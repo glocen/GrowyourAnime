@@ -55,7 +55,8 @@ local AUTO = 96
 local PLATE = Vector2.new(400, Theme.Size.Tap - Theme.Size.Pad) -- the battery's plate in the head, authored
 local LINE = 20 -- the plate's reading line, authored high
 local CHARGE = 8 -- the plate's charge bar, authored high
-local MARK = Vector2.new(20, 12) -- the battery's mark, drawn from frames: a stand-in until AR12's mark is cut
+local MARK = 28 -- the battery's mark (AR12's V2 Battery; TR41 (e)): its side in points
+local MARK_INK = 25 -- its drawing across in points (0.88 of its side), where the frames' stand-in stood: the words start past it
 
 -- The machines in the bar's order (Rules.Power.Machines), by name, each with its light's colour and its chip; the
 -- battery takes what's left, in its own light.
@@ -565,26 +566,10 @@ local function plate(body: Frame)
 		Parent = body,
 	})
 	parts.BatteryPlate = frame
-	local mark = Instance.new("Frame")
-	mark.Name = "Mark"
-	mark.BackgroundTransparency = 1
-	mark.AnchorPoint = Vector2.new(0, 0.5)
-	mark.Position = UDim2.new(0, pad, 0.5, 0)
-	mark.Size = UDim2.fromOffset(MARK.X, MARK.Y)
-	mark.Parent = frame
-	local stroke = Instance.new("UIStroke")
-	stroke.Thickness = 2
-	stroke.Color = BATTERY
-	stroke.Parent = mark
-	local nub = Instance.new("Frame")
-	nub.Name = "Nub"
-	nub.BorderSizePixel = 0
-	nub.BackgroundColor3 = BATTERY
-	nub.AnchorPoint = Vector2.new(0, 0.5)
-	nub.Position = UDim2.new(1, 2, 0.5, 0)
-	nub.Size = UDim2.fromOffset(3, MARK.Y / 2)
-	nub.Parent = mark
-	local left = pad + MARK.X + 5 + gap -- past the mark and its nub
+	-- Its drawing is centred in its image, so the image is centred on the span the drawing takes.
+	local record = POWER.Images.Battery
+	Skin.LayOwn(frame, record, "Mark", { X = pad + (MARK_INK - MARK) / 2, Y = (PLATE.Y - MARK) / 2, Scale = MARK / record.Points.X, Z = 2 })
+	local left = pad + MARK_INK + gap -- past the mark
 	local inner = PLATE.X - left - pad
 	local top = (PLATE.Y - LINE - gap - CHARGE) / 2
 	local reading = label(frame, "BatteryReading", "", Theme.Text.Body, UDim2.fromOffset(inner, LINE), UDim2.fromOffset(left, top), { Font = Theme.Font.Number, Colour = BATTERY })

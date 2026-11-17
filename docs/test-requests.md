@@ -3629,3 +3629,45 @@ Research, 2026-11-17, 14:05, on the director's question: "how is that there is m
     - **The chambers' row gives way at the smallest phone:** that is TR41 (a)'s class, nothing runs past its panel, and the 40-point picture with its disc still reads.
   - **To polish-later:** at the smallest phone, a ready chip's band (3.6 points) reads as a faint line under the gold edge, not yet as the ground's colour.
   - **Not this piece's:** TR18's take, failing at the Power screen's prompt, is Faber's to look into at TR18's next pass, as the record says.
+
+### (e) The HUD's V2 leftovers, and the Training machine training (Faber, 2026-11-17, after 18:40 (25e59ed) to 18:49 by the clock)
+
+- **The 30 images of AR12's V2, Block, one by one** (`build/handoff/UI/hud/colour/images/`, `hud_colour.json`):
+  - **In the game since AR12's build (17):** the pills' block (BlockPill); the ink marks of Power, Credits and Voidkin (InkBolt, InkCoin, InkShard: the two pills and the hint); CoinMint (the credits' flight, the reveal's plate); the readout in its four layers with the two signatures' icons and their ready twins; the spectate eye, off and on; the lead card's stud and its glow.
+  - **Installed here (1):** Battery, the battery's mark on its plate in the Power screen's head.
+    - It replaces the stand-in drawn from frames, at 28 points, its drawing (25 points across) where the stand-in stood, so the words keep their place.
+    - In its own gold, untinted (`Config.Hud.Power.Images.Battery`).
+    - Uploaded under the group, read back Approved; content check PASS for the upload (`docs/asset-log.md`, the V2 row).
+  - **Replaced by a later piece (8):**
+    - BlockDock, and the light icons only the dock wore (Plant, Shard, Route): replaced by the dock's own images, its tiles and three ink marks (AR12, "The dock's images, delivered").
+    - The four halos (CardFrameHalo Rare to Mythical): taken off by the director's word of 2026-11-15, "let remove this light aura" (AR12).
+  - **Unspent, as decided (4):**
+    - Crest and InkCrest: Regalia's. Its dock button isn't built since the merge (the director, 2026-11-15; research's pass: they stay in the kit, unspent, not deleted).
+    - InkPlant and InkRoute: the Base's and the Map's marks on a block. No pill or hint of either exists, and the dock has its own marks.
+    - None of the four is uploaded. The kit's system rows already name them, so a pill or hint of one stops at `Skin.Icon`'s assert until it goes up and into the kit: that's the sign it's needed.
+- **The Power pill's covering state** in V2 (the Battery icon at 17 points between "30 kW" and "34 kW used", and the bar's covered share in dashes) is TR18's to say.
+  - TR18 rebuilt the pill: generation against demand, then the battery's own reading, its fill as the thread.
+  - Covering shows in the warning colour on the value (research's verdict on TR18).
+  - I've built nothing there. See "Open, for research".
+- **The Training machine's cyan** (research's ask at (b)), seen in the game:
+  - The lead, whole at home while the player is off the plot, trains (the game's own rule, `Rules.Training.Who`). The driver set it up: the heal tuned to 5 s, the avatar on the strip, the lead felled.
+  - The Training machine's share wears its own light, cyan, at 54% beside the battery's gold rest.
+- **Cases:**
+  - "Power: the generator shows ..." checks three things about the plate's mark:
+    - it's the battery's image, untinted;
+    - it's centred on the plate's height;
+    - its box ends before the words.
+    - It passes 90/0.
+  - "Take: TR41 (e)" shows the Power screen at the smallest phone, then in this screen's room ("Large"), as `NL_TakeStep` says. It checks the mark, that a Voidkin trains, and that the Training machine wears its own light. It passes 6/0.
+- **Tested:** type check 0 new.
+- **Stills for your read,** in `build/scratch/faber/stills/`:
+  - `tr41e-a-power-phone.jpg`, and `tr41e-a-power-zoom.png` for the head and the bar at the smallest phone;
+  - `tr41e-b-power-large.jpg`, and `tr41e-b-mark-zoom.png` for the mark beside its reading at full size.
+- **Open, for research:**
+  - **The pill's second value** ("full", "42.10 kWh") is the battery's, but only its words say so. V2 put the battery's mark in the pill while it covers. Should the mark, at 17 points, stand before that value always? It's a tier 2 call; nothing is built until you say.
+  - **The mark draws two cells of three lit at any charge.** It's a mark, not a gauge: the bar under the reading is the gauge. At 60 of 60 it reads as said, but say if it jars.
+- **Four facts:**
+  - **Implemented:** yes.
+  - **Tested:** as above.
+  - **Visually reviewed:** my stills. Research's read is next.
+  - **Director-accepted:** no.

@@ -498,6 +498,9 @@ return {
 			ChipBreaker = { Id = "rbxassetid://130456525982318", Pixels = Vector2.new(88, 88), Points = Vector2.new(22, 22), Pad = 5 },
 			ChipTraining = { Id = "rbxassetid://114149720582348", Pixels = Vector2.new(88, 88), Points = Vector2.new(22, 22), Pad = 5 },
 			Ember = { Id = "rbxassetid://90007328405959", Pixels = Vector2.new(580, 168), Points = Vector2.new(580, 168), Pad = 0 },
+			-- The battery's mark on its plate in the head, one of AR12's V2 images (build/handoff/UI/hud/colour/images/Battery.png;
+			-- TR41 (e)): drawn in its own gold and dark rim, never tinted. Its drawing spans 0.88 of its side across, centred.
+			Battery = { Id = "rbxassetid://124264049509782", Pixels = Vector2.new(128, 128), Points = Vector2.new(32, 32), Pad = 0 },
 		} :: { [string]: UIKit.Image },
 		Colours = {
 			Breaker = Color3.fromHex("#E6ECF7"),

@@ -2,6 +2,18 @@
 
 The oldest entries of `docs/team-notes.md`, moved here as that file passed about 250 lines (`AGENTS.md`, "Team notes"). Newest first.
 
+### 2026-11-16, 20:00. AR19: the Void Mill's Stages II and III as kit pieces (Modulo)
+
+- **What changed:** Stages II and III are kit pieces, cut from AR19's fixes 1 to 3:
+  - each stage's still body;
+  - the twin wheel, with its spur gear;
+  - a pinion on each side, made meshed and turning at -2.4;
+  - each stage's eight steps and its demand mark.
+- **The plan:** it carries the swap's table, each stage's pieces with their places and motion. Stage I's pieces are untouched. The collision on the ground is Stage I's, with the sill 0.5 nearer the gate. The content check passed.
+- **Where:** AR19, "Stages II and III as kit pieces"; `build/handoff/Base` (`meshes/Generator2*`, `meshes/Generator3*`, `manifest.json`, and `plan.json`'s `machines.generatorStages`); `tools/blender/base_mill.py`.
+- **Open:** Faber's upload, install and motion. Then research's pass, with the check's note on the dynamos' real-world look.
+- **For:** Faber, then research.
+
 ### 2026-11-16, 19:27. AR6: batch 2 in colour, the 120 in their slots (Modulo)
 
 - **What changed:** the eight shared kinds in colour, in batch 1's slots and frames. Cloth has its own colours by rarity, with Rare and Epic dark so the frame carries the rarity. Glove leather is charcoal, with knuckle plates. Every body piece is dark-lined inside. Yoake's wing rises over its two lames. Hoshikuzu's stars are solid, on a line.

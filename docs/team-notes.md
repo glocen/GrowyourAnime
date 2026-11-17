@@ -9,9 +9,9 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **AR11, Ground Wire's retake:** works. Must-fix (round 2 on the hold): the lock as a pulsing fill on the stopped Shade, the shield as a pulsing glint on the spear's head. Asked of Faber: does a real fight hide the lead behind its target?
 - **Next:** verdicts in motion on AR26's blocks as Faber installs them; sim.py's pool() learns "made" (TR24); attributes.py on the real Config once TR36 lands.
 
-**Faber (builder).** 2026-11-17, 18:38. TR41 (d) is in: the festival tag on a chamber's picture, its mark on a disc in a bag cell (at the crystal's left foot, clear of the count), a band of the ground's colour along a Breaker chip's foot, for research's read (TR41, "(d) Where a shard came from"; stills in `build/scratch/faber/stills/tr41d-*`). Found and fixed on the way: at the smallest phone the Breaker's strip ran past its panel, cut. Voidkin work stays parked on branch `parked/ar26-watt-block`.
-- **Now:** TR41 (e), the V2 leftovers, with the Training machine's still.
-- **Next, in order:** AR29's B, 13 icons; AR30's 25 images; AR31's 38 and TR10's two icons up, then TR10's marker captures; TR34; AR23; TR29 and TR10; TR37 to TR39; TR31 to TR33, TR35, the responsive pass; AR19's six re-uploads; AR32's and AR33's Stages II and III as kit pieces.
+**Faber (builder).** 2026-11-17, 18:49. TR41 (e) is in for research's read: the V2 leftovers, each answered (the battery's mark on Power's plate installed; the dock's and the halos replaced; Regalia's, the Base's and the Map's marks unspent), and the Training machine's cyan seen while its Voidkin trains (TR41, "(e)"; stills `build/scratch/faber/stills/tr41e-*`). (d) passed. Voidkin work stays parked on branch `parked/ar26-watt-block`.
+- **Now:** AR29's B, 13 icons.
+- **Next, in order:** AR30's 25 images; AR31's 38 and TR10's two icons up, then TR10's marker captures; TR34; AR23; TR29 and TR10; TR37 to TR39; TR31 to TR33, TR35, the responsive pass; AR19's six re-uploads; AR32's and AR33's Stages II and III as kit pieces.
 - **Open, tests:** four timing cases are NOT VERIFIED (AR11). The Keeper's "and out on Out" and Pip's skip fail at times. TR20's Breaker hover depends on order. A reveal once stayed held after the suites (TR41, "The two must-fixes", Open).
 - **Open, for research:** the target card's light (`CardLightHealth`) keeps its glow ahead of its front. Does it go the same way as the lead's?
 
@@ -116,6 +116,13 @@ For Faber:
 - Tier 2, research, 2026-11-12, on the director's words: weapons belong to a class, in two hands (Main Hand and Off Hand replace Weapon and Shield), a preset holds a pair per class, a weapon drop is for the lead's class; Combat Power made to be watched, its weights fitted by the simulation; each item kind modelled and rendered to its icon (AR6, phase 3) (`docs/design.md`, "Regalia: gear" and "Combat Power"). Faber: the Stats case's `"Weapon"` source becomes `"Main Hand"` when you next touch it. Faber and Modulo: say in your row what you'd change.
 
 ## Entries
+
+### 2026-11-17, 18:49. TR41 (e): the HUD's V2 leftovers answered, the Training machine training (Faber)
+
+- **What changed:** of AR12's 30 V2 images, 17 were already in the game. The battery's mark is now installed on the Power screen's plate, in place of its stand-in drawn from frames. 8 were replaced by later pieces (the dock's own images; the halos the director took off). 4 stay unspent until a pill or hint wears them.
+- **Where:** `PowerScreen.luau`, `Config.Hud.Power.Images.Battery`; cases "Power: the generator ..." and "Take: TR41 (e)".
+- **Tested:** the Power case 90/0, the take 6/0, type check 0 new. The Training machine's cyan was seen in the game, with the lead training.
+- **Open, for research:** the battery's mark in the HUD's Power pill, before its second value (tier 2, nothing built).
 
 ### 2026-11-17, 18:38. TR41 (d): where a shard came from, the festival tag, installed (Faber)
 
@@ -235,15 +242,3 @@ For Faber:
 - **Tested:** logic and flow. The 11 layout checks are NOT VERIFIED (the screen's locked).
 - **Open:** the 120 gear pictures in its cells.
 - **For:** research.
-
-### 2026-11-16, 20:00. AR19: the Void Mill's Stages II and III as kit pieces (Modulo)
-
-- **What changed:** Stages II and III are kit pieces, cut from AR19's fixes 1 to 3:
-  - each stage's still body;
-  - the twin wheel, with its spur gear;
-  - a pinion on each side, made meshed and turning at -2.4;
-  - each stage's eight steps and its demand mark.
-- **The plan:** it carries the swap's table, each stage's pieces with their places and motion. Stage I's pieces are untouched. The collision on the ground is Stage I's, with the sill 0.5 nearer the gate. The content check passed.
-- **Where:** AR19, "Stages II and III as kit pieces"; `build/handoff/Base` (`meshes/Generator2*`, `meshes/Generator3*`, `manifest.json`, and `plan.json`'s `machines.generatorStages`); `tools/blender/base_mill.py`.
-- **Open:** Faber's upload, install and motion. Then research's pass, with the check's note on the dynamos' real-world look.
-- **For:** Faber, then research.

@@ -2,7 +2,7 @@
 -- PowerCases (client, Studio only): the Power screen's cases, a list of their own beside Cases, which joins it as it joins
 -- HudCases and VoidkinCases (Cases' one table had passed what the type solver checks in one piece). The generator's face
 -- and prompt, the screen's bar and its handles, +/- and Auto (TR18), and the battery on its plate in the head (AR12's
--- tier 2, research's ruling, 2026-11-15).
+-- tier 2, research's ruling, 2026-11-15), its mark AR12's battery (TR41 (e)).
 
 local GuiService = game:GetService("GuiService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
@@ -163,6 +163,18 @@ local function batteryPlate(t: any, now: Read.Base)
 	local reading = part("BatteryReading")
 	t.Check("the battery's plate: its kWh against its cap", string.find(said("BatteryReading"), `^[%d%.,]+ / {Read.Number(capacity)} kWh$`) ~= nil, said("BatteryReading"))
 	t.Check("in Power's yellow", reading ~= nil and reading:IsA("TextLabel") and reading.TextColor3 == Theme.Colour.Electricity)
+	-- Its mark is AR12's battery (TR41 (e)), in its own gold, centred on the plate's height, clear of the words.
+	local plate = part("BatteryPlate")
+	local mark = if plate then plate:FindFirstChild("Mark") else nil
+	if mark and mark:IsA("ImageLabel") and plate and plate:IsA("GuiObject") and reading and reading:IsA("GuiObject") then
+		local middle = mark.AbsolutePosition.Y + mark.AbsoluteSize.Y / 2
+		local plateMiddle = plate.AbsolutePosition.Y + plate.AbsoluteSize.Y / 2
+		t.Check("its mark: AR12's battery, untinted", mark.Image == HudConfig.Power.Images.Battery.Id and mark.ImageColor3 == Color3.new(1, 1, 1), mark.Image)
+		t.Check("the mark centred on the plate's height, inside its left", math.abs(middle - plateMiddle) <= 1 and mark.AbsolutePosition.X >= plate.AbsolutePosition.X, `{middle} against {plateMiddle}`)
+		t.Check("the mark ends before the words", mark.AbsolutePosition.X + mark.AbsoluteSize.X <= reading.AbsolutePosition.X + 0.5, `{mark.AbsolutePosition.X + mark.AbsoluteSize.X} against {reading.AbsolutePosition.X}`)
+	else
+		t.Check("its mark: AR12's battery, an image on the plate", false, tostring(mark))
+	end
 	local holds = said("BatteryHolds")
 	t.Check("the work it holds as its soft line", string.find(holds, "^holds .+ of work$") ~= nil or holds == "nothing draws now", holds)
 	local charge = part("BatteryCharge")
@@ -397,6 +409,55 @@ function PowerCases.Cases(given: Given): { any }
 				if not was.Open then
 					t.Server("PowerOpen", false)
 				end
+				step:Destroy()
+			end,
+		},
+		{
+			Name = "Take: TR41 (e), the battery's mark on Power's plate and the Training machine lit while its Voidkin trains, at the smallest phone then this screen, as the driver writes, for research",
+			Manual = true,
+			Stay = true,
+			Run = function(t: any)
+				-- Research's read of TR41 (e) (docs/test-requests.md, TR41): the Power screen at the smallest phone, held until
+				-- ReplicatedStorage.NL_TakeStep says "Large" (this screen's own room), "Phone" or "End". The driver sets the
+				-- machine training first, as the game does (Rules.Training.Who): the player off the plot, the lead home and whole.
+				local step = Instance.new("StringValue")
+				step.Name = "NL_TakeStep"
+				step.Value = "Phone"
+				step.Parent = ReplicatedStorage
+				local function show(phone: boolean)
+					Screen.Close()
+					Layers.Force(if phone then Theme.Scale.Floor else nil)
+					Layers.Box(if phone then Theme.Smallest - Vector2.new(0, GuiService.TopbarInset.Height) else nil)
+					BaseController.OpenPower()
+				end
+				show(true)
+				t.Check("the Power screen opens", Screen.Current() == PowerScreen.Name, tostring(Screen.Current()))
+				local plate = PowerScreen.Parts().BatteryPlate
+				local mark = if plate then plate:FindFirstChild("Mark") else nil
+				t.Check("its plate wears the battery's mark", mark ~= nil and mark:IsA("ImageLabel") and mark.Image == HudConfig.Power.Images.Battery.Id)
+				local on = game:GetService("Players").LocalPlayer:GetAttribute("Training")
+				t.Check("a Voidkin trains (the driver's setup)", type(on) == "string" and on ~= "", tostring(on))
+				for index, machine in PowerScreen.Machines do
+					if machine.Id == "Training" then
+						t.Check("the Training machine wears its own light", waitFor(t, 3, function(): boolean
+							local segment = PowerScreen.Parts()[`Segment{index}`]
+							return segment ~= nil and segment:GetAttribute("Wears") == "Training"
+						end))
+					end
+				end
+				local shown = step.Value
+				waitFor(t, 300, function(): boolean
+					if step.Value ~= shown then
+						shown = step.Value
+						if shown == "Large" or shown == "Phone" then
+							show(shown == "Phone")
+						end
+					end
+					return step.Value == "End"
+				end)
+				Layers.Box(nil)
+				Layers.Force(nil)
+				Screen.Close()
 				step:Destroy()
 			end,
 		},

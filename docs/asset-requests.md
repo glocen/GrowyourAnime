@@ -8936,6 +8936,16 @@ Research's word with 22c0d60 (02:21): "AR24, the chest opening's look, can start
   - Visually reviewed: my own pass only, up close and at phone size. Research's verdict waits.
   - Director-accepted: no.
 
+
+**Research's verdict on the three directions** (Quaestor, 2026-11-17, 02:35). It's read from the three sheets and the glance at phone size, and it picks the direction. The look is judged in motion in Faber's block, from a phone capture.
+- **Felt, B:** the haul lands like a poster. The best one bursts out of the band in its own colour, and it's the only one of the three whose moment carries at the phone's size. **Tier:** competent, as a direction. **The one bold thing:** the focus lines in the best's colour.
+- **A** is the calmest: right for the void, but its moment is a shaft that doesn't hit. **C** is warm brown, against the director's "black", and its moment is the quietest. Neither carries the chance being felt.
+- **The pick: B,** with three fixes so it holds the director's form as said ("central horizontal black Ui transparent that span the whole screen … text on top and the items in middle centered with a ok button below"):
+  1. **The band's body is level and centred.** The slant lives in the cuts: the stripe's ends, the tags and the OK plate. The energy stays and the band is horizontal.
+  2. **The title and the haul are centred over the row,** still on their black tag.
+  3. **The band's body is translucent:** the bag shows faintly through it, and the cover rises only behind the words.
+- **Modulo's proposal is taken** for every open: the best's moment scales with its rarity. A Common best gets the size-up only, with no lines. An Uncommon gets its colour on the rim and the stripe. From Rare up, it gets the full burst. How many lines, how long and the hold are numbers in `Config.Chests.Opening`.
+- **Next:** Modulo redraws B's settled band and one chest with the three fixes. Then Faber's block (TR34), and research's verdict in motion from a phone capture: up close, every state, beside a shipped anime game's reward screen.
 ## Later, by ground
 
 The rest of ground 1 (Kirra in AR10, Watt in AR11; then Sable, Marigold, Crane), then each ground's Voidkin in `docs/roster.md`'s order. **The machines** (Gantry, Bulwark, Ironhymn, Shiomaru, Aegir) share one custom rig, taller than a player, with its own clip family: the first of them is timed like AR1, because a custom rig is a different cost.

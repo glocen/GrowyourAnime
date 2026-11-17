@@ -1,7 +1,7 @@
 --!strict
 -- KitCases (client, Studio only): a Voidkin's kit in play, a list of its own that joins Cases in the runner, as the
 -- Tower's does (Cases is at the type checker's limit). AR11's install: Watt's Ground Wire, its stop, its held pose and its
--- shield, through the replay.
+-- shield, through the replay. AR26's spacing: a lead stands off a bigger Shade by its depth.
 
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
@@ -10,6 +10,8 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Shared = ReplicatedStorage.Shared
 local Net = require(Shared.Net)
 local Actions = require(Shared.Definitions.Actions)
+local Enemies = require(Shared.Definitions.Enemies)
+local Combat = require(Shared.Config.Combat)
 local FighterController = require(script.Parent.Parent.Parent.Main.FighterController)
 local ProfileController = require(script.Parent.Parent.ProfileController)
 local UI = script.Parent.Parent.Parent.Parent.UI
@@ -42,8 +44,106 @@ local function myLead(): Model?
 	return nil
 end
 
+-- How far a rig's face stands before its root, read on this client: its visible torso's (`<Rig>_Torso`) nearest face along
+-- its root's facing, as the server reads it (FightService, frontOf). Nil without one.
+local function frontOf(model: Model): number?
+	local root = model:FindFirstChild("HumanoidRootPart")
+	local torso: BasePart? = nil
+	for _, part in model:GetChildren() do
+		if part:IsA("BasePart") and string.sub(part.Name, -6) == "_Torso" then
+			torso = part
+		end
+	end
+	if torso == nil or not (root and root:IsA("BasePart")) then
+		return nil
+	end
+	local placed = root.CFrame:ToObjectSpace(torso.CFrame)
+	local half = torso.Size / 2
+	local front = -math.huge
+	for _, x in { -1, 1 } do
+		for _, y in { -1, 1 } do
+			for _, z in { -1, 1 } do
+				front = math.max(front, -(placed * Vector3.new(x * half.X, y * half.Y, z * half.Z)).Z)
+			end
+		end
+	end
+	return front
+end
+
 function KitCases.Cases(): { any }
 	return {
+		{
+			-- AR26's spacing (Modulo's ask, approved for research 2026-11-17): a lead stands off its target by the target's own
+			-- depth, its torso's face before its root past an ordinary Shade's (FightService, Fighter.Depth), so a touch placed
+			-- for the ordinary Shade meets a bigger body's surface. Read here from the bodies as this client sees them, never
+			-- from a number: the elite is the ordinary Shade at its Scale, the Lamplighter its own rig. The replay stands the
+			-- lead off as a fight does.
+			Name = "Fight: a lead stands off a bigger Shade by its depth, read from its own torso (AR26's spacing)",
+			Run = function(t: any)
+				local lead = myLead()
+				local def = if lead then lead:GetAttribute("Def") else nil
+				if type(def) ~= "string" then
+					t.Check("the lead is in the world", false)
+					return
+				end
+				local action: any = nil
+				for _, one in Actions.KitOf(def) do
+					if action == nil and one.Cooldown == 0 and one.Range > 0 then
+						action = one
+					end
+				end
+				if action == nil then
+					t.Check(`{def} has a basic attack`, false)
+					return
+				end
+				local fronts: { [string]: number } = {}
+				for _, foe in { "brawler", "brawler_elite", "lamplighter" } do
+					local started = t.Server("Replay", action.Id, action.Length + REPLAY_PAUSE, foe)
+					t.Check(`{foe}: the replay starts on it`, type(started) == "table" and started.Ok == true, tostring(type(started) == "table" and started.Error))
+					if type(started) ~= "table" or started.Ok ~= true then
+						continue
+					end
+					local body: Model? = nil
+					waitFor(t, 6, function(): boolean
+						local fighters = workspace:FindFirstChild("Fighters")
+						for _, model in (if fighters then fighters:GetChildren() else {}) do
+							if model:IsA("Model") and model:GetAttribute("Def") == foe and frontOf(model) ~= nil then
+								body = model
+							end
+						end
+						return body ~= nil
+					end)
+					local front = if body then frontOf(body) else nil
+					local depth = if body then body:GetAttribute("Depth") else nil
+					if front == nil or type(depth) ~= "number" then
+						t.Check(`{foe}: its body and its depth reach this client`, false)
+						continue
+					end
+					fronts[foe] = front
+					local plain = fronts.brawler
+					if foe == "brawler" then
+						t.Check("the ordinary Shade's depth is none", math.abs(depth) < 0.005, string.format("%.3f", depth))
+					elseif plain then
+						t.Check(`{foe}: its depth is its face past the ordinary Shade's`, depth > 0 and math.abs(depth - (front - plain)) < 0.01,
+							string.format("%.3f, its face %.3f before its root, the Shade's %.3f", depth, front, plain))
+						local scale = Enemies.ById[foe].Scale or 1
+						if Enemies.ById[foe].Rig == "Shade" then
+							t.Check(`{foe}: the ordinary Shade grown by its Scale`, math.abs(depth - plain * (scale - 1)) < 0.01,
+								string.format("%.3f against %.3f", depth, plain * (scale - 1)))
+						end
+					end
+					local spot, target = started.Spot, started.Target
+					if typeof(spot) == "Vector3" and typeof(target) == "Vector3" then
+						local gap = Vector3.new(spot.X - target.X, 0, spot.Z - target.Z).Magnitude
+						local want = action.Range - Combat.Approach + depth
+						t.Check(`{foe}: the lead stands off it by its depth`, math.abs(gap - want) < 0.02, string.format("%.3f studs root to root, %.3f wanted", gap, want))
+					else
+						t.Check(`{foe}: the lead stands off it by its depth`, false, "no spot")
+					end
+				end
+				t.Server("Replay")
+			end,
+		},
 		{
 			-- AR11's install: Ground Wire's pulse stops what stands round Watt for his hold, Plant to Release, never throwing it,
 			-- and shields him past it (Actions.Hit.Round, Stun, Shield); a stopped body holds the pose it was stopped in until it

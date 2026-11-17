@@ -135,11 +135,13 @@ local function replay(who: any, actionId: any, every: any, foe: any): any
 	if session.Dummy then
 		FightService.Remove(session.Dummy)
 	end
-	local gap = if Combat.Replay.Distance > 0 then Combat.Replay.Distance else action.Range - Combat.Approach
 	local dummyAt = Vector3.new(CENTER.X, top, CENTER.Z)
 	local stand = dummyAt - ahead * Combat.Replay.Behind - right * Combat.Lead.Side + Vector3.new(0, STAND, 0)
 	session.Dummy = FightService.SpawnEnemy(foeRow.Id, lead.Block.Level, CFrame.lookAt(dummyAt, dummyAt - ahead))
-	local turn = math.rad(Combat.Lead.Frame)
+	-- off a bigger foe by its depth, as a fight spaces (FightService.Fighter.Depth)
+	local gap = (if Combat.Replay.Distance > 0 then Combat.Replay.Distance else action.Range - Combat.Approach) + (session.Dummy :: FightService.Fighter).Depth
+	-- as a fight frames it: beyond the foe, turned Lead.Frame; beside an elite or a keeper (Lead.Beside, Fight.Aside)
+	local turn = math.rad((Combat.Lead.Beside :: { [string]: number })[foeRow.Kind] or Combat.Lead.Frame)
 	local spot = dummyAt + (ahead * math.cos(turn) + right * math.sin(turn)) * gap + Vector3.new(0, STAND, 0)
 	player:RequestStreamAroundAsync(spot)
 	lead.Root.AssemblyLinearVelocity = Vector3.zero

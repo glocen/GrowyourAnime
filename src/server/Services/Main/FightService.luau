@@ -77,6 +77,10 @@ export type Fighter = {
 	Shield: { Share: number, Until: number }?, -- the share less damage it takes until then (Actions.Hit.Shield)
 	StunLock: number, -- no stun stops it again before this (Rules.Fight.Stun)
 	Alone: number, -- its most health with one or two leads on it; a crowd adds to it (Fight.CrowdHealth)
+	-- Studs its body's face stands before its root past an ordinary Shade's (bodyDepth). A lead's spacing and a hit's reach
+	-- count from that face, so a touch placed for the ordinary Shade meets a bigger body's surface (AR26's ask, approved
+	-- for research 2026-11-17). 0 for a body of the Shade's size, a box or a lead.
+	Depth: number,
 	-- A lead watching a keeper it felled, standing and facing where it fell, until its Down's Gone (AR7, section 5, fix 2).
 	Watch: Vector3?,
 	WatchUntil: number,
@@ -130,6 +134,49 @@ end
 
 local function distance(a: BasePart, b: BasePart): number
 	return flat(b.Position - a.Position).Magnitude
+end
+
+-- How far a rig's face stands before its root along its facing: its visible torso's (`<Rig>_Torso`, AR2's and AR7's) at
+-- its scale. Nil for a body without one (a box, an R6 lead).
+local function frontOf(model: Model): number?
+	local root = model:FindFirstChild("HumanoidRootPart")
+	local torso: BasePart? = nil
+	for _, part in model:GetChildren() do
+		if part:IsA("BasePart") and string.sub(part.Name, -6) == "_Torso" then
+			torso = part
+			break
+		end
+	end
+	if not (root and root:IsA("BasePart") and torso) then
+		return nil
+	end
+	local placed = root.CFrame:ToObjectSpace(torso.CFrame)
+	local half = torso.Size / 2
+	local front = -math.huge
+	for _, x in { -1, 1 } do
+		for _, y in { -1, 1 } do
+			for _, z in { -1, 1 } do
+				front = math.max(front, -(placed * Vector3.new(x * half.X, y * half.Y, z * half.Z)).Z)
+			end
+		end
+	end
+	return front
+end
+
+local shadeFront: number? = nil -- the ordinary Shade's, read once from its template
+
+-- A body's Depth (Fighter.Depth): its face's distance before its root, less the ordinary Shade's own, both read from the
+-- rigs (ServerStorage.Templates.Shade at its own size), so nothing is copied from a recipe. 0 for a body with no rig torso.
+local function bodyDepth(model: Model): number
+	local front = frontOf(model)
+	if front == nil then
+		return 0
+	end
+	if shadeFront == nil then
+		local shade = ServerStorage:WaitForChild("Templates"):FindFirstChild("Shade")
+		shadeFront = if shade and shade:IsA("Model") then frontOf(shade) else nil
+	end
+	return if shadeFront then front - shadeFront else 0
 end
 
 local function standing(f: Fighter?): boolean
@@ -500,6 +547,7 @@ local function register(model: Model, side: "Lead" | "Shade", kind: string, def:
 		Shield = nil,
 		StunLock = 0,
 		Alone = block.Health,
+		Depth = if side == "Shade" and rig ~= nil and rig ~= "Box" and rig ~= "R6" then bodyDepth(model) else 0,
 		WatchUntil = 0,
 		Forced = nil,
 		ForcedEvery = 0,
@@ -516,6 +564,7 @@ local function register(model: Model, side: "Lead" | "Shade", kind: string, def:
 	model:SetAttribute("Rig", rig or (if side == "Lead" then "R6" else "Box"))
 	model:SetAttribute("Title", title)
 	model:SetAttribute("Level", block.Level)
+	model:SetAttribute("Depth", f.Depth) -- for the tests: what a lead stands off past an ordinary Shade
 	-- The signature: the kit's action with a cooldown, for the HUD's ring (TR3), after its passive. 0 without one.
 	local cooldown = 0
 	for _, action in kit do
@@ -898,7 +947,7 @@ end
 local function inCone(f: Fighter, other: Fighter, axis: Vector3, hit: Actions.Hit): boolean
 	local offset = flat(other.Root.Position - f.Root.Position)
 	local along = offset:Dot(axis)
-	return Fight.InCone(along, (offset - axis * along).Magnitude, hit.Reach, hit.Cone :: number, hit.Apex or 0)
+	return Fight.InCone(along, (offset - axis * along).Magnitude, hit.Reach + other.Depth, hit.Cone :: number, hit.Apex or 0)
 end
 
 -- A beat's heal (Actions.Hit.Heal): the fighter itself, and with a Cone every ally lead standing inside it along `axis`,
@@ -949,7 +998,7 @@ local function strike(f: Fighter, beat: string, hit: Actions.Hit, at: number)
 		-- a pulse round the fighter itself: every enemy standing within, its target too, whichever way it faces
 		local near = {}
 		for _, other in fighters do
-			if against(f, other) and standing(other) and Fight.Within(flat(other.Root.Position - f.Root.Position).Magnitude, hit.Round) then
+			if against(f, other) and standing(other) and Fight.Within(flat(other.Root.Position - f.Root.Position).Magnitude - other.Depth, hit.Round) then
 				table.insert(near, other)
 			end
 		end
@@ -963,7 +1012,7 @@ local function strike(f: Fighter, beat: string, hit: Actions.Hit, at: number)
 	end
 	local facing = flat(f.Root.CFrame.LookVector)
 	local cosine = if gap > 0.01 and facing.Magnitude > 0.01 then facing.Unit:Dot(line.Unit) else 1
-	if not Fight.Reaches(gap, cosine, hit.Reach, Combat.Arc) then
+	if not Fight.Reaches(gap, cosine, hit.Reach + target.Depth, Combat.Arc) then
 		return -- a whiff: its effect still plays on the beat, with no spark and no number
 	end
 	local centre = target.Root.Position
@@ -1176,7 +1225,7 @@ local function trySkip(f: Fighter, target: Fighter, avatar: BasePart, at: number
 		return false
 	end
 	local next = Fight.Choose(f.Kit, f.ReadyAt, at)
-	local radius = math.max(0, (if next then next.Range else 4) - Combat.Approach)
+	local radius = math.max(0, (if next then next.Range else 4) - Combat.Approach) + target.Depth
 	local _, _, place, here = slotFor(f, target, radius)
 	local center = target.Root.Position
 	for _, bearing in Fight.SkipBearings(place, Combat.Skip.Step, here) do
@@ -1253,10 +1302,10 @@ local function thinkLead(f: Fighter, at: number, dt: number)
 		local action = Fight.Choose(f.Kit, f.ReadyAt, at)
 		local range = if action then action.Range else 4
 		local gap = distance(f.Root, target.Root)
-		local slot, off = slotFor(f, target, math.max(0, range - Combat.Approach))
+		local slot, off = slotFor(f, target, math.max(0, range - Combat.Approach) + target.Depth)
 		-- after a skip it fires from where it lands while its target is in range, and never walks in again (Combat.Skip)
 		local landed = at - f.SkippedAt < Combat.Skip.Every
-		if action and gap <= action.Range and (off <= Combat.Slots.Arc or landed) then
+		if action and gap <= action.Range + target.Depth and (off <= Combat.Slots.Arc or landed) then
 			start(f, action, at)
 		elseif landed and action == nil then
 			-- landed with nothing ready yet: it holds where it landed, as a walk to its slot would take it back in (the
@@ -1400,8 +1449,8 @@ local function thinkShade(f: Fighter, at: number)
 	local action = Fight.Choose(f.Kit, f.ReadyAt, at)
 	local range = if action then action.Range else 4
 	local gap = distance(f.Root, target.Root)
-	local slot, off = slotFor(f, target, math.max(0, range - Combat.Approach))
-	if action and gap <= action.Range and off <= Combat.Slots.Arc then
+	local slot, off = slotFor(f, target, math.max(0, range - Combat.Approach) + target.Depth)
+	if action and gap <= action.Range + target.Depth and off <= Combat.Slots.Arc then
 		start(f, action, at)
 	else
 		endAction(f, at)

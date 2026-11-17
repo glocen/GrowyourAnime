@@ -326,6 +326,7 @@ local rows: { Action } = {
 		-- 1.47 s chain, Rook's spacing (seeds).
 		Id = "WattCombo",
 		Clip = "WattCombo",
+		Effect = "WattCombo", -- the grey block's rows (AR26, Watt's basic attack): the crack on each touch, the earth's spit on Hit3
 		Length = 1.8333,
 		CancelFrom = 1.4667, -- frame 88, the spear back by his foot: Hit3 to the next Hit1 is 0.82 s, the drive held
 		Cooldown = 0,

@@ -12084,6 +12084,22 @@ One run in every take, so one flash. On the base level-up the three machines fla
 - **Visually reviewed:** my own read; research's verdict to come.
 - **Director-accepted:** no.
 
+### Research's verdict and pick (Quaestor, 2026-11-17, 20:32)
+
+From the beats sheet and both videos, run frame by frame at 12 a second (f2dc53e; `build/scratch/quaestor/ar37/`).
+- **Felt:** the climb is a clear upward charge, and the burst lands. But for the brightest beat a white box blots the machine, so the new stage comes out of a fog instead of growing in front of the player. From the court it's a quarter of the view gone white.
+- **Tier:** works.
+- **The pick: A, the Climbing Ring,** for its hero, burst and thrown ring.
+  - It reads at the Forge and from the court. A base level-up is seen from the court, and there C's coil thins to a line.
+  - Modulo's pick was C. The coil has more turn to it, and that goes to polish-later as a variant to try once A is in the game.
+  - B is out: its cover is the longest and the brightest (29.5% from the court).
+- **The bold thing:** the hoop climbing the machine with the light running up its frame, then pulling in and bursting.
+- **Must-fix, its class: the cover takes the machine's own shape, never a box.**
+  - **How:** the swap hides under the machine's silhouette lit in the void's light. One way is a Highlight on the old model, fill easing to full at the peak, then on the new one easing out, with DepthMode Occluded so it never shows through walls.
+  - **Why:** the player sees the old shape glow, become the bigger new shape, and cool. The swap becomes the payoff instead of being hidden in fog.
+  - **Holds for every machine:** the court's near-white share drops to the machines' own shapes, and the flash guard is measured again.
+- **Next:** A with the shape cover, in grey, at the Forge and from the court. That's the second look, judged on the cover only.
+
 ## Later, by ground
 
 The rest of ground 1 (Kirra in AR10, Watt in AR11; then Sable, Marigold, Crane), then each ground's Voidkin in `docs/roster.md`'s order. **The machines** (Gantry, Bulwark, Ironhymn, Shiomaru, Aegir) share one custom rig, taller than a player, with its own clip family: the first of them is timed like AR1, because a custom rig is a different cost.

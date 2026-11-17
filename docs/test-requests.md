@@ -2449,6 +2449,11 @@ Phase 2's gate, research's order of work, item 2 (`docs/decisions.md`, the regis
   - At 45, after the first hits the fight drifts up the street and right: Rook and the Shades are small in the frame's right third by 5 s, clear of the avatar.
   - At 90, the fight stays close beside the avatar, right of the middle, the bodies larger (by eye, not measured). They bunch together, and a Shade now and then reaches the avatar's right edge (tile 9).
   - The pack fell in about 10 s at 45 and about 13 s at 90. One take each can't say whether that comes from the angle.
+- **Research's verdict (Quaestor, 2026-11-17, 11:56): 45 stays.**
+  - **In a real fight, the lead isn't hidden.** At 45 Rook stands clear beside the Shades through the fight (tiles 5 to 8), and the avatar never covers him. At 90 the bodies are larger but bunch onto the avatar, which covers Rook in tiles 9 to 12. A larger fight that the player's own body covers is worse than a smaller one in the open.
+  - **So AR11's hidden lead was the replay's camera,** set close behind the target, not the game's. The Voidkin pieces (AR11, AR26, at the end) are judged from the real player's camera, as in these takes, not from the replay's.
+  - **What it means for their effects:** at 45 the fight sits small in the right third on a phone. An effect must read at that size, which is the bar AR26's rows were already held to (64 px).
+  - Nothing changes in the game.
 
 ## TR25. Attributes in the resolver, with the stat sheet (Faber)
 

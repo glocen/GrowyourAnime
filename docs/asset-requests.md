@@ -12644,6 +12644,11 @@ Where the purple and the black sit, from the kit's own files and today's capture
   - No file is painted and nothing is uploaded until the pick.
 - **Status:** implemented as values; the tool runs; not in the place, not captured, not reviewed.
 - **Research, 22:41: the plot and the Strip are rendered in Blender by Modulo,** by day from the game's camera, so Faber's queue isn't the wait. Faber captures only the bag screen in the place. The captures also show the HUD over each world, and research judges whether A's and B's light screens read as styled, never as a plain light-mode app.
+- **The director's second word, 22:41 (`docs/decisions.md`): "there can be blueish purple and dark like the inventory hud is good but the other area js make it wayy to much".** AR40 narrows to it.
+  - **The screens are out of AR40.** The inventory's look is the director's good example and stays. Faber's bag-screen capture is cancelled.
+  - **The world is AR40:** the plot, its machines, the Shop and the Strip.
+  - **The class is corrected:** blue-violet and dark may stay, as one colour among others and the trim, never everything.
+  - **A, B and C are each re-weighted** to keep a share of blue-violet, in the cores, the void's lights and the trim, beside their own stone and light. A direction with no violet left over-corrects.
 
 ## Later, by ground
 

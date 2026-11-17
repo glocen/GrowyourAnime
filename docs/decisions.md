@@ -8,6 +8,10 @@ Each covers exactly what it names. The directive of 2026-11-09 is in `docs/archi
 
 | Date | The words | They cover |
 |---|---|---|
+| 2026-11-17, 22:41, to research | "i think the game is way to much too purple/Black and somber btw", then "there can be blueish purple and dark like the inventory hud is good but the other area js make it wayy to much" | **Covers:** the game's colour, worked in AR40.
+- **Allowed, and shown good:** blue-violet and dark, as in the inventory's screen. That screen stays as it is.
+- **Too much:** the other areas, where blue-violet and black are everything. Research reads "the other area" as the world: the base, its machines, the Shop and the Strip. Those get value range and other colours beside blue-violet, which stays as one colour among them, not removed.
+- **Not named, so unchanged for now:** the other screens. |
 | 2026-11-17, 21:15, to research | "make sure it all free, safe etc.", then the SFX rescue directive, word for word in `docs/archive/directive-sfx-2026-11-17.md`: "Do not involve me in choosing samples, editing files, using external software, testing Studio or comparing candidate sounds" | **Covers:** the team improves the sound effects on its own. Research coordinates, Modulo makes, Faber builds, and an independent reviewer challenges.
 - **Order:** a short feasibility check first, then three pilots (Light Hit, Heavy Hit and Haymaker, Shade Swipe), at most three design rounds each, and then expansion by player impact.
 - **It replaces the 08:00 row's (2) and (3):** no wait for the director's samples and no last retry before the director takes over. The 14:05 row's calibration on the director's samples rests until samples come.

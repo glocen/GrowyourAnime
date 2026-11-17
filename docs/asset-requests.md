@@ -9942,6 +9942,20 @@ Built on research's pick, in `tools/blender/base_forge.py`, on the base kit's at
 - **Director-accepted:** no.
 
 
+
+## AR29. The Voidkin screen's chrome, mature (Modulo, for research's pick, then Faber)
+
+From the director's word, 2026-11-17, 13:16, over a crop of the page rail at phone size: "those ui need a massive polished it looks childish and not good" (`docs/decisions.md`). Research's ask, 13:16. Tier 2, an asset players see, in Modulo's area. A new look, so a new set of directions, never a patch.
+- **Feel line:** the player opens their Voidkin, and the screen's frame reads like a premium anime game's menu: sharp, quiet and heavy, its pages a set of cut tabs, with the chosen one lit by the seam's light. It never reads as a toy's bubbles.
+- **What reads as childish today:** round bubbles threaded on a line like beads, a thick white ring round the chosen one, generic glyphs (a person, a briefcase, a sword, a diamond), and three greyed "Soon"s stacked at the bottom.
+- **The block contains:**
+  - the page rail: each page's tab, its icon of our own drawing, its chosen and idle states, and how a page that isn't open yet shows (one quiet lock state, or the tab hidden until it opens: Modulo's direction to propose);
+  - the top bar's buttons (Back, settings, lock, edit), read beside the rail, since they share its make. They follow the picked direction.
+- **Three directions,** each at the smallest phone on the real screen (Overview and Items), beside today's: the rail and top bar only, in the seam's palette (AR18).
+- **What waits:** motion beyond a state's change; the other screens, which take the picked make when their own pass comes.
+- **Checks:** the content check; research's pick at phone size, zoomed, every state, read up close; then Faber's build in one round.
+- **When:** Modulo's next piece after AR22's Shoulders fix, before the re-lay's install and AR17.
+
 ## Later, by ground
 
 The rest of ground 1 (Kirra in AR10, Watt in AR11; then Sable, Marigold, Crane), then each ground's Voidkin in `docs/roster.md`'s order. **The machines** (Gantry, Bulwark, Ironhymn, Shiomaru, Aegir) share one custom rig, taller than a player, with its own clip family: the first of them is timed like AR1, because a custom rig is a different cost.

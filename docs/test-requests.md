@@ -2795,6 +2795,14 @@ Part 12's order, item 4.5 (`docs/research/rework-2026-11-16.md`, parts 5 and 12;
 - **Tested:** the type check 0 new; logic offline 23,971/0 (the Bag case on five kinds); "Items page (TR28)" 112/0; "Voidkin screen (TR17)" 233/0, its slot checks now "no gear slot on the screen" and "Combat Power under the figure's middle, alone at its feet".
 - **Seen:** phone stills by the builder, the strip with Gear and the Overview without slots. Research's pass waits.
 
+**Research's pass on the seam skin and the three words (Quaestor, 2026-11-17, 13:16),** from the phone stills (`build/scratch/faber/stills/`).
+- **Felt:** the bag is one room now, its seams lit and its rarity frames carrying the colour. The Gear tab is right: one tab for what's worn, and the strip fits a phone.
+- **Tier:** works. The director's word over these stills, 13:16: "those ui need a massive polished it looks childish". Read on the crop they sent, it's the page rail first: the beads on a string, the white ring, the stock glyphs and three "Soon"s. That's AR29, a new look, not a fix round here.
+- **Must-fix (Faber):**
+  1. **The Overview's top bar collides** (`overview-phone.png`): the fourth button sits on the Credits pill, and Electricity is cut to "60.00 kWh". Class: the top bar's buttons and pills never overlap at any page or phone.
+  2. **The Overview leaves its lower third empty:** the sheet's panel ends at two-thirds of the screen's height. Class: a page's panel fills the room to the bottom edge, and the sheet scrolls inside it. If it's the capture's moment, a fresh still proves it.
+- **American spelling** (the director, 13:15, `docs/decisions.md`): "Jewelry" on the strip, and every shown "Defence", "Armour" or "Colour" in Config, Definitions and the UI's text, by one search.
+
 ## TR29. The Tower's run, in grey (Faber)
 
 Part 12's order, item 4.7 (`docs/research/rework-2026-11-16.md`, part 8; `docs/design.md` and `docs/balance.md`, "The Tower"; the contract in `docs/engineering-plan.md`, "The Tower's run"), on the director's yes of 2026-11-16, 16:50. Taken while 4.6 waited on AR19's Stages II and III, which came in at 20:00 (e516da7).

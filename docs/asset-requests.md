@@ -12255,6 +12255,17 @@ Destroy the Highlight at 60: a disabled one still holds a slot. On a base level-
   - **The flash guard** reads lower than grey's, with no saturated red.
   - **What the sheets can't show,** first seen in Faber's build: the Highlight's fill in Roblox's own renderer at the court's distance, and a base level-up's three machines starting on one frame. Those are research's read in the game. The sound waits for the director's samples.
 
+## AR38. The Void Shop: the building and its screen (Modulo, for research's pick, then Faber)
+
+Research, 2026-11-17, 21:10. The rules: `docs/design.md`, "The Strip", the Void Shop. It replaces the grey Shop slab (`WorldService`), which must not reach a public build.
+
+- **Feel line:** a player walking the Strip sees the Shop's clock from the crossing, knows at a glance how long until the next stock, and when the crown is lit, turns toward it. Up close, the counter opens to six lines on a shelf that reads in a second, with the rare offer standing apart.
+- **The class:** the Shop is the void's own, as the base's machines are: never a market stall, a vending machine or a real shop front, and never Lantern Row's lanterns (they stay in their ground). The clock is the void's, never a wall clock.
+- **The block contains:**
+  - the building in grey, at its place south of the crossing (`Config/World`, "Strip"), with the clock and the crown, in two or three directions judged from the crossing and from the counter;
+  - the screen in grey at the smallest phone: six lines, the rare offer's place, each line's price, the count left to that player, the countdown and the tables' chances.
+- **It waits:** the colour pass, after the verdict. The rare offer's light and its sound (no new sound until the director's samples). The shards' and emblems' pictures exist (AR21, AR31). The screen is built on the kit (`docs/ui.md`).
+
 ## Later, by ground
 
 The rest of ground 1 (Kirra in AR10, Watt in AR11; then Sable, Marigold, Crane), then each ground's Voidkin in `docs/roster.md`'s order. **The machines** (Gantry, Bulwark, Ironhymn, Shiomaru, Aegir) share one custom rig, taller than a player, with its own clip family: the first of them is timed like AR1, because a custom rig is a different cost.

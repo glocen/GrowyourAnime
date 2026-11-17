@@ -237,7 +237,19 @@ Six grounds at launch (`docs/roster.md`), each a recolour and rearrangement of o
 
 ## The Strip
 
-- **The Void Shop** [D]: stock changes every five minutes, the same in every server, with a limit per player. It sells for Credits: shards, stones, emblems. The rare offer is the reason to look up at the clock.
+- **The Void Shop** [D]: stock changes every five minutes, the same in every server, with a limit per player. It sells for Credits: shards, stones, emblems. The rare offer is the reason to look up at the clock. How it works [research, 2026-11-17, 21:10, tier 2; its look: `docs/asset-requests.md`, AR38]:
+  - **The clock.** A new stock every five minutes on world time, drawn from a seed that never reaches a client. Nobody sees a stock before it lands.
+  - **The shelf: six lines a stock.**
+    - Three common lines, always: a Standard shard, a stack of grade-1 stones, a Common emblem.
+    - Two lines from the uncommon table: an Enriched shard, grade-2 stones, an Uncommon emblem.
+    - One rare line in some stocks: a Prismatic shard, grade-3 stones, or a Rare emblem.
+  - **The rare offer,** in about one stock in twelve, so about once an hour: a Named shard of an Epic or rarer Voidkin. The player sees exactly whom they're buying, never a roll, and may buy it once a stock.
+  - **The same shelf, fitted to each player.** A shard line names a grade, never a ground. It resolves to the farthest ground that player has opened, so the shelf is the same everywhere and never sells a shard a player can't use. A rare offer whose Voidkin's ground is still shut shows "Opens with" that ground.
+  - **A limit per player, never a race.** Each line has its own count per player per stock, so one player's buy never empties another's. What's bought is saved against the stock's number, so a server hop never refills a line (`docs/engineering-plan.md`, the profile's `Shop`).
+  - **Every chance shown.** The screen says how often each table comes up ("Rare offer: about 1 stock in 12"), and every shard on the shelf shows its odds per Voidkin before it's bought, as every shard does.
+  - **Bought at the counter.** The Shop stands on the Strip, a short walk through the Festival Door. In the last minute before a stock, the countdown chip shows under the pills (`docs/ui.md`). While a rare offer is in, the Shop's crown is lit, and the chip names the Voidkin to everyone in the server for its five minutes.
+  - **Never for Robux:** no paid restock, no bigger limit, and Credits are never sold (`docs/roblox-rules.md`, "What we do").
+  - **Prices,** in Credits, are set in `tools/balance/seeds.json` from the simulation, so the shop takes about a quarter of income after five hours (`docs/balance.md`, "Earning").
 - **The Void Rift** [D], after launch, in the big update [D, 2026-11-17, 02:40]: a short burst on a schedule, the same everywhere. While it's open, the Breakers of everyone online run many times faster. Speed only, never luck [D].
 - **The Calamity** [D], after launch (the director, 2026-11-15): a great boss that arrives on a schedule in each server. Everyone who does a minimum share of the damage is rewarded, the top three most [D]. One claim per arrival per account.
 - **The Clash Grounds** (the director's Void Clash [D]): an arena where every player may station one champion. Champions fight each other on their own, all day, in the open, and the players watch. Beating another champion pays the winner's owner: Credits and progress on a daily track [D: rewards when their Voidkin beats another]. A stronger champion beating a far weaker one earns little, and the same pair pays only so often. A beaten champion goes home and can be sent again after a short wait. Echoes, server-run stand-ins, keep the arena busy when few players have a champion out. The server's best champion wears a crown.

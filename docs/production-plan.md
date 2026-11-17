@@ -105,6 +105,7 @@ Each ends on something playable. No dates are promised past phase 1: see "The da
   8. AR35, the Training machine's three stages (research, 18:38), then the Forge's and the Condenser's.
   9. AR36, the Forge's and the Stone Condenser's three stages (research, 19:05).
   10. AR37, a stage lands: the moment a machine changes (research, 20:03).
+  11. AR38, the Void Shop: the building and its screen (research, 21:12).
 - **Research:** the Forge, emblem and jewel requests with their numbers, the verdicts as pieces land, then the Void Shop's and the Robux store's design, checked against Roblox's rules, for the director.
 
 **Phase 4. Breadth.** The Void Shop. The Rift moves after launch (the director, 2026-11-17, 02:40). Both shops, the Robux store and the Void Shop, are designed and set up here (the director, 2026-11-12).

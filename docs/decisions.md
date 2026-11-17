@@ -269,4 +269,17 @@ The test every Voidkin passes (`AGENTS.md`, rule 3): it's ours if no published c
 Nothing blocks the team's start. These are the director's when they want them:
 
 1. **The cut line** for launch, once the first ground is at the bar (`docs/production-plan.md`).
-2. **The store's design,** before anything is sold.
+2. **The store's design,** before anything is sold. Research's proposal (2026-11-17, 21:10), for your yes or changes. It's tier 3, so nothing is written into the design before your word.
+   - **Sold at launch (early access), none of it random and none of it power over another player:**
+     - a **Founder's Mark**, sold only during early access: a title, a gold rim on the name plate, and the gate's plate in a founder's finish;
+     - **more bag space**, as a pass;
+     - **cosmetics**, made by Modulo as its queue allows: a reveal in another light (the crack's colour, never its odds), and the yard's lights in another theme;
+     - **private servers**, Roblox's own, at a price you set or free.
+   - **Not at launch, and why:**
+     - **Credits for Robux, or a 2x Credits pass.** Credits buy shards that roll, so Robux would reach a roll. Whether a sure 2x counts is asked on Roblox's forum and not clearly answered.
+     - **Faster breaks for Robux.** It isn't checked yet whether more rolls an hour, bought, counts as a paid roll.
+     - **Luck, rerolls, a paid restock, chests and keys.** Some are your word on chests; the others are Roblox's rules.
+     - **A Voidkin for Robux** (a Named shard). It isn't random, so it's allowed, but it sells strength and splits players. Research advises against it at launch, and all Voidkin work is parked until the end anyway.
+   - **Later, in an update, the random sales you asked for** ("as transparent as glass", 2026-11-12). Built in first: the PolicyService check, every outcome's odds on the screen before purchase, the questionnaire, and a non-random alternative where they're restricted.
+   - **Prices:** comparable passes sell for 149 to 1,499 Robux (`docs/research/tower.md`). Research sets each at your yes.
+   - **The cost:** an early access store this thin earns little. It keeps the game clean while the loop proves itself (the directive, section 15: "First establish an enjoyable free progression loop").

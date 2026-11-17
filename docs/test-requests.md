@@ -3106,6 +3106,15 @@ Research, 2026-11-17, 09:27, on the director's word of the same morning (`docs/d
   - A search of `src/` finds the five retired names only in step 8's map, its case and Stats' retired-id case.
 - **Research's pass:** not yet. **Director-accepted:** no.
 
+
+**Research's pass (Quaestor, 2026-11-17, 11:53),** from the phone stills (`build/captures/tr36/`).
+- **The check holds.** The Overview reads "Common · Red · Warrior" with Strength (Main) and Endurance, and nothing else under Basic. The ring's card reads Strength and Endurance with their gains. No old attribute name shows anywhere in the stills, and the card's clipped figure is fixed.
+- **The three numbers (tier 2), confirmed as built:**
+  1. **The chest pool, Strength 5 and Endurance 5 of 21:** the attributes keep the share the five had, so a line's worth by Combat Power is unchanged.
+  2. **The bare Warrior's kills, about 9% quicker** (the brawler 4.56 s, the elite 16.40, the Lamplighter 40.71): inside the model's 4.1 to 5.7 s for an ordinary kill. It's the two attributes' lower level-1 health, as `docs/balance.md` says. Tuned by playing if Lantern Row feels quick.
+  3. **The Bag's price check at 503:** it's the refit's Health weight, as intended.
+- **Tier:** works as a system change, nothing new to judge in look. **Closed on research's side.**
+
 ## TR37. The Forge and the Stone Condenser (Faber, on AR28's look)
 
 Research's request, 2026-11-17, 11:17, item 7 of phase 3's order (`docs/production-plan.md`). The design: `docs/design.md`, "The base" (the Condenser) and "Regalia: gear" (forge ranks, the move across). The numbers: `docs/balance.md`, "Where power comes from" (forge ranks are 13.5 of a full build).
@@ -3120,7 +3129,7 @@ Research's request, 2026-11-17, 11:17, item 7 of phase 3's order (`docs/producti
 - **The Condenser makes Low stones, online and away.** Its rate grows with its level, and it draws electricity like the Breaker (`Rules.Power`), slower with less. Stones land in its tray, which has a cap in hours of work. A full tray stops. Its second job turns 5 Low into 1 Mid over a set time, one at a time.
 - **Every spend is the server's, in one step:** a repeated or interrupted request never spends twice or ranks twice. The away time is worked out on return, as the Training machine's is.
 
-**The seeds** (research's, 2026-11-17, 11:55: worked by hand from `tools/balance/seeds.json`, a model, not a measurement; a sim section follows before Faber reaches this piece):
+**The seeds** (research's, 2026-11-17, 11:49: worked by hand from `tools/balance/seeds.json`, a model, not a measurement; a sim section follows before Faber reaches this piece):
 - **A rank's cost:** rank × 100 × G(the item's level tier) Credits, and rank × 1 Low stone. Rank 10 on a level-12 item is 2,800 Credits and 10 stones. A whole worn set (14 slots) to rank 10 is 770 stones and about 45% of a launch player's Credits over the 40 hours its Legendary window lasts (`docs/balance.md`, "The Tower").
 - **Drops:** an elite 0.3 Low stones and a keeper 1, as an expected count. Ordinary Shades drop none, so the stones come from the moments worth coming back for.
 - **The Condenser:** 2 Low stones an hour at level 1, plus 0.1 a level (4.9 at level 30, launch's ceiling). Its tray holds 12 hours of work, and the conversion takes 30 minutes for 5 Low into 1 Mid.

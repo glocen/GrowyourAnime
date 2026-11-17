@@ -186,6 +186,54 @@ return {
 	-- Plates kept apart in a group (UI.World.Apart: the base's machine plates): Gap authored pixels between two, over and
 	-- under, as the command view's chips (Config.BaseView.Chip.Gap). The builder's seed.
 	Plates = { Gap = 6 },
+	-- The level-up's notice (AR12, take B, the director's pick of 2026-11-15; Modulo's levelup_notice.json; UI.LevelNotice;
+	-- TR41 (c)). A plate Tall points high, in the lead card's violet, Below the lead's corner (its readout's foot) at the
+	-- card's left edge, Base + the wider of its name and its line across. Its block is Block wide and leans Lean across per
+	-- down, as do its ends. Above the HUD's parts at Z. The words in the game's face: Modulo's sizes are Blender's, whose
+	-- capitals stand 1.2 times the game's at the same size (measured on its sheet: "Rook" 34.9 points drawn, 29.3 at 16 in
+	-- Builder Sans; the digits 18.8 tall), so each size here is the json's times 1.2. A word stands by its capitals' top:
+	-- Capitals is where they stand in the face's line (its top and height, shares of the size; Digits the bold figures),
+	-- measured in Studio at 100. "LEVEL UP" is spaced by hair spaces (0.67 points each at 11), Blender's 1.14.
+	-- Its sheen's band crosses the foot Sheen.Middle points from its image's left. The motion is Rules.Hud.Notice.
+	-- The plate is cut across only, as the json cuts it: its ends keep their size and its middle stretches. It's laid as
+	-- three plain pieces of its image, not Roblox's slice: under the layer's scale a slice drew this plate wrong (measured in
+	-- Studio, 2026-11-17: cut across only, nothing at all; with rows above and under, its rows far too short).
+	LevelNotice = {
+		Images = {
+			Plate = { Id = "rbxassetid://86056784616806", Pixels = Vector2.new(656, 304), Points = Vector2.new(164, 76), Cut = { 80, 0, 74, 0 }, Pad = 16 },
+			Flash = { Id = "rbxassetid://101874891515818", Pixels = Vector2.new(247, 176), Points = Vector2.new(61.8, 44), Pad = 0, At = Vector2.new(-1, 0) },
+			Sheen = { Id = "rbxassetid://138783457538831", Pixels = Vector2.new(295, 176), Points = Vector2.new(73.8, 44), Pad = 0 },
+		} :: { [string]: UIKit.Image },
+		Tall = 44,
+		Block = 40,
+		Lean = 0.45,
+		Base = 83.8,
+		Below = 8,
+		Z = 6,
+		Capitals = { Top = 0.224, Tall = 0.552 },
+		Digits = { Top = 0.216, Tall = 0.56 },
+		Words = {
+			-- Centred on the block, as the json's note says: the block's lavender centres at 30.75 points across at the
+			-- digits' middle height in Modulo's plate image (measured 2026-11-17), where the json's middle says 28.9.
+			Number = { Middle = Vector2.new(30.75, 22), Sizes = { 32, 30, 23 }, Colour = Color3.fromHex("#1D1245") },
+			Name = { At = Vector2.new(63.95, 8), Size = 19, Colour = Color3.fromHex("#FFFFFF") },
+			Line = { Text = "L\u{200A}E\u{200A}V\u{200A}E\u{200A}L\u{200A} \u{200A}U\u{200A}P", At = Vector2.new(55.4, 28), Size = 13, Colour = Color3.fromHex("#D8C8FF") },
+		},
+		Sheen = { Middle = 27 },
+		Motion = {
+			In = 0.2,
+			Fall = 0.12,
+			From = 1.9,
+			Squash = 0.88,
+			Settle = 0.1,
+			Flash = { Strength = 0.75, Seconds = 0.14 },
+			Knock = { Points = 1.5, Seconds = 0.12 },
+			Sheen = { After = 0.1, Seconds = 0.5, Reach = 30, Fade = 26 },
+			Hold = 2.5,
+			Out = 0.2,
+			Fade = 0.2,
+		},
+	},
 	-- The next step's marker (TR24's fix 1; UI.Guide): a chevron Lift studs over each target, bobbing Bob studs Rate times a
 	-- second, Size authored points wide; off the frame, one arrow at its edge, Margin authored points in from the sides,
 	-- Top from the top and Bottom from the foot (clear of the cards and the dock). Within Near studs of the avatar it steps

@@ -24,6 +24,7 @@ local KitCases = require(script.KitCases)
 local SoundCases = require(script.SoundCases)
 local BreakerCases = require(script.BreakerCases)
 local StripCases = require(script.StripCases)
+local NoticeCases = require(script.NoticeCases)
 local BaseController = require(script.Parent.Parent.Main.BaseController)
 
 local BRIDGE_NAME = "NL_SelfTest"
@@ -185,6 +186,8 @@ local function run(filter: string?): string
 	table.move(breaker, 1, #breaker, #cases + 1, cases)
 	local strip = StripCases.Cases() -- the Strip's kit (AR17), apart for the same reason
 	table.move(strip, 1, #strip, #cases + 1, cases)
+	local notice = NoticeCases.Cases() -- the level-up's notice (TR41 (c)), apart for the same reason
+	table.move(notice, 1, #notice, #cases + 1, cases)
 	for _, case in cases do
 		local chosen = if filter then string.find(case.Name, filter, 1, true) ~= nil else not case.Manual
 		if chosen then

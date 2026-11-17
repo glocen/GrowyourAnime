@@ -344,19 +344,13 @@ local Effects = {
 	-- is (Config.Hud.Card.Xp; the ring before them was Neon, seeded at 0.58 of it to render as the thread's blue: research
 	-- on TR3's three calls). The column wears Modulo's picture (its foot the top row), stretched along it, its colour white
 	-- at its peak and the thread's blue as it fades, so its fade never reads grey at night (research's pass on Modulo's
-	-- sheet, AR8 C, fix 2); the sleeve stays the flat blue. The word pops in from From of its size over Pop as the column
-	-- peaks, and rises Rise over Seconds, slower and larger than a hit's number. Its foot stands Clear studs over the
-	-- lead's top, hat and all; it's filled bright (white with Fill of experience's blue) and edged in that blue, Edge
-	-- authored pixels, so it reads over a blue hat and over the sky (research's pass on AR8 C, fix 1: blue on Pip's blue
-	-- hat, it sank).
+	-- sheet, AR8 C, fix 2); the sleeve stays the flat blue. Tall is the lead's height when its model can't say. The words
+	-- are the HUD's notice (Config.Hud.LevelNotice; AR12, take B: research's ruling of 2026-11-15, the word over the lead
+	-- goes and the column stays).
 	LevelUp = {
 		Column = { Seconds = 0.7, Over = 5, Wide = 0.6, Climb = 0.3, Peak = 0.25, Narrow = 0.5, Opaque = 0.85, Foot = 0.4, Fade = 0.25, Emission = 0, Picture = "rbxassetid://104727013188370" },
 		Sleeve = { Delay = 0.08, Seconds = 0.6, Over = 1, Wide = 0.75, Alpha = 0.3, Front = 2 },
-		Word = { From = 0.6, Pop = 0.18, Clear = 0.8, Fill = 0.15, Edge = 2.5 },
 		Tall = 5,
-		Rise = 3,
-		Seconds = 1.6,
-		Size = 34,
 	},
 	-- A shard won, in the world (TR24's fix 8: "a drop falls in the world with its name and flies to the player", the
 	-- package's chests' flight; Rules.Flight). It pops out of the fallen Shade a step toward the player, bounces once, rests

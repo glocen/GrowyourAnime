@@ -526,4 +526,45 @@ return {
 			t.Equal("no bay yet", (Hud.WorkReason("", {})), "No bay open yet")
 		end,
 	},
+	{
+		Name = "Hud: the level-up's notice slides in, its number falls onto its block and lands with a flash and a knock, one sheen crosses, it holds and leaves (TR41 (c))",
+		Run = function(t: any)
+			-- AR12's take B as Modulo's json gives its motion (Config.Hud.LevelNotice.Motion): the levers, in order.
+			local m = HudConfig.LevelNotice.Motion
+			local wide, foot = 160, 140
+			local land = m.In + m.Fall
+			local function at(age: number): Hud.Notice
+				return Hud.Notice(age, m, wide, foot)
+			end
+			t.Equal("it starts wholly off the screen's left", at(0).Away, 1)
+			t.Check("eased out: most of the way in by half its slide", at(m.In / 2).Away < 0.2, tostring(at(m.In / 2).Away))
+			t.Equal("at its place when the slide ends", at(m.In).Away, 0)
+			t.Check("its block empty while it slides", at(m.In * 0.9).Number == 0 and at(m.In * 0.9).Size == 0)
+			t.Check("the number starts large", near(at(m.In).Size, m.From))
+			t.Check("and solid within the fall's first third", at(m.In + m.Fall / 3 + 1e-6).Number >= 1 and at(m.In + m.Fall / 6).Number < 1)
+			t.Check("it lands squashed", near(at(land).Size, m.Squash) and m.Squash < 1)
+			t.Check("and settles to its own size", near(at(land + m.Settle).Size, 1) and near(at(land + 5).Size, 1))
+			t.Check("the flash at its strongest as it lands", near(at(land).Flash, m.Flash.Strength))
+			t.Check("and gone after its time", at(land + m.Flash.Seconds).Flash == 0)
+			t.Check("the knock as it lands, back after its time", near(at(land).Knock, m.Knock.Points) and at(land + m.Knock.Seconds).Knock == 0)
+			t.Check("no flash or knock before it lands", at(land - 0.01).Flash == 0 and at(land - 0.01).Knock == 0)
+			local start = land + m.Sheen.After
+			t.Check("no sheen before its moment", at(start - 0.01).Sheen == nil)
+			t.Check("the sheen starts left of the plate, unseen", near(at(start).Sheen :: number, -m.Sheen.Reach) and at(start).Shine == 0)
+			t.Check("it ends past the far end", near(at(start + m.Sheen.Seconds).Sheen :: number, wide + m.Sheen.Reach))
+			local middle = at(start + m.Sheen.Seconds / 2)
+			t.Check("whole across the plate's middle", near(middle.Sheen :: number, wide / 2) and middle.Shine == 1)
+			t.Check("never seen past the leaning end's foot", at(start + m.Sheen.Seconds * 0.95).Shine == 0)
+			t.Check("held at its place", at(m.In + m.Hold).Away == 0 and not at(m.In + m.Hold).Done)
+			t.Check("eased in as it leaves: still near at half its exit", at(m.In + m.Hold + m.Out / 2).Away < 0.2)
+			t.Check("gone the way it came", at(m.In + m.Hold + m.Out).Away == 1 and at(m.In + m.Hold + m.Out).Done)
+			t.Check("whole all along without reduced motion", at(0).Solid == 1 and at(m.In + m.Hold).Solid == 1)
+			-- Reduced motion: it fades in at its place, the number set, and out; no fall, flash, knock or sheen.
+			local still = Hud.Notice(land, m, wide, foot, true)
+			t.Check("reduced motion: at its place, the number set", still.Away == 0 and still.Size == 1 and still.Number == 1)
+			t.Check("no flash, knock or sheen", still.Flash == 0 and still.Knock == 0 and still.Sheen == nil)
+			t.Check("it fades in", Hud.Notice(0, m, wide, foot, true).Solid == 0 and Hud.Notice(m.Fade, m, wide, foot, true).Solid == 1)
+			t.Check("and out", Hud.Notice(m.In + m.Hold + m.Fade, m, wide, foot, true).Done and Hud.Notice(m.In + m.Hold + m.Fade, m, wide, foot, true).Solid == 0)
+		end,
+	},
 }

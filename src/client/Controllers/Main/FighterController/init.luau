@@ -772,7 +772,7 @@ local function add(model: Instance)
 	table.insert(view.Connections, model:GetAttributeChangedSignal("Level"):Connect(function()
 		local now = model:GetAttribute("Level")
 		if isMine(view) and type(now) == "number" and type(level) == "number" and now > level then
-			Effects.LevelUp(view.Root, now)
+			Effects.LevelUp(view.Root)
 		end
 		level = now
 	end))

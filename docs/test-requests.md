@@ -3514,3 +3514,50 @@ Research, 2026-11-17, 14:05, on the director's question: "how is that there is m
   - **The bold thing:** the white arriving end of each light, so power visibly flows to its machine.
   - **As designed, and to polish-later:** an idle machine's share wears the battery's gold, so the handle between them splits gold from gold. It's honest, since the power goes to the battery, and the row says "Idle". A dimmed trace of the machine's own colour would show where its share ends.
   - **Accepted on the cases:** the Training machine's cyan, which no still shows. It's seen first in a capture with a save that trains, which Faber can add to (e)'s.
+
+### (c) The level-up notice, take B, in the game (Faber, 2026-11-17, after 17:24 (ebeecac) to 17:58 by the clock)
+
+- **Built,** from Modulo's `build/handoff/UI/hud/levelup/levelup_notice.json` and three images, uploaded under the group and read back Approved (`docs/asset-log.md`, the notice's row):
+  - **`src/client/UI/LevelNotice.luau`:** the plate in the lead card's violet slides in from the screen's left edge under the lead's corner, at the card's left edge. Its new level falls onto the lavender block with a flash and a knock, one sheen crosses, then it holds and slides back. It's as wide as its words ask (the json's Base plus the wider of the name and "LEVEL UP").
+  - **The motion** is a pure rule, `Rules.Hud.Notice`, with its logic case. Every number is in `Config.Hud.LevelNotice`.
+  - **Said once, in one place,** as research ruled on 2026-11-15: `HudController` shows the notice in place of the old level toast, and `Effects.LevelUp` loses its word over the lead. The column of light and its sleeve stay.
+- **Calls made at the build:**
+  - **The plate is three plain pieces of its image, not Roblox's slice.** Under the layer's scale a 9-slice drew this plate wrong, measured in Studio: cut across only, nothing at all; with rows above and under its middle, its lower rows far too short. That fault is what pushed the number off its block in my first stills. The ends keep their size and the middle stretches, as the json cuts it.
+  - **The number is centred on the block as Modulo's image draws it:** 30.75 points across at the digits' middle height, where the json's middle says 28.9. The json's note says "centred on the block", so the image wins. Modulo: your json's middle may want the same.
+  - **The sizes are the json's times 1.2.** Blender's capitals stand 1.2 times the game's face at the same size, measured on the sheet. "LEVEL UP" is spaced by hair spaces, for Blender's 1.14.
+  - **The sheen fades over the leaning ends** (the json's first option), rather than clipping. It passes under the words as the json stacks it, so "UP" pales for the tenth of a second it's crossed (still e).
+  - **A second level while it's shown** takes the new number and lands again from its arrival, then holds anew.
+  - **Room on a phone:** the step's chip over the dock shares its row at the smallest phone. The plate stops a gap short of it, and a longer name is cut with "…" (Roblox cuts at a word: "Little Storm Cloud" reads "Little…"). It's never narrower than "LEVEL UP".
+  - **Every place across the plate is a share of its width,** as in (b), since a UDim's offset is a whole number.
+- **Cases:**
+  - "HUD: TR41 (c), the level-up's notice" (`SelfTestController/NoticeCases.luau`, its own list) checks:
+    - the first frame against the rule's place for its age;
+    - the words, the place under the corner and the width;
+    - the plate's three pieces, their sizes and their shares of the image;
+    - the number centred on the block;
+    - the stack;
+    - a second level re-landing it;
+    - the fall, the squash, the flash, the knock and the sheen;
+    - no toast;
+    - a 20-letter name at the smallest phone, cut and stopping short of the chip.
+  - The level-up's light cases lost their word checks.
+- **The take:** "Take: TR41 (c)" holds the notice at the smallest phone, at the age `NL_TakeStep` writes. "Long" shows the longest name at level 100. It passes 3/0 and puts the layer back.
+- **Tested:**
+  - the notice's case 39/0 (7.8 s, 59 fps);
+  - the level-up's light: one colour 8/0, the column 17/0, the top band 5/0, the reward pops 16/0, TR6's badge burst 28/0;
+  - every "HUD:" case, the notice's included, 445/0 (82.3 s, 59 fps);
+  - logic offline 24,032/0;
+  - type check 0 new.
+- **Stills for your read,** at the smallest phone, in `build/scratch/faber/stills/`. `tr41c-strip-zoom.png` shows all seven zoomed, in order:
+  - `tr41c-a-0.08-sliding-in.jpg`
+  - `tr41c-b-0.26-falling.jpg`
+  - `tr41c-c-0.33-landing-flash.jpg`
+  - `tr41c-d-0.57-sheen-entering.jpg`
+  - `tr41c-e-0.72-sheen-crossing.jpg`
+  - `tr41c-f-1.5-rest.jpg`
+  - `tr41c-g-long-name-cut.jpg`
+- **Four facts:**
+  - **Implemented:** yes.
+  - **Tested:** as above.
+  - **Visually reviewed:** my stills. Research's read is next.
+  - **Director-accepted:** no.

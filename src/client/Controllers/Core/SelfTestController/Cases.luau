@@ -3941,11 +3941,10 @@ local cases = {
 		end,
 	},
 	{
-		Name = "HUD: experience has one colour: the level-up's word is edged in the thread's blue, the sleeve is that blue, the column fades to it",
+		Name = "HUD: experience has one colour: the level-up's sleeve is the thread's blue, the column fades to it",
 		Run = function(t: any)
-			-- Research on TR3's three calls (2026-11-13): the word takes the card's thread's blue, and so does the light, as it
-			-- is (a beam, unlit by the scene: AR8 C). Research's pass on AR8 C, fix 1: the word's fill is bright and the blue
-			-- is its edge, so it reads over a blue hat. On a stand-in body.
+			-- Research on TR3's three calls (2026-11-13): the light takes the card's thread's blue as it is (a beam, unlit by
+			-- the scene: AR8 C). The words are the HUD's notice now (TR41 (c)). On a stand-in body.
 			local root = Instance.new("Part")
 			root.Name = "HumanoidRootPart"
 			root.Anchored, root.CanCollide, root.CanQuery, root.Transparency = true, false, false, 1
@@ -3953,26 +3952,7 @@ local cases = {
 			root.Parent = workspace
 			local look = EffectsConfig.LevelUp
 			local xp = HudConfig.Card.Xp
-			local column, word, sleeve = Effects.LevelUp(root, 7)
-			local edge = word:FindFirstChildOfClass("UIStroke")
-			-- TR6: the word and its edge are white under their shine, which carries their colour off its band.
-			local function shone(object: Instance?, own: Color3): Color3
-				local shine = object and object:FindFirstChild("Shine")
-				return if shine and shine:IsA("UIGradient") then shine.Color.Keypoints[1].Value else own
-			end
-			local fill = shone(word, word.TextColor3)
-			local edgeColour = if edge then shone(edge, edge.Color) else Color3.new()
-			t.Check("the word is edged in the thread's blue", edge ~= nil and edgeColour:ToHex() == xp:ToHex(), edgeColour:ToHex())
-			local plate = word.Parent
-			local rays = plate and plate:FindFirstChild("Rays")
-			t.Check("TR6: a sunburst behind the word", rays ~= nil and rays:IsA("ImageLabel") and rays.ZIndex < word.ZIndex and rays:FindFirstChildOfClass("UIGradient") ~= nil, if rays then "" else "none")
-			local band = word:FindFirstChild("Shine")
-			t.Check("TR6: one light band across its fill and its edge", band ~= nil and edge ~= nil and edge:FindFirstChild("Shine") ~= nil and word.TextColor3 == Color3.new(1, 1, 1))
-			t.Check("TR6: the band waits off the word until it sweeps", band ~= nil and band:IsA("UIGradient") and band.Offset.X <= -1 + 1e-3)
-			t.Check("its edge drawn at its authored width", edge ~= nil and math.abs(edge.Thickness - look.Word.Edge * Layers.Scale()) < 0.01)
-			t.Check("its fill is bright, near white", math.min(fill.R, fill.G, fill.B) >= 0.8, fill:ToHex())
-			t.Check("and of the same blue's hue", (fill.B - fill.R) * (xp.B - xp.R) > 0, `{fill:ToHex()} against {xp:ToHex()}`)
-			t.Check("one edge only, no legacy stroke", word.TextStrokeTransparency >= 1)
+			local column, sleeve = Effects.LevelUp(root)
 			local k = sleeve.Color.Keypoints
 			t.Check("the sleeve is the thread's blue, all along it", k[1].Value:ToHex() == xp:ToHex() and k[#k].Value:ToHex() == xp:ToHex(), k[1].Value:ToHex())
 			t.Check("both unlit by the scene", column.LightInfluence == 0 and sleeve.LightInfluence == 0)
@@ -3999,8 +3979,8 @@ local cases = {
 			watch:Disconnect()
 			t.Check("white at its brightest", near(atBrightest, white) < 0.15, atBrightest:ToHex())
 			t.Check("the thread's blue as it fades", peaked and lastFaint ~= nil and near(lastFaint, xp) < near(lastFaint, white), if lastFaint then lastFaint:ToHex() else "never faint")
-			t.Wait(look.Seconds + look.Column.Peak * look.Column.Seconds - look.Column.Seconds)
-			t.Check("all gone after the effect", not column:IsDescendantOf(game) and not sleeve:IsDescendantOf(game) and not word:IsDescendantOf(game))
+			t.Wait(0.2)
+			t.Check("all gone after the effect", not column:IsDescendantOf(game) and not sleeve:IsDescendantOf(game))
 			root:Destroy()
 		end,
 	},
@@ -4009,7 +3989,7 @@ local cases = {
 		Run = function(t: any)
 			-- AR8 C, part 4 (rule 3): the main shape stands up out of the feet past the head, brightest in the first quarter
 			-- of its life; its foot then leaves the ground and climbs after its top; the sleeve comes a breath later, wider and
-			-- fainter, over the body; the word pops in as the column peaks. Solid light: one part each, nothing falls (the
+			-- fainter, over the body. Solid light: one part each, nothing falls (the
 			-- content check's condition 2). Sized by the lead: a stand-in body whose hat stands as tall as Pip's, sampled
 			-- every frame.
 			local body = Instance.new("Model")
@@ -4032,12 +4012,9 @@ local cases = {
 			local look = EffectsConfig.LevelUp
 			local c = look.Column
 			local born = os.clock()
-			local column, word, sleeve = Effects.LevelUp(root, 7)
-			local scale = word:FindFirstChildOfClass("UIScale")
+			local column, sleeve = Effects.LevelUp(root)
 			local brightest, brightestAt, highest, footAt, lowestFoot = 1, -1, -math.huge, -1, math.huge
 			local sleeveFirst, sleeveWidest, columnWidest, sleeveOpaque = -1, 0, 0, 0
-			local wordFirst, wordBiggest, wordLowest = -1, 0, math.huge
-			local plate = word.Parent :: Frame
 			local footLast = -math.huge
 			local fell = false
 			local function opaque(beam: Beam): number
@@ -4078,20 +4055,10 @@ local cases = {
 					sleeveWidest = math.max(sleeveWidest, sleeve.Width0)
 					sleeveOpaque = math.max(sleeveOpaque, so)
 				end
-				if word.Parent and word.TextTransparency < 1 then
-					if wordFirst < 0 then
-						wordFirst = age
-					end
-					wordBiggest = math.max(wordBiggest, if scale then scale.Scale else 1)
-					local over = World.Where(plate)
-					if over then
-						wordLowest = math.min(wordLowest, over.Y - feet)
-					end
-				end
 			end)
 			t.Wait(c.Seconds + 0.1)
 			t.Check("the column is gone by its seconds", opaque(column) == 0, `{opaque(column)}`)
-			t.Wait(look.Seconds + c.Peak * c.Seconds - c.Seconds + 0.1)
+			t.Wait(0.1)
 			watch:Disconnect()
 			body:Destroy()
 			t.Check("it stands out of the feet", lowestFoot < 0.3, string.format("its foot at %.2f studs", lowestFoot))
@@ -4107,10 +4074,7 @@ local cases = {
 			t.Check("the sleeve a breath later", sleeveFirst >= look.Sleeve.Delay - 0.02, string.format("at %.3f s", sleeveFirst))
 			t.Check("wider", sleeveWidest > columnWidest, string.format("%.2f against %.2f", sleeveWidest, columnWidest))
 			t.Check("and fainter", sleeveOpaque <= look.Sleeve.Alpha + 0.01, string.format("%.2f", sleeveOpaque))
-			t.Check("the word pops in as the column peaks", wordFirst >= c.Peak * c.Seconds - 0.03 and wordFirst <= c.Peak * c.Seconds + 0.1, string.format("at %.3f s", wordFirst))
-			t.Check("past its size for a moment", wordBiggest > 1, string.format("%.3f", wordBiggest))
-			t.Check("the word stands clear over the lead's top, hat and all, its whole life", wordLowest >= tall + look.Word.Clear - 0.05 and look.Word.Clear > 0, string.format("its foot at %.2f studs, the lead %.1f", wordLowest, tall))
-			t.Check("all gone after", not column:IsDescendantOf(game) and not sleeve:IsDescendantOf(game) and not word:IsDescendantOf(game))
+			t.Check("all gone after", not column:IsDescendantOf(game) and not sleeve:IsDescendantOf(game))
 		end,
 	},
 	{
@@ -4234,48 +4198,6 @@ local cases = {
 			root:Destroy()
 			t.Check("it showed", frames > 10, `{frames} frames`)
 			t.Check("never over the band, its rise and swell included", closest >= -1, string.format("%.1f px under it at its closest", closest))
-			-- The level-up's word is an open plate (research's pass on AR8 C, fix 1): born at the band, it may stand in the sky
-			-- between the band's pieces, but never over one it crosses, nor over the top bar's foot (the phone pack,
-			-- 2026-11-13: it drew over the Electricity pill). Each piece's span is its frame, the band's margin all round.
-			local feet = Instance.new("Part")
-			feet.Name = "HumanoidRootPart"
-			feet.Anchored, feet.CanCollide, feet.CanQuery, feet.Transparency = true, false, false, 1
-			feet.Position = ray.Origin + ray.Direction * 24 - Vector3.new(0, 3, 0)
-			feet.Parent = workspace
-			local _, word = Effects.LevelUp(feet, 7)
-			local plate = word.Parent :: Frame
-			local up = EffectsConfig.LevelUp
-			local parts = HudController.Parts()
-			local pieces = { parts.Lead, parts.Target, (parts.Credits :: GuiObject).Parent :: GuiObject, (parts.Electricity :: GuiObject).Parent :: GuiObject }
-			local margin = HudConfig.Numbers.Band
-			local overPiece, overBar, seen, crossed = math.huge, math.huge, 0, 0
-			local look = RunService.RenderStepped:Connect(function()
-				if not (plate.Parent and plate.Visible) then
-					return
-				end
-				seen += 1
-				local origin, scale = world.AbsolutePosition, Layers.Scale()
-				local left = (plate.AbsolutePosition.X - origin.X) / scale
-				local right = left + plate.AbsoluteSize.X / scale
-				local top = (plate.AbsolutePosition.Y - origin.Y) / scale
-				overBar = math.min(overBar, top - (Layers.Get("Hud").AbsolutePosition.Y - origin.Y) / scale)
-				for _, piece in pieces do
-					if piece.Visible then
-						local at = (piece.AbsolutePosition - origin) / scale
-						local size = piece.AbsoluteSize / scale
-						if at.X - margin < right - 0.5 and at.X + size.X + margin > left + 0.5 then -- flush beside it isn't over it
-							crossed += 1
-							overPiece = math.min(overPiece, top - (at.Y + size.Y + margin))
-						end
-					end
-				end
-			end)
-			t.Wait(up.Seconds + up.Column.Peak * up.Column.Seconds + 0.1)
-			look:Disconnect()
-			feet:Destroy()
-			t.Check("the level-up's word showed", seen > 10, `{seen} frames`)
-			t.Check("and never over the top bar's foot, its rise included", overBar >= -1, string.format("%.1f px under it at its closest", overBar))
-			t.Check("nor over a piece of the band it crosses", crossed == 0 or overPiece >= -1, if crossed == 0 then "it crossed none" else string.format("%.1f px under one at its closest", overPiece))
 		end,
 	},
 	{
@@ -7681,8 +7603,7 @@ local cases = {
 			if lead == nil or root == nil then
 				return
 			end
-			local level = tonumber(lead:GetAttribute("Level")) or 1
-			Effects.LevelUp(root, level + 1)
+			Effects.LevelUp(root)
 			Effects.Number(root, "Capture@Frost", 1234, { Style = "Element", Colour = UIKit.Elements.Frost }, Combat.Numbers)
 			t.Wait(3)
 		end,

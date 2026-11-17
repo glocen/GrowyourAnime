@@ -2,6 +2,13 @@
 
 The oldest entries of `docs/team-notes.md`, moved here as that file passed about 250 lines (`AGENTS.md`, "Team notes"). Newest first.
 
+### 2026-11-16, 19:08. AR6: batch 2, the eight shared kinds in grey, with their fixes (Modulo)
+
+- **What changed:** Shoulders, Chest Armor, Gloves, Bracers, Boots, Cloak, Amulet and Earring, each in three designs at each rarity (120). Each kind has one view it reads in at 38 points. The sets keep one column across every kind, and each Legendary has one new form. The Earring's fifteen serve both earring slots. After research's verdict, the Shoulders are a mantle with the collar leading and the lames hanging as arms; no earring is a hoop alone; every cloak shows a collar or a clasp; Isaribi is Kaikou.
+- **Where:** AR6, "Batch 2" and "Batch 2's fixes"; `build/handoff/Gear/batch2_sheet/gear_batch2_sheet.png`, with `<kind>_sets/` for each kind; `tools/blender/gear_parts.py`, `gear_<kind>_sets.py`, `gear_batch_sheet.py`.
+- **Open:** research's pass on the fixes; then colour and frames, as batch 1's.
+- **For:** research.
+
 ### 2026-11-16, 17:40. AR20: C's paint and skies, for Faber (Modulo)
 
 - **What changed:** the base kit out of grey-violet (steel, girders, concrete, deck, floors); the Tower asleep, the far shards and the outcrops painted violet for distance; the ground between plots lifted from #1A1D2E to #6E7290; the base's and the Strip's own dusk and night skies; the Strip's own paving, lifted from Lantern Row's.

@@ -494,4 +494,85 @@ function Hud.FrontShift(along: number, turn: number): (number, number)
 	return along * math.cos(angle), along * math.sin(angle)
 end
 
+
+-- The level-up's notice (AR12, take B; Modulo's levelup_notice.json; Config.Hud.LevelNotice.Motion), `age` seconds after
+-- it was shown, on a plate `wide` points across whose foot ends `foot` points from its left (its far end leans):
+--   Away     how far it stands off its place to the left, 0 at its place to 1 wholly off the screen
+--   Size     the number's size against its own (0 before it appears)
+--   Number   how solid the number is
+--   Flash    how solid the block's white flash is
+--   Knock    points it's knocked to the right
+--   Sheen    the sheen's middle along the foot, points from the plate's left, or nil while it isn't crossing
+--   Shine    how solid the sheen is there (it fades in over its first Fade points on the plate and out over its last)
+--   Solid    the whole notice's opacity (reduced motion fades it; otherwise 1)
+--   Done     it has left
+-- The levers: the slide in, eased out (cubic); the number falls onto its block (quadratic in), squashes and settles
+-- (quadratic out); the impact, a white flash on the block and a knock, both falling off quadratically; the follow-through,
+-- one sheen across the whole plate (smooth step). With reduced motion it fades in at its place with its number set, and out.
+export type NoticeMotion = {
+	In: number,
+	Fall: number,
+	From: number,
+	Squash: number,
+	Settle: number,
+	Flash: { Strength: number, Seconds: number },
+	Knock: { Points: number, Seconds: number },
+	Sheen: { After: number, Seconds: number, Reach: number, Fade: number },
+	Hold: number,
+	Out: number,
+	Fade: number,
+}
+export type Notice = {
+	Away: number,
+	Size: number,
+	Number: number,
+	Flash: number,
+	Knock: number,
+	Sheen: number?,
+	Shine: number,
+	Solid: number,
+	Done: boolean,
+}
+
+function Hud.Notice(age: number, m: NoticeMotion, wide: number, foot: number, reduced: boolean?): Notice
+	local leave = m.In + m.Hold
+	if reduced then
+		local solid = math.clamp(age / math.max(m.Fade, 1e-6), 0, 1) * math.clamp(1 - (age - leave) / math.max(m.Fade, 1e-6), 0, 1)
+		return { Away = 0, Size = 1, Number = 1, Flash = 0, Knock = 0, Sheen = nil, Shine = 0, Solid = solid, Done = age >= leave + m.Fade }
+	end
+	local away = 0
+	if age < m.In then
+		away = (1 - math.max(age, 0) / m.In) ^ 3 -- cubic out: most of the way in at once
+	elseif age > leave then
+		away = math.min((age - leave) / m.Out, 1) ^ 3 -- cubic in: it gathers speed as it goes
+	end
+	local land = m.In + m.Fall
+	local size, number = 0, 0
+	if age >= m.In and age < land then
+		local u = (age - m.In) / m.Fall
+		size = m.From + (m.Squash - m.From) * u * u
+		number = math.min(u * 3, 1)
+	elseif age >= land then
+		local u = math.min((age - land) / m.Settle, 1)
+		size = m.Squash + (1 - m.Squash) * (1 - (1 - u) ^ 2)
+		number = 1
+	end
+	local flash, knock = 0, 0
+	if age >= land and age < land + m.Flash.Seconds then
+		flash = m.Flash.Strength * (1 - (age - land) / m.Flash.Seconds) ^ 2
+	end
+	if age >= land and age < land + m.Knock.Seconds then
+		knock = m.Knock.Points * (1 - (age - land) / m.Knock.Seconds) ^ 2
+	end
+	local sheen, shine = nil, 0
+	local start = land + m.Sheen.After
+	if age >= start and age <= start + m.Sheen.Seconds then
+		local u = (age - start) / m.Sheen.Seconds
+		local at = -m.Sheen.Reach + (wide + 2 * m.Sheen.Reach) * u * u * (3 - 2 * u)
+		sheen = at
+		shine = math.clamp(at / m.Sheen.Fade, 0, 1) * math.clamp((foot - at) / m.Sheen.Fade, 0, 1)
+	end
+	return { Away = away, Size = size, Number = number, Flash = flash, Knock = knock, Sheen = sheen, Shine = shine, Solid = 1, Done = age >= leave + m.Out }
+end
+
 return Hud

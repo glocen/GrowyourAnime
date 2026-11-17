@@ -9,9 +9,9 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **AR11, Ground Wire's retake:** works. Must-fix (round 2 on the hold): the lock as a pulsing fill on the stopped Shade, the shield as a pulsing glint on the spear's head. Asked of Faber: does a real fight hide the lead behind its target?
 - **Next:** verdicts in motion on AR26's blocks as Faber installs them; sim.py's pool() learns "made" (TR24); attributes.py on the real Config once TR36 lands.
 
-**Faber (builder).** 2026-11-17, 17:23. TR41 (b) is in: Power's bar is built from Modulo's eight cut images, at phone size, for research's read (TR41, "(b) Power's bar from its cut images, in the game"; stills in `build/scratch/faber/stills/`). The full suite's three failures were AR17's steady shard, which an older lighting case didn't know; taught, it passes. Voidkin work stays parked on branch `parked/ar26-watt-block`.
-- **Now:** TR41 (c), the level-up notice, take B. Its three images are up.
-- **Next, in order:** TR41 (d) and (e); AR29's B, 13 icons; AR30's 25 images; AR31's 38 and TR10's two icons up, then TR10's marker captures; TR34; AR23; TR29 and TR10; TR37 to TR39; TR31 to TR33, TR35, the responsive pass; AR19's six re-uploads; AR32's Stages II and III as kit pieces.
+**Faber (builder).** 2026-11-17, 17:58. TR41 (c) is in: the level-up notice, take B, from Modulo's three images, in place of the old toast and the word over the lead, for research's read (TR41, "(c) The level-up notice, take B, in the game"; stills in `build/scratch/faber/stills/tr41c-*`). Roblox's 9-slice drew its plate wrong under the layer's scale, so it's three plain pieces. Voidkin work stays parked on branch `parked/ar26-watt-block`.
+- **Now:** TR41 (d), the festival tag's four images.
+- **Next, in order:** TR41 (e), with the Training machine's still; AR29's B, 13 icons; AR30's 25 images; AR31's 38 and TR10's two icons up, then TR10's marker captures; TR34; AR23; TR29 and TR10; TR37 to TR39; TR31 to TR33, TR35, the responsive pass; AR19's six re-uploads; AR32's and AR33's Stages II and III as kit pieces.
 - **Open, tests:** four timing cases are NOT VERIFIED (AR11). The Keeper's "and out on Out" and Pip's skip fail at times. TR20's Breaker hover depends on order. A reveal once stayed held after the suites (TR41, "The two must-fixes", Open).
 - **Open, for research:** the target card's light (`CardLightHealth`) keeps its glow ahead of its front. Does it go the same way as the lead's?
 
@@ -115,6 +115,14 @@ For Faber:
 - Tier 2, research, 2026-11-12, on the director's words: weapons belong to a class, in two hands (Main Hand and Off Hand replace Weapon and Shield), a preset holds a pair per class, a weapon drop is for the lead's class; Combat Power made to be watched, its weights fitted by the simulation; each item kind modelled and rendered to its icon (AR6, phase 3) (`docs/design.md`, "Regalia: gear" and "Combat Power"). Faber: the Stats case's `"Weapon"` source becomes `"Main Hand"` when you next touch it. Faber and Modulo: say in your row what you'd change.
 
 ## Entries
+
+### 2026-11-17, 17:58. TR41 (c): the level-up notice, take B, installed (Faber)
+
+- **What changed:** a level gained shows Modulo's notice under the lead's corner: it slides in, its number lands with a flash and a knock, one sheen crosses, and it slides back. The old toast and the word over the lead are gone; the column of light stays.
+- **Where:** `UI/LevelNotice.luau`, `Rules.Hud.Notice`, `Config/Hud.luau` (`LevelNotice`), `HudController`, `Effects.LevelUp`. Cases: logic "Hud", self-test "HUD: TR41 (c)" (`NoticeCases.luau`), "Take: TR41 (c)".
+- **Tested:** HUD 445/0, the notice 39/0, logic 24,032/0; type check 0 new.
+- **Open:** the plate is three plain image pieces, since a Roblox 9-slice drew it wrong under the layer's scale. The number sits on the block as drawn (30.75), not on the json's 28.9.
+- **For:** research's read from the strip (`build/scratch/faber/stills/tr41c-strip-zoom.png`).
 
 ### 2026-11-17, 16:52. AR17: the Strip installed at 128; TR41 (a)'s two must-fixes (Faber)
 
@@ -237,10 +245,3 @@ For Faber:
 - **Where:** AR6, "Batch 2 in colour"; `build/handoff/UI/gear/` (`gear_<kind>_colour.png`, `images/`, `gear_icons.json`); `tools/blender/gear_icons.py` and the batch 2 `gear_<kind>_sets.py`.
 - **Open:** research's verdict. Then the 120 go to Faber for upload and the slots, after Kaikou's catalog search.
 - **For:** research, then Faber.
-
-### 2026-11-16, 19:08. AR6: batch 2, the eight shared kinds in grey, with their fixes (Modulo)
-
-- **What changed:** Shoulders, Chest Armor, Gloves, Bracers, Boots, Cloak, Amulet and Earring, each in three designs at each rarity (120). Each kind has one view it reads in at 38 points. The sets keep one column across every kind, and each Legendary has one new form. The Earring's fifteen serve both earring slots. After research's verdict, the Shoulders are a mantle with the collar leading and the lames hanging as arms; no earring is a hoop alone; every cloak shows a collar or a clasp; Isaribi is Kaikou.
-- **Where:** AR6, "Batch 2" and "Batch 2's fixes"; `build/handoff/Gear/batch2_sheet/gear_batch2_sheet.png`, with `<kind>_sets/` for each kind; `tools/blender/gear_parts.py`, `gear_<kind>_sets.py`, `gear_batch_sheet.py`.
-- **Open:** research's pass on the fixes; then colour and frames, as batch 1's.
-- **For:** research.

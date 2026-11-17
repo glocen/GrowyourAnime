@@ -52,6 +52,7 @@ local Button = require(UI.Kit.Button)
 local Skin = require(UI.Kit.Skin)
 local Readout = require(UI.Readout)
 local LeadCard = require(UI.LeadCard)
+local LevelNotice = require(UI.LevelNotice)
 local VoidkinScreen = require(UI.VoidkinScreen)
 local TargetCard = require(UI.TargetCard)
 local Dock = require(UI.Dock)
@@ -321,6 +322,11 @@ local function placeCorner()
 	eye.Size = UDim2.fromOffset(look.Size, look.Size)
 	eye.Position = UDim2.fromOffset(x, y)
 	nextButton.Position = UDim2.fromOffset(x + look.Size / 2 + Theme.Size.Gap, y)
+	-- The level-up's notice under the corner's row, at the card's left edge (AR12, take B; TR41 (c)), stopping a gap short
+	-- of the step's chip over the dock, which shares its row on a phone.
+	local hud, scale = Layers.Get("Hud"), math.max(Layers.Scale(), 0.01)
+	local chipLeft = if chip then (chip.AbsolutePosition.X - hud.AbsolutePosition.X) / scale else math.huge
+	LevelNotice.Place(card.Position.X.Offset, top + plate.Size + HudConfig.LevelNotice.Below, chipLeft - Theme.Size.Gap - card.Position.X.Offset)
 end
 
 -- The readout shows only in a fight (TR3's verdict, fix 5): it fades in as the lead takes a target, and out a moment
@@ -815,7 +821,9 @@ local function notice(old: Profile.View?, new: Profile.View)
 		end })
 	end
 	if was and now and now.Level > was.Level then
-		Toast.Show(`{Read.VoidkinName(now)} reached level {now.Level}`, HudConfig.Card.Xp)
+		-- Said once, in one place: the notice under the lead's corner (AR12, take B; research's ruling, 2026-11-15: the
+		-- old toast and the word over the lead go, the column of light stays). Its name is the filtered one.
+		LevelNotice.Show(Read.VoidkinName(now), now.Level)
 		Pop.Play(lead.Level, pops.Level, { Paint = function(p: number)
 			LeadCard.Glow(lead, HudConfig.Pop.Glow * p) -- the badge lit under the ink number
 		end })
@@ -1176,6 +1184,7 @@ HudController.OpenView = function() end
 
 function HudController.Start()
 	lead = LeadCard.new(Layers.Get("Hud"), UDim2.fromOffset(PAD, TOP))
+	LevelNotice.Mount(Layers.Get("Hud"))
 	-- The target's card centred, its blade and tab level with the lead's.
 	target = TargetCard.new(Layers.Get("Hud"), UDim2.new(0.5, 0, 0, TOP - UIKit.TargetCard.Offset.Y))
 	targetArrow = arrow(target.Frame, TargetCard.ArrowAt.X, TargetCard.ArrowAt.Y)

@@ -29,11 +29,11 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **Open, for research:** the target card's light (`CardLightHealth`) keeps its glow ahead of its front. Does it go the same way as the lead's?
 - **Open, tooling:** `tools/ui/kit_config.py` rewrites `Config.UIKit` whole and drops what was added by hand (Eclipse, the reveal's marks, the shard grades). Don't run it until it merges.
 
-**Modulo (assets).** 2026-11-17, 08:15, on Opus 5.5.
-- **AR26, Watt's basic attack** (b4a1ac7): the crack in grey, 27 rows in `build/handoff/Watt/fx/WattCombo.rows.json`, with the content check PASS for the block. For Faber's block in the replay, after Ground Wire's retake. Open for research: the technique check, and the finding that at the main framing the Shade covers the touch (AR26, "Watt's basic attack").
-- **AR18, the ring's fix** (f8545f7): the chosen ring stands on a dark moat and reads on every rarity's frame (`bag_seam_ring_phone.png`). It waits on research's second look, then Faber rebuilds the bag.
+**Modulo (assets).** 2026-11-17, 08:44, on Opus 5.5.
+- **AR26, Rook's basic attack** (27df36b): the burst and the cone in grey, 38 rows in `build/handoff/Rook/fx/RookCombo.rows.json`. Content check PASS, after one block on three paths into the body, now held off by a guard in the script. For Faber's block after Watt's. Open for research: the technique check, and the hook, which is mostly hidden at the main framing as Watt's crack is (AR26, "Rook's basic attack").
+- **AR26, Watt's** (b4a1ac7) and **AR18's ring** (f8545f7): research passed both (6c2992c). Watt's block and the bag's rebuild are Faber's.
 - **Unchanged:** AR24's A goes to Faber's block (TR34), and Sable waits for after launch. The Door is Faber's install. Ground Wire waits on Faber's retake, then my colour pass.
-- **Next:** AR26's next basic attack, Rook, as effects and clips only, with no sound (the director's word of 08:00). TR10's two icons follow the grey marker's verdict.
+- **Now:** AR26's Pip, effects only, no sound (the director's word of 08:00). Then Lyric and Kirra. TR10's two icons follow the grey marker's verdict.
 
 **Turns.** Studio: nobody (Faber stopped at 02:59, the playtest stopped). Blender: nobody. Timing tests: nobody.
 

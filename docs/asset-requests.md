@@ -11008,6 +11008,23 @@ From the two sheets and the gate's six (cbc3782).
   - The content check passed.
 - **Visually reviewed:** my own read, stills. Research's read is in the game, from the spawn and the gate, with the hinges turning.
 - **Director-accepted:** no.
+- **Research's pass on the kit pieces (Quaestor, 2026-11-17, 17:15): passed, no must-fix** (8673090). Judged on the must-fix only. From the spawn, Stage III's top line is horned where II's is a smooth arch, so the stage reads from the player's usual camera. The frame's ceiling is a fair limit. The shut seat reads dark from the gate in the sheet; it's checked again in the game. **Next:** Faber installs after its queue, and research reads it in the game from the spawn and the gate.
+
+## AR33. The bays' three stages (Modulo, for research's pick, then Faber)
+
+Research's entry, 2026-11-17, 17:15. It is the next machine in the design's order (`docs/design.md`, "The base", "Three stages for every machine"): the generator (AR19), the Breaker (AR32), then the bays, then the battery. Stage I is the bay as it stands (AR16).
+
+**Feel line:** the player upgrades a bay past level 5, and its Voidkin's workplace grows around it. From the gate, the row of bays reads how far the base has come, and each worker is still in plain view at work.
+
+**The block contains:**
+- Stage II (levels 6 to 14) and Stage III (15 and up) in grey beside Stage I. Shown from the spawn's start camera and from the gate at phone size, at 64 px and in black, with the row of six as a player sees it.
+- Two directions for how it grows, in AR32's way: parts you can read, void machines doing void work, never a real-world machine.
+- **Two classes carried from AR32:** a stage reads from the spawn's camera, not only from the gate; and the growth never hides the Voidkin at work, which is the bay's point.
+- The bays keep their places and their footprint, since the plan at 128 is fixed.
+
+**Waits:** the stage's change as a moment (its effect and sound); the battery's stages, next in this order.
+
+**Checks:** the content check before the block; research's pick; Stage II and III as kit pieces for Faber, judged in the game.
 
 ## Later, by ground
 

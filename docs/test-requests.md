@@ -1171,6 +1171,28 @@ Research's entry, 2026-11-14, on the director's words of the same day (`docs/dec
 - **Visually reviewed:** not yet. The three layouts at phone size from the street, near and far, go here once Studio is back, for research's verdict. Modulo's two icons come after it.
 - **Accepted:** no.
 
+### The two icons (Modulo, 2026-11-17, 16:17 to 16:22 by the clock)
+
+Research's word, 2026-11-17, sent with AR31's verdict (AR31, "Research's verdict", 16:11): the grey marker has never been captured, so the icons are drawn now, at the stand-in tile's size (`Config.Hud.Down.Icon`, 40). Their layout doesn't change the drawing.
+- **Feel line (Modulo's):** from the street, the player sees who is down before reading the name: the elite by its two masks, the Lamplighter by his hat and his lantern.
+- **The images:** `build/handoff/UI/marker/images/MarkerElite.png` and `MarkerLamplighter.png`, 160 px square on transparency (40 points at the kit's 4 a point). The sheet is `build/handoff/UI/marker/marker_icons.png`, from `tools/blender/marker_icons.py`.
+- **How they're made:** each from its own delivery (`build/handoff/Shade`, `build/handoff/Lamplighter`), its meshes and maps on the surfaces Roblox draws. Each shows a face and a sign:
+  - **Elite:** the Brawler's mask, with the elite's second mask on its arm, turned to the camera. The two masks are what tell the elite from a pack's Brawler.
+  - **Lamplighter:** his paper mask under the straw hat, with his lantern lit beside his head. The lantern is brought in from the pole's end at 0.75 of its size. The pole stays out, since at 40 points it is a line across the face.
+  - The body's glow is a quarter of the game's, so the type shows at the edges, not as a lit seam down a 40-point picture.
+- **For Faber:** each image goes on the marker's Icon tile, in place of the Initial (a letter on PlateHigh). It's an ImageLabel filling the tile and clipped to its corner, or the tile's colour left under it as the sheet shows. Upload both under the group.
+- **My read:** on the tile at 40 px, the elite reads as a big mask and a small one, and the Lamplighter as a hat over a white mask with a cyan light. At 28 px both still part.
+- **Content check** (for building and upload, 2026-11-17, 16:22 to 16:24 by the clock): **PASS**. It read the sheet, both files at 160 px and at 64 px over dark and bright, the script, and AR2's and AR7's checks.
+  - The elite's seam reads as coat piping and its hem as an even fade, never blood. The second mask reads as a paper badge on the sleeve, not a head.
+  - The hat sits on a paper lantern mask, a festival costume piece with no play on anyone. Its cords read as a chin strap.
+  - **Conditions:**
+    1. The elite's body glow stays at a quarter of the game's or lower, no redder than `#EA4B4F`, with a dark gap between the big mask's chin and the seam. A new glow, colour or camera makes a new picture, and it comes back to the check.
+    2. The Lamplighter's eyes stay level closed arcs, with no slant and no teeth. A caption, if one ever comes, is checked against `docs/ip-list.md`.
+    3. Upload these exact two files under the group, and log each in `docs/asset-log.md` with `tools/blender/marker_icons.py` as its source.
+    4. Once in game, look at the live marker at 64 px over Lantern Row's dark and bright corners. No bloom or tint on the ImageLabel may push the elite's red further, or put red on the small mask.
+    5. AR2's and AR7's conditions stand.
+- **Four facts.** Implemented: the two images. Tested: rendered and read on the tile at 80, 40 and 28 px. Visually reviewed: my read; research's verdict next. Director-accepted: no.
+
 ## TR11. Spectate, a toggle on the HUD (Faber)
 
 Research's entry, 2026-11-14, night, on the director's words of the same night (`docs/decisions.md`): the player's camera is never moved in a fight, and a small button follows the lead instead. "Change it now."

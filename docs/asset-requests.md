@@ -9111,6 +9111,16 @@ Research's request, 2026-11-17, 02:41, on the director's word of the same night 
 - **Light on purpose:** a basic attack lands many times a minute, so its effect is short and small beside the signature's. Its flash fits inside the hit's own 0.1 to 0.2 s, and it never hides the Shade.
 - **Waits:** the redesigns of Rook, Kirra, Pip and Lyric, at the finish pass. Each one's attack is redrawn for its new weapon then, and its motion and timing carry over.
 - **Time it:** each attack records what it took. The cap is an effect's 2 hours at its block.
+- **The director's word of 08:00:** no new sound effects until the director's samples come (`docs/decisions.md`). Each attack's sound waits for that one retry. The effect and the clip go on.
+
+### Research's feel lines, signed (Quaestor, 2026-11-17, 08:06)
+
+These are written from each combo's clip and its timings in `Shared.Definitions.Actions`, so each `/ga-action` starts signed. **For each, the block holds:** the hero shape on each of the three hits, in grey beside the combo's clip, at the game's camera. **What waits:** the colour pass after the block's verdict, the sound for the retry, and the redraw for the new weapon at the redesign. A maker who finds a line wrong in motion says so at the blockout, with what it would change.
+1. **Watt** (Storm; the spear-staff with three white discs): each of his three blows cracks Storm on the touch, short and hard. On the third, the drive into the street earths it in one brief spit of light along the ground. From behind, he hits like a breaker tripping: contained, earthed, never a mage's spray. Apart from Ground Wire: no ring and no hold, since that's the signature's.
+2. **Rook** (no element; his accent is the gauntlet's orange band): the jab and the hook snap a tight burst off the knuckles. The ram drives a short cone of dust and light through the Shade, and it opens the space it pushes. From behind, a street fight, fists first, with the third hit heavy.
+3. **Pip** (Fire; the lantern): each flick throws a spitting ember that streaks into the Shade and pops in a small flame bloom. The third, the lantern kicked over, sends a fatter one with a short ribbon behind it. From across the street, a schoolboy's fireworks that still land. Apart from Lantern Burst: no area, the shot ends on its target.
+4. **Lyric** (Storm; the two speaker drones): each speaker fires a pulse you can see travel, speaker to Shade, and it bursts there on the beat. The third, both at once, lands as two pulses crossing on the same frame. From behind, her hits keep time like a song. Apart from Watt's Storm: a travelling ring of sound, never a crack in the ground. Apart from Held Note: no cone.
+5. **Kirra** (no element; her scarf's colour): the dash leaves a thin streak in the scarf's colour. Each cut is a crisp line across the Shade that snaps shut. The second wears as an X, and the rise through it flashes upward. From behind, she's already past when the cuts show. With First Strike, the critical's number is still the only extra cue (Faber's tier 1, 2026-11-14).
 
 ## Later, by ground
 

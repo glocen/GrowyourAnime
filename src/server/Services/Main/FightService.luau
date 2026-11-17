@@ -86,6 +86,10 @@ export type Fighter = {
 	ForcedNext: number,
 	ForcedTarget: Fighter?,
 	ForcedHome: CFrame?, -- where it stood when held: an action that carries it (Actions.Moves) starts each press from there
+	-- The replay's foe (FightService.Follow): it presses ForcedLag seconds after each press of the fighter whose
+	-- ForcedFollower it is, never on its own clock.
+	ForcedLag: number?,
+	ForcedFollower: Fighter?,
 }
 
 local FightService = {
@@ -502,6 +506,8 @@ local function register(model: Model, side: "Lead" | "Shade", kind: string, def:
 		ForcedNext = 0,
 		ForcedTarget = nil,
 		ForcedHome = nil,
+		ForcedLag = nil,
+		ForcedFollower = nil,
 	}
 	model:SetAttribute("Fighter", id)
 	model:SetAttribute("Side", side)
@@ -1099,17 +1105,24 @@ local function forced(f: Fighter, at: number): boolean
 	if target and at >= f.ForcedNext and not busy(f, at) then
 		local action = Actions.ById[f.Forced]
 		if action then
-			if target.Home then -- every press from the same spacing: the last one's push undone
+			if target.Home then -- every press from the same spacing and health: the last one's push and damage undone
 				target.Root.AssemblyLinearVelocity = Vector3.zero
 				target.Root.CFrame = target.Home
+				if target.Health < target.Block.Health then
+					setHealth(target, target.Block.Health)
+				end
 			end
 			if action.Moves and f.ForcedHome then -- and the last one's carry (start's stop holds it there)
 				f.Root.AssemblyLinearVelocity = Vector3.zero
 				f.Root.CFrame = f.ForcedHome
 			end
 			start(f, action, at)
+			local follower = f.ForcedFollower
+			if follower and follower.ForcedLag then
+				follower.ForcedNext = at + follower.ForcedLag
+			end
 		end
-		f.ForcedNext = at + f.ForcedEvery
+		f.ForcedNext = if f.ForcedLag then math.huge else at + f.ForcedEvery
 	end
 	return true
 end
@@ -1658,10 +1671,21 @@ function FightService.Force(f: Fighter, action: string?, every: number?, target:
 	f.ForcedNext = now()
 	f.ForcedTarget = target
 	f.ForcedHome = if action then f.Root.CFrame else nil
+	f.ForcedLag = nil
+	f.ForcedFollower = nil
 	showTarget(f)
 	if action == nil then
 		face(f, nil)
 	end
+end
+
+-- The replay's foe (ReplayService: a Shade in place of the dummy). `f`, held by Force already, presses its action `lag`
+-- seconds after each press of `leader`, within a think, never on its own clock. So its swing meets the leader's beat at the
+-- same moment every press, without drifting: AR11's retake, a brawler stopped mid-swing.
+function FightService.Follow(f: Fighter, leader: Fighter, lag: number)
+	leader.ForcedFollower = f
+	f.ForcedLag = math.max(0, lag)
+	f.ForcedNext = math.huge
 end
 
 function FightService.Init()

@@ -170,7 +170,9 @@ return {
 		end,
 	},
 	{
-		Name = "Track: a hit's looks are rows played on a body, held to the end of what they show, and none goes unnamed",
+		-- A look is rows riding the body, or an outline on it (Config.Effects.Outlines: Ground Wire's shield since AR11's
+		-- retake), never both.
+		Name = "Track: a hit's looks are worn on a body, rows held to the end of what they show or an outline, and none goes unnamed",
 		Run = function(t: any)
 			local named: { [string]: boolean } = {}
 			for _, action in Actions.List do
@@ -185,7 +187,12 @@ return {
 						t.Check(`{label}: shows what the hit does`, (what == "Stun" and hit.Stun ~= nil) or (what == "Shield" and hit.Shield ~= nil))
 						t.Check(`{label}: played on a body`, EffectsConfig.Lasting[name] ~= nil)
 						local rows = (EffectsConfig.Rows :: any)[name] :: EffectsConfig.Rows?
-						t.Check(`{label}: its rows`, rows ~= nil)
+						local outline = (EffectsConfig.Outlines :: any)[name] :: { Color: Color3, Transparency: number }?
+						t.Check(`{label}: its rows or its outline, one of them`, (rows ~= nil) ~= (outline ~= nil))
+						if outline then
+							t.Check(`{label}: an outline in a colour`, typeof(outline.Color) == "Color3")
+							t.Check(`{label}: an outline that shows`, type(outline.Transparency) == "number" and outline.Transparency >= 0 and outline.Transparency < 0.9, tostring(outline.Transparency))
+						end
 						if rows == nil then
 							continue
 						end
@@ -208,6 +215,9 @@ return {
 			end
 			for name in EffectsConfig.Lasting do
 				t.Check(`{name}: played on a body by a hit's look`, named[name] == true)
+			end
+			for name in EffectsConfig.Outlines do
+				t.Check(`{name}: an outline a hit's look wears, with its switch`, named[name] == true and EffectsConfig.Lasting[name] ~= nil)
 			end
 		end,
 	},

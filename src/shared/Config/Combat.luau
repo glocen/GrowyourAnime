@@ -198,5 +198,9 @@ return {
 		Pitch = 20, -- degrees the camera looks down, over the avatar onto the fight
 		Every = 3.5, -- seconds from one press to the next
 		FreezeAt = 0, -- Studio: above 0, the player's own lead stops this many seconds into each press (clip, effect, sparks), to capture or study a beat; 0 is off
+		-- A foe in the dummy's place (Replay's fourth argument) swings at the lead on its clock: its blow would land this many
+		-- seconds after the lead's first hit, within a think, so a stop meets it mid-swing (AR11's retake). The builder's
+		-- number, 2026-11-17, to tune by watching.
+		Short = 0.1,
 	},
 }

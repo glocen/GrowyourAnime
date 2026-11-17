@@ -379,11 +379,17 @@ local Effects = {
 	-- move to rows at the finish pass (docs/engineering-plan.md, "Content at scale", item 1). Every other effect is rows.
 	Older = { Haymaker = true, LanternBurst = true, HeldNote = true } :: { [string]: boolean },
 
-	-- The rows effects a hit's Looks name (Definitions.Actions), played by FighterController on a body for as long as what
-	-- they show holds, and ended with it at once: their rows hold to a far frame. False takes one off at once and leaves it
-	-- out, to judge a block without it (research's call on Ground Wire's shell, 2026-11-17):
-	-- "Effects.Lasting.WattGroundWireShield", false.
+	-- The looks a hit's Looks name (Definitions.Actions), worn by FighterController on a body for as long as what they show
+	-- holds, and ended with it at once: rows (their rows hold to a far frame), or an outline (Outlines, below). False takes
+	-- one off at once and leaves it out, to judge a block without it: "Effects.Lasting.WattGroundWireShield", false.
 	Lasting = { WattGroundWireStop = true, WattGroundWireShield = true } :: { [string]: boolean },
+	-- The looks worn as an outline on the body, not rows: its one Highlight's outline, the fill left clear for the hit
+	-- flash, Occluded so it never shows through a wall. Read each frame, so a Tune shows at once. Ground Wire's shield, for
+	-- his 5 s: a thin outline that sharpens his silhouette, in place of the shell's haze that blurred it (research's
+	-- must-fix on AR11's blockout, 2026-11-17, 01:56: a blockout's trial, beside none). Grey until Storm's colour pass.
+	Outlines = {
+		WattGroundWireShield = { Color = Color3.fromRGB(236, 238, 245), Transparency = 0.15 },
+	} :: { [string]: { Color: Color3, Transparency: number } },
 
 	-- The passives' grey cues (Definitions.Passives, Cue; TR7, part 3), the builder's numbers, 2026-11-13, to tune by playing.
 	-- Shell: a faint ball round the body while a Reduction holds (Rook's Second Wind), Size studs across, faded in and out

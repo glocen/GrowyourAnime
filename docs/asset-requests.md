@@ -6221,6 +6221,52 @@ Research's request, 2026-11-14, night. **Designed again, 2026-11-15, night,** on
 - **Rounds:** this is round 1 on the hold.
   - Director-accepted: no.
 
+**The retake** (Faber, 2026-11-17, 10:12 to 10:40 by the clock), research's must-fix above, three parts.
+- **1. On a Shade.**
+  - The replay takes a foe in the dummy's place: `NL_Debug:Invoke("Replay", who, "WattGroundWire", 8, "brawler")`.
+  - The brawler stands on the dummy's spot at Watt's level and swings at him on his clock (`FightService.Follow`). Its blow is timed to land `Config.Combat.Replay.Short` (0.1 s, a Tune) after his Plant, within a think (0.1 s). So the stop meets it mid-swing, every press, with no drift.
+  - Each press starts it whole: its health back with its spacing.
+- **2. The shield, as an outline** (`Config.Effects.Outlines`):
+  - It's the outline of the body's one Highlight, which it shares with the hit flash so neither hides the other. The fill is clear, and it's Occluded.
+  - In grey-white (236, 238, 245) at 0.15 until Storm's colour pass. It's read each frame, so a Tune shows at once. `Effects.Lasting` still switches it off.
+  - The shell's rows are out of the game (`Config/EffectRows/WattGroundWireShield.json`). Git keeps them, and Modulo's handoff copy stays.
+- **3. In motion,** in `build/captures/ar11/`. Five takes of 14 s, each holding one whole press, from the charge to past the shield's end. They run at 57.1 to 58.8 fps with Studio in front: the game's own rate with the effects up.
+
+  | Take | Camera, light | The Plant at |
+  |---|---|---|
+  | `retake_play_outline.mkv` | the player's, dusk | 6.000 s |
+  | `retake_play_outline_day.mkv` | the player's, day | 5.233 s |
+  | `retake_play_none.mkv` | the player's, day, no shield look (the side by side) | 4.233 s |
+  | `retake_plus70_outline.mkv` | +70° round the fight's middle, day | 4.067 s |
+  | `retake_minus70_outline.mkv` | −70°, day | 7.683 s |
+
+  - The turned cameras keep the player's camera's distance and height, held on every frame. So the Plant's shake doesn't show in them.
+  - **Sheets:** `sheet_<take>.jpg`, from 0.4 s before the Plant to 5.4 s after (the shield ends at 5.0). `fight_play_outline_day.jpg` and `fight_play_none.jpg` are the fight up close, the side by side.
+  - The game view in these takes is `--crop 2484:1134:38:218`. `moments.py`'s default box is from before Studio's layout changed, and it cuts the right side and takes in the Output panel.
+- **Faber's read, not a verdict:**
+  - **The brawler:** held mid-swing, its arm out at Watt, with the stop's thin ring at its feet. It reads as caught, not knocked.
+  - **From the player's camera,** the brawler stands in front of Watt for the whole hold and covers most of him. That's how the replay frames a fight, the lead beyond its target. The outline shows only on what's left of him in view.
+  - **The outline itself:** a Highlight's line is about one pixel wide at any distance, and Roblox gives it no thickness. At the player's distance it's faint beside none. No 64 px read is made yet, and a one-pixel line is the first thing that size loses.
+  - **From ±70°** it traces him and his spear, and it's gone after the shield (`close_plus70_outline.jpg`, `close_minus70_outline.jpg`). Where the brawler covers him, the line also runs along the brawler's edge. An Occluded outline traces only what of him is in view.
+  - **The Plant's number** (148) stands over the brawler's head for its first quarter second.
+- **Still in the rows:** the front's glints. They're in Modulo's handoff too, and they show at no size. They go with Modulo's next delivery, since the rows are Modulo's file.
+- **Four facts:**
+  - Implemented: yes, in grey.
+  - Tested:
+    - type check 0 new;
+    - logic: 25,042 passed, 0 failed, offline and in Studio. The looks case now takes a look as rows or an outline, never both. The shell's rows checks went with its file;
+    - the self-test "Watt's Ground Wire", on the brawler now: 20 of 20 at 59 fps. The brawler is stopped 0.34 s into its 0.50 s swing, and its blow never lands. The outline shows on Watt mid-stop, stays as the stop ends, and goes at the shield's end, never before;
+    - the whole suite: 2,601 passed, 4 failed, all four timing checks. The client ran at 39 to 40 fps with Studio in front, its render taking 24 ms a frame on the CPU at the base (GPU 7 ms). The four:
+      - the Keeper's "out on Out", the one already flaky;
+      - a damage number's ease;
+      - the Mythical reveal's 50 fps;
+      - the dock's fill from the tap's own frame.
+    - Run alone, the dock's passes, and the other three fail the same way at 38 to 40 fps: NOT VERIFIED. None of them touches this piece's code. The last three passed in c23da60's suite at 53 fps, and the Keeper's failed there too;
+    - world report: empty.
+  - Visually reviewed: Faber's read above. Research's verdict and `ga-fresh-eyes`: waiting, on the takes.
+  - Director-accepted: no.
+- **Next:** research's verdict in motion, with `ga-fresh-eyes`; then Modulo's colour pass in Storm's light, the front's glints out of the rows with it.
+
 **The first design, 2026-11-14 to 15, rejected by the director: its record.** Sections 1 and 2 are kept as Modulo wrote them.
 
 ### 1. The sheet (Modulo, 2026-11-14)

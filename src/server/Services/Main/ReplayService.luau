@@ -3,6 +3,8 @@
 -- against a dummy, seen from the player's camera, with every number live through Tune.
 --   NL_Debug:Invoke("Replay", who, "RookHaymaker")      every Config.Combat.Replay.Every seconds
 --   NL_Debug:Invoke("Replay", who, "RookCombo", 2)      every 2 seconds
+--   NL_Debug:Invoke("Replay", who, "WattGroundWire", 6, "brawler")   against a brawler in place of the dummy, swinging
+--                                                       on the lead's clock (Config.Combat.Replay.Short)
 --   NL_Debug:Invoke("Replay", who)                      stops, and puts the player and the lead back
 -- More Studio tools for fights, for tests and play checks:
 --   NL_Debug:Invoke("FightSpawn", who, "brawler", 3, 12)   a level 3 brawler 12 studs ahead of the avatar, on its ground
@@ -15,7 +17,10 @@
 -- Replay.Behind behind it and Lead.Side to the left, so its own body hides neither, all facing down the pad; the lead
 -- beyond the dummy at the action's own spacing (Replay.Distance), turned Lead.Frame degrees toward the avatar's right,
 -- the side it walks in from, facing the dummy. The client puts the camera behind the avatar. Each press starts with the
--- dummy back on its spot (FightService.Force). The dummy has the lead's level, so the numbers read true.
+-- dummy back on its spot and whole (FightService.Force). The dummy has the lead's level, so the numbers read true.
+-- A foe in its place (AR11's retake: "a brawler stopped mid-swing replaces the dummy, so the lock is the payoff") stands
+-- on the same spot at the same level and presses its own action at the lead on the lead's clock (FightService.Follow):
+-- timed so its blow would land Replay.Short seconds after the lead's first hit, so a stop meets it mid-swing.
 
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
@@ -88,7 +93,19 @@ local function stopFor(player: Player)
 	end
 end
 
-local function replay(who: any, actionId: any, every: any): any
+-- The first beat an action hits on, in seconds from its press.
+local function firstHit(action: Actions.Action): number?
+	local first: number? = nil
+	for beat in action.Hits do
+		local at = action.Beats[beat]
+		if at and (first == nil or at < first) then
+			first = at
+		end
+	end
+	return first
+end
+
+local function replay(who: any, actionId: any, every: any, foe: any): any
 	local player = DebugService.ResolvePlayer(who)
 	if player == nil then
 		return { Ok = false, Error = "NoPlayer" }
@@ -99,7 +116,9 @@ local function replay(who: any, actionId: any, every: any): any
 	end
 	local action = if type(actionId) == "string" then Actions.ById[actionId] else nil
 	local seconds = if every == nil then Combat.Replay.Every else every
-	if action == nil or type(seconds) ~= "number" or not (seconds > 0) then
+	local foeId = if foe == nil then "dummy" else foe
+	local foeRow = if type(foeId) == "string" then Enemies.ById[foeId] else nil
+	if action == nil or type(seconds) ~= "number" or not (seconds > 0) or foeRow == nil then
 		return { Ok = false, Error = "BadArgs" }
 	end
 	local lead = FightService.LeadOf(player)
@@ -119,7 +138,7 @@ local function replay(who: any, actionId: any, every: any): any
 	local gap = if Combat.Replay.Distance > 0 then Combat.Replay.Distance else action.Range - Combat.Approach
 	local dummyAt = Vector3.new(CENTER.X, top, CENTER.Z)
 	local stand = dummyAt - ahead * Combat.Replay.Behind - right * Combat.Lead.Side + Vector3.new(0, STAND, 0)
-	session.Dummy = FightService.SpawnEnemy("dummy", lead.Block.Level, CFrame.lookAt(dummyAt, dummyAt - ahead))
+	session.Dummy = FightService.SpawnEnemy(foeRow.Id, lead.Block.Level, CFrame.lookAt(dummyAt, dummyAt - ahead))
 	local turn = math.rad(Combat.Lead.Frame)
 	local spot = dummyAt + (ahead * math.cos(turn) + right * math.sin(turn)) * gap + Vector3.new(0, STAND, 0)
 	player:RequestStreamAroundAsync(spot)
@@ -128,10 +147,24 @@ local function replay(who: any, actionId: any, every: any): any
 	root.AssemblyLinearVelocity = Vector3.zero
 	root.CFrame = CFrame.lookAt(stand, stand + ahead)
 	FightService.Force(lead, action.Id, seconds, session.Dummy)
+	local swing = if foeRow.Action then Actions.ById[foeRow.Action] else nil
+	local leadHit, foeHit = firstHit(action), if swing then firstHit(swing) else nil
+	local lag: number? = nil
+	if swing and leadHit and foeHit then
+		-- its blow at the lead's first hit plus Short: it presses that long after the lead, or the lead after it
+		lag = leadHit + Combat.Replay.Short - foeHit
+		local dummy = session.Dummy :: FightService.Fighter
+		FightService.Force(dummy, swing.Id, seconds, lead)
+		if (lag :: number) >= 0 then
+			FightService.Follow(dummy, lead, lag :: number)
+		else
+			FightService.Follow(lead, dummy, -(lag :: number))
+		end
+	end
 	player:SetAttribute("Replay", `{action.Id}@{workspace:GetServerTimeNow()}`)
 	-- Spot and Target: where the lead and the dummy stand for each press, which a client can't see when its first beat
 	-- moves the lead (Actions.Moves) in the same step as the press puts them back
-	return { Ok = true, Action = action.Id, Every = seconds, Level = lead.Block.Level, Spot = spot, Target = dummyAt }
+	return { Ok = true, Action = action.Id, Every = seconds, Level = lead.Block.Level, Spot = spot, Target = dummyAt, Foe = foeRow.Id, Lag = lag }
 end
 
 local spawned: { [FightService.Fighter]: boolean } = {}

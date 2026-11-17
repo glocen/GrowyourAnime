@@ -98,7 +98,7 @@ type View = {
 	Cued: { [string]: boolean }, -- the beats whose cue (Rules.Sound.Beat) this press has begun
 	Held: { [string]: Held }, -- each hit it has shown on a body, by beat, press and target: what a server's hit may raise
 	Struck: Struck?, -- its flash and tremble as a hit's target, while they run
-	Glow: Highlight?, -- its flash's fill, made on its first hit
+	Glow: Highlight?, -- its one Highlight: its flash's fill and a worn outline's line, made when either first needs it
 	Running: { Running },
 	Joint: Motor6D?, -- a box's lean
 	Height: number,
@@ -107,7 +107,8 @@ type View = {
 	Connections: { RBXScriptConnection },
 	Knock: Knock?,
 	Prop: Prop?,
-	Looks: { [string]: Rows.Player }, -- a hit's looks riding it now, by name (Effects.Lasting): Ground Wire's stop, his shield
+	Looks: { [string]: Rows.Player }, -- a hit's rows looks riding it now, by name (Effects.Lasting): Ground Wire's stop
+	Outline: { Name: string, Holds: () -> boolean }?, -- a hit's outline look worn now (Config.Effects.Outlines): his shield
 }
 
 local views: { [Model]: View } = {}
@@ -215,21 +216,29 @@ local function freezeOf(view: View): number?
 end
 
 -- The struck body's flash, and its tremble inside its hold when `trembles` (Config.Combat.Hitstop; AR8 A): from now, a
--- later hit starting it over. The flash is a white fill over the body (a Highlight, one a body, made on its first hit).
-local function strike(view: View, lever: Fight.Lever, hold: number, trembles: boolean)
+-- later hit starting it over. The flash is a white fill over the body (glowOf: a Highlight, one a body).
+-- The body's one Highlight, shared by its hit flash's fill and a worn outline (Config.Effects.Outlines), so neither hides
+-- the other: made when either first needs it, off while neither shows.
+local function glowOf(view: View): Highlight
 	local glow = view.Glow
-	if glow == nil or glow.Parent == nil then
-		local made = Instance.new("Highlight")
-		made.Name = "NL_HitFlash"
-		made.FillColor = Color3.new(1, 1, 1)
-		made.FillTransparency = 1
-		made.OutlineTransparency = 1
-		made.DepthMode = Enum.HighlightDepthMode.Occluded
-		made.Enabled = false
-		made.Adornee = view.Model
-		made.Parent = view.Model
-		view.Glow = made
+	if glow and glow.Parent then
+		return glow
 	end
+	local made = Instance.new("Highlight")
+	made.Name = "NL_HitFlash"
+	made.FillColor = Color3.new(1, 1, 1)
+	made.FillTransparency = 1
+	made.OutlineTransparency = 1
+	made.DepthMode = Enum.HighlightDepthMode.Occluded
+	made.Enabled = false
+	made.Adornee = view.Model
+	made.Parent = view.Model
+	view.Glow = made
+	return made
+end
+
+local function strike(view: View, lever: Fight.Lever, hold: number, trembles: boolean)
+	glowOf(view)
 	local was = view.Struck
 	view.Struck = {
 		At = os.clock(),
@@ -449,7 +458,13 @@ local letGo: (prop: Prop, out: boolean) -> ()
 -- A hit's look on this body (Actions.Hit.Looks), the name its server attribute gives, one of each at a time, for as long as
 -- `holds` and the body is drawn.
 local function wear(view: View, name: any, holds: () -> boolean)
-	if type(name) ~= "string" or view.Looks[name] then
+	if type(name) ~= "string" or view.Looks[name] or (view.Outline and view.Outline.Name == name) then
+		return
+	end
+	if (EffectsConfig.Outlines :: any)[name] then -- an outline (stepOutline), while its switch is on
+		if EffectsConfig.Lasting[name] == true then
+			view.Outline = { Name = name, Holds = holds }
+		end
 		return
 	end
 	local rows = Effects.Lasting(name, view.Model, function(): boolean
@@ -696,6 +711,7 @@ local function add(model: Instance)
 		State = "Idle",
 		Connections = {},
 		Looks = {},
+		Outline = nil,
 		Cued = {},
 	}
 	views[model] = view
@@ -961,7 +977,7 @@ local function stepStruck(view: View, now: number)
 	local fill = Fight.Flash(t, struck.Flash, struck.Glow)
 	if glow then
 		glow.FillTransparency = 1 - fill
-		glow.Enabled = fill > 0
+		glow.Enabled = fill > 0 or view.Outline ~= nil
 	end
 	local root = view.Root
 	local at = root.Position
@@ -980,6 +996,23 @@ local function stepStruck(view: View, now: number)
 	if fill <= 0 and studs <= 0 and t > 0 then
 		view.Struck = nil
 	end
+end
+
+-- One frame of a worn outline (wear; Config.Effects.Outlines): the body's Highlight's line while the look holds and its
+-- switch is on, its numbers read live; at its end the line goes at once, and the Highlight with it unless a flash runs.
+local function stepOutline(view: View)
+	local worn = view.Outline :: { Name: string, Holds: () -> boolean }
+	local spec = (EffectsConfig.Outlines :: any)[worn.Name] :: { Color: Color3, Transparency: number }?
+	local glow = glowOf(view)
+	if spec == nil or EffectsConfig.Lasting[worn.Name] ~= true or views[view.Model] ~= view or not worn.Holds() then
+		view.Outline = nil
+		glow.OutlineTransparency = 1
+		glow.Enabled = view.Struck ~= nil and glow.FillTransparency < 1
+		return
+	end
+	glow.OutlineColor = spec.Color
+	glow.OutlineTransparency = spec.Transparency
+	glow.Enabled = true
 end
 
 -- The server's hit on `beat` of the action begun `at`, reaching a screen whose clock of it is still short of the beat
@@ -1188,6 +1221,13 @@ function FighterController.Start()
 				if not stepped then
 					view.Struck = nil
 					warn(`FighterController: {view.Model.Name}'s flash: {problem}`)
+				end
+			end
+			if view.Outline then
+				local stepped, problem = pcall(stepOutline, view)
+				if not stepped then
+					view.Outline = nil
+					warn(`FighterController: {view.Model.Name}'s outline: {problem}`)
 				end
 			end
 		end

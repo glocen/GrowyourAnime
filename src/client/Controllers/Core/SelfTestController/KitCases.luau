@@ -47,14 +47,28 @@ function KitCases.Cases(): { any }
 		{
 			-- AR11's install: Ground Wire's pulse stops what stands round Watt for his hold, Plant to Release, never throwing it,
 			-- and shields him past it (Actions.Hit.Round, Stun, Shield); a stopped body holds the pose it was stopped in until it
-			-- lets go (FighterController, onState).
-			Name = "Fight: Watt's Ground Wire stops the dummy for his hold, its pose held, and shields him past it",
+			-- lets go (FighterController, onState). Since the retake (research's must-fix, 2026-11-17) it's played on a brawler
+			-- swinging at him on his clock (the replay's foe), so the stop meets a blow mid-swing, and his shield is an outline.
+			Name = "Fight: Watt's Ground Wire stops a brawler mid-swing for his hold, its pose held, and shields him past it",
 			Run = function(t: any)
 				local def = "watt"
 				local action = Actions.ById.WattGroundWire
 				local plant = action.Hits.Plant
 				local stun, shield = plant.Stun :: number, plant.Shield :: { Share: number, Seconds: number }
 				local looks: { Stun: string?, Shield: string? } = plant.Looks or {} -- AR11's stop and shield, played on the bodies (Effects.Lasting)
+				local swipe = Actions.ById.ShadeSwipe -- the brawler's (Definitions.Enemies)
+				-- his shield's look shows: its rows ride him, or its outline is on his Highlight (Config.Effects.Outlines)
+				local function shieldOn(mine: any): boolean
+					if looks.Shield == nil or mine == nil then
+						return false
+					end
+					if mine.Looks[looks.Shield] ~= nil then
+						return true
+					end
+					local glow = mine.Glow :: Highlight?
+					return mine.Outline ~= nil and mine.Outline.Name == looks.Shield and glow ~= nil and glow.Parent ~= nil and glow.Enabled
+						and glow.OutlineTransparency < 1
+				end
 				local view = ProfileController.Get()
 				local was = if view then view.Roles.Lead else nil
 				local function leading(): Model?
@@ -119,11 +133,30 @@ function KitCases.Cases(): { any }
 					return
 				end
 				local struck: Model? = nil
+				local swungAt: number? = nil -- server time, the brawler's swipe pressed before the Plant
+				local blows = 0 -- its swipes landed on Watt
 				local onHit = Net.Client.On("Hit", function(hit: any)
 					if type(hit) == "table" and hit.A == lead and hit.Action == action.Id and hit.Beat == "Plant" and typeof(hit.T) == "Instance" then
 						struck = hit.T
+					elseif type(hit) == "table" and hit.T == lead and hit.Action == swipe.Id then
+						blows += 1
 					end
 				end)
+				local fighters = workspace:FindFirstChild("Fighters")
+				local watched: { RBXScriptConnection } = {}
+				local function watchSwing(model: Instance)
+					if model:IsA("Model") then -- the replay's brawler, as it arrives
+						table.insert(watched, model:GetAttributeChangedSignal("ActionAt"):Connect(function()
+							local at = model:GetAttribute("ActionAt")
+							if swungAt == nil and model:GetAttribute("Def") == "brawler" and model:GetAttribute("Action") == swipe.Id and type(at) == "number" then
+								swungAt = at
+							end
+						end))
+					end
+				end
+				if fighters then
+					table.insert(watched, fighters.ChildAdded:Connect(watchSwing))
+				end
 				local pressed: number? = nil -- server time, the press's own (the action's end moves ActionAt)
 				local onPress = lead:GetAttributeChangedSignal("ActionAt"):Connect(function()
 					local at = lead:GetAttribute("ActionAt")
@@ -131,9 +164,9 @@ function KitCases.Cases(): { any }
 						pressed = at
 					end
 				end)
-				local started = t.Server("Replay", action.Id, action.Length + REPLAY_PAUSE)
+				local started = t.Server("Replay", action.Id, action.Length + REPLAY_PAUSE, "brawler")
 				local ok = type(started) == "table" and started.Ok == true
-				t.Check("the replay presses Ground Wire", ok, if type(started) == "table" then tostring(started.Error) else tostring(started))
+				t.Check("the replay presses Ground Wire at a brawler", ok, if type(started) == "table" then tostring(started.Error) else tostring(started))
 				local stoppedUntil: number? = nil -- server time
 				local stoppedAt: Vector3? = nil
 				local held, heldWhen = false, false
@@ -171,7 +204,7 @@ function KitCases.Cases(): { any }
 								end
 							end
 							local mine = (FighterController.Views :: any)[lead]
-							shieldWorn = looks.Shield ~= nil and mine ~= nil and mine.Looks[looks.Shield] ~= nil
+							shieldWorn = shieldOn(mine)
 						end
 					elseif stoppedUntil and letGo == nil then
 						letGo = workspace:GetServerTimeNow()
@@ -180,6 +213,9 @@ function KitCases.Cases(): { any }
 				end
 				onHit:Disconnect()
 				onPress:Disconnect()
+				for _, connection in watched do
+					connection:Disconnect()
+				end
 				-- the stop's look goes with its stun, at once; the shield's stays to its own end
 				local stopGone: boolean? = nil
 				local afterStop = os.clock()
@@ -192,13 +228,13 @@ function KitCases.Cases(): { any }
 					end
 				end
 				local mine = (FighterController.Views :: any)[lead]
-				local shieldStays = looks.Shield ~= nil and mine ~= nil and mine.Looks[looks.Shield] ~= nil
+				local shieldStays = shieldOn(mine)
 				local shieldEnd = lead:GetAttribute("ShieldUntil")
 				local shieldGone: boolean? = nil
 				local shieldEarly = false
 				while type(shieldEnd) == "number" and workspace:GetServerTimeNow() < shieldEnd + 0.25 do
 					RunService.Heartbeat:Wait()
-					shieldGone = mine == nil or mine.Looks[looks.Shield] == nil
+					shieldGone = not shieldOn(mine)
 					if shieldGone and workspace:GetServerTimeNow() < shieldEnd - 0.1 then
 						shieldEarly = true
 					end
@@ -209,8 +245,13 @@ function KitCases.Cases(): { any }
 				t.Server("Replay")
 				local plantAt = if pressed then pressed + action.Beats.Plant else nil
 				t.Check("pressed", pressed ~= nil)
-				t.Check("the Plant lands on the dummy", struck ~= nil)
+				t.Check("the Plant lands on the brawler", struck ~= nil and struck:GetAttribute("Def") == "brawler")
 				t.Check("it's stopped", stoppedUntil ~= nil)
+				-- mid-swing: its swipe pressed before the Plant and short of its blow there, which never lands
+				local swung = if swungAt and plantAt then plantAt - swungAt else nil
+				t.Check("stopped mid-swing, its blow not yet landed", swung ~= nil and swung > 0 and swung < swipe.Beats.Hit,
+					if swung then string.format("%.2f s into its swing, its blow at %.2f", swung, swipe.Beats.Hit) else "no swing seen")
+				t.Check("and its blow never lands on him", blows == 0, `{blows} landed`)
 				if stoppedUntil and plantAt then
 					local off = stoppedUntil - (plantAt + stun)
 					t.Check("for his hold, Plant to Release", math.abs(off) <= 0.1, string.format("%+.3f s against the Plant's time plus %.2f", off, stun))
@@ -230,8 +271,8 @@ function KitCases.Cases(): { any }
 				else
 					t.Check("his shield from the Plant, past the stop", false, "no shield")
 				end
-				t.Check("the stop's look on the dummy mid-stop", stopWorn, tostring(looks.Stun))
-				t.Check("its ring on the floor at the dummy's foot, not under it", stopFoot ~= nil and math.abs(stopFoot :: number) <= 0.15, if stopFoot then string.format("%+.2f studs", stopFoot) else "no ring")
+				t.Check("the stop's look on the brawler mid-stop", stopWorn, tostring(looks.Stun))
+				t.Check("its ring on the floor at its foot, not under it", stopFoot ~= nil and math.abs(stopFoot :: number) <= 0.15, if stopFoot then string.format("%+.2f studs", stopFoot) else "no ring")
 				t.Check("and gone within 0.2 s of its stun's end", stopGone == true, tostring(stopGone))
 				t.Check("the shield's look on him mid-stop", shieldWorn, tostring(looks.Shield))
 				t.Check("still on him as the stop ends", shieldStays)

@@ -12621,28 +12621,22 @@ Research, 2026-11-17, 22:17. The director's remark, at 22:17: "i think the game 
 - **It waits:** any re-texture or re-upload, until the pick. AR38's clock fix and its colour pause, because the Shop follows the pick.
 - **Order:** after AR39's first round of arrangements.
 
-### The three directions, as values (Modulo, 2026-11-17, 22:32 to 22:38 by the clock)
+### The three directions for the world, as values (Modulo, 2026-11-17, 22:32 to 22:46 by the clock)
 
-Where the purple and the black sit, from the kit's own files and today's captures: the machines' body is one swatch, `abyss` (dark violet, L* 29 falling to 7), on `girder` frames (navy, 38 to 18); the far shards are three violets; the day's fill is a lilac grey; the HUD's panel is L* 14 and the bag's 8. Of ten large surfaces, four are violet and five black.
-- **The values:** `build/handoff/Colour/ar40/directions.json`, from `tools/colour/ar40_directions.py`. `directions.md` beside it has the measures, and `chips.png` is each direction as flat colour beside today's (a machine on the yard with the HUD's card, the bag, the swatches). It's no render, and it's no verdict.
-- **What a direction moves,** and nothing else: nine of the kit's swatches by name (the body `abyss`, the frame `girder`, the fitting `bone`, `steel`, `dark`, `rubber`, and the far shards `far`, `tower`, `outcrop`), the wall's print as a ramp, the Strip's stones as one colour, ten of the day's lighting keys, the two palettes the views show (Graphite, the HUD's; Seam, the bag's), and the HUD's five system pieces (`Systems` in the json). A system keeps its own colour and gets its panel, button and words by one rule from it: a wash of its colour with words in its deep on a pale HUD, its deep sunk into the glass on C's. Without it a pale HUD would be captured with black pieces on it. The void's light (`void`, `cyan`) is the same in all three: it's the accent.
-- **A, porcelain and gold:** warm white stone on slate frames with gold fittings, a warm white sun, the HUD and the bag as cream paper with slate ink, the bag's chosen plate in violet. The brightest, the furthest from today.
-- **B, sky steel:** light blue steel with white frames, a clear blue fill, the HUD and the bag in white with sky blue buttons and gold for the accent.
-- **C, sandstone and teal:** warm pale stone on teal bronze, a gold day, the HUD and the bag still a glass with pale words, lifted from black to a mid slate teal (L* 41 and 39). The nearest to today on screen.
-- **Measured, on the values alone:** every direction has no violet and no black among the ten surfaces. The body's lightness is 95 to 75 (A), 85 to 61 (B), 89 to 63 (C). Words on their panels stand at 5.8 to 1 or more.
-- **Weak, before any capture:**
+Where the purple and the black sit in the world, from the kit's own files and today's captures: the machines' body is one swatch, `abyss` (dark violet, L* 29 falling to 7), on `girder` frames (navy, 38 to 18); the far shards are three violets; the wall and the stones are blue-violet too. Of ten of the world's surfaces, six are blue-violet and four black.
+- **Re-weighted at 22:46 on the director's second word** (below): the screens are out and keep today's values; each direction keeps a share of blue-violet. The first version (f450081, 8155f36) moved the HUD's and the bag's palettes and took violet out of every surface: it's replaced.
+- **The values:** `build/handoff/Colour/ar40/directions.json`, from `tools/colour/ar40_directions.py`. `directions.md` beside it has the measures, and `chips.png` is each direction as flat colour beside today's (a machine on the yard with today's HUD card, then the swatches). It's no render, and it's no verdict.
+- **What a direction moves,** and nothing else: nine of the kit's swatches by name (the body `abyss`, the frame `girder`, the fitting `bone`, the trim `dark`, `steel`, `rubber`, and the far shards `far`, `tower`, `outcrop`), the wall's print as a ramp, the Strip's stones as one colour, and five of the day's lighting keys. The void's light (`void`, `cyan`) is the same in all three.
+- **A, porcelain and indigo:** warm white stone on indigo frames with gold fittings, a warm white sun. The most blue-violet kept: the frame, the trim, the wall and the far shards, at mid values, none black.
+- **B, sky steel:** light blue steel with white frames, blue-violet in the trim and the far shards, a clear blue fill.
+- **C, sandstone and teal:** warm pale stone on teal bronze, violet trim and a violet core against the sand, violet far shards, a gold day.
+- **Measured, on the values alone:** the body's lightness is 95 to 75 (A), 85 to 61 (B), 89 to 63 (C), against today's 29 to 7. Blue-violet surfaces of ten: six in A, three in B, three in C. Black: none in any.
+- **Weak, before any render:**
   - B's violet core sits on a blue body, its neighbour in hue: the void's light may read least there.
-  - B's far shards are near the sky's own blue and may vanish.
-  - A's and B's bag draws its chosen plate dark on pale, the reverse of the seam's design (5.1 and 4.6 to 1).
-  - C's screens are the least changed, and "black" may still be said of them.
-  - C's system pieces read at 4.5 to 1, the least of the three, on the line.
-- **For Faber, the block:** each direction in the place by day at the smallest phone, three views (the plot from the spawn, the Strip from the crossing, the bag), beside today's.
-  - Lighting: the ten keys are `Config.Lighting` paths, for the live tune.
-  - UI: `UI.Graphite`, `UI.Seam` and `Systems`, in the palettes' own field names.
-  - Swatches: a repaint of the kit's cells in the place, from the json's `Cell` rule (the head falling to the foot by `(y / (h - 1)) ^ 0.85`, times the shade across), or whatever way the place allows. A surface's Color alone can't do it: it only darkens.
-  - The stones want about 1.5 times the light for their colour, so a tint alone falls short.
-  - No file is painted and nothing is uploaded until the pick.
-- **Status:** implemented as values; the tool runs; not in the place, not captured, not reviewed.
+  - A keeps as many blue-violet surfaces as today, lighter: it may still be said to be too purple.
+  - Today's stones are read by eye off one capture, so the stones' lift is an estimate.
+- **The renders, blocked on memory:** `tools/colour/ar40_see.py` renders the plot from the spawn and the Strip from the crossing by day, at the phone's shape (960 by 438), from the game's camera at its start zoom, a direction's colours painted into the kit's atlas for the run only, with the game's HUD cut from a day capture of Faber's and pasted over each. The first run (today's plot, 22:45) was stopped by the memory guard 13 seconds in, at 0.61 GB free, before the world was built: the PC had about 1 GB free, with Studio holding 2.8. Eight runs are needed, one at a time. Nothing is rendered.
+- **Status:** implemented as values; the tools run as far as memory lets them; not rendered, not captured, not reviewed.
 - **Research, 22:41: the plot and the Strip are rendered in Blender by Modulo,** by day from the game's camera, so Faber's queue isn't the wait. Faber captures only the bag screen in the place. The captures also show the HUD over each world, and research judges whether A's and B's light screens read as styled, never as a plain light-mode app.
 - **The director's second word, 22:41 (`docs/decisions.md`): "there can be blueish purple and dark like the inventory hud is good but the other area js make it wayy to much".** AR40 narrows to it.
   - **The screens are out of AR40.** The inventory's look is the director's good example and stays. Faber's bag-screen capture is cancelled.

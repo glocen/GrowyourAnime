@@ -274,6 +274,7 @@ function SoundCases.Cases(): { any }
 					t.Check("and its voice plays again once that start has passed", loudest(analyzer, began, 0, slice.Seconds + 0.1) > QUIET)
 					-- the A/B: the pilot's cue as one of its arrangements, then as it was, by the tune
 					local use = t.Server("Tune", "Cues.Use.LightHit")
+					local arranged = config.Arrangements.LightHit
 					config.Arrangements.LightHit = { Test = cue }
 					Cues.Try("LightHit@Test", cue :: any)
 					local variant = Cues.Voice("LightHit@Test", 1, 1)
@@ -302,7 +303,7 @@ function SoundCases.Cases(): { any }
 						t.Check("and the cue as it was once Use says Old", config.Use.LightHit == "Old" and old > 0 and not variant.IsPlaying and math.abs(variant.TimePosition - slice.From) < 1e-3, `use {config.Use.LightHit}, playing {old}, at {variant.TimePosition}`)
 					end
 					t.Server("Tune", "Cues.Use.LightHit", if type(use) == "string" then use else "Old")
-					config.Arrangements.LightHit = nil
+					config.Arrangements.LightHit = arranged
 					Cues.Try("LightHit@Test", nil)
 				end
 				t.Equal("no play missed its take", Cues.Missed(), missedBefore)
@@ -310,6 +311,109 @@ function SoundCases.Cases(): { any }
 				Cues.Try("NL_TestSlice", nil)
 				config.Cues.NL_TestSlice = nil
 				config.Takes.NL_TestSlice = nil
+			end,
+		},
+		{
+			Name = "Sound: AR39's round 1: each bus ends in its limiter, which holds, and every arrangement is heard through its pilot's bus",
+			Run = function(t: any)
+				local camera = workspace.CurrentCamera
+				local config = CuesConfig :: any
+				-- ten studs ahead: an emitter on the listener itself reads 8.5 dB down (measured 2026-11-17)
+				local ahead = camera.CFrame:PointToWorldSpace(Vector3.new(0, 0, -10))
+				local out = game:GetService("SoundService"):FindFirstChild("NL_CuesOut")
+				local buses: { [string]: boolean } = {}
+				for _, cue in CuesConfig.Cues do
+					buses[cue.Bus] = true
+				end
+				local function wired(from: Instance?, to: Instance?): boolean
+					for _, w in (if to then to:GetChildren() else {}) do
+						if w:IsA("Wire") and w.SourceInstance == from and w.TargetInstance == to then
+							return true
+						end
+					end
+					return false
+				end
+				for bus in buses do
+					local limiter, fader = Cues.Limiter(bus), Cues.Fader(bus)
+					local is = limiter ~= nil and limiter:IsA("AudioLimiter")
+					t.Check(`the {bus} bus: fader, limiter, out, and never past the limiter`, is and wired(fader, limiter) and wired(limiter, out) and not wired(fader, out))
+					if limiter and limiter:IsA("AudioLimiter") then
+						t.Check(`the {bus} bus's limiter takes Config.Cues.Limiter's values`, math.abs(limiter.MaxLevel - CuesConfig.Limiter.MaxLevel) < 1e-3 and math.abs(limiter.Release - CuesConfig.Limiter.Release) < 1e-3 and not limiter.Bypass, `{limiter.MaxLevel} {limiter.Release}`)
+					end
+				end
+				-- it holds: a take at its file's own level against a limit 12 dB under full scale (quiet on purpose)
+				local limiter = Cues.Limiter("Shade")
+				local before, doneBefore = listen("Shade")
+				if limiter and limiter:IsA("AudioLimiter") and before then
+					local after = Instance.new("AudioAnalyzer")
+					local w = Instance.new("Wire")
+					w.SourceInstance = limiter
+					w.TargetInstance = after
+					w.Parent = after
+					after.Parent = limiter
+					local cue = { Layers = { { Takes = "ShadeSwipe", At = 0, Volume = 1 / (CuesConfig.Volume * CuesConfig.Trim) } }, Bus = "Shade", Pitch = { 1, 1 }, Volume = { 1, 1 }, Voices = 1, Near = 30, Range = 160 }
+					config.Cues.NL_TestHot = cue
+					Cues.Try("NL_TestHot", cue :: any)
+					local voice = Cues.Voice("NL_TestHot", 1, 1)
+					waitFor(t, 8, function(): boolean
+						return voice ~= nil and voice.IsReady
+					end)
+					local limit = 10 ^ (-12 / 20)
+					limiter.MaxLevel = -12
+					hush(before)
+					local began = os.clock()
+					Cues.Play("NL_TestHot", ahead)
+					local into: number = 0
+					local held: number = 0
+					while os.clock() - began < 0.6 do
+						RunService.Heartbeat:Wait()
+						into = math.max(into, before.PeakLevel)
+						held = math.max(held, after.PeakLevel)
+					end
+					limiter.MaxLevel = CuesConfig.Limiter.MaxLevel
+					t.Check("a take over the limit goes in over it and comes out at it", into > limit * 1.5 and held > QUIET and held <= limit * 1.03, string.format("in %.3f, out %.3f, the limit %.3f", into, held, limit))
+					after:Destroy()
+					Cues.Try("NL_TestHot", nil)
+					config.Cues.NL_TestHot = nil
+				else
+					t.Check("the Shades' bus has its limiter", false)
+				end
+				doneBefore()
+				-- every arrangement, switched in as the A/B does it
+				local missedBefore = Cues.Missed()
+				for name, set in CuesConfig.Arrangements do
+					local use = t.Server("Tune", `Cues.Use.{name}`)
+					local variants = {}
+					for variant in set do
+						table.insert(variants, variant)
+					end
+					table.sort(variants)
+					for _, variant in variants do
+						local cue = set[variant]
+						local analyzer, done = listen(cue.Bus)
+						t.Server("Tune", `Cues.Use.{name}`, variant)
+						local switched = waitFor(t, 3, function(): boolean
+							return config.Use[name] == variant
+						end)
+						if analyzer and switched then
+							hush(analyzer)
+							local lead = SoundRule.Ahead(cue)
+							local began = os.clock()
+							local played = Cues.Play(name, ahead, { In = lead, Strength = 1 })
+							local sounding = Cues.Playing(name)
+							local heard = loudest(analyzer, began, 0, lead + 0.5)
+							t.Check(`{name} as {variant}: heard through the {cue.Bus} bus`, played and sounding > 0 and heard > QUIET, string.format("peak %.4f, %d sounding", heard, sounding))
+						else
+							t.Check(`{name} as {variant}: switched in`, false, tostring(config.Use[name]))
+						end
+						done()
+					end
+					t.Server("Tune", `Cues.Use.{name}`, if type(use) == "string" then use else "Old")
+					t.Check(`{name} is back on what it played`, waitFor(t, 3, function(): boolean
+						return config.Use[name] == (if type(use) == "string" then use else "Old")
+					end), tostring(config.Use[name]))
+				end
+				t.Equal("no play missed its take", Cues.Missed(), missedBefore)
 			end,
 		},
 	}

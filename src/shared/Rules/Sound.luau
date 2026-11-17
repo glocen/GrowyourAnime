@@ -63,6 +63,13 @@ function Sound.Strength(rung: number): number
 	return math.clamp((rung - low) / math.max(high - low, 1e-6), 0, 1)
 end
 
+-- The volume a layer's take plays at on its player: every cue's fader and trim, the layer's own, the take's gain inside
+-- its list (a library take's, AR39), the play's pick from its cue's spread, and the hit's strength (0 to 1) for a layer
+-- that follows it.
+function Sound.Level(layer: Cues.Layer, take: Cues.Take, volume: number, strength: number?): number
+	return Cues.Volume * Cues.Trim * layer.Volume * (take.Gain or 1) * volume * (if layer.Strength then math.clamp(strength or 1, 0, 1) else 1)
+end
+
 -- When a layer starts, in seconds from its cue's moment, playing `take` at `speed`: a layer led by its top or its length
 -- starts that much earlier, so its top or its end lands on the moment.
 function Sound.Start(layer: Cues.Layer, take: Cues.Take, speed: number): number

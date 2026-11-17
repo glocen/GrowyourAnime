@@ -37,13 +37,27 @@ return {
 					used[layer.Takes] = true
 				end
 			end
+			for _, set in Cues.Arrangements do
+				for _, cue in set do
+					for _, layer in cue.Layers do
+						used[layer.Takes] = true
+					end
+				end
+			end
+			-- one of ours is one upload, in one list. A library recording may give slices to several lists (AR39), never
+			-- two to one list, and never one of ours'.
 			local ids: { [number]: string } = {}
 			for layer, takes in Cues.Takes do
 				t.Check(`{layer}: a layer plays it`, used[layer] == true)
+				local inList: { [number]: boolean } = {}
 				for k, take in takes do
 					t.Check(`{layer} {k}: an asset id`, take.Id > 0 and take.Id % 1 == 0)
-					t.Check(`{layer} {k}: its id no other take's`, ids[take.Id] == nil, ids[take.Id])
-					ids[take.Id] = `{layer} {k}`
+					local library = take.From ~= nil
+					local was = ids[take.Id]
+					t.Check(`{layer} {k}: its id no other take's, or a library recording's in another list`, not inList[take.Id] and (was == nil or (library and string.sub(was, 1, 3) == "lib")), was)
+					inList[take.Id] = true
+					ids[take.Id] = if library then `lib {layer} {k}` else `{layer} {k}`
+					t.Check(`{layer} {k}: its gain inside its list above 0`, (take.Gain or 1) > 0, tostring(take.Gain))
 					t.Check(`{layer} {k}: a length, its top inside it`, take.Seconds > 0 and take.Peak >= 0 and take.Peak <= take.Seconds)
 				end
 			end
@@ -129,6 +143,42 @@ return {
 					end
 				end
 			end
+		end,
+	},
+	{
+		Name = "Cues: an arrangement is its pilot with other layers, its players inside their volume (AR39)",
+		Run = function(t: any)
+			local some = false
+			for pilot, set in Cues.Arrangements do
+				local of = Cues.Cues[pilot]
+				t.Check(`{pilot}: a cue, switched by Use, as it was until Use says otherwise`, of ~= nil and (Cues.Use :: any)[pilot] == "Old", tostring((Cues.Use :: any)[pilot]))
+				for variant, cue in set do
+					some = true
+					local name = `{pilot}@{variant}`
+					t.Check(`{name}: its pilot's bus, spreads, voices and reach`, of ~= nil and cue.Bus == of.Bus and cue.Pitch == of.Pitch and cue.Volume == of.Volume and cue.Voices == of.Voices and cue.Near == of.Near and cue.Range == of.Range)
+					t.Check(`{name}: not named "Old"`, variant ~= "Old")
+					t.Check(`{name}: has layers`, #cue.Layers > 0)
+					local loudest = math.max(cue.Volume[1], cue.Volume[2])
+					for i, layer in cue.Layers do
+						local takes = Cues.Takes[layer.Takes]
+						t.Check(`{name} layer {i}: its takes ({layer.Takes}) exist, two or more so none plays twice running`, takes ~= nil and #takes >= 2)
+						t.Check(`{name} layer {i}: led by its top, its length, or nothing`, layer.Lead == nil or layer.Lead == "Peak" or layer.Lead == "Length", layer.Lead)
+						for k, take in takes or {} do
+							local level = Sound.Level(layer, take, loudest, 1)
+							t.Check(`{name} layer {i} take {k}: its player's volume above 0, at most 3`, level > 0 and level <= 3, string.format("%.3f", level))
+						end
+					end
+				end
+			end
+			t.Check("the limiter: at or under full scale, released in a moment", Cues.Limiter.MaxLevel <= 0 and Cues.Limiter.MaxLevel >= -12 and Cues.Limiter.Release > 0 and Cues.Limiter.Release <= 1)
+			-- a take's gain is times its layer's volume, and a layer follows the hit's strength only when it says so
+			local layer = { Takes = "x", At = 0, Volume = 0.5 } :: any
+			local take = { Id = 1, Seconds = 0.1, Peak = 0, Gain = 4 } :: any
+			local base = Cues.Volume * Cues.Trim
+			t.Check("a take's gain times its layer's volume", math.abs(Sound.Level(layer, take, 0.9, 0.2) - base * 0.5 * 4 * 0.9) < 1e-9)
+			t.Check("no gain is 1", math.abs(Sound.Level(layer, { Id = 1, Seconds = 0.1, Peak = 0 } :: any, 1, nil) - base * 0.5) < 1e-9)
+			t.Check("a layer by strength: none at the lightest hit", Sound.Level({ Takes = "x", At = 0, Volume = 0.5, Strength = true } :: any, take, 1, 0) == 0)
+			t.Check("round 1 is in", some)
 		end,
 	},
 	{

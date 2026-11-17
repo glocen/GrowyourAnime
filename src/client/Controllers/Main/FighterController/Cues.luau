@@ -7,7 +7,11 @@
 --   - the spread is PlaybackSpeed, never a pitch shifter, whose window would put the layer late off its frame;
 --   - two listeners of our own on the camera, one per bus (Config.Cues' Bus), each through its fader to the device, so
 --     nothing rests on the default listener, and the Shades' bus ducks alone;
---   - the level: Config.Cues.Trim takes back the 2025 doubling of an AudioPlayer's volume;
+--   - the level: Config.Cues.Trim takes back the 2025 doubling of an AudioPlayer's volume (a player at Volume 1 plays
+--     its file as it is, so a cue is 6 dB under its file: measured 2026-11-17); a library take has its own
+--     gain inside its list (Rules.Sound.Level), and a player's volume stops at 3;
+--   - each bus ends in an AudioLimiter (Config.Cues.Limiter), after its fader: the rare coincidence of tops is caught
+--     there, so the cues' levels are set by their relation (AR39, research on round 1);
 --   - a library take plays its slice of its file (AR39): its PlaybackRegion is From to To, set once, and its fades are
 --     tweens of its volume, as Rules.Sound.Run times them. A tween steps once a frame, so a rise under two frames isn't
 --     drawn: such a slice is cut where its file is near silent;
@@ -58,6 +62,7 @@ local HOLD = 0.03 -- seconds past a held start's time before its voice plays aga
 local random = Random.new()
 local built = false
 local faders: { [string]: AudioFader } = {}
+local limiters: { [string]: Instance } = {}
 local listeners: { [string]: AudioListener } = {}
 -- pools[cue][layer][take]: that take's voices
 local pools: { [string]: { { { Voice } } } } = {}
@@ -259,10 +264,17 @@ function Cues.Preload()
 		local f = Instance.new("AudioFader")
 		f.Name = `{GROUP}{bus}`
 		f.Parent = SoundService
+		local limiter = Instance.new("AudioLimiter")
+		limiter.Name = `{GROUP}{bus}`
+		limiter.MaxLevel = Config.Limiter.MaxLevel
+		limiter.Release = Config.Limiter.Release
+		limiter.Parent = SoundService
 		wire(listener, f)
-		wire(f, out)
+		wire(f, limiter)
+		wire(limiter, out)
 		listeners[bus] = listener
 		faders[bus] = f
+		limiters[bus] = limiter
 	end
 	hear()
 	workspace:GetPropertyChangedSignal("CurrentCamera"):Connect(hear)
@@ -309,7 +321,7 @@ function Cues.Play(name: string, at: Vector3, options: Options?): boolean
 		end
 		local k = takeOf(`{key}#{i}`, math.min(#takes, #pool))
 		local take, voices = takes[k], pool[k]
-		local gain = Config.Volume * Config.Trim * layer.Volume * volume * (if layer.Strength then math.clamp(o.Strength or 1, 0, 1) else 1)
+		local gain = SoundRule.Level(layer, take, volume, o.Strength)
 		if gain <= 0 or voices == nil then
 			continue
 		end
@@ -379,6 +391,9 @@ end
 -- For the self-test: a bus's fader, the plays of a cue still sounding, how many of every voice are loaded, and the
 -- plays missed because their take wasn't.
 Cues.Fader = fader
+function Cues.Limiter(bus: string): Instance?
+	return limiters[bus]
+end
 function Cues.Missed(): number
 	return missed
 end

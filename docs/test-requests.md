@@ -3120,7 +3120,11 @@ Research's request, 2026-11-17, 11:17, item 7 of phase 3's order (`docs/producti
 - **The Condenser makes Low stones, online and away.** Its rate grows with its level, and it draws electricity like the Breaker (`Rules.Power`), slower with less. Stones land in its tray, which has a cap in hours of work. A full tray stops. Its second job turns 5 Low into 1 Mid over a set time, one at a time.
 - **Every spend is the server's, in one step:** a repeated or interrupted request never spends twice or ranks twice. The away time is worked out on return, as the Training machine's is.
 
-**The seeds** (research sets them in `tools/balance/sim.py` before Faber reaches this piece): the Credits and stones a rank costs; the Condenser's rate, tray and conversion time by level; the stones that drop by source. The target: the forge takes `forgeShareOfIncome` (45%) of a launch player's Credits, and rank 10 on a whole worn set takes about as long as the launch's grind is meant to last.
+**The seeds** (research's, 2026-11-17, 11:55: worked by hand from `tools/balance/seeds.json`, a model, not a measurement; a sim section follows before Faber reaches this piece):
+- **A rank's cost:** rank × 100 × G(the item's level tier) Credits, and rank × 1 Low stone. Rank 10 on a level-12 item is 2,800 Credits and 10 stones. A whole worn set (14 slots) to rank 10 is 770 stones and about 45% of a launch player's Credits over the 40 hours its Legendary window lasts (`docs/balance.md`, "The Tower").
+- **Drops:** an elite 0.3 Low stones and a keeper 1, as an expected count. Ordinary Shades drop none, so the stones come from the moments worth coming back for.
+- **The Condenser:** 2 Low stones an hour at level 1, plus 0.1 a level (4.9 at level 30, launch's ceiling). Its tray holds 12 hours of work, and the conversion takes 30 minutes for 5 Low into 1 Mid.
+- **What it gives** (by hand): a whole set at rank 10 in about 12 active hours for a casual player (0.5 a day, 25 days), 26 for an active one (1.5 a day, 17 days) and 39 for a heavy one (4 a day, 10 days). The Condenser gives half or more of an active player's stones, so coming back pays.
 
 **The block contains:**
 - the rules in pure Luau (`Rules.Forge`, `Rules.Condenser`) with their cases;

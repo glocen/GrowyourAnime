@@ -92,7 +92,7 @@ def field(m, x, z, w):
     hh, y = FIELD
     pts = [Vector((x - w / 2, y, z - hh)), Vector((x + w / 2, y, z - hh)), Vector((x + w / 2, y, z + hh)),
            Vector((x - w / 2, y, z + hh))]
-    m.out(pts, [kit.sw_uv("void", 0.0, 0.0)] * 4, Vector((x, y - 1.0, z)))
+    m.out(pts, [kit.sw_uv("voidfield", 0.0, 0.0)] * 4, Vector((x, y - 1.0, z)))   # one step under the void's glow
 
 
 def cog(r, teeth, thick):

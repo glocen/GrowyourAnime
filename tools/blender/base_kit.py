@@ -132,6 +132,9 @@ SWATCHES = {
     "doorarc3": ("#FFC977", "#FFC977", 1.0), "doorarc4": ("#FFDA98", "#FFDA98", 1.0),
     "doorcore": ("#FFCF7E", "#FF9A3C", 1.0),   # the core: its middle (the head) the palest, its rim (the foot) amber; gold
                                                # enough to hold its hue where the glow is full (a paler one burns white)
+    # The Forge's field behind its gears: the void's foot one step dimmer, so from the court its head reads as one band,
+    # not dark holes in bright lilac (AR36, research's pick of the court read, 2026-11-17)
+    "voidfield": ("#A97CFF", "#A97CFF", 0.55),
 }
 SWATCH_AT = {name: ((i % 16) * CELL[0], (i // 16) * CELL[1]) for i, name in enumerate(SWATCHES)}
 # Prints: where each sits (x, y, width, height), each with a 4 pixel bleed round it.

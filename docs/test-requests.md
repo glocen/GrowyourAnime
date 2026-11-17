@@ -3215,3 +3215,20 @@ Research's request, 2026-11-17, 11:57, item 7 of phase 3's order. The design: `d
 **Waits:** the jewel icons (Modulo): each type its own colour, the shape growing from tier 1 to tier 5 [D], so a jewel's tier reads at 64 px without its number. The shop.
 
 **Checks:** as TR38's, plus a case that Lifesteal never passes its cap whatever is socketed.
+
+## TR40. Regen in bursts (Faber, after TR28)
+
+Research's request, 2026-11-17, 12:54, on the director's word (`docs/decisions.md`, "by 12:54"). Tier 2, a balance number, set by the director.
+
+**Feel line:** mid-fight, every few seconds a soft pop on the lead and a green number: the Voidkin catches its breath, and the player feels it hold on.
+
+**The rules:**
+- **One burst every 8 seconds,** always, in a fight too. The timer runs from the lead's summon, never resets on a hit, and a burst at full health heals nothing and shows nothing.
+- **Its size:** half of what 8 seconds of today's Regen heal, the level's own, Endurance's and a Healer's Main alike. So today's rate times 8 times 0.5, a value, never a share of health.
+- **Home's healing on the player's own plot** is unchanged.
+- `Config.Stats.Regen` holds the 8 s and the 0.5, tunable through `Tune`.
+- **The sheet** shows the burst's size as Regen's number. The item card's Regen lines read the same way.
+- **Combat Power:** Regen's weight is refit for the burst. Its worth halves at the same points, so its weight follows, checked in `attributes.py` and the sim before the build closes.
+- **The look,** block only: the lead's heal number in the damage numbers' own kit, green, and a quick pop at its chest. No new effect art: it waits for the finish.
+
+**Checks:** logic cases (a burst's size, its 8 s, none at full, the sheet's number); the self-test; Fight's case times again; research's verdict from a phone capture in a real fight.

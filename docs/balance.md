@@ -48,7 +48,7 @@ The Battle Attributes, which every fight reads:
 | Stat | Kind | What it does |
 |---|---|---|
 | Health, Attack, Defence | points | the three every source adds to |
-| Regen | points | health a second, always, in a fight too (`docs/design.md`, "Health carries") |
+| Regen | points | health in one burst every 8 s, always, in a fight too (`docs/design.md`, "Health carries"; TR40) |
 | Speed | studs a second | a lead's walk speed in a fight, by class and Voidkin (`docs/design.md`, "Speed") |
 | Hit | rating | against the target's Dodge and Block |
 | Dodge | rating | chance to avoid a hit entirely |

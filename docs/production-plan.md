@@ -87,7 +87,7 @@ Each ends on something playable. No dates are promised past phase 1: see "The da
 - **Faber:**
   1. TR36, the two attributes;
   2. AR16's three base sizes captured for the pick, which frees the map (AR17);
-  3. TR28's bag rebuilt in the seam's skin (AR18);
+  3. TR28's bag rebuilt in the seam's skin (AR18), then TR40, Regen in bursts (the director, 12:54);
   4. TR34, the chest opening on AR24's A;
   5. AR23, Combat Power's number;
   6. TR29's three fixes and TR10's marker captures;

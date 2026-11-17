@@ -14,13 +14,14 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **Open, tests:** ten Base and HUD checks need the base's models, which stand grey since 8858359 (AR16 at 128) until the plan is laid again. Four timing cases are NOT VERIFIED (AR11). The Keeper's "and out on Out" and Pip's skip fail at times. TR20's Breaker hover depends on order.
 - **Open, for research:** the target card's light (`CardLightHealth`) keeps its glow ahead of its front. Does it go the same way as the lead's?
 
-**Modulo (assets).** 2026-11-17, 15:52, on Opus 5.5. Voidkin work parked until before launch (the director's word, 11:10): AR26 and AR27 stay as delivered, and Faber holds AR27's upload.
+**Modulo (assets).** 2026-11-17, 15:59, on Opus 5.5. Voidkin work parked until before launch (the director's word, 11:10): AR26 and AR27 stay as delivered, and Faber holds AR27's upload.
 - **For Faber, now:** AR16's plan laid again at 128. It passes part 7's tests, and the masts are off the Door's line. To take it: `Plots.Drawn` = 8, then kit_take; 8 meshes and 11 pictures to upload (AR16, "Delivery 3"). It brings back the ten Base and HUD checks that wait on the base's models.
 - **For Faber, after it:**
   - AR29's B: 13 icons (AR29).
   - AR30's buttons: 25 images (AR30, "The cut"). Research passed the phone sheet at 15:47.
   - TR41's falling star: one image and five numbers (AR12, "The falling star, made to be caught").
-- **Now:** AR17's map kit at 128. **Then:** the icons for stones, emblems and jewels, and TR10's two.
+  - AR17's Strip at 128: `plan.json` by Kit.Place from the festival gate at z = -200 (AR17, "The plan laid again at 128"). Research's pass first.
+- **Now:** the icons for stones, emblems and jewels (TR39), then TR10's two.
 - **Unchanged:** AR28's Stage I is with Faber, waiting on TR37. AR19 (db2f086) waits on research's pass and Faber's six re-uploads. AR24's A waits on Faber's TR34 block. Sable is after launch.
 
 **Turns.** Studio: Faber (the game's place, for AR30's bases). Blender: nobody. Timing tests: nobody.
@@ -115,6 +116,13 @@ For Faber:
 - Tier 2, research, 2026-11-12, on the director's words: weapons belong to a class, in two hands (Main Hand and Off Hand replace Weapon and Shield), a preset holds a pair per class, a weapon drop is for the lead's class; Combat Power made to be watched, its weights fitted by the simulation; each item kind modelled and rendered to its icon (AR6, phase 3) (`docs/design.md`, "Regalia: gear" and "Combat Power"). Faber: the Stats case's `"Weapon"` source becomes `"Main Hand"` when you next touch it. Faber and Modulo: say in your row what you'd change.
 
 ## Entries
+
+### 2026-11-17, 15:59. AR17: the Strip's plan laid again at 128 (Modulo)
+
+- The Strip's pieces stand where the world at 128 puts them. The Strip runs ±432, the festival gate is at -200, and the plots are at ±128 and ±288. The crack, the posts, the outcrops and the far ring all moved with them; nothing in the kit changed. 126 placements, 12,868 triangles, 7 lights.
+- **Fix 3:** the farthest gate is 288 from the crossing. From there the great shard reads 3.7 to 1, against 3.2 from the 372 view research passed (the same measure on both).
+- **Where:** `build/handoff/Strip/` (`plan.json` and the eleven views); the record is AR17, "The plan laid again at 128".
+- **Open:** research's pass, then Faber's install.
 
 ### 2026-11-17, 15:45. AR30: the phone sheet on the smallest phone (Modulo)
 

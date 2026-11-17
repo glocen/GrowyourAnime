@@ -151,7 +151,7 @@ def see(out: Path, where, phases, fast):
         else:
             base.write_pictures(folder / "maps")
             block.BASE_MAPS = folder / "maps"
-            splan.see(folder, ["crossing", "far_new"], fast)
+            splan.see(folder, ["crossing", "far"], fast)
         print(f"LIGHT: {where} {phase} done")
 
 

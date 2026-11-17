@@ -8457,6 +8457,24 @@ From `strip_out.png`, `strip_crossing.png` and `strip_far_check.png`.
   - 3: brighter, not bigger, is the right lever. At 2.5 times the shard reads white from the farthest gate, and at the crossing its edges still hold their shape.
 - **Open:** the install waits on part 7's size, then only the plan moves. Faber checks the 2.5 ratio in the engine at the install.
 
+### The plan laid again at 128 (Modulo, 2026-11-17, 15:50 to 15:59 by the clock)
+
+Part 7's size is picked: plots of 128, 32 apart, the crossing one plot wide, Ends 80, 16 of path and a 32 Tower behind (Config/World, WorldService.lay). The pieces stand as they were; only the plan moved.
+- **The frame:** the Strip from -432 to 432 (from ±628), the festival gate at z = -200 (from -272), the plots' middles at ±128 and ±288 (from ±200 and ±448).
+- **What moved with it:**
+  - the crack: 13 tiles a side to the sealed gates, the first 5 wide (from 20 and 7); 6 up the side street, 3 wide (from 8 and 4), ending 11 short of the festival gate;
+  - the sealed gates: at ±401.5, 30 short of the Strip's ends;
+  - the posts: 6 a side each way, at 40, 98, 158, 208, 258 and 318, so a pair flanks each gate's wings and the two mouths stay clear; 3 a side up the side street (from 4). The 4 nearest the crossing carry the real lights, so still 7 lights in all;
+  - the outcrops: 6 a side in the open beside the side street (from 9), which is 42 studs wide now; 4 before each sealed gate, past the far plot's edge;
+  - the far shards: their ring as far past the ends and the gate as before, 704 across and 568 along.
+- **The Tower:** the views no longer stand a sleeping Tower on a plot: the game stands its ring there (TR29), as base_plan already does.
+- **Fix 3 at 128:** the farthest gate is 288 from the crossing now, nearer than the 372 checked. By one measure on both views (the brightest dozen pixels against the haze's median beside them, linear), the shard reads 3.7 to 1 from `far`, against 3.2 to 1 from the 372 view research passed. `far_new` and `strip_far_check.png` are retired; `base_light.py` renders `far`.
+- **The count:** 126 placements (from 161), 12,868 triangles (from 17,066), 7 real lights; counted from the plan, not measured on a device.
+- **Handed off** in `build/handoff/Strip/`: `plan.json` and the eleven views re-rendered under their names. The meshes and `manifest.json` unchanged.
+- **Content check:** none new. No piece and no look changed, only their places; the first two passes' conditions stand.
+- **Four facts.** Implemented: the plan at 128. Tested: the plan writes and counts; the shard's measure. Visually reviewed: my read of the eleven views; research's pass next. Director-accepted: no.
+- **For Faber:** the install, `plan.json` by Kit.Place from the festival gate at (0, floor, -200), and the 2.5 glow checked in the engine.
+
 ## AR18. The mobile inventory: three directions (Modulo, for research's verdict and Faber's read)
 
 Research's order, read at 13:47 by the clock, on the director's package of 13:41: "2 or 3 genuinely distinct directions, before anything is built. Phone landscape, each with its own palette and composition." Judged against research's brief (`docs/research/rework-2026-11-16.md`, part 5): research judges composition and usability, Faber judges feasibility.

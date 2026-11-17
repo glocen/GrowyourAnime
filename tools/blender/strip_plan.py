@@ -1,8 +1,8 @@
 """AR17: where the Strip's pieces stand, and the look of it from the player's camera.
 
-It is laid out in the world's own frame (Config/World, WorldService): studs, the crossing's middle at the origin, the
-Strip along X from -628 to 628 and 48 wide, north toward -Z, the side street north from the Strip to the festival gate
-at z = -272. It is written in Lantern Row's plan's frame and shape, so the builder's Kit.Place takes it as it is: from
+It is laid out in the world's own frame (Config/World, WorldService) at plots of 128: studs, the crossing's middle at
+the origin, the Strip along X from -432 to 432 and 48 wide, north toward -Z, the side street north from the Strip to
+the festival gate at z = -200. It is written in Lantern Row's plan's frame and shape, so the builder's Kit.Place takes it as it is: from
 the festival gate's middle, `across` toward +X and `along` toward -Z (the crossing's middle is at along -272), `turn`
 in degrees anticlockwise seen from above, and the real lights in a list of their own. The pieces are strip_kit's:
 the void's own, nothing of the festival's before its gate (the director, 2026-11-16).
@@ -26,12 +26,22 @@ import strip_kit as strip  # noqa: E402
 
 plan, base, bl, kit, look, rs = block.plan, block.base, block.bl, block.kit, block.look, block.rs
 ROW_PIECES = set(kit.PIECES)
-STRIP, STREET, END, GATE = 48.0, 44.0, 628.0, -272.0     # the Strip's width, the side street's, the Strip's ends, the festival gate
-PLOTS = (200.0, 448.0)                                  # a plot's middle, each side of the crossing; its gate's wings reach 28
+# The world at 128 (Config/World; WorldService.lay): the Strip's width, the side street's, the crossing's middle to a
+# Strip's end (432), and the festival gate (-200, the Strip's half, a plot, its path and its Tower).
+STRIP, STREET, END = 48.0, 44.0, block.END
+GATE = block.GATE - STRIP / 2
+PLOTS = (block.CROSSING, block.CROSSING + block.PLOT + block.BETWEEN)   # a plot's middle each side of the crossing (128, 288); its gate's wings reach 28
+OPEN = block.PLOT / 2                                   # the crossing's lot reaches this far each side of the side street's middle
 ENDS = {"SealCalamity": -1, "SealClash": 1}             # which end each gate closes, the sign of its x: the Calamity west (docs/design.md)
-REACH = 20                                              # the crack's tiles from the crossing's ring to a sealed gate
-SEALS = strip.HEART + strip.TILE * REACH + 2.5          # a sealed gate's place: where the crack ends, on the Strip's slab
-LIT_POSTS = 46.0                                        # a post this far from the crossing carries a real light; the rest only glow
+REACH, WIDE = 13, 5                                     # the crack's tiles from the crossing's ring to a sealed gate; the wide ones first
+UP, UP_WIDE = 6, 3                                      # the same up the side street: it stops 11 short of the festival gate
+SEALS = strip.HEART + strip.TILE * REACH + 2.5          # a sealed gate's place: where the crack ends, on the Strip's slab (401.5, 30 from the end)
+# The Strip's posts, each side of the crossing: the first two flank the side street's mouth and the Shop's, then a pair
+# flanks each gate (its wings at 100 to 156 and 260 to 316), one between. Past the far gate the outcrops take over.
+POSTS = (40.0, 98.0, 158.0, 208.0, 258.0, 318.0)
+SIDE_POSTS = (-62.0, -114.0, -166.0)                    # up the side street, each side
+LIT_POSTS = 40.0                                        # a post this far from the crossing carries a real light; the rest only glow
+FAR_RING = (END + 272.0, -GATE + 368.0)                 # the far shards' ring, across and along: as far past the ends and the gate as at 200
 
 
 def placements():
@@ -48,18 +58,18 @@ def placements():
     for name, side in ENDS.items():
         put(name, side * SEALS, 0, side * 90)
         lights.append((name, side * SEALS, 0.0, 46.0, {"SealCalamity": "#B58CFF", "SealClash": "#7CE8FF"}[name], "point"))
-    # The lamps: a post each side of the Strip every 62 studs, clear of every gate and of the crossing's two mouths,
-    # and four a side up the side street.
-    for k in range(9):
+    # The lamps: posts each side of the Strip, clear of every gate and of the crossing's two mouths (POSTS), and three a
+    # side up the side street.
+    for k, at in enumerate(POSTS):
         for sx in (-1, 1):
-            x = sx * (46.0 + 62.0 * k)
+            x = sx * at
             for sz in (-1, 1):
                 z = sz * (STRIP / 2 - 2.4)
                 put("StripPost", x, z, sz * 90)
                 if abs(x) <= LIT_POSTS:
                     lights.append((f"Post{'W' if sx < 0 else 'E'}{'N' if sz < 0 else 'S'}", x, z - sz * strip.LAMP[0], strip.LAMP[1],
                                    "#C9B0FF", "point"))
-    for z in (-62.0, -114.0, -166.0, -218.0):
+    for z in SIDE_POSTS:
         for sx in (-1, 1):
             put("StripPost", sx * (STREET / 2 - 2.4), z, 90 + sx * 90)
     # The void's crack: down the Strip's middle from each sealed gate to the crossing's ring, wide near the crossing and
@@ -68,9 +78,9 @@ def placements():
     tile, heart = strip.TILE, strip.HEART
     for sx in (-1, 1):
         for k in range(REACH):
-            put("VeinWide" if k < 7 else "VeinThin", sx * (heart + tile * (k + 0.5)), 0, 90 + 180 * int(rng.integers(0, 2)))
-    for k in range(8):
-        put("VeinWide" if k < 4 else "VeinThin", 0, -(heart + tile * (k + 0.5)), 180 * int(rng.integers(0, 2)))
+            put("VeinWide" if k < WIDE else "VeinThin", sx * (heart + tile * (k + 0.5)), 0, 90 + 180 * int(rng.integers(0, 2)))
+    for k in range(UP):
+        put("VeinWide" if k < UP_WIDE else "VeinThin", 0, -(heart + tile * (k + 0.5)), 180 * int(rng.integers(0, 2)))
     put("VeinBranch", 0, heart + strip.BRANCH / 2, 180)
     for x in PLOTS:
         for sx in (-1, 1):
@@ -80,14 +90,15 @@ def placements():
     # street's edges before each sealed gate.
     for sx in (-1, 1):
         stood = []
-        for _ in range(9):
+        for _ in range(6):
             for _ in range(40):
-                x, z = sx * (STREET / 2 + 12.0 + rng.random() * 62.0), -44.0 - rng.random() * 210.0
-                if all((x - a) ** 2 + (z - b) ** 2 > 28.0 ** 2 for a, b in stood):
+                x = sx * (STREET / 2 + 10.0 + rng.random() * (OPEN - STREET / 2 - 22.0))
+                z = -44.0 - rng.random() * (-GATE - 60.0)
+                if all((x - a) ** 2 + (z - b) ** 2 > 26.0 ** 2 for a, b in stood):
                     break
             stood.append((x, z))
             put("ShardOutcrop", x, z, rng.uniform(0, 360))
-        for k, back in enumerate((12.0, 27.0, 45.0, 60.0)):
+        for k, back in enumerate((9.0, 20.0, 31.0, 42.0)):     # between the far plot's edge (352) and the gate
             put("ShardOutcrop", sx * (SEALS - back), (1 if k % 2 else -1) * (STRIP / 2 - 5.0 - 2.0 * k), rng.uniform(0, 360))
     # Past the edges: great shards far off in the haze, all round but the festival's sky.
     names = list(strip.SHARDS)
@@ -96,7 +107,7 @@ def placements():
         if abs(a - 1.5 * math.pi) < 0.3:
             continue
         far = 1.0 + 0.25 * rng.random()
-        put(names[int(rng.integers(0, 3))], math.cos(a) * 900.0 * far, math.sin(a) * 640.0 * far, rng.uniform(0, 360))
+        put(names[int(rng.integers(0, 3))], math.cos(a) * FAR_RING[0] * far, math.sin(a) * FAR_RING[1] * far, rng.uniform(0, 360))
     return out, lights
 
 
@@ -111,8 +122,9 @@ def write(out: Path):
     book = dict(
         what="AR17: the Strip, the crossing and the side street, dressed in the void's own: nothing of the festival's "
              "before its gate. Pieces from this folder's manifest.",
-        origin="the festival gate's middle on the floor, as Lantern Row's plan: the world's (0, floor, -272). The "
-               "crossing's middle is at across 0, along -272; the Strip's ends at across -628 and 628.",
+        origin=f"the festival gate's middle on the floor, as Lantern Row's plan: the world's (0, floor, {GATE:g}), with "
+               f"plots of 128 studs, 32 apart (Config/World). The crossing's middle is at across 0, along {GATE:g}; the "
+               f"Strip's ends at across {-END:g} and {END:g}.",
         axes="across toward +X, along toward -Z (so everything here has along under 0), turn in degrees anticlockwise "
              "seen from above: Kit.Place's own. At turn 0 a piece's front looks north.",
         placements=[dict(piece=piece, across=round(x, 2), along=round(GATE - z, 2), turn=round(turn, 1)) for piece, x, z, turn in places],
@@ -185,11 +197,8 @@ STANDS.update(far=((FAR, 12.0), 90), line=((-150.0, 24.0), 90), clash=((block.EN
               calamity=((block.ENDS[1] - 110.0, 24.0), 90), mark=((block.CROSSING + 34.0, 24.0), -90),
               vein=((block.CROSSING - 52.0, 21.0), 60))
 STANDS.pop("stone", None)
-# Research's fix 3 (2026-11-16, 14:09): the far gate at the base's new size, not picked yet (128, 144 or 160 studs, 32
-# apart: docs/research/rework-2026-11-16.md, part 7). From the largest, with the crossing's lot kept at 200, the far
-# plot's gate stands 372 from the crossing (448 today): the farthest any new size puts it. Today's yard stands round it.
-NEARER = 372.0
-STANDS["far_new"] = ((block.CROSSING - NEARER, 12.0), 90)
+# Research's fix 3 (2026-11-16, 14:09), the great shard from a far gate, is `far` itself at 128: that gate stands 288
+# from the crossing.
 
 
 def see(out: Path, only, fast):

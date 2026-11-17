@@ -39,18 +39,19 @@ BASE_MAPS = REPO / "build" / "handoff" / "Base" / "maps"
 ROW = REPO / "build" / "handoff" / "LanternRow"
 ROW_WEARS = (kit.SWATCHES, kit.SWATCH_AT, kit.PRINTS)   # Lantern Row's own atlas: the base's builder swaps it out (base.wear)
 PLOT, STRIP = plan.PLOT, plan.STRIP
-BETWEEN = 48.0                              # between neighbours (Config/World, Plots.Between)
+BETWEEN = 32.0                              # between neighbours (Config/World, Plots.Between)
 CROSSING = PLOT / 2 + PLOT / 2              # the crossing's middle, across: our plot is the first east of it
 STREET = 44.0                               # the side street, wall to wall (Config/World, Row.Wide)
 GATE = -(PLOT + sum(plan.TOWER_LOT))        # the festival gate, along: a plot, its path and its Tower up the side street
-ENDS = (CROSSING - 628.0, CROSSING + 628.0)  # the Strip's two ends (two plots, their gap, and Strip.Ends)
+END = PLOT / 2 + 2 * PLOT + BETWEEN + 80.0  # the crossing's middle to a Strip's end: half the crossing, two plots, their gap, Strip.Ends
+ENDS = (CROSSING - END, CROSSING + END)     # the Strip's two ends
 NORTH, SOUTH = (0.0, 1), (STRIP, -1)        # a row's front edge and the way its plots face
 # Who is home: ours, the plot across, and the one over the crossing. The rest are bare.
 PLOTS = {"P3": (0.0, NORTH, "ours"), "P7": (0.0, SOUTH, "home"), "P2": (2 * CROSSING, NORTH, "lit"),
          "P4": (-(PLOT + BETWEEN), NORTH, "stone"), "P8": (-(PLOT + BETWEEN), SOUTH, "bare"),
          "P6": (2 * CROSSING, SOUTH, "bare"), "P1": (2 * CROSSING + PLOT + BETWEEN, NORTH, "bare"),
          "P5": (2 * CROSSING + PLOT + BETWEEN, SOUTH, "bare")}
-STRINGS = (-246.0, -202.0, -158.0, -120.0, -88.0, -61.0, -38.0, -18.0)   # the side street's lantern strings, from the gate: closing up
+STRINGS = (-160.0, -126.0, -96.0, -70.0, -48.0, -30.0, -14.0)   # the side street's lantern strings, from the gate: closing up
 
 
 class World(plan.Yard):
@@ -77,17 +78,12 @@ class World(plan.Yard):
     def at(self, front, face, x, inward, z=0.0):
         return (self.dx + face * x, front - face * inward, z)
 
-    def toward(self):
-        return 1.0 if self.dx < CROSSING else -1.0
-
     # --- the plots ---
 
     def home(self, dx, row):
         """A plot whose player is home: the whole base, its Tower on the crossing's side, its gate's light on the Strip."""
         self.dx = dx
-        self.plot(*row)
-        tower = next(o for o in reversed(self.kit.pieces) if o.name.startswith("TowerSleeping"))
-        tower.location.x = dx + self.toward() * plan.TOWER_AT[0]
+        self.plot(*row)                  # the Tower's place stays empty: the game stands its ring there (TR29)
         self.threshold(row)
 
     def threshold(self, row):
@@ -107,7 +103,6 @@ class World(plan.Yard):
             if lit and name != "Showcase" or name.startswith(("Wall", "Gate")):
                 stock.stand(name, f"{tag}_{i}", self.at(front, face, x, -along), turn + (0 if face > 0 else 180))
         if lit:
-            self.stock.stand("TowerSleeping", tag, (dx + self.toward() * plan.TOWER_AT[0], front - face * plan.TOWER_AT[1], 0), 0)
             self.threshold(row)
         if stone:
             self.asleep.stand("SleepingStone", tag, self.at(front, face, *plan.GENERATOR), 0)
@@ -180,7 +175,7 @@ class World(plan.Yard):
             for k in range(95):
                 t = rng.random() ** 1.6                            # 0 at the gate's end
                 y = GATE + 50.0 + t * (-GATE - 58.0)
-                x = CROSSING + side * (STREET / 2 + 5.0 + rng.random() * 68.0)
+                x = CROSSING + side * (STREET / 2 + 5.0 + rng.random() * (PLOT / 2 - STREET / 2 - 9.0))
                 b(f"Field{side}{k}", (0.9, 0.9, 1.3), (x, y, 0.65), f["field"])
         self.row_stand("FestivalGate", "Gate", self.row_at(0, 0), 180)
         places = json.loads((ROW / "plan.json").read_text(encoding="utf-8"))["placements"]
@@ -224,7 +219,7 @@ def behind(at, yaw):
 WEST = -(PLOT + BETWEEN)
 STANDS = {"out": ((0.0, 9.0), 0), "down": ((6.0, 24.0), 90), "turn": ((0.0, 14.0), 62), "away": ((-40.0, 24.0), -90),
           "bare": ((WEST, 30.0), 180), "stone": ((WEST, -40.0), 180), "crossing": ((CROSSING, 26.0), 180),
-          "street": ((CROSSING, -70.0), 180), "gate": ((CROSSING, -196.0), 180), "shop": ((CROSSING, 12.0), 0),
+          "street": ((CROSSING, -70.0), 180), "gate": ((CROSSING, GATE + 52.0), 180), "shop": ((CROSSING, 12.0), 0),
           "back": ((CROSSING, -150.0), 0), "end": ((ENDS[0] + 130.0, 24.0), -90)}
 
 

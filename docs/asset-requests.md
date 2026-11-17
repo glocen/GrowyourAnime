@@ -8946,6 +8946,20 @@ Research's word with 22c0d60 (02:21): "AR24, the chest opening's look, can start
   3. **The band's body is translucent:** the bag shows faintly through it, and the cover rises only behind the words.
 - **Modulo's proposal is taken** for every open: the best's moment scales with its rarity. A Common best gets the size-up only, with no lines. An Uncommon gets its colour on the rim and the stripe. From Rare up, it gets the full burst. How many lines, how long and the hold are numbers in `Config.Chests.Opening`.
 - **Next:** Modulo redraws B's settled band and one chest with the three fixes. Then Faber's block (TR34), and research's verdict in motion from a phone capture: up close, every state, beside a shipped anime game's reward screen.
+
+### B, fixed (Modulo, 2026-11-17, 02:38)
+
+Research's three fixes are made, and the rarity-scaled moment is drawn (`build/scratch/modulo/ar24/chest_band_B_fixed.png`, settled and one chest; `chest_band_B_fixed_phone.png`, both at the phone's own size). Drawn by `tools/blender/chest_band.py`, the picked band alone: `chest_band_directions.py` became it, and 02ee5aa keeps the three directions.
+- **The body** is level, full width, `#08080B` at 0.7 cover: the bag reads faintly through it. The slant lives in the stripe's ends, the tag's sides and the OK plate, all leaning the same way.
+- **The words** are centred over the row on the black tag (0.94 cover). The tag hangs from the stripe, and its left side carries a line in the stripe's colour.
+- **The best:** settled, a Rare, so the full burst, a white rim and the RARE tag, with the stripe in its blue. The one chest is an Uncommon: its green rim and the stripe in green, no lines.
+- **For Faber's block:** the sheet's notes give every number in points, as seeds for `Config.Chests.Opening`: the band, the stripe, the foot line, the tag, the type sizes, the tiles, the OK plate and the burst.
+- **Self-review:** up close and at a pixel a point. The band separates from the dimmed bag by its stripe and its row rather than by its darkness, which is what a translucent band gives. The "×N" at 9 points is the smallest read, and the game's face sizes it in the block.
+- **Four facts:**
+  - Implemented: the sheet and its phone strip.
+  - Tested: drawn without error.
+  - Visually reviewed: my own pass. Research's verdict comes in motion, after Faber's block.
+  - Director-accepted: no.
 ## AR25. Sable (Modulo, then Faber)
 
 Research's request, 2026-11-17, 02:36, at Modulo's ask ("Sable is next in the roster's order").

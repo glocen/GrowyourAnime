@@ -2025,7 +2025,7 @@
    }
   },
   "trainingStages": {
-   "note": "AR35: the Training machine's three stages, the Weighted Crown, the swap's table. The machine has no level of its own, so it takes the stage of the base's level (Stage I at 1, II at 2, III at 3). Every place is in the machine's own frame, turn 0: `across`, `along` toward the gate, `up` from its floor. The stone (Training) is the same at every stage; a stage's crown replaces the one before's at the same place. `moves`: still; turns, about the crown's own upright while a Voidkin trains, still when none does, at TrainingCrown's rate and sign (Config.World.Grey.Training.Crown). The game turns a piece about Y when its Piece is TrainingCrown; TrainingCrown2 and TrainingCrown3 turn the same way.",
+   "note": "AR35: the Training machine's three stages, the Weighted Crown, the swap's table. The machine has no level of its own, so it takes the stage of the base's level (Stage I at 1, II at 2, III at 3). Every place is in the machine's own frame, turn 0: `across`, `along` toward the gate, `up` from its floor. The stone (Training) is the same at every stage; a stage's crown replaces the one before's at the same place. `moves`: still; turns, about the crown's own upright while a Voidkin trains, still when none does, at TrainingCrown's rate and sign (Config.World.Grey.Training.Crown). The game picks a piece's axis (Y) and its rate by its Piece being TrainingCrown; TrainingCrown2 and TrainingCrown3 take both.",
    "stages": {
     "1": {
      "pieces": [

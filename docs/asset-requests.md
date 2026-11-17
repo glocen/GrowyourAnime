@@ -11598,6 +11598,42 @@ From both sheets (d40537a).
   - **Stage I, the check's note: yes, the class holds there too.** A class is fixed at every instance, and Stage I is the one every player sees first. Its crown is re-made in the same family, low and rising to the middle, with TrainingCrown re-exported and uploaded again for Faber. It's a small piece, tier 1, inside AR35.
   - **For Faber:** the crown's turn about Y takes the two new names too (the table's note).
 
+### Stage I's crown in the family (Modulo, 2026-11-17, 19:07 to 19:16 by the clock)
+
+On research's pass: the class holds at Stage I too.
+
+**The crown:**
+- **One rule for all three stages:** the family's numbers and its shape are `CROWNS` and `crown()` in `tools/blender/base_machines.py`. `training_crown()` is `crown(1)`, and `base_training.py` makes Stages II and III from the same rule.
+- **Stage I** is a band of void stone from 2.9 to 3.3, with four short crystals set through it (1.1 high), eight marks, and three tall crystals 1.5 out (2.6 high). Their tips stand 1.66 over the crown's middle, and it's 6.6 across.
+- **The progression:** tall tips at 1.66, 1.90 and 2.26; across 6.6, 8.2 and 9.6.
+
+**Tuned from the plan:** the plan had short crystals 1.35 high and tall ones 1.75 out and 2.4 high. In the first render, seen from behind at the crown's second turn, the far tall crystal sat low in perspective and the middle came down to the ends' height. Shorter end crystals, and tall ones nearer the spark and taller, keep the ends lowest at every turn.
+
+**The handoff** (`build/handoff/Base`):
+- **TrainingCrown** re-exported: 604 triangles, 6.82 across with its hull, 2.82 high.
+- **TrainingCrown2 and TrainingCrown3** came out byte for byte the same.
+- **The table's note** now says that the game picks both the crown's axis and its rate by its Piece name (`BaseController`, the axis test and the speed test), so the two new names need both.
+
+**The sheet:** `build/handoff/Base/training_stages.png`, now with Stage I remade. It adds the side and behind views at each crown's second turn: 90 degrees for I, 45 for II, 30 for III.
+
+**The content checks:**
+- **The plan (19:09): PASS.** Its conditions:
+  - every crystal exactly vertical, and any tilt along the ring;
+  - nothing joins the tall crystals to each other or to the spark;
+  - the tall crystals unlit, with no ring, iris or almond round the spark;
+  - II and III unchanged;
+  - the build shown at two turns from the side and from behind.
+- **The coloured build (19:16): PASS, for re-upload.** Every condition is met. From behind at the second turn, the ends stay lowest. From above, it's a ring with three points, a crown.
+- **Its note, for research's look from the gate:** at turn 0, two tall crystals stand either side of the lit spark. That's the view closest to horns round a flame, though to the check they read as a crown's crystals. It's a question of taste, not a content rule.
+
+**For Faber:** re-upload TrainingCrown, with the same name and place.
+
+**The four facts:**
+- **Implemented:** yes.
+- **Tested:** both content checks passed. Nothing has run in the game yet.
+- **Visually reviewed:** mine; research's pass is next.
+- **Director-accepted:** no.
+
 ## AR36. The Forge's and the Stone Condenser's three stages (Modulo, for research's pick, then Faber)
 
 Research's entry, 2026-11-17, 19:05. They are the last machines in the design's order (`docs/design.md`, "Three stages for every machine"). Stage I for each is AR28's pick as it stands: the Forge's Press and the Condenser's Comb.

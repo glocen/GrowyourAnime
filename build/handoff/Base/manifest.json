@@ -505,17 +505,17 @@
   },
   "TrainingCrown": {
    "mesh": "meshes/TrainingCrown.json",
-   "triangles": 496,
-   "vertices": 288,
+   "triangles": 604,
+   "vertices": 360,
    "centre": [
     0.0,
-    -0.2,
+    0.36,
     0.0
    ],
    "size": [
-    6.24,
-    2.22,
-    6.24
+    6.82,
+    2.82,
+    6.82
    ],
    "colour": "maps/Base_Kit_Color.png",
    "glow": "maps/Base_Kit_Glow.png",
@@ -523,7 +523,7 @@
    "glowStrength": 2.4,
    "collision": "none",
    "lights": [],
-   "note": "its origin is its middle: it floats 8 up at the Training machine's middle, round the stone's spark, and turns about its own upright while a Voidkin trains, still when none does. 7.6 across at its weights. Look only"
+   "note": "Stage I's crown, base level 1. Its origin is its middle: it floats 8 up at the Training machine's middle, round the stone's spark, and turns about its own upright while a Voidkin trains, still when none does. A band of void stone with 4 short crystals set through it and 8 marks of the void's light, and 3 tall crystals near the spark, their tips 1.66 over its middle. 6.6 across. At base levels 2 and 3, TrainingCrown2 and TrainingCrown3 stand in its place (plan.json, machines.trainingStages). Look only"
   },
   "Breaker": {
    "mesh": "meshes/Breaker.json",

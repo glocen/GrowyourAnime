@@ -599,21 +599,58 @@ def training():
                       f"is TrainingCrown, floating {CROWN:g} up")
 
 
-def training_crown():
-    """The Training machine's crown, a piece by itself, its origin its middle: a ring of void stone lying flat, eight
-    marks of the void's light on its rim, and four weights of void stone floating round it."""
+# The crown, a stage at a time, in AR35's family (research's class, 2026-11-17): a flat band of void stone with short
+# crystals set through it and tall crystals standing near the spark, so its top line rises to its middle from every
+# side while it turns, never weights at a bar's ends. A stage's band: its inner and outer radius and its sides; the
+# crystals set through it: how many, half width, high; the tall ones: how many, how far out, half width, high. Every
+# crystal is upright, never radial or leaning in, unlit, joined to nothing, and at least 3 times as tall as it is wide
+# (the content check, 2026-11-17). Stage I is TrainingCrown; Stages II and III are base_training.py's pieces.
+CROWNS = {1: dict(band=(2.9, 3.3), sides=16, rim=(4, 0.18, 1.1), core=(3, 1.5, 0.36, 2.6)),
+          2: dict(band=(3.6, 4.05), sides=20, rim=(6, 0.26, 1.6), core=(4, 2.1, 0.42, 3.0)),
+          3: dict(band=(4.3, 4.75), sides=24, rim=(8, 0.29, 1.8), core=(6, 2.4, 0.45, 3.6))}
+RIM_LEAN, CORE_LEAN = 0.45, 0.6     # how much of a crystal stands over its widest: the tall ones mostly above the band
+
+
+def crown(stage):
+    """A stage's crown, built round its own middle: a flat band of void stone, two marks of the void's light on its
+    rim for each crystal set through it, spaced evenly all round between them, and the tall crystals near the spark."""
+    c = CROWNS[stage]
     m = Mesh()
-    hoop(m, (0, 0, 0), 2.3, 2.75, 0.34, 16, "abyss", lying=True)
-    for k in range(8):
-        a = math.tau * k / 8
-        m.box((0.3, 0.5, 0.42), (2.77 * math.cos(a), 2.77 * math.sin(a), 0), "void", rot=(0.0, 0.0, a))
-    for k in range(4):
-        a = math.tau * (k + 0.5) / 4
-        shard(m, (3.55 * math.cos(a), 3.55 * math.sin(a), 0.1), 0.5, 2.0, "abyss", lean=0.35, ink=True)
-    return Piece("TrainingCrown", m,
-                 note=f"its origin is its middle: it floats {CROWN:g} up at the Training machine's middle, round the "
-                      f"stone's spark, and turns about its own upright while a Voidkin trains, still when none does. "
-                      f"7.6 across at its weights. Look only")
+    r0, r1 = c["band"]
+    hoop(m, (0, 0, 0), r0, r1, 0.34, c["sides"], "abyss", lying=True)
+    n, half, high = c["rim"]
+    for k in range(2 * n):                     # the marks, a quarter step off the crystals
+        a = math.tau * (k + 0.5) / (2 * n)
+        m.box((0.3, 0.5, 0.42), ((r1 + 0.02) * math.cos(a), (r1 + 0.02) * math.sin(a), 0), "void", rot=(0.0, 0.0, a))
+    for k in range(n):
+        a = math.tau * (k + 0.5) / n
+        shard(m, ((r0 + r1) / 2 * math.cos(a), (r0 + r1) / 2 * math.sin(a), 0.1), half, high, "abyss",
+              lean=RIM_LEAN, ink=True)
+    count, out, half, high = c["core"]
+    for k in range(count):
+        a = math.tau * k / count
+        shard(m, (out * math.cos(a), out * math.sin(a), 0.1), half, high, "abyss", lean=CORE_LEAN, ink=True)
+    return m
+
+
+def crown_size(stage):
+    """A stage's crown: across, at its rim's crystals; and the tall crystals' tips, up from its middle."""
+    c = CROWNS[stage]
+    across = 2 * max(c["band"][1], sum(c["band"]) / 2 + c["rim"][1])
+    return across, 0.1 + c["core"][3] * CORE_LEAN
+
+
+def training_crown():
+    """The Training machine's crown at Stage I, a piece by itself, its origin its middle."""
+    across, tip = crown_size(1)
+    n, count = CROWNS[1]["rim"][0], CROWNS[1]["core"][0]
+    return Piece("TrainingCrown", crown(1),
+                 note=f"Stage I's crown, base level 1. Its origin is its middle: it floats {CROWN:g} up at the Training "
+                      f"machine's middle, round the stone's spark, and turns about its own upright while a Voidkin "
+                      f"trains, still when none does. A band of void stone with {n} short crystals set through it and "
+                      f"{2 * n} marks of the void's light, and {count} tall crystals near the spark, their tips "
+                      f"{tip:.2f} over its middle. {across:.1f} across. At base levels 2 and 3, TrainingCrown2 and "
+                      f"TrainingCrown3 stand in its place (plan.json, machines.trainingStages). Look only")
 
 
 PIECES = {"Door": door, **{f"DoorRing{k}": door_ring(k) for k in range(1, len(RINGS) + 1)}, "DoorWay": door_way, "Training": training, "TrainingCrown": training_crown,

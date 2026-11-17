@@ -3,9 +3,10 @@ AR35; research's pick of A). The machine takes the base's level: Stage I at leve
 
 The stone, its reticle, the spark and the pad stay Stage I's (base_machines.training) at every stage. The crown, the
 machine's moving part, carries more: TrainingCrown2 and TrainingCrown3 each replace TrainingCrown at its place and turn
-as it does. Each is a flat band of void stone with short crystals set through it and tall crystals standing near the
-spark, so the crown's top line rises to its middle from every side while it turns: a crown, never weights at a bar's
-ends (research's class on the pick, 2026-11-17).
+as it does. Every stage's crown, Stage I's included, is a flat band of void stone with short crystals set through it
+and tall crystals standing near the spark, so its top line rises to its middle from every side while it turns: a
+crown, never weights at a bar's ends (research's class on the pick, 2026-11-17, held at Stage I too on its pass). The
+family's numbers and shape are base_machines.CROWNS and crown(); this module makes Stages II and III its pieces.
 
 Not run by itself for the kit: base_kit.py takes PIECES into its own, base_plan.py the swap's table. Run, it renders the
 review: each stage in the yard at base level 3, in two passes so the page fits in memory beside Studio:
@@ -26,55 +27,17 @@ from base_mill import Mesh, at, put  # noqa: E402
 
 Piece = kit.Piece
 CROWN = bm.CROWN
-
-# A stage's crown: its band's inner and outer radius and its sides; the crystals set through the band (how many, half
-# width, high); and the crystals standing near the spark (how many, how far out, half width, high). Every crystal is
-# upright, never radial, and at least 3 times as tall as it is wide (the content check, 2026-11-17, 18:50 and 18:58).
-CROWNS = {2: dict(band=(3.6, 4.05), sides=20, rim=(6, 0.26, 1.6), core=(4, 2.1, 0.42, 3.0)),
-          3: dict(band=(4.3, 4.75), sides=24, rim=(8, 0.29, 1.8), core=(6, 2.4, 0.45, 3.6))}
-RIM_LEAN, CORE_LEAN = 0.45, 0.6     # how much of a crystal stands over its widest: the tall ones mostly above the band
-
-
-def crown(stage):
-    """A stage's crown, built round its own middle as TrainingCrown is: a flat band of void stone, two marks of the
-    void's light on its rim for each crystal set through it, spaced evenly all round between them, and the tall
-    crystals near the spark."""
-    c = CROWNS[stage]
-    m = Mesh()
-    r0, r1 = c["band"]
-    bm.hoop(m, (0, 0, 0), r0, r1, 0.34, c["sides"], "abyss", lying=True)
-    n, half, high = c["rim"]
-    for k in range(2 * n):                     # the marks, a quarter step off the crystals
-        a = math.tau * (k + 0.5) / (2 * n)
-        m.box((0.3, 0.5, 0.42), ((r1 + 0.02) * math.cos(a), (r1 + 0.02) * math.sin(a), 0), "void", rot=(0.0, 0.0, a))
-    for k in range(n):
-        a = math.tau * (k + 0.5) / n
-        bm.shard(m, ((r0 + r1) / 2 * math.cos(a), (r0 + r1) / 2 * math.sin(a), 0.1), half, high, "abyss",
-                 lean=RIM_LEAN, ink=True)
-    count, out, half, high = c["core"]
-    for k in range(count):
-        a = math.tau * k / count
-        bm.shard(m, (out * math.cos(a), out * math.sin(a), 0.1), half, high, "abyss", lean=CORE_LEAN, ink=True)
-    return m
-
-
-def size(stage):
-    """A stage's crown: across, at its rim's crystals; and the tall crystals' tips, up from its middle."""
-    c = CROWNS[stage]
-    n, half, _ = c["rim"]
-    across = 2 * max(c["band"][1], sum(c["band"]) / 2 + half)
-    count, out, half, high = c["core"]
-    return across, 0.1 + high * CORE_LEAN
+TURNED = {1: 90.0, 2: 45.0, 3: 30.0}   # the review's second turn of each crown: its tall crystals at the other heading
 
 
 # --- the kit's pieces and the swap's table ------------------------------------------------------------------------------
 
 def crown_piece(stage):
     def make():
-        across, tip = size(stage)
-        n = CROWNS[stage]["rim"][0]
-        count = CROWNS[stage]["core"][0]
-        return Piece(f"TrainingCrown{stage}", crown(stage),
+        across, tip = bm.crown_size(stage)
+        n = bm.CROWNS[stage]["rim"][0]
+        count = bm.CROWNS[stage]["core"][0]
+        return Piece(f"TrainingCrown{stage}", bm.crown(stage),
                      note=f"Stage {'II' if stage == 2 else 'III'}'s crown, base level {stage}, in place of "
                           f"TrainingCrown: its origin is its middle, floating {CROWN:g} up at the Training machine's "
                           f"middle round the stone's spark. A band of void stone with {n} short crystals set through "
@@ -103,28 +66,32 @@ def tables():
              "in the machine's own frame, turn 0: `across`, `along` toward the gate, `up` from its floor. The stone "
              "(Training) is the same at every stage; a stage's crown replaces the one before's at the same place. "
              "`moves`: still; turns, about the crown's own upright while a Voidkin trains, still when none does, at "
-             "TrainingCrown's rate and sign (Config.World.Grey.Training.Crown). The game turns a piece about Y when "
-             "its Piece is TrainingCrown; TrainingCrown2 and TrainingCrown3 turn the same way.",
+             "TrainingCrown's rate and sign (Config.World.Grey.Training.Crown). The game picks a piece's axis (Y) "
+             "and its rate by its Piece being TrainingCrown; TrainingCrown2 and TrainingCrown3 take both.",
         stages=stages()))
 
 
 PIECES = {"TrainingCrown2": crown_piece(2), "TrainingCrown3": crown_piece(3)}
 
 
-def whole(stage):
-    """A stage whole, every piece at its table's place: for the review."""
+def whole(stage, turn=0.0):
+    """A stage whole, every piece at its table's place, the crown turned `turn` degrees about its upright: for the
+    review."""
+    from mathutils import Matrix
     made = {"Training": bm.training().mesh, "TrainingCrown": bm.training_crown().mesh,
-            **{name: crown(int(name[-1])) for name in PIECES}}
+            **{name: bm.crown(int(name[-1])) for name in PIECES}}
     m = Mesh()
     for row in stages()[str(stage)]["pieces"]:
-        put(m, made[row["piece"]], at(*row["at"]))
+        turned = Matrix.Rotation(math.radians(turn), 4, "Z") if row["moves"] == "turns" else Matrix()
+        put(m, made[row["piece"]], at(*row["at"]) @ turned)
     return m
 
 
 # --- the review: each stage in the yard ---------------------------------------------------------------------------------
 
 FULL_VIEWS = ("front", "side", "three")                                  # at their own size
-CUT_VIEWS = ("court", "front", "side", "far", "back", "three", "high")   # cut small and in black
+CUT_VIEWS = ("court", "front", "side", "sideturned", "far", "back", "backturned", "three", "high")   # cut small, in black
+SECOND = {"sideturned": "side", "backturned": "back"}                    # the crown at its second turn, from these
 
 
 def toward(at_, target):
@@ -210,25 +177,27 @@ def review(out, fast):
             o.hide_render = False
 
     for key, stage in (("I", 1), ("II", 2), ("III", 3)):
-        mesh = whole(stage)
-        tris[key] = mesh.whole().tris()
-        data = mesh.whole().to_object(f"Training{key}", kit_mat)
-        obj = bpy.data.objects.new(f"Training{key}", data)
-        obj.location = (x, -inward, 0.0)
-        scene.collection.objects.link(obj)
-        bpy.context.view_layer.update()
-        for name, (eye, target) in views.items():
-            scene.camera = plan.camera(scene, f"Cam{key}{name}", eye, target)
-            path = out / f"training_{key}_{name}.png"
-            rs.save(look.finish(look.render_linear(scene, path.with_suffix(".exr")), d), path)
-            path.with_suffix(".exr").unlink(missing_ok=True)
-            if name in CUT_VIEWS:
-                pts = [world_to_camera_view(scene, scene.camera, obj.matrix_world @ v.co) for v in obj.data.vertices]
-                boxes[f"{key} {name}"] = (min(p.x for p in pts) * w, min((1 - p.y) for p in pts) * h,
-                                          max(p.x for p in pts) * w, max((1 - p.y) for p in pts) * h)
-                silhouette(obj, out / f"black_{key}_{name}.png")
-        bpy.data.objects.remove(obj)
-        bpy.data.meshes.remove(data)
+        for turn, shots in ((0.0, {n: v for n, v in views.items()}),
+                            (TURNED[stage], {n: views[v] for n, v in SECOND.items()})):
+            mesh = whole(stage, turn)
+            tris[key] = mesh.whole().tris()
+            data = mesh.whole().to_object(f"Training{key}", kit_mat)
+            obj = bpy.data.objects.new(f"Training{key}", data)
+            obj.location = (x, -inward, 0.0)
+            scene.collection.objects.link(obj)
+            bpy.context.view_layer.update()
+            for name, (eye, target) in shots.items():
+                scene.camera = plan.camera(scene, f"Cam{key}{name}", eye, target)
+                path = out / f"training_{key}_{name}.png"
+                rs.save(look.finish(look.render_linear(scene, path.with_suffix(".exr")), d), path)
+                path.with_suffix(".exr").unlink(missing_ok=True)
+                if name in CUT_VIEWS:
+                    pts = [world_to_camera_view(scene, scene.camera, obj.matrix_world @ v.co) for v in obj.data.vertices]
+                    boxes[f"{key} {name}"] = (min(p.x for p in pts) * w, min((1 - p.y) for p in pts) * h,
+                                              max(p.x for p in pts) * w, max((1 - p.y) for p in pts) * h)
+                    silhouette(obj, out / f"black_{key}_{name}.png")
+            bpy.data.objects.remove(obj)
+            bpy.data.meshes.remove(data)
     (out / "training_review.json").write_text(json.dumps(dict(boxes=boxes, tris=tris)), encoding="utf-8")
 
 
@@ -264,20 +233,23 @@ def sheet(out):
 
     unions = {name: union(name) for name in CUT_VIEWS}
     fulls = {name: [crop(shot(k, name), unions[name]) for k in keys] for name in CUT_VIEWS}
-    titles = ("Stage I, base level 1, as it stands", "Stage II, base level 2", "Stage III, base level 3")
+    titles = ("Stage I, base level 1, its crown remade", "Stage II, base level 2", "Stage III, base level 3")
     said = {"court": "from the court, as the player sees it", "front": "head-on from the gate's side, 20 away",
             "side": "from the generator's side, 18 away", "far": "from the side wall's side, 18 away",
             "back": "from behind the stone, 12 away", "three": "three-quarter, from the front and the generator's side",
-            "high": "from above, 40 degrees down, three-quarter"}
-    (a2, t2), (a3, t3) = size(2), size(3)
+            "high": "from above, 40 degrees down, three-quarter",
+            "sideturned": "from the generator's side, the crown at its second turn (I 90, II 45, III 30 degrees)",
+            "backturned": "from behind the stone, the crown at its second turn"}
+    (a1, t1), (a2, t2), (a3, t3) = (bm.crown_size(s) for s in (1, 2, 3))
     notes = [
-        "The crown carries more. The stone, its reticle, the spark and the pad stay Stage I's at every stage. At Stage "
-        f"II the crown is a wider band of void stone, {a2:.1f} across, with six short crystals set through it and "
-        f"twelve marks of the void's light on its rim, and four tall crystals standing near the spark, their tips "
-        f"{t2:.2f} over the crown's middle; at Stage III, {a3:.1f} across, eight short crystals and sixteen marks, and "
-        f"six tall crystals, their tips {t3:.2f} over it. Short at the rim and tall near the spark, so its top line "
-        "rises to the middle from every side while it turns: a crown, never weights at a bar's ends. Every crystal "
-        "stands upright and unlit. Each stage's crown replaces Stage I's and turns as it does.",
+        "The crown carries more. The stone, its reticle, the spark and the pad stay Stage I's at every stage. Stage I's "
+        f"crown is remade in the family: a band of void stone {a1:.1f} across, four short crystals set through it and "
+        f"eight marks of the void's light on its rim, and three tall crystals near the spark, their tips {t1:.2f} over "
+        f"the crown's middle. At Stage II, {a2:.1f} across, six short crystals and twelve marks, and four tall, their "
+        f"tips {t2:.2f} over it; at Stage III, {a3:.1f} across, eight short and sixteen marks, and six tall, their tips "
+        f"{t3:.2f} over it. Short at the rim and tall near the spark, so its top line rises to the middle from every "
+        "side while it turns: a crown, never weights at a bar's ends. Every crystal stands upright and unlit, joined "
+        "to nothing. Each stage's crown replaces the one before's and turns as it does.",
         "In the base kit's colours, in the yard at base level 3 under the place's dusk, the yard's trainee on the pad, "
         "rendered in Blender; nothing is seen in Studio. Triangles, a stage whole before the drawn edge's hull: "
         + ", ".join(f"Stage {k} {tris[k]:,}" for k in keys) + "."]

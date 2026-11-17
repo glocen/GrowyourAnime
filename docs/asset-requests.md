@@ -12550,6 +12550,48 @@ Measured by Faber's mixdown of each cue as the engine plays it, at its real gain
   2. `GetWaveformAsync` reads 9116673915: 4.02 s, three events.
   The rescue goes on: Modulo's batch is running.
 
+### Round 1: the first batch read, and nine arrangements (Modulo, 2026-11-17, 22:14 to 22:28 by the clock)
+Nothing was heard. Whether any of these convinces is **UNVERIFIED**; every level is a seed, and every estimate below is worked from the batch's numbers, never measured on a mix. The gates are Faber's mixdown's.
+- **The batch (Faber, 22:14):** five files, 14 picks each, all 70 measured; 43 are licensed rows.
+- **The ranker, corrected on the real files** (`tools/audio/ar39_rank.py`; its picture's crash with no pick through, Faber's find, is fixed):
+  - **Contact is a hit's rise from its onset,** not its top's place in the batch's slice. The batch's slices start before the sound, so the first version failed 30 hits for a trim. The onset is where a recipe's slice starts.
+  - **The source:** a licensed row goes in. A community upload goes in only when it's plainly its uploader's own, by its id, with why. None of the 27 is: none is in a round 1 recipe.
+  - **The brief, by the spectrum:** a pick's shares of energy under 250 Hz, to 2.5 kHz and over, against its brief's own bands. And 14 picks whose title names another thing than the brief's (a hand on glass, a bird, interface swipes, scissors), each with its reason in the tool.
+  - **Shown, unscreened:** the trim, the fall to 20 dB under the top, a second knock, the range to the floor.
+- **Through the pre-screen:** HeavyHitBody 4, LightHitSnap 5, ShadeTellPaper 4, ShadeSwipeAir 2, **LightHitBody 0**. The table and the picture: `build/scratch/modulo/ar39/rank.md`, `rank.png`.
+- **The arrangements** (`tools/audio/ar39_arrange.py`, which writes `build/handoff/Audio/ar39/round1.md`, `.luau` in `Config.Cues`' own shape, and `.json`): 29 slices of 21 licensed recordings, all ProSoundEffects, in ten lists by role. A pilot's three are built differently:
+
+  | Cue | How it's built | Layers |
+  |---|---|---|
+  | LightHit_A1 | one recorded contact, nothing else | a skin or cloth slap (4 recordings) |
+  | LightHit_A2 | two recordings split by their bands | a glove or cloth thud (3) under a clap's crack (3) |
+  | LightHit_A3 | a recorded contact, recorded weight, our accent | the slap (4), a deep glove thump (2), our spark 10 dB under |
+  | HeavyHit_B1 | a recorded body; ours only reinforce | a heavy body (3), our sub 10 dB under, our tail by strength. The knocks are gone |
+  | HeavyHit_B2 | two recordings, no synthesis | a deep glove thump (2) under the light hit's own slap (4) |
+  | HeavyHit_B3 | a recorded body with a recorded edge, no sub | the heavy body (3), a leather or clap snap (3), our tail by strength |
+  | ShadeSwipe_C1 | all recorded | paper's flick for the tell (3), a pass through the air (3) |
+  | ShadeSwipe_C2 | a paper-edged pass | our tell, the pass (3), a sheet's rustle riding its top (3) |
+  | ShadeSwipe_C3 | the paper drawn back, then the pass | a rustle ending in its flick (3), the pass (3), our swipe 10 dB under |
+
+- **How a recipe is made:**
+  - a hit's or a pass's slice starts 2 ms before its onset, where its file is 20 dB or more under its top, and ends after its top with a fall of 10 to 60 ms; a rustle's starts a set time before its top;
+  - every hit's top comes 3 to 10 ms after its slice starts (Boxing Hits 22 and Cloth Flap 13 at 10, the gate's edge);
+  - a tell lands 0.2 s before the swipe's top, and a pass leads by its own time to its top.
+- **The levels, seeds:** LightHit at -42.1 LUFS (the loudest 400 ms of one play), HeavyHit 4 LU over, ShadeSwipe 4.5 LU under. LightHit's is solved from gate 3's worst case: the hottest HeavyHit's top over the hottest LightHit's twice, every layer's top together, held to -2 dBFS. That's about 15 dB under today's spark. If the mixdown shows room, the cues' fader takes it back in one number.
+- **Estimated per cue** (its layers' energies and tops summed; its bands from each take's third octaves):
+  - LightHit: tops -15.3 to -12.5 dBFS; 2%, 26% and 18% under 120 Hz;
+  - HeavyHit: tops -12.4 to -10.0 dBFS; 27%, 37% and 20% under 120 Hz, inside gate 5's half;
+  - through the phone's curve, HeavyHit stands 2.0 to 4.5 LU over LightHit. B1 over A1 is 2.0, the gate's edge.
+- **What's weak, plainly:**
+  - **No licensed pick fits LightHit's own body brief.** A1's and A3's body is the snap brief's slaps and a glove catch; A2's thuds hold 48 to 59% of their energy under 250 Hz. A punch on a body, as the brief words it, isn't in this batch.
+  - **HeavyHit has three bodies,** and one (Body Fall Heavy 5) is 24 dB quieter than the others: its gain is 7.27, so its floor rises with it.
+  - **ShadeSwipe has three passes,** the least gate 8 allows.
+- **Two asks of Faber:**
+  1. **A library take needs its own `Gain`** (linear, 1 when absent), times its layer's Volume, in the engine and in the mixdown. A library sound can't be levelled offline, and one list's takes differ by up to 24 dB. Then the nine cues go in beside the old ones, and the mixdown measures each on the gates, every take once.
+  2. **The second batch,** licensed only: `Batch.Start({ "LightHitBody2", "HeavyHitBody2", "ShadeSwipeAir2" }, { Count = 14, Measure = 80, Pages = 3, AnyAuthor = false })`. The three briefs are in `Briefs.luau`, in the libraries' own words ("Body Hits", "Body Fall", "Cloth Whoosh"), with the first batch's wrong sounds in each Avoid.
+- **The log:** the 21 recordings are in `docs/asset-log.md`, each with its id and author.
+- **Status:** implemented as recipes; the tools' self-test runs; not mixed, not measured, not heard. Round 1 of three.
+
 ## AR40. Less purple, less black: the game's colour by day (Modulo, for research's pick, then Faber)
 
 Research, 2026-11-17, 22:17. The director's remark, at 22:17: "i think the game is way to much too purple/Black and somber btw". It's the third time: 2026-11-15, "too much purple"; 2026-11-16, "need to be less somber"; 2026-11-16, night, "a bit to dark and somber we need a day time" (`docs/decisions.md`). Day is already in the game, 18 minutes of every 30 (`Config/Lighting`). So the time of day isn't the cause; what's lit is.

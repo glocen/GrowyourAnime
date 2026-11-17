@@ -287,6 +287,76 @@ local briefs: { [string]: Brief } = {
 		Bands = { Low = 0.05, Mid = 0.45, High = 0.5 },
 		MaxFile = 4,
 	},
+
+	-- AR39's second batch (Modulo, 2026-11-17): the three thin roles again, in the licensed libraries' own words, run
+	-- with AnyAuthor = false so every pick is one a monetized game may use. The first batch's keywords were a player's
+	-- ("punch", "jab"); the libraries title a file by what was recorded ("Body Hits Leather Glove", "Thigh Slap").
+	-- The first batch's wrong sounds join each Avoid.
+	LightHitBody2 = {
+		Brief = "a quick, clean hit on a body or padded cloth, as a foley library titles it: a short low-mid thock, one burst",
+		Keywords = {
+			"body hits", "body hit", "body punch", "body punches", "punches", "face punch", "chest hit", "chest thump",
+			"chest pat", "body pats", "body slap", "shoulder pat", "back slap", "fist into palm", "fist palm", "palm hit",
+			"glove hits", "boxing hits", "focus mitt", "punching mitt", "kick pad", "pad hit", "cloth hits", "jacket hits",
+			"leather jacket hit", "coat hit", "pillow punch", "pillow hit", "cushion punch", "karate hit", "thigh slap",
+		},
+		Avoid = {
+			"whoosh", "swoosh", "swing", "swish", "miss", "sword", "blade", "knife", "glass", "window", "vehicle", "metal",
+			"metallic", "gun", "explosion", "slam", "door", "bell", "rock", "stone", "cinematic", "trailer", "boom", "bass",
+			"sub", "reverb", "echo", "rain", "loop", "bird", "plastic", "applause", "crowd", "fall", "drop",
+		},
+		Prefer = { "body", "hits", "punch", "cloth", "leather", "glove", "pat", "slap" },
+		Mode = "Hit",
+		Slice = { 0.06, 0.15 },
+		Attack = { 0, 0.008 },
+		Tail = { 0.04, 0.12 },
+		Bands = { Low = 0.25, Mid = 0.6, High = 0.15 },
+		MaxFile = 6,
+	},
+	HeavyHitBody2 = {
+		Brief = "one heavy, soft-edged body blow, as a foley library titles it: a body or a full sack landing, a deep thud",
+		Keywords = {
+			"body fall", "body falls", "bodyfall", "body drop", "body slam", "body hits heavy", "heavy body hit",
+			"sandbag", "sand bag drop", "sack drop", "heavy bag hits", "punching bag hits", "medicine ball", "mattress hits",
+			"mattress hit", "couch hits", "cushion hits", "pillow hits heavy", "duffel bag drop", "leather bag drop",
+			"wrestling mat", "gym mat", "body kick", "kick body", "heavy thuds", "dull thud", "muffled thud",
+			"leather couch hit", "boxing hits heavy",
+		},
+		Avoid = {
+			"whoosh", "swoosh", "swing", "swish", "miss", "glass", "metal", "metallic", "explosion", "gun", "shot", "debris",
+			"rumble", "crash", "door", "car", "cinematic", "trailer", "boom", "riser", "reverb", "echo", "rain", "loop",
+			"water", "splash", "bird", "plastic", "paper", "scrapbook", "sprinkling", "stretching", "grab", "handling",
+			"rock", "dirt", "gravel", "stairs", "roll", "rolling",
+		},
+		Prefer = { "body", "heavy", "thud", "bag", "leather", "fall", "hits", "mat" },
+		Mode = "Hit",
+		Slice = { 0.18, 0.5 },
+		Attack = { 0, 0.012 },
+		Tail = { 0.12, 0.4 },
+		Bands = { Low = 0.4, Mid = 0.5, High = 0.1 },
+		MaxFile = 6,
+	},
+	ShadeSwipeAir2 = {
+		Brief = "one quick pass of cloth or paper through the air, as a foley library titles it: soft-edged, rising and gone",
+		Keywords = {
+			"cloth whoosh", "cloth whooshes", "cloth swish", "cloth swishes", "cloth swing", "fabric whoosh", "towel whip",
+			"towel swing", "towel whoosh", "flag whoosh", "flag swing", "cape", "cape whoosh", "coat swing", "jacket swing",
+			"jacket whoosh", "sheet whoosh", "blanket whoosh", "paper whoosh", "paper swish", "cardboard whoosh",
+			"whooshes cloth", "whooshes fast", "swishes", "stick whoosh", "bamboo swish", "rope swish", "fan whoosh",
+		},
+		Avoid = {
+			"sword", "blade", "knife", "katana", "metal", "laser", "fire", "magic", "energy", "sci fi", "scifi", "electric",
+			"car", "plane", "jet", "wind", "loop", "ambience", "rain", "punch", "hit", "impact", "heavy", "big", "bass",
+			"cinematic", "trailer", "riser", "reverse", "ui", "gui", "interface", "button", "bird", "wing", "wings",
+		},
+		Prefer = { "cloth", "fabric", "paper", "swish", "whoosh", "towel", "flag", "short", "fast" },
+		Mode = "Hit",
+		Slice = { 0.18, 0.4 },
+		Attack = { 0.05, 0.2 },
+		Tail = { 0.05, 0.22 },
+		Bands = { Low = 0.05, Mid = 0.45, High = 0.5 },
+		MaxFile = 5,
+	},
 }
 
 return briefs

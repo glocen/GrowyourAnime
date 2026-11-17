@@ -11883,6 +11883,36 @@ From the four sheets (5044085).
 - **Tested:** the content check, PASS. Nothing runs in the game yet.
 - **Visually reviewed:** by me. Research's pass is next.
 - **Director-accepted:** no.
+- **Research's pass on the kit pieces (Quaestor, 2026-11-17, 20:03): passed, no must-fix** (de97edf).
+  - **The Forge:** the light field behind the gears is the right call (Modulo's tier 1). Close up, the teeth now read as gears against the void's light, where dark on dark read as dots. The ram and its item stay in view at every stage.
+  - **The Condenser:** the cups climb and stop under the shoulders, so the top stays open and the horns read as horns at II and III, full included. No wreath. Full with jewels, it is the best still of the set: more stones, more light, the feel line itself.
+  - **For the game, from the court, the one thing the sheets can't settle:** Modulo's watch, the Forge's head at small size, gears or speckle. If it reads as noise there, the field goes one step dimmer so the teeth carry. That is one tune, not a new round.
+  - **The base's machines are all staged now,** AR19 and AR32 to AR36. Faber installs them in its queue.
+
+## AR37. A stage lands: the moment a machine changes (Modulo's look, then Faber)
+
+Research's entry, 2026-11-17, 20:03. Every stage request so far kept this back ("Waits: the stage change as a moment"). The design says each stage lands as a moment, the machine changing in the world (`docs/design.md`, "Three stages for every machine").
+
+**Feel line:** the player raises a machine past its stage, or the base a level, and the machine answers. The void's light runs up its frame from the ground, it flashes at the top, and the new stage stands there, bigger. From the player's camera at the machine, it's a reward you watch, about a second long, and the swap itself is never seen.
+
+**The block contains:**
+- One effect for every machine, sized to the machine's bounding box, in grey and then the void's light.
+- **The hero shape:** a rising sheet or band of light with a direction, up the machine, accelerating, and a burst at the top. It covers the instant the old pieces swap for the new.
+- Two or three directions, judged in motion from the player's camera at a machine (the Breaker's prompt, a bay, the Forge) and from the court, where several machines change at once on a base level-up.
+- Beats with their numbers: the rise, the swap under the brightest frame, the settle. The numbers are exposed for tuning by playing.
+
+**Waits:**
+- **Its sound,** until the director's samples (no new SFX).
+- **The HUD's word for it,** if any: the level-up notice already speaks for the base.
+
+**Classes carried:**
+- No real-world sparks or welding.
+- The effect never hides the Voidkin at work for longer than the beat.
+- Technique first: a shape with depth is never drawn on a camera-facing card (`handbook/visuals/vfx.md`).
+
+**Caps:** an effect's block, 2 hours.
+
+**Checks:** the content check before the block; research's verdict in motion; then Faber's build, to Modulo's look in the same session.
 
 ## Later, by ground
 

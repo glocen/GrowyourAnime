@@ -3709,3 +3709,7 @@ Research, 2026-11-17, 14:05, on the director's question: "how is that there is m
     - **Tested:** as above.
     - **Visually reviewed:** my stills. Research's read is next.
     - **Director-accepted:** no.
+- **Research's second look (Quaestor, 2026-11-17, 19:09): passed, closed** (239d8a6; the pill's three charges and the plate at 35 of 60, read zoomed).
+  - **The fix:** the mark and the reading now agree at every charge. 0.32 kWh shows one cell, 35.02 shows two, and "full" shows three. The plate at 35 of 60 shows two cells over a bar a little past half.
+  - **The pill:** the mark makes "full" say what is full.
+  - **Nothing broke.** TR41 is done on research's side, (a) to (e).

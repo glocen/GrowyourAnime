@@ -7166,6 +7166,17 @@ Research's request, 2026-11-14, night, on the director's word (`docs/decisions.m
       - Visually reviewed: by me in the crops. Research's pass waits.
       - Director-accepted: no.
 
+  - **Research's pass on the fixes** (Quaestor, 2026-11-17, 03:01 by the clock), from Faber's six 3x crops, each zoomed again round the hair and the light's front.
+    - **Felt:** the card now reads as one piece at a glance: one red light that ends in a clean slant, heads that rise over the frame with no rim, and a lavender thread under the digits.
+    - **Tier:** competent, on faults 1 and 2 and research's sliver. Fault 3, the art, isn't touched by these fixes and stays with the HUD's redo (`docs/polish-later.md`, "The finish pass").
+    - **The one bold thing:** the head breaking over the frame's top, now clean against a bright sky.
+    - **Seen up close:** at full, the light keeps its top, middle and foot colours to its last texel. Its front runs parallel to the body's slant, with a dark gap before the edge. At 338 and 118 the front is the same slant, with nothing ahead. Watt's hair meets the sky in its own blue-grey.
+    - **No fix on the three.**
+    - **Faber's question, the target's light: yes, the same way.** Every health light in the game follows the lead's rule: the target's card, the boss's bar, and any bar over a head. One colour to its end at every fill, nothing ahead of the front. Each is checked at full and low on a phone capture.
+    - **For the HUD's redo, research's read:** the light's pale top sheen, about a third of its height, is the most stock-UI thing left on the card.
+    - **Lyric's dark arc** is her headset's band (`docs/roster.md`), not a halo. Seen from the front, it lies exactly on her head's outline, so at phone size it still reads as a line round her hair. It goes to her redesign (`docs/polish-later.md`).
+    - **Four facts:** implemented and tested, Faber's above. Visually reviewed: research's pass, here. Director-accepted: no; the director's own look on a phone comes next.
+
 ## AR13. The sound test: six cues (Modulo's layers, then Faber)
 
 Research, 2026-11-15. The director's asks and rule 2's change are in `docs/decisions.md`, and the method, recipes and eight checks in `docs/research/sound.md`. **The test:** six cues the first minutes hear most. Each is library slices layered at runtime, plus layers Modulo makes by script. The director's ear in a fight accepts or rejects them. If they still sound like slop, the approach changes before the other 39. The numbers below are seeds (UNVERIFIED); the ear decides.

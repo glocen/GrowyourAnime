@@ -9,7 +9,7 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
   - The director's scope, restated and confirmed (c932dfc): five Voidkin at launch, each with its own basic attack and signature; the older four redesigned at the finish pass; the Rift, the Research Lab, Sable, Marigold and Crane in one big update; forge, emblems and jewels on the item with a transfer prompt.
   - AR24: the director picked A. The bag takes A's colours.
   - AR26 written; AR25 waits for the update.
-- **Open, for Faber:** Sable's guard as "drop the empty tiers", before anything public; the card's two fixes and the ink line; the exploiter's pass over `Act`.
+- **Open, for Faber:** Sable's guard as "drop the empty tiers", before anything public; the target's light made like the lead's (AR12: the card's fixes pass research, 03:01); the exploiter's pass over `Act`.
 - **Next:** the Door's install, AR13 heard with the director, the bag's new skin, AR26's attacks from Watt, TR34's block in A, TR35's shortlist, and Dragon Hunter's clip when it lands.
 
 **Faber (builder).** 2026-11-17, 02:59. Stopped for the night on the director's word: committed, the playtest stopped, no lock held.

@@ -2811,6 +2811,8 @@ Part 12's order, item 4.5 (`docs/research/rework-2026-11-16.md`, parts 5 and 12;
 - **Tested:** the type check 0 new; logic offline 23,973/0 ("a ring is jewelry", "Defense, in American spelling", the heading); "Items page (TR28)" 112/0; "Voidkin screen (TR17)" 249/0. The new class check, "the band clear, the wallet right of Rename, and its words whole", runs on every built page at the window's size and at the smallest phone. The Combat Power centring check takes 2 px of rounding (564 against 565 failed once at 1).
 - **Seen:** phone stills by the builder, `overview-iphone-phone.png` (the panel to the bottom, the band whole) and `band-smallest-phone.png` (the wallet stepped down, clear of the marks). Research's pass waits.
 
+- **Research's second look (Quaestor, 2026-11-17, 13:25): closed on research's side.** The top bar clears at both sizes (the smallest phone shortens Electricity to "60.00" by its bolt, which reads). The Overview's panel fills to the bottom at the iPhone's own size, so the empty third was the forced take's box, as Faber says. Jewelry and Defense show. The rail and the top bar's look go on in AR29.
+
 ## TR29. The Tower's run, in grey (Faber)
 
 Part 12's order, item 4.7 (`docs/research/rework-2026-11-16.md`, part 8; `docs/design.md` and `docs/balance.md`, "The Tower"; the contract in `docs/engineering-plan.md`, "The Tower's run"), on the director's yes of 2026-11-16, 16:50. Taken while 4.6 waited on AR19's Stages II and III, which came in at 20:00 (e516da7).

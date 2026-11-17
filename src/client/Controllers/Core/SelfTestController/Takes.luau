@@ -27,6 +27,7 @@ local Profile = require(Shared.Data.Profile)
 local ShardConfig = require(Shared.Config.Shards)
 local RevealArt = require(Shared.Config.RevealArt)
 local VoidkinDefs = require(Shared.Definitions.Voidkin)
+local Items = require(Shared.Definitions.Items)
 local HudController = require(script.Parent.Parent.Parent.Main.HudController)
 local Effects = require(script.Parent.Parent.Parent.Main.FighterController.Effects)
 local Net = require(Shared.Net)
@@ -1222,6 +1223,189 @@ return function(given: Given): { any }
 				t.Server("LeadHeal")
 				t.Reset()
 				step:Destroy()
+			end,
+		},
+		{
+			Name = "Take: AR30's bases at the smallest phone, for Modulo: an item's card, a chest's, the Breaker, the base's rows and the HUD at a bay and at the Breaker",
+			Manual = true,
+			Stay = true,
+			Run = function(t: any)
+				-- Modulo's bases for AR30, every button in B's make (docs/asset-requests.md, AR30): each state held at the
+				-- smallest phone until the driver moves ReplicatedStorage.NL_TakeStep on ("Gear", "GearOff", "Chest",
+				-- "Breaker", "Base", "Bay", "BreakerPrompt", "End") and captures it. The two weapons, the chests and the
+				-- shard in the first chamber are the take's own, taken back.
+				local step = Instance.new("StringValue")
+				step.Name = "NL_TakeStep"
+				step.Value = "Ready"
+				step.Parent = ReplicatedStorage
+				local function await(name: string): boolean
+					return waitFor(t, 180, function(): boolean
+						return step.Value == name or step.Value == "End"
+					end) and step.Value == name
+				end
+				local Bag = VoidkinScreen.Bag
+				local view = ProfileController.Get()
+				local owned = if view then view.Voidkin[view.Roles.Lead] else nil
+				local row = if owned then VoidkinDefs.ById[owned.Def] else nil
+				-- A weapon its lead wields (Equip lit) and one of another class (Equip off, "<class> only").
+				local wields, other = nil :: string?, nil :: string?
+				for _, item in Items.List do
+					if item.Class and row and item.Class == row.Class and wields == nil then
+						wields = item.Id
+					elseif item.Class and row and item.Class ~= row.Class and other == nil then
+						other = item.Id
+					end
+				end
+				local given: { string } = {}
+				local function give(def: string?, rarity: string): string?
+					if def == nil then
+						return nil
+					end
+					local answer = t.Server("ItemGive", def, rarity, { { Stat = "Attack", Value = 64 } })
+					if type(answer) == "table" and answer.Ok == true and type(answer.Id) == "string" then
+						table.insert(given, answer.Id)
+						return answer.Id
+					end
+					return nil
+				end
+				local mine, theirs = give(wields, "Rare"), give(other, "Epic")
+				t.Check("a weapon the lead wields and one it doesn't", mine ~= nil and theirs ~= nil, `{wields} {other}`)
+				local CHEST_GIVEN = "lanternrow_1"
+				local chestsWere = if view then view.Bag.Chests[CHEST_GIVEN] or 0 else 0
+				t.Server("ChestGive", CHEST_GIVEN, 3)
+				t.Server("LeadCalm")
+				t.Server("HomeReady")
+				waitFor(t, ANSWER, function(): boolean
+					local now = ProfileController.Get()
+					return now ~= nil and mine ~= nil and now.Items[mine] ~= nil and (now.Bag.Chests[CHEST_GIVEN] or 0) == chestsWere + 3
+				end)
+				local function smallest()
+					Layers.Force(Theme.Scale.Floor)
+					Layers.Box(Theme.Smallest - Vector2.new(0, GuiService.TopbarInset.Height))
+				end
+				local function voidkin(kind: string, choose: string?)
+					if Screen.Current() ~= VoidkinScreen.Name then
+						Button.Press(HudController.Parts().Voidkin :: TextButton)
+						waitFor(t, 1, function(): boolean
+							return Screen.Current() == VoidkinScreen.Name
+						end)
+					end
+					smallest()
+					VoidkinScreen.Show("Bag")
+					Bag.Choose(nil)
+					VoidkinScreen.Tap(VoidkinScreen.Find(kind))
+					t.Wait(0.2)
+					Bag.Choose(choose)
+					t.Wait(HudConfig.Bag.Slide + 0.2)
+				end
+				if await("Gear") then
+					voidkin("Gear", mine)
+				end
+				if await("GearOff") then
+					voidkin("Gear", theirs)
+				end
+				if await("Chest") then
+					voidkin("Chests", CHEST_GIVEN)
+				end
+				local SHARD = "lanternrow_standard"
+				local added = false
+				if await("Breaker") then
+					Bag.Choose(nil)
+					Screen.Close()
+					t.Wait(HudConfig.Motion.Screen.Exit + 0.1)
+					local now = ProfileController.Get()
+					local first = if now then now.Base.Chambers[1] else nil
+					if now and first and first.Work == nil then
+						if (now.Bag.Shards[SHARD] or 0) == 0 then
+							t.Server("BaseGive", SHARD, 1)
+							t.Wait(0.5)
+						end
+						added = ProfileController.Act("AddShard", { Shard = SHARD }).Ok == true
+						waitFor(t, 2, function(): boolean
+							local after = ProfileController.Get()
+							return after ~= nil and after.Base.Chambers[1].Work ~= nil
+						end)
+					end
+					smallest()
+					BaseController.OpenBreaker()
+					waitFor(t, 1, function(): boolean
+						return Screen.Current() == BreakerScreen.Name
+					end)
+					t.Wait(HudConfig.Motion.Screen.Enter + 0.1)
+					local held = ProfileController.Get()
+					local work = if held then held.Base.Chambers[1].Work else nil
+					BreakerScreen.Select({ Kind = "Chamber", Index = 1, Def = if work then work.Def else SHARD })
+					t.Wait(0.3)
+					t.Check("the first chamber chosen, breaking", work ~= nil)
+				end
+				if await("Base") then
+					Screen.Close()
+					t.Wait(HudConfig.Motion.Screen.Exit + 0.1)
+					smallest()
+					BaseController.Open()
+					t.Wait(HudConfig.Motion.Screen.Enter + 0.1)
+				end
+				-- Its shard out of the first chamber once the last screen that shows it is captured (a standard shard breaks in
+				-- about 30 s: one left longer breaks and waits with the ready ones).
+				local function takeOut()
+					local now = ProfileController.Get()
+					if added and now and now.Base.Chambers[1].Work ~= nil then
+						ProfileController.Act("TakeOut", { Chamber = 1 })
+					end
+					added = false
+				end
+				takeOut()
+				-- The HUD at a machine: the avatar 7 studs short of its prompt's spot, facing it, the camera behind.
+				local function at(prompt: Instance?)
+					Screen.Close()
+					t.Wait(HudConfig.Motion.Screen.Exit + 0.1)
+					smallest()
+					local anchor = if prompt then prompt.Parent else nil
+					local root = t.Root()
+					if anchor == nil or not anchor:IsA("BasePart") or root == nil then
+						t.Check("a prompt's spot to stand by", false)
+						return
+					end
+					local away = Vector3.new(root.Position.X - anchor.Position.X, 0, root.Position.Z - anchor.Position.Z)
+					local dir = if away.Magnitude > 1e-3 then away.Unit else Vector3.new(0, 0, 1)
+					local spot = Vector3.new(anchor.Position.X, root.Position.Y, anchor.Position.Z) + dir * 7
+					local target = Vector3.new(anchor.Position.X, root.Position.Y, anchor.Position.Z)
+					t.Server("TestStandAt", spot, target)
+					t.Wait(0.5)
+					local camera = workspace.CurrentCamera
+					camera.CFrame = CFrame.lookAt(spot + dir * 12 + Vector3.new(0, 6, 0), target)
+					t.Check("its prompt shows", waitFor(t, 3, function(): boolean
+						return (prompt :: ProximityPrompt).Enabled
+					end))
+					t.Wait(1)
+				end
+				if await("Bay") then
+					at(BaseController.Parts().Bay1Prompt)
+				end
+				if await("BreakerPrompt") then
+					at(BaseController.Parts().BreakerPrompt)
+				end
+				await("End")
+				Layers.Box(nil)
+				Layers.Force(nil)
+				Bag.Choose(nil)
+				Screen.Close()
+				step:Destroy()
+				takeOut()
+				for _, id in given do
+					t.Server("ItemTake", id)
+				end
+				t.Server("ChestGive", CHEST_GIVEN, -3)
+				t.Check("its own things taken back", waitFor(t, ANSWER, function(): boolean
+					local now = ProfileController.Get()
+					for _, id in given do
+						if now == nil or now.Items[id] then
+							return false
+						end
+					end
+					return now ~= nil and (now.Bag.Chests[CHEST_GIVEN] or 0) == chestsWere
+				end))
+				t.Reset()
 			end,
 		},
 		{

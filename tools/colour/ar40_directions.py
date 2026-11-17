@@ -50,13 +50,13 @@ DIRECTIONS = [
     {
         "Key": "A", "Name": "A, porcelain and indigo",
         "Idea": "the machines in warm white stone on indigo frames with gold fittings, under a warm white sun. The "
-                "most blue-violet kept: every frame is the void's colour, at a mid value, never black.",
+                "most blue-violet kept: every frame is the void's colour, at a mid value, never black; the wall is steel blue.",
         "Swatches": {
             "abyss": ("#F6F1E6", "#B9B6C0"), "girder": ("#6468B8", "#30306C"), "bone": ("#F2C45A", "#9A6A24"),
             "steel": ("#B6C4DE", "#6E7EA0"), "dark": ("#4A4494", "#242054"), "rubber": ("#2A2C48", "#16172A"),
             "far": ("#B6B4EC", "#8884CE"), "tower": ("#A6A4E0", "#7472BA"), "outcrop": ("#AEA8E8", "#7C74C6"),
         },
-        "Panel": ("#44488A", "#CED4F0"),
+        "Panel": ("#4E618A", "#C9D5EC"),
         "Stones": "#D2CCC2",
         "Lighting": {
             "Phases.Day.Sun": "#FFF0D2", "Phases.Day.Glow": 0.6, "Clear.Phases.Day.Ambient": "#B6B4AC",

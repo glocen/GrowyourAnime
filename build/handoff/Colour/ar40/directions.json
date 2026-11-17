@@ -87,7 +87,7 @@
   {
    "Key": "A",
    "Name": "A, porcelain and indigo",
-   "Idea": "the machines in warm white stone on indigo frames with gold fittings, under a warm white sun. The most blue-violet kept: every frame is the void's colour, at a mid value, never black.",
+   "Idea": "the machines in warm white stone on indigo frames with gold fittings, under a warm white sun. The most blue-violet kept: every frame is the void's colour, at a mid value, never black; the wall is steel blue.",
    "Swatches": {
     "abyss": [
      "#F6F1E6",
@@ -127,8 +127,8 @@
     ]
    },
    "Panel": [
-    "#44488A",
-    "#CED4F0"
+    "#4E618A",
+    "#C9D5EC"
    ],
    "Stones": "#D2CCC2",
    "Lighting": {
@@ -152,9 +152,7 @@
      "the frame",
      "the trim",
      "the far shards",
-     "the Tower",
-     "the wall",
-     "the wall's foot"
+     "the Tower"
     ],
     "Black": []
    },

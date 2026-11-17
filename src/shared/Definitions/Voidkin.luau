@@ -83,7 +83,16 @@ for _, row in rows do
 	byId[row.Id] = row
 end
 
+-- Whether a Voidkin is made: its body and its moves installed, no clips still due. Only a made Voidkin comes out of a
+-- shard (Rules.Odds; TR24, "a must-fix before any public build": a shard rolled Sable, who has no model, kit or
+-- portrait; the director, 2026-11-17, 02:40: launch has five, Sable, Marigold and Crane wait), so each joins the
+-- shards' tables on its own once it's built. Its portrait is the logic cases' check.
+local function made(row: Row): boolean
+	return row.Model ~= nil and row.Kit ~= nil and row.ClipsDue == nil
+end
+
 return {
 	List = rows, -- in the roster's order
 	ById = byId,
+	Made = made,
 }

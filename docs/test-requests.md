@@ -2402,6 +2402,39 @@ Phase 2's gate, research's order of work, item 2 (`docs/decisions.md`, the regis
 - **Older, not this piece; a must-fix before any public build:** the fifth card in the roster row is a silhouette in an Uncommon frame. A Standard shard of Lantern Row rolls Uncommon 30% of the time (`Config.Shards.Pools`), and the only Uncommon of ground 1 is Sable, who has no model, kit or portrait yet (`Rules.Odds` rolls every row of the ground). A player's first shards can give a Voidkin that isn't made. The roll takes only made Voidkin, or each is made first. How is Faber's call; which Voidkin come next is research's and the production plan's.
 - **Still open from the director's run:** the Festival Door (AR15, C, its colour pass next) and sound (`docs/research/sound.md`, "Next"). Phase 3's go follows the Door.
 
+**Sable's guard (Faber, 2026-11-17, to 10:09 by the clock).** Research's must-fix above, before any public build.
+- **The rule:** only a made Voidkin comes out of a shard.
+  - "Made" is the definitions' own read (`Definitions.Voidkin.Made`): its body (Model) and its moves (Kit) installed, and no clips still due.
+  - `Rules.Odds` leaves out any Voidkin that isn't made. So a tier with no one made drops, by the rule already there ("a tier nobody there reaches is dropped").
+  - A Named shard of a Voidkin that isn't made holds nothing, so the Breaker refuses it and the shard stays.
+  - Each Voidkin joins the tables on its own once it's built: there's nothing to switch on.
+- **What it gives at launch** (the director, 02:40: five Voidkin, with Sable, Marigold and Crane waiting): Lantern Row's Standard shard gives the four Commons and Lyric.
+  - The pool's 60 and 9 stand, out of 69: Common 86.96% (21.74% each) and Rare 13.04%. The drop rates show exactly that, from the same table.
+  - With two tiers live, luck lifts only Rare.
+  - The Breaker is the only place a roll happens (`Rules.Base`, through `Odds.Roll`).
+- **For research (tier 2, a number that changes balance):**
+  - Lyric goes from 9% to 13.04% of a Standard shard, by the drop rule as it stands. Another split while three tiers wait is `Config.Shards.Pools`, research's numbers.
+  - `tools/balance/sim.py`'s `pool()`, which Odds follows exactly, doesn't know "made" yet.
+
+**Four facts:**
+- Implemented: as above (`Definitions/Voidkin`, `Rules/Odds`).
+- Tested:
+  - The new logic case covers the guard:
+    - every entry of every shard is made, and every Named or Starter shard holds its own;
+    - the launch table worked by hand, Sable, Marigold and Crane never in it, and the rates read Common and Rare;
+    - luck lifts one tier;
+    - Sable, once made, joins at 30 in 99 and leaves with his row;
+    - a Named Sable holds nothing and rolls nothing;
+    - every made Voidkin has both portraits.
+  - The rule's own math (four tiers, the Enriched and Prismatic grades, the featured weight, the rates by hand) is still worked, with the waiting rows made for the case.
+  - Logic: 25,153 passed, 0 failed, offline and in Studio.
+  - The Breaker's two drop-rate cases: 57 and 60 passed. With an infused shard the top tier reads 13.04%.
+  - The whole suite, run twice:
+    - The second run: 2,612 passed and 1 failed, the Keeper's lantern "and out on Out". That's a clip marker's timing, which this piece doesn't touch. Alone it failed once in three, at 53 fps. Frames were counted through that run: 52 a second, no gap over 0.11 s.
+    - The first run: 16 failed together (the camera, the world plates, a fade and the guide's chevron), with the camera left Scriptable at its end. All 16 ran before the Base cases, and nothing here touches them. Run alone they passed (123 checks), and they didn't come back in the second run. Their cause is unknown.
+- Visually reviewed: no. Nothing players see changed except two tiers fewer in the drop rates, which the cases' layout checks cover.
+- Director-accepted: no.
+
 ## TR25. Attributes in the resolver, with the stat sheet (Faber)
 
 Part 12's order, item 4.2 (`docs/research/rework-2026-11-16.md`, parts 1, 2 and 4; the contract in `docs/engineering-plan.md`, "Attributes in the resolver"), on the director's yes of 2026-11-16, 16:50, with research's names.

@@ -5,7 +5,9 @@
 --   a shard holds the Voidkin whose Zone is at most its ground's; a grade weighs each rarity (Config.Shards.Pools), a tier
 --   nobody there reaches is dropped; a Voidkin of the ground or the one before weighs Config.Shards.FeaturedWeight against
 --   older ones of its tier; luck lifts the top two tiers that can drop (only the top one when two can, none when one can).
--- Nothing above Definitions.Rarity.ObtainableTop is ever in a table. No Roblox API: it runs with Studio closed.
+-- Nothing above Definitions.Rarity.ObtainableTop is ever in a table, and no Voidkin that isn't made (Definitions.Voidkin's
+-- Made: TR24's guard, before any public build). One that isn't reaches nobody, so a tier with no one made drops by the
+-- rule above, and a Named shard of one holds nothing. No Roblox API: it runs with Studio closed.
 -- Odds.Rates is the same table as the player reads it, "Drop rates" (the director, 2026-11-15; docs/ui.md, screen 3).
 
 local Shared = game:GetService("ReplicatedStorage").Shared
@@ -32,7 +34,8 @@ function Odds.Table(shardId: string, luck: number?): { Entry }
 		return {}
 	end
 	if shard.Holds ~= "" then
-		return { { Id = shard.Holds, Chance = 1 } }
+		local held = Voidkin.ById[shard.Holds]
+		return if held and Voidkin.Made(held) then { { Id = shard.Holds, Chance = 1 } } else {}
 	end
 	local ground = Grounds.ById[shard.Ground]
 	local weights = ShardConfig.Pools[shard.Grade]
@@ -43,7 +46,7 @@ function Odds.Table(shardId: string, luck: number?): { Entry }
 	local byTier: { [string]: { Voidkin.Row } } = {}
 	for _, row in Voidkin.List do
 		local rank = Rarity.Rank[row.Rarity]
-		if row.Zone <= ground.Order and rank and rank <= top then
+		if row.Zone <= ground.Order and rank and rank <= top and Voidkin.Made(row) then
 			local tier = byTier[row.Rarity] or {}
 			table.insert(tier, row)
 			byTier[row.Rarity] = tier

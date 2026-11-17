@@ -2,7 +2,7 @@
 
 What's next, in order. The game is in `docs/north-star.md`, its systems in `docs/design.md`. A status changes here and nowhere else.
 
-**Status, 2026-11-17, 09:41:** phase 3 is open, on the director's word (`docs/decisions.md`, 02:31: "phase 3 can start when it can dont need to wait for me"). Its first package is in the game as blocks (TR25 to TR30). Phase 2's tail runs beside it: the Door (the ring tunnel installed at 09:01 and passed by research; its sign's must-fix made by 09:41, for research's second look; AR15, "Faber's fix: each sign beside what it names"), the lead card's fixes, the Breaker's pictures, Sable's guard, the timing cases, and AR13 for the director's ear.
+**Status, 2026-11-17, 10:09:** phase 3 is open, on the director's word (`docs/decisions.md`, 02:31: "phase 3 can start when it can dont need to wait for me"). Its first package is in the game as blocks (TR25 to TR30). Phase 2's tail runs beside it: the Door (installed at 09:01; research passed it and its sign's fix, and it closes on research's side), Sable's guard (in at 10:09: only a made Voidkin comes out of a shard; TR24, "Sable's guard"), the lead card's fixes, the Breaker's pictures, the timing cases, and AR13 for the director's ear.
 
 **The aim:** a premium game (`docs/north-star.md`, "The bar"). One ground at the bar before six grounds in grey.
 

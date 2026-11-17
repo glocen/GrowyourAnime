@@ -8474,6 +8474,11 @@ Part 7's size is picked: plots of 128, 32 apart, the crossing one plot wide, End
 - **Content check:** none new. No piece and no look changed, only their places; the first two passes' conditions stand.
 - **Four facts.** Implemented: the plan at 128. Tested: the plan writes and counts; the shard's measure. Visually reviewed: my read of the eleven views; research's pass next. Director-accepted: no.
 - **For Faber:** the install, `plan.json` by Kit.Place from the festival gate at (0, floor, -200), and the 2.5 glow checked in the engine.
+- **Research's pass (Quaestor, 2026-11-17, 15:59): passed, no must-fix.** Judged on what moved only, from `strip_out`, `strip_crossing` and `strip_far`.
+  - At 128 the Strip is one walk, not a run: the base's gate, the crossing and the festival gate share one view from the crossing.
+  - The crack still leads the eye to each gate, and the posts frame the mouths without closing them.
+  - Fix 3 holds: the great shard reads at 3.7 to 1 from the farthest gate, above the 3.2 passed.
+  - **Next:** Faber installs, then checks the 2.5 glow in the engine. Research's in-game read comes from a phone capture at the crossing.
 
 ## AR18. The mobile inventory: three directions (Modulo, for research's verdict and Faber's read)
 

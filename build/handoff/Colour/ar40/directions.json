@@ -135,7 +135,50 @@
    "BagPanelLight": 8,
    "HudWords": 13.6,
    "BagWords": 15.3,
-   "BagChosen": 16.1
+   "BagChosen": 16.1,
+   "SystemWords": 10.0
+  },
+  "Systems": {
+   "Power": {
+    "Panel": [
+     "#4D3711",
+     "#211605"
+    ],
+    "Text": "#FFF7C2",
+    "Words": 10.3
+   },
+   "Credits": {
+    "Panel": [
+     "#0E4541",
+     "#071E1F"
+    ],
+    "Text": "#D6FFF7",
+    "Words": 10.0
+   },
+   "Voidkin": {
+    "Panel": [
+     "#35286B",
+     "#171033"
+    ],
+    "Text": "#FAF7FF",
+    "Words": 11.9
+   },
+   "Regalia": {
+    "Panel": [
+     "#1D2A6E",
+     "#0C1233"
+    ],
+    "Text": "#E2E6FF",
+    "Words": 10.6
+   },
+   "Map": {
+    "Panel": [
+     "#5A1D3F",
+     "#260B1B"
+    ],
+    "Text": "#FFE3EE",
+    "Words": 10.4
+   }
   },
   "StonesTint": "#FFFFFF",
   "StonesLight": 1.0
@@ -273,7 +316,110 @@
     "BagPanelLight": 98,
     "HudWords": 13.6,
     "BagWords": 13.4,
-    "BagChosen": 5.1
+    "BagChosen": 5.1,
+    "SystemWords": 9.7
+   },
+   "Systems": {
+    "Power": {
+     "Panel": [
+      "#FFFAE7",
+      "#FFF5CB"
+     ],
+     "Button": [
+      "#FFFEF9",
+      "#FFF9DD"
+     ],
+     "Pressed": [
+      "#FFF3BF",
+      "#FFF6D1"
+     ],
+     "Edge": "#B88A14",
+     "Glint": "#FFFFFF",
+     "Channel": "#39311E",
+     "Text": "#463A1D",
+     "Soft": "#70581A",
+     "Words": 10.2
+    },
+    "Credits": {
+     "Panel": [
+      "#E0F9F6",
+      "#BEF3EC"
+     ],
+     "Button": [
+      "#F7FEFD",
+      "#D5F7F2"
+     ],
+     "Pressed": [
+      "#AFF0E7",
+      "#C6F4EE"
+     ],
+     "Edge": "#13867A",
+     "Glint": "#FFFFFF",
+     "Channel": "#183033",
+     "Text": "#17393A",
+     "Soft": "#165652",
+     "Words": 10.2
+    },
+    "Voidkin": {
+     "Panel": [
+      "#F9F7FF",
+      "#F3EDFF"
+     ],
+     "Button": [
+      "#FEFDFF",
+      "#F7F4FF"
+     ],
+     "Pressed": [
+      "#F0E9FF",
+      "#F4EFFF"
+     ],
+     "Edge": "#7C66CC",
+     "Glint": "#FFFFFF",
+     "Channel": "#2D2A43",
+     "Text": "#353051",
+     "Soft": "#4F447F",
+     "Words": 10.8
+    },
+    "Regalia": {
+     "Panel": [
+      "#E7EAFF",
+      "#CDD2FF"
+     ],
+     "Button": [
+      "#F9FAFF",
+      "#DFE2FF"
+     ],
+     "Pressed": [
+      "#C1C8FF",
+      "#D3D7FF"
+     ],
+     "Edge": "#3340B8",
+     "Glint": "#FFFFFF",
+     "Channel": "#1E223F",
+     "Text": "#20254B",
+     "Soft": "#272F74",
+     "Words": 10.0
+    },
+    "Map": {
+     "Panel": [
+      "#FFE5EE",
+      "#FFC8DA"
+     ],
+     "Button": [
+      "#FFF8FB",
+      "#FFDBE7"
+     ],
+     "Pressed": [
+      "#FFBBD2",
+      "#FFCEDF"
+     ],
+     "Edge": "#B8245C",
+     "Glint": "#FFFFFF",
+     "Channel": "#391D2D",
+     "Text": "#461E32",
+     "Soft": "#702041",
+     "Words": 9.7
+    }
    },
    "StonesTint": "#F4FFC8",
    "StonesLight": 1.463672646459582
@@ -410,7 +556,110 @@
     "BagPanelLight": 100,
     "HudWords": 12.7,
     "BagWords": 12.5,
-    "BagChosen": 4.6
+    "BagChosen": 4.6,
+    "SystemWords": 8.6
+   },
+   "Systems": {
+    "Power": {
+     "Panel": [
+      "#FFFAE7",
+      "#FFF5CB"
+     ],
+     "Button": [
+      "#FFFEF9",
+      "#FFF9DD"
+     ],
+     "Pressed": [
+      "#FFF3BF",
+      "#FFF6D1"
+     ],
+     "Edge": "#B88A14",
+     "Glint": "#FFFFFF",
+     "Channel": "#363C3F",
+     "Text": "#43433B",
+     "Soft": "#6F5E2C",
+     "Words": 9.1
+    },
+    "Credits": {
+     "Panel": [
+      "#E0F9F6",
+      "#BEF3EC"
+     ],
+     "Button": [
+      "#F7FEFD",
+      "#D5F7F2"
+     ],
+     "Pressed": [
+      "#AFF0E7",
+      "#C6F4EE"
+     ],
+     "Edge": "#13867A",
+     "Glint": "#FFFFFF",
+     "Channel": "#153B54",
+     "Text": "#154257",
+     "Soft": "#145C64",
+     "Words": 8.8
+    },
+    "Voidkin": {
+     "Panel": [
+      "#F9F7FF",
+      "#F3EDFF"
+     ],
+     "Button": [
+      "#FEFDFF",
+      "#F7F4FF"
+     ],
+     "Pressed": [
+      "#F0E9FF",
+      "#F4EFFF"
+     ],
+     "Edge": "#7C66CC",
+     "Glint": "#FFFFFF",
+     "Channel": "#2A3464",
+     "Text": "#33396E",
+     "Soft": "#4E4A92",
+     "Words": 9.4
+    },
+    "Regalia": {
+     "Panel": [
+      "#E7EAFF",
+      "#CDD2FF"
+     ],
+     "Button": [
+      "#F9FAFF",
+      "#DFE2FF"
+     ],
+     "Pressed": [
+      "#C1C8FF",
+      "#D3D7FF"
+     ],
+     "Edge": "#3340B8",
+     "Glint": "#FFFFFF",
+     "Channel": "#1C2D60",
+     "Text": "#1E2F69",
+     "Soft": "#263587",
+     "Words": 8.6
+    },
+    "Map": {
+     "Panel": [
+      "#FFE5EE",
+      "#FFC8DA"
+     ],
+     "Button": [
+      "#FFF8FB",
+      "#FFDBE7"
+     ],
+     "Pressed": [
+      "#FFBBD2",
+      "#FFCEDF"
+     ],
+     "Edge": "#B8245C",
+     "Glint": "#FFFFFF",
+     "Channel": "#36274E",
+     "Text": "#43274F",
+     "Soft": "#6F2654",
+     "Words": 8.8
+    }
    },
    "StonesTint": "#E7FFDD",
    "StonesLight": 1.5289502604820173
@@ -547,7 +796,110 @@
     "BagPanelLight": 39,
     "HudWords": 5.8,
     "BagWords": 6.2,
-    "BagChosen": 12.3
+    "BagChosen": 12.3,
+    "SystemWords": 4.5
+   },
+   "Systems": {
+    "Power": {
+     "Panel": [
+      "#6F744C",
+      "#535D45"
+     ],
+     "Button": [
+      "#828456",
+      "#697351"
+     ],
+     "Pressed": [
+      "#535D45",
+      "#6F744C"
+     ],
+     "Edge": "#FFE266",
+     "Glint": "#FFF7C2",
+     "Channel": "#383F2E",
+     "Text": "#FFF7C2",
+     "Soft": "#C5CBAA",
+     "Words": 4.5
+    },
+    "Credits": {
+     "Panel": [
+      "#2D7375",
+      "#255C62"
+     ],
+     "Button": [
+      "#388384",
+      "#2F7175"
+     ],
+     "Pressed": [
+      "#255C62",
+      "#2D7375"
+     ],
+     "Edge": "#40DCC6",
+     "Glint": "#D6FFF7",
+     "Channel": "#173E42",
+     "Text": "#D6FFF7",
+     "Soft": "#A8D1CF",
+     "Words": 5.1
+    },
+    "Voidkin": {
+     "Panel": [
+      "#576696",
+      "#425378"
+     ],
+     "Button": [
+      "#6774A9",
+      "#546692"
+     ],
+     "Pressed": [
+      "#425378",
+      "#576696"
+     ],
+     "Edge": "#DCCBFF",
+     "Glint": "#FAF7FF",
+     "Channel": "#2C3852",
+     "Text": "#FAF7FF",
+     "Soft": "#C2CBD5",
+     "Words": 5.3
+    },
+    "Regalia": {
+     "Panel": [
+      "#3A578E",
+      "#2E4973"
+     ],
+     "Button": [
+      "#4663A0",
+      "#3A598A"
+     ],
+     "Pressed": [
+      "#2E4973",
+      "#3A578E"
+     ],
+     "Edge": "#6C7BFF",
+     "Glint": "#E2E6FF",
+     "Channel": "#1D304E",
+     "Text": "#E2E6FF",
+     "Soft": "#B1C0D5",
+     "Words": 5.8
+    },
+    "Map": {
+     "Panel": [
+      "#6F4C69",
+      "#534159"
+     ],
+     "Button": [
+      "#825776",
+      "#694F6A"
+     ],
+     "Pressed": [
+      "#534159",
+      "#6F4C69"
+     ],
+     "Edge": "#FF5C93",
+     "Glint": "#FFE3EE",
+     "Channel": "#382A3C",
+     "Text": "#FFE3EE",
+     "Soft": "#C5BDC9",
+     "Words": 6.0
+    }
    },
    "StonesTint": "#FCFFBA",
    "StonesLight": 1.5124750056867065

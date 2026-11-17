@@ -12625,7 +12625,7 @@ Research, 2026-11-17, 22:17. The director's remark, at 22:17: "i think the game 
 
 Where the purple and the black sit, from the kit's own files and today's captures: the machines' body is one swatch, `abyss` (dark violet, L* 29 falling to 7), on `girder` frames (navy, 38 to 18); the far shards are three violets; the day's fill is a lilac grey; the HUD's panel is L* 14 and the bag's 8. Of ten large surfaces, four are violet and five black.
 - **The values:** `build/handoff/Colour/ar40/directions.json`, from `tools/colour/ar40_directions.py`. `directions.md` beside it has the measures, and `chips.png` is each direction as flat colour beside today's (a machine on the yard with the HUD's card, the bag, the swatches). It's no render, and it's no verdict.
-- **What a direction moves,** and nothing else: nine of the kit's swatches by name (the body `abyss`, the frame `girder`, the fitting `bone`, `steel`, `dark`, `rubber`, and the far shards `far`, `tower`, `outcrop`), the wall's print as a ramp, the Strip's stones as one colour, ten of the day's lighting keys, and the two palettes the views show (Graphite, the HUD's; Seam, the bag's). The void's light (`void`, `cyan`) is the same in all three: it's the accent.
+- **What a direction moves,** and nothing else: nine of the kit's swatches by name (the body `abyss`, the frame `girder`, the fitting `bone`, `steel`, `dark`, `rubber`, and the far shards `far`, `tower`, `outcrop`), the wall's print as a ramp, the Strip's stones as one colour, ten of the day's lighting keys, the two palettes the views show (Graphite, the HUD's; Seam, the bag's), and the HUD's five system pieces (`Systems` in the json). A system keeps its own colour and gets its panel, button and words by one rule from it: a wash of its colour with words in its deep on a pale HUD, its deep sunk into the glass on C's. Without it a pale HUD would be captured with black pieces on it. The void's light (`void`, `cyan`) is the same in all three: it's the accent.
 - **A, porcelain and gold:** warm white stone on slate frames with gold fittings, a warm white sun, the HUD and the bag as cream paper with slate ink, the bag's chosen plate in violet. The brightest, the furthest from today.
 - **B, sky steel:** light blue steel with white frames, a clear blue fill, the HUD and the bag in white with sky blue buttons and gold for the accent.
 - **C, sandstone and teal:** warm pale stone on teal bronze, a gold day, the HUD and the bag still a glass with pale words, lifted from black to a mid slate teal (L* 41 and 39). The nearest to today on screen.
@@ -12635,9 +12635,10 @@ Where the purple and the black sit, from the kit's own files and today's capture
   - B's far shards are near the sky's own blue and may vanish.
   - A's and B's bag draws its chosen plate dark on pale, the reverse of the seam's design (5.1 and 4.6 to 1).
   - C's screens are the least changed, and "black" may still be said of them.
-  - The system blocks (Power, Credits, Voidkin, Regalia, Map) keep their dark panels in all three: they wait for the pick.
+  - C's system pieces read at 4.5 to 1, the least of the three, on the line.
 - **For Faber, the block:** each direction in the place by day at the smallest phone, three views (the plot from the spawn, the Strip from the crossing, the bag), beside today's.
   - Lighting: the ten keys are `Config.Lighting` paths, for the live tune.
+  - UI: `UI.Graphite`, `UI.Seam` and `Systems`, in the palettes' own field names.
   - Swatches: a repaint of the kit's cells in the place, from the json's `Cell` rule (the head falling to the foot by `(y / (h - 1)) ^ 0.85`, times the shade across), or whatever way the place allows. A surface's Color alone can't do it: it only darkens.
   - The stones want about 1.5 times the light for their colour, so a tint alone falls short.
   - No file is painted and nothing is uploaded until the pick.

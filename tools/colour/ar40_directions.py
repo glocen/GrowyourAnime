@@ -155,6 +155,48 @@ DIRECTIONS = [
 ]
 
 
+# The HUD's system pieces (Config.UIKit, Systems: its colour, its pale, its deep), copied here for the block only. Each
+# wears a dark panel of its own colour today; on a pale HUD that's a black piece again, so a direction gives each a
+# panel by one rule from its own colour.
+SYSTEMS = {"Power": ("#FFE266", "#FFF7C2", "#B88A14"), "Credits": ("#40DCC6", "#D6FFF7", "#13867A"),
+           "Voidkin": ("#DCCBFF", "#FAF7FF", "#7C66CC"), "Regalia": ("#6C7BFF", "#E2E6FF", "#3340B8"),
+           "Map": ("#FF5C93", "#FFE3EE", "#B8245C")}   # Base wears Power's
+TODAY_SYSTEMS = {"Power": ("#4D3711", "#211605"), "Credits": ("#0E4541", "#071E1F"), "Voidkin": ("#35286B", "#171033"),
+                 "Regalia": ("#1D2A6E", "#0C1233"), "Map": ("#5A1D3F", "#260B1B")}
+
+
+def blend(a, b, t):
+    c = rgb(a) * (1 - t) + rgb(b) * t
+    return "#" + "".join(f"{int(round(v * 255)):02X}" for v in c)
+
+
+def systems(d):
+    """Each system's panel, button, channel and words for a direction: on a pale HUD a wash of its colour with words in
+    its deep; on a glass HUD its deep sunk into the glass with words in its pale."""
+    g = d["UI"]["Graphite"]
+    pale = light(g["Panel"][0]) > 60
+    out = {}
+    for name, (colour, soft, deep) in SYSTEMS.items():
+        if d["Name"] == "Today":
+            panel = TODAY_SYSTEMS[name]
+            out[name] = {"Panel": panel, "Text": soft}
+        elif pale:
+            ink = blend(deep, g["Text"], 0.72)
+            out[name] = {"Panel": (blend("#FFFFFF", colour, 0.16), blend("#FFFFFF", colour, 0.34)),
+                         "Button": (blend("#FFFFFF", colour, 0.04), blend("#FFFFFF", colour, 0.22)),
+                         "Pressed": (blend("#FFFFFF", colour, 0.42), blend("#FFFFFF", colour, 0.3)),
+                         "Edge": deep, "Glint": "#FFFFFF", "Channel": blend(deep, g["Text"], 0.8),
+                         "Text": ink, "Soft": blend(deep, g["Text"], 0.45)}
+        else:
+            out[name] = {"Panel": (blend(deep, g["Panel"][0], 0.6), blend(deep, g["Panel"][1], 0.72)),
+                         "Button": (blend(deep, g["Button"][0], 0.55), blend(deep, g["Button"][1], 0.65)),
+                         "Pressed": (blend(deep, g["Panel"][1], 0.72), blend(deep, g["Panel"][0], 0.6)),
+                         "Edge": colour, "Glint": soft, "Channel": blend(deep, g["Channel"], 0.8),
+                         "Text": soft, "Soft": blend(soft, g["Panel"][0], 0.3)}
+        out[name]["Words"] = round(min(contrast(out[name]["Text"], c) for c in out[name]["Panel"]), 1)
+    return out
+
+
 def rgb(text):
     return np.array([int(text[i:i + 2], 16) for i in (1, 3, 5)], np.float64) / 255.0
 
@@ -252,6 +294,13 @@ def row(d):
     fill(page, 24, 36, 46, 5, g["Soft"])
     fill(page, 110, 24, 44, 24, *g["Button"])
     fill(page, 110, 46, 44, 2, g["Accent"])
+    # Power's and Credits' pieces, top right: the block in the system's own colour, its panel, its words
+    for i, name in enumerate(("Credits", "Power")):
+        y, piece = 14 + i * 30, d["Systems"][name]
+        fill(page, 396, y, 112, 24, SYSTEMS[name][0])
+        fill(page, 398, y + 2, 108, 20, *piece["Panel"])
+        fill(page, 398, y + 2, 22, 20, SYSTEMS[name][0])
+        fill(page, 428, y + 9, 50, 6, piece["Text"])
     # the bag: its cover, its panel, a card, words, a chosen plate, a button
     m = ui["Seam"]
     fill(page, 540, 0, 330, 200, m["Backing"])
@@ -280,6 +329,8 @@ def main():
     every = [TODAY] + DIRECTIONS
     for d in every:
         d["Measures"] = measures(d)
+        d["Systems"] = systems(d)
+        d["Measures"]["SystemWords"] = min(piece["Words"] for piece in d["Systems"].values())
         d["StonesTint"], d["StonesLight"] = tint(TODAY["Stones"], d["Stones"])
     (OUT / "directions.json").write_text(json.dumps({"Cell": CELL, "Today": TODAY, "Directions": DIRECTIONS}, indent=1),
                                          encoding="utf-8", newline="\n")
@@ -287,18 +338,19 @@ def main():
     png(OUT / "chips.png", np.concatenate([part for d in every for part in (row(d), gap)][:-1]))
     lines = ["# AR40: three colour directions by day, as values", "",
              "From `tools/colour/ar40_directions.py`; the values are in `directions.json`, beside this. `chips.png` is "
-             "flat colour, top to bottom Today, A, B, C: a machine on the yard with the HUD's card, the bag, then the "
+             "flat colour, top to bottom Today, A, B, C: a machine on the yard with the HUD's card and Credits' and Power's "
+             "pieces, the bag, then the "
              "swatches (body, frame, fitting, steel, trim, the wall, the stones, the sun, the fill). It's no render.", ""]
     for d in every:
         lines += [f"- **{d['Name']}:** {d['Idea']}"]
     lines += ["", "| | body L* | frame L* | bodies' range | violet grounds | black grounds | HUD panel L* | bag panel L* | "
-              "HUD words | bag words | bag's chosen |", "|---|---|---|---|---|---|---|---|---|---|---|"]
+              "HUD words | bag words | bag's chosen | a system's words, least |", "|---|---|---|---|---|---|---|---|---|---|---|---|"]
     for d in every:
         m = d["Measures"]
         lines.append(f"| {d['Name']} | {m['BodyLight'][0]} to {m['BodyLight'][1]} | {m['FrameLight'][0]} to "
                      f"{m['FrameLight'][1]} | {m['Range']} | {m['VioletGrounds']} of {m['Grounds']} | "
                      f"{m['BlackGrounds']} of {m['Grounds']} | {m['HudPanelLight']} | {m['BagPanelLight']} | "
-                     f"{m['HudWords']} | {m['BagWords']} | {m['BagChosen']} |")
+                     f"{m['HudWords']} | {m['BagWords']} | {m['BagChosen']} | {m['SystemWords']} |")
     lines += ["", f"A ground is one of ten large surfaces: the body's head and foot, the frame, two far shards, the "
               f"stones, the day's fill, the HUD's panel, the bag's panel and its cover. Violet: a hue from "
               f"{VIOLET[0]:g} to {VIOLET[1]:g} degrees with colour in it. Black: under L* {DARK:g}. Words need "
@@ -310,7 +362,7 @@ def main():
     (OUT / "directions.md").write_text("\n".join(lines), encoding="utf-8", newline="\n")
     for d in every:
         print(d["Name"], d["Measures"])
-        low = [k for k in ("HudWords", "BagWords", "BagChosen") if d["Measures"][k] < WORDS]
+        low = [k for k in ("HudWords", "BagWords", "BagChosen", "SystemWords") if d["Measures"][k] < WORDS]
         if low:
             print("  under", WORDS, ":", low)
     print("wrote", OUT)

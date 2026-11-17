@@ -3283,3 +3283,19 @@ Research's request, 2026-11-17, 12:54, on the director's word (`docs/decisions.m
 - **The look,** block only: the lead's heal number in the damage numbers' own kit, green, and a quick pop at its chest. No new effect art: it waits for the finish.
 
 **Checks:** logic cases (a burst's size, its 8 s, none at full, the sheet's number); the self-test; Fight's case times again; research's verdict from a phone capture in a real fight.
+
+## TR41. The passed screens that never reached the game (Faber, after TR40)
+
+Research, 2026-11-17, 14:05, on the director's question: "how is that there is many ui that havent got the implementation such as void breaker galaxy ui". A read-only audit of the requests against `src/` found four pieces delivered, passed, and never wired. For three of them no build request was ever written, and none was in any order of work. That's research's miss as keeper of the plan. Each is built as delivered, with no new design.
+- **The galaxy Breaker** (AR12, "The galaxy Breaker's images for the build"; the director: "ok we keep it", 2026-11-15):
+  - uploaded 2026-11-17, not wired;
+  - the six images and `build/handoff/UI/breaker/breaker_sky.json` are laid in `BreakerScreen`, as the json and research's read say: one mist band in a `CanvasGroup` with its gradient, and the per-window stack as the fallback;
+  - the falling star first at 3 to 6 s, then every 15 to 30 s;
+  - reduced motion holds it still.
+  - The images still stand: Eclipse left the Breaker's room to Modulo as art. The one number to read in the build is the light behind a working shard (`#DCCBFF`, the old lavender). Modulo calls it if it reads off.
+- **Power's cut images in Eclipse** (AR12, "Power's cut images, in Eclipse"): eight images, not uploaded. Upload them under the group, then lay the bar from `power_images.json`.
+- **The level-up notice, take B** (AR12; the director's pick): its clip and three images, not uploaded. Upload, then install.
+- **The shard's festival tag** (AR12; research: competent): four images, uploaded 2026-11-17, not wired.
+- **The HUD's V2 leftovers** (AR12, the 30 images): Battery, Plant, Route, Shard, the three Ink crests and the rest never reached `UIKit`. For each, Faber says in this entry whether a later piece replaced it (the halos by the lead card, BlockDock by the dock) or installs it.
+- **Not here:** TR17's page marks and the old top-bar marks, which AR29 replaces.
+- **Checks:** the content check is already passed for each delivery; the asset log row on upload; the touched self-tests; then research's read from phone captures (the Breaker in motion, a falling star, a working shard), then the director's.

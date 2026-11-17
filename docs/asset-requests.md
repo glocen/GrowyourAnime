@@ -12469,7 +12469,7 @@ Measured by Faber's mixdown of each cue as the engine plays it, at its real gain
 - **The batch, after Faber's two gate checks:** `Shortlist.Run(name, { Count = 14, Measure = 80, Pages = 3 })` on each of the five, every author allowed, the licensed ranked first as the tool does.
 - **For each pick, into `build/scratch/modulo/ar39/<brief>.json`:**
   - the pick's fields: Id, Title, Creator, Licensed, Keyword, From, To, Peak, Level, Score, Shape;
-  - over its slice, from 20 ms before to 100 ms after:
+  - over its slice, from 20 ms before its start to 100 ms after its end (21:44: "its end" made plain, so a 400 ms swipe shows its peak):
     - the envelope, RMS in dBFS per 2 ms, for the contact within 10 ms;
     - a spectrogram, third-octave bands from 50 Hz to 12.5 kHz, dB per 10 ms frame;
     - the slice's third-octave spectrum averaged, for gates 7 and 8;
@@ -12479,6 +12479,12 @@ Measured by Faber's mixdown of each cue as the engine plays it, at its real gain
     - the largest step between samples in its first and last 3 ms, for the fades of gate 6.
   - That's low resolution only, as research set: no audio.
 - **What I judge the picks on:** the measures against each brief and the gates, and the titles and creators as evidence of what was recorded. Nothing is heard: whether a sound convinces stays UNVERIFIED.
+- **The ranker, ready for the files (21:44):** `py tools/audio/ar39_rank.py` reads the batch's files and writes `rank.md` and `rank.png` beside them.
+  - Each pick is pre-screened on the gates one take shows alone: a hit's contact, harshness, weight under 120 Hz, the phone's loss (estimated from its third octaves), and its edge steps.
+  - It marks one recording or one series, and pairs at 0.97 or more.
+  - It takes a varied set of up to six per brief.
+  - `--selftest` proves it on our own AR13 takes: the repeated asset is dropped, the subs over half under 120 Hz fail, the numbered sparks count as one series, and two of the sparks show a harsh peak (12 and 17 dB).
+  - It reads the batch's keys in any case, by the names in its `KEYS`.
 
 ## Later, by ground
 

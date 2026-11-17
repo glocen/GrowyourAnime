@@ -8,6 +8,11 @@ Each covers exactly what it names. The directive of 2026-11-09 is in `docs/archi
 
 | Date | The words | They cover |
 |---|---|---|
+| 2026-11-17, 21:15, to research | "make sure it all free, safe etc.", then the SFX rescue directive, word for word in `docs/archive/directive-sfx-2026-11-17.md`: "Do not involve me in choosing samples, editing files, using external software, testing Studio or comparing candidate sounds" | **Covers:** the team improves the sound effects on its own. Research coordinates, Modulo makes, Faber builds, and an independent reviewer challenges.
+- **Order:** a short feasibility check first, then three pilots (Light Hit, Heavy Hit and Haymaker, Shade Swipe), at most three design rounds each, and then expansion by player impact.
+- **It replaces the 08:00 row's (2) and (3):** no wait for the director's samples and no last retry before the director takes over. The 14:05 row's calibration on the director's samples rests until samples come.
+- **Unchanged:** zero spend, and no install of a tool or model without the director's OK (rule 1; rule 2's sounds). A library sound plays only in the game, never downloaded or uploaded. Nothing is published unverified. Subjective quality is reported VERIFIED or UNVERIFIED, never claimed from numbers.
+- **"An isolated branch or development environment":** read as the dev build with the old cues kept for an A/B switch and a git rollback, since only the builder switches branches (AGENTS.md). |
 | 2026-11-09 | the directive, word for word in `docs/archive/directive-2026-11-09.md` | what each section says. Its candidates stay candidates (sections 6, 7 and 21) |
 | 2026-11-09 | "our next game named "Grow a Anime"" | the title, in their spelling |
 | 2026-11-09 | "This is a inspiration of 2 games: Grow a Garden and grow a chicken fighter (dont even think about worrying of IP)" | taking those two games' genre and general mechanics as inspiration |

@@ -842,7 +842,8 @@ return {
 		-- the grid beside the Voidkin between its two columns of slots, the card sliding over the Voidkin (docs/ui.md, the bag).
 		Cell = 64, -- a grid cell's side at most (docs/ui.md: about 64); five across or more, never under a touch
 		CellGap = 6,
-		Veil = 24, -- the kinds strip's fade where it hides a chip
+		Veil = 32, -- the kinds strip's fade where it hides a chip: past a chip's half pad, so a whole chip at the edge fades too
+		Peek = 0.5, -- a row scrolled to show the chosen chip keeps this share of its neighbour in view: it ends on a cut chip (AR30, research's must-fix)
 		Ring = 16, -- the cells' holder's margins, 8 each side and over and under: a chosen cell's ring's light (UI.VoidkinScreen.Seam.Reach at 64), the scroll bar inside the right's
 		Empty = { Share = 32 / 44, Tint = Color3.fromHex("#6F6790"), Alpha = 0.45 }, -- an empty slot's mark (AR22's json): its share of the well, its tint (the seam's Faint) at 0.55
 		Columns = 5, -- at least; a wider room adds a column a cell wide

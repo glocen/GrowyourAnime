@@ -1051,27 +1051,38 @@ function Bag.Build(context: Context): (() -> boolean)?
 		before.Visible = from > 1
 		after.Visible = from + kinds.AbsoluteWindowSize.X < kinds.AbsoluteCanvasSize.X - 1
 	end
-	-- The chosen kind kept in view: scrolled so its chip stands whole, once the strip has its size and again whenever
-	-- its window changes size. Its place comes from the chips' own widths in order, never from absolute positions,
-	-- which a strip just built can still hold from before its layout. A player's own scroll changes no size, so it's
-	-- never pulled back.
+	-- The chosen kind kept in view: scrolled so its chip stands whole with Peek of its neighbour beside it, cut by the
+	-- edge, so the row shows that it scrolls. Once the strip has its size and again whenever its window changes size.
+	-- Its place comes from the chips' own widths in order, never from absolute positions, which a strip just built can
+	-- still hold from before its layout. A player's own scroll changes no size, so it's never pulled back.
 	local function keep()
 		local window = kinds.AbsoluteWindowSize.X
 		if lit and lit.Parent and kinds.Parent and window > 0 then
 			local scale = Layers.Scale()
 			local left = 0
+			local prior: GuiObject?, after: GuiObject? = nil, nil
+			local passed = false
 			for _, name in Rules.Kinds do
-				local before = kinds:FindFirstChild(name) :: GuiObject?
-				if before == nil or before == lit then
+				local one = kinds:FindFirstChild(name) :: GuiObject?
+				if one == nil then
+					continue
+				elseif one == lit then
+					passed = true
+				elseif passed then
+					after = one
 					break
+				else
+					prior = one
+					left += (one.Size.X.Offset + line.Padding.Offset) * scale
 				end
-				left += (before.Size.X.Offset + line.Padding.Offset) * scale
 			end
 			local wide = lit.Size.X.Offset * scale
 			if left < kinds.CanvasPosition.X then
-				kinds.CanvasPosition = Vector2.new(math.max(0, left - 12 * scale), 0)
+				local peek = if prior then prior.Size.X.Offset * scale * C.Peek else 0
+				kinds.CanvasPosition = Vector2.new(math.max(0, left - peek), 0)
 			elseif left + wide > kinds.CanvasPosition.X + window then
-				kinds.CanvasPosition = Vector2.new(math.max(0, left + wide - window + 12 * scale), 0)
+				local peek = if after then after.Size.X.Offset * scale * C.Peek else 0
+				kinds.CanvasPosition = Vector2.new(math.max(0, left + wide - window + peek), 0)
 			end
 		end
 		veils()

@@ -765,6 +765,15 @@ function BagCases.Cases(given: Given): { any }
 				pickChecks("Salvage", "Salvage:", if below == "" then "Off" else below, below ~= "")
 				local chests = find("Chests")
 				t.Check("Chests chosen: the glass, its neighbours unsplit", chipChosen(chests) and chests ~= nil and chests:FindFirstChild("Split") == nil and (find("Materials") :: Instance):FindFirstChild("Split") == nil)
+				-- A row that scrolls shows that it scrolls (research's must-fix): its fade reaches past a chip's half pad, so
+				-- a whole chip at the edge fades too; and a row scrolled to show the chosen chip ends on its neighbour, cut.
+				t.Check("the row's fade reaches past a chip's half pad", HudConfig.Bag.Veil >= K.Pad / 2 + 8, `{HudConfig.Bag.Veil}`)
+				local rowNow, materials = find("Kinds"), find("Materials")
+				if rowNow and rowNow:IsA("ScrollingFrame") and rowNow.CanvasPosition.X > 1 and materials and materials:IsA("GuiObject") and chests and chests:IsA("GuiObject") then
+					local rowEnd = rowNow.AbsolutePosition.X + rowNow.AbsoluteWindowSize.X
+					local shown = rowEnd - materials.AbsolutePosition.X
+					t.Check("scrolled to Chests: it stands whole, and Peek of Materials beside it, cut by the edge", chests.AbsolutePosition.X >= rowNow.AbsolutePosition.X - 0.5 and near(shown, materials.AbsoluteSize.X * HudConfig.Bag.Peek, 1.5) and find("VeilRight") ~= nil and (find("VeilRight") :: GuiObject).Visible, `shown {shown} of {materials.AbsoluteSize.X}`)
+				end
 				VoidkinScreen.Tap(find("All"))
 				Bag.Reset()
 				Screen.Close()

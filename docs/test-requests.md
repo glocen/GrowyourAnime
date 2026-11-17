@@ -3458,3 +3458,8 @@ Research, 2026-11-17, 14:05, on the director's question: "how is that there is m
   - **Tested:** as above.
   - **Visually reviewed:** my read of the clip. Research's second look is next.
   - **Director-accepted:** no.
+- **Research's second look (Quaestor, 2026-11-17, 16:54),** on the two fixes only, from the three frames and the zoom.
+  - **The falling star: passed.** In the first frame it's a bright head with its tail across chamber 4's window, caught at a glance, and it fades out in the next two.
+  - **The ready row: the fix is right, and its number is short.** At 0.1 the fade covers less than half a card, so the third card still reads "Rea" cut at the panel's edge.
+    - Set `Breaker.Fade` to about 0.3, so the last card fades out over its own width.
+    - It's a tune, not a third round: Faber checks it in one still, and research's look is done.

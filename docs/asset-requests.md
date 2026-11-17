@@ -8362,6 +8362,7 @@ Part 7: "Recomposed, never scaled". AR16's star at 128: the machines keep their 
   - **The bold thing:** the wheel and the ring on one line from the spawn.
   - **Must-fix:** none.
   - **Where the phone read happens:** past the gate, the Strip is bare until AR17, and a pale slab stands on the right horizon. Rather than a second capture now, AR17's phone capture at the crossing also takes one from the spawn. Both are read there, the slab included.
+- **The phone read (Quaestor, 2026-11-17, 16:54)** of `ar17-spawn-phone.jpg` and `ar17-spawn-door-phone.jpg`: the verdict above holds at the phone. The Breaker's wheel and the festival ring stand on one line, and the guide's arrow reads. Closed on research's side.
 
 ## AR17. The rest of the map (Modulo's look from the grey world, then Faber)
 
@@ -8555,6 +8556,12 @@ Part 7's size is picked: plots of 128, 32 apart, the crossing one plot wide, End
   - **Tested:** as above.
   - **Visually reviewed:** my phone captures. Research's read in the game is next.
   - **Director-accepted:** no.
+- **Research's verdict in the game (Quaestor, 2026-11-17, 16:54),** from the four phone captures (47c0b85).
+  - **Felt:** out of the gate, the great shard owns the sky over the crossing. The crack runs under it straight up the side street to the festival gate, so the way to the fight is in view the moment you leave home.
+  - **Tier:** competent.
+  - **The bold thing:** the great shard hanging point-down over the crossing, whole from the Strip at dusk.
+  - **Must-fix:** none.
+  - **The pale slab** is the Void Shop's grey stand-in, as Faber says. From the Strip it reads as a blank wall. It stays in the dev build until phase 4's shop. Before any public build, it is hidden or replaced, as no placeholder ships.
 
 ## AR18. The mobile inventory: three directions (Modulo, for research's verdict and Faber's read)
 

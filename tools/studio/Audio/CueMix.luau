@@ -46,9 +46,11 @@ CueMix.Lead, CueMix.Tail = 0.02, 0.05 -- silence kept before a render's first so
 -- didn't load.
 export type Source = (take: Config.Take) -> { number }?
 -- One play of a cue: its layers' takes by number (each list's `k`th, wrapped), its speed, its volume and its strength.
-export type Play = { Cue: Config.Cue, Takes: { number }?, Speed: number?, Volume: number?, Strength: number? }
--- A render: samples from `Origin` seconds (the cue's moment is 0), and its edges' largest steps, of full scale: where a
--- layer starts (In), where it ends (Out), and at a fade's steps (Fade). Missed counts the takes that didn't load.
+-- Gain multiplies every layer's level before the player's cap (the A/B's matched level).
+export type Play = { Cue: Config.Cue, Takes: { number }?, Speed: number?, Volume: number?, Strength: number?, Gain: number? }
+-- A render: samples from `Origin` seconds (the cue's moment is 0), and its edges (gate 6): the step into a layer's
+-- first sample (In) and out of its last (Out), of that layer's own top, the most of its layers; and a fade's largest
+-- step (Fade), of full scale. Missed counts the takes that didn't load, Clamped the layers past the player's cap.
 export type Render = { Samples: { number }, Origin: number, In: number, Out: number, Fade: number, Missed: number, Clamped: number }
 export type Measure = {
 	Momentary: number, -- the loudest 400 ms, LUFS
@@ -110,7 +112,7 @@ function CueMix.Play(play: Play, source: Source, rate: number): Render
 			continue
 		end
 		local take = takes[((if play.Takes then play.Takes[i] or 1 else 1) - 1) % #takes + 1]
-		local level = SoundRule.Level(layer, take, volume, play.Strength)
+		local level = SoundRule.Level(layer, take, volume, play.Strength) * (play.Gain or 1)
 		if level <= 0 then
 			continue
 		end
@@ -130,7 +132,6 @@ function CueMix.Play(play: Play, source: Source, rate: number): Render
 	end
 	local origin = first - CueMix.Lead
 	local out = table.create(math.max(math.ceil((last + CueMix.Tail - origin) * rate), 1), 0)
-	local edge = math.floor(Measures.Edge * rate + 0.5)
 	local stepIn, stepOut, stepFade = 0, 0, 0
 	for _, event in events do
 		local s = event.Samples
@@ -157,20 +158,18 @@ function CueMix.Play(play: Play, source: Source, rate: number): Render
 			was = v
 			i += 1
 		end
-		-- its edges: from silence into its first samples, and from its last into silence
+		-- its edges: from silence into its first sample, and from its last into silence, of its own top
 		local count = #own
 		while count > 0 and own[count] == 0 do
 			count -= 1
 		end
-		local before = 0
-		for j = 1, math.min(edge, count) do
-			stepIn = math.max(stepIn, math.abs(own[j] - before))
-			before = own[j]
+		local top = 0
+		for j = 1, count do
+			top = math.max(top, math.abs(own[j]))
 		end
-		local after = 0
-		for j = count, math.max(count - edge + 1, 1), -1 do
-			stepOut = math.max(stepOut, math.abs(own[j] - after))
-			after = own[j]
+		if top > 0 then
+			stepIn = math.max(stepIn, math.abs(own[1]) / top)
+			stepOut = math.max(stepOut, math.abs(own[count]) / top)
 		end
 	end
 	return { Samples = out, Origin = origin, In = stepIn, Out = stepOut, Fade = stepFade, Missed = missed, Clamped = clamped }

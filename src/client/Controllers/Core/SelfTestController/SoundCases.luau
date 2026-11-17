@@ -314,7 +314,7 @@ function SoundCases.Cases(): { any }
 			end,
 		},
 		{
-			Name = "Sound: AR39's round 1: each bus ends in its limiter, which holds, and every arrangement is heard through its pilot's bus",
+			Name = "Sound: AR39's arrangements: each bus ends in its limiter, which holds, and every arrangement is heard through its pilot's bus at its matched level",
 			Run = function(t: any)
 				local camera = workspace.CurrentCamera
 				local config = CuesConfig :: any
@@ -383,8 +383,8 @@ function SoundCases.Cases(): { any }
 				local missedBefore = Cues.Missed()
 				for name, set in CuesConfig.Arrangements do
 					local use = t.Server("Tune", `Cues.Use.{name}`)
-					local variants = {}
-					for variant in set do
+					local variants: { string } = {}
+					for variant: string in set :: { [string]: CuesConfig.Cue } do
 						table.insert(variants, variant)
 					end
 					table.sort(variants)
@@ -401,8 +401,25 @@ function SoundCases.Cases(): { any }
 							local began = os.clock()
 							local played = Cues.Play(name, ahead, { In = lead, Strength = 1 })
 							local sounding = Cues.Playing(name)
-							local heard = loudest(analyzer, began, 0, lead + 0.5)
+							-- its first layer's player, against that take's level times the A/B's match, capped as a player is
+							local takes = (CuesConfig.Takes :: { [string]: { CuesConfig.Take } })[cue.Layers[1].Takes]
+							local match = SoundRule.Match(name, variant)
+							local heard: number = 0
+							local most: number = 0
+							while os.clock() - began < lead + 0.5 do
+								RunService.Heartbeat:Wait()
+								heard = math.max(heard, analyzer.PeakLevel)
+								for k, take in takes do
+									for nth = 1, math.max(cue.Voices, 1) do
+										local voice = Cues.Voice(`{name}@{variant}`, 1, k, nth)
+										if voice and voice.IsPlaying then
+											most = math.max(most, voice.Volume / math.min(SoundRule.Level(cue.Layers[1], take, 1, 1) * match, 3))
+										end
+									end
+								end
+							end
 							t.Check(`{name} as {variant}: heard through the {cue.Bus} bus`, played and sounding > 0 and heard > QUIET, string.format("peak %.4f, %d sounding", heard, sounding))
+							t.Check(`{name} as {variant}: its player at its level times its match (x{string.format("%.2f", match)})`, most <= 1.001 and most >= math.min(cue.Volume[1], cue.Volume[2]) - 0.02, string.format("%.3f of it", most))
 						else
 							t.Check(`{name} as {variant}: switched in`, false, tostring(config.Use[name]))
 						end

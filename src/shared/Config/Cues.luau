@@ -244,6 +244,10 @@ local Config = {
 	-- the old one stays as it is beside it. A name with no arrangement plays the old cue.
 	Use = { LightHit = "Old", HeavyHit = "Old", ShadeSwipe = "Old" },
 	Arrangements = {} :: { [string]: { [string]: Cue } },
+	-- AR39, the A/B at matched level (research, 2026-11-17): while On, an arrangement plays Db louder, so it meets its old
+	-- cue's short-term loudness. Db is CueCheck's Match, measured on the mix with this off, and is measured again after
+	-- every round. For the listen only: the level that ships is gate 4's. NL_Debug:Invoke("Tune", "Cues.Match.On", false).
+	Match = { On = true, Db = {} :: { [string]: { [string]: number } } },
 }
 
 -- An arrangement of a pilot: its own layers, and its pilot's bus, spreads, voices and reach.
@@ -307,5 +311,12 @@ Config.Arrangements.ShadeSwipe = {
 	}),
 }
 -- AR39's arrangements: end
+-- AR39's match: begin (CueCheck's Match for the arrangements above, dB)
+Config.Match.Db = {
+	LightHit = { A1 = 9.72, A3 = 9.62, A4 = 9.65 },
+	HeavyHit = { B1 = 14.34, B2 = 14.46, B3 = 14.49 },
+	ShadeSwipe = { C1 = 22.23, C2 = 22.22, C3 = 22.22 },
+}
+-- AR39's match: end
 
 return Config

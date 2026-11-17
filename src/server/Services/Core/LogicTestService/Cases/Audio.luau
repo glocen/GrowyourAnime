@@ -152,7 +152,10 @@ return {
 				local slice = cue({ { Takes = "NL_MixFlat", At = 0, Volume = full } })
 				CueMix.Engine.Stepped = true
 				local stairs = CueMix.Play({ Cue = slice }, source, rate)
-				t.Check("a slice's 3 ms rise isn't drawn: it starts at its first sample", near(stairs.In, 0.5, 1e-6), tostring(stairs.In))
+				t.Check("a slice's 3 ms rise isn't drawn: it starts at its first sample, a step of its whole top", near(stairs.In, 1, 1e-6), tostring(stairs.In))
+				t.Check("a tone that starts on its zero steps nothing in", plain.In < 1e-6, tostring(plain.In))
+				local matched = CueMix.Measure(CueMix.Play({ Cue = tone, Takes = { 1 }, Gain = 2 }, source, rate), rate)
+				t.Check("a play's gain of 2, the matched level's, is 6.02 dB", near(matched.SamplePeak - m.SamplePeak, 6.0206), tostring(matched.SamplePeak - m.SamplePeak))
 				t.Check("a 40 ms fall in a frame's steps: each a frame's share of it", near(stairs.Fade, 0.5 * CueMix.Engine.Frame / 0.04, 1e-3), tostring(stairs.Fade))
 				CueMix.Engine.Stepped = false
 				local line = CueMix.Play({ Cue = slice }, source, rate)

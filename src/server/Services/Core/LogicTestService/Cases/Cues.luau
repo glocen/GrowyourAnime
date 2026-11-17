@@ -179,6 +179,21 @@ return {
 			t.Check("no gain is 1", math.abs(Sound.Level(layer, { Id = 1, Seconds = 0.1, Peak = 0 } :: any, 1, nil) - base * 0.5) < 1e-9)
 			t.Check("a layer by strength: none at the lightest hit", Sound.Level({ Takes = "x", At = 0, Volume = 0.5, Strength = true } :: any, take, 1, 0) == 0)
 			t.Check("round 1 is in", some)
+			-- the A/B at matched level: an arrangement's own dB while it's on, nothing for a cue as it was or while off
+			local on = Cues.Match.On
+			for pilot, set in Cues.Match.Db do
+				for variant, db in set do
+					local named = Cues.Arrangements[pilot] ~= nil and Cues.Arrangements[pilot][variant] ~= nil
+					t.Check(`{pilot}@{variant}: its match is an arrangement's, within 30 dB`, named and db == db and math.abs(db) <= 30, tostring(db))
+					Cues.Match.On = true
+					t.Check(`{pilot}@{variant}: matched, its level times its dB`, math.abs(Sound.Match(pilot, variant) - 10 ^ (db / 20)) < 1e-9)
+					Cues.Match.On = false
+					t.Check(`{pilot}@{variant}: unmatched, its own level`, Sound.Match(pilot, variant) == 1)
+				end
+			end
+			Cues.Match.On = true
+			t.Check("a cue as it was, or an arrangement with no measure, plays at its own level", Sound.Match("LightHit", "Old") == 1 and Sound.Match("LightHit", nil) == 1 and Sound.Match("NoSuchCue", "A1") == 1)
+			Cues.Match.On = on
 		end,
 	},
 	{

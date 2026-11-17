@@ -9,7 +9,8 @@
 --     nothing rests on the default listener, and the Shades' bus ducks alone;
 --   - the level: Config.Cues.Trim takes back the 2025 doubling of an AudioPlayer's volume (a player at Volume 1 plays
 --     its file as it is, so a cue is 6 dB under its file: measured 2026-11-17); a library take has its own
---     gain inside its list (Rules.Sound.Level), and a player's volume stops at 3;
+--     gain inside its list (Rules.Sound.Level), and a player's volume stops at 3. While Config.Cues.Match is on, an
+--     arrangement plays at its old cue's loudness (the A/B at matched level, for the listen);
 --   - each bus ends in an AudioLimiter (Config.Cues.Limiter), after its fader: the rare coincidence of tops is caught
 --     there, so the cues' levels are set by their relation (AR39, research on round 1);
 --   - a library take plays its slice of its file (AR39): its PlaybackRegion is From to To, set once, and its fades are
@@ -311,6 +312,7 @@ function Cues.Play(name: string, at: Vector3, options: Options?): boolean
 		end
 	end
 	local speed, volume = pick(cue.Pitch), pick(cue.Volume)
+	local match = if key ~= name then SoundRule.Match(name, (Config.Use :: { [string]: string })[name]) else 1
 	local mixer = mixerTime()
 	local play: Play = { Voices = {}, Ends = now }
 	for i, layer in cue.Layers do
@@ -321,7 +323,7 @@ function Cues.Play(name: string, at: Vector3, options: Options?): boolean
 		end
 		local k = takeOf(`{key}#{i}`, math.min(#takes, #pool))
 		local take, voices = takes[k], pool[k]
-		local gain = SoundRule.Level(layer, take, volume, o.Strength)
+		local gain = SoundRule.Level(layer, take, volume, o.Strength) * match
 		if gain <= 0 or voices == nil then
 			continue
 		end
@@ -414,10 +416,11 @@ function Cues.Try(name: string, cue: Config.Cue?)
 		build(name, cue)
 	end
 end
--- One voice of a cue's layer's take, for the self-test to read.
-function Cues.Voice(name: string, layer: number, take: number): AudioPlayer?
+-- One voice of a cue's layer's take (its first, or its `nth`), for the self-test to read.
+function Cues.Voice(name: string, layer: number, take: number, nth: number?): AudioPlayer?
 	local voices = pools[name] and pools[name][layer] and pools[name][layer][take]
-	return if voices and voices[1] then voices[1].Player else nil
+	local voice = voices and voices[nth or 1]
+	return if voice then voice.Player else nil
 end
 function Cues.Playing(name: string): number
 	local now, count = os.clock(), 0

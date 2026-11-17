@@ -70,6 +70,14 @@ function Sound.Level(layer: Cues.Layer, take: Cues.Take, volume: number, strengt
 	return Cues.Volume * Cues.Trim * layer.Volume * (take.Gain or 1) * volume * (if layer.Strength then math.clamp(strength or 1, 0, 1) else 1)
 end
 
+-- What an arrangement's level is multiplied by for the A/B at matched level (Config.Cues.Match): 1 while it's off, for
+-- a cue as it was, and for an arrangement with no measure.
+function Sound.Match(name: string, variant: string?): number
+	local set = if Cues.Match.On and variant then Cues.Match.Db[name] else nil
+	local db: number? = if set and variant then set[variant] else nil
+	return if db then 10 ^ (db / 20) else 1
+end
+
 -- When a layer starts, in seconds from its cue's moment, playing `take` at `speed`: a layer led by its top or its length
 -- starts that much earlier, so its top or its end lands on the moment.
 function Sound.Start(layer: Cues.Layer, take: Cues.Take, speed: number): number

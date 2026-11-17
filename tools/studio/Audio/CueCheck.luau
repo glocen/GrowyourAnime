@@ -4,13 +4,15 @@
 -- plays it (CueMix, with what it takes as given), and the mix is measured: numbers only, never audio. Studio, Edit
 -- mode, MCP execute_luau. It outlasts one call, so it runs detached and keeps its answer under ServerStorage.NL_CueCheck:
 --   local Check = require(game.ServerStorage.NL_Tools.Audio.CueCheck:Clone())
---   Check.Start()            -- returns at once
+--   Check.Start()            -- returns at once; Start({ Match = false }) reads the cues at their own level
 --   return Check.Status()    -- where it is
 --   return Check.Report()    -- once done: the gates, a line each
 --   return Check.Result()    -- the numbers, as JSON: every take alone, every cue with each take once, the overlaps
 -- A cue is played at its loudest pick, the middle of its speed spread and full strength; play `k` of a cue takes each
 -- of its lists' `k`th take, so every take is in a mix once. An overlap repeats a cue's hottest plays, which the engine
--- never does twice running: the worst case.
+-- never does twice running: the worst case. While Config.Cues.Match is on, an arrangement is read at its matched level,
+-- as the engine plays it. Rules.Sound reads Config.Cues as Studio first loaded it: after a change to Volume or Trim,
+-- restart Studio before trusting a level.
 
 local HttpService = game:GetService("HttpService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
@@ -178,6 +180,7 @@ end
 type Variant = {
 	Name: string, -- "LightHit@Old", "LightHit@A1"
 	Cue: Config.Cue,
+	Gain: number, -- its matched level's factor, 1 for a cue as it was
 	Renders: { CueMix.Render },
 	Rows: { { [string]: any } },
 	Peaks: { number }, -- each play's true peak, dBTP
@@ -204,7 +207,7 @@ local function run(status: (string) -> ())
 		local set: { Variant } = {}
 		local old = (Config.Cues :: { [string]: Config.Cue })[pilot]
 		if old then
-			table.insert(set, { Name = `{pilot}@Old`, Cue = old, Renders = {}, Rows = {}, Peaks = {}, ShortTerm = 0, Phone = 0 })
+			table.insert(set, { Name = `{pilot}@Old`, Cue = old, Gain = 1, Renders = {}, Rows = {}, Peaks = {}, ShortTerm = 0, Phone = 0 })
 		end
 		local names = {}
 		for name in Config.Arrangements[pilot] or {} do
@@ -212,7 +215,8 @@ local function run(status: (string) -> ())
 		end
 		table.sort(names)
 		for _, name in names do
-			table.insert(set, { Name = `{pilot}@{name}`, Cue = Config.Arrangements[pilot][name], Renders = {}, Rows = {}, Peaks = {}, ShortTerm = 0, Phone = 0 })
+			local db = if Config.Match.On then (Config.Match.Db[pilot] or {})[name] else nil
+			table.insert(set, { Name = `{pilot}@{name}`, Cue = Config.Arrangements[pilot][name], Gain = if db then 10 ^ (db / 20) else 1, Renders = {}, Rows = {}, Peaks = {}, ShortTerm = 0, Phone = 0 })
 		end
 		variants[pilot] = set
 		for _, variant in set do
@@ -283,7 +287,7 @@ local function run(status: (string) -> ())
 			local worst = { TruePeak = -math.huge, PeakFrom = math.huge, PeakTo = -math.huge, Under120 = 0, Narrow = -math.huge, NarrowAt = 0, StepIn = 0, StepOut = 0, StepFade = 0, Missed = 0, Clamped = 0 }
 			for k = 1, most do
 				local order = table.create(#variant.Cue.Layers, k)
-				local render = CueMix.Play({ Cue = variant.Cue, Takes = order }, source, RATE)
+				local render = CueMix.Play({ Cue = variant.Cue, Takes = order, Gain = variant.Gain }, source, RATE)
 				local m = CueMix.Measure(render, RATE, task.wait)
 				table.insert(variant.Renders, render)
 				table.insert(variant.Rows, row(m, render))
@@ -319,12 +323,12 @@ local function run(status: (string) -> ())
 				Players = count,
 			}
 			say(string.format(
-				"%s: short-term %s LUFS (%s to %s), through the phone %s; true peak %s dBTP%s; top %.1f to %.1f ms from the moment%s; under 120 Hz %.0f%%; narrow %s dB at %.0f Hz%s; steps in %.3f, out %.3f, fade %.3f%s; %d players%s%s",
+				"%s: short-term %s LUFS (%s to %s), through the phone %s; true peak %s dBTP%s; top %.1f to %.1f ms from the moment%s; under 120 Hz %.0f%%; narrow %s dB at %.0f Hz%s; edges in %.3f, out %.3f of the slice's top%s, a fade's step %.3f; %d players%s%s",
 				variant.Name, fmt(variant.ShortTerm), fmt(math.min(table.unpack(short))), fmt(math.max(table.unpack(short))), fmt(variant.Phone),
 				fmt(worst.TruePeak), if worst.TruePeak > -1 then "  GATE 3" else "",
 				worst.PeakFrom * 1000, worst.PeakTo * 1000, if math.max(math.abs(worst.PeakFrom), math.abs(worst.PeakTo)) > 0.01 then "  GATE 2" else "",
 				worst.Under120 * 100, fmt(worst.Narrow), worst.NarrowAt, if worst.Narrow >= 10 then "  GATE 7" else "",
-				worst.StepIn, worst.StepOut, worst.StepFade, if math.max(worst.StepIn, worst.StepOut, worst.StepFade) > 0.25 then "  GATE 6" else "",
+				worst.StepIn, worst.StepOut, if math.max(worst.StepIn, worst.StepOut) > 0.25 then "  GATE 6" else "", worst.StepFade,
 				count, if worst.Missed > 0 then `  {worst.Missed} MISSED` else "", if worst.Clamped > 0 then `  {worst.Clamped} PAST VOLUME 3` else ""
 			))
 		end
@@ -364,6 +368,19 @@ local function run(status: (string) -> ())
 				match[variant.Name] = round(was.ShortTerm - variant.ShortTerm)
 			end
 		end
+	end
+
+	local off = {}
+	for name, db in match do
+		if math.abs(db) > 0.3 then
+			table.insert(off, `{name} {fmt(db)}`)
+		end
+	end
+	table.sort(off)
+	if Config.Match.On then
+		say(if #off > 0 then "matched level is ON, and these are more than 0.3 LU off their old cue (dB to add): " .. table.concat(off, ", ") .. "  MATCH" else "matched level is ON: every arrangement within 0.3 LU of its old cue")
+	else
+		say("matched level is off: each arrangement at its own level")
 	end
 
 	-- 4. the bus in a fight's overlaps (gate 3), and what its limiter takes
@@ -459,6 +476,7 @@ local function run(status: (string) -> ())
 		Spacing = round(spacing, 4),
 		SpacingOf = spacingOf,
 		Limiter = Config.Limiter,
+		Matched = Config.Match.On,
 		Centres = centres,
 		Missed = missed,
 		Players = players,
@@ -470,8 +488,12 @@ local function run(status: (string) -> ())
 	}))
 end
 
--- Starts the check, detached. Its answer stays under ServerStorage.NL_CueCheck until the next Start.
-function CueCheck.Start()
+-- Starts the check, detached. Its answer stays under ServerStorage.NL_CueCheck until the next Start. `options.Match`
+-- false reads every arrangement at its own level (how Config.Cues.Match.Db is measured), true at its matched one.
+function CueCheck.Start(options: { Match: boolean? }?)
+	if options and options.Match ~= nil then
+		Config.Match.On = options.Match
+	end
 	holder():ClearAllChildren()
 	keep("Status", "starting")
 	task.spawn(function()

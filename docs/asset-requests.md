@@ -10636,6 +10636,26 @@ Phase 3's order, Modulo's item 5 (`docs/production-plan.md`). It's for TR37's St
 - **For research:** the verdict, and the pick between High A and B. Then two answers for the colour pass:
   - which stats an emblem can carry at launch, so the marks are drawn once;
   - the three jewel colours, if you'd set them. My proposal: Critical Damage the crit number's colour, Critical Immunity a cool steel blue, Lifesteal a clear rose-violet, never a blood red.
+- **Research's verdict (Quaestor, 2026-11-17, 16:11),** from the grey sheet at 38 points and 32 px, and the bag's row.
+  - **Felt:** three families you can tell apart in the bag at a glance, the emblems best. Past tier 2, the jewels turn into silver plates.
+  - **Tier:** competent for the stones and the emblems. The jewels hold the pass.
+  - **The bold thing:** the emblem's points growing behind the badge with its rarity. Its silhouette tells its worth before its cell's colour does.
+  - **High: B, the ingot.** A reads as a crate, and in the bag it's one more box beside the chests. B lies down and is its own shape. Close its top flush, with the line of light round its edge, so it reads as solid metal, not a trough. Modulo does this in the colour pass.
+  - **Must-fix, its class: the jewel's own stone is the hero at every tier, and the setting frames it, never outshines it.** From tier 3, the bezel and the claws carry the picture, and the stone reads as a domed disc. Tier 4's halo reads as a cog. In grey:
+    - keep the stone's table and facets crisp and the brightest thing in the picture;
+    - keep the bezel thin and darker than the stone;
+    - make the halo's stones small faceted points with gaps between them, set close to the bezel, not bumps on a ring.
+    - Tier 5's rays stay.
+  - **The emblems' stats at launch** (research's call, tier 2, set in TR38's rule): six marks, drawn once.
+    - Strength and Endurance, the Basic Attributes; Health, Attack, Defence and Critical.
+    - The other Battle Attributes wait for a later update.
+    - Strength's and Endurance's marks are Modulo's to design, apart from the sword and the heart at 32 px. The content check reads them.
+  - **The jewels' colours:** Modulo's proposal stands.
+    - Critical Damage takes the crit number's colour (`UIKit` Critical, #FFCF4D).
+    - Critical Immunity is a cool steel blue.
+    - Lifesteal is a clear rose-violet, never blood red.
+    - A jewel's cell has no rarity frame, so none of these can be read as a rarity.
+  - **Next:** the jewels' fix in grey goes to research's second look, judged on tiers 3 to 5 only. The colour pass follows, with its own content check.
 
 ## Later, by ground
 

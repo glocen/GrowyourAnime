@@ -3225,7 +3225,7 @@ Research's request, 2026-11-17, 11:57, item 7 of phase 3's order. The design: `d
 **Feel line:** the player drops an emblem into an empty socket on an item, the item's card shows the gain, and the Combat Power ticks up by a whole number.
 
 **The rules (research's, tier 2):**
-- **An emblem** has a rarity (Common, Uncommon and Rare at launch [D]), a level tier fixed at the drop, and one stat: a flat line of Strength, Endurance or a Battle Attribute. Its size is its rarity's budget times G(tier), priced by Combat Power as an item's line is, so every stat's emblem of one rarity is worth the same.
+- **An emblem** has a rarity (Common, Uncommon and Rare at launch [D]), a level tier fixed at the drop, and one stat: a flat line of Strength, Endurance, Health, Attack, Defence or Critical at launch. The other Battle Attributes come later [research, 16:11, AR31's verdict]. Its size is its rarity's budget times G(tier), priced by Combat Power as an item's line is, so every stat's emblem of one rarity is worth the same.
 - **Sockets** by the item's rarity: one on Common, two on Uncommon, three on Rare, four on Epic and above [D]. Putting one in or taking one out is free [D]. They move across on equip with the rank and the jewel (TR37).
 - **Three of a kind make one better:** three emblems of the same stat and rarity combine into one of the next rarity, at the highest tier of the three. It never fails, and Rare is the top at launch. Duplicates always have a use.
 - **Sources:** chests (`Config.Chests`, a new kind of reward), elites, and the Void Shop when it comes (phase 4).

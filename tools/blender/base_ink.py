@@ -18,7 +18,8 @@ SOLID = {"steel", "girder", "bone", "concrete", "yellow", "ceramic", "copper", "
 HULLED = ("Generator", "GeneratorWheel", "GeneratorDemand", "Breaker", "BreakerChamber", "BreakerWaiting", "Bay", "BatteryRack",
           "BatteryCell", "Showcase", "Door", "Training", "TrainingCrown", "BaySleeping", "SleepingStone",
           "Generator2", "Generator3", "Generator2Wheel", "Generator2Pinion", "Generator3Pinion", "Generator2Demand",
-          "Generator3Demand", "Forge", "ForgeRam", "ForgeGear", "Condenser", "CondenserCore")   # the machines, and the plinth
+          "Generator3Demand", "Forge", "ForgeRam", "ForgeGear", "Condenser", "CondenserCore",
+          "Breaker2", "Breaker3", "BreakerHinge", "BreakerLid")   # the machines, and the plinth
 LEAST = (0.25, 0.8)   # a shape worth an edge: its thinnest side, and its middle one. Under it, an edge would swallow it
 
 

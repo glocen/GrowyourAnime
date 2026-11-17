@@ -10931,6 +10931,84 @@ From the two sheets and the gate's six (cbc3782).
 - **Must-fix for the build, its class: a stage reads from the player's usual camera, not only from the gate.** From the spawn's start camera, A's II and III are near twins: III is wider, but its top line barely changes. Give III's barbs and the crystal's claws enough height that the silhouette's top changes from the spawn too.
 - **Next:** Stages II and III as models for Faber with that fix. Judged in the game from the spawn and the gate, the hinge gears turning while chambers break.
 
+### Stages II and III as kit pieces, for Faber's install (Modulo, 2026-11-17, 17:01 to 17:13 by the clock)
+
+**The content check on the block's sheets** (17:00 to 17:03): PASS. Its conditions for the models:
+- The gears' spokes stay straight.
+- No brass, copper or gold comes near a gear.
+- Every vein stops at least a stud short of every tip.
+- A's jaws get no inner glow, no dark-red fill and no tongue or gum shape, and the fangs stay pale or grey stone, never wet.
+- No segmented horns that read as vertebrae.
+- The coloured model's sheet comes back to it, and the upload once more.
+
+**Research's must-fix, made:**
+- Stage III's barbs rise from each jaw's elbow to 19.2, above the jaws' crest at 17.6.
+- Its two claws rise round the crystal and close over its top at 20.
+- From the spawn's start camera, Stage III's top line is now horned where Stage II's is a smooth arch.
+- **Why no higher:** that camera's frame tops out about 20 up over the Breaker's middle. Tips at 21.4 touched it, so they came down.
+- Stage III's crystal is lifted to 16.4, so it floats clear of the clamp.
+
+**What's handed off:**
+- The pieces are in `build/handoff/Base` (`manifest.json`, `meshes/`), made by `tools/blender/base_breaker.py`. `breaker_stages.py`, the block's script, is gone: B's code stays in cbc3782.
+- The swap's table is in `plan.json`, under `machines.breakerStages`.
+- **Stage I's pieces, names and origins are byte for byte as they were:** the export only adds.
+
+**The pieces,** each stood at the Breaker's place, in its own frame:
+- **Breaker2 and Breaker3:** each stage's still body, jaws, fangs and crystal, in place of Breaker.
+  - Breaker2's body is 21 long; Breaker3's is 28. Each runs from the line's inner end outward, so its middle is 3.5 or 7 across from Stage I's.
+  - **Collision:** a box over the body, 5 high, in the manifest. The jaws are look only.
+- **BreakerHinge:** a jaw's hinge, a 10-tooth gear on each long face on one axle.
+  - It stands twice a stage, 6.3 up.
+  - It turns about its own axle while any chamber breaks: `CFrame.Angles(0, 0, angle * sign)`, the sign from the table, so the two turn mirrored.
+- **BreakerLid:** a seat whose chamber hasn't opened, an unlit lid of void stone with two bone bars. It stands in the chamber's place until the Breaker has that chamber.
+- **Stood again:** BreakerChamber and BreakerWaiting are Stage I's.
+
+**The table** gives each stage's rows: piece, place (across, toward the gate, up), how it moves, and `lamp`, where BreakerLamp stands.
+- **Chambers:** a row's `chamber` is its number, and `shut` is BreakerLid, for chambers 3 and 4 until Config.Base's BreakerChambers gives them (3 from level 8, 4 from 20).
+- **The waiting line:** at Stage I, along the line's end as today; from Stage II, three cradles at the body's front foot, 5.1 toward the gate.
+- **The lamp:** Stage I 10.2 up, Stage II 14.4, Stage III 16.4, at the line's middle.
+
+**Triangles,** with the drawn edge's hull, from the manifest:
+
+| Piece | Triangles |
+|---|---|
+| Breaker2 | 962 |
+| Breaker3 | 1,320 |
+| BreakerHinge | 736 |
+| BreakerLid | 108 |
+
+- **Stages whole:** I 1,618; II 3,640; III 4,268.
+
+**The plot's fit:** the footprint grows to 28 along the line at Stage III. Its check is Faber's: `Config.World.Fit` and Rules.BaseFit.
+
+**One thing for research, in the game:**
+- A shut seat's window on the body's face keeps its cyan line: it's the body's light, in the still piece.
+- If it reads as an open chamber from the gate, the line moves into the chamber piece. That's a re-export of BreakerChamber, which Faber has already uploaded.
+
+**The sheet:** `build/handoff/Base/breaker_stages.png`. It shows each stage:
+- from the spawn's start camera and from the gate at 640 by 360;
+- the spawn view at its own size and in black;
+- the gate cut at 64 and 128 px, and in black;
+- and Stage II at levels 6 and 7 with chamber 3 lidded.
+
+**Content check on the coloured models** (17:14 to 17:17): PASS. It looked at the sheet, the views and the source.
+- **Stage III's top line** reads as a horned arch over a row of fangs, mild fantasy menace. There's no hand sign and no emblem.
+- **The claws** read as a gem's setting, and **the lid's bars** carry no symbol.
+- **The fangs** are the kit's matte void stone, accepted as clean stone.
+- **Its conditions for upload:**
+  1. The jaws, fangs, barbs, claws and gears stay matte in Studio. No Glass, Neon or shine on them, and no red or warm tint at a tip or inside the jaws.
+  2. The meshes go up exactly as they are. Any change to the jaws' outline, the barbs, the claws, the crystal, the gear or the lid comes back to it.
+  3. The builder's own check before upload opens these files, and logs them in `docs/asset-log.md`.
+
+**The four facts:**
+- **Implemented:** Stages II and III as four kit pieces and the swap's table.
+- **Tested:**
+  - The export and the plan ran. Stage I's pieces are unchanged byte for byte.
+  - Each stage was stood by the table and rendered from the spawn and the gate.
+  - The content check passed.
+- **Visually reviewed:** my own read, stills. Research's read is in the game, from the spawn and the gate, with the hinges turning.
+- **Director-accepted:** no.
+
 ## Later, by ground
 
 The rest of ground 1 (Kirra in AR10, Watt in AR11; then Sable, Marigold, Crane), then each ground's Voidkin in `docs/roster.md`'s order. **The machines** (Gantry, Bulwark, Ironhymn, Shiomaru, Aegir) share one custom rig, taller than a player, with its own clip family: the first of them is timed like AR1, because a custom rig is a different cost.

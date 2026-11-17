@@ -1688,6 +1688,94 @@
    "collision": "none",
    "lights": [],
    "note": "a jewel in a cup: stood at the cup's place on the comb, the Condenser's turn. One pale swatch on every face: the jewel type's colour is the builder's (a tint, or the mesh in Neon without the kit's pictures), so the cup reads from a stone's at 14 studs. Look only"
+  },
+  "Breaker2": {
+   "mesh": "meshes/Breaker2.json",
+   "triangles": 962,
+   "vertices": 636,
+   "centre": [
+    3.5,
+    8.395,
+    0.0
+   ],
+   "size": [
+    24.92,
+    17.01,
+    6.82
+   ],
+   "colour": "maps/Base_Kit_Color.png",
+   "glow": "maps/Base_Kit_Glow.png",
+   "glowTint": "#FFFFFF",
+   "glowStrength": 2.4,
+   "collision": "a box 21 along the line, 6 deep and 5 high, its middle 3.5 across; the jaws stand on its top",
+   "lights": [],
+   "note": "Stage II's still body, in place of Breaker at the same place: the body grown to 3 chambers (21 long, from -7 to 14 across), its jaws arched over three chambers to 15.4. The crystal is the Breaker's lamp: BreakerLamp stands at its middle, 14.4 up and 3.5 across. The chambers, the hinges, the lids and the waiting line stand by machines.breakerStages"
+  },
+  "Breaker3": {
+   "mesh": "meshes/Breaker3.json",
+   "triangles": 1320,
+   "vertices": 860,
+   "centre": [
+    7.0,
+    10.02905,
+    0.0
+   ],
+   "size": [
+    34.577,
+    20.278,
+    6.82
+   ],
+   "colour": "maps/Base_Kit_Color.png",
+   "glow": "maps/Base_Kit_Glow.png",
+   "glowTint": "#FFFFFF",
+   "glowStrength": 2.4,
+   "collision": "a box 28 along the line, 6 deep and 5 high, its middle 7 across; the jaws stand on its top",
+   "lights": [],
+   "note": "Stage III's still body, in place of Breaker at the same place: the body grown to 4 chambers (28 long, from -7 to 21 across), its jaws arched over four chambers to 17.6, a barb from each jaw's elbow to 19.2, and two claws round the crystal to 20. The crystal is the Breaker's lamp: BreakerLamp stands at its middle, 16.4 up and 7 across. The chambers, the hinges, the lids and the waiting line stand by machines.breakerStages"
+  },
+  "BreakerHinge": {
+   "mesh": "meshes/BreakerHinge.json",
+   "triangles": 736,
+   "vertices": 416,
+   "centre": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "size": [
+    2.64,
+    2.585,
+    3.12
+   ],
+   "colour": "maps/Base_Kit_Color.png",
+   "glow": "maps/Base_Kit_Glow.png",
+   "glowTint": "#FFFFFF",
+   "glowStrength": 2.4,
+   "collision": "none",
+   "lights": [],
+   "note": "Stages II and III: a jaw's hinge, a gear (10 teeth, 2 across) on each long face, 1.15 out, on one axle through the jaw's root. Its origin on the axle's middle, 6.3 up; its axle along the piece's Y (Roblox's Z). It turns while chambers break, CFrame.Angles(0, 0, angle * sign) with the sign the table gives, so the two turn mirrored as the jaws are. Look only"
+  },
+  "BreakerLid": {
+   "mesh": "meshes/BreakerLid.json",
+   "triangles": 108,
+   "vertices": 72,
+   "centre": [
+    0.0,
+    0.42,
+    0.0
+   ],
+   "size": [
+    4.42,
+    1.06,
+    4.42
+   ],
+   "colour": "maps/Base_Kit_Color.png",
+   "glow": "maps/Base_Kit_Glow.png",
+   "glowTint": "#FFFFFF",
+   "glowStrength": 2.4,
+   "collision": "none",
+   "lights": [],
+   "note": "a seat whose chamber hasn't opened: stood in place of BreakerChamber at its place, on the body's top, until the Breaker has that chamber. Unlit. Look only"
   }
  }
 }

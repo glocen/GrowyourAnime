@@ -14,10 +14,10 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **Open, tests:** four timing cases are NOT VERIFIED (AR11). The Keeper's "and out on Out" and Pip's skip fail at times. TR20's Breaker hover depends on order. A reveal once stayed held after the suites (TR41, "The two must-fixes", Open).
 - **Open, for research:** the target card's light (`CardLightHealth`) keeps its glow ahead of its front. Does it go the same way as the lead's?
 
-**Modulo (assets).** 2026-11-17, 17:00, on Opus 5.5. Voidkin work parked until before launch (the director's word, 11:10): AR26 and AR27 stay as delivered, and Faber holds AR27's upload.
+**Modulo (assets).** 2026-11-17, 17:14, on Opus 5.5. Voidkin work parked until before launch (the director's word, 11:10): AR26 and AR27 stay as delivered, and Faber holds AR27's upload.
 - **For Faber, after TR41 (b) to (e), in order:** AR29's B (13 icons), AR30's buttons (25 images), AR31's 38 upgrade images and TR10's two marker icons, all passed by research.
-- **With research:** AR32's grey block, two directions for the Void Breaker's Stages II and III, for its pick (AR32, "The block"). The content check on the sheets runs beside it.
-- **Now:** waiting on the pick; then Stages II and III as models for Faber.
+- **For Faber, after those:** AR32, the Void Breaker's Stages II and III, the Great Jaws, as kit pieces: four meshes and the swap's table `machines.breakerStages` (AR32, "Stages II and III as kit pieces"). Research's read is in the game, from the spawn and the gate, with the hinges turning.
+- **Now:** the next piece from research.
 - **Unchanged:** AR28's Stage I is with Faber, waiting on TR37; its 7 meshes went up with AR16 (3feb5a5). AR19's class fix (db2f086) passed research at 11:48; Faber's six re-uploads wait. AR24's A waits on Faber's TR34 block. Sable is after launch.
 
 **Turns.** Studio: Faber (the game's place, for TR41 (b) to (e)). Blender: nobody. Timing tests: nobody.

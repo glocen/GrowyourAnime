@@ -1547,6 +1547,288 @@
      "up": 6.38
     }
    ]
+  },
+  "breakerStages": {
+   "note": "AR32: the Void Breaker's three stages, the Great Jaws, the swap's table. The Breaker takes the stage of its machine level (Config.Base, Stages: 1, 6, 15). Every place is in the Breaker's own frame, turned with it: `across` along the line (chamber 1 nearest the plot's middle, the line going on outward), `along` toward the gate, `up` from its floor. A stage's pieces replace the one before's. `moves`: still; chamber, the chamber of that number, lit by its state as today; while the Breaker hasn't that chamber yet (Config.Base, BreakerChambers: 3 from level 8, 4 from 20), `shut` stands in its place; turns, about the piece's own axle while any chamber breaks, CFrame.Angles(0, 0, angle * sign); waiting, the waiting line's place of that number. `lamp`: where BreakerLamp stands, the crystal's middle.",
+   "stages": {
+    "1": {
+     "pieces": [
+      {
+       "piece": "Breaker",
+       "at": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "moves": "still"
+      },
+      {
+       "piece": "BreakerChamber",
+       "at": [
+        -3.5,
+        0.0,
+        5.0
+       ],
+       "moves": "chamber",
+       "chamber": 1
+      },
+      {
+       "piece": "BreakerChamber",
+       "at": [
+        3.5,
+        0.0,
+        5.0
+       ],
+       "moves": "chamber",
+       "chamber": 2
+      },
+      {
+       "piece": "BreakerWaiting",
+       "at": [
+        9.0,
+        0.0,
+        0.0
+       ],
+       "moves": "waiting",
+       "place": 1
+      },
+      {
+       "piece": "BreakerWaiting",
+       "at": [
+        12.0,
+        0.0,
+        0.0
+       ],
+       "moves": "waiting",
+       "place": 2
+      },
+      {
+       "piece": "BreakerWaiting",
+       "at": [
+        15.0,
+        0.0,
+        0.0
+       ],
+       "moves": "waiting",
+       "place": 3
+      }
+     ],
+     "lamp": [
+      0.0,
+      0.0,
+      10.2
+     ]
+    },
+    "2": {
+     "pieces": [
+      {
+       "piece": "Breaker2",
+       "at": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "moves": "still"
+      },
+      {
+       "piece": "BreakerChamber",
+       "at": [
+        -3.5,
+        0.0,
+        5.0
+       ],
+       "moves": "chamber",
+       "chamber": 1
+      },
+      {
+       "piece": "BreakerChamber",
+       "at": [
+        3.5,
+        0.0,
+        5.0
+       ],
+       "moves": "chamber",
+       "chamber": 2
+      },
+      {
+       "piece": "BreakerChamber",
+       "at": [
+        10.5,
+        0.0,
+        5.0
+       ],
+       "moves": "chamber",
+       "chamber": 3,
+       "shut": "BreakerLid"
+      },
+      {
+       "piece": "BreakerHinge",
+       "at": [
+        -6.3,
+        0.0,
+        6.3
+       ],
+       "moves": "turns",
+       "sign": 1
+      },
+      {
+       "piece": "BreakerHinge",
+       "at": [
+        13.3,
+        0.0,
+        6.3
+       ],
+       "moves": "turns",
+       "sign": -1
+      },
+      {
+       "piece": "BreakerWaiting",
+       "at": [
+        0.5,
+        5.1,
+        0.0
+       ],
+       "moves": "waiting",
+       "place": 1
+      },
+      {
+       "piece": "BreakerWaiting",
+       "at": [
+        3.5,
+        5.1,
+        0.0
+       ],
+       "moves": "waiting",
+       "place": 2
+      },
+      {
+       "piece": "BreakerWaiting",
+       "at": [
+        6.5,
+        5.1,
+        0.0
+       ],
+       "moves": "waiting",
+       "place": 3
+      }
+     ],
+     "lamp": [
+      3.5,
+      0.0,
+      14.4
+     ]
+    },
+    "3": {
+     "pieces": [
+      {
+       "piece": "Breaker3",
+       "at": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "moves": "still"
+      },
+      {
+       "piece": "BreakerChamber",
+       "at": [
+        -3.5,
+        0.0,
+        5.0
+       ],
+       "moves": "chamber",
+       "chamber": 1
+      },
+      {
+       "piece": "BreakerChamber",
+       "at": [
+        3.5,
+        0.0,
+        5.0
+       ],
+       "moves": "chamber",
+       "chamber": 2
+      },
+      {
+       "piece": "BreakerChamber",
+       "at": [
+        10.5,
+        0.0,
+        5.0
+       ],
+       "moves": "chamber",
+       "chamber": 3,
+       "shut": "BreakerLid"
+      },
+      {
+       "piece": "BreakerChamber",
+       "at": [
+        17.5,
+        0.0,
+        5.0
+       ],
+       "moves": "chamber",
+       "chamber": 4,
+       "shut": "BreakerLid"
+      },
+      {
+       "piece": "BreakerHinge",
+       "at": [
+        -6.3,
+        0.0,
+        6.3
+       ],
+       "moves": "turns",
+       "sign": 1
+      },
+      {
+       "piece": "BreakerHinge",
+       "at": [
+        20.3,
+        0.0,
+        6.3
+       ],
+       "moves": "turns",
+       "sign": -1
+      },
+      {
+       "piece": "BreakerWaiting",
+       "at": [
+        4.0,
+        5.1,
+        0.0
+       ],
+       "moves": "waiting",
+       "place": 1
+      },
+      {
+       "piece": "BreakerWaiting",
+       "at": [
+        7.0,
+        5.1,
+        0.0
+       ],
+       "moves": "waiting",
+       "place": 2
+      },
+      {
+       "piece": "BreakerWaiting",
+       "at": [
+        10.0,
+        5.1,
+        0.0
+       ],
+       "moves": "waiting",
+       "place": 3
+      }
+     ],
+     "lamp": [
+      7.0,
+      0.0,
+      16.4
+     ]
+    }
+   }
   }
  },
  "lighting": "the base stands under Lantern Row's dusk: the same sky, ambient, fog and bloom (build/handoff/LanternRow/sky/lighting.json). The conduits, the wall's line and the lamps are drawn for dusk, and under the place's daylight they don't read.",

@@ -10187,6 +10187,21 @@ The director, 2026-11-17, 14:03, over the close sheet: "the B) UI on the left ar
   - research's look at what changed is to come;
   - not director-accepted.
 
+### Research's look at B's round, and the call on seven rows (Quaestor, 2026-11-17, 14:17)
+
+What changed only, from the phone and close sheets.
+- **Felt:** B now holds the hand. The rows are of a size to press, the bar's channel reads as one instrument, and the chosen glass names its page on both phones at their own size. The weak point is closed.
+- **Tier:** competent. **Must-fix:** none.
+- **A build seed, not a fix:** at 17.5:1 the idle icons are as white as the chosen one, so only the glass sets the chosen page apart. In the build, the idle icon's tint is a seed, starting at the seam's soft text (about 9:1, never under 4.5). It is tuned in play so the chosen page is the brightest thing on the rail.
+- **A fact:** seven pages ship at launch, not four. The Forge, Jewels and War Emblems are phase 3 (TR37 to TR39), before the launch. So the rows call is for launch.
+- **The call on seven rows:** every page stays in sight, with no scroll. A rail that hides the Forge and Jewels under a fold loses them.
+  - A row is 44 points where seven fit. Where they don't, every row shrinks by the same amount, to the room divided by seven, down to 34 points.
+  - The touch area keeps the rail's whole width, the icon stays 24 points, and the chosen word stays.
+  - On the smallest phone that's about 36 points a row (256 ÷ 7).
+  - The rail scrolls only on a screen too short for seven rows of 34, and no phone in the targets is.
+  - This replaces research's "at least 44 points" for the rail's rows on short screens only. The bar's buttons keep 44.
+- **Next:** Faber builds AR29 after TR41, from `build/handoff/UI/voidkin/chrome/` (bef311f). Then research's read in the build.
+
 ## AR30. Every button in the game, in the seam's make (Modulo, then Faber)
 
 The director, 2026-11-17, 14:03: "any other button ui could maybe get reworked". Then, to research's question on its scope: "Every button in game". Tier 2, a look players see, in Modulo's area, the director's own ask.

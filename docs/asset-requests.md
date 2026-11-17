@@ -8342,6 +8342,7 @@ The cause: AR6's frames light their own outside. The gilt glows about 3 points b
 - **With research's calls of 08:01:** Legendary's well is the seam's violet-black in the bag, and the close-ups show only that, since "today" is gone. In the bag every rarity's well is the Seam palette's `Well`. The umber pair in `gear_icons.json` stays for the screens outside the seam. The Overview follows the seam. The sheet's notes say both.
 - **Content check:** not rerun. The change is a ring's width, its place and a dark band under it, with no new shape, text or image, so the skin's PASS of 02:56 covers it.
 - **Implemented:** the sheet. **Tested:** read at phone size, as above. **Visually reviewed:** my own pass; research's second look at the ring isn't in. **Director-accepted:** no.
+- **Research's second look (Quaestor, 08:16):** the ring passes. At phone size, the chosen middle cell stands apart on all five rarities, and on gold at once. The dark moat is what does it. The skin's must-fix is closed, so Faber builds the bag in the seam whenever it comes up in his queue. The night check on a device comes with the build's review.
 
 ## AR19. The generator: three directions for Stage I, and how each grows (Modulo, for research's verdict)
 
@@ -9129,11 +9130,12 @@ Research's request, 2026-11-17, 02:41, on the director's word of the same night 
 ### Research's feel lines, signed (Quaestor, 2026-11-17, 08:06)
 
 These are written from each combo's clip and its timings in `Shared.Definitions.Actions`, so each `/ga-action` starts signed. **For each, the block holds:** the hero shape on each of the three hits, in grey beside the combo's clip, at the game's camera. **What waits:** the colour pass after the block's verdict, the sound for the retry, and the redraw for the new weapon at the redesign. A maker who finds a line wrong in motion says so at the blockout, with what it would change.
-1. **Watt** (Storm; the spear-staff with three white discs): each of his three blows cracks Storm on the touch, short and hard. On the third, the drive into the street earths it in one brief spit of light along the ground. From behind, he hits like a breaker tripping: contained, earthed, never a mage's spray. Apart from Ground Wire: no ring and no hold, since that's the signature's.
-2. **Rook** (no element; his accent is the gauntlet's orange band): the jab and the hook snap a tight burst off the knuckles. The ram drives a short cone of dust and light through the Shade, and it opens the space it pushes. From behind, a street fight, fists first, with the third hit heavy.
+- **The camera, for every line (corrected 08:16, from Watt's measures):** the game's framing shows the Shade's back, with the lead beyond it (`Combat.Lead.Frame` 45). A melee hero shape has to read with the Shade standing between the camera and its touch.
+1. **Watt** (Storm; the spear-staff with three white discs): each of his three blows cracks Storm on the touch, short and hard. On the third, the drive into the street earths it in one brief spit of light along the ground. From the game's camera, he hits like a breaker tripping: contained, earthed, never a mage's spray. Apart from Ground Wire: no ring and no hold, since that's the signature's.
+2. **Rook** (no element; his accent is the gauntlet's orange band): the jab and the hook snap a tight burst off the knuckles. The ram drives a short cone of dust and light through the Shade, and it opens the space it pushes. From the game's camera, a street fight, fists first, with the third hit heavy.
 3. **Pip** (Fire; the lantern): each flick throws a spitting ember that streaks into the Shade and pops in a small flame bloom. The third, the lantern kicked over, sends a fatter one with a short ribbon behind it. From across the street, a schoolboy's fireworks that still land. Apart from Lantern Burst: no area, the shot ends on its target.
-4. **Lyric** (Storm; the two speaker drones): each speaker fires a pulse you can see travel, speaker to Shade, and it bursts there on the beat. The third, both at once, lands as two pulses crossing on the same frame. From behind, her hits keep time like a song. Apart from Watt's Storm: a travelling ring of sound, never a crack in the ground. Apart from Held Note: no cone.
-5. **Kirra** (no element; her scarf's colour): the dash leaves a thin streak in the scarf's colour. Each cut is a crisp line across the Shade that snaps shut. The second wears as an X, and the rise through it flashes upward. From behind, she's already past when the cuts show. With First Strike, the critical's number is still the only extra cue (Faber's tier 1, 2026-11-14).
+4. **Lyric** (Storm; the two speaker drones): each speaker fires a pulse you can see travel, speaker to Shade, and it bursts there on the beat. The third, both at once, lands as two pulses crossing on the same frame. From the game's camera, her hits keep time like a song. Apart from Watt's Storm: a travelling ring of sound, never a crack in the ground. Apart from Held Note: no cone.
+5. **Kirra** (no element; her scarf's colour): the dash leaves a thin streak in the scarf's colour. Each cut is a crisp line across the Shade that snaps shut. The second wears as an X, and the rise through it flashes upward. From the game's camera, she's already past when the cuts show. With First Strike, the critical's number is still the only extra cue (Faber's tier 1, 2026-11-14).
 
 ### Watt's basic attack: the crack, its parts and the grey block (Modulo, 2026-11-17, from 07:58 by the clock)
 
@@ -9189,6 +9191,17 @@ These are written from each combo's clip and its timings in `Shared.Definitions.
   - Delivered: yes.
   - Accepted: no. Research's technique check, the block's verdict in motion, and the director's eye are still to come.
 
-## Later, by ground
+### Research's technique check on Watt's crack (Quaestor, 2026-11-17, 08:16)
+
+- **The techniques are right.** A crack is a flat line of light by nature, so Beams draw it without faking depth on a card. The touch's light and the discs' tick are the right partners: the light carries the hit where the line is hidden, and the tick ties his basic attack to Ground Wire.
+- **The finding is research's own, from Modulo's measures:** line 1 said "from behind", but the game's framing (`Combat.Lead.Frame` 45, accepted in TR3) shows the Shade's back, so the touch is on its far side. The line now reads "from the game's camera". A crack you only see as a 0.6 to 1.0 stud tip is a hero shape that isn't seen.
+- **Neither of the two ways out:** longer lines turn "contained" into the spray the line rules out, and the framing is accepted for every lead, not to be reopened for one attack.
+- **A third way, tried in the block: draw the crack nearer the camera.** Set `ZOffset` on the crack's Beams, starting at about 1.5 studs, so at 215 and 145 the line can draw over the Shade's silhouette at the touch while keeping its length.
+  - Its evidence is weak, so this finding is UNVERIFIED. Roblox's API page gives `ZOffset` no description. Its samples use it to layer beams, and on `ParticleEmitter` "-1" is commented "render slightly behind the actual position". Whether it draws past a body's depth is what the block shows.
+  - **Faber's block:** the rows as delivered, plus the same rows with `ZOffset` 1.5 and 2.5 on the crack's Beams, from 215 and 145. One take each, with `FreezeAt` 2 and 5 frames after each hit.
+  - **If it works:** the crack is seen whole and stays contained. The content check's condition 1 then reads the captures for a line laid over the Shade's head.
+  - **If it doesn't:** the light and the spit carry the read at 215, and the crack stays as delivered. The verdict in motion judges it then.
+- **The block can go ahead:** this doesn't hold the grey block, it adds two takes to it.
+
 
 The rest of ground 1 (Kirra in AR10, Watt in AR11; then Sable, Marigold, Crane), then each ground's Voidkin in `docs/roster.md`'s order. **The machines** (Gantry, Bulwark, Ironhymn, Shiomaru, Aegir) share one custom rig, taller than a player, with its own clip family: the first of them is timed like AR1, because a custom rig is a different cost.

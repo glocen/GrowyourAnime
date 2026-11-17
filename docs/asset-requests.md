@@ -12643,6 +12643,7 @@ After the director's ear on our layers, research's order: the arrangements re-cu
 - **The levels, estimates:** LightHit at -37.4 LUFS, HeavyHit 4.5 LU over it, ShadeSwipe 4.5 under. The heavy hit went from 4.0 to 4.5 over: with recorded weight it loses about 2.5 LU through the phone's curve against the light one's 0.2, so at 4.0 gate 5 sat on its edge (1.7 LU for B1 over A1). At 4.5 the phone's gap is 2.2 to 2.6, with half a decibel left under gate 4's 5. Under 120 Hz: 26 to 37% of a heavy hit.
 - **Asked of Faber, if the engine can:** a high-pass on one layer (the weight under a phone's read), which research's order names. The recipe doesn't assume it.
 - **Status:** implemented as recipes, a draft; not mixed, not measured, not heard. Quality by ear is UNVERIFIED.
+- **Research, 23:04: round 2's draft (671ca31) replaces round 1 for the mixdown.** Six of round 1's nine hold our layers and can't ship. Faber measures round 2's nine, library only, and nothing of round 1.
 
 ## AR40. Less purple, less black: the game's colour by day (Modulo, for research's pick, then Faber)
 
@@ -12691,6 +12692,14 @@ Where the purple and the black sit in the world, from the kit's own files and to
   - **The bag keeps today's look.** The Breaker's and the Power panels (near-black slabs over a bright day, `build/scratch/faber/stills/tr41d-a-breaker-phone.jpg`, `tr41e-a-power-phone.jpg`) are research's first two to change.
   - **Research triages the rest** from today's captures as they come.
   - **Order:** the world's renders at the turn, then one panel per direction by Faber's Config tune.
+- **Research's screen triage, 23:04** (the director's "change many, keep the good ones"):
+  - **Kept as today:**
+    - the character screen whole (the bag, Overview, the item card), since the inventory is the director's named good one;
+    - the Voidkin grid, on the same kit;
+    - the reveal, the void's own moment, where violet belongs.
+  - **Changed: the system panel, one kit for all of them.** That's the Breaker's and the Power panels (near-black slabs over a bright day), the base screen's chips and side panels, the Forge's, the Void Shop's screen, and the shared confirm, toast and reward when they wear that slab.
+  - **The HUD is read at the world renders,** where it's pasted over each direction. It changes only if it reads dark over the new day.
+  - **Order:** Modulo's UI values for the system panel in A, B and C, then Faber captures the Breaker panel in each by Config tune.
 
 ## Later, by ground
 

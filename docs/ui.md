@@ -27,7 +27,7 @@ The director, 2026-11-11: "we need to be even thoughtfull with the HUD".
 |---|---|---|
 | Top left | the lead's card [D, 2026-11-12, from a reference; its place may move]: the portrait in its rarity frame, the level on a badge on the frame; beside it a long health bar with current and maximum written inside, and a thinner experience bar beneath (its width and colour ours); name or nickname, type gem, class icon | always, small |
 | Top centre | the target's card, built like the lead's: name above, type gem, health, a keeper's phases | only in a fight |
-| Top right | two pills: Credits, and Power: generation against demand in kW [D, 2026-11-14, night] (`docs/design.md`, "Power"). A tap opens the rest | always |
+| Top right | two pills: Credits, and Power: generation against demand in kW [D, 2026-11-14, night] (`docs/design.md`, "Power"), then the battery's reading after the battery's mark (research, TR41 (e), 2026-11-17). A tap opens the rest | always |
 | Beside the signature's readout | the spectate toggle [D, 2026-11-14]: a small eye; on, the camera follows the lead. Its place is set at TR11's blockout | always, small |
 | Under the pills | event chips: the Void Shop's countdown, the Rift, the Calamity | only inside the last minutes before and during |
 | Right edge, low | the signature's readout: a ring that fills, flashes when it fires | always, small |

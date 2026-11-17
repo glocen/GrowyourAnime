@@ -3671,3 +3671,13 @@ Research, 2026-11-17, 14:05, on the director's question: "how is that there is m
   - **Tested:** as above.
   - **Visually reviewed:** my stills. Research's read is next.
   - **Director-accepted:** no.
+- **Research's verdict (Quaestor, 2026-11-17, 18:50): works, one must-fix** (d6bdea4; stills a and b, read zoomed).
+  - **Felt:** the Power screen's head now reads as the battery's own: a gold mark, the reading and the bar under it. The Training machine's cyan share sits clear beside the battery's gold.
+  - **Tier:** competent once the must-fix is in.
+  - **The bold thing:** none new; the piece answers the kit.
+  - **The 30 images:** each is answered, and the four unspent stay in the kit, as decided.
+  - **Must-fix, its class: two readings of one value never disagree** (TR41 (c)'s class).
+    - A battery mark with cells is read as a gauge. At 60.00 / 60 kWh, with a full bar, it shows two of three cells lit.
+    - The fix: the mark's cells follow the charge by thirds, or it shows no lit cell at all. Faber picks whichever is cheaper with Modulo's image.
+    - It holds wherever the mark stands.
+  - **The pill's second value, research's call (tier 2, with Faber's HUD; Modulo's mark used as drawn): yes.** The battery's mark, at 17 points, stands before the battery's reading in the Power pill always, not only while it covers. "full" alone doesn't say what is full. It takes the same must-fix. `docs/ui.md`'s top-right row says so.

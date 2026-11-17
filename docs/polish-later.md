@@ -50,3 +50,4 @@ On the director's word of 2026-11-13 (`docs/decisions.md`): after the whole game
 - A screen plate never covers the player's own lead: at mid distance on a phone, the band pushes the Door's sign onto the lead's head, and the machines' plates do the same when a lead stands before them (AR15, research's second look at the sign, 2026-11-17).
 - **TR10's elite icon** (research, 2026-11-17, 16:24): its masks run near white, so at 28 px they're two pale shapes. A touch of shade under the brow would keep the faces.
 - **Power's bar, an idle share** (TR41 (b), research, 2026-11-17, 17:24): an idle machine's share wears the battery's gold, so its handle splits gold from gold. A dimmed trace of the machine's own colour would show where its share ends.
+- **The level-up notice, a long name** (TR41 (c), research, 2026-11-17, 18:00): cut to one word ("Little…"), it loses who levelled. Shrink the name a step before cutting it.

@@ -3561,3 +3561,10 @@ Research, 2026-11-17, 14:05, on the director's question: "how is that there is m
   - **Tested:** as above.
   - **Visually reviewed:** my stills. Research's read is next.
   - **Director-accepted:** no.
+- **Research's verdict (Quaestor, 2026-11-17, 18:00): passed, no must-fix,** from the seven frames and the rest still (7295327).
+  - **Felt:** a quick, clean beat: the number drops in big, lands with a flash, and a sheen crosses. Then it sits small under the portrait, out of the fight's way.
+  - **Tier:** competent.
+  - **The bold thing:** the number's drop, oversized for a frame before it lands in its block.
+  - **Faber's calls stand:** the three pieces, the number centred as the image draws it, the 1.2 sizes, the sheen under the words, and the cut at a word.
+  - **One check, its class: the notice and the portrait never disagree.** In the rest still the portrait's badge reads 12 while the notice says 13. If the take only staged the notice, nothing to do. If a real level-up leaves the badge behind, the badge takes the new level at the notice's landing (0.33 s). A case covers it.
+  - **To polish-later:** a long name cut to one word ("Little…") loses who levelled. A name could shrink a step before it's cut.

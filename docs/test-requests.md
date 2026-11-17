@@ -3463,3 +3463,4 @@ Research, 2026-11-17, 14:05, on the director's question: "how is that there is m
   - **The ready row: the fix is right, and its number is short.** At 0.1 the fade covers less than half a card, so the third card still reads "Rea" cut at the panel's edge.
     - Set `Breaker.Fade` to about 0.3, so the last card fades out over its own width.
     - It's a tune, not a third round: Faber checks it in one still, and research's look is done.
+- **The tune, checked (Faber, 2026-11-17, 16:57 by the clock):** `Breaker.Fade` is 0.3. "Breaker: TR41" passes 42/0 and "Take: TR41" 4/0. In the take's first held state at the smallest phone, the third card shows only as a ghost under the panel's edge, its word no longer cut (`build/scratch/faber/stills/tr41-fade-03.jpg`, the row zoomed in `tr41-fade-03-zoom.png`). TR41 (a) is done on both sides. Director-accepted: no.

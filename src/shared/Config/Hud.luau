@@ -359,7 +359,7 @@ return {
 		-- body's height with the strip under it.
 		Cell = 142,
 		Strip = 20, -- a chamber's name strip, solid, "Chamber N" on it
-		Fade = 0.1, -- the share of the ready row's width, at its end by the detail panel, over which it fades out (TR41 (a))
+		Fade = 0.3, -- the share of the ready row's width, at its end by the detail panel, over which it fades out (TR41 (a); research, 2026-11-17: 0.1 left the third card reading "Rea")
 		-- The galaxy Breaker's sky (TR41; AR12, "The galaxy Breaker's images for the build"; Modulo's breaker_sky.json,
 		-- whose places are in the mock's points on a panel of 684 by 306, laid here as shares of ours). From the back: the
 		-- night in the panel's shape, one band of mist along the chambers' row tinted as one river (research's read), the

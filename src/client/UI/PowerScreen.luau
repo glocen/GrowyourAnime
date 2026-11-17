@@ -35,6 +35,7 @@ local Row = require(UI.Kit.Row)
 local Panel = require(UI.Kit.Panel)
 local Bar = require(UI.Kit.Bar)
 local Skin = require(UI.Kit.Skin)
+local BatteryMark = require(UI.BatteryMark)
 
 local PowerScreen = {}
 
@@ -566,9 +567,10 @@ local function plate(body: Frame)
 		Parent = body,
 	})
 	parts.BatteryPlate = frame
-	-- Its drawing is centred in its image, so the image is centred on the span the drawing takes.
-	local record = POWER.Images.Battery
-	Skin.LayOwn(frame, record, "Mark", { X = pad + (MARK_INK - MARK) / 2, Y = (PLATE.Y - MARK) / 2, Scale = MARK / record.Points.X, Z = 2 })
+	-- Its drawing is centred in its image, so the image is centred on the span the drawing takes. Its cells follow the
+	-- charge (UI.BatteryMark).
+	local mark = BatteryMark.new(frame, MARK, 2)
+	mark.Position = UDim2.fromOffset(pad + (MARK_INK - MARK) / 2, (PLATE.Y - MARK) / 2)
 	local left = pad + MARK_INK + gap -- past the mark
 	local inner = PLATE.X - left - pad
 	local top = (PLATE.Y - LINE - gap - CHARGE) / 2
@@ -582,6 +584,7 @@ local function plate(body: Frame)
 		reading.Text = `{Read.Kwh(kwh)} / {Read.Number(capacity)} kWh`
 		holds.Text = if demand > 1e-9 then `holds {Read.Hours(kwh / demand)} of work` else "nothing draws now"
 		Bar.Set(charge, if capacity > 0 then math.clamp(kwh / capacity, 0, 1) else 0)
+		BatteryMark.Set(mark, kwh, capacity)
 	end)
 end
 

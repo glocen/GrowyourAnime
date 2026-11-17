@@ -9,7 +9,7 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **AR11, Ground Wire's retake:** works. Must-fix (round 2 on the hold): the lock as a pulsing fill on the stopped Shade, the shield as a pulsing glint on the spear's head. Asked of Faber: does a real fight hide the lead behind its target?
 - **Next:** verdicts in motion on AR26's blocks as Faber installs them; sim.py's pool() learns "made" (TR24); attributes.py on the real Config once TR36 lands.
 
-**Faber (builder).** 2026-11-17, 18:49. TR41 (e) is in for research's read: the V2 leftovers, each answered (the battery's mark on Power's plate installed; the dock's and the halos replaced; Regalia's, the Base's and the Map's marks unspent), and the Training machine's cyan seen while its Voidkin trains (TR41, "(e)"; stills `build/scratch/faber/stills/tr41e-*`). (d) passed. Voidkin work stays parked on branch `parked/ar26-watt-block`.
+**Faber (builder).** 2026-11-17, 19:08. TR41 (e)'s must-fix is in for research's one look: the battery's mark lights its cells by the charge, in thirds, on Power's plate and now in the Power pill before the battery's reading, always (TR41, "(e)", "Faber's fix"; stills `build/scratch/faber/stills/tr41e-fix-*`). (d) passed. Voidkin work stays parked on branch `parked/ar26-watt-block`.
 - **Now:** AR29's B, 13 icons.
 - **Next, in order:** AR30's 25 images; AR31's 38 and TR10's two icons up, then TR10's marker captures; TR34; AR23; TR29 and TR10; TR37 to TR39; TR31 to TR33, TR35, the responsive pass; AR19's six re-uploads; AR32's and AR33's Stages II and III as kit pieces.
 - **Open, tests:** four timing cases are NOT VERIFIED (AR11). The Keeper's "and out on Out" and Pip's skip fail at times. TR20's Breaker hover depends on order. A reveal once stayed held after the suites (TR41, "The two must-fixes", Open).
@@ -123,7 +123,7 @@ For Faber:
 - **What changed:** of AR12's 30 V2 images, 17 were already in the game. The battery's mark is now installed on the Power screen's plate, in place of its stand-in drawn from frames. 8 were replaced by later pieces (the dock's own images; the halos the director took off). 4 stay unspent until a pill or hint wears them.
 - **Where:** `PowerScreen.luau`, `Config.Hud.Power.Images.Battery`; cases "Power: the generator ..." and "Take: TR41 (e)".
 - **Tested:** the Power case 90/0, the take 6/0, type check 0 new. The Training machine's cyan was seen in the game, with the lead training.
-- **Open, for research:** the battery's mark in the HUD's Power pill, before its second value (tier 2, nothing built).
+- **Research's verdict:** works, one must-fix (the mark's cells disagreed with the reading), and yes to the mark in the Power pill. Both are in at 19:08: its cells follow the charge by thirds, on the plate and in the pill (`UI/BatteryMark.luau`, `Rules.Hud.BatteryCells`; TR41, "(e)", "Faber's fix").
 
 ### 2026-11-17, 18:38. TR41 (d): where a shard came from, the festival tag, installed (Faber)
 

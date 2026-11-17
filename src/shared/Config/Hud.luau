@@ -502,6 +502,20 @@ return {
 			-- TR41 (e)): drawn in its own gold and dark rim, never tinted. Its drawing spans 0.88 of its side across, centred.
 			Battery = { Id = "rbxassetid://124264049509782", Pixels = Vector2.new(128, 128), Points = Vector2.new(32, 32), Pad = 0 },
 		} :: { [string]: UIKit.Image },
+		-- The battery mark's three cells, in its image's pixels (TR41 (e), research's must-fix: lit by the charge, by
+		-- Rules.Hud.BatteryCells). The image draws two lit and an empty slot behind the third, so each cell is laid as a
+		-- crop of the image itself. A lit cell: its second cell (Lit), at At plus Every for each cell before it. An empty
+		-- one: a tile of the slot's dark over the battery's inside (Inside, left to right, top to foot), from the middle of
+		-- one gap between cells to the next, stretched from a small flat patch deep in the slot (Dark), since an image drawn
+		-- small blends each pixel with its neighbours, and a crop near the gold brought a seam of it in (TR41 (e)'s stills).
+		Cells = {
+			At = Vector2.new(25, 46), Every = 25, Size = Vector2.new(19, 36), Lit = Vector2.new(50, 46),
+			Inside = { Left = 23, Right = 93, Top = 44, Foot = 85 },
+			Dark = { From = Vector2.new(78, 58), Size = Vector2.new(6, 12) },
+		},
+		-- The mark in the Power pill, before the battery's reading, always (research, TR41 (e); docs/ui.md, the top right):
+		-- its side and its gap to the words, in points.
+		PillMark = { Side = 17, Gap = 4 },
 		Colours = {
 			Breaker = Color3.fromHex("#E6ECF7"),
 			Training = Color3.fromHex("#4FD1FF"),

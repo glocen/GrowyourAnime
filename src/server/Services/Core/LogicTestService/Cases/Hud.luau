@@ -612,4 +612,29 @@ return {
 			t.Check("and out", Hud.Notice(m.In + m.Hold + m.Fade, m, wide, foot, true).Done and Hud.Notice(m.In + m.Hold + m.Fade, m, wide, foot, true).Solid == 0)
 		end,
 	},
+	{
+		Name = "Hud: TR41 (e), the battery mark's cells follow its charge by thirds: full only when full, empty only when empty, never disagreeing with the reading beside it",
+		Run = function(t: any)
+			t.Check("empty: no cell", Hud.BatteryCells(0, 60) == 0)
+			t.Check("a sliver: one cell", Hud.BatteryCells(0.01, 60) == 1)
+			t.Check("a third: one cell", Hud.BatteryCells(20, 60) == 1)
+			t.Check("past a third: two", Hud.BatteryCells(20.5, 60) == 2)
+			t.Check("all but full: two, never full before it is", Hud.BatteryCells(59.99, 60) == 2)
+			t.Check("full: all three", Hud.BatteryCells(60, 60) == 3 and Hud.BatteryCells(400, 400) == 3)
+			t.Check("no battery: no cell", Hud.BatteryCells(5, 0) == 0)
+			local cells = HudConfig.Power.Cells
+			local pixels = HudConfig.Power.Images.Battery.Pixels
+			local third = cells.At.X + cells.Every * 2
+			t.Check("the three cells inside the image", third + cells.Size.X <= pixels.X and cells.At.Y + cells.Size.Y <= pixels.Y, `{third}`)
+			-- The image's inside is dark from x 23 to 92, y 44 to 84, and its empty slot from x 69 (measured on Battery.png).
+			local inside, dark = cells.Inside, cells.Dark
+			t.Check("the cells inside the battery's inside", cells.At.X >= inside.Left and cells.At.Y >= inside.Top and cells.At.Y + cells.Size.Y <= inside.Foot)
+			-- The third is cut at the inside's right (UI.BatteryMark): a pixel at most, so it still reads as a cell.
+			t.Check("the third cell cut by a pixel at most", inside.Right - third >= cells.Size.X - 1, `{inside.Right - third} of {cells.Size.X}`)
+			-- Drawn small, an image blends a pixel with its neighbours up to about 8 away (a 128 px image at 16 points):
+			-- the dark patch keeps that far from the slot's edges, the second cell's gold at 68 and the rim at 93.
+			local far = 8
+			t.Check("the dark patch keeps clear of any gold, as far as an image drawn small blends", dark.From.X - far >= 69 and dark.From.X + dark.Size.X + far <= 93 and dark.From.Y - far >= inside.Top and dark.From.Y + dark.Size.Y + far <= inside.Foot, `{dark.From}`)
+		end,
+	},
 }

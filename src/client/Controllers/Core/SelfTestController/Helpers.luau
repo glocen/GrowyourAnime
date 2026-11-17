@@ -8,7 +8,11 @@
 --   Helpers.readyCount(def)                 shards of `def` broken and waiting to be opened
 --   Helpers.openReadyDown(t, def, keep)     opens them, the oldest first, down to `keep`
 --   Helpers.breakerPart(name)               a piece of the open Breaker screen, by name at any depth under its body
+--   Helpers.batteryCells(t, mark, kwh, cap, where)  the battery mark's cells lit as the charge says (UI.BatteryMark)
 
+local Shared = game:GetService("ReplicatedStorage").Shared
+local HudConfig = require(Shared.Config.Hud)
+local Hud = require(Shared.Rules.Hud)
 local ProfileController = require(script.Parent.Parent.ProfileController)
 local UI = script.Parent.Parent.Parent.Parent.UI
 local Theme = require(UI.Theme)
@@ -83,6 +87,25 @@ function Helpers.breakerPart(name: string): Instance?
 	local frame = Screen.Frame(BreakerScreen.Name)
 	local body = frame and frame:FindFirstChild("Body")
 	return body and body:FindFirstChild(name, true)
+end
+
+-- The battery's mark (UI.BatteryMark; TR41 (e), research's must-fix): as many cells lit as Rules.Hud.BatteryCells says
+-- for this charge, each drawn from its own image as a lit cell or the slot's dark, so it never disagrees with the reading.
+function Helpers.batteryCells(t: any, mark: Instance?, kwh: number, capacity: number, where: string)
+	local want = Hud.BatteryCells(kwh, capacity)
+	local cells = HudConfig.Power.Cells
+	local drawn = 0
+	if mark and mark:IsA("ImageLabel") then
+		for index = 1, 3 do
+			local cell = mark:FindFirstChild(`Cell{index}`)
+			local lit = index <= want
+			if cell and cell:IsA("ImageLabel") and cell.Image == mark.Image and cell:GetAttribute("Lit") == lit and cell.ImageRectOffset == (if lit then cells.Lit else cells.Dark.From) then
+				drawn += 1
+			end
+		end
+	end
+	local said = if mark then tostring(mark:GetAttribute("Cells")) else "no mark"
+	t.Check(`{where}: the mark's cells follow the charge, {want} of 3 lit at {string.format("%.2f", kwh)} of {capacity} kWh`, mark ~= nil and mark:GetAttribute("Cells") == want and drawn == 3, `{said} lit, {drawn} of 3 drawn so`)
 end
 
 return Helpers

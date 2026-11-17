@@ -46,6 +46,7 @@ local World = require(UI.World)
 local Guide = require(UI.Guide)
 local Read = require(UI.Read)
 local Pill = require(UI.Kit.Pill)
+local BatteryMark = require(UI.BatteryMark)
 local Text = require(UI.Kit.Text)
 local Bar = require(UI.Kit.Bar)
 local Button = require(UI.Kit.Button)
@@ -103,6 +104,7 @@ local coin: ImageLabel -- the Credits pill's icon, where a kill's Credits fly to
 local electricity: TextLabel -- the Power pill's value: generation against demand in kW (TR18)
 local bolt: ImageLabel -- the Power pill's mark, where the battery's jump flies to
 local stored: TextLabel -- the Power pill's second value: the battery's kWh
+local battery: ImageLabel -- the battery's mark before it, its cells lit by the charge (UI.BatteryMark; TR41 (e))
 local charge: Frame -- the Power pill's thread: the battery's fill
 local chip: Frame
 local chipText: TextLabel
@@ -1164,6 +1166,7 @@ local function step(dt: number)
 			electricity.TextColor3 = if over then Theme.Colour.Over else UIKit.Systems.Power.Text
 		end
 		stored.Text = if kwh >= cap - 1e-6 then "full" else `{Read.Kwh(kwh)} kWh`
+		BatteryMark.Set(battery, kwh, cap)
 		if charge then
 			Bar.Set(charge, if cap > 0 then kwh / cap else 0)
 		end
@@ -1194,6 +1197,10 @@ function HudController.Start()
 	credits, coin = creditsPill.Value, creditsPill.Mark
 	local power = pill("Electricity", 2, HudConfig.Pills.Power, "Power")
 	electricity, stored, charge, bolt = power.Value, power.Extra :: TextLabel, power.Thread :: Frame, power.Mark
+	-- The battery's mark before its reading, always (research, TR41 (e); docs/ui.md, the top right).
+	battery = BatteryMark.new(power.Frame, HudConfig.Power.PillMark.Side, power.Value.ZIndex)
+	battery.Name = "Battery" -- the pill's own Mark stays the bolt, where the battery's jump flies to
+	Pill.Before(power, battery, HudConfig.Power.PillMark.Gap)
 	readout = {
 		Piece = Readout.new(Layers.Get("Hud")),
 		Ready = 0,
@@ -1409,6 +1416,7 @@ function HudController.Parts(): { [string]: GuiObject }
 		LeadHealBand = healBand,
 		LeadHealGain = healGain,
 		PowerStored = stored,
+		PowerBattery = battery,
 		Signature = readout.Piece.Frame,
 		Spectate = eye,
 		Next = nextButton,

@@ -5403,6 +5403,7 @@ local cases = {
 			if kwh then
 				t.Near("the battery as it stands now", kwh, now.Data.Base.Charge, 0.05)
 			end
+			HudCases.PillBattery(t, parts, now.Data.Base.Charge, now.Rates.Capacity)
 			t.Check("a battery under 100 shows its hundredth, so it visibly counts up", Read.Kwh(0.354) == "0.35" and Read.Kwh(47.8) == "47.80" and Read.Kwh(2357) == "2,357", `{Read.Kwh(0.354)}, {Read.Kwh(47.8)}, {Read.Kwh(2357)}`)
 			t.Check("power in kW: a tenth under 10, whole above", Read.Kw(7.5) == "7.5 kW" and Read.Kw(7) == "7 kW" and Read.Kw(18) == "18 kW" and Read.Kw(3, true) == "+3 kW" and Read.Against(30, 34) == "30 / 34 kW", `{Read.Kw(7.5)}, {Read.Kw(7)}, {Read.Against(30, 34)}`)
 			t.Check("nothing drawing, only what's made (TR24's fix 4)", Read.Against(18, 0) == "18 kW" and Read.Against(0, 0) == "0 kW", `{Read.Against(18, 0)}, {Read.Against(0, 0)}`)

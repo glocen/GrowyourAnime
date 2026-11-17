@@ -289,6 +289,19 @@ end
 -- thread from `large` up, else the mark on its disc. Its box is in points from the picture's middle: its left, its top,
 -- its width and its height. `left`: the mark at the crystal's left foot, mirrored, where a bag cell's count holds the
 -- right (TR41 (d)).
+-- How many of the battery mark's three cells are lit (TR41 (e); research's must-fix: two readings of one value never
+-- disagree, and a mark with cells reads as a gauge). Full only when full, as the Power pill's "full" says; empty only when
+-- empty; between, a cell for each third begun, at most two.
+function Hud.BatteryCells(kwh: number, capacity: number): number
+	if capacity <= 0 or kwh <= 1e-6 then
+		return 0
+	end
+	if kwh >= capacity - 1e-6 then
+		return 3
+	end
+	return math.clamp(math.ceil(kwh / capacity * 3 - 1e-9), 1, 2)
+end
+
 export type TagLook = {
 	Tag: { Plaque: number, Tie: Vector2, At: Vector2, Third: { Upto: number, Of: number }, Quarter: { From: number, Of: number } },
 	Mark: { Side: number, Least: number, Middle: Vector2 },

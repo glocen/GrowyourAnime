@@ -23,6 +23,7 @@ local Effects = require(script.Parent.Parent.Parent.Main.FighterController.Effec
 local HudController = require(script.Parent.Parent.Parent.Main.HudController)
 local BaseController = require(script.Parent.Parent.Parent.Main.BaseController)
 local ProfileController = require(script.Parent.Parent.ProfileController)
+local Helpers = require(script.Parent.Helpers)
 local UI = script.Parent.Parent.Parent.Parent.UI
 local BreakerScreen = require(UI.BreakerScreen)
 local VoidkinScreen = require(UI.VoidkinScreen)
@@ -51,6 +52,26 @@ export type Given = {
 	lintClean: (t: any, where: string) -> (),
 	myLead: () -> Model?,
 }
+
+-- The battery's mark in the Power pill (research, TR41 (e); docs/ui.md, the top right): before the battery's reading,
+-- its gap to the words, its middle on their line, clear of the generation's words, its cells as the charge says.
+function HudCases.PillBattery(t: any, parts: { [string]: any }, kwh: number, capacity: number)
+	local mark = parts.PowerBattery :: ImageLabel
+	local stored = parts.PowerStored :: TextLabel
+	local value = parts.Electricity :: TextLabel
+	Helpers.batteryCells(t, mark, kwh, capacity, "the Power pill")
+	local look = HudConfig.Power.PillMark
+	local scale = mark.AbsoluteSize.X / look.Side
+	local words = stored.AbsolutePosition.X + stored.AbsoluteSize.X - stored.TextBounds.X
+	local gap = words - (mark.AbsolutePosition.X + mark.AbsoluteSize.X)
+	t.Near("the pill's battery mark stands its gap before the reading, in points", gap / scale, look.Gap, 0.75)
+	local middle = mark.AbsolutePosition.Y + mark.AbsoluteSize.Y / 2
+	local line = stored.AbsolutePosition.Y + stored.AbsoluteSize.Y / 2
+	t.Check("its middle on the reading's line", math.abs(middle - line) <= 1, string.format("%.1f against %.1f", middle, line))
+	local past = value.AbsolutePosition.X + value.TextBounds.X
+	t.Check("clear of the generation's words", mark.AbsolutePosition.X >= past + scale, string.format("its left %.1f, the words end %.1f", mark.AbsolutePosition.X, past))
+	t.Check("not the pill's own mark: that stays the bolt", (mark.Parent :: Instance):FindFirstChild("Mark") ~= mark)
+end
 
 -- The lead card's level on a badge on the portrait's frame (TR24, the director's run, fix 6), for the lead card's case in
 -- Cases: over the frame's foot and inside its width, the old tab gone; take A's colours (AR12, research's pick of

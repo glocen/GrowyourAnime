@@ -15,6 +15,7 @@ local BaseController = require(script.Parent.Parent.Parent.Main.BaseController)
 local ProfileController = require(script.Parent.Parent.ProfileController)
 local UI = script.Parent.Parent.Parent.Parent.UI
 local PowerScreen = require(UI.PowerScreen)
+local Helpers = require(script.Parent.Helpers)
 local Read = require(UI.Read)
 local Button = require(UI.Kit.Button)
 local Screen = require(UI.Kit.Screen)
@@ -172,6 +173,7 @@ local function batteryPlate(t: any, now: Read.Base)
 		t.Check("its mark: AR12's battery, untinted", mark.Image == HudConfig.Power.Images.Battery.Id and mark.ImageColor3 == Color3.new(1, 1, 1), mark.Image)
 		t.Check("the mark centred on the plate's height, inside its left", math.abs(middle - plateMiddle) <= 1 and mark.AbsolutePosition.X >= plate.AbsolutePosition.X, `{middle} against {plateMiddle}`)
 		t.Check("the mark ends before the words", mark.AbsolutePosition.X + mark.AbsoluteSize.X <= reading.AbsolutePosition.X + 0.5, `{mark.AbsolutePosition.X + mark.AbsoluteSize.X} against {reading.AbsolutePosition.X}`)
+		Helpers.batteryCells(t, mark, now.Data.Base.Charge, capacity, "the battery's plate")
 	else
 		t.Check("its mark: AR12's battery, an image on the plate", false, tostring(mark))
 	end

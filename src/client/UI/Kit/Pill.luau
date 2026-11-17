@@ -5,6 +5,7 @@
 -- on the block, the system's mark in ink. Its words start past the block in the system's pale ink, a second value
 -- right-aligned in its soft ink, and Power's wears a thread of light under them. A hint is a pill with its words centred.
 --   Pill.new{ Name, System, Width, ... }     its parts: Frame, Mark, Value, Extra, Thread
+--   Pill.Before(parts, piece, gap)          `piece` held just left of the second value's words, as they change
 
 local Shared = game:GetService("ReplicatedStorage").Shared
 local UIKit = require(Shared.Config.UIKit)
@@ -87,6 +88,27 @@ function Pill.new(props: Props): Parts
 		else nil
 	frame.Parent = props.Parent
 	return { Frame = frame, Mark = mark, Value = value, Extra = extra, Thread = thread }
+end
+
+-- Holds `piece` just left of the second value's words, `gap` points clear, its middle on their line (the battery's mark
+-- before its reading in Power's: research, TR41 (e)). The words are right-aligned, so it follows the width they draw at,
+-- now and whenever it changes: their own bounds, in the pill's points.
+function Pill.Before(parts: Parts, piece: GuiObject, gap: number)
+	local extra = parts.Extra
+	if extra == nil then
+		return
+	end
+	local function place()
+		local scale = extra.AbsoluteSize.X / extra.Size.X.Offset
+		if scale <= 0 then
+			return
+		end
+		piece.Position = UDim2.new(1, -(RIGHT + extra.TextBounds.X / scale + gap), 0, extra.Position.Y.Offset + extra.Size.Y.Offset / 2)
+	end
+	piece.AnchorPoint = Vector2.new(1, 0.5)
+	place()
+	extra:GetPropertyChangedSignal("TextBounds"):Connect(place)
+	extra:GetPropertyChangedSignal("AbsoluteSize"):Connect(place)
 end
 
 return Pill

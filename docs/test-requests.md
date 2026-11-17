@@ -3681,3 +3681,31 @@ Research, 2026-11-17, 14:05, on the director's question: "how is that there is m
     - The fix: the mark's cells follow the charge by thirds, or it shows no lit cell at all. Faber picks whichever is cheaper with Modulo's image.
     - It holds wherever the mark stands.
   - **The pill's second value, research's call (tier 2, with Faber's HUD; Modulo's mark used as drawn): yes.** The battery's mark, at 17 points, stands before the battery's reading in the Power pill always, not only while it covers. "full" alone doesn't say what is full. It takes the same must-fix. `docs/ui.md`'s top-right row says so.
+- **Faber's fix (2026-11-17, after 18:50 (research's verdict) to 19:08 by the clock):** the must-fix, and the pill's mark.
+  - **The cells follow the charge by thirds** (`Rules.Hud.BatteryCells`):
+    - none only when empty, all three only when full (when the pill says "full");
+    - between, a cell for each third begun, at most two. A battery near empty keeps its last cell lit, as a phone's does, until it's empty.
+  - **With Modulo's one image, no new upload** (`UI/BatteryMark.luau`, `Config.Hud.Power.Cells`). Three crops of the image lie over it:
+    - a lit cell is a crop of its second cell;
+    - an empty one is a tile of the battery's dark inside, from the middle of one gap to the next, stretched from a small flat patch deep in the empty slot.
+    - A first try cropped close to the gold, and a gold seam showed between dark cells at the pill's size: an image drawn small blends each pixel with its neighbours. Hence the patch, kept 8 pixels clear of any gold.
+    - The third cell is a pixel narrower than the others, since the image's slot ends there: under half a screen pixel at the pill's size.
+  - **The pill:** the mark at 17 points, 4 before the battery's reading, always, its middle on the reading's line.
+    - It's placed by the words' own drawn width as it changes (`Pill.Before`).
+    - A first placement by the face's measured width put it 3.6 to 5.3 points off; now it's 3.6 to 3.9.
+    - The pill's own mark stays the bolt, where the battery's jump flies to.
+  - **Cases:**
+    - logic "Hud: TR41 (e), the battery mark's cells …", 24,062/0;
+    - the plate's cells against the save's charge, in "Power: the generator …", 91/0;
+    - the pill's cells, its gap (within 0.75 points), its line, and its clearance from the generation's words, in "HUD: … the pills read the save", 38/0 at full and 39/0 at 35 kWh;
+    - "AR12, the pills wear …", 38/0. Type check 0 new.
+  - **The take** passed its screen and mark checks. Its two training checks failed: I skipped the driver's training setup this time, since only the stills mattered. They passed at (e).
+  - **Stills,** in `build/scratch/faber/stills/`:
+    - `tr41e-fix-pill-cells.png`: the pill at 0.32 kWh, 35.02 and full, with one, two and three cells.
+    - `tr41e-fix-plate-phone.png` and `tr41e-fix-plate-mark.png`: the plate at the smallest phone, at 35 of 60, two cells.
+    - `tr41e-fix-large.jpg` and `tr41e-fix-large-head-pill.png`: the plate and the pill together at 35.20, two cells each. These came before the placement by drawn width, so the pill's gap there is up to a point and a half wide.
+  - **Four facts:**
+    - **Implemented:** yes.
+    - **Tested:** as above.
+    - **Visually reviewed:** my stills. Research's read is next.
+    - **Director-accepted:** no.

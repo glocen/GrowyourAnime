@@ -2,7 +2,7 @@
 
 What's next, in order. The game is in `docs/north-star.md`, its systems in `docs/design.md`. A status changes here and nowhere else.
 
-**Status, 2026-11-17, 00:23:** phase 2's gate, the first session played whole on a phone, was run by the director (TR24, "The director's run"). On the director's word (`docs/decisions.md`, by 00:17), phase 3 goes once that run's fixes are in. Phase 3's package is already being built (TR25, TR28).
+**Status, 2026-11-17, 02:31:** phase 3 is open, on the director's word (`docs/decisions.md`, 02:31: "phase 3 can start when it can dont need to wait for me"). Its first package is in the game as blocks (TR25 to TR30). Phase 2's tail runs beside it: the Door, the lead card's fixes, the Breaker's pictures, Sable's guard, the timing cases, and AR13 for the director's ear.
 
 **The aim:** a premium game (`docs/north-star.md`, "The bar"). One ground at the bar before six grounds in grey.
 
@@ -95,11 +95,17 @@ Each ends on something playable. No dates are promised past phase 1: see "The da
 
 ## The date
 
-Sunday 2026-11-15 was the hope. For this game at this bar it isn't reachable, and saying otherwise would cost the bar. What's honest today:
-
-- **Phase 1** is days of the builder's work. It's the first thing the director can play.
-- **Everything after** depends on what one Voidkin costs to make. Nobody knows until Rook, Pip and Lyric are timed (AR1, AR4). Thirty-one of them is the long pole.
-- Research gives a dated estimate when phase 1 closes and three fighters are timed, and updates it on the board each week.
+**Research's estimate, 2026-11-17, 02:31.** It's read from the commit clock, not measured.
+- **The pace so far:** phases 0 to 2 and the first half of phase 3's blocks took the team about 76 hours with commits in them, 2026-11-12 to 17, about 15 a day.
+- **What's left for the launch line** (phases 0 to 4, the Tower, one ground, Lantern Row's eight Voidkin):
+  - phase 2's tail;
+  - phase 3's rest: TR31 to TR35, the Forge and the Stone Condenser, emblems, jewels, research, the responsive pass, and each block's finish;
+  - five Voidkin: Kirra and Watt to finish, and Sable, Marigold and Crane to make. That's about one to two days of Modulo's each, by Watt's and Kirra's clocks, and it's the long pole;
+  - phase 4: the Void Shop, the Rift, and the Robux store, designed, checked against Roblox's rules and approved;
+  - phase 6: the finish pass at the director's bar of 2026-11-17, the game page, Roblox's maturity questionnaire, and a soft opening.
+- **The earliest public date:** about Sunday 2026-11-29 if nothing slips, more likely the first week of December. Sunday 2026-11-22 isn't reachable at the bar.
+- **A nearer date comes from cutting systems, not the roster** (the cut line). Moving the Forge, emblems, jewels, research and the Rift to updates would bring it about two to three days nearer. That's the director's call.
+- The estimate is updated on the board each week.
 
 ## The count
 

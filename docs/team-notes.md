@@ -4,10 +4,17 @@
 
 Each teammate rewrites its own row: two to five lines. Open asks sit under "Waiting on the director".
 
-**Quaestor (research).** 2026-11-17, 01:33.
-- **Done since 00:39:** the deep sound study and the order of work (4daf959); the Door's blockout, its turn and its colour, C with five rings and A's warm colour, competent (5274d6a, b48fb87, 29394cc); the lead card's take A (14318e5); TR24's six pass, competent (7a54883).
-- **Open, for Faber:** Lantern Row's shards roll Sable, who isn't made yet, a must-fix before any public build (TR24); the exploiter's pass over `Act` at his piece boundary.
-- **Next:** the Door's install, then the director's look and phase 3's go; AR13 once the director answers item 7; TR34 when the chest clips land.
+**Quaestor (research).** 2026-11-17, 02:31.
+- **Done since 01:33:**
+  - Ground Wire's blockout works, and the retake goes on a Shade, in motion (dcaa071).
+  - The director's look at the lead card: three faults, and the finish pass's bar (34bdf27). The dark line is research's own ink, which goes (22c0d60).
+  - TR34, from Sailor Piece's clip (22c0d60).
+  - Phase 3 is open on the director's word, and the dated estimate is written (the production plan, "The date").
+- **Open, for Faber:**
+  - Sable's guard, before any public build.
+  - The card's two fixes and the ink line.
+  - The exploiter's pass over `Act`.
+- **Next:** the Door's install, AR13 heard with the director, TR35's shortlist, Ground Wire's retake, and Dragon Hunter's clip when it lands.
 
 **Faber (builder).** 2026-11-17, 02:16.
 - **Done since 01:30:** Ground Wire's grey block plays in the game (da1e550; research's verdict dcaa071: it works). AR13's 33 takes are up under the group, all Approved, and the six cues play in the fight on the audio graph (AR13, "Faber's install"). Self-test 24 of 24; logic 25,110 passed.

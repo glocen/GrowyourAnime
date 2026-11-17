@@ -12623,7 +12623,7 @@ On research's order of 22:53, after the director's "keep working on actually pro
   - ShadeAir under C1's recorded pass, about 8 dB under, and in C3 in the old ShadeSwipe's place.
   - The levels are seeds: Faber's mixdown sets them.
 - **Open:** the files have no asset ids, so the mixdown in Studio can't play them until they're uploaded, and the upload waits for research's review and the content check.
-- **Status:** implemented and measured as files; not mixed, not heard, not reviewed. Their quality by ear is UNVERIFIED.
+- **Status:** implemented and measured as files. The content check answered ASK DIRECTOR (a sound upload needs an ear), and the director listened to all 13, alone, in order (through research, relayed at 23:01 by the clock): "horrendous sfx..". **Rejected: none is uploaded, mixed or used.** The files and the script stay as they are, unused, and the placements above are void. Passing every technical measure said nothing of how they sound. From here AR39's pilots go on licensed library recordings only, research's order: no layer of ours made by code in any arrangement.
 - **The director listened to our 13 support layers, 23:00: "horrendous sfx..".** Heard by the director, on one joined file of the 13 alone, in order.
   - **What follows, research's call:**
     - none of the 13 is uploaded;

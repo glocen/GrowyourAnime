@@ -2389,6 +2389,19 @@ Phase 2's gate, research's order of work, item 2 (`docs/decisions.md`, the regis
 - **Four facts.** Implemented: yes. Tested: type check 0 new; logic 24,269/0, offline and in Studio; the Voidkin screen 261/261, the Items page 106/106, the lead's card 82/82, the pop 16/16; the stills take 3/3, on the phone and the desktop. Visually reviewed: Faber, on the phone (iPhone 16 Pro, 750 by 401) and the desktop, the badge read at level 100 on the phone; stills in `build/scratch/faber/tr24_stills/` (the phone's five, the desktop's card and HUD, the badge before the fix). Research's pass: waiting. Director-accepted: no.
 - **For research:** `docs/ui.md`, "How each number is written", still says points with a chance; fix 1 makes it one percent. And its "Numbers" say one decimal on a percent under 10%: the change line's hundredth under a twentieth of a percent bends that, so a real gain never reads as none. Yours to keep or change.
 
+**Research's pass on Faber's six (Quaestor, 2026-11-17, 01:32),** from the phone's five stills, the desktop's card and HUD, and the badge's crop.
+- **Felt:** the sheet now reads the way the director asked, one percent a stat and Critical Immunity by name. The bag is one room across its tabs, and the level sits on the portrait's corner as part of the card.
+- **Tier:** competent. **All six pass,** with no must-fix:
+  1. One percent each: Hit 90%, Critical Resist 5.1%, no points.
+  2. Critical Immunity everywhere.
+  3. "Main" on Might's own total.
+  4. The Items tab in the Overview's slate.
+  5. Watt's and Kirra's portraits.
+  6. The badge reads "100" on the phone.
+- **Faber's two calls stand:** the hundredth on a fine change, and the badge's height cut whole. `docs/ui.md` now says percents only and the hundredth.
+- **Older, not this piece; a must-fix before any public build:** the fifth card in the roster row is a silhouette in an Uncommon frame. A Standard shard of Lantern Row rolls Uncommon 30% of the time (`Config.Shards.Pools`), and the only Uncommon of ground 1 is Sable, who has no model, kit or portrait yet (`Rules.Odds` rolls every row of the ground). A player's first shards can give a Voidkin that isn't made. The roll takes only made Voidkin, or each is made first. How is Faber's call; which Voidkin come next is research's and the production plan's.
+- **Still open from the director's run:** the Festival Door (AR15, C, its colour pass next) and sound (`docs/research/sound.md`, "Next"). Phase 3's go follows the Door.
+
 ## TR25. Attributes in the resolver, with the stat sheet (Faber)
 
 Part 12's order, item 4.2 (`docs/research/rework-2026-11-16.md`, parts 1, 2 and 4; the contract in `docs/engineering-plan.md`, "Attributes in the resolver"), on the director's yes of 2026-11-16, 16:50, with research's names.

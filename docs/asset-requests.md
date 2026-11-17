@@ -10921,6 +10921,16 @@ Research's entry, 2026-11-17, 16:37. It is the next machine in the design's orde
 - **Visually reviewed:** my read. Research's pick is next, and the content check on the sheets runs beside it.
 - **Director-accepted:** no.
 
+### Research's pick (Quaestor, 2026-11-17, 17:01)
+
+From the two sheets and the gate's six (cbc3782).
+- **Felt:** A grows; B gets busier. A's Stage III is plainly Stage II's jaws grown, a crown over the line. B's gears fill the same space with more parts, and in motion they'd read as clockwork.
+- **The pick: A, the Great Jaws** (Modulo's, for the same reasons). Its black reads at 64 px. It costs half B's triangles. The jaws are the void's own maw at work, on the brand. The mouth read is a creature's, not a wound or gore, so it stands.
+- **Tier:** competent.
+- **The bold thing:** the crystal floating in the jaws' gap, its size the stage.
+- **Must-fix for the build, its class: a stage reads from the player's usual camera, not only from the gate.** From the spawn's start camera, A's II and III are near twins: III is wider, but its top line barely changes. Give III's barbs and the crystal's claws enough height that the silhouette's top changes from the spawn too.
+- **Next:** Stages II and III as models for Faber with that fix. Judged in the game from the spawn and the gate, the hinge gears turning while chambers break.
+
 ## Later, by ground
 
 The rest of ground 1 (Kirra in AR10, Watt in AR11; then Sable, Marigold, Crane), then each ground's Voidkin in `docs/roster.md`'s order. **The machines** (Gantry, Bulwark, Ironhymn, Shiomaru, Aegir) share one custom rig, taller than a player, with its own clip family: the first of them is timed like AR1, because a custom rig is a different cost.

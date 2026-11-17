@@ -3078,3 +3078,32 @@ Research, 2026-11-17, 09:27, on the director's word of the same morning (`docs/d
 - **Cases:** the Stats and Sheet logic cases move to two attributes, and one new case checks that every class's Main is Strength or Endurance and that every shown type name is a colour.
 - **The model** reads the new rows once they land: `py tools/balance/attributes.py`. Research reruns it and confirms the fit.
 - **Saves:** a Voidkin's own points come from its class's shape, so only gear rolled with an old attribute needs a rule. Re-rolling it on load or wiping test saves is your call, since nothing is public.
+
+## TR37. The Forge and the Stone Condenser (Faber, on AR28's look)
+
+Research's request, 2026-11-17, 11:17, item 7 of phase 3's order (`docs/production-plan.md`). The design: `docs/design.md`, "The base" (the Condenser) and "Regalia: gear" (forge ranks, the move across). The numbers: `docs/balance.md`, "Where power comes from" (forge ranks are 13.5 of a full build).
+
+**Feel lines:** AR28's two. The Forge: the player sets an item on it, and it takes the stones and drives the item up a rank, which comes back brighter. The Condenser: coming home, its tray glows with what it made while they were away.
+
+**The rules (research's, tier 2):**
+- **A forge rank belongs to the item** [D, 2026-11-17, 02:40]. Each rank adds a share of the item's own base, its main stat and every line alike: `fullBonusOfGearBase` (0.50) over `maxRank` (30), so 1/60 of the base a rank. It's linear and touches nothing else (`docs/balance.md`, rule 2).
+- **Three stone grades,** by the rank they buy: Low for ranks 1 to 10, Mid for 11 to 20, High for 21 to 30. **At launch ranks stop at 10**, so only Low stones are spent. Mid and High drop and stack from launch, with the ranks they buy coming in the big update. Lantern Row and the Tower drop Low, and the Tower drops a few Mid.
+- **A rank never fails.** It costs stones and Credits, rising with the rank and with the item's level tier (G), and it always lands. No chance and no loss, so the Forge never sells a random outcome.
+- **The move across** is the design's prompt on equip (TR26's comparison). Yes moves the rank, the emblems and the jewel for free. No leaves them on the old item.
+- **The Condenser makes Low stones, online and away.** Its rate grows with its level, and it draws electricity like the Breaker (`Rules.Power`), slower with less. Stones land in its tray, which has a cap in hours of work. A full tray stops. Its second job turns 5 Low into 1 Mid over a set time, one at a time.
+- **Every spend is the server's, in one step:** a repeated or interrupted request never spends twice or ranks twice. The away time is worked out on return, as the Training machine's is.
+
+**The seeds** (research sets them in `tools/balance/sim.py` before Faber reaches this piece): the Credits and stones a rank costs; the Condenser's rate, tray and conversion time by level; the stones that drop by source. The target: the forge takes `forgeShareOfIncome` (45%) of a launch player's Credits, and rank 10 on a whole worn set takes about as long as the launch's grind is meant to last.
+
+**The block contains:**
+- the rules in pure Luau (`Rules.Forge`, `Rules.Condenser`) with their cases;
+- the Forge's screen in grey: pick an item, see its stats now and at the next rank, the cost, and one press;
+- the Condenser in grey: its tray in the world (full, part-full, empty, readable from the gate), a tap to collect, and its convert job;
+- stones in the bag's Stones tab;
+- the rank's badge on an item's slot (TR28) and its card.
+
+**Waits:** the machines' models (AR28's pick, then Modulo's Stage I); the rank-up moment's effect and sound; ranks 11 to 30; the Condenser's Stages II and III; auto-salvage into stones (TR27's note).
+
+**Checks:** the logic cases (a rank's gain, its cost, never twice on a repeat, the move across, the tray's cap, the away time, the conversion); the self-test of both screens; the UI lint on the smallest phone; research's verdict in grey from a phone capture.
+
+**Order in the queue:** item 7, after TR29's fixes and TR10's captures. Emblems (TR38) and jewels (TR39) follow, written by research before Faber reaches them.

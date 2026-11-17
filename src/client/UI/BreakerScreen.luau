@@ -13,9 +13,16 @@
 --   BreakerScreen.Select(selection) a tap on a shard, for tests
 --   BreakerScreen.Flashing()        the chambers flashing now, by index, for tests
 --   BreakerScreen.Tap(target)       a tap on a chamber's or a chip's tap target, for tests
+--   BreakerScreen.Still(on)         for tests: the sky held as reduced motion holds it (nil: as the player's setting says)
+--   BreakerScreen.Fall(at?)         for tests: the next star falls now; `at` holds it at that share of its path
+-- The galaxy (TR41; AR12's images, the director's "ok we keep it", 2026-11-15): the panel's body is a still night with
+-- one river of mist sliding along the chambers' row, six stars breathing and now and then a star falling in the last
+-- chamber's window. A chamber is glass on it: a solid strip for its number, a window, a solid plate for its words.
 
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local TweenService = game:GetService("TweenService")
+local GuiService = game:GetService("GuiService")
+local RunService = game:GetService("RunService")
 
 local Shared = ReplicatedStorage.Shared
 local Profile = require(Shared.Data.Profile)
@@ -50,13 +57,20 @@ local SIZE = Vector2.new(660, 320)
 local CHIP = Vector2.new(144, 52) -- its shard's picture (Config.Hud.ShardArt.Chip) and a gap left of 112 for its words
 local HEADING = 20
 local LINE = 18
-local TOP = 4 -- a working chamber's picture under its top edge
+local SKY = HudConfig.Breaker.Sky
+local NUMBER_PAD = 6 -- "Chamber N" from its strip's left: whole at the smallest phone's text
 
--- The room a working chamber's words take under its picture: its name, its crack, its time and, infused, its line.
-local function chamberWords(infused: boolean): number
-	return 2 + 22 + 2 + Theme.Size.Bar + 2 + LINE + (if infused then LINE else 0) + 2
+-- The room a chamber's plate takes: a working one's name, its crack, its time and, infused, its line; an empty or locked
+-- one's single word.
+local function plateFor(working: boolean, infused: boolean): number
+	if not working then
+		return 2 + LINE + 2
+	end
+	return 2 + LINE + 2 + Theme.Size.Bar + 2 + LINE + (if infused then LINE else 0) + 2
 end
-local LOCKED = "Upgrade the Breaker" -- under "Locked": what opens a chamber (research, TR9, 2026-11-14, night)
+-- What opens a locked chamber (research, TR9, 2026-11-14, night), said once over the row: at the kit's smallest text it
+-- won't fit a plate beside "Locked" (research's fix 1 on the galaxy, AR12, 2026-11-15: "say it once").
+local LOCKED = "Upgrade the Breaker"
 
 local selected: Selection? = nil
 local pending: Selection? = nil -- a shard just put in, chosen where the server says it stands once the save shows it
@@ -72,6 +86,17 @@ type Seen = { Ready: number, Chambers: { [number]: { Def: string, Done: number, 
 local seen: Seen? = nil
 local flashes: { [number]: number } = {} -- chamber index: os.clock() its flash began
 local arrivals: { [number]: number } = {} -- Ready index: os.clock() its shard came from a chamber
+
+-- The galaxy's moving layers, laid again at each build (the stars once a screen), and the clock they move by.
+type Star = { Image: ImageLabel, Seconds: number, Start: number }
+type Sky = { Mist: { ImageLabel }, Lights: { ImageLabel }, Fall: ImageLabel?, Stars: { Star } }
+local sky: Sky = { Mist = {}, Lights = {}, Fall = nil, Stars = {} }
+local opened = 0 -- os.clock() at the screen's fresh opening
+local nextFall = math.huge -- os.clock() the next star falls
+local fallFrom = 0 -- os.clock() the falling star set off, or 0
+local still: boolean? = nil -- for tests: held still, or nil for the player's setting
+local heldFall: number? = nil -- for tests: the falling star held at this share of its path
+local moving: RBXScriptConnection? = nil
 
 -- Every shard on the screen, in its order: ready, the chambers, the line, the bag.
 local function shardsOf(view: Profile.View): { Selection }
@@ -339,7 +364,221 @@ end
 -- A chamber as it stands: its shard's name, the crack's progress as a conduit filling, the time left; empty or locked.
 -- While gold fades over it, what it holds next waits under it: its words show once the gold is gone, never through
 -- "Ready" (TR9's retake, research's fix, 2026-11-15).
-local function cell(parent: Instance, index: number, view: Profile.View, width: UDim, height: number, side: number)
+-- Seconds drawn at random between a range's two ends.
+local function between(range: { number }): number
+	return range[1] + math.random() * (range[2] - range[1])
+end
+
+local function image(name: string, id: string, parent: Instance): ImageLabel
+	local made = Instance.new("ImageLabel")
+	made.Name = name
+	made.BackgroundTransparency = 1
+	made.BorderSizePixel = 0
+	made.Image = id
+	made.Parent = parent
+	return made
+end
+
+-- The still night in the panel's shape and its six stars, on the panel's own fill and under its facet, edge and glint:
+-- laid once a screen and kept through its rebuilds (the body is cleared, the panel's skin isn't). The places are shares
+-- of the mock's panel, so the night carries ours.
+local function night(panel: GuiObject)
+	local skin = Skin.Of(panel)
+	if skin:FindFirstChild("Sky") then
+		return
+	end
+	for _, name in { "Facet", "Edge", "Glint" } do -- the fill at 2, the night at 3, these over it
+		local layer = skin:FindFirstChild(name)
+		if layer and layer:IsA("GuiObject") then
+			layer.ZIndex += 1
+		end
+	end
+	local holder = Instance.new("Frame")
+	holder.Name = "Sky"
+	holder.BackgroundTransparency = 1
+	holder.Size = UDim2.fromScale(1, 1)
+	holder.ZIndex = 3
+	holder.Parent = skin
+	local across = SKY.Panel
+	for _, half in { { Name = "Left", Id = SKY.Images.Left, Part = SKY.Left }, { Name = "Right", Id = SKY.Images.Right, Part = SKY.Right } } do
+		local made = image(half.Name, half.Id, holder)
+		made.Position = UDim2.fromScale(half.Part.At / across.X, 0)
+		made.Size = UDim2.fromScale(half.Part.Wide / across.X, 1)
+	end
+	sky.Stars = {}
+	for index, star in SKY.Stars.Each do
+		local side = math.floor(SKY.Stars.Side * star.Size + 0.5) -- an offset is whole points
+		local made = image(`Star{index}`, SKY.Images.Star, holder)
+		made.AnchorPoint = Vector2.new(0.5, 0.5)
+		made.Position = UDim2.fromScale(star.At.X / across.X, star.At.Y / across.Y)
+		made.Size = UDim2.fromOffset(side, side)
+		made.ImageColor3 = Color3.fromHex(star.Tint)
+		made.ZIndex = 2
+		table.insert(sky.Stars, { Image = made, Seconds = star.Seconds, Start = star.Start })
+	end
+end
+
+-- One band of mist along the chambers' row, gaps included, behind them: two copies of its lumps slide inside a group that
+-- holds still and carries the river's colour as one gradient, so the colour stays put while the lumps move (research's
+-- read of AR12's images, 2026-11-15). The image lies so the json's band meets the windows' band down a chamber `height`
+-- tall, from `y`; its cover fades down its height, which sliding never changes.
+local function mist(parent: Instance, y: number, height: number)
+	local m = SKY.Mist
+	local band = (SKY.Band.Foot - SKY.Band.Top) * height
+	local tall = math.floor(band / (m.Foot - m.Top) + 0.5) -- an offset is whole points
+	local turn = math.floor(m.Image.X * tall / m.Image.Y + 0.5)
+	local group = Instance.new("CanvasGroup")
+	group.Name = "Mist"
+	group.BackgroundTransparency = 1
+	group.BorderSizePixel = 0
+	group.Size = UDim2.new(1, 0, 0, tall)
+	group.Position = UDim2.fromOffset(0, y + SKY.Band.Top * height - m.Top * tall)
+	group.ZIndex = 1
+	group.Parent = parent
+	local colours = {}
+	for _, stop in m.Tint do
+		table.insert(colours, ColorSequenceKeypoint.new(stop[1] :: number, Color3.fromHex(stop[2] :: string)))
+	end
+	local river = Instance.new("UIGradient")
+	river.Name = "River"
+	river.Color = ColorSequence.new(colours)
+	river.Parent = group
+	local covers = {}
+	for _, stop in m.Down do
+		table.insert(covers, NumberSequenceKeypoint.new(stop[1], 1 - stop[2]))
+	end
+	sky.Mist = {}
+	for copy = 1, 2 do
+		local made = image(`Lumps{copy}`, SKY.Images.Mist, group)
+		made.Size = UDim2.fromOffset(turn, tall)
+		made:SetAttribute("Turn", turn)
+		local down = Instance.new("UIGradient")
+		down.Name = "Down"
+		down.Rotation = 90
+		down.Transparency = NumberSequence.new(covers)
+		down.Parent = made
+		table.insert(sky.Mist, made)
+	end
+end
+
+-- The falling star's window: chamber `index`'s band, under its glass, of `most` across the row.
+local function fallingBox(parent: Instance, index: number, most: number, y: number, height: number)
+	local gap = Theme.Size.Gap
+	local box = Instance.new("Frame")
+	box.Name = "Falling"
+	box.BackgroundTransparency = 1
+	box.ClipsDescendants = true
+	box.Position = UDim2.new((index - 1) / most, (index - 1) * gap / most, 0, y + SKY.Band.Top * height)
+	box.Size = UDim2.new(1 / most, -gap * (most - 1) / most, 0, (SKY.Band.Foot - SKY.Band.Top) * height)
+	box.ZIndex = 2
+	box.Parent = parent
+	local made = image("Star", SKY.Images.Falling, box)
+	made.Size = UDim2.fromOffset(SKY.Falling.Points.X, SKY.Falling.Points.Y)
+	made.ImageTransparency = 1
+	sky.Fall = made
+end
+
+-- A chamber's glass: its body in the glass's colour, solid over its strip (to `top`) and its plate (from `foot`), covering
+-- Window of the sky between them, Locked's when it's locked. The fill reaches its pad past the box, so the stops are laid
+-- in its own height. Its shadow would darken the window, so it goes.
+local function glass(frame: GuiObject, height: number, top: number, foot: number, open: boolean)
+	local g = SKY.Glass
+	local colour = Color3.fromHex(g.Colour)
+	frame:SetAttribute("Body", colour) -- Panel.Hover whitens this, not the palette's
+	local folder = frame:FindFirstChild("NL_Skin")
+	local shadow = if folder then folder:FindFirstChild("Shadow", true) else nil
+	if shadow then
+		shadow:Destroy()
+	end
+	local fill = if folder then folder:FindFirstChild("Fill", true) :: ImageLabel? else nil
+	if fill == nil then
+		return
+	end
+	Skin.Tint(fill, ColorSequence.new(colour))
+	fill.ImageTransparency = 0
+	local gradient = fill:FindFirstChildOfClass("UIGradient")
+	if gradient == nil then
+		return
+	end
+	local pad = fill.Size.Y.Offset / 2
+	local whole = height + 2 * pad
+	local function at(y: number): number
+		return math.clamp((y + pad) / whole, 0, 1)
+	end
+	local clear = 1 - (if open then g.Window else g.Locked)
+	gradient.Transparency = NumberSequence.new({
+		NumberSequenceKeypoint.new(0, 0),
+		NumberSequenceKeypoint.new(at(top), 0),
+		NumberSequenceKeypoint.new(at(top + g.Under * height), clear),
+		NumberSequenceKeypoint.new(at(foot - g.Over * height), clear),
+		NumberSequenceKeypoint.new(at(foot), 0),
+		NumberSequenceKeypoint.new(1, 0),
+	})
+end
+
+local function held(): boolean
+	if still ~= nil then
+		return still
+	end
+	return GuiService.ReducedMotionEnabled
+end
+
+-- The sky's motion, each frame, from the screen's clock: the mist slides, the stars and a shard's light breathe, and a
+-- star falls when it's due. Held still, the screen is the still: the mist and the stars at their start, no star falls.
+local function move()
+	local now = os.clock()
+	local hold = held()
+	local t = if hold then 0 else now - opened
+	for copy, lumps in sky.Mist do
+		-- Slid by scale, which takes a share of a point: an offset is whole points, and the drift is 2.5 a second.
+		local turn = lumps:GetAttribute("Turn")
+		local group = lumps.Parent
+		if type(turn) == "number" and turn > 0 and group and group:IsA("GuiObject") and group.AbsoluteSize.X > 0 then
+			local shift = -((t * SKY.Mist.Drift) % turn) + (copy - 1) * turn
+			lumps.Position = UDim2.fromScale(shift * (lumps.AbsoluteSize.X / turn) / group.AbsoluteSize.X, 0)
+		end
+	end
+	for _, star in sky.Stars do
+		star.Image.ImageTransparency = 1 - (0.775 + 0.225 * math.sin(2 * math.pi * (t / star.Seconds + star.Start)))
+	end
+	local l = SKY.Light
+	local cover = l.Cover + l.Swell * math.sin(2 * math.pi * t / l.Breath)
+	for _, light in sky.Lights do
+		light.ImageTransparency = 1 - cover
+	end
+	local fall = sky.Fall
+	local f = SKY.Falling
+	if heldFall and fall and not hold then
+		local head = f.From:Lerp(f.To, heldFall)
+		fall.Position = UDim2.new(head.X, -f.Head.X, head.Y, -f.Head.Y)
+		fall.ImageTransparency = 1 - math.sin(math.pi * heldFall) ^ 0.6
+		return
+	end
+	if hold then
+		fallFrom = 0
+		if fall then
+			fall.ImageTransparency = 1
+		end
+		return
+	end
+	if fallFrom == 0 and now >= nextFall then
+		fallFrom = now
+		nextFall = now + between(f.Every)
+	end
+	if fallFrom > 0 then
+		local s = (now - fallFrom) / f.Seconds
+		if s >= 1 then
+			fallFrom = 0
+		end
+		if fall then
+			local head = f.From:Lerp(f.To, math.clamp(s, 0, 1))
+			fall.Position = UDim2.new(head.X, -f.Head.X, head.Y, -f.Head.Y)
+			fall.ImageTransparency = if s >= 1 then 1 else 1 - math.sin(math.pi * s) ^ 0.6
+		end
+	end
+end
+
+local function cell(parent: Instance, index: number, view: Profile.View, width: UDim, height: number, plate: number, side: number)
 	local open = index <= #view.Base.Chambers
 	local chamber = if open then view.Base.Chambers[index] else nil
 	local work = if chamber then chamber.Work else nil
@@ -347,17 +586,18 @@ local function cell(parent: Instance, index: number, view: Profile.View, width: 
 	local frame = Panel.new({
 		Name = `Chamber{index}`,
 		Size = UDim2.new(width, UDim.new(0, height)),
-		Colour = Theme.Colour.PlateHigh,
-		Transparency = if open then 0.3 else 0.7,
 		Edge = true,
 		LayoutOrder = index,
 		Parent = parent,
 	})
+	-- Glass on the sky (TR41): its number on the strip, its shard in the window, its words on the plate.
+	local top = HudConfig.Breaker.Strip
+	local foot = height - plate
+	glass(frame, height, top, foot, open)
 	local pad = Theme.Size.Pad
-	local inner = UDim2.new(1, -pad * 2, 0, 22)
-	if work == nil then -- a working chamber's picture takes its number's place
-		label(frame, "Number", `Chamber {index}`, Theme.Text.Caption, UDim2.new(1, -pad * 2, 0, LINE), UDim2.fromOffset(pad, pad), { Colour = Theme.Colour.TextDim })
-	end
+	local inner = UDim2.new(1, -pad * 2, 0, LINE)
+	local centre = { Font = Theme.Font.Strong, Truncate = true, Align = Enum.TextXAlignment.Center }
+	label(frame, "Number", `Chamber {index}`, Theme.Text.Caption, UDim2.new(1, -NUMBER_PAD * 2, 0, LINE), UDim2.fromOffset(NUMBER_PAD, (top - LINE) / 2), { Colour = Theme.Colour.TextDim, Truncate = true })
 	local flash = flashes[index]
 	local gold = if flash then flashLeft(flash) else nil
 	if flash then
@@ -375,29 +615,42 @@ local function cell(parent: Instance, index: number, view: Profile.View, width: 
 			end)
 		end
 	end
-	if work == nil then
-		later(label(frame, "Name", if open then "Empty" else "Locked", Theme.Text.Body, inner, UDim2.fromOffset(pad, pad + LINE + 4), { Colour = Theme.Colour.Disabled }))
-		if not open then
-			-- What opens it, by research's rule for the locked infusion: the Breaker's own level (TR9, fix 2). The level
-			-- joins the words once the Breaker's upgrades are seeded. "Locked · upgrade the Breaker" over two lines.
-			label(frame, "Opens", LOCKED, Theme.Text.Caption, UDim2.new(1, -pad * 2, 0, LINE * 3), UDim2.fromOffset(pad, pad + LINE + 28), { Colour = Theme.Colour.TextDim, Wrap = true })
-		end
+	if work == nil then -- what opens a locked one is said once over the row
+		later(label(frame, "Name", if open then "Empty" else "Locked", Theme.Text.Caption, inner, UDim2.fromOffset(pad, foot + 2), { Colour = Theme.Colour.Disabled, Align = Enum.TextXAlignment.Center }))
 		return
 	end
 	local w = work :: Profile.ShardWork
-	-- Its shard's picture at the top, `side` points (AR12, research's call); under it, never over its foot, its name,
-	-- its crack, its time, and, infused, one line saying so: the level is the pane's and the odds', as on a chip.
+	-- The soft light behind its shard, in its window only (the json's light, working).
+	local tall = foot - top
+	local window = Instance.new("Frame")
+	window.Name = "Window"
+	window.BackgroundTransparency = 1
+	window.ClipsDescendants = true
+	window.Position = UDim2.fromOffset(0, top)
+	window.Size = UDim2.new(1, 0, 0, tall)
+	window.Parent = frame
+	local l = SKY.Light
+	local light = image("Light", SKY.Images.Light, window)
+	light.AnchorPoint = Vector2.new(0.5, 0.5)
+	light.Position = UDim2.new(0.5, 0, 0, tall / 2)
+	light.Size = UDim2.fromOffset(l.Side * l.Radius, l.Side * l.Radius)
+	light.ImageColor3 = Color3.fromHex(l.Tint)
+	light.ImageTransparency = 1 - l.Cover
+	table.insert(sky.Lights, light)
+	later(window)
+	-- Its shard in the window's middle, `side` points (AR12, research's call); on the plate under it, its name, its
+	-- crack, its time, and, infused, one line saying so: the level is the pane's and the odds', as on a chip.
 	local art = HudConfig.ShardArt
 	local row = Shards.ById[w.Def]
 	local picture = Skin.Icon(frame, Hud.ShardPicture(if row then row.Grade else "Standard", side, art.Large), 0, 0, side)
 	picture.Name = "Picture"
-	picture.AnchorPoint = Vector2.new(0.5, 0)
-	picture.Position = UDim2.new(0.5, 0, 0, TOP)
+	picture.AnchorPoint = Vector2.new(0.5, 0.5)
+	picture.Position = UDim2.new(0.5, 0, 0, top + tall / 2)
+	picture.ZIndex = 2
 	later(picture)
-	local y = TOP + side + 2
-	local centre = { Font = Theme.Font.Strong, Truncate = true, Align = Enum.TextXAlignment.Center }
-	later(label(frame, "Name", shortName(w.Def), Theme.Text.Body, inner, UDim2.fromOffset(pad, y), centre))
-	y += 22 + 2
+	local y = foot + 2
+	later(label(frame, "Name", shortName(w.Def), Theme.Text.Caption, inner, UDim2.fromOffset(pad, y), centre))
+	y += LINE + 2
 	local bar = Bar.new({ Name = "Crack", Size = UDim2.new(1, -pad * 2, 0, Theme.Size.Bar), Position = UDim2.fromOffset(pad, y), Colour = Theme.Colour.Electricity, Parent = frame })
 	later(bar)
 	y += Theme.Size.Bar + 2
@@ -525,24 +778,33 @@ end
 -- The chambers side by side, `height` tall: those open, and the rest locked up to the most a Breaker has.
 local function machine(parent: Instance, view: Profile.View, height: number)
 	label(parent, "ChambersTitle", "Chambers", Theme.Text.Caption, UDim2.new(1, 0, 0, HEADING), UDim2.new(), { Font = Theme.Font.Strong, Colour = Theme.Colour.TextDim })
+	local most = math.max(BaseConfig.Breaker.MostChambers, #view.Base.Chambers)
+	if most > #view.Base.Chambers then
+		label(parent, "Opens", LOCKED, Theme.Text.Caption, UDim2.new(1, 0, 0, HEADING), UDim2.new(), { Colour = Theme.Colour.TextDim, Align = Enum.TextXAlignment.Right })
+	end
+	local top = HEADING + 2
+	mist(parent, top, height)
+	fallingBox(parent, math.min(SKY.Falling.Chamber, most), most, top, height)
 	local row = Instance.new("Frame")
 	row.Name = "Chambers"
 	row.BackgroundTransparency = 1
 	row.Size = UDim2.new(1, 0, 0, height)
-	row.Position = UDim2.fromOffset(0, HEADING + 2)
+	row.Position = UDim2.fromOffset(0, top)
+	row.ZIndex = 3
 	row.Parent = parent
 	Panel.List(row, Enum.FillDirection.Horizontal, Theme.Size.Gap)
-	local most = math.max(BaseConfig.Breaker.MostChambers, #view.Base.Chambers)
-	-- One picture size for the row, so the words line up across it: as large as fits up to Chamber, giving way to Least
-	-- where a chamber's infusion takes its line (Config.Hud.ShardArt).
-	local infusedRow = false
+	-- One plate for the row, as tall as its fullest chamber's words, so the windows line up as one band; one picture size,
+	-- as large as the window holds up to Chamber, giving way to Least where an infusion takes a line (Config.Hud.ShardArt).
+	local plate = plateFor(false, false)
 	for _, chamber in view.Base.Chambers do
-		infusedRow = infusedRow or charged(chamber.Work)
+		if chamber.Work then
+			plate = math.max(plate, plateFor(true, charged(chamber.Work)))
+		end
 	end
 	local art = HudConfig.ShardArt
-	local side = math.clamp(height - TOP - chamberWords(infusedRow), art.Least, art.Chamber)
+	local side = math.clamp(height - HudConfig.Breaker.Strip - plate - 2, art.Least, art.Chamber)
 	for index = 1, most do
-		cell(row, index, view, UDim.new(1 / most, -Theme.Size.Gap * (most - 1) / most), height, side)
+		cell(row, index, view, UDim.new(1 / most, -Theme.Size.Gap * (most - 1) / most), height, plate, side)
 	end
 end
 
@@ -820,7 +1082,12 @@ local function build(view: Profile.View, on: On)
 	local now = Read.Base(view, workspace:GetServerTimeNow())
 	watch(now)
 	selected = settle(view)
+	sky.Mist, sky.Lights, sky.Fall = {}, {}, nil
 	local body = Screen.Open(NAME, "Void Breaker", SIZE)
+	local panel = body.Parent
+	if panel and panel:IsA("GuiObject") then
+		night(panel)
+	end
 	local gap = Theme.Size.Gap
 	local cellHeight = HudConfig.Breaker.Cell
 	local left = Instance.new("Frame")
@@ -844,8 +1111,26 @@ function BreakerScreen.Open(view: Profile.View, on: On)
 		selected, pending = nil, nil
 		rates = false
 		seen, flashes, arrivals = nil, {}, {} -- what finished while it was shut waits on the strip, unflashed
+		opened = os.clock()
+		nextFall = opened + between(SKY.Falling.First)
+		fallFrom = 0
 	end
 	build(view, on)
+	move() -- laid where it stands before its first frame
+	if moving == nil then
+		moving = RunService.RenderStepped:Connect(function()
+			if Screen.Current() ~= NAME then
+				local was = moving
+				moving = nil
+				sky = { Mist = {}, Lights = {}, Fall = nil, Stars = {} }
+				if was then
+					was:Disconnect()
+				end
+				return
+			end
+			move()
+		end)
+	end
 end
 
 function BreakerScreen.Tick(now: Read.Base)
@@ -887,6 +1172,15 @@ function BreakerScreen.Flashing(): { [number]: boolean }
 		end
 	end
 	return out
+end
+
+function BreakerScreen.Still(on: boolean?)
+	still = on
+end
+
+function BreakerScreen.Fall(at: number?)
+	heldFall = at
+	nextFall = os.clock()
 end
 
 BreakerScreen.Name = NAME

@@ -22,6 +22,7 @@ local Cases = require(script.Cases)
 local TowerCases = require(script.TowerCases)
 local KitCases = require(script.KitCases)
 local SoundCases = require(script.SoundCases)
+local BreakerCases = require(script.BreakerCases)
 local BaseController = require(script.Parent.Parent.Main.BaseController)
 
 local BRIDGE_NAME = "NL_SelfTest"
@@ -179,6 +180,8 @@ local function run(filter: string?): string
 	table.move(kits, 1, #kits, #cases + 1, cases)
 	local sounds = SoundCases.Cases() -- AR13's cues on the audio graph, apart for the same reason
 	table.move(sounds, 1, #sounds, #cases + 1, cases)
+	local breaker = BreakerCases.Cases() -- the galaxy Breaker (TR41), apart for the same reason
+	table.move(breaker, 1, #breaker, #cases + 1, cases)
 	for _, case in cases do
 		local chosen = if filter then string.find(case.Name, filter, 1, true) ~= nil else not case.Manual
 		if chosen then

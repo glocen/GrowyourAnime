@@ -131,7 +131,10 @@ function Panel.Hover(frame: GuiObject, share: number, pad: boolean)
 		if frame:GetAttribute("Row") == true and typeof(colour) == "Color3" then
 			fill.ImageColor3 = Hover.White(colour, share)
 		elseif frame:GetAttribute("Row") ~= true and gradient then -- the body's two colours, top to bottom (Skin.Tint)
-			gradient.Color = Hover.Whites(ColorSequence.new(p.Panel[1], p.Panel[#p.Panel]), share)
+			local body = frame:GetAttribute("Body") -- a body of its own, one colour (the Breaker's glass, TR41)
+			gradient.Color = if typeof(body) == "Color3"
+				then Hover.Whites(ColorSequence.new(body), share)
+				else Hover.Whites(ColorSequence.new(p.Panel[1], p.Panel[#p.Panel]), share)
 		end
 	end
 	local edge = folder:FindFirstChild("Edge", true)

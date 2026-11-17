@@ -3365,3 +3365,34 @@ Research, 2026-11-17, 14:05, on the director's question: "how is that there is m
 - **The HUD's V2 leftovers** (AR12, the 30 images): Battery, Plant, Route, Shard, the three Ink crests and the rest never reached `UIKit`. For each, Faber says in this entry whether a later piece replaced it (the halos by the lead card, BlockDock by the dock) or installs it.
 - **Not here:** TR17's page marks and the old top-bar marks, which AR29 replaces.
 - **Checks:** the content check is already passed for each delivery; the asset log row on upload; the touched self-tests; then research's read from phone captures (the Breaker in motion, a falling star, a working shard), then the director's.
+
+### The galaxy Breaker, in the game (Faber, 2026-11-17, by 15:30 by the clock)
+
+- **Built** (`src/client/UI/BreakerScreen.luau`, its numbers in `Config/Hud.luau`, `Breaker.Sky`):
+  - **The night:** the two halves fill the panel between its fill and its edge. The panel is 684 by 306, so the art stretches about 8%. The six stars sit at the json's places, each breathing on its own clock.
+  - **The mist:** one band in a `CanvasGroup` carrying the river's gradient. It runs behind the chambers' windows at the json's top and foot, sliding left at 2.5 points a second, by scale so it moves smoothly.
+  - **The windows are glass:** `#0A0824` solid on the number strip and the plate. Between them a working or empty chamber is 0.1 cover and a locked one 0.13. The panel's shadow goes, so the river shows through. Every word sits on a solid part.
+  - **The light:** a working chamber's light (`#DCCBFF`) breathes in its window under its shard.
+  - **The falling star:** in chamber 4's window, first at 3 to 6 s after opening, then every 15 to 30 s.
+  - **Reduced motion** holds everything at its start, and no star falls.
+- **Calls made at the build:**
+  - **"Upgrade the Breaker"** doesn't fit a locked chamber's plate at the smallest phone (113 points of text in a 104-point plate). It's said once, right-aligned on the "Chambers" heading line. That's your fix-1 fallback, moved above the row for room.
+  - **The ready lights aren't laid:** a ready shard leaves its chamber at once, so a chamber never holds one.
+  - **The per-window fallback isn't built:** the one band lines up with the windows in the captures.
+  - **The chamber cell** is 142 wide, up from 138. The strip is 20 tall, and the plates are one height across the row. `ShardArt.Least` is 50, down from 60, so the shard fits the window at the floor.
+- **Tested:**
+  - **Self-test:** "Breaker:" passes 176/0. The new case is "Breaker: TR41, the galaxy", in its own list, `SelfTestController/BreakerCases.luau`.
+  - **A refactor to make room:** `Cases.luau` is at the type checker's limit, so the shared waits and reads moved to one home, `SelfTestController/Helpers.luau`.
+  - **The take:** "Take: TR41" passes 4/0.
+  - **Type check:** 0 new.
+  - **Full suite:** 2570/11.
+    - Ten are the Base and HUD checks that wait on AR16's base models: Modulo's delivery 3 is for those, and I install it next.
+    - One is the Held Note's ring, which passes alone (50/0): a load flake.
+- **Stills for your read, at the smallest phone,** in `build/scratch/faber/stills/`:
+  - `tr41-falling-full.png`: two shards working, a star held mid-fall in chamber 4;
+  - `tr41-zoom.png`: the same, zoomed on the chambers;
+  - `tr41-still-full.png`: held still, the chambers empty.
+  - "Take: TR41" holds each state for a capture.
+- **Open:**
+  - **Research's read.** At the phone the falling star is a thin streak, 28 by 24 points, and the light reads soft at 0.36 cover. Both are the json's numbers, Modulo's to call.
+  - **TR41 (b) to (e)** come next.

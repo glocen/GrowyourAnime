@@ -1228,6 +1228,80 @@ return function(given: Given): { any }
 			end,
 		},
 		{
+			Name = "Take: TR41, the galaxy Breaker at the smallest phone: two shards breaking, the sky moving, a star held mid-fall, then held still, for research",
+			Manual = true,
+			Stay = true,
+			Run = function(t: any)
+				-- Research's read from phone captures (TR41): each state held until the driver moves
+				-- ReplicatedStorage.NL_TakeStep on ("Falling", "Still", "End") and captures it. A Standard breaks in about
+				-- 30 s, so the driver captures quickly; the two shards are the take's own, taken out and back at the end.
+				local step = Instance.new("StringValue")
+				step.Name = "NL_TakeStep"
+				step.Value = "Ready"
+				step.Parent = ReplicatedStorage
+				local function await(name: string): boolean
+					return waitFor(t, 180, function(): boolean
+						return step.Value == name or step.Value == "End"
+					end) and step.Value == name
+				end
+				local SHARD = "lanternrow_standard"
+				local view = ProfileController.Get()
+				local had = if view then view.Bag.Shards[SHARD] or 0 else 0
+				local ready = readyCount(SHARD)
+				local empty: { number } = {}
+				for index, chamber in (if view then view.Base.Chambers else {}) do
+					if chamber.Work == nil then
+						table.insert(empty, index)
+					end
+				end
+				t.Server("BaseGive", SHARD, #empty)
+				waitFor(t, ANSWER, function(): boolean
+					local now = ProfileController.Get()
+					return now ~= nil and (now.Bag.Shards[SHARD] or 0) == had + #empty
+				end)
+				Screen.Close()
+				for _ = 1, #empty do
+					ProfileController.Act("AddShard", { Shard = SHARD })
+				end
+				t.Check("a shard breaking in each open chamber", waitFor(t, ANSWER, function(): boolean
+					local now = ProfileController.Get()
+					return now ~= nil and (now.Bag.Shards[SHARD] or 0) == had
+				end))
+				Layers.Force(Theme.Scale.Floor)
+				Layers.Box(Theme.Smallest - Vector2.new(0, GuiService.TopbarInset.Height))
+				BaseController.OpenBreaker()
+				waitFor(t, 1, function(): boolean
+					return Screen.Current() == BreakerScreen.Name
+				end)
+				t.Wait(HudConfig.Motion.Screen.Enter + 0.1)
+				step.Value = "Moving"
+				if await("Falling") then
+					BreakerScreen.Fall(0.45)
+					t.Wait(0.1)
+				end
+				if await("Still") then
+					BreakerScreen.Fall(nil)
+					BreakerScreen.Still(true)
+					t.Wait(0.1)
+				end
+				await("End")
+				BreakerScreen.Still(nil)
+				BreakerScreen.Fall(nil)
+				Layers.Box(nil)
+				Layers.Force(nil)
+				Screen.Close()
+				step:Destroy()
+				-- Taken out, a shard only goes to the line: its work is skipped and it's opened, as the cases leave theirs.
+				t.Server("BaseSkip", SKIP_ALL)
+				waitFor(t, ANSWER, function(): boolean
+					return readyCount(SHARD) >= ready + #empty
+				end)
+				openReadyDown(t, SHARD, ready)
+				t.Check("its shards opened, the Breaker as it was", readyCount(SHARD) == ready)
+				t.Reset()
+			end,
+		},
+		{
 			Name = "Take: AR30's bases at the smallest phone, for Modulo: an item's card, a chest's, the Breaker, the base's rows and the HUD at a bay and at the Breaker",
 			Manual = true,
 			Stay = true,

@@ -355,7 +355,76 @@ return {
 	-- research's fix (b)), held at full for Hold of them, then fading; Pop, the scale it lands from. Glow: a ready chip's
 	-- gold fill breathing between Low and High (its alpha) every Period seconds, there and back (fix (a)).
 	Breaker = {
-		Cell = 138,
+		-- A chamber's height: its name strip, its window on the sky and its plate (TR41, the galaxy's glass), so the whole
+		-- body's height with the strip under it.
+		Cell = 142,
+		Strip = 20, -- a chamber's name strip, solid, "Chamber N" on it
+		-- The galaxy Breaker's sky (TR41; AR12, "The galaxy Breaker's images for the build"; Modulo's breaker_sky.json,
+		-- whose places are in the mock's points on a panel of 684 by 306, laid here as shares of ours). From the back: the
+		-- night in the panel's shape, one band of mist along the chambers' row tinted as one river (research's read), the
+		-- six stars, the falling star in chamber 4's window, then a chamber's glass, its light, its shard, and the plates.
+		-- With reduced motion on, it holds still and no star falls.
+		Sky = {
+			Images = {
+				Left = "rbxassetid://85968639200976",
+				Right = "rbxassetid://104002526402503",
+				Mist = "rbxassetid://119524756969687",
+				Star = "rbxassetid://91107060875888",
+				Falling = "rbxassetid://80394599323881",
+				Light = "rbxassetid://136697115054832",
+			},
+			Panel = Vector2.new(684, 306), -- the mock's panel: the night's halves and the stars are shares of it
+			Left = { At = 0, Wide = 428.651 }, -- the night's two halves, lapping 7.5 points
+			Right = { At = 421.116, Wide = 262.884 },
+			-- The windows' band down a chamber, shares of its height (the json's glass.nameStrip and glass.plate): the mist's
+			-- image lies so that its Top and Foot (shares of the image's own height) meet the band's.
+			Band = { Top = 0.1458, Foot = 0.6944 },
+			Mist = {
+				Image = Vector2.new(684, 142.945), -- one turn of it, in the mock's points
+				Top = 0.1367,
+				Foot = 0.6894,
+				Drift = 2.5, -- points a second, leftward
+				Tint = { -- the river, left to right along the row
+					{ 0, "#D44FB4" }, { 0.125, "#D14FB7" }, { 0.25, "#B54FD0" }, { 0.375, "#9850E9" }, { 0.5, "#7768F4" },
+					{ 0.625, "#5580FF" }, { 0.75, "#41A1EE" }, { 0.875, "#2DC2DD" }, { 1, "#2FCCD4" },
+				} :: { { any } },
+				Down = { -- the cover down the image, share of its height: cover
+					{ 0, 0 }, { 0.1367, 0.347 }, { 0.2058, 0.647 }, { 0.2749, 0.827 }, { 0.344, 0.859 }, { 0.4131, 0.886 },
+					{ 0.4822, 0.89 }, { 0.5512, 0.858 }, { 0.6203, 0.792 }, { 0.6894, 0.704 }, { 1, 0 },
+				} :: { { number } },
+			},
+			-- Six stars: the image is Side times a star's size across; its light 0.775 + 0.225 * sin(2 pi (t / Seconds + Start)).
+			Stars = {
+				Side = 16,
+				Each = {
+					{ At = Vector2.new(528, 21), Size = 1.5, Tint = "#DCE6FF", Seconds = 4.6, Start = 0 },
+					{ At = Vector2.new(398, 90), Size = 1.1, Tint = "#FFE9D0", Seconds = 3.4, Start = 0.3 },
+					{ At = Vector2.new(38, 142), Size = 1.0, Tint = "#BFD0FF", Seconds = 5.2, Start = 0.6 },
+					{ At = Vector2.new(94, 84), Size = 0.9, Tint = "#F1D9FF", Seconds = 3.9, Start = 0.8 },
+					{ At = Vector2.new(250, 46), Size = 0.9, Tint = "#DCE6FF", Seconds = 4.2, Start = 0.45 },
+					{ At = Vector2.new(300, 294), Size = 0.9, Tint = "#BFD0FF", Seconds = 5.0, Start = 0.15 },
+				},
+			},
+			-- The falling star, pale, never tinted, in chamber 4's window under its glass: its Head runs From To (shares of the
+			-- window's band) in Seconds; its light sin(pi s) ^ 0.6. The first First seconds after the screen opens, then one
+			-- every Every, each drawn at random between the two (research, 2026-11-15: seeds, tuned in play).
+			Falling = {
+				Chamber = 4, -- its window's chamber
+				Points = Vector2.new(28, 24),
+				Head = Vector2.new(4, 20),
+				From = Vector2.new(0.969, -0.089),
+				To = Vector2.new(0.24, 0.646),
+				Seconds = 0.7,
+				First = { 3, 6 },
+				Every = { 15, 30 },
+			},
+			-- The soft light behind a working shard: Side times Radius across, on the shard's middle, breathing Swell round
+			-- its Cover once in Breath seconds.
+			Light = { Tint = "#DCCBFF", Radius = 27, Side = 4, Cover = 0.36, Breath = 2.6, Swell = 0.07 },
+			-- A chamber's glass: solid over its strip and plate, covering Window of the sky between them (Locked when it's
+			-- locked), going over Under of its height below the strip and Over above the plate.
+			Glass = { Colour = "#0A0824", Window = 0.1, Locked = 0.13, Under = 0.04, Over = 0.06 },
+		},
 		Flash = { Seconds = 1.5, Hold = 0.35, Pop = 1.08 },
 		Glow = { Low = 0.18, High = 0.4, Period = 0.9 },
 		-- A rarity's heading in the drop rates where its trim is too dim to head a list: Common's metal grey, lifted
@@ -368,10 +437,11 @@ return {
 	-- small one under that (a step paler, its rim wider, a dark line round it, so the outline holds at a chip's size).
 	-- Modulo drew the large for 50 and up and the small for 40 and under; between them the small one holds the outline.
 	--   Chip: the picture's side on a Breaker chip; Cell: its share of a Voidkin bag cell's side
-	--   Chamber: its side at the top of a Breaker chamber, its words under it, never over its foot, where Enriched's and
-	--            Prismatic's spires grow (research's call, AR12, 2026-11-15, night); Least: the side it gives way to
-	--            first, in a row where a chamber's infusion takes a line, before anything overlaps
-	ShardArt = { Large = 50, Chip = 26, Cell = 0.78, Chamber = 72, Least = 60 },
+	--   Chamber: its most in a Breaker chamber's window, its words on the plate under it, never over its foot, where
+	--            Enriched's and Prismatic's spires grow (research's call, AR12, 2026-11-15, night); Least: the side it gives
+	--            way to, in a row where a chamber's infusion takes a line of the plate, before anything overlaps (still the
+	--            large picture, at Large)
+	ShardArt = { Large = 50, Chip = 26, Cell = 0.78, Chamber = 72, Least = 50 },
 	-- TR17's Voidkin screen in grey (UI/VoidkinScreen): one Voidkin at a time, full screen, in the director's layout
 	-- (2026-11-15, TR17, "The director's layout"): a thin rail of round buttons down the far left, its own model live
 	-- between two columns of gear slots, its two hands and Combat Power at its feet, the chosen page on the right, the

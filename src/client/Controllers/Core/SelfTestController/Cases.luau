@@ -87,6 +87,7 @@ local HudCases = require(script.Parent.HudCases)
 local PowerCases = require(script.Parent.PowerCases)
 local ViewCases = require(script.Parent.ViewCases)
 local BaseCases = require(script.Parent.BaseCases)
+local Helpers = require(script.Parent.Helpers)
 
 local R6_ROOT_HEIGHT = 3 -- an R6 body's root stands 3 studs above the floor (legs 2, half the torso 1): an engine fact
 local TUNE_PATH = "Game.Version" -- a string any build has; the case puts it back
@@ -165,13 +166,13 @@ local CARD_SLACK = 0.1 -- seconds past reveal.json's Card the reveal's card may 
 local FPS_FLOOR = 50 -- frames a second the Mythical's reveal holds: the self-test's own warning line
 local DROP_BACK = 3 -- seconds a felled pack takes to come back in the drops case: time to leave the street first
 local PACK_SETTLE = 10 -- seconds Shades drawn out by an earlier case's walk may take to stand home again
-local ANSWER = 3 -- seconds a request through a screen may take to come back in the save's copy
+local ANSWER = Helpers.ANSWER
 local STREAM_IN = 3 -- seconds a far place may take to stream in to this client once the server asks
 -- Where TR10's case watches the elite's square from: Past studs beyond the badge's Near, toward the gate, by the square of
 -- Pack, felled for the case (Lantern Row: Pack 3 stands 80 studs short of the elite).
 local ELITE_STAND = { Past = 10, Pack = "Pack 3" }
 local PLATE_TICK = 0.4 -- seconds for the plates and pills to show a change (BaseController and HudController read at 4 Hz)
-local SKIP_ALL = 3600 -- seconds of base time a case skips, past any shard's work even at the floor's speed
+local SKIP_ALL = Helpers.SKIP_ALL
 local DOOR_RUN = 4 -- studs before a Festival Door the avatar starts its walk in
 local DOOR_THROUGH = 4 -- seconds from the walk's start to the fade's move: a step in, then the fade's middle
 local DOOR_GONE = 40 -- studs from a door that count as set down on its other side
@@ -185,17 +186,7 @@ local function flatAngle(a: Vector3, b: Vector3): number
 	return math.deg(math.acos(math.clamp(fa.Unit:Dot(fb.Unit), -1, 1)))
 end
 
--- Waits up to `seconds` for `ok`, and says whether it came.
-local function waitFor(t: any, seconds: number, ok: () -> boolean): boolean
-	local began = os.clock()
-	while os.clock() - began < seconds do
-		if ok() then
-			return true
-		end
-		t.Wait(0.1)
-	end
-	return ok()
-end
+local waitFor = Helpers.waitFor -- the shared waits and reads, one home (Helpers)
 
 -- Before a test Shade spawns SHADE_AHEAD studs ahead of the avatar: the camera turned to look the avatar's way, as a
 -- player's does. The lead takes on only what's in the camera's view (TR24's fix 2, Combat.Lead.View), and a fresh
@@ -251,42 +242,9 @@ local function leadButton(id: string): TextButton?
 	return if found and found:IsA("TextButton") then found else nil
 end
 
--- How many shards of `def` wait ready to open, in the save's copy.
-local function readyCount(def: string): number
-	local view = ProfileController.Get()
-	local count = 0
-	for _, work in (if view then view.Base.Ready else {}) do
-		count += if work.Def == def then 1 else 0
-	end
-	return count
-end
-
--- Opens the shards of `def` ready beyond `keep`, the oldest first: a case leaves the Breaker as it found it.
-local function openReadyDown(t: any, def: string, keep: number)
-	while readyCount(def) > keep do
-		local current = ProfileController.Get()
-		local at = 0
-		for index, work in (if current then current.Base.Ready else {}) do
-			if at == 0 and work.Def == def then
-				at = index
-			end
-		end
-		local count = readyCount(def)
-		if ProfileController.Act("Open", { Index = at }).Ok ~= true then
-			break
-		end
-		waitFor(t, ANSWER, function(): boolean
-			return readyCount(def) < count
-		end)
-	end
-end
-
--- A piece of the open Breaker screen, by name at any depth under its body, or nil.
-local function breakerPart(name: string): Instance?
-	local frame = Screen.Frame(BreakerScreen.Name)
-	local body = frame and frame:FindFirstChild("Body")
-	return body and body:FindFirstChild(name, true)
-end
+local readyCount = Helpers.readyCount
+local openReadyDown = Helpers.openReadyDown
+local breakerPart = Helpers.breakerPart
 
 -- A label's text on the open Breaker screen: the label `label` under the piece `name`, or "".
 local function breakerText(name: string, label: string): string
@@ -357,22 +315,7 @@ local function revealAt(at: number, seconds: number): boolean
 	return false
 end
 
--- The UI lint on whatever shows now. A toast rides in from off the screen and leaves that way (Kit.Toast), so the lint
--- reads once none is mid-ride: a gain's toast caught on its way in failed "on screen" under load (2026-11-15).
-local function lintClean(t: any, where: string)
-	waitFor(t, 1, function(): boolean
-		return not Toast.Riding()
-	end)
-	local report = UiLint.Run()
-	t.Check(`{where}: every label fits its box`, #report.Fit == 0, UiLint.Detail(report.Fit, report.Checked))
-	t.Check(`{where}: every label reads at {Theme.Text.Minimum} px or more`, #report.Size == 0, UiLint.Detail(report.Size, report.Checked))
-	t.Check(`{where}: every label is on screen`, #report.Screen == 0, UiLint.Detail(report.Screen, report.Checked))
-	t.Check(`{where}: no label shows Roblox's default`, #report.Placeholder == 0, UiLint.Detail(report.Placeholder, report.Checked))
-	t.Check(`{where}: every tap is {Theme.Size.Touch} px or more`, #report.Touch == 0, UiLint.Detail(report.Touch, report.Checked))
-	t.Check(`{where}: every piece sits in the safe area`, #report.Safe == 0, UiLint.Detail(report.Safe, report.Checked))
-	t.Check(`{where}: no two pieces of the HUD overlap`, #report.Overlap == 0, UiLint.Detail(report.Overlap, report.Checked))
-	t.Check(`{where}: nothing sits under the thumbs' controls`, #report.Thumbs == 0, UiLint.Detail(report.Thumbs, report.Checked))
-end
+local lintClean = Helpers.lintClean
 
 -- Walks the avatar into a Festival Door's way from the side it stands on (DOOR_RUN studs out when `close`, else wherever it
 -- is), and waits for the fade to move it: true once it's been set down away from the door.
@@ -7171,13 +7114,13 @@ local cases = {
 					local left = cell and cell:FindFirstChild("Left") :: TextLabel?
 					local chamber = now.Base.Chambers[index]
 					local want = if chamber == nil then "Locked" elseif chamber.Work == nil then "Empty" else nil
-					local opens = cell and cell:FindFirstChild("Opens") :: TextLabel?
+					local opens = breakerPart("Opens") :: TextLabel? -- said once over the row (TR41)
 					if cell == nil or label == nil then
 						table.insert(wrong, `chamber {index} missing`)
 					elseif want and label.Text ~= want then
 						table.insert(wrong, `chamber {index} says {label.Text}, not {want}`)
 					elseif chamber == nil and (opens == nil or opens.Text ~= BreakerScreen.Locked) then
-						table.insert(wrong, `locked chamber {index} doesn't say what opens it: {if opens then opens.Text else "nothing"}`)
+						table.insert(wrong, `the row doesn't say what opens locked chamber {index}: {if opens then opens.Text else "nothing"}`)
 					elseif want == nil and (cell:FindFirstChild("Crack") == nil or left == nil or string.find(left.Text, " left$") == nil) then
 						table.insert(wrong, `chamber {index} lacks its crack or its time`)
 					elseif want == nil then
@@ -7839,5 +7782,4 @@ end
 for _, case in BagCases.Cases({ ANSWER = ANSWER, waitFor = waitFor, lintClean = lintClean }) do
 	table.insert(cases, case)
 end
-
 return cases

@@ -9668,6 +9668,24 @@ Research's request, 2026-11-17, 10:10, on the director's word (`docs/decisions.m
 - **For Faber:** the four idles uploaded under the group and installed.
 - **Then research's check:** one loop of each from the game's camera, at phone size, in motion.
 
+## AR28. The Forge and the Stone Condenser: three directions each (Modulo, for research's pick, then Faber)
+
+Research's request, 2026-11-17, 11:15, in phase 3's order (`docs/production-plan.md`). The design: `docs/design.md`, "The base" (the machines, the Condenser, three stages) and "Regalia: gear" (forge ranks). The two systems are Faber's after the base's pieces, so their look comes first.
+
+- **Feel lines:**
+  - **The Forge:** the player sets an item on the Forge, and it takes the stones and drives the item up a rank in void light. From the player's camera, the machine works hard for a moment and the item comes back brighter.
+  - **The Condenser:** coming home, the player sees its tray glowing with the stones it made while they were away, from the gate, and walks over to take them.
+- **The rules they're held to:**
+  - They're void machines built from parts you can read (gears, pistons, clamps, cables) doing void work, never a real-world forge, furnace or factory. They belong with the Breaker, the bays and the generator as one family (AR16, AR19), with the toon outline.
+  - Their size fits the halved base: they keep their size, and the base is recomposed around them.
+  - The Condenser's tray reads full, part-full and empty from the gate at phone size. That's its whole job.
+  - The Forge's work has a motion its rank-up can ride, a strike or a press. The moment is Faber's block later.
+- **Each direction shows:** Stage I, and in one line how it grows to II and III. A grey block-in beside the Breaker, from the player's camera at phone size, at 64 px, and the silhouette in black.
+- **Research's pick** follows the review skill's verdict. The director sees the pick at the next checkpoint, and doesn't gate it (units, maps and machines go without the director's gate, 2026-11-12).
+- **Scope:** the two machines' look in three directions, then the chosen one's Stage I as a model for Faber. **Waits:** Stages II and III, the Research Lab (after launch), their sounds, their screens.
+- **Order:** after AR19's two notes. The content check before drawing.
+
+
 ## Later, by ground
 
 The rest of ground 1 (Kirra in AR10, Watt in AR11; then Sable, Marigold, Crane), then each ground's Voidkin in `docs/roster.md`'s order. **The machines** (Gantry, Bulwark, Ironhymn, Shiomaru, Aegir) share one custom rig, taller than a player, with its own clip family: the first of them is timed like AR1, because a custom rig is a different cost.

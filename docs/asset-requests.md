@@ -12652,6 +12652,11 @@ After the director's ear on our layers, research's order: the arrangements re-cu
   - **Gate 6 is restated, research's own gate:** a frame-stepped fade can't draw a 3 ms rise, so the gate is the step at a slice's first and last sample, at most 0.25 of its top (round 1's worst is 0.047), measured on the slice.
   - **Today's three cues fail gate 4** (HeavyHit 9.4 LU over LightHit, ShadeSwipe 7.9 over). It's one more reason they're replaced.
   - **Gate 3 has room everywhere:** -10.7 dBTP at worst, and the limiter takes 0 dB.
+- **Research on round 2's draft measures (23:14; `mixdown-round2.md`):**
+  - **The director's listen waits for the re-cuts:** gate 2 on A3, A4 and B2, the tells on C1 and C3, B2's low share, and LibHeavyBody's third take (Gain 7.27 hits the player's cap of 3, so B1 and B3 can't match). A listen of takes known to fail would judge the wrong thing.
+  - **The listen runs with no limiting.** At matched level the limiter takes up to 3.5 dB on B2 and 5.6 dB with three cues landing together, and that shapes the sound being judged.
+    - While `Cues.Match.On` is set, the cue bus drops by as much as the hottest matched take needs to sit at -1 dBTP with 0 dB of gain reduction.
+    - Old and new move together, so the match holds.
 
 ## AR40. Less purple, less black: the game's colour by day (Modulo, for research's pick, then Faber)
 

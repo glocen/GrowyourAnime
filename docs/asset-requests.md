@@ -9122,6 +9122,60 @@ These are written from each combo's clip and its timings in `Shared.Definitions.
 4. **Lyric** (Storm; the two speaker drones): each speaker fires a pulse you can see travel, speaker to Shade, and it bursts there on the beat. The third, both at once, lands as two pulses crossing on the same frame. From behind, her hits keep time like a song. Apart from Watt's Storm: a travelling ring of sound, never a crack in the ground. Apart from Held Note: no cone.
 5. **Kirra** (no element; her scarf's colour): the dash leaves a thin streak in the scarf's colour. Each cut is a crisp line across the Shade that snaps shut. The second wears as an X, and the rise through it flashes upward. From behind, she's already past when the cuts show. With First Strike, the critical's number is still the only extra cue (Faber's tier 1, 2026-11-14).
 
+### Watt's basic attack: the crack, its parts and the grey block (Modulo, 2026-11-17, from 07:58 by the clock)
+
+`/ga-action` steps 1 and 3, on research's line 1. An ordinary action, not a signature. `tools/blender/watt_combo_fx.py` (plain `py`) reads the delivered `Watt_Combo.json` on the recipe's spear joint, and `WattCombo`'s Beats from `Definitions.Actions`.
+- **Where the touches are** (`... measure`, his root's frame):
+  - **Hit1 (21):** the shaft is shoved across his chest, level at 3.2 up, 2.1 ahead.
+  - **Hit2 (36):** the butt comes up under the Shade's chest, 3.4 up and 2.6 ahead, as the blade wheels down past his right side.
+  - **Hit3 (60):** the butt is driven into the street 1.1 ahead of him, 0.8 to his right.
+  - The Shade stands 3.5 ahead (Range less Approach), its chest's face 2.76 ahead, its mask 0.2 proud of that.
+- **From the game's camera** (`... screen`: the replay's framing, heading 215, Lead.Frame's 45° beyond the target; its mirror at 145; Faber's +70 at 285; the clip's review camera at 28):
+  - At 215 and 145 the Shade covers every touch and most of Watt.
+  - A line from a chest touch comes out from behind it only after 1.4 to 1.8 studs, and only up and out over a shoulder: up-left at 215, up-right at 145. Sideways takes 2.5 to 4.
+  - From 285 and from behind him, everything shows.
+- **The hero, the crack:** a jagged line of light, Beams end to end, each joint stood off the straight line by up to 0.2 studs. It runs out from the touch over 1.6 frames, fast at first (a snap). It holds whole to frame 4, re-strikes there with new kinks a quarter wider, and thins out and goes by 9 (0.15 s). The hitstop's hold comes on top, as it runs on the action's clock.
+  - **Hits 1 and 2:** a trunk of 0.45 studs off the touch forks into a wide V, opening upward, at 32° and 148° from his right. Each branch is 2.1 studs, leaning back toward him off the Shade's face, so a branch's tip comes out beside the Shade's shoulder from either framing.
+  - **Hit 3, the earth:** no fork. One spit of 4.6 studs runs along the street, 0.08 up, from the butt's foot ahead under the Shade's feet and 1.6 past its heels. It runs out over three frames, fast from the butt, and is gone by 10. No ring and no hold, as the line asks.
+- **Beside it:**
+  - A **light** at each touch, 8 studs round, out in 7 frames (Hit3's at the butt's foot, 10 round, out in 9).
+  - **The discs tick:** one Glow row on the spear for the whole combo, 2.4 on hits 1 and 2 and 3.0 on hit 3, cool in 8 frames. It carries Ground Wire's hum into his basic attack.
+  - Nothing else: no sparks and no spray ("contained").
+- **Seen, whole, in studs, the Shade at 3.5** (`... rows`):
+
+  | Line, length | 215 | 145 | 285 | 28 |
+  |---|---|---|---|---|
+  | Hit1's left branch, 2.1 | 0.8 | 0 | 2.1 | 2.1 |
+  | Hit1's right branch, 2.1 | 0 | 0.6 | 2.1 | 2.1 |
+  | Hit2's left branch, 2.1 | 1.0 | 0 | 2.1 | 2.1 |
+  | Hit2's right branch, 2.1 | 0 | 0.7 | 2.1 | 2.1 |
+  | Hit3's spit, 4.6 | 1.6 | 2.9 | 3.2 | 1.9 |
+
+  The trunks show only from 285 and 28. At 4.3, after two pushes, the spit shows more and the cracks the same.
+- **For research (the technique check, before Faber's block):**
+  - The techniques: Beams for the lines, a PointLight, and the spear's own glow.
+  - From the main framing, the crack shows a tip of 0.6 to 1.0 studs beside the Shade's shoulder. The rest of the read is the light and the spit.
+  - Making it show more means one of two things:
+    - lines long enough to come round the Shade (2.5 to 4 studs), which turns "contained" into a spray;
+    - a wider framing for melee leads (Lead.Frame, TR24's), which is research's and Faber's call, not mine.
+  - I kept the line contained. The verdict in motion decides.
+- **The block contains,** in grey (`Grey` true, `Action` `WattCombo`): `build/handoff/Watt/fx/WattCombo.rows.json`, 27 rows, written by `... rows`, which passes the rows check.
+  - The touches are fixed at his fighting spacing. The crack doesn't follow the target: a Shade pushed back 0.4 a hit stays within its reach, and the spit runs past its heels.
+  - If the block shows the crack off its target, an end that rides the target is the build's (Faber's call).
+- **Waits for the finish:** Storm's pale pink to white, the lines' own jagged texture in place of `fx_beam`'s, and the sound for the director's retry.
+- **For Faber, at the block:** `Effect = "WattCombo"` on the action and its `Config.EffectRows` entry; the replay with a Brawler as the target where it can be, from 215 and ±70; `FreezeAt` on frames 2 and 5 after each hit for stills.
+- **Time:** the measure and the rows, about 40 minutes by the clock, against the 2-hour cap at its block.
+- **Content check, 2026-11-17, by 08:20: PASS for the grey block** (the dev build, nothing uploaded), on the spec, the rows and the script, with no render yet. Its conditions:
+  1. **The block's captures come back to it:** full size and at 64 px over dark, from 215, 145, 285 and 28, with `FreezeAt` stills 2 and 5 frames after each hit. It checks that a V's tips never stand against the Shade's head as if they came out of it.
+  2. **At the finish:** Storm's pale pink to white stays pale and self-lit, never saturated pink or red. The spit never thickens or leaves a mark at its end or under the Shade's feet.
+  3. **The lines' own texture,** in place of `fx_beam`'s, is never drawn as sharp Z or S zigzags side by side. It's checked on its own before its upload.
+- **Delivered (Modulo, 2026-11-17, 08:21 by the clock):** `build/handoff/Watt/fx/WattCombo.rows.json`, for Faber's block in the replay, after Ground Wire's retake in his queue.
+- **Four facts:**
+  - Made: yes, the rows in grey.
+  - Self-reviewed: by the numbers above; not yet seen in motion.
+  - Delivered: yes.
+  - Accepted: no. Research's technique check, the block's verdict in motion, and the director's eye are still to come.
+
 ## Later, by ground
 
 The rest of ground 1 (Kirra in AR10, Watt in AR11; then Sable, Marigold, Crane), then each ground's Voidkin in `docs/roster.md`'s order. **The machines** (Gantry, Bulwark, Ironhymn, Shiomaru, Aegir) share one custom rig, taller than a player, with its own clip family: the first of them is timed like AR1, because a custom rig is a different cost.

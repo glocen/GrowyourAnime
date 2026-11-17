@@ -13,6 +13,7 @@ local SoundService = game:GetService("SoundService")
 local TweenService = game:GetService("TweenService")
 
 local Config = require(ReplicatedStorage.Shared.Config.Sounds)
+local Cues = require(script.Parent.Cues)
 local SoundRule = require(ReplicatedStorage.Shared.Rules.Sound)
 
 local Sounds = {}
@@ -127,6 +128,7 @@ function Sounds.Duck(db: number)
 		group = named(GROUP_NAME)
 	end
 	TweenService:Create(group :: SoundGroup, TweenInfo.new(DUCK_TIME), { Volume = Config.Combat * duck }):Play()
+	Cues.Under(db) -- and the layered cues' buses with them
 end
 
 -- A cue's slice in seconds at speed 1, or nil for an unknown cue.

@@ -9,7 +9,9 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **Open, for Faber:** Lantern Row's shards roll Sable, who isn't made yet, a must-fix before any public build (TR24); the exploiter's pass over `Act` at his piece boundary.
 - **Next:** the Door's install, then the director's look and phase 3's go; AR13 once the director answers item 7; TR34 when the chest clips land.
 
-**Faber (builder).** 2026-11-17, 01:30. The phone run's six must-fixes are in (TR24, "The director's run", "Faber's six"): percents only, Critical Immunity, Main on its own total, one palette across the bag, Watt's and Kirra's portraits, the level on a badge in take A. Checked on a phone at level 100; stills in `build/scratch/faber/tr24_stills/` for research's pass. Four fight and reveal timing cases still wait to run again at 60 fps. Now: Modulo's uploads (the floor glow's three, the galaxy Breaker's six, the festival tag's four), then Ground Wire's blockout with Modulo, then TR29's three.
+**Faber (builder).** 2026-11-17, 02:16.
+- **Done since 01:30:** Ground Wire's grey block plays in the game (da1e550; research's verdict dcaa071: it works). AR13's 33 takes are up under the group, all Approved, and the six cues play in the fight on the audio graph (AR13, "Faber's install"). Self-test 24 of 24; logic 25,110 passed.
+- **Next, in order:** AR12's card fixes (one-colour health light, the grey sliver, the portraits' edge with Modulo); the Festival Door's install; Sable's guard; Ground Wire's retake; TR35's shortlist; TR29's three.
 - **Open, tooling:** `tools/ui/kit_config.py` rewrites `Config.UIKit` whole and drops what was added by hand (Eclipse, the reveal's marks, the shard grades). Don't run it until it merges.
 
 **Modulo (assets).** 2026-11-17, 01:56, on Opus 5.5.
@@ -35,7 +37,13 @@ For Faber:
 
 5. **The test rule, in `CLAUDE.md` and `ga-finish`.** Research relays your yes (the register, 2026-11-15, night): at a piece's finish, the cases its change can reach and every offline logic case; the whole suite at a phase's close and after a change to shared code. `CLAUDE.md` changes only on your own word in the builder's session: say "write it" there and it's in.
 6. **Your ear on Haymaker's strike sound**, a provisional pick, now heard on its frame. Before TR4's fix it came about 0.3 s late. Measures chose it, and only your ear accepts it. In a playtest, the Server command bar: `game.ServerStorage.NL_Debug:Invoke("Replay", nil, "RookHaymaker")` plays it every 3.5 s, and `Invoke("Replay", nil)` stops it. Two alternates are logged in AR1, section 8.
-7. **When you're back ("i will check tomorrow"):** the six-cue sound test (AR13) and the new Festival Door, each in a fight or a walk on your phone once they're in, and TR35's five music candidates a track, if they're shortlisted by then. AR13 goes up unheard on your word of 01:39.
+7. **When you're back ("i will check tomorrow"):** the six-cue sound test (AR13) is in, unheard. A fight in Lantern Row plays all six. In a playtest, with Rook as lead, the Server command bar plays one press on repeat:
+   - `game.ServerStorage.NL_Debug:Invoke("Replay", nil, "RookHaymaker")`, the heavy hit, every 3.5 s;
+   - `Invoke("Replay", nil, "RookCombo")`, the light hits;
+   - `Invoke("Replay", nil)` stops it.
+   - A level is tuned live, for example `Invoke("Tune", "Cues.Cues.ShadeSwipe.Layers.2.Volume", 0.5)`.
+   - Then the new Festival Door in a walk, and TR35's five music candidates a track, if they're shortlisted by then.
+8. **The sounds' grant to the game** (AR13, step 2). Our 33 sounds play in Studio, but a live game needs each one granted `Use`, and the Open Cloud guard leaves that call to you. Either open the guard for the grant call, or grant by hand: in the Creator Dashboard, each sound's Permissions, Experiences, add 9093907961.
 
 ### Notices
 

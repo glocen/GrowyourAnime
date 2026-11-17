@@ -29,6 +29,8 @@ local Clips = require(script.Clips)
 local Effects = require(script.Effects)
 local Rows = require(script.Rows)
 local Sounds = require(script.Sounds)
+local Cues = require(script.Cues)
+local SoundRule = require(Shared.Rules.Sound)
 
 local player = Players.LocalPlayer
 
@@ -93,6 +95,7 @@ type View = {
 	FrozenUntil: number,
 	StunHeld: number, -- the hold a stun set (os.clock()), let go when the stun ends; 0 for none
 	Shown: { [string]: boolean }, -- the hits this screen has shown, by beat and press
+	Cued: { [string]: boolean }, -- the beats whose cue (Rules.Sound.Beat) this press has begun
 	Held: { [string]: Held }, -- each hit it has shown on a body, by beat, press and target: what a server's hit may raise
 	Struck: Struck?, -- its flash and tremble as a hit's target, while they run
 	Glow: Highlight?, -- its flash's fill, made on its first hit
@@ -195,6 +198,12 @@ local function isMine(view: View?): boolean
 	return view ~= nil and view.Model:GetAttribute("Owner") == player.UserId
 end
 
+-- A body's side as the server names it ("Shade", or a fighter's), for its sounds (Rules.Sound).
+local function sideOf(view: View): string?
+	local side = view.Model:GetAttribute("Side")
+	return if type(side) == "string" then side else nil
+end
+
 -- The replay's freeze (Config.Combat.Replay.FreezeAt): the moment the player's own lead stops at in a replayed press, or nil.
 local function freezeOf(view: View): number?
 	local at = Combat.Replay.FreezeAt
@@ -266,6 +275,14 @@ local function show(attacker: View, target: View?, rung: number, heavy: boolean,
 			end
 			held.At = os.clock()
 			strike(target, lever, hold, holds)
+			-- its cues on the struck body (Rules.Sound.Contact; AR13), the Shades' bus ducked under the player's own lead's
+			local struckAt = chest(target)
+			for _, cue in SoundRule.Contact(heavy, sideOf(attacker), sideOf(target)) do
+				Cues.Play(cue, struckAt, { Strength = SoundRule.Strength(rung) })
+			end
+			if isMine(attacker) then
+				Cues.Duck()
+			end
 		end
 		if not (draw and draw(land)) then
 			land()
@@ -339,6 +356,7 @@ local function beginAction(view: View, action: Actions.Action, at: number)
 	view.Action = action
 	view.ActionAt = at
 	view.Shown = {}
+	view.Cued = {}
 	view.Held = {}
 	view.Begun = os.clock()
 	local late = math.max(0, workspace:GetServerTimeNow() - at)
@@ -418,7 +436,9 @@ end
 -- its own (Config.Effects.Falls): the same burst on its clip's marker, and its lantern left to go out (AR7, section 5).
 local function burst(view: View, down: AnimationTrack?)
 	local fall = EffectsConfig.Falls[view.Rig]
-	Effects.ShadeBurst(view.Model, down, view.Collar, fall)
+	Effects.ShadeBurst(view.Model, down, view.Collar, fall, function(at: Vector3)
+		Cues.Play("ShadeBurst", at) -- AR13, on the burst's frame
+	end)
 	if fall then
 		Effects.LanternOut(view.Model, down, fall)
 	end
@@ -676,6 +696,7 @@ local function add(model: Instance)
 		State = "Idle",
 		Connections = {},
 		Looks = {},
+		Cued = {},
 	}
 	views[model] = view
 	byId[view.Id] = view
@@ -789,6 +810,17 @@ local function stepView(view: View, dt: number, now: number): boolean
 	if action then
 		local before = view.Clock
 		view.Clock += step
+		-- A beat's cue (Rules.Sound.Beat; AR13) starts its lead ahead of the beat, landed or not: a Shade's swing, a heavy
+		-- hit's wind-up. Begun once a press, never once the beat's gone by.
+		for beat, hit in action.Hits do
+			local cue = SoundRule.Beat(action.Id, hit.Heavy, sideOf(view))
+			local beatAt = action.Beats[beat]
+			local written = if cue then Cues.Ahead(cue) else nil
+			if cue and written and beatAt and not view.Cued[beat] and view.Clock >= beatAt - written and view.Clock < beatAt then
+				view.Cued[beat] = true
+				Cues.Play(cue, view.Root.Position, { In = beatAt - view.Clock })
+			end
+		end
 		for _, beat in Fight.BeatsBetween(action, before, view.Clock) do
 			local hit = action.Hits[beat]
 			local target = targetOf(view)
@@ -1008,6 +1040,10 @@ local function onHit(hit: any)
 	end
 	local struck: View = target
 	local press = pressOf(hit.A)
+	local shing = if hit.Critical and not hit.Dodged and attacker then SoundRule.Critical(sideOf(attacker)) else nil
+	if shing then
+		Cues.Play(shing, chest(struck)) -- AR13: over the hit's own cue, a replication's delay after a hit this screen showed
+	end
 	local function land()
 		if attacker and not hit.Dodged then
 			knockOf(attacker, struck, hit)
@@ -1116,6 +1152,7 @@ end
 
 function FighterController.Start()
 	Sounds.Preload()
+	Cues.Preload()
 	Rows.Warm() -- the effect kit drawn once, unseen, so the first effect never pops in late (AR8)
 	CollectionService:GetInstanceAddedSignal("Fighter"):Connect(function(model: Instance)
 		task.spawn(add, model)

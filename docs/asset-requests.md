@@ -7228,6 +7228,39 @@ Research, 2026-11-15. The director's asks and rule 2's change are in `docs/decis
   3. Install the six cues with the engine's traps in `docs/research/sound.md`, "The engine, for Faber": a pool per cue, `PlaybackSpeed` for spread, the listener set, and the level trap.
   4. Ready for the director's ear in a fight at the next session, with the Replay command's line in the Now board.
   - A layer the ear rejects is replaced, never patched.
+- **Faber's install** (2026-11-17, 01:56 to 02:16 by the clock).
+  - **1, the upload:** `test6.py`, run again into scratch, writes the same samples as the handoff's files (the bytes differ only in the Ogg stream's random serial), every check passing. All 33 are up under the group with plain titles, read back Approved at 02:15. Ids in `docs/asset-log.md`.
+  - **2, the grant: waits on the director.** The Open Cloud guard allows only the upload, so the grant API (`PATCH /asset-permissions-api/v1/assets/permissions`, `Universe` 9093907961, `Use`) asks the director. Either the director adds it, or grants by hand: Creator Dashboard, each sound's Permissions, Experiences, add 9093907961. Studio's own "Share access" click covers all at once if a play shows it.
+    - In Studio every take loads and sounds without it: 98 of 98 voices. Studio passing isn't proof, so a live client checks every id after the next publish.
+  - **3, the six cues,** in `Config.Cues` (seeds, unheard), played by `FighterController/Cues` on the audio graph. Which cue plays where is `Rules.Sound`:
+    - **On the attacker's clock, landed or not:**
+      - a Shade's swipe: the tell 0.2 s before the hit, the whoosh's top on the hit;
+      - a fighter's heavy hit: the riser, ending on it.
+    - **On the touch,** on the struck body:
+      - a fighter's light or heavy hit, the heavy tail by the hit's rung (none at 2, full at 8);
+      - a Shade's hurt.
+    - **On the server's word:** a fighter's critical shing.
+    - **On the burst's frame:** a Shade's burst.
+    - **The traps:**
+      - each take keeps a pool of loaded `AudioPlayer`s, one per voice the cue allows (98 in all), and a play past the cap stops the cue's oldest;
+      - the spread is `PlaybackSpeed`, ±8%, one pick per play so its layers stay in tune, and volume 0.85 to 1;
+      - two listeners of our own on the camera, Lead and Shade, each through its fader;
+      - `Trim` 0.5 takes back the 2025 doubling.
+    - **The duck:** on the player's own lead's touch, the Shades' bus drops 3.5 dB at once, holds 0.15 s and comes back over 0.05 s. A screen's duck (the reveal's) takes both buses down with the classic group.
+  - **Known limits:**
+    - The critical's shing comes a replication's delay after a touch this screen showed, since only the server knows a critical.
+    - Haymaker's library body stays its own `Config.Sounds` cue, beside our heavy layers.
+    - A keeper's swing plays no swipe.
+    - The library's layers (paper, the snap, the body) wait on the shortlist: these are our layers alone.
+  - **4, the director's ear:** the Now board's line. A fight in Lantern Row plays all six. The Replay plays a heavy hit and a light one on the dummy, again and again.
+  - **Four facts:**
+    - Implemented: yes.
+    - Tested:
+      - type check 0 new;
+      - logic cases 25,110 passed, 0 failed, offline and in Studio. Three new: every cue's layers play takes that exist; the rules play every written cue and only those; a led layer lands on its moment at any speed, and every beat's cue fits before its beat.
+      - self-test "Sound:" 24 of 24 at 60 fps: 98 of 98 voices loaded; each cue heard through its bus; the swipe silent until its lead, then heard; the burst capped at 3; the duck to 0.668 and back to 1.000; Haymaker's wind-up 0.217 s before its touch; Rook's combo touching with no wind-up.
+      - In a 25 s fight with two brawlers, all six played: ShadeSwipe 18 voice starts, ShadeHurt 13, LightHit 12, HeavyHit 3, HeavyWind 1, Critical 4, ShadeBurst 4.
+    - Heard: no one. Director-accepted: no.
 
 ## AR14. The base dressed (Modulo, then Faber)
 

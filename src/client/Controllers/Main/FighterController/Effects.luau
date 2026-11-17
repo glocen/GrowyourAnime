@@ -1486,7 +1486,7 @@ end
 -- A keeper's fall (`fall`, Config.Effects.Falls) runs the same burst on its own Down clip: the table's frames are moved
 -- to its Burst marker, and its Kept parts aren't hidden (Effects.LanternOut puts them out).
 export type Fall = typeof(EffectsConfig.Falls.Lamplighter)
-function Effects.ShadeBurst(model: Model, down: AnimationTrack?, collar: Attachment?, fall: Fall?)
+function Effects.ShadeBurst(model: Model, down: AnimationTrack?, collar: Attachment?, fall: Fall?, burst: ((at: Vector3) -> ())?)
 	local look = EffectsConfig.ShadeBurst
 	local scale = model:GetScale()
 	local offset = if fall then ShadeBurstArt.Burst - fall.Burst else 0 -- the table's frame for a clip's frame
@@ -1555,6 +1555,9 @@ function Effects.ShadeBurst(model: Model, down: AnimationTrack?, collar: Attachm
 		if reached and burstAge == nil then
 			burstAge = age
 			stood = standing()
+			if burst then
+				burst((stood :: CFrame).Position) -- its sound, on this frame (AR13)
+			end
 		end
 		-- After the Burst, the nearest frame: a step runs a hair either side of a frame, and counting down would hold the
 		-- flare, a frame long, for two pictures about every other burst.

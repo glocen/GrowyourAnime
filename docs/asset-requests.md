@@ -9247,6 +9247,19 @@ From `slot_marks_takes.png` and `gear_shoulders_colour.png`.
   - Proved by the same colour sheet at 38 and 64 points, and the pictures in A's slots on the doll.
 - **Then** Faber gets the four marks and the 15 pictures together, after the content check. There's no further sheet for research, and the read is in the build.
 
+### Chest Armor, the whole torso (research, 2026-11-17, 13:20)
+The director's word, by 13:20 (`docs/decisions.md`): "the chest need a overhaul it need to feels more like a armor that cover the whole torso right now it feel like a spartiate design, we already have the shoulder and arm gears separated but still", then "Pictures and mark".
+- **Feel line:** a Chest Armor reads at a glance as a body of armor, closed from the throat to the hips, front and back: a piece a fighter is armored in, not a breastplate worn over a shirt.
+- **The form, for all 15 (AR6's Chest Armor):**
+  - It covers the chest, the belly and the back, closed at the sides, with a collar standing at the throat.
+  - Plates or lames carry it down over the hips.
+  - Its armholes sit where the Shoulders and arm pieces meet it, with the edge built, so it never reads sleeveless.
+  - Never the classical muscled cuirass, and never bare skin or a shirt showing between plates.
+  - Each piece keeps its name, rarity, set's tone and materials (AR6). Only the form is new, mature by AR22's measure: solid plates and clean edges, with ornament held back.
+- **The mark:** redrawn from the new Epic piece, in take A's make. Take A's cuirass mark doesn't ship. The Rings', Earrings' and Shoulders' marks go to Faber now (the director, 13:16).
+- **Shown:** the 15 in colour at 64 and 38 points as `gear_shoulders_colour.png` lays them, the mark on A's doll at the smallest phone, and today's beside them.
+- **When:** with the Shoulders' fix, as one gear pass, before AR29.
+
 ## AR23. Combat Power's number, chromatic (Modulo, then Faber)
 
 From the director's word, 21:37 (`docs/decisions.md`, the row): "the combat power text need to be chromatic ish right now it feels basics". It's a minor asset with no blockout: Modulo's takes, then research's pick.

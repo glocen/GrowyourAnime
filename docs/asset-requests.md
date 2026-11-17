@@ -10328,6 +10328,135 @@ Both sheets in `build/handoff/UI/buttons/` are drawn again.
   - The reward to claim takes the same gold, and Claimed falls back to the make.
   - **Next:** Modulo cuts the images and the numbers for Faber. Faber builds AR30 screen by screen after AR29, with the Breaker's buttons after TR41's sky.
 
+### The cut, the images and the numbers for Faber (Modulo, 2026-11-17, 15:00)
+
+- **The images:** `build/handoff/UI/buttons/images/`, 25 of them, white on alpha, for the game to tint. They're drawn by `tools/blender/button_make.py` (`-- <out> cut`).
+  - `buttons_cut_review.png` shows each image over the panel at full size and at 64 high.
+  - `buttons_cut_check.png` is the lit dock rebuilt from the images by the numbers below, beside the make's own drawing, with their difference. It differs by 1.2 to 1.5 of 255 on a pale ground and on the panel, called and pressed. Only sub-pixel edges and a faint foot glow are apart: the tool prints it and fails above 2.
+- **What the kit already has:** every button's glass and channel are `Kit/Button.luau`'s own slices (`ButtonFill`, `ButtonEdge`, `ButtonEdgeBold`, `ButtonRingGlow`), on the make's own cut, 8 at the top left and the foot right.
+  - Two kit layers are swapped. `ButtonBase` lays a dark band over its foot line, which the make hasn't, so the foot is `SeamFoot` and its glow `SeamFootGlow`.
+  - `ButtonPressedShade` and the Veil stay off in the make: the press is the sink and the light.
+  - `ButtonShadow` stays as today.
+  - `ButtonRing` stays for waiting, succeeded and failed, as the block said.
+- **Conventions:** sizes are authored points. T is a layer's ImageTransparency. Colours are the Seam palette's (`UIKit.luau` 174) by name, plus `Ready` #F6DE80, Power #F2C53D and the map's #E0566E. All are seeds, tuned in play with the numbers live.
+
+**The images, as laid**
+
+| Image | Laid at | Slice | For |
+|---|---|---|---|
+| `SeamClose` | 20.7 square | | the X |
+| `SeamMark` | 2.46 × a diamond's half height | | Lead's mark (11.3), the prompt's tap mark (14.8), the pip (24.6, 18.7, 10.8) |
+| `SeamChevron` | 12.3 | | Sort |
+| `SeamRates` | 12.6 | | Drop rates |
+| `SeamPlus`, `SeamMinus` | 17.2 | | Power's ± |
+| `DockSeamBase`, `DockSeamMap` | 39.4 | | the dock's wings; the bag is AR29's `VoidkinPageItems` at 49.2 |
+| `SeamPipGlow` | 54.2, on the pip's middle | | the pip |
+| `SeamHalo` | 56.6, on the icon's middle | | an icon button, pressed |
+| `SeamFoot` | the button's width × 4, at its foot | Cut {10, 0, 10, 0} | a glass's foot |
+| `SeamFootGlow` | width + 36 × 36, at (−18, h − 18) | Cut {28, 0, 28, 0} | its glow |
+| `SeamUnderline`, `…Glow` | 2·half × 76/64 by 16, on the line's middle | stretched | the short line under a word |
+| `DockSeamBody`, `…Edge` | 192.4 × 62 at the dock's (0, 0) | | the dock's channel |
+| `DockSeamShadow` | 240.4 × 110 at (−24, −24) | | under it |
+| `DockSeamGlassWing`, `…FootWing` | 56.8 × 48 at the cell's glass | | a wing cell |
+| `DockSeamLightWing`, `…CallWing` | 92.8 × 84, 18 up and left of it | | |
+| `DockSeamGlassMid`, `…FootMid` | 66.8 × 58 | | the bag's cell |
+| `DockSeamLightMid`, `…CallMid` | 102.8 × 94, 18 up and left | | |
+
+**The glass** (a main action, the chosen chip, Auto on, a dock cell, a ready shard, Claim), lit at L in its light colour (`Light`, or the kind's hue):
+- `ButtonRingGlow` at T = 1 − 0.44·L.
+- `ButtonFill` with a UIGradient `Panel[1]` to `Panel[2]` from top to foot (Rotation 90), at T 0.03.
+- **The wash:** a second `ButtonFill` in the light colour. Its UIGradient Transparency runs from top to foot: 0 → 0.913, 0.4 → 0.867, 0.6 → 0.756, 0.75 → 0.607, 0.9 → 0.384, 1 → 0.188. Its T is 1 − L/1.45, so the press tweens one number.
+- `ButtonEdge` at T = 1 − 0.6·L.
+- `SeamFootGlow` at T = 1 − 0.5·L.
+- `SeamFoot` at T 0.
+
+| Kind | Idle | Pressed | On or chosen | Light colour |
+|---|---|---|---|---|
+| Main action | 1.0 | 1.45, sunk 1 | Lead set: 0.6 | `Light`; Claim in `Ready` |
+| Second action | the channel | the channel | Auto: 0.75 | `Light` |
+| Chosen chip | | | 0.9 | `Light` |
+| Ready shard | 1.0 | 1.4, sunk 1 | 1.0, its edge in `Light` | `Ready` |
+| Dock cell | 1.0; 1.45 calling | 1.3, no sink | 0.75, its screen open | Base Power, bag `Light`, Map #E0566E |
+
+**The channel** (a second action, Sort, the tabs' row, ±, an unavailable main action, a waiting shard):
+- `ButtonFill` in `Channel` at T 0.22. It's 0.3 for an unavailable main action, 0.38 for an unavailable second action or Sort, and 0.18 for a waiting shard.
+- `ButtonEdge` in `Edge`.
+- No glow, wash or foot.
+
+**Each kind**
+- **Main action:**
+  - The row is 52, the word 16 bold in `Text`.
+  - The press sinks 1 and tweens L from 1 to 1.45. Research's seed is a sink of 1 to 2 and a release flash.
+  - **Lead set:** `SeamMark` 11.3 in `Light`, its middle 7 left of the word's left edge. The word is in `Light`, and the pair moves 5 right.
+  - **Unavailable:** the word in `Soft` 8 over the middle, and the reason in `Soft` 14, regular, 9 under it.
+- **Second action:**
+  - The word is in `Text`, 1.2 over the middle.
+  - **Its underline:** half = 0.8 × min(0.3·width, 26), centred 5 over the foot; the line at T 0.45, its glow at T 0.835.
+  - **Pressed:** it sinks 1.
+    - A wash of `Light` over the channel, Transparency 0 → 0.95, 0.4 → 0.915, 0.6 → 0.871, 0.75 → 0.826, 0.9 → 0.772, 1 → 0.73.
+    - The edge in #8B83A3.
+    - The underline at its full half: the line at T 0, its glow at T 0.4.
+  - **A mark (Drop rates):** `SeamRates` in `Text`, its middle 7.5 left of the word, which moves 7 right.
+  - **On (Auto):** the glass at 0.75, the word 1 over the middle.
+- **Tabs and chips:**
+  - One channel; the row is 52.
+  - A chip is max(52, its word + 30) wide.
+  - Splits are 0.85 wide in `Edge`, 26 tall and centred, and only between two unchosen chips.
+  - **Chosen:** the glass at 0.9, inset 1.5 all round, with the kit's cut on every chip (the make drew 3 on a middle chip; 8 stands, my call). Its word is in `Text`, 1 over the middle.
+  - Idle words are in `Soft`, off words in `Faint`.
+  - **Pressed:** the word in `Text` and an underline of half 0.32 × the chip's width, the line at T 0.2, its glow at T 0.6.
+  - **At the smallest phone the card covers the row** (Faber's stills, 14:46). That's the screen's layout, not the button's.
+- **Sort:**
+  - The channel, its width the words + 44.
+  - "Sort:" in `Soft` from 15 in, then its value in `Text`, bold.
+  - `SeamChevron` in `Text`, its middle 15 in from the right and 1 under the middle.
+  - **On** (a sort that isn't the default): the value and chevron in `Light`, an underline of half 0.3·width, the line at T 0.2, its glow at T 0.52.
+  - **Pressed:** the underline's line at T 0, its glow at T 0.4.
+  - **Unavailable:** everything in `Faint`.
+- **Close, the X, on every panel:**
+  - `SeamClose` in its 52 square at the panel's top right: 44 on the smallest phone.
+  - The word Close becomes the X in `Kit/Screen.luau` 287, on BaseView and on Tower. The card's X takes the image.
+  - **Idle:** `Text`.
+  - **Pressed:** `Light`, with `SeamHalo` at T 0.7 and an underline of half 9 whose middle is 20 under the icon's. The line is at T 0, its glow at T 0.55.
+- **Power's ±:** the channel, 52 square, with `SeamPlus` or `SeamMinus` in `Text`. The make drew a cut of 6; the kit's 8 stands.
+- **A shard at the Breaker:**
+  - **Ready:** the glass in `Ready`, with `ButtonEdgeBold` over it in `Ready` at T 0.15 (chosen: in `Light` at T 0).
+    - "Ready" is in `Ready`, bold 16, and "Standard" in `Soft` 14. Both start 38 in, 8 over and 9 under the middle.
+    - The shard is as today. The kit's cut stands here too (the make drew 6).
+  - **Waiting:** the channel, the shard at T 0.45, its words in `Soft`.
+- **A reward to claim:** the main action lit in `Ready`. Claimed is the main action set, in `Light` with its mark. Before it can be claimed, it's unavailable with its reason.
+- **The dock:** fixed images, laid as today's are.
+  - **The frame:** 192.4 × 62, centred where today's dock is, its foot on today's tiles' foot.
+  - **The channel:** `DockSeamShadow` in `Channel` at T 0.55, `DockSeamBody` in `Channel` at T 0.1, and `DockSeamEdge` in `Edge`.
+  - **The cells' glass:** Base's at (2, 12), the bag's at (62.8, 2), and Map's at (133.6, 12).
+    - Glass with the `Panel` gradient at T 0.03.
+    - Light in the cell's hue at T = 1 − L/1.45.
+    - Foot in the hue at T 0.
+  - **The icons, in `Text`:** their middles are Base (30.4, 33.5), the bag (96.2, 28.5) and Map (162, 33.5).
+  - **Calling:** L = 1.45 and Call in the hue at T 0.
+    - **The pip:** its middle is 3 in from the cell's top-right corner: Base (57.8, 13), the bag (128.6, 3), Map (189.4, 13).
+    - It's `SeamPipGlow` in the hue at T 0.2, then `SeamMark` 24.6 in `Ink`, 18.7 in the hue, and 10.8 in `Light`.
+  - **Touch:** each cell's column, 60.8 × 52 for a wing and 70.8 × 62 for the bag.
+  - Today's `Dock*` tile images retire with this.
+- **A world prompt** (a custom prompt, a build piece of its own):
+  - **The plate:** a channel 60 tall at T 0.12, the longer line + 62 wide.
+  - **Its seam:** a line 2 wide, 2.4 in from the left, in `Light`, with a glow of 5 at 0.45.
+  - **The cap:** 28 square, its middle 26 in and at the plate's middle.
+    - It's the kit's slices at SliceScale 0.625 (a cut of 5), filled with the `Button` gradient, its edge `Light` at T 0.3.
+    - Pressed, it's `Light` with its mark in `Ink`.
+    - The mark is the key's letter, or `SeamMark` 14.8 on a phone.
+  - **The words:** the title in `Text`, bold 16, 10 from the top; the action in `Soft` 15, 33 from the top. Both start 48 in.
+  - **A hold:** a bar 2.4 tall in `Light` along the foot, from the left to hold × width, with a glow of 4 at 0.5.
+  - **Unavailable:** no seam, the title in `Soft`, and the reason on the action's line.
+- **Graphite panels** (the Breaker, the Power screen): their buttons take the seam's `Light` as every screen's do. Graphite's accent stays for the room's bar and readouts (research's call 2).
+- **Content check** on the 25 upload files and the sheet: PASS, in two runs (13 files, then the 12 added and 3 re-padded). No symbol, gore or liquid shape, copied icon or text. Everything is drawn from geometry in the tool.
+- **What waits:** the phone sheet re-run on Faber's smallest-phone stills (`build/scratch/faber/stills/ar30-*`), after the re-lay. The make's sizes are authored, so UIScale carries them. Faber builds from these numbers if AR30 comes first.
+- **Four facts:**
+  - cut, and the dock proven against the make;
+  - the images seen at full size and at 64;
+  - research's passes are on the make (14:37, 14:43), and the cut changes no look;
+  - not director-accepted.
+
 ## Later, by ground
 
 The rest of ground 1 (Kirra in AR10, Watt in AR11; then Sable, Marigold, Crane), then each ground's Voidkin in `docs/roster.md`'s order. **The machines** (Gantry, Bulwark, Ironhymn, Shiomaru, Aegir) share one custom rig, taller than a player, with its own clip family: the first of them is timed like AR1, because a custom rig is a different cost.

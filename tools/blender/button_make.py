@@ -675,8 +675,257 @@ def phone_sheet(out):
     b.save(out / "buttons_phone.png")
 
 
+# --- the cut: the images the make adds to the kit, white on alpha for the game to tint ----------------------------------
+# Every button's glass and channel are the kit's own slices (ui_kit.py, `buttons`: the same 8-point cuts at the top left
+# and the foot right), tinted and layered as AR30's numbers say. What the kit hasn't got is cut here: the make's small
+# marks, the dock's own body, and the short line under a word.
+
+PT = 4.0                       # pixels a point, as the kit's slices
+ICON_PX, ICON_R = vc.CUT, vc.CUT_R   # an icon's image, and the half size its glyph is drawn at in it (AR29's 128 and 52)
+
+
+def _sign(a, cx, cy, s, plus):
+    bar = np.maximum(np.abs(a.X - cx) - 7.0 * s, np.abs(a.Y - cy) - 1.1 * s)
+    if plus:
+        bar = np.minimum(bar, np.maximum(np.abs(a.Y - cy) - 7.0 * s, np.abs(a.X - cx) - 1.1 * s))
+    a.paint(bar, "#FFFFFF")
+
+
+def _chevron(a, cx, cy, s):
+    # Sort's chevron, its middle 1 point under the word's middle in the make: drawn here about its own middle
+    vx, mid = cx, cy - 1.0 * s
+    a.paint(a.poly([(vx - 5 * s, mid - 2.5 * s), (vx, mid + 2.5 * s), (vx + 5 * s, mid - 2.5 * s),
+                    (vx + 5 * s, mid - 0.5 * s), (vx, mid + 4.5 * s), (vx - 5 * s, mid - 0.5 * s)]), "#FFFFFF")
+
+
+# file: (its half extent in points as the make draws it, how to draw it about (cx, cy) at s pixels a point, its use)
+CUT_ICONS = {
+    "SeamClose": (8.4, lambda a, cx, cy, s: close_glyph(a, cx, cy, 0.82 * ICON * s, "#FFFFFF"),
+                  "Close, the X: on every panel, top right"),
+    "SeamMark": (1.0, lambda a, cx, cy, s: a.paint(a.poly(vc.diamond(cx, cy, s)), "#FFFFFF"),
+                 "the diamond: a set action's mark, a world prompt's tap mark, and the pip's three layers"),
+    "SeamChevron": (5.0, _chevron, "Sort's chevron"),
+    "SeamRates": (5.1, lambda a, cx, cy, s: rates_mark(a, cx - 4.5 * s, cy, s, "#FFFFFF"), "Drop rates' mark"),
+    "SeamPlus": (7.0, lambda a, cx, cy, s: _sign(a, cx, cy, s, True), "Power's +"),
+    "SeamMinus": (7.0, lambda a, cx, cy, s: _sign(a, cx, cy, s, False), "Power's -"),
+    "DockSeamBase": (1.0, lambda a, cx, cy, s: dock_glyph(a, "Base", cx, cy, s, "#FFFFFF"), "the dock's Base"),
+    "DockSeamMap": (1.0, lambda a, cx, cy, s: dock_glyph(a, "Map", cx, cy, s, "#FFFFFF"), "the dock's Map"),
+    # two glows drawn about a mark: the pip's ring (a diamond of 10 glowing 6), Close's halo when pressed (a disc of
+    # 12.6 glowing 5); each extent leaves the glow faded out at the image's edge
+    "SeamPipGlow": (22.0, lambda a, cx, cy, s: a.glow(a.poly(vc.diamond(cx, cy, 10.0 * s)), 6.0 * s, "#FFFFFF", 1.0),
+                    "the pip's glow, under its ink ring"),
+    "SeamHalo": (23.0, lambda a, cx, cy, s: a.glow(np.hypot(a.X - cx, a.Y - cy) - 0.9 * ICON * s, 5.0 * s, "#FFFFFF",
+                                                   1.0), "an icon button's halo, pressed"),
+}
+
+TOP = 1.45     # the brightest a glass is lit (a main action pressed, a dock cell calling): what a light layer is cut at
+
+
+def dock_shape(a, ox, oy):
+    """The dock's one channel, its wings and its raised middle united, its top-left corner at (ox, oy), in points."""
+    (ww, wh), (mw, mh) = DOCK_WING, DOCK_MID
+    y1 = oy + mh
+    wings = a.poly(ui.cut_box(ox, y1 - wh, ox + 2 * ww + mw, y1, 9.0, 0, 9.0, 0))
+    mid = a.poly(ui.cut_box(ox + ww - 2.0, oy, ox + ww + mw + 2.0, y1, 9.0, 0, 0, 0))
+    return np.minimum(wings, mid)
+
+
+def dock_cells():
+    """Each cell's glass: (name, its top-left in the dock's frame, its size, its cut), as `dock` draws it."""
+    (ww, wh), (mw, mh) = DOCK_WING, DOCK_MID
+    return (("Wing", (2.0, mh - wh + 2.0), (ww - 4.0, wh - 4.0), 3.0),
+            ("Mid", (ww + 2.0, 2.0), (mw - 4.0, mh - 4.0), 7.0))
+
+
+def plate(w, h, pad, draw):
+    """An image of w by h points with `pad` round it, 4 pixels a point, drawn by `draw(a)` in points."""
+    W, H = int(round((w + 2 * pad) * PT)), int(round((h + 2 * pad) * PT))
+    px = np.zeros((H * K, W * K, 4), np.float32)
+    a = Area(px, 0, 0, W, H)
+    a.X, a.Y = a.X / PT, a.Y / PT
+    draw(a)
+    return rs.shrink(px, 1 / K)
+
+
+def cell_light(a, d, y0, y1):
+    """A glass's light at TOP in one layer over its fill: the halo outside it, the wash, the outline, the foot's glow.
+    The game scales it by its ImageTransparency (1 - lit / TOP), as the make scales its strengths by lit."""
+    t = np.clip((a.Y - y0) / (y1 - y0), 0, 1)
+    outside = np.clip(0.5 + d * K, 0, 1)                         # inside, the fill covers the halo
+    ui.over(a.px, c("#FFFFFF"), outside * 0.22 * TOP * np.exp(-(np.maximum(d, 0) / 6.0) ** 1.4))
+    a.paint(d, "#FFFFFF", wash(t, 0.06 * TOP, 0.5 * TOP))
+    a.line(d, HAIR, "#FFFFFF", 0.6 * TOP)
+    foot = np.maximum(d, (y1 - 2.6) - a.Y)
+    a.glow(np.maximum(foot, 0), 6.0, "#FFFFFF", 0.5 * TOP)
+
+
+def export_cut(out):
+    """The images, white on alpha, in `out`/images, and their review sheet."""
+    folder = out / "images"
+    folder.mkdir(parents=True, exist_ok=True)
+    made, edge_free = {}, set()
+    for file, (extent, draw, _) in CUT_ICONS.items():
+        px = np.zeros((ICON_PX * K, ICON_PX * K, 4), np.float32)
+        draw(Area(px, 0, 0, ICON_PX, ICON_PX), ICON_PX / 2, ICON_PX / 2, ICON_R / extent)
+        made[file] = rs.shrink(px, 1 / K)
+        edge_free.add(file)
+    # the dock: its one channel, the channel's edge, its shadow; then each cell's glass in four layers
+    (ww, wh), (mw, mh) = DOCK_WING, DOCK_MID
+    w = 2 * ww + mw
+    made["DockSeamBody"] = plate(w, mh, 0, lambda a: a.paint(dock_shape(a, 0, 0), "#FFFFFF"))
+    made["DockSeamEdge"] = plate(w, mh, 0, lambda a: a.line(dock_shape(a, 0, 0), HAIR, "#FFFFFF"))
+    made["DockSeamShadow"] = plate(w, mh, 24, lambda a: a.glow(dock_shape(a, 24, 24), 8.0, "#FFFFFF", 1.0))
+    edge_free.add("DockSeamShadow")
+    for name, _, (cw, ch), k in dock_cells():
+        def shape(a, o, cw=cw, ch=ch, k=k):
+            return a.poly(ui.cut_box(o, o, o + cw, o + ch, k, 0, k, 0))
+
+        def call(a, shape=shape):
+            d = shape(a, 18)
+            a.glow(np.abs(d), 6.0, "#FFFFFF", 0.7)
+            a.line(d, 2.2, "#FFFFFF")
+        made[f"DockSeamGlass{name}"] = plate(cw, ch, 0, lambda a, shape=shape: a.paint(shape(a, 0), "#FFFFFF"))
+        made[f"DockSeamLight{name}"] = plate(cw, ch, 18, lambda a, shape=shape, ch=ch: cell_light(a, shape(a, 18), 18,
+                                                                                                    18 + ch))
+        made[f"DockSeamFoot{name}"] = plate(cw, ch, 0, lambda a, shape=shape, ch=ch: a.paint(
+            np.maximum(shape(a, 0), (ch - 2.6) - a.Y), "#FFFFFF"))
+        made[f"DockSeamCall{name}"] = plate(cw, ch, 18, call)
+        edge_free |= {f"DockSeamLight{name}", f"DockSeamCall{name}"}
+
+    # a glass button's foot, cut clean (the kit's ButtonBase lays a dark band over its line, which the make hasn't):
+    # the foot 4 points of the kit's 28-point box; and the foot's glow, 18 up into the box and 18 round it
+    def foot(a):
+        d = a.poly(ui.cut_box(0, -24.0, 28.0, 4.0, CUT, 0, CUT, 0))
+        a.paint(np.maximum(d, (4.0 - 2.6) - a.Y), "#FFFFFF")
+    made["SeamFoot"] = plate(28.0, 4.0, 0, foot)
+
+    def foot_glow(a):
+        d = a.poly(ui.cut_box(18.0, -10.0, 46.0, 18.0, CUT, 0, CUT, 0))
+        a.glow(np.maximum(np.maximum(d, (18.0 - 2.6) - a.Y), 0), 6.0, "#FFFFFF", 1.0)
+    made["SeamFootGlow"] = plate(64.0, 36.0, 0, foot_glow)
+    edge_free.add("SeamFootGlow")
+
+    # the short line of light under a word, 64 points long in a 76 by 16 image, stretched to its length; its glow apart
+    def underline_image(a, glow):
+        d = np.maximum(np.abs(a.Y - 8.0) - 0.5, np.abs(a.X - 38.0) - 32.0)
+        prof = 0.15 + 0.85 * np.exp(-((a.X - 38.0) / (0.6 * 32.0)) ** 2)
+        if glow:
+            ui.over(a.px, c("#FFFFFF"), prof * np.exp(-(np.maximum(d, 0) / 2.2) ** 1.4))
+        else:
+            a.paint(d, "#FFFFFF", prof)
+    for file in ("SeamUnderline", "SeamUnderlineGlow"):
+        made[file] = plate(76.0, 16.0, 0, lambda a, g=file.endswith("Glow"): underline_image(a, g))
+        edge_free.add(file)
+    for file, img in made.items():
+        if file in edge_free:   # nothing that fades touches its image's edge (the glow under the foot is cut at its top)
+            sides = [img[-1, :, 3], img[:, 0, 3], img[:, -1, 3]] + ([] if file == "SeamFootGlow" else [img[0, :, 3]])
+            assert max(v.max() for v in sides) < 0.02, (file, [round(float(v.max()), 3) for v in sides])
+        rs.save(img, folder / f"{file}.png")
+    review(out, made)
+    print("cut", len(made), "images into", folder, {k: v.shape[:2] for k, v in made.items()})
+
+
+def review(out, made):
+    """Each image over the seam's panel: the icons in a row at 128 and at 64, the rest at full size and 64 high."""
+    gap = 24
+    icons = {k: v for k, v in made.items() if v.shape[:2] == (ICON_PX, ICON_PX)}
+    rest = {k: v for k, v in made.items() if k not in icons}
+    thumbs = {k: rs.shrink(v, 64 / v.shape[0]) if v.shape[0] > 64 else v for k, v in rest.items()}
+    width = max(gap + len(icons) * (ICON_PX + gap),
+                max(v.shape[1] + thumbs[k].shape[1] for k, v in rest.items()) + 3 * gap)
+    height = 60 + ICON_PX + gap + 64 + 80 + sum(v.shape[0] + 50 for v in rest.values()) + 40
+    b = Board(width, height, SEAM["Panel"][0])
+    b.text(gap, 16, 22, "AR30, the cut: the make's images, white on alpha, at full size and at 64, over the seam's "
+           "panel", bold=0.5)
+    x = gap
+    for file, img in icons.items():
+        b.put(img, x, 60)
+        b.put(rs.shrink(img, 0.5), x + ICON_PX / 4, 60 + ICON_PX + gap)
+        b.text(x, 60 + ICON_PX + gap + 64 + 10, 11, file, SEAM["Soft"])
+        x += ICON_PX + gap
+    y = 60 + ICON_PX + gap + 64 + 80
+    for file, img in rest.items():
+        b.text(gap, y - 22, 12, f"{file}, {img.shape[1]} by {img.shape[0]}, and at 64 high", SEAM["Soft"])
+        b.put(img, gap, y)
+        b.put(thumbs[file], img.shape[1] + 2 * gap, y)
+        y += img.shape[0] + 50
+    b.save(out / "buttons_cut_review.png")
+
+
+def check_cut(out):
+    """The cut proven: the lit dock rebuilt from the images by AR30's numbers (each layer's tint and opacity, as the
+    game lays them), beside the make's own drawing, over a pale ground and the panel. Prints the difference."""
+    img = {p.stem: rs.load(p) for p in (out / "images").glob("*.png")}
+    img["Items"] = rs.load(out.parent / "voidkin" / "chrome" / "images" / "VoidkinPageItems.png")
+    u, pad = PT, 30.0
+    (ww, wh), (mw, mh) = DOCK_WING, DOCK_MID
+    W, H = int(round((2 * ww + mw + 2 * pad) * u)), int(round((mh + 2 * pad) * u))
+    hues = {"Base": MEANS["Power"], "Inventory": SEAM["Light"], "Map": MEANS["Map"]}
+    (_, wing_at, _, _), (_, mid_at, _, _) = dock_cells()
+    cells = (("Base", "Wing", wing_at, ww, mh - wh), ("Inventory", "Mid", mid_at, ww + mw, 0.0),
+             ("Map", "Wing", (wing_at[0] + ww + mw, wing_at[1]), 2 * ww + mw, mh - wh))
+    cases = (({}, ("Inventory",)), ({"Base": "pressed", "Map": "on"}, ()))
+    rows, worst = [], 0.0
+    for ground in ("#A9A79C", SEAM["Panel"][0]):
+        for states, new in cases:
+            px = np.zeros((H * K, W * K, 4), np.float32)
+            px[...] = (*c(ground), 1.0)
+            dock(Area(px, 0, 0, W, H), [], (pad + ww + mw / 2) * u, (pad + mh) * u, u, states, lit=True, new=new)
+            made = rs.shrink(px, 1 / K)
+            built = np.zeros((H, W, 4), np.float32)
+            built[...] = (*c(ground), 1.0)
+
+            def lay(name, x, y, tint, opacity, size=None, centre=False, grad=None):
+                im = img[name] if size is None else rs.shrink(img[name], size * u / img[name].shape[0])
+                h, w = im.shape[:2]
+                x0 = int(round((pad + x) * u - (w / 2 if centre else 0)))
+                y0 = int(round((pad + y) * u - (h / 2 if centre else 0)))
+                colour = grad if grad is not None else c(tint)[None, None, :] * im[..., :3]
+                ui.over(built[y0:y0 + h, x0:x0 + w], colour, im[..., 3] * opacity)
+
+            lay("DockSeamShadow", -24, -24, SEAM["Channel"], 0.45)
+            lay("DockSeamBody", 0, 0, SEAM["Channel"], 0.9)
+            lay("DockSeamEdge", 0, 0, SEAM["Edge"], 1.0)
+            for name, kind, (gx, gy), right, top in cells:
+                state, calls, hue = states.get(name, "idle"), name in new, hues[name]
+                lit = {"on": 0.75, "pressed": 1.3, "idle": TOP if calls else 1.0}[state]
+                gh = img[f"DockSeamGlass{kind}"].shape[0]
+                t = ((np.arange(gh) + 0.5) / gh)[:, None, None]
+                panel = c(SEAM["Panel"][0]) + (c(SEAM["Panel"][1]) - c(SEAM["Panel"][0])) * t
+                lay(f"DockSeamGlass{kind}", gx, gy, None, 0.97, grad=panel)
+                lay(f"DockSeamLight{kind}", gx - 18, gy - 18, hue, lit / TOP)
+                lay(f"DockSeamFoot{kind}", gx, gy, hue, 1.0)
+                mx, my = (right - (ww if kind == "Wing" else mw) / 2), (top + mh) / 2 - 2.5
+                rad = DOCK_MARK[1 if kind == "Mid" else 0] * 0.8
+                lay("Items" if name == "Inventory" else f"DockSeam{name}", mx, my, SEAM["Text"], 1.0,
+                    size=ICON_PX * rad / ICON_R, centre=True)
+                if calls:
+                    lay(f"DockSeamCall{kind}", gx - 18, gy - 18, hue, 1.0)
+                    pip = (right - 3.0, top + 3.0)
+                    lay("SeamPipGlow", *pip, hue, 0.8, size=ICON_PX * 22.0 / ICON_R, centre=True)
+                    for r, ink in ((10.0, SEAM["Ink"]), (7.6, hue), (4.4, SEAM["Light"])):
+                        lay("SeamMark", *pip, ink, 1.0, size=ICON_PX * r / ICON_R, centre=True)
+            diff = np.abs(made[..., :3] - built[..., :3])
+            worst = max(worst, float(diff.mean()))
+            print(f"dock rebuilt over {ground}, {states or 'idle'} {new or ''}: mean difference "
+                  f"{diff.mean() * 255:.2f} of 255, 99th percentile {np.percentile(diff, 99) * 255:.1f}")
+            gap = np.zeros((H, 16, 4), np.float32)
+            gap[...] = (*c(SEAM["Panel"][1]), 1.0)
+            heat = np.concatenate([np.clip(diff * 4, 0, 1), np.ones((H, W, 1), np.float32)], axis=2)
+            rows.append(np.concatenate([made, gap, built, gap, heat], axis=1))
+    sheet = np.concatenate([np.concatenate([r, np.zeros((16, r.shape[1], 4), np.float32) + 1.0 * 0], axis=0)
+                            for r in rows], axis=0)
+    sheet[..., 3] = 1.0
+    rs.save(sheet, out / "buttons_cut_check.png")
+    assert worst * 255 < 2.0, worst * 255
+
+
 def main():
     out = bl.out_dir()
+    if "cut" in sys.argv[sys.argv.index("--") + 1:]:
+        export_cut(out)
+        check_cut(out)
+        return
     kit_sheet(out)
     phone_sheet(out)
 

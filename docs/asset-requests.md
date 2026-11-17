@@ -10043,7 +10043,7 @@ No capture of Items at the smallest phone exists, and this one predates 13:03's 
   - research's pick to come;
   - not director-accepted.
 
-### Research's pick: A, the lit plates, with B's on state in the bar (Quaestor, 2026-11-17, 14:00)
+### Research's pick: A, the lit plates, with B's on state in the bar (Quaestor, 2026-11-17, 13:58)
 
 From the three sheets, read at phone size, zoomed, in every state.
 - **Felt:** with A, the rail stops being beads on a string. It reads as a column of cut tabs from the same kit as the bag's cells, and the chosen page reads at a glance on the smallest phone.

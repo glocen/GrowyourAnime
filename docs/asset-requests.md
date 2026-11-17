@@ -7574,6 +7574,27 @@ Each take's light is its own glow: its lines bright, and what lies deep (the vei
   3. **The name's plate** belongs to the front ring, not floating loose above it.
 - **Modulo's two tier 1 questions: keep both.** The warm floor light at the mouth draws the walk in, and the rings' different gaps let a turn show.
 
+**The finish, motion first: C turning, in grey** (Modulo, 2026-11-17, 01:04 to 01:11 by the clock). A throwaway in Blender, from the game's camera, the base's own scene: `tools/blender/base_door_turn.py`. **Nothing was seen in Studio.** In `build/handoff/Base/`:
+- **The way in, turning, at 24 frames a second for 6 seconds, 960 by 540:** `door_turn_five.mp4` (the front ring and four behind it) and `door_turn_three.mp4` (the front ring and two).
+- **The Door every half second, cut from those:** `door_turn_contact_five.png` and `door_turn_contact_three.png`.
+- **From the spawn and three-quarter on:** `door_turn_stills.png` (five on top, three under it).
+
+**Built to research's three fixes:**
+- Each ring behind turns about the tunnel's axis at its own rate, alternating ways, faster the deeper it lies: 9, 14, 20 and 28 degrees a second in five; 10 and 18 in three.
+- The rings behind are now a thin stone back (0.32 deep) with the line of light on its inner edge. They have open gaps, and no face or spokes.
+- The name's plate sits sunk into the front ring's crown.
+- The floor light at the mouth and each ring's own gaps are kept.
+
+**Modulo's read, from the frames (the verdict in motion is research's):**
+- **Five breaks the target best.** With four rings turning against each other, their arcs read as a swirl drawing down to the disc, and in no frame do they line up into circles. The rings drift up and aside as they go back, which keeps the swirl off-centre.
+- **Three reads closer to a target than five.** Its disc is larger and nearer, a bright bullseye inside two rings of arcs.
+- **So my read is five.** Three is the fallback research named, and in these frames it's the worse of the two.
+- **Seen, for the finish:**
+  - The base's lamp post stands in the way in's line, across the Door's left side, and the player stands before its foot. Moving the lamp is the base plan's call, not this piece's.
+  - Every line of light burns to white. Its warmth is the colour pass, after the motion is accepted.
+
+**Four facts:** implemented, as a throwaway. Tested: the renders ran in Blender; nothing is in Studio. Visually reviewed: Modulo's read above, from frames. Research's verdict in motion comes next. Director-accepted: no.
+
 ### Faber's install: AR14's deliveries 4 to 6, sections 1 to 3 here, and the bare lots (2026-11-15, to 22:50)
 
 The look is reopened since (AR16), so this install stands in the dev build until AR16's verdict, and its route carries the new look.

@@ -11664,6 +11664,133 @@ Research's entry, 2026-11-17, 19:05. They are the last machines in the design's 
 
 **Checks:** the content check before the block; research's pick; Stages II and III as kit pieces for Faber, judged in the game from the court.
 
+### The two directions each, planned (Modulo, 2026-11-17, 19:18)
+
+**Stage I as it stands** (AR28, `tools/blender/base_forge.py`). Each machine's front faces the Strip, and each stands on a sleeping place's deck, 8.6 studs square:
+- **The Forge, the Press,** at (-26, 98):
+  - Two horns of void stone rise from the deck's sides, bulge out to 4.7 and curve in to a head 3.6 wide, 10.9 to 12.5 up.
+  - The head carries two meshing gears on its face.
+  - The ram, 4 across, rides on two rods under the head, over the seat's lit plate, where the item lies 2.76 up.
+- **The Condenser, the Comb,** at (26, 98):
+  - A six-sided panel 6.9 wide of 37 six-sided cups faces the gate.
+  - Two horns hug its sides and close over its top round the core, a ring of four clamps round a floating shard 9.5 up.
+
+**What every direction keeps:**
+- **The footprint:** the deck stays 8.6 square, and every foot stands on it. Horns may bulge over its edge up high, as Stage I's Forge horns already do.
+- **The work in view:** nothing grows in front of the Forge's seat and ram, or across the Condenser's cups.
+- **The look:** the base's family. Horns of void stone with veins of the void's violet, bone accents, steel decks, the toon edge. Violet is the light, with nothing red, orange or gold.
+- **What it's never:** a real smithy, anvil, hammer or factory press.
+
+**The Forge, A, the Gear Train** (its growth is the mechanism):
+- **Stage II:** the head widens into a lintel 7.6 across, resting on the horns' shoulders. It carries four gears in a row on its face, each meshing the next, turning with the ram as Stage I's two do. They're ForgeGear again, with more places in the table.
+- **Stage III:** the lintel steps up at its ends to carry two more gears, one over each outer gear and meshing only that one. That makes six in an arch. Each horn gets three bone clamps.
+
+**The Forge, B, the Braced Press** (its growth is the frame and the ram):
+- **Stage II:**
+  - A second pair of horns rises from the deck's back corners and curves up and forward to brace the head from behind.
+  - The ram is heavier, 4.6 across on four rods (ForgeRam2), with the same poses and the same contact on the plate.
+- **Stage III:**
+  - All four horns are banded with three bone clamps each.
+  - The ram is heavier again, 5.2 across with a bone rim (ForgeRam3).
+  - The head is taller, with a second line of the void's light.
+
+**The Condenser, A, the Broad Comb** (its growth goes out):
+- **Stage II:**
+  - The comb widens by a cup in every row, to 44 cups (rows of 5, 6, 7, 8, 7, 6, 5).
+  - A second pair of horns rises behind the first from the deck's back corners and hugs the panel.
+- **Stage III:**
+  - Wider again, 51 cups (rows of 6 to 9).
+  - The core gains a second, larger ring round the first, with four clamps of its own, turning the other way.
+
+**The Condenser, B, the Tall Comb** (its growth goes up):
+- **Stage II:**
+  - A second comb of 19 cups (rows of 3, 4, 5, 4, 3) stands on the first, making 56 cups.
+  - The horns lengthen to hug both, and the core rises over the top, to about 12.6.
+- **Stage III:**
+  - A third comb of 7 cups stands on the second, making 63 cups.
+  - The core rises to about 15.5.
+- **Both directions:** the cups fill from the lowest up, so the lit height is still the fill.
+
+**For the content check, the guards I'm holding:**
+- **Gears:** six-sided hubs only. No gear reads as a sun, a wheel symbol, or a face with eyes.
+- **Horns:** the Forge's horns over its head never close into a crown of horns or a horned helmet over a figure. The Condenser's horns never read as arms round a body.
+- **The core's two rings (Condenser A, III):** never an eye, so no almond and no lit pupil in a ring. The shard stays a faceted shard.
+- **Stacked combs (Condenser B):** never a beehive, and never a figure with a head.
+- **No text, no emblem.**
+
+**The block:** grey, Stages II and III of each beside Stage I. Shown from the court at a phone's 640 by 360, from the main line where the player walks up, head-on, from the side and behind, at 64 and 128 px, and in black.
+
+### The content check on the plan (2026-11-17, 19:24)
+
+- **Forge A, PASS,** on conditions:
+  - hubs six-sided and unlit, with no ring and dot;
+  - the gears solid toothed discs, never spoked;
+  - each upper gear right over an outer one, the two at one height;
+  - no single gear lit.
+- **Forge B, PASS,** on conditions:
+  - the back horns' tips buried in the head, with no free hooked tip over the seat, and no horn tip above the head's top;
+  - the second light line the head's full width;
+  - the ram's rim plain, with no teeth;
+  - the front and back pairs different in curve or thickness.
+- **Condenser A: II PASS. III BLOCK** on the second ring round the core, which reads as an eye. The fix, taken: no second ring. III is 51 cups, with three bone clamps on each of the four horns, and the core stays Stage I's. At II, the back horns mustn't read as arms round a body with the ring as a head (checked in black at 64 px).
+- **Condenser B, the Tall Comb, BLOCK.** A stack of combs under a rising core reads as the dark-tower class. It's replaced, not patched (below).
+- **On every block:**
+  - AR28's conditions hold: no red or orange, no drip, no text or emblem, six-sided cups, the Press's contact light flat, the core's clamps straight and radial;
+  - void stone, bone and violet only, nothing gold, copper or brass;
+  - veins stop short of a horn's tip;
+  - no T, plus or cross in the negative space;
+  - a high view, 35 to 45 degrees down;
+  - drawn by functions under `tools/blender/`;
+  - the grey sheets come back to the check, and the coloured build comes back before any upload.
+
+**Condenser B, replaced: the Climbing Comb** (its growth climbs the horns; planned 19:26):
+- **Stage II:** four cups climb each horn's outer side, each on a six-sided plate set on the horn and facing the gate, from about 1.6 up to 4.8. That's 45 cups.
+- **Stage III:** six on each side, up to about 6.9, below the horns' shoulders. That's 49 cups.
+- **What stays:** the comb, the core and the horns are Stage I's. The climbing cups fill with their row's height, so the lit height is still the fill.
+- **Guards:** the cups never go over the shoulders or near the core, never close into a ring or a halo, and never form a ladder or a spine.
+
+### The grey block (Modulo, 2026-11-17, 19:27 to 19:39)
+
+**Where:** `build/scratch/modulo/forge_stages_full/`: `forge_A.png`, `forge_B.png`, `condenser_A.png` and `condenser_B.png`.
+- **Each sheet:** Stage I in colour beside II and III in grey, in the yard at base level 3. The views:
+  - from the court at a phone's 640 by 360, and from the walk-up off the main line;
+  - head-on, from the side, and three-quarter;
+  - cuts at 64 and 128 px, over the dark and in black, from the court, head-on, the side, behind, three-quarter and high (40° down).
+- **Made by** `tools/blender/base_forge_stages.py` (`-- <out> forge|condenser`, then the same with `sheet`), about a minute a machine.
+- **The close views** hide whatever yard piece stands between the camera and the machine. The court's view and the walk-up's keep everything, as the player sees it.
+
+**What reads** (my own look, not a verdict):
+- **From the court,** each machine stands about 70 px tall on a 960 by 540, 62 studs off. At that size:
+  - Forge A's growth reads plainly. The head doubles in width at II, and its raised ends change the outline at III.
+  - Forge B's II barely changes the outline from the court, since the back horns stand behind the front ones. Its growth reads from the side and the three-quarter, and from the court at III, by the taller head.
+  - Condenser A reads wider. B's cups show as stepped sides.
+- **The work stays in view** in all four: the ram and the seat are open at every stage, and nothing crosses the cups.
+
+**What each pick needs as kit pieces:**
+- Forge A: Forge2 and Forge3, with ForgeGear in four and six places. The table gets each gear's place and its turn.
+- Forge B: Forge2 and Forge3, plus ForgeRam2 and ForgeRam3, with Stage I's poses.
+- Condenser A: Condenser2 and Condenser3, with the cups' table at 44 and 51.
+- Condenser B: Condenser2 and Condenser3, with the cups' table at 45 and 49. The climbing cups join the table in the fill's order.
+
+**The content check on the block (19:40): PASS for all four,** on these conditions:
+- **Forge A:**
+  - The hubs are Stage I's eight-sided ones (AR28), and they're accepted. The condition is now: the hub unlit, never a pale dot in a lit ring.
+  - In colour, the bone hubs mustn't glow or bloom.
+- **Forge B:**
+  - III's second line moves over the gears' teeth and runs 3.4 of the head's 3.6. The check found that fix needed and enough.
+  - A note for research, not a content matter: at III, three-quarter, the tall head with a lit line over two round gears comes near a visor over goggles.
+- **Condenser A:** on the first sheets, the back horns' tips met under the core and read as forearms holding the ring. They now end under the front horns' shoulders, leaving about 5 studs open under the ring (the full sheets). The check confirmed the gap in black from behind and from III's front, PASS (19:41).
+- **Condenser B:**
+  - The plan passed.
+  - I rendered its block before the plan's check returned. That's the wrong order, and nothing was built on it.
+  - A watch for the colour build: at III, head-on, the two chains of cups beside the panel come near a wreath round a crest. If the colour front closes into one at 64 px, each chain stops a cup lower or its plates spread apart.
+
+**Four facts:**
+- Implemented: as a grey block.
+- Tested: by the content check.
+- Visually reviewed: by me only. Research's pick is next.
+- Director-accepted: not yet.
+
 ## Later, by ground
 
 The rest of ground 1 (Kirra in AR10, Watt in AR11; then Sable, Marigold, Crane), then each ground's Voidkin in `docs/roster.md`'s order. **The machines** (Gantry, Bulwark, Ironhymn, Shiomaru, Aegir) share one custom rig, taller than a player, with its own clip family: the first of them is timed like AR1, because a custom rig is a different cost.

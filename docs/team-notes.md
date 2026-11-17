@@ -10,11 +10,11 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **Verdicts owed:** AR30's scrolling row (one phone capture); AR37's build, read in the game; TR10's marker, AR28's Stage I, TR34, AR23, TR29.
 - **With the director:** the store's design (`docs/decisions.md`, "Waiting on the director", item 2).
 
-**Faber (builder).** 2026-11-17, 20:49. AR30, the seam's make, screen by screen (5cc97e5): the kit's Button as glass or channel, the X on every panel, Power's ±, and the director's remark on Lead and "Send to work" answered as research ruled: Station and Recall, with "Leading" alone on the lead's page. Stills are in `build/scratch/faber/ar30/shots/`. Research holds one question: Lead on a stationed one's page.
-- **Now:** AR30, the dock, then Sort and the chips, the Breaker's shards and Drop rates, the card's X and Tower's Close; then research's read.
-- **Next, in order:** AR31's 38 and TR10's two icons up, then TR10's marker captures; TR34; AR23; TR29 and TR10; TR37 to TR39; TR31 to TR33, TR35, the responsive pass; AR19's six re-uploads; AR32's and AR33's Stages II and III as kit pieces.
-- **Open, tests:** four timing cases are NOT VERIFIED (AR11). The Keeper's "and out on Out" and Pip's skip fail at times. TR20's Breaker hover depends on order. A reveal once stayed held after the suites (TR41, "The two must-fixes", Open).
-- **Open, for research:** the target card's light (`CardLightHealth`) keeps its glow ahead of its front. Does it go the same way as the lead's?
+**Faber (builder).** 2026-11-17, 23:35. Session closed on the director's "tell everyone to wrap up": committed and pushed, the playtest stopped, the place saved, nothing running, no lock held. AR39's engine stands as committed (c25a212); my record is in AR39's entry. The tree is the committed engine: the re-cut import and the listen's bus offset were taken out at the stop.
+- **Next session, in order:** (1) TR42, the sound audition panel; (2) AR40's Breaker panel captured in A, B and C from `build/handoff/Colour/ar40/directions.json`, then the Studio-closed turn for Modulo's Blender runs; (3) AR30's rest: the Breaker's shards and Drop rates, the card's X and Tower's Close, then research's read; (4) the queue: AR37, AR31's 38 and TR10's icons, TR34, AR23, TR29 and TR10, TR37 to TR39, TR31 to TR33, TR35, the responsive pass, AR19's six re-uploads, AR32 to AR36's stages.
+- **For research:** the bag's kinds row on the simulated phone (iPhone 16 Pro, 750 by 401), at rest and scrolled to its end: `build/scratch/faber/ar30/chips/row_both.png` (the two full stills beside it).
+- **Open, tests:** the full self-test at the close was stopped unfinished on the director's word: NOT VERIFIED on HEAD. Sound cases 65/0 and the logic cases 24,491/0 on c25a212. Four timing cases stay NOT VERIFIED (AR11); the Keeper's "and out on Out" and Pip's skip fail at times; TR20's Breaker hover depends on order.
+- **Open, for research:** the target card's light (`CardLightHealth`) keeps its glow ahead of its front. Does it go the same way as the lead's? Lead on a stationed one's page.
 
 **Modulo (assets).** 2026-11-17, 23:23, on Fable 5.2. Voidkin work parked until before launch (the director's word, 11:10): AR26 and AR27 stay as delivered, and Faber holds AR27's upload.
 - **For Faber, after TR41 (b) to (e), in order:** AR29's B (13 icons), AR30's buttons (25 images), AR31's 38 upgrade images and TR10's two marker icons, all passed by research.
@@ -29,7 +29,7 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **Now:** session closed on the director's "tell everyone to wrap up"; everything committed, nothing running, no lock held. **Next session, in order:** (1) the Blender turn once Studio is closed, one run at a time under the guard: AR38's 64 px mesh sheet (`tools/blender/shop_meshes.py`), then AR40's eight renders and their sheets (`tools/colour/ar40_see.py`); (2) AR38's clock fix once AR40 is picked: the brow tries are in `strip_kit.py` and `shop_look.py` as committed, not rendered and not exported. AR40's system panel values (454e308) wait for Faber's Breaker capture and research's read. AR39 is stopped (research's stop rule); nothing on sound is mine (the director picks sounds by ear on TR42's panel).
 - **Unchanged:** AR28's Stage I is with Faber, waiting on TR37; its 7 meshes went up with AR16 (3feb5a5). AR19's class fix (db2f086) passed research at 11:48; Faber's six re-uploads wait. AR24's A waits on Faber's TR34 block. Sable is after launch.
 
-**Turns.** Studio: Faber (the game's place, for AR30). Blender: nobody. Timing tests: nobody.
+**Turns.** Studio: nobody (open in Edit, saved; Faber's at the next session). Blender: nobody. Timing tests: nobody.
 
 **The count.** Pieces closed and playable this week: 13. TR2, the circuit in grey (phase 1); Haymaker, on A; the Shade's burst; Pip's Lantern Burst; Lyric's Held Note; TR3, the HUD in the world; TR4, the reveal; AR7, the Lamplighter installed with his fall; his signature; Lantern Burst's exit in 3D (B1); Haymaker's square in 3D (B5); TR18, power in grey; AR12's HUD part 1. Hours are in each piece's entry.
 

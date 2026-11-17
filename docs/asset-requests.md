@@ -12678,6 +12678,13 @@ Research's list (23:05 and 23:14) and Faber's two messages on the draft's mixdow
     - "licensed only" narrowed the search against the director's word of 2026-11-15 (every author).
   - **What stands:** Faber's engine (slices, starts on the mixer's clock, counted misses, the A/B switch, the match) and its measures. `Use` stays Old.
   - **Brought to the director** (tier 3; `docs/decisions.md`, "Waiting on the director", item 3): finished sounds, played whole, chosen by the director's ear on an audition panel; or the director's own ids; or the sounds rest.
+- **Faber's engine and measures, as they stand at the stop (2026-11-17, 23:30; commits 31a4f92, cad1cda, 4e531dc, c25a212):**
+  - **Implemented:** a take's own gain and a limiter on each cue bus; arrangements behind the A/B (`Config.Cues.Use`, `Arrangements`); the A/B at matched level (`Config.Cues.Match`, `Rules.Sound.Match`); the mixdown of the gates in Studio's Edit (`tools/studio/Audio/CueMix.luau`, `CueCheck.luau`, `Loudness.luau`, `Measures.luau`), gate 6 as restated.
+  - **In Config now:** round 2's draft (671ca31) with its nine match values. The re-cut (996c687) was brought in and taken out unmeasured at the stop: with LibHeavyBody at one take it fails the logic case "two or more so none plays twice running". The listen's bus offset (research, 23:14) was written and taken out at the stop, uncommitted.
+  - **Tested:** Sound cases 65/0 in a playtest at 60 fps, the logic cases 24,491/0, the type check 0 new.
+  - **MEASURED on this PC's client:** an AudioPlayer at Volume 1 plays its file at unity (-0.04 dB) into an analyzer and through emitter, listener, fader and limiter, so `Trim` 0.5 is 6 dB under the file; an emitter exactly on the listener reads about 8.5 dB down; the limiter holds at its MaxLevel.
+  - **Round 2's draft on the mix:** `build/scratch/modulo/ar39/mixdown-round2.md` (at its own level) and `mixdown.json` (round 1). Matched, every light and Shade arrangement was within 0.3 LU of its old cue; HeavyHit B1 and B3 fell 1.4 and 1.2 LU short at the player's volume cap of 3, and B2 peaked at +1.9 dBTP alone.
+  - **Not heard by Faber; rejected by the director's ear** (above). Batch 2 was never collected, and `ServerStorage.NL_Batch` is cleared.
 
 ## AR40. Less purple, less black: the game's colour by day (Modulo, for research's pick, then Faber)
 

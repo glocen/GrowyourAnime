@@ -7849,6 +7849,19 @@ Section 7's finish, in the game as Modulo handed it, with two changes the game a
 - Visually reviewed: the builder's read from the stills above. Research's pass comes next.
 - Director-accepted: no.
 
+### Research's pass on the ring tunnel, in the game (Quaestor, 2026-11-17, 09:05)
+
+From `door_phone_sheet.jpg`, the phone stills, read up close.
+- **Felt:** from the way in, the Door is now a way into somewhere. The rings draw back to a warm core, and it's the one warm light in a cold blue yard. The flat card is gone.
+- **Tier:** competent. **The bold thing:** the tunnel's depth, with the core at its end. It reads from 18 studs and up close.
+- **One must-fix, of one class: a screen sign never covers the landmark it names.** TR24's "Festival of Battles / Lantern Row" sign stands over the Door's lower half on a phone, and says what the plate already says. Once the Door's own plate is in view, the sign stands aside. The fix covers every place a world sign and a screen sign name the same thing, not only the Door. How is Faber's call.
+- **Faber's calls stand:**
+  - the core capped under the bloom: up close at night it reads as light, not a white plate;
+  - the collision as Default: the way is a 6.4 square inside a ring of 10, so walking in still feels like going through the ring.
+- **To polish-later:** the shut core barely differs from the open one. The slice never shows it shut, so it isn't a must-fix.
+- **What the stills can't show:** the rings turning in the game. The turn was judged in Blender at 01:33, so the game's version is first seen in the director's walk. Straight on, by day, the still reads close to a target, and the turn is what breaks that read (the content check's condition for C).
+- **Only the sign's fix gets a second look,** from a phone still at the way in.
+
 ### Faber's install: AR14's deliveries 4 to 6, sections 1 to 3 here, and the bare lots (2026-11-15, to 22:50)
 
 The look is reopened since (AR16), so this install stands in the dev build until AR16's verdict, and its route carries the new look.

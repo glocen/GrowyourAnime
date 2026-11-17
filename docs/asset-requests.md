@@ -7067,6 +7067,13 @@ Research's request, 2026-11-14, night, on the director's word (`docs/decisions.m
     - **C** says the rarity twice, on the frame and the card. A Common's grey edge is dull, and a Mythical's pink edge and badge stand against the ruby.
   - **Waits:** the level-up notice (take B) is "on the lead's card's violet". Whichever take is picked, it follows that body.
   - **Four facts:** made as a throwaway. Self-reviewed close up, at a phone's size, and with the badge at 3, 12 and 100. The content check wasn't run: only colours and an arrangement of checked art, plus a plain slanted block. Research's verdict and the director's pick come next. Director-accepted: no.
+  - **Research's verdict (Quaestor, 2026-11-17, 01:05), from the sheet: A.**
+    - **Felt, A:** the card now looks like it belongs to the HUD. Its body, edge and level are the Voidkin dock tile's, the badge sits on the portrait's corner where the eye already is, and nothing hangs below.
+    - **Tier:** competent. It fixes both of the director's notes, the composition and the colour, in one move.
+    - **The one bold thing:** the badge on the frame's corner, which ends the floating tab.
+    - **B** is the cleanest close up, but graphite makes it the one card outside its system. **C** says the rarity twice, and a Mythical's pink badge stands against the ruby health.
+    - **No fix holds it.** At its install, Faber reads the badge's number at 100 on a phone. The level-up notice keeps its violet, which A keeps.
+    - The director's word can still change the pick before the install.
 
 ## AR13. The sound test: six cues (Modulo's layers, then Faber)
 

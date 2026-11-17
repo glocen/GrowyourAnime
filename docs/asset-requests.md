@@ -10766,6 +10766,10 @@ Phase 3's order, Modulo's item 5 (`docs/production-plan.md`). It's for TR37's St
 - **My read at 38 points:** a warm ingot that carries its own shape, with two short dark bands on its shoulders. No legs.
 - **Content check, for upload (16:40 to 16:41): PASS.** It reads as a copper ingot or polished stone, with no deep red, nothing soft, and nothing that reads as a gold bar or currency. Its taste note for research: at 38 points the brown body with dark bands reads a little like a chocolate bar or a small wooden chest.
 - **Four facts.** Implemented: High's body and bands. Tested: rendered and read at 38 points, 32 px and 64 px. Visually reviewed: my read; research's second look next. Director-accepted: no.
+- **Research's second look on High (Quaestor, 2026-11-17, 16:42): passed, no must-fix** (3f65550).
+  - The ingot's body now carries the shape: hot copper with a white-hot top edge, and the dark bands only hold it.
+  - The check's taste note is read and set aside: the glowing rim makes it metal from the forge, not a chocolate bar or a chest.
+  - **Next:** the cut and TR10's icons to Faber in one message.
 
 ## AR32. The Void Breaker's three stages (Modulo, for research's pick, then Faber)
 

@@ -12592,6 +12592,15 @@ Nothing was heard. Whether any of these convinces is **UNVERIFIED**; every level
 - **The log:** the 21 recordings are in `docs/asset-log.md`, each with its id and author.
 - **Status:** implemented as recipes; the tools' self-test runs; not mixed, not measured, not heard. Round 1 of three.
 
+- **Research on round 1 (Quaestor, 2026-11-17, 22:30).**
+  - **Gate 3 means overlaps as a fight makes them, not coinciding peaks.** The cues' level is set by gate 4, the relation between them. Turning LightHit 15 dB under today's spark to survive a worst case would bury it.
+    - **The measure:** LightHits at the fastest real attack spacing, and a HeavyHit landing at any offset of 10 ms or more against two LightHits. Each stays at or under -1 dBTP on the bus.
+    - **The rare exact coincidence** is caught by an `AudioLimiter` on each bus (Faber's, research's engine notes), never by the cues' level. The limiter takes at most 3 dB in the gate's overlaps, measured, so it never shapes the sound.
+  - **LightHit's body joins the second batch.** No licensed pick fits its brief, and a slap or a glove catch isn't a fighter's hit. New briefs: fist into a bag, body blow, martial-arts punch, kick into a pad.
+    - A1 and A3 stay as fallbacks.
+    - A2's thuds, with half their energy under 250 Hz, fail the phone read; they're out unless a high-pass keeps their contact.
+  - **Gate 5's edge:** B1 over A1 at an estimated 2.0 LU. Faber's measure decides, and an arrangement on the edge doesn't pass.
+
 ## AR40. Less purple, less black: the game's colour by day (Modulo, for research's pick, then Faber)
 
 Research, 2026-11-17, 22:17. The director's remark, at 22:17: "i think the game is way to much too purple/Black and somber btw". It's the third time: 2026-11-15, "too much purple"; 2026-11-16, "need to be less somber"; 2026-11-16, night, "a bit to dark and somber we need a day time" (`docs/decisions.md`). Day is already in the game, 18 minutes of every 30 (`Config/Lighting`). So the time of day isn't the cause; what's lit is.

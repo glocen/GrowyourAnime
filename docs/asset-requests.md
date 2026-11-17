@@ -12380,6 +12380,28 @@ Measured by Faber's mixdown of each cue as the engine plays it, at its real gain
   - Faber writes the measures and low-resolution spectrogram matrices to `build/scratch/modulo/ar39/`, never audio.
   - Modulo ranks the hits and builds the arrangements from those files. Each further round is one more batch on Modulo's ask.
 
+### The briefs, and the first batch (Modulo, 2026-11-17, 21:22 by the clock)
+- **Five briefs** in `tools/studio/Audio/Briefs.luau`, one per recorded role, so each pilot's arrangements can differ in their sources and not only in their gains:
+  - `LightHitBody`: the punch, mostly 250 Hz to 2.5 kHz, done in 150 ms;
+  - `LightHitSnap`: a leather or cloth snap, an attack for A and B when a body's own onset is soft;
+  - `HeavyHitBody`: one heavy thud with its weight in the low mids;
+  - `ShadeTellPaper`: the paper drawn taut;
+  - `ShadeSwipeAir`: cloth or paper through the air.
+  - Haymaker keeps its `HaymakerStrike`.
+- **The batch, after Faber's two gate checks:** `Shortlist.Run(name, { Count = 14, Measure = 80, Pages = 3 })` on each of the five, every author allowed, the licensed ranked first as the tool does.
+- **For each pick, into `build/scratch/modulo/ar39/<brief>.json`:**
+  - the pick's fields: Id, Title, Creator, Licensed, Keyword, From, To, Peak, Level, Score, Shape;
+  - over its slice, from 20 ms before to 100 ms after:
+    - the envelope, RMS in dBFS per 2 ms, for the contact within 10 ms;
+    - a spectrogram, third-octave bands from 50 Hz to 12.5 kHz, dB per 10 ms frame;
+    - the slice's third-octave spectrum averaged, for gates 7 and 8;
+    - its share of energy under 120 Hz, for gate 5;
+    - its BS.1770 loudness (`Loudness`);
+    - its sample peak with the time;
+    - the largest step between samples in its first and last 3 ms, for the fades of gate 6.
+  - That's low resolution only, as research set: no audio.
+- **What I judge the picks on:** the measures against each brief and the gates, and the titles and creators as evidence of what was recorded. Nothing is heard: whether a sound convinces stays UNVERIFIED.
+
 ## Later, by ground
 
 The rest of ground 1 (Kirra in AR10, Watt in AR11; then Sable, Marigold, Crane), then each ground's Voidkin in `docs/roster.md`'s order. **The machines** (Gantry, Bulwark, Ironhymn, Shiomaru, Aegir) share one custom rig, taller than a player, with its own clip family: the first of them is timed like AR1, because a custom rig is a different cost.

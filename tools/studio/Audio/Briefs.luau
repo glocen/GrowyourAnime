@@ -167,6 +167,126 @@ local briefs: { [string]: Brief } = {
 		Bands = { Low = 0.1, Mid = 0.4, High = 0.5 },
 		MaxFile = 12,
 	},
+
+	-- AR39, the sound rescue's three pilots (docs/asset-requests.md, AR39; the director's directive of 2026-11-17).
+	-- Recorded material first: one brief per recorded role, so a pilot's arrangements can be built differently, never as
+	-- pitch copies. Searched wide and in one batch: Shortlist.Run(name, { Count = 14, Measure = 80, Pages = 3 }).
+	-- The bands' edges are Waveform's, 250 and 2500 Hz, so "Mid" is the body a phone keeps.
+
+	-- A, LightHit: the contact itself, a body or cloth punch. Its body lives from 200 Hz to 2 kHz, it's done inside
+	-- 150 ms, and it decays fast and clean, so six in a second stay six hits. One burst, nothing before it.
+	LightHitBody = {
+		Brief = "a quick, clean punch landing on a body or a padded jacket: a short low-mid thock, one burst, no ring",
+		Keywords = {
+			"punch", "body punch", "punch impact", "punch hit", "jab", "light punch", "quick punch", "fast punch", "fist punch",
+			"fist hit", "cloth punch", "jacket punch", "leather punch", "glove hit", "boxing glove", "boxing punch",
+			"martial arts punch", "kung fu punch", "karate punch", "fight punch", "fight hit", "combat hit", "body hit",
+			"hit body", "punch foley", "foley punch", "kick hit", "kick impact", "thump", "soft impact", "hand hit",
+		},
+		Avoid = {
+			"whoosh", "swoosh", "swing", "swish", "miss", "sword", "blade", "knife", "glass", "metal", "metallic", "gun",
+			"explosion", "heavy", "slam", "bag", "wood", "door", "bell", "rock", "stone", "cinematic", "trailer", "boom",
+			"bass", "sub", "reverb", "echo", "rain", "loop",
+		},
+		Prefer = { "punch", "jab", "body", "cloth", "fist", "foley", "impact", "hit" },
+		Mode = "Hit",
+		Slice = { 0.06, 0.15 },
+		Attack = { 0, 0.008 },
+		Tail = { 0.04, 0.12 },
+		Bands = { Low = 0.25, Mid = 0.6, High = 0.15 },
+		MaxFile = 4,
+	},
+	-- A and B's attack, when a body's own onset is soft: a crisp leather or cloth snap, a few milliseconds to its top and
+	-- gone in 60, laid on a body from another recording. Never the whole hit.
+	LightHitSnap = {
+		Brief = "a crisp leather or cloth snap: a glove slapping, a towel snapped taut, very short, no tail",
+		Keywords = {
+			"leather snap", "cloth snap", "fabric snap", "towel snap", "slap", "hand slap", "glove slap", "leather slap",
+			"skin slap", "clap", "hand clap", "snap", "leather hit", "belt snap", "whip crack", "flick", "cloth flick",
+		},
+		Avoid = {
+			"whoosh", "swoosh", "swing", "miss", "sword", "blade", "glass", "metal", "gun", "explosion", "applause", "crowd",
+			"reverb", "echo", "loop", "finger", "fingers", "cinematic", "camera", "shutter", "lighter", "branch", "twig",
+		},
+		Prefer = { "snap", "slap", "leather", "cloth", "crisp", "short" },
+		Mode = "Hit",
+		Slice = { 0.03, 0.08 },
+		Attack = { 0, 0.004 },
+		Tail = { 0.015, 0.06 },
+		Bands = { Low = 0.05, Mid = 0.55, High = 0.4 },
+		MaxFile = 3,
+	},
+
+	-- B, HeavyHit and Haymaker's base: a recorded heavy body, one contact, never a cluster of knocks. Its weight must
+	-- hold through a phone (a 200 Hz high-pass): energy under 120 Hz at most half its total, so the low mids carry it,
+	-- and our sub only reinforces. Haymaker keeps its own HaymakerStrike on top.
+	HeavyHitBody = {
+		Brief = "a heavy, solid body blow: a fist or a padded ram sinking into a sandbag or a leather mass, one deep thud",
+		Keywords = {
+			"heavy punch", "body blow", "punch heavy", "hard punch", "strong punch", "power punch", "big punch", "sandbag",
+			"sandbag hit", "punching bag", "heavy bag", "boxing bag", "bag hit", "bag punch", "leather hit", "leather thud",
+			"heavy thud", "thud", "body thud", "body slam", "body fall", "body impact", "wood thud", "heavy wood hit",
+			"wood impact heavy", "heavy impact", "impact thud", "heavy kick", "kick heavy", "mattress hit", "pillow hit",
+		},
+		Avoid = {
+			"whoosh", "swoosh", "swing", "swish", "miss", "glass", "metal", "metallic", "explosion", "gun", "shot", "debris",
+			"rumble", "crash", "door", "car", "cinematic", "trailer", "boom", "bass", "sub", "drop", "braam", "riser",
+			"reverb", "echo", "rain", "loop", "water", "splash",
+		},
+		Prefer = { "punch", "body", "heavy", "thud", "bag", "leather", "blow", "impact" },
+		Mode = "Hit",
+		Slice = { 0.18, 0.5 },
+		Attack = { 0, 0.012 },
+		Tail = { 0.12, 0.4 },
+		Bands = { Low = 0.4, Mid = 0.5, High = 0.1 },
+		MaxFile = 5,
+	},
+
+	-- C, ShadeSwipe's tell: the Shade's paper drawn back taut before it strikes, a sound a player learns to dodge on.
+	-- Short and crisp, mid and high, so it reads under the lead's hits; it lands about 0.2 s before the swipe's top.
+	ShadeTellPaper = {
+		Brief = "a sheet of stiff paper or cloth drawn back and pulled taut: a short dry rustle ending in a crisp flick",
+		Keywords = {
+			"paper rustle", "paper crinkle", "paper flutter", "paper shake", "paper snap", "paper flick", "paper handling",
+			"paper foley", "page flip", "page turn", "paper movement", "cloth rustle", "fabric rustle", "clothing rustle",
+			"cloth movement", "fabric movement", "flag flutter", "flag snap", "banner flap", "sheet shake", "rustle",
+			"flutter", "flap",
+		},
+		Avoid = {
+			"loop", "ambience", "ambient", "rain", "fire", "wind", "crowd", "office", "printer", "tear", "tearing", "rip",
+			"ripping", "bird", "wings", "bag", "plastic", "chips", "footstep", "footsteps", "walk", "reverb",
+		},
+		Prefer = { "paper", "cloth", "fabric", "flick", "snap", "rustle", "short" },
+		Mode = "Hit",
+		Slice = { 0.12, 0.3 },
+		Attack = { 0.02, 0.15 },
+		Tail = { 0.03, 0.12 },
+		Bands = { Low = 0.05, Mid = 0.45, High = 0.5 },
+		MaxFile = 5,
+	},
+	-- C, the swipe: paper or cloth cutting the air, one pass, its top on the swipe's beat (the cue leads it by its peak).
+	-- Lighter and higher than the lead's hits, so it sits under them.
+	ShadeSwipeAir = {
+		Brief = "a quick swipe of cloth or paper through the air: one soft-edged pass, rising to its top and gone",
+		Keywords = {
+			"cloth whoosh", "cloth swish", "fabric whoosh", "fabric swish", "paper whoosh", "paper swish", "cape whoosh",
+			"cloak whoosh", "coat whoosh", "robe swish", "jacket whoosh", "flag whoosh", "towel whoosh", "swish", "swipe",
+			"quick whoosh", "short whoosh", "soft whoosh", "air swipe", "hand whoosh", "arm swing", "fan swish",
+			"whoosh foley", "foley whoosh",
+		},
+		Avoid = {
+			"sword", "blade", "knife", "katana", "metal", "laser", "fire", "magic", "energy", "sci fi", "scifi", "electric",
+			"car", "plane", "jet", "wind", "loop", "ambience", "rain", "punch", "hit", "impact", "heavy", "big", "bass",
+			"cinematic", "trailer", "riser", "reverse",
+		},
+		Prefer = { "cloth", "fabric", "paper", "swish", "swipe", "cape", "short", "foley" },
+		Mode = "Hit",
+		Slice = { 0.18, 0.4 },
+		Attack = { 0.05, 0.2 },
+		Tail = { 0.05, 0.22 },
+		Bands = { Low = 0.05, Mid = 0.45, High = 0.5 },
+		MaxFile = 4,
+	},
 }
 
 return briefs

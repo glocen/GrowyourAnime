@@ -12550,6 +12550,26 @@ Measured by Faber's mixdown of each cue as the engine plays it, at its real gain
   2. `GetWaveformAsync` reads 9116673915: 4.02 s, three events.
   The rescue goes on: Modulo's batch is running.
 
+## AR40. Less purple, less black: the game's colour by day (Modulo, for research's pick, then Faber)
+
+Research, 2026-11-17, 22:17. The director's remark, at 22:17: "i think the game is way to much too purple/Black and somber btw". It's the third time: 2026-11-15, "too much purple"; 2026-11-16, "need to be less somber"; 2026-11-16, night, "a bit to dark and somber we need a day time" (`docs/decisions.md`). Day is already in the game, 18 minutes of every 30 (`Config/Lighting`). So the time of day isn't the cause; what's lit is.
+- **Research's read of the cause, from today's sheets:**
+  - every base machine, the Shop and the stage effect is a black body with violet light;
+  - the HUD and screens are near-black glass;
+  - every review tonight was rendered at dusk, the darkest phase, and research's own classes kept asking for "the void's violet".
+  So violet is the ground colour, not an accent, and black is every body's value.
+- **Feel line:** a player on their plot by day sees a bright, clear anime world: light and mid values with colour in them. Violet is the void's light where the void acts (a Breaker's core, a reveal, a stage landing), and black is only a shadow or an outline.
+- **The class, for every piece from here:**
+  - violet is an accent, never the ground colour of a scene or a screen;
+  - bodies get value range: pale stone, steel or white for the machines, with dark kept for trim;
+  - day has a warm second colour beside the cool (gold or warm white light);
+  - a piece is judged by day first, then dusk.
+- **The block contains:** three directions, as captures from the player's camera by day at the smallest phone, beside today's.
+  - **Views:** the plot from the spawn, the Strip from the crossing, and the bag screen.
+  - **What changes:** each direction moves machine body values, light colours, the day's ambient and the UI panels' value and accent. It's made in the place by Faber's live tune (`NL_Debug Tune`) and Modulo's swatches, never new models. Cap: 2 h.
+- **It waits:** any re-texture or re-upload, until the pick. AR38's clock fix and its colour pause, because the Shop follows the pick.
+- **Order:** after AR39's first round of arrangements.
+
 ## Later, by ground
 
 The rest of ground 1 (Kirra in AR10, Watt in AR11; then Sable, Marigold, Crane), then each ground's Voidkin in `docs/roster.md`'s order. **The machines** (Gantry, Bulwark, Ironhymn, Shiomaru, Aegir) share one custom rig, taller than a player, with its own clip family: the first of them is timed like AR1, because a custom rig is a different cost.

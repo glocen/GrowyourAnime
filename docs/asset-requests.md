@@ -11436,6 +11436,96 @@ Research's entry, 2026-11-17, 18:38. It is next in the design's order (`docs/des
 
 **Checks:** the content check before the block; research's pick; Stages II and III as kit pieces for Faber, judged in the game from the court.
 
+### The two directions, planned (Modulo, 2026-11-17, 18:41)
+
+**Stage I is the machine as it stands** (`base_machines.training`, `training_crown`):
+- a tapered standing stone of void stone, 6.6 high on its deck, with two violet bands and a target of the void's light on its face;
+- the crown, a flat ring with eight marks and four floating weights of void stone, 8 up, turning while a Voidkin trains;
+- the pad, 6 in front, where the Voidkin stands facing the stone.
+
+**The footprint** (`Config.World.Fit.Prints.training`): 6.2 wide by 11.2 deep, centred 2.5 toward the gate. The court sees the pad side from about 44 studs, off the generator's side.
+
+- **A, the Weighted Crown: the crown, the machine's moving part, carries more.**
+  - The stone, the spark and the pad stay as at Stage I.
+  - **Stage II:** the crown's ring widens (2.8 to 3.25) and carries six weights, slimmer and taller (2.6 high), at 4.1 out, with twelve marks.
+  - **Stage III:** the ring widens again (3.3 to 3.75), with eight weights (3.2 high) at 4.6 out and sixteen marks.
+  - The crown stays flat: from the court it's a bar like Stage I's, growing from 7.6 across to 9.0 and then 10.1, its weights to be counted.
+  - Each stage's crown is a piece of its own (TrainingCrown2, TrainingCrown3) that replaces Stage I's and turns the same way.
+  - The first A, the Halo (tilted rings round the spark), was blocked by the check and replaced. Below.
+- **B, the Sparring Ring: growth around the Voidkin, the feel line's "works inside a frame".**
+  - Lesser fangs of void stone stand on the floor at the pad's sides, inside the footprint's 6.2.
+  - **Stage II:** the left one at 4.3 high, a little behind the pad's middle; the right one at 3.7, nearer it.
+  - **Stage III:** two more beside the pad's front half, lower, at 3.1 and 2.6. The arc steps down toward the gate, open there, with uneven heights and spacing.
+  - Each is straight-edged with a chiselled tip, upright or leaning a little out. A vein of the void's light runs up its edge toward the pad and stops short of its tip.
+  - Nothing joins them. Stage I's reticle stays the machine's only target.
+  - The crown and the main stone stay as at Stage I. The stones stand off the line from the court to the Voidkin.
+
+**The guards, for both:**
+- Void stone, bone and the void's violet only, with nothing gold.
+- No horns at a tall stone's top cradling a light, after AR34's dark-tower BLOCK.
+- No lintel over B's stones, so no trilithon or gate.
+- Never a gym's machine: no bars, plates, benches or dummies.
+- The pad stays open to the court at every stage.
+
+**The content check on the plan (18:44), and what changed (18:46):**
+- **The Halo:** BLOCK. Tilted rings open into almonds round the upright spark, which is an eye on a dark stone (the ip-list, AR16). Steeper rings cross into a wheel or a sun cross. A ring centred on the shard frames it or crosses it from some heading, so A was replaced, not patched.
+- **B:** PASS once two lines changed, both now made:
+  - a ring-and-dot target on each fang would be a ring of eyes, so it's a vein instead;
+  - four posts at the pad's corners are a boxing ring, so it's an uneven arc instead.
+- **B's conditions, kept:**
+  - straight fangs, never curved or hooked inward, never in mirror pairs (a jaw or ribs);
+  - void stone only on the fangs, never bone;
+  - no lintel or cross-piece;
+  - under the Voidkin's head, the line from the court to it clear.
+- **For both:**
+  - Void stone, bone and the void's violet only, with nothing written.
+  - Every vein stops short of its tip.
+  - The pieces are drawn by functions in `tools/blender/`.
+  - The grey sheets come back to the check, and so does the coloured build before upload.
+- **The revised plan (18:50): A and B both PASS for the grey block.** The conditions:
+  - **A's weights:**
+    - upright, never radial (from above, an eight-armed star is a known emblem);
+    - at least 3 times as tall as wide;
+    - straddling the ring, their tips over the spark's, so it's never a bare crossbar;
+    - void stone, unlit.
+  - **A's spark and marks:** the spark stays exactly Stage I's. The marks are even all round, like a dial.
+  - **The high view:** one view 35 to 45° down joins the sheets.
+  - **B's fangs:**
+    - each rooted on its own, with floor or sky between it and the main stone;
+    - never a mirror pair in height, depth or width;
+    - each vein a straight line of even width, no bulb at its end.
+
+### The grey block (Modulo, 2026-11-17, 18:47 to 18:54 by the clock)
+
+**The sheets** (in `build/scratch/modulo/training/`, from `tools/blender/base_training.py`):
+- `training_A.png` and `training_B.png`, each stage beside Stage I in the yard at base level 3 under the dusk, with the yard's trainee on the pad.
+- **The views:** from the court at a phone's 640 by 360; on the way to the left back bay; head-on; both sides; behind; three-quarter; and one 40° down.
+- **The cuts:** at 64 and 128 px and in black.
+- **Triangles,** a stage whole before the hull: Stage I 962; A 1,082 and 1,266; B 1,070 and 1,178.
+
+**My read:**
+- **From the court,** the machine stands 56 studs off, dead centre between the generator's wheel and the Door. The bus's junction box hides the pad's left foot at every stage; that's the yard's, not this piece's.
+- **A reads from the court.** The crown is a heavier bar of crystals at II and wider again at III. The weights count at 128 px, not at 64. From above it's a crown of lights with crystals standing round it, a dial and not an eye.
+- **B barely reads from the court.** The fangs stand under the Voidkin's head (the check's condition) and inside the footprint's 6.2. From there the left pair hides behind the junction box, and the right pair shows only as two slivers of vein. B reads from the front, the sides and three-quarter.
+- **Stage I's crown from the court** is a bar with a dark shard at each end. A's added weights break that up.
+
+**The content check on the sheets (18:58): A PASS, B PASS.**
+- **A:**
+  - from the front in black, it's a spiked crown edge-on, not a candelabrum: the crystals sit astride the bar;
+  - from the side, II and III move away from Stage I's barbell;
+  - from above, a dial, with no almond and no star.
+- **B:** straight fangs leaning out, with no jaw or pincers. The feet merging with the deck in black read as a stepped base.
+- **The 18:50 conditions,** each met as drawn.
+- **For the kit pieces:**
+  - A's weights stay vertical. Any later tilt is tangential, never splayed.
+  - B's fangs are never curved toward the pad, and never two of one height facing each other.
+  - The veins stay even, short of the tip, with no blob.
+  - No piece name says "Eye".
+  - The coloured build comes back before upload.
+- **The check's note for the pick:** B's Stage III fangs sit near the pad's four corners, close to the boxing ring the plan's check warned of. Nothing drawn reads that way.
+
+**Next:** research's pick.
+
 ## Later, by ground
 
 The rest of ground 1 (Kirra in AR10, Watt in AR11; then Sable, Marigold, Crane), then each ground's Voidkin in `docs/roster.md`'s order. **The machines** (Gantry, Bulwark, Ironhymn, Shiomaru, Aegir) share one custom rig, taller than a player, with its own clip family: the first of them is timed like AR1, because a custom rig is a different cost.

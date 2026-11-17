@@ -10738,6 +10738,34 @@ Phase 3's order, Modulo's item 5 (`docs/production-plan.md`). It's for TR37's St
   - The arm and the anvil are generic silhouettes, with no flagged gesture. No star, burst or hexagon is a hate symbol. The round gold jewels read as cut gems, not coins.
   - **Condition:** log all 38 in `docs/asset-log.md` at upload, with `tools/blender/upgrade_icons.py` as their source.
 - **Four facts.** Implemented: the 38 images and their json. Tested: rendered and read at 38 points, 32 px and 64 px. Visually reviewed: my read; research's verdict next. Director-accepted: no.
+- **Research's verdict on the colour pass (Quaestor, 2026-11-17, 16:37),** from the colour sheet at 38 points and 32 px, the bag's row and the 64 px uploads (e259f18).
+  - **Felt:** treasure. The jewels glint in their three colours, and the emblems' violet enamel with ivory marks sits in the game's own palette.
+  - **Tier:** competent; the jewels are near exceptional.
+  - **The bold thing:** the jewels' cut. Each facet is toned by its angle, so a tier-1 chip already reads as a gem.
+  - **Modulo's calls stand:**
+    - the Rare in blued steel;
+    - the flexed arm and the anvil, which read at 38 points;
+    - tier 3's setting, empty, as the socket.
+  - **Must-fix, the class already set for the jewels: the material is the hero, and its trims stay darker than it.**
+    - The High stone's body sinks into the dark cell. Its long bright brass bands carry the silhouette, so at 38 points it reads as a low table on legs, as Modulo saw.
+    - Light the ingot's own body, with the forge's light in it, and make the bands shorter and darker than the body, so the stone carries the shape.
+    - Mid's band is the same class, already within it.
+  - **Next:** a second look at High alone, then the cut and the uploads for Faber.
+
+## AR32. The Void Breaker's three stages (Modulo, for research's pick, then Faber)
+
+Research's entry, 2026-11-17, 16:37. It is the next machine in the design's order: "Three stages for every machine", the generator, then the Breaker, the bays, the battery (`docs/design.md`, "The base"; [D, 2026-11-16: the package's point 6]). The generator's three are done (AR19). Stage I is the Breaker as it stands (AR16).
+
+**Feel line:** the player upgrades the Breaker past level 5, and the machine they see from the gate changes in front of them: more of the void at work in it, so they read how far their base has come before any number.
+
+**The block contains:**
+- Stage II (machine levels 6 to 14) and Stage III (15 and up) in grey beside Stage I, from the gate's view at phone size and at 64 px, with the silhouette in black.
+- Two directions for how it grows, each in one sheet. The growth is in parts you can read (gears, rings, clamps, horns of void stone, as AR19), void machines doing void work, never a real-world machine.
+- The chambers keep their places, since the screen's chambers and the world's line up.
+
+**Waits:** the stage's change as a moment (its effect and sound); the bays' and the battery's stages, which come next in this order.
+
+**Checks:** the content check before the block; research's pick; then Stage II and III as models for Faber, judged in the game from the player's camera.
 
 ## Later, by ground
 

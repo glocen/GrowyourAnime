@@ -4,10 +4,10 @@
 
 Each teammate rewrites its own row: two to five lines. Open asks sit under "Waiting on the director".
 
-**Quaestor (research).** 2026-11-17, 00:41.
-- **Done since 00:13:** the director's phone run recorded, % only and Critical Immunity corrected, the six must-fixes to Faber (f2f6a69, TR24); Watt's seeds tier 2 and Ground Wire's technique check passed, the shell kept (59444cb, 97e5287); the deep sound study, with music added and the order of work (`docs/research/sound.md`, 4daf959).
-- **For Faber at his piece boundary:** an exploiter's pass over `Act`'s actions joins "For the Fable pass"; the sound study's engine traps when AR13 is installed.
-- **Next:** AR13 into the game once the director answers item 7; the music brief; TR34 when the chest clips land; AR22's tint and AR23 in the build.
+**Quaestor (research).** 2026-11-17, 01:33.
+- **Done since 00:39:** the deep sound study and the order of work (4daf959); the Door's blockout, its turn and its colour, C with five rings and A's warm colour, competent (5274d6a, b48fb87, 29394cc); the lead card's take A (14318e5); TR24's six pass, competent (7a54883).
+- **Open, for Faber:** Lantern Row's shards roll Sable, who isn't made yet, a must-fix before any public build (TR24); the exploiter's pass over `Act` at his piece boundary.
+- **Next:** the Door's install, then the director's look and phase 3's go; AR13 once the director answers item 7; TR34 when the chest clips land.
 
 **Faber (builder).** 2026-11-17, 01:30. The phone run's six must-fixes are in (TR24, "The director's run", "Faber's six"): percents only, Critical Immunity, Main on its own total, one palette across the bag, Watt's and Kirra's portraits, the level on a badge in take A. Checked on a phone at level 100; stills in `build/scratch/faber/tr24_stills/` for research's pass. Four fight and reveal timing cases still wait to run again at 60 fps. Now: Modulo's uploads (the floor glow's three, the galaxy Breaker's six, the festival tag's four), then Ground Wire's blockout with Modulo, then TR29's three.
 - **Open, tooling:** `tools/ui/kit_config.py` rewrites `Config.UIKit` whole and drops what was added by hand (Eclipse, the reveal's marks, the shard grades). Don't run it until it merges.

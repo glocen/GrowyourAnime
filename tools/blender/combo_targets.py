@@ -319,17 +319,18 @@ def landed(points, ahead, name, land):
     return [[p[0], p[1] + land * (s - 1), p[2] + ft - f0] for p in points]
 
 
-def rule4(points, ahead, what, land=None, margin=0.1, views=VIEWS, waiting=None):
+def rule4(points, ahead, what, land=None, margin=0.1, views=VIEWS, waiting=None, fit=None):
     """Every target against `points` (the lead's frame, placed for the ordinary Shade `ahead` studs before him): fixed
     rows (`land` None) with the target standing so its torso face is the ordinary Shade's (the lead spaced by its
-    target's depth: Faber's, AR26), or a flight's rows landed on it (`land` up on the ordinary Shade). With a
-    `waiting` list, a target the game doesn't have yet (`in_game`) is reported there, not failed: it joins the game
-    only once the rows pass it (the content check's gate, 2026-11-17)."""
+    target's depth: Faber's, AR26), or a flight's rows landed on it (`land` up on the ordinary Shade). `fit`
+    (points, name) moves fixed rows as the game would place them on that target (Kirra's cuts, lifted to its waist).
+    With a `waiting` list, a target the game doesn't have yet (`in_game`) is reported there, not failed: it joins the
+    game only once the rows pass it (the content check's gate, 2026-11-17)."""
     bad = []
     game = in_game()
     for name in targets():
         if land is None:
-            pts, at = points, on_face(name, ahead)
+            pts, at = (fit(points, name) if fit else points), on_face(name, ahead)
         else:
             pts, at = landed(points, ahead, name, land), ahead
         got = [f"{what} {x} (the target {ahead} ahead)" for x in faults(pts, name, at, margin, views)]

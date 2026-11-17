@@ -1,0 +1,829 @@
+{
+ "Schema": "rows/1",
+ "Effect": "KirraCombo",
+ "Why": "Kirra's basic attack (KirraCombo), the grey block (AR26; research's feel line, 08:06): the dash's streak, two crisp cuts that snap shut, the second worn as an X while the Shade flinches, and the rise flashing up her blades. Written by tools/blender/kirra_combo_fx.py.",
+ "Area": 1,
+ "Grey": true,
+ "Action": "KirraCombo",
+ "Rows": {
+  "Streak": {
+   "Kind": "Beam",
+   "Body": "HumanoidRootPart",
+   "Image": "fx_beam",
+   "Grey": "fx_beam",
+   "Color": {
+    "Color3": [
+     255,
+     255,
+     255
+    ]
+   },
+   "Beam": {
+    "FaceCamera": true,
+    "TextureMode": "Stretch",
+    "TextureLength": 1,
+    "TextureSpeed": 0,
+    "LightEmission": 1,
+    "LightInfluence": 0,
+    "Brightness": 3,
+    "Segments": 6
+   },
+   "Trail": {
+    "Back": 0.3,
+    "Beyond": 0.4
+   },
+   "Why": "the dash's thin streak, behind her back (the scarf's colour at the finish)",
+   "Tracks": {
+    "At": [
+     [
+      0,
+      {
+       "Vector3": [
+        0.0,
+        0.2,
+        0.55
+       ]
+      }
+     ]
+    ],
+    "Lag": [
+     [
+      0,
+      5
+     ]
+    ],
+    "Width": [
+     [
+      1,
+      0.12,
+      "Linear"
+     ],
+     [
+      9,
+      0.06,
+      "Quad In"
+     ],
+     [
+      14,
+      0.0
+     ]
+    ],
+    "Transparency": [
+     [
+      1,
+      0.1,
+      "Linear"
+     ],
+     [
+      9,
+      0.25,
+      "Quad In"
+     ],
+     [
+      14,
+      1
+     ]
+    ]
+   }
+  },
+  "Cut1At": {
+   "Kind": "Point",
+   "From": "Hit1",
+   "Body": "HumanoidRootPart",
+   "Hold": true,
+   "Why": "her root as it stands on Hit1, kept there: the cut stays where she cut",
+   "Tracks": {
+    "At": [
+     [
+      0,
+      {
+       "Vector3": [
+        0,
+        0,
+        0
+       ]
+      }
+     ]
+    ]
+   }
+  },
+  "Cut1": {
+   "Kind": "Beam",
+   "On": "Cut1At",
+   "Image": "fx_beam",
+   "Grey": "fx_beam",
+   "Color": {
+    "Color3": [
+     255,
+     255,
+     255
+    ]
+   },
+   "Beam": {
+    "FaceCamera": true,
+    "TextureMode": "Stretch",
+    "TextureLength": 1,
+    "TextureSpeed": 0,
+    "LightEmission": 1,
+    "LightInfluence": 0,
+    "Brightness": 3,
+    "Segments": 1
+   },
+   "High": "Cut1End.Low",
+   "Why": "cut 1: a crisp line at the right blade's angle, snapping shut",
+   "Tracks": {
+    "At": [
+     [
+      0,
+      {
+       "Vector3": [
+        -0.218,
+        -0.95,
+        -2.58
+       ]
+      },
+      "Quad In"
+     ],
+     [
+      4,
+      {
+       "Vector3": [
+        -0.218,
+        -0.95,
+        -2.58
+       ]
+      }
+     ],
+     [
+      8,
+      {
+       "Vector3": [
+        -0.174,
+        -0.825,
+        -2.58
+       ]
+      }
+     ]
+    ],
+    "Foot": [
+     [
+      0,
+      0
+     ]
+    ],
+    "Width": [
+     [
+      0,
+      0,
+      "Linear"
+     ],
+     [
+      1,
+      0,
+      "Linear"
+     ],
+     [
+      2,
+      0.1,
+      "Linear"
+     ],
+     [
+      4,
+      0.1,
+      "Quad In"
+     ],
+     [
+      8,
+      0
+     ]
+    ],
+    "Transparency": [
+     [
+      0,
+      1,
+      "Linear"
+     ],
+     [
+      1,
+      1,
+      "Linear"
+     ],
+     [
+      2,
+      0,
+      "Linear"
+     ],
+     [
+      7,
+      0,
+      "Linear"
+     ],
+     [
+      8,
+      1
+     ]
+    ]
+   }
+  },
+  "Cut1End": {
+   "Kind": "Beam",
+   "On": "Cut1At",
+   "Image": "fx_beam",
+   "Grey": "fx_beam",
+   "Color": {
+    "Color3": [
+     255,
+     255,
+     255
+    ]
+   },
+   "Beam": {
+    "FaceCamera": true,
+    "TextureMode": "Stretch",
+    "TextureLength": 1,
+    "TextureSpeed": 0,
+    "LightEmission": 1,
+    "LightInfluence": 0,
+    "Brightness": 3,
+    "Segments": 1
+   },
+   "Why": "Cut1's top: a place for it, never shown",
+   "Tracks": {
+    "At": [
+     [
+      0,
+      {
+       "Vector3": [
+        0.218,
+        0.3,
+        -2.58
+       ]
+      },
+      "Quad In"
+     ],
+     [
+      4,
+      {
+       "Vector3": [
+        0.218,
+        0.3,
+        -2.58
+       ]
+      }
+     ],
+     [
+      8,
+      {
+       "Vector3": [
+        0.174,
+        0.175,
+        -2.58
+       ]
+      }
+     ]
+    ],
+    "Foot": [
+     [
+      0,
+      0
+     ]
+    ],
+    "Width": [
+     [
+      0,
+      0
+     ]
+    ]
+   }
+  },
+  "Cut1Light": {
+   "Kind": "Light",
+   "On": "Cut1At",
+   "Range": 6,
+   "Color": {
+    "Color3": [
+     255,
+     255,
+     255
+    ]
+   },
+   "Why": "the cut's light, which rims the Shade where the line is behind it",
+   "Tracks": {
+    "At": [
+     [
+      0,
+      {
+       "Vector3": [
+        0.0,
+        -0.325,
+        -2.58
+       ]
+      }
+     ]
+    ],
+    "Brightness": [
+     [
+      0,
+      0,
+      "Linear"
+     ],
+     [
+      1,
+      0,
+      "Linear"
+     ],
+     [
+      2,
+      3,
+      "Quart Out"
+     ],
+     [
+      8,
+      0
+     ]
+    ]
+   }
+  },
+  "Cut2At": {
+   "Kind": "Point",
+   "From": "Hit2",
+   "Body": "HumanoidRootPart",
+   "Hold": true,
+   "Why": "her root as it stands on Hit2, kept there: the cut stays where she cut",
+   "Tracks": {
+    "At": [
+     [
+      0,
+      {
+       "Vector3": [
+        0,
+        0,
+        0
+       ]
+      }
+     ]
+    ]
+   }
+  },
+  "Cut2": {
+   "Kind": "Beam",
+   "On": "Cut2At",
+   "Image": "fx_beam",
+   "Grey": "fx_beam",
+   "Color": {
+    "Color3": [
+     255,
+     255,
+     255
+    ]
+   },
+   "Beam": {
+    "FaceCamera": true,
+    "TextureMode": "Stretch",
+    "TextureLength": 1,
+    "TextureSpeed": 0,
+    "LightEmission": 1,
+    "LightInfluence": 0,
+    "Brightness": 3,
+    "Segments": 1
+   },
+   "High": "Cut2End.Low",
+   "Why": "cut 2: a crisp line at the left blade's angle, snapped thin, worn faint, gone with the flinch",
+   "Tracks": {
+    "At": [
+     [
+      0,
+      {
+       "Vector3": [
+        0.261,
+        -0.95,
+        -2.98
+       ]
+      }
+     ]
+    ],
+    "Foot": [
+     [
+      0,
+      0
+     ]
+    ],
+    "Width": [
+     [
+      0,
+      0,
+      "Linear"
+     ],
+     [
+      1,
+      0,
+      "Linear"
+     ],
+     [
+      2,
+      0.1,
+      "Linear"
+     ],
+     [
+      4,
+      0.1,
+      "Quad In"
+     ],
+     [
+      8,
+      0.035,
+      "Linear"
+     ],
+     [
+      16,
+      0.035
+     ]
+    ],
+    "Transparency": [
+     [
+      0,
+      1,
+      "Linear"
+     ],
+     [
+      1,
+      1,
+      "Linear"
+     ],
+     [
+      2,
+      0,
+      "Linear"
+     ],
+     [
+      4,
+      0,
+      "Quad In"
+     ],
+     [
+      8,
+      0.4,
+      "Linear"
+     ],
+     [
+      13,
+      0.4,
+      "Quad In"
+     ],
+     [
+      16,
+      1
+     ]
+    ]
+   }
+  },
+  "Cut2End": {
+   "Kind": "Beam",
+   "On": "Cut2At",
+   "Image": "fx_beam",
+   "Grey": "fx_beam",
+   "Color": {
+    "Color3": [
+     255,
+     255,
+     255
+    ]
+   },
+   "Beam": {
+    "FaceCamera": true,
+    "TextureMode": "Stretch",
+    "TextureLength": 1,
+    "TextureSpeed": 0,
+    "LightEmission": 1,
+    "LightInfluence": 0,
+    "Brightness": 3,
+    "Segments": 1
+   },
+   "Why": "Cut2's top: a place for it, never shown",
+   "Tracks": {
+    "At": [
+     [
+      0,
+      {
+       "Vector3": [
+        -0.261,
+        0.3,
+        -2.98
+       ]
+      }
+     ]
+    ],
+    "Foot": [
+     [
+      0,
+      0
+     ]
+    ],
+    "Width": [
+     [
+      0,
+      0
+     ]
+    ]
+   }
+  },
+  "Cross": {
+   "Kind": "Beam",
+   "On": "Cut2At",
+   "Image": "fx_beam",
+   "Grey": "fx_beam",
+   "Color": {
+    "Color3": [
+     255,
+     255,
+     255
+    ]
+   },
+   "Beam": {
+    "FaceCamera": true,
+    "TextureMode": "Stretch",
+    "TextureLength": 1,
+    "TextureSpeed": 0,
+    "LightEmission": 1,
+    "LightInfluence": 0,
+    "Brightness": 3,
+    "Segments": 1
+   },
+   "High": "CrossEnd.Low",
+   "Why": "cut 1's line again, crossing cut 2: the X, snapped thin, worn faint, gone with the flinch",
+   "Tracks": {
+    "At": [
+     [
+      0,
+      {
+       "Vector3": [
+        -0.218,
+        -0.95,
+        -2.98
+       ]
+      }
+     ]
+    ],
+    "Foot": [
+     [
+      0,
+      0
+     ]
+    ],
+    "Width": [
+     [
+      0,
+      0,
+      "Linear"
+     ],
+     [
+      1,
+      0,
+      "Linear"
+     ],
+     [
+      2,
+      0.1,
+      "Linear"
+     ],
+     [
+      4,
+      0.1,
+      "Quad In"
+     ],
+     [
+      8,
+      0.035,
+      "Linear"
+     ],
+     [
+      16,
+      0.035
+     ]
+    ],
+    "Transparency": [
+     [
+      0,
+      1,
+      "Linear"
+     ],
+     [
+      1,
+      1,
+      "Linear"
+     ],
+     [
+      2,
+      0,
+      "Linear"
+     ],
+     [
+      4,
+      0,
+      "Quad In"
+     ],
+     [
+      8,
+      0.4,
+      "Linear"
+     ],
+     [
+      13,
+      0.4,
+      "Quad In"
+     ],
+     [
+      16,
+      1
+     ]
+    ]
+   }
+  },
+  "CrossEnd": {
+   "Kind": "Beam",
+   "On": "Cut2At",
+   "Image": "fx_beam",
+   "Grey": "fx_beam",
+   "Color": {
+    "Color3": [
+     255,
+     255,
+     255
+    ]
+   },
+   "Beam": {
+    "FaceCamera": true,
+    "TextureMode": "Stretch",
+    "TextureLength": 1,
+    "TextureSpeed": 0,
+    "LightEmission": 1,
+    "LightInfluence": 0,
+    "Brightness": 3,
+    "Segments": 1
+   },
+   "Why": "Cross's top: a place for it, never shown",
+   "Tracks": {
+    "At": [
+     [
+      0,
+      {
+       "Vector3": [
+        0.218,
+        0.3,
+        -2.98
+       ]
+      }
+     ]
+    ],
+    "Foot": [
+     [
+      0,
+      0
+     ]
+    ],
+    "Width": [
+     [
+      0,
+      0
+     ]
+    ]
+   }
+  },
+  "Cut2Light": {
+   "Kind": "Light",
+   "On": "Cut2At",
+   "Range": 6,
+   "Color": {
+    "Color3": [
+     255,
+     255,
+     255
+    ]
+   },
+   "Why": "the X's light on hit 2, which rims the Shade where the lines are behind it",
+   "Tracks": {
+    "At": [
+     [
+      0,
+      {
+       "Vector3": [
+        0.0,
+        -0.325,
+        -2.98
+       ]
+      }
+     ]
+    ],
+    "Brightness": [
+     [
+      0,
+      0,
+      "Linear"
+     ],
+     [
+      1,
+      0,
+      "Linear"
+     ],
+     [
+      2,
+      3.5,
+      "Quart Out"
+     ],
+     [
+      8,
+      0
+     ]
+    ]
+   }
+  },
+  "RiseR": {
+   "Kind": "Light",
+   "From": "Dash",
+   "Body": "TipR",
+   "Range": 7,
+   "Color": {
+    "Color3": [
+     255,
+     255,
+     255
+    ]
+   },
+   "Why": "the rise: the right blade's tip flashes as it climbs",
+   "Tracks": {
+    "At": [
+     [
+      52,
+      {
+       "Vector3": [
+        0,
+        0,
+        0
+       ]
+      }
+     ]
+    ],
+    "Brightness": [
+     [
+      52,
+      0,
+      "Quad In"
+     ],
+     [
+      55,
+      5,
+      "Quart Out"
+     ],
+     [
+      60,
+      0
+     ]
+    ]
+   }
+  },
+  "RiseL": {
+   "Kind": "Light",
+   "From": "Dash",
+   "Body": "TipL",
+   "Range": 7,
+   "Color": {
+    "Color3": [
+     255,
+     255,
+     255
+    ]
+   },
+   "Why": "the rise: the left blade's tip flashes as it climbs",
+   "Tracks": {
+    "At": [
+     [
+      52,
+      {
+       "Vector3": [
+        0,
+        0,
+        0
+       ]
+      }
+     ]
+    ],
+    "Brightness": [
+     [
+      52,
+      0,
+      "Quad In"
+     ],
+     [
+      55,
+      5,
+      "Quart Out"
+     ],
+     [
+      60,
+      0
+     ]
+    ]
+   }
+  }
+ }
+}

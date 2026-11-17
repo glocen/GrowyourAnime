@@ -9564,6 +9564,54 @@ Made on research's line 4, with its camera of 08:16. `tools/blender/lyric_combo_
   - the redraw for her new weapon at the redesign.
 - **Time:** 08:48 to 08:53 and 09:04 to 09:10 by the clock, around Pip's fixes. The targets' guard ran from 09:12 to 09:39, shared with Rook's and Pip's, and left the rows unchanged. The cap is 2 hours at its block.
 
+### Kirra's basic attack: the streak, the two cuts and the X (Modulo, 2026-11-17, from 10:00 by the transcript)
+
+Made on research's line 5. `tools/blender/kirra_combo_fx.py` reads the delivered `Kirra_Combo.json` on the recipe's blade joints, between frames as the game blends them, and checks KirraCombo's beats (12, 26, 56) against the clip's markers.
+- **Where the blades cut** (`measure`, `sweeps`; the Shade 3.5, 3.9 and 4.3 off on the three beats, each push 0.4):
+  - **Cut 1, the right blade,** crosses a plane 0.18 before the Shade's torso face from 3.90 up to 0.68 over frames 11.5 to 13.2, 71 degrees off level.
+  - **Cut 2, the left blade,** crosses it from 4.12 to 1.07 over frames 25.25 to 26.45, 67 degrees the other way.
+  - The two paths meet as a V between the legs, not an X. So the X is drawn: each line keeps its blade's angle, moved onto the torso.
+  - **Hit 3:** both blades rise beside her (frames 52 to 56, 0.8 to 6.1 up) and never reach the Shade.
+- **The parts (`KirraCombo`, 13 rows, grey, white light):**
+  - **The streak:** a Beam trail on her root, 0.2 up and 0.55 behind her back, Lag 5, 0.12 to 0.06 wide, over the dash (frames 1 to 9), gone by 14.
+  - **Cut 1:** a straight line 0.1 wide at its blade's angle, on the torso from 2.05 to 3.3 up, 0.18 before the face where the Shade stands on the beat. It rides a point held where her root is on the beat.
+    - It shows 2 frames after the beat, once the blade is past, and holds 2.
+    - It snaps shut by +8: its width goes to nothing and its ends draw 20% in.
+    - A light rims the Shade from it.
+  - **The X:** on hit 2, cut 2 and cut 1's line again cross at 2.68 up. It's crisp for 2 frames, snapped thin (0.035) by +8, worn faint, and gone at +16 (frame 42).
+  - **The rise:** a light on each blade tip (`TipR`, `TipL`) flashes as they climb, frames 52 to 60. No line.
+- **The content check on the design (10:50 by the transcript):**
+  - **The cuts that snap shut: PASS.** Its conditions: the line never swells in its middle, it shrinks straight to nothing, nothing falls from it, it's never dark, and the light is never red.
+  - **The X worn to the rise: BLOCK.** A Shade that walks into it wears it cut into its body. Its way out is taken: the X is gone while an ordinary Shade still flinches (the hitstop and 0.28 s, to about frame 45), and the rise flashes only the blades.
+  - **So research re-signs line 5:** "the rise through it flashes upward" becomes the rise flashing up her blades.
+  - **The X's crossing at the elite's waist: BLOCK, fixed.** Every cut's foot is now at the target's legs' top or above, so the crossing is on the torso.
+- **The waist lift, an ask for Faber (tier 2, research and Faber):** a cut's held point lifts by the target's legs' top (2.0) times its Scale less one. The lines stay at their own size. That's 0.7 on the elite (its cuts 2.75 to 4.0) and 1.0 on the Lamplighter (3.05 to 4.3). As the flights land on the belly times the Scale (research's call, 10:36), the cut lands on what's hit.
+  - The spacing ask (Rook's section) applies too.
+  - **Until both are in, Kirra's rows play on the ordinary Brawler only,** enforced in the game, as Watt's and Rook's. As the game stands, the cuts enter the elite and the Lamplighter root to root and sit under their legs' top.
+- **Rule 4, in the script (`into`, which fails the rows),** against every target in `combo_targets.py`, each spaced by its depth where it stands on the line's beat, the cuts lifted:
+  - no line within 0.15 of a part, and none drawing over a face from 148 views, every 0.05 studs;
+  - no cut's foot under the target's legs' top.
+  - A top of 3.45 draws over the elite's arm mask from heading 280, so the top is 3.3. The streak at the knot's height drew over the Shade's face from low behind her, so it's at her waist.
+  - The Dasher and Support masks fail: they wait on the gate.
+- **The walk-in, as the game is:** an ordinary Brawler struck mid-swipe doesn't flinch. ShadeSwipe has no move, no cooldown and Range 4 root to root. So after hit 2's push to 4.3 it walks back only to about 3.8, one 0.2-stud step inside its range, and its torso stops 0.08 behind the X's plane.
+- **Seen:** at 215 and 145 the Shade covers the cuts and the X whole; at 285 and 28 they show whole. As with Watt's, Rook's and Pip's, the lights carry the main framing.
+- **The content check on the rows (10:57 by the transcript): PASS** for the grey block in the dev build's replay, on the ordinary Brawler. Left for the captures (the game's camera, full size and 64 px, over dark and noon, every heading, the low view behind her included):
+  - **the Brawler struck mid-swipe, frames 26 to 42:** its swiping arm likely reaches through the X's plane at chest height, and the guard tests parts at rest. If a capture shows a line across the moving arm, the X fades out early whenever its target is mid-action;
+  - a crowd pushing a Shade off its spot into cut 1 or the X;
+  - frames 14 to 20 and 26 to 42 at 64 px: the X reads as light before the body, never as a mark on it.
+
+  After its check, the cuts and the lights keep nothing from before the blade passes (the tracks hid them only from their first key). That takes away two frames of line and changes nothing it checked.
+- **What's still weak, for the block to judge in motion:**
+  - the main framing sees only the cuts' light;
+  - the X is small and narrow (1.25 studs tall, 0.5 wide), held to the blades' steep angles in the band under the masks.
+  - The variant, if it doesn't read: a flatter, wider X past the Shade's sides, which would show at 215. Its lines would leave the blades' angles.
+- **Delivered (Modulo, 2026-11-17, 10:57 by the clock):** `build/handoff/Kirra/fx/KirraCombo.rows.json`. The rise rides `TipR` and `TipL`, the recipe's blade points; Faber checks both are attachments in her model (the .rbxm is compressed, so I couldn't read them).
+- **What waits:**
+  - the waist lift and the spacing ask;
+  - the finish in the scarf's Sky (#47A6F5), with the lights white or Sky, never red, and its own content check before any upload;
+  - the sound, for the director's retry.
+- **Time:** 10:00 to 10:58 by the transcript and the clock, with Rook's, Pip's and Lyric's delivery and research's calls between. The cap is 2 hours at its block.
+
 
 ## AR27. The idles without the glance (Modulo, then Faber)
 

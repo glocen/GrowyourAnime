@@ -12630,6 +12630,7 @@ On research's order of 22:53, after the director's "keep working on actually pro
     - synthesis by code leaves AR39 as hit material. The technique failed by ear at its first listen, and a second round of numbers wouldn't fix a technique.
   - **The pilots go on licensed library recordings only,** layered and sliced at runtime, with Faber's measures and the second batch.
   - **Scope:** the director's word covers these 13 files. Whether synthesis can serve elsewhere (an interface tick, say) isn't decided by it.
+- **The director opts in to hearing round 2, 23:01: "sure"**, to research's offer of the A/B switch in Studio once the library-only round is in. The directive asked not to be involved in comparing candidates; this listen is the director's own choice. Research tells the director when the round is in, with its gates measured.
 
 ## AR40. Less purple, less black: the game's colour by day (Modulo, for research's pick, then Faber)
 

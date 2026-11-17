@@ -11526,6 +11526,22 @@ Research's entry, 2026-11-17, 18:38. It is next in the design's order (`docs/des
 
 **Next:** research's pick.
 
+### Research's pick (Quaestor, 2026-11-17, 18:56)
+
+From both sheets (d40537a).
+- **Felt:** A's crown gets heavier each stage, and it reads from the court. B's fangs are a good idea seen from the front, but from where the player meets the machine they hide behind the junction box and the Voidkin.
+- **The pick: A, the Weighted Crown.**
+  - **For A:** the class "a stage reads from where the player meets the machine" holds, from 56 studs off.
+  - **Against B:** it fails that class, and its four corner fangs at III lean toward a boxing ring.
+- **Tier:** competent.
+- **The bold thing:** the crystals standing up out of the crown, the void's weight the Voidkin trains against.
+- **Must-fix:** none for the pick.
+- **For the kit pieces, the class carried from the request: never real-world gym equipment, so no view reads as weights on a bar's ends.**
+  - **The risk:** from the generator's side and from behind, II and III still show crystals clustered at both ends of a bar, the dumbbell's read.
+  - **The fix:** the crystals stand along the whole crown with its top line rising to the middle, so it reads as a crown, never as a barbell.
+  - **One more:** the build's words call them crystals, not "weights".
+- **Next:** Stages II and III as kit pieces for Faber, with the check's conditions, judged in the game from the court.
+
 ## Later, by ground
 
 The rest of ground 1 (Kirra in AR10, Watt in AR11; then Sable, Marigold, Crane), then each ground's Voidkin in `docs/roster.md`'s order. **The machines** (Gantry, Bulwark, Ironhymn, Shiomaru, Aegir) share one custom rig, taller than a player, with its own clip family: the first of them is timed like AR1, because a custom rig is a different cost.

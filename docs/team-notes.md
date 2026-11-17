@@ -9,9 +9,9 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **AR11, Ground Wire's retake:** works. Must-fix (round 2 on the hold): the lock as a pulsing fill on the stopped Shade, the shield as a pulsing glint on the spear's head. Asked of Faber: does a real fight hide the lead behind its target?
 - **Next:** verdicts in motion on AR26's blocks as Faber installs them; sim.py's pool() learns "made" (TR24); attributes.py on the real Config once TR36 lands.
 
-**Faber (builder).** 2026-11-17, 11:56. TR36 is closed on research's side (46cdea8). The framing takes, 45 against 90, are in TR24's entry ("The framing takes"), for research's verdict, with Lead.Frame back at 45. Voidkin work stays parked on branch `parked/ar26-watt-block` (AR26). The save is as it was, with lead k1 and k2 in bay 1; the helmet is re-given as k414, with the same lines.
-- **Now:** the base at 128 on its grey layout, from the player's camera at phone size, with one still of 144 beside it (24e4808).
-- **Next, in order** (809f50b): TR28's bag in the seam (AR18); TR34's chest on AR24's A; AR23, Combat Power's number; TR29's three and TR10's marker captures; the Forge and the Condenser, then emblems, then jewels; TR31 to TR33, TR35 and the responsive pass.
+**Faber (builder).** 2026-11-17, 12:01. TR36 is closed (46cdea8), and the framing stays at 45 (516fa04). The base at 128 from the player's camera, with 144 beside it, is in AR16 ("128 from the player's camera"), for research's confirmation. Today's 200 is back in the place. Voidkin work stays parked on branch `parked/ar26-watt-block` (AR26). The save is as it was, with lead k1 and k2 in bay 1; the helmet is re-given as k414, with the same lines.
+- **Now:** TR28's bag in the seam (AR18). Once research confirms 128, Config.World.Plots goes to 128.
+- **Next, in order** (809f50b): TR34's chest on AR24's A; AR23, Combat Power's number; TR29's three and TR10's marker captures; the Forge and the Condenser, then emblems, then jewels; TR31 to TR33, TR35 and the responsive pass.
 - **Open, tests:** four timing cases are NOT VERIFIED (AR11's record); the client ran at 38 to 40 fps at the base from 10:30, and the 11:40 suite ran at 58. The Keeper's "and out on Out" still fails about one run in three. TR20's Breaker-chamber hover fails in the whole suite and passes alone. Don't run `tools/ui/kit_config.py`: it rewrites `Config.UIKit` whole and drops what was added by hand.
 - **Open, for research:** the target card's light (`CardLightHealth`) keeps its glow ahead of its front. Does it go the same way as the lead's?
 
@@ -20,7 +20,7 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **Now:** AR28, the Forge's and the Condenser's three directions each. **Then:** the re-lay at 128 once Faber's capture confirms it, AR17's map kit, then the icons (TR10's two after its marker's verdict).
 - **Unchanged:** AR24's A waits on Faber's TR34 block; Sable after launch; the Door is Faber's install.
 
-**Turns.** Studio: Faber, playtesting (11:51; the device simulator off). Blender: nobody. Timing tests: nobody.
+**Turns.** Studio: nobody (Faber stopped at 12:01; the device simulator off). Blender: nobody. Timing tests: nobody.
 
 **The count.** Pieces closed and playable this week: 13. TR2, the circuit in grey (phase 1); Haymaker, on A; the Shade's burst; Pip's Lantern Burst; Lyric's Held Note; TR3, the HUD in the world; TR4, the reveal; AR7, the Lamplighter installed with his fall; his signature; Lantern Burst's exit in 3D (B1); Haymaker's square in 3D (B5); TR18, power in grey; AR12's HUD part 1. Hours are in each piece's entry.
 

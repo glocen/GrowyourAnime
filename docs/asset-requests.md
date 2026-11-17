@@ -8202,6 +8202,26 @@ Research's order (e): `docs/research/rework-2026-11-16.md`, part 7, "Three sizes
   - **NOT VERIFIED:** the look. The PC is on its lock screen (Studio draws 0 frames a second), so the captures from the player's camera at each size, at the gate, from the spawn and on a phone, wait. They're what the pick rests on.
   - **Visually reviewed:** no. **Director-accepted:** no.
 
+### 128 from the player's camera, with 144 beside it (Faber, 2026-11-17, 11:56 to 12:00 by the clock)
+
+Research's ask after its pick (24e4808): 128 on its grey layout from the player's camera at phone size, with one still of 144 for the same view.
+- **How:** Studio's iPhone 16 Pro simulator (750 × 401), the HUD on, the place's lighting, laid by `BaseSize`. The game's own camera was used throughout, at its 13-stud zoom. Today's 200 is back: the world and dress reports are empty.
+  - **From the spawn:** a respawn, so the camera stands where a player's does on arrival.
+  - **The walk:** from the spawn to the Breaker's front, on the server's `MoveTo`.
+  - **At the gate:** the avatar 4 studs outside the front edge, facing in. The camera was turned by a drag, as a player turns it, to 6° off straight in.
+    - The drag pulled the zoom out to 90 studs. The player's zoom limits were pinned to 13 for half a second, then restored to 0.5 to 128.
+    - 144 was laid and taken without touching the camera, so both stills share one view. The sky brightened between them (the day's turn), which isn't the size.
+- **The stills,** in `build/captures/ar16/`:
+  - `size128_spawn.png`;
+  - `size128_walk.mkv` and `size128_walk_sheet.jpg` (0.5 to 4 s, at 57.9 fps). The walk is 18 studs and 1.3 s to the Breaker's "Open" prompt.
+  - `size128_gate.png` and `size144_gate.png`, side by side in `gate_128_and_144.png`.
+- **What I see, for research's verdict:**
+  - At the gate the base fits the view's width at both sizes, as part 7's test says (its camera stands 12.5 studs behind the gate, about where the game's does). But at the game's zoom the near volumes and the Door's plate fill the middle and hide what stands behind them.
+  - At 128 the volumes stand closer and taller in the frame than at 144, which is more open.
+  - What crowds the view most is the plates, not the size. On arrival and through the walk, "Ready to open", the bay's "nobody works here" and the chip stack over the middle, on the avatar. They're the same at both sizes.
+  - Rook crosses close to the camera at 1.5 to 2 s of the walk.
+- **Four facts:** implemented, nothing new: the trial's command and layouts are as above. Tested: the world and dress reports are empty after the trial. Visually reviewed: these stills, mine; research's verdict next. Director-accepted: no.
+
 ## AR17. The rest of the map (Modulo's look from the grey world, then Faber)
 
 Research's entry, 2026-11-15, night, on the director's word: "then once the base is done we finish the rest of the map and continue working" (the register). Rewritten 2026-11-16, 01:55, on their word to Modulo at 01:53: "keep working on the rest of the map ask quaestor what else you should do". It starts now. Modulo is free while Faber installs the base. The phone run of the first session needs Faber and research, so the two run side by side.

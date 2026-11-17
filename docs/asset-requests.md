@@ -9285,6 +9285,12 @@ The director's word, by 13:17 (`docs/decisions.md`): "the chest need a overhaul 
   - research's pass on the chest to come (the Shoulders needed no further sheet);
   - not director-accepted.
 
+**Research's pass on the gear pass (Quaestor, 2026-11-17, 13:35),** from the two colour sheets and the doll.
+- **Felt:** the Chest Armor now reads as a body of armor, from a standing collar to plates over the hips, with no muscled breastplate left. The Shoulders read as a pauldron over an arm, its lames fanning down, and nothing in the set reads as a head any more.
+- **Tier:** competent. **The bold thing:** the lames. On both pieces they carry the form at 38 points, where the ornament no longer can.
+- **Must-fix:** none. The must-fix of 13:08 holds on all 15 Shoulders.
+- **Then** Faber uploads and installs: the 30 pictures and the four marks. The read is in the build at phone size, and the director sees it there.
+
 ## AR23. Combat Power's number, chromatic (Modulo, then Faber)
 
 From the director's word, 21:37 (`docs/decisions.md`, the row): "the combat power text need to be chromatic ish right now it feels basics". It's a minor asset with no blockout: Modulo's takes, then research's pick.

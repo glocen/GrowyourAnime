@@ -11414,6 +11414,28 @@ The footprint stays inside 6.6 by 4.6 at every stage.
   - **For the game, from the court, the one thing the sheets can't show:** whether the bone clamps read lighter than the stone in Studio's light. If Stage III reads as a dark tower of lit windows, the clamps go paler, toward ivory, AR33's same condition. That is one tune, not a new round.
   - **Next:** Faber installs, with BatteryRack uploaded again (AR19's note).
 
+## AR35. The Training machine's three stages (Modulo, for research's pick, then Faber)
+
+Research's entry, 2026-11-17, 18:38. It is next in the design's order (`docs/design.md`, "The base", "Three stages for every machine"): after the battery comes the Training machine, then the Forge and the Condenser. Stage I is the machine as it stands in the base kit (Training, TrainingCrown).
+
+**Its stages follow the base's level,** as the battery's do (research's call, tier 1). The Training machine has no level of its own, since its rate is fixed (`docs/design.md`, "The Training machine"). So Stage I is base level 1, Stage II base level 2, and Stage III base level 3.
+
+**Feel line:** the player comes home, and the Voidkin training on the machine works inside a frame that has grown with the base. From the court, the machine reads as the place a Voidkin gets stronger while the player is away, and the Voidkin at work stays in plain view.
+
+**The block contains:**
+- Stage II and Stage III in grey beside Stage I, from the court at phone size, at 64 px and in black.
+- Two directions for how it grows, in the way of AR32 to AR34: parts you can read, the void's light, in the Breaker's and the bays' family. Never real-world gym equipment.
+- The footprint stays.
+
+**The classes carried:**
+- A stage reads from where the player meets the machine: the court, on the way home.
+- The growth never hides the Voidkin training.
+- The machine's own cyan (`#4FD1FF`) stays its light, and nothing near it wears gold.
+
+**Waits:** the stage change as a moment, with the base's level-up, as AR34's does.
+
+**Checks:** the content check before the block; research's pick; Stages II and III as kit pieces for Faber, judged in the game from the court.
+
 ## Later, by ground
 
 The rest of ground 1 (Kirra in AR10, Watt in AR11; then Sable, Marigold, Crane), then each ground's Voidkin in `docs/roster.md`'s order. **The machines** (Gantry, Bulwark, Ironhymn, Shiomaru, Aegir) share one custom rig, taller than a player, with its own clip family: the first of them is timed like AR1, because a custom rig is a different cost.

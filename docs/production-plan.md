@@ -102,6 +102,7 @@ Each ends on something playable. No dates are promised past phase 1: see "The da
   5. the icons for forge stones, emblems and jewels, and TR10's two.
   6. AR29, the Voidkin screen's rail and top bar on B (the director, 14:03), then AR30, every button in the game in that make.
   7. AR32, the Void Breaker's three stages (research, 16:37), then the bays' and the battery's in the design's order.
+  8. AR35, the Training machine's three stages (research, 18:38), then the Forge's and the Condenser's.
 - **Research:** the Forge, emblem and jewel requests with their numbers, the verdicts as pieces land, then the Void Shop's and the Robux store's design, checked against Roblox's rules, for the director.
 
 **Phase 4. Breadth.** The Void Shop. The Rift moves after launch (the director, 2026-11-17, 02:40). Both shops, the Robux store and the Void Shop, are designed and set up here (the director, 2026-11-12).

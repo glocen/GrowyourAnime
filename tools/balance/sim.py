@@ -484,6 +484,7 @@ def game():
     notice = float(re.search(r"Shade = \{\s*Notice = ([\d.]+)", combat)[1])
     stats = lua("src/shared/Config/Stats.luau")
     regen = re.search(r"Regen = \{ Base = ([\d.]+), Class = \{([^}]*)\}", stats)
+    burst = re.search(r"Regen = \{[^\n]*?Every = ([\d.]+), Share = ([\d.]+)", stats)
     growth = lua("src/shared/Config/Growth.luau")
     early = [int(x) for x in re.search(r"Early = \{([\d, ]*)\}", growth)[1].replace(" ", "").split(",") if x]
     training = re.search(r"Training = \{ Share = ([\d.]+)", growth)
@@ -494,6 +495,7 @@ def game():
     return dict(kinds=kinds, stops=stops, spacing=float(row[2]) * 16, notice=notice, early=early,
                 regen=float(regen[1]) if regen else None,
                 regen_class={k: float(v) for k, v in re.findall(r"(\w+) = ([\d.]+)", regen[2])} if regen else {},
+                regen_every=float(burst[1]) if burst else None, regen_share=float(burst[2]) if burst else 1.0,
                 training=float(training[1]) if training else None,
                 drops={"Pack": float(drops[1]), "Elite": float(drops[2])},
                 keeper_share=float(drops[3]), shard_chance=float(re.search(r"ShardChance = ([\d.]+)", drops_lua)[1]),
@@ -546,13 +548,28 @@ def circuit(cls, start, regen_base, gm, rng, swing=1.1, beat=0.6, dt=0.05, board
     me = lead(level)
     hp = me["hp"]
     mult = gm["regen_class"].get(cls, 1.0)
+    every, share = gm.get("regen_every"), gm.get("regen_share", 1.0)
+    clock = [0.0]   # time since the last burst, carried across walks and fights
+
+    def heal(hp, seconds):
+        """Regen over `seconds`: a burst of `share` of what `every` seconds healed at the rate, on each `every` (TR40).
+        With no burst in the config, the old rate every second."""
+        rate = regen_base * mult * up.get("regen", 1.0) * G(level)
+        if not every:
+            return min(me["hp"], hp + rate * seconds)
+        clock[0] += seconds
+        while clock[0] >= every:
+            clock[0] -= every
+            hp = min(me["hp"], hp + rate * every * share)
+        return hp
+
     shares, fell = [], None
     for index, stop in enumerate(gm["stops"]):
         if stop["kind"] != "Pack":
             break
         # The walk in: from the gate, or from the last stop, until the pack notices; the player's own pace added.
         walk = (gm["spacing"] * (0.4 if index == 0 else 1) - gm["notice"]) / 16 + rng.uniform(0.5, 4)
-        hp = min(me["hp"], hp + regen_base * mult * up.get("regen", 1.0) * G(level) * walk)
+        hp = heal(hp, walk)
         foes = [dict(e=shade("Ordinary", stop["level"], gm), late=rng.uniform(0.3, 2.0), next=0.0) for _ in range(stop["count"])]
         for f in foes:
             f["hp"] = f["e"]["hp"]
@@ -584,7 +601,7 @@ def circuit(cls, start, regen_base, gm, rng, swing=1.1, beat=0.6, dt=0.05, board
                     hp -= theirs / (1 + S["ratings"]["caps"]["critFloor"] * 0.5) * (1.5 if crit else 1)
                     f["next"] = t + swing
             if hp > 0:
-                hp = min(me["hp"], hp + regen_base * mult * up.get("regen", 1.0) * G(level) * dt)
+                hp = heal(hp, dt)
         if hp <= 0:
             fell = index
             break
@@ -597,8 +614,9 @@ def report_carry(runs=400, sweep=None, starts=(1, 3)):
     print("\n== 9. Health carries (TR12): Lantern Row on what the lead carries ==")
     print("A model, not a measurement: the game's own enemy and street numbers (src/shared/Config), a bare lead, every")
     print("Shade of a pack on it at once after a walk in of 0.3 to 2 s, its kill time spread 12% for movement, the walk")
-    print("between stops at 16 studs a second plus 0.5 to 4 s of the player's own pace. Regen a second, always.")
-    print(f"Regen in the game now: Base {gm['regen']} a second at level 1, times G; class {gm['regen_class']}.")
+    print("between stops at 16 studs a second plus 0.5 to 4 s of the player's own pace. Regen in bursts on one clock.")
+    print(f"Regen in the game now: Base {gm['regen']} a second at level 1, times G; class {gm['regen_class']}; a burst every "
+          f"{gm.get('regen_every')} s of {gm.get('regen_share')} of what that time healed at the rate (TR40).")
     print("Each cell: health share at Pack 2's end, median [10th to 90th]; falls before the elite, in 100 runs.")
     import random
     sweep = sorted(set(sweep or (0, 4, 8, 12, 16, 20, 24)) | ({gm["regen"]} if gm["regen"] else set()))
@@ -988,9 +1006,21 @@ CP_STANDIN = {"hp": 0.5, "atk": 4, "def": 4, "regen": 25, "hit": 2, "dodge": 2, 
               "pen": 2, "elem": 2, "eres": 2, "critdmg": 200, "critguard": 2, "lifesteal": 500}
 
 
+_REGEN = {}
+
+
+def regen_config():
+    """Config.Stats.Regen, read once: the rate a second at G = 1, the class's factor, and the burst's share (TR40)."""
+    if not _REGEN:
+        gm = game()
+        _REGEN.update(base=gm["regen"] or 0.0, cls=gm["regen_class"], share=gm.get("regen_share", 1.0))
+    return _REGEN
+
+
 def fighter(level, frac, rarity="Common", cls="Warrior", spec="balanced", lifesteal=0.0):
     st = build(level, next(x["id"] for x in S["grounds"] if x["from"] <= level <= x["to"]), frac, rarity, cls, spec)
-    st["regen"] = 4 * G(level) * (1.5 if cls == "Healer" else 1)   # Config.Stats.Regen
+    rc = regen_config()
+    st["regen"] = rc["base"] * G(level) * rc["cls"].get(cls, 1.0)   # Config.Stats.Regen: the rate, before the burst's share
     st["lifesteal"] = lifesteal
     return st
 
@@ -999,8 +1029,9 @@ def edge(a, b):
     """How much faster a beats b than b beats a, in logs (above 0, a wins): duel() with each side's regen healing too."""
     da, db = dps(a, b), dps(b, a)
     cap = S["lifesteal"]["perSecondCapOfMaxHp"]
-    ta = b["hp"] / max(1e-9, da - min(db * b["lifesteal"], cap * b["hp"]) - b["regen"])
-    tb = a["hp"] / max(1e-9, db - min(da * a["lifesteal"], cap * a["hp"]) - a["regen"])
+    share = regen_config()["share"]   # bursts heal this share of the rate, on average (TR40)
+    ta = b["hp"] / max(1e-9, da - min(db * b["lifesteal"], cap * b["hp"]) - b["regen"] * share)
+    tb = a["hp"] / max(1e-9, db - min(da * a["lifesteal"], cap * a["hp"]) - a["regen"] * share)
     return math.log(tb / ta)
 
 

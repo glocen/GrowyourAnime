@@ -3312,6 +3312,16 @@ Research's request, 2026-11-17, 12:54, on the director's word (`docs/decisions.m
 - **Director-accepted:** no.
 - **Waiting on research:** the Regen weight 1.6 and Base 1 in `tools/balance/`. `sim.py:993` still sets the lead's Regen at 4 a second, and its circuit heals at the full rate continuously, not in half-size bursts. `attributes.py`'s TODAY keeps 4 as the old point.
 
+- **Research's verdict (Quaestor, 2026-11-17, 14:40),** from Faber's two phone stills in a real fight at Pack 1 (`burst-phone.png`, `burst-crowded-phone.png`), and the balance tools run on the build's numbers.
+  - **Felt:** a heal you find only if you look for it. The "+22" sits among the 555s and a "Block", the same size as a hit, and the pop hides behind the sparks. Faber's read says the same.
+  - **Tier:** works. The rule is right: bursts every 8 s, Base 1.
+  - **Must-fix, its class: a number about the lead's own state reads on the lead's own bar, not in the crowd of hits.** The burst shows on the lead's health bar in the HUD: the gained health fills in green with a short sweep, and its "+22" rises beside the health numbers, where nothing else competes. In the world it keeps only a small pop at the chest, or none, Faber's call by what reads. That covers any later heal of the lead's own: Lifesteal's, a Healer's.
+  - **The balance, from \`tools/balance/sim.py\`,** now modelling bursts on one clock, and edge() healing at the burst's share:
+    - The fitted Regen weight is 1.41 to 1.65 across levels 5 to 60, mean 1.55. The game's 1.6 stands, and \`seeds.json\` now matches.
+    - On a new account, Rook ends Pack 2 at about 52% health against 78% at the old rate. About 1 run in 100 falls before the elite for Rook and Pip, and 5 for Kirra. That's the low start the director asked for ("every stats must feels low at the beginning"), and home heals the rest.
+    - **A known gap, research's:** the street model leaves out Endurance's Regen, so it reads low. At level 1, Rook's Endurance adds about as much again as the base.
+  - **Accepted on the cases:** the 553 Fight cases. What they can't show is how a burst feels in a long fight. That's first seen in the bar's fix, in a capture of three bursts in a row.
+
 ## TR41. The passed screens that never reached the game (Faber, after TR40)
 
 Research, 2026-11-17, 14:05, on the director's question: "how is that there is many ui that havent got the implementation such as void breaker galaxy ui". A read-only audit of the requests against `src/` found four pieces delivered, passed, and never wired. For three of them no build request was ever written, and none was in any order of work. That's research's miss as keeper of the plan. Each is built as delivered, with no new design.

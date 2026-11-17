@@ -130,7 +130,7 @@
   "combatPower": {
     "_": "TR17, fix 10: Config.Stats.Power. Refit 2026-11-16 on the attribute builds by tools/balance/attributes.py, report A8 (sim.py section 16's method). A weight a point, Attack's held at 4; a percent's (Critical Damage above its base, Critical Guard, Lifesteal) is its weight at level 1, and Power multiplies it by G(level). Refit when a source lands past launch's ranges (Critical Damage far past +100%, a new stat).",
     "scale": 10,
-    "weights": { "Health": 0.62, "Attack": 4, "Defence": 2.9, "Regen": 2.9, "Hit": 0.45, "Dodge": 1.4, "Critical": 0.57, "CriticalResist": 0.17, "Block": 0.91, "Penetration": 0.44, "ElementalAttack": 3.6, "ElementalResist": 0.18, "CriticalDamage": 130, "CriticalGuard": 130, "Lifesteal": 630 }
+    "weights": { "Health": 0.62, "Attack": 4, "Defence": 2.9, "Regen": 1.6, "Hit": 0.45, "Dodge": 1.4, "Critical": 0.57, "CriticalResist": 0.17, "Block": 0.91, "Penetration": 0.44, "ElementalAttack": 3.6, "ElementalResist": 0.18, "CriticalDamage": 130, "CriticalGuard": 130, "Lifesteal": 630 }
   },
   "tower": {
     "_": "The foe's build share in the Tower: its numbers stand on enemyFrac of its level's build (docs/balance.md, The Tower). Config.Tower.Lift is read from it, so a new enemyFrac means a new reading. Every other Tower number lives in src/shared/Config/Tower.luau (TR29), which tools/balance/tower.py reads.",

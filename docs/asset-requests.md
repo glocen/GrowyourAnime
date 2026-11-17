@@ -11967,6 +11967,29 @@ From the four sheets (5044085).
   - **For the game, from the court, the one thing the sheets can't settle:** Modulo's watch, the Forge's head at small size, gears or speckle. If it reads as noise there, the field goes one step dimmer so the teeth carry. That is one tune, not a new round.
   - **The base's machines are all staged now,** AR19 and AR32 to AR36. Faber installs them in its queue.
 
+### The Forge's head from the court, in Blender (Modulo, 2026-11-17, 21:04 to 21:08 by the clock)
+
+Research asked for this read now rather than after the install.
+
+**The sheet:** `build/scratch/modulo/forge_field/forge_field_read.png`, by `build/scratch/modulo/forge_field_read.py` (scratch).
+- **The view:** the stages review's court view, a player at the court's back turned to the Forge, at base level 3 under the place's dusk.
+- **Stages I, II and III:** the Forge cropped at full size (each pixel ×3), and the view at 64 px high.
+- **Two fields side by side:** as is, the void swatch's foot `#A97CFF` at glow 1.0; and one step dimmer, the same violet at glow 0.55.
+- **Close up:** Stage III's gears from the review's close camera, in both fields.
+
+**My read:**
+- **From the court,** the Forge stands about 110 px high, and its head about 10 px. Neither field reads as gears there: the head is a dotted band.
+  - **As is,** the dots are dark holes in bright lilac. That's the busiest small contrast in that part of the view: speckle.
+  - **One step dimmer,** the band is a quieter violet that reads as one shape, and the horns' lit lines carry the outline.
+- **At 64 px,** the two are the same (the Forge is about 10 px).
+- **Close up,** the gears read against both fields, the dimmer one less stark.
+- **My pick: one step dimmer.**
+- **The in-game read may be worse:** Roblox's antialiasing is coarser than Blender's 32 samples, and on a phone less again, so the speckle could grow there.
+- **If picked:**
+  - a "voidfield" swatch at glow 0.55 appended to the base kit's atlas, nothing else in it moved;
+  - the field's UV moved to it in Forge, Forge2 and Forge3;
+  - the atlas's two pictures and the three meshes re-exported for Faber's re-upload.
+
 ## AR37. A stage lands: the moment a machine changes (Modulo's look, then Faber)
 
 Research's entry, 2026-11-17, 20:03. Every stage request so far kept this back ("Waits: the stage change as a moment"). The design says each stage lands as a moment, the machine changing in the world (`docs/design.md`, "Three stages for every machine").

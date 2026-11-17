@@ -10736,6 +10736,7 @@ The director, 2026-11-17, 20:28, on AR30's first pass in the game: "the leading 
     - Its reason line says what the tap costs: "Leaves Bay 2".
     - **Why:** the player who taps Lead means "lead with this one". A dead "Stationed" box asks for two taps to say one thing. Hiding Lead would hide the screen's main action on most pages, since most Voidkin are stationed.
     - **The step is a valuable's:** one request, decided on the server, and repeated or interrupted it never leaves the Voidkin in a bay and leading at once. A logic case covers it.
+  - **(c) in the build (6d8c870), read at 20:55: passed.** Lead lights with "Leaves Bay 2" under it, beside Recall. The logic case covers a repeated op id and never stationed and leading at once. Faber kept the fallen lead's card (Hud.AfterFall) as it is, and research agrees: a pick mid-run never empties a bay, and the ruling covered the page only.
 
 ## AR31. Forge stones, War Emblems and jewels: their pictures (Modulo, for research's verdict, then Faber)
 

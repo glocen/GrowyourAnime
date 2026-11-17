@@ -9,10 +9,9 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **AR11, Ground Wire's retake:** works. Must-fix (round 2 on the hold): the lock as a pulsing fill on the stopped Shade, the shield as a pulsing glint on the spear's head. Asked of Faber: does a real fight hide the lead behind its target?
 - **Next:** verdicts in motion on AR26's blocks as Faber installs them; sim.py's pool() learns "made" (TR24); attributes.py on the real Config once TR36 lands.
 
-**Faber (builder).** 2026-11-17, 12:19. The base is 128 in Config, standing grey on Fit's layout until Modulo lays the plan again at 128. The plates' must-fix is built and proved at phone size in AR16 ("128 laid, and the plates' must-fix"), for research's confirmation: plates speak only near their machine, never stand over the avatar, and leave the next step's fact to the nudge. Voidkin work stays parked on branch `parked/ar26-watt-block` (AR26). The save is as it was, with lead k1 and k2 in bay 1; the helmet is re-given as k414, with the same lines.
-- **Now:** TR28's bag in the seam (AR18).
-- **Next, in order** (809f50b): TR34's chest on AR24's A; AR23, Combat Power's number; TR29's three and TR10's marker captures; the Forge and the Condenser, then emblems, then jewels; TR31 to TR33, TR35 and the responsive pass.
-- **Open, tests:** four timing cases are NOT VERIFIED (AR11's record); the client ran at 38 to 40 fps at the base from 10:30, and the 11:40 suite ran at 58. The Keeper's "and out on Out" still fails about one run in three. TR20's Breaker-chamber hover fails in the whole suite and passes alone. Don't run `tools/ui/kit_config.py`: it rewrites `Config.UIKit` whole and drops what was added by hand.
+**Faber (builder).** 2026-11-17, 13:15. TR28's bag and the Voidkin screen are in the seam's skin (d299687), waiting on research's pass. The director's words of 13:00 to 13:03 are built (44fd634): one Gear tab for weapons and armor, no "Armour", and no gear slots on the Overview. Voidkin work stays parked on branch `parked/ar26-watt-block` (AR26).
+- **Next, in order:** TR40, Regen in bursts (research's word: after TR28); TR34's chest on AR24's A; AR23, Combat Power's number; TR29's three and TR10's marker captures; TR37 with AR28's Stage I, then emblems, then jewels; TR31 to TR33, TR35, and the responsive pass. AR19's six re-uploads when their turn comes.
+- **Open, tests:** four timing cases are NOT VERIFIED (AR11's record). The Keeper's "and out on Out" still fails at times. TR20's Breaker hover depends on order.
 - **Open, for research:** the target card's light (`CardLightHealth`) keeps its glow ahead of its front. Does it go the same way as the lead's?
 
 **Modulo (assets).** 2026-11-17, 13:07, on Opus 5.5. Voidkin work parked until before launch (the director's word, 11:10): AR26 and AR27 stay as delivered, and Faber holds AR27's upload.
@@ -20,7 +19,7 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **Now:** the re-lay of AR16's plan at 128 on Faber's grey layout, with the FloodMast off the Door's line. **Then:** AR17's map kit; then the icons for stones, emblems and jewels, and TR10's two.
 - **Unchanged:** AR28's Stage I is with Faber, waiting on TR37. AR19 (db2f086) waits on research's pass and Faber's six re-uploads. AR24's A waits on Faber's TR34 block. Sable is after launch. The Door is Faber's install.
 
-**Turns.** Studio: nobody (Faber stopped at 12:18; the device simulator off). Blender: nobody. Timing tests: nobody.
+**Turns.** Studio: nobody (Faber stopped at 13:15; the device simulator off). Blender: nobody. Timing tests: nobody.
 
 **The count.** Pieces closed and playable this week: 13. TR2, the circuit in grey (phase 1); Haymaker, on A; the Shade's burst; Pip's Lantern Burst; Lyric's Held Note; TR3, the HUD in the world; TR4, the reveal; AR7, the Lamplighter installed with his fall; his signature; Lantern Burst's exit in 3D (B1); Haymaker's square in 3D (B5); TR18, power in grey; AR12's HUD part 1. Hours are in each piece's entry.
 

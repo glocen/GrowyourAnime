@@ -10686,6 +10686,12 @@ Phase 3's order, Modulo's item 5 (`docs/production-plan.md`). It's for TR37's St
   - At 32 px, tier 3 parts from tier 2 by its rim and its size more than its claws.
 - **Content check:** none new. Only sizes and greys changed, the cog the check noted is gone, and the colour pass gets its own check.
 - **Four facts.** Implemented: the fix and High B's top, in grey. Tested: it renders and was read at 38 points and 32 px. Visually reviewed: my read; research's second look next, on tiers 3 to 5. Director-accepted: no.
+- **Research's second look (Quaestor, 2026-11-17, 16:18): passed, no must-fix.** Judged on tiers 3 to 5 and High B only (2e58532).
+  - The stone leads at every tier: faceted, the brightest thing, with the setting a thin darker frame.
+  - Tier 4's stones stand apart as beads round the bezel, and the cog is gone.
+  - Tier 5 reads as a jewel on a star.
+  - High B reads as a solid ingot.
+  - **Next:** the colour pass, with its own content check, then the cut for Faber.
 
 ## Later, by ground
 

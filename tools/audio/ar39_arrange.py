@@ -19,7 +19,12 @@ How a recipe is made:
   top as its layers' tops summed (the worst case); its share under 120 Hz and its loss through the phone's curve from
   each take's bands.
 
-    py tools/audio/ar39_arrange.py     writes build/handoff/Audio/ar39/round1.json, round1.luau and round1.md
+- **Round 2's set** (NO_CODE) has no layer of ours in it: the director heard our code-made layers on 2026-11-17 and
+  none is used, so a pilot is library recordings only, layered. Until the second batch and Faber's measures land it's a
+  draft on the first batch's numbers.
+
+    py tools/audio/ar39_arrange.py            writes build/handoff/Audio/ar39/round1.json, round1.luau and round1.md
+    py tools/audio/ar39_arrange.py round2     the same for round 2's set
 """
 import json
 import sys
@@ -111,6 +116,53 @@ ARRANGEMENTS = {
           ("ShadeSwipe", "accent", 0, "Peak", -11.0, False)]),
     ],
 }
+
+# Round 2: library recordings only (research's order after the director's ear, 2026-11-17). Contact comes from a sharp
+# glove or clap transient over a body, weight from a low thud out of a second recording. A2's thuds are out (the
+# phone's read, research, 22:30); a heavy hit's tail and a swipe's tone, which were ours, are gone with nothing in
+# their place until a recording earns it.
+NO_CODE = {
+    "LightHit": [
+        ("LightHit_A1", "one recorded contact, nothing else: a slap of skin or cloth carries the hit whole, in the band "
+         "a phone keeps",
+         [("LibContact", "body", 0, None, 0.0, False)]),
+        ("LightHit_A3", "a recorded contact with recorded weight under it from a second recording. Our spark is gone",
+         [("LibContact", "body", 0, None, -1.0, False), ("LibLow", "weight", 0, None, -6.0, False)]),
+        ("LightHit_A4", "a recorded contact with a clap's crack laid on its edge: the transient from one recording, the "
+         "body from another",
+         [("LibContact", "body", 0, None, -1.0, False), ("LibSnap", "attack", 0, None, -8.0, False)]),
+    ],
+    "HeavyHit": [
+        ("HeavyHit_B1", "one recorded heavy body, and a deep glove thump from a second recording under it for the "
+         "weight, where our sub was",
+         [("LibHeavyBody", "body", 0, None, -0.5, False), ("LibLowLong", "weight", 0, None, -8.0, False)]),
+        ("HeavyHit_B2", "two recordings: a deep glove thump for the weight, and the light hit's own contact over it, so "
+         "a heavy hit is a light one with a body behind it",
+         [("LibLowLong", "weight", 0, None, -3.0, False), ("LibContact", "attack", 0, None, -3.0, False)]),
+        ("HeavyHit_B3", "three recordings stacked: a heavy body, a leather or clap snap on its edge, and a deep thump "
+         "under both",
+         [("LibHeavyBody", "body", 0, None, -1.0, False), ("LibHeavySnap", "attack", 0, None, -8.0, False),
+          ("LibLowLong", "weight", 0, None, -9.0, False)]),
+    ],
+    "ShadeSwipe": [
+        ("ShadeSwipe_C1", "paper's flick for the tell, a pass through the air for the swipe",
+         [("LibFlick", "tell", -0.2, "Peak", -9.0, False), ("LibAir", "body", 0, "Peak", -0.5, False)]),
+        ("ShadeSwipe_C2", "a paper-edged pass: paper's flick for the tell, then the air's pass with a sheet's rustle "
+         "riding its top",
+         [("LibFlick", "tell", -0.2, "Peak", -9.5, False), ("LibAir", "body", 0, "Peak", -1.5, False),
+          ("LibRustle", "character", 0, "Peak", -6.0, False)]),
+        ("ShadeSwipe_C3", "the paper drawn back, then the pass: a longer rustle ending in its flick for the tell, and "
+         "the recorded pass alone",
+         [("LibRustle", "tell", -0.2, "Peak", -7.0, False), ("LibAir", "body", 0, "Peak", -1.0, False)]),
+    ],
+}
+ROUNDS = {"round1": ARRANGEMENTS, "round2": NO_CODE}
+# A round's own levels over OVER. Round 2's heavy hit stands 4.5 LU over the light one: with recorded weight under it a
+# heavy hit loses about 2.5 LU through the phone's curve and a light one 0.2, so at 4.0 gate 5's 2 LU sat on its edge
+# (an estimated 1.7 for B1 over A1). At 4.5 it's 2.2 or more, with half a decibel left under gate 4's 5.
+LEVELS = {"round2": {"HeavyHit": 4.5}}
+NOTES = {"round2": " **A draft:** round 2's set on the first batch's numbers, with no layer of ours in any cue. It's "
+                   "re-run when the second batch and Faber's measures of round 1 land."}
 
 
 # --- the takes' numbers ------------------------------------------------------------------------------------------------
@@ -280,7 +332,8 @@ def markdown(lists, cues, light):
     lines = [f"# AR39, {ROUND}: the three pilots' arrangements", "",
              "Made by `tools/audio/ar39_arrange.py` from the first batch's numbers. Nothing was heard: whether one "
              "convinces stays UNVERIFIED. Every level is a seed, and every number under 'estimated' is worked from the "
-             "batch's measures of each take, never measured on a mix: the gates are Faber's mixdown's.", "",
+             "batch's measures of each take, never measured on a mix: the gates are Faber's mixdown's."
+             + NOTES.get(ROUND, ""), "",
              f"**The levels:** LightHit at {light:.1f} LUFS (the loudest 400 ms of one play at full volume), HeavyHit "
              f"{OVER['HeavyHit']:+.1f} LU, ShadeSwipe {OVER['ShadeSwipe']:+.1f} LU: gate 4's relation sets them. LightHit's "
              "own level is where the hottest single cue's top, its layers' tops together, stands at -4 dBFS: a decibel "
@@ -315,7 +368,13 @@ def markdown(lists, cues, light):
 
 
 def main():
+    global ROUND, ARRANGEMENTS
+    ROUND = sys.argv[1] if len(sys.argv) > 1 else "round1"
+    ARRANGEMENTS = ROUNDS[ROUND]
+    OVER.update(LEVELS.get(ROUND, {}))
     lists, cues, light = build()
+    used = {la["Takes"] for c in cues for la in c["Layers"]}
+    lists = {k: v for k, v in lists.items() if k in used}        # a round's files hold only the lists it plays
     OUT.mkdir(parents=True, exist_ok=True)
 
     def plain(v):

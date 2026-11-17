@@ -12632,6 +12632,18 @@ On research's order of 22:53, after the director's "keep working on actually pro
   - **Scope:** the director's word covers these 13 files. Whether synthesis can serve elsewhere (an interface tick, say) isn't decided by it.
 - **The director opts in to hearing round 2, 23:01: "sure"**, to research's offer of the A/B switch in Studio once the library-only round is in. The directive asked not to be involved in comparing candidates; this listen is the director's own choice. Research tells the director when the round is in, with its gates measured.
 
+### Round 2's set, drafted: library recordings only (Modulo, 2026-11-17, 23:04 by the clock)
+
+After the director's ear on our layers, research's order: the arrangements re-cut with no layer of ours in any, contact and weight by layering library takes. Drafted now on the first batch's numbers, so that round 2 is one re-run when the second batch and Faber's measures land.
+- **The files:** `build/handoff/Audio/ar39/round2.luau`, `.json` and `.md`, from `py tools/audio/ar39_arrange.py round2`. Round 1's three files are unchanged by the same script.
+- **LightHit:** A1 as it was (one recorded contact). A3 without our spark: a contact with a low thud from a second recording under it. A4, new: a contact with a clap's crack on its edge, 8 dB under. A2 is out (research, 22:30).
+- **HeavyHit:** B1 with a deep glove thump from a second recording where our sub was, 8 dB under the body, and no tail. B2 as it was (a thump and the light hit's contact). B3 as three recordings: the heavy body, a snap on its edge, a thump under both.
+- **ShadeSwipe:** C1 as it was (paper's flick, then the pass). C2 with paper's flick for the tell where ours was, and the rustle riding the pass. C3 without our swipe: the long rustle, then the pass alone.
+- **Gone with nothing in their place:** the heavy hit's tail by strength, and the swipe's own tone. A recording takes each only if a batch brings one that earns it.
+- **The levels, estimates:** LightHit at -37.4 LUFS, HeavyHit 4.5 LU over it, ShadeSwipe 4.5 under. The heavy hit went from 4.0 to 4.5 over: with recorded weight it loses about 2.5 LU through the phone's curve against the light one's 0.2, so at 4.0 gate 5 sat on its edge (1.7 LU for B1 over A1). At 4.5 the phone's gap is 2.2 to 2.6, with half a decibel left under gate 4's 5. Under 120 Hz: 26 to 37% of a heavy hit.
+- **Asked of Faber, if the engine can:** a high-pass on one layer (the weight under a phone's read), which research's order names. The recipe doesn't assume it.
+- **Status:** implemented as recipes, a draft; not mixed, not measured, not heard. Quality by ear is UNVERIFIED.
+
 ## AR40. Less purple, less black: the game's colour by day (Modulo, for research's pick, then Faber)
 
 Research, 2026-11-17, 22:17. The director's remark, at 22:17: "i think the game is way to much too purple/Black and somber btw". It's the third time: 2026-11-15, "too much purple"; 2026-11-16, "need to be less somber"; 2026-11-16, night, "a bit to dark and somber we need a day time" (`docs/decisions.md`). Day is already in the game, 18 minutes of every 30 (`Config/Lighting`). So the time of day isn't the cause; what's lit is.

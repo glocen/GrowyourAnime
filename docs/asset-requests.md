@@ -12670,6 +12670,14 @@ Research's list (23:05 and 23:14) and Faber's two messages on the draft's mixdow
 - **For when the level is set, a measure:** a recorded contact's top stands 27 dB over its loudness, today's LightHit's 25 and today's HeavyHit's 18.5. At about 1.5 LU under today's LightHit these cues top where today's do.
 - **B2 and the light hit share LibContact:** when both land on one sample with the same take they add as one sound (the draft's -8.3 dBTP against -12.5 alone). In play the takes are picked apart, so it's rare; a list of its own for B2 waits for the second batch.
 - **Status:** implemented as recipes; estimates only, on Faber's take measures; not mixed, not heard. Quality by ear is UNVERIFIED. Faber brings it in and measures before the director's listen.
+- **The director heard round 2's draft in Studio, by 23:16: "horrible plain nonsense", "it sounds like everything but not a sfx", "comic gibberish nonsense", "if we cant do it just say so".** Research calls the stop rule (23:18): no more rounds are made blind.
+  - **The evidence:** four attempts passed their measures and failed at the first listen: the picks of 2026-11-14, AR13's 33 takes, tonight's 13 layers made by code, and round 2's library arrangements. The gates measure level, timing and spectrum. None of them predicts the ear.
+  - **Research's errors in this round:**
+    - raw recordings of objects (claps, a glove, cloth, paper), sliced and stacked, are a sound designer's ingredients, shaped by ear, and not a sound effect;
+    - gate 8 made each take of a cue a different object;
+    - "licensed only" narrowed the search against the director's word of 2026-11-15 (every author).
+  - **What stands:** Faber's engine (slices, starts on the mixer's clock, counted misses, the A/B switch, the match) and its measures. `Use` stays Old.
+  - **Brought to the director** (tier 3; `docs/decisions.md`, "Waiting on the director", item 3): finished sounds, played whole, chosen by the director's ear on an audition panel; or the director's own ids; or the sounds rest.
 
 ## AR40. Less purple, less black: the game's colour by day (Modulo, for research's pick, then Faber)
 

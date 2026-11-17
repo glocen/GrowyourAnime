@@ -13,11 +13,13 @@ left at the HUD's PAD, TOP):
                            Voidkin's Panel, no band, the two slots, the ink; its rim white, tinted the Voidkin's lavender
   CardLevelBadge           the level's block on the card's slant over the frame's foot (TR24's must-fix 6): white,
                            tinted the Voidkin's Block in the game, sliced across, its slanted ends the caps
-  CardLeadHealth           the ruby, one solid bar, wine at its root to hot at its front, sliced across, anchored at its front
+  CardLeadHealth           the ruby, one colour along its whole length, lit at its top, deep at its foot, sliced across,
+                           anchored at its front: nothing marks the front (AR12, the director's look on a phone)
   CardLeadXp               the lavender thread at the plate's foot, sliced across
   CardFace<Who>            the face cut to its rarity's inner rim line, on Midnight's well, its foot faded
   CardFrame<Rarity>        the portrait's frame at the card's size: its rim and shadow, no glow round it, the opening clear
-  CardHead<Who>            the head over the frame's top, its foot ended hard, an ink line round it above the frame
+  CardHead<Who>            the head over the frame's top, its foot ended hard, no line round it (AR12, research,
+                           2026-11-17: the seam's ink line read as a dark line round the hair on a phone)
   CardStud(Glow)           Modulo's (hud/colour): the type's stud at the health bar's root, tinted the type, its gem on it
   LevelPlate(Edge)         Modulo's (voidkin/marks): the level's mark, under the frame's lowest point, with its chevrons
 
@@ -363,7 +365,6 @@ P_FULL = P_END - P_INSET - 1.5  # a light's front when full, on the top line
 # under the frame's right side, hidden.
 P_ROOT = {"Health": 68.0, "Xp": 59.4}
 P_STUD = (FRAME[0] + FRAME[2] + 0.5, sum(P_HEALTH) / 2, 8.5)  # centre and radius: Modulo's CardStud, 17 points across
-P_HOT = 0.06  # the ruby's last stretch, hot to its front: this share of the full bar, kept that long at any share
 VIOLET = dict(body=("#43348A", "#150F30"), tab=("#5545A6", "#211849"), glint="#E6DBFF", slot=("#07051A", "#120C2C"),
               ink="#000000")
 # Take A, the Voidkin's block (AR12, research's pick of 2026-11-17; Modulo's tools/blender/lead_card_colours.py): the
@@ -373,12 +374,13 @@ VOIDKIN = dict(body=("#35286B", "#171033"), tab=None, glint="#FAF7FF", slot=("#0
 # The level's badge: its foot's left (1 left of the frame's), its top, its least width (one digit), its height; Modulo's
 # mock lays it there, the frame's foot (82) across it.
 L_BADGE = (1.0, 74.0, 33.0, 17.0)
+# One colour along each light, at every share (AR12, the director's look on a phone, 2026-11-17): a hot last stretch,
+# a glow ahead or a pale front sheen read as a second colour at the bar's end, a pinker block at full health.
 RUBY = dict(ramp=((0.0, "#FF9CAE"), (0.22, "#F2466A"), (0.5, "#D4163F"), (0.56, "#BE1238"), (1.0, "#6E0A26")),
-            along=((0.0, "#6A0A2C"), (0.5, "#C41440"), (0.9, "#F0284E"), (1.0, "#FF4A68")), sheen="#FFD9E0")
-# The ruby's front stays a saturated hot red, the pale only in its 1-point front sheen: at a low share the hot stretch is
-# all that shows, and a pale front then read as pink beside Mythical's trim.
-LAVENDER = dict(ramp=((0.0, "#FFFFFF"), (0.22, "#EDE3FF"), (0.5, "#C9B2FF"), (0.56, "#B79CF5"), (1.0, "#6A52C4")),
-                sheen="#FFFFFF")
+            sheen="#FFD9E0")
+# The experience thread is 3 points high: a ramp from white read as a grey sliver near empty (AR12, research on the
+# director's screenshot), so it stays lavender from top to foot, a light at any length.
+LAVENDER = dict(ramp=((0.0, "#DCCBFF"), (0.35, "#B794FF"), (0.65, "#9D76F7"), (1.0, "#6A4FD0")), sheen="#EEE6FF")
 LEAD_LIGHTS = {"Health": (P_HEALTH, RUBY), "Xp": (P_XP, LAVENDER)}
 
 
@@ -443,9 +445,10 @@ def lead_row(name):
 
 
 def lead_light(name):
-    """A lead light drawn full, sliced across in the game: its root's slanted end the left cap, its front, its glow
-    ahead and (the ruby) its hot last stretch the right cap, the middle stretching. The ruby runs along it, wine at the
-    root to hot at the front; the lavender is lit at its top, deep at its foot, as the target's light."""
+    """A lead light drawn full, sliced across in the game: its root's slanted end the left cap, its front's the right
+    cap, the middle stretching. One colour along it, lit at its top, deep at its foot, as the target's light; nothing
+    marks its front. Its box still runs GLOW past the front, clear, where LeadCard.Fill puts it (Config.UIKit's
+    LeadCard.Glow, shared with the target's card)."""
     (y0, y1), light = LEAD_LIGHTS[name]
     h = y1 - y0
     xl, _, xr, _ = lead_row(name)
@@ -455,24 +458,21 @@ def lead_light(name):
     ty, tx = 40.0, 40.0  # anywhere on the drawing: the image is the light's own box
     te = tx + length
     lit = t.poly([(tx, ty), (te, ty), (te - h * SLANT, ty + h), (tx - h * SLANT, ty + h)])
-    ahead = ((t.x - te) + (t.y - ty) * SLANT) / np.hypot(1.0, SLANT)
-    band_y = np.abs(t.y - (ty + h / 2)) - h / 2
-    glow = np.clip(1 - np.maximum(ahead, 0) / GLOW, 0, 1) * (ahead > 0) * cover(band_y)
-    ui.over(t.px, stops(t, np.full_like(t.y, 0.5), light["ramp"]), glow * 0.35)
     v = np.clip((t.y - ty) / h, 0, 1)
-    along = light.get("along")
-    if along:
-        col = stops(t, ((t.x - tx) + (t.y - ty) * SLANT) / length, along)
-        col = col + (1 - col) * (np.clip(1 - v / 0.35, 0, 1) * 0.3)[..., None]  # lit toward the top
-        col = col * (1 - np.clip((v - 0.5) / 0.5, 0, 1) * 0.3)[..., None]  # deep toward the foot
-    else:
-        col = stops(t, v, light["ramp"])
-    t.paint(lit, col)
+    t.paint(lit, stops(t, v, light["ramp"]))
     t.paint(np.maximum(lit, np.abs(t.y - (ty + h * 0.22)) - max(h * 0.07, 0.3)), c(light["sheen"]), 0.4)
-    t.paint(np.maximum(lit, -ahead - 1.0), c(light["sheen"]), 0.5)
     run = h * SLANT
     image = lay.crop(tx - run, ty, te + GLOW, ty + h)
-    return image, across(image, run + 0.5, run + 1.5 + GLOW + (P_HOT * length if along else 0.0))
+    cut = across(image, run + 0.5, run + 1.5 + GLOW)
+    # One colour along it (AR12): every fully lit texel of a row, in its caps too, is the colour of that row's middle.
+    lo, hi = int(np.ceil(cut[0] * K)), image.shape[1] - int(np.ceil(cut[2] * K))
+    for y, row in enumerate(image):
+        full = row[:, 3] >= 0.999
+        middle = row[lo:hi][full[lo:hi]]
+        if len(middle):
+            spread = np.abs(row[full, :3] - middle[0, :3]).max()
+            assert spread < 2 / 255, f"the {name} light changes colour along its row {y} ({spread * 255:.1f} of 255)"
+    return image, cut
 
 
 def rim_right(px):
@@ -536,8 +536,7 @@ def placed(face, rarity, who):
 
 
 HEAD_TOP = FRAME[1] - RISE - 12.0
-HEAD_SIDE = 2.0  # the head's image reaches this far past the frame's sides, for its ink line
-INK_LINE, INK_ALPHA = 1.0, 0.85  # the line round the head above the frame (the seam's fix c)
+HEAD_SIDE = 2.0  # the head's image reaches this far past the frame's sides (its box from when it had an ink line)
 
 
 def openings(rarity, width):
@@ -546,21 +545,6 @@ def openings(rarity, width):
     at the middle of the inner line where the rarity has one (d), and the head ends hard below that line (a)."""
     inner = ui.RARITIES[rarity].get("inner")
     return (width + 1.55 if inner else width + 0.25), FRAME[1] + width + (2.2 if inner else 0.9)
-
-
-def dilate(alpha, radius):
-    """An alpha grown by `radius` points: the most of it within a disc."""
-    r = round(radius * K)
-    grown = alpha.copy()
-    h, w = alpha.shape
-    for dy in range(-r, r + 1):
-        for dx in range(-r, r + 1):
-            if dx * dx + dy * dy > r * r or (dx == 0 and dy == 0):
-                continue
-            src = alpha[max(-dy, 0):h - max(dy, 0), max(-dx, 0):w - max(dx, 0)]
-            dst = grown[max(dy, 0):h - max(-dy, 0), max(dx, 0):w - max(-dx, 0)]
-            np.maximum(dst, src, out=dst)
-    return grown
 
 
 def face_and_head(face, rarity, who, pal):
@@ -582,13 +566,10 @@ def face_and_head(face, rarity, who, pal):
     o = head.t
     band = np.maximum(o.y - foot, np.minimum(o.y - y0, np.maximum(x0 - o.x, o.x - x1)))
     head.image(img, fx, fy, band)
-    # Its ink line (c), above the frame's rim's inner edge only: never along its cut foot, which the face continues.
-    ink = np.clip(dilate(o.px[..., 3], INK_LINE) - o.px[..., 3], 0, 1) * cover(band) * cover(o.y - (y0 + width))
-    over = Layer()
-    over.t.px[..., 3] = ink * INK_ALPHA  # black: the Layer's colour is 0
-    over.image(o.px, -M, -M)
+    # No ink line round it (research, AR12, 2026-11-17): if a pale head melts into bright ground, the next try is a soft
+    # shadow under it, never a line.
     box = (x0 - HEAD_SIDE, HEAD_TOP, x1 + HEAD_SIDE, y0 + 6.0)
-    return inside.crop(x0, y0, x1, y1), over.crop(*box)
+    return inside.crop(x0, y0, x1, y1), head.crop(*box)
 
 
 # --- making ---------------------------------------------------------------------------------------------------------
@@ -615,7 +596,7 @@ def make(out: Path):
     listing = {}
 
     def keep(name, px, x0, y0, pad, use, cut=None):
-        rs.save(px, images / f"{name}.png")
+        rs.save(rs.bleed(px), images / f"{name}.png")  # its clear texels coloured (AR12, fault 2)
         entry = dict(file=f"images/{name}.png", pixels=[px.shape[1], px.shape[0]],
                      points=[px.shape[1] / K, px.shape[0] / K], pad=pad, at=[x0, y0], use=use)
         if cut:

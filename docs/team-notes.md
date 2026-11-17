@@ -12,9 +12,24 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **Open, for Faber:** Sable's guard as "drop the empty tiers", before anything public; the card's two fixes and the ink line; the exploiter's pass over `Act`.
 - **Next:** the Door's install, AR13 heard with the director, the bag's new skin, AR26's attacks from Watt, TR34's block in A, TR35's shortlist, and Dragon Hunter's clip when it lands.
 
-**Faber (builder).** 2026-11-17, 02:16.
-- **Done since 01:30:** Ground Wire's grey block plays in the game (da1e550; research's verdict dcaa071: it works). AR13's 33 takes are up under the group, all Approved, and the six cues play in the fight on the audio graph (AR13, "Faber's install"). Self-test 24 of 24; logic 25,110 passed.
-- **Next, in order:** AR12's card fixes (one-colour health light, the grey sliver, the portraits' edge with Modulo); the Festival Door's install; Sable's guard; Ground Wire's retake; TR35's shortlist; TR29's three.
+**Faber (builder).** 2026-11-17, 02:59. Stopped for the night on the director's word: committed, the playtest stopped, no lock held.
+- **Done since 02:16:** AR12's card fixes (AR12, "Faber's fixes"):
+  - the health light is one colour along its whole length, with nothing at its front at full health;
+  - the heads' ink line is gone, and every card picture is bled;
+  - the experience thread reads lavender.
+  - Modulo's 60 and the card's 37 are up under the group, all 99 Approved (two unused copies among them), with their ids in `Config.UIKit` and `Config.RevealArt`.
+  - Self-test: HUD 414, Reveal 163, Items page 110, 0 failed, at 60 fps.
+  - Phone captures for research's pass are in `build/scratch/faber/ar12_card/`.
+- **Next, in order:**
+  1. the Festival Door's install;
+  2. Sable's guard as "drop every tier with no Voidkin made", before anything public;
+  3. Ground Wire's retake, then AR26's attacks from Watt;
+  4. TR35's shortlist;
+  5. TR29's three;
+  6. TR34's block in A;
+  7. forge ranks, emblems and jewels on the item (the data contract and its tests);
+  8. the bag's rebuild once Modulo's skin lands.
+- **Open, for research:** the target card's light (`CardLightHealth`) keeps its glow ahead of its front. Does it go the same way as the lead's?
 - **Open, tooling:** `tools/ui/kit_config.py` rewrites `Config.UIKit` whole and drops what was added by hand (Eclipse, the reveal's marks, the shard grades). Don't run it until it merges.
 
 **Modulo (assets).** 2026-11-17, 02:48, on Opus 5.5.
@@ -26,7 +41,7 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **Ground Wire** (AR11, research's verdict dcaa071): Faber's retake tries an outline or nothing in place of the shell. Then the colour pass in Storm's light, mine, and Watt's basic attack (AR26) with Faber.
 - **Next:** AR26's basic attacks, Watt first; TR10's two icons, after the grey marker's verdict; AR24's finished art, after the block's verdict.
 
-**Turns.** Studio: the main place is Faber's since 16:23, for the phone run's fixes and Watt's blockout. Blender: nobody. Timing tests: nobody.
+**Turns.** Studio: nobody (Faber stopped at 02:59, the playtest stopped). Blender: nobody. Timing tests: nobody.
 
 **The count.** Pieces closed and playable this week: 13. TR2, the circuit in grey (phase 1); Haymaker, on A; the Shade's burst; Pip's Lantern Burst; Lyric's Held Note; TR3, the HUD in the world; TR4, the reveal; AR7, the Lamplighter installed with his fall; his signature; Lantern Burst's exit in 3D (B1); Haymaker's square in 3D (B5); TR18, power in grey; AR12's HUD part 1. Hours are in each piece's entry.
 

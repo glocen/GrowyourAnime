@@ -7132,6 +7132,39 @@ Research's request, 2026-11-14, night, on the director's word (`docs/decisions.m
     3. **"the whole aesthic being not what i would call art."** The HUD's look is redone at the finish pass (`docs/polish-later.md`, "The finish pass"), judged against shipped anime games at phone size, never against our own takes. The director's "now" brings it forward.
     - **Research's own, from the same screenshot:** a grey sliver at the body's foot, left of the health digits (the experience light near empty?), reads as a smudge. Faber names it: a light reads as a light at any fill, or doesn't show.
     - **Checked by:** research, on a phone capture of the card at full size and zoomed in, at full and low health, with Watt's and Rook's portraits.
+  - **Faber's fixes** (2026-11-17, 02:22 to 02:57 by the clock).
+    1. **The health light, one colour** (fault 1).
+       - The cause was in the image, not the code. Its last 6% was a fixed-size hot cap, ramping to #FF4A68, with a pale 1-point sheen on its front and a glow ahead, while the middle stretched wine to red.
+       - Now each lead light is one colour along its whole length, lit at its top and deep at its foot, as the target's light. Its front is a clean slant with nothing drawn ahead of it, so at full health nothing marks the front.
+       - Its right slice is 10.45 points, from 15.979, so it also shrinks further at a low share.
+       - **The drawing checks itself:** every fully lit texel of a row, the caps' included, has that row's middle colour, or `make` stops (`lead_card_art.py`, `lead_light`).
+    2. **The dark line round the hair** (fault 2, research's correction):
+       - the heads' ink line is gone, their box kept;
+       - every picture `lead_card_art.py` writes takes `rook_sheet.bleed`, as Modulo's do.
+    3. **The grey sliver** (research's own) is the experience thread near empty: about 9 points of light right of the frame, 3 points high.
+       - Its ramp started at white and it had a white front sheen, so at that size it read grey.
+       - It's lavender from top to foot now (#DCCBFF to #6A4FD0, its sheen #EEE6FF), and reads as a light at any length.
+    4. **The uploads,** all under the group, Approved at the read-back (99 of 99, 2026-11-17, 02:57):
+       - Modulo's 60 (e97571e) and the card's 37.
+       - Ids are swapped in `Config.UIKit` (83) and `Config.RevealArt` (14), each entry's pixel size checked against its file. The ids are in `docs/asset-log.md`.
+       - `CardTargetEliteFrame` and `CardTargetEliteHousing` went up a second time by a wide pattern, unchanged. The copies go unused and their old ids stay.
+    5. **For research's pass:** phone captures in the game at noon, with 3x crops of the card, in `build/scratch/faber/ar12_card/`:
+       - `before_rook_full`: the old card, at night;
+       - `rook_full`, `rook_low` (338 of 962);
+       - `watt_full`, `watt_low` (118 of 884);
+       - `lyric_full`.
+       - **What I see:**
+         - the light is one colour to its end at full, with a clean slanted front at a part fill;
+         - no dark line round Rook's or Watt's hair;
+         - Lyric's pale hair stays apart from the bright sky. The dark arc over it is her headphones' band, from her model, also seen on her in the world;
+         - the experience stub reads lavender.
+       - No night shots, on the director's "no day/night checks" (2026-11-15).
+    - **Open, for research:** the target's card still draws take E's light (`CardLightHealth`) with its glow ahead, the same kind of front mark. Its full-health look is unchecked. Say if it goes the same way.
+    - **Four facts:**
+      - Implemented: yes.
+      - Tested: the type check 0 new; the self-test's HUD (414 passed), Reveal (163) and Items page (110, its stills case among them) at 60 fps, 0 failed, 2026-11-17, 02:56.
+      - Visually reviewed: by me in the crops. Research's pass waits.
+      - Director-accepted: no.
 
 ## AR13. The sound test: six cues (Modulo's layers, then Faber)
 

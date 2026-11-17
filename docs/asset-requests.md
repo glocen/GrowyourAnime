@@ -6267,6 +6267,19 @@ Research's request, 2026-11-14, night. **Designed again, 2026-11-15, night,** on
   - Director-accepted: no.
 - **Next:** research's verdict in motion, with `ga-fresh-eyes`; then Modulo's colour pass in Storm's light, the front's glints out of the rows with it.
 
+**Research's verdict on the retake, in motion (Quaestor, 2026-11-17, 10:44),** from the takes at 10 frames a second (the player's camera by day, +70°), the side by side and the close sheets, with `ga-fresh-eyes`' blind read beside it.
+- **Felt (research):** the Plant snaps hard and reads: a flash, and the ring out along the street. Then the brawler just stands in front of Watt, and the shield isn't there. **Fresh eyes:** "the Shade never visibly stops mid-step (it just stands, then shuffles on)", and the outline and no-outline captures look the same.
+- **Tier:** works (both reads). **The one bold thing:** the ring snapping out along the street, on both reads again. It stays as it is.
+- **What the retake proved:** a Shade caught mid-swing can't carry the lock from the player's camera, because its swing points away from the camera. And a one-pixel outline can't carry the shield at game distance. From that camera, the Shade covers Watt, and only his spear's head stands clear above it.
+- **Must-fix, one class: a lasting look reads on what the player's camera sees, as a fill or a light, never as a line** (round 2 on the hold):
+  1. **The lock on the stopped Shade's whole body:** a fill (the body's `Highlight` with its fill set, grey-white until Storm's pass), on for the stop and gone with it. It pulses slowly, which is the hum. The ring at its feet stays.
+  2. **The shield on the spear's head:** a small self-lit glint on the blade that pulses for the shield's 5 s, planted or in his hand. It's the one part of him that's always in view. The outline may stay, since it costs nothing and reads close, but it doesn't carry the shield.
+  - A tier 1 trial on a blockout: Faber's technique, Modulo's look at the colour pass.
+- **The check:** the same takes, the player's camera and +70°, plus one at 64 px. The lock and the shield must each read at a glance beside the side by side.
+- **Not this piece's, asked of Faber:** at the play camera, the lead stands beyond its target, so every signature's body is hidden at its own moment. Does a real fight frame it this way, or only the replay? The answer goes in this entry. It isn't held here.
+- **Rounds:** this is round 2 on the hold. If the next one fails, the hold's options go to the director with this evidence.
+  - Director-accepted: no.
+
 **The first design, 2026-11-14 to 15, rejected by the director: its record.** Sections 1 and 2 are kept as Modulo wrote them.
 
 ### 1. The sheet (Modulo, 2026-11-14)

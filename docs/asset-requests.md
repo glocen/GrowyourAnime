@@ -11567,7 +11567,7 @@ From both sheets (d40537a).
 - **The turn:** the game turns a piece about Y when its Piece is "TrainingCrown" (`BaseController`, the axis test). TrainingCrown2 and TrainingCrown3 turn the same way, at the same rate, while a Voidkin trains.
 - **Unchanged:** nothing else in the manifest or the meshes changed. The export only added entries.
 
-**The sheet:** `build/scratch/modulo/training_kit/training_stages.png`, in the kit's colours, the same views and cuts as the grey sheets. Triangles, a stage whole before the hull: Stage I 962, II 1,290, III 1,546.
+**The sheet:** `build/handoff/Base/training_stages.png`, in the kit's colours, the same views and cuts as the grey sheets. Triangles, a stage whole before the hull: Stage I 962, II 1,290, III 1,546.
 
 **My read:**
 - **From the generator's side and from behind,** the top line rises to the middle at II and III. It reads as a crown, with no cluster at the bar's ends.
@@ -11592,6 +11592,37 @@ From both sheets (d40537a).
 - **Tested:** the content check, PASS. Nothing runs in the game yet.
 - **Visually reviewed:** mine, and research's pass to come.
 - **Director-accepted:** no.
+- **Research's pass on the kit pieces (Quaestor, 2026-11-17, 19:05): passed, no must-fix** (8410bc8).
+  - **The class holds:** a crystal's height goes by how close it stands to the spark, so from every heading, the turn included, the top line rises to the middle. In black from the side and from behind, II and III read as a crown, never as weights on a bar's ends.
+  - **For the game, from the side and behind while it turns:** the middle may dip between two tall crystals, as long as the ends stay lowest.
+  - **Stage I, the check's note: yes, the class holds there too.** A class is fixed at every instance, and Stage I is the one every player sees first. Its crown is re-made in the same family, low and rising to the middle, with TrainingCrown re-exported and uploaded again for Faber. It's a small piece, tier 1, inside AR35.
+  - **For Faber:** the crown's turn about Y takes the two new names too (the table's note).
+
+## AR36. The Forge's and the Stone Condenser's three stages (Modulo, for research's pick, then Faber)
+
+Research's entry, 2026-11-17, 19:05. They are the last machines in the design's order (`docs/design.md`, "Three stages for every machine"). Stage I for each is AR28's pick as it stands: the Forge's Press and the Condenser's Comb.
+
+**Which levels they follow** (research's call, tier 1):
+- **The Stone Condenser** has a level of its own, which raises its rate, its grade and its tray (`docs/design.md`, "A machine's level"; TR37). Its stages follow its own level: 1 to 5, 6 to 14, then 15 and up.
+- **The Forge** has no level at launch, since its own use comes after launch. Like the battery and the Training machine, it follows the base's level: Stage I at 1, II at 2, III at 3. If it gains a level later, its stages move to that level, as the Condenser's do.
+
+**Feel lines:**
+- **The Forge:** the player ranks an item at the Forge, its ram strikes, and the Press has grown with the base. From the court it reads as the place gear gets stronger.
+- **The Stone Condenser:** the player upgrades the Condenser, and the Comb grows more cups and more light. From the court its work, stones and jewels in their cups, stays in view.
+
+**The block contains:**
+- Stages II and III of each in grey beside Stage I, from the court at phone size, at 64 px and in black.
+- Two directions each, in the way of AR32 to AR35: parts you can read, the void's light, in the base's family. Never a real-world smithy or factory machine.
+- The footprints stay.
+
+**The classes carried:**
+- A stage reads from where the player meets the machine (the court).
+- The growth never hides the machine's work: the Forge's ram and the item under it, and the Condenser's cups.
+- A class is answered at every stage, Stage I included.
+
+**Waits:** the stage change as a moment, with the base's level-up and the machine's upgrade.
+
+**Checks:** the content check before the block; research's pick; Stages II and III as kit pieces for Faber, judged in the game from the court.
 
 ## Later, by ground
 

@@ -12285,6 +12285,96 @@ Research, 2026-11-17, 21:10. The rules: `docs/design.md`, "The Strip", the Void 
   - the screen in grey at the smallest phone: six lines, the rare offer's place, each line's price, the count left to that player, the countdown and the tables' chances.
 - **It waits:** the colour pass, after the verdict. The rare offer's light and its sound (no new sound until the director's samples). The shards' and emblems' pictures exist (AR21, AR31). The screen is built on the kit (`docs/ui.md`).
 
+## AR39. The sound rescue: three pilots (Modulo's sourcing and arrangements, Faber's engine, an independent review)
+
+Research, 2026-11-17, 21:19. The director's directive, word for word: `docs/archive/directive-sfx-2026-11-17.md` (its row in `docs/decisions.md`). The cue registry stays `src/shared/Config/Cues.luau`; provenance stays `docs/asset-log.md`.
+
+### Feasibility (research, from the code and files, 21:19)
+- **Local tools, free and already approved:** numpy, scipy, pedalboard, pyloudnorm, ffmpeg. There's no audio model (CLAP isn't installed). It agrees with people only weakly (Spearman about 0.28) and judges a sound's fit to its description, not its quality ([Human-CLAP, 2025](https://arxiv.org/abs/2506.23553)). So it isn't asked for.
+- **The library, from Studio:** `tools/studio/Audio/Library.luau` searches it (`AssetService.SearchAudio`, deprecated; `SearchAudioAsync` replaces it), and marks Roblox, ProSoundEffects and APMOfficial. `Waveform.luau` reads a sound's samples in Studio (`GetWaveformAsync`), with no download. `Mixdown.luau` mixes cues offline and `Loudness.luau` measures BS.1770. The MCP marketplace search stays blocked by our guard, as it should.
+- **Layering:** the engine (`FighterController/Cues.luau`, the new audio API: per-bus listeners, faders, voice pools, take rotation, a duck) can carry library layers once a layer may name a library id and its slice.
+- **Hearing the game's output:** this PC has no loopback device, so nothing records the mix. What can be measured is the delivered mix offline from the real samples (`Mixdown`), and in a playtest `AudioAnalyzer`'s peak, RMS and spectrum per bus.
+- **Can't be verified without a listener:** whether a sound is convincing, pleasant or powerful. Every pilot's subjective quality is reported **UNVERIFIED**. Nobody claims to have heard anything.
+- **The gate, Faber's two checks, Studio in Edit mode:**
+  1. the search still returns ProSoundEffects results;
+  2. `GetWaveformAsync` reads a ProSoundEffects asset.
+  If either fails, the rescue stops and research reports it.
+- **Raw library audio never leaves Studio:** no waveform file at audio rate on disk. Only measurements, and spectrogram matrices at low resolution for the sheets.
+
+### Root causes, confirmed in the code (C) and unproven (H)
+- **C. No library layer exists in any AR13 cue.** The comments say they wait on the shortlist, but there's no brief for them in `Briefs.luau` and no field in the data. LightHit is only our spark: 1.3 to 1.8 ms to peak, at -27.4 LUFS. HeavyHit has a recorded body only on Haymaker's own cue.
+- **C. HeavyHit's weight sits in the sub.** The Sub files are 96 to 99% low band. The Impacts layer is 3 to 5 knocks of 50 ms within 0.25 s. Whether they read as separate knocks rather than one contact is **H**; the structure says so.
+- **C. Critical is high FM, all of it in the high band. ShadeHurt and ShadeBurst's ticks are clicks of about 1.5 ms.**
+- **C. The takes the director rejected at 08:00 still play.**
+- **C. Config.Cues isn't preloaded.** A play whose take isn't ready is dropped silently (`Cues.luau:104`). How often that happens in a fight is **H**.
+- **C. Layers start by `task.delay`, not `Play(atTime)` with `GetMixerTime()`.** That the frame quantisation is audible is **H**.
+- **C. Nothing measures the AR13 cues as a mix.** `Mixdown` covers `Config.Sounds` only.
+- **C. The reveal's Breath is a community upload** (kyleamida). It's for the expansion, not the pilots.
+
+### The three pilots (the directive, section 6), at most three design rounds each
+Recorded material first, synthesis only where it helps. Each layer has a role (prep, attack, body, character, decay), and each must earn its place: a layer that doesn't change the measures is cut. Each pilot gets **at least three arrangements, built differently**, never pitch copies, with the old cue kept for the A/B.
+- **A, LightHit.**
+  - A recorded contact: a body or cloth punch, with its body from 200 Hz to 2 kHz, so it lives on a phone.
+  - Under 150 ms, with a fast, controlled decay.
+  - Our spark is allowed at most as an accent 10 dB under.
+  - At least four takes from different recordings.
+- **B, HeavyHit and Haymaker.**
+  - A recorded heavy body and transient as the base: a body blow, sandbag, or heavy wood or leather thud.
+  - Our sub only as reinforcement.
+  - One contact, never a cluster of knocks.
+  - Its peak on the contact frame.
+- **C, ShadeSwipe.**
+  - A readable tell and a recorded swipe (cloth or paper in the air, the Shade's paper).
+  - It sits under the lead's hits in the mix.
+  - At least three takes from different recordings.
+
+### The technical gates (research sets them; the maker doesn't)
+Measured by Faber's mixdown of each cue as the engine plays it, at its real gains, and by a playtest's `AudioAnalyzer`.
+1. **Loads and plays:** every take reads `IsReady` on a client, and a play is never dropped silently: a miss is counted and logged. The real client: at the next published build. Until then it's marked a limitation.
+2. **Contact:**
+   - a hit's peak within 10 ms of its contact moment on the engine's own timeline;
+   - a swipe's peak within 10 ms of its beat;
+   - layers started together by `Play(atTime)`.
+3. **True peak and overlap:**
+   - each cue at most -1 dBTP;
+   - six LightHits in one second, and a HeavyHit over two LightHits, still at most -1 dBTP on the bus, with no clipping.
+4. **Level by design, not volume** (short-term LUFS, each cue at its game gain):
+   - HeavyHit 3 to 5 LU over LightHit;
+   - ShadeSwipe 3 to 6 LU under LightHit.
+5. **Weight above the phone's floor:**
+   - through a phone curve (a 200 Hz high-pass, an 8 kHz low-pass), HeavyHit still reads at least 2 LU over LightHit;
+   - HeavyHit's energy under 120 Hz is at most half its total.
+6. **No cuts:**
+   - every slice fades in at least 3 ms and out at least 10 ms;
+   - no step over 0.25 of full scale between samples at a slice's edges.
+7. **Harshness:** no narrow peak 10 dB or more over its third-octave neighbours between 2 and 6 kHz.
+8. **Variation:**
+   - a cue's takes come from different recordings;
+   - each pair's averaged spectra differ (cosine similarity under 0.97);
+   - no take plays twice running.
+9. **Cost:**
+   - voices per cue as `Config.Cues` caps them;
+   - players built and assets loaded are counted at the fight's start.
+- **A/B at matched level:** old and new each normalised to the same short-term LUFS, side by side on one sheet of spectrograms and envelopes, so louder never wins.
+
+### Who does what, and in what order
+- **Faber (section 8 of the directive),** after AR30's Sort and the bag's chips:
+  1. the two gate checks above;
+  2. `Library.luau` on `SearchAudioAsync`;
+  3. a layer in `Config.Cues` may name a library id with its slice (From, To, its fades);
+  4. Config.Cues preloaded, with a counted miss;
+  5. layers started by `Play(atTime)`;
+  6. `Mixdown` over Config.Cues with the gates' measures;
+  7. a runtime A/B switch (old/new) by debug command.
+  Nothing published.
+- **Modulo, after the Forge field's tune and before AR38:**
+  - briefs for the three pilots in `Briefs.luau`;
+  - shortlists from ProSoundEffects, APMOfficial and Roblox first, then any author whose upload is plainly theirs;
+  - the arrangements, judged on the measures and the spectrogram sheets.
+  - Studio's time is taken in turns with Faber on the Now board.
+- **Research:** the A/B sheets, read against the feel lines. Then the independent review: a fresh agent given the files, measures and sheets, never the maker's conclusions, briefed to find weaknesses. Then the report to the director.
+- **Stop rule:** if after three rounds a pilot shows no recorded body, fails a gate, or measures no better than the old cue, the rescue stops there and research reports it.
+
 ## Later, by ground
 
 The rest of ground 1 (Kirra in AR10, Watt in AR11; then Sable, Marigold, Crane), then each ground's Voidkin in `docs/roster.md`'s order. **The machines** (Gantry, Bulwark, Ironhymn, Shiomaru, Aegir) share one custom rig, taller than a player, with its own clip family: the first of them is timed like AR1, because a custom rig is a different cost.

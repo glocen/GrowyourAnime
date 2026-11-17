@@ -105,6 +105,7 @@ Each ends on something playable. No dates are promised past phase 1: see "The da
   8. AR35, the Training machine's three stages (research, 18:38), then the Forge's and the Condenser's.
   9. AR36, the Forge's and the Stone Condenser's three stages (research, 19:05).
   10. AR37, a stage lands: the moment a machine changes (research, 20:03).
+  10b. AR39, the sound rescue's three pilots: briefs, shortlists and arrangements (the director's directive, 21:19), before AR38.
   11. AR38, the Void Shop: the building and its screen (research, 21:10).
 - **Research:** the Forge, emblem and jewel requests with their numbers, the verdicts as pieces land, then the Void Shop's and the Robux store's design, checked against Roblox's rules, for the director.
 

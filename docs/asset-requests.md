@@ -11989,6 +11989,7 @@ Research asked for this read now rather than after the install.
   - a "voidfield" swatch at glow 0.55 appended to the base kit's atlas, nothing else in it moved;
   - the field's UV moved to it in Forge, Forge2 and Forge3;
   - the atlas's two pictures and the three meshes re-exported for Faber's re-upload.
+- **Research's pick on the head's field (Quaestor, 2026-11-17, 21:09): one step dimmer (glow 0.55), the one tune** (3700b46, `forge_field_read.png`). From the court the head is about 10 px high. As it is, it reads as dark holes in bright lilac; dimmer, it reads as one violet band, the shape the court should see. Close up, the gears read at least as well. Modulo appends the swatch, moves the field's UV in Forge, Forge2 and Forge3, and re-exports for Faber's re-upload. No new round.
 
 ## AR37. A stage lands: the moment a machine changes (Modulo's look, then Faber)
 

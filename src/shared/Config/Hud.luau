@@ -434,8 +434,57 @@ return {
 		-- (research's fix, 2026-11-15). The others head theirs in their trim's colour.
 		Tier = { Common = Color3.fromHex("#C9CED8") } :: { [string]: Color3 },
 	},
-	-- The Power screen (TR18, grey): Step, the share a +/- press moves, of the whole generation; shares snap to Snap.
-	Power = { Step = 0.05, Snap = 0.01 },
+	-- The Power screen (TR18): Step, the share a +/- press moves, of the whole generation; shares snap to Snap. Its bar is
+	-- Modulo's, cut in Eclipse (AR12, "Power's cut images, in Eclipse"; build/handoff/UI/hud/colour/power_images.json;
+	-- TR41 (b)), stacked as the json's `bar.stack` says, ember to handle. Its images are its own, not the kit's: a white
+	-- one takes its tint, Cut in points at 4 pixels a point, Pad past its piece's box (the Ember drawn at a pixel a point).
+	Power = {
+		Step = 0.05,
+		Snap = 0.01,
+		Images = {
+			Channel = { Id = "rbxassetid://112778052596196", Pixels = Vector2.new(224, 224), Points = Vector2.new(56, 56), Cut = { 24, 24, 24, 24 }, Pad = 16 },
+			Glow = { Id = "rbxassetid://135869228981854", Pixels = Vector2.new(352, 336), Points = Vector2.new(88, 84), Cut = { 40, 40, 40, 40 }, Pad = 32 },
+			Light = { Id = "rbxassetid://95479211429609", Pixels = Vector2.new(96, 96), Points = Vector2.new(24, 24), Cut = { 8, 8, 8, 8 }, Pad = 0 },
+			Edge = { Id = "rbxassetid://122469296270915", Pixels = Vector2.new(96, 96), Points = Vector2.new(24, 24), Cut = { 8, 8, 8, 8 }, Pad = 0 },
+			Handle = { Id = "rbxassetid://90514113048264", Pixels = Vector2.new(100, 224), Points = Vector2.new(25, 56), Pad = 8 },
+			ChipBreaker = { Id = "rbxassetid://130456525982318", Pixels = Vector2.new(88, 88), Points = Vector2.new(22, 22), Pad = 5 },
+			ChipTraining = { Id = "rbxassetid://114149720582348", Pixels = Vector2.new(88, 88), Points = Vector2.new(22, 22), Pad = 5 },
+			Ember = { Id = "rbxassetid://90007328405959", Pixels = Vector2.new(580, 168), Points = Vector2.new(580, 168), Pad = 0 },
+		} :: { [string]: UIKit.Image },
+		Colours = {
+			Breaker = Color3.fromHex("#E6ECF7"),
+			Training = Color3.fromHex("#4FD1FF"),
+			Battery = Color3.fromHex("#FFE266"),
+			Ember = Color3.fromHex("#F2A63B"),
+			Caution = Color3.fromHex("#FF9A4D"),
+			Channel = Color3.fromHex("#080705"),
+			Edge = Color3.fromHex("#9A7A22"),
+			Faint = Color3.fromHex("#8F7F52"),
+			Well = Color3.fromHex("#0E0C09"),
+		} :: { [string]: Color3 },
+		-- A light's colour across the bar, top to foot: dark at the rims, paled at the middle, the sheen's band. An idle
+		-- machine's light wears the Battery's.
+		Lights = {
+			Breaker = ColorSequence.new({ ColorSequenceKeypoint.new(0, Color3.fromHex("#989CA3")), ColorSequenceKeypoint.new(0.0625, Color3.fromHex("#9FA3AA")), ColorSequenceKeypoint.new(0.125, Color3.fromHex("#A8ACB4")), ColorSequenceKeypoint.new(0.1875, Color3.fromHex("#B6BAC1")), ColorSequenceKeypoint.new(0.25, Color3.fromHex("#C7CBD1")), ColorSequenceKeypoint.new(0.3125, Color3.fromHex("#D3D6DD")), ColorSequenceKeypoint.new(0.375, Color3.fromHex("#D7DCE3")), ColorSequenceKeypoint.new(0.4375, Color3.fromHex("#DFE3EC")), ColorSequenceKeypoint.new(0.5, Color3.fromHex("#EAEFF8")), ColorSequenceKeypoint.new(0.5625, Color3.fromHex("#DDE2EC")), ColorSequenceKeypoint.new(0.625, Color3.fromHex("#D2D6DF")), ColorSequenceKeypoint.new(0.6875, Color3.fromHex("#C6CBD3")), ColorSequenceKeypoint.new(0.75, Color3.fromHex("#BBC0C8")), ColorSequenceKeypoint.new(0.8125, Color3.fromHex("#B1B5BD")), ColorSequenceKeypoint.new(0.875, Color3.fromHex("#A7ABB3")), ColorSequenceKeypoint.new(0.9375, Color3.fromHex("#9FA3AA")), ColorSequenceKeypoint.new(1, Color3.fromHex("#989CA3")) }),
+			Training = ColorSequence.new({ ColorSequenceKeypoint.new(0, Color3.fromHex("#348AA8")), ColorSequenceKeypoint.new(0.0625, Color3.fromHex("#3990B0")), ColorSequenceKeypoint.new(0.125, Color3.fromHex("#409AB9")), ColorSequenceKeypoint.new(0.1875, Color3.fromHex("#50A8C7")), ColorSequenceKeypoint.new(0.25, Color3.fromHex("#69BAD6")), ColorSequenceKeypoint.new(0.3125, Color3.fromHex("#77C6E2")), ColorSequenceKeypoint.new(0.375, Color3.fromHex("#6DC9E9")), ColorSequenceKeypoint.new(0.4375, Color3.fromHex("#65CEF3")), ColorSequenceKeypoint.new(0.5, Color3.fromHex("#68D8FF")), ColorSequenceKeypoint.new(0.5625, Color3.fromHex("#60CCF2")), ColorSequenceKeypoint.new(0.625, Color3.fromHex("#59C1E6")), ColorSequenceKeypoint.new(0.6875, Color3.fromHex("#51B6DA")), ColorSequenceKeypoint.new(0.75, Color3.fromHex("#4BACCE")), ColorSequenceKeypoint.new(0.8125, Color3.fromHex("#44A2C3")), ColorSequenceKeypoint.new(0.875, Color3.fromHex("#3E99B9")), ColorSequenceKeypoint.new(0.9375, Color3.fromHex("#3890AF")), ColorSequenceKeypoint.new(1, Color3.fromHex("#348AA8")) }),
+			Battery = ColorSequence.new({ ColorSequenceKeypoint.new(0, Color3.fromHex("#A89543")), ColorSequenceKeypoint.new(0.0625, Color3.fromHex("#B09C48")), ColorSequenceKeypoint.new(0.125, Color3.fromHex("#B9A550")), ColorSequenceKeypoint.new(0.1875, Color3.fromHex("#C7B35F")), ColorSequenceKeypoint.new(0.25, Color3.fromHex("#D6C478")), ColorSequenceKeypoint.new(0.3125, Color3.fromHex("#E2D085")), ColorSequenceKeypoint.new(0.375, Color3.fromHex("#E9D57E")), ColorSequenceKeypoint.new(0.4375, Color3.fromHex("#F3DB78")), ColorSequenceKeypoint.new(0.5, Color3.fromHex("#FFE67C")), ColorSequenceKeypoint.new(0.5625, Color3.fromHex("#F2DA73")), ColorSequenceKeypoint.new(0.625, Color3.fromHex("#E6CE6B")), ColorSequenceKeypoint.new(0.6875, Color3.fromHex("#DAC363")), ColorSequenceKeypoint.new(0.75, Color3.fromHex("#CEB85C")), ColorSequenceKeypoint.new(0.8125, Color3.fromHex("#C3AE55")), ColorSequenceKeypoint.new(0.875, Color3.fromHex("#B9A44E")), ColorSequenceKeypoint.new(0.9375, Color3.fromHex("#AF9C48")), ColorSequenceKeypoint.new(1, Color3.fromHex("#A89543")) }),
+		} :: { [string]: ColorSequence },
+		Bar = {
+			Height = 24,
+			Rim = 2, -- the lights run from Rim inside the bar's left to Rim inside its right; a cut at share s at Rim + (width - 2 Rim) s
+			Gap = 1, -- left each side of a cut between two lights
+			Glow = 0.42,
+			Edge = 0.95,
+			Ember = 0.16,
+			Arrive = { Points = 38.4, From = 1, To = 0.7 }, -- the light's white end, its Transparency over its last Points
+			Ticks = { At = { 0.25, 0.5, 0.75 }, Size = Vector2.new(1, 4), Under = 3.5, Alpha = 0.8 },
+			Handle = Vector2.new(9, 40),
+			Chip = 12,
+			-- The well: the kit's ButtonFill tinted Well at Fill and its ButtonEdge tinted Edge at Line, past the bar by Above,
+			-- Under and Ends.
+			Well = { Above = 13, Under = 15, Ends = 26, Fill = 0.6, Line = 0.4 },
+		},
+	},
 	-- The shard grades' pictures (AR12; Config.UIKit's Shard images): each grade's own from Large authored points up, its
 	-- small one under that (a step paler, its rim wider, a dark line round it, so the outline holds at a chip's size).
 	-- Modulo drew the large for 50 and up and the small for 40 and under; between them the small one holds the outline.

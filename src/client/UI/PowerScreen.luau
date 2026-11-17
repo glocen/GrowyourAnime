@@ -7,7 +7,9 @@
 -- bar (AR12's tier 2, research's ruling, 2026-11-15). Every change is asked of the server (Rules.Base.SetPower) through the owner's Act,
 -- and the screen is rebuilt from the server's copy. A handle drags here and asks once, when it's let go; a change of the
 -- save while it's held waits for the let-go. The generator's prompt opens it (BaseController), once a second machine
--- has drawn (Profile's Base.Power.Open). Its look waits on AR12's pick and the machine room's Dynamo.
+-- has drawn (Profile's Base.Power.Open). Its bar is Modulo's, cut in Eclipse (Hud.Power; TR41 (b)): the ember and the
+-- well behind it, the bed, each light's glow, the lights seen through their segments' windows, the outline, the ticks, and
+-- the brass handles over all.
 --   PowerScreen.Open(view, on)    builds it (on: Act); again on each change of the save
 --   PowerScreen.Tick(now)         the readings and the bar, from the base as it stands now
 --   PowerScreen.Parts()           its pieces by name, for tests
@@ -32,6 +34,7 @@ local Screen = require(UI.Kit.Screen)
 local Row = require(UI.Kit.Row)
 local Panel = require(UI.Kit.Panel)
 local Bar = require(UI.Kit.Bar)
+local Skin = require(UI.Kit.Skin)
 
 local PowerScreen = {}
 
@@ -39,10 +42,12 @@ export type On = { Act: (name: string, args: any?) -> { [string]: any } }
 
 local NAME = "Power"
 local SIZE = Vector2.new(600, 380)
-local TRACK = 24 -- the bar's height, authored
+local POWER = HudConfig.Power
+local LOOK = POWER.Bar
+local TRACK = LOOK.Height -- the bar's height, authored
+local RIM = LOOK.Rim -- the lights stand this far inside the bar's ends
 local HANDLE = Theme.Size.Tap -- a handle: a whole touch target over the bar
-local GRIP = Vector2.new(8, 40) -- what a handle shows: an upright, over the bar
-local CHIP = 12 -- a row's colour chip, the bar's segment it reads
+local CHIP = LOOK.Chip -- a row's chip, the bar's light it reads
 local NAME_LINE = 24
 local STEP = Theme.Size.Tap -- a +/- button, square
 local SHARE = 56 -- the share's words between a row's - and +
@@ -52,13 +57,14 @@ local LINE = 20 -- the plate's reading line, authored high
 local CHARGE = 8 -- the plate's charge bar, authored high
 local MARK = Vector2.new(20, 12) -- the battery's mark, drawn from frames: a stand-in until AR12's mark is cut
 
--- The machines in the bar's order (Rules.Power.Machines), by name, each in a grey colour until AR12's pick; the battery
--- takes what's left, in Power's.
-local MACHINES: { { Id: string, Name: string, Colour: Color3 } } = {
-	{ Id = "Breaker", Name = "Void Breaker", Colour = Theme.Colour.Primary },
-	{ Id = "Training", Name = "Training machine", Colour = Theme.Colour.Heal },
+-- The machines in the bar's order (Rules.Power.Machines), by name, each with its light's colour and its chip; the
+-- battery takes what's left, in its own light.
+local MACHINES: { { Id: string, Name: string, Colour: Color3, Chip: string } } = {
+	{ Id = "Breaker", Name = "Void Breaker", Colour = POWER.Colours.Breaker, Chip = "ChipBreaker" },
+	{ Id = "Training", Name = "Training machine", Colour = POWER.Colours.Training, Chip = "ChipTraining" },
 }
-local BATTERY = Theme.Colour.Electricity
+local BATTERY = Theme.Colour.Electricity -- the plate's words and charge
+local REST = "Battery" -- the light of the bar's rest, and of an idle machine's share
 
 local lastView: Profile.View? = nil
 local lastOn: On? = nil
@@ -128,20 +134,87 @@ local function stepped(shares: { number }, index: number, by: number): { [string
 	return asked
 end
 
--- The bar's segments and handles at `cuts`.
+-- The bar's width in points, whatever the layer's scale: its height is TRACK points. 0 before it's first laid out.
+local function barWidth(): number
+	local track = parts.Track :: Frame?
+	local size = if track then track.AbsoluteSize else Vector2.zero
+	return if size.Y > 0 then size.X * TRACK / size.Y else 0
+end
+
+-- A cut at share `at` of the bar, `offset` points past it, as a share of the bar's `wide` points: Rim inside its left at
+-- 0, Rim inside its right at 1. In shares, since a UDim's offset is a whole number (1.8 points lands at 1). Before the bar
+-- is laid out (`wide` 0) it's the plain share, until its size comes.
+local function across(at: number, offset: number, wide: number): number
+	return if wide > 0 then (RIM + (wide - 2 * RIM) * at + offset) / wide else at
+end
+
+-- The arriving end's Transparency across the bar's whole width: clear, then From to To over Arrive.Points ending at
+-- share `right`, and To past it (clipped by the window).
+local function arriving(right: number, wide: number): NumberSequence
+	local arrive = LOOK.Arrive
+	local keys = { NumberSequenceKeypoint.new(0, arrive.From) }
+	local function add(time: number, value: number)
+		time = math.clamp(time, 0, 1)
+		if time > keys[#keys].Time + 1e-4 and time < 1 - 1e-4 then
+			table.insert(keys, NumberSequenceKeypoint.new(time, value))
+		end
+	end
+	add(right - arrive.Points / wide, arrive.From)
+	add(right, arrive.To)
+	table.insert(keys, NumberSequenceKeypoint.new(1, if right >= 1 - 1e-4 then arrive.To else keys[#keys].Value))
+	return NumberSequence.new(keys)
+end
+
+-- The bar's lights, their glows, its ticks and the handles at `cuts`. A light's window runs cut to cut, the Gap left each
+-- side of a cut between two lights; the light inside it is the bar's whole image at the bar's own place, so its ends
+-- stay true. Every place across the bar is a share of it.
 local function lay()
 	local edges = { 0, cuts[1], cuts[2], 1 }
+	local wide = barWidth()
 	for index = 1, 3 do
+		local left = across(edges[index], if index > 1 then LOOK.Gap else 0, wide)
+		local right = across(edges[index + 1], if index < 3 then -LOOK.Gap else 0, wide)
+		local share = math.max(0, edges[index + 1] - edges[index])
+		local width = right - left
+		local shown = width > 1e-6 and share > 0
 		local segment = parts[`Segment{index}`] :: Frame?
+		local glow = parts[`Glow{index}`] :: Frame?
 		if segment then
-			segment.Position = UDim2.fromScale(edges[index], 0)
-			segment.Size = UDim2.fromScale(math.max(0, edges[index + 1] - edges[index]), 1)
+			segment:SetAttribute("Share", share)
+			segment.Position = UDim2.fromScale(left, 0)
+			segment.Size = UDim2.fromScale(math.max(width, 0), 1)
+			segment.Visible = shown
+			-- The bar's image at the bar's own place, in shares of the window: its left `left` of the bar back, its width
+			-- the bar's.
+			for _, name in { "Light", "Arrive" } do
+				local image = segment:FindFirstChild(name) :: ImageLabel?
+				if image and shown then
+					image.Position = UDim2.fromScale(-left / width, 0)
+					image.Size = UDim2.fromScale(1 / width, 1)
+				end
+			end
+			local arrive = segment:FindFirstChild("Arrive")
+			local fade = if arrive then arrive:FindFirstChildOfClass("UIGradient") else nil
+			if fade and wide > 0 then
+				fade.Transparency = arriving(right, wide)
+			end
+		end
+		if glow then
+			glow.Position = UDim2.new(left, 0, 0, RIM)
+			glow.Size = UDim2.new(math.max(width, 0), 0, 0, TRACK - 2 * RIM)
+			glow.Visible = shown
+		end
+	end
+	for index, at in LOOK.Ticks.At do
+		local tick = parts[`Tick{index}`] :: Frame?
+		if tick then
+			tick.Position = UDim2.new(across(at, -LOOK.Ticks.Size.X / 2, wide), 0, 1, LOOK.Ticks.Under)
 		end
 	end
 	for index = 1, 2 do
 		local handle = parts[`Handle{index}`] :: GuiObject?
 		if handle then
-			handle.Position = UDim2.new(cuts[index], 0, 0.5, 0)
+			handle.Position = UDim2.fromScale(across(cuts[index], 0, wide), 0.5)
 		end
 	end
 	for index = 1, 3 do
@@ -218,7 +291,8 @@ local function wire()
 		if moving then
 			-- By how far the finger went, never where it is: the same in every layer's inset. Two handles on one spot: a
 			-- move left holds the Void Breaker's, a move right the Training machine's.
-			local by = (input.Position.X - hold.StartX) / track.AbsoluteSize.X
+			local span = track.AbsoluteSize.X - 2 * RIM * track.AbsoluteSize.Y / TRACK
+			local by = (input.Position.X - hold.StartX) / math.max(span, 1)
 			if hold.Pick and math.abs(by) > 1e-6 then
 				hold.Pick = false
 				hold.Handle = if by < 0 then 1 else 2
@@ -244,15 +318,16 @@ local function label(parent: Instance, name: string, text: string, size: number,
 	return made
 end
 
-local function chip(parent: Instance, colour: Color3)
+-- A row's chip: its machine's cut stone, in its light's colour (its own), reaching past its box.
+local function chip(parent: Instance, image: string)
 	local mark = Instance.new("Frame")
 	mark.Name = "Chip"
-	mark.BorderSizePixel = 0
-	mark.BackgroundColor3 = colour
+	mark.BackgroundTransparency = 1
 	mark.AnchorPoint = Vector2.new(0, 0.5)
 	mark.Position = UDim2.new(0, 0, 0, NAME_LINE / 2)
 	mark.Size = UDim2.fromOffset(CHIP, CHIP)
 	mark.Parent = parent
+	Skin.LayOwn(mark, POWER.Images[image], "Stone")
 end
 
 -- The head: generation against demand; Auto at its right. Under Auto, demand over generation in the warning colour: the
@@ -307,32 +382,77 @@ local function head(body: Frame, now: Read.Base)
 	Button.Set(parts.Auto :: TextButton, { Selected = auto })
 end
 
--- The bar: the whole generation, a segment for each machine and the battery's for the rest, a handle at each cut.
+-- The bar: the whole generation, a light for each machine and the battery's for the rest, a handle at each cut. Stacked
+-- as power_images.json's `bar.stack` says: the ember, the well, the bed, the glows (outside every window), the lights,
+-- the outline, the ticks; the handles over all.
 local function bar(body: Frame, top: number)
+	local images, colours = POWER.Images, POWER.Colours
 	local rail = Instance.new("Frame")
 	rail.Name = "Rail"
 	rail.BackgroundTransparency = 1
 	rail.Size = UDim2.new(1, -HANDLE, 0, HANDLE)
 	rail.Position = UDim2.fromOffset(HANDLE / 2, top)
 	rail.Parent = body
+	local box = Instance.new("Frame")
+	box.Name = "Bar"
+	box.BackgroundTransparency = 1
+	box.AnchorPoint = Vector2.new(0, 0.5)
+	box.Position = UDim2.fromScale(0, 0.5)
+	box.Size = UDim2.new(1, 0, 0, TRACK)
+	box.Parent = rail
+	-- The conduit's warmth behind the well, its middle on the bar's.
+	local ember = Skin.LayOwn(box, images.Ember, "Ember", { Tint = colours.Ember, Alpha = LOOK.Ember, Z = 1 })
+	ember.AnchorPoint = Vector2.new(0.5, 0.5)
+	ember.Position = UDim2.fromScale(0.5, 0.5)
+	local well = Instance.new("Frame")
+	well.Name = "Well"
+	well.BackgroundTransparency = 1
+	well.Position = UDim2.fromOffset(-LOOK.Well.Ends, -LOOK.Well.Above)
+	well.Size = UDim2.new(1, 2 * LOOK.Well.Ends, 1, LOOK.Well.Above + LOOK.Well.Under)
+	well.ZIndex = 2
+	well.Parent = box
+	Skin.Lay(well, "ButtonFill", { Tint = colours.Well, Alpha = LOOK.Well.Fill, Z = 1 })
+	Skin.Lay(well, "ButtonEdge", { Tint = colours.Edge, Alpha = LOOK.Well.Line, Z = 2 })
+	Skin.LayOwn(box, images.Channel, "Channel", { Tint = colours.Channel, Z = 3 })
+	for index = 1, 3 do
+		local glow = Instance.new("Frame")
+		glow.Name = `Glow{index}`
+		glow.BackgroundTransparency = 1
+		glow.ZIndex = 4
+		glow.Parent = box
+		Skin.LayOwn(glow, images.Glow, "Image", { Alpha = LOOK.Glow })
+		parts[`Glow{index}`] = glow
+	end
 	local track = Instance.new("Frame")
 	track.Name = "Track"
-	track.BorderSizePixel = 0
-	track.BackgroundColor3 = Theme.Colour.Channel
-	track.AnchorPoint = Vector2.new(0, 0.5)
-	track.Position = UDim2.fromScale(0, 0.5)
-	track.Size = UDim2.new(1, 0, 0, TRACK)
-	track.ClipsDescendants = true
-	track.Parent = rail
+	track.BackgroundTransparency = 1
+	track.Size = UDim2.fromScale(1, 1)
+	track.ZIndex = 5
+	track.Parent = box
 	parts.Track = track
-	local colours = { MACHINES[1].Colour, MACHINES[2].Colour, BATTERY }
-	for index, colour in colours do
+	for index = 1, 3 do
 		local segment = Instance.new("Frame")
 		segment.Name = `Segment{index}`
-		segment.BorderSizePixel = 0
-		segment.BackgroundColor3 = colour
+		segment.BackgroundTransparency = 1
+		segment.ClipsDescendants = true
 		segment.Parent = track
+		Skin.LayOwn(segment, images.Light, "Light", { Z = 1 })
+		local arrive = Skin.LayOwn(segment, images.Light, "Arrive", { Z = 2 })
+		local fade = Instance.new("UIGradient")
+		fade.Parent = arrive
 		parts[`Segment{index}`] = segment
+	end
+	Skin.LayOwn(box, images.Edge, "Edge", { Tint = colours.Edge, Alpha = LOOK.Edge, Z = 6 })
+	for index in LOOK.Ticks.At do
+		local tick = Instance.new("Frame")
+		tick.Name = `Tick{index}`
+		tick.BorderSizePixel = 0
+		tick.BackgroundColor3 = colours.Faint
+		tick.BackgroundTransparency = 1 - LOOK.Ticks.Alpha
+		tick.Size = UDim2.fromOffset(LOOK.Ticks.Size.X, LOOK.Ticks.Size.Y)
+		tick.ZIndex = 7
+		tick.Parent = box
+		parts[`Tick{index}`] = tick
 	end
 	for index = 1, 2 do
 		local handle = Instance.new("TextButton")
@@ -344,15 +464,10 @@ local function bar(body: Frame, top: number)
 		handle.Size = UDim2.fromOffset(HANDLE, HANDLE)
 		handle.ZIndex = 3
 		handle.Parent = rail
-		local grip = Instance.new("Frame")
-		grip.Name = "Grip"
-		grip.BorderSizePixel = 0
-		grip.BackgroundColor3 = Theme.Colour.Text
+		-- The brass centred on the handle's middle (its pad even each side), never by a half point's offset.
+		local grip = Skin.LayOwn(handle, images.Handle, "Grip", { Z = 4 })
 		grip.AnchorPoint = Vector2.new(0.5, 0.5)
 		grip.Position = UDim2.fromScale(0.5, 0.5)
-		grip.Size = UDim2.fromOffset(GRIP.X, GRIP.Y)
-		grip.ZIndex = 4
-		grip.Parent = handle
 		handle.InputBegan:Connect(function(input: InputObject)
 			local kind = input.UserInputType
 			if kind == Enum.UserInputType.MouseButton1 or kind == Enum.UserInputType.Touch then
@@ -361,13 +476,24 @@ local function bar(body: Frame, top: number)
 		end)
 		parts[`Handle{index}`] = handle
 	end
-	-- An idle machine's share charges the battery whole, so it's drawn as the battery's (research, TR18).
+	-- The lights stand on the bar's width in points, known once it's laid out, and again whenever the layer's box changes.
+	track:GetPropertyChangedSignal("AbsoluteSize"):Connect(lay)
+	-- Each light in its machine's colour while it works; an idle machine's share charges the battery whole, so it's lit
+	-- as the battery's (research, TR18). `Wears` names the light a segment wears.
+	local function wear(index: number, name: string)
+		local segment = parts[`Segment{index}`] :: Frame?
+		local glow = parts[`Glow{index}`] :: Frame?
+		if segment == nil or glow == nil or segment:GetAttribute("Wears") == name then
+			return
+		end
+		segment:SetAttribute("Wears", name)
+		Skin.Tint(segment:FindFirstChild("Light") :: ImageLabel, POWER.Lights[name])
+		Skin.Tint(glow:FindFirstChild("Image") :: ImageLabel, colours[name])
+	end
+	wear(3, REST)
 	table.insert(tickers, function(at: Read.Base)
 		for index, machine in MACHINES do
-			local segment = parts[`Segment{index}`] :: Frame?
-			if segment then
-				segment.BackgroundColor3 = if (at.Rates.Flow.Demand[machine.Id] or 0) > 0 then machine.Colour else BATTERY
-			end
+			wear(index, if (at.Rates.Flow.Demand[machine.Id] or 0) > 0 then machine.Id else REST)
 		end
 	end)
 end
@@ -382,7 +508,7 @@ local function machineRow(list: ScrollingFrame, index: number, now: Read.Base)
 	row.Size = UDim2.new(1, -gap, 0, STEP)
 	row.LayoutOrder = index
 	row.Parent = list
-	chip(row, machine.Colour)
+	chip(row, machine.Chip)
 	local right = STEP * 2 + SHARE + gap * 2
 	label(row, "Name", machine.Name, Theme.Text.Body, UDim2.new(1, -(right + CHIP + gap), 0, NAME_LINE), UDim2.fromOffset(CHIP + gap, 0), { Font = Theme.Font.Strong })
 	local reading = label(row, "Reading", "", Theme.Text.Caption, UDim2.new(1, -(right + CHIP + gap), 0, STEP - NAME_LINE), UDim2.fromOffset(CHIP + gap, NAME_LINE), { Colour = Theme.Colour.TextDim })

@@ -1180,7 +1180,9 @@ local cases = {
 					elseif type(lit) == "number" then -- a battery cell, by its share of the charge (AR15, section 4)
 						want *= LightingConfig.Glow.Empty + (1 - LightingConfig.Glow.Empty) * math.clamp(lit, 0, 1)
 					end
-					want *= share
+					-- A steady piece (Config.Lighting.Steady; AR17's crossing shard) keeps its own glow at the phase's share alone.
+					local steady = LightingConfig.Steady[piece]
+					want = if steady then steady * LightingController.Look().Steady else want * share
 					if math.abs(surface.EmissiveStrength - want) > 1e-3 then
 						table.insert(off, string.format("%s at %.2f, not %.2f", piece, surface.EmissiveStrength, want))
 					end

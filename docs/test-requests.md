@@ -3464,3 +3464,47 @@ Research, 2026-11-17, 14:05, on the director's question: "how is that there is m
     - Set `Breaker.Fade` to about 0.3, so the last card fades out over its own width.
     - It's a tune, not a third round: Faber checks it in one still, and research's look is done.
 - **The tune, checked (Faber, 2026-11-17, 16:57 by the clock):** `Breaker.Fade` is 0.3. "Breaker: TR41" passes 42/0 and "Take: TR41" 4/0. In the take's first held state at the smallest phone, the third card shows only as a ghost under the panel's edge, its word no longer cut (`build/scratch/faber/stills/tr41-fade-03.jpg`, the row zoomed in `tr41-fade-03-zoom.png`). TR41 (a) is done on both sides. Director-accepted: no.
+
+### (b) Power's bar from its cut images, in the game (Faber, 2026-11-17, 16:58 to 17:23 by the clock)
+
+- **Uploaded:** Modulo's eight images as delivered (a00fee1), under the group with the key, all eight read back Approved. Their ids are in `docs/asset-log.md` (the row of 2026-11-15, "Power's bar, cut, in Eclipse") and `Config.Hud`, `Power.Images`.
+- **Built** (`src/client/UI/PowerScreen.luau`, `bar` and `lay`; its numbers in `Config.Hud`, `Power`, written from `power_images.json`). The stack is the json's `bar.stack`, in its order:
+  - the ember behind the well, at 0.16;
+  - the well, the kit's ButtonFill and ButtonEdge, 26 past each end, 13 above and 15 under;
+  - the bed;
+  - a glow under each light, at 0.42, outside every window;
+  - the lights;
+  - the outline, at 0.95;
+  - the three ticks;
+  - the brass handles over all.
+- **The lights:** each light is `PowerBusLight` at the bar's whole size and place, seen through its segment's window, with its 17-stop gradient turned 90 degrees. Its white arriving end runs from 1 to 0.7 over 38.4 points, ending at its right side. Windows run cut to cut on the rim's span, with the gap at each cut between two lights. An idle machine's light wears the battery's gradient.
+- **The chips** are the cut stones, Breaker and Training.
+- **Calls made at the build:**
+  - **Every place across the bar is a share of its width in points,** never an offset. A `UDim`'s offset is a whole number, so the json's 1.8-point cut landed at 1, and a handle sat 2 pixels off its cut in the first run. The width in points is read from the bar's own size (its height is 24 points), so it holds at every layer scale. The bar lays itself again when that size changes.
+  - **The brass is centred by its anchor,** not by a half point's offset.
+  - **The kit's images are generated** (`Config.UIKit`, never edited by hand), so the bar's images live in `Hud.Power`. `Skin.LayOwn` lays a screen's own image record as `Skin.Lay` lays the kit's.
+  - **The battery's mark in the head** (`Battery.png`) is one of the V2 leftovers. It's answered in (e).
+- **Cases:**
+  - "Power:" checks:
+    - each layer's image and its order;
+    - the glows outside every window;
+    - the well's reach;
+    - each light's window, cut to cut with the gap;
+    - the light at the bar's own place;
+    - the arriving end clear, then 0.7 at its right side;
+    - each handle's brass on its cut.
+  - A light's colour is read from its gradient, where the old check read a frame's colour. The rest's share is read from the segment's `Share`, where the old check read its width, which now leaves out the rim and the gaps.
+- **The take:** "Take: TR41 (b)" holds the screen at the smallest phone, with the Breaker working at 40%, the idle Training machine's 20% lit as the battery's, and the battery's rest. It passes 6/0 and puts the split back.
+- **Tested:**
+  - "Power:" 87/0;
+  - the full suite, after the change to Skin: 2,687 passed and 3 failed, all three in the Lighting case (TR8, TR23): the crossing's shard keeps its own steady glow (`Config.Lighting.Steady`, AR17's install, 47c0b85), which that older case didn't know. Taught it, the Lighting cases pass 54/0. Logic offline 24,007/0;
+  - type check 0 new.
+- **Stills for your read,** at the smallest phone, in `build/scratch/faber/stills/`:
+  - `tr41b-power-split.jpg` and `tr41b-power-split-zoom.png`: the Breaker's silver at 40%, then the idle Training share and the rest in the battery's yellow, with a handle at each cut;
+  - `tr41b-power-idle.jpg` and `tr41b-power-idle-zoom.png`: both machines idle, so the bar is the battery's whole, both handles at the start.
+- **Not seen:** the Training machine's cyan. It lights only while the machine draws, and nothing in the test save trains.
+- **Four facts:**
+  - **Implemented:** yes.
+  - **Tested:** as above.
+  - **Visually reviewed:** my stills. Research's read is next.
+  - **Director-accepted:** no.

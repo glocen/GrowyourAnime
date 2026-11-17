@@ -6,6 +6,7 @@
 -- other child (ZIndex 0 against their 1). The Frame undoes the piece's padding, so the skin always covers the whole box.
 --   Skin.Of(piece)                          the piece's skin frame, made on first use
 --   Skin.Lay(holder, image, options?)       one image: filling `holder`'s box, or at X, Y, W, H inside it
+--   Skin.LayOwn(holder, record, options?)   the same for a screen's own image, its record in its Config (Hud.Power's bar)
 --   Skin.Tint(image, tint)                  a colour, two top to bottom, or a ColorSequence top to bottom
 --   Skin.Refit(piece)                       after the piece's padding changes
 
@@ -28,6 +29,8 @@ export type Options = {
 local Skin = {}
 
 local FOLDER = "NL_Skin"
+
+local set: (image: ImageLabel, im: UIKit.Image, o: Options) -> () -- an image laid from its record, below
 
 function Skin.Of(piece: GuiObject): Frame
 	local folder = piece:FindFirstChild(FOLDER)
@@ -97,13 +100,9 @@ function Skin.Tint(image: ImageLabel, tint: (Color3 | { Color3 } | ColorSequence
 	end
 end
 
--- Lays `name` in `holder` (a skin frame, or any frame for an icon). Returns the image.
-function Skin.Lay(holder: GuiObject, name: string, options: Options?): ImageLabel
-	local o: Options = options or {}
-	local im = UIKit.Images[name]
-	assert(im, `UIKit has no image "{name}"`)
+local function made(holder: GuiObject, im: UIKit.Image, name: string, o: Options): ImageLabel
 	local image = Instance.new("ImageLabel")
-	Skin.Set(image, name, o)
+	set(image, im, o)
 	image.Name = o.Name or name
 	image.BackgroundTransparency = 1
 	image.BorderSizePixel = 0
@@ -114,10 +113,29 @@ function Skin.Lay(holder: GuiObject, name: string, options: Options?): ImageLabe
 	return image
 end
 
+-- Lays `name` in `holder` (a skin frame, or any frame for an icon). Returns the image.
+function Skin.Lay(holder: GuiObject, name: string, options: Options?): ImageLabel
+	local im = UIKit.Images[name]
+	assert(im, `UIKit has no image "{name}"`)
+	local image = made(holder, im, name, options or {})
+	image:SetAttribute("Kit", name)
+	return image
+end
+
+-- Lays a screen's own image, `record` in its Config in the kit's form, named `name`. Returns the image.
+function Skin.LayOwn(holder: GuiObject, record: UIKit.Image, name: string, options: Options?): ImageLabel
+	return made(holder, record, name, options or {})
+end
+
 -- Lays `name` into an image already made (a bar's light as it moves, a frame's rarity as it changes).
 function Skin.Set(image: ImageLabel, name: string, o: Options)
 	local im = UIKit.Images[name]
 	assert(im, `UIKit has no image "{name}"`)
+	set(image, im, o)
+	image:SetAttribute("Kit", name)
+end
+
+set = function(image: ImageLabel, im: UIKit.Image, o: Options)
 	local s = o.Scale or (if o.Size then o.Size / (im.Points.X - 2 * im.Pad) else 1)
 	local pad = im.Pad * s
 	local x, y = o.X or 0, o.Y or 0
@@ -140,7 +158,6 @@ function Skin.Set(image: ImageLabel, name: string, o: Options)
 		image.Size = UDim2.fromOffset(im.Points.X * s, im.Points.Y * s)
 		image.Position = UDim2.fromOffset(x - pad, y - pad)
 	end
-	image:SetAttribute("Kit", name)
 end
 
 -- An icon of the kit (a gem, a class mark, an element, a coin, a bolt) `size` pixels across, centred on cx, cy.

@@ -74,6 +74,81 @@ local function plateClear(t: any, where: string)
 	t.Check(`{where}: the reading and the work it holds stay apart at their longest`, fits and ends + gap <= starts, `{math.floor(ends)} + {math.floor(gap)} against {math.floor(starts)}`)
 end
 
+-- TR41 (b): the bar stacked from Modulo's cut images (Hud.Power; power_images.json's `bar.stack`), checked on the screen
+-- as it stands: each layer its image and its order, the lights the bar's own image seen through their windows, the
+-- rim and the gap kept, and each handle's brass on its cut.
+local function barLook(t: any)
+	local look = HudConfig.Power
+	local parts = PowerScreen.Parts()
+	local track = parts.Track :: Frame?
+	local box = if track then track.Parent :: Frame? else nil
+	t.Check("the bar is laid out", box ~= nil and track ~= nil and track.AbsoluteSize.Y > 0)
+	if box == nil or track == nil or track.AbsoluteSize.Y <= 0 then
+		return
+	end
+	local k = track.AbsoluteSize.Y / look.Bar.Height -- pixels a point, here
+	local function image(holder: Instance?, name: string): ImageLabel?
+		local found = if holder then holder:FindFirstChild(name) else nil
+		return if found and found:IsA("ImageLabel") then found else nil
+	end
+	local ember, well, channel, edge = image(box, "Ember"), box:FindFirstChild("Well") :: Frame?, image(box, "Channel"), image(box, "Edge")
+	local glow = box:FindFirstChild("Glow1") :: Frame?
+	t.Check("each layer wears its own image: the ember, the bed, a glow, a light, the outline", ember ~= nil and ember.Image == look.Images.Ember.Id
+		and channel ~= nil and channel.Image == look.Images.Channel.Id and edge ~= nil and edge.Image == look.Images.Edge.Id
+		and image(glow, "Image") ~= nil and (image(glow, "Image") :: ImageLabel).Image == look.Images.Glow.Id
+		and image(parts.Segment1, "Light") ~= nil and (image(parts.Segment1, "Light") :: ImageLabel).Image == look.Images.Light.Id)
+	t.Check("stacked as the json says: ember, well, bed, glows, lights, outline, ticks", ember ~= nil and well ~= nil and channel ~= nil and glow ~= nil
+		and edge ~= nil and ember.ZIndex < well.ZIndex and well.ZIndex < channel.ZIndex and channel.ZIndex < glow.ZIndex
+		and glow.ZIndex < track.ZIndex and track.ZIndex < edge.ZIndex and edge.ZIndex < (box:FindFirstChild("Tick1") :: GuiObject).ZIndex)
+	t.Check("the glows stand outside every window", glow ~= nil and glow.Parent == box and not box.ClipsDescendants and not track.ClipsDescendants)
+	t.Check("the well reaches 26 past each end, 13 above and 15 under", well ~= nil
+		and math.abs(well.AbsoluteSize.X - box.AbsoluteSize.X - 2 * look.Bar.Well.Ends * k) < 1
+		and math.abs(well.AbsolutePosition.Y - (box.AbsolutePosition.Y - look.Bar.Well.Above * k)) < 1
+		and math.abs(well.AbsoluteSize.Y - (look.Bar.Height + look.Bar.Well.Above + look.Bar.Well.Under) * k) < 1)
+	local rim, gap = look.Bar.Rim * k, look.Bar.Gap * k
+	local span = box.AbsoluteSize.X - 2 * rim
+	local cuts = PowerScreen.Cuts()
+	local edges = { 0, cuts[1], cuts[2], 1 }
+	for index = 1, 3 do
+		local segment = parts[`Segment{index}`] :: Frame?
+		local light = image(segment, "Light")
+		local arrive = image(segment, "Arrive")
+		local share = edges[index + 1] - edges[index]
+		if segment and light and arrive and share * span > 2 * gap + 1 then
+			local left = box.AbsolutePosition.X + rim + span * edges[index] + (if index > 1 then gap else 0)
+			local right = box.AbsolutePosition.X + rim + span * edges[index + 1] - (if index < 3 then gap else 0)
+			t.Check(`light {index}: its window from cut to cut, the gap kept at a cut between two`, segment.ClipsDescendants
+				and math.abs(segment.AbsolutePosition.X - left) < 1 and math.abs(segment.AbsolutePosition.X + segment.AbsoluteSize.X - right) < 1,
+				string.format("%.1f to %.1f, want %.1f to %.1f", segment.AbsolutePosition.X, segment.AbsolutePosition.X + segment.AbsoluteSize.X, left, right))
+			t.Check(`light {index}: the bar's whole image at the bar's own place`, math.abs(light.AbsolutePosition.X - box.AbsolutePosition.X) < 1
+				and math.abs(light.AbsoluteSize.X - box.AbsoluteSize.X) < 1 and math.abs(arrive.AbsolutePosition.X - box.AbsolutePosition.X) < 1)
+			local fade = arrive:FindFirstChildOfClass("UIGradient")
+			local keys = if fade then fade.Transparency.Keypoints else {}
+			local function at(x: number): number
+				local time = (x - box.AbsolutePosition.X) / box.AbsoluteSize.X
+				for i = 2, #keys do
+					if keys[i].Time >= time - 1e-6 then
+						local a, b = keys[i - 1], keys[i]
+						return a.Value + (b.Value - a.Value) * (time - a.Time) / math.max(b.Time - a.Time, 1e-9)
+					end
+				end
+				return if #keys > 0 then keys[#keys].Value else 1
+			end
+			t.Check(`light {index}: its white end clear, then {look.Bar.Arrive.To} at its right side`, arrive.ImageColor3 == Color3.new(1, 1, 1)
+				and math.abs(at(right) - look.Bar.Arrive.To) < 0.02 and at(right - look.Bar.Arrive.Points * k - 2) > 0.99,
+				string.format("%.3f at its right, %.3f before its ramp", at(right), at(right - look.Bar.Arrive.Points * k - 2)))
+		end
+	end
+	for index = 1, 2 do
+		local handle = parts[`Handle{index}`] :: GuiObject?
+		local grip = image(handle, "Grip")
+		local want = box.AbsolutePosition.X + rim + span * cuts[index]
+		t.Check(`handle {index}: the brass, its middle on its cut`, grip ~= nil and grip.Image == look.Images.Handle.Id
+			and math.abs(grip.AbsolutePosition.X + grip.AbsoluteSize.X / 2 - want) < 1,
+			if grip then string.format("%.1f, want %.1f", grip.AbsolutePosition.X + grip.AbsoluteSize.X / 2, want) else "no grip")
+	end
+end
+
 -- The battery on its plate in the Power screen's head (AR12's tier 2): its kWh against its cap in Power's yellow, the
 -- work it holds as its soft line, its charge as a bar; no row of its own, its share being the bar's yellow rest.
 local function batteryPlate(t: any, now: Read.Base)
@@ -189,15 +264,20 @@ function PowerCases.Cases(given: Given): { any }
 					end))
 					t.Check("the screen shows it: 30%, 60%, and the battery's 10% as the bar's rest", waitFor(t, 1, function(): boolean
 						local rest = part("Segment3") :: Frame?
-						return said("Share1") == "30%" and said("Share2") == "60%" and rest ~= nil and math.abs(rest.Size.X.Scale - 0.1) < 1e-6
+						return said("Share1") == "30%" and said("Share2") == "60%" and rest ~= nil and math.abs((tonumber(rest:GetAttribute("Share")) or 0) - 0.1) < 1e-6
 					end), `{said("Share1")}, {said("Share2")}`)
 					local flow = Read.Base(ProfileController.Get() :: Profile.View, workspace:GetServerTimeNow()).Rates.Flow
 					for index, machine in PowerScreen.Machines do
 						local segment = part(`Segment{index}`)
 						local busy = (flow.Demand[machine.Id] or 0) > 0
-						local colour = if busy then machine.Colour else Theme.Colour.Electricity
-						t.Check(`{machine.Name}'s share in its colour, or the battery's while it's idle ({if busy then "working" else "idle"})`, segment ~= nil and segment:IsA("Frame") and segment.BackgroundColor3 == colour)
+						local wears = if busy then machine.Id else "Battery"
+						local light = if segment then segment:FindFirstChild("Light") else nil
+						local gradient = if light then light:FindFirstChildOfClass("UIGradient") else nil
+						t.Check(`{machine.Name}'s light in its colour, or the battery's while it's idle ({if busy then "working" else "idle"})`,
+							segment ~= nil and segment:GetAttribute("Wears") == wears and gradient ~= nil and gradient.Rotation == 90
+								and gradient.Color == HudConfig.Power.Lights[wears], if segment then tostring(segment:GetAttribute("Wears")) else "no segment")
 					end
+					barLook(t)
 					local line = part("Over")
 					t.Check("under a split, the head's line is plain: never the warning colour", line ~= nil and line:IsA("TextLabel") and line.TextColor3 ~= Theme.Colour.Over and (part("Body") :: Instance):GetAttribute("Over") ~= true, if line and line:IsA("TextLabel") then line.Text else "none")
 					-- +/-: a step of the whole on one share.
@@ -256,6 +336,68 @@ function PowerCases.Cases(given: Given): { any }
 				if not ok then
 					error(err, 0)
 				end
+			end,
+		},
+		{
+			Name = "Take: TR41 (b), Power's bar at the smallest phone: the Breaker working at 40%, the idle Training machine's 20% lit as the battery's, the battery's rest, held for a still, for research",
+			Manual = true,
+			Stay = true,
+			Run = function(t: any)
+				-- Research's read of TR41 (b) (docs/test-requests.md, TR41): a shard in each open chamber so the Breaker draws,
+				-- the split set by hand, the battery a third full, held until the driver sets ReplicatedStorage.NL_TakeStep to
+				-- "End". The plant's door and split are put back; the shards break on as any shard does.
+				local view = ProfileController.Get()
+				t.Check("the save's copy is here", view ~= nil)
+				if view == nil then
+					return
+				end
+				local was = { Open = view.Base.Power.Open, Auto = view.Base.Power.Auto, Shares = table.clone(view.Base.Power.Shares) }
+				local step = Instance.new("StringValue")
+				step.Name = "NL_TakeStep"
+				step.Value = "Ready"
+				step.Parent = ReplicatedStorage
+				local shard = "lanternrow_standard"
+				local idle = 0
+				for _, chamber in view.Base.Chambers do
+					idle += if chamber.Work then 0 else 1
+				end
+				if idle > 0 then
+					local held = view.Bag.Shards[shard] or 0
+					t.Server("BaseGive", shard, idle)
+					waitFor(t, ANSWER, function(): boolean
+						local seen = ProfileController.Get()
+						return seen ~= nil and (seen.Bag.Shards[shard] or 0) == held + idle
+					end)
+					for _ = 1, idle do
+						ProfileController.Act("AddShard", { Shard = shard })
+					end
+				end
+				local base = Read.Base(view, workspace:GetServerTimeNow())
+				t.Server("BaseBattery", base.Rates.Capacity / 3)
+				t.Server("PowerOpen", true)
+				local split = ProfileController.Act("SetPower", { Auto = false, Shares = { Breaker = 0.4, Training = 0.2 } })
+				t.Check("the split is taken", split.Ok == true, tostring(split.Error))
+				waitFor(t, ANSWER, function(): boolean
+					local seen = ProfileController.Get()
+					return seen ~= nil and seen.Base.Power.Open and not seen.Base.Power.Auto
+				end)
+				Screen.Close()
+				Layers.Force(Theme.Scale.Floor)
+				Layers.Box(Theme.Smallest - Vector2.new(0, GuiService.TopbarInset.Height))
+				BaseController.OpenPower()
+				t.Check("the Power screen opens", Screen.Current() == PowerScreen.Name, tostring(Screen.Current()))
+				waitFor(t, 180, function(): boolean
+					return step.Value == "End"
+				end)
+				Layers.Box(nil)
+				Layers.Force(nil)
+				Screen.Close()
+				local back = ProfileController.Act("SetPower", if was.Auto then { Auto = true } else { Auto = false, Shares = was.Shares })
+				t.Check("the split put back", back.Ok == true, tostring(back.Error))
+				if not was.Open then
+					t.Server("PowerOpen", false)
+				end
+				step:Destroy()
 			end,
 		},
 	}

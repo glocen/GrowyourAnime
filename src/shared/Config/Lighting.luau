@@ -140,6 +140,10 @@ return {
 	Glow = { Kit = 2.4, Houses = 1.6, Empty = 0.2, CoreBloom = 0.6 },
 	Houses = { HouseLow = true, HouseTall = true } :: { [string]: boolean },
 	Cores = { DoorWay = true } :: { [string]: boolean },
+	-- A piece whose glow is its own, times its phase's share and none of Clear's lift (AR17's great shard over the crossing:
+	-- 2.5 times the kit's, so its light carries to the farthest gate; lifted with the base's glow it blooms into a halo at
+	-- night, the manifest's surface note).
+	Steady = { CrossingShard = 6 } :: { [string]: number },
 	-- The street's static lights (the plan's), Shadows off: a pool's SpotLight straight down in its cone, and the keeper's
 	-- lamp. Brightness and Range are the builder's seeds against the two targets (the lead at least 1.3 times what's round
 	-- him, a Shade's edge at least 0.15), tuned in the engine.

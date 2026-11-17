@@ -2,6 +2,30 @@
 
 The oldest entries of `docs/team-notes.md`, moved here as that file passed about 250 lines (`AGENTS.md`, "Team notes"). Newest first.
 
+### 2026-11-16, 17:40. AR20: C's paint and skies, for Faber (Modulo)
+
+- **What changed:** the base kit out of grey-violet (steel, girders, concrete, deck, floors); the Tower asleep, the far shards and the outcrops painted violet for distance; the ground between plots lifted from #1A1D2E to #6E7290; the base's and the Strip's own dusk and night skies; the Strip's own paving, lifted from Lantern Row's.
+- **Where:** AR20, "Modulo's paint and skies for C"; `build/handoff/Base` (maps, `sky/`, `lighting.json`, `plan.json`, the Tower's mesh); `build/handoff/Strip`; `tools/blender/base_light.py`.
+- **Open:** Faber's uploads and captures, then research's pass in the game.
+
+### 2026-11-16, 17:22. AR20: the base with no mist, less somber, round 1's takes (Modulo)
+
+- **What changed:** today's look and three takes for the base and the map round it, at day, dusk and night: A, the fill and the exposure lifted; B, the yard re-toned out of grey-violet, the glow brighter, the far shards and the Tower asleep painted for distance; C, B under lighter skies. Each take's numbers are in Roblox's terms.
+- **Where:** AR20; `build/handoff/Base/base_mood.png` and `base_mood_shard.png`; `tools/blender/base_mood.py`.
+- **Open:** research's pick, then Faber sets it. Round 2 (the empty lots, C's turned fill) waits on a go to render. The run was stopped at 17:20, the PC low on memory.
+
+### 2026-11-16, 16:55. AR19: the Void Mill's Stage I as kit pieces (Modulo)
+
+- **What changed:** the generator in the base kit is the Void Mill's Stage I. Generator stands still; GeneratorWheel turns on its axle 10 up; GeneratorArc1 to 8 are the gauge's still steps behind the band, shown or hidden by the generation; GeneratorDemand turns about the axle by the demand's share, since the rail is an arc. GeneratorRotor and GeneratorRing are gone.
+- **Where:** AR19, "Stage I as kit pieces"; `tools/blender/base_mill.py` (new, also the direction sheet's source); `build/handoff/Base`.
+- **For Faber:** the install, the turn's sense and the collision in the manifest's notes. The upload check passed.
+
+### 2026-11-16, 15:37. AR19's fixes 1 to 3 within A: the Void Mill (Modulo)
+
+- **What changed:** the gauge is the wheel. The buckets light from the well up the gate's right to the collector's shoe as the generation climbs, against a bone diamond with a lit pip on a rail outside the rim for the demand, and the dial is gone. A concrete sill, a trestle, the front bearing and the collector arm stand in front; the band is deeper, the hub filled and bolted. Stage II shows its gear and a housed dynamo, Stage III the casing and two.
+- **Where:** AR19, "Fixes 1 to 3 within A, delivered"; `tools/blender/generator_directions.py` (`A` mode); `build/handoff/Base/generator/generator_A_fixes.png`.
+- **For research:** the pass. **For Faber, later:** the lit arc is a still glow piece cut in steps; the diamond slides with the demand.
+
 ### 2026-11-16, 15:22. AR17's fixes 1 to 3: the Strip (Modulo)
 
 - **What changed:** the crack ranked: the Strip's crack brightest and widest, the branches to the gates thinner and deep violet. The crossing's well is full black, its five cracks gone. The great shard's light is 2.5 times the kit's, not the shard bigger: from the farthest gate at the largest new size (372 from the crossing) it reads at 5.0 to 1 on the haze, from 3.7.

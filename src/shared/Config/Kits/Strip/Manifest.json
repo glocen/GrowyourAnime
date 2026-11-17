@@ -1,0 +1,317 @@
+{
+ "what": "AR17: the Strip's own pieces. Made as the base's kit is, and wearing the base kit's own pair of pictures.",
+ "unit": "1 = 1 stud",
+ "frame": "Roblox's: a piece's front (Blender +Y) is -Z. A MeshPart goes at the piece's place times `centre`. A light's `at` is in the piece's own frame.",
+ "surface": "one SurfaceAppearance per MeshPart, the base kit's: ColorMap Base_Kit_Color, EmissiveMaskContent Base_Kit_Glow, EmissiveTint `glowTint`, EmissiveStrength from `glowStrength` (the base kit's own, tuned in the engine; CrossingShard's is 2.5 times the kit's before AR20's lift, so its light carries to a far gate: when Config.Lighting lifts the kit's glow for the base and the Strip, the shard keeps this strength and takes none of the lift, or it blooms into a halo at night). Single sided; the void stone's ink is in its mesh.",
+ "maps": {
+  "maps/Strip_Paving_Color.png": "the Strip's stones: Lantern Row's paving, 1.35 times its light (AR20's C), a tile 8 studs square for a Texture on the street's Part",
+  "../Base/maps/Base_Deck_Color.png": "an empty lot's floor, the base's plain deck tinted #6E7290 (the Texture's Color3), a tile 8 studs square"
+ },
+ "shadows": "CastShadow off on the three cracks, CrossingMark and the far shards.",
+ "pieces": {
+  "StripPost": {
+   "mesh": "meshes/StripPost.json",
+   "triangles": 176,
+   "vertices": 108,
+   "centre": [
+    1.02,
+    5.11102,
+    0.0
+   ],
+   "size": [
+    3.96,
+    10.442,
+    1.92
+   ],
+   "colour": "../Base/maps/Base_Kit_Color.png",
+   "glow": "../Base/maps/Base_Kit_Glow.png",
+   "glowTint": "#FFFFFF",
+   "glowStrength": 2.4,
+   "collision": "the foot, 1.7 square, and the stone",
+   "lights": [
+    {
+     "name": "Lamp",
+     "at": [
+      2.0,
+      7.7,
+      -0.0
+     ],
+     "colour": "#C9B0FF"
+    }
+   ],
+   "note": "10.2 high. Its shard hangs in its ring 2 out toward +X and 7.7 up: turn the post so +X looks at the street's middle. A PointLight at Lamp only where the plan lights one; the shard glows anyway"
+  },
+  "VeinWide": {
+   "mesh": "meshes/VeinWide.json",
+   "triangles": 44,
+   "vertices": 58,
+   "centre": [
+    0.54151,
+    0.0575,
+    -0.00701
+   ],
+   "size": [
+    9.034,
+    0.035,
+    30.216
+   ],
+   "colour": "../Base/maps/Base_Kit_Color.png",
+   "glow": "../Base/maps/Base_Kit_Glow.png",
+   "glowTint": "#FFFFFF",
+   "glowStrength": 2.4,
+   "collision": "none",
+   "lights": [],
+   "note": "a crack of the void's light, flat in the stones, 30 long from its back to its front. The wide one, for near the crossing: 2.2 at its widest, two side cracks. It glows without a Light. No shadow. Look only: it lies 0.07 over the floor"
+  },
+  "VeinThin": {
+   "mesh": "meshes/VeinThin.json",
+   "triangles": 26,
+   "vertices": 35,
+   "centre": [
+    0.74945,
+    0.0575,
+    -0.0045
+   ],
+   "size": [
+    3.658,
+    0.035,
+    30.099
+   ],
+   "colour": "../Base/maps/Base_Kit_Color.png",
+   "glow": "../Base/maps/Base_Kit_Glow.png",
+   "glowTint": "#FFFFFF",
+   "glowStrength": 2.4,
+   "collision": "none",
+   "lights": [],
+   "note": "a crack of the void's light, flat in the stones, 30 long from its back to its front. The thin one, for far down the street: 0.8 at its widest, one side crack. It glows without a Light. No shadow. Look only: it lies 0.07 over the floor"
+  },
+  "VeinBranch": {
+   "mesh": "meshes/VeinBranch.json",
+   "triangles": 16,
+   "vertices": 20,
+   "centre": [
+    -0.0103,
+    0.055,
+    0.01579
+   ],
+   "size": [
+    1.699,
+    0.03,
+    21.046
+   ],
+   "colour": "../Base/maps/Base_Kit_Color.png",
+   "glow": "../Base/maps/Base_Kit_Glow.png",
+   "glowTint": "#FFFFFF",
+   "glowStrength": 2.4,
+   "collision": "none",
+   "lights": [],
+   "note": "a crack of the void's light, flat in the stones, 21 long from its back to its front. A branch from the street's crack to a gate, thinner and dimmer than the street's own: 0.36 at its widest, thinning toward its front. It glows without a Light. No shadow. Look only: it lies 0.07 over the floor"
+  },
+  "CrossingShard": {
+   "mesh": "meshes/CrossingShard.json",
+   "triangles": 248,
+   "vertices": 180,
+   "centre": [
+    -0.20038,
+    27.24044,
+    1.21618
+   ],
+   "size": [
+    16.156,
+    37.874,
+    19.252
+   ],
+   "colour": "../Base/maps/Base_Kit_Color.png",
+   "glow": "../Base/maps/Base_Kit_Glow.png",
+   "glowTint": "#FFFFFF",
+   "glowStrength": 6.0,
+   "collision": "none: it hangs 8.5 over the floor, and players walk under it",
+   "lights": [
+    {
+     "name": "Heart",
+     "at": [
+      0.0,
+      24.0,
+      -0.0
+     ],
+     "colour": "#B58CFF"
+    }
+   ],
+   "note": "hangs over the crossing's mark, from 8.5 to 46 over the floor, about 17 across. Its three parts are void stone; the light inside them and the four small shards glow. One PointLight at Heart. It may turn slowly and rise and fall a little, the builder's call. A place for the Void Rift to open, if research wants one: the piece asks for nothing"
+  },
+  "ShardOutcrop": {
+   "mesh": "meshes/ShardOutcrop.json",
+   "triangles": 208,
+   "vertices": 132,
+   "centre": [
+    -0.0867,
+    3.35137,
+    -0.14513
+   ],
+   "size": [
+    7.248,
+    8.773,
+    5.812
+   ],
+   "colour": "../Base/maps/Base_Kit_Color.png",
+   "glow": "../Base/maps/Base_Kit_Glow.png",
+   "glowTint": "#FFFFFF",
+   "glowStrength": 2.4,
+   "collision": "the tallest shard, as a post 2 square, if anything",
+   "lights": [],
+   "note": "shards breaking out of the ground, 7.6 high and about 6 across: five of void stone, a lighter violet than the near pieces' so none stands black against the day sky (AR20), and one of the void's light, which glows without a Light. Turned as the plan says, no two look alike"
+  },
+  "SealCalamity": {
+   "mesh": "meshes/SealCalamity.json",
+   "triangles": 576,
+   "vertices": 387,
+   "centre": [
+    0.0,
+    24.56667,
+    0.0
+   ],
+   "size": [
+    48.62,
+    49.867,
+    5.98
+   ],
+   "colour": "../Base/maps/Base_Kit_Color.png",
+   "glow": "../Base/maps/Base_Kit_Glow.png",
+   "glowTint": "#FFFFFF",
+   "glowStrength": 2.4,
+   "collision": "a wall across the whole street: 48 wide, 5 deep, as high as it needs",
+   "lights": [
+    {
+     "name": "Shard",
+     "at": [
+      0.0,
+      46.0,
+      -0.0
+     ],
+     "colour": "#B58CFF"
+    }
+   ],
+   "note": "stands across the Strip's end toward the Calamity, its front (+Y) looking back down the street. 49.5 high at its shard, the two stones 30.5, the shut way 20 wide and 38 to its point. Shut and dim: only the seam, the arch's edge, the lock's shard and the shard over the keystone glow. One PointLight at Shard if the phone's count allows. It opens in its own phase"
+  },
+  "SealClash": {
+   "mesh": "meshes/SealClash.json",
+   "triangles": 576,
+   "vertices": 387,
+   "centre": [
+    0.0,
+    24.56667,
+    0.0
+   ],
+   "size": [
+    48.62,
+    49.867,
+    5.98
+   ],
+   "colour": "../Base/maps/Base_Kit_Color.png",
+   "glow": "../Base/maps/Base_Kit_Glow.png",
+   "glowTint": "#FFFFFF",
+   "glowStrength": 2.4,
+   "collision": "a wall across the whole street: 48 wide, 5 deep, as high as it needs",
+   "lights": [
+    {
+     "name": "Shard",
+     "at": [
+      0.0,
+      46.0,
+      -0.0
+     ],
+     "colour": "#7CE8FF"
+    }
+   ],
+   "note": "stands across the Strip's end toward the Clash Grounds, its front (+Y) looking back down the street. 49.5 high at its shard, the two stones 30.5, the shut way 20 wide and 38 to its point. Shut and dim: only the seam, the arch's edge, the lock's shard and the shard over the keystone glow. One PointLight at Shard if the phone's count allows. It opens in its own phase"
+  },
+  "CrossingMark": {
+   "mesh": "meshes/CrossingMark.json",
+   "triangles": 198,
+   "vertices": 200,
+   "centre": [
+    0.0,
+    0.05,
+    0.0
+   ],
+   "size": [
+    39.8,
+    0.02,
+    39.8
+   ],
+   "colour": "../Base/maps/Base_Kit_Color.png",
+   "glow": "../Base/maps/Base_Kit_Glow.png",
+   "glowTint": "#FFFFFF",
+   "glowStrength": 2.4,
+   "collision": "none",
+   "lights": [],
+   "note": "lies 0.06 over the stones at the crossing's middle, 39.8 across: a ring, and a well of full black ringed in the void's light 9 out, where the street's cracks end, with nothing in it. The inner ring glows. No shadow. Look only"
+  },
+  "FarShardLow": {
+   "mesh": "meshes/FarShardLow.json",
+   "triangles": 20,
+   "vertices": 12,
+   "centre": [
+    1.6,
+    24.91984,
+    0.0
+   ],
+   "size": [
+    15.992,
+    110.181,
+    12.8
+   ],
+   "colour": "../Base/maps/Base_Kit_Color.png",
+   "glow": "../Base/maps/Base_Kit_Glow.png",
+   "glowTint": "#FFFFFF",
+   "glowStrength": 2.4,
+   "collision": "none",
+   "lights": [],
+   "note": "a great shard of void stone, 80 high and 16 wide, far past the map's edge: unlit, in a pale void stone painted for the distance, since no haze pales it now (AR20). It leans a little toward +X, and its foot goes 30 under the floor, for where the ground has ended. No hull, no shadow, nobody reaches it"
+  },
+  "FarShardMid": {
+   "mesh": "meshes/FarShardMid.json",
+   "triangles": 20,
+   "vertices": 12,
+   "centre": [
+    2.2,
+    47.37553,
+    0.0
+   ],
+   "size": [
+    21.989,
+    155.267,
+    17.6
+   ],
+   "colour": "../Base/maps/Base_Kit_Color.png",
+   "glow": "../Base/maps/Base_Kit_Glow.png",
+   "glowTint": "#FFFFFF",
+   "glowStrength": 2.4,
+   "collision": "none",
+   "lights": [],
+   "note": "a great shard of void stone, 125 high and 22 wide, far past the map's edge: unlit, in a pale void stone painted for the distance, since no haze pales it now (AR20). It leans a little toward +X, and its foot goes 30 under the floor, for where the ground has ended. No hull, no shadow, nobody reaches it"
+  },
+  "FarShardTall": {
+   "mesh": "meshes/FarShardTall.json",
+   "triangles": 20,
+   "vertices": 12,
+   "centre": [
+    3.0,
+    74.81155,
+    0.0
+   ],
+   "size": [
+    29.985,
+    210.394,
+    24.0
+   ],
+   "colour": "../Base/maps/Base_Kit_Color.png",
+   "glow": "../Base/maps/Base_Kit_Glow.png",
+   "glowTint": "#FFFFFF",
+   "glowStrength": 2.4,
+   "collision": "none",
+   "lights": [],
+   "note": "a great shard of void stone, 180 high and 30 wide, far past the map's edge: unlit, in a pale void stone painted for the distance, since no haze pales it now (AR20). It leans a little toward +X, and its foot goes 30 under the floor, for where the ground has ended. No hull, no shadow, nobody reaches it"
+  }
+ }
+}

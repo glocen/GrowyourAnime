@@ -359,6 +359,7 @@ return {
 		-- body's height with the strip under it.
 		Cell = 142,
 		Strip = 20, -- a chamber's name strip, solid, "Chamber N" on it
+		Fade = 0.1, -- the share of the ready row's width, at its end by the detail panel, over which it fades out (TR41 (a))
 		-- The galaxy Breaker's sky (TR41; AR12, "The galaxy Breaker's images for the build"; Modulo's breaker_sky.json,
 		-- whose places are in the mock's points on a panel of 684 by 306, laid here as shares of ours). From the back: the
 		-- night in the panel's shape, one band of mist along the chambers' row tinted as one river (research's read), the
@@ -370,7 +371,7 @@ return {
 				Right = "rbxassetid://104002526402503",
 				Mist = "rbxassetid://119524756969687",
 				Star = "rbxassetid://91107060875888",
-				Falling = "rbxassetid://80394599323881",
+				Falling = "rbxassetid://121639543913318",
 				Light = "rbxassetid://136697115054832",
 			},
 			Panel = Vector2.new(684, 306), -- the mock's panel: the night's halves and the stars are shares of it
@@ -407,14 +408,16 @@ return {
 			},
 			-- The falling star, pale, never tinted, in chamber 4's window under its glass: its Head runs From To (shares of the
 			-- window's band) in Seconds; its light sin(pi s) ^ 0.6. The first First seconds after the screen opens, then one
-			-- every Every, each drawn at random between the two (research, 2026-11-15: seeds, tuned in play).
+			-- every Every, each drawn at random between the two (research, 2026-11-15: seeds, tuned in play). Made to be caught
+			-- at the smallest phone (TR41 (a)'s must-fix; AR12, "The falling star, made to be caught"): a bright head in a soft
+			-- glow, the tail twice as long, corner to corner of the window in the old speed on the longer path.
 			Falling = {
 				Chamber = 4, -- its window's chamber
-				Points = Vector2.new(28, 24),
-				Head = Vector2.new(4, 20),
-				From = Vector2.new(0.969, -0.089),
-				To = Vector2.new(0.24, 0.646),
-				Seconds = 0.7,
+				Points = Vector2.new(56, 48),
+				Head = Vector2.new(9, 39),
+				From = Vector2.new(1, 0),
+				To = Vector2.new(0, 1),
+				Seconds = 0.9,
 				First = { 3, 6 },
 				Every = { 15, 30 },
 			},

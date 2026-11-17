@@ -181,6 +181,20 @@ function BreakerCases.Cases(): { any }
 				t.Wait(sky.Falling.Seconds + 0.1)
 				local star = fallen()
 				t.Check("and goes out at its end", star ~= nil and star.ImageTransparency > 1 - 1e-3)
+				-- Made to be caught at the smallest phone (TR41 (a)'s must-fix): at its made size.
+				local made = UDim2.fromOffset(sky.Falling.Points.X, sky.Falling.Points.Y)
+				t.Check(`the star at its made size, {sky.Falling.Points.X} by {sky.Falling.Points.Y}`, star ~= nil and star.Size == made, if star then tostring(star.Size) else nil)
+				-- The ready row ends at the machine's column, by the detail panel, fading out over its last share (the other).
+				local fade = breakerPart("StripFade") :: CanvasGroup?
+				local column = breakerPart("Machine") :: Frame?
+				local soft = if fade then fade:FindFirstChildOfClass("UIGradient") else nil
+				local keys: { NumberSequenceKeypoint } = if soft then soft.Transparency.Keypoints else {}
+				local last = keys[#keys]
+				t.Check("the ready row ends at the machine's column", fade ~= nil and column ~= nil
+					and fade.AbsolutePosition.X + fade.AbsoluteSize.X <= column.AbsolutePosition.X + column.AbsoluteSize.X + 0.5
+					and (fade:FindFirstChild("Strip") :: Instance?) ~= nil)
+				t.Check(`and fades out over its last {HudConfig.Breaker.Fade * 100}%`, #keys == 3 and last ~= nil and last.Value > 1 - 1e-3
+					and math.abs(keys[2].Time - (1 - HudConfig.Breaker.Fade)) < 1e-3 and keys[2].Value < 1e-3)
 				-- Held still, as reduced motion holds it: the mist and the stars at their start, and no star falls.
 				BreakerScreen.Still(true)
 				t.Wait(0.2)

@@ -811,17 +811,32 @@ end
 -- What's ready, waiting and in the bag, a strip of chips that scrolls sideways, at `y`.
 local function strip(parent: Instance, view: Profile.View, y: number, on: On)
 	label(parent, "StripTitle", "Ready, waiting and in the bag", Theme.Text.Caption, UDim2.new(1, 0, 0, HEADING), UDim2.fromOffset(0, y), { Font = Theme.Font.Strong, Colour = Theme.Colour.TextDim })
+	-- It ends at the machine's column, by the detail panel, softly: a chip cut there fades out, never stands cut mid-word
+	-- (research's must-fix on TR41 (a), 2026-11-17).
+	local fade = Instance.new("CanvasGroup")
+	fade.Name = "StripFade"
+	fade.BackgroundTransparency = 1
+	fade.BorderSizePixel = 0
+	fade.Size = UDim2.new(1, 0, 0, CHIP.Y + 8)
+	fade.Position = UDim2.fromOffset(0, y + HEADING + 2)
+	fade.Parent = parent
+	local soft = Instance.new("UIGradient")
+	soft.Transparency = NumberSequence.new({
+		NumberSequenceKeypoint.new(0, 0),
+		NumberSequenceKeypoint.new(1 - HudConfig.Breaker.Fade, 0),
+		NumberSequenceKeypoint.new(1, 1),
+	})
+	soft.Parent = fade
 	local list = Instance.new("ScrollingFrame")
 	list.Name = "Strip"
 	list.BackgroundTransparency = 1
 	list.BorderSizePixel = 0
-	list.Size = UDim2.new(1, 0, 0, CHIP.Y + 8)
-	list.Position = UDim2.fromOffset(0, y + HEADING + 2)
+	list.Size = UDim2.fromScale(1, 1)
 	list.ScrollingDirection = Enum.ScrollingDirection.X
 	list.ScrollBarThickness = 4
 	list.AutomaticCanvasSize = Enum.AutomaticSize.X
 	list.CanvasSize = UDim2.new()
-	list.Parent = parent
+	list.Parent = fade
 	Panel.List(list, Enum.FillDirection.Horizontal, Theme.Size.Gap)
 	local order = 0
 	for _, item in shardsOf(view) do

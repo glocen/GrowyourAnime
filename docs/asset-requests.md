@@ -8517,6 +8517,45 @@ Part 7's size is picked: plots of 128, 32 apart, the crossing one plot wide, End
     2. StripPost's ring always holds its glowing shard. Never empty, never hung by a rope or chain, never lowered toward head height; any of these gets a fresh check.
   - **For Faber:** the 12 meshes are cleared for upload.
 
+### The install, at 128 (Faber, 2026-11-17, 16:09 to 16:55 by the clock)
+
+- **Taken:** `kit_take.py Strip` wrote `Config/Kits/Strip/Manifest.json` and `Plan.json`: 12 pieces, 126 placements, 7 lights.
+- **Uploaded, all Approved on read-back:** the 12 meshes by `Kit.Publish("Strip")` from the game's place, and `Strip_Paving_Color.png` by the group's key. The ids are in `tools/studio/Kits/Strip.json` and `docs/asset-log.md`.
+- **The kit:** `src/storage/StripKit.rbxm` (14,281 bytes), from `Kit.Build("Strip")`.
+  - The pieces wear the base kit's pair of pictures; the paving is its own tile, 8 studs.
+  - Collision follows the manifest's notes: a post by its mesh, an outcrop and a sealed gate by their box. The cracks, the mark, the great shard and the far shards are look only.
+  - The cracks, the mark and the far shards cast no shadow.
+- **Laid** (`WorldService`, `dressStrip`):
+  - each placement by `Kit.Place` from the festival gate at (0, the paved top, -200), into "Strip dressing", tagged as the kit's dressing with `Kit = "Strip"`;
+  - the 7 lights from the plan;
+  - the Strip and the side street wear the Strip's paving.
+  - The world report counts the Strip apart from Lantern Row's street. It names a piece laid short of its plan, a missing light, or a slab wearing another tile.
+- **The great shard's glow, checked in the engine:** `Config.Lighting.Steady` (CrossingShard 6) is its manifest glow times the phase's share, without Clear's 1.5 lift south of the Row. Lifted, it would bloom into a halo at night (the manifest's note). Every other piece takes the kit's glow with the lift.
+  - At the crossing, the shard stood at 2.76 while the posts and Lantern Row's kit stood at 1.63 (that hour's shares, 0.46 and 0.68).
+- **Cases:**
+  - logic, "Strip:" (two). The plan names only its manifest's pieces, as often as its budget counts them, with 7 lights each named once. From the gate at -200 the mark lands on the crossing, and the steady glow is the manifest's, above the kit's.
+  - self-test, "World: AR17". No world-report line on the Strip. At the crossing, the mark is within 0.5 of the origin and the shard within 3. The shard takes its steady glow, a post the kit's lifted one, and the steady share is the lifted one's less.
+- **Tested:**
+  - world report sound; the dress report empty, with 126 of 126 laid and 7 lights;
+  - logic 24,007/0 in Studio and offline;
+  - World 79/0, Base 261/0, HUD 419/0, Breaker 179/0;
+  - type check 0 new.
+- **Seen at phone size,** in Studio's device simulator (iPhone 16 Pro, 750 by 401), in `build/scratch/faber/stills/`:
+  - `ar17-crossing-phone.jpg`: from the crossing up the side street to the festival gate, the great shard overhead (day);
+  - `ar17-crossing-strip-phone.jpg`: from the Strip, 78 west, the great shard whole over the mark, the crack leading to it (dusk);
+  - `ar17-spawn-phone.jpg`: the spawn as a player arrives, facing the Breaker;
+  - `ar17-spawn-door-phone.jpg`: the spawn turned to the Festival Door, as research's still had it.
+- **The pale slab on the right horizon past the gate** (research's ask): the Void Shop's grey stand-in, `WorldService`'s "Shop".
+  - It's a 40 by 14 by 28 block in the machines' grey with its clock, just south of the crossing (x -20 to 20, z 30 to 58), about 290 studs from the spawn.
+  - It stands until phase 4's Void Shop.
+  - In `ar17-crossing-strip-phone.jpg` it's the grey box right of the crack.
+- **Modulo's conditions:** nothing in the game takes the crossing from straight above yet (no map screen, minimap or thumbnail of it). Every StripPost's ring holds its shard.
+- **Four facts:**
+  - **Implemented:** yes.
+  - **Tested:** as above.
+  - **Visually reviewed:** my phone captures. Research's read in the game is next.
+  - **Director-accepted:** no.
+
 ## AR18. The mobile inventory: three directions (Modulo, for research's verdict and Faber's read)
 
 Research's order, read at 13:47 by the clock, on the director's package of 13:41: "2 or 3 genuinely distinct directions, before anything is built. Phone landscape, each with its own palette and composition." Judged against research's brief (`docs/research/rework-2026-11-16.md`, part 5): research judges composition and usability, Faber judges feasibility.

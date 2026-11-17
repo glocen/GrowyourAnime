@@ -58,6 +58,7 @@ local DRESS = "LanternRow" -- the kit Lantern Row wears: Config.Kits.LanternRow,
 local DRESS_LIFT = 0.05 -- the kit's floors stand a hair over the paving they cover, so the two never fight at a distance
 local LIGHT_CEILING = 14 -- round 2's lights, the ceiling the kit keeps (AR5, section 2)
 local BASE = "Base" -- the kit every plot wears: Config.Kits.Base, ServerStorage.Templates.BaseKit (AR14)
+local STRIP = "Strip" -- the kit the Strip and the side street wear: Config.Kits.Strip, ServerStorage.Templates.StripKit (AR17)
 local BASE_LEVEL = "1" -- the plan's level laid on every plot, until the base has its levels (TR21)
 local LEVEL_FACE = Font.new("rbxasset://fonts/families/BuilderSans.json", Enum.FontWeight.ExtraBold) -- the HUD's numbers
 local LEVEL_INK = Color3.fromHex("#FFD23E") -- Power's yellow, as the plan's level mark asks
@@ -308,6 +309,52 @@ local function dress(street: Instance, gateZ: number)
 		end
 	end
 	folder.Parent = street
+end
+
+-- Why the Strip's kit can't be laid: none when it can.
+local function stripProblems(): { string }
+	local template = kitTemplate(STRIP)
+	if template == nil then
+		return { `the Strip's template isn't built (ServerStorage.Templates.{STRIP}Kit: tools/studio/KitAssembly)` }
+	end
+	local manifest, plan = kitFiles(STRIP)
+	local problems: { string } = {}
+	for index, placement in plan.placements do
+		local piece = template:FindFirstChild(placement.piece)
+		if manifest.pieces[placement.piece] == nil then
+			table.insert(problems, `placement {index}: "{tostring(placement.piece)}" isn't in the Strip's manifest`)
+		elseif piece == nil or not piece:IsA("BasePart") then
+			table.insert(problems, `the Strip's template has no part {placement.piece}`)
+		end
+	end
+	if template:FindFirstChild("Paving") == nil then
+		table.insert(problems, "the Strip's template has no Paving")
+	end
+	return problems
+end
+
+-- The Strip's kit (AR17): the void's own, from the crossing to the sealed gates and up the side street to the festival's
+-- gate, in Lantern Row's plan's frame (Kit.Place from the gate at `gateZ`), with the plan's seven lights, Shadows off.
+-- Every piece and light is tagged for the client's look and carries its kit, so the street's count leaves them out.
+local function dressStrip(parent: Instance, gateZ: number)
+	local template = kitTemplate(STRIP) :: Instance
+	local manifest, plan = kitFiles(STRIP)
+	local folder = Instance.new("Folder")
+	folder.Name = "Strip dressing"
+	local floorY = PAVED_TOP + DRESS_LIFT
+	for _, placement in plan.placements do
+		local part = (template:FindFirstChild(placement.piece) :: BasePart):Clone()
+		part.Anchored = true
+		part.CFrame = Kit.Place(placement, manifest.pieces[placement.piece], gateZ, floorY)
+		part:SetAttribute("Piece", placement.piece)
+		part:SetAttribute("Kit", STRIP)
+		CollectionService:AddTag(part, Kit.Tag)
+		part.Parent = folder
+	end
+	for _, light in plan.lights do
+		kitLight(light, Kit.Light(light, gateZ, floorY), folder):SetAttribute("Kit", STRIP)
+	end
+	folder.Parent = parent
 end
 
 -- The plan's colours while the base's kit is laid (its stand-ins', the lot's and the ground's), or nil: the plots grey.
@@ -857,13 +904,20 @@ local function lay(folder: Folder)
 	slab(folder, "Ground", -stripEnd, stripEnd, towers, shutZ - 24, GROUND_TOP, if baseLook then baseLook.ground else GREY.Ground)
 	-- The Strip, the side street to the gate, and Lantern Row to the keeper's gate. With the base laid, the Strip and the
 	-- side street wear Lantern Row's paving, as its street does: off the stones onto the plates is coming home (AR14).
+	-- With the Strip's own kit, its own tile (Lantern Row's lifted) and its dressing (AR17).
 	local strip = slab(folder, "Strip", -stripEnd, stripEnd, -stripHalf, stripHalf, PAVED_TOP, GREY.Paved)
 	local sideStreet = slab(folder, "Side street", -rowHalf, rowHalf, gateZ, -stripHalf, PAVED_TOP, GREY.Paved)
-	local stones = kitTemplate(DRESS)
+	local stripHeld = stripProblems()
+	local stones = if #stripHeld == 0 then kitTemplate(STRIP) else kitTemplate(DRESS)
 	local stone = if baseLook and stones then stones:FindFirstChild("Paving") else nil
 	if stone then
 		stone:Clone().Parent = strip
 		stone:Clone().Parent = sideStreet
+	end
+	if #stripHeld == 0 then
+		dressStrip(folder, gateZ)
+	else
+		Log.Info("WorldService", `the Strip stays bare: {table.concat(stripHeld, "; ")}`)
 	end
 	-- The street's own floor carries the walking; dressed, it wears the kit's paving under the bays (AR5's manifest).
 	local streetFloor = slab(folder, "Lantern Row", -rowHalf, rowHalf, keeperZ, gateZ, PAVED_TOP, GREY.Paved)
@@ -1171,12 +1225,23 @@ function WorldService.Init()
 		end
 		local got: { [string]: number } = {}
 		local lights, paper, problems = 0, 0, {}
+		local stripGot: { [string]: number } = {}
+		local stripLights = 0
 		for _, item in CollectionService:GetTagged(Kit.Tag) do
 			if not item:IsDescendantOf(world) or item:GetAttribute("Plot") ~= nil then
 				continue
 			end
 			local piece = item:GetAttribute("Piece")
-			if type(piece) == "string" then
+			if item:GetAttribute("Kit") == STRIP then
+				if type(piece) == "string" then
+					stripGot[piece] = (stripGot[piece] or 0) + 1
+					if item:FindFirstChildOfClass("SurfaceAppearance") == nil then
+						table.insert(problems, `{item:GetFullName()}: no look`)
+					end
+				elseif item:FindFirstChildWhichIsA("Light") then
+					stripLights += 1
+				end
+			elseif type(piece) == "string" then
 				got[piece] = (got[piece] or 0) + 1
 				if item:FindFirstChildOfClass("SurfaceAppearance") == nil then
 					table.insert(problems, `{item:GetFullName()}: no look`)
@@ -1309,6 +1374,33 @@ function WorldService.Init()
 				local street = world:FindFirstChild(name)
 				if street == nil or street:FindFirstChild("Paving") == nil then
 					table.insert(problems, `the {name} wears no paving`)
+				end
+			end
+		end
+		-- The Strip's kit (AR17) against its plan, and its own tile on the Strip and the side street.
+		local stripHeld = stripProblems()
+		if #stripHeld > 0 then
+			table.insert(problems, `the Strip bare: {table.concat(stripHeld, "; ")}`)
+		else
+			local _, stripPlan = kitFiles(STRIP)
+			local stripWant: { [string]: number } = {}
+			for _, placement in stripPlan.placements do
+				stripWant[placement.piece] = (stripWant[placement.piece] or 0) + 1
+			end
+			for piece, count in stripWant do
+				if stripGot[piece] ~= count then
+					table.insert(problems, `the Strip's {piece}: {stripGot[piece] or 0} laid, the plan has {count}`)
+				end
+			end
+			if stripLights ~= #stripPlan.lights then
+				table.insert(problems, `the Strip's lights: {stripLights}, the plan has {#stripPlan.lights}`)
+			end
+			local tile = (kitTemplate(STRIP) :: Instance):FindFirstChild("Paving") :: Texture?
+			for _, name in { "Strip", "Side street" } do
+				local street = world:FindFirstChild(name)
+				local paving = if street then street:FindFirstChild("Paving") :: Texture? else nil
+				if baseLook and tile and (paving == nil or paving.Texture ~= tile.Texture) then
+					table.insert(problems, `the {name} wears another tile than the Strip's`)
 				end
 			end
 		end

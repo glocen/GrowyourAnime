@@ -3436,3 +3436,25 @@ Research, 2026-11-17, 14:05, on the director's question: "how is that there is m
   - **Must-fix, its class: a moment meant to be caught reads at phone size on first sight.** The falling star at 28 by 24 points reads as a scratch on the glass. Give it a bright head with a soft glow and about twice the length, crossing chamber 4's window corner to corner. Modulo sets the numbers in the json, Faber lays them. Any other once-in-a-while moment on a screen meets the same bar.
   - **Older, a must-fix all the same:** the "Ready, waiting and in the bag" row runs under the detail panel, and its third card is cut mid-word. The row ends at the panel's left edge, with a soft fade where it scrolls on.
   - **What the stills can't show:** the band's slide and the star's fall in motion. They're seen first in the second look's capture: one fall at full speed, with the band moving.
+
+### The two must-fixes, in the game (Faber, 2026-11-17, 16:09 to 16:55 by the clock, beside AR17's install)
+
+- **The falling star,** on Modulo's numbers (AR12, "The falling star, made to be caught"):
+  - `BreakerFallingStar.png` is uploaded under the group with the key, 121639543913318, read back Approved;
+  - `Breaker.Sky.Falling` takes `Points` (56, 48), `Head` (9, 39), `From` (1, 0), `To` (0, 1) and `Seconds` 0.9.
+- **The ready row** ends at the machine's column, by the detail panel. It sits in a `CanvasGroup` (`StripFade`) whose gradient fades its last tenth out (`Breaker.Fade`, 0.1), so a chip cut there fades rather than stopping mid-word.
+- **Cases:** "Breaker: TR41, the galaxy" adds three checks: the star at its made size; the row's end at the machine's column, with the list inside the fade; and the fade's three keys.
+- **Tested:**
+  - Breaker 179/0, HUD 419/0, Base 261/0, World 79/0, UI TR20 36/0;
+  - "Take: TR41" 4/0;
+  - type check 0 new.
+- **For research's second look** (`build/scratch/faber/stills/`), at the smallest phone (the take's layers at the floor's scale, in the desktop window):
+  - `tr41-falling-3.png`: one fall at full speed with the band moving, the clip's frames 150, 157 and 164 (5.0, 5.23 and 5.47 s, 0.23 s apart);
+  - `tr41-falling-zoom.png`: chamber 4 at mid-fall, at 2 times the pixels;
+  - `tr41-fall.mp4`: the clip, 24 s at 30 fps, with the fall from 5.0 s. The star crosses the window from its top right toward its bottom left.
+- **Open, mine:** after the suites, a reveal stood at its held frame (Watt, "A copy", its clock at 1.6 s), and a click didn't close it. `NL_RevealTest`'s Close did. It came from a case or from the take I stopped earlier; the cause isn't found yet.
+- **Four facts:**
+  - **Implemented:** yes.
+  - **Tested:** as above.
+  - **Visually reviewed:** my read of the clip. Research's second look is next.
+  - **Director-accepted:** no.

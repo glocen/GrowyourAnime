@@ -9,9 +9,9 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **AR11, Ground Wire's retake:** works. Must-fix (round 2 on the hold): the lock as a pulsing fill on the stopped Shade, the shield as a pulsing glint on the spear's head. Asked of Faber: does a real fight hide the lead behind its target?
 - **Next:** verdicts in motion on AR26's blocks as Faber installs them; sim.py's pool() learns "made" (TR24); attributes.py on the real Config once TR36 lands.
 
-**Faber (builder).** 2026-11-17, 14:37. TR40, Regen in bursts, is built and tested, waiting on research's verdict from the stills and its check of the balance tools (TR40, "Built"). AR22's gear pass is installed (e3c588d). Voidkin work stays parked on branch `parked/ar26-watt-block` (AR26).
-- **Next, in order:** Modulo's AR30 bases at the smallest phone; TR41; AR29's rail and bar on B; TR34's chest on AR24's A; AR23; TR29's three and TR10's captures; TR37 with AR28's Stage I, then emblems, then jewels; TR31 to TR33, TR35, the responsive pass. AR19's six re-uploads when their turn comes.
-- **Open, tests:** ten Base and HUD checks need the base's models, which stand grey since 8858359 (AR16 at 128) until the plan is laid again. Four timing cases are NOT VERIFIED (AR11). The Keeper's "and out on Out" and Pip's skip fail at times. TR20's Breaker hover depends on order.
+**Faber (builder).** 2026-11-17, 16:52. AR17's Strip is installed at 128 and TR41 (a)'s two must-fixes are in, both tested, for research's reads (AR17, "The install, at 128"; TR41, "The two must-fixes, in the game"). The pale slab past the gate is the Void Shop's grey stand-in. Voidkin work stays parked on branch `parked/ar26-watt-block`.
+- **Next, in order:** TR41 (b) to (e); AR29's B, 13 icons; AR30's 25 images; AR31's 38 and TR10's two icons up, then TR10's marker captures; TR34; AR23; TR29 and TR10; TR37 to TR39; TR31 to TR33, TR35, the responsive pass; AR19's six re-uploads.
+- **Open, tests:** four timing cases are NOT VERIFIED (AR11). The Keeper's "and out on Out" and Pip's skip fail at times. TR20's Breaker hover depends on order. A reveal once stayed held after the suites (TR41, "The two must-fixes", Open).
 - **Open, for research:** the target card's light (`CardLightHealth`) keeps its glow ahead of its front. Does it go the same way as the lead's?
 
 **Modulo (assets).** 2026-11-17, 16:41, on Opus 5.5. Voidkin work parked until before launch (the director's word, 11:10): AR26 and AR27 stay as delivered, and Faber holds AR27's upload.
@@ -21,7 +21,7 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **Now:** AR32, the Void Breaker's Stages II and III: two directions, the plan's content check first.
 - **Unchanged:** AR28's Stage I is with Faber, waiting on TR37; its 7 meshes went up with AR16 (3feb5a5). AR19 (db2f086) waits on research's pass and Faber's six re-uploads. AR24's A waits on Faber's TR34 block. Sable is after launch.
 
-**Turns.** Studio: Faber (the game's place, for AR30's bases). Blender: nobody. Timing tests: nobody.
+**Turns.** Studio: Faber (the game's place, for TR41 (b) to (e)). Blender: nobody. Timing tests: nobody.
 
 **The count.** Pieces closed and playable this week: 13. TR2, the circuit in grey (phase 1); Haymaker, on A; the Shade's burst; Pip's Lantern Burst; Lyric's Held Note; TR3, the HUD in the world; TR4, the reveal; AR7, the Lamplighter installed with his fall; his signature; Lantern Burst's exit in 3D (B1); Haymaker's square in 3D (B5); TR18, power in grey; AR12's HUD part 1. Hours are in each piece's entry.
 
@@ -113,6 +113,13 @@ For Faber:
 - Tier 2, research, 2026-11-12, on the director's words: weapons belong to a class, in two hands (Main Hand and Off Hand replace Weapon and Shield), a preset holds a pair per class, a weapon drop is for the lead's class; Combat Power made to be watched, its weights fitted by the simulation; each item kind modelled and rendered to its icon (AR6, phase 3) (`docs/design.md`, "Regalia: gear" and "Combat Power"). Faber: the Stats case's `"Weapon"` source becomes `"Main Hand"` when you next touch it. Faber and Modulo: say in your row what you'd change.
 
 ## Entries
+
+### 2026-11-17, 16:52. AR17: the Strip installed at 128; TR41 (a)'s two must-fixes (Faber)
+
+- **What changed:** the Strip and the side street wear Modulo's kit, laid from the festival gate (12 meshes, 126 placements, 7 lights, the paving). The great shard glows steady, without Clear's lift. The Breaker's falling star is Modulo's redraw, and the ready row fades out at the detail panel.
+- **Where:** `WorldService` (`dressStrip`), `src/storage/StripKit.rbxm`, `Config/Kits/Strip/`, `Config/Lighting.luau` (`Steady`), `BreakerScreen.luau`, `Config/Hud.luau`. Cases: logic "Strip:", self-test "World: AR17", "Breaker: TR41".
+- **Tested:** logic 24,007/0; World 79/0, Base 261/0, HUD 419/0, Breaker 179/0; type check 0 new.
+- **For research:** the phone captures at the spawn and the crossing, and TR41's second look (`build/scratch/faber/stills/ar17-*`, `tr41-falling-3.png`).
 
 ### 2026-11-17, 15:59. AR17: the Strip's plan laid again at 128 (Modulo)
 
@@ -235,27 +242,3 @@ For Faber:
 - **Where:** AR6, "Batch 2" and "Batch 2's fixes"; `build/handoff/Gear/batch2_sheet/gear_batch2_sheet.png`, with `<kind>_sets/` for each kind; `tools/blender/gear_parts.py`, `gear_<kind>_sets.py`, `gear_batch_sheet.py`.
 - **Open:** research's pass on the fixes; then colour and frames, as batch 1's.
 - **For:** research.
-
-### 2026-11-16, 17:40. AR20: C's paint and skies, for Faber (Modulo)
-
-- **What changed:** the base kit out of grey-violet (steel, girders, concrete, deck, floors); the Tower asleep, the far shards and the outcrops painted violet for distance; the ground between plots lifted from #1A1D2E to #6E7290; the base's and the Strip's own dusk and night skies; the Strip's own paving, lifted from Lantern Row's.
-- **Where:** AR20, "Modulo's paint and skies for C"; `build/handoff/Base` (maps, `sky/`, `lighting.json`, `plan.json`, the Tower's mesh); `build/handoff/Strip`; `tools/blender/base_light.py`.
-- **Open:** Faber's uploads and captures, then research's pass in the game.
-
-### 2026-11-16, 17:22. AR20: the base with no mist, less somber, round 1's takes (Modulo)
-
-- **What changed:** today's look and three takes for the base and the map round it, at day, dusk and night: A, the fill and the exposure lifted; B, the yard re-toned out of grey-violet, the glow brighter, the far shards and the Tower asleep painted for distance; C, B under lighter skies. Each take's numbers are in Roblox's terms.
-- **Where:** AR20; `build/handoff/Base/base_mood.png` and `base_mood_shard.png`; `tools/blender/base_mood.py`.
-- **Open:** research's pick, then Faber sets it. Round 2 (the empty lots, C's turned fill) waits on a go to render. The run was stopped at 17:20, the PC low on memory.
-
-### 2026-11-16, 16:55. AR19: the Void Mill's Stage I as kit pieces (Modulo)
-
-- **What changed:** the generator in the base kit is the Void Mill's Stage I. Generator stands still; GeneratorWheel turns on its axle 10 up; GeneratorArc1 to 8 are the gauge's still steps behind the band, shown or hidden by the generation; GeneratorDemand turns about the axle by the demand's share, since the rail is an arc. GeneratorRotor and GeneratorRing are gone.
-- **Where:** AR19, "Stage I as kit pieces"; `tools/blender/base_mill.py` (new, also the direction sheet's source); `build/handoff/Base`.
-- **For Faber:** the install, the turn's sense and the collision in the manifest's notes. The upload check passed.
-
-### 2026-11-16, 15:37. AR19's fixes 1 to 3 within A: the Void Mill (Modulo)
-
-- **What changed:** the gauge is the wheel. The buckets light from the well up the gate's right to the collector's shoe as the generation climbs, against a bone diamond with a lit pip on a rail outside the rim for the demand, and the dial is gone. A concrete sill, a trestle, the front bearing and the collector arm stand in front; the band is deeper, the hub filled and bolted. Stage II shows its gear and a housed dynamo, Stage III the casing and two.
-- **Where:** AR19, "Fixes 1 to 3 within A, delivered"; `tools/blender/generator_directions.py` (`A` mode); `build/handoff/Base/generator/generator_A_fixes.png`.
-- **For research:** the pass. **For Faber, later:** the lit arc is a still glow piece cut in steps; the diamond slides with the demand.

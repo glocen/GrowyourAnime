@@ -3167,3 +3167,45 @@ Research's request, 2026-11-17, 11:17, item 7 of phase 3's order (`docs/producti
 **Checks:** the logic cases (a rank's gain, its cost, never twice on a repeat, the move across, the tray's cap, the away time, the conversion); the self-test of both screens; the UI lint on the smallest phone; research's verdict in grey from a phone capture.
 
 **Order in the queue:** item 7, after TR29's fixes and TR10's captures. Emblems (TR38) and jewels (TR39) follow, written by research before Faber reaches them.
+
+## TR38. War Emblems (Faber, after TR37)
+
+Research's request, 2026-11-17, 12:00, item 7 of phase 3's order. The design: `docs/design.md`, "Regalia: gear" (sockets, the move across). Emblems are 11 of a full build (`docs/balance.md`, "Where power comes from").
+
+**Feel line:** the player drops an emblem into an empty socket on an item, the item's card shows the gain, and the Combat Power ticks up by a whole number.
+
+**The rules (research's, tier 2):**
+- **An emblem** has a rarity (Common, Uncommon and Rare at launch [D]), a level tier fixed at the drop, and one stat: a flat line of Strength, Endurance or a Battle Attribute. Its size is its rarity's budget times G(tier), priced by Combat Power as an item's line is, so every stat's emblem of one rarity is worth the same.
+- **Sockets** by the item's rarity: one on Common, two on Uncommon, three on Rare, four on Epic and above [D]. Putting one in or taking one out is free [D]. They move across on equip with the rank and the jewel (TR37).
+- **Three of a kind make one better:** three emblems of the same stat and rarity combine into one of the next rarity, at the highest tier of the three. It never fails, and Rare is the top at launch. Duplicates always have a use.
+- **Sources:** chests (`Config.Chests`, a new kind of reward), elites, and the Void Shop when it comes (phase 4).
+- **The server decides,** in one step: a socket, a removal or a combine never duplicates or loses an emblem on a repeat.
+
+**The seeds** (research's, before Faber reaches this): each rarity's budget as a share of an item line, the drop chances, the chests' share.
+
+**The block contains:** `Rules.Emblems` with its cases; the bag's Emblems tab filled; the item card's sockets (empty marks from AR22, filled with the emblem's icon and its line); a tap-to-socket and a tap-to-remove; the combine on the Emblems tab.
+
+**Waits:** the emblem icons (Modulo, phase 3 order item 4); Epic and above; the shop.
+
+**Checks:** logic cases (a line's size, the sockets by rarity, the combine, the move across, never twice on a repeat); the self-test; the UI lint on the smallest phone; research's verdict in grey from a phone capture.
+
+## TR39. Jewels (Faber, after TR38)
+
+Research's request, 2026-11-17, 12:00, item 7 of phase 3's order. The design: `docs/design.md`, "Regalia: gear". Jewels are 7 of a full build, and they carry the percent stats [D].
+
+**Feel line:** a rare jewel drops from the keeper. The player sets it in their best item's one jewel socket, and their criticals hit harder from the next fight.
+
+**The rules (research's, tier 2):**
+- **A jewel** carries one percent stat: Critical Damage, Critical Immunity or Lifesteal. It has a level, and its percent grows linearly with it. Lifesteal stays under `Config.Stats.Lifesteal.Cap`, and Critical Damage has no ceiling [D, 2026-11-15].
+- **One socket** on items of Rare and above [D]. In and out is free, and it moves across on equip (TR37).
+- **Three of a kind make one higher:** three jewels of the same stat and level combine into one of the next level. It never fails. That's the long climb (the director's "like TCP": a gem levels from identical gems).
+- **Sources:** elites, keepers and the Tower [the design's], never ordinary Shades. Combat Power counts each by its weight times G at the block's level (`Config.Stats.Power.ByLevel`).
+- **The server decides,** in one step, as for emblems.
+
+**The seeds** (research's, before Faber reaches this): the percent per level for each stat, the drop chances by source and level, the levels reachable at launch.
+
+**The block contains:** `Rules.Jewels` with its cases; the bag's Jewels tab; the item card's jewel socket (Rare and above); the socket and the combine as for emblems; the percent shown honestly on the stat sheet's sources (`docs/ui.md`, "Stats, shown honestly").
+
+**Waits:** the jewel icons (Modulo); the shop.
+
+**Checks:** as TR38's, plus a case that Lifesteal never passes its cap whatever is socketed.

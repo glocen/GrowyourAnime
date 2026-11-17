@@ -7615,6 +7615,29 @@ Each take's light is its own glow: its lines bright, and what lies deep (the vei
   - `src/shared/Config/Kits/Base/Plan.json` takes the handoff's `plan.json` as it is. The two files matched until now, so those 4 lines are the whole change.
   - The three glow pictures are uploaded again under the group.
 
+**The colour pass on five, in motion: two takes** (Modulo, 2026-11-17, 01:24 to 01:33 by the clock). A throwaway in Blender, from the game's camera, in the base's own scene with the masts moved: `tools/blender/base_door_colour.py`. **Nothing was seen in Studio.** The motion and shapes are the motion take's five, unchanged, so section 7's C conditions hold as checked: no shape was added. In `build/handoff/Base/`:
+- `door_colour_A.mp4` and `door_colour_B.mp4`: the way in, turning, 6 seconds at 24 frames a second, 960 by 540.
+- `door_colour_contact_A.png` and `door_colour_contact_B.png`: the Door every half second.
+- `door_colour_phone.png`: both takes at a phone's width (360), every 1.5 seconds, A on top.
+- `door_colour_stills.png`: from the spawn and three-quarter on, A on top.
+
+**What both takes share:**
+- The stone is the void machines' own (`abyss`), so the Door belongs to the base, and only its light is warm.
+- Each line keeps its hue. Each glow is held low enough not to burn white, and the disc is a pale core, not a white blob.
+- The three lights stay as the motion take had them. The floor light at the mouth now stands just past the step (it sat inside it) and is stronger. In Blender it shows only as a faint warm spot at the step, because the deck's own glow drowns it. In the game it's the PointLight Faber sets.
+
+**The two takes:**
+- **A, warm all through:** the mouth's line is a deep amber (`#FF9038`). Each ring behind is paler (`#FFA448`, `#FFB65C`, `#FFC977`, `#FFDA98`), to a pale gold core (`#FFDDA4`). The eye runs from the saturated mouth to the pale light it comes from. Its lights are amber.
+- **B, void to warm:** the mouth's line is the base's violet (`#A97CFF`). The rings behind pass through a pale lavender and a near-white into gold (`#C9B2FF`, `#F2E8F4`, `#FFDDA2`, `#FFC56E`), with a gold core (`#FFCB7A`). The light before it is violet, the rest warm.
+
+**Modulo's read, from the frames (the verdict in motion is research's):**
+- **A is the strongest.** From the spawn it's the one warm thing in a base of cyan, violet and white, a landmark you pick out first. At a phone's width it's an amber ring round a swirl that pales into a warm core, and the swirl still never lines up.
+- **B tells the way through but loses the pull.** At a distance its violet mouth reads like the generator's light, so the Door joins the void machines. Its warmth is only the core, small at a phone's width.
+- **Watch, for the verdict:** A's front line is the one full circle of saturated colour, round a pale disc. In these frames the swirl between them keeps it from reading as a target. Section 7's C conditions keep the front ring plain, so if it does read as one, the fix is in the rings' colours: the mouth's line darker, or the deep arcs brighter.
+- **The mast:** from the way in it stands clear of the Door's left edge, with its head reaching toward the Door's crown but not crossing it.
+
+**Four facts:** implemented, as a throwaway. Tested: the renders ran in Blender; nothing is in Studio. Visually reviewed: Modulo's read above, from frames. Research's verdict in motion comes next. Director-accepted: no.
+
 ### Faber's install: AR14's deliveries 4 to 6, sections 1 to 3 here, and the bare lots (2026-11-15, to 22:50)
 
 The look is reopened since (AR16), so this install stands in the dev build until AR16's verdict, and its route carries the new look.

@@ -134,6 +134,8 @@ local function make(key: string, marker: Instance, lines: { string }, look: any,
 		local low, high = boxOf(marker)
 		return low, high
 	end)
+	-- nor over the player's own avatar: at the plot's gate, the Door's plate stood on it (AR16, 2026-11-17)
+	World.Off(frame)
 	if group then
 		World.Apart(frame, group)
 	end

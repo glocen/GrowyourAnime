@@ -18,10 +18,12 @@ return {
 	-- Festival Door, not the walk, takes a player to the grounds.
 	Plots = {
 		Count = 8,
-		Across = 12.5, -- 200 studs, open onto the Strip
-		Deep = 12.5, -- 200 studs. Where each machine stands is the base plan's layout (Config.Kits.Base, AR16)
+		-- 128 studs square (research's verdict of 2026-11-17, 12:01, on part 7's trial; AR16): until the base plan is laid
+		-- again at 128, the plot stands grey on Fit's layout for its size. 144 is the written fallback (docs/design.md).
+		Across = 8, -- 128 studs, open onto the Strip
+		Deep = 8, -- 128 studs. Where each machine stands is the base plan's layout (Config.Kits.Base, AR16)
 		Kept = 1.5, -- 24 studs at the back, kept for the Forge, the Lab and the Condenser (phase 3)
-		Between = 3, -- 48 studs between neighbours
+		Between = 2, -- 32 studs between neighbours
 		Behind = 1, -- 16 studs of path behind a plot, then its Tower
 		Tower = 2, -- the Tower's footprint, 32 studs, left empty (phase 3)
 		-- The size the base plan's layout and its floor pictures are drawn for (AR16). A plot of another size stands grey,

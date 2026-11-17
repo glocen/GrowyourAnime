@@ -56,9 +56,10 @@ local SELF_OPEN_EVERY = 0.5 -- seconds between looks for a shard that opens itse
 local SELF_OPEN_AFTER_NO = 5 -- seconds before asking again once the server said no
 local REACH = 140 -- studs from the camera a base's plates show: the plot and the Strip, never the street
 local PROMPT_REACH = 10 -- studs from a prompt's spot it can be pressed
--- Studs, flat, from a machine's spot within which its plate speaks without news: the prompt's reach and a few steps. The
--- spawn stands 14 from the battery, so a player arriving home sees no plate that has nothing to say. A plate lets go
--- NEAR_SLACK farther out than it takes hold, so it never flickers at the edge.
+-- Studs, flat, from a machine's spot within which its plate speaks: the prompt's reach and a few steps. From farther, the
+-- next step over the dock carries a machine's news, with its marker on the machine, and its plate is quiet (research's
+-- must-fix on AR16, 2026-11-17: on arrival the plates stacked over the avatar and said the Breaker's count twice). A plate
+-- lets go NEAR_SLACK farther out than it takes hold, so it never flickers at the edge.
 local NEAR = PROMPT_REACH + 3
 local NEAR_SLACK = 2
 local BREAKER_UP = 7 -- studs over the Breaker's marker its prompt stands
@@ -170,7 +171,7 @@ local function prompt(parent: Instance, name: string, object: string, actionText
 	return p
 end
 
--- Whether a spot's plate speaks now: it has news, or the avatar stands near it.
+-- Whether a spot's plate speaks now: the avatar stands near it. Its news only lights it.
 local function speaks(spot: Spot): boolean
 	local root = Parts.Root(player.Character)
 	if root == nil then
@@ -179,7 +180,7 @@ local function speaks(spot: Spot): boolean
 		local gap = root.Position - spot.Anchor.Position
 		spot.Near = Vector2.new(gap.X, gap.Z).Magnitude <= (if spot.Near then NEAR + NEAR_SLACK else NEAR)
 	end
-	return spot.News or spot.Near
+	return spot.Near
 end
 
 -- A plate over `anchor`, `lift` studs higher: a panel of `lines` text lines, filled by the caller, shown while `shown()`.
@@ -192,6 +193,8 @@ local function plate(name: string, anchor: Part, lines: number, width: number, s
 	World.Below(frame)
 	-- And never over another machine's: from the spawn, AR16's star stands bay 2 right behind the Breaker.
 	World.Apart(frame, "Base")
+	-- Nor over the player's own avatar: under the band on a phone, a plate over a machine ahead stood on its head.
+	World.Off(frame)
 	local panel = Panel.new({ Name = "Panel", Size = UDim2.fromScale(1, 1), Parent = frame })
 	panel.Visible = false -- until setLines gives it a line: at a join the save's copy comes a moment after the plot
 	Panel.Pad(panel, 4, 10) -- clear of the panel's cut corner and its lit edge at the sides (TR3's take)
@@ -778,9 +781,11 @@ function BaseController.Refresh()
 	layStarters(view)
 	local now = Read.Base(view, workspace:GetServerTimeNow())
 	if breaker then
-		-- Only what's happening: what breaks and when, what's ready, how many wait (docs/ui.md, rule 2).
+		-- Only what's happening: what breaks and when, what's ready, how many wait (docs/ui.md, rule 2). What's ready is
+		-- the next step's line while it points here, so the plate leaves it out: one fact, said once.
+		local step = HudController.Step()
 		local lines = {}
-		if #view.Base.Ready > 0 then
+		if #view.Base.Ready > 0 and not (step and step.Target == "Breaker") then
 			table.insert(lines, `Ready to open: {#view.Base.Ready}`)
 		end
 		for _, chamber in now.Data.Base.Chambers do
@@ -792,12 +797,12 @@ function BaseController.Refresh()
 		if #now.Data.Base.Line > 0 then
 			table.insert(lines, `Waiting: {#now.Data.Base.Line}`)
 		end
-		if #lines == 0 then
+		if #lines == 0 and #view.Base.Ready == 0 then
 			table.insert(lines, "Void Breaker · idle")
 		end
 		setLines(breaker.Plate, lines)
-		-- Lit, and seen from anywhere on the plot, while a shard waits in the bag, until it's in (research's read of TR2's
-		-- fixes, 2026-11-12), or one waits to be opened.
+		-- Lit while a shard waits in the bag, until it's in (research's read of TR2's fixes, 2026-11-12), or one waits to
+		-- be opened. Seen only near: from afar the next step says it (research's must-fix on AR16, 2026-11-17).
 		local bagged = false
 		for _, count in view.Bag.Shards do
 			bagged = bagged or count > 0
@@ -842,14 +847,17 @@ function BaseController.Refresh()
 	for id in view.Voidkin do
 		free = free or Read.Role(view, id) == ""
 	end
+	local step = HudController.Step()
 	for index, spot in bays do
 		local bay = view.Base.Bays[index]
 		local worker = if bay and bay.Worker ~= "" then view.Voidkin[bay.Worker] else nil
-		setLines(spot.Plate, {
-			if bay == nil then `Bay {index} · locked`
+		-- An empty bay the next step sends a Voidkin to says nothing: the step's line says it, and the prompt is there.
+		local sent = step ~= nil and step.Target == "Bay" and step.Bay == index
+		local line: string? = if bay == nil then `Bay {index} · locked`
 			elseif worker then `{Read.VoidkinName(worker)} · {Read.Kw(Power.Output(worker))}`
-			else `Bay {index} · nobody works here`,
-		})
+			elseif sent then nil
+			else `Bay {index} · nobody works here`
+		setLines(spot.Plate, if line then { line } else {})
 		spot.News = bay ~= nil and worker == nil and free
 		local panel = spot.Plate:FindFirstChild("Panel")
 		if panel and panel:IsA("GuiObject") then

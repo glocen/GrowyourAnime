@@ -1150,8 +1150,9 @@ function WorldService.Init()
 	-- The dressing against its plan: every piece laid as often as the plan has it, each with its look, the plan's lights,
 	-- and the grey look under it hidden; then each plot against its base level's plan (AR14), its lights and its level's
 	-- number; a plot no one owns, its bare lot. Empty when it's whole; one line when the street or the plots are grey, and
-	-- why.
-	DebugService.Register("DressReport", function(): { string }
+	-- why. ("DressReport", nil, "Street") leaves out the plots' grey trial while their size isn't the plan's (research's 128
+	-- of 2026-11-17, until the base plan is laid again at 128), for the street's case.
+	DebugService.Register("DressReport", function(_who: any, only: any): { string }
 		local world = workspace:FindFirstChild(WORLD)
 		if world == nil then
 			return { "no world" }
@@ -1206,7 +1207,10 @@ function WorldService.Init()
 		local held = baseProblems()
 		local plots = world:FindFirstChild("Plots")
 		if #held > 0 or plots == nil then
-			table.insert(problems, `plots grey: {table.concat(held, "; ")}`)
+			local trial = plots ~= nil and (WorldConfig.Plots.Across ~= WorldConfig.Plots.Drawn or WorldConfig.Plots.Deep ~= WorldConfig.Plots.Drawn)
+			if not (only == "Street" and trial) then
+				table.insert(problems, `plots grey: {table.concat(held, "; ")}`)
+			end
 		else
 			local _, basePlan = kitFiles(BASE)
 			local level = basePlan.levels[BASE_LEVEL]

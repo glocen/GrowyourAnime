@@ -767,9 +767,11 @@ end
 -- The next step over the dock, in the Voidkin's colour, and its marker in the world (TR24's fix 1; Rules.Hud.NextStep):
 -- what to do next at every step of the first session, the shards' hint among them ("into the Breaker", only at the base:
 -- the director, 2026-11-15), which stays after it.
+local shownStep: Hud.Step? = nil
 local function showChip(view: Profile.View)
 	-- nothing in a keeper's try: the fight has the screen
 	local step = if player:GetAttribute("Try") ~= nil then nil else Hud.NextStep(stepState(view))
+	shownStep = step
 	chip.Visible = step ~= nil
 	if step then
 		chipText.Text = step.Line
@@ -1286,6 +1288,11 @@ end
 -- For tests: the keeper's bar's trail and fill, shares of the bar (UI.BossBar.Trail).
 function HudController.KeeperTrail(): (number, number)
 	return BossBar.Trail(keeperBar)
+end
+
+-- The next step over the dock now, or nil: a machine's plate leaves out the fact it says (BaseController).
+function HudController.Step(): Hud.Step?
+	return shownStep
 end
 
 -- For tests: where a step's marker stands (stepTargets): a "Bay" step's, the bay it names on the player's plot.

@@ -1074,9 +1074,10 @@ local cases = {
 		Name = "World: TR8, Lantern Row wears its kit whole, the plan's lights with it, the grey look under it hidden",
 		Stay = true,
 		Run = function(t: any)
-			local problems = t.Server("DressReport")
+			-- "Street": the plots' grey trial left out while their size isn't the base plan's (128, until it's laid again)
+			local problems = t.Server("DressReport", "Street")
 			local first = if type(problems) == "table" then problems[1] else nil
-			t.Check("the dressing report is empty", type(problems) == "table" and #problems == 0, if first then `{first} (and {#problems - 1} more)` else nil)
+			t.Check("the dressing report is empty, but for the plots' grey trial", type(problems) == "table" and #problems == 0, if first then `{first} (and {#problems - 1} more)` else nil)
 			-- The paper as this client shows it (research's TR8 verdict): each box streamed in stands in Config.Lighting.Paper's
 			-- band over the paving, in its tint (its rate is the logic case's).
 			streamed(t, "Elite")
@@ -6389,7 +6390,9 @@ local cases = {
 		end,
 	},
 	{
-		Name = "Base: the plot's plates speak only near their machine or lit with news, and the battery's says only its name",
+		-- Research's must-fix on AR16 (2026-11-17): a world plate never stands over the player's own avatar, and one fact
+		-- shows once on the screen. From afar, a machine's news is the next step's line over the dock; its plate only lights.
+		Name = "Base: the plot's plates speak only near their machine, never over the avatar nor saying the next step's fact, and the battery's says only its name",
 		Stay = true, -- it moves the avatar itself; the next case's reset takes it back to the pad
 		Run = function(t: any)
 			local view = ProfileController.Get()
@@ -6447,20 +6450,25 @@ local cases = {
 				end
 				return out
 			end
-			-- Every plate whose spot is neither near nor lit is hidden; each spot's news is the save's.
+			-- Every plate whose spot isn't near is hidden, news or not, and none that shows stands over the avatar; each spot's
+			-- news is the save's, and lights its plate.
 			local function quiet(where: string)
 				local want = news()
-				local wrong, loud = {}, {}
+				local wrong, loud, over = {}, {}, {}
 				for name, spot in BaseController.Says() do
 					if spot.News ~= want[name] or lit(name) ~= want[name] then
 						table.insert(wrong, `{name} {spot.News}/{lit(name)}, the save {want[name]}`)
 					end
-					if not spot.News and not spot.Near and plateOf(name).Visible then
+					if not spot.Near and plateOf(name).Visible then
 						table.insert(loud, name)
+					end
+					if plateOf(name).Visible and World.OnAvatar(plateOf(name)) then
+						table.insert(over, name)
 					end
 				end
 				t.Check(`{where}: each plate's news and its light are the save's`, #wrong == 0, table.concat(wrong, "; "))
-				t.Check(`{where}: a plate neither near nor with news hides`, #loud == 0, table.concat(loud, ", "))
+				t.Check(`{where}: a plate not near hides, news or not`, #loud == 0, table.concat(loud, ", "))
+				t.Check(`{where}: no plate stands over the avatar`, #over == 0, table.concat(over, ", "))
 			end
 			local function nearOnes(): string
 				local list = {}
@@ -6479,9 +6487,9 @@ local cases = {
 
 			stand(battery.Ground + back * 6, battery.Ground)
 			t.Check("beside the battery, only it is near", nearOnes() == "Battery", nearOnes())
-			t.Check("and its plate shows", waitFor(t, 1, function(): boolean
-				return plateOf("Battery").Visible
-			end))
+			t.Check("and its plate shows, unless it would stand over the avatar", waitFor(t, 1, function(): boolean
+				return plateOf("Battery").Visible or World.OnAvatar(plateOf("Battery"))
+			end), if plateOf("Battery").Visible then "shown" else "hidden over the avatar")
 			local line = plateOf("Battery"):FindFirstChild("Line1", true) :: TextLabel?
 			t.Check("saying only its name: the Electricity pill has the count", line ~= nil and line.Text == "Battery", if line then line.Text else "no line")
 			quiet("beside the battery")
@@ -6495,17 +6503,25 @@ local cases = {
 
 			stand(breaker.Ground + back * 8, breaker.Ground)
 			t.Check("beside the Breaker, it's near", BaseController.Says().Breaker.Near)
-			t.Check("and its plate shows", waitFor(t, 1, function(): boolean
-				return plateOf("Breaker").Visible
-			end))
+			t.Check("and its plate shows, unless it would stand over the avatar", waitFor(t, 1, function(): boolean
+				return plateOf("Breaker").Visible or World.OnAvatar(plateOf("Breaker"))
+			end), if plateOf("Breaker").Visible then "shown" else "hidden over the avatar")
+			quiet("beside the Breaker")
+			-- One fact once: what's ready is the next step's line while it points at the Breaker, so the plate leaves it out.
+			local ready = #(ProfileController.Get() :: any).Base.Ready
+			local step = HudController.Step()
+			if ready > 0 and step and step.Target == "Breaker" then
+				local first = plateOf("Breaker"):FindFirstChild("Line1", true) :: TextLabel?
+				t.Check(`{ready} ready, said by the next step: the Breaker's plate leaves the count out`, first ~= nil and string.find(first.Text, "Ready", 1, true) == nil, if first then first.Text else "no line")
+			end
 
-			-- News reaches the far side of the plot.
+			-- From afar, news lights a plate and leaves it quiet: the next step says it.
 			stand(battery.Ground + back * 24, breaker.Ground)
 			local shard = "named_watt"
 			local had = news().Breaker
 			t.Check("a shard goes in the bag", t.Server("BaseGive", shard, 1).Ok == true)
-			t.Check("far off, the Breaker's plate lights and shows", waitFor(t, ANSWER, function(): boolean
-				return BaseController.Says().Breaker.News and lit("Breaker") and plateOf("Breaker").Visible
+			t.Check("far off, the Breaker's plate lights and stays quiet", waitFor(t, ANSWER, function(): boolean
+				return BaseController.Says().Breaker.News and lit("Breaker") and not plateOf("Breaker").Visible
 			end))
 			quiet("with a shard in the bag")
 			t.Check("the shard comes back out", t.Server("BaseGive", shard, -1).Ok == true)
@@ -6515,8 +6531,8 @@ local cases = {
 			local worker = view.Base.Bays[1] and view.Base.Bays[1].Worker or ""
 			if worker ~= "" and says.Bay1 then
 				t.Check("bay 1's worker steps out", ProfileController.Act("SetWorker", { Bay = 1, Voidkin = "" }).Ok == true)
-				t.Check("far off, bay 1 lights and shows: a free Voidkin could work it", waitFor(t, ANSWER, function(): boolean
-					return BaseController.Says().Bay1.News and lit("Bay1") and plateOf("Bay1").Visible
+				t.Check("far off, bay 1 lights and stays quiet: a free Voidkin could work it", waitFor(t, ANSWER, function(): boolean
+					return BaseController.Says().Bay1.News and lit("Bay1") and not plateOf("Bay1").Visible
 				end))
 				t.Check("the worker goes back", ProfileController.Act("SetWorker", { Bay = 1, Voidkin = worker }).Ok == true)
 				t.Check("and bay 1 is quiet again", waitFor(t, ANSWER, function(): boolean

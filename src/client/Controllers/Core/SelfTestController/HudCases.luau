@@ -614,8 +614,25 @@ function HudCases.Cases(given: Given): { any }
 					return humanoid ~= nil and humanoid.FloorMaterial ~= Enum.Material.Air
 				end))
 				t.Wait(PLATE_TICK * 2)
-				local point = World.Where(plate)
+				-- A plate speaks only near its machine (research's must-fix on AR16, 2026-11-17). The camera keeps the spawn's
+				-- place, and the avatar steps beside the Breaker, aside from the camera's line, out of the plate's way.
 				local camera = workspace.CurrentCamera
+				local says = BaseController.Says()
+				local breakerSpot, batterySpot = says.Breaker, says.Battery
+				local near = false
+				if camera and breakerSpot and batterySpot then
+					camera.CameraType = Enum.CameraType.Scriptable
+					local flat = batterySpot.Ground - breakerSpot.Ground
+					local back = Vector3.new(flat.X, 0, flat.Z).Unit
+					local side = Vector3.new(-back.Z, 0, back.X)
+					t.Server("TestStandAt", breakerSpot.Ground + side * 9 + Vector3.new(0, 3, 0), breakerSpot.Ground)
+					near = waitFor(t, 1, function(): boolean
+						return BaseController.Says().Breaker.Near
+					end)
+				end
+				t.Check("the avatar beside the Breaker: its plate speaks", near)
+				t.Wait(PLATE_TICK)
+				local point = World.Where(plate)
 				t.Check("its point", point ~= nil and camera ~= nil)
 				if point and camera then
 					camera.CameraType = Enum.CameraType.Scriptable

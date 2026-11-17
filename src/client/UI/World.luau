@@ -24,10 +24,14 @@
 --   World.Clear(plate, box)                   never over the landmark it names: box() its box on the screen, viewport
 --                                             pixels; where the band, the lead's corner or its group set it over the box,
 --                                             it hides (research's must-fix on AR15, 2026-11-17)
+--   World.Off(plate)                          never over the player's own avatar: where it would stand over the avatar's
+--                                             box on the screen, it hides (research's must-fix on AR16, 2026-11-17: the
+--                                             base's plates stacked over the avatar on arrival)
 --   World.Remove(plate)
 --   World.Where(plate)                        the world point it stands over now, or nil: for tests
 
 local GuiService = game:GetService("GuiService")
+local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
 
 local HudConfig = require(game:GetService("ReplicatedStorage").Shared.Config.Hud)
@@ -37,11 +41,13 @@ local Screen = require(script.Parent.Kit.Screen)
 
 local World = {}
 
-type Plate = { Frame: Frame, Where: () -> Vector3?, Reach: number, Shift: Vector2, Below: boolean, Open: boolean, Slide: number?, Drop: number?, Swell: UIScale?, Apart: string?, Clear: (() -> (Vector2?, Vector2?))? }
+type Plate = { Frame: Frame, Where: () -> Vector3?, Reach: number, Shift: Vector2, Below: boolean, Open: boolean, Slide: number?, Drop: number?, Swell: UIScale?, Apart: string?, Clear: (() -> (Vector2?, Vector2?))?, Off: boolean? }
 -- A plate on the screen, authored pixels from the layer's corner: its middle, its foot, half its width, its height; and how
 -- far its point stands from the camera, if known.
 export type Row = { Frame: Frame, Middle: number, Foot: number, Half: number, Tall: number, Depth: number? }
 export type Span = { Left: number, Right: number, Edge: number } -- a piece of the band, its margin included, authored pixels
+-- A plate kept off a box on the screen (World.Clear's landmark, World.Off's avatar): where it stands, authored pixels.
+type Kept = { Box: () -> (Vector2?, Vector2?), Middle: number, Foot: number, Half: number, Tall: number }
 
 local plates: { [Frame]: Plate } = {}
 local band: number? = nil -- the top band's lower edge, margin included: the cards and the pills that show (HudController)
@@ -119,6 +125,53 @@ function World.Clear(frame: Frame, box: () -> (Vector2?, Vector2?))
 	if plate then
 		plate.Clear = box
 	end
+end
+
+function World.Off(frame: Frame)
+	local plate = plates[frame]
+	if plate then
+		plate.Off = true
+	end
+end
+
+-- The player's own avatar on the screen: its box's corners in the viewport's pixels, or nil while it's gone or behind the
+-- camera. The model's box, as Studio draws its selection, so a hat or a held thing counts.
+function World.AvatarBox(): (Vector2?, Vector2?)
+	local camera = workspace.CurrentCamera
+	local character = Players.LocalPlayer.Character
+	if camera == nil or character == nil or character.PrimaryPart == nil then
+		return nil, nil
+	end
+	local middle, size = character:GetBoundingBox()
+	local low, high = Vector2.new(math.huge, math.huge), Vector2.new(-math.huge, -math.huge)
+	local seen = false
+	for _, x in { -0.5, 0.5 } do
+		for _, y in { -0.5, 0.5 } do
+			for _, z in { -0.5, 0.5 } do
+				local point = camera:WorldToViewportPoint(middle * (size * Vector3.new(x, y, z)))
+				if point.Z > 0 then
+					seen = true
+					low = low:Min(Vector2.new(point.X, point.Y))
+					high = high:Max(Vector2.new(point.X, point.Y))
+				end
+			end
+		end
+	end
+	if not seen then
+		return nil, nil
+	end
+	return low, high
+end
+
+-- For tests: whether a frame, where it stands (shown or hidden), crosses the avatar's box on the screen.
+function World.OnAvatar(frame: GuiObject): boolean
+	local low, high = World.AvatarBox()
+	if low == nil or high == nil then
+		return false
+	end
+	local p0 = frame.AbsolutePosition + GuiService:GetGuiInset()
+	local p1 = p0 + frame.AbsoluteSize
+	return p0.X < high.X and p1.X > low.X and p0.Y < high.Y and p1.Y > low.Y
 end
 
 -- No row covers another: the one lowest on the screen, the nearest, stands at its point, and each one above it takes the
@@ -237,7 +290,8 @@ RunService:BindToRenderStep("NL_WorldPlates", Enum.RenderPriority.Camera.Value +
 		return
 	end
 	local groups: { [string]: { Row } } = {} -- the plates kept apart, by group, where each would stand
-	local clear: { [Frame]: { Box: () -> (Vector2?, Vector2?), Middle: number, Foot: number, Half: number, Tall: number } } = {}
+	local clear: { [Frame]: Kept } = {}
+	local off: { [Frame]: Kept } = {}
 	for frame, plate in plates do
 		if frame.Parent == nil then
 			plates[frame] = nil
@@ -308,6 +362,10 @@ RunService:BindToRenderStep("NL_WorldPlates", Enum.RenderPriority.Camera.Value +
 			local swell = if plate.Swell then plate.Swell.Scale else 1
 			clear[frame] = { Box = plate.Clear, Middle = on.X / scale + shift.X, Foot = on.Y / scale + shift.Y, Half = frame.Size.X.Offset * swell / 2, Tall = frame.Size.Y.Offset * swell }
 		end
+		if plate.Off then
+			local swell = if plate.Swell then plate.Swell.Scale else 1
+			off[frame] = { Box = World.AvatarBox, Middle = on.X / scale + shift.X, Foot = on.Y / scale + shift.Y, Half = frame.Size.X.Offset * swell / 2, Tall = frame.Size.Y.Offset * swell }
+		end
 		local group = plate.Apart
 		if group then
 			local swell = if plate.Swell then plate.Swell.Scale else 1
@@ -327,17 +385,24 @@ RunService:BindToRenderStep("NL_WorldPlates", Enum.RenderPriority.Camera.Value +
 			if kept and foot then
 				kept.Foot = foot
 			end
+			local avoided = off[row.Frame]
+			if avoided and foot then
+				avoided.Foot = foot
+			end
 		end
 	end
-	-- Last, a plate over the landmark it names hides: where it stands, in authored pixels on the layer, against the box,
-	-- a viewport's pixels less the inset and the layer's corner (as `on` is).
-	for frame, kept in clear do
-		local ok, low, high = pcall(kept.Box)
-		if ok and low and high then
-			local left, top = (low.X - inset.X - corner.X) / scale, (low.Y - inset.Y - corner.Y) / scale
-			local right, bottom = (high.X - inset.X - corner.X) / scale, (high.Y - inset.Y - corner.Y) / scale
-			if kept.Middle - kept.Half < right and kept.Middle + kept.Half > left and kept.Foot - kept.Tall < bottom and kept.Foot > top then
-				frame.Visible = false
+	-- Last, a plate over the landmark it names hides, and one kept off the avatar where it would stand over it: where it
+	-- stands, in authored pixels on the layer, against the box, a viewport's pixels less the inset and the layer's corner
+	-- (as `on` is).
+	for _, each: { [Frame]: Kept } in { clear, off } do
+		for frame, kept in each do
+			local ok, low, high = pcall(kept.Box)
+			if ok and low and high then
+				local left, top = (low.X - inset.X - corner.X) / scale, (low.Y - inset.Y - corner.Y) / scale
+				local right, bottom = (high.X - inset.X - corner.X) / scale, (high.Y - inset.Y - corner.Y) / scale
+				if kept.Middle - kept.Half < right and kept.Middle + kept.Half > left and kept.Foot - kept.Tall < bottom and kept.Foot > top then
+					frame.Visible = false
+				end
 			end
 		end
 	end

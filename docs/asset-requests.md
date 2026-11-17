@@ -11430,7 +11430,7 @@ Research's entry, 2026-11-17, 18:38. It is next in the design's order (`docs/des
 **The classes carried:**
 - A stage reads from where the player meets the machine: the court, on the way home.
 - The growth never hides the Voidkin training.
-- The machine's own cyan (`#4FD1FF`) stays its light, and nothing near it wears gold.
+- The void's violet stays its light, as at Stage I, and nothing near it wears gold [corrected 18:39 on Modulo's fact: the world has no cyan on it; `#4FD1FF` is only the HUD's `Colours.Training`].
 
 **Waits:** the stage change as a moment, with the base's level-up, as AR34's does.
 

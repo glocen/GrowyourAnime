@@ -12644,6 +12644,14 @@ After the director's ear on our layers, research's order: the arrangements re-cu
 - **Asked of Faber, if the engine can:** a high-pass on one layer (the weight under a phone's read), which research's order names. The recipe doesn't assume it.
 - **Status:** implemented as recipes, a draft; not mixed, not measured, not heard. Quality by ear is UNVERIFIED.
 - **Research, 23:04: round 2's draft (671ca31) replaces round 1 for the mixdown.** Six of round 1's nine hold our layers and can't ship. Faber measures round 2's nine, library only, and nothing of round 1.
+- **Research on Faber's round 1 measures (23:05; `build/scratch/modulo/ar39/mixdown.json`):**
+  - **The A/B the director hears is level-matched per arrangement to its old cue,** as a switch in the engine (on for the listen). Its shipped level is gate 4's. A louder take mustn't win the listen.
+  - **Trim stays 0.5** until the director's listen. It moves every cue players hear.
+  - **Gate 2: the slice starts nearer its top.** Round 2 moves each failing take's From so its top lands within 10 ms (A3's, B1's and B2's recordings, by name), and a tell sits under its swipe's top (C1, C3).
+  - **Gate 5:** a body with more than half its energy under 120 Hz is high-passed or replaced (B2 at 63%).
+  - **Gate 6 is restated, research's own gate:** a frame-stepped fade can't draw a 3 ms rise, so the gate is the step at a slice's first and last sample, at most 0.25 of its top (round 1's worst is 0.047), measured on the slice.
+  - **Today's three cues fail gate 4** (HeavyHit 9.4 LU over LightHit, ShadeSwipe 7.9 over). It's one more reason they're replaced.
+  - **Gate 3 has room everywhere:** -10.7 dBTP at worst, and the limiter takes 0 dB.
 
 ## AR40. Less purple, less black: the game's colour by day (Modulo, for research's pick, then Faber)
 

@@ -12349,6 +12349,20 @@ The scripts are `tools/blender/shop_block.py` (on `strip_plan`'s Strip) and `too
 
 **Status:** implemented as grey sheets; not built, not reviewed in game, not yet read by research. Next: research's pick of a direction and its read of the screen, then the colour pass.
 
+### Research's verdict and pick (Quaestor, 2026-11-17, 21:41)
+
+From `shop_block.png`, `crossing_close.png` and `shop_screen.png` (08cb14f).
+- **Felt:** from the crossing, the Shop is a low block behind the great shard. What makes it a place is its clock.
+- **Tier:** competent.
+- **The pick: C, the Hanging Stock.**
+  - Its five lit blades under the canopy are the only clock that reads from the crossing, down the side street and along the Strip.
+  - With the crown on, the lit rim tells a rare offer at all three distances.
+  - A's stones go small and flat far off, and B's crown is above the crossing's camera.
+- **The bold thing:** the screen's band repeats the building's five lights as its countdown, so the world's clock and the screen's are one object.
+- **The screen passes as laid.** The rare offer stands apart with its chance on it. A line says why it's off ("Need 450 more", "Opens with"), and the top-left is kept for Roblox's buttons.
+- **The rare line's chance is research's: about one stock in three** (`docs/design.md`). Prices and counts stay stand-ins until the simulation.
+- **No must-fix.** For the colour pass: at the counter, the blades' light stays under the counter's own. In grey they fill the view's top left at near-white.
+
 ## AR39. The sound rescue: three pilots (Modulo's sourcing and arrangements, Faber's engine, an independent review)
 
 Research, 2026-11-17, 21:19. The director's directive, word for word: `docs/archive/directive-sfx-2026-11-17.md` (its row in `docs/decisions.md`). The cue registry stays `src/shared/Config/Cues.luau`; provenance stays `docs/asset-log.md`.

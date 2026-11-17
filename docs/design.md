@@ -242,7 +242,7 @@ Six grounds at launch (`docs/roster.md`), each a recolour and rearrangement of o
   - **The shelf: six lines a stock.**
     - Three common lines, always: a Standard shard, a stack of grade-1 stones, a Common emblem.
     - Two lines from the uncommon table: an Enriched shard, grade-2 stones, an Uncommon emblem.
-    - One rare line in some stocks: a Prismatic shard, grade-3 stones, or a Rare emblem.
+    - One rare line in about one stock in three: a Prismatic shard, grade-3 stones, or a Rare emblem.
   - **The rare offer,** in about one stock in twelve, so about once an hour: a Named shard of an Epic or rarer Voidkin. The player sees exactly whom they're buying, never a roll, and may buy it once a stock.
   - **The same shelf, fitted to each player.** A shard line names a grade, never a ground. It resolves to the farthest ground that player has opened, so the shelf is the same everywhere and never sells a shard a player can't use. A rare offer whose Voidkin's ground is still shut shows "Opens with" that ground.
   - **A limit per player, never a race.** Each line has its own count per player per stock, so one player's buy never empties another's. What's bought is saved against the stock's number, so a server hop never refills a line (`docs/engineering-plan.md`, the profile's `Shop`).

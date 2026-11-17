@@ -111,11 +111,6 @@ local Config = {
 			{ Id = 9113532901, Seconds = 0.049, Peak = 0.0058, From = 0.008, To = 0.057, In = 0.003, Out = 0.02, Gain = 0.861 }, -- Body Pats Cloth Hits 3 (SFX), ProSoundEffects
 			{ Id = 9113316991, Seconds = 0.032, Peak = 0.0028, From = 0.008, To = 0.04, In = 0.003, Out = 0.015, Gain = 1.84 }, -- Baseball Slap Ball Into Glove Singles 4 (SFX), ProSoundEffects
 		},
-		LibThud = {
-			{ Id = 9113574504, Seconds = 0.11, Peak = 0.0103, From = 0.01, To = 0.12, In = 0.003, Out = 0.04, Gain = 0.616 }, -- Boxing Hits 22 (SFX), ProSoundEffects
-			{ Id = 9113818926, Seconds = 0.068, Peak = 0.0095, From = 0.044, To = 0.112, In = 0.003, Out = 0.025, Gain = 1.0 }, -- Cloth Flap 13 (SFX), ProSoundEffects
-			{ Id = 9113531442, Seconds = 0.104, Peak = 0.005, From = 0.634, To = 0.738, In = 0.003, Out = 0.04, Gain = 1.382 }, -- Body Kick With Leather Boots 9 (SFX), ProSoundEffects
-		},
 		LibSnap = {
 			{ Id = 9114763106, Seconds = 0.032, Peak = 0.004, From = 0.0, To = 0.032, In = 0.003, Out = 0.015, Gain = 0.768 }, -- Hand Clap Single Hits 14 (SFX), ProSoundEffects
 			{ Id = 9114762131, Seconds = 0.022, Peak = 0.0032, From = 0.788, To = 0.81, In = 0.003, Out = 0.01, Gain = 1.876 }, -- Hand Claps 1 (SFX), ProSoundEffects
@@ -262,56 +257,53 @@ end
 Config.Arrangements.LightHit = {
 	-- one recorded contact, nothing else: a slap of skin or cloth carries the hit whole, in the band a phone keeps.
 	A1 = like(Config.Cues.LightHit, {
-		{ Takes = "LibContact", At = 0, Volume = 0.417 }, -- body
+		{ Takes = "LibContact", At = 0, Volume = 0.359 }, -- body
 	}),
-	-- two recordings split by their bands: a glove or cloth thud for the body, a clap's crack laid on it for the contact.
-	A2 = like(Config.Cues.LightHit, {
-		{ Takes = "LibThud", At = 0, Volume = 0.303 }, -- body
-		{ Takes = "LibSnap", At = 0, Volume = 0.179 }, -- attack
-	}),
-	-- a recorded contact with recorded weight under it, and our spark as its accent, 10 dB under.
+	-- a recorded contact with recorded weight under it from a second recording. Our spark is gone.
 	A3 = like(Config.Cues.LightHit, {
-		{ Takes = "LibContact", At = 0, Volume = 0.35 }, -- body
-		{ Takes = "LibLow", At = 0, Volume = 0.141 }, -- weight
-		{ Takes = "LightHitSpark", At = 0, Volume = 0.097 }, -- accent
+		{ Takes = "LibContact", At = 0, Volume = 0.313 }, -- body
+		{ Takes = "LibLow", At = 0, Volume = 0.126 }, -- weight
+	}),
+	-- a recorded contact with a clap's crack laid on its edge: the transient from one recording, the body from another.
+	A4 = like(Config.Cues.LightHit, {
+		{ Takes = "LibContact", At = 0, Volume = 0.328 }, -- body
+		{ Takes = "LibSnap", At = 0, Volume = 0.128 }, -- attack
 	}),
 }
 Config.Arrangements.HeavyHit = {
-	-- one recorded heavy body as the base; our sub only reinforces it, and our tail by the hit's strength. The knocks are gone.
+	-- one recorded heavy body, and a deep glove thump from a second recording under it for the weight, where our sub was.
 	B1 = like(Config.Cues.HeavyHit, {
-		{ Takes = "LibHeavyBody", At = 0, Volume = 0.721 }, -- body
-		{ Takes = "HeavySub", At = 0, Volume = 0.083 }, -- weight
-		{ Takes = "HeavyTail", At = 0, Volume = 0.07, Strength = true }, -- decay
+		{ Takes = "LibHeavyBody", At = 0, Volume = 0.639 }, -- body
+		{ Takes = "LibLowLong", At = 0, Volume = 0.167 }, -- weight
 	}),
-	-- two recordings and no synthesis: a deep glove thump for the weight, and the light hit's own contact over it, so a heavy hit is a light one with a body behind it.
+	-- two recordings: a deep glove thump for the weight, and the light hit's own contact over it, so a heavy hit is a light one with a body behind it.
 	B2 = like(Config.Cues.HeavyHit, {
-		{ Takes = "LibLowLong", At = 0, Volume = 0.333 }, -- weight
-		{ Takes = "LibContact", At = 0, Volume = 0.467 }, -- attack
+		{ Takes = "LibLowLong", At = 0, Volume = 0.304 }, -- weight
+		{ Takes = "LibContact", At = 0, Volume = 0.426 }, -- attack
 	}),
-	-- a recorded heavy body with a recorded snap on its edge, and no sub: the body's own lows carry it. Our tail by the hit's strength.
+	-- three recordings stacked: a heavy body, a leather or clap snap on its edge, and a deep thump under both.
 	B3 = like(Config.Cues.HeavyHit, {
-		{ Takes = "LibHeavyBody", At = 0, Volume = 0.694 }, -- body
-		{ Takes = "LibHeavySnap", At = 0, Volume = 0.442 }, -- attack
-		{ Takes = "HeavyTail", At = 0, Volume = 0.071, Strength = true }, -- decay
+		{ Takes = "LibHeavyBody", At = 0, Volume = 0.595 }, -- body
+		{ Takes = "LibHeavySnap", At = 0, Volume = 0.379 }, -- attack
+		{ Takes = "LibLowLong", At = 0, Volume = 0.147 }, -- weight
 	}),
 }
 Config.Arrangements.ShadeSwipe = {
-	-- all recorded: paper's flick for the tell, a pass through the air for the swipe.
+	-- paper's flick for the tell, a pass through the air for the swipe.
 	C1 = like(Config.Cues.ShadeSwipe, {
-		{ Takes = "LibFlick", At = -0.2, Lead = "Peak", Volume = 0.186 }, -- tell
-		{ Takes = "LibAir", At = 0, Lead = "Peak", Volume = 0.233 }, -- body
+		{ Takes = "LibFlick", At = -0.2, Lead = "Peak", Volume = 0.16 }, -- tell
+		{ Takes = "LibAir", At = 0, Lead = "Peak", Volume = 0.2 }, -- body
 	}),
-	-- a paper-edged pass: the air's pass with a sheet's rustle riding its top; the tell stays ours.
+	-- a paper-edged pass: paper's flick for the tell, then the air's pass with a sheet's rustle riding its top.
 	C2 = like(Config.Cues.ShadeSwipe, {
-		{ Takes = "ShadeTell", At = -0.2, Volume = 0.024 }, -- tell
-		{ Takes = "LibAir", At = 0, Lead = "Peak", Volume = 0.202 }, -- body
-		{ Takes = "LibRustle", At = 0, Lead = "Peak", Volume = 0.271 }, -- character
+		{ Takes = "LibFlick", At = -0.2, Lead = "Peak", Volume = 0.147 }, -- tell
+		{ Takes = "LibAir", At = 0, Lead = "Peak", Volume = 0.174 }, -- body
+		{ Takes = "LibRustle", At = 0, Lead = "Peak", Volume = 0.233 }, -- character
 	}),
-	-- the paper drawn back, then the pass: a longer rustle ending in its flick for the tell, and our own swipe 10 dB under the recorded pass, for its tone.
+	-- the paper drawn back, then the pass: a longer rustle ending in its flick for the tell, and the recorded pass alone.
 	C3 = like(Config.Cues.ShadeSwipe, {
-		{ Takes = "LibRustle", At = -0.2, Lead = "Peak", Volume = 0.241 }, -- tell
-		{ Takes = "LibAir", At = 0, Lead = "Peak", Volume = 0.214 }, -- body
-		{ Takes = "ShadeSwipe", At = 0, Lead = "Peak", Volume = 0.018 }, -- accent
+		{ Takes = "LibRustle", At = -0.2, Lead = "Peak", Volume = 0.216 }, -- tell
+		{ Takes = "LibAir", At = 0, Lead = "Peak", Volume = 0.191 }, -- body
 	}),
 }
 -- AR39's arrangements: end

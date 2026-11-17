@@ -21,6 +21,7 @@ local TestInput = require(Shared.Util.TestInput)
 local Cases = require(script.Cases)
 local TowerCases = require(script.TowerCases)
 local KitCases = require(script.KitCases)
+local ButtonCases = require(script.ButtonCases)
 local SoundCases = require(script.SoundCases)
 local BreakerCases = require(script.BreakerCases)
 local StripCases = require(script.StripCases)
@@ -188,6 +189,8 @@ local function run(filter: string?): string
 	table.move(strip, 1, #strip, #cases + 1, cases)
 	local notice = NoticeCases.Cases() -- the level-up's notice (TR41 (c)), apart for the same reason
 	table.move(notice, 1, #notice, #cases + 1, cases)
+	local buttons = ButtonCases.Cases() -- the kit's buttons in the seam's make (AR30), apart for the same reason
+	table.move(buttons, 1, #buttons, #cases + 1, cases)
 	for _, case in cases do
 		local chosen = if filter then string.find(case.Name, filter, 1, true) ~= nil else not case.Manual
 		if chosen then

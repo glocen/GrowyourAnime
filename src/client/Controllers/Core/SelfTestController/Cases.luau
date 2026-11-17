@@ -4903,7 +4903,10 @@ local cases = {
 			local squeezed = Button.Squeeze(button)
 			t.Check("squeezed within its In", math.abs(squeezed - press.Squeeze) < 0.005, string.format("%.3f", squeezed))
 			local now = label.AbsolutePosition + label.AbsoluteSize / 2
-			t.Check("about its middle", (now - middle).Magnitude <= 1, string.format("%.1f px off", (now - middle).Magnitude))
+			-- About its middle, sunk by the make's Sink (AR30): the press goes down as it squeezes.
+			local sunk = math.round(HudConfig.Make.Sink) * box.Y / Theme.Size.Tap
+			local off = (now - middle) - Vector2.new(0, sunk)
+			t.Check("about its middle, sunk by the make's press", off.Magnitude <= 1, string.format("%.1f px off", off.Magnitude))
 			t.Check("its box, and so the layout, unmoved", button.AbsoluteSize == box)
 			t.Check("held, the pressed look", Button.State(button) == "Pressed", Button.State(button))
 			local most = 0
@@ -7010,7 +7013,7 @@ local cases = {
 				end
 				t.Check(`{where}: Drop rates is one tap away, its voltage shown until then`, fold ~= nil and fold:IsA("TextButton") and Button.State(fold) == "Rest" and breakerPart("Chances") == nil and voltageBack(), if offered then "voltage offered" else "no voltage on this kind")
 				local beside = fold and fold.Parent
-				local base = fold and fold:FindFirstChild("Base", true)
+				local base = fold and fold:FindFirstChild("Foot", true) -- the glass's foot of light (AR30)
 				t.Check(`{where}: a secondary press: half its row at most, a list's mark, never the action's light`, fold ~= nil and fold:IsA("GuiObject") and beside ~= nil and beside:IsA("GuiObject")
 					and fold.AbsoluteSize.X <= beside.AbsoluteSize.X / 2 + 0.5 and fold:FindFirstChild("Mark") ~= nil and base ~= nil and base:IsA("GuiObject") and not base.Visible)
 				t.Check(`{where}: a tap opens them, in place of its voltage`, fold ~= nil and fold:IsA("TextButton") and Button.Press(fold) and waitFor(t, 1, function(): boolean

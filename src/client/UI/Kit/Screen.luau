@@ -43,9 +43,11 @@ Screen.BandLeft = Theme.Size.Pad + Screen.Back.X + Theme.Size.Gap -- where the b
 
 local TITLE = 32 -- authored height of the title's line
 local HEAD = Theme.Size.Tap + Theme.Size.Pad -- the head row: the close button, a tap high, and half a pad over and under
-local EXIT = 72 -- authored width of a panel's Close
+local EXIT = HudConfig.Make.Close.Box -- authored side of a panel's X (AR30: Close is the X, top right)
+local BACK = 72 -- authored width of a full screen's Back press
 Screen.Head = HEAD -- a panel's head row, authored high: its body starts under it, two pads in
-Screen.Exit = EXIT -- a panel's Close, authored wide, a pad in from the panel's right
+Screen.Exit = EXIT -- a panel's X, authored square
+Screen.ExitLeft = HudConfig.Make.Close.In + EXIT -- the X's left edge, authored in from the panel's right
 local MARGIN = 8 -- authored pixels kept between a screen and the edge of its room
 
 -- As large as authored, or as the room allows; a full screen (no size) takes the room.
@@ -286,12 +288,15 @@ local function show(name: string, title: string, size: Vector2?, palette: string
 	})
 	heading.Text = title
 	heading.Visible = not full -- a full screen's owner places its name
+	local close = HudConfig.Make.Close
 	local exit = Button.new({
 		Name = if full then "Back" else "Close",
-		Text = if full and dress then "" elseif full then "Back" else "Close",
+		Text = if full and dress then "" elseif full then "Back" else "",
 		Bare = full and dress ~= nil,
-		Size = UDim2.fromOffset(EXIT, Theme.Size.Tap),
-		Position = UDim2.new(1, -Theme.Size.Pad, 0, Theme.Size.Pad / 2),
+		Icon = if full then nil else HudConfig.Make.Images.SeamClose,
+		IconSide = close.Side,
+		Size = if full then UDim2.fromOffset(BACK, Theme.Size.Tap) else UDim2.fromOffset(EXIT, EXIT),
+		Position = if full then UDim2.new(1, -Theme.Size.Pad, 0, Theme.Size.Pad / 2) else UDim2.new(1, -close.In, 0, close.In),
 		AnchorPoint = Vector2.new(1, 0),
 		Parent = band or frame,
 		OnPress = Screen.Close,

@@ -526,7 +526,10 @@ local function machineRow(list: ScrollingFrame, index: number, now: Read.Base)
 	local function step(name: string, by: number, x: number)
 		local made = Button.new({
 			Name = `{name}{index}`,
-			Text = if by > 0 then "+" else "-",
+			Text = "",
+			Icon = if by > 0 then HudConfig.Make.Images.SeamPlus else HudConfig.Make.Images.SeamMinus, -- AR30: the channel's ±
+			IconSide = HudConfig.Make.PlusMinus,
+			Plate = true,
 			Size = UDim2.fromOffset(STEP, STEP),
 			Position = UDim2.new(1, -x, 0, 0),
 			AnchorPoint = Vector2.new(1, 0),
@@ -560,8 +563,8 @@ local function plate(body: Frame)
 	local frame = Panel.new({
 		Name = "BatteryPlate",
 		Size = UDim2.fromOffset(PLATE.X, PLATE.Y),
-		-- Centred in the head's row, its right a gap short of Close (the body stands two pads in, Close one).
-		Position = UDim2.new(1, -(Screen.Exit - pad + gap), 0, -(Screen.Head + PLATE.Y) / 2),
+		-- Centred in the head's row, its right a gap short of the X (the body stands two pads in).
+		Position = UDim2.new(1, -(Screen.ExitLeft - 2 * pad + gap), 0, -(Screen.Head + PLATE.Y) / 2),
 		AnchorPoint = Vector2.new(1, 0),
 		Edge = false,
 		Parent = body,

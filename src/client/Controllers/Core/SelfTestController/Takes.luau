@@ -394,10 +394,10 @@ return function(given: Given): { any }
 						return now ~= nil and now.Roles.Lead == free[1]
 					end))
 					t.Wait(TAKE_READ)
-					moment(`Send to work: the strip's {free[2]}, then Send to work`)
+					moment(`Station: the strip's {free[2]}, then Station`)
 					press(free[2])
 					t.Wait(1)
-					t.Check("Send to work", press("Work") and waitFor(t, ANSWER, function(): boolean
+					t.Check("Station", press("Work") and waitFor(t, ANSWER, function(): boolean
 						local now = ProfileController.Get()
 						return now ~= nil and Read.Role(now, free[2]) == `Bay {bay}`
 					end))
@@ -415,7 +415,7 @@ return function(given: Given): { any }
 
 	-- TR17's retake (docs/test-requests.md, TR17, research's verdict of 2026-11-15): its three fixes and the band. The
 	-- lead's screen as it opens (Back, the marks and the currencies in Roblox's band, its name over the stage, Leading,
-	-- Send to work off with why), two switches by the strip and one by a flick (never an empty stage), each mark tapped,
+	-- alone on its line), two switches by the strip and one by a flick (never an empty stage), each mark tapped,
 	-- a rename opened and left, then the same screen in the smallest phone's room, its rail dragged to its foot and
 	-- back. Not played, and their rows say so: the flick (the figure's own gesture handler), the smallest phone's room
 	-- (the layers' own test box, in this window's corner) and the rail's drag.
@@ -447,8 +447,8 @@ return function(given: Given): { any }
 					t.Check("the dock opens it", Button.Press(hud.Voidkin :: TextButton) and waitFor(t, 1, function(): boolean
 						return Screen.Current() == VoidkinScreen.Name
 					end))
-					VoidkinScreen.Show("Overview") -- it opens on the Items page (TR28): Leading and Send to work are Overview's
-					moment("the lead's screen: the band, its name over the stage, Leading, Send to work off with why")
+					VoidkinScreen.Show("Overview") -- it opens on the Items page (TR28): Leading is Overview's
+					moment("the lead's screen: the band, its name over the stage, Leading alone on its line")
 					t.Wait(TAKE_READ)
 					for index = 2, 3 do
 						moment(`the strip: Voidkin {index} tapped, its body's first draw`)

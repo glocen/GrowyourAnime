@@ -8,7 +8,6 @@ local Shared = game:GetService("ReplicatedStorage").Shared
 local HudConfig = require(Shared.Config.Hud)
 local UIKit = require(Shared.Config.UIKit)
 local Theme = require(script.Parent.Parent.Theme)
-local Skin = require(script.Parent.Parent.Kit.Skin)
 
 local Seam = {}
 
@@ -241,12 +240,6 @@ function Seam.Plate(on: GuiObject, radius: number)
 		Seam.Ramp(on, { Color3.new(1, 1, 1), LIGHT })
 	end
 	Seam.Glow(on, radius)
-end
-
--- A kit button's plate of light (Seam.Lit) gets its glow: the kit's ring glow, which follows its cut corners, in the
--- seam's Light, under its fill.
-function Seam.ButtonGlow(button: GuiObject): ImageLabel
-	return Skin.Lay(Skin.Of(button), "ButtonRingGlow", { Name = "Glow", Tint = LIGHT, Alpha = S.Lit.Button, Z = 2 })
 end
 
 -- A plate of light's glow: stepped bands of Light round `on`, outside it.

@@ -1,16 +1,19 @@
 --!strict
 -- Button (client kit): a press, in the seven states every component has (docs/ui.md): rest, pressed, selected, disabled
--- with its reason, waiting on the server, succeeded, failed. Drawn from the kit in Modulo's order (tools/blender/ui_kit.py,
--- `button`): the shadow, a lit ring's glow, the body, the disabled veil, the edge, the pressed shade, the lit ring, and the
--- accent's base line at rest. A press that waits (an Act) shows the light running round its edge and three dots until it
--- answers, and refuses a second press meanwhile, so nothing is asked twice. It flashes succeeded or failed only on the
+-- with its reason, waiting on the server, succeeded, failed. Every button is of the seam's make (AR30; Config.Hud.Make):
+-- a main action, or anything set, on or chosen, is dark glass lit from its foot at L in its light colour (the ring's glow,
+-- the Panel gradient, a wash of the light, the edge, the foot's glow and the foot); a second action is the plain channel
+-- with a short underline, washed with the light while a finger holds it. A press sinks, and the light rises with it and
+-- falls back on the let-go. Unavailable, it's the channel and its words go soft. A press that waits (an Act) shows the
+-- light running round its edge and three dots until it answers, and refuses a second press meanwhile, so nothing is asked
+-- twice. It flashes succeeded or failed only on the
 -- server's answer (rule 4: the interface never lies). Disabled, its face says why in place of its name; one made with
 -- Under keeps its name and says why in a smaller line under it (TR17, research's fix 3). A touch squeezes its face and label about their middle within
 -- 0.05 s, and a let-go brings them back over full size for a moment (Config.Hud.Motion.Press, Rules.Hud.Squeeze; AR8 C);
 -- a press with no touch (a pad, a key) squeezes as a tap. A touch also ticks under the thumb (Roblox's UIClick haptic;
 -- TR6). No state moves the layout.
 --   Button.new{ Name, Text, Size, OnPress, ... }      a button; OnPress may return true (succeeded) or false (failed)
---   Button.Set(button, { Text = ..., Disabled = "why" | false, Selected = true | false })
+--   Button.Set(button, { Text = ..., Disabled = "why" | false, Selected = true | false, Note = "Bay 3" | false })
 --   Button.Grow(button, scale)   its face and label at `scale` at rest, a card's hover (TR20)
 --   Button.Press(button)                             what a tap does, for tests: false when disabled or pending; an icon's
 --                                                    button (Text "") says its reason in a toast, never in its face
@@ -19,6 +22,7 @@
 --   Button.Haptic(button)                            a touch's tick under the thumb; true when it ticked, for tests
 
 local RunService = game:GetService("RunService")
+local TweenService = game:GetService("TweenService")
 
 local Shared = game:GetService("ReplicatedStorage").Shared
 local UIKit = require(Shared.Config.UIKit)
@@ -27,7 +31,6 @@ local Hud = require(Shared.Rules.Hud)
 local Theme = require(script.Parent.Parent.Theme)
 local Text = require(script.Parent.Text)
 local Skin = require(script.Parent.Skin)
-local Panel = require(script.Parent.Panel)
 local Toast = require(script.Parent.Toast)
 
 export type Props = {
@@ -37,7 +40,11 @@ export type Props = {
 	Position: UDim2?,
 	AnchorPoint: Vector2?,
 	Parent: Instance?,
-	Primary: boolean?, -- the screen's one main action
+	Primary: boolean?, -- the screen's one main action: the glass; set (Selected), its mark and its word in the light
+	Light: Color3?, -- the kind's light: a claim's or a ready shard's (Config.Hud.Make.Light), the seam's Light by default
+	Icon: UIKit.Image?, -- an icon's button (the X, Config.Hud.Make.Images.SeamClose): no plate, this image IconSide across
+	IconSide: number?,
+	Plate: boolean?, -- an icon on the channel (Power's ±): its plate kept, no halo
 	Palette: string?,
 	LayoutOrder: number?,
 	TextSize: number?,
@@ -57,12 +64,24 @@ type State = {
 	Dots: { ImageLabel },
 	Text: string,
 	Disabled: string?, -- the reason, while disabled
+	Note: string?, -- a line under its name while it can be pressed (Station's bay)
 	Pending: boolean,
 	Selected: boolean,
 	Primary: boolean,
 	Quiet: boolean,
 	Inset: number,
 	Bare: boolean,
+	Still: boolean,
+	Light: Color3,
+	Skin: Frame,
+	Mark: ImageLabel,
+	Icon: ImageLabel?, -- an icon's button's image, and its halo
+	Halo: ImageLabel?,
+	Plate: boolean,
+	Wide: number, -- its authored width, for the underline
+	Fades: { [ImageLabel]: Tween },
+	Glass: boolean, -- the kind it was painted in, so the light tweens only within the glass
+	L: number,
 	Held: boolean,
 	DownAt: number?, -- the touch's moment, while its squeeze runs
 	UpAt: number?, -- the let-go's
@@ -77,7 +96,45 @@ local Button = {}
 
 Button.FlashSeconds = 0.6
 
-local UNDER = 9 -- authored pixels its name rises, and its reason sinks, when the reason stands under it
+local MAKE = HudConfig.Make
+local SEAM = UIKit.Palettes.Seam
+local SEAM_LIGHT = SEAM.Light :: Color3
+local Whole = math.round
+
+local function fall(points: { { number } }): NumberSequence
+	local keys = {}
+	for _, point in points do
+		table.insert(keys, NumberSequenceKeypoint.new(point[1], point[2]))
+	end
+	return NumberSequence.new(keys)
+end
+local GLASS_FALL = fall(MAKE.Glass.WashFall)
+local PRESSED_FALL = fall(MAKE.Channel.PressedFall)
+-- A main action set (Leading, Claimed) wears the rail's chosen tab's light (AR29's B; research's ruling on the director's
+-- remark, 2026-11-17, 20:31): its glow, its fill, its edge, and its wash rising to the foot as the tab's does to the line.
+local TAB = HudConfig.Voidkin.Chrome.Rail.Tab
+local TAB_FALL = (function(): NumberSequence
+	local keys = {}
+	for i = 0, 10 do
+		local t = i / 10
+		table.insert(keys, NumberSequenceKeypoint.new(t, 1 - (TAB.Wash.Base + TAB.Wash.Rise * t ^ TAB.Wash.Power)))
+	end
+	return NumberSequence.new(keys)
+end)()
+
+-- The product of the UIScales over a piece: its authored size is its drawn size over it.
+local function scaleOver(piece: Instance): number
+	local scale = 1
+	local at: Instance? = piece
+	while at do
+		local s = at:FindFirstChildOfClass("UIScale")
+		if s then
+			scale *= s.Scale
+		end
+		at = at.Parent
+	end
+	return scale
+end
 
 -- Held until the button is destroyed: a weak table keyed by an instance can lose a live one (Text's note).
 local states: { [TextButton]: State } = {}
@@ -103,59 +160,146 @@ function Button.State(button: TextButton): string
 	return "Rest"
 end
 
+-- A layer's transparency, tweened over `seconds` (the light rising on a press, falling on the let-go), or set at once.
+local function fade(state: State, image: ImageLabel, to: number, seconds: number)
+	local running = state.Fades[image]
+	if running then
+		running:Cancel()
+		state.Fades[image] = nil
+	end
+	if seconds <= 0 or math.abs(image.ImageTransparency - to) < 1e-3 then
+		image.ImageTransparency = to
+		return
+	end
+	local tween = TweenService:Create(image, TweenInfo.new(seconds, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), { ImageTransparency = to })
+	state.Fades[image] = tween
+	tween:Play()
+end
+
 local function paint(button: TextButton, state: State)
-	local p = Panel.Palette(button)
 	local now = Button.State(button)
 	local layers = state.Layers
-	local lit = if now == "Selected" then p.Accent elseif now == "Succeeded" then UIKit.Good elseif now == "Failed" then UIKit.Bad else nil
+	local G, C = MAKE.Glass, MAKE.Channel
+	local disabled = now == "Disabled"
 	local pressed = now == "Pressed"
-	local inked = now == "Selected" and p.Selected ~= nil
+	local flash = if now == "Succeeded" then UIKit.Good elseif now == "Failed" then UIKit.Bad else nil
+	local main = state.Primary
+	local word = state.Text ~= ""
+	local set = state.Selected and not disabled
+	local light = state.Light
+	-- The kind: glass for a main action, or anything set, on or chosen; the channel otherwise.
+	local glass = not disabled and (set or main)
+	local L = if not glass then 0
+		elseif set then (if main then MAKE.L.Set elseif word then MAKE.L.On else MAKE.L.Chosen)
+		elseif pressed then MAKE.L.Pressed
+		else MAKE.L.Main
+	local seconds = if glass and state.Glass then (if L > state.L then MAKE.Down else MAKE.Up) else 0
+	state.Glass, state.L = glass, L
+	local tabbed = set and main
+
 	layers.Shadow.Visible = not pressed
-	layers.RingGlow.Visible = lit ~= nil
-	if lit then
-		Skin.Tint(layers.RingGlow, lit)
+	layers.RingGlow.Visible = glass or flash ~= nil
+	layers.RingGlow.ImageColor3 = flash or light
+	fade(state, layers.RingGlow, if tabbed then 1 - TAB.Glow else 1 - G.RingGlow * (if glass then L else MAKE.L.Main), seconds)
+	if glass then
+		Skin.Tint(layers.Fill, SEAM.Panel)
+		layers.Fill.ImageTransparency = if tabbed then 1 - TAB.Fill else G.Fill
+	else
+		Skin.Tint(layers.Fill, SEAM.Channel)
+		layers.Fill.ImageTransparency = if disabled then (if main then C.Main else C.Off) else C.Rest
 	end
-	Skin.Tint(layers.Fill, if pressed then p.Pressed elseif inked then p.Selected else p.Button)
-	layers.Veil.Visible = now == "Disabled"
-	layers.Edge.ImageTransparency = if now == "Disabled" then 0.55 else 0
-	layers.Shade.Visible = pressed
-	layers.Ring.Visible = lit ~= nil or now == "Waiting"
-	Skin.Tint(layers.Ring, lit or p.Accent)
-	local gradient = layers.Ring:FindFirstChildOfClass("UIGradient")
-	if gradient then
-		gradient.Enabled = now == "Waiting"
+	local wash = layers.Wash
+	local washFall = wash:FindFirstChildOfClass("UIGradient") :: UIGradient
+	wash.Visible = glass or pressed
+	wash.ImageColor3 = if glass then light else SEAM_LIGHT
+	washFall.Transparency = if tabbed then TAB_FALL elseif glass then GLASS_FALL else PRESSED_FALL
+	fade(state, wash, if tabbed then 0 elseif glass then 1 - L / G.Wash else 0, seconds)
+	layers.Edge.ImageColor3 = if glass then light elseif pressed then C.PressedEdge else SEAM.Edge
+	fade(state, layers.Edge, if tabbed then 1 - TAB.Edge elseif glass then 1 - G.Edge * L else 0, seconds)
+	layers.FootGlow.Visible = glass
+	layers.FootGlow.ImageColor3 = light
+	fade(state, layers.FootGlow, if tabbed then 1 - TAB.Meet.GlowAlpha else 1 - G.FootGlow * L, seconds)
+	layers.Foot.Visible = glass
+	layers.Foot.ImageColor3 = light
+	-- Waiting: a window of light running round the ring; the server's answer: the ring in its colour.
+	layers.Ring.Visible = flash ~= nil or now == "Waiting"
+	layers.Ring.ImageColor3 = flash or light
+	local run = layers.Ring:FindFirstChildOfClass("UIGradient")
+	if run then
+		run.Enabled = now == "Waiting"
 	end
-	local base = (now == "Rest" or pressed) and not state.Quiet
-	layers.Base.Visible = base
-	layers.BaseGlow.Visible = base
-	Skin.Tint(layers.Base, if pressed then Color3.new(1, 1, 1) else p.Accent)
-	layers.BaseGlow.ImageTransparency = if pressed then 0 else 0.55
+	-- A second action's underline: short at rest, whole under a finger.
+	local U = MAKE.Underline
+	local underlined = word and not glass and not disabled
+	local half = (if pressed then 1 else U.Rest) * math.min(U.Share * state.Wide, U.Most)
+	local span = Whole(2 * half * U.Span)
+	for index, layer in { layers.Under, layers.UnderGlow } do
+		layer.Visible = underlined
+		layer.ImageColor3 = SEAM_LIGHT
+		layer.Size = UDim2.fromOffset(span, U.Tall)
+		local t = if index == 1 then U.Line else U.Glow
+		layer.ImageTransparency = if pressed then t[2] else t[1]
+	end
 	layers.Well.Visible = now == "Waiting"
 	for _, dot in state.Dots do
 		dot.Visible = now == "Waiting"
+		dot.ImageColor3 = light
 	end
 	waiting[button] = if now == "Waiting" then true else nil
 	state.Tick.Visible = now == "Succeeded"
 	-- An icon's button (no text) keeps its face: a reason never fits in it, so a tap says it instead (Button.Press).
 	local reason = state.Reason
-	local under = reason ~= nil and now == "Disabled" and state.Text ~= ""
-	state.Label.Text = if state.Text == "" then "" elseif under then state.Text else Hud.Says(state.Text, state.Disabled, false)
-	state.Label.Visible = now ~= "Waiting"
-	state.Label.Position = UDim2.new(0.5, if now == "Succeeded" then 12 else state.Inset, 0.5, if under then -UNDER else 0)
+	local note = if disabled then state.Disabled else state.Note
+	local under = reason ~= nil and word and note ~= nil and note ~= ""
+	local label = state.Label
+	label.Text = if not word then "" elseif under then state.Text else Hud.Says(state.Text, state.Disabled, false)
+	label.Visible = now ~= "Waiting"
+	local marked = set and main and word
+	local sink = if pressed and not state.Bare and not state.Icon then Whole(MAKE.Sink) else 0
+	local over = if under then -MAKE.Word.Rise
+		elseif main and not set then 0
+		elseif glass then -Whole(MAKE.Word.OnOver)
+		else -Whole(MAKE.Word.Over)
+	label.Position = UDim2.new(0.5, if now == "Succeeded" then 12 elseif marked then state.Inset + MAKE.Mark.Shift else state.Inset, 0.5, over + sink)
+	state.Skin.Position = UDim2.new(0.5, 0, 0.5, sink)
+	state.Mark.Visible = marked
+	if marked then
+		state.Mark.ImageColor3 = light
+		state.Mark.Position = UDim2.new(0.5, -Whole(Text.Wide(label, label.Text) / 2 + MAKE.Mark.Left), 0.5, 0)
+	end
 	if reason then
 		reason.Visible = under
-		reason.Text = if under then state.Disabled or "" else ""
-		reason.TextColor3 = p.Soft
+		reason.Text = if under then note or "" else ""
+		reason.TextColor3 = SEAM.Soft
+		reason.Position = UDim2.new(0.5, 0, 0.5, MAKE.Word.Fall)
 	end
-	state.Label.TextColor3 = if now == "Disabled" then p.Soft elseif inked then (p.SelectedText or p.Text) else p.Text
-	if state.Bare then
+	label.TextColor3 = if disabled then SEAM.Soft elseif marked then light else SEAM.Text
+	if state.Bare or (state.Icon and not state.Plate) then
 		for _, layer in layers do
 			layer.Visible = false
+		end
+	end
+	-- An icon's button: the icon in Text; pressed, in the light over its halo with a short line under it.
+	local icon, halo = state.Icon, state.Halo
+	if icon and state.Plate then
+		icon.ImageColor3 = if disabled then SEAM.Faint :: Color3 else SEAM.Text :: Color3
+	elseif icon and halo then
+		local I = MAKE.Icon
+		icon.ImageColor3 = if disabled then SEAM.Faint :: Color3 elseif pressed then light else SEAM.Text :: Color3
+		halo.Visible = pressed
+		halo.ImageColor3 = light
+		for index, layer in { layers.Under, layers.UnderGlow } do
+			layer.Visible = pressed
+			layer.Size = UDim2.fromOffset(Whole(2 * I.Half * U.Span), U.Tall)
+			layer.Position = UDim2.new(0.5, 0, 0.5, I.Below)
+			layer.ImageTransparency = if index == 1 then I.Line else I.Glow
 		end
 	end
 	button:SetAttribute("Disabled", state.Disabled or "")
 	button:SetAttribute("Pending", state.Pending)
 	button:SetAttribute("State", now)
+	button:SetAttribute("Kind", if tabbed then "Plate" elseif glass then "Glass" else "Channel")
+	button:SetAttribute("L", L)
 end
 
 -- A press's tick under the thumb (TR6; the study's DESIGN 2, ClickHaptic): Roblox's UIClick haptic, on a touch going down
@@ -278,20 +422,34 @@ function Button.new(props: Props): TextButton
 	button.AutoButtonColor = false
 	button.LayoutOrder = props.LayoutOrder or 0
 	button:SetAttribute("Palette", props.Palette or "Graphite")
-	local p = Panel.Palette(button)
-	local bold = if (p.Border or 1) > 1 then "Bold" else ""
+	local light = props.Light or SEAM_LIGHT
 	local skin = Skin.Of(button)
+	local images = MAKE.Images
 	local layers: { [string]: ImageLabel } = {
 		Shadow = Skin.Lay(skin, "ButtonShadow", { Name = "Shadow", Z = 1 }),
 		RingGlow = Skin.Lay(skin, "ButtonRingGlow", { Name = "RingGlow", Z = 2 }),
-		Fill = Skin.Lay(skin, "ButtonFill", { Name = "Fill", Tint = p.Button, Z = 3 }),
-		Veil = Skin.Lay(skin, "ButtonFill", { Name = "Veil", Tint = p.Ground, Alpha = 0.55, Z = 4 }),
-		Edge = Skin.Lay(skin, "ButtonEdge" .. bold, { Name = "Edge", Tint = p.Edge, Z = 5 }),
-		Shade = Skin.Lay(skin, "ButtonPressedShade", { Name = "Shade", Z = 6 }),
-		Ring = Skin.Lay(skin, "ButtonRing", { Name = "Ring", Z = 7 }),
-		Base = Skin.Lay(skin, "ButtonBase", { Name = "Base", Z = 8 }),
-		BaseGlow = Skin.Lay(skin, "ButtonBaseGlow", { Name = "BaseGlow", Tint = p.Accent, Z = 9 }),
+		Fill = Skin.Lay(skin, "ButtonFill", { Name = "Fill", Z = 3 }),
+		Wash = Skin.Lay(skin, "ButtonFill", { Name = "Wash", Z = 4 }),
+		Edge = Skin.Lay(skin, "ButtonEdge", { Name = "Edge", Z = 5 }),
+		FootGlow = Skin.LayOwn(skin, images.SeamFootGlow, "FootGlow", { Z = 6 }),
+		Foot = Skin.LayOwn(skin, images.SeamFoot, "Foot", { Z = 7 }),
+		Ring = Skin.Lay(skin, "ButtonRing", { Name = "Ring", Z = 8 }),
+		UnderGlow = Skin.LayOwn(skin, images.SeamUnderlineGlow, "UnderGlow", { Z = 9 }),
+		Under = Skin.LayOwn(skin, images.SeamUnderline, "Under", { Z = 10 }),
 	}
+	-- The wash falls from the foot up; the foot's glow reaches past each side and below; the underline sits over the foot.
+	local washFall = Instance.new("UIGradient")
+	washFall.Rotation = 90
+	washFall.Parent = layers.Wash
+	local reach = MAKE.Glass.Reach
+	layers.FootGlow.Position = UDim2.new(0, -reach, 1, -reach)
+	layers.FootGlow.Size = UDim2.new(1, 2 * reach, 0, 2 * reach)
+	layers.Foot.Position = UDim2.new(0, 0, 1, -MAKE.Glass.Foot)
+	layers.Foot.Size = UDim2.new(1, 0, 0, MAKE.Glass.Foot)
+	for _, layer in { layers.Under, layers.UnderGlow } do
+		layer.AnchorPoint = Vector2.new(0.5, 0.5)
+		layer.Position = UDim2.new(0.5, 0, 1, -MAKE.Underline.Over)
+	end
 	-- Waiting: a window of light running round the ring.
 	local run = Instance.new("UIGradient")
 	run.Transparency = NumberSequence.new({
@@ -308,12 +466,12 @@ function Button.new(props: Props): TextButton
 		local at = image.Position
 		image.Position = UDim2.new(ax, at.X.Offset, 0.5, at.Y.Offset)
 	end
-	local well = Skin.Lay(skin, "DotsWell", { Name = "Well", X = -26, Y = -7, Z = 10 })
+	local well = Skin.Lay(skin, "DotsWell", { Name = "Well", X = -26, Y = -7, Z = 11 })
 	centred(well, 0.5)
 	layers.Well = well
 	local dots = {}
 	for i = 0, 2 do
-		local dot = Skin.Icon(skin, "Dot", -13 + 13 * i, 0, 12 * (1 - 0.17 * i), p.Accent, 11)
+		local dot = Skin.Icon(skin, "Dot", -13 + 13 * i, 0, 12 * (1 - 0.17 * i), light, 12)
 		centred(dot, 0.5)
 		dot.ImageTransparency = 0.3 * i
 		table.insert(dots, dot)
@@ -336,15 +494,36 @@ function Button.new(props: Props): TextButton
 		scale.Parent = piece
 		table.insert(scales, scale)
 	end
+	-- An icon's button: its icon, and its halo under it, on its middle (they squeeze as its face).
+	local icon: ImageLabel?, halo: ImageLabel? = nil, nil
+	if props.Icon then
+		local I = MAKE.Icon
+		local iconSide = Whole(props.IconSide or props.Icon.Points.X)
+		local haloSide = Whole(I.Halo)
+		halo = if props.Plate then nil else Skin.LayOwn(skin, images.SeamHalo, "Halo", { Z = 8, Alpha = 1 - I.HaloT })
+		icon = Skin.LayOwn(skin, props.Icon, "Icon", { Z = 11 })
+		for _, each in { halo, icon } :: { ImageLabel } do
+			local side = if each == icon then iconSide else haloSide
+			each.AnchorPoint = Vector2.new(0.5, 0.5)
+			each.Position = UDim2.fromScale(0.5, 0.5)
+			each.Size = UDim2.fromOffset(side, side)
+		end
+	end
+	-- A main action set: its mark at the word's left, in the light (Leading, Claimed).
+	local side = Whole(MAKE.Mark.Side)
+	local mark = Skin.LayOwn(label, images.SeamMark, "Mark", { Z = 2 })
+	mark.AnchorPoint = Vector2.new(0.5, 0.5)
+	mark.Size = UDim2.fromOffset(side, side)
+	mark.Visible = false
 	local reason: TextLabel? = nil
 	if props.Under then
 		reason = Text.new({
 			Name = "Reason",
 			Size = Theme.Text.Caption,
-			Colour = p.Soft,
+			Colour = SEAM.Soft,
 			Align = Enum.TextXAlignment.Center,
 			Box = UDim2.new(1, -4, 0, 18),
-			Position = UDim2.new(0.5, 0, 0.5, UNDER + 2),
+			Position = UDim2.new(0.5, 0, 0.5, MAKE.Word.Fall),
 			AnchorPoint = Vector2.new(0.5, 0.5),
 			Parent = button,
 		})
@@ -360,12 +539,24 @@ function Button.new(props: Props): TextButton
 		Dots = dots,
 		Text = props.Text,
 		Disabled = nil,
+		Note = nil,
 		Pending = false,
 		Selected = false,
 		Primary = props.Primary == true,
 		Quiet = props.Quiet == true,
 		Inset = props.Inset or 0,
 		Bare = props.Bare == true,
+		Still = props.Still == true,
+		Light = light,
+		Skin = skin,
+		Mark = mark,
+		Icon = icon,
+		Halo = halo,
+		Plate = props.Plate == true,
+		Wide = 0,
+		Fades = {},
+		Glass = false,
+		L = 0,
 		Held = false,
 		Scales = scales,
 		Grow = 1,
@@ -395,13 +586,27 @@ function Button.new(props: Props): TextButton
 	button.Activated:Connect(function()
 		Button.Press(button)
 	end)
+	-- Its authored width, for the underline, whenever it's laid out again.
+	local function refit()
+		if not button:IsDescendantOf(game) then
+			return -- taken out or destroyed: its layers may be going already
+		end
+		local wide = button.AbsoluteSize.X / math.max(scaleOver(button), 1e-3)
+		if math.abs(wide - state.Wide) > 0.5 then
+			state.Wide = wide
+			paint(button, state)
+		end
+	end
+	button:GetPropertyChangedSignal("AbsoluteSize"):Connect(refit)
+	button.AncestryChanged:Connect(refit)
+	state.Wide = if props.Size.X.Scale == 0 then props.Size.X.Offset else 0
 	paint(button, state)
 	button.Parent = props.Parent
 	return button
 end
 
 -- A new label, or disabled with its reason (a string), or enabled again (false); selected while its screen is open.
-function Button.Set(button: TextButton, change: { Text: string?, Disabled: (string | boolean)?, Selected: boolean? })
+function Button.Set(button: TextButton, change: { Text: string?, Disabled: (string | boolean)?, Selected: boolean?, Note: (string | boolean)? })
 	local state = states[button]
 	if state == nil then
 		return
@@ -414,6 +619,9 @@ function Button.Set(button: TextButton, change: { Text: string?, Disabled: (stri
 	end
 	if change.Selected ~= nil then
 		state.Selected = change.Selected
+	end
+	if change.Note ~= nil then
+		state.Note = if type(change.Note) == "string" then change.Note else nil
 	end
 	paint(button, state)
 end

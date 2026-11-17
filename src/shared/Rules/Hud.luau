@@ -193,7 +193,7 @@ function Hud.LeadReason(role: string, healingUntil: number?, now: number?, inCom
 	if role == "Lead" then
 		return "Leading"
 	elseif role ~= "" then
-		return "At work"
+		return "Stationed"
 	elseif inCombat then
 		return "In a fight" -- the lead never changes in a fight (TR12)
 	elseif healingUntil and now and healingUntil > now then
@@ -202,20 +202,21 @@ function Hud.LeadReason(role: string, healingUntil: number?, now: number?, inCom
 	return nil
 end
 
--- Why a Voidkin can't be sent to work, or nil and the bay it would go to, the first one empty (TR17's Send to work). The
--- lead fights and never works (Rules.Base, SetWorker); a worker is already at work, and its button brings it home.
+-- Why a Voidkin can't be stationed, or nil and the bay it would go to, the first one empty (TR17's Station; the word
+-- research's, on the director's remark, 2026-11-17). The lead fights and never works (Rules.Base, SetWorker), so its page
+-- shows no Station; a stationed one's button recalls it.
 function Hud.WorkReason(role: string, bays: { Profile.Bay }): (string?, number?)
 	if role == "Lead" then
-		return "Not while leading", nil
+		return "Leading", nil
 	elseif role ~= "" then
-		return "At work", nil
+		return "Stationed", nil
 	end
 	for index, bay in bays do
 		if bay.Worker == "" then
 			return nil, index
 		end
 	end
-	return if #bays == 0 then "No bay open yet" else "Every bay is busy", nil
+	return if #bays == 0 then "No bay open yet" else "No bay free", nil
 end
 
 -- Seconds as minutes and seconds, rounded up: "1:05", "0:09".
@@ -511,7 +512,7 @@ export type Step = {
 
 -- The next step (TR24's fix 1: one line and one marker on the next target, at every step of the first session). At home,
 -- in turn: the first shard to choose; shards ready to open; shards in the bag (ShardHint's line, which stays after the
--- first session); a Voidkin to set to work in an empty bay; then, until a keeper is beaten, a shard breaking and the
+-- first session); a Voidkin to station in an empty bay; then, until a keeper is beaten, a shard breaking and the
 -- Door to the grounds. Out in a ground, once a bay works and until a keeper is beaten, the keeper's gate; nothing else,
 -- since the shards' hint shows only at the base (the director, 2026-11-15). Nil: nothing to say.
 function Hud.NextStep(s: StepState): Step?
@@ -533,7 +534,7 @@ function Hud.NextStep(s: StepState): Step?
 		return { Line = shards, Target = "Breaker" }
 	end
 	if s.Idle and s.Bay then
-		return { Line = `{s.Idle}: to work in Bay {s.Bay}`, Target = "Bay", Bay = s.Bay }
+		return { Line = `Station {s.Idle} in Bay {s.Bay}`, Target = "Bay", Bay = s.Bay }
 	end
 	if s.Won then
 		return nil

@@ -329,16 +329,20 @@ function VoidkinCases.Cases(given: Given): { any }
 		t.Check(`{where}: the wallet's words whole`, wallet ~= nil and cut == "", cut)
 	end
 
-	-- The lead's Send to work: off, its own name kept and why under it, both whole on its face.
+	-- The lead's page: "Leading" with its mark alone across the line, in the rail's chosen tab's light; no Station, since
+	-- the page's own state rules it out (research's ruling on the director's remark, 2026-11-17).
 	local function leadsWork(t: any, where: string)
-		local work = button("Work")
-		local label, reason = work and work:FindFirstChild("Label", true), work and work:FindFirstChild("Reason", true)
-		if work and label and label:IsA("TextLabel") and reason and reason:IsA("TextLabel") then
-			t.Check(`{where}: the lead's Send to work is off`, Button.State(work) == "Disabled", Button.State(work))
-			t.Check(`{where}: it keeps its name`, label.Text == "Send to work" and label.TextFits, label.Text)
-			t.Check(`{where}: and says why under it`, reason.Visible and reason.Text == "Not while leading" and reason.TextFits and reason.AbsolutePosition.Y >= label.AbsolutePosition.Y and reason.AbsolutePosition.Y + reason.AbsoluteSize.Y <= work.AbsolutePosition.Y + work.AbsoluteSize.Y + 1, reason.Text)
+		local leads = button("Lead")
+		local row = leads and leads.Parent
+		t.Check(`{where}: no Station on the lead's page`, button("Work") == nil)
+		if leads and row and row:IsA("GuiObject") then
+			local label = leads:FindFirstChild("Label") :: TextLabel?
+			local mark = label and label:FindFirstChild("Mark") :: ImageLabel?
+			t.Check(`{where}: Leading across the line`, math.abs(leads.AbsoluteSize.X - row.AbsoluteSize.X) <= 1, `{leads.AbsoluteSize.X} of {row.AbsoluteSize.X}`)
+			t.Check(`{where}: its word whole, its mark beside it`, label ~= nil and label.Text == "Leading" and label.TextFits and mark ~= nil and mark.Visible)
+			t.Check(`{where}: in the chosen tab's light, not a dim glass`, leads:GetAttribute("Kind") == "Plate", tostring(leads:GetAttribute("Kind")))
 		else
-			t.Check(`{where}: the lead's Send to work, its name and why`, false)
+			t.Check(`{where}: the lead's Leading`, false)
 		end
 	end
 
@@ -457,7 +461,7 @@ function VoidkinCases.Cases(given: Given): { any }
 				local caption = if plate then plate:FindFirstChild("Caption") :: TextLabel? else nil
 				t.Check("its caption in its colour", caption ~= nil and caption.TextColor3 == finish.Caption and caption.Text == "COMBAT POWER")
 			end
-			for _, name in { "Rail", "Name", "Panel", "Strip", "Lead", "Work" } do
+			for _, name in { "Rail", "Name", "Panel", "Strip", "Lead" } do -- the lead's page: no Station
 				t.Check(`{name} in view`, inView(name))
 			end
 			t.Check("the bag's kinds the bag's five, weapons and armor one Gear", table.concat(VoidkinScreen.Kinds, ", ") == "All, Gear, Jewelry, Chests, Materials", table.concat(VoidkinScreen.Kinds, ", "))
@@ -486,19 +490,19 @@ function VoidkinCases.Cases(given: Given): { any }
 			else
 				t.Check("the rail", false)
 			end
-			local leads, works, panel = button("Lead"), button("Work"), VoidkinScreen.Find("Panel")
-			if leads and works and panel and panel:IsA("GuiObject") then
+			local leads, panel = button("Lead"), VoidkinScreen.Find("Panel")
+			if leads and panel and panel:IsA("GuiObject") then
 				local top, left, right = panel.AbsolutePosition.Y, panel.AbsolutePosition.X, panel.AbsolutePosition.X + panel.AbsoluteSize.X
-				t.Check("Lead and Send to work out of the panel, on the line over it", leads.AbsolutePosition.Y + leads.AbsoluteSize.Y <= top + 1 and works.AbsolutePosition.Y + works.AbsoluteSize.Y <= top + 1)
-				t.Check("Lead first, Send to work beside it, in the panel's column", leads.AbsolutePosition.X >= left - 1 and leads.AbsolutePosition.X + leads.AbsoluteSize.X <= works.AbsolutePosition.X and works.AbsolutePosition.X + works.AbsoluteSize.X <= right + 1)
+				t.Check("Leading out of the panel, on the line over it", leads.AbsolutePosition.Y + leads.AbsoluteSize.Y <= top + 1)
+				t.Check("in the panel's column", leads.AbsolutePosition.X >= left - 1 and leads.AbsolutePosition.X + leads.AbsoluteSize.X <= right + 1)
 			else
-				t.Check("Lead and Send to work out of the panel, on the line over it", false)
+				t.Check("Leading out of the panel, on the line over it", false)
 			end
 			local wallet = VoidkinScreen.Find("Wallet")
 			local credits = wallet and wallet:FindFirstChild("Credits")
 			local value = credits and credits:FindFirstChild("Value")
 			t.Check("the band's Credits, the save's", value ~= nil and value:IsA("TextLabel") and value.Text == Read.Number(view.Currency.Credits), if value and value:IsA("TextLabel") then value.Text else "none")
-			-- The lead: its Lead lit and reading Leading, its Send to work off, its name kept and why under it.
+			-- The lead: its Lead lit and reading Leading, alone on its line.
 			t.Check("the lead's own reads Leading", labelOf(leads) == "Leading", labelOf(leads))
 			t.Check("lit, not greyed", leads ~= nil and Button.State(leads) == "Selected", if leads then Button.State(leads) else "none")
 			leadsWork(t, "this window")
@@ -647,7 +651,7 @@ function VoidkinCases.Cases(given: Given): { any }
 						t.Check("Stars: its copies toward the next star, never N of M past M", said ~= "" and not past, said)
 					end
 				end
-				for _, kept in (if name == "Bag" then {} else { "Lead", "Work" }) :: { string } do -- C's Items page has neither
+				for _, kept in (if name == "Bag" then {} else { "Lead" }) :: { string } do -- C's Items page has none; the lead's, no Station
 					t.Check(`{name}: {kept} still in view`, inView(kept))
 				end
 			end
@@ -740,7 +744,8 @@ function VoidkinCases.Cases(given: Given): { any }
 				local _, yaw = now.Body:GetPivot():ToEulerAnglesYXZ()
 				t.Check("turned 40°", math.abs(((from + 40) % 360) - now.Yaw) < 1e-6 and math.abs(math.deg(yaw) - ((from + 40 + 180) % 360 - 180)) < 0.5, string.format("%.1f°", math.deg(yaw)))
 			end
-			-- One sent to work and brought home (or, every bay busy, home and back).
+			-- One stationed and recalled (or, every bay busy, recalled and stationed again), each saying its bay under its name;
+			-- on another Voidkin's page Lead and Station stand side by side, the line over the panel.
 			local current = ProfileController.Get() :: Profile.View
 			local free: string?, worker: string?, working = nil, nil, 0
 			for _, id in ids do
@@ -763,19 +768,35 @@ function VoidkinCases.Cases(given: Given): { any }
 					return labelOf(button("Work")) == want
 				end)
 			end
+			local function says(want: string): (boolean, string)
+				local work = button("Work")
+				local reason = work and work:FindFirstChild("Reason") :: TextLabel?
+				local said = if reason and reason.Visible then reason.Text else "none"
+				return said == want and reason ~= nil and reason.TextFits, said
+			end
+			local function pair(where: string)
+				local leads, works = button("Lead"), button("Work")
+				t.Check(`{where}: Lead first, Station or Recall beside it`, leads ~= nil and works ~= nil and leads.AbsolutePosition.X + leads.AbsoluteSize.X <= works.AbsolutePosition.X
+					and math.abs(leads.AbsolutePosition.Y - works.AbsolutePosition.Y) <= 1)
+			end
 			if free and empty then
 				VoidkinScreen.Choose(free)
-				t.Check("Send to work", Button.Press(button("Work") :: TextButton) and role(free, `Bay {empty}`))
-				t.Check("and its button brings it home", shows("Bring home"), labelOf(button("Work")))
-				t.Check("Bring home", Button.Press(button("Work") :: TextButton) and role(free, ""))
+				pair("an idle one")
+				t.Check(`Station says its bay under its name, Bay {empty}`, says(`Bay {empty}`))
+				t.Check("Station", Button.Press(button("Work") :: TextButton) and role(free, `Bay {empty}`))
+				t.Check("and its button recalls it", shows("Recall"), labelOf(button("Work")))
+				t.Check(`Recall says its bay, Bay {empty}`, says(`Bay {empty}`))
+				t.Check("Recall", Button.Press(button("Work") :: TextButton) and role(free, ""))
 			elseif worker then
 				VoidkinScreen.Choose(worker)
-				t.Check("every bay busy: a worker reads Bring home", labelOf(button("Work")) == "Bring home", labelOf(button("Work")))
-				t.Check("Bring home", Button.Press(button("Work") :: TextButton) and role(worker, ""))
-				t.Check("and its button sends it", shows("Send to work"), labelOf(button("Work")))
-				t.Check("Send to work, to the bay it left", Button.Press(button("Work") :: TextButton) and role(worker, `Bay {working}`))
+				pair("a stationed one")
+				t.Check("every bay busy: a stationed one reads Recall", labelOf(button("Work")) == "Recall", labelOf(button("Work")))
+				t.Check(`and says its bay, Bay {working}`, says(`Bay {working}`))
+				t.Check("Recall", Button.Press(button("Work") :: TextButton) and role(worker, ""))
+				t.Check("and its button stations it", shows("Station"), labelOf(button("Work")))
+				t.Check("Station, to the bay it left", Button.Press(button("Work") :: TextButton) and role(worker, `Bay {working}`))
 			else
-				t.Check("a Voidkin to send or to bring home", false)
+				t.Check("a Voidkin to station or to recall", false)
 			end
 			-- A rename: the line a box, Save and Cancel in the band; tidied, through the filter; then taken off.
 			VoidkinScreen.Choose(lead)

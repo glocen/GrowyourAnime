@@ -19,6 +19,7 @@ local TweenService = game:GetService("TweenService")
 local Shared = game:GetService("ReplicatedStorage").Shared
 local Profile = require(Shared.Data.Profile)
 local BaseViewConfig = require(Shared.Config.BaseView)
+local HudConfig = require(Shared.Config.Hud)
 local BaseLevels = require(Shared.Rules.BaseLevels)
 local Power = require(Shared.Rules.Power)
 local Signal = require(Shared.Util.Signal)
@@ -249,7 +250,8 @@ function BaseView.Open(options: Options)
 	holder.BackgroundTransparency = 1
 	holder.Size = UDim2.fromScale(1, 1)
 	holder.Parent = Layers.Get("Menus")
-	Button.new({ Name = "Close", Text = "Close", Size = UDim2.fromOffset(96, Theme.Size.Tap), Position = UDim2.fromOffset(pad, pad), Parent = holder, OnPress = function()
+	local close = HudConfig.Make.Close -- AR30: Close is the X, top right
+	Button.new({ Name = "Close", Text = "", Icon = HudConfig.Make.Images.SeamClose, IconSide = close.Side, Size = UDim2.fromOffset(close.Box, close.Box), Position = UDim2.new(1, -pad, 0, pad), AnchorPoint = Vector2.new(1, 0), Parent = holder, OnPress = function()
 		BaseView.Close()
 		return nil
 	end })

@@ -301,7 +301,7 @@ function BagCases.Cases(given: Given): { any }
 				end
 				t.Check("the Main Hand ringed on the doll in the seam's light, and only it", ringed(ring) and rings == 1, `{rings} rings`)
 				local press = find("Equip")
-				t.Check("Equip a plate of light while it can be pressed, its glow round it", press ~= nil and press:GetAttribute("Palette") == Seam.Lit and press:FindFirstChild("Glow", true) ~= nil)
+				t.Check("Equip the glass while it can be pressed, lit at the main action's L (AR30)", press ~= nil and press:GetAttribute("Kind") == "Glass" and press:GetAttribute("L") == HudConfig.Make.L.Main)
 				t.Check("the figure's Combat Power still under the card", power ~= nil)
 				-- Equip: the server wears it, the card goes, the cell says it's worn.
 				local equip = find("Equip")

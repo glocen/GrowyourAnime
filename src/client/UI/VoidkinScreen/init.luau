@@ -97,8 +97,8 @@ local player = Players.LocalPlayer
 local REFUSED: { [string]: string } = {
 	InCombat = "Not during a fight",
 	Healing = "Still healing at home",
-	Leading = "The lead fights, it can't work",
-	Working = "At work: bring it home first",
+	Leading = "The lead fights, it can't be stationed",
+	Working = "Stationed: recall it first",
 	NotEnough = "Not enough copies",
 	MaxStars = "All seven stars",
 	Filtered = "That name can't be used",
@@ -222,7 +222,7 @@ local function role(view: Profile.View, owned: Profile.OwnedVoidkin, on: On, now
 		return "Training"
 	end
 	local at = Read.Role(view, owned.Id)
-	return if at == "Lead" then "Leading" elseif at ~= "" then `At work in {string.lower(at)}` else "Resting"
+	return if at == "Lead" then "Leading" elseif at ~= "" then `Stationed in {at}` else "Resting"
 end
 
 local function resolved(view: Profile.View, owned: Profile.OwnedVoidkin): (Stats.Block, { Stats.Line })
@@ -421,20 +421,22 @@ local function nameLine(over: Frame, x: number, wide: number, owned: Profile.Own
 	return nil
 end
 
--- Lead and Send to work (or Bring home), side by side in `parent`, the line over the panel. On the lead, Lead is lit
--- and reads "Leading"; a button that's off keeps its name and says why under it (docs/ui.md, rule 4; research's fix 3).
+-- Lead and Station (or Recall), side by side in `parent`, the line over the panel. On the lead, "Leading" with its mark
+-- stands alone across the line: an action the page's own state rules out isn't shown (research's ruling on the
+-- director's remark, 2026-11-17, 20:31). A passing block keeps its name and says why under it ("No bay free"); Station
+-- and Recall say their bay under their name (docs/ui.md, rule 4).
 local function actions(parent: Instance, view: Profile.View, owned: Profile.OwnedVoidkin, on: On)
 	local gap = Theme.Size.Gap
 	local at = Read.Role(view, owned.Id)
 	local leading = at == "Lead"
-	local width = UDim2.new(0.5, -gap / 2, 0, ROW)
+	local width = if leading then UDim2.new(1, 0, 0, ROW) else UDim2.new(0.5, -gap / 2, 0, ROW)
 	local lead = Button.new({
 		Palette = Seam.Palette,
 		Name = "Lead",
 		Text = if leading then "Leading" else "Lead",
 		Size = width,
 		Parent = parent,
-		Primary = not leading,
+		Primary = true, -- leading, it's the main action set: its mark and its word in the light (AR30)
 		Under = true,
 		OnPress = function(): boolean?
 			if leading then
@@ -450,25 +452,30 @@ local function actions(parent: Instance, view: Profile.View, owned: Profile.Owne
 	end
 	leadState()
 	table.insert(tickers, leadState)
+	if leading then
+		return
+	end
 	local working = string.match(at, "^Bay (%d+)$")
 	local why, bay = Hud.WorkReason(at, view.Base.Bays)
 	local work = Button.new({
 		Palette = Seam.Palette,
 		Name = "Work",
-		Text = if working then "Bring home" else "Send to work",
+		Text = if working then "Recall" else "Station",
 		Size = width,
 		Position = UDim2.new(0.5, gap / 2, 0, 0),
 		Parent = parent,
 		Under = true,
 		OnPress = function(): boolean
 			if working then
-				return refused("Can't bring it home", on.Act("SetWorker", { Bay = tonumber(working), Voidkin = "" }))
+				return refused("Can't recall it", on.Act("SetWorker", { Bay = tonumber(working), Voidkin = "" }))
 			end
-			return refused("Can't send it", on.Act("SetWorker", { Bay = bay, Voidkin = owned.Id }))
+			return refused("Can't station it", on.Act("SetWorker", { Bay = bay, Voidkin = owned.Id }))
 		end,
 	})
-	if not working then
-		Button.Set(work, { Disabled = why or false })
+	if working then
+		Button.Set(work, { Note = `Bay {working}` })
+	else
+		Button.Set(work, { Disabled = why or false, Note = if bay then `Bay {bay}` else false })
 	end
 end
 
@@ -816,7 +823,7 @@ local function starsTab(scroll: ScrollingFrame, view: Profile.View, owned: Profi
 			Size = UDim2.new(1, -8, 0, ROW),
 			LayoutOrder = 4,
 			Parent = scroll,
-			Primary = owned.Copies >= cost,
+			Primary = true, -- short of copies, the main action unavailable (AR30)
 			OnPress = function(): boolean
 				return refused("Can't take it", on.Act("SpendCopies", { Voidkin = owned.Id }))
 			end,

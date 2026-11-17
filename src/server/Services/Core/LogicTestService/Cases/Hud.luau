@@ -225,7 +225,7 @@ return {
 			t.Equal("waiting outranks a reason", Hud.Says("Lead", "Leading", true), Hud.Pending)
 			t.Equal("an empty reason is no reason", Hud.Says("Lead", "", false), "Lead")
 			t.Equal("the lead can't lead again", Hud.LeadReason("Lead"), "Leading")
-			t.Equal("a worker is at work", Hud.LeadReason("Worker"), "At work")
+			t.Equal("a worker is stationed", Hud.LeadReason("Worker"), "Stationed")
 			t.Equal("an idle Voidkin can lead", Hud.LeadReason(""), nil)
 			t.Equal("no Voidkin, no roster", Hud.VoidkinReason(0), "No Voidkin")
 			t.Equal("one Voidkin opens it", Hud.VoidkinReason(1), nil)
@@ -288,12 +288,12 @@ return {
 			t.Check("home with a shard: the shards' hint, at the Breaker", line == "Watt's shard: into the Breaker" and target == "Breaker", `{line} {target}`)
 			local bay
 			line, target, bay = step({ Idle = "Watt", Bay = 2 })
-			t.Check("a Voidkin idle and a bay empty: that bay", line == "Watt: to work in Bay 2" and target == "Bay" and bay == 2, `{line} {target} {bay}`)
+			t.Check("a Voidkin idle and a bay empty: that bay", line == "Station Watt in Bay 2" and target == "Bay" and bay == 2, `{line} {target} {bay}`)
 			t.Equal("an idle Voidkin with no empty bay: on to the Door", (step({ Idle = "Watt" })), "Through the Door: Lantern Row")
 			t.Equal("the order: the choice first", (step({ Chosen = false, Ready = 1, Shards = 2, Kinds = 1 })), "Choose your first shard")
 			t.Equal("then what's ready", (step({ Ready = 1, Shards = 2, Kinds = 1, Idle = "Watt", Bay = 2 })), "Ready: open it at the Breaker")
 			t.Equal("then the bag", (step({ Shards = 2, Kinds = 1, Idle = "Watt", Bay = 2 })), "2 shards: into the Breaker")
-			t.Equal("then the bay", (step({ Idle = "Watt", Bay = 2, Breaking = 1 })), "Watt: to work in Bay 2")
+			t.Equal("then the bay", (step({ Idle = "Watt", Bay = 2, Breaking = 1 })), "Station Watt in Bay 2")
 			-- Out in a ground: nothing but the keeper's gate, once a bay works and until a keeper falls.
 			t.Equal("in the ground before a bay works: nothing", (step({ Home = false, Keeper = "the Lamplighter" })), nil)
 			line, target = step({ Home = false, Worked = true, Keeper = "the Lamplighter" })
@@ -306,7 +306,7 @@ return {
 			t.Equal("won, home, a shard breaking: nothing", (step({ Won = true, Breaking = 2 })), nil)
 			t.Equal("won, home, one ready: still said", (step({ Won = true, Ready = 1 })), "Ready: open it at the Breaker")
 			t.Equal("won, home, the bag: still said", (step({ Won = true, Shards = 5, Kinds = 2 })), "5 shards: into the Breaker")
-			t.Equal("won, home, an empty bay: still said", (step({ Won = true, Idle = "Watt", Bay = 1 })), "Watt: to work in Bay 1")
+			t.Equal("won, home, an empty bay: still said", (step({ Won = true, Idle = "Watt", Bay = 1 })), "Station Watt in Bay 1")
 		end,
 	},
 	{
@@ -559,15 +559,15 @@ return {
 		end,
 	},
 	{
-		Name = "Hud: a Voidkin goes to work in the first empty bay, never the lead, never a worker twice, and says why not",
+		Name = "Hud: a Voidkin is stationed in the first empty bay, never the lead, never a worker twice, and says why not",
 		Run = function(t: any)
-			-- TR17: Send to work on one Voidkin's screen.
+			-- TR17: Station on one Voidkin's screen (research's word, 2026-11-17).
 			local bays = { { Worker = "k1", Level = 1 }, { Worker = "", Level = 1 }, { Worker = "", Level = 1 } }
 			local why, bay = Hud.WorkReason("", bays)
 			t.Check("the first empty bay", why == nil and bay == 2, `{why} {bay}`)
-			t.Equal("the lead fights", (Hud.WorkReason("Lead", bays)), "Not while leading")
-			t.Equal("a worker is at work", (Hud.WorkReason("Bay 1", bays)), "At work")
-			t.Equal("every bay busy", (Hud.WorkReason("", { { Worker = "k1", Level = 1 } })), "Every bay is busy")
+			t.Equal("the lead fights", (Hud.WorkReason("Lead", bays)), "Leading")
+			t.Equal("a worker is stationed", (Hud.WorkReason("Bay 1", bays)), "Stationed")
+			t.Equal("every bay busy", (Hud.WorkReason("", { { Worker = "k1", Level = 1 } })), "No bay free")
 			t.Equal("no bay yet", (Hud.WorkReason("", {})), "No bay open yet")
 		end,
 	},

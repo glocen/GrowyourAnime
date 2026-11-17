@@ -396,7 +396,7 @@ local function bayRows(list: ScrollingFrame, view: Profile.View, now: Read.Base)
 				Name = owned.Id,
 				Text = Read.VoidkinName(owned),
 				Detail = `Lv {owned.Level} · {Read.Kw(Power.Output(owned))}`,
-				Action = "Work",
+				Action = "Station",
 				Primary = true,
 				Disabled = if here then "Here" elseif role == "Lead" then "Leading" else nil,
 				OnPress = function()

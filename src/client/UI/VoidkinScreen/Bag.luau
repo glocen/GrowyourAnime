@@ -586,13 +586,6 @@ end
 
 -- A card's frame over the grid's right: the seam's card a step up from the room, its sliding edge lit, its shadow on
 -- the grid, its close, and the side of a touch.
--- A card's action in the plate of light gets its glow; one in the seam's own buttons none.
-local function lit(button: TextButton)
-	if button:GetAttribute("Palette") == Seam.Lit then
-		Seam.ButtonGlow(button)
-	end
-end
-
 local function cardFrame(at: Layout, id: string, taps: { [Instance]: () -> () }): (Frame, number)
 	local holder = room :: Frame
 	local made = Instance.new("Frame")
@@ -740,9 +733,9 @@ local function itemCard(context: Context, at: Layout, id: string)
 		Size = UDim2.fromOffset(wide, touch()),
 		Position = UDim2.fromOffset(pad, bottom),
 		Parent = made,
-		Primary = info.Fits and not info.Worn,
+		Primary = not info.Worn, -- the glass; one that doesn't fit, the main action unavailable (AR30)
 		Quiet = info.Worn ~= nil,
-		Palette = if info.Fits and not info.Worn and not why then Seam.Lit else Seam.Palette, -- the plate of light, while it can be pressed
+		Palette = Seam.Palette,
 		OnPress = function(): boolean
 			local args = { Preset = owned.Preset, Slot = info.Worn or info.Slot, Class = if Gear.IsHand(info.Worn or info.Slot) then class else nil, Item = if info.Worn then "" else id }
 			local ok = said(EQUIP_SAID, if info.Worn then "Can't take it off" else "Can't equip it", context.Act("Equip", args))
@@ -755,7 +748,6 @@ local function itemCard(context: Context, at: Layout, id: string)
 	if why then
 		Button.Set(equip, { Disabled = why })
 	end
-	lit(equip)
 	card = made
 	if carded ~= id then
 		slide(made, true)
@@ -830,7 +822,7 @@ local function chestCard(context: Context, at: Layout, id: string)
 		Parent = made,
 		Primary = not many,
 		Quiet = many,
-		Palette = if not many and info.Step >= 1 then Seam.Lit else Seam.Palette,
+		Palette = Seam.Palette,
 		OnPress = function(): boolean
 			return open(1)
 		end,
@@ -838,20 +830,19 @@ local function chestCard(context: Context, at: Layout, id: string)
 	if info.Step < 1 then
 		Button.Set(one, { Disabled = "The bag is full" })
 	end
-	lit(one)
 	if many then
-		lit(Button.new({
+		Button.new({
 			Name = "OpenAll",
 			Text = `Open {info.Step}`,
 			Size = UDim2.fromOffset(buttonWide, action),
 			Position = UDim2.fromOffset(pad + buttonWide + 6, bottom),
 			Parent = made,
 			Primary = true,
-			Palette = Seam.Lit,
+			Palette = Seam.Palette,
 			OnPress = function(): boolean
 				return open(info.Step)
 			end,
-		}))
+		})
 	end
 	card = made
 	if carded ~= id then

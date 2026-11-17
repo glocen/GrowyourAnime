@@ -246,6 +246,85 @@ return {
 	-- The dock of three icons (AR12; UI.Dock; its shape is UIKit.Dock, Modulo's): pressed, a tile's mark sinks Sink points
 	-- along the tile's lean (Modulo's 1.6); a tile that can't be used draws its tile and mark at Dim of themselves; a touch
 	-- held LongPress seconds shows the tile's word Rise points over its tap, and lifting it then doesn't press.
+	-- AR30, every button in the seam's make (Modulo's numbers, 2026-11-17, 15:00; asset-requests, AR30, "The cut, the images
+	-- and the numbers for Faber"): a pressable thing is dark glass lit from its foot at L in its light colour, or the plain
+	-- channel. Sizes are authored points, T a layer's ImageTransparency. Colours are the Seam palette's (Config.UIKit), and
+	-- Light below a kind's own. Seeds, tuned in play: Tune("Hud.Make.Sink", 2).
+	Make = {
+		Images = {
+			DockSeamBase = { Id = "rbxassetid://101111358271877", Pixels = Vector2.new(128, 128), Points = Vector2.new(32, 32), Pad = 0 },
+			DockSeamBody = { Id = "rbxassetid://120288857758554", Pixels = Vector2.new(770, 248), Points = Vector2.new(192.5, 62), Pad = 0 },
+			DockSeamCallMid = { Id = "rbxassetid://96997959999931", Pixels = Vector2.new(411, 376), Points = Vector2.new(102.75, 94), Pad = 0 },
+			DockSeamCallWing = { Id = "rbxassetid://117349466656055", Pixels = Vector2.new(371, 336), Points = Vector2.new(92.75, 84), Pad = 0 },
+			DockSeamEdge = { Id = "rbxassetid://116879340527241", Pixels = Vector2.new(770, 248), Points = Vector2.new(192.5, 62), Pad = 0 },
+			DockSeamFootMid = { Id = "rbxassetid://114305255121830", Pixels = Vector2.new(267, 232), Points = Vector2.new(66.75, 58), Pad = 0 },
+			DockSeamFootWing = { Id = "rbxassetid://106010594765096", Pixels = Vector2.new(227, 192), Points = Vector2.new(56.75, 48), Pad = 0 },
+			DockSeamGlassMid = { Id = "rbxassetid://133510593265528", Pixels = Vector2.new(267, 232), Points = Vector2.new(66.75, 58), Pad = 0 },
+			DockSeamGlassWing = { Id = "rbxassetid://110774430206065", Pixels = Vector2.new(227, 192), Points = Vector2.new(56.75, 48), Pad = 0 },
+			DockSeamLightMid = { Id = "rbxassetid://71451440044467", Pixels = Vector2.new(411, 376), Points = Vector2.new(102.75, 94), Pad = 0 },
+			DockSeamLightWing = { Id = "rbxassetid://124228959542597", Pixels = Vector2.new(371, 336), Points = Vector2.new(92.75, 84), Pad = 0 },
+			DockSeamMap = { Id = "rbxassetid://76450894205228", Pixels = Vector2.new(128, 128), Points = Vector2.new(32, 32), Pad = 0 },
+			DockSeamShadow = { Id = "rbxassetid://126174280533213", Pixels = Vector2.new(962, 440), Points = Vector2.new(240.5, 110), Pad = 0 },
+			SeamChevron = { Id = "rbxassetid://87298639484008", Pixels = Vector2.new(128, 128), Points = Vector2.new(32, 32), Pad = 0 },
+			SeamClose = { Id = "rbxassetid://132295505672780", Pixels = Vector2.new(128, 128), Points = Vector2.new(32, 32), Pad = 0 },
+			SeamFoot = { Id = "rbxassetid://124112477894928", Pixels = Vector2.new(112, 16), Points = Vector2.new(28, 4), Cut = { 10, 0, 10, 0 }, Pad = 0 },
+			SeamFootGlow = { Id = "rbxassetid://78206033974809", Pixels = Vector2.new(256, 144), Points = Vector2.new(64, 36), Cut = { 28, 0, 28, 0 }, Pad = 0 },
+			SeamHalo = { Id = "rbxassetid://123474220477559", Pixels = Vector2.new(128, 128), Points = Vector2.new(32, 32), Pad = 0 },
+			SeamMark = { Id = "rbxassetid://81214305959157", Pixels = Vector2.new(128, 128), Points = Vector2.new(32, 32), Pad = 0 },
+			SeamMinus = { Id = "rbxassetid://75848718889044", Pixels = Vector2.new(128, 128), Points = Vector2.new(32, 32), Pad = 0 },
+			SeamPipGlow = { Id = "rbxassetid://83810068457044", Pixels = Vector2.new(128, 128), Points = Vector2.new(32, 32), Pad = 0 },
+			SeamPlus = { Id = "rbxassetid://107263844901515", Pixels = Vector2.new(128, 128), Points = Vector2.new(32, 32), Pad = 0 },
+			SeamRates = { Id = "rbxassetid://78602826016043", Pixels = Vector2.new(128, 128), Points = Vector2.new(32, 32), Pad = 0 },
+			SeamUnderline = { Id = "rbxassetid://110759843540232", Pixels = Vector2.new(304, 64), Points = Vector2.new(76, 16), Pad = 0 },
+			SeamUnderlineGlow = { Id = "rbxassetid://133063172941339", Pixels = Vector2.new(304, 64), Points = Vector2.new(76, 16), Pad = 0 },
+		} :: { [string]: UIKit.Image },
+		-- The glass: the Panel gradient at Fill; the ring's glow at 1 - RingGlow·L; the wash in the light at 1 - L/Wash,
+		-- falling from the foot up (WashFall: where, T); the edge at 1 - Edge·L; the foot's glow at 1 - FootGlow·L, Reach
+		-- past each side and the foot, and the foot itself Foot tall at T 0.
+		Glass = {
+			Fill = 0.03,
+			RingGlow = 0.44,
+			Wash = 1.45,
+			WashFall = { { 0, 0.913 }, { 0.4, 0.867 }, { 0.6, 0.756 }, { 0.75, 0.607 }, { 0.9, 0.384 }, { 1, 0.188 } },
+			Edge = 0.6,
+			FootGlow = 0.5,
+			Reach = 18,
+			Foot = 4,
+		},
+		-- The channel: Channel at T Rest; Main for an unavailable main action, Off for an unavailable second one; edged in
+		-- Edge, or Pressed's edge with a wash of the light falling as PressedFall while a finger holds it.
+		Channel = {
+			Rest = 0.22,
+			Main = 0.3,
+			Off = 0.38,
+			PressedEdge = Color3.fromHex("#8B83A3"),
+			PressedFall = { { 0, 0.95 }, { 0.4, 0.915 }, { 0.6, 0.871 }, { 0.75, 0.826 }, { 0.9, 0.772 }, { 1, 0.73 } },
+		},
+		-- L: a main action at rest and pressed; set (Leading); a second action on (Auto); a chosen chip.
+		L = { Main = 1, Pressed = 1.45, Set = 0.6, On = 0.75, Chosen = 0.9 },
+		-- A press sinks Sink points; the light rises over Down seconds and falls back over Up (the release flash). Research's
+		-- seed: a sink of 1 to 2 and a release flash.
+		Sink = 1,
+		Down = 0.05,
+		Up = 0.25,
+		-- The word: a second action's Over the middle; on or chosen, OnOver; an unavailable one's name Rise over it and its
+		-- reason Fall under it.
+		Word = { Over = 1.2, OnOver = 1, Rise = 8, Fall = 9 },
+		-- A second action's underline: half Rest × min(Share × its width, Most) at rest, the whole at a press, its middle
+		-- Over the foot. Its image spans Span of its drawn width, Tall high. Line and Glow: T at rest and pressed.
+		Underline = { Share = 0.3, Most = 26, Rest = 0.8, Over = 5, Span = 76 / 64, Tall = 16, Line = { 0.45, 0 }, Glow = { 0.835, 0.4 } },
+		-- A main action set (Leading): its mark Side across in the light, its middle Left of the word's left edge, and the
+		-- pair Shift to the right.
+		Mark = { Side = 11.3, Left = 7, Shift = 5 },
+		-- An icon's button (the X): no plate, the icon Side across in Text; pressed, in the light over its halo (Halo across
+		-- at HaloT) with an underline of Half whose middle is Below the icon's (the line at Line, its glow at Glow); unavailable,
+		-- in Faint. The X's touch is Box square at a panel's top right, In from its corner.
+		Icon = { Halo = 56.6, HaloT = 0.7, Half = 9, Below = 20, Line = 0, Glow = 0.55 },
+		Close = { Side = 20.7, Box = 52, In = 4 },
+		PlusMinus = 17.2, -- Power's ±: the channel with SeamPlus or SeamMinus this many across, in Text
+		-- The kinds' own lights: a claim and a ready shard, the base's, the map's.
+		Light = { Ready = Color3.fromHex("#F6DE80"), Power = Color3.fromHex("#F2C53D"), Map = Color3.fromHex("#E0566E") },
+	},
 	Dock = {
 		Sink = 1.6,
 		Dim = 0.45,
@@ -778,7 +857,7 @@ return {
 		-- glow's bands outward; at a 48-point cell, scaled with the cell.
 		-- Corner: its rounding round a cell's cut corner.
 		Ring = { Moat = { From = 0.8, To = 3.4, Alpha = 0.94 }, Out = 3, Wide = 2.6, Glow = { { Wide = 3, Alpha = 0.3 }, { Wide = 7, Alpha = 0.12 } }, Cell = 48, Corner = 4 },
-		Lit = { Glow = { { Wide = 2, Alpha = 0.22 }, { Wide = 5, Alpha = 0.1 } }, Button = 0.5 }, -- a plate of light's glow round it (the lit chip), and a button's (Equip's) in the kit's ring glow
+		Lit = { Glow = { { Wide = 2, Alpha = 0.22 }, { Wide = 5, Alpha = 0.1 } } }, -- a plate of light's glow round it (the lit chip)
 		Room = { Corner = 6 }, -- the Items room's panel
 		Shade = { Wide = 8, Alpha = 0.45 }, -- the card's shadow on the grid, left of its sliding edge
 	},

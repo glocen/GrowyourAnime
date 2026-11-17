@@ -8229,6 +8229,31 @@ Research's ask after its pick (24e4808): 128 on its grey layout from the player'
 - **The size:** 128. 144 is more open at the gate, but only by the near volumes, and those are grey boxes taller than the machines that replace them. The walk is what a player does every visit, and 128 halves it. 144 stays the fallback in `docs/design.md`. **Faber sets `Config.World.Plots` to 128** (8 in its 16-stud units) and lays it.
 - **Must-fix, older than this piece (the same at 200 and 144):** the plates crowd the player's arrival. "Ready to open: 4", "Bay 2 · nobody works here" and the nudge "4 ready: open them at the Breaker" stack over the avatar on arrival and through the walk, and the Breaker's count is said twice. **Class: a world plate never sits over the player's own avatar, and one fact shows once on screen.** The lever is Faber's: for example, a machine's plate only within a few studs of it, or only on the nudge's target, and the HUD nudge alone carries the count from afar. Proved by a spawn still and the walk sheet again, at 128.
 
+### 128 laid, and the plates' must-fix (Faber, 2026-11-17, 12:02 to 12:18 by the clock)
+
+- **128 laid:** `Config.World.Plots` is 8 by 8 cells (128 studs), 2 between (32). Until the base plan is laid again at 128, the plots stand grey on Fit's layout, as `BaseSize` laid them.
+  - The world report is empty. The dressing report says only "plots grey: ... part 7's grey trial".
+  - TR8's case reads the street's dressing through `DressReport`'s new "Street" option, which leaves out that one line. The line comes back by itself once the plan is drawn for 128.
+  - BaseFit's case "the row of four shorter" now compares with the plan's row at 200, not with today's.
+- **The plates (the must-fix's class: a world plate never sits over the player's own avatar, and one fact shows once):**
+  - **Near only:** a machine's plate speaks only within 13 studs of it (the prompt's reach and 3). From farther, the next step over the dock carries the news, with its marker on the machine. The news still lights the plate. This replaces TR2's "lit plates are seen from anywhere on the plot" (research's read of 2026-11-12).
+  - **Off the avatar:** `World.Off` hides a plate wherever it would stand over the player's avatar on the screen (the model's box). It's on the base's plates and the signs; the Door's plate stood on the avatar at the gate.
+    - On a phone, a plate over a machine straight ahead is pushed under the top band onto the avatar's head, so facing a machine head on, its plate hides. Its prompt names it.
+    - Beside a machine, the plate shows.
+  - **Once:** a plate leaves out what the next step says when the step points at its machine. The Breaker drops "Ready to open: n" (the nudge says "n ready: open them at the Breaker"). An empty bay the step sends a Voidkin to drops "nobody works here". The Breaker reads "idle" only with nothing ready.
+- **Proof at phone size** (iPhone 16 Pro simulator, the same save: 4 ready, bay 2 empty), in `build/captures/ar16/`:
+  - `plates_spawn_before_after.png`: 11:57 and 12:17 from the spawn. The two plates over the avatar are gone, and the count is said once, in the nudge.
+  - `plates_walk_before_after.jpg`: 11:57's walk over today's (0.5 to 4 s). In no frame does a plate stand on the avatar. At the Breaker the "Open" prompt shows, and the nudge has the count.
+- **Seen, not this piece's:** at the Breaker, Roblox's own prompt ("Void Breaker · Open") stands over the Electricity pill at the top right, in both takes.
+- **Checks:**
+  - Type check: 0 new.
+  - Logic: 23,970/0, offline and in Studio.
+  - Self-test:
+    - "Base: the plot's plates speak only near ..." 36/0, rewritten for the rule. It checks that no shown plate is over the avatar at every stand, and that the Breaker leaves the count to the next step.
+    - "HUD: a machine's plate under the lead's card ..." 21/0. The avatar now stands beside the Breaker, so its plate speaks.
+    - World's cases: 70 passed and 1 failed, TR8's "the dressing report is empty" on the plots' grey line. With the "Street" read, TR8 passes 5/5.
+- **Four facts:** implemented, yes. Tested, as above. Visually reviewed: these stills, mine; research's confirmation next. Director-accepted: no.
+
 ## AR17. The rest of the map (Modulo's look from the grey world, then Faber)
 
 Research's entry, 2026-11-15, night, on the director's word: "then once the base is done we finish the rest of the map and continue working" (the register). Rewritten 2026-11-16, 01:55, on their word to Modulo at 01:53: "keep working on the rest of the map ask quaestor what else you should do". It starts now. Modulo is free while Faber installs the base. The phone run of the first session needs Faber and research, so the two run side by side.
@@ -9150,6 +9175,17 @@ The director, over the grey: "im not happy with the shoulder and helmet and boot
 - **Content check, on the bracer rendered again** (a fresh-eyes agent, on the exact file and the sheet, by 22:17): PASS. The other 19 marks are unchanged since the 22:13 pass. The agent's one taste note: at 44 points the leaning, open sleeve may still read a little as a tipped cup. Research's verdict says the read in the build decides it.
 - **To Faber:** the 20 marks in `build/handoff/UI/slots/images/` and `slot_marks.json`, with the draw it gives. Upload them under the group with the key, exactly these files.
 - **Four facts:** drawn; seen on the sheet at 44 and 88 points and at the smallest phone; research's verdict competent, and the read in the build still to come; not director-accepted.
+
+
+### The director's word on the marks in the build, and the Shoulders' pictures (research, 2026-11-17, 12:19)
+The director, over the Items tab at phone size: "i do not look like gear slot design of chest and rings and shoulder and earings make it better and mature the ring can be more simple same for the earings looks at tcp 3 gears slot for references if needed also the actual gears images of shoulder features both shoulders when it should once face 1" (`docs/decisions.md`). It's their word, so it's no fix round of research's.
+- **Chest Armor's and the Shoulders' marks:** drawn again, better and more mature. Mature here means restrained and weighty: solid plates and clean edges, with the ornament held back, never toy-like curls or a crest standing off the form. They keep the Epic weight asked on 2026-11-16 and stay one pauldron.
+- **The Rings' and the Earrings' marks: simpler.** A ring is a plain band at three-quarters with one set stone at most. An earring is one simple drop or stud.
+- **The rest stay:** the Helmet, Gloves, Bracers, Boots, Cloak and Amulet, and the hands' pairs.
+- **The Shoulders' pictures (AR6), all 15 designs:** one pauldron each, never a pair, the same design as today's.
+- **The reference:** TCP3's slots, if the director shares a screenshot, are read for how much detail a slot mark carries at its size, never for any shape. Without one, the director's words are the brief.
+- **Shown:** two takes on the four marks in A's empty slots at 44 points, on the doll at the smallest phone beside filled slots, with today's marks beside them; and the 15 Shoulders' pictures at the bag's size. Research picks one take, and the director sees it in the pick.
+- **When:** Modulo's next piece after AR28's Stage I, before AR17's kit.
 
 ## AR23. Combat Power's number, chromatic (Modulo, then Faber)
 

@@ -12414,6 +12414,15 @@ The script is `tools/blender/shop_look.py`.
 
 **Status:** implemented as kit pieces and rendered on the Strip. Not exported to the handoff, not built, not reviewed in game. Quality is UNVERIFIED until research's read. Then I export to `build/handoff/Strip/` with the meshes' sheet, for Faber.
 
+### Research's read of the colour pass (Quaestor, 2026-11-17, 22:00): works, one must-fix
+
+From `shop_look.png` and `far_close.png` (1910443).
+- **Felt:** the Shop is now the void's own. The canopy's rim is lit, and the counter's six lights read as stock on a shelf. Up close it's a place, not a block.
+- **What holds:** the note at the counter is met (p99 0.93 under the counter's 0.99). The rim reads a rare offer from the east. The spent tooth that's gone stands as the tier-1 change.
+- **Must-fix, its class: the clock carries the light of its minutes left, readable as a count from the crossing and at 160 studs.** The feel line's first read is the clock from the crossing. In colour, the teeth are dark with a thin crack, so from the crossing and down the side street they fade into the haze, and the counter's lights read before the clock. It was the reason C was picked.
+  - **The lever is Modulo's:** a lit tooth's face carries the light, not only its crack, within the counter's cap. A glow rising with distance (Faber's runtime) is the fallback only.
+- **Second look:** the clock alone, from the crossing, at 160 and at the counter.
+
 ## AR39. The sound rescue: three pilots (Modulo's sourcing and arrangements, Faber's engine, an independent review)
 
 Research, 2026-11-17, 21:19. The director's directive, word for word: `docs/archive/directive-sfx-2026-11-17.md` (its row in `docs/decisions.md`). The cue registry stays `src/shared/Config/Cues.luau`; provenance stays `docs/asset-log.md`.

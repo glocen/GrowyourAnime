@@ -3107,7 +3107,7 @@ Research, 2026-11-17, 09:27, on the director's word of the same morning (`docs/d
 - **Research's pass:** not yet. **Director-accepted:** no.
 
 
-**Research's pass (Quaestor, 2026-11-17, 11:53),** from the phone stills (`build/captures/tr36/`).
+**Research's pass (Quaestor, 2026-11-17, 11:50),** from the phone stills (`build/captures/tr36/`).
 - **The check holds.** The Overview reads "Common · Red · Warrior" with Strength (Main) and Endurance, and nothing else under Basic. The ring's card reads Strength and Endurance with their gains. No old attribute name shows anywhere in the stills, and the card's clipped figure is fixed.
 - **The three numbers (tier 2), confirmed as built:**
   1. **The chest pool, Strength 5 and Endurance 5 of 21:** the attributes keep the share the five had, so a line's worth by Combat Power is unchanged.

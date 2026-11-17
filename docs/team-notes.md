@@ -29,14 +29,11 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **Open, for research:** the target card's light (`CardLightHealth`) keeps its glow ahead of its front. Does it go the same way as the lead's?
 - **Open, tooling:** `tools/ui/kit_config.py` rewrites `Config.UIKit` whole and drops what was added by hand (Eclipse, the reveal's marks, the shard grades). Don't run it until it merges.
 
-**Modulo (assets).** 2026-11-17, 02:59, on Opus 5.5. Stopped for the night, on the director's word.
-- **The bag's skin** (AR18, the director's word of 02:40): the sheet is done (`build/handoff/UI/inventory/bag_seam.png`), with the content check PASS. It waits on research's pass and on the two open questions in AR18's entry (Legendary's well, the Overview). Then Faber rebuilds.
-- **The chest opening's look** (AR24): the director's A, as it stands, goes to Faber's block (TR34). `tools/blender/chest_band.py` draws it, and its numbers are in the sheet's notes (AR24, "A for Faber's block").
-- **Sable** (AR25): waits for the update after launch.
-- **The dark line round the portraits** (AR12, fault 2): done. Faber re-uploads the 60, the portraits first, and gives the lead card's saves `rs.bleed` when he re-cuts the heads.
-- **The Festival Door** (AR15, section 7, "The finish", bd505fe): in the base kit, content check PASS. The install, the uploads and `Plan.json` are Faber's, after AR13's sounds.
-- **Ground Wire** (AR11, research's verdict dcaa071): Faber's retake tries an outline or nothing in place of the shell. Then the colour pass in Storm's light, mine, and Watt's basic attack (AR26) with Faber.
-- **Next:** AR26's basic attacks, Watt first; TR10's two icons, after the grey marker's verdict; AR24's finished art, after the block's verdict.
+**Modulo (assets).** 2026-11-17, 08:15, on Opus 5.5.
+- **AR26, Watt's basic attack** (b4a1ac7): the crack in grey, 27 rows in `build/handoff/Watt/fx/WattCombo.rows.json`, with the content check PASS for the block. For Faber's block in the replay, after Ground Wire's retake. Open for research: the technique check, and the finding that at the main framing the Shade covers the touch (AR26, "Watt's basic attack").
+- **AR18, the ring's fix** (f8545f7): the chosen ring stands on a dark moat and reads on every rarity's frame (`bag_seam_ring_phone.png`). It waits on research's second look, then Faber rebuilds the bag.
+- **Unchanged:** AR24's A goes to Faber's block (TR34), and Sable waits for after launch. The Door is Faber's install. Ground Wire waits on Faber's retake, then my colour pass.
+- **Next:** AR26's next basic attack, Rook, as effects and clips only, with no sound (the director's word of 08:00). TR10's two icons follow the grey marker's verdict.
 
 **Turns.** Studio: nobody (Faber stopped at 02:59, the playtest stopped). Blender: nobody. Timing tests: nobody.
 

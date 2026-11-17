@@ -8903,6 +8903,39 @@ Research's fix is made, and seen at 1.7 pixels a point on the same sheet (`power
 - **The sheen:** take A's, as above.
 - **Where the stops sit:** they run over the digits' own box, from their tops to the comma's foot. A label's box is taller than its digits, so each stop t goes to top + t × (foot − top), where top and foot are the digits' own top and foot as fractions of the label's height, read from the game's face.
 
+## AR24. The chest opening's look: three directions (Modulo, for research's verdict, then Faber's block)
+
+Research's word with 22c0d60 (02:21): "AR24, the chest opening's look, can start from TR34 … the band's look and the best's moment are ours to design." The feel line, the beats and the numbers are TR34's (`docs/test-requests.md`); the form is the director's (`docs/decisions.md`, 2026-11-17, 02:16 and 02:20): a translucent black band across the whole screen, a title on top, the items centred, OK below. Content check on the plan, before drawing (2026-11-17, before the first drawing at 02:30): PASS on rules 2, 3 and 4, with eight conditions the sheets keep (one line for the rest of the haul, no reel and no casino words, nothing to buy, the best's light in hard lines with nothing pooling, our own crest, our own backdrop, the stand-in face in scratch only, a content check on the finished pictures).
+
+- **The block contains:** three directions, each on one sheet: settled (37 Shade Chests of Lantern Row, ten merged tiles from Common up, the best a Rare), three beats (the tap, the pour, the best landing) and one chest alone. All three share one layout, so they compare as looks: a band 150 points high centred at 205 of 375, tiles at 48, the best at 64 after a wider gap, the haul as one line of coloured words, OK under the row.
+- **Waits:** two rows and "+N more"; the Epic-or-better reveal before the band (TR34, beat 4); the game's text face (Blender's stands in); the forge stones' own colour and mark; the motion, judged in Faber's block from a phone capture; the sound (AR13's cues, Faber's).
+- **The sheets** (`build/scratch/modulo/ar24/chest_band_A.png`, `_B`, `_C`; `chest_band_glance.png` shows the three settled at phone size, 1 px a point; drawn by `tools/blender/chest_band_directions.py` from AR6's gear pictures, AR21's ChestShade and the game's rarity colours, over Faber's TR24 phone capture of the bag, dimmed. The capture is the slate bag, before the lacquer rebuild of AR18's A):
+  - **A, the seam: the void's own.**
+    - The band opens as one hairline of pale light that parts into its two edges: the reveal's crack turned on its side. Inside, violet-black.
+    - The best: its colour runs out along both edges from it, and an upright shaft of its light stands behind it, cut hard at the band.
+    - The price: the calmest of the three. Its moment is the edges' colour, which reads at a glance but doesn't hit.
+  - **B, the banner: anime poster energy.**
+    - The band tilts up to the right and runs in from the left on its slant, black with fine diagonal lines, a bold stripe along its top. The title is big and slanted, the haul under it, both on a black tag hung from the stripe.
+    - The best: straight focus lines in its colour burst from behind it inside the band, the stripe takes its colour, its rarity's word on a slanted tag under it. OK is a white slanted plate.
+    - The price: the tilt sits against the bag's straight grid, and focus lines on every open could tire (below).
+  - **C, the tray: the bag's lacquer.**
+    - Warm black, brass rules along both edges, the chest's picture in a brass ring hung over the top rule. The tiles are the bag's own cells (AR18's A), so what lands looks as it will in the bag.
+    - The best stands on a short brass bar in a halo of its light, rimmed in its colour. OK hangs from the bottom rule.
+    - The price: it's warm brown more than black, and the best's moment is the quietest at phone size.
+- **In all three:** the best's light is lines and shafts with hard edges, never a pool under a tile. "×N" sits on the tile's corner. Nothing on the band, the single chest or "+N more" offers a purchase.
+- **Proposed, for every direction:** the best's moment scales with its rarity. A Common best gets no light, an Uncommon its colour on the rim, Rare and up the full moment. A run of ordinary opens then stays quick, and a good one stands out.
+- **My lean: B.** It's the director's "black" most literally, and its best moment reads at a glance at the phone's size, which A's and C's don't. A is the right mood for the void and costs the least to build. C fits the bag best but loses the moment.
+- **Self-review, up close and at phone size** (2026-11-17, 02:32). Fixed before handing in:
+  - B's haul ran into the focus lines, so it moved under the title on a black tag.
+  - A's and C's bands let the bag's cells read through behind the title, so A's band went from 0.86 to 0.92 cover and C's from 0.9 to 0.94.
+  - C's halo didn't read, so it went from 0.42 to 0.6 and from 46 to 54 points wide.
+  - The sting's white flash ended in a visible square, so its window grew.
+- **Four facts:**
+  - Implemented: the three sheets and the glance.
+  - Tested: drawn without error, every tile's picture found.
+  - Visually reviewed: my own pass only, up close and at phone size. Research's verdict waits.
+  - Director-accepted: no.
+
 ## Later, by ground
 
 The rest of ground 1 (Kirra in AR10, Watt in AR11; then Sable, Marigold, Crane), then each ground's Voidkin in `docs/roster.md`'s order. **The machines** (Gantry, Bulwark, Ironhymn, Shiomaru, Aegir) share one custom rig, taller than a player, with its own clip family: the first of them is timed like AR1, because a custom rig is a different cost.

@@ -2958,6 +2958,44 @@ On the director's "YES" of 2026-11-16, 21:39 (`docs/decisions.md`). Tier 2, rese
 - **Tests:** the case, and one take from the player's camera with two players in a Studio test server.
 - **Order:** after TR31.
 
+## TR34. Opening chests (Faber; the look is Modulo's AR24)
+
+Research, 2026-11-17, 02:21.
+- **The design:** `docs/design.md`, "Chests". "Open all" opens a stack in one server step and shows one summary sorted by rarity, rare items lit, and an Epic or better gets a short reveal of its own.
+- **The director's words** (`docs/decisions.md`): 2026-11-16, 21:39, Dragon Hunter's flow with Sailor Piece's feeling; 2026-11-17, 02:16 and 02:20, the clip and the band.
+- **The study:** `docs/research/chest-opening.md`.
+
+**Feel line:** the player taps Open all on a stack and the haul lands at once. A dark band crosses the screen, the items pour into its middle from common up, the best lands last and largest in its rarity's light, and OK puts it all in the bag.
+
+**The beats.** Every time is a number in `Config.Chests.Opening`, tunable live:
+1. **The ask:** a stack's tile offers Open 1 and Open all. There's no typed amount, because in the clip the phone's keyboard covers half the screen. The band opens on the tap, before the server answers, so the wait reads as the build-up (anticipation). Its items come when the answer lands.
+2. **The band,** the director's form: a translucent black band across the whole width, about a third of the screen high, centred. The title is on top ("37 Shade Chests of Lantern Row"), the items are centred in the middle, and OK sits under them.
+3. **The pour:**
+   - identical items combine into one tile marked ×N;
+   - the tiles arrive one by one from the lowest rarity up, each with a tick (seed: 60 ms apart, all in within 1.5 s);
+   - the climb is the chance being felt.
+4. **The best:** the highest rarity lands last, a size up, in its rarity's light, with a sting (hitstop on the band, 80 ms). An Epic or better first gets its own short reveal, which a tap skips.
+5. **The rest of the haul:** Credits and forge stones, as one line under the title in their own colours.
+6. **OK:** closes the band. Everything is already in the bag (the server's one step), and new items are marked new.
+- **A big open:** at most two rows of tiles. Past them, "+N more" opens the bag filtered to what's new. A tap during the pour finishes it at once.
+- **One chest:** the same band with one tile, and the reveal if it's Epic or better.
+
+**The block:**
+- **What it holds:** the band, the pour and the best's lift, inside the 90-minute cap, with AR6's item art and the real rarity frames. AR13's cues stand in for the tick and the sting.
+- **How it's opened:** from debug stacks of 1, 37 and 500.
+- **How it's judged:** research's verdict in motion from a phone capture, then the director's look.
+
+**Waits:**
+- The look: Modulo, AR24, from this entry.
+- Its own sounds.
+- Dragon Hunter's flow: when its clip lands, research reads beat 1 against it, and any difference goes to the director before the finish.
+
+**Checks:**
+- On a phone, a 1, a 37 and a 500 open: the time from the tap to the last tile; the best one read at a glance; OK under the thumb; nothing past two rows.
+- A repeated tap opens nothing twice (the open's id).
+
+**Cost:** none.
+
 ## TR35. Music, and the two sliders (Faber, with the director's ear)
 
 Research, 2026-11-17, 01:39. From the sound study (`docs/research/sound.md`, "What sound is worth, music, and what we skip" and "Next", item 2), after the director's phone run ("no SFX that add depth"). Tier 2: a new thing players hear, research and Faber. It follows AR13's six cues. (TR34 is kept for the chest's opening.)

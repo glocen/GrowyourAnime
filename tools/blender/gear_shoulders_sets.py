@@ -1,16 +1,16 @@
 """AR6, batch 2: Shoulders in three designs at each rarity, in grey: a blockout for research's verdict.
 
 One family: one pauldron as it sits on the right shoulder, from the front and above, turned a little toward its
-outside (the director, 2026-11-17, 12:19: the pictures showed "both shoulders when it should once face 1"). The plate
-slopes from a low rim at the neck out over the shoulder, the cop leans out at its end, and the lames hang from the cop's
-outer end as the arm hangs, each as wide as the cop's rim and wider than the one above. So it keeps the shoulder's own
-outline, the neck, the slope, the arm, which is what made the pair read: a cop alone, without the slope, read as a
-helmet, a bell or a beetle in every pose tried (2026-11-16, and again on 2026-11-17). The lames are what say shoulders,
-so every design has at least two. A design is the cop, its lames, and what the cop carries.
+outside (the director, 2026-11-17, 12:19: the pictures showed "both shoulders when it should once face 1"). The cop
+and its lames share the arm's line, ARM degrees out from straight down, so the cup opens down and out over the arm and
+the lames fan down it (research's must-fix, 13:15). What the cop carries lies on its face along the rim: the stone on
+the rim, the set's ornament round it or running from it. A dome seen crown up read as a helmet, a bell or a beetle in
+every pose tried, its stone in the middle as an eye and its standing crests as feelers (2026-11-16 and 17). The lames
+are what say shoulders, so every design has at least two. A design is the cop, its lames, and what the cop carries.
 A rarity keeps the ladder's rule, a set keeps its word (gear_parts.py), and the near word from Rare up is Pauldrons.
 
-Each Legendary's one new form changes the silhouette: Noroshi carries a beacon's spire on its cop, Yoake's cop grows
-a folded wing that rises over two lames, Kaikou's crest rises over its cop like a wave, holding a light under it.
+Each Legendary's one new form: Noroshi's beacon rod runs round the rim to the shoulder's point, its light at the end;
+Yoake's folded wing lies back along its rim over its two lames; Kaikou's wave curls along the rim, holding a light under it.
 
     blender -b --factory-startup --python tools/blender/gear_shoulders_sets.py -- build/handoff/Gear/shoulders_sets
 
@@ -20,7 +20,7 @@ import math
 import sys
 from pathlib import Path
 
-from mathutils import Matrix
+from mathutils import Matrix, Vector
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import blcommon as bl  # noqa: E402
@@ -30,11 +30,12 @@ mat = p.mat
 TILT, SPIN = 30.0, -20.0   # from the front and above, turned a little toward the shoulder's outside
 FILL, DROP = 0.8, 0.0
 LEAST = 0.86
-X0, LEAN, DEEP = 1.0, 46.0, 0.92   # the cop's middle, how far it leans out over the arm, its depth to its width
+X0, Z0, DEEP = 1.0, -0.1, 0.92     # the cop's middle, and its depth to its width
 SIZE, SHALLOW = 0.72, 0.5          # the cop's width beside the plate, and its height to its width: low, a shell
-FACE = 30.0                        # the cop's face, and what it carries, turned toward the arm: a stone in the
-#                                    middle read as an eye
-LAME, STEP = 0.36, 0.3             # each lame's height, and how far each hangs below the last: long, as an arm
+ARM = 35.0     # the arm's line, degrees out from straight down: the cop's axis and every lame's, so the cup opens down
+#                and out over the arm (research, 2026-11-17, 13:15)
+FAN = 6.0      # each lame turns this much further out than the one above, so the lames fan down the arm
+LAME, STEP = 0.5, 0.36             # in the cop's own size: each lame's height, and how far each hangs below the last
 
 COP = [(1.0, 0.0), (0.98, 0.22), (0.9, 0.46), (0.74, 0.68), (0.5, 0.84), (0.22, 0.93), (0.02, 0.96)]
 OUTER = (-40.0, 220.0)     # the lames hang over the front, the outside and the back, never on the neck's side
@@ -51,39 +52,39 @@ def design(name, rarity, note, key, **more):
 
 
 DESIGNS = (
-    design("Iron Shoulders", "Common", "Round iron cops, three lames a side, on a plain mantle.", "iron"),
-    design("Bronze Shoulders", "Common", "A deep bronze cop a side with a button, three lames with rolled rims.",
+    design("Iron Shoulders", "Common", "A round iron cop and three lames.", "iron"),
+    design("Bronze Shoulders", "Common", "A deep bronze cop with a button, three lames with rolled rims.",
            "bronze", cop="deep", rims="bronze", top="button"),
-    design("Scrap Shoulders", "Common", "Plates beaten flat and riveted, a strap over each cop.", "scrap", cop="facet",
+    design("Scrap Shoulders", "Common", "Plates beaten flat and riveted, a strap over the cop.", "scrap", cop="facet",
            rivets=True),
 
-    design("Lanternsteel Shoulders", "Uncommon", "Bright steel, four lames a side, a brass rim on each.", "steel",
+    design("Lanternsteel Shoulders", "Uncommon", "Bright steel, four lames, a brass rim on each.", "steel",
            lames=4, rims="brass"),
-    design("Rowsmith Shoulders", "Uncommon", "A ridge over each cop and a brass lozenge on its face.", "steel",
+    design("Rowsmith Shoulders", "Uncommon", "A ridge over the cop and a brass lozenge on its face.", "steel",
            ridge=True, lozenge="brass"),
-    design("Stallguard Shoulders", "Uncommon", "Three brass studs down each cop, brass rims.", "steel", studs="brass",
+    design("Stallguard Shoulders", "Uncommon", "Three brass studs down the cop, brass rims.", "steel", studs="brass",
            rims="brass"),
 
     design("Pauldrons of Embers", "Rare", "A swelling frame round one small stone, a line round the cop.", "blued",
            line="filigree", orn="Embers", stone=("stone", 0.13)),
     design("Pauldrons of Hoarfrost", "Rare", "Cops cut in facets, a square stone in a spade.", "blued", cop="facet",
            line="filigree", orn="Hoarfrost", stone=("stone", 0.13), cut="square"),
-    design("Pauldrons of Gales", "Rare", "A vane sweeps up and out from each cop, the stone below it.", "blued",
+    design("Pauldrons of Gales", "Rare", "A vane sweeps from the stone along the rim.", "blued",
            line="filigree", orn="Gales", stone=("stone", 0.13)),
 
-    design("Stormcall Pauldrons", "Epic", "Two filigree hooks rise from the crown and curl out. A glowing stone.", "rich",
+    design("Stormcall Pauldrons", "Epic", "Two filigree hooks curl out along the rim from a glowing stone.", "rich",
            trim="filigree", line="filigree", orn="Stormcall", stone=("glow", 0.17)),
-    design("Gloamforge Pauldrons", "Epic", "Two filigree prongs stand on the crown, a square glowing stone.", "rich",
+    design("Gloamforge Pauldrons", "Epic", "Two filigree prongs lie along the rim, a square glowing stone.", "rich",
            trim="filigree", orn="Gloamforge", stone=("glow", 0.17), cut="square"),
-    design("Nightloom Pauldrons", "Epic", "A shuttle lies over the crown, four long lames, a glowing stone.", "rich",
+    design("Nightloom Pauldrons", "Epic", "A shuttle lies along the rim, four long lames, a glowing stone.", "rich",
            trim="filigree", lames=4, line="filigree", orn="Nightloom", stone=("glow", 0.17)),
 
-    design("Noroshi, the Beacon", "Legendary", "Its one new form: a beacon's spire on each cop, its light at the point.",
+    design("Noroshi, the Beacon", "Legendary", "Its one new form: a beacon's rod round the rim, its light at the shoulder's point.",
            "gilt", trim="ivory", rims="ivory", orn="spire", stone=("lit", 0.15), edge=True, strap="ivory"),
-    design("Yoake, the Daybreak", "Legendary", "Its one new form: a folded wing rises from each cop, two lames under "
-           "it.", "gilt", trim="ivory", lames=2, orn="wing", stone=("lit", 0.15), edge=True, strap="ivory"),
-    design("Kaikou, the Sea Light", "Legendary", "Its one new form: a crest rises over each cop like a wave, a light "
-           "under it.", "gilt", trim="ivory", rims="ivory", orn="wave", stone=("lit", 0.15), edge=True, strap="ivory"),
+    design("Yoake, the Daybreak", "Legendary", "Its one new form: a folded wing laid back along the "
+           "rim, over its two lames.", "gilt", trim="ivory", lames=2, orn="wing", stone=("lit", 0.15), edge=True, strap="ivory"),
+    design("Kaikou, the Sea Light", "Legendary", "Its one new form: a crest curls along the rim like a "
+           "wave, a light under it.", "gilt", trim="ivory", rims="ivory", orn="wave", stone=("lit", 0.15), edge=True, strap="ivory"),
 )
 
 
@@ -95,8 +96,18 @@ def arc_rim(name, radius, minor, key, z, a0, a1):
     return bl.smooth_by_angle(bl.place(t, (0, 0, z), (0, 0, 0), (1, DEEP, 1)), 40.0)
 
 
-def cop(d, side):
-    """The cop and what it carries, built in its own frame, then made the mantle's size and leant out over the arm."""
+def lay(objs, base, at, turn=0.0, scale=(1.0, 1.0)):
+    """What stood on the crown, laid on the cop's face at its rim: `base` (x, z), where it stood, comes to `at`, turned
+    `turn` degrees in the face's plane and scaled across and up."""
+    m = (Matrix.Translation(at) @ Matrix.Rotation(math.radians(turn), 4, "Y")
+         @ Matrix.Diagonal((scale[0], scale[0], scale[1], 1.0)) @ Matrix.Translation((-base[0], 0.0, -base[1])))
+    for obj in objs:
+        p.move(obj, m)
+    return objs
+
+
+def cop(d, side=1):
+    """The cop and what it carries, in the piece's own frame: z up the cop's axis, x out toward the arm, its front -y."""
     key, trim, parts = d["key"], d["trim"], []
     tall = SHALLOW * (1.35 if d["cop"] == "deep" else 1.0)
     rise = 0.96 * (tall - 1.0)       # what stands on the crown comes down with it
@@ -131,91 +142,86 @@ def cop(d, side):
     if d["top"] == "button":
         parts.append(p.ball("Button", 0.13, key, (0, 0, 0.97 * tall), squash=(1, 1, 0.7)))
 
-    # What the cop carries: the set's ornament round its stone, or a Legendary's new form.
-    orn, stone_at = d["orn"], front(0.5, 0.9)
+    # What the cop carries lies on its face at the rim's front: the stone on the rim, the set's ornament round it or
+    # running from it along the rim. On the crown, the crests and the Beacon's rod read as feelers, and a stone in the
+    # dome's middle as an eye (research, 2026-11-17, 13:15).
+    orn, rim = d["orn"], 0.2
+    stone_at = front(rim, 0.98)
+    face = stone_at[1] + 0.02
     if orn in ("Embers", "Hoarfrost"):
-        parts.append(p.flat("Frame", p.set_ornament(orn, 0.42, (0, 0.5 * tall)), 0.06, trim, y=stone_at[1] + 0.03))
+        parts.append(p.flat("Frame", p.set_ornament(orn, 0.42, (0, rim * tall)), 0.06, trim, y=face + 0.01))
     elif orn == "Gales":
-        parts.append(p.flat("Vane", p.shifted(p.VANE, 0.55, 0.62 + rise, 1.05 * side, 1.05), 0.07, trim, y=-0.1))
-        stone_at = front(0.36, 0.95)
+        vane = [p.flat("Vane", p.shifted(p.VANE, 0.55, 0.62 + rise, 1.05, 1.05), 0.07, trim, y=0.0)]
+        parts += lay(vane, (0.55, 0.62 + rise), (0.12, face, rim * tall), -70.0, (0.55, 0.55))
     elif orn in ("Stormcall", "Gloamforge"):
-        parts.append(p.flat("Crest", p.set_ornament(orn, 0.62, (0, 0.98 * tall + 0.16)), 0.08, trim, y=0.0))
+        crest = [p.flat("Crest", p.set_ornament(orn, 0.62, (0, 0.98 * tall + 0.16)), 0.08, trim, y=0.0)]
+        parts += lay(crest, (0.0, 0.98 * tall), (0.0, face, rim * tall + 0.06), 0.0, (0.95, 0.42))
     elif orn == "Nightloom":
-        parts.append(p.flat("Shuttle", p.shifted(p.SHUTTLE, 0, 1.0 + rise, 1.5, 1.4), 0.4, trim, y=0.0))
+        shuttle = [p.flat("Shuttle", p.shifted(p.SHUTTLE, 0, 1.0 + rise, 1.5, 1.4), 0.2, trim, y=0.0)]
+        parts += lay(shuttle, (0.0, 1.0 + rise), (0.0, face, rim * tall + 0.1), 0.0, (0.62, 0.5))
     elif orn == "spire":
-        path = [(0, 0, 0.9 + rise), (0.06 * side, 0, 1.4 + rise), (0.1 * side, 0, 1.9 + rise),
-                (0.12 * side, 0, 2.2 + rise)]
-        parts.append(p.tube("Spire", path, [0.16, 0.11, 0.07, 0.04], key, sides=8))
-        parts.append(p.lathe("Cup", [(0.05, 2.14 + rise), (0.2, 2.22 + rise), (0.26, 2.34 + rise)], trim, thick=0.04,
-                             steps=16))
-        parts.append(p.ball("Light", 0.2, "lit", (0.12 * side, 0, 2.42 + rise), squash=(1, 1, 1.2)))
+        # the beacon's rod runs round the rim from the front to the shoulder's point, its cup and light at its end
+        path = [(1.05 * math.sin(math.radians(a)), -1.05 * DEEP * math.cos(math.radians(a)) - 0.04, (rim + 0.04 * a / 90)
+                 * tall) for a in range(-10, 91, 20)]
+        end = Vector(path[-1]) + Vector((0.18, 0.0, 0.0))
+        rod = p.curve(path + [tuple(end)], 20)
+        parts.append(p.tube("Spire", rod, [0.1 - 0.05 * i / (len(rod) - 1) for i in range(len(rod))], key, sides=8))
+        parts.append(bl.place(p.lathe("Cup", [(0.05, 0.0), (0.18, 0.08), (0.24, 0.2)], trim, thick=0.04, steps=16),
+                              tuple(end), (0, 90, 0)))
+        parts.append(p.ball("Light", 0.17, "lit", tuple(end + Vector((0.24, 0.0, 0.0))), squash=(1.2, 1, 1)))
     elif orn == "wing":
-        # the wing grows from the cop and rises, so the two lames hang clear under it (research, 2026-11-16)
+        # the folded wing laid back from the stone along the rim, over the lames toward the arm
+        wing = []
         for k, (angle, length) in enumerate(((14, 1.65), (-6, 1.55), (-26, 1.42), (-46, 1.26), (-66, 1.08))):
-            blade = p.turned(p.leaf(length, 0.36, bend=0.0), angle if side > 0 else -angle, (0, 0))
-            blade = p.shifted(blade, 0.78 * side, 0.32 - 0.05 * k)
-            parts.append(p.flat("Feather", blade, 0.06, trim if k % 2 else key, y=0.05 + 0.07 * k))
+            blade = p.shifted(p.turned(p.leaf(length, 0.36, bend=0.0), angle, (0, 0)), 0.0, -0.05 * k)
+            wing.append(p.flat("Feather", blade, 0.06, trim if k % 2 else key, y=-0.07 * k))
+        parts += lay(wing, (0.0, 0.0), (0.22, face - 0.12, rim * tall + 0.05), 100.0, (0.95, 0.95))
     elif orn == "wave":
-        outline = p.shifted(WAVE if side > 0 else p.flipped(WAVE), 0.0, rise)
-        parts.append(p.flat("Wave", outline, 0.1, trim, y=0.0))
-        parts.append(p.ball("Light", 0.17, "lit", (0.42 * side, -0.08, 1.3 + rise)))
+        # the wave curls along the rim from the stone toward the arm, its light under the curl
+        wave = [p.flat("Wave", WAVE, 0.1, trim, y=0.0), p.ball("Light", 0.17, "lit", (0.42, -0.08, 1.3))]
+        parts += lay(wave, (0.3, 0.3), (0.1, face - 0.06, rim * tall - 0.04), 0.0, (0.95, 0.6))
     parts += p.stone_of(d, 0.9, stone_at)
-    laid = (Matrix.Translation((side * X0, 0, -0.12)) @ Matrix.Rotation(math.radians(LEAN * side), 4, "Y")
-            @ Matrix.Rotation(math.radians(FACE * side), 4, "Z") @ Matrix.Scale(SIZE, 4))
-    for obj in parts:
-        p.move(obj, laid)
     return parts
 
 
-def lames(d, side):
-    """The lames hang from the cop's outer end round the arm, each as wide as the cop's rim and wider than the one
-    above, a skirt round the arm, each leaning a little less than the one above, so the last hangs straight as the arm
-    does."""
-    parts, n = [], d["lames"]
-    a0, a1 = OUTER if side > 0 else (-OUTER[1], -OUTER[0])
-    end_x = side * (X0 + SIZE * math.cos(math.radians(LEAN)))
-    end_z = -0.12 - SIZE * math.sin(math.radians(LEAN))
-    for k in range(n):
-        r0, r1 = 0.66 + 0.07 * k, 0.81 + 0.07 * k
-        band = [p.lathe("Lame", [(r0, 0.0), (r1, -LAME)], d["lame_mat"], a0, a1, thick=0.05, deep=DEEP, steps=48)]
+def lames(d):
+    """The lames round the arm under the cop, on its axis, each a little wider than the one above and turned FAN
+    further out, so they fan down the arm. They wrap the front, the outside and the back, never the neck's side."""
+    parts = []
+    for k in range(d["lames"]):
+        r0 = 0.97 + 0.05 * k
+        r1 = r0 + 0.12
+        band = [p.lathe("Lame", [(r0, 0.0), (r1, -LAME)], d["lame_mat"], *OUTER, thick=0.06, deep=DEEP, steps=48)]
         if d["rims"]:
-            band.append(arc_rim("Rim", r1, 0.03, d["rims"], -LAME, a0, a1))
-        lean = side * LEAN * (1.0 - (k + 1) / (n + 1))
-        at = Matrix.Translation((end_x - side * 0.62, 0.0, end_z + 0.18 - 0.85 * STEP * k)) @ Matrix.Rotation(
-            math.radians(lean), 4, "Y")
+            band.append(arc_rim("Rim", r1, 0.04, d["rims"], -LAME, *OUTER))
+        at = (Matrix.Rotation(math.radians(-FAN * (k + 1)), 4, "Y")
+              @ Matrix.Translation((0.0, 0.0, -0.08 - STEP * k)))
         for obj in band:
             parts.append(p.move(obj, at))
     return parts
 
 
-SLOPE = (-15.0, 195.0)     # the plate's sweep round the neck: the right shoulder's side, front to back
-
-
 def build(d):
     def parts():
-        out = cop(d, 1) + lames(d, 1)
-        # the plate sloping from the neck out under the cop, the right shoulder's half
-        out.append(p.lathe("Mantle", [(0.44, 0.12), (0.8, 0.0), (1.15, -0.2), (1.35, -0.42)], d["key"], *SLOPE,
-                           deep=0.62, thick=0.05, steps=48))
-        # a low rim standing along its neck edge, in the trim
-        out.append(p.lathe("Rim", [(0.43, 0.08), (0.42, 0.18), (0.47, 0.27)], d["trim"], *SLOPE, deep=0.65, thick=0.05,
-                           steps=40))
-        return out
+        # the cop and its lames on the arm's line, the cup opening down and out over the arm
+        laid = (Matrix.Translation((X0, 0.0, Z0)) @ Matrix.Rotation(math.radians(-ARM), 4, "Y")
+                @ Matrix.Scale(SIZE, 4))
+        return [p.move(obj, laid) for obj in cop(d) + lames(d)]
     return p.scene_of(parts, TILT, SPIN)
 
 
 WORDS = dict(
     file="gear_shoulders_sets.png",
     title="Grow your Anime: Shoulders in three designs at each rarity, in grey (AR6, batch 2)",
-    lead="One pauldron as it sits on the right shoulder, from the front and above: a plate sloping from the neck, "
-         "the cop leant out at its end, its lames hanging down as the arm does. A design is the cop, its lames and what "
-         "it carries.",
+    lead="One pauldron as it sits on the right shoulder, from the front and above: the cop and its lames on the arm's "
+         "line, the cup opening down and out, the lames fanning down the arm. A design is the cop, its lames and what it "
+         "carries, laid along its rim.",
     notes=(
         "A set keeps its word and its ornament on every kind: Embers swells round its stone, Hoarfrost is cut square, Gales "
         "sweeps back, Stormcall curls out, Gloamforge stands in prongs, Nightloom lies in a shuttle. The near word is Pauldrons.",
-        "Each Legendary's one new form: Noroshi (a beacon fire), a spire on the cop with its light at the point; Yoake "
-        "(daybreak), a folded wing rising from each cop over its lames; Kaikou (the sea's own light), a wave over a "
-        "light.",
+        "Each Legendary's one new form: Noroshi (a beacon fire), a rod round the rim with its light at the shoulder's "
+        "point; Yoake (daybreak), a folded wing laid back along the rim over its lames; Kaikou (the sea's own light), a wave along the rim over "
+        "a light.",
         "No flame and no cloud anywhere: a light is a stone or a line.",
         "For the verdict: does each read as shoulders, and apart from its two neighbours, at 38 points? Does each Legendary "
         "outrank every Epic by shape? Not here yet: colour, frames.",

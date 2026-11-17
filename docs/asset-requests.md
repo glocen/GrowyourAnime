@@ -9247,11 +9247,11 @@ From `slot_marks_takes.png` and `gear_shoulders_colour.png`.
   - Proved by the same colour sheet at 38 and 64 points, and the pictures in A's slots on the doll.
 - **Then** Faber gets the four marks and the 15 pictures together, after the content check. There's no further sheet for research, and the read is in the build.
 
-### Chest Armor, the whole torso (research, 2026-11-17, 13:20)
-The director's word, by 13:20 (`docs/decisions.md`): "the chest need a overhaul it need to feels more like a armor that cover the whole torso right now it feel like a spartiate design, we already have the shoulder and arm gears separated but still", then "Pictures and mark".
-- **Feel line:** a Chest Armor reads at a glance as a body of armor, closed from the throat to the hips, front and back: a piece a fighter is armored in, not a breastplate worn over a shirt.
+### Chest Armor, the whole torso (research, 2026-11-17, 13:17)
+The director's word, by 13:17 (`docs/decisions.md`): "the chest need a overhaul it need to feels more like a armor that cover the whole torso right now it feel like a spartiate design, we already have the shoulder and arm gears separated but still", then "Pictures and mark".
+- **Feel line:** a Chest Armor reads at a glance as a body of armor, closed from the throat to the hips: a piece a fighter is armored in, not a breastplate worn over a shirt.
 - **The form, for all 15 (AR6's Chest Armor):**
-  - It covers the chest, the belly and the back, closed at the sides, with a collar standing at the throat.
+  - It covers the chest and the belly, closed at the sides, with a collar standing at the throat. No back is drawn: the pictures are 2D, seen from the front [D, 13:18: "no need for the back since it 2d visual"].
   - Plates or lames carry it down over the hips.
   - Its armholes sit where the Shoulders and arm pieces meet it, with the edge built, so it never reads sleeveless.
   - Never the classical muscled cuirass, and never bare skin or a shirt showing between plates.

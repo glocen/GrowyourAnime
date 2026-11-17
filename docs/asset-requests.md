@@ -12643,6 +12643,11 @@ Where the purple and the black sit in the world, from the kit's own files and to
   - **The world is AR40:** the plot, its machines, the Shop and the Strip.
   - **The class is corrected:** blue-violet and dark may stay, as one colour among others and the trim, never everything.
   - **A, B and C are each re-weighted** to keep a share of blue-violet, in the cores, the void's lights and the trim, beside their own stone and light. A direction with no violet left over-corrects.
+- **The director's correction, 22:53: "we dont have to change everything some are very good, we just need to change many".** The 22:41 narrowing above was research's misreading and is replaced.
+  - **AR40 covers the world and many of the screens.**
+  - **The bag keeps today's look.** The Breaker's and the Power panels (near-black slabs over a bright day, `build/scratch/faber/stills/tr41d-a-breaker-phone.jpg`, `tr41e-a-power-phone.jpg`) are research's first two to change.
+  - **Research triages the rest** from today's captures as they come.
+  - **Order:** the world's renders at the turn, then one panel per direction by Faber's Config tune.
 
 ## Later, by ground
 

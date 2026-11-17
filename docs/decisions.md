@@ -8,7 +8,11 @@ Each covers exactly what it names. The directive of 2026-11-09 is in `docs/archi
 
 | Date | The words | They cover |
 |---|---|---|
-| 2026-11-17, 22:41, to research | "i think the game is way to much too purple/Black and somber btw", then "there can be blueish purple and dark like the inventory hud is good but the other area js make it wayy to much" | **Covers:** the game's colour, worked in AR40.
+| 2026-11-17, 22:41 and 22:53, to research | "i think the game is way to much too purple/Black and somber btw", then "there can be blueish purple and dark like the inventory hud is good but the other area js make it wayy to much", then, correcting research's reading: "all i said was that it fine to keep some of the old UI that are in purple, we dont have to change everything some are very good, we just need to change many cause else the game is simply to dark somber, purple" | **Covers:** the game's colour, the world and the screens, worked in AR40.
+- **Change many, not all.** The game is too dark, somber and purple, so many pieces change, in the world and on the screens.
+- **Kept, as some old purple screens are very good:** the inventory is the one named.
+- **Research picks which screens keep their purple** (its own call, by the standing word on which screen takes which palette).
+- **Research's 22:41 reading,** that the screens were out of AR40, was wrong and is replaced. |
 - **Allowed, and shown good:** blue-violet and dark, as in the inventory's screen. That screen stays as it is.
 - **Too much:** the other areas, where blue-violet and black are everything. Research reads "the other area" as the world: the base, its machines, the Shop and the Strip. Those get value range and other colours beside blue-violet, which stays as one colour among them, not removed.
 - **Not named, so unchanged for now:** the other screens. |

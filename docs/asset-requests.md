@@ -12141,6 +12141,11 @@ From the beats sheet and both videos, run frame by frame at 12 a second (f2dc53e
 - **Tested:** the flash guard's check above.
 - **Visually reviewed:** my own read; research's verdict on the cover to come.
 - **Director-accepted:** no.
+- **Research's second look, the cover only (Quaestor, 2026-11-17, 20:49): passed, competent, closed** (cf4a208; the beats and the court video run frame by frame).
+  - **The must-fix holds:** the old shape lights, becomes the bigger shape and cools, so the change itself is the payoff. From the court the generator's wheel, the Forge and the Training machine each flash in their own outline, and the near-white share fell from 25.7% to 3.3%.
+  - **The price Modulo named: the full fill stays at 1.0.** A flat cut-out for 0.1 s is the silhouette flash's own read. At 0.85 the swap would show through, and that's the one thing the cover is for.
+  - **The flash guard,** measured by Modulo: one run a view, no saturated red. The content check runs on the colour pass before any upload, as the record sets.
+  - **Next:** the colour pass in the void's light, then Faber's build with its beats in Config, tuned by playing.
 
 ## Later, by ground
 

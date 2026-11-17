@@ -36,7 +36,7 @@ For Faber:
 
 5. **The test rule, in `CLAUDE.md` and `ga-finish`.** Research relays your yes (the register, 2026-11-15, night): at a piece's finish, the cases its change can reach and every offline logic case; the whole suite at a phase's close and after a change to shared code. `CLAUDE.md` changes only on your own word in the builder's session: say "write it" there and it's in.
 6. **Your ear on Haymaker's strike sound**, a provisional pick, now heard on its frame. Before TR4's fix it came about 0.3 s late. Measures chose it, and only your ear accepts it. In a playtest, the Server command bar: `game.ServerStorage.NL_Debug:Invoke("Replay", nil, "RookHaymaker")` plays it every 3.5 s, and `Invoke("Replay", nil)` stops it. Two alternates are logged in AR1, section 8.
-7. **The six-cue sound test (AR13):** play the 33 files in `build/handoff/Audio/test6/` first (under 10 s), or say they go up unheard (research's advice: you judge them in a fight, and a rejected layer is replaced).
+7. **When you're back ("i will check tomorrow"):** the six-cue sound test (AR13) and the new Festival Door, each in a fight or a walk on your phone once they're in, and TR35's five music candidates a track, if they're shortlisted by then. AR13 goes up unheard on your word of 01:39.
 
 ### Notices
 

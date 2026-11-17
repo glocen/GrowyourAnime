@@ -54,51 +54,51 @@ Takes = {
 Cues = {
 	-- one recorded contact, nothing else: a slap of skin or cloth carries the hit whole, in the band a phone keeps.
 	LightHit_A1 = { Layers = {
-		{ Takes = "LibContact", At = 0, Volume = 0.209 }, -- body
+		{ Takes = "LibContact", At = 0, Volume = 0.417 }, -- body
 	} },
 	-- two recordings split by their bands: a glove or cloth thud for the body, a clap's crack laid on it for the contact.
 	LightHit_A2 = { Layers = {
-		{ Takes = "LibThud", At = 0, Volume = 0.152 }, -- body
-		{ Takes = "LibSnap", At = 0, Volume = 0.09 }, -- attack
+		{ Takes = "LibThud", At = 0, Volume = 0.303 }, -- body
+		{ Takes = "LibSnap", At = 0, Volume = 0.179 }, -- attack
 	} },
 	-- a recorded contact with recorded weight under it, and our spark as its accent, 10 dB under.
 	LightHit_A3 = { Layers = {
-		{ Takes = "LibContact", At = 0, Volume = 0.176 }, -- body
-		{ Takes = "LibLow", At = 0, Volume = 0.071 }, -- weight
-		{ Takes = "LightHitSpark", At = 0, Volume = 0.049 }, -- accent
+		{ Takes = "LibContact", At = 0, Volume = 0.35 }, -- body
+		{ Takes = "LibLow", At = 0, Volume = 0.141 }, -- weight
+		{ Takes = "LightHitSpark", At = 0, Volume = 0.097 }, -- accent
 	} },
 	-- one recorded heavy body as the base; our sub only reinforces it, and our tail by the hit's strength. The knocks are gone.
 	HeavyHit_B1 = { Layers = {
-		{ Takes = "LibHeavyBody", At = 0, Volume = 0.361 }, -- body
-		{ Takes = "HeavySub", At = 0, Volume = 0.042 }, -- weight
-		{ Takes = "HeavyTail", At = 0, Volume = 0.035, Strength = true }, -- decay
+		{ Takes = "LibHeavyBody", At = 0, Volume = 0.721 }, -- body
+		{ Takes = "HeavySub", At = 0, Volume = 0.083 }, -- weight
+		{ Takes = "HeavyTail", At = 0, Volume = 0.07, Strength = true }, -- decay
 	} },
 	-- two recordings and no synthesis: a deep glove thump for the weight, and the light hit's own contact over it, so a heavy hit is a light one with a body behind it.
 	HeavyHit_B2 = { Layers = {
-		{ Takes = "LibLowLong", At = 0, Volume = 0.167 }, -- weight
-		{ Takes = "LibContact", At = 0, Volume = 0.234 }, -- attack
+		{ Takes = "LibLowLong", At = 0, Volume = 0.333 }, -- weight
+		{ Takes = "LibContact", At = 0, Volume = 0.467 }, -- attack
 	} },
 	-- a recorded heavy body with a recorded snap on its edge, and no sub: the body's own lows carry it. Our tail by the hit's strength.
 	HeavyHit_B3 = { Layers = {
-		{ Takes = "LibHeavyBody", At = 0, Volume = 0.348 }, -- body
-		{ Takes = "LibHeavySnap", At = 0, Volume = 0.222 }, -- attack
-		{ Takes = "HeavyTail", At = 0, Volume = 0.036, Strength = true }, -- decay
+		{ Takes = "LibHeavyBody", At = 0, Volume = 0.694 }, -- body
+		{ Takes = "LibHeavySnap", At = 0, Volume = 0.442 }, -- attack
+		{ Takes = "HeavyTail", At = 0, Volume = 0.071, Strength = true }, -- decay
 	} },
 	-- all recorded: paper's flick for the tell, a pass through the air for the swipe.
 	ShadeSwipe_C1 = { Layers = {
-		{ Takes = "LibFlick", At = -0.2, Lead = "Peak", Volume = 0.093 }, -- tell
-		{ Takes = "LibAir", At = 0, Lead = "Peak", Volume = 0.117 }, -- body
+		{ Takes = "LibFlick", At = -0.2, Lead = "Peak", Volume = 0.186 }, -- tell
+		{ Takes = "LibAir", At = 0, Lead = "Peak", Volume = 0.233 }, -- body
 	} },
 	-- a paper-edged pass: the air's pass with a sheet's rustle riding its top; the tell stays ours.
 	ShadeSwipe_C2 = { Layers = {
-		{ Takes = "ShadeTell", At = -0.2, Volume = 0.012 }, -- tell
-		{ Takes = "LibAir", At = 0, Lead = "Peak", Volume = 0.101 }, -- body
-		{ Takes = "LibRustle", At = 0, Lead = "Peak", Volume = 0.136 }, -- character
+		{ Takes = "ShadeTell", At = -0.2, Volume = 0.024 }, -- tell
+		{ Takes = "LibAir", At = 0, Lead = "Peak", Volume = 0.202 }, -- body
+		{ Takes = "LibRustle", At = 0, Lead = "Peak", Volume = 0.271 }, -- character
 	} },
 	-- the paper drawn back, then the pass: a longer rustle ending in its flick for the tell, and our own swipe 10 dB under the recorded pass, for its tone.
 	ShadeSwipe_C3 = { Layers = {
-		{ Takes = "LibRustle", At = -0.2, Lead = "Peak", Volume = 0.121 }, -- tell
-		{ Takes = "LibAir", At = 0, Lead = "Peak", Volume = 0.107 }, -- body
-		{ Takes = "ShadeSwipe", At = 0, Lead = "Peak", Volume = 0.009 }, -- accent
+		{ Takes = "LibRustle", At = -0.2, Lead = "Peak", Volume = 0.241 }, -- tell
+		{ Takes = "LibAir", At = 0, Lead = "Peak", Volume = 0.214 }, -- body
+		{ Takes = "ShadeSwipe", At = 0, Lead = "Peak", Volume = 0.018 }, -- accent
 	} },
 },

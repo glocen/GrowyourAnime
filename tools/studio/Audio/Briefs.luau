@@ -295,7 +295,8 @@ local briefs: { [string]: Brief } = {
 	LightHitBody2 = {
 		Brief = "a quick, clean hit on a body or padded cloth, as a foley library titles it: a short low-mid thock, one burst",
 		Keywords = {
-			"body hits", "body hit", "body punch", "body punches", "punches", "face punch", "chest hit", "chest thump",
+			"body hits", "body hit", "body punch", "body punches", "body blow", "punches", "fist into bag", "bag punch",
+			"punching bag", "martial arts punch", "martial arts hit", "kick into pad", "face punch", "chest hit", "chest thump",
 			"chest pat", "body pats", "body slap", "shoulder pat", "back slap", "fist into palm", "fist palm", "palm hit",
 			"glove hits", "boxing hits", "focus mitt", "punching mitt", "kick pad", "pad hit", "cloth hits", "jacket hits",
 			"leather jacket hit", "coat hit", "pillow punch", "pillow hit", "cushion punch", "karate hit", "thigh slap",

@@ -12577,10 +12577,10 @@ Nothing was heard. Whether any of these convinces is **UNVERIFIED**; every level
   - a hit's or a pass's slice starts 2 ms before its onset, where its file is 20 dB or more under its top, and ends after its top with a fall of 10 to 60 ms; a rustle's starts a set time before its top;
   - every hit's top comes 3 to 10 ms after its slice starts (Boxing Hits 22 and Cloth Flap 13 at 10, the gate's edge);
   - a tell lands 0.2 s before the swipe's top, and a pass leads by its own time to its top.
-- **The levels, seeds:** LightHit at -42.1 LUFS (the loudest 400 ms of one play), HeavyHit 4 LU over, ShadeSwipe 4.5 LU under. LightHit's is solved from gate 3's worst case: the hottest HeavyHit's top over the hottest LightHit's twice, every layer's top together, held to -2 dBFS. That's about 15 dB under today's spark. If the mixdown shows room, the cues' fader takes it back in one number.
+- **The levels, seeds:** HeavyHit 4 LU over LightHit, ShadeSwipe 4.5 LU under. LightHit's own level was first solved from gate 3 read as coinciding tops, which put it at -42.1 LUFS, about 15 dB under today's spark. **Corrected at 22:31 on research's ruling below:** the relation sets the levels, and LightHit stands at -36.1 LUFS, where the hottest single cue's top (B2's, its layers' tops together) is at -4 dBFS: a decibel for the true peak and the bus limiter's 3 for an overlap. That's 8.7 dB under today's spark by loudness, since a recorded contact is peakier than the spark. The recipes are regenerated; the estimates below are the corrected ones.
 - **Estimated per cue** (its layers' energies and tops summed; its bands from each take's third octaves):
-  - LightHit: tops -15.3 to -12.5 dBFS; 2%, 26% and 18% under 120 Hz;
-  - HeavyHit: tops -12.4 to -10.0 dBFS; 27%, 37% and 20% under 120 Hz, inside gate 5's half;
+  - LightHit: tops -9.3 to -6.5 dBFS; 2%, 26% and 18% under 120 Hz;
+  - HeavyHit: tops -6.4 to -4.0 dBFS; 27%, 37% and 20% under 120 Hz, inside gate 5's half;
   - through the phone's curve, HeavyHit stands 2.0 to 4.5 LU over LightHit. B1 over A1 is 2.0, the gate's edge.
 - **What's weak, plainly:**
   - **No licensed pick fits LightHit's own body brief.** A1's and A3's body is the snap brief's slaps and a glove catch; A2's thuds hold 48 to 59% of their energy under 250 Hz. A punch on a body, as the brief words it, isn't in this batch.
@@ -12588,7 +12588,7 @@ Nothing was heard. Whether any of these convinces is **UNVERIFIED**; every level
   - **ShadeSwipe has three passes,** the least gate 8 allows.
 - **Two asks of Faber:**
   1. **A library take needs its own `Gain`** (linear, 1 when absent), times its layer's Volume, in the engine and in the mixdown. A library sound can't be levelled offline, and one list's takes differ by up to 24 dB. Then the nine cues go in beside the old ones, and the mixdown measures each on the gates, every take once.
-  2. **The second batch,** licensed only: `Batch.Start({ "LightHitBody2", "HeavyHitBody2", "ShadeSwipeAir2" }, { Count = 14, Measure = 80, Pages = 3, AnyAuthor = false })`. The three briefs are in `Briefs.luau`, in the libraries' own words ("Body Hits", "Body Fall", "Cloth Whoosh"), with the first batch's wrong sounds in each Avoid.
+  2. **The second batch,** licensed only (LightHit's body in research's words too, from its ruling: a fist into a bag, a body blow, a martial-arts punch, a kick into a pad): `Batch.Start({ "LightHitBody2", "HeavyHitBody2", "ShadeSwipeAir2" }, { Count = 14, Measure = 80, Pages = 3, AnyAuthor = false })`. The three briefs are in `Briefs.luau`, in the libraries' own words ("Body Hits", "Body Fall", "Cloth Whoosh"), with the first batch's wrong sounds in each Avoid.
 - **The log:** the 21 recordings are in `docs/asset-log.md`, each with its id and author.
 - **Status:** implemented as recipes; the tools' self-test runs; not mixed, not measured, not heard. Round 1 of three.
 

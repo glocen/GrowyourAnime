@@ -2,7 +2,7 @@
 
 Made by `tools/audio/ar39_arrange.py` from the first batch's numbers. Nothing was heard: whether one convinces stays UNVERIFIED. Every level is a seed, and every number under 'estimated' is worked from the batch's measures of each take, never measured on a mix: the gates are Faber's mixdown's.
 
-**The levels:** LightHit at -42.1 LUFS (the loudest 400 ms of one play at full volume), HeavyHit +4.0 LU, ShadeSwipe -4.5 LU. LightHit's is solved from gate 3's worst case: the hottest HeavyHit's top over the hottest LightHit's twice, every layer's top together, held to -2 dBFS. If the mixdown shows room, the cues' fader takes it back in one number.
+**The levels:** LightHit at -36.1 LUFS (the loudest 400 ms of one play at full volume), HeavyHit +4.0 LU, ShadeSwipe -4.5 LU: gate 4's relation sets them. LightHit's own level is where the hottest single cue's top, its layers' tops together, stands at -4 dBFS: a decibel for the true peak, and the bus limiter's 3 for an overlap.
 
 ## The arrangements
 
@@ -12,9 +12,9 @@ One recorded contact, nothing else: a slap of skin or cloth carries the hit whol
 
 | Layer | Role | Takes | At, s | Lead | Volume | Level, LUFS |
 |---|---|---|---|---|---|---|
-| LibContact | body | 4 | 0 |  | 0.209 | -42.1 |
+| LibContact | body | 4 | 0 |  | 0.417 | -36.1 |
 
-Estimated, one play at full volume, its strength layer left out: -42.1 LUFS (the loudest 400 ms); its top at most -15.2 dBFS (its layers' tops together); 2% under 120 Hz; through the phone's curve -42.3 LUFS.
+Estimated, one play at full volume, its strength layer left out: -36.1 LUFS (the loudest 400 ms); its top at most -9.2 dBFS (its layers' tops together); 2% under 120 Hz; through the phone's curve -36.3 LUFS.
 
 ### LightHit_A2
 
@@ -22,10 +22,10 @@ Two recordings split by their bands: a glove or cloth thud for the body, a clap'
 
 | Layer | Role | Takes | At, s | Lead | Volume | Level, LUFS |
 |---|---|---|---|---|---|---|
-| LibThud | body | 3 | 0 |  | 0.152 | -43.3 |
-| LibSnap | attack | 3 | 0 |  | 0.09 | -48.3 |
+| LibThud | body | 3 | 0 |  | 0.303 | -37.3 |
+| LibSnap | attack | 3 | 0 |  | 0.179 | -42.3 |
 
-Estimated, one play at full volume, its strength layer left out: -42.1 LUFS (the loudest 400 ms); its top at most -15.3 dBFS (its layers' tops together); 26% under 120 Hz; through the phone's curve -44.4 LUFS.
+Estimated, one play at full volume, its strength layer left out: -36.1 LUFS (the loudest 400 ms); its top at most -9.3 dBFS (its layers' tops together); 26% under 120 Hz; through the phone's curve -38.4 LUFS.
 
 ### LightHit_A3
 
@@ -33,11 +33,11 @@ A recorded contact with recorded weight under it, and our spark as its accent, 1
 
 | Layer | Role | Takes | At, s | Lead | Volume | Level, LUFS |
 |---|---|---|---|---|---|---|
-| LibContact | body | 4 | 0 |  | 0.176 | -43.6 |
-| LibLow | weight | 2 | 0 |  | 0.071 | -48.6 |
-| LightHitSpark | accent | 5 | 0 |  | 0.049 | -53.6 |
+| LibContact | body | 4 | 0 |  | 0.35 | -37.6 |
+| LibLow | weight | 2 | 0 |  | 0.141 | -42.6 |
+| LightHitSpark | accent | 5 | 0 |  | 0.097 | -47.6 |
 
-Estimated, one play at full volume, its strength layer left out: -42.1 LUFS (the loudest 400 ms); its top at most -12.5 dBFS (its layers' tops together); 18% under 120 Hz; through the phone's curve -43.1 LUFS.
+Estimated, one play at full volume, its strength layer left out: -36.1 LUFS (the loudest 400 ms); its top at most -6.5 dBFS (its layers' tops together); 18% under 120 Hz; through the phone's curve -37.1 LUFS.
 
 ### HeavyHit_B1
 
@@ -45,11 +45,11 @@ One recorded heavy body as the base; our sub only reinforces it, and our tail by
 
 | Layer | Role | Takes | At, s | Lead | Volume | Level, LUFS |
 |---|---|---|---|---|---|---|
-| LibHeavyBody | body | 3 | 0 |  | 0.361 | -38.6 |
-| HeavySub | weight | 3 | 0 |  | 0.042 | -48.1 |
-| HeavyTail | decay (by strength) | 3 | 0 |  | 0.035 | -50.1 |
+| LibHeavyBody | body | 3 | 0 |  | 0.721 | -32.6 |
+| HeavySub | weight | 3 | 0 |  | 0.083 | -42.1 |
+| HeavyTail | decay (by strength) | 3 | 0 |  | 0.07 | -44.1 |
 
-Estimated, one play at full volume, its strength layer left out: -38.1 LUFS (the loudest 400 ms); its top at most -12.4 dBFS (its layers' tops together); 27% under 120 Hz; through the phone's curve -40.3 LUFS.
+Estimated, one play at full volume, its strength layer left out: -32.1 LUFS (the loudest 400 ms); its top at most -6.4 dBFS (its layers' tops together); 27% under 120 Hz; through the phone's curve -34.3 LUFS.
 
 ### HeavyHit_B2
 
@@ -57,10 +57,10 @@ Two recordings and no synthesis: a deep glove thump for the weight, and the ligh
 
 | Layer | Role | Takes | At, s | Lead | Volume | Level, LUFS |
 |---|---|---|---|---|---|---|
-| LibLowLong | weight | 2 | 0 |  | 0.167 | -41.1 |
-| LibContact | attack | 4 | 0 |  | 0.234 | -41.1 |
+| LibLowLong | weight | 2 | 0 |  | 0.333 | -35.1 |
+| LibContact | attack | 4 | 0 |  | 0.467 | -35.1 |
 
-Estimated, one play at full volume, its strength layer left out: -38.1 LUFS (the loudest 400 ms); its top at most -10.0 dBFS (its layers' tops together); 37% under 120 Hz; through the phone's curve -40.3 LUFS.
+Estimated, one play at full volume, its strength layer left out: -32.1 LUFS (the loudest 400 ms); its top at most -4.0 dBFS (its layers' tops together); 37% under 120 Hz; through the phone's curve -34.3 LUFS.
 
 ### HeavyHit_B3
 
@@ -68,11 +68,11 @@ A recorded heavy body with a recorded snap on its edge, and no sub: the body's o
 
 | Layer | Role | Takes | At, s | Lead | Volume | Level, LUFS |
 |---|---|---|---|---|---|---|
-| LibHeavyBody | body | 3 | 0 |  | 0.348 | -38.9 |
-| LibHeavySnap | attack | 3 | 0 |  | 0.222 | -45.9 |
-| HeavyTail | decay (by strength) | 3 | 0 |  | 0.036 | -49.9 |
+| LibHeavyBody | body | 3 | 0 |  | 0.694 | -32.9 |
+| LibHeavySnap | attack | 3 | 0 |  | 0.442 | -39.9 |
+| HeavyTail | decay (by strength) | 3 | 0 |  | 0.071 | -43.9 |
 
-Estimated, one play at full volume, its strength layer left out: -38.1 LUFS (the loudest 400 ms); its top at most -10.2 dBFS (its layers' tops together); 20% under 120 Hz; through the phone's curve -39.9 LUFS.
+Estimated, one play at full volume, its strength layer left out: -32.1 LUFS (the loudest 400 ms); its top at most -4.2 dBFS (its layers' tops together); 20% under 120 Hz; through the phone's curve -33.9 LUFS.
 
 ### ShadeSwipe_C1
 
@@ -80,10 +80,10 @@ All recorded: paper's flick for the tell, a pass through the air for the swipe.
 
 | Layer | Role | Takes | At, s | Lead | Volume | Level, LUFS |
 |---|---|---|---|---|---|---|
-| LibFlick | tell | 3 | -0.2 | Peak | 0.093 | -55.7 |
-| LibAir | body | 3 | 0 | Peak | 0.117 | -47.2 |
+| LibFlick | tell | 3 | -0.2 | Peak | 0.186 | -49.7 |
+| LibAir | body | 3 | 0 | Peak | 0.233 | -41.2 |
 
-Estimated, one play at full volume, its strength layer left out: -46.6 LUFS (the loudest 400 ms); its top at most -20.7 dBFS (its layers' tops together); 7% under 120 Hz; through the phone's curve -47.0 LUFS.
+Estimated, one play at full volume, its strength layer left out: -40.6 LUFS (the loudest 400 ms); its top at most -14.7 dBFS (its layers' tops together); 7% under 120 Hz; through the phone's curve -41.0 LUFS.
 
 ### ShadeSwipe_C2
 
@@ -91,11 +91,11 @@ A paper-edged pass: the air's pass with a sheet's rustle riding its top; the tel
 
 | Layer | Role | Takes | At, s | Lead | Volume | Level, LUFS |
 |---|---|---|---|---|---|---|
-| ShadeTell | tell | 3 | -0.2 |  | 0.012 | -56.4 |
-| LibAir | body | 3 | 0 | Peak | 0.101 | -48.4 |
-| LibRustle | character | 3 | 0 | Peak | 0.136 | -52.9 |
+| ShadeTell | tell | 3 | -0.2 |  | 0.024 | -50.4 |
+| LibAir | body | 3 | 0 | Peak | 0.202 | -42.4 |
+| LibRustle | character | 3 | 0 | Peak | 0.271 | -46.9 |
 
-Estimated, one play at full volume, its strength layer left out: -46.6 LUFS (the loudest 400 ms); its top at most -19.2 dBFS (its layers' tops together); 6% under 120 Hz; through the phone's curve -47.0 LUFS.
+Estimated, one play at full volume, its strength layer left out: -40.6 LUFS (the loudest 400 ms); its top at most -13.2 dBFS (its layers' tops together); 6% under 120 Hz; through the phone's curve -41.0 LUFS.
 
 ### ShadeSwipe_C3
 
@@ -103,11 +103,11 @@ The paper drawn back, then the pass: a longer rustle ending in its flick for the
 
 | Layer | Role | Takes | At, s | Lead | Volume | Level, LUFS |
 |---|---|---|---|---|---|---|
-| LibRustle | tell | 3 | -0.2 | Peak | 0.121 | -53.9 |
-| LibAir | body | 3 | 0 | Peak | 0.107 | -47.9 |
-| ShadeSwipe | accent | 3 | 0 | Peak | 0.009 | -57.9 |
+| LibRustle | tell | 3 | -0.2 | Peak | 0.241 | -47.9 |
+| LibAir | body | 3 | 0 | Peak | 0.214 | -41.9 |
+| ShadeSwipe | accent | 3 | 0 | Peak | 0.018 | -51.9 |
 
-Estimated, one play at full volume, its strength layer left out: -46.6 LUFS (the loudest 400 ms); its top at most -19.8 dBFS (its layers' tops together); 6% under 120 Hz; through the phone's curve -47.0 LUFS.
+Estimated, one play at full volume, its strength layer left out: -40.6 LUFS (the loudest 400 ms); its top at most -13.8 dBFS (its layers' tops together); 6% under 120 Hz; through the phone's curve -41.0 LUFS.
 
 ## The takes
 

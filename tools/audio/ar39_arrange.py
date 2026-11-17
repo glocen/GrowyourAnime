@@ -38,11 +38,12 @@ PRE, IN = 2.0, 0.003          # ms before the onset a slice starts; the rise the
 CAP = 3.0                     # an AudioPlayer's most volume
 TRIM = 0.5                    # Config.Cues.Trim
 # The pilots' levels against LightHit's, LU (gate 4: HeavyHit 3 to 5 over, ShadeSwipe 3 to 6 under), by the loudest
-# 400 ms of one play at the cue's full volume. LightHit's own level is solved from gate 3's worst case: the hottest
-# HeavyHit's top over the hottest LightHit's twice, every layer's top together, held to ROOM (-2 dBFS, a decibel kept
-# for the true peak). If the mixdown shows room, the cues' fader takes it back in one number.
+# 400 ms of one play at the cue's full volume. The relation sets the levels (research, 2026-11-17, 22:30: gate 3 means a
+# fight's overlaps, and an exact coincidence is the bus limiter's, never the cues' level). LightHit's own level is where
+# the hottest single cue's top, its layers' tops together, stands at ROOM: -4 dBFS, a decibel for the true peak and the
+# limiter's 3 for an overlap.
 OVER = {"LightHit": 0.0, "HeavyHit": 4.0, "ShadeSwipe": -4.5}
-ROOM = 10 ** (-2.0 / 20)
+ROOM = 10 ** (-4.0 / 20)
 
 # A library take: its id; how its slice starts ("onset", or ms before its top); ms after its top it ends; its fall, ms.
 # Lists are by role. One recording never stands twice in a list, nor two of one series.
@@ -239,10 +240,9 @@ def build():
     def all_at(light):
         return [arrange(pilot, *a, lists, light) for pilot, group in ARRANGEMENTS.items() for a in group]
 
-    # tops move with the level, one for one: solve LightHit's from the worst case at a trial level
-    trial = all_at(-36.0)
-    hot = {pilot: max(10 ** (c["est"]["top"] / 20) for c in trial if c["Pilot"] == pilot) for pilot in OVER}
-    light = -36.0 + 20 * np.log10(ROOM / (hot["HeavyHit"] + 2 * hot["LightHit"]))
+    # tops move with the level, one for one: solve LightHit's from the hottest cue's top at a trial level
+    hot = max(10 ** (c["est"]["top"] / 20) for c in all_at(-36.0))
+    light = -36.0 + 20 * np.log10(ROOM / hot)
     return lists, all_at(round(float(light), 1)), round(float(light), 1)
 
 
@@ -282,9 +282,9 @@ def markdown(lists, cues, light):
              "convinces stays UNVERIFIED. Every level is a seed, and every number under 'estimated' is worked from the "
              "batch's measures of each take, never measured on a mix: the gates are Faber's mixdown's.", "",
              f"**The levels:** LightHit at {light:.1f} LUFS (the loudest 400 ms of one play at full volume), HeavyHit "
-             f"{OVER['HeavyHit']:+.1f} LU, ShadeSwipe {OVER['ShadeSwipe']:+.1f} LU. LightHit's is solved from gate 3's "
-             "worst case: the hottest HeavyHit's top over the hottest LightHit's twice, every layer's top together, "
-             "held to -2 dBFS. If the mixdown shows room, the cues' fader takes it back in one number.", "",
+             f"{OVER['HeavyHit']:+.1f} LU, ShadeSwipe {OVER['ShadeSwipe']:+.1f} LU: gate 4's relation sets them. LightHit's "
+             "own level is where the hottest single cue's top, its layers' tops together, stands at -4 dBFS: a decibel "
+             "for the true peak, and the bus limiter's 3 for an overlap.", "",
              "## The arrangements", ""]
     for c in cues:
         e = c["est"]

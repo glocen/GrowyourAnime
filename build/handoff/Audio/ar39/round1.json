@@ -1,5 +1,5 @@
 {
- "LightHit": -42.1,
+ "LightHit": -36.1,
  "Takes": {
   "LibContact": {
    "takes": [
@@ -2238,16 +2238,16 @@
      "Role": "body",
      "At": 0,
      "Lead": null,
-     "Volume": 0.209,
+     "Volume": 0.417,
      "Strength": false,
-     "level": -42.1
+     "level": -36.1
     }
    ],
    "est": {
-    "lufs": -42.1,
-    "top": -15.19879932136341,
+    "lufs": -36.1,
+    "top": -9.198799321363406,
     "under120": 0.021775,
-    "phone": -42.31712461037609
+    "phone": -36.31712461037609
    }
   },
   {
@@ -2260,25 +2260,25 @@
      "Role": "body",
      "At": 0,
      "Lead": null,
-     "Volume": 0.152,
+     "Volume": 0.303,
      "Strength": false,
-     "level": -43.29331048066095
+     "level": -37.29331048066095
     },
     {
      "Takes": "LibSnap",
      "Role": "attack",
      "At": 0,
      "Lead": null,
-     "Volume": 0.09,
+     "Volume": 0.179,
      "Strength": false,
-     "level": -48.29331048066095
+     "level": -42.29331048066095
     }
    ],
    "est": {
-    "lufs": -42.1,
-    "top": -15.251539059174403,
-    "under120": 0.25984490010765954,
-    "phone": -44.40662627275628
+    "lufs": -36.1,
+    "top": -9.251539059174402,
+    "under120": 0.25984490010765965,
+    "phone": -38.40662627275628
    }
   },
   {
@@ -2291,34 +2291,34 @@
      "Role": "body",
      "At": 0,
      "Lead": null,
-     "Volume": 0.176,
+     "Volume": 0.35,
      "Strength": false,
-     "level": -43.61133104744714
+     "level": -37.61133104744714
     },
     {
      "Takes": "LibLow",
      "Role": "weight",
      "At": 0,
      "Lead": null,
-     "Volume": 0.071,
+     "Volume": 0.141,
      "Strength": false,
-     "level": -48.61133104744714
+     "level": -42.61133104744714
     },
     {
      "Takes": "LightHitSpark",
      "Role": "accent",
      "At": 0,
      "Lead": null,
-     "Volume": 0.049,
+     "Volume": 0.097,
      "Strength": false,
-     "level": -53.61133104744714
+     "level": -47.61133104744714
     }
    ],
    "est": {
-    "lufs": -42.1,
-    "top": -12.489591432494734,
-    "under120": 0.17615573559386186,
-    "phone": -43.07351732873515
+    "lufs": -36.1,
+    "top": -6.489591432494733,
+    "under120": 0.17615573559386194,
+    "phone": -37.07351732873515
    }
   },
   {
@@ -2331,34 +2331,34 @@
      "Role": "body",
      "At": 0,
      "Lead": null,
-     "Volume": 0.361,
+     "Volume": 0.721,
      "Strength": false,
-     "level": -38.56183611348224
+     "level": -32.56183611348224
     },
     {
      "Takes": "HeavySub",
      "Role": "weight",
      "At": 0,
      "Lead": null,
-     "Volume": 0.042,
+     "Volume": 0.083,
      "Strength": false,
-     "level": -48.06183611348224
+     "level": -42.06183611348224
     },
     {
      "Takes": "HeavyTail",
      "Role": "decay",
      "At": 0,
      "Lead": null,
-     "Volume": 0.035,
+     "Volume": 0.07,
      "Strength": true,
-     "level": -50.06183611348224
+     "level": -44.06183611348224
     }
    ],
    "est": {
-    "lufs": -38.1,
-    "top": -12.417176766687724,
+    "lufs": -32.1,
+    "top": -6.417176766687726,
     "under120": 0.26895490042215414,
-    "phone": -40.291891200517554
+    "phone": -34.291891200517554
    }
   },
   {
@@ -2371,25 +2371,25 @@
      "Role": "weight",
      "At": 0,
      "Lead": null,
-     "Volume": 0.167,
+     "Volume": 0.333,
      "Strength": false,
-     "level": -41.110299956639814
+     "level": -35.110299956639814
     },
     {
      "Takes": "LibContact",
      "Role": "attack",
      "At": 0,
      "Lead": null,
-     "Volume": 0.234,
+     "Volume": 0.467,
      "Strength": false,
-     "level": -41.110299956639814
+     "level": -35.110299956639814
     }
    ],
    "est": {
-    "lufs": -38.10000000000001,
-    "top": -10.028808419618631,
+    "lufs": -32.1,
+    "top": -4.028808419618631,
     "under120": 0.37091250000000003,
-    "phone": -40.29644392173142
+    "phone": -34.29644392173141
    }
   },
   {
@@ -2402,34 +2402,34 @@
      "Role": "body",
      "At": 0,
      "Lead": null,
-     "Volume": 0.348,
+     "Volume": 0.694,
      "Strength": false,
-     "level": -38.89009749652567
+     "level": -32.89009749652567
     },
     {
      "Takes": "LibHeavySnap",
      "Role": "attack",
      "At": 0,
      "Lead": null,
-     "Volume": 0.222,
+     "Volume": 0.442,
      "Strength": false,
-     "level": -45.89009749652567
+     "level": -39.89009749652567
     },
     {
      "Takes": "HeavyTail",
      "Role": "decay",
      "At": 0,
      "Lead": null,
-     "Volume": 0.036,
+     "Volume": 0.071,
      "Strength": true,
-     "level": -49.89009749652567
+     "level": -43.89009749652567
     }
    ],
    "est": {
-    "lufs": -38.10000000000001,
-    "top": -10.241856578653037,
-    "under120": 0.2007770177889245,
-    "phone": -39.88218338421305
+    "lufs": -32.1,
+    "top": -4.241856578653036,
+    "under120": 0.20077701778892454,
+    "phone": -33.88218338421304
    }
   },
   {
@@ -2442,25 +2442,25 @@
      "Role": "tell",
      "At": -0.2,
      "Lead": "Peak",
-     "Volume": 0.093,
+     "Volume": 0.186,
      "Strength": false,
-     "level": -55.673822192736296
+     "level": -49.673822192736296
     },
     {
      "Takes": "LibAir",
      "Role": "body",
      "At": 0,
      "Lead": "Peak",
-     "Volume": 0.117,
+     "Volume": 0.233,
      "Strength": false,
-     "level": -47.173822192736296
+     "level": -41.173822192736296
     }
    ],
    "est": {
-    "lufs": -46.6,
-    "top": -20.667806877018574,
+    "lufs": -40.599999999999994,
+    "top": -14.667806877018574,
     "under120": 0.06545423367936228,
-    "phone": -47.026886661744975
+    "phone": -41.02688666174497
    }
   },
   {
@@ -2473,34 +2473,34 @@
      "Role": "tell",
      "At": -0.2,
      "Lead": null,
-     "Volume": 0.012,
+     "Volume": 0.024,
      "Strength": false,
-     "level": -56.3992580936683
+     "level": -50.3992580936683
     },
     {
      "Takes": "LibAir",
      "Role": "body",
      "At": 0,
      "Lead": "Peak",
-     "Volume": 0.101,
+     "Volume": 0.202,
      "Strength": false,
-     "level": -48.3992580936683
+     "level": -42.3992580936683
     },
     {
      "Takes": "LibRustle",
      "Role": "character",
      "At": 0,
      "Lead": "Peak",
-     "Volume": 0.136,
+     "Volume": 0.271,
      "Strength": false,
-     "level": -52.8992580936683
+     "level": -46.8992580936683
     }
    ],
    "est": {
-    "lufs": -46.6,
-    "top": -19.21273373985972,
-    "under120": 0.05833368939419314,
-    "phone": -47.036744479404334
+    "lufs": -40.60000000000001,
+    "top": -13.212733739859722,
+    "under120": 0.05833368939419313,
+    "phone": -41.03674447940434
    }
   },
   {
@@ -2513,34 +2513,34 @@
      "Role": "tell",
      "At": -0.2,
      "Lead": "Peak",
-     "Volume": 0.121,
+     "Volume": 0.241,
      "Strength": false,
-     "level": -53.907159862983
+     "level": -47.907159862983
     },
     {
      "Takes": "LibAir",
      "Role": "body",
      "At": 0,
      "Lead": "Peak",
-     "Volume": 0.107,
+     "Volume": 0.214,
      "Strength": false,
-     "level": -47.907159862983
+     "level": -41.907159862983
     },
     {
      "Takes": "ShadeSwipe",
      "Role": "accent",
      "At": 0,
      "Lead": "Peak",
-     "Volume": 0.009,
+     "Volume": 0.018,
      "Strength": false,
-     "level": -57.907159862983
+     "level": -51.907159862983
     }
    ],
    "est": {
-    "lufs": -46.60000000000001,
-    "top": -19.842235447702347,
+    "lufs": -40.60000000000001,
+    "top": -13.842235447702345,
     "under120": 0.06058630991846509,
-    "phone": -47.01024792942574
+    "phone": -41.01024792942574
    }
   }
  ]

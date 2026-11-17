@@ -309,7 +309,7 @@ def make(out: Path):
     listing = {}
 
     def keep(name, px, at, pad, use, cut=None):
-        rs.save(px, images / f"{name}.png")
+        rs.save(rs.bleed(px), images / f"{name}.png")
         entry = dict(file=f"images/{name}.png", pixels=[px.shape[1], px.shape[0]],
                      points=[px.shape[1] / K, px.shape[0] / K], pad=pad, at=list(at), use=use)
         if cut:

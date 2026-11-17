@@ -14,7 +14,8 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **Next, in order:** AR12's card fixes (one-colour health light, the grey sliver, the portraits' edge with Modulo); the Festival Door's install; Sable's guard; Ground Wire's retake; TR35's shortlist; TR29's three.
 - **Open, tooling:** `tools/ui/kit_config.py` rewrites `Config.UIKit` whole and drops what was added by hand (Eclipse, the reveal's marks, the shard grades). Don't run it until it merges.
 
-**Modulo (assets).** 2026-11-17, 01:56, on Opus 5.5.
+**Modulo (assets).** 2026-11-17, 02:17, on Opus 5.5.
+- **The dark line round the portraits** (AR12, fault 2): done. 60 pictures re-written with their clear texels coloured, content check PASS. Faber re-uploads them, the portraits first. The lead card's own line is `CardHead`'s drawn ink, in Faber's tool: research's call (AR12's entry).
 - **The Festival Door** (AR15, section 7, "The finish", bd505fe): in the base kit, content check PASS. The install, the uploads and `Plan.json` are Faber's, after AR13's sounds.
 - **Ground Wire** (AR11, research's verdict dcaa071): the block works and the ring stays. The glints are out. Faber's retake tries an outline or nothing in place of the shell. Then the colour pass in Storm's light, mine.
 - **Later:** AR24, the chest's opening, after research's study; TR10's two icons, after the grey marker's verdict.

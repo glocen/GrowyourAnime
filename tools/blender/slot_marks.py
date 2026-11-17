@@ -324,7 +324,7 @@ def review(out, files, table, shots):
 def deliver(out, files, table):
     (out / "images").mkdir(parents=True, exist_ok=True)
     for name, img in files.items():
-        rs.save(img, out / "images" / f"{name}.png")
+        rs.save(rs.bleed(img), out / "images" / f"{name}.png")
     note = ("The empty slots' marks (AR22): white on alpha, the slot tints them. Each is drawn at `points` in a slot of "
             "`slot` points, centred, tinted `tint` at `transparency`. `marks` keys a slot by its kind "
             "(Definitions/Gear.luau: either ring is Ring, either earring Earring); each hand's by the lead's class.")

@@ -271,7 +271,7 @@ def make(out: Path, only=()):
         listing = json.loads((out / "hud_art.json").read_text(encoding="utf-8"))["images"]
 
     def keep(name, px, entry, use):
-        rs.save(px, images / f"{name}.png")
+        rs.save(rs.bleed(px), images / f"{name}.png")
         listing[name] = dict(file=f"images/{name}.png", pixels=[px.shape[1], px.shape[0]], points=entry["points"],
                              pad=entry["pad"], use=use)
 

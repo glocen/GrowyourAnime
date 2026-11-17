@@ -1262,7 +1262,7 @@ def parts(out: Path):
     images = {}
 
     def write(name, px, k, use, anchor=None, points=None, **more):
-        rs.save(px, folder / "images" / f"{name}.png")
+        rs.save(rs.bleed(px), folder / "images" / f"{name}.png")
         h, w = px.shape[:2]
         if w > 1024 or h > 1024:
             raise SystemExit(f"{name} is {w} by {h}, past the 1024 cap")

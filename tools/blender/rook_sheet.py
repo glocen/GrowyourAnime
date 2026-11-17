@@ -414,6 +414,37 @@ def save(pixels, path):
     print(f"wrote {path} {w}x{h}")
 
 
+def bleed(rgba, reach=16):
+    """A picture for the game, its clear texels given colour: each takes the mean colour of the drawn texels nearest it,
+    ring by ring out to `reach`, and past that the shape's mean colour; its alpha is kept, so nothing visible moves.
+    The engine filters a picture as it draws it smaller, and a clear texel's colour bleeds into the edge beside it: left
+    black, it draws a dark line round the shape (research, AR12, 2026-11-17: Watt's portrait on a phone)."""
+    out = rgba.copy()
+    drawn = rgba[..., 3] > 0
+    if drawn.all() or not drawn.any():
+        return out
+    h, w = drawn.shape
+    known = drawn.astype(np.float32)
+    colour = rgba[..., :3] * known[..., None]
+    for _ in range(reach):
+        total, count = np.zeros_like(colour), np.zeros_like(known)
+        pad_c, pad_k = np.pad(colour * known[..., None], ((1, 1), (1, 1), (0, 0))), np.pad(known, 1)
+        for dy in (-1, 0, 1):
+            for dx in (-1, 0, 1):
+                if dy or dx:
+                    total += pad_c[1 + dy:1 + dy + h, 1 + dx:1 + dx + w]
+                    count += pad_k[1 + dy:1 + dy + h, 1 + dx:1 + dx + w]
+        new = (known == 0) & (count > 0)
+        if not new.any():
+            break
+        colour[new] = total[new] / count[new][:, None]
+        known[new] = 1.0
+    weight = rgba[..., 3][drawn][:, None]
+    colour[known == 0] = (rgba[..., :3][drawn] * weight).sum(0) / weight.sum()
+    out[..., :3] = np.where(drawn[..., None], rgba[..., :3], colour)
+    return out
+
+
 # --- sheet pieces ---------------------------------------------------------------------------------------------
 
 def shrink(rgba, factor):

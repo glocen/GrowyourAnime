@@ -1209,6 +1209,7 @@ local cases = {
 					end
 					count += 1
 					local want = if Kit.Floors[piece] then (LightingConfig.Phases :: any)[name].Floor
+						elseif LightingConfig.Cores[piece] then math.min(LightingConfig.Glow.Kit * share, LightingController.Look().CoreMost) / share
 						elseif LightingConfig.Houses[piece] then LightingConfig.Glow.Houses
 						else LightingConfig.Glow.Kit
 					local lit = item:GetAttribute("Lit")

@@ -965,7 +965,10 @@ end
 -- * the demand's mark ("demand") about the same axle, to the demand's share of the gauge at its stage's degrees
 --   (`Turn`, the row's; `Generator.Gauge.Turn` without one), gliding there over `Gauge.Glide` seconds
 --   (Rules.Power.Gauge); the axle is its piece's origin, the manifest's centre away from the part;
--- * the Training machine's crown about its own upright while a Voidkin trains, still when none does (AR15, section 5).
+-- * the Training machine's crown about its own upright while a Voidkin trains, still when none does (AR15, section 5);
+-- * the Festival Door's rings ("spins") about the tunnel's axis, each its own origin's Z, always and whatever the Door's
+--   state, at their plan's `Spin` in degrees a second, anticlockwise seen from the mouth for a positive one: drawn as
+--   CFrame.Angles(0, 0, -angle), so the angle runs against the spin (AR15, section 7).
 -- A hidden stage's pieces keep their angle, and are moved once they're shown.
 type Turning = { Rest: CFrame, Angle: number, Drawn: number, Axis: "Z" | "Y", Pivot: CFrame, Rate: number, Follows: boolean }
 local turning: { [BasePart]: Turning } = {}
@@ -1004,7 +1007,7 @@ local function watchTurning(item: Instance)
 	end
 	local kind = item:GetAttribute("Piece")
 	local moves = item:GetAttribute("Moves")
-	local axis: ("Z" | "Y")? = if kind == "TrainingCrown" then "Y" elseif moves == "turns" or moves == "demand" then "Z" else nil
+	local axis: ("Z" | "Y")? = if kind == "TrainingCrown" then "Y" elseif moves == "turns" or moves == "demand" or moves == "spins" then "Z" else nil
 	if axis == nil then
 		return
 	end
@@ -1038,6 +1041,10 @@ local function angleOf(part: BasePart, turn: Turning, dt: number): number
 		local goal = math.rad(if type(degrees) == "number" then degrees else generator.Gauge.Turn) * math.clamp(if type(share) == "number" then share else 0, 0, 1)
 		local glide = generator.Gauge.Glide
 		return if glide <= 0 then goal else turn.Angle + (goal - turn.Angle) * (1 - math.exp(-dt * 4 / glide))
+	end
+	if part:GetAttribute("Moves") == "spins" then
+		local spin = part:GetAttribute("Spin")
+		return (turn.Angle - math.rad(if type(spin) == "number" then spin else 0) * dt) % WRAP
 	end
 	local speed = 0
 	if part:GetAttribute("Piece") == "TrainingCrown" then

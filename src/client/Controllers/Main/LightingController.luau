@@ -67,6 +67,7 @@ local applied: any = nil -- the last look applied, for tests and to set only wha
 local current = { Area = 0, Row = 0, From = "Day", To = "Day", Turn = 0, Warm = 0, Phase = "Day", Glow = 1, Lights = 1, Veil = 0 }
 local SHARE_STEP = 0.02 -- the glow's and the lights' shares move in steps: a crossing re-dresses the pieces ~30 times, not each frame
 local glowShare, lightShare = 1, 1
+local coreMost = math.huge -- a core's most glow, under the bloom applied (Config.Lighting's CoreBloom), in the shares' steps
 local floors: { [BasePart]: true } = {}
 local stamp = "" -- the glow and light numbers last given to the pieces
 local leadLight: PointLight? = nil
@@ -230,7 +231,8 @@ local function dressOne(item: Instance, floor: number)
 		if look then
 			local empty = LightingConfig.Glow.Empty
 			local share = if working == false then empty elseif type(lit) == "number" then empty + (1 - empty) * math.clamp(lit, 0, 1) else 1
-			local want = glowOf(piece, floor) * share * glowShare
+			local full = glowOf(piece, floor) * glowShare
+			local want = (if LightingConfig.Cores[piece] then math.min(full, coreMost) else full) * share
 			if look.EmissiveStrength ~= want then
 				look.EmissiveStrength = want
 			end
@@ -268,7 +270,7 @@ end
 
 local function dressAll(floor: number)
 	local glow, pools, lamp, paper = LightingConfig.Glow, LightingConfig.Pools, LightingConfig.Lamp, LightingConfig.Paper
-	local now = `{glow.Kit},{glow.Houses},{glow.Empty},{pools.Brightness},{pools.Range},{lamp.Brightness},{lamp.Range},{paper.Floor},{paper.Top},{paper.Colour},{glowShare},{lightShare}`
+	local now = `{glow.Kit},{glow.Houses},{glow.Empty},{coreMost},{pools.Brightness},{pools.Range},{lamp.Brightness},{lamp.Range},{paper.Floor},{paper.Top},{paper.Colour},{glowShare},{lightShare}`
 	if now ~= stamp then
 		stamp = now
 		for _, item in CollectionService:GetTagged(Kit.Tag) do
@@ -386,6 +388,7 @@ local function step(dt: number)
 	local look = Night.Mix(base, ground, a)
 	glowShare = math.floor(ground.Glow * (1 + (clear.Glow - 1) * out) / SHARE_STEP + 0.5) * SHARE_STEP
 	lightShare = math.floor(ground.Lights * (1 + (clear.Lights - 1) * out) / SHARE_STEP + 0.5) * SHARE_STEP
+	coreMost = math.floor(look.Bloom.Threshold * LightingConfig.Glow.CoreBloom / SHARE_STEP + 0.5) * SHARE_STEP
 	-- The haze's peak where a sky is swapped: the turn's, inside, and the walk's own, into the ground and up or down the
 	-- side street when the base's sky differs from the Row's. In the Row its haze and density; south of it Haze alone,
 	-- which veils the sky and leaves the yard clear.
@@ -402,7 +405,7 @@ local function step(dt: number)
 	dressAll(ground.Floor)
 	lightLead(a * lightShare)
 	applied = look
-	current = { Area = area, Row = row, From = fromName, To = toName, Turn = turn, Warm = warm, Phase = phase, Glow = glowShare, Lights = lightShare, Veil = veil }
+	current = { Area = area, Row = row, From = fromName, To = toName, Turn = turn, Warm = warm, Phase = phase, Glow = glowShare, Lights = lightShare, CoreMost = coreMost, Veil = veil }
 end
 
 function LightingController.Start()

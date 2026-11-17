@@ -351,38 +351,126 @@
   },
   "Door": {
    "mesh": "meshes/Door.json",
-   "triangles": 896,
-   "vertices": 604,
+   "triangles": 768,
+   "vertices": 428,
    "centre": [
     0.0,
-    7.245,
-    0.0
+    6.075,
+    0.6
    ],
    "size": [
-    12.34,
-    14.71,
-    3.02
+    14.22,
+    13.97,
+    4.22
    ],
    "colour": "maps/Base_Kit_Color.png",
    "glow": "maps/Base_Kit_Glow.png",
    "glowTint": "#FFFFFF",
    "glowStrength": 2.4,
-   "collision": "the threshold, 10.4 by 2.8 and 0.4 high, and the two stones on it, each about 2 by 1.8 and 9.4 high; the way between them stays open",
+   "collision": "the step, 14 by 4 and 0.6 high, and the front ring, 12.8 across and 1.6 deep, round its opening; the opening stays open",
    "lights": [],
-   "note": "its middle on the stand-in's, 14.6 high at its keystone. Turned 90, so its way looks down the plot's way in. The way is 6 wide between the stones, as the stand-in's"
+   "note": "its origin is the step's middle on the floor; its mouth looks toward -Y, so at the plan's turn of 90 it looks down the way in. The way a player walks into is the ring's opening: 10 across, from 0.6 to 10.6 up, in the ring's front at -1 along its Y. The name goes on the plate's -Y face, 5 by 1.3, its middle 12.3 up. The line of light round the opening is the Door's own: full always"
+  },
+  "DoorRing1": {
+   "mesh": "meshes/DoorRing1.json",
+   "triangles": 368,
+   "vertices": 228,
+   "centre": [
+    -0.04014,
+    0.02236,
+    -0.13
+   ],
+   "size": [
+    10.519,
+    10.542,
+    0.34
+   ],
+   "colour": "maps/Base_Kit_Color.png",
+   "glow": "maps/Base_Kit_Glow.png",
+   "glowTint": "#FFFFFF",
+   "glowStrength": 2.4,
+   "collision": "none",
+   "lights": [],
+   "note": "ring 1 of 4 behind the Door's front ring, 1.7 behind it, 5.3 in radius. Its origin is its middle, on the tunnel's axis: it turns about its own Y, the axis, at 9 degrees a second, anticlockwise seen from the mouth, always, whatever the Door's state. Look only"
+  },
+  "DoorRing2": {
+   "mesh": "meshes/DoorRing2.json",
+   "triangles": 372,
+   "vertices": 231,
+   "centre": [
+    0.03301,
+    0.0,
+    -0.13
+   ],
+   "size": [
+    8.732,
+    8.8,
+    0.34
+   ],
+   "colour": "maps/Base_Kit_Color.png",
+   "glow": "maps/Base_Kit_Glow.png",
+   "glowTint": "#FFFFFF",
+   "glowStrength": 2.4,
+   "collision": "none",
+   "lights": [],
+   "note": "ring 2 of 4 behind the Door's front ring, 3 behind it, 4.4 in radius. Its origin is its middle, on the tunnel's axis: it turns about its own Y, the axis, at 14 degrees a second, clockwise seen from the mouth, always, whatever the Door's state. Look only"
+  },
+  "DoorRing3": {
+   "mesh": "meshes/DoorRing3.json",
+   "triangles": 368,
+   "vertices": 228,
+   "centre": [
+    -0.00037,
+    -0.00196,
+    -0.13
+   ],
+   "size": [
+    7.199,
+    7.177,
+    0.34
+   ],
+   "colour": "maps/Base_Kit_Color.png",
+   "glow": "maps/Base_Kit_Glow.png",
+   "glowTint": "#FFFFFF",
+   "glowStrength": 2.4,
+   "collision": "none",
+   "lights": [],
+   "note": "ring 3 of 4 behind the Door's front ring, 4.1 behind it, 3.6 in radius. Its origin is its middle, on the tunnel's axis: it turns about its own Y, the axis, at 20 degrees a second, anticlockwise seen from the mouth, always, whatever the Door's state. Look only"
+  },
+  "DoorRing4": {
+   "mesh": "meshes/DoorRing4.json",
+   "triangles": 384,
+   "vertices": 238,
+   "centre": [
+    -0.00084,
+    1e-05,
+    -0.13
+   ],
+   "size": [
+    5.795,
+    5.8,
+    0.34
+   ],
+   "colour": "maps/Base_Kit_Color.png",
+   "glow": "maps/Base_Kit_Glow.png",
+   "glowTint": "#FFFFFF",
+   "glowStrength": 2.4,
+   "collision": "none",
+   "lights": [],
+   "note": "ring 4 of 4 behind the Door's front ring, 5 behind it, 2.9 in radius. Its origin is its middle, on the tunnel's axis: it turns about its own Y, the axis, at 28 degrees a second, clockwise seen from the mouth, always, whatever the Door's state. Look only"
   },
   "DoorWay": {
    "mesh": "meshes/DoorWay.json",
-   "triangles": 28,
-   "vertices": 13,
+   "triangles": 32,
+   "vertices": 33,
    "centre": [
     0.0,
-    6.05,
+    0.0,
     -0.0
    ],
    "size": [
-    6.0,
-    11.1,
+    4.8,
+    4.8,
     0.0
    ],
    "colour": "maps/Base_Kit_Color.png",
@@ -391,7 +479,7 @@
    "glowStrength": 2.4,
    "collision": "none",
    "lights": [],
-   "note": "stands where its Door stands, the same turn: 6 wide, from 0.5 to 11.6 up at its point. It wears the kit's two pictures: the festival seen through the door, warm white at its foot rising into cyan, lantern lights down a street. Its glow's strength is the Door's state, low while no ground is open to go to; keep its tint white, or the festival's colours go. Look only: the player walks through it"
+   "note": "the Door's core, 4.8 across, 5.9 behind its mouth, facing it. Its origin is its middle. Its glow's strength is the Door's state: full while a ground is open to go to, low while none is. Keep its tint white, or its warmth goes. Look only: the way a player walks into is the Door's opening (the Door's note), not this"
   },
   "Training": {
    "mesh": "meshes/Training.json",

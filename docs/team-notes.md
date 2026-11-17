@@ -9,23 +9,9 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **AR18, the bag's skin:** competent, with one must-fix: the chosen ring against Legendary's gilt. Legendary's well takes the seam. The Overview follows, by the one-palette word of 00:17.
 - **Next:** verdicts as pieces land: the Door's install, Ground Wire's retake, AR26 from Watt, TR34's block.
 
-**Faber (builder).** 2026-11-17, 02:59. Stopped for the night on the director's word: committed, the playtest stopped, no lock held.
-- **Done since 02:16:** AR12's card fixes (AR12, "Faber's fixes"):
-  - the health light is one colour along its whole length, with nothing at its front at full health;
-  - the heads' ink line is gone, and every card picture is bled;
-  - the experience thread reads lavender.
-  - Modulo's 60 and the card's 37 are up under the group, all 99 Approved (two unused copies among them), with their ids in `Config.UIKit` and `Config.RevealArt`.
-  - Self-test: HUD 414, Reveal 163, Items page 110, 0 failed, at 60 fps.
-  - Phone captures for research's pass are in `build/scratch/faber/ar12_card/`.
-- **Next, in order:**
-  1. the Festival Door's install;
-  2. Sable's guard as "drop every tier with no Voidkin made", before anything public;
-  3. Ground Wire's retake, then AR26's attacks from Watt;
-  4. TR35's shortlist;
-  5. TR29's three;
-  6. TR34's block in A;
-  7. forge ranks, emblems and jewels on the item (the data contract and its tests);
-  8. the bag's rebuild once Modulo's skin lands.
+**Faber (builder).** 2026-11-17, 09:01. The Festival Door's install is in (AR15, "Faber's install: the ring tunnel"), for research's pass.
+- **Done:** the ring tunnel in the game: its rings turn, the core lights by whether a ground is open (capped under the bloom so it never burns), the way fits the opening (the Door's collision is Default: the precise one shut it), and the name is on the plate. Phone stills: `build/captures/ar15/`.
+- **Next, in order:** (1) Sable's guard as "drop every tier with no Voidkin made", before anything public; (2) Ground Wire's retake, then AR26's attacks from Watt, with research's two ZOffset takes on the crack; (3) TR35's shortlist; (4) TR29's three; (5) TR34's block in A; (6) forge ranks, emblems and jewels on the item (the data contract and its tests); (7) the bag's rebuild in the seam (AR18 passes, 6c2992c).
 - **Open, for research:** the target card's light (`CardLightHealth`) keeps its glow ahead of its front. Does it go the same way as the lead's?
 - **Open, tooling:** `tools/ui/kit_config.py` rewrites `Config.UIKit` whole and drops what was added by hand (Eclipse, the reveal's marks, the shard grades). Don't run it until it merges.
 
@@ -35,7 +21,7 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **Unchanged:** AR24's A goes to Faber's block (TR34), and Sable waits for after launch. The Door is Faber's install. Ground Wire waits on Faber's retake, then my colour pass.
 - **Now:** AR26's Pip, effects only, no sound (the director's word of 08:00). Then Lyric and Kirra. TR10's two icons follow the grey marker's verdict.
 
-**Turns.** Studio: nobody (Faber stopped at 02:59, the playtest stopped). Blender: nobody. Timing tests: nobody.
+**Turns.** Studio: nobody (Faber stopped the playtest at 09:01; the place is open, its Rojo connected). Blender: nobody. Timing tests: nobody.
 
 **The count.** Pieces closed and playable this week: 13. TR2, the circuit in grey (phase 1); Haymaker, on A; the Shade's burst; Pip's Lantern Burst; Lyric's Held Note; TR3, the HUD in the world; TR4, the reveal; AR7, the Lamplighter installed with his fall; his signature; Lantern Burst's exit in 3D (B1); Haymaker's square in 3D (B5); TR18, power in grey; AR12's HUD part 1. Hours are in each piece's entry.
 
@@ -126,6 +112,14 @@ For Faber:
 - Tier 2, research, 2026-11-12, on the director's words: weapons belong to a class, in two hands (Main Hand and Off Hand replace Weapon and Shield), a preset holds a pair per class, a weapon drop is for the lead's class; Combat Power made to be watched, its weights fitted by the simulation; each item kind modelled and rendered to its icon (AR6, phase 3) (`docs/design.md`, "Regalia: gear" and "Combat Power"). Faber: the Stats case's `"Weapon"` source becomes `"Main Hand"` when you next touch it. Faber and Modulo: say in your row what you'd change.
 
 ## Entries
+
+### 2026-11-17, 09:01. AR15: the Festival Door's ring tunnel, installed (Faber)
+
+- **What changed:** Modulo's ring tunnel is in the game. Its four rings turn always, at their plan's rates, and the core lights by whether a ground is open, capped at 0.6 of the phase's bloom threshold so it never burns white. The way fits the front ring's opening, and the name is on the plate. The six meshes and the atlas pair are under the group, all Approved.
+- **The Door's collision is Default:** the precise one shut the ring's opening.
+- **Where:** AR15, "Faber's install: the ring tunnel"; `Config.Lighting` (`CoreBloom`), `Config.World` (`Grey.Door`), `BaseController` ("spins"), `WorldService`, `DoorService`, `SignsController`, `src/storage/BaseKit.rbxm`.
+- **Open:** research's pass, from the phone stills in `build/captures/ar15/`. Its two findings: TR24's screen sign repeats the plate's name over the Door, and the shut core barely differs from the open one. Then the director's own look on a phone.
+- **For:** research, then the director.
 
 ### 2026-11-16, 23:47. AR11: Watt's eight clips, delivered (Modulo)
 
@@ -234,61 +228,3 @@ For Faber:
 - **What changed:** the gauge is the wheel. The buckets light from the well up the gate's right to the collector's shoe as the generation climbs, against a bone diamond with a lit pip on a rail outside the rim for the demand, and the dial is gone. A concrete sill, a trestle, the front bearing and the collector arm stand in front; the band is deeper, the hub filled and bolted. Stage II shows its gear and a housed dynamo, Stage III the casing and two.
 - **Where:** AR19, "Fixes 1 to 3 within A, delivered"; `tools/blender/generator_directions.py` (`A` mode); `build/handoff/Base/generator/generator_A_fixes.png`.
 - **For research:** the pass. **For Faber, later:** the lit arc is a still glow piece cut in steps; the diamond slides with the demand.
-
-### 2026-11-16, 15:22. AR17's fixes 1 to 3: the Strip (Modulo)
-
-- **What changed:** the crack ranked: the Strip's crack brightest and widest, the branches to the gates thinner and deep violet. The crossing's well is full black, its five cracks gone. The great shard's light is 2.5 times the kit's, not the shard bigger: from the farthest gate at the largest new size (372 from the crossing) it reads at 5.0 to 1 on the haze, from 3.7.
-- **Where:** AR17, "Fixes 1 to 3, delivered"; `tools/blender/strip_kit.py`, `strip_plan.py`; `build/handoff/Strip/`. The look's bloom no longer wraps round the frame (`lantern_row_look.py`).
-- **For research:** the pass. **For Faber:** at the install, CrossingShard's `glowStrength` is 6.0 against the kit's 2.4; the plan moves with the base's new size.
-
-### 2026-11-16, 15:11. C's inventory fixes 1 to 3 (Modulo)
-
-- **What changed:** C's porcelain warmed to bone, a step darker than first tried. The bag opens at 0.31 of a white screen's light, 4.2 times the Row at night (paper was 7.5), measured beside Faber's TR24 captures. Its coloured words deepened to hold 4.5 to 1. The empty bag is its line alone, and every kind's chip says its word, with the counts gone from the chips.
-- **Where:** AR18, "Fixes 1 to 3, delivered"; `tools/blender/inventory_directions.py`; `build/handoff/UI/inventory/` (`inventory_night.png`, `inventory_C.png`, the glance).
-- **For research:** the pass. **For Faber:** the feasibility read (fix 4) takes C as it stands now.
-
-### 2026-11-16, 15:01. The generator, three directions (Modulo)
-
-- **What changed:** three directions for the generator's Stage I, each with its growth to Stages II and III, at about 30 studs (today's is 26): A, the Void Mill, a wheel turning in the well; B, the Beam Pump, a lit column under a rocking beam; C, the Governor, three lit weights flying over a yellow demand ring. Each from the spawn, from 30 studs and from the side; B and C also at low and high generation.
-- **Where:** AR19; `tools/blender/generator_directions.py`; `build/handoff/Base/generator/` (`generator_glance.png` first).
-- **For research:** the verdict and the pick. The content check passed all three, with three conditions for the finish in AR19.
-- **For Faber, after the pick:** the chosen direction's moving parts come as pieces of their own; its export and the motion wait on the pick.
-
-### 2026-11-16, 14:24. The mobile inventory, three directions (Modulo)
-
-- **What changed:** three phone-landscape directions for the bag in the Voidkin screen, each in three states (a full bag with a long Legendary name, a Healer choosing a Warrior's sword, an empty bag): A, Lacquer, the ledger; B, Nocturne, the ring; C, Porcelain, the case, the one on research's brief. Combat Power's change sits under the item's name in all three.
-- **Where:** AR18; `tools/blender/inventory_directions.py`; `build/handoff/UI/inventory/` (`inventory_glance.png` shows all three at phone size).
-- **For research:** the verdict on composition and usability. A and B leave the brief on purpose, each saying why and what it costs. **For Faber:** the feasibility read.
-- **Open:** the tabs are the bag's kinds as `docs/design.md` has them; the brief's list waits on the nine points.
-
-### 2026-11-16, 02:50. AR17's kit, in the void's own (Modulo)
-
-- **What changed:** the director stopped the lantern line down the Strip (read between 02:39 and 02:45 by the clock: ground lanterns are the first ground's alone, and the map wants its own look). The kit was made again from the void: a crack of light in the stones to a great split shard over the crossing, shard lamps, sealed gates, outcrops. Research's bold thing of 02:18 is set aside by that word.
-- **Where:** AR17, "The kit, in the void's own"; `tools/blender/strip_kit.py`, `strip_plan.py`; `build/handoff/Strip/` (meshes, `manifest.json`, `plan.json`, eleven pictures); the asset log.
-- **For research:** the verdict on the pictures, the new feel line, and the register's line for the director's word.
-- **For Faber, after that verdict:** the install, which needs a third kit laid; the list is in the entry.
-- **Open:** the director has four pictures and hasn't spoken on them. Nothing was seen in Studio.
-
-### 2026-11-16, 02:40. Day in the world's turn, under Modulo's sky (Faber)
-
-- **What changed:** the world has a day, on the director's word ("we need a day time") and pick. Day, dusk and night go round on the server's one clock, 30 minutes a turn: 18 of day, 5 of dusk, 4 of night, with a minute's crossing between each. By day the kit's glow and the street's lights dim to a share and come up at dusk. Modulo's Day sky is uploaded, Approved and played with his seeds: a clear azure day with a thin haze.
-- **Where:** `Rules.Night` (the turn as an order of looks), `Config.Lighting` (`Cycle`, `Phases.Day`), `LightingController`; TR23; the asset log. The debug jump takes "Day", "ToDusk", "ToNight" and "ToDay".
-- **Checks:** type check 0 new; logic 9,936; the whole suite 2,202/0 at 60 fps.
-- **For research:** the verdict in the game, the day and its crossing into dusk. The director's mist word to Modulo ("a bit to much atmosphere") may also mean the dusk haze; I don't know which phase they saw.
-- **Open:** one ~90 ms frame in two of four day-to-dusk crossings, not attributed, for the phone run to watch.
-
-### 2026-11-16, 02:15. The Day sky, and AR17's blockout (Modulo)
-
-- **What changed:** our own Day sky, on the director's word ("we need a day / dusk sky box"): six painted faces, a clear azure day with a thin warm line on the horizon and two-tone cumulus, the sun painted where the game's light stands. A Day block of seeds in `lighting.json`. Dusk and Night are untouched. And AR17's blockout from the game's camera, for research's verdict.
-- **Where:** `build/handoff/LanternRow/sky/` (`LanternRow_SkyDay_*.png`, `lighting.json`, `lantern_row_sky_day_sheet.png`); `tools/art/sky_day.py`. `build/handoff/Strip/`; `tools/blender/strip_block.py`. Records: AR5, section 2b; AR17, "The blockout".
-- **For Faber:** the six faces to upload under the group and play in `Phases.Day`, with the engine's sun disc at 0. The block's numbers are seeds moved from yours toward warmth; tune them by playing.
-- **For research:** the Day sky's pass, and AR17's verdict.
-- **Open:** the director said of the first sheet "a bit to much atmosphere imo like that mist is a bit to much"; the faces were painted again with less, and the second sheet has no word yet. Whether that word also means the game's own mist at dusk is with Faber and research. Nothing here was seen in the engine.
-
-### 2026-11-16, 01:51. The base installed: AR16, the Door's festival and the sleeping Tower, AR15's last machines (Faber)
-
-- **What changed:** each plot's base stands as Modulo's star, as its owner's save has it: the bays it opened awake and the rest asleep, the battery a bank lit by its charge, the great ring and the Training crown turning, the Door's way showing the festival under five paper lanterns, and a sleeping Tower behind the back corner on the crossing's side. The spawn faces the Breaker, and the machines' plates never cover each other.
-- **Where:** AR16, "Faber's install"; AR15's status; the asset log's three rows of 2026-11-16; `docs/engineering-plan.md`, the world contract; `src/server/Services/Main/WorldService.luau`, `BaseService.luau`, `src/shared/World/Kit.luau` (`Kit.Toward`), `src/client/UI/World.luau`.
-- **Open:** research's verdict in the game; the Door's name over the arch, my next piece; a fighter on the Training pad gets one look the first time it trains.
-- **For:** research, and Modulo for the look in Studio (`build/captures/ar16/`).
-

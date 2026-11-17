@@ -688,23 +688,38 @@ local function plot(parent: Instance, number: number, at: CFrame, across: number
 			block(plant, "Body", generator.Size, generatorAt * CFrame.new(0, generator.Size.Y / 2, 0), tint("generator", GREY.Generator))
 		end
 		Markers.Stamp(plant, "Generator", { Plot = number })
-		-- The Festival Door on the other slant toward the gate, turned to face down the way in (AR15, section 5): its
-		-- frame, its way of light, and the unseen Way a player walks into (DoorService); the grey frame while its kit
-		-- isn't laid.
+		-- The Festival Door on the other slant toward the gate, turned to face down the way in: the ring tunnel (AR15,
+		-- section 7). Its frame (the step, the front ring and the name's plate), the four rings behind it, which the
+		-- client turns always, each at its plan's `spin` ("spins"), its core, whose glow is the Door's state (DoorService:
+		-- "Working", full while a ground is open to go to, low while none is), the unseen Way a player walks into, inside
+		-- the front ring's opening, and the unseen Name the client writes the Door's name on, on the plate's face. The
+		-- grey frame while its kit isn't laid.
 		local doorAt = place(layout.stations.door, turnOf("Door"))
 		local festival = model(base, "Festival Door", doorAt)
-		if machine(festival, "Frame", "Door", 1, number, at, front) then
+		local frame = machine(festival, "Frame", "Door", 1, number, at, front)
+		if frame then
 			local d = WorldConfig.Grey.Door
-			-- Its way wears the festival seen through it, a print on the kit's atlas (AR15, section 6), tinted Light.
-			local light = machine(festival, "Light", "DoorWay", 1, number, at, front)
-			if light then
-				light.Color = Color3.fromHex(d.Light)
-				light.Transparency = d.LightFade
-				light.CastShadow = false
+			local _, doorPlan = kitFiles(BASE)
+			for _, placement in (if doorPlan.machines then doorPlan.machines.placements else {}) do
+				local ring = if type(placement.spin) == "number" then string.match(placement.piece, "^DoorRing(%d+)$") else nil
+				local part = if ring then machine(festival, `Ring {ring}`, placement.piece, 1, number, at, front) else nil
+				if part then
+					part:SetAttribute("Moves", "spins")
+					part:SetAttribute("Spin", placement.spin) -- degrees a second, anticlockwise seen from the mouth
+				end
 			end
-			local way = manifest.pieces.DoorWay.size
-			local trigger = block(festival, "Way", Vector3.new(way[1], way[2], 1), if light then light.CFrame else doorAt * CFrame.new(0, way[2] / 2 + 0.5, 0), GREY.Pad)
+			local core = machine(festival, "Core", "DoorWay", 1, number, at, front)
+			if core then
+				core.CastShadow = false
+				core:SetAttribute("Working", false) -- DoorService opens it once the ground it goes to is laid
+			end
+			-- The Door's own frame: its origin, the step's middle on the floor, its mouth looking along +Z.
+			local c = manifest.pieces.Door.centre
+			local origin = frame.CFrame * CFrame.new(-c[1], -c[2], -c[3])
+			local trigger = block(festival, "Way", d.Way.Size, origin * CFrame.new(d.Way.At), GREY.Pad)
 			trigger.Transparency, trigger.CanCollide, trigger.CanQuery, trigger.CastShadow = 1, false, false, false
+			local name = block(festival, "Name", Vector3.new(d.Name.Size.X, d.Name.Size.Y, 0.05), origin * CFrame.new(d.Name.At), GREY.Pad)
+			name.Transparency, name.CanCollide, name.CanQuery, name.CanTouch, name.CastShadow = 1, false, false, false, false
 		else
 			festival:Destroy()
 			festival = door(base, "Festival Door", doorAt)

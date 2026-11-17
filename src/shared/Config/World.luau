@@ -122,8 +122,18 @@ return {
 	-- arch and its ground under it (docs/design.md, "The Festival Door"), and the festival gate, its ground's name to the
 	-- side street. Width and Line in authored pixels; Lift studs over the model's top; Reach studs from the camera (the
 	-- gate's, past the 35 studs TR24's still saw it from). The builder's seeds, a block until research's pass.
+	-- The Door's name is also written on its own plate, on the front ring's crown (AR15, section 7: research's fix 3,
+	-- the name's plate belongs to the ring): Plate, in the Door's warm light, unlit by the world (LightInfluence 0),
+	-- PixelsPerStud on the plate's 5 by 1.3, Pad studs in from each edge, seen within Reach studs (the builder's seeds).
 	Signs = {
-		Door = { Name = "Festival of Battles", Width = 200, Line = 22, Lift = 1.5, Reach = 90 },
+		Door = {
+			Name = "Festival of Battles",
+			Width = 200,
+			Line = 22,
+			Lift = 1.5,
+			Reach = 90,
+			Plate = { Colour = "#FFD49A", Brightness = 1.2, PixelsPerStud = 80, Pad = 0.12, Reach = 60 },
+		},
 		Gate = { Width = 160, Line = 24, Lift = 2, Reach = 120 },
 	},
 	Row = {
@@ -163,15 +173,27 @@ return {
 		Copies = 600, -- how far apart the keeper's ring copies stand, one per plot, out of sight
 		CopiesAt = 3000, -- studs east of the crossing the first copy stands
 		-- The Festival Door: its way of light, Wide by High, in a grey frame. On a plot it stands where the base plan's
-		-- layout says, and wears its kit's Door: the way wears the festival seen through it, a print on the kit's atlas
-		-- (AR15, section 6), tinted Light, white so the print keeps its colours, its Transparency LightFade, so the print
-		-- reads whole. At a ground's gate it stands AtGate studs
+		-- layout says, and wears its kit's Door, the ring tunnel (AR15, section 7). In the Door's own frame (its origin the
+		-- step's middle on the floor, +Z out of its mouth): the Way a player walks into fills the front ring's opening, a
+		-- square round 5.6 up and through its depth, from -0.6 to 1.0, so it never touches a player walking past the stone.
+		-- The mesh's opening is a circle of radius 5, and the Door's collision (Default: the precise one shuts the opening)
+		-- comes within 4.8 of its middle, so the square's corner stays at 4.53. The Name is the plate's face toward the way
+		-- in, where the client writes the name (Config.World.Signs.Door.Plate), just proud of the face at 1.4. At a ground's
+		-- gate it stands AtGate studs
 		-- inside it, against the east stall front. A plot's door sets the player down Landing studs before the gate, facing
 		-- through it: out of the lead's leash of the first pack (Combat.Lead.Leash), so the arrival is a look up the street
 		-- before the first fight.
 		-- HomeWay: the door home's way, in the ground's look, is lit by the street, no brighter than its lanterns (research's
 		-- read of TR8's round 1, 2026-11-14: a Neon block outshone them at the gate); its dressing waits for the door pass.
-		Door = { Wide = 6, High = 9, AtGate = 10, Landing = 4, HomeWay = "SmoothPlastic", Light = "#FFFFFF", LightFade = 0 },
+		Door = {
+			Wide = 6,
+			High = 9,
+			AtGate = 10,
+			Landing = 4,
+			HomeWay = "SmoothPlastic",
+			Way = { Size = Vector3.new(6.4, 6.4, 1.6), At = Vector3.new(0, 5.6, 0.2) },
+			Name = { Size = Vector2.new(5, 1.3), At = Vector3.new(0, 12.3, 1.43) },
+		},
 		-- The Training machine (TR12), where the layout says: a box Size while its kit isn't laid, and its pad Spot studs
 		-- before it toward the gate (the kit's pad, AR15, section 5), where a fallen lead comes home, facing the machine.
 		-- Its crown turns Crown turns a second about its upright while a Voidkin trains (the builder's seed).

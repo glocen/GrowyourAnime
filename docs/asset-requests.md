@@ -7537,7 +7537,7 @@ Research's entry, 2026-11-15, night. It answers Modulo's ask (AR14, delivery 2, 
 - **For Faber:** before the Breaker's model, the stand-ins' footprints and the chambers' anchors, sent to Modulo.
 - **Review:** one look in the game from the spawn, and from TR21's camera once it exists. Research's verdict.
 
-**Status:** the Breaker's model (section 1), a bay (section 2), the generator (section 3) and the battery as a bank (section 4) are delivered, 2026-11-15, 22:29 (Modulo). Sections 1 to 3 are installed with AR14's deliveries 4 to 6 ("Faber's install", below). **Sections 1 to 3 are made again as void machines** on the director's words (AR16, "Delivery 1", which is their record): what sections 1 to 3 say of their look is the installed one's, until that install. The battery keeps its look. **The Festival Door and the Training machine are delivered** (section 5), 2026-11-16, and the Door's festival layer (section 6). **Installed with AR16** (2026-11-16, AR16's "Faber's install"): the battery as a bank, the Door with its festival layer, and the Training machine.
+**Status:** the Breaker's model (section 1), a bay (section 2), the generator (section 3) and the battery as a bank (section 4) are delivered, 2026-11-15, 22:29 (Modulo). Sections 1 to 3 are installed with AR14's deliveries 4 to 6 ("Faber's install", below). **Sections 1 to 3 are made again as void machines** on the director's words (AR16, "Delivery 1", which is their record): what sections 1 to 3 say of their look is the installed one's, until that install. The battery keeps its look. **The Festival Door and the Training machine are delivered** (section 5), 2026-11-16, and the Door's festival layer (section 6). **Installed with AR16** (2026-11-16, AR16's "Faber's install"): the battery as a bank, the Door with its festival layer, and the Training machine. **Section 7's ring tunnel is installed**, 2026-11-17, 09:01 ("Faber's install: the ring tunnel", below); research's pass is next.
 
 ### 1. The Void Breaker (Modulo, 2026-11-15, 22:00 to 22:04 by the clock)
 
@@ -7823,6 +7823,30 @@ Each take's light is its own glow: its lines bright, and what lies deep (the vei
 - Implemented: the six pieces, the swatches and the plan, exported to `build/handoff/Base/`.
 - Tested: the export and the look ran in Blender. Nothing is in Studio.
 - Visually reviewed: Modulo's read from the renders in place. Research's pick of A stands, and its watch moves to the install.
+- Director-accepted: no.
+
+### Faber's install: the ring tunnel (2026-11-17, to 09:01 by the clock)
+
+Section 7's finish, in the game as Modulo handed it, with two changes the game asked for: the Door's collision, and a ceiling on the core's glow.
+- **The files:** `Config/Kits/Base/Plan.json` and `Manifest.json` from the handoff (`tools/world/kit_take.py`, its 66 cases pass). The six meshes and the atlas pair are under the group and read back Approved (the asset log's row of 2026-11-17). The template, `src/storage/BaseKit.rbxm`, holds the six pieces and the atlas's new ids.
+- **The rings** turn always, each about its own origin on the tunnel's axis, at its plan's `spin` (`BaseController`, Moves "spins"). Measured over a second: 8.99, −13.99, 19.99 and −27.98 degrees a second, for 9, −14, 20 and −28.
+- **The core** (`WorldService`, "Core"): `DoorService` sets its Working by whether Lantern Row's landing is laid. Its glow is the kit's, but never past CoreBloom (0.6) times the phase's bloom threshold (`Config.Lighting`), which comes to 1.32 by day and 0.72 at night.
+  - At the kit's own glow, the night's 3.6 clipped the core's middle to white in the bloom: 255, 255, 235 to 251 in the phone's still.
+  - A plain cut to 0.27 by day read as a flat gold disc.
+  - Low while no ground is open: 0.2 of that.
+- **The collision is Default, not precise.** The precise decomposition shut the opening: from the way in, every ray met a flat face 1.1 out, across the whole ring. Default keeps the ring and the step solid and the opening open, its stone within 4.8 of the middle. So the way is a 6.4 square (its corner at 4.53), from −0.6 to 1.0 (`Config.World`, `Grey.Door.Way`). The reason is in the install's Why (`tools/studio/Kits/Base.json`).
+  - A Rojo sync doesn't carry a changed collision into a part that already exists. Studio's template took the Door from `KitAssembly.Build`, and the place was saved (version 701).
+- **The name** is on the plate's face toward the way in (`SignsController`, a SurfaceGui; `Config.World.Signs.Door.Plate`).
+- **Stills,** from the game camera's own distance and pitch, on the device simulator's iPhone 16 Pro: `build/captures/ar15/` (`door_phone_sheet.jpg`: the way in at 18 studs and up close, by day and at night). Plus the core shut, the trials at night 1.8 and 0.7 and day 1.63 and 0.82, and the way in by day in a desktop window (`wayin_desktop_day.jpg`, 1920 by 876).
+- **For research's pass:**
+  - **The TR24 screen sign** ("Festival of Battles", "Lantern Row") now says the plate's name again, and on a phone it sits over the Door's lower half from the way in.
+  - **The shut core barely reads.** Open and shut differ by about 10 in blue at its middle, because its colour swatch and `DoorInside` carry most of its look. It only shows while no ground is laid, which the slice never is.
+
+**Four facts:**
+- Implemented: as above.
+- Tested: the new case "Base: AR15's Festival Door, the ring tunnel" covers the rings' rates and axes, the core open and low with its most under the bloom, the way inside the opening, a ray through the opening and one at the ring, and the name. With the Door's walk case and TR24's fix 10, its 51 checks pass. "Lighting:" 54 pass. The whole suite: 2,608 passed, 0 failed, at 60 fps. The logic tests' 25,110 pass, the world report is clean, and the type check finds 0 new.
+  - Two whole-suite runs before failed one AR16 check: the demand's mark read 0.33 and 0.37 off a share of 0. The case alone passed, and after the Power cases too. Its read now waits until the mark's share has held through two glides, and checks that it held (`BaseCases`, AR16's case).
+- Visually reviewed: the builder's read from the stills above. Research's pass comes next.
 - Director-accepted: no.
 
 ### Faber's install: AR14's deliveries 4 to 6, sections 1 to 3 here, and the bare lots (2026-11-15, to 22:50)

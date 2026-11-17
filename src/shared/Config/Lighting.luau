@@ -133,8 +133,13 @@ return {
 	-- The kit's glow, the same in both phases (EmissiveStrength): every piece's, and the houses' at about two thirds of it
 	-- (TR8's first note, research's verdict on AR5: their windows burned as bright as the lanterns).
 	-- A Breaker's chamber with no shard in it glows at Empty times the kit's (AR15: full while it breaks, low when empty).
-	Glow = { Kit = 2.4, Houses = 1.6, Empty = 0.2 },
+	-- The Festival Door's core (AR15, section 7) glows as the kit does, never past CoreBloom times its phase's bloom
+	-- Threshold (before its state's share), so its middle stays a warm light and never burns: from the way in at phone size
+	-- (the builder's read, 2026-11-17), under the night's threshold of 1.2 its 3.6 and 1.8 clipped to white and 0.7 kept it
+	-- gold; under the day's 2.2, 1.63 and 1.32 read as light, 0.82 as a gold disc and 0.27 as a flat one.
+	Glow = { Kit = 2.4, Houses = 1.6, Empty = 0.2, CoreBloom = 0.6 },
 	Houses = { HouseLow = true, HouseTall = true } :: { [string]: boolean },
+	Cores = { DoorWay = true } :: { [string]: boolean },
 	-- The street's static lights (the plan's), Shadows off: a pool's SpotLight straight down in its cone, and the keeper's
 	-- lamp. Brightness and Range are the builder's seeds against the two targets (the lead at least 1.3 times what's round
 	-- him, a Shade's edge at least 0.15), tuned in the engine.

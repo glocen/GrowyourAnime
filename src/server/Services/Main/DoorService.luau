@@ -53,10 +53,22 @@ local function hook(door: Instance, kind: string)
 	end)
 end
 
+-- A plot's door shows whether it goes anywhere: its core's glow full while the ground it goes to is laid, low while
+-- none is (AR15, section 7; LightingController lights a kit piece by "Working").
+local function show(door: Instance)
+	local core = door:FindFirstChild("Core")
+	if core then
+		core:SetAttribute("Working", Markers.Find("DoorLanding", { Ground = WorldConfig.Row.Ground }) ~= nil)
+	end
+end
+
 local function hookAll()
 	for _, kind in { "FestivalDoor", "GroundDoor" } do
 		for _, door in Markers.All(kind) do
 			hook(door, kind)
+			if kind == "FestivalDoor" then
+				show(door)
+			end
 		end
 	end
 end

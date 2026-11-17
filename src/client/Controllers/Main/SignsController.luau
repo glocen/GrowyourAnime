@@ -84,12 +84,47 @@ local function place(key: string, marker: Instance?, lines: { string }, look: an
 	end
 end
 
+-- The Door's name on its own plate (AR15, section 7), on every plot's Door: written on the face of its unseen Name,
+-- toward the way in (+Z, the part's Back), once each time the part streams in.
+local function writeName(door: Instance)
+	local host = door:FindFirstChild("Name")
+	if host == nil or not host:IsA("BasePart") or host:FindFirstChild("DoorName") then
+		return
+	end
+	local look = WorldConfig.Signs.Door.Plate
+	local gui = Instance.new("SurfaceGui")
+	gui.Name = "DoorName"
+	gui.Face = Enum.NormalId.Back
+	gui.SizingMode = Enum.SurfaceGuiSizingMode.PixelsPerStud
+	gui.PixelsPerStud = look.PixelsPerStud
+	gui.LightInfluence = 0
+	gui.Brightness = look.Brightness
+	gui.MaxDistance = look.Reach
+	local pad = look.Pad / host.Size.Y
+	local label = Instance.new("TextLabel")
+	label.Name = "Words"
+	label.AnchorPoint = Vector2.new(0.5, 0.5)
+	label.Position = UDim2.fromScale(0.5, 0.5)
+	label.Size = UDim2.fromScale(1 - 2 * look.Pad / host.Size.X, 1 - 2 * pad)
+	label.BackgroundTransparency = 1
+	label.FontFace = Theme.Font.Strong
+	label.TextColor3 = Color3.fromHex(look.Colour)
+	label.TextScaled = true
+	label.TextWrapped = true
+	label.Text = WorldConfig.Signs.Door.Name
+	label.Parent = gui
+	gui.Parent = host
+end
+
 local function find()
 	local config = WorldConfig.Signs
 	local row = Grounds.ById[WorldConfig.Row.Ground]
 	local ground = if row then row.Name else WorldConfig.Row.Ground
 	local plot = player:GetAttribute("Plot")
 	local door = if type(plot) == "number" then Markers.Find("FestivalDoor", { Plot = plot }) else nil
+	for _, each in Markers.All("FestivalDoor") do
+		writeName(each)
+	end
 	place("Door", door, { config.Door.Name, ground }, config.Door, "Base")
 	place("Gate", Markers.Find("FestivalGate"), { ground }, config.Gate, nil)
 end

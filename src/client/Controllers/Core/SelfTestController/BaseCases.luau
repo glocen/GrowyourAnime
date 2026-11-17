@@ -19,6 +19,8 @@ local Power = require(Shared.Rules.Power)
 local LightingConfig = require(Shared.Config.Lighting)
 local WorldConfig = require(Shared.Config.World)
 local Markers = require(Shared.World.Markers)
+local BaseManifest: any = require(Shared.Config.Kits.Base.Manifest)
+local BasePlan: any = require(Shared.Config.Kits.Base.Plan)
 local BaseController = require(script.Parent.Parent.Parent.Main.BaseController)
 local LightingController = require(script.Parent.Parent.Parent.Main.LightingController)
 local SignsController = require(script.Parent.Parent.Parent.Main.SignsController)
@@ -60,7 +62,7 @@ function BaseCases.Cases(given: Given): { any }
 	local ANSWER, waitFor = given.ANSWER, given.waitFor
 	return {
 		{
-			Name = "Base: AR16's base as its save has it: the bays it opened awake and the rest asleep, the battery's cells by its level and lit by its charge, the mill's wheel, gauge and demand mark (AR19), the crown while a Voidkin trains, the Door's way in the festival's print",
+			Name = "Base: AR16's base as its save has it: the bays it opened awake and the rest asleep, the battery's cells by its level and lit by its charge, the mill's wheel, gauge and demand mark (AR19), the crown while a Voidkin trains",
 			Run = function(t: any)
 				local view = ProfileController.Get()
 				local plot = Players.LocalPlayer:GetAttribute("Plot")
@@ -201,8 +203,18 @@ function BaseCases.Cases(given: Given): { any }
 					return type(share) == "number" and want ~= nil and math.abs(share - want.Demand) < 1e-6
 				end), tostring(mark and mark:GetAttribute("Share")))
 				if mark and mark:IsA("BasePart") then
-					t.Wait(mill.Gauge.Glide * 2)
+					-- Read once its share has held through two glides: the demand (the Breaker's and the Training machine's
+					-- draw) can move meanwhile. In the whole suite, twice on 2026-11-17, the mark was read mid-glide, 0.33 and
+					-- 0.37 off a share of 0 that it reaches when the case runs alone.
 					local share = mark:GetAttribute("Share")
+					local moved = 0
+					t.Wait(mill.Gauge.Glide * 2)
+					while mark:GetAttribute("Share") ~= share and moved < 5 do
+						share = mark:GetAttribute("Share")
+						moved += 1
+						t.Wait(mill.Gauge.Glide * 2)
+					end
+					t.Check("its share held through two glides", mark:GetAttribute("Share") == share, `moved {moved} times`)
 					local angle = BaseController.TurnedOf(mark)
 					local degrees = mark:GetAttribute("Turn")
 					t.Check("the mark has its stage's degrees", type(degrees) == "number")
@@ -280,14 +292,6 @@ function BaseCases.Cases(given: Given): { any }
 					t.Equal(`base level {level}: its pinions`, pinions, want - 1)
 				end
 				t.Server("BaseLevel", levelWas)
-				-- The Festival Door's way wears the festival seen through it, a print on the kit's atlas, tinted white so it keeps
-				-- its colours (AR15, section 6).
-				local door = Markers.Find("FestivalDoor", { Plot = plot })
-				local way = if door then door:FindFirstChild("Light") else nil
-				local tint = string.lower(string.sub(WorldConfig.Grey.Door.Light, 2))
-				t.Check("the Door's way wears the festival's print, in Config's tint", way ~= nil and way:IsA("BasePart") and way:FindFirstChildOfClass("SurfaceAppearance") ~= nil
-					and string.lower(way.Color:ToHex()) == tint and way.Transparency == WorldConfig.Grey.Door.LightFade,
-					if way and way:IsA("BasePart") then `{way.Color:ToHex()} at {way.Transparency}` else "no way")
 				-- The crown: the server's word on whether a Voidkin trains, and turning only then. Then the client's turning
 				-- alone, by its word set here, and the server's put back.
 				local trainer = Markers.Find("Training", { Plot = plot })
@@ -498,6 +502,122 @@ function BaseCases.Cases(given: Given): { any }
 					local at = World.Where(parts.Door)
 					t.Check("the door's over its arch", at ~= nil and (at - want).Magnitude < 0.1, if at then tostring(at) else "nowhere")
 				end
+			end,
+		},
+		{
+			Name = "Base: AR15's Festival Door, the ring tunnel: its four rings turn always about the tunnel's axis at their plan's rates, its core lit by whether its ground is open, its way inside the front ring's open opening, its name on the plate",
+			Run = function(t: any)
+				local plot = Players.LocalPlayer:GetAttribute("Plot")
+				local door = if type(plot) == "number" then Markers.Find("FestivalDoor", { Plot = plot }) else nil
+				local frame = if door then door:FindFirstChild("Frame") else nil
+				if door == nil or frame == nil or not frame:IsA("BasePart") then
+					t.Check("the plot's Festival Door, in its kit", false, if door == nil then "no door streamed in" else "a grey door: no Frame")
+					return
+				end
+				local function originOf(part: BasePart): CFrame
+					local c = BaseManifest.pieces[part:GetAttribute("Piece") :: string].centre
+					return part.CFrame * CFrame.new(-c[1], -c[2], -c[3])
+				end
+				local origin = originOf(frame)
+				-- Full is the frame's own glow, never past the core's most under the bloom applied (Config.Lighting's
+				-- CoreBloom): the frame is a kit piece with no state, lit as the day has it (LightingController).
+				local frameLook = frame:FindFirstChildOfClass("SurfaceAppearance")
+				local most = LightingController.Look().CoreMost
+				local look = if frameLook then math.min(frameLook.EmissiveStrength, most) else -1
+				local bloom = game:GetService("Lighting"):FindFirstChildOfClass("BloomEffect")
+				local under = if bloom then bloom.Threshold * LightingConfig.Glow.CoreBloom else -1
+				t.Check("the core: its most under the bloom applied", math.abs(most - under) <= 0.011, `{most}, want {under}`)
+				-- The rings: each its plan's spin, turning about its own origin on the tunnel's axis, always.
+				local spins: { [string]: number } = {}
+				for _, placement in BasePlan.machines.placements do
+					if type(placement.spin) == "number" then
+						spins[placement.piece] = placement.spin
+					end
+				end
+				local rings: { BasePart } = {}
+				for index = 1, 4 do
+					local ring = door:FindFirstChild(`Ring {index}`)
+					if ring and ring:IsA("BasePart") then
+						table.insert(rings, ring)
+					end
+				end
+				t.Equal("four rings behind the front ring", #rings, 4)
+				local before: { [BasePart]: { Angle: number?, Origin: CFrame } } = {}
+				for _, ring in rings do
+					before[ring] = { Angle = BaseController.TurnedOf(ring), Origin = originOf(ring) }
+				end
+				local from = os.clock()
+				task.wait(1)
+				local took = os.clock() - from
+				for _, ring in rings do
+					local kind = ring:GetAttribute("Piece") :: string
+					local spin = spins[kind]
+					t.Check(`{ring.Name}: its plan's spin`, spin ~= nil and ring:GetAttribute("Moves") == "spins" and ring:GetAttribute("Spin") == spin, `{ring:GetAttribute("Spin")}`)
+					t.Check(`{ring.Name}: look only`, not ring.CanCollide, "solid")
+					local was, now = before[ring].Angle, BaseController.TurnedOf(ring)
+					if spin == nil or was == nil or now == nil then
+						t.Check(`{ring.Name}: watched, turning`, false, "not watched")
+						continue
+					end
+					-- The angle runs against the spin (drawn as -angle); one second's turn is under half a turn.
+					local turned = (now - was + math.pi) % (2 * math.pi) - math.pi
+					local rate = -math.deg(turned) / took
+					t.Check(`{ring.Name}: turns at {spin} degrees a second`, math.abs(rate - spin) < math.abs(spin) * 0.1, `{rate}`)
+					local axis = originOf(ring)
+					t.Check(`{ring.Name}: about its own origin`, axis.Position:FuzzyEq(before[ring].Origin.Position, 1e-3), `{(axis.Position - before[ring].Origin.Position).Magnitude}`)
+					t.Check(`{ring.Name}: on the tunnel's axis`, axis.ZVector:Dot(origin.ZVector) > 0.999, `{axis.ZVector:Dot(origin.ZVector)}`)
+				end
+				-- The core: tinted white, lit full while the ground it goes to is open, low while none is.
+				local core = door:FindFirstChild("Core")
+				local surface = if core then core:FindFirstChildOfClass("SurfaceAppearance") else nil
+				if core == nil or not core:IsA("BasePart") or surface == nil then
+					t.Check("the Door's core", false, "none")
+				else
+					t.Check("the core: tinted white", surface.EmissiveTint == Color3.new(1, 1, 1), surface.EmissiveTint:ToHex())
+					t.Check("the core: open, as its ground is laid", core:GetAttribute("Working") == true, `{core:GetAttribute("Working")}`)
+					t.Check("the core: full while open", waitFor(t, 1, function(): boolean
+						return math.abs(surface.EmissiveStrength - look) < 1e-3
+					end), `{surface.EmissiveStrength}, want {look}`)
+					core:SetAttribute("Working", false) -- the client's own word, the server's put back below
+					t.Check("the core: low while none is", waitFor(t, 1, function(): boolean
+						return math.abs(surface.EmissiveStrength - look * LightingConfig.Glow.Empty) < 1e-3
+					end), `{surface.EmissiveStrength}, want {look * LightingConfig.Glow.Empty}`)
+					core:SetAttribute("Working", true)
+				end
+				-- The way: in the front ring's opening and through its depth, touching none of the stone.
+				local way = door:FindFirstChild("Way")
+				local spec = WorldConfig.Grey.Door.Way
+				if way == nil or not way:IsA("BasePart") then
+					t.Check("the Door's way", false, "none")
+				else
+					local at = origin:ToObjectSpace(way.CFrame)
+					t.Check("the way: in the opening, as Config's", at.Position:FuzzyEq(spec.At, 1e-3) and way.Size:FuzzyEq(spec.Size, 1e-3), `{at.Position} {way.Size}`)
+					local corner = Vector2.new(spec.Size.X / 2, spec.Size.Y / 2).Magnitude
+					t.Check("the way: inside the stone's collision, within 4.8 of the opening's middle 5.6 up", corner < 4.8 and math.abs(spec.At.Y - 5.6) < 1e-6, `{corner}`)
+					t.Check("the way: through the ring's depth, -0.6 to 1.0", spec.At.Z - spec.Size.Z / 2 >= -0.6 - 1e-6 and spec.At.Z + spec.Size.Z / 2 <= 1.0 + 1e-6)
+					local only = OverlapParams.new()
+					only.FilterType = Enum.RaycastFilterType.Include
+					only.FilterDescendantsInstances = { frame }
+					local touching = workspace:GetPartsInPart(way, only)
+					t.Check("the way: touches none of the stone", #touching == 0 and frame.CanCollide, `{#touching} touching, solid {frame.CanCollide}`)
+					-- A player walks through the opening, and bumps the ring round it: a ray from the way in through the
+					-- opening's middle meets no stone, one at the ring's side meets it.
+					local rays = RaycastParams.new()
+					rays.FilterType = Enum.RaycastFilterType.Include
+					rays.FilterDescendantsInstances = { frame }
+					local back = origin:VectorToWorldSpace(Vector3.new(0, 0, -8))
+					local through = workspace:Raycast(origin * Vector3.new(0, 5.6, 4), back, rays)
+					local side = workspace:Raycast(origin * Vector3.new(5.7, 5.6, 4), back, rays)
+					t.Check("the way: the opening open to walk through", through == nil, if through then `stone at {origin:PointToObjectSpace(through.Position)}` else "open")
+					t.Check("the way: the ring round it solid", side ~= nil, if side then "stone" else "open")
+				end
+				-- The name, on the plate's face toward the way in.
+				local host = door:FindFirstChild("Name")
+				local gui = if host then host:FindFirstChild("DoorName") else nil
+				local words = if gui then gui:FindFirstChild("Words") else nil
+				t.Check("the name: on the plate's face", host ~= nil and host:IsA("BasePart") and origin:ToObjectSpace(host.CFrame).Position:FuzzyEq(WorldConfig.Grey.Door.Name.At, 1e-3)
+					and gui ~= nil and gui:IsA("SurfaceGui") and gui.Face == Enum.NormalId.Back)
+				t.Equal("the name: its words", if words and words:IsA("TextLabel") then words.Text else "", WorldConfig.Signs.Door.Name)
 			end,
 		},
 		{

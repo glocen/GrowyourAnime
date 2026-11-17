@@ -1,5 +1,5 @@
 {
-  "Why": "The base's install (AR16, delivery 2: the star pulled in, the sleeping places, and AR15's Door and Training machine as void machines; delivery 1's void Breaker, bays and generator, and the hull at 0.11): the maps as published under the group (docs/asset-log.md), the court's, the kit's atlas and the yard's again on 2026-11-16 and the four new floors' pairs, the atlas again for the Door's festival layer (AR15, section 6); the meshes' ids from KitAssembly.Publish. YardLive and YardBack are Yard's own mesh, WingsLive and WingsBack Wings', each with its own two pictures. Collision follows each piece's in the manifest: the wall's posts and panels, the gate's towers, the pylons and the flood masts follow their mesh; the Breaker, the bays, the sleeping bays, the sleeping stones, the Door and the Training machine follow it closely, so the jaws' and the crescents' feet, the fangs, the Door's two stones and the Training machine's stone stand alone and the Door's way stays open; the transformers, the plinth, the battery's rack, the waiting places and the sleeping Tower keep their box (the Tower stands on ground a player can walk to, beside the side street). The Void Mill (AR19, Stage I) is look only: what a player bumps is WorldService's unseen shapes from its manifest's collision, the well shut to walking so nobody stands in its wheel, the sill, and the raked legs' feet and legs. The floors, the lines, the chambers, the mill's wheel, its gauge's steps and the demand's mark, the bay's light, the Door's way, the crown and the cells are look only (the plot's own floor carries the walking). No shadow from the lines, the floors, the bay's light or the Door's way. The paving is the deck tile, 8 studs square.",
+  "Why": "The base's install (AR16, delivery 2: the star pulled in, the sleeping places, and AR15's Door and Training machine as void machines; delivery 1's void Breaker, bays and generator, and the hull at 0.11): the maps as published under the group (docs/asset-log.md), the court's, the kit's atlas and the yard's again on 2026-11-16 and the four new floors' pairs, the atlas again for the Door's festival layer (AR15, section 6); the meshes' ids from KitAssembly.Publish. YardLive and YardBack are Yard's own mesh, WingsLive and WingsBack Wings', each with its own two pictures. Collision follows each piece's in the manifest: the wall's posts and panels, the gate's towers, the pylons and the flood masts follow their mesh; the Breaker, the bays, the sleeping bays, the sleeping stones and the Training machine follow it closely, so the jaws' and the crescents' feet, the fangs and the Training machine's stone stand alone; the Door follows its mesh (AR15, section 7: the close one shuts the front ring's opening, the mesh's keeps it open, its stone within 4.8 of the middle); the transformers, the plinth, the battery's rack, the waiting places and the sleeping Tower keep their box (the Tower stands on ground a player can walk to, beside the side street). The Void Mill (AR19, Stage I) is look only: what a player bumps is WorldService's unseen shapes from its manifest's collision, the well shut to walking so nobody stands in its wheel, the sill, and the raked legs' feet and legs. The floors, the lines, the chambers, the mill's wheel, its gauge's steps and the demand's mark, the bay's light, the Door's way, the crown and the cells are look only (the plot's own floor carries the walking). No shadow from the lines, the floors, the bay's light or the Door's way. The paving is the deck tile, 8 studs square.",
   "Meshes": {
     "BatteryCell": 94477438272024,
     "BatteryRack": 73504779605370,
@@ -10,8 +10,12 @@
     "BreakerChamber": 94944196007606,
     "BreakerWaiting": 79874885027835,
     "Court1": 108865800907915,
-    "Door": 105881526247295,
-    "DoorWay": 120116100751584,
+    "Door": 79286032726563,
+    "DoorRing1": 95531925389806,
+    "DoorRing2": 128189454662950,
+    "DoorRing3": 125868188927551,
+    "DoorRing4": 99395923588240,
+    "DoorWay": 120410439367287,
     "FloodMast": 137738955847893,
     "Gate1": 132930855097227,
     "Generator": 108158015128523,
@@ -67,8 +71,8 @@
     "Generator3Pinion": 134902663796537
   },
   "Maps": {
-    "Base_Kit_Color.png": "rbxassetid://123438000727464",
-    "Base_Kit_Glow.png": "rbxassetid://132602966036914",
+    "Base_Kit_Color.png": "rbxassetid://83438936286073",
+    "Base_Kit_Glow.png": "rbxassetid://117137133419400",
     "Base_Deck_Color.png": "rbxassetid://136208918666185",
     "Base_Court1_Color.png": "rbxassetid://111876096153835",
     "Base_Court1_Glow.png": "rbxassetid://126898797026130",
@@ -97,7 +101,7 @@
     "Bay": "PreciseConvexDecomposition",
     "BreakerWaiting": "Box",
     "Showcase": "Box",
-    "Door": "PreciseConvexDecomposition",
+    "Door": "Default",
     "Training": "PreciseConvexDecomposition",
     "BaySleeping": "PreciseConvexDecomposition",
     "SleepingStone": "PreciseConvexDecomposition",

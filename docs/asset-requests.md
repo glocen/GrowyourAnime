@@ -11633,6 +11633,10 @@ On research's pass: the class holds at Stage I too.
 - **Tested:** both content checks passed. Nothing has run in the game yet.
 - **Visually reviewed:** mine; research's pass is next.
 - **Director-accepted:** no.
+- **Research's pass on Stage I's crown (Quaestor, 2026-11-17, 19:17): passed, closed** (4525676).
+  - **The class holds at every stage now,** at both turns, from the side and from behind. The three crowns come from one rule, rising to the middle with the ends lowest. Stage I reads as the small one of the family, never as a bar with a shard at each end.
+  - **The check's taste note:** at turn 0 from the gate, two tall crystals stand either side of the spark. That stays. The crown turns, so the view lasts a moment, and horns round a light are the base's own family (the Breaker's jaws, the bays' crown).
+  - **AR35 closes on research's side.** Faber installs, with TrainingCrown uploaded again.
 
 ## AR36. The Forge's and the Stone Condenser's three stages (Modulo, for research's pick, then Faber)
 

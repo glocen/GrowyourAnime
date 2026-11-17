@@ -10712,6 +10712,24 @@ Both sheets in `build/handoff/UI/buttons/` are drawn again.
     - the X on the card and the Graphite panels.
   - **For Faber at the build,** the class of TR41 (a)'s older must-fix: a row is never cut mid-word under a panel. With a card open, the bag's chips end at the card's left edge with a soft fade, as the Breaker's ready row does.
 
+### The Voidkin screen's two actions, research's answer to the director's remark (Quaestor, 2026-11-17, 20:30)
+
+The director, 2026-11-17, 20:28, on AR30's first pass in the game: "the leading and send to work button is bad as well also "send to work" is 1) so off and 2) corny". Faber's stills: `build/scratch/faber/ar30/shots/ov_buttons.png`.
+- **What's wrong:**
+  - "Send to work" is an office chore's word for a fighter, the same miss as the job costumes the director rejected.
+  - On the lead's page, the pair is a dim grey slab beside a dead black box. That's the page players open most.
+- **The word, research's call (tier 1, the game's own words): "Station" and its other side "Recall".**
+  - "Station" says a fighter is posted to a bay, and "Recall" brings it home. Both are short, plain and serious, with no chore in them.
+  - Neither is on the IP list.
+  - The class: every place that names the action uses these words, the guide's line ("to work in Bay N") included.
+  - The reason line under an action keeps the bay's number where it helps, as "Bay 3", or "No bay free".
+- **The look:**
+  - **An action the page's own state rules out isn't shown.** On the lead's page, "Station / Not while leading" goes. The lead's state stands alone across the line's width: "Leading" with its mark.
+  - A reason line still shows when something passing blocks the action, as "No bay free".
+  - **A set state wears the same light as the rail's chosen plate** (AR29's B), so "chosen" and "set" are one light on one screen. It is never the dim glass at L 0.6.
+  - On a Voidkin that isn't the lead, the pair stays side by side: "Lead" filled, "Station" or "Recall" in the channel.
+- **For Faber:** build it with AR30's screens, and a still of the lead's page and of a stationed Voidkin's page at the smallest phone. Research's read follows, then the director sees it in the game.
+
 ## AR31. Forge stones, War Emblems and jewels: their pictures (Modulo, for research's verdict, then Faber)
 
 Phase 3's order, Modulo's item 5 (`docs/production-plan.md`). It's for TR37's Stones tab, TR38's War Emblems page and item card, and TR39's Jewels page, each of which waits on these icons. The design: `docs/design.md`, "Regalia: gear" (the emblems' sockets, the jewels' tiers [D: "Each type has its own colour, and its shape grows with its tier"]). The study: `docs/research/gear-icons.md`.
@@ -11965,6 +11983,92 @@ Research's entry, 2026-11-17, 20:03. Every stage request so far kept this back (
 **Caps:** an effect's block, 2 hours.
 
 **Checks:** the content check before the block; research's verdict in motion; then Faber's build, to Modulo's look in the same session.
+
+### Three directions, planned (Modulo, 2026-11-17, 20:08 by the clock)
+
+**Job and rank:** a reward moment for a machine, about a second, between a skill and a signature. One hero, the climb, in the void's light; nothing else as loud.
+
+**The size:** every part is sized from the machine's box, the larger of its old and new stage: `r`, half its footprint's diagonal plus 0.6, and `h`, its height plus 0.5. The Forge is r 7.7 and h 13.2; the generator r 19.6 and h 24.3.
+
+**The beats, the same in all three** (frames at 60, numbers for `Config`):
+
+| Beat | Frames | What |
+|---|---|---|
+| Rise | 0 to 33 (0.55 s) | the hero climbs from the ground to h, accelerating (height ∝ t², an ease-in), brightening |
+| Peak, the swap | 33 to 37; swap at 35 | the cover at its brightest, never under 2 rendered frames or 1/30 s |
+| Settle | 37 to 63 (to 1.05 s) | the cover leaves, the burst opens and fades, moving to its last frame |
+
+**A, the Climbing Ring.**
+- **The hero:** one hoop of light round the machine, flat in the world's plane, an upright band. The machine stands inside it, its near side in front and its far side behind. It climbs on the ease-in, its band stretching from 0.5 to 1.8 tall with speed, its top edge bright and its foot soft.
+- **At the top:** the hoop pulls in to a third of r in 3 frames and bursts. A thin flat ring is thrown out to 1.7 r, fast then slow, and a short upright shaft of light rises from the top and thins.
+- **The cover:** the machine's box as a shell of light, white for 4 frames, the swap under it. It then swells by 8% and fades by frame 52.
+- **Techniques:** the hoop, the thrown ring and the shell are meshes played Start to End by a row (place, size, transparency, ease). The shaft is a mesh too. A PointLight rides the hoop, so the light runs up the frame.
+- **The price:** the shell is a flash of the whole machine. It's one in a second, under the flash guard, but it's a white-out more than a shape.
+
+**B, the Pillar.**
+- **The hero:** a sheet of light grows up from a flat ring at the machine's foot. Its top edge is the bright leading edge, with a soft fall below it, and it climbs on the ease-in.
+- **At the top:** the machine stands inside a closed pillar. The sheet's body fills to cover, and the swap happens inside it. The top edge flares out into a lip that opens to 1.5 r and tips outward.
+- **The settle:** the pillar's foot lifts and the whole sheet leaves upward, thinning. The new stage is uncovered from the ground up, so every motion goes up.
+- **Techniques:** the sheet is an open cylinder mesh with a gradient up it, its top rising (Start to End), then its foot rising. The lip is a flared ring mesh, the foot's ring a flat ring mesh. A PointLight rides the edge.
+- **The price:** the machine is covered longest, about 0.3 s from the closing to the foot passing its middle. Inside the class: no longer than the beat.
+
+**C, the Coil.**
+- **The hero:** a ribbon of light winds up round the machine, 2¼ turns from the ground to h. Its head accelerates and its tail fades over the last ¾ turn behind it. The machine stands inside the coil.
+- **At the top:** the head tightens to a third of r in a knot, and bursts as A's does: the thrown ring and the shaft.
+- **The cover:** A's shell, the swap under it.
+- **Techniques:** the ribbon is Trails on attachments spiralling round the path, the vfx handbook's "wind with depth", never a card. The rest is as A.
+- **The price:** at the court, a thin coil round a far machine may read as a line, not a climb.
+
+**In all three:**
+- **No sparks.** Nothing falls, nothing is orange or yellow, no metal glows: no welding or real-world sparks. The colour is the void's light, from the grey block's white-violet.
+- **The flash guard:** one flash for each machine, and on a base level-up all start on the same frame, so the court sees one flash, never a ripple of them.
+- **On a base level-up:** the generator, the Forge and the Training machine change at once.
+
+**The block:** in grey, at the yard's level-2 light, as frames at 30 a second and an MP4, rendered in Blender.
+- **From the player's camera at the Forge,** turned to it at its prompt, as the Forge goes from Stage I to II.
+- **From the court,** turned to the plot's middle, as the generator, the Forge and the Training machine go to Stage II together.
+- Each direction gets its strip, and a sheet compares the three at their beats.
+
+### The grey block (Modulo, 2026-11-17, 20:08 to 20:26 by the clock)
+
+**Where:** `tools/blender/stage_land_block.py` draws it, into `build/scratch/modulo/stage_land/`:
+- `stage_land_beats.png`: the three at five beats, from both views.
+- `stage_land_A.png`, `_B.png`, `_C.png`: every frame at 30, each labelled with its frame at 60 and its share of near-white.
+- `stage_land_64.png`: the beats read at 64 px high.
+- `stage_land_forge.mp4` and `stage_land_court.mp4`: A, B and C one after another, 153 frames at 30 each.
+
+**The views:**
+- **At the Forge:** the player's camera at its prompt, turned to it, as it goes from Stage I to II.
+- **From the court:** a player at the court's back (10 left of the middle, 28 in), turned to the plot's middle, as the generator, the Forge and the Training machine go to Stage II on the same frame. The generator fills the middle; the Training machine and the Forge stand past it.
+- **The yard:** its level-2 colours under the place's dusk; the effect is a near-white light.
+
+**Changed from the plan, tier 1:**
+- **The cover** (A and C) is round, like the climb, at 0.92 r, lit to its top. It's no longer the machine's box. Its light falls on a cube from frame 37 and is gone by 46, where the plan had 52. The first render's box was a white wall that held too long.
+- **B's cover light** falls on the same curve, while its sheet still leaves upward to frame 57.
+- **C's ribbon** is a mesh drawn again each frame in the block. The game's is Trails, as planned.
+
+**Measured** (the view's share of pixels at 243 or over, in numpy; the court's lit floor sits at 3.1% before the effect starts):
+
+| | At the Forge, peak | Drawn frames over 10% | From the court, peak | Drawn frames over 10% |
+|---|---|---|---|---|
+| A | 14.8% | 3 (34 to 38 at 60) | 25.7% | 3 (34 to 38) |
+| B | 17.0% | 5 (32 to 40) | 29.5% | 5 (32 to 40) |
+| C | 14.8% | 3 (34 to 38) | 25.8% | 3 (34 to 38) |
+
+One run in every take, so one flash. On the base level-up the three machines flash on the same frame. The swap at 35 falls between drawn frames 34 and 36, both under the full cover, so it's never seen.
+
+**My read, for research's verdict:**
+- **A, the Climbing Ring:** the cleanest read at the Forge and at 64 px. The hoop shows clearly as a ring with the machine inside it. From the court, at eye height, the hoop round the generator flattens to a line.
+- **B, the Pillar:** the strongest shape from the court. At the Forge it reads as a glass vessel filling. It covers the machine longest: see-through from frame 16, white 32 to 40, the foot past the middle at about 50. That's about 0.55 s, past the plan's 0.3 s.
+- **C, the Coil:** the most motion at the machine, the ribbon sweeping across the front as it climbs. At 64 px the climb reads as a dash until the top. From the court it reads as an arc round the generator.
+- **My pick: C,** with A's burst and cover. It carries the feel line's direction and acceleration best at the machine. A is the fallback, and B only if the court's read outweighs the machine's.
+- **For the colour pass:** the cover is sized by the machine. On the generator it takes a quarter of the court's view for 0.1 s. One flash, but a big one. Research may want the generator's cover dimmer, or its light capped.
+
+**Four facts:**
+- **Implemented:** the grey block, rendered in Blender.
+- **Tested:** the measures above, and the MP4s' frame counts.
+- **Visually reviewed:** my own read; research's verdict to come.
+- **Director-accepted:** no.
 
 ## Later, by ground
 

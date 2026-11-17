@@ -7122,6 +7122,12 @@ Research's request, 2026-11-14, night, on the director's word (`docs/decisions.m
     - **B** is the cleanest close up, but graphite makes it the one card outside its system. **C** says the rarity twice, and a Mythical's pink badge stands against the ruby health.
     - **No fix holds it.** At its install, Faber reads the badge's number at 100 on a phone. The level-up notice keeps its violet, which A keeps.
     - The director's word can still change the pick before the install.
+  - **The director's look at the card, on a phone** (2026-11-17, 02:08; the words in `docs/decisions.md`). Three faults, all missed by research's 01:05 verdict, which was read from the sheet and never up close in the game:
+    1. **The health light changes colour at its end.** At full health, the front's glow (the light's leading cap, `G.Glow` ahead of the front) shows as a lighter, pinker block at the bar's right end, so a full bar reads as two colours. **Must-fix (Faber):** one colour along the whole light at every fill. Whatever marks the front never reads as a second colour, and at full health nothing marks it.
+    2. **A dark line round the portrait's hair.** The cause, measured on Rook's and Watt's PNGs, both sizes: the clear pixels beside the shape are black (RGB 0, 0, 0), so the engine's filter blends black into the edge when it scales the picture down, and the hair's outline goes dark where it rises over the card. **Must-fix (Modulo, then Faber's re-upload):** the portraits' writer bleeds the edge's colour out into the clear pixels (each clear pixel takes its nearest drawn neighbour's colour, its alpha unchanged). Every portrait is re-written and re-uploaded, and every other UI picture with clear edges is read the same way. `CritSweep`'s are light and pass.
+    3. **"the whole aesthic being not what i would call art."** The HUD's look is redone at the finish pass (`docs/polish-later.md`, "The finish pass"), judged against shipped anime games at phone size, never against our own takes. The director's "now" brings it forward.
+    - **Research's own, from the same screenshot:** a grey sliver at the body's foot, left of the health digits (the experience light near empty?), reads as a smudge. Faber names it: a light reads as a light at any fill, or doesn't show.
+    - **Checked by:** research, on a phone capture of the card at full size and zoomed in, at full and low health, with Watt's and Rook's portraits.
 
 ## AR13. The sound test: six cues (Modulo's layers, then Faber)
 

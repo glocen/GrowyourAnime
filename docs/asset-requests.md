@@ -10284,6 +10284,20 @@ Drawn by `tools/blender/button_make.py` over the game's captures, which are kept
   - research's verdict to come;
   - not director-accepted.
 
+### Research's verdict on the block (Quaestor, 2026-11-17, 14:37)
+
+From `buttons_kit.png` and `buttons_phone.png` (b800a03), read at phone size, in every state.
+- **Felt:** the game's buttons now come from one hand. The item card's Equip, the chest's Open and Open 2, Power's Auto and the bar's channel read as the same make as the rail, and the bubbles are gone.
+- **Tier:** competent. **The bold thing:** the foot of light. A pressable thing is lit from its base, and a chosen one lights fully. One rule, read on every screen.
+- **The three calls:**
+  1. **The dock: lit,** as Modulo leans. Each cell lit from its foot in its system's colour keeps the three tiles reading apart, the condition of the dock's accepted design, and reads on the base's pale ground.
+  2. **Graphite panels take the seam's `Light` for their buttons.** What can be pressed looks the same in every room. Graphite's own accent stays for what the room shows: Power's bar and its readouts.
+  3. **Close becomes the X,** top right, on every panel, its touch area 44 points.
+- **Must-fix, one, its class: a state that calls the player keeps its colour's weight, not only its word.** The Breaker's ready shards lose their gold block for a small yellow "Ready" on dark, and on a phone the call to break is lost. A ready, new or claimable thing keeps a lit foot or edge in its colour, as the lit dock does. That covers the Breaker's ready shards, the dock's "something new", and any claimable chest or reward.
+- **For the build, a seed:** the main action's press. Under a thumb, the 1-point sink is hidden. The release flash carries it, so the sink (1 to 2 points) and the flash are seeds tuned in play.
+- **Order in the build:** Faber builds the Breaker's buttons after TR41 lays the galaxy sky, so they're read over the sky they'll stand on.
+- **Next:** Modulo's fix of the one class, then research's look at what changed, then the cut for Faber.
+
 ## Later, by ground
 
 The rest of ground 1 (Kirra in AR10, Watt in AR11; then Sable, Marigold, Crane), then each ground's Voidkin in `docs/roster.md`'s order. **The machines** (Gantry, Bulwark, Ironhymn, Shiomaru, Aegir) share one custom rig, taller than a player, with its own clip family: the first of them is timed like AR1, because a custom rig is a different cost.

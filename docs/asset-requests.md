@@ -8949,19 +8949,17 @@ Research's word with 22c0d60 (02:21): "AR24, the chest opening's look, can start
 - **The director's pick (2026-11-17, 02:40): A, the seam** ("i like A \"the seam more"), in place of research's B. B's three fixes are void, since A already holds the director's form. The rarity-scaled moment stays. A's price is its calm moment, so at the block the edges' run of colour and the shaft are judged in motion. If the moment doesn't hit, the levers are their speed and brightness, never a new shape.
 - **Next, superseded by the pick:** Modulo redraws B's settled band and one chest with the three fixes. Then Faber's block (TR34), and research's verdict in motion from a phone capture: up close, every state, beside a shipped anime game's reward screen.
 
-### B, fixed (Modulo, 2026-11-17, 02:38)
+### A for Faber's block (Modulo, 2026-11-17, 02:48)
 
-Research's three fixes are made, and the rarity-scaled moment is drawn (`build/scratch/modulo/ar24/chest_band_B_fixed.png`, settled and one chest; `chest_band_B_fixed_phone.png`, both at the phone's own size). Drawn by `tools/blender/chest_band.py`, the picked band alone: `chest_band_directions.py` became it, and 02ee5aa keeps the three directions.
-- **The body** is level, full width, `#08080B` at 0.7 cover: the bag reads faintly through it. The slant lives in the stripe's ends, the tag's sides and the OK plate, all leaning the same way.
-- **The words** are centred over the row on the black tag (0.94 cover). The tag hangs from the stripe, and its left side carries a line in the stripe's colour.
-- **The best:** settled, a Rare, so the full burst, a white rim and the RARE tag, with the stripe in its blue. The one chest is an Uncommon: its green rim and the stripe in green, no lines.
-- **For Faber's block:** the sheet's notes give every number in points, as seeds for `Config.Chests.Opening`: the band, the stripe, the foot line, the tag, the type sizes, the tiles, the OK plate and the burst.
-- **Self-review:** up close and at a pixel a point. The band separates from the dimmed bag by its stripe and its row rather than by its darkness, which is what a translucent band gives. The "×N" at 9 points is the smallest read, and the game's face sizes it in the block.
+On the director's pick, `tools/blender/chest_band.py` draws A as it stands, in place of B fixed (44b4a67 keeps that, void). Its sheet (`build/scratch/modulo/ar24/chest_band_A_seam.png`; `chest_band_A_seam_phone.png` at a pixel a point) shows the tap, the sting, settled with a Rare best, and one chest with an Uncommon best. Its notes give every number in points, as seeds for `Config.Chests.Opening`: the band, the inside's ramp, the edges' light and how it burns as the seam opens, the run's reach, the shaft, the tiles, the type and OK.
+- **The rarity scale in A:** a Common best gets its size-up only. An Uncommon gets its colour on its rim and running out along both edges. Rare and up add the shaft and the glow.
+- **Changed from 02ee5aa's A:** only that scale. The shaft, the glow and the sting's white flash used to show for every best.
 - **Four facts:**
   - Implemented: the sheet and its phone strip.
   - Tested: drawn without error.
   - Visually reviewed: my own pass. Research's verdict comes in motion, after Faber's block.
-  - Director-accepted: no.
+  - Director-accepted: A's direction is the director's pick (02:40). This sheet hasn't been seen.
+
 ## AR25. Sable (Modulo, then Faber)
 
 **Waits for the big update after launch** (the director, 2026-11-17, 02:40: five Voidkin at launch). The takes can be drawn when Modulo's launch work is done.

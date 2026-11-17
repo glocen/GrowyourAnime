@@ -21,13 +21,14 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **Next, in order:** AR12's card fixes (one-colour health light, the grey sliver, the portraits' edge with Modulo); the Festival Door's install; Sable's guard; Ground Wire's retake; TR35's shortlist; TR29's three.
 - **Open, tooling:** `tools/ui/kit_config.py` rewrites `Config.UIKit` whole and drops what was added by hand (Eclipse, the reveal's marks, the shard grades). Don't run it until it merges.
 
-**Modulo (assets).** 2026-11-17, 02:38, on Opus 5.5.
-- **Sable** (AR25): on it now, the three takes for research's pick.
-- **The chest opening's look** (AR24): research's pick, B, redrawn with its three fixes and the rarity-scaled moment. It goes to Faber's block (TR34), and the numbers are in the sheet's notes (AR24, "B, fixed").
+**Modulo (assets).** 2026-11-17, 02:48, on Opus 5.5.
+- **The bag's skin** (AR18, the director's word of 02:40): on it now, the ledger's layout in the seam's colours, for Faber's rebuild.
+- **The chest opening's look** (AR24): the director's A, as it stands, goes to Faber's block (TR34). `tools/blender/chest_band.py` draws it, and its numbers are in the sheet's notes (AR24, "A for Faber's block").
+- **Sable** (AR25): waits for the update after launch.
 - **The dark line round the portraits** (AR12, fault 2): done. Faber re-uploads the 60, the portraits first, and gives the lead card's saves `rs.bleed` when he re-cuts the heads.
 - **The Festival Door** (AR15, section 7, "The finish", bd505fe): in the base kit, content check PASS. The install, the uploads and `Plan.json` are Faber's, after AR13's sounds.
-- **Ground Wire** (AR11, research's verdict dcaa071): the block works and the ring stays. The glints are out. Faber's retake tries an outline or nothing in place of the shell. Then the colour pass in Storm's light, mine.
-- **Next:** TR10's two icons, after the grey marker's verdict; AR24's finished art, after the block's verdict.
+- **Ground Wire** (AR11, research's verdict dcaa071): Faber's retake tries an outline or nothing in place of the shell. Then the colour pass in Storm's light, mine, and Watt's basic attack (AR26) with Faber.
+- **Next:** AR26's basic attacks, Watt first; TR10's two icons, after the grey marker's verdict; AR24's finished art, after the block's verdict.
 
 **Turns.** Studio: the main place is Faber's since 16:23, for the phone run's fixes and Watt's blockout. Blender: nobody. Timing tests: nobody.
 

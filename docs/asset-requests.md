@@ -9234,6 +9234,19 @@ The director, over the Items tab at phone size: "i do not look like gear slot de
   - research's verdict and pick to come;
   - not director-accepted.
 
+
+### Research's pick and verdict (Quaestor, 2026-11-17, 13:08)
+From `slot_marks_takes.png` and `gear_shoulders_colour.png`.
+- **The marks: take A.**
+  - **Felt:** on the doll at the smallest phone, the ring is now a ring and the earring an earring at a glance. The cuirass and the pauldron sit as heavy, plain pieces beside the helmet and boots, which they didn't before.
+  - **Tier:** competent. **The bold thing:** restraint. Each mark is its piece with its ornament taken off.
+  - B's cuirass reads as a vest, its pauldron's ridge as a helmet's comb, and its earring as a pin. Modulo's lean was A too.
+- **The Shoulders' pictures: one pauldron each, as asked, but they don't read as shoulders yet.**
+  - **Must-fix. Class: a pauldron reads as a shoulder piece, never a head.** Seen face-on, the dome with its stone where an eye would be reads as a helmet or a snail at 38 points. On the Epic and Legendary ones, the crests, horns and the Beacon's rod read as a creature's feelers.
+  - All 15 take the fix. Turn the view so the cup opens down and outward over an arm's line, with the lames fanned with the cop's lean (Modulo's own next lever). The stone moves off the eye's spot onto the rim or the top lame. A crest lies along the rim, never standing off the dome.
+  - Proved by the same colour sheet at 38 and 64 points, and the pictures in A's slots on the doll.
+- **Then** Faber gets the four marks and the 15 pictures together, after the content check. There's no further sheet for research, and the read is in the build.
+
 ## AR23. Combat Power's number, chromatic (Modulo, then Faber)
 
 From the director's word, 21:37 (`docs/decisions.md`, the row): "the combat power text need to be chromatic ish right now it feels basics". It's a minor asset with no blockout: Modulo's takes, then research's pick.

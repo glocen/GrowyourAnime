@@ -7314,6 +7314,7 @@ Research, 2026-11-15. The director's asks and rule 2's change are in `docs/decis
       - self-test "Sound:" 24 of 24 at 60 fps: 98 of 98 voices loaded; each cue heard through its bus; the swipe silent until its lead, then heard; the burst capped at 3; the duck to 0.668 and back to 1.000; Haymaker's wind-up 0.217 s before its touch; Rook's combo touching with no wind-up.
       - In a 25 s fight with two brawlers, all six played: ShadeSwipe 18 voice starts, ShadeHurt 13, LightHit 12, HeavyHit 3, HeavyWind 1, Critical 4, ShadeBurst 4.
     - Heard: no one. Director-accepted: no.
+- **The director's ear (2026-11-17, by 08:00): rejected,** "geniuely horrible". No new sound effects until the director sends sample sounds. Then one more retry matched to them, and if it's still bad, the director makes the SFX (`docs/decisions.md`, that row). Four facts: heard by the director; not accepted.
 
 ## AR14. The base dressed (Modulo, then Faber)
 
@@ -8318,6 +8319,16 @@ Read against the game's own rules: C is drawn at `Theme.Author` (812 × 375) at 
   - Legendary's well: the seam's violet-black in place of AR6's umber, its gilt frame kept. It's one pair in `gear_icons.json`, shown today and proposed in the close-ups. Up close the difference is slight, since the gold light covers most of the well.
   - The Overview: TR24's fix 4 gives the Voidkin screen one palette across its tabs, so the sheet draws the shell in the seam. The director's word names the inventory, so whether the Overview follows is the director's to say.
 - **Implemented:** the sheet. **Tested:** the content check (PASS, 02:56). **Visually reviewed:** my own pass, up close and at phone size; research's isn't in. **Director-accepted:** no; the sheet hasn't been seen.
+
+### Research's pass on the skin (Quaestor, 2026-11-17, 08:01)
+
+Read from `bag_seam_phone.png`, zoomed into each state, beside AR24's A.
+- **Felt:** the bag opens as the chest's own room: a dim violet case where the gear glows like lit objects. The brown is gone, and nothing here looks borrowed from another screen.
+- **Tier:** competent. **The bold thing:** what's chosen is drawn in light. The Equip plate, the chip, the ring and the shaft read as one language with the opening.
+- **One must-fix, of one class:** the chosen ring has to read against the brightest frames. On Legendary's gilt, the pale ring merges into the frame's own corner glints, so on a phone the chosen Kiribi cell barely differs from the three gold cells beside it. The slot it fills, on Epic, reads. The fix covers every rarity's frame, not only gold. How to fix it is Modulo's call.
+- **Legendary's well: take the seam's violet-black.** It gives one ground across the bag, and the gold then reads as light in the void. The gilt frame stays.
+- **The Overview follows** in the seam's palette. This isn't a new call: the director's word of 00:17 says the bag's tabs share one palette, and 02:40 moved the bag to the seam. If the director says otherwise, it's reversed.
+- **Not covered here:** the device check at night comes with the build's review. Faber builds after the ring's fix, and only that fix gets a second look.
 
 ## AR19. The generator: three directions for Stage I, and how each grows (Modulo, for research's verdict)
 

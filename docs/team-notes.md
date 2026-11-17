@@ -4,13 +4,10 @@
 
 Each teammate rewrites its own row: two to five lines. Open asks sit under "Waiting on the director".
 
-**Quaestor (research).** 2026-11-17, 02:52, wrapping up for the night on the director's word.
-- **Done since 02:31:**
-  - The director's scope, restated and confirmed (c932dfc): five Voidkin at launch, each with its own basic attack and signature; the older four redesigned at the finish pass; the Rift, the Research Lab, Sable, Marigold and Crane in one big update; forge, emblems and jewels on the item with a transfer prompt.
-  - AR24: the director picked A. The bag takes A's colours.
-  - AR26 written; AR25 waits for the update.
-- **Open, for Faber:** Sable's guard as "drop the empty tiers", before anything public; the target's light made like the lead's (AR12: the card's fixes pass research, 03:01); the exploiter's pass over `Act`.
-- **Next:** the Door's install, AR13 heard with the director, the bag's new skin, AR26's attacks from Watt, TR34's block in A, TR35's shortlist, and Dragon Hunter's clip when it lands.
+**Quaestor (research).** 2026-11-17, 08:02, working through the director's absence ("keep working no matter what", no break).
+- **The director's word on the sounds (by 08:00):** AR13's 33 made takes are rejected. No new sound effects from anyone until the director sends samples. Then one retry, and if it's still bad, the director makes them (`docs/decisions.md`). Faber and Modulo were told. AR26 goes on with effects and clips; its sounds wait.
+- **AR18, the bag's skin:** competent, with one must-fix: the chosen ring against Legendary's gilt. Legendary's well takes the seam. The Overview follows, by the one-palette word of 00:17.
+- **Next:** verdicts as pieces land: the Door's install, Ground Wire's retake, AR26 from Watt, TR34's block.
 
 **Faber (builder).** 2026-11-17, 02:59. Stopped for the night on the director's word: committed, the playtest stopped, no lock held.
 - **Done since 02:16:** AR12's card fixes (AR12, "Faber's fixes"):
@@ -58,14 +55,8 @@ For Faber:
 4. **Publish the build, for your phone run** (TR24's fix 1 is in, and research gives the go). The place is saved with it, and the Studio tool can't publish: in Studio, File → Publish to Roblox (Alt+P). The experience stays private.
 
 5. **The test rule, in `CLAUDE.md` and `ga-finish`.** Research relays your yes (the register, 2026-11-15, night): at a piece's finish, the cases its change can reach and every offline logic case; the whole suite at a phase's close and after a change to shared code. `CLAUDE.md` changes only on your own word in the builder's session: say "write it" there and it's in.
-6. **Your ear on Haymaker's strike sound**, a provisional pick, now heard on its frame. Before TR4's fix it came about 0.3 s late. Measures chose it, and only your ear accepts it. In a playtest, the Server command bar: `game.ServerStorage.NL_Debug:Invoke("Replay", nil, "RookHaymaker")` plays it every 3.5 s, and `Invoke("Replay", nil)` stops it. Two alternates are logged in AR1, section 8.
-7. **When you're back ("i will check tomorrow"):** the six-cue sound test (AR13) is in, unheard. A fight in Lantern Row plays all six. In a playtest, with Rook as lead, the Server command bar plays one press on repeat:
-   - `game.ServerStorage.NL_Debug:Invoke("Replay", nil, "RookHaymaker")`, the heavy hit, every 3.5 s;
-   - `Invoke("Replay", nil, "RookCombo")`, the light hits;
-   - `Invoke("Replay", nil)` stops it.
-   - A level is tuned live, for example `Invoke("Tune", "Cues.Cues.ShadeSwipe.Layers.2.Volume", 0.5)`.
-   - Then the new Festival Door in a walk, and TR35's five music candidates a track, if they're shortlisted by then.
-8. **One look to confirm the sounds' grant** (AR13, step 2). On your word, Faber granted the game `Use` of our 33 sounds at 03:01, and Roblox listed all 33 as granted, but its API can't read a grant back. In the Creator Dashboard, open any one of our sounds, then Permissions: Grow your Anime should be listed. A fight in the published game playing them confirms it too.
+6. **Your ear on Haymaker's strike sound**, a library pick (not one of AR13's made takes), heard on its frame. In a playtest, the Server command bar: `game.ServerStorage.NL_Debug:Invoke("Replay", nil, "RookHaymaker")` plays it every 3.5 s, and `Invoke("Replay", nil)` stops it. Two alternates are logged in AR1, section 8.
+7. **The sample sounds** of the family you want, for the one retry on the sound effects (your word, by 08:00). Nobody makes a new one until they come.
 
 ### Notices
 

@@ -11323,6 +11323,23 @@ The yard is at base level 3, with a player's stand-in beside the battery. The ch
 - **Visually reviewed:** mine only. Research's pick and the content check's read of the sheets are pending.
 - **Director-accepted:** no.
 
+### Research's pick (Quaestor, 2026-11-17, 18:08)
+
+From both sheets (d9c61e7). The pick stands once the content check's read of the sheets passes.
+- **Felt:** A grows the way the feel line asks: the base holds more, so the battery stacks higher, and the light climbs in it. B grows a crown of stone behind a bank that stays the same size.
+- **The pick: A, the Rising Stack,** which is Modulo's lean too.
+  - Its height is its capacity, so the stage and the fill tell one story, and the fill reads at every stage.
+  - Its three blacks differ most: a block, a short stack, a forked tower.
+- **Against B,** besides the fill: the yard's own skyline already stands in violet spires (Faber's TR41 (c) still), so B's blades join the background instead of reading as the machine.
+- **Tier:** competent.
+- **The bold thing:** the bead held in the fork at Stage III's top, the light the whole stack climbs toward.
+- **Must-fix:** none for the pick.
+- **For the kit pieces, the rack risk Modulo named, its class: the stack never reads as a building or shelving.**
+  - **Cells:** they are things held in a frame, with the sky seen between the uprights wherever the frame allows. They are never lit panes in a wall.
+  - **The fill:** reads as charge climbing tier by tier, with an empty cell's dull line, never as rooms lit at random.
+  - **Materials:** void stone and bone, as in the bays.
+- **Next:** Stages II and III as kit pieces, with the cells' seats in the table for Faber. Judged in the game from the court and on the way to the back bay.
+
 ## Later, by ground
 
 The rest of ground 1 (Kirra in AR10, Watt in AR11; then Sable, Marigold, Crane), then each ground's Voidkin in `docs/roster.md`'s order. **The machines** (Gantry, Bulwark, Ironhymn, Shiomaru, Aegir) share one custom rig, taller than a player, with its own clip family: the first of them is timed like AR1, because a custom rig is a different cost.

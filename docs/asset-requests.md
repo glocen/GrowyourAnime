@@ -8253,6 +8253,16 @@ Research's ask after its pick (24e4808): 128 on its grey layout from the player'
     - "HUD: a machine's plate under the lead's card ..." 21/0. The avatar now stands beside the Breaker, so its plate speaks.
     - World's cases: 70 passed and 1 failed, TR8's "the dressing report is empty" on the plots' grey line. With the "Street" read, TR8 passes 5/5.
 - **Four facts:** implemented, yes. Tested, as above. Visually reviewed: these stills, mine; research's confirmation next. Director-accepted: no.
+- **Research's second look (Quaestor, 2026-11-17, 12:19): the must-fix holds, closed.** From the spawn's before and after and the walk sheet. No plate stands on the avatar in any frame, and the Breaker's count is said once, in the nudge. The arrival now reads as the player, their lead and one line telling them where to go. **AR16 at 128 is closed on research's side** until Modulo's re-lay is judged in the game.
+  - **Seen, older, and its own fix (Faber's, beside TR28's HUD work):** Roblox's "Void Breaker · Open" prompt stands over the Electricity pill at every visit to the Breaker. Class: no world prompt sits on a HUD element. The lever is Faber's (the prompt's offset, or our own prompt in the game's skin).
+  - **Fixed (Faber, 2026-11-17, 12:20 to 12:27 by the clock), by the offset, for every prompt:**
+    - World keeps each prompt that shows under the top band, deeper where it would cross the lead's corner. Where there's room, it also stays over the next step's chip.
+    - The lever is the prompt's `UIOffset`. Roblox's card is a billboard drawn round its point (164 by 72 for "Void Breaker · Open", read from it), and a positive Y moves it up the screen (measured).
+    - Our own prompt in the game's skin waits for the shared finish.
+    - **Case:** the HUD case "a machine's plate under the lead's card ..." aims the Breaker's prompt point at the Electricity pill, then checks the card stands under the band and clear of the pill. With the guard: 25/0 (the card's top 232.0, the band's foot 232.0). Unbound in the same run: the two checks fail (its top 121.0).
+    - **Still:** `build/captures/ar16/prompt_breaker.png`, at phone size at the Breaker. The card stands under the band, clear of the pill and over the chip, beside the avatar, over Rook.
+    - **Type check:** 0 new.
+  - **Research's read (Quaestor, 2026-11-17, 12:28): accepted.** The card stands clear of the pill and under the band. At the Breaker it sits over the lead, which `docs/polish-later.md` already holds ("A screen plate never covers the player's own lead"), for our own prompt at the shared finish.
 
 ## AR17. The rest of the map (Modulo's look from the grey world, then Faber)
 
@@ -9176,15 +9186,6 @@ The director, over the grey: "im not happy with the shoulder and helmet and boot
 - **To Faber:** the 20 marks in `build/handoff/UI/slots/images/` and `slot_marks.json`, with the draw it gives. Upload them under the group with the key, exactly these files.
 - **Four facts:** drawn; seen on the sheet at 44 and 88 points and at the smallest phone; research's verdict competent, and the read in the build still to come; not director-accepted.
 
-- **Research's second look (Quaestor, 2026-11-17, 12:19): the must-fix holds, closed.** From the spawn's before and after and the walk sheet. No plate stands on the avatar in any frame, and the Breaker's count is said once, in the nudge. The arrival now reads as the player, their lead and one line telling them where to go. **AR16 at 128 is closed on research's side** until Modulo's re-lay is judged in the game.
-  - **Seen, older, and its own fix (Faber's, beside TR28's HUD work):** Roblox's "Void Breaker · Open" prompt stands over the Electricity pill at every visit to the Breaker. Class: no world prompt sits on a HUD element. The lever is Faber's (the prompt's offset, or our own prompt in the game's skin).
-  - **Fixed (Faber, 2026-11-17, 12:20 to 12:27 by the clock), by the offset, for every prompt:**
-    - World keeps each prompt that shows under the top band, deeper where it would cross the lead's corner. Where there's room, it also stays over the next step's chip.
-    - The lever is the prompt's `UIOffset`. Roblox's card is a billboard drawn round its point (164 by 72 for "Void Breaker · Open", read from it), and a positive Y moves it up the screen (measured).
-    - Our own prompt in the game's skin waits for the shared finish.
-    - **Case:** the HUD case "a machine's plate under the lead's card ..." aims the Breaker's prompt point at the Electricity pill, then checks the card stands under the band and clear of the pill. With the guard: 25/0 (the card's top 232.0, the band's foot 232.0). Unbound in the same run: the two checks fail (its top 121.0).
-    - **Still:** `build/captures/ar16/prompt_breaker.png`, at phone size at the Breaker. The card stands under the band, clear of the pill and over the chip, beside the avatar, over Rook.
-    - **Type check:** 0 new.
 
 ### The director's word on the marks in the build, and the Shoulders' pictures (research, 2026-11-17, 12:19)
 The director, over the Items tab at phone size: "i do not look like gear slot design of chest and rings and shoulder and earings make it better and mature the ring can be more simple same for the earings looks at tcp 3 gears slot for references if needed also the actual gears images of shoulder features both shoulders when it should once face 1" (`docs/decisions.md`). It's their word, so it's no fix round of research's.

@@ -2,7 +2,7 @@
 -- The seam's skin on the Voidkin screen (TR28; the director's word of 2026-11-17, 02:40: "the inventory ... with that color
 -- style not the old yellow brown"; Modulo's sheet and its notes, AR18): violet-black grounds, edges of pale light, and
 -- what's chosen drawn in that light. Its colours are UIKit.Palettes.Seam; its numbers are Config.Hud.Seam. It draws the
--- three things the kit doesn't: a lit edge, the chosen ring, and a plate of light with its glow.
+-- two things the kit doesn't: a lit edge and the chosen ring (the lit chip is the kit's own now, AR30's make).
 
 local Shared = game:GetService("ReplicatedStorage").Shared
 local HudConfig = require(Shared.Config.Hud)
@@ -45,14 +45,6 @@ Seam.Ground = K.Ground
 
 -- What a colour of the panel's top reads as over the backing: a veil that fades into the room must match it.
 Seam.Room = K.Panel[1]:Lerp(K.Backing :: Color3, 1 - K.Alpha)
-
-function Seam.Ramp(on: Instance, colours: { Color3 }, rotation: number?): UIGradient
-	local gradient = Instance.new("UIGradient")
-	gradient.Color = ColorSequence.new(colours[1], colours[2])
-	gradient.Rotation = rotation or 90
-	gradient.Parent = on
-	return gradient
-end
 
 -- How strong an edge is along it, as a UIGradient's transparency: full at `mid`, falling to `floor` at its ends,
 -- times `alpha`. Fifteen samples hold the curve (a sequence takes twenty at most); a narrow peak (the page rail's line,
@@ -229,34 +221,6 @@ end
 -- A ring's cell drawn over its neighbours while its ring shows, and back among them after.
 function Seam.Raise(on: GuiObject, up: boolean)
 	on.ZIndex = if up then 2 else 1
-end
-
--- A plate of light (the lit chip; Equip's plate is the kit's button in Seam.Lit): white falling to the seam's Light,
--- its glow round it, `radius` its corners'.
-function Seam.Plate(on: GuiObject, radius: number)
-	if on:IsA("Frame") then
-		on.BackgroundColor3 = Color3.new(1, 1, 1)
-		on.BackgroundTransparency = 0
-		Seam.Ramp(on, { Color3.new(1, 1, 1), LIGHT })
-	end
-	Seam.Glow(on, radius)
-end
-
--- A plate of light's glow: stepped bands of Light round `on`, outside it.
-function Seam.Glow(on: GuiObject, radius: number): Frame
-	local holder = Instance.new("Frame")
-	holder.Name = "Glow"
-	holder.Active = false
-	holder.BackgroundTransparency = 1
-	holder.BorderSizePixel = 0
-	holder.Size = UDim2.fromScale(1, 1)
-	holder.ZIndex = 0
-	holder:SetAttribute("Seam", true)
-	holder.Parent = on
-	for index, glow in S.Lit.Glow do
-		outline(holder, `Glow{index}`, 0, radius, LIGHT, glow.Wide, 1 - glow.Alpha, index)
-	end
-	return holder
 end
 
 return Seam

@@ -3,7 +3,9 @@
 -- with its reason, waiting on the server, succeeded, failed. Every button is of the seam's make (AR30; Config.Hud.Make):
 -- a main action, or anything set, on or chosen, is dark glass lit from its foot at L in its light colour (the ring's glow,
 -- the Panel gradient, a wash of the light, the edge, the foot's glow and the foot); a second action is the plain channel
--- with a short underline, washed with the light while a finger holds it. A press sinks, and the light rises with it and
+-- with a short underline, washed with the light while a finger holds it. A chip on a tabs' row has no plate of its own
+-- (the row is the channel) and is the glass when chosen; a picker (Sort) is the channel with its name, its value and a
+-- chevron, its value in the light while it isn't the default. A press sinks, and the light rises with it and
 -- falls back on the let-go. Unavailable, it's the channel and its words go soft. A press that waits (an Act) shows the
 -- light running round its edge and three dots until it answers, and refuses a second press meanwhile, so nothing is asked
 -- twice. It flashes succeeded or failed only on the
@@ -15,6 +17,7 @@
 --   Button.new{ Name, Text, Size, OnPress, ... }      a button; OnPress may return true (succeeded) or false (failed)
 --   Button.Set(button, { Text = ..., Disabled = "why" | false, Selected = true | false, Note = "Bay 3" | false })
 --   Button.Grow(button, scale)   its face and label at `scale` at rest, a card's hover (TR20)
+--   Button.Fit(button)           a chip's or a picker's width from its words, set on it (AR30's make)
 --   Button.Press(button)                             what a tap does, for tests: false when disabled or pending; an icon's
 --                                                    button (Text "") says its reason in a toast, never in its face
 --   Button.Touch(button, down)                       a finger going down on it or coming off, for tests
@@ -53,6 +56,8 @@ export type Props = {
 	Inset: number?, -- its label's middle this many pixels right of the button's, room for a mark its owner lays at its left
 	Bare: boolean?, -- no plate of the kit: its owner lays its own face in its skin (the spectate eye's plate), which squeezes as a face does
 	Still: boolean?, -- no squeeze: its owner draws its own press from its State (the dock's tiles sink, UI.Dock)
+	Chip: boolean?, -- a chip on a tabs' row: no plate of its own, the row its owner lays is the channel (Config.Hud.Make.Chip)
+	Pick: string?, -- a picker's name ("Sort:"): Text is its value; Selected while it holds anything but the default (Make.Pick)
 	OnPress: () -> ...any,
 }
 
@@ -78,7 +83,11 @@ type State = {
 	Icon: ImageLabel?, -- an icon's button's image, and its halo
 	Halo: ImageLabel?,
 	Plate: boolean,
+	Chip: boolean,
+	Pick: TextLabel?, -- a picker's name, and its chevron
+	Chevron: ImageLabel?,
 	Wide: number, -- its authored width, for the underline
+	Tall: number, -- and its height, for a chip's inset glass
 	Fades: { [ImageLabel]: Tween },
 	Glass: boolean, -- the kind it was painted in, so the light tweens only within the glass
 	L: number,
@@ -187,17 +196,24 @@ local function paint(button: TextButton, state: State)
 	local word = state.Text ~= ""
 	local set = state.Selected and not disabled
 	local light = state.Light
-	-- The kind: glass for a main action, or anything set, on or chosen; the channel otherwise.
-	local glass = not disabled and (set or main)
+	local chip, pick = state.Chip, state.Pick
+	-- The kind: glass for a main action, or anything set, on or chosen; the channel otherwise. A picker on stays the
+	-- channel, its value in the light; a chip off the glass has no plate, its row is its channel.
+	local glass = not disabled and (set or main) and pick == nil
 	local L = if not glass then 0
-		elseif set then (if main then MAKE.L.Set elseif word then MAKE.L.On else MAKE.L.Chosen)
+		elseif set then (if main then MAKE.L.Set elseif chip or not word then MAKE.L.Chosen else MAKE.L.On)
 		elseif pressed then MAKE.L.Pressed
 		else MAKE.L.Main
 	local seconds = if glass and state.Glass then (if L > state.L then MAKE.Down else MAKE.Up) else 0
 	state.Glass, state.L = glass, L
 	local tabbed = set and main
+	local bare = chip and not glass
+	if chip then
+		local inset = 2 * MAKE.Chip.Inset
+		state.Skin.Size = UDim2.fromScale(1 - inset / math.max(state.Wide, 1), 1 - inset / math.max(state.Tall, 1))
+	end
 
-	layers.Shadow.Visible = not pressed
+	layers.Shadow.Visible = not pressed and not chip
 	layers.RingGlow.Visible = glass or flash ~= nil
 	layers.RingGlow.ImageColor3 = flash or light
 	fade(state, layers.RingGlow, if tabbed then 1 - TAB.Glow else 1 - G.RingGlow * (if glass then L else MAKE.L.Main), seconds)
@@ -208,13 +224,15 @@ local function paint(button: TextButton, state: State)
 		Skin.Tint(layers.Fill, SEAM.Channel)
 		layers.Fill.ImageTransparency = if disabled then (if main then C.Main else C.Off) else C.Rest
 	end
+	layers.Fill.Visible = not bare
+	layers.Edge.Visible = not bare
 	local wash = layers.Wash
 	local washFall = wash:FindFirstChildOfClass("UIGradient") :: UIGradient
-	wash.Visible = glass or pressed
+	wash.Visible = glass or (pressed and not chip and pick == nil)
 	wash.ImageColor3 = if glass then light else SEAM_LIGHT
 	washFall.Transparency = if tabbed then TAB_FALL elseif glass then GLASS_FALL else PRESSED_FALL
 	fade(state, wash, if tabbed then 0 elseif glass then 1 - L / G.Wash else 0, seconds)
-	layers.Edge.ImageColor3 = if glass then light elseif pressed then C.PressedEdge else SEAM.Edge
+	layers.Edge.ImageColor3 = if glass then light elseif pressed and pick == nil then C.PressedEdge else SEAM.Edge
 	fade(state, layers.Edge, if tabbed then 1 - TAB.Edge elseif glass then 1 - G.Edge * L else 0, seconds)
 	layers.FootGlow.Visible = glass
 	layers.FootGlow.ImageColor3 = light
@@ -228,17 +246,28 @@ local function paint(button: TextButton, state: State)
 	if run then
 		run.Enabled = now == "Waiting"
 	end
-	-- A second action's underline: short at rest, whole under a finger.
+	-- A second action's underline: short at rest, whole under a finger. A chip's only under a finger; a picker's while it's
+	-- on or pressed.
 	local U = MAKE.Underline
-	local underlined = word and not glass and not disabled
-	local half = (if pressed then 1 else U.Rest) * math.min(U.Share * state.Wide, U.Most)
+	local at = if pressed then 2 else 1
+	local underlined: boolean, half: number, lineT: number, glowT: number
+	if chip then
+		local K = MAKE.Chip
+		underlined, half, lineT, glowT = pressed and not glass and not disabled, K.Under * state.Wide, K.Line, K.Glow
+	elseif pick then
+		local K = MAKE.Pick
+		underlined, half, lineT, glowT = (pressed or set) and not disabled, K.Under * state.Wide, K.Line[at], K.Glow[at]
+	else
+		underlined = word and not glass and not disabled
+		half = (if pressed then 1 else U.Rest) * math.min(U.Share * state.Wide, U.Most)
+		lineT, glowT = U.Line[at], U.Glow[at]
+	end
 	local span = Whole(2 * half * U.Span)
 	for index, layer in { layers.Under, layers.UnderGlow } do
 		layer.Visible = underlined
 		layer.ImageColor3 = SEAM_LIGHT
 		layer.Size = UDim2.fromOffset(span, U.Tall)
-		local t = if index == 1 then U.Line else U.Glow
-		layer.ImageTransparency = if pressed then t[2] else t[1]
+		layer.ImageTransparency = if index == 1 then lineT else glowT
 	end
 	layers.Well.Visible = now == "Waiting"
 	for _, dot in state.Dots do
@@ -252,14 +281,25 @@ local function paint(button: TextButton, state: State)
 	local note = if disabled then state.Disabled else state.Note
 	local under = reason ~= nil and word and note ~= nil and note ~= ""
 	local label = state.Label
-	label.Text = if not word then "" elseif under then state.Text else Hud.Says(state.Text, state.Disabled, false)
+	label.Text = if not word then "" elseif under or chip or pick then state.Text else Hud.Says(state.Text, state.Disabled, false)
 	label.Visible = now ~= "Waiting"
 	local marked = set and main and word
-	local sink = if pressed and not state.Bare and not state.Icon then Whole(MAKE.Sink) else 0
+	local sink = if pressed and not state.Bare and not state.Icon and not chip and pick == nil then Whole(MAKE.Sink) else 0
 	local over = if under then -MAKE.Word.Rise
 		elseif main and not set then 0
 		elseif glass then -Whole(MAKE.Word.OnOver)
 		else -Whole(MAKE.Word.Over)
+	-- A picker: its name from In, its value Gap after it (the label, centred there), the chevron at its right.
+	local faint = SEAM.Faint :: Color3
+	if pick then
+		local K = MAKE.Pick
+		local valueWide = Text.Wide(label, label.Text)
+		state.Inset = Whole(K.In + Text.Wide(pick, pick.Text) + K.Gap + valueWide / 2 - state.Wide / 2)
+		pick.Position = UDim2.new(0, K.In, 0.5, over)
+		pick.TextColor3 = if disabled then faint else SEAM.Soft
+		local chevron = state.Chevron :: ImageLabel
+		chevron.ImageColor3 = if disabled then faint elseif set then light else SEAM.Text
+	end
 	label.Position = UDim2.new(0.5, if now == "Succeeded" then 12 elseif marked then state.Inset + MAKE.Mark.Shift else state.Inset, 0.5, over + sink)
 	state.Skin.Position = UDim2.new(0.5, 0, 0.5, sink)
 	state.Mark.Visible = marked
@@ -273,7 +313,11 @@ local function paint(button: TextButton, state: State)
 		reason.TextColor3 = SEAM.Soft
 		reason.Position = UDim2.new(0.5, 0, 0.5, MAKE.Word.Fall)
 	end
-	label.TextColor3 = if disabled then SEAM.Soft elseif marked then light else SEAM.Text
+	label.TextColor3 = if chip then (if disabled then faint elseif glass or pressed then SEAM.Text else SEAM.Soft)
+		elseif pick then (if disabled then faint elseif set then light else SEAM.Text)
+		elseif disabled then SEAM.Soft
+		elseif marked then light
+		else SEAM.Text
 	if state.Bare or (state.Icon and not state.Plate) then
 		for _, layer in layers do
 			layer.Visible = false
@@ -298,7 +342,7 @@ local function paint(button: TextButton, state: State)
 	button:SetAttribute("Disabled", state.Disabled or "")
 	button:SetAttribute("Pending", state.Pending)
 	button:SetAttribute("State", now)
-	button:SetAttribute("Kind", if tabbed then "Plate" elseif glass then "Glass" else "Channel")
+	button:SetAttribute("Kind", if tabbed then "Plate" elseif glass then "Glass" elseif bare then "Chip" else "Channel")
 	button:SetAttribute("L", L)
 end
 
@@ -487,8 +531,33 @@ function Button.new(props: Props): TextButton
 	skin.AnchorPoint = Vector2.new(0.5, 0.5)
 	skin.Position = UDim2.fromScale(0.5, 0.5)
 	label.AnchorPoint = Vector2.new(0.5, 0.5)
+	-- A picker: its name at its left and its chevron at its right, over the face, squeezing with it (painted in place).
+	local pickName: TextLabel?, chevron: ImageLabel? = nil, nil
+	local squeezed: { GuiObject } = if props.Still then {} else { skin, label }
+	if props.Pick then
+		local holder = Instance.new("Frame")
+		holder.Name = "Pick"
+		holder.BackgroundTransparency = 1
+		holder.BorderSizePixel = 0
+		holder.Active = false
+		holder.AnchorPoint = Vector2.new(0.5, 0.5)
+		holder.Position = UDim2.fromScale(0.5, 0.5)
+		holder.Size = UDim2.fromScale(1, 1)
+		holder.Parent = button
+		local name = Text.new({ Name = "PickName", Size = props.TextSize or Theme.Text.Body, Font = Theme.Font.Body, Colour = SEAM.Soft, AnchorPoint = Vector2.new(0, 0.5), Parent = holder })
+		name.Text = props.Pick
+		local side = Whole(MAKE.Pick.Chevron)
+		local made = Skin.LayOwn(holder, MAKE.Images.SeamChevron, "Chevron", { Z = 1 })
+		made.AnchorPoint = Vector2.new(0.5, 0.5)
+		made.Position = UDim2.new(1, -MAKE.Pick.In, 0.5, MAKE.Pick.Drop)
+		made.Size = UDim2.fromOffset(side, side)
+		pickName, chevron = name, made
+		if not props.Still then
+			table.insert(squeezed, holder)
+		end
+	end
 	local scales = {}
-	for _, piece in (if props.Still then {} else { skin, label }) :: { GuiObject } do
+	for _, piece in squeezed do
 		local scale = Instance.new("UIScale")
 		scale.Name = "Squeeze"
 		scale.Parent = piece
@@ -553,7 +622,11 @@ function Button.new(props: Props): TextButton
 		Icon = icon,
 		Halo = halo,
 		Plate = props.Plate == true,
+		Chip = props.Chip == true,
+		Pick = pickName,
+		Chevron = chevron,
 		Wide = 0,
+		Tall = 0,
 		Fades = {},
 		Glass = false,
 		L = 0,
@@ -591,15 +664,17 @@ function Button.new(props: Props): TextButton
 		if not button:IsDescendantOf(game) then
 			return -- taken out or destroyed: its layers may be going already
 		end
-		local wide = button.AbsoluteSize.X / math.max(scaleOver(button), 1e-3)
-		if math.abs(wide - state.Wide) > 0.5 then
-			state.Wide = wide
+		local scale = math.max(scaleOver(button), 1e-3)
+		local wide, tall = button.AbsoluteSize.X / scale, button.AbsoluteSize.Y / scale
+		if math.abs(wide - state.Wide) > 0.5 or math.abs(tall - state.Tall) > 0.5 then
+			state.Wide, state.Tall = wide, tall
 			paint(button, state)
 		end
 	end
 	button:GetPropertyChangedSignal("AbsoluteSize"):Connect(refit)
 	button.AncestryChanged:Connect(refit)
 	state.Wide = if props.Size.X.Scale == 0 then props.Size.X.Offset else 0
+	state.Tall = if props.Size.Y.Scale == 0 then props.Size.Y.Offset else 0
 	paint(button, state)
 	button.Parent = props.Parent
 	return button
@@ -624,6 +699,21 @@ function Button.Set(button: TextButton, change: { Text: string?, Disabled: (stri
 		state.Note = if type(change.Note) == "string" then change.Note else nil
 	end
 	paint(button, state)
+end
+
+-- A chip's or a picker's width from its words (Config.Hud.Make.Chip, .Pick), set on it and returned, in authored points;
+-- any other button keeps its own.
+function Button.Fit(button: TextButton): number
+	local state = states[button]
+	local wide = button.Size.X.Offset
+	if state and state.Chip then
+		wide = math.max(MAKE.Chip.Least, math.ceil(Text.Wide(state.Label, state.Text)) + MAKE.Chip.Pad)
+	elseif state and state.Pick then
+		local name = state.Pick :: TextLabel
+		wide = math.ceil(Text.Wide(name, name.Text) + MAKE.Pick.Gap + Text.Wide(state.Label, state.Text)) + MAKE.Pick.Pad
+	end
+	button.Size = UDim2.new(0, wide, button.Size.Y.Scale, button.Size.Y.Offset)
+	return wide
 end
 
 -- The running light and the dots, while a button waits; the squeeze, while a touch's runs.

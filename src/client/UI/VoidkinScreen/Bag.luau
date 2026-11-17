@@ -160,16 +160,6 @@ local function ramp(on: Instance, colours: { Color3 }, rotation: number?)
 	gradient.Parent = on
 end
 
-local function edge(on: Instance, colour: Color3, thickness: number?, name: string?): UIStroke
-	local stroke = Instance.new("UIStroke")
-	stroke.Name = name or "Edge"
-	stroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
-	stroke.Color = colour
-	stroke.Thickness = thickness or 1
-	stroke.Parent = on
-	return stroke
-end
-
 local function press(name: string, parent: Instance, x: number, y: number, wide: number, tall: number, onTap: () -> (), taps: { [Instance]: () -> () }): TextButton
 	local made = Instance.new("TextButton")
 	made.Name = name
@@ -897,42 +887,39 @@ refresh = function()
 	end
 end
 
--- A chip on the strip: a pill `C.Pill` tall in a tap's height, an Overview slot's well and edge, ivory when chosen.
-local function chip(parent: Instance, name: string, words: string, order: number, lit: boolean, taps: { [Instance]: () -> () }, onTap: () -> ()): TextButton
-	local probe = label({ Name = "Probe", Size = Theme.Text.Caption, Font = Theme.Font.Strong, Parent = parent }, words)
-	local wide = math.max(math.ceil(Text.Wide(probe, words)) + Theme.Size.Pad * 2, Theme.Size.Tap)
-	probe:Destroy()
-	local made = Instance.new("TextButton")
-	made.Name = name
-	made.Text = ""
-	made.AutoButtonColor = false
-	made.BackgroundTransparency = 1
-	made.BorderSizePixel = 0
-	made.LayoutOrder = order
-	made.Size = UDim2.fromOffset(wide, Theme.Size.Tap)
+-- A chip on the kinds' row, in AR30's make (UI.Kit.Button's Chip; Config.Hud.Make.Chip): no plate of its own, the row is
+-- its channel; the glass when chosen; its word in Soft, and in Text under a finger over a short line.
+local function chip(parent: Instance, name: string, order: number, lit: boolean, taps: { [Instance]: () -> () }, onTap: () -> ()): TextButton
+	local made = Button.new({ Name = name, Text = name, Size = UDim2.fromOffset(Theme.Size.Tap, Theme.Size.Tap), Chip = true, LayoutOrder = order, Palette = Seam.Palette, OnPress = onTap })
+	Button.Fit(made)
+	Button.Set(made, { Selected = lit })
 	made:SetAttribute("Chosen", lit)
 	made.Parent = parent
-	local pill = Instance.new("Frame")
-	pill.Name = "Pill"
-	pill.BorderSizePixel = 0
-	pill.BackgroundColor3 = P.Cell[2]
-	pill.BackgroundTransparency = 0.3
-	pill.AnchorPoint = Vector2.new(0, 0.5)
-	pill.Position = UDim2.fromScale(0, 0.5)
-	pill.Size = UDim2.new(1, 0, 0, C.Pill)
-	round(pill, C.Pill / 2)
-	if lit then
-		Seam.Plate(pill, C.Pill / 2) -- a plate of light, its words in Ink
-	else
-		edge(pill, P.Line)
-	end
-	pill.Parent = made
-	label({ Name = "Word", Size = Theme.Text.Caption, Font = Theme.Font.Strong, Colour = if lit then P.Ink else P.Soft, Align = Enum.TextXAlignment.Center, Parent = pill }, words)
-	made.Activated:Connect(function()
-		onTap()
-	end)
 	taps[made] = onTap
 	return made
+end
+
+-- The strip's right: the sort, or in Chests the salvage's steps, a picker in AR30's make (Button's Pick): its name, its
+-- value, a chevron; its value in the light while it isn't the first step.
+local function picker(parent: Instance, name: string, words: string, value: string, on: boolean, taps: { [Instance]: () -> () }, onTap: () -> ()): TextButton
+	local made = Button.new({ Name = name, Text = value, Pick = words, Size = UDim2.fromOffset(Theme.Size.Tap, Theme.Size.Tap), Palette = Seam.Palette, OnPress = onTap })
+	Button.Fit(made)
+	Button.Set(made, { Selected = on })
+	made.Parent = parent
+	taps[made] = onTap
+	return made
+end
+
+-- The kinds' row: one channel (AR30's make), its shadow and fill under the chips, its edge over them and their veils.
+local CHANNEL = UIKit.Palettes.Seam
+local function channel(holder: Frame, over: Frame)
+	local under = Skin.Of(holder)
+	Skin.Lay(under, "ButtonShadow", { Name = "Shadow", Z = 1 })
+	local fill = Skin.Lay(under, "ButtonFill", { Name = "Fill", Z = 2 })
+	Skin.Tint(fill, CHANNEL.Channel)
+	fill.ImageTransparency = HudConfig.Make.Channel.Rest
+	local line = Skin.Lay(Skin.Of(over), "ButtonEdge", { Name = "Edge", Z = 1 })
+	line.ImageColor3 = CHANNEL.Edge
 end
 
 local EMPTY: { [string]: { string } } = {
@@ -959,14 +946,13 @@ function Bag.Build(context: Context): (() -> boolean)?
 	ramp(case, Seam.Panel)
 	round(case, SEAM.Room.Corner)
 	Seam.Edge(case, "Top", SEAM.Room.Corner, 0, at.Case.Wide - SEAM.Room.Corner * 2, false, SEAM.Edges.Room)
-	-- The strip: the five kinds, scrolling, then the sort or, in Chests, the salvage.
+	-- The strip: the five kinds' row, scrolling, then the sort or, in Chests, the salvage's steps (AR30's make).
 	local data = context.View :: any
-	local rightWords: string
-	local onRight: () -> ()
+	local right: TextButton
+	local strip = plain("Strip", body, at.Strip.X, at.Strip.Y, at.Strip.Wide, at.Strip.Tall)
 	if kind == "Chests" then
 		local below = context.View.Settings.Salvage
-		rightWords = if below == "" then "Salvage: off" else `Salvage: {below}`
-		onRight = function()
+		right = picker(strip, "Salvage", "Salvage:", if below == "" then "Off" else below, below ~= "", taps, function()
 			local steps = C.Salvage
 			local at_ = table.find(steps, below) or 1
 			local nextOne = steps[at_ % #steps + 1]
@@ -974,24 +960,30 @@ function Bag.Build(context: Context): (() -> boolean)?
 			if said(CHEST_SAID, "Can't set it", answer) then
 				Toast.Show(if nextOne == "" then "Salvage off: every item kept" else `{nextOne} and under turn into Credits, unless they'd raise Combat Power`, Theme.Colour.Text)
 			end
-		end
+		end)
 	else
-		rightWords = `Sort: {sort}`
-		onRight = function()
+		right = picker(strip, "Sort", "Sort:", sort, sort ~= Rules.Sorts[1], taps, function()
 			local at_ = table.find(Rules.Sorts, sort) or 1
 			sort = Rules.Sorts[at_ % #Rules.Sorts + 1]
 			context.Rebuild()
-		end
+		end)
 	end
-	local strip = plain("Strip", body, at.Strip.X, at.Strip.Y, at.Strip.Wide, at.Strip.Tall)
-	local right = chip(strip, if kind == "Chests" then "Salvage" else "Sort", rightWords, 0, false, taps, onRight)
 	right.AnchorPoint = Vector2.new(1, 0)
 	right.Position = UDim2.fromScale(1, 0)
+	-- The row: its channel under the kinds' window, its edge over the chips and their veils.
+	local rowWide = UDim2.new(1, -(right.Size.X.Offset + Theme.Size.Gap), 1, 0)
+	local row = plain("Row", strip, 0, 0, 0, 0)
+	row.Size = rowWide
+	local rowEdge = plain("RowEdge", strip, 0, 0, 0, 0)
+	rowEdge.Size = rowWide
+	rowEdge.ZIndex = 4
+	channel(row, rowEdge)
 	local kinds = Instance.new("ScrollingFrame")
 	kinds.Name = "Kinds"
 	kinds.BackgroundTransparency = 1
 	kinds.BorderSizePixel = 0
-	kinds.Size = UDim2.new(1, -(right.Size.X.Offset + Theme.Size.Gap), 1, 0)
+	kinds.Size = rowWide
+	kinds.ZIndex = 2
 	kinds.ScrollBarThickness = 0
 	kinds.ScrollBarImageTransparency = 1 -- a touch device draws its thumb even at nought: a grey line under the chips
 	kinds.CanvasSize = UDim2.new()
@@ -999,39 +991,59 @@ function Bag.Build(context: Context): (() -> boolean)?
 	kinds.ScrollingDirection = Enum.ScrollingDirection.X
 	kinds:SetAttribute("Keep", kind) -- the screen's refill puts its scroll back only while the same kind is chosen
 	kinds.Parent = strip
-	local row = Instance.new("UIListLayout")
-	row.FillDirection = Enum.FillDirection.Horizontal
-	row.Padding = UDim.new(0, 4)
-	row.SortOrder = Enum.SortOrder.LayoutOrder
-	row.Parent = kinds
+	local line = Instance.new("UIListLayout")
+	line.FillDirection = Enum.FillDirection.Horizontal
+	line.Padding = UDim.new(0, 0)
+	line.SortOrder = Enum.SortOrder.LayoutOrder
+	line.Parent = kinds
 	local lit: TextButton? = nil
+	local made: { TextButton } = {}
 	for index, name in Rules.Kinds do
-		local made = chip(kinds, name, name, index, name == kind, taps, function()
+		local one = chip(kinds, name, index, name == kind, taps, function()
 			if kind ~= name then
 				kind, chosen = name, nil
 				context.Rebuild()
 			end
 		end)
-		lit = if name == kind then made else lit
+		lit = if name == kind then one else lit
+		table.insert(made, one)
 	end
-	-- A chip cut by the strip's edge reads as more this way, never a stray sliver: each edge hiding a chip fades into
-	-- the backing under it.
+	-- A split between two unchosen chips, a hairline in Edge at the left of the second (Make.Chip: Split of a point wide,
+	-- drawn a point wide at that cover).
+	local K = HudConfig.Make.Chip
+	for index = 2, #made do
+		if made[index] ~= lit and made[index - 1] ~= lit then
+			local split = Instance.new("Frame")
+			split.Name = "Split"
+			split.Active = false
+			split.BorderSizePixel = 0
+			split.BackgroundColor3 = CHANNEL.Edge
+			split.BackgroundTransparency = 1 - K.Split
+			split.AnchorPoint = Vector2.new(0.5, 0.5)
+			split.Position = UDim2.fromScale(0, 0.5)
+			split.Size = UDim2.fromOffset(1, K.SplitTall)
+			split.ZIndex = 2
+			split.Parent = made[index]
+		end
+	end
+	-- A chip cut by the row's edge reads as more this way, never a stray sliver: each edge hiding a chip fades into the
+	-- channel under it.
 	local function veil(name: string, onLeft: boolean): Frame
-		local made = Instance.new("Frame")
-		made.Name = name
-		made.Active = false
-		made.BorderSizePixel = 0
-		made.BackgroundColor3 = P.Backing
-		made.AnchorPoint = Vector2.new(if onLeft then 0 else 1, 0)
-		made.Position = if onLeft then UDim2.new() else UDim2.new(1, kinds.Size.X.Offset, 0, 0)
-		made.Size = UDim2.new(0, C.Veil, 1, 0)
-		made.ZIndex = kinds.ZIndex + 1
-		made.Visible = false
+		local made_ = Instance.new("Frame")
+		made_.Name = name
+		made_.Active = false
+		made_.BorderSizePixel = 0
+		made_.BackgroundColor3 = CHANNEL.Channel
+		made_.AnchorPoint = Vector2.new(if onLeft then 0 else 1, 0)
+		made_.Position = if onLeft then UDim2.new() else UDim2.new(1, kinds.Size.X.Offset, 0, 0)
+		made_.Size = UDim2.new(0, C.Veil, 1, 0)
+		made_.ZIndex = 3
+		made_.Visible = false
 		local gradient = Instance.new("UIGradient")
 		gradient.Transparency = NumberSequence.new(if onLeft then 0 else 1, if onLeft then 1 else 0)
-		gradient.Parent = made
-		made.Parent = strip
-		return made
+		gradient.Parent = made_
+		made_.Parent = strip
+		return made_
 	end
 	local before, after = veil("VeilLeft", true), veil("VeilRight", false)
 	local function veils()
@@ -1053,7 +1065,7 @@ function Bag.Build(context: Context): (() -> boolean)?
 				if before == nil or before == lit then
 					break
 				end
-				left += (before.Size.X.Offset + row.Padding.Offset) * scale
+				left += (before.Size.X.Offset + line.Padding.Offset) * scale
 			end
 			local wide = lit.Size.X.Offset * scale
 			if left < kinds.CanvasPosition.X then

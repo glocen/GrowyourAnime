@@ -319,6 +319,17 @@ return {
 		Icon = { Halo = 56.6, HaloT = 0.7, Half = 9, Below = 20, Line = 0, Glow = 0.55 },
 		Close = { Side = 20.7, Box = 52, In = 4 },
 		PlusMinus = 17.2, -- Power's ±: the channel with SeamPlus or SeamMinus this many across, in Text
+		-- A chip on a tabs' row (the bag's kinds): the row is one channel and a chip has no plate of its own. At least Least
+		-- wide, its word plus Pad; its word in Soft, off in Faint. Chosen, the glass at L.Chosen Inset inside its box, its word
+		-- in Text; pressed, its word in Text over an underline of half Under × its width (the line at Line, its glow at Glow),
+		-- no sink. The row's splits: Split of a point wide in Edge, SplitTall high and centred, only between two unchosen chips.
+		Chip = { Least = 52, Pad = 30, Inset = 1.5, Under = 0.32, Line = 0.2, Glow = 0.6, Split = 0.85, SplitTall = 26 },
+		-- A picker (Sort; the salvage's steps): the channel, its words plus Pad wide. Its name in Soft from In, then Gap, then
+		-- its value in Text, bold; the chevron Chevron across in Text, its middle In from the right and Drop under the middle.
+		-- On (anything but the default): the value and the chevron in the light over an underline of half Under × its width;
+		-- pressed, that underline whether on or not (Line and Glow: T on, pressed), no wash, no sink. Unavailable, all Faint.
+		-- Gap is measured from the make's sheet (AR30, buttons_kit.png: 65 px at its 2.64 to a point), the spec giving none.
+		Pick = { Pad = 44, In = 15, Gap = 24, Chevron = 12.3, Drop = 1, Under = 0.3, Line = { 0.2, 0 }, Glow = { 0.52, 0.4 } },
 		-- The kinds' own lights: a claim and a ready shard, the base's, the map's.
 		Light = { Ready = Color3.fromHex("#F6DE80"), Power = Color3.fromHex("#F2C53D"), Map = Color3.fromHex("#E0566E") },
 		-- The dock (AR30, "The dock"; UI.Dock), in points from its frame's top left. Its frame is Frame across, its foot on
@@ -843,7 +854,6 @@ return {
 		Doll = { Slot = 44, Gap = 5, Most = 64, Seam = 4, Figure = 140, Grow = 2.6, Level = 16 },
 		Gear = 48, -- the slot AR6's sizes are given for (build/handoff/UI/gear/gear_icons.json): a cell's layers scale from it
 		Bar = 3, -- a cell's rarity bar along its foot
-		Pill = 34, -- a chip's pill, drawn in the middle of its tap's height
 		Row = 18, -- a line of the card
 		Slide = 0.16, -- seconds: the card over the Voidkin, and back
 		Mark = 14, -- a cell's corner seat: the up arrow, the worn tick
@@ -884,7 +894,6 @@ return {
 		-- glow's bands outward; at a 48-point cell, scaled with the cell.
 		-- Corner: its rounding round a cell's cut corner.
 		Ring = { Moat = { From = 0.8, To = 3.4, Alpha = 0.94 }, Out = 3, Wide = 2.6, Glow = { { Wide = 3, Alpha = 0.3 }, { Wide = 7, Alpha = 0.12 } }, Cell = 48, Corner = 4 },
-		Lit = { Glow = { { Wide = 2, Alpha = 0.22 }, { Wide = 5, Alpha = 0.1 } } }, -- a plate of light's glow round it (the lit chip)
 		Room = { Corner = 6 }, -- the Items room's panel
 		Shade = { Wide = 8, Alpha = 0.45 }, -- the card's shadow on the grid, left of its sliding edge
 	},

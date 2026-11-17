@@ -609,7 +609,7 @@ function VoidkinCases.Cases(given: Given): { any }
 							and roomRamp ~= nil and roomRamp.Color.Keypoints[1].Value == Seam.Panel[1] and case:FindFirstChild("Top") ~= nil)
 						local wells, odd = 0, ""
 						for _, piece in (if items then items:GetDescendants() else {}) :: { Instance } do
-							if piece:IsA("ImageLabel") and piece.Name == "Well" then
+							if piece:IsA("ImageLabel") and piece.Name == "Well" and piece:GetAttribute("Kit") ~= "DotsWell" then -- a button's dots' well is the kit's
 								wells += 1
 								local ramp = piece:FindFirstChildOfClass("UIGradient")
 								local keys = if ramp then ramp.Color.Keypoints else {}

@@ -10,6 +10,7 @@ local GuiService = game:GetService("GuiService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Shared = ReplicatedStorage.Shared
 local HudConfig = require(Shared.Config.Hud)
+local UIKit = require(Shared.Config.UIKit)
 local Profile = require(Shared.Data.Profile)
 local Items = require(Shared.Definitions.Items)
 local Voidkin = require(Shared.Definitions.Voidkin)
@@ -18,6 +19,7 @@ local HudController = require(script.Parent.Parent.Parent.Main.HudController)
 local ProfileController = require(script.Parent.Parent.ProfileController)
 local UI = script.Parent.Parent.Parent.Parent.UI
 local Theme = require(UI.Theme)
+local Text = require(UI.Kit.Text)
 local Layers = require(UI.Layers)
 local Screen = require(UI.Kit.Screen)
 local Button = require(UI.Kit.Button)
@@ -35,6 +37,7 @@ export type Given = {
 }
 
 local CHEST = "lanternrow_1"
+local KIT = UIKit.Palettes.Seam
 
 local function view(): Profile.View
 	return ProfileController.Get() :: Profile.View
@@ -59,13 +62,16 @@ local function ringed(ring: Instance?): boolean
 	return moat ~= nil and light ~= nil and glow ~= nil and moat.Color == Seam.Colour.Channel and light.Color == Seam.Light and light.Transparency == 0 and glow.Transparency > 0
 end
 
--- A chip drawn as a plate of light: its pill white falling to the seam's Light, its word in Ink, its glow round it.
-local function plateOfLight(chip: Instance?): boolean
-	local pill = if chip then chip:FindFirstChild("Pill") else nil
-	local ramp = if pill then pill:FindFirstChildOfClass("UIGradient") else nil
-	local word = if pill then pill:FindFirstChild("Word") else nil
-	return ramp ~= nil and ramp.Color.Keypoints[#ramp.Color.Keypoints].Value == Seam.Light and word ~= nil and word:IsA("TextLabel") and word.TextColor3 == Seam.Ink
-		and (pill :: Instance):FindFirstChild("Glow") ~= nil
+-- A chip in AR30's make (UI.Kit.Button's Chip): chosen, the glass at L Chosen, its word in Text; otherwise no plate of
+-- its own, its word in Soft.
+local function chipChosen(chip: Instance?): boolean
+	local word = if chip then chip:FindFirstChild("Label") else nil
+	return chip ~= nil and chip:GetAttribute("Kind") == "Glass" and chip:GetAttribute("L") == HudConfig.Make.L.Chosen and word ~= nil and word:IsA("TextLabel") and word.TextColor3 == KIT.Text
+end
+
+local function chipIdle(chip: Instance?): boolean
+	local word = if chip then chip:FindFirstChild("Label") else nil
+	return chip ~= nil and chip:GetAttribute("Kind") == "Chip" and word ~= nil and word:IsA("TextLabel") and word.TextColor3 == KIT.Soft
 end
 
 local function inView(piece: GuiObject?): boolean
@@ -164,8 +170,8 @@ function BagCases.Cases(given: Given): { any }
 					chestIn = chestIn or entry.Kind == "Chest"
 				end
 				t.Check("All the strip's first tab, lit, holding the gear and the chests", Rules.Kinds[1] == "All" and firstChip ~= nil and firstChip:GetAttribute("Chosen") == true and gearIn and chestIn)
-				-- TR28's seam: the lit chip a plate of light (white falling to the seam's Light, Ink words, its glow); the others dark.
-				t.Check("the lit chip a plate of light, its word in Ink, the others dark", plateOfLight(firstChip) and not plateOfLight(if kindsStrip then kindsStrip:FindFirstChild(Rules.Kinds[2]) else nil))
+				-- AR30's make: the chosen chip the glass, its word in Text; the others no plate, in Soft.
+				t.Check("the chosen chip the glass, its word in Text, the others no plate and Soft", chipChosen(firstChip) and chipIdle(if kindsStrip then kindsStrip:FindFirstChild(Rules.Kinds[2]) else nil))
 				for _, name in { "Rail", "Case", "Doll", "Strip", "Page", "Over", "CardRoom", "BagCount" } do
 					t.Check(`{name} in view`, inView(find(name)))
 				end
@@ -608,6 +614,160 @@ function BagCases.Cases(given: Given): { any }
 					end
 					return true
 				end))
+			end,
+		},
+		{
+			Name = "Items page: the kinds' row and Sort in the seam's make (AR30): one channel, each chip its word's width, the chosen one the glass inset, the splits only between two unchosen, a press's word and short line; Sort's name, value and chevron at the make's places, its line on a press and while it's on; the salvage's steps the same",
+			Run = function(t: any)
+				local MAKE = HudConfig.Make
+				local K, Q = MAKE.Chip, MAKE.Pick
+				local U = MAKE.Underline
+				local faint = KIT.Faint :: Color3
+				Screen.Close()
+				Bag.Reset()
+				local hud = HudController.Parts()
+				t.Check("the dock's bag opens the Items page", Button.Press(hud.Voidkin :: TextButton) and waitFor(t, 1, function(): boolean
+					local page = find("Page")
+					return page ~= nil and page:GetAttribute("Page") == "Bag"
+				end))
+				t.Wait(HudConfig.Motion.Screen.Enter + 0.1)
+				local function layer(button: Instance?, name: string): ImageLabel?
+					local found = if button then button:FindFirstChild(name, true) else nil
+					return if found and found:IsA("ImageLabel") then found else nil
+				end
+				local function near(a: number, b: number, within: number?): boolean
+					return math.abs(a - b) <= (within or 0.51)
+				end
+				local scale = Layers.Scale()
+				-- The row: one channel under the chips, its edge over them and their veils.
+				local row, rowEdge, kinds = find("Row"), find("RowEdge"), find("Kinds")
+				local fill, edge = layer(row, "Fill"), layer(rowEdge, "Edge")
+				local veil = find("VeilRight")
+				t.Check("one channel: its fill in Channel at the channel's T, its edge in Edge over the chips and the veils", fill ~= nil and fill.ImageColor3 == KIT.Channel and near(fill.ImageTransparency, MAKE.Channel.Rest, 1e-3)
+					and edge ~= nil and edge.ImageColor3 == KIT.Edge and rowEdge ~= nil and kinds ~= nil and veil ~= nil and rowEdge.ZIndex > kinds.ZIndex and rowEdge.ZIndex > veil.ZIndex and veil.ZIndex > kinds.ZIndex)
+				t.Check("the row's height a touch, the make's 52", kinds ~= nil and near(kinds.AbsoluteSize.Y / scale, Theme.Size.Tap, 0.6))
+				-- Each chip: its word's width or the least, abutting the one before.
+				local chips: { GuiObject } = {}
+				for _, name in Rules.Kinds do
+					local one = if kinds then kinds:FindFirstChild(name) else nil
+					if one and one:IsA("GuiObject") then
+						table.insert(chips, one)
+					end
+				end
+				local wrongWide, gapped = "", ""
+				for index, one in chips do
+					local word = one:FindFirstChild("Label") :: TextLabel?
+					local want = if word then math.max(K.Least, math.ceil(Text.Wide(word, one.Name)) + K.Pad) else -1
+					wrongWide = if wrongWide == "" and one.Size.X.Offset ~= want then `{one.Name} {one.Size.X.Offset}, not {want}` else wrongWide
+					local before = chips[index - 1]
+					if before and not near(one.AbsolutePosition.X, before.AbsolutePosition.X + before.AbsoluteSize.X, 1) then
+						gapped = one.Name
+					end
+				end
+				t.Check("five chips, each max(52, its word + 30) wide", #chips == #Rules.Kinds and wrongWide == "", wrongWide)
+				t.Check("abutting in one channel, no gaps", gapped == "", gapped)
+				-- The chosen one (All): the glass inset all round, its word in Text one over the middle.
+				local all = chips[1]
+				local allSkin = all and all:FindFirstChild("Skin", true)
+				local allWord = all and all:FindFirstChild("Label") :: TextLabel?
+				t.Check("All chosen: the glass at L Chosen, its word in Text", chipChosen(all))
+				t.Check(`the glass inset {K.Inset} all round`, allSkin ~= nil and allSkin:IsA("GuiObject") and all ~= nil and near(allSkin.AbsoluteSize.X, all.AbsoluteSize.X - 2 * K.Inset * scale, 0.6) and near(allSkin.AbsoluteSize.Y, all.AbsoluteSize.Y - 2 * K.Inset * scale, 0.6),
+					if allSkin and allSkin:IsA("GuiObject") and all then `{allSkin.AbsoluteSize} in {all.AbsoluteSize}` else "none")
+				t.Check("its word one over the middle", allWord ~= nil and allWord.Position.Y.Offset == -math.round(MAKE.Word.OnOver))
+				local idle = ""
+				for index = 2, #chips do
+					local word = chips[index]:FindFirstChild("Label") :: TextLabel?
+					local plate = layer(chips[index], "Fill")
+					idle = if idle == "" and not (chipIdle(chips[index]) and plate ~= nil and not plate.Visible and word ~= nil and word.Position.Y.Offset == -math.round(MAKE.Word.Over)) then chips[index].Name else idle
+				end
+				t.Check("the others no plate of their own, their words in Soft one over the middle", idle == "", idle)
+				-- The splits: a hairline in Edge between two unchosen chips only.
+				local splits = ""
+				for index, one in chips do
+					local split = one:FindFirstChild("Split")
+					local want = index > 1 and one:GetAttribute("Chosen") ~= true and chips[index - 1]:GetAttribute("Chosen") ~= true
+					local right = if want then split ~= nil and split:IsA("Frame") and split.BackgroundColor3 == KIT.Edge and near(split.BackgroundTransparency, 1 - K.Split, 1e-3) and split.Size.Y.Offset == K.SplitTall else split == nil
+					splits = if splits == "" and not right then one.Name else splits
+				end
+				t.Check("a split in Edge, 26 tall, only between two unchosen chips", splits == "", splits)
+				-- A press on an unchosen chip: its word in Text over a short line, no sink, no wash.
+				local gear = chips[2]
+				if gear and gear:IsA("TextButton") then
+					local word = gear:FindFirstChild("Label") :: TextLabel
+					local under, glow, wash = layer(gear, "Under"), layer(gear, "UnderGlow"), layer(gear, "Wash")
+					local restY = word.Position.Y.Offset
+					Button.Touch(gear, true)
+					local span = math.round(2 * K.Under * gear.Size.X.Offset * U.Span)
+					t.Check("pressed: its word in Text over its line, half 0.32 of its width", word.TextColor3 == KIT.Text and under ~= nil and under.Visible and under.Size.X.Offset == span and glow ~= nil and glow.Visible,
+						if under then `{under.Visible} {under.Size.X.Offset}, want {span}` else "none")
+					t.Check("the line at T 0.2, its glow at 0.6", under ~= nil and glow ~= nil and near(under.ImageTransparency, K.Line, 1e-3) and near(glow.ImageTransparency, K.Glow, 1e-3))
+					t.Check("no sink, no wash", word.Position.Y.Offset == restY and wash ~= nil and not wash.Visible)
+					Button.Touch(gear, false)
+					t.Check("let go: back to Soft, no line", word.TextColor3 == KIT.Soft and under ~= nil and not under.Visible)
+				else
+					t.Check("Gear's chip", false, "none")
+				end
+				-- Sort: the channel, its words + 44 wide; "Sort:" from 15 in, the value Gap after it, the chevron 15 in from the right.
+				local function pickChecks(name: string, words: string, value: string, on: boolean)
+					local pick = find(name)
+					local named = pick and pick:FindFirstChild("PickName", true) :: TextLabel?
+					local word = pick and pick:FindFirstChild("Label") :: TextLabel?
+					local chevron = layer(pick, "Chevron")
+					if not (pick and pick:IsA("TextButton") and named and word and chevron) then
+						t.Check(`{name}: its name, value and chevron`, false, "missing")
+						return
+					end
+					local nameWide, valueWide = Text.Wide(named, words), Text.Wide(word, value)
+					local wide = math.ceil(nameWide + Q.Gap + valueWide) + Q.Pad
+					t.Check(`{name}: "{words}" then "{value}", {wide} wide (its words + {Q.Pad})`, named.Text == words and word.Text == value and pick.Size.X.Offset == wide, `{named.Text} {word.Text} {pick.Size.X.Offset}`)
+					local left = pick.AbsolutePosition.X
+					local mid = pick.AbsolutePosition.Y + pick.AbsoluteSize.Y / 2
+					local inkLeft = word.AbsolutePosition.X + (word.AbsoluteSize.X - word.TextBounds.X) / 2
+					t.Check(`{name}: its name from {Q.In} in, its value {Q.Gap} after it`, near(named.AbsolutePosition.X, left + Q.In * scale, 1) and near(inkLeft, left + (Q.In + nameWide + Q.Gap) * scale, 1.5),
+						`{(named.AbsolutePosition.X - left) / scale}, {(inkLeft - left) / scale}`)
+					t.Check(`{name}: the chevron {Q.In} in from the right, {Q.Drop} under the middle`, near(chevron.AbsolutePosition.X + chevron.AbsoluteSize.X / 2, left + pick.AbsoluteSize.X - Q.In * scale, 1) and near(chevron.AbsolutePosition.Y + chevron.AbsoluteSize.Y / 2, mid + Q.Drop * scale, 1))
+					local under, glow, wash = layer(pick, "Under"), layer(pick, "UnderGlow"), layer(pick, "Wash")
+					local colour = if on then KIT.Light :: Color3 else KIT.Text
+					t.Check(`{name}: its name in Soft, its value and chevron in {if on then "the light" else "Text"}`, named.TextColor3 == KIT.Soft and word.TextColor3 == colour and chevron.ImageColor3 == colour)
+					local span = math.round(2 * Q.Under * pick.Size.X.Offset * U.Span)
+					if on then
+						t.Check(`{name} on: its line half 0.3 of its width, at T 0.2, its glow 0.52`, under ~= nil and glow ~= nil and under.Visible and under.Size.X.Offset == span and near(under.ImageTransparency, Q.Line[1], 1e-3) and near(glow.ImageTransparency, Q.Glow[1], 1e-3))
+					else
+						t.Check(`{name} at its first step: no line`, under ~= nil and not under.Visible)
+					end
+					local restY = word.Position.Y.Offset
+					Button.Touch(pick, true)
+					t.Check(`{name} pressed: its line at T 0, its glow 0.4, no sink, no wash`, under ~= nil and glow ~= nil and under.Visible and under.Size.X.Offset == span and near(under.ImageTransparency, Q.Line[2], 1e-3) and near(glow.ImageTransparency, Q.Glow[2], 1e-3)
+						and word.Position.Y.Offset == restY and wash ~= nil and not wash.Visible)
+					Button.Touch(pick, false)
+					t.Check(`{name}: the channel, its fill at T {MAKE.Channel.Rest}`, pick:GetAttribute("Kind") == "Channel" and layer(pick, "Fill") ~= nil and near((layer(pick, "Fill") :: ImageLabel).ImageTransparency, MAKE.Channel.Rest, 1e-3))
+					local row_ = find("Kinds") -- the row as rebuilt by the last tap
+					local rowRight = if row_ then row_.AbsolutePosition.X + row_.AbsoluteSize.X else 0
+					t.Check(`{name}: right of the row by a gap`, near(left - rowRight, Theme.Size.Gap * scale, 1), `{(left - rowRight) / scale}`)
+					-- Unavailable: everything in Faint, then put back.
+					Button.Set(pick, { Disabled = "test" })
+					t.Check(`{name} unavailable: its name, value and chevron in Faint, no line`, named.TextColor3 == faint and word.TextColor3 == faint and chevron.ImageColor3 == faint and under ~= nil and not under.Visible and word.Text == value)
+					Button.Set(pick, { Disabled = false })
+				end
+				pickChecks("Sort", "Sort:", Bag.State().Sort, false)
+				t.Check("a tap: the next sort, on", VoidkinScreen.Tap(find("Sort")) and Bag.State().Sort == Rules.Sorts[2])
+				t.Wait(0.1)
+				pickChecks("Sort", "Sort:", Rules.Sorts[2], true)
+				for _ = 3, #Rules.Sorts + 1 do
+					VoidkinScreen.Tap(find("Sort"))
+					t.Wait(0.1)
+				end
+				t.Check("round to the first", Bag.State().Sort == Rules.Sorts[1])
+				-- Chests: the salvage's steps in the same make, on while it turns anything into Credits.
+				t.Check("Chests", VoidkinScreen.Tap(find("Chests")) and Bag.State().Kind == "Chests")
+				t.Wait(0.1)
+				local below = view().Settings.Salvage
+				pickChecks("Salvage", "Salvage:", if below == "" then "Off" else below, below ~= "")
+				local chests = find("Chests")
+				t.Check("Chests chosen: the glass, its neighbours unsplit", chipChosen(chests) and chests ~= nil and chests:FindFirstChild("Split") == nil and (find("Materials") :: Instance):FindFirstChild("Split") == nil)
+				VoidkinScreen.Tap(find("All"))
+				Bag.Reset()
+				Screen.Close()
 			end,
 		},
 	}

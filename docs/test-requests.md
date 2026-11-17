@@ -3713,3 +3713,34 @@ Research, 2026-11-17, 14:05, on the director's question: "how is that there is m
   - **The fix:** the mark and the reading now agree at every charge. 0.32 kWh shows one cell, 35.02 shows two, and "full" shows three. The plate at 35 of 60 shows two cells over a bar a little past half.
   - **The pill:** the mark makes "full" say what is full.
   - **Nothing broke.** TR41 is done on research's side, (a) to (e).
+
+## TR42. The sound audition panel: the director picks by ear (Faber, first piece of the next session)
+
+Research, 2026-11-17, 23:24, on the director's word: "ok let do 1" (`docs/decisions.md`), after AR39's stop. Nobody on the team can hear, so the team stops making and layering sounds. A cue is one finished sound from Roblox's library, played whole, and the director's ear chooses it. This panel is how that costs the director minutes.
+
+- **Feel line:** the director plays a fight in the dev place, taps a candidate, and from that tap every hit of that kind plays it, in the fight, at the fight's level; one more tap keeps the one that's right.
+- **The block contains,** for the three pilots (LightHit, HeavyHit, ShadeSwipe):
+  - **The panel,** in Studio only: a tab for each cue, and under it "Old" (today's cue) and about ten candidates, each a row with its number, title, author and length.
+    - A tap on a row plays it once and makes it that cue's live sound.
+    - **Keep** marks it; more than one may be kept. **More** brings the next ten. **None** says the ten held nothing, and is recorded too.
+  - **A candidate is a finished sound, whole:** no slice from inside it, no layer, and no pitch spread while it's auditioned.
+    - **On the hit:** its start is trimmed, or its play is started ahead inside the engine's lookahead, so its top lands within 10 ms of contact. That head trim is the only cut.
+    - **A recording that holds several events** plays its first event, whole.
+  - **A fair listen:** every candidate of a cue plays at one loudness (the match), with the limiter taking 0 dB, so a louder one never wins. A preview with no fight goes through a hit's own path, since an emitter on the listener reads 8.5 dB down (AR39).
+  - **Where candidates come from:** `Library.Search` over every author (the director, 2026-11-15), on research's words below, in the library's own order. If the library gives a community rating, the best rated come first. That's checked in 15 minutes and dropped if it isn't there.
+  - **Left out before the director sees it,** by number and title only:
+    - one that doesn't load;
+    - one too long for its cue (LightHit over 0.7 s, HeavyHit over 1.5 s, ShadeSwipe over 1.0 s);
+    - music or a voice;
+    - a title that names another work.
+  - **The picks are read out** by one debug command (cue, id, title, author, kept or none), for `Config.Cues` and `docs/asset-log.md`.
+  - **The three cues' levels against each other** start at AR39's gate 4 and are tuned live.
+- **Research's search words** (finished sounds, never a recording of an object: no glove, bag, clap or paper):
+  - **LightHit:** "punch", "punch hit", "melee hit", "hit impact", "kick hit", "combat hit".
+  - **HeavyHit:** "heavy punch", "heavy hit", "strong impact", "power hit", "smash impact", "slam".
+  - **ShadeSwipe:** "sword swing", "slash", "swoosh", "claw swipe", "swing whoosh".
+- **After the director's picks, in this piece's finish:** each kept sound becomes its cue through AR39's engine: whole, with a small pitch and volume spread, its id and author in the asset log, quick to swap.
+- **It waits:** every other cue; counting the ranker against the picks (the director's word of 14:05: is their pick among our first three?); sibling takes for variation; the listen on a phone.
+- **Cases:** the panel isn't built outside Studio; a candidate that fails to load is marked and skipped; changing the live sound never drops or doubles a voice; "Old" brings today's cue back exactly.
+- **Cap:** the block in 2 hours (research's estimate, from the A/B switch's build of 2026-11-17). The director's part is about 10 to 15 minutes for the three.
+- **What can't be known before the listen:** whether the library holds a good one for each cue. A cue whose candidates all get None goes back to the director with what was tried.

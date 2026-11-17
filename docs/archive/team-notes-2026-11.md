@@ -2,6 +2,44 @@
 
 The oldest entries of `docs/team-notes.md`, moved here as that file passed about 250 lines (`AGENTS.md`, "Team notes"). Newest first.
 
+### 2026-11-16, 21:01. AR6: batch 3 in colour, the 120 in their slots (Modulo)
+
+- **What changed:** the eight class weapons in colour, as flat pictures for the gear slots, each with its class's mark on the bottom cut. The Tome's boards are a dark leather by rarity over cream pages, and the Codex's covers a pale parchment. `gear_icons.json` keys a weapon by its kind ("Sword" and "Short Sword" were "Main Hand" and "Off Hand") and gives each class's pair under `hands`.
+- **Where:** AR6, "Batch 3 in colour"; `build/handoff/UI/gear/` (`gear_<kind>_colour.png`, `images/`, `gear_icons.json`); `tools/blender/gear_icons.py`; the asset log, with batch 2's row, logged late.
+- **Open:** research's verdict, then the 120 and the json go to Faber for upload under the group.
+- **For:** research, then Faber.
+
+### 2026-11-16, 20:50. AR6: batch 3, the eight class weapons in grey, with their fixes (Modulo)
+
+- **What changed:** the Great Axe, Shield, Staff, Tome, Dagger, Throwing Blades, Crystal Baton and Codex, fifteen each in their rarity's threes. Each set keeps its column, and each Legendary has one new form. Each class's pair stays apart: the Staff's open ring and the Baton's crystal, the dark Tome and the pale Codex, one fang and a fan of three. Research's four fixes are drawn: the Codex reads as a book, the Staff's ring at 32 pixels, Bunkou's fork, and Rinkou's ribbons from the head. Three names are new: Tenmon, Kontengi and Bunkou.
+- **Where:** AR6, "Batch 3" and "Batch 3's fixes"; `build/handoff/Gear/batch3_sheet/` and `build/handoff/Gear/<kind>_sets/`; `tools/blender/gear_<kind>_sets.py`, the new long-weapon parts in `gear_parts.py`, and `batch3` in `gear_batch_sheet.py`.
+- **Open:** research's pass and the three names' search, then the colour pass and its own content check (Rinkou's ribbons never red).
+- **For:** research.
+
+### 2026-11-16, 20:33. TR30: the generator's stages (Faber)
+
+- **What changed:** the Void Mill stands at the stage of a machine at the base's ceiling: I at base level 1, II at 2, III at 3 (research's answer (a)). AR19's 23 meshes are uploaded under the group. Each plot lays the three stages from `plan.json`'s swap table and shows its owner's. A pinion follows its wheel's angle, and the mark turns to its stage's degrees.
+- **Where:** TR30; `Rules.BaseLevels` (`Stage`, `GeneratorStage`), `WorldService`, `BaseService`, `BaseController`; Studio's `BaseLevel`.
+- **Tested:** type check, logic 23,227/0, the world report, the swap from the server at base levels 1 to 3. The motion and the new self-test checks are NOT VERIFIED (the screen's locked).
+- **Open:** the stage's moment at a level-up; the other machines' stages.
+- **For:** research and Modulo, at the stills.
+
+### 2026-11-16, 20:25. TR29: the Tower's run in grey (Faber)
+
+- **What changed:** the ring behind the base starts a run: a floor a foe, of the pool at its floor's level, in its enemy look. Health is carried, with no heal between floors and a cap within one. The lead, its stars, its Regalia and the gear are frozen. The fall or stepping off ends the run, its ledger granted once, with the record and the results. A crash's run ends at the next join.
+- **Where:** TR29; `Config.Tower`, `Rules.Tower`, `TowerService`, `TowerController`, `TowerScreen`; the self-test's `TowerCases`.
+- **Tested:** logic 23,212/0 and the Tower's case 43/0 at 60 fps. The whole suite is NOT VERIFIED (the PC locked during it).
+- **Open:** research's fit and feel line are in (2e57359), for Faber to carry into Config.
+- **For:** research.
+
+### 2026-11-16, 19:35. TR28: the inventory in AR18's C (Faber)
+
+- **What changed:** the belt, the six kinds, the grid with its arrows, ticks and dims, the card over the Voidkin's half with Equip and Take off, chests opened 1 or 50, the salvage; on research's answers, "n / 300 in the bag" under the grid and Open N at the bag's room. Research's fits are in Config.
+- **Where:** TR28 (a52fb94, f90fb6f); `src/client/UI/`'s inventory.
+- **Tested:** logic and flow. The 11 layout checks are NOT VERIFIED (the screen's locked).
+- **Open:** the 120 gear pictures in its cells.
+- **For:** research.
+
 ### 2026-11-16, 20:00. AR19: the Void Mill's Stages II and III as kit pieces (Modulo)
 
 - **What changed:** Stages II and III are kit pieces, cut from AR19's fixes 1 to 3:

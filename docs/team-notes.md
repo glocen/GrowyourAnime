@@ -4,10 +4,11 @@
 
 Each teammate rewrites its own row: two to five lines. Open asks sit under "Waiting on the director".
 
-**Quaestor (research).** 2026-11-17, 10:58, working through the director's absence (no break; no new sound effects until the director's samples).
-- **Today's calls:** two attributes (Strength, Endurance) and the types named by their colours (TR36, Faber's); AR27, the idles lose their head glance; AR26, Rook keeps its rows with the spacing ask, and both tier 2 asks are approved on research's side; AR15's Door closed on research's side.
-- **AR11, Ground Wire's retake:** works. Must-fix (round 2 on the hold): the lock as a pulsing fill on the stopped Shade, the shield as a pulsing glint on the spear's head. Asked of Faber: does a real fight hide the lead behind its target?
-- **Next:** verdicts in motion on AR26's blocks as Faber installs them; sim.py's pool() learns "made" (TR24); attributes.py on the real Config once TR36 lands.
+**Quaestor (research).** 2026-11-17, 23:24, session closed on the director's word. On Fable 5.2 since 23:16 (the director's word, for the sound question).
+- **Sound:** AR39 is stopped (research's stop rule): the director's ear rejected the 13 layers made by code and round 2's library arrangements. The director's pick is the audition panel, TR42, Faber's first piece next session: finished library sounds, whole, chosen by the director's ear.
+- **Colour:** AR40, less purple and black in the world and on many screens (the director's three words of tonight, `docs/decisions.md`). The bag, the Voidkin grid and the reveal stay; the system panel changes. Research's pick waits for Modulo's eight renders and Faber's Breaker capture; AR38's clock fix follows it.
+- **Verdicts owed:** AR30's scrolling row (one phone capture); AR37's build, read in the game; TR10's marker, AR28's Stage I, TR34, AR23, TR29.
+- **With the director:** the store's design (`docs/decisions.md`, "Waiting on the director", item 2).
 
 **Faber (builder).** 2026-11-17, 20:49. AR30, the seam's make, screen by screen (5cc97e5): the kit's Button as glass or channel, the X on every panel, Power's ±, and the director's remark on Lead and "Send to work" answered as research ruled: Station and Recall, with "Leading" alone on the lead's page. Stills are in `build/scratch/faber/ar30/shots/`. Research holds one question: Lead on a stationed one's page.
 - **Now:** AR30, the dock, then Sort and the chips, the Breaker's shards and Drop rates, the card's X and Tower's Close; then research's read.
@@ -46,7 +47,7 @@ For Faber:
 
 5. **The test rule, in `CLAUDE.md` and `ga-finish`.** Research relays your yes (the register, 2026-11-15, night): at a piece's finish, the cases its change can reach and every offline logic case; the whole suite at a phase's close and after a change to shared code. `CLAUDE.md` changes only on your own word in the builder's session: say "write it" there and it's in.
 6. **Your ear on Haymaker's strike sound**, a library pick (not one of AR13's made takes), heard on its frame. In a playtest, the Server command bar: `game.ServerStorage.NL_Debug:Invoke("Replay", nil, "RookHaymaker")` plays it every 3.5 s, and `Invoke("Replay", nil)` stops it. Two alternates are logged in AR1, section 8.
-7. **The sample sounds** of the family you want, for the one retry on the sound effects (your word, by 08:00). Nobody makes a new one until they come.
+7. **Your ear on the audition panel** (TR42), once Faber has built it: about 10 to 15 minutes, tapping through finished library sounds for three hits and keeping the ones you like (your word of 23:24: "ok let do 1").
 
 ### Notices
 
@@ -122,6 +123,15 @@ For Faber:
 - Tier 2, research, 2026-11-12, on the director's words: weapons belong to a class, in two hands (Main Hand and Off Hand replace Weapon and Shield), a preset holds a pair per class, a weapon drop is for the lead's class; Combat Power made to be watched, its weights fitted by the simulation; each item kind modelled and rendered to its icon (AR6, phase 3) (`docs/design.md`, "Regalia: gear" and "Combat Power"). Faber: the Stats case's `"Weapon"` source becomes `"Main Hand"` when you next touch it. Faber and Modulo: say in your row what you'd change.
 
 ## Entries
+
+### 2026-11-17, 23:24. AR39 stopped; the sounds go to the director's ear, TR42 (Quaestor)
+
+- **What changed:** the sound rescue is stopped. Two more attempts passed every measure and failed at the director's first listen: 13 layers made by code ("horrendous sfx.."), then round 2's library recordings, sliced and stacked ("it sounds like everything but not a sfx"). Nobody on the team can hear, and the measures don't predict the ear.
+- **The director's pick:** an audition panel in the dev place. Every cue is one finished library sound, any author, played whole, and the director keeps the one that's right.
+- **Where:** `docs/asset-requests.md`, AR39 (the stop, and research's errors); `docs/test-requests.md`, TR42 (the panel); `docs/decisions.md`, the top rows.
+- **Stands:** Faber's engine and its measures (starts on the mixer's clock, counted misses, the A/B switch, the match). Today's cues play.
+- **Open:** TR42's build and the director's listen. AR40's renders and captures, for research's colour pick.
+- **For:** Faber (TR42 first), Modulo (nothing on sound), the director (about 10 to 15 minutes on the panel).
 
 ### 2026-11-17, 18:49. TR41 (e): the HUD's V2 leftovers answered, the Training machine training (Faber)
 
@@ -210,41 +220,3 @@ For Faber:
 - **Where:** AR6, "Research's three fixes, in colour"; `build/handoff/UI/gear/`; `tools/blender/gear_icons.py` (`lift`, `glint`) and the five kinds' scripts.
 - **Open:** research's look, then the 120 go to Faber for upload. Batch 1's two iron swords measure as dark, and the same flag is ready if research wants it.
 - **For:** research, then Faber.
-
-### 2026-11-16, 21:01. AR6: batch 3 in colour, the 120 in their slots (Modulo)
-
-- **What changed:** the eight class weapons in colour, as flat pictures for the gear slots, each with its class's mark on the bottom cut. The Tome's boards are a dark leather by rarity over cream pages, and the Codex's covers a pale parchment. `gear_icons.json` keys a weapon by its kind ("Sword" and "Short Sword" were "Main Hand" and "Off Hand") and gives each class's pair under `hands`.
-- **Where:** AR6, "Batch 3 in colour"; `build/handoff/UI/gear/` (`gear_<kind>_colour.png`, `images/`, `gear_icons.json`); `tools/blender/gear_icons.py`; the asset log, with batch 2's row, logged late.
-- **Open:** research's verdict, then the 120 and the json go to Faber for upload under the group.
-- **For:** research, then Faber.
-
-### 2026-11-16, 20:50. AR6: batch 3, the eight class weapons in grey, with their fixes (Modulo)
-
-- **What changed:** the Great Axe, Shield, Staff, Tome, Dagger, Throwing Blades, Crystal Baton and Codex, fifteen each in their rarity's threes. Each set keeps its column, and each Legendary has one new form. Each class's pair stays apart: the Staff's open ring and the Baton's crystal, the dark Tome and the pale Codex, one fang and a fan of three. Research's four fixes are drawn: the Codex reads as a book, the Staff's ring at 32 pixels, Bunkou's fork, and Rinkou's ribbons from the head. Three names are new: Tenmon, Kontengi and Bunkou.
-- **Where:** AR6, "Batch 3" and "Batch 3's fixes"; `build/handoff/Gear/batch3_sheet/` and `build/handoff/Gear/<kind>_sets/`; `tools/blender/gear_<kind>_sets.py`, the new long-weapon parts in `gear_parts.py`, and `batch3` in `gear_batch_sheet.py`.
-- **Open:** research's pass and the three names' search, then the colour pass and its own content check (Rinkou's ribbons never red).
-- **For:** research.
-
-### 2026-11-16, 20:33. TR30: the generator's stages (Faber)
-
-- **What changed:** the Void Mill stands at the stage of a machine at the base's ceiling: I at base level 1, II at 2, III at 3 (research's answer (a)). AR19's 23 meshes are uploaded under the group. Each plot lays the three stages from `plan.json`'s swap table and shows its owner's. A pinion follows its wheel's angle, and the mark turns to its stage's degrees.
-- **Where:** TR30; `Rules.BaseLevels` (`Stage`, `GeneratorStage`), `WorldService`, `BaseService`, `BaseController`; Studio's `BaseLevel`.
-- **Tested:** type check, logic 23,227/0, the world report, the swap from the server at base levels 1 to 3. The motion and the new self-test checks are NOT VERIFIED (the screen's locked).
-- **Open:** the stage's moment at a level-up; the other machines' stages.
-- **For:** research and Modulo, at the stills.
-
-### 2026-11-16, 20:25. TR29: the Tower's run in grey (Faber)
-
-- **What changed:** the ring behind the base starts a run: a floor a foe, of the pool at its floor's level, in its enemy look. Health is carried, with no heal between floors and a cap within one. The lead, its stars, its Regalia and the gear are frozen. The fall or stepping off ends the run, its ledger granted once, with the record and the results. A crash's run ends at the next join.
-- **Where:** TR29; `Config.Tower`, `Rules.Tower`, `TowerService`, `TowerController`, `TowerScreen`; the self-test's `TowerCases`.
-- **Tested:** logic 23,212/0 and the Tower's case 43/0 at 60 fps. The whole suite is NOT VERIFIED (the PC locked during it).
-- **Open:** research's fit and feel line are in (2e57359), for Faber to carry into Config.
-- **For:** research.
-
-### 2026-11-16, 19:35. TR28: the inventory in AR18's C (Faber)
-
-- **What changed:** the belt, the six kinds, the grid with its arrows, ticks and dims, the card over the Voidkin's half with Equip and Take off, chests opened 1 or 50, the salvage; on research's answers, "n / 300 in the bag" under the grid and Open N at the bag's room. Research's fits are in Config.
-- **Where:** TR28 (a52fb94, f90fb6f); `src/client/UI/`'s inventory.
-- **Tested:** logic and flow. The 11 layout checks are NOT VERIFIED (the screen's locked).
-- **Open:** the 120 gear pictures in its cells.
-- **For:** research.

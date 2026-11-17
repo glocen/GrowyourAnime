@@ -8,9 +8,13 @@ Each covers exactly what it names. The directive of 2026-11-09 is in `docs/archi
 
 | Date | The words | They cover |
 |---|---|---|
+| 2026-11-17, 23:24, to research | "ok let do 1 also tell everyone to wrap up", to research's three ways after AR39's stop (1, an audition panel where the director picks finished library sounds by ear; 2, the director's own ids; 3, the sounds rest) | **Covers:** how the sound effects get made, and the session's end.
+- **The sounds:** every cue is one finished sound from Roblox's library, any author, played whole, chosen by the director's ear on an audition panel (`docs/test-requests.md`, TR42). The team makes and layers none.
+- **It replaces** AR39's arrangements, and the directive's "do not involve me in choosing samples" for the picks only. The directive's other lines stand.
+- **The team wraps up** the session. |
 | 2026-11-17, by 23:16, to research | After listening to AR39's round 2 in Studio: "listened but this is just horrible plain nonsense like i have no words it sounds like everything but not a sfx it just comic gibberish nonsense if we cant do it just say so else go here i give you fable 5.2 xhigh to think this through" | **Covers:** AR39's round 2 as heard is rejected by the director's ear, and research owes a plain answer on whether the team can do the sound effects. Research on Fable 5.2 for it, by the director's word.
 - **Research's answer, 23:18:** the team can't make or choose sounds blind (four attempts, each passing its measures, each rejected at the first listen). It can build everything around a sound that is already good. The stop rule is called (AR39).
-- **What happens next** is the director's: "Waiting on the director", item 3. |
+- **What happens next:** answered by the director at 23:24, the row above. |
 | 2026-11-17, 22:41 and 22:53, to research | "i think the game is way to much too purple/Black and somber btw", then "there can be blueish purple and dark like the inventory hud is good but the other area js make it wayy to much", then, correcting research's reading: "all i said was that it fine to keep some of the old UI that are in purple, we dont have to change everything some are very good, we just need to change many cause else the game is simply to dark somber, purple" | **Covers:** the game's colour, the world and the screens, worked in AR40.
 - **Change many, not all.** The game is too dark, somber and purple, so many pieces change, in the world and on the screens.
 - **Kept, as some old purple screens are very good:** the inventory is the one named.
@@ -299,11 +303,3 @@ Nothing blocks the team's start. These are the director's when they want them:
    - **Later, in an update, the random sales you asked for** ("as transparent as glass", 2026-11-12). Built in first: the PolicyService check, every outcome's odds on the screen before purchase, the questionnaire, and a non-random alternative where they're restricted.
    - **Prices:** comparable passes sell for 149 to 1,499 Robux (`docs/research/tower.md`). Research sets each at your yes.
    - **The cost:** an early access store this thin earns little. It keeps the game clean while the loop proves itself (the directive, section 15: "First establish an enjoyable free progression loop").
-
-3. **How the sound effects get made, after AR39's stop** (research's proposal, 2026-11-17, 23:18; tier 3, since it asks for the director's ear, which the directive of 21:15 kept out).
-   - **What changes:** the team stops making and layering sounds. Every cue is one finished sound from Roblox's library, any author (the word of 2026-11-15), played whole.
-   - **The ear is the director's,** as their words of 2026-11-14 (a listening sheet) and 14:05 today (samples per family) already had it.
-     - Faber builds an audition panel in the dev place: about ten finished candidates a cue, heard on real hits, with a tap to keep one.
-     - The director's picks are also the anchors the ranker is counted against for the cues that follow.
-   - **What it replaces:** AR39's arrangements, and the directive's "do not involve me in choosing samples" for the picks only.
-   - **Or:** the director gives the ids of sounds they like and the team wires them. Or the sounds rest and today's cues stay.

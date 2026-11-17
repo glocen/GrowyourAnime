@@ -9203,5 +9203,60 @@ These are written from each combo's clip and its timings in `Shared.Definitions.
   - **If it doesn't:** the light and the spit carry the read at 215, and the crack stays as delivered. The verdict in motion judges it then.
 - **The block can go ahead:** this doesn't hold the grey block, it adds two takes to it.
 
+### Rook's basic attack: the burst, the cone and the grey block (Modulo, 2026-11-17, from 08:15, after the row's commit)
+
+Made on research's line 2, with its camera of 08:16: the hero shape reads with the Shade between the camera and the touch. `tools/blender/rook_combo_fx.py` reads the delivered `Rook_Combo.json` on R6's shoulders and the piston's joint, and checks RookCombo's beats (12, 48, 86).
+- **Where the blows land** (`measure`, `screen`):
+  - **The jab** (hit 1, the taped fist): it lands 2.2 studs to his left and 1.8 ahead, beside the Shade's right shoulder, as the clip aimed it for the game's camera. At 215 it's in the open. At the mirror (145) the Shade covers it.
+  - **The hook** (hit 2, the ram's face): it lands at waist height 0.27 studs before the Shade's left arm, behind it from 215.
+  - **The ram** (hit 3): it goes into the street 1.5 ahead, before the Shade, as the piston fires on frame 87. At 215 the Shade's legs cover its foot.
+- **The hero, hits 1 and 2: a tight burst.** Six straight spikes snap off the knuckles on a hollow ring, long and short in turn. They're out in 1.5 frames, held through the hitstop to frame 4, then fly off their tips and thin out by 8 (0.13 s).
+  - **The jab's** spikes are 1.25 and 0.7 studs. It lands beside the Shade's right shoulder, just under its head, so its burst flares off the outside, to his left and down (its reach turned 40 degrees out and 20 down, raked 50). The few bursts that keep every spike off the body and off the head's outline from every heading all flare this way.
+  - **The hook's** spikes are 2.1 and 1.16 studs, and they glance: a narrow spray up off the arm's front, to his right and back toward him (50 degrees up). The arm stands behind the touch, so the hook's burst can't open forward without entering it. I searched every axis, rake and turn that keeps all six spikes 0.2 studs off the Shade. This spray shows the most at 215, 1.4 studs on two lines. A wider burst shows 0.9 on one.
+- **The hero, hit 3: the cone.** Five straight lines run from the ram's foot along the street, through the Shade's feet the way the ram pushes it, drawn in 3 frames, fast at first, and gone by 11 (0.18 s).
+  - **Through the legs,** three lines rush low, 2 to 3 degrees up and 4.2 to 4.8 studs long. A line that meets a leg is under 0.4 studs there, a rush along the ground.
+  - **On his right,** two lines pass beside the Shade's left leg and rise as the cone opens, 12 and 17 degrees, shorter at 3.8 and 3.4.
+  - **The dust:** 12 soft puffs, thrown the same way and slowing (Drag 5), out past the Shade's feet.
+  - **The light:** it runs with the cone through the Shade, and lights it from his side.
+  - Aimed at the Shade's middle, the cone showed 3.4 studs at 215. Aimed 2 studs past it, it shows 9.8.
+- **A light at each touch**, which rims the Shade where the burst is behind it.
+- **Jab, hook, ram:** 1.25, then 2.1, then 3.4 to 4.8 studs, each heavier, to match the line's "the third hit heavy".
+- **Rule 4, in the script (`into`, which fails the rows):**
+  - no spike comes within 0.18 studs of a Shade part, and no spike's end (what's left as it flies off) draws over the head's outline from any heading;
+  - no cone line is inside one above 0.4 studs up;
+  - both hold with the Shade at its spacing and pushed back by the jab and the hook (3.5, 3.9 and 4.3 ahead, against fixed rows).
+
+  The content check's first pass (between 08:26 and 08:36 by the clock) blocked on three paths that entered the body: the jab's spike 1 tip in the Shade's shoulder, the hook's spikes 3 and 4 through its arm, and cone line 2 out of a calf at 0.9 up. All three are gone. Its second pass gave **PASS for the grey block**, and named one near miss: jab spike 1's tip drew over the head from 285. The head test is the fix, so that miss is gone too.
+- **Seen, studs of the lines whole that the Shade doesn't cover** (`rows` prints it; the Shade 3.5 ahead, then pushed to 4.3):
+
+  | Heading | Jab (of 6.1) | Hook (of 9.9) | Cone (of 20.8) |
+  |---|---|---|---|
+  | 215, the main framing | 6.0, 6 lines (4.3: 6.1) | 1.4, 2 lines (4.3: 0) | 9.8, 5 lines (4.3: 4.8) |
+  | 145, its mirror | 0.2 | 9.6, 6 lines | 17.5, 5 lines |
+  | 285 | 6.1, 6 lines | 9.9, 6 lines | 11.7, 5 lines |
+  | 28, the clip's review | 6.1, 6 lines | 9.9, 6 lines | 12.9, 5 lines |
+
+- **What's still weak, for the block to judge in motion:**
+  - At 145 the jab is hidden: the clip aims it for 215. The touch's light carries it there.
+  - At 215 the hook is mostly hidden, as Watt's crack is: two tips, 0.5 and 0.9 studs, and none with the Shade pushed back. The touch's light carries it. Research's `ZOffset` takes on Watt's crack apply here, with the content check's condition: a line drawn nearer the camera must not lie over the body as if through it.
+  - The puffs aren't in the table. They spread wider than the Shade's legs, so most should show at 215.
+- **No band tick.** The line doesn't ask for one, so the gauntlet's own look is untouched.
+- **The block holds:** 38 rows in grey: 24 Beams for the spikes, 10 for the cone, the dust in the kit's soft light (lit, as Kirra's Puff), and three lights. They run on the action's clock, so a hitstop holds them.
+- **What waits:**
+  - the colour pass after the block's verdict (his accent is the gauntlet's orange band);
+  - the dust in the kit's puff sheet;
+  - the sound, for the director's retry;
+  - the redraw for his new weapon at the redesign.
+- **For Faber:** `build/handoff/Rook/fx/RookCombo.rows.json`, after Watt's block in your queue. The touches are placed for the fighting spacing, 3.5. The cone's dust turns about up (`Turn`) onto the cone's aim, and emits `Front`. **The captures,** which come back to the content check: full size and 64 px over dark, at 215, 145, 285 and 28, frozen 2 and 5 frames after each hit, with one take where the Shade has been pushed back. They check that:
+  - no spike's tip stands against the head or a shoulder: the jab's spike 1 from 285 must read as a ray flaring past the shoulder, not one ending in it, and its spike 6 from 285 and 28 as a spark at the contact, not a point driven in;
+  - the hook's spray reads as glancing up off the arm, not as a line drawn along it (at 28 and 285);
+  - no cone line seems to leave a leg above the ankle (line 4, beside the Shade's left leg when pushed back, is the nearest).
+
+  A `ZOffset` take is judged the same way.
+- **The content check's conditions for later:**
+  - **The colour pass:** the band's accent stays self-lit amber to orange-white, never red, crimson or dark. The dust stays grey to tan soft puffs, never drops or wet shapes. Nothing is left on the street. The rays stay straight.
+  - **Before any upload:** the puff sheet and any line texture get their own check.
+- **Time:** the first rows took 11 minutes, from the row's commit at 08:15 to 08:26. The content check's fixes took 14 more, the head test included, to 08:40 by the clock. The cap is 2 hours at its block.
+
 
 The rest of ground 1 (Kirra in AR10, Watt in AR11; then Sable, Marigold, Crane), then each ground's Voidkin in `docs/roster.md`'s order. **The machines** (Gantry, Bulwark, Ironhymn, Shiomaru, Aegir) share one custom rig, taller than a player, with its own clip family: the first of them is timed like AR1, because a custom rig is a different cost.

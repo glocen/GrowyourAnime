@@ -1,0 +1,3043 @@
+{
+ "Schema": "rows/1",
+ "Effect": "RookCombo",
+ "Why": "Rook's basic attack, the grey block (AR26; research's feel line, 08:06, its camera 08:16): on the jab and the hook a tight burst of spikes snaps off the knuckles; on the ram a cone of lines and dust runs from its foot along the street, through the Shade and past it. On the action's clock, so a hitstop holds it. The touches are placed for the Shade 3.5 ahead, his fighting spacing. Written by tools/blender/rook_combo_fx.py.",
+ "Area": 1,
+ "Grey": true,
+ "Action": "RookCombo",
+ "Rows": {
+  "Hit1Spike1": {
+   "Kind": "Beam",
+   "Image": "fx_beam",
+   "Grey": "fx_beam",
+   "Color": {
+    "Color3": [
+     255,
+     255,
+     255
+    ]
+   },
+   "From": "Hit1",
+   "Beam": {
+    "FaceCamera": true,
+    "TextureMode": "Stretch",
+    "TextureLength": 1,
+    "TextureSpeed": 0,
+    "LightEmission": 1,
+    "LightInfluence": 0,
+    "Brightness": 3,
+    "Segments": 1
+   },
+   "High": "Hit1Spike1Tip.Low",
+   "Taper": 0.3,
+   "Why": "Hit1Spike1: a line off the touch",
+   "Tracks": {
+    "At": [
+     [
+      0,
+      {
+       "Vector3": [
+        -2.304,
+        3.522,
+        -2.011
+       ]
+      },
+      "Linear"
+     ],
+     [
+      4,
+      {
+       "Vector3": [
+        -2.304,
+        3.522,
+        -2.011
+       ]
+      },
+      "Quad In"
+     ],
+     [
+      8,
+      {
+       "Vector3": [
+        -2.839,
+        3.839,
+        -2.919
+       ]
+      }
+     ]
+    ],
+    "Foot": [
+     [
+      0,
+      0
+     ]
+    ],
+    "Width": [
+     [
+      0,
+      0.102,
+      "Quart Out"
+     ],
+     [
+      1,
+      0.17,
+      "Linear"
+     ],
+     [
+      4,
+      0.17,
+      "Quad In"
+     ],
+     [
+      8,
+      0.051
+     ]
+    ],
+    "Transparency": [
+     [
+      0,
+      0,
+      "Linear"
+     ],
+     [
+      5,
+      0,
+      "Quad In"
+     ],
+     [
+      8,
+      1
+     ]
+    ]
+   }
+  },
+  "Hit1Spike1Tip": {
+   "Kind": "Beam",
+   "Image": "fx_beam",
+   "Grey": "fx_beam",
+   "Color": {
+    "Color3": [
+     255,
+     255,
+     255
+    ]
+   },
+   "From": "Hit1",
+   "Beam": {
+    "FaceCamera": true,
+    "TextureMode": "Stretch",
+    "TextureLength": 1,
+    "TextureSpeed": 0,
+    "LightEmission": 1,
+    "LightInfluence": 0,
+    "Brightness": 3,
+    "Segments": 1
+   },
+   "Why": "Hit1Spike1's tip: a place for its line, never shown",
+   "Tracks": {
+    "At": [
+     [
+      0,
+      {
+       "Vector3": [
+        -2.304,
+        3.522,
+        -2.011
+       ]
+      },
+      "Quart Out"
+     ],
+     [
+      1.5,
+      {
+       "Vector3": [
+        -2.956,
+        3.909,
+        -3.118
+       ]
+      }
+     ]
+    ],
+    "Foot": [
+     [
+      0,
+      0
+     ]
+    ],
+    "Width": [
+     [
+      0,
+      0
+     ]
+    ]
+   }
+  },
+  "Hit1Spike2": {
+   "Kind": "Beam",
+   "Image": "fx_beam",
+   "Grey": "fx_beam",
+   "Color": {
+    "Color3": [
+     255,
+     255,
+     255
+    ]
+   },
+   "From": "Hit1",
+   "Beam": {
+    "FaceCamera": true,
+    "TextureMode": "Stretch",
+    "TextureLength": 1,
+    "TextureSpeed": 0,
+    "LightEmission": 1,
+    "LightInfluence": 0,
+    "Brightness": 3,
+    "Segments": 1
+   },
+   "High": "Hit1Spike2Tip.Low",
+   "Taper": 0.3,
+   "Why": "Hit1Spike2: a line off the touch",
+   "Tracks": {
+    "At": [
+     [
+      0,
+      {
+       "Vector3": [
+        -2.418,
+        3.562,
+        -1.846
+       ]
+      },
+      "Linear"
+     ],
+     [
+      4,
+      {
+       "Vector3": [
+        -2.418,
+        3.562,
+        -1.846
+       ]
+      },
+      "Quad In"
+     ],
+     [
+      8,
+      {
+       "Vector3": [
+        -2.939,
+        3.818,
+        -2.012
+       ]
+      }
+     ]
+    ],
+    "Foot": [
+     [
+      0,
+      0
+     ]
+    ],
+    "Width": [
+     [
+      0,
+      0.102,
+      "Quart Out"
+     ],
+     [
+      1,
+      0.17,
+      "Linear"
+     ],
+     [
+      4,
+      0.17,
+      "Quad In"
+     ],
+     [
+      8,
+      0.051
+     ]
+    ],
+    "Transparency": [
+     [
+      0,
+      0,
+      "Linear"
+     ],
+     [
+      5,
+      0,
+      "Quad In"
+     ],
+     [
+      8,
+      1
+     ]
+    ]
+   }
+  },
+  "Hit1Spike2Tip": {
+   "Kind": "Beam",
+   "Image": "fx_beam",
+   "Grey": "fx_beam",
+   "Color": {
+    "Color3": [
+     255,
+     255,
+     255
+    ]
+   },
+   "From": "Hit1",
+   "Beam": {
+    "FaceCamera": true,
+    "TextureMode": "Stretch",
+    "TextureLength": 1,
+    "TextureSpeed": 0,
+    "LightEmission": 1,
+    "LightInfluence": 0,
+    "Brightness": 3,
+    "Segments": 1
+   },
+   "Why": "Hit1Spike2's tip: a place for its line, never shown",
+   "Tracks": {
+    "At": [
+     [
+      0,
+      {
+       "Vector3": [
+        -2.418,
+        3.562,
+        -1.846
+       ]
+      },
+      "Quart Out"
+     ],
+     [
+      1.5,
+      {
+       "Vector3": [
+        -3.053,
+        3.874,
+        -2.049
+       ]
+      }
+     ]
+    ],
+    "Foot": [
+     [
+      0,
+      0
+     ]
+    ],
+    "Width": [
+     [
+      0,
+      0
+     ]
+    ]
+   }
+  },
+  "Hit1Spike3": {
+   "Kind": "Beam",
+   "Image": "fx_beam",
+   "Grey": "fx_beam",
+   "Color": {
+    "Color3": [
+     255,
+     255,
+     255
+    ]
+   },
+   "From": "Hit1",
+   "Beam": {
+    "FaceCamera": true,
+    "TextureMode": "Stretch",
+    "TextureLength": 1,
+    "TextureSpeed": 0,
+    "LightEmission": 1,
+    "LightInfluence": 0,
+    "Brightness": 3,
+    "Segments": 1
+   },
+   "High": "Hit1Spike3Tip.Low",
+   "Taper": 0.3,
+   "Why": "Hit1Spike3: a line off the touch",
+   "Tracks": {
+    "At": [
+     [
+      0,
+      {
+       "Vector3": [
+        -2.432,
+        3.468,
+        -1.646
+       ]
+      },
+      "Linear"
+     ],
+     [
+      4,
+      {
+       "Vector3": [
+        -2.432,
+        3.468,
+        -1.646
+       ]
+      },
+      "Quad In"
+     ],
+     [
+      8,
+      {
+       "Vector3": [
+        -3.415,
+        3.587,
+        -1.222
+       ]
+      }
+     ]
+    ],
+    "Foot": [
+     [
+      0,
+      0
+     ]
+    ],
+    "Width": [
+     [
+      0,
+      0.102,
+      "Quart Out"
+     ],
+     [
+      1,
+      0.17,
+      "Linear"
+     ],
+     [
+      4,
+      0.17,
+      "Quad In"
+     ],
+     [
+      8,
+      0.051
+     ]
+    ],
+    "Transparency": [
+     [
+      0,
+      0,
+      "Linear"
+     ],
+     [
+      5,
+      0,
+      "Quad In"
+     ],
+     [
+      8,
+      1
+     ]
+    ]
+   }
+  },
+  "Hit1Spike3Tip": {
+   "Kind": "Beam",
+   "Image": "fx_beam",
+   "Grey": "fx_beam",
+   "Color": {
+    "Color3": [
+     255,
+     255,
+     255
+    ]
+   },
+   "From": "Hit1",
+   "Beam": {
+    "FaceCamera": true,
+    "TextureMode": "Stretch",
+    "TextureLength": 1,
+    "TextureSpeed": 0,
+    "LightEmission": 1,
+    "LightInfluence": 0,
+    "Brightness": 3,
+    "Segments": 1
+   },
+   "Why": "Hit1Spike3's tip: a place for its line, never shown",
+   "Tracks": {
+    "At": [
+     [
+      0,
+      {
+       "Vector3": [
+        -2.432,
+        3.468,
+        -1.646
+       ]
+      },
+      "Quart Out"
+     ],
+     [
+      1.5,
+      {
+       "Vector3": [
+        -3.63,
+        3.614,
+        -1.128
+       ]
+      }
+     ]
+    ],
+    "Foot": [
+     [
+      0,
+      0
+     ]
+    ],
+    "Width": [
+     [
+      0,
+      0
+     ]
+    ]
+   }
+  },
+  "Hit1Spike4": {
+   "Kind": "Beam",
+   "Image": "fx_beam",
+   "Grey": "fx_beam",
+   "Color": {
+    "Color3": [
+     255,
+     255,
+     255
+    ]
+   },
+   "From": "Hit1",
+   "Beam": {
+    "FaceCamera": true,
+    "TextureMode": "Stretch",
+    "TextureLength": 1,
+    "TextureSpeed": 0,
+    "LightEmission": 1,
+    "LightInfluence": 0,
+    "Brightness": 3,
+    "Segments": 1
+   },
+   "High": "Hit1Spike4Tip.Low",
+   "Taper": 0.3,
+   "Why": "Hit1Spike4: a line off the touch",
+   "Tracks": {
+    "At": [
+     [
+      0,
+      {
+       "Vector3": [
+        -2.339,
+        3.262,
+        -1.598
+       ]
+      },
+      "Linear"
+     ],
+     [
+      4,
+      {
+       "Vector3": [
+        -2.339,
+        3.262,
+        -1.598
+       ]
+      },
+      "Quad In"
+     ],
+     [
+      8,
+      {
+       "Vector3": [
+        -2.682,
+        2.93,
+        -1.28
+       ]
+      }
+     ]
+    ],
+    "Foot": [
+     [
+      0,
+      0
+     ]
+    ],
+    "Width": [
+     [
+      0,
+      0.102,
+      "Quart Out"
+     ],
+     [
+      1,
+      0.17,
+      "Linear"
+     ],
+     [
+      4,
+      0.17,
+      "Quad In"
+     ],
+     [
+      8,
+      0.051
+     ]
+    ],
+    "Transparency": [
+     [
+      0,
+      0,
+      "Linear"
+     ],
+     [
+      5,
+      0,
+      "Quad In"
+     ],
+     [
+      8,
+      1
+     ]
+    ]
+   }
+  },
+  "Hit1Spike4Tip": {
+   "Kind": "Beam",
+   "Image": "fx_beam",
+   "Grey": "fx_beam",
+   "Color": {
+    "Color3": [
+     255,
+     255,
+     255
+    ]
+   },
+   "From": "Hit1",
+   "Beam": {
+    "FaceCamera": true,
+    "TextureMode": "Stretch",
+    "TextureLength": 1,
+    "TextureSpeed": 0,
+    "LightEmission": 1,
+    "LightInfluence": 0,
+    "Brightness": 3,
+    "Segments": 1
+   },
+   "Why": "Hit1Spike4's tip: a place for its line, never shown",
+   "Tracks": {
+    "At": [
+     [
+      0,
+      {
+       "Vector3": [
+        -2.339,
+        3.262,
+        -1.598
+       ]
+      },
+      "Quart Out"
+     ],
+     [
+      1.5,
+      {
+       "Vector3": [
+        -2.757,
+        2.858,
+        -1.21
+       ]
+      }
+     ]
+    ],
+    "Foot": [
+     [
+      0,
+      0
+     ]
+    ],
+    "Width": [
+     [
+      0,
+      0
+     ]
+    ]
+   }
+  },
+  "Hit1Spike5": {
+   "Kind": "Beam",
+   "Image": "fx_beam",
+   "Grey": "fx_beam",
+   "Color": {
+    "Color3": [
+     255,
+     255,
+     255
+    ]
+   },
+   "From": "Hit1",
+   "Beam": {
+    "FaceCamera": true,
+    "TextureMode": "Stretch",
+    "TextureLength": 1,
+    "TextureSpeed": 0,
+    "LightEmission": 1,
+    "LightInfluence": 0,
+    "Brightness": 3,
+    "Segments": 1
+   },
+   "High": "Hit1Spike5Tip.Low",
+   "Taper": 0.3,
+   "Why": "Hit1Spike5: a line off the touch",
+   "Tracks": {
+    "At": [
+     [
+      0,
+      {
+       "Vector3": [
+        -2.235,
+        3.146,
+        -1.786
+       ]
+      },
+      "Linear"
+     ],
+     [
+      4,
+      {
+       "Vector3": [
+        -2.235,
+        3.146,
+        -1.786
+       ]
+      },
+      "Quad In"
+     ],
+     [
+      8,
+      {
+       "Vector3": [
+        -2.5,
+        2.146,
+        -1.861
+       ]
+      }
+     ]
+    ],
+    "Foot": [
+     [
+      0,
+      0
+     ]
+    ],
+    "Width": [
+     [
+      0,
+      0.102,
+      "Quart Out"
+     ],
+     [
+      1,
+      0.17,
+      "Linear"
+     ],
+     [
+      4,
+      0.17,
+      "Quad In"
+     ],
+     [
+      8,
+      0.051
+     ]
+    ],
+    "Transparency": [
+     [
+      0,
+      0,
+      "Linear"
+     ],
+     [
+      5,
+      0,
+      "Quad In"
+     ],
+     [
+      8,
+      1
+     ]
+    ]
+   }
+  },
+  "Hit1Spike5Tip": {
+   "Kind": "Beam",
+   "Image": "fx_beam",
+   "Grey": "fx_beam",
+   "Color": {
+    "Color3": [
+     255,
+     255,
+     255
+    ]
+   },
+   "From": "Hit1",
+   "Beam": {
+    "FaceCamera": true,
+    "TextureMode": "Stretch",
+    "TextureLength": 1,
+    "TextureSpeed": 0,
+    "LightEmission": 1,
+    "LightInfluence": 0,
+    "Brightness": 3,
+    "Segments": 1
+   },
+   "Why": "Hit1Spike5's tip: a place for its line, never shown",
+   "Tracks": {
+    "At": [
+     [
+      0,
+      {
+       "Vector3": [
+        -2.235,
+        3.146,
+        -1.786
+       ]
+      },
+      "Quart Out"
+     ],
+     [
+      1.5,
+      {
+       "Vector3": [
+        -2.558,
+        1.926,
+        -1.877
+       ]
+      }
+     ]
+    ],
+    "Foot": [
+     [
+      0,
+      0
+     ]
+    ],
+    "Width": [
+     [
+      0,
+      0
+     ]
+    ]
+   }
+  },
+  "Hit1Spike6": {
+   "Kind": "Beam",
+   "Image": "fx_beam",
+   "Grey": "fx_beam",
+   "Color": {
+    "Color3": [
+     255,
+     255,
+     255
+    ]
+   },
+   "From": "Hit1",
+   "Beam": {
+    "FaceCamera": true,
+    "TextureMode": "Stretch",
+    "TextureLength": 1,
+    "TextureSpeed": 0,
+    "LightEmission": 1,
+    "LightInfluence": 0,
+    "Brightness": 3,
+    "Segments": 1
+   },
+   "High": "Hit1Spike6Tip.Low",
+   "Taper": 0.3,
+   "Why": "Hit1Spike6: a line off the touch",
+   "Tracks": {
+    "At": [
+     [
+      0,
+      {
+       "Vector3": [
+        -2.208,
+        3.262,
+        -2.004
+       ]
+      },
+      "Linear"
+     ],
+     [
+      4,
+      {
+       "Vector3": [
+        -2.208,
+        3.262,
+        -2.004
+       ]
+      },
+      "Quad In"
+     ],
+     [
+      8,
+      {
+       "Vector3": [
+        -2.306,
+        2.918,
+        -2.484
+       ]
+      }
+     ]
+    ],
+    "Foot": [
+     [
+      0,
+      0
+     ]
+    ],
+    "Width": [
+     [
+      0,
+      0.102,
+      "Quart Out"
+     ],
+     [
+      1,
+      0.17,
+      "Linear"
+     ],
+     [
+      4,
+      0.17,
+      "Quad In"
+     ],
+     [
+      8,
+      0.051
+     ]
+    ],
+    "Transparency": [
+     [
+      0,
+      0,
+      "Linear"
+     ],
+     [
+      5,
+      0,
+      "Quad In"
+     ],
+     [
+      8,
+      1
+     ]
+    ]
+   }
+  },
+  "Hit1Spike6Tip": {
+   "Kind": "Beam",
+   "Image": "fx_beam",
+   "Grey": "fx_beam",
+   "Color": {
+    "Color3": [
+     255,
+     255,
+     255
+    ]
+   },
+   "From": "Hit1",
+   "Beam": {
+    "FaceCamera": true,
+    "TextureMode": "Stretch",
+    "TextureLength": 1,
+    "TextureSpeed": 0,
+    "LightEmission": 1,
+    "LightInfluence": 0,
+    "Brightness": 3,
+    "Segments": 1
+   },
+   "Why": "Hit1Spike6's tip: a place for its line, never shown",
+   "Tracks": {
+    "At": [
+     [
+      0,
+      {
+       "Vector3": [
+        -2.208,
+        3.262,
+        -2.004
+       ]
+      },
+      "Quart Out"
+     ],
+     [
+      1.5,
+      {
+       "Vector3": [
+        -2.328,
+        2.842,
+        -2.59
+       ]
+      }
+     ]
+    ],
+    "Foot": [
+     [
+      0,
+      0
+     ]
+    ],
+    "Width": [
+     [
+      0,
+      0
+     ]
+    ]
+   }
+  },
+  "Hit1Light": {
+   "Kind": "Light",
+   "From": "Hit1",
+   "Range": 7,
+   "Color": {
+    "Color3": [
+     255,
+     255,
+     255
+    ]
+   },
+   "Why": "the knuckles' light: it rims the Shade where the touch is behind it",
+   "Tracks": {
+    "At": [
+     [
+      0,
+      {
+       "Vector3": [
+        -2.159,
+        3.435,
+        -1.764
+       ]
+      }
+     ]
+    ],
+    "Brightness": [
+     [
+      0,
+      4,
+      "Quart Out"
+     ],
+     [
+      6,
+      0
+     ]
+    ]
+   }
+  },
+  "Hit2Spike1": {
+   "Kind": "Beam",
+   "Image": "fx_beam",
+   "Grey": "fx_beam",
+   "Color": {
+    "Color3": [
+     255,
+     255,
+     255
+    ]
+   },
+   "From": "Hit2",
+   "Beam": {
+    "FaceCamera": true,
+    "TextureMode": "Stretch",
+    "TextureLength": 1,
+    "TextureSpeed": 0,
+    "LightEmission": 1,
+    "LightInfluence": 0,
+    "Brightness": 3,
+    "Segments": 1
+   },
+   "High": "Hit2Spike1Tip.Low",
+   "Taper": 0.3,
+   "Why": "Hit2Spike1: a line off the touch",
+   "Tracks": {
+    "At": [
+     [
+      0,
+      {
+       "Vector3": [
+        2.249,
+        2.857,
+        -2.367
+       ]
+      },
+      "Linear"
+     ],
+     [
+      4,
+      {
+       "Vector3": [
+        2.249,
+        2.857,
+        -2.367
+       ]
+      },
+      "Quad In"
+     ],
+     [
+      8,
+      {
+       "Vector3": [
+        2.715,
+        4.319,
+        -1.321
+       ]
+      }
+     ]
+    ],
+    "Foot": [
+     [
+      0,
+      0
+     ]
+    ],
+    "Width": [
+     [
+      0,
+      0.12,
+      "Quart Out"
+     ],
+     [
+      1,
+      0.2,
+      "Linear"
+     ],
+     [
+      4,
+      0.2,
+      "Quad In"
+     ],
+     [
+      8,
+      0.06
+     ]
+    ],
+    "Transparency": [
+     [
+      0,
+      0,
+      "Linear"
+     ],
+     [
+      5,
+      0,
+      "Quad In"
+     ],
+     [
+      8,
+      1
+     ]
+    ]
+   }
+  },
+  "Hit2Spike1Tip": {
+   "Kind": "Beam",
+   "Image": "fx_beam",
+   "Grey": "fx_beam",
+   "Color": {
+    "Color3": [
+     255,
+     255,
+     255
+    ]
+   },
+   "From": "Hit2",
+   "Beam": {
+    "FaceCamera": true,
+    "TextureMode": "Stretch",
+    "TextureLength": 1,
+    "TextureSpeed": 0,
+    "LightEmission": 1,
+    "LightInfluence": 0,
+    "Brightness": 3,
+    "Segments": 1
+   },
+   "Why": "Hit2Spike1's tip: a place for its line, never shown",
+   "Tracks": {
+    "At": [
+     [
+      0,
+      {
+       "Vector3": [
+        2.249,
+        2.857,
+        -2.367
+       ]
+      },
+      "Quart Out"
+     ],
+     [
+      1.5,
+      {
+       "Vector3": [
+        2.818,
+        4.64,
+        -1.091
+       ]
+      }
+     ]
+    ],
+    "Foot": [
+     [
+      0,
+      0
+     ]
+    ],
+    "Width": [
+     [
+      0,
+      0
+     ]
+    ]
+   }
+  },
+  "Hit2Spike2": {
+   "Kind": "Beam",
+   "Image": "fx_beam",
+   "Grey": "fx_beam",
+   "Color": {
+    "Color3": [
+     255,
+     255,
+     255
+    ]
+   },
+   "From": "Hit2",
+   "Beam": {
+    "FaceCamera": true,
+    "TextureMode": "Stretch",
+    "TextureLength": 1,
+    "TextureSpeed": 0,
+    "LightEmission": 1,
+    "LightInfluence": 0,
+    "Brightness": 3,
+    "Segments": 1
+   },
+   "High": "Hit2Spike2Tip.Low",
+   "Taper": 0.3,
+   "Why": "Hit2Spike2: a line off the touch",
+   "Tracks": {
+    "At": [
+     [
+      0,
+      {
+       "Vector3": [
+        2.204,
+        2.915,
+        -2.468
+       ]
+      },
+      "Linear"
+     ],
+     [
+      4,
+      {
+       "Vector3": [
+        2.204,
+        2.915,
+        -2.468
+       ]
+      },
+      "Quad In"
+     ],
+     [
+      8,
+      {
+       "Vector3": [
+        2.321,
+        3.842,
+        -2.198
+       ]
+      }
+     ]
+    ],
+    "Foot": [
+     [
+      0,
+      0
+     ]
+    ],
+    "Width": [
+     [
+      0,
+      0.12,
+      "Quart Out"
+     ],
+     [
+      1,
+      0.2,
+      "Linear"
+     ],
+     [
+      4,
+      0.2,
+      "Quad In"
+     ],
+     [
+      8,
+      0.06
+     ]
+    ],
+    "Transparency": [
+     [
+      0,
+      0,
+      "Linear"
+     ],
+     [
+      5,
+      0,
+      "Quad In"
+     ],
+     [
+      8,
+      1
+     ]
+    ]
+   }
+  },
+  "Hit2Spike2Tip": {
+   "Kind": "Beam",
+   "Image": "fx_beam",
+   "Grey": "fx_beam",
+   "Color": {
+    "Color3": [
+     255,
+     255,
+     255
+    ]
+   },
+   "From": "Hit2",
+   "Beam": {
+    "FaceCamera": true,
+    "TextureMode": "Stretch",
+    "TextureLength": 1,
+    "TextureSpeed": 0,
+    "LightEmission": 1,
+    "LightInfluence": 0,
+    "Brightness": 3,
+    "Segments": 1
+   },
+   "Why": "Hit2Spike2's tip: a place for its line, never shown",
+   "Tracks": {
+    "At": [
+     [
+      0,
+      {
+       "Vector3": [
+        2.204,
+        2.915,
+        -2.468
+       ]
+      },
+      "Quart Out"
+     ],
+     [
+      1.5,
+      {
+       "Vector3": [
+        2.346,
+        4.046,
+        -2.139
+       ]
+      }
+     ]
+    ],
+    "Foot": [
+     [
+      0,
+      0
+     ]
+    ],
+    "Width": [
+     [
+      0,
+      0
+     ]
+    ]
+   }
+  },
+  "Hit2Spike3": {
+   "Kind": "Beam",
+   "Image": "fx_beam",
+   "Grey": "fx_beam",
+   "Color": {
+    "Color3": [
+     255,
+     255,
+     255
+    ]
+   },
+   "From": "Hit2",
+   "Beam": {
+    "FaceCamera": true,
+    "TextureMode": "Stretch",
+    "TextureLength": 1,
+    "TextureSpeed": 0,
+    "LightEmission": 1,
+    "LightInfluence": 0,
+    "Brightness": 3,
+    "Segments": 1
+   },
+   "High": "Hit2Spike3Tip.Low",
+   "Taper": 0.3,
+   "Why": "Hit2Spike3: a line off the touch",
+   "Tracks": {
+    "At": [
+     [
+      0,
+      {
+       "Vector3": [
+        2.32,
+        2.893,
+        -2.572
+       ]
+      },
+      "Linear"
+     ],
+     [
+      4,
+      {
+       "Vector3": [
+        2.32,
+        2.893,
+        -2.572
+       ]
+      },
+      "Quad In"
+     ],
+     [
+      8,
+      {
+       "Vector3": [
+        3.08,
+        4.388,
+        -2.605
+       ]
+      }
+     ]
+    ],
+    "Foot": [
+     [
+      0,
+      0
+     ]
+    ],
+    "Width": [
+     [
+      0,
+      0.12,
+      "Quart Out"
+     ],
+     [
+      1,
+      0.2,
+      "Linear"
+     ],
+     [
+      4,
+      0.2,
+      "Quad In"
+     ],
+     [
+      8,
+      0.06
+     ]
+    ],
+    "Transparency": [
+     [
+      0,
+      0,
+      "Linear"
+     ],
+     [
+      5,
+      0,
+      "Quad In"
+     ],
+     [
+      8,
+      1
+     ]
+    ]
+   }
+  },
+  "Hit2Spike3Tip": {
+   "Kind": "Beam",
+   "Image": "fx_beam",
+   "Grey": "fx_beam",
+   "Color": {
+    "Color3": [
+     255,
+     255,
+     255
+    ]
+   },
+   "From": "Hit2",
+   "Beam": {
+    "FaceCamera": true,
+    "TextureMode": "Stretch",
+    "TextureLength": 1,
+    "TextureSpeed": 0,
+    "LightEmission": 1,
+    "LightInfluence": 0,
+    "Brightness": 3,
+    "Segments": 1
+   },
+   "Why": "Hit2Spike3's tip: a place for its line, never shown",
+   "Tracks": {
+    "At": [
+     [
+      0,
+      {
+       "Vector3": [
+        2.32,
+        2.893,
+        -2.572
+       ]
+      },
+      "Quart Out"
+     ],
+     [
+      1.5,
+      {
+       "Vector3": [
+        3.247,
+        4.716,
+        -2.613
+       ]
+      }
+     ]
+    ],
+    "Foot": [
+     [
+      0,
+      0
+     ]
+    ],
+    "Width": [
+     [
+      0,
+      0
+     ]
+    ]
+   }
+  },
+  "Hit2Spike4": {
+   "Kind": "Beam",
+   "Image": "fx_beam",
+   "Grey": "fx_beam",
+   "Color": {
+    "Color3": [
+     255,
+     255,
+     255
+    ]
+   },
+   "From": "Hit2",
+   "Beam": {
+    "FaceCamera": true,
+    "TextureMode": "Stretch",
+    "TextureLength": 1,
+    "TextureSpeed": 0,
+    "LightEmission": 1,
+    "LightInfluence": 0,
+    "Brightness": 3,
+    "Segments": 1
+   },
+   "High": "Hit2Spike4Tip.Low",
+   "Taper": 0.3,
+   "Why": "Hit2Spike4: a line off the touch",
+   "Tracks": {
+    "At": [
+     [
+      0,
+      {
+       "Vector3": [
+        2.434,
+        2.801,
+        -2.56
+       ]
+      },
+      "Linear"
+     ],
+     [
+      4,
+      {
+       "Vector3": [
+        2.434,
+        2.801,
+        -2.56
+       ]
+      },
+      "Quad In"
+     ],
+     [
+      8,
+      {
+       "Vector3": [
+        3.177,
+        3.4,
+        -2.546
+       ]
+      }
+     ]
+    ],
+    "Foot": [
+     [
+      0,
+      0
+     ]
+    ],
+    "Width": [
+     [
+      0,
+      0.12,
+      "Quart Out"
+     ],
+     [
+      1,
+      0.2,
+      "Linear"
+     ],
+     [
+      4,
+      0.2,
+      "Quad In"
+     ],
+     [
+      8,
+      0.06
+     ]
+    ],
+    "Transparency": [
+     [
+      0,
+      0,
+      "Linear"
+     ],
+     [
+      5,
+      0,
+      "Quad In"
+     ],
+     [
+      8,
+      1
+     ]
+    ]
+   }
+  },
+  "Hit2Spike4Tip": {
+   "Kind": "Beam",
+   "Image": "fx_beam",
+   "Grey": "fx_beam",
+   "Color": {
+    "Color3": [
+     255,
+     255,
+     255
+    ]
+   },
+   "From": "Hit2",
+   "Beam": {
+    "FaceCamera": true,
+    "TextureMode": "Stretch",
+    "TextureLength": 1,
+    "TextureSpeed": 0,
+    "LightEmission": 1,
+    "LightInfluence": 0,
+    "Brightness": 3,
+    "Segments": 1
+   },
+   "Why": "Hit2Spike4's tip: a place for its line, never shown",
+   "Tracks": {
+    "At": [
+     [
+      0,
+      {
+       "Vector3": [
+        2.434,
+        2.801,
+        -2.56
+       ]
+      },
+      "Quart Out"
+     ],
+     [
+      1.5,
+      {
+       "Vector3": [
+        3.34,
+        3.532,
+        -2.543
+       ]
+      }
+     ]
+    ],
+    "Foot": [
+     [
+      0,
+      0
+     ]
+    ],
+    "Width": [
+     [
+      0,
+      0
+     ]
+    ]
+   }
+  },
+  "Hit2Spike5": {
+   "Kind": "Beam",
+   "Image": "fx_beam",
+   "Grey": "fx_beam",
+   "Color": {
+    "Color3": [
+     255,
+     255,
+     255
+    ]
+   },
+   "From": "Hit2",
+   "Beam": {
+    "FaceCamera": true,
+    "TextureMode": "Stretch",
+    "TextureLength": 1,
+    "TextureSpeed": 0,
+    "LightEmission": 1,
+    "LightInfluence": 0,
+    "Brightness": 3,
+    "Segments": 1
+   },
+   "High": "Hit2Spike5Tip.Low",
+   "Taper": 0.3,
+   "Why": "Hit2Spike5: a line off the touch",
+   "Tracks": {
+    "At": [
+     [
+      0,
+      {
+       "Vector3": [
+        2.434,
+        2.77,
+        -2.453
+       ]
+      },
+      "Linear"
+     ],
+     [
+      4,
+      {
+       "Vector3": [
+        2.434,
+        2.77,
+        -2.453
+       ]
+      },
+      "Quad In"
+     ],
+     [
+      8,
+      {
+       "Vector3": [
+        3.734,
+        3.67,
+        -1.923
+       ]
+      }
+     ]
+    ],
+    "Foot": [
+     [
+      0,
+      0
+     ]
+    ],
+    "Width": [
+     [
+      0,
+      0.12,
+      "Quart Out"
+     ],
+     [
+      1,
+      0.2,
+      "Linear"
+     ],
+     [
+      4,
+      0.2,
+      "Quad In"
+     ],
+     [
+      8,
+      0.06
+     ]
+    ],
+    "Transparency": [
+     [
+      0,
+      0,
+      "Linear"
+     ],
+     [
+      5,
+      0,
+      "Quad In"
+     ],
+     [
+      8,
+      1
+     ]
+    ]
+   }
+  },
+  "Hit2Spike5Tip": {
+   "Kind": "Beam",
+   "Image": "fx_beam",
+   "Grey": "fx_beam",
+   "Color": {
+    "Color3": [
+     255,
+     255,
+     255
+    ]
+   },
+   "From": "Hit2",
+   "Beam": {
+    "FaceCamera": true,
+    "TextureMode": "Stretch",
+    "TextureLength": 1,
+    "TextureSpeed": 0,
+    "LightEmission": 1,
+    "LightInfluence": 0,
+    "Brightness": 3,
+    "Segments": 1
+   },
+   "Why": "Hit2Spike5's tip: a place for its line, never shown",
+   "Tracks": {
+    "At": [
+     [
+      0,
+      {
+       "Vector3": [
+        2.434,
+        2.77,
+        -2.453
+       ]
+      },
+      "Quart Out"
+     ],
+     [
+      1.5,
+      {
+       "Vector3": [
+        4.019,
+        3.868,
+        -1.807
+       ]
+      }
+     ]
+    ],
+    "Foot": [
+     [
+      0,
+      0
+     ]
+    ],
+    "Width": [
+     [
+      0,
+      0
+     ]
+    ]
+   }
+  },
+  "Hit2Spike6": {
+   "Kind": "Beam",
+   "Image": "fx_beam",
+   "Grey": "fx_beam",
+   "Color": {
+    "Color3": [
+     255,
+     255,
+     255
+    ]
+   },
+   "From": "Hit2",
+   "Beam": {
+    "FaceCamera": true,
+    "TextureMode": "Stretch",
+    "TextureLength": 1,
+    "TextureSpeed": 0,
+    "LightEmission": 1,
+    "LightInfluence": 0,
+    "Brightness": 3,
+    "Segments": 1
+   },
+   "High": "Hit2Spike6Tip.Low",
+   "Taper": 0.3,
+   "Why": "Hit2Spike6: a line off the touch",
+   "Tracks": {
+    "At": [
+     [
+      0,
+      {
+       "Vector3": [
+        2.344,
+        2.754,
+        -2.321
+       ]
+      },
+      "Linear"
+     ],
+     [
+      4,
+      {
+       "Vector3": [
+        2.344,
+        2.754,
+        -2.321
+       ]
+      },
+      "Quad In"
+     ],
+     [
+      8,
+      {
+       "Vector3": [
+        2.863,
+        3.243,
+        -1.63
+       ]
+      }
+     ]
+    ],
+    "Foot": [
+     [
+      0,
+      0
+     ]
+    ],
+    "Width": [
+     [
+      0,
+      0.12,
+      "Quart Out"
+     ],
+     [
+      1,
+      0.2,
+      "Linear"
+     ],
+     [
+      4,
+      0.2,
+      "Quad In"
+     ],
+     [
+      8,
+      0.06
+     ]
+    ],
+    "Transparency": [
+     [
+      0,
+      0,
+      "Linear"
+     ],
+     [
+      5,
+      0,
+      "Quad In"
+     ],
+     [
+      8,
+      1
+     ]
+    ]
+   }
+  },
+  "Hit2Spike6Tip": {
+   "Kind": "Beam",
+   "Image": "fx_beam",
+   "Grey": "fx_beam",
+   "Color": {
+    "Color3": [
+     255,
+     255,
+     255
+    ]
+   },
+   "From": "Hit2",
+   "Beam": {
+    "FaceCamera": true,
+    "TextureMode": "Stretch",
+    "TextureLength": 1,
+    "TextureSpeed": 0,
+    "LightEmission": 1,
+    "LightInfluence": 0,
+    "Brightness": 3,
+    "Segments": 1
+   },
+   "Why": "Hit2Spike6's tip: a place for its line, never shown",
+   "Tracks": {
+    "At": [
+     [
+      0,
+      {
+       "Vector3": [
+        2.344,
+        2.754,
+        -2.321
+       ]
+      },
+      "Quart Out"
+     ],
+     [
+      1.5,
+      {
+       "Vector3": [
+        2.977,
+        3.35,
+        -1.478
+       ]
+      }
+     ]
+    ],
+    "Foot": [
+     [
+      0,
+      0
+     ]
+    ],
+    "Width": [
+     [
+      0,
+      0
+     ]
+    ]
+   }
+  },
+  "Hit2Light": {
+   "Kind": "Light",
+   "From": "Hit2",
+   "Range": 7,
+   "Color": {
+    "Color3": [
+     255,
+     255,
+     255
+    ]
+   },
+   "Why": "the knuckles' light: it rims the Shade where the touch is behind it",
+   "Tracks": {
+    "At": [
+     [
+      0,
+      {
+       "Vector3": [
+        2.161,
+        2.581,
+        -2.565
+       ]
+      }
+     ]
+    ],
+    "Brightness": [
+     [
+      0,
+      4,
+      "Quart Out"
+     ],
+     [
+      6,
+      0
+     ]
+    ]
+   }
+  },
+  "Hit3Cone1": {
+   "Kind": "Beam",
+   "Image": "fx_beam",
+   "Grey": "fx_beam",
+   "Color": {
+    "Color3": [
+     255,
+     255,
+     255
+    ]
+   },
+   "From": "Hit3",
+   "Beam": {
+    "FaceCamera": true,
+    "TextureMode": "Stretch",
+    "TextureLength": 1,
+    "TextureSpeed": 0,
+    "LightEmission": 1,
+    "LightInfluence": 0,
+    "Brightness": 3,
+    "Segments": 1
+   },
+   "High": "Hit3Cone1Tip.Low",
+   "Taper": 0.35,
+   "Why": "Hit3Cone1: a line off the touch",
+   "Tracks": {
+    "At": [
+     [
+      0,
+      {
+       "Vector3": [
+        1.997,
+        0.162,
+        -1.722
+       ]
+      },
+      "Linear"
+     ],
+     [
+      5,
+      {
+       "Vector3": [
+        1.997,
+        0.162,
+        -1.722
+       ]
+      },
+      "Quad In"
+     ],
+     [
+      11,
+      {
+       "Vector3": [
+        -0.868,
+        0.294,
+        -4.172
+       ]
+      }
+     ]
+    ],
+    "Foot": [
+     [
+      0,
+      0
+     ]
+    ],
+    "Width": [
+     [
+      0,
+      0.144,
+      "Quart Out"
+     ],
+     [
+      1,
+      0.24,
+      "Linear"
+     ],
+     [
+      5,
+      0.24,
+      "Quad In"
+     ],
+     [
+      11,
+      0.072
+     ]
+    ],
+    "Transparency": [
+     [
+      0,
+      0,
+      "Linear"
+     ],
+     [
+      6,
+      0,
+      "Quad In"
+     ],
+     [
+      11,
+      1
+     ]
+    ]
+   }
+  },
+  "Hit3Cone1Tip": {
+   "Kind": "Beam",
+   "Image": "fx_beam",
+   "Grey": "fx_beam",
+   "Color": {
+    "Color3": [
+     255,
+     255,
+     255
+    ]
+   },
+   "From": "Hit3",
+   "Beam": {
+    "FaceCamera": true,
+    "TextureMode": "Stretch",
+    "TextureLength": 1,
+    "TextureSpeed": 0,
+    "LightEmission": 1,
+    "LightInfluence": 0,
+    "Brightness": 3,
+    "Segments": 1
+   },
+   "Why": "Hit3Cone1's tip: a place for its line, never shown",
+   "Tracks": {
+    "At": [
+     [
+      0,
+      {
+       "Vector3": [
+        1.997,
+        0.162,
+        -1.722
+       ]
+      },
+      "Quart Out"
+     ],
+     [
+      3,
+      {
+       "Vector3": [
+        -1.497,
+        0.323,
+        -4.71
+       ]
+      }
+     ]
+    ],
+    "Foot": [
+     [
+      0,
+      0
+     ]
+    ],
+    "Width": [
+     [
+      0,
+      0
+     ]
+    ]
+   }
+  },
+  "Hit3Cone2": {
+   "Kind": "Beam",
+   "Image": "fx_beam",
+   "Grey": "fx_beam",
+   "Color": {
+    "Color3": [
+     255,
+     255,
+     255
+    ]
+   },
+   "From": "Hit3",
+   "Beam": {
+    "FaceCamera": true,
+    "TextureMode": "Stretch",
+    "TextureLength": 1,
+    "TextureSpeed": 0,
+    "LightEmission": 1,
+    "LightInfluence": 0,
+    "Brightness": 3,
+    "Segments": 1
+   },
+   "High": "Hit3Cone2Tip.Low",
+   "Taper": 0.35,
+   "Why": "Hit3Cone2: a line off the touch",
+   "Tracks": {
+    "At": [
+     [
+      0,
+      {
+       "Vector3": [
+        2.05,
+        0.168,
+        -1.772
+       ]
+      },
+      "Linear"
+     ],
+     [
+      5,
+      {
+       "Vector3": [
+        2.05,
+        0.168,
+        -1.772
+       ]
+      },
+      "Quad In"
+     ],
+     [
+      11,
+      {
+       "Vector3": [
+        -0.042,
+        0.349,
+        -4.502
+       ]
+      }
+     ]
+    ],
+    "Foot": [
+     [
+      0,
+      0
+     ]
+    ],
+    "Width": [
+     [
+      0,
+      0.144,
+      "Quart Out"
+     ],
+     [
+      1,
+      0.24,
+      "Linear"
+     ],
+     [
+      5,
+      0.24,
+      "Quad In"
+     ],
+     [
+      11,
+      0.072
+     ]
+    ],
+    "Transparency": [
+     [
+      0,
+      0,
+      "Linear"
+     ],
+     [
+      6,
+      0,
+      "Quad In"
+     ],
+     [
+      11,
+      1
+     ]
+    ]
+   }
+  },
+  "Hit3Cone2Tip": {
+   "Kind": "Beam",
+   "Image": "fx_beam",
+   "Grey": "fx_beam",
+   "Color": {
+    "Color3": [
+     255,
+     255,
+     255
+    ]
+   },
+   "From": "Hit3",
+   "Beam": {
+    "FaceCamera": true,
+    "TextureMode": "Stretch",
+    "TextureLength": 1,
+    "TextureSpeed": 0,
+    "LightEmission": 1,
+    "LightInfluence": 0,
+    "Brightness": 3,
+    "Segments": 1
+   },
+   "Why": "Hit3Cone2's tip: a place for its line, never shown",
+   "Tracks": {
+    "At": [
+     [
+      0,
+      {
+       "Vector3": [
+        2.05,
+        0.168,
+        -1.772
+       ]
+      },
+      "Quart Out"
+     ],
+     [
+      3,
+      {
+       "Vector3": [
+        -0.501,
+        0.388,
+        -5.101
+       ]
+      }
+     ]
+    ],
+    "Foot": [
+     [
+      0,
+      0
+     ]
+    ],
+    "Width": [
+     [
+      0,
+      0
+     ]
+    ]
+   }
+  },
+  "Hit3Cone3": {
+   "Kind": "Beam",
+   "Image": "fx_beam",
+   "Grey": "fx_beam",
+   "Color": {
+    "Color3": [
+     255,
+     255,
+     255
+    ]
+   },
+   "From": "Hit3",
+   "Beam": {
+    "FaceCamera": true,
+    "TextureMode": "Stretch",
+    "TextureLength": 1,
+    "TextureSpeed": 0,
+    "LightEmission": 1,
+    "LightInfluence": 0,
+    "Brightness": 3,
+    "Segments": 1
+   },
+   "High": "Hit3Cone3Tip.Low",
+   "Taper": 0.35,
+   "Why": "Hit3Cone3: a line off the touch",
+   "Tracks": {
+    "At": [
+     [
+      0,
+      {
+       "Vector3": [
+        2.101,
+        0.168,
+        -1.805
+       ]
+      },
+      "Linear"
+     ],
+     [
+      5,
+      {
+       "Vector3": [
+        2.101,
+        0.168,
+        -1.805
+       ]
+      },
+      "Quad In"
+     ],
+     [
+      11,
+      {
+       "Vector3": [
+        0.289,
+        0.374,
+        -5.293
+       ]
+      }
+     ]
+    ],
+    "Foot": [
+     [
+      0,
+      0
+     ]
+    ],
+    "Width": [
+     [
+      0,
+      0.144,
+      "Quart Out"
+     ],
+     [
+      1,
+      0.24,
+      "Linear"
+     ],
+     [
+      5,
+      0.24,
+      "Quad In"
+     ],
+     [
+      11,
+      0.072
+     ]
+    ],
+    "Transparency": [
+     [
+      0,
+      0,
+      "Linear"
+     ],
+     [
+      6,
+      0,
+      "Quad In"
+     ],
+     [
+      11,
+      1
+     ]
+    ]
+   }
+  },
+  "Hit3Cone3Tip": {
+   "Kind": "Beam",
+   "Image": "fx_beam",
+   "Grey": "fx_beam",
+   "Color": {
+    "Color3": [
+     255,
+     255,
+     255
+    ]
+   },
+   "From": "Hit3",
+   "Beam": {
+    "FaceCamera": true,
+    "TextureMode": "Stretch",
+    "TextureLength": 1,
+    "TextureSpeed": 0,
+    "LightEmission": 1,
+    "LightInfluence": 0,
+    "Brightness": 3,
+    "Segments": 1
+   },
+   "Why": "Hit3Cone3's tip: a place for its line, never shown",
+   "Tracks": {
+    "At": [
+     [
+      0,
+      {
+       "Vector3": [
+        2.101,
+        0.168,
+        -1.805
+       ]
+      },
+      "Quart Out"
+     ],
+     [
+      3,
+      {
+       "Vector3": [
+        -0.109,
+        0.42,
+        -6.058
+       ]
+      }
+     ]
+    ],
+    "Foot": [
+     [
+      0,
+      0
+     ]
+    ],
+    "Width": [
+     [
+      0,
+      0
+     ]
+    ]
+   }
+  },
+  "Hit3Cone4": {
+   "Kind": "Beam",
+   "Image": "fx_beam",
+   "Grey": "fx_beam",
+   "Color": {
+    "Color3": [
+     255,
+     255,
+     255
+    ]
+   },
+   "From": "Hit3",
+   "Beam": {
+    "FaceCamera": true,
+    "TextureMode": "Stretch",
+    "TextureLength": 1,
+    "TextureSpeed": 0,
+    "LightEmission": 1,
+    "LightInfluence": 0,
+    "Brightness": 3,
+    "Segments": 1
+   },
+   "High": "Hit3Cone4Tip.Low",
+   "Taper": 0.35,
+   "Why": "Hit3Cone4: a line off the touch",
+   "Tracks": {
+    "At": [
+     [
+      0,
+      {
+       "Vector3": [
+        2.16,
+        0.223,
+        -1.822
+       ]
+      },
+      "Linear"
+     ],
+     [
+      5,
+      {
+       "Vector3": [
+        2.16,
+        0.223,
+        -1.822
+       ]
+      },
+      "Quad In"
+     ],
+     [
+      11,
+      {
+       "Vector3": [
+        1.245,
+        0.871,
+        -4.729
+       ]
+      }
+     ]
+    ],
+    "Foot": [
+     [
+      0,
+      0
+     ]
+    ],
+    "Width": [
+     [
+      0,
+      0.122,
+      "Quart Out"
+     ],
+     [
+      1,
+      0.204,
+      "Linear"
+     ],
+     [
+      5,
+      0.204,
+      "Quad In"
+     ],
+     [
+      11,
+      0.061
+     ]
+    ],
+    "Transparency": [
+     [
+      0,
+      0,
+      "Linear"
+     ],
+     [
+      6,
+      0,
+      "Quad In"
+     ],
+     [
+      11,
+      1
+     ]
+    ]
+   }
+  },
+  "Hit3Cone4Tip": {
+   "Kind": "Beam",
+   "Image": "fx_beam",
+   "Grey": "fx_beam",
+   "Color": {
+    "Color3": [
+     255,
+     255,
+     255
+    ]
+   },
+   "From": "Hit3",
+   "Beam": {
+    "FaceCamera": true,
+    "TextureMode": "Stretch",
+    "TextureLength": 1,
+    "TextureSpeed": 0,
+    "LightEmission": 1,
+    "LightInfluence": 0,
+    "Brightness": 3,
+    "Segments": 1
+   },
+   "Why": "Hit3Cone4's tip: a place for its line, never shown",
+   "Tracks": {
+    "At": [
+     [
+      0,
+      {
+       "Vector3": [
+        2.16,
+        0.223,
+        -1.822
+       ]
+      },
+      "Quart Out"
+     ],
+     [
+      3,
+      {
+       "Vector3": [
+        1.044,
+        1.013,
+        -5.367
+       ]
+      }
+     ]
+    ],
+    "Foot": [
+     [
+      0,
+      0
+     ]
+    ],
+    "Width": [
+     [
+      0,
+      0
+     ]
+    ]
+   }
+  },
+  "Hit3Cone5": {
+   "Kind": "Beam",
+   "Image": "fx_beam",
+   "Grey": "fx_beam",
+   "Color": {
+    "Color3": [
+     255,
+     255,
+     255
+    ]
+   },
+   "From": "Hit3",
+   "Beam": {
+    "FaceCamera": true,
+    "TextureMode": "Stretch",
+    "TextureLength": 1,
+    "TextureSpeed": 0,
+    "LightEmission": 1,
+    "LightInfluence": 0,
+    "Brightness": 3,
+    "Segments": 1
+   },
+   "High": "Hit3Cone5Tip.Low",
+   "Taper": 0.35,
+   "Why": "Hit3Cone5: a line off the touch",
+   "Tracks": {
+    "At": [
+     [
+      0,
+      {
+       "Vector3": [
+        2.219,
+        0.252,
+        -1.827
+       ]
+      },
+      "Linear"
+     ],
+     [
+      5,
+      {
+       "Vector3": [
+        2.219,
+        0.252,
+        -1.827
+       ]
+      },
+      "Quad In"
+     ],
+     [
+      11,
+      {
+       "Vector3": [
+        1.873,
+        1.067,
+        -4.47
+       ]
+      }
+     ]
+    ],
+    "Foot": [
+     [
+      0,
+      0
+     ]
+    ],
+    "Width": [
+     [
+      0,
+      0.122,
+      "Quart Out"
+     ],
+     [
+      1,
+      0.204,
+      "Linear"
+     ],
+     [
+      5,
+      0.204,
+      "Quad In"
+     ],
+     [
+      11,
+      0.061
+     ]
+    ],
+    "Transparency": [
+     [
+      0,
+      0,
+      "Linear"
+     ],
+     [
+      6,
+      0,
+      "Quad In"
+     ],
+     [
+      11,
+      1
+     ]
+    ]
+   }
+  },
+  "Hit3Cone5Tip": {
+   "Kind": "Beam",
+   "Image": "fx_beam",
+   "Grey": "fx_beam",
+   "Color": {
+    "Color3": [
+     255,
+     255,
+     255
+    ]
+   },
+   "From": "Hit3",
+   "Beam": {
+    "FaceCamera": true,
+    "TextureMode": "Stretch",
+    "TextureLength": 1,
+    "TextureSpeed": 0,
+    "LightEmission": 1,
+    "LightInfluence": 0,
+    "Brightness": 3,
+    "Segments": 1
+   },
+   "Why": "Hit3Cone5's tip: a place for its line, never shown",
+   "Tracks": {
+    "At": [
+     [
+      0,
+      {
+       "Vector3": [
+        2.219,
+        0.252,
+        -1.827
+       ]
+      },
+      "Quart Out"
+     ],
+     [
+      3,
+      {
+       "Vector3": [
+        1.797,
+        1.246,
+        -5.051
+       ]
+      }
+     ]
+    ],
+    "Foot": [
+     [
+      0,
+      0
+     ]
+    ],
+    "Width": [
+     [
+      0,
+      0
+     ]
+    ]
+   }
+  },
+  "Hit3Dust": {
+   "Kind": "Emitter",
+   "From": "Hit3",
+   "Image": "fx_glow",
+   "Turn": {
+    "Vector3": [
+     0,
+     29.5,
+     0
+    ]
+   },
+   "Why": "the dust the ram throws along the cone, fast then slowing, out past the Shade's feet",
+   "Emit": [
+    [
+     0,
+     12
+    ]
+   ],
+   "Emitter": {
+    "EmissionDirection": "Front",
+    "SpreadAngle": [
+     20,
+     20
+    ],
+    "Lifetime": [
+     0.35,
+     0.6
+    ],
+    "Speed": [
+     9,
+     15
+    ],
+    "Drag": 5,
+    "Acceleration": {
+     "Vector3": [
+      0,
+      2,
+      0
+     ]
+    },
+    "Size": [
+     [
+      0,
+      0.9
+     ],
+     [
+      1,
+      2.4
+     ]
+    ],
+    "Transparency": [
+     [
+      0,
+      0.4
+     ],
+     [
+      1,
+      1
+     ]
+    ],
+    "Rotation": [
+     0,
+     360
+    ],
+    "RotSpeed": [
+     -60,
+     60
+    ],
+    "LightEmission": 0.2,
+    "LightInfluence": 0.7
+   },
+   "Tracks": {
+    "At": [
+     [
+      0,
+      {
+       "Vector3": [
+        2.263,
+        0.4,
+        -1.495
+       ]
+      }
+     ]
+    ]
+   }
+  },
+  "Hit3Light": {
+   "Kind": "Light",
+   "From": "Hit3",
+   "Range": 10,
+   "Color": {
+    "Color3": [
+     255,
+     255,
+     255
+    ]
+   },
+   "Why": "the ram's light, run through the Shade with the cone: it lights the Shade from his side",
+   "Tracks": {
+    "At": [
+     [
+      0,
+      {
+       "Vector3": [
+        2.263,
+        0.75,
+        -1.495
+       ]
+      },
+      "Quad Out"
+     ],
+     [
+      4,
+      {
+       "Vector3": [
+        0.0,
+        1.0,
+        -4.1
+       ]
+      }
+     ]
+    ],
+    "Brightness": [
+     [
+      0,
+      6,
+      "Quart Out"
+     ],
+     [
+      10,
+      0
+     ]
+    ]
+   }
+  }
+ }
+}

@@ -3508,3 +3508,9 @@ Research, 2026-11-17, 14:05, on the director's question: "how is that there is m
   - **Tested:** as above.
   - **Visually reviewed:** my stills. Research's read is next.
   - **Director-accepted:** no.
+- **Research's verdict (Quaestor, 2026-11-17, 17:24): passed, no must-fix,** from the split and the idle stills at the smallest phone with their zooms (7175794).
+  - **Felt:** the bar reads as a lit channel you set by hand. The Breaker's silver pours in from the left, the battery's gold takes the rest, and the brass handles sit at the cuts ready to drag.
+  - **Tier:** competent.
+  - **The bold thing:** the white arriving end of each light, so power visibly flows to its machine.
+  - **As designed, and to polish-later:** an idle machine's share wears the battery's gold, so the handle between them splits gold from gold. It's honest, since the power goes to the battery, and the row says "Idle". A dimmed trace of the machine's own colour would show where its share ends.
+  - **Accepted on the cases:** the Training machine's cyan, which no still shows. It's seen first in a capture with a save that trains, which Faber can add to (e)'s.

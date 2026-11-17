@@ -23,6 +23,7 @@ sys.dont_write_bytecode = True
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import kirra_scarf_step_fx as k  # noqa: E402  (the CFrame sums, the Track reader, the rows file check)
 import watt_combo_fx as w  # noqa: E402  (the game's camera, the Shade's boxes, what it covers: AR26's first attack)
+import combo_targets as ct  # noqa: E402  (every target the touches land on, and rule 4's guards against them)
 
 ROOT = Path(__file__).resolve().parents[2]
 RECIPE = ROOT / "build" / "handoff" / "Rook" / "Rook.recipe.json"
@@ -113,10 +114,11 @@ def screen():
 # off the outside of the shoulder it lands beside, the hook's a narrow glance up off the arm's front. They snap out in a frame and a half, hold through
 # the hitstop, then fly off their tips and thin out. Hit 3: a cone of straight lines from the ram's foot along the
 # street, through the Shade's feet the way it's pushed: low through its legs, rising beside them as it opens, with dust
-# thrown the same way and slowing, and a light that runs through with it. Jab, hook, ram: 1.25, 2.1, then 3.4 to 4.8
-# studs, each heavier. Rule 4, by `into`: no spike comes within CLEAR of the Shade, and no cone line is inside it above
-# LEG_LINE, and no spike's end draws over the head from a heading, with the Shade at its spacing or pushed back (the
-# content check of 2026-11-17: never a stab, never a stake, never a point on a head).
+# thrown the same way and slowing, and a light that runs through with it. Jab, hook, ram: 1.25, 2.1, then 3.4 to 4.6
+# studs, each heavier. Rule 4, by `into`, against every target (combo_targets: the ordinary Shade under each of its
+# masks, the elite, the Lamplighter), each spaced by its depth, at his spacing or pushed back: no spike comes within
+# CLEAR of a part or draws over a face from any view, and no cone line is inside a part above LEG_LINE (the content
+# check of 2026-11-17: never a stab, never a stake, never a point on a head).
 # DESIGN seeds, frames after the hit's beat on the action's clock (so a hitstop holds them), tuned live.
 GREY = "fx_beam"
 DUST = "fx_glow"  # the block's dust: the kit's soft round light, lit by the scene (Kirra's Puff); the puff sheet at the finish
@@ -124,25 +126,27 @@ WHITE = {"Color3": [255, 255, 255]}
 USED = (GREY, DUST)
 SEED = 27  # the burst's dice: fixed, so the file is the same each run
 BURST = {  # per hit: spikes, long and short studs, the ring's hollow, their rake off the blow (degrees), the ring's turn
-    "Hit1": {"spikes": 6, "long": 1.25, "short": 0.7, "hollow": 0.3, "rake": 50, "turn": 36, "width": 0.17},
-    "Hit2": {"spikes": 6, "long": 2.1, "short": 1.16, "hollow": 0.35, "rake": 20, "turn": 15, "width": 0.2},
+    "Hit1": {"spikes": 6, "long": 1.25, "short": 0.7, "hollow": 0.3, "rake": 30, "turn": 48, "width": 0.17},
+    "Hit2": {"spikes": 6, "long": 2.1, "short": 1.16, "hollow": 0.35, "rake": 10, "turn": 30, "width": 0.2},
 }
 # The jab lands beside the Shade's right shoulder, just under its head, so its burst flares off the outside: round its
-# reach turned JAB_FLARE, out to his left and down, away from the head. Of the axes, rakes and turns tried, the few that
-# keep every spike CLEAR of the Shade and off the head's outline from every heading (`into`) all flare out this way;
-# this one shows the most at 215 (6.0 studs, all six lines). The hook
-# lands on the front of the Shade's left arm, 0.27 studs before it, so its burst can't open forward: it glances, a
-# narrow spray up off the arm's front, out to his right and back toward him (HOOK_GLANCE). Of every axis, rake and
-# turn that keeps each spike CLEAR of the Shade, this shows the most at 215 (1.4 studs on two lines); a wider burst
-# shows 0.9 on one.
-JAB_FLARE = (40, -20)  # degrees round off the jab's reach toward his left; degrees up (here down)
-HOOK_GLANCE = (50, 60)  # degrees up; degrees round from straight back (+z, toward him) toward his right
-CLEAR = 0.18  # studs: no spike comes nearer the Shade's parts than this (the jab's spike 1 passes the arm at 0.19)
+# reach turned JAB_FLARE, out to his left and down, away from the head. Of the axes, rakes and turns tried, those that
+# keep every spike CLEAR of every target and off every face from every view (`into`; the elite's arm is bigger than
+# the Shade's, and the Lamplighter's bigger again) all flare out this way; this one shows the most at 215 (6.1 studs,
+# all six lines), with neighbours either way that pass too. The hook lands on the front of the Shade's left arm, 0.27
+# studs before it, so its burst can't open forward: it glances, a narrow spray up off the arm's front, out to his
+# right and back toward him (HOOK_GLANCE). Of every axis, rake, turn and length that keeps each spike CLEAR of every
+# target and off every face, this shows the most at 215 (1.3 studs on two lines): flatter than the last, which ran
+# into the elite's second mask, on its arm's front corner.
+JAB_FLARE = (50, -40)  # degrees round off the jab's reach toward his left; degrees up (here down)
+HOOK_GLANCE = (20, 80)  # degrees up; degrees round from straight back (+z, toward him) toward his right
+CLEAR = 0.18  # studs: no spike comes nearer a target's parts than this: the guard's 0.1 and half a spike's width
 SNAP, HOLD, OFF = 1.5, 4, 8  # frames: out to their tips; held whole; flown off their tips and gone (0.13 s)
-CONE = [(-20, 2, 4.6), (-8, 3, 4.2), (2, 3, 4.8), (12, 12, 3.8), (22, 17, 3.4)]  # each line: degrees off the aim toward
+CONE = [(-20, 2, 4.6), (-8, 3, 4.2), (2, 3, 4.2), (24, 6, 3.8), (38, 12, 3.4)]  # each line: degrees off the aim toward
 #   his right, degrees up off the street, studs long. The three through the Shade's legs rush low along the street (a
 #   line inside a Shade part stays under LEG_LINE: 3 degrees up at most from the ram's foot); the two on his right pass
-#   beside the Shade's left leg and rise, shorter, as the cone opens.
+#   wide of the Shade's left leg, and of the elite's and the Lamplighter's bigger ones, and rise, shorter, as the cone
+#   opens.
 LEG_LINE = 0.4  # studs up: a cone line inside a Shade part stays below this, a rush along the ground, never a stake
 CONE_HOLLOW, CONE_WIDTH = 0.35, 0.24
 CONE_PAST = 2.0  # the cone's aim: through the Shade's feet to this far past its middle, the way the ram pushes it, so its
@@ -278,61 +282,22 @@ def seen(lines, ahead=SPACING, samples=16):
 AHEADS = (SPACING, SPACING + 0.4, SPACING + 0.8)  # the Shade at his spacing, and pushed back by the jab and the hook
 
 
-def outline(points):
-    """The convex outline of points on the screen, anticlockwise."""
-    pts = sorted(set(map(tuple, points)))
-
-    def half(seq):
-        out = []
-        for p in seq:
-            while len(out) >= 2 and ((out[-1][0] - out[-2][0]) * (p[1] - out[-2][1])
-                                     - (out[-1][1] - out[-2][1]) * (p[0] - out[-2][0])) <= 0:
-                out.pop()
-            out.append(p)
-        return out
-
-    return half(pts)[:-1] + half(pts[::-1])[:-1]
-
-
-def over_head(seg, ahead):
-    """The heading from which a spike's end (its last 18%, what's left as it flies off) draws over the head's outline,
-    nearer the camera than the head; None when it never does (the content check, 2026-11-17: never a point on a head)."""
-    c, h = w.shade_boxes(ahead)[-1]
-    corners = [[c[j] + s[j] * h[j] for j in range(3)] for s in itertools.product((-1, 1), repeat=3)]
-    a, b = seg
-    for heading in HEADINGS:
-        cam = w.camera(ahead, heading)
-        poly = outline([w.on_screen(q, cam) for q in corners])
-        far = max(k.dot(k.sub(q, cam[0]), cam[1]) for q in corners)
-        for t in (0.82, 0.88, 0.94, 1.0):
-            p = k.add(a, k.mul(k.sub(b, a), t))
-            s = w.on_screen(p, cam)
-            if k.dot(k.sub(p, cam[0]), cam[1]) < far and all(
-                    (q[0] - o[0]) * (s[1] - o[1]) - (q[1] - o[1]) * (s[0] - o[0]) >= 0 for o, q in zip(poly, poly[1:] + poly[:1])):
-                return heading
-    return None
-
-
-def into(lines, samples=400):
-    """Every line that enters the Shade at any of AHEADS (the rows are fixed; the Shade moves): a spike that comes
-    within CLEAR of a part or whose end draws over the head from a heading, or a cone line inside a part above
-    LEG_LINE. Rule 4: nothing reads as piercing a body."""
+def into(lines):
+    """Rule 4 against every target (combo_targets: the ordinary Shade under each mask, the elite, the Lamplighter),
+    each standing so its torso face is where the ordinary Shade's is (the lead spaced by its target's depth: Faber's,
+    AR26), at his spacing and pushed back: no point of a spike comes within CLEAR of a part or draws over a face from
+    any view, and no point of a cone line is inside a part above LEG_LINE. Nothing reads as piercing a body (the
+    content check of 2026-11-17: never a stab, never a stake, never a point on a head)."""
     bad = []
     for ahead in AHEADS:
-        boxes = w.shade_boxes(ahead)
         for hit in ("Hit1", "Hit2"):
-            for i, seg in enumerate(lines.get(hit, [])):
-                heading = over_head(seg, ahead)
-                if heading is not None:
-                    bad.append(f"{hit} line {i + 1} ends over the head from {heading} (the Shade {ahead} ahead)")
-        for hit, segs in lines.items():
-            margin, floor = (0.0, LEG_LINE) if hit == "Hit3" else (CLEAR, -1.0)
-            for i, (a, b) in enumerate(segs):
-                for step in range(samples + 1):
-                    p = k.add(a, k.mul(k.sub(b, a), step / samples))
-                    if p[1] > floor and any(all(abs(p[j] - c[j]) < h[j] + margin for j in range(3)) for c, h in boxes):
-                        bad.append(f"{hit} line {i + 1} enters the Shade at {k.v3(p)['Vector3']} (the Shade {ahead} ahead)")
-                        break
+            for i, (a, b) in enumerate(lines.get(hit, [])):
+                bad += ct.rule4(ct.along(a, b), ahead, f"{hit} spike {i + 1}", margin=CLEAR)
+        for i, (a, b) in enumerate(lines.get("Hit3", [])):
+            high = [q for q in ct.along(a, b) if q[1] > LEG_LINE]
+            for name in ct.targets():
+                bad += [f"Hit3 line {i + 1} {x} (the target {ahead} ahead)"
+                        for x in ct.faults(high, name, ct.on_face(name, ahead), 0.0, faces=False)]
     return bad
 
 
@@ -345,7 +310,8 @@ def write_rows(out):
     out.mkdir(parents=True, exist_ok=True)
     (out / f"{ACTION}.rows.json").write_text(json.dumps(e, indent=1) + "\n", encoding="utf-8")
     print(f"Written to {out}: {ACTION} ({len(e['Rows'])} rows)")
-    print(f"  no line enters the Shade or ends over its head, at {', '.join(str(a) for a in AHEADS)} ahead")
+    print(f"  no line enters a target or draws over its face from {len(ct.VIEWS)} views, at {', '.join(str(a) for a in AHEADS)} "
+          f"ahead (each target spaced by its depth): {', '.join(ct.targets())}")
     for ahead in (SPACING, SPACING + 0.8):
         print(f"  the Shade {ahead} ahead: studs seen of each line, whole, by heading (of their lengths)")
         for hit, cells in seen(lines, ahead).items():

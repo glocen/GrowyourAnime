@@ -9282,34 +9282,41 @@ Made on research's line 2, with its camera of 08:16: the hero shape reads with t
   - **The hook** (hit 2, the ram's face): it lands at waist height 0.27 studs before the Shade's left arm, behind it from 215.
   - **The ram** (hit 3): it goes into the street 1.5 ahead, before the Shade, as the piston fires on frame 87. At 215 the Shade's legs cover its foot.
 - **The hero, hits 1 and 2: a tight burst.** Six straight spikes snap off the knuckles on a hollow ring, long and short in turn. They're out in 1.5 frames, held through the hitstop to frame 4, then fly off their tips and thin out by 8 (0.13 s).
-  - **The jab's** spikes are 1.25 and 0.7 studs. It lands beside the Shade's right shoulder, just under its head, so its burst flares off the outside, to his left and down (its reach turned 40 degrees out and 20 down, raked 50). The few bursts that keep every spike off the body and off the head's outline from every heading all flare this way.
-  - **The hook's** spikes are 2.1 and 1.16 studs, and they glance: a narrow spray up off the arm's front, to his right and back toward him (50 degrees up). The arm stands behind the touch, so the hook's burst can't open forward without entering it. I searched every axis, rake and turn that keeps all six spikes 0.2 studs off the Shade. This spray shows the most at 215, 1.4 studs on two lines. A wider burst shows 0.9 on one.
+  - **The jab's** spikes are 1.25 and 0.7 studs. It lands beside the Shade's right shoulder, just under its head, so its burst flares off the outside, to his left and down (its reach turned 50 degrees out and 40 down, raked 30, the ring turned 48). The bursts that keep every spike off every target and its faces from every view all flare this way. The nearest spike passes 0.44 studs from the Shade, and 0.36 from the elite's bigger arm.
+  - **The hook's** spikes are 2.1 and 1.16 studs, and they glance: a narrow spray up off the arm's front, to his right and back toward him (20 degrees up, 80 round from straight back, raked 10, the ring turned 30). The arm stands behind the touch, so the hook's burst can't open forward without entering it. I searched every axis, rake, turn and length that keeps all six spikes 0.18 studs off every target and off every face. This spray shows the most at 215, 1.3 studs on two lines.
 - **The hero, hit 3: the cone.** Five straight lines run from the ram's foot along the street, through the Shade's feet the way the ram pushes it, drawn in 3 frames, fast at first, and gone by 11 (0.18 s).
-  - **Through the legs,** three lines rush low, 2 to 3 degrees up and 4.2 to 4.8 studs long. A line that meets a leg is under 0.4 studs there, a rush along the ground.
-  - **On his right,** two lines pass beside the Shade's left leg and rise as the cone opens, 12 and 17 degrees, shorter at 3.8 and 3.4.
+  - **Through the legs,** three lines rush low, 2 to 3 degrees up and 4.2 to 4.6 studs long. A line that meets a leg is under 0.4 studs there, a rush along the ground.
+  - **On his right,** two lines pass wide of the Shade's left leg, 24 and 38 degrees off the aim, and rise as the cone opens, 6 and 12 degrees, shorter at 3.8 and 3.4. They pass the elite's and the Lamplighter's thicker legs too, 0.29 studs at the nearest.
   - **The dust:** 12 soft puffs, thrown the same way and slowing (Drag 5), out past the Shade's feet.
   - **The light:** it runs with the cone through the Shade, and lights it from his side.
-  - Aimed at the Shade's middle, the cone showed 3.4 studs at 215. Aimed 2 studs past it, it shows 9.8.
+  - Aimed at the Shade's middle, the cone showed 3.4 studs at 215. Aimed 2 studs past it, it shows 10.1.
 - **A light at each touch**, which rims the Shade where the burst is behind it.
-- **Jab, hook, ram:** 1.25, then 2.1, then 3.4 to 4.8 studs, each heavier, to match the line's "the third hit heavy".
-- **Rule 4, in the script (`into`, which fails the rows):**
-  - no spike comes within 0.18 studs of a Shade part, and no spike's end (what's left as it flies off) draws over the head's outline from any heading;
-  - no cone line is inside one above 0.4 studs up;
-  - both hold with the Shade at its spacing and pushed back by the jab and the hook (3.5, 3.9 and 4.3 ahead, against fixed rows).
+- **Jab, hook, ram:** 1.25, then 2.1, then 3.4 to 4.6 studs, each heavier, to match the line's "the third hit heavy".
+- **Rule 4, in the script (`into`, which fails the rows),** against every target the fight puts before him (`tools/blender/combo_targets.py`): the ordinary Shade under each of its four masks, the Brawler elite at 1.35 with its second mask on its arm, and the Lamplighter at 1.5 with its pole and lantern.
+  - **No point of a spike** comes within 0.18 studs of a part (0.1, and half a spike's width), or draws over a face. That's a mask, the elite's arm mask or the Lamplighter's head, tested on their triangles from 76 views: the four headings, and every 5 degrees round at the game's camera height.
+  - **No cone line** is inside a part above 0.4 studs up.
+  - **Where each test holds:** at his spacing and pushed back by the jab and the hook (3.5, 3.9 and 4.3 ahead, against fixed rows). Each target stands spaced by its own depth, so its torso face is where the ordinary Shade's is (the ask below).
 
   The content check's first pass (between 08:26 and 08:36 by the clock) blocked on three paths that entered the body: the jab's spike 1 tip in the Shade's shoulder, the hook's spikes 3 and 4 through its arm, and cone line 2 out of a calf at 0.9 up. All three are gone. Its second pass gave **PASS for the grey block**, and named one near miss: jab spike 1's tip drew over the head from 285. The head test is the fix, so that miss is gone too.
+
+  **Corrected after delivery:** the content check on Pip (08:53) found that the head test read only the Brawler mask. Support's mask sits lower and wider (its foot is 3.30 up), and Dasher's lower still (3.06). Under all four masks, the jab's two upper spikes crossed the head from 285, and the hook's from 28. Both are re-aimed in the same file. The cone is unchanged.
+
+  **Corrected again, on the content check's third pass (its report at 09:12): BLOCK on the elite.**
+  - **The fault:** `brawler_elite` is 1.35 the Shade's size and stands at his same 3.5. Its arms are bigger and its torso face is nearer, so the jab's spike 1 ended inside its right arm, and the hook's spikes 3 and 4 ran through its left arm. No guard tested its second mask, on that arm's front corner, where the hook sprays up.
+  - **The Lamplighter (1.5, 1.92 deep)** wasn't tested either. As things stand, his fist sinks 0.26 studs into the elite and 1.18 into the Lamplighter.
+  - **The fix:** the targets' guard above, which every combo script now uses, and a new search. The jab keeps its 6.1 studs at 215. The hook is flatter (1.3 there). The cone's two rising lines open wider and lower.
 - **Seen, studs of the lines whole that the Shade doesn't cover** (`rows` prints it; the Shade 3.5 ahead, then pushed to 4.3):
 
-  | Heading | Jab (of 6.1) | Hook (of 9.9) | Cone (of 20.8) |
+  | Heading | Jab (of 6.1) | Hook (of 9.9) | Cone (of 20.2) |
   |---|---|---|---|
-  | 215, the main framing | 6.0, 6 lines (4.3: 6.1) | 1.4, 2 lines (4.3: 0) | 9.8, 5 lines (4.3: 4.8) |
-  | 145, its mirror | 0.2 | 9.6, 6 lines | 17.5, 5 lines |
-  | 285 | 6.1, 6 lines | 9.9, 6 lines | 11.7, 5 lines |
-  | 28, the clip's review | 6.1, 6 lines | 9.9, 6 lines | 12.9, 5 lines |
+  | 215, the main framing | 6.1, 6 lines (4.3: 6.1) | 1.3, 2 lines (4.3: 0.7, none) | 10.1, 5 lines (4.3: 6.1, 4 lines) |
+  | 145, its mirror | 0 | 9.9, 6 lines | 16.6, 5 lines |
+  | 285 | 6.1, 6 lines | 9.9, 6 lines | 10.8, 5 lines |
+  | 28, the clip's review | 6.1, 6 lines | 9.9, 6 lines | 13.2, 5 lines |
 
 - **What's still weak, for the block to judge in motion:**
   - At 145 the jab is hidden: the clip aims it for 215. The touch's light carries it there.
-  - At 215 the hook is mostly hidden, as Watt's crack is: two tips, 0.5 and 0.9 studs, and none with the Shade pushed back. The touch's light carries it. Research's `ZOffset` takes on Watt's crack apply here, with the content check's condition: a line drawn nearer the camera must not lie over the body as if through it.
+  - At 215 the hook is mostly hidden, as Watt's crack is: three tips of 0.3 to 0.6 studs, and less with the Shade pushed back. The touch's light carries it. Research's `ZOffset` takes on Watt's crack apply here, with the content check's condition: a line drawn nearer the camera must not lie over the body as if through it.
   - The puffs aren't in the table. They spread wider than the Shade's legs, so most should show at 215.
 - **No band tick.** The line doesn't ask for one, so the gauntlet's own look is untouched.
 - **The block holds:** 38 rows in grey: 24 Beams for the spikes, 10 for the cone, the dust in the kit's soft light (lit, as Kirra's Puff), and three lights. They run on the action's clock, so a hitstop holds them.
@@ -9318,16 +9325,144 @@ Made on research's line 2, with its camera of 08:16: the hero shape reads with t
   - the dust in the kit's puff sheet;
   - the sound, for the director's retry;
   - the redraw for his new weapon at the redesign.
-- **For Faber:** `build/handoff/Rook/fx/RookCombo.rows.json`, after Watt's block in your queue. The touches are placed for the fighting spacing, 3.5. The cone's dust turns about up (`Turn`) onto the cone's aim, and emits `Front`. **The captures,** which come back to the content check: full size and 64 px over dark, at 215, 145, 285 and 28, frozen 2 and 5 frames after each hit, with one take where the Shade has been pushed back. They check that:
-  - no spike's tip stands against the head or a shoulder: the jab's spike 1 from 285 must read as a ray flaring past the shoulder, not one ending in it, and its spike 6 from 285 and 28 as a spark at the contact, not a point driven in;
-  - the hook's spray reads as glancing up off the arm, not as a line drawn along it (at 28 and 285);
-  - no cone line seems to leave a leg above the ankle (line 4, beside the Shade's left leg when pushed back, is the nearest).
+- **For Faber:** `build/handoff/Rook/fx/RookCombo.rows.json`, after Watt's block in your queue. The touches are placed for the fighting spacing, 3.5, on the ordinary Shade's torso face. The cone's dust turns about up (`Turn`) onto the cone's aim, and emits `Front`.
+- **The ask, tier 2, for research and Faber: a lead's spacing counts its target's depth.** `slotFor` takes Range less Approach, root to root, whatever the target's size. So a melee lead's weapon goes into a bigger one: 0.26 studs into the elite, 1.18 into the Lamplighter. Every fixed touch (Watt's, Rook's, Kirra's to come) then lands inside it.
+  - **The seed (DESIGN):** add the target's torso face before its root, less the ordinary Shade's 0.74. That's 0.26 for the elite, 1.18 for the Lamplighter, from its own torso at its Scale. The weapon then meets the surface, as on the ordinary Shade, and the rows hold.
+  - **If the spacing should stay,** the other way is to play these rows moved forward by that same depth. But the clip still sinks.
+- **The captures,** which come back to the content check: full size and 64 px over dark, at 215, 145, 285 and 28, frozen 2 and 5 frames after each hit, with one take where the Shade has been pushed back. They check that:
+  - no spike's tip stands against the head or a shoulder: from 285 the jab's spikes must read as rays flaring away past the shoulder (the nearest, spike 6, passes 0.44 from the Shade), not ending in it;
+  - the hook's spray reads as glancing up off the arm, not as a line drawn along it (at 28 and 285): spikes 3 and 4 pass 0.26 and 0.25 from the arm near their roots, and from the elite's arm mask along them;
+  - one take on a Shade in the Support mask and one in the Dasher's, the lowest two, once they're in the game;
+  - one take on `brawler_elite` and one on the Lamplighter, after the spacing ask is in, and one with the Shade mid-swipe;
+  - no cone line seems to leave a leg above the ankle (lines 4 and 5 beside the Lamplighter's are the nearest, 0.29 and 0.39).
 
-  A `ZOffset` take is judged the same way.
+  No `ZOffset` take until the face test fails any ray that meets a face beyond the eye (t1 > 0): the content check's condition, since a line drawn nearer the camera isn't hidden by the face behind it.
 - **The content check's conditions for later:**
   - **The colour pass:** the band's accent stays self-lit amber to orange-white, never red, crimson or dark. The dust stays grey to tan soft puffs, never drops or wet shapes. Nothing is left on the street. The rays stay straight.
   - **Before any upload:** the puff sheet and any line texture get their own check.
-- **Time:** the first rows took 11 minutes, from the row's commit at 08:15 to 08:26. The content check's fixes took 14 more, the head test included, to 08:40 by the clock. The cap is 2 hours at its block.
+- **Time:** the first rows took 11 minutes, from the row's commit at 08:15 to 08:26. The content check's fixes took 14 more, the head test included, to 08:40 by the clock. The four masks' fix ran from 08:53 to 09:03, shared with Pip's. The targets' guard and the third aim ran from the report at 09:12 to 09:39, shared with Watt's, Pip's and Lyric's. **That makes three fix rounds on these rows** (the first pass's three paths, the four masks, the elite), one past the two-rounds line. So the idea goes to research with the options, not another patch:
+  - **keep these rows** with the spacing ask: the guard now covers every target the game has, so the kind of fault is closed;
+  - **rows per target,** the fight picking one by the target's size;
+  - **touches placed from the target's own surface,** as Pip's flight lands.
+
+  The cap is 2 hours at its block.
+
+### Pip's basic attack: the spit, the ember and the pop (Modulo, 2026-11-17, 08:48)
+
+Made on research's line 3, with its camera of 08:16. `tools/blender/pip_combo_fx.py` reads the delivered `Pip_Combo.json` on the recipe's lamp joint, and checks PipCombo's beats (10, 26, 62) against the clip's markers.
+- **Where the shot leaves and lands** (`measure`, `screen`):
+  - **The lantern** spits beside his head on each beat, and kicks back on the frame after. On the third, it starts to go over as the beat lands.
+  - **The spacing:** he fights from 13.5 studs, but a Shade walks in on him, so it may stand anywhere from its own reach to 13.5 when a shot goes.
+  - **From 215** the shot comes at the camera. At 13.5 the ember shows for its first 70% (0.15 of the screen's height), then the Shade covers it, and covers where it lands. With the Shade closed in to 5, the flight is hidden at 215.
+  - **From 285 and 28** the whole flight shows, 0.3 to 0.46 of the screen.
+- **The hero is the ember**, from the lantern's spit to the pop. It leaves fast, speeds up into the Shade, and pops there.
+- **The spit** (`PipShots`, his own rows, on each beat at the lantern's place on that frame, 0.35 studs out toward the Shade):
+  - 4 short lines (5 on the third), 0.55 to 0.85 studs long (0.8 to 1.2 on the third), in a narrow cone at the Shade, out in a frame and gone by 5;
+  - 5 sparks (8 on the third) thrown at the Shade and dropping away;
+  - a light.
+  - The builder's three Streaks stay in the file until the ember flies.
+- **The ember's look** (`PipEmber`, and `PipEmberHeavy` for the third: rows on the flight's head, -Z its way):
+  - **The tail,** a Beam trail back to where the head was a fraction of a frame before, so it grows as the ember speeds up. As it lands from 13.5 it runs 3.6 studs a frame, which makes the tail 2.2 studs (0.22 wide). The third's is 2.9 (0.45 wide), the "fatter one".
+  - **The third's ribbon,** a second, softer trail behind it: 4.6 studs, 0.9 wide, half see-through.
+  - **A light** carried with it.
+  - **Its spits:** sparks left behind it in the air, which hang and fade in 0.08 to 0.15 s and never fall.
+  - From 5 studs, the trails are about 0.6 of that.
+- **The ember's flight is Faber's,** since rows in his frame can't follow a target that moves. **The ask, tier 2, for research and Faber:** a Streak row that travels with the ember's rows on its head, then plays its pop, and lands its hit when it arrives (as Held Note's crest takes its hit through `Struck`). DESIGN seeds, tuned live; the names are Faber's to choose:
+  - **Flight:** from the lantern's mouth at 60 studs a second, speeding up at 1,600 a second squared. It lands in 6 frames from 13.5 studs, and in 3 from 5.
+  - **Where it lands:** it flies at the target's belly, 2.4 studs up from its feet, and stops 0.25 before the torso's face, recomputed on each frame from where the target stands. A Shade that walks in during the flight never ends up with the ember inside it.
+  - **On arrival:** the head stops, the tail closes onto it within a frame, and the ember's rows go as the pop plays. The ribbon doesn't linger: it's gone within 3 frames, under the pop's flash, and never stands as a bar against the body. If a Beam's transparency can run along its length, it fades from the belly end first. Nothing stays in the body.
+  - **If the target dies mid-flight,** the ember pops in the air where it is, or fades.
+  - **The pop:** `PipPop` plays there, facing the flight made level, at scale 1 for shots 1 and 2 and 1.4 for the third.
+  - **The hit:** its hold, push and number land with the pop. The server's damage stays on the beat.
+  - **The same shape would serve Lyric's** travelling pulse (line 4).
+- **The pop** (`PipPop`, its own rows, played where the ember lands):
+  - **The bloom opens to the sides:** 6 short petals (1.0 and 0.65 studs) off the Shade's front, tipped back toward him, three a side, from 80 to 150 degrees off up. A petal nearer up meets the lower masks: Support's foot is 3.30 up and Dasher's 3.06. A petal nearer down runs toward the street.
+  - **Three sparks flung out past its outline:** 2.8 studs straight out to his left, and 2.8 out to his right, tipped toward him. The third is short and low to his left, 1.6 studs.
+  - **A crackle in the air,** in two sprays of 5 sparks thrown back toward him and out to each side. Each is slowed hard, barely falls, and shrinks and fades to nothing within 0.8 studs of the bloom, between 2.2 and 2.9 studs up.
+  - **A light,** which rims the Shade from his side.
+- **Rule 4, in the script, which fails the rows:**
+  - **The pop's lines (`pop_into`):**
+    - no line comes within 0.1 studs of a Shade part, or lower than 1 stud up;
+    - no flung spark aims within 45 degrees of straight down;
+    - no point of a line draws over the head from any heading. This uses an exact test (`over_mask`): the mask lies behind the point along the camera's ray.
+  - **The crackle (`crackle_into`):** the middle and edges of both sprays, at their slowest and fastest, stay within 1 stud of the bloom, between the hips (2.0) and the lowest mask's foot (3.06), out of the parts and off the head.
+  - **Where each test holds:** with the Shade at 13.5 and at 5, at both of the pop's sizes, under each of the Shade's four masks.
+  - **What it rules out:** nothing is shed from the body or falls from it, and no light runs from the struck belly down to the street.
+- **The content check:**
+  - **The first pass, after 08:53, was a BLOCK** on three things:
+    - two flung sparks ran down into the street, which reads as a drip from the struck belly;
+    - the crackle fell from the belly to the feet;
+    - the head test read one mask of the four.
+  - All three are fixed as above, and Rook's rows are re-aimed for the four masks (its section).
+- **Seen, studs of the pop's lines the Shade doesn't cover** (petals of 4.9, sparks of 7.2):
+
+  | Heading | The Shade 13.5 ahead | The Shade 5 ahead |
+  |---|---|---|
+  | 215, the main framing | petals 0, sparks 0.9 | petals 0, sparks 0.7 |
+  | 145, its mirror | petals 0, sparks 1.2 | petals 0, sparks 1.4 |
+  | 285 and 28 | all | all |
+
+  No way that passes the guards shows a spark more than 0.9 studs at 215 or 1.2 at 145. Up and out crosses a low mask from 28, and down runs to the street.
+- **What's still weak, for the block to judge in motion:** at the main framing the Shade hides the bloom, as with Watt and Rook. From 215 the read is:
+  - the ember coming at the camera;
+  - the light on the Shade's rim;
+  - a spark past its arm;
+  - the crackle, which isn't in the table.
+
+  Research's `ZOffset` takes apply here too, under the content check's condition.
+- **The block holds:** all grey, on the kit's beam and spark. The spit runs on the action's clock.
+  - `PipShots`, 35 rows: the spit's 26 Beams, three emitters, three lights, and the builder's three Streaks.
+  - `PipPop`, 21 rows: 18 Beams for the petals and sparks, two crackle sprays and the light.
+  - `PipEmber`, 3 rows, and `PipEmberHeavy`, 4.
+- **What waits:**
+  - the flight, for Faber's Streak;
+  - the colour pass after the block's verdict (fire: the flame sheet in the bloom, amber to white-hot, never red);
+  - the sound, for the director's retry;
+  - the redraw for his new weapon at the redesign.
+- **Time:** the measures began while Rook's content check ran, between 08:26 and 08:36. The rows ran from Rook's commit at 08:44 to 08:48 by the clock, and the content check's fixes from 08:53 to 09:04, shared with Rook's. The cap is 2 hours at its block.
+
+### Lyric's basic attack: the ring of sound, the pulse and the burst (Modulo, 2026-11-17, 09:10)
+
+Made on research's line 4, with its camera of 08:16. `tools/blender/lyric_combo_fx.py` reads the delivered `Lyric_Combo.json` on the recipe's two speaker joints, and checks LyricCombo's beats (15, 30, 60) against the clip's markers.
+- **Where the shots leave and land** (`measure`):
+  - **Each speaker drives forward into its beat** and stops on it: the right over frames 10 to 14, the left over 25 to 29, both over 53 to 59, at up to 18 to 25 studs a second. The right fires on 1, the left on 2, both on 3.
+  - **The spacing:** she fights from 11 studs (Range 12 less Approach). A Shade walks in on her, so it can be as close as 5.
+  - **The flight, at 11:** 10.7 studs. At 215 and 145 the Shade hides its last quarter to two fifths. The rest shows, 0.15 to 0.22 of the screen's height. From 285 and 28 it all shows.
+  - **The flight, at 5:** the speaker on the far side of the framing is hidden.
+- **The hero is the ring of sound,** from the speaker's mouth to the burst.
+- **The speaker's thrust launches it.** The ring leaves 5 frames before the beat and lands on it, whatever the distance. So the burst is on the beat, the hit needs no wait, and her hits keep time.
+- **Three parts, each where it can live:**
+  - **`LyricShots`** (her own rows, 12): at each firing speaker, from 5 frames before the beat, a ring leaves its mouth (the kit's hoop, 0.35 to 0.7 studs, out and fading in 5 frames) with a light. Both follow the ring's own path through the clip as the speaker drives forward. The builder's four Streaks stay until the pulse flies.
+  - **`LyricPulse`** (3 rows, on the flight's head): the ring of sound, 0.4 swelling to 0.5 studs, a faint line back along its flight, and a light. Its frame faces the target square, so it comes as a wavefront, whatever the flight's pitch.
+  - **`LyricBurst`** (2 rows, played where a pulse lands, facing the Shade's front): the ring thrown wide and low before the Shade's belly. It opens from 0.9 by 0.45 studs (half widths across and up) to 3.4 by 0.85 in 6 frames, gone by 9, with a light. The hoop's rim is 0.7 to 1 of that.
+  - **`LyricBurstBoth`** (3 rows, the third): both pulses land on the same frame, and their two rings open crossed, rolled 9 degrees either way, under one light.
+- **How I read "crossing":** the two pulses meet on the same frame, and their rings open as a low X. The other reading is the two flights crossing in the air: each speaker aims at the Shade's far side, so the paths cross about 2 studs out. That one is an aim offset in Faber's flight, a variant for the blockout if research wants it.
+- **The flight is Faber's,** the same travelling Streak as Pip's (his section, the ask), in its land-on-the-beat way:
+  - it launches 5 frames before the beat from the speaker's ring and lands on the beat, at a steady speed (128 studs a second from 11, 65 from 5);
+  - it lands 1.9 studs up and 0.4 before the target's torso face, recomputed each frame from where the target stands;
+  - on arrival it plays `LyricBurst` facing the target's front. On the third, one `LyricBurstBoth` plays between where the two land;
+  - the hit is on the beat, so it lands with the burst;
+  - if the target dies mid-flight, it bursts in the air or fades.
+- **Off the street and under the masks:** Ground Wire's ring is on the street, so this one never is. The burst's top stays under the lowest mask's foot (Dasher's, 3.06 up).
+- **Rule 4, in the script (`guard`, which fails the rows):**
+  - no point comes within 0.1 studs of a Shade part or under the street, or draws over its head from any heading (Pip's exact test, `over_mask`);
+  - it holds under each of the four masks, with the Shade at 11 and at 5;
+  - it covers the burst at every size from its first to its widest, both rims, both rolls, and the pulse over its last 1.2 studs.
+
+  Before that last approach the pulse is in the open street between them. At her speaker it's hers.
+- **Seen, the burst at its widest:**
+  - **At 215,** 14 to 36% of its rims show (11 to 36% with the Shade at 5): the side past the Shade's arm, and its foot beside the legs.
+  - **At 145,** the mirror: 12 to 35%.
+  - **At 285 and 28,** all of it.
+- **What's still weak, for the block to judge in motion:**
+  - A 5-frame flight is quick to read as travel. If it doesn't read, a longer flight launches earlier, before the speaker's drive starts, from a speaker standing still.
+  - The burst sits at the Shade's belly and hips, lower than the line's "bursts there", to keep under the masks.
+- **What waits:**
+  - the flight, for Faber's Streak;
+  - the colour pass after the block's verdict (Storm's light);
+  - the sound, for the director's retry;
+  - the redraw for her new weapon at the redesign.
+- **Time:** 08:48 to 08:53 and 09:04 to 09:10 by the clock, around Pip's fixes. The cap is 2 hours at its block.
 
 
 The rest of ground 1 (Kirra in AR10, Watt in AR11; then Sable, Marigold, Crane), then each ground's Voidkin in `docs/roster.md`'s order. **The machines** (Gantry, Bulwark, Ironhymn, Shiomaru, Aegir) share one custom rig, taller than a player, with its own clip family: the first of them is timed like AR1, because a custom rig is a different cost.

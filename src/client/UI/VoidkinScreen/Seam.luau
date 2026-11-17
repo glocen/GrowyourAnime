@@ -56,53 +56,114 @@ function Seam.Ramp(on: Instance, colours: { Color3 }, rotation: number?): UIGrad
 end
 
 -- How strong an edge is along it, as a UIGradient's transparency: full at `mid`, falling to `floor` at its ends,
--- times `alpha`. Fifteen samples hold the curve (a sequence takes twenty at most).
+-- times `alpha`. Fifteen samples hold the curve (a sequence takes twenty at most); a narrow peak (the page rail's line,
+-- AR29) takes its samples round the peak, and the ends.
 local function along(mid: number, spread: number, floor: number, alpha: number): NumberSequence
-	local points = {}
-	local steps = 14
-	for i = 0, steps do
-		local v = i / steps
+	local function at(v: number): NumberSequenceKeypoint
 		local strength = floor + (1 - floor) * math.exp(-((v - mid) / math.max(spread, 1e-3)) ^ 2)
-		table.insert(points, NumberSequenceKeypoint.new(v, math.clamp(1 - alpha * strength, 0, 1)))
+		return NumberSequenceKeypoint.new(v, math.clamp(1 - alpha * strength, 0, 1))
+	end
+	local points = {}
+	if spread >= 0.25 then
+		for i = 0, 14 do
+			table.insert(points, at(i / 14))
+		end
+		return NumberSequence.new(points)
+	end
+	local spots = { 0, 1 }
+	for k = -8, 8 do
+		local v = mid + k * spread * 0.3
+		if v > 1e-3 and v < 1 - 1e-3 then
+			table.insert(spots, v)
+		end
+	end
+	table.sort(spots)
+	for _, v in spots do
+		table.insert(points, at(v))
 	end
 	return NumberSequence.new(points)
 end
 
 export type EdgeLook = { Spread: number, Floor: number, Strength: number }
+export type Bands = { Line: number, Glow: { { Wide: number, Alpha: number } } }
+
+-- A line `line` wide with a glow reaching `reach` each side at `alpha`, Modulo's falloff (alpha * e^-(d/reach)^1.4, d
+-- from the line's side, in tools/blender/voidkin_chrome.py), out to three reaches where it's spent (AR29, B). Drawn as
+-- nested bands of Light, a unit apart or more and sixteen at most, each band's alpha such that where they overlap they
+-- make the falloff at the middle of each ring: steps too fine to see, where two bands showed as grey slabs.
+function Seam.Bands(line: number, reach: number, alpha: number): Bands
+	local far = 3 * reach
+	local rings = math.clamp(math.round(far), 2, 16)
+	local step = far / rings
+	local want: { number } = {}
+	for ring = 1, rings do
+		want[ring] = alpha * math.exp(-(((ring - 0.5) * step / reach) ^ 1.4))
+	end
+	local glow: { { Wide: number, Alpha: number } } = {}
+	for ring = rings, 1, -1 do -- outermost first, under the rest
+		local beyond = want[ring + 1] or 0
+		table.insert(glow, { Wide = line + 2 * ring * step, Alpha = 1 - (1 - want[ring]) / (1 - beyond) })
+	end
+	return { Line = line, Glow = glow }
+end
+
+-- Roblox keeps a UDim's offset whole, cutting toward nought (0.85 becomes 0, 2.7 becomes 2), so B's points are made
+-- whole before they become one: a place to the nearest unit (`Whole`), a line's width or a size the same but never under
+-- one (`Thin`), so a hairline of 0.85 still draws.
+function Seam.Whole(n: number): number
+	return math.round(n)
+end
+
+function Seam.Thin(n: number): number
+	return if n > 0 then math.max(1, math.round(n)) else 0
+end
 
 -- A lit edge `length` long from (x, y) along its axis, down when `vertical`: its glow's bands, then its line on top,
 -- each a frame of Light whose gradient carries the strength along it. `mid`: where it's strongest, a share of its
--- length (its middle when nil). The frame holds no taps.
-function Seam.Edge(parent: Instance, name: string, x: number, y: number, length: number, vertical: boolean, look: EdgeLook, mid: number?): Frame
+-- length (its middle when nil). `bands`: its line's width and its glow's (Config.Hud.Seam.Edge's when nil). The frame
+-- holds no taps.
+function Seam.Edge(parent: Instance, name: string, x: number, y: number, length: number, vertical: boolean, look: EdgeLook, mid: number?, bands: Bands?): Frame
 	local holder = Instance.new("Frame")
 	holder.Name = name
 	holder.Active = false
 	holder.BackgroundTransparency = 1
 	holder.BorderSizePixel = 0
-	holder.Position = UDim2.fromOffset(x, y)
-	holder.Size = if vertical then UDim2.fromOffset(0, length) else UDim2.fromOffset(length, 0)
+	holder.Position = UDim2.fromOffset(Seam.Whole(x), Seam.Whole(y))
+	holder.Size = if vertical then UDim2.fromOffset(0, Seam.Whole(length)) else UDim2.fromOffset(Seam.Whole(length), 0)
 	holder:SetAttribute("Seam", true)
 	holder.Parent = parent
 	local centre = mid or 0.5
-	local function band(bandName: string, wide: number, alpha: number, z: number)
+	local long = math.max(Seam.Whole(length), 1)
+	-- A band `beyond` past each end too, its ends round, when it's a ring of glow: every point of it as far from the
+	-- line as the sheet's falloff measures (the distance to the line, so a short line glows as a halo, not a slab). Its
+	-- strength along it is the line's, moved for its longer length.
+	local function band(bandName: string, wide: number, beyond: number, alpha: number, z: number)
 		local made = Instance.new("Frame")
 		made.Name = bandName
 		made.Active = false
 		made.BorderSizePixel = 0
 		made.BackgroundColor3 = LIGHT
 		made.AnchorPoint = if vertical then Vector2.new(0.5, 0) else Vector2.new(0, 0.5)
-		made.Size = if vertical then UDim2.new(0, wide, 1, 0) else UDim2.new(1, 0, 0, wide)
+		made.Position = if vertical then UDim2.fromOffset(0, -beyond) else UDim2.fromOffset(-beyond, 0)
+		made.Size = if vertical then UDim2.new(0, Seam.Thin(wide), 1, 2 * beyond) else UDim2.new(1, 2 * beyond, 0, Seam.Thin(wide))
 		made.ZIndex = z
 		made.Parent = holder
+		if beyond > 0 then
+			local corner = Instance.new("UICorner")
+			corner.CornerRadius = UDim.new(0.5, 0)
+			corner.Parent = made
+		end
 		local gradient = Instance.new("UIGradient")
 		gradient.Rotation = if vertical then 90 else 0
-		gradient.Transparency = along(centre, look.Spread, look.Floor, alpha * look.Strength)
+		local whole = long + 2 * beyond
+		gradient.Transparency = along((centre * long + beyond) / whole, look.Spread * long / whole, look.Floor, alpha * look.Strength)
 		gradient.Parent = made
 	end
-	for index, glow in S.Edge.Glow do
-		band(`Glow{index}`, glow.Wide, glow.Alpha, 1)
+	local widths: Bands = bands or S.Edge
+	for index, glow in widths.Glow do
+		band(`Glow{index}`, glow.Wide, if bands then Seam.Whole((glow.Wide - widths.Line) / 2) else 0, glow.Alpha, 1)
 	end
-	band("Line", S.Edge.Line, 1, 2)
+	band("Line", widths.Line, 0, 1, 2)
 	return holder
 end
 

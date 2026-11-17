@@ -1,13 +1,14 @@
 --!strict
 -- VoidkinScreen (client): one Voidkin at a time, a character to show off, full screen (TR17, "The director's layout",
 -- 2026-11-15; docs/research/voidkin-screen.md, "DESIGN"; docs/ui.md, "The screens of the first loop", 4 and 5). In grey:
---   in Roblox's top bar, right of its buttons (the Screen kit's band; research's call, 2026-11-15): Back, then
---     favourite, lock and rename as small marks, each a touch or more, and at its right the currencies;
---   a thin rail down the far left, every page a round button strung on a line: Overview, Bag, Kit and Stars, then
---     Forge, Jewels and War Emblems, greyed with "Soon" until they're built. The chosen one is larger and lit, the light
---     running along the line to it, and only its word shows; each opens its page in the panel on the right. A button
---     is a touch tall and no more, so the seven stand whole wherever the room is seven touches tall; on a shorter
---     phone the rail scrolls, the built pages in view;
+--   in Roblox's top bar, right of its buttons (the Screen kit's band; research's call, 2026-11-15), AR29's B, the
+--     seam (the director's pick, 2026-11-17): Back with no plate, its chevron and word over a line of light; then
+--     favourite, lock and rename in one cut channel of three cells, each a touch or more; at its right the currencies;
+--   a thin rail down the far left (B): a line of light down its right edge, strongest at the chosen page, and each
+--     page's icon free beside it: Overview, Items, Kit and Stars, then Forge, Jewels and War Emblems once they're
+--     built (hidden until then). The chosen one is a tab of dark glass opening from the line, its icon over its word;
+--     each opens its page in the panel on the right. A row is a touch tall or more, and where they don't fit they
+--     close up evenly, every page in sight (Rules.Hud.RailRows);
 --   its own model, live, on a stage lit by its rarity, the floor glowing its element (Figure): a drag turns it, a tap
 --     plays the end of its Reveal, a flick goes to the next or the one before. Over the stage, its name on one line with
 --     its rarity in the rarity's colour, and the figure under it (research's fix 2);
@@ -79,7 +80,6 @@ local SAID: { [string]: string } = { Bag = "Items" }
 local ROW = Theme.Size.Tap -- a row of buttons, authored
 local BAR = 28 -- a currency's chip, in the band, authored
 local TITLE = 24 -- the name's line over the stage, authored
-local LABEL = 16 -- a rail button's label, under its circle, authored
 local WORD = 64 -- Save and Cancel, in the band, each, authored
 local WARM = 12 -- bodies drawn ahead at the open, the roster's first; one past them is drawn when it's asked for
 local SHEET_HEAD = 22 -- a stat group's caption line, the space above it included, authored
@@ -119,7 +119,6 @@ local lastOn: On? = nil
 local slideFrom = 0 -- where the next figure comes in from
 local figure: Figure.Figure? = nil
 local stage: Frame? = nil -- the figure's stage, in the screen's frame beside its body: kept across rebuilds
-local litTo: number? = nil -- how far down the rail's line the light reached, authored: it runs on from there
 local measured = { Height = 0, Stage = 0, Power = 0 }
 local tickers: { () -> () } = {}
 local taps: { [Instance]: () -> () } = {} -- for tests: what a tap does; emptied at each build
@@ -840,113 +839,141 @@ local function pageBody(parent: Frame, view: Profile.View, owned: Profile.OwnedV
 	end
 end
 
-local function bit(parent: Instance, name: string, size: UDim2, colour: Color3, rotation: number?, position: UDim2?): Frame
-	local made = Instance.new("Frame")
-	made.Name = name
-	made.BorderSizePixel = 0
-	made.BackgroundColor3 = colour
-	made.AnchorPoint = Vector2.new(0.5, 0.5)
-	made.Position = position or UDim2.fromScale(0.5, 0.5)
-	made.Size = size
-	made.Rotation = rotation or 0
-	made.Parent = parent
-	return made
+-- AR29's B, the seam (the director's pick, 2026-11-17, 14:04; Modulo's numbers, 14:15; Config.Hud.Voidkin.Chrome): the
+-- rail's and the bar's icons are Modulo's, white on alpha, tinted here.
+local ICONS: { [string]: string } = {
+	Overview = "PageOverview",
+	Bag = "PageItems",
+	Kit = "PageKit",
+	Stars = "PageStars",
+	Forge = "PageForge",
+	Jewels = "PageJewels",
+	["War Emblems"] = "PageWarEmblems",
+}
+
+-- One of the chrome's icons, `side` across, its middle at `at`, named "Icon" (its image's name as its "Kit").
+local Whole, Thin = Seam.Whole, Seam.Thin -- B's points made whole before a UDim cuts them (Seam.Whole)
+
+local function chromeIcon(parent: Instance, key: string, side: number, at: UDim2, tint: Color3, z: number): ImageLabel
+	local record = HudConfig.Voidkin.Chrome.Images[key]
+	local image = Instance.new("ImageLabel")
+	image.Name = "Icon"
+	image.BackgroundTransparency = 1
+	image.BorderSizePixel = 0
+	image.Image = record.Id
+	image.ImageColor3 = tint
+	image.AnchorPoint = Vector2.new(0.5, 0.5)
+	image.Position = at
+	image.Size = UDim2.fromOffset(side, side)
+	image.ZIndex = z
+	image:SetAttribute("Kit", key)
+	image.Parent = parent
+	return image
 end
 
-local function round(on: Instance)
-	local corner = Instance.new("UICorner")
-	corner.CornerRadius = UDim.new(1, 0)
-	corner.Parent = on
+-- Back, B's: no plate (Screen.Full's `dress`). Its chevron and its word on the band, over a line of Light strongest under
+-- its middle, all in its face, so a press squeezes them as one.
+local function dressBack(exit: TextButton)
+	local look = HudConfig.Voidkin.Chrome.Bar.Back
+	local rail = HudConfig.Voidkin.Chrome.Rail
+	local face = Skin.Of(exit)
+	local side = Whole(2 * look.Chevron * rail.Icon / rail.Drawn)
+	chromeIcon(face, "Back", side, UDim2.new(0, Whole(look.ChevronAt), 0.5, 0), Look.Text, 20)
+	local word = text({
+		Name = "Word",
+		Size = look.Word,
+		Font = Theme.Font.Strong,
+		Colour = Look.Text,
+		Align = Enum.TextXAlignment.Left,
+		Box = UDim2.new(1, -Whole(look.WordAt), 1, 0),
+		Position = UDim2.fromOffset(Whole(look.WordAt), 0),
+		Parent = face,
+	}, "BACK")
+	word.ZIndex = 20
+	local line = look.Line
+	local long = Screen.Back.X - line.Inset * 2
+	local edge = Seam.Edge(face, "Line", line.Inset, 0, long, false, { Spread = line.Spread / long, Floor = line.Floor, Strength = 1 }, 0.5, Seam.Bands(line.Tall, line.Glow, line.GlowAlpha))
+	edge.Position = UDim2.new(0, Whole(line.Inset), 1, -Whole(line.Over))
+	edge.ZIndex = 19
 end
 
--- A page's mark in its circle, in grey: a head for Overview, a pouch for the bag, a blade for Kit, a star's cut for
--- Stars, an anvil for the Forge, a pair of stones for Jewels, a shield for War Emblems. The drawn icons are Modulo's.
-local function glyph(dot: Frame, name: string, colour: Color3)
-	if name == "Bag" then
-		bit(dot, "Flap", UDim2.fromScale(0.24, 0.1), colour, 0, UDim2.fromScale(0.5, 0.34))
-		bit(dot, "Pouch", UDim2.fromScale(0.44, 0.32), colour, 0, UDim2.fromScale(0.5, 0.58))
-	elseif name == "Kit" then
-		bit(dot, "Blade", UDim2.fromScale(0.56, 0.1), colour, -45)
-		bit(dot, "Guard", UDim2.fromScale(0.26, 0.09), colour, 45, UDim2.fromScale(0.39, 0.61))
-	elseif name == "Stars" then
-		bit(dot, "Cut", UDim2.fromScale(0.34, 0.34), colour, 45)
-	elseif name == "Forge" then
-		bit(dot, "Face", UDim2.fromScale(0.5, 0.14), colour, 0, UDim2.fromScale(0.5, 0.4))
-		bit(dot, "Foot", UDim2.fromScale(0.22, 0.24), colour, 0, UDim2.fromScale(0.5, 0.58))
-	elseif name == "Jewels" then
-		bit(dot, "Stone1", UDim2.fromScale(0.2, 0.2), colour, 45, UDim2.fromScale(0.37, 0.5))
-		bit(dot, "Stone2", UDim2.fromScale(0.2, 0.2), colour, 45, UDim2.fromScale(0.63, 0.5))
-	elseif name == "War Emblems" then
-		bit(dot, "Field", UDim2.fromScale(0.36, 0.26), colour, 0, UDim2.fromScale(0.5, 0.42))
-		bit(dot, "Point", UDim2.fromScale(0.255, 0.255), colour, 45, UDim2.fromScale(0.5, 0.55))
-	else
-		round(bit(dot, "Head", UDim2.fromScale(0.26, 0.26), colour, 0, UDim2.fromScale(0.5, 0.38)))
-		bit(dot, "Shoulders", UDim2.fromScale(0.44, 0.12), colour, 0, UDim2.fromScale(0.5, 0.66))
-	end
-end
-
--- A mark's sign on its button in the band, in grey: a star for favourite, a padlock, a pencil. The drawn ones are Modulo's.
-local function markGlyph(on: Instance, name: string, colour: Color3)
-	local holder = Instance.new("Frame")
-	holder.Name = "Glyph"
-	holder.BackgroundTransparency = 1
-	holder.AnchorPoint = Vector2.new(0.5, 0.5)
-	holder.Position = UDim2.fromScale(0.5, 0.5)
-	holder.Size = UDim2.fromOffset(20, 20)
-	holder.ZIndex = 20
-	holder.Parent = on
-	if name == "Favourite" then
-		bit(holder, "Square", UDim2.fromScale(0.6, 0.6), colour, 0)
-		bit(holder, "Cut", UDim2.fromScale(0.6, 0.6), colour, 45)
-	elseif name == "Lock" then
-		local shackle = bit(holder, "Shackle", UDim2.fromScale(0.46, 0.5), colour, 0, UDim2.fromScale(0.5, 0.36))
-		shackle.BackgroundTransparency = 1
-		round(shackle)
-		local loop = Instance.new("UIStroke")
-		loop.Color = colour
-		loop.Thickness = 2
-		loop.Parent = shackle
-		bit(holder, "Body", UDim2.fromScale(0.76, 0.46), colour, 0, UDim2.fromScale(0.5, 0.72)).ZIndex = 2
-	else
-		bit(holder, "Shaft", UDim2.fromScale(0.74, 0.2), colour, -45, UDim2.fromScale(0.56, 0.44))
-		bit(holder, "Tip", UDim2.fromScale(0.2, 0.2), colour, 0, UDim2.fromScale(0.16, 0.84))
-	end
-end
-
--- Favourite, lock and rename in the band, right of Back: small marks, each on a touch or more (research's fix 2), lit
--- while they're on. Renaming, Save (`save`) and Cancel stand there. Returns where they end, authored from the band's left.
+-- Favourite, lock and rename in the band, right of Back: B's channel, one cut plate of the dark split by hairlines into
+-- three equal cells, each a touch or more, an icon in each: the seam's text when off; on, Light with a short line of it
+-- under, favourite and lock drawn solid and shut. Renaming, Save (`save`) and Cancel stand there as kit buttons. Returns
+-- where they end, authored from the band's left.
 local function marks(band: Frame, owned: Profile.OwnedVoidkin, on: On, save: (() -> boolean)?): number
 	local gap = Theme.Size.Gap
 	local tall = Screen.Row()
 	local x = Screen.BandLeft
-	local function button(name: string, said: string, wide: number, press: () -> ...any): TextButton
-		local made = Button.new({
-			Palette = Seam.Palette,
-			Name = name,
-			Text = said,
-			Size = UDim2.fromOffset(wide, tall),
-			Position = UDim2.new(0, x, 0.5, 0),
-			AnchorPoint = Vector2.new(0, 0.5),
-			Parent = band,
-			TextSize = Theme.Text.Caption,
-			OnPress = press,
-		})
-		x += wide + gap
-		return made
-	end
 	if save then
-		button("Save", "Save", WORD, save)
-		button("Cancel", "Cancel", WORD, function()
+		local function button(name: string, said: string, press: () -> ...any)
+			Button.new({
+				Palette = Seam.Palette,
+				Name = name,
+				Text = said,
+				Size = UDim2.fromOffset(WORD, tall),
+				Position = UDim2.new(0, x, 0.5, 0),
+				AnchorPoint = Vector2.new(0, 0.5),
+				Parent = band,
+				TextSize = Theme.Text.Caption,
+				OnPress = press,
+			})
+			x += WORD + gap
+		end
+		button("Save", "Save", save)
+		button("Cancel", "Cancel", function()
 			editing, draft = false, nil
 			rebuild()
 		end)
 		return x - gap
 	end
+	local chrome = HudConfig.Voidkin.Chrome
+	local look, rail = chrome.Bar, chrome.Rail
+	local channel = look.Channel
+	local cell = math.ceil(math.max(channel.Cell, touch()))
+	-- The channel's top and foot from the band's middle, each whole, so the lit line hangs a whole Over above that foot.
+	local top, foot = -Whole(tall / 2 + channel.Over), Whole(tall / 2 + channel.Under)
+	local plate = frameOf("Channel", band, UDim2.new(0, x, 0.5, top), UDim2.fromOffset(cell * 3, foot - top))
+	plate.AnchorPoint = Vector2.new(0, 0)
+	plate.Active = false
+	Skin.LayOwn(plate, chrome.Images.ChannelFill, "Fill", { Tint = Look.Channel, Alpha = channel.Fill, Z = 1 })
+	Skin.LayOwn(plate, chrome.Images.ChannelEdge, "Edge", { Tint = Look.Line, Z = 2 })
+	for at = 1, 2 do
+		local split = Instance.new("Frame")
+		split.Name = `Split{at}`
+		split.BorderSizePixel = 0
+		split.BackgroundColor3 = Look.Line
+		split.AnchorPoint = Vector2.new(0.5, 0)
+		split.Position = UDim2.fromOffset(cell * at, Whole(channel.Over + channel.Split.Inset))
+		split.Size = UDim2.fromOffset(Thin(channel.Split.Wide), Thin(tall - channel.Split.Inset * 2))
+		split.ZIndex = 3
+		split.Parent = plate
+	end
+	local middle = (top + foot) / 2 -- the channel's middle, from a cell's
 	local function mark(name: string, lit: boolean, press: () -> ...any)
-		local made = button(name, "", touch(), press)
+		local made = Button.new({
+			Palette = Seam.Palette,
+			Name = name,
+			Text = "",
+			Bare = true,
+			Size = UDim2.fromOffset(cell, tall),
+			Position = UDim2.new(0, x, 0.5, 0),
+			AnchorPoint = Vector2.new(0, 0.5),
+			Parent = band,
+			OnPress = press,
+		})
+		made.ZIndex = 2
+		x += cell
 		Button.Set(made, { Selected = lit })
 		made:SetAttribute("On", lit)
-		markGlyph(made, name, if lit then Look.Text else Look.TextDim)
+		local face = Skin.Of(made)
+		chromeIcon(face, if lit then `{name}On` else name, rail.Icon, UDim2.new(0.5, 0, 0.5, Whole(middle - look.Mark.Lift)), if lit then Seam.Light else Look.Text, 20)
+		if lit then
+			local under = look.Mark.On
+			local edge = Seam.Edge(face, "Lit", 0, 0, under.Long, false, { Spread = 1e3, Floor = 1, Strength = 1 }, nil, Seam.Bands(under.Tall, under.Glow, under.GlowAlpha))
+			edge.Position = UDim2.new(0.5, -Whole(under.Long / 2), 0.5, Whole(foot - under.Over))
+			edge.ZIndex = 19
+		end
 	end
 	mark("Favourite", owned.Favourite, function(): boolean
 		return refused("Can't mark it", on.Act("SetMark", { Voidkin = owned.Id, Mark = "Favourite", On = not owned.Favourite }))
@@ -958,120 +985,144 @@ local function marks(band: Frame, owned: Profile.OwnedVoidkin, on: On, save: (()
 		editing, draft = true, nil
 		rebuild()
 	end)
-	return x - gap
+	return x
 end
 
--- The menu: a thin line down the far left with a round button strung on it for each page. The chosen one is larger, its
--- ring lit, a halo round it, its word under it, and the line is lit from the top down to it: the light runs there from
--- where it stood. The others show no word; one not built yet is greyed with "Soon" under it, and a tap says so. A
--- button's tap area is the rail's width and a touch tall, more only for its word, and the gaps give way before a tap
--- does: the seven stand whole in a room seven touches tall, and in a shorter one the rail scrolls. A pad wider than its
--- buttons each side for the chosen word (the room's edge on the left, the stage's gap on the right).
+-- The menu (AR29's B): a line of Light down the rail's right edge, strongest at the chosen page, and each page's icon
+-- free beside it with a short tick on the line; the chosen page a tab of dark glass opening from the line, washed in
+-- Light toward it, its icon over its word. A page not built yet isn't on the rail until it opens (the director's pick
+-- of B: hidden). A row's tap is the rail's width and a touch tall or more; where the rows don't fit they close up evenly,
+-- every page in sight (Rules.Hud.RailRows; research's call on seven rows), and only a room too short for even that
+-- scrolls. A pad each side of the rail for the glow (the room's edge on the left, the stage's gap on the right).
 local function rail(body: Instance, at: Place)
-	local config = HudConfig.Voidkin.Rail
-	local lit = Look.Primary
+	local chrome = HudConfig.Voidkin.Chrome
+	local look = chrome.Rail
+	local tab = look.Tab
+	local images = chrome.Images
 	local pad = Theme.Size.Pad
-	local middle = pad + at.Rail.Wide / 2
-	local least = touch()
-	local resting, worded, picked = math.max(least, config.Dot + 2), math.max(least, config.Dot + LABEL + 2), math.max(least, config.Chosen + LABEL + 2)
-	local function tallOf(name: string): number
-		return if name == page then picked elseif SOON[name] then worded else resting
-	end
-	local sum = 0
+	local wide = at.Rail.Wide
+	local shown: { string } = {}
 	for _, name in PAGES do
-		sum += tallOf(name)
+		if not SOON[name] then
+			table.insert(shown, name)
+		end
 	end
-	local between = math.clamp((at.Rail.Tall - sum) / (#PAGES - 1), 0, config.Spread)
-	local whole = sum + between * (#PAGES - 1)
-	local top = math.clamp((at.Rail.Tall - whole) / 2, 0, pad)
+	local size = Text.Legible(tab.Word, Layers.Scale())
+	local function lines(name: string): { string }
+		return string.split(SAID[name] or name, " ")
+	end
+	local need = 0
+	for _, name in shown do
+		need = math.max(need, Hud.RailNeed(#lines(name), size, look.Drawn, tab))
+	end
+	local chosenNeed = Hud.RailNeed(#lines(page), size, look.Drawn, tab)
+	local pitch, whole = Hud.RailRows(math.max(at.Rail.Tall - pad * 2, 1), #shown, look.Row, look.Least, need, chosenNeed)
+	local chosenTall = math.max(pitch, chosenNeed)
+	local rows = pitch * (#shown - 1) + chosenTall
+	local canvas = math.max(at.Rail.Tall, rows + pad * 2)
 	local holder = Instance.new("ScrollingFrame")
 	holder.Name = "Rail"
 	holder.BackgroundTransparency = 1
 	holder.BorderSizePixel = 0
 	holder.Position = UDim2.fromOffset(at.Rail.X - pad, at.Rail.Y)
-	holder.Size = UDim2.fromOffset(at.Rail.Wide + pad * 2, at.Rail.Tall)
-	holder.CanvasSize = UDim2.fromOffset(0, top + whole)
+	holder.Size = UDim2.fromOffset(wide + pad * 2, at.Rail.Tall)
+	holder.CanvasSize = UDim2.fromOffset(0, Whole(canvas))
 	holder.ScrollBarThickness = 0
 	holder.ScrollBarImageTransparency = 1 -- a touch device draws its thumb even at nought
 	holder.ScrollingDirection = Enum.ScrollingDirection.Y
-	holder.ScrollingEnabled = whole > at.Rail.Tall + 0.5
-	holder:SetAttribute("Whole", whole <= at.Rail.Tall + 0.5)
+	holder.ScrollingEnabled = not whole
+	holder:SetAttribute("Whole", whole)
+	holder:SetAttribute("Pitch", pitch)
 	holder.Parent = body
-	local conduit = bit(holder, "Line", UDim2.fromOffset(config.Line, whole), Look.Line, 0, UDim2.fromOffset(middle, top + whole / 2))
-	conduit.ZIndex = 1
-	local light = Instance.new("Frame")
-	light.Name = "Lit"
-	light.BorderSizePixel = 0
-	light.BackgroundColor3 = lit
-	light.AnchorPoint = Vector2.new(0.5, 0)
-	light.Position = UDim2.fromOffset(middle, top)
-	light.ZIndex = 2
-	light.Parent = holder
-	local y = top
-	for index, name in PAGES do
+	local tops: { [string]: number } = {}
+	local y = pad
+	for _, name in shown do
+		tops[name] = y
+		y += if name == page then chosenTall else pitch
+	end
+	local seam = wide - look.Line.In -- the line's middle, from the rail's left
+	local peak = (tops[page] or pad) + chosenTall / 2
+	local length = canvas - pad * 2
+	local line = Seam.Edge(holder, "Line", pad + seam, pad, length, true, { Spread = look.Line.Spread / length, Floor = look.Line.Floor, Strength = 1 }, (peak - pad) / length, Seam.Bands(look.Line.Wide, look.Line.Glow, look.Line.GlowAlpha))
+	line:SetAttribute("Peak", peak)
+	local cx = wide / 2 - look.Aside -- an icon's middle
+	for index, name in shown do
 		local on_ = name == page
-		local soon = SOON[name] == true
-		local tall = tallOf(name)
-		local across = if on_ then config.Chosen else config.Dot
-		local centred = if on_ or soon then 1 + across / 2 else tall / 2 -- a button with no word has its circle in its middle
+		local tall = if on_ then chosenTall else pitch
 		local press = Instance.new("TextButton")
 		press.Name = name
 		press.Text = ""
 		press.AutoButtonColor = false
 		press.BackgroundTransparency = 1
-		press.Position = UDim2.fromOffset(pad, y)
-		press.Size = UDim2.fromOffset(at.Rail.Wide, tall)
+		press.Position = UDim2.fromOffset(pad, Whole(tops[name]))
+		press.Size = UDim2.fromOffset(wide, Whole(tall))
 		press.ZIndex = 3
 		press.LayoutOrder = index
 		press:SetAttribute("Chosen", on_)
-		press:SetAttribute("Soon", soon)
 		press.Parent = holder
-		local centre = at.Rail.Wide / 2
 		if on_ then
-			local halo = bit(press, "Halo", UDim2.fromOffset(across + 10, across + 10), lit, 0, UDim2.fromOffset(centre, centred))
-			halo.BackgroundTransparency = 0.78
-			round(halo)
-		end
-		local dot = bit(press, "Dot", UDim2.fromOffset(across, across), if on_ or soon then Look.Plate else Look.PlateHigh, 0, UDim2.fromOffset(centre, centred))
-		dot.ZIndex = 2
-		round(dot)
-		local ring = Instance.new("UIStroke")
-		ring.Name = "Ring"
-		ring.Thickness = if on_ then 2.5 else 1.5
-		ring.Color = if on_ then lit else Look.Line
-		ring.Transparency = if soon then 0.4 else 0
-		ring.Parent = dot
-		glyph(dot, name, if on_ then Look.Text elseif soon then Look.Line else Look.TextDim)
-		if on_ or soon then
-			-- The line passes behind the word, never through its letters: a cut of the cover's colour under them.
-			local cut = bit(press, "Cut", UDim2.fromOffset(config.Line + 10, LABEL), Look.Backing, 0, UDim2.fromOffset(centre, 2 + across + LABEL / 2))
-			cut.ZIndex = 0
-			text({
+			local x0, y0 = tab.Inset, tab.Inset
+			local w, h = seam - x0, tall - tab.Inset * 2
+			local function plate(record: any, called: string, tint: Color3 | { Color3 }, alpha: number, z: number): ImageLabel
+				return Skin.LayOwn(press, record, called, { X = Whole(x0), Y = Whole(y0), W = Whole(x0 + w) - Whole(x0), H = Whole(y0 + h) - Whole(y0), Tint = tint, Alpha = alpha, Z = z })
+			end
+			plate(images.TabGlow, "Glow", Seam.Light, tab.Glow, 1)
+			plate(images.TabFill, "Fill", Seam.Panel, tab.Fill, 2)
+			local wash = plate(images.TabFill, "Wash", Seam.Light, 1, 3)
+			local shades = {}
+			for i = 0, 10 do
+				local t = i / 10
+				table.insert(shades, NumberSequenceKeypoint.new(t, 1 - (tab.Wash.Base + tab.Wash.Rise * t ^ tab.Wash.Power)))
+			end
+			local gradient = Instance.new("UIGradient")
+			gradient.Rotation = 0 -- its left to the line
+			gradient.Transparency = NumberSequence.new(shades)
+			gradient.Parent = wash
+			plate(images.TabEdge, "Edge", Seam.Light, tab.Edge, 4)
+			Seam.Edge(press, "Meet", seam, y0, h, true, { Spread = 1e3, Floor = 1, Strength = 1 }, nil, Seam.Bands(tab.Meet.Wide, tab.Meet.Glow, tab.Meet.GlowAlpha)).ZIndex = 5
+			-- Its icon over its word, the two centred in the tab; the word under the icon, kept inside the glass.
+			local said = lines(name)
+			local wordTall = #said * size * tab.Lines
+			local top = (tall - (tab.Top + look.Drawn + tab.Under + wordTall)) / 2
+			chromeIcon(press, ICONS[name], look.Icon, UDim2.fromOffset(Whole(cx), Whole(top + tab.Top + look.Drawn / 2)), Look.Text, 7)
+			local label = text({
 				Name = "Label",
-				Size = Theme.Text.Caption,
-				Font = if on_ then Theme.Font.Strong else Theme.Font.Body,
-				Colour = if on_ then Look.Text else Look.TextDim,
+				Size = tab.Word,
+				Font = Theme.Font.Strong,
+				Colour = Look.Text,
 				Align = Enum.TextXAlignment.Center,
-				Box = UDim2.new(1, pad * 2, 0, LABEL),
-				Position = UDim2.fromOffset(-pad, 2 + across),
+				Box = UDim2.fromOffset(Whole(w), Thin(wordTall)),
+				Position = UDim2.fromOffset(Whole(cx), Whole(top + tab.Top + look.Drawn + tab.Under)),
 				Parent = press,
-			}, if on_ then SAID[name] or name else "Soon")
+			}, table.concat(said, "\n"))
+			label.AnchorPoint = Vector2.new(0.5, 0)
+			label.LineHeight = tab.Lines
+			label.ZIndex = 8
+			local across = 0
+			for _, each in said do
+				across = math.max(across, Text.Wide(label, each))
+			end
+			local margin = tab.Inset * 2
+			local least, most = x0 + margin + across / 2, x0 + w - margin - across / 2
+			label.Position = UDim2.fromOffset(Whole(if least > most then x0 + w / 2 else math.clamp(cx, least, most)), label.Position.Y.Offset)
+		else
+			chromeIcon(press, ICONS[name], look.Icon, UDim2.fromOffset(Whole(cx), Whole(tall / 2)), look.Idle, 2)
+			local tick = Instance.new("Frame")
+			tick.Name = "Tick"
+			tick.BorderSizePixel = 0
+			tick.BackgroundColor3 = Seam.Light
+			tick.BackgroundTransparency = 1 - look.Tick.Alpha
+			tick.AnchorPoint = Vector2.new(1, 0.5)
+			tick.Position = UDim2.fromOffset(Whole(seam), Whole(tall / 2))
+			tick.Size = UDim2.fromOffset(Thin(look.Tick.Long), Thin(look.Tick.Tall))
+			tick.ZIndex = 2
+			tick.Parent = press
 		end
 		local function onTap()
 			show(name)
 		end
 		press.Activated:Connect(onTap)
 		taps[press] = onTap
-		if on_ then
-			local to = y - top + centred
-			local from = litTo or to
-			litTo = to
-			light.Size = UDim2.fromOffset(config.Line, from)
-			if from ~= to then
-				TweenService:Create(light, TweenInfo.new(config.Run, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), { Size = UDim2.fromOffset(config.Line, to) }):Play()
-			end
-		end
-		y += tall + between
 	end
 end
 
@@ -1224,7 +1275,7 @@ local function build(view: Profile.View, on: On)
 		local lead = view.Roles.Lead
 		chosen = if lead ~= "" and view.Voidkin[lead] then lead elseif roster[1] then roster[1].Id else nil
 	end
-	local body = Screen.Full(NAME, "Voidkin", Seam.Palette)
+	local body = Screen.Full(NAME, "Voidkin", Seam.Palette, dressBack)
 	local frame = Screen.Frame(NAME) :: Frame
 	local band = Screen.Band(NAME) :: Frame
 	-- Under the stage: what a page lays behind its figure (the Items page's room), cleared with the body.
@@ -1308,7 +1359,7 @@ end
 function VoidkinScreen.Open(view: Profile.View, on: On)
 	local fresh = Screen.Current() ~= NAME
 	if fresh then -- a fresh open starts on the lead and the bag (research's call, 2026-11-15), never on a choice left from before
-		chosen, page, slideFrom, shownPower, litTo = nil, if on.Page and table.find(PAGES, on.Page) and not SOON[on.Page] then on.Page else "Bag", 0, {}, nil
+		chosen, page, slideFrom, shownPower = nil, if on.Page and table.find(PAGES, on.Page) and not SOON[on.Page] then on.Page else "Bag", 0, {}
 		editing, draft, awaited = false, nil, nil
 		BagPage.Reset()
 	end

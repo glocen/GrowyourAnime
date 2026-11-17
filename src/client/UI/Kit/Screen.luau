@@ -17,7 +17,8 @@
 -- band's left, then whatever its owner sets beside it (Screen.Band, from Screen.BandLeft on). Back is as tall as the band
 -- lets it be, a touch or more. Its body is the whole room under the band, laid out by its owner.
 --   Screen.Open(name, title, size) -> the body frame to fill
---   Screen.Full(name, title) -> the body frame to fill, the whole room
+--   Screen.Full(name, title, palette?, dress?) -> the body frame to fill, the whole room; `dress(back)` lays Back's
+--     own face on a bare button, once, when the screen opens (the Voidkin screen's seam, AR29 B: no plate)
 --   Screen.Band(name) -> a full screen's band to fill, Back in it; nil for any other
 --   Screen.Row() -> how tall a button stands in the band now, authored
 --   Screen.Close()
@@ -187,7 +188,8 @@ local function back(exit: TextButton)
 end
 
 -- `size` nil: a full screen. `palette`: a full screen's cover and Back in that UIKit palette (the Voidkin screen's seam).
-local function show(name: string, title: string, size: Vector2?, palette: string?): Frame
+-- `dress`: Back bare, its face its owner's.
+local function show(name: string, title: string, size: Vector2?, palette: string?, dress: ((exit: TextButton) -> ())?): Frame
 	local full = size == nil
 	local current = open
 	local again = current and current.Name == name and current.Frame:FindFirstChild("Body")
@@ -286,7 +288,8 @@ local function show(name: string, title: string, size: Vector2?, palette: string
 	heading.Visible = not full -- a full screen's owner places its name
 	local exit = Button.new({
 		Name = if full then "Back" else "Close",
-		Text = if full then "Back" else "Close",
+		Text = if full and dress then "" elseif full then "Back" else "Close",
+		Bare = full and dress ~= nil,
 		Size = UDim2.fromOffset(EXIT, Theme.Size.Tap),
 		Position = UDim2.new(1, -Theme.Size.Pad, 0, Theme.Size.Pad / 2),
 		AnchorPoint = Vector2.new(1, 0),
@@ -297,6 +300,9 @@ local function show(name: string, title: string, size: Vector2?, palette: string
 	exit.ZIndex = 3
 	if band then
 		back(exit)
+		if dress then
+			dress(exit)
+		end
 		band.Parent = Layers.Get("Band")
 	end
 	local body = Instance.new("Frame")
@@ -319,8 +325,8 @@ function Screen.Open(name: string, title: string, size: Vector2): Frame
 	return show(name, title, size)
 end
 
-function Screen.Full(name: string, title: string, palette: string?): Frame
-	return show(name, title, nil, palette)
+function Screen.Full(name: string, title: string, palette: string?, dress: ((exit: TextButton) -> ())?): Frame
+	return show(name, title, nil, palette, dress)
 end
 
 return Screen

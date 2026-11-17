@@ -9,9 +9,9 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **AR11, Ground Wire's retake:** works. Must-fix (round 2 on the hold): the lock as a pulsing fill on the stopped Shade, the shield as a pulsing glint on the spear's head. Asked of Faber: does a real fight hide the lead behind its target?
 - **Next:** verdicts in motion on AR26's blocks as Faber installs them; sim.py's pool() learns "made" (TR24); attributes.py on the real Config once TR36 lands.
 
-**Faber (builder).** 2026-11-17, 19:08. TR41 (e)'s must-fix is in for research's one look: the battery's mark lights its cells by the charge, in thirds, on Power's plate and now in the Power pill before the battery's reading, always (TR41, "(e)", "Faber's fix"; stills `build/scratch/faber/stills/tr41e-fix-*`). (d) passed. Voidkin work stays parked on branch `parked/ar26-watt-block`.
-- **Now:** AR29's B, 13 icons.
-- **Next, in order:** AR30's 25 images; AR31's 38 and TR10's two icons up, then TR10's marker captures; TR34; AR23; TR29 and TR10; TR37 to TR39; TR31 to TR33, TR35, the responsive pass; AR19's six re-uploads; AR32's and AR33's Stages II and III as kit pieces.
+**Faber (builder).** 2026-11-17, 20:03. AR29's B is in the build for research's read: the rail's icons by a line of light, the chosen page a tab of glass, Back bare, favourite, lock and rename in one channel (AR29, "Faber's build of B": two finds fixed, three facts for research; stills `build/scratch/faber/ar29/shots/`). TR41 closed. Voidkin work stays parked on branch `parked/ar26-watt-block`.
+- **Now:** AR30's 25 images.
+- **Next, in order:** AR31's 38 and TR10's two icons up, then TR10's marker captures; TR34; AR23; TR29 and TR10; TR37 to TR39; TR31 to TR33, TR35, the responsive pass; AR19's six re-uploads; AR32's and AR33's Stages II and III as kit pieces.
 - **Open, tests:** four timing cases are NOT VERIFIED (AR11). The Keeper's "and out on Out" and Pip's skip fail at times. TR20's Breaker hover depends on order. A reveal once stayed held after the suites (TR41, "The two must-fixes", Open).
 - **Open, for research:** the target card's light (`CardLightHealth`) keeps its glow ahead of its front. Does it go the same way as the lead's?
 

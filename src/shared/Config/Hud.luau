@@ -623,7 +623,78 @@ return {
 	--   Strip    a portrait's cell, authored
 	--   Panel    the page's panel: Share of the room's width, between Least and Most authored
 	Voidkin = {
-		Rail = { Width = 68, Dot = 26, Chosen = 42, Line = 2, Spread = 20, Run = 0.25 },
+		Rail = { Width = 68 }, -- the rail's width; its look is Chrome's (AR29, B)
+		-- AR29, B, the seam (the director's pick, 2026-11-17, 14:04; Modulo's numbers, 14:15; research's call on seven rows,
+		-- 14:17): the rail and the bar, in authored points. Images: Modulo's 13 icons, white on alpha for the game to tint
+		-- (build/handoff/UI/voidkin/chrome/images/; their drawing 104 of 128 pixels, centred), and the two cut plates the
+		-- kit hasn't (tools/ui/cut_plates.py): the chosen tab, cut top left and foot left, and the bar's channel.
+		Chrome = {
+			Images = {
+				PageOverview = { Id = "rbxassetid://107109302537459", Pixels = Vector2.new(128, 128), Points = Vector2.new(32, 32), Pad = 0 },
+				PageItems = { Id = "rbxassetid://136552132337644", Pixels = Vector2.new(128, 128), Points = Vector2.new(32, 32), Pad = 0 },
+				PageKit = { Id = "rbxassetid://82892541132082", Pixels = Vector2.new(128, 128), Points = Vector2.new(32, 32), Pad = 0 },
+				PageStars = { Id = "rbxassetid://88757612539188", Pixels = Vector2.new(128, 128), Points = Vector2.new(32, 32), Pad = 0 },
+				PageForge = { Id = "rbxassetid://86087795979068", Pixels = Vector2.new(128, 128), Points = Vector2.new(32, 32), Pad = 0 },
+				PageJewels = { Id = "rbxassetid://84949390395894", Pixels = Vector2.new(128, 128), Points = Vector2.new(32, 32), Pad = 0 },
+				PageWarEmblems = { Id = "rbxassetid://104137646367677", Pixels = Vector2.new(128, 128), Points = Vector2.new(32, 32), Pad = 0 },
+				Back = { Id = "rbxassetid://82378479826308", Pixels = Vector2.new(128, 128), Points = Vector2.new(32, 32), Pad = 0 },
+				Favourite = { Id = "rbxassetid://130526251247322", Pixels = Vector2.new(128, 128), Points = Vector2.new(32, 32), Pad = 0 },
+				FavouriteOn = { Id = "rbxassetid://96273820029643", Pixels = Vector2.new(128, 128), Points = Vector2.new(32, 32), Pad = 0 },
+				Lock = { Id = "rbxassetid://118645338371807", Pixels = Vector2.new(128, 128), Points = Vector2.new(32, 32), Pad = 0 },
+				LockOn = { Id = "rbxassetid://81840010809176", Pixels = Vector2.new(128, 128), Points = Vector2.new(32, 32), Pad = 0 },
+				Rename = { Id = "rbxassetid://111948848313920", Pixels = Vector2.new(128, 128), Points = Vector2.new(32, 32), Pad = 0 },
+				TabFill = { Id = "rbxassetid://121634951696924", Pixels = Vector2.new(64, 64), Points = Vector2.new(16, 16), Cut = { 9, 9, 2, 4 }, Pad = 0 },
+				TabEdge = { Id = "rbxassetid://77599492881527", Pixels = Vector2.new(64, 64), Points = Vector2.new(16, 16), Cut = { 9, 9, 2, 4 }, Pad = 0 },
+				TabGlow = { Id = "rbxassetid://95861086972945", Pixels = Vector2.new(104, 104), Points = Vector2.new(26, 26), Cut = { 14, 14, 7, 9 }, Pad = 5 },
+				ChannelFill = { Id = "rbxassetid://77652759335656", Pixels = Vector2.new(64, 64), Points = Vector2.new(16, 16), Cut = { 8, 8, 8, 8 }, Pad = 0 },
+				ChannelEdge = { Id = "rbxassetid://110614215738990", Pixels = Vector2.new(64, 64), Points = Vector2.new(16, 16), Cut = { 8, 8, 8, 8 }, Pad = 0 },
+			} :: { [string]: UIKit.Image },
+			Rail = {
+				-- A row, and the least it closes up to where every page must be in sight (34 points on the smallest phone):
+				-- Rules.Hud.RailRows.
+				Row = 52,
+				Least = 40,
+				Icon = 35, -- an icon's image, square: its drawing is 28 across, 24 points on the smallest phone
+				Drawn = 28,
+				Aside = 3.4, -- an icon's middle, left of the rail's middle
+				-- An idle icon's tint: research's seed, the seam's soft text (about 9:1), tuned in play so the chosen page is
+				-- the brightest thing on the rail, never under 4.5:1 on the panel.
+				Idle = UIKit.Palettes.Seam.Soft :: Color3,
+				-- The line down the rail's right edge: its middle In from it, its strength Floor + (1 - Floor) e^-(dy/Spread)^2
+				-- from the chosen row's middle, with a glow Glow wide each side at GlowAlpha of that.
+				Line = { Wide = 1, In = 0.85, Floor = 0.16, Spread = 60, Glow = 2.6, GlowAlpha = 0.28 },
+				Tick = { Long = 5, Tall = 1, Alpha = 0.5 }, -- at each idle row's middle, running left from the line
+				-- The chosen tab: its row less Inset at top and foot, from the rail's left + Inset to the line. Its fill the
+				-- panel's at Fill, washed with Light at Base + Rise t^Power from its left (t 0) to the line (t 1); its edge
+				-- Light at Edge, its glow at Glow; where it meets the line, the line Meet.Wide in full Light with its glow.
+				-- Its contents, centred: Top, the icon's drawing, Under, then its word at Word, bold, Lines tall a line.
+				Tab = {
+					Inset = 0.85,
+					Fill = 0.97,
+					Wash = { Base = 0.08, Rise = 0.52, Power = 3.4 },
+					Edge = 0.6,
+					Glow = 0.22,
+					Meet = { Wide = 2.7, Glow = 7.7, GlowAlpha = 0.6 },
+					Top = 3.4,
+					Under = 2.6,
+					Word = 15,
+					Lines = 1.05,
+				},
+			},
+			Bar = {
+				-- Back: no plate. Its chevron (the Back icon, half its drawing Chevron) ChevronAt in, its word from WordAt, and
+				-- under them a line Tall high, Inset in at each end, Over above the row's foot, its strength Floor +
+				-- (1 - Floor) e^-(dx/Spread)^2 from its middle, with a glow.
+				Back = { Chevron = 7.3, ChevronAt = 9.4, Word = 17, WordAt = 19.7, Line = { Tall = 0.85, Inset = 3.4, Over = 2.6, Floor = 0.15, Spread = 18.8, Glow = 2.1, GlowAlpha = 0.3 } },
+				-- Favourite, lock and rename in one channel: Cell wide each (46 points on the smallest phone), from the band
+				-- row's top less Over to its foot plus Under; filled with Channel at Fill, edged (0.85, the plate's own) and split
+				-- in the seam's Edge, the splits Inset from the row's top and foot.
+				Channel = { Cell = 54, Over = 0.85, Under = 1.7, Fill = 0.72, Split = { Wide = 0.85, Inset = 10.3 } },
+				-- A mark: its icon the rail's size, Lift over the channel's middle; on, in Light, with a line Long by Tall,
+				-- Over above the channel's foot, and its glow.
+				Mark = { Lift = 0.85, On = { Long = 15.4, Tall = 1, Over = 3.1, Glow = 2.6, GlowAlpha = 0.45 } },
+			},
+		},
 		Span = 1.2,
 		Figure = { Top = 24, Fov = 30, Turn = 0.6, Back = 0.2, Slide = 48, Draw = 0.8 },
 		Swipe = { Distance = 80, Time = 0.35, Tap = 10, TapTime = 0.3 },

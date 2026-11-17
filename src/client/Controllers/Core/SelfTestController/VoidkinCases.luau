@@ -40,6 +40,7 @@ local UIKit = require(Shared.Config.UIKit)
 local VoidkinCases = {}
 
 local DEFS = { "rook", "pip", "lyric" } -- the three with their own bodies and Reveals
+local SETTLE = 0.15 -- seconds for a page shown to be built again
 
 export type Given = {
 	ANSWER: number,
@@ -342,7 +343,7 @@ function VoidkinCases.Cases(given: Given): { any }
 	end
 
 	local case = {
-		Name = "Voidkin screen (TR17): full screen, Back, its marks and the currencies in Roblox's band, its name over one Voidkin between its gear slots, the rail's seven pages, the bag, its power, its actions over the panel, switched by the strip and a flick",
+		Name = "Voidkin screen (TR17): full screen, Back, its marks and the currencies in Roblox's band, its name over one Voidkin, the rail's built pages (AR29's B: the seam), the bag, its power, its actions over the panel, switched by the strip and a flick",
 		Stay = true,
 		Run = function(t: any)
 			local ids = VoidkinCases.Own(t, waitFor, ANSWER)
@@ -386,11 +387,38 @@ function VoidkinCases.Cases(given: Given): { any }
 			end
 			t.Check("Back, favourite, lock, rename, then the currencies, left to right, none over another", order)
 			t.Check(`Back and each mark a touch or more, {Theme.Size.Touch} rendered px`, touch)
+			-- AR29's B: Back with no plate, its chevron and BACK over its line; the marks in one channel, three equal cells.
+			local back = button("Back")
+			local plateFill = back and back:FindFirstChild("Fill", true)
+			local chevron = back and back:FindFirstChild("Icon", true)
+			local backWord = back and back:FindFirstChild("Word", true)
+			t.Check("Back bare: no plate, its chevron, BACK and its line", plateFill ~= nil and plateFill:IsA("ImageLabel") and not plateFill.Visible and chevron ~= nil and chevron:GetAttribute("Kit") == "Back" and backWord ~= nil and backWord:IsA("TextLabel") and backWord.Text == "BACK" and back ~= nil and back:FindFirstChild("Line", true) ~= nil)
+			local channel = VoidkinScreen.Find("Channel")
+			local firstMark, lastMark = button("Favourite"), button("Rename")
+			if channel and channel:IsA("GuiObject") and firstMark and lastMark then
+				local left, right = channel.AbsolutePosition.X, channel.AbsolutePosition.X + channel.AbsoluteSize.X
+				t.Check("favourite, lock and rename in one channel, from the first's left to the last's right", math.abs(left - firstMark.AbsolutePosition.X) <= 1 and math.abs(right - lastMark.AbsolutePosition.X - lastMark.AbsoluteSize.X) <= 1, `{left}..{right}`)
+				local lock = button("Lock")
+				t.Check("three equal cells", lock ~= nil and math.abs(firstMark.AbsoluteSize.X - lock.AbsoluteSize.X) < 0.5 and math.abs(lock.AbsoluteSize.X - lastMark.AbsoluteSize.X) < 0.5)
+				t.Check("split by two hairlines", channel:FindFirstChild("Split1") ~= nil and channel:FindFirstChild("Split2") ~= nil)
+			else
+				t.Check("favourite, lock and rename in one channel", false)
+			end
+			-- Every hairline of B's draws: a UDim's offset is whole, so a line of 0.85 would be cut to nothing (Seam.Whole).
+			local thin: { string } = {}
+			for _, root in { back, channel } :: { Instance? } do
+				for _, piece in if root then root:GetDescendants() else {} do
+					if piece:IsA("Frame") and ((piece.Name == "Line" and piece.Parent ~= nil and piece.Parent:GetAttribute("Seam") == true) or string.match(piece.Name, "^Split%d$") ~= nil) and math.min(piece.AbsoluteSize.X, piece.AbsoluteSize.Y) < 1 then
+						table.insert(thin, `{piece:GetFullName()} {piece.AbsoluteSize}`)
+					end
+				end
+			end
+			t.Check("Back's line and the channel's hairlines a pixel or more across", #thin == 0, thin[1])
 			local opened = VoidkinScreen.Find("Page")
 			t.Check("it opens on the Items page", opened ~= nil and opened:GetAttribute("Page") == "Bag", tostring(opened and opened:GetAttribute("Page")))
 			-- The Items page is AR18's A (TR28), checked in its own case (BagCases): what follows is Overview's composition.
 			VoidkinScreen.Show("Overview")
-			t.Wait(HudConfig.Voidkin.Rail.Run + 0.15)
+			t.Wait(SETTLE)
 			local view = ProfileController.Get() :: Profile.View
 			local lead = view.Roles.Lead
 			t.Check("on the lead", VoidkinScreen.Chosen() == lead, tostring(VoidkinScreen.Chosen()))
@@ -435,18 +463,24 @@ function VoidkinCases.Cases(given: Given): { any }
 			t.Check("the bag's kinds the bag's five, weapons and armor one Gear", table.concat(VoidkinScreen.Kinds, ", ") == "All, Gear, Jewelry, Chests, Materials", table.concat(VoidkinScreen.Kinds, ", "))
 			-- Its name over the stage: one line inside it, its rarity after it in the rarity's colour.
 			nameLine(t, "this window", owned)
-			-- The rail: all seven taps whole, each a touch or more, and no scroll.
+			-- The rail (AR29's B): every built page's tap whole, one under another, each a touch or more, and no scroll; a page
+			-- not built yet isn't on it (the director's pick of B: hidden until it opens).
 			local strung = VoidkinScreen.Find("Rail")
 			if strung and strung:IsA("ScrollingFrame") then
 				local top, foot = strung.AbsolutePosition.Y, strung.AbsolutePosition.Y + strung.AbsoluteSize.Y
-				local fits, taps, last = true, true, top
+				local fits, taps, last, hidden = true, true, top, true
 				for _, name in VoidkinScreen.Pages do
 					local each = railButton(name)
+					if VoidkinScreen.Soon[name] then
+						hidden = hidden and each == nil
+						continue
+					end
 					fits = fits and each ~= nil and each.AbsolutePosition.Y >= last - 1 and each.AbsolutePosition.Y + each.AbsoluteSize.Y <= foot + 1
 					taps = taps and each ~= nil and each.AbsoluteSize.Y >= Theme.Size.Touch - 0.5
 					last = if each then each.AbsolutePosition.Y + each.AbsoluteSize.Y else last
 				end
-				t.Check("the rail holds all seven taps whole, one under another", fits and strung:GetAttribute("Whole") == true)
+				t.Check("the rail holds every built page's tap whole, one under another", fits and strung:GetAttribute("Whole") == true)
+				t.Check("the pages not built yet aren't on it", hidden)
 				t.Check("with no scroll", not strung.ScrollingEnabled)
 				t.Check(`each a touch or more tall, {Theme.Size.Touch} rendered px`, taps)
 			else
@@ -469,46 +503,60 @@ function VoidkinCases.Cases(given: Given): { any }
 			t.Check("lit, not greyed", leads ~= nil and Button.State(leads) == "Selected", if leads then Button.State(leads) else "none")
 			leadsWork(t, "this window")
 			-- Each page from its rail button, on the save's numbers; one not built yet says so and keeps the page.
-			local rail = HudConfig.Voidkin.Rail
+			local chrome = HudConfig.Voidkin.Chrome
 			t.Check("the rail holds every page", table.concat(VoidkinScreen.Pages, ", ") == "Overview, Bag, Kit, Stars, Forge, Jewels, War Emblems", table.concat(VoidkinScreen.Pages, ", "))
 			local overviewLook = "" -- the Overview's stage, for the Items page's to match
 			for _, name in VoidkinScreen.Pages do
 				if VoidkinScreen.Soon[name] then
 					local before = VoidkinScreen.Find("Page")
 					local was = before and before:GetAttribute("Page")
-					local greyed = railButton(name)
-					t.Check(`{name}, not built: greyed, and reads Soon`, greyed ~= nil and greyed:GetAttribute("Soon") == true and labelOf(greyed) == "Soon", labelOf(greyed))
-					t.Check(`a tap on it says so`, VoidkinScreen.Tap(greyed) and table.find(Toast.Shown(), `{name}: soon`) ~= nil, table.concat(Toast.Shown(), "; "))
-					local after, still = VoidkinScreen.Find("Page"), railButton(name)
-					t.Check(`and the page stays, never an empty one`, after ~= nil and after:GetAttribute("Page") == was and still ~= nil and still:GetAttribute("Chosen") == false, tostring(after and after:GetAttribute("Page")))
+					VoidkinScreen.Show(name)
+					t.Wait(SETTLE)
+					local after = VoidkinScreen.Find("Page")
+					t.Check(`{name}, not built: asked for, it says so`, table.find(Toast.Shown(), `{name}: soon`) ~= nil, table.concat(Toast.Shown(), "; "))
+					t.Check(`and the page stays, never an empty one`, after ~= nil and after:GetAttribute("Page") == was, tostring(after and after:GetAttribute("Page")))
 					continue
 				end
 				t.Check(`the rail's {name} takes a tap`, VoidkinScreen.Tap(railButton(name)))
-				t.Wait(rail.Run + 0.15)
+				t.Wait(SETTLE)
 				local chosen = railButton(name)
-				local dot = chosen and chosen:FindFirstChild("Dot")
-				local ring = dot and dot:FindFirstChild("Ring")
 				t.Check(`{name} chosen`, chosen ~= nil and chosen:GetAttribute("Chosen") == true)
-				t.Check(`its ring lit in the seam's light`, ring ~= nil and ring:IsA("UIStroke") and ring.Color == Seam.Light)
-				local larger, alone, words = true, true, true
+				-- Its tab of glass: the cut plates, edged in the seam's light, washed toward the line, and the line bright and
+				-- wide where they meet.
+				local fill = chosen and chosen:FindFirstChild("Fill")
+				local edge = chosen and chosen:FindFirstChild("Edge")
+				local wash = chosen and chosen:FindFirstChild("Wash")
+				local tab = chrome.Rail.Tab
+				t.Check("its tab of glass, cut, edged in the seam's light", fill ~= nil and fill:IsA("ImageLabel") and fill.Image == chrome.Images.TabFill.Id and fill.ScaleType == Enum.ScaleType.Slice and edge ~= nil and edge:IsA("ImageLabel") and edge.ImageColor3 == Seam.Light and math.abs(edge.ImageTransparency - (1 - tab.Edge)) < 1e-3)
+				t.Check("washed in the light toward the line, and the line wide where they meet", wash ~= nil and wash:FindFirstChildOfClass("UIGradient") ~= nil and chosen ~= nil and chosen:FindFirstChild("Meet") ~= nil)
+				local icon = chosen and chosen:FindFirstChild("Icon")
+				local chosenWord = chosen and chosen:FindFirstChild("Label")
+				t.Check("its icon over its word, in the seam's text", icon ~= nil and icon:IsA("ImageLabel") and icon.ImageColor3 == Seam.Colour.Text and chosenWord ~= nil and chosenWord:IsA("TextLabel") and chosenWord.TextColor3 == Seam.Colour.Text and chosenWord.AbsolutePosition.Y >= icon.AbsolutePosition.Y + icon.AbsoluteSize.Y * 0.8)
+				if chosenWord and chosenWord:IsA("TextLabel") and fill and fill:IsA("GuiObject") then
+					local inkLeft = chosenWord.AbsolutePosition.X + (chosenWord.AbsoluteSize.X - chosenWord.TextBounds.X) / 2
+					local inkRight = inkLeft + chosenWord.TextBounds.X
+					local inkFoot = chosenWord.AbsolutePosition.Y + (chosenWord.AbsoluteSize.Y + chosenWord.TextBounds.Y) / 2
+					t.Check("its word inside the glass", inkLeft >= fill.AbsolutePosition.X - 0.5 and inkRight <= fill.AbsolutePosition.X + fill.AbsoluteSize.X + 0.5 and inkFoot <= fill.AbsolutePosition.Y + fill.AbsoluteSize.Y + 1, string.format("%.1f..%.1f in %.1f..%.1f", inkLeft, inkRight, fill.AbsolutePosition.X, fill.AbsolutePosition.X + fill.AbsoluteSize.X))
+				end
+				local alone, idle, quiet = true, true, true
 				for _, other in VoidkinScreen.Pages do
 					local rest = railButton(other)
-					local restDot = rest and rest:FindFirstChild("Dot")
-					if other ~= name and rest and restDot and restDot:IsA("GuiObject") and dot and dot:IsA("GuiObject") then
-						larger = larger and dot.AbsoluteSize.X > restDot.AbsoluteSize.X + 4
+					if other ~= name and rest then
+						local restIcon = rest:FindFirstChild("Icon")
 						alone = alone and rest:GetAttribute("Chosen") == false
+						idle = idle and restIcon ~= nil and restIcon:IsA("ImageLabel") and restIcon.ImageColor3 == chrome.Rail.Idle and rest:FindFirstChild("Tick") ~= nil
+						quiet = quiet and rest:FindFirstChild("Label") == nil and rest:FindFirstChild("Fill") == nil
 					end
-					words = words and labelOf(rest) == (if other == name then VoidkinScreen.Said[name] or name elseif VoidkinScreen.Soon[other] then "Soon" else "")
 				end
-				t.Check(`larger than the six at rest, and the only one chosen`, larger and alone)
-				t.Check(`only its word shows, and Soon under those not built`, words)
-				local lit = VoidkinScreen.Find("Lit")
-				if lit and lit:IsA("GuiObject") and dot and dot:IsA("GuiObject") then
-					local reach = lit.AbsolutePosition.Y + lit.AbsoluteSize.Y
-					local centre = dot.AbsolutePosition.Y + dot.AbsoluteSize.Y / 2
-					t.Check(`the line lit down to it`, math.abs(reach - centre) <= 2, string.format("%.0f against %.0f", reach, centre))
+				t.Check("the only one chosen; the rest idle, each its icon in the idle tint and a tick on the line", alone and idle)
+				t.Check("only its word shows", quiet)
+				local line = VoidkinScreen.Find("Rail")
+				local seam = line and line:FindFirstChild("Line")
+				if seam and chosen then
+					local middle = chosen.Position.Y.Offset + chosen.Size.Y.Offset / 2
+					t.Check("the line brightest at it", math.abs((seam:GetAttribute("Peak") :: number) - middle) < 0.5, string.format("%.1f against %.1f", seam:GetAttribute("Peak") :: number, middle))
 				else
-					t.Check(`the line lit down to it`, false)
+					t.Check("the line brightest at it", false)
 				end
 				local scroll = VoidkinScreen.Find("Page")
 				t.Check(`the panel shows {name}`, scroll ~= nil and scroll:GetAttribute("Page") == name)
@@ -610,6 +658,12 @@ function VoidkinCases.Cases(given: Given): { any }
 					t.Check(`{mark.Name}: its button shows it`, waitFor(t, 1, function(): boolean
 						local found = button(mark.Name)
 						return found ~= nil and (Button.State(found) == "Selected") == want
+					end))
+					t.Check(`{mark.Name}: its icon {if want then "solid, in the light, with its line under" else "an outline, in the seam's text"}`, waitFor(t, 1, function(): boolean
+						local found = button(mark.Name)
+						local icon = found and found:FindFirstChild("Icon", true)
+						local lit = found and found:FindFirstChild("Lit", true)
+						return icon ~= nil and icon:IsA("ImageLabel") and icon:GetAttribute("Kit") == (if want then `{mark.Name}On` else mark.Name) and icon.ImageColor3 == (if want then Seam.Light else Seam.Colour.Text) and (lit ~= nil) == want
 					end))
 				end
 			end
@@ -747,7 +801,7 @@ function VoidkinCases.Cases(given: Given): { any }
 			for _, name in VoidkinScreen.Pages do
 				if not VoidkinScreen.Soon[name] then
 					VoidkinScreen.Show(name)
-					t.Wait(rail.Run + 0.15)
+					t.Wait(SETTLE)
 					bandClear(t, `this window, {name}`)
 				end
 			end
@@ -757,7 +811,7 @@ function VoidkinCases.Cases(given: Given): { any }
 			for _, name in VoidkinScreen.Pages do
 				if not VoidkinScreen.Soon[name] then
 					VoidkinScreen.Show(name) -- built again at the phone's size
-					t.Wait(rail.Run + 0.15)
+					t.Wait(SETTLE)
 					lintClean(t, `the smallest phone, {name}`)
 					bandClear(t, `the smallest phone, {name}`)
 				end
@@ -771,25 +825,24 @@ function VoidkinCases.Cases(given: Given): { any }
 			end
 			local purse = VoidkinScreen.Find("Wallet")
 			t.Row(`the smallest phone: the band, authored px wide (the wallet's form {tostring(purse and purse:GetAttribute("Form"))})`, nil, nil, Layers.Band().X, "")
-			-- Seven taps are taller than the rail: the built pages stand whole in it before any scroll, the rest a scroll down.
+			-- The built pages stand whole on the rail, a touch or more each, with no scroll (AR29's B; research's call on seven
+			-- rows: every page in sight).
 			local holder = VoidkinScreen.Find("Rail")
 			if holder and holder:IsA("ScrollingFrame") then
-				holder.CanvasPosition = Vector2.zero
-				t.Wait(0.05)
 				local top, foot = holder.AbsolutePosition.Y, holder.AbsolutePosition.Y + holder.AbsoluteSize.Y
-				local fits = true
+				local fits, taps = true, true
 				for _, name in VoidkinScreen.Pages do
 					local each = railButton(name)
 					if not VoidkinScreen.Soon[name] then
 						fits = fits and each ~= nil and each.AbsolutePosition.Y >= top - 1 and each.AbsolutePosition.Y + each.AbsoluteSize.Y <= foot + 1
+						taps = taps and each ~= nil and each.AbsoluteSize.Y >= Theme.Size.Touch - 0.5
 					end
 				end
-				t.Check("the smallest phone: every built page's button whole in the rail before any scroll", fits)
-				local last = railButton(VoidkinScreen.Pages[#VoidkinScreen.Pages])
-				t.Check("the smallest phone: the rail scrolls down to its last button", last ~= nil and holder.AbsoluteCanvasSize.Y > holder.AbsoluteWindowSize.Y and last.AbsolutePosition.Y + last.AbsoluteSize.Y - top <= holder.AbsoluteCanvasSize.Y + 1)
-				t.Row(`the smallest phone: the rail's seven taps, authored px, in a window of {math.floor(holder.AbsoluteWindowSize.Y / Layers.Scale())}`, nil, nil, holder.AbsoluteCanvasSize.Y / Layers.Scale(), "")
+				t.Check("the smallest phone: every built page whole on the rail, a touch or more each", fits and taps)
+				t.Check("the smallest phone: with no scroll", not holder.ScrollingEnabled and holder:GetAttribute("Whole") == true)
+				t.Row(`the smallest phone: the rail's pitch, authored px, in a window of {math.floor(holder.AbsoluteWindowSize.Y / Layers.Scale())}`, nil, nil, holder:GetAttribute("Pitch") :: number, "")
 			else
-				t.Check("the smallest phone: the rail scrolls", false)
+				t.Check("the smallest phone: the rail", false)
 			end
 			Layers.Box(nil)
 			Layers.Force(nil)
@@ -848,7 +901,7 @@ function VoidkinCases.Cases(given: Given): { any }
 			end))
 			t.Wait(HudConfig.Motion.Screen.Enter + 0.1)
 			VoidkinScreen.Show("Overview")
-			t.Wait(HudConfig.Voidkin.Rail.Run + 0.15)
+			t.Wait(SETTLE)
 			local scroll = VoidkinScreen.Find("Page")
 			t.Check("on Overview", scroll ~= nil and scroll:GetAttribute("Page") == "Overview")
 			if scroll == nil or not scroll:IsA("ScrollingFrame") then
@@ -936,7 +989,7 @@ function VoidkinCases.Cases(given: Given): { any }
 			Layers.Box(Theme.Smallest - Vector2.new(0, GuiService.TopbarInset.Height))
 			t.Wait(0.1)
 			VoidkinScreen.Show("Overview")
-			t.Wait(HudConfig.Voidkin.Rail.Run + 0.15)
+			t.Wait(SETTLE)
 			local small = VoidkinScreen.Find("Page")
 			if small and small:IsA("ScrollingFrame") then
 				small.CanvasPosition = Vector2.new(0, math.max(0, small.AbsoluteCanvasSize.Y - small.AbsoluteWindowSize.Y))
@@ -970,7 +1023,81 @@ function VoidkinCases.Cases(given: Given): { any }
 		end,
 	}
 
-	return { case, sheet }
+	-- AR29's B in the build, for research's read (docs/asset-requests.md, AR29): the screen held, each state as
+	-- ReplicatedStorage.NL_TakeStep says, "<room> <page> <marks>": the room "Large" (this window) or "Phone" (the
+	-- smallest phone), a built page's name, and "on" or "off" for favourite and lock together. "End" closes it, the marks
+	-- as they were. Each state is set on the server as a press would, so the screen shows the save's own answer.
+	local held = {
+		Name = "Take: AR29's B, the rail and the bar in every state, held as the driver writes, for research",
+		Manual = true,
+		Stay = true,
+		Run = function(t: any)
+			local ids = VoidkinCases.Own(t, waitFor, ANSWER)
+			if #ids == 0 then
+				return
+			end
+			local step = Instance.new("StringValue")
+			step.Name = "NL_TakeStep"
+			step.Value = "Large Overview off"
+			step.Parent = ReplicatedStorage
+			Screen.Close()
+			Button.Press(HudController.Parts().Voidkin :: TextButton)
+			t.Check("the Voidkin screen opens", waitFor(t, 1, function(): boolean
+				return Screen.Current() == VoidkinScreen.Name
+			end))
+			local lead = VoidkinScreen.Chosen() :: string
+			local fields: { [string]: string } = { Favourite = "Favourite", Lock = "Locked" }
+			local function marked(name: string): boolean
+				local now = ProfileController.Get()
+				return now ~= nil and (now.Voidkin[lead] :: any)[fields[name]] == true
+			end
+			local was: { [string]: boolean } = { Favourite = marked("Favourite"), Lock = marked("Lock") }
+			local function mark(name: string, want: boolean)
+				if marked(name) ~= want then
+					Button.Press(button(name) :: TextButton)
+					waitFor(t, ANSWER, function(): boolean
+						return marked(name) == want
+					end)
+				end
+			end
+			local function apply(said: string)
+				local room, rest = string.match(said, "^(%a+) (.+)$")
+				local page, marks = string.match(rest or "", "^(.-) (%a+)$")
+				if room == nil or page == nil then
+					return
+				end
+				Layers.Force(if room == "Phone" then Theme.Scale.Floor else nil)
+				Layers.Box(if room == "Phone" then Theme.Smallest - Vector2.new(0, GuiService.TopbarInset.Height) else nil)
+				t.Wait(SETTLE)
+				VoidkinScreen.Tap(railButton(page))
+				for name in fields do
+					mark(name, marks == "on")
+				end
+				t.Wait(SETTLE)
+				step:SetAttribute("Shown", said)
+			end
+			apply(step.Value)
+			local shown = step.Value
+			waitFor(t, 600, function(): boolean
+				if step.Value ~= shown then
+					shown = step.Value
+					if shown ~= "End" then
+						apply(shown)
+					end
+				end
+				return step.Value == "End"
+			end)
+			for name, before in was do
+				mark(name, before)
+			end
+			Layers.Box(nil)
+			Layers.Force(nil)
+			Screen.Close()
+			step:Destroy()
+		end,
+	}
+
+	return { case, sheet, held }
 end
 
 return VoidkinCases

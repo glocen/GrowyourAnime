@@ -10377,6 +10377,49 @@ What changed only, from the phone and close sheets.
   - This replaces research's "at least 44 points" for the rail's rows on short screens only. The bar's buttons keep 44.
 - **Next:** Faber builds AR29 after TR41, from `build/handoff/UI/voidkin/chrome/` (bef311f). Then research's read in the build.
 
+### Faber's build of B (2026-11-17, 19:13 to 20:03)
+
+From `build/handoff/UI/voidkin/chrome/` (bef311f) and B's numbers, with research's seed and call of 14:17.
+- **Uploaded under the group,** each read back Approved: the 13 icons, and the two cut plates the kit hasn't, drawn by `tools/ui/cut_plates.py` (the tab of glass with its glow, and the channel, as nine-slices). Content check PASS on the plates before upload. Ids in `docs/asset-log.md`; the records and every number of B's in `Config.Hud.Voidkin.Chrome`, in authored points.
+- **The rail** (`VoidkinScreen`, `rail`):
+  - The line of Light down its right edge, strongest at the chosen row.
+  - Each idle page is its icon in the idle tint, with its tick.
+  - The chosen page is the tab of glass: its fill, its wash toward the line, its edge and glow, the line 2.7 wide where they meet, its icon over its word.
+  - Unbuilt pages aren't on it.
+  - **The rows** come from `Rules.Hud.RailRows` and `RailNeed`: 52 authored where they fit, closing up evenly to 40 (34 points at the floor) where they don't. The pitch is the same whichever page is chosen.
+  - **Idle tint:** the seam's soft text (research's seed), tunable at `Chrome.Rail.Idle`. It reads 9.8:1 on the cover and 8.6:1 on the panel, against the chosen text's 17.5:1. A logic case holds it at 4.5 or more and under the chosen (`Rules.Hud.Contrast`).
+- **The bar** (`marks`, `dressBack`):
+  - Back is bare (the Screen kit's new `dress`): its chevron and BACK over its line.
+  - Favourite, lock and rename are three equal cells in the cut channel, split by hairlines. When on, an icon swaps to solid in Light with its lit line under.
+  - Save and Cancel are unchanged.
+- **Two finds in the build, fixed:**
+  - **Fractional points were cut to nothing.** Roblox keeps a UDim's offset whole and cuts toward nought. So B's 0.85 hairlines (the channel's splits, Back's line) drew nothing, and every fractional point lost up to one unit.
+    - Each point is now made whole before it becomes an offset (`Seam.Whole`, and `Seam.Thin`, which never goes under one).
+    - A self-test case checks every hairline draws a pixel or more.
+  - **The glow showed as grey slabs.** Two stepped bands, square at the ends, read as grey rectangles beside the meeting line and as a striped box under a lit mark.
+    - `Seam.Bands` now lays Modulo's falloff (α·e^−(d/reach)^1.4) as up to sixteen nested capsules, each ring as far from the line all round. The halo wraps the ends as on the sheet.
+    - The Bag's edges keep their own two bands. Its Rule, placed on a half unit, now rounds instead of being cut: one unit right.
+- **Checks:**
+  - logic 24,075/0 (the rows, the tab's need, the contrast);
+  - the type check: 0 new;
+  - the whole self-test 2,779/0 at 59 fps.
+  - The stills of every state, in this window and at the smallest phone (Overview, Items, Kit and Stars chosen; marks off and on), are in `build/scratch/faber/ar29/shots/` (the take "Take: AR29's B…", held by `NL_TakeStep`).
+- **Facts for research** (B's numbers are research's; neither is changed):
+  - **The chosen word at the smallest phone.** In the game the word is never under 14 rendered pixels, so it draws at 17 authored at the floor; the sheet drew it at about 10.5 points. "Overview" then takes 62.7 of the glass's 66.3, about 2 points each side, its last letter against the meeting line.
+  - **Seven rows (TR37 to TR39).**
+    - The smallest phone's rail has a room of 292 authored (248 points, not the 256 the call used).
+    - At 40 a row (34 points), six idle rows and a one-line chosen tab (53.6) run 293.6: a scroll of 1.6.
+    - With War Emblems chosen (two lines, 71.4), they run 311.4: a scroll of 19.4.
+    - Levers: the floor at 36 authored (30.6 points) keeps all seven whole with any page chosen, or War Emblems' tab with a smaller word.
+    - Today four pages show and stand whole at 52.
+  - **The lit mark's line** hangs 3 above the channel's foot (B's 3.1). At the smallest phone that's 2.6 pixels, close to the channel's edge, as on the sheet.
+- **Not in B, so not built:** no motion when the page changes; the tab appears at once. A line in `docs/polish-later.md` if research wants one.
+- **Four facts:**
+  - implemented;
+  - tested (above);
+  - seen in the build up close in every state, at both sizes; research's read to come;
+  - not director-accepted.
+
 ## AR30. Every button in the game, in the seam's make (Modulo, then Faber)
 
 The director, 2026-11-17, 14:03: "any other button ui could maybe get reworked". Then, to research's question on its scope: "Every button in game". Tier 2, a look players see, in Modulo's area, the director's own ask.

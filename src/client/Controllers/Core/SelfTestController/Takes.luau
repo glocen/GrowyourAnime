@@ -381,25 +381,10 @@ return function(given: Given): { any }
 						t.Check(`the rail's {name}`, VoidkinScreen.Tap(rail and rail:FindFirstChild(name)))
 						t.Wait(read)
 					end
-					-- The rail to its foot or back to its top, as a finger's drag would bring it.
-					local function railTo(foot: boolean)
-						local rail = VoidkinScreen.Find("Rail")
-						if rail and rail:IsA("ScrollingFrame") then
-							local to = if foot then math.max(rail.AbsoluteCanvasSize.Y - rail.AbsoluteWindowSize.Y, 0) else 0
-							TweenService:Create(rail, TweenInfo.new(0.5, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), { CanvasPosition = Vector2.new(0, to) }):Play()
-						end
-						t.Wait(0.9)
-					end
 					for _, name in { "Bag", "Kit", "Stars" } do
 						railTap(name, TAKE_READ - 0.5)
 					end
-					moment("not played: the rail dragged up to the pages not built yet")
-					railTo(true)
-					for _, name in { "Forge", "Jewels", "War Emblems" } do
-						railTap(name, 1.6) -- greyed: a notice, the page stays
-					end
-					moment("not played: the rail dragged back")
-					railTo(false)
+					-- The pages not built yet aren't on the rail (AR29's B: hidden until they open).
 					railTap("Overview", TAKE_READ - 0.5)
 					moment(`Lead: the strip's {free[1]}, then Lead`)
 					press(free[1])

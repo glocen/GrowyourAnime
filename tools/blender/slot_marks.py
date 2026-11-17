@@ -1,8 +1,8 @@
 """AR22: the empty gear slots' marks. Each is its slot's own Epic piece from AR6, its detail and ornament kept, in one
 faint tone and inset, so an empty slot on the Voidkin's sheet names its piece at a glance and a worn item still outshines
 it (the director, by 21:32: "the empty gears slot decal need a rework it sooo simple like the chest arm  shoulder"; on
-the grey, 21:57: "need to looks more detailed "epic" and the shoulder only show 1 shoulder", and "All of them"). The Shoulders' drawn again
-more mature, the Rings' and the Earrings' simpler (the director, 2026-11-17, 12:19: "i do not
+the grey, 21:57: "need to looks more detailed "epic" and the shoulder only show 1 shoulder", and "All of them"). Chest Armor's and the
+Shoulders' drawn again more mature, the Rings' and the Earrings' simpler (the director, 2026-11-17, 12:19: "i do not
 look like gear slot design of chest and rings and shoulder and earings make it better and mature the ring can be more
 simple same for the earings"): research's pick of take A, each piece in AR6's own view with its ornament held back.
 
@@ -29,6 +29,7 @@ import numpy as np
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import blcommon as bl  # noqa: E402
 import gear_bracers_sets as bracers  # noqa: E402
+import gear_chest_sets as chest  # noqa: E402
 import gear_cloak_sets as cloak  # noqa: E402
 import gear_earring_sets as earring  # noqa: E402
 import gear_icons as gi  # noqa: E402
@@ -52,9 +53,9 @@ LUMA = np.array([0.2126, 0.7152, 0.0722], dtype=np.float32)
 
 # Each slot kind (Definitions/Gear.luau: a ring or an earring is one kind for its two slots) and the piece its mark is
 # drawn from: of AR6's three Epic sets, the one whose outline reads clearest at 44 points, Stormcall's most often; the
-# ring and the earring from a plainer piece (take A, 2026-11-17). Chest Armor's waits on the pieces' overhaul into a
-# whole torso's armour (the director, 2026-11-17, 13:20).
-KINDS = (("Helmet", "GloamforgeHelm"), ("Shoulders", "StormcallPauldrons"), ("Chest Armor", "StormcallCuirass"),
+# ring and the earring from a plainer piece (take A, 2026-11-17); Chest Armor's from the overhauled piece, armour for
+# the whole torso (the director, 2026-11-17, 13:17).
+KINDS = (("Helmet", "GloamforgeHelm"), ("Shoulders", "StormcallPauldrons"), ("Chest Armor", "GloamforgeCuirass"),
          ("Gloves", "GloamforgeGauntlets"), ("Bracers", "StormcallVambraces"), ("Boots", "GloamforgeGreaves"),
          ("Cloak", "StormcallMantle"), ("Amulet", "NightloomTalisman"), ("Ring", "BandOfEmbers"),
          ("Earring", "Eardrop"))
@@ -145,9 +146,11 @@ def widened(k):
 
 # The kinds whose mark is posed afresh from AR6's model rather than drawn from its picture, each in its view.
 POSED = {
-    # take A (research's pick, 2026-11-17): the ornament held back. The pauldron, the pictures' own, keeps its line and
-    # stone on the rim, its crest gone; the ring is a plain band at three-quarters, one stone in a round bezel; the
-    # earring a hook and one drop
+    # take A (research's pick, 2026-11-17): the ornament held back. The cuirass, the whole torso's, keeps its collar,
+    # ridge, lames and square stone, its prongs gone; the pauldron, the pictures' own, keeps its line and stone on the
+    # rim, its crest gone; the ring is a plain band at three-quarters, one stone in a round bezel; the earring a hook and
+    # one drop
+    "GloamforgeCuirass": lambda: posed(chest, "Gloamforge Cuirass", change=dict(orn=None, neck="filigree")),
     "StormcallPauldrons": lambda: posed(shoulders, "Stormcall Pauldrons", change=dict(orn=None)),
     "BandOfEmbers": lambda: posed(ring, "Band of Embers", ring.ring,
                                   change=dict(shoulders=None, line=None, wide=1.3, stone=("stone", 0.2))),
@@ -295,8 +298,9 @@ def review(out, files, table, shots):
         x += shot.shape[1] / ui.K + 20
     y += shots[0].shape[0] / ui.K + 16
     notes = ("These are the pieces themselves, so the slot says what goes there and a held item, lit in its rarity, still "
-             "outshines it. The Shoulders hold their ornament back: the pauldron, as in its pictures, opens down and "
-             "out over the arm, its stone on the rim. The ring is a plain band with one set stone, the earring a hook and one drop. The bracer stands, "
+             "outshines it. Chest Armor and the Shoulders hold their ornament back: the "
+             "cuirass, armour for the whole torso, keeps its collar, ridge, lames and stone; the pauldron, as in its "
+             "pictures, opens down and out over the arm, its stone on the rim. The ring is a plain band with one set stone, the earring a hook and one drop. The bracer stands, "
              "leaning a little, its cuff flared and open, its crest laid on its face. The cloak's hem is wider than its "
              "shoulders, and its crest stands where a hood's peak would. The rings and the earrings share their kind's "
              "mark.",

@@ -9260,6 +9260,31 @@ The director's word, by 13:17 (`docs/decisions.md`): "the chest need a overhaul 
 - **Shown:** the 15 in colour at 64 and 38 points as `gear_shoulders_colour.png` lays them, the mark on A's doll at the smallest phone, and today's beside them.
 - **When:** with the Shoulders' fix, as one gear pass, before AR29.
 
+### The gear pass: Chest Armor for the whole torso, the Shoulders on the arm's line, take A's marks (Modulo, 2026-11-17, 13:35)
+
+- **The sheets,** in `build/handoff/UI/gear/`: `gear_chest_colour.png` and `gear_shoulders_colour.png` (the 15 each at 64 and 38 points); `gear_pass_doll.png`, A's doll at the smallest phone, today's beside the new: Rook wearing the Pauldrons of Embers and the Stormcall Cuirass, a new account with the four marks empty, and the 30 pictures at 38 points, today's above the new.
+- **Chest Armor, all 15** (`gear_chest_sets.py`), front only:
+  - A gorget, and a collar standing in two rings, each rolled.
+  - Broad, square shoulders, with the armholes on the sides and their edges rolled.
+  - The breastplate with a ridge down its middle (a keel's is three times as deep), its rolled lower edge dipping to a point.
+  - The belly closed in two lames down to the belt. The fauld, at least two lames, over the hips, arched at the front over the legs.
+  - Kept: each name, rarity, set tone, materials and stone. Stormcall's hooks and Gloamforge's prongs now lie on the upper chest beside the collar. Hinode's rays fan out behind the whole body, and Tsukiyo's crescent rises behind the shoulders: behind the collar alone, they read as leaves or horns in a vase.
+  - Tried and dropped: one smooth collar on a rounded shell read as a vase or a turtleneck vest; tassets read as shorts; a plackart read no better than the lames at 38 points.
+- **The Shoulders, all 15** (`gear_shoulders_sets.py`, research's must-fix of 13:08):
+  - The cop and its lames sit on the arm's line, 35° out from straight down. The cup opens down and out, and each lame turns 6° further out.
+  - The stone is on the rim, and every crest lies along it: Noroshi's rod runs round to the shoulder's point, Yoake's wing lies back over the lames, Kaikou's wave runs along the rim.
+  - The neck plate is gone: without it, the pauldron is bigger and clearer at 38 points.
+- **The marks** (`slot_marks.py`): take A.
+  - Shoulders, Ring and Earring went to Faber at 13:23 (17fe19d).
+  - Chest Armor's is drawn from the new Gloamforge Cuirass with its prongs off.
+- **Content check** (a fresh-eyes agent, on the exact files): PASS on the chest's 15, the Shoulders' 15 and the mark.
+- **For Faber:** upload under the group the 30 pictures in `images/` (15 `Gear*Chestplate`/`Gear*Cuirass`/Hinode/Tsukiyo/Amanogawa, 15 Shoulders) and `SlotEmptyChestArmor.png`. Names, sizes and draw are unchanged.
+- **Four facts:**
+  - drawn;
+  - seen on the sheets at 38 and 64 points, and on the doll at the smallest phone;
+  - research's pass on the chest to come (the Shoulders needed no further sheet);
+  - not director-accepted.
+
 ## AR23. Combat Power's number, chromatic (Modulo, then Faber)
 
 From the director's word, 21:37 (`docs/decisions.md`, the row): "the combat power text need to be chromatic ish right now it feels basics". It's a minor asset with no blockout: Modulo's takes, then research's pick.

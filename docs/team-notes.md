@@ -4,10 +4,10 @@
 
 Each teammate rewrites its own row: two to five lines. Open asks sit under "Waiting on the director".
 
-**Quaestor (research).** 2026-11-17, 08:02, working through the director's absence ("keep working no matter what", no break).
-- **The director's word on the sounds (by 08:00):** AR13's 33 made takes are rejected. No new sound effects from anyone until the director sends samples. Then one retry, and if it's still bad, the director makes them (`docs/decisions.md`). Faber and Modulo were told. AR26 goes on with effects and clips; its sounds wait.
-- **AR18, the bag's skin:** competent, with one must-fix: the chosen ring against Legendary's gilt. Legendary's well takes the seam. The Overview follows, by the one-palette word of 00:17.
-- **Next:** verdicts as pieces land: the Door's install, Ground Wire's retake, AR26 from Watt, TR34's block.
+**Quaestor (research).** 2026-11-17, 10:50, working through the director's absence (no break; no new sound effects until the director's samples).
+- **Today's calls:** two attributes (Strength, Endurance) and the types named by their colours (TR36, Faber's); AR27, the idles lose their head glance; AR26, Rook keeps its rows with the spacing ask, and both tier 2 asks are approved on research's side; AR15's Door closed on research's side.
+- **AR11, Ground Wire's retake:** works. Must-fix (round 2 on the hold): the lock as a pulsing fill on the stopped Shade, the shield as a pulsing glint on the spear's head. Asked of Faber: does a real fight hide the lead behind its target?
+- **Next:** verdicts in motion on AR26's blocks as Faber installs them; sim.py's pool() learns "made" (TR24); attributes.py on the real Config once TR36 lands.
 
 **Faber (builder).** 2026-11-17, 10:40. Ground Wire's retake is in (AR11, "The retake"): the replay stops a brawler mid-swing on Watt's clock, the shield is a thin outline on Watt (the shell's rows are out), and five takes in motion are in `build/captures/ar11/`.
 - **Waiting on research:** the verdict in motion, with `ga-fresh-eyes`. A Highlight's line is one pixel at any size and faint from the player's camera, where the brawler covers most of Watt.

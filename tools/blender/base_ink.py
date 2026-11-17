@@ -19,7 +19,8 @@ HULLED = ("Generator", "GeneratorWheel", "GeneratorDemand", "Breaker", "BreakerC
           "BatteryCell", "Showcase", "Door", "Training", "TrainingCrown", "BaySleeping", "SleepingStone",
           "Generator2", "Generator3", "Generator2Wheel", "Generator2Pinion", "Generator3Pinion", "Generator2Demand",
           "Generator3Demand", "Forge", "ForgeRam", "ForgeGear", "Condenser", "CondenserCore",
-          "Breaker2", "Breaker3", "BreakerHinge", "BreakerLid", "Bay2", "Bay3", "BayCog", "BayCogOuter")   # the machines, and the plinth
+          "Breaker2", "Breaker3", "BreakerHinge", "BreakerLid", "Bay2", "Bay3", "BayCog", "BayCogOuter",
+          "BatteryRack2", "BatteryRack3")   # the machines, and the plinth
 LEAST = (0.25, 0.8)   # a shape worth an edge: its thinnest side, and its middle one. Under it, an edge would swallow it
 
 

@@ -713,16 +713,16 @@
   },
   "BatteryRack": {
    "mesh": "meshes/BatteryRack.json",
-   "triangles": 372,
-   "vertices": 230,
+   "triangles": 144,
+   "vertices": 96,
    "centre": [
     0.0,
-    1.37,
+    1.27,
     0.0
    ],
    "size": [
     6.52,
-    2.96,
+    2.76,
     4.52
    ],
    "colour": "maps/Base_Kit_Color.png",
@@ -731,7 +731,7 @@
    "glowStrength": 2.4,
    "collision": "a box, 6 by 4, 3 high",
    "lights": [],
-   "note": "on the stand-in's footprint, 2.85 high at its posts. Its eight seats are 0.6 up; a BatteryCell stands on each seat the base's level has earned (plan.json, machines, battery)"
+   "note": "Stage I, base level 1: on the stand-in's footprint, 2.65 high at its posts. Its cells stand 0.6 up, on the seats machines.batteryStages gives each stage (AR34)"
   },
   "BatteryCell": {
    "mesh": "meshes/BatteryCell.json",
@@ -1864,6 +1864,50 @@
    "collision": "none",
    "lights": [],
    "note": "a toothed ring of void stone Stage III's second, outside the first: 22 square teeth, 7.7 across, unlit. Its origin on its axle's middle; its axle along the piece's X (Roblox's X). It turns while a worker works there, CFrame.Angles(angle * sign, 0, 0) with the sign the table gives, so the two turn opposite ways. Look only"
+  },
+  "BatteryRack2": {
+   "mesh": "meshes/BatteryRack2.json",
+   "triangles": 408,
+   "vertices": 272,
+   "centre": [
+    0.0,
+    3.40642,
+    0.0
+   ],
+   "size": [
+    6.52,
+    7.033,
+    4.52
+   ],
+   "colour": "maps/Base_Kit_Color.png",
+   "glow": "maps/Base_Kit_Glow.png",
+   "glowTint": "#FFFFFF",
+   "glowStrength": 2.4,
+   "collision": "a box, 6 by 4, 0.6 high, the deck; and the stack's round its cells, 3.76 across by 1.6 deep by 5.8 high, its middle 0.95 back from the deck's",
+   "lights": [],
+   "note": "Stage II's still battery, base level 2, in place of BatteryRack at the same place, turn 0: the deck, and two uprights of void stone holding 2 tiers of two cells in clamps of bone, rising to points at 6.80. Its cells stand on the seats machines.batteryStages gives, in the order they fill"
+  },
+  "BatteryRack3": {
+   "mesh": "meshes/BatteryRack3.json",
+   "triangles": 656,
+   "vertices": 428,
+   "centre": [
+    0.0,
+    6.65912,
+    0.0
+   ],
+   "size": [
+    6.52,
+    13.538,
+    4.52
+   ],
+   "colour": "maps/Base_Kit_Color.png",
+   "glow": "maps/Base_Kit_Glow.png",
+   "glowTint": "#FFFFFF",
+   "glowStrength": 2.4,
+   "collision": "a box, 6 by 4, 0.6 high, the deck; and the stack's round its cells, 3.76 across by 1.6 deep by 11.4 high, its middle 0.95 back from the deck's",
+   "lights": [],
+   "note": "Stage III's still battery, base level 3, in place of BatteryRack at the same place, turn 0: the deck, and two uprights of void stone holding 4 tiers of two cells in clamps of bone, rising to points at 13.30, a bead of the void's light resting between them on the top bar. Its cells stand on the seats machines.batteryStages gives, in the order they fill"
   }
  }
 }

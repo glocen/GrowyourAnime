@@ -1903,6 +1903,126 @@
      ]
     }
    }
+  },
+  "batteryStages": {
+   "note": "AR34: the battery's three stages, the Rising Stack, the swap's table. The battery takes the stage of the base's level (Stage I at 1, II at 2, III at 3), and shows that level's cells (Config.Base, Levels.Cells: 2, 4, 8), one on each of its stage's seats. Every place is in the battery's own frame, turn 0: `across`, `along` toward the gate, `up` from its floor. A stage's piece replaces the one before's. `seats` are in the order the cells fill: the bottom tier first, left to right, so the charge climbs. BatteryCell is unchanged; each cell's glow is its share of the charge, as today. This supersedes machines.battery's seats once installed.",
+   "stages": {
+    "1": {
+     "pieces": [
+      {
+       "piece": "BatteryRack",
+       "at": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "moves": "still"
+      }
+     ],
+     "seats": [
+      [
+       -0.66,
+       -0.95,
+       0.6
+      ],
+      [
+       0.66,
+       -0.95,
+       0.6
+      ]
+     ]
+    },
+    "2": {
+     "pieces": [
+      {
+       "piece": "BatteryRack2",
+       "at": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "moves": "still"
+      }
+     ],
+     "seats": [
+      [
+       -0.66,
+       -0.95,
+       0.6
+      ],
+      [
+       0.66,
+       -0.95,
+       0.6
+      ],
+      [
+       -0.66,
+       -0.95,
+       3.4
+      ],
+      [
+       0.66,
+       -0.95,
+       3.4
+      ]
+     ]
+    },
+    "3": {
+     "pieces": [
+      {
+       "piece": "BatteryRack3",
+       "at": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "moves": "still"
+      }
+     ],
+     "seats": [
+      [
+       -0.66,
+       -0.95,
+       0.6
+      ],
+      [
+       0.66,
+       -0.95,
+       0.6
+      ],
+      [
+       -0.66,
+       -0.95,
+       3.4
+      ],
+      [
+       0.66,
+       -0.95,
+       3.4
+      ],
+      [
+       -0.66,
+       -0.95,
+       6.2
+      ],
+      [
+       0.66,
+       -0.95,
+       6.2
+      ],
+      [
+       -0.66,
+       -0.95,
+       9.0
+      ],
+      [
+       0.66,
+       -0.95,
+       9.0
+      ]
+     ]
+    }
+   }
   }
  },
  "lighting": "the base stands under Lantern Row's dusk: the same sky, ambient, fog and bloom (build/handoff/LanternRow/sky/lighting.json). The conduits, the wall's line and the lamps are drawn for dusk, and under the place's daylight they don't read.",

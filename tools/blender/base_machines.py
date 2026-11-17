@@ -77,10 +77,6 @@ TRAINEE = 6.0                    # the Training machine's pad: its middle, out f
 TOWER = 172.0                    # the sleeping Tower's tip
 
 
-def post(m, x, y, z0, z1, t, sw, ink=False):
-    m.box((t, t, z1 - z0), (x, y, (z0 + z1) / 2), sw, ink=ink)
-
-
 def insulator(m, at, length, r=0.34, ribs=3, sides=5):
     """A ribbed ceramic stack standing up from `at`, as the kit's."""
     step = length / ribs
@@ -371,25 +367,29 @@ def tower_sleeping():
 
 # --- the battery -------------------------------------------------------------------------------------------------------
 
-def battery_rack():
-    """The battery's rack: on the stand-in's footprint, 6 studs by 4, a girder deck with eight dark seats, a copper
-    bus bar down its middle with the current's line on it, and a low terminal post at each end. An empty seat is a
-    cell the base hasn't earned yet."""
-    m = Mesh()
+def battery_deck(m):
+    """The battery's deck, every stage's: on the stand-in's footprint, 6 studs by 4, a groove of void stone down its
+    middle with the current's line in it, and a squared post of void stone at each end with its light. AR19's note,
+    made in AR34: the copper bar and the insulators are gone, and so are the seats' plates, since the cells now stand
+    in the stack's tiers (base_battery.py)."""
     wide, deep, _ = BANK
     m.box((wide + 0.3, deep + 0.3, 0.3), (0, 0, 0.15), "concrete", ink=True)
     m.box((wide, deep, 0.3), (0, 0, 0.45), "girder", ink=True)
-    for x, y in SEATS:
-        m.box((1.24, 1.5, 0.05), (x, y, SEAT + 0.025), "dark")
-    m.box((wide - 0.5, 0.3, 0.24), (0, 0, SEAT + 0.12), "copper")
-    m.box((wide - 0.9, 0.12, 0.06), (0, 0, SEAT + 0.27), "power")
+    m.box((wide - 0.5, 0.34, 0.14), (0, 0, SEAT + 0.07), "abyss")
+    m.box((wide - 0.9, 0.12, 0.05), (0, 0, SEAT + 0.165), "power")
     for sx in (-1, 1):
-        post(m, sx * (wide / 2 - 0.22), 0, SEAT, 2.1, 0.3, "girder", ink=True)
-        insulator(m, (sx * (wide / 2 - 0.22), 0, 2.1), 0.55, r=0.3, ribs=2)
-        m.box((0.24, 0.24, 0.2), (sx * (wide / 2 - 0.22), 0, 2.75), "power")
+        x = sx * (wide / 2 - 0.22)
+        m.box((0.42, 0.42, 2.45 - SEAT), (x, 0, (SEAT + 2.45) / 2), "abyss", ink=True)
+        m.box((0.24, 0.24, 0.2), (x, 0, 2.55), "power")
+
+
+def battery_rack():
+    """The battery's Stage I (AR34): the deck, its two cells standing on it at the stack's foot."""
+    m = Mesh()
+    battery_deck(m)
     return Piece("BatteryRack", m, solid="a box, 6 by 4, 3 high",
-                 note=f"on the stand-in's footprint, 2.85 high at its posts. Its eight seats are {SEAT:g} up; a "
-                      f"BatteryCell stands on each seat the base's level has earned (plan.json, machines, battery)")
+                 note=f"Stage I, base level 1: on the stand-in's footprint, 2.65 high at its posts. Its cells stand "
+                      f"{SEAT:g} up, on the seats machines.batteryStages gives each stage (AR34)")
 
 
 def battery_cell():

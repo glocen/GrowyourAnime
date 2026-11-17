@@ -11340,6 +11340,75 @@ From both sheets (d9c61e7). The pick stands once the content check's read of the
   - **Materials:** void stone and bone, as in the bays.
 - **Next:** Stages II and III as kit pieces, with the cells' seats in the table for Faber. Judged in the game from the court and on the way to the back bay.
 
+### Stages II and III as kit pieces, for Faber's install (Modulo, 2026-11-17, 18:09 to 18:37 by the clock)
+
+**The content check on the block's sheets (18:09):**
+- **A:** BLOCK on Stage III's top only. The prongs hooked in from the corners and cradled the bead: in black, a famous dark tower's summit, and from three-quarter a claw. The check's fix: straight, chiselled points, upright or leaning a little out, with the bead low on the top tie and sky above it.
+- **B:** PASS with conditions (not built).
+- **Its conditions for the build:** no red; no copper, brass or gold; tips stay hard points, never rounded, flame-curved or hooked; no T or plus; nothing written; the reads held at 64 px and in black from every heading.
+
+**What changed from the block, and why:**
+- **Stage III's top,** as the check said: the points rise straight from each upright and lean a little out. The bead rests on the one top bar, its foot set in it, with open sky above it.
+- **Research's class, the stack never a building or shelving:**
+  - No bar crosses a tier, so nothing reads as a floor. Each cell is held by a bone clamp from its upright.
+  - The sky shows under and over each tier: a tier rises 2.8, with 1.1 of sky from a cell's cap to the next cell.
+- **A tier's pair stands close, as one unit.** With a gap between the pair as well, my own black cut drew a white three-barred cross at Stage III and a single one at Stage II (the tiers' gaps crossing the pair's slit). The negative space is now horizontal slots only.
+- **Stage I** is the deck alone, AR19's note made: the copper bar is now a groove of void stone with the current's line in it, and the posts are void stone, squared, with no insulators. The eight seat plates go, since the cells stand on each stage's seats.
+
+**What's handed off:**
+- The pieces are in `build/handoff/Base` (`manifest.json`, `meshes/`), made by `tools/blender/base_battery.py`. That was the block's script, now A's kit module; B's code stays in d9c61e7. Stage I's rack is `battery_rack` in `base_machines.py`.
+- The swap's table is in `plan.json`, under `machines.batteryStages`.
+- **The export adds BatteryRack2 and BatteryRack3, and changes one existing piece on purpose: BatteryRack** (AR19's note). Every other piece is byte for byte as it was.
+
+**For Faber:**
+- **Re-upload BatteryRack.** Until the stages are installed, the game's cells stand on `machines.battery`'s old seats, on the bare deck, which does no harm.
+- **BatteryRack2 and BatteryRack3:** each stage's still battery, in place of BatteryRack at the battery's place, turn 0.
+- **The table:** `batteryStages.stages["1"]` to `["3"]`, each with:
+  - `pieces`: piece, place, `moves: still`;
+  - `seats`: [across, toward the gate, up] in the battery's own frame, in the order they fill, the bottom tier first, left to right, so the charge climbs. There are 2, 4 and 8, the same as `Levels.Cells`.
+  - Once installed, it supersedes `machines.battery`'s seats.
+- **BatteryCell** is unchanged; each cell's glow is its share of the charge, as today.
+- **Collision:** the deck's box, 6 by 4 and 0.6 high. Then the stack's box round its cells, 3.76 across by 1.6 deep, its middle 0.95 back from the deck's, up to 5.8 at Stage II and 11.4 at Stage III. The points and the bead are look only.
+
+**The pieces,** from the manifest:
+
+| Piece | Triangles | High | Stage whole, with its cells |
+|---|---|---|---|
+| BatteryRack (Stage I) | 144 (was 372) | 2.65 at its posts | 384 |
+| BatteryRack2 | 408 | 6.8 at its points | 888 |
+| BatteryRack3 | 656 | 13.3 at its points | 1,616 |
+
+The footprint stays inside 6.6 by 4.6 at every stage.
+
+**The sheet:** `build/handoff/Base/battery_stages.png`. It shows each stage:
+- in the yard at base level 3, from the court and on the way to the back bay, at 640 by 360;
+- head-on, from the side and three-quarter at its own size;
+- cut at 64 and 128 px, in colour and in black, from the front, both sides, behind and three-quarter.
+
+**The content check on the coloured models (18:33 to 18:34): PASS for upload.**
+- **Stage III's top:** the BLOCK is resolved. The horns are straight and chiselled and lean out; from three-quarter they no longer close like a claw. The bead is low on the bar under the tips, with empty sky above it.
+- **Shapes:** no cross, T or plus in any silhouette.
+- **Colours:** no red, copper, brass or gold.
+- **Its conditions:**
+  1. **The bead rests on the bar, never floats.** Made at once: `shard` centres on its point, so its foot sat 0.1 over the bar; it's now set 0.03 into it. Rendered and exported again; the triangles are unchanged.
+  2. **The bead's light stays pale violet-white in Studio,** never orange or red. Nothing near it gets a ring, and nothing in the base is called an "eye".
+  3. **Upload these exact meshes;** any later change to the horns, the bead, the top bar or the clamps comes back to the check.
+  4. **The earlier conditions still hold.**
+
+**My read, from stills:**
+- **The height is the capacity:** from the court, Stage III stands over everything near it.
+- **Building or shelving:** answered as research's class asks. There are no floors, the cells are gripped from the side, and the sky shows between the tiers. What remains is that under the dusk the bone clamps render as dark as the stone, so up close Stage III still reads as a dark, lit stack. That's for research's read in the game.
+- **The fill:** an empty cell keeps its pale-yellow line, because the game scales only `EmissiveStrength`, by `Glow.Empty` (0.2), and its base colour stays. So the gauge reads by brightness alone: clear head-on from 18 studs, faint from the court. BatteryCell and the empty share are outside this piece and unchanged.
+
+**The four facts:**
+- **Implemented:** Stages II and III as two kit pieces, Stage I's rack with AR19's note made, and the swap's table.
+- **Tested:**
+  - The export and the plan ran; only the battery's entries changed.
+  - Each stage was stood on its table's seats and rendered.
+  - The content check passed.
+- **Visually reviewed:** my own read, from stills. Research's read is in the game, from the court and on the way to the back bay.
+- **Director-accepted:** no.
+
 ## Later, by ground
 
 The rest of ground 1 (Kirra in AR10, Watt in AR11; then Sable, Marigold, Crane), then each ground's Voidkin in `docs/roster.md`'s order. **The machines** (Gantry, Bulwark, Ironhymn, Shiomaru, Aegir) share one custom rig, taller than a player, with its own clip family: the first of them is timed like AR1, because a custom rig is a different cost.

@@ -650,10 +650,11 @@ return {
 				ChannelEdge = { Id = "rbxassetid://110614215738990", Pixels = Vector2.new(64, 64), Points = Vector2.new(16, 16), Cut = { 8, 8, 8, 8 }, Pad = 0 },
 			} :: { [string]: UIKit.Image },
 			Rail = {
-				-- A row, and the least it closes up to where every page must be in sight (34 points on the smallest phone):
-				-- Rules.Hud.RailRows.
+				-- A row, and the least it closes up to where every page must be in sight: 30.6 points on the smallest phone,
+				-- whose room is 248, so its seven stand whole with War Emblems' two lines chosen (research's call, 2026-11-17,
+				-- 20:06): Rules.Hud.RailRows.
 				Row = 52,
-				Least = 40,
+				Least = 36,
 				Icon = 35, -- an icon's image, square: its drawing is 28 across, 24 points on the smallest phone
 				Drawn = 28,
 				Aside = 3.4, -- an icon's middle, left of the rail's middle

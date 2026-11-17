@@ -636,6 +636,15 @@ function VoidkinCases.Cases(given: Given): { any }
 							count += if child:IsA("Frame") then 1 else 0
 						end
 						t.Check(`Stars: {VoidkinConfig.MaxStars} pips`, count == VoidkinConfig.MaxStars, `{count}`)
+						-- Its copies toward the next star (Rules.Hud.Copies): never a count past its total read as N of M.
+						local said = ""
+						for _, child in scroll:GetChildren() do
+							local under = if string.find(child.Name, " stars$") then child:FindFirstChild("Under") else nil
+							said = if under and under:IsA("TextLabel") then under.Text else said
+						end
+						local n, m = string.match(said, "^([%d,]+) of ([%d,]+) copies")
+						local past = n ~= nil and m ~= nil and (tonumber((string.gsub(n, ",", ""))) or 0) > (tonumber((string.gsub(m, ",", ""))) or 0)
+						t.Check("Stars: its copies toward the next star, never N of M past M", said ~= "" and not past, said)
 					end
 				end
 				for _, kept in (if name == "Bag" then {} else { "Lead", "Work" }) :: { string } do -- C's Items page has neither

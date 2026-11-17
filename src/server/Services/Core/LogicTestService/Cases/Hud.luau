@@ -644,8 +644,15 @@ return {
 			local one, two = Hud.RailNeed(1, rail.Tab.Word, rail.Drawn, rail.Tab), Hud.RailNeed(2, rail.Tab.Word, rail.Drawn, rail.Tab)
 			t.Check("a one-line word's tab fits a row at its authored size", one <= rail.Row, string.format("%.2f of %d", one, rail.Row))
 			t.Check("two lines need more", two > rail.Row)
-			-- The least a row closes to is 34 points at the scale's floor (research's call; Theme.Scale.Floor 0.85).
-			t.Check("the least row is 34 points at the floor", math.abs(rail.Least * 0.85 - 34) < 0.01)
+			-- The least a row closes to is 30.6 points at the scale's floor (research's call of 20:06; Theme.Scale.Floor 0.85).
+			t.Check("the least row is 30.6 points at the floor", math.abs(rail.Least * 0.85 - 30.6) < 0.01)
+			-- The smallest phone: a room of 292 authored (248 points), the word at the legible floor (14 pixels at 0.85: 17),
+			-- seven pages, War Emblems' two lines chosen: every page whole, no scroll.
+			local word = math.max(rail.Tab.Word, math.ceil(14 / 0.85))
+			local phoneOne, phoneTwo = Hud.RailNeed(1, word, rail.Drawn, rail.Tab), Hud.RailNeed(2, word, rail.Drawn, rail.Tab)
+			local phonePitch, phoneWhole = Hud.RailRows(292, 7, rail.Row, rail.Least, phoneTwo, phoneTwo)
+			t.Check("the smallest phone: seven whole with War Emblems chosen", phoneWhole, string.format("%.2f", phonePitch))
+			t.Check("and with a one-line page chosen", select(2, Hud.RailRows(292, 7, rail.Row, rail.Least, phoneTwo, phoneOne)))
 			local pitch, whole = Hud.RailRows(300, 4, rail.Row, rail.Least, one, one)
 			t.Check("four pages in a tall room: a row each, whole", pitch == rail.Row and whole, `{pitch}`)
 			pitch, whole = Hud.RailRows(4 * rail.Row + (two - rail.Row), 4, rail.Row, rail.Least, two, two)
@@ -668,6 +675,15 @@ return {
 			t.Check("and on the panel", Hud.Contrast(rail.Idle, panel) >= 4.5, string.format("%.1f", Hud.Contrast(rail.Idle, panel)))
 			t.Check("dimmer than the chosen page's text", Hud.Contrast(seam.Text :: Color3, ground) > idle)
 			t.Check("contrast: white on black is 21:1", math.abs(Hud.Contrast(Color3.new(1, 1, 1), Color3.new(0, 0, 0)) - 21) < 1e-6)
+		end,
+	},
+	{
+		Name = "Hud: the Stars page's copies, never a count past its total read as N of M",
+		Run = function(t: any)
+			t.Equal("short of the next star", Hud.Copies(3, 5), "3 of 5 copies for the next")
+			t.Equal("exactly enough", Hud.Copies(5, 5), "5 of 5 copies for the next")
+			t.Equal("past it: the count and the need apart", Hud.Copies(48, 1), "48 copies, 1 needed for the next star")
+			t.Equal("in thousands", Hud.Copies(1200, 40), "1,200 copies, 40 needed for the next star")
 		end,
 	},
 }

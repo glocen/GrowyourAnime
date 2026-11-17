@@ -794,7 +794,7 @@ local function starsTab(scroll: ScrollingFrame, view: Profile.View, owned: Profi
 		pip.Parent = pips
 	end
 	local cost = Collection.NextStarCost(owned)
-	line(scroll, 2, `{owned.Stars} of {VoidkinConfig.MaxStars} stars`, nil, if cost then `{owned.Copies} of {cost} copies for the next` else "Every star: a copy sells for Credits")
+	line(scroll, 2, `{owned.Stars} of {VoidkinConfig.MaxStars} stars`, nil, if cost then Hud.Copies(owned.Copies, cost) else "Every star: a copy sells for Credits")
 	if cost then
 		local before = Stats.Power((resolved(view, owned)))
 		local next = table.clone(owned)

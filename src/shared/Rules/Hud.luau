@@ -314,6 +314,15 @@ end
 
 -- The contrast of two colours, WCAG's: (L1 + 0.05) / (L2 + 0.05) of their relative luminances, the lighter over the
 -- darker (docs/ui.md: text and icons 4.5:1 or more on their ground).
+-- The Stars page's copies toward the next star: "3 of 5 copies for the next" while short of it, and once past it the
+-- count and the need apart, "48 copies, 1 needed for the next star", never "48 of 1" (research's must-fix, 2026-11-17).
+function Hud.Copies(have: number, need: number): string
+	if have > need then
+		return `{Hud.Digits(have)} copies, {Hud.Digits(need)} needed for the next star`
+	end
+	return `{Hud.Digits(have)} of {Hud.Digits(need)} copies for the next`
+end
+
 function Hud.Contrast(a: Color3, b: Color3): number
 	local function channel(c: number): number
 		return if c <= 0.04045 then c / 12.92 else ((c + 0.055) / 1.055) ^ 2.4

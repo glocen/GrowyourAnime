@@ -10607,6 +10607,36 @@ Both sheets in `build/handoff/UI/buttons/` are drawn again.
     - the X on the card and the Graphite panels.
   - **For Faber at the build,** the class of TR41 (a)'s older must-fix: a row is never cut mid-word under a panel. With a card open, the bag's chips end at the card's left edge with a soft fade, as the Breaker's ready row does.
 
+## AR31. Forge stones, War Emblems and jewels: their pictures (Modulo, for research's verdict, then Faber)
+
+Phase 3's order, Modulo's item 5 (`docs/production-plan.md`). It's for TR37's Stones tab, TR38's War Emblems page and item card, and TR39's Jewels page, each of which waits on these icons. The design: `docs/design.md`, "Regalia: gear" (the emblems' sockets, the jewels' tiers [D: "Each type has its own colour, and its shape grows with its tier"]). The study: `docs/research/gear-icons.md`.
+
+**Feel line (Modulo's):** the player opens the bag's Stones, Emblems or Jewels and reads each one's worth from its shape before a word or a number: a stone's grade, an emblem's rarity and stat, a jewel's tier.
+
+**The block contains:** the three grades of stone, the emblem in its three launch rarities with four stats' marks, and a jewel's five tiers, all in grey, built and rendered as AR6's gear and AR21's chests are. **It waits for the colour pass, after the verdict:** each kind's colour, the jewels' three types (Critical Damage, Critical Immunity, Lifesteal), and the stone's colour and mark for AR24's haul line. **It also waits for the colour pass:** the marks for the other emblem stats (Strength, Endurance and the flat Battle Attributes, as TR38 sets them), and the empty sockets' marks on the item card (an emblem's and a jewel's). The tier number and the stack's count are the bag's.
+
+### The grey, for research's verdict (Modulo, 2026-11-17, 15:59 to 16:10 by the clock)
+
+- **The sheet:** `build/handoff/UI/upgrades/upgrades_grey.png`, from `tools/blender/upgrade_icons.py`. Each picture is shown close in the bag's cell (AR18's A), at 38 points and alone at 32 px over dark. Under them is a row of the bag with AR6's gear and AR21's chests, at 38 points and twice that.
+- **Each kind is its own family,** apart from the shards (crystals, pointed) and the chests:
+  - **Forge stones:** opaque stone with the forge's light in it, more worked as the grade rises. Low is a rough lump with one crack of light. Mid is a whetstone of two grits lying on the diagonal, with a seam of light where they meet. **High in two, for research's pick:** A is a polished block standing, bound at its foot and head, its light behind a window. B is the stone cut to an ingot and polished, lying, bound in two bands, with a line of light round its top.
+  - **War Emblems:** a six-sided badge, never a coin. It has a dark enamel face, its stat's mark raised in pale, and a metal rim. Common is the badge alone, in iron. Uncommon has four points behind it, in steel. Rare has eight, in gilt, with a ring of light inside the rim. Its rarity's cell does the rest, as an item's does. The marks tried: Attack a sword, Defence a heater shield, Health a heart, Critical a four-point burst.
+  - **Jewels:** a cut stone lying face up, and its tier is its shape. Tier 1 is a small stone with 6 facets. Tier 2 is larger, with 12. Tier 3 is set in a bright bezel with four claws standing out past it. Tier 4 adds a halo of eight small stones. Tier 5 adds eight rays under the halo and a ring of light inside it. Size climbs with tier: 0.48 to 0.9 of the square.
+- **Tried and changed in the block:** the first High was a tapered block with a band at its head, and it read as a headstone. The two Highs replace it. The first Mid was too thin to read at 38 points: it's now chunkier, its grits further apart in value. At 32 px the emblems' marks were lost, so the face and the mark are larger. Tier 3 couldn't be told from tier 2 until the bezel and claws stood out past the stone.
+- **My read at 38 points:** the stones read as three grades, a lump, a bar and a finished piece. Of the Highs, A reads a little as a crate and B as a trough. Every emblem's mark reads at 38 points; at 32 px, Attack and Critical still part. In grey, the Common badge alone is near a hex nut: its enamel's colour should carry it. The jewels' tiers climb clearly from 3 to 5. Tiers 1 and 2 part by size alone, as the director's "grows" asks.
+- **Content check, for building: PASS** (16:08 to 16:10). It found nothing that reads as gore, a hate symbol, a drug or another work's mark. Health is a heart, never a cross. Its conditions for the colour pass, which gets its own check before upload:
+  - the heart may be red or pink, but only as a flat symbol: no drip, no crack, no wet gloss;
+  - a red jewel reads as a cut gem, crisp facets and its table kept, with no droplet shape and no red glow running under it; tier 5's rays and ring are never blood red;
+  - the forge's light is orange to white-hot, never deep red, and Low's crack stays a thin lit line;
+  - never a red cross on white, or white on red, on any item;
+  - a pale jewel keeps its even cut and its setting, never a loose white shard;
+  - the sword's point and pommel, and the burst's four points, still read at 32 px in colour.
+  - It noted, for research's pass: tier 4 at 38 points reads a little as a cog.
+- **Four facts.** Implemented: the block, in grey. Tested: it renders, and was read at 38 points and 32 px. Visually reviewed: my read above; research's verdict next. Director-accepted: no.
+- **For research:** the verdict, and the pick between High A and B. Then two answers for the colour pass:
+  - which stats an emblem can carry at launch, so the marks are drawn once;
+  - the three jewel colours, if you'd set them. My proposal: Critical Damage the crit number's colour, Critical Immunity a cool steel blue, Lifesteal a clear rose-violet, never a blood red.
+
 ## Later, by ground
 
 The rest of ground 1 (Kirra in AR10, Watt in AR11; then Sable, Marigold, Crane), then each ground's Voidkin in `docs/roster.md`'s order. **The machines** (Gantry, Bulwark, Ironhymn, Shiomaru, Aegir) share one custom rig, taller than a player, with its own clip family: the first of them is timed like AR1, because a custom rig is a different cost.

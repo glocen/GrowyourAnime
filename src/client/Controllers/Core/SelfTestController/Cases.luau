@@ -4335,9 +4335,10 @@ local cases = {
 	},
 	{
 		-- TR40, Regen in bursts (the director, 2026-11-17): a lead under full heals one burst every Config.Stats.Regen.Every
-		-- seconds, its size Rules.Stats.Burst of its Regen, with the heal's green number on its owner's screen and a pop at its
-		-- chest (Effects.RegenPop); at full, none, and nothing shows.
-		Name = "Fight: TR40, a lead's Regen in bursts: one every 8 s at its size, a green number and a pop, and none at full",
+		-- seconds, its size Rules.Stats.Burst of its Regen, and a small pop at its chest (Effects.RegenPop). Its number reads on
+		-- its owner's HUD, on the lead's own bar: the band in the heal's green and "+N" after the digits (research's must-fix),
+		-- never in the world among the hits. At full, none, and nothing shows.
+		Name = "Fight: TR40, a lead's Regen in bursts: one every 8 s at its size, on the lead's bar with its +N and a small pop, and none at full",
 		Run = function(t: any)
 			local lead = myLead()
 			local view = ProfileController.Get()
@@ -4356,17 +4357,24 @@ local cases = {
 					table.insert(bursts, { At = os.clock(), Amount = heal.Amount })
 				end
 			end)
-			local popped, green = false, false
+			local parts = HudController.Parts()
+			local band, gain = parts.LeadHealBand, parts.LeadHealGain :: TextLabel
+			local popped, banded, plus, inWorld = false, false, "", false
 			local watch = RunService.RenderStepped:Connect(function()
 				local home = workspace:FindFirstChild("NL_Effects")
 				local pop = if home then home:FindFirstChild("RegenPop") else nil
 				if pop and pop:IsA("BasePart") and (pop.Position - root.Position).Magnitude < 2 then
 					popped = true
 				end
+				if band.Visible and band.BackgroundTransparency < 0.9 then
+					banded = true
+				end
+				if gain.Visible then
+					plus = gain.Text
+				end
 				local keyed = Effects.Counting[root]
-				local number = if keyed then keyed.regen else nil
-				if number and number.Style == "Heal" then
-					green = true
+				if keyed and keyed.regen then
+					inWorld = true
 				end
 			end)
 			t.Server("FightHealth", 0.5)
@@ -4380,7 +4388,11 @@ local cases = {
 				t.Near("each its Regen's burst: the rate times 8 times a half", bursts[1].Amount, size, 0.05)
 			end
 			t.Check("a pop at its chest", popped)
-			t.Check("its green number, the heal's own", green)
+			t.Check("the band runs on the lead's health light", banded)
+			local said = if #bursts > 0 then `+{Hud.Digits(math.floor(bursts[#bursts].Amount + 0.5))}` else "?"
+			t.Check("its +N after the health's digits, the burst's own", plus == said, `{plus} for {said}`)
+			t.Check("in the heal's green", gain.TextColor3 == HudConfig.Card.Heal.Colour)
+			t.Check("and no number in the world among the hits", not inWorld)
 			-- At full: nothing for a whole beat.
 			t.Server("FightHealth", 1)
 			t.Wait(0.3)

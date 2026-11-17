@@ -113,6 +113,10 @@ local dockHolder: Frame
 local dockUi: Dock.Dock -- the dock of three icons (AR12; UI.Dock): dock[screen] is its tile's button
 local keeperBar: BossBar.Bar
 local lastView: Profile.View? = nil
+local healBand: Frame -- a heal of the lead's own: a band in the heal's green along its health light (Config.Hud.Card.Heal)
+local healGain: TextLabel -- and its "+N" after the health's digits
+local healAt = -math.huge -- the os.clock() the last one started
+local healHeld: number? = nil -- for tests: the look held this many seconds in (a still), or running
 local glint: Frame -- experience's pop: a light over the thread's
 local lastCharge: number? = nil -- the battery at the last read, for its jump
 local baseReadAt = 0
@@ -1011,6 +1015,36 @@ local function bandRoom(): number
 	return 2 * (math.min(middle - left, right - middle) / math.max(Layers.Scale(), 0.01) - Theme.Size.Gap)
 end
 
+-- A heal of the lead's own on its bar (TR40, research's must-fix): the band runs from the light's root to its front
+-- eased out, holds and fades; the "+N" rises after the digits and fades in its last third. The front is read each frame,
+-- so a heal that comes before its health does still ends on the new front.
+local function paintHeal()
+	local h = HudConfig.Card.Heal
+	local age = healHeld or (os.clock() - healAt)
+	local shown = lead.Frame.Visible
+	healBand.Visible = shown and age < h.Sweep + h.Hold + h.Fade
+	if healBand.Visible then
+		local share = lead.Health:GetAttribute("Share")
+		local front = (if type(share) == "number" then share else 0) * lead.Health.Size.X.Offset
+		local run = math.clamp(age / h.Sweep, 0, 1)
+		local fade = math.clamp((age - h.Sweep - h.Hold) / h.Fade, 0, 1)
+		healBand.Position = UDim2.fromOffset(front * (1 - (1 - run) ^ 2) - h.Band / 2, 0)
+		healBand.Size = UDim2.new(0, h.Band, 1, 0)
+		healBand.BackgroundTransparency = 1 - h.Peak * (1 - fade)
+	end
+	healGain.Visible = shown and age < h.Life
+	if healGain.Visible then
+		local life = math.clamp(age / h.Life, 0, 1)
+		local digits = lead.HealthText
+		-- The digits as drawn, in the card's points (Text.Wide's stock measure ran 3 points long on the phone's face).
+		local drawn = digits.TextBounds.X * digits.Size.X.Offset / math.max(digits.AbsoluteSize.X, 1)
+		local after = digits.Position.X.Offset + drawn + h.Gap
+		healGain.Position = UDim2.fromOffset(after, digits.Position.Y.Offset - h.Rise * (1 - (1 - life) ^ 2))
+		healGain.Size = UDim2.fromOffset(Text.Wide(healGain, healGain.Text) + 2, digits.Size.Y.Offset)
+		healGain.TextTransparency = math.clamp((life - 2 / 3) * 3, 0, 1)
+	end
+end
+
 local function step(dt: number)
 	VoidkinScreen.Tick() -- its clocks, Combat Power's count, a layout tuned live
 	face()
@@ -1058,6 +1092,7 @@ local function step(dt: number)
 		local id = model:GetAttribute("Target")
 		foe = if type(id) == "string" and id ~= "" then fighterById(id) else nil
 	end
+	paintHeal()
 	-- A keeper's own bar stands in the target card's stead (TR5, A and B); an elite's card wears its heavier frame (C).
 	local boss = HudConfig.Boss
 	local variant = tostring(boss.Keeper)
@@ -1188,6 +1223,29 @@ function HudController.Start()
 	round.CornerRadius = UDim.new(0.5, 0)
 	round.Parent = glint
 	glint.Parent = lead.Xp
+	-- A heal of the lead's own (paintHeal): the band over its health light, soft at both ends so the light's slant never
+	-- shows a square edge; its "+N" on the card, after the digits.
+	local heal = HudConfig.Card.Heal
+	healBand = Instance.new("Frame")
+	healBand.Name = "HealBand"
+	healBand.BackgroundColor3 = heal.Colour
+	healBand.BackgroundTransparency = 1
+	healBand.BorderSizePixel = 0
+	healBand.Visible = false
+	healBand.ZIndex = 2
+	local soft = Instance.new("UIGradient")
+	soft.Transparency = NumberSequence.new({ NumberSequenceKeypoint.new(0, 1), NumberSequenceKeypoint.new(0.5, 0), NumberSequenceKeypoint.new(1, 1) })
+	soft.Parent = healBand
+	healBand.Parent = lead.Health
+	healGain = Text.new({ Name = "HealGain", Size = Theme.Text.Caption, Font = Theme.Font.Strong, Colour = heal.Colour, Parent = lead.Frame })
+	healGain.ZIndex = 6
+	healGain.Visible = false
+	-- A Regen burst on the player's own lead (TR40). Later heals of the lead's own (Lifesteal's, a healer's) come here too.
+	Net.Client.On("Heal", function(burst: any)
+		if type(burst) == "table" and burst.Regen == true and type(burst.Amount) == "number" and burst.T ~= nil and burst.T == myLead() then
+			HudController.LeadHealed(burst.Amount)
+		end
+	end)
 	Pop.Centre(lead.Level) -- it swells about its middle
 	banded = { lead.Frame, target.Frame, credits.Parent :: GuiObject, electricity.Parent :: GuiObject }
 	local hint = Pill.new({
@@ -1300,6 +1358,20 @@ function HudController.StepTargets(step: Hud.Step?): { Instance }
 	return stepTargets(step)
 end
 
+-- A heal of the lead's own, `amount` health, shown on its bar (paintHeal); nothing under half a point.
+function HudController.LeadHealed(amount: number)
+	if amount < 0.5 then
+		return
+	end
+	healGain.Text = `+{Hud.Digits(math.floor(amount + 0.5))}`
+	healAt = os.clock()
+end
+
+-- For tests: the lead's heal look held `age` seconds in, for a still, or running again (nil).
+function HudController.HoldHeal(age: number?)
+	healHeld = age
+end
+
 -- For tests: the HUD's parts by name.
 function HudController.Parts(): { [string]: GuiObject }
 	return {
@@ -1325,6 +1397,8 @@ function HudController.Parts(): { [string]: GuiObject }
 		Credits = credits,
 		Electricity = electricity,
 		XpGlint = glint,
+		LeadHealBand = healBand,
+		LeadHealGain = healGain,
 		PowerStored = stored,
 		Signature = readout.Piece.Frame,
 		Spectate = eye,

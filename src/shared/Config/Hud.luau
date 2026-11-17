@@ -269,6 +269,12 @@ return {
 			Mythical = Color3.fromHex("#FF8794"), -- its metal's light, not its #FF2848 glow: kept apart from health's red
 		} :: { [string]: Color3 },
 		Room = 0.75,
+		-- A heal of the lead's own shows on its bar (TR40, research's must-fix: a number about the lead's own state reads
+		-- on the lead's own bar, never in the crowd of hits). A burst is a sliver of the bar, so a soft band in the heal's
+		-- green, Band points wide and at most Peak opaque, runs from the bar's root to its front in Sweep seconds, holds
+		-- there Hold seconds and fades over Fade. Its "+N", in the same green, stands Gap points after the health's digits
+		-- and rises Rise points over Life seconds, fading in its last third. The builder's seeds.
+		Heal = { Colour = UIKit.Numbers.Heal, Band = 26, Peak = 0.75, Sweep = 0.3, Hold = 0.15, Fade = 0.45, Gap = 4, Rise = 8, Life = 1.2 },
 	},
 	-- A bar's glow reaches at most this far past its light, authored pixels: the kit's 14 points at a tall bar's scale ran
 	-- past the cards (TR3's take). Read when a bar is set.

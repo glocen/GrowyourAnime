@@ -1137,8 +1137,8 @@ local function onHit(hit: any)
 end
 
 -- A hit's heal (Actions.Hit.Heal): its look round the healed body (HEALS), and its number over it on the screens of the
--- healer's player and the healed's, one counting number for the press. A Regen burst (Regen, TR40): its pop on every
--- screen, and its green number on its owner's.
+-- healer's player and the healed's, one counting number for the press. A Regen burst (Regen, TR40): its small pop on
+-- every screen; its number is on its owner's HUD, on the lead's own bar (HudController), never in the crowd of hits.
 local function onHeal(heal: any)
 	if type(heal) ~= "table" or type(heal.Amount) ~= "number" then
 		return
@@ -1149,9 +1149,6 @@ local function onHeal(heal: any)
 	end
 	if heal.Regen == true then
 		Effects.RegenPop(healed.Root)
-		if isMine(healed) and heal.Amount >= 0.5 then
-			Effects.Number(healed.Root, "regen", heal.Amount, { Style = "Heal" }, Combat.Numbers)
-		end
 		return
 	end
 	local look = if healer and healer.Action then HEALS[healer.Action.Id] else nil

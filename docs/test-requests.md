@@ -3322,6 +3322,25 @@ Research's request, 2026-11-17, 12:54, on the director's word (`docs/decisions.m
     - **A known gap, research's:** the street model leaves out Endurance's Regen, so it reads low. At level 1, Rook's Endurance adds about as much again as the base.
   - **Accepted on the cases:** the 553 Fight cases. What they can't show is how a burst feels in a long fight. That's first seen in the bar's fix, in a capture of three bursts in a row.
 
+**The must-fix, on the lead's bar (Faber, 2026-11-17, by 15:03 by the clock).**
+- **Implemented:**
+  - A burst on the player's own lead shows on its HUD card (`HudController.LeadHealed`, `paintHeal`; `Config.Hud.Card.Heal`).
+    - A soft band in the heal's green runs along the health light from its root to its front in 0.3 s, holds 0.15 s and fades over 0.45 s. It's soft at both ends, so the light's slant never shows a square edge.
+    - A burst is 0.4 to 2% of the bar, a sliver of one or two points on a phone, so the sweep carries the read.
+    - "+22" in the same green stands after the health's digits, measured as drawn. It rises 8 points over 1.2 s and fades in its last third.
+  - In the world, the green number is gone. The pop stays as a small tie to the body: 0.8 to 2.2 studs, from 1 to 3.4.
+  - HudController hears `Heal` itself, so a later heal of the lead's own (Lifesteal's, a healer's) comes to the same place.
+- **Tested:**
+  - Type check: 0 new.
+  - "Fight: TR40": 12 of 12. It checks the band runs, "+N" is the burst's own and in the heal's green, and no number appears in the world.
+  - "HUD:": 417 passed, 2 failed, both the machine plate with news, which needs the base's models (open above).
+  - On the iPhone simulator, 14 more HUD cases failed: the lead never took on its Shade under the simulator's camera (TR24's view rule). They pass with it off, on the same code.
+- **Seen, for research's second look:** three bursts in a row in a real fight at Pack 1, on the iPhone 16 Pro, each held 0.3 s in (the band just at the front).
+  - The stills are in `build/scratch/faber/stills/`: `bar-burst1-phone.png` (+22 at 732 of 1,237), `bar-burst2-phone.png` (650), `bar-burst3-phone.png` (607), and `bar-zoom.png`, the card ×3 from the first.
+  - The take: "Take: TR40, three Regen bursts in a row...".
+  - In these stills "+22" stands 3 points wider than set. Since fixed: it's measured as drawn.
+- **Director-accepted:** no.
+
 ## TR41. The passed screens that never reached the game (Faber, after TR40)
 
 Research, 2026-11-17, 14:05, on the director's question: "how is that there is many ui that havent got the implementation such as void breaker galaxy ui". A read-only audit of the requests against `src/` found four pieces delivered, passed, and never wired. For three of them no build request was ever written, and none was in any order of work. That's research's miss as keeper of the plan. Each is built as delivered, with no new design.

@@ -29,7 +29,6 @@ local RevealArt = require(Shared.Config.RevealArt)
 local VoidkinDefs = require(Shared.Definitions.Voidkin)
 local Items = require(Shared.Definitions.Items)
 local HudController = require(script.Parent.Parent.Parent.Main.HudController)
-local Effects = require(script.Parent.Parent.Parent.Main.FighterController.Effects)
 local Net = require(Shared.Net)
 local BaseController = require(script.Parent.Parent.Parent.Main.BaseController)
 local ProfileController = require(script.Parent.Parent.ProfileController)
@@ -1130,18 +1129,20 @@ return function(given: Given): { any }
 			end,
 		},
 		{
-			Name = "Take: TR40, a Regen burst in a real fight at Pack 1, held for a phone still, for research",
+			Name = "Take: TR40, three Regen bursts in a row in a real fight at Pack 1, each held on the lead's bar for a phone still, for research",
 			Manual = true,
 			Stay = true,
 			Run = function(t: any)
-				-- The lead walks through the Festival Door to Pack 1 as a player's does and fights it; under full (the lead set at
-				-- 60%, so a burst has room), the next burst's number and pop are held still a few frames in (Effects.TimeScale 0)
-				-- and ReplicatedStorage.NL_TakeStep reads "Burst" until the driver moves it to "End". Then all as it was.
+				-- The lead walks through the Festival Door to Pack 1 as a player's does and fights it, under full (set at 60%, so a
+				-- burst has room). Three bursts in a row that land while it has a target (research's second look at the must-fix),
+				-- each held on the lead's bar HELD seconds in (HudController.HoldHeal): the band at the front, its "+N" rising.
+				-- ReplicatedStorage.NL_TakeStep reads "Burst1", "Burst2", "Burst3" in turn; the driver captures each and moves it
+				-- to "Next", or to "End". The fight runs on meanwhile. Then all as it was.
+				local HELD = HudConfig.Card.Heal.Sweep
 				local step = Instance.new("StringValue")
 				step.Name = "NL_TakeStep"
 				step.Value = "Ready"
 				step.Parent = ReplicatedStorage
-				local share = t.Server("Tune", "Stats.Regen.Share")
 				-- Pack 1 brought back again and again levels the lead: its level and experience are put back after.
 				local data = t.Server("Data")
 				local owned = data.Voidkin[data.Roles.Lead]
@@ -1181,45 +1182,46 @@ return function(given: Given): { any }
 						t.Check("the lead fights", waitFor(t, 15, function(): boolean
 							return lead:GetAttribute("Target") ~= "" or (lead:GetAttribute("Health") :: number) < (lead:GetAttribute("MaxHealth") :: number)
 						end))
-						-- Held from the Heal itself, a few frames in (the pop lives 10 frames, a poll misses it), and only a burst
-						-- that lands while the lead has a target: Pack 1 is brought back if it falls first.
-						local held = false
+						local count, waiting = 0, true
 						local onHeal = Net.Client.On("Heal", function(heal: any)
-							if not held and type(heal) == "table" and heal.T == lead and heal.Regen == true and lead:GetAttribute("Target") ~= "" then
-								held = true
-								task.delay(4 / 60, function()
-									Effects.TimeScale = 0
-									step.Value = "Burst"
+							if waiting and type(heal) == "table" and heal.T == lead and heal.Regen == true and lead:GetAttribute("Target") ~= "" then
+								waiting = false
+								count += 1
+								local index = count
+								task.delay(HELD, function()
+									HudController.HoldHeal(HELD)
+									step.Value = `Burst{index}`
 								end)
 							end
 						end)
 						t.Server("FightHealth", 0.6, true)
-						local deadline = os.clock() + 60
-						while step.Value ~= "Burst" and os.clock() < deadline do
+						-- Pack 1 brought back if it falls, and the lead put back under full while a burst is awaited.
+						local deadline = os.clock() + 180
+						while step.Value ~= "End" and os.clock() < deadline do
+							if step.Value == "Next" then
+								HudController.HoldHeal(nil)
+								if count >= 3 then
+									break
+								end
+								step.Value = "Waiting"
+								waiting = true
+							end
 							for _, row in t.Server("Packs") do
 								if row.Name == "Pack 1" and row.Standing == 0 then
 									t.Server("PackBack", "Pack 1")
 								end
 							end
-							if (lead:GetAttribute("Health") :: number) >= (lead:GetAttribute("MaxHealth") :: number) * 0.95 then
+							if waiting and (lead:GetAttribute("Health") :: number) >= (lead:GetAttribute("MaxHealth") :: number) * 0.95 then
 								t.Server("FightHealth", 0.6, true)
 							end
-							t.Wait(0.5)
+							t.Wait(0.3)
 						end
 						onHeal:Disconnect()
-						t.Check("a burst comes in the fight", step.Value == "Burst")
-						if step.Value == "Burst" then
-							-- No burst while it's held: a pop made during the hold never ages, so they'd pile up on the one shown.
-							t.Server("Tune", "Stats.Regen.Share", 0)
-							waitFor(t, 300, function(): boolean
-								return step.Value == "End"
-							end)
-						end
+						HudController.HoldHeal(nil)
+						t.Check("three bursts in the fight, each held", count >= 3, tostring(count))
 					end
 				end)
-				t.Server("Tune", "Stats.Regen.Share", share)
 				t.Server("LeadLevel", level, xp)
-				Effects.TimeScale = 1
 				t.Server("LeadHeal")
 				t.Reset()
 				step:Destroy()

@@ -281,8 +281,9 @@ local Effects = {
 
 	-- A Regen burst's pop (TR40, the block; the builder's numbers, its look waits for the finish): a ball of the heal
 	-- number's green at the chest, Height studs over the root, swelling From to To studs across over its Frames (fast
-	-- first) while it fades from Alpha to nothing. No picture: Neon, unlit.
-	RegenPop = { Frames = 10, From = 1, To = 3.4, Alpha = 0.45, Height = 0.6 },
+	-- first) while it fades from Alpha to nothing. No picture: Neon, unlit. Small: the burst reads on the HUD's bar
+	-- (Config.Hud.Card.Heal), and the pop only ties it to the body (research's must-fix; 3.4 hid behind the sparks).
+	RegenPop = { Frames = 10, From = 0.8, To = 2.2, Alpha = 0.45, Height = 0.6 },
 
 	-- A Shade's burst (docs/asset-requests.md, AR2, section 11; tools/blender/shade_burst_art.py): the sky lantern. A small
 	-- flame swells in its collar from the Down clip's frame 18, flares the coat's size on its Burst marker (27), where the body

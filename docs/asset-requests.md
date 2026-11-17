@@ -12601,6 +12601,30 @@ Nothing was heard. Whether any of these convinces is **UNVERIFIED**; every level
     - A2's thuds, with half their energy under 250 Hz, fail the phone read; they're out unless a high-pass keeps their contact.
   - **Gate 5's edge:** B1 over A1 at an estimated 2.0 LU. Faber's measure decides, and an arrangement on the edge doesn't pass.
 
+### Our support layers, made and measured (Modulo, 2026-11-17, 22:54 to 22:57 by the clock)
+
+On research's order of 22:53, after the director's "keep working on actually producing the game or SFX": the layers the recorded bodies lean on, made offline with our own code (numpy, scipy, pedalboard, as `tools/audio/audiokit.py`'s other sounds are). The recorded material stays each cue's base.
+- **The files:** 13 OGG takes in `build/scratch/modulo/ar39/own/`, from `py tools/audio/ar39_support.py`, which writes the same files every time. Their numbers are `own.md` and `own.json` beside them. Nothing is uploaded.
+- **LightContact, 4 takes, 45 ms:** a knock of two partials near 300 to 470 Hz falling a third as they ring, and a snap of noise from about 700 Hz to 3.8 kHz. Its top is 0.6 to 1.2 ms into the file.
+- **HeavyContact, 3 takes, 80 ms:** a thump falling an octave from near 240 Hz, a knock near 520 Hz and a crack of noise, driven. Its top is 0.6 to 0.9 ms in.
+- **HeavyLow, 3 takes, 140 to 180 ms:** a sine falling to about 58 Hz, driven off-centre, with its harmonics' band lifted. 29 to 36% of its energy is under 120 Hz. It's a third of HeavySub's length.
+- **ShadeAir, 3 takes, 300 to 400 ms:** noise through a moving band with a slow flutter, three airs built differently: closing from 2.6 kHz to 900 Hz, opening from 1.3 to 4.6 kHz, and low and wide from 1.5 kHz to 480 Hz.
+- **Measured, each file read back as written:**
+  - true peak: -1.45 dBTP or under on all 13;
+  - the ends: no step over 0.013 of the file's top at the start, none at the end;
+  - a peak between 2 and 6 kHz over its third-octave neighbours: 8.2 dB at most (HeavyLow 2, in a band it barely plays), under the gate's 10 on all 13;
+  - through the phone's curve: the contacts lose 0.2 to 3.9 LU, HeavyLow 2.9 to 6.0, ShadeAir 0.3 at most;
+  - two takes of a layer against each other, cosine of their third octaves: 0.936 at most, under the gate's 0.97.
+- **First tries that failed and were changed:** HeavyLow's third take had 51% under 120 Hz, so the lift on its harmonics went up; ShadeAir's three takes were one air at three pitches (cosines of 0.95 to 0.99), so each is now built on its own sweep and band.
+- **Where each goes, DESIGN, for round 2's recipes once they have ids:**
+  - LightContact under A1's and A2's body, on the hit's frame with no lead, about 8 dB under: the cue's top lands in the first 2 ms even where the body's own comes 10 ms late (Boxing Hits 22, Cloth Flap 13).
+  - HeavyContact under B1's and B3's body the same way, about 6 dB under.
+  - HeavyLow in B2, which has no weight of ours, about 8 dB under; and as B1's weight in HeavySub's place if the mixdown shows the long sub muddying a fast fight.
+  - ShadeAir under C1's recorded pass, about 8 dB under, and in C3 in the old ShadeSwipe's place.
+  - The levels are seeds: Faber's mixdown sets them.
+- **Open:** the files have no asset ids, so the mixdown in Studio can't play them until they're uploaded, and the upload waits for research's review and the content check.
+- **Status:** implemented and measured as files; not mixed, not heard, not reviewed. Their quality by ear is UNVERIFIED.
+
 ## AR40. Less purple, less black: the game's colour by day (Modulo, for research's pick, then Faber)
 
 Research, 2026-11-17, 22:17. The director's remark, at 22:17: "i think the game is way to much too purple/Black and somber btw". It's the third time: 2026-11-15, "too much purple"; 2026-11-16, "need to be less somber"; 2026-11-16, night, "a bit to dark and somber we need a day time" (`docs/decisions.md`). Day is already in the game, 18 minutes of every 30 (`Config/Lighting`). So the time of day isn't the cause; what's lit is.

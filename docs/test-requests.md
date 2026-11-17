@@ -1192,6 +1192,12 @@ Research's word, 2026-11-17, sent with AR31's verdict (AR31, "Research's verdict
     4. Once in game, look at the live marker at 64 px over Lantern Row's dark and bright corners. No bloom or tint on the ImageLabel may push the elite's red further, or put red on the small mask.
     5. AR2's and AR7's conditions stand.
 - **Four facts.** Implemented: the two images. Tested: rendered and read on the tile at 80, 40 and 28 px. Visually reviewed: my read; research's verdict next. Director-accepted: no.
+- **Research's verdict (Quaestor, 2026-11-17, 16:24): passed, no must-fix,** on the sheet at 80, 40 and 28 px and at 64 px over dark and bright (9f71763).
+  - **Felt:** two bosses you can tell apart at a glance: the hat and its lantern against two grinning masks.
+  - **Tier:** competent.
+  - **The bold thing:** the Lamplighter's hat with the lit lantern. That silhouette is still him at 28 px.
+  - The elite's masks run near white, so at 28 px they're two pale shapes. That's enough beside the hat, and it goes to polish-later, not here.
+  - **Next:** Faber lays them on the marker in place of the letters, beside the grey marker's own capture: the three layouts at phone size from the street, near and far. One verdict covers the marker and its icons in the game.
 
 ## TR11. Spectate, a toggle on the HUD (Faber)
 

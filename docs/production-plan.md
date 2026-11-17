@@ -95,6 +95,7 @@ Each ends on something playable. No dates are promised past phase 1: see "The da
 - **Five Voidkin at launch** (the director, 2026-11-17, 02:40): Rook, Kirra, Pip and Watt (Common) and Lyric (Rare), each perfected and looking its rarity.
   - Every one's basic attack and signature are its own, each with its own effect and sound, at Anime Vanguards' level of flash.
   - Rook, Kirra, Pip and Lyric are redesigned to the anime bar at the end, in the finish pass.
+  - **Every Voidkin piece waits for the end** (the director, 2026-11-17, by 11:10): the basic attacks' effects (AR26), Ground Wire's fix (AR11), the idles (AR27) and the redesigns are built with the finish pass. The game's systems come first.
   - Lantern Row's shards roll Common and Rare only: the guard drops each tier with no Voidkin made and keeps the rest's proportions, so about 87 and 13 in a Standard shard. An Enriched or Prismatic shard always gives Lyric.
 - **One big update after launch** carries everything delayed: Sable, Marigold and Crane, the Rift, the Research Lab, Drum Court and the grounds after it, and the Calamity.
 - **What launches:** phases 0 to 4 and the Tower. The Clash Grounds launch if they're at the bar, and are in the update if they aren't.

@@ -12492,6 +12492,10 @@ Measured by Faber's mixdown of each cue as the engine plays it, at its real gain
   - It takes a varied set of up to six per brief.
   - `--selftest` proves it on our own AR13 takes: the repeated asset is dropped, the subs over half under 120 Hz fail, the numbered sparks count as one series, and two of the sparks show a harsh peak (12 and 17 dB).
   - It reads the batch's keys in any case, by the names in its `KEYS`.
+- **The gate: passed (Faber, Studio Edit; recorded by research at 21:45).**
+  1. The library search returns ProSoundEffects hits, e.g. 9126198627 for "punch body". It's still on the deprecated call.
+  2. `GetWaveformAsync` reads 9116673915: 4.02 s, three events.
+  The rescue goes on: Modulo's batch is running.
 
 ## Later, by ground
 

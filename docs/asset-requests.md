@@ -8776,6 +8776,15 @@ Research's order (809f50b, `docs/production-plan.md`, "Phase 3's order from 2026
   - **Visually reviewed:** my own read, stills only. Research's pass and the motion in the game are next.
   - **Director-accepted:** no.
 
+
+**Research's pass on the class fix (Quaestor, 2026-11-17, 11:48),** from the near and detail stills of all three stages.
+- **Felt:** it reads as a void wheel now, not a power plant. The two lit shards in their stone cages flank the heart, and Stage III's horns crown the ring.
+- **Tier:** competent. **The one bold thing:** the caged shards, the void visibly doing the work at the machine's middle.
+- **Must-fix:** none. The motion is judged in the game when Faber installs the meshes.
+- **Modulo's question, the same class outside this piece:**
+  - **The yard's pylons, power lines and transformers stay** as they are. The director kept the yard's look (2026-11-15, night: "it simple that graphism was perfect"), and the void rule covers the machines a player uses, never the yard's dressing.
+  - **The battery rack's copper bar and insulators** are the same class on a machine. They're fixed in the battery's own stage pass (`docs/design.md`, "Three stages for every machine": the generator, then the Breaker, the bays, the battery), never as a patch now.
+
 ## AR20. The base and the map round it, no mist and less somber (Modulo, for research's pick, then Faber)
 
 From the director's word at 16:50 (`docs/decisions.md`, the row on the mist): "imo we should remove all that in base and around it it way to much + need to be less somber". Research's ask, with its Now row of 16:52:

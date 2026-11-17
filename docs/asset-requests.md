@@ -12735,6 +12735,20 @@ Where the purple and the black sit in the world, from the kit's own files and to
   - **The HUD is read at the world renders,** where it's pasted over each direction. It changes only if it reads dark over the new day.
   - **Order:** Modulo's UI values for the system panel in A, B and C, then Faber captures the Breaker panel in each by Config tune.
 
+### The system panel in A, B and C, as values (Modulo, 2026-11-17, 23:17 to 23:22 by the clock)
+
+On research's triage of 23:04: one palette for the slab the Breaker's and the Power panels wear, in each direction, for Faber's capture of the Breaker panel by Config tune.
+- **Where:** `tools/colour/ar40_directions.py` (`SYSTEM`), written to `build/handoff/Colour/ar40/directions.json` (each direction's `System`, and today's), with a table of every key and its contrasts in `directions.md`, "The system panel", and a flat chip, `panels.png`.
+- **The keys** are Config.UIKit's, as Graphite has them, plus what the two screens draw from the theme (`src/client/UI/Theme.luau`): `Row` is the theme's PlateHigh, `Text`, `Soft` and `Faint` its Text, TextDim and Disabled, and `Backing`, `Ready`, `Electricity` and `Over` its own. A and B are bordered like Pearl (Border, Rim, Seat, Selected).
+- **A, porcelain in an indigo frame:** the panel at L* 96 to 89, indigo ink, gold where a chamber is ready, blue-violet on the lit edge and on what's chosen.
+- **B, blue steel:** the panel a clear step under white (L* 86 to 78) in a navy frame with a white rim and white rows, navy ink, the same gold and blue-violet.
+- **C, teal bronze:** a mid slab (L* 38 to 31), neither black nor pale, in a sand edge with cream words, sand for what's chosen and pale violet on the lit edge.
+- **What keeps a pale panel from a plain light app, by design:** every direction keeps a dark channel, so a bar's light still glows in it; the frame is bold; and blue-violet is the colour of what asks and what's chosen. Whether it reads so is the capture's to show.
+- **A colour that's both a light and a word is two values:** `Electricity` in the channel (today's yellow, 10.7 to 13.4 to 1 there) and `ElectricityWords` on the panel (a deep amber on A and B, since today's yellow is 1.2 to 1 on porcelain); `Over` and `OverWords` the same.
+- **Contrast, the least in each:** words 4.7 to 12.4 to 1 (the need is 4.5), Faint 3.3 to 3.6, the accent 3.4 to 4.1, the edge 4.5 to 8.7. Today's edge is 1.7 on its slab. The script stops on a word under 4.5 or a mark under 3.
+- **Known weak, said now:** gold on a pale panel is 1.0 to 1.7 to 1 against it, so a ready chamber on A and B is carried by its blue-violet edge and its ink word, not by its fill.
+- **Status:** implemented as values and a flat chip; not in the game, not captured, not reviewed.
+
 ## Later, by ground
 
 The rest of ground 1 (Kirra in AR10, Watt in AR11; then Sable, Marigold, Crane), then each ground's Voidkin in `docs/roster.md`'s order. **The machines** (Gantry, Bulwark, Ironhymn, Shiomaru, Aegir) share one custom rig, taller than a player, with its own clip family: the first of them is timed like AR1, because a custom rig is a different cost.

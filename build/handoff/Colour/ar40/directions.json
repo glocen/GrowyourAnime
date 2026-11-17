@@ -52,6 +52,40 @@
    "Clear.Phases.Day.Brightness": 2.61,
    "Clear.Phases.Day.Exposure": 0.16
   },
+  "System": {
+   "Panel": [
+    "#20242C",
+    "#13151A"
+   ],
+   "Alpha": 0.92,
+   "Edge": "#434A57",
+   "Facet": "#8A93A6",
+   "Glint": "#C9D2E4",
+   "Text": "#F3EFE6",
+   "Soft": "#A6ADBA",
+   "Faint": "#6E7482",
+   "Channel": "#06070A",
+   "Well": "#0B0C10",
+   "Button": [
+    "#323845",
+    "#22262F"
+   ],
+   "Pressed": [
+    "#1A1D24",
+    "#20242C"
+   ],
+   "Ground": "#2B2E36",
+   "Accent": "#FFF4D6",
+   "Core": 0.5,
+   "Row": "#2E323B",
+   "Backing": "#121419",
+   "Ready": "#F6DE80",
+   "ReadyWords": "#191B21",
+   "Electricity": "#FFE266",
+   "ElectricityWords": "#FFE266",
+   "Over": "#FF965C",
+   "OverWords": "#FF965C"
+  },
   "Measures": {
    "BodyLight": [
     29,
@@ -75,6 +109,32 @@
     "the body's foot",
     "the trim",
     "the wall's foot"
+   ]
+  },
+  "SystemMeasures": {
+   "PanelLight": [
+    14,
+    7
+   ],
+   "Text": 10.2,
+   "Soft": 5.7,
+   "Faint": 3.3,
+   "SignalWords": 10.0,
+   "OverWords": 6.0,
+   "ReadyWords": 12.9,
+   "Ready": 11.6,
+   "Bar": 15.7,
+   "Channel": 1.1,
+   "Edge": 1.7,
+   "Accent": 14.2,
+   "Chosen": 10.2,
+   "AccentViolet": false,
+   "Black": [
+    "Panel",
+    "Row",
+    "Button",
+    "Ground",
+    "Backing"
    ]
   },
   "StonesGain": [
@@ -138,6 +198,48 @@
     "Clear.Phases.Day.Brightness": 2.5,
     "Clear.Phases.Day.Exposure": 0.05
    },
+   "System": {
+    "Panel": [
+     "#F7F2E8",
+     "#E7E0D2"
+    ],
+    "Alpha": 0.96,
+    "Edge": "#2B3472",
+    "Border": 1.6,
+    "Rim": 2,
+    "Seat": 1.6,
+    "Facet": "#FFFFFF",
+    "Glint": "#FFFFFF",
+    "Text": "#1B1E3A",
+    "Soft": "#4A4F70",
+    "Faint": "#74788F",
+    "Channel": "#232A52",
+    "Well": "#D9D1C0",
+    "Button": [
+     "#FFFFFF",
+     "#EEE8DA"
+    ],
+    "Pressed": [
+     "#D8D0BE",
+     "#E4DDCE"
+    ],
+    "Ground": "#CFC8B8",
+    "Accent": "#6A4DF0",
+    "Core": 0.9,
+    "Selected": [
+     "#2B3472",
+     "#1D2452"
+    ],
+    "SelectedText": "#F7F2E8",
+    "Row": "#FFFDF8",
+    "Backing": "#D9D3C6",
+    "Ready": "#E3A52A",
+    "ReadyWords": "#1B1E3A",
+    "Electricity": "#FFE266",
+    "ElectricityWords": "#7A5800",
+    "Over": "#FF8A4A",
+    "OverWords": "#A63A12"
+   },
    "Measures": {
     "BodyLight": [
      95,
@@ -154,6 +256,26 @@
      "the far shards",
      "the Tower"
     ],
+    "Black": []
+   },
+   "SystemMeasures": {
+    "PanelLight": [
+     96,
+     89
+    ],
+    "Text": 12.4,
+    "Soft": 6.0,
+    "Faint": 3.3,
+    "SignalWords": 5.0,
+    "OverWords": 4.9,
+    "ReadyWords": 7.5,
+    "Ready": 1.7,
+    "Bar": 10.7,
+    "Channel": 10.5,
+    "Edge": 8.7,
+    "Accent": 4.1,
+    "Chosen": 10.2,
+    "AccentViolet": true,
     "Black": []
    },
    "StonesGain": [
@@ -216,6 +338,48 @@
     "Clear.Phases.Day.Brightness": 2.6,
     "Clear.Phases.Day.Exposure": 0.08
    },
+   "System": {
+    "Panel": [
+     "#C9D8EC",
+     "#AFC2DC"
+    ],
+    "Alpha": 0.96,
+    "Edge": "#22346A",
+    "Border": 1.6,
+    "Rim": 2,
+    "Seat": 1.6,
+    "Facet": "#FFFFFF",
+    "Glint": "#FFFFFF",
+    "Text": "#14223F",
+    "Soft": "#3A4868",
+    "Faint": "#566480",
+    "Channel": "#172648",
+    "Well": "#9FB4D0",
+    "Button": [
+     "#FFFFFF",
+     "#E6EEF8"
+    ],
+    "Pressed": [
+     "#A9BCD6",
+     "#BACBE2"
+    ],
+    "Ground": "#A4B6D0",
+    "Accent": "#5B43E8",
+    "Core": 0.9,
+    "Selected": [
+     "#22346A",
+     "#162550"
+    ],
+    "SelectedText": "#F2F6FB",
+    "Row": "#EEF3FA",
+    "Backing": "#A9BAD2",
+    "Ready": "#F0B429",
+    "ReadyWords": "#14223F",
+    "Electricity": "#FFE266",
+    "ElectricityWords": "#5E4300",
+    "Over": "#FF8A4A",
+    "OverWords": "#822A0A"
+   },
    "Measures": {
     "BodyLight": [
      85,
@@ -231,6 +395,26 @@
      "the far shards",
      "the Tower"
     ],
+    "Black": []
+   },
+   "SystemMeasures": {
+    "PanelLight": [
+     86,
+     78
+    ],
+    "Text": 8.7,
+    "Soft": 5.0,
+    "Faint": 3.3,
+    "SignalWords": 5.1,
+    "OverWords": 5.1,
+    "ReadyWords": 8.5,
+    "Ready": 1.0,
+    "Bar": 11.6,
+    "Channel": 8.2,
+    "Edge": 6.5,
+    "Accent": 3.4,
+    "Chosen": 10.9,
+    "AccentViolet": true,
     "Black": []
    },
    "StonesGain": [
@@ -293,6 +477,46 @@
     "Clear.Phases.Day.Brightness": 2.7,
     "Clear.Phases.Day.Exposure": 0.08
    },
+   "System": {
+    "Panel": [
+     "#34606C",
+     "#2A4E5A"
+    ],
+    "Alpha": 0.95,
+    "Edge": "#E2CFA4",
+    "Border": 1.3,
+    "Facet": "#A9DCD4",
+    "Glint": "#F2FFF9",
+    "Text": "#FFF6E2",
+    "Soft": "#D9E8E2",
+    "Faint": "#A9C0BC",
+    "Channel": "#0E1D23",
+    "Well": "#21414A",
+    "Button": [
+     "#447480",
+     "#366270"
+    ],
+    "Pressed": [
+     "#2A4E5A",
+     "#34606C"
+    ],
+    "Ground": "#3E6872",
+    "Accent": "#CDBBFF",
+    "Core": 0.5,
+    "Selected": [
+     "#F0E2C4",
+     "#DCCBA6"
+    ],
+    "SelectedText": "#1E3238",
+    "Row": "#3C6A76",
+    "Backing": "#2E525C",
+    "Ready": "#FFD880",
+    "ReadyWords": "#1E3238",
+    "Electricity": "#FFE266",
+    "ElectricityWords": "#FFE98A",
+    "Over": "#FF965C",
+    "OverWords": "#FFE2D0"
+   },
    "Measures": {
     "BodyLight": [
      89,
@@ -308,6 +532,26 @@
      "the far shards",
      "the Tower"
     ],
+    "Black": []
+   },
+   "SystemMeasures": {
+    "PanelLight": [
+     38,
+     31
+    ],
+    "Text": 4.8,
+    "Soft": 4.7,
+    "Faint": 3.6,
+    "SignalWords": 4.9,
+    "OverWords": 4.8,
+    "ReadyWords": 9.8,
+    "Ready": 5.1,
+    "Bar": 13.4,
+    "Channel": 1.9,
+    "Edge": 4.5,
+    "Accent": 4.0,
+    "Chosen": 10.4,
+    "AccentViolet": true,
     "Black": []
    },
    "StonesGain": [

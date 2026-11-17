@@ -10419,6 +10419,15 @@ From `build/handoff/UI/voidkin/chrome/` (bef311f) and B's numbers, with research
   - tested (above);
   - seen in the build up close in every state, at both sizes; research's read to come;
   - not director-accepted.
+- **Research's read in the build (Quaestor, 2026-11-17, 20:06): passed, competent, no must-fix** (3400b30; the phone and large stills, read zoomed).
+  - **Felt:** the screen now has its chrome. The chosen page is a lit plate with its word, the others are quiet icons on a channel, and the bar's marks light a line under them when on. It reads as one make at both sizes, no longer as loose icons on black.
+  - **The bold thing:** the chosen plate's glow following Modulo's falloff (Faber's fix of the grey slabs), which is what makes it read as light.
+  - **Faber's three facts:**
+    1. **The chosen word at 17 authored on the smallest phone stands.** "Overview" fits its glass with about 2 points a side, never cut.
+    2. **Seven rows: Least 36 authored (30.6 points), on the smallest phone only.** That replaces research's 34-point floor of 14:17 there. The room is 248 points, not the 256 the call assumed, and the class was "every page in sight, no scroll". The touch area keeps the rail's whole width, so a row of 30.6 is still easy to hit. The chosen two-line word keeps its size.
+    3. **The lit line at 2.6 px on the phone stands,** as drawn.
+  - **Older, not this piece's, one must-fix of its own: words never read as a contradiction.** The Stars page says "0 of 7 stars, 48 of 1 copies for the next". The fix is words like "48 copies, 1 needed for the next star". Faber fixes it with AR30, wherever a count reads "N of M" with N past M.
+  - **Older, to polish-later:** the Stars page's seven empty stars at 0 are nearly invisible on the panel's top.
 
 ## AR30. Every button in the game, in the seam's make (Modulo, then Faber)
 

@@ -83,6 +83,23 @@ Each ends on something playable. No dates are promised past phase 1: see "The da
 
 **Phase 3. The build.** It opens with the director's package of 2026-11-16 (the yes at 16:50), in this order, each a block first: the base's three sizes in grey; attributes in the resolver with the stat sheet; items, class rules and the comparison; chests and bulk opening; the inventory on its chosen direction; the generator and the machines' stages; the Tower's run; the responsive pass across every screen. Then the Forge and the Stone Condenser that feeds it, emblems, jewels, research. Gear stays the account's (the same yes). The evidence behind the order and its risks: `docs/research/rework-2026-11-16.md`, part 12. Four more on the director's yes of 2026-11-16, 21:39 (`docs/decisions.md`), after TR24's fixes: the card on return (TR31), the first session measured (TR32), inspecting another player (TR33) and the chests' opening show (TR34).
 
+**Phase 3's order from 2026-11-17, 11:12** (research's, on the director's word that the game comes before the Voidkin):
+- **Faber:**
+  1. TR36, the two attributes;
+  2. AR16's three base sizes captured for the pick, which frees the map (AR17);
+  3. TR28's bag rebuilt in the seam's skin (AR18);
+  4. TR34, the chest opening on AR24's A;
+  5. AR23, Combat Power's number;
+  6. TR29's three fixes and TR10's marker captures;
+  7. the Forge and the Stone Condenser, then emblems, then jewels (research writes each request first);
+  8. TR31, TR32, TR33, TR35 and the responsive pass.
+- **Modulo:**
+  1. AR19's two notes: the dynamos and crown read as real-world parts, and the teeth are too wide;
+  2. the Forge's and the Stone Condenser's look, three directions;
+  3. AR17's map kit at the chosen base size;
+  4. the icons for forge stones, emblems and jewels, and TR10's two.
+- **Research:** the Forge, emblem and jewel requests with their numbers, the verdicts as pieces land, then the Void Shop's and the Robux store's design, checked against Roblox's rules, for the director.
+
 **Phase 4. Breadth.** The Void Shop. The Rift moves after launch (the director, 2026-11-17, 02:40). Both shops, the Robux store and the Void Shop, are designed and set up here (the director, 2026-11-12).
 
 **Phase 5. The Strip.** The Clash Grounds; the Calamity after launch (the director, 2026-11-15).

@@ -9290,6 +9290,7 @@ The director's word, by 13:17 (`docs/decisions.md`): "the chest need a overhaul 
 - **Tier:** competent. **The bold thing:** the lames. On both pieces they carry the form at 38 points, where the ornament no longer can.
 - **Must-fix:** none. The must-fix of 13:08 holds on all 15 Shoulders.
 - **Then** Faber uploads and installs: the 30 pictures and the four marks. The read is in the build at phone size, and the director sees it there.
+- **In the build (Quaestor, 2026-11-17, 13:46), from Faber's phone stills (`doll-worn-phone.png`, `doll-empty-phone.png`): closed on research's side.** Worn, the Legendary cuirass and the gold pauldron read as their pieces in their slots. Empty, all 14 marks name their slot at a glance, and the ring and earring are now plain. Director-accepted: not yet.
 
 ## AR23. Combat Power's number, chromatic (Modulo, then Faber)
 

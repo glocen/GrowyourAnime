@@ -3181,7 +3181,10 @@ Research's request, 2026-11-17, 11:57, item 7 of phase 3's order. The design: `d
 - **Sources:** chests (`Config.Chests`, a new kind of reward), elites, and the Void Shop when it comes (phase 4).
 - **The server decides,** in one step: a socket, a removal or a combine never duplicates or loses an emblem on a repeat.
 
-**The seeds** (research's, before Faber reaches this): each rarity's budget as a share of an item line, the drop chances, the chests' share.
+**The seeds** (research's, 2026-11-17, 12:40: worked by hand from `docs/balance.md`'s shares, a model, not a measurement; the sim checks them before Faber reaches this):
+- **A line's size:** a share of a same-tier Legendary item's whole budget, in Combat Power: Common 4%, Uncommon 7%, Rare 10%. Four Rare emblems on an item then add about 40% of it, the 11 to 27 that emblems hold against gear.
+- **Drops:** an elite 0.2 emblems and a keeper 0.6, as an expected count, with the rarity row Common 70, Uncommon 25, Rare 5. A chest holds an emblem 30% of the time.
+- **What it gives** (by hand, an active player at 1.5 hours a day): about 13 emblems a day, so a Rare (nine Commons through two combines) takes under a day, and a whole worn set's sockets fill with Rares in about six weeks.
 
 **The block contains:** `Rules.Emblems` with its cases; the rail's War Emblems page, where its Soon stands today, reached from anywhere [D, 2026-11-17, 12:27], with the bag's Emblems tab filled; the item card's sockets (empty marks from AR22, filled with the emblem's icon and its line); a tap-to-socket and a tap-to-remove; the combine on the Emblems tab.
 
@@ -3202,7 +3205,10 @@ Research's request, 2026-11-17, 11:57, item 7 of phase 3's order. The design: `d
 - **Sources:** elites, keepers and the Tower [the design's], never ordinary Shades, and **the Stone Condenser** [D, 2026-11-17, 12:10], its tier rising with its level (TR37). Chests holding higher tiers come in a later update [D]. Combat Power counts each by its weight times G at the block's level (`Config.Stats.Power.ByLevel`).
 - **The server decides,** in one step, as for emblems.
 
-**The seeds** (research's, before Faber reaches this): the percent per tier for each stat, the drop chances by source and tier, and the Condenser's jewel rate. **The Condenser's tiers** (research's seed): tier 1 from its level 1, tier 2 from level 11, tier 3 from level 21. Tiers 4 and 5 come only from combining at launch.
+**The seeds** (research's, 2026-11-17, 12:40: worked by hand, a model, not a measurement; the sim checks them before Faber reaches this):
+- **The percent per tier,** 2.5 times the tier below, so a combine is always worth its socket: Critical Damage and Critical Immunity 5%, 12.5%, 31%, 78% and 195%; Lifesteal 0.2%, 0.4%, 0.8%, 1.6% and 3.2%, doubling, under its 10% cap.
+- **Drops,** all tier 1: an elite 0.05 jewels and a keeper 0.3, as an expected count; a Tower hard floor 0.05. The Condenser makes one jewel per 6 hours of work.
+- **What it gives** (by hand, an active player at 1.5 hours a day): about 9 tier-1 jewels a day with the Condenser, so a tier 3 in every socket of a Rare-and-up set takes about two weeks, tier 4 about six, and tier 5 about four months: the long climb, with tiers above for the updates. **The Condenser's tiers** (research's seed): tier 1 from its level 1, tier 2 from level 11, tier 3 from level 21. Tiers 4 and 5 come only from combining at launch.
 
 **The block contains:** `Rules.Jewels` with its cases; the rail's Jewels page, where its Soon stands today, reached from anywhere [D, 2026-11-17, 12:27], with the bag's Jewels tab; the item card's jewel socket (Rare and above); the socket and the combine as for emblems; the percent shown honestly on the stat sheet's sources (`docs/ui.md`, "Stats, shown honestly").
 

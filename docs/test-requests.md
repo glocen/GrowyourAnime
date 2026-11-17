@@ -3028,3 +3028,20 @@ Research, 2026-11-17, 01:39. From the sound study (`docs/research/sound.md`, "Wh
 **Never:** a jukebox, a radio or a paid track (the Terms' music-library line), or a track that sounds like a known score.
 
 **Cost:** none. The library and the search are free.
+
+## TR36. Two attributes, and the types named by their colours (Faber)
+
+Research, 2026-11-17, 09:27, on the director's word of the same morning (`docs/decisions.md`): "just strenght and endurance", then "yes" to research's restatement, and the types named by the colours they already wear. Design: `docs/design.md`, "Voidkin". The numbers: `docs/balance.md`, "The stats". No art is redrawn.
+
+- **The attributes:** five become two, Strength and Endurance.
+  - `Config.Stats.Attributes` takes the rows, Mains and shapes in `docs/balance.md`'s table, with these shapes: Warrior 67, 48; Tank 40, 77; Assassin 67, 41; Mage 67, 45; Healer 38, 68.
+  - `Definitions.Attributes` takes the two.
+  - The ids are yours. A jewellery roll picks one of the two.
+- **Combat Power's weights,** refit on these builds: `docs/balance.md`, the same section, into `Config.Stats.Power.Weights`.
+- **The types are named by their colours,** in the same ring: Strength → Red, Endurance → Orange, Agility → Blue, Intelligence → Purple, Technique → Green.
+  - Everything players see takes the new names: the type's label, the stat sheet, the filters, the reveal.
+  - Whether the ids change is your call. The gems, their colours and the Shades' tints stay.
+- **What research checks:** the stat sheet and the item card at phone size, showing only Strength and Endurance under Basic. A ring's line says "Strength" or "Endurance". No "Might", "Finesse", "Vigor", "Spirit" or "Insight" is left anywhere players look.
+- **Cases:** the Stats and Sheet logic cases move to two attributes, and one new case checks that every class's Main is Strength or Endurance and that every shown type name is a colour.
+- **The model** reads the new rows once they land: `py tools/balance/attributes.py`. Research reruns it and confirms the fit.
+- **Saves:** a Voidkin's own points come from its class's shape, so only gear rolled with an old attribute needs a rule. Re-rolling it on load or wiping test saves is your call, since nothing is public.

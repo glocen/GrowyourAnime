@@ -6,7 +6,7 @@ It reuses sim.py's hit, duel and Combat Power, so nothing here re-derives the co
 Nothing here is a measurement of play: it tests the structure and the seeds against each other.
 
 The model:
-- Five attributes. Every point converts to Battle Attributes by one fixed row (CONV), the same for every class.
+- Two attributes, Strength and Endurance (the director, 2026-11-17: "just strenght and endurance"). Every point converts to Battle Attributes by one fixed row (CONV), the same for every class.
 - A class's Main attribute converts once more by its own row (MAIN): this is where classes differ.
 - A Voidkin's own attributes are its class profile x rarity x G(level) x (1 + stars). Gear adds points flat.
 - Everything adds. No attribute multiplies another, nothing multiplies an attribute, and Combat Power reads
@@ -20,7 +20,7 @@ import sim  # noqa: E402
 from sim import S, G, line, dps, edge, fighter, cp, CP_NAMES, SPECS, RARITIES  # noqa: E402
 
 CLASSES = ["Warrior", "Tank", "Assassin", "Mage", "Healer"]
-ATTRS = ["might", "finesse", "vigor", "spirit", "insight"]
+ATTRS = ["strength", "endurance"]
 
 # ------------------------------------------------------------------ the numbers (src/shared/Config/Stats.luau, their home)
 
@@ -30,7 +30,9 @@ KEY = {v: k for k, v in CP_NAMES.items()}   # "Attack" -> "atk", and so on
 def _config_attributes():
     """Config.Stats.Attributes and the level's Regen, read from the game's own file, so the model follows every tune."""
     import re
-    src = sim.lua("src/shared/Config/Stats.luau")
+    import os
+    # ATTR_STATS points the model at a proposed copy of Stats.luau (a path under the project), to try rows before they land.
+    src = sim.lua(os.environ.get("ATTR_STATS", "src/shared/Config/Stats.luau"))
     body = src[src.index("Attributes = {"):src.index("EvenFoe =")]
 
     def block(name):
@@ -64,11 +66,11 @@ ATTR = {
     # The fit's input, research's: a class's share of its points in each attribute, its Main the largest.
     # fit_profiles() turns it into level-1 points; Config.Stats.Attributes.Shape holds the points the game uses.
     "shape": {
-        "Warrior":  {"might": .40, "finesse": .10, "vigor": .30, "spirit": .10, "insight": .10},
-        "Tank":     {"might": .22, "finesse": .10, "vigor": .42, "spirit": .14, "insight": .12},
-        "Assassin": {"might": .26, "finesse": .36, "vigor": .22, "spirit": .08, "insight": .08},
-        "Mage":     {"might": .24, "finesse": .08, "vigor": .22, "spirit": .10, "insight": .36},
-        "Healer":   {"might": .22, "finesse": .08, "vigor": .26, "spirit": .36, "insight": .08},
+        "Warrior":  {"strength": .58, "endurance": .42},
+        "Tank":     {"strength": .34, "endurance": .66},
+        "Assassin": {"strength": .62, "endurance": .38},
+        "Mage":     {"strength": .60, "endurance": .40},
+        "Healer":   {"strength": .36, "endurance": .64},
     },
     "profile": {c: dict(p) for c, p in _points.items()},   # the game's points, until fit_profiles() refits them
 }
@@ -80,7 +82,7 @@ TODAY = {c: {"hp": S["base"]["hp"] * S["classMult"][c]["hp"], "atk": S["base"]["
 RATING_KEYS = S["ratings"]["list"]
 STAT_KEYS = ["hp", "atk", "def", "regen", "elem"] + RATING_KEYS
 LEVEL_REGEN = _regen   # Config.Stats.Regen.Base: Regen a second at G = 1 from the level, every class
-MIN_SECONDARY = 5   # every class holds at least this many points of finesse and insight at level 1: no dead attribute
+MIN_SECONDARY = 5   # unused since two attributes: each class holds both, its Main the larger
 
 
 def convert(points, cls):
@@ -233,8 +235,8 @@ def report_ttk():
 
 
 def report_stacking():
-    print("\n== A5. One gear budget of attribute points, spent five ways and spread (edge against the panel) ==")
-    print("A budget of 25% of the class's own points. 'spread' puts a fifth in each; 'main' all in the Main.")
+    print("\n== A5. One gear budget of attribute points, all in one or spread evenly (edge against the panel) ==")
+    print("A budget of 25% of the class's own points. 'spread' splits it evenly; 'all' puts it in one.")
     for L in (30, 60):
         ps = panel(L, S["onBudget"], fighter_attr)
         print(f"-- level {L}")
@@ -243,7 +245,7 @@ def report_stacking():
             me = fighter_attr(L, S["onBudget"], cls=c)
             budget = 0.25 * sum(me["_points"].values())
             ways = {f"all {a}": {a: budget} for a in ATTRS}
-            ways["spread"] = {a: budget / 5 for a in ATTRS}
+            ways["spread"] = {a: budget / len(ATTRS) for a in ATTRS}
             score = {}
             for k, ex in ways.items():
                 b = fighter_attr(L, S["onBudget"], cls=c, extra=ex)

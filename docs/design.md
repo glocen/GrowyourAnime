@@ -31,7 +31,7 @@ Break a shard, meet a Voidkin. Lead with one, fight through a ground, win shards
 ## Voidkin
 
 - **Thirty-one at launch,** in `docs/roster.md`. Rarities at launch: Common to Mythical. Limited and the tiers above Mythical come in updates (`docs/decisions.md`, D05).
-- **Type** is what it beats, five in a ring [D]: Agility beats Strength, Strength beats Endurance, Endurance beats Intelligence, Intelligence beats Technique, Technique beats Agility. An edge, never a verdict (`docs/balance.md`, "Type").
+- **Type** is what it beats, five in a ring [D], named by their colours [D, 2026-11-17]: Blue beats Red, Red beats Orange, Orange beats Purple, Purple beats Green, Green beats Blue. An edge, never a verdict (`docs/balance.md`, "Type").
 - **Class** is how it fights [D: each Voidkin has a class]. Class and type are separate: any type can be any class, so a counter never dictates a role.
 
 | Class | Range | What it's for | Its tell |
@@ -43,9 +43,15 @@ Break a shard, meet a Voidkin. Lead with one, fight through a ground, win shards
 | Healer | ranged | keeps itself up alone, keeps others up in a group | heals in its signature |
 
 - **Element** (Fire, Frost, Storm, Void) is optional. A Voidkin with one deals a second, coloured damage number [D: elemental damage with its own number].
-- **Basic Attributes** [D, 2026-11-16: the package's point 1, the yes at 16:50, with research's names]. Five, each with its own job, and never a type's name:
-  - **Might,** raw power. **Finesse,** precision and evasion. **Vigor,** toughness. **Spirit,** resolve and recovery. **Insight,** seeing through armour: Penetration, and the Mage's element.
-  - Every point converts into Battle Attributes by one fixed row, the same for every class. The class's **Main** converts once more by its own row: the Warrior's Might, the Tank's Vigor, the Assassin's Finesse, the Mage's Insight, the Healer's Spirit. That's the whole class difference.
+- **Basic Attributes** [D, 2026-11-17: "just strenght and endurance", and "yes" to research's restatement; it replaces the five of 2026-11-16]. Two, and the types keep their own names, their colours:
+  - **Strength,** power: Attack and Health, and a little Hit and Penetration. **Endurance,** toughness: Health, Defence, Block, Regen and the two resists.
+  - Every point converts into Battle Attributes by one fixed row, the same for every class. The class's **Main** converts once more by its own row, and that's the whole class difference:
+    - the Warrior's Strength gives more Attack;
+    - the Assassin's Strength gives Critical and Dodge;
+    - the Mage's Strength gives its element and Penetration;
+    - the Tank's Endurance gives Block, Health and a little Attack;
+    - the Healer's Endurance gives Regen and Critical Resist.
+  - Every other Battle Attribute comes from the Main's row, the Voidkin's levels and its gear's lines, never from an attribute of its own.
   - A Voidkin's own points are its class's shape × its rarity × G(level) × its stars. Gear adds points flat. Everything adds: nothing multiplies an attribute, and Combat Power reads only the resolved Battle Attributes, so no point counts twice.
   - None are spent by hand (skill points, below). The rows and the shapes: `docs/balance.md`, "The stats". The evidence: `docs/research/rework-2026-11-16.md`, parts 1 to 3.
 - **A kit** is a basic combo (two families: the melee three-hit and the ranged three-shot, with stance and tempo of its own), one **signature** on a cooldown, and one **passive**. The signature fires by itself, with a readout the player can watch. Firing it by hand is a later option (`docs/polish-later.md`).
@@ -178,7 +184,7 @@ The largest change from the package (`docs/decisions.md`, "What changed from the
 - **Gear is never shown on the body** [D]: each Voidkin's look is authored. An item's whole look is its icon, so the icon carries all of gear's appeal. Each item kind is modelled in Blender and rendered to its icon, lit, with its rarity's frame and light; rarity also shows in its material, from plain iron to gilt. Dawn has designs of its own. How many designs per kind is set when the item art's request is written (`docs/asset-requests.md`, AR6), after a reference study of the director's references for what makes an icon worth wanting.
 - **An item's design** [research, 2026-11-16, on Faber's proposal]: each kind has three designs at each rarity (AR6), each with its own picture and name. An item's design is fixed when it drops and never changes after, even when its kind gains designs. A design is the look and the name only, never a stat, so no design is worth more than another of its rarity. The card's title is the design's name ("Blade of Embers", "Meigetsu, the Full Moon"), with its kind and rarity under it.
 - **An item** has a rarity, a level tier, one main stat and a few rolled lines.
-  - A weapon's main stat is Attack, and its lines favour its class's Main. An armour piece's is the Battle Attribute its slot fixes. A piece of jewellery's (the Amulet, the Rings, the Earrings) is a Basic Attribute rolled at the drop: that's where the player chooses ("this ring is Finesse").
+  - A weapon's main stat is Attack, and its lines favour its class's Main. An armour piece's is the Battle Attribute its slot fixes. A piece of jewellery's (the Amulet, the Rings, the Earrings) is a Basic Attribute rolled at the drop, Strength or Endurance: that's where the player chooses ("this ring is Endurance").
   - Rolled lines come from the five attributes and the Battle Attributes. A line is priced by its Combat Power, so an attribute line and a Battle line of one budget are worth the same.
 - **The comparison:** against what's worn in the same preset, for the weapon's class, or for the selected Voidkin with armour and jewellery. It shows the Basic Attribute changes, then the Battle Attribute changes, then Combat Power. Both sides come from the one resolver, so it can't drift.
 - **Forge ranks, emblems and jewels belong to the item** [D, 2026-11-17, 02:40: "they stick to a gears but if i equip a new gears i have this ui popped up that ask the player confirmation to transfer everything gears level, jewels etc"]. Equipping a new item over one that holds any of them asks once whether to move them all across. Yes moves the forge rank, the emblems and the jewel to the new item for free. No leaves them on the old item, which goes to the bag with them. What the new item can't hold stays on the old one (fewer sockets, or no jewel socket below Rare). The prompt says so.

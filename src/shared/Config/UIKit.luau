@@ -755,7 +755,7 @@ return {
 		SlotEmptyBracers = { Id = "rbxassetid://104311676494459", Pixels = Vector2.new(128, 128), Points = Vector2.new(32, 32), Pad = 0 },
 		SlotEmptyChestArmor = { Id = "rbxassetid://94401709849952", Pixels = Vector2.new(128, 128), Points = Vector2.new(32, 32), Pad = 0 },
 		SlotEmptyCloak = { Id = "rbxassetid://124083858115224", Pixels = Vector2.new(128, 128), Points = Vector2.new(32, 32), Pad = 0 },
-		SlotEmptyEarring = { Id = "rbxassetid://82359503101942", Pixels = Vector2.new(128, 128), Points = Vector2.new(32, 32), Pad = 0 },
+		SlotEmptyEarring = { Id = "rbxassetid://92338619102191", Pixels = Vector2.new(128, 128), Points = Vector2.new(32, 32), Pad = 0 },
 		SlotEmptyGloves = { Id = "rbxassetid://115568440048945", Pixels = Vector2.new(128, 128), Points = Vector2.new(32, 32), Pad = 0 },
 		SlotEmptyHelmet = { Id = "rbxassetid://94383055159537", Pixels = Vector2.new(128, 128), Points = Vector2.new(32, 32), Pad = 0 },
 		SlotEmptyMainHandAssassin = { Id = "rbxassetid://77028829980191", Pixels = Vector2.new(128, 128), Points = Vector2.new(32, 32), Pad = 0 },
@@ -768,8 +768,8 @@ return {
 		SlotEmptyOffHandMage = { Id = "rbxassetid://129807485028278", Pixels = Vector2.new(128, 128), Points = Vector2.new(32, 32), Pad = 0 },
 		SlotEmptyOffHandTank = { Id = "rbxassetid://113675725471311", Pixels = Vector2.new(128, 128), Points = Vector2.new(32, 32), Pad = 0 },
 		SlotEmptyOffHandWarrior = { Id = "rbxassetid://128064287623574", Pixels = Vector2.new(128, 128), Points = Vector2.new(32, 32), Pad = 0 },
-		SlotEmptyRing = { Id = "rbxassetid://96997437555736", Pixels = Vector2.new(128, 128), Points = Vector2.new(32, 32), Pad = 0 },
-		SlotEmptyShoulders = { Id = "rbxassetid://140326174991642", Pixels = Vector2.new(128, 128), Points = Vector2.new(32, 32), Pad = 0 },
+		SlotEmptyRing = { Id = "rbxassetid://117078692283931", Pixels = Vector2.new(128, 128), Points = Vector2.new(32, 32), Pad = 0 },
+		SlotEmptyShoulders = { Id = "rbxassetid://81543940119149", Pixels = Vector2.new(128, 128), Points = Vector2.new(32, 32), Pad = 0 },
 	} :: { [string]: Image },
 	-- The lead card's shape, in its own points: images are laid at their At (tools/blender/lead_card_art.py).
 	LeadCard = {

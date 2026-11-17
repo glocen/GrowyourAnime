@@ -98,6 +98,10 @@ function NoticeCases.Cases(): { any }
 					-- At rest: its words, its place, its width, its stack.
 					local now = leadOf(ProfileController.Get())
 					t.Equal("the number is the new level", number.Text, tostring(was + 1))
+					-- The card's badge says the same once it rests: it reads the lead's model, which the server sets in the
+					-- same step as the save (LeadService's sync; research's question on TR41 (c), 2026-11-17).
+					local badge = HudController.Parts().Lead:FindFirstChild("Level", true) :: TextLabel?
+					t.Check("and the card's badge says it too, once it rests", badge ~= nil and badge.Text == tostring(was + 1), if badge then badge.Text else "no badge")
 					t.Check("the name is the lead's, as shown to its owner", now ~= nil and name.Text == Read.VoidkinName(now), name.Text)
 					t.Equal("and LEVEL UP under it", line.Text, LOOK.Words.Line.Text)
 					-- The number's middle on the block's, by its label's own middle (centred text, anchored at its middle).

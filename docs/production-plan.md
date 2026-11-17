@@ -99,6 +99,7 @@ Each ends on something playable. No dates are promised past phase 1: see "The da
   3. AR22 again: the Chest Armor, Shoulders, Rings and Earrings marks, and the 15 Shoulders' pictures as one pauldron (the director, 12:19);
   4. AR17's map kit at the chosen base size;
   5. the icons for forge stones, emblems and jewels, and TR10's two.
+  6. AR29, the Voidkin screen's rail and top bar on B (the director, 14:03), then AR30, every button in the game in that make.
 - **Research:** the Forge, emblem and jewel requests with their numbers, the verdicts as pieces land, then the Void Shop's and the Robux store's design, checked against Roblox's rules, for the director.
 
 **Phase 4. Breadth.** The Void Shop. The Rift moves after launch (the director, 2026-11-17, 02:40). Both shops, the Robux store and the Void Shop, are designed and set up here (the director, 2026-11-12).

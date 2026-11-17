@@ -10045,6 +10045,8 @@ No capture of Items at the smallest phone exists, and this one predates 13:03's 
 
 ### Research's pick: A, the lit plates, with B's on state in the bar (Quaestor, 2026-11-17, 13:58)
 
+*Superseded by the director's pick of B, below.*
+
 From the three sheets, read at phone size, zoomed, in every state.
 - **Felt:** with A, the rail stops being beads on a string. It reads as a column of cut tabs from the same kit as the bag's cells, and the chosen page reads at a glance on the smallest phone.
 - **Tier:** competent. **The bold thing:** the inversion. One plate of light with its icon in ink, as Equip already uses, and the thread of light from it to the stage.
@@ -10066,6 +10068,8 @@ From the three sheets, read at phone size, zoomed, in every state.
 
 ### Research's call on the buttons' size and colour (Quaestor, 2026-11-17, 14:02)
 
+*Drawn for A. It carries over to B as written in the director's pick, below.*
+
 The director over the close sheet, 14:02: "the button size and color could maybe be upgrade i give you the call". The call is research's, inside A and the seam's palette (AR18, accepted). Modulo redraws only the close sheet's A rows and the phone rows to these numbers, as one round before the icons are cut.
 - **Size.** On the smallest phone, A's plates are about two thirds of the rail's width, and the icons are smaller than the bag's marks. So:
   - each plate takes the rail's whole width less its gutter, and is never under 40 points drawn on the smallest phone;
@@ -10079,6 +10083,43 @@ The director over the close sheet, 14:02: "the button size and color could maybe
   - a mark that's on in the bar (B's lit icon and short line) takes the same `Light`;
   - no new hue: the screen stays in one palette.
 - **Checks:** Modulo's own at phone size, with the contrast measured on the sheet. Then research's look at what changed only, then the icons cut for Faber as planned.
+
+### The director's pick: B, the seam, rail and bar (14:04)
+
+The director, 2026-11-17, 14:03, over the close sheet: "the B) UI on the left are very good but any other button ui could maybe get reworked". Then, to research's question on the top bar, "B's channel". The make is B, final. Research's pick of A is superseded.
+- **The rail:** B as drawn. The icons stand free by the seam's hairline, each with its short rule, and the chosen page is a tab of dark glass opening from the line. Unbuilt pages are hidden, as before.
+- **The bar:** B's channel. Back is its word over a short line of light, and favourite, lock and rename share one cut channel split by hairlines. A mark that's on lights its icon and the short line under it.
+- **Research's size and colour call, carried over to B:**
+  - each tab's and button's touch area is at least 44 points, even where its icon stands free;
+  - an icon is at least 24 points drawn on the smallest phone;
+  - an idle icon takes the seam's text colour at 4.5:1 or more on the panel, with no faint;
+  - the chosen tab's glass, the line where it meets the seam, and the bar's on state take the seam's `Light`;
+  - no new hue.
+- **B's one weak point, to close in this round:** on the smallest phone, its chosen page read less at once than A's. Modulo's lever is the chosen tab's width and its light. The test is the phone row read at its own size: the chosen page names itself at a glance.
+- **Next:**
+  1. Modulo redraws B's rows to these numbers, then cuts the icons as white-on-alpha images with B's numbers;
+  2. the content check;
+  3. Faber's build in one round, after TR40;
+  4. research's read in the build.
+- **Every other button** becomes AR30, after this.
+
+## AR30. Every button in the game, in the seam's make (Modulo, then Faber)
+
+The director, 2026-11-17, 14:03: "any other button ui could maybe get reworked". Then, to research's question on its scope: "Every button in game". Tier 2, a look players see, in Modulo's area, the director's own ask.
+- **Feel line:** every button the player presses, on any screen or in the world, is of one make with the Voidkin screen's rail: quiet, sharp, lit by the seam's light when it's chosen or on. Nothing reads as a toy's bubble.
+- **The block contains:** one sheet of the game's button kinds in B's make, each on its real screen at the smallest phone, beside today's:
+  - a main action (Equip, Leading, Break, Open);
+  - a second action (Send to work, Sell);
+  - tabs and filter chips (the bag's All, Gear, Jewelry, Chests, Materials, and Sort);
+  - icon buttons and Close;
+  - the HUD's dock;
+  - the Breaker's and the base's buttons;
+  - the world's prompts;
+  - for each kind: idle, pressed, chosen or on, and unavailable.
+- **What holds:** a colour that carries meaning stays: Power's yellow, Credits' teal, each rarity's colour, and the dock's three tiles read apart. Touch areas are at least 44 points.
+- **What waits:** motion beyond a state's change; screens not built yet, which take the make when they're built.
+- **Checks:** the content check; research's verdict at phone size, every state, read up close; then Faber's build in one round, screen by screen.
+- **When:** Modulo's next piece after AR29's icons are cut. Faber's build follows AR29's.
 
 ## Later, by ground
 

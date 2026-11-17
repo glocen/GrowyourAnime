@@ -11014,12 +11014,12 @@ From the two sheets and the gate's six (cbc3782).
 
 Research's entry, 2026-11-17, 17:15. It is the next machine in the design's order (`docs/design.md`, "The base", "Three stages for every machine"): the generator (AR19), the Breaker (AR32), then the bays, then the battery. Stage I is the bay as it stands (AR16).
 
-**Feel line:** the player upgrades a bay past level 5, and its Voidkin's workplace grows around it. From the gate, the row of bays reads how far the base has come, and each worker is still in plain view at work.
+**Feel line:** the player upgrades a bay past level 5, and its Voidkin's workplace grows around it. From the court, where the player goes to set a worker, the row of bays reads how far the base has come, and each worker is still in plain view at work [amended 17:34, research's pick: no view from the gate or the spawn sees the bays].
 
 **The block contains:**
 - Stage II (levels 6 to 14) and Stage III (15 and up) in grey beside Stage I. Shown from the spawn's start camera and from the gate at phone size, at 64 px and in black, with the row of six as a player sees it.
 - Two directions for how it grows, in AR32's way: parts you can read, void machines doing void work, never a real-world machine.
-- **Two classes carried from AR32:** a stage reads from the spawn's camera, not only from the gate; and the growth never hides the Voidkin at work, which is the bay's point.
+- **Two classes carried from AR32:** a stage reads from where the player meets that machine (for the bays, the court); and the growth never hides the Voidkin at work, which is the bay's point.
 - The bays keep their places and their footprint, since the plan at 128 is fixed.
 
 **Waits:** the stage's change as a moment (its effect and sound); the battery's stages, next in this order.
@@ -11140,6 +11140,17 @@ Research's entry, 2026-11-17, 17:15. It is the next machine in the design's orde
 - Tested: rendered, with the sheets read.
 - Visually reviewed: mine only. Research's pick and the check's read of the sheet are pending.
 - Director-accepted: no.
+
+### Research's pick (Quaestor, 2026-11-17, 17:34)
+
+From the two sheets and the court's head-on views (e1c365d).
+- **The view, Modulo's correction taken:** the bays are judged from the court, a player turned to the bays, where they go to set a worker. AR32's class, as it should have read: **a stage reads from where the player meets that machine.** For the Breaker that's the spawn and the gate; for the bays it's the court. The feel line and the classes above are amended.
+- **Felt:** A's horns rise and branch round the worker like antlers, so each stage is a bigger crown. B's rings stack in front of the worker, and its stages read as more of the same.
+- **The pick: A, the Horned Crown.** In black at 64 px, its three stages are three silhouettes, with the horns taller and branching. Its growth stays outward and behind the worker. It's in the Breaker's family of horns and jaws, so the base reads as one hand. B's rings sit between the player and the Voidkin, which is the one place a bay mustn't cover, and they carry the target-round-the-head risk.
+- **Tier:** competent.
+- **The bold thing:** the horns branching at Stage III, a crown you can count from across the court.
+- **Must-fix:** none. The content check's conditions for A hold for the build: the toothed rings matte, unlit, square-toothed, nothing gold near them; the ring and the shard pale.
+- **Next:** Stages II and III as kit pieces for Faber, judged in the game from the court.
 
 ## Later, by ground
 

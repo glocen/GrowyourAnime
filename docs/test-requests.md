@@ -3152,7 +3152,7 @@ Research's request, 2026-11-17, 11:17, item 7 of phase 3's order (`docs/producti
 **The seeds** (research's, 2026-11-17, 11:49: worked by hand from `tools/balance/seeds.json`, a model, not a measurement; a sim section follows before Faber reaches this piece):
 - **A rank's cost:** rank × 100 × G(the item's level tier) Credits, and rank × 1 Low stone. Rank 10 on a level-12 item is 2,800 Credits and 10 stones. A whole worn set (14 slots) to rank 10 is 770 stones and about 45% of a launch player's Credits over the 40 hours its Legendary window lasts (`docs/balance.md`, "The Tower").
 - **Drops:** an elite 0.3 Low stones and a keeper 1, as an expected count. Ordinary Shades drop none, so the stones come from the moments worth coming back for.
-- **The Condenser:** 2 Low stones an hour at level 1, plus 0.1 a level (4.9 at level 30, launch's ceiling). Its tray holds 12 hours of work, and the conversion takes 30 minutes for 5 Low into 1 Mid.
+- **The Condenser:** 2 Low stones an hour at level 1, plus 0.1 a level (4.9 at level 30, launch's ceiling). It also makes jewels into the same tray [D, 2026-11-17, 12:10], its tier rising with its level (TR39's seeds), so the block includes the jewel in the tray. Its tray holds 12 hours of work, and the conversion takes 30 minutes for 5 Low into 1 Mid.
 - **What it gives** (by hand): a whole set at rank 10 in about 12 active hours for a casual player (0.5 a day, 25 days), 26 for an active one (1.5 a day, 17 days) and 39 for a heavy one (4 a day, 10 days). The Condenser gives half or more of an active player's stones, so coming back pays.
 
 **The block contains:**
@@ -3196,16 +3196,16 @@ Research's request, 2026-11-17, 11:57, item 7 of phase 3's order. The design: `d
 **Feel line:** a rare jewel drops from the keeper. The player sets it in their best item's one jewel socket, and their criticals hit harder from the next fight.
 
 **The rules (research's, tier 2):**
-- **A jewel** carries one percent stat: Critical Damage, Critical Immunity or Lifesteal. It has a level, and its percent grows linearly with it. Lifesteal stays under `Config.Stats.Lifesteal.Cap`, and Critical Damage has no ceiling [D, 2026-11-15].
+- **A jewel** carries one percent stat: Critical Damage, Critical Immunity or Lifesteal. It has a **tier, 1 to 5 at launch** [D, 2026-11-17, 12:10], and its percent grows with it. Lifesteal stays under `Config.Stats.Lifesteal.Cap`, and Critical Damage has no ceiling [D, 2026-11-15].
 - **One socket** on items of Rare and above [D]. In and out is free, and it moves across on equip (TR37).
-- **Three of a kind make one higher:** three jewels of the same stat and level combine into one of the next level. It never fails. That's the long climb (the director's "like TCP": a gem levels from identical gems).
-- **Sources:** elites, keepers and the Tower [the design's], never ordinary Shades. Combat Power counts each by its weight times G at the block's level (`Config.Stats.Power.ByLevel`).
+- **Three of a kind make one higher:** three jewels of the same stat and tier combine into one of the next tier [D, 2026-11-17, 12:10], so a tier 5 is 81 tier 1s. It never fails, and tier 5 is the top at launch.
+- **Sources:** elites, keepers and the Tower [the design's], never ordinary Shades, and **the Stone Condenser** [D, 2026-11-17, 12:10], its tier rising with its level (TR37). Chests holding higher tiers come in a later update [D]. Combat Power counts each by its weight times G at the block's level (`Config.Stats.Power.ByLevel`).
 - **The server decides,** in one step, as for emblems.
 
-**The seeds** (research's, before Faber reaches this): the percent per level for each stat, the drop chances by source and level, the levels reachable at launch.
+**The seeds** (research's, before Faber reaches this): the percent per tier for each stat, the drop chances by source and tier, and the Condenser's jewel rate. **The Condenser's tiers** (research's seed): tier 1 from its level 1, tier 2 from level 11, tier 3 from level 21. Tiers 4 and 5 come only from combining at launch.
 
 **The block contains:** `Rules.Jewels` with its cases; the bag's Jewels tab; the item card's jewel socket (Rare and above); the socket and the combine as for emblems; the percent shown honestly on the stat sheet's sources (`docs/ui.md`, "Stats, shown honestly").
 
-**Waits:** the jewel icons (Modulo); the shop.
+**Waits:** the jewel icons (Modulo): each type its own colour, the shape growing from tier 1 to tier 5 [D], so a jewel's tier reads at 64 px without its number. The shop.
 
 **Checks:** as TR38's, plus a case that Lifesteal never passes its cap whatever is socketed.

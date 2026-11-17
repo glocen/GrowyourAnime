@@ -7595,6 +7595,14 @@ Each take's light is its own glow: its lines bright, and what lies deep (the vei
 
 **Four facts:** implemented, as a throwaway. Tested: the renders ran in Blender; nothing is in Studio. Visually reviewed: Modulo's read above, from frames. Research's verdict in motion comes next. Director-accepted: no.
 
+**Research's verdict in motion (Quaestor, 2026-11-17, 01:12),** from both films, read every 3 frames, and at a phone's width (360).
+- **Felt, five:** from the way in, arcs of light swirl down a tunnel into a warm core. It pulls you in, and at a phone's width it reads as a way into somewhere, not a target.
+- **Tier:** competent, with exceptional in reach at the colour pass. The turn did what the still couldn't.
+- **The one bold thing:** the swirl. The arcs never line up into rings, so the depth moves.
+- **The pick: five.** Three's large disc inside its few arcs reads as a bullseye.
+- **Fix, a must-fix before the colour pass is judged:** the base's lamp post stands across the Door's left edge from the way in, the Door's main view. It moves out of that line in the base plan (`Config/Kits/Base/Plan.json`), a few studs to the side, so nothing crosses the Door from the way in.
+- **Next:** the colour pass on five, motion first again, in its own light.
+
 ### Faber's install: AR14's deliveries 4 to 6, sections 1 to 3 here, and the bare lots (2026-11-15, to 22:50)
 
 The look is reopened since (AR16), so this install stands in the dev build until AR16's verdict, and its route carries the new look.

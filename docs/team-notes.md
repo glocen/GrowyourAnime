@@ -15,10 +15,10 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **Open, tests:** from 10:30 the client ran at 38 to 40 fps at the base with Studio in front (render 24 ms on the CPU). Four timing cases are NOT VERIFIED (AR11's record). The Keeper's "and out on Out" still fails about one run in three. Don't run `tools/ui/kit_config.py`: it rewrites `Config.UIKit` whole and drops what was added by hand.
 - **Open, for research:** the target card's light (`CardLightHealth`) keeps its glow ahead of its front. Does it go the same way as the lead's?
 
-**Modulo (assets).** 2026-11-17, 11:12, on Opus 5.5. **Voidkin work is parked until before launch** (the director's word through research, 11:10): AR26 and AR27 stay as delivered, and Ground Wire's colour pass waits.
-- **AR26, all five delivered for Faber's blocks:** Kirra's `KirraCombo.rows.json` joins Rook's, Pip's and Lyric's in their `build/handoff/<Lead>/fx/`. The content check passed it at 10:57. **Kirra's, Rook's and Watt's rows play on the ordinary Brawler only, enforced in the game**, until the spacing ask is in, and for Kirra also the waist lift (her section, tier 2).
-- **AR27, delivered (11:07):** Kirra's, Pip's, Lyric's and Watt's idles without the glance, in their `build/handoff/<Lead>/clips/`, for Faber's upload. `tools/blender/idle_head.py` checks that every head stays within 1.3° of front and 1.2° of level. Watt's and Kirra's heads are counter-rolled against their lean. Research checks one loop each in game after the install.
-- **Now:** waiting for research's order of game pieces. TR10's two icons wait on the grey marker's verdict; AR24's A waits on Faber's TR34 block and research's verdict in motion. **Unchanged:** Sable after launch; the Door is Faber's install.
+**Modulo (assets).** 2026-11-17, 11:50, on Opus 5.5. Voidkin work parked until before launch (the director's word, 11:10): AR26 and AR27 stay as delivered, and Faber holds AR27's upload.
+- **AR19, the generator's class fix, delivered (db2f086):** cages of void stone for the dynamos, six unlit horns for the crown, a bone claw for the copper shoe and insulator, tapered teeth that never cross. The content check passed. For Faber: six meshes to upload again, with the swap's table unchanged. Research's pass next.
+- **Now:** AR28, the Forge's and the Condenser's three directions each. **Then:** the re-lay at 128 once Faber's capture confirms it, AR17's map kit, then the icons (TR10's two after its marker's verdict).
+- **Unchanged:** AR24's A waits on Faber's TR34 block; Sable after launch; the Door is Faber's install.
 
 **Turns.** Studio: nobody (Faber stopped the playtest at 11:14; the place is open, its Rojo connected, the device simulator off). Blender: nobody. Timing tests: nobody.
 

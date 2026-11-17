@@ -16,12 +16,12 @@
    "centre": [
     0.0,
     0.06,
-    24.0
+    16.0
    ],
    "size": [
     88.0,
     0.0,
-    48.0
+    32.0
    ],
    "colour": "maps/Base_Court1_Color.png",
    "glow": "maps/Base_Court1_Glow.png",
@@ -38,12 +38,12 @@
    "centre": [
     0.0,
     0.06,
-    24.0
+    16.0
    ],
    "size": [
     88.0,
     0.0,
-    48.0
+    32.0
    ],
    "colour": "maps/Base_Yard_Color.png",
    "glow": "maps/Base_Yard_Glow.png",
@@ -60,12 +60,12 @@
    "centre": [
     0.0,
     0.06,
-    24.0
+    16.0
    ],
    "size": [
-    200.0,
+    128.0,
     0.0,
-    48.0
+    32.0
    ],
    "colour": "maps/Base_Wings_Color.png",
    "glow": "maps/Base_Wings_Glow.png",
@@ -82,12 +82,12 @@
    "centre": [
     0.0,
     0.06,
-    24.0
+    16.0
    ],
    "size": [
     88.0,
     0.0,
-    48.0
+    32.0
    ],
    "colour": "maps/Base_YardLive_Color.png",
    "glow": "maps/Base_YardLive_Glow.png",
@@ -104,12 +104,12 @@
    "centre": [
     0.0,
     0.06,
-    24.0
+    16.0
    ],
    "size": [
     88.0,
     0.0,
-    48.0
+    32.0
    ],
    "colour": "maps/Base_YardBack_Color.png",
    "glow": "maps/Base_YardBack_Glow.png",
@@ -126,12 +126,12 @@
    "centre": [
     0.0,
     0.06,
-    24.0
+    16.0
    ],
    "size": [
-    200.0,
+    128.0,
     0.0,
-    48.0
+    32.0
    ],
    "colour": "maps/Base_WingsLive_Color.png",
    "glow": "maps/Base_WingsLive_Glow.png",
@@ -148,12 +148,12 @@
    "centre": [
     0.0,
     0.06,
-    24.0
+    16.0
    ],
    "size": [
-    200.0,
+    128.0,
     0.0,
-    48.0
+    32.0
    ],
    "colour": "maps/Base_WingsBack_Color.png",
    "glow": "maps/Base_WingsBack_Glow.png",
@@ -239,7 +239,7 @@
     0.0
    ],
    "size": [
-    56.0,
+    64.0,
     20.71,
     4.82
    ],

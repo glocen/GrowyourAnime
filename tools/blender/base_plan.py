@@ -23,17 +23,18 @@ above, a piece's front (+Y) toward the Strip at 0. In the plot's own frame, a pi
 it with the front edge as its gate.
 
 The levels (launch caps the base at 3):
-  1, the yard    the whole plot walled, 200 studs by 200 (the director, 2026-11-15: "the base must be that 200x200"),
-                 and its machines spread across it (the same day: "just make it less clustered make it accross the
-                 base"). A way in 20 studs wide runs clear from the gate to the generator, the plant's heart, 40 in,
-                 over a well of void in the floor. One bus crosses the base through it: the Void Breaker and the
-                 Festival Door 30 either side of the heart, a bay at each end, 68 out in the wings. Behind, in the
-                 yard's first block, the main line runs to a junction and out to the battery and the Training
-                 machine, 28 either side. No machine stands nearer another than 25 studs. Two flood masts flank the
-                 heart, a transformer stands by each bay's line, the pylons run down the inside of each side wall,
-                 and nothing else is stood: no site, no stock. Behind all of it the yard's blocks lie dormant: the
-                 main conduit dead down the middle, a lot marked each side, a pilot lamp at each junction.
-  2 and 3        not made yet: each wakes the yard a block further, so nothing a player has seen goes away.
+  1, the yard    the whole plot walled, 128 studs by 128 (research's pick of 2026-11-17, 12:01, from part 7's three
+                 sizes; it was 200), and its machines spread across it as a star round the generator (AR16; the
+                 director, 2026-11-15: "just make it less clustered make it accross the base"), recomposed at 128
+                 with the machines at their size. A way in 20 studs wide runs clear from the gate to the generator,
+                 the plant's heart, 52 in, over a well of void in the floor, inside a ring of current open toward the
+                 gate. The Void Breaker and the Festival Door stand on the slants toward the gate, 26 across and 26
+                 nearer; the bus runs out to a bay each side; the battery and the Training machine stand on the
+                 slants toward the back. Part 7's tests hold every footprint 12 studs from the next (`fit`). Two
+                 flood masts flank the way in before the ring, a transformer stands by each bay's line, the pylons
+                 run down the inside of each side wall between the bays' lots, and nothing else is stood: no site,
+                 no stock. What the base will wake lies asleep where it will stand, on lines with no current yet.
+  2 and 3        not made yet: each wakes a further place, so nothing a player has seen goes away.
 """
 
 import json
@@ -69,12 +70,14 @@ DOOR_TURN = 90.0           # the Door's turn: its mouth (-Y) looks down the way 
 DOOR_LIGHTS = {"DoorInside": (0.6, 3.0, 6.4), "DoorMouth": (0.0, -3.6, 0.8)}
 DOOR_WARM = "#FFC27A"
 DOOR_SPIN = {f"DoorRing{k}": ring[2] for k, ring in enumerate(base.machines.RINGS, 1)}
-APART = 25.0               # the least from one machine's middle to the next (AR16)
+# A transformer by each open bay's line, behind the bus, where the bay's current joins it: midway from the ring to the
+# bay's frame, across, and 5.5 behind the bus
+TRANSFORMER = ((base.RING + base.OUTER - 6.2) / 2, 5.5)
 LEVEL_NAMES = {1: "the yard"}
 # What isn't a kit piece: flat colours for the builder's own slabs and boxes, from the kit's swatches.
 GROUND = {"lot": "#7C7C8E", "ground": "#6E7290", "note": "the lot is the plot's own floor under the kit's floors: the deck tile "
-          "(Base_Deck_Color.png), its Texture's Color3 at `lot`. It shows only as the last 8 studs under the back "
-          "wall, the darker foot of that wall (the Kept and Tower overlays take it too, unmarked). The ground is "
+          "(Base_Deck_Color.png), its Texture's Color3 at `lot`. At 128 the kit's floors cover the plot to its back "
+          "wall, so it shows only on the Tower's lot behind it, unmarked. The ground is "
           "the slab between plots, a flat colour, lifted from #1A1D2E for AR20's C so the open ground beside the "
           "crossing isn't black with no haze over it. The Strip and the side street wear the Strip's own paving tile "
           "(build/handoff/Strip/maps/Strip_Paving_Color.png, Lantern Row's lifted): stepping off the stones onto the "
@@ -157,7 +160,66 @@ def spread(level=1):
     inside = [name for name, x, along, _ in plan(level)[0]
               if name in reach and abs(x) - reach[name] < base.AVENUE / 2 and -along < GENERATOR[1]]
     inside += [name for name, at in named.items() if abs(at[0]) < base.AVENUE / 2 + 5.0 and at[1] < GENERATOR[1]]
-    return dict(nearest=[round(near[0], 1), near[1], near[2]], least=APART, inTheWay=inside)
+    return dict(nearest=[round(near[0], 1), near[1], near[2]], inTheWay=inside)
+
+
+WORLD = REPO / "src" / "shared" / "Config" / "World.luau"
+
+
+def fit_numbers():
+    """Part 7's numbers as the game has them (Config.World: Fit, its Prints, the kept back and the walk), read from the
+    file, so the plan is checked on the footprints the game checks it on."""
+    import re
+    text = WORLD.read_text(encoding="utf-8")
+    block = text[text.index("\tFit = {"):]
+    block = block[:block.index("\n\t\tLayouts")]
+    num = lambda key: float(re.search(rf"\b{key} = ([\d.]+)", block).group(1))   # noqa: E731
+    cam = re.search(r"Camera = \{ Back = ([\d.]+), Fov = ([\d.]+), Aspect = (\d+) / (\d+) \}", block)
+    prints = {m.group(1): {k: float(v) for k, v in re.findall(r"(\w+) = (-?[\d.]+)", m.group(2))}
+              for m in re.finditer(r"(\w+) = \{ (Across[^}]*)\}", block)}
+    walk = float(re.search(r"\bWalk = (\d+)", text).group(1))
+    return dict(Breaker=num("Breaker"), Clear=num("Clear"), Avenue=num("Avenue"), Apron=num("Apron"), Margin=num("Margin"),
+                Back=float(cam.group(1)), Fov=float(cam.group(2)), Aspect=float(cam.group(3)) / float(cam.group(4)),
+                Prints=prints, Kept=float(re.search(r"\bKept = ([\d.]+)", text).group(1)) * walk, Walk=walk)
+
+
+def fit():
+    """Rules.BaseFit's measures of this plan, as the game takes them (BaseFit.Measure, line for line): each machine at
+    its footprint, the Breaker's walk from the gate, the least gap between two footprints, the way in, the square's
+    edge and the kept back, and the widest corner in the gate camera's view."""
+    f = fit_numbers()
+    spots = dict(stations())
+    spots.update({f"bay{i + 3}": at for i, at in enumerate(BAY_LOTS[base.BAYS_AT[1]:])})
+    spots.update(SLEEPING)
+
+    def kind(name):
+        return ("bay" if name in ("bay1", "bay2") else "later" if name.startswith("bay")
+                else "stone" if name in SLEEPING else name)
+
+    boxes = {}
+    for name, (x, z) in spots.items():
+        p = f["Prints"][kind(name)]
+        cx, cz = x + p["Across"], z + p["Inward"]
+        boxes[name] = (cx - p["Wide"] / 2, cx + p["Wide"] / 2, cz - p["Deep"] / 2, cz + p["Deep"] / 2)
+
+    def gap(a, b):
+        dx = max(0.0, max(a[0], b[0]) - min(a[1], b[1]))
+        dz = max(0.0, max(a[2], b[2]) - min(a[3], b[3]))
+        return math.hypot(dx, dz) if dx > 0 or dz > 0 else -min(a[1] - b[0], b[1] - a[0], a[3] - b[2], b[3] - a[2])
+
+    names = sorted(boxes)
+    least = min((gap(boxes[a], boxes[b]), a, b) for i, a in enumerate(names) for b in names[i + 1:])
+    g, half = boxes["generator"], PLOT / 2 - f["Margin"]
+    way = [n for n, b in boxes.items() if n != "generator" and b[2] < g[2] and b[0] < f["Avenue"] / 2 and b[1] > -f["Avenue"] / 2]
+    outside = [n for n, b in boxes.items() if b[0] < -half or b[1] > half or b[2] < f["Apron"] or b[3] > PLOT - f["Kept"]]
+    view = max((math.degrees(math.atan2(abs(x), z + f["Back"])), n) for n, b in boxes.items() for x in b[:2] for z in b[2:])
+    k = boxes["breaker"]
+    seconds = math.hypot(min(max(0.0, k[0]), k[1]), min(max(0.0, k[2]), k[3])) / f["Walk"]
+    half_view = math.degrees(math.atan(math.tan(math.radians(f["Fov"] / 2)) * f["Aspect"]))
+    report = dict(size=PLOT, breaker=round(seconds, 2), least=[round(least[0], 2), least[1], least[2]], way=way,
+                  outside=outside, widest=[round(view[0], 2), view[1]], halfView=round(half_view, 2))
+    report["passes"] = (seconds <= f["Breaker"] and least[0] >= f["Clear"] and not way and not outside and view[0] <= half_view)
+    return report
 
 
 def plan(level=1):
@@ -176,21 +238,33 @@ def plan(level=1):
             put({deep: "YardLive", deep + block: "YardBack"}.get(inward, "Yard"), 0, inward)   # the heart's, the battery's, then dormant
         put({block: "WingsLive", 2 * block: "WingsBack"}.get(inward, "Wings"), 0, inward)   # and the deck each side: the bus's block, the last bays', the rest plain
     # the wall, on the plot's own edge, the same on both sides of the middle line: each post carries the panel to the
-    # next, and a half panel closes a run on the plot's 200. The sides run in from the front corners' posts; the back
-    # runs in from its corners' posts to the way out at its middle; the front runs out from the gate's shoulders
+    # next, and a half panel closes a run that isn't whole panels. The sides run in from the front corners' posts; the
+    # back runs in from its corners' posts to the way out at its middle; the front runs out from the gate's shoulders
+    def run(start, length):
+        """Posts from `start` along a run of `length`: whole panels, then a half panel if 8 are left."""
+        whole, left = divmod(length, 16.0)
+        assert left in (0.0, 8.0), f"a wall's run of {length:g} isn't whole panels and halves"
+        return [start + 16.0 * k for k in range(int(whole))], (start + 16.0 * whole if left else None)
+
     for side in (-1, 1):
-        for inward in range(0, int(yard) - 8, 16):
+        posts, last = run(0.0, yard)
+        for inward in posts:
             put("Wall", side * half, inward, -90)
-        put("WallHalf", side * half, yard - 8, -90)
+        if last is not None:
+            put("WallHalf", side * half, last, -90)
         turn = 0 if side < 0 else 180                               # along the back, toward the middle
-        for k in range(5):
-            put("Wall", side * (half - 16 * k), yard, turn)
-        put("WallHalf", side * 20, yard, turn)
-        put("WallEnd", side * 12, yard, 0)
+        posts, last = run(0.0, half - base.EXIT)
+        for k in posts:
+            put("Wall", side * (half - k), yard, turn)
+        if last is not None:
+            put("WallHalf", side * (half - last), yard, turn)
+        put("WallEnd", side * base.EXIT, yard, 0)
         turn = 180 if side < 0 else 0                               # along the front, toward the corner
-        for k in range(4):
-            put("Wall", side * (base.WING + 16 * k), 0, turn)
-        put("WallHalf", side * (half - 8), 0, turn)
+        posts, last = run(base.WING, half - base.WING)
+        for k in posts:
+            put("Wall", side * k, 0, turn)
+        if last is not None:
+            put("WallHalf", side * last, 0, turn)
     # the lines: a pylon every span down the inside of each side wall, from the front to the back, and its lines:
     # the base's length and its width seen from the Strip, over everything
     across, first = base.PYLON
@@ -208,7 +282,7 @@ def plan(level=1):
     # the transformers: one by each open bay's line, behind the bus, where the bay's current joins it
     # a pair for every two open bays (research, 2026-11-15, AR14)
     for x, inward in BAY_LOTS[:base.BAYS_AT[level]]:
-        put("Transformer", math.copysign(abs(x) - 16.0, x), inward + 5.5, 0)
+        put("Transformer", math.copysign(TRANSFORMER[0], x), inward + TRANSFORMER[1], 0)
     lights.append((*LAMP[:2], -LAMP[2], *LAMP[3:], "point"))
     lights.append((*WELL_LIGHT[:2], -WELL_LIGHT[2], *WELL_LIGHT[3:], "point"))
     for name, (x, y, up) in DOOR_LIGHTS.items():
@@ -262,14 +336,17 @@ def write_plan(out: Path):
                  "What the base will wake stands asleep where it will stand, dark, on a dead line that lights "
                  "out to it when it wakes: bays 3 and 4 on the bus's line outward (level 2), bays 5 and 6 back along "
                  "the side walls (level 3), and in the back half the Lab on the main line with the Forge and the "
-                 "Condenser on a spoke each (`sleeping`). Nothing new stands between the gate and the generator.",
-            avenue=base.AVENUE, least=APART, ring=base.RING,
+                 "Condenser on a spoke each (`sleeping`). Nothing new stands between the gate and the generator. "
+                 "Laid at 128 (research's pick of 2026-11-17, 12:01): recomposed, the machines at their size, and held "
+                 "by part 7's tests on the game's own footprints (Rules.BaseFit on Config.World.Fit): `fit` is the "
+                 "plan's measure, taken as BaseFit.Measure takes it.",
+            avenue=base.AVENUE, least=fit_numbers()["Clear"], ring=base.RING, size=PLOT,
             spawn=dict(across=SPAWN[0], inward=SPAWN[1], facing="into the plot"),
             showcase=dict(across=SHOWCASE[0], inward=SHOWCASE[1]),
             stations={name: dict(across=x, inward=i) for name, (x, i) in stations().items()},
             laterBays=[dict(across=x, inward=i) for x, i in BAY_LOTS[base.BAYS_AT[1]:]],
             sleeping={name: dict(across=x, inward=i) for name, (x, i) in SLEEPING.items()},
-            check=spread()),
+            check=spread(), fit=fit()),
         current=dict(
             note="the live conduits drawn in the floor, each from the generator's end outward: where the current "
                  "runs. For a pulse of light along each, if the builder's effect takes it: a small touch, at "
@@ -371,6 +448,8 @@ class Yard:
         for x in (-3.5, 3.5):                                      # a shard in each chamber, the builder's own
             b("Shard", (1.0, 1.0, 1.7), BREAKER[0] + x, BREAKER[1], sum(base.machines.GAP) / 2, "chamber")
         for i, (name, x, inward, up, turn, _) in enumerate(machines(level)):
+            if name == "TowerSleeping":     # the game stands the Tower's ring on its place, and no slab (TR29; part 8)
+                continue
             self.stock.stand(name, f"{tag}m{i}", self.at(front, face, x, inward, up), turn + (0 if face > 0 else 180))
         for index, (x, inward) in enumerate(BAY_LOTS[:base.BAYS_AT[level]]):   # a worker's size, on each bay
             wx, wy, _ = self.at(front, face, x, inward)
@@ -430,7 +509,7 @@ def see(out: Path, level, fast, clear, only=()):
     yard.kit.block("Strip", (3 * PLOT, STRIP, 0.4), (0, STRIP / 2, -0.22), yard.stone)
     yard.kit.block("Ground", (5 * PLOT, 4 * PLOT, 0.4), (0, STRIP / 2, -0.3), yard.flat["ground"])
     yard.person((SPAWN[0], -SPAWN[1]))
-    yard.person((6.0, -120.0), "Walker")
+    yard.person((6.0, -76.0), "Walker")
     yard.person((base.OUTER - 9.0, -(base.ROW - 7.0)), "Hand")
     for obj in yard.kit.pieces:
         if obj.name.startswith(("PowerSpan", "Court", "Yard", "Wings")):
@@ -455,19 +534,19 @@ def see(out: Path, level, fast, clear, only=()):
     (gx, gi), (bx, bi), (tx, ti) = GENERATOR, BREAKER, BATTERY
     views = {"home": behind((SPAWN[0], -SPAWN[1]), -1), "gate": behind((0, STRIP / 2), -1),
              "yard": behind((0, -(base.COURT[1] + 8.0)), -1), "back": behind((0, -(base.YARD - 14.0)), 1),
-             "across": ((-88.0, -6.0, 11.0), (30.0, -130.0, 4.0)),
+             "across": ((-58.0, -4.0, 9.0), (20.0, -84.0, 3.0)),
              "breaker": ((bx - 9.0, -(bi - 17.0), 9.5), (bx, -bi, 6.0)), "strip": ((-8.0, 9.0, 7.5), (gx, -gi, 5.0)),
              "bay": ((-(base.OUTER - 17.0), -(gi - 11.0), 6.0), (-base.OUTER, -gi, 5.0)),
              "bays": ((-10.0, -(gi - 26.0), 6.5), (base.OUTER, -gi, 4.0)),
-             "heart": behind((0, -(gi - 34.0)), -1), "star": ((0.0, -8.0, 150.0), (0.0, -(gi + 6.0), 0.0)),
+             "heart": behind((0, -(gi - 34.0)), -1), "star": ((0.0, -8.0, 100.0), (0.0, -(gi + 6.0), 0.0)),
              "generator": ((gx - 15.0, -(gi - 34.0), 8.0), (gx, -gi, 11.5)),
              "battery": ((tx - 5.5, -(ti - 9.5), 4.6), (tx, -ti, 1.4)),
              "show": ((6.0, 22.0, 6.0), (SHOWCASE[0], -SHOWCASE[1], 4.5)), "shown": ((21.5, -13.5, 5.5), (SHOWCASE[0], -SHOWCASE[1], 3.6)),
              "door": ((DOOR[0] + 20.0, -(DOOR[1] - 9.0), 6.0), (DOOR[0], -DOOR[1], 6.6)),
              "training": ((TRAINING[0] + 11.0, -(TRAINING[1] - 17.0), 5.5), (TRAINING[0], -(TRAINING[1] - 2.0), 4.2)),
              "asleep": ((base.FAR - 10.0, -(base.ROW - 9.0), 6.0), (base.FAR, -base.ROW, 0.6)),
-             "tower": ((-10.0, -84.0, 6.0), (TOWER_AT[0], -TOWER_AT[1], 84.0)),
-             "above": ((0.0, 96.0, 118.0), (0.0, -92.0, 0.0))}
+             "tower": ((-10.0, -56.0, 6.0), (TOWER_AT[0], -TOWER_AT[1], 56.0)),
+             "above": ((0.0, 60.0, 78.0), (0.0, -60.0, 0.0))}
     if only:
         views = {name: views[name] for name in only}
     if clear:   # the layout, with the dusk's haze thinned: from above the haze veils it

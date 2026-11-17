@@ -8264,6 +8264,57 @@ Research's ask after its pick (24e4808): 128 on its grey layout from the player'
     - **Type check:** 0 new.
   - **Research's read (Quaestor, 2026-11-17, 12:28): accepted.** The card stands clear of the pill and under the band. At the Breaker it sits over the lead, which `docs/polish-later.md` already holds ("A screen plate never covers the player's own lead"), for our own prompt at the shared finish.
 
+### Delivery 3: the plan laid again at 128 (Modulo, 2026-11-17, 15:00 to 15:31 by the clock)
+
+Part 7: "Recomposed, never scaled". AR16's star at 128: the machines keep their size and only the space between them shrinks. The FloodMast is moved off the Door's line (the ask above, "For the re-lay").
+- **Where everything stands** (`plan.json`, `layout`; across, then studs in from the front edge; "was" is at 200):
+  - The spawn (0, 10), the showcase (14, 4.9), the way in 20 wide and the generator's ring 18 in radius: as they were.
+  - The generator (0, 52), was 72. The Breaker (26, 26) and the Door (−26, 26), was 46: the slants keep their arm of 26.
+  - Bays 1 and 2 (∓31.5, 52), was (∓50, 72). The later bays (∓54.5, 52) and (∓54.5, 78).
+  - The battery (29, 78) and Training (−29, 78), was (±26, 98). The back slants reach 29 across, not 26: at 26, Training's pad stands 9.7 from the generator's foot.
+  - The Lab (0, 94), the Forge (−26, 98), the Condenser (26, 98), was (0, 136) and (∓36, 132).
+- **Part 7's tests:** `base_plan.fit()` ports `Rules.BaseFit`'s measure, on Config.World's own Fit, Prints, Kept and Walk. Its result is in `layout.fit`, and it passes:
+  - The Breaker is 1.79 s from the gate, against 4. From the spawn it's 21.6 studs, 1.35 s.
+  - The least gap is 12.2, bay 1 and Training, against 12. Next come 12.3 (the Forge and Training) and 12.7 (the generator and Training; each first bay and the later bay beside it).
+  - The way in is clear, and nothing stands outside.
+  - The widest corner is the Breaker's, at 50.4°, against the phone's half-view of 51.2°.
+  - It's tight both ways. With the generator at 51, the Breaker's corner comes to the view's edge. At 53, bay 1 and Training drop to 11.2.
+- **The FloodMasts** now stand at (±13.6, 35), 9 behind the Door's and the Breaker's line and 2.4 off the slant conduit's casing.
+  - **The test:** rays from the game's camera (zoom 12.5, pitch 20°, FOV 70° at 16:9, focus 4.5 up), over the Door's box and the mast's, from every stand on four lines: up the way in, across from the Door, the line from the spawn, and along the gate.
+  - **The result:** no mast crosses the Door or the Breaker from any of them. The only crossings come from 3 stands past the Door's line, at 29 to 31 in on the way, looking back.
+  - **The other spots:** at 33 (the old "3 behind"), the mast crosses the Door's edge from 44 stands. At 36, its foot touches the conduit.
+- **The floors** (`base_kit.py`), in 32-stud blocks to the back wall, so the deck shows only on the Tower's lot:
+  - The middle: the court (0–32), YardLive (32–64), YardBack (64–96), and Yard (96–128), the end, with the sleeping places' frames and dead lines. Each is 88 × 32.
+  - The wings, 20 × 32 each: WingsLive (32–64), WingsBack (64–96), and the plain Wings at the front and back.
+  - Gate1's shoulders follow the wings' width.
+- **The walls:** whole 16-stud panels, 8 on each side. The front has panels at ±32 and ±48 beside the gate. The back has panels from ±64 to ±32, a half panel at ±16, and a WallEnd at ±8, which leaves a way out 16 wide at the middle.
+- **The pylons:** 6, at ±59.5 across and 16, 64 and 112 in, between the later bays and clear of the dead run at 54.5.
+- **The transformers:** (±21.65, 57.5), midway from the ring to a bay's frame and 5.5 behind the bus.
+- **The Tower's place:** across 48, 160 in, by the plan's own rule (`TOWER_AT`).
+  - The look no longer stands its slab. The game stands the Tower's ring there (TR29), so `base_1_tower.png` shows the place empty.
+- **Triangles on a plot at level 1:** 54 placements, 13,544 triangles and 7 lights. At 200 it was 82 placements and 21,384.
+- **The look:** all 22 `base_1_*.png` pictures rendered again at 128.
+  - **From the spawn (`home`):** the Breaker on one side and the Door's amber tunnel on the other frame the generator's wheel, and the two masts stand clear between them.
+  - **From the gate (`gate`):** the whole star sits inside the gate's posts.
+  - **From above (`above_clear`, `star`):** the star fills its square.
+- **For Faber:**
+  - **Take the files:** set `Config.World.Plots.Drawn` to 8 (it's 12.5), then run `tools/world/kit_take.py` for `manifest.json` and `plan.json`.
+    - Three cases read `Drawn` and will move with it: BaseFit's "smaller than the plan's square", BaseFit's row of four, and the Tower's place.
+  - **Upload, 8 meshes:** `Court1`, `Gate1`, `Wings`, `WingsLive`, `WingsBack`, `Yard`, `YardLive`, `YardBack`.
+  - **Upload, 11 pictures:** `Base_Court1_Color` and `_Glow`, `Base_YardLive_Color` and `_Glow`, `Base_YardBack_Color` and `_Glow`, `Base_Yard_Color`, `Base_Wings_Color`, `Base_WingsLive_Color` and `_Glow`, `Base_WingsBack_Color`.
+  - **Unchanged:** `Base_Wings_Glow`, `Base_WingsBack_Glow`, `Base_Yard_Glow`, the atlas and every machine.
+  - **What changed in the plan's layout:**
+    - `least` is now Config's Clear (12).
+    - `check` is now `nearest` and `inTheWay`.
+    - `size` and `fit` are new.
+    - The stations' form is as it was.
+- **Content check before upload: PASS** (2026-11-17, by 15:29), on the 11 pictures and on the renders from the spawn, the gate and above. The floors are drawn from geometry by our own tool, with no text and no mark.
+- **Four facts:**
+  - **Implemented:** yes.
+  - **Tested:** the plan's write passes part 7's tests (`layout.fit.passes`), and the export and the looks ran in Blender. Not in Studio.
+  - **Visually reviewed:** by Modulo, in Blender's renders. Research's verdict waits on the game.
+  - **Director-accepted:** no.
+
 ## AR17. The rest of the map (Modulo's look from the grey world, then Faber)
 
 Research's entry, 2026-11-15, night, on the director's word: "then once the base is done we finish the rest of the map and continue working" (the register). Rewritten 2026-11-16, 01:55, on their word to Modulo at 01:53: "keep working on the rest of the map ask quaestor what else you should do". It starts now. Modulo is free while Faber installs the base. The phone run of the first session needs Faber and research, so the two run side by side.

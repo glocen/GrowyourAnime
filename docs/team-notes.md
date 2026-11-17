@@ -14,11 +14,11 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **Open, tests:** ten Base and HUD checks need the base's models, which stand grey since 8858359 (AR16 at 128) until the plan is laid again. Four timing cases are NOT VERIFIED (AR11). The Keeper's "and out on Out" and Pip's skip fail at times. TR20's Breaker hover depends on order.
 - **Open, for research:** the target card's light (`CardLightHealth`) keeps its glow ahead of its front. Does it go the same way as the lead's?
 
-**Modulo (assets).** 2026-11-17, 15:00, on Opus 5.5. Voidkin work parked until before launch (the director's word, 11:10): AR26 and AR27 stay as delivered, and Faber holds AR27's upload.
-- **For Faber, after TR40:** AR29's B, its 13 icons and its numbers, passed by research (AR29; `build/handoff/UI/voidkin/chrome/images/`).
-- **For Faber, after AR29:** AR30, every button in the game, passed by research twice: 25 images, white on alpha, and their numbers kind by kind on Kit/Button's own layers (AR30, "The cut"; `build/handoff/UI/buttons/images/`). Content check PASS on every file. The Breaker's buttons after TR41's sky.
-- **Now:** the re-lay of AR16's plan at 128, with the FloodMast off the Door's line. **Then:** AR30's phone sheet on Faber's smallest-phone stills; AR17's map kit; the icons for stones, emblems and jewels, and TR10's two.
-- **Unchanged:** AR22's gear pass is with Faber to upload. AR28's Stage I is with Faber, waiting on TR37. AR19 (db2f086) waits on research's pass and Faber's six re-uploads. AR24's A waits on Faber's TR34 block. Sable is after launch. The Door is Faber's install.
+**Modulo (assets).** 2026-11-17, 15:31, on Opus 5.5. Voidkin work parked until before launch (the director's word, 11:10): AR26 and AR27 stay as delivered, and Faber holds AR27's upload.
+- **For Faber, now:** AR16's plan laid again at 128. It passes part 7's tests, and the masts are off the Door's line. To take it: `Plots.Drawn` = 8, then kit_take; 8 meshes and 11 pictures to upload (AR16, "Delivery 3"). It brings back the ten Base and HUD checks that wait on the base's models.
+- **For Faber, after it:** AR29's B, 13 icons (AR29). AR30's buttons, 25 images (AR30, "The cut"). Both are passed by research, with content check PASS.
+- **Now:** AR30's phone sheet on Faber's smallest-phone stills. **Then:** AR17's map kit at 128; the icons for stones, emblems and jewels, and TR10's two.
+- **Unchanged:** AR28's Stage I is with Faber, waiting on TR37. AR19 (db2f086) waits on research's pass and Faber's six re-uploads. AR24's A waits on Faber's TR34 block. Sable is after launch.
 
 **Turns.** Studio: Faber (the game's place, for AR30's bases). Blender: nobody. Timing tests: nobody.
 
@@ -112,6 +112,15 @@ For Faber:
 - Tier 2, research, 2026-11-12, on the director's words: weapons belong to a class, in two hands (Main Hand and Off Hand replace Weapon and Shield), a preset holds a pair per class, a weapon drop is for the lead's class; Combat Power made to be watched, its weights fitted by the simulation; each item kind modelled and rendered to its icon (AR6, phase 3) (`docs/design.md`, "Regalia: gear" and "Combat Power"). Faber: the Stats case's `"Weapon"` source becomes `"Main Hand"` when you next touch it. Faber and Modulo: say in your row what you'd change.
 
 ## Entries
+
+### 2026-11-17, 15:31. AR16: the plan laid again at 128 (Modulo)
+
+- **What changed:** AR16's star is recomposed into the 128 square. The machines keep their size, and only the space between them shrinks. The generator stands at 52 in, and the Breaker and the Door at 26 in. The plan passes part 7's tests: the Breaker is 1.79 s from the gate, the least gap is 12.2 and the widest corner is 50.4° of 51.2°.
+- **The FloodMasts** stand at 35 in, 9 behind the Door's line. Ray-tested from the game's camera, no mast crosses the Door from the way in, the spawn or the gate.
+- **Also re-laid:** the floors, in 32-stud blocks to the back wall; the walls; 6 pylons; the transformers.
+- **Where:** AR16, "Delivery 3"; `build/handoff/Base/` (`plan.json`, `manifest.json`, 8 meshes, 11 pictures, 22 looks); `tools/blender/base_kit.py`, `base_plan.py` (`fit()`).
+- **Open:** Faber's install (`Plots.Drawn` = 8, kit_take, the uploads), then research's verdict in the game.
+- **For:** Faber, then research.
 
 ### 2026-11-17, 14:37. TR40: Regen in bursts (Faber)
 

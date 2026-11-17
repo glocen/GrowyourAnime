@@ -41,30 +41,37 @@ A, CELL = kit.A, kit.CELL
 # --- the plot, as the builder lays it (WorldService.plot, Config.World): copies, read again when the layout moves ------
 # Studs. `in` is from the plot's front edge, the one on the Strip, into the plot.
 
-PLOT, STRIP = 200.0, 48.0
+PLOT, STRIP = 128.0, 48.0
 # The spread (AR16; the director, 2026-11-15: "just make it less clustered make it accross the base"). Each place is
 # across and in. The placement is a star round the generator (the director, the same night, of one straight row:
-# "i dont like the placement of the building it a bit to simplish"). The generator stands at the plot's heart, 72 in,
+# "i dont like the placement of the building it a bit to simplish"). The generator stands at the plot's heart, 52 in,
 # at the end of the way in, inside a ring of current open toward the gate. The ring's two ends run out on the slant
 # to the Breaker and the Door, nearer the gate; the bus runs out each side to level 1's bays; two more slants run
-# back to the battery and the Training machine; the main line goes on to the back wall, dormant. Every neighbour is
-# 48 studs from the next. Modulo's proposal, until the builder's Config.World takes it.
+# back to the battery and the Training machine; the main line goes on to the back wall, dormant.
+# Laid again at 128 (research's pick of 2026-11-17, 12:01; docs/research/rework-2026-11-16.md, part 7: "recomposed,
+# never scaled"): the machines keep their size and the star its shape, and only the ground between them shrinks. The
+# slants keep the 200's reach, 26 across and 26 in. Each place is held by part 7's tests (Rules.BaseFit, on the
+# footprints in Config.World.Fit.Prints; base_plan.fit() reads them and checks the plan): 12 studs between any two
+# footprints, the way in clear, all inside, all in the gate camera's one view. The tight ones are the Breaker's far
+# corner in that view (the heart no nearer the gate than 52) and the Training machine against the generator's foot
+# (the back slants 29 across).
 AVENUE = 20.0                      # the way in, clear from the gate to the generator
 SPAWN = (0.0, 10.0)                # facing into the plot, the generator ahead
-ROW = 72.0                         # the heart's line: the generator's, and the bus's out to the bays
+ROW = 52.0                         # the heart's line: the generator's, and the bus's out to the bays
 GENERATOR = (0.0, ROW)
 RING = 18.0                        # the ring of current round the well, open toward the gate: its radius
 ARM = 26.0                         # a slant's reach from the heart, the same across and in
 BREAKER, DOOR = (ARM, ROW - ARM), (-ARM, ROW - ARM)
-BATTERY, TRAINING = (ARM, ROW + ARM), (-ARM, ROW + ARM)
-OUTER = 50.0                       # the bus's ends: level 1's bays
-FAR, BACK = 82.0, 108.0            # the later bays: the bus's line on outward, then back along the side wall
+KIN = 29.0                         # the back slants' reach across: the Training machine's pad 12 clear of the generator's foot
+BATTERY, TRAINING = (KIN, ROW + ARM), (-KIN, ROW + ARM)
+OUTER = 31.5                       # the bus's ends: level 1's bays
+FAR, BACK = 54.5, ROW + ARM        # the later bays: the bus's line on outward, then back along the side wall
 BAYS = ([(side * OUTER, ROW) for side in (-1, 1)] + [(side * FAR, ROW) for side in (-1, 1)]
         + [(side * FAR, BACK) for side in (-1, 1)])   # in the order they open: level 1's, level 2's, level 3's
 # What the base will wake, asleep in the back half (research, 2026-11-16): the Lab on the main line, the Forge and
 # the Condenser on a spoke each from the main line's node, the Condenser on the bays' feeding side
-NODE = ROW + 40.0
-LAB, CONDENSER, FORGE = (0.0, 136.0), (36.0, 132.0), (-36.0, 132.0)
+NODE = ROW + 30.0
+LAB, CONDENSER, FORGE = (0.0, 94.0), (26.0, 98.0), (-26.0, 98.0)
 SLEEPS = 6.2                       # a sleeping place's ground: its frame's half side
 BAYS_AT = {1: 2, 2: 4, 3: 6}       # bays by the base's level (docs/design.md, research's seeds)
 WELL = 9.0                         # the generator's ground: a well of void under the plant's heart, its radius
@@ -72,21 +79,24 @@ PAD = (9.5, 5.2)                   # a machine's ground: half across, half deep
 
 # --- the yard ------------------------------------------------------------------------------------------------------------
 
-COURT = (44.0, 48.0)   # the lit court at the front: half across, and how far in from the front edge
-HALF = PLOT / 2        # the wall, across: the base is the whole plot (the director, 2026-11-15: "the base must be that 200x200")
-YARD = PLOT            # how far in the wall runs (the director, the same day: "much much longer")
-BLOCK = 48.0           # a floor block behind the court, one picture laid again toward the back wall
-PYLON = (HALF - 7.0, 4.0)   # the pylons' line inside the side walls, and the first one's place in from the front
+COURT = (44.0, 32.0)   # the lit court at the front: half across, and how far in from the front edge
+HALF = PLOT / 2        # the wall, across: the base is the whole plot (the director, 2026-11-15)
+YARD = PLOT            # how far in the wall runs
+BLOCK = 32.0           # a floor block behind the court: the yard's three, the heart's, the battery's and the sleeping three's
+PYLON = (HALF - 4.5, 16.0)   # the pylons' line inside the side walls, clear of the later bays' line, and the first one's
+                             # place in from the front: they stand between the bays' lots, never on one
 LANE = 12.5            # a lane's middle, between the Breaker's line and the bays
 GATE = 22.0            # a gate tower's place, across
-WING = 28.0            # where a front wall ends and the gate's shoulder begins
+WING = 32.0            # where a front wall ends and the gate's shoulder begins: whole panels on to the corner
 SPAN = 48.0            # from pylon to pylon
 ARMS = ((16.5, 5.2), (20.0, 3.8))   # a pylon's arms: how high, and how far each reaches
 HANG = 1.9             # an insulator's drop under its arm
-FLOOD = (ROW - 19.0, 3.0, 12.0)   # a flood mast, one each side of the way in before the ring: in from the front; its head's reach toward the front, and its height.
-# 7 studs behind the Door's and the Breaker's line (46 in), so from the way in and on the way to either machine from the gate
-# neither mast crosses it; its middle 3.8 studs off the slant conduit's line (research, 2026-11-17, AR15's finish: it stood at 50,
-# across the Door's left edge from the way in; at 39 it crossed it on the way from the spawn)
+EXIT = 8.0             # the way out at the back wall's middle, half its width: on to the Tower's path
+FLOOD = (ROW - 17.0, 3.0, 12.0)   # a flood mast, one each side of the way in before the ring: in from the front; its head's reach toward the front, and its height.
+# 9 studs behind the Door's and the Breaker's line (26 in), its middle 2.4 off the slant conduit's line and its foot clear of the
+# way in's edge line. From the game's camera (zoom, pitch, FOV) up the way in, along the Door's line, on the line from the spawn
+# and along the gate, neither mast crosses the Door or the Breaker; only a camera beyond the Door's line looking back sees one
+# (Modulo, 2026-11-17, the re-lay at 128, rays at 192 by 108 at each place; at 200 research's must-fix had put it 7 behind)
 COURT_GLOW = 1.0       # the court's glow picture's white, as emission strength (EmissiveStrength)
 MAPS = {"Kit": ("#FFFFFF", kit.GLOW), "Court1": ("#FFFFFF", COURT_GLOW), "Yard": ("#FFFFFF", COURT_GLOW),
         "YardLive": ("#FFFFFF", COURT_GLOW), "YardBack": ("#FFFFFF", COURT_GLOW), "WingsLive": ("#FFFFFF", COURT_GLOW),
@@ -423,11 +433,13 @@ def spine(x, along, px):
 
 
 def yard_pictures(kind=None):
-    """A yard block, half of it, laid again and again behind the court to the back wall: the deck with its lanes, the
-    main conduit down the middle and a joint across its far edge. Dead, it is plain on purpose: nothing is marked on
-    it, since nothing will stand on it (research, 2026-11-16). `live` is the block behind the court, the heart's: the
-    way in's last studs, the well, the ring and the lines leaving it. `back` is the block behind that: the slant
-    arriving at the battery's ground (the Training machine's, mirrored), and the main line going on, dormant."""
+    """A yard block, half of it, behind the court toward the back wall: the deck with its lanes and a joint across its
+    far edge. `live` is the block behind the court, the heart's: the way in's last studs, the well, the ring and the
+    lines leaving it. `back` is the block behind that: the ring's back, the slant arriving at the battery's ground (the
+    Training machine's, mirrored), and the main line going on, dormant, to its node. `end` is the last, against the
+    back wall: the sleeping three's places, the spokes reaching them and the main line on to the way out. At 128 the
+    yard is these three behind the court; a block with no kind, plain on purpose with only the dead main line down
+    its middle (research, 2026-11-16), stood only on the 200."""
     n = 1024
     half, deep = COURT[0], BLOCK
     yy, xx = np.mgrid[0:n, 0:n].astype(np.float32)
@@ -438,13 +450,13 @@ def yard_pictures(kind=None):
     if not kind:
         page[..., :3] *= 0.9                                    # a shade under the court: nothing here is lit
     glow = np.zeros((n, n), np.float32)
-    if kind != "live":
-        _mix(page, "#D4DCEE", band(x - LANE, 0.11) * ((y % 4.0) < 2.0) * 0.45)
+    front = COURT[1] + deep * ("live", "back", "end").index(kind) if kind else 0.0   # the block's own front edge, in from the plot's
+    if kind != "live":                                          # the lane, clear of the ring and the lines leaving it
+        _mix(page, "#D4DCEE", band(x - LANE, 0.11) * ((y % 4.0) < 2.0) * (y + front > ROW + RING + 4.0) * 0.45)
     # the joint across the block's far edge: where one block of the yard ends
     _mix(page, "#252B44", band(y - (deep - 0.2), 0.2))
     _mix(page, "#C9D2E6", band(y - (deep - 0.55), 0.07) * 0.5)
     if kind:
-        front = COURT[1] + deep * ("live", "back").index(kind)  # the block's own front edge, in from the plot's
         way_in(page, x, y + front, px)
         return page, grey(marks(page, glow, x, y + front, px))
     _mix(page, "#141724", spine(x, y + PLATE, px))              # the main line, as its casing alone
@@ -453,9 +465,10 @@ def yard_pictures(kind=None):
 
 def wings_pictures(kind=None):
     """A wing block, one side's: the deck from the middle strip's edge out to the side wall (the picture's left to
-    its right), laid again and again from the front wall back. Dead, the plainest ground of the base, kept for its
-    later levels: two service lanes, the wall's foot, and the block's joint, with nothing marked on it. `live` is the heart's block, the second from the front: the bus runs in from the ring to an open
-    bay's frame, and on, dead, to the next bay's place, asleep. `back` is the block behind it: the last bay's place."""
+    its right), laid from the front wall back. Dead, the plainest ground of the base: a service lane, the wall's foot,
+    and the block's joint, with nothing marked on it. `live` is the heart's block, the second from the front: the bus
+    runs on, dead, from the open bay to the next bay's place, asleep. `back` is the block behind it: the line back
+    along the wall to the last bay's place."""
     n = 1024
     wide, deep = HALF - COURT[0], BLOCK
     yy, xx = np.mgrid[0:n, 0:n].astype(np.float32)
@@ -470,8 +483,9 @@ def wings_pictures(kind=None):
     margin = np.clip((x - (wide - 3.0)) / px + 0.5, 0, 1)
     page[..., :3] *= (1.0 - 0.38 * margin)[..., None]
     _mix(page, "#C9D2E6", band(x - (wide - 3.0), 0.09) * 0.6)
-    for lane in (6.0, 42.0):
-        _mix(page, "#D4DCEE", band(x - lane, 0.11) * ((y % 4.0) < 2.0) * 0.4)
+    for lane in (6.0, 42.0):                                    # where the wing is wide enough, and never under a bay's place
+        if lane < wide - 6.0 and not kind:
+            _mix(page, "#D4DCEE", band(x - lane, 0.11) * ((y % 4.0) < 2.0) * 0.4)
     _mix(page, "#252B44", band(y - (deep - 0.2), 0.2) * (x < wide - 3.0))
     _mix(page, "#C9D2E6", band(y - (deep - 0.55), 0.07) * (x < wide - 3.0) * 0.5)
     if kind:
@@ -479,7 +493,7 @@ def wings_pictures(kind=None):
     return page, grey(glow)
 
 
-FLOORS = {"Court1": lambda: court_pictures(1), "Yard": yard_pictures, "YardLive": lambda: yard_pictures("live"),
+FLOORS = {"Court1": lambda: court_pictures(1), "Yard": lambda: yard_pictures("end"), "YardLive": lambda: yard_pictures("live"),
           "YardBack": lambda: yard_pictures("back"), "Wings": wings_pictures, "WingsLive": lambda: wings_pictures("live"),
           "WingsBack": lambda: wings_pictures("back")}
 
@@ -515,7 +529,7 @@ def insulator(m, at, length, r=0.34, ribs=3, sides=5):
 
 def court(level):
     def make():
-        """A level's court floor, the middle 88 studs by 48 from the front edge in: one picture, laid mirrored about
+        """A level's court floor, the middle 88 studs by 32 from the front edge in: one picture, laid mirrored about
         the middle."""
         m = Mesh(None)
         half, deep = COURT
@@ -529,8 +543,8 @@ def court(level):
 
 
 def yard(name="Yard"):
-    """A yard block's floor, 88 studs by 48, its front edge at the piece's place: one picture, laid mirrored about the
-    middle. Three stand behind the court, toward the back wall; YardLive is the same floor in the live picture."""
+    """A yard block's floor, 88 studs by 32, its front edge at the piece's place: one picture, laid mirrored about the
+    middle. Three stand behind the court, to the back wall: YardLive, YardBack and Yard, each in its own picture."""
     m = Mesh(None)
     half, deep = COURT[0], BLOCK
     m.face([Vector((0, -deep, 0.06)), Vector((half, -deep, 0.06)), Vector((half, 0, 0.06)), Vector((0, 0, 0.06))],
@@ -542,7 +556,7 @@ def yard(name="Yard"):
 
 
 def wings(name="Wings"):
-    """A block of the deck each side of the middle strip, out to the side walls: 56 studs by 48 a side, its front
+    """A block of the deck each side of the middle strip, out to the side walls: 20 studs by 32 a side, its front
     edge at the piece's place, one picture mirrored about the middle. Four stand from the front wall back; WingsLive
     and WingsBack are the same floor in their own pictures."""
     m = Mesh(None)
@@ -558,8 +572,8 @@ def wings(name="Wings"):
 
 def wall(run=16.0):
     """The yard's wall: a post on a concrete foot with a lamp on its cap, and a ribbed steel panel 16 studs along +X
-    to the next post, a line of light under its bone coping. The half panel runs 8, so a wall closes on the plot's
-    200. A run's last post is the same without the panel."""
+    to the next post, a line of light under its bone coping. The half panel runs 8, to close a run that isn't whole
+    panels: at 128, the back wall at its way out. A run's last post is the same without the panel."""
     m = Mesh()
     m.box((2.0, 2.0, 1.2), (0, 0, 0.6), "concrete", ink=True)
     m.box((1.1, 1.1, 5.4), (0, 0, 3.9), "girder", ink=True)

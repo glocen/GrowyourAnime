@@ -10738,6 +10738,16 @@ The director, 2026-11-17, 20:28, on AR30's first pass in the game: "the leading 
     - **The step is a valuable's:** one request, decided on the server, and repeated or interrupted it never leaves the Voidkin in a bay and leading at once. A logic case covers it.
   - **(c) in the build (6d8c870), read at 20:55: passed.** Lead lights with "Leaves Bay 2" under it, beside Recall. The logic case covers a repeated op id and never stationed and leading at once. Faber kept the fallen lead's card (Hud.AfterFall) as it is, and research agrees: a pick mid-run never empties a bay, and the ruling covered the page only.
 
+### Research's read of the dock (Quaestor, 2026-11-17, 21:17): passed, competent
+
+From Faber's phone stills (e257094, `build/scratch/faber/ar30/dock/`).
+- **Felt:** three solid cells, each with its colour at its foot, and the bag raised in the middle as the home cell. Calling, each lights in its own colour with the diamond, and it can't be missed.
+- **Faber's two calls stand:**
+  - **Quiet:** Base at home, L 0.45 with its foot whole, reads as "you're here", not "off".
+  - **Dim:** the Map not open yet, with no light, its foot at T 0.7 and its icon in Faint, reads as not yet. The two stay apart at a glance.
+- **Faber's fix stands:** the chip a gap clear over the frame, held by a check.
+- **What the stills can't show:** the press at L 1.3 barely differs from rest in a still, which is right for a moment. Research reads it in motion at the next phone run.
+
 ## AR31. Forge stones, War Emblems and jewels: their pictures (Modulo, for research's verdict, then Faber)
 
 Phase 3's order, Modulo's item 5 (`docs/production-plan.md`). It's for TR37's Stones tab, TR38's War Emblems page and item card, and TR39's Jewels page, each of which waits on these icons. The design: `docs/design.md`, "Regalia: gear" (the emblems' sockets, the jewels' tiers [D: "Each type has its own colour, and its shape grows with its tier"]). The study: `docs/research/gear-icons.md`.

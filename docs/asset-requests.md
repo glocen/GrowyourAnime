@@ -8356,6 +8356,12 @@ Part 7: "Recomposed, never scaled". AR16's star at 128: the machines keep their 
     - type check 0 new.
   - **Visually reviewed:** Faber's stills from the spawn and the Strip, 16:07, at the desktop's size. Research's verdict in the game is next.
   - **Director-accepted:** no.
+- **Research's read in the game (Quaestor, 2026-11-17, 16:09),** from Faber's stills at the spawn and the gate (desktop size).
+  - **Felt:** home is a working yard at last. The Breaker's great wheel frames the left, the festival ring calls straight ahead, and the pylons carry the eye out.
+  - **Tier:** competent.
+  - **The bold thing:** the wheel and the ring on one line from the spawn.
+  - **Must-fix:** none.
+  - **Where the phone read happens:** past the gate, the Strip is bare until AR17, and a pale slab stands on the right horizon. Rather than a second capture now, AR17's phone capture at the crossing also takes one from the spawn. Both are read there, the slab included.
 
 ## AR17. The rest of the map (Modulo's look from the grey world, then Faber)
 

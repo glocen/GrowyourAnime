@@ -36,7 +36,7 @@ function Library.Search(keywords: { string }, options: { MaxDuration: number?, M
 		if opts.MinDuration then
 			params.MinDuration = opts.MinDuration
 		end
-		local ok, pages = pcall(AssetService.SearchAudio, AssetService, params)
+		local ok, pages = pcall(AssetService.SearchAudioAsync, AssetService, params) -- SearchAudio is deprecated (AR39)
 		if not ok then
 			warn(`[NL] Library: "{keyword}" failed: {pages}`)
 			continue

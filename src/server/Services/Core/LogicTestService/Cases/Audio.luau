@@ -1,9 +1,11 @@
 --!strict
 -- Audio cases (pure): the level check's measure (ServerStorage.NL_Tools.Audio.Loudness; docs/asset-requests.md, AR8 A)
--- reads what ITU-R BS.1770-4 says it should, on signals whose answers are known.
+-- reads what ITU-R BS.1770-4 says it should, and a batch's measures (NL_Tools.Audio.Measures; AR39) read what numpy
+-- reads, on signals whose answers are known.
 -- Runs in Studio (LogicTests) and with Studio closed (tools/checks/logic_offline.luau).
 
 local Loudness = require(game:GetService("ServerStorage").NL_Tools.Audio.Loudness)
+local Measures = require(game:GetService("ServerStorage").NL_Tools.Audio.Measures)
 
 local function sine(rate: number, seconds: number, hz: number, amplitude: number, phase: number?): { number }
 	local out = table.create(math.floor(rate * seconds), 0)
@@ -52,6 +54,42 @@ return {
 			-- nothing at all
 			local quiet = Loudness.Measure(table.create(rate, 0), rate)
 			t.Check("silence: no level and no peak", quiet.Integrated == -math.huge and quiet.TruePeak == -math.huge)
+		end,
+	},
+	{
+		Name = "Audio: a batch's measures read as numpy reads them (AR39; tools/audio/ar39_rank.py's own definitions)",
+		Run = function(t: any)
+			-- a decaying 440 Hz tone over a steady 3150 Hz one, 20 ms of silence before and 100 ms after; the answers are
+			-- numpy's, on the same signal (np.fft.rfft, np.hanning), to 0.01 dB
+			local rate = 48000
+			local function near(a: number, b: number, within: number?): boolean
+				return math.abs(a - b) < (within or 0.01)
+			end
+			for _, case in {
+				{ Length = 7200, Env = 135, Frames = 27, Spec10 = 51.4240, Spec19 = 55.3851, Out = 0.103804 },
+				{ Length = 14400, Env = 210, Frames = 42, Spec10 = 46.0511, Spec19 = 55.9458, Out = 0.102372 }, -- Welch's segments
+			} do
+				local window = table.create(960 + case.Length + 4800, 0)
+				for n = 0, case.Length - 1 do
+					window[961 + n] = 0.6 * math.sin(2 * math.pi * 440 * n / rate) * math.exp(-n / 2400) + 0.25 * math.sin(2 * math.pi * 3150 * n / rate)
+				end
+				local m = Measures.Slice(window, rate, 960, case.Length)
+				local at = `{case.Length} samples:`
+				t.Check(`{at} the envelope, 2 ms a step from 20 ms ahead`, #m.Envelope == case.Env and near(m.Envelope[11], -6.6078) and near(m.Envelope[40], -13.1000), `{#m.Envelope} {m.Envelope[11]} {m.Envelope[40]}`)
+				local third = m.Spectrogram[3]
+				t.Check(`{at} the spectrogram, 10 ms a frame, by third octaves`, #m.Spectrogram == case.Frames and #third == 25 and near(third[10], 47.2007) and near(third[19], 43.6156) and near(m.Spectrogram[9][1], -21.8449), `{#m.Spectrogram} {third[10]} {third[19]} {m.Spectrogram[9][1]}`)
+				t.Check(`{at} the slice's averaged spectrum`, near(m.Spectrum[10], case.Spec10) and near(m.Spectrum[19], case.Spec19), `{m.Spectrum[10]} {m.Spectrum[19]}`)
+				t.Check(`{at} the sample peak and its time`, near(m.SamplePeak, -1.9820) and near(m.SamplePeakAt, 0.000708, 1e-5), `{m.SamplePeak} {m.SamplePeakAt}`)
+				t.Check(`{at} the steps in the first and last 3 ms`, near(m.StepIn, 0.135858, 1e-5) and near(m.StepOut, case.Out, 1e-5), `{m.StepIn} {m.StepOut}`)
+				t.Check(`{at} a loudness and a true peak`, m.Loudness > -20 and m.Loudness < 0 and m.TruePeak >= m.SamplePeak - 1e-9, `{m.Loudness} {m.TruePeak}`)
+			end
+			-- a 60 Hz tone with a little 1 kHz: its weight under 120 Hz
+			local low = table.create(7200, 0)
+			for n = 0, 7199 do
+				low[n + 1] = 0.5 * math.sin(2 * math.pi * 60 * n / rate) + 0.05 * math.sin(2 * math.pi * 1000 * n / rate)
+			end
+			local m = Measures.Slice(low, rate, 0, 7200)
+			t.Check("a 60 Hz tone: 99% of it under 120 Hz", near(m.Under120, 0.990099, 1e-5) and near(m.Spectrum[1], 51.8218) and near(m.Spectrum[14], 41.4057), `{m.Under120} {m.Spectrum[1]} {m.Spectrum[14]}`)
 		end,
 	},
 }

@@ -10064,6 +10064,22 @@ From the three sheets, read at phone size, zoomed, in every state.
   3. Faber's build in one round;
   4. research's read in the build, then the director's.
 
+### Research's call on the buttons' size and colour (Quaestor, 2026-11-17, 14:02)
+
+The director over the close sheet, 14:02: "the button size and color could maybe be upgrade i give you the call". The call is research's, inside A and the seam's palette (AR18, accepted). Modulo redraws only the close sheet's A rows and the phone rows to these numbers, as one round before the icons are cut.
+- **Size.** On the smallest phone, A's plates are about two thirds of the rail's width, and the icons are smaller than the bag's marks. So:
+  - each plate takes the rail's whole width less its gutter, and is never under 40 points drawn on the smallest phone;
+  - the icon fills about 60% of its plate;
+  - the bar's Back and three marks are the same height as the rail's plates, so the two read as one kit;
+  - all seven still stand whole at the smallest phone with War Emblems' two lines, and Modulo shows the pitch that does it. If seven won't fit at 40, the gutter between plates gives first, never the plate.
+- **Colour, within the seam:** idle reads too faint today, a lavender icon on an indigo plate almost the panel's own colour. So:
+  - an idle plate sits one clear step off the panel, with the seam's hairline edge brighter, so a tab reads as a key before its icon does;
+  - an idle icon takes the seam's text colour, not its faint, and measures at least 4.5:1 on its plate;
+  - the chosen plate and its thread take the seam's own `Light`, not a flat white, so the lit tab is the seam's light;
+  - a mark that's on in the bar (B's lit icon and short line) takes the same `Light`;
+  - no new hue: the screen stays in one palette.
+- **Checks:** Modulo's own at phone size, with the contrast measured on the sheet. Then research's look at what changed only, then the icons cut for Faber as planned.
+
 ## Later, by ground
 
 The rest of ground 1 (Kirra in AR10, Watt in AR11; then Sable, Marigold, Crane), then each ground's Voidkin in `docs/roster.md`'s order. **The machines** (Gantry, Bulwark, Ironhymn, Shiomaru, Aegir) share one custom rig, taller than a player, with its own clip family: the first of them is timed like AR1, because a custom rig is a different cost.

@@ -6688,6 +6688,24 @@ Research's request, 2026-11-14, night, on the director's word (`docs/decisions.m
       - `mist.band`: the row it covers (405 by 79 points at 14, 81), the river's colours across it as nine stops from `#D44FB4` to `#2FCCD4`, and one `down` for the whole row. `mist.windows` stays as the fallback.
       - `fallingStar.first` is 3 to 6 and `fallingStar.every` 15 to 30, in seconds.
       - **What one band gives up:** one `down` is the row's average, so the mist no longer thins round the knot of stars in chamber 3 (0.7 of its cover there in the windows' own numbers), and the river's slant is flattened. If chamber 3's stars look veiled in the build, that's the lever.
+  - **The falling star, made to be caught** (Modulo, 2026-11-17, 15:46 to 15:52 by the clock; research's must-fix, TR41, "Research's verdict"). The class: a moment meant to be caught reads at phone size on first sight.
+    - **What changed:** only `BreakerFallingStar.png` and its numbers. The other five images came out byte for byte the same.
+      - The streak is drawn in `void_sky.streak`, its parts in `void_sky.STREAK`.
+      - **The head:** a bright white core 1.5 points across in a soft glow, `#CFE0FF`, 4.5 points across at 0.55 cover.
+      - **The tail:** 54 points long, up from 27. It thins from 1.1 points at the head to 0.3 at its end.
+      - **The image:** 56 by 48 points, its head at (9, 39), in the same 224 by 192 pixels as before.
+      - **The path:** chamber 4's window corner to corner, from (419, 81) to (323, 160). That's 124 points, up from 91.
+      - **The time:** 0.9 s, up from 0.7. That keeps the old speed on the longer path, and gives the eye longer to catch it.
+    - **Seen:** laid on Faber's held still (`tr41-still-full.png`) at the game's scale, about 1.2 pixels a point, beside the old star at 0.3, 0.5 and 0.7 of its fall. The old reads as a scratch. The new reads as a falling star: a lit head, a tail across half the window.
+    - **For Faber:**
+      - upload the new image under the group;
+      - `Breaker.Sky.Falling` becomes `Points` (56, 48), `Head` (9, 39), `From` (1, 0), `To` (0, 1), `Seconds` 0.9.
+    - **Content check:** PASS for upload (15:53), on the image alone, at 64 pixels and in the stacked sky.
+    - **Four facts:**
+      - drawn;
+      - seen at phone size on Faber's still;
+      - research's read is in the build's capture of one fall at full speed;
+      - not director-accepted.
 - **The dock as three icons, a block** (Modulo, 2026-11-15; the director's words in `docs/decisions.md`; `tools/blender/hud_dock_sheet.py`; the sheet `build/handoff/UI/hud/dock/hud_dock.png`).
   - **Feel line:** one console under the thumbs' reach, three keys of colour set in one graphite body, Inventory standing over its two wings.
   - **The piece:** 196 by 68 points, bottom centre, 150 points clear of the thumbstick and of the jump button. A graphite body cut as the kit's buttons are (top left, bottom right), stepping up round the middle tile. Three tiles lean as a bar's front does (0.2): Base 52 by 44, Inventory 60 by 54 in the middle, the Map 52 by 44. A tile is a block of its system's colour (Power, Voidkin, the Map), deeper at its foot than a pill's block, with a sheen across it and a front face, its mark in ink. Under each tile, its light.

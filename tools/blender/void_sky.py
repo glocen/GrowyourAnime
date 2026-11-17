@@ -201,9 +201,14 @@ def glints(rows, cols, k, stars, t=0.0):
     return out
 
 
-def streak(rows, cols, k, start, end, s):
-    """A falling star, `s` of its way from start to end (points): a white head and a tail that thins behind it. Pale,
-    and tied to nothing: it never takes a rarity's colour, and it's never the reveal's."""
+STREAK = dict(tail=54.0, root=1.1, tip=0.3, core=1.5, glow=4.5, glow_cover=0.55)  # points: the falling star's parts
+
+
+def streak(rows, cols, k, start, end, s, parts=STREAK):
+    """A falling star, `s` of its way from start to end (points): a bright head in a soft glow, and a tail that thins
+    behind it, `tail` points long, `root` thick at the head and `tip` at its end. Pale, and tied to nothing: it never
+    takes a rarity's colour, and it's never the reveal's. Made to be caught at the smallest phone on first sight
+    (research's must-fix, TR41, 2026-11-17)."""
     out = np.zeros((rows, cols, 4), np.float32)
     if not 0.0 <= s <= 1.0:
         return out
@@ -212,13 +217,18 @@ def streak(rows, cols, k, start, end, s):
     hx, hy = ax + (bx - ax) * s, ay + (by - ay) * s
     length = math.hypot(bx - ax, by - ay)
     ux, uy = (bx - ax) / length, (by - ay) / length
-    tail = length * 0.3
+    tail = parts["tail"] * k
     y, x = np.mgrid[0:rows, 0:cols].astype(np.float32)
     on, across = (x - hx) * ux + (y - hy) * uy, -(x - hx) * uy + (y - hy) * ux
     fade = math.sin(math.pi * s) ** 0.6
-    body = np.where((on <= 0) & (on > -tail), np.clip(1 + on / tail, 0, 1) ** 1.6, 0.0) * np.exp(-(across / (0.45 * k)) ** 2)
-    head = np.exp(-(on * on + across * across) / (0.8 * k) ** 2)
-    over(out, rgb("#CFE0FF"), np.clip(body * 0.8 * fade, 0, 1).astype(np.float32))
+    along = np.clip(1 + on / tail, 0, 1)  # 1 at the head, 0 at the tail's end
+    thick = (parts["tip"] + (parts["root"] - parts["tip"]) * along) * k
+    body = np.where((on <= 0) & (on > -tail), along ** 1.6, 0.0) * np.exp(-(across / thick) ** 2)
+    r2 = on * on + across * across
+    glow = parts["glow_cover"] * np.exp(-r2 / (parts["glow"] * k) ** 2)
+    head = np.exp(-(r2 / (parts["core"] * k) ** 2) ** 1.5)
+    over(out, rgb("#CFE0FF"), np.clip(glow * fade, 0, 1).astype(np.float32))
+    over(out, rgb("#CFE0FF"), np.clip(body * 0.85 * fade, 0, 1).astype(np.float32))
     over(out, np.ones(3, np.float32), np.clip(head * fade, 0, 1).astype(np.float32))
     return out
 
@@ -246,7 +256,7 @@ BREAKER = dict(
     glints=((528.0, 21.0, 1.5, "#DCE6FF", 4.6, 0.0), (398.0, 90.0, 1.1, "#FFE9D0", 3.4, 0.3),
             (38.0, 142.0, 1.0, "#BFD0FF", 5.2, 0.6), (94.0, 84.0, 0.9, "#F1D9FF", 3.9, 0.8),
             (250.0, 46.0, 0.9, "#DCE6FF", 4.2, 0.45), (300.0, 294.0, 0.9, "#BFD0FF", 5.0, 0.15)),
-    streak=((416.0, 74.0), (346.0, 132.0)),  # a falling star's path, through the fourth chamber's window
+    streak=((419.0, 81.0), (323.0, 160.0)),  # a falling star's path: the fourth chamber's window, corner to corner
     shards=((62.0, 118.0), (165.0, 118.0)),  # where a working chamber's shard floats
 )
 

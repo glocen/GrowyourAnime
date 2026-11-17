@@ -40,11 +40,12 @@ PW, PH = vs.PANEL[2:]
 K_SKY = 43.0 / 18.0  # pixels a point in the night: the most that keeps its left half within 1024 and its sizes whole
 LEFT, RIGHT = 1024, 1006  # the left half's width in pixels, and where the right half starts: they lap by 18
 K_MIST = 1024.0 / PW  # the mist is soft: one turn of the panel's width in 1024 pixels
-K_SMALL = 8  # the star and the falling star
+K_SMALL = 8  # the star
+K_FALL = 4  # the falling star: twice the old one's size in the same pixels
 # The four chambers' windows, between a chamber's name strip and its plate (screens_vivid_sheet.chamber).
 WINDOWS = [(14.0 + 103.0 * i, 60.0 + 144.0 * sv.HEAD, 96.0, 144.0 * (sv.SPLIT - sv.HEAD)) for i in range(4)]
 STAR = 24.0  # a star's image, in points, for a star of size 1.5: sixteen times its size
-FALL = dict(points=(28.0, 24.0), head=(4.0, 20.0))  # the falling star's image, and where its head is in it
+FALL = dict(points=(56.0, 48.0), head=(9.0, 39.0))  # the falling star's image, and where its head is in it
 LIGHT = 256  # the light's image, in pixels: four times its radius across
 SHOWN = 3.75  # the moment the sheet stacks: the falling star is halfway
 
@@ -139,8 +140,8 @@ def falling():
     (ax, ay), (bx, by) = LOOK["streak"]
     half = ((bx - ax) / 2, (by - ay) / 2)
     hx, hy = FALL["head"]
-    rows, cols = round(FALL["points"][1] * K_SMALL), round(FALL["points"][0] * K_SMALL)
-    return vs.streak(rows, cols, K_SMALL, (hx - half[0], hy - half[1]), (hx + half[0], hy + half[1]), 0.5)
+    rows, cols = round(FALL["points"][1] * K_FALL), round(FALL["points"][0] * K_FALL)
+    return vs.streak(rows, cols, K_FALL, (hx - half[0], hy - half[1]), (hx + half[0], hy + half[1]), 0.5)
 
 
 def light():
@@ -244,7 +245,7 @@ def stacked(images, top, tall, keys, colours, t, k=2):
         (ax, ay), (bx, by) = LOOK["streak"]
         x, y, w, hh = WINDOWS[3]
         x0, y0 = round(x * k), round(y * k)
-        one = rs.shrink(images["BreakerFallingStar"], k / K_SMALL)
+        one = rs.shrink(images["BreakerFallingStar"], k / K_FALL)
         one[..., 3] *= math.sin(math.pi * s) ** 0.6
         rs.paste(px[y0:round((y + hh) * k), x0:round((x + w) * k)], one,
                  round((ax + (bx - ax) * s - FALL["head"][0]) * k) - x0, round((ay + (by - ay) * s - FALL["head"][1]) * k) - y0)

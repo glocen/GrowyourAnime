@@ -30,7 +30,7 @@ import void_sky as vs  # noqa: E402
 
 K, FPS = 2, 30
 BREATH, SWELL = 2.6, 0.07  # a shard's light: seconds a breath, and how far it swells
-FALL, FALLS = 3.4, 0.7  # the falling star: when it starts, how long it lasts
+FALL, FALLS = 3.4, 0.9  # the falling star: when it starts, how long it lasts (its old speed on the longer path)
 LAVENDER = "#DCCBFF"
 
 

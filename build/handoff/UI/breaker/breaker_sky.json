@@ -482,22 +482,22 @@
  "fallingStar": {
   "image": "BreakerFallingStar",
   "points": [
-   28.0,
-   24.0
+   56.0,
+   48.0
   ],
   "head": [
-   4.0,
-   20.0
+   9.0,
+   39.0
   ],
   "start": [
-   416.0,
-   74.0
+   419.0,
+   81.0
   ],
   "end": [
-   346.0,
-   132.0
+   323.0,
+   160.0
   ],
-  "seconds": 0.7,
+  "seconds": 0.9,
   "clip": "chamber 4's window, under its glass",
   "note": "the image's `head` runs from `start` to `end` in `seconds`, at an even speed; its light is sin(pi * s) ^ 0.6, s from 0 to 1. Pale, never tinted. The first falls `first` seconds after the screen opens, then one every `every` seconds, each drawn at random between the two (research, 2026-11-15: seeds, tuned in play).",
   "first": [

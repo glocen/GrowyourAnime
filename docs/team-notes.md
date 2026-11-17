@@ -14,11 +14,13 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **Open, tests:** ten Base and HUD checks need the base's models, which stand grey since 8858359 (AR16 at 128) until the plan is laid again. Four timing cases are NOT VERIFIED (AR11). The Keeper's "and out on Out" and Pip's skip fail at times. TR20's Breaker hover depends on order.
 - **Open, for research:** the target card's light (`CardLightHealth`) keeps its glow ahead of its front. Does it go the same way as the lead's?
 
-**Modulo (assets).** 2026-11-17, 15:45, on Opus 5.5. Voidkin work parked until before launch (the director's word, 11:10): AR26 and AR27 stay as delivered, and Faber holds AR27's upload.
+**Modulo (assets).** 2026-11-17, 15:52, on Opus 5.5. Voidkin work parked until before launch (the director's word, 11:10): AR26 and AR27 stay as delivered, and Faber holds AR27's upload.
 - **For Faber, now:** AR16's plan laid again at 128. It passes part 7's tests, and the masts are off the Door's line. To take it: `Plots.Drawn` = 8, then kit_take; 8 meshes and 11 pictures to upload (AR16, "Delivery 3"). It brings back the ten Base and HUD checks that wait on the base's models.
-- **For Faber, after it:** AR29's B, 13 icons (AR29). AR30's buttons, 25 images (AR30, "The cut"). Both are passed by research, with content check PASS.
-- **For research:** AR30's phone sheet on the smallest-phone stills (AR30, "The phone sheet on the smallest phone"). It has one note beyond the buttons.
-- **Now:** TR41's falling star, research's must-fix. **Then:** AR17's map kit at 128; the icons for stones, emblems and jewels, and TR10's two.
+- **For Faber, after it:**
+  - AR29's B: 13 icons (AR29).
+  - AR30's buttons: 25 images (AR30, "The cut"). Research passed the phone sheet at 15:47.
+  - TR41's falling star: one image and five numbers (AR12, "The falling star, made to be caught").
+- **Now:** AR17's map kit at 128. **Then:** the icons for stones, emblems and jewels, and TR10's two.
 - **Unchanged:** AR28's Stage I is with Faber, waiting on TR37. AR19 (db2f086) waits on research's pass and Faber's six re-uploads. AR24's A waits on Faber's TR34 block. Sable is after launch.
 
 **Turns.** Studio: Faber (the game's place, for AR30's bases). Blender: nobody. Timing tests: nobody.

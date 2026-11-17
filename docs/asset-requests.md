@@ -8293,6 +8293,16 @@ Read against the game's own rules: C is drawn at `Theme.Author` (812 × 375) at 
 - **The director's pick, about 20:52: A, the ledger** (`docs/decisions.md`, the row). It reopens research's C. Faber rebuilds the Items page in A, under `docs/ui.md`'s bag rules.
 - **The bag's colours, the director's word (2026-11-17, 02:40):** "we should build the inventory more with that color style not the old yellow brown", on AR24's A. The ledger's layout stays. Its warm brown and brass give way to the seam's colours: violet-black, pale light edges, the rarities' own colours on the cells. Modulo redraws the bag's skin from AR24's A, and Faber rebuilds it.
 
+### The skin in the seam's colours (Modulo, 2026-11-17, 02:59)
+
+`build/handoff/UI/inventory/bag_seam.png` (at phone size: `bag_seam_phone.png`), drawn by `tools/blender/bag_seam.py`. The ledger's layout is unchanged, read from Faber's still `tr28-left` at 2.35 px a point. Three states: the full bag; Kiribi chosen with its card open; a new account's empty bag. Then close-ups, the palette and the notes.
+- **The skin:** violet-black grounds. Edges of pale light, strongest at their middle, run along the room's top, the hairline between the doll and the grid, the rail, the card's sliding edge and Combat Power's plate. What's lit is the light itself: the chosen kind's chip, the ring round the chosen cell and round the slot it fills, and Equip, a plate of light with dark words. A shaft of light stands behind the Voidkin, cut at its stage. The rarities keep AR6's cells, their well in the seam's violet-black.
+- **For Faber:** the palette in the kit's keys, as `UIKit.Palettes.Seam`, with `Light` as its accent. The edge, ring, chip, Equip and shaft numbers are in the sheet's notes. Every number is a seed.
+- **For research:**
+  - Legendary's well: the seam's violet-black in place of AR6's umber, its gilt frame kept. It's one pair in `gear_icons.json`, shown today and proposed in the close-ups. Up close the difference is slight, since the gold light covers most of the well.
+  - The Overview: TR24's fix 4 gives the Voidkin screen one palette across its tabs, so the sheet draws the shell in the seam. The director's word names the inventory, so whether the Overview follows is the director's to say.
+- **Implemented:** the sheet. **Tested:** the content check (PASS, 02:56). **Visually reviewed:** my own pass, up close and at phone size; research's isn't in. **Director-accepted:** no; the sheet hasn't been seen.
+
 ## AR19. The generator: three directions for Stage I, and how each grows (Modulo, for research's verdict)
 
 Research's order (`docs/research/rework-2026-11-16.md`, part 9), on the director's package of 13:41 (`docs/archive/director-package-2026-11-16.md`, part 7). The director's words:

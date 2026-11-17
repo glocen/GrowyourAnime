@@ -32,8 +32,8 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **Open, for research:** the target card's light (`CardLightHealth`) keeps its glow ahead of its front. Does it go the same way as the lead's?
 - **Open, tooling:** `tools/ui/kit_config.py` rewrites `Config.UIKit` whole and drops what was added by hand (Eclipse, the reveal's marks, the shard grades). Don't run it until it merges.
 
-**Modulo (assets).** 2026-11-17, 02:48, on Opus 5.5.
-- **The bag's skin** (AR18, the director's word of 02:40): on it now, the ledger's layout in the seam's colours, for Faber's rebuild.
+**Modulo (assets).** 2026-11-17, 02:59, on Opus 5.5. Stopped for the night, on the director's word.
+- **The bag's skin** (AR18, the director's word of 02:40): the sheet is done (`build/handoff/UI/inventory/bag_seam.png`), with the content check PASS. It waits on research's pass and on the two open questions in AR18's entry (Legendary's well, the Overview). Then Faber rebuilds.
 - **The chest opening's look** (AR24): the director's A, as it stands, goes to Faber's block (TR34). `tools/blender/chest_band.py` draws it, and its numbers are in the sheet's notes (AR24, "A for Faber's block").
 - **Sable** (AR25): waits for the update after launch.
 - **The dark line round the portraits** (AR12, fault 2): done. Faber re-uploads the 60, the portraits first, and gives the lead card's saves `rs.bleed` when he re-cuts the heads.

@@ -9758,6 +9758,53 @@ Research's request, 2026-11-17, 11:15, in phase 3's order (`docs/production-plan
 - **Scope:** the two machines' look in three directions, then the chosen one's Stage I as a model for Faber. **Waits:** Stages II and III, the Research Lab (after launch), their sounds, their screens.
 - **Order:** after AR19's two notes. The content check before drawing.
 
+### The six directions in blocks, for research's pick (Modulo, 2026-11-17, 11:50 to 12:18 by the clock)
+
+**The directions,** each at Stage I, in the base kit's own swatches, the family of the Breaker, the bays and the generator (AR16, AR19): horns of void stone with veins of the void's violet, shards floating, steel decks with a line of violet round their foot, bone accents, the toon outline. Violet is the void's light, and yellow is electricity. Each stands on a sleeping place's footprint, 8.6 studs square, and under the Breaker's 12.8.
+- **The Forge:** the item is a flat bone plate on a lit seat. The stones go in at a small cradle on the deck. Each direction has one motion for the rank-up: the tell, the contact, then the recovery.
+  - **A, the Press:** two horns curve in from the deck's sides to meet over the seat, in a block with two meshing gears on its face. Between them is the ram, a broad eight-sided block with a flat disc of light under it, riding on two rods. Tell: the ram lifts high and its band lights. Contact: it drops onto the item. Grows: II, a heavier ram on four rods and plated horns; III, a second pair of horns across the first.
+  - **B, the Clasp:** a short pillar holds the item in a ring of light. Two straight arms of void stone, banded in steel, stand open in a V from axles at the pillar's foot, each on a gear. The gears mesh, so the arms move together, and each arm carries a flat-faced head. Tell: the item rises in a column of light and the arms lean wider. Contact: they clap shut on it. Grows: II, a second, shorter pair at right angles; III, the arms ribbed with clamps and the pillar floating.
+  - **C, the Sting:** one arm of void stone in five segments, a gear on each joint, rises from a block at the deck's left and hooks over the seat. Its last segment is a broad faceted point with a lit core. Tell: the arm draws up and back. Contact: the point strikes down onto the item. Grows: II, a second, shorter arm beside it; III, the segments plated and the point three points. "Sting" is a working name: players see the Forge.
+- **The Stone Condenser:** a yellow cable comes in at its foot. Over each direction floats the core: a ring of four clamps round a floating shard of the void's light, drawing motes in. Each stone it makes drops into the tray, a full tray stops, and the five-into-one is a small cradle on the deck.
+  - **A, the Comb:** an upright panel, 7 by 6.4, facing the gate, held from its sides by two horns that close over its top, with the core between their tips. Its face is a comb of 35 six-sided cups filling from the bottom up, so its lit height is the fill. Grows: II, a wider comb on four horns; III, a second comb behind at an angle and the core in two rings.
+  - **B, the Cup:** three separate, slightly curved horns rise to a hub. Over it, six claws open in a cup tipped toward the gate, with a ring round their middles. The stones heap inside (33 when full), and the ring's eight marks light from the low side up. Grows: II, a second, lower cup on the other side; III, three cups round the stalk, stepped.
+  - **C, the Shelves:** four shelves of six cups each step down toward the gate, about 4 studs high, with a mark under each cup on the step's lip. Behind the top, two horns hold the core between their tips, and a groove runs down to the lowest shelf. The shelves fill from the lowest up. Grows: II, a wider stair with a second core; III, the stair round in a half ring.
+
+**Content check before drawing** (2026-11-17, from the written directions): all six PASS, on the conditions kept in the script's head. The conditions are:
+- no red or orange, no drip or liquid shape, no text or emblem;
+- the Press's ram flat underneath and wider than tall, its horns visibly curved, and nothing overhanging where they meet;
+- the Clasp's arms never hand-shaped;
+- the Sting's joints geared, never a spine, and its tip dry and faceted;
+- the Comb's cups six-sided;
+- the Cup's three horns separate, with six claws that are never fingers;
+- the Shelves' steps open rows, with nothing on the top step.
+
+**The blocks** (a throwaway in Blender, from the game's camera): `tools/blender/forge_condenser_directions.py`.
+- **Where they stand:** each is set in the yard as it stands today (the 200 yard, the generator taken out), on the Breaker's inner side, 17.5 studs from its middle. The Condenser's gate view puts it 86 studs before the gate's camera, as on the halved base at 128, and hides today's battery, which stands on that line in the 200 yard.
+- **Nothing was seen in Studio.** The lights are Blender's.
+- **The sheets,** in `build/handoff/Base/`:
+  - `forge_block_A.png`, `_B.png` and `_C.png`: at rest beside the Breaker from 30 studs; the grey block-in; from 14 studs at rest, at the tell and at the contact (the burst is a stand-in for Faber's effect); the silhouette in black with the Breaker's.
+  - `condenser_block_A.png`, `_B.png` and `_C.png`: part-full beside the Breaker from 30 studs; the grey; part-full from 14 studs; the gate's whole view, full; full, part-full and empty cut from the gate's view and drawn 4 times; the silhouette.
+  - `forge_block_glance.png` and `condenser_block_glance.png`: the three side by side.
+  - `forge_block_64.png` and `condenser_block_64.png`: 64 px and 128 px tall, and the silhouette at 64 px.
+- **Triangles,** with the drawn edge: the Forge's A 1,372, B 1,188, C 1,820; the Condenser's A 5,152, B 1,692, C 5,132.
+
+**Modulo's read, for research's pick:**
+- **The Forge, A, the Press: the strongest presence.** It stands near the Breaker's height, an arch of two curved horns with the ram hung inside, the same family as the Breaker's crown. At 64 px it reads as a machine, a closed arch with a block in it. From 14 studs the press reads: the ram up with its band lit, then down on the item in a ring of light. **Weakest:** from 30 studs, the tell is only the ram a little higher, so the rank-up's tell rides on Faber's effect. Beside the Breaker the two horned shapes are close at a glance.
+- **The Forge, C, the Sting: the silhouette that's its own.** It's a hook, unlike anything in the base, and its tell (the arm reared up and back) reads best of the three from afar. **Weakest:** it's thin. At 64 px its bent arm is near the yard's lamp posts, also bent poles, and its contact is a small mass on a small item.
+- **The Forge, B, the Clasp: the clearest motion up close.** The item rises in its column of light and the two arms clap shut on it. **Weakest:** it's the lowest of the three. From 30 studs it's a small dark V beside the Breaker, and at 64 px a V of two heads, like tongs.
+- **The Condenser, A, the Comb: its job done best.** Cut from the gate's view at 86 studs, full, part-full and empty are three different pictures: a lit honeycomb, a lit lower half, a dark comb. **Weakest:** its silhouette is a block with a ring on top, and its triangles. Most of its 5,152 are the 35 cups' rims, and a plain six-sided plug per cup would bring Stage I near 2,000.
+- **The Condenser, C, the Shelves: second at the job.** From the gate, its rows read lit from the bottom up, and the arch of horns over the core gives it a shape at 64 px. **Weakest:** 5,132 triangles, for the same reason as the Comb. The arch over the core and the groove under it read a little like a shrine (see the check below).
+- **The Condenser, B, the Cup: I'd drop it.** It's the most sculptural, but it fails the job. From the gate the heap is a few pixels, and full and part-full barely differ. At 64 to 128 px, the three stalks, the claws and the floating core read as a standing figure with its arms out.
+- **My picks:** the Press and the Comb. The Sting is the bolder Forge if its thinness is accepted.
+
+**Content check on the renders** (2026-11-17, by 12:15, from the ten sheets): the Press, the Clasp, the Sting and the Comb PASS. The Cup and the Shelves were BLOCKED on one thing only: their unlit marks, in the "dark" swatch (#1E1426), read as maroon under the dusk's pink light, against "no red". All three Condensers' unlit plugs, discs and marks are now "ink" (#0C0A16), re-rendered at 12:17. The recheck: the Cup and the Shelves PASS (12:18), and the Comb with them. The conditions it adds, kept through the finish:
+- **The Press:** Faber's contact light stays flat round the plate, never a ring standing upright at the seat under the falling ram.
+- **The Clasp:** the contact's column of light never has a crossbar, and its ring stays clear of the shut arms, so it never makes a cross inside a circle. Stage II's four heads stay straight and symmetrical, never offset into a pinwheel; checked when Stage II is drawn.
+- **Design reads, not content:** the Cup as a standing figure is research's call. The Shelves' shrine read is allowed (incidental), and if research wants it gone, the groove goes to one side, off the line under the core.
+
+**Four facts:** implemented, as a throwaway: six blocks and ten sheets. Tested: the renders ran in Blender; nothing is in Studio. Visually reviewed: Modulo's read above; research's pick next. Director-accepted: no (the pick doesn't wait on the director, 2026-11-12).
+
 
 ## Later, by ground
 

@@ -15,9 +15,9 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **Open, tests:** four timing cases are NOT VERIFIED (AR11's record); the client ran at 38 to 40 fps at the base from 10:30, and the 11:40 suite ran at 58. The Keeper's "and out on Out" still fails about one run in three. TR20's Breaker-chamber hover fails in the whole suite and passes alone. Don't run `tools/ui/kit_config.py`: it rewrites `Config.UIKit` whole and drops what was added by hand.
 - **Open, for research:** the target card's light (`CardLightHealth`) keeps its glow ahead of its front. Does it go the same way as the lead's?
 
-**Modulo (assets).** 2026-11-17, 11:50, on Opus 5.5. Voidkin work parked until before launch (the director's word, 11:10): AR26 and AR27 stay as delivered, and Faber holds AR27's upload.
-- **AR19, the generator's class fix, delivered (db2f086):** cages of void stone for the dynamos, six unlit horns for the crown, a bone claw for the copper shoe and insulator, tapered teeth that never cross. The content check passed. For Faber: six meshes to upload again, with the swap's table unchanged. Research's pass next.
-- **Now:** AR28, the Forge's and the Condenser's three directions each. **Then:** the re-lay at 128 once Faber's capture confirms it, AR17's map kit, then the icons (TR10's two after its marker's verdict).
+**Modulo (assets).** 2026-11-17, 12:18, on Opus 5.5. Voidkin work parked until before launch (the director's word, 11:10): AR26 and AR27 stay as delivered, and Faber holds AR27's upload.
+- **AR28, the Forge's and the Condenser's three directions each, delivered for research's pick:** ten sheets in `build/handoff/Base/` (`forge_block_*`, `condenser_block_*`). The content check passed all six from the renders. My read: the Press and the Comb, with the Sting the bolder Forge. AR19 (db2f086) waits on research's pass and Faber's six re-uploads.
+- **Now:** the re-lay of AR16's plan at 128 on Faber's grey layout (research's 128, 12:01), the FloodMast off the Door's line. **Then:** AR28's picked Stage I as models for Faber, AR17's map kit, then the icons (TR10's two after its marker's verdict).
 - **Unchanged:** AR24's A waits on Faber's TR34 block; Sable after launch; the Door is Faber's install.
 
 **Turns.** Studio: nobody (Faber stopped at 12:01; the device simulator off). Blender: nobody. Timing tests: nobody.

@@ -4,7 +4,7 @@
 
 Each teammate rewrites its own row: two to five lines. Open asks sit under "Waiting on the director".
 
-**Quaestor (research).** 2026-11-17, 10:50, working through the director's absence (no break; no new sound effects until the director's samples).
+**Quaestor (research).** 2026-11-17, 10:58, working through the director's absence (no break; no new sound effects until the director's samples).
 - **Today's calls:** two attributes (Strength, Endurance) and the types named by their colours (TR36, Faber's); AR27, the idles lose their head glance; AR26, Rook keeps its rows with the spacing ask, and both tier 2 asks are approved on research's side; AR15's Door closed on research's side.
 - **AR11, Ground Wire's retake:** works. Must-fix (round 2 on the hold): the lock as a pulsing fill on the stopped Shade, the shield as a pulsing glint on the spear's head. Asked of Faber: does a real fight hide the lead behind its target?
 - **Next:** verdicts in motion on AR26's blocks as Faber installs them; sim.py's pool() learns "made" (TR24); attributes.py on the real Config once TR36 lands.

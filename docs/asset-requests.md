@@ -8739,6 +8739,43 @@ Faber's ask (2026-11-16, after 19:28): Stages II and III as kit pieces, for part
   - **Visually reviewed:** my own read, stills only. The motion is judged in the game.
   - **Director-accepted:** no.
 
+### The class fix and the teeth, all three stages (Modulo, 2026-11-17, 11:15 to 11:48 by the clock)
+
+Research's order (809f50b, `docs/production-plan.md`, "Phase 3's order from 2026-11-17, 11:12", Modulo's 1): the two notes above. The dynamos and the crown read as real-world parts, against the director's word that the base's machines are void machines (2026-11-15), and the teeth are too wide. The class is fixed on all three stages.
+- **The class:** copper drums, terminal boxes, ceramic insulators, and the copper shoe and blocks. Gears, bearings, clamps, cables and the rail stay: they're the parts you can read in research's reading (`docs/design.md`, the base).
+- **Stages II and III, a cage for each dynamo:**
+  - **The shape:** a square back plate of void stone, and four claws from its corners reaching toward the gate and closing round a floating shard of the void's light. A vein runs down each claw to the shard, and the cage stands on a girder stand on the sill.
+  - **The current:** it leaves on the yellow cable from a block on the plate's top.
+  - **The read:** from the gate it's a square of claws round a lit diamond at the hub's height, the Breaker's and the bay's way of holding the void. The pinion turns behind it.
+- **Stage III's crown:**
+  - **The shape:** the six rods with their insulators and copper blocks are now six horns of void stone, three a side. Each rises from the casing along its radius and leans a little toward the middle, so they read nearly upright. The longest stand nearest the middle, and the top's middle stays open.
+  - **Lit:** no part of it. Its highest point is 27.0, against the rods' 27.7.
+- **The collector, all three stages:**
+  - **The arm:** the insulator is gone, so it's one bare bar.
+  - **The claw:** the copper shoe is now a flat claw of bone on the band's face. It leaves the arm at the gauge's top and points down the band, against the rising buckets.
+  - **Tried and dropped:** a fang of void stone, first behind the arm, then beside it, didn't show from the player's camera, dark on the dark band. A vein of the void's light down the claw also went: at the gauge's top it read as the gauge full.
+- **The teeth:**
+  - **The shape:** each tooth is tapered, 0.55 at its root and 0.24 at its tip, from 0.4 under the pitch circle to 0.32 over it.
+  - **The radii:** the pitch radii now share the 6 between the axles in the teeth's ratio: 4.235 for the gear and 1.765 for a pinion. The old 4.2 and 1.65 don't roll at 2.4.
+  - **Measured:** swept in 2D through a whole tooth's pass (`build/scratch/modulo/ar19/teeth.py`), the faces never cross, and the closest come 0.043 apart. Today's blocks on the same radii crossed by up to 0.15 of a tooth's face.
+- **For Faber, six meshes to upload again** (`build/handoff/Base/meshes`): Generator, Generator2, Generator3, Generator2Wheel, Generator2Pinion and Generator3Pinion.
+  - **Unchanged:** the names, the origins, the places and the swap's table (`plan.json`). The pinions stand where they did and turn at 2.4.
+  - **Changed, words only:** Generator2's and Generator3's collision texts say "cages" for "dynamos".
+- **Triangles:** Stage I 5,018, unchanged. Stage II 6,838, from 7,134. Stage III 8,310, from 9,682.
+- **Seen:** `build/scratch/modulo/ar19/`. The `look/` folder holds each stage in the plan's look under the dusk, from the gate's line and from 30 studs, close views of the claw, a cage and the crown, and small copies. The `check/` folder holds the pieces stood by the table.
+- **Content check before upload:** PASS, 2026-11-17, by 11:47. It looked at every view at full size, 128 and 64 px, the stood pieces, and Stage III before the fix.
+  - **What it found:** no red at any size, and nothing reads as gore. The bone claw is a clean pale blade with no liquid shape. The cages have no pinwheel twist, the eight spokes are straight, and the teeth are plain. Every condition of 2026-11-16 still holds.
+  - **Conditions:**
+    - The horns and the claw stay unlit, with no glow at any tip.
+    - No red or warm wet tint goes on the claw or the horn tips, and no drip-like highlight on the bone.
+    - The cages' claws stay straight, mirror-image diagonals. A bent claw or vein needs a new check from the gate.
+- **Outside this piece, for research:** the same class stands elsewhere in the base. That's the kit's pylons, power lines and transformers (`base_kit.py`, AR14's dressing), and the battery rack's copper bar and insulators (`base_machines.py`). They weren't in this order, and I haven't touched them.
+- **The four facts:**
+  - **Implemented:** the class fix on all three stages and the tapered teeth, exported. Only the six generator meshes and their manifest entries changed.
+  - **Tested:** the export and the plan ran, and `plan.json` is unchanged. No copper or ceramic face is left in any stage. The teeth's sweep is above. The content check passed.
+  - **Visually reviewed:** my own read, stills only. Research's pass and the motion in the game are next.
+  - **Director-accepted:** no.
+
 ## AR20. The base and the map round it, no mist and less somber (Modulo, for research's pick, then Faber)
 
 From the director's word at 16:50 (`docs/decisions.md`, the row on the mist): "imo we should remove all that in base and around it it way to much + need to be less somber". Research's ask, with its Now row of 16:52:

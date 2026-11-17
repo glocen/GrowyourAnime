@@ -758,7 +758,7 @@
   "Generator": {
    "mesh": "meshes/Generator.json",
    "triangles": 2318,
-   "vertices": 1390,
+   "vertices": 1372,
    "centre": [
     -0.96866,
     10.59113,
@@ -797,7 +797,7 @@
    "glowStrength": 2.4,
    "collision": "none",
    "lights": [],
-   "note": "its origin is its axle's middle, 10 up at the generator's middle; its axle lies along the piece's Y (Roblox's Z), the line to the gate. From the gate it turns anticlockwise, so the buckets rise on the gate's right and run under the collector's shoe: in Roblox, CFrame.Angles(0, 0, -angle) with the angle growing, faster as the plant generates more. Its lower edge runs 1.6 under the floor, inside the well's dark"
+   "note": "its origin is its axle's middle, 10 up at the generator's middle; its axle lies along the piece's Y (Roblox's Z), the line to the gate. From the gate it turns anticlockwise, so the buckets rise on the gate's right and run under the collector's claw: in Roblox, CFrame.Angles(0, 0, -angle) with the angle growing, faster as the plant generates more. Its lower edge runs 1.6 under the floor, inside the well's dark"
   },
   "GeneratorArc1": {
    "mesh": "meshes/GeneratorArc1.json",
@@ -995,12 +995,12 @@
    "glowStrength": 2.4,
    "collision": "none",
    "lights": [],
-   "note": "its origin on the axle, 10 up at the generator's middle, made at a demand's share of 0 at the rail's foot by the well. The rail is an arc about the axle, so the mark turns, not slides: about the axle the way the wheel turns, by the share times 117.9 degrees (CFrame.Angles(0, 0, -share * math.rad(117.9))); at 1 it stands by the collector's shoe, 13.16 from the axle, about 27 studs of travel. The share is on the gauge's own scale, the demand over the same top as the generation's, so the lit steps reach the mark when generation meets demand. Under a share of 0.12 it sinks into the well's kerb. Look only"
+   "note": "its origin on the axle, 10 up at the generator's middle, made at a demand's share of 0 at the rail's foot by the well. The rail is an arc about the axle, so the mark turns, not slides: about the axle the way the wheel turns, by the share times 117.9 degrees (CFrame.Angles(0, 0, -share * math.rad(117.9))); at 1 it stands by the collector's claw, 13.16 from the axle, about 27 studs of travel. The share is on the gauge's own scale, the demand over the same top as the generation's, so the lit steps reach the mark when generation meets demand. Under a share of 0.12 it sinks into the well's kerb. Look only"
   },
   "Generator2": {
    "mesh": "meshes/Generator2.json",
-   "triangles": 2994,
-   "vertices": 1814,
+   "triangles": 2770,
+   "vertices": 1712,
    "centre": [
     -0.97012,
     10.57303,
@@ -1015,36 +1015,36 @@
    "glow": "maps/Base_Kit_Glow.png",
    "glowTint": "#FFFFFF",
    "glowStrength": 2.4,
-   "collision": "in the piece's frame (across, toward the gate, up): the well shut to walking, a cylinder of radius 10.6, 3 high, at the middle; the sill a box 22.4 across, 1.8 deep and 1.4 high, its middle 5.1 toward the gate; each raked leg's foot a box 2.8 square, 1 high, at across +-7.6, 14 back; each raked leg a Part 1.3 thick along its line, from (+-7.6, -14, 0.3) to (+-1.5, -4.1, 8.7). The trestle and the dynamos stand on the sill, the arm over the well: look only",
+   "collision": "in the piece's frame (across, toward the gate, up): the well shut to walking, a cylinder of radius 10.6, 3 high, at the middle; the sill a box 22.4 across, 1.8 deep and 1.4 high, its middle 5.1 toward the gate; each raked leg's foot a box 2.8 square, 1 high, at across +-7.6, 14 back; each raked leg a Part 1.3 thick along its line, from (+-7.6, -14, 0.3) to (+-1.5, -4.1, 8.7). The trestle and the cages stand on the sill, the arm over the well: look only",
    "lights": [],
-   "note": "Stage II's still body, in place of Generator at the same place: a twin wheel 24.4 across with two sets of spokes, the spur gear on its axle driving a pinion and its housed dynamo on the sill (the descending side), the back frame plated. Its middle on the well's. The collector's arm reaches about 23.1 up. On the ground it stands where Stage I stands, its sill 0.5 nearer the gate. The well light stays: VoidWell, 1.6 up in its middle"
+   "note": "Stage II's still body, in place of Generator at the same place: a twin wheel 24.4 across with two sets of spokes, the spur gear on its axle driving a pinion and its void cage on the sill (the descending side): four claws round a lit shard; the back frame plated. Its middle on the well's. The collector's arm reaches about 23.1 up. On the ground it stands where Stage I stands, its sill 0.5 nearer the gate. The well light stays: VoidWell, 1.6 up in its middle"
   },
   "Generator3": {
    "mesh": "meshes/Generator3.json",
-   "triangles": 5098,
-   "vertices": 3026,
+   "triangles": 3822,
+   "vertices": 2396,
    "centre": [
     -0.72398,
-    12.7019,
+    12.40887,
     3.72023
    ],
    "size": [
     30.238,
-    30.006,
+    29.42,
     28.86
    ],
    "colour": "maps/Base_Kit_Color.png",
    "glow": "maps/Base_Kit_Glow.png",
    "glowTint": "#FFFFFF",
    "glowStrength": 2.4,
-   "collision": "in the piece's frame (across, toward the gate, up): the well shut to walking, a cylinder of radius 10.6, 3 high, at the middle; the sill a box 22.4 across, 1.8 deep and 1.4 high, its middle 5.1 toward the gate; each raked leg's foot a box 2.8 square, 1 high, at across +-7.6, 14 back; each raked leg a Part 1.3 thick along its line, from (+-7.6, -14, 0.3) to (+-1.5, -4.1, 8.7). The trestle and the dynamos stand on the sill, the arm, the casing and its crown over the well: look only",
+   "collision": "in the piece's frame (across, toward the gate, up): the well shut to walking, a cylinder of radius 10.6, 3 high, at the middle; the sill a box 22.4 across, 1.8 deep and 1.4 high, its middle 5.1 toward the gate; each raked leg's foot a box 2.8 square, 1 high, at across +-7.6, 14 back; each raked leg a Part 1.3 thick along its line, from (+-7.6, -14, 0.3) to (+-1.5, -4.1, 8.7). The trestle and the cages stand on the sill, the arm, the casing and its crown over the well: look only",
    "lights": [],
-   "note": "Stage III's still body, in place of Generator at the same place: Stage II's, with the armoured half drum of a casing over the wheel and its crown of six rods, a second pinion and dynamo on the rising side; the casing's seven windows stand dark here: the gauge's steps 5 to 8 (Generator3Arc5 to 8) carry the lit ones of the five over them, and the two past the collector's shoe stay dark. Its middle on the well's. The collector's arm reaches about 24.9 up, the crown about 27.7. On the ground it stands where Stage I stands, its sill 0.5 nearer the gate. The well light stays: VoidWell, 1.6 up in its middle"
+   "note": "Stage III's still body, in place of Generator at the same place: Stage II's, with the armoured half drum of a casing over the wheel and its crown of six unlit horns, a second pinion and cage on the rising side; the casing's seven windows stand dark here: the gauge's steps 5 to 8 (Generator3Arc5 to 8) carry the lit ones of the five over them, and the two past the collector's claw stay dark. Its middle on the well's. The collector's arm reaches about 24.9 up, the crown about 27.7. On the ground it stands where Stage I stands, its sill 0.5 nearer the gate. The well light stays: VoidWell, 1.6 up in its middle"
   },
   "Generator2Wheel": {
    "mesh": "meshes/Generator2Wheel.json",
-   "triangles": 3432,
-   "vertices": 1960,
+   "triangles": 3384,
+   "vertices": 1928,
    "centre": [
     0.0,
     0.0,
@@ -1065,16 +1065,16 @@
   },
   "Generator2Pinion": {
    "mesh": "meshes/Generator2Pinion.json",
-   "triangles": 384,
-   "vertices": 224,
+   "triangles": 360,
+   "vertices": 208,
    "centre": [
     0.0,
     0.0,
     0.0
    ],
    "size": [
-    4.164,
-    4.045,
+    4.181,
+    4.172,
     1.02
    ],
    "colour": "maps/Base_Kit_Color.png",
@@ -1087,16 +1087,16 @@
   },
   "Generator3Pinion": {
    "mesh": "meshes/Generator3Pinion.json",
-   "triangles": 384,
-   "vertices": 224,
+   "triangles": 360,
+   "vertices": 208,
    "centre": [
     0.0,
     0.0,
     0.0
    ],
    "size": [
-    4.164,
-    4.045,
+    4.181,
+    4.172,
     1.02
    ],
    "colour": "maps/Base_Kit_Color.png",

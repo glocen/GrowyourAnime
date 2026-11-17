@@ -1,20 +1,20 @@
 """AR19: the generator, the Void Mill (research's pick of 2026-11-16, 15:04; its three fixes passed at 15:38).
 
 A wheel facing the gate turns down into the well's dark. Its band of buckets comes up on the gate's right through the
-void's light, and a collector's shoe high on that side takes it. The lit arc's height up the rim is the generation; a
+void's light, and a collector's claw high on that side takes it. The lit arc's height up the rim is the generation; a
 bone diamond on a rail outside the rim is the demand, and the arc past it means power to spare. In front, a concrete
 sill across the well carries a trestle and the front bearing; the collector is an arm clamped on that bearing.
 
 One source for two uses: generator_directions.py's sheet draws the whole mill (`mill`), and the base kit takes
 `PIECES` (base_kit.py), the mill cut the way the builder drives it (Faber, 2026-11-16):
   Generator          all that stands still: the well and its kerb, the back bearing on its raked frame, the sill, the
-                     trestle and the front bearing, the collector arm with its shoe, the demand's rail, the current's
+                     trestle and the front bearing, the collector arm with its claw, the demand's rail, the current's
                      cable, and the dark plate behind the band that the buckets turn across.
   GeneratorWheel     the rims, the buckets' walls, the spokes, the hub and the axle with its nut: its origin on the axle,
                      AXLE up, turning about the line to the gate. From the gate it turns anticlockwise: the buckets rise
                      on the gate's right.
   GeneratorArc1..8   the gauge: eight still steps of the void's light between the plate and the band, from the well up
-                     the gate's right to the collector's shoe, each an eighth of the generation's share. A step is
+                     the gate's right to the collector's claw, each an eighth of the generation's share. A step is
                      shown or hidden, never dimmed: hidden, the dark plate shows through the band.
   GeneratorDemand    the demand's bone diamond with its lit pip, on the rail: its origin on the axle, made at a share of
                      0, turned about the axle by the share, the way the wheel turns.
@@ -23,6 +23,7 @@ at 3) are cut the same way, every piece of stage n named Generator<n>..., with w
 before named once: `STAGES` lists each stage's pieces, and base_plan.py writes it into the plan as the swap's table.
   Generator2, Generator3          the stage's still body. Stage III's casing windows stand dark in it.
   Generator2Wheel                 the twin wheel and the spur gear on its axle, which turns with it: Stages II and III.
+                                  The pinions turn the void's cages on the sill (Generator2, 3).
   Generator2Pinion                the pinion on the descending side, turning the other way, 24/10 as fast: II and III.
   Generator3Pinion                the pinion on the rising side: III.
   Generator2Arc1..8, 3Arc1..8     the gauge's steps on the twin wheel. Stage III's carry the casing's windows over them,
@@ -34,9 +35,15 @@ axle for the wheel and the demand), one unit a stud. A part built about Z is tur
 gate: an angle `a` about it is then at (cos a, -sin a) across and up from the axle. Violet in, yellow out.
 
 The content check (2026-11-16, by 15:36) holds for the finish: both sets of spokes straight and radial; Stage III's
-dynamos square cages about the hub's height either side of a trestle that keeps its splayed A and tie; the collector
-one straight rigid arm with nothing hung from it; copper on the orange side; the demand's mark a plain diamond with a
-plain pip; the violet emissive stepped light and the well dark with motes.
+cages square about the hub's height either side of a trestle that keeps its splayed A and tie; the collector one
+straight rigid arm with nothing hung from it; the demand's mark a plain diamond with a plain pip; the violet emissive
+stepped light and the well dark with motes. The crown stays unlit, three and three, its top's middle open, and the
+collector's claw stays unlit, since a light at the gauge's top would read as the gauge full.
+
+The machines are void machines built from parts you can read, never real electrical plant (the director, 2026-11-15;
+docs/design.md, the base): AR19's class fix (2026-11-17) took out the copper dynamos, the ceramic insulators and the
+copper shoe and blocks, for cages of void stone round a lit shard, horns of void stone and a claw of bone. Gears,
+bearings, clamps and cables stay.
 
 Not run by itself.
 """
@@ -56,7 +63,7 @@ UP = Vector((0.0, 0.0, 1.0))
 FACING = Matrix.Rotation(-math.pi / 2, 4, "X")   # a part built about Z, turned so its Z looks at the gate (+Y)
 
 AXLE = 10.0           # the wheel's axle, up from the floor
-GAUGE_TOP = 250.0     # the collector's shoe, about the wheel's own Z: high on the gate's right, short of the top
+GAUGE_TOP = 250.0     # the collector's claw, about the wheel's own Z: high on the gate's right, short of the top
 DEEP = 3.0            # the band of buckets, from its outer rim in
 STEPS = 8             # the gauge's steps
 GAP = 1.6             # degrees of dark between two steps, so the light reads stepped
@@ -159,33 +166,74 @@ def sector(m, r0, r1, a, b, z0, z1, sw, t=0.85, n=4):
             m.out([ring[i][e] for i in range(4)], uv, inside)
 
 
+TOOTH = (0.32, 0.4, 0.55, 0.24)   # a tooth: out past the pitch circle, in under it, its width at the root and at the tip
+
+
 def toothed(r, teeth, thick, hole):
-    """A spur gear about Z: a web from `hole` out, its teeth at `r`."""
+    """A spur gear about Z: a web from `hole` out to the teeth's root, its teeth tapered from the root to the tip
+    about the pitch circle `r` (AR19's tooth fix, 2026-11-17: narrower than the gaps between them, so a pair meshes
+    through its whole pass with the faces never crossing)."""
+    add, ded, w_root, w_tip = TOOTH
     g = Mesh()
-    bm.hoop(g, (0, 0, 0), hole, r - 0.3, thick, max(teeth, 12), "girder", lying=True)
+    bm.hoop(g, (0, 0, 0), hole, r - ded + 0.02, thick, max(teeth, 12), "girder", lying=True)
+    r0, r1 = r - ded, r + add
     for k in range(teeth):
         a = math.tau * k / teeth
-        g.box((0.65, 0.65, thick), Vector((math.cos(a), math.sin(a), 0)) * r, "girder", rot=(0, 0, a))
+        out, side = Vector((math.cos(a), math.sin(a), 0.0)), Vector((-math.sin(a), math.cos(a), 0.0))
+        rim = [out * r0 - side * w_root / 2, out * r1 - side * w_tip / 2, out * r1 + side * w_tip / 2, out * r0 + side * w_root / 2]
+        prism(g, rim, thick, "girder", out * (r0 + r1) / 2)
     return g
 
 
-def dynamo(m, x, y0, y1, z, stand_from):
-    """A dynamo, housed (research's fix 3): a copper drum lying along the line to the gate inside a steel cage, square
-    bolted end plates joined by four corner bars and strapped round, a bone boss on its front, a terminal box on its
-    top, on a stand down to `stand_from`. From the gate it's a square plate round a boss, never a ball."""
-    s, length = 3.6, y1 - y0
-    put(m, turned([(1.45, length - 0.6), (1.45, 0.0)], 14, "copper"), at(x, y0 + 0.3, z) @ FACING)
-    for y in (y0 + 0.25, y1 - 0.25):
-        m.box((s, 0.5, s), (x, y, z), "steel", ink=True)
-    for cx in (-1, 1):
-        for cz in (-1, 1):
-            m.box((0.5, length - 0.5, 0.5), (x + cx * (s / 2 - 0.25), (y0 + y1) / 2, z + cz * (s / 2 - 0.25)), "steel")
-    for f in (0.35, 0.65):
-        put(m, turned([(1.7, 0.45), (1.7, 0.0)], 14, "steel"), at(x, y0 + length * f - 0.22, z) @ FACING)
-    put(m, turned([(0.85, 0.45), (0.85, 0.0)], 10, "bone"), at(x, y1, z) @ FACING)
-    m.box((1.6, 1.8, 1.0), (x, (y0 + y1) / 2, z + s / 2 + 0.5), "dark", ink=True)
+def prism(m, rim, thick, sw, inside):
+    """A flat shape about Z stood `thick` along it: `rim` its corners in order, `inside` a point within it."""
+    lo = [p + Vector((0, 0, -thick / 2)) for p in rim]
+    hi = [p + Vector((0, 0, thick / 2)) for p in rim]
+    m.out(hi, [kit.sw_uv(sw, 0.0, 0.9)] * len(rim), inside)
+    m.out(lo, [kit.sw_uv(sw, 0.0, 0.9)] * len(rim), inside)
+    for i in range(len(rim)):
+        j = (i + 1) % len(rim)
+        m.out([lo[i], lo[j], hi[j], hi[i]], [kit.sw_uv(sw, 0.0, 0.55)] * 4, inside)
+
+
+def claw(r, reach=19.0, root=1.8, thick=0.5, n=5):
+    """The collector's claw, about the wheel's Z (AR19's class fix, 2026-11-17, in place of the copper shoe): a flat
+    claw of bone on the band's face, from the arm at the gauge's top down the band against the rising buckets,
+    `reach` degrees, `root` wide across the band where it leaves the arm and pointed at its end. Flat to the gate, so
+    its pale face reads from the player's camera: bone, since void stone is lost on the dark band. Unlit: a light at
+    the gauge's top would read as the gauge full."""
+    m = Mesh()
+    a0 = GAUGE_TOP + 1.0
+    angles = [a0 - reach * k / n for k in range(n + 1)]
+    widths = [root * (1.0 - (k / n) ** 1.6) + 0.06 for k in range(n + 1)]
+
+    def on(a, rr, z=0.0):
+        return Vector((rr * math.cos(math.radians(a)), rr * math.sin(math.radians(a)), z))
+
+    for k in range(n):
+        a, b, wa, wb = angles[k], angles[k + 1], widths[k] / 2, widths[k + 1] / 2
+        rim = [on(a, r - wa), on(b, r - wb), on(b, r + wb), on(a, r + wa)]
+        prism(m, rim, thick, "bone", on((a + b) / 2, r))
+    return m
+
+
+def cage(m, x, y0, y1, z, stand_from):
+    """Where the gear train's turning does the void's work (AR19's class fix, 2026-11-17, in place of the housed
+    dynamo): a square back plate of void stone, four claws from its corners reaching toward the gate and closing
+    round a floating shard of the void's light, a vein down each claw's inner edge to it, on a girder stand down to
+    `stand_from`. The current leaves from a block on the plate's top. From the gate it's a square of claws round a
+    lit diamond at the hub's height, as the square cage the content check passed was: never a drum."""
+    s, mid = 3.6, (y0 + y1) / 2
+    m.box((s, 0.6, s), (x, y0 + 0.3, z), "abyss", ink=True)
+    for cx, cz in bm.SIGNS:
+        claw = [(x + cx * 1.5, y0 + 0.6, z + cz * 1.5), (x + cx * 1.78, mid, z + cz * 1.78), (x + cx * 0.95, y1, z + cz * 0.95)]
+        widths = [0.4, 0.34, 0.05]
+        bm.horn(m, claw, widths, "abyss", flat=(-cz, 0.0, cx))
+        bm.vein(m, claw[:2] + [(x + cx * 1.15, y1 - 0.5, z + cz * 1.15)], widths[:2] + [0.12], (x, mid, z), r=0.07)
+    bm.shard(m, (x, mid + 0.3, z), 0.62, 2.5, "void", lean=0.55)
+    m.box((1.2, 0.9, 0.6), (x, y0 + 0.45, z + s / 2 + 0.3), "girder", ink=True)          # where the current leaves
     high = z - s / 2 - stand_from
-    m.box((2.6, 2.0, high), (x, (y0 + y1) / 2 - 0.2, stand_from + high / 2), "steel", ink=True)
+    m.box((2.6, 1.8, high), (x, y0 + 0.9, stand_from + high / 2), "girder", ink=True)
 
 
 # --- the mill ----------------------------------------------------------------------------------------------------------
@@ -202,13 +250,13 @@ def start(stage):
 
 
 def span(stage):
-    """The gauge's arc, in degrees: from the well to the collector's shoe."""
+    """The gauge's arc, in degrees: from the well to the collector's claw."""
     return GAUGE_TOP - start(stage)
 
 
 def lit_to(share, stage):
     """The gauge (research's fix 1): the angle up to which the rising side is lit, from the well at a share of 0 to
-    the collector's shoe at 1."""
+    the collector's claw at 1."""
     return start(stage) + max(0.0, min(1.0, share)) * span(stage)
 
 
@@ -315,7 +363,9 @@ def still(stage, top=None):
     for sx in (-1, 1):
         m.box((0.55, 0.55, 0.5), (sx * 2.0, yf, AXLE - 0.6), "bone", ink=True)
     # the collector (fix 2): an arm clamped on the bearing's cap, out across the wheel's face to the top of the gauge,
-    # where its copper shoe rides the buckets' lips; it carries the rail's head beyond the rim
+    # where a claw of bone reaches down the band from it, against the rising buckets, and takes their light
+    # (AR19's class fix, 2026-11-17: the claw and the bare arm in place of a copper shoe and an insulator; the claw
+    # curves beside the arm, never behind it); it carries the rail's head beyond the rim
     phi = math.radians(GAUGE_TOP)
     dirn = Vector((math.cos(phi), 0.0, -math.sin(phi)))
     turn = (0.0, -math.atan2(dirn.z, dirn.x), 0.0)
@@ -325,9 +375,8 @@ def still(stage, top=None):
     tip, end = head + dirn * mid, head + dirn * rr
     m.box((1.0, 2.8, 1.6), head + dirn * 2.0, "steel", rot=turn, ink=True)                     # the clamp
     bar(m, head + dirn * 1.8, end, 1.2, "steel", d=0.9)
-    bar(m, tip + Vector((0, -0.4, 0)), Vector((tip.x, front + 0.55, tip.z)), 0.8, "steel")     # the shoe's holder
-    m.box((1.3, 0.5, 2.2), (tip.x, front + 0.3, tip.z), "copper", rot=turn, ink=True)          # the shoe
-    bm.insulator(m, tuple(head + dirn * (mid * 0.62) + Vector((0, 0.7, 0.5))), 1.4)
+    bar(m, tip + Vector((0, -0.4, 0)), Vector((tip.x, front + 0.55, tip.z)), 0.8, "steel")     # the claw's holder
+    put(m, claw(mid), at(0, front + 0.35, AXLE) @ FACING)
     bar(m, end + Vector((0, -0.4, 0)), Vector((end.x, front + 0.2, end.z)), 0.8, "steel")      # down to the rail
     # the gauge's rail (fix 1): a steel arc outside the rim on the rising side, from the well to the collector
     rail = Mesh()
@@ -349,22 +398,29 @@ def still(stage, top=None):
         put(m, shell, face)
         put(m, windows(stage, [a for a in WINDOWS if a <= top], "void"), at(0, width / 2 + 0.85, AXLE) @ FACING)
         put(m, windows(stage, [a for a in WINDOWS if a > top], "dark"), at(0, width / 2 + 0.85, AXLE) @ FACING)
-        for x in (-10.6, -8.4, -6.0, 6.0, 8.4, 10.6):                                          # the crown of rods
-            z = AXLE + math.sqrt(max(rb * rb - x * x, 0.0))
-            rod(m, (x, -0.4, z - 0.6), (x, -0.4, z + 3.2), 0.28, "steel")
-            bm.insulator(m, (x, -0.4, z + 3.2), 1.1)
-            m.box((0.6, 0.6, 0.45), (x, -0.4, z + 4.5), "copper", ink=True)
+        # the crown (AR19's class fix, 2026-11-17, in place of rods with insulators): three horns of void stone each
+        # side, rising from the casing along its radius and leaning a little toward the middle, the longest nearest it,
+        # the top's middle open. Unlit: no vein, no glow at a tip
+        for x, length in ((6.0, 4.6), (8.4, 3.8), (10.6, 3.0)):
+            for sx in (-1, 1):
+                a = math.asin(x / rb)
+                out = Vector((sx * math.sin(a), 0.0, math.cos(a)))
+                foot = Vector((0.0, -0.4, AXLE)) + out * (rb - 0.3)
+                knee = foot + out * (length * 0.45)
+                point = knee + (out + Vector((-sx * 0.35, 0.0, 1.0)).normalized()).normalized() * (length * 0.55)
+                bm.horn(m, [tuple(foot), tuple(knee), tuple(point)], [0.5, 0.42, 0.05], "abyss", flat=(0.0, 1.0, 0.0), deep=1.4)
     if stage >= 2:
-        # the dynamos the gear train drives, housed, on their stands on the sill: Stage II's on the descending side,
-        # Stage III's a second on the rising side; and the frame plated
+        # the cages the gear train drives, on their stands on the sill: Stage II's on the descending side, Stage III's
+        # a second on the rising side; and the frame plated
         for sx in ((1,) if stage == 2 else (1, -1)):
             px, pz = pinion(sx)
-            dynamo(m, px, front + 1.4, front + 5.6, pz, 1.4)
-            cable(m, [(px, front + 3.5, pz + 2.5), (sx * 9.0, front + 3.5, pz + 2.5), (sx * 9.8, yf + 0.9, 1.4),
+            y0 = front + 1.4
+            cage(m, px, y0, front + 5.6, pz, 1.4)
+            cable(m, [(px, y0 + 0.45, pz + 2.4), (sx * 9.0, y0 + 0.45, pz + 2.4), (sx * 9.8, yf + 0.9, 1.4),
                       (sx * 11.4, -4.0, 0.3), (sx * 3.4, -18.0, 0.2)], r=0.3)
         for sx in (-1, 1):
             bar(m, (sx * 6.8, -13.2, 0.6), (sx * 1.9, back, AXLE - 0.4), 2.0, "steel", d=0.5)
-    # the current: from the shoe along the arm, round the bearing, down the trestle and away on the floor
+    # the current: from the claw along the arm, round the bearing, down the trestle and away on the floor
     cable(m, [tuple(tip + Vector((0, 0.75, 0))), tuple(head + dirn * 2.4 + Vector((0, 0.75, 0))),
               (-2.8, yf + 0.8, AXLE - 0.4), (-2.8, yf + 0.8, AXLE - 2.6), (-3.9, yf + 0.8, 1.6),
               (-9.8, yf + 0.9, 1.4), (-11.4, -4.0, 0.3), (-3.4, -18.0, 0.2)], r=0.3)
@@ -385,12 +441,14 @@ def windows(stage, angles, sw, lift=0.0):
     return band
 
 
-GEAR, PINION = (4.2, 24), (1.65, 10)   # the spur gear on the axle and its pinions: radius, teeth
+CENTRES = 6.0                          # from the wheel's axle to a pinion's
+GEAR = (CENTRES * 24 / 34, 24)         # the spur gear on the axle: its pitch radius, teeth
+PINION = (CENTRES * 10 / 34, 10)       # a pinion: the pitch radii share the centres in the teeth's ratio, so they roll
 
 
 def pinion(sx):
     """A pinion's axle, across and up: on the gear's rim, 30 degrees under the axle's level."""
-    return sx * 6.0 * math.cos(math.radians(30.0)), AXLE - 6.0 * math.sin(math.radians(30.0))
+    return sx * CENTRES * math.cos(math.radians(30.0)), AXLE - CENTRES * math.sin(math.radians(30.0))
 
 
 def pinion_gear(sx):
@@ -450,7 +508,7 @@ def generator_wheel():
     return Piece("GeneratorWheel", m,
                  note=f"its origin is its axle's middle, {AXLE:g} up at the generator's middle; its axle lies along "
                       f"the piece's Y (Roblox's Z), the line to the gate. From the gate it turns anticlockwise, so the "
-                      f"buckets rise on the gate's right and run under the collector's shoe: in Roblox, "
+                      f"buckets rise on the gate's right and run under the collector's claw: in Roblox, "
                       f"CFrame.Angles(0, 0, -angle) with the angle growing, faster as the plant generates more. Its "
                       f"lower edge runs 1.6 under the floor, inside the well's dark")
 
@@ -482,7 +540,7 @@ def generator_demand():
                       f"at the rail's foot by the well. The rail is an arc about the axle, so the mark turns, not "
                       f"slides: about the axle the way the wheel turns, by the share times {span(1):.1f} degrees "
                       f"(CFrame.Angles(0, 0, -share * math.rad({span(1):.1f}))); at 1 it stands by the collector's "
-                      f"shoe, {rail_radius(1) + 0.51:.2f} from the axle, about "
+                      f"claw, {rail_radius(1) + 0.51:.2f} from the axle, about "
                       f"{math.radians(span(1)) * (rail_radius(1) + 0.51):.0f} studs of travel. The share is on the "
                       f"gauge's own scale, the demand over the same top as the generation's, so the lit steps reach "
                       f"the mark when generation meets demand. Under a share of 0.12 it sinks into the well's kerb. "
@@ -498,13 +556,13 @@ def reach(stage):
 
 def solid(stage):
     """What a player walks into, in the piece's frame: Stage I's, with the sill and the legs' heads where the wider
-    wheel puts them. The dynamos stand on the sill inside the well's cylinder, and the casing and its crown overhead."""
+    wheel puts them. The cages stand on the sill inside the well's cylinder, and the casing and its crown overhead."""
     width = size(stage)[1]
     return (f"in the piece's frame (across, toward the gate, up): the well shut to walking, a cylinder of radius 10.6, "
             f"3 high, at the middle; the sill a box 22.4 across, 1.8 deep and 1.4 high, its middle "
             f"{width / 2 + REACH:g} toward the gate; each raked leg's foot a box 2.8 square, 1 high, at across +-7.6, 14 "
             f"back; each raked leg a Part 1.3 thick along its line, from (+-7.6, -14, 0.3) to "
-            f"(+-1.5, {-width / 2 - 1.6:g}, {AXLE - 1.3:g}). The trestle and the dynamos stand on the sill, the arm"
+            f"(+-1.5, {-width / 2 - 1.6:g}, {AXLE - 1.3:g}). The trestle and the cages stand on the sill, the arm"
             f"{', the casing and its crown' if stage == 3 else ''} over the well: look only")
 
 
@@ -512,11 +570,12 @@ def generator_stage(stage):
     def make():
         r, width = size(stage)
         grown = ("a twin wheel 24.4 across with two sets of spokes, the spur gear on its axle driving a pinion and its "
-                 "housed dynamo on the sill (the descending side), the back frame plated" if stage == 2 else
-                 "Stage II's, with the armoured half drum of a casing over the wheel and its crown of six rods, a second "
-                 "pinion and dynamo on the rising side; the casing's seven windows stand dark here: the gauge's steps "
-                 "5 to 8 (Generator3Arc5 to 8) carry the lit ones of the five over them, and the two past the "
-                 "collector's shoe stay dark")
+                 "void cage on the sill (the descending side): four claws round a lit shard; the back frame plated"
+                 if stage == 2 else
+                 "Stage II's, with the armoured half drum of a casing over the wheel and its crown of six unlit horns, "
+                 "a second pinion and cage on the rising side; the casing's seven windows stand dark here: the gauge's "
+                 "steps 5 to 8 (Generator3Arc5 to 8) carry the lit ones of the five over them, and the two past the "
+                 "collector's claw stay dark")
         return Piece(f"Generator{stage}", still(stage),
                      solid=solid(stage),
                      note=f"Stage {'II' if stage == 2 else 'III'}'s still body, in place of Generator at the same place: "

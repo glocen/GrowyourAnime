@@ -11237,6 +11237,92 @@ Research's entry, 2026-11-17, 17:43. It is the last machine in the design's orde
 
 **Checks:** the content check before the block; research's pick; Stage II and III as kit pieces for Faber, judged in the game from the court.
 
+### The two directions, planned (Modulo, 2026-11-17, 17:48)
+
+**Both directions, Stage I:** the battery as it stands, with AR19's note made.
+- The copper bar becomes a groove of void stone along the deck's middle, with the current's line in it as today.
+- The insulators leave. Each end post becomes void stone, squared, with its light on top as today.
+- **The cells:** BatteryCell is unchanged, and so is the fill: each cell's glow by its share of the charge.
+- **The footprint:** each stage stays inside 6.6 by 4.6 (`Config.World.Fit`, Prints, battery). The stages grow up.
+
+**A, the Rising Stack: the bank climbs, and the fill climbs with it.**
+- **Stage II:** two uprights of void stone rise from the deck's ends to about 5.6. The four cells stand in two tiers of two, the second tier on a shelf 2.45 above the deck's seats, with a bone tie across each tier, inside the uprights.
+- **Stage III:** the uprights reach about 10.5, with four tiers of two. At the top they bend in to two points, apart, and hold a bead of the void's light between them.
+- **The fill lights tier by tier from the bottom,** so from the court the bank reads as a gauge. The table gives each stage's seats in that order; the cells themselves don't change.
+- **In black:** a low block, a short stack, then a tall column with a forked top.
+
+**B, the Ridge: the bank stays, and a ridge of void stone rises behind it.** It replaces the Gate (below).
+- **The cells** keep today's eight seats on the deck, in today's order.
+- **Stage II:** three blades of void stone rise from the deck's back edge, uneven at about 4.2, 6.6 and 5.4 high, leaning a little apart. Each has a vein of the void's light stopping short of its tip.
+- **Stage III:** five blades, uneven at about 3.6, 5.6, 8.6, 10 and 7.2, the tallest off the middle, so the ridge peaks to one side.
+- From the court the lit cells stand in front of the dark stone.
+- **In black:** a low block, a short ridge, then a tall uneven ridge.
+
+**Guards, in both:**
+- No cross: a tie stays between its uprights, never a T or a plus.
+- No pointed arch or window tracery, no ribs, and no tall round-topped pillar. A's bead is held between two points, never capping a column.
+- B's blades are uneven in height and lean, never an even crown, fan or sunburst. They're straight-edged with chiselled tips, never flames, and never segmented.
+- Nothing written, nothing in copper, brass or gold, and every vein stops short of its tip.
+- **Height:** the battery's print's height grows from 3 to about 12.8 (A) or 10 (B); its check is Faber's (`Config.World.Fit`, Rules.BaseFit).
+
+**The content check on the plan** (17:49 to 17:51):
+- **A: PASS, with conditions.**
+  1. The black and 64 px reads hold from every heading: front, back, both sides and three-quarter. From the side the two uprights overlap into one column, so the bead sits below the prong tips, inside the fork, no wider than the uprights' depth.
+  2. The prong tips stay clearly apart at 64 px, chiselled, never rounded.
+  3. The ties end at the uprights' inner faces.
+- **The first B, the Gate: BLOCK.** Two pylons leaning in, a lintel sweeping up past them and a bar under it read in black as a torii, a shrine gate. It's replaced by the Ridge, which went back to the check.
+- **B, the Ridge (17:53): PASS, with conditions.** The risk at 64 px is uneven blades reading as a splayed hand rising from the ground, or a lone tall blade as a rude gesture.
+  1. Each blade rises from its own point along the deck's back edge, nearly upright, never fanning from one root.
+  2. Each is wide at the root and tapers to a chiselled tip, with no bulb, knuckle or segment, and the widths differ.
+  3. The tallest blade's nearest neighbour is at least about 80% of its height, at every stage.
+  4. The reads hold from the back and both sides too. From the side the blades overlap into one spike, whose tip stays chiselled.
+- **For whichever is picked:**
+  - The sheet shows each stage at full size, at 64 and 128 px and in black, from the court, a side and a three-quarter view.
+  - The fill and the veins stay straight lines and tiers of light: no drip, run or pool, and no red fill or glow.
+  - No copper, brass or gold, and nothing written.
+  - The coloured build comes back to the check before upload.
+- **A note for research, on taste:** A's tiered rack may still read as a real-world battery or server rack.
+
+### The block, for research's pick (Modulo, 2026-11-17, 17:48 to 18:08 by the clock)
+
+**The sheets:** `build/scratch/modulo/battery/battery_A.png` and `battery_B.png`, made by `tools/blender/base_battery.py`. Each shows the three stages:
+- from two players' cameras at 640 by 360: one at the court's back turned to the battery, one between the right side's bays on the way to the back one;
+- head-on, from the generator's side and three-quarter, at their own size;
+- head-on, from both sides, from behind and three-quarter, cut at 64 and 128 px and in black.
+
+The yard is at base level 3, with a player's stand-in beside the battery. The charge shown is 1 of 2 cells lit, then 3 of 4, then 5 of 8.
+
+**Stage I, both:** made as planned. The groove of void stone carries the current's line, and the posts are void stone with their lights, the insulators gone.
+
+**A, the Rising Stack:**
+- Built as planned. Each upright also forks front and back, so from the side the bead sits in a notch (the check's condition 1).
+- **For it:** the fill reads best here. From the way to the back bay, Stage III is a lit gauge you can count across the yard. Its three silhouettes differ most: a block, a short stack, a tall forked tower.
+- **Against it:** it can read as a building or a rack of shelves. From the side Stage III is a narrow slab, 1.5 deep and 12.9 high.
+- **For Faber:** the cells move. The table would give each stage's seats; Stage I's two cells stay where they are.
+
+**B, the Ridge:**
+- Built with the check's conditions: each blade is rooted on its own along the back edge, the widths run from 0.38 to 0.62, and the tallest's neighbour is 86% of it at Stage III and 82% at Stage II.
+- **For it:** it's in the Breaker's and the bays' family, dark stone holding the void's light, and its top line differs at each stage.
+- **Against it:** the fill stays a low row, 2.8 high. From the court the veins' violet outshines the cells' yellow, so how full the battery is reads less than in A. The build could thin or dim the veins.
+- **For Faber:** the cells stay where they are; only the still body swaps.
+
+**From the court's back** (about 44 away), every stage is small in both directions. Stage III is the first that reads over the right side's bays.
+
+**Sizes,** a stage whole, before the drawn edge's hull:
+
+| | Stage I | A, Stage II | A, Stage III | B, Stage II | B, Stage III |
+|---|---|---|---|---|---|
+| Triangles | 480 | 832 | 1,504 | 882 | 1,470 |
+| Height | 2.65 | 6.3 | 12.9 | 7.2 | 10.6 |
+
+**My lean: A.** The feel line asks that how much the base holds reads before any number, and A's bank is its own gauge. Its risk is the rack read, which a coloured build in void stone and bone can answer better than the grey shows.
+
+**The four facts:**
+- **Implemented:** the block, in grey.
+- **Tested:** rendered, with the sheets read.
+- **Visually reviewed:** mine only. Research's pick and the content check's read of the sheets are pending.
+- **Director-accepted:** no.
+
 ## Later, by ground
 
 The rest of ground 1 (Kirra in AR10, Watt in AR11; then Sable, Marigold, Crane), then each ground's Voidkin in `docs/roster.md`'s order. **The machines** (Gantry, Bulwark, Ironhymn, Shiomaru, Aegir) share one custom rig, taller than a player, with its own clip family: the first of them is timed like AR1, because a custom rig is a different cost.

@@ -489,22 +489,40 @@ function HudCases.Cases(given: Given): { any }
 					return Screen.Current() == BreakerScreen.Name
 				end))
 				t.Wait(HudConfig.Motion.Screen.Enter + 0.1)
-				local screen = Screen.Frame(BreakerScreen.Name)
-				local chamber = if screen then screen:FindFirstChild("Chamber1", true) :: Frame? else nil
-				local neighbour = if screen then screen:FindFirstChild("Chamber2", true) :: Frame? else nil
-				local tap = if chamber then chamber:FindFirstChild("Tap") :: TextButton? else nil
-				local piece = if chamber then chamber:FindFirstChildWhichIsA("TextLabel") else nil
-				t.Check("its first two chambers, a tap and words", chamber ~= nil and neighbour ~= nil and tap ~= nil and piece ~= nil)
-				if chamber and neighbour and tap and piece then
+				-- The pointer on the first chamber and off, measured; nil when the panel was rebuilt meanwhile (a chamber's work
+				-- changing, as the whole suite's clock can bring), so the chamber measured is still the one shown.
+				local function hovered(): { [string]: any }?
+					local screen = Screen.Frame(BreakerScreen.Name)
+					local chamber = if screen then screen:FindFirstChild("Chamber1", true) :: Frame? else nil
+					local neighbour = if screen then screen:FindFirstChild("Chamber2", true) :: Frame? else nil
+					local tap = if chamber then chamber:FindFirstChild("Tap") :: TextButton? else nil
+					local piece = if chamber then chamber:FindFirstChildWhichIsA("TextLabel") else nil
+					if not (chamber and neighbour and tap and piece) then
+						return { Found = false }
+					end
 					local restWords, restCell, restNext = at(piece), at(chamber), at(neighbour)
 					Hover.Force(tap, true)
 					t.Wait(settle)
-					t.Near("a chamber's words lift inside it (points)", (restWords.Y - at(piece).Y) / scale, motion.Lift, 0.3)
-					t.Check("its own place and its neighbour's stay", (at(chamber) - restCell).Magnitude < 0.5 and (at(neighbour) - restNext).Magnitude < 0.5)
+					local lift = (restWords.Y - at(piece).Y) / scale
+					local stays = (at(chamber) - restCell).Magnitude < 0.5 and (at(neighbour) - restNext).Magnitude < 0.5
 					Hover.Force(tap, false)
 					t.Wait(settle)
-					t.Check("off it, its words are back", (at(piece) - restWords).Magnitude < 0.5)
+					local back = (at(piece) - restWords).Magnitude < 0.5
 					Hover.Force(tap, nil)
+					if piece.Parent == nil or chamber.Parent == nil or neighbour.Parent == nil then
+						return nil
+					end
+					return { Found = true, Lift = lift, Stays = stays, Back = back }
+				end
+				local measured = hovered()
+				if measured == nil then
+					measured = hovered()
+				end
+				t.Check("its first two chambers, a tap and words", measured ~= nil and measured.Found)
+				if measured and measured.Found then
+					t.Near("a chamber's words lift inside it (points)", measured.Lift, motion.Lift, 0.3)
+					t.Check("its own place and its neighbour's stay", measured.Stays)
+					t.Check("off it, its words are back", measured.Back)
 				end
 				-- A ready chip's gold edge goes toward its full light under the pointer: toward the panel's accent it dulled,
 				-- and the hovered chip read weaker than its neighbour (TR20's retake). One is made if none is ready.

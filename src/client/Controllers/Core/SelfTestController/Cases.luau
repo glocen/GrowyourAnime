@@ -2417,7 +2417,9 @@ local cases = {
 					end
 				end)
 				lookAhead(t)
-				local spawned = t.Server("FightSpawn", "brawler", body:GetAttribute("Level"), SHADE_AHEAD)
+				-- SHADE_TOUGHER over him, so it stands for the third shot: a geared Pip fells a level-matched brawler in two
+				-- (this save's, 2026-11-18: 172 a shot).
+				local spawned = t.Server("FightSpawn", "brawler", ((body:GetAttribute("Level") :: number?) or 1) + SHADE_TOUGHER, SHADE_AHEAD)
 				t.Check("pip: the Shade spawns", type(spawned) == "table" and spawned.Ok == true)
 				waitFor(t, SHADE_TIMEOUT, function(): boolean
 					return seen[row.Beat :: string] ~= nil and seen.Shot1 ~= nil

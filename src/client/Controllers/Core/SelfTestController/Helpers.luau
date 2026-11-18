@@ -43,6 +43,9 @@ function Helpers.lintClean(t: any, where: string)
 	Helpers.waitFor(t, 1, function(): boolean
 		return not Toast.Riding()
 	end)
+	-- One frame, so the deferred signals have run, as they always have before a frame draws: NameGuardController keeps a
+	-- name from translation on one (D8), and a case can lint in the frame that built its rows.
+	task.wait()
 	local report = UiLint.Run()
 	t.Check(`{where}: every label fits its box`, #report.Fit == 0, UiLint.Detail(report.Fit, report.Checked))
 	t.Check(`{where}: every label reads at {Theme.Text.Minimum} px or more`, #report.Size == 0, UiLint.Detail(report.Size, report.Checked))

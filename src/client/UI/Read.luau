@@ -67,6 +67,13 @@ function Read.Seconds(seconds: number): string
 	return if s % 60 == 0 then `{m} min` else `{m} min {s % 60} s`
 end
 
+-- Seconds as a clock, for a count in a narrow cell (a chamber's, at the smallest phone): "0:45", "1:20", "1:02:05".
+function Read.Clock(seconds: number): string
+	local s = math.max(0, math.ceil(seconds))
+	local h, m = s // 3600, (s % 3600) // 60
+	return if h > 0 then string.format("%d:%02d:%02d", h, m, s % 60) else string.format("%d:%02d", m, s % 60)
+end
+
 -- A shard's name: "Rook's shard", "Watt's shard", "Lantern Row shard".
 function Read.ShardName(id: string): string
 	local row = Shards.ById[id]

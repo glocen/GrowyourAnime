@@ -667,7 +667,7 @@ local function cell(parent: Instance, index: number, view: Profile.View, width: 
 		if at and left.Parent then
 			local total = Breaker.Cost(at.Def) or 1
 			Bar.Set(bar, math.clamp(at.Done / math.max(total, 1e-3), 0, 1))
-			left.Text = `{Read.Seconds(Read.Left(now, at))} left`
+			left.Text = `{Read.Clock(Read.Left(now, at))} left` -- a clock: "1 min 20 s left" outgrew the cell at the smallest phone
 		end
 	end)
 	Panel.Lit(frame, same(item, selected))

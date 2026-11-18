@@ -144,10 +144,24 @@ function BreakerCases.Cases(): { any }
 					local group = of.Parent :: GuiObject
 					return of.Position.X.Scale * group.AbsoluteSize.X / math.max(of.AbsoluteSize.X / turn, 1e-6)
 				end
-				local x0, star0 = shift(lumps), stars[1].ImageTransparency
-				t.Wait(1)
-				local slid = (x0 - shift(lumps)) % turn
-				t.Near("the mist slides left at its drift (points in about a second)", slid, sky.Mist.Drift, 0.6)
+				-- Over about a second; again if the panel was rebuilt in it (a chamber's work ending, as the whole suite's
+				-- clock can bring), so the lumps measured are still the ones shown.
+				local function slide(): number?
+					local band = breakerPart("Mist")
+					local each = if band then band:FindFirstChild("Lumps1") :: ImageLabel? else nil
+					if each == nil then
+						return nil
+					end
+					local x = shift(each)
+					t.Wait(1)
+					return if each.Parent then (x - shift(each)) % turn else nil
+				end
+				local star0 = stars[1].ImageTransparency
+				local slid = slide()
+				if slid == nil then
+					slid = slide()
+				end
+				t.Near("the mist slides left at its drift (points in about a second)", slid or -1, sky.Mist.Drift, 0.6)
 				t.Check("the stars breathe", math.abs(stars[1].ImageTransparency - star0) > 1e-3)
 				-- A working chamber: its light in the window, under its shard, breathing round its rest.
 				local now = ProfileController.Get() :: Profile.View

@@ -723,8 +723,12 @@ function BagCases.Cases(given: Given): { any }
 					local left = pick.AbsolutePosition.X
 					local mid = pick.AbsolutePosition.Y + pick.AbsoluteSize.Y / 2
 					local inkLeft = word.AbsolutePosition.X + (word.AbsoluteSize.X - word.TextBounds.X) / 2
-					t.Check(`{name}: its name from {Q.In} in, its value {Q.Gap} after it`, near(named.AbsolutePosition.X, left + Q.In * scale, 1) and near(inkLeft, left + (Q.In + nameWide + Q.Gap) * scale, 1.5),
-						`{(named.AbsolutePosition.X - left) / scale}, {(inkLeft - left) / scale}`)
+					-- The value is centred on its width as measured at its authored size (Text.Wide); it draws at the screen's
+					-- scale, where hinting can make it a point or so narrower ("Power": 40 measured, 38.7 drawn at 1655x756), and
+					-- its ink starts half that further in. The check allows that half, as measured here, past its 1.5 px.
+					local drawn = math.abs(valueWide * scale - word.TextBounds.X) / 2
+					t.Check(`{name}: its name from {Q.In} in, its value {Q.Gap} after it`, near(named.AbsolutePosition.X, left + Q.In * scale, 1) and near(inkLeft, left + (Q.In + nameWide + Q.Gap) * scale, 1.5 + drawn),
+						`{(named.AbsolutePosition.X - left) / scale}, {(inkLeft - left) / scale}, want {Q.In}, {Q.In + nameWide + Q.Gap} (the value {valueWide} wide, its box {word.AbsoluteSize.X / scale}, its ink {word.TextBounds.X / scale}; the pick {pick.AbsoluteSize.X / scale})`)
 					t.Check(`{name}: the chevron {Q.In} in from the right, {Q.Drop} under the middle`, near(chevron.AbsolutePosition.X + chevron.AbsoluteSize.X / 2, left + pick.AbsoluteSize.X - Q.In * scale, 1) and near(chevron.AbsolutePosition.Y + chevron.AbsoluteSize.Y / 2, mid + Q.Drop * scale, 1))
 					local under, glow, wash = layer(pick, "Under"), layer(pick, "UnderGlow"), layer(pick, "Wash")
 					local colour = if on then KIT.Light :: Color3 else KIT.Text

@@ -94,6 +94,7 @@ def frame(m, stage):
             bm.horn(m, pts, radii, "abyss", flat=(0.0, 1.0, 0.0), deep=1.5)
     if stage == 3:
         bm.shard(m, (0.0, STACK_Y, head + 0.52), 0.36, 1.1, "void")  # its foot set in the top bar, the sky open above
+        m.box((0.5, 0.46, 0.04), (0.0, STACK_Y, head + 0.02), "well")   # the bead's dark socket on its rest (AR40)
 
 
 def still(stage):

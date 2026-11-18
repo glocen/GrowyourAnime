@@ -30,14 +30,17 @@ def showcase():
     m.lathe([(3.3, 0.4), (3.3, 0.0)], (0, 0, 0), SIDES, "concrete", spin=FLAT)
     m.lathe([(2.85, 0.8), (2.85, 0.4)], (0, 0, 0), SIDES, "steel", spin=FLAT)
     m.lathe([(2.15, 0.92), (2.15, 0.8)], (0, 0, 0), SIDES, "lamp", spin=FLAT, caps=False)   # the line of light under the top
+    m.lathe([(2.15, 0.805), (2.5, 0.805)], (0, 0, 0), SIDES, "well", spin=FLAT, caps=False)   # on its dark sill (AR40)
     m.lathe([(2.35, TOP), (2.35, 0.92)], (0, 0, 0), SIDES, "bone", spin=FLAT)
-    m.lathe([(1.55, TOP + 0.02), (1.85, TOP + 0.02)], (0, 0, 0), 12, "lamp", caps=False)  # the ring round the feet
+    m.lathe([(1.4, TOP + 0.015), (2.0, TOP + 0.015)], (0, 0, 0), 12, "well", caps=False)   # the ring's dark bed (AR40)
+    m.lathe([(1.55, TOP + 0.025), (1.85, TOP + 0.025)], (0, 0, 0), 12, "lamp", caps=False)  # the ring round the feet
     for k in range(4):
         a = math.tau * (k + 0.5) / 4
         x, y = 2.4 * math.cos(a), 2.4 * math.sin(a)
         rot = (0.0, 0.0, a)
         m.box((0.4, 0.4, 0.7), (x, y, 1.15), "girder", rot=rot)
         m.box((0.3, 0.3, 0.2), (x, y, 1.6), "lamp", rot=rot)
+        m.box((0.38, 0.38, 0.06), (x, y, 1.53), "well", rot=rot)                     # its dark collar (AR40)
     return Piece("Showcase", m, lights=[LIGHT],
                  solid="an eight-sided block, 6.6 across and 1.2 high, or its box",
                  note=f"the Voidkin stands at its middle, {TOP:g} up, and turns there: the plinth doesn't. Its "

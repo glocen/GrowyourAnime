@@ -6,13 +6,18 @@ swatches painted into the kit's atlas for this run only, the wall's print moved 
 lifted to their colour in a scratch copy, and the day's sun, fill, exposure and glow set from the direction's lighting
 keys. No file of the kit's is written over.
 
+Since research's pick (C, 2026-11-18, 22:40) the kit itself wears C: base_kit's swatches and wall, strip_kit's
+paving with its warm joints, and the wells under its lights. So a direction's stones are moved from the kit's own
+(C's), and its print from the print's first ramp; "Kit" is the kit as it stands, under C's day, with no colour worn.
+
 One direction and one place a run, under the guard (each is a whole world in memory):
 
-    guard.ps1 tools/colour/ar40_see.py <abs out> <Today|A|B|C> <base|strip> [fast]
-    guard.ps1 tools/colour/ar40_see.py <abs out> sheet
+    guard.ps1 tools/colour/ar40_see.py <abs out> <Today|A|B|C|Kit> <base|strip> [fast]
+    guard.ps1 tools/colour/ar40_see.py <abs out> sheet [keys...]
 
 Writes <out>/<key>/base_1_home.png or strip_crossing.png at the phone's shape, then <out>/ar40_plot.png,
-ar40_strip.png (today's and the three, with the HUD's pieces over each) and ar40_64.png (the same at 64 px high).
+ar40_strip.png (today's and the three, or the keys named, with the HUD's pieces over each) and ar40_64.png (the same
+at 64 px high).
 
 The HUD over each is the game's own, cut from one of Faber's day captures (HUD_FROM) and pasted where it sits: its
 pieces are slanted, so a sliver of that capture's sky shows at their corners. It's there to read the HUD's values over
@@ -40,33 +45,29 @@ HUD_FROM = ROOT / "build" / "scratch" / "faber" / "stills" / "ar20-start-day.jpg
 # The HUD's pieces in that capture: left, top, right, bottom
 HUD_PIECES = {"the lead's card": (8, 112, 322, 270), "the pills": (1688, 95, 1908, 214), "the dock": (792, 742, 1128, 862)}
 EVERY = {"Today": data.TODAY, **{d["Key"]: d for d in data.DIRECTIONS}}
+KIT = "C"   # what the kit itself wears (research's pick, 2026-11-18, 22:40)
 
 
 def wear(d, out: Path):
     """A direction's colours over the kit's, for this run."""
     for name, (head, foot) in d["Swatches"].items():
         base.SWATCHES[name] = (head, foot, base.SWATCHES[name][2])
-    lo0, hi0 = (kit.code(c) for c in data.TODAY["Panel"])
-    lo1, hi1 = (kit.code(c) for c in d["Panel"])
-    paint = base.atlas
-
-    def atlas():
-        page, glow = paint()
-        x, y, w, h = base.PRINTS["panel"]
-        cut = page[y:y + h, x:x + w, :3]
-        page[y:y + h, x:x + w, :3] = np.clip(lo1 + (cut - lo0) / (hi0 - lo0) * (hi1 - lo1), 0, 1)
-        return page, glow
-    base.atlas = atlas
-    # the stones: the Strip's own tile, its light times the direction's gain, in a scratch copy
+    base.WALL = d["Panel"]                       # the print moved from its first ramp (base.WALL_FROM) to the direction's
+    # the stones: the Strip's own tile, its light times the gain from the kit's stones to the direction's, in a scratch copy
     page = rs.load(plan.STREET)
     c = page[..., :3]
-    lit = np.where(c <= 0.04045, c / 12.92, ((c + 0.055) / 1.055) ** 2.4) * np.array(data.gain(d["Stones"]), np.float32)
+    gain = data.gain(d["Stones"], EVERY[KIT]["Stones"])
+    lit = np.where(c <= 0.04045, c / 12.92, ((c + 0.055) / 1.055) ** 2.4) * np.array(gain, np.float32)
     page[..., :3] = kit.encode(np.clip(lit, 0, 1))
     path = out / "stones" / plan.STREET.name
     path.parent.mkdir(parents=True, exist_ok=True)
     rs.save(page, path)
     plan.STREET = path
-    # the day's light: the sun's colour and strength, the fill, the exposure, the kit's glow by day
+    lighting(d)
+
+
+def lighting(d):
+    """The day's light: the sun's colour and strength, the fill, the exposure, the kit's glow by day."""
     keys = d["Lighting"]
     az, el, _, _, shadow = day.DAY["sun"]
     day.DAY["sun"] = (az, el, keys["Phases.Day.Sun"], keys["Clear.Phases.Day.Brightness"] / 3, shadow)
@@ -77,7 +78,9 @@ def wear(d, out: Path):
 def see(out: Path, key, where, fast):
     folder = out / key
     folder.mkdir(parents=True, exist_ok=True)
-    if key != "Today":
+    if key == "Kit":
+        lighting(EVERY[KIT])
+    else:
         wear(EVERY[key], folder)
     look.SIZE = SIZE
     day.light("day")
@@ -101,18 +104,18 @@ def hud(page):
     return page
 
 
-def sheet(out: Path):
+def sheet(out: Path, names=None):
     rs.OUT = out
     w, h = SIZE
     pad, head = 12, 30
-    names = ["Today"] + [d["Key"] for d in data.DIRECTIONS]
-    titles = {"Today": "Today"} | {d["Key"]: d["Name"] for d in data.DIRECTIONS}
+    names = names or ["Today"] + [d["Key"] for d in data.DIRECTIONS]
+    titles = {"Today": "Today", "Kit": "The kit as exported (C, with its wells and joints)"} | {d["Key"]: d["Name"] for d in data.DIRECTIONS}
     small = []
     for where, (file, what) in VIEWS.items():
         got = [k for k in names if (out / k / file).exists()]
         if not got:
             continue
-        board = rs.canvas(2 * w + 3 * pad, 2 * (h + head) + pad, (0.93, 0.93, 0.94))
+        board = rs.canvas(2 * w + 3 * pad, (len(got) + 1) // 2 * (h + head) + pad, (0.93, 0.93, 0.94))
         words = []
         for i, k in enumerate(got):
             x, y = pad + (i % 2) * (w + pad), (i // 2) * (h + head) + head
@@ -136,7 +139,7 @@ def main():
     out = bl.out_dir()
     args = sys.argv[sys.argv.index("--") + 2:]
     if args[0] == "sheet":
-        sheet(out)
+        sheet(out, args[1:])
     else:
         see(out, args[0], args[1], "fast" in args)
 

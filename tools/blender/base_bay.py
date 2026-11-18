@@ -65,10 +65,10 @@ COG_THICK = 0.35
 def ground(m):
     """The bay's deck, dais, well, inner corners, ring, shard and the current's outlet, as Stage I has them."""
     m.box((SIDE, SIDE, TOP), (0, 0, TOP / 2), "girder", ink=True)
-    m.box((SIDE + 0.1, SIDE + 0.1, 0.1), (0, 0, 0.2), "void")
+    bm.rim(m, SIDE, SIDE, (0, 0, 0.2))                       # each light in its dark bed (AR40)
     m.lathe([(4.1, 0.16), (4.3, 0.0)], (0, 0, TOP), 12, "abyss")
-    m.lathe([(3.55, 0.17), (3.85, 0.17)], (0, 0, TOP), 12, "void", caps=False)
-    bm.well(m, (0, 0, TOP), 2.6)
+    bm.dais_line(m, (0, 0, TOP), 3.55, 3.85, 12)
+    bm.well(m, (0, 0, TOP), bm.DAIS_FLOOR)
     m.box((1.3, SIDE - 1.2, 0.6), (BACK, 0, TOP + 0.3), "abyss", ink=True)
     for sy in (-1, 1):
         bm.horn(m, [(4.35, sy * 4.35, TOP), (3.75, sy * 3.75, TOP + 1.7)], [0.42, 0.05], "abyss", flat=(sy, -1.0, 0.0))
@@ -76,7 +76,7 @@ def ground(m):
     bm.hoop(m, (BACK, 0, RING), bm.HALO[1], bm.HALO[2], 0.4, 12, "abyss")
     bm.shard(m, (BACK, 0, RING), 0.8, 3.0, "void", lean=0.55)
     m.box((0.9, 1.6, 1.0), (BACK + 0.3, 0, TOP + 0.5), "girder", ink=True)
-    m.box((0.1, 1.0, 0.2), (BACK + 0.78, 0, TOP + 0.6), "power")
+    bm.lamp(m, (0.1, 1.0, 0.2), (BACK + 0.78, 0, TOP + 0.6), "power", 0, 1, pad=0.15)
 
 
 def still(stage):

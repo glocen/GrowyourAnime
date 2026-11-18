@@ -108,26 +108,27 @@ MAPS = {"Kit": ("#FFFFFF", kit.GLOW), "Court1": ("#FFFFFF", COURT_GLOW), "Yard":
         "WingsBack": ("#FFFFFF", COURT_GLOW),
         "Wings": ("#FFFFFF", COURT_GLOW)}   # each pair's tint and strength
 
-# Swatches: the colour at the head, at the foot, and how much it glows. Light steel, pale concrete and bone, the
-# current in Power's yellow (the HUD's own), the Breaker's light in cyan. The steel, the girders and the concrete left
-# the grey-violet for AR20's C (research's pick, 2026-11-16, 17:23, on the director's "need to be less somber"), so the
-# void's violet is the only violet in the yard.
+# Swatches: the colour at the head, at the foot, and how much it glows. Pale concrete, the current in Power's yellow
+# (the HUD's own), the Breaker's light in cyan. AR40's C, sandstone and teal (research's pick, 2026-11-18, 22:52, on the
+# director's "too purple/black and somber"; tools/colour/ar40_directions.py): the void machines' stone is warm pale
+# sand, their frames teal bronze, their fittings cream, the steel a pale sea grey, the trim and the far shards violet.
+# The void's light (`void`, `cyan`) and the deck are as they were. Before AR40: the stone a dark violet, navy frames.
 SWATCHES = {
-    "steel": ("#8290B0", "#46506E", 0.0), "girder": ("#4C5878", "#242C42", 0.0), "bone": ("#E9E2D2", "#9C95A6", 0.0),
-    "concrete": ("#C8CAD2", "#82858F", 0.0), "yellow": ("#FFD23E", "#B07A28", 0.05), "rubber": ("#1F2233", "#0E101A", 0.0),
+    "steel": ("#A9C2C8", "#62808A", 0.0), "girder": ("#46A39C", "#1F5E64", 0.0), "bone": ("#FFF4DC", "#C2AE8C", 0.0),
+    "concrete": ("#C8CAD2", "#82858F", 0.0), "yellow": ("#FFD23E", "#B07A28", 0.05), "rubber": ("#2C2A44", "#181628", 0.0),
     "ceramic": ("#F4F0E8", "#A8A2B6", 0.0), "copper": ("#DE8E54", "#7C4630", 0.0), "power": ("#FFF6C4", "#FFD94A", 1.0),
     "cyan": ("#8CF6FF", "#3CC8E8", 1.0), "lamp": ("#F6FCFF", "#CDEEFF", 1.0), "beacon": ("#FF9A7A", "#FF6A52", 1.0),
-    "dark": ("#1E1426", "#0C0A12", 0.0), "ink": ("#0C0A16", "#0C0A16", 0.0),
-    "void": ("#E9DBFF", "#A97CFF", 1.0), "abyss": ("#4B3A7E", "#171030", 0.0),   # the void machines': its light, its stone
+    "dark": ("#5A4A9C", "#2A2258", 0.0), "ink": ("#0C0A16", "#0C0A16", 0.0),
+    "void": ("#E9DBFF", "#A97CFF", 1.0), "abyss": ("#EEDDBC", "#B2946C", 0.0),   # the void machines': its light, its stone
     # the second row. The Festival Door's lines (AR15, section 7, take A): amber at the mouth, paler ring by ring
     "doormouth": ("#FF9038", "#FF9038", 1.0),
     "dawn": ("#FF9AD2", "#FF4FA6", 0.55),      # the Tower's own light, faint
     # The distance, painted in (AR20): with no haze to pale them, the far shards, the Tower asleep and the shards
     # breaking out beside the crossing stood as black cut-outs against the day sky. Each wears a lighter void stone:
     # the farthest palest.
-    "far": ("#9284C8", "#5E5298", 0.0),        # the great shards past the map's edge (the Strip's FarShard pieces)
-    "tower": ("#7C76AE", "#46427A", 0.0),      # the Tower asleep, a violet slate
-    "outcrop": ("#8474BC", "#4A3E86", 0.0),    # the Strip's ShardOutcrop, nearer, a little deeper
+    "far": ("#B8A8E0", "#8878BC", 0.0),        # the great shards past the map's edge (the Strip's FarShard pieces)
+    "tower": ("#A898D4", "#7868AE", 0.0),      # the Tower asleep, a violet slate
+    "outcrop": ("#B0A0DC", "#8070B8", 0.0),    # the Strip's ShardOutcrop, nearer, a little deeper
     "doorarc1": ("#FFA448", "#FFA448", 1.0), "doorarc2": ("#FFB65C", "#FFB65C", 1.0),
     "doorarc3": ("#FFC977", "#FFC977", 1.0), "doorarc4": ("#FFDA98", "#FFDA98", 1.0),
     "doorcore": ("#FFCF7E", "#FF9A3C", 1.0),   # the core: its middle (the head) the palest, its rim (the foot) amber; gold
@@ -135,8 +136,15 @@ SWATCHES = {
     # The Forge's field behind its gears: the void's foot one step dimmer, so from the court its head reads as one band,
     # not dark holes in bright lilac (AR36, research's pick of the court read, 2026-11-17)
     "voidfield": ("#A97CFF", "#A97CFF", 0.55),
+    # A light's dark well (AR40, research's must-fix 1: a light on a pale body sits in a dark well, as a panel's bar sits
+    # in its channel). Deep teal, one value head to foot, so two wells that meet never show a seam; the light stands a
+    # hair proud of it. Never a body's colour: only the bed a line, a lamp or a ring of light sits in.
+    "well": ("#1A353C", "#1A353C", 0.0),
 }
 SWATCH_AT = {name: ((i % 16) * CELL[0], (i // 16) * CELL[1]) for i, name in enumerate(SWATCHES)}
+# The wall's print, its darkest and its lightest: drawn on its old ramp (WALL_FROM) and moved along it to AR40's C
+# channel by channel, as research saw it in AR40's renders (ar40_directions.py, C's "Panel"): sand, not indigo.
+WALL_FROM, WALL = ("#20263E", "#93A0C8"), ("#8A6E4E", "#F0E2C4")
 # Prints: where each sits (x, y, width, height), each with a 4 pixel bleed round it.
 PRINTS = {"panel": (8, 268, 512, 160), "hazard": (536, 268, 256, 48), "plate": (536, 332, 256, 112)}
 PRINTS["half"] = (8, 268, 256, 160)   # the panel's first 8 studs, for the half panel: the same pixels, not drawn again
@@ -182,6 +190,8 @@ def atlas():
     for ry in (24.0, h - 20.0):
         dot = np.clip(2.6 - np.hypot(np.abs(rib - 32.0) - 22.0, yy - ry), 0, 1)
         _mix(rgb, "#20263E", dot)
+    lo0, hi0, lo1, hi1 = (code(c) for c in WALL_FROM + WALL)     # AR40's C: the same print moved along its ramp
+    rgb[..., :3] = np.clip(lo1 + (rgb[..., :3] - lo0) / (hi0 - lo0) * (hi1 - lo1), 0, 1)
     kit._put(page, glow, rgb[..., :3], x, y)
     # hazard: yellow and black on the slant, for a tower's foot and a threshold
     x, y, w, h = PRINTS["hazard"]
@@ -578,6 +588,12 @@ def wings(name="Wings"):
                       "a Part under it carries the walking")
 
 
+def wall_line(m, run, at):
+    """A wall's line of light under its coping, `run` along X, in a dark band a little taller (AR40)."""
+    m.box((run, 0.58, 0.14), at, "power")
+    m.box((run - 0.02, 0.54, 0.4), at, "well")
+
+
 def wall(run=16.0):
     """The yard's wall: a post on a concrete foot with a lamp on its cap, and a ribbed steel panel 16 studs along +X
     to the next post, a line of light under its bone coping. The half panel runs 8, to close a run that isn't whole
@@ -587,11 +603,12 @@ def wall(run=16.0):
     m.box((1.1, 1.1, 5.4), (0, 0, 3.9), "girder", ink=True)
     m.box((1.5, 1.5, 0.4), (0, 0, 6.8), "yellow")
     m.box((0.6, 0.6, 0.5), (0, 0, 7.25), "power")
+    m.box((0.8, 0.8, 0.1), (0, 0, 7.05), "well")                                      # the lamp's dark collar (AR40)
     if run:
         panel, coping, print_ = {16.0: (14.9, 15.2, "panel"), 8.0: (6.9, 7.2, "half")}[run]
         m.box((panel, 1.0, 1.0), (run / 2, 0, 0.5), "concrete", ink=True)
         m.box((panel, 0.5, 3.6), (run / 2, 0, 2.8), "steel", pics={"+y": print_, "-y": print_}, ink=True)
-        m.box((panel, 0.58, 0.14), (run / 2, 0, 4.72), "power")
+        wall_line(m, panel, (run / 2, 0, 4.72))
         m.box((coping, 0.8, 0.3), (run / 2, 0, 4.95), "bone")
     name = {16.0: "Wall", 8.0: "WallHalf", 0.0: "WallEnd"}[float(run)]
     return Piece(name, m, solid="the post, and the panel as a wall 5 studs high" if run else "the post",
@@ -608,14 +625,15 @@ def gate():
         m.box((4.6, 4.6, 2.0), (x, 0, 1.0), "concrete", ink=True)
         m.box((2.6, 2.6, 15.4), (x, 0, 9.7), "girder", ink=True)
         m.box((2.8, 2.8, 1.5), (x, 0, 3.4), "yellow", pics={k: "hazard" for k in ("+x", "-x", "+y", "-y")})
-        m.box((0.16, 1.0, 8.6), (x - side * 1.34, 0, 9.6), "power")          # a strip of light down the inner face
+        machines.lamp(m, (0.16, 1.0, 8.6), (x - side * 1.34, 0, 9.6), "power", 0, -side, pad=0.2)   # a strip of light down the inner face, in its dark bed
         m.box((3.2, 3.2, 0.5), (x, 0, 17.65), "bone", ink=True)
         insulator(m, (x, 0, 17.9), 2.2, r=0.55)
         m.box((0.5, 0.5, 0.5), (x, 0, 20.35), "beacon")
+        m.box((0.6, 0.6, 0.1), (x, 0, 20.15), "well")                                 # the beacon's dark collar (AR40)
         mid, reach = side * (GATE + 2.3 + WING) / 2, WING - GATE - 2.3
         m.box((reach, 1.0, 1.0), (mid, 0, 0.5), "concrete")
         m.box((reach, 0.5, 3.6), (mid, 0, 2.8), "steel")
-        m.box((reach, 0.58, 0.14), (mid, 0, 4.72), "power")
+        wall_line(m, reach, (mid, 0, 4.72))
         m.box((reach, 0.8, 0.3), (mid, 0, 4.95), "bone")
     span = 2 * GATE - 2.6
     for z in (15.0, 17.0):
@@ -700,6 +718,7 @@ def transformer():
     for x in (-0.9, 0.0, 0.9):
         insulator(m, (x, 0, 3.34), 1.5, r=0.3)
         m.box((0.3, 0.3, 0.3), (x, 0, 4.99), "power")
+        m.box((0.4, 0.4, 0.1), (x, 0, 4.89), "well")                                  # each tip's dark collar (AR40)
     return Piece("Transformer", m, solid="a box, 3.6 by 3 by 3.4")
 
 

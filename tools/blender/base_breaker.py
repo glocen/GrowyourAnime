@@ -113,6 +113,7 @@ def body(m, n):
     _, deep, high = bm.BODY
     m.box((length + 0.6, deep + 0.6, 0.6), (xc, 0, 0.3), "girder", ink=True)
     m.box((length + 0.2, deep + 0.2, 0.16), (xc, 0, 0.74), "cyan")
+    m.box((length + 0.1, deep + 0.1, 0.5), (xc, 0, 0.85), "well")   # the cyan line's dark reveal (AR40)
     m.box((length, deep, 3.4), (xc, 0, 2.8), "abyss", ink=True)
     m.box((length + 0.4, deep + 0.4, 0.5), (xc, 0, high - 0.25), "bone", ink=True)
     for sy in (-1, 1):
@@ -120,14 +121,14 @@ def body(m, n):
         for x in chambers(n):
             m.box((2.6, 0.16, 2.4), (x, y, 2.9), "dark")
             m.box((0.34, 0.2, 1.9), (x, y + sy * 0.02, 2.9), "cyan")
-        for a, b in zip(chambers(n)[:-1], chambers(n)[1:]):
-            m.box((STEP - 2.8, 0.14, 0.2), ((a + b) / 2, y, 4.1), "void")
+        for a, b in zip(chambers(n)[:-1], chambers(n)[1:]):   # the void's veins, each in its dark well (AR40)
+            bm.lamp(m, (STEP - 2.8, 0.14, 0.2), ((a + b) / 2, y, 4.1), "void", 1, sy)
         for end, s in ((x0, 1), (x1, -1)):
-            m.box((1.6, 0.14, 0.2), (end + s * 1.3, y, 4.1), "void")
-            m.box((0.2, 0.14, 1.9), (end + s * 0.6, y, 3.25), "void")
+            bm.lamp(m, (1.6, 0.14, 0.2), (end + s * 1.3, y, 4.1), "void", 1, sy)
+            bm.lamp(m, (0.2, 0.14, 1.9), (end + s * 0.6, y, 3.25), "void", 1, sy)
     for end, s in ((x0, -1), (x1, 1)):                       # the rail's coupling at each end
         m.box((0.5, 2.2, 1.8), (end + s * 0.2, 0, 2.0), "girder", ink=True)
-        m.box((0.14, 1.4, 0.24), (end + s * 0.47, 0, 2.0), "cyan")
+        bm.lamp(m, (0.14, 1.4, 0.24), (end + s * 0.47, 0, 2.0), "cyan", 0, s)
 
 
 def fang(m, x, top, clamp=True):

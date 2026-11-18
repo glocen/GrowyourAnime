@@ -14,7 +14,8 @@ SHARED = 0.14         # the kit's own
 INK_UV = (0.8297, 0.0625)   # the atlas's ink texel in a record's frame: kit.sw_uv("ink", 0.2, 0.5), V from the top
 SWATCHES = ("steel", "girder", "bone", "concrete", "yellow", "rubber", "ceramic", "copper", "power", "cyan", "lamp",
             "beacon", "dark", "ink", "void", "abyss")   # base_kit.SWATCHES, in the atlas's order
-SOLID = {"steel", "girder", "bone", "concrete", "yellow", "ceramic", "copper", "abyss", "print"}   # what a hull is drawn round
+WELL = 27             # base_kit.SWATCHES' "well" (AR40), the second row's twelfth: a light's dark bed
+SOLID = {"steel", "girder", "bone", "concrete", "yellow", "ceramic", "copper", "abyss", "print", "well"}   # what a hull is drawn round
 HULLED = ("Generator", "GeneratorWheel", "GeneratorDemand", "Breaker", "BreakerChamber", "BreakerWaiting", "Bay", "BatteryRack",
           "BatteryCell", "Showcase", "Door", "Training", "TrainingCrown", "BaySleeping", "SleepingStone",
           "Generator2", "Generator3", "Generator2Wheel", "Generator2Pinion", "Generator3Pinion", "Generator2Demand",
@@ -50,7 +51,8 @@ def _names(t, f):
     """Each triangle's swatch, by its first corner's place in the atlas."""
     uv = t[f[:, 6]]
     cell = np.floor(uv[:, 0] * 16).astype(int) + 16 * np.floor(uv[:, 1] * 8).astype(int)
-    return [SWATCHES[c] if uv[i, 1] < 0.125 and 0 <= c < len(SWATCHES) else "print" for i, c in enumerate(cell)]
+    return [SWATCHES[c] if uv[i, 1] < 0.125 and 0 <= c < len(SWATCHES) else "well" if c == WELL else "print"
+            for i, c in enumerate(cell)]
 
 
 def _shells(p, f):
@@ -131,8 +133,8 @@ def hull(record, by=INK):
     added = 0
     for s, (low, high, worn) in zip(shells, boxes):
         size = np.sort(high - low)
-        if not worn <= SOLID or size[0] < LEAST[0] or size[1] < LEAST[1]:
-            continue
+        if not worn <= SOLID or worn == {"well"} or size[0] < LEAST[0] or size[1] < LEAST[1]:
+            continue                                      # a well alone is a bed under a light: no edge of its own
         if any(_own(a, b, low, high) for a, b in inks):
             continue                                      # it has its edge
         moves, normal = _moves(p, weld, s, f, by)

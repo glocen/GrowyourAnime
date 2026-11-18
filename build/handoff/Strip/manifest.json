@@ -4,15 +4,15 @@
  "frame": "Roblox's: a piece's front (Blender +Y) is -Z. A MeshPart goes at the piece's place times `centre`. A light's `at` is in the piece's own frame.",
  "surface": "one SurfaceAppearance per MeshPart, the base kit's: ColorMap Base_Kit_Color, EmissiveMaskContent Base_Kit_Glow, EmissiveTint `glowTint`, EmissiveStrength from `glowStrength` (the base kit's own, tuned in the engine; CrossingShard's is 2.5 times the kit's before AR20's lift, so its light carries to a far gate: when Config.Lighting lifts the kit's glow for the base and the Strip, the shard keeps this strength and takes none of the lift, or it blooms into a halo at night). Single sided; the void stone's ink is in its mesh.",
  "maps": {
-  "maps/Strip_Paving_Color.png": "the Strip's stones: Lantern Row's paving, 1.35 times its light (AR20's C), a tile 8 studs square for a Texture on the street's Part",
+  "maps/Strip_Paving_Color.png": "the Strip's stones: Lantern Row's paving, 1.35 times its light (AR20's C), its stones moved to #F2EDE4 by day and its joints to #B2946C (AR40's C), a tile 8 studs square for a Texture on the street's Part",
   "../Base/maps/Base_Deck_Color.png": "an empty lot's floor, the base's plain deck tinted #6E7290 (the Texture's Color3), a tile 8 studs square"
  },
  "shadows": "CastShadow off on the three cracks, CrossingMark and the far shards.",
  "pieces": {
   "StripPost": {
    "mesh": "meshes/StripPost.json",
-   "triangles": 176,
-   "vertices": 108,
+   "triangles": 184,
+   "vertices": 116,
    "centre": [
     1.02,
     5.11102,
@@ -109,8 +109,8 @@
   },
   "CrossingShard": {
    "mesh": "meshes/CrossingShard.json",
-   "triangles": 248,
-   "vertices": 180,
+   "triangles": 296,
+   "vertices": 228,
    "centre": [
     -0.20038,
     27.24044,
@@ -163,8 +163,8 @@
   },
   "SealCalamity": {
    "mesh": "meshes/SealCalamity.json",
-   "triangles": 576,
-   "vertices": 387,
+   "triangles": 608,
+   "vertices": 419,
    "centre": [
     0.0,
     24.56667,
@@ -195,8 +195,8 @@
   },
   "SealClash": {
    "mesh": "meshes/SealClash.json",
-   "triangles": 576,
-   "vertices": 387,
+   "triangles": 608,
+   "vertices": 419,
    "centre": [
     0.0,
     24.56667,

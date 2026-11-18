@@ -70,6 +70,11 @@ BROW = ((19.6, 0.5), (18.3, 3.1), (15.5, 3.4), (12.5, 3.0), (9.5, 3.4), (6.5, 3.
 # AR20's C (research's pick, 2026-11-16, 17:23): the Strip's stones, Lantern Row's paving times STONES in light, and an
 # empty lot's floor, the base's deck under LOT_TINT, lifted from #3A3C52 so the lots beside the crossing aren't black.
 STONES, LOT_TINT = 1.35, "#6E7290"
+# AR40's C (research's pick, 2026-11-18, 22:40) and its must-fix 2, no one hue is a scene's ground: the stones a step
+# lighter and nearer cream than tan, their light moved channel by channel from DAY (the stones by day on AR20's tile,
+# read off a capture) to CREAM; the warm kept in the joints between them, at JOINT by the same day. A pixel of the tile
+# under JOINTS[0] in L* is a joint, over JOINTS[1] a stone, blended between.
+DAY, CREAM, JOINT, JOINTS = "#B9ACD0", "#F2EDE4", "#B2946C", (36.0, 42.0)
 ROW_PAVING = Path(__file__).resolve().parents[2] / "build" / "handoff" / "LanternRow" / "maps" / "LanternRow_Paving_Color.png"
 PAVING_NAME = "Strip_Paving_Color.png"
 # The crossing's shard: its three parts round the light, each (the way it stands out in degrees, its foot, its tip).
@@ -130,6 +135,7 @@ def strip_post():
     horn(m, [(-0.1, 0, 8.7), (out + 0.3, 0, 9.35)], [0.2, 0.12], "abyss", ink=False)
     m.box((0.07, 0.07, 0.56), (out, 0, up + 1.24), "rubber")
     facing(m, (out, 0, up), 0.78, 1.0, 0.16, 8, "abyss")
+    facing(m, (out, 0, up), 0.77, 0.88, 0.18, 8, "well")              # the ring's dark lip round the shard (AR40)
     shard(m, (out, 0, up + 0.05), 0.36, 1.5, "void")
     return Piece("StripPost", m, lights=[("Lamp", (out, 0.0, up), "#C9B0FF")], solid="the foot, 1.7 square, and the stone",
                  note=f"10.2 high. Its shard hangs in its ring {out:g} out toward +X and {up:g} up: turn the post so +X "
@@ -358,12 +364,23 @@ class Stock(base.Stock):
         return super().stand(name, tag, at, turn)
 
 
+def _linear(c):
+    return np.where(c <= 0.04045, c / 12.92, ((c + 0.055) / 1.055) ** 2.4)
+
+
 def paving(out: Path):
-    """The Strip's own stones: Lantern Row's paving lifted, in light, by STONES."""
+    """The Strip's own stones: Lantern Row's paving lifted, in light, by STONES (AR20), then AR40's C: the stones
+    moved to CREAM by day and the joints to JOINT, each keeping its own grain."""
     page = rs.load(ROW_PAVING)
-    c = page[..., :3]
-    linear = np.where(c <= 0.04045, c / 12.92, ((c + 0.055) / 1.055) ** 2.4) * STONES
-    page[..., :3] = base.kit.encode(linear)
+    lin = _linear(page[..., :3]) * STONES
+    y = lin @ np.array([0.2126, 0.7152, 0.0722], np.float32)
+    lstar = np.where(y > 0.008856, 116 * np.cbrt(y) - 16, 903.3 * y)
+    j = np.clip((JOINTS[1] - lstar) / (JOINTS[1] - JOINTS[0]), 0, 1)[..., None]
+    day, cream, joint = (_linear(np.array([int(h[i:i + 2], 16) / 255 for i in (1, 3, 5)], np.float32)) for h in (DAY, CREAM, JOINT))
+    stones = lin * (cream / day)
+    seen = day / lin[j[..., 0] == 0].mean(0)                       # a stone's light by day over its texel's
+    joints = lin * (joint / seen) / lin[j[..., 0] == 1].mean(0)    # the joints' mean to JOINT by the same day
+    page[..., :3] = base.kit.encode(np.clip(stones * (1 - j) + joints * j, 0, 1))
     out.mkdir(parents=True, exist_ok=True)
     rs.save(page, out / PAVING_NAME)
 
@@ -400,7 +417,8 @@ def export(out: Path):
                 "gate: when Config.Lighting lifts the kit's glow for the base and the Strip, the shard keeps this "
                 "strength and takes none of the lift, or it blooms into a halo at night). Single sided; the void stone's "
                 "ink is in its mesh.",
-        maps={f"maps/{PAVING_NAME}": f"the Strip's stones: Lantern Row's paving, {STONES:g} times its light (AR20's C), a "
+        maps={f"maps/{PAVING_NAME}": f"the Strip's stones: Lantern Row's paving, {STONES:g} times its light (AR20's C), "
+                                     f"its stones moved to {CREAM} by day and its joints to {JOINT} (AR40's C), a "
                                      f"tile {base.kit.PAVING[1]:g} studs square for a Texture on the street's Part",
               "../Base/maps/Base_Deck_Color.png": f"an empty lot's floor, the base's plain deck tinted {LOT_TINT} "
                                                  "(the Texture's Color3), a tile 8 studs square"},

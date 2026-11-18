@@ -165,8 +165,8 @@
   },
   "Wall": {
    "mesh": "meshes/Wall.json",
-   "triangles": 144,
-   "vertices": 96,
+   "triangles": 168,
+   "vertices": 112,
    "centre": [
     7.245,
     3.695,
@@ -187,8 +187,8 @@
   },
   "WallHalf": {
    "mesh": "meshes/WallHalf.json",
-   "triangles": 144,
-   "vertices": 96,
+   "triangles": 168,
+   "vertices": 112,
    "centre": [
     3.245,
     3.695,
@@ -209,8 +209,8 @@
   },
   "WallEnd": {
    "mesh": "meshes/WallEnd.json",
-   "triangles": 72,
-   "vertices": 48,
+   "triangles": 84,
+   "vertices": 56,
    "centre": [
     0.0,
     3.695,
@@ -231,8 +231,8 @@
   },
   "Gate1": {
    "mesh": "meshes/Gate1.json",
-   "triangles": 808,
-   "vertices": 564,
+   "triangles": 880,
+   "vertices": 612,
    "centre": [
     0.0,
     10.245,
@@ -329,8 +329,8 @@
   },
   "Transformer": {
    "mesh": "meshes/Transformer.json",
-   "triangles": 492,
-   "vertices": 286,
+   "triangles": 528,
+   "vertices": 310,
    "centre": [
     0.0,
     2.515,
@@ -351,8 +351,8 @@
   },
   "Door": {
    "mesh": "meshes/Door.json",
-   "triangles": 768,
-   "vertices": 428,
+   "triangles": 840,
+   "vertices": 500,
    "centre": [
     0.0,
     6.075,
@@ -483,8 +483,8 @@
   },
   "Training": {
    "mesh": "meshes/Training.json",
-   "triangles": 466,
-   "vertices": 304,
+   "triangles": 666,
+   "vertices": 432,
    "centre": [
     0.0,
     4.37,
@@ -505,8 +505,8 @@
   },
   "TrainingCrown": {
    "mesh": "meshes/TrainingCrown.json",
-   "triangles": 604,
-   "vertices": 360,
+   "triangles": 700,
+   "vertices": 424,
    "centre": [
     0.0,
     0.36,
@@ -527,8 +527,8 @@
   },
   "Breaker": {
    "mesh": "meshes/Breaker.json",
-   "triangles": 682,
-   "vertices": 452,
+   "triangles": 934,
+   "vertices": 628,
    "centre": [
     0.0,
     6.345,
@@ -549,8 +549,8 @@
   },
   "BreakerChamber": {
    "mesh": "meshes/BreakerChamber.json",
-   "triangles": 270,
-   "vertices": 176,
+   "triangles": 282,
+   "vertices": 184,
    "centre": [
     0.0,
     1.98697,
@@ -593,8 +593,8 @@
   },
   "Bay": {
    "mesh": "meshes/Bay.json",
-   "triangles": 614,
-   "vertices": 400,
+   "triangles": 710,
+   "vertices": 488,
    "centre": [
     -0.07,
     5.0,
@@ -713,8 +713,8 @@
   },
   "BatteryRack": {
    "mesh": "meshes/BatteryRack.json",
-   "triangles": 144,
-   "vertices": 96,
+   "triangles": 180,
+   "vertices": 120,
    "centre": [
     0.0,
     1.27,
@@ -735,8 +735,8 @@
   },
   "BatteryCell": {
    "mesh": "meshes/BatteryCell.json",
-   "triangles": 120,
-   "vertices": 80,
+   "triangles": 132,
+   "vertices": 88,
    "centre": [
     0.0,
     1.025,
@@ -977,8 +977,8 @@
   },
   "GeneratorDemand": {
    "mesh": "meshes/GeneratorDemand.json",
-   "triangles": 36,
-   "vertices": 24,
+   "triangles": 48,
+   "vertices": 32,
    "centre": [
     -8.82567,
     -9.76182,
@@ -999,8 +999,8 @@
   },
   "Generator2": {
    "mesh": "meshes/Generator2.json",
-   "triangles": 2770,
-   "vertices": 1712,
+   "triangles": 2834,
+   "vertices": 1776,
    "centre": [
     -0.97012,
     10.57303,
@@ -1021,8 +1021,8 @@
   },
   "Generator3": {
    "mesh": "meshes/Generator3.json",
-   "triangles": 3822,
-   "vertices": 2396,
+   "triangles": 3950,
+   "vertices": 2524,
    "centre": [
     -0.72398,
     12.40887,
@@ -1461,8 +1461,8 @@
   },
   "Generator2Demand": {
    "mesh": "meshes/Generator2Demand.json",
-   "triangles": 36,
-   "vertices": 24,
+   "triangles": 48,
+   "vertices": 32,
    "centre": [
     -9.80822,
     -9.65072,
@@ -1483,8 +1483,8 @@
   },
   "Generator3Demand": {
    "mesh": "meshes/Generator3Demand.json",
-   "triangles": 36,
-   "vertices": 24,
+   "triangles": 48,
+   "vertices": 32,
    "centre": [
     -11.23383,
     -11.05344,
@@ -1505,8 +1505,8 @@
   },
   "Showcase": {
    "mesh": "meshes/Showcase.json",
-   "triangles": 304,
-   "vertices": 200,
+   "triangles": 392,
+   "vertices": 272,
    "centre": [
     0.0,
     0.795,
@@ -1537,8 +1537,8 @@
   },
   "Forge": {
    "mesh": "meshes/Forge.json",
-   "triangles": 586,
-   "vertices": 392,
+   "triangles": 708,
+   "vertices": 492,
    "centre": [
     0.0,
     6.25,
@@ -1559,8 +1559,8 @@
   },
   "ForgeRam": {
    "mesh": "meshes/ForgeRam.json",
-   "triangles": 412,
-   "vertices": 240,
+   "triangles": 456,
+   "vertices": 272,
    "centre": [
     0.0,
     3.2,
@@ -1581,8 +1581,8 @@
   },
   "ForgeGear": {
    "mesh": "meshes/ForgeGear.json",
-   "triangles": 304,
-   "vertices": 176,
+   "triangles": 308,
+   "vertices": 184,
    "centre": [
     0.0,
     0.0,
@@ -1603,8 +1603,8 @@
   },
   "Condenser": {
    "mesh": "meshes/Condenser.json",
-   "triangles": 2000,
-   "vertices": 1474,
+   "triangles": 2072,
+   "vertices": 1538,
    "centre": [
     0.0,
     5.83774,
@@ -1625,8 +1625,8 @@
   },
   "CondenserCore": {
    "mesh": "meshes/CondenserCore.json",
-   "triangles": 472,
-   "vertices": 256,
+   "triangles": 664,
+   "vertices": 352,
    "centre": [
     0.0,
     0.0,
@@ -1691,8 +1691,8 @@
   },
   "Breaker2": {
    "mesh": "meshes/Breaker2.json",
-   "triangles": 962,
-   "vertices": 636,
+   "triangles": 1206,
+   "vertices": 812,
    "centre": [
     3.5,
     8.395,
@@ -1713,8 +1713,8 @@
   },
   "Breaker3": {
    "mesh": "meshes/Breaker3.json",
-   "triangles": 1320,
-   "vertices": 860,
+   "triangles": 1588,
+   "vertices": 1052,
    "centre": [
     7.0,
     10.02905,
@@ -1779,8 +1779,8 @@
   },
   "Bay2": {
    "mesh": "meshes/Bay2.json",
-   "triangles": 738,
-   "vertices": 480,
+   "triangles": 850,
+   "vertices": 584,
    "centre": [
     -0.07,
     6.03979,
@@ -1801,8 +1801,8 @@
   },
   "Bay3": {
    "mesh": "meshes/Bay3.json",
-   "triangles": 910,
-   "vertices": 592,
+   "triangles": 1022,
+   "vertices": 696,
    "centre": [
     -0.07,
     7.8138,
@@ -1867,8 +1867,8 @@
   },
   "BatteryRack2": {
    "mesh": "meshes/BatteryRack2.json",
-   "triangles": 408,
-   "vertices": 272,
+   "triangles": 444,
+   "vertices": 296,
    "centre": [
     0.0,
     3.40642,
@@ -1889,8 +1889,8 @@
   },
   "BatteryRack3": {
    "mesh": "meshes/BatteryRack3.json",
-   "triangles": 656,
-   "vertices": 428,
+   "triangles": 704,
+   "vertices": 460,
    "centre": [
     0.0,
     6.65912,
@@ -1911,8 +1911,8 @@
   },
   "TrainingCrown2": {
    "mesh": "meshes/TrainingCrown2.json",
-   "triangles": 824,
-   "vertices": 496,
+   "triangles": 968,
+   "vertices": 592,
    "centre": [
     0.0,
     0.4,
@@ -1933,8 +1933,8 @@
   },
   "TrainingCrown3": {
    "mesh": "meshes/TrainingCrown3.json",
-   "triangles": 1080,
-   "vertices": 656,
+   "triangles": 1272,
+   "vertices": 784,
    "centre": [
     0.0,
     0.46,
@@ -1955,8 +1955,8 @@
   },
   "Forge2": {
    "mesh": "meshes/Forge2.json",
-   "triangles": 634,
-   "vertices": 424,
+   "triangles": 756,
+   "vertices": 524,
    "centre": [
     0.0,
     6.25,
@@ -1977,8 +1977,8 @@
   },
   "Forge3": {
    "mesh": "meshes/Forge3.json",
-   "triangles": 866,
-   "vertices": 576,
+   "triangles": 992,
+   "vertices": 684,
    "centre": [
     0.0,
     7.2,
@@ -1999,8 +1999,8 @@
   },
   "Condenser2": {
    "mesh": "meshes/Condenser2.json",
-   "triangles": 2480,
-   "vertices": 1798,
+   "triangles": 2552,
+   "vertices": 1862,
    "centre": [
     0.0,
     5.83774,
@@ -2021,8 +2021,8 @@
   },
   "Condenser3": {
    "mesh": "meshes/Condenser3.json",
-   "triangles": 2800,
-   "vertices": 2014,
+   "triangles": 2872,
+   "vertices": 2078,
    "centre": [
     0.0,
     5.83774,

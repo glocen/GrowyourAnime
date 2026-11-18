@@ -54,6 +54,14 @@ One palette for the slab the Breaker's and the Power panels wear, with the base 
 | ElectricityWords | #FFE266 | #7A5800 | #5E4300 | #FFE98A |
 | Over | #FF965C | #FF8A4A | #FF8A4A | #FF965C |
 | OverWords | #FF965C | #A63A12 | #822A0A | #FFE2D0 |
+| Glass | #0A0824 |  |  | #16343C |
+| Close | #FFFFFF |  |  | #FFF6E2 |
+| Primary | #2A2244 to #1A1530 |  |  | #F0E2C4 to #DCCBA6 |
+| PrimaryEdge | #3B3358 |  |  | #FFF6E2 |
+| PrimaryWords | #F1ECFF |  |  | #1E3238 |
+| Quiet | #2A2244 to #1A1530 |  |  | #21434C to #193740 |
+| QuietEdge | #3B3358 |  |  | #8FC4C8 |
+| QuietWords | #F1ECFF |  |  | #FFF6E2 |
 
 | contrast, the least | Today | A | B | C |
 |---|---|---|---|---|
@@ -72,5 +80,13 @@ One palette for the slab the Breaker's and the Power panels wear, with the base 
 | a chosen button's words | 10.2 | 10.2 | 10.9 | 10.4 |
 | the accent is blue-violet | no | yes | yes | yes |
 | under L* 30 | Panel, Row, Button, Ground, Backing | none | none | none |
+| a chamber's number (Soft) on its glass | 8.7 | closed | closed | 10.4 |
+| its "Empty" (Faint) on its glass | 4.2 | closed | closed | 6.9 |
+| the glass against the panel | 1.1 | closed | closed | 1.5 |
+| the close cross on the panel | 15.6 | closed | closed | 6.4 |
+| the one action's words | 12.9 | closed | closed | 8.4 |
+| the one action against the panel | 1 | closed | closed | 4.3 |
+| a quiet press's words | 12.9 | closed | closed | 9.9 |
+| a quiet press's edge, the least of panel and fill | 1.3 | closed | closed | 3.6 |
 
 Words need 4.5 to 1, a mark or an edge 3. Today's panel is Graphite with the theme's colours, as the code has them.

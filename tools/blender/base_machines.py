@@ -49,7 +49,7 @@ import math
 import sys
 from pathlib import Path
 
-from mathutils import Vector
+from mathutils import Euler, Matrix, Vector
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import base_ink as ink  # noqa: E402
@@ -134,10 +134,50 @@ def shard(m, at, r, high, sw, lean=0.5, ink=False):
     horn(m, [(x, y, z - high * (1 - lean)), at, (x, y, z + high * lean)], [0.04, r, 0.04], sw, ink=ink)
 
 
-def vein(m, points, radii, heart, sw="void", r=0.1):
-    """A line of the void's light along a horn's edge, the one that looks at `heart`."""
+WELL = 0.25   # a light's dark well (AR40, research's must-fix 1): how far its bed reaches past it on the face it lies on
+
+
+def lamp(m, size, at, sw, axis, sign, pad=WELL, rot=None):
+    """A light lying on a body's face, in its dark well (AR40: a light on a pale body sits in a dark well): the light's
+    box as asked, and under it a bed in the well's colour `pad` wider each way on that face (a number, or one per
+    axis), its front 0.03 behind the light's and its back at the light's. `axis` is the face's normal (0 X, 1 Y, 2 Z)
+    in the box's own frame, `sign` the way it looks; `rot` turns both as m.box does."""
+    m.box(size, at, sw, rot=rot)
+    pads = pad if isinstance(pad, (tuple, list)) else (pad,) * 3
+    bed = [s + 2 * p for s, p in zip(size, pads)]
+    bed[axis] = size[axis] - 0.03
+    shift = Vector((0.0, 0.0, 0.0))
+    shift[axis] = -sign * 0.015
+    if rot is not None:
+        shift = (rot if isinstance(rot, Matrix) else Euler(rot).to_matrix()) @ shift
+    m.box(tuple(bed), tuple(Vector(at) + shift), "well", rot=rot)
+
+
+def vein(m, points, radii, heart, sw="void", r=0.1, well=0.1):
+    """A line of the void's light along a horn's edge, the one that looks at `heart`, in its dark well (AR40): a
+    cable `well` thicker each way under it, sunk toward the horn's spine so the light stands 0.02 proud of it."""
     heart = Vector(heart)
-    m.tube([Vector(p) + (heart - Vector(p)).normalized() * q * 0.97 for p, q in zip(points, radii)], r, sw)
+    toward = [(heart - Vector(p)).normalized() for p in points]
+    m.tube([Vector(p) + t * q * 0.97 for p, t, q in zip(points, toward, radii)], r, sw)
+    if well:
+        m.tube([Vector(p) + t * (q * 0.97 - well - 0.02) for p, t, q in zip(points, toward, radii)], r + well, "well")
+
+
+DAIS_FLOOR = 3.2   # a bay's dark floor under the worker, out past the halo's ring (BayHalo: 2.75 to 3.05) so it lies in dark
+
+
+def rim(m, x, y, at, sw="void"):
+    """A line of light round a deck's sides, the deck `x` by `y`, its middle at `at`: the line 0.1 high and 0.05 proud,
+    in a dark band 0.3 high a hair proud of the deck (AR40)."""
+    m.box((x + 0.1, y + 0.1, 0.1), at, sw)
+    m.box((x + 0.05, y + 0.05, 0.3), at, "well")
+
+
+def dais_line(m, at, r0, r1, sides, sw="void", h=0.17):
+    """A ring of light on a dais's top, from r0 out to r1, `at` the dais's foot, in its dark bed (AR40): the bed 0.15
+    wider each way at `h`, the light 0.01 over it."""
+    m.lathe([(r0 - 0.15, h), (r1 + 0.15, h)], at, sides, "well", caps=False)
+    m.lathe([(r0, h + 0.01), (r1, h + 0.01)], at, sides, sw, caps=False)
 
 
 def hoop(m, at, r0, r1, thick, sides, sw, ink=True, lying=False):
@@ -187,6 +227,7 @@ def breaker():
     wide, deep, high = BODY
     m.box((wide + 0.6, deep + 0.6, 0.6), (0, 0, 0.3), "girder", ink=True)
     m.box((wide + 0.2, deep + 0.2, 0.16), (0, 0, 0.74), "cyan")
+    m.box((wide + 0.1, deep + 0.1, 0.5), (0, 0, 0.85), "well")                     # the cyan line's dark reveal (AR40)
     m.box((wide, deep, 3.4), (0, 0, 2.8), "abyss", ink=True)
     m.box((wide + 0.4, deep + 0.4, 0.5), (0, 0, high - 0.25), "bone", ink=True)
     across, up, side = CHAMBERS
@@ -195,12 +236,12 @@ def breaker():
         m.box((2.6, 0.16, 2.4), (0, y, 2.9), "dark")                                 # the core's window, the void in it
         m.box((0.34, 0.2, 1.9), (0, y + sy * 0.02, 2.9), "cyan")
         for sx in (-1, 1):
-            m.box((4.6, 0.14, 0.2), (sx * 4.3, y, 4.1), "void")                      # the void's veins, in along the block
-            m.box((0.2, 0.14, 1.4), (sx * 1.9, y, 3.5), "void")                      # and down into the core
-            m.box((0.2, 0.14, 1.9), (sx * 6.5, y, 3.25), "void")
+            lamp(m, (4.6, 0.14, 0.2), (sx * 4.3, y, 4.1), "void", 1, sy)             # the void's veins, in along the block
+            lamp(m, (0.2, 0.14, 1.4), (sx * 1.9, y, 3.5), "void", 1, sy)             # and down into the core
+            lamp(m, (0.2, 0.14, 1.9), (sx * 6.5, y, 3.25), "void", 1, sy)
     for sx in (-1, 1):                                                               # the rail's coupling at each end
         m.box((0.5, 2.2, 1.8), (sx * (wide / 2 + 0.2), 0, 2.0), "girder", ink=True)
-        m.box((0.14, 1.4, 0.24), (sx * (wide / 2 + 0.47), 0, 2.0), "cyan")
+        lamp(m, (0.14, 1.4, 0.24), (sx * (wide / 2 + 0.47), 0, 2.0), "cyan", 0, sx)
     # the jaws: a horn from each end, closing over the chambers; a fang down into each
     for sx in (-1, 1):
         jaw = [(sx * 6.6, 0, high), (sx * 7.5, 0, 8.4), (sx * 6.0, 0, 11.4), (sx * 2.0, 0, 12.6)]
@@ -210,6 +251,7 @@ def breaker():
         vein(m, jaw[:3] + [(sx * 3.4, 0, 12.18)], widths[:3] + [0.3], (0, 0, 8.0))
         horn(m, [(sx * 3.9, 0, 11.9), (sx * across, 0, GAP[1] + 0.12)], [0.5, 0.05], "abyss")
         m.box((0.22, 0.22, 0.2), (sx * across, 0, GAP[1] + 0.06), "cyan")
+        m.box((0.3, 0.3, 0.1), (sx * across, 0, GAP[1] + 0.21), "well")              # the lamp's dark collar (AR40)
     # the middle: a seat between the chambers, a point standing on it, and the crystal over it, between the jaws' tips
     m.box((1.7, 1.7, 0.8), (0, 0, high + 0.4), "abyss", ink=True)
     horn(m, [(0, 0, high + 0.8), (0, 0, high + 2.3)], [0.5, 0.05], "abyss")
@@ -229,7 +271,7 @@ def breaker_chamber():
     foot = BODY[2]
     half = side / 2 - 0.15
     m.box((side + 0.2, side + 0.2, 0.3), (0, 0, 0.15), "abyss", ink=True)
-    m.box((3.0, 3.0, 0.1), (0, 0, 0.35), "dark")
+    m.box((3.9, 3.9, 0.1), (0, 0, 0.35), "dark")   # wide enough that the cyan square lies in it, not on the sand (AR40)
     for s in (-1, 1):
         m.box((3.4, 0.14, 0.12), (0, s * 1.75, 0.36), "cyan")
         m.box((0.14, 3.4, 0.12), (s * 1.75, 0, 0.36), "cyan")
@@ -238,6 +280,7 @@ def breaker_chamber():
              [0.32, 0.28, 0.05], "abyss", flat=(sx, -sy, 0.0))
     horn(m, [(0, 0, 0.4), (0, 0, GAP[0] - foot - 0.12)], [0.46, 0.05], "abyss")
     m.box((0.22, 0.22, 0.2), (0, 0, GAP[0] - foot - 0.06), "cyan")
+    m.box((0.3, 0.3, 0.1), (0, 0, GAP[0] - foot - 0.21), "well")                     # the lamp's dark collar (AR40)
     return Piece("BreakerChamber", m,
                  note=f"its place is the chamber's middle across, on the body's top ({foot:g} up): the stand-in's cube "
                       f"from {up - side / 2:g} to {up + side / 2:g}. The shard's room is between the points, "
@@ -270,10 +313,10 @@ def bay():
     side, top = BAY
     back, eye = -(side / 2 - 0.55), HALO[0]
     m.box((side, side, top), (0, 0, top / 2), "girder", ink=True)
-    m.box((side + 0.1, side + 0.1, 0.1), (0, 0, 0.2), "void")
+    rim(m, side, side, (0, 0, 0.2))
     m.lathe([(4.1, 0.16), (4.3, 0.0)], (0, 0, top), 12, "abyss")
-    m.lathe([(3.55, 0.17), (3.85, 0.17)], (0, 0, top), 12, "void", caps=False)        # the dais's line of light
-    well(m, (0, 0, top), 2.6)                      # the well under the worker's feet
+    dais_line(m, (0, 0, top), 3.55, 3.85, 12)                                         # the dais's line of light
+    well(m, (0, 0, top), DAIS_FLOOR)               # the well under the worker's feet, wide enough for the halo's ring
     m.box((1.3, side - 1.2, 0.6), (back, 0, top + 0.3), "abyss", ink=True)            # the crescent's foot, along the back
     for sy in (-1, 1):
         arm = [(back, sy * 3.7, top + 0.5), (back, sy * 4.9, 3.6), (back, sy * 4.3, 6.9), (back, sy * 2.3, 9.4)]
@@ -286,7 +329,7 @@ def bay():
     hoop(m, (back, 0, eye), HALO[1], HALO[2], 0.4, 12, "abyss")
     shard(m, (back, 0, eye), 0.8, 3.0, "void", lean=0.55)
     m.box((0.9, 1.6, 1.0), (back + 0.3, 0, top + 0.5), "girder", ink=True)            # where the current leaves
-    m.box((0.1, 1.0, 0.2), (back + 0.78, 0, top + 0.6), "power")
+    lamp(m, (0.1, 1.0, 0.2), (back + 0.78, 0, top + 0.6), "power", 0, 1, pad=0.15)
     return Piece("Bay", m, solid="a box, 10 square, 0.4 high, and the crescent's two feet",
                  note=f"on the stand-in's pad, 9.4 high at its horns' tips. Its crescent stands on -X: turn 0 on the "
                       f"plot's left, 180 on its right, so the eye is on the outer side and the worker is seen under it "
@@ -376,11 +419,12 @@ def battery_deck(m):
     m.box((wide + 0.3, deep + 0.3, 0.3), (0, 0, 0.15), "concrete", ink=True)
     m.box((wide, deep, 0.3), (0, 0, 0.45), "girder", ink=True)
     m.box((wide - 0.5, 0.34, 0.14), (0, 0, SEAT + 0.07), "abyss")
-    m.box((wide - 0.9, 0.12, 0.05), (0, 0, SEAT + 0.165), "power")
+    lamp(m, (wide - 0.9, 0.12, 0.05), (0, 0, SEAT + 0.165), "power", 2, 1, pad=0.1)   # in its dark bed (AR40)
     for sx in (-1, 1):
         x = sx * (wide / 2 - 0.22)
         m.box((0.42, 0.42, 2.45 - SEAT), (x, 0, (SEAT + 2.45) / 2), "abyss", ink=True)
         m.box((0.24, 0.24, 0.2), (x, 0, 2.55), "power")
+        m.box((0.38, 0.38, 0.1), (x, 0, 2.5), "well")                                 # its dark collar (AR40)
 
 
 def battery_rack():
@@ -403,6 +447,7 @@ def battery_cell():
         m.box((0.26, 0.1, 0.94), (0, sy * 0.75, 0.76), "power")
     m.box((0.4, 0.4, 0.3), (0, 0, 1.85), "ceramic")
     m.box((0.22, 0.22, 0.16), (0, 0, 2.08), "power")
+    m.box((0.32, 0.32, 0.06), (0, 0, 2.03), "well")                                   # its dark collar (AR40)
     return Piece("BatteryCell", m,
                  note=f"its origin is its seat on the rack, {SEAT:g} up; 2.16 high above it. Its glow is its own "
                       f"charge: the builder lights the cells in the seats' order as the battery fills. Look only")
@@ -422,6 +467,7 @@ RINGS = ((1.7, 5.3, 9.0, (20, 135, 150, 262, 280, 350)), (3.0, 4.4, -14.0, (70, 
 DRIFT = (0.25, 0.35)                  # a ring's step aside and up from the one before
 CORE = (5.9, 2.4)                     # the core, where a fifth ring would stand: how far back, its radius
 LINE = (0.22, 0.2)                    # a line of light: its width on the face, and its lip's depth back along the edge
+MOUTH_WELL = 0.3                      # the mouth's well on the front ring's face: how far past its line it reaches (AR40)
 NAME = (5.0, 0.5, 1.3)                # the name's plate, sunk into the front ring's crown: across, deep, high
 
 
@@ -453,9 +499,10 @@ def _face(m, pts, sw, toward, t):
     m.face(pts, [kit.sw_uv(sw, 0.0, min(max(v, 0.0), 1.0)) for v in ts])
 
 
-def _stone(m, r, wide, y0, y1, arcs, sw, lift, at=(0.0, 0.0)):
+def _stone(m, r, wide, y0, y1, arcs, sw, lift, at=(0.0, 0.0), inside=None):
     """A ring's stone round `at` (X and Z), `wide` in from its outer radius, from y0 to y1 along Y: whole, or in arcs
-    (from, to) with their ends. Its swatch runs foot to head with its height, `lift` over the floor."""
+    (from, to) with their ends. Its swatch runs foot to head with its height, `lift` over the floor; its inner wall
+    wears `inside` when given."""
     def put(q, y):
         return (at[0] + q[0], y, at[1] + q[1])
 
@@ -476,7 +523,7 @@ def _stone(m, r, wide, y0, y1, arcs, sw, lift, at=(0.0, 0.0)):
             mid = (Vector(put(o0, 0)) + Vector(put(o1, 0))) / 2
             _face(m, [put(o0, y0), put(o1, y0), put(o1, y1), put(o0, y1)], sw, mid - centre, t(o0, o1, o1, o0))
             mid = (Vector(put(i0, 0)) + Vector(put(i1, 0))) / 2
-            _face(m, [put(i0, y0), put(i1, y0), put(i1, y1), put(i0, y1)], sw, centre - mid, t(i0, i1, i1, i0))
+            _face(m, [put(i0, y0), put(i1, y0), put(i1, y1), put(i0, y1)], inside or sw, centre - mid, t(i0, i1, i1, i0))
         if not whole:
             for i in (0, k - 1):
                 o, n = outer[i], inner[i]
@@ -484,10 +531,9 @@ def _stone(m, r, wide, y0, y1, arcs, sw, lift, at=(0.0, 0.0)):
                 _face(m, [put(o, y0), put(n, y0), put(n, y1), put(o, y1)], sw, side if i else -side, t(o, n, n, o))
 
 
-def _line(m, r, y, arcs, sw, at=(0.0, 0.0)):
-    """A line of light on a ring's inner edge, round `at`: a strip on the face toward the mouth at `y`, its inner edge at
-    radius `r`, and a lip back along that edge, so it reads from the side too. One colour, so no gradient."""
-    wide, deep = LINE
+def _band(m, r, wide, y, arcs, sw, at=(0.0, 0.0), lip=0.0):
+    """A flat band on a ring's face toward the mouth at `y`, round `at`, from radius `r` out `wide`; with `lip`, a lip
+    that deep back along its inner edge, so it reads from the side too. One colour, so no gradient."""
     for a0, a1 in arcs:
         outer, whole = _arc(r + wide, a0, a1)
         inner, _ = _arc(r, a0, a1)
@@ -496,9 +542,16 @@ def _line(m, r, y, arcs, sw, at=(0.0, 0.0)):
             j = (i + 1) % k
             o0, o1, i0, i1 = ((at[0] + q[0], at[1] + q[1]) for q in (outer[i], outer[j], inner[i], inner[j]))
             _face(m, [(o0[0], y, o0[1]), (o1[0], y, o1[1]), (i1[0], y, i1[1]), (i0[0], y, i0[1])], sw, (0, -1, 0), 0.5)
-            mid = Vector(((i0[0] + i1[0]) / 2 - at[0], 0, (i0[1] + i1[1]) / 2 - at[1]))
-            _face(m, [(i0[0], y, i0[1]), (i1[0], y, i1[1]), (i1[0], y + deep, i1[1]), (i0[0], y + deep, i0[1])], sw,
-                  -mid, 0.5)
+            if lip:
+                mid = Vector(((i0[0] + i1[0]) / 2 - at[0], 0, (i0[1] + i1[1]) / 2 - at[1]))
+                _face(m, [(i0[0], y, i0[1]), (i1[0], y, i1[1]), (i1[0], y + lip, i1[1]), (i0[0], y + lip, i0[1])], sw,
+                      -mid, 0.5)
+
+
+def _line(m, r, y, arcs, sw, at=(0.0, 0.0)):
+    """A line of light on a ring's inner edge, round `at`: a strip on the face toward the mouth at `y`, its inner edge at
+    radius `r`, and a lip back along that edge, so it reads from the side too."""
+    _band(m, r, LINE[0], y, arcs, sw, at, lip=LINE[1])
 
 
 def door():
@@ -508,7 +561,10 @@ def door():
     m = Mesh()
     zc, outer, inner, front, back = MOUTH
     m.box(STEP[:3], (0, STEP[3], STEP[2] / 2), "abyss", ink=True)
-    _stone(m, outer, outer - inner, front, back, [(0.0, 360.0)], "abyss", 0.0, at=(0.0, zc))
+    # AR40: the mouth is a dark well the amber line sits in, its wall and a band round it on the face; the rings
+    # behind are the same well, so the tunnel reads as a dark throat lined with light inside a pale stone frame
+    _stone(m, outer, outer - inner, front, back, [(0.0, 360.0)], "abyss", 0.0, at=(0.0, zc), inside="well")
+    _band(m, inner - 0.02, LINE[0] + MOUTH_WELL, front - 0.02, [(0.0, 360.0)], "well", at=(0.0, zc))
     _line(m, inner - 0.02, front - 0.04, [(0.0, 360.0)], "doormouth", at=(0.0, zc))
     m.box(NAME, (0, front - 0.15, zc + outer + 0.3), "rubber", ink=True)
     w, d, h = NAME
@@ -531,7 +587,7 @@ def door_ring(k):
 
     def make():
         m = Mesh(None)
-        _stone(m, r, 0.32, 0.0, 0.3, spans, "abyss", lift)
+        _stone(m, r, 0.32, 0.0, 0.3, spans, "well", lift)   # AR40: the throat's well, the amber arcs in it
         _line(m, r - 0.34, -0.04, [(a0 + 2, a1 - 2) for a0, a1 in spans], f"doorarc{k}")
         way = "anticlockwise" if rate > 0 else "clockwise"
         return Piece(f"DoorRing{k}", m,
@@ -572,10 +628,11 @@ def training():
     m = Mesh()
     q = math.sqrt(0.5)
     m.box((6.0, 4.6, 0.5), (0, 0, 0.25), "girder", ink=True)
-    m.box((6.1, 4.7, 0.1), (0, 0, 0.25), "void")
+    rim(m, 6.0, 4.6, (0, 0, 0.25))
     horn(m, [(0, 0, 0.5), (0, 0, 3.4), (0, 0, 6.6)], [2.0, 1.8, 1.25], "abyss", flat=(q, q, 0.0))
-    m.box((2.86, 2.86, 0.14), (0, 0, 1.4), "void")
-    m.box((2.06, 2.06, 0.14), (0, 0, 5.8), "void")
+    for side, z in ((2.86, 1.4), (2.06, 5.8)):                                       # the bands, each in a dark band (AR40)
+        m.box((side, side, 0.14), (0, 0, z), "void")
+        m.box((side - 0.05, side - 0.05, 0.54), (0, 0, z), "well")
     m.box((1.5, 1.5, 0.3), (0, 0, 6.75), "bone", ink=True)
     shard(m, (0, 0, CROWN), 0.42, 1.7, "void")
     for sx in (-1, 1):                                                                # the pegs, blunt
@@ -584,12 +641,15 @@ def training():
     face = 1.72                                                                       # the target, floating before the stone
     target(m, (0, face, 3.55), 0.02, 0.3, 8, "void")
     target(m, (0, face, 3.55), 0.72, 0.92, 12, "void")
+    target(m, (0, face - 0.03, 3.55), 0.01, 0.42, 8, "well")                         # each in its dark bed (AR40)
+    target(m, (0, face - 0.03, 3.55), 0.6, 1.04, 12, "well")
     for sx, sz in EDGES:
-        m.box((0.12 + 0.3 * abs(sx), 0.06, 0.12 + 0.3 * abs(sz)), (sx * 1.3, face, 3.55 + sz * 1.3), "void")
+        lamp(m, (0.12 + 0.3 * abs(sx), 0.06, 0.12 + 0.3 * abs(sz)), (sx * 1.3, face, 3.55 + sz * 1.3), "void", 1, 1,
+             pad=0.12)
     m.box((4.0, 4.0, 0.4), (0, TRAINEE, 0.2), "girder", ink=True)                     # the pad
-    m.box((4.1, 4.1, 0.1), (0, TRAINEE, 0.2), "void")
+    rim(m, 4.0, 4.0, (0, TRAINEE, 0.2))
     m.lathe([(1.75, 0.16), (1.9, 0.0)], (0, TRAINEE, 0.4), 12, "abyss")
-    m.lathe([(1.42, 0.17), (1.6, 0.17)], (0, TRAINEE, 0.4), 12, "void", caps=False)
+    dais_line(m, (0, TRAINEE, 0.4), 1.42, 1.6, 12)
     well(m, (0, TRAINEE, 0.4), 1.12)
     m.box((0.3, TRAINEE - 4.3, 0.08), (0, (TRAINEE + 0.3) / 2, 0.04), "void")
     return Piece("Training", m, solid=f"the deck, 6 by 4.6 and 0.5 high, the stone on it, about 2.8 square and 6.9 high, "
@@ -621,7 +681,8 @@ def crown(stage):
     n, half, high = c["rim"]
     for k in range(2 * n):                     # the marks, a quarter step off the crystals
         a = math.tau * (k + 0.5) / (2 * n)
-        m.box((0.3, 0.5, 0.42), ((r1 + 0.02) * math.cos(a), (r1 + 0.02) * math.sin(a), 0), "void", rot=(0.0, 0.0, a))
+        lamp(m, (0.3, 0.5, 0.42), ((r1 + 0.02) * math.cos(a), (r1 + 0.02) * math.sin(a), 0), "void", 0, 1,
+             pad=(0.0, 0.15, -0.02), rot=(0.0, 0.0, a))   # a dark cheek each side, on the band's face (AR40)
     for k in range(n):
         a = math.tau * (k + 0.5) / n
         shard(m, ((r0 + r1) / 2 * math.cos(a), (r0 + r1) / 2 * math.sin(a), 0.1), half, high, "abyss",

@@ -329,6 +329,8 @@ def demand_mark(stage):
     m = Mesh()
     m.box((2.0, 2.0, 1.4), out * (rail_radius(stage) + 0.51) + Vector((0, 0, front - 0.2)), "bone", rot=(0.0, 0.0, a + math.pi / 4), ink=True)
     m.box((0.95, 0.95, 0.3), out * (rail_radius(stage) + 0.51) + Vector((0, 0, front + 0.6)), "lamp", rot=(0.0, 0.0, a + math.pi / 4), occ=0.5)
+    m.box((1.25, 1.25, 0.06), out * (rail_radius(stage) + 0.51) + Vector((0, 0, front + 0.51)), "well",
+          rot=(0.0, 0.0, a + math.pi / 4))                                           # the pip's dark bed (AR40)
     return m
 
 

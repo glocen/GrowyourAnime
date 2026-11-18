@@ -64,7 +64,7 @@ ROWS = (4, 5, 6, 7, 6, 5, 4)
 def deck(m):
     """A sleeping place's deck, as a machine's: steel, a line of the void's light round its foot."""
     m.box((DECK, DECK, 0.5), (0, 0, 0.25), "girder", ink=True)
-    m.box((DECK + 0.1, DECK + 0.1, 0.1), (0, 0, 0.25), "void")
+    bm.rim(m, DECK, DECK, (0, 0, 0.25))   # in its dark band (AR40)
 
 
 def stone(m, p, r=0.22):
@@ -77,7 +77,7 @@ def cradle(m, x, y, stones=0):
     m.box((1.5, 1.5, 0.5), (x, y, 0.75), "abyss", ink=True)
     for s in (-1, 1):
         m.box((1.5, 0.16, 0.2), (x, y + s * 0.67, 1.08), "bone")
-    m.box((0.9, 0.5, 0.04), (x, y, 1.02), "void")
+    bm.lamp(m, (0.9, 0.5, 0.04), (x, y, 1.02), "void", 2, 1, pad=0.15)   # in its dark bed (AR40)
     for k in range(stones):
         stone(m, (x - 0.4 + 0.4 * k, y, 1.35))
 
@@ -93,6 +93,10 @@ def field(m, x, z, w):
     pts = [Vector((x - w / 2, y, z - hh)), Vector((x + w / 2, y, z - hh)), Vector((x + w / 2, y, z + hh)),
            Vector((x - w / 2, y, z + hh))]
     m.out(pts, [kit.sw_uv("voidfield", 0.0, 0.0)] * 4, Vector((x, y - 1.0, z)))   # one step under the void's glow
+    e, b = 0.15, y - 0.0025                                                # its dark frame on the head's face (AR40)
+    frame = [Vector((x - w / 2 - e, b, z - hh - e)), Vector((x + w / 2 + e, b, z - hh - e)),
+             Vector((x + w / 2 + e, b, z + hh + e)), Vector((x - w / 2 - e, b, z + hh + e))]
+    m.out(frame, [kit.sw_uv("well", 0.0, 0.5)] * 4, Vector((x, b - 1.0, z)))
 
 
 def cog(r, teeth, thick):
@@ -111,8 +115,14 @@ def cog(r, teeth, thick):
         prism(g, rim, thick, "abyss", out * (r0 + r1) / 2)
     face = thick / 2 + 0.015
     crack = [Vector((r * u, r * v, face)) for u, v in CRACK]
+    w = 0.07 * r / 0.85
     for a, b in zip(crack, crack[1:]):
-        bar(g, a, b, 0.07 * r / 0.85, "void", d=0.03, ink=False)
+        bar(g, a, b, w, "void", d=0.03, ink=False)
+        # its dark bed on the face (AR40): a flat strip 0.1 wider each side, a hair over the gear's face
+        side = (b - a).normalized().cross(Vector((0, 0, 1))) * (w / 2 + 0.1)
+        ends = (a - (b - a).normalized() * 0.1, b + (b - a).normalized() * 0.1)
+        g.out([Vector((p.x, p.y, thick / 2 + 0.005)) for p in (ends[0] - side, ends[1] - side, ends[1] + side, ends[0] + side)],
+              [kit.sw_uv("well", 0.0, 0.5)] * 4, Vector((0, 0, 0)))
     disc(g, (0, 0, 0), r * 0.34, thick + 0.12, "bone", axis=(0, 0, 1), sides=8)
     return g
 
@@ -137,9 +147,9 @@ def forge(head=True):
     deck(m)
     m.box((3.2, 2.6, 2.0), (0, 0, 1.5), "abyss", ink=True)                 # the seat, its top at 2.5
     m.box((3.4, 2.8, 0.2), (0, 0, 2.6), "bone", ink=True)
-    m.box((2.4, 1.8, 0.06), (0, 0, PLATE - 0.03), "void")                  # the flat lit plate
+    bm.lamp(m, (2.4, 1.8, 0.06), (0, 0, PLATE - 0.03), "void", 2, 1, pad=0.2)   # the flat lit plate, in its dark bed (AR40)
     for sx in (-1, 1):
-        m.box((0.2, 0.14, 1.3), (sx * 0.9, 1.33, 1.45), "void")            # the seat's veins, down its front
+        bm.lamp(m, (0.2, 0.14, 1.3), (sx * 0.9, 1.33, 1.45), "void", 1, 1)  # the seat's veins, down its front
     for sx in (-1, 1):
         arch = [(sx * 3.2, 0, 0.5), (sx * 4.7, 0, 4.4), (sx * 4.1, 0, 8.8), (sx * 1.7, 0, 11.3)]
         widths = [0.8, 0.72, 0.58, 0.42]
@@ -153,7 +163,7 @@ def forge(head=True):
     for sx in (-1, 1):
         rod(m, (sx * RODS[0], 0, low + 0.05), (sx * RODS[0], 0, SLEEVE), 0.36, "girder")
     cradle(m, 3.0, 3.0, stones=3)
-    m.box((0.18, 1.15, 0.04), (3.1, 1.67, 0.52), "void")                    # the cradle's vein, to the horn's foot
+    bm.lamp(m, (0.18, 1.15, 0.04), (3.1, 1.67, 0.52), "void", 2, 1, pad=0.12)   # the cradle's vein, to the horn's foot
     return m
 
 
@@ -165,7 +175,9 @@ def forge_ram():
     r, high = RAM
     put(m, turned([(r, high), (r, 0.0)], 8, "abyss"), at(0, 0, 0))
     put(m, turned([(r + 0.08, 0.3), (r + 0.08, 0.0)], 8, "void"), at(0, 0, high - 0.4))
+    put(m, turned([(r + 0.04, 0.58), (r + 0.04, 0.02)], 8, "well", ink=False, caps=False), at(0, 0, high - 0.6))   # its dark band (AR40)
     disc(m, (0, 0, 0), 1.6, 0.08, "void", axis=(0, 0, 1), sides=8, ink=False)
+    disc(m, (0, 0, -0.005), 1.85, 0.04, "well", axis=(0, 0, 1), sides=8, ink=False)   # its dark ring (AR40)
     x, length, thick = RODS
     for sx in (-1, 1):
         m.box((0.7, 0.7, 0.2), (sx * x, 0, high + 0.1), "bone", ink=True)
@@ -285,6 +297,7 @@ def condenser_core():
     put(m, t, FACING)
     lit = Mesh(None)
     bm.hoop(lit, (0, 0, 0), 1.06, 1.17, 0.44, 24, "void", ink=False, lying=True)
+    bm.hoop(lit, (0, 0, 0), 1.0, 1.23, 0.42, 24, "well", ink=False, lying=True)   # its dark channel (AR40)
     put(m, lit, FACING)
     for k in range(4):
         a = math.radians(45 + 90 * k)

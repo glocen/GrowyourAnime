@@ -50,6 +50,11 @@ SYSTEM_TODAY = {
     "Core": 0.5, "Row": "#2E323B", "Backing": "#121419",
     "Ready": "#F6DE80", "ReadyWords": "#191B21", "Electricity": "#FFE266", "ElectricityWords": "#FFE266",
     "Over": "#FF965C", "OverWords": "#FF965C",
+    # outside the palette (Faber's capture, AR40): a chamber's glass (Config.Hud.Breaker.Sky.Glass.Colour), the close
+    # cross (the Seam's X image, untinted), and the two buttons, which wear the Seam palette
+    "Glass": "#0A0824", "Close": "#FFFFFF",
+    "Primary": ("#2A2244", "#1A1530"), "PrimaryEdge": "#3B3358", "PrimaryWords": "#F1ECFF",
+    "Quiet": ("#2A2244", "#1A1530"), "QuietEdge": "#3B3358", "QuietWords": "#F1ECFF",
 }
 # The same slab in each direction. Every one keeps a dark channel, so a bar's light still glows in it: that, the bold
 # edge and the blue-violet of what's lit and chosen are what keep a pale panel from reading as a plain light app.
@@ -84,6 +89,14 @@ SYSTEM = {
         "Row": "#3C6A76", "Backing": "#2E525C",
         "Ready": "#FFD880", "ReadyWords": "#1E3238", "Electricity": "#FFE266", "ElectricityWords": "#FFE98A",
         "Over": "#FF965C", "OverWords": "#FFE2D0",
+        # round two, research's must-fix 3 (AR40, "Research's pick: C"): the keys outside the palette, in C's own.
+        # A chamber's glass, its head band and its plate, in the slab's deep teal, never today's navy; its number and
+        # its "Empty" stay Soft and Faint. The close cross in the cream words. The one action (Open, Put it in) is the
+        # sand plate in ink, as what's chosen; a quiet press (Drop rates, Take out) a deep teal well in a pale teal edge.
+        # Both keep the Seam's cut: only its colours change, on the system panel only.
+        "Glass": "#16343C", "Close": "#FFF6E2",
+        "Primary": ("#F0E2C4", "#DCCBA6"), "PrimaryEdge": "#FFF6E2", "PrimaryWords": "#1E3238",
+        "Quiet": ("#21434C", "#193740"), "QuietEdge": "#8FC4C8", "QuietWords": "#FFF6E2",
     },
 }
 
@@ -146,7 +159,10 @@ DIRECTIONS = [
             "far": ("#B8A8E0", "#8878BC"), "tower": ("#A898D4", "#7868AE"), "outcrop": ("#B0A0DC", "#8070B8"),
         },
         "Panel": ("#8A6E4E", "#F0E2C4"),
-        "Stones": "#DCCFB8",
+        # research's must-fix 2 (AR40, "Research's pick: C"): no one hue is a scene's ground. #DCCFB8 rendered L* 55 and
+        # chroma 16 to 22 under the gold day, one tan bowl at 64 px; this is nearer cream, the warm kept in the stones'
+        # joints (strip_kit.JOINT) and the wall's print. The kit wears these now (strip_kit.paving)
+        "Stones": "#F2EDE4",
         "Lighting": {
             "Phases.Day.Sun": "#FFDDA6", "Phases.Day.Glow": 0.6, "Clear.Phases.Day.Ambient": "#BAAE9C",
             "Clear.Phases.Day.Brightness": 2.7, "Clear.Phases.Day.Exposure": 0.08,
@@ -185,7 +201,19 @@ def system_measures(m):
 
     def least(colour, over):
         return round(min(contrast(colour, o) for o in over), 1)
-    return {
+    outside = {}
+    if "Glass" in m:   # round two's keys, outside the palette
+        outside = {
+            "GlassWords": least(m["Soft"], [m["Glass"]]),
+            "GlassFaint": least(m["Faint"], [m["Glass"]]),
+            "GlassBand": least(m["Glass"], panel),
+            "Close": least(m["Close"], panel),
+            "PrimaryWords": least(m["PrimaryWords"], list(m["Primary"])),
+            "PrimaryOn": least(m["Primary"][1], panel),
+            "QuietWords": least(m["QuietWords"], list(m["Quiet"])),
+            "QuietEdge": least(m["QuietEdge"], panel + list(m["Quiet"])),
+        }
+    return outside | {
         "PanelLight": [round(light(c)) for c in panel],
         "Text": least(m["Text"], panel + [m["Row"]] + list(m["Button"])),
         "Soft": least(m["Soft"], panel + [m["Row"]]),
@@ -387,12 +415,19 @@ def main():
              ("Bar", "Electricity in its channel"), ("Channel", "the channel against the panel"),
              ("Edge", "the edge against the panel"), ("Accent", "the accent against the panel"),
              ("Chosen", "a chosen button's words"), ("AccentViolet", "the accent is blue-violet"),
-             ("Black", "under L* 30"))
+             ("Black", "under L* 30"), ("GlassWords", "a chamber's number (Soft) on its glass"),
+             ("GlassFaint", "its \"Empty\" (Faint) on its glass"), ("GlassBand", "the glass against the panel"),
+             ("Close", "the close cross on the panel"), ("PrimaryWords", "the one action's words"),
+             ("PrimaryOn", "the one action against the panel"), ("QuietWords", "a quiet press's words"),
+             ("QuietEdge", "a quiet press's edge, the least of panel and fill"))
     lines += ["", "| contrast, the least | Today | A | B | C |", "|---|---|---|---|---|"]
     for k, what in names:
         cells = []
         for d in every:
-            v = d["SystemMeasures"][k]
+            v = d["SystemMeasures"].get(k, "")
+            if v == "":
+                cells.append("closed")
+                continue
             cells.append(" to ".join(map(str, v)) if k == "PanelLight" else (", ".join(v) or "none") if k == "Black"
                          else ("yes" if v else "no") if k == "AccentViolet" else f"{v:g}")
         lines.append(f"| {what} | " + " | ".join(cells) + " |")
@@ -406,6 +441,10 @@ def main():
         if d is not TODAY:
             low = [k for k in ("Text", "Soft", "SignalWords", "OverWords", "ReadyWords", "Chosen") if m[k] < WORDS]
             low += [k for k in ("Faint", "Bar", "Edge", "Accent") if m[k] < MARK]   # a channel on a mid slab is read by its light
+            # round two's keys, where a direction has them (C, research's pick); the glass is read by its sand edge and
+            # its words, so its step from the panel is shown, not held
+            low += [k for k in ("GlassWords", "PrimaryWords", "QuietWords") if k in m and m[k] < WORDS]
+            low += [k for k in ("GlassFaint", "Close", "PrimaryOn", "QuietEdge") if k in m and m[k] < MARK]
             assert not low, (d["Name"], "under its contrast:", low)
     print("wrote", OUT)
 

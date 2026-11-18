@@ -12798,6 +12798,42 @@ From the eight renders, the 64 px sheet and Faber's four Breaker captures. Still
 - **Accepted on stills, not yet seen:** the panel at a real phone's size (Faber's captures are Studio's window), and C by dusk. Both are read at the install's capture.
 - **Unblocked:** AR38's clock fix and the Shop's colour follow C.
 
+### The must-fixes on C, built (Modulo, 2026-11-18, 22:52 to 23:12 by the clock)
+
+The kit itself wears C now: `base_kit.SWATCHES` and the wall's print (`WALL`), `strip_kit.paving`, the system's keys in `ar40_directions.py`. `ar40_see.py` gains "Kit", the kit as exported under C's day, and moves a direction's colours from the kit's own.
+1. **Every light on a pale body sits in a dark bed.** The beds are geometry in a new unlit swatch, `well` (#1A353C, the slab's deep teal), because an inverted hull can't make a well for a flush light. The helpers are in `base_machines.py`: `lamp` (a light on its bed), `vein` (a dark tube under every vein of void stone, so the Strip's posts, seals and great shard carry one too), `rim` (a deck's line in a dark band) and `dais_line` (a dais's ring in a dark bed).
+   - **The Door and the Breaker, first:** the Door's mouth is a dark band with a dark inner wall, and its rings are set in well. The Breaker's veins are in dark tubes and its lamps on dark beds. It has a dark reveal at its foot and a collar under each tip, and the chamber's plate is 3.9 square.
+   - **Then the class:**
+     - the bays: a dark floor out to 3.2 (`DAIS_FLOOR`), so BayHalo's ring lies in dark;
+     - the Training: its bands, its target, its marks and its pad. The crowns' marks get dark cheeks;
+     - the Forge: its plate, its veins and its cradle, each gear's crack, a dark frame round its lit field, and the ram's band and disc;
+     - the Condenser core: its channel;
+     - the battery: its line, its lamps and Stage III's socket;
+     - the generator's demand pips;
+     - the yard: the gate's strip and beacons, the walls' line and lamps, the transformer's tips;
+     - the showcase: its sill, its ring and its lamps.
+   - **Measured** by a scratch scan: each light's solid neighbours within 0.35 studs, and their L* in C.
+     - **Before:** most lights sat on pale. For example: Bay 26/84, Forge 86/144, Training 57/80, ForgeRam 54/54, Transformer 36/36, the walls 22/22.
+     - **After:** the Door, its rings, the walls and the generator are clear. Elsewhere it's under a fifth of a piece's light, mostly a light's own sides beside its collar.
+     - **Left as they stand:** ForgeGear's crack (its bed is 0.1 each side and the scan counts the teeth), CondenserCore 56/192 (the clamps), the Transformer 33/36 (the insulator's ribs under each collar), and StripPost 8/16. Its ring gets a dark lip in the script, exported when there's memory.
+2. **The stones are a step lighter and nearer cream, the warm kept in the joints.**
+   - The stones' light moves channel by channel from today's day look (#B9ACD0) to #F2EDE4, and the joints go to #B2946C, the sand of the void stone's foot. A joint is under 36 in L*, blended to 42, and each keeps its grain.
+   - Texels: stones #9F9996, joints #735D44.
+   - The Strip has no kerb piece in the game. Its edge is where the plots' decks and walls meet the stones, so the warm at the edge is the walls' print (#8A6E4E to #F0E2C4).
+3. **The three keys, in C's values** (`SYSTEM`'s C; `build/handoff/Colour/ar40/directions.json`):
+   - the head band is Glass #16343C, the slab's deep teal;
+   - the close cross is #FFF6E2;
+   - the Seam buttons: Primary #F0E2C4 to #DCCBA6 with #1E3238 words, Quiet #21434C to #193740 with #FFF6E2 words, and a #8FC4C8 edge.
+   - Every key passes and is asserted: words 8.4 to 10.4 to 1, the close cross 6.4, the primary on the panel 4.3, the quiet edge 3.6.
+- **The install (Faber):** the base's 40 changed meshes and `Base_Kit_Color.png`, the Strip's 4 changed meshes and `Strip_Paving_Color.png` (`git status build/handoff`).
+  - The atlas goes up with C's lighting keys, never alone, and it supersedes AR36's pending atlas.
+  - The Shop's three meshes in `build/handoff/Strip/meshes` are AR38's and go with AR38.
+- **Checked:**
+  - the content check passed on both textures (23:10);
+  - `ar40_directions.py`'s assertions pass;
+  - not rendered: "Kit" needs about 2.3 GB free, and it had 1.0 or less while Faber's Studio was open. It runs at the next window, then research's look.
+- **Status:** implemented and measured; not rendered, not reviewed by research, not in the game.
+
 ## Later, by ground
 
 The rest of ground 1 (Kirra in AR10, Watt in AR11; then Sable, Marigold, Crane), then each ground's Voidkin in `docs/roster.md`'s order. **The machines** (Gantry, Bulwark, Ironhymn, Shiomaru, Aegir) share one custom rig, taller than a player, with its own clip family: the first of them is timed like AR1, because a custom rig is a different cost.

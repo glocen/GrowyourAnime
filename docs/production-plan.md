@@ -110,6 +110,25 @@ Each ends on something playable. No dates are promised past phase 1: see "The da
   12. AR40, less purple and less black by day: three directions, captured in the place (the director's remark, 22:17), after AR39's first round; AR38's colour waits on its pick.
 - **Research:** the Forge, emblem and jewel requests with their numbers, the verdicts as pieces land, then the Void Shop's and the Robux store's design, checked against Roblox's rules, for the director.
 
+**The design review's follow-up, 2026-11-18** (the director's brief, evening; the decisions D1 to D8 in `docs/decisions.md`). Research's sort, in hours of active work, seeds. Built from the brief and the repo: this morning's pack wasn't seen, so the launch review's own list stands where it differs.
+- **In, Faber:**
+  1. the branch `claude/design-review-rules` cherry-picked onto main (four commits: Elemental Attack only with an element, the Tower's fixed opening five and sure first chest, salvage, "HP Regen"), then the self-test, with E1: 1 h;
+  2. the stages on Normal and Hard, in grey, with their picker, locked tiles stating their condition, and the results naming what just opened and tomorrow's dailies (D2, 5.2): 4 h;
+  3. the slam (`KeeperSignature`) in the Lamplighter's rotation, with its marked footprint, and the two lead-movement blocks on that fight, A (follow during a marked strike) and B (a Recall button, 4 s), for research's verdict and the director's pick: 4 h;
+  4. gear's budgets by stage and difficulty, the sure usable first item, Hard's Keeper's Rare chance shown, and a line the fighter can't use dimmed with its reason (D7, 4.4): 3 h, after 2 and research's refit;
+  5. Combat Power at a tenth, compared unrounded, and the cases that hold a scaled number (D3): 1 h;
+  6. the salvage button on the item's card, "n / 300" on the bag, and a full-bag message that says how to free a slot (4.5): 2 h;
+  7. the Tower: the results with Retry and Home, the heal cap explained the first time, one solo board, and foes drawn from a weekly seed with chests on the run's own (4.3; the seed is research's tier 2, taken): 3 h;
+  8. bays 2, 3 and 4 with 5 and 6 locked (D5), "HP Regen" with "every 8 s" under it (4.6), and the Voidkin screen's "nothing worn yet" read from the preset (4.10): 1.5 h;
+  9. the Void Shop's launch shelf in pure Luau with its cases (D6), in phase 4: 4 h;
+  10. TR32's marks (section 6) before any stranger plays: 3 h;
+  11. the Voidkin's names kept untranslated (D8): 0.5 h.
+- **In, research:** the loot refit to 10 to 15 minutes (`chests.py --fit`, the Pace table's first row) and level 3's price (`sim.py`, section 15), before Faber's 4: 2 h; the Combat Power fit run again (section 16): 0.5 h; the verdicts on 2 and 3; what the Lamplighter's win shows at launch, with one ground (4.9): 0.5 h.
+- **The director's hand:** translation's switch in Creator Hub (D8); the pick between A and B (3).
+- **After everything else:** parties, with their health table and the AFK guard (D1, 4.2), in a reserved server.
+- **After early access:** the second form (D4).
+- **Research disagrees, one line:** the shop's draw on the Unix time can't be shared code alone, or a client predicts the next stock: it's salted on the server (`docs/design.md`, "The Strip").
+
 **Phase 4. Breadth.** The Void Shop. The Rift moves after launch (the director, 2026-11-17, 02:40). Both shops, the Robux store and the Void Shop, are designed and set up here (the director, 2026-11-12).
 
 **Phase 5. The Strip.** The Clash Grounds; the Calamity after launch (the director, 2026-11-15).
@@ -130,6 +149,8 @@ Each ends on something playable. No dates are promised past phase 1: see "The da
 - **The foundation** makes a new ground, Voidkin or effect mostly data and art, so the update is fast (`docs/engineering-plan.md`, its own section, Faber's).
 
 ## The date
+
+**No new date is worked out** (the director, 2026-11-18: "no new launch date let not waste time and grind no more wasting time just planning and action"). The estimate below stays as it was written.
 
 **Research's estimate, 2026-11-17, 02:31.** It's read from the commit clock, not measured.
 - **The pace so far:** phases 0 to 2 and the first half of phase 3's blocks took the team about 76 hours with commits in them, 2026-11-12 to 17, about 15 a day.

@@ -471,6 +471,65 @@ return {
 		end,
 	},
 	{
+		Name = "Chests: one owned item salvaged by hand pays its Credits once, never a worn one, and frees a full bag for a chest",
+		Run = function(t: any)
+			local data = fresh()
+			lead(data, "Warrior")
+			local function item(def: string, rarity: string): string
+				local id = Profile.NewId(data)
+				data.Items[id] = { Id = id, Def = def, Tier = 1, Rarity = rarity, Design = 1, Lines = { { Stat = "Attack", Value = 3 } }, Sockets = {}, Jewel = "" }
+				return id
+			end
+			local spare, sword, armour = item("sword", "Uncommon"), item("sword", "Common"), item(Items.List[1].Id, "Common")
+			local shared: string? = nil
+			for _, row in Items.List do
+				if row.Class == nil and not Gear.IsHand(row.Slot) then
+					data.Items[armour].Def = row.Id
+					shared = Gear.SlotsOf(row.Slot)[1]
+					break
+				end
+			end
+			t.Check("a shared piece to wear", shared ~= nil)
+			Regalia.Put(data.Presets[1], "Main Hand", "Warrior", sword)
+			Regalia.Put(data.Presets[1], shared :: string, nil, armour)
+			t.Check("worn: the hand's and the shared slot's", Chests.IsWorn(data, sword) and Chests.IsWorn(data, armour) and not Chests.IsWorn(data, spare))
+			local before, held = table.clone(data.Currency), count(data.Items)
+			for _, bad in { nil, 7, "", "no-such-item", {} } :: { any } do
+				local answer = Chests.SalvageItem(data, bad)
+				t.Check(`{tostring(bad)}: not owned, nothing changed`, answer.Ok == false and answer.Error == Chests.NotOwned and count(data.Items) == held and data.Currency.Credits == before.Credits)
+			end
+			for _, id in { sword, armour } do
+				local answer = Chests.SalvageItem(data, id)
+				t.Check("a worn item: refused, kept, unpaid", answer.Ok == false and answer.Error == Chests.Worn and data.Items[id] ~= nil and data.Currency.Credits == before.Credits)
+			end
+			local worth = Chests.Salvage(data.Items[spare])
+			local answer = Chests.SalvageItem(data, spare)
+			t.Check("its Credits, the opened chest's own salvage price", worth > 0 and answer.Ok == true and answer.Item == spare and answer.Credits == worth)
+			t.Check("gone and paid", data.Items[spare] == nil and count(data.Items) == held - 1 and data.Currency.Credits == before.Credits + worth)
+			t.Check("asked again: not owned, never paid twice", Chests.SalvageItem(data, spare).Error == Chests.NotOwned and data.Currency.Credits == before.Credits + worth)
+			t.Check("the worn ones still worn", Chests.IsWorn(data, sword) and Chests.IsWorn(data, armour))
+			-- Taken off, it can go.
+			Regalia.Put(data.Presets[1], "Main Hand", "Warrior", nil)
+			t.Check("taken off: salvaged", Chests.SalvageItem(data, sword).Ok == true and data.Items[sword] == nil)
+			-- The full bag: a chest refused at the cap opens once one item is salvaged.
+			while count(data.Items) < ChestsConfig.Bag do
+				item("sword", "Common")
+			end
+			local id = chest("lanternrow", 1)
+			Chests.Grant(data, id, 1)
+			t.Equal("at the cap: the chest refused", Chests.Open(data, id, 1, sequence(5)).Error, Chests.BagFull)
+			local one: string? = nil
+			for itemId in data.Items do
+				if not Chests.IsWorn(data, itemId) then
+					one = itemId
+					break
+				end
+			end
+			t.Check("one salvaged by hand", one ~= nil and Chests.SalvageItem(data, one).Ok == true)
+			t.Check("and the chest opens", Chests.Open(data, id, 1, sequence(5)).Ok == true)
+		end,
+	},
+	{
 		Name = "Chests: an elite's chest always, a Shade's at its chance, one sure on the third kill, a keeper's better first",
 		Run = function(t: any)
 			local data = fresh()

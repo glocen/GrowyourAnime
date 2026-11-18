@@ -31,6 +31,8 @@ local Chests = {}
 Chests.Unknown = "Unknown" -- no such chest, or a count that isn't one, or more than one step opens
 Chests.NotEnough = "NotEnough" -- fewer of that chest in the bag than asked
 Chests.BagFull = "BagFull" -- the items would pass the bag's cap: nothing rolled, the chests kept
+Chests.NotOwned = "NotOwned" -- no such item in the save
+Chests.Worn = "Worn" -- a preset wears the item: it's taken off before it can be salvaged
 
 -- A number in [0, 1): the server's random source, or a case's own sequence.
 export type Draw = () -> number
@@ -341,6 +343,43 @@ function Chests.SetSalvage(data: Profile.Data, below: any): { [string]: any }
 	end
 	data.Settings.Salvage = below
 	return { Ok = true, Salvage = below }
+end
+
+-- Whether any preset wears item `id`, in a shared slot or a class's hands.
+function Chests.IsWorn(data: Profile.Data, id: string): boolean
+	for _, preset in data.Presets do
+		for _, worn in preset.Slots do
+			if worn == id then
+				return true
+			end
+		end
+		for _, pair in preset.Hands do
+			for _, worn in pair do
+				if worn == id then
+					return true
+				end
+			end
+		end
+	end
+	return false
+end
+
+-- Salvages one owned item by the player's own hand: the item leaves the save and its Credits (Chests.Salvage) come in,
+-- in this one step, so a full bag can be emptied (the director's design review, 2026-11-18: at the cap a chest is
+-- refused, and nothing a player could do removed an item). An item any preset wears is refused, never taken off for
+-- them. { Ok, Item, Credits }, or a refusal that changed nothing; a repeated request finds no item and is refused.
+function Chests.SalvageItem(data: Profile.Data, id: any): { [string]: any }
+	local item = if type(id) == "string" then data.Items[id] else nil
+	if item == nil then
+		return { Ok = false, Error = Chests.NotOwned }
+	end
+	if Chests.IsWorn(data, id) then
+		return { Ok = false, Error = Chests.Worn }
+	end
+	local credits = Chests.Salvage(item)
+	data.Items[id] = nil
+	data.Currency.Credits += credits
+	return { Ok = true, Item = id, Credits = credits }
 end
 
 return Chests

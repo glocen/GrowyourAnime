@@ -7,7 +7,9 @@
 --   it lies inside its screen (not for the World layer's plates, which follow the world off the edges);
 --     a label a scrolling list (or any clipping frame) hides entirely isn't drawn, so isn't checked, and one it cuts
 --     is checked by the part it shows;
---   it doesn't show Roblox's default "Label".
+--   it doesn't show Roblox's default "Label";
+--   a Voidkin's name in it never goes to Roblox's automatic translation: its AutoLocalize is off (the director,
+--     2026-11-18, D8; NameGuardController keeps it so). A button's text counts too.
 -- And for what the player touches and reads around the world (docs/ui.md, rule 1; TR3):
 --   every button that takes a tap is Theme.Size.Touch or more on its least side, rendered;
 --   each piece of the HUD and of an open screen lies inside its layer's safe area (Layers: clear of Roblox's top bar and
@@ -16,9 +18,11 @@
 --   none sits under the thumbs' controls (Roblox's jump button and fixed thumbstick, on a touch screen).
 
 local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local UI = script.Parent.Parent.Parent.Parent.UI
 local Theme = require(UI.Theme)
+local Names = require(ReplicatedStorage.Shared.Rules.Names)
 
 local OURS = "NL_"
 local WORLD = "NL_World"
@@ -37,6 +41,7 @@ export type Report = {
 	Size: { string },
 	Screen: { string },
 	Placeholder: { string },
+	Names: { string },
 	Touch: { string },
 	Safe: { string },
 	Overlap: { string },
@@ -131,7 +136,7 @@ local function short(object: Instance): string
 end
 
 function UiLint.Run(): Report
-	local report: Report = { Checked = 0, Fit = {}, Size = {}, Screen = {}, Placeholder = {}, Touch = {}, Safe = {}, Overlap = {}, Thumbs = {} }
+	local report: Report = { Checked = 0, Fit = {}, Size = {}, Screen = {}, Placeholder = {}, Names = {}, Touch = {}, Safe = {}, Overlap = {}, Thumbs = {} }
 	local gui = Players.LocalPlayer:WaitForChild("PlayerGui")
 	-- The taps: every button the player can press now.
 	for _, object in gui:GetDescendants() do
@@ -181,6 +186,15 @@ function UiLint.Run(): Report
 						table.insert(report.Thumbs, `{pieces[i].Name} under {control.Name}`)
 					end
 				end
+			end
+		end
+	end
+	-- The names: a shown label or button with a Voidkin's name as a whole word, left to translation.
+	for _, object in gui:GetDescendants() do
+		if (object:IsA("TextLabel") or object:IsA("TextButton")) and object.AutoLocalize and shown(object :: any) then
+			local name = Names.Found((object :: TextLabel).Text)
+			if name then
+				table.insert(report.Names, `{short(object)} ({name})`)
 			end
 		end
 	end

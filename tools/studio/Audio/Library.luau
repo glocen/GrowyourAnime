@@ -18,7 +18,7 @@ Library.Licensed = {
 	[7462718749] = "APMOfficial",
 }
 
-export type Found = { Id: number, Title: string, Creator: string, Licensed: boolean, Duration: number, Keyword: string }
+export type Found = { Id: number, Title: string, Creator: string, Licensed: boolean, Duration: number, Keyword: string, Description: string }
 
 -- Every sound effect matching any of `keywords` (deduplicated, in the order found): licensed uploads only, unless
 -- AnyAuthor. Options: MaxDuration and MinDuration (seconds), Pages per keyword (25 results each, default 2).
@@ -48,7 +48,7 @@ function Library.Search(keywords: { string }, options: { MaxDuration: number?, M
 					seen[item.Id] = true
 					local creator = licensed or (item.Creator and item.Creator.Name) or "?"
 					table.insert(found, { Id = item.Id, Title = item.Title, Creator = creator, Licensed = licensed ~= nil,
-						Duration = item.Duration, Keyword = keyword })
+						Duration = item.Duration, Keyword = keyword, Description = item.Description or "" })
 				end
 			end
 			if pages.IsFinished or page == (opts.Pages or 2) then

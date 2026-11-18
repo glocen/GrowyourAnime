@@ -5,7 +5,7 @@
 -- What it takes as given (Engine, below; each one a line in the report):
 --   - an AudioPlayer at Volume 1 plays its file's samples as they are, and so do its emitter, listener, fader and
 --     limiter under its limit (measured with an AudioAnalyzer at each, 2026-11-17: -0.04 dB at 10 and 29 studs; an
---     emitter on the listener itself reads 8.5 dB down, which no fight's cue is). A player's volume stops at 3;
+--     emitter on the listener itself reads 8.5 dB down, which no fight's cue is). A player's volume stops at 10 (read back on a client, 2026-11-18: 12 and 20 read 10);
 --   - a fade is a tween: its volume steps once a frame, each step at once (the engine may smooth a step; unverified, so
 --     the step is the worst case). A rise Rules.Sound.Run doesn't draw isn't drawn here either;
 --   - a library slice stops at its To (its player's PlaybackRegion);
@@ -33,7 +33,7 @@ end
 
 CueMix.Engine = {
 	PlayerGain = 1, -- an AudioPlayer's samples at Volume 1, of its file's (measured: 1)
-	MaxVolume = 3, -- an AudioPlayer's Volume stops here
+	MaxVolume = 10, -- an AudioPlayer's Volume stops here (read back on a client, 2026-11-18; it was taken as 3 before)
 	Frame = 1 / 60, -- a tween's step
 	Stepped = true, -- a volume step lands at once; false draws every fade as its straight line
 }

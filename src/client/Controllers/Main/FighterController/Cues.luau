@@ -9,7 +9,7 @@
 --     nothing rests on the default listener, and the Shades' bus ducks alone;
 --   - the level: Config.Cues.Trim takes back the 2025 doubling of an AudioPlayer's volume (a player at Volume 1 plays
 --     its file as it is, so a cue is 6 dB under its file: measured 2026-11-17); a library take has its own
---     gain inside its list (Rules.Sound.Level), and a player's volume stops at 3. While Config.Cues.Match is on, an
+--     gain inside its list (Rules.Sound.Level), and a player's volume stops at 10. While Config.Cues.Match is on, an
 --     arrangement plays at its old cue's loudness (the A/B at matched level, for the listen);
 --   - each bus ends in an AudioLimiter (Config.Cues.Limiter), after its fader: the rare coincidence of tops is caught
 --     there, so the cues' levels are set by their relation (AR39, research on round 1);

@@ -3744,3 +3744,16 @@ Research, 2026-11-17, 23:24, on the director's word: "ok let do 1" (`docs/decisi
 - **Cases:** the panel isn't built outside Studio; a candidate that fails to load is marked and skipped; changing the live sound never drops or doubles a voice; "Old" brings today's cue back exactly.
 - **Cap:** the block in 2 hours (research's estimate, from the A/B switch's build of 2026-11-17). The director's part is about 10 to 15 minutes for the three.
 - **What can't be known before the listen:** whether the library holds a good one for each cue. A cue whose candidates all get None goes back to the director with what was tried.
+
+### The block, built (Faber, 2026-11-18, 21:51 to 22:12)
+
+- **Where:** the finder `tools/studio/Audio/Audition.luau` (Edit: `Audition.Start()`, `Status()`, `Report()`, `Clear()`); the server half `Services/Core/AuditionService.luau`; the panel `Controllers/Core/AuditionController.luau`; the numbers `Config/Audition.luau`; the cases `SelfTestController/AuditionCases.luau`. Studio only, all of it.
+- **The finder's run** (22:05): the library gives no rating, so its own order stands, the words taken in turn. 50 candidates a cue, of 270, 291 and 244 found. Left out, by reason (each by id and title in `Report()`):
+  - LightHit 48: too long 41, a title naming another work 6, a gore word 1.
+  - HeavyHit 47: too long 26, another work 16, gore 2, hidden by the filter 1, a voice 1, a top over -1 dBTP at the match 1.
+  - ShadeSwipe 27: too long 21, another work 4, gore 1, hidden by the filter 1.
+- **The match:** short-term loudness against today's LightHit (-42.5 LUFS), HeavyHit +4 dB, ShadeSwipe -4.5 dB (gate 4's middles; `Audition.Levels`, tuned live). The hottest top at the match: -8.4, -1.3 and -14.1 dBTP, under the -1 ceiling. A contact's head is cut so its top lands within 8 ms; a swipe keeps its rise and starts ahead (Lead "Peak").
+- **Added in the block (tier 1):** "Others off" silences the fight's other cues, so a candidate is heard alone on its hit; on by default.
+- **Found on the way:** an AudioPlayer's Volume stops at 10, not 3 (read back on a client). `CueMix` and AR39's sound case took 3; both are corrected. So AR39's matched A/B played an arrangement whose level passed 3 louder than `CueMix` measured it; that was the sound case's two failures this session (HeavyHit B1 and B3, ShadeSwipe C3).
+- **Tests:** type check 0 new; logic offline 24,491/0; in a playtest at 60 fps, the audition cases 44/0 (the four above, the fair listen, and Others) and the sound cases 63/0. A tap, Keep, More and None by mouse, then the readout: `LightHit, 112758963155190, Hit⧸Punch in the air Sound, Raknium, kept` and `LightHit, page 2, none`. The panel made opaque after that run (a colour only) and captured from the player's view. The place is saved with the candidates (v857).
+- **Open:** the director's listen; then the picks become cues, the asset log, and `Audition.Clear()` before a public build.

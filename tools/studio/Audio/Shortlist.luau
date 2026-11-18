@@ -44,7 +44,10 @@ local OTHER_WORKS = {
 	"pirates of the caribbean", "nuclear throne", "risk of rain", "enter the gungeon", "hotline miami",
 	"binding of isaac", "dead cells", "hyper light drifter", "ultrakill", "doom eternal", "stardew",
 	"brawl stars", "clash royale", "clash of clans", "castle crashers", "hl2", "half life 2", "gmod", "garry",
-	"l4d", "left 4 dead", "portal 2", "dark deception",
+	"l4d", "left 4 dead", "portal 2", "dark deception", "mkx", "mk 11", "mk11", "injustice", "soulcalibur", "guilty gear",
+	"blazblue", "dead or alive", "one punch man", "one punch", "saitama", "akuma", "jjs", "jujutsu shenanigans",
+	"strongest battlegrounds", "tsb", "kj", "animator vs animation", "alan becker", "omori", "little mac", "punch out",
+	"doppio", "naoya", "narukami",
 	-- their characters and named moves (rips carry them: "Yamato_power_slash", "KungLao_Energy_Blast")
 	"yamato", "vergil", "kung lao", "reiko", "sub zero", "ki blast", "kamehameha", "sora", "tanjiro", "zenitsu",
 	"gojo", "sukuna", "jujutsu", "jjk", "luffy", "rasengan", "chidori",
@@ -117,6 +120,25 @@ local function allowed(text: string, avoid: { string }?): boolean
 		end
 	end
 	return true
+end
+
+-- The lists and their test, for the audition's finder (Audition), which leaves out by its own reasons.
+Shortlist.Lists = { Gore = GORE, OtherWorks = OTHER_WORKS, Junk = JUNK }
+Shortlist.Normalized = normalized
+Shortlist.Mentions = mentions
+-- Whether a text (normalized) names one of the other works, run together too.
+function Shortlist.NamesWork(text: string): boolean
+	if mentions(text, OTHER_WORKS) > 0 then
+		return true
+	end
+	local squashed = text:gsub("%s+", "")
+	for _, name in OTHER_WORKS do
+		local letters = name:gsub("%s+", "")
+		if #letters >= RUN_TOGETHER_MIN and string.find(squashed, letters, 1, true) then
+			return true
+		end
+	end
+	return false
 end
 
 -- Whether a library title may be used for this cue (the same test Run applies), for checking older shortlists.

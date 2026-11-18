@@ -142,7 +142,7 @@ return {
 				t.Check("a take that didn't load is counted, never mixed", none.Missed == 1 and CueMix.Measure(none, rate).SamplePeak < -100)
 				t.Check("a take's number past its list wraps", near(CueMix.Measure(CueMix.Play({ Cue = tone, Takes = { 4 } }, source, rate), rate).SamplePeak, m.SamplePeak))
 				local hot = CueMix.Play({ Cue = cue({ { Takes = "NL_MixTone", At = 0, Volume = full * 100 } }), Takes = { 1 } }, source, rate)
-				t.Check("a player's volume stops at 3", hot.Clamped == 1 and near(CueMix.Measure(hot, rate).SamplePeak, 20 * math.log10(0.25 * 3 * CueMix.Engine.PlayerGain)))
+				t.Check("a player's volume stops at its cap", hot.Clamped == 1 and near(CueMix.Measure(hot, rate).SamplePeak, 20 * math.log10(0.25 * CueMix.Engine.MaxVolume * CueMix.Engine.PlayerGain)))
 				-- a layer led by its top lands it on the moment; a later layer keeps its place
 				local led = CueMix.Measure(CueMix.Play({ Cue = cue({ { Takes = "NL_MixClick", At = 0, Lead = "Peak", Volume = full } }) }, source, rate), rate)
 				t.Check("a layer led by its top: its top on the moment", near(led.PeakAt, 0, 1 / rate + 1e-9), tostring(led.PeakAt))

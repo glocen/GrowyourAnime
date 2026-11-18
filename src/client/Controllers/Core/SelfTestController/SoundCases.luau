@@ -17,6 +17,7 @@ local Cues = require(script.Parent.Parent.Parent.Main.FighterController.Cues)
 local SoundCases = {}
 
 local QUIET = 1e-4 -- an analyzer's peak at or under this is silence
+local MAX_VOLUME = 10 -- an AudioPlayer's Volume stops here (read back on a client, 2026-11-18; CueMix.Engine.MaxVolume)
 local REPLAY_PAUSE = 5 -- seconds past the action before a second press, longer than the case waits, as Cases'
 
 local function waitFor(t: any, seconds: number, ok: () -> boolean): boolean
@@ -413,7 +414,7 @@ function SoundCases.Cases(): { any }
 									for nth = 1, math.max(cue.Voices, 1) do
 										local voice = Cues.Voice(`{name}@{variant}`, 1, k, nth)
 										if voice and voice.IsPlaying then
-											most = math.max(most, voice.Volume / math.min(SoundRule.Level(cue.Layers[1], take, 1, 1) * match, 3))
+											most = math.max(most, voice.Volume / math.min(SoundRule.Level(cue.Layers[1], take, 1, 1) * match, MAX_VOLUME))
 										end
 									end
 								end

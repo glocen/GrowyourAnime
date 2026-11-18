@@ -269,11 +269,12 @@ return {
 	},
 	{
 		-- Research's fix 2 to the rebuild in A (TR28, 22:37): the Bracers' +465 over Health +75 alone. It was right: a card
-		-- shows every stat behind its number, and Health +75 is worth 0.62 × 75 × 10; 0.67 × 75 × 10 since TR36's refit.
+		-- shows every stat behind its number, and Health +75 is worth 0.62 × 75 × 10; 0.67 × 75 × 10 since TR36's refit;
+		-- 0.67 × 75 at a tenth's scale (D3, 2026-11-18).
 		Name = "Bag: a card's Combat Power is what its shown lines are worth, so none is hidden",
 		Run = function(t: any)
 			local power = StatsConfig.Power
-			t.Equal("Health +75 alone is worth +503", math.floor(power.Weights.Health * 75 * power.Scale + 0.5), 503)
+			t.Equal("Health +75 alone is worth +50", math.floor(power.Weights.Health * 75 * power.Scale + 0.5), 50)
 			local data, warrior, ids = stocked()
 			local preset = Stats.PresetOf(data, warrior) :: Profile.Preset
 			local before = Stats.Resolve(warrior, preset, data)

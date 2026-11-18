@@ -222,7 +222,7 @@ function Chests.Salvage(item: { Tier: number, Rarity: string }): number
 	return math.floor((ChestsConfig.Salvage[item.Rarity] or 0) * Growth.G(if ground then ground.LevelTo else 1) + 0.5)
 end
 
--- Each class's best owned Voidkin, by Combat Power in its own preset, the first by Id on a tie: who the salvage protects
+-- Each class's best owned Voidkin, by Combat Power's unrounded sum in its own preset, the first by Id on a tie: who the salvage protects
 -- (docs/design.md, "Chests", "Auto-salvage"). A class the player owns none of has no entry.
 function Chests.For(data: Profile.Data): { [string]: Profile.OwnedVoidkin }
 	local out: { [string]: Profile.OwnedVoidkin } = {}
@@ -231,7 +231,7 @@ function Chests.For(data: Profile.Data): { [string]: Profile.OwnedVoidkin }
 		local owned = data.Voidkin[id]
 		local row = Voidkin.ById[owned.Def]
 		if row and Gear.Weapons[row.Class] then
-			local power = Stats.Power((Stats.Resolve(owned, Stats.PresetOf(data, owned), data)))
+			local power = Stats.Sum((Stats.Resolve(owned, Stats.PresetOf(data, owned), data)))
 			if most[row.Class] == nil or power > most[row.Class] then
 				out[row.Class], most[row.Class] = owned, power
 			end
@@ -241,7 +241,8 @@ function Chests.For(data: Profile.Data): { [string]: Profile.OwnedVoidkin }
 end
 
 -- Whether the salvage must keep item `id`: it would raise the Combat Power of its class's best Voidkin, or for a piece
--- every class wears, of any class's best (`best` is Chests.For's). A class owned by nobody protects nothing.
+-- every class wears, of any class's best (`best` is Chests.For's). A class owned by nobody protects nothing. The gain is
+-- the unrounded sum's (Stats.Compare), so one too small to move the shown figure is still kept (D3, 2026-11-18).
 function Chests.Keep(data: Profile.Data, id: string, best: { [string]: Profile.OwnedVoidkin }): boolean
 	local item = data.Items[id]
 	local row = if item then Items.ById[item.Def] else nil

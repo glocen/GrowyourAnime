@@ -103,8 +103,10 @@ return {
 	-- fitted by tools/balance/sim.py, section 16), tier 2, 2026-11-15, night; refitted on the attribute builds (TR25,
 	-- "Research's answers", 2026-11-16, 19:13; attributes.py, report A8): 97% again, 99.7% where one wins 10% faster.
 	-- Refitted again on the two attributes' builds (docs/balance.md, "The stats", 2026-11-17; TR36): 96.3%, and 99.7%.
+	-- Scale is a tenth of the seeds' 10 (the director, 2026-11-18, D3: 60,382 reads about 6,038), a look that moves no
+	-- balance: the weights and every price made from them (Config.Chests.PowerPerG) stand before it.
 	Power = {
-		Scale = 10,
+		Scale = 1,
 		Weights = {
 			Health = 0.67,
 			Attack = 4,

@@ -229,11 +229,12 @@ function Stats.Resolve(owned: Profile.OwnedVoidkin, preset: Profile.Preset?, dat
 	return block, lines
 end
 
--- A block's Combat Power (docs/design.md, "Combat Power"; Config.Stats.Power): its stats weighted, critical damage above
--- its base, a percent's weight times G at the block's level, times the scale, rounded to a whole. For reading only:
--- nothing in a fight reads it. Elemental Attack counts only for a block with an element: without one a hit has no
--- elemental part (Rules.Hit), so the points add nothing to winning (the director's design review, 2026-11-18).
-function Stats.Power(block: Block): number
+-- A block's Combat Power unrounded (docs/design.md, "Combat Power"; Config.Stats.Power): its stats weighted, critical
+-- damage above its base, a percent's weight times G at the block's level, times the scale. For reading only: nothing in
+-- a fight reads it. Elemental Attack counts only for a block with an element: without one a hit has no elemental part
+-- (Rules.Hit), so the points add nothing to winning (the director's design review, 2026-11-18). A gain is judged on this
+-- sum, never on the rounded figure, so one under half a shown point still counts (D3, 2026-11-18).
+function Stats.Sum(block: Block): number
 	local power = StatsConfig.Power
 	local g = Growth.G(math.clamp(block.Level, 1, GrowthConfig.MaxLevel))
 	local sum = 0
@@ -245,7 +246,12 @@ function Stats.Power(block: Block): number
 			sum += each * (if stat == "CriticalDamage" then math.max(0, value - StatsConfig.CriticalDamage) else value)
 		end
 	end
-	return math.floor(sum * power.Scale + 0.5)
+	return sum * power.Scale
+end
+
+-- A block's Combat Power as it shows: the sum rounded to a whole.
+function Stats.Power(block: Block): number
+	return math.floor(Stats.Sum(block) + 0.5)
 end
 
 -- One Regen burst's size (TR40; Config.Stats.Regen): Share of what Every seconds at `regen` a second would heal. A value,
@@ -300,7 +306,7 @@ export type Change = {
 	Slot: string,
 	Attributes: { [string]: number },
 	Battle: { [string]: number },
-	Power: number,
+	Power: number, -- the unrounded sum's change (Stats.Sum), so a gain under half a shown point is still a gain
 	Before: Block,
 	After: Block,
 }
@@ -346,7 +352,7 @@ function Stats.Compare(
 		local trial = copyPreset(preset)
 		Regalia.Put(trial, candidate, class, id)
 		local after = Stats.Resolve(owned, trial, data)
-		local power = Stats.Power(after) - Stats.Power(now)
+		local power = Stats.Sum(after) - Stats.Sum(now)
 		if best == nil or power > best.Power then
 			local attributes, battle = {}, {}
 			for _, attribute in Attributes.Ids do

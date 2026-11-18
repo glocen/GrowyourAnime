@@ -463,29 +463,32 @@ return {
 		end,
 	},
 	{
-		Name = "Stats: Combat Power is a whole number that rises with every stat, a level and a star, and a critical's base adds none",
+		Name = "Stats: Combat Power is its sum rounded to a whole, and the sum rises with every stat, a level and a star, and a critical's base adds none",
 		Run = function(t: any)
-			-- docs/design.md, "Combat Power": every real gain moves it by a whole, visible number. TR17 shows it at the feet.
+			-- docs/design.md, "Combat Power". TR17 shows it at the feet. At a tenth's scale (D3, 2026-11-18) one point of a
+			-- stat can stay under half a shown point, so a gain is judged on the unrounded sum (Stats.Sum).
 			local data = fresh()
 			local id = Collection.Uncover(data, "rook", NOW).Id
 			local owned = data.Voidkin[id]
 			local base = Stats.Resolve(owned, nil, data)
 			local power = Stats.Power(base)
+			local sum = Stats.Sum(base)
 			t.Check("a whole number above zero", power > 0 and power == math.floor(power), tostring(power))
-			t.Equal("an empty block has only its critical's base, which adds none", Stats.Power(Stats.Empty(1)), 0)
+			t.Equal("the sum rounded", power, math.floor(sum + 0.5))
+			t.Equal("an empty block has only its critical's base, which adds none", Stats.Sum(Stats.Empty(1)), 0)
 			for stat in StatsConfig.Power.Weights do
 				local more = table.clone(base) :: any
 				more[stat] += if stat == "CriticalDamage" or stat == "Lifesteal" then 0.01 else 1
 				if stat == "ElementalAttack" then
 					-- Rook has no element: a hit of his has no elemental part (Rules.Hit), so the points add nothing.
-					t.Equal("more Elemental Attack with no element: the same power", Stats.Power(more), power)
+					t.Equal("more Elemental Attack with no element: the same power", Stats.Sum(more), sum)
 					more.Element = "Storm"
-					t.Check("more Elemental Attack with an element, more power", Stats.Power(more) > power, `{Stats.Power(more)} over {power}`)
+					t.Check("more Elemental Attack with an element, more power", Stats.Sum(more) > sum, `{Stats.Sum(more)} over {sum}`)
 					local spare = table.clone(base) :: any
 					spare.Element = "Storm"
-					t.Equal("an element alone adds none", Stats.Power(spare), power)
+					t.Equal("an element alone adds none", Stats.Sum(spare), sum)
 				else
-					t.Check(`more {stat}, more power`, Stats.Power(more) > power, `{Stats.Power(more)} over {power}`)
+					t.Check(`more {stat}, more power`, Stats.Sum(more) > sum, `{Stats.Sum(more)} over {sum}`)
 				end
 			end
 			owned.Level = 10

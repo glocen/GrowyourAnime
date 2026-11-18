@@ -290,7 +290,7 @@ return {
 				trial.Hands.Tank = { ["Main Hand"] = axe }
 				local after = Stats.Resolve(tank, trial, data)
 				local before = Stats.Resolve(tank, preset, data)
-				t.Equal("its Combat Power is the resolver's twice", change.Power, Stats.Power(after) - Stats.Power(before))
+				t.Equal("its Combat Power is the resolver's twice, unrounded", change.Power, Stats.Sum(after) - Stats.Sum(before))
 				for _, stat in Stats.Names do
 					t.Equal(`{stat}'s change`, change.Battle[stat], (after :: any)[stat] - (before :: any)[stat])
 				end

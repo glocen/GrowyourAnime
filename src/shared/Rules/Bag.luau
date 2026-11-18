@@ -318,7 +318,7 @@ function Bag.Card(data: Profile.Data, owned: Profile.OwnedVoidkin?, id: string):
 		card.Replaces = worn[change.Slot]
 		after = change.After
 	end
-	card.Power = Stats.Power(after) - Stats.Power(before)
+	card.Power = Stats.Sum(after) - Stats.Sum(before)
 	for _, attribute in Attributes.Ids do
 		table.insert(card.Basic, { Stat = attribute, Value = before.Attributes[attribute], Change = after.Attributes[attribute] - before.Attributes[attribute] })
 	end

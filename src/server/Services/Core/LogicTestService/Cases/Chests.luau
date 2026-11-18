@@ -26,6 +26,8 @@ local Collection = require(Shared.Rules.Collection)
 local Stats = require(Shared.Rules.Stats)
 local ItemDesigns = require(Shared.Definitions.ItemDesigns)
 local UIKit = require(Shared.Config.UIKit)
+local Bag = require(Shared.Rules.Bag)
+local Sheet = require(Shared.Rules.Sheet)
 
 local NOW = 1_800_000_000
 local OP = "9b2c7d1e-5f3a-4c8b-a6e0-1d2f3a4b5c6d"
@@ -468,6 +470,50 @@ return {
 			Chests.SetSalvage(data, "")
 			t.Equal("off", data.Settings.Salvage, "")
 			t.Check(`the worn Voidkin stood: {owned.Id}`, data.Voidkin[owned.Id] ~= nil)
+		end,
+	},
+	{
+		-- D3 (the director, 2026-11-18): Combat Power shows a tenth, so a small gain can stay under half a shown point.
+		-- It is judged on the unrounded sum: the salvage keeps it, the bag marks it, and its card words it finer than none.
+		Name = "Chests: a gain too small to move the shown Combat Power is still a gain: kept by the salvage, marked in the bag, worded on its card",
+		Run = function(t: any)
+			local data = fresh()
+			local owned = lead(data, "Warrior")
+			local slot = Gear.Shared[1]
+			local def = Items.ById[string.lower((string.gsub(Gear.Family(slot), " ", "_")))].Id
+			local function item(health: number): string
+				local id = Profile.NewId(data)
+				data.Items[id] = { Id = id, Def = def, Tier = 1, Rarity = "Common", Design = 1, Lines = { { Stat = "Health", Value = health } }, Sockets = {}, Jewel = "" }
+				return id
+			end
+			Regalia.Put(data.Presets[1], slot, nil, item(10))
+			local better = item(10.1)
+			local preset = Stats.PresetOf(data, owned)
+			local change = Stats.Compare(data, preset, owned, better)
+			t.Check("it compares", change ~= nil and change.Slot == slot, if change then change.Slot else "none")
+			if change == nil then
+				return
+			end
+			local before = Stats.Resolve(owned, preset, data)
+			t.Equal("the shown figure doesn't move", Stats.Power(change.After), Stats.Power(before))
+			t.Check("the unrounded sum does, by under half a point", change.Power > 0 and change.Power < 0.5, tostring(change.Power))
+			local best = Chests.For(data)
+			local warrior = best.Warrior
+			t.Equal("its class's best is the one wearing it", if warrior then warrior.Id else "", owned.Id)
+			t.Check("the salvage keeps it", Chests.Keep(data, better, best))
+			local entry: Bag.Entry? = nil
+			for _, each in Bag.List(data, owned, "All", "Rarity") do
+				if each.Id == better then
+					entry = each
+				end
+			end
+			t.Check("the bag gives it the up arrow", entry ~= nil and entry.Up == true and entry.Gain == change.Power)
+			local card = Bag.Card(data, owned, better)
+			t.Check("its card's change is the sum's", card ~= nil and math.abs(card.Power - change.Power) < 1e-9, if card then tostring(card.Power) else "none")
+			t.Equal("worded finer than none", Sheet.Change("Power", change.Power), "+0.1")
+			local worse = item(9.9)
+			local loss = Stats.Compare(data, preset, owned, worse)
+			t.Check("a loss as small is a loss, never kept", loss ~= nil and loss.Power < 0 and not Chests.Keep(data, worse, best))
 		end,
 	},
 	{

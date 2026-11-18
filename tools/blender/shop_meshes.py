@@ -36,7 +36,8 @@ def shots(out: Path):
     made = {}
     for name in NAMES:
         piece = strip.build(name)
-        obj = piece.mesh.whole().to_object(name, clay)
+        obj = bpy.data.objects.new(name, piece.mesh.whole().to_object(name, clay))   # to_object gives the mesh data
+        scene.collection.objects.link(obj)
         corners = [obj.matrix_world @ Vector(c) for c in obj.bound_box]
         low = Vector(min(c[i] for c in corners) for i in range(3))
         high = Vector(max(c[i] for c in corners) for i in range(3))
@@ -56,7 +57,7 @@ def sheet(out: Path):
     pad, head, label = 16, 44, 26
     tile = BIG + pad + SMALL
     row = label + BIG + pad
-    board = rs.canvas(pad + len(VIEWS) * (tile + pad), head + len(NAMES) * row, DARK)
+    board = rs.canvas(pad + len(VIEWS) * (tile + pad) + 64, head + len(NAMES) * row, DARK)   # + room for the last label
     words = [(pad, 14, 17, "AR38, the Void Shop: its three meshes alone, untextured, at full size and at 64 px", "#E8E6F0")]
     for j, name in enumerate(NAMES):
         y = head + j * row

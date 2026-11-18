@@ -12423,7 +12423,7 @@ From `shop_look.png` and `far_close.png` (1910443).
   - **The lever is Modulo's:** a lit tooth's face carries the light, not only its crack, within the counter's cap. A glow rising with distance (Faber's runtime) is the fallback only.
 - **Second look:** the clock alone, from the crossing, at 160 and at the counter.
 
-### The clock's fix, and the Shop in AR40's C (Modulo, 2026-11-18, to 23:24 by the clock)
+### The clock's fix, and the Shop in AR40's C (Modulo, 2026-11-18, to 23:51 by the clock)
 
 In `tools/blender/strip_kit.py` (search "AR38"). Built in the script only so far.
 
@@ -12437,6 +12437,12 @@ In `tools/blender/strip_kit.py` (search "AR38"). Built in the script only so far
 - **The counter's light edge** lies on a dark bed.
 - **Each of the stock's six shards** stands before a dark niche, 1.34 by 2.3. The stones behind them are pale.
 - **The crown's light** sits 0.3 out from the slab's edge, before a dark cord wider than it. It's shown only with a rare offer, as before.
+
+**The shelf follows D6** (2026-11-18, `docs/decisions.md`; my call, tier 1, at 23:51 by the clock). The six lights for the six lines are gone with the six lines.
+- **The Standard shards** are two shards of light, 4.4 each side of the shelf's middle, each before its dark niche.
+- **The featured piece's cradle** stands between them, before the tallest stone: two prongs of void stone curving in over a dark plate. On an ordinary stock it's an empty place kept.
+- **On a featured stock** a stone of the void's light floats in it. That stone is in `VoidShopCrown`, so it shows and hides with the crown, at the crown's glow.
+- **The crown's note** now reads "a featured stock" for "a rare offer". The screen's grey (21:24) keeps the six lines research read; the screen is drawn again on D6's shelf when it's built (phase 4).
 
 **The second look's renders:** `shop_look.py` takes `day` (base_light's day under C's keys, the kit's light now) beside the look's dusk, which the grey was judged in. `rim=` replaces `wide=`.
 

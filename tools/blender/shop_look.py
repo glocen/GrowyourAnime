@@ -5,7 +5,7 @@ as the grey block (shop_block.py), so the two compare view for view.
 The Shop stands where WorldService puts it: on the crossing's axis, 4 studs into its lot from the Strip's south edge,
 its front looking at the Strip. The clock shows 3:20 to the next stock, as in the grey: the first minute spent (its
 tooth gone), the second a third left (its tooth scaled from its root), three whole. The crown is lit in the views that
-ask whether a rare offer is seen from afar.
+ask whether a featured stock (D6) is seen from afar.
 
 The clock's numbers can be tried without an edit: blade=, rim=, bright= and sw= set the minute's half width, its dark
 rim's size over the tooth's, its glow over the kit's and its swatch, and tag= names the try's files. Each render writes,
@@ -62,7 +62,7 @@ class World(sb.World):
 
 
 def boxes(scene, cam):
-    """Where the clock and the counter (its edge, the shelf and its six lines) fall in the picture: pixel boxes."""
+    """Where the clock and the counter (its edge, the shelf, its shards and cradle) fall in the picture: pixel boxes."""
     from bpy_extras.object_utils import world_to_camera_view
     from mathutils import Vector
 

@@ -101,6 +101,11 @@ export type GroundProgress = {
 
 -- A Tower run under way (TR29, Rules.Tower): its ledger, written in the transaction of each floor won and granted once,
 -- by the transaction that ends it. A run never resumes: one left in the save by a crash is ended at the next join.
+-- A ground's stages on one difficulty (TR43, Rules.Stages): how many are cleared, from the first (a stage needs the one
+-- before it, so the clears are always the first ones), and each stage's fastest clear in seconds, 0 before one is timed.
+export type StageLine = { Cleared: number, Best: { number } }
+export type StageProgress = { Normal: StageLine, Hard: StageLine }
+
 export type TowerRun = {
 	Id: string, -- Profile.NewId: an end naming another id is a no-op, so a run is granted once
 	Started: number, -- os.time() it started
@@ -154,6 +159,7 @@ export type Data = {
 	Progress: {
 		Starter: string, -- the starter shard chosen, or "" before the choice
 		Grounds: { [string]: GroundProgress }, -- by ground id, once opened
+		Stages: { [string]: StageProgress }, -- by ground id, from its first clear (TR43)
 		Kills: number, -- enemies that fell with this player's lead among their hitters (Rules.Drops); the first drops Watt's shard
 		Tower: {
 			Best: number, -- the highest floor ever won (TR29)
@@ -205,7 +211,7 @@ function Profile.Template(): Data
 			Bays = bays,
 		},
 		Training = { Trainee = "", Banked = 0 },
-		Progress = { Starter = "", Grounds = {}, Kills = 0, Tower = { Best = 0 } },
+		Progress = { Starter = "", Grounds = {}, Stages = {}, Kills = 0, Tower = { Best = 0 } },
 	}
 end
 

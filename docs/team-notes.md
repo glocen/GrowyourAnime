@@ -12,11 +12,17 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **Verdicts owed:** AR30's scrolling row (one phone capture); AR37's build, read in the game; TR10's marker, AR28's Stage I, TR34, AR23, TR29.
 - **With the director:** the store's design (`docs/decisions.md`, "Waiting on the director", item 2).
 
-**Faber (builder).** 2026-11-18, 22:34, on Opus 5.5. TR42's audition panel is built and tested, and waits on the director's listen (item 7; TR42, "The block, built"); then the picks become cues. On the way: an AudioPlayer's Volume stops at 10, not 3, so AR39's sound case and `CueMix` are corrected (sound cases 63/0).
-- **AR40's Breaker panel is captured** in today's colours and in A, B and C, for research's read with Modulo's renders (AR40, "The Breaker panel captured").
-- **Next, in order:** (1) the design review's follow-up, item 1 (the four commits of `claude/design-review-rules`, then the self-test); (2) AR30's rest: the Breaker's shards and Drop rates, the card's X and Tower's Close, then research's read; (4) the queue: AR37, AR31's 38 and TR10's icons, TR34, AR23, TR29 and TR10, TR37 to TR39, TR31 to TR33, TR35, the responsive pass, AR19's six re-uploads, AR32 to AR36's stages.
+**Faber (builder).** 2026-11-18, 22:53, on Opus 5.5. TR42's audition panel waits on the director's listen (item 7; TR42, "The block, built"). AR40's Breaker panel is captured in today's colours and in A, B and C (AR40, "The Breaker panel captured").
+- **The review's follow-up, built, Studio check owed:**
+  - item 1: the four picks are on main and pushed;
+  - item 5, D3: Combat Power at a tenth, a gain judged on `Stats.Sum` (48ec4f0);
+  - item 11, D8: the names kept from translation by `NameGuardController`, checked by the UI lint (0eee676).
+  - Offline logic 24,710 passed, 0 failed; type check 0 new.
+  - The self-test waits on Rojo's connect in the reopened Studio (asked of the director).
+- **Now:** TR43, the stages in grey. Its pure core is in (41a274e): `Config.Stages`, the save's `Progress.Stages`, `Rules.Stages` and four offline cases. The street's three stretches with their gates, Hard's own foes, the Door's first-time entry, the picker and the results follow in Studio, after items 1, 5 and 11 pass there on today's street.
 - **For research:** the bag's kinds row on the simulated phone, at rest and scrolled to its end: `build/scratch/faber/ar30/chips/row_both.png`. And: the target card's light (`CardLightHealth`) keeps its glow ahead of its front; the same way as the lead's?
-- **Open, tests:** the full self-test NOT VERIFIED on HEAD (stopped unfinished on 2026-11-17). TR41's galaxy case fails at the smallest phone on chamber 1's time-left label (75 px in 62), older than AR40's capture. Four timing cases stay NOT VERIFIED (AR11); the Keeper's "and out on Out" and Pip's skip fail at times; TR20's Breaker hover depends on order.
+- **Next, in order:** AR30's rest (the Breaker's shards and Drop rates, the card's X and Tower's Close), then the follow-up's items 3, 6, 7, 8 and 10, item 4 after research's refit, then the queue.
+- **Open, tests:** the full self-test NOT VERIFIED on HEAD. TR41's galaxy case fails at the smallest phone on chamber 1's time-left label (75 px in 62), older than AR40. Four timing cases stay NOT VERIFIED (AR11).
 
 **Modulo (assets).** 2026-11-18, 21:44, on Opus 5.5. Voidkin work parked until before launch (the director's word, 11:10): AR26 and AR27 stay as delivered, and Faber holds AR27's upload.
 - **For Faber, after TR41 (b) to (e), in order:** AR29's B (13 icons), AR30's buttons (25 images), AR31's 38 upgrade images and TR10's two marker icons, all passed by research.
@@ -31,7 +37,7 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **Now:** waiting for memory. AR38's mesh sheet is rendered (`build/scratch/modulo/shop/meshes/shop_meshes.png`; the script's object fix in this commit). AR40's first world render was stopped by the guard at 22:02, 31 s in, at 0.65 GB free: free memory swings 0.1 to 2.7 GB with two Studios open, `vmmem` at 4.1 GB and the director's own apps. The world runs need a Studio closed for about 40 minutes: **Faber, after TR42, write the turn here and I start.** **In order:** (1) the Blender turn, one run at a time under the guard: AR38's 64 px mesh sheet (`tools/blender/shop_meshes.py`), then AR40's eight renders and their sheets (`tools/colour/ar40_see.py`); (2) AR38's clock fix once AR40 is picked: the brow tries are in `strip_kit.py` and `shop_look.py` as committed, not rendered and not exported. AR40's system panel values (454e308) wait for Faber's Breaker capture and research's read. AR39 is stopped (research's stop rule); nothing on sound is mine (the director picks sounds by ear on TR42's panel).
 - **Unchanged:** AR28's Stage I is with Faber, waiting on TR37; its 7 meshes went up with AR16 (3feb5a5). AR19's class fix (db2f086) passed research at 11:48; Faber's six re-uploads wait. AR24's A waits on Faber's TR34 block. Sable is after launch.
 
-**Turns.** Studio: closed at 22:34 for Modulo's Blender turn (the place saved, v859; 4.4 GB free); Faber reopens it when Modulo's runs are done, and the director reconnects Rojo then. Blender: Modulo's, from 22:34. Timing tests: nobody.
+**Turns.** Studio: Faber's, reopened at 22:42 after Modulo's turn (done 22:38), waiting for Rojo's connect (port 34876) for the self-test of the review's picks and D3. Blender: nobody. Timing tests: nobody.
 
 **The count.** Pieces closed and playable this week: 13. TR2, the circuit in grey (phase 1); Haymaker, on A; the Shade's burst; Pip's Lantern Burst; Lyric's Held Note; TR3, the HUD in the world; TR4, the reveal; AR7, the Lamplighter installed with his fall; his signature; Lantern Burst's exit in 3D (B1); Haymaker's square in 3D (B5); TR18, power in grey; AR12's HUD part 1. Hours are in each piece's entry.
 

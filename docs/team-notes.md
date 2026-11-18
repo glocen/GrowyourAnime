@@ -4,8 +4,9 @@
 
 Each teammate rewrites its own row: two to five lines. Open asks sit under "Waiting on the director".
 
-**Quaestor (research).** 2026-11-17, 23:24, session closed on the director's word. On Fable 5.2 since 23:16 (the director's word, for the sound question).
-- **Sound:** AR39 is stopped (research's stop rule): the director's ear rejected the 13 layers made by code and round 2's library arrangements. The director's pick is the audition panel, TR42, Faber's first piece next session: finished library sounds, whole, chosen by the director's ear.
+**Quaestor (research).** 2026-11-18, 22:45, on Opus 5.5. The design review's follow-up is recorded: D1 to D8 and the director's words in `docs/decisions.md`, each fact in its home, the sorted list in `docs/production-plan.md` ("The design review's follow-up, 2026-11-18"). No new launch date; Faber and Modulo never idle (the director).
+- **Next, mine:** the loot refit to the stages' 10 to 15 minutes (`chests.py`, a launch model of the four stages on Normal and Hard plus the Tower, not the six-ground climb), with the stages' recommended levels and level 3's price (`sim.py`, section 15); then the Combat Power fit again. Faber's item 4 waits on it.
+- **Sound:** AR39 stopped; the director picks on TR42's panel.
 - **Colour:** AR40, less purple and black in the world and on many screens (the director's three words of tonight, `docs/decisions.md`). The bag, the Voidkin grid and the reveal stay; the system panel changes. Research's pick waits for Modulo's eight renders and Faber's Breaker capture; AR38's clock fix follows it.
 - **Verdicts owed:** AR30's scrolling row (one phone capture); AR37's build, read in the game; TR10's marker, AR28's Stage I, TR34, AR23, TR29.
 - **With the director:** the store's design (`docs/decisions.md`, "Waiting on the director", item 2).

@@ -307,7 +307,7 @@ Void Essence is out of launch: nothing needed it that these four don't cover (`d
 
 ## Out of launch
 
-No height stat, no prestige, no player traits, clans or races [D]. Fusion, mutations and traits on Voidkin, manual signatures, parties, saved-player Tower teams, Limited Voidkin and the tiers above Mythical wait for updates. Each is a line in `docs/polish-later.md`. A rare second form of each Voidkin comes after early access [D, 2026-11-18, D4]: a look found by roll, no stats, earned only and never sold.
+No height stat, no prestige, no player traits, clans or races [D]. Fusion, mutations and traits on Voidkin, manual signatures, parties (built after everything else is finished [D, 2026-11-18]), saved-player Tower teams, Limited Voidkin and the tiers above Mythical wait for updates. Each is a line in `docs/polish-later.md`. A rare second form of each Voidkin comes after early access [D, 2026-11-18, D4]: a look found by roll, no stats, earned only and never sold.
 
 ## What's sold
 

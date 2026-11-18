@@ -137,6 +137,7 @@ return {
 			t.Equal("Damage Bonus with nothing giving it: 0%", (row(groups, "DamageBonus") :: Sheet.Row).Value, "0%")
 			t.Equal("points grouped", (row(groups, "Health") :: Sheet.Row).Value, "1,234")
 			t.Equal("Regen as one burst, every 8 s (TR40): 4.26 a second, 8 s, a half", (row(groups, "Regen") :: Sheet.Row).Value, "17 every 8 s")
+			t.Equal("its name: HP Regen (the director, 2026-11-18)", (row(groups, "Regen") :: Sheet.Row).Name, "HP Regen")
 			t.Equal("a small burst to a tenth", Sheet.Burst(1.5), "6.0")
 			t.Equal("a card's Regen: the burst alone", Sheet.Amount("Regen", 4.26), "17")
 			t.Equal("a card's Regen change: the burst's", Sheet.Change("Regen", 0.5), "+2.0")

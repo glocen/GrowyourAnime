@@ -7,11 +7,11 @@ its front looking at the Strip. The clock shows 3:20 to the next stock, as in th
 tooth gone), the second a third left (its tooth scaled from its root), three whole. The crown is lit in the views that
 ask whether a rare offer is seen from afar.
 
-The clock's numbers can be tried without an edit: wide=, blade=, bright= and sw= set the minute's light's half width,
-its blade's half width, its glow over the kit's and its swatch, and tag= names the try's files. Each render writes,
+The clock's numbers can be tried without an edit: blade=, rim=, bright= and sw= set the minute's half width, its dark
+rim's size over the tooth's, its glow over the kit's and its swatch, and tag= names the try's files. Each render writes,
 beside its picture, where the clock and the counter fall in it (projected from the camera), for the measures.
 
-    blender -b --factory-startup --python tools/blender/shop_look.py -- <abs out> [view ...] [fast] [tag=..] [wide=..]
+    blender -b --factory-startup --python tools/blender/shop_look.py -- <abs out> [view ...] [fast] [day] [tag=..] [rim=..]
     blender -b --factory-startup --python tools/blender/shop_look.py -- <abs out> sheet <grey folder>
     blender -b --factory-startup --python tools/blender/shop_look.py -- <abs out> clock <grey folder> <tag> [tag ...]
 
@@ -67,7 +67,7 @@ def boxes(scene, cam):
     from mathutils import Vector
 
     w, h = look.SIZE
-    reach = strip.MINUTE[0] + 0.6
+    reach = strip.MINUTE + 0.6
     parts = {"clock": [(x, strip.MINUTE_ALONG, z) for x in (strip.MINUTES[0] + 1.2, strip.MINUTES[-1] - 1.2)
                        for z in (strip.SLAB_Z - 0.3, strip.SLAB_Z - reach)],
              "counter": [(x, y, z) for x in (-11.5, 11.5) for y in (-9.0, -17.7) for z in (3.0, 6.0)]}
@@ -82,11 +82,10 @@ def boxes(scene, cam):
 
 
 def tune(args):
-    """The try's numbers, from the command line: the minute's light and blade, its glow and its swatch."""
+    """The try's numbers, from the command line: the minute's blade and dark rim, its glow and its swatch."""
     said = dict(a.split("=", 1) for a in args if "=" in a)
-    long, wide = strip.MINUTE
-    strip.MINUTE = (long, float(said.get("wide", wide)))
     strip.BLADE = float(said.get("blade", strip.BLADE))
+    strip.RIM = float(said.get("rim", strip.RIM))
     strip.BRIGHT["VoidShopMinute"] = float(said.get("bright", strip.BRIGHT["VoidShopMinute"]))
     strip.MINUTE_SW = said.get("sw", strip.MINUTE_SW)
     return said.get("tag", "")
@@ -312,9 +311,22 @@ def clock_sheet(out: Path, grey: Path, tags):
     rs.save(page.px, out / "clock_look.png")
 
 
+def by_day():
+    """The game's day as the kit wears it since AR40's pick (C, 2026-11-18, 22:40): base_light's day under C's keys,
+    no mist, the kit's glow at the day's share. Without it a render keeps the look's dusk, the light the grey was
+    judged in."""
+    sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "colour"))
+    import ar40_see as seen
+
+    seen.lighting(seen.EVERY[seen.KIT])
+    seen.day.light("day")
+
+
 def main():
     out = bl.out_dir()
     args = sys.argv[sys.argv.index("--") + 2:]
+    if "day" in args:
+        by_day()
     if "sheet" in args:
         sheet(out, Path(args[args.index("sheet") + 1]))
         return

@@ -55,15 +55,15 @@ BRIGHT = {"CrossingShard": 2.5,
 # its front (+Y) looks at the Strip; SHOP_IN is that 4. The clock's five minutes hang from the slab's front edge on
 # its east half (+X here is the world's +X, east, once it faces the Strip: on the left from the counter), the first
 # minute the farthest out, clear of the crossing shard's cover and of the way in: each minute's across. A minute is a
-# tooth: a blade of void stone (BLADE, its half width) with a crack of the void's light down its middle, as the Strip's
-# light lives in its cracks, so at the counter the light stays under the counter's own (research's note, 21:41; in
-# grey, whole lit blades filled the view's top left). A spent minute's tooth is gone, so from far off, where the haze
-# drowns a thin crack, the clock still reads as a count of dark teeth against the sky. MINUTE is the crack: (its
-# length, its half width); MINUTE_ALONG the tooth's root, its blade's middle; CRACK_OUT how far proud the crack stands.
+# tooth whose whole face is the void's light (BLADE, its half width at its widest), in a dark rim RIM times its size,
+# hung in front of the brow's dark: research's must-fix of 2026-11-17, 22:00, the clock carries the light of its
+# minutes left as a count from the crossing and at 160 studs, where a crack down a stone tooth drowned in the haze. Its
+# glow (BRIGHT) keeps it under the counter's own light at the counter (research's note, 21:41). A spent minute's tooth
+# is gone. MINUTE is a tooth's length under its root; MINUTE_ALONG the tooth's root, its blade's middle.
 SHOP_IN, SLAB_Z, SLAB_FRONT = 4.0, 12.2, -5.6
 SLAB_ENDS = (18.8, -15.8)          # where the slab's full depth ends each side; its points run 2.4 past
 MINUTES = (17.0, 14.0, 11.0, 8.0, 5.0)
-MINUTE, BLADE, MINUTE_SW = (5.6, 0.6), 1.2, "void"
+MINUTE, BLADE, RIM, MINUTE_SW = 5.6, 1.2, 1.12, "void"
 MINUTE_ALONG = SLAB_FRONT - 0.3
 # The brow behind the teeth: (across, half height) along it, a point at each end.
 BROW = ((19.6, 0.5), (18.3, 3.1), (15.5, 3.4), (12.5, 3.0), (9.5, 3.4), (6.5, 3.1), (3.6, 2.6), (2.4, 0.5))
@@ -272,11 +272,14 @@ def shop():
     # The clock's brow: a blade of void stone hanging from the slab's front edge behind the five teeth, its lower edge
     # broken. It is the clock's dark ground: a lit tooth reads against stone, not against the haze, from any distance
     # (research's must-fix, 22:02: in the first pass the sky stood behind the teeth, pale on pale at 160 studs).
+    # In AR40's C the void stone is pale sand, pale on pale behind a lit tooth, so the brow is C's teal metal: each
+    # tooth's own dark rim makes the valleys between teeth, and the brow needs only to sit darker than the light, not
+    # to add a band of near-black (the director's "too black", AR40).
     behind = MINUTE_ALONG - 1.0
-    horn(m, [(x, behind, SLAB_Z + 0.2 - r) for x, r in BROW], [r for _, r in BROW], "abyss", flat=(0.0, 1.0, 0.0), deep=0.12)
+    horn(m, [(x, behind, SLAB_Z + 0.2 - r) for x, r in BROW], [r for _, r in BROW], "girder", flat=(0.0, 1.0, 0.0), deep=0.12)
     m.box((16.0, 2.4, 3.2), (0.0, -10.5, 1.6), "abyss", ink=True)                         # the counter
     m.box((16.4, 2.8, 0.25), (0.0, -10.5, 3.32), "girder")
-    m.box((16.2, 0.2, 0.2), (0.0, -9.1, 3.3), "lamp")             # its edge toward the player: the counter's own light
+    machines.lamp(m, (16.2, 0.2, 0.2), (0.0, -9.1, 3.3), "lamp", 1, 1, pad=0.12)   # its edge toward the player: the counter's own light, on its dark bed
     for x, turn, high in ((10.0, -14.0, 7.6), (0.0, 0.0, 8.6), (-10.0, 14.0, 7.6)):         # the stones at its back
         a = math.radians(turn)
         flat = (math.sin(a), math.cos(a), 0.0)
@@ -284,6 +287,8 @@ def shop():
     m.box((23.0, 1.6, 0.4), (0.0, -16.9, 3.2), "girder", ink=True)                          # the shelf
     for k in range(6):                                                                     # the stock's six lines
         shard(m, (-8.75 + 3.5 * k, -16.9, 4.6), 0.42, 1.7, "lamp")
+        # each before its dark niche: in C the stones behind are pale sand (AR40, must-fix 1)
+        m.box((1.34, 0.06, 2.3), (-8.75 + 3.5 * k, -17.62, 4.6), "well")   # clear of the middle stone's face by 0.07
     return Piece("VoidShop", m, lights=[("Counter", (0.0, -14.0, 7.0), "#F6FCFF")],
                  solid="the counter, 16 by 2.4 by 3.2, and the three stones at its back; the slab hangs out of reach",
                  note=f"stands at the Shop's place in WorldService ({SHOP_IN:g} into its lot from the Strip's edge), its "
@@ -295,33 +300,43 @@ def shop():
 
 
 def shop_minute():
-    """One minute of the Shop's clock: a tooth hanging point down from its root in the slab, a blade of void stone with
-    a crack of the void's light down its front. Stood five times along the slab's front edge (MINUTES). A minute to run
-    shows; a spent one is gone; the running one is shortened from its root by the share still to run."""
-    m = Mesh()
-    long, wide = MINUTE
-    horn(m, [(0.0, 0.0, 0.0), (0.0, 0.0, -2.6), (0.0, 0.0, -long - 0.5)], [BLADE * 0.75, BLADE, 0.05], "abyss",
-         flat=(0.0, 1.0, 0.0), deep=0.35)
-    out = BLADE * 0.35 + 0.1 - wide * 0.25       # the light's front ridge 0.1 proud of the blade's, its sides clear of it
-    horn(m, [(0.0, out, -0.2), (0.0, out, -2.6), (0.0, out, -long - 0.2)], [wide * 0.75, wide, 0.04],
-         MINUTE_SW, flat=(0.0, 1.0, 0.0), deep=0.25, ink=False)
+    """One minute of the Shop's clock: a tooth hanging point down from its root in the slab, its whole face the void's
+    light in a dark rim (research's must-fix of 22:00: a lit tooth's face carries the light, not only its crack, so
+    the clock reads as a count of lit teeth from the crossing and at 160 studs). Stood five times along the slab's
+    front edge (MINUTES), in front of the brow's dark. A minute to run shows; a spent one is gone; the running one is
+    shortened from its root by the share still to run."""
+    m = Mesh(None)
+    spine = [(0.0, 0.0, 0.0), (0.0, 0.0, -2.6), (0.0, 0.0, -MINUTE - 0.5)]
+    radii = [BLADE * 0.75, BLADE, 0.05]
+    horn(m, spine, radii, MINUTE_SW, flat=(0.0, 1.0, 0.0), deep=0.35, ink=False)          # the lit tooth
+    # its dark rim: the same tooth RIM times as wide, set back and shallower, so the light's faces lie in front of it
+    # all round (by 0.08 at their edge) and it wraps the tooth's back: from behind the counter a tooth is dark
+    horn(m, [(x, y - 0.1 * BLADE, z) for x, y, z in spine], [r * RIM for r in radii], "well", flat=(0.0, 1.0, 0.0),
+         deep=0.35 / RIM * 0.93, ink=False)
     return Piece("VoidShopMinute", m,
-                 note=f"its origin is its root, in the slab's underside, and it hangs {long + 0.5:g} down from it. Five "
+                 note=f"its origin is its root, in the slab's underside, and it hangs {MINUTE + 0.5:g} down from it. Five "
                       f"stand on the VoidShop's own turn, at its frame's across {', '.join(f'{x:g}' for x in MINUTES)}, "
                       f"along {MINUTE_ALONG:g}, up {SLAB_Z:g}: the first minute at 17. A minute still to run shows; a "
                       "spent one is hidden. The running one shows the share of its minute left: its height (the "
-                      "MeshPart's Y) times that share, its root kept where it is. The crack glows under the counter's "
-                      "light (research, 21:41). No collision")
+                      "MeshPart's Y) times that share, its root kept where it is. Its lit face glows under the "
+                      "counter's light (research, 21:41), in a dark rim that also covers its back. No collision")
 
 
 def shop_crown():
     """The Shop's crown: a line of the void's light round the slab's edge, lit only while a rare offer is in."""
     m = Mesh(None)
-    mid, r, z = SLAB_FRONT - 8.4, 8.4 + 0.12, SLAB_Z
-    east, west = SLAB_ENDS[0] + 2.7, SLAB_ENDS[1] - 2.7
-    ring = [(east, mid), (SLAB_ENDS[0], mid + r), (SLAB_ENDS[1], mid + r), (west, mid), (SLAB_ENDS[1], mid - r),
-            (SLAB_ENDS[0], mid - r), (east, mid)]
-    m.tube([(x, y, z) for x, y in ring], 0.24, "void")
+    mid, z = SLAB_FRONT - 8.4, SLAB_Z
+
+    def ring(out):
+        r, east, west = 8.4 + out, SLAB_ENDS[0] + 2.4 + out, SLAB_ENDS[1] - 2.4 - out
+        return [(x, y, z) for x, y in ((east, mid), (SLAB_ENDS[0], mid + r), (SLAB_ENDS[1], mid + r), (west, mid),
+                                       (SLAB_ENDS[1], mid - r), (SLAB_ENDS[0], mid - r), (east, mid))]
+
+    # the light, 0.3 out from the slab's edge, before a dark cord wider than it on the edge itself: in C the slab is
+    # pale sand, and a light on a pale body sits in a dark well (AR40, must-fix 1). From outside, the light's face is
+    # in front, and the cord shows above, below and inside it.
+    m.tube(ring(0.3), 0.24, "void")
+    m.tube(ring(0.0), 0.36, "well")
     return Piece("VoidShopCrown", m, lights=[("Crown", (2.0, mid, SLAB_Z + 3.0), "#B58CFF")],
                  note="stands on the VoidShop's own place and turn, round its slab's edge. Shown only while a rare offer "
                       "is in, for its five minutes; hidden otherwise. Its glow is the brightest of the Shop's, so a lit "

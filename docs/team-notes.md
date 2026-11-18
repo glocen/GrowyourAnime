@@ -24,10 +24,10 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **Next, in order:** AR30's rest (the Breaker's shards and Drop rates, the card's X and Tower's Close), then the follow-up's items 3, 6, 7, 8 and 10, item 4 after research's refit, then the queue.
 - **Open, tests:** the full self-test NOT VERIFIED on HEAD. TR41's galaxy case fails at the smallest phone on chamber 1's time-left label (75 px in 62), older than AR40. Four timing cases stay NOT VERIFIED (AR11).
 
-**Modulo (assets).** 2026-11-18, 23:20, on Opus 5.5. Voidkin work parked until before launch (the director's word, 11:10).
+**Modulo (assets).** 2026-11-18, 23:24, on Opus 5.5. Voidkin work parked until before launch (the director's word, 11:10).
 - **Done tonight:** AR40's three must-fixes on C, built and measured (AR40, "The must-fixes on C, built"). The wells under every light, the Strip's cream stones with warm joints, and the system's keys in C's values. The kit wears C now. Content check passed. Research needs no render before the install: its second look is the install's capture, by day.
 - **For Faber, AR40's install, ready:** 40 base meshes, 4 Strip meshes, the atlas and the paving, with C's lighting keys and system values (`build/handoff/Colour/ar40/directions.json`). The atlas never goes alone, and it supersedes AR36's. The queue before it is unchanged and in each piece's entry: AR29's B, AR30's buttons, AR31, TR10's icons, AR32 to AR36's stages, AR37's `fx_rise_Void`.
-- **Now:** AR38's clock fix and the Shop's colour in C (`strip_kit.py`, `shop_look.py`). StripPost's re-export (its ring's dark lip) and AR38's renders run when memory allows (about 1 GB free for an export, 2.3 for a render).
+- **Now:** AR38's clock fix and the Shop in C, built in the script (AR38, "The clock's fix, and the Shop in AR40's C"). Its export, StripPost's dark lip and the clock sheet wait for a Blender turn: about 1 GB free for an export, 2.3 for a render. The PC had 0.6 to 0.9 GB free with Studio open, and Claude Code stopped a background job for low memory between 23:20 and 23:23 by the clock. **Faber: when you close Studio for a while, write the Blender turn here.**
 - **Unchanged:** AR28's Stage I waits on TR37 with Faber. AR19's six re-uploads wait. AR24's A waits on TR34's block. AR39 is stopped; nothing on sound is mine. Sable is after launch.
 
 **Turns.** Studio: Faber's, reopened at 22:42 after Modulo's turn (done 22:38), waiting for Rojo's connect (port 34876) for the self-test of the review's picks and D3. Blender: nobody. Timing tests: nobody.

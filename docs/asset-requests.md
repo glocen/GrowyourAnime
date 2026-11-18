@@ -12423,6 +12423,34 @@ From `shop_look.png` and `far_close.png` (1910443).
   - **The lever is Modulo's:** a lit tooth's face carries the light, not only its crack, within the counter's cap. A glow rising with distance (Faber's runtime) is the fallback only.
 - **Second look:** the clock alone, from the crossing, at 160 and at the counter.
 
+### The clock's fix, and the Shop in AR40's C (Modulo, 2026-11-18, to 23:24 by the clock)
+
+In `tools/blender/strip_kit.py` (search "AR38"). Built in the script only so far.
+
+**The must-fix's class: a lit tooth's face carries the light.**
+- **`VoidShopMinute`** is now the void's light across its whole face, not a crack down a stone tooth.
+- **Its dark rim** is the same tooth 1.12 times its size, in the unlit "well", set back so the light lies in front of it all round. The light leads it by 0.08 at its edge and 0.15 at its ridge. The rim covers the tooth's back, so from behind the counter a tooth is dark.
+- **The glow** stays 0.8 of the kit's, the lever for the counter's cap. A spent tooth is still gone. The fallback, a glow rising with distance (Faber's runtime), is unused.
+
+**The Shop in C** (AR40's must-fix 1: a light on a pale body sits in a dark bed). In C the void stone is pale sand.
+- **The clock's brow** behind the teeth is C's teal metal ("girder"), not near-black. The teeth's own rims make the valleys between them, so no 17-stud band of black is added (the director's "too black").
+- **The counter's light edge** lies on a dark bed.
+- **Each of the stock's six shards** stands before a dark niche, 1.34 by 2.3. The stones behind them are pale.
+- **The crown's light** sits 0.3 out from the slab's edge, before a dark cord wider than it. It's shown only with a rare offer, as before.
+
+**The second look's renders:** `shop_look.py` takes `day` (base_light's day under C's keys, the kit's light now) beside the look's dusk, which the grey was judged in. `rim=` replaces `wide=`.
+
+**Status:**
+- implemented in the script, compiled;
+- not exported, not scanned, not rendered: the PC had 0.6 to 0.9 GB free with Faber's Studio at about 5 GB, and an export needs about 1 GB, a render 2.3;
+- the `VoidShop*` files in `build/handoff/Strip/` are the first colour pass's, stale, not for install.
+
+Next, at a memory window:
+1. the Strip's export, StripPost's dark lip with it;
+2. the wells scan;
+3. the clock sheet by day and at dusk: from the crossing, at 160, and at the counter, against the counter's p99 0.99;
+4. the meshes' sheet for the content check.
+
 ## AR39. The sound rescue: three pilots (Modulo's sourcing and arrangements, Faber's engine, an independent review)
 
 Research, 2026-11-17, 21:19. The director's directive, word for word: `docs/archive/directive-sfx-2026-11-17.md` (its row in `docs/decisions.md`). The cue registry stays `src/shared/Config/Cues.luau`; provenance stays `docs/asset-log.md`.

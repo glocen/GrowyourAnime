@@ -12423,7 +12423,7 @@ From `shop_look.png` and `far_close.png` (1910443).
   - **The lever is Modulo's:** a lit tooth's face carries the light, not only its crack, within the counter's cap. A glow rising with distance (Faber's runtime) is the fallback only.
 - **Second look:** the clock alone, from the crossing, at 160 and at the counter.
 
-### The clock's fix, and the Shop in AR40's C (Modulo, 2026-11-18, to 23:51 by the clock)
+### The clock's fix, and the Shop in AR40's C (Modulo, 2026-11-18, to 23:54 by the clock)
 
 In `tools/blender/strip_kit.py` (search "AR38"). Built in the script only so far.
 
@@ -12446,16 +12446,20 @@ In `tools/blender/strip_kit.py` (search "AR38"). Built in the script only so far
 
 **The second look's renders:** `shop_look.py` takes `day` (base_light's day under C's keys, the kit's light now) beside the look's dusk, which the grey was judged in. `rim=` replaces `wide=`.
 
-**Status:**
-- implemented in the script, compiled;
-- not exported, not scanned, not rendered: the PC had 0.6 to 0.9 GB free with Faber's Studio at about 5 GB, and an export needs about 1 GB, a render 2.3;
-- the `VoidShop*` files in `build/handoff/Strip/` are the first colour pass's, stale, not for install.
+**Exported** in Faber's Blender window (23:52 to 23:53 by the clock) to `build/handoff/Strip/`:
+- `VoidShop` 524 triangles, `VoidShopMinute` 36, `VoidShopCrown` 112, and `StripPost` again, its ring on a dark lip;
+- the manifest with their notes; the paving came out byte for byte as committed.
+- **The scan of each light's bed** (AR40's): no light on pale in the four. The seals' 2 of 102 are the same edge noise as before.
+- **Content check: PASS** (23:54), on the meshes' sheet (`build/scratch/modulo/shop/meshes/shop_meshes.png`, each mesh alone, untextured, full size and 64 px on dark). The teeth read as stone or light, never drips. Its condition: if the clock's colour renders show a colour other than the palette's, a fresh look before upload.
 
-Next, at a memory window:
-1. the Strip's export, StripPost's dark lip with it;
-2. the wells scan;
-3. the clock sheet by day and at dusk: from the crossing, at 160, and at the counter, against the counter's p99 0.99;
-4. the meshes' sheet for the content check.
+**Status:**
+- implemented, exported, scanned and content-checked;
+- not rendered in colour, so research's second look hasn't happened, and it's not for install before it.
+
+Next, when a render fits (2.3 GB free, so a window without Studio): the clock sheet by day and at dusk, from the crossing, at 160 and at the counter, against the counter's p99 0.99:
+
+    guard.ps1 tools/blender/shop_look.py <out> counter crossing street_off [day] tag=<try>
+    guard.ps1 tools/blender/shop_look.py <out> clock build/scratch/modulo/shop <try> [...]
 
 ## AR39. The sound rescue: three pilots (Modulo's sourcing and arrangements, Faber's engine, an independent review)
 

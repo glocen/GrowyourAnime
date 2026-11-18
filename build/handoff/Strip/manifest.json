@@ -11,8 +11,8 @@
  "pieces": {
   "StripPost": {
    "mesh": "meshes/StripPost.json",
-   "triangles": 184,
-   "vertices": 116,
+   "triangles": 248,
+   "vertices": 148,
    "centre": [
     1.02,
     5.11102,
@@ -312,6 +312,92 @@
    "collision": "none",
    "lights": [],
    "note": "a great shard of void stone, 180 high and 30 wide, far past the map's edge: unlit, in a pale void stone painted for the distance, since no haze pales it now (AR20). It leans a little toward +X, and its foot goes 30 under the floor, for where the ground has ended. No hull, no shadow, nobody reaches it"
+  },
+  "VoidShop": {
+   "mesh": "meshes/VoidShop.json",
+   "triangles": 524,
+   "vertices": 320,
+   "centre": [
+    1.5,
+    6.751,
+    14.0
+   ],
+   "size": [
+    39.62,
+    13.722,
+    17.02
+   ],
+   "colour": "../Base/maps/Base_Kit_Color.png",
+   "glow": "../Base/maps/Base_Kit_Glow.png",
+   "glowTint": "#FFFFFF",
+   "glowStrength": 2.4,
+   "collision": "the counter, 16 by 2.4 by 3.2, and the three stones at its back; the slab hangs out of reach",
+   "lights": [
+    {
+     "name": "Counter",
+     "at": [
+      0.0,
+      7.0,
+      14.0
+     ],
+     "colour": "#F6FCFF"
+    }
+   ],
+   "note": "stands at the Shop's place in WorldService (4 into its lot from the Strip's edge), its front (+Y) looking at the Strip. The slab hangs from 10.9 to 13.5, 39.4 across and 16.8 deep, its front edge a blade's. Only the counter's edge and the shelf's two shards (the Standard shards, D6) glow: the counter's own light, over the clock's. The cradle between them stays dark; a featured stock's light in it is VoidShopCrown's. One PointLight at Counter, white. The clock's light and the crown are their own pieces, VoidShopMinute (five) and VoidShopCrown"
+  },
+  "VoidShopMinute": {
+   "mesh": "meshes/VoidShopMinute.json",
+   "triangles": 36,
+   "vertices": 24,
+   "centre": [
+    0.0,
+    -3.05,
+    0.0453
+   ],
+   "size": [
+    2.688,
+    6.1,
+    0.931
+   ],
+   "colour": "../Base/maps/Base_Kit_Color.png",
+   "glow": "../Base/maps/Base_Kit_Glow.png",
+   "glowTint": "#FFFFFF",
+   "glowStrength": 1.92,
+   "collision": "none",
+   "lights": [],
+   "note": "its origin is its root, in the slab's underside, and it hangs 6.1 down from it. Five stand on the VoidShop's own turn, at its frame's across 17, 14, 11, 8, 5, along -5.9, up 12.2: the first minute at 17. A minute still to run shows; a spent one is hidden. The running one shows the share of its minute left: its height (the MeshPart's Y) times that share, its root kept where it is. Its lit face glows under the counter's light (research, 21:41), in a dark rim that also covers its back. No collision"
+  },
+  "VoidShopCrown": {
+   "mesh": "meshes/VoidShopCrown.json",
+   "triangles": 112,
+   "vertices": 108,
+   "centre": [
+    1.5,
+    8.28,
+    14.0
+   ],
+   "size": [
+    40.458,
+    8.56,
+    17.88
+   ],
+   "colour": "../Base/maps/Base_Kit_Color.png",
+   "glow": "../Base/maps/Base_Kit_Glow.png",
+   "glowTint": "#FFFFFF",
+   "glowStrength": 5.28,
+   "collision": "none",
+   "lights": [
+    {
+     "name": "Crown",
+     "at": [
+      2.0,
+      15.2,
+      14.0
+     ],
+     "colour": "#B58CFF"
+    }
+   ],
+   "note": "stands on the VoidShop's own place and turn: round its slab's edge, and a stone of light in the shelf's cradle. Shown only while a featured stock is in (D6), for its five minutes; hidden otherwise. Its glow is the brightest of the Shop's, so a lit crown reads from far down the Strip and the side street. One PointLight at Crown while it's lit, if the phone's count allows. No collision"
   }
  }
 }

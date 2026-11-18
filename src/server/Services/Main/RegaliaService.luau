@@ -126,6 +126,11 @@ function RegaliaService.Init()
 	DataService.Action("SetSalvage", function(draft: Profile.Data, args: any): { [string]: any }
 		return Chests.SetSalvage(draft, if type(args) == "table" then args.Below else nil)
 	end)
+	-- One owned item into Credits by the player's hand (Rules.Chests.SalvageItem): never one a preset wears, so it changes
+	-- no fighter's stats and needs no fight check.
+	DataService.Action("SalvageItem", function(draft: Profile.Data, args: any): { [string]: any }
+		return Chests.SalvageItem(draft, if type(args) == "table" then args.Item else nil)
+	end)
 	if RunService:IsStudio() then
 		registerDebug()
 	end

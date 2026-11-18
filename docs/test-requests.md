@@ -3758,6 +3758,14 @@ Research, 2026-11-17, 23:24, on the director's word: "ok let do 1" (`docs/decisi
 - **Tests:** type check 0 new; logic offline 24,491/0; in a playtest at 60 fps, the audition cases 44/0 (the four above, the fair listen, and Others) and the sound cases 63/0. A tap, Keep, More and None by mouse, then the readout: `LightHit, 112758963155190, Hit⧸Punch in the air Sound, Raknium, kept` and `LightHit, page 2, none`. The panel made opaque after that run (a colour only) and captured from the player's view. The place is saved with the candidates (v857).
 - **Open:** the director's listen; then the picks become cues, the asset log, and `Audition.Clear()` before a public build.
 
+### Research's read of the second round (2026-11-19, 00:47 by the clock)
+
+The director's "Done", then "we need more audition sfx for the skills of our current voidskin rooster + the m1 of ranged class like mage etc" (2026-11-19, 00:3x). Faber's tier 2 notice is accepted as built: the 63 keeps as cues, the nine pilots, the beat cues replacing the heavy wind-up, the levels as seeds tuned in the listen.
+- **The pool, agreed with Faber's concern:** 32 different recordings in one pool make each punch a different sound, so no fighter has a voice. It's split by fighter, 4 to 6 keeps each, and the director's ear does the split: the next round adds a tab for each melee fighter's light hits, with that tab's candidates drawn from the 32 keeps, not the library. Faber's 0.5 h, in this round. Until then, the single pool stands.
+- **Mage cues:** the words are Pip's fire, so the cue belongs to a Fire Mage. A later Mage of another element gets its own cue under the same rule.
+- **Healer cues:** "laser shot" is off Lyric's look, since her speakers throw sound, not light. Use "sonic pulse" in its place. For HealerShot, HealerHit and HeldNote, a single tone or chime isn't music: the music filter drops only a recording with a tune.
+- **The pilots' entry stays this one;** each kept sound joins its cue through the engine as before.
+
 ## TR43. Lantern Row's stages on Normal and Hard, in grey (Faber, the follow-up's item 2)
 
 Research, 2026-11-18, 22:44, on D2 and D7 (`docs/decisions.md`; `docs/design.md`, "The Festival of Battles"). Answers Faber's four questions of this evening.
@@ -3769,3 +3777,29 @@ Research, 2026-11-18, 22:44, on D2 and D7 (`docs/decisions.md`; `docs/design.md`
 - **The results (d):** what the stage gave, Retry, Next and Home, and what just opened. Dailies aren't named until they're designed. The Lamplighter's Normal win says "Hard is open", in place of "Drum Court opened" at launch (the follow-up's 4.9).
 - **Waits:** gear budgets by stage (item 4, after research's loot refit), the party's anything, art on the tiles, the dock's shortcut to the picker.
 - **Research reads it:** in motion, from a phone's camera: the first 90 seconds of a fresh account, one stage's results, and one Hard stage's first fight.
+
+## TR44. The Lamplighter's slam in its fight, and two ways to move the lead out of it (Faber, the follow-up's item 3)
+
+Research, 2026-11-19, 00:47 by the clock, from the brief of 2026-11-18, 3.3: two blocks on the same fight, each inside the 90-minute cap, and the director picks one. The pack that proposed the slam's place, its footprint and its recovery isn't in the repo, so the numbers below are research's seeds, tuned live. A blockout is tier 1. The pick is the director's.
+- **Feel line:** the Lamplighter leans its lantern out over your fighter, and a ring opens on the street where it will land. You move your fighter out of the ring in time, and the slam hits empty stone. If you didn't, you know why it hit.
+- **The slam in the rotation:**
+  - `KeeperSignature` joins the Lamplighter's row beside `KeeperSwing`. It's the first slam 8 s after the Challenge ends, then each time its cooldown of 12 s is up and its target is within its Range (7.5); otherwise the keeper swings. A 90-second fight holds about 6 slams.
+  - The keeper turns to its target until Plant (0.4). From Plant the aim is fixed.
+  - **The tell is 1.57 s,** from Plant to Slam (1.9667): the clip's own lean and gathering light, and the footprint.
+  - **The recovery is the clip's tail, 1.07 s** (Slam to 3.0333). The keeper doesn't act in it, and the lead's hits land as normal. A bonus in that window waits.
+- **The marked footprint:** a flat ring on the ground at the lantern's landing point (6.33 studs ahead of the keeper, 1.92 to its left), radius 5 (seed). Inside it, a disc grows from the centre and meets the ring on the Slam frame, so the fill tells the time. In grey: a white ring and a translucent fill that read on the street by day and at dusk. It's gone on the Slam, and the column takes over. Nothing else is marked: no screen text and no icon.
+- **The hit resolves on the footprint:** the Slam's hit takes every lead whose centre is within the radius at the Slam's beat, at its real position. That replaces Reach 10 and the 70° arc for this hit alone.
+- **A, the pack's rule: follow during a marked strike.**
+  - While a footprint is down, if the avatar moves 2 studs or more from where it stood at Plant and ends outside the ring, the lead breaks off its combo at once and walks to its place beside the avatar (`Lead.Frame`), at its catch-up speed.
+  - It holds there until the Slam, then fights again.
+  - If the avatar stands still, or stands inside the ring, nothing changes. Standing still is the old rule, so the lead fights on and is hit.
+- **B, a Recall button.**
+  - One press: touch (a round button by the right thumb, 44 pt or more, shown only in the keeper's fight in this block), the R key, and the gamepad's ButtonY.
+  - The lead breaks off its combo and dashes to its place beside the avatar at 40 studs a second (seed), then holds 1 s and fights again.
+  - The cooldown is 4 s, shown on the button. It isn't untouchable: if the dash ends inside the ring, the slam hits.
+  - In B, walking away does nothing new during a mark, so the two rules are tested apart.
+- **Both:** the breaking off costs the combo, which is the price. A runtime switch picks Off, A or B (`Config`, read live), so the director plays all three in one session without a restart.
+- **What the block counts:** per slam, on the server, write hit or missed. For a missed slam, also write on purpose (the player moved 2 studs, or pressed Recall, in the tell) or by accident (no input in the tell). One debug command reads out the counts per mode.
+- **Waits:** the footprint's look in the game's art (Modulo, at the shared finish); the slam's sound (no sound work outside TR42's panel); a bonus in the recovery; poise and stagger; Hard's numbers; parties' several leads; Recall outside the keeper's fight; any other keeper.
+- **Cases:** the slam's aim is fixed from Plant; a lead on the ring's edge at the Slam is hit only when its centre is inside; A fires only on a 2-stud move that ends outside; B's cooldown holds through a repeat press; a Recall during the lead's own signature breaks it with no double hit; Off plays as today's rule.
+- **Research reads it:** in motion, from a phone's camera, one fight in each mode, with the counts. The question for each is the pack's own: can the player explain why the slam hit their lead? A mode in which most misses are accidents fails that question. Research sends the director the two takes and the counts, and the director picks.

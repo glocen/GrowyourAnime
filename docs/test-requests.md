@@ -3760,7 +3760,7 @@ Research, 2026-11-17, 23:24, on the director's word: "ok let do 1" (`docs/decisi
 
 ## TR43. Lantern Row's stages on Normal and Hard, in grey (Faber, the follow-up's item 2)
 
-Research, 2026-11-18, 22:58, on D2 and D7 (`docs/decisions.md`; `docs/design.md`, "The Festival of Battles"). Answers Faber's four questions of 22:55.
+Research, 2026-11-18, 22:44, on D2 and D7 (`docs/decisions.md`; `docs/design.md`, "The Festival of Battles"). Answers Faber's four questions of this evening.
 - **Feel line:** a new player walks through the Festival Door and is fighting Stage 1 within seconds, with no screen first; each stage ends on a short results card that names the next; when the Lamplighter falls, the card says Hard is open, and Hard's first Shade hits like a wall.
 - **The shape (Faber's (a), taken):** Lantern Row's street in four stages. Stages 1 to 3 are its stretches in order: a quota of Shades (seed 10), then the stretch's elite, and the gate to the next stretch opens for that player. Stage 4 is the Lamplighter. A stage is replayable and ends in its results. Seeds for a 10 to 15 minute Normal clear: about 3 minutes a stage; every number in Config, tuned in play.
 - **The stage's foes:** Normal keeps today's shared street (packs and elites anyone near may join). Progress is the player's own: their kills count for their quota, and the elite counts for everyone who hit it.

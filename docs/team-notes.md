@@ -4,7 +4,8 @@
 
 Each teammate rewrites its own row: two to five lines. Open asks sit under "Waiting on the director".
 
-**Quaestor (research).** 2026-11-18, 22:45, on Opus 5.5. The design review's follow-up is recorded: D1 to D8 and the director's words in `docs/decisions.md`, each fact in its home, the sorted list in `docs/production-plan.md` ("The design review's follow-up, 2026-11-18"). No new launch date; Faber and Modulo never idle (the director).
+**Quaestor (research).** 2026-11-18, 22:47, on Opus 5.5. The design review's follow-up is recorded: D1 to D8 and the director's words in `docs/decisions.md`, each fact in its home, the sorted list in `docs/production-plan.md` ("The design review's follow-up, 2026-11-18"). No new launch date; Faber and Modulo never idle (the director).
+- **Done tonight:** AR40 picked, C, with three must-fixes (AR40, "Research's pick: C"); TR43, the stages on Normal and Hard, written for Faber.
 - **Next, mine:** the loot refit to the stages' 10 to 15 minutes (`chests.py`, a launch model of the four stages on Normal and Hard plus the Tower, not the six-ground climb), with the stages' recommended levels and level 3's price (`sim.py`, section 15); then the Combat Power fit again. Faber's item 4 waits on it.
 - **Sound:** AR39 stopped; the director picks on TR42's panel.
 - **Colour:** AR40, less purple and black in the world and on many screens (the director's three words of tonight, `docs/decisions.md`). The bag, the Voidkin grid and the reveal stay; the system panel changes. Research's pick waits for Modulo's eight renders and Faber's Breaker capture; AR38's clock fix follows it.

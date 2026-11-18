@@ -12785,7 +12785,7 @@ These ran in Studio's closed turn, each under the memory guard (lowest free 3.45
 - **The same in all of them:** the deck (no direction moves it), the void's own light (`void`, `cyan`) and the HUD.
 - **Status:** rendered and self-reviewed; not picked, not reviewed by research, not in the game.
 
-### Research's pick: C (2026-11-18, 22:52 by the clock)
+### Research's pick: C (2026-11-18, 22:40 by the clock)
 
 From the eight renders, the 64 px sheet and Faber's four Breaker captures. Stills, since a colour pass has no motion to watch.
 - **Felt:** in C the yard turns to a warm afternoon where the void's violet is the one thing that glows; A is clean but its Strip goes muddy, and B goes cold, its void lost in blue.

@@ -476,7 +476,17 @@ return {
 			for stat in StatsConfig.Power.Weights do
 				local more = table.clone(base) :: any
 				more[stat] += if stat == "CriticalDamage" or stat == "Lifesteal" then 0.01 else 1
-				t.Check(`more {stat}, more power`, Stats.Power(more) > power, `{Stats.Power(more)} over {power}`)
+				if stat == "ElementalAttack" then
+					-- Rook has no element: a hit of his has no elemental part (Rules.Hit), so the points add nothing.
+					t.Equal("more Elemental Attack with no element: the same power", Stats.Power(more), power)
+					more.Element = "Storm"
+					t.Check("more Elemental Attack with an element, more power", Stats.Power(more) > power, `{Stats.Power(more)} over {power}`)
+					local spare = table.clone(base) :: any
+					spare.Element = "Storm"
+					t.Equal("an element alone adds none", Stats.Power(spare), power)
+				else
+					t.Check(`more {stat}, more power`, Stats.Power(more) > power, `{Stats.Power(more)} over {power}`)
+				end
 			end
 			owned.Level = 10
 			local levelled = Stats.Power((Stats.Resolve(owned, nil, data)))

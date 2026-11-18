@@ -112,7 +112,7 @@ Each ends on something playable. No dates are promised past phase 1: see "The da
 
 **The design review's follow-up, 2026-11-18** (the director's brief, evening; the decisions D1 to D8 in `docs/decisions.md`). Research's sort, in hours of active work, seeds. Built from the brief and the repo: this morning's pack wasn't seen, so the launch review's own list stands where it differs.
 - **In, Faber:**
-  1. the branch `claude/design-review-rules` cherry-picked onto main (four commits: Elemental Attack only with an element, the Tower's fixed opening five and sure first chest, salvage, "HP Regen"), then the self-test, with E1: 1 h;
+  1. the branch `claude/design-review-rules` cherry-picked onto main (four commits: Elemental Attack only with an element, the Tower's fixed opening five and sure first chest, salvage, "HP Regen"), then the self-test: 1 h;
   2. the stages on Normal and Hard, in grey, with their picker, locked tiles stating their condition, and the results naming what just opened and tomorrow's dailies (D2, 5.2): 4 h;
   3. the slam (`KeeperSignature`) in the Lamplighter's rotation, with its marked footprint, and the two lead-movement blocks on that fight, A (follow during a marked strike) and B (a Recall button, 4 s), for research's verdict and the director's pick: 4 h;
   4. gear's budgets by stage and difficulty, the sure usable first item, Hard's Keeper's Rare chance shown, and a line the fighter can't use dimmed with its reason (D7, 4.4): 3 h, after 2 and research's refit;

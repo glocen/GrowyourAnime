@@ -18,6 +18,10 @@ return {
 	} :: { [string]: number },
 	Health = 0.55, -- and then this share of its health (seeds "enemyHpShare")
 	-- Its Voidkin: one with a body and moves of its own (a Model and a Kit: Rules.Tower.Pool), picked from the run's seed by floor, no new models.
+	-- The opening: the first floors' foes, in this order in every run, so the climb starts the same for everyone and each
+	-- teaches one fighter (the director's design review of 2026-11-18, on the director's go of that day). An id not in
+	-- the pool falls back to the seed's pick. Past it, the seed picks as before.
+	Opening = { "rook", "pip", "kirra", "lyric", "watt" } :: { string },
 	HealCap = 0.15, -- healing in one floor tops out at this share of the lead's most health (seeds "healCap")
 	Rise = 2.5, -- seconds from a floor won to the next foe: the rise to its platform (seeds "risePerFloorSec")
 	Leap = 0.5, -- the share of Rise at which the lead and the avatar are set down on the new platform
@@ -30,7 +34,8 @@ return {
 	Credits = { Share = 0.34, Record = 2 },
 	-- A chest a hard floor won: Base + PerFloor x the floor, at most Most. It's the Tower's own (Config.Chests.Tower, its
 	-- own rarity row), of the ground the foe's level stands in, which an item's worth is read from.
-	Chest = { Base = 0, PerFloor = 0.0018, Most = 0.5 },
+	-- First: the floor whose chest is sure the first time the account wins it (the same review: the roll there was 0.9%).
+	Chest = { Base = 0, PerFloor = 0.0018, Most = 0.5, First = 5 },
 	-- The world, in studs (builder's, tuned by playing). The ring lies on its lot's crossing end, where the sleeping
 	-- Tower stood; stepping within Ring of its middle starts a run. Floor f's platform stands f x Height over it.
 	Ring = 5,

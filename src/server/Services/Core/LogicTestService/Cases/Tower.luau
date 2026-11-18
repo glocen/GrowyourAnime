@@ -70,6 +70,19 @@ return {
 				differs = differs or Tower.Foe(floor, SEED).Def ~= Tower.Foe(floor, SEED + 1).Def
 			end
 			t.Check("another seed, other foes", differs)
+			-- The opening: the same foes in the same order for every run, each in the pool, then the seed's pick.
+			t.Check("an opening", #TowerConfig.Opening >= 1)
+			for floor, def in TowerConfig.Opening do
+				t.Check(`the opening's {def} is in the pool`, table.find(pool, def) ~= nil)
+				for _, seed in { SEED, SEED + 1, 7, 2_000_000_011 } do
+					t.Equal(`floor {floor} of seed {seed}: {def}`, Tower.Foe(floor, seed).Def, def)
+				end
+			end
+			local past, varied = #TowerConfig.Opening + 1, false
+			for floor = past, past + 20 do
+				varied = varied or Tower.Foe(floor, SEED).Def ~= Tower.Foe(floor, SEED + 1).Def
+			end
+			t.Check("past the opening the seed picks", varied)
 			local draws = 0
 			for index = 1, 1000 do
 				local u = Tower.Draw(SEED, index, 2)
@@ -163,17 +176,35 @@ return {
 					t.Check(`floor {floor}: the same seed, the same reward`, false)
 				end
 				local fast = Tower.Reward(floor, 0, SEED, true)
-				if fast.Credits ~= 0 or fast.Chest ~= nil then
-					t.Check(`floor {floor}: a fast floor pays nothing, past the record or not`, false, `{fast.Credits}, {fast.Chest}`)
+				local first = floor == TowerConfig.Chest.First
+				if fast.Credits ~= 0 or (fast.Chest ~= nil) ~= first then
+					t.Check(`floor {floor}: a fast floor pays nothing, past the record or not, but the first chest`, false, `{fast.Credits}, {fast.Chest}`)
+				end
+				local known = Tower.Reward(floor, floor, SEED, true)
+				if known.Credits ~= 0 or known.Chest ~= nil then
+					t.Check(`floor {floor}: a fast floor at or under the record pays nothing at all`, false, `{known.Credits}, {known.Chest}`)
 				end
 			end
+			-- The first chest: sure the first time the account wins its floor, fast or hard, in every run; then the roll again.
+			local firstFloor = TowerConfig.Chest.First
+			local firstGround = Grounds.List[Growth.GroundOf(Tower.Level(firstFloor))]
+			local sure, after = 0, 0
+			for seed = 1, 300 do
+				local hard, quick = Tower.Reward(firstFloor, firstFloor - 1, seed), Tower.Reward(firstFloor, 0, seed, true)
+				local row = if hard.Chest then ChestRows.ById[hard.Chest] else nil
+				sure += if row and row.Ground == firstGround.Id and row.Tier == ChestRows.Tower and quick.Chest == hard.Chest then 1 else 0
+				after += if Tower.Reward(firstFloor, firstFloor, seed).Chest then 1 else 0
+			end
+			t.Equal(`floor {firstFloor}'s first win: the Tower's chest in each of 300 runs`, sure, 300)
+			t.Check("won before: its roll again", after < 30, `{after} of 300`)
+			t.Check("the floor under it isn't sure", Tower.Reward(firstFloor - 1, 0, 1, true).Chest == nil)
 			local plain, record = Tower.Reward(30, 30, SEED), Tower.Reward(30, 29, SEED)
 			t.Check("past the record: the bonus", record.Credits == math.floor(DropsConfig.CreditsPerKillPerG * Growth.G(Tower.Level(30)) * TowerConfig.Credits.Share * TowerConfig.Credits.Record + 0.5) and record.Credits > plain.Credits)
 			t.Check("the chest chance rises with the floor", Tower.ChestChance(10) < Tower.ChestChance(40))
 			t.Equal("and tops out", Tower.ChestChance(100_000), TowerConfig.Chest.Most)
 			local chests = 0
 			for floor = 1, 400 do
-				if Tower.Reward(floor, 0, SEED).Chest then
+				if Tower.Reward(floor, TowerConfig.Chest.First, SEED).Chest then
 					chests += 1
 				end
 			end
@@ -241,7 +272,20 @@ return {
 			end
 			local ran = quick.Progress.Tower.Run :: any
 			t.Check("forty fast floors: the run at floor 40", ran ~= nil and ran.Floor == 40)
-			t.Check("and its ledger empty", ran ~= nil and ran.Credits == 0 and next(ran.Chests) == nil)
+			local firstChest = Tower.Reward(TowerConfig.Chest.First, 0, SEED, true).Chest :: string
+			local carried = 0
+			for _, each in if ran then ran.Chests else {} do
+				carried += each
+			end
+			t.Check("and its ledger empty but the first chest, once", ran ~= nil and ran.Credits == 0 and carried == 1 and ran.Chests[firstChest] == 1)
+			local later = fresh()
+			later.Progress.Tower.Best = TowerConfig.Chest.First
+			Tower.Start(later, "k905", SEED, NOW)
+			for floor = 1, 40 do
+				Tower.Won(later, "k905", floor, true)
+			end
+			local again = later.Progress.Tower.Run :: any
+			t.Check("a later climb through fast floors: nothing", again ~= nil and again.Credits == 0 and next(again.Chests) == nil)
 			t.Equal("floor 40 again, hard: a no-op", Tower.Won(quick, "k904", 40, false), nil)
 			local hard = Tower.Won(quick, "k904", 41, false)
 			t.Check("then a hard floor pays", hard ~= nil and hard.Credits > 0 and ran.Credits == hard.Credits)

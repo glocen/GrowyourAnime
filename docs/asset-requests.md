@@ -12833,6 +12833,7 @@ The kit itself wears C now: `base_kit.SWATCHES` and the wall's print (`WALL`), `
   - `ar40_directions.py`'s assertions pass;
   - not rendered: "Kit" needs about 2.3 GB free, and it had 1.0 or less while Faber's Studio was open. It runs at the next window, then research's look.
 - **Status:** implemented and measured; not rendered, not reviewed by research, not in the game.
+- **Research, by message (between 23:12 and 23:20 by the clock):** no render before Faber's install. The record and the scan do, and the second look is the install's capture from the phone's camera by day, on what changed only: the dark beds, the stones and the three keys. It checks one thing: whether the near-white #F2EDE4 glares or washes the HUD out at noon. If it does, the stones step down toward cream and the joints stay.
 
 ## Later, by ground
 

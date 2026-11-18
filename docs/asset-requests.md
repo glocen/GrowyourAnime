@@ -12423,7 +12423,7 @@ From `shop_look.png` and `far_close.png` (1910443).
   - **The lever is Modulo's:** a lit tooth's face carries the light, not only its crack, within the counter's cap. A glow rising with distance (Faber's runtime) is the fallback only.
 - **Second look:** the clock alone, from the crossing, at 160 and at the counter.
 
-### The clock's fix, and the Shop in AR40's C (Modulo, 2026-11-18, to 23:54 by the clock)
+### The clock's fix, and the Shop in AR40's C (Modulo, 2026-11-18, to 23:59 by the clock)
 
 In `tools/blender/strip_kit.py` (search "AR38"). Built in the script only so far.
 
@@ -12435,14 +12435,27 @@ In `tools/blender/strip_kit.py` (search "AR38"). Built in the script only so far
 **The Shop in C** (AR40's must-fix 1: a light on a pale body sits in a dark bed). In C the void stone is pale sand.
 - **The clock's brow** behind the teeth is C's teal metal ("girder"), not near-black. The teeth's own rims make the valleys between them, so no 17-stud band of black is added (the director's "too black").
 - **The counter's light edge** lies on a dark bed.
-- **Each of the stock's six shards** stands before a dark niche, 1.34 by 2.3. The stones behind them are pale.
-- **The crown's light** sits 0.3 out from the slab's edge, before a dark cord wider than it. It's shown only with a rare offer, as before.
+- **Each shard on the shelf** stands before a dark niche, 1.34 by 2.3. The stones behind them are pale.
+- **The crown's light** sits 0.3 out from the slab's edge, before a dark cord wider than it. It's shown only with a featured stock.
 
 **The shelf follows D6** (2026-11-18, `docs/decisions.md`; my call, tier 1, at 23:51 by the clock). The six lights for the six lines are gone with the six lines.
 - **The Standard shards** are two shards of light, 4.4 each side of the shelf's middle, each before its dark niche.
 - **The featured piece's cradle** stands between them, before the tallest stone: two prongs of void stone curving in over a dark plate. On an ordinary stock it's an empty place kept.
 - **On a featured stock** a stone of the void's light floats in it. That stone is in `VoidShopCrown`, so it shows and hides with the crown, at the crown's glow.
-- **The crown's note** now reads "a featured stock" for "a rare offer". The screen's grey (21:24) keeps the six lines research read; the screen is drawn again on D6's shelf when it's built (phase 4).
+- **The crown's note** now reads "a featured stock" for "a rare offer".
+
+**The screen on D6's shelf, in grey** (`tools/blender/shop_screen.py`, redrawn; `build/scratch/modulo/shop/screen_d6/shop_screen.png`, 23:58 by the clock). It replaces the 21:24 grey's six lines and rare offer. The band is unchanged: Back, the title, the clock's five lights with the countdown, and Credits.
+- **The featured piece** stands apart on the left, as the rare offer did. "about 1 stock in 6" is always on it (a stand-in for research's number).
+  - When one is in: its picture, name, slot and whom it fits, its rarity and its stats, then the count left, Preview (the bag's item card on the lead, unchanged) and Buy.
+  - When none is in: "None this stock. When one is in, the Shop's crown is lit."
+- **The Standard shard's line** is on the right: "2 each player, each stock", whom it draws from, a Drop rates row of its own (the Breaker's panel, AR30's mark), the count left, and Buy.
+- **The states:**
+  - A: a featured piece for every class, with one shard bought;
+  - B: none featured, and the shard out of reach ("Need 150 more", Buy dimmed);
+  - C: a weapon of a class the player has none of ("You have no Tank yet" in red), with the shards bought out ("Bought").
+- **Open, for research:** whether C's piece can be bought. I drew it as buyable, since a drop of any class is kept in the bag (`docs/design.md`, gear), but no line says so for the Shop.
+- **Sizes:** every tap is 44, no text is under 14, Pad 7, Gap 5.
+- **Stand-ins:** the prices, counts, stats, the chance and the pictures (AR21's shard, AR22's gear).
 
 **The second look's renders:** `shop_look.py` takes `day` (base_light's day under C's keys, the kit's light now) beside the look's dusk, which the grey was judged in. `rim=` replaces `wide=`.
 
@@ -12453,8 +12466,8 @@ In `tools/blender/strip_kit.py` (search "AR38"). Built in the script only so far
 - **Content check: PASS** (23:54), on the meshes' sheet (`build/scratch/modulo/shop/meshes/shop_meshes.png`, each mesh alone, untextured, full size and 64 px on dark). The teeth read as stone or light, never drips. Its condition: if the clock's colour renders show a colour other than the palette's, a fresh look before upload.
 
 **Status:**
-- implemented, exported, scanned and content-checked;
-- not rendered in colour, so research's second look hasn't happened, and it's not for install before it.
+- the building: implemented, exported, scanned and content-checked; not rendered in colour, so research's second look hasn't happened, and it's not for install before it;
+- the screen: a grey sheet on D6, not yet read by research; Faber builds it on the kit with the shelf's rule (phase 4).
 
 Next, when a render fits (2.3 GB free, so a window without Studio): the clock sheet by day and at dusk, from the crossing, at 160 and at the counter, against the counter's p99 0.99:
 

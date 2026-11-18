@@ -68,6 +68,7 @@ Sheet.Said = {
 	CriticalGuard = "Critical Immunity", -- the director's name (2026-11-17, by 00:17); the key stays the code's
 	ElementalResist = "Elemental Resist",
 	DamageReduction = "Damage Reduction",
+	Regen = "HP Regen", -- the director's name (2026-11-18): the stat keeps its name, its value is one burst's health
 } :: { [string]: string }
 
 -- The ratings, each shown as its share against an even foe (Sheet.Odds), never as its points.

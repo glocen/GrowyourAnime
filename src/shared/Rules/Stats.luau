@@ -231,14 +231,16 @@ end
 
 -- A block's Combat Power (docs/design.md, "Combat Power"; Config.Stats.Power): its stats weighted, critical damage above
 -- its base, a percent's weight times G at the block's level, times the scale, rounded to a whole. For reading only:
--- nothing in a fight reads it.
+-- nothing in a fight reads it. Elemental Attack counts only for a block with an element: without one a hit has no
+-- elemental part (Rules.Hit), so the points add nothing to winning (the director's design review, 2026-11-18).
 function Stats.Power(block: Block): number
 	local power = StatsConfig.Power
 	local g = Growth.G(math.clamp(block.Level, 1, GrowthConfig.MaxLevel))
 	local sum = 0
 	for stat, weight in power.Weights do
 		local value = (block :: any)[stat]
-		if type(value) == "number" and value == value then
+		local used = stat ~= "ElementalAttack" or block.Element ~= ""
+		if used and type(value) == "number" and value == value then
 			local each = if power.ByLevel[stat] then weight * g else weight
 			sum += each * (if stat == "CriticalDamage" then math.max(0, value - StatsConfig.CriticalDamage) else value)
 		end

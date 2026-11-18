@@ -40,6 +40,11 @@ Theme.Colour = {
 	Dodge = Color3.fromRGB(150, 154, 162),
 	Hurt = Color3.fromRGB(255, 120, 110), -- a hit on the player's own lead
 	Over = Color3.fromRGB(255, 150, 92), -- power: demand over generation (TR18, grey until AR12's pick)
+	-- A colour that's both a light and a word is two values (AR40, "The system panel in A, B and C"): the light in a bar or
+	-- a fill above, the word on the panel here. Today each word is its light's colour (the word on a ready fill, the ink).
+	ReadyWords = Color3.fromRGB(18, 20, 25), -- the word on a ready fill
+	ElectricityWords = UIKit.Charge,
+	OverWords = Color3.fromRGB(255, 150, 92),
 }
 
 Theme.Transparency = {

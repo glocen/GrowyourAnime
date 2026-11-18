@@ -31,7 +31,7 @@ local AuditionController = {}
 local USE = CuesConfig.Use :: { [string]: string } -- AR39's A/B switch: "Old" or a variant, read at each play
 
 local DATA = "NL_Audition" -- the finder's answer, as AuditionService hands it over
-local GUI = "NL_Audition"
+local GUI = "Studio_Audition" -- not NL_: the UI lint reads the game's own screens by that, and this is a tool, never a player's
 local LOAD = 4 -- s a tapped sound has to load in
 local LEVELS = 0.25 -- s between reads of Config.Audition.Levels
 

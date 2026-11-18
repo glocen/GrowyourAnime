@@ -12756,6 +12756,23 @@ On research's triage of 23:04: one palette for the slab the Breaker's and the Po
 - **Known weak, said now:** gold on a pale panel is 1.0 to 1.7 to 1 against it, so a ready chamber on A and B is carried by its blue-violet edge and its ink word, not by its fill.
 - **Status:** implemented as values and a flat chip; not in the game, not captured, not reviewed.
 
+### The Breaker panel captured in A, B and C (Faber, 2026-11-18, 22:13 to 22:26 by the clock)
+
+- **How, live and Studio only:** `NL_ClientTheme` (`TuneController`) sets the theme's colours and a palette's values on the client, and `Reset` puts them back; `NL_RevealTest:Invoke("Breaker")` opens the screen. Graphite's own keys went to Graphite. `Row` went to `PlateHigh`; `Text`, `Soft` and `Faint` to `Text`, `TextDim` and `Disabled`; `Backing`, `Ready`, `Electricity` and `Over` to their own. The words are three new theme colours at today's values, so nothing changes today: `ReadyWords` on the ready fill, `ElectricityWords` for "Infused", and `OverWords` for the power screen later.
+- **The window is a Graphite panel under its own painted night** (TR41's galaxy, its `Sky` layer). The palette is the slab, so the night is hidden for A, B and C and shown for today. A screen keeps its skin while it stays open, so each direction was opened fresh.
+- **Captures,** in Studio's window (viewport 1655 by 756) at dusk, not on a phone: `build/scratch/faber/ar40/breaker_today.jpg`, `breaker_A.jpg`, `breaker_B.jpg` and `breaker_C.jpg`.
+- **What they show:**
+  - **A and B:** the slab is pale, and the headings and the shard's panel read in ink. Four weak spots:
+    - each chamber card's head band stays dark, with its "Chamber 1" in dim ink;
+    - the close cross stays white, nearly gone on the pale slab;
+    - the chambers' pictures turn pastel;
+    - the gold "Ready" word on its gold chip doesn't read (Modulo's known weak).
+  - **C:** every word reads, the ready chip's included, and the sand edge holds the frame.
+  - **All three:** Open and Drop rates keep their own dark buttons (the kit's Seam palette, not the slab's).
+- **Outside the palette's keys,** so a picked direction must name them: the chamber's head band, the close cross, and the Seam buttons.
+- **Tests:** type check 0 new. In a playtest, the Breaker cases 223/1, with the new case for the live look and the opening. The one failure is chamber 1's time-left label, 75 px in a 62 px box at the smallest phone's scale (TR41's galaxy case). It fails again alone on a fresh playtest (41/1), and this change to that screen is two colours, so it's older than this piece and depends on a working shard's text.
+- **Found on the way:** the audition panel (TR42) stood in every playtest under an `NL_` name, so the UI lint read it as a game screen: 28 false failures in the Breaker cases. Renamed `Studio_Audition`, outside the lint's reach.
+
 ## Later, by ground
 
 The rest of ground 1 (Kirra in AR10, Watt in AR11; then Sable, Marigold, Crane), then each ground's Voidkin in `docs/roster.md`'s order. **The machines** (Gantry, Bulwark, Ironhymn, Shiomaru, Aegir) share one custom rig, taller than a player, with its own clip family: the first of them is timed like AR1, because a custom rig is a different cost.

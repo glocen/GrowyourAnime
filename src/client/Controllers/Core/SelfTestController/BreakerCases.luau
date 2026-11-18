@@ -472,6 +472,34 @@ function BreakerCases.Cases(): { any }
 				after()
 			end,
 		},
+		{
+			Name = "Breaker: AR40's live look, Studio only: NL_ClientTheme sets the screens' colours and a palette's values on this client and Reset puts each back exactly; NL_RevealTest opens the Breaker; the ready and infused words are their own colours",
+			Run = function(t: any)
+				local UIKit = require(Shared.Config.UIKit)
+				local Players = game:GetService("Players")
+				local theme = Players.LocalPlayer:FindFirstChild("PlayerScripts") and Players.LocalPlayer.PlayerScripts:FindFirstChild("NL_ClientTheme")
+				local reveal = ReplicatedStorage:FindFirstChild("NL_RevealTest")
+				t.Check("both bridges stand", theme ~= nil and reveal ~= nil)
+				if theme == nil or reveal == nil then
+					return
+				end
+				local graphite = UIKit.Palettes.Graphite :: any
+				local ready, words, edge, panel = Theme.Colour.Ready, Theme.Colour.ElectricityWords, graphite.Edge, graphite.Panel
+				t.Check("today, each word is its light's colour", Theme.Colour.ElectricityWords == Theme.Colour.Electricity and Theme.Colour.OverWords == Theme.Colour.Over and Theme.Colour.ReadyWords == Theme.Colour.Backing)
+				local set = (theme :: BindableFunction):Invoke("Set", { Colour = { Ready = "#102030", ElectricityWords = "#7A5800" }, Palette = "Graphite", Values = { Edge = "#2B3472", Panel = { "#F7F2E8", "#E7E0D2" }, Rim = 2 } })
+				t.Check("Set takes colours, pairs and numbers", set == true and Theme.Colour.Ready == Color3.fromHex("#102030") and Theme.Colour.ElectricityWords == Color3.fromHex("#7A5800")
+					and graphite.Edge == Color3.fromHex("#2B3472") and graphite.Panel[2] == Color3.fromHex("#E7E0D2") and graphite.Rim == 2)
+				;(theme :: BindableFunction):Invoke("Set", { Colour = { Ready = "#405060" } }) -- a second Set still resets to the first values
+				;(theme :: BindableFunction):Invoke("Reset")
+				t.Check("Reset puts each back exactly, a key the palette didn't have taken away", Theme.Colour.Ready == ready and Theme.Colour.ElectricityWords == words and graphite.Edge == edge and graphite.Panel == panel and graphite.Rim == nil)
+				Screen.Close()
+				;(reveal :: BindableFunction):Invoke("Breaker")
+				t.Check("the Breaker opens from the bridge", waitFor(t, 2, function(): boolean
+					return Screen.Current() == BreakerScreen.Name
+				end), tostring(Screen.Current()))
+				Screen.Close()
+			end,
+		},
 	}
 end
 

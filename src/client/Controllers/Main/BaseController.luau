@@ -943,6 +943,7 @@ end
 --   NL_RevealTest:Invoke("Seek", 1.2)       its clock pinned there; ("Seek") lets it run on
 --   NL_RevealTest:Invoke("Show", { Rarity = "Mythical", Name = "Umbriel", Model = "Rook" })   the stage's own options
 --   NL_RevealTest:Invoke("State"), ("Tap"), ("Close")
+--   NL_RevealTest:Invoke("Breaker"), ("Power")   the Breaker's or the power's screen, as their prompts open them (AR40's captures)
 local function revealBridge()
 	local bridge = Instance.new("BindableFunction")
 	bridge.Name = "NL_RevealTest"
@@ -957,6 +958,10 @@ local function revealBridge()
 			tap()
 		elseif command == "Close" then
 			BaseController.Dismiss()
+		elseif command == "Breaker" then
+			BaseController.OpenBreaker()
+		elseif command == "Power" then
+			BaseController.OpenPower()
 		end
 		return BaseController.Revealed()
 	end

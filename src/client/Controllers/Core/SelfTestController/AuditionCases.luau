@@ -63,7 +63,7 @@ function AuditionCases.Cases(): { any }
 				Audition.Studio = studio
 				t.Check("outside Studio it mounts nothing", made == nil and #gui:GetChildren() == before)
 				local has = ReplicatedStorage:FindFirstChild("NL_Audition") ~= nil
-				t.Check("in Studio, the panel stands exactly when the finder's candidates are here", (gui:FindFirstChild("NL_Audition") ~= nil) == has, `candidates {has}`)
+				t.Check("in Studio, the panel stands exactly when the finder's candidates are here", (gui:FindFirstChild("Studio_Audition") ~= nil) == has, `candidates {has}`)
 			end,
 		},
 		{

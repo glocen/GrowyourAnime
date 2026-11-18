@@ -345,7 +345,7 @@ local function flashOver(frame: GuiObject, started: number)
 	over.Parent = frame
 	local fill = Skin.Lay(over, "PanelFill", { Name = "Fill", Tint = Theme.Colour.Ready, Alpha = 0.9, Z = 1 })
 	local edge = Skin.Lay(over, "PanelEdgeBold", { Name = "Edge", Tint = Theme.Colour.Ready, Alpha = 1, Z = 2 })
-	local word = label(over, "Ready", "Ready", Theme.Text.Title, UDim2.new(1, 0, 0, 26), UDim2.fromScale(0, 0.5), { Font = Theme.Font.Number, Colour = Theme.Colour.Backing, Align = Enum.TextXAlignment.Center })
+	local word = label(over, "Ready", "Ready", Theme.Text.Title, UDim2.new(1, 0, 0, 26), UDim2.fromScale(0, 0.5), { Font = Theme.Font.Number, Colour = Theme.Colour.ReadyWords, Align = Enum.TextXAlignment.Center })
 	word.AnchorPoint = Vector2.new(0, 0.5)
 	word.ZIndex = 3
 	local elapsed = (1 - left) * tune.Seconds
@@ -659,7 +659,7 @@ local function cell(parent: Instance, index: number, view: Profile.View, width: 
 	local left = label(frame, "Left", "", Theme.Text.Caption, UDim2.new(1, -pad * 2, 0, LINE), UDim2.fromOffset(pad, y), { Colour = Theme.Colour.TextDim, Align = Enum.TextXAlignment.Center })
 	later(left)
 	if charged(w) then
-		later(label(frame, "Infused", "Infused", Theme.Text.Caption, UDim2.new(1, -pad * 2, 0, LINE), UDim2.fromOffset(pad, y + LINE), { Colour = Theme.Colour.Electricity, Align = Enum.TextXAlignment.Center }))
+		later(label(frame, "Infused", "Infused", Theme.Text.Caption, UDim2.new(1, -pad * 2, 0, LINE), UDim2.fromOffset(pad, y + LINE), { Colour = Theme.Colour.ElectricityWords, Align = Enum.TextXAlignment.Center }))
 	end
 	table.insert(tickers, function(now: Read.Base)
 		local current = now.Data.Base.Chambers[index]

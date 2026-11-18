@@ -12773,6 +12773,31 @@ On research's triage of 23:04: one palette for the slab the Breaker's and the Po
 - **Tests:** type check 0 new. In a playtest, the Breaker cases 223/1, with the new case for the live look and the opening. The one failure is chamber 1's time-left label, 75 px in a 62 px box at the smallest phone's scale (TR41's galaxy case). It fails again alone on a fresh playtest (41/1), and this change to that screen is two colours, so it's older than this piece and depends on a working shard's text.
 - **Found on the way:** the audition panel (TR42) stood in every playtest under an `NL_` name, so the UI lint read it as a game screen: 28 false failures in the Breaker cases. Renamed `Studio_Audition`, outside the lint's reach.
 
+### The world's eight renders (Modulo, 2026-11-18, 22:34 to 22:38 by the clock)
+
+These ran in Studio's closed turn, each under the memory guard (lowest free 3.45 GB, about 24 s a run). `tools/colour/ar40_see.py` rendered today's colours and A, B and C, the plot from the spawn and the Strip from the crossing, by day, at the phone's shape, with the game's HUD pasted over each.
+- **Where:** `build/scratch/modulo/ar40/ar40_plot.png`, `ar40_strip.png` (four to a sheet, today's first) and `ar40_64.png` (all eight at 64 px high). Each view alone is in its direction's folder beside them.
+- **Modulo's read, by eye, not a verdict:**
+  - **C, sandstone and teal,** changes the most, and stays ours. The day is warm and the violet crystals stand clear on the sand, a complement, so violet reads as the accent the class asks for. The teal pylons and rails give the plot a second colour of its own. Its panel is the one of Faber's three captures with no weak spot. My lean.
+  - **A, porcelain and indigo,** is bright and clean: white bodies, gold trim, the generator's indigo frame. Its Strip stones turn a muddy greige, the weakest surface in it.
+  - **B, sky steel,** is cold and flat: blue bodies on a blue-grey deck under a blue sky. Its violet core is the weakest of the three, as said before the render.
+- **Weak in all three, said now:** the Festival Door's lit rings and the Breaker's lamps lose their pop on a pale body, because a light reads on dark. The fix for the pick, tier 1: keep a dark well for the rings to sit in, as each panel keeps its dark channel.
+- **The same in all of them:** the deck (no direction moves it), the void's own light (`void`, `cyan`) and the HUD.
+- **Status:** rendered and self-reviewed; not picked, not reviewed by research, not in the game.
+
+### Research's pick: C (2026-11-18, 22:52 by the clock)
+
+From the eight renders, the 64 px sheet and Faber's four Breaker captures. Stills, since a colour pass has no motion to watch.
+- **Felt:** in C the yard turns to a warm afternoon where the void's violet is the one thing that glows; A is clean but its Strip goes muddy, and B goes cold, its void lost in blue.
+- **Tier:** competent, as a block. **The one bold thing:** the violet crystals and core against warm sand, a complement, so violet finally reads as the accent.
+- **Picked: C, sandstone and teal,** for the world and the system panel. A and B are closed. The bag, the Voidkin grid and the reveal stay as today (23:04's triage).
+- **Must-fix, before Faber's install:**
+  1. **A light on a pale body sits in a dark well** (class: every lit ring and lamp, the Festival Door's rings and the Breaker's lamps first): Modulo's tier 1, taken. It serves the light reading as light.
+  2. **No one hue is a scene's ground** (class: every large ground plane; the Strip's stones first). C's Strip is one tan bowl at 64 px, the failure AR40 opened on with brown in violet's place. A step lighter and less saturated, nearer cream than tan, with the warm kept in the borders and kerbs.
+  3. **The three keys outside the palette, in C's values** (the chamber's head band, the close cross, the Seam buttons; Modulo's round two): the head band in the slab's deep teal, never the old navy, so the chambers stop reading as today's panel inside C's.
+- **Accepted on stills, not yet seen:** the panel at a real phone's size (Faber's captures are Studio's window), and C by dusk. Both are read at the install's capture.
+- **Unblocked:** AR38's clock fix and the Shop's colour follow C.
+
 ## Later, by ground
 
 The rest of ground 1 (Kirra in AR10, Watt in AR11; then Sable, Marigold, Crane), then each ground's Voidkin in `docs/roster.md`'s order. **The machines** (Gantry, Bulwark, Ironhymn, Shiomaru, Aegir) share one custom rig, taller than a player, with its own clip family: the first of them is timed like AR1, because a custom rig is a different cost.

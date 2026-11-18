@@ -144,7 +144,7 @@ Eight bases in two rows, a Tower behind each [D]. A plot is given at join and th
   - **The base's level, 1 to 20 for now** [D, 2026-11-15, night: "let say level max for now will be level 20"]. **Launch caps it at 3** [D, the same night: "for higher levels it will require items so for the launch the cap will be level 3 it will let us take our time and deliver high quality"]. It opens bays, raises the ceiling every machine can reach (at launch 2, 6 and 30, research's seeds: `docs/balance.md`, "Earning"), raises the battery's cap, and changes how the whole base looks [D: "the whole base visuals, changed based of the levels of the base itself"].
     - **The price:** levels 2 and 3 cost Credits. Higher levels also need items [D], designed when the cap rises.
     - **The pace at launch** (seeds): level 2 in the first session, 3 at about 5 hours of play. The ladder to 20 keeps its "hundreds of hours" [D] once its items exist, and its pace is set then (`docs/balance.md`).
-    - **Bays** (seeds, research's, so launch keeps the six [D]): two at level 1, four at 2, six at 3.
+    - **Bays** [D, 2026-11-18, D5]: two at level 1, three at 2, four at 3, since five Voidkin with one leading staff four at most. Bays 5 and 6 stand locked, "Opens with more Voidkin". Level 3's price is refitted to its one bay (`docs/balance.md`, "Earning").
     - **The look:** at launch, levels 1, 2 and 3 each have a look of their own for the whole base and its machines, readable from the gate. Its look as it stands in the game is kept [D, 2026-11-15, about 23:28: "that graphism was perfect"], with the toon outline on every machine and a bit more anime in small touches [D, the word after]. Three machines are reworked as void machines: the Void Breaker, the bays, and the generator, a lot bigger and still turning [D, 2026-11-15, 23:44 to 23:58]. It's spread across the whole plot with an open way in from the gate, less cluttered, the generator turning in view, and never a building site (`docs/asset-requests.md`, AR16). The levels past 3 get theirs when the cap rises. The base's level stands on its gate (`docs/asset-requests.md`, AR14). No mist in the base and the map around it, and less somber in every phase [D, 2026-11-16, 16:50]: a light world with the void as its one dark (`docs/asset-requests.md`, AR20).
     - **Where it's bought:** the base screen (`docs/ui.md`, 7).
     - **The base shows off its owner** [D, 2026-11-15, about 22:04, to Modulo: "dont forget the base need to show of each players etc"]. At launch, by research's call (tier 2; TR22), a passer-by on the Strip sees three things. The gate's plate carries the owner's name and the base's level. The showcase, research's idea brought into launch, is a lit plinth just inside the gate: a Voidkin the player picks stands on it, turning, with its Combat Power, and it's their strongest until they pick one. Each working bay is lit in its worker's rarity colour. A tap on the plinth to see that Voidkin as a visitor comes later.
@@ -199,7 +199,7 @@ The largest change from the package (`docs/decisions.md`, "What changed from the
 One number for how strong the lead is with its preset, made to be watched rising [D: appealing, 2026-11-12].
 
 - **It never lies.** It's a weighted sum of the lead's resolved stats (`docs/balance.md`, "The stats"), and the weights are fitted by the simulation so that, with no type edge, the higher Combat Power wins more often. A number players chase has to be one they can trust.
-- **Every upgrade moves it.** Everything adds points, so every real gain, an emblem included, raises it by a whole, visible number, never by zero. Its scale is large, set in the seeds.
+- **Every upgrade moves it.** Everything adds points, so every real gain, an emblem included, raises it by a whole, visible number, never by zero. Its scale is a tenth of the seeds' first [D, 2026-11-18, D3: 60,382 reads about 6,038], a look that moves no balance. A gain is judged on the unrounded sum (`Stats.Compare`, `Chests.Keep`), so one under a half is never salvaged as none.
 - **Where it shows.** On the Voidkin screen (Regalia's screen is merged into it, 2026-11-15), at the Voidkin's feet, large (between the slot columns on the Items page; alone under the figure on every other page), so it reads as the character's own [D: where is research's choice]. The same view is what a visiting player sees of your lead.
 - **The moment** [D, 2026-11-12]. When an upgrade lands, the number pops a little, the gain shows in green with a "+", and the gold counter rolls to its new value. A loss shows as a plain number down. Over the world, the gain rises beside the lead's card for a second, then the HUD is quiet again.
 - **The pull.** In the bag, an item that would raise it carries an up arrow; a slot with a better item waiting carries a dot. Each ground, keeper and Tower floor shows its recommended Combat Power, the player's beside it in green, amber or red.
@@ -212,7 +212,7 @@ One number for how strong the lead is with its preset, made to be watched rising
 
 - **Where they come from:** a Shade, at a small chance a kill, and the account's third kill always drops one, for the north star's "Build" beat; an elite, one every time, a tier up; a keeper, a better chest on the first win and a chest after; the Tower, a chance rising with the floor.
 - **A chest is named for its ground and its kind** ("a Shade Chest of Lantern Row"). There are four kinds, Shade, Elite, Keeper's and Tower, each named for what drops it, and never a rarity's word or frame, since a chest isn't a rarity (research, TR29, 2026-11-16). In the bag, its picture says its kind, and its card gives its odds. Its table rolls the item's rarity, slot and lines on the server when it's opened.
-- **The rarities' pace,** with the rates fitted to it by simulation (`docs/balance.md`, "Chests"):
+- **The rarities' pace,** with the rates fitted to it by simulation (`docs/balance.md`, "Chests"). Being refitted to the stages' 10 to 15 minutes (D2), with research's seeds: the first piece worn by minute 3, the first Uncommon by the first Normal clear, the first Rare inside the first hour and sure on the first Hard Keeper's win, an Epic at 4 to 6 hours, a Legendary at 15 to 20. Until the fit, the table below stands:
 
 | Rarity | The first one, at about | Mostly from |
 |---|---|---|
@@ -231,23 +231,21 @@ One number for how strong the lead is with its preset, made to be watched rising
 
 Six grounds at launch (`docs/roster.md`), each a recolour and rearrangement of one festival kit. A ground has ordinary Shades, elites, one keeper, and a gate. Beating the keeper opens the next ground for good, and a shortcut gate back to the base [D].
 
+- **Stages, each played on Normal or Hard** [D, 2026-11-18, D2; the shape is research's, on the director's grant]. Lantern Row is four stages, one mission each, and a Normal clear of the four takes 10 to 15 minutes. Hard opens for the ground when the Lamplighter falls on Normal, and is much harder; a stage needs the one before it on the same difficulty. Each tile shows its recommended Combat Power and, if locked, its condition. Each stage and difficulty rolls gear on its own budget: the first stage's first reward is sure to be an item the chosen fighter can use, and Hard's Keeper shows its Rare chance [D, D7]. The loot's pace is refitted to this length ("Chests", below).
+- **A party plays in a reserved server** [D, 2026-11-18, D1], if parties come at launch ("Out of launch"). Its rules are pure Luau, blind to the transport, and progress travels in the save.
 - **Keepers are fought alone.** Everyone gets their own fight, so nobody is carried and nobody waits.
 - **Fighting together** happens at elites, which anyone near may join, and at the Calamity.
 - **Each ground leans on two types,** so a second and a third lead are worth raising.
 
 ## The Strip
 
-- **The Void Shop** [D]: stock changes every five minutes, the same in every server, with a limit per player. It sells for Credits: shards, stones, emblems. The rare offer is the reason to look up at the clock. How it works [research, 2026-11-17, 21:10, tier 2; its look: `docs/asset-requests.md`, AR38]:
+- **The Void Shop** [D]: stock changes every five minutes, the same in every server, with a limit per player. It sells for Credits: at launch, shards and a featured gear piece (D6, below). A featured stock is the reason to look up at the clock. How it works [research, 2026-11-17, 21:10, tier 2; its look: `docs/asset-requests.md`, AR38]:
   - **The clock.** A new stock every five minutes on world time, drawn from a seed that never reaches a client. Nobody sees a stock before it lands.
-  - **The shelf: six lines a stock.**
-    - Three common lines, always: a Standard shard, a stack of grade-1 stones, a Common emblem.
-    - Two lines from the uncommon table: an Enriched shard, grade-2 stones, an Uncommon emblem.
-    - One rare line in about one stock in three: a Prismatic shard, grade-3 stones, or a Rare emblem.
-  - **The rare offer,** in about one stock in twelve, so about once an hour: a Named shard of an Epic or rarer Voidkin. The player sees exactly whom they're buying, never a roll, and may buy it once a stock.
-  - **The same shelf, fitted to each player.** A shard line names a grade, never a ground. It resolves to the farthest ground that player has opened, so the shelf is the same everywhere and never sells a shard a player can't use. A rare offer whose Voidkin's ground is still shut shows "Opens with" that ground.
+  - **The shelf at launch** [D, 2026-11-18, D6, replacing the six lines of 2026-11-17]: two Standard shards a player each stock, and on featured stocks one gear piece the player can preview before buying, for Credits only. The stock's index is the Unix time divided by 300, floored, and the shelf is a seeded draw on it, as `Tower.Draw` does, salted on the server so no client sees a stock early; every server shows the same shelf with no messaging. The rule is pure Luau, with offline cases (the shelf for an index, a buy, a refusal at the limit, a repeated request).
+  - **Waiting for the roster:** the Enriched and Prismatic shard lines, and the rare offer (a Named shard of an Epic or rarer Voidkin, never a roll), come back when the roster holds what they sell. Lantern Row has no Epic.
   - **A limit per player, never a race.** Each line has its own count per player per stock, so one player's buy never empties another's. What's bought is saved against the stock's number, so a server hop never refills a line (`docs/engineering-plan.md`, the profile's `Shop`).
-  - **Every chance shown.** The screen says how often each table comes up ("Rare offer: about 1 stock in 12"), and every shard on the shelf shows its odds per Voidkin before it's bought, as every shard does.
-  - **Bought at the counter.** The Shop stands on the Strip, a short walk through the Festival Door. In the last minute before a stock, the countdown chip shows under the pills (`docs/ui.md`). While a rare offer is in, the Shop's crown is lit, and the chip names the Voidkin to everyone in the server for its five minutes.
+  - **Every chance shown.** The screen says how often a featured stock comes up, and every shard on the shelf shows its odds per Voidkin before it's bought, as every shard does.
+  - **Bought at the counter.** The Shop stands on the Strip, a short walk through the Festival Door. In the last minute before a stock, the countdown chip shows under the pills (`docs/ui.md`). While a featured stock is in, the Shop's crown is lit for its five minutes.
   - **Never for Robux:** no paid restock, no bigger limit, and Credits are never sold (`docs/roblox-rules.md`, "What we do").
   - **Prices,** in Credits, are set in `tools/balance/seeds.json` from the simulation, so the shop takes about a quarter of income after five hours (`docs/balance.md`, "Earning").
 - **The Void Rift** [D], after launch, in the big update [D, 2026-11-17, 02:40]: a short burst on a schedule, the same everywhere. While it's open, the Breakers of everyone online run many times faster. Speed only, never luck [D].
@@ -309,7 +307,7 @@ Void Essence is out of launch: nothing needed it that these four don't cover (`d
 
 ## Out of launch
 
-No height stat, no prestige, no player traits, clans or races [D]. Fusion, mutations and traits on Voidkin, manual signatures, parties, saved-player Tower teams, Limited Voidkin and the tiers above Mythical wait for updates. Each is a line in `docs/polish-later.md`.
+No height stat, no prestige, no player traits, clans or races [D]. Fusion, mutations and traits on Voidkin, manual signatures, parties, saved-player Tower teams, Limited Voidkin and the tiers above Mythical wait for updates. Each is a line in `docs/polish-later.md`. A rare second form of each Voidkin comes after early access [D, 2026-11-18, D4]: a look found by roll, no stats, earned only and never sold.
 
 ## What's sold
 

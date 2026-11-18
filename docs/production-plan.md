@@ -125,6 +125,7 @@ Each ends on something playable. No dates are promised past phase 1: see "The da
   - **Every Voidkin piece waits for the end** (the director, 2026-11-17, by 11:10): the basic attacks' effects (AR26), Ground Wire's fix (AR11), the idles (AR27) and the redesigns are built with the finish pass. The game's systems come first.
   - Lantern Row's shards roll Common and Rare only: the guard drops each tier with no Voidkin made and keeps the rest's proportions, so about 87 and 13 in a Standard shard. An Enriched or Prismatic shard always gives Lyric.
 - **One big update after launch** carries everything delayed: Sable, Marigold and Crane, the Rift, the Research Lab, Drum Court and the grounds after it, and the Calamity.
+- **Translation launches** (the director, 2026-11-18, D8): Roblox's automatic translation, switched on in Creator Hub by the director, with the Voidkin's names kept untranslated. No build hours.
 - **What launches:** phases 0 to 4 and the Tower. The Clash Grounds launch if they're at the bar, and are in the update if they aren't.
 - **The foundation** makes a new ground, Voidkin or effect mostly data and art, so the update is fast (`docs/engineering-plan.md`, its own section, Faber's).
 

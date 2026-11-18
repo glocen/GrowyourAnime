@@ -52,9 +52,14 @@ function Tower.Level(floor: number): number
 	return math.clamp(math.floor(1 + (math.max(floor, 1) - 1) * TowerConfig.LevelPerFloor + 0.5), 1, GrowthConfig.MaxLevel)
 end
 
--- Floor `floor`'s foe in the run of `seed`.
+-- Floor `floor`'s foe in the run of `seed`: the opening's (Config.Tower.Opening) on its floors, the same for every run,
+-- while that Voidkin is in the pool; from the seed past it.
 function Tower.Foe(floor: number, seed: number): Foe
 	local pool = Tower.Pool()
+	local opening = TowerConfig.Opening[floor]
+	if opening and table.find(pool, opening) then
+		return { Def = opening, Level = Tower.Level(floor) }
+	end
 	local index = math.min(#pool, 1 + math.floor(draw(seed, floor, 1) * #pool))
 	return { Def = pool[index], Level = Tower.Level(floor) }
 end
@@ -132,16 +137,19 @@ function Tower.ChestChance(floor: number): number
 end
 
 -- What winning floor `floor` adds to the ledger of a run whose record before it was `best`: nothing when it fell `fast`
--- (Tower.Fast, as it was fought), since only hard floors pay.
+-- (Tower.Fast, as it was fought), since only hard floors pay. The one exception: floor Config.Tower.Chest.First's
+-- chest is sure the first time the account wins it (`best` under it), fast or hard, so a lead that outgrew the opening
+-- before its first climb still gets it. Once: the record never falls back under that floor.
 function Tower.Reward(floor: number, best: number, seed: number, fast: boolean?): Reward
+	local sure = floor == TowerConfig.Chest.First and best < floor
 	if fast then
-		return { Credits = 0, Chest = nil }
+		return { Credits = 0, Chest = if sure then chestOf(floor) else nil }
 	end
 	local credits = DropsConfig.CreditsPerKillPerG * Growth.G(Tower.Level(floor)) * TowerConfig.Credits.Share
 	if floor > best then
 		credits *= TowerConfig.Credits.Record
 	end
-	local chest = if draw(seed, floor, 2) < Tower.ChestChance(floor) then chestOf(floor) else nil
+	local chest = if sure or draw(seed, floor, 2) < Tower.ChestChance(floor) then chestOf(floor) else nil
 	return { Credits = math.floor(credits + 0.5), Chest = chest }
 end
 

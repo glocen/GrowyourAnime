@@ -1,28 +1,33 @@
-"""AR42: the stages' picker in Seam's lit glass, the kit Equipment and Settings wear (research's B, 15:04). The
-director's 14:56 scope, as research recorded it, moves the picker from AR40's C to Seam. The results card and the run's
-line aren't named in it and keep C.
+"""AR42: the stages' screens in Seam's lit glass, the kit Equipment and Settings wear (research's B, 15:04): the picker,
+the results card and the run's line. The director's 14:56 scope moves the picker from AR40's C to Seam; research's pass
+(16:34) moves the card and the line with it, for one look.
 
-The layout is A's, One road (research's pick, 02:06, with its two must-fixes): the four stages side by side over one
-road, lit to where the player stands, the next one raised and tagged. The pictures are stage_screen.py's: the Shade in
-the Brawler's paper mask, the elite with its second mask, the Lamplighter's lantern. What changes is the glass:
+The layout is A's, One road (research's pick, 02:06): the four stages side by side over one road, lit to where the
+player stands, the next one raised and tagged. The pictures are stage_screen.py's: the Shade in the Brawler's paper
+mask, the elite with its second mask, the Lamplighter's lantern. What changes is the glass:
     - every tile lighter at its top, its hairline lit from above, with the kit's corner glint;
-    - the next tile washed with light, a glint down it once a loop, a bloom behind its picture;
+    - every picture on its light (research's must-fix 1, 16:34): the Shade's Void body lifted at its top, rimmed by the
+      tile's top light, a bloom behind it on every open tile, the next one's strongest;
+    - the next tile washed with light, a glint down it once a loop;
     - the walked road a conduit filling with light, to a lit ring with the kit's comet round it;
     - the side of the switch chosen is the lit press, white falling to lavender, its sheen across once a loop.
-Hard (must-fix 2, the whole screen a full value darker) can't take C's violet on a violet screen, so its one accent is
-an ember, white falling to coral: the chosen Hard half, the edges, the chevrons, the walked road, the ring and the
-bloom. Everything else on Hard steps a value down.
+Hard's one accent is an ember, white falling to coral (accepted, 16:34): the chosen Hard half, the edges, the chevrons,
+the walked road, the ring and the bloom. Hard keeps Normal's value (must-fix 2, 16:34): nothing else darkens.
 
 Measured in rendered points at the smallest phone (568 x 320), as stage_screen.py. Drawn in code; nothing is exported.
 
     blender -b --factory-startup --python tools/blender/stage_seam.py -- <abs out> [quick]
 
 Writes:
-    stage_seam.png         the picker's three states, with the notes
-    stage_seam_64.png      the three at 64 pixels high
-    stage_seam_close.png   the next tile, its road and the switch at the phone's own pixels, twice over
-    stage_seam_strip.png   the opening's beats and the switch's, Normal to Hard and back
-    frames/f0000.png ...   the clip's frames (ffmpeg joins them; the frames are then deleted). "quick" skips them.
+    stage_seam.png               the picker's three states, with the notes
+    stage_seam_results.png       the card's four states
+    stage_seam_line.png          the line's four states
+    stage_seam_64.png            the picker's three and the card's four at 64 pixels high
+    stage_seam_close.png         the next tile, its road and the switch at the phone's own pixels, twice over
+    stage_seam_strip.png         the picker's opening and the switch, Normal to Hard and back
+    stage_seam_card_strip.png    the card's opening: its check, then the light running on
+    stage_seam_line_strip.png    the line as a Shade falls, and as the last foe rises
+    frames/f0000.png ...         the picker's clip (ffmpeg joins them; the frames are then deleted). "quick" skips it.
 """
 
 import math
@@ -51,16 +56,52 @@ LIGHT = up.SEAM["light"]
 ACC = {False: dict(edge=LIGHT, lit=P["lit"], road=(P["facet"], LIGHT), bloom="#5C48AC", glow=P["lit"][1]),
        True: dict(edge="#FF9A80", lit=("#FFF4EE", "#FFB4A0"), road=("#C2503F", "#FFC2B2"), bloom="#E85A44",
                   glow="#FF9A80")}
-# Hard, a full value darker: the ground, every open tile, a shut tile a step under that.
-GROUND = {False: P["backing"], True: ("#120E28", "#050409")}
-TILE = {False: P["panel"], True: ("#1E1838", "#0B0915")}
-SHUT = {False: ("#1C1834", "#110E20"), True: ("#100D1E", "#08070F")}
-BLOOM = {False: 0.30, True: 0.22}
+# Hard keeps Normal's value (research's must-fix 2, 16:34): one ground, one tile, one shut tile for both.
+GROUND, TILE, SHUT = P["backing"], P["panel"], ("#1C1834", "#110E20")
+BLOOM = {False: 0.30, True: 0.24}            # the ground's bloom behind the next tile
+PIC_BLOOM = {("next", False): 0.75, ("next", True): 0.55, ("open", False): 0.42, ("open", True): 0.32}
+READY = "#FFD880"                            # Theme.Colour.Ready: what a run opened, a new best
+VOID, VOID_LIFT = "#1B1728", "#2C2542"       # the Shade's own Void, and its lift (shade_sheet.py's PALETTE)
 
 # The pictures' own colours, on Seam: stage_screen's C read for the shut silhouettes, the lock, the check and the bed.
 ss.C.update(well="#262044", faint=P["faint"], text=P["text"], soft=P["soft"], ink=P["ink"], chosen=P["lit"],
             glass=sk.SOCKET_DARK[0], channel=sk.SOCKET_DARK[1], row=P["edge"], edge=P["facet"])
-ss.SHADE_BODY = "#1B1728"                    # the model's own Void (shade_sheet.py's PALETTE), not C's teal
+ss.SHADE_BODY = VOID                         # the model's own Void, not C's teal
+SHADE_DIM = ss.shade
+
+
+def shade_lit(t, cx, cy, s, elite=False, dim=False):
+    """stage_screen's Shade on its light (research's must-fix 1, 16:34): its Void body lifted toward its top, and a rim
+    of the tile's top light along every edge that faces up. Shut, it stays the dim silhouette."""
+    if dim:
+        return SHADE_DIM(t, cx, cy, s, elite, dim)
+    hx, hy = cx, cy - s * 0.5
+    outline = [(cx - s * 0.52, cy - s * 0.14), (cx + s * 0.52, cy - s * 0.14), (cx + s * 0.8, cy + s * 0.9),
+               (cx - s * 0.8, cy + s * 0.9)]
+
+    def body(x, y):
+        return np.minimum.reduce([ui.sd_polygon(x, y, outline), np.hypot(x - hx, y - hy) - s * 0.38,
+                                  np.hypot(x - cx + s * 0.52, y - cy - s * 0.05) - s * 0.22,
+                                  np.hypot(x - cx - s * 0.52, y - cy - s * 0.05) - s * 0.22])
+    d = body(t.x, t.y)
+    t.glow(d, 4.0, ss.SHADE_GLOW, 0.3)
+    top, foot = hy - s * 0.38, cy + s * 0.9
+    t.paint(d, t.ramp(VOID_LIFT, VOID, np.clip((t.y - top) / (foot - top) * 1.6, 0, 1)))
+    t.paint(d, LIGHT, 0.12 * np.exp(-(t.y - top) / (s * 0.45)))          # the top light falling on it
+    t.line(d, 1.2, ss.SHADE_GLOW)
+    lift = s * 0.16                                    # inside, with the point above outside: the edges facing up
+    up_ = np.maximum(d, -body(t.x, t.y - lift))
+    inside = np.minimum(d, 0)
+    t.paint(up_, LIGHT, 0.3 * np.exp(inside / (lift * 0.9)))           # its spill, soft
+    t.paint(up_, LIGHT, 0.9 * np.exp(inside / (lift * 0.35)))          # the rim: the outline thickening into light
+    t.stroke([(hx - s * 0.37, hy - s * 0.1), (hx + s * 0.37, hy - s * 0.04)], s * 0.045, ss.PAPER_SHADE)
+    ss.mask(t, hx + s * 0.13, hy + s * 0.02, s * 0.25, 0.32)
+    if elite:
+        t.stroke([(cx + s * 0.52, cy + s * 0.14), (cx + s * 0.2, cy - s * 0.14)], s * 0.05, ss.PAPER_SHADE)
+        ss.mask(t, cx + s * 0.54, cy + s * 0.18, s * 0.17, 0.22)
+
+
+ss.shade = shade_lit                         # stage_screen's picture() draws it
 
 TOP, Y1, RY = ss.TOP + 6, 266, 280          # the tiles' top and foot, the road's middle (A's)
 WIDE = (W - 2 * PAD - 3 * GAP) / 4
@@ -84,14 +125,14 @@ STATES = [
 NOTES = [
     "A's One road in Seam's lit glass, the kit Equipment wears.",
     "Every tile is lighter at its top, its hairline lit from above.",
-    "The next is raised and washed with light, with a glint down",
-    "it once a loop and a bloom behind its picture. The walked",
-    "road fills with light to a lit ring, the comet round it. The",
-    "side of the switch chosen is the lit press, its sheen across.",
-    "Hard: the whole screen a full value darker, its one accent",
-    "an ember on the chosen half, the edges, the chevrons, the",
-    "road, the ring and the bloom. The player's power stands at",
-    "the road's start; Combat Power reads CR, as in the game.",
+    "Every picture on its light: the Shade lifted at its top and",
+    "rimmed by the tile's light, a bloom behind every open one.",
+    "The next is raised and washed with light, a glint down it",
+    "once a loop. The walked road fills with light to a lit ring,",
+    "the comet round it. The switch's chosen side is the lit press.",
+    "Hard keeps Normal's value: its one accent, an ember, on the",
+    "chosen half, the edges, the chevrons, the road, the ring and",
+    "the bloom. The player's power stands at the road's start.",
 ]
 
 
@@ -130,10 +171,10 @@ def quiet_plate(t, x0, y0, x1, y1, edge, cut=5.0):
 def ground(t, state):
     hard = state["hard"]
     whole = t.poly([(0, 0), (W, 0), (W, H), (0, H)])
-    t.paint(whole, t.ramp(GROUND[hard][0], GROUND[hard][1], t.y / H))
+    t.paint(whole, t.ramp(GROUND[0], GROUND[1], t.y / H))
     bx, by = bloom_at(state)
     t.paint(whole, ACC[hard]["bloom"], BLOOM[hard] * np.exp(-(((t.x - bx) / 150) ** 2 + ((t.y - by) / 120) ** 2)))
-    t.paint(whole, ACC[hard]["edge"] if hard else P["glint"], 0.06 * np.exp(-t.y / 40))
+    t.paint(whole, P["glint"], 0.06 * np.exp(-t.y / 40))
 
 
 def band(t, state, phase):
@@ -185,10 +226,10 @@ def window(t, x0, y0, x1, y1, kind, state, hard, n):
     d = t.poly(ui.cut_box(x0, y0, x1, y1, 4, 4, 4, 4))
     t.paint(d, up.shade(t, sk.SOCKET_DARK, y0, y1))
     cx, cy = (x0 + x1) / 2, (y0 + y1) / 2 + 2
-    if state != "shut":
-        colour, strength = (ACC[hard]["bloom"], 0.5 if hard else 0.75) if state == "next" else (P["facet"], 0.22)
-        t.paint(d, colour, strength * np.exp(-(((t.x - cx) / ((x1 - x0) * 0.38)) ** 2 +
-                                               ((t.y - cy - 6) / ((y1 - y0) * 0.42)) ** 2)))
+    if state != "shut":                      # every picture on its light: the next one's bloom, softer on the rest
+        strength = PIC_BLOOM[("next" if state == "next" else "open", hard)]
+        t.paint(d, ACC[hard]["bloom"], strength * np.exp(-(((t.x - cx) / ((x1 - x0) * 0.38)) ** 2 +
+                                                           ((t.y - cy - 6) / ((y1 - y0) * 0.42)) ** 2)))
     t.line(d, 1.0, P["edge"], 0.8)
     s = (y1 - y0) * 0.42
     ss.picture(t, kind, cx, cy, s, dim=state == "shut")
@@ -218,7 +259,7 @@ def tile(t, k, row, hard, phase):
     d = t.poly(ui.cut_box(x0, y0, x1, y1, 6, 6, 6, 6))
     if state == "next":
         t.glow(d, 8.0, acc["glow"], 0.38)
-    t.paint(d, up.shade(t, SHUT[hard] if state == "shut" else TILE[hard], y0, y1))
+    t.paint(d, up.shade(t, SHUT if state == "shut" else TILE, y0, y1))
     down = np.clip(1 - (t.y - y0) / ((y1 - y0) * 0.85), 0, 1)
     if state != "shut":
         t.paint(d, P["glint"], 0.11 * np.exp(-np.maximum(t.y - y0, 0) / 24))       # the kit's top sheen
@@ -308,18 +349,269 @@ def phone(sheet, ox, oy, state, phase=0.0, parts="all", run=1.0, ring_scale=1.0)
     foot(t, state)
 
 
+# --- the results card and the run's line ---------------------------------------------------------------------------
+
+def stand_in(t):
+    """Roblox's own buttons at the top bar's left, as the picker's band draws them: a stand-in."""
+    up.box(t, 6, 8, 160, 50, P["channel"], P["edge"], 1.0, 6)
+    t.text(83, 15, SMALL, "Roblox's", P["faint"], "CENTER")
+    t.text(83, 31, SMALL, "buttons", P["faint"], "CENTER")
+
+
+def glass(t, x0, y0, x1, y1, hard, cut=8.0, width=1.2):
+    """A tile's glass, as a plate over the world: its shadow under it, lighter at its top, its hairline lit from above
+    (ember on Hard), the corner glint."""
+    d = t.poly(ui.cut_box(x0, y0, x1, y1, cut, cut, cut, cut))
+    t.glow(t.poly(ui.cut_box(x0, y0 + 3, x1, y1 + 3, cut, cut, cut, cut)), 8.0, P["channel"], 0.6)
+    t.paint(d, up.shade(t, TILE, y0, y1))
+    t.paint(d, P["glint"], 0.11 * np.exp(-np.maximum(t.y - y0, 0) / 24))
+    down = np.clip(1 - (t.y - y0) / ((y1 - y0) * 0.85), 0, 1)
+    t.line(d, width, ACC[True]["edge"] if hard else P["facet"], 0.35 + 0.6 * down)
+    t.line(d, 1.3, P["glint"], 0.85 * np.exp(-np.hypot(t.x - x0 - 24, t.y - y0) / 46))
+    return d
+
+
+def fill(t, x0, x1, y, half, acc, span_x1=None):
+    """A road's light from x0 to x1: its colour along the whole road (to span_x1), lit at its top edge, glowing."""
+    span = (span_x1 or x1) - x0
+    f = t.poly(ui.cut_box(x0, y - half, x1, y + half, 1, 0, 0, 1))
+    t.paint(f, t.ramp(acc["road"][0], acc["road"][1], np.clip((t.x - x0) / max(span, 1), 0, 1)))
+    t.paint(f, "#FFFFFF", 0.35 * np.exp(-np.maximum(t.y - y + half, 0) / 1.2))
+    t.glow(f, 3.5, acc["edge"], 0.22)
+
+
+def press(t, x0, y0, x1, y1, words, kind, into_hard, phase=0.0):
+    """The one press is the lit press (an ember into a Hard stage, with Hard's chevrons); the rest are quiet."""
+    if kind == "one":
+        lit_plate(t, x0, y0, x1, y1, ACC[into_hard], phase)
+        colour = P["ink"]
+    else:
+        quiet_plate(t, x0, y0, x1, y1, P["facet"])
+        colour = P["text"]
+    cx, cy = (x0 + x1) / 2 + (8 if into_hard else 0), (y0 + y1) / 2
+    if into_hard:
+        ss.chevrons(t, cx - ss.wide_of(words, TITLE) / 2 - 11, cy, 12, colour)
+    t.text(cx, cy - TITLE * 0.36, TITLE, words, colour, "CENTER", bold=0.3)
+
+
+def marks(t, x0, x1, y, rows, hard, run=1.0, pop=1.0):
+    """The four stages' marks on their road, as the picker's: lit to the stage just cleared, then on (`run`) to where
+    the player now stands; the next mark ringed in light; the one just cleared with its check lit (`pop` its size)."""
+    acc = ACC[hard]
+    tab = 21 if hard else 0
+    step = (x1 - x0 - 12 - 26 - tab) / 3
+    xs = [x0 + 6 + k * step for k in range(4)]
+    d = t.poly(ui.cut_box(x0, y - 3, x1, y + 3, 2, 2, 2, 2))
+    t.paint(d, P["channel"])
+    t.line(d, 1.0, P["edge"], 0.9)
+    nxt_ = next((k for k, r in enumerate(rows) if r == "next"), None)
+    just = next((k for k, r in enumerate(rows) if r == "just"), None)
+    end = xs[nxt_] + 13 if nxt_ is not None else x1 - 1
+    start = xs[just] + 13 if just is not None else end
+    at = start + (end - start) * run
+    fill(t, x0 + 1, at, y, 2, acc, end)
+    for k, row in enumerate(rows):
+        bx, by = xs[k], y - 13
+        if row == "next":
+            ring_in = float(np.clip((run - 0.75) / 0.25, 0, 1))
+            if ring_in > 0:
+                r = t.poly(ui.cut_box(bx - 3, by - 3, bx + 29 + tab, by + 29, 6, 6, 6, 6))
+                t.glow(r, 6.0, acc["glow"], 0.5 * ring_in)
+                t.line(r, 2.0, acc["edge"], ring_in)
+        badge(t, bx, by, k + 1, hard, row != "shut")
+        if row == "cleared":
+            ss.check(t, bx, by, 6)
+        if row == "just" and pop > 0:                # the stage just cleared: its check, lit, at the badge's corner
+            t.glow(np.hypot(t.x - bx, t.y - by) - 7.5 * pop, 5.0, acc["glow"], 0.7 * min(pop, 1.0))
+            ss.check(t, bx, by, 7.5 * pop)
+
+
+def results(t, st, run=1.0, pop=1.0, phase=0.0):
+    """The card at a run's end (StageScreen.Results), on the picker's glass over the street dimmed under it. `run` and
+    `pop` are the marks' beats as it opens: the check popping in, then the light running on."""
+    hard, lost = st["hard"], st.get("lost", False)
+    x0, x1 = 124, 444
+    cx = (x0 + x1) / 2
+    spans = [("marks", 30), ("title", 28), ("time", 22)]
+    if st.get("gave"):
+        spans.append(("gave", 28))
+    if st.get("opened"):
+        spans.append(("opened", 34 if st["opened"] == "Hard" else 20))
+    inner = sum(h for _, h in spans) + 8 * (len(spans) - 1)
+    total = 12 + inner + 14 + ss.TAP + 10
+    y0 = max(ss.BAND + 4, ss.BAND + (H - ss.BAND - total) / 2)
+    y1 = y0 + total
+    glass(t, x0, y0, x1, y1, hard, 8, 1.4)
+    y = y0 + 12
+    for kind, h in spans:
+        if kind == "marks":
+            marks(t, x0 + 16, x1 - 16, y + h / 2, st["marks"], hard, run, pop)
+        elif kind == "title":
+            t.text(cx, y + 2, ss.BIG, st["title"], ss.HURT if lost else P["text"], "CENTER", bold=0.35)
+        elif kind == "time" and lost:
+            t.text(cx, y + 3, SMALL, st["said"], P["soft"], "CENTER")
+        elif kind == "time" and st.get("new_best"):
+            tw, chip = ss.wide_of(st["time"], TITLE), ss.wide_of("a new best", SMALL) + 18
+            left = cx - (tw + 10 + chip) / 2
+            t.text(left, y + 2, TITLE, st["time"], P["text"], bold=0.3)
+            up.box(t, left + tw + 10, y, left + tw + 10 + chip, y + 22, sk.SOCKET_DARK, READY, 1.2, 4)
+            t.text(left + tw + 10 + chip / 2, y + 4, SMALL, "a new best", READY, "CENTER", bold=0.3)
+        elif kind == "time":
+            t.text(cx, y + 3, SMALL, f"{st['time']}   ·   best {st['best']}", P["soft"], "CENTER")
+        elif kind == "gave":
+            chips = [(what, words, ss.MINT if what == "credits" else P["text"]) for what, words in st["gave"]]
+            widths = [38 + ss.wide_of(words, TITLE) + 8 for _, words, _ in chips]
+            left = cx - (sum(widths) + 6 * (len(chips) - 1)) / 2
+            for (what, words, colour), cw in zip(chips, widths):
+                up.box(t, left, y, left + cw, y + h, P["well"], P["edge"], 1.0, 4)
+                ss.icon(t, what, left + 5, y + 3, 22)
+                t.text(left + 33, y + 6, TITLE, words, colour, bold=0.3)
+                left += cw + 6
+        elif kind == "opened" and st["opened"] == "Hard":
+            band_ = t.poly(ui.cut_box(x0 + 16, y, x1 - 16, y + h, 5, 5, 5, 5))
+            t.glow(band_, 6.0, ACC[True]["glow"], 0.3)
+            t.paint(band_, up.shade(t, sk.SOCKET_DARK, y, y + h))
+            t.paint(band_, ACC[True]["bloom"], 0.35 * np.exp(-((t.x - cx) / 110) ** 2))
+            t.line(band_, 1.4, ACC[True]["edge"])
+            t.text(cx, y + 6, ss.BIG, "Hard is open", READY, "CENTER", bold=0.35)
+            for side in (-1, 1):
+                ss.chevrons(t, cx + side * (ss.wide_of("Hard is open", ss.BIG) / 2 + 18), y + h / 2, 13,
+                            ACC[True]["edge"])
+        elif kind == "opened":
+            t.text(cx, y + 1, TITLE, st["opened"], READY, "CENTER", bold=0.3)
+        y += h + 8
+    py = y1 - 10 - ss.TAP
+    widths = [p[2] for p in st["presses"]]
+    left = cx - (sum(widths) + 6 * (len(widths) - 1)) / 2
+    for words, kind, wide, into_hard in st["presses"]:
+        press(t, left, py, left + wide, py + ss.TAP, words, kind, into_hard, phase)
+        left += wide + 6
+
+
+def card(sheet, ox, oy, st, **beat):
+    """The card over the street (ui_sheet's noon stand-in), dimmed under it, with Roblox's buttons."""
+    t = sheet.tile(ox, oy, W, H)
+    ui.world(t, "noon")
+    t.paint(np.full_like(t.x, -1.0), P["channel"], 0.5)
+    stand_in(t)
+    results(t, st, **beat)
+
+
+CARD_NOTES = [
+    "The card at a run's end, over the street, on the picker's glass. The four marks sit on their road, lit to the stage",
+    "just cleared, then on to where the player now stands, the next mark ringed in light. Then the stage cleared, its time",
+    "(a new best in Ready's gold), what it gave on the game's own pictures (Credits in their mint), what it opened, and",
+    "Retry, Next and Home, with Next the lit press. Hard keeps Normal's value: its edge, road, chevrons and a press into a",
+    "Hard stage are the ember. \"Hard is open\" is its own band, gold words over an ember glow. A lost run: the lead fell,",
+    "and Retry is the press. 2: Faber's card has no Next after the keeper on Normal (StageService: Next is nil); Hard 1",
+    "is drawn as a proposal. Stand-ins: the times, what each stage gives, the street. Every tap 44, no text under 14.",
+]
+CARD_BEATS = [        # the card's opening, on the first card: Equipment's rise and fade, then the marks' two beats
+    ("0.22 s: the card is in, the road lit to Stage 3", dict(run=0.0, pop=0.0)),
+    ("0.34 s: Stage 3's check pops in, a little over", dict(run=0.0, pop=1.3)),
+    ("0.50 s: the light runs on toward Stage 4", dict(run=0.55, pop=1.0)),
+    ("0.70 s: Stage 4 rings in light; the press's sheen", dict(run=1.0, pop=1.0, phase=0.45)),
+]
+
+LINE_H = ss.LINE_H
+
+
+def stage_line(t, st, kills=None, flash=0.0, ring_pop=1.0):
+    """The run under Roblox's top bar (StageController's label), on the picker's glass: the stage's mark and name, its
+    Shades on a short road (a notch a Shade) lit as they fall, to its last foe's ring, and Faber's words at the right.
+    The ring lights when the last foe is up and takes a check once the stage is cleared; on the keeper's stage the road
+    runs straight to the keeper. `kills` may fall between two counts (the light easing on a notch); `flash`, the light
+    at its head; `ring_pop`, the ring's size as it lights."""
+    hard, quota, last = st["hard"], st["quota"], st["last"]
+    kills = st["kills"] if kills is None else kills
+    acc = ACC[hard]
+    x0, x1, y0, y1 = 100, 468, ss.BAND + 4, ss.BAND + 48
+    glass(t, x0, y0, x1, y1, hard, 6, 1.2)
+    badge(t, x0 + 8, y0 + 9, st["stage"], hard, True)
+    tx = x0 + 8 + 26 + (24 if hard else 0) + 10
+    name = ("Hard " if hard else "") + f"Stage {st['stage']}"
+    t.text(tx, y0 + 6, TITLE, name, P["text"], bold=0.3)
+    if quota:                                        # the count steps at the fall; the light eases after it
+        t.text(tx + ss.wide_of(name, TITLE) + 12, y0 + 8, SMALL, f"{math.ceil(kills)} / {quota} Shades", P["text"])
+        right = ("its last foe down" if kills < quota else "cleared") if last else "then its last foe"
+    else:
+        right = "cleared" if last else "the keeper"
+    t.text(x1 - 10, y0 + 8, SMALL, right, P["soft"], "RIGHT")
+    rx0, rx1, ry, ex = tx, x1 - 30, y0 + 34, x1 - 16
+    risen = quota == 0 or kills >= quota
+    d = t.poly(ui.cut_box(rx0, ry - 3, ex - 6, ry + 3, 2, 2, 2, 2))
+    t.paint(d, P["channel"])
+    t.line(d, 1.0, P["edge"], 0.9)
+    for i in range(1, quota):
+        x = rx0 + i * (rx1 - rx0) / quota
+        t.stroke([(x, ry - 2.5), (x, ry + 2.5)], 1.0, P["edge"])
+    lit = ex - 6 if risen else rx0 + kills / quota * (rx1 - rx0)
+    if lit > rx0 + 1:
+        fill(t, rx0 + 1, lit, ry, 1.6, acc, ex - 6)
+    if flash > 0:
+        t.glow(np.hypot(t.x - lit, (t.y - ry) * 1.6) - 2, 5.0, "#FFFFFF", 0.8 * flash)
+    if last:
+        t.glow(np.hypot(t.x - ex, t.y - ry) - 7.5, 5.0, acc["glow"], 0.45)
+        ss.check(t, ex, ry, 7.5)
+    elif risen and ring_pop > 0:                     # the last foe is up: its ring lit through
+        r = 6.5 * ring_pop
+        disc = np.hypot(t.x - ex, t.y - ry) - r
+        t.glow(disc, 6.0, acc["glow"], 0.6)
+        t.paint(disc, up.shade(t, acc["lit"], ry - r, ry + r))
+        t.line(disc, 1.0, "#FFFFFF", 0.9)
+        t.paint(np.hypot(t.x - ex, t.y - ry) - 2.2 * ring_pop, P["ink"])
+    else:
+        disc = np.hypot(t.x - ex, t.y - ry) - 6.5
+        t.paint(disc, P["channel"])
+        t.line(disc, 1.2, P["edge"])
+
+
+def line_strip(sheet, ox, oy, st, **beat):
+    t = sheet.tile(ox, oy, W, LINE_H)
+    ui.world(t, "noon")
+    stand_in(t)
+    stage_line(t, st, **beat)
+
+
+STAGE_2 = ss.LINES[0][1]
+LINE_BEATS = [        # Stage 2: a Shade falls, then the last foe rises
+    ("a Shade falls: the count steps to 7 at once", dict(kills=6.15, flash=1.0)),
+    ("0.18 s on: the light has eased onto its notch", dict(kills=7.0, flash=0.3)),
+    ("the tenth falls, the last foe rises: its ring lights, over", dict(kills=10.0, ring_pop=1.35)),
+    ("0.20 s on: the ring settles, lit through", dict(kills=10.0, ring_pop=1.0)),
+]
+LINE_NOTES = [
+    "The run under Roblox's top bar, on the picker's glass: the stage's mark and name, its Shades on a short road (a notch",
+    "a Shade) lit as they fall, to its last foe's ring, and Faber's words at the right. The ring lights when the last foe",
+    "is up and takes a check once the stage is cleared; on the keeper's stage the road runs straight to the keeper. Hard",
+    "keeps Normal's value: its edge, chevrons and road are the ember.",
+]
+
+
 # --- the sheets ----------------------------------------------------------------------------------------------------
 
 def sheets(out):
     common = "in Seam's lit glass, at the smallest phone (568 x 320 points)"
     shots = ss.sheet_of(out, "stage_seam.png", f"AR42, the stages' picker, A: One road, {common}", STATES, H, NOTES,
                         lambda sheet, x, y, st: phone(sheet, x, y, st))
+    cards = ss.sheet_of(out, "stage_seam_results.png", f"AR42, the results card, {common}", ss.CARDS, H, CARD_NOTES,
+                        lambda sheet, x, y, st: card(sheet, x, y, st))
+    ss.sheet_of(out, "stage_seam_line.png", f"AR42, the run's line at the top of the screen, {common}", ss.LINES,
+                LINE_H, LINE_NOTES, lambda sheet, x, y, st: line_strip(sheet, x, y, st))
+    first = ss.CARDS[0][1]
+    ss.sheet_of(out, "stage_seam_card_strip.png", "AR42, the card's opening, on its first card", CARD_BEATS, H,
+                ["The card rises 12 points as it fades in (0.22 s, Equipment's); then its marks' two beats."],
+                lambda sheet, x, y, beat: card(sheet, x, y, first, **beat))
+    ss.sheet_of(out, "stage_seam_line_strip.png", "AR42, the run's line as Stage 2's Shades fall", LINE_BEATS, LINE_H,
+                ["Every Shade's fall steps the count; the light eases on a notch, a flash at its head."],
+                lambda sheet, x, y, beat: line_strip(sheet, x, y, STAGE_2, **beat))
     gap, small = 12, 64 / (H * 2)
     sw, sh = round(W * 2 * small), 64
-    tiny = np.zeros((sh + 2 * gap, 3 * (sw + gap) + gap, 4), dtype=np.float32)
+    tiny = np.zeros((2 * sh + 3 * gap, 4 * (sw + gap) + gap, 4), dtype=np.float32)
     tiny[..., :3], tiny[..., 3] = ui.c("#101117"), 1.0
-    for k, shot in enumerate(shots):
-        rs.paste(tiny, rs.shrink(shot, small), gap + k * (sw + gap), gap)
+    for row, group_ in enumerate((shots, cards)):
+        for k, shot in enumerate(group_):
+            rs.paste(tiny, rs.shrink(shot, small), gap + k * (sw + gap), gap + row * (sh + gap))
     rs.save(tiny, out / "stage_seam_64.png")
     # the next tile and its road, and the switch, at the phone's own pixels, twice over: the gradients' read
     def crop(shot, x0, y0, x1, y1):

@@ -13329,6 +13329,44 @@ The numbers are stand-ins (Combat Power, the bests).
   3. **The results card and the run's line move to Seam too.** They're drawn on the picker's kit in C's teal, and the 14:56 row covers "the screens drawn in AR40's C teal". The list after that named the screens, and these two are AR42's. Drawn in the same pass, with one look for all three.
 - Second look on the fixes and the card, from the sheet and the strip.
 
+### The two fixes, and the card and the line in Seam (Modulo, 2026-11-19, from research's 16:34 pass to 16:54 by the clock)
+
+- **Sheets** (`build/scratch/modulo/stages/`, from `tools/blender/stage_seam.py`):
+  - `stage_seam.png`, the picker's three; `stage_seam_close.png`;
+  - `stage_seam_results.png`, the card's four; `stage_seam_line.png`, the line's four;
+  - `stage_seam_64.png`, the picker's three and the card's four at 64 px;
+  - strips: `stage_seam_strip.png`, the picker's opening and switch; `stage_seam_card_strip.png`, the card's opening; `stage_seam_line_strip.png`, a Shade's fall and the last foe rising.
+- **Must-fix 1, every picture on its light:**
+  - the Shade's Void body is lifted from the model's VoidLift `#2C2542` at its top to Void at its base, with the tile's top light falling on it;
+  - its up-facing edges (the head's top, the shoulders) thicken from the cream outline into the kit's light, a soft spill under them, so it's lit from above and the sides stay cream;
+  - every open tile has the next one's bloom behind its picture, softer: 0.42 on Normal, 0.32 on Hard, against the next's 0.75 and 0.55.
+- **Must-fix 2, Hard keeps Normal's value:** one ground, one tile and one shut tile for both modes, and the top light is the kit's glint on both. The ember carries Hard: the chosen half, the edges, the chevrons, the walked road, the ring and the blooms.
+- **The card** (`StageScreen.Results`), on the tiles' glass over the street dimmed under it, its shadow binding it to the street:
+  - the marks on the picker's road and badges: lit to the stage just cleared, whose check pops in lit at its corner, then the light runs on to the next mark, ringed in light;
+  - the title, the time ("a new best" chip in Ready's gold), the reward chips on the kit's well with the game's own pictures (Credits in their mint), and what opened in Ready's gold;
+  - "Hard is open" is its own band: gold words over an ember glow, with ember chevrons;
+  - Next is the lit press, and the ember press into a Hard stage; Retry and Home are quiet;
+  - lost: "Your lead fell" in Theme.Colour.Hurt, and Retry is the press.
+- **The line** (StageController's label), the same glass under Roblox's top bar:
+  - the stage's badge and name, then "7 / 10 Shades";
+  - its road with a notch for each Shade, lit as they fall, in the kit's light (ember on Hard);
+  - the last foe's ring lights through when it's up, and takes the lit check once the stage is cleared.
+- **The motion, drawn as beats:**
+  - the card rises 12 points as it fades in, over 0.22 s (Equipment's), then the check pops in a little over, then the light runs on and the next mark rings in;
+  - on the line, a Shade's fall steps the count at once, and the light eases onto its notch over 0.18 s with a flash at its head; the last foe's ring lights at 1.35, then settles over 0.20 s.
+- **For the cut:**
+  - the card and the line use the kit's pieces: the panel, the lit and quiet presses, the slider for the roads, the knob for the ring, and `ScreenBloom`;
+  - Hard's ember is a tint;
+  - the pictures stay the open question from the picker's section.
+- **Content check: PASS** (16:54), on all eight sheets at full size and at 64 px. **Conditions:**
+  - the Hard bloom stays a soft round glow behind the picture: never at or under the figure's base, never in streaks or drops, and never deeper than `#E85A44`;
+  - the red of "Your lead fell" stays text only: no drip, splash or stain near it, and no red in the lost card's light;
+  - the mask's and the strap's conditions stand;
+  - the "Roblox's buttons" box, the sheets' words and the fight capture in the picker's strip stay internal;
+  - any image cut from these sheets gets its own check on the exact file, at full size and at 64 px, before upload.
+- **Not done:** the picker's clip. Its 86 held frames predate both fixes, so it is re-rendered from frame 0 when memory allows and someone asks.
+- **Status:** drawn, self-read and content-checked. For research's second look.
+
 ## AR43. The Forge and War Emblem pages on the Voidkin screen (Modulo, for research's pick, then Faber)
 
 Research, 2026-11-19, 02:34 by the clock, on the director's question of 02:1x ("where is the forge, jewels, war emblems we could work on it, atleast modulo"). The icons are made (`build/handoff/UI/upgrades/images`: 18 emblems, 15 jewels, the sockets and the stones), but the pages that use them aren't. They're the character screen's rail pages (`docs/design.md`, "Upgrading gear needs no walk"). Drawn in code, with no render.

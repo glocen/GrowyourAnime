@@ -3067,6 +3067,17 @@ On the director's "ok" of 2026-11-16, 21:39 (`docs/decisions.md`). Nothing playe
   - The dashboard's read, which needs live players.
 - **Order:** Faber's call. It's about an hour, so it can go in beside TR31.
 
+### The build (Faber, 2026-11-19, 16:26 to 16:35 by the clock)
+
+- **The rule,** pure Luau (`Rules.Funnel`): the eight steps in the block's order, each its number; which steps a committed act's answer makes true (a starter picked, a shard opened, a kill: Fight, and Find when its drop carries the first kill's Named shard, a worker set, an item equipped); and the mark on the save, refused when every step given is marked already.
+- **The service** (`FunnelService`): it hears every committed change with its label (`DataService.Changed` now carries it), marks the steps in their own transaction, and logs them only once the mark commits. Arrive comes on the first join. Want is a look every second for an avatar within the Challenge's reach of the keeper's gate (`Config.Combat.Keeper.Reach`). A step carries its number and name, nothing else.
+- **Old saves:** migration step 10 marks all eight on a save that chose its starter before the funnel existed, so test accounts never log a first session they didn't play. A new account starts with none.
+- **Tested:**
+  - five logic cases (26,802 checks, offline and in Studio): a first session logs 1 to 8 once, in order; replayed, nothing; a refused act, a recall, an item taken off, an act the funnel doesn't read: nothing; a kill without the Named shard: Fight alone; the marks save; step 10;
+  - in a playtest, through the Equip act's own path: Build marked and logged once ("7 Build"), and its repeat with the same op id, a second equip and a refused pick log nothing. The account's marks are put back. Studio logged one onboarding event. 12/12. Type check 0 new.
+- **NOT VERIFIED:** Want, whose case runs in the Festival place only, the one place with the keeper's gate (item 9). The dashboard's read waits for live players.
+- **Debug:** `Funnel` reads an account's marks and what this server logged; `FunnelSet` sets the marks.
+
 ## TR33. Inspect another player (Faber)
 
 On the director's "YES" of 2026-11-16, 21:39 (`docs/decisions.md`). Tier 2, research and Faber: a new view players see. It serves the north star's measure "two players compare builds and argue about which is better", and it takes TR22's wait, the plinth's tap (Dragon Hunter's View Character).

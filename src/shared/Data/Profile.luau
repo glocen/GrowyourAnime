@@ -159,6 +159,9 @@ export type Data = {
 	Roles: {
 		Lead: string, -- the lead's Id, or ""
 	},
+	-- The first session's steps already logged to Roblox's onboarding funnel, by name (TR32, Rules.Funnel): each once
+	-- an account.
+	Funnel: { [string]: boolean },
 	Base: Base,
 	Training: {
 		-- Who's on the Training machine while the player is in the game, an owned Voidkin's Id or "" (the server's,
@@ -210,6 +213,7 @@ function Profile.Template(): Data
 		Currency = { Credits = 0, Research = 0 },
 		Shop = { Stock = 0, Bought = {} },
 		Roles = { Lead = "" },
+		Funnel = {},
 		Base = {
 			Level = 1,
 			Machines = { Breaker = 1 },

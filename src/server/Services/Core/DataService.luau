@@ -48,7 +48,7 @@ local DataService = {
 }
 
 DataService.Ready = Signal.new() -- (player, data) once a player's save is open and migrated
-DataService.Changed = Signal.new() -- (player, data, answer) after every committed change
+DataService.Changed = Signal.new() -- (player, data, answer, label) after every committed change: label is the act's name or the Change's
 
 local store: any = nil
 local sessions: { [Player]: Session } = {}
@@ -89,7 +89,7 @@ local function run(player: Player, opId: string?, label: string, change: Transac
 	end
 	if changed then
 		push(player, data)
-		DataService.Changed:Fire(player, data, answer)
+		DataService.Changed:Fire(player, data, answer, label)
 	end
 	return answer
 end

@@ -151,6 +151,22 @@ local STEPS: { (data: any) -> () } = {
 			table.remove(base.Bays)
 		end
 	end,
+	-- 10: the onboarding funnel's marks (TR32, Rules.Funnel). Touches Funnel. A save that had chosen its starter before the
+	-- funnel was measured has played its first session already, so every step is marked and none is ever logged for it; a
+	-- new account (its starter still "") keeps none, and logs each as it plays. The names are written here, not read from
+	-- the rule, so the step never moves.
+	function(data: any)
+		if type(data.Funnel) ~= "table" then
+			data.Funnel = {}
+		end
+		local progress = data.Progress
+		if type(progress) ~= "table" or type(progress.Starter) ~= "string" or progress.Starter == "" then
+			return
+		end
+		for _, name in { "Arrive", "Choose", "Reveal", "Fight", "Find", "Work", "Build", "Want" } do
+			data.Funnel[name] = true
+		end
+	end,
 }
 
 -- The version a save reaches once migrated: the number of steps.

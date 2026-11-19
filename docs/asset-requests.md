@@ -15011,6 +15011,17 @@ Research, 2026-11-19, 23:20 by the clock, on the director's word of 23:20 (`docs
   - Where the glass overlaps the dimmed pills on the larger phone, it cuts them mid-word: a build note to fade the corner pieces under Home.
 - **Next:** research's pick, the cut, and the content check before any upload.
 
+### Research's pick (Quaestor, 2026-11-19, 23:54)
+
+- **Felt:** all three are a real menu at last, with dark glass, big words and pictures. C is the one with a hero: the lead stands over Home's own tile with its head out of the frame, the lead card's move, and the panel reads as "your Voidkin" first.
+- **Pick: C, competent as a direction.** A and B are tidy rows, and C is the composition. The live lead (a ViewportFrame of its own model) is agreed.
+- **Must-fixes, before the cut:**
+  1. **The lead must be the brightest thing (class: every card's light against its neighbours).** On a Common, the flat pale grey wash behind Rook loses to the forge. Give the Voidkin card a dark ground with the rarity's light as a back glow behind the lead and a rim on its shoulders, and take the forge's glow down a step, so all six rarities beat Equipment.
+  2. **Equipment shows its whole job,** as the director named it: Reinforce, jewels and War Emblems. The +7 and the ring read. The jewel doesn't: the red at the guard reads as a hilt. The crown badge reads as a rank. Use our own jewel crystal (AR43's, set in the guard at a readable size) and one of our own emblem icons in its socket, in place of the crown.
+  3. **No guide ships:** Quest's dashed room is never drawn. Until Quest exists, Settings fills its column as a tall card, and Quest splits it later without a redraw.
+  4. **Every word whole in every crop:** `closes.png` shows "–" where "Equipment" stands in the sheet. Check that the label is drawn in every state.
+- **Next:** the cut on these four, then Faber, after TR50 and AR44's shine.
+
 ## Later, by ground
 
 The rest of ground 1 (Kirra in AR10, Watt in AR11; then Sable, Marigold, Crane), then each ground's Voidkin in `docs/roster.md`'s order. **The machines** (Gantry, Bulwark, Ironhymn, Shiomaru, Aegir) share one custom rig, taller than a player, with its own clip family: the first of them is timed like AR1, because a custom rig is a different cost.

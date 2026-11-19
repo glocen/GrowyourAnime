@@ -55,11 +55,13 @@ return {
 	-- A weapon is for the lead's class this often; else for one of the other classes the player owns.
 	ClassLean = 0.6,
 
-	-- An item's worth, in Combat Power before its scale, a G at its ground's last level: a full set of fourteen at
-	-- rarity 1 is the sim's gear share (Health 617, Attack 77, Defence 39, 20 of each rating, a G), 888, so 63.5 an item.
+	-- An item's worth, in Combat Power, a G at its ground's last level: what it adds on the reference body, since the
+	-- line prices are the gains themselves (Config.Stats.Power.Weights; TR49's must-fix). 63.5 at the sim's gear share
+	-- (Health 617, Attack 77, Defence 39, 20 of each rating, a G, 888 a set of fourteen) in the prices of the time, over
+	-- the run's normaliser 0.7102 when the prices became the gains, so every line rolls the points it did.
 	-- Its rarity takes the sim's share of that (seeds.json, "gearRarity"). The main stat takes MainShare, the lines share
 	-- the rest, and each roll lands within Spread of its worth.
-	PowerPerG = 63.5,
+	PowerPerG = 89.4,
 	Rarity = { Common = 0.55, Uncommon = 0.65, Rare = 0.76, Epic = 0.88, Legendary = 1.0 } :: { [string]: number },
 	MainShare = 0.5,
 	Spread = 0.15,

@@ -4273,3 +4273,22 @@ Faber, 2026-11-19, 03:43 by the clock: the follow-up's item 7 (`docs/production-
   5. Agreed, nothing changes now. A keeper row in the stage's factor must wire its Stage first.
   6. Agreed: it follows the never-grey rule.
   7. **Agreed:** it's TR24's rule working as written. The floor in the element's colour is better than ten grey ones.
+
+### Research's must-fix: the prices are the gains (Faber, 2026-11-19, 23:05 to 23:10 by the clock)
+
+- **Where the factor was:** not a √2 in the game's path, and the other way round from my finding 1. Measured by `Stats.Sum` at the reference body, every price was 0.710 of its gain, so a point added 1.408 times its price. That 0.710 is the normaliser in research's price run (`runs/s5_prices3.luau`: `out[stat] = parts[stat] * k`, k = the body's CR over its priced total).
+- **What a price does:** it's never shown. The item card's CR is `Stats.Sum(after) - Stats.Sum(before)` on the wearer (`Rules.Bag`), and the comparison reads the same, so the card and the panel already agreed. A price sets a rolled line's points: worth / price (`Rules.Chests`). So the 0.710 meant an item rolled at worth W added 1.408 W on the reference body.
+- **The fix:**
+  - `Config.Stats.Power.Weights` are the gains themselves, measured at the reference body (Rook in Fire, level 30; a percent's per G).
+  - `Config.Chests.PowerPerG` goes from 63.5 to 89.4, over the same 0.7102, so every line rolls the points it did, within 0.15% (Attack ×0.9999, Health ×0.9995, Lifesteal ×0.9987). An item's worth is now what it adds on the reference body. No balance moves.
+- **Measured after:** price over gain is 0.9997 to 1.0003 for all fifteen lines at levels 1, 10, 30 and 55.
+- **The cases:**
+  - Bag's price case now holds price = gain within 0.5%, where it held one shared factor within 2%.
+  - Chests' attribute price reads 9 to 10 a point, where the normalised prices read 6 to 7.
+- **Tested:**
+  - Type check 0 new.
+  - Logic 28,782/0, offline and in Studio.
+  - Self-test: Items page 48/0, Chest 2/0, Equipment 118/0.
+- **For research:**
+  - `docs/balance.md`, "The stats", says an attribute point is worth about 6 to 7. In the gains it is 9.4 for Strength and 9.5 for Endurance.
+  - If gear should be stronger or weaker, that's `PowerPerG`, research's number.

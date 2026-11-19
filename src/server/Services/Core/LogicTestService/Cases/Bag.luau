@@ -331,11 +331,11 @@ return {
 		end,
 	},
 	{
-		Name = "Stats: the line prices stand in one proportion to what a point adds to the reference body's Combat Power (TR49)",
+		Name = "Stats: a line's price is what a point adds to the reference body's Combat Power (TR49)",
 		Run = function(t: any)
-			-- Config.Stats.Power.Weights, the prices Rules.Chests.Price reads: each stat's against the rest as its true gain at
-			-- the reference body (Reference at level 1, its three percents as they are), so no line is over- or under-priced
-			-- against another. One factor for all; its size is research's (asked, TR49).
+			-- Config.Stats.Power.Weights, the prices Rules.Chests.Price reads: each stat's is its true gain at the reference
+			-- body (Reference at level 1, its three percents as they are), so an item's worth is what it adds there and no
+			-- line is over- or under-priced against another. The factor is 1 (research's must-fix, TR49: no normaliser).
 			local power = StatsConfig.Power
 			local reference = Stats.Empty(1) :: any
 			for stat, value in power.Reference do
@@ -343,15 +343,13 @@ return {
 			end
 			reference.Def, reference.Element = "rook", "Reference"
 			local base = Stats.Sum(reference)
-			local first: number? = nil
 			for _, stat in { "Health", "Attack", "Defence", "Hit", "Dodge", "Critical", "CriticalResist", "Block", "Penetration", "ElementalAttack", "ElementalResist", "CriticalDamage", "CriticalGuard", "Lifesteal", "Regen" } do
 				local step = if power.ByLevel[stat] then 0.001 else 0.1
 				local more = table.clone(reference)
 				more[stat] += step
 				local gain = (Stats.Sum(more) - base) / step
 				local ratio = gain / power.Weights[stat]
-				first = first or ratio
-				t.Check(`{stat}: a point adds {string.format("%.4f", gain)}, {string.format("%.3f", ratio)} times its price`, math.abs(ratio / (first :: number) - 1) <= 0.02)
+				t.Check(`{stat}: a point adds {string.format("%.4f", gain)}, {string.format("%.3f", ratio)} times its price`, math.abs(ratio - 1) <= 0.005)
 			end
 		end,
 	},

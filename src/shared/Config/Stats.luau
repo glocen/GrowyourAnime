@@ -108,26 +108,27 @@ return {
 	-- the five kitted leads' Combat Power over G, levels 1 to 60, has today's geometric mean. Weights are the line
 	-- prices (Rules.Chests.Price): what a point adds to the shown Combat Power at the reference body, Scale already in
 	-- them, a percent's at level 1 and times G at the block's level (ByLevel). Combat Power itself never reads them.
-	-- Research's integration pass of the combat-math review, 2026-11-19.
+	-- Research's integration pass of the combat-math review, 2026-11-19; each is the gain itself, measured by Stats.Sum
+	-- at the reference body, Rook in Fire, level 30, without the run's normaliser (0.710, research's must-fix, TR49).
 	Power = {
 		Scale = 3.431,
 		Reference = { Health = 736.2, Attack = 124.5, Defence = 83.84, Hit = 250.8, Dodge = 129.8, Critical = 270.6, CriticalResist = 443.4, Block = 102.8, Penetration = 227.1, ElementalAttack = 53.73, ElementalResist = 213.8, CriticalDamage = 1, CriticalGuard = 0.175, Lifesteal = 0.035, Regen = 3.42 } :: { [string]: number },
 		Weights = {
-			Health = 0.9556,
-			Attack = 4.487,
-			Defence = 1.947,
-			Hit = 0.2681,
-			Dodge = 0.4825,
-			Critical = 0.1744,
-			CriticalResist = 0.08822,
-			Block = 0.3202,
-			Penetration = 0.08318,
-			ElementalAttack = 2.584,
-			ElementalResist = 0.2196,
-			CriticalDamage = 109.1,
-			CriticalGuard = 110.8,
-			Lifesteal = 172.3,
-			Regen = 1.463,
+			Health = 1.346,
+			Attack = 6.318,
+			Defence = 2.741,
+			Hit = 0.3775,
+			Dodge = 0.6795,
+			Critical = 0.2456,
+			CriticalResist = 0.1242,
+			Block = 0.4508,
+			Penetration = 0.1171,
+			ElementalAttack = 3.638,
+			ElementalResist = 0.3093,
+			CriticalDamage = 153.6,
+			CriticalGuard = 156.1,
+			Lifesteal = 242.9,
+			Regen = 2.062,
 		} :: { [string]: number },
 		-- The percents, whose weight multiplies by G at the block's level: a percent multiplies points, which grow with G.
 		ByLevel = { CriticalDamage = true, CriticalGuard = true, Lifesteal = true } :: { [string]: boolean },

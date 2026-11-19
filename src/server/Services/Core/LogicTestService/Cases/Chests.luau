@@ -240,9 +240,10 @@ return {
 				end
 				return true
 			end)())
-			-- docs/balance.md, "The stats": a point of either is worth about 6 to 7 at the generic row (TR36)
-			t.Check("an attribute's price is its row weighed: 6 to 7 a point", Chests.Price("Strength") > 6 and Chests.Price("Strength") < 7 and Chests.Price("Endurance") > 6
-				and Chests.Price("Endurance") < 7, `{Chests.Price("Strength")}, {Chests.Price("Endurance")}`)
+			-- docs/balance.md, "The stats": a point of either is worth about the same at the generic row (TR36); since the
+			-- prices became the gains (TR49's must-fix), 9 to 10 a point, where the normalised prices read 6 to 7
+			t.Check("an attribute's price is its row weighed: 9 to 10 a point", Chests.Price("Strength") > 9 and Chests.Price("Strength") < 10 and Chests.Price("Endurance") > 9
+				and Chests.Price("Endurance") < 10, `{Chests.Price("Strength")}, {Chests.Price("Endurance")}`)
 		end,
 	},
 	{

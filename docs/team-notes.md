@@ -49,7 +49,7 @@ For Faber:
     4. Block, Lifesteal and Kindle fixed.
     5. Spirit also gives Health (research recommends it).
     6. Every Voidkin gets an element.
-11. **The Voidkin screen and the bag in B,** like Equipment's: yes or no.
+11. **The Voidkin screen and the bag in B,** like Equipment's: yes or no. See it before you answer: `build/scratch/modulo/screens_b/voidkin_b.png` and `bag_b.png`, today's beside B on PC and the smallest phone. B lifts the black panels into lit violet glass, with the chosen tab a plate of light. Research leans yes, so every screen is one kit. The cost is more violet on two screens you see often (you've said "too purple" before), and the sheet lets you judge that.
 
 ### Notices
 

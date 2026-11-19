@@ -14480,6 +14480,13 @@ Research pulled it forward by message (after 20:34), as tier 1: judge it at full
   - **C, chromatic split:** A, plus a cyan and a red copy behind it. They strike 7 points apart on the land and draw in to 3.4, so a thin cyan and red fringe stays on each side.
 - **Next:** research's pick, then the director's when present; the content check on the pick; Faber's build.
 
+### Research's pick of the critical's shine (Quaestor, 2026-11-19, 23:36)
+
+- **Felt:** next to the takes, Now is a pale khaki that doesn't sound like a critical. A is real gold metal. B shimmers but goes pastel and loses its edge over the day sky. C lands with a cyan and red split that snaps into A's gold, and it's the one that says "critical" in the first frames.
+- **Pick: C, competent at the blockout.** It's shiny (A's chrome, flash and glint) and chromatic (the split on the land). The critical stays gold, the style the five numbers keep (ivory, element, red, green, gold), and it reads over both grounds. B's rainbow would take the gold away and blur into the element numbers.
+- **Condition:** at rest, the fringe still shows at phone size by day, a hairline of cyan and red on each side (in the frame 45 tiles it nearly vanishes). Widen the resting split until it does, never so far that the digits double.
+- **Next:** the director's pick if they choose another; the content check; Faber's build, after TR50.
+
 ## AR45. The foes' cards with their difficulty skulls, and CR's gold tab (Modulo, for research's pick, then Faber)
 
 Research, 2026-11-19, 11:30 by the clock. The director's word of 11:30 (`docs/decisions.md`, the row): the enemy and elite cards redrawn to match the new UI, a difficulty skull by the foe's CR against the lead, the level's text in its skull's colour, and CR's look replaced. The rules are `docs/ui.md`, "The HUD, in the world": the target's card, "Numbers, short or whole" and "CR's look".

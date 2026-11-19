@@ -27,7 +27,7 @@
     }
   },
   "fit": {
-    "mean": 8.923,
+    "mean": 8.876,
     "p99": 42.49,
     "note": "the cut's frame against the stand-in B's, in 8-bit steps, where a foe stands: a crack's edge is a touch softer in the atlas's texels, and the trim's daylit part a touch redder"
   },

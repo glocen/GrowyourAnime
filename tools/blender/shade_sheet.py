@@ -164,7 +164,8 @@ def mask(kind, m):
     paper, y = m["Paper"], MASK_Y
     if kind == "Brawler":
         # Cut by hand from one sheet: not quite round, a tab each side for the strings. The grin is cut lopsided
-        # behind four teeth no two alike, one eye laughs wider than the other, and the brows are two strokes of ink.
+        # behind four teeth no two alike, and one eye laughs wider than the other. No brows: the content check's block
+        # (AR42, 02:31) found the two ink strokes low at the middle nearing a known meme face, so AR47 took them off.
         c = 4.85
         radii = (1.0, 0.96, 1.03, 0.98, 1.02, 0.95, 1.0, 1.04, 0.97, 1.01, 0.96, 1.02)
         face = []
@@ -181,10 +182,8 @@ def mask(kind, m):
                 for e, r in ((-1, 0.25), (1, 0.19))]
         teeth = [rs.slab("Tooth", (x, y + 0.16, c - 0.36 + dz), (w, 0.02, 0.5), paper, rot=(0, tilt, 0))
                  for x, w, dz, tilt in ((-0.4, 0.09, 0.0, 4), (-0.14, 0.06, -0.02, -3), (0.14, 0.1, 0.02, 2), (0.4, 0.06, 0.05, 7))]
-        brows = [rs.slab("InkBrow", (e * 0.4, y + 0.15, c + 0.6 + e * 0.02), (0.52, 0.016, 0.13 + 0.02 * e), m["Ink"], rot=(0, e * -17, 0))
-                 for e in (-1, 1)]
         nose = rs.slab("InkNose", (0.02, y + 0.15, c + 0.06), (0.07, 0.016, 0.2), m["Ink"], rot=(0, 5, 0))
-        return [raised("Mask", face, y, 0.14, paper, inset=0.84), rim(face, m, 1.07), cut("Grin", grin, m), *eyes, *teeth, *brows, nose,
+        return [raised("Mask", face, y, 0.14, paper, inset=0.84), rim(face, m, 1.07), cut("Grin", grin, m), *eyes, *teeth, nose,
                 *ties(m, c, 1.22)]
     if kind == "Guard":  # a square under two heavy brows that meet low in the middle and jut past its sides
         face = [(-0.95, 4.2), (-0.7, 3.95), (0.7, 3.95), (0.95, 4.2), (0.95, 5.75), (-0.95, 5.75)]

@@ -14497,6 +14497,26 @@ Labelled SIMULATION, not play: `tools/balance/sim.py`'s model, 6,000 leads (leve
   - The paper mask keeps its cut holes and its grin's cuts, read as a mask, not a face. Never a hood, a blue jacket, round sockets or dot pupils.
 - **Done when:** the content check passes on the exact files at full size and at 64 px; research's look at the phone's pixels, Normal and Hard; and the re-upload handed to Faber with AR46's cut.
 
+### The rework, for Faber (Modulo, 2026-11-19, 18:22 to 18:31 by the clock)
+
+- **What changed:** the two ink brows are off the Brawler mask (`tools/blender/shade_sheet.py`, `mask("Brawler")`). Its paper keeps the cut eye arcs, the lopsided grin with its four teeth, the nose's ink stroke and the ties. The mask is 500 triangles (was 524), and the Brawler with its body is 2944.
+- **Re-baked, in `build/handoff/Shade/`** (`shade_model.py`, then `shade_elite_bare.py write`, then `hard_cut.py shade` and `sheet`):
+  - `Shade_MaskBrawler.json`, and `Shade_MaskBrawlerBare.json`, the elite's shoulder mask (`EliteMask_Brawler`, 440 triangles). Its centre is unchanged, so the recipe's `elite` placement and `ELITE_SIZE` stand. Its points lie on the whole mask's within 0.00001 studs.
+  - `Shade_Color.png` and `Shade_Emissive.png`: only the mask's face island changed (texels x 355 to 468, y 888 to 971). `Shade_Roughness.png` and the other eight pieces are byte-identical.
+  - AR46's Hard pair for the Shade, re-cut on the new atlas: `hard/Shade_Color_HardRed.png`, `Shade_Color_HardTint.png` and `Shade_Emissive_Hard.png`. `hard.json`'s fit is 8.88 (was 8.92). The Lamplighter's are unchanged.
+  - `Shade.recipe.json` (its triangle counts), `shade_model_sheet.png` and `shade_elite_bare.png`.
+- **Rollback:** the shipped files are in git at d5389f4. The scratch model as it was is in `build/scratch/modulo/shade/model-before-ar47-2026-11-19/`.
+- **The look:** `build/scratch/modulo/ember/brawler_mask_look.png` (`tools/blender/brawler_mask_look.py`). It shows Normal and Hard in Faber's day capture at twice its size, at the smallest phone's 450 pixels high (where the near mask is about 44 pixels tall), and at 64 px over dark.
+- **A tool's fix:** `shade_elite_bare.py`'s picture now places the whole mask from its own centre. The recipe's `elite` has named the bare copy since AR2, so its old placement put the tied mask 0.78 studs off.
+- **For Faber, one upload with AR46's cut:**
+  - Re-upload under the group, together: the meshes `Shade_MaskBrawler` and `Shade_MaskBrawlerBare` (new ids in `tools/studio/Models/Shade.luau`'s MESHES), the maps `Shade_Color` and `Shade_Emissive` (MAPS), and the Shade's three Hard maps as his route needs.
+  - `Shade_Roughness` and the other meshes stay as they are.
+- **Content check:** PASS 2026-11-19, 18:30, with three conditions:
+  1. Only the maps and the two meshes go up. The sheets and the before copy stay internal.
+  2. AR46's four conditions of 18:19 still hold.
+  3. AR42's guard: the brows never come back; never a hood, a blue jacket, round sockets or dot pupils. On Hard, the coral stays inside the cuts, with no glow or streak running below the mouth or the eyes. If one shows in the installed capture, it comes back to the check.
+- **Open:** research's look at the phone's pixels. The tile's picture (`stage_screen.py`, AR42) also has almond holes, a narrower grin and no nose. AR47 scoped the brows only, so the model keeps its arcs, its grin and its nose.
+
 ## Later, by ground
 
 The rest of ground 1 (Kirra in AR10, Watt in AR11; then Sable, Marigold, Crane), then each ground's Voidkin in `docs/roster.md`'s order. **The machines** (Gantry, Bulwark, Ironhymn, Shiomaru, Aegir) share one custom rig, taller than a player, with its own clip family: the first of them is timed like AR1, because a custom rig is a different cost.

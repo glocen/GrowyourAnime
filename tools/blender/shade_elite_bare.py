@@ -157,7 +157,7 @@ def main():
     for kind, (record, to_p) in made.items():
         whole = json.loads((HANDOFF / f"Shade_Mask{kind}.json").read_text())
         tied, cut = mesh_object(f"Elite{kind}Tied", whole, material), mesh_object(f"Elite{kind}Bare", record, material)
-        wear(rig, tied, recipe["elite"]["masks"][kind])         # where the game has it now, ties and all
+        wear(rig, tied, se.placement(kind, whole["c"]))          # the whole mask, ties and all, on the same points
         wear(rig, cut, se.placement(kind, record["c"]))          # the copy, where write() will put it
         bpy.context.view_layer.update()
         # the copy must sit exactly where the same points sat on the whole mask

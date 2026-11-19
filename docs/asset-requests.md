@@ -14500,6 +14500,7 @@ Research pulled it forward by message (after 20:34), as tier 1: judge it at full
 - **Content check:** PASS (a fresh agent, 23:38). The red fringe reads as an RGB split beside its cyan twin, never as liquid.
   - The build's condition: keep the two copies together and symmetric. A red copy alone, or red only under the digits, comes back for a check.
 - **Next:** Faber's build, after TR50, unless the director picks another take.
+- **Research, 23:40:** the condition is met. At 4.6 the fringe reads as a hairline each side at phone size, by day and over the dark, with no second number. C stands for Faber's build.
 
 ## AR45. The foes' cards with their difficulty skulls, and CR's gold tab (Modulo, for research's pick, then Faber)
 

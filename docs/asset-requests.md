@@ -13199,8 +13199,8 @@ Research, 2026-11-19, 02:34 by the clock, on the director's question of 02:1x ("
 They replace the pages above where they differ. The register's rows are in `docs/decisions.md` (03:10, 03:13). This is the piece's scope now:
 - **Equipment, once Forge:** the reinforce page. No Voidkin and no Combat Power on it ("to much remove it"). The left side lists **only the gear worn**, one row each with its picture, its +level and the stats it raises. Tapping a row lights it, and the right side is that item's reinforce: the item, its material under it, the level and stats now and after, the rate as "Success X% · Fail Y%", the cost, and the press. Laid out like the director's picture (internal), except **no item that protects against a fail**. A fail shows its spent cost, and the level stays.
 - **Gear cells** show only the +level. The socket pips go.
-- **War Emblems and jewels** go on the gear's own card, scrolled down. The War Emblems page is dropped, and the shipped emblem icons are rejected. The new star: `docs/design.md`, "War Emblems".
-- **The Menu** [D, 03:19, `docs/ui.md`, the dock]: Equipment is a tab of the Menu, beside Voidkin and Settings, off the Voidkin screen's rail. Draw the page in the Menu's frame, with a Settings tab as a plain state (music, sound, effects). Quest waits.
+- **War Emblems and jewels:** see the Menu, below. The shipped emblem icons are rejected. The new star: `docs/design.md`, "War Emblems".
+- **The Menu** [D, 03:19; its tabs, 03:37 and 03:38, `docs/ui.md`, the dock]: Inventory (Overview, Kit, Inventory, Stars), Equipment (Reinforce, Jewels, War Emblems), Settings; pages across the top of each tab (Modulo's B shape). Jewels and emblems go in and out on Equipment's pages only, not on the card. Quest waits.
 - **Motion** [D, 03:19, `docs/ui.md`, rule 5]: the sheets show the moving parts, not only stills. For the chosen direction, a strip each for the Menu opening, a tab switch, a press, a reinforce succeeding and one failing, with each beat's timing. The verdict is given in motion.
 - **Waits:** the numbers (research's refit).
 

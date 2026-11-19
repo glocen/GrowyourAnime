@@ -14688,7 +14688,8 @@ Labelled SIMULATION, not play: `tools/balance/sim.py`'s model, 6,000 leads (leve
 - **Felt:** a see-through dark rectangle stands behind the slanted card, about 10 px past it on every side, plainest over the Breaker's white light (`build/captures/ar45/skull-red.png`, zoomed in `build/scratch/quaestor/foe/zoom_red.png`). The slant reads as stuck on a square sticker. The lead card has no box. I passed this at 14:24 and missed it.
 - **The cause:** `CardSlantFill.png` bakes a soft shadow into its 8 point pad. The blur still has alpha at the image's edge, so it stops in a hard square, and the 9-slice stretches it into a box.
 - **Must-fix (class: every kit image with a shadow or glow in its pad):** redraw the plate with no baked shadow, or a slanted shadow fully faded inside its pad, alpha 0 on every edge pixel. Check every padded image in `Config.UIKit` the same way. Modulo first, before AR48; then Faber uploads it again.
-- It closes on the same capture over the Breaker's light, zoomed, with no edge visible.
+- **Must-fix 2, the director's at 23:29 (class: every number laid over a bar):** the dark band behind the health digits goes. It was research's own must-fix 1 of the morning, so the light's front never crossed the digits, and it was wrong: a black slab cuts the bar in two and reads as a hole. The digits sit straight on the light, ivory with a dark outline thick enough to hold over the light's front at any fill (about 2 points, solid). The lead card's digits take the same outline if theirs is thinner. Faber's, in code (`TargetCard`'s `Band` and `fitBand`), with the plate's upload.
+- It closes on the same capture over the Breaker's light, zoomed, with no edge visible, and the digits read over the bar at full, half and near-empty health.
 
 ### The fill recut, its shadow gone before the edge (Modulo, 2026-11-19, 23:26 to 23:30 by the clock)
 

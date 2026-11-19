@@ -16,10 +16,13 @@ shapes, the kit's type gems, and Blender's own face standing in for the game's. 
 
     blender -b --factory-startup --python tools/blender/foe_cards.py -- <abs out>        the sheet, foe_cards.png
     blender -b --factory-startup --python tools/blender/foe_cards.py -- <abs out> cut    research's pick B, cut
+    blender -b --factory-startup --python tools/blender/foe_cards.py -- <abs out> fit    the cards in the game's HUD
 
 The sheet is at 2 pixels a point, its fight views at 1 too. The cut writes <out>/images (the new images at 4 pixels a
 point), foes.json (what each is for, its tint and its place on the card), and foe_cards_cut.png, the check sheet: each
 image alone at full size and at 64 px, the skull's tiers, and B's cards built from the kit's slices and these images.
+The fit writes foe_cards_fit.png: the cards laid in Faber's phone capture of a fight, in the old target card's place,
+beside the game's own HUD, as cut and on the fight HUD's slant (card's `slant`), at 2 pixels a point and at the phone's 1.
 """
 
 import sys
@@ -168,45 +171,64 @@ def crest(t, cx, y0, size):
         t.paint(np.maximum(d, (t.x - (cx + dx))), "#000000", 0.18)
 
 
-def card(t, x0, y0, kind, tier, pal, name, level, share, health, gem="Strength", edge=None):
-    """The target's card. Returns its size."""
+def card(t, x0, y0, kind, tier, pal, name, level, share, health, gem="Strength", edge=None, slant=0.0):
+    """The target's card. Returns its size. With `slant`, the fight HUD's plate instead of the kit's cut panel: a
+    parallelogram leaning like the lead's card and the old target card (its ends `slant` of its height across), its lit
+    end the left, and the health's digits on a dark band (AR45's must-fix 1)."""
     w, h = {"Shade": (216, 42), "Elite": (216, 42), "Keeper": (300, 50)}[kind]
     x1, y1 = x0 + w, y0 + h
-    d = t.poly(ui.cut_box(x0, y0, x1, y1, 9, 0, 9, 0))
+    lean = h * slant
+    if slant:
+        d = t.poly([(x0 + lean, y0), (x1, y0), (x1 - lean, y1), (x0, y1)])
+    else:
+        d = t.poly(ui.cut_box(x0, y0, x1, y1, 9, 0, 9, 0))
     t.glow(d, 6.0, "#000000", 0.4)
     t.paint(d, t.ramp(pal["panel"][0], pal["panel"][1], (t.y - y0) / h), 0.93)
-    t.paint(np.maximum(d, (t.x - x0) + (t.y - y0) - 9 * 3.4), pal["facet"], 0.08)
+    t.paint(np.maximum(d, (t.x - x0) + (t.y - y0) - 9 * 3.4 - lean), pal["facet"], 0.08)
     if kind == "Shade":
         t.line(d, 1.0, pal["edge"], 0.95)
     else:   # an elite's and a keeper's frame: brass, a hairline of the panel's edge inside it
         t.line(d, 1.6, BRASS[1], 1.0)
         t.line(d, 0.8, BRASS[0], 0.9)
         t.line(d + 1.6, 0.6, pal["edge"], 0.8)
-    t.paint(ui.sd_segment(t.x, t.y, (x0 + 0.5, y0 + 9), (x0 + 9, y0 + 0.5)) - 0.6, pal["glint"], 0.85)
-    t.paint(ui.sd_segment(t.x, t.y, (x1 - 9, y1 - 0.5), (x1 - 0.5, y1 - 9)) - 0.5, pal["glint"], 0.35)
+    if slant:
+        t.paint(ui.sd_segment(t.x, t.y, (x0 + 0.6, y1 - 0.8), (x0 + lean + 0.2, y0 + 0.6)) - 0.7, pal["glint"], 0.85)
+        t.paint(ui.sd_segment(t.x, t.y, (x1 - lean, y1 - 0.6), (x1 - 0.6, y0 + 0.8)) - 0.5, pal["glint"], 0.35)
+    else:
+        t.paint(ui.sd_segment(t.x, t.y, (x0 + 0.5, y0 + 9), (x0 + 9, y0 + 0.5)) - 0.6, pal["glint"], 0.85)
+        t.paint(ui.sd_segment(t.x, t.y, (x1 - 9, y1 - 0.5), (x1 - 0.5, y1 - 9)) - 0.5, pal["glint"], 0.35)
     if kind == "Elite":
-        horns(t, x0, x1, y0, 11, BRASS)
+        horns(t, x0 + lean, x1, y0, 11, BRASS)
     if kind == "Keeper":
-        horns(t, x0, x1, y0, 14, BRASS)
-        crest(t, (x0 + x1) / 2, y0, 12)
+        horns(t, x0 + lean, x1, y0, 14, BRASS)
+        crest(t, (x0 + lean + x1) / 2, y0, 12)
     big = kind == "Keeper"
     name_size = 16 if big else 14
     row = y0 + (6 if not big else 7)
     s = 15 if not big else 17
+    ink_in = lean * 0.75                     # the top row starts clear of the lit end
     _, colour, alpha = TIERS[tier]
-    skull(t, x0 + 14, row + name_size * 0.36, s, colour, alpha, pal["ink"])
+    skull(t, x0 + 14 + ink_in, row + name_size * 0.36, s, colour, alpha, pal["ink"])
     lv = f"Lv {level}"
-    t.text(x0 + 25, row, name_size, lv, LEVEL_FAINT if tier == 0 else colour, bold=0.25 if tier else 0.1,
+    faint = LEVEL_FAINT_B if pal is C_SYS else LEVEL_FAINT
+    t.text(x0 + 25 + ink_in, row, name_size, lv, faint if tier == 0 else colour, bold=0.25 if tier else 0.1,
            layer="outlined")
-    t.text(x0 + 25 + len(lv) * name_size * 0.5 + 7, row, name_size, name, pal["text"], bold=0.12, layer="outlined")
+    t.text(x0 + 25 + ink_in + len(lv) * name_size * 0.5 + 7, row, name_size, name, pal["text"], bold=0.12,
+           layer="outlined")
     gx = x1 - 22
     pic(t, KIT / f"Gem{gem}.png", gx - 7, row - 2.5, 15)
     if edge is not None:
         arrow(t, gx + 12, row + 5, 9, edge)
     bh = 13 if not big else 15
     by = y1 - bh - 5
-    bar(t, x0 + 5, by, x1 - 5, bh, share, pal, phases=3 if big else 0)
-    t.text((x0 + x1) / 2, by + (bh - 11 * 0.72) / 2, 11, health, IVORY, "CENTER", bold=0.1, layer="outlined")
+    bar(t, x0 + 5 + 5 * slant, by, x1 - 5 - (h - 5 - bh) * slant, bh, share, pal, phases=3 if big else 0)
+    mid = (x0 + x1) / 2
+    if slant:
+        nw = len(health) * 11 * 0.52 + 14
+        band = t.poly([(mid - nw / 2 + bh * 0.3, by + 0.5), (mid + nw / 2, by + 0.5), (mid + nw / 2 - bh * 0.3, by + bh - 0.5),
+                       (mid - nw / 2, by + bh - 0.5)])
+        t.paint(band, pal["channel"], 0.72)
+    t.text(mid, by + (bh - 11 * 0.72) / 2, 11, health, IVORY, "CENTER", bold=0.1, layer="outlined")
     return w, h
 
 
@@ -598,9 +620,77 @@ def cut(out):
     rs.save(sheet.px[:round((y + 30) * 2)], out / "foe_cards_cut.png")
 
 
+# --- the fit: the cards over the game's own HUD (the director, 12:24: "make sure it compose well to our game") ----------
+
+FIGHT = REPO / "build" / "scratch" / "faber" / "ar44" / "take-now-fight.jpg"   # Faber's phone capture, ~1.11 px a point
+OLD_CARD = (95, 162, 338, 604)      # the old target card and the floor's title over it, the capture's rows and columns
+OLD_MIDDLE, OLD_TOP = 471, 98       # the old card's middle and top, the capture's pixels
+SLANT = 0.4                         # the old target card's lean: its ends 0.4 of its height across (the capture)
+
+
+def fit(out):
+    """Every HUD piece around the cards is the game's own, in Faber's capture: the lead's card, the economy pills, the
+    skill buttons, the dock. The old target card is lifted and the new one laid in its place, its middle and top."""
+    made = images()
+    kit = {n: rs.load(KIT / f"{n}.png") for n in ("PanelShadow", "PanelFill", "PanelFacet", "PanelEdge", "PanelGlint")}
+    ui.K = 2
+    shot = rs.load(FIGHT)
+    lifted = shot.copy()
+    blank(lifted, *OLD_CARD)
+    f = 2 / STILL_PPT
+    now, bare = scaled(shot, f), scaled(lifted, f)
+    pw, ph = now.shape[1] / 2, now.shape[0] / 2
+    W = 16 + 2 * (pw + 16)
+    H = 70 + 3 * (24 + ph + 14) + 24 + 2 * (ph / 2 + 10) + 16
+    sheet = ui.Sheet(W, H, "#101117")
+    ink, soft = "#EDE6D6", "#B4AC9C"
+    head = sheet.tile(0, 0, W, 66)
+    head.text(16, 16, 20, "AR45, the fit: the foes' cards in the game's own HUD, from Faber's phone capture (AR44, Tower floor 1)",
+              ink, bold=0.2)
+    head.text(16, 44, 13, "At 2 pixels a point, then each at the phone's own size. Everything but the target card is the game as it "
+                          "is; the old card and the floor's title over it are lifted, and the new card laid at its middle and top.",
+              soft)
+    shade = ("Brawler", 12, 0.62, "679/1,096", "Strength", True)
+    elite = ("Brawler", 14, 0.4, "1,204/3,010", "Technique", False)
+    panes = (("1. Now: the game as it is", None),
+             ("2. B as cut (research's pick, C's teal): a Shade, stronger", ("B", "Shade", 2, shade)),
+             ("3. B on the fight HUD's slant (the lead's card's plate): a Shade, stronger", ("S", "Shade", 2, shade)),
+             ("4. B on the fight HUD's slant: an elite, much stronger", ("S", "Elite", 3, elite)),
+             ("5. B as cut: an elite, much stronger", ("B", "Elite", 3, elite)),
+             ("6. A as drawn (the Menu's Seam): a Shade, stronger", ("A", "Shade", 2, shade)))
+    spots = []
+    for k, (label, what) in enumerate(panes):
+        x, y = 16 + (k % 2) * (pw + 16), 70 + (k // 2) * (24 + ph + 14)
+        sheet.tile(x, y, pw, 22).text(0, 2, 14, label, ink)
+        y += 24
+        rs.paste(sheet.px, now if what is None else bare, round(x * 2), round(y * 2))
+        spots.append((x, y))
+        if what is None:
+            continue
+        take, kind, tier, args = what
+        cx, cy = x + OLD_MIDDLE / STILL_PPT - 108, y + OLD_TOP / STILL_PPT
+        if take == "B":
+            built(sheet, made, kit, cx, cy, kind, tier, *args)
+        else:
+            card(sheet.tile(cx - 20, cy - 20, 256, 84), 20, 20, kind, tier, SEAM if take == "A" else C_SYS, *args,
+                 slant=SLANT if take == "S" else 0.0)
+    y = 70 + 3 * (24 + ph + 14)
+    sheet.tile(0, y, W, 22).text(16, 2, 14, "At the phone's own size (1 pixel a point), in the order above", ink)
+    finish(sheet)
+    gap = (W - 16 - 3 * pw / 2) / 3
+    for k, (x, sy) in enumerate(spots):
+        crop = sheet.px[round(sy * 2):round((sy + ph) * 2), round(x * 2):round((x + pw) * 2)]
+        rs.paste(sheet.px, rs.shrink(crop, 0.5), round((16 + (k % 3) * (pw / 2 + gap)) * 2),
+                 round((y + 24 + (k // 3) * (ph / 2 + 10)) * 2))
+    rs.save(sheet.px, out / "foe_cards_fit.png")
+
+
 if __name__ == "__main__":
     rest = sys.argv[sys.argv.index("--") + 1:] if "--" in sys.argv else []
-    if len(rest) > 1 and rest[1] == "cut":
+    mode = rest[1] if len(rest) > 1 else None
+    if mode == "cut":
         cut(bl.out_dir())
+    elif mode == "fit":
+        fit(bl.out_dir())
     else:
         main()

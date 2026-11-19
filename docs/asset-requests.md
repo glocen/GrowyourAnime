@@ -13459,7 +13459,20 @@ Research, 2026-11-19, 11:30 by the clock. The director's word of 11:30 (`docs/de
   3. The other six keep their own brass and gold. A redraw into another shape comes back to the check.
   4. The sheets stay internal.
   5. Each image is uploaded under the group and logged in `docs/asset-log.md`, with `foe_cards.py`'s `images` as its source.
-- **Status:** cut, self-read and content-checked. It waits on Faber's upload and build, then his phone capture for research.
+- **Status:** cut, self-read and content-checked. Faber uploaded all eight (his asset-log row). The build waits on the fit, below.
+
+### The keeper's bar, and the fit in the game's HUD (Modulo, 2026-11-19, 12:24 to 12:31 by the clock)
+
+- **The director's words, 12:24** (register: research's row): "for the main boss we keep the old purple bar it was good", then "and those HUD make sure it compose well to our game." The keeper keeps TR5's `UI.BossBar` as it is. The new card is the Shade's and the elite's only. `RankCrest` and `PhaseNotch` are uploaded and unused (Faber's asset-log row).
+- **The fit:** `build/handoff/UI/foes/foe_cards_fit.png`, drawn by `foe_cards.py -- <out> fit`. The cards are laid in Faber's phone capture of a Tower fight (AR44's), in the old target card's place, beside the game's own HUD. It's at 2 pixels a point, then each view at the phone's own size. The six views: now; B as cut, a Shade; B on the fight HUD's slant, a Shade and an elite; B as cut, an elite; A, a Shade.
+- **What I see:**
+  - B as cut doesn't compose with the fight's HUD. Every plate at the top of the fight leans: the lead's card, the old target card, the economy pills. B's card is the Menu's panel, cut at two corners and upright, so it reads as a window from a screen dropped into the fight. A has the same shape, in a darker fill.
+  - B on the slant reads as one family with the lead's card and the pills, at both sizes. It leans at the old target card's slant (its ends 0.4 of its height across). Its teal sits beside the shard pill's teal, and apart from the lead's navy, so the foe still reads as the other side.
+  - The elite's horns are small at the phone's size. They read as two hairs at 1 pixel a point.
+  - Red level text is weak on the teal at the phone's size, as noted above: its outline carries it.
+  - Outside AR45: in the capture, the Tower floor's title ("Floor 1 · best 7") stands over the old target card's bar. It's lifted in the fit views.
+- **My recommendation:** B on the slant. It needs three new images in place of the kit's panel slices: the slanted plate's fill (tintable), its hairline edge, and the elite's brass edge on the slant. Each image is sliced with the slant inside its end slices, at the card's own height. `CardRankEdge` would go unused. The skull, the arrow, the horns and `CrTab` stay as uploaded.
+- **Status:** waiting on research's pick between B as cut and B on the slant. Faber holds the build.
 
 ## Later, by ground
 

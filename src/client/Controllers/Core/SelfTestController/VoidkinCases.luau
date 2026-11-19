@@ -983,8 +983,9 @@ function VoidkinCases.Cases(given: Given): { any }
 					local item = scroll:FindFirstChild(want.Name, true)
 					if item == nil or not item:IsA("GuiObject") or placeOf(item) <= order then
 						table.insert(wrong, `{want.Name} out of its block`)
-					elseif said(item, "Right") ~= want.Value or item:FindFirstChild("Effect", true) ~= nil or item:FindFirstChild("Under") ~= nil then
-						table.insert(wrong, `{want.Name}: {said(item, "Right")}, wanted {want.Value} and nothing under it`)
+					-- Under its total, only its row's own quiet line: HP Regen's "every 8 s" (4.6), nothing on the others.
+					elseif said(item, "Right") ~= want.Value or item:FindFirstChild("Effect", true) ~= nil or said(item, "Under") ~= want.Under then
+						table.insert(wrong, `{want.Name}: {said(item, "Right")} over {said(item, "Under") or "nothing"}, wanted {want.Value} over {want.Under or "nothing"}`)
 					elseif (item:FindFirstChild("Main", true) ~= nil) ~= (want.Main == true) then
 						table.insert(wrong, `{want.Name}: its Main tag`)
 					elseif want.Main and not mainBeside(item) then
@@ -994,7 +995,7 @@ function VoidkinCases.Cases(given: Given): { any }
 					end
 				end
 			end
-			t.Check("the five, then Core, Offense and Defense, Sustain, two a row in order, each under its heading and caption with its one total (a rating's its percent alone), the Main tagged beside its own total", #wrong == 0, wrong[1])
+			t.Check("the five, then Core, Offense and Defense, Sustain, two a row in order, each under its heading and caption with its one total (a rating's its percent alone, HP Regen's how often under it), the Main tagged beside its own total", #wrong == 0, wrong[1])
 			-- Nothing opens: no cell is a button, none holds anything under its total, and no caption says to tap.
 			local opens: { string } = {}
 			for _, group in Sheet.Groups do

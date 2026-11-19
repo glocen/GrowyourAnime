@@ -108,8 +108,11 @@ return {
 			-- never under 2.2 heights; it stretches along, never up. Tint: the content check's limit itself (AR44, "Modulo's
 			-- splash", condition 1), the nearest allowed to the reference's burnt orange, which rule 4 blocks (research's
 			-- measure, 12:48, replacing the #F08A2C of 12:11): yellower or lighter free, never redder or darker.
+			-- Round 5 (AR44, "The splash, painted"): the colour is in the picture, #CC661F at its lower edge to #E8873A in its
+			-- core, so the tint is white; a tint multiplies, and #CC661F over the core would pass rule 4's limit (the content
+			-- check's condition 1).
 			Sweep = {
-				Tint = Color3.fromHex("#CC661F"),
+				Tint = Color3.fromHex("#FFFFFF"),
 				Transparency = 0,
 				Height = 1.25, -- tucked behind the digits, peeking out at the head and the tail as the reference's (1.5 and 0.67 till 2026-11-19)
 				Left = 0.5,

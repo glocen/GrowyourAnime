@@ -562,6 +562,7 @@ local function register(model: Model, side: "Lead" | "Shade", kind: string, def:
 	model:SetAttribute("Rig", rig or (if side == "Lead" then "R6" else "Box"))
 	model:SetAttribute("Title", title)
 	model:SetAttribute("Level", block.Level)
+	model:SetAttribute("Power", Stats.Power(block)) -- its CR, for the foe card's skull (AR45; Config.Hud.Skulls)
 	-- The signature: the kit's action with a cooldown, for the HUD's ring (TR3), after its passive. 0 without one.
 	local cooldown = 0
 	for _, action in kit do
@@ -1638,6 +1639,7 @@ function FightService.SetBlock(f: Fighter, block: Stats.Block)
 	local share = Fight.Rescale(f.Health, f.Block.Health, block.Health)
 	f.Block = block
 	f.Model:SetAttribute("Level", block.Level)
+	f.Model:SetAttribute("Power", Stats.Power(block))
 	f.Model:SetAttribute("MaxHealth", block.Health)
 	setHealth(f, if f.State == "Down" then 0 else share)
 end

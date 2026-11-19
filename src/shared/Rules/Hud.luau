@@ -688,4 +688,22 @@ function Hud.Notice(age: number, m: NoticeMotion, wide: number, foot: number, re
 	return { Away = away, Size = size, Number = number, Flash = flash, Knock = knock, Sheen = sheen, Shine = shine, Solid = 1, Done = age >= leave + m.Out }
 end
 
+-- The foe card's skull (AR45; Config.Hud.Skulls): 1 grey, 2 white, 3 yellow, 4 red, by the foe's CR over the lead's.
+-- Grey under cuts[1]; white up to cuts[2], that ratio included; yellow under cuts[3]; red from it. With no lead CR yet
+-- the foe reads white, or red if it has any.
+function Hud.Skull(foe: number, lead: number, cuts: { number }): number
+	if lead <= 0 then
+		return if foe > 0 then 4 else 2
+	end
+	local ratio = foe / lead
+	if ratio < cuts[1] then
+		return 1
+	elseif ratio <= cuts[2] then
+		return 2
+	elseif ratio < cuts[3] then
+		return 3
+	end
+	return 4
+end
+
 return Hud

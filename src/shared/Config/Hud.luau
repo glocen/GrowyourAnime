@@ -124,6 +124,16 @@ return {
 		Rung = { Grow = 0.08, Most = 1.5, Rungs = { Critical = 4 } :: { [string]: number }, Default = 2 },
 		Yield = { From = 7, Seconds = 0.1, Aside = 14 },
 	},
+	-- The foe card's difficulty skull (AR45), by the foe's CR over the lead's (Rules.Hud.Skull): grey under Cuts[1], white
+	-- up to Cuts[2], yellow under Cuts[3], red from it. Fitted in research's simulation, not play (AR45, "The skulls'
+	-- thresholds, fitted", 13:22: a Shade carries much of its CR in health, so an own-level Ordinary is about 0.33 of the
+	-- lead's); checked against the game's ratios on Lantern Row. The skull and the level wear the tier's colour; the
+	-- grey skull is faint (Faint, its ImageTransparency).
+	Skulls = {
+		Cuts = { 0.25, 1.1, 1.8 },
+		Colours = { Color3.fromHex("#D3D1DC"), Color3.fromHex("#F6F2E8"), Color3.fromHex("#FFC83A"), Color3.fromHex("#FF4F42") },
+		Faint = 0.45,
+	},
 	-- The interface's motion (AR8 C; docs/research/vfx-reference.md, rule 4). Seconds; scales are of full size.
 	Motion = {
 		-- A press: the face squeezes to Squeeze within In of the touch, held at least Least, and comes back over Out with a

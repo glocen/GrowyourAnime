@@ -4116,3 +4116,17 @@ Faber, 2026-11-19, 03:43 by the clock: the follow-up's item 7 (`docs/production-
 - **The stage log:** each run's length, from its beginning to its clear, its fall or its end, is a line in the server's output (`stage run lanternrow Hard 2: Cleared after 74.3 s`), the last 50 in `NL_Debug:Invoke("StageLog")`, and in a live game Roblox's custom event `StageRunSeconds` (Creator Dashboard, Analytics, Custom), its fields the stage and how it ended.
 - **Tested:** type check 0 new; offline logic 27,212 passed, LogicTests in Studio 27,212 passed, with `Cases/Loot.luau`'s six cases (the count, step 12, Hard's chests, the floor with a retry and an interrupted win, the materials' rates, the Tower's numbers). Self-test in the Main place: Gear 10, Tower 63 and HUD 477 passed (the guide reads the new count). NOT VERIFIED, the Festival place (Now board, item 9): the Keeper, Drops and Stages cases, and a real run's log line.
 - **For research:** Hard's chests are per stage, so a ground has up to ten more chest kinds in the bag. The keeper's emblem is sure only on its first Normal win, as the table says.
+
+### Part 2: the Epic and Legendary pace (research, 2026-11-19, 20:46; tier 2, for Faber)
+
+- **The finding (MODEL, the long run, `loot/out_e3.txt`):** with part 1 built, the median first Epic comes at 11.8 h and the first Legendary after 45 h, against design.md's 4 to 6 h and 15 to 20 h. With one ground at launch, no ladder row a chest reads holds an Epic or a Legendary (they start at rows 5 and 7), so only the Tower's 0.93% and 0.40% give them.
+- **The change, two weights on Hard, each taken from Common:**
+  - A Hard elite's chest holds Epic at 0.9% or more.
+  - A Hard keeper's chest after its first win holds Epic at 2.0% and Legendary at 0.45% or more.
+  - The first Hard win is left out on purpose. Its Rare floor drops everything under Rare, so these weights would become about half its roll (Epic) and one in ten (Legendary): a jackpot at 5 h, measured in `out_e6.txt`.
+  - Config: `Chests.Hard.Least = { Elite = { Epic = 0.9 }, Keeper = { Epic = 2.0, Legendary = 0.45 } }`, or the shape Faber prefers. The chest's card shows the odds as rolled.
+- **MODEL, at the elite's 0.8 and 1.1 (`out_e6c.txt`; design clock, 80 players, 45 h, a quarter in the Tower):** first Epic rolled at 4.4 and 4.1 h, worn at 5.5 and 4.6 h. First Legendary rolled at 19.5 and 16.9 h. The first Rare comes at 1.9 h, worn at 2.8 to 3.1 h. 0.9 sits between the two runs.
+- **Limits:**
+  - The clock is the design's 180 and 210 s stages. The real length, from the stage log, can move every time here by 2 to 2.5 times. Research refits once 20 real runs are logged.
+  - With more grounds, the ladder reaches rows 5 and 7, and these weights are dropped then.
+- **Done when:** a case rolls each chest's weights (the Hard elite's, the Hard keeper's first and after, a Normal keeper's unchanged), and the bag's chest card shows them.

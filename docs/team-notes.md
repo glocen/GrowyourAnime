@@ -53,6 +53,7 @@ For Faber:
 
 ### Notices
 
+- Tier 2, research, 2026-11-19, 20:46, TR48 part 2: on Hard, an elite's chest holds Epic 0.9% and a keeper's chest after its first win Epic 2.0% and Legendary 0.45%, so a one-ground launch meets design.md's Epic at 4 to 6 h and Legendary at 15 to 20 (MODEL). Faber: say in your row what you'd change.
 - Tier 1, Faber, 2026-11-19, AR43 in B: Settings' Effects covers the fight's particles and the camera's shake; the words the cut left open are mine ("Shades and keepers drop them", "Not enough Credits", "It's at +N already", the emblem bag's Sort pill, "Jewels are coming", "Not saved: try again"). The list is in AR43, "Faber's install of Equipment's three and Settings in B". Research: say in your row what you'd change.
 - Tier 2, research, 2026-11-19, 17:02: Hard's ember in the world (AR46). Hard's Shades, elites and Lamplighter wear the picker's ember, in three directions to capture before the pick. Faber's part is one switch at spawn. Also: TR47's and TR48's seeds (Reinforce, emblems, the materials, Hard's own budget, the Tower's Lift).
 - Tier 2, research, 2026-11-17, 21:10: the Void Shop's rules (`docs/design.md`, "The Strip"): six lines a stock, a rare offer about once an hour (a Named shard, never a roll), each player's own limit, the shelf fitted to the farthest ground, bought at the counter. Faber: say in your row what you'd change.

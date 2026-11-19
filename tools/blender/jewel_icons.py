@@ -15,7 +15,9 @@ the crown, then the colour's tones, dark to near white. No setting: the five lev
 as they climb.
   1. the grain: a small round brilliant;
   2. the tiny long crystal: a small long hexagon, step cut, lying on the diagonal;
-  3. the bigger long crystal: a long octagon with pointed ends, three steps, lying on the diagonal;
+  3. the bigger long crystal: a long octagon with pointed ends, three steps, seen true and lying at 40 degrees, so it
+     reaches across the cell from its lower left (polish-later, research, 2026-11-19: at 38 points it differed from 2
+     only in size, both flat slivers on the view's tilt);
   4. the triangle: equilateral, its sides straight and its corners sharp, point up, seen square on, three steps (the
      director, 14:07: "the triangle need to be straight and perfect draw");
   5. the square: a square with its corners clipped, three steps.
@@ -186,15 +188,19 @@ def cut(level):
     if level == 2:
         girdle = turned([(-0.8, 0), (-0.48, -0.3), (0.48, -0.3), (0.8, 0), (0.48, 0.3), (-0.48, 0.3)], 32)
         return [stone("Long", [(x * 0.62, y * 0.62) for x, y in girdle], [(0.76, 0.1), (0.54, 0.17)], depth=0.3)]
+    tilt = math.radians(ic.VIEWS["jewel"][0])
     if level == 3:
+        # Level 3's own read at 38 points: seen true as the triangle is (its depth stretched by 1/sin(tilt), no spin),
+        # turned 40 degrees, so it reaches across the cell where level 2 lies flat. At FILL's 0.74 it covers about a
+        # quarter of its square, between level 2's tenth and the triangle's 0.28.
         girdle = turned([(-1.0, 0), (-0.78, -0.22), (-0.48, -0.34), (0.48, -0.34), (0.78, -0.22), (1.0, 0),
-                         (0.78, 0.22), (0.48, 0.34), (-0.48, 0.34), (-0.78, 0.22)], 32)
-        return [stone("Long", girdle, [(0.86, 0.1), (0.7, 0.18), (0.52, 0.24)], depth=0.42)]
+                         (0.78, 0.22), (0.48, 0.34), (-0.48, 0.34), (-0.78, 0.22)], 40)
+        girdle = [(x, y / math.sin(tilt)) for x, y in girdle]
+        return [stone("Long", girdle, [(0.86, 0.1), (0.7, 0.18), (0.52, 0.24)], depth=0.42, rise=1 / math.tan(tilt))]
     if level == 4:
         # The director, 14:07: "the triangle need to be straight and perfect draw". An equilateral triangle, its sides
         # straight and its corners sharp, its point up, seen square on (no spin, TRUE_VIEW); its depth stretched by
         # 1/sin(tilt) so the view's tilt gives back a true equilateral on the screen. Three clean steps to its table.
-        tilt = math.radians(ic.VIEWS["jewel"][0])
         girdle = [(0.95 * math.cos(math.radians(90 + 120 * k)), 0.95 * math.sin(math.radians(90 + 120 * k)) / math.sin(tilt))
                   for k in range(3)]
         return [stone("Triangle", girdle, [(0.8, 0.1), (0.62, 0.18), (0.42, 0.24)], depth=0.5, rise=1 / math.tan(tilt))]
@@ -209,7 +215,7 @@ def renders(out):
     for name, col in COLOURS.items():
         look = dict(facets=col["tones"], light=(col["light"], (4, 0.7), (10, 0.3)))
         for level in range(1, 6):
-            view = "jewel_true" if level == 4 else "jewel"
+            view = "jewel_true" if level in (3, 4) else "jewel"
             shot = ic.coloured(out, lambda: cut(level), view, FILL[level - 1], look)
             shots[f"Jewel{name}{level}"] = sparkle(shot, col["light"])
     return shots

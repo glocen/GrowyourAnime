@@ -57,7 +57,6 @@ On the director's word of 2026-11-13 (`docs/decisions.md`): after the whole game
 - **A stage lands, the coil** (AR37, research, 2026-11-17, 20:32): C's winding ribbon, Modulo's pick, has more turn than A's hoop. Try it as A's climb once A is in the game, if it reads from the court.
 - **The Void Shop's clock by day from far off** (AR38's second look, research, 2026-11-19, 01:14): at 160 studs at noon the lit teeth are no lighter than the sky. A dark back behind the brow's opening would set the lower teeth on dark. The count reads now by its gaps, and the crown is the far signal.
 - **The stages' tiles share one picture** (AR42's pick, research, 2026-11-19, 02:06): stages 1 to 3 show the Shade, with 2 and 3 identical. Give each stretch its own mark once the stretches differ.
-- **Jewels' levels 2 and 3 at 38 points** (AR43, research's pass, 14:12): they differ only in size in the bag's cell. Level 3 could take a brighter table or a longer reach across the cell.
 - **The stages' band's Back** (AR42's install, research, 2026-11-19, 18:51): a black plate, the darkest thing on the lit-glass screen. It could be the kit's quiet glass press.
 
 ## Done
@@ -65,3 +64,4 @@ On the director's word of 2026-11-13 (`docs/decisions.md`): after the whole game
 Lines pulled forward and drawn. The record is in each piece's entry.
 
 - **The plain damage digits' tracking** (AR44's second look, research, 2026-11-19, 13:20): pulled forward by research on 2026-11-19. Loose at full speed too, so Modulo set the plain styles' `Gap` to 0.12, and Faber's Config change is next (AR44, "The plain digits' tracking, from polish-later").
+- **Jewels' levels 2 and 3 at 38 points** (AR43, research's pass, 14:12): pulled forward by research on 2026-11-19. Level 3 now lies true at 40 degrees, reaching across the cell, and the content check passed. Faber's upload of the five is next (AR43, "Jewel level 3's own read at 38 points, from polish-later").

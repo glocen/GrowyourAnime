@@ -14062,6 +14062,29 @@ The director's words: jewels and War Emblems go in and out on Equipment's pages 
     - Reinforce's beat in frames. The timer ends it, so the press frees.
 - **Status:** implemented and tested as above. Visually reviewed: no, the PC is locked, so no captures. The phone captures of every state and research's pass wait for it to be unlocked.
 
+### Jewel level 3's own read at 38 points, from polish-later (Modulo, 2026-11-19, 20:49 to 20:56 by the clock)
+
+Research pulled it forward by message (after 20:34), as tier 1. Give level 3 its own read, a brighter table or a longer reach, checked at 38 points and at 64 px over dark, in all five colours.
+- **Why 2 and 3 matched:** both are long stones lying face up on the view's 55-degree tilt, so both drew as flat slivers about 27 degrees off level. Level 3 was only longer, covering 0.14 of its square against level 2's 0.10.
+- **Three takes, all five colours** (`build/scratch/modulo/jewel_l3/jewel_l3_takes.png`, by `variants.py` beside it):
+  - **The table lifted and broadened:** it barely changes at 38 points.
+  - **The reach, seen true across the cell:** level 3 reads as its own stone at once.
+  - **Both together:** the lifted table washes every colour pastel, against the director's "mature" (14:07).
+- **What's drawn: the reach.** Level 3 is the same long octagon with pointed ends and three steps (`cut(3)` in `tools/blender/jewel_icons.py`).
+  - It is now seen true, as level 4's triangle is: its depth is stretched by 1/sin(tilt), and the view has no spin.
+  - It is turned 40 degrees, so it reaches across the cell from its lower left. FILL stays 0.74.
+  - It covers 0.255 of its square, between level 2's 0.100 and the triangle's 0.280, so the climb by size holds: 0.073, 0.100, 0.255, 0.280, 0.481.
+  - At 0.8 it covered 0.298, past the triangle, so it was kept at 0.74.
+- **The read:** in the bag at 38 points, the five read grain, sliver, crystal, triangle, square. The colours, the edge light and the glint are unchanged.
+  - Beside the Standard shard (`shard_vs_l3.png`), the shard is a pale, upright raw crystal with a glow. Purple level 3 is deep violet at 40 degrees, with a crisp stepped table.
+- **Where:** the five `Jewel<Colour>3.png` in `build/handoff/UI/jewels/images/` are new, and `jewels_cut.png` is redrawn. The other 20 images are byte-identical to the uploaded ones. `jewels.json` is unchanged.
+- **Content check PASS** (20:55). All five read as cut stones with straight step facets and dry glints, and the red one reads as a cut ruby stick, never a drop or a wound, at 64 px and at 38 points. Nothing in them is a mark, a logo or another game's gem, and level 3 stays apart from the shard. The conditions are the first pass's:
+  1. Upload only the five `Jewel<Colour>3.png`. The sheets and the before files stay internal.
+  2. Log each new id in `docs/asset-log.md`, in place of the old level 3 ids.
+  3. Red jewels in the world need their own check.
+  4. A further redraw of level 3 comes back to the check.
+- **For Faber:** upload the five under the group, untinted, swap their ids in `Config.UIKit`, and log them.
+
 ## AR44. The damage numbers' rework: the plain, received and healing numbers, and the critical closer to the reference (Faber's takes in the game, Modulo's stroke, research's pick)
 
 Research, 2026-11-19, 11:17 by the clock. The director, by 11:16, to research: "The damages/healing text need a small rework it doesnt look as i wanted it to be, same for the crit text it need to be more close to the reference i've shown". The same morning, relayed by Modulo at about 11:15: "like the blackstroke around the text for those are way to thick". Research reads "those" as the damage numbers, since the two came together. The rule stays `docs/ui.md`, "Damage numbers" (the director, 2026-11-12); this changes the look only. The reference is `docs/research/hud-reference.md`, its three arena screenshots, held internal.

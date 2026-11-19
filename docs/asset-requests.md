@@ -13349,6 +13349,28 @@ From home_tray.png and home_step.png at the smallest phone, before Modulo cuts t
 - **The step:** the tray folds back into the tile as the screen rises over it, and Back plays it in reverse, so the player always sees where a screen came from and goes back to. One mixed frame each way is fine at that speed.
 - **Tier:** competent. **Must-fix:** none. It goes to Faber as drawn.
 
+### Home in B, cut for Faber (Modulo, 2026-11-19, 13:21 to 13:33 by the clock)
+
+- **Where:** `build/handoff/UI/home/`, from `tools/blender/home_panel.py` (`cut`).
+  - `images/`: eleven images at 4 pixels a point.
+  - `home.json`: every placement in points from the tray's top left, the tints and states, the dim, and the seeds for the opening and the step.
+  - `home_cut.png`: each image alone, at full size and at 64 px.
+  - `home_fit.png`: the tray built from the images beside the drawn one.
+- **The images:**
+  - **The row tile, sliced:** `HomeTileFill`, `HomeTileEdge`, `HomeTileGlint` and `HomeTileGlow`. They're drawn at their own height and stretch along only, so one set serves Inventory's four and Equipment's three.
+  - **Settings' tall tile, fixed:** the same four as `HomeTall*`.
+  - `HomePoint`, the point toward the Home tile, in its own colours.
+  - **Two marks that were drawn in code until now:** `HomeMarkSettings` (the cog) and `HomeMarkInventory` (the shard, its crease cut half through).
+  - **From before:** the plate is the kit's panel (`PanelShadow`, `PanelFill`, `PanelEdge`), and the tiles' icons are the shipped page icons (Equipment's heading takes `PageForge`).
+- **Two changes from the drawing, both to match it in the engine:**
+  - The hairline and the glint sit on the tile's outline, half outside it. Their images carry a 1 point pad.
+  - The plate is opaque. The world never shows through the tray.
+- **The fit:** built against drawn over the tray at the smallest phone, the mean difference is 0.003 and the 99th percentile 0.05. What remains is the sub-pixel edges of slices stretched to fractional widths, the scaled marks' rims, and the plate's corner. The corner is the kit's, the same as every other panel's.
+- **The world:** the fight still is now my own copy (`build/scratch/modulo/captures/fight-phone.png`, Faber's AR44 still), its bezel cut away in code. The capture these sheets used before was cleared from Faber's scratch at 13:21.
+- **Content check PASS** (13:31), on all eleven images and the words players see. The cog is an ordinary gear. The shard reads as the game's own crystal, never a drop, a wound or a sign. The tray copies no work's frame or composition.
+- **For Faber:** upload the eleven under the group, then build the tray from `home.json`. Its tray, headings, tiles and rule are measured on the smallest phone. The tray keeps its size on every phone, centred, its foot 12 above the dock's top. The press's squeeze is `Config.Hud.Motion.Press`, as for every press.
+- **Status:** cut and content-checked; not uploaded. Next for Modulo: the dock's Home mark (B), then the twelve set symbols.
+
 ## AR44. The damage numbers' rework: the plain, received and healing numbers, and the critical closer to the reference (Faber's takes in the game, Modulo's stroke, research's pick)
 
 Research, 2026-11-19, 11:17 by the clock. The director, by 11:16, to research: "The damages/healing text need a small rework it doesnt look as i wanted it to be, same for the crit text it need to be more close to the reference i've shown". The same morning, relayed by Modulo at about 11:15: "like the blackstroke around the text for those are way to thick". Research reads "those" as the damage numbers, since the two came together. The rule stays `docs/ui.md`, "Damage numbers" (the director, 2026-11-12); this changes the look only. The reference is `docs/research/hud-reference.md`, its three arena screenshots, held internal.

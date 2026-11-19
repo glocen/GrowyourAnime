@@ -1,0 +1,473 @@
+{
+ "pixelsPerPoint": 4,
+ "palette": "C_SYS (AR40's C, the system panel), as the foe cards",
+ "layout": {
+  "tray": {
+   "size": [
+    536.8,
+    138.0
+   ],
+   "where": "centred on the phone's middle; its foot 12 above the dock's top (95 above the phone's foot)",
+   "plate": "the kit's panel (Config.UIKit's slices, as the foe cards): PanelShadow under it (pad 16), PanelFill tinted C's panel #34606C to #2A4E5A, opaque (the world never shows through the tray), PanelEdge tinted C's edge #E2CFA4",
+   "point": "HomePoint, its anchor on the tray's foot at the phone's middle"
+  },
+  "headings": [
+   {
+    "group": "Inventory",
+    "mark": [
+     65.4,
+     29.0
+    ],
+    "markBox": 19.2,
+    "word": [
+     65.4,
+     49.0
+    ]
+   },
+   {
+    "group": "Equipment",
+    "mark": [
+     53.0,
+     91.0
+    ],
+    "markBox": 18.0,
+    "word": [
+     53.0,
+     111.0
+    ]
+   }
+  ],
+  "headingNote": "the mark an ImageLabel markBox square, its middle at `mark`: Inventory's HomeMarkInventory, Equipment's Config.Hud PageForge, tinted C's light #F0E2C4; the group's name 14 points, bold, C's text #FFF6E2, its capitals' middle at `word`, centred. No plate",
+  "tiles": [
+   {
+    "button": "Overview",
+    "foot": [
+     108.4,
+     64.0
+    ],
+    "footWidth": 76.0,
+    "high": 52.0,
+    "image": "HomeTile",
+    "box": [
+     108.4,
+     12.0,
+     86.4,
+     52.0
+    ],
+    "icon": [
+     151.6,
+     28.0
+    ],
+    "iconBox": 20.0,
+    "word": [
+     151.6,
+     48.0
+    ]
+   },
+   {
+    "button": "Kit",
+    "foot": [
+     190.4,
+     64.0
+    ],
+    "footWidth": 76.0,
+    "high": 52.0,
+    "image": "HomeTile",
+    "box": [
+     190.4,
+     12.0,
+     86.4,
+     52.0
+    ],
+    "icon": [
+     233.6,
+     28.0
+    ],
+    "iconBox": 20.0,
+    "word": [
+     233.6,
+     48.0
+    ]
+   },
+   {
+    "button": "Inventory",
+    "foot": [
+     272.4,
+     64.0
+    ],
+    "footWidth": 76.0,
+    "high": 52.0,
+    "image": "HomeTile",
+    "box": [
+     272.4,
+     12.0,
+     86.4,
+     52.0
+    ],
+    "icon": [
+     315.6,
+     28.0
+    ],
+    "iconBox": 20.0,
+    "word": [
+     315.6,
+     48.0
+    ]
+   },
+   {
+    "button": "Stars",
+    "foot": [
+     354.4,
+     64.0
+    ],
+    "footWidth": 76.0,
+    "high": 52.0,
+    "image": "HomeTile",
+    "box": [
+     354.4,
+     12.0,
+     86.4,
+     52.0
+    ],
+    "icon": [
+     397.6,
+     28.0
+    ],
+    "iconBox": 20.0,
+    "word": [
+     397.6,
+     48.0
+    ]
+   },
+   {
+    "button": "Reinforce",
+    "foot": [
+     96.0,
+     126.0
+    ],
+    "footWidth": 103.33,
+    "high": 52.0,
+    "image": "HomeTile",
+    "box": [
+     96.0,
+     74.0,
+     113.73,
+     52.0
+    ],
+    "icon": [
+     152.87,
+     90.0
+    ],
+    "iconBox": 20.0,
+    "word": [
+     152.87,
+     110.0
+    ]
+   },
+   {
+    "button": "Jewels",
+    "foot": [
+     205.33,
+     126.0
+    ],
+    "footWidth": 103.33,
+    "high": 52.0,
+    "image": "HomeTile",
+    "box": [
+     205.33,
+     74.0,
+     113.73,
+     52.0
+    ],
+    "icon": [
+     262.2,
+     90.0
+    ],
+    "iconBox": 20.0,
+    "word": [
+     262.2,
+     110.0
+    ]
+   },
+   {
+    "button": "War Emblems",
+    "foot": [
+     314.67,
+     126.0
+    ],
+    "footWidth": 103.33,
+    "high": 52.0,
+    "image": "HomeTile",
+    "box": [
+     314.67,
+     74.0,
+     113.73,
+     52.0
+    ],
+    "icon": [
+     371.53,
+     90.0
+    ],
+    "iconBox": 20.0,
+    "word": [
+     371.53,
+     110.0
+    ]
+   },
+   {
+    "button": "Settings",
+    "foot": [
+     430.0,
+     126.0
+    ],
+    "footWidth": 72.0,
+    "high": 114.0,
+    "image": "HomeTall",
+    "box": [
+     430.0,
+     12.0,
+     94.8,
+     114.0
+    ],
+    "icon": [
+     479.4,
+     59.0
+    ],
+    "iconBox": 27.73,
+    "word": [
+     475.4,
+     88.0
+    ]
+   }
+  ],
+  "tileNote": "each tile's images laid in its box (left, top, width, height), an image with a Pad in that box grown by its Pad on every side, bottom to top: Glow (pressed), Fill, Edge, Glint (at rest). Its icon an ImageLabel iconBox square, its middle at `icon`: the page's icon, Config.Hud's PageOverview, PageKit, PageItems (Inventory), PageStars, PageForge (Reinforce), PageJewels and PageWarEmblems; Settings' HomeMarkSettings. Tinted C's light #F0E2C4 at rest, C's ink #1E3238 pressed. Its word 14 points, bold, centred, its capitals' middle at `word`: C's text #FFF6E2 at rest, C's ink pressed",
+  "rule": {
+   "ends": [
+    [
+     425.2,
+     120.0
+    ],
+    [
+     445.6,
+     18.0
+    ]
+   ],
+   "middle": [
+    435.4,
+    69.0
+   ],
+   "note": "a 1 point line between the rows and Settings, C's edge #E2CFA4 at BackgroundTransparency 0.4: a Frame 1 wide and 104.0 high, its middle at `middle`, Rotation 11.31 (clockwise, its top to the right)"
+  }
+ },
+ "layoutNote": "measured on the smallest phone (568 by 320); the tray keeps its size on every phone, centred",
+ "states": {
+  "rest": "Fill tinted C's button, Edge C's facet at 0.45, Glint shown, icon and word light",
+  "pressed": "Glow shown under, Fill C's lit, Edge C's light, Glint hidden, icon and word ink; the press's squeeze is Config.Hud.Motion.Press, as every press"
+ },
+ "dim": {
+  "colour": "#05090B",
+  "amount": 0.36,
+  "seconds": 0.15,
+  "note": "the world dims under the tray, eased out; the dock stays lit above the dim (its rect: 100 points each side of the middle, 83 up from the foot)"
+ },
+ "motion": {
+  "open": {
+   "Grow": 0.22,
+   "GrowFrom": 0.55,
+   "GrowBack": 1.2,
+   "Fade": 0.1
+  },
+  "step": {
+   "Lit": 0.06,
+   "Leave": 0.12,
+   "LeaveTo": 0.55,
+   "RiseAt": 0.08,
+   "Rise": 0.22,
+   "RiseFrom": 24.0,
+   "Cover": 0.08,
+   "Sink": 0.14,
+   "Uncover": 0.1,
+   "BackAt": 0.06
+  },
+  "note": "open: the tray grows from GrowFrom of its size to 1 about the Home tile's top middle (the phone's middle, 83 up from the foot) in Grow seconds, a Back ease of GrowBack, and fades in in Fade. step: into a screen and Back, as AR43's record says. Seeds for Config.Hud.Motion"
+ },
+ "images": {
+  "HomeTileFill": {
+   "file": "images/HomeTileFill.png",
+   "pixels": [
+    208,
+    208
+   ],
+   "points": [
+    52.0,
+    52.0
+   ],
+   "cut": [
+    12.4,
+    0,
+    12.4,
+    0
+   ],
+   "tint": "at rest, C's button #447480 at its top to #366270 at its foot (a UIGradient); pressed, C's lit #F0E2C4 to #DCCBA6",
+   "use": "a button tile in Inventory's and Equipment's rows: its body. Sliced at Cut (left, top, right, foot), its slanted ends inside the end slices: drawn at its own height (52), it stretches along only. Its box is its foot's width plus 10.4."
+  },
+  "HomeTileEdge": {
+   "file": "images/HomeTileEdge.png",
+   "pixels": [
+    216,
+    216
+   ],
+   "points": [
+    54.0,
+    54.0
+   ],
+   "pad": 1.0,
+   "cut": [
+    13.4,
+    0,
+    13.4,
+    0
+   ],
+   "tint": "at rest, C's facet #8FC4C8 at ImageTransparency 0.45; pressed, C's light #F0E2C4",
+   "use": "a button tile in Inventory's and Equipment's rows: its hairline, over the body. Its box is the tile's with Pad on every side: the line sits on the tile's outline, half outside. Sliced as the tile, at its own height (54)."
+  },
+  "HomeTileGlint": {
+   "file": "images/HomeTileGlint.png",
+   "pixels": [
+    216,
+    216
+   ],
+   "points": [
+    54.0,
+    54.0
+   ],
+   "pad": 1.0,
+   "cut": [
+    13.4,
+    0,
+    13.4,
+    0
+   ],
+   "tint": "C's glint #FFF6E2 at ImageTransparency 0.65; at rest only",
+   "use": "a button tile in Inventory's and Equipment's rows: the light along its top, over the hairline. Its box is the tile's with Pad on every side: the line sits on the tile's outline, half outside. Sliced as the tile, at its own height (54)."
+  },
+  "HomeTileGlow": {
+   "file": "images/HomeTileGlow.png",
+   "pixels": [
+    272,
+    272
+   ],
+   "points": [
+    68.0,
+    68.0
+   ],
+   "pad": 8.0,
+   "cut": [
+    20.4,
+    0,
+    20.4,
+    0
+   ],
+   "tint": "C's light #F0E2C4 at ImageTransparency 0.6; pressed only, under the body",
+   "use": "a button tile in Inventory's and Equipment's rows: the press's glow. Its box is the tile's with Pad on every side. Sliced as the tile, at its own height (68)."
+  },
+  "HomeTallFill": {
+   "file": "images/HomeTallFill.png",
+   "pixels": [
+    379,
+    456
+   ],
+   "points": [
+    94.8,
+    114.0
+   ],
+   "tint": "at rest, C's button #447480 at its top to #366270 at its foot (a UIGradient); pressed, C's lit #F0E2C4 to #DCCBA6",
+   "use": "Settings' tile, both rows high: its body. Never sliced: drawn at its own size, its foot 72 wide and its top 22.8 right of its foot."
+  },
+  "HomeTallEdge": {
+   "file": "images/HomeTallEdge.png",
+   "pixels": [
+    387,
+    464
+   ],
+   "points": [
+    96.8,
+    116.0
+   ],
+   "pad": 1.0,
+   "tint": "at rest, C's facet #8FC4C8 at ImageTransparency 0.45; pressed, C's light #F0E2C4",
+   "use": "Settings' tile, both rows high: its hairline, over the body. Its box is the tile's with Pad on every side: the line sits on the tile's outline, half outside. Never sliced."
+  },
+  "HomeTallGlint": {
+   "file": "images/HomeTallGlint.png",
+   "pixels": [
+    387,
+    464
+   ],
+   "points": [
+    96.8,
+    116.0
+   ],
+   "pad": 1.0,
+   "tint": "C's glint #FFF6E2 at ImageTransparency 0.65; at rest only",
+   "use": "Settings' tile, both rows high: the light along its top, over the hairline. Its box is the tile's with Pad on every side: the line sits on the tile's outline, half outside. Never sliced."
+  },
+  "HomeTallGlow": {
+   "file": "images/HomeTallGlow.png",
+   "pixels": [
+    443,
+    520
+   ],
+   "points": [
+    110.8,
+    130.0
+   ],
+   "pad": 8.0,
+   "tint": "C's light #F0E2C4 at ImageTransparency 0.6; pressed only, under the body",
+   "use": "Settings' tile, both rows high: the press's glow. Its box is the tile's with Pad on every side. Never sliced."
+  },
+  "HomePoint": {
+   "file": "images/HomePoint.png",
+   "pixels": [
+    112,
+    56
+   ],
+   "points": [
+    28,
+    14
+   ],
+   "anchor": [
+    14,
+    2
+   ],
+   "tint": null,
+   "use": "the point toward the Home tile, in its own colours (C's panel's foot #2A4E5A, C's edge #E2CFA4), never tinted. Its anchor on the tray's foot at the phone's middle, laid over the plate, so the point opens into it"
+  },
+  "HomeMarkSettings": {
+   "file": "images/HomeMarkSettings.png",
+   "pixels": [
+    128,
+    128
+   ],
+   "points": [
+    32,
+    32
+   ],
+   "tint": "at rest, C's light #F0E2C4; pressed, C's ink #1E3238",
+   "use": "Settings' cog, drawn 30 high in its 32 point box: on Settings' tile at 26 high (its box 27.7)"
+  },
+  "HomeMarkInventory": {
+   "file": "images/HomeMarkInventory.png",
+   "pixels": [
+    128,
+    128
+   ],
+   "points": [
+    32,
+    32
+   ],
+   "tint": "C's light #F0E2C4",
+   "use": "Inventory's mark, a shard with its crease cut through, drawn 30 high in its 32 point box: in Inventory's heading at 18 high (its box 19.2)"
+  }
+ }
+}

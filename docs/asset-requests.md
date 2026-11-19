@@ -13200,7 +13200,8 @@ They replace the pages above where they differ. The register's rows are in `docs
 - **Equipment, once Forge:** the reinforce page. No Voidkin and no Combat Power on it ("to much remove it"). The left side lists **only the gear worn**, one row each with its picture, its +level and the stats it raises. Tapping a row lights it, and the right side is that item's reinforce: the item, its material under it, the level and stats now and after, the rate as "Success X% · Fail Y%", the cost, and the press. Laid out like the director's picture (internal), except **no item that protects against a fail**. A fail shows its spent cost, and the level stays.
 - **Gear cells** show only the +level. The socket pips go.
 - **War Emblems and jewels** go on the gear's own card, scrolled down. The War Emblems page is dropped, and the shipped emblem icons are rejected. The new star: `docs/design.md`, "War Emblems".
-- **Waits:** the Menu (the director's proposal of 03:17, before the director's yes); the numbers (research's refit).
+- **The Menu** [D, 03:19, `docs/ui.md`, the dock]: Equipment is a tab of the Menu, beside Voidkin and Settings, off the Voidkin screen's rail. Draw the page in the Menu's frame, with a Settings tab as a plain state (music, sound, effects). Quest waits.
+- **Waits:** the numbers (research's refit).
 
 ## Later, by ground
 

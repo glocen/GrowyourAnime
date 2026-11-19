@@ -194,6 +194,7 @@ The largest change from the package (`docs/decisions.md`, "What changed from the
 
 One number for how strong the lead is with its preset, made to be watched rising [D: appealing, 2026-11-12].
 
+- **Its word.** Players read it as "CR" wherever it shows [D, 2026-11-19, 10:36: "we are shorting combat power words to \"CR\""], from one string, `Sheet.Said.Power`. The docs and the code call it Combat Power.
 - **It never lies.** It's a weighted sum of the lead's resolved stats (`docs/balance.md`, "The stats"), counting only what the fighter can use: Elemental Attack counts only for a fighter with an element (24f85e8, 2026-11-18), and the weights are fitted by the simulation so that, with no type edge, the higher Combat Power wins more often. A number players chase has to be one they can trust.
 - **Every upgrade moves it.** Everything adds points, so every real gain, an emblem included, raises it by a visible number, never by zero: a whole one, or one decimal for a gain under 1 ("+0.4"). Its scale is a tenth of the seeds' first [D, 2026-11-18, D3: 60,382 reads about 6,038], a look that moves no balance. A gain is judged on the unrounded sum (`Stats.Compare`, `Chests.Keep`), so one under a half is never salvaged as none.
 - **Where it shows.** On the Voidkin screen (Regalia's screen is merged into it, 2026-11-15), at the Voidkin's feet, large (between the slot columns on the Items page; alone under the figure on every other page), so it reads as the character's own [D: where is research's choice]. The same view is what a visiting player sees of your lead.

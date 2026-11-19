@@ -21,4 +21,14 @@ return {
 		Green = Color3.fromHex("42CC7E"),
 	} :: { [string]: Color3 },
 	MaskTint = Color3.fromHex("FFE2B8"),
+	-- A foe on a Hard stage (AR46, with AR47's masks): its body and masks wear its rig's Hard look
+	-- (ServerStorage.Templates.HardLooks, tools/studio/Models/HardLooks.luau), the coat's cracks lit from within and the
+	-- masks' cuts in the ember. The type's colour moves from the glow's tint into the look's own (SurfaceAppearance.Color,
+	-- AlphaMode TintMask), which the glow carries, so the body's glow takes BodyTint at the same strength and every lit
+	-- texel draws as on Normal; the masks keep MaskTint and MaskEmissive. Its burst's pictures take Burst, the scraps
+	-- excepted: they stay white on every difficulty (the content check's condition, 2026-11-19, 18:19).
+	Hard = {
+		BodyTint = Color3.new(1, 1, 1),
+		Burst = Color3.fromHex("FFB4A0"),
+	},
 }

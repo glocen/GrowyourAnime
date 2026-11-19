@@ -438,10 +438,38 @@ local function buildBox(row: Enemies.Row, name: string): Model
 	return model
 end
 
+-- A foe's look on Hard (AR46; Config.Shades.Hard): `look` is replaced by its rig's Hard look, which keeps its attributes
+-- (the Lamplighter's Glow). A script can't set a look's maps, so the Hard one is cloned from ServerStorage.Templates.
+local function wearHard(look: SurfaceAppearance, rig: string): SurfaceAppearance
+	local hard = (ServerStorage:WaitForChild("Templates"):WaitForChild("HardLooks"):WaitForChild(rig) :: SurfaceAppearance):Clone()
+	for name, value in look:GetAttributes() do
+		hard:SetAttribute(name, value)
+	end
+	hard.Name = look.Name
+	hard.Parent = look.Parent
+	look:Destroy()
+	return hard
+end
+
+-- A look lit as its kind of glow: the body's in its type's colour, a mask's in a mask's own (Config.Shades). On Hard the
+-- type's colour is the look's own tint and the body's glow goes white (Config.Shades.Hard); a mask's look takes no tint.
+local function light(look: SurfaceAppearance, onMask: boolean, tint: Color3, hard: boolean)
+	if onMask then
+		look.EmissiveTint, look.EmissiveStrength = Shades.MaskTint, Shades.MaskEmissive
+	elseif hard then
+		look.EmissiveTint, look.EmissiveStrength = Shades.Hard.BodyTint, Shades.Emissive
+	else
+		look.EmissiveTint, look.EmissiveStrength = tint, Shades.Emissive
+	end
+	if hard then
+		look.Color = if onMask then Color3.new(1, 1, 1) else tint
+	end
+end
+
 -- A Shade in AR2's rig (ServerStorage.Templates.Shade, tools/studio/Models/Shade.luau): the row's mask kept and the
 -- others dropped, an elite's second mask on its Left Arm too, the body's lit edges in its type's colour and the masks in
--- their own (Config.Shades), at the row's scale.
-local function buildShade(row: Enemies.Row, name: string, type: string): Model
+-- their own (Config.Shades), at the row's scale. On Hard, the body and masks wear the Shade's Hard look.
+local function buildShade(row: Enemies.Row, name: string, type: string, hard: boolean): Model
 	local templates = ServerStorage:WaitForChild("Templates")
 	local model = (templates:WaitForChild("Shade") :: Model):Clone()
 	model.Name = name
@@ -461,9 +489,8 @@ local function buildShade(row: Enemies.Row, name: string, type: string): Model
 	for _, look in model:GetDescendants() do
 		if look:IsA("SurfaceAppearance") then
 			local on = (look.Parent :: Instance).Name
-			local onMask = on == keep or on == second
-			look.EmissiveTint = if onMask then Shades.MaskTint else tint
-			look.EmissiveStrength = if onMask then Shades.MaskEmissive else Shades.Emissive
+			local worn = if hard then wearHard(look, "Shade") else look
+			light(worn, on == keep or on == second, tint, hard)
 		end
 	end
 	if row.Scale and row.Scale ~= 1 then
@@ -474,8 +501,9 @@ end
 
 -- An enemy in a rig of its own (ServerStorage.Templates.<Rig>: the Lamplighter's, built by ModelRecipe),
 -- built on the Shade's frame: each surface's glow says what it is (its attribute Glow), so the body's lit seams take its
--- type's colour and the mask a mask's, as a Shade's (Config.Shades); any other glow is its own. At the row's scale.
-local function buildRig(row: Enemies.Row, name: string, type: string): Model
+-- type's colour and the mask a mask's, as a Shade's (Config.Shades); any other glow is its own. At the row's scale. On
+-- Hard, the body's and the mask's looks are the rig's Hard look; its other glows keep theirs.
+local function buildRig(row: Enemies.Row, name: string, type: string, hard: boolean): Model
 	local templates = ServerStorage:WaitForChild("Templates")
 	local model = (templates:WaitForChild(row.Rig) :: Model):Clone()
 	model.Name = name
@@ -484,10 +512,9 @@ local function buildRig(row: Enemies.Row, name: string, type: string): Model
 	for _, look in model:GetDescendants() do
 		if look:IsA("SurfaceAppearance") then
 			local glow = look:GetAttribute("Glow")
-			if glow == "Body" then
-				look.EmissiveTint, look.EmissiveStrength = tint, Shades.Emissive
-			elseif glow == "Mask" then
-				look.EmissiveTint, look.EmissiveStrength = Shades.MaskTint, Shades.MaskEmissive
+			if glow == "Body" or glow == "Mask" then
+				local worn = if hard then wearHard(look, row.Rig :: string) else look
+				light(worn, glow == "Mask", tint, hard)
 			end
 		end
 	end
@@ -1660,7 +1687,8 @@ function FightService.SpawnEnemy(def: string, level: number, at: CFrame, options
 		model = buildBox(row, name)
 		up = (row.Size :: { number })[2] / 2 + 0.1
 	else
-		model = if row.Rig == "Shade" then buildShade(row, name, block.Type) else buildRig(row, name, block.Type)
+		local hard = options ~= nil and options.Difficulty == "Hard"
+		model = if row.Rig == "Shade" then buildShade(row, name, block.Type, hard) else buildRig(row, name, block.Type, hard)
 		up = SHADE_ROOT_HEIGHT * (row.Scale or 1) + 0.05 -- the rig's feet on the floor
 	end
 	model:PivotTo(at + Vector3.new(0, up, 0))
@@ -1672,6 +1700,7 @@ function FightService.SpawnEnemy(def: string, level: number, at: CFrame, options
 	f.Difficulty = if options then options.Difficulty else nil
 	model:SetAttribute("Type", block.Type)
 	model:SetAttribute("Stage", f.Stage)
+	model:SetAttribute("Difficulty", f.Difficulty) -- its burst's tint on Hard (Config.Shades.Hard)
 	if options and options.For then
 		f.For = options.For
 		model:SetAttribute("For", options.For.UserId)

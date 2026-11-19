@@ -12,26 +12,27 @@
 local Players = game:GetService("Players")
 
 -- Published under the group, 2026-11-12 (docs/asset-log.md): meshes by ModelAssembly.PublishMesh, maps by
--- tools/upload/upload_asset.py.
+-- tools/upload/upload_asset.py. The Brawler's two masks and the colour and glow maps again on 2026-11-19, with the
+-- stage tile's face (AR47).
 local MESHES = {
 	Shade_Torso = 128634049240309,
 	Shade_RightArm = 76942653408881,
 	Shade_LeftArm = 103928260550532,
 	Shade_RightLeg = 94957425237019,
 	Shade_LeftLeg = 89850488694412,
-	Shade_MaskBrawler = 79129017294899,
+	Shade_MaskBrawler = 92815305659174,
 	Shade_MaskGuard = 127621233124561,
 	Shade_MaskDasher = 92039325647952,
 	Shade_MaskSupport = 82027470218034,
-	Shade_MaskBrawlerBare = 134287799840335, -- the elite's copy without its ties (AR2, section 7)
+	Shade_MaskBrawlerBare = 91378643616488, -- the elite's copy without its ties (AR2, section 7)
 }
 -- AR2, section 4 (2026-11-12): the colour map grey under the lit edges and near white under the masks' cuts, and the
 -- glow mask written for the recipe's two strengths over it. The two go up together and are never paired with the first
--- two (97770465927421, 104234918338692).
+-- two (97770465927421, 104234918338692), nor AR2's (101466364915316, 102819316179447), which AR47 replaced.
 local MAPS = {
-	Color = "rbxassetid://101466364915316",
+	Color = "rbxassetid://136707341913294",
 	Roughness = "rbxassetid://139349513496154",
-	Emissive = "rbxassetid://102819316179447",
+	Emissive = "rbxassetid://99710484965891",
 }
 local BODY = {
 	{ Piece = "Shade_Torso", On = "Torso" },

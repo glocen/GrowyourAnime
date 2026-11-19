@@ -36,6 +36,7 @@ local Fight = require(ReplicatedStorage.Shared.Rules.Fight)
 local Track = require(ReplicatedStorage.Shared.Rules.Track)
 local Flight = require(ReplicatedStorage.Shared.Rules.Flight)
 local ShadeBurstArt = require(ReplicatedStorage.Shared.Config.ShadeBurstArt)
+local Shades = require(ReplicatedStorage.Shared.Config.Shades)
 local Sounds = require(script.Parent.Sounds)
 local Rows = require(script.Parent.Rows)
 local UI = script.Parent.Parent.Parent.Parent.UI
@@ -1510,6 +1511,7 @@ end
 -- an ordinary Shade's size, so a Shade's scale (the elite's) scales it. With no clip it starts at the Burst.
 -- A keeper's fall (`fall`, Config.Effects.Falls) runs the same burst on its own Down clip: the table's frames are moved
 -- to its Burst marker, and its Kept parts aren't hidden (Effects.LanternOut puts them out).
+-- A foe on Hard (its Difficulty attribute) tints every picture but the scraps with Config.Shades.Hard.Burst (AR46).
 export type Fall = typeof(EffectsConfig.Falls.Lamplighter)
 function Effects.ShadeBurst(model: Model, down: AnimationTrack?, collar: Attachment?, fall: Fall?, burst: ((at: Vector3) -> ())?)
 	local look = EffectsConfig.ShadeBurst
@@ -1520,6 +1522,7 @@ function Effects.ShadeBurst(model: Model, down: AnimationTrack?, collar: Attachm
 		kept[name] = true
 	end
 	local root = model:FindFirstChild("HumanoidRootPart") :: BasePart?
+	local hard = model:GetAttribute("Difficulty") == "Hard"
 	local anchor = part(HOT)
 	anchor.Name = "NL_ShadeBurst"
 	anchor.Transparency = 1
@@ -1537,6 +1540,8 @@ function Effects.ShadeBurst(model: Model, down: AnimationTrack?, collar: Attachm
 				gui.ClipsDescendants = false -- a scrap turns past its square
 				gui.Enabled = true
 				label.ImageTransparency = 1
+				label.ImageColor3 = if hard and picture.Kind ~= "scrap" then Shades.Hard.Burst else HOT
+				gui:SetAttribute("Kind", picture.Kind) -- for the self-test
 				shown[key] = { Gui = gui, Label = label }
 			end
 		end

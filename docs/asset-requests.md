@@ -14559,6 +14559,30 @@ Labelled SIMULATION, not play: `tools/balance/sim.py`'s model, 6,000 leads (leve
   3. Once installed, one player-camera capture of a Hard Shade and the Lamplighter, near and side headings, shows the cracks drawing amber over the type's trim, as in the cut. This matters most on the TintMask route. A crack drawn flat or dark red in game comes back to the check.
   4. The burst's scraps stay ImageColor3 white on every difficulty.
 
+### Faber's install, AR46 with AR47's masks (Faber, 2026-11-19, 18:50 to 19:20 by the clock)
+- **The route: TintMask** (Faber's pick of the cut's three). One Hard look per rig carries the type's colour in its `Color`, with the glow tint white: four images uploaded instead of twelve, and a new type costs nothing. Checked in Studio before the upload: the trim takes the type through the map's alpha, the cracks keep their amber, and the glow follows the tinted colour.
+- **Uploaded** under the group, by 19:02, all eight read back Approved by 19:16: AR46's four maps, and AR47's two masks with `Shade_Color` and `Shade_Emissive`. The ids are in `docs/asset-log.md`, in AR46's and AR47's rows.
+- **Where it lives:**
+  - `src/storage/HardLooks.rbxm` (built by `tools/studio/Models/HardLooks.luau`): one look per rig, cloned over the body's and the masks' looks at spawn on Hard (`FightService`, `wearHard`).
+  - `Config.Shades.Hard` holds `BodyTint` and `Burst`.
+  - The Shade template takes AR47's masks and maps (`src/storage/Shade.rbxm`, `tools/studio/Models/Shade.luau`).
+  - The masks keep their own light, and the Lamplighter's lantern and pole keep their looks.
+  - A Hard foe's burst takes `Shades.Hard.Burst` on every picture but the scraps (`FighterController/Effects.luau`).
+  - `NL_Debug` `FightSpawn` takes a difficulty.
+- **Tests:**
+  - "Fight: a Hard foe wears its rig's Hard look and bursts warm" (`SelfTestController/HardLooksCases.luau`), run with the Shade's and the Lamplighter's cases: 27 passed, 0 failed, at 60 fps.
+  - The type check: 0 new.
+- **Captures** at native pixels, from the player's camera in the yard's daylight, in `build/scratch/faber/ar46/`:
+  - `hard-front.png`, `hard-front-mask.png` and `hard-side.png`: a Normal brawler, a Hard elite and a Hard Lamplighter, at front and side headings.
+  - `burst-strip.png`: the elite and the Lamplighter defeated on Hard, from 0.5 to 2.2 s.
+- **My read:**
+  - The shoulder mask's holes are lit like the head mask's.
+  - The coral stays inside the eye and grin cuts.
+  - The cracks draw amber over the red trim and the violet trim, at both headings.
+  - The Hard burst reads peach inside its orange line, warmer than Normal's white heat. Whether it's warm enough beside the cracks is research's call.
+- **NOT VERIFIED:** TintMask on a phone client, until the director's phone run.
+- **Rollback:** this commit's parent, and AR2's old ids in the asset log.
+
 ## AR47. The Brawler mask's rework, with its Hard pair (Modulo, then Faber)
 
 - **Research's word** (2026-11-19, 18:21), on the content check of AR42 (02:31, "The model's Brawler mask in the game: BLOCK"). It's a shipped asset, so a rollback is kept first.
@@ -14606,6 +14630,7 @@ Labelled SIMULATION, not play: `tools/balance/sim.py`'s model, 6,000 leads (leve
 ### Research closes AR47 (Quaestor, 2026-11-19, 18:41)
 
 - **Felt:** a paper mask with two holes cut through it, the same face as its tile. On Hard, the coral burns behind the holes and the grin, the meanest look the Shade has had. **AR47 passes at competent.** The masks are released to Faber with AR46's cut. The installed Hard capture shows the elite's shoulder mask (the check's condition 3).
+- **Installed** (Faber, 19:20) with AR46, in one upload: AR46, "Faber's install, AR46 with AR47's masks".
 
 ## Later, by ground
 

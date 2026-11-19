@@ -8,6 +8,7 @@
 --   NL_Debug:Invoke("Replay", who)                      stops, and puts the player and the lead back
 -- More Studio tools for fights, for tests and play checks:
 --   NL_Debug:Invoke("FightSpawn", who, "brawler", 3, 12)   a level 3 brawler 12 studs ahead of the avatar, on its ground
+--   NL_Debug:Invoke("FightSpawn", who, "brawler", 3, 12, nil, "Hard")   the same on Hard: its Hard look (AR46)
 --   NL_Debug:Invoke("FightSpawn", who)                      removes every Shade it spawned
 --   NL_Debug:Invoke("FightDefeat", who, id)                 one of those falls at once, its fall seen whole
 --   NL_Debug:Invoke("Fighters")                             every fighter: kind, state, health, target, action, place
@@ -171,7 +172,7 @@ local spawned: { [FightService.Fighter]: boolean } = {}
 
 -- `comes`: it comes for the player's lead at once, as one fought alone does (TR29's `For`), lead fighting or not: since
 -- TR24's fix 6 a Shade passes over an idle lead, and a case that needs one on the lead says so.
-local function fightSpawn(who: any, def: any, level: any, ahead: any, comes: any): any
+local function fightSpawn(who: any, def: any, level: any, ahead: any, comes: any, difficulty: any): any
 	if def == nil then
 		local count = 0
 		for f in spawned do
@@ -185,7 +186,8 @@ local function fightSpawn(who: any, def: any, level: any, ahead: any, comes: any
 	local root = if player then Parts.Root(player.Character) else nil
 	local lvl = if level == nil then 1 else level
 	local studs = if ahead == nil then 12 else ahead
-	if root == nil or type(def) ~= "string" or Enemies.ById[def] == nil or type(lvl) ~= "number" or type(studs) ~= "number" then
+	local badDifficulty = difficulty ~= nil and difficulty ~= "Normal" and difficulty ~= "Hard"
+	if root == nil or type(def) ~= "string" or Enemies.ById[def] == nil or type(lvl) ~= "number" or type(studs) ~= "number" or badDifficulty then
 		return { Ok = false, Error = "BadArgs" }
 	end
 	local look = Vector3.new(root.CFrame.LookVector.X, 0, root.CFrame.LookVector.Z).Unit
@@ -195,7 +197,7 @@ local function fightSpawn(who: any, def: any, level: any, ahead: any, comes: any
 	params.FilterDescendantsInstances = { workspace:FindFirstChild("Fighters") or workspace.Terrain, (player :: Player).Character :: Model }
 	local hit = workspace:Raycast(spot, Vector3.new(0, -GROUND_RAY, 0), params)
 	local ground = if hit then hit.Position else spot - Vector3.new(0, STAND, 0)
-	local f = FightService.SpawnEnemy(def, lvl, CFrame.lookAt(ground, ground - look))
+	local f = FightService.SpawnEnemy(def, lvl, CFrame.lookAt(ground, ground - look), if difficulty then { Difficulty = difficulty } else nil)
 	if comes == true then
 		f.For = player
 		f.Model:SetAttribute("For", (player :: Player).UserId)

@@ -13121,6 +13121,16 @@ The numbers are stand-ins (Combat Power, the bests).
   - any picture later exported for Roblox gets its own check on the exact file, at full size and at 64 px.
 - **Status:** drawn, self-read and content-checked. Not picked.
 
+### Research's pick: A, One road (Quaestor, 2026-11-19, 02:06 by the clock)
+
+- **Felt:** at the smallest phone, the four stages and their numbers read in one glance, the lit road ends at the player's ring, and the raised gold Next draws the eye, as the feel line asks. **Tier:** competent. **The one bold thing:** the road under the tiles, lit up to where the player stands.
+- **Why A:** B's stairs take room from the numbers, and C shows one stage at a time behind two taps. A is also the plainest build on Faber's kit. This is Modulo's lean too.
+- **Must-fixes,** each with its class:
+  1. **The mask reads as a mask, not a face.** The blush and the closed happy eyes make an emoji, the cutest thing on the screen, in a game that's slightly mature. Draw it as the Brawler's mask (`docs/roster.md`, "round, grinning") as it's modelled: dark eye holes cut through, a fixed carved grin, no cheeks. The class is every mask picture at every size, the elite's second mask included.
+  2. **Hard reads from anywhere on the screen.** Hard's field steps a full value darker, toward `well`, so the whole screen changes at a glance. The violet stays only on the edges, the chevrons and the walked road. The class is every Hard state, shut and open.
+- **To `docs/polish-later.md`:** stages 1 to 3 share one picture (2 and 3 are identical); the number carries them now.
+- **Next:** the two fixes on A, then the results card and the stage's line in A, for one look together.
+
 ## Later, by ground
 
 The rest of ground 1 (Kirra in AR10, Watt in AR11; then Sable, Marigold, Crane), then each ground's Voidkin in `docs/roster.md`'s order. **The machines** (Gantry, Bulwark, Ironhymn, Shiomaru, Aegir) share one custom rig, taller than a player, with its own clip family: the first of them is timed like AR1, because a custom rig is a different cost.

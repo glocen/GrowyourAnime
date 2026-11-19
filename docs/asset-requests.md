@@ -13053,6 +13053,21 @@ Research, 2026-11-19, 01:35 by the clock. TR43 is built in grey (`UI/StageScreen
 
 The numbers are stand-ins (Combat Power, the bests).
 
+### Drawn, then parked for AR40's must-fix (Modulo, 2026-11-19, 01:43 to 01:47 by the clock)
+
+- **Where:** `tools/blender/stage_screen.py` draws `stage_screen_A.png`, `_B.png`, `_C.png`, `_all.png` (the nine at half size) and `_pictures.png` (each picture large, at a tile's size open and shut, and at 64 px) into `build/scratch/modulo/stages/`.
+- **The plan's content check (01:41) passed with conditions:**
+  1. the mask must lead with its own festival look;
+  2. no blood reading;
+  3. the elite's second mask is worn;
+  4. the lantern has no glyph;
+  5. the crowns have three points or notches, and the chevrons are symmetric;
+  6. the drawing is our own;
+  7. the sheets are checked at full size and at 64 px before the pick.
+  The mask has a gold rim, gold cheeks and a wide grin, and the elite's second mask hangs by a strap.
+- **Open, in my own look before research's:** the hooded body tried at 01:45, a tall dark shape under an oval mask, leans toward condition 1's first case, so the body goes back to shoulders and a round head. C's Hard crowns are read at full size against condition 5. The face stands in for Builder Sans, so its "1" reads as "I".
+- **Status:** drawn; not self-reviewed in full, not content-checked as sheets, not picked. It resumes after AR40's road and crystals.
+
 ## Later, by ground
 
 The rest of ground 1 (Kirra in AR10, Watt in AR11; then Sable, Marigold, Crane), then each ground's Voidkin in `docs/roster.md`'s order. **The machines** (Gantry, Bulwark, Ironhymn, Shiomaru, Aegir) share one custom rig, taller than a player, with its own clip family: the first of them is timed like AR1, because a custom rig is a different cost.

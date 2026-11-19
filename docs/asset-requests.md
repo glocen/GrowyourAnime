@@ -13298,6 +13298,38 @@ Judged from the beat strips at the smallest phone and the sheets in Faber's figh
 - **Tier:** competent. **The one bold thing:** the anticipation (stones, ring breathing in), which turns the server's 0.4 s into a held breath.
 - **Must-fix:** none. Under Home, the strips move into Reinforce's own screen (Back, no tabs) with the same beats.
 
+### The War Emblem star, three directions (Modulo, 2026-11-19, 13:00 to 13:11 by the clock)
+
+The director's look (`docs/decisions.md`, 02:58 to 03:13; `docs/design.md`, "War Emblems"): a black rock star, its upper part the rarity's colour, and a white mark in its middle that is a set's symbol, three sets a rarity.
+- **Feel line:** in the bag and the sockets, an emblem reads first as its rarity's colour crowning a black stone star, then as its set's white mark. Two of one set are told apart by colour, two of one rarity by mark.
+- **The block contains:** three star shapes in the four rarities. Each is shown large, in the bag's cell at 44 points, and in that cell at one pixel a point. The marks are stand-ins.
+- **Waits:**
+  - the twelve sets' symbols and names: research's sets, then a content check of each;
+  - the chosen star's finish and export;
+  - the War Emblems and Jewels pages.
+- **Where:** `tools/blender/emblem_stars.py`, drawn in code. The render is `build/scratch/modulo/emblems/emblem_stars.png`.
+- **The directions:**
+  - **A, the cut star:** five sharp points with crisp facets, like worked obsidian. The colour sits above a straight line, with a seam of light where they meet.
+  - **B, the rough star:** five stubby points with a chipped edge on broad planes, like a struck stone. The colour sits above a jagged break and glows a little, like ore.
+  - **C, the four-point:** the top and foot long, the arms short. The colour covers the upper half.
+  - **All three:** lit from the upper left, facet by facet. The lit face keeps its colour and never goes white. In the first pass it went white, and Uncommon read as mint.
+- **Modulo's lean: B.**
+  - "Rockish" is the director's word, and B is the only one that reads as stone.
+  - Its colour is a mass over the top half, so the rarity reads first even at one pixel a point.
+  - Its broad middle holds the mark without crossing a point.
+  - A is the crispest at small sizes and a close second, but it reads as polished crystal, a medal.
+  - C reads as a compass or a sparkle, and its thin arms leave the colour the least room.
+- **Content check, PASS** (by 13:08). The conditions, for the finished icons:
+  - **No crescent or cross on a star.** A star with a crescent reads as the star and crescent. The stand-ins became three slashes and a ring before this sheet.
+  - **Never red, or red over black, on a split star,** if a red rarity ever comes.
+  - **The star stays upright,** and its lines never run tip to tip.
+  - **Each real set symbol gets its own check,** alone and on its star, at full size and at 64 px:
+    - the spiral never becomes a published series' crest;
+    - the fangs stay white, with blunt, dry tips;
+    - no symbol and star together make a flag, an emblem or a brand.
+  - **For research:** at 22 px the fangs read as a W, and a mark that reads as a letter may confuse.
+- **Status:** drawn, self-read and content-checked. It waits on research's pick. Next for Modulo: Home's finish in B, with Settings as its own tile.
+
 ## AR44. The damage numbers' rework: the plain, received and healing numbers, and the critical closer to the reference (Faber's takes in the game, Modulo's stroke, research's pick)
 
 Research, 2026-11-19, 11:17 by the clock. The director, by 11:16, to research: "The damages/healing text need a small rework it doesnt look as i wanted it to be, same for the crit text it need to be more close to the reference i've shown". The same morning, relayed by Modulo at about 11:15: "like the blackstroke around the text for those are way to thick". Research reads "those" as the damage numbers, since the two came together. The rule stays `docs/ui.md`, "Damage numbers" (the director, 2026-11-12); this changes the look only. The reference is `docs/research/hud-reference.md`, its three arena screenshots, held internal.

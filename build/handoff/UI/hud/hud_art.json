@@ -246,44 +246,68 @@
     30.0
    ],
    "pad": 0.0,
-   "tint": "#CC661F",
+   "tint": "#FFFFFF",
+   "paint": [
+    "#CC661F",
+    "#E8873A"
+   ],
    "shear": 0.176,
    "transparency": 0.0,
    "lay": {
-    "height": 1.5,
+    "height": 1.25,
     "left": 0.5,
-    "width": 0.67,
+    "width": 0.55,
     "least": 2.2
    },
    "number": {
-    "gap": 0.4,
+    "gap": 0.25,
     "ramp": [
      [
       0.0,
-      "#EEFFC4"
+      "#E7C66A"
      ],
      [
-      0.34,
-      "#FFF9D8"
+      0.12,
+      "#EFCA61"
      ],
      [
-      0.47,
-      "#FFE349"
+      0.3,
+      "#ECD072"
      ],
      [
-      0.76,
-      "#FFC020"
+      0.5,
+      "#EBD88C"
+     ],
+     [
+      0.57,
+      "#EAD692"
+     ],
+     [
+      0.63,
+      "#B49E60"
+     ],
+     [
+      0.7,
+      "#C4B06F"
+     ],
+     [
+      0.82,
+      "#CFC27C"
      ],
      [
       1.0,
-      "#FF9340"
+      "#CFC27A"
      ]
     ],
-    "outline": "#4E2C16",
-    "outlinePoints": 1.0,
+    "outline": "#211306",
+    "outlinePoints": 2.4,
+    "cast": [
+     2,
+     3
+    ],
     "slantDegrees": 10
    },
-   "use": "behind a critical number, under its outline: its height 1.5 of the digits' own, centred on them; its left edge 0.5 of a digit before the first digit; its width 0.67 of the number's and never under 2.2 times its height. It stretches along, never up"
+   "use": "a coloured picture, drawn untinted (ImageColor3 #FFFFFF: a tint only darkens). Behind a critical number, under its cast and outline: its height 1.25 of the digits' own, centred on them; its left edge 0.5 of a digit before the first digit; its width 0.55 of the number's and never under 2.2 times its height. It stretches along, never up"
   },
   "PortraitWatt": {
    "file": "images/PortraitWatt.png",

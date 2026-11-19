@@ -13561,6 +13561,23 @@ Judged on what changed, from round-moments, critical-pop and its frames at the p
 - **Tier:** competent. The take stays as the default.
 - **Must-fix, the splash is painted, not cut** (serves composition; Modulo's): `CritSweep` becomes a brushed smear in place of the flat fill. It has a soft, ragged tail to the upper right and a bristle-streaked body. Its colour is lightest in the core (about #E8873A) and darkens to #CC661F along the lower edge, and never darker (rule 4's limit of 12:47). Faber's Tint and Transparency stay; the image changes. The content check runs before upload.
 
+### The splash, painted: `CritSweep`, round 5 (Modulo, 2026-11-19, 13:37 to 13:46 by the clock)
+
+- **What:** one brushed smear, `sweep()` in `tools/blender/hud_art.py`, at the same 66 by 30 points and 4 pixels a point. A full round head sits behind the first digit and is dragged up and to the right.
+  - The body is streaked along its length by the bristles: a few broad streaks fade in and out, with fine ones over them.
+  - The tail goes soft and ragged as the bristles run dry one by one, the outer ones first. Each strand's end is feathered, so there are no tongues and no point.
+- **Its colour is in the picture now.** Every pixel is a mix of #CC661F (the lower edge) and #E8873A (the core), and the upper edge is a little deeper. The streaks' crests reach #EB8A3D, lighter and yellower still.
+  - Measured in the PNG's bytes, over every drawn texel: red at least 204, green at least 102, red over green at most 2.0. Nothing is redder or darker than the limit.
+- **One correction to the must-fix: the Tint goes to white.** A tint multiplies, so #CC661F over a #E8873A core would draw #B93607, past rule 4's limit. `Config.Hud.Numbers.Critical.Sweep.Tint` becomes #FFFFFF. Transparency stays 0, and Height, Left, Width and Least stay Faber's (1.25, 0.5, 0.55, 2.2).
+- **Where:** `build/handoff/UI/hud/images/CritSweep.png` (264 by 120), its entry in `hud_art.json`, and the sheet `crit_stroke_sheet.png`.
+  - The sheet lays it under the game's critical as it is now: the measured ramp, the #211306 outline at 2.4 and the cast at (2, 3). It shows three lengths over the street and the lanterns, at 2 pixels a point and at the phone's 1, and in the phone still.
+  - It was checked against `build/captures/ar44/critical-cast-take.png`. The head peeks below and left of the first digit, and the tail rises past the digits' tops at the right.
+- **Content check PASS** (13:45), on two conditions:
+  1. The Tint stays #FFFFFF. Any other tint, a darker pixel or a red variant comes back to the check.
+  2. The PNG uploaded is the current `sweep()`'s output. The bytes above prove it.
+  - It reads as orange paint and speed, never blood or a stain. It has no drops, drips or spatter, and its streaks run parallel, so it doesn't read as a flame.
+- **For Faber:** upload `CritSweep` under the group and swap its id in `Config.UIKit`, then set the Sweep's Tint to #FFFFFF in the same change.
+
 ## AR45. The foes' cards with their difficulty skulls, and CR's gold tab (Modulo, for research's pick, then Faber)
 
 Research, 2026-11-19, 11:30 by the clock. The director's word of 11:30 (`docs/decisions.md`, the row): the enemy and elite cards redrawn to match the new UI, a difficulty skull by the foe's CR against the lead, the level's text in its skull's colour, and CR's look replaced. The rules are `docs/ui.md`, "The HUD, in the world": the target's card, "Numbers, short or whole" and "CR's look".

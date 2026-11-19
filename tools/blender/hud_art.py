@@ -214,67 +214,105 @@ def cut(shot, rarity, small, kit):
 
 SWEEP = (66.0, 30.0)    # points: drawn for a 28 point number, whose digits stand 20 high, the stroke half as tall again
 SHEAR = 0.176           # the critical's slant, 10 degrees (research's table, round 2)
-SWEEP_TINT = "#CC661F"  # burnt orange: the slice's white. Its tail is drawn darker, so the tint goes brown there
-SWEEP_SEE = 0.0         # how see-through the game draws it (ImageTransparency): none, the slice's own alpha dries the tail
-# Where the game lays it (Config.Hud.Numbers.Critical.Sweep, Effects.luau's `sweep`), proposed for AR44's stroke: its
-# height Height digits' heights, centred on the digits; its left edge Left digits' widths before the first digit; its
-# width Width of the number's, never under Least heights. These put the head behind the first digit and the tail's end
-# over about two thirds of a four- to six-figure number, laid at the length it's drawn (Least is the slice's own shape).
-SWEEP_LAY = dict(height=1.5, left=0.5, width=0.67, least=2.2)
-# The digits, for the sheet and the builder's Config: the gap between digits as a part of a digit's width, the outline
-# and its width in points at a 28 point number, and their colour from head to foot (round 4; the director, 2026-11-19:
-# "the text itsels is yellow but a bit chromatic looks up closely"): yellow, with a slight run of hues, a cool pale
-# lemon at the head, a bright band just above the middle, warming to orange at the foot. One UIGradient, rotated 90.
-DIGITS = dict(gap=0.4, ramp=((0.0, "#EEFFC4"), (0.34, "#FFF9D8"), (0.47, "#FFE349"), (0.76, "#FFC020"), (1.0, "#FF9340")),
-              outline="#4E2C16", outlinePoints=1.0, slantDegrees=10)
-SPACE = 1.24            # Blender's letter spacing that gives that gap in its own face
+# The paint, in the picture itself (round 5, research's must-fix of 13:35: painted, not cut): lightest in its core,
+# darkening to its lower edge's colour, rule 4's limit of 12:47 (yellower or lighter free, never redder or darker).
+# Every pixel is a mix of the two, so none passes the limit. The game draws it untinted: a tint only multiplies, and the
+# core is lighter than the limit.
+PAINT = ("#CC661F", "#E8873A")
+SWEEP_TINT = "#FFFFFF"  # Config.Hud.Numbers.Critical.Sweep.Tint: white, the colour is in the picture (round 4's #CC661F)
+SWEEP_SEE = 0.0         # how see-through the game draws it (ImageTransparency): none, the picture's alpha dries the tail
+# Where the game lays it (Config.Hud.Numbers.Critical.Sweep, Effects.luau's `sweep`), Faber's cast take (AR44, research,
+# 13:35): its height Height digits' heights, centred on the digits; its left edge Left digits' widths before the first
+# digit; its width Width of the number's, never under Least heights.
+SWEEP_LAY = dict(height=1.25, left=0.5, width=0.55, least=2.2)
+# The digits, for the sheet only: the game's critical as Config.Hud.Numbers.Critical has it (the measured ramp of 12:48,
+# its outline, Weight 2.4, and the hard cast down and right), Blender's face standing in for the game's.
+DIGITS = dict(gap=0.25, ramp=((0.0, "#E7C66A"), (0.12, "#EFCA61"), (0.3, "#ECD072"), (0.5, "#EBD88C"), (0.57, "#EAD692"),
+                              (0.63, "#B49E60"), (0.7, "#C4B06F"), (0.82, "#CFC27C"), (1.0, "#CFC27A")),
+              outline="#211306", outlinePoints=2.4, cast=(2, 3), slantDegrees=10)
+SPACE = 1.12            # Blender's letter spacing near that gap in its own face
 
 
 def sweep():
-    """The splash behind a critical number (AR44, round 4; the director, 2026-11-19: "an orange splash", after round 3's
-    dry-brush comet read as a 2D flame). One splash of paint: it lands as a full, round head behind the first digit,
-    its back edge splatted into soft scallops where it hit, and is wiped away up and to the right in one smooth swoosh
-    that thins to a blunt, rounded end. Flat paint: a shade deeper at its rim, where it pools, with a slow mottle inside,
-    and a little thinner toward the end. No streaks, no drops, no spatter, no second mark, no point. A grey slice the game
-    tints."""
+    """The splash behind a critical number (AR44, round 5; research, 13:35, on the director's "that art isnt composited":
+    painted, not cut). One brushed smear of paint. It lands as a full, round head behind the first digit and is dragged
+    up and to the right. Its body is streaked along its length by the brush's bristles. Its tail is soft and ragged where
+    the bristles run dry one by one, each strand's end feathered: no tongues, no point. It's lightest in its core, a
+    little deeper toward its upper edge, and darkens to rule 4's limit along its lower edge. Every pixel is a mix of
+    PAINT's two, so none is redder or darker than the limit. No drops, no spatter, no second mark. A coloured picture:
+    the game draws it untinted."""
     w, h = SWEEP
-    rng = np.random.default_rng(45)
+    rng = np.random.default_rng(55)
     rows, cols = round(h * K), round(w * K)
     yy, xx = np.mgrid[0:rows, 0:cols]
-    y = (yy + 0.5) / K                                   # points, from the top
-    x = (xx + 0.5) / K
-    ease = lambda t: np.clip(t, 0, 1) ** 2 * (3 - 2 * np.clip(t, 0, 1))   # noqa: E731
+    y = ((yy + 0.5) / K).astype(np.float32)              # points, from the top
+    x = ((xx + 0.5) / K).astype(np.float32)
+    ease = lambda t: (lambda c: c * c * (3 - 2 * c))(np.clip(t, 0, 1))   # noqa: E731
+
+    def strands(at, spacing, reach=1.8):
+        """Noise across the bristles, 0 to 1: random knots `spacing` apart across the stroke, smoothly joined."""
+        n = int(2 * reach / spacing) + 2
+        knots = rng.random(n).astype(np.float32)
+        f = np.clip((at + reach) / spacing, 0, n - 1.001)
+        i = f.astype(int)
+        s = ease(f - i)
+        return knots[i] * (1 - s) + knots[i + 1] * s
+
+    def lengthwise(at, n, low=0.0, high=1.0):
+        """Slow noise along the stroke: n random knots from the head to the tail."""
+        return np.interp(at, np.linspace(0, 1, n), rng.uniform(low, high, n)).astype(np.float32)
+
+    # the path: circles along a line that climbs faster toward its end, a full head thinning to the tail
     radius = 0.34 * h                                    # the head: 10.2 points, a digit's height across
     hx, hy = radius + 2.2, 0.6 * h                       # low, so it sits behind the digits' lower half and below
-    # the head, its back splatted: soft scallops on the half facing away from the swoosh
-    turn = np.arctan2(y - hy, x - hx)
-    back = np.clip(-np.cos(turn), 0, 1) ** 1.3
-    phases = rng.uniform(0, 2 * np.pi, 2)
-    rim = radius * (1 + back * (0.075 * np.sin(5 * turn + phases[0]) + 0.035 * np.sin(9 * turn + phases[1])))
-    head = np.hypot((x - hx) / 1.06, y - hy) - rim
-    # the swoosh: circles along a line that climbs faster toward its end, thinning to a blunt end
-    ex, ey, rise = w - 4.6, 0.6 * h, 0.42 * h
-    along = np.linspace(0, 1, 90)
+    ex, rise = w - 4.6, 0.42 * h
+    along = np.linspace(0, 1, 220).astype(np.float32)
     cx = hx + (ex - hx) * along
     cy = hy - rise * along ** 1.5
-    cr = radius * (1 - 0.72 * along ** 1.05)
-    swoosh = np.full(x.shape, 1e9, np.float32)
-    for px_, py_, r_ in zip(cx, cy, cr):
-        swoosh = np.minimum(swoosh, np.hypot(x - px_, y - py_) - r_)
-    k = 1.6                                              # the join, smooth as wet paint
-    d = -k * np.log(np.exp(-head / k) + np.exp(-swoosh / k))
-    u = np.clip((x - hx) / (ex + cr[-1] - hx), 0, 1)     # 0 at the head's centre, 1 at the end
-    alpha = np.clip(0.5 - d / 0.4, 0, 1)                 # a clean paint edge, 0.4 points
-    alpha *= 1 - 0.22 * ease((u - 0.35) / 0.65)          # the paint thinner toward the end
-    # a slow mottle inside the paint
-    knots = rng.random((5, 9))
-    mottle = np.stack([np.interp(np.linspace(0, 8, cols), np.arange(9), r) for r in knots])
-    mottle = np.stack([np.interp(np.linspace(0, 4, rows), np.arange(5), mottle[:, c]) for c in range(cols)], 1)
-    value = (1.0 - 0.17 * ease((d + 1.8) / 1.8)         # a shade deeper at the rim, where it pools
-             - 0.12 * ease(u / 0.9)                      # and browner toward the end
-             - 0.06 * (mottle - 0.5))
+    cr = radius * (1 - 0.6 * along ** 1.2)
+    tx, ty = np.gradient(cx), np.gradient(cy)
+    tl = np.hypot(tx, ty)
+    tx, ty = tx / tl, ty / tl
+    ox = x[..., None] - cx
+    oy = y[..., None] - cy
+    sd = np.hypot(ox, oy) - cr
+    at = sd.argmin(-1)                                   # each pixel's nearest circle along the path
+    d = np.take_along_axis(sd, at[..., None], -1)[..., 0]
+    u = along[at]                                        # 0 at the head, 1 at the tail
+    across = (tx[at] * np.take_along_axis(oy, at[..., None], -1)[..., 0]
+              - ty[at] * np.take_along_axis(ox, at[..., None], -1)[..., 0])
+    v = across / cr[at]                                  # across the stroke: -1 its upper edge, +1 its lower
+    # the bristles: they draw together as the stroke thins, but only part way, so a strand stays a point or more wide
+    # where the phone draws a pixel a point
+    q = across / np.sqrt(cr[at] * radius)
+    del ox, oy, sd
+    # the edges: a brush's, uneven along the stroke, softening into the tail
+    wobble = np.where(v > 0, lengthwise(u, 11, -1, 1), lengthwise(u, 11, -1, 1)) * (0.35 + 0.5 * u)
+    soft = 0.6 + 1.4 * ease((u - 0.5) / 0.5)
+    alpha = np.clip(0.5 - (d - wobble) / soft, 0, 1)
+    # the tail: each bristle runs dry at its own length, the outer ones first, its end feathered
+    end = 1.02 - 0.12 * v ** 2 - 0.09 * strands(q, 0.24)
+    alpha *= ease((end - u) / 0.1)
+    # dry gaps opening between strands toward the tail, and the paint thinner there
+    gaps = strands(q, 0.22)
+    alpha *= 1 - 0.6 * ease((u - 0.6) / 0.4) * ease((gaps - 0.62) / 0.16)
+    alpha *= 1 - 0.1 * ease((u - 0.5) / 0.5)
+    # the paint's light: lightest in the core, a little above the middle; deeper toward the upper edge; the limit at the
+    # lower edge
+    core = -0.2
+    light = np.where(v > core, 1 - ease((v - core) / 1.1), 1 - 0.45 * ease((core - v) / 0.8))
+    # the bristles' streaks: a few broad ones, each fading in and out along the stroke, and fine ones over them, stronger
+    # where the brush runs dry. Their crests may pass the core's colour by a fifth of the way from the limit, lighter and
+    # yellower still (#EE8E3F at most): rule 4's limit bars only redder or darker
+    mix = lengthwise(u, 6)
+    broad = strands(q, 0.32) * (1 - mix) + strands(q, 0.32) * mix
+    streak = 0.65 * broad + 0.35 * strands(q, 0.14) - 0.5
+    light += 0.95 * streak * (0.8 + 0.4 * u)
+    light -= 0.14 * ease((u - 0.4) / 0.6)                # a shade deeper toward the tail
+    t = np.clip(light, 0, 1.2)[..., None]
+    lo, hi = (np.array(rs.rgb(code), np.float32) for code in PAINT)
     px = np.zeros((rows, cols, 4), np.float32)
-    px[..., :3] = np.clip(value, 0, 1)[..., None]
+    px[..., :3] = lo + (hi - lo) * t
     px[..., 3] = alpha
     return px
 
@@ -321,8 +359,10 @@ def keep_stroke(images: Path, listing):
     rs.save(rs.bleed(px), images / "CritSweep.png")
     lay = SWEEP_LAY
     listing["CritSweep"] = dict(file="images/CritSweep.png", pixels=[px.shape[1], px.shape[0]], points=list(SWEEP), pad=0.0,
-                                tint=SWEEP_TINT, shear=SHEAR, transparency=SWEEP_SEE, lay=lay, number=DIGITS,
-                                use=f"behind a critical number, under its outline: its height {lay['height']} of the digits' "
+                                tint=SWEEP_TINT, paint=list(PAINT), shear=SHEAR, transparency=SWEEP_SEE, lay=lay,
+                                number=DIGITS,
+                                use=f"a coloured picture, drawn untinted (ImageColor3 {SWEEP_TINT}: a tint only darkens). "
+                                    f"Behind a critical number, under its cast and outline: its height {lay['height']} of the digits' "
                                     f"own, centred on them; its left edge {lay['left']} of a digit before the first digit; its "
                                     f"width {lay['width']} of the number's and never under {lay['least']} times its height. "
                                     f"It stretches along, never up")
@@ -486,7 +526,12 @@ def crit_laid(ground, text, size, slice_px):
     colours = np.array([rs.rgb(code) for _, code in DIGITS["ramp"]], np.float32)
     rows = np.stack([np.interp(at, stops, colours[:, c]) for c in range(3)], 1)
     number[..., :3] = rows[:, None, :]
-    ui.over(tile, ui.c(DIGITS["outline"]), ui.spread(cover, round(1.2 * ui.K)))
+    edge = ui.spread(cover, round(DIGITS["outlinePoints"] * ui.K))
+    dx, dy = (round(p * ui.K) for p in DIGITS["cast"])   # Config's Cast: a hard dark copy, down and right
+    cast = np.zeros_like(edge)
+    cast[dy:, dx:] = edge[:-dy, :-dx]
+    ui.over(tile, ui.c(DIGITS["outline"]), cast)
+    ui.over(tile, ui.c(DIGITS["outline"]), edge)
     rs.paste(tile, number, 0, 0)
     return tile, (sw / ui.K, sh / ui.K)
 
@@ -518,29 +563,32 @@ def stroke_sheet(out: Path):
     page = rs.canvas(W, H, (0.075, 0.07, 0.085))
     ink, soft = "#F2ECE2", "#B9B2C4"
     lay = SWEEP_LAY
-    text = [(24, 18, 26, "AR44, round 4: the critical's orange splash (CritSweep, a new picture), its digits yellow.", ink),
-            (24, 54, 15, "A round splash behind the first digit, its back edge splatted, wiped away up and to the right in one "
-                         "smooth swoosh to a blunt end. The digits: lemon to orange, a bright band above the middle.", soft)]
+    text = [(24, 18, 26, "AR44, round 5: the critical's splash, painted (CritSweep), under the game's critical as it is now.", ink),
+            (24, 54, 15, "One brushed smear: a full head behind the first digit, dragged up and to the right, streaked by its "
+                         f"bristles, its tail soft and ragged. Lightest in the core ({PAINT[1]}), {PAINT[0]} at the lower edge.", soft)]
     y = 92
     rs.paste(page, slice_px, 24, y)
     tinted = slice_px.copy()
     tinted[..., :3] *= np.array(rs.rgb(SWEEP_TINT), np.float32)
-    rs.paste(page, tinted, 336, y)
     sh_, sw_ = slice_px.shape[:2]
+    grey = rs.canvas(sw_, sh_, (0.42, 0.42, 0.44))
+    rs.paste(grey, tinted, 0, 0)
+    rs.paste(page, grey, 336, y)
     checker = rs.canvas(sw_, sh_, (0.5, 0.5, 0.5))
     yy, xx = np.mgrid[0:sh_, 0:sw_]
     checker[((yy // 12 + xx // 12) % 2 == 0)] = (0.62, 0.62, 0.62, 1)
     rs.paste(checker, tinted, 0, 0)
     rs.paste(page, checker, 648, y)
-    text.append((24, y + 132, 12, f"alone as it ships: a grey slice, {SWEEP[0]:g} by {SWEEP[1]:g} points at 4 pixels a point; "
-                                  f"tinted {SWEEP_TINT}; over a checker, where it's clear", soft))
-    text.append((960, y + 4, 13, "Laid as proposed for Config.Hud.Numbers.Critical.Sweep:", ink))
+    text.append((24, y + 132, 12, f"alone as it ships: {SWEEP[0]:g} by {SWEEP[1]:g} points at 4 pixels a point, its own colour; "
+                                  f"over a mid grey; over a checker, where it's clear", soft))
+    text.append((960, y + 4, 13, "Laid as Config.Hud.Numbers.Critical has it now (Faber's cast take):", ink))
     for i, line in enumerate((f"Height {lay['height']} (of the digits' height, centred on them)",
                               f"Left {lay['left']} (of a digit, before the first digit)",
                               f"Width {lay['width']} (of the number's), Least {lay['least']} (heights)",
-                              f"Transparency {SWEEP_SEE:g}: solid, the slice thins its end",
-                              f"Tint {SWEEP_TINT}, as now",
-                              "Digits, one UIGradient at 90: " + ", ".join(f"{p:g} {c}" for p, c in DIGITS["ramp"]))):
+                              f"Transparency {SWEEP_SEE:g}: solid, the picture thins its tail",
+                              f"Tint {SWEEP_TINT}: the colour is in the picture (was #CC661F)",
+                              f"Digits: the measured ramp, outline {DIGITS['outline']} at {DIGITS['outlinePoints']:g}, "
+                              f"cast {DIGITS['cast'][0]:g},{DIGITS['cast'][1]:g}")):
         text.append((960, y + 26 + i * 20, 12, line, soft))
     y += 168
     for j, name in enumerate(grounds):
@@ -564,7 +612,7 @@ def stroke_sheet(out: Path):
     rs.paste(page, placed, 24 + 950 + 16, y + 22)
     close = np.repeat(np.repeat(tinted, 2, 0), 2, 1)
     rs.paste(page, close, 24 + 950 + 16, y + 22 + 160 + 24)
-    text.append((24 + 950 + 16, y + 22 + 160 + 6, 12, "the tinted slice, twice its own size: the splatted back, the swoosh", soft))
+    text.append((24 + 950 + 16, y + 22 + 160 + 6, 12, "the picture, twice its own size: the bristles' streaks, the ragged tail", soft))
     rs.paste(page, rs.text_layer(W, H, text), 0, 0)
     rs.save(page, out / "crit_stroke_sheet.png")
 

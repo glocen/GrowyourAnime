@@ -87,6 +87,7 @@ local HudCases = require(script.Parent.HudCases)
 local DockCases = require(script.Parent.DockCases)
 local PowerCases = require(script.Parent.PowerCases)
 local ViewCases = require(script.Parent.ViewCases)
+local NumberCases = require(script.Parent.NumberCases)
 local BaseCases = require(script.Parent.BaseCases)
 local Helpers = require(script.Parent.Helpers)
 local TravelCases = require(script.Parent.TravelCases)
@@ -3866,27 +3867,25 @@ local cases = {
 			local c1 = first("SelfTest@1")
 			local stroke = if c1 then c1:FindFirstChildOfClass("UIStroke") else nil
 			t.Check("in the plain hit's colour", c1 ~= nil and c1.TextColor3 == styles.Dealt.Colour, if c1 then tostring(c1.TextColor3) else "no digit")
-			-- AR44: the plain numbers wear the take being tried (Config.Hud.Numbers.Take), its face, outline, gap and shadow.
-			local take = HudConfig.Numbers.Takes[HudConfig.Numbers.Take]
-			local function wears(label: TextLabel?, family: string, weight: string): boolean
-				return label ~= nil and label.FontFace.Family == family and label.FontFace.Weight == (Enum.FontWeight :: any)[weight]
+			-- AR44: the plain numbers in their own face (take B, research's pick), outline, gap and soft shadow.
+			local plain = styles.Dealt
+			local function wears(label: TextLabel?, family: string?, weight: string?): boolean
+				return label ~= nil and label.FontFace.Family == (family or HudConfig.Numbers.Face) and label.FontFace.Weight == (Enum.FontWeight :: any)[weight or "ExtraBold"]
 			end
-			t.Near("its outline grows with the layer", if stroke then stroke.Thickness else 0, (if take then take.Weight else styles.Dealt.Weight) * Layers.Scale(), 0.01)
-			if take then
-				t.Check(`in take {HudConfig.Numbers.Take}'s face and weight`, wears(c1, take.Face, take.Font), if c1 then `{c1.FontFace.Family} {c1.FontFace.Weight.Name}` else "no digit")
-				local list = one.Row:FindFirstChildOfClass("UIListLayout")
-				t.Near("spaced by its gap, in its own digit (a whole pixel)", if list then list.Padding.Offset else 0, take.Gap * take.Digit * (one.Row:GetAttribute("Size") :: number), 0.5)
-				local shadow = Digits.Shadows[one.Row]
-				local under = if shadow then shadow:FindFirstChild("C1") :: TextLabel? else nil
-				local soft = HudConfig.Numbers.Shadow
-				if take.Shadow then
-					t.Check("its soft shadow under it: the same digits, offset, in the shadow's colour", shadow ~= nil and shadow.Parent == one.Row.Parent and shadow.ZIndex < one.Row.ZIndex
-						and shadow:GetAttribute("Text") == nil and under ~= nil and under.Text == "3" and under.TextColor3 == soft.Colour
-						and shadow.Position.X.Offset == soft.Offset.X and shadow.Position.Y.Offset == soft.Offset.Y, if shadow then shadow.Name else "no shadow")
-					t.Near("and see-through as Config says", if under then under.TextTransparency else 0, soft.Transparency, 0.01)
-				else
-					t.Check("no shadow in this take", shadow == nil)
-				end
+			t.Near("its outline grows with the layer", if stroke then stroke.Thickness else 0, plain.Weight * Layers.Scale(), 0.01)
+			t.Check("in the plain numbers' face and weight", wears(c1, plain.Face, plain.Font), if c1 then `{c1.FontFace.Family} {c1.FontFace.Weight.Name}` else "no digit")
+			local pad = if c1 then c1:FindFirstChildOfClass("UIPadding") else nil
+			t.Near("spaced by its gap, in its own digit (a whole pixel)", if pad then pad.PaddingRight.Offset else 0, plain.Gap * (plain.Digit or HudConfig.Numbers.Digit) * (one.Row:GetAttribute("Size") :: number), 0.5)
+			local shadow = Digits.Shadows[one.Row]
+			local under = if shadow then shadow:FindFirstChild("C1") :: TextLabel? else nil
+			local soft = HudConfig.Numbers.Shadow
+			if plain.Shadow then
+				t.Check("its soft shadow under it: the same digits, offset, in the shadow's colour", shadow ~= nil and shadow.Parent == one.Row.Parent and shadow.ZIndex < one.Row.ZIndex
+					and shadow:GetAttribute("Text") == nil and under ~= nil and under.Text == "3" and under.TextColor3 == soft.Colour
+					and shadow.Position.X.Offset == soft.Offset.X and shadow.Position.Y.Offset == soft.Offset.Y, if shadow then shadow.Name else "no shadow")
+				t.Near("and see-through as Config says", if under then under.TextTransparency else 0, soft.Transparency, 0.01)
+			else
+				t.Check("no shadow", shadow == nil)
 			end
 			t.Near("unswollen", one.Scale.Scale, 1, 0.001)
 			t.Wait(numbers.Seconds * 0.5)
@@ -3944,129 +3943,23 @@ local cases = {
 			Effects.Number(root, "SelfTest:mine", 20, { Style = "Received" }, numbers)
 			local mine = first("SelfTest:mine")
 			t.Check("a received number in its own colour", mine ~= nil and mine.TextColor3 == styles.Received.Colour)
-			if take then
-				t.Check("received and healing follow the take, and an element's number", wears(mine, take.Face, take.Font) and wears(first("SelfTest:heal"), take.Face, take.Font) and wears(tinted, take.Face, take.Font))
-				-- The take switched live: the next number wears the new one (Tune reaches the client's Config the same way).
-				local was = HudConfig.Numbers.Take
-				for name, other in HudConfig.Numbers.Takes do
-					(HudConfig.Numbers :: any).Take = name
-					Effects.Number(root, `SelfTest:take{name}`, 5, { Style = "Dealt" }, numbers)
-					local c = of(`SelfTest:take{name}`)
-					local label = if c then c.Row:FindFirstChild("C1") :: TextLabel? else nil
-					t.Check(`switched to take {name}: the next number wears it`, wears(label, other.Face, other.Font) and (Digits.Shadows[if c then c.Row else Instance.new("Frame")] ~= nil) == other.Shadow)
-				end
-				(HudConfig.Numbers :: any).Take = was
+			t.Check("received and healing wear the plain face, and an element's number", wears(mine, styles.Received.Face, styles.Received.Font)
+				and wears(first("SelfTest:heal"), styles.Heal.Face, styles.Heal.Font) and wears(tinted, styles.Element.Face, styles.Element.Font))
+			-- A comma or a "1" keeps no whole digit's gap about it (AR44's verdict, fix 2): 1,204's spaces.
+			Effects.Number(root, "SelfTest:comma", 1204, { Style = "Dealt" }, numbers)
+			local comma = of("SelfTest:comma")
+			local function padOf(i: number): number
+				local label = if comma then comma.Row:FindFirstChild(`C{i}`) else nil
+				local after = if label then label:FindFirstChildOfClass("UIPadding") else nil
+				return if after then after.PaddingRight.Offset else -1
 			end
-			local takes = 0
-			for _ in HudConfig.Numbers.Takes do
-				takes += 1
-			end
-			t.Check("six numbers up at once, and one a take", keys() == 6 + (if take then takes else 0), `{keys()}`)
+			t.Check("1,204: about its comma a comma's share of the gap, between digits a whole one, none after the last", comma ~= nil and comma.Text == "1,204"
+				and padOf(1) >= 0 and padOf(1) < padOf(3) * 0.5 and padOf(2) >= 0 and padOf(2) < padOf(3) * 0.5 and padOf(3) > 0 and padOf(5) == 0,
+				`{padOf(1)}, {padOf(2)}, {padOf(3)}, {padOf(4)}, {padOf(5)}`)
+			t.Check("seven numbers up at once", keys() == 7, `{keys()}`)
 			t.Wait(numbers.Seconds + 0.1)
 			t.Check("all gone a fade after their last", counting[root] == nil, `{keys()} left`)
 			root:Destroy()
-		end,
-	},
-	{
-		-- AR44 (research's ask): each take of the plain numbers in a real fight, from the player's camera, for the phone
-		-- captures. The lead climbs the Tower; on its foe a flurry counts up, then a critical and a word land, a beat apart
-		-- as a fight's do, and the lead takes a number and a heal of its own. ReplicatedStorage.NL_TakeStep names the take ("A", "B", "Now"): the avatar steps
-		-- beside the fight so its body hides neither fighter, only the take's own numbers are drawn (Effects.Only), they
-		-- land a beat apart as a fight's do, and once they've counted and settled the clock is held (Effects.TimeScale 0);
-		-- the step's attribute Held names the take. "End" ends the run and lets go. Meanwhile the foes strike for next to
-		-- nothing and stand a hundred times longer, by Tunes put back after, so a hold neither ends in a fall nor outlives
-		-- its foe.
-		Name = "Take: AR44, the plain numbers' takes in a Tower fight, a flurry, a critical, a heal and a word on the foe, held take by take as the driver writes, for research",
-		Manual = true,
-		Stay = true,
-		Place = "Main",
-		Run = function(t: any)
-			local me = Players.LocalPlayer
-			local numbers = Combat.Numbers
-			local was = HudConfig.Numbers.Take
-			local lift = (require(Shared.Config.Tower) :: any).Lift -- the client's copy, as the Tower case reads it
-			local attack, health = lift.Attack, lift.Health
-			t.Server("Tune", "Tower.Lift.Attack", 0.01)
-			t.Server("Tune", "Tower.Lift.Health", health * 100)
-			local step = Instance.new("StringValue")
-			step.Name = "NL_TakeStep"
-			step.Parent = ReplicatedStorage
-			local ok, problem = pcall(function()
-				t.Server("TowerEnd")
-				t.Server("LeadHeal")
-				t.Wait(0.5)
-				t.Check("a run begins", (t.Server("TowerStart") :: any) ~= nil and me:GetAttribute("Tower") ~= nil)
-				local function rival(): BasePart?
-					for _, item in workspace:GetDescendants() do
-						if item:IsA("Model") and item:GetAttribute("Kind") == "Rival" and item:GetAttribute("For") == me.UserId then
-							return (item:FindFirstChild("HumanoidRootPart") or item.PrimaryPart) :: BasePart?
-						end
-					end
-					return nil
-				end
-				local began = os.clock()
-				while rival() == nil and os.clock() - began < 10 do
-					t.Wait(0.2)
-				end
-				t.Check("its foe stands", rival() ~= nil)
-				t.Wait(2) -- into the fight
-				local shown = ""
-				began = os.clock()
-				while os.clock() - began < 600 do
-					local value = step.Value
-					if value == "End" then
-						break
-					end
-					local take = HudConfig.Numbers.Takes[value]
-					if value ~= shown and take then
-						step:SetAttribute("Held", nil)
-						Effects.Only = "AR44" -- the take's own numbers only, from here to the end of its hold
-						Effects.TimeScale = 1
-						t.Wait(numbers.Seconds + 0.1) -- the last take's numbers, and the fight's, gone
-						local root, lead = rival(), myLead()
-						local leadRoot = if lead then lead:FindFirstChild("HumanoidRootPart") :: BasePart? else nil
-						if root then -- else tried again, once a foe stands
-							-- Beside the fight, on the camera's side and to its right: the fight is seen past the avatar's shoulder.
-							local camera = workspace.CurrentCamera
-							local back = -camera.CFrame.LookVector * Vector3.new(1, 0, 1)
-							local right = camera.CFrame.RightVector * Vector3.new(1, 0, 1)
-							if back.Magnitude > 0.1 and right.Magnitude > 0.1 then
-								t.Server("TestStandAt", root.Position + back.Unit * 10 + right.Unit * 7)
-								t.Wait(0.8)
-							end
-							shown = value;
-							(HudConfig.Numbers :: any).Take = value
-							for _, amount in { 312, 296, 341 } do
-								Effects.Number(root, "AR44@1", amount, { Style = "Dealt" }, numbers)
-								t.Wait(0.1)
-							end
-							Effects.Number(root, "AR44@2", 1204, { Style = "Critical" }, numbers)
-							if leadRoot then
-								Effects.Number(leadRoot, "AR44:mine", 57, { Style = "Received" }, numbers)
-							end
-							t.Wait(0.1)
-							Effects.Number(root, "AR44:word", nil, { Style = "Word", Word = "Block" }, numbers)
-							if leadRoot then
-								Effects.Number(leadRoot, "AR44:heal", 86, { Style = "Heal" }, numbers)
-							end
-							t.Wait(numbers.Count + 0.1) -- counted and settled, the flurry not yet fading
-							Effects.TimeScale = 0
-							step:SetAttribute("Held", value)
-						end
-					end
-					t.Wait(0.1)
-				end
-			end)
-			Effects.Only = nil
-			Effects.TimeScale = 1;
-			(HudConfig.Numbers :: any).Take = was
-			t.Server("TowerEnd")
-			t.Server("Tune", "Tower.Lift.Attack", attack)
-			t.Server("Tune", "Tower.Lift.Health", health)
-			step:Destroy()
-			if not ok then
-				error(problem, 0)
-			end
 		end,
 	},
 	{
@@ -7805,6 +7698,10 @@ for _, case in HudCases.Cases({
 end
 -- TR24's fixes 1 to 3, given theirs: the next step's marker, the lead's fights in view, its place beside the avatar, its fade.
 for _, case in ViewCases.Cases({ LEAD_SETTLE = LEAD_SETTLE, SHADE_AHEAD = SHADE_AHEAD, waitFor = waitFor, myLead = myLead }) do
+	table.insert(cases, case)
+end
+-- AR44's numbers in a fight, given theirs: clear of each other along their rise, and the clip for research.
+for _, case in NumberCases.Cases({ myLead = myLead }) do
 	table.insert(cases, case)
 end
 -- The dock's, given theirs (AR30's make).

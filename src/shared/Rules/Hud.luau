@@ -78,10 +78,14 @@ end
 
 -- A box on the screen: its centre and size, in the layer's authored pixels.
 export type Box = { X: number, Y: number, W: number, H: number }
+-- One moment of a number's rise: where it will be then, unmoved, and where the others will be.
+export type Moment = { Want: Box, Taken: { Box } }
 
-local function overlap(a: Box, b: Box): number
-	local w = math.min(a.X + a.W / 2, b.X + b.W / 2) - math.max(a.X - a.W / 2, b.X - b.W / 2)
-	local h = math.min(a.Y + a.H / 2, b.Y + b.H / 2) - math.max(a.Y - a.H / 2, b.Y - b.H / 2)
+-- How much two boxes overlap, each kept `clear` pixels from the other: two that only touch overlap by `clear` across.
+local function overlap(a: Box, b: Box, clear: number?): number
+	local c = clear or 0
+	local w = math.min(a.X + a.W / 2, b.X + b.W / 2) - math.max(a.X - a.W / 2, b.X - b.W / 2) + c
+	local h = math.min(a.Y + a.H / 2, b.Y + b.H / 2) - math.max(a.Y - a.H / 2, b.Y - b.H / 2) + c
 	return if w > 0 and h > 0 then w * h else 0
 end
 
@@ -93,14 +97,29 @@ end
 -- under it (TR3's verdict, fix 4). `rise` is how far it climbs after its birth, so one born near the band starts lower,
 -- and no slot lifts it back over.
 function Hud.Place(want: Box, taken: { Box }, slots: { { number } }, top: number?, rise: number?): (number, number)
+	return Hud.PlaceAlong({ { Want = want, Taken = taken } }, slots, top, rise)
+end
+
+-- As Place, clear at every moment given, its birth first (AR44's verdict, fix 3): each number rises on its own eased
+-- curve, so one born a beat after another climbs faster and catches it up, and only its birth was clear. A slot's
+-- offset is the same at every moment; the overlaps of all the moments add up; and `clear` is the room every box
+-- keeps from every other, so none touches. Held down by the band, a slot above folds onto where it's held and a slot
+-- below counts down from there: on a phone the band can sit level with where numbers are born, and a slot below its
+-- birth fell inside the hold, onto the one before it.
+function Hud.PlaceAlong(moments: { Moment }, slots: { { number } }, top: number?, rise: number?, clear: number?): (number, number)
 	local bestX, bestY, least = 0, 0, math.huge
+	local want = moments[1].Want
 	local lowest = if top then top + want.H / 2 + math.max(rise or 0, 0) - want.Y else -math.huge -- the highest a slot may sit
+	local held = math.max(lowest, 0) -- where its own slot stands
 	for _, slot in slots do
-		local dx, dy = slot[1] * want.W, math.max(slot[2] * want.H, lowest)
-		local moved: Box = { X = want.X + dx, Y = want.Y + dy, W = want.W, H = want.H }
+		local dx, dy = slot[1] * want.W, math.max(held + slot[2] * want.H, lowest)
 		local covered = 0
-		for _, other in taken do
-			covered += overlap(moved, other)
+		for _, moment in moments do
+			local w = moment.Want
+			local moved: Box = { X = w.X + dx, Y = w.Y + dy, W = w.W, H = w.H }
+			for _, other in moment.Taken do
+				covered += overlap(moved, other, clear)
+			end
 		end
 		if covered == 0 then
 			return dx, dy

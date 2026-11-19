@@ -101,6 +101,30 @@ return {
 		end,
 	},
 	{
+		Name = "Hud: a number is placed clear of its neighbours along their whole rise, kept apart by its clearance",
+		Run = function(t: any)
+			-- AR44's verdict, fix 3: each number rises on its own curve, so a later one climbs into the one above it. Born,
+			-- the neighbour is 30 above, clear; a moment on, it has slowed and the new one has climbed level with it.
+			local slots = { { 0, 0 }, { 0, -1 }, { -1, -0.5 }, { 1, -0.5 } }
+			local born: Hud.Moment = { Want = { X = 100, Y = 100, W = 60, H = 24 }, Taken = { { X = 100, Y = 70, W = 60, H = 24 } } }
+			local later: Hud.Moment = { Want = { X = 100, Y = 60, W = 60, H = 24 }, Taken = { { X = 100, Y = 62, W = 60, H = 24 } } }
+			local x, y = Hud.Place(born.Want, born.Taken, slots)
+			t.Check("seen only at its birth, it stays where it rose (the fault)", x == 0 and y == 0)
+			x, y = Hud.PlaceAlong({ born }, slots)
+			t.Check("one moment is Place", x == 0 and y == 0)
+			x, y = Hud.PlaceAlong({ born, later }, slots)
+			t.Check("seen along the rise, it goes where it stays clear at both moments: aside", x == -60 and y == -12, `{x}, {y}`)
+			local apart: Hud.Moment = { Want = { X = 100, Y = 100, W = 60, H = 24 }, Taken = { { X = 161, Y = 100, W = 60, H = 24 } } }
+			x, y = Hud.PlaceAlong({ apart }, slots)
+			t.Check("a pixel apart, with no clearance: clear", x == 0 and y == 0)
+			x, y = Hud.PlaceAlong({ apart }, slots, nil, nil, 3)
+			t.Check("a pixel apart, with a clearance of 3: it moves aside (a height up still meets the corner within 3)", x == -60 and y == -12, `{x}, {y}`)
+			local top: Hud.Moment = { Want = { X = 100, Y = 70, W = 60, H = 24 }, Taken = {} }
+			x, y = Hud.PlaceAlong({ top, { Want = { X = 100, Y = 40, W = 60, H = 24 }, Taken = {} } }, slots, 50, 20)
+			t.Equal("the band is kept from its birth's box, as Place keeps it", y, 12)
+		end,
+	},
+	{
 		Name = "Hud: a number's whole life stays under the top band",
 		Run = function(t: any)
 			-- TR3's verdict, fix 4: the band's lower edge at 50, and a number that climbs 20 after its birth.
@@ -126,6 +150,9 @@ return {
 			t.Check("no band: as before", x == 0 and y == 0)
 			x, y = Hud.Place(near, {}, slots, TOP, -5)
 			t.Equal("a rise below nothing counts as none: its top at 58, clear of the band", y, 0)
+			-- AR44's fix 3: held 12 down, the one before it standing there; a slot below counts down from the hold.
+			x, y = Hud.Place(near, { { X = 100, Y = 82, W = 60, H = 24 } }, { { 0, 0 }, { 0, -1 }, { 0, 1 } }, TOP, RISE)
+			t.Check("held by the band, a slot below goes a height under the hold, clear of the one held there", x == 0 and y == 36, `{x}, {y}`)
 		end,
 	},
 	{

@@ -2,6 +2,26 @@
 
 The oldest entries of `docs/team-notes.md`, moved here as that file passed about 250 lines (`AGENTS.md`, "Team notes"). Newest first.
 
+### 2026-11-16, 23:47. AR11: Watt's eight clips, delivered (Modulo)
+
+- **What changed:** Watt's clips, Idle, Combo, Ground Wire (butt-down, research's pick), Hit, Down, Up, Reveal and Work, keyed on R6 with his spear as a joint.
+  - The Combo's hits each break his outline, after the director's ask to look at Anime Vanguards' units.
+  - A hand on the shaft no longer jumps.
+- **Where:** `build/handoff/Watt/clips/`; `tools/blender/watt_clips.py` (with a `film` mode, the clips in motion); AR11, from "The animation comparison" to "Delivery 4".
+- **Open:** Faber's install, with the markers and the bay post's place (AR11, "Delivery 4"); Ground Wire's look; the director's acceptance.
+- **For:** Faber.
+
+### 2026-11-16, 21:17. AR6: batch 3's three fixes, in colour (Modulo)
+
+- **What changed:** research's three fixes, in eight pictures.
+  - Common iron (the Iron Greataxe, Staff and Dagger) and the Common Tome's boards (Iron and Bronze) are toned to a mid tone with a light edge.
+  - The Bronze Greataxe and Dagger take a polished streak.
+  - Ryuukou's spire is an unlit crystal in three tones, in a cluster of four.
+  - The other 112 render byte-identical.
+- **Where:** AR6, "Research's three fixes, in colour"; `build/handoff/UI/gear/`; `tools/blender/gear_icons.py` (`lift`, `glint`) and the five kinds' scripts.
+- **Open:** research's look, then the 120 go to Faber for upload. Batch 1's two iron swords measure as dark, and the same flag is ready if research wants it.
+- **For:** research, then Faber.
+
 ### 2026-11-16, 21:01. AR6: batch 3 in colour, the 120 in their slots (Modulo)
 
 - **What changed:** the eight class weapons in colour, as flat pictures for the gear slots, each with its class's mark on the bottom cut. The Tome's boards are a dark leather by rarity over cream pages, and the Codex's covers a pale parchment. `gear_icons.json` keys a weapon by its kind ("Sword" and "Short Sword" were "Main Hand" and "Off Hand") and gives each class's pair under `hands`.

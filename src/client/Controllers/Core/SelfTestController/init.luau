@@ -33,6 +33,7 @@ local AuditionCases = require(script.AuditionCases)
 local StageCases = require(script.StageCases)
 local SlamCases = require(script.SlamCases)
 local BaseController = require(script.Parent.Parent.Main.BaseController)
+local Screen = require(script.Parent.Parent.Parent.UI.Kit.Screen)
 
 local BRIDGE_NAME = "NL_SelfTest"
 local BASELINE = "Baseline" -- the preset the cases are written against
@@ -181,6 +182,12 @@ local function run(filter: string?): string
 	-- a shard that opens itself would race the cases that open theirs by hand (TR24's fix 5): off for the run, its own
 	-- case turning it on
 	local selfOpening = BaseController.SelfOpen(false)
+	-- a screen left open hides the world's plates and holds the camera, failing cases that never touch it: closed, as a
+	-- player's Back closes it (a run's held results, which open on join, are told seen and dropped from the save)
+	if Screen.Current() ~= nil then
+		Screen.Close()
+		task.wait(0.3)
+	end
 	local cases: { any } = table.clone(Cases)
 	-- more lists join here: table.move(More.Cases, 1, #More.Cases, #cases + 1, cases)
 	local tower = TowerCases.Cases() -- the Tower's (TR29), apart: Cases is at the type checker's limit

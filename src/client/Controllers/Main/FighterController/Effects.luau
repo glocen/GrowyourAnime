@@ -1822,17 +1822,17 @@ local function lookOf(style: string, colour: Color3?): (Digits.Look, number)
 		return { Top = c.Top, Foot = c.Foot, Ramp = c.Ramp, Outline = c.Outline, Weight = c.Weight, Gap = c.Gap, Italic = c.Italic }, c.Size
 	end
 	local s = config.Styles[style] or config.Styles.Dealt
-	local look: Digits.Look = { Colour = colour or s.Colour, Outline = s.Outline, Weight = s.Weight, Gap = s.Gap, Italic = s.Italic }
-	-- AR44: the plain numbers wear the take being tried, its face, outline, gap and shadow.
-	local take = config.Takes[config.Take]
-	if take and table.find(config.Plain, style) then
-		look.Face = take.Face
-		look.Font = (Enum.FontWeight :: any)[take.Font] :: Enum.FontWeight
-		look.Digit = take.Digit
-		look.Weight = take.Weight
-		look.Gap = take.Gap
-		look.Shadow = if take.Shadow then config.Shadow else nil
-	end
+	local look: Digits.Look = {
+		Colour = colour or s.Colour,
+		Outline = s.Outline,
+		Weight = s.Weight,
+		Gap = s.Gap,
+		Italic = s.Italic,
+		Face = s.Face,
+		Font = if s.Font then (Enum.FontWeight :: any)[s.Font] :: Enum.FontWeight else nil,
+		Digit = s.Digit,
+		Shadow = if s.Shadow then config.Shadow else nil,
+	}
 	return look, s.Size
 end
 
@@ -1901,37 +1901,64 @@ end
 
 -- Clear of the numbers already up: each one's box where it stands now, in authored pixels. And under the top band its
 -- whole life (UI.World's band, the HUD's; TR3's verdict, fix 4): `rise` is how far it climbs, in studs.
-local function place(c: Counting, rise: number)
+local function place(c: Counting, numbers: Numbers)
 	local camera = workspace.CurrentCamera
 	local scale = Layers.Scale()
 	local at = c.Where()
 	if camera == nil or at == nil or scale <= 0 then
 		return
 	end
-	local function box(other: Counting, point: Vector3): Hud.Box?
-		local v = camera:WorldToViewportPoint(point)
+	local config = HudConfig.Numbers
+	local edge = World.Edge()
+	-- How far a number of this age has risen (the step's own curve).
+	local function lift(age: number): number
+		return numbers.Rise * easeOut(age / numbers.Seconds)
+	end
+	-- Its box with its point `ahead` seconds on: the critical's wide enough for its splash, which reaches past its digits,
+	-- and swollen as a joining hit swells it then, up from its foot (the plate's anchor).
+	local function box(other: Counting, point: Vector3, ahead: number): Hud.Box?
+		local v = camera:WorldToViewportPoint(point + Vector3.new(0, lift(other.Age + ahead) - lift(other.Age), 0))
 		if v.Z <= 0 then
 			return nil
 		end
-		return { X = v.X / scale + other.Shift.X, Y = v.Y / scale + other.Shift.Y - other.H / 2, W = other.W, H = other.H }
+		local w = other.W
+		if other.Big then
+			w += 2 * config.Critical.Sweep.Left * config.Digit * (other.Row:GetAttribute("Size") :: number)
+		end
+		local grow = 1 + (numbers.Pop - 1) * Hud.Swell(other.Count, other.Age + ahead, numbers.Count)
+		local tall = other.H * grow
+		local y = v.Y / scale + other.Shift.Y - tall / 2
+		-- Held under the top band as UI.World holds it, its top at the band's edge: it stalls there while one below rises on.
+		if edge and other ~= c and y - tall / 2 < edge then
+			y = edge + tall / 2
+		end
+		return { X = v.X / scale + other.Shift.X, Y = y, W = w * grow, H = tall }
 	end
-	local want = box(c, at)
-	if want == nil then
-		return
-	end
-	local taken: { Hud.Box } = {}
-	for _, onBody in counting do
-		for _, other in onBody do
-			local point = if other ~= c then other.Where() else nil
-			local b = if point then box(other, point) else nil
-			if b then
-				table.insert(taken, b)
+	-- Each moment ahead (Config.Hud.Numbers.Ahead, from its birth): where it and every other number will be then.
+	local moments: { Hud.Moment } = {}
+	for _, ahead in config.Ahead do
+		local want = box(c, at, ahead)
+		if want then
+			local taken: { Hud.Box } = {}
+			for _, onBody in counting do
+				for _, other in onBody do
+					local point = if other ~= c and other.YieldAt == nil then other.Where() else nil
+					local b = if point then box(other, point, ahead) else nil
+					if b then
+						table.insert(taken, b)
+					end
+				end
 			end
+			table.insert(moments, { Want = want, Taken = taken })
 		end
 	end
-	local peak = camera:WorldToViewportPoint(at + Vector3.new(0, rise, 0))
-	local climb = if peak.Z > 0 then (want.Y + c.H / 2 - (peak.Y / scale + c.Shift.Y)) else 0 -- the rise, in authored pixels
-	local dx, dy = Hud.Place(want, taken, HudConfig.Numbers.Slots, World.Edge(), climb)
+	local born = moments[1]
+	if born == nil then
+		return
+	end
+	local peak = camera:WorldToViewportPoint(at + Vector3.new(0, numbers.Rise, 0))
+	local climb = if peak.Z > 0 then (born.Want.Y + c.H / 2 - (peak.Y / scale + c.Shift.Y)) else 0 -- the rise, in authored pixels
+	local dx, dy = Hud.PlaceAlong(moments, config.Slots, World.Edge(), climb, config.Clear)
 	c.Shift = Vector2.new(dx, dy)
 	World.Shift(c.Plate, c.Shift)
 end
@@ -2009,7 +2036,7 @@ function Effects.Number(root: BasePart, key: string, amount: number?, look: Numb
 	end
 	onBody[key] = c
 	World.Below(plate)
-	place(c, numbers.Rise)
+	place(c, numbers)
 	local function lay(age: number): boolean
 		c.Age = age
 		if not Hud.Live(c.Count, age, numbers.Seconds) then

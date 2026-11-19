@@ -13,11 +13,13 @@ export type Style = {
 	Outline: Color3,
 	Weight: number, -- the outline, authored pixels
 	Italic: boolean, -- Builder Sans' true italic, about 10 degrees forward
+	Face: string?, -- its own face; nil: Numbers.Face
+	Font: string?, -- the face's weight, an Enum.FontWeight name; nil: ExtraBold
+	Digit: number?, -- its face's digit width in its text size, the unit of Gap; nil: Numbers.Digit
+	Shadow: boolean?, -- the soft shadow under it (Numbers.Shadow)
 }
 
--- A take of the plain numbers (AR44): see Numbers.Takes.
-export type Take = { Face: string, Font: string, Digit: number, Weight: number, Gap: number, Shadow: boolean }
-
+local OSWALD = "rbxasset://fonts/families/Oswald.json" -- the plain numbers' face (AR44)
 local DARK = Color3.fromHex("#15120E") -- a warm near-black: an outline that reads over the dusk street's pink end and its dark side
 
 return {
@@ -25,38 +27,43 @@ return {
 		-- Roblox's own face, with a stroke (research's call, 2026-11-12): Builder Sans, which has a true italic at ExtraBold.
 		Face = "rbxasset://fonts/families/BuilderSans.json",
 		Digit = 0.56, -- a digit's width in its text size, Builder Sans ExtraBold: the unit of Gap
+		-- The plain numbers, dealt, an element's, received and healing: AR44's take B, research's pick at 12:11 (the
+		-- director, by 11:16: "The damages/healing text need a small rework"; the stroke "way to thick"): Oswald Medium,
+		-- calm and tall, a thin outline of 0.8 and a gap of 0.45 of its own digit (Oswald's 0 is 0.36 of its size, measured
+		-- in Studio), on the soft shadow. The critical and the grey word keep Builder Sans.
 		Styles = {
 			-- A hit dealt: pale ivory, upright.
-			Dealt = { Colour = UIKit.Numbers.Plain, Size = 1, Gap = 0.3, Outline = DARK, Weight = 1.6, Italic = false },
+			Dealt = { Colour = UIKit.Numbers.Plain, Size = 1, Gap = 0.45, Outline = DARK, Weight = 0.8, Italic = false, Face = OSWALD, Font = "Medium", Digit = 0.36, Shadow = true },
 			-- An element's second number: the same, in its element's colour, a beat behind.
-			Element = { Size = 1, Gap = 0.3, Outline = DARK, Weight = 1.6, Italic = false },
+			Element = { Size = 1, Gap = 0.45, Outline = DARK, Weight = 0.8, Italic = false, Face = OSWALD, Font = "Medium", Digit = 0.36, Shadow = true },
 			-- Damage the player's lead receives: the same face in muted red, a size larger (the builder's seed, 2026-11-12).
-			Received = { Colour = Color3.fromHex("#E27A6A"), Size = 1.2, Gap = 0.3, Outline = DARK, Weight = 1.6, Italic = false },
+			Received = { Colour = Color3.fromHex("#E27A6A"), Size = 1.2, Gap = 0.45, Outline = DARK, Weight = 0.8, Italic = false, Face = OSWALD, Font = "Medium", Digit = 0.36, Shadow = true },
 			-- Healing: as damage received, in green.
-			Heal = { Colour = UIKit.Numbers.Heal, Size = 1.2, Gap = 0.3, Outline = DARK, Weight = 1.6, Italic = false },
+			Heal = { Colour = UIKit.Numbers.Heal, Size = 1.2, Gap = 0.45, Outline = DARK, Weight = 0.8, Italic = false, Face = OSWALD, Font = "Medium", Digit = 0.36, Shadow = true },
 			-- A dodge, a block, an absorb: a short grey word on a pointer.
 			Word = { Colour = UIKit.Numbers.Miss, Size = 0.72, Gap = 0.12, Outline = DARK, Weight = 1.4, Italic = false },
 		} :: { [string]: Style },
-		-- AR44's takes of the plain numbers (the director, by 11:16: "The damages/healing text need a small rework"; the
-		-- stroke "way to thick"; research's table in AR44): every number but the critical and the grey word (Plain) takes
-		-- its Take's face, outline and gap in place of its style's, and the soft shadow when the take has it. Switched
-		-- live, on the next number: Tune("Hud.Numbers.Take", "B"). "Now" is the look before AR44. Font is the face's
-		-- weight; Weight the outline, authored pixels; Gap in the take's own Digit, a digit's width in its text size
-		-- (measured in Studio: Oswald's 0 is 0.36 of its size at Regular and Medium, Builder Sans ExtraBold's 0.53).
-		Take = "A",
-		Plain = { "Dealt", "Element", "Received", "Heal" },
-		Takes = {
-			A = { Face = "rbxasset://fonts/families/Oswald.json", Font = "Regular", Digit = 0.36, Weight = 0.6, Gap = 0.5, Shadow = true },
-			B = { Face = "rbxasset://fonts/families/Oswald.json", Font = "Medium", Digit = 0.36, Weight = 0.8, Gap = 0.45, Shadow = true },
-			Now = { Face = "rbxasset://fonts/families/BuilderSans.json", Font = "ExtraBold", Digit = 0.56, Weight = 1.6, Gap = 0.3, Shadow = false },
-		} :: { [string]: Take },
-		-- The soft shadow under a take's digits: a dark copy of them Offset authored pixels right and down, Transparency
+		-- The soft shadow under the plain digits: a dark copy of them Offset authored pixels right and down, Transparency
 		-- see-through, its edge softened by an outline Spread authored pixels wide at Soft see-through. The builder's seed.
 		Shadow = { Colour = DARK, Offset = Vector2.new(1, 2), Transparency = 0.45, Spread = 2.5, Soft = 0.82 },
 		Element = { Delay = 0.1 }, -- seconds behind the hit's own number: "a beat behind"
 		-- Where a new number tries to go, in its own widths and heights, first to last, clear of the numbers already up
-		-- (Rules.Hud.Place): where it rose, then above, then up to either side.
-		Slots = { { 0, 0 }, { 0, -1 }, { -0.75, -0.5 }, { 0.75, -0.5 }, { 0, -2 } },
+		-- (Rules.Hud.Place): where it rose, then above, then up to either side, then a ring farther up and out, then wide
+		-- aside, and last below, where it trails the ones above. A short word among a flurry, a critical aside and the next
+		-- body's numbers found the first five all taken, and under the top band every slot above folds down to one (AR44's
+		-- fix 3).
+		Slots = {
+			{ 0, 0 }, { 0, -1 }, { -0.75, -0.5 }, { 0.75, -0.5 }, { 0, -2 },
+			{ -0.75, -1.5 }, { 0.75, -1.5 }, { -1.25, -1 }, { 1.25, -1 }, { 0, -3 },
+			{ -0.75, -2.5 }, { 0.75, -2.5 }, { 0, -4 },
+			{ -1.5, -0.5 }, { 1.5, -0.5 }, { -1.5, 0.5 }, { 1.5, 0.5 },
+			{ 0, 1 }, { -0.75, 1 }, { 0.75, 1 }, { 0, 2 },
+		},
+		-- Clear along their whole rise, seen at these seconds ahead (each rises on its own eased curve, so one born a beat
+		-- later climbs into the one above it: AR44's verdict, fix 3), and Clear authored pixels apart, so none touches.
+		-- The builder's seeds.
+		Ahead = { 0, 0.1, 0.25, 0.5, 0.8 },
+		Clear = 3,
 		Pointer = 5, -- the word's pointer, authored pixels across
 		-- Authored pixels a number keeps under the top band (the lowest of the cards and the pills that show), its whole life,
 		-- rise and swell included (TR3's verdict, fix 4). The builder's seed.
@@ -69,26 +76,31 @@ return {
 		-- heavy, slanted, larger, widely spaced, on the swept stroke. Research tunes these live at TR3's blockout.
 		Critical = {
 			Size = 1.6, -- tops the ladder by a clear step: received and heal are 1.2 (research on TR3's three calls, 2026-11-13)
-			Gap = 0.4, -- about 0.4 of a digit between digits
-			-- Yellow, "a bit chromatic" up close (the director, 2026-11-19; AR44, "Modulo's splash"): a run of hues head to
-			-- foot, a cool pale lemon at the head, a bright band above the middle, warming to orange at the foot
-			-- (hud_art.json's CritSweep, number.ramp). Top and Foot are its ends.
-			Top = Color3.fromHex("#EEFFC4"),
-			Foot = Color3.fromHex("#FF9340"),
+			Gap = 0.25, -- a quarter of a digit between digits: at 0.4, "1 , 2 0 4" read as separate glyphs (AR44's verdict, fix 2)
+			-- Gold drifting to an olive khaki head to foot, with a darker band two thirds down: the reference's critical
+			-- measured row by row (AR44, "The critical's colours, measured", research, 12:48; the director, by 12:47: "make
+			-- it as accurate as possible and allowed"). Top and Foot are its ends.
+			Top = Color3.fromHex("#E7C66A"),
+			Foot = Color3.fromHex("#CFC27A"),
 			Ramp = ColorSequence.new({
-				ColorSequenceKeypoint.new(0, Color3.fromHex("#EEFFC4")),
-				ColorSequenceKeypoint.new(0.34, Color3.fromHex("#FFF9D8")),
-				ColorSequenceKeypoint.new(0.47, Color3.fromHex("#FFE349")),
-				ColorSequenceKeypoint.new(0.76, Color3.fromHex("#FFC020")),
-				ColorSequenceKeypoint.new(1, Color3.fromHex("#FF9340")),
+				ColorSequenceKeypoint.new(0, Color3.fromHex("#E7C66A")),
+				ColorSequenceKeypoint.new(0.12, Color3.fromHex("#EFCA61")),
+				ColorSequenceKeypoint.new(0.3, Color3.fromHex("#ECD072")),
+				ColorSequenceKeypoint.new(0.5, Color3.fromHex("#EBD88C")),
+				ColorSequenceKeypoint.new(0.57, Color3.fromHex("#EAD692")),
+				ColorSequenceKeypoint.new(0.63, Color3.fromHex("#B49E60")),
+				ColorSequenceKeypoint.new(0.7, Color3.fromHex("#C4B06F")),
+				ColorSequenceKeypoint.new(0.82, Color3.fromHex("#CFC27C")),
+				ColorSequenceKeypoint.new(1, Color3.fromHex("#CFC27A")),
 			}),
-			Outline = Color3.fromHex("#4E2C16"), -- a medium warm brown
+			Outline = Color3.fromHex("#211306"), -- near-black brown, measured
 			Weight = 1.2, -- one point at a 28 point number, at this size
 			Italic = true, -- the slant is the face's italic, on or off: about 10 degrees, never another angle
 			-- The splash (CritSweep, AR44 round 4, Modulo's): behind the number and under its outline, its height 1.5 of the
 			-- digits', centred on them, its left edge half a digit before the first digit, its width 0.67 of the number's and
-			-- never under 2.2 heights; it stretches along, never up. Tint: the content check's limit (AR44, "Modulo's
-			-- splash", condition 1): #CC661F, or yellower or lighter, never redder or darker.
+			-- never under 2.2 heights; it stretches along, never up. Tint: the content check's limit itself (AR44, "Modulo's
+			-- splash", condition 1), the nearest allowed to the reference's burnt orange, which rule 4 blocks (research's
+			-- measure, 12:48, replacing the #F08A2C of 12:11): yellower or lighter free, never redder or darker.
 			Sweep = {
 				Tint = Color3.fromHex("#CC661F"),
 				Transparency = 0,

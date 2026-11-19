@@ -10,10 +10,10 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **Verdicts owed:** AR43, the Menu sheets (a37ab9b) with the motion strips, and Seam against C; TR43 and TR44 in motion; AR40's install; AR30, AR37, TR10, AR28's Stage I, TR34, AR23, TR29.
 - **With the director:** the store's design (`docs/decisions.md`, "Waiting on the director", item 2); the sound pick on TR42's panel (AR39 stopped); quests, designed when asked.
 
-**Faber (builder).** 2026-11-19, 11:43, on Opus 5.5. Done today: "CR" in every word players see (the director's word, 10:36); "Arc" in the three lines that said ground (the director, by 11:16), the boss's refusal reading "Not in a boss's arena", since it means the keeper's street and never the Arc (a tier 1 call); and TR46 whole, tested in Studio: the heal cap told once, and the week's board on the Tower's card. The card now fits a phone (TR46, "Where it stands").
-- **Now:** AR44, the damage numbers' takes. TR46 waits on research's pass on the card and the board, in grey.
-- **Next, in order:** AR44's two plain takes in `Config.Hud.Numbers` with a phone capture of each in a fight, and a critical's, with Modulo's CritSweep uploaded under the group and its Sweep numbers set (research's message after TR46; AR44's entry and its "Modulo's stroke"); AR45, the foes' cards with difficulty skulls and CR's new look, once Modulo's sheet is picked (AR45's entry; the director, 11:30); item 10; item 4 after research's refit; AR38's Void Shop install with its one confirm; AR40's C install with Modulo's new swatches; AR30's rest. The UI sounds' audition comes after the director's listen.
-- **Open, tests:** NOT VERIFIED (the Festival place): the Festival role's suite and the stage tile's "CR". TR44's phone take waits for the director's go. The real trip waits on item 9 below.
+**Faber (builder).** 2026-11-19, 13:19, on Opus 5.5. Done today: "CR" in every word players see (the director's word, 10:36); "Arc" in the three lines that said ground (the director, by 11:16); TR46 whole, tested in Studio; and AR44's three must-fixes with the measured critical, tested, with a phone clip for research's second look (AR44, "Faber's must-fixes, the measured colours, and the clip"). The critical lands without a pop: research's call, in that section.
+- **Now:** AR45, the foes' cards on the slant. Its 13 images are uploaded under the group, all Approved.
+- **Next, in order:** item 10; item 4 after research's refit; AR38's Void Shop install with its one confirm; AR40's C install with Modulo's new swatches; AR30's rest; TR46's "Floor 1 · best 7" over the target card's bar. The UI sounds' audition comes after the director's listen.
+- **Open, tests:** seven cases fail in the phone simulator and pass in the full window (AR44's section, "Tests"), to sort after AR45. NOT VERIFIED (the Festival place): the Festival role's suite and the stage tile's "CR". TR44's phone take waits for the director's go. The real trip waits on item 9 below.
 
 **Modulo (assets).** 2026-11-19, 12:55, on Opus 5.5. Voidkin work parked until before launch (the director's word, 11:10).
 - **Done, AR45 on the slant** (research's pick, 12:32): five new images in `build/handoff/UI/foes/`. They are the plate in three pieces (fill, a Shade's edge, an elite's brass edge) and the elite's solid shards. Content check PASS. The first cut's upright edge, horns, crest and notch are listed unused. For research: the shards at the phone's size, in `foe_cards_fit.png`'s bottom row. For Faber, after that: upload the five and build the cards (AR45, "The cut on the slant").
@@ -117,6 +117,13 @@ For Faber:
 - Tier 2, research, 2026-11-12, on the director's words: weapons belong to a class, in two hands (Main Hand and Off Hand replace Weapon and Shield), a preset holds a pair per class, a weapon drop is for the lead's class; Combat Power made to be watched, its weights fitted by the simulation; each item kind modelled and rendered to its icon (AR6, phase 3) (`docs/design.md`, "Regalia: gear" and "Combat Power"). Faber: the Stats case's `"Weapon"` source becomes `"Main Hand"` when you next touch it. Faber and Modulo: say in your row what you'd change.
 
 ## Entries
+
+### 2026-11-19, 13:19. AR44: the numbers' must-fixes, the measured critical, the clip (Faber)
+
+- **What changed:** B is the plain numbers' style. The critical wears research's measured gold, its near-black outline and the #CC661F splash. Each glyph advances by its own share of the gap: a comma, a "1", a digit. Every number and word stays clear of every other along its whole rise, on any body. The self-test now starts with no screen open.
+- **Where:** AR44, "Faber's must-fixes, the measured colours, and the clip". `Config.Hud.Numbers`, `Rules.Hud.PlaceAlong`, `UI.Kit.Digits`, the fighter's `Effects`, `NumberCases.luau`, and two logic cases.
+- **Open:** research's second look, from `build/captures/ar44/`. The critical lands without a pop, research's call. Seven cases fail in the phone simulator and pass in the full window.
+- **For:** research.
 
 ### 2026-11-19, 11:25. TR46: the heal cap told once, the week's board; "CR" in every word (Faber)
 
@@ -227,23 +234,3 @@ For Faber:
 - **Where:** AR15, "Faber's install: the ring tunnel"; `Config.Lighting` (`CoreBloom`), `Config.World` (`Grey.Door`), `BaseController` ("spins"), `WorldService`, `DoorService`, `SignsController`, `src/storage/BaseKit.rbxm`.
 - **Open:** research's pass, from the phone stills in `build/captures/ar15/`. Its two findings: TR24's screen sign repeats the plate's name over the Door, and the shut core barely differs from the open one. Then the director's own look on a phone.
 - **For:** research, then the director.
-
-### 2026-11-16, 23:47. AR11: Watt's eight clips, delivered (Modulo)
-
-- **What changed:** Watt's clips, Idle, Combo, Ground Wire (butt-down, research's pick), Hit, Down, Up, Reveal and Work, keyed on R6 with his spear as a joint.
-  - The Combo's hits each break his outline, after the director's ask to look at Anime Vanguards' units.
-  - A hand on the shaft no longer jumps.
-- **Where:** `build/handoff/Watt/clips/`; `tools/blender/watt_clips.py` (with a `film` mode, the clips in motion); AR11, from "The animation comparison" to "Delivery 4".
-- **Open:** Faber's install, with the markers and the bay post's place (AR11, "Delivery 4"); Ground Wire's look; the director's acceptance.
-- **For:** Faber.
-
-### 2026-11-16, 21:17. AR6: batch 3's three fixes, in colour (Modulo)
-
-- **What changed:** research's three fixes, in eight pictures.
-  - Common iron (the Iron Greataxe, Staff and Dagger) and the Common Tome's boards (Iron and Bronze) are toned to a mid tone with a light edge.
-  - The Bronze Greataxe and Dagger take a polished streak.
-  - Ryuukou's spire is an unlit crystal in three tones, in a cluster of four.
-  - The other 112 render byte-identical.
-- **Where:** AR6, "Research's three fixes, in colour"; `build/handoff/UI/gear/`; `tools/blender/gear_icons.py` (`lift`, `glint`) and the five kinds' scripts.
-- **Open:** research's look, then the 120 go to Faber for upload. Batch 1's two iron swords measure as dark, and the same flag is ready if research wants it.
-- **For:** research, then Faber.

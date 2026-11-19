@@ -1,6 +1,7 @@
 --!strict
 -- Digits (client kit): a number written the way the HUD's damage numbers are (docs/ui.md, "The HUD, in the world"):
--- Roblox's own face with an outline, widely spaced, one label to a character so the space between them is ours. A look
+-- Roblox's own face with an outline, widely spaced, one label to a character so the space between them is ours: a
+-- gap of the look's Gap in digits, narrowed beside a comma or a "1" (spaceOf). A look
 -- is flat in one colour, or a gradient from its head to its foot (the critical's cream to gold), upright or in the face's
 -- italic, in Config.Hud.Numbers.Face at ExtraBold or its own face (AR44's takes), with a soft shadow if it has one: a
 -- dark copy of the row beside it, offset, under it. Sizes are authored pixels (UI.Theme.Author); the layer's scale grows
@@ -45,18 +46,39 @@ local function digitOf(look: Look): number
 	return look.Digit or HudConfig.Numbers.Digit
 end
 
--- A comma or a stop is about a third of a digit.
+-- A character's width in digits: a comma or a stop about a third, a "1" about 0.7 (measured in Studio: Builder Sans
+-- ExtraBold's is 0.66 of its 0, Oswald's 0.75).
 local function share(char: string): number
-	return if char == "," or char == "." then 0.34 elseif char == "+" or char == "-" then 0.8 else 1
+	return if char == "," or char == "." then 0.34 elseif char == "1" then 0.7 elseif char == "+" or char == "-" then 0.8 else 1
+end
+
+-- The space after a character, before the next: the gap, narrowed by the narrower of the two, so a comma or a "1"
+-- advances by its own width and keeps no whole digit's gap about it (AR44's verdict, fix 2).
+local function spaceOf(text: string, i: number, size: number, look: Look): number
+	if i >= #text then
+		return 0
+	end
+	return look.Gap * digitOf(look) * size * math.min(share(text:sub(i, i)), share(text:sub(i + 1, i + 1)))
 end
 
 function Digits.Width(text: string, size: number, look: Look): number
 	local digit = digitOf(look) * size
 	local w = 0
 	for i = 1, #text do
-		w += digit * share(text:sub(i, i))
+		w += digit * share(text:sub(i, i)) + spaceOf(text, i, size, look)
 	end
-	return w + math.max(#text - 1, 0) * look.Gap * digit
+	return w
+end
+
+-- Each character's space after it, as its own right padding (the list lays them with none of its own).
+local function space(row: Frame, text: string, size: number, look: Look)
+	for i = 1, #text do
+		local label = row:FindFirstChild(`C{i}`)
+		local pad = if label then label:FindFirstChildOfClass("UIPadding") else nil
+		if pad then
+			pad.PaddingRight = UDim.new(0, math.round(spaceOf(text, i, size, look))) -- an offset is whole pixels
+		end
+	end
 end
 
 local function style(label: TextLabel, size: number, look: Look)
@@ -107,6 +129,7 @@ local function char(row: Frame, index: number, z: number): TextLabel
 	local stroke = Instance.new("UIStroke")
 	stroke.LineJoinMode = Enum.LineJoinMode.Round
 	stroke.Parent = label
+	Instance.new("UIPadding").Parent = label -- the space after it (space)
 	label.Parent = row
 	return label
 end
@@ -125,7 +148,6 @@ local function frame(name: string, size: number, look: Look, z: number): Frame
 	list.HorizontalAlignment = Enum.HorizontalAlignment.Center
 	list.VerticalAlignment = Enum.VerticalAlignment.Bottom
 	list.SortOrder = Enum.SortOrder.LayoutOrder
-	list.Padding = UDim.new(0, look.Gap * digitOf(look) * size)
 	list.Parent = row
 	return row
 end
@@ -153,10 +175,6 @@ local function shade(row: Frame)
 	end
 	local s = copy :: Frame
 	s.Position = UDim2.new(0.5, shadow.Offset.X, 0.5, shadow.Offset.Y)
-	local list = s:FindFirstChildOfClass("UIListLayout")
-	if list then
-		list.Padding = UDim.new(0, look.Gap * digitOf(look) * size)
-	end
 	local text = row:GetAttribute("Text") :: string
 	for i = 1, #text do
 		local label = s:FindFirstChild(`C{i}`) :: TextLabel?
@@ -172,6 +190,7 @@ local function shade(row: Frame)
 			child:Destroy()
 		end
 	end
+	space(s, text, size, look)
 end
 
 function Digits.new(parent: Instance, size: number, look: Look): Frame
@@ -218,21 +237,19 @@ function Digits.Set(row: Frame, text: string)
 			child:Destroy()
 		end
 	end
+	space(row, text, size, look)
 	shade(row)
 end
 
 function Digits.Restyle(row: Frame, size: number, look: Look)
 	Digits.Looks[row] = look
 	row:SetAttribute("Size", size)
-	local list = row:FindFirstChildOfClass("UIListLayout")
-	if list then
-		list.Padding = UDim.new(0, look.Gap * digitOf(look) * size)
-	end
 	for _, child in row:GetChildren() do
 		if child:IsA("TextLabel") then
 			style(child, size, look)
 		end
 	end
+	space(row, row:GetAttribute("Text") :: string, size, look)
 	shade(row)
 end
 

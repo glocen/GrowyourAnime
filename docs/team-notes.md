@@ -42,15 +42,6 @@ For Faber:
 8. **Pick the slam's rule by playing it** (TR44): Off, A or B. In Studio's Play, start a keeper's try. The Server command bar switches the mode mid-fight: `game.ServerStorage.NL_Debug:Invoke("Slam", nil, "A")` (or `"B"`, `"Off"`), and `Invoke("Slam")` reads the counts. In A, walk out of the ring and your fighter follows; in B, press the round Recall button or R. Research reads a phone take of each first: say go and I record it (the PC's memory stopped it tonight).
 9. **The Festival's place, for a real trip** (TR45). In Studio, open the place 110443456684004 (File → Open from Roblox) and connect Rojo on port 34876; Faber sets its role and saves it. Then, on the Creator Dashboard, under the experience's Places: its name (Faber's suggestion: Festival of Battles), its server size 8, and its Direct Access set to "Secure within universe only". Publish both places (Alt+P in each), and add the id to `CLAUDE.md`'s "Places" when you like.
 
-10. **The combat review's six decisions** (`docs/research/combat-math.md`, "For the director"). Each is written as a restatement, and nothing is built before your yes:
-    1. Levels count only through your 0.85 rule (no hidden bonus).
-    2. Combat Power measures the fight, and the skulls read the fight's cost.
-    3. The Shades get every stat and are re-authored for the gear players have.
-    4. Block, Lifesteal and Kindle fixed.
-    5. Spirit also gives Health (research recommends it).
-    6. Every Voidkin gets an element.
-11. **The Voidkin screen and the bag in B,** like Equipment's: yes or no. See it before you answer: `build/scratch/modulo/screens_b/voidkin_b.png` and `bag_b.png`, today's beside B on PC and the smallest phone. B lifts the black panels into lit violet glass, with the chosen tab a plate of light. Research leans yes, so every screen is one kit. The cost is more violet on two screens you see often (you've said "too purple" before), and the sheet lets you judge that.
-
 ### Notices
 
 - Tier 2, research, 2026-11-19, 20:46, TR48 part 2: on Hard, an elite's chest holds Epic 0.9% and a keeper's chest after its first win Epic 2.0% and Legendary 0.45%, so a one-ground launch meets design.md's Epic at 4 to 6 h and Legendary at 15 to 20 (MODEL). Faber: say in your row what you'd change.

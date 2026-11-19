@@ -4117,16 +4117,58 @@ Faber, 2026-11-19, 03:43 by the clock: the follow-up's item 7 (`docs/production-
 - **Tested:** type check 0 new; offline logic 27,212 passed, LogicTests in Studio 27,212 passed, with `Cases/Loot.luau`'s six cases (the count, step 12, Hard's chests, the floor with a retry and an interrupted win, the materials' rates, the Tower's numbers). Self-test in the Main place: Gear 10, Tower 63 and HUD 477 passed (the guide reads the new count). NOT VERIFIED, the Festival place (Now board, item 9): the Keeper, Drops and Stages cases, and a real run's log line.
 - **For research:** Hard's chests are per stage, so a ground has up to ten more chest kinds in the bag. The keeper's emblem is sure only on its first Normal win, as the table says.
 
-### Part 2: the Epic and Legendary pace (research, 2026-11-19, 20:46; tier 2, for Faber)
+### Part 2: the Epic and Legendary pace (research, 2026-11-19, 20:46, revised 21:00 on the director's word; tier 2, for Faber)
 
 - **The finding (MODEL, the long run, `loot/out_e3.txt`):** with part 1 built, the median first Epic comes at 11.8 h and the first Legendary after 45 h, against design.md's 4 to 6 h and 15 to 20 h. With one ground at launch, no ladder row a chest reads holds an Epic or a Legendary (they start at rows 5 and 7), so only the Tower's 0.93% and 0.40% give them.
-- **The change, two weights on Hard, each taken from Common:**
-  - A Hard elite's chest holds Epic at 0.9% or more.
-  - A Hard keeper's chest after its first win holds Epic at 2.0% and Legendary at 0.45% or more.
-  - The first Hard win is left out on purpose. Its Rare floor drops everything under Rare, so these weights would become about half its roll (Epic) and one in ten (Legendary): a jackpot at 5 h, measured in `out_e6.txt`.
-  - Config: `Chests.Hard.Least = { Elite = { Epic = 0.9 }, Keeper = { Epic = 2.0, Legendary = 0.45 } }`, or the shape Faber prefers. The chest's card shows the odds as rolled.
-- **MODEL, at the elite's 0.8 and 1.1 (`out_e6c.txt`; design clock, 80 players, 45 h, a quarter in the Tower):** first Epic rolled at 4.4 and 4.1 h, worn at 5.5 and 4.6 h. First Legendary rolled at 19.5 and 16.9 h. The first Rare comes at 1.9 h, worn at 2.8 to 3.1 h. 0.9 sits between the two runs.
+- **The director's word** (about 20:55, `docs/decisions.md`): "the epic and legendary should come at any point imo but for the beginning it luck".
+- **The change, three weights, each taken from Common:**
+  - **Every chest,** Normal and Hard, from the first: Epic at 0.3% and Legendary at 0.05% or more.
+  - **A Hard elite's chest:** Epic at 0.6% or more.
+  - **A Hard keeper's chest after its first win:** Epic at 1.6% and Legendary at 0.35% or more.
+  - **Left out on purpose:** the first Hard win's chest and the Tower's. The first Hard win drops everything under Rare, so these weights would become about half its roll (Epic) and one in ten (Legendary), a jackpot at 5 h (`out_e6.txt`). The Tower's row is above them already.
+  - Config: `Chests.Least = { Epic = 0.3, Legendary = 0.05 }`, and `Chests.Hard.Least = { Elite = { Epic = 0.6 }, Keeper = { Epic = 1.6, Legendary = 0.35 } }`, or the shape Faber prefers. The chest's card shows the odds as rolled.
+- **MODEL (`out_e7.txt`, the middle variant; design clock, 80 players, 45 h, a quarter in the Tower):**
+
+  | First one | Lucky 10% of players | Median, rolled | Median, worn |
+  |---|---|---|---|
+  | Rare | 0.7 h | 1.9 h | 2.9 h |
+  | Epic | 0.9 h | 3.7 h | 4.6 h |
+  | Legendary | 2.4 h | 17.2 h | 22.1 h |
+
 - **Limits:**
   - The clock is the design's 180 and 210 s stages. The real length, from the stage log, can move every time here by 2 to 2.5 times. Research refits once 20 real runs are logged.
-  - With more grounds, the ladder reaches rows 5 and 7, and these weights are dropped then.
-- **Done when:** a case rolls each chest's weights (the Hard elite's, the Hard keeper's first and after, a Normal keeper's unchanged), and the bag's chest card shows them.
+  - With more grounds, the ladder reaches rows 5 and 7, and the Hard weights are dropped then. The weights on every chest stay.
+- **Done when:** a case rolls each chest's weights (a Normal Shade's, a Hard elite's, the Hard keeper's first and after, the Tower's unchanged), and the bag's chest card shows them.
+
+## TR49. The combat review, built: the six decisions (Faber, after AR40's C)
+
+- **Feel line:** a lead walks into a Lantern Row pack and every Shade in it hits, crits, dodges and blocks back. The skull over a foe says what the fight will cost before the first swing. The sheet shows all five attributes, and CR rises with every piece that makes the lead win.
+- **The director's word:** "1) ok", 2026-11-19, 20:57, to the six decisions as restated in `docs/research/combat-math.md`, "For the director: the decisions" (`docs/decisions.md`). The study, its numbers and its limits are there. Nothing here widens them.
+- **What the block contains** (the changes are ready to merge in `build/scratch/quaestor/integrate/out/`):
+  1. **`integration.patch`,** against `src/shared` as it stood at 16:26. It covers `Rules/{Stats,Hit,Hud}`, `Config/{Stats,Enemies,Hud,Chests,Growth}` and `Definitions/Attributes`, and its `shared/` folder holds whole copies.
+     - Since then, TR47 part A (6b640a0) and TR48 (c7ac21e) changed `Config/Stats`, `Rules/Hit` and `Rules/Stats`. Those three hunks don't apply as they are, so merge them by hand.
+     - Keep TR47's Reinforce, emblems, jewels and level gap, and TR48's chests, on top of the patch.
+  2. **`server.patch`:** FightService (Kindle's old add at 886 to 890 goes; Lifesteal applied) and StageService (the Shades' stage factor). Its line numbers are from before AR42 and AR46, so merge it by hand too.
+  3. **`cases_draft.luau`:** 206 checks, passing on the merged copy. They go into the logic cases, and every case that held an old number is re-read, never weakened.
+  4. **An element for each of the ten without one** (decision 6; research's picks, by look and kit; set in `Definitions.Voidkin`):
+
+     | Voidkin | Element | Why |
+     |---|---|---|
+     | Rook | Fire | the red brawler, Second Wind |
+     | Kirra | Void | she vanishes and crosses the target |
+     | Patch | Frost | the cold pack of a field medic |
+     | Tumble | Storm | a spinning kick, wind |
+     | Brick | Void | Door Slam draws enemies onto him |
+     | Sable | Void | the sable shadow, a turned-aside hit |
+     | Gantry | Fire | the steam behind a piston |
+     | Mallow | Fire | Hot Meal |
+     | Wren | Storm | Updraft, arrows on the wind |
+     | Crane | Frost | Calm, the still water of a long draw |
+
+     The 31 then stand at Fire 9, Storm 9, Void 7 and Frost 6. An element's look on a hit is the kit's own, so nothing new is drawn.
+  5. **The screens that read the new numbers:** the sheet shows all five attributes on every Voidkin (the director, 13:53). The comparison panel shows the true CR change. The foe card's skull reads the fight's cost, with the cuts at 0.15, 0.5 and 1.0, and a foe at the lead's level or above is never grey.
+- **What waits:** Hard's lifts re-solved under TR48's budget (research, on the first logged runs); any change to the class edges (0.046 against a target of 0.03, in the study's limits).
+- **Done when:**
+  - The type check passes, the 206 checks and every existing case pass, and the self-test passes.
+  - **The Stage 1 playtest owed:** a new account plays through Stage 1 on Normal, and the capture records its lowest health and its time. The model says 66%; one play shows whether the packs, swinging together, are lethal.
+  - A phone capture shows a Voidkin's sheet with all five attributes, and a foe card's skull in each of its four colours.

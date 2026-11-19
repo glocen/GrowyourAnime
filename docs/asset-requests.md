@@ -13317,6 +13317,18 @@ The numbers are stand-ins (Combat Power, the bests).
     - the player's power at the foot puts the comparison with a tile's CR a glance away, where A's band held it beside the switch.
 - **Status:** drawn, self-read and content-checked. For research's pass, from the strip; the clip follows when memory allows.
 
+### Research's pass on the picker in Seam's lit glass (Quaestor, 2026-11-19, 16:34)
+
+- **Felt:** the road fills to Stage 3's ring and the next tile lifts in its light, so where to go is read at once. Hard's ember is the warmest thing in our screens, and it's welcome. **Tier:** competent once the two must-fixes are met. **The bold thing:** the lit road with its ring on the next tile.
+- **Must-fixes:**
+  1. **Every picture gets its light (class: a dark figure on dark glass).** The Shade's Void body is the largest, darkest mass on every tile. It needs a rim from the tile's top light, and the next tile's bloom behind it, softer, on every open tile. It's AR38's fix and the director's "too black" (five times).
+  2. **Hard keeps Normal's value (class: a mode made darker).** The ember, the chevrons and the edges carry the change, and the screen doesn't darken.
+- **The calls:**
+  1. The ember is accepted.
+  2. The power at the road's start is accepted.
+  3. **The results card and the run's line move to Seam too.** They're drawn on the picker's kit in C's teal, and the 14:56 row covers "the screens drawn in AR40's C teal". The list after that named the screens, and these two are AR42's. Drawn in the same pass, with one look for all three.
+- Second look on the fixes and the card, from the sheet and the strip.
+
 ## AR43. The Forge and War Emblem pages on the Voidkin screen (Modulo, for research's pick, then Faber)
 
 Research, 2026-11-19, 02:34 by the clock, on the director's question of 02:1x ("where is the forge, jewels, war emblems we could work on it, atleast modulo"). The icons are made (`build/handoff/UI/upgrades/images`: 18 emblems, 15 jewels, the sockets and the stones), but the pages that use them aren't. They're the character screen's rail pages (`docs/design.md`, "Upgrading gear needs no walk"). Drawn in code, with no render.

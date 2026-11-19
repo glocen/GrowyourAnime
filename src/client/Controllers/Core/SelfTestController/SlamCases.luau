@@ -67,6 +67,7 @@ function SlamCases.Cases(): { any }
 	return {
 		{
 			Name = "Slam (TR44): the keeper's footprint, its fill and its aim; Off counted, A's walk out, B's Recall and its cooldown",
+			Place = "Festival", -- TR45: its world stands in that place only
 			Run = function(t: any)
 				local was = t.Server("Slam").Mode
 				local look = Combat.Keeper.Mark

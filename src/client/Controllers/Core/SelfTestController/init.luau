@@ -5,6 +5,8 @@
 --   game.ReplicatedStorage.NL_SelfTest:Invoke()            -- every check
 --   game.ReplicatedStorage.NL_SelfTest:Invoke("Boot")      -- only checks whose name contains "Boot"
 --   game.ReplicatedStorage.NL_SelfTest:Invoke("Scorecard") -- a Manual case list: numbers against targets, never in "every check"
+-- A case with Place = "Main" or "Festival" runs only in that place's playtest, filtered or not (TR45; Util.PlaceRole);
+-- the report's second line counts the ones left for the other place.
 -- It returns the report as text. Leave the keyboard alone while it runs: real input would mix with the test's.
 -- From the kit's controller, cut to this game: the player's avatar never fights (docs/design.md, "Combat"), so there's no
 -- stamina, lock-on or entity state here. The lead's and the enemies' checks join when TR2 builds them.
@@ -18,6 +20,7 @@ local Shared = ReplicatedStorage.Shared
 local Net = require(Shared.Net)
 local Parts = require(Shared.Util.Parts)
 local TestInput = require(Shared.Util.TestInput)
+local PlaceRole = require(Shared.Util.PlaceRole)
 local Cases = require(script.Cases)
 local TowerCases = require(script.TowerCases)
 local KitCases = require(script.KitCases)
@@ -200,8 +203,14 @@ local function run(filter: string?): string
 	table.move(stages, 1, #stages, #cases + 1, cases)
 	local slams = SlamCases.Cases() -- the keeper's marked slam (TR44), apart for the same reason
 	table.move(slams, 1, #slams, #cases + 1, cases)
+	local elsewhere = 0
+	pcall(serverCall, "TravelStub", true) -- no case ever leaves the place: each trip asked for is recorded (TR45)
 	for _, case in cases do
 		local chosen = if filter then string.find(case.Name, filter, 1, true) ~= nil else not case.Manual
+		if chosen and case.Place ~= nil and not PlaceRole.Is(case.Place) then
+			chosen = false
+			elsewhere += 1
+		end
 		if chosen then
 			current = case.Name
 			local ok, err = pcall(function()
@@ -228,12 +237,16 @@ local function run(filter: string?): string
 	record(#serverList == 0, "none on the server", serverList[1])
 	record(#clientErrors == 0, "none on the client", clientErrors[1])
 
+	pcall(serverCall, "TravelStub", false)
 	counting:Disconnect()
 	local seconds = os.clock() - started
 	local rate = math.round(frames / math.max(seconds, 1e-3))
 	table.insert(lines, 1, `SELF-TEST {if failed == 0 then "PASSED" else "FAILED"}: {passed} passed, {failed} failed ({string.format("%.1f", seconds)} s, {rate} fps)`)
 	if rate < 50 then
 		table.insert(lines, 2, `WARN  the client ran at {rate} fps: timing checks need about 60 (bring this Studio's window to the front)`)
+	end
+	if elsewhere > 0 then
+		table.insert(lines, 2, `NOTE  {elsewhere} chosen case(s) belong to the other place: run them in its playtest ({PlaceRole.Current} here)`)
 	end
 	return table.concat(lines, "\n")
 end

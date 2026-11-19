@@ -9,7 +9,8 @@
 -- Electricity stored over its cap with the rate and a thread of charge. Under the lead's card, the signature's readout
 -- (UI.Readout): its well fills over the cooldown, it's white-hot when ready and empties in a flash as the move fires;
 -- beside it the spectate eye. Bottom centre, the dock of three icons (UI.Dock): Base takes the player home in one tap
--- (TR19), Inventory opens the Voidkin screen, open while it is, and the Map waits for its screen; over the dock the
+-- (TR19), Inventory opens the Voidkin screen, open while it is, and the Map tile, its word Play, the Festival of Battles'
+-- menu (TR45: HudController.OpenPlay, set by StageController); over the dock the
 -- shards' hint while a shard waits and the player is home. The HUD's text wears one face
 -- (Config.Hud.Face), switched at runtime. Everything reads the fighters' attributes (FightService) or the save's copy
 -- (ProfileController); nothing here decides anything. The Voidkin screen lists the collection and makes a lead.
@@ -1184,6 +1185,8 @@ end
 HudController.OpenBase = function() end
 -- Opens the base's command view (TR21's blockout): BaseController's, set by it at Start.
 HudController.OpenView = function() end
+-- The dock's Play tile: the Festival of Battles' menu (StageController sets it, TR45).
+HudController.OpenPlay = function() end
 
 function HudController.Start()
 	lead = LeadCard.new(Layers.Get("Hud"), UDim2.fromOffset(PAD, TOP))
@@ -1277,8 +1280,7 @@ function HudController.Start()
 	World.Foot(chip) -- the edge's arrow stands over it
 	chip.Visible = false
 	-- The dock of three icons (AR12): Inventory opens the Voidkin screen, open while it is; Base takes the player home
-	-- (TR19: goHome), and the Base screen opens from a bay's prompt; the Map's screen isn't built, so its tile dims and says
-	-- so on a tap.
+	-- (TR19: goHome), and the Base screen opens from a bay's prompt; the Map tile opens the Festival's menu (TR45).
 	local function toggle(name: string, open: () -> ())
 		return function()
 			if Screen.Current() == name then
@@ -1293,13 +1295,15 @@ function HudController.Start()
 			voidkinScreen()
 		end),
 		Base = goHome,
+		Map = function() -- its word is Play: the Festival of Battles' menu, in either place (TR45)
+			HudController.OpenPlay()
+		end,
 	})
 	Dock.Charges(dockUi, "Base", true) -- its tap is the charge's first frame: ink while it fills, no flash (TR19)
 	dockHolder = dockUi.Frame
 	dockHolder.AnchorPoint = Vector2.new(0.5, 1)
 	dockHolder.Position = UDim2.new(0.5, 0, 1, -PAD)
 	dock.Voidkin = dockUi.Tiles.Inventory.Button
-	Button.Set(dockUi.Tiles.Map.Button, { Disabled = "The map isn't open yet" })
 	-- The jump's light (TR19), a stand-in until Modulo's look: one frame on each of the screen's edges, lit at the edge and
 	-- gone Reach in, over everything but the toasts.
 	local overlay = Layers.Get("Overlay")

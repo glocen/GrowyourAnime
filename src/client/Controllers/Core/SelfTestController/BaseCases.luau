@@ -12,6 +12,7 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
 
 local Shared = ReplicatedStorage.Shared
+local PlaceRole = require(Shared.Util.PlaceRole)
 local BaseLevels = require(Shared.Rules.BaseLevels)
 local Breaker = require(Shared.Rules.Breaker)
 local ShardConfig = require(Shared.Config.Shards)
@@ -65,6 +66,7 @@ function BaseCases.Cases(given: Given): { any }
 	return {
 		{
 			Name = "Base: AR16's base as its save has it: the bays it opened awake and the rest asleep, the battery's cells by its level and lit by its charge, the mill's wheel, gauge and demand mark (AR19), the crown while a Voidkin trains",
+			Place = "Main", -- TR45: its world stands in that place only
 			Run = function(t: any)
 				local view = ProfileController.Get()
 				local plot = Players.LocalPlayer:GetAttribute("Plot")
@@ -318,6 +320,7 @@ function BaseCases.Cases(given: Given): { any }
 		},
 		{
 			Name = "Base: from the spawn, AR16, no machine's plate speaks (each only near its machine); at the Breaker its plate speaks, covering none, under the top band",
+			Place = "Main", -- TR45: its world stands in that place only
 			Run = function(t: any)
 				local old = Players.LocalPlayer.Character
 				t.Check("the avatar goes home", t.Server("Respawn") == true and waitFor(t, 8, function(): boolean
@@ -444,6 +447,7 @@ function BaseCases.Cases(given: Given): { any }
 		},
 		{
 			Name = "Base: TR24's fix 5, Watt's shard breaks in a starter's time and opens itself once its player is on their plot, never off it",
+			Place = "Main", -- TR45: its world stands in that place only
 			Run = function(t: any)
 				local shard = "named_watt"
 				local grade = ShardConfig.Grades[Shards.ById[shard].Grade]
@@ -460,9 +464,10 @@ function BaseCases.Cases(given: Given): { any }
 				BaseController.Dismiss() -- a reveal left up (one that opened itself at the join) holds the next back
 				local was = BaseController.SelfOpen(false)
 				local ok, err = pcall(function()
-					-- off the plot, in the Row: it breaks and waits (turned on there, so nothing left ready opens on the plot)
+					-- off the plot, on the Strip's crossing: it breaks and waits (turned on there, so nothing left ready opens
+					-- on the plot; TR45: the street is the Festival's place)
 					local up = Vector3.new(0, 3.6, 0)
-					t.Server("TestStandAt", Vector3.new(0, 0, gateZ - 60) + up, Vector3.new(0, 0, gateZ - 70) + up)
+					t.Server("TestStandAt", up, Vector3.new(10, 0, 0) + up)
 					t.Wait(0.5)
 					BaseController.SelfOpen(true)
 					local held = view.Bag.Shards[shard] or 0
@@ -518,20 +523,25 @@ function BaseCases.Cases(given: Given): { any }
 				local plot = Players.LocalPlayer:GetAttribute("Plot")
 				local door = if type(plot) == "number" then Markers.Find("FestivalDoor", { Plot = plot }) else nil
 				local gate = Markers.Find("FestivalGate")
-				t.Check("the plot's door and the festival gate are in the world", door ~= nil and gate ~= nil)
+				-- Each place has its own (TR45): the plot's door in the base's, the festival gate in the Festival's.
+				local festival = PlaceRole.Is("Festival")
+				t.Check("this place's landmark is in the world", if festival then gate ~= nil else door ~= nil)
 				local parts: { [string]: Frame } = {}
-				t.Check("each wears its sign", waitFor(t, 3, function(): boolean
+				t.Check("it wears its sign", waitFor(t, 3, function(): boolean
 					parts = SignsController.Parts()
-					return parts.Door ~= nil and parts.Gate ~= nil
+					return if festival then parts.Gate ~= nil else parts.Door ~= nil
 				end))
 				local function says(frame: Frame?, index: number): string
 					local panel = frame and frame:FindFirstChild("Panel")
 					local label = panel and panel:FindFirstChild(`Line{index}`)
 					return if label and label:IsA("TextLabel") then label.Text else ""
 				end
-				t.Equal("the door: its name", says(parts.Door, 1), WorldConfig.Signs.Door.Name)
-				t.Equal("the door: the ground it goes to under it", says(parts.Door, 2), ground)
-				t.Equal("the gate: its ground", says(parts.Gate, 1), ground)
+				if festival then
+					t.Equal("the gate: its ground", says(parts.Gate, 1), ground)
+				else
+					t.Equal("the door: its name", says(parts.Door, 1), WorldConfig.Signs.Door.Name)
+					t.Equal("the door: the ground it goes to under it", says(parts.Door, 2), ground)
+				end
 				-- Beside each landmark, never over it, and the Door's away while its own plate reads (research's must-fix on
 				-- AR15, 2026-11-17). Seen as the game's camera sees a stand: 12 studs behind the avatar and 4.7 up, looking at
 				-- its head, the avatar facing the landmark (measured in AR15). It moves on render.
@@ -558,11 +568,12 @@ function BaseCases.Cases(given: Given): { any }
 					return wide * tall / (frame.AbsoluteSize.X * frame.AbsoluteSize.Y)
 				end
 				local frameOf = if door then door:FindFirstChild("Frame") else nil
-				if door and frameOf and frameOf:IsA("BasePart") and parts.Door then
+				local doorSign: Frame? = parts.Door
+				if door and frameOf and frameOf:IsA("BasePart") and doorSign then
 					local c = BaseManifest.pieces[frameOf:GetAttribute("Piece") :: string].centre
 					local origin = frameOf.CFrame * CFrame.new(-c[1], -c[2], -c[3])
 					look(door, origin * Vector3.new(0, 3.5, 18))
-					t.Check("the door: its sign away while its own plate reads, at the way in", SignsController.Aside(door) and not parts.Door.Visible, `{SignsController.Aside(door)}, shown {parts.Door.Visible}`)
+					t.Check("the door: its sign away while its own plate reads, at the way in", SignsController.Aside(door) and not doorSign.Visible, `{SignsController.Aside(door)}, shown {doorSign.Visible}`)
 					local stands: { { Name: string, At: Vector3 } } = {
 						{ Name = "40 out", At = Vector3.new(0, 3.5, 40) },
 						{ Name = "18 behind", At = Vector3.new(0, 3.5, -18) },
@@ -570,20 +581,21 @@ function BaseCases.Cases(given: Given): { any }
 					}
 					for _, stand in stands do
 						look(door, origin * stand.At)
-						local over = covered(parts.Door, door)
+						local over = covered(doorSign, door)
 						t.Check(`the door, {stand.Name}: its sign shown beside it, none of it over the door`, not SignsController.Aside(door) and over == 0, `aside {SignsController.Aside(door)}, over {over}`)
 					end
-				else
+				elseif not festival then
 					t.Check("the door's kit, to stand before it", false, "no Frame")
 				end
-				if gate and parts.Gate then
+				local gateSign: Frame? = parts.Gate
+				if gate and gateSign then
 					local box, extent = if gate:IsA("Model") then gate:GetBoundingBox() else (gate :: BasePart).CFrame, if gate:IsA("Model") then gate:GetExtentsSize() else (gate :: BasePart).Size
 					local middle = box.Position
 					local toward = if door and door:IsA("Model") then door:GetBoundingBox().Position else middle + Vector3.new(0, 0, 1)
 					local flat = Vector3.new(toward.X - middle.X, 0, toward.Z - middle.Z).Unit
 					look(gate, middle + flat * 40 + Vector3.new(0, 3 - extent.Y / 2, 0)) -- the avatar's root on the gate's floor
-					t.Check("the gate, 40 out: its sign shown", parts.Gate.Visible)
-					local over = covered(parts.Gate, gate)
+					t.Check("the gate, 40 out: its sign shown", gateSign.Visible)
+					local over = covered(gateSign, gate)
 					t.Check("the gate, 40 out: none of its sign over the gate", over == 0, `over {over}`)
 				end
 				camera.CameraType = Enum.CameraType.Custom
@@ -591,6 +603,7 @@ function BaseCases.Cases(given: Given): { any }
 		},
 		{
 			Name = "Base: AR15's Festival Door, the ring tunnel: its four rings turn always about the tunnel's axis at their plan's rates, its core lit by whether its ground is open, its way inside the front ring's open opening, its name on the plate",
+			Place = "Main", -- TR45: its world stands in that place only
 			Run = function(t: any)
 				local plot = Players.LocalPlayer:GetAttribute("Plot")
 				local door = if type(plot) == "number" then Markers.Find("FestivalDoor", { Plot = plot }) else nil
@@ -707,6 +720,7 @@ function BaseCases.Cases(given: Given): { any }
 		},
 		{
 			Name = "Base: TR24's fix 1, a worker stands at work in its bay's ring playing its rig's Idle, the halo lit in its rarity colour; the bay empty, both gone; the step's chevron over the bay it names",
+			Place = "Main", -- TR45: its world stands in that place only
 			Run = function(t: any)
 				local view = ProfileController.Get()
 				local plot = Players.LocalPlayer:GetAttribute("Plot")

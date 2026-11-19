@@ -7,6 +7,7 @@
 -- player and their lead are set down at their plot's spawn facing its Breaker (KeeperService.Place, no fade: the jump's
 -- light is the client's), the cooldown starts (HomeReady: its end, server time) and the client is told (Net "HomeJump").
 -- In Studio: HomeState reads it all, HomeHit stamps a hit now, HomeReady ends the cooldown.
+-- In the Festival's place the same charge, and its jump is the trip back to the base (TravelService.Home, TR45).
 
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
@@ -20,7 +21,9 @@ local Net = require(Shared.Net)
 
 local Core = script.Parent.Parent.Core
 local DebugService = require(Core.DebugService)
+local PlaceRole = require(Shared.Util.PlaceRole)
 local KeeperService = require(script.Parent.KeeperService)
+local TravelService = require(script.Parent.TravelService)
 local FightService = require(script.Parent.FightService)
 local WorldService = require(script.Parent.WorldService)
 
@@ -75,6 +78,11 @@ local function jump(player: Player, began: number)
 		return
 	end
 	local refusal: Home.Refusal? = if s.Try then "Boss" elseif s.Event then "Event" else nil -- a try or an event begun in it
+	if PlaceRole.Is("Festival") then
+		local going = refusal == nil and TravelService.Home(player)
+		Net.Server.Fire("HomeJump", player, going, if refusal then Home.Says(refusal, s) else nil)
+		return
+	end
 	local at = arrival(player)
 	if refusal or at == nil or not KeeperService.Place(player, at :: CFrame) then
 		Net.Server.Fire("HomeJump", player, false, if refusal then Home.Says(refusal, s) else nil)
@@ -94,7 +102,7 @@ function HomeService.Ask(player: Player): { [string]: any }
 	if player:GetAttribute("HomeCharge") ~= nil then
 		return { Ok = true, Charging = true }
 	end
-	if arrival(player) == nil then
+	if not PlaceRole.Is("Festival") and arrival(player) == nil then
 		return { Ok = false, Refusal = "Nowhere" } -- no plot or no spawn: the world report says what
 	end
 	local began = s.Now

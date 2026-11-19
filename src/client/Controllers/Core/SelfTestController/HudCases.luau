@@ -126,6 +126,7 @@ function HudCases.Cases(given: Given): { any }
 			-- tile away from home; a fight, a hit in the charge and a keeper's try each refuse in plain words and shake the tile;
 			-- a lead fallen alone out in a ground gives the tile its pip.
 			Name = "HUD: TR19, the dock's Base tile takes the player home after its charge, refuses in plain words, is quiet at home, and wears the pip after a lone fall",
+			Place = "Main", -- TR45: away is the Strip; in the Festival's place the tile is the trip home (its own case)
 			Stay = true, -- it moves the avatar itself; the next case's reset takes it back to the pad
 			Run = function(t: any)
 				t.Wait(LEAD_SETTLE)
@@ -137,9 +138,10 @@ function HudCases.Cases(given: Given): { any }
 				local where = if type(plot) == "number" then { Plot = plot } else nil
 				local spawn = if where then streamed(t, "Spawn", where) else nil
 				local breaker = if where then streamed(t, "Breaker", where) else nil
-				local elite = streamed(t, "Elite", { Stage = Helpers.SQUARE.Stage })
-				t.Check("the plot's spawn and Breaker, and the elite's square", spawn ~= nil and breaker ~= nil and elite ~= nil)
-				if not (spawn and breaker and elite) then
+				local world = workspace:FindFirstChild("World")
+				local strip = if world then world:FindFirstChild("Strip") else nil
+				t.Check("the plot's spawn and Breaker, and the Strip", spawn ~= nil and breaker ~= nil and strip ~= nil and strip:IsA("BasePart"))
+				if not (spawn and breaker and strip and strip:IsA("BasePart")) then
 					return
 				end
 				local function flat(a: Vector3, b: Vector3): number
@@ -154,19 +156,16 @@ function HudCases.Cases(given: Given): { any }
 				local function said(words: string): boolean
 					return table.find(Toast.Shown(), words) ~= nil
 				end
-				-- Home before the elite comes back: left on its square, the lead fells it again, and it rests Back.Elite
-				-- seconds, past the packs' case (seen 2026-11-15).
 				local function restore()
 					t.Server("HomeReady")
 					t.Server("LeadHeal")
 					t.Root().CFrame = CFrame.new(Markers.At(spawn).Position + Vector3.new(0, R6_ROOT_HEIGHT, 0))
 					t.Wait(0.5)
-					t.Server("PackBack", Helpers.SQUARE.Name)
 				end
 				t.Server("HomeReady")
 				t.Server("LeadCalm") -- out of any fight a case before left it in: a lead with a target is "In a fight"
-				t.Check("the elite's square is cleared", t.Server("PackDefeat", Helpers.SQUARE.Name).Ok == true)
-				local square = Markers.At(elite).Position + Vector3.new(0, R6_ROOT_HEIGHT, 0)
+				-- Away: the Strip's crossing, off every plot, nothing to fight (TR45: the street is the Festival's place).
+				local square = strip.Position + Vector3.new(0, strip.Size.Y / 2 + R6_ROOT_HEIGHT, 0)
 				local home = Markers.At(spawn).Position
 				-- At home: quiet, and a tap opens the base's command view (TR21's blockout; its build retires the quiet look).
 				t.Root().CFrame = CFrame.new(home + Vector3.new(0, R6_ROOT_HEIGHT, 0))
@@ -196,10 +195,10 @@ function HudCases.Cases(given: Given): { any }
 				t.Check("a tap opens the base's command view (TR21): no charge, no shake, nothing said", BaseView.IsOpen() and player:GetAttribute("HomeCharge") == nil and shakes() == still and #new == 0, table.concat(new, "; "))
 				BaseView.Close()
 				t.Wait(BaseViewConfig.Lift.Seconds + 0.2)
-				-- Out on Lantern Row, nothing in the way: a tap charges, then home.
+				-- Out on the Strip, nothing in the way: a tap charges, then home.
 				t.Root().CFrame = CFrame.new(square)
 				t.Wait(LEAD_SETTLE)
-				t.Check("out in the ground the tile is at rest", waitFor(t, 1, function(): boolean
+				t.Check("away from the plot the tile is at rest", waitFor(t, 1, function(): boolean
 					return base:GetAttribute("Look") == "Rest" and base:GetAttribute("Mood") == nil
 				end), tostring(base:GetAttribute("Look")))
 				t.Equal("and the server would take them home", state().Refusal, "")
@@ -330,36 +329,8 @@ function HudCases.Cases(given: Given): { any }
 				end))
 				t.Check("the player wasn't moved", flat(t.Root().Position, from) < SET_DOWN)
 				t.Check("and no cooldown was spent", player:GetAttribute("HomeReady") == nil)
-				-- A keeper's try: dim, and a tap says so.
 				t.Server("HomeReady")
-				t.Server("KeeperRest", 0)
-				local try = t.Server("KeeperTry")
-				local tried = type(try) == "table" and try.Ok == true
-				t.Check("a try starts", tried, if type(try) == "table" then tostring(try.Error) else "")
-				if tried then
-					t.Check("in a boss's ground the tile dims", waitFor(t, REPLICATE + 1, function(): boolean
-						return player:GetAttribute("Try") ~= nil and base:GetAttribute("Look") == "Dim"
-					end), tostring(base:GetAttribute("Look")))
-					before = shakes()
-					Button.Press(base)
-					t.Check("a tap says it's a boss's ground, and shakes", waitFor(t, REPLICATE, function(): boolean
-						return said("Not in a boss's ground") and shakes() > before
-					end))
-					-- The keeper stands in its ring only once the try's fade has moved the player (the server says NoTry
-					-- before), so the loss is asked until it's taken, then the try ends after the lead's fall.
-					local fade = Combat.Keeper.Fade
-					local ended: any = nil
-					waitFor(t, fade.Out + fade.Hold + 1, function(): boolean
-						ended = t.Server("KeeperEnd", "Loss")
-						return type(ended) == "table" and ended.Ok == true
-					end)
-					t.Check("the try ends", type(ended) == "table" and ended.Ok == true and waitFor(t, Combat.Keeper.LossPause + fade.Out + fade.Hold + 2, function(): boolean
-						return player:GetAttribute("Try") == nil
-					end), if type(ended) == "table" then tostring(ended.Error) else "")
-					t.Server("LeadHeal")
-					t.Wait(LEAD_SETTLE)
-				end
-				-- A lead fallen alone out in a ground: the pip on the tile, gone at its return.
+				-- A lead fallen alone away from home: the pip on the tile, gone at its return.
 				t.Root().CFrame = CFrame.new(square)
 				t.Wait(LEAD_SETTLE)
 				t.Check("no pip while the lead stands", base:GetAttribute("New") ~= true)
@@ -440,13 +411,13 @@ function HudCases.Cases(given: Given): { any }
 				t.Wait(settle)
 				t.Near("off it, it eases out", Hover.Share(inventory), 0, 1e-3)
 				t.Check("back in its place, its word gone", (at(tile) - restTile).Magnitude < 0.5 and not word.Visible)
-				-- A refused tile's word says why.
+				-- The Map tile's word is Play (TR45; a refused tile's reason is TR19's "You're home", in its own case).
 				local map = parts.Map :: TextButton
 				local mapWord = dock:FindFirstChild("MapWord", true) :: TextLabel
 				Hover.Force(map, true)
-				t.Check("a refused tile's word is its reason", waitFor(t, motion.Word + 0.3, function(): boolean
+				t.Check("the Map tile's word is Play", waitFor(t, motion.Word + 0.3, function(): boolean
 					return mapWord.Visible
-				end) and mapWord.Text == "The map isn't open yet", mapWord.Text)
+				end) and mapWord.Text == "Play", mapWord.Text)
 				Hover.Force(map, nil)
 				-- A touch answers nothing.
 				Hover.Pretend("Touch")
@@ -628,6 +599,7 @@ function HudCases.Cases(given: Given): { any }
 		},
 		{
 			Name = "HUD: a machine's plate under the lead's card starts right of the readout and the eye, in this window and on the smallest phone",
+			Place = "Main", -- TR45: its world stands in that place only
 			Run = function(t: any)
 				-- Research's pass on AR12 at phone size (2026-11-15): at home, Spectate's eye stood over "Bay 1 · no one works
 				-- here". The camera is turned so the Breaker's point stands over the eye, halfway up the band; its plate must show
@@ -765,6 +737,7 @@ function HudCases.Cases(given: Given): { any }
 			-- bay wears a chip saying its name, its level and what it does, the base's level stands at the top, the HUD and
 			-- the machines' own plates step back, and Close gives the camera back behind the lead.
 			Name = "Base view: TR21's blockout, the camera lifts over the whole base, a chip on every machine and bay, and Close gives it back",
+			Place = "Main", -- TR45: its world stands in that place only
 			Run = function(t: any)
 				Screen.Close()
 				local camera = workspace.CurrentCamera

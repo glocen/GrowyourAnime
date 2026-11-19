@@ -38,6 +38,8 @@ local DataService = require(Core.DataService)
 local DebugService = require(Core.DebugService)
 local FightService = require(script.Parent.FightService)
 local WorldService = require(script.Parent.WorldService)
+local TravelService = require(script.Parent.TravelService)
+local PlaceRole = require(Shared.Util.PlaceRole)
 
 local KeeperService = {
 	Priority = 45, -- after the world, the fight and the packs
@@ -162,7 +164,9 @@ local function lay()
 	local marker = Markers.Find("Ring")
 	local gate = Markers.Find("KeeperGate")
 	if marker == nil or gate == nil then
-		Log.Warn("KeeperService", "no Ring or KeeperGate marker: no keeper's try")
+		if PlaceRole.Is("Festival") then -- the base's place has no ring (TR45)
+			Log.Warn("KeeperService", "no Ring or KeeperGate marker: no keeper's try")
+		end
 		return
 	end
 	local def, level, ground = marker:GetAttribute("Def"), marker:GetAttribute("Level"), marker:GetAttribute("Ground")
@@ -253,7 +257,7 @@ end
 
 -- Starts a try for `player`: { Ok } or { Ok = false, Error }.
 function KeeperService.Try(player: Player): { [string]: any }
-	local plot = WorldService.PlotOf(player)
+	local plot = WorldService.SlotOf(player)
 	local copy = if plot then copies[plot] else nil
 	local lead = FightService.LeadOf(player)
 	if tries[player] then
@@ -348,7 +352,7 @@ local function state(who: any): any
 		return { Ok = false, Error = "NoPlayer" }
 	end
 	local try = tries[player]
-	local plot = WorldService.PlotOf(player)
+	local plot = WorldService.SlotOf(player)
 	local copy = if plot then copies[plot] else nil
 	local root = Parts.Root(player.Character)
 	local data = DataService.Get(player)
@@ -403,14 +407,14 @@ function KeeperService.Start()
 	Players.PlayerRemoving:Connect(KeeperService.End)
 	local function watch(player: Player)
 		player.CharacterAdded:Connect(function()
-			KeeperService.End(player) -- a respawn mid-try: WorldService sets them down on their plot
+			KeeperService.End(player) -- a respawn mid-try: WorldService sets them down on their plot, or the landing
 		end)
 	end
 	Players.PlayerAdded:Connect(watch)
 	for _, player in Players:GetPlayers() do
 		watch(player)
 	end
-	-- The shortcut home: whoever steps on it, once a second at most.
+	-- The shortcut home: whoever steps on it, once a second at most, goes back to the base (TR45).
 	local last: { [Player]: number } = {}
 	local function shortcut()
 		local pad = Markers.Find("Shortcut")
@@ -424,10 +428,7 @@ function KeeperService.Start()
 				return
 			end
 			last[player] = now
-			local home = WorldService.SpawnOf(player)
-			if home then
-				KeeperService.SetDown(player, home)
-			end
+			TravelService.Home(player)
 		end)
 	end
 	Players.PlayerRemoving:Connect(function(player: Player)

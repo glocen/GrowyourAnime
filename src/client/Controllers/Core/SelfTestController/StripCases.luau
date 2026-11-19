@@ -40,6 +40,7 @@ function StripCases.Cases(): { any }
 	return {
 		{
 			Name = "World: AR17, the Strip wears its kit: whole on the world report, laid from the festival's gate so the crossing's mark is on the crossing, and the great shard glows steady over it",
+			Place = "Main", -- TR45: its world stands in that place only
 			Run = function(t: any)
 				local problems = t.Server("DressReport", "Street")
 				local stripLines = {}

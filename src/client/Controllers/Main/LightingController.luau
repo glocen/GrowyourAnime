@@ -44,6 +44,7 @@ local Night = require(Shared.Rules.Night)
 local Kit = require(Shared.World.Kit)
 local Plan: Kit.Plan = require(Shared.Config.Kits.LanternRow.Plan) :: any -- the kit Lantern Row wears (WorldService's DRESS)
 local Parts = require(Shared.Util.Parts)
+local PlaceRole = require(Shared.Util.PlaceRole)
 
 local LightingController = {}
 
@@ -352,7 +353,8 @@ local function step(dt: number)
 	local camera = workspace.CurrentCamera
 	local focus = if camera then camera.Focus.Position else nil
 	local z = gateZ()
-	local inRow = focus ~= nil and z ~= nil and Night.Inside(focus.Z, z, LightingConfig.From)
+	-- The Festival's place is the ground's from its forecourt on (TR45); beside the base, north of its gate.
+	local inRow = PlaceRole.Is("Festival") or (focus ~= nil and z ~= nil and Night.Inside(focus.Z, z, LightingConfig.From))
 	local target = if LightingConfig.Everywhere or inRow then 1 else 0
 	local jumped = focus == nil or lastFocus == nil or (focus - (lastFocus :: Vector3)).Magnitude > JUMP
 	lastFocus = focus

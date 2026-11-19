@@ -185,6 +185,19 @@ The handbook's rule ([the world contract](../handbook/engineering/architecture.m
 - **One base plan for every plot**, laid in each plot's own frame (`Kit.Place`). A placement marked `"toward": "crossing"` is written for one side and mirrored, across and turn, onto each plot's crossing side (`Kit.Toward`, AR16's sleeping Tower); the dressing report checks it stands there.
 - Screens read replicated state, never markers.
 
+## Places
+
+The Festival of Battles is a game mode, so it has its own place in this experience (the director, 2026-11-19: "festival of battle is a game mode it need a new places not the main experience", "u can make a new place inside this experience"). Built in TR45; the research behind it: `docs/research/game-mode-places.md`.
+
+- **Two places, one code.** The base's place (`Config.Game.Places.Main`) holds the plots, the Strip, the Shop and the Towers; the Festival's (`Places.Festival`) holds Lantern Row's stages, its elites and its keeper. Both run the whole of `src/`. The workspace attribute `PlaceRole` ("Main" or "Festival", saved in each place, never synced by Rojo) is read once through `Shared.Util.PlaceRole`; with none the place is Main. Every place boots `Core` and `Main`, then the role's own folder if there is one.
+- **Each tag belongs to one place** (`Shared.World.Tags`, `Place`): `WorldService` lays only its place's half, and the world report wants none of the other's.
+- **The trip is `TravelService`'s alone.** It sends one player at a time with `TeleportAsync` and `TeleportOptions` (a server asked for on the way home: the base server they came from, else any), retries a failed start by kind (`Rules.Travel.Next`: a flooded server after 15 s, a failure after 1 s, a server gone to any server once, the rest final), and gives up after a watchdog; the trip's card goes up on both sides of the loading screen (`SetTeleportGui`, then `ReplicatedFirst`'s `Arrival`).
+- **The ticket is a request, never a grant.** The teleport data is the stage asked for, written by the sender and readable by the client, so the arriving server reads it with `Rules.Travel.Read` (unknown fields dropped, every value checked), trusts it only from one of `Config.Game.Places`, and checks it against the save before a run begins (`Rules.Travel.Arrival`): a stage the save keeps shut opens the menu instead. Nothing a player owns ever travels in it.
+- **The save travels by the store, not the ticket.** It's released at leave and loaded at arrival as any join; the plot is freed while the player is away, and the way home lays it again.
+- **Every way in opens the menu, and the menu sends.** In the base, the plot's door and the dock's Play tile open the stages' menu; a pick is the trip. In the Festival a pick begins the run in place, and the ground's door, the keeper's shortcut, the dock's Base tile and the results' Home are the trip home.
+- **Studio can't teleport.** The self-test turns `TravelService`'s stub on for the run, so every trip asked for is recorded (`TravelSent`) and nothing leaves; `TravelFail` plays Roblox's refusals, `StageArriveBy` an arrival by ticket. A case with `Place` runs only in that place's playtest. A real trip is tested from the published places.
+- **What's the director's in the dashboard:** each place's name, its server size (the Festival's at most `Plots.Count`, eight, set on the Creator Dashboard below 11), and the Festival's Direct Access set to "Secure within universe only", so it's reached only by a trip from our servers.
+
 ## Transactions
 
 - Each change to a valuable is one server function: check, then apply everything to the profile, with no yield between.

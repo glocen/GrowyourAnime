@@ -192,6 +192,7 @@ function PowerCases.Cases(given: Given): { any }
 	return {
 		{
 			Name = "Power: the generator shows generation and demand, opens the Power screen once it's open, its battery on a plate in the head, and its split is asked of the server",
+			Place = "Main", -- TR45: its world stands in that place only
 			Run = function(t: any)
 				-- TR18 (docs/design.md, "Power"; UI/PowerScreen; Rules.Base.SetPower): the generator's face, its prompt only once
 				-- a second machine has drawn (PowerOpen stands for that here), the screen's bar dragged by its handles, +/- on a

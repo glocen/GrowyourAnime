@@ -34,7 +34,9 @@ local REMOTES: { [string]: Spec } = {
 	HomeJump = { Kind = "Event", RatePerSecond = 0 }, -- server -> client: (landed, says?) the jump home, or the charge broken and why
 	-- A ground's stages (StageService, TR43).
 	Stage = { Kind = "Function", RatePerSecond = 2 }, -- client -> server: (ground, difficulty, stage) -> { Ok, Error?, Needs?, Waits? }: a run begins there, or why not
-	StagePick = { Kind = "Event", RatePerSecond = 0 }, -- server -> client: ({ Ground }) through the Festival Door, not fresh: the picker opens
+	StagePick = { Kind = "Event", RatePerSecond = 0 }, -- server -> client: ({ Ground, Refused? }) the picker opens: by the base's Festival Door, or on arriving in the Festival with no stage to begin
+	-- The trip between places (TravelService, TR45).
+	Travel = { Kind = "Event", RatePerSecond = 0 }, -- server -> client: (state, info) "Leaving" { To }: the trip's card; "Failed" { Result }: the screen back, with a line; "Back": the screen back; "Arrived": the far side stands, the arrival card lifts
 	StageDone = { Kind = "Event", RatePerSecond = 0 }, -- server -> client: (results) a run ended, won or lost, for its card
 	StageGate = { Kind = "Event", RatePerSecond = 0 }, -- server -> client: ({ Stage, Ground }) set back at a gate shut to them
 	-- The fight in the camera's view (FightService, TR24's fixes 2 and 3).

@@ -100,8 +100,9 @@ end
 
 -- What's wrong with this place's markers, against the contract and `plots` plots. Empty: the world is whole. With
 -- `owned`, a plot's own markers are wanted only on the plots in it, and none on the rest (a bare lot until its owner
--- arrives); without it, on every plot.
-function Markers.Report(plots: number, owned: { [number]: boolean }?): { string }
+-- arrives); without it, on every plot. With `place`, only that place's markers are checked, and the other place's must
+-- be absent (Tags' Place, TR45).
+function Markers.Report(plots: number, owned: { [number]: boolean }?, place: string?): { string }
 	local problems = {}
 	local function problem(text: string)
 		table.insert(problems, text)
@@ -114,6 +115,12 @@ function Markers.Report(plots: number, owned: { [number]: boolean }?): { string 
 	for _, name in names do
 		local s = Tags[name]
 		local live = Markers.All(name)
+		if place and s.Place ~= place then
+			if #live > 0 then
+				problem(`{name}: {#live} in the world, wants none: it belongs in the {s.Place} place`)
+			end
+			continue
+		end
 		for _, item in live do
 			local where = item:GetFullName()
 			if not (item:IsA("BasePart") or item:IsA("Model")) then

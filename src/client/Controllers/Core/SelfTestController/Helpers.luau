@@ -11,6 +11,8 @@
 --   Helpers.batteryCells(t, mark, kwh, cap, where)  the battery mark's cells lit as the charge says (UI.BatteryMark)
 --   Helpers.SQUARE                          the elite in the square (one elite a stage, TR43): its group's Name ("Elite 2"),
 --                                           its marker's Stage, and the pack before it (Before, "Pack 2")
+--   Helpers.TRIP_ASKED                      seconds a step on a door or a pad, or a pick, may take to ask for a trip
+--   Helpers.lastTrip(t, role)               the newest trip TravelService's stub recorded, if it goes to place `role`
 
 local Shared = game:GetService("ReplicatedStorage").Shared
 local HudConfig = require(Shared.Config.Hud)
@@ -25,6 +27,15 @@ local BreakerScreen = require(UI.BreakerScreen)
 local UiLint = require(script.Parent.UiLint)
 
 local Helpers = {}
+
+Helpers.TRIP_ASKED = 3
+
+function Helpers.lastTrip(t: any, role: string): { [string]: any }?
+	local record = t.Server("TravelSent")
+	local sent = if type(record) == "table" and type(record.Sent) == "table" then record.Sent else {}
+	local last = sent[#sent]
+	return if type(last) == "table" and last.Role == role then last else nil
+end
 
 Helpers.ANSWER = 3
 Helpers.SKIP_ALL = 3600

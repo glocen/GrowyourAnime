@@ -1289,6 +1289,7 @@ return function(given: Given): { any }
 		},
 		{
 			Name = "Take: AR30's bases at the smallest phone, for Modulo: an item's card, a chest's, the Breaker, the base's rows and the HUD at a bay and at the Breaker",
+			Place = "Main", -- TR45: its world stands in that place only
 			Manual = true,
 			Stay = true,
 			Run = function(t: any)
@@ -1513,6 +1514,7 @@ return function(given: Given): { any }
 		},
 		{
 			Name = "Take: TR20's fixes, stills held step by step: the word's plate over the chip, You're home, a card, a ready chip and a breaking chamber, for research's verdict",
+			Place = "Main", -- TR45: its world stands in that place only
 			Manual = true,
 			Stay = true,
 			Run = function(t: any)
@@ -1635,6 +1637,7 @@ return function(given: Given): { any }
 		},
 		{
 			Name = "Take: TR18, the Power screen from the generator: the Breaker's handle dragged down and the Breaker slowing, then Auto, for research's verdict",
+			Place = "Main", -- TR45: its world stands in that place only
 			Manual = true,
 			Stay = true,
 			Run = function(t: any)
@@ -1843,6 +1846,7 @@ return function(given: Given): { any }
 		},
 		{
 			Name = "Take: TR9, the Breaker in Machine, a shard finishing in its chamber and opened from its chip, for research's verdict",
+			Place = "Main", -- TR45: its world stands in that place only
 			Manual = true,
 			Stay = true,
 			Run = function(t: any)
@@ -1997,6 +2001,7 @@ return function(given: Given): { any }
 		},
 		{
 			Name = "Take: the Lamplighter's fall, for TR2's close",
+			Place = "Festival", -- TR45: its world stands in that place only
 			Manual = true,
 			Stay = true,
 			Run = function(t: any)
@@ -2187,6 +2192,7 @@ return function(given: Given): { any }
 		},
 		{
 			Name = "Take: a rejoin, part 1: the leave, for TR2's close",
+			Place = "Main", -- TR45: its world stands in that place only
 			Manual = true,
 			Stay = true,
 			Run = function(t: any)
@@ -2229,6 +2235,7 @@ return function(given: Given): { any }
 		},
 		{
 			Name = "Take: a rejoin, part 2: the return, for TR2's close",
+			Place = "Main", -- TR45: its world stands in that place only
 			Manual = true,
 			Stay = true,
 			Run = function(t: any)
@@ -2311,6 +2318,7 @@ return function(given: Given): { any }
 		},
 		{
 			Name = "Take: TR21, the base's command view held open from home, for research's verdict",
+			Place = "Main", -- TR45: its world stands in that place only
 			Manual = true,
 			Stay = true,
 			Run = function(t: any)

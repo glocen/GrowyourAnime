@@ -39,6 +39,7 @@ local Net = require(Shared.Net)
 local Markers = require(Shared.World.Markers)
 local Log = require(Shared.Util.Log)
 local Signal = require(Shared.Util.Signal)
+local PlaceRole = require(Shared.Util.PlaceRole)
 local Core = script.Parent.Parent.Core
 local DebugService = require(Core.DebugService)
 local TuneService = require(Core.TuneService)
@@ -57,6 +58,10 @@ local SPAWN_UP = 3 -- an R6 root stands 3 studs over its floor
 local DRESS = "LanternRow" -- the kit Lantern Row wears: Config.Kits.LanternRow, ServerStorage.Templates.LanternRowKit
 local DRESS_LIFT = 0.05 -- the kit's floors stand a hair over the paving they cover, so the two never fight at a distance
 local LIGHT_CEILING = 14 -- round 2's lights, the ceiling the kit keeps (AR5, section 2)
+-- Which world this place lays (TR45): Lantern Row's street in the Festival's place, the base's Strip and plots in the
+-- main one. Read once: a place never changes role.
+local FESTIVAL = PlaceRole.Is("Festival")
+local FORECOURT = 24 -- the Festival's paving reaches this far before its gate, where a trip sets the player down
 local BASE = "Base" -- the kit every plot wears: Config.Kits.Base, ServerStorage.Templates.BaseKit (AR14)
 local STRIP = "Strip" -- the kit the Strip and the side street wear: Config.Kits.Strip, ServerStorage.Templates.StripKit (AR17)
 local BASE_LEVEL = "1" -- the plan's level laid on every plot, until the base has its levels (TR21)
@@ -846,6 +851,8 @@ end
 -- Each plot's base builder, as the last lay left it (plot()).
 local bases: { [number]: () -> Model } = {}
 
+local layStreet: (folder: Folder, gateZ: number, stripEnd: number, groundColour: Color3) -> ()
+
 local function lay(folder: Folder)
 	local c = WorldConfig
 	local function studs(seconds: number): number
@@ -861,28 +868,10 @@ local function lay(folder: Folder)
 	local rowEnd = crossingHalf + perSide * across + math.max(0, perSide - 1) * between
 	local stripEnd = rowEnd + studs(c.Strip.Ends)
 	local towers = stripHalf + deep + behind + tower -- from the Strip's middle to the Towers' far edge
-	local row = c.Row
-	local rowHalf = studs(row.Wide) / 2
-	local gateZ = -towers -- the festival gate, at the side street's end
-	local function stopZ(index: number): number
-		return gateZ - studs(row.FirstPack + (index - 1) * row.Spacing)
-	end
-	local stops = row.Stops
-	local keeperZ = stopZ(#stops)
-	local ringRadius = studs(row.Ring) / 2
-	local ringZ = keeperZ - ringRadius
-	local farZ = ringZ - ringRadius
-	local shutZ = farZ - studs(row.Beyond)
-	local high = c.Grey.Wall
+	-- The festival gate, where the side street beside the base once ended: Lantern Row keeps that spot in its own place,
+	-- and the Strip's kit and the lights still measure from it.
+	local gateZ = -towers
 	folder:SetAttribute("GateZ", gateZ)
-	-- The grey look the kit replaces: the street's stall fronts, the square, the two gates. Kept as unseen
-	-- colliders when the kit is laid; the ring and beyond stay grey (their dressing waits).
-	local looks: { Instance } = {}
-	local function under(item: Instance?)
-		if item then
-			table.insert(looks, item)
-		end
-	end
 
 	-- The base's kit, if its template is built: its colours for every plot (AR14).
 	local baseHeld = baseProblems()
@@ -897,30 +886,31 @@ local function lay(folder: Folder)
 		end
 		colours.lot, colours.ground = Color3.fromHex(basePlan.ground.lot), Color3.fromHex(basePlan.ground.ground)
 		baseLook = colours
-	else
+	elseif not FESTIVAL then
 		Log.Info("WorldService", `the plots stay grey: {table.concat(baseHeld, "; ")}`)
 	end
-	-- The ground, under all of it.
-	slab(folder, "Ground", -stripEnd, stripEnd, towers, shutZ - 24, GROUND_TOP, if baseLook then baseLook.ground else GREY.Ground)
-	-- The Strip, the side street to the gate, and Lantern Row to the keeper's gate. With the base laid, the Strip and the
-	-- side street wear Lantern Row's paving, as its street does: off the stones onto the plates is coming home (AR14).
-	-- With the Strip's own kit, its own tile (Lantern Row's lifted) and its dressing (AR17).
+	local groundColour = if baseLook then baseLook.ground else GREY.Ground
+	if FESTIVAL then
+		layStreet(folder, gateZ, stripEnd, groundColour)
+		return
+	end
+	-- The base's ground, out to the Towers' far edges. The Festival of Battles is its own place (TR45): the base's
+	-- Festival Door opens its menu, and the crossing north of the Strip is ground.
+	slab(folder, "Ground", -stripEnd, stripEnd, towers, -towers, GROUND_TOP, groundColour)
+	-- The Strip, wearing Lantern Row's paving with the base laid, as its street does: off the stones onto the plates is
+	-- coming home (AR14). With the Strip's own kit, its own tile (Lantern Row's lifted) and its dressing (AR17).
 	local strip = slab(folder, "Strip", -stripEnd, stripEnd, -stripHalf, stripHalf, PAVED_TOP, GREY.Paved)
-	local sideStreet = slab(folder, "Side street", -rowHalf, rowHalf, gateZ, -stripHalf, PAVED_TOP, GREY.Paved)
 	local stripHeld = stripProblems()
 	local stones = if #stripHeld == 0 then kitTemplate(STRIP) else kitTemplate(DRESS)
 	local stone = if baseLook and stones then stones:FindFirstChild("Paving") else nil
 	if stone then
 		stone:Clone().Parent = strip
-		stone:Clone().Parent = sideStreet
 	end
 	if #stripHeld == 0 then
 		dressStrip(folder, gateZ)
 	else
 		Log.Info("WorldService", `the Strip stays bare: {table.concat(stripHeld, "; ")}`)
 	end
-	-- The street's own floor carries the walking; dressed, it wears the kit's paving under the bays (AR5's manifest).
-	local streetFloor = slab(folder, "Lantern Row", -rowHalf, rowHalf, keeperZ, gateZ, PAVED_TOP, GREY.Paved)
 
 	-- The plots: two rows, numbered west to east, the north row first; each opens onto the Strip.
 	local plotFolder = Instance.new("Folder")
@@ -946,6 +936,41 @@ local function lay(folder: Folder)
 	clock.Shape = Enum.PartType.Cylinder
 	Markers.Stamp(shop, "Shop")
 	slab(folder, "Shop's floor", -crossingHalf, crossingHalf, stripHalf, stripHalf + deep, PAVED_TOP, GREY.Plot)
+end
+
+-- The Festival's place (TR45): Lantern Row from its forecourt, where a trip sets the player down before the gate, to
+-- past the shut gate, on its own ground as wide as the base's, at the same spots it had beside the base, so every stop
+-- keeps its numbers.
+function layStreet(folder: Folder, gateZ: number, stripEnd: number, groundColour: Color3)
+	local c = WorldConfig
+	local function studs(seconds: number): number
+		return seconds * c.Walk
+	end
+	local row = c.Row
+	local rowHalf = studs(row.Wide) / 2
+	local function stopZ(index: number): number
+		return gateZ - studs(row.FirstPack + (index - 1) * row.Spacing)
+	end
+	local stops = row.Stops
+	local keeperZ = stopZ(#stops)
+	local ringRadius = studs(row.Ring) / 2
+	local ringZ = keeperZ - ringRadius
+	local farZ = ringZ - ringRadius
+	local shutZ = farZ - studs(row.Beyond)
+	local high = c.Grey.Wall
+	local doors = c.Grey.Door
+	-- The grey look the kit replaces: the street's stall fronts, the square, the two gates. Kept as unseen
+	-- colliders when the kit is laid; the ring and beyond stay grey (their dressing waits).
+	local looks: { Instance } = {}
+	local function under(item: Instance?)
+		if item then
+			table.insert(looks, item)
+		end
+	end
+	slab(folder, "Ground", -stripEnd, stripEnd, gateZ + FORECOURT * 2, shutZ - 24, GROUND_TOP, groundColour)
+	local forecourt = slab(folder, "Forecourt", -rowHalf, rowHalf, gateZ, gateZ + FORECOURT, PAVED_TOP, GREY.Paved)
+	-- The street's own floor carries the walking; dressed, it wears the kit's paving under the bays (AR5's manifest).
+	local streetFloor = slab(folder, "Lantern Row", -rowHalf, rowHalf, keeperZ, gateZ, PAVED_TOP, GREY.Paved)
 
 	-- The festival gate, open.
 	local north = Vector3.new(0, 0, -1)
@@ -953,9 +978,8 @@ local function lay(folder: Folder)
 	local festivalGate = gate(folder, "Festival gate", gateAt, studs(row.Wide), high, false)
 	under(festivalGate)
 	Markers.Stamp(festivalGate, "FestivalGate")
-	-- Its twin, inside the gate against the east stall front, takes the player home; the plots' doors land them before
-	-- the gate in the street's middle, looking through it.
-	local doors = c.Grey.Door
+	-- Its twin, inside the gate against the east stall front, takes the player home; a trip here lands them before the
+	-- gate in the street's middle, looking through it.
 	local homeDoorAt = CFrame.lookAt(Vector3.new(rowHalf - 4, PAVED_TOP, gateZ - doors.AtGate), Vector3.new(0, PAVED_TOP, gateZ - doors.AtGate))
 	Markers.Stamp(door(folder, "Home door", homeDoorAt, WorldConfig.Grey.Door.HomeWay), "GroundDoor", { Ground = row.Ground })
 	-- Where the trail home goes (TR16), and the street it keeps to (its middle's X, its half width), on the folder that
@@ -964,6 +988,19 @@ local function lay(folder: Folder)
 	folder:SetAttribute("Street", Vector2.new(0, rowHalf))
 	local landingAt = CFrame.lookAt(Vector3.new(0, PAVED_TOP, gateZ + doors.Landing), Vector3.new(0, PAVED_TOP, gateZ + doors.Landing) + north)
 	Markers.Stamp(spot(folder, "Door landing", landingAt), "DoorLanding", { Ground = row.Ground })
+	-- Roblox's own spawn sets a player down there too, before setDown turns them to face the gate.
+	local arrival = Instance.new("SpawnLocation")
+	arrival.Name = "Arrival"
+	arrival.Anchored = true
+	arrival.Size = Vector3.new(6, 0.2, 6)
+	arrival.CFrame = landingAt * CFrame.new(0, 0.1, 0)
+	arrival.Transparency = 1
+	arrival.CanCollide = false
+	arrival.CanQuery = false
+	arrival.CanTouch = false
+	arrival.Duration = 0
+	arrival.Neutral = true
+	arrival.Parent = folder
 	-- The first stage starts where the Door sets a player down (TR43).
 	Markers.Stamp(spot(folder, `Stage {row.Stops[1].Stage}'s start`, landingAt), "StageStart", { Stage = row.Stops[1].Stage, Ground = row.Ground })
 
@@ -1077,6 +1114,7 @@ local function lay(folder: Folder)
 	local paving = (kitTemplate() :: Instance):FindFirstChild("Paving")
 	if paving then
 		paving:Clone().Parent = streetFloor
+		paving:Clone().Parent = forecourt
 	end
 	for _, item in looks do
 		local parts = if item:IsA("BasePart") then { item } else item:GetDescendants()
@@ -1148,8 +1186,48 @@ function WorldService.SpawnOf(player: Player): CFrame?
 	return if spawn then Markers.At(spawn) else nil
 end
 
--- Roblox's own respawn lands on the plot's spawn too.
+-- In the Festival's place, each player's number among those here, 1 to Config.World.Plots.Count as a plot's is in the
+-- base's: what's kept per player is found by it (the keeper's ring copies, TR45). In the base's place, the plot's.
+local slots: { [number]: Player } = {}
+
+function WorldService.SlotOf(player: Player): number?
+	if not FESTIVAL then
+		return WorldService.PlotOf(player)
+	end
+	for number, who in slots do
+		if who == player then
+			return number
+		end
+	end
+	return nil
+end
+
+local function slot(player: Player)
+	for number = 1, WorldConfig.Plots.Count do
+		if slots[number] == nil then
+			slots[number] = player
+			return
+		end
+	end
+	Log.Warn("WorldService", `no free number for {player.Name} here: Max Players should be {WorldConfig.Plots.Count}`)
+end
+
+-- In the Festival's place, where everyone arrives: the Door's landing before the gate (TR45).
+function WorldService.LandingOf(): CFrame?
+	local landing = Markers.Find("DoorLanding")
+	return if landing then Markers.At(landing) else nil
+end
+
+-- Roblox's own respawn lands on the plot's spawn too; in the Festival's place, on the landing's.
 local function respawnOn(player: Player)
+	if FESTIVAL then
+		local world = workspace:FindFirstChild(WORLD)
+		local arrival = if world then world:FindFirstChild("Arrival") else nil
+		if arrival and arrival:IsA("SpawnLocation") then
+			player.RespawnLocation = arrival
+		end
+		return
+	end
 	local plot = WorldService.PlotOf(player)
 	local spawn = if plot then Markers.Find("Spawn", { Plot = plot }) else nil
 	if spawn and spawn:IsA("SpawnLocation") then
@@ -1177,12 +1255,17 @@ local function leave(player: Player)
 			clear(number)
 		end
 	end
+	for number, who in slots do
+		if who == player then
+			slots[number] = nil
+		end
+	end
 end
 
 -- A new avatar on its plot's spawn, facing the Breaker, then the client opens from black with the camera behind it. The
 -- event reaches the client after the pivot does, so the camera turns behind the final facing, never the spawn's first.
 local function setDown(player: Player, character: Model)
-	local at = WorldService.SpawnOf(player)
+	local at = if FESTIVAL then WorldService.LandingOf() else WorldService.SpawnOf(player)
 	if at then
 		character:PivotTo(at * CFrame.new(0, SPAWN_UP, 0))
 		Net.Server.Fire("Fade", player, 0, 0, WorldConfig.Arrive)
@@ -1198,7 +1281,7 @@ function WorldService.Init()
 		build()
 	end
 	DebugService.Register("WorldReport", function(): { string }
-		return Markers.Report(WorldConfig.Plots.Count, owned())
+		return Markers.Report(WorldConfig.Plots.Count, owned(), PlaceRole.Current)
 	end)
 	-- Part 7's trial (Config.World.Fit): ("BaseSize", nil, 144) lays the plots grey at that size, Fit.Between apart, on
 	-- Fit's layout; ("BaseSize") puts today's back. Either way it answers Rules.BaseFit's line for today's and each size.
@@ -1448,11 +1531,16 @@ function WorldService.Init()
 end
 
 function WorldService.Start()
-	for _, problem in Markers.Report(WorldConfig.Plots.Count, owned()) do
+	for _, problem in Markers.Report(WorldConfig.Plots.Count, owned(), PlaceRole.Current) do
 		Log.Warn("WorldService", problem)
 	end
 	local function join(player: Player)
-		arrive(player)
+		if FESTIVAL then
+			slot(player) -- no plot here: the save keeps the base, and the base keeps working from it (TR45)
+			respawnOn(player)
+		else
+			arrive(player)
+		end
 		player.CharacterAdded:Connect(function(character: Model)
 			setDown(player, character)
 		end)

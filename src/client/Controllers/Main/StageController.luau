@@ -25,6 +25,9 @@ local Text = require(UI.Kit.Text)
 local Toast = require(UI.Kit.Toast)
 local StageScreen = require(UI.StageScreen)
 local ProfileController = require(script.Parent.Parent.Core.ProfileController)
+local HudController = require(script.Parent.HudController)
+local WorldConfig = require(Shared.Config.World)
+local Screen = require(UI.Kit.Screen)
 
 local StageController = {}
 
@@ -128,7 +131,21 @@ function StageController.Gate(stage: number): boolean?
 	return if gate and gate:IsA("BasePart") then gate.Transparency < 1 else nil
 end
 
+-- The Festival of Battles' menu, from the dock's Play tile or the base's door (TR45): closed if it's the one open.
+function StageController.Pick()
+	local view = ProfileController.Get()
+	if view == nil then
+		return
+	end
+	if Screen.Current() == StageScreen.Name then
+		Screen.Close()
+		return
+	end
+	StageScreen.Pick(WorldConfig.Row.Ground, view, on)
+end
+
 function StageController.Start()
+	HudController.OpenPlay = StageController.Pick
 	Net.Client.On("StagePick", function(payload: any)
 		local view = ProfileController.Get()
 		if type(payload) == "table" and type(payload.Ground) == "string" and view then

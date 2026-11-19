@@ -14,5 +14,9 @@ Preset.Follow() -- before the Loader, or a preset silently does nothing
 
 local role = PlaceRole.Current
 local services = script.Parent:WaitForChild("Services")
-local _, bootErrors = Loader.Boot(`Server/{role}`, { services:FindFirstChild("Core"), services:FindFirstChild(role) })
+local folders: { Instance? } = { services:FindFirstChild("Core"), services:FindFirstChild("Main") } -- the game's systems, in every place
+if role ~= "Main" then
+	folders[3] = services:FindFirstChild(role)
+end
+local _, bootErrors = Loader.Boot(`Server/{role}`, folders)
 script:SetAttribute("BootErrors", bootErrors) -- the debug bridge's BootErrors reads it

@@ -50,6 +50,7 @@ function TowerCases.Cases(): { any }
 	return {
 		{
 			Name = "Tower (TR29): a run from the ring, floors won into the ledger, the heal cap, the freeze, three platforms, the fall, the results once, stepping off, a crash's run ended at the join",
+			Place = "Main", -- TR45: its world stands in that place only
 			Run = function(t: any)
 				-- The bays step out for the run and back after it: a full battery spills a working bay's power into Credits,
 				-- which would read as a grant mid-run (Rules.Breaker's Spill). And the foes strike for next to nothing, by

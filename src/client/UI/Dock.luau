@@ -19,7 +19,7 @@
 --   dim       refused for now: as a disabled cell
 -- Over a cell's glass, under its icon, two of its owner's measures in the glass's own shape: a fill rising from its foot
 -- (a charge), and a veil over the share still to come, swept away left to right (a cooldown).
---   Dock.new(parent, presses)          the dock; presses[name] is each cell's OnPress (Base, Inventory, Map)
+--   Dock.new(parent, presses)          the dock; presses[name] is each cell's OnPress (Base, Inventory, Map: its word Play)
 --   Dock.Pip(dock, name, on)           something new on a cell: it calls
 --   Dock.Mood(dock, name, mood?)       "Quiet", "Dim", or nil for its button's own look
 --   Dock.Reason(dock, name, why?)      why it's refused, its word on a long press or a hover; nil for its name
@@ -310,7 +310,7 @@ function Dock.new(parent: Instance, presses: { [string]: () -> ...any }): Dock
 			Box = UDim2.fromScale(1, 1),
 			Parent = plate,
 		})
-		word.Text = name
+		word.Text = (def :: any).Word or name
 		word.ZIndex = 2
 		word.Visible = false
 		local tile: Tile
@@ -531,7 +531,7 @@ function Dock.Paint(dock: Dock)
 		end
 		local shows = (held ~= nil and tile.Long) or now < tile.WordUntil or Hover.Since(tile.Button) >= HudConfig.Motion.Hover.Word
 		local disabled = tile.Button:GetAttribute("Disabled")
-		local said = tile.Reason or (if type(disabled) == "string" and disabled ~= "" then disabled else tile.Def.Name)
+		local said = tile.Reason or (if type(disabled) == "string" and disabled ~= "" then disabled else (tile.Def :: any).Word or tile.Def.Name)
 		local word = tile.Word
 		local plate = word.Parent :: Frame
 		if shows and (word.Text ~= said or tile.WordEpoch ~= Text.Epoch()) then

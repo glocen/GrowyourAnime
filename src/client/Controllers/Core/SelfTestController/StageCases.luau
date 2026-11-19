@@ -66,6 +66,7 @@ function StageCases.Cases(): { any }
 	return {
 		{
 			Name = "Stages (TR43): the gates, a Normal run to its card, Next, leaving, Hard's own foes, the keeper lifted, the picker's locks, a lost run",
+			Place = "Festival", -- TR45: its world stands in that place only
 			Run = function(t: any)
 				-- A card a case before left open (a keeper's try lost is Stage 4's run: its card) would read as this run's.
 				if Screen.Current() ~= nil then
@@ -296,6 +297,7 @@ function StageCases.Cases(): { any }
 		},
 		{
 			Name = "Stages (TR43): a fresh account through the Festival Door is in Stage 1 on Normal with no screen (wipes the save)",
+			Place = "Festival", -- TR45: its world stands in that place only
 			Manual = true,
 			Run = function(t: any)
 				t.Server("DataWipe")

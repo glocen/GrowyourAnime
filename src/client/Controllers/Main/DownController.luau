@@ -26,6 +26,7 @@ local Progress = require(Shared.Rules.Progress)
 local Drops = require(Shared.Rules.Drops)
 local Hud = require(Shared.Rules.Hud)
 local Parts = require(Shared.Util.Parts)
+local PlaceRole = require(Shared.Util.PlaceRole)
 local UI = script.Parent.Parent.Parent.UI
 local Theme = require(UI.Theme)
 local Read = require(UI.Read)
@@ -77,7 +78,10 @@ local function marker(name: string): Instance?
 end
 
 local function look()
-	if os.clock() - lookedAt < FIND_EVERY and elites[1] and elites[1].Parent and marker("KeeperGate") and marker("Ring") then
+	-- The street's markers stream in, so each frame looks again until they're all found; the base's place has none to
+	-- find (TR45), so it looks only every FIND_EVERY.
+	local whole = not PlaceRole.Is("Festival") or (elites[1] and elites[1].Parent and marker("KeeperGate") and marker("Ring"))
+	if os.clock() - lookedAt < FIND_EVERY and whole then
 		return
 	end
 	lookedAt = os.clock()

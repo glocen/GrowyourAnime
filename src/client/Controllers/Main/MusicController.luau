@@ -17,6 +17,7 @@ local Shared = ReplicatedStorage.Shared
 local MusicConfig = require(Shared.Config.Music)
 local Music = require(Shared.Rules.Music)
 local Markers = require(Shared.World.Markers)
+local PlaceRole = require(Shared.Util.PlaceRole)
 
 local MusicController = {}
 
@@ -59,7 +60,7 @@ local function placeNow(): string
 	return Music.Place({
 		Try = player:GetAttribute("Try") ~= nil,
 		Tower = player:GetAttribute("Tower") ~= nil,
-		Row = type(gateZ) == "number" and at.Z < gateZ,
+		Row = PlaceRole.Is("Festival") or (type(gateZ) == "number" and at.Z < gateZ), -- the Festival's place is all the Row (TR45)
 		Plot = onPlot(at),
 	})
 end

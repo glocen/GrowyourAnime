@@ -21,7 +21,9 @@
 -- Studio:
 --   NL_Debug:Invoke("Stage")                                 the run, the gates shut to the player, their record
 --   NL_Debug:Invoke("StageBegin", nil, difficulty, stage)    a run begins, as the picker asks one
---   NL_Debug:Invoke("StageArrive", nil)                      as if the Festival Door had just taken the player
+--   NL_Debug:Invoke("StageArrive", nil)                      as if the player had just come through the base's door: the
+--                                                            menu there; in the Festival, an arrival with no ticket
+--   NL_Debug:Invoke("StageArriveBy", nil, difficulty, stage)  in the Festival, an arrival with a ticket for that stage
 --   NL_Debug:Invoke("StageFell", nil, group)                 fells a group's standing Shades ("Pack 1", "Elite 1", or a
 --                                                            Hard run's own: "Elite 1 mine"), the player their hitter
 --   NL_Debug:Invoke("StageLine", nil, difficulty, cleared)   the record's cleared count on Lantern Row (0 wipes it)
@@ -46,6 +48,13 @@ local DebugService = require(Core.DebugService)
 local FightService = require(script.Parent.FightService)
 local KeeperService = require(script.Parent.KeeperService)
 local DoorService = require(script.Parent.DoorService)
+local TravelService = require(script.Parent.TravelService)
+local TravelConfig = require(Shared.Config.Travel)
+local Travel = require(Shared.Rules.Travel)
+local PlaceRole = require(Shared.Util.PlaceRole)
+
+-- The Festival of Battles is its own place (TR45): its stages run there, and the base's picker sends the player there.
+local FESTIVAL = PlaceRole.Is("Festival")
 
 local StageService = {
 	Priority = 48, -- after the packs, the keeper and the doors, whose signals it hears
@@ -334,22 +343,57 @@ local function watch()
 	end
 end
 
--- Through the Festival Door: a fresh player's first stage begins where they land; anyone else is sent the picker.
-function StageService.Arrived(player: Player)
+-- A pick in the base's place: the trip to the Festival, into that stage, if the save opens it and the lead stands.
+-- The Festival checks again on arrival (Travel.Arrival).
+function StageService.Travel(player: Player, ground: string, difficulty: string, stage: number): { [string]: any }
+	local data = DataService.Get(player)
+	if data == nil then
+		return { Ok = false, Error = "NoData" }
+	elseif player:GetAttribute("Try") ~= nil then
+		return { Ok = false, Error = "InTry" }
+	elseif not FightService.Standing(FightService.LeadOf(player)) then
+		return { Ok = false, Error = "NoLead" }
+	end
+	local needs, waits = Stages.Needs(data, ground, difficulty, stage)
+	if needs == Stages.Unknown then
+		return { Ok = false, Error = Stages.Unknown }
+	elseif needs then
+		return { Ok = false, Error = Stages.Locked, Needs = needs, Waits = waits }
+	end
+	local ok, err = TravelService.ToStage(player, ground, difficulty, stage)
+	return { Ok = ok, Error = err, Travel = true }
+end
+
+-- Arriving in the Festival's place, or through its door in Studio's StageArrive: the ticket's stage begins if the save
+-- opens it; else a fresh player's first stage, or the picker where they land (Travel.Arrival). The lead stands first,
+-- Config.Travel.Hold seconds at most; then the trip's card lifts.
+function StageService.Arrived(player: Player, ticket: Travel.Ticket?)
 	local data = DataService.Get(player)
 	if data == nil then
 		return
 	end
 	local ground = WorldConfig.Row.Ground
-	if Stages.Fresh(data) then
-		local answer = StageService.Begin(player, ground, "Normal", 1, true)
-		if answer.Ok ~= true then
-			Log.Warn("StageService", `{player.Name}'s first stage didn't begin: {tostring(answer.Error)}`)
-		end
-	else
-		StageService.End(player)
-		Net.Server.Fire("StagePick", player, { Ground = ground })
+	local decision = Travel.Arrival(ticket, data, ground)
+	local waited = 0
+	while player.Parent and not FightService.Standing(FightService.LeadOf(player)) and waited < TravelConfig.Hold do
+		waited += task.wait(0.2)
 	end
+	if player.Parent == nil then
+		return
+	end
+	local begun = false
+	if decision.Begin then
+		local answer = StageService.Begin(player, ground, decision.Difficulty :: string, decision.Stage :: number, ticket == nil)
+		begun = answer.Ok == true
+		if not begun then
+			Log.Warn("StageService", `{player.Name}'s stage on arriving didn't begin: {tostring(answer.Error)}`)
+		end
+	end
+	if not begun then
+		StageService.End(player)
+		Net.Server.Fire("StagePick", player, { Ground = ground, Refused = decision.Refused })
+	end
+	Net.Server.Fire("Travel", player, "Arrived", {})
 end
 
 local function state(who: any): any
@@ -390,16 +434,28 @@ function StageService.Start()
 		if type(ground) ~= "string" or type(difficulty) ~= "string" or type(stage) ~= "number" then
 			return { Ok = false, Error = Stages.Unknown }
 		end
+		if not FESTIVAL then
+			return StageService.Travel(player, ground, difficulty, stage)
+		end
 		return StageService.Begin(player, ground, difficulty, stage)
 	end)
 	FightService.Fell:Connect(fell)
+	-- The base's Festival Door opens the menu, for everyone (the director, 2026-11-19: "the teleport point of the base will
+	-- simply open the menu ui of the game mode"); a pick from it is the trip.
 	DoorService.Through:Connect(function(player: Player, kind: string)
-		if kind == "FestivalDoor" then
-			StageService.Arrived(player)
+		if kind == "FestivalDoor" and not FESTIVAL then
+			Net.Server.Fire("StagePick", player, { Ground = WorldConfig.Row.Ground })
+		elseif kind == "FestivalDoor" then
+			task.spawn(StageService.Arrived, player, nil)
 		else
 			StageService.End(player)
 		end
 	end)
+	if FESTIVAL then
+		TravelService.Arrived:Connect(function(player: Player, ticket: Travel.Ticket?)
+			task.spawn(StageService.Arrived, player, ticket) -- it waits for the lead: never inside the save's own signal
+		end)
+	end
 	KeeperService.Trying:Connect(function(player: Player, ground: string)
 		local run = runs[player]
 		local count = #((Stages.Of(ground) or {}) :: { any })
@@ -461,7 +517,26 @@ function StageService.Start()
 			if player == nil then
 				return { Ok = false, Error = "NoPlayer" }
 			end
-			StageService.Arrived(player)
+			if FESTIVAL then
+				task.spawn(StageService.Arrived, player, nil)
+			else
+				Net.Server.Fire("StagePick", player, { Ground = WorldConfig.Row.Ground })
+			end
+			return { Ok = true }
+		end)
+		-- In the Festival's place, an arrival with a ticket for that stage, read as one from GetJoinData is (TR45).
+		DebugService.Register("StageArriveBy", function(who: any, difficulty: any, stage: any): any
+			local player = DebugService.ResolvePlayer(who)
+			if player == nil or type(difficulty) ~= "string" or type(stage) ~= "number" then
+				return { Ok = false, Error = "BadArgs" }
+			elseif not FESTIVAL then
+				return { Ok = false, Error = "NotFestival" }
+			end
+			local ticket = Travel.Read(Travel.Stage(WorldConfig.Row.Ground, difficulty, stage, nil, workspace:GetServerTimeNow()))
+			if ticket == nil then
+				return { Ok = false, Error = "BadTicket" }
+			end
+			task.spawn(StageService.Arrived, player, ticket)
 			return { Ok = true }
 		end)
 		DebugService.Register("StageLine", function(who: any, difficulty: any, cleared: any): any

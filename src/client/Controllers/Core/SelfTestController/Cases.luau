@@ -88,6 +88,7 @@ local PowerCases = require(script.Parent.PowerCases)
 local ViewCases = require(script.Parent.ViewCases)
 local BaseCases = require(script.Parent.BaseCases)
 local Helpers = require(script.Parent.Helpers)
+local TravelCases = require(script.Parent.TravelCases)
 
 local R6_ROOT_HEIGHT = 3 -- an R6 body's root stands 3 studs above the floor (legs 2, half the torso 1): an engine fact
 local TUNE_PATH = "Game.Version" -- a string any build has; the case puts it back
@@ -319,8 +320,9 @@ end
 local lintClean = Helpers.lintClean
 
 -- Walks the avatar into a Festival Door's way from the side it stands on (DOOR_RUN studs out when `close`, else wherever it
--- is), and waits for the fade to move it: true once it's been set down away from the door.
-local function walkThrough(t: any, door: Instance, close: boolean): boolean
+-- is), and waits for the fade to move it: true once it's been set down away from the door. With `done`, it waits for that
+-- instead (TR45: the base's door opens a menu, the Festival's asks for the trip home).
+local function walkThrough(t: any, door: Instance, close: boolean, done: (() -> boolean)?): boolean
 	local way = door:FindFirstChild("Way")
 	local character = Players.LocalPlayer.Character
 	local humanoid = if character then Parts.Humanoid(character) else nil
@@ -335,7 +337,7 @@ local function walkThrough(t: any, door: Instance, close: boolean): boolean
 		t.Wait(0.3)
 	end
 	humanoid:MoveTo(floor - look * side * 2)
-	local moved = waitFor(t, DOOR_THROUGH, function(): boolean
+	local moved = waitFor(t, DOOR_THROUGH, done or function(): boolean
 		local here = t.Root().Position
 		return Vector3.new(here.X - floor.X, 0, here.Z - floor.Z).Magnitude > DOOR_GONE
 	end)
@@ -1004,6 +1006,7 @@ local cases = {
 	},
 	{
 		Name = "World: a plot no one owns is a bare lot, and each player's base stands on theirs (the director, 2026-11-15)",
+		Place = "Main", -- TR45: its world stands in that place only
 		Stay = true,
 		Run = function(t: any)
 			local owned: { [number]: boolean } = {}
@@ -1034,6 +1037,7 @@ local cases = {
 	},
 	{
 		Name = "World: TR8, Lantern Row wears its kit whole, the plan's lights with it, the grey look under it hidden",
+		Place = "Festival", -- TR45: its world stands in that place only
 		Stay = true,
 		Run = function(t: any)
 			-- "Street": the plots' grey trial left out while their size isn't the base plan's (128, until it's laid again)
@@ -1077,6 +1081,7 @@ local cases = {
 	},
 	{
 		Name = "Lighting: TR8, TR23, north of the festival gate the ground's day, dusk or night holds, outside it the place's own unless the base is under it too (AR14), in the clear with no mist (the director's 16:50); by day the glow and the lights dim; a walk eases in, a jump lands",
+		Place = "Festival", -- TR45: its world stands in that place only
 		Run = function(t: any)
 			local world = workspace:FindFirstChild("World")
 			local gateZ = if world then world:GetAttribute("GateZ") else nil
@@ -1230,6 +1235,7 @@ local cases = {
 	},
 	{
 		Name = "World: the player arrives on their own plot, facing the Breaker",
+		Place = "Main", -- TR45: its world stands in that place only
 		Stay = true, -- it makes its own arrival; the next case's reset takes the avatar back to the pad
 		Run = function(t: any)
 			local player = Players.LocalPlayer
@@ -1271,6 +1277,7 @@ local cases = {
 	},
 	{
 		Name = "Packs: each stop stands its Shades, and a fallen pack comes back",
+		Place = "Festival", -- TR45: its world stands in that place only
 		Stay = true,
 		Run = function(t: any)
 			-- Shades an earlier case's walk drew out walk home first.
@@ -1331,6 +1338,7 @@ local cases = {
 	},
 	{
 		Name = "Keeper: a try in the plot's own ring; a win is saved and sets down beyond it, a loss before the gate",
+		Place = "Festival", -- TR45: its world stands in that place only
 		Stay = true, -- it moves the avatar itself; the next case's reset takes it back to the pad
 		Run = function(t: any)
 			local keeper = Combat.Keeper
@@ -1529,13 +1537,19 @@ local cases = {
 			local won = t.Server("Keeper")
 			t.Check("the try is over", won.InTry == false and Players.LocalPlayer:GetAttribute("Try") == nil)
 			t.Near("the avatar stands at the ring's exit (studs off)", won.FromExit, 0, SET_DOWN)
-			-- The shortcut home, a step away.
+			-- The shortcut home, a step away: the trip to the base (TR45), recorded by the run's stub.
 			local pad = Markers.Find("Shortcut")
 			t.Check("the shortcut is in view of the exit", pad ~= nil and pad:IsA("BasePart"))
 			if pad and pad:IsA("BasePart") then
+				local stood = t.Root().CFrame
+				t.Server("TravelStub", true)
 				t.Root().CFrame = pad.CFrame + Vector3.new(0, R6_ROOT_HEIGHT, 0)
-				t.Wait(moved + 0.3)
-				t.Near("the shortcut sets the avatar down on its plot (studs off)", t.Server("Keeper").FromHome, 0, SET_DOWN)
+				t.Check("the shortcut asks for the trip home", waitFor(t, Helpers.TRIP_ASKED, function(): boolean
+					return Helpers.lastTrip(t, "Main") ~= nil
+				end))
+				t.Root().CFrame = stood -- off the pad, before the trip's reset
+				t.Wait(0.3)
+				t.Server("TravelStub", true) -- the trip's card down again, nothing under way
 			end
 			-- A loss: the lead falls. The win rested the keeper (TR10): a try meanwhile is refused, then it's back.
 			t.Equal("the win rests the keeper: a try now is refused", t.Server("KeeperTry").Error, "Resting")
@@ -1568,51 +1582,9 @@ local cases = {
 		end,
 	},
 	{
-		Name = "World: the Festival Door takes the player to Lantern Row's gate, and its twin takes them home",
-		Stay = true, -- it moves the avatar itself; the next case's reset takes it back to the pad
-		Run = function(t: any)
-			local fade = Combat.Keeper.Fade
-			local moved = fade.Out + fade.Hold / 2 + MOVE_SLACK
-			local plot = Players.LocalPlayer:GetAttribute("Plot")
-			local door = if type(plot) == "number" then Markers.Find("FestivalDoor", { Plot = plot }) else nil
-			local landing = Markers.Find("DoorLanding", { Ground = WorldConfig.Row.Ground })
-			local home = Markers.Find("GroundDoor", { Ground = WorldConfig.Row.Ground })
-			local spawn = if type(plot) == "number" then Markers.Find("Spawn", { Plot = plot }) else nil
-			t.Check("the plot has its door, Lantern Row its twin and its landing", door ~= nil and landing ~= nil and home ~= nil and spawn ~= nil)
-			if not (door and landing and home and spawn) then
-				return
-			end
-			local function flat(a: Vector3, b: Vector3): number
-				return Vector3.new(a.X - b.X, 0, a.Z - b.Z).Magnitude
-			end
-			-- From the spawn, as a player arrives.
-			t.Root().CFrame = Markers.At(spawn) + Vector3.new(0, R6_ROOT_HEIGHT, 0)
-			t.Wait(0.5)
-			local fromSpawn = flat(Markers.At(door).Position, Markers.At(spawn).Position)
-			t.Check("the door stands near the spawn, in view", fromSpawn < 60, `{math.floor(fromSpawn)} studs`)
-			t.Check("the avatar walks into the plot's door", walkThrough(t, door, true))
-			t.Wait(moved)
-			local at = Markers.At(landing)
-			t.Near("the plot's door sets the avatar down at Lantern Row's gate (studs off)", flat(t.Root().Position, at.Position), 0, SET_DOWN)
-			t.Near("facing through it (degrees off)", flatAngle(t.Root().CFrame.LookVector, at.LookVector), 0, FACING_TOLERANCE)
-			-- Out of the lead's leash of every pack: the arrival is a look up the street, never a fight already joined.
-			local nearest = math.huge
-			for _, pack in Markers.All("Pack") do
-				nearest = math.min(nearest, flat(Markers.At(pack).Position, at.Position))
-			end
-			t.Check("no pack within the lead's leash of the landing", nearest > Combat.Lead.Leash, `{math.floor(nearest)} studs to the nearest`)
-			local lead = myLead()
-			local leadRoot = if lead then Parts.Root(lead) else nil
-			t.Check("the lead comes through beside it", leadRoot ~= nil and flat(leadRoot.Position, t.Root().Position) <= Combat.Lead.Follow, if leadRoot then `{math.floor(flat(leadRoot.Position, t.Root().Position))} studs` else "no lead")
-			t.Wait(1) -- past the door's gap, once a second at most a player
-			t.Check("and into its twin", walkThrough(t, home, true))
-			t.Wait(moved)
-			t.Near("its twin sets the avatar down on its plot (studs off)", flat(t.Root().Position, Markers.At(spawn).Position), 0, SET_DOWN)
-		end,
-	},
-	{
 		-- Not Stay: the reset before it records where the run will put the avatar back (TestPadClear), never the street.
 		Name = "Drops: the Shades a player's lead hit pay them as they fall, into the save; a pack it never hit pays nothing",
+		Place = "Festival", -- TR45: its world stands in that place only
 		Run = function(t: any)
 			local before = t.Server("Drops")
 			t.Check("the save is open", before.Ok == true, tostring(before.Error))
@@ -5450,6 +5422,7 @@ local cases = {
 		-- TR12 (docs/design.md, "A fall sends it home", "The next lead"): the card through a fall, and another Voidkin sent
 		-- out at once from the button under it; the fallen one stays home until it's whole.
 		Name = "HUD: TR12, a fallen lead's card says it's down, then healing at home with its time, and sends out the next",
+		Place = "Main", -- TR45: its world stands in that place only
 		Run = function(t: any)
 			t.Wait(LEAD_SETTLE)
 			local parts = HudController.Parts()
@@ -5620,6 +5593,7 @@ local cases = {
 	},
 	{
 		Name = "HUD: a keeper's try and an elite take their own HUD: the keeper's title card at the foot or the top, an elite's heavier frame (TR5)",
+		Place = "Festival", -- TR45: its world stands in that place only
 		Stay = true, -- it moves the avatar itself (a try); the next case's reset takes it back to the pad
 		Run = function(t: any)
 			local boss = HudConfig.Boss
@@ -6060,6 +6034,7 @@ local cases = {
 		-- and its loot's chances from Rules.Drops, in each layout, and the three side by side; this player's keeper resting
 		-- shows at its gate, its Challenge hidden for them, and a try asked meanwhile is refused.
 		Name = "World: TR10, the elite's and the keeper's markers while they're down, and a resting keeper refuses a try",
+		Place = "Festival", -- TR45: its world stands in that place only
 		Run = function(t: any)
 			t.Wait(LEAD_SETTLE)
 			local config = HudConfig.Down
@@ -6180,6 +6155,7 @@ local cases = {
 	},
 	{
 		Name = "HUD: a shard in the bag: the chip names the next step, and the Breaker's plate is lit until it's in",
+		Place = "Main", -- TR45: its world stands in that place only
 		Stay = true, -- it moves the avatar itself; the next case's reset takes it back to the pad
 		Run = function(t: any)
 			-- Home is the server's respawn and the field is the test pad: a far marker isn't streamed in to this client.
@@ -6248,6 +6224,7 @@ local cases = {
 	},
 	{
 		Name = "HUD: a machine's plate with news never hides under the top band",
+		Place = "Main", -- TR45: its world stands in that place only
 		Run = function(t: any)
 			-- The phone pack, part two (2026-11-13): at the plot on a phone, the Breaker's plate ("Ready to open") stood under
 			-- the lead's card. The camera is turned so the Breaker's point is halfway up the band on the lead card's side; its
@@ -6323,6 +6300,7 @@ local cases = {
 	},
 	{
 		Name = "Base: the plot's Breaker, bays and battery carry their prompt and plate; the dock opens each screen",
+		Place = "Main", -- TR45: its world stands in that place only
 		Run = function(t: any)
 			local parts = BaseController.Parts()
 			local view = ProfileController.Get()
@@ -6397,6 +6375,7 @@ local cases = {
 		-- Research's must-fix on AR16 (2026-11-17): a world plate never stands over the player's own avatar, and one fact
 		-- shows once on the screen. From afar, a machine's news is the next step's line over the dock; its plate only lights.
 		Name = "Base: the plot's plates speak only near their machine, never over the avatar nor saying the next step's fact, and the battery's says only its name",
+		Place = "Main", -- TR45: its world stands in that place only
 		Stay = true, -- it moves the avatar itself; the next case's reset takes it back to the pad
 		Run = function(t: any)
 			local view = ProfileController.Get()
@@ -6548,6 +6527,7 @@ local cases = {
 	},
 	{
 		Name = "Base: the Breaker's chambers glow and hold their shard while they break, low and empty after; the mill's wheel turns by its generation (AR15, AR19)",
+		Place = "Main", -- TR45: its world stands in that place only
 		Run = function(t: any)
 			local view = ProfileController.Get()
 			local plot = Players.LocalPlayer:GetAttribute("Plot")
@@ -6611,6 +6591,7 @@ local cases = {
 	},
 	{
 		Name = "Base: a shard added through the screen breaks, and opening it shows a card that names it",
+		Place = "Main", -- TR45: its world stands in that place only
 		Run = function(t: any)
 			local view = ProfileController.Get()
 			t.Check("the first shard is chosen", view ~= nil and view.Progress.Starter ~= "")
@@ -7447,6 +7428,7 @@ local cases = {
 	},
 	{
 		Name = "Base: a worker set through the screen works its bay, and its plate says so",
+		Place = "Main", -- TR45: its world stands in that place only
 		Run = function(t: any)
 			local view = ProfileController.Get()
 			t.Check("a bay is open", view ~= nil and #view.Base.Bays >= 1)
@@ -7535,6 +7517,7 @@ local cases = {
 	},
 	{
 		Name = "Capture: the plot's plates, no screen open",
+		Place = "Main", -- TR45: its world stands in that place only
 		Manual = true,
 		Stay = true,
 		Run = function(t: any)
@@ -7640,6 +7623,17 @@ local given: Takes.Given = {
 	DOOR_RUN = DOOR_RUN,
 }
 for _, case in Takes(given) do
+	table.insert(cases, case)
+end
+-- The places' and the trip between them, given theirs (TR45).
+for _, case in TravelCases.Cases({
+	REPLICATE = REPLICATE,
+	SET_DOWN = SET_DOWN,
+	R6_ROOT_HEIGHT = R6_ROOT_HEIGHT,
+	streamed = streamed,
+	walkThrough = walkThrough,
+	lintClean = lintClean,
+}) do
 	table.insert(cases, case)
 end
 -- The HUD's and the kit's newer ones, given theirs (TR19, TR20).

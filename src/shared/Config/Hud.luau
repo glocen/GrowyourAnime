@@ -359,7 +359,9 @@ return {
 			Cells = {
 				{ Name = "Base", Kind = "Wing", Glass = Vector2.new(2, 12), Icon = Vector2.new(30.4, 33.5), Side = 39.4, Pip = Vector2.new(57.8, 13), Tap = { 0, 10, 60.8, 52 } },
 				{ Name = "Inventory", Kind = "Mid", Glass = Vector2.new(62.8, 2), Icon = Vector2.new(96.2, 28.5), Side = 49.2, Pip = Vector2.new(128.6, 3), Tap = { 60.8, 0, 70.8, 62 } },
-				{ Name = "Map", Kind = "Wing", Glass = Vector2.new(133.6, 12), Icon = Vector2.new(162, 33.5), Side = 39.4, Pip = Vector2.new(189.4, 13), Tap = { 131.6, 10, 60.8, 52 } },
+				-- Its word (a long press) is Word: the director, 2026-11-19, "the map button that should be renamed to play or
+				-- something else and open FOB" (TR45). Its name stays the cell's, for its images and light.
+				{ Name = "Map", Word = "Play", Kind = "Wing", Glass = Vector2.new(133.6, 12), Icon = Vector2.new(162, 33.5), Side = 39.4, Pip = Vector2.new(189.4, 13), Tap = { 131.6, 10, 60.8, 52 } },
 			},
 			Pip = { Glow = 54.2, GlowT = 0.2, Rings = { 24.6, 18.7, 10.8 } },
 		},

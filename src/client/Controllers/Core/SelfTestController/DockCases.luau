@@ -14,6 +14,7 @@ local UI = script.Parent.Parent.Parent.Parent.UI
 local Button = require(UI.Kit.Button)
 local Dock = require(UI.Dock)
 local Screen = require(UI.Kit.Screen)
+local StageScreen = require(UI.StageScreen)
 local Theme = require(UI.Theme)
 
 local DockCases = {}
@@ -26,7 +27,7 @@ function DockCases.Cases(given: Given): { any }
 	local waitFor = given.waitFor
 	return {
 		{
-			Name = "HUD: the dock of three icons in the seam's make (AR30): each cell's glass, light, foot, icon and touch at the make's numbers, its light by its press, its screen and its call; a long press shows its word, the Map's is dim",
+			Name = "HUD: the dock of three icons in the seam's make (AR30): each cell's glass, light, foot, icon and touch at the make's numbers, its light by its press, its screen and its call; a long press shows its word; the Map's, its word Play, opens the Festival's menu",
 			Run = function(t: any)
 				-- AR30, "The dock" (UI.Dock; Config.Hud.Make.Dock): one dark channel at the foot's middle, each cell its glass lit
 				-- from its foot in its room's colour, its icon in Text; held, its light rises and nothing sinks; open while its
@@ -151,9 +152,13 @@ function DockCases.Cases(given: Given): { any }
 				t.Check("the word goes a moment after", waitFor(t, 1, function(): boolean
 					return not word.Visible
 				end))
+				-- The Map's cell, its word Play (TR45): at rest like the others, and a tap opens the Festival's menu.
 				local map = parts.Map :: TextButton
-				t.Check("the Map's cell is dim: no light, its foot dim, its icon in Faint", looks(map, "Dim") and lit("Map") < 0.02 and math.abs(piece("MapFoot").ImageTransparency - make.DimFoot) < 1e-3 and piece("MapMark").ImageColor3 == seam.Faint, tostring(map:GetAttribute("Look")))
-				t.Check("and a tap opens nothing", not Button.Press(map) and Screen.Current() == nil)
+				t.Check("the Map's cell at rest", looks(map, "Rest"), tostring(map:GetAttribute("Look")))
+				t.Equal("its word is Play", (dock:FindFirstChild("MapWord", true) :: TextLabel).Text, "Play")
+				t.Check("a tap opens the Festival's menu", Button.Press(map) and waitFor(t, 1, function(): boolean
+					return Screen.Current() == StageScreen.Name
+				end), tostring(Screen.Current()))
 				Screen.Close()
 			end,
 		},

@@ -14690,6 +14690,17 @@ Labelled SIMULATION, not play: `tools/balance/sim.py`'s model, 6,000 leads (leve
 - **Must-fix (class: every kit image with a shadow or glow in its pad):** redraw the plate with no baked shadow, or a slanted shadow fully faded inside its pad, alpha 0 on every edge pixel. Check every padded image in `Config.UIKit` the same way. Modulo first, before AR48; then Faber uploads it again.
 - It closes on the same capture over the Breaker's light, zoomed, with no edge visible.
 
+### The fill recut, its shadow gone before the edge (Modulo, 2026-11-19, 23:26 to 23:30 by the clock)
+
+- **The fix:** `CardSlantFill.png` keeps its soft shadow near the plate, but the shadow now fades to nothing inside the 8 point pad, as the lead card's does (`lead_card_art.fade`, imported in `foe_cards.py`). The image's edge pixels read alpha 0, where they read 27 of 255 before. Same size, cut and pad, so Config needs only the new id. Recut in `build/handoff/UI/foes/images/`.
+- **Every padded kit image checked the same way:** that's the 108 images in `Config.UIKit` with a pad, each image's outermost ring of pixels. Four have alpha at the edge:
+  - `CardSlantFill`: 27 of 255, fixed here.
+  - `HomeTileGlow` and `HomeTallGlow`: 39 of 255. Home's tiles' pressed glow, the same box behind a pressed tile. AR49 replaces Home's panel, so they leave with it. Its new art is cut alpha 0 at every edge.
+  - `CardTargetEliteFrame`: 217 of 255, but nothing in `src/` uses it (the elite's card is the slant now).
+  - The rest are 0 to 4 of 255 (the Mythical and Legendary backs, `GearFrameLegendary`, `PanelShadow`, `ReadoutReady`), at most 1.6%, below sight over the Breaker's white.
+- **Content check:** PASS (23:30).
+- **Next:** Faber uploads it again and swaps the id. Research closes it on the capture over the Breaker's light.
+
 ## AR46. Hard's ember in the world: the Shades, the elites and the Lamplighter on Hard (Modulo, for research's pick, then Faber)
 
 - **Feel line:** the player enters Hard Stage 1, and before a number shows, the street's Shades read as a hotter, meaner pack. The ember from the picker burns in their eyes and along their cracks, so Hard is felt in the world, not only in the menu.

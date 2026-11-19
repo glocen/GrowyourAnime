@@ -35,6 +35,7 @@ import numpy as np
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import blcommon as bl  # noqa: E402
+import lead_card_art as lca  # noqa: E402  (a shadow's fade inside its pad)
 import rook_sheet as rs  # noqa: E402
 import ui_sheet as ui  # noqa: E402
 
@@ -492,7 +493,9 @@ def images():
 
     t = clear(sw, sh)
     d = t.poly(plate)
-    t.glow(d, 6.0, "#000000", 0.45)
+    # its shadow, gone before the image's edge (lead_card_art.fade): cut short there, the 9-slice stretched it into a
+    # see-through box behind the slant (research's must-fix, 23:18)
+    ui.over(t.px, "#000000", 0.45 * np.exp(-(np.maximum(d, 0) / 6.0) ** 1.4) * lca.fade(d, SLANT_PAD))
     t.paint(d, t.ramp(LEAD["panel"][0], LEAD["panel"][1], (t.y - y0) / (y1 - y0)))
     t.paint(np.maximum(d, np.abs(t.y - (y0 + 1.9)) - 0.55), LEAD["glint"], 0.3)       # the lacquer's line under the top
     well = t.poly(slot)

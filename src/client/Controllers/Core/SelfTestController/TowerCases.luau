@@ -162,6 +162,12 @@ function TowerCases.Cases(): { any }
 							local root = me.Character and me.Character:FindFirstChild("HumanoidRootPart") :: BasePart?
 							t.Check(`floor {s.Floor}: the avatar on its platform`, root ~= nil and math.abs(root.Position.Y - 3 - s.Top) < 2, if root then `{root.Position.Y - 3} against {s.Top}` else "no root")
 							if caught == 1 then
+								-- The floor's title under the foe's card, never over its health (TR46; AR44's verdict).
+								local title = Layers.Get("Hud"):FindFirstChild("TowerFloor") :: GuiObject?
+								local card = HudController.Parts().Target
+								t.Check("the floor's title stands under the foe's card", title ~= nil and title.Visible
+									and title.AbsolutePosition.Y >= card.AbsolutePosition.Y + card.AbsoluteSize.Y - 0.5,
+									if title then `title from {title.AbsolutePosition.Y}, the card's foot {card.AbsolutePosition.Y + card.AbsoluteSize.Y}` else "no title")
 								-- The freeze (D10): gear and the lead stay as they are through the run.
 								local equip = t.Server("Act", "Equip", { Preset = 1, Slot = "Helmet", Item = "none" })
 								t.Check("gear frozen", type(equip) == "table" and equip.Error == "InCombat", tostring(equip and equip.Error))

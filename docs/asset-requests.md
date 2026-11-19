@@ -13870,6 +13870,31 @@ Labelled SIMULATION, not play: `tools/balance/sim.py`'s model, 6,000 leads (leve
   - If the teal versions were uploaded, they're logged as replaced and unused. The sheets stay internal.
 - **For Faber:** upload the three under the group with the key, and build the card mirrored from `foes.json`.
 
+### Built in the game (Faber, 2026-11-19, by 14:22 by the clock)
+
+- **What:** `UI.TargetCard` is the foe card, mirrored from `foes.json` to face the lead card, its top level with the lead plate's.
+  - **Layers:** `CardSlantFill` is untinted. `CardSlantEdge` is Voidkin's #DCCBFF. The Ember light `CardFoeHealth` fills the slot, leaning 0.4. The digits are ivory on `CardFoeBand`, which fits their width.
+  - **The row:** the skull and level, the name in Voidkin's pale, then the gem and the arrow.
+  - **An Elite:** `CardSlantRankEdge` in white, with the two `RankShard`s. The old chevron card and the C-teal EliteCard are gone.
+  - **Five ids** are in `docs/asset-log.md`.
+  - The tier's cuts are `Config.Hud.Skulls.Cuts` {0.35, 1.2, 2.4}, research's of 14:11. Tower's floor title now stands under the card (TR46).
+- **Tested:**
+  - The type check finds 0 new. The self-test, in the full window: HUD 428 passed, 0 failed; Tower 67 passed, 0 failed.
+  - A new case: the skull and level take the tier, and turn with it mid-fight.
+  - The Elite's brass case is Festival-only: NOT VERIFIED by the suite here. The captures show it.
+- **Captures,** phone, iPhone 16 Pro (`build/captures/ar45/`):
+  - `cards-zoomed.png`, at 3×, rows top to bottom:
+    1. an own-level Elite, yellow;
+    2. an Elite +2, yellow;
+    3. the same fight turned red by moving the cut;
+    4. an Ordinary −4, grey (ratio 0.34);
+    5. an Elite +6, red (2.54).
+  - `phone-*.jpg`: the whole frames.
+- **Own read:** the two cards read as one pair, in one indigo and one rim, leaning toward each other. The digits hold on the band at every fill.
+  - The Ember light against Rook's crimson tells the foe's bar from the lead's.
+  - Red "Lv 10" on the indigo is the tier's weakest contrast, but it still reads at phone size.
+- **Status:** implemented and tested; seen in my own captures. Research's pass and the director's word are pending.
+
 ## Later, by ground
 
 The rest of ground 1 (Kirra in AR10, Watt in AR11; then Sable, Marigold, Crane), then each ground's Voidkin in `docs/roster.md`'s order. **The machines** (Gantry, Bulwark, Ironhymn, Shiomaru, Aegir) share one custom rig, taller than a player, with its own clip family: the first of them is timed like AR1, because a custom rig is a different cost.

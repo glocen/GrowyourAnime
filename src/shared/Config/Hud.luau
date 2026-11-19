@@ -130,10 +130,11 @@ return {
 	-- The foe card's difficulty skull (AR45), by the foe's CR over the lead's (Rules.Hud.Skull): grey under Cuts[1], white
 	-- up to Cuts[2], yellow under Cuts[3], red from it. On the game's own scale (AR45, "The cuts against the game's real
 	-- ratios", research, from Faber's 13:39 ratios: an own-level Ordinary is about 0.50 of the lead's, an own-level Elite
-	-- 1.60), replacing the simulation's 0.25, 1.1 and 1.8. The skull and the level wear the tier's colour; the grey skull
-	-- is faint (Faint, its ImageTransparency).
+	-- 1.60), replacing the simulation's 0.25, 1.1 and 1.8. Red's edge from 2.0 to 2.4 (research, 14:11, "Red's edge", from
+	-- Faber's Elite fights off the plot: Watt at 8 kept 67% against an Elite at 12, ratio 2.20; a seed). The skull and the
+	-- level wear the tier's colour; the grey skull is faint (Faint, its ImageTransparency).
 	Skulls = {
-		Cuts = { 0.35, 1.2, 2.0 },
+		Cuts = { 0.35, 1.2, 2.4 },
 		Colours = { Color3.fromHex("#D3D1DC"), Color3.fromHex("#F6F2E8"), Color3.fromHex("#FFC83A"), Color3.fromHex("#FF4F42") },
 		Faint = 0.45,
 	},
@@ -195,8 +196,9 @@ return {
 		Jump = 0.05,
 		Count = 0.15,
 	},
-	-- The type edge's arrow on the target's card (docs/ui.md): up when the lead's type beats the target's.
-	Arrow = { Up = UIKit.Good, Down = Color3.fromHex("#A6ADBA") },
+	-- The type edge's arrow on the target's card (docs/ui.md): up, green, when the lead's type beats the target's; down,
+	-- red, when the target's beats the lead's (AR45's EdgeArrow, its content check: these two tints only).
+	Arrow = { Up = UIKit.Good, Down = Color3.fromHex("#FF786E") },
 	-- The signature's readout (AR12, V2 Block; hud_colour.json's pieces.readout): a plate Size across in the lead's corner,
 	-- Under the lead card's foot and Right of its left, holding the lead's signature's own icon (Icons, by the action's
 	-- id; one not drawn yet shows its class's glyph, Glyph of the plate across). Its well (x0, y0, x1, y1 in the plate's
@@ -472,10 +474,8 @@ return {
 	-- metal's light. Experience has this one colour: the thread, the level-up's word and ring, its toast. Room: the share
 	-- of a health bar its number may take before it takes its compact form (fix 6).
 	Card = {
-		-- The lead's card and the target's draw their lights in their colours (tools/blender/lead_card_art.py, the Ember pick
-		-- of 2026-11-13); Xp stays experience's one colour for the level-up's ring and word. The target's rims and stud: a
-		-- neutral grey, Common's metal light, since a Shade has no rarity (the builder's seed).
-		TargetTrim = Color3.fromHex("#666C78"),
+		-- The lead's card and the foe's draw their lights in their colours (tools/blender/lead_card_art.py, the Ember pick
+		-- of 2026-11-13); Xp stays experience's one colour for the level-up's ring and word.
 		-- A level on both cards: the target's beside its name, "a tiny bit brighter and in yellow style" (the director,
 		-- 2026-11-13), a soft gold a step brighter than the soft grey it replaced; the lead's on its badge the same, the
 		-- director leaving it to the builder ("whatever best", 2026-11-13). Experience keeps its blue, the level this gold.
@@ -535,8 +535,8 @@ return {
 	-- pills (Top.Most at most); "A" its bar wide at the foot, the dock stepped out for the try; "Off" the target card as
 	-- before. Its look, the director's words of 2026-11-14: richer and composed, its health purple, and light over the
 	-- fight ("it does need to looks very light too else we see nothing"): no plate behind it, a thin framed bar on a faint
-	-- glow, its line art Modulo's frames tinted Rim. Elite: C, the target card in Modulo's frames, its blade and light
-	-- taller, a heavier frame tinted EliteFrame, a tab of its own with a crest notch and the word Elite; false the plain card. Switched live by Tune ("Hud.Boss.Keeper", "B"). The name stamps on as the Challenge's Stamp
+	-- glow, its line art Modulo's frames tinted Rim. Elite: the foe card's brass edge and shards (AR45); false the plain
+	-- card. Switched live by Tune ("Hud.Boss.Keeper", "B"). The name stamps on as the Challenge's Stamp
 	-- lands, From times its size down to its own over Seconds; the rest comes in over Fill with a shine across the bar
 	-- (Shine); the whole leaves over Leave from the fall's Gone. Drain: after a hit the pale trail holds Hold seconds, then
 	-- drains Rate of the bar a second. Look: transparencies, 0 solid. Sizes in authored pixels. The builder's seeds,
@@ -562,7 +562,6 @@ return {
 		Name = { Color3.fromHex("#D7B5FF"), Color3.fromHex("#A066FF") },
 		-- Channel: the bar's empty part, the world through it; Rim: the bar's rim and caps; Rule: the title's rules and crest.
 		Look = { Channel = 0.45, Rim = 0.15, Glow = 0.82, Rule = 0.3 },
-		EliteFrame = Color3.fromHex("#C9D2E4"), -- the elite's heavier frame: Graphite's glint, as Modulo's sheet shows it
 	},
 	-- TR10's marker while the elite, or this player's keeper, is down (DownController; research's entry, 2026-11-14), in
 	-- grey: its icon (a stand-in until Modulo's), the time left, and a small card of its loot with each drop's chance

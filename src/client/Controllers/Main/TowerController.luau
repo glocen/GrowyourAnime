@@ -167,7 +167,7 @@ local function showLabel()
 			Font = Theme.Font.Number,
 			Align = Enum.TextXAlignment.Center,
 			Box = UDim2.fromOffset(240, 34),
-			Position = UDim2.new(0.5, 0, 0, 56),
+			Position = UDim2.new(0.5, 0, 0, HudController.FoeFoot() + Theme.Size.Gap), -- under the foe's card, never over its health
 			AnchorPoint = Vector2.new(0.5, 0),
 			Parent = Layers.Get("Hud"),
 		})

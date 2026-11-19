@@ -34,6 +34,8 @@ renders cached in RENDERS (out of git; hud_art shoots any that's missing), write
 (tools/ui/kit_config.py reads it).
 `sheet` composes whole cards for review: every Voidkin at every rarity over night and noon sand at card size, each at 3x,
 two at 2x, and the target's card.
+`foe` draws the foe card's two pieces that lean right (AR45): its health light and its digits' band, into images/ with
+foe_lights.json (`<abs path>/build/handoff/UI/hud/lead_card/foe`).
 """
 import json
 import re
@@ -819,6 +821,60 @@ def sheet(out: Path):
     rs.save(np.concatenate(rows, axis=0), out / "target_card_sheet.png")
 
 
+# --- the foe's card (AR45, research's pick of 2026-11-19, 13:35) -------------------------------------------------------
+# The plate is Modulo's (foe_cards.py, CardSlantFill): the lead card's material, mirrored, its ends leaning right. Its
+# health light and its digits' band lean right with it, so the lead's lights, leaning left, can't fill its slot: these
+# two are drawn as foe_cards.py's fit draws them, each one image sliced across.
+
+FOE_LEAN = 0.4  # across per down, leaning right (foe_cards.py's SLANT)
+FOE_H = 13.0  # the plate's slot, 24 to 37 down (foe_cards.py's SLOT)
+FOE_BAND_RUN = 3.9  # the digits' band's lean across its height less half a point top and foot (the fit's bh * 0.3)
+
+
+def foe_light():
+    """The foe card's health light drawn full: Ember from its top to its foot with its sheen along the top, one colour
+    along it, its front cut on the lean, no glow ahead (the fit's bar). Its box from its top left to its foot right."""
+    h, run = FOE_H, FOE_H * FOE_LEAN
+    lay = Layer()
+    t = lay.t
+    ty, tx = 40.0, 40.0  # anywhere on the drawing: the image is the light's own box
+    te = tx + 60.0
+    lit = t.poly([(tx, ty), (te, ty), (te + run, ty + h), (tx + run, ty + h)])
+    t.paint(lit, stops(t, (t.y - ty) / h, EMBER["hp"]))
+    t.paint(np.maximum(lit, np.abs(t.y - (ty + 1.6)) - 0.5), c(EMBER["hp_sheen"]), 0.55)
+    image = lay.crop(tx, ty, te + run, ty + h)
+    return image, across(image, run + 0.5, run + 0.5)
+
+
+def foe_band():
+    """The band under the foe's health digits (AR45's must-fix 1): white, tinted the plate's channel in the game, leaning
+    right, half a point clear of the slot's top and foot (the fit's band). Its box from its top left to its foot right."""
+    h, run = FOE_H, FOE_BAND_RUN
+    lay = Layer()
+    t = lay.t
+    ty, tx = 40.0, 40.0
+    te = tx + 30.0
+    lit = t.poly([(tx, ty + 0.5), (te, ty + 0.5), (te + run, ty + h - 0.5), (tx + run, ty + h - 0.5)])
+    t.paint(lit, c("#FFFFFF"))
+    image = lay.crop(tx, ty, te + run, ty + h)
+    return image, across(image, run + 0.5, run + 0.5)
+
+
+def foe(out: Path):
+    images = out / "images"
+    images.mkdir(parents=True, exist_ok=True)
+    listing = {}
+    for name, (px, cut), use in (
+            ("CardFoeHealth", foe_light(), "the foe card's health light drawn full, leaning right 0.4, in the plate's slot"),
+            ("CardFoeBand", foe_band(), "the band under the foe's health digits: white, tinted the channel, leaning right")):
+        rs.save(rs.bleed(px), images / f"{name}.png")
+        listing[name] = dict(file=f"images/{name}.png", pixels=[px.shape[1], px.shape[0]],
+                             points=[px.shape[1] / K, px.shape[0] / K], cut=cut, pad=0.0, use=use)
+    (out / "foe_lights.json").write_text(json.dumps(dict(pixelsPerPoint=K, lean=FOE_LEAN, images=listing), indent=1),
+                                         encoding="utf-8", newline="\n")
+    print(f"wrote {out / 'foe_lights.json'}: {len(listing)} images")
+
+
 def main():
     out = bl.out_dir()
     args = sys.argv[sys.argv.index("--") + 2:]
@@ -827,6 +883,8 @@ def main():
         make(out)
     elif mode == "sheet":
         sheet(out)
+    elif mode == "foe":
+        foe(out)
 
 
 if __name__ == "__main__":

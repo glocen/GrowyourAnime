@@ -1440,7 +1440,7 @@ local cases = {
 				local see = HudConfig.SeeThrough
 				local hud = HudController.Parts()
 				local camera = workspace.CurrentCamera
-				local housing = hud.Target:FindFirstChild("Housing") :: ImageLabel?
+				local housing = hud.Target:FindFirstChild("Plate") :: ImageLabel? -- the foe card's plate (AR45)
 				local light = hud.TargetHealth:FindFirstChild("Light") :: ImageLabel?
 				local housingWhole, lightWhole = -1, -1 -- read once the sky has held: the test's own camera may start on the keeper
 				local aim: GuiObject? = nil -- the piece the hat is held under; nil, the sky
@@ -5655,6 +5655,67 @@ local cases = {
 		end,
 	},
 	{
+		Name = "HUD: the foe card's skull and level take the tier of the foe's CR over the lead's, and turn with it mid-fight (AR45)",
+		Run = function(t: any)
+			local parts = HudController.Parts()
+			local lead = myLead()
+			local level = if lead then lead:GetAttribute("Level") else nil
+			t.Check("the lead is in the world", type(level) == "number")
+			if lead == nil or type(level) ~= "number" then
+				return
+			end
+			-- An elite of the lead's level: it stands long enough for the cuts to move under it.
+			lookAhead(t)
+			local spawned = t.Server("FightSpawn", "brawler_elite", level, SHADE_AHEAD)
+			t.Check("the elite spawns", type(spawned) == "table" and spawned.Ok == true)
+			if type(spawned) ~= "table" or spawned.Ok ~= true then
+				return
+			end
+			t.Check("its card shows", waitFor(t, SHADE_TIMEOUT, function(): boolean
+				return lead:GetAttribute("Target") == spawned.Id and parts.Target.Visible
+			end))
+			local skulls = HudConfig.Skulls
+			local wasCuts = table.clone(skulls.Cuts)
+			local function shown(): number
+				local tier = parts.Target:GetAttribute("Tier")
+				return if type(tier) == "number" then tier else 0
+			end
+			local foe = fighterModel(spawned.Id)
+			local theirs = if foe then foe:GetAttribute("Power") else nil
+			local mine = lead:GetAttribute("Power")
+			t.Check("both sides carry their CR", type(theirs) == "number" and type(mine) == "number", `{theirs}, {mine}`)
+			local want = Hud.Skull(if type(theirs) == "number" then theirs else 0, if type(mine) == "number" then mine else 0, skulls.Cuts)
+			t.Check("its tier by the two CRs (Rules.Hud.Skull)", shown() == want, `shown {shown()}, wanted {want}`)
+			local skull = parts.TargetSkull :: ImageLabel
+			local words = parts.TargetLevel :: TextLabel
+			local function worn(tier: number): boolean
+				local colour = skulls.Colours[tier]
+				local faint = if tier == 1 then skulls.Faint else 0
+				return skull.ImageColor3 == colour and words.TextColor3 == colour and words.TextTransparency == 0 and math.abs(skull.ImageTransparency - faint) < 1e-3
+			end
+			t.Check("the skull and the level in its colour", worn(want))
+			-- Mid-fight, the cuts moved under the ratio and then over it: the skull turns red, then grey and faint, with its
+			-- level whole (research's must-fix 2).
+			local ok, problem = pcall(function()
+				t.Server("Tune", "Hud.Skulls.Cuts", { 1e-6, 2e-6, 3e-6 })
+				local red = waitFor(t, REPLICATE, function(): boolean
+					return shown() == 4
+				end)
+				t.Check("the cuts under the ratio: red, at once", red and worn(4))
+				t.Server("Tune", "Hud.Skulls.Cuts", { 1e6, 2e6, 3e6 })
+				local grey = waitFor(t, REPLICATE, function(): boolean
+					return shown() == 1
+				end)
+				t.Check("over it: grey and faint, its level whole", grey and worn(1))
+			end)
+			t.Server("Tune", "Hud.Skulls.Cuts", wasCuts)
+			t.Server("FightSpawn") -- clears it
+			if not ok then
+				error(problem, 0)
+			end
+		end,
+	},
+	{
 		Name = "HUD: a keeper's try and an elite take their own HUD: the keeper's title card at the foot or the top, an elite's heavier frame (TR5)",
 		Place = "Festival", -- TR45: its world stands in that place only
 		Stay = true, -- it moves the avatar itself (a try); the next case's reset takes it back to the pad
@@ -5670,40 +5731,34 @@ local cases = {
 			if lead == nil or type(level) ~= "number" then
 				return
 			end
-			-- C: an elite's card wears its heavier frame, the word Elite on it; switched off, the plain card. A Shade's, none.
+			-- An elite's card wears the brass edge and its two shards (AR45); switched off, the plain card. A Shade's, none.
 			t.Server("Tune", "Hud.Boss.Elite", true)
 			lookAhead(t)
 			local elite = t.Server("FightSpawn", "brawler_elite", level, SHADE_AHEAD)
 			t.Check("the elite spawns", type(elite) == "table" and elite.Ok == true)
 			if type(elite) == "table" and elite.Ok == true then
-				t.Check("C: the elite's card wears its frame", waitFor(t, SHADE_TIMEOUT, function(): boolean
+				t.Check("the elite's card wears its brass", waitFor(t, SHADE_TIMEOUT, function(): boolean
 					return lead:GetAttribute("Target") == elite.Id and parts.Target.Visible and parts.TargetElite.Visible
 				end))
-				local word = parts.TargetElite:FindFirstChild("Word")
-				t.Check("with the word Elite", word ~= nil and word:IsA("TextLabel") and word.Text == "Elite")
-				-- In a tab of its own after the level, in the card's ink, never on the sky (research's verdict, 2026-11-14, fix 3;
-				-- Modulo's frames): the name's tab ends before it.
-				local eliteTab = parts.TargetElite:FindFirstChild("EliteTab") :: GuiObject?
-				local levelLabel = parts.Target:FindFirstChild("Level") :: TextLabel?
-				if word and word:IsA("TextLabel") and eliteTab and levelLabel then
-					local wordLeft, wordRight = word.AbsolutePosition.X + (word.AbsoluteSize.X - word.TextBounds.X) / 2, word.AbsolutePosition.X + (word.AbsoluteSize.X + word.TextBounds.X) / 2
-					local tabLeft, tabRight = eliteTab.AbsolutePosition.X, eliteTab.AbsolutePosition.X + eliteTab.AbsoluteSize.X
-					t.Check("in its own tab, after the level", wordLeft >= levelLabel.AbsolutePosition.X + levelLabel.TextBounds.X and wordLeft >= tabLeft and wordRight <= tabRight
-						and word.TextColor3 == (parts.TargetName :: TextLabel).TextColor3, string.format("the word %d to %d, its tab %d to %d", wordLeft, wordRight, tabLeft, tabRight))
+				local edge = parts.Target:FindFirstChild("Edge") :: ImageLabel?
+				t.Check("its edge the brass, in its own colours", edge ~= nil and edge:GetAttribute("Kit") == "CardSlantRankEdge" and edge.ImageColor3 == Color3.new(1, 1, 1))
+				-- Each shard's root on the plate's top edge (foes.json's RankShardLeft and Right): standing above the card, the
+				-- left one near its square corner, the right one short of where its leaning end starts.
+				local plate = parts.Target
+				local edgeEnd = plate.AbsolutePosition.X + plate.AbsoluteSize.X * (1 - UIKit.FoeCard.Lean * UIKit.FoeCard.Size.Y / UIKit.FoeCard.Size.X)
+				local stands = 0
+				for _, shard in parts.TargetElite:GetChildren() do
+					if shard:IsA("ImageLabel") and shard.AbsolutePosition.Y < plate.AbsolutePosition.Y and shard.AbsolutePosition.X > plate.AbsolutePosition.X
+						and shard.AbsolutePosition.X + shard.AbsoluteSize.X < edgeEnd then
+						stands += 1
+					end
 				end
-				local tabEnd = parts.Target:GetAttribute("TabEnd")
-				t.Check("the name's tab ends before the Elite tab", type(tabEnd) == "number" and tabEnd <= UIKit.EliteCard.NameTabEnd + 0.01, tostring(tabEnd))
-				-- The elite's frames: its own blade and frame, its light the elite's, taller.
-				local housing = parts.Target:FindFirstChild("Housing") :: ImageLabel?
-				local frame = parts.Target:FindFirstChild("EliteFrame") :: ImageLabel?
-				t.Check("its blade and its heavier frame", housing ~= nil and housing:GetAttribute("Kit") == "CardTargetEliteHousing" and frame ~= nil and frame.Visible)
-				t.Check("its light the elite's, taller", parts.TargetHealth:GetAttribute("Kit") == "CardLightHealthElite" and parts.TargetHealth:GetAttribute("Height") == UIKit.EliteCard.Health[4])
+				t.Check("its two shards on its top edge, short of where it ends", stands == 2, `{stands} of 2`)
 				t.Server("Tune", "Hud.Boss.Elite", false)
 				t.Check("switched off, the plain card", waitFor(t, REPLICATE, function(): boolean
 					return parts.Target.Visible and not parts.TargetElite.Visible
 				end))
-				t.Check("with the plain blade and light", housing ~= nil and housing:GetAttribute("Kit") == "CardTargetHousing" and frame ~= nil and not frame.Visible
-					and parts.TargetHealth:GetAttribute("Kit") == "CardLightHealth")
+				t.Check("with the lead card's lavender rim", edge ~= nil and edge:GetAttribute("Kit") == "CardSlantEdge" and edge.ImageColor3 == UIKit.Systems.Voidkin.Colour)
 				t.Server("Tune", "Hud.Boss.Elite", wasElite)
 				t.Server("FightSpawn") -- clears it
 			end

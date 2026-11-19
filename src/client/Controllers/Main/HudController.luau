@@ -100,7 +100,6 @@ type Signature = {
 
 local lead: LeadCard.Card
 local target: TargetCard.Card
-local targetArrow: Frame
 local credits: TextLabel
 local coin: ImageLabel -- the Credits pill's icon, where a kill's Credits fly to (TR6)
 local electricity: TextLabel -- the Power pill's value: generation against demand in kW (TR18)
@@ -169,49 +168,6 @@ local function swap(image: ImageLabel, name: string)
 	if im and image:GetAttribute("Kit") ~= name then
 		image.Image = im.Id
 		image:SetAttribute("Kit", name)
-	end
-end
-
--- The type edge's arrow: a chevron of two strokes, up or down (Rules.Hud.Arrow).
-local function arrow(parent: Instance, cx: number, cy: number): Frame
-	local holder = Instance.new("Frame")
-	holder.Name = "Arrow"
-	holder.BackgroundTransparency = 1
-	holder.Size = UDim2.fromOffset(12, 12)
-	holder.AnchorPoint = Vector2.new(0.5, 0.5)
-	holder.Position = UDim2.fromOffset(cx, cy)
-	holder.ZIndex = 2
-	for side = -1, 1, 2 do
-		local stroke = Instance.new("Frame")
-		stroke.Name = if side < 0 then "Left" else "Right"
-		stroke.BorderSizePixel = 0
-		stroke.AnchorPoint = Vector2.new(0.5, 0.5)
-		stroke.Size = UDim2.fromOffset(8, 2.5)
-		stroke.Position = UDim2.new(0.5, side * 2.6, 0.5, 0)
-		stroke.ZIndex = 2
-		stroke.Parent = holder
-	end
-	holder:SetAttribute("Way", "")
-	holder.Visible = false
-	holder.Parent = parent
-	return holder
-end
-
-local function point(holder: Frame, way: string)
-	if holder:GetAttribute("Way") == way then
-		return
-	end
-	holder:SetAttribute("Way", way)
-	holder.Visible = way ~= ""
-	local colour = if way == "Up" then HudConfig.Arrow.Up else HudConfig.Arrow.Down
-	for _, stroke in holder:GetChildren() do
-		if stroke:IsA("Frame") then
-			local left = stroke.Name == "Left"
-			-- Up: /\ ; down: \/
-			stroke.Rotation = if (way == "Up") == left then -45 else 45
-			stroke.Position = UDim2.new(0.5, (if left then -1 else 1) * 2.6, 0.5, 0)
-			stroke.BackgroundColor3 = colour
-		end
 	end
 end
 
@@ -1141,7 +1097,7 @@ local function step(dt: number)
 		foe = if type(id) == "string" and id ~= "" then fighterById(id) else nil
 	end
 	paintHeal()
-	-- A keeper's own bar stands in the target card's stead (TR5, A and B); an elite's card wears its heavier frame (C).
+	-- A keeper's own bar stands in the target card's stead (TR5, A and B); an elite's card wears its brass (AR45).
 	local boss = HudConfig.Boss
 	local variant = tostring(boss.Keeper)
 	local trying = player:GetAttribute("Try") ~= nil
@@ -1150,15 +1106,18 @@ local function step(dt: number)
 	target.Frame.Visible = foe ~= nil and not (foeKind == "Keeper" and (variant == "A" or variant == "B"))
 	banded[5] = if variant == "B" then keeperBar.Frame else nil
 	if foe then
-		TargetCard.Elite(target, foeKind == "Elite" and boss.Elite == true) -- before its health: it swaps the light
+		TargetCard.Elite(target, foeKind == "Elite" and boss.Elite == true)
 		showHealth(target.Health, target.HealthText, foe)
+		-- The skull by the foe's CR over the lead's (AR45; Rules.Hud.Skull), read again each frame: it turns as either grows.
+		local theirPower, myPower = foe:GetAttribute("Power"), if model then model:GetAttribute("Power") else nil
+		TargetCard.Tier(target, Hud.Skull(if type(theirPower) == "number" then theirPower else 0, if type(myPower) == "number" then myPower else 0, HudConfig.Skulls.Cuts))
 		TargetCard.Name(target, tostring(foe:GetAttribute("Title") or ""), `Lv {tostring(foe:GetAttribute("Level") or "")}`)
 		local theirs = kindOf(foe)
 		if theirs ~= "" then
 			swap(target.Gem, `Gem{theirs}`)
 		end
 		target.Gem.Visible = theirs ~= ""
-		point(targetArrow, Hud.Arrow(mine, theirs))
+		TargetCard.Point(target, Hud.Arrow(mine, theirs))
 	end
 	placeCorner()
 	stepReadout(model, foe ~= nil, dt)
@@ -1266,11 +1225,8 @@ function HudController.Start()
 	lead = LeadCard.new(Layers.Get("Hud"), UDim2.fromOffset(PAD, TOP))
 	LevelNotice.Mount(Layers.Get("Hud"))
 	note = makeNote(Layers.Get("Hud"))
-	-- The target's card centred, its blade and tab level with the lead's.
-	target = TargetCard.new(Layers.Get("Hud"), UDim2.new(0.5, 0, 0, TOP - UIKit.TargetCard.Offset.Y))
-	targetArrow = arrow(target.Frame, TargetCard.ArrowAt.X, TargetCard.ArrowAt.Y)
-	targetArrow.ZIndex = 6 -- over the tab
-	TargetCard.Elite(target, false) -- C's parts, built hidden
+	-- The foe's card centred, its top level with the lead's plate's (AR45: the two face each other).
+	target = TargetCard.new(Layers.Get("Hud"), UDim2.new(0.5, 0, 0, TOP + UIKit.LeadPlate.Plate[2]))
 	local creditsPill = pill("Credits", 1, HudConfig.Pills.Credits, "Credits")
 	credits, coin = creditsPill.Value, creditsPill.Mark
 	local power = pill("Electricity", 2, HudConfig.Pills.Power, "Power")
@@ -1468,6 +1424,12 @@ function HudController.HoldHeal(age: number?)
 end
 
 -- For tests: the HUD's parts by name.
+-- The foe card's foot, in the HUD layer's authored pixels: a title at the top's middle stands under it (the Tower's
+-- floor, TR46; AR44's verdict: it drew over the card's health).
+function HudController.FoeFoot(): number
+	return target.Frame.Position.Y.Offset + target.Frame.Size.Y.Offset
+end
+
 function HudController.Parts(): { [string]: GuiObject }
 	return {
 		Lead = lead.Frame,
@@ -1480,9 +1442,11 @@ function HudController.Parts(): { [string]: GuiObject }
 		Target = target.Frame,
 		TargetName = target.Name,
 		TargetHealth = target.Health,
-		TargetArrow = targetArrow,
+		TargetArrow = target.Arrow,
 		TargetGem = target.Gem,
-		TargetElite = target.Frame:FindFirstChild("Elite") :: GuiObject,
+		TargetElite = target.Elite,
+		TargetSkull = target.Skull,
+		TargetLevel = target.Level,
 		Keeper = keeperBar.Frame,
 		KeeperHead = keeperBar.Head,
 		KeeperName = keeperBar.Name,

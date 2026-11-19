@@ -770,6 +770,15 @@ return {
 		SlotEmptyOffHandWarrior = { Id = "rbxassetid://128064287623574", Pixels = Vector2.new(128, 128), Points = Vector2.new(32, 32), Pad = 0 },
 		SlotEmptyRing = { Id = "rbxassetid://117078692283931", Pixels = Vector2.new(128, 128), Points = Vector2.new(32, 32), Pad = 0 },
 		SlotEmptyShoulders = { Id = "rbxassetid://81543940119149", Pixels = Vector2.new(128, 128), Points = Vector2.new(32, 32), Pad = 0 },
+		CardSlantFill = { Id = "rbxassetid://119180727485467", Pixels = Vector2.new(264, 232), Points = Vector2.new(66, 58), Cut = { 29, 28, 29, 28 }, Pad = 8 },
+		CardSlantEdge = { Id = "rbxassetid://129146398694981", Pixels = Vector2.new(264, 232), Points = Vector2.new(66, 58), Cut = { 29, 28, 29, 28 }, Pad = 8 },
+		CardSlantRankEdge = { Id = "rbxassetid://134082242402029", Pixels = Vector2.new(264, 232), Points = Vector2.new(66, 58), Cut = { 29, 28, 29, 28 }, Pad = 8 },
+		RankShardLeft = { Id = "rbxassetid://83506516675547", Pixels = Vector2.new(40, 40), Points = Vector2.new(10, 10), Pad = 0 },
+		RankShardRight = { Id = "rbxassetid://104711251698920", Pixels = Vector2.new(40, 40), Points = Vector2.new(10, 10), Pad = 0 },
+		Skull = { Id = "rbxassetid://126210701643533", Pixels = Vector2.new(72, 72), Points = Vector2.new(18, 18), Pad = 0 },
+		EdgeArrow = { Id = "rbxassetid://75745566571381", Pixels = Vector2.new(40, 40), Points = Vector2.new(10, 10), Pad = 0 },
+		CardFoeHealth = { Id = "rbxassetid://83666929491890", Pixels = Vector2.new(261, 52), Points = Vector2.new(65.25, 13), Cut = { 5.7, 6.25, 5.7, 6.25 }, Pad = 0 },
+		CardFoeBand = { Id = "rbxassetid://109247033366238", Pixels = Vector2.new(136, 52), Points = Vector2.new(34, 13), Cut = { 4.4, 6.25, 4.4, 6.25 }, Pad = 0 },
 	} :: { [string]: Image },
 	-- The lead card's shape, in its own points: images are laid at their At (tools/blender/lead_card_art.py).
 	LeadCard = {
@@ -795,15 +804,6 @@ return {
 		FrameRight = 65, -- how far right any rarity's frame reaches, its side points included
 		Badge = { 1, 74, 33, 17 }, -- the level's badge over the frame's foot: its foot's left, its top, its least width, its height
 	},
-	-- The target's card, built like the lead's, in its own points; the lead's images it shares are moved by Offset.
-	TargetCard = {
-		Size = Vector2.new(216, 39.8),
-		Offset = Vector2.new(-41.36, -18), -- the lead's points to the target's
-		Housing = { 2.645, 16, 215, 39.8 }, -- its foot's left, its top, its top's right end, its foot
-		Health = { 16.245, 19.4, 204.63, 17 }, -- the light's top edge: its left end, its y, its full right end; its height
-		FillFrom = 16.245, -- the light's empty point along its top edge
-		Stud = Vector2.new(8, 27.9), -- the type's stud, on the blade's left end
-	},
 	-- The keeper's bar's frames as drawn (TR5): the bar's height they were drawn for, a cap's and a phase mark's box,
 	-- the rim's reach past the channel, the title's rules (their line, a tip's box, the gap, the taper) and its crest.
 	BossBar = {
@@ -814,18 +814,13 @@ return {
 		Rule = { Width = 1.5, Tip = Vector2.new(11, 6.4), Gap = 1, Taper = 24 },
 		Crest = Vector2.new(24, 11),
 	},
-	-- The elite's card, in the target card's own points (TR5): its size, its blade, its light row, the stud, the Elite
-	-- tab's corners and the word's centre, where the name's tab must end, and how far its crest notch rises above its top.
-	EliteCard = {
-		Size = Vector2.new(216, 45.8),
-		Housing = { -0.055, 16, 215, 45.8 },
-		Health = { 16.245, 19.4, 204.63, 23 },
-		FillFrom = 16.245,
-		Stud = Vector2.new(6.65, 30.9),
-		Tab = { Vector2.new(169.85, 3), Vector2.new(215.85, 3), Vector2.new(208.92, 18.4), Vector2.new(162.92, 18.4) },
-		Word = Vector2.new(189.925, 9.5),
-		NameTabEnd = 165.85,
-		ArtTop = -7.3,
+	-- The foe's card (AR45, research's pick of 2026-11-19, 13:35): the lead card's material mirrored to face it, its top
+	-- left square and its ends leaning right, in its own points (build/handoff/UI/foes/foes.json, `card`). The plate is
+	-- CardSlantFill under CardSlantEdge (an elite's CardSlantRankEdge), each an 8 point pad round the card's box.
+	FoeCard = {
+		Size = Vector2.new(216, 42),
+		Lean = 0.4, -- across per down: the right end's top is 16.8 in from the card's right
+		Slot = { 24, 37, 5 }, -- the health's slot: its top, its foot, its ends in from the plate's
 	},
 	-- The dock of three icons (AR12; build/handoff/UI/hud/dock/hud_dock.json): one piece of a fixed size, bottom
 	-- centre. Every place is in points from the body's top left; a button's Box is its tap, round its leaning tile.

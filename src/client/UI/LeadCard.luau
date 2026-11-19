@@ -17,7 +17,7 @@
 --   LeadCard.Kind(card, type, class)      the stud's colour and gem, and the class mark
 --   LeadCard.Name(card, text)             the name, cut with "…" past its room
 --   LeadCard.Fill(bar, share)             a light's share, 0 to 1 (card.Health, card.Xp, a target card's Health)
--- UI.TargetCard is built from take E's parts, which stay here: Lay, Image, Light, Relight, Stud and Digits below.
+-- UI.TargetCard (the foe's card) shares its Light and its Digits below.
 
 
 local Shared = game:GetService("ReplicatedStorage").Shared
@@ -64,8 +64,6 @@ local VOIDKIN = UIKit.Systems.Voidkin -- the card's colours, as each pill wears 
 -- past it: the shadow, the head, a high rarity's crest and points, and the level's badge to 91, clear of the readout's
 -- corner (from 99) and the eye (from 102).
 local BOX = Vector2.new(P.Plate[3], 89)
-local STUD = 6.5 -- take E's stud's radius (the target's card)
-local INK = Color3.fromHex("#000000") -- take E's stud's well, Midnight's ink
 local DIGITS_INK = Color3.fromHex("#0B0C10") -- the outline of the health digits on a light (the target's card)
 
 -- Lays the kit image `name` at its place in the card, in a holder whose top left is at `origin` in the card's points
@@ -92,8 +90,7 @@ local function image(parent: Instance, name: string, kit: string, z: number, ori
 end
 
 -- A light's slot and art: `row` is its top edge (its left end, its y, its right end when full) and its height; `from`, its
--- empty point along that edge. Laid again at the next Fill (an elite's card swaps its light for the elite's, taller:
--- UI.TargetCard).
+-- empty point along that edge. Laid again at the next Fill.
 local function relight(bar: Frame, kit: string, row: { number }, from: number)
 	local y, right, h = row[2], row[3], row[4]
 	bar.Position = UDim2.fromOffset(from, y) -- the share that shows: the empty point to the light's full end
@@ -125,7 +122,9 @@ end
 
 -- A light's share. Below the slices' least width (a share of a few percent) a light's image can't shrink: the lead's
 -- (attribute Front) is anchored at its front, its root end sliding under the stud and frame that cover its empty point,
--- so its front shows where the share is; the target's keeps its root end in its slot, its front a little long.
+-- so its front shows where the share is; the target's keeps its root end in its slot, its front a little long. A light
+-- with a Lean (the foe's card, AR45) leans the other way, right: its box runs from its top's left end to its foot's right,
+-- that far past the front, with no glow.
 function LeadCard.Fill(bar: Frame, share: number)
 	local clamped = math.clamp(if share == share then share else 0, 0, 1)
 	if bar:GetAttribute("Share") == clamped then
@@ -141,33 +140,15 @@ function LeadCard.Fill(bar: Frame, share: number)
 	local left, right, from, h = bar:GetAttribute("Left") :: number, bar:GetAttribute("Right") :: number, bar:GetAttribute("From") :: number, bar:GetAttribute("Height") :: number
 	local cut = UIKit.Images[kit].Cut :: { number }
 	local front = from + (right - from) * clamped -- along the top edge
+	local lean = bar:GetAttribute("Lean")
+	if type(lean) == "number" then
+		Skin.Set(lit, kit, { X = left - from, Y = 0, W = math.max(front - left + h * lean, cut[1] + cut[3]), H = h })
+		return
+	end
 	local w = math.max(front - left + h * SLANT + G.Glow, cut[1] + cut[3])
 	-- In the bar's own place: its box ends at its glow ahead of the front, or starts at its foot's left.
 	local x = if bar:GetAttribute("Front") == true then front + G.Glow - w - from else left - h * SLANT - from
 	Skin.Set(lit, kit, { X = x, Y = 0, W = w, H = h })
-end
-
--- Take E's stud (the target's card): a well in Midnight's ink, its rim (a UIStroke named Rim), the type's gem in it.
-local function stud(parent: Instance, centre: Vector2, z: number): ImageLabel
-	local well = Instance.new("Frame")
-	well.Name = "Stud"
-	well.AnchorPoint = Vector2.new(0.5, 0.5)
-	well.Position = UDim2.fromOffset(centre.X, centre.Y)
-	well.Size = UDim2.fromOffset(2 * STUD, 2 * STUD)
-	well.BackgroundColor3 = INK
-	well.BorderSizePixel = 0
-	well.ZIndex = z
-	local round = Instance.new("UICorner")
-	round.CornerRadius = UDim.new(0.5, 0)
-	round.Parent = well
-	local ring = Instance.new("UIStroke")
-	ring.Name = "Rim"
-	ring.Thickness = 1.5
-	ring.Parent = well
-	well.Parent = parent
-	local gem = Skin.Icon(well, "GemRed", STUD, STUD, 2 * STUD * 0.8 + 1, nil, 1)
-	gem.Name = "Gem"
-	return gem
 end
 
 -- The health digits on a light, centred on the share that shows, outlined so they read on the empty slot too (the
@@ -182,11 +163,7 @@ local function digits(health: Frame): TextLabel
 	return label
 end
 
-LeadCard.Lay = at
-LeadCard.Image = image
 LeadCard.Light = light
-LeadCard.Relight = relight
-LeadCard.Stud = stud
 LeadCard.Digits = digits
 
 -- The badge cut to fit the number, its left fixed so it grows rightward over the frame's foot; the number's label

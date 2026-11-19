@@ -1,0 +1,44 @@
+{
+ "pixelsPerPoint": 4,
+ "lean": 0.4,
+ "images": {
+  "CardFoeHealth": {
+   "file": "images/CardFoeHealth.png",
+   "pixels": [
+    261,
+    52
+   ],
+   "points": [
+    65.25,
+    13.0
+   ],
+   "cut": [
+    5.7,
+    6.25,
+    5.7,
+    6.25
+   ],
+   "pad": 0.0,
+   "use": "the foe card's health light drawn full, leaning right 0.4, in the plate's slot"
+  },
+  "CardFoeBand": {
+   "file": "images/CardFoeBand.png",
+   "pixels": [
+    136,
+    52
+   ],
+   "points": [
+    34.0,
+    13.0
+   ],
+   "cut": [
+    4.4,
+    6.25,
+    4.4,
+    6.25
+   ],
+   "pad": 0.0,
+   "use": "the band under the foe's health digits: white, tinted the channel, leaning right"
+  }
+ }
+}

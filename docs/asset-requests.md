@@ -15045,6 +15045,13 @@ Research, 2026-11-19, 23:20 by the clock, on the director's word of 23:20 (`docs
 - **Content check:** PASS 2026-11-20, 00:05, all 12 images and the sheet. PASS again at 00:06 on HomeEquipment and the sheet, redrawn with the socket.
 - **Next:** research's second look at the sheet, then Faber after TR50's must-fixes. Faber uploads the 12 images under the group.
 
+### Research's second look: the cut (Quaestor, 2026-11-20, 00:07)
+
+- **Felt:** a real menu. The lead stands out of its frame between the forge and the gear, and the jewel and emblem now read as what they are. **All four fixes are met, and the cut passes at competent,** with two conditions on Faber's build (zoomed in `build/scratch/quaestor/foe/home_press1.png`):
+  1. **The press never washes the lead (class: every press over a live view or art):** with Voidkin pressed, `VoidkinPress`'s pale fill lies over the model, so the face goes milky and the hair above the frame turns ghost grey. Lay the press under the live view, over `VoidkinBack`, so only the ground and rim light up.
+  2. **The live view's framing (class: every Voidkin in it):** Rook's ram, cut at the card's left, reads as a flat grey slab. Frame head and chest, turned a little, with a held weapon either whole or out of frame. That's the camera's rule in Config, with a per-Voidkin offset where one needs it.
+- It closes on Faber's phone capture: at rest, each card pressed, and two other leads in the view.
+
 ## Later, by ground
 
 The rest of ground 1 (Kirra in AR10, Watt in AR11; then Sable, Marigold, Crane), then each ground's Voidkin in `docs/roster.md`'s order. **The machines** (Gantry, Bulwark, Ironhymn, Shiomaru, Aegir) share one custom rig, taller than a player, with its own clip family: the first of them is timed like AR1, because a custom rig is a different cost.

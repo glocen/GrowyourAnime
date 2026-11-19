@@ -55,6 +55,12 @@ function Shop.Ends(stock: number): number
 	return (stock + 1) * ShopConfig.Period
 end
 
+-- The share still to run of the building's minute `index` of `count` (AR38's clock: the first runs first), with `left`
+-- seconds of the stock to go: 1 while it waits, 0 once it's spent, and the running one in between.
+function Shop.Minute(left: number, index: number, count: number): number
+	return math.clamp(left * count / ShopConfig.Period - (count - index), 0, 1)
+end
+
 local TWO32 = 4294967296
 
 -- a * b modulo 2^32, exact in a double: the low half's product stays under 2^49.

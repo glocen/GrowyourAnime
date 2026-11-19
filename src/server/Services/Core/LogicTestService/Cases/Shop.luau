@@ -76,6 +76,25 @@ return {
 		end,
 	},
 	{
+		Name = "Shop: the building's five minutes count a stock down, the first first, the running one by its share left",
+		Run = function(t: any)
+			local each = ShopConfig.Period / 5
+			local function all(left: number): string
+				local out = {}
+				for index = 1, 5 do
+					table.insert(out, string.format("%.2f", Shop.Minute(left, index, 5)))
+				end
+				return table.concat(out, " ")
+			end
+			t.Equal("a new stock: all five to run", all(ShopConfig.Period), "1.00 1.00 1.00 1.00 1.00")
+			t.Equal("half its first minute gone", all(ShopConfig.Period - each / 2), "0.50 1.00 1.00 1.00 1.00")
+			t.Equal("the first spent, the second just begun", all(ShopConfig.Period - each), "0.00 1.00 1.00 1.00 1.00")
+			t.Equal("a quarter of the last minute left", all(each / 4), "0.00 0.00 0.00 0.00 0.25")
+			t.Equal("at its end, all spent", all(0), "0.00 0.00 0.00 0.00 0.00")
+			t.Equal("past its end, still spent", Shop.Minute(-1, 5, 5), 0)
+		end,
+	},
+	{
 		Name = "Shop: a stock's shelf is the same from every server, new with the salt, and draws in [0, 1)",
 		Run = function(t: any)
 			local stock = Shop.Stock(NOW)

@@ -47,6 +47,26 @@ Theme.Colour = {
 	OverWords = Color3.fromRGB(255, 150, 92),
 }
 
+-- A screen's colours on a palette of its own (UIKit's System, AR40's C): Theme.Colour with its ink (Text, Soft and
+-- Faint as Text, TextDim and Disabled), its rows (Row as PlateHigh) and its lights and their words from the palette's
+-- keys of those names. Theme.Colour itself without one. Read when a screen is built, so a live tune reaches the next.
+local INKED = { "Backing", "Channel", "Ready", "ReadyWords", "Electricity", "ElectricityWords", "Over", "OverWords" }
+function Theme.Ink(palette: string?): typeof(Theme.Colour)
+	local p = if palette then (UIKit.Palettes :: any)[palette] else nil
+	if p == nil then
+		return Theme.Colour
+	end
+	local ink = table.clone(Theme.Colour)
+	ink.Text, ink.TextDim, ink.Disabled = p.Text or ink.Text, p.Soft or ink.TextDim, p.Faint or ink.Disabled
+	ink.PlateHigh = p.Row or ink.PlateHigh
+	for _, key in INKED do
+		if p[key] ~= nil then
+			(ink :: any)[key] = p[key]
+		end
+	end
+	return ink
+end
+
 Theme.Transparency = {
 	Plate = 0.08, -- 92% opaque: ".12 looks too solid" reads the other way round
 	Dim = 0.45, -- the world behind a reveal

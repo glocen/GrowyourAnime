@@ -3,7 +3,8 @@
 -- Shop's counter opens the screen on the standing shelf, fetched from the server (Net "Shop"); a buy goes through the
 -- profile's Act ("ShopBuy"), and the copy that lands refills the screen. When the stock gives way while it's open, the
 -- new shelf is fetched. In a stock's last Config.Shop.Warn seconds a chip under the HUD's pills counts it down (docs/ui.md,
--- "Under the pills"); the stock's clock is the world's, so the chip needs no shelf.
+-- "Under the pills"); the stock's clock is the world's, so the chip needs no shelf. The Shop's building runs the same
+-- clock on its five minutes (WorldService's dressShop; Rules.Shop.Minute), here on the client.
 --   ShopController.Open(): boolean     fetches the shelf and opens the screen (the counter's prompt, and tests)
 --   ShopController.Chip(): Frame?      the countdown chip, for tests
 
@@ -159,9 +160,38 @@ local function fitChip()
 	end
 end
 
+-- The building's clock: a spent minute hidden, the running one as tall as its share left, hung from its root under the
+-- slab, so it shrinks upward; the server lays them full and never touches them again.
+local function minutes(left: number)
+	local marker = Markers.Find("Shop")
+	if marker == nil then
+		return
+	end
+	local hung: { BasePart } = {}
+	for _, item in marker:GetChildren() do
+		if item:IsA("BasePart") and type(item:GetAttribute("Minute")) == "number" then
+			table.insert(hung, item)
+		end
+	end
+	for _, part in hung do
+		local root, full, centre = part:GetAttribute("Root"), part:GetAttribute("Full"), part:GetAttribute("Centre")
+		if typeof(root) ~= "CFrame" or typeof(full) ~= "Vector3" or typeof(centre) ~= "Vector3" then
+			continue
+		end
+		local share = Shop.Minute(left, part:GetAttribute("Minute") :: number, #hung)
+		part.Transparency = if share > 0 then 0 else 1
+		local size = Vector3.new(full.X, full.Y * math.max(share, 0.01), full.Z)
+		if (part.Size - size).Magnitude > 1e-3 then
+			part.Size = size
+			part.CFrame = root * CFrame.new(centre.X, centre.Y * size.Y / full.Y, centre.Z)
+		end
+	end
+end
+
 local function tick()
 	local now = workspace:GetServerTimeNow()
 	local left = Shop.Ends(Shop.Stock(now)) - now
+	minutes(left)
 	local made, words = chip, chipWords
 	if made and words then
 		local shown = left <= ShopConfig.Warn and Screen.Current() ~= ShopScreen.Name

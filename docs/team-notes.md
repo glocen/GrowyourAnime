@@ -9,10 +9,10 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **Verdicts owed:** TR43 and TR44 in motion; AR40's install; AR30, AR37, TR10, AR28's Stage I, TR34, AR23, TR29.
 - **With the director:** the combat review's six decisions; the Voidkin screen and bag in B; the store's design; the sound pick on TR42's panel.
 
-**Faber (builder).** 2026-11-19, 20:33, on Opus 5.5. Done today: AR43's Equipment three and Settings in B, from Home's tray (implemented and tested; captures and research's pass wait on the PC unlocked); AR46's Hard looks with AR47's masks, passed at competent (19:18); AR42's install in Seam, passed at competent (18:51); TR48; TR47's part A; TR46; AR44's must-fixes; AR45's foe cards; AR43's Home tray; AR38's Void Shop; TR32.
-- **Now:** AR40's C install.
-- **Next, in order:** item 4 after research's refit. When the PC is unlocked: AR43's phone captures of every state, then research's pass (AR43, "Faber's install of Equipment's three and Settings in B").
-- **Open, tests:** seven cases fail in the phone simulator and pass in the full window (AR44, "Tests"). NOT VERIFIED while the PC is locked (RenderStepped 0, tweens still): Reinforce's beat in frames, the Home tray's grow, the cue fades and ducks, the lint on Equipment and Settings. NOT VERIFIED (the Festival place, item 9): the Festival role's suite, the stage tile's "CR", TR48's keeper, drops and run log in a real run, and AR42's Stage cases; TintMask on a phone. TR44's phone take waits for the director's go.
+**Faber (builder).** 2026-11-19, 21:24, on Opus 5.5. Done today: AR40's C installed (the kits, C's afternoon, the Shop's building, the Breaker's and Power's windows on the system panel; implemented and tested, captured by day for research's pass); AR43's Equipment three and Settings in B, from Home's tray (implemented and tested; its phone captures are next); AR46's Hard looks with AR47's masks, passed at competent (19:18); AR42's install in Seam, passed at competent (18:51); TR48; TR47's part A; TR46; AR44's must-fixes; AR45's foe cards; AR43's Home tray; AR38's Void Shop; TR32.
+- **Now:** TR48 part 2, the Epic and Legendary pace, as revised at 21:00. I'd change nothing. The chest card will say each chance to the hundredth (`Rules.Odds.Percent`), so 0.05% reads as rolled.
+- **Next, in order:** TR49, the combat review built; AR44's digits Gap 0.12 and AR43's five level-3 jewels (Modulo's asks); AR43's phone captures of every state, then research's pass.
+- **Open, tests:** seven cases fail in the phone simulator and pass in the full window (AR44, "Tests"). Since the unlock, HUD, UI, Equipment and Settings pass in full; the cue fades and ducks wait for a rerun. NOT VERIFIED (the Festival place, item 9): the Festival role's suite, the stage tile's "CR", TR48's keeper, drops and run log in a real run, and AR42's Stage cases; TintMask on a phone. TR44's phone take waits for the director's go.
 
 **Modulo (assets).** 2026-11-19, 21:02, on Opus 5.5. Voidkin work parked until before launch (the director's word, 11:10). Done: research's two polish-later lines, passed at competent (21:00), and TR10's elite icon redrawn on AR47's mask (content check PASS). Now: the Voidkin screen and the bag cut in B, for Faber (research, 21:00, on the director's "sure" of 20:57).
 - **In the game:** AR46's Hard looks with AR47's masks, on TintMask (a856f06), passed at competent (19:18). AR42's tiles in Seam, passed at competent (f9f3636). The board's item 11 blockout (AR43) is with the director.
@@ -117,6 +117,14 @@ For Faber:
 - Tier 2, research, 2026-11-12, on the director's words: weapons belong to a class, in two hands (Main Hand and Off Hand replace Weapon and Shield), a preset holds a pair per class, a weapon drop is for the lead's class; Combat Power made to be watched, its weights fitted by the simulation; each item kind modelled and rendered to its icon (AR6, phase 3) (`docs/design.md`, "Regalia: gear" and "Combat Power"). Faber: the Stats case's `"Weapon"` source becomes `"Main Hand"` when you next touch it. Faber and Modulo: say in your row what you'd change.
 
 ## Entries
+
+### 2026-11-19, 21:24. AR40's C installed: the world by day, the Shop's building, the system panel's first two windows (Faber)
+
+- **What changed:** both kits are in C, with the beds, the cream paving and the teal glass, and the base's atlas and the paving are uploaded under the group. The day is C's warm afternoon. The Shop stands as AR38's building: its counter collides, its crown shows on a featured stock, and its five minutes count each stock down. The Breaker's and the Power windows are on the system panel's slab, with C's ink, C's buttons and the chamber's teal band. The Breaker keeps its night (the director, 2026-11-15).
+- **Where:** AR40, "The install of C"; `tools/studio/Kits/`, `src/storage/*Kit.rbxm`, `Config.Lighting`, `Config.UIKit` (System), `Theme.Ink`, `Kit.Button`'s face, `WorldService`'s `dressShop`, `Rules.Shop.Minute`.
+- **Tested:** the type check, 27,232 logic cases, the world report, and the self-test's Shop, Power, Breaker, World, Base, Kit, HUD, UI, Equipment and Settings filters, all passing (three stale cases fixed).
+- **Open:** research's pass on the four captures in `build/scratch/faber/ar40/`. The rest of the system panel follows: the base screen's chips and side panels, the Forge's, the Void Shop's screen, and the shared confirm, toast and reward.
+- **For:** research.
 
 ### 2026-11-19, 20:33. AR43 in B: Equipment's three and Settings, from Home's tray (Faber)
 

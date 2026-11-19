@@ -165,8 +165,8 @@
   },
   "Wall": {
    "mesh": "meshes/Wall.json",
-   "triangles": 144,
-   "vertices": 96,
+   "triangles": 168,
+   "vertices": 112,
    "centre": [
     7.245,
     3.695,
@@ -187,8 +187,8 @@
   },
   "WallHalf": {
    "mesh": "meshes/WallHalf.json",
-   "triangles": 144,
-   "vertices": 96,
+   "triangles": 168,
+   "vertices": 112,
    "centre": [
     3.245,
     3.695,
@@ -209,8 +209,8 @@
   },
   "WallEnd": {
    "mesh": "meshes/WallEnd.json",
-   "triangles": 72,
-   "vertices": 48,
+   "triangles": 84,
+   "vertices": 56,
    "centre": [
     0.0,
     3.695,
@@ -231,8 +231,8 @@
   },
   "Gate1": {
    "mesh": "meshes/Gate1.json",
-   "triangles": 808,
-   "vertices": 564,
+   "triangles": 880,
+   "vertices": 612,
    "centre": [
     0.0,
     10.245,
@@ -329,8 +329,8 @@
   },
   "Transformer": {
    "mesh": "meshes/Transformer.json",
-   "triangles": 492,
-   "vertices": 286,
+   "triangles": 528,
+   "vertices": 310,
    "centre": [
     0.0,
     2.515,
@@ -351,8 +351,8 @@
   },
   "Door": {
    "mesh": "meshes/Door.json",
-   "triangles": 768,
-   "vertices": 428,
+   "triangles": 840,
+   "vertices": 500,
    "centre": [
     0.0,
     6.075,
@@ -483,8 +483,8 @@
   },
   "Training": {
    "mesh": "meshes/Training.json",
-   "triangles": 466,
-   "vertices": 304,
+   "triangles": 666,
+   "vertices": 432,
    "centre": [
     0.0,
     4.37,
@@ -505,17 +505,17 @@
   },
   "TrainingCrown": {
    "mesh": "meshes/TrainingCrown.json",
-   "triangles": 496,
-   "vertices": 288,
+   "triangles": 700,
+   "vertices": 424,
    "centre": [
     0.0,
-    -0.2,
+    0.36,
     0.0
    ],
    "size": [
-    6.24,
-    2.22,
-    6.24
+    6.82,
+    2.82,
+    6.82
    ],
    "colour": "maps/Base_Kit_Color.png",
    "glow": "maps/Base_Kit_Glow.png",
@@ -523,12 +523,12 @@
    "glowStrength": 2.4,
    "collision": "none",
    "lights": [],
-   "note": "its origin is its middle: it floats 8 up at the Training machine's middle, round the stone's spark, and turns about its own upright while a Voidkin trains, still when none does. 7.6 across at its weights. Look only"
+   "note": "Stage I's crown, base level 1. Its origin is its middle: it floats 8 up at the Training machine's middle, round the stone's spark, and turns about its own upright while a Voidkin trains, still when none does. A band of void stone with 4 short crystals set through it and 8 marks of the void's light, and 3 tall crystals near the spark, their tips 1.66 over its middle. 6.6 across. At base levels 2 and 3, TrainingCrown2 and TrainingCrown3 stand in its place (plan.json, machines.trainingStages). Look only"
   },
   "Breaker": {
    "mesh": "meshes/Breaker.json",
-   "triangles": 682,
-   "vertices": 452,
+   "triangles": 934,
+   "vertices": 628,
    "centre": [
     0.0,
     6.345,
@@ -549,8 +549,8 @@
   },
   "BreakerChamber": {
    "mesh": "meshes/BreakerChamber.json",
-   "triangles": 270,
-   "vertices": 176,
+   "triangles": 282,
+   "vertices": 184,
    "centre": [
     0.0,
     1.98697,
@@ -593,8 +593,8 @@
   },
   "Bay": {
    "mesh": "meshes/Bay.json",
-   "triangles": 614,
-   "vertices": 400,
+   "triangles": 710,
+   "vertices": 488,
    "centre": [
     -0.07,
     5.0,
@@ -713,16 +713,16 @@
   },
   "BatteryRack": {
    "mesh": "meshes/BatteryRack.json",
-   "triangles": 372,
-   "vertices": 230,
+   "triangles": 180,
+   "vertices": 120,
    "centre": [
     0.0,
-    1.37,
+    1.27,
     0.0
    ],
    "size": [
     6.52,
-    2.96,
+    2.76,
     4.52
    ],
    "colour": "maps/Base_Kit_Color.png",
@@ -731,12 +731,12 @@
    "glowStrength": 2.4,
    "collision": "a box, 6 by 4, 3 high",
    "lights": [],
-   "note": "on the stand-in's footprint, 2.85 high at its posts. Its eight seats are 0.6 up; a BatteryCell stands on each seat the base's level has earned (plan.json, machines, battery)"
+   "note": "Stage I, base level 1: on the stand-in's footprint, 2.65 high at its posts. Its cells stand 0.6 up, on the seats machines.batteryStages gives each stage (AR34)"
   },
   "BatteryCell": {
    "mesh": "meshes/BatteryCell.json",
-   "triangles": 120,
-   "vertices": 80,
+   "triangles": 132,
+   "vertices": 88,
    "centre": [
     0.0,
     1.025,
@@ -977,8 +977,8 @@
   },
   "GeneratorDemand": {
    "mesh": "meshes/GeneratorDemand.json",
-   "triangles": 36,
-   "vertices": 24,
+   "triangles": 48,
+   "vertices": 32,
    "centre": [
     -8.82567,
     -9.76182,
@@ -999,8 +999,8 @@
   },
   "Generator2": {
    "mesh": "meshes/Generator2.json",
-   "triangles": 2770,
-   "vertices": 1712,
+   "triangles": 2834,
+   "vertices": 1776,
    "centre": [
     -0.97012,
     10.57303,
@@ -1021,8 +1021,8 @@
   },
   "Generator3": {
    "mesh": "meshes/Generator3.json",
-   "triangles": 3822,
-   "vertices": 2396,
+   "triangles": 3950,
+   "vertices": 2524,
    "centre": [
     -0.72398,
     12.40887,
@@ -1461,8 +1461,8 @@
   },
   "Generator2Demand": {
    "mesh": "meshes/Generator2Demand.json",
-   "triangles": 36,
-   "vertices": 24,
+   "triangles": 48,
+   "vertices": 32,
    "centre": [
     -9.80822,
     -9.65072,
@@ -1483,8 +1483,8 @@
   },
   "Generator3Demand": {
    "mesh": "meshes/Generator3Demand.json",
-   "triangles": 36,
-   "vertices": 24,
+   "triangles": 48,
+   "vertices": 32,
    "centre": [
     -11.23383,
     -11.05344,
@@ -1505,8 +1505,8 @@
   },
   "Showcase": {
    "mesh": "meshes/Showcase.json",
-   "triangles": 304,
-   "vertices": 200,
+   "triangles": 392,
+   "vertices": 272,
    "centre": [
     0.0,
     0.795,
@@ -1537,8 +1537,8 @@
   },
   "Forge": {
    "mesh": "meshes/Forge.json",
-   "triangles": 596,
-   "vertices": 396,
+   "triangles": 708,
+   "vertices": 492,
    "centre": [
     0.0,
     6.25,
@@ -1559,8 +1559,8 @@
   },
   "ForgeRam": {
    "mesh": "meshes/ForgeRam.json",
-   "triangles": 412,
-   "vertices": 240,
+   "triangles": 456,
+   "vertices": 272,
    "centre": [
     0.0,
     3.2,
@@ -1581,8 +1581,8 @@
   },
   "ForgeGear": {
    "mesh": "meshes/ForgeGear.json",
-   "triangles": 280,
-   "vertices": 160,
+   "triangles": 308,
+   "vertices": 184,
    "centre": [
     0.0,
     0.0,
@@ -1599,12 +1599,12 @@
    "glowStrength": 2.4,
    "collision": "none",
    "lights": [],
-   "note": "its origin is its middle, its axle toward the front: two stand on the Forge's head, turning opposite ways as the ram moves (plan.json, machines.forge). Look only"
+   "note": "its origin is its middle, its axle toward the front: void stone with a vein of the void's light and a bone hub. Two stand on the Forge's head at Stage I, four and six on the lintel at II and III, each turning the other way from the one it meshes as the ram moves (plan.json, machines.forge and machines.forgeStages). Look only"
   },
   "Condenser": {
    "mesh": "meshes/Condenser.json",
-   "triangles": 2000,
-   "vertices": 1474,
+   "triangles": 2072,
+   "vertices": 1538,
    "centre": [
     0.0,
     5.83774,
@@ -1625,8 +1625,8 @@
   },
   "CondenserCore": {
    "mesh": "meshes/CondenserCore.json",
-   "triangles": 472,
-   "vertices": 256,
+   "triangles": 664,
+   "vertices": 352,
    "centre": [
     0.0,
     0.0,
@@ -1688,6 +1688,358 @@
    "collision": "none",
    "lights": [],
    "note": "a jewel in a cup: stood at the cup's place on the comb, the Condenser's turn. One pale swatch on every face: the jewel type's colour is the builder's (a tint, or the mesh in Neon without the kit's pictures), so the cup reads from a stone's at 14 studs. Look only"
+  },
+  "Breaker2": {
+   "mesh": "meshes/Breaker2.json",
+   "triangles": 1206,
+   "vertices": 812,
+   "centre": [
+    3.5,
+    8.395,
+    0.0
+   ],
+   "size": [
+    24.92,
+    17.01,
+    6.82
+   ],
+   "colour": "maps/Base_Kit_Color.png",
+   "glow": "maps/Base_Kit_Glow.png",
+   "glowTint": "#FFFFFF",
+   "glowStrength": 2.4,
+   "collision": "a box 21 along the line, 6 deep and 5 high, its middle 3.5 across; the jaws stand on its top",
+   "lights": [],
+   "note": "Stage II's still body, in place of Breaker at the same place: the body grown to 3 chambers (21 long, from -7 to 14 across), its jaws arched over three chambers to 15.4. The crystal is the Breaker's lamp: BreakerLamp stands at its middle, 14.4 up and 3.5 across. The chambers, the hinges, the lids and the waiting line stand by machines.breakerStages"
+  },
+  "Breaker3": {
+   "mesh": "meshes/Breaker3.json",
+   "triangles": 1588,
+   "vertices": 1052,
+   "centre": [
+    7.0,
+    10.02905,
+    0.0
+   ],
+   "size": [
+    34.577,
+    20.278,
+    6.82
+   ],
+   "colour": "maps/Base_Kit_Color.png",
+   "glow": "maps/Base_Kit_Glow.png",
+   "glowTint": "#FFFFFF",
+   "glowStrength": 2.4,
+   "collision": "a box 28 along the line, 6 deep and 5 high, its middle 7 across; the jaws stand on its top",
+   "lights": [],
+   "note": "Stage III's still body, in place of Breaker at the same place: the body grown to 4 chambers (28 long, from -7 to 21 across), its jaws arched over four chambers to 17.6, a barb from each jaw's elbow to 19.2, and two claws round the crystal to 20. The crystal is the Breaker's lamp: BreakerLamp stands at its middle, 16.4 up and 7 across. The chambers, the hinges, the lids and the waiting line stand by machines.breakerStages"
+  },
+  "BreakerHinge": {
+   "mesh": "meshes/BreakerHinge.json",
+   "triangles": 736,
+   "vertices": 416,
+   "centre": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "size": [
+    2.64,
+    2.585,
+    3.12
+   ],
+   "colour": "maps/Base_Kit_Color.png",
+   "glow": "maps/Base_Kit_Glow.png",
+   "glowTint": "#FFFFFF",
+   "glowStrength": 2.4,
+   "collision": "none",
+   "lights": [],
+   "note": "Stages II and III: a jaw's hinge, a gear (10 teeth, 2 across) on each long face, 1.15 out, on one axle through the jaw's root. Its origin on the axle's middle, 6.3 up; its axle along the piece's Y (Roblox's Z). It turns while chambers break, CFrame.Angles(0, 0, angle * sign) with the sign the table gives, so the two turn mirrored as the jaws are. Look only"
+  },
+  "BreakerLid": {
+   "mesh": "meshes/BreakerLid.json",
+   "triangles": 108,
+   "vertices": 72,
+   "centre": [
+    0.0,
+    0.42,
+    0.0
+   ],
+   "size": [
+    4.42,
+    1.06,
+    4.42
+   ],
+   "colour": "maps/Base_Kit_Color.png",
+   "glow": "maps/Base_Kit_Glow.png",
+   "glowTint": "#FFFFFF",
+   "glowStrength": 2.4,
+   "collision": "none",
+   "lights": [],
+   "note": "a seat whose chamber hasn't opened: stood in place of BreakerChamber at its place, on the body's top, until the Breaker has that chamber. Unlit. Look only"
+  },
+  "Bay2": {
+   "mesh": "meshes/Bay2.json",
+   "triangles": 850,
+   "vertices": 584,
+   "centre": [
+    -0.07,
+    6.03979,
+    0.0
+   ],
+   "size": [
+    10.36,
+    12.3,
+    11.485
+   ],
+   "colour": "maps/Base_Kit_Color.png",
+   "glow": "maps/Base_Kit_Glow.png",
+   "glowTint": "#FFFFFF",
+   "glowStrength": 2.4,
+   "collision": "a box, 10 square, 0.4 high, and the crescent's two feet",
+   "lights": [],
+   "note": "Stage II's still bay, in place of Bay at the same place and turn: its horns risen to 12, their tips apart over the ring, and a tine from each shoulder to 11. The worker stands at the pad's middle; the ring's middle is 8 up, as Stage I's, so BayHalo stands as it does. The toothed rings stand by machines.bayStages"
+  },
+  "Bay3": {
+   "mesh": "meshes/Bay3.json",
+   "triangles": 1022,
+   "vertices": 696,
+   "centre": [
+    -0.07,
+    7.8138,
+    0.0
+   ],
+   "size": [
+    10.36,
+    15.848,
+    11.739
+   ],
+   "colour": "maps/Base_Kit_Color.png",
+   "glow": "maps/Base_Kit_Glow.png",
+   "glowTint": "#FFFFFF",
+   "glowStrength": 2.4,
+   "collision": "a box, 10 square, 0.4 high, and the crescent's two feet",
+   "lights": [],
+   "note": "Stage III's still bay, in place of Bay at the same place and turn: its horns risen to 14.5, a tine from each shoulder to 12.4 and a second branching from each horn to 15.6, bone clamps where they branch. The worker stands at the pad's middle; the ring's middle is 8 up, as Stage I's, so BayHalo stands as it does. The toothed rings stand by machines.bayStages"
+  },
+  "BayCog": {
+   "mesh": "meshes/BayCog.json",
+   "triangles": 448,
+   "vertices": 256,
+   "centre": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "size": [
+    0.57,
+    6.053,
+    6.053
+   ],
+   "colour": "maps/Base_Kit_Color.png",
+   "glow": "maps/Base_Kit_Glow.png",
+   "glowTint": "#FFFFFF",
+   "glowStrength": 2.4,
+   "collision": "none",
+   "lights": [],
+   "note": "a toothed ring of void stone round the ring, from Stage II: 16 square teeth, 6.1 across, unlit. Its origin on its axle's middle; its axle along the piece's X (Roblox's X). It turns while a worker works there, CFrame.Angles(angle * sign, 0, 0) with the sign the table gives, so the two turn opposite ways. Look only"
+  },
+  "BayCogOuter": {
+   "mesh": "meshes/BayCogOuter.json",
+   "triangles": 616,
+   "vertices": 352,
+   "centre": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "size": [
+    0.57,
+    7.673,
+    7.7
+   ],
+   "colour": "maps/Base_Kit_Color.png",
+   "glow": "maps/Base_Kit_Glow.png",
+   "glowTint": "#FFFFFF",
+   "glowStrength": 2.4,
+   "collision": "none",
+   "lights": [],
+   "note": "a toothed ring of void stone Stage III's second, outside the first: 22 square teeth, 7.7 across, unlit. Its origin on its axle's middle; its axle along the piece's X (Roblox's X). It turns while a worker works there, CFrame.Angles(angle * sign, 0, 0) with the sign the table gives, so the two turn opposite ways. Look only"
+  },
+  "BatteryRack2": {
+   "mesh": "meshes/BatteryRack2.json",
+   "triangles": 444,
+   "vertices": 296,
+   "centre": [
+    0.0,
+    3.40642,
+    0.0
+   ],
+   "size": [
+    6.52,
+    7.033,
+    4.52
+   ],
+   "colour": "maps/Base_Kit_Color.png",
+   "glow": "maps/Base_Kit_Glow.png",
+   "glowTint": "#FFFFFF",
+   "glowStrength": 2.4,
+   "collision": "a box, 6 by 4, 0.6 high, the deck; and the stack's round its cells, 3.76 across by 1.6 deep by 5.8 high, its middle 0.95 back from the deck's",
+   "lights": [],
+   "note": "Stage II's still battery, base level 2, in place of BatteryRack at the same place, turn 0: the deck, and two uprights of void stone holding 2 tiers of two cells in clamps of bone, rising to points at 6.80. Its cells stand on the seats machines.batteryStages gives, in the order they fill"
+  },
+  "BatteryRack3": {
+   "mesh": "meshes/BatteryRack3.json",
+   "triangles": 704,
+   "vertices": 460,
+   "centre": [
+    0.0,
+    6.65912,
+    0.0
+   ],
+   "size": [
+    6.52,
+    13.538,
+    4.52
+   ],
+   "colour": "maps/Base_Kit_Color.png",
+   "glow": "maps/Base_Kit_Glow.png",
+   "glowTint": "#FFFFFF",
+   "glowStrength": 2.4,
+   "collision": "a box, 6 by 4, 0.6 high, the deck; and the stack's round its cells, 3.76 across by 1.6 deep by 11.4 high, its middle 0.95 back from the deck's",
+   "lights": [],
+   "note": "Stage III's still battery, base level 3, in place of BatteryRack at the same place, turn 0: the deck, and two uprights of void stone holding 4 tiers of two cells in clamps of bone, rising to points at 13.30, a bead of the void's light resting between them on the top bar. Its cells stand on the seats machines.batteryStages gives, in the order they fill"
+  },
+  "TrainingCrown2": {
+   "mesh": "meshes/TrainingCrown2.json",
+   "triangles": 968,
+   "vertices": 592,
+   "centre": [
+    0.0,
+    0.4,
+    0.0
+   ],
+   "size": [
+    8.32,
+    3.22,
+    8.39
+   ],
+   "colour": "maps/Base_Kit_Color.png",
+   "glow": "maps/Base_Kit_Glow.png",
+   "glowTint": "#FFFFFF",
+   "glowStrength": 2.4,
+   "collision": "none",
+   "lights": [],
+   "note": "Stage II's crown, base level 2, in place of TrainingCrown: its origin is its middle, floating 8 up at the Training machine's middle round the stone's spark. A band of void stone with 6 short crystals set through it and 12 marks of the void's light, and 4 tall crystals near the spark, their tips 1.90 over its middle. 8.2 across. It turns about its own upright while a Voidkin trains, still when none does, as TrainingCrown does. Look only"
+  },
+  "TrainingCrown3": {
+   "mesh": "meshes/TrainingCrown3.json",
+   "triangles": 1272,
+   "vertices": 784,
+   "centre": [
+    0.0,
+    0.46,
+    0.0
+   ],
+   "size": [
+    9.748,
+    3.82,
+    9.748
+   ],
+   "colour": "maps/Base_Kit_Color.png",
+   "glow": "maps/Base_Kit_Glow.png",
+   "glowTint": "#FFFFFF",
+   "glowStrength": 2.4,
+   "collision": "none",
+   "lights": [],
+   "note": "Stage III's crown, base level 3, in place of TrainingCrown: its origin is its middle, floating 8 up at the Training machine's middle round the stone's spark. A band of void stone with 8 short crystals set through it and 16 marks of the void's light, and 6 tall crystals near the spark, their tips 2.26 over its middle. 9.6 across. It turns about its own upright while a Voidkin trains, still when none does, as TrainingCrown does. Look only"
+  },
+  "Forge2": {
+   "mesh": "meshes/Forge2.json",
+   "triangles": 756,
+   "vertices": 524,
+   "centre": [
+    0.0,
+    6.25,
+    0.0
+   ],
+   "size": [
+    11.05,
+    12.72,
+    8.82
+   ],
+   "colour": "maps/Base_Kit_Color.png",
+   "glow": "maps/Base_Kit_Glow.png",
+   "glowTint": "#FFFFFF",
+   "glowStrength": 2.4,
+   "collision": "the deck, 8.6 square and 0.5 high; the seat, 3.4 by 2.8 and 2.76 high; the horns' two feet",
+   "lights": [],
+   "note": "Stage II of the Forge, base level 2, in place of Forge: on a sleeping place, its front toward the Strip, 12.5 high at its head. The lintel carries 4 ForgeGear; the ram is ForgeRam, as at Stage I: plan.json, machines.forgeStages"
+  },
+  "Forge3": {
+   "mesh": "meshes/Forge3.json",
+   "triangles": 992,
+   "vertices": 684,
+   "centre": [
+    0.0,
+    7.2,
+    0.0
+   ],
+   "size": [
+    11.08,
+    14.62,
+    8.82
+   ],
+   "colour": "maps/Base_Kit_Color.png",
+   "glow": "maps/Base_Kit_Glow.png",
+   "glowTint": "#FFFFFF",
+   "glowStrength": 2.4,
+   "collision": "the deck, 8.6 square and 0.5 high; the seat, 3.4 by 2.8 and 2.76 high; the horns' two feet",
+   "lights": [],
+   "note": "Stage III of the Forge, base level 3, in place of Forge: on a sleeping place, its front toward the Strip, 14.4 high at its head. The lintel carries 6 ForgeGear; the ram is ForgeRam, as at Stage I: plan.json, machines.forgeStages"
+  },
+  "Condenser2": {
+   "mesh": "meshes/Condenser2.json",
+   "triangles": 2552,
+   "vertices": 1862,
+   "centre": [
+    0.0,
+    5.83774,
+    0.245
+   ],
+   "size": [
+    11.611,
+    11.895,
+    9.31
+   ],
+   "colour": "maps/Base_Kit_Color.png",
+   "glow": "maps/Base_Kit_Glow.png",
+   "glowTint": "#FFFFFF",
+   "glowStrength": 2.4,
+   "collision": "the deck, 8.6 square and 0.5 high, and the panel as a box 6.9 by 1 by 6.0",
+   "lights": [],
+   "note": "Stage II of the Stone Condenser, from its level 6, in place of Condenser: Stage I's comb and 3 cups up each horn, 43 in all, dark when empty. A cup's stone or jewel is CondenserStone or CondenserJewel stood in it, the core CondenserCore: plan.json, machines.condenserStages"
+  },
+  "Condenser3": {
+   "mesh": "meshes/Condenser3.json",
+   "triangles": 2872,
+   "vertices": 2078,
+   "centre": [
+    0.0,
+    5.83774,
+    0.245
+   ],
+   "size": [
+    11.611,
+    11.895,
+    9.31
+   ],
+   "colour": "maps/Base_Kit_Color.png",
+   "glow": "maps/Base_Kit_Glow.png",
+   "glowTint": "#FFFFFF",
+   "glowStrength": 2.4,
+   "collision": "the deck, 8.6 square and 0.5 high, and the panel as a box 6.9 by 1 by 6.0",
+   "lights": [],
+   "note": "Stage III of the Stone Condenser, from its level 15, in place of Condenser: Stage I's comb and 5 cups up each horn, 47 in all, dark when empty. A cup's stone or jewel is CondenserStone or CondenserJewel stood in it, the core CondenserCore: plan.json, machines.condenserStages"
   }
  }
 }

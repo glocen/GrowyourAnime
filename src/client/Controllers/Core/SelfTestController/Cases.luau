@@ -91,6 +91,7 @@ local NumberCases = require(script.Parent.NumberCases)
 local BaseCases = require(script.Parent.BaseCases)
 local Helpers = require(script.Parent.Helpers)
 local TravelCases = require(script.Parent.TravelCases)
+local HomeTray = require(UI.HomeTray)
 
 local R6_ROOT_HEIGHT = 3 -- an R6 body's root stands 3 studs above the floor (legs 2, half the torso 1): an engine fact
 local TUNE_PATH = "Game.Version" -- a string any build has; the case puts it back
@@ -7285,7 +7286,7 @@ local cases = {
 			local over = cell and cell:FindFirstChild("Flash")
 			local word = over and over:FindFirstChild("Ready") :: TextLabel?
 			local fill = over and over:FindFirstChild("Fill", true) :: ImageLabel?
-			t.Check("gold, \"Ready\" across the box", word ~= nil and word.Text == "Ready" and fill ~= nil and fill.ImageColor3 == Theme.Colour.Ready,
+			t.Check("gold, \"Ready\" across the box", word ~= nil and word.Text == "Ready" and fill ~= nil and fill.ImageColor3 == Theme.Ink(BreakerScreen.Palette).Ready,
 				if word then word.Text else "no flash over the chamber")
 			local under = cell and cell:FindFirstChild("Name")
 			t.Check("what the chamber holds next waits under the gold, its words not shown", under ~= nil and under:IsA("TextLabel") and not under.Visible)
@@ -7300,8 +7301,8 @@ local cases = {
 				return chip ~= nil
 			end))
 			local glow = chip and chip:FindFirstChild("Glow", true) :: ImageLabel?
-			t.Check("the chip glows gold, \"Ready\" its first word", chip ~= nil and glow ~= nil and glow.ImageColor3 == Theme.Colour.Ready
-				and chip:GetAttribute("Trim") == Theme.Colour.Ready and breakerText(`Ready{index}`, "Name") == "Ready", breakerText(`Ready{index}`, "Name"))
+			t.Check("the chip glows gold, \"Ready\" its first word", chip ~= nil and glow ~= nil and glow.ImageColor3 == Theme.Ink(BreakerScreen.Palette).Ready
+				and chip:GetAttribute("Trim") == Theme.Ink(BreakerScreen.Palette).Ready and breakerText(`Ready{index}`, "Name") == "Ready", breakerText(`Ready{index}`, "Name"))
 			lintClean(t, "the Breaker with a chamber flashing")
 			t.Check("the flash ends in about its time", waitFor(t, flash.Seconds + 0.5, function(): boolean
 				return BreakerScreen.Flashing()[nearest] == nil
@@ -7514,32 +7515,38 @@ local cases = {
 			t.Wait(0.1) -- a frame of the plates' step
 			t.Check("the world's layer shows with no screen open", layer.Visible)
 			-- The Base screen opens from a bay's prompt (the dock's Base tile is the way home, TR19); the Voidkin screen from
-			-- the dock, its tile open while it is.
+			-- Home's Inventory tile (AR43), the dock's Home cell selected while it holds it.
 			for _, name in { "Base", "Voidkin" } do
 				local hud = HudController.Parts()
 				if name == "Base" then
 					BaseController.Open()
 				end
+				-- The Voidkin screen as a player opens it: Home's tray first, then its Inventory tile, which steps into it.
+				local home = HudConfig.Home
+				if name == "Voidkin" and not HomeTray.Shown(HudController.Home()) then
+					Button.Press(hud.Home :: TextButton)
+					t.Wait(home.Open.Grow + 0.1)
+				end
 				local opened = name == "Base" or Button.Press(hud[name] :: TextButton)
-				t.Check(`{name} opens`, opened and waitFor(t, 1, function(): boolean
+				t.Check(`{name} opens`, opened and waitFor(t, 1 + home.Step.Lit + home.Step.RiseAt, function(): boolean
 					return Screen.Current() == name
 				end))
 				t.Check(`the world's layer hides while {name} is open`, waitFor(t, 0.5, function(): boolean
 					return not layer.Visible
 				end))
-				if name == "Voidkin" then
-					t.Check(`the dock's {name} is selected while it's open`, waitFor(t, 0.5, function(): boolean
-						return Button.State(hud[name] :: TextButton) == "Selected"
-					end), Button.State(hud[name] :: TextButton))
+				if name == "Voidkin" then -- from Home's Inventory tile since AR43: the dock's Home cell holds its screen
+					t.Check(`the dock's Home is selected while {name} is open from its tray`, waitFor(t, 0.5, function(): boolean
+						return Button.State(hud.Home :: TextButton) == "Selected"
+					end), Button.State(hud.Home :: TextButton))
 				end
 				Screen.Close()
 				t.Check(`and shows again once {name} closes`, waitFor(t, 0.5, function(): boolean
 					return layer.Visible
 				end))
 				if name == "Voidkin" then
-					t.Check(`and the dock's {name} is back at rest`, waitFor(t, 0.5, function(): boolean
-						return Button.State(hud[name] :: TextButton) == "Rest"
-					end), Button.State(hud[name] :: TextButton))
+					t.Check("and the dock's Home is back at rest", waitFor(t, 0.5, function(): boolean
+						return Button.State(hud.Home :: TextButton) == "Rest"
+					end), Button.State(hud.Home :: TextButton))
 				end
 			end
 		end,

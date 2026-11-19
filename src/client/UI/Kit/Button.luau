@@ -80,6 +80,7 @@ type State = {
 	Bare: boolean,
 	Still: boolean,
 	Light: Color3,
+	Face: Face,
 	Skin: Frame,
 	Mark: ImageLabel,
 	Icon: ImageLabel?, -- an icon's button's image, and its halo
@@ -110,6 +111,17 @@ Button.FlashSeconds = 0.6
 local MAKE = HudConfig.Make
 local SEAM = UIKit.Palettes.Seam
 local SEAM_LIGHT = SEAM.Light :: Color3
+-- A button's face: Seam's, or a system palette's when the one it's given has a Primary (UIKit's System, AR40's C): the
+-- glass a sand plate in ink with an ivory light, the channel teal in ivory with a pale teal edge.
+type Face = { Glass: any, GlassWords: Color3, Marked: Color3?, Light: Color3, Channel: any, Edge: Color3, Text: Color3, Soft: Color3, Faint: Color3 }
+local SEAM_FACE: Face = { Glass = SEAM.Panel, GlassWords = SEAM.Text, Light = SEAM_LIGHT, Channel = SEAM.Channel, Edge = SEAM.Edge, Text = SEAM.Text, Soft = SEAM.Soft, Faint = SEAM.Faint }
+local function faceOf(palette: string?): Face
+	local p = if palette then (UIKit.Palettes :: any)[palette] else nil
+	if p == nil or p.Primary == nil then
+		return SEAM_FACE
+	end
+	return { Glass = p.Primary, GlassWords = p.PrimaryWords, Marked = p.PrimaryWords, Light = p.PrimaryEdge, Channel = p.Quiet, Edge = p.QuietEdge, Text = p.QuietWords, Soft = p.Soft, Faint = p.Faint }
+end
 local Whole = math.round
 
 local function fall(points: { { number } }): NumberSequence
@@ -203,6 +215,7 @@ local function paint(button: TextButton, state: State)
 	local pressed = now == "Pressed"
 	local flash = if now == "Succeeded" then UIKit.Good elseif now == "Failed" then UIKit.Bad else nil
 	local main = state.Primary
+	local F = state.Face
 	local word = state.Text ~= ""
 	local set = state.Selected and not disabled
 	local light = state.Light
@@ -229,10 +242,10 @@ local function paint(button: TextButton, state: State)
 	layers.RingGlow.ImageColor3 = flash or light
 	fade(state, layers.RingGlow, if tabbed then 1 - TAB.Glow else 1 - G.RingGlow * (if glass then L else MAKE.L.Main), seconds)
 	if glass then
-		Skin.Tint(layers.Fill, SEAM.Panel)
+		Skin.Tint(layers.Fill, F.Glass)
 		layers.Fill.ImageTransparency = if tabbed then 1 - TAB.Fill else G.Fill
 	else
-		Skin.Tint(layers.Fill, SEAM.Channel)
+		Skin.Tint(layers.Fill, F.Channel)
 		layers.Fill.ImageTransparency = if disabled then (if main then C.Main else C.Off) else C.Rest
 	end
 	layers.Fill.Visible = not bare
@@ -240,10 +253,10 @@ local function paint(button: TextButton, state: State)
 	local wash = layers.Wash
 	local washFall = wash:FindFirstChildOfClass("UIGradient") :: UIGradient
 	wash.Visible = glass or (pressed and not chip and pick == nil)
-	wash.ImageColor3 = if glass then light else SEAM_LIGHT
+	wash.ImageColor3 = if glass then light else F.Light
 	washFall.Transparency = if tabbed then TAB_FALL elseif glass then GLASS_FALL else PRESSED_FALL
 	fade(state, wash, if tabbed then 0 elseif glass then 1 - L / G.Wash else 0, seconds)
-	layers.Edge.ImageColor3 = if glass then light elseif pressed and pick == nil then C.PressedEdge else SEAM.Edge
+	layers.Edge.ImageColor3 = if glass then light elseif pressed and pick == nil then C.PressedEdge else F.Edge
 	fade(state, layers.Edge, if tabbed then 1 - TAB.Edge elseif glass then 1 - G.Edge * L else 0, seconds)
 	layers.FootGlow.Visible = glass
 	layers.FootGlow.ImageColor3 = light
@@ -291,7 +304,7 @@ local function paint(button: TextButton, state: State)
 	local span = Whole(2 * half * U.Span)
 	for index, layer in { layers.Under, layers.UnderGlow } do
 		layer.Visible = underlined
-		layer.ImageColor3 = SEAM_LIGHT
+		layer.ImageColor3 = F.Light
 		layer.Size = UDim2.fromOffset(span, U.Tall)
 		layer.ImageTransparency = if index == 1 then lineT else glowT
 	end
@@ -316,36 +329,37 @@ local function paint(button: TextButton, state: State)
 		elseif glass then -Whole(MAKE.Word.OnOver)
 		else -Whole(MAKE.Word.Over)
 	-- A picker: its name from In, its value Gap after it (the label, centred there), the chevron at its right.
-	local faint = SEAM.Faint :: Color3
+	local faint = F.Faint
 	if pick then
 		local K = MAKE.Pick
 		local valueWide = Text.Wide(label, label.Text)
 		state.Inset = Whole(K.In + Text.Wide(pick, pick.Text) + K.Gap + valueWide / 2 - state.Wide / 2)
 		pick.Position = UDim2.new(0, K.In, 0.5, over)
-		pick.TextColor3 = if disabled then faint else SEAM.Soft
+		pick.TextColor3 = if disabled then faint else F.Soft
 		local chevron = state.Chevron :: ImageLabel
-		chevron.ImageColor3 = if disabled then faint elseif set then light else SEAM.Text
+		chevron.ImageColor3 = if disabled then faint elseif set then light else F.Text
 	end
 	label.Position = UDim2.new(0.5, if now == "Succeeded" then 12 elseif marked then state.Inset + MAKE.Mark.Shift else state.Inset, 0.5, over + sink)
 	state.Skin.Position = UDim2.new(0.5, 0, 0.5, sink)
 	state.Mark.Visible = marked
 	if marked then
-		state.Mark.ImageColor3 = light
+		state.Mark.ImageColor3 = F.Marked or light
 		state.Mark.Position = UDim2.new(0.5, -Whole(Text.Wide(label, label.Text) / 2 + MAKE.Mark.Left), 0.5, 0)
 	end
 	if reason then
 		reason.Visible = under
 		reason.Text = if under then note or "" else ""
-		reason.TextColor3 = SEAM.Soft
+		reason.TextColor3 = F.Soft
 		reason.Position = UDim2.new(0.5, 0, 0.5, MAKE.Word.Fall)
 	end
 	label.TextTransparency = if lit and disabled then MAKE.Lit.OffWords else 0
 	label.TextColor3 = if lit then LIT_INK
-		elseif chip then (if disabled then faint elseif glass or pressed then SEAM.Text else SEAM.Soft)
-		elseif pick then (if disabled then faint elseif set then light else SEAM.Text)
-		elseif disabled then SEAM.Soft
-		elseif marked then light
-		else SEAM.Text
+		elseif chip then (if disabled then faint elseif glass then F.GlassWords elseif pressed then F.Text else F.Soft)
+		elseif pick then (if disabled then faint elseif set then light else F.Text)
+		elseif disabled then F.Soft
+		elseif marked then F.Marked or light
+		elseif glass then F.GlassWords
+		else F.Text
 	if state.Bare or (state.Icon and not state.Plate) then
 		for _, layer in layers do
 			layer.Visible = false
@@ -354,10 +368,10 @@ local function paint(button: TextButton, state: State)
 	-- An icon's button: the icon in Text; pressed, in the light over its halo with a short line under it.
 	local icon, halo = state.Icon, state.Halo
 	if icon and state.Plate then
-		icon.ImageColor3 = if disabled then SEAM.Faint :: Color3 else SEAM.Text :: Color3
+		icon.ImageColor3 = if disabled then F.Faint elseif glass then F.GlassWords else F.Text
 	elseif icon and halo then
 		local I = MAKE.Icon
-		icon.ImageColor3 = if disabled then SEAM.Faint :: Color3 elseif pressed then light else SEAM.Text :: Color3
+		icon.ImageColor3 = if disabled then F.Faint elseif pressed then light else F.Text
 		halo.Visible = pressed
 		halo.ImageColor3 = light
 		for index, layer in { layers.Under, layers.UnderGlow } do
@@ -494,7 +508,8 @@ function Button.new(props: Props): TextButton
 	button.AutoButtonColor = false
 	button.LayoutOrder = props.LayoutOrder or 0
 	button:SetAttribute("Palette", props.Palette or "Graphite")
-	local light = props.Light or SEAM_LIGHT
+	local face = faceOf(props.Palette)
+	local light = props.Light or face.Light
 	local skin = Skin.Of(button)
 	local images = MAKE.Images
 	local layers: { [string]: ImageLabel } = {
@@ -646,6 +661,7 @@ function Button.new(props: Props): TextButton
 		Bare = props.Bare == true,
 		Still = props.Still == true,
 		Light = light,
+		Face = face,
 		Skin = skin,
 		Mark = mark,
 		Icon = icon,

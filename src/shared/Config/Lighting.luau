@@ -53,7 +53,8 @@ return {
 		Atmosphere = { Density = 0, Haze = 0, Glare = 0 },
 		Veil = { Density = 0, Haze = 2.5 },
 		Phases = {
-			Day = { Ambient = hex("A3A1B4"), Brightness = 2.61, Exposure = 0.16 },
+			-- AR40's C by day (build/handoff/Colour/ar40/directions.json, C's Lighting): a warm afternoon, a step less exposed.
+			Day = { Ambient = hex("BAAE9C"), Brightness = 2.7, Exposure = 0.08 },
 			Dusk = {
 				Sky = faces({ 75877956278554, 103984710637104, 74714220433765, 138164631575167, 125396877000879, 111017006396801 }),
 				Ambient = hex("70618C"),
@@ -95,7 +96,7 @@ return {
 		Day = {
 			-- The six faces, uploaded under the group (docs/asset-log.md, 2026-11-16); the sun is painted in them.
 			Sky = faces({ 98216580739980, 89383367394493, 123733923034090, 132698338964060, 116406582796462, 124209204001841 }),
-			Sun = hex("FFE2B8"),
+			Sun = hex("FFDDA6"), -- AR40's C, a warmer sun (directions.json, C's Lighting)
 			Brightness = 2.6,
 			Ambient = hex("8A8496"),
 			Diffuse = 0.5,
@@ -103,7 +104,7 @@ return {
 			Atmosphere = { Density = 0.16, Offset = 0.2, Haze = 0.2, Glare = 0.1, Color = hex("EFE3D6"), Decay = hex("A9BCE4") },
 			Bloom = { Intensity = 0.3, Size = 24, Threshold = 2.2 },
 			Floor = 0.35,
-			Glow = 0.45,
+			Glow = 0.6, -- AR40's C: the kit's glow a step up by day, so a light in its dark bed still reads
 			Lights = 0.2,
 		},
 		Dusk = {
@@ -142,8 +143,9 @@ return {
 	Cores = { DoorWay = true } :: { [string]: boolean },
 	-- A piece whose glow is its own, times its phase's share and none of Clear's lift (AR17's great shard over the crossing:
 	-- 2.5 times the kit's, so its light carries to the farthest gate; lifted with the base's glow it blooms into a halo at
-	-- night, the manifest's surface note).
-	Steady = { CrossingShard = 6 } :: { [string]: number },
+	-- night, the manifest's surface note). The Shop's crown and minutes at their manifest's (AR38): the crown the Shop's
+	-- brightest, so a lit one reads from far down the Strip; the minutes under the counter's light.
+	Steady = { CrossingShard = 6, VoidShopCrown = 5.28, VoidShopMinute = 1.92 } :: { [string]: number },
 	-- The street's static lights (the plan's), Shadows off: a pool's SpotLight straight down in its cone, and the keeper's
 	-- lamp. Brightness and Range are the builder's seeds against the two targets (the lead at least 1.3 times what's round
 	-- him, a Shade's edge at least 0.15), tuned in the engine.

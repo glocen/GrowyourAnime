@@ -35,8 +35,13 @@ local Breaker = require(Shared.Rules.Breaker)
 local Power = require(Shared.Rules.Power)
 local Odds = require(Shared.Rules.Odds)
 local Hud = require(Shared.Rules.Hud)
+local UIKit = require(Shared.Config.UIKit)
 local UI = script.Parent
 local Theme = require(UI.Theme)
+-- AR40's C: the window on the system panel's slab (Config.UIKit's System), its words in its ink (Theme.Ink), read again
+-- at each build so a live tune reaches the next.
+local PALETTE = "System"
+local ink = Theme.Ink(PALETTE)
 local Read = require(UI.Read)
 local Panel = require(UI.Kit.Panel)
 local Hover = require(UI.Kit.Hover)
@@ -315,7 +320,7 @@ local function label(parent: Instance, name: string, text: string, size: number,
 		Name = name,
 		Size = size,
 		Font = p.Font,
-		Colour = p.Colour,
+		Colour = p.Colour or ink.Text,
 		Align = p.Align,
 		Box = box,
 		Position = position,
@@ -343,9 +348,9 @@ local function flashOver(frame: GuiObject, started: number)
 	over.Size = UDim2.fromScale(1, 1)
 	over.ZIndex = 4
 	over.Parent = frame
-	local fill = Skin.Lay(over, "PanelFill", { Name = "Fill", Tint = Theme.Colour.Ready, Alpha = 0.9, Z = 1 })
-	local edge = Skin.Lay(over, "PanelEdgeBold", { Name = "Edge", Tint = Theme.Colour.Ready, Alpha = 1, Z = 2 })
-	local word = label(over, "Ready", "Ready", Theme.Text.Title, UDim2.new(1, 0, 0, 26), UDim2.fromScale(0, 0.5), { Font = Theme.Font.Number, Colour = Theme.Colour.ReadyWords, Align = Enum.TextXAlignment.Center })
+	local fill = Skin.Lay(over, "PanelFill", { Name = "Fill", Tint = ink.Ready, Alpha = 0.9, Z = 1 })
+	local edge = Skin.Lay(over, "PanelEdgeBold", { Name = "Edge", Tint = ink.Ready, Alpha = 1, Z = 2 })
+	local word = label(over, "Ready", "Ready", Theme.Text.Title, UDim2.new(1, 0, 0, 26), UDim2.fromScale(0, 0.5), { Font = Theme.Font.Number, Colour = ink.ReadyWords, Align = Enum.TextXAlignment.Center })
 	word.AnchorPoint = Vector2.new(0, 0.5)
 	word.ZIndex = 3
 	local elapsed = (1 - left) * tune.Seconds
@@ -484,7 +489,8 @@ end
 -- in its own height. Its shadow would darken the window, so it goes.
 local function glass(frame: GuiObject, height: number, top: number, foot: number, open: boolean)
 	local g = SKY.Glass
-	local colour = Color3.fromHex(g.Colour)
+	-- its head band and plate in the slab's deep teal on C (its Glass), never the old navy (AR40's must-fix 3)
+	local colour: Color3 = (UIKit.Palettes :: any)[PALETTE].Glass or Color3.fromHex(g.Colour)
 	frame:SetAttribute("Body", colour) -- Panel.Hover whitens this, not the palette's
 	local folder = frame:FindFirstChild("NL_Skin")
 	local shadow = if folder then folder:FindFirstChild("Shadow", true) else nil
@@ -585,6 +591,7 @@ local function cell(parent: Instance, index: number, view: Profile.View, width: 
 	local work = if chamber then chamber.Work else nil
 	local item: Selection? = if work then { Kind = "Chamber", Index = index, Def = work.Def } else nil
 	local frame = Panel.new({
+		Palette = PALETTE,
 		Name = `Chamber{index}`,
 		Size = UDim2.new(width, UDim.new(0, height)),
 		Edge = true,
@@ -598,7 +605,7 @@ local function cell(parent: Instance, index: number, view: Profile.View, width: 
 	local pad = Theme.Size.Pad
 	local inner = UDim2.new(1, -pad * 2, 0, LINE)
 	local centre = { Font = Theme.Font.Strong, Truncate = true, Align = Enum.TextXAlignment.Center }
-	label(frame, "Number", `Chamber {index}`, Theme.Text.Caption, UDim2.new(1, -NUMBER_PAD * 2, 0, LINE), UDim2.fromOffset(NUMBER_PAD, (top - LINE) / 2), { Colour = Theme.Colour.TextDim, Truncate = true })
+	label(frame, "Number", `Chamber {index}`, Theme.Text.Caption, UDim2.new(1, -NUMBER_PAD * 2, 0, LINE), UDim2.fromOffset(NUMBER_PAD, (top - LINE) / 2), { Colour = ink.TextDim, Truncate = true })
 	local flash = flashes[index]
 	local gold = if flash then flashLeft(flash) else nil
 	if flash then
@@ -617,7 +624,7 @@ local function cell(parent: Instance, index: number, view: Profile.View, width: 
 		end
 	end
 	if work == nil then -- what opens a locked one is said once over the row
-		later(label(frame, "Name", if open then "Empty" else "Locked", Theme.Text.Caption, inner, UDim2.fromOffset(pad, foot + 2), { Colour = Theme.Colour.Disabled, Align = Enum.TextXAlignment.Center }))
+		later(label(frame, "Name", if open then "Empty" else "Locked", Theme.Text.Caption, inner, UDim2.fromOffset(pad, foot + 2), { Colour = ink.Disabled, Align = Enum.TextXAlignment.Center }))
 		return
 	end
 	local w = work :: Profile.ShardWork
@@ -653,13 +660,13 @@ local function cell(parent: Instance, index: number, view: Profile.View, width: 
 	local y = foot + 2
 	later(label(frame, "Name", shortName(w.Def), Theme.Text.Caption, inner, UDim2.fromOffset(pad, y), centre))
 	y += LINE + 2
-	local bar = Bar.new({ Name = "Crack", Size = UDim2.new(1, -pad * 2, 0, Theme.Size.Bar), Position = UDim2.fromOffset(pad, y), Colour = Theme.Colour.Electricity, Parent = frame })
+	local bar = Bar.new({ Palette = PALETTE, Name = "Crack", Size = UDim2.new(1, -pad * 2, 0, Theme.Size.Bar), Position = UDim2.fromOffset(pad, y), Colour = ink.Electricity, Parent = frame })
 	later(bar)
 	y += Theme.Size.Bar + 2
-	local left = label(frame, "Left", "", Theme.Text.Caption, UDim2.new(1, -pad * 2, 0, LINE), UDim2.fromOffset(pad, y), { Colour = Theme.Colour.TextDim, Align = Enum.TextXAlignment.Center })
+	local left = label(frame, "Left", "", Theme.Text.Caption, UDim2.new(1, -pad * 2, 0, LINE), UDim2.fromOffset(pad, y), { Colour = ink.TextDim, Align = Enum.TextXAlignment.Center })
 	later(left)
 	if charged(w) then
-		later(label(frame, "Infused", "Infused", Theme.Text.Caption, UDim2.new(1, -pad * 2, 0, LINE), UDim2.fromOffset(pad, y + LINE), { Colour = Theme.Colour.ElectricityWords, Align = Enum.TextXAlignment.Center }))
+		later(label(frame, "Infused", "Infused", Theme.Text.Caption, UDim2.new(1, -pad * 2, 0, LINE), UDim2.fromOffset(pad, y + LINE), { Colour = ink.ElectricityWords, Align = Enum.TextXAlignment.Center }))
 	end
 	table.insert(tickers, function(now: Read.Base)
 		local current = now.Data.Base.Chambers[index]
@@ -681,7 +688,7 @@ end
 -- a pad's selection the breath holds at its High, since the body's whitening is lost under its gold (TR20's verdict), and
 -- it breathes on from where it paused when the pointer leaves.
 local function glow(frame: GuiObject, item: Selection): (share: number) -> ()
-	Panel.Trim(frame, Theme.Colour.Ready)
+	Panel.Trim(frame, ink.Ready)
 	local folder = frame:FindFirstChild("NL_Skin")
 	local edge = if folder then folder:FindFirstChild("Edge", true) :: ImageLabel? else nil
 	if edge then
@@ -689,7 +696,7 @@ local function glow(frame: GuiObject, item: Selection): (share: number) -> ()
 		edge.ImageTransparency = 0
 	end
 	local tune = HudConfig.Breaker.Glow
-	local fill = Skin.Lay(Skin.Of(frame), "PanelFill", { Name = "Glow", Tint = Theme.Colour.Ready, Alpha = tune.Low, Z = 3 })
+	local fill = Skin.Lay(Skin.Of(frame), "PanelFill", { Name = "Glow", Tint = ink.Ready, Alpha = tune.Low, Z = 3 })
 	local active: Tween? = nil -- the breath, or the settle after an arrival
 	local function breathe()
 		local period = TweenInfo.new(math.max(tune.Period, 0.05), Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true)
@@ -737,9 +744,10 @@ end
 -- A shard that's ready, waiting or in the bag, as a chip on the strip. A ready one opens on one tap; the rest are chosen.
 local function chip(parent: Instance, item: Selection, view: Profile.View, order: number, on: On)
 	local frame = Panel.new({
+		Palette = PALETTE,
 		Name = `{item.Kind}{item.Index}`,
 		Size = UDim2.fromOffset(CHIP.X, CHIP.Y),
-		Colour = Theme.Colour.PlateHigh,
+		Colour = ink.PlateHigh,
 		Transparency = if item.Kind == "Bag" then 0.6 else 0.3,
 		Edge = true,
 		LayoutOrder = order,
@@ -761,9 +769,9 @@ local function chip(parent: Instance, item: Selection, view: Profile.View, order
 	local under = if ready then `{shortName(item.Def)}{infusedMark}`
 		elseif item.Kind == "Line" then `Waiting, {ordinal(item.Index)}{infusedMark}`
 		else `In the bag · {view.Bag.Shards[item.Def] or 0}`
-	local name = label(frame, "Name", top, if ready then Theme.Text.Body else Theme.Text.Caption, UDim2.new(1, -(words + pad), 0, LINE), UDim2.fromOffset(words, 6), { Font = if ready then Theme.Font.Number else Theme.Font.Strong, Colour = if ready then Theme.Colour.Ready else nil, Truncate = true })
+	local name = label(frame, "Name", top, if ready then Theme.Text.Body else Theme.Text.Caption, UDim2.new(1, -(words + pad), 0, LINE), UDim2.fromOffset(words, 6), { Font = if ready then Theme.Font.Number else Theme.Font.Strong, Colour = if ready then ink.Ready else nil, Truncate = true })
 	name.ZIndex = 2
-	local detail = label(frame, "Detail", under, Theme.Text.Caption, UDim2.new(1, -(words + pad), 0, LINE), UDim2.fromOffset(words, 6 + LINE + 2), { Colour = if ready then Theme.Colour.Text else Theme.Colour.TextDim, Truncate = true })
+	local detail = label(frame, "Detail", under, Theme.Text.Caption, UDim2.new(1, -(words + pad), 0, LINE), UDim2.fromOffset(words, 6 + LINE + 2), { Colour = if ready then ink.Text else ink.TextDim, Truncate = true })
 	detail.ZIndex = 2
 	if ready then
 		local held = glow(frame, item)
@@ -780,10 +788,10 @@ end
 
 -- The chambers side by side, `height` tall: those open, and the rest locked up to the most a Breaker has.
 local function machine(parent: Instance, view: Profile.View, height: number)
-	label(parent, "ChambersTitle", "Chambers", Theme.Text.Caption, UDim2.new(1, 0, 0, HEADING), UDim2.new(), { Font = Theme.Font.Strong, Colour = Theme.Colour.TextDim })
+	label(parent, "ChambersTitle", "Chambers", Theme.Text.Caption, UDim2.new(1, 0, 0, HEADING), UDim2.new(), { Font = Theme.Font.Strong, Colour = ink.TextDim })
 	local most = math.max(BaseConfig.Breaker.MostChambers, #view.Base.Chambers)
 	if most > #view.Base.Chambers then
-		label(parent, "Opens", LOCKED, Theme.Text.Caption, UDim2.new(1, 0, 0, HEADING), UDim2.new(), { Colour = Theme.Colour.TextDim, Align = Enum.TextXAlignment.Right })
+		label(parent, "Opens", LOCKED, Theme.Text.Caption, UDim2.new(1, 0, 0, HEADING), UDim2.new(), { Colour = ink.TextDim, Align = Enum.TextXAlignment.Right })
 	end
 	local top = HEADING + 2
 	mist(parent, top, height)
@@ -816,7 +824,7 @@ end
 
 -- What's ready, waiting and in the bag, a strip of chips that scrolls sideways, at `y`.
 local function strip(parent: Instance, view: Profile.View, y: number, on: On)
-	label(parent, "StripTitle", "Ready, waiting and in the bag", Theme.Text.Caption, UDim2.new(1, 0, 0, HEADING), UDim2.fromOffset(0, y), { Font = Theme.Font.Strong, Colour = Theme.Colour.TextDim })
+	label(parent, "StripTitle", "Ready, waiting and in the bag", Theme.Text.Caption, UDim2.new(1, 0, 0, HEADING), UDim2.fromOffset(0, y), { Font = Theme.Font.Strong, Colour = ink.TextDim })
 	-- It ends at the machine's column, by the detail panel, softly: a chip cut there fades out, never stands cut mid-word
 	-- (research's must-fix on TR41 (a), 2026-11-17).
 	local fade = Instance.new("CanvasGroup")
@@ -852,7 +860,7 @@ local function strip(parent: Instance, view: Profile.View, y: number, on: On)
 		end
 	end
 	if order == 0 then
-		label(list, "Nothing", "Nothing waits. Shards drop on Lantern Row.", Theme.Text.Caption, UDim2.fromOffset(300, CHIP.Y), UDim2.new(), { Colour = Theme.Colour.TextDim })
+		label(list, "Nothing", "Nothing waits. Shards drop on Lantern Row.", Theme.Text.Caption, UDim2.fromOffset(300, CHIP.Y), UDim2.new(), { Colour = ink.TextDim })
 	end
 end
 
@@ -902,7 +910,7 @@ local chances: (column: Instance, def: string, luck: number) -> ()
 
 -- A line that wraps and grows to its words, in a column.
 local function lines(parent: Instance, name: string, text: string, box: UDim2, order: number, colour: Color3?): TextLabel
-	local made = label(parent, name, text, Theme.Text.Caption, box, UDim2.new(), { Colour = colour or Theme.Colour.TextDim })
+	local made = label(parent, name, text, Theme.Text.Caption, box, UDim2.new(), { Colour = colour or ink.TextDim })
 	made.TextWrapped = true
 	made.AutomaticSize = Enum.AutomaticSize.Y
 	made.LayoutOrder = order
@@ -913,18 +921,18 @@ end
 -- "Drop rates" beside it, one tap away (docs/ui.md, screen 3). Under the row, its voltage; or, Drop rates lit, every
 -- Voidkin it can give under its rarity's total, as the server rolls them.
 local function pane(parent: Instance, item: Selection?, view: Profile.View, now: Read.Base, on: On, box: UDim2, position: UDim2)
-	local frame = Panel.new({ Name = "Odds", Size = box, Position = position, Parent = parent })
+	local frame = Panel.new({ Palette = PALETTE, Name = "Odds", Size = box, Position = position, Parent = parent })
 	frame.ZIndex = 10
 	frame.Active = true -- a tap on the pane stays on it, never reaching a chamber under the sheet
 	local pad = Theme.Size.Pad
 	local gap = Theme.Size.Gap
 	if item == nil then
-		label(frame, "Empty", "No shard yet. They drop on Lantern Row.", Theme.Text.Caption, UDim2.new(1, -pad * 2, 0, LINE * 2), UDim2.fromOffset(pad, pad), { Colour = Theme.Colour.TextDim })
+		label(frame, "Empty", "No shard yet. They drop on Lantern Row.", Theme.Text.Caption, UDim2.new(1, -pad * 2, 0, LINE * 2), UDim2.fromOffset(pad, pad), { Colour = ink.TextDim })
 		return
 	end
 	local it = item :: Selection
 	label(frame, "Title", fullName(it.Def), Theme.Text.Body, UDim2.new(1, -pad * 2, 0, 22), UDim2.fromOffset(pad, pad), { Font = Theme.Font.Strong, Truncate = true })
-	local place = label(frame, "Place", placeOf(it, now, view), Theme.Text.Caption, UDim2.new(1, -pad * 2, 0, LINE), UDim2.fromOffset(pad, pad + 22), { Colour = Theme.Colour.TextDim, Truncate = true })
+	local place = label(frame, "Place", placeOf(it, now, view), Theme.Text.Caption, UDim2.new(1, -pad * 2, 0, LINE), UDim2.fromOffset(pad, pad + 22), { Colour = ink.TextDim, Truncate = true })
 	table.insert(tickers, function(current: Read.Base)
 		if place.Parent then
 			place.Text = placeOf(it, current, view)
@@ -965,11 +973,12 @@ local function pane(parent: Instance, item: Selection?, view: Profile.View, now:
 	first.LayoutOrder = 1
 	first.Parent = column
 	if action then
-		Button.new({ Name = "Action", Text = action, Primary = primary, Size = UDim2.new(0.5, -gap / 2, 1, 0), Parent = first, OnPress = press :: () -> ...any })
+		Button.new({ Palette = PALETTE, Name = "Action", Text = action, Primary = primary, Size = UDim2.new(0.5, -gap / 2, 1, 0), Parent = first, OnPress = press :: () -> ...any })
 	end
 	-- A secondary press, half the row whether or not an action stands beside it, with a list's mark and never the
 	-- action's light (research's fix, 2026-11-15).
 	local fold = Button.new({
+		Palette = PALETTE,
 		Name = "Rates",
 		Text = "Drop rates",
 		TextSize = Theme.Text.Caption,
@@ -997,7 +1006,7 @@ local function pane(parent: Instance, item: Selection?, view: Profile.View, now:
 		local bar = Instance.new("Frame")
 		bar.Name = `Bar{index + 1}`
 		bar.BorderSizePixel = 0
-		bar.BackgroundColor3 = Theme.Colour.TextDim
+		bar.BackgroundColor3 = ink.TextDim
 		bar.Position = UDim2.fromOffset(0, index * RATE_MARK.Pitch)
 		bar.Size = UDim2.fromOffset(RATE_MARK.Wide, RATE_MARK.Thick)
 		bar.ZIndex = 12
@@ -1016,7 +1025,7 @@ local function pane(parent: Instance, item: Selection?, view: Profile.View, now:
 	end
 	local whole = blockShard(it, now)
 	if whole then
-		lines(column, "Why", whole, UDim2.new(1, -gap, 0, LINE), 2, Theme.Colour.Text)
+		lines(column, "Why", whole, UDim2.new(1, -gap, 0, LINE), 2, ink.Text)
 	end
 	local fresh: Profile.ShardWork = { Def = it.Def, Luck = 0, Done = 0 }
 	local work = workOf(now.Data, it) or fresh
@@ -1034,6 +1043,7 @@ local function pane(parent: Instance, item: Selection?, view: Profile.View, now:
 		local name = LEVELS[index] or `Level {index}`
 		local text = if price then `{name}\n{Read.Number(price)} kWh` else name
 		local button = Button.new({
+			Palette = PALETTE,
 			Name = `Infuse{index}`,
 			Text = text,
 			Size = UDim2.new(0.5, -gap / 2, 0, Theme.Size.Tap),
@@ -1088,7 +1098,7 @@ chances = function(column: Instance, def: string, luck: number)
 		-- A rarity heads its rows in its own colour, heavier than them; their names are the text's ivory.
 		rate(`Tier{group.Rarity}`, group.Rarity, group.Parts, 0, HudConfig.Breaker.Tier[group.Rarity] or HudConfig.Card.Trim[group.Rarity], Theme.Font.Number)
 		for _, each in group.Rates do
-			rate(each.Id, Voidkin.ById[each.Id].Name, each.Parts, RATE_INDENT, Theme.Colour.Text, Theme.Font.Body)
+			rate(each.Id, Voidkin.ById[each.Id].Name, each.Parts, RATE_INDENT, ink.Text, Theme.Font.Body)
 		end
 	end
 end
@@ -1104,7 +1114,8 @@ local function build(view: Profile.View, on: On)
 	watch(now)
 	selected = settle(view)
 	sky.Mist, sky.Lights, sky.Fall = {}, {}, nil
-	local body = Screen.Open(NAME, "Void Breaker", SIZE)
+	ink = Theme.Ink(PALETTE)
+	local body = Screen.Open(NAME, "Void Breaker", SIZE, PALETTE)
 	local panel = body.Parent
 	if panel and panel:IsA("GuiObject") then
 		night(panel)
@@ -1210,6 +1221,7 @@ function BreakerScreen.Fall(at: number?)
 end
 
 BreakerScreen.Name = NAME
+BreakerScreen.Palette = PALETTE
 BreakerScreen.Reasons = REASONS
 BreakerScreen.Locked = LOCKED
 

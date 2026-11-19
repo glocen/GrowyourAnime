@@ -268,6 +268,81 @@ function ShopCases.Cases(): { any }
 			end,
 		},
 		{
+			Name = "Shop: its building from the Strip's kit (AR38, in AR40's C): the counter's prompt before its counter, the crown lit only on a featured stock, five minutes counting the stock down",
+			Run = function(t: any)
+				local marker = Markers.Find("Shop")
+				-- Its parts stream in by distance: from the base they may not be on this client yet.
+				if marker and marker:IsA("Model") then
+					pcall(function()
+						game:GetService("Players").LocalPlayer:RequestStreamAroundAsync(marker:GetPivot().Position, 5)
+					end)
+				end
+				waitFor(t, 5, function(): boolean
+					return marker ~= nil and marker:FindFirstChild("VoidShop") ~= nil and marker:FindFirstChild("VoidShopCrown") ~= nil and #marker:GetChildren() >= 10
+				end)
+				local building = if marker then marker:FindFirstChild("VoidShop") else nil
+				local crown = if marker then marker:FindFirstChild("VoidShopCrown") else nil
+				t.Check("the Shop stands as the kit's building", building ~= nil and crown ~= nil and crown:IsA("BasePart"), if marker then "no VoidShop" else "no marker")
+				if marker == nil or building == nil or crown == nil or not crown:IsA("BasePart") then
+					return
+				end
+				local counter = marker:FindFirstChild("ShopCounter")
+				local face = (building :: BasePart).CFrame:PointToObjectSpace(if counter and counter:IsA("BasePart") then counter.Position else Vector3.zero)
+				-- In the building's own frame its counter's face stands 5 before its middle (the mesh: 9 behind the Shop's place).
+				t.Check("the counter's prompt just before the counter", counter ~= nil and face.Z < -5 and face.Z > -8 and math.abs(face.X) < 8, tostring(face))
+				local light: Light? = nil
+				for _, item in marker:GetDescendants() do
+					if item:IsA("Light") and item.Parent and item.Parent.Name == "Crown" then
+						light = item
+					end
+				end
+				local function lit(): boolean
+					return crown.Transparency == 0 and light ~= nil and light.Enabled
+				end
+				local function dark(): boolean
+					return crown.Transparency == 1 and light ~= nil and not light.Enabled
+				end
+				local stood = t.Server("ShopStock") :: any
+				t.Check("on a featured stock, the crown and its light lit", stood.Ok == true and waitFor(t, 1, lit), `{crown.Transparency}, {if light then tostring(light.Enabled) else "no light"}`)
+				local plain = false
+				for ahead = 1, 40 do
+					local next = t.Server("ShopStock", ahead) :: any
+					if next.Ok and not next.Featured then
+						plain = true
+						break
+					end
+				end
+				t.Check("on a plain one, the crown dark", plain and waitFor(t, 1, dark), `{crown.Transparency}`)
+				t.Server("ShopStock", 0)
+				t.Check("back on the clock's stock, the crown as it holds", waitFor(t, 1, function(): boolean
+					return if workspace:GetAttribute("ShopFeatured") == true then lit() else dark()
+				end))
+				-- The minutes against the world's clock: a spent one hidden, the running one by its share, its root kept.
+				local hung: { BasePart } = {}
+				for _, item in marker:GetChildren() do
+					if item:IsA("BasePart") and type(item:GetAttribute("Minute")) == "number" then
+						table.insert(hung, item)
+					end
+				end
+				t.Equal("five minutes hang under the slab", #hung, 5)
+				t.Wait(0.25)
+				local now = workspace:GetServerTimeNow()
+				local left = Shop.Ends(Shop.Stock(now)) - now
+				for _, part in hung do
+					local index = part:GetAttribute("Minute") :: number
+					local share = Shop.Minute(left, index, #hung)
+					local full, root = part:GetAttribute("Full") :: Vector3, part:GetAttribute("Root") :: CFrame
+					local top = root:PointToObjectSpace(part.CFrame * Vector3.new(0, part.Size.Y / 2, 0))
+					local shown = part.Transparency == 0
+					t.Check(`minute {index}: shown while it runs ({string.format("%.2f", share)} left)`, shown == (share > 0), tostring(part.Transparency))
+					if share > 0 then
+						t.Check(`minute {index}: as tall as its share left`, math.abs(part.Size.Y - full.Y * math.max(share, 0.01)) < 0.05, `{part.Size.Y} for {full.Y * share}`)
+						t.Check(`minute {index}: hung from its root`, math.abs(top.Y) < 0.02, tostring(top))
+					end
+				end
+			end,
+		},
+		{
 			Name = "Take: AR38, the Void Shop held for stills: a featured stock, out of reach, bought out, the Drop rates, none featured, then the smallest phone, for research",
 			Manual = true,
 			Stay = true,

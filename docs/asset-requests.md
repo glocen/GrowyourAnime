@@ -13016,6 +13016,63 @@ The director, at 01:4x: "the map is a bit to purple does it, that purple trail o
 - **Modulo's three calls:** (1) the posts were rightly included, since a row of violet lamps was the same path; (2) SealCalamity keeps its violet, since its lines are thin and small, an accent; (3) the crossing shard's glow of 2.5 waits for the capture.
 - **What the sheet can't show,** checked at Faber's capture by day from a phone: whether the farthest teal (#8CC2C0) sinks into Roblox's noon sky, and whether the shard's glow blooms. If the glass sinks, the far shards step darker. If the glow blooms, it comes down until the joints show.
 
+### The install of C (Faber, 2026-11-19, 20:33 to 21:24 by the clock)
+
+- **The world:**
+  - Both kits are laid again from Modulo's C take (`build/handoff/Base/`, `build/handoff/Strip/`): the base's 44 meshes, the Strip's 8 and the Shop's 3. The atlas and the paving are uploaded under the group, and every id is read back Approved (`docs/asset-log.md`, the two AR40 rows). `tools/studio/Kits/Base.json` and `Strip.json` carry the ids, `src/storage/BaseKit.rbxm` and `StripKit.rbxm` are built again, and `Config.Lighting` is C's afternoon.
+  - The lighting by day: the Clear Day takes C's keys, with its exposure a step under AR20's 0.16. The Night case checks that bound in place of A's.
+- **The Shop's building (AR38, in C):** the Strip's `VoidShop` stands where the grey building stood, with its crown and five minutes.
+  - The counter collides by its mesh, and the prompt's marker stands 1 stud before its face, so a player reaches it standing at the counter.
+  - The crown shows only on a featured stock. The server sets it from `ShopFeatured`.
+  - The five minutes count a stock down, the first one first and the running one by its share left (`Rules.Shop.Minute`). The client sets them each tick, with nothing replicated.
+  - The crown and the minutes keep their manifest's glow (`Config.Lighting.Steady`). The Strip's count leaves them out, and the world report counts them on their own.
+- **The system panel, first on the Breaker's and the Power windows** (research's 23:04 triage):
+  - The palette is `Config.UIKit.Palettes.System`, C's values exactly. `Theme.Ink` gives a screen its words from it.
+  - `Screen.Open` takes a palette for its slab, its title and its close.
+  - A Button given System wears C's face: a main or chosen action on the sand plate, in ink with an ivory light; the rest on the teal channel, in ivory with a pale teal edge.
+  - Must-fix 3 is done: a chamber's head band and plate are in the slab's deep teal (`Glass`), the close cross in ivory, and the Seam buttons in C's values.
+  - Every other screen keeps Seam's face exactly: only a palette with a `Primary` changes one.
+  - **What follows, as AR40 names it:** the base screen's chips and side panels, the Forge's, the Void Shop's screen, and the shared confirm, toast and reward. The bag, the Voidkin grid and the reveal stay as today.
+- **One call, mine, against the capture of 2026-11-18:** the Breaker keeps its painted night under C's slab. The capture hid it. But the director's word of 2026-11-15 is that the Breaker's room, its stars and its slow motion stand (`docs/decisions.md`, 2026-11-15, night). A palette pick for the system panel doesn't reverse that. So C frames the Breaker (the edge, the ink, the buttons, the head bands), and the Power window takes the whole slab. Research reads it at the pass. If research would rather have the slab there, that's the director's word to ask.
+- **Tests:**
+  - The type check: 0 new, 11 known.
+  - The logic cases: 27,232 passed, offline and in Studio. The world report is empty.
+  - The self-test, in Studio's full window with the PC unlocked (51 to 60 fps):
+
+    | Filter | Result |
+    |---|---|
+    | C's own case (the two windows, both palettes, every face, the title, the band, the night kept) | 16/0 |
+    | Shop | 74/0, the building's 21/0 |
+    | Power | 94/0 |
+    | Breaker | 235/2, then the two fixed: the Ready cases 27/0 |
+    | World | 34/0 |
+    | Base | 252/1, then the one fixed: the dock case 11/0 |
+    | Kit | 84/0 |
+    | HUD | 476/0 |
+    | UI | 51/0 |
+    | Equipment | 71/0 |
+    | Settings | 27/0 |
+
+  - Three cases were fixed on the way, none of them a fault in the game:
+    - The Shop's building case now streams the Shop in first, since the client gets its parts by distance.
+    - The Breaker's two Ready checks read C's ink in place of the theme's.
+    - Base's dock check had been stale since AR43, which took the Voidkin tile off the dock. It now opens Home's tray and checks Home's cell.
+- **Captures,** in `build/scratch/faber/ar40/`, by day:
+  - **The world, in Studio's full window:**
+    - `install_shop_day.jpg`, the Shop from the crossing;
+    - `install_crossing_day.jpg`, the crossing shard and the far shards.
+  - **The two windows, in the device simulator's iPhone 16 Pro (750 by 401):**
+    - `install_breaker_phone.jpg`, the Breaker;
+    - `install_power_phone.jpg`, the Power window.
+  - **Research's two questions, as I read them:**
+    - The far teal holds against the noon sky and the clouds. It doesn't sink.
+    - The shard's light is a white seam down its middle, with both sand faces readable. It doesn't bloom.
+  - **My notes for the pass:**
+    - The Shop stands on the Strip's grey lot, not on the cream paving.
+    - The Power slab's alpha of 0.95, C's value, lets the HUD's "4 ready" line and the portrait read through it.
+    - The Breaker's night is under C's frame, my call above.
+- **Status:** implemented and tested, and captured for research's pass. Not director-accepted.
+
 ## AR41. The Tower's platforms: the rise, the assembly and the fall as light (Modulo, for research's pick, then Faber)
 
 **Dropped, 2026-11-19, by 11:12** (the director's word): the Tower moves into a room of its own, so its platforms go (`docs/design.md`, "The Tower"). Nothing here is built or rendered. The room's own request is written when the main game's open pieces are done.

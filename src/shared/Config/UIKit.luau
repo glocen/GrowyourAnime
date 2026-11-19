@@ -291,6 +291,47 @@ local UIKit = {
 			Ink = Color3.fromHex("#0B0913"),
 			Card = { Color3.fromHex("#221A3C"), Color3.fromHex("#0E0B18") },
 		},
+		-- AR40's C, sandstone and teal (research's pick, 2026-11-18; build/handoff/Colour/ar40/directions.json, C's System):
+		-- the system panel, a deep teal slab in a sand edge, ivory ink. Beside the kit's keys, the theme's own on it (Row, the
+		-- words on a light) and the three outside the palette: a chamber's head band (Glass), the close cross (Close), and the
+		-- Seam buttons (Primary, the main action's sand plate in ink; Quiet, the rest's teal channel). Theme.Ink and
+		-- Button take them. Worn by the Breaker's and the Power windows.
+		System = {
+			Panel = { Color3.fromHex("#34606C"), Color3.fromHex("#2A4E5A") },
+			Alpha = 0.95,
+			Edge = Color3.fromHex("#E2CFA4"),
+			Border = 1.3,
+			Facet = Color3.fromHex("#A9DCD4"),
+			Glint = Color3.fromHex("#F2FFF9"),
+			Text = Color3.fromHex("#FFF6E2"),
+			Soft = Color3.fromHex("#D9E8E2"),
+			Faint = Color3.fromHex("#A9C0BC"),
+			Channel = Color3.fromHex("#0E1D23"),
+			Well = Color3.fromHex("#21414A"),
+			Button = { Color3.fromHex("#447480"), Color3.fromHex("#366270") },
+			Pressed = { Color3.fromHex("#2A4E5A"), Color3.fromHex("#34606C") },
+			Ground = Color3.fromHex("#3E6872"),
+			Accent = Color3.fromHex("#CDBBFF"),
+			Core = 0.5,
+			Selected = { Color3.fromHex("#F0E2C4"), Color3.fromHex("#DCCBA6") },
+			SelectedText = Color3.fromHex("#1E3238"),
+			Row = Color3.fromHex("#3C6A76"),
+			Backing = Color3.fromHex("#2E525C"),
+			Ready = Color3.fromHex("#FFD880"),
+			ReadyWords = Color3.fromHex("#1E3238"),
+			Electricity = Color3.fromHex("#FFE266"),
+			ElectricityWords = Color3.fromHex("#FFE98A"),
+			Over = Color3.fromHex("#FF965C"),
+			OverWords = Color3.fromHex("#FFE2D0"),
+			Glass = Color3.fromHex("#16343C"),
+			Close = Color3.fromHex("#FFF6E2"),
+			Primary = { Color3.fromHex("#F0E2C4"), Color3.fromHex("#DCCBA6") },
+			PrimaryEdge = Color3.fromHex("#FFF6E2"),
+			PrimaryWords = Color3.fromHex("#1E3238"),
+			Quiet = { Color3.fromHex("#21434C"), Color3.fromHex("#193740") },
+			QuietEdge = Color3.fromHex("#8FC4C8"),
+			QuietWords = Color3.fromHex("#FFF6E2"),
+		},
 		-- Seam's lit glass (research's B, 2026-11-19, 15:04; build/handoff/UI/seam/seam.json): every screen Home opens.
 		-- Seam's violet lifted at every top. Backing is the gradient's top; its foot is Config.Hud.Equipment.Backing's.
 		SeamGlass = {

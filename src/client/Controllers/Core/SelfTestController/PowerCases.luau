@@ -163,7 +163,7 @@ local function batteryPlate(t: any, now: Read.Base)
 	local capacity = now.Rates.Capacity
 	local reading = part("BatteryReading")
 	t.Check("the battery's plate: its kWh against its cap", string.find(said("BatteryReading"), `^[%d%.,]+ / {Read.Number(capacity)} kWh$`) ~= nil, said("BatteryReading"))
-	t.Check("in Power's yellow", reading ~= nil and reading:IsA("TextLabel") and reading.TextColor3 == Theme.Colour.Electricity)
+	t.Check("in Power's yellow, the words' own on its slab (AR40's C)", reading ~= nil and reading:IsA("TextLabel") and reading.TextColor3 == Theme.Ink(PowerScreen.Palette).ElectricityWords)
 	-- Its mark is AR12's battery (TR41 (e)), in its own gold, centred on the plate's height, clear of the words.
 	local plate = part("BatteryPlate")
 	local mark = if plate then plate:FindFirstChild("Mark") else nil
@@ -294,7 +294,7 @@ function PowerCases.Cases(given: Given): { any }
 					end
 					barLook(t)
 					local line = part("Over")
-					t.Check("under a split, the head's line is plain: never the warning colour", line ~= nil and line:IsA("TextLabel") and line.TextColor3 ~= Theme.Colour.Over and (part("Body") :: Instance):GetAttribute("Over") ~= true, if line and line:IsA("TextLabel") then line.Text else "none")
+					t.Check("under a split, the head's line is plain: never the warning colour", line ~= nil and line:IsA("TextLabel") and line.TextColor3 ~= Theme.Ink(PowerScreen.Palette).Over and (part("Body") :: Instance):GetAttribute("Over") ~= true, if line and line:IsA("TextLabel") then line.Text else "none")
 					-- +/-: a step of the whole on one share.
 					local step = HudConfig.Power.Step
 					t.Check("+ on the Breaker", Button.Press(part("Plus1") :: TextButton))

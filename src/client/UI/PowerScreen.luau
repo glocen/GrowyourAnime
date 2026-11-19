@@ -27,6 +27,10 @@ local Power = require(Shared.Rules.Power)
 
 local UI = script.Parent
 local Theme = require(UI.Theme)
+-- AR40's C: the window on the system panel's slab (Config.UIKit's System), its words in its ink (Theme.Ink), read again
+-- at each build so a live tune reaches the next.
+local PALETTE = "System"
+local ink = Theme.Ink(PALETTE)
 local Read = require(UI.Read)
 local Text = require(UI.Kit.Text)
 local Button = require(UI.Kit.Button)
@@ -65,7 +69,6 @@ local MACHINES: { { Id: string, Name: string, Colour: Color3, Chip: string } } =
 	{ Id = "Breaker", Name = "Void Breaker", Colour = POWER.Colours.Breaker, Chip = "ChipBreaker" },
 	{ Id = "Training", Name = "Training machine", Colour = POWER.Colours.Training, Chip = "ChipTraining" },
 }
-local BATTERY = Theme.Colour.Electricity -- the plate's words and charge
 local REST = "Battery" -- the light of the bar's rest, and of an idle machine's share
 
 local lastView: Profile.View? = nil
@@ -311,7 +314,7 @@ local function wire()
 end
 
 local function label(parent: Instance, name: string, text: string, size: number, box: UDim2, at: UDim2, extra: { [string]: any }?): TextLabel
-	local props: { [string]: any } = { Name = name, Size = size, Box = box, Position = at, Parent = parent }
+	local props: { [string]: any } = { Name = name, Size = size, Box = box, Position = at, Parent = parent, Colour = ink.Text }
 	for key, value in extra or {} do
 		props[key] = value
 	end
@@ -338,7 +341,7 @@ end
 local function head(body: Frame, now: Read.Base)
 	local gap = Theme.Size.Gap
 	local says = label(body, "Plant", "", Theme.Text.Body, UDim2.new(1, -(AUTO + gap), 0, NAME_LINE), UDim2.fromOffset(0, (STEP - NAME_LINE) / 2), { Font = Theme.Font.Strong })
-	local over = label(body, "Over", "", Theme.Text.Caption, UDim2.new(1, -(AUTO + gap), 0, 18), UDim2.fromOffset(0, (STEP + NAME_LINE) / 2), { Colour = Theme.Colour.Over })
+	local over = label(body, "Over", "", Theme.Text.Caption, UDim2.new(1, -(AUTO + gap), 0, 18), UDim2.fromOffset(0, (STEP + NAME_LINE) / 2), { Colour = ink.Over })
 	parts.Plant, parts.Over = says, over
 	table.insert(tickers, function(at: Read.Base)
 		local rates = at.Rates
@@ -361,11 +364,12 @@ local function head(body: Frame, now: Read.Base)
 			text = table.concat(slow, " · ")
 		end
 		over.Text = text
-		over.TextColor3 = if warn then Theme.Colour.Over else Theme.Colour.TextDim
+		over.TextColor3 = if warn then ink.Over else ink.TextDim
 		body:SetAttribute("Over", warn)
 	end)
 	local auto = now.Data.Base.Power.Auto
 	parts.Auto = Button.new({
+		Palette = PALETTE,
 		Name = "Auto",
 		Text = "Auto",
 		Size = UDim2.fromOffset(AUTO, STEP),
@@ -513,7 +517,7 @@ local function machineRow(list: ScrollingFrame, index: number, now: Read.Base)
 	chip(row, machine.Chip)
 	local right = STEP * 2 + SHARE + gap * 2
 	label(row, "Name", machine.Name, Theme.Text.Body, UDim2.new(1, -(right + CHIP + gap), 0, NAME_LINE), UDim2.fromOffset(CHIP + gap, 0), { Font = Theme.Font.Strong })
-	local reading = label(row, "Reading", "", Theme.Text.Caption, UDim2.new(1, -(right + CHIP + gap), 0, STEP - NAME_LINE), UDim2.fromOffset(CHIP + gap, NAME_LINE), { Colour = Theme.Colour.TextDim })
+	local reading = label(row, "Reading", "", Theme.Text.Caption, UDim2.new(1, -(right + CHIP + gap), 0, STEP - NAME_LINE), UDim2.fromOffset(CHIP + gap, NAME_LINE), { Colour = ink.TextDim })
 	parts[`Reading{index}`] = reading
 	table.insert(tickers, function(at: Read.Base)
 		local flow = at.Rates.Flow
@@ -525,6 +529,7 @@ local function machineRow(list: ScrollingFrame, index: number, now: Read.Base)
 	local shares = sharesNow(now)
 	local function step(name: string, by: number, x: number)
 		local made = Button.new({
+			Palette = PALETTE,
 			Name = `{name}{index}`,
 			Text = "",
 			Icon = if by > 0 then HudConfig.Make.Images.SeamPlus else HudConfig.Make.Images.SeamMinus, -- AR30: the channel's ±
@@ -561,6 +566,7 @@ end
 local function plate(body: Frame)
 	local pad, gap = Theme.Size.Pad, Theme.Size.Gap
 	local frame = Panel.new({
+		Palette = PALETTE,
 		Name = "BatteryPlate",
 		Size = UDim2.fromOffset(PLATE.X, PLATE.Y),
 		-- Centred in the head's row, its right a gap short of the X (the body stands two pads in).
@@ -577,9 +583,9 @@ local function plate(body: Frame)
 	local left = pad + MARK_INK + gap -- past the mark
 	local inner = PLATE.X - left - pad
 	local top = (PLATE.Y - LINE - gap - CHARGE) / 2
-	local reading = label(frame, "BatteryReading", "", Theme.Text.Body, UDim2.fromOffset(inner, LINE), UDim2.fromOffset(left, top), { Font = Theme.Font.Number, Colour = BATTERY })
-	local holds = label(frame, "BatteryHolds", "", Theme.Text.Caption, UDim2.fromOffset(inner, LINE), UDim2.fromOffset(left, top), { Colour = Theme.Colour.TextDim, Align = Enum.TextXAlignment.Right })
-	local charge = Bar.new({ Name = "Charge", Size = UDim2.fromOffset(inner, CHARGE), Position = UDim2.fromOffset(left, top + LINE + gap), Colour = BATTERY, Parent = frame })
+	local reading = label(frame, "BatteryReading", "", Theme.Text.Body, UDim2.fromOffset(inner, LINE), UDim2.fromOffset(left, top), { Font = Theme.Font.Number, Colour = ink.ElectricityWords })
+	local holds = label(frame, "BatteryHolds", "", Theme.Text.Caption, UDim2.fromOffset(inner, LINE), UDim2.fromOffset(left, top), { Colour = ink.TextDim, Align = Enum.TextXAlignment.Right })
+	local charge = Bar.new({ Palette = PALETTE, Name = "Charge", Size = UDim2.fromOffset(inner, CHARGE), Position = UDim2.fromOffset(left, top + LINE + gap), Colour = ink.Electricity, Parent = frame })
 	parts.BatteryReading, parts.BatteryHolds, parts.BatteryCharge = reading, holds, charge
 	table.insert(tickers, function(at: Read.Base)
 		local kwh, capacity = at.Data.Base.Charge, at.Rates.Capacity
@@ -592,6 +598,7 @@ local function plate(body: Frame)
 end
 
 build = function(view: Profile.View)
+	ink = Theme.Ink(PALETTE)
 	lastView = view
 	if held then
 		waiting = true -- the screen under a held handle stays until it's let go
@@ -601,7 +608,7 @@ build = function(view: Profile.View)
 	sent = false
 	wire()
 	local now = Read.Base(view, workspace:GetServerTimeNow())
-	local body = Screen.Open(NAME, "Power", SIZE)
+	local body = Screen.Open(NAME, "Power", SIZE, PALETTE)
 	local gap = Theme.Size.Gap
 	head(body, now)
 	plate(body)
@@ -669,6 +676,7 @@ function PowerScreen.Slide(handle: number, to: number, seconds: number): { [stri
 end
 
 PowerScreen.Name = NAME
+PowerScreen.Palette = PALETTE
 PowerScreen.Machines = MACHINES
 assert(#MACHINES == #Power.Machines, "PowerScreen: one row for each of Rules.Power's machines")
 

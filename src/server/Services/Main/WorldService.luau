@@ -65,6 +65,12 @@ local FESTIVAL = PlaceRole.Is("Festival")
 local FORECOURT = 24 -- the Festival's paving reaches this far before its gate, where a trip sets the player down
 local BASE = "Base" -- the kit every plot wears: Config.Kits.Base, ServerStorage.Templates.BaseKit (AR14)
 local STRIP = "Strip" -- the kit the Strip and the side street wear: Config.Kits.Strip, ServerStorage.Templates.StripKit (AR17)
+-- The Shop's building from the Strip's kit (AR38, installed with AR40's C), in its place's frame (the manifest's notes):
+-- the marker stands before the counter, whose face is 9 behind the place; the five minutes hang at these across, the
+-- first to run at 17, along -5.9 and up 12.2.
+local SHOP_COUNTER = 8
+local SHOP_MINUTES = { 17, 14, 11, 8, 5 }
+local SHOP_MINUTE_ALONG, SHOP_MINUTE_UP = -5.9, 12.2
 local BASE_LEVEL = "1" -- the plan's level laid on every plot, until the base has its levels (TR21)
 local LEVEL_FACE = Font.new("rbxasset://fonts/families/BuilderSans.json", Enum.FontWeight.ExtraBold) -- the HUD's numbers
 local LEVEL_INK = Color3.fromHex("#FFD23E") -- Power's yellow, as the plan's level mark asks
@@ -361,6 +367,66 @@ local function dressStrip(parent: Instance, gateZ: number)
 		kitLight(light, Kit.Light(light, gateZ, floorY), folder):SetAttribute("Kit", STRIP)
 	end
 	folder.Parent = parent
+end
+
+-- The Shop's building from the Strip's kit (AR38; the manifest's VoidShop, VoidShopCrown and VoidShopMinute), into `shop`
+-- at `place`: the building and its crown on the place, the five minutes on its turn, and the two pieces' own lights.
+-- The crown and its light show only while the standing stock holds a piece (ShopService's ShopFeatured). Each minute
+-- carries its number, its root under the slab, its full size and its centre, so the client runs the clock
+-- (ShopController). Every piece carries Shop, so the Strip's count leaves them out.
+local function dressShop(shop: Model, place: CFrame)
+	local template = kitTemplate(STRIP) :: Instance
+	local manifest = kitFiles(STRIP)
+	local function mark(item: Instance)
+		item:SetAttribute("Kit", STRIP)
+		item:SetAttribute("Shop", true)
+	end
+	local function lay(piece: string, at: CFrame, name: string?): BasePart
+		local part = (template:FindFirstChild(piece) :: BasePart):Clone()
+		local c = manifest.pieces[piece].centre
+		part.Name = name or piece
+		part.Anchored = true
+		part.CFrame = at * CFrame.new(c[1], c[2], c[3])
+		part:SetAttribute("Piece", piece)
+		mark(part)
+		CollectionService:AddTag(part, Kit.Tag)
+		part.Parent = shop
+		return part
+	end
+	lay("VoidShop", place)
+	local crown = lay("VoidShopCrown", place)
+	for index, across in SHOP_MINUTES do
+		local root = place * CFrame.new(across, SHOP_MINUTE_UP, -SHOP_MINUTE_ALONG)
+		local minute = lay("VoidShopMinute", root, `VoidShopMinute{index}`)
+		local c = manifest.pieces.VoidShopMinute.centre
+		minute:SetAttribute("Minute", index)
+		minute:SetAttribute("Root", root)
+		minute:SetAttribute("Full", minute.Size)
+		minute:SetAttribute("Centre", Vector3.new(c[1], c[2], c[3]))
+	end
+	local crownLight: Light? = nil
+	for _, piece in { "VoidShop", "VoidShopCrown" } do
+		for _, light in manifest.pieces[piece].lights or {} do
+			local a = light.at
+			local holder = kitLight({ name = light.name, colour = light.colour, kind = "point" } :: any, place * CFrame.new(a[1], a[2], a[3]), shop)
+			mark(holder)
+			if piece == "VoidShopCrown" then
+				crownLight = holder:FindFirstChildWhichIsA("Light")
+			end
+		end
+	end
+	local function crowned()
+		local on = workspace:GetAttribute("ShopFeatured") == true
+		crown.Transparency = if on then 0 else 1
+		if crownLight then
+			crownLight.Enabled = on
+		end
+	end
+	crowned()
+	local watch = workspace:GetAttributeChangedSignal("ShopFeatured"):Connect(crowned)
+	shop.Destroying:Connect(function()
+		watch:Disconnect()
+	end)
 end
 
 -- The plan's colours while the base's kit is laid (its stand-ins', the lot's and the ground's), or nil: the plots grey.
@@ -931,12 +997,19 @@ local function lay(folder: Folder)
 		bases[number] = plot(plotFolder, number, at, across, deep, studs(plots.Kept), behind, tower)
 	end
 
-	-- The Shop, south of the crossing: every trip out and back passes its clock.
+	-- The Shop, south of the crossing: every trip out and back passes its clock. With the Strip's kit, its own building
+	-- (dressShop), its marker before the counter; without it, a grey block and a clock.
 	local shopAt = CFrame.lookAt(Vector3.new(0, PAVED_TOP, stripHalf + 4), Vector3.new(0, PAVED_TOP, 0))
-	local shop = model(folder, "Shop", shopAt)
-	block(shop, "Building", Vector3.new(40, 14, 28), shopAt * CFrame.new(0, 7, 16), GREY.Machine)
-	local clock = block(shop, "Clock", Vector3.new(1, 8, 8), shopAt * CFrame.new(0, 10, 1.5) * CFrame.Angles(0, math.pi / 2, 0), GREY.Pad)
-	clock.Shape = Enum.PartType.Cylinder
+	local shop: Model
+	if #stripHeld == 0 then
+		shop = model(folder, "Shop", shopAt * CFrame.new(0, 0, SHOP_COUNTER))
+		dressShop(shop, shopAt + Vector3.new(0, DRESS_LIFT, 0))
+	else
+		shop = model(folder, "Shop", shopAt)
+		block(shop, "Building", Vector3.new(40, 14, 28), shopAt * CFrame.new(0, 7, 16), GREY.Machine)
+		local clock = block(shop, "Clock", Vector3.new(1, 8, 8), shopAt * CFrame.new(0, 10, 1.5) * CFrame.Angles(0, math.pi / 2, 0), GREY.Pad)
+		clock.Shape = Enum.PartType.Cylinder
+	end
 	Markers.Stamp(shop, "Shop")
 	slab(folder, "Shop's floor", -crossingHalf, crossingHalf, stripHalf, stripHalf + deep, PAVED_TOP, GREY.Plot)
 end
@@ -1336,11 +1409,17 @@ function WorldService.Init()
 		local lights, paper, problems = 0, 0, {}
 		local stripGot: { [string]: number } = {}
 		local stripLights = 0
+		local shopGot: { [string]: number } = {}
 		for _, item in CollectionService:GetTagged(Kit.Tag) do
 			if not item:IsDescendantOf(world) or item:GetAttribute("Plot") ~= nil then
 				continue
 			end
 			local piece = item:GetAttribute("Piece")
+			if item:GetAttribute("Shop") then
+				local name = if type(piece) == "string" then piece elseif item:FindFirstChildWhichIsA("Light") then "light" else "other"
+				shopGot[name] = (shopGot[name] or 0) + 1
+				continue
+			end
 			if item:GetAttribute("Kit") == STRIP then
 				if type(piece) == "string" then
 					stripGot[piece] = (stripGot[piece] or 0) + 1
@@ -1503,6 +1582,13 @@ function WorldService.Init()
 			end
 			if stripLights ~= #stripPlan.lights then
 				table.insert(problems, `the Strip's lights: {stripLights}, the plan has {#stripPlan.lights}`)
+			end
+			-- The Shop's building (dressShop): the building, its crown, its five minutes and its two lights.
+			local shopWant: { [string]: number } = { VoidShop = 1, VoidShopCrown = 1, VoidShopMinute = #SHOP_MINUTES, light = 2 }
+			for name, count in shopWant do
+				if shopGot[name] ~= count then
+					table.insert(problems, `the Shop's {name}: {shopGot[name] or 0}, its building has {count}`)
+				end
 			end
 			local tile = (kitTemplate(STRIP) :: Instance):FindFirstChild("Paving") :: Texture?
 			for _, name in { "Strip", "Side street" } do

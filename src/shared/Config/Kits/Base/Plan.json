@@ -1547,6 +1547,1315 @@
      "up": 6.38
     }
    ]
+  },
+  "breakerStages": {
+   "note": "AR32: the Void Breaker's three stages, the Great Jaws, the swap's table. The Breaker takes the stage of its machine level (Config.Base, Stages: 1, 6, 15). Every place is in the Breaker's own frame, turned with it: `across` along the line (chamber 1 nearest the plot's middle, the line going on outward), `along` toward the gate, `up` from its floor. A stage's pieces replace the one before's. `moves`: still; chamber, the chamber of that number, lit by its state as today; while the Breaker hasn't that chamber yet (Config.Base, BreakerChambers: 3 from level 8, 4 from 20), `shut` stands in its place; turns, about the piece's own axle while any chamber breaks, CFrame.Angles(0, 0, angle * sign); waiting, the waiting line's place of that number. `lamp`: where BreakerLamp stands, the crystal's middle.",
+   "stages": {
+    "1": {
+     "pieces": [
+      {
+       "piece": "Breaker",
+       "at": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "moves": "still"
+      },
+      {
+       "piece": "BreakerChamber",
+       "at": [
+        -3.5,
+        0.0,
+        5.0
+       ],
+       "moves": "chamber",
+       "chamber": 1
+      },
+      {
+       "piece": "BreakerChamber",
+       "at": [
+        3.5,
+        0.0,
+        5.0
+       ],
+       "moves": "chamber",
+       "chamber": 2
+      },
+      {
+       "piece": "BreakerWaiting",
+       "at": [
+        9.0,
+        0.0,
+        0.0
+       ],
+       "moves": "waiting",
+       "place": 1
+      },
+      {
+       "piece": "BreakerWaiting",
+       "at": [
+        12.0,
+        0.0,
+        0.0
+       ],
+       "moves": "waiting",
+       "place": 2
+      },
+      {
+       "piece": "BreakerWaiting",
+       "at": [
+        15.0,
+        0.0,
+        0.0
+       ],
+       "moves": "waiting",
+       "place": 3
+      }
+     ],
+     "lamp": [
+      0.0,
+      0.0,
+      10.2
+     ]
+    },
+    "2": {
+     "pieces": [
+      {
+       "piece": "Breaker2",
+       "at": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "moves": "still"
+      },
+      {
+       "piece": "BreakerChamber",
+       "at": [
+        -3.5,
+        0.0,
+        5.0
+       ],
+       "moves": "chamber",
+       "chamber": 1
+      },
+      {
+       "piece": "BreakerChamber",
+       "at": [
+        3.5,
+        0.0,
+        5.0
+       ],
+       "moves": "chamber",
+       "chamber": 2
+      },
+      {
+       "piece": "BreakerChamber",
+       "at": [
+        10.5,
+        0.0,
+        5.0
+       ],
+       "moves": "chamber",
+       "chamber": 3,
+       "shut": "BreakerLid"
+      },
+      {
+       "piece": "BreakerHinge",
+       "at": [
+        -6.3,
+        0.0,
+        6.3
+       ],
+       "moves": "turns",
+       "sign": 1
+      },
+      {
+       "piece": "BreakerHinge",
+       "at": [
+        13.3,
+        0.0,
+        6.3
+       ],
+       "moves": "turns",
+       "sign": -1
+      },
+      {
+       "piece": "BreakerWaiting",
+       "at": [
+        0.5,
+        5.1,
+        0.0
+       ],
+       "moves": "waiting",
+       "place": 1
+      },
+      {
+       "piece": "BreakerWaiting",
+       "at": [
+        3.5,
+        5.1,
+        0.0
+       ],
+       "moves": "waiting",
+       "place": 2
+      },
+      {
+       "piece": "BreakerWaiting",
+       "at": [
+        6.5,
+        5.1,
+        0.0
+       ],
+       "moves": "waiting",
+       "place": 3
+      }
+     ],
+     "lamp": [
+      3.5,
+      0.0,
+      14.4
+     ]
+    },
+    "3": {
+     "pieces": [
+      {
+       "piece": "Breaker3",
+       "at": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "moves": "still"
+      },
+      {
+       "piece": "BreakerChamber",
+       "at": [
+        -3.5,
+        0.0,
+        5.0
+       ],
+       "moves": "chamber",
+       "chamber": 1
+      },
+      {
+       "piece": "BreakerChamber",
+       "at": [
+        3.5,
+        0.0,
+        5.0
+       ],
+       "moves": "chamber",
+       "chamber": 2
+      },
+      {
+       "piece": "BreakerChamber",
+       "at": [
+        10.5,
+        0.0,
+        5.0
+       ],
+       "moves": "chamber",
+       "chamber": 3,
+       "shut": "BreakerLid"
+      },
+      {
+       "piece": "BreakerChamber",
+       "at": [
+        17.5,
+        0.0,
+        5.0
+       ],
+       "moves": "chamber",
+       "chamber": 4,
+       "shut": "BreakerLid"
+      },
+      {
+       "piece": "BreakerHinge",
+       "at": [
+        -6.3,
+        0.0,
+        6.3
+       ],
+       "moves": "turns",
+       "sign": 1
+      },
+      {
+       "piece": "BreakerHinge",
+       "at": [
+        20.3,
+        0.0,
+        6.3
+       ],
+       "moves": "turns",
+       "sign": -1
+      },
+      {
+       "piece": "BreakerWaiting",
+       "at": [
+        4.0,
+        5.1,
+        0.0
+       ],
+       "moves": "waiting",
+       "place": 1
+      },
+      {
+       "piece": "BreakerWaiting",
+       "at": [
+        7.0,
+        5.1,
+        0.0
+       ],
+       "moves": "waiting",
+       "place": 2
+      },
+      {
+       "piece": "BreakerWaiting",
+       "at": [
+        10.0,
+        5.1,
+        0.0
+       ],
+       "moves": "waiting",
+       "place": 3
+      }
+     ],
+     "lamp": [
+      7.0,
+      0.0,
+      16.4
+     ]
+    }
+   }
+  },
+  "bayStages": {
+   "note": "AR33: the extraction bays' three stages, the Horned Crown, the swap's table. A bay takes the stage of its own machine level (Config.Base, Stages: 1, 6, 15). Every place is in the bay's own frame, turned with it as Bay is (0 on the plot's left, 180 on its right): `across` toward the outer side's crescent is negative, `along` toward the gate, `up` from its floor. A stage's pieces replace the one before's. `moves`: still; turns, about the piece's own axle while a worker works there, CFrame.Angles(angle * sign, 0, 0). BayHalo and BaySleeping stand as they do at every stage.",
+   "stages": {
+    "1": {
+     "pieces": [
+      {
+       "piece": "Bay",
+       "at": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "moves": "still"
+      }
+     ]
+    },
+    "2": {
+     "pieces": [
+      {
+       "piece": "Bay2",
+       "at": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "moves": "still"
+      },
+      {
+       "piece": "BayCog",
+       "at": [
+        -4.45,
+        0.0,
+        8.0
+       ],
+       "moves": "turns",
+       "sign": 1
+      }
+     ]
+    },
+    "3": {
+     "pieces": [
+      {
+       "piece": "Bay3",
+       "at": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "moves": "still"
+      },
+      {
+       "piece": "BayCog",
+       "at": [
+        -4.45,
+        0.0,
+        8.0
+       ],
+       "moves": "turns",
+       "sign": 1
+      },
+      {
+       "piece": "BayCogOuter",
+       "at": [
+        -4.45,
+        0.0,
+        8.0
+       ],
+       "moves": "turns",
+       "sign": -1
+      }
+     ]
+    }
+   }
+  },
+  "batteryStages": {
+   "note": "AR34: the battery's three stages, the Rising Stack, the swap's table. The battery takes the stage of the base's level (Stage I at 1, II at 2, III at 3), and shows that level's cells (Config.Base, Levels.Cells: 2, 4, 8), one on each of its stage's seats. Every place is in the battery's own frame, turn 0: `across`, `along` toward the gate, `up` from its floor. A stage's piece replaces the one before's. `seats` are in the order the cells fill: the bottom tier first, left to right, so the charge climbs. BatteryCell is unchanged; each cell's glow is its share of the charge, as today. This supersedes machines.battery's seats once installed.",
+   "stages": {
+    "1": {
+     "pieces": [
+      {
+       "piece": "BatteryRack",
+       "at": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "moves": "still"
+      }
+     ],
+     "seats": [
+      [
+       -0.66,
+       -0.95,
+       0.6
+      ],
+      [
+       0.66,
+       -0.95,
+       0.6
+      ]
+     ]
+    },
+    "2": {
+     "pieces": [
+      {
+       "piece": "BatteryRack2",
+       "at": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "moves": "still"
+      }
+     ],
+     "seats": [
+      [
+       -0.66,
+       -0.95,
+       0.6
+      ],
+      [
+       0.66,
+       -0.95,
+       0.6
+      ],
+      [
+       -0.66,
+       -0.95,
+       3.4
+      ],
+      [
+       0.66,
+       -0.95,
+       3.4
+      ]
+     ]
+    },
+    "3": {
+     "pieces": [
+      {
+       "piece": "BatteryRack3",
+       "at": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "moves": "still"
+      }
+     ],
+     "seats": [
+      [
+       -0.66,
+       -0.95,
+       0.6
+      ],
+      [
+       0.66,
+       -0.95,
+       0.6
+      ],
+      [
+       -0.66,
+       -0.95,
+       3.4
+      ],
+      [
+       0.66,
+       -0.95,
+       3.4
+      ],
+      [
+       -0.66,
+       -0.95,
+       6.2
+      ],
+      [
+       0.66,
+       -0.95,
+       6.2
+      ],
+      [
+       -0.66,
+       -0.95,
+       9.0
+      ],
+      [
+       0.66,
+       -0.95,
+       9.0
+      ]
+     ]
+    }
+   }
+  },
+  "trainingStages": {
+   "note": "AR35: the Training machine's three stages, the Weighted Crown, the swap's table. The machine has no level of its own, so it takes the stage of the base's level (Stage I at 1, II at 2, III at 3). Every place is in the machine's own frame, turn 0: `across`, `along` toward the gate, `up` from its floor. The stone (Training) is the same at every stage; a stage's crown replaces the one before's at the same place. `moves`: still; turns, about the crown's own upright while a Voidkin trains, still when none does, at TrainingCrown's rate and sign (Config.World.Grey.Training.Crown). The game picks a piece's axis (Y) and its rate by its Piece being TrainingCrown; TrainingCrown2 and TrainingCrown3 take both.",
+   "stages": {
+    "1": {
+     "pieces": [
+      {
+       "piece": "Training",
+       "at": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "moves": "still"
+      },
+      {
+       "piece": "TrainingCrown",
+       "at": [
+        0.0,
+        0.0,
+        8.0
+       ],
+       "moves": "turns"
+      }
+     ]
+    },
+    "2": {
+     "pieces": [
+      {
+       "piece": "Training",
+       "at": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "moves": "still"
+      },
+      {
+       "piece": "TrainingCrown2",
+       "at": [
+        0.0,
+        0.0,
+        8.0
+       ],
+       "moves": "turns"
+      }
+     ]
+    },
+    "3": {
+     "pieces": [
+      {
+       "piece": "Training",
+       "at": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "moves": "still"
+      },
+      {
+       "piece": "TrainingCrown3",
+       "at": [
+        0.0,
+        0.0,
+        8.0
+       ],
+       "moves": "turns"
+      }
+     ]
+    }
+   }
+  },
+  "forgeStages": {
+   "note": "AR36: the Forge's three stages, the Gear Train. It has no level of its own, so it takes the stage of the base's level (Stage I at 1, II at 2, III at 3). Every place is in the Forge's own frame, as machines.forge's. A stage's `frame` stands in place of the one before's; the ram, its poses and the plate are machines.forge's at every stage. A ForgeGear stands at each of `gears`, turned half a tooth about its axle when `turnedHalfTooth` (machines.forge.halfTooth), and turns with the ram at machines.forge.degreesPerStud: `spin` 1 anticlockwise seen from the front as the ram lifts, as Stage I's left gear, -1 the other way, so every gear turns against the ones it meshes.",
+   "stages": {
+    "1": {
+     "frame": "Forge",
+     "gears": [
+      {
+       "across": -0.85,
+       "along": 1.32,
+       "up": 11.7,
+       "spin": 1,
+       "turnedHalfTooth": false
+      },
+      {
+       "across": 0.85,
+       "along": 1.32,
+       "up": 11.7,
+       "spin": -1,
+       "turnedHalfTooth": true
+      }
+     ]
+    },
+    "2": {
+     "frame": "Forge2",
+     "gears": [
+      {
+       "across": -2.55,
+       "along": 1.32,
+       "up": 11.7,
+       "spin": -1,
+       "turnedHalfTooth": true
+      },
+      {
+       "across": -0.85,
+       "along": 1.32,
+       "up": 11.7,
+       "spin": 1,
+       "turnedHalfTooth": false
+      },
+      {
+       "across": 0.85,
+       "along": 1.32,
+       "up": 11.7,
+       "spin": -1,
+       "turnedHalfTooth": true
+      },
+      {
+       "across": 2.55,
+       "along": 1.32,
+       "up": 11.7,
+       "spin": 1,
+       "turnedHalfTooth": false
+      }
+     ]
+    },
+    "3": {
+     "frame": "Forge3",
+     "gears": [
+      {
+       "across": -2.55,
+       "along": 1.32,
+       "up": 11.7,
+       "spin": -1,
+       "turnedHalfTooth": true
+      },
+      {
+       "across": -0.85,
+       "along": 1.32,
+       "up": 11.7,
+       "spin": 1,
+       "turnedHalfTooth": false
+      },
+      {
+       "across": 0.85,
+       "along": 1.32,
+       "up": 11.7,
+       "spin": -1,
+       "turnedHalfTooth": true
+      },
+      {
+       "across": 2.55,
+       "along": 1.32,
+       "up": 11.7,
+       "spin": 1,
+       "turnedHalfTooth": false
+      },
+      {
+       "across": -2.55,
+       "along": 1.32,
+       "up": 13.4,
+       "spin": 1,
+       "turnedHalfTooth": false
+      },
+      {
+       "across": 2.55,
+       "along": 1.32,
+       "up": 13.4,
+       "spin": -1,
+       "turnedHalfTooth": true
+      }
+     ]
+    }
+   }
+  },
+  "condenserStages": {
+   "note": "AR36: the Stone Condenser's three stages, the Climbing Comb. It takes its own level: a stage from `fromLevel` (I at 1 to 5, II at 6 to 14, III at 15 and up). Every place is in the Condenser's own frame, as machines.condenser's. A stage's `frame` stands in place of the one before's; the core is machines.condenser's at every stage. `cups` is the stage's tray in its filling order, Stage I's comb and the cups climbing the horns together by height: a stone or a jewel to a cup, as at Stage I, so the lit height is the fill.",
+   "stages": {
+    "1": {
+     "fromLevel": 1,
+     "frame": "Condenser",
+     "cups": [
+      {
+       "across": 0.45,
+       "along": 0.1,
+       "up": 1.7
+      },
+      {
+       "across": -0.45,
+       "along": 0.1,
+       "up": 1.7
+      },
+      {
+       "across": 1.351,
+       "along": 0.1,
+       "up": 1.7
+      },
+      {
+       "across": -1.351,
+       "along": 0.1,
+       "up": 1.7
+      },
+      {
+       "across": 0.0,
+       "along": 0.1,
+       "up": 2.48
+      },
+      {
+       "across": 0.901,
+       "along": 0.1,
+       "up": 2.48
+      },
+      {
+       "across": -0.901,
+       "along": 0.1,
+       "up": 2.48
+      },
+      {
+       "across": 1.801,
+       "along": 0.1,
+       "up": 2.48
+      },
+      {
+       "across": -1.801,
+       "along": 0.1,
+       "up": 2.48
+      },
+      {
+       "across": 0.45,
+       "along": 0.1,
+       "up": 3.26
+      },
+      {
+       "across": -0.45,
+       "along": 0.1,
+       "up": 3.26
+      },
+      {
+       "across": 1.351,
+       "along": 0.1,
+       "up": 3.26
+      },
+      {
+       "across": -1.351,
+       "along": 0.1,
+       "up": 3.26
+      },
+      {
+       "across": 2.252,
+       "along": 0.1,
+       "up": 3.26
+      },
+      {
+       "across": -2.252,
+       "along": 0.1,
+       "up": 3.26
+      },
+      {
+       "across": 0.0,
+       "along": 0.1,
+       "up": 4.04
+      },
+      {
+       "across": 0.901,
+       "along": 0.1,
+       "up": 4.04
+      },
+      {
+       "across": -0.901,
+       "along": 0.1,
+       "up": 4.04
+      },
+      {
+       "across": 1.801,
+       "along": 0.1,
+       "up": 4.04
+      },
+      {
+       "across": -1.801,
+       "along": 0.1,
+       "up": 4.04
+      },
+      {
+       "across": 2.702,
+       "along": 0.1,
+       "up": 4.04
+      },
+      {
+       "across": -2.702,
+       "along": 0.1,
+       "up": 4.04
+      },
+      {
+       "across": 0.45,
+       "along": 0.1,
+       "up": 4.82
+      },
+      {
+       "across": -0.45,
+       "along": 0.1,
+       "up": 4.82
+      },
+      {
+       "across": 1.351,
+       "along": 0.1,
+       "up": 4.82
+      },
+      {
+       "across": -1.351,
+       "along": 0.1,
+       "up": 4.82
+      },
+      {
+       "across": 2.252,
+       "along": 0.1,
+       "up": 4.82
+      },
+      {
+       "across": -2.252,
+       "along": 0.1,
+       "up": 4.82
+      },
+      {
+       "across": 0.0,
+       "along": 0.1,
+       "up": 5.6
+      },
+      {
+       "across": 0.901,
+       "along": 0.1,
+       "up": 5.6
+      },
+      {
+       "across": -0.901,
+       "along": 0.1,
+       "up": 5.6
+      },
+      {
+       "across": 1.801,
+       "along": 0.1,
+       "up": 5.6
+      },
+      {
+       "across": -1.801,
+       "along": 0.1,
+       "up": 5.6
+      },
+      {
+       "across": 0.45,
+       "along": 0.1,
+       "up": 6.38
+      },
+      {
+       "across": -0.45,
+       "along": 0.1,
+       "up": 6.38
+      },
+      {
+       "across": 1.351,
+       "along": 0.1,
+       "up": 6.38
+      },
+      {
+       "across": -1.351,
+       "along": 0.1,
+       "up": 6.38
+      }
+     ]
+    },
+    "2": {
+     "fromLevel": 6,
+     "frame": "Condenser2",
+     "cups": [
+      {
+       "across": 4.285,
+       "along": 0.1,
+       "up": 1.6
+      },
+      {
+       "across": -4.285,
+       "along": 0.1,
+       "up": 1.6
+      },
+      {
+       "across": 0.45,
+       "along": 0.1,
+       "up": 1.7
+      },
+      {
+       "across": -0.45,
+       "along": 0.1,
+       "up": 1.7
+      },
+      {
+       "across": 1.351,
+       "along": 0.1,
+       "up": 1.7
+      },
+      {
+       "across": -1.351,
+       "along": 0.1,
+       "up": 1.7
+      },
+      {
+       "across": 0.0,
+       "along": 0.1,
+       "up": 2.48
+      },
+      {
+       "across": 0.901,
+       "along": 0.1,
+       "up": 2.48
+      },
+      {
+       "across": -0.901,
+       "along": 0.1,
+       "up": 2.48
+      },
+      {
+       "across": 1.801,
+       "along": 0.1,
+       "up": 2.48
+      },
+      {
+       "across": -1.801,
+       "along": 0.1,
+       "up": 2.48
+      },
+      {
+       "across": 4.705,
+       "along": 0.1,
+       "up": 2.66
+      },
+      {
+       "across": -4.705,
+       "along": 0.1,
+       "up": 2.66
+      },
+      {
+       "across": 0.45,
+       "along": 0.1,
+       "up": 3.26
+      },
+      {
+       "across": -0.45,
+       "along": 0.1,
+       "up": 3.26
+      },
+      {
+       "across": 1.351,
+       "along": 0.1,
+       "up": 3.26
+      },
+      {
+       "across": -1.351,
+       "along": 0.1,
+       "up": 3.26
+      },
+      {
+       "across": 2.252,
+       "along": 0.1,
+       "up": 3.26
+      },
+      {
+       "across": -2.252,
+       "along": 0.1,
+       "up": 3.26
+      },
+      {
+       "across": 5.124,
+       "along": 0.1,
+       "up": 3.72
+      },
+      {
+       "across": -5.124,
+       "along": 0.1,
+       "up": 3.72
+      },
+      {
+       "across": 0.0,
+       "along": 0.1,
+       "up": 4.04
+      },
+      {
+       "across": 0.901,
+       "along": 0.1,
+       "up": 4.04
+      },
+      {
+       "across": -0.901,
+       "along": 0.1,
+       "up": 4.04
+      },
+      {
+       "across": 1.801,
+       "along": 0.1,
+       "up": 4.04
+      },
+      {
+       "across": -1.801,
+       "along": 0.1,
+       "up": 4.04
+      },
+      {
+       "across": 2.702,
+       "along": 0.1,
+       "up": 4.04
+      },
+      {
+       "across": -2.702,
+       "along": 0.1,
+       "up": 4.04
+      },
+      {
+       "across": 0.45,
+       "along": 0.1,
+       "up": 4.82
+      },
+      {
+       "across": -0.45,
+       "along": 0.1,
+       "up": 4.82
+      },
+      {
+       "across": 1.351,
+       "along": 0.1,
+       "up": 4.82
+      },
+      {
+       "across": -1.351,
+       "along": 0.1,
+       "up": 4.82
+      },
+      {
+       "across": 2.252,
+       "along": 0.1,
+       "up": 4.82
+      },
+      {
+       "across": -2.252,
+       "along": 0.1,
+       "up": 4.82
+      },
+      {
+       "across": 0.0,
+       "along": 0.1,
+       "up": 5.6
+      },
+      {
+       "across": 0.901,
+       "along": 0.1,
+       "up": 5.6
+      },
+      {
+       "across": -0.901,
+       "along": 0.1,
+       "up": 5.6
+      },
+      {
+       "across": 1.801,
+       "along": 0.1,
+       "up": 5.6
+      },
+      {
+       "across": -1.801,
+       "along": 0.1,
+       "up": 5.6
+      },
+      {
+       "across": 0.45,
+       "along": 0.1,
+       "up": 6.38
+      },
+      {
+       "across": -0.45,
+       "along": 0.1,
+       "up": 6.38
+      },
+      {
+       "across": 1.351,
+       "along": 0.1,
+       "up": 6.38
+      },
+      {
+       "across": -1.351,
+       "along": 0.1,
+       "up": 6.38
+      }
+     ]
+    },
+    "3": {
+     "fromLevel": 15,
+     "frame": "Condenser3",
+     "cups": [
+      {
+       "across": 4.285,
+       "along": 0.1,
+       "up": 1.6
+      },
+      {
+       "across": -4.285,
+       "along": 0.1,
+       "up": 1.6
+      },
+      {
+       "across": 0.45,
+       "along": 0.1,
+       "up": 1.7
+      },
+      {
+       "across": -0.45,
+       "along": 0.1,
+       "up": 1.7
+      },
+      {
+       "across": 1.351,
+       "along": 0.1,
+       "up": 1.7
+      },
+      {
+       "across": -1.351,
+       "along": 0.1,
+       "up": 1.7
+      },
+      {
+       "across": 0.0,
+       "along": 0.1,
+       "up": 2.48
+      },
+      {
+       "across": 0.901,
+       "along": 0.1,
+       "up": 2.48
+      },
+      {
+       "across": -0.901,
+       "along": 0.1,
+       "up": 2.48
+      },
+      {
+       "across": 1.801,
+       "along": 0.1,
+       "up": 2.48
+      },
+      {
+       "across": -1.801,
+       "along": 0.1,
+       "up": 2.48
+      },
+      {
+       "across": 4.705,
+       "along": 0.1,
+       "up": 2.66
+      },
+      {
+       "across": -4.705,
+       "along": 0.1,
+       "up": 2.66
+      },
+      {
+       "across": 0.45,
+       "along": 0.1,
+       "up": 3.26
+      },
+      {
+       "across": -0.45,
+       "along": 0.1,
+       "up": 3.26
+      },
+      {
+       "across": 1.351,
+       "along": 0.1,
+       "up": 3.26
+      },
+      {
+       "across": -1.351,
+       "along": 0.1,
+       "up": 3.26
+      },
+      {
+       "across": 2.252,
+       "along": 0.1,
+       "up": 3.26
+      },
+      {
+       "across": -2.252,
+       "along": 0.1,
+       "up": 3.26
+      },
+      {
+       "across": 5.124,
+       "along": 0.1,
+       "up": 3.72
+      },
+      {
+       "across": -5.124,
+       "along": 0.1,
+       "up": 3.72
+      },
+      {
+       "across": 0.0,
+       "along": 0.1,
+       "up": 4.04
+      },
+      {
+       "across": 0.901,
+       "along": 0.1,
+       "up": 4.04
+      },
+      {
+       "across": -0.901,
+       "along": 0.1,
+       "up": 4.04
+      },
+      {
+       "across": 1.801,
+       "along": 0.1,
+       "up": 4.04
+      },
+      {
+       "across": -1.801,
+       "along": 0.1,
+       "up": 4.04
+      },
+      {
+       "across": 2.702,
+       "along": 0.1,
+       "up": 4.04
+      },
+      {
+       "across": -2.702,
+       "along": 0.1,
+       "up": 4.04
+      },
+      {
+       "across": 4.984,
+       "along": 0.1,
+       "up": 4.78
+      },
+      {
+       "across": -4.984,
+       "along": 0.1,
+       "up": 4.78
+      },
+      {
+       "across": 0.45,
+       "along": 0.1,
+       "up": 4.82
+      },
+      {
+       "across": -0.45,
+       "along": 0.1,
+       "up": 4.82
+      },
+      {
+       "across": 1.351,
+       "along": 0.1,
+       "up": 4.82
+      },
+      {
+       "across": -1.351,
+       "along": 0.1,
+       "up": 4.82
+      },
+      {
+       "across": 2.252,
+       "along": 0.1,
+       "up": 4.82
+      },
+      {
+       "across": -2.252,
+       "along": 0.1,
+       "up": 4.82
+      },
+      {
+       "across": 0.0,
+       "along": 0.1,
+       "up": 5.6
+      },
+      {
+       "across": 0.901,
+       "along": 0.1,
+       "up": 5.6
+      },
+      {
+       "across": -0.901,
+       "along": 0.1,
+       "up": 5.6
+      },
+      {
+       "across": 1.801,
+       "along": 0.1,
+       "up": 5.6
+      },
+      {
+       "across": -1.801,
+       "along": 0.1,
+       "up": 5.6
+      },
+      {
+       "across": 4.601,
+       "along": 0.1,
+       "up": 5.84
+      },
+      {
+       "across": -4.601,
+       "along": 0.1,
+       "up": 5.84
+      },
+      {
+       "across": 0.45,
+       "along": 0.1,
+       "up": 6.38
+      },
+      {
+       "across": -0.45,
+       "along": 0.1,
+       "up": 6.38
+      },
+      {
+       "across": 1.351,
+       "along": 0.1,
+       "up": 6.38
+      },
+      {
+       "across": -1.351,
+       "along": 0.1,
+       "up": 6.38
+      }
+     ]
+    }
+   }
   }
  },
  "lighting": "the base stands under Lantern Row's dusk: the same sky, ambient, fog and bloom (build/handoff/LanternRow/sky/lighting.json). The conduits, the wall's line and the lamps are drawn for dusk, and under the place's daylight they don't read.",

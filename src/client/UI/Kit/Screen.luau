@@ -294,6 +294,7 @@ local function show(name: string, title: string, size: Vector2?, palette: string
 			Position = UDim2.fromScale(0.5, 0.5),
 			AnchorPoint = Vector2.new(0.5, 0.5),
 			Parent = stage,
+			Palette = palette,
 		})
 	end
 	frame.Active = true -- a tap on the screen stays on it
@@ -314,6 +315,7 @@ local function show(name: string, title: string, size: Vector2?, palette: string
 		Name = "Title",
 		Size = Theme.Text.Title,
 		Font = Theme.Font.Strong,
+		Colour = Theme.Ink(palette).Text,
 		Box = UDim2.new(1, -(Theme.Size.Pad * 3 + EXIT), 0, TITLE),
 		Position = UDim2.fromOffset(Theme.Size.Pad * 2, (HEAD - TITLE) / 2),
 		Parent = frame,
@@ -334,7 +336,7 @@ local function show(name: string, title: string, size: Vector2?, palette: string
 		OnPress = function()
 			Screen.Close("Back")
 		end,
-		Palette = if full then palette else nil,
+		Palette = palette,
 	})
 	exit.ZIndex = 3
 	if band then
@@ -367,8 +369,9 @@ local function show(name: string, title: string, size: Vector2?, palette: string
 	return body
 end
 
-function Screen.Open(name: string, title: string, size: Vector2): Frame
-	return show(name, title, size)
+-- A window `size` over the world; on `palette`'s slab, its title and close in its ink (the Breaker's and Power's, AR40's C).
+function Screen.Open(name: string, title: string, size: Vector2, palette: string?): Frame
+	return show(name, title, size, palette)
 end
 
 function Screen.Full(name: string, title: string, palette: string?, dress: ((exit: TextButton) -> ())?): Frame

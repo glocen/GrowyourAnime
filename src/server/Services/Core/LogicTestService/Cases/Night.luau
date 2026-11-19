@@ -274,7 +274,8 @@ return {
 			t.Equal("the day keeps the game's own sky everywhere", Night.SkyOf("Day", phases, 1), "Day")
 			t.Equal("a phase Clear doesn't name keeps its own", Night.SkyOf("Nowhere", phases, 1), "Nowhere")
 			t.Check("the pools' and the lead's light lifted, not doubled", clear.Lights > 1 and clear.Lights < 2, tostring(clear.Lights))
-			t.Check("C's day: brighter exposure than A's", phases.Day.Exposure > 0.11, tostring(phases.Day.Exposure))
+			-- AR40's C (build/handoff/Colour/ar40/directions.json): a warm afternoon, a step less exposed than AR20's 0.16.
+			t.Check("AR40's C by day: a step under AR20's exposure, still lifted", phases.Day.Exposure > 0 and phases.Day.Exposure < 0.16, tostring(phases.Day.Exposure))
 		end,
 	},
 }

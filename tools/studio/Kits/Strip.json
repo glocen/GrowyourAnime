@@ -1,30 +1,34 @@
 {
- "Why": "The Strip's install (AR17, 'The plan laid again at 128'): the pieces wear the base kit's own pair of pictures (Base.json's ids), the paving its own tile, Lantern Row's lifted. The meshes' ids come from KitAssembly.Publish. Collision, from the manifest's notes: the posts follow their mesh, so the camera stops at the stone; an outcrop is its box; a sealed gate is a wall across the whole street. The cracks, the mark, the great shard (players walk under it) and the far shards are look only, and the cracks, the mark and the far shards cast no shadow, as the manifest's shadows say. The paving is an 8-stud tile on the Strip's and the side street's own floors.",
+ "Why": "The Strip's install (AR17, 'The plan laid again at 128'): the pieces wear the base kit's own pair of pictures (Base.json's ids), the paving its own tile, Lantern Row's lifted. The meshes' ids come from KitAssembly.Publish. Collision, from the manifest's notes: the posts follow their mesh, so the camera stops at the stone; an outcrop is its box; a sealed gate is a wall across the whole street. The cracks, the mark, the great shard (players walk under it) and the far shards are look only, and the cracks, the mark and the far shards cast no shadow, as the manifest's shadows say. The paving is an 8-stud tile on the Strip's and the side street's own floors. The Shop's building (AR38, installed with AR40's C): the counter collides by its mesh, so a player stands at it and the slab hangs out of reach; its crown and minutes are look only.",
  "Meshes": {
-  "CrossingMark": 132751736348001,
-  "CrossingShard": 112140652695541,
+  "CrossingMark": 79789180619314,
+  "CrossingShard": 133202656074214,
   "FarShardLow": 87240320954913,
   "FarShardMid": 90711682272413,
   "FarShardTall": 131403467983046,
-  "SealCalamity": 78806465624850,
-  "SealClash": 72278158286620,
+  "SealCalamity": 118219211498380,
+  "SealClash": 126781053096678,
   "ShardOutcrop": 77344010402107,
-  "StripPost": 82036697649182,
-  "VeinBranch": 103301966419788,
-  "VeinThin": 132155396452234,
-  "VeinWide": 137647996852722
+  "StripPost": 116021489294322,
+  "VeinBranch": 133094078039458,
+  "VeinThin": 78644593608953,
+  "VeinWide": 108738472926612,
+  "VoidShop": 71918340903175,
+  "VoidShopCrown": 118853349233806,
+  "VoidShopMinute": 91311515321526
  },
  "Maps": {
-  "Base_Kit_Color.png": "rbxassetid://83438936286073",
-  "Base_Kit_Glow.png": "rbxassetid://117137133419400",
+  "Base_Kit_Color.png": "rbxassetid://116097535289808",
+  "Base_Kit_Glow.png": "rbxassetid://110106565948818",
   "Base_Deck_Color.png": "rbxassetid://136208918666185",
-  "Strip_Paving_Color.png": "rbxassetid://110126249296518"
+  "Strip_Paving_Color.png": "rbxassetid://131953978006033"
  },
  "Collide": {
   "StripPost": "Default",
   "ShardOutcrop": "Box",
   "SealCalamity": "Box",
-  "SealClash": "Box"
+  "SealClash": "Box",
+  "VoidShop": "Default"
  },
  "NoShadow": [
   "VeinWide",

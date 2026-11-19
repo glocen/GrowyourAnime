@@ -514,6 +514,73 @@ function BreakerCases.Cases(): { any }
 				Screen.Close()
 			end,
 		},
+		{
+			Name = "Breaker and Power on AR40's C (the system panel, sandstone and teal): each window on System's slab, its title and words in its ink, a main action's sand plate in ink and the rest's teal channel in ivory, the close cross in ivory, a chamber's head band in the slab's deep teal; the Breaker keeps its night (the director, 2026-11-15)",
+			Run = function(t: any)
+				local UIKit = require(Shared.Config.UIKit)
+				local PowerScreen = require(UI.PowerScreen)
+				local system = (UIKit.Palettes :: any).System
+				t.Check("both windows name System", BreakerScreen.Palette == "System" and PowerScreen.Palette == "System" and system ~= nil, `{BreakerScreen.Palette} {PowerScreen.Palette}`)
+				if system == nil then
+					return
+				end
+				-- Every button in a window: its words by its kind, the close cross in its ink.
+				local function faces(where: string, frame: Instance)
+					local glass, channel, wrong = 0, 0, {}
+					for _, each in frame:GetDescendants() do
+						local kind = each:GetAttribute("Kind")
+						local label = if each:IsA("TextButton") then each:FindFirstChild("Label", true) else nil
+						if (kind == "Glass" or kind == "Channel") and each:GetAttribute("Disabled") == "" and label and label:IsA("TextLabel") and label.Text ~= "" and each:GetAttribute("Pick") == nil then
+							local want = if kind == "Glass" then system.PrimaryWords else system.QuietWords
+							if kind == "Glass" then
+								glass += 1
+							else
+								channel += 1
+							end
+							if label.TextColor3 ~= want and label.TextColor3 ~= system.PrimaryEdge then
+								table.insert(wrong, `{each.Name} {kind} {label.TextColor3:ToHex()}`)
+							end
+						end
+					end
+					t.Check(`{where}: each button's words in its face's ink ({glass} sand, {channel} teal)`, #wrong == 0 and glass + channel > 0, table.concat(wrong, ", "))
+					local close = frame:FindFirstChild("Close", true)
+					local icon = if close then close:FindFirstChild("Icon", true) else nil
+					t.Check(`{where}: the close cross in the slab's ivory`, icon ~= nil and icon:IsA("ImageLabel") and icon.ImageColor3 == system.QuietWords, if icon and icon:IsA("ImageLabel") then icon.ImageColor3:ToHex() else "none")
+					local title = frame:FindFirstChild("Title", true)
+					t.Check(`{where}: its title in the slab's ink`, title ~= nil and title:IsA("TextLabel") and title.TextColor3 == system.Text)
+					t.Equal(`{where}: the window wears System`, frame:GetAttribute("Palette"), "System")
+				end
+				Screen.Close()
+				BaseController.OpenBreaker()
+				t.Check("the Breaker opens", waitFor(t, 2, function(): boolean
+					return Screen.Current() == BreakerScreen.Name
+				end), tostring(Screen.Current()))
+				local breaker = Screen.Frame(BreakerScreen.Name)
+				if breaker then
+					faces("the Breaker", breaker)
+					local chamber = breaker:FindFirstChild("Chamber1", true)
+					t.Check("a chamber's head band in the slab's deep teal, never the old navy", chamber ~= nil and chamber:GetAttribute("Body") == system.Glass, if chamber then tostring(chamber:GetAttribute("Body")) else "none")
+					t.Check("the Breaker keeps its night (its room of its own, its stars)", breaker:FindFirstChild("Sky", true) ~= nil)
+				end
+				Screen.Close()
+				local view = ProfileController.Get()
+				if view and view.Base.Power.Open then
+					BaseController.OpenPower()
+					t.Check("the Power screen opens", waitFor(t, 2, function(): boolean
+						return Screen.Current() == PowerScreen.Name
+					end), tostring(Screen.Current()))
+					local power = Screen.Frame(PowerScreen.Name)
+					if power then
+						faces("Power", power)
+						local reading = PowerScreen.Parts().BatteryReading
+						t.Check("Power: the battery's words in the slab's light words", reading ~= nil and reading:IsA("TextLabel") and reading.TextColor3 == system.ElectricityWords)
+					end
+					Screen.Close()
+				else
+					t.Check("Power: open on this save (the Power cases open it first)", false, "NOT VERIFIED here: the generator isn't open on this save")
+				end
+			end,
+		},
 	}
 end
 

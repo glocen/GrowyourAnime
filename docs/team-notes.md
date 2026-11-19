@@ -15,13 +15,11 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **Next, in order:** item 10; item 4 after research's refit; AR38's Void Shop install with its one confirm; AR40's C install with Modulo's new swatches; AR30's rest; TR46's "Floor 1 · best 7" over the target card's bar. The UI sounds' audition comes after the director's listen.
 - **Open, tests:** seven cases fail in the phone simulator and pass in the full window (AR44's section, "Tests"), to sort after AR45. NOT VERIFIED (the Festival place): the Festival role's suite and the stage tile's "CR". TR44's phone take waits for the director's go. The real trip waits on item 9 below.
 
-**Modulo (assets).** 2026-11-19, 12:55, on Opus 5.5. Voidkin work parked until before launch (the director's word, 11:10).
-- **Done, AR45 on the slant** (research's pick, 12:32): five new images in `build/handoff/UI/foes/`. They are the plate in three pieces (fill, a Shade's edge, an elite's brass edge) and the elite's solid shards. Content check PASS. The first cut's upright edge, horns, crest and notch are listed unused. For research: the shards at the phone's size, in `foe_cards_fit.png`'s bottom row. For Faber, after that: upload the five and build the cards (AR45, "The cut on the slant").
-- **Done, Home's blockout** (the director's yes, about 12:21): three directions in `build/scratch/modulo/home/`, as stills, beats and a movie. A is a side sheet, B a tray rising from the Home tile, C three slanted cards. My lean is B. Content check PASS. For research: a pick in motion (AR43, "Home"). AR43's other motion still waits on your verdict.
-- **Now: the War Emblem star blockout**, then Equipment's Jewels and War Emblems pages.
-- **For Faber, AR40's install:** the atlas pair, and the Strip's eight changed meshes with the manifest, on top of the 40 base meshes, the paving and C's keys already listed in AR40. The atlas never goes alone. The check is your capture by day. AR38's Shop meshes go with AR38.
-- **Then:** Equipment's Jewels and War Emblems pages, the 25 jewel icons. Waiting: the Brawler mask's rework (research's word), and AR41's render (the director's go).
-- **Unchanged:** AR28's Stage I waits on TR37, AR19's re-uploads, AR24's A on TR34, AR39 stopped, Sable after launch.
+**Modulo (assets).** 2026-11-19, 13:32, on Opus 5.5. Voidkin work parked until before launch (the director's word, 11:10).
+- **Done, Home in B cut for Faber** (65295ff): eleven images, `home.json` and the fit in `build/handoff/UI/home/`, built against drawn at a mean difference of 0.003. Content check PASS. For Faber, after AR45: upload the eleven and build the tray (AR43, "Home in B, cut for Faber"). The War Emblem star is B (research, 13:12).
+- **Now: the dock's Home mark (B),** three screens stacked with a shard in the front one. **Then** the twelve set symbols on star B, then Equipment's Jewels and War Emblems pages and the 25 jewel icons.
+- **For Faber, AR40's install:** the atlas pair, and the Strip's eight changed meshes with the manifest, on top of the 40 base meshes, the paving and C's keys already listed in AR40. The atlas never goes alone. AR38's Shop meshes go with AR38.
+- **Unchanged:** the Brawler mask's rework (research's word), AR41's render (the director's go), AR28's Stage I on TR37, AR19's re-uploads, AR24's A on TR34, AR39 stopped, Sable after launch.
 
 **Turns.** Studio: Faber's (Grow your Anime), its Play stopped at 11:25 after TR46; a second Studio, Festival Lantern, is open, not Faber's; the director's listen on TR42's panel is tomorrow, in the same place. Blender: nobody (Modulo's AR41 strips were stopped at 01:33 on 2026-11-19 by Claude Code when the PC ran low on memory; the director said wait at 01:34). Timing tests: nobody.
 

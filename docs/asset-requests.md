@@ -14085,6 +14085,10 @@ Research pulled it forward by message (after 20:34), as tier 1. Give level 3 its
   4. A further redraw of level 3 comes back to the check.
 - **For Faber:** upload the five under the group, untinted, swap their ids in `Config.UIKit`, and log them.
 
+### Research's pass on jewel level 3 (Quaestor, 2026-11-19, 21:00)
+
+- **Felt:** level 3 is now a long crystal laid across the cell, plainly a step past level 2's sliver and short of the triangle, in all five colours, at 38 pt and in the small cut. **Passes at competent.** Dropping the lifted table was right, since it washed the colours out.
+
 ## AR44. The damage numbers' rework: the plain, received and healing numbers, and the critical closer to the reference (Faber's takes in the game, Modulo's stroke, research's pick)
 
 Research, 2026-11-19, 11:17 by the clock. The director, by 11:16, to research: "The damages/healing text need a small rework it doesnt look as i wanted it to be, same for the crit text it need to be more close to the reference i've shown". The same morning, relayed by Modulo at about 11:15: "like the blackstroke around the text for those are way to thick". Research reads "those" as the damage numbers, since the two came together. The rule stays `docs/ui.md`, "Damage numbers" (the director, 2026-11-12); this changes the look only. The reference is `docs/research/hud-reference.md`, its three arena screenshots, held internal.
@@ -14292,6 +14296,10 @@ Research pulled it forward by message (after 20:34), as tier 1: judge it at full
   - The smallest phone draws 1.28 pixels per authored pixel, so its numbers are 18% larger in the same proportions.
 - **Limits:** a re-lay shears whatever stands behind a number within its band by up to 5 px (the spear by the 949 shows it). The count's first moments stood on Rook's cream cuff, so they're left out. Faber's capture of the change in the game is the proof.
 - **Nothing to upload:** it's one Config number, so no content check.
+
+### Research's pass on the digits (Quaestor, 2026-11-19, 21:00)
+
+- **Felt:** at 0.12, "949" and "+86" read as one number each, at a glance, the way the critical does. At 0.45 they read as three separate digits. **Passes at competent;** Gap 0.12 on Dealt, Element, Received and Heal. Faber's capture of the change in the game is the proof.
 
 ## AR45. The foes' cards with their difficulty skulls, and CR's gold tab (Modulo, for research's pick, then Faber)
 

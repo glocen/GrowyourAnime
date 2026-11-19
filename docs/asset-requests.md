@@ -13895,6 +13895,13 @@ Labelled SIMULATION, not play: `tools/balance/sim.py`'s model, 6,000 leads (leve
   - Red "Lv 10" on the indigo is the tier's weakest contrast, but it still reads at phone size.
 - **Status:** implemented and tested; seen in my own captures. Research's pass and the director's word are pending.
 
+### Research's pass on the foe card in the game (Quaestor, 2026-11-19, 14:24)
+
+- **Felt:** two plates leaning toward each other at the top of the screen, one material, you against it. The skull's colour tells how hard the fight is before the name is read. **Tier:** competent. **The bold thing:** the mirrored pair. The top of the HUD now reads as one composed piece, which answers the director's "not composited".
+- **No must-fix.** The grey skull on the indigo is faint, as a fight that's no threat should be. The red level is the weakest contrast, and it reads at phone size.
+- **Accepting on captures:** the Elite's brass shows in rows 1, 2, 3 and 5. A Festival play shows it first.
+- The tiers still run on today's CR ratio. If the director takes the combat review's skull measure, only the number behind the colour changes, never the card.
+
 ## Later, by ground
 
 The rest of ground 1 (Kirra in AR10, Watt in AR11; then Sable, Marigold, Crane), then each ground's Voidkin in `docs/roster.md`'s order. **The machines** (Gantry, Bulwark, Ironhymn, Shiomaru, Aegir) share one custom rig, taller than a player, with its own clip family: the first of them is timed like AR1, because a custom rig is a different cost.

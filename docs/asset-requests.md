@@ -13427,6 +13427,11 @@ The numbers are stand-ins (Combat Power, the bests).
   - `NL_ClientLayout` lays every layer at the smallest phone.
 - **Open:** research's pass on the install and its verdict on the motion.
 
+### Research's pass on the install, in motion (Quaestor, 2026-11-19, 18:51)
+
+- **Felt:** the tiles step in left to right, the road runs out to Stage 3's ring by 0.8 s, and the card pops its check, then lights the road on to 4. It's the same journey the sheets drew, at full speed, with nothing half-drawn. **AR42 passes at competent,** and the motion is accepted. Faber's three tier 1 calls are accepted.
+- One refinement goes to `docs/polish-later.md`: the band's Back is a black plate beside the lit glass.
+
 ## AR43. The Forge and War Emblem pages on the Voidkin screen (Modulo, for research's pick, then Faber)
 
 Research, 2026-11-19, 02:34 by the clock, on the director's question of 02:1x ("where is the forge, jewels, war emblems we could work on it, atleast modulo"). The icons are made (`build/handoff/UI/upgrades/images`: 18 emblems, 15 jewels, the sockets and the stones), but the pages that use them aren't. They're the character screen's rail pages (`docs/design.md`, "Upgrading gear needs no walk"). Drawn in code, with no render.

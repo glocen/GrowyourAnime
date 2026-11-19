@@ -59,3 +59,4 @@ On the director's word of 2026-11-13 (`docs/decisions.md`): after the whole game
 - **The stages' tiles share one picture** (AR42's pick, research, 2026-11-19, 02:06): stages 1 to 3 show the Shade, with 2 and 3 identical. Give each stretch its own mark once the stretches differ.
 - **The plain damage digits' tracking** (AR44's second look, research, 2026-11-19, 13:20): the per-glyph gap reads "9 4 9" in the plain style, loose beside the critical's. Tighten the plain style's gap at the finish pass if the clip shows it at full speed.
 - **Jewels' levels 2 and 3 at 38 points** (AR43, research's pass, 14:12): they differ only in size in the bag's cell. Level 3 could take a brighter table or a longer reach across the cell.
+- **The stages' band's Back** (AR42's install, research, 2026-11-19, 18:51): a black plate, the darkest thing on the lit-glass screen. It could be the kit's quiet glass press.

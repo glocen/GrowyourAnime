@@ -1,6 +1,6 @@
 {
  "pixelsPerPoint": 4,
- "palette": "C_SYS (AR40's C, the system panel), as the foe cards",
+ "palette": "the dock's own (research, AR43, 13:36): the plate the dock body's graphite, the tiles the dock's Home tile, Voidkin's lavender with marks in ink; the screens it opens keep C",
  "layout": {
   "tray": {
    "size": [
@@ -8,7 +8,7 @@
     138.0
    ],
    "where": "centred on the phone's middle; its foot 12 above the dock's top (95 above the phone's foot)",
-   "plate": "the kit's panel (Config.UIKit's slices, as the foe cards): PanelShadow under it (pad 16), PanelFill tinted C's panel #34606C to #2A4E5A, opaque (the world never shows through the tray), PanelEdge tinted C's edge #E2CFA4",
+   "plate": "the kit's panel (Config.UIKit's slices): PanelShadow under it (pad 16), PanelFill tinted the dock body's graphite #323845 to #22262F, opaque (the world never shows through the tray), PanelEdge tinted its edge #434A57",
    "point": "HomePoint, its anchor on the tray's foot at the phone's middle"
   },
   "headings": [
@@ -37,7 +37,7 @@
     ]
    }
   ],
-  "headingNote": "the mark an ImageLabel markBox square, its middle at `mark`: Inventory's HomeMarkInventory, Equipment's Config.Hud PageForge, tinted C's light #F0E2C4; the group's name 14 points, bold, C's text #FFF6E2, its capitals' middle at `word`, centred. No plate",
+  "headingNote": "the mark an ImageLabel markBox square, its middle at `mark`: Inventory's HomeMarkInventory, Equipment's Config.Hud PageForge, tinted the lavender #DCCBFF; the group's name 14 points, bold, #F3EFE6, its capitals' middle at `word`, centred. No plate",
   "tiles": [
    {
     "button": "Overview",
@@ -240,7 +240,7 @@
     ]
    }
   ],
-  "tileNote": "each tile's images laid in its box (left, top, width, height), an image with a Pad in that box grown by its Pad on every side, bottom to top: Glow (pressed), Fill, Edge, Glint (at rest). Its icon an ImageLabel iconBox square, its middle at `icon`: the page's icon, Config.Hud's PageOverview, PageKit, PageItems (Inventory), PageStars, PageForge (Reinforce), PageJewels and PageWarEmblems; Settings' HomeMarkSettings. Tinted C's light #F0E2C4 at rest, C's ink #1E3238 pressed. Its word 14 points, bold, centred, its capitals' middle at `word`: C's text #FFF6E2 at rest, C's ink pressed",
+  "tileNote": "each tile's images laid in its box (left, top, width, height), an image with a Pad in that box grown by its Pad on every side, bottom to top: Glow (pressed), Fill, Edge, Glint (at rest). Its icon an ImageLabel iconBox square, its middle at `icon`: the page's icon, Config.Hud's PageOverview, PageKit, PageItems (Inventory), PageStars, PageForge (Reinforce), PageJewels and PageWarEmblems; Settings' HomeMarkSettings. In the dock marks' ink #14161B, at rest and pressed. Its word 14 points, bold, centred, its capitals' middle at `word`, in the same ink",
   "rule": {
    "ends": [
     [
@@ -256,13 +256,13 @@
     435.4,
     69.0
    ],
-   "note": "a 1 point line between the rows and Settings, C's edge #E2CFA4 at BackgroundTransparency 0.4: a Frame 1 wide and 104.0 high, its middle at `middle`, Rotation 11.31 (clockwise, its top to the right)"
+   "note": "a 1 point line between the rows and Settings, #8A93A6 at BackgroundTransparency 0.4: a Frame 1 wide and 104.0 high, its middle at `middle`, Rotation 11.31 (clockwise, its top to the right)"
   }
  },
  "layoutNote": "measured on the smallest phone (568 by 320); the tray keeps its size on every phone, centred",
  "states": {
-  "rest": "Fill tinted C's button, Edge C's facet at 0.45, Glint shown, icon and word light",
-  "pressed": "Glow shown under, Fill C's lit, Edge C's light, Glint hidden, icon and word ink; the press's squeeze is Config.Hud.Motion.Press, as every press"
+  "rest": "Fill tinted the Home tile's lavender, Edge Voidkin's deep at 0.45, Glint shown, icon and word in ink",
+  "pressed": "Glow shown under, Fill the Home tile's pressed, Edge the lavender, Glint hidden, icon and word in ink; the press's squeeze is Config.Hud.Motion.Press, as every press"
  },
  "dim": {
   "colour": "#05090B",
@@ -308,7 +308,7 @@
     12.4,
     0
    ],
-   "tint": "at rest, C's button #447480 at its top to #366270 at its foot (a UIGradient); pressed, C's lit #F0E2C4 to #DCCBA6",
+   "tint": "at rest, the dock's Home tile, #E4D6FF at its top to #B7A4EB at its foot (a UIGradient); pressed, its pressed #A28EE0 to #C3B1F2",
    "use": "a button tile in Inventory's and Equipment's rows: its body. Sliced at Cut (left, top, right, foot), its slanted ends inside the end slices: drawn at its own height (52), it stretches along only. Its box is its foot's width plus 10.4."
   },
   "HomeTileEdge": {
@@ -328,7 +328,7 @@
     13.4,
     0
    ],
-   "tint": "at rest, C's facet #8FC4C8 at ImageTransparency 0.45; pressed, C's light #F0E2C4",
+   "tint": "at rest, Voidkin's deep #7C66CC at ImageTransparency 0.45; pressed, its lavender #DCCBFF",
    "use": "a button tile in Inventory's and Equipment's rows: its hairline, over the body. Its box is the tile's with Pad on every side: the line sits on the tile's outline, half outside. Sliced as the tile, at its own height (54)."
   },
   "HomeTileGlint": {
@@ -348,7 +348,7 @@
     13.4,
     0
    ],
-   "tint": "C's glint #FFF6E2 at ImageTransparency 0.65; at rest only",
+   "tint": "Voidkin's pale #FAF7FF at ImageTransparency 0.65; at rest only",
    "use": "a button tile in Inventory's and Equipment's rows: the light along its top, over the hairline. Its box is the tile's with Pad on every side: the line sits on the tile's outline, half outside. Sliced as the tile, at its own height (54)."
   },
   "HomeTileGlow": {
@@ -368,7 +368,7 @@
     20.4,
     0
    ],
-   "tint": "C's light #F0E2C4 at ImageTransparency 0.6; pressed only, under the body",
+   "tint": "the lavender #DCCBFF at ImageTransparency 0.6; pressed only, under the body",
    "use": "a button tile in Inventory's and Equipment's rows: the press's glow. Its box is the tile's with Pad on every side. Sliced as the tile, at its own height (68)."
   },
   "HomeTallFill": {
@@ -381,7 +381,7 @@
     94.8,
     114.0
    ],
-   "tint": "at rest, C's button #447480 at its top to #366270 at its foot (a UIGradient); pressed, C's lit #F0E2C4 to #DCCBA6",
+   "tint": "at rest, the dock's Home tile, #E4D6FF at its top to #B7A4EB at its foot (a UIGradient); pressed, its pressed #A28EE0 to #C3B1F2",
    "use": "Settings' tile, both rows high: its body. Never sliced: drawn at its own size, its foot 72 wide and its top 22.8 right of its foot."
   },
   "HomeTallEdge": {
@@ -395,7 +395,7 @@
     116.0
    ],
    "pad": 1.0,
-   "tint": "at rest, C's facet #8FC4C8 at ImageTransparency 0.45; pressed, C's light #F0E2C4",
+   "tint": "at rest, Voidkin's deep #7C66CC at ImageTransparency 0.45; pressed, its lavender #DCCBFF",
    "use": "Settings' tile, both rows high: its hairline, over the body. Its box is the tile's with Pad on every side: the line sits on the tile's outline, half outside. Never sliced."
   },
   "HomeTallGlint": {
@@ -409,7 +409,7 @@
     116.0
    ],
    "pad": 1.0,
-   "tint": "C's glint #FFF6E2 at ImageTransparency 0.65; at rest only",
+   "tint": "Voidkin's pale #FAF7FF at ImageTransparency 0.65; at rest only",
    "use": "Settings' tile, both rows high: the light along its top, over the hairline. Its box is the tile's with Pad on every side: the line sits on the tile's outline, half outside. Never sliced."
   },
   "HomeTallGlow": {
@@ -423,7 +423,7 @@
     130.0
    ],
    "pad": 8.0,
-   "tint": "C's light #F0E2C4 at ImageTransparency 0.6; pressed only, under the body",
+   "tint": "the lavender #DCCBFF at ImageTransparency 0.6; pressed only, under the body",
    "use": "Settings' tile, both rows high: the press's glow. Its box is the tile's with Pad on every side. Never sliced."
   },
   "HomePoint": {
@@ -441,7 +441,7 @@
     2
    ],
    "tint": null,
-   "use": "the point toward the Home tile, in its own colours (C's panel's foot #2A4E5A, C's edge #E2CFA4), never tinted. Its anchor on the tray's foot at the phone's middle, laid over the plate, so the point opens into it"
+   "use": "the point toward the Home tile, in its own colours (the graphite's foot #22262F, its edge #434A57), never tinted. Its anchor on the tray's foot at the phone's middle, laid over the plate, so the point opens into it"
   },
   "HomeMarkSettings": {
    "file": "images/HomeMarkSettings.png",
@@ -453,7 +453,7 @@
     32,
     32
    ],
-   "tint": "at rest, C's light #F0E2C4; pressed, C's ink #1E3238",
+   "tint": "the ink #14161B, at rest and pressed",
    "use": "Settings' cog, drawn 30 high in its 32 point box: on Settings' tile at 26 high (its box 27.7)"
   },
   "HomeMarkInventory": {
@@ -466,7 +466,7 @@
     32,
     32
    ],
-   "tint": "C's light #F0E2C4",
+   "tint": "the lavender #DCCBFF",
    "use": "Inventory's mark, a shard with its crease cut through, drawn 30 high in its 32 point box: in Inventory's heading at 18 high (its box 19.2)"
   }
  }

@@ -33,6 +33,7 @@ Faber in build/handoff/UI/home: its images, home.json, home_cut.png and home_fit
 drawn, the difference printed and mapped into <out>).
 """
 
+import functools
 import shutil
 import sys
 from pathlib import Path
@@ -51,6 +52,27 @@ import upgrade_pages as up  # noqa: E402
 K = 2
 P = dict(up.C_SYS)
 up.P = P                                            # upgrade_pages' kit draws in C here
+# B's tray in the dock's own material (research, AR43, "Home's tray takes the dock's graphite", 13:36): the plate the dock
+# body's graphite (hud_dock_sheet.py's body, Graphite Dark's button, its edge), its tiles the dock's Home tile, Voidkin's
+# lavender block with its marks in ink (hud_dock.json, Home's rest and pressed); its headings lavender on the graphite.
+# The screens it opens keep C (P).
+TRAY_P = dict(P, panel=("#323845", "#22262F"), edge="#434A57", rule="#8A93A6", text="#F3EFE6",
+              button=("#E4D6FF", "#B7A4EB"), facet="#7C66CC", glint="#FAF7FF", lit=("#A28EE0", "#C3B1F2"),
+              light="#DCCBFF", ink="#14161B", tileText="#14161B", tileIcon="#14161B")
+
+
+def in_graphite(fn):
+    """Draws `fn` with the tray's colours in P (and so in upgrade_pages' kit), and puts C back after."""
+    @functools.wraps(fn)
+    def run(*args, **kwargs):
+        saved = dict(P)
+        P.update(TRAY_P)
+        try:
+            return fn(*args, **kwargs)
+        finally:
+            P.clear()
+            P.update(saved)
+    return run
 SMALL, TITLE = up.SMALL, up.TITLE
 GROUPS = (("Inventory", ("Overview", "Kit", "Inventory", "Stars")),
           ("Equipment", ("Reinforce", "Jewels", "War Emblems")),
@@ -116,10 +138,11 @@ def heading(t, x, y, name, x_end, size=SMALL):
 
 
 def icon(t, name, cx, cy, lit, s=ICON):
+    colour = P["ink"] if lit else P.get("tileIcon", P["light"])
     if name == "Settings":
-        up.mark(t, "Settings", cx, cy, s, P["ink"] if lit else P["light"], tab=True)
+        up.mark(t, "Settings", cx, cy, s, colour, tab=True)
     else:
-        up.mark(t, name, cx, cy, s, P["ink"] if lit else P["light"])
+        up.mark(t, name, cx, cy, s, colour)
 
 
 def row(t, x0, y0, x1, name, lit, lean=0.0):
@@ -214,7 +237,7 @@ def tray_layout(w, h):
 def face(t, name, fx, top, fw, high, on):
     """A tile's icon and word: over its middle, the tall tile's larger and nearer its middle."""
     cx = fx + fw / 2 + LEAN * high / 2
-    words = P["ink"] if on else P["text"]
+    words = P["ink"] if on else P.get("tileText", P["text"])
     if high > TRAY["High"]:
         icon(t, name, cx + 2, top + high / 2 - 10, on, 26)
         t.text(cx - 2, top + high / 2 + 14, SMALL, name, words, "CENTER", bold=0.3)
@@ -223,16 +246,17 @@ def face(t, name, fx, top, fw, high, on):
         t.text(cx, top + high - 21, SMALL, name, words, "CENTER", bold=0.3)
 
 
+@in_graphite
 def dock_tray(t, w, h, lit=None, part=None):
     """B: a tray over the dock with its groups apart (tray_layout), every tile leaning as the dock's (0.2). A point
-    at its foot meets the Home tile."""
+    at its foot meets the Home tile. In the dock's graphite, its tiles the dock's Home tile (TRAY_P)."""
     (x0, y0, x1, y1), heads, tiles, rule = tray_layout(w, h)
     sheet_plate(t, x0, y0, x1, y1)
     t.paint(t.poly([(w / 2 - 12, y1 - 1), (w / 2 + 12, y1 - 1), (w / 2, y1 + 10)]), up.shade(t, P["panel"], y0, y1))
     t.stroke([(w / 2 - 12, y1), (w / 2, y1 + 10), (w / 2 + 12, y1)], 1.0, P["edge"])
     for name, cx, top in heads:
         stacked_heading(t, cx, top, name, TRAY["High"])
-    t.stroke(rule, 1.0, P["edge"], 0.6)
+    t.stroke(rule, 1.0, P["rule"], 0.6)
     for name, fx, top, fw, high in tiles:
         button(t, leaned(fx, top, fx + fw, top + high, LEAN * high), top, top + high, lit == name)
         face(t, name, fx, top, fw, high, lit == name)
@@ -687,6 +711,7 @@ def tile_shape(foot_w, high, pad=0.0):
     return leaned(pad, pad, pad + foot_w, pad + high, LEAN * high), foot_w + LEAN * high + 2 * pad, high + 2 * pad
 
 
+@in_graphite
 def cut_images():
     """B's own images: each tile's body, hairline, glint and glow (the row tile sliced, Settings' tall one fixed), the
     point toward the Home tile, and the two marks drawn in code until now. White where the game tints them.
@@ -710,9 +735,10 @@ def cut_images():
             box["cut"] = [round(lean + 2, 2), 0, round(lean + 2, 2), 0]
         t = fc.clear(w, h)
         t.paint(t.poly(pts), "#FFFFFF")
-        made[f"Home{key}Fill"] = (t.px.copy(), dict(box, tint=f"{rest}, C's button #447480 at its top to #366270 at "
-                                                              f"its foot (a UIGradient); {pressed}, C's lit #F0E2C4 to "
-                                                              "#DCCBA6", use=f"{what}: its body. {how}"))
+        made[f"Home{key}Fill"] = (t.px.copy(), dict(box, tint=f"{rest}, the dock's Home tile, {P['button'][0]} at its "
+                                                              f"top to {P['button'][1]} at its foot (a UIGradient); "
+                                                              f"{pressed}, its pressed {P['lit'][0]} to {P['lit'][1]}",
+                                                    use=f"{what}: its body. {how}"))
         pts, w, h = tile_shape(foot_w, high, LINE_PAD)
         lined = dict(points=[round(w, 2), round(h, 2)], pad=LINE_PAD)
         if sliced:
@@ -721,13 +747,14 @@ def cut_images():
                    + ("Sliced as the tile, at its own height (54)." if sliced else "Never sliced."))
         t = fc.clear(w, h)
         t.line(t.poly(pts), 1.0, "#FFFFFF")
-        made[f"Home{key}Edge"] = (t.px.copy(), dict(lined, tint=f"{rest}, C's facet #8FC4C8 at ImageTransparency "
-                                                                f"0.45; {pressed}, C's light #F0E2C4",
+        made[f"Home{key}Edge"] = (t.px.copy(), dict(lined, tint=f"{rest}, Voidkin's deep {P['facet']} at "
+                                                                f"ImageTransparency 0.45; {pressed}, its lavender "
+                                                                f"{P['light']}",
                                                     use=f"{what}: its hairline, over the body." + on_line))
         t = fc.clear(w, h)
         t.stroke(pts[:2], 1.0, "#FFFFFF")
-        made[f"Home{key}Glint"] = (t.px.copy(), dict(lined, tint=f"C's glint #FFF6E2 at ImageTransparency 0.65; "
-                                                                 f"{rest} only",
+        made[f"Home{key}Glint"] = (t.px.copy(), dict(lined, tint=f"Voidkin's pale {P['glint']} at ImageTransparency "
+                                                                 f"0.65; {rest} only",
                                                      use=f"{what}: the light along its top, over the hairline."
                                                          + on_line))
         pts, w, h = tile_shape(foot_w, high)
@@ -737,8 +764,8 @@ def cut_images():
         glow = dict(points=[round(w, 2), round(h, 2)], pad=GLOW_PAD)
         if sliced:
             glow["cut"] = [round(lean + 2 + GLOW_PAD, 2), 0, round(lean + 2 + GLOW_PAD, 2), 0]
-        made[f"Home{key}Glow"] = (t.px.copy(), dict(glow, tint=f"C's light #F0E2C4 at ImageTransparency 0.6; {pressed} "
-                                                                "only, under the body",
+        made[f"Home{key}Glow"] = (t.px.copy(), dict(glow, tint=f"the lavender {P['light']} at ImageTransparency 0.6; "
+                                                                f"{pressed} only, under the body",
                                                     use=f"{what}: the press's glow. Its box is the tile's with Pad on "
                                                         "every side. " + ("Sliced as the tile, at its own height (68)."
                                                                           if sliced else "Never sliced.")))
@@ -747,13 +774,13 @@ def cut_images():
     t.paint(t.poly([(cx - 12, y1 - 1), (cx + 12, y1 - 1), (cx, y1 + 10)]), P["panel"][1])
     t.stroke([(cx - 12, y1), (cx, y1 + 10), (cx + 12, y1)], 1.0, P["edge"])
     made["HomePoint"] = (t.px.copy(), dict(points=[28, 14], anchor=[14, 2], tint=None,
-                                           use="the point toward the Home tile, in its own colours (C's panel's foot "
-                                               "#2A4E5A, C's edge #E2CFA4), never tinted. Its anchor on the tray's foot "
-                                               "at the phone's middle, laid over the plate, so the point opens into it"))
+                                           use=f"the point toward the Home tile, in its own colours (the graphite's foot "
+                                               f"{P['panel'][1]}, its edge {P['edge']}), never tinted. Its anchor on the "
+                                               "tray's foot at the phone's middle, laid over the plate, so the point "
+                                               "opens into it"))
     t = fc.clear(32, 32)
     up.mark(t, "Settings", 16, 16, 30, "#FFFFFF", tab=True)
-    made["HomeMarkSettings"] = (t.px.copy(), dict(points=[32, 32], tint=f"{rest}, C's light #F0E2C4; {pressed}, C's ink "
-                                                                         "#1E3238",
+    made["HomeMarkSettings"] = (t.px.copy(), dict(points=[32, 32], tint=f"the ink {P['ink']}, {rest} and {pressed}",
                                                   use="Settings' cog, drawn 30 high in its 32 point box: on Settings' "
                                                       "tile at 26 high (its box 27.7)"))
     t = fc.clear(32, 32)
@@ -764,13 +791,14 @@ def cut_images():
     seam = np.minimum.reduce([ui.sd_segment(t.x, t.y, a, b) for a, b in zip(crease, crease[1:])]) - s * 0.035
     t.px[..., :3] = 1.0
     t.px[..., 3] = np.clip(0.5 - t.poly(shard_pts) * ui.K, 0, 1) * (1 - 0.55 * np.clip(0.5 - seam * ui.K, 0, 1))
-    made["HomeMarkInventory"] = (t.px.copy(), dict(points=[32, 32], tint="C's light #F0E2C4",
+    made["HomeMarkInventory"] = (t.px.copy(), dict(points=[32, 32], tint=f"the lavender {P['light']}",
                                                    use="Inventory's mark, a shard with its crease cut through, drawn 30 "
                                                        "high in its 32 point box: in Inventory's heading at 18 high "
                                                        "(its box 19.2)"))
     return made
 
 
+@in_graphite
 def tray_placements(w, h):
     """Where each piece goes, in points from the tray's top left, for a phone w by h."""
     (x0, y0, x1, y1), heads, tiles, rule = tray_layout(w, h)
@@ -780,15 +808,15 @@ def tray_placements(w, h):
     return dict(
         tray=dict(size=[round(x1 - x0, 2), round(y1 - y0, 2)],
                   where="centred on the phone's middle; its foot 12 above the dock's top (95 above the phone's foot)",
-                  plate="the kit's panel (Config.UIKit's slices, as the foe cards): PanelShadow under it (pad 16), "
-                        "PanelFill tinted C's panel #34606C to #2A4E5A, opaque (the world never shows through the tray), "
-                        "PanelEdge tinted C's edge #E2CFA4",
+                  plate=f"the kit's panel (Config.UIKit's slices): PanelShadow under it (pad 16), PanelFill tinted the "
+                        f"dock body's graphite {P['panel'][0]} to {P['panel'][1]}, opaque (the world never shows through "
+                        f"the tray), PanelEdge tinted its edge {P['edge']}",
                   point="HomePoint, its anchor on the tray's foot at the phone's middle"),
         headings=[dict(group=n, mark=[rx(cx), ry(top + 17)], markBox=round(HEAD_BOX[n], 2),
                        word=[rx(cx), ry(top + TRAY["High"] - 15)]) for n, cx, top in heads],
-        headingNote="the mark an ImageLabel markBox square, its middle at `mark`: Inventory's HomeMarkInventory, "
-                    "Equipment's Config.Hud PageForge, tinted C's light #F0E2C4; the group's name 14 points, bold, C's "
-                    "text #FFF6E2, its capitals' middle at `word`, centred. No plate",
+        headingNote=f"the mark an ImageLabel markBox square, its middle at `mark`: Inventory's HomeMarkInventory, "
+                    f"Equipment's Config.Hud PageForge, tinted the lavender {P['light']}; the group's name 14 points, "
+                    f"bold, {P['text']}, its capitals' middle at `word`, centred. No plate",
         tiles=[dict(button=n, foot=[rx(fx), ry(top + hi)], footWidth=round(fw, 2), high=hi,
                     image="HomeTall" if hi > TRAY["High"] else "HomeTile",
                     box=[rx(fx), ry(top), round(fw + LEAN * hi, 2), hi],
@@ -802,16 +830,17 @@ def tray_placements(w, h):
                  "by its Pad on every side, bottom to top: Glow (pressed), Fill, Edge, Glint (at rest). Its icon an "
                  "ImageLabel iconBox square, its middle at `icon`: "
                  "the page's icon, Config.Hud's PageOverview, PageKit, PageItems (Inventory), PageStars, PageForge "
-                 "(Reinforce), PageJewels and PageWarEmblems; Settings' HomeMarkSettings. Tinted C's light #F0E2C4 at "
-                 "rest, C's ink #1E3238 pressed. Its word 14 points, bold, centred, its capitals' middle at `word`: "
-                 "C's text #FFF6E2 at rest, C's ink pressed",
+                 f"(Reinforce), PageJewels and PageWarEmblems; Settings' HomeMarkSettings. In the dock marks' ink "
+                 f"{P['ink']}, at rest and pressed. Its word 14 points, bold, centred, its capitals' middle at `word`, "
+                 f"in the same ink",
         rule=dict(ends=[[rx(a[0]), ry(a[1])], [rx(b[0]), ry(b[1])]],
                   middle=[rx((a[0] + b[0]) / 2), ry((a[1] + b[1]) / 2)],
-                  note="a 1 point line between the rows and Settings, C's edge #E2CFA4 at BackgroundTransparency 0.4: "
+                  note=f"a 1 point line between the rows and Settings, {P['rule']} at BackgroundTransparency 0.4: "
                        f"a Frame 1 wide and {round(np.hypot(b[0] - a[0], b[1] - a[1]), 1)} high, its middle at "
                        f"`middle`, Rotation {round(np.degrees(np.arctan(LEAN)), 2)} (clockwise, its top to the right)"))
 
 
+@in_graphite
 def built_tray(world, made, lit=None):
     """The phone with B open, laid as the game lays it: the kit's slices, these images, the game's icons and words."""
     ui.K = K
@@ -837,23 +866,25 @@ def built_tray(world, made, lit=None):
             fc.lay_slice(page, px, entry.get("cut", (0, 0, 0, 0)), fx, top, fw + LEAN * high, high,
                          pad=entry.get("pad", 0.0), tint=tint, alpha=alpha)
         cx = fx + fw / 2 + LEAN * high / 2
-        words = P["ink"] if on else P["text"]
+        words = P["ink"] if on else P.get("tileText", P["text"])
+        mark = P["ink"] if on else P.get("tileIcon", P["light"])
         if key == "HomeTall":
-            laid(page, made["HomeMarkSettings"][0], cx + 2, top + high / 2 - 10, TALL_ICON, P["ink"] if on else P["light"])
+            laid(page, made["HomeMarkSettings"][0], cx + 2, top + high / 2 - 10, TALL_ICON, mark)
             t.text(cx - 2, top + high / 2 + 14, SMALL, name, words, "CENTER", bold=0.3)
         else:
             shipped = rs.load(up.CHROME / f"VoidkinPage{up.PAGE_ICON.get(name, name)}.png")
-            laid(page, shipped, cx, top + 16, ICON_BOX, P["ink"] if on else P["light"])
+            laid(page, shipped, cx, top + 16, ICON_BOX, mark)
             t.text(cx, top + high - 21, SMALL, name, words, "CENTER", bold=0.3)
     for name, cx, top in heads:
         mark = made["HomeMarkInventory"][0] if name == "Inventory" else rs.load(up.CHROME / "VoidkinPageForge.png")
         laid(page, mark, cx, top + 17, HEAD_BOX[name], P["light"])
         t.text(cx, top + TRAY["High"] - 20, SMALL, name, P["text"], "CENTER", bold=0.3)
-    t.stroke(rule, 1.0, P["edge"], 0.6)
+    t.stroke(rule, 1.0, P["rule"], 0.6)
     words_in(sheet)
     return sheet.px
 
 
+@in_graphite
 def cut(out):
     """Writes build/handoff/UI/home: images/, home.json, home_cut.png (each image alone, then at 64 px) and home_fit.png
     (the tray built from them beside the drawn one, at rest and pressed, at the smallest phone and in the capture)."""
@@ -867,12 +898,15 @@ def cut(out):
         listing[name] = dict(file=f"images/{name}.png", pixels=[px.shape[1], px.shape[0]], **entry)
     sw, sh = SMALLEST
     (HANDOFF / "home.json").write_text(json.dumps(dict(
-        pixelsPerPoint=4, palette="C_SYS (AR40's C, the system panel), as the foe cards",
+        pixelsPerPoint=4, palette="the dock's own (research, AR43, 13:36): the plate the dock body's graphite, the "
+                                  "tiles the dock's Home tile, Voidkin's lavender with marks in ink; the screens it "
+                                  "opens keep C",
         layout=tray_placements(sw, sh),
         layoutNote="measured on the smallest phone (568 by 320); the tray keeps its size on every phone, centred",
-        states=dict(rest="Fill tinted C's button, Edge C's facet at 0.45, Glint shown, icon and word light",
-                    pressed="Glow shown under, Fill C's lit, Edge C's light, Glint hidden, icon and word ink; the press's "
-                            "squeeze is Config.Hud.Motion.Press, as every press"),
+        states=dict(rest="Fill tinted the Home tile's lavender, Edge Voidkin's deep at 0.45, Glint shown, icon and "
+                         "word in ink",
+                    pressed="Glow shown under, Fill the Home tile's pressed, Edge the lavender, Glint hidden, icon and "
+                            "word in ink; the press's squeeze is Config.Hud.Motion.Press, as every press"),
         dim=dict(colour=DIM_TO, amount=DIM["B"], seconds=SEEDS["Dim"],
                  note="the world dims under the tray, eased out; the dock stays lit above the dim (its rect: 100 points "
                       "each side of the middle, 83 up from the foot)"),
@@ -887,7 +921,8 @@ def cut(out):
     W = 1180
     sheet = label_sheet(W, 1000)
     head = sheet.tile(0, 0, W, 72)
-    head.text(16, 16, 20, "AR43, Home in B, cut for Faber: B's own images, for the content check", ink, bold=0.2)
+    head.text(16, 16, 20, "AR43, Home's tray in the dock's graphite, recut for Faber: its own images, for the content check",
+              ink, bold=0.2)
     head.text(16, 46, 13, "Each white where the game tints it, shown tinted at rest over dark: as it ships (4 px a point, here "
                           "at 1 px a pixel), then at 64 px. The plate is the kit's panel; the icons are shipped.", soft)
     x, y, row = 16.0, 84.0, 0.0

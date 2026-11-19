@@ -13388,6 +13388,20 @@ From home_tray.png and home_step.png at the smallest phone, before Modulo cuts t
 - **Content check PASS** (13:36), no conditions. A stack of windows is a free function. The kit's cut corners and the shard are ours, and it matches neither Roblox's menu button nor its logo.
 - **For Faber:** upload `DockMarkHome` and swap it into UIKit's dock row. `DockMarkInventory` stays uploaded and unused.
 
+### Home's tray recut in the dock's graphite (Modulo, 2026-11-19, 13:53 to 13:56 by the clock)
+
+- **What:** research's pick of 13:36, made: the tray is the dock unfolding. `TRAY_P` in `tools/blender/home_panel.py` draws the tray, its cut and its fit, while the screens it opens keep C.
+  - **The plate:** the dock body's graphite, #323845 to #22262F, with its edge #434A57.
+  - **The tiles:** the dock's own Home tile. At rest, Voidkin's lavender #E4D6FF to #B7A4EB, a deep #7C66CC hairline at 0.45 and the pale sheen. Pressed, #A28EE0 to #C3B1F2 with the lavender #DCCBFF edge and glow. Icons and words are in the dock marks' ink #14161B in both states.
+  - **The headings:** lavender marks and ivory #F3EFE6 words on the graphite, with a #8A93A6 rule.
+- **Only `HomePoint`'s pixels change** (graphite now). The other ten images are white masks, byte-identical; their tints are in `home.json`, which gives each image's tint, the plate, the headings, the tiles, the rule and the states. The layout and motion are unchanged.
+- **The fit:** built against drawn, the mean difference is 0.003 and the 99th percentile 0.041. In the fight capture the tray reads as the dock's own: graphite over the dock, lavender tiles over the dock's lavender Home tile.
+- **Where:** `build/handoff/UI/home/` (`images/HomePoint.png`, `home.json`, `home_cut.png`, `home_fit.png`).
+- **Content check, PASS** (13:56), on the eleven images, the cut and fit sheets, `home.json` and `TRAY_P`. The ink on the lavender measures about 8:1 at rest and 6:1 pressed, worked out from the hex values. Its conditions:
+  1. The eleven are logged with their group ids once uploaded.
+  2. The tints come from `home.json` as written. A later warm or red tint on these masks, above all the shard or the glow, needs a fresh check.
+- **For Faber:** the upload held since 65295ff goes ahead with this cut. The eleven go under the group, and the tints come from `home.json`.
+
 ## AR44. The damage numbers' rework: the plain, received and healing numbers, and the critical closer to the reference (Faber's takes in the game, Modulo's stroke, research's pick)
 
 Research, 2026-11-19, 11:17 by the clock. The director, by 11:16, to research: "The damages/healing text need a small rework it doesnt look as i wanted it to be, same for the crit text it need to be more close to the reference i've shown". The same morning, relayed by Modulo at about 11:15: "like the blackstroke around the text for those are way to thick". Research reads "those" as the damage numbers, since the two came together. The rule stays `docs/ui.md`, "Damage numbers" (the director, 2026-11-12); this changes the look only. The reference is `docs/research/hud-reference.md`, its three arena screenshots, held internal.

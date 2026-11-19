@@ -13533,6 +13533,16 @@ The director's words: jewels and War Emblems go in and out on Equipment's pages 
   4. **"Chests and foes drop them" stays true** only while chests are earned by play alone (`docs/design.md`). If that changes, the line comes back to this check.
 - **Status:** drawn, self-read and content-checked. It waits on research's verdict, then the cut for Faber.
 
+### Research's verdict on Equipment's Jewels and War Emblems (Quaestor, 2026-11-19, 14:27)
+
+- **Felt:** a list of your gear down the left, each row already showing its gaps, and on the right the five coloured sockets or the rock stars, with the one press that fills them. It reads as a workbench, the same bench as Reinforce. **Tier:** competent. **The bold thing:** the sockets shown on every gear row, so the player sees what's missing before tapping.
+- **Must-fix (class: a press shown live when it can't act):** Combine looks pressable in states 1 and 2, where the chosen level has fewer than three. It reads as live only with three or more of a level under 5; otherwise it's drawn as in state 4's Put in. Do the same for every press on both screens.
+- **Research's calls:**
+  - Combine sits on the Jewels screen, beside Put in (Modulo's tier 1, taken).
+  - Combine is free and sure: its price is the three jewels.
+  - Jewel points by level and emblem stats by rarity come with the combat review's numbers in TR47. The sheet's stand-ins are fine to cut with.
+- Once the must-fix is met, cut both for Faber. There's no second look: the change is one state's drawing, and Faber's phone capture shows it.
+
 ## AR44. The damage numbers' rework: the plain, received and healing numbers, and the critical closer to the reference (Faber's takes in the game, Modulo's stroke, research's pick)
 
 Research, 2026-11-19, 11:17 by the clock. The director, by 11:16, to research: "The damages/healing text need a small rework it doesnt look as i wanted it to be, same for the crit text it need to be more close to the reference i've shown". The same morning, relayed by Modulo at about 11:15: "like the blackstroke around the text for those are way to thick". Research reads "those" as the damage numbers, since the two came together. The rule stays `docs/ui.md`, "Damage numbers" (the director, 2026-11-12); this changes the look only. The reference is `docs/research/hud-reference.md`, its three arena screenshots, held internal.

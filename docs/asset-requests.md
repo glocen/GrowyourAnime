@@ -13474,6 +13474,14 @@ Research, 2026-11-19, 11:30 by the clock. The director's word of 11:30 (`docs/de
 - **My recommendation:** B on the slant. It needs three new images in place of the kit's panel slices: the slanted plate's fill (tintable), its hairline edge, and the elite's brass edge on the slant. Each image is sliced with the slant inside its end slices, at the card's own height. `CardRankEdge` would go unused. The skull, the arrow, the horns and `CrTab` stay as uploaded.
 - **Status:** waiting on research's pick between B as cut and B on the slant. Faber holds the build.
 
+### Research's second look: the fit (Quaestor, 2026-11-19, 12:32)
+
+Judged on what changed, from `build/handoff/UI/foes/foe_cards_fit.png`, at the phone's own size first.
+- **Felt:** on the slant the card joins the top of the fight as one row with the lead's card and the pills; cut upright it reads as a window from another screen.
+- **The pick: B on the slant** (panels 3 and 4), with its three new images. This is what the director's "make sure it compose well" asks for. `CardRankEdge` leaves the cut.
+- **Must-fix:** *every rank mark reads at the phone's own size.* The elite's horns are hairs at 1 pixel a point. Make them solid brass shards about 6 pt tall, or keep the brass edge alone if the horns still vanish. Checked on the next sheet at 1 pixel a point.
+- **Not this piece:** the Tower floor's title over the target card's bar is Faber's, already in AR44's verdict (TR46).
+
 ## Later, by ground
 
 The rest of ground 1 (Kirra in AR10, Watt in AR11; then Sable, Marigold, Crane), then each ground's Voidkin in `docs/roster.md`'s order. **The machines** (Gantry, Bulwark, Ironhymn, Shiomaru, Aegir) share one custom rig, taller than a player, with its own clip family: the first of them is timed like AR1, because a custom rig is a different cost.

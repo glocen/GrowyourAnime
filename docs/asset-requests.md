@@ -13442,7 +13442,8 @@ From home_tray.png and home_step.png at the smallest phone, before Modulo cuts t
     4. The twelve are logged with their group ids once uploaded.
   - **For research, not content:** at 64 px Serpent Coil leans toward an S and Tidebreak has a faint "2" echo. Both read as their thing at full size and in the 44 point cell.
 - **For Faber:** upload the twelve under the group. The set names and image keys go in `src/shared/Definitions/` as research's entry says.
- The damage numbers' rework: the plain, received and healing numbers, and the critical closer to the reference (Faber's takes in the game, Modulo's stroke, research's pick)
+
+## AR44. The damage numbers' rework: the plain, received and healing numbers, and the critical closer to the reference (Faber's takes in the game, Modulo's stroke, research's pick)
 
 Research, 2026-11-19, 11:17 by the clock. The director, by 11:16, to research: "The damages/healing text need a small rework it doesnt look as i wanted it to be, same for the crit text it need to be more close to the reference i've shown". The same morning, relayed by Modulo at about 11:15: "like the blackstroke around the text for those are way to thick". Research reads "those" as the damage numbers, since the two came together. The rule stays `docs/ui.md`, "Damage numbers" (the director, 2026-11-12); this changes the look only. The reference is `docs/research/hud-reference.md`, its three arena screenshots, held internal.
 

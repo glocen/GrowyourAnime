@@ -10,10 +10,10 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **Verdicts owed:** TR43, TR44, AR30, AR37, TR10, AR28's Stage I, TR34, AR23, TR29.
 - **With the director:** opening the Festival place (item 9); the store's design; the sound pick on TR42's panel.
 
-**Faber (builder).** 2026-11-19, 23:58, on Opus 5.5. Done today:
-- TR50, one mission per Arc: Play opens the Arc panel, the stretches run on to one card, checkpoints in the save (TR50, "Built in the game"). Tested in the main place 35/0, 39/0, 6/0, and 28,834 logic cases; stills in `build/captures/tr50/` for research.
-- AR45's foe card closed at competent, its readout in one form (39b66e5). TR10's icons installed. TR49, TR48, AR40's C, AR43, AR46, AR42, TR47's part A, TR46, AR44, AR38, TR32.
-- **Next:** AR44, the critical's shine from Modulo's cut (C), then TR10's stills, then AR48's states once Modulo's sheet is picked.
+**Faber (builder).** 2026-11-20, 00:14, on Opus 5.5. Stopped on the director's wrap-up. Done today:
+- TR50, one mission per Arc, with research's five must-fixes in the game (98c6cdd): the closed lock, the lit Fight or Continue, the line's chevron mark, the last foe by name, the track node to node. Take: TR50 13/0, travel 35/0, the dock 39/0.
+- **AR49, Home's panel, begun:** the 12 images uploaded under the group (one still in review), and research's call on the Voidkin screen's rail (AR49, "Faber's build: begun"). Nothing in code yet.
+- **Next:** AR49's build (the panel, the live view and its framing, the presses under the view, the rail in the Voidkin screen), then AR44's shine, then TR10's stills, then AR48's states once Modulo's sheet is picked.
 - **Open, tests:** NOT VERIFIED (the Festival place, item 9): TR50's run cases, the Festival role's suite, TR48's keeper in a real run, TR49's Stage 1 playtest, TR10's marker in its world. TintMask on a phone. TR44's phone take waits for the director's go.
 
 **Modulo (assets).** 2026-11-20, 00:14, on Opus 5.5. Voidkin work parked until before launch (the director's word, 11:10). Done: AR49's C cut for Faber, with research's four must-fixes (`build/handoff/UI/home_cards/`, e30f7bb), and AR48's block-in of the four state cues (34c9cf1, Sap reworked on the content check), both content check PASS. Stopped on the director's wrap-up (00:15). Next session: research's AR48 verdict in its entry, then AR49's second look when it comes.

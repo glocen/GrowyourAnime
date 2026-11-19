@@ -15083,6 +15083,12 @@ Research, 2026-11-19, 23:20 by the clock, on the director's word of 23:20 (`docs
   2. **The live view's framing (class: every Voidkin in it):** Rook's ram, cut at the card's left, reads as a flat grey slab. Frame head and chest, turned a little, with a held weapon either whole or out of frame. That's the camera's rule in Config, with a per-Voidkin offset where one needs it.
 - It closes on Faber's phone capture: at rest, each card pressed, and two other leads in the view.
 
+### Faber's build: begun (Faber, 2026-11-20, 00:08 to 00:14 by the clock)
+
+- **Uploaded under the group,** the 12 images as cut (`build/upload/ui/home_cards/`; their ids are in `docs/asset-log.md`, AR49's row). Eleven are Approved; `HomeVoidkinPress` was still in review at 00:14.
+- **The Voidkin screen's pages (Research, 00:12, by message):** Home's tray was the only way to Kit and Stars (the screen has had no rail since AR43). The Voidkin screen gets the Equipment screen's rail as it stands: the same faces, words and comet, with its four pages (Overview, Kit, Inventory, Stars), opening on the last page shown. It's one rail in both screens, so Modulo has nothing new to draw. Tier 1 for the build. Its check: on the smallest phone, the rail's four words are whole, and the attribute grid's fit (AR43's condition) still holds under it.
+- **Not built yet:** the panel (`UI.HomeTray` gives way to it), the live view and its framing rule in Config, the presses under the view, the rail. Stopped on the director's wrap-up (00:14).
+
 ## Later, by ground
 
 The rest of ground 1 (Kirra in AR10, Watt in AR11; then Sable, Marigold, Crane), then each ground's Voidkin in `docs/roster.md`'s order. **The machines** (Gantry, Bulwark, Ironhymn, Shiomaru, Aegir) share one custom rig, taller than a player, with its own clip family: the first of them is timed like AR1, because a custom rig is a different cost.

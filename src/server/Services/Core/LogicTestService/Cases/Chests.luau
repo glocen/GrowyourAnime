@@ -170,7 +170,7 @@ return {
 					end
 				end
 			end
-			-- Lantern Row's Tower chest can give what its ladder row can't: rolled, each rarity near its share.
+			-- Lantern Row's Tower chest gives what its ladder rows give at their least, and more: rolled, each rarity near its share.
 			local row = ChestRows.Of("lanternrow", ChestRows.Tower) :: ChestRows.Row
 			local draw = sequence(77)
 			local counts: { [string]: number } = {}
@@ -184,7 +184,7 @@ return {
 				local got = counts[name] or 0
 				t.Check(`Lantern Row's Tower chest: {name} near its share`, math.abs(got - want) <= 4 * math.sqrt(want) + 1, `{got} against {want}`)
 			end
-			t.Check("it can give a Legendary, as no ladder row of Lantern Row's can", (counts.Legendary or 0) > 0 and Chests.Odds(ChestRows.Of("lanternrow", 2) :: any).Legendary == 0)
+			t.Check("it can give a Legendary, more often than Lantern Row's ladder chests at their least (TR48 part 2)", (counts.Legendary or 0) > 0 and Chests.Odds(ChestRows.Of("lanternrow", 2) :: any).Legendary < own[5] / total)
 		end,
 	},
 	{

@@ -16,7 +16,20 @@ return {
 	-- pace": a Rare sure on the first Hard keeper's win), its ladder row's weights under it going to none.
 	Keeper = { First = 3, After = 2, FirstFloor = { Hard = "Rare" } :: { [string]: string } },
 	-- A Hard stage's chests read this many ladder rows past their ground's: Lantern Row's read Drum Court's (TR48).
-	Hard = { Rows = 1 },
+	-- Least: the share, in percent of a roll, under which a Hard chest's Epic or Legendary never falls, on top of
+	-- Chests.Least: a Hard elite's, and a Hard keeper's after its first win (TR48 part 2; research, 2026-11-19, 21:00).
+	Hard = {
+		Rows = 1,
+		Least = {
+			Elite = { Epic = 0.6 },
+			Keeper = { Epic = 1.6, Legendary = 0.35 },
+		} :: { [string]: { [string]: number } },
+	},
+	-- The share, in percent of a roll, under which a ladder chest's Epic or Legendary never falls, Normal and Hard, from
+	-- the first chest: the difference comes from Common. Never on the Tower's row, which is above it, nor on a keeper's
+	-- first win's chest with a floor, where it would be a jackpot (TR48 part 2, research's pace of 2026-11-19, 21:00, on
+	-- the director's word: "the epic and legendary should come at any point imo but for the beginning it luck").
+	Least = { Epic = 0.3, Legendary = 0.05 } :: { [string]: number },
 	Sure = 3, -- the account's third kill always drops a Shade's chest (the north star's "Build" beat)
 
 	-- Rarity weights, Common to Legendary, one row a step. A chest of the ground in order g at tier t reads row g + t - 1,

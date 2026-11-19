@@ -41,6 +41,7 @@ local Voidkin = require(Shared.Definitions.Voidkin)
 local Rules = require(Shared.Rules.Bag)
 local Chests = require(Shared.Rules.Chests)
 local Sheet = require(Shared.Rules.Sheet)
+local Odds = require(Shared.Rules.Odds)
 local Hud = require(Shared.Rules.Hud)
 local HudConfig = require(Shared.Config.Hud)
 local UIKit = require(Shared.Config.UIKit)
@@ -836,7 +837,7 @@ local function chestCard(context: Context, at: Layout, id: string)
 		line.LayoutOrder = index
 		line.Parent = odds
 		label({ Name = "Name", Size = Theme.Text.Caption, Font = Theme.Font.Strong, Colour = P.Rarity[each.Rarity] or P.Text, Parent = line }, each.Rarity)
-		label({ Name = "Chance", Size = Theme.Text.Caption, Font = Theme.Font.Number, Colour = P.Text, Align = Enum.TextXAlignment.Right, Parent = line }, Sheet.Percent(each.Chance))
+		label({ Name = "Chance", Size = Theme.Text.Caption, Font = Theme.Font.Number, Colour = P.Text, Align = Enum.TextXAlignment.Right, Parent = line }, Odds.Percent(each.Chance * 10000)) -- to the hundredth, as rolled: 0.05% (TR48 part 2)
 	end
 	if info.Room > 0 then
 		label({ Name = "Room", Size = Theme.Text.Caption, Colour = P.Faint, Box = UDim2.fromOffset(wide, C.Row), Parent = odds }, `Room for {Hud.Digits(info.Room)} in the bag`).LayoutOrder = #info.Odds + 1

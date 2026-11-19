@@ -4163,6 +4163,38 @@ Faber, 2026-11-19, 03:43 by the clock: the follow-up's item 7 (`docs/production-
   - With more grounds, the ladder reaches rows 5 and 7, and the Hard weights are dropped then. The weights on every chest stay.
 - **Done when:** a case rolls each chest's weights (a Normal Shade's, a Hard elite's, the Hard keeper's first and after, the Tower's unchanged), and the bag's chest card shows them.
 
+### Part 2 built (Faber, 2026-11-19, between 21:25 and 21:36 by the clock, alongside AR40's two fixes)
+
+- **The shape, research's as written:**
+  - `Config.Chests.Least = { Epic = 0.3, Legendary = 0.05 }`.
+  - `Config.Chests.Hard.Least = { Elite = { Epic = 0.6 }, Keeper = { Epic = 1.6, Legendary = 0.35 } }`, on top of it.
+- **The rule (`Rules.Chests.Least` and `Weights`):**
+  - A ladder chest's Epic and Legendary rise to their least share of its roll, and the difference comes from Common. Its Uncommon and Rare stay its row's.
+  - On Hard, a tier-2 chest on the stage a keeper ends (`ChestRows.KeeperStage`) takes the keeper's least, and any other takes the elite's. Lantern Row's stage 4 is the keeper alone, so no elite shares that chest.
+  - The Tower's row and a keeper's first-win chest with a floor (Hard's) are untouched.
+- **The chest's card says each chance to the hundredth, as rolled** (`Rules.Odds.Percent`), so a Legendary reads 0.05%. Before, it was to the tenth under 10%, which would have read 0.1%.
+- **What a Lantern Row chest gives now:**
+
+  | Chest | Common | Uncommon | Rare | Epic | Legendary |
+  |---|---|---|---|---|---|
+  | A Shade's, Normal | 93.65% | 6% | 0 | 0.3% | 0.05% |
+  | An elite's on Normal, or a Shade's on Hard (row 2) | 91.05% | 8.6% | 0 | 0.3% | 0.05% |
+  | A Hard elite's (row 3) | 87.35% | 10.9% | 1.1% | 0.6% | 0.05% |
+  | The Hard keeper's after its first win (row 3) | 86.05% | 10.9% | 1.1% | 1.6% | 0.35% |
+  | The Hard keeper's first win | 0 | 0 | 100% | 0 | 0 |
+  | The Tower's | unchanged | | | | |
+
+- **Tests:**
+  - The type check: 0 new.
+  - The logic cases: 27,248 passed, offline and in Studio. The new case, "Loot: TR48 part 2", checks:
+    - research's numbers, and each chest's odds as the table says;
+    - every Hard stage's elite;
+    - the first Hard win's floor alone, the Tower's untouched, and Normal's first keeper's win;
+    - 20,000 rolls each of a Normal Shade's chest and the Hard keeper's repeat, with Epic and Legendary at their shares.
+  - Eight older checks compared a chest's weights to its ladder row by identity, and now read the row under the least shares. The Tower case's "no ladder row of Lantern Row's" gives a Legendary is now "more often than Lantern Row's ladder chests".
+  - The self-test: the Items page's chest card shows 0.3% and 0.05% (Items page 121/0).
+- **Status:** implemented and tested. Research's MODEL stands for the pace. Not director-accepted.
+
 ## TR49. The combat review, built: the six decisions (Faber, after AR40's C)
 
 - **Feel line:** a lead walks into a Lantern Row pack and every Shade in it hits, crits, dodges and blocks back. The skull over a foe says what the fight will cost before the first swing. The sheet shows all five attributes, and CR rises with every piece that makes the lead win.

@@ -112,21 +112,48 @@ function Chests.Step(chest: ChestRows.Row): number
 	return math.clamp((if ground then ground.Order else 1) + chest.Tier - 1 + past, 1, #ChestsConfig.Ladder)
 end
 
--- The rarity weights a chest rolls by, Common to Legendary: the Tower's own row for a Tower chest, else its ladder row,
--- and a keeper's first win's chest none under its difficulty's floor (Config.Chests.Keeper.FirstFloor, TR48).
+-- The least shares a ladder chest keeps, by rarity, in percent of its roll (TR48 part 2): every chest's
+-- (Config.Chests.Least), and on Hard a keeper's after its first win (its tier-2 chest on the stage the keeper ends) or an
+-- elite's (any other tier-2 chest) raised by Config.Chests.Hard.Least.
+function Chests.Least(chest: ChestRows.Row): { [string]: number }
+	local least = table.clone(ChestsConfig.Least)
+	if chest.Difficulty == "Hard" and chest.Tier == ChestsConfig.Keeper.After then
+		local keeper = chest.Stage == ChestRows.KeeperStage[chest.Ground]
+		for name, share in ChestsConfig.Hard.Least[if keeper then "Keeper" else "Elite"] or {} do
+			least[name] = math.max(least[name] or 0, share)
+		end
+	end
+	return least
+end
+
+-- The rarity weights a chest rolls by, Common to Legendary: the Tower's own row for a Tower chest; a keeper's first
+-- win's chest none under its difficulty's floor (Config.Chests.Keeper.FirstFloor, TR48); else its ladder row, each
+-- rarity raised to its least share (Chests.Least), the difference taken from Common.
 function Chests.Weights(chest: ChestRows.Row): { number }
 	if chest.Tier == ChestRows.Tower then
 		return ChestsConfig.Tower
 	end
 	local row = ChestsConfig.Ladder[Chests.Step(chest)]
 	local floor = if chest.Tier == ChestsConfig.Keeper.First then ChestsConfig.Keeper.FirstFloor[chest.Difficulty] else nil
-	local least = if floor then table.find(ChestsConfig.Rarities, floor) else nil
-	if least == nil then
-		return row
-	end
+	local lowest = if floor then table.find(ChestsConfig.Rarities, floor) else nil
 	local weights = table.clone(row)
-	for i = 1, least - 1 do
-		weights[i] = 0
+	if lowest then
+		for i = 1, lowest - 1 do
+			weights[i] = 0
+		end
+		return weights
+	end
+	local total = 0
+	for _, weight in row do
+		total += weight
+	end
+	for name, share in Chests.Least(chest) do
+		local i = table.find(ChestsConfig.Rarities, name)
+		local want = total * share / 100
+		if i and i > 1 and (weights[i] or 0) < want then
+			weights[1] -= want - (weights[i] or 0)
+			weights[i] = want
+		end
 	end
 	return weights
 end

@@ -390,6 +390,13 @@ function BagCases.Cases(given: Given): { any }
 					rows += if chest and child:IsA("Frame") and table.find(HudConfig.Bag.Salvage, child.Name) ~= nil or (child.Name == "Legendary") then 1 else 0
 				end
 				t.Check("its odds, a line for each rarity it gives", chest ~= nil and odds ~= nil and rows >= #chest.Odds - 1, `{rows}`)
+				-- TR48 part 2: every chest's least Epic and Legendary, said to the hundredth as rolled (Rules.Odds.Percent).
+				local function chanceOf(rarity: string): string
+					local line = if odds then odds:FindFirstChild(rarity) else nil
+					local chance = if line then line:FindFirstChild("Chance") :: TextLabel? else nil
+					return if chance then chance.Text else "none"
+				end
+				t.Check("its Epic at 0.3% and its Legendary at 0.05%, as rolled", chanceOf("Epic") == "0.3%" and chanceOf("Legendary") == "0.05%", `{chanceOf("Epic")}, {chanceOf("Legendary")}`)
 				local open = find("OpenOne")
 				local held = view().Bag.Chests[CHEST] or 0
 				t.Check("Open pressed", open ~= nil and open:IsA("TextButton") and Button.Press(open))

@@ -13367,6 +13367,12 @@ The numbers are stand-ins (Combat Power, the bests).
 - **Not done:** the picker's clip. Its 86 held frames predate both fixes, so it is re-rendered from frame 0 when memory allows and someone asks.
 - **Status:** drawn, self-read and content-checked. For research's second look.
 
+### Research's second look on the picker, the card and the line in Seam (Quaestor, 2026-11-19, 16:55)
+
+- **Felt:** one lit road runs through all three. The picker's next tile, the card's ringed next mark and the line's last-foe ring read as the same journey, and Hard is only its ember. **Tier:** competent. Both must-fixes are met, and AR42 passes for Faber's install.
+- The card's Hard 1 press after the keeper on Normal is accepted as drawn: Faber gives `StageService` that Next.
+- **Accepting on stills and strips** (the clip predates the fixes): the opening's timing and the road's fill are first seen in Faber's install capture, and judged there.
+
 ## AR43. The Forge and War Emblem pages on the Voidkin screen (Modulo, for research's pick, then Faber)
 
 Research, 2026-11-19, 02:34 by the clock, on the director's question of 02:1x ("where is the forge, jewels, war emblems we could work on it, atleast modulo"). The icons are made (`build/handoff/UI/upgrades/images`: 18 emblems, 15 jewels, the sockets and the stones), but the pages that use them aren't. They're the character screen's rail pages (`docs/design.md`, "Upgrading gear needs no walk"). Drawn in code, with no render.

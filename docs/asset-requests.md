@@ -13194,6 +13194,14 @@ Research, 2026-11-19, 02:34 by the clock, on the director's question of 02:1x ("
 - **Rules:** taps 44 or more, no text under 14; violet only as an accent (AR40); the icons as they are; Combat Power's change shown as `docs/design.md`, "Combat Power", says (a visible number, never zero).
 - **Waits:** the Jewels page, until the director answers on the sockets (five, one of each colour, against one from Rare); the numbers (research's emblem and forge request, next, with the level-gap question); any sound.
 
+### The director's words on the pages (2026-11-19, 02:59 to 03:17 by the clock, via Modulo)
+
+They replace the pages above where they differ. The register's rows are in `docs/decisions.md` (03:10, 03:13). This is the piece's scope now:
+- **Equipment, once Forge:** the reinforce page. No Voidkin and no Combat Power on it ("to much remove it"). The left side lists **only the gear worn**, one row each with its picture, its +level and the stats it raises. Tapping a row lights it, and the right side is that item's reinforce: the item, its material under it, the level and stats now and after, the rate as "Success X% · Fail Y%", the cost, and the press. Laid out like the director's picture (internal), except **no item that protects against a fail**. A fail shows its spent cost, and the level stays.
+- **Gear cells** show only the +level. The socket pips go.
+- **War Emblems and jewels** go on the gear's own card, scrolled down. The War Emblems page is dropped, and the shipped emblem icons are rejected. The new star: `docs/design.md`, "War Emblems".
+- **Waits:** the Menu (the director's proposal of 03:17, before the director's yes); the numbers (research's refit).
+
 ## Later, by ground
 
 The rest of ground 1 (Kirra in AR10, Watt in AR11; then Sable, Marigold, Crane), then each ground's Voidkin in `docs/roster.md`'s order. **The machines** (Gantry, Bulwark, Ironhymn, Shiomaru, Aegir) share one custom rig, taller than a player, with its own clip family: the first of them is timed like AR1, because a custom rig is a different cost.

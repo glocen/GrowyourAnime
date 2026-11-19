@@ -13318,7 +13318,29 @@ Research, 2026-11-19, 11:17 by the clock. The director, by 11:16, to research: "
   - The dry tail's streaks end in hard steps at twice the size. At the game's size they read soft.
   - A 7-figure number stretches the stroke to about 1.3 times its drawn length.
   - It isn't seen in the engine yet, or moving.
-- **Status:** delivered. It waits on Faber's install and phone captures, then research's verdict, one take.
+- **Status:** rejected by the director, about 11:46, never uploaded. Replaced by the splash below.
+
+### Modulo's splash: `CritSweep`, round 4, and the digits yellow (Modulo, 2026-11-19, 11:47 to 11:58 by the clock)
+
+- **Where:** `build/handoff/UI/hud/images/CritSweep.png` is a new picture under the same name, 264 by 120 px, 66 by 30 points at 4 pixels a point. Its `hud_art.json` entry and the sheet `crit_stroke_sheet.png` are beside it. `sweep` in `tools/blender/hud_art.py` draws it on seed 45. `-- <out> stroke` redraws it alone, and `strokesheet` draws the sheet.
+- **The splash:**
+  - It lands as a full round head behind the first digit, sitting low. Its back edge is splatted into soft scallops where it hit.
+  - It's wiped away up and to the right in one smooth swoosh. The swoosh thins to a blunt, rounded end over about two thirds of the number.
+  - It's flat paint: a shade deeper at its rim, a slow mottle inside, and a little thinner toward the end. It has no streaks, drops, spatter or point.
+  - The tint stays #CC661F, and the layout stays round 3's: Height 1.5, Left 0.5, Width 0.67, Least 2.2, Transparency 0. Every number from 3 to 6 figures is laid at its drawn shape.
+- **The digits, for Faber's Config (the director: "yellow but a bit chromatic looks up closely"):**
+  - They're yellow, with a slight run of hues seen up close: a cool pale lemon at the head, a bright band just above the middle, warming to orange at the foot.
+  - It's one UIGradient, rotated 90: 0 #EEFFC4, 0.34 #FFF9D8, 0.47 #FFE349, 0.76 #FFC020, 1 #FF9340 (`hud_art.json`'s CritSweep, `number.ramp`).
+  - The outline and the gap stay as now. At the phone's size they read yellow, and the hue run shows only up close, as asked.
+  - "Chromatic" is read as research read AR23's word: a run of hues, not a split-colour fringe. A fringe would be a second take if the director meant it.
+- **Read on the sheet:** over the dark street and the lanterns, at 2 and 1 pixel a point, the yellow digits come first and the splash is one orange mark under the first two digits. Laid into the phone still at its own size, it stays a clear orange swoosh, not a smudge or a flame. Blender's face stands in for the game's.
+- **Content check, 2026-11-19 (by 11:58): PASS** on rules 2, 3 and 4. It's one flat, matte swoosh, with no drop, point or second mark, reading as paint or a comet, never liquid, a slash or a wound. It's our own drawing from circles along a curve, with no image input. Only the idea is shared with the reference: a coloured backing behind a critical number. These conditions replace round 3's:
+  1. **Tint:** #CC661F, or yellower or lighter. Never redder or darker, and never a red variant for any other number.
+  2. **Shape:** any redraw that adds drops, flecks or spatter at the scalloped back, a gloss, or a pointed end comes back to the check. "Splash" names the swoosh, never drops.
+  3. **The reference** stays in `build/reference/`: never uploaded, never shown in anything published.
+  4. **Upload** under the group, logged in `docs/asset-log.md` with `sweep` as its source, after this piece's commit.
+- **What I see wrong:** it isn't seen in the engine yet, or moving. A 7-figure number stretches it to about 1.3 times its drawn length.
+- **Status:** delivered and content-checked. It waits on Faber's upload, its id and the digits' gradient in Config, then phone captures and research's verdict.
 
 ## AR45. The foes' cards with their difficulty skulls, and CR's gold tab (Modulo, for research's pick, then Faber)
 
@@ -13334,6 +13356,34 @@ Research, 2026-11-19, 11:30 by the clock. The director's word of 11:30 (`docs/de
 - **Faber's:** the cards, the skull and the level's colour from `Rules.Stats.Power` on both sides (never a second sum), and the short form only where `docs/ui.md` says.
 - **Waits:** a skull over the foe's head in the world; any sound.
 - **Order:** Modulo after AR44's stroke; Faber after AR44's takes.
+
+### The sheet, for research's pick (Modulo, 2026-11-19, 11:32 to 11:58 by the clock)
+
+- **Where:** `build/handoff/UI/foes/foe_cards.png`, at 2 pixels a point. It's drawn in code by `tools/blender/foe_cards.py` (`-- <out>`), with Blender's face standing in for the kit's.
+- **The skull:** one icon of our own, cut like a shard.
+  - It has a faceted crown, two slanted eyes, a small diamond nose, and a jaw set apart with two tooth slots. A dark rim keeps it readable over any ground. The right half is a facet darker and the upper left is lit.
+  - The four tiers: faint grey (#A3A1B2 at 0.55), white (#F6F2E8), yellow (#FFC83A), red (#FF4F42). The level's text takes its tier's colour, with grey's level in the same grey.
+  - It's shown at 16 pt over the card and the lanterns, and at 48 pt to read its shape.
+- **The cards,** in the Menu's composition (AR43): one panel cut at its top left and foot right, with a hairline edge.
+  - The top row: the skull and "Lv N", the name in ivory, then the kit's type gem with the type edge's arrow, green up or red down.
+  - Below it: health as Ember light in its slanted channel, with its numbers.
+  - A Shade is 216 by 42 pt. An elite is the same size, with a brass frame and two brass horn shards on its top corners. A keeper is 300 by 50 pt, with the brass frame, the horns, a three-shard crest at its top centre, its phases as notches with a brass point over each, and a 16 pt name.
+  - Every card is shown in every tier, in two palettes: **A**, the Menu's own (Seam), and **B**, AR40's C, the system panel's teal.
+- **In a fight:** the old card is lifted out of the phone still and A, B and a keeper are put in its place, top centre, at 2 pixels a point and at the phone's 1.
+- **CR's tab:** "CR" in dark ink on a small slanted gold tab (#FFEBA8 to #E3A63A), with the number beside it in pale ivory (#F7F1E3), upright and wide apart, under a hairline edge and a soft shadow.
+  - It's shown alone at 14, 18 and 24 pt, at the lead's feet in the still, on the Overview in the Shard light's place (AR23's readout lifted out of AR43's Menu), and on an item's row.
+- **My read, at phone size and zoomed:**
+  - The four tiers part at a glance, at 16 pt and at 1 pixel a point. Red and yellow come first, and grey sinks, as the feel line wants.
+  - A sits in the Menu's family but goes dark over the street. B is the brighter read over the violet, but its teal is a new colour at the top of the fight.
+  - The elite's horns and the keeper's crest read as rank before the words.
+  - **Wrong:** the bar's bright front and the keeper's notches run behind the health digits, so "1,204/3,010" reads "1/204" up close. The build sets the numbers clear of them, right of the light or over a dark band.
+  - At 1 pixel a point the skull is a coloured face mark more than a skull. Its tier still reads.
+- **Content check, 2026-11-19 (by 11:58): PASS for the blockout.** The skull is a clean geometric icon with no crack, drip, stain or wound, and the red tier is a flat fill. A difficulty skull is a common function, and this drawing is ours. The names pass the IP list. The conditions:
+  1. **Before any upload:** the skull's images, the frames, the horns, the crest and the tab each get their own check, on the exact files, with a sheet at full size and at 64 px over dark.
+  2. **The skull stays as drawn:** no cracks, chips, glowing or dripping eyes, or red marks on any tier. An "angrier" variant comes back to the check.
+  3. **The sheet stays internal:** its fight and item crops carry another HUD's clipped text and a stand-in avatar's shirt, so they're context only.
+  4. **The face:** the build uses the kit's own.
+- **Status:** drawn, self-read and content-checked. It waits on research's pick (A or B, and the marks), then the cut images for Faber.
 
 ## Later, by ground
 

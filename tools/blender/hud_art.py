@@ -221,73 +221,58 @@ SWEEP_SEE = 0.0         # how see-through the game draws it (ImageTransparency):
 # width Width of the number's, never under Least heights. These put the head behind the first digit and the tail's end
 # over about two thirds of a four- to six-figure number, laid at the length it's drawn (Least is the slice's own shape).
 SWEEP_LAY = dict(height=1.5, left=0.5, width=0.67, least=2.2)
-# Round 2's digits, for the sheet and the builder's Config: the gap between digits as a part of a digit's width, the
-# gradient from the digits' head to their foot, the outline and its width in points at a 28 point number.
-DIGITS = dict(gap=0.4, top="#FFF4D6", foot="#F2B43C", outline="#4E2C16", outlinePoints=1.0, slantDegrees=10)
+# The digits, for the sheet and the builder's Config: the gap between digits as a part of a digit's width, the outline
+# and its width in points at a 28 point number, and their colour from head to foot (round 4; the director, 2026-11-19:
+# "the text itsels is yellow but a bit chromatic looks up closely"): yellow, with a slight run of hues, a cool pale
+# lemon at the head, a bright band just above the middle, warming to orange at the foot. One UIGradient, rotated 90.
+DIGITS = dict(gap=0.4, ramp=((0.0, "#EEFFC4"), (0.34, "#FFF9D8"), (0.47, "#FFE349"), (0.76, "#FFC020"), (1.0, "#FF9340")),
+              outline="#4E2C16", outlinePoints=1.0, slantDegrees=10)
 SPACE = 1.24            # Blender's letter spacing that gives that gap in its own face
 
 
 def sweep():
-    """The stroke behind a critical number (AR44): one stroke of a loaded round brush. It lands hard behind the first
-    digit, a round, heavy press of solid paint, then is pulled away up and to the right, climbing a little faster as it
-    goes, and runs dry: past halfway its bristles part into streaks and give out one by one, the outer ones first, the
-    middle ones last, so the tail narrows to a few dry streaks. Speed off a hit, a lick of fire: never a cut. No drop,
-    spatter, fleck, gloss or second mark. A grey slice the game tints: white where the paint is thick, darker toward the
-    dry tail and at the paint's rim, where it pools."""
+    """The splash behind a critical number (AR44, round 4; the director, 2026-11-19: "an orange splash", after round 3's
+    dry-brush comet read as a 2D flame). One splash of paint: it lands as a full, round head behind the first digit,
+    its back edge splatted into soft scallops where it hit, and is wiped away up and to the right in one smooth swoosh
+    that thins to a blunt, rounded end. Flat paint: a shade deeper at its rim, where it pools, with a slow mottle inside,
+    and a little thinner toward the end. No streaks, no drops, no spatter, no second mark, no point. A grey slice the game
+    tints."""
     w, h = SWEEP
-    rng = np.random.default_rng(44)
+    rng = np.random.default_rng(45)
     rows, cols = round(h * K), round(w * K)
     yy, xx = np.mgrid[0:rows, 0:cols]
     y = (yy + 0.5) / K                                   # points, from the top
     x = (xx + 0.5) / K
     ease = lambda t: np.clip(t, 0, 1) ** 2 * (3 - 2 * np.clip(t, 0, 1))   # noqa: E731
-
-    def wobble(n, knots, at):
-        """Smooth noise in [-1, 1] over `at` in [0, 1]: `n` knots' worth of slow wander."""
-        return np.interp(at, np.linspace(0, 1, knots), rng.uniform(-1, 1, knots) * n)
-
-    radius = 0.36 * h                                    # the press: 10.8 points, a digit's height and a bit across
-    hx, hy = radius + 1.0, 0.6 * h                       # its centre: low, so the head sits behind the digits' lower part
-    length = w - 1.2 - hx                                # from the press's centre to the longest bristle's end
-    rise = 0.5 * h                                       # how far the pull climbs over that length
-    u = (x - hx) / length                                # 0 at the press's centre, 1 at the longest bristle's end
-    ua = np.clip(u, 0, None)
-    centre = hy - rise * ua ** 1.35                      # the pull's middle line, climbing faster toward the tail
-    slope = rise * 1.35 * ua ** 0.35 / length
-    half = radius * (1 - 0.5 * np.clip(ua, 0, 1) ** 1.1) * np.sqrt(1 + slope ** 2)   # measured straight up
-    v = (y - centre) / half                              # across the pull: -1 its upper edge, 1 its lower
-    # the press: a circle with a ragged rim
-    d = np.hypot(x - hx, y - hy)
-    turn = (np.arctan2(y - hy, x - hx) / (2 * np.pi)) % 1
-    rim = radius * (1 + 0.035 * wobble(1, 9, turn))
-    press = np.clip((rim - d) * K + 0.5, 0, 1)
-    # the pull's upper and lower edge, ragged once it has left the press
-    rag = np.where(v < 0, wobble(1, 14, np.clip(ua, 0, 1)), wobble(1, 14, np.clip(ua, 0, 1)))
-    edge = 1 + 0.045 * rag * ease(ua / 0.15)
-    pull = np.clip((edge - np.abs(v)) * half * K + 0.5, 0, 1)
-    shape = np.where(u < 0, press, np.maximum(pull, press * (u < 0.05)))
-    # the bristles: each a streak along the pull, landing loaded and giving out at its own place, the outer ones first
-    count = 34
-    across = np.clip(((np.clip(v, -1, 1) + 1) / 2 * count).astype(int), 0, count - 1)
-    middle = (np.arange(count) + 0.5) / count * 2 - 1
-    wander = np.convolve(rng.random(count + 4), np.ones(5) / 5, "valid")   # neighbours give out near each other
-    end = 1 - 0.5 * np.abs(middle + 0.08) ** 1.6 + 0.16 * (wander - 0.5) + 0.06 * (rng.random(count) - 0.5)
-    end = np.minimum(end / end.max(), 1.0)
-    dry = np.convolve(rng.random(count + 2), (0.25, 0.5, 0.25), "valid")
-    knots = 14
-    coarse = rng.random((count, knots))
-    along = np.clip(ua, 0, 1) * (knots - 1)
-    lo = np.floor(along).astype(int).clip(0, knots - 2)
-    f = along - lo
-    grain = coarse[across, lo] * (1 - f) + coarse[across, lo + 1] * f   # slow along each bristle, its own across
-    grain = 0.45 * dry[across] + 0.55 * grain
-    t = ua / end[across]
-    load = 1.9 * (1 - np.clip(t, 0, 1)) ** 0.9           # past 1 the paint covers; under it the grain shows
-    paint = np.clip((load - grain) * 4.0 + 0.5, 0, 1) * (t < 1)
-    alpha = shape * np.where(u < 0, 1.0, paint)
-    # its value: white where it's loaded, browner toward the dry tail and where the paint pools at the rim
-    outer = np.where(u < 0, d / radius, np.abs(v))
-    value = 1.0 - 0.34 * ease(ua / 0.9) - 0.1 * ease((outer - 0.74) / 0.26) - 0.06 * (grain - 0.5) * (u >= 0)
+    radius = 0.34 * h                                    # the head: 10.2 points, a digit's height across
+    hx, hy = radius + 2.2, 0.6 * h                       # low, so it sits behind the digits' lower half and below
+    # the head, its back splatted: soft scallops on the half facing away from the swoosh
+    turn = np.arctan2(y - hy, x - hx)
+    back = np.clip(-np.cos(turn), 0, 1) ** 1.3
+    phases = rng.uniform(0, 2 * np.pi, 2)
+    rim = radius * (1 + back * (0.075 * np.sin(5 * turn + phases[0]) + 0.035 * np.sin(9 * turn + phases[1])))
+    head = np.hypot((x - hx) / 1.06, y - hy) - rim
+    # the swoosh: circles along a line that climbs faster toward its end, thinning to a blunt end
+    ex, ey, rise = w - 4.6, 0.6 * h, 0.42 * h
+    along = np.linspace(0, 1, 90)
+    cx = hx + (ex - hx) * along
+    cy = hy - rise * along ** 1.5
+    cr = radius * (1 - 0.72 * along ** 1.05)
+    swoosh = np.full(x.shape, 1e9, np.float32)
+    for px_, py_, r_ in zip(cx, cy, cr):
+        swoosh = np.minimum(swoosh, np.hypot(x - px_, y - py_) - r_)
+    k = 1.6                                              # the join, smooth as wet paint
+    d = -k * np.log(np.exp(-head / k) + np.exp(-swoosh / k))
+    u = np.clip((x - hx) / (ex + cr[-1] - hx), 0, 1)     # 0 at the head's centre, 1 at the end
+    alpha = np.clip(0.5 - d / 0.4, 0, 1)                 # a clean paint edge, 0.4 points
+    alpha *= 1 - 0.22 * ease((u - 0.35) / 0.65)          # the paint thinner toward the end
+    # a slow mottle inside the paint
+    knots = rng.random((5, 9))
+    mottle = np.stack([np.interp(np.linspace(0, 8, cols), np.arange(9), r) for r in knots])
+    mottle = np.stack([np.interp(np.linspace(0, 4, rows), np.arange(5), mottle[:, c]) for c in range(cols)], 1)
+    value = (1.0 - 0.17 * ease((d + 1.8) / 1.8)         # a shade deeper at the rim, where it pools
+             - 0.12 * ease(u / 0.9)                      # and browner toward the end
+             - 0.06 * (mottle - 0.5))
     px = np.zeros((rows, cols, 4), np.float32)
     px[..., :3] = np.clip(value, 0, 1)[..., None]
     px[..., 3] = alpha
@@ -422,8 +407,8 @@ def sheet(out: Path):
         text.append((400 + i * 196 + 52, y + 256, 12, rarity, soft))
         framed(page, 400 + i * 196 + 46, y + 272, f"PortraitUnknown{rarity}", rarity, True, 0.25)
     y += 404 + 20
-    text.append((24, y, 16, "The critical's stroke (AR44): a round press behind the first digit, pulled up and to the right, running dry. "
-                            "The digits: wide apart, cream to gold, 10 degrees, a medium warm-brown outline", ink))
+    text.append((24, y, 16, "The critical's splash (AR44): a round splash behind the first digit, wiped up and to the right. "
+                            "The digits: wide apart, lemon to orange, 10 degrees, a medium warm-brown outline", ink))
     swept = rs.load(LOADED / "CritSweep.png")
     rs.paste(page, swept, 24, y + 40)
     text.append((24, y + 40 + 104, 12, "alone as it ships: a grey slice, 4 pixels a point", soft))
@@ -496,9 +481,11 @@ def crit_laid(ground, text, size, slice_px):
     mark[..., :3] *= np.array(rs.rgb(SWEEP_TINT), np.float32)
     mark[..., 3] *= 1 - SWEEP_SEE
     rs.paste(tile, mark, round(left - lay["left"] * digit), round(top + tall / 2 - sh / 2))
-    ramp = np.clip((np.arange(h) - top) / tall, 0, 1)[:, None]
-    number[..., :3] = (np.array(rs.rgb(DIGITS["top"]), np.float32) * (1 - ramp)
-                       + np.array(rs.rgb(DIGITS["foot"]), np.float32) * ramp)[:, None, :]
+    at = np.clip((np.arange(h) - top) / tall, 0, 1)
+    stops = [p for p, _ in DIGITS["ramp"]]
+    colours = np.array([rs.rgb(code) for _, code in DIGITS["ramp"]], np.float32)
+    rows = np.stack([np.interp(at, stops, colours[:, c]) for c in range(3)], 1)
+    number[..., :3] = rows[:, None, :]
     ui.over(tile, ui.c(DIGITS["outline"]), ui.spread(cover, round(1.2 * ui.K)))
     rs.paste(tile, number, 0, 0)
     return tile, (sw / ui.K, sh / ui.K)
@@ -531,9 +518,9 @@ def stroke_sheet(out: Path):
     page = rs.canvas(W, H, (0.075, 0.07, 0.085))
     ink, soft = "#F2ECE2", "#B9B2C4"
     lay = SWEEP_LAY
-    text = [(24, 18, 26, "AR44: the critical's stroke, a painted brushstroke (CritSweep, a new picture).", ink),
-            (24, 54, 15, "One stroke of a loaded round brush: a heavy round press behind the first digit, pulled away up and to "
-                         "the right, running dry into streaks.", soft)]
+    text = [(24, 18, 26, "AR44, round 4: the critical's orange splash (CritSweep, a new picture), its digits yellow.", ink),
+            (24, 54, 15, "A round splash behind the first digit, its back edge splatted, wiped away up and to the right in one "
+                         "smooth swoosh to a blunt end. The digits: lemon to orange, a bright band above the middle.", soft)]
     y = 92
     rs.paste(page, slice_px, 24, y)
     tinted = slice_px.copy()
@@ -551,8 +538,9 @@ def stroke_sheet(out: Path):
     for i, line in enumerate((f"Height {lay['height']} (of the digits' height, centred on them)",
                               f"Left {lay['left']} (of a digit, before the first digit)",
                               f"Width {lay['width']} (of the number's), Least {lay['least']} (heights)",
-                              f"Transparency {SWEEP_SEE:g}: the head solid, the slice dries the tail",
-                              f"Tint {SWEEP_TINT}, as now")):
+                              f"Transparency {SWEEP_SEE:g}: solid, the slice thins its end",
+                              f"Tint {SWEEP_TINT}, as now",
+                              "Digits, one UIGradient at 90: " + ", ".join(f"{p:g} {c}" for p, c in DIGITS["ramp"]))):
         text.append((960, y + 26 + i * 20, 12, line, soft))
     y += 168
     for j, name in enumerate(grounds):
@@ -576,7 +564,7 @@ def stroke_sheet(out: Path):
     rs.paste(page, placed, 24 + 950 + 16, y + 22)
     close = np.repeat(np.repeat(tinted, 2, 0), 2, 1)
     rs.paste(page, close, 24 + 950 + 16, y + 22 + 160 + 24)
-    text.append((24 + 950 + 16, y + 22 + 160 + 6, 12, "the tinted slice, twice its own size: the press's rim, the dry tail", soft))
+    text.append((24 + 950 + 16, y + 22 + 160 + 6, 12, "the tinted slice, twice its own size: the splatted back, the swoosh", soft))
     rs.paste(page, rs.text_layer(W, H, text), 0, 0)
     rs.save(page, out / "crit_stroke_sheet.png")
 

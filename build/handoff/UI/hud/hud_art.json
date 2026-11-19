@@ -257,8 +257,28 @@
    },
    "number": {
     "gap": 0.4,
-    "top": "#FFF4D6",
-    "foot": "#F2B43C",
+    "ramp": [
+     [
+      0.0,
+      "#EEFFC4"
+     ],
+     [
+      0.34,
+      "#FFF9D8"
+     ],
+     [
+      0.47,
+      "#FFE349"
+     ],
+     [
+      0.76,
+      "#FFC020"
+     ],
+     [
+      1.0,
+      "#FF9340"
+     ]
+    ],
     "outline": "#4E2C16",
     "outlinePoints": 1.0,
     "slantDegrees": 10

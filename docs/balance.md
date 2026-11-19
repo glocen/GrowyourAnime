@@ -66,24 +66,11 @@ The Battle Attributes, which every fight reads:
 
 **Ratings** all convert the same way: `chance = ceiling x mine / (mine + theirs + K x G(level))`. A rating never reaches its ceiling, an opposing rating always pulls it down, and it needs more points at higher levels to hold the same chance. That shape is what keeps a stat from being solved.
 
-**Combat Power** is one number shown to the player: a weighted sum of the stats, its weights fitted by the simulation so the higher number wins more often with no type edge. It's for reading, matchmaking and the Clash's rewards. It's never used to compute damage. How it's shown: `docs/design.md`, "Combat Power". Its weights (`tools/balance/seeds.json`, "combatPower"; refit on the attribute builds by `attributes.py`, report A8, with the sim's section 16 method) are what a point adds to winning, Attack's held at 4. A percent's weight is given at level 1 and multiplies by G at the Voidkin's level, since a percent multiplies points that grow with G. With them the higher number wins 97% of same-level duels with no type edge, and 99.7% where one side wins 10% faster (2026-11-16). Its limit is a sum's: it can't see that spreading points beats stacking them, so of one budget spent two ways it picks the better about half the time (`docs/polish-later.md`).
+**Combat Power** [D, 2026-11-19, 20:57, the combat review's decision 2] is one number shown to the player: `CR = Scale x sqrt(effective health x damage a second)`, both taken against an even foe at the fighter's own level, at the kit's real rate, with Regen and Lifesteal counted (`Rules.Stats`). The higher CR wins 94.6% of same-level duels (MODEL). It's for reading, matchmaking and the Clash's rewards, never for computing damage. The skull reads a fight's cost, not a ratio of two CRs (`docs/research/combat-math.md`). How it's shown: `docs/design.md`, "Combat Power".
 
-**Basic Attributes** [D, 2026-11-19, 03:10: five, Strength, Agility, Intelligence, Endurance and Spirit, one per class's Main; research's refit replaces the two-attribute rows below, which stand until it lands] feed the Battle Attributes and no fight reads them itself (`docs/design.md`, "Voidkin"). Each attribute converts by one row, every class alike, and the class's Main once more by its own. A class's points at level 1 are its shape, fitted so the class stands against every class and spec as it did before. The rows and the shapes: `src/shared/Config/Stats.luau`, "Attributes", once Faber lands TR36. The model reads them there: `py tools/balance/attributes.py`, or a proposed copy through `ATTR_STATS`.
+**Basic Attributes** [D, 2026-11-19, 03:10: five, Strength, Agility, Intelligence, Endurance and Spirit; 20:57: Spirit also gives Health] feed the Battle Attributes, and no fight reads them itself (`docs/design.md`, "Voidkin"). Each converts once by its row, and the class's Main converts once more. The rows are in `Config.Stats`, fitted in the combat review so every class holds a real share, 12% or more, in each (`docs/research/combat-math.md`, item 9, with what it doesn't reach).
 
-| Attribute | Its job | It feeds, every class | As a Main, on top |
-|---|---|---|---|
-| Strength | power | Attack 1, Health 3, Hit 0.4, Penetration 0.4 | Warrior: Attack 1. Assassin: Attack 0.6, Critical 1.6, Dodge 0.6. Mage: Attack 0.6, Elemental Attack 0.25, Penetration 1.5 |
-| Endurance | toughness | Health 5, Defence 1, Block 0.3, Regen 0.02, Critical Resist 1.5, Elemental Resist 1 | Tank: Attack 0.5, Health 3, Block 0.3. Healer: Attack 0.7, Regen 0.06, Critical Resist 2 |
-
-- **The shapes, fitted** (level 1, Common, no stars; Strength, Endurance): Warrior 67, 48; Tank 40, 77; Assassin 67, 41; Mage 67, 45; Healer 38, 68.
-- **SIMULATED** (`attributes.py` on the rows above, 2026-11-17, research's seeds, UNVERIFIED in play):
-  - Class-against-class edges stay within 0.03 of the old ones at levels 10 and 40.
-  - Each Main is its class's best attribute. The other is worth 67% to 74% of it at levels 5 to 60, so neither is dead.
-  - All in the Main beats spreading evenly, which beats all in the other. Gear reads "my Main first".
-- **Health** runs 29% to 45% lower at level 1 than before the attributes (the Warrior lowest, since its Main gives Attack). Its ratings and Attack make up the value.
-- **Against the game,** an ordinary Shade dies in 4.1 to 5.7 s across the six grounds, against 4.5 to 5.7 before. Each kill costs one or two points more health. The Warrior gains most, about 0.8 s.
-- **Combat Power,** its weights refit on these builds, picks the winner of 96.3% of same-level duels with no type edge, and 99.7% where one side wins 10% faster. The refit weights: Health 0.67, Attack 4, Defence 2.9, Regen 3.2, Hit 0.57, Dodge 1.7, Critical 0.65, Critical Resist 0.11, Block 0.96, Penetration 0.59, Elemental Attack 4.0, Elemental Resist 0.21, Critical Damage 110, Critical Immunity 110, Lifesteal 650, for `Config.Stats.Power.Weights` (TR36).
-- **A gear line's price** is its Combat Power at the generic row: a point of either is worth about 6 to 7, and about 10 as the class's Main.
+- **A gear line's price** is its gain in CR at the reference body (`Power.Reference`), measured, so a price equals what the line adds (TR49, "Research's must-fix: the prices are the gains"). A point of Strength or Endurance is worth about 9.4 to 9.5 there. A price only sets a rolled line's points (worth / price); gear's strength is `PowerPerG`.
 
 ## One hit
 

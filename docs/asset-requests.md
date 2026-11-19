@@ -12423,7 +12423,7 @@ From `shop_look.png` and `far_close.png` (1910443).
   - **The lever is Modulo's:** a lit tooth's face carries the light, not only its crack, within the counter's cap. A glow rising with distance (Faber's runtime) is the fallback only.
 - **Second look:** the clock alone, from the crossing, at 160 and at the counter.
 
-### The clock's fix, and the Shop in AR40's C (Modulo, 2026-11-18, to 23:59 by the clock)
+### The clock's fix, and the Shop in AR40's C (Modulo, 2026-11-18, 2026-11-19 to 01:12 by the clock)
 
 In `tools/blender/strip_kit.py` (search "AR38"). Built in the script only so far.
 
@@ -12465,11 +12465,27 @@ In `tools/blender/strip_kit.py` (search "AR38"). Built in the script only so far
 - **The scan of each light's bed** (AR40's): no light on pale in the four. The seals' 2 of 102 are the same edge noise as before.
 - **Content check: PASS** (23:54), on the meshes' sheet (`build/scratch/modulo/shop/meshes/shop_meshes.png`, each mesh alone, untextured, full size and 64 px on dark). The teeth read as stone or light, never drips. Its condition: if the clock's colour renders show a colour other than the palette's, a fresh look before upload.
 
+**The clock in colour, for research's second look** (2026-11-19, 01:10 to 01:12 by the clock, in a window of 3 GB free on the director's word). The sheet is `build/scratch/modulo/shop/clock2/clock_look.png`, with its measures in `clock_measures.json`. It shows the clock alone at 3:20 (four minutes shown, the second a third left) beside the grey, from the crossing, at 160 studs and at the counter.
+
+| | at the counter: the clock's p99 (the counter's own) | from the crossing: lights, over the valley, over the sky | at 160 studs: the same |
+|---|---|---|---|
+| grey C | 0.98 (0.98) | 1 of 4, +0.00, +0.41 | 4 of 4, +0.09, +0.10 |
+| dusk | 0.94 (0.98) | 3 of 4, +0.64, +0.33 | 3 of 4, +0.29, +0.21 |
+| day | 0.94 (0.97) | 3 of 4, +0.57, +0.03 | 0 of 4, +0.34, +0.02 |
+| day, glow 1.2 | 0.97 (0.97) | 3 of 4, +0.62, +0.06 | 1 of 4, +0.00, +0.05 |
+
+- **Within the counter's cap,** at both hours. The clock's p99 is 0.94, under the counter's 0.97 to 0.98.
+- **From the crossing,** at dusk and by day, by eye: three whole teeth and the running minute's short one, each light in its dark rim, with the spent minute's place empty. The measure says 3 because its band, the clock's middle rows, misses the short tooth, which hangs from its root high under the brow.
+- **At 160 by day, the weak read.** The teeth stand far apart from the dark gaps between them (+0.34), as much as at dusk, but they're no lighter than the noon sky behind them (+0.02). So the count reads by its dark gaps and the teal brow over their roots, not as lights. The measure, which asks for lights over the sky, counts none.
+- **Tried: the minute's glow at 1.2.** It's worse: the bloom fills the gaps (+0.00) and the count falls to 1. The glow stays at 0.8.
+- **What's left if research wants more by day:** the fix lies behind the teeth, not in their light. A dark back to the brow's opening would put the lower teeth on dark instead of on sky. It's not built: research's call.
+- This is a render's sky. Roblox's noon sky is the install's capture, AR40's second look.
+
 **Status:**
-- the building: implemented, exported, scanned and content-checked; not rendered in colour, so research's second look hasn't happened, and it's not for install before it;
+- the building: implemented, exported, scanned and content-checked; rendered in colour; research's second look is next, and it's not for install before it;
 - the screen: a grey sheet on D6, not yet read by research; Faber builds it on the kit with the shelf's rule (phase 4).
 
-Next, when a render fits (2.3 GB free, so a window without Studio): the clock sheet by day and at dusk, from the crossing, at 160 and at the counter, against the counter's p99 0.99:
+To render again (about 7 s a set; free memory went from 3.27 GB to 2.43 at the lowest, so under 0.9 GB, not the 2.3 I'd assumed):
 
     guard.ps1 tools/blender/shop_look.py <out> counter crossing street_off [day] tag=<try>
     guard.ps1 tools/blender/shop_look.py <out> clock build/scratch/modulo/shop <try> [...]

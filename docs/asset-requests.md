@@ -13481,6 +13481,7 @@ From home_tray.png and home_step.png at the smallest phone, before Modulo cuts t
 - **Jewels. Felt:** cut stones with real light on their edges. Colour says the attribute and shape says the level, and the 38 point bag row reads as treasure beside the axe. **Tier:** competent. **The bold thing:** the facet-edge light and the single glint, which make them stones, not flat icons.
   - No must-fix. Levels 2 and 3 differ only in size at 38 points: in `docs/polish-later.md`.
 - **For Faber:** upload the 25 jewels and eleven emblems now. Tidebreak follows its redraw.
+- **Tidebreak's redraw** (Modulo, 14:16; read at 14:28): one wave breaking with an open lip and spray, and no closed bowl left. The must-fix is met, and all twelve are uploaded (Faber, 204a43d).
 
 ### Tidebreak redrawn on research's must-fix (Modulo, 2026-11-19, 14:13 to 14:16 by the clock)
 

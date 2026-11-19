@@ -129,6 +129,9 @@ local equipment: { [string]: Image } = {
 	EmblemTidebreak = { Id = "rbxassetid://103613441821263", Pixels = Vector2.new(256, 256), Points = Vector2.new(64, 64), Pad = 0 },
 	EmblemWarhorn = { Id = "rbxassetid://118391953079903", Pixels = Vector2.new(256, 256), Points = Vector2.new(64, 64), Pad = 0 },
 	EmblemZenith = { Id = "rbxassetid://77830852343327", Pixels = Vector2.new(256, 256), Points = Vector2.new(64, 64), Pad = 0 },
+	-- The down marker's two pictures (TR10; Modulo's tools/blender/marker_icons.py), 160 px for the tile's 40 points
+	MarkerElite = { Id = "rbxassetid://121675659017221", Pixels = Vector2.new(160, 160), Points = Vector2.new(40, 40), Pad = 0 },
+	MarkerLamplighter = { Id = "rbxassetid://80022024404957", Pixels = Vector2.new(160, 160), Points = Vector2.new(40, 40), Pad = 0 },
 	JewelBlue1 = { Id = "rbxassetid://78673938657069", Pixels = Vector2.new(256, 256), Points = Vector2.new(64, 64), Pad = 0 },
 	JewelBlue2 = { Id = "rbxassetid://86378166667445", Pixels = Vector2.new(256, 256), Points = Vector2.new(64, 64), Pad = 0 },
 	JewelBlue3 = { Id = "rbxassetid://78880635096825", Pixels = Vector2.new(256, 256), Points = Vector2.new(64, 64), Pad = 0 },

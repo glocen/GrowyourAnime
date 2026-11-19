@@ -14,6 +14,7 @@ local Combat = require(Shared.Config.Combat)
 local HomeConfig = require(Shared.Config.Home)
 local HudConfig = require(Shared.Config.Hud)
 local BaseViewConfig = require(Shared.Config.BaseView)
+local WorldConfig = require(Shared.Config.World)
 local UIKit = require(Shared.Config.UIKit)
 local Markers = require(Shared.World.Markers)
 local Parts = require(Shared.Util.Parts)
@@ -22,6 +23,7 @@ local Flight = require(Shared.Rules.Flight)
 local Effects = require(script.Parent.Parent.Parent.Main.FighterController.Effects)
 local HudController = require(script.Parent.Parent.Parent.Main.HudController)
 local BaseController = require(script.Parent.Parent.Parent.Main.BaseController)
+local DownController = require(script.Parent.Parent.Parent.Main.DownController)
 local ProfileController = require(script.Parent.Parent.ProfileController)
 local Helpers = require(script.Parent.Helpers)
 local UI = script.Parent.Parent.Parent.Parent.UI
@@ -118,7 +120,118 @@ function HudCases.Cases(given: Given): { any }
 	local waitFor, streamed, lintClean, myLead = given.waitFor, given.streamed, given.lintClean, given.myLead
 	local ANSWER, ARRIVE_TIMEOUT, PLATE_TICK = given.ANSWER, given.ARRIVE_TIMEOUT, given.PLATE_TICK
 
+	-- TR10's down marker stood where the world has none (DownController.Try): `kind` for `def`, 272 seconds left, `away`
+	-- studs ahead of the camera, flat, its plate on the ray through the HUD's middle a third down, so it stands in the
+	-- view's open middle, or a take's phone box's (the World layer covers the screen; the HUD's root is the box).
+	local function standDown(t: any, kind: string, def: string, away: number)
+		local camera = workspace.CurrentCamera
+		local hud = Layers.Get("Hud")
+		local middle = hud.AbsolutePosition + hud.AbsoluteSize * Vector2.new(0.5, 0.3)
+		local ray = camera:ScreenPointToRay(middle.X, middle.Y)
+		local flat = Vector3.new(ray.Direction.X, 0, ray.Direction.Z).Magnitude
+		local point = ray.Origin + ray.Direction * (away / math.max(flat, 0.1))
+		local up = (HudConfig.Down.Up :: any)[kind] or 10
+		local lead = myLead()
+		local level = if lead and type(lead:GetAttribute("Level")) == "number" then lead:GetAttribute("Level") :: number else 10
+		DownController.Try(kind, { Kind = kind, Def = def, Level = level, Ground = WorldConfig.Row.Ground }, 272, point - Vector3.new(0, up, 0))
+	end
+
 	return {
+		{
+			-- TR10's pictures (Modulo's, research's pass 2026-11-17 and 2026-11-19, 21:03): a down elite's and a resting keeper's
+			-- marker wear their row's Marker on the tile, filling it over its colour, untinted; a row without one keeps its
+			-- letter. Stood by DownController.Try, so it runs where the world has no square or gate.
+			Name = "HUD: TR10, the down marker's tile wears its row's picture, a row without one its letter",
+			Run = function(t: any)
+				t.Wait(LEAD_SETTLE)
+				local function check(kind: string, def: string, picture: string?)
+					standDown(t, kind, def, 20)
+					local plate: Frame? = nil
+					t.Check(`{def}: its marker stands`, waitFor(t, 2, function(): boolean
+						plate = DownController.Plate(kind)
+						return plate ~= nil and plate:GetAttribute("Left") == 272 and plate:GetAttribute("Picture") == (picture or "")
+					end))
+					local icon = if plate then plate:FindFirstChild("Icon", true) else nil
+					local image = if icon then icon:FindFirstChild("Picture") :: ImageLabel? else nil
+					local letter = if icon then icon:FindFirstChild("Initial") :: TextLabel? else nil
+					if icon == nil or image == nil or letter == nil then
+						t.Check(`{def}: the tile, its picture and its letter`, false)
+						return
+					end
+					if picture then
+						t.Check(`{def}: {picture} on the tile, the letter hidden`, image.Visible and image.Image == UIKit.Images[picture].Id and not letter.Visible, image.Image)
+						t.Check(`{def}: untinted, over the tile's colour`, image.ImageColor3 == Color3.new(1, 1, 1) and image.BackgroundTransparency == 1)
+						t.Check(`{def}: it fills the tile`, (image.AbsoluteSize - (icon :: GuiObject).AbsoluteSize).Magnitude < 1, `{image.AbsoluteSize} in {(icon :: GuiObject).AbsoluteSize}`)
+						t.Check(`{def}: clipped to the tile's corner`, image:FindFirstChildOfClass("UICorner") ~= nil)
+					else
+						t.Check(`{def}: no picture, its letter`, not image.Visible and letter.Visible and letter.Text ~= "", letter.Text)
+					end
+				end
+				local ok, problem = pcall(function()
+					check("Elite", "brawler_elite", "MarkerElite")
+					check("Keeper", "lamplighter", "MarkerLamplighter")
+					check("Elite", "brawler", nil)
+				end)
+				DownController.Try("Elite", nil)
+				DownController.Try("Keeper", nil)
+				t.Check("it ran", ok, tostring(problem))
+				t.Check("cleared: the markers go", waitFor(t, 2, function(): boolean
+					local elite, keeper = DownController.Plate("Elite"), DownController.Plate("Keeper")
+					return (elite == nil or elite:GetAttribute("Left") == 0) and (keeper == nil or keeper:GetAttribute("Left") == 0)
+				end))
+			end,
+		},
+		{
+			Name = "Take: TR10's down marker with its pictures at the smallest phone, each held for a still, for research",
+			Manual = true,
+			Stay = true,
+			Run = function(t: any)
+				-- Each state is held until the driver moves ReplicatedStorage.NL_TakeStep on ("Near", "Far", "Keeper", "End"):
+				-- the elite's plate in the picked layout 24 studs ahead, then 120, then the keeper's.
+				local step = Instance.new("StringValue")
+				step.Name = "NL_TakeStep"
+				step.Value = "Ready"
+				step.Parent = ReplicatedStorage
+				local function await(name: string): boolean
+					return waitFor(t, 300, function(): boolean
+						return step.Value == name or step.Value == "End"
+					end) and step.Value == name
+				end
+				t.Wait(LEAD_SETTLE)
+				-- The world as a player stands in it: the World layer hides under any open screen (a spawn at the base's door
+				-- opens the Stage picker, TR45)
+				if Screen.Current() ~= nil then
+					Screen.Close()
+					t.Wait(0.5)
+				end
+				Layers.Force(Theme.Scale.Floor)
+				Layers.Box(Theme.Smallest - Vector2.new(0, GuiService.TopbarInset.Height))
+				local ok, problem = pcall(function()
+					if await("Near") then
+						standDown(t, "Elite", "brawler_elite", 24)
+						t.Wait(0.5)
+						t.Check("near: the elite's stands", DownController.Plate("Elite") ~= nil)
+					end
+					if await("Far") then
+						standDown(t, "Elite", "brawler_elite", 120)
+						t.Wait(0.5)
+					end
+					if await("Keeper") then
+						DownController.Try("Elite", nil)
+						standDown(t, "Keeper", "lamplighter", 24)
+						t.Wait(0.5)
+						t.Check("the keeper's stands", DownController.Plate("Keeper") ~= nil)
+					end
+					await("End")
+				end)
+				DownController.Try("Elite", nil)
+				DownController.Try("Keeper", nil)
+				Layers.Box(nil)
+				Layers.Force(nil)
+				step:Destroy()
+				t.Check("it ran", ok, tostring(problem))
+			end,
+		},
 		{
 			Name = "Take: AR45's skull in its four colours on the foe card at the smallest phone, each held for a still, for research (TR49)",
 			Manual = true,

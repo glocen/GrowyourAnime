@@ -4,13 +4,17 @@
 -- (its Elite marker's BackAt, server time, from PackService), the nearest down elite to the player when more than one of
 -- the stages' three is (TR43); at the keeper's gate while this player's own runs (their
 -- save's Progress.Grounds[ground].Back, Rules.Progress.Resting), the gate's Challenge hidden for them meanwhile. Each
--- shows its icon (a grey stand-in until Modulo's), its name, the time left, and a small card of its loot with each drop's
+-- shows its icon (Modulo's picture, its row's Marker, on the tile; the name's letter for a row without one), its name, the time left, and a small card of its loot with each drop's
 -- chance (Rules.Drops.Card, Rules.Hud.Chance): when to come back, and why. Config.Hud.Down picks the layout, tuned live;
 -- Compare shows the three side by side over the elite's square, for one capture.
 --   DownController.Plate(kind, layout?)   the plate of "Elite" or "Keeper" in that layout (the picked one), or nil before
 --                                         it's first shown: for the self-test, with its attributes Kind, Layout, Left
 --                                         (whole seconds), Lines (its card's), Chances ("1,1,0.144"), Card (shown or not)
 --   DownController.Challenge()            the keeper gate's Challenge prompt, or nil
+--   DownController.Try(kind, what?, left?, floor?)  the self-test's and its takes' only: stands `kind`'s marker for
+--                                         `what` ({ Kind, Def, Level, Ground }) over `floor`, `left` seconds, as if it
+--                                         were down there, where the world has no square or gate (the main place); nil
+--                                         lets the world say again
 
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
@@ -18,6 +22,7 @@ local RunService = game:GetService("RunService")
 
 local Shared = ReplicatedStorage.Shared
 local HudConfig = require(Shared.Config.Hud)
+local UIKit = require(Shared.Config.UIKit)
 local WorldConfig = require(Shared.Config.World)
 local Enemies = require(Shared.Definitions.Enemies)
 local Markers = require(Shared.World.Markers)
@@ -56,6 +61,7 @@ type Plate = {
 	Frame: Frame,
 	Icon: Frame,
 	Initial: TextLabel,
+	Picture: ImageLabel,
 	Name: TextLabel,
 	Time: TextLabel,
 	Card: Frame,
@@ -144,6 +150,19 @@ local function make(kind: string, layout: string): Plate
 	stroke.Thickness = 1.5
 	stroke.Parent = icon
 	local letter = Text.new({ Name = "Initial", Size = Theme.Text.Title, Font = Theme.Font.Strong, Colour = Theme.Colour.TextDim, Align = Enum.TextXAlignment.Center, Parent = icon })
+	-- Its picture fills the tile over the tile's own colour, clipped to its corner, never tinted (TR10's content check,
+	-- condition 4: nothing pushes the elite's red further)
+	local picture = Instance.new("ImageLabel")
+	picture.Name = "Picture"
+	picture.BackgroundTransparency = 1
+	picture.Size = UDim2.fromScale(1, 1)
+	picture.ScaleType = Enum.ScaleType.Fit
+	picture.Visible = false
+	picture.ZIndex = letter.ZIndex + 1
+	picture.Parent = icon
+	local clip = Instance.new("UICorner")
+	clip.CornerRadius = corner.CornerRadius
+	clip.Parent = picture
 	local name = Text.new({ Name = "Name", Size = Theme.Text.Caption, Colour = Theme.Colour.TextDim, Truncate = true, Parent = panel })
 	local time = Text.new({ Name = "Time", Size = Theme.Text.Title, Font = Theme.Font.Number, Parent = panel })
 	local card = Instance.new("Frame")
@@ -156,6 +175,7 @@ local function make(kind: string, layout: string): Plate
 		Frame = frame,
 		Icon = icon,
 		Initial = letter,
+		Picture = picture,
 		Name = name,
 		Time = time,
 		Card = card,
@@ -198,6 +218,12 @@ local function fill(plate: Plate, what: What)
 	plate.Lines = count
 	plate.Name.Text = if plate.Layout == "Row" then `{title(what.Def)} · back in` else title(what.Def)
 	plate.Initial.Text = initial(what.Def)
+	local row = Enemies.ById[what.Def]
+	local image = if row and row.Marker then UIKit.Images[row.Marker] else nil
+	plate.Picture.Image = if image then image.Id else ""
+	plate.Picture.Visible = image ~= nil
+	plate.Initial.Visible = image == nil
+	plate.Frame:SetAttribute("Picture", if image and row then row.Marker else "")
 	plate.Frame:SetAttribute("Lines", count)
 	plate.Frame:SetAttribute("Chances", table.concat(chances, ","))
 end
@@ -255,8 +281,14 @@ local function lay(plate: Plate, card: boolean)
 	plate.Frame:SetAttribute("Card", card)
 end
 
+local tries: { [string]: { What: What, Left: number, Floor: Vector3 } } = {}
+
 -- What's down now, the seconds left, and where its marker stands on the floor: the elite's square, or the keeper's gate.
 local function down(kind: string, now: number): (What?, number, Vector3?)
+	local try = tries[kind]
+	if try then
+		return try.What, try.Left, try.Floor
+	end
 	if kind == "Elite" then
 		-- The down elite nearest the player.
 		local root = Parts.Root(player.Character)
@@ -347,6 +379,10 @@ end
 function DownController.Plate(kind: string, layout: string?): Frame?
 	local plate = plates[`{kind}/{layout or HudConfig.Down.Layout}`]
 	return if plate then plate.Frame else nil
+end
+
+function DownController.Try(kind: string, what: What?, left: number?, floor: Vector3?)
+	tries[kind] = if what and left and floor then { What = what, Left = left, Floor = floor } else nil
 end
 
 function DownController.Start()

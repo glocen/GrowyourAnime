@@ -26,14 +26,15 @@ export type Row = {
 	-- its Enter ends (TR44: the Lamplighter's slam)
 	Signature: string?,
 	Idle: string?, -- its own stance's clip, over its rig's Idle (Config.Animations.Rigs; Actions.IdleOf)
+	Marker: string?, -- its picture on the down marker's tile (TR10), a Config.UIKit image; nil: the name's letter
 }
 
 local rows: { Row } = {
 	{ Id = "brawler", Name = "Brawler", Kind = "Ordinary", Action = "ShadeSwipe", Type = "Red", Rig = "Shade", Mask = "Brawler" },
 	-- An elite wears its mask twice, the second on its Left Arm (AR2, section 5): only the Brawler's is past the content check.
-	{ Id = "brawler_elite", Name = "Brawler", Kind = "Elite", Action = "ShadeSwipe", Type = "Red", Rig = "Shade", Mask = "Brawler", Scale = 1.35 },
+	{ Id = "brawler_elite", Name = "Brawler", Kind = "Elite", Action = "ShadeSwipe", Type = "Red", Rig = "Shade", Mask = "Brawler", Scale = 1.35, Marker = "MarkerElite" },
 	-- AR7: 1.5 an ordinary Shade's size, the hat's top 10.3 studs up (research's pick: taller than the elite)
-	{ Id = "lamplighter", Name = "the Lamplighter", Kind = "Keeper", Action = "KeeperSwing", Signature = "KeeperSignature", Type = "Purple", Rig = "Lamplighter", Scale = 1.5, Enter = "KeeperChallenge", Idle = "LamplighterReady" },
+	{ Id = "lamplighter", Name = "the Lamplighter", Kind = "Keeper", Action = "KeeperSwing", Signature = "KeeperSignature", Type = "Purple", Rig = "Lamplighter", Scale = 1.5, Enter = "KeeperChallenge", Idle = "LamplighterReady", Marker = "MarkerLamplighter" },
 	-- The replay's and the self-test's target: takes every hit, never answers.
 	{ Id = "dummy", Name = "Dummy", Kind = "Dummy", Action = nil, Type = "", Rig = "Box", Mask = "Round", Size = { 2.6, 4.6, 1.6 } },
 }

@@ -9,12 +9,11 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **Verdicts owed:** TR43 and TR44 in motion; AR40's install; AR30, AR37, TR10, AR28's Stage I, TR34, AR23, TR29.
 - **With the director:** the combat review's six decisions; the Voidkin screen and bag in B; the store's design; the sound pick on TR42's panel.
 
-**Faber (builder).** 2026-11-19, 23:02, on Opus 5.5. Done today:
-- TR49, the combat review built, with AR43's take 2 of the Voidkin screen and bag, AR44's Gap 0.12 and AR43's level 3 jewels: implemented and tested; the Stage 1 playtest is owed (the Festival place, item 9).
-- TR48 part 2 (on Hard's chests as research noticed them: nothing I'd change); AR40's C, closed at competent; AR43's Equipment three and Settings in B; AR46 and AR42, passed at competent; TR48; TR47's part A; TR46; AR44's must-fixes; AR45's foe cards; AR43's Home tray; AR38's Void Shop; TR32.
-- **For research:** the pass on TR49's and AR43's phone captures (`build/captures/ar43/`, `build/captures/ar45/skull-four.png`, `build/captures/ar44/`), and seven findings in TR49, "Built in the game".
-- **Next:** the system panel's rest (AR40): the base screen's chips and side panels, the Forge's, the Void Shop's screen, and the shared confirm, toast and reward.
-- **Open, tests:** NOT VERIFIED (the Festival place, item 9): the Festival role's suite, TR48's keeper, drops and run log in a real run, AR42's Stage cases, TR49's Stage 1 playtest. TintMask on a phone. TR44's phone take waits for the director's go.
+**Faber (builder).** 2026-11-19, 23:23, on Opus 5.5. Done today:
+- TR10's icons installed (the down marker's tile wears `MarkerElite` and `MarkerLamplighter`, both Approved): implemented, tested in the main place by `DownController.Try` (16/0); the phone stills and the in-world verdict wait (below).
+- TR49, the combat review, with research's must-fix (the prices are the gains, db39f40), passed at competent; its Stage 1 playtest is owed (the Festival place, item 9). TR48, AR40's C, AR43, AR46, AR42, TR47's part A, TR46, AR44, AR45's foe cards, AR38, TR32.
+- **Next, research's order (23:19):** AR45's foe card re-upload when Modulo hands it, then TR50 (one mission per Arc), then TR10's stills (the take "Take: TR10's down marker", held, three steps).
+- **Open, tests:** NOT VERIFIED (the Festival place, item 9): the Festival role's suite, TR48's keeper, drops and run log in a real run, AR42's Stage cases, TR49's Stage 1 playtest, TR10's marker in its world. TintMask on a phone. TR44's phone take waits for the director's go.
 
 **Modulo (assets).** 2026-11-19, 21:30, on Opus 5.5. Voidkin work parked until before launch (the director's word, 11:10). Done: the Voidkin screen and the bag cut in B (AR43, `build/handoff/UI/voidkin_b/`, content check PASS): all five attributes at 14 points; take 2, B's lights on Seam's grounds, picked by research at competent (21:28). Next: nothing unblocked in my area; I ask research when idle.
 - **In the game:** AR46's Hard looks with AR47's masks, on TintMask (a856f06), passed at competent (19:18). AR42's tiles in Seam, passed at competent (f9f3636).

@@ -14487,6 +14487,20 @@ Research pulled it forward by message (after 20:34), as tier 1: judge it at full
 - **Condition:** at rest, the fringe still shows at phone size by day, a hairline of cyan and red on each side (in the frame 45 tiles it nearly vanishes). Widen the resting split until it does, never so far that the digits double.
 - **Next:** the director's pick if they choose another; the content check; Faber's build, after TR50.
 
+### C's resting split, and the cut (Modulo, 2026-11-19, 23:36 to 23:38 by the clock)
+
+- **The condition met:** the resting split goes from 3.4 to 4.6 points, at 0.95 opacity (was 0.75).
+  - Five widths at rest, side by side, over both grounds, at 2 px a point and at the phone's size: `build/scratch/modulo/crit/crit_rest.png` (`crit_shine.py -- <out> rest`).
+  - By day, 3.4 vanishes and 4.2 is faint. At 4.6 the cyan and red read as a hairline each side. 5.8 starts to double the 1.
+- **The cut for Faber:** `build/handoff/UI/hud/critical_shine.json` (`-- <out> cut`). It holds:
+  - the chrome ramp that replaces `Critical.Ramp`;
+  - the split's colours, its points at the land and at rest, its time and its transparencies;
+  - the flash and the glint, and how each copy of the label is laid.
+  - Everything else on the critical stays as it is.
+- **Content check:** PASS (a fresh agent, 23:38). The red fringe reads as an RGB split beside its cyan twin, never as liquid.
+  - The build's condition: keep the two copies together and symmetric. A red copy alone, or red only under the digits, comes back for a check.
+- **Next:** Faber's build, after TR50, unless the director picks another take.
+
 ## AR45. The foes' cards with their difficulty skulls, and CR's gold tab (Modulo, for research's pick, then Faber)
 
 Research, 2026-11-19, 11:30 by the clock. The director's word of 11:30 (`docs/decisions.md`, the row): the enemy and elite cards redrawn to match the new UI, a difficulty skull by the foe's CR against the lead, the level's text in its skull's colour, and CR's look replaced. The rules are `docs/ui.md`, "The HUD, in the world": the target's card, "Numbers, short or whole" and "CR's look".
@@ -14731,6 +14745,12 @@ Labelled SIMULATION, not play: `tools/balance/sim.py`'s model, 6,000 leads (leve
 - **Checked:** type check 0 new. Self-test in the main place: the foe card's two HUD cases 9/0 and 11/0. The new take (`HudCases`, "Take: AR45's foe card digits...", with a Studio-only `FoeHealth` debug command) 5/0, including no band and the 2-point outline.
 - **Captures, smallest phone, the Breaker's lit column behind the card's right end:** `build/captures/ar45/digits-full.png`, `digits-half.png`, `digits-low.png`, and the three zoomed ×3 in `digits-three-zoomed.png`. The digits read at every fill, the front cutting through them at half. No box behind the slant over the light.
 - **Next:** research's verdict on the stills.
+
+### Research's second look (Quaestor, 2026-11-19, 23:38)
+
+- **Both must-fixes are met.** No box stands behind the card, even over the Breaker's white column. The bar runs whole, with the digits sitting on it, outlined and readable at full, half and near-empty health. The lead card's digits are on its plate, so they stay as they are.
+- **One more must-fix, older than these (class: every health readout with a compact form):** the form flips mid-fight. At 704K the card reads "704K/709K", and at 35,942 it reads "35,942/709,920", so the most jumps from 709K to 709,920 as the foe weakens. The cause is in `Rules.Hud.Health`: it checks whether the current text fits, so a shorter current number changes the form. Choose the form by the most alone (the longest the text can be, the most over the most), so one fight keeps one form. Add a case.
+- It closes on the case, with no new capture.
 
 ## AR46. Hard's ember in the world: the Shades, the elites and the Lamplighter on Hard (Modulo, for research's pick, then Faber)
 

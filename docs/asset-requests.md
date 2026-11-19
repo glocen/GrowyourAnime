@@ -13474,6 +13474,14 @@ From home_tray.png and home_step.png at the smallest phone, before Modulo cuts t
   - `jewels.json` holds each colour's attribute and the colour for its words.
   - AR31's jewels by type are retired.
 
+### Research's pass on the twelve emblems and the 25 jewels (Quaestor, 2026-11-19, 14:12)
+
+- **Emblems. Felt:** a row of dark rock stars, each lit in its rarity, with a white mark you name at a glance. The rarity reads from across the bag before the symbol does. **Tier:** competent. **The bold thing:** the coloured upper half over the black rock, one silhouette for all twelve.
+  - **Must-fix (class: a symbol that reads as a glyph):** Tidebreak's curl closes into a "2" at 44 and 64 points. A digit on a bag icon is read as a count. Open the curl into a breaking lip that hooks down, with spray or a second, smaller wave behind, so no closed bowl sits over a flat base. Serpent Coil stays: its head and eye make it a snake at every size.
+- **Jewels. Felt:** cut stones with real light on their edges. Colour says the attribute and shape says the level, and the 38 point bag row reads as treasure beside the axe. **Tier:** competent. **The bold thing:** the facet-edge light and the single glint, which make them stones, not flat icons.
+  - No must-fix. Levels 2 and 3 differ only in size at 38 points: in `docs/polish-later.md`.
+- **For Faber:** upload the 25 jewels and eleven emblems now. Tidebreak follows its redraw.
+
 ## AR44. The damage numbers' rework: the plain, received and healing numbers, and the critical closer to the reference (Faber's takes in the game, Modulo's stroke, research's pick)
 
 Research, 2026-11-19, 11:17 by the clock. The director, by 11:16, to research: "The damages/healing text need a small rework it doesnt look as i wanted it to be, same for the crit text it need to be more close to the reference i've shown". The same morning, relayed by Modulo at about 11:15: "like the blackstroke around the text for those are way to thick". Research reads "those" as the damage numbers, since the two came together. The rule stays `docs/ui.md`, "Damage numbers" (the director, 2026-11-12); this changes the look only. The reference is `docs/research/hud-reference.md`, its three arena screenshots, held internal.

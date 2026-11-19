@@ -3,8 +3,9 @@ player's camera in the street by day, Normal beside Hard (research's ask, 2026-1
 
   A  the eyes and the mask's cuts in the ember: a Hard map pair for the mask, the cuts painted the picker's bloom and
      the paper's faint glow off, its tint as it is (by day a glow tint on white cuts drew pink, see EMBER)
-  B  A, plus ember veins up the body, a white core falling to coral (a second glow: its own surface in the game, the
-     body's one EmissiveTint being its type's), and the burst's flame tinted (its ImageColor3), the scraps left paper
+  B  A, plus cracks lit from within up the coat, a warm core falling to coral, on the cloth only (a second glow: its
+     own surface in the game, the body's one EmissiveTint being its type's), and the burst's flame tinted (its
+     ImageColor3), the scraps left paper. Research's pick (17:42), its cracks redrawn to research's must-fix
   C  B, plus faint heat at the feet: an ember light low under each, on the paving and the hem, and a few motes
 
 Drawn on the delivered models riding their rigs in the clips the game plays (the Shade's Idle, the Lamplighter's Ready,
@@ -17,13 +18,14 @@ emissive tint whose green and blue are the picker's edge (#FF9A80) over the glow
 draw that edge with red to spare for the bloom (Config.Shades' own note: any green or blue in a tint at 16 lifts it
 toward white).
 
-Stand-ins, for judging the direction only: the cracks' pattern (a broken cell network, procedural), the motes, the
+Stand-ins, for judging the direction only: the cracks' pattern (a procedural noise's middle line), the motes, the
 light's numbers, the contact shadows. What the game has today is Normal; A to C would be Faber's spawn switch.
 
-  blender -b --factory-startup --python tools/blender/hard_ember.py -- <abs out> shade|keeper|sheet
+  blender -b --factory-startup --python tools/blender/hard_ember.py -- <abs out> shade|keeper|sheet|veins
 
 `shade` and `keeper` each render their layers into <out>/layers (one Blender at a time, for memory); `sheet` lays
-them into the capture: <out>/hard_ember_<look>.png, hard_ember_keeper_<look>.png and the sheet hard_ember.png.
+them into the capture: <out>/hard_ember_<look>.png, hard_ember_keeper_<look>.png and the sheet hard_ember.png;
+`veins` lays the second look, Normal beside B only, into hard_ember_veins.png.
 """
 import json
 import math
@@ -78,12 +80,22 @@ CUT_HARD = "#E85A44"
 # the mask's glow map over this is a cut. The map is encoded (shade_model.encode: light x 2 over 12 x the colour under
 # it), so a cut reads 0.19 and the paper about 0.07; on Hard the paper's is dropped
 CUTS = 0.13
-# the cracks: a noise's middle line (ridged veins: a cell network's corners drew round spots, which read as holes),
-# stretched tall so they run up unbroken from the feet, the hem and the cuffs, never across, and gone by the chest (rise,
-# studs up the model). Each is the picker's ramp across: the core CRACK_CORE where the line is over `core`, falling to
-# EMBER at its edges (the content check, 17:38: flat red dashes sat too near scratches). Width: the noise's own units
-CRACK = dict(scale=0.9, stretch=0.2, detail=0.3, width=0.02, core=0.75, rise=(2.4, 3.8), strength=7.0)
-CRACK_CORE = "#FFF4EE"                # the picker's lit top
+# the cracks, lit from within: a noise's middle line (a cell network's corners drew round spots, which read as holes),
+# one smooth octave stretched tall so they run up from the feet, the hem and the cuffs. Their width is in studs (the
+# true distance to the line: a raw |n - 0.5| swelled into teardrops where the noise was flat), at most `width`, shaped
+# by a second slow noise (wander, clamped through swell) so each crack is a spindle, tapering to nothing at both ends,
+# and narrowing as it rises until gone by the chest (rise, studs up the model). Across it, a warm core CRACK_CORE where
+# the line is over `core`, falling to EMBER's coral at its edges. On the coat's dark cloth only: none where the body's
+# glow map passes trim, or where the colour map is lighter than the cloth (a panel, a sash, a band).
+#   The content check, 17:38: flat red dashes sat too near scratches. Research's pick, 17:42: thin white zigzags read as
+#   Watt's arcs, this game's electricity; cracks lit from within, wider, tapering, a warm core, no sharp angle, off the
+#   keeper's purple trim
+CRACK = dict(scale=1.4, stretch=0.12, detail=0.0, width=0.07, wander=4.0, swell=(0.34, 0.54), core=0.7,
+             rise=(2.4, 3.7), strength=7.0,     # rise: gone before the shoulders' tops (4), where a tail drew a tick
+             trim=(0.60, 0.72),                 # the glow map: the coat's own glow ramp stays under 0.5, the trim 0.75 up
+             cloth=(0.05, 0.065),               # linear tone: both coats' cloth under 0.033 (0.2 sRGB), the next 0.073 up
+             seed=(4.3, 1.7, 0.0))              # where the pattern sits
+CRACK_CORE = "#FFC680"                # warm amber, the ember's heart
 # ImageColor3 on the burst's flame (the charge, the flare, the flame): the picker's lit pair's coral end. The paper
 # scraps keep their own cream: tinted, the flesh-toned pieces flying from where the body was could read as parts (the
 # content check, 17:38)
@@ -94,7 +106,7 @@ HEAT = dict(colour="#FF8A6A", power=120.0, height=0.4, reach=2.0, ground=1.2, mo
 LOOKS = ("Normal", "A", "B", "C")
 WHAT = {"Normal": "Normal: the game today",
         "A": "A: the eyes and the mask's cuts in the ember",
-        "B": "B: A, plus ember veins up the body (and the burst's flame, below)",
+        "B": "B: A, plus cracks lit from within up the coat (and the burst's flame)",
         "C": "C: B, plus faint heat at the feet"}
 # the street's pack, in Roblox studs from the avatar: (name, x, z, faces toward (x, z), Idle frame). Open paving in
 # the capture, clear of the avatar and Rook: two come toward the player, one squares up to Rook.
@@ -234,30 +246,115 @@ def glows(materials, body_names):
             tall.operation = "MULTIPLY"
             tall.inputs[1].default_value = (1.0, 1.0, CRACK["stretch"])
             links.new(coord.outputs["Object"], tall.inputs[0])
-            links.new(tall.outputs[0], veins.inputs["Vector"])
+            moved = nodes.new("ShaderNodeVectorMath")
+            moved.operation = "ADD"
+            moved.inputs[1].default_value = CRACK["seed"]
+            links.new(tall.outputs[0], moved.inputs[0])
+            links.new(moved.outputs[0], veins.inputs["Vector"])
             off = nodes.new("ShaderNodeMath")
             off.operation = "SUBTRACT"
             off.inputs[1].default_value = 0.5
             links.new(veins.outputs["Fac"], off.inputs[0])
+            level = nodes.new("ShaderNodeMath")
+            level.operation = "ABSOLUTE"
+            links.new(off.outputs[0], level.inputs[0])
+            # the true distance to the middle line: |n - 0.5| over the noise's slope (three samples a step apart), so
+            # a crack's width is in studs and never swells where the noise is flat (those drew teardrops)
+            step = 0.01
+            slope = nodes.new("ShaderNodeCombineXYZ")
+            for axis in range(3):
+                probe = nodes.new("ShaderNodeTexNoise")
+                probe.inputs["Scale"].default_value = CRACK["scale"]
+                probe.inputs["Detail"].default_value = CRACK["detail"]
+                nudge = nodes.new("ShaderNodeVectorMath")
+                nudge.operation = "ADD"
+                nudge.inputs[1].default_value = tuple(step if a == axis else 0.0 for a in range(3))
+                links.new(moved.outputs[0], nudge.inputs[0])
+                links.new(nudge.outputs[0], probe.inputs["Vector"])
+                diff = nodes.new("ShaderNodeMath")
+                diff.operation = "SUBTRACT"
+                links.new(probe.outputs["Fac"], diff.inputs[0])
+                links.new(veins.outputs["Fac"], diff.inputs[1])
+                links.new(diff.outputs[0], slope.inputs[axis])
+            steep = nodes.new("ShaderNodeVectorMath")
+            steep.operation = "LENGTH"
+            links.new(slope.outputs[0], steep.inputs[0])
+            steep_ok = nodes.new("ShaderNodeMath")
+            steep_ok.operation = "MAXIMUM"
+            steep_ok.inputs[1].default_value = 1e-6
+            links.new(steep.outputs["Value"], steep_ok.inputs[0])
+            per = nodes.new("ShaderNodeMath")
+            per.operation = "DIVIDE"
+            links.new(level.outputs[0], per.inputs[0])
+            links.new(steep_ok.outputs[0], per.inputs[1])
             apart = nodes.new("ShaderNodeMath")
-            apart.operation = "ABSOLUTE"
-            links.new(off.outputs[0], apart.inputs[0])
+            apart.operation = "MULTIPLY"
+            apart.inputs[1].default_value = step
+            links.new(per.outputs[0], apart.inputs[0])
             height = nodes.new("ShaderNodeSeparateXYZ")
             links.new(coord.outputs["Object"], height.inputs[0])
             rise = nodes.new("ShaderNodeMapRange")
             rise.inputs["From Min"].default_value, rise.inputs["From Max"].default_value = CRACK["rise"]
             rise.inputs["To Min"].default_value, rise.inputs["To Max"].default_value = 1.0, 0.0
             links.new(height.outputs["Z"], rise.inputs["Value"])
+            # the taper: a crack is widest at the hem and narrows to a point as it rises, its width wandering slowly
+            wander = nodes.new("ShaderNodeTexNoise")
+            wander.inputs["Scale"].default_value, wander.inputs["Detail"].default_value = CRACK["wander"], 0.0
+            links.new(moved.outputs[0], wander.inputs["Vector"])
+            swell = nodes.new("ShaderNodeMapRange")            # clamped: a crack pinches to nothing at both ends
+            swell.inputs["From Min"].default_value, swell.inputs["From Max"].default_value = CRACK["swell"]
+            swell.inputs["To Min"].default_value, swell.inputs["To Max"].default_value = 0.0, 1.0
+            links.new(wander.outputs["Fac"], swell.inputs["Value"])
+            taper = nodes.new("ShaderNodeMath")
+            taper.operation = "MULTIPLY"
+            links.new(rise.outputs["Result"], taper.inputs[0])
+            links.new(swell.outputs["Result"], taper.inputs[1])
+            wide = nodes.new("ShaderNodeMath")
+            wide.operation = "MULTIPLY"
+            wide.inputs[1].default_value = CRACK["width"]
+            links.new(taper.outputs[0], wide.inputs[0])
             line = nodes.new("ShaderNodeMapRange")
             line.interpolation_type = "SMOOTHSTEP"
-            line.inputs["From Min"].default_value, line.inputs["From Max"].default_value = 0.0, CRACK["width"]
+            line.inputs["From Min"].default_value = 0.0
             line.inputs["To Min"].default_value, line.inputs["To Max"].default_value = 1.0, 0.0
+            links.new(wide.outputs[0], line.inputs["From Max"])
             links.new(apart.outputs[0], line.inputs["Value"])
+            # inside the coat: never on the type's glowing trim (the body's own glow map)
+            trim = nodes.new("ShaderNodeMapRange")
+            trim.inputs["From Min"].default_value, trim.inputs["From Max"].default_value = CRACK["trim"]
+            trim.inputs["To Min"].default_value, trim.inputs["To Max"].default_value = 1.0, 0.0
+            links.new(strength.inputs[0].links[0].from_socket, trim.inputs["Value"])
+            # and on the coat's dark cloth only: never a panel, a sash, a band or a cuff (the colour map's tone)
+            tone = nodes.new("ShaderNodeRGBToBW")
+            links.new(tint.inputs[6].links[0].from_socket, tone.inputs[0])
+            cloth = nodes.new("ShaderNodeMapRange")
+            cloth.inputs["From Min"].default_value, cloth.inputs["From Max"].default_value = CRACK["cloth"]
+            cloth.inputs["To Min"].default_value, cloth.inputs["To Max"].default_value = 1.0, 0.0
+            links.new(tone.outputs[0], cloth.inputs["Value"])
+            # and on the sides only: an end cap (a cuff's face, a shoulder's top) takes the noise unstretched, which drew
+            # zig-zags across the keeper's held-out cuff and lone ticks on top (the content check, 17:55)
+            facing = nodes.new("ShaderNodeSeparateXYZ")
+            links.new(coord.outputs["Normal"], facing.inputs[0])
+            level_n = nodes.new("ShaderNodeMath")
+            level_n.operation = "ABSOLUTE"
+            links.new(facing.outputs["Z"], level_n.inputs[0])
+            sides = nodes.new("ShaderNodeMapRange")
+            sides.inputs["From Min"].default_value, sides.inputs["From Max"].default_value = 0.4, 0.6
+            sides.inputs["To Min"].default_value, sides.inputs["To Max"].default_value = 1.0, 0.0
+            links.new(level_n.outputs[0], sides.inputs["Value"])
+            gate = nodes.new("ShaderNodeMath")
+            gate.operation = "MULTIPLY"
+            links.new(trim.outputs["Result"], gate.inputs[0])
+            links.new(cloth.outputs["Result"], gate.inputs[1])
+            inside = nodes.new("ShaderNodeMath")
+            inside.operation = "MULTIPLY"
+            links.new(gate.outputs[0], inside.inputs[0])
+            links.new(sides.outputs["Result"], inside.inputs[1])
             crack = nodes.new("ShaderNodeMath")
             crack.operation = "MULTIPLY"
             links.new(line.outputs["Result"], crack.inputs[0])
-            links.new(rise.outputs["Result"], crack.inputs[1])
-            # across a vein: its middle the core's white, falling to the ember at its edges
+            links.new(inside.outputs[0], crack.inputs[1])
+            # across a crack: its middle the warm core, falling to coral at its edges
             core = nodes.new("ShaderNodeMapRange")
             core.interpolation_type = "SMOOTHSTEP"
             core.inputs["From Min"].default_value, core.inputs["From Max"].default_value = CRACK["core"], 1.0
@@ -546,7 +643,8 @@ def crop(img, x, y, w, h):
     return img[y:y + h, x:x + w].copy()
 
 
-def sheet_run(out):
+def sheet_run(out, looks=LOOKS, second=False):
+    """The sheet; `second`: the second look, the veins only (Normal and B, no burst), into hard_ember_veins.png."""
     rs.OUT = out
     layers_dir = out / "layers"
     still = rs.load(STILL)
@@ -560,7 +658,7 @@ def sheet_run(out):
     pack, keeper = {}, {}
     pack_places = [(x, z, 1.0) for _, x, z, _, _ in PACK]
     _, kx, kz, _, _ = KEEPER_AT
-    for look in LOOKS:
+    for look in looks:
         shades = [(project((x, 0, z))[2], layer(f"shade_{look}_{name}")) for name, x, z, _, _ in PACK]
         pack[look] = lay(backdrop, shades, pack_places, look, gx, gz)
         rs.save(pack[look], out / f"hard_ember_{look}.png")
@@ -593,17 +691,18 @@ def sheet_run(out):
     zoom = 2
     cols = [half[0], near[2] * zoom, side[2] * zoom, kbox[2]]
     row_h = max(half[1], near[3] * zoom, side[3] * zoom, kbox[3])
-    burst_h = bbox[3] * zoom
+    burst_h = 0 if second else label + bbox[3] * zoom
     width = gap + sum(c + gap for c in cols)
-    height = head + len(LOOKS) * (label + row_h + gap) + label + burst_h + 2 * gap + 60
+    height = head + len(looks) * (label + row_h + gap) + burst_h + 2 * gap + 60
     page = rs.canvas(width, height, rs.rgb("#101117"))
     ink, soft, pale = "#EDE6D6", "#B4AC9C", "#8C8577"
-    text = [(gap, 22, 34, "AR46, HARD'S EMBER IN THE WORLD: A, B AND C", ink),
+    title = ("AR46'S SECOND LOOK: B'S CRACKS, REDRAWN" if second else "AR46, HARD'S EMBER IN THE WORLD: A, B AND C")
+    text = [(gap, 22, 34, title, ink),
             (gap, 70, 16, "The real Brawler and Lamplighter at the game's glow, laid into Faber's day capture of the street "
                           "(TR24) through its own camera. First column: the phone's pixels; then the near pair and the "
                           "side Shade at two times, the keeper at full size.", soft)]
     y = head
-    for look in LOOKS:
+    for look in looks:
         text.append((gap, y, 18, WHAT[look], ink))
         y += label
         x = gap
@@ -615,25 +714,27 @@ def sheet_run(out):
             x += col + gap
         rs.paste(page, crop(keeper[look], *kbox), x, y)
         y += row_h + gap
-    text.append((gap, y, 18, "The burst at the near Shade's place, two times: the flare (27), the flame leaving with the "
-                             "scraps (29); Normal, then Hard's tint (B and C)", ink))
-    y += label
-    x = gap
-    for frame in BURST_FRAMES:
-        for lbl in ("Normal", "Hard"):
-            big = np.repeat(np.repeat(crop(bursts[frame, lbl], *bbox), zoom, 0), zoom, 1)
-            rs.paste(page, big, x, y)
-            text.append((x + 8, y + 8, 14, f"{frame}, {lbl}", ink))
-            x += bbox[2] * zoom + gap
+    if not second:
+        text.append((gap, y, 18, "The burst at the near Shade's place, two times: the flare (27), the flame leaving "
+                                 "with the scraps (29); Normal, then Hard's tint (B and C)", ink))
+        y += label
+        x = gap
+        for frame in BURST_FRAMES:
+            for lbl in ("Normal", "Hard"):
+                big = np.repeat(np.repeat(crop(bursts[frame, lbl], *bbox), zoom, 0), zoom, 1)
+                rs.paste(page, big, x, y)
+                text.append((x + 8, y + 8, 14, f"{frame}, {lbl}", ink))
+                x += bbox[2] * zoom + gap
     notes = (f"A: Hard's mask maps, the cuts painted {CUT_HARD}, the paper's glow off, its tint and 6 as today. B: the "
-             f"veins glow {CRACK_CORE} falling to {EMBER} at {CRACK['strength']:g}; the burst's flame tinted "
-             f"{BURST_TINT}, the scraps paper. C: a light "
-             f"{HEAT['colour']} low under each. Stand-ins: the cracks' pattern, the motes, the light, the contact "
-             "shadows.")
+             f"cracks lit from within, a core {CRACK_CORE} falling to {EMBER} at {CRACK['strength']:g}, tapering as "
+             f"they rise, off the trim; the burst's flame tinted {BURST_TINT}, the scraps paper."
+             + ("" if second else f" C: a light {HEAT['colour']} low under each.")
+             + " Stand-ins: the cracks' pattern, the contact shadows.")
     text.append((gap, height - 40, 15, notes, pale))
     rs.paste(page, rs.text_layer(width, height, text), 0, 0)
-    rs.save(page, out / "hard_ember.png")
-    print(f"wrote {out / 'hard_ember.png'} ({width} by {height})")
+    name = "hard_ember_veins.png" if second else "hard_ember.png"
+    rs.save(page, out / name)
+    print(f"wrote {out / name} ({width} by {height})")
 
 
 def main():
@@ -641,7 +742,8 @@ def main():
     mode = sys.argv[sys.argv.index("--") + 2] if len(sys.argv) > sys.argv.index("--") + 2 else "sheet"
     layers = out / "layers"
     layers.mkdir(parents=True, exist_ok=True)
-    {"shade": lambda: shade_run(layers), "keeper": lambda: keeper_run(layers), "sheet": lambda: sheet_run(out)}[mode]()
+    {"shade": lambda: shade_run(layers), "keeper": lambda: keeper_run(layers), "sheet": lambda: sheet_run(out),
+     "veins": lambda: sheet_run(out, ("Normal", "B"), second=True)}[mode]()
 
 
 if __name__ == "__main__":

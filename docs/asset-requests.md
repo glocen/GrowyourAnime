@@ -14412,9 +14412,9 @@ Labelled SIMULATION, not play: `tools/balance/sim.py`'s model, 6,000 leads (leve
     - The content check (17:38) blocked the first B: flat red, broken dashes sat near scratches, and coral scraps flying from where the body was could read as parts. This is the redraw.
   - **C:** B, plus a low ember light under each (`#FF8A6A`, lighting the hem and the paving) and five motes behind the legs.
 - **What the game would need, for Faber to weigh after the pick:**
-  - **A:** one more SurfaceAppearance per mask (the Brawler's, which the elite wears twice, and the Lamplighter's head), swapped at spawn. Four images.
+  - **A:** a Hard map pair for the masks. Each mask MeshPart has its own SurfaceAppearance, but it shares the body's atlas (`tools/studio/Models/Shade.luau` MAPS; the Lamplighter's head is on its own atlas). Today the ids are baked into the templates (`src/storage/Shade.rbxm`, `Lamplighter.rbxm`), and spawn sets only the tint and strength (`FightService.buildShade`, `buildRig`).
   - **B's veins:** a glow beside the type's. The body's one EmissiveTint is its type colour, which would turn the veins red on the Brawler and magenta on the purple keeper. So they need either a thin shell per body piece with its own surface, or the body's own map pair, taking the type's hue.
-  - **B's burst:** one colour on the flame's pictures on Hard, never on the scraps. The self-test checks it white today (`Cases.luau:2692`).
+  - **B's burst:** one colour on the flame's pictures on Hard, never on the scraps. Each picture's `Kind` (charge, flare, flame, scrap; `Config.ShadeBurstArt`) tells them apart. Today every picture is `HOT` white (`Effects.luau` `billboard`), and the self-test checks it white (`Cases.luau:2692`).
   - **C:** a light and an emitter per Hard foe, inside the street's light budget.
 - **My read (for research's pick):**
   - At the phone's pixels each step is small, and A alone is the subtlest: the pack's grins go red-hot.
@@ -14438,6 +14438,25 @@ Labelled SIMULATION, not play: `tools/balance/sim.py`'s model, 6,000 leads (leve
 - **Must-fix (class: a glow line that reads as electricity):** the veins are thin white zigzags, so they read as Watt's arcs, and this game's electricity is its own theme. Redraw them as cracks lit from within. They should be wider and tapering, with a warm core that falls to coral at the edges and no sharp angle. On the keeper, they stay inside his coat, off the purple trim.
 - **Faber's part,** after the redraw: the Hard look's keys in `Config.Shades`, applied at spawn from the stage's difficulty, with the burst's tint the same way.
 - The second look is on the redrawn veins only, from the same phone-pixel frame.
+
+### B's cracks redrawn, for the second look (Modulo, 2026-11-19, 17:43 to 17:55 by the clock)
+
+- **The sheet:** `build/scratch/modulo/ember/hard_ember_veins.png`, Normal beside B, in the same frame and crops as the first sheet. The full frames are beside it, `hard_ember_B.png` and `hard_ember_keeper_B.png`. The first sheet, `hard_ember.png`, stays as round one's record.
+- **The cracks, lit from within** (`tools/blender/hard_ember.py`, CRACK):
+  - **Shape:** each is a smooth spindle, tapering to nothing at both ends, and widest along its middle at about 0.07 studs. They rise from the hem, the cuffs and the trouser feet and are gone before the shoulders.
+  - **Colour:** across each crack, a warm amber core `#FFC680` falls to `#FF4739` coral at its edges, at a strength of 7.
+  - **Placement:** the cracks lie on the coat's dark cloth only. They stay off the glowing trim (the body's glow map), off the keeper's panel, sash and purple stripe (the colour map's tone), and off the end caps (a cuff's face, a shoulder's top).
+  - **How it was tuned, each step judged in the frame:**
+    - The width is now the true distance to the line, in studs. A raw width swelled into teardrops where the noise was flat, which read as candle flames.
+    - The end caps took the pattern unstretched and drew zig-zags across the keeper's held-out cuff (the content check's taste note).
+    - Too sparse a set lost B's read at the phone's pixels, so the count was raised until the pack read hot again.
+  - A and the burst are unchanged.
+- **Content check** (the same checker, a third look, 17:53): PASS. Its conditions for the build:
+  1. Each crack keeps a light-to-dark ramp, amber or gold at its core falling to coral, never flat or dark red or a single colour.
+  2. Every crack is anchored at a hem, a cuff or a foot, or tapers at both ends. None ends in a bead or hangs from above.
+  3. No short isolated marks: a crack is long or gone. Its one tick, at a shoulder's top, is fixed since.
+  4. The cracks stay off the mask, the face, the hands and the trim, and are gone by the chest.
+  5. The built Hard foes get their own check before upload, at full size and at 64 px over dark, with the near and side headings, the keeper's sleeve and the burst.
 
 ## Later, by ground
 

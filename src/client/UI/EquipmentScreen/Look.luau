@@ -71,14 +71,6 @@ export type Page = {
 	Stop: () -> (),
 }
 
-local LIT = (function(): ColorSequence
-	local points = {}
-	for _, stop in HudConfig.Make.Lit.Fill do
-		table.insert(points, ColorSequenceKeypoint.new(stop[1] :: number, Color3.fromHex(stop[2] :: string)))
-	end
-	return ColorSequence.new(points)
-end)()
-local GLOW = HudConfig.Make.Lit.Glow
 local ALIGN = { Left = Enum.TextXAlignment.Left, Right = Enum.TextXAlignment.Right, Centre = Enum.TextXAlignment.Center }
 
 function Look.X(x: number): number
@@ -132,30 +124,7 @@ function Look.Press(parent: Instance, name: string, x: number, y: number, w: num
 end
 
 function Look.Dress(button: TextButton, kind: string, words: string, why: string?)
-	local skin = Skin.Of(button)
-	local old = skin:FindFirstChild("Face")
-	if old then
-		old:Destroy()
-	end
-	local face = Instance.new("Frame")
-	face.Name = "Face"
-	face.BackgroundTransparency = 1
-	face.Size = UDim2.fromScale(1, 1)
-	face.Parent = skin
-	local w, h = button.Size.X.Offset, button.Size.Y.Offset
-	if kind == "Lit" then
-		Glass.Lit(face, "Plate", 0, 0, w, h, LIT, GLOW, 1)
-	elseif kind == "Quiet" then
-		Glass.Quiet(face, "Plate", 0, 0, w, h, SEAM.Facet, 1)
-	else
-		Glass.Fill(face, "Fill", 0, 0, w, h, 5, SEAM.Well, 1)
-		Glass.Edge(face, "Edge", 0, 0, w, h, 5, SEAM.Edge, 0.9, nil, 2)
-	end
-	local colour = if kind == "Lit" then Look.Ink elseif kind == "Quiet" then SEAM.Text else SEAM.Faint
-	Glass.Label(face, "Words", words, Look.Small, colour, 0, 0, w, h, nil, true, 7)
-	button:SetAttribute("Dress", kind)
-	button:SetAttribute("Words", words)
-	Button.Set(button, { Disabled = if kind == "Off" then why or "Not now" else false })
+	Glass.Dress(button, kind, words, why, { Size = Look.Small })
 end
 
 -- A socket (equipment.json's images): the chosen one's glow under its well; the well; a held or coloured one's light in
@@ -300,26 +269,7 @@ end
 -- A panel in B (seam.json, panel): the kit's fill in the Panel's colours top to foot, its lift across the top, its edge
 -- in the facet lit from above, the light along its top-left corner.
 function Look.Panel(parent: Instance, name: string, box: { number }, z: number): Frame
-	local frame = Instance.new("Frame")
-	frame.Name = name
-	frame.BackgroundTransparency = 1
-	frame.Position = UDim2.fromOffset(Look.X(box[1]), Look.Y(box[2]))
-	frame.Size = UDim2.fromOffset(box[3] - box[1], box[4] - box[2])
-	frame.ZIndex = z
-	frame.Parent = parent
-	Skin.Lay(frame, "PanelFill", { Name = "Fill", Tint = SEAM.Panel, Z = z })
-	Skin.Lay(frame, "PanelSheen", { Name = "Sheen", W = box[3] - box[1], H = 96, Tint = SEAM.Glint, Alpha = 1 - E.Panel.Sheen, Z = z + 1 })
-	local edge = Skin.Lay(frame, "PanelEdge", { Name = "Edge", Tint = SEAM.Facet, Z = z + 2 })
-	local lit = Instance.new("UIGradient")
-	lit.Rotation = 90
-	lit.Transparency = NumberSequence.new({
-		NumberSequenceKeypoint.new(0, E.Panel.Edge[1]),
-		NumberSequenceKeypoint.new(0.85, E.Panel.Edge[2]),
-		NumberSequenceKeypoint.new(1, E.Panel.Edge[2]),
-	})
-	lit.Parent = edge
-	Skin.Lay(frame, "PanelCornerGlint", { Name = "CornerGlint", Tint = SEAM.Glint, Alpha = 1 - E.Panel.Glint, Z = z + 3 })
-	return frame
+	return Glass.Panel(parent, name, Look.X(box[1]), Look.Y(box[2]), box[3] - box[1], box[4] - box[2], SEAM, z)
 end
 
 return Look

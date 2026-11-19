@@ -217,7 +217,7 @@ function Stages.Recommended(ground: string, difficulty: string, stage: number): 
 	if last == nil or StagesConfig.Offset[difficulty] == nil then
 		return 0
 	end
-	return Stats.Power(Stats.Enemy(last.Def, Stages.Level(last.Level, difficulty)))
+	return Stats.Power(Stats.Enemy(last.Def, Stages.Level(last.Level, difficulty), nil, difficulty, stage)) -- lifted (TR49)
 end
 
 return Stages

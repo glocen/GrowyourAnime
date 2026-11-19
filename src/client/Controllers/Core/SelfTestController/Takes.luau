@@ -1043,6 +1043,60 @@ return function(given: Given): { any }
 			end,
 		},
 		{
+			Name = "Take: AR43's take 2, the Voidkin screen and the bag in B at the smallest phone, each state held for stills, for research",
+			Manual = true,
+			Stay = true,
+			Run = function(t: any)
+				-- Research's pass on the install (docs/asset-requests.md, AR43, "Research's pick of the cut"): each state is held
+				-- until the driver moves ReplicatedStorage.NL_TakeStep on ("Lead", "Other", "Kit", "Stars", "Bag", "End") and
+				-- captures it. "Lead" is the lead's Overview (Leading); "Other" an idle Voidkin's, Lead and Station side by side.
+				local step = Instance.new("StringValue")
+				step.Name = "NL_TakeStep"
+				step.Value = "Ready"
+				step.Parent = ReplicatedStorage
+				local function await(name: string): boolean
+					return waitFor(t, 300, function(): boolean
+						return step.Value == name or step.Value == "End"
+					end) and step.Value == name
+				end
+				Screen.Close()
+				local parts = HudController.Parts()
+				t.Check("the dock's Voidkin opens it", Button.Press(parts.Voidkin :: TextButton) and waitFor(t, 1, function(): boolean
+					return Screen.Current() == VoidkinScreen.Name
+				end))
+				Layers.Force(Theme.Scale.Floor)
+				Layers.Box(Theme.Smallest - Vector2.new(0, GuiService.TopbarInset.Height))
+				local view = ProfileController.Get() :: Profile.View
+				local lead = view.Roles.Lead
+				local other: string? = nil
+				for _, owned in view.Voidkin do
+					if owned.Id ~= lead and Read.Role(view, owned.Id) == "" then
+						other = owned.Id
+						break
+					end
+				end
+				if await("Lead") then
+					VoidkinScreen.Choose(lead)
+					VoidkinScreen.Show("Overview")
+				end
+				if await("Other") and other then
+					VoidkinScreen.Choose(other)
+					VoidkinScreen.Show("Overview")
+				end
+				for _, page in { "Kit", "Stars", "Bag" } do
+					if await(page) then
+						VoidkinScreen.Choose(lead)
+						VoidkinScreen.Show(page)
+					end
+				end
+				await("End")
+				Layers.Box(nil)
+				Layers.Force(nil)
+				Screen.Close()
+				step:Destroy()
+			end,
+		},
+		{
 			Name = "Take: TR24's must-fixes from the director's run, held for stills: the Overview's sheet, the Items tab, an item's card, the HUD's lead card",
 			Manual = true,
 			Stay = true,

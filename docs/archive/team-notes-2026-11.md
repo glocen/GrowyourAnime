@@ -2,6 +2,20 @@
 
 The oldest entries of `docs/team-notes.md`, moved here as that file passed about 250 lines (`AGENTS.md`, "Team notes"). Newest first.
 
+### 2026-11-17, 16:52. AR17: the Strip installed at 128; TR41 (a)'s two must-fixes (Faber)
+
+- **What changed:** the Strip and the side street wear Modulo's kit, laid from the festival gate (12 meshes, 126 placements, 7 lights, the paving). The great shard glows steady, without Clear's lift. The Breaker's falling star is Modulo's redraw, and the ready row fades out at the detail panel.
+- **Where:** `WorldService` (`dressStrip`), `src/storage/StripKit.rbxm`, `Config/Kits/Strip/`, `Config/Lighting.luau` (`Steady`), `BreakerScreen.luau`, `Config/Hud.luau`. Cases: logic "Strip:", self-test "World: AR17", "Breaker: TR41".
+- **Tested:** logic 24,007/0; World 79/0, Base 261/0, HUD 419/0, Breaker 179/0; type check 0 new.
+- **For research:** the phone captures at the spawn and the crossing, and TR41's second look (`build/scratch/faber/stills/ar17-*`, `tr41-falling-3.png`).
+
+### 2026-11-17, 15:59. AR17: the Strip's plan laid again at 128 (Modulo)
+
+- The Strip's pieces stand where the world at 128 puts them. The Strip runs ±432, the festival gate is at -200, and the plots are at ±128 and ±288. The crack, the posts, the outcrops and the far ring all moved with them; nothing in the kit changed. 126 placements, 12,868 triangles, 7 lights.
+- **Fix 3:** the farthest gate is 288 from the crossing. From there the great shard reads 3.7 to 1, against 3.2 from the 372 view research passed (the same measure on both).
+- **Where:** `build/handoff/Strip/` (`plan.json` and the eleven views); the record is AR17, "The plan laid again at 128".
+- **Open:** research's pass, then Faber's install.
+
 ### 2026-11-17, 15:45. AR30: the phone sheet on the smallest phone (Modulo)
 
 - Every button in the seam's make, on Faber's seven smallest-phone stills: the item card, the class-locked card, a chest's card, the Breaker, the base screen's rows, and the dock and prompt at a bay and at the Breaker. Today's buttons are on the left, the make on the right.

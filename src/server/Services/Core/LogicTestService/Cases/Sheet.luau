@@ -67,7 +67,7 @@ end
 
 return {
 	{
-		Name = "Sheet: Overview's two headings, Strength and Endurance with the Main marked, then Core, Offence and Defence paired, and Sustain",
+		Name = "Sheet: Overview's two headings, the five attributes with the Main marked (TR49), then Core, Offence and Defence paired, and Sustain",
 		Run = function(t: any)
 			local groups = Sheet.Rows(block())
 			t.Equal("four blocks", #groups, 4)
@@ -77,8 +77,8 @@ return {
 				table.insert(two, each.Stat)
 				table.insert(shown, each.Name)
 			end
-			t.Equal("the two, in order", table.concat(two, ","), table.concat(Attributes.Ids, ","))
-			t.Equal("Strength and Endurance only, by name (TR36)", table.concat(shown, ","), "Strength,Endurance")
+			t.Equal("the five, in order", table.concat(two, ","), table.concat(Attributes.Ids, ","))
+			t.Equal("all five, by name (the director, 2026-11-19, 13:53; TR49)", table.concat(shown, ","), "Strength,Agility,Intelligence,Endurance,Spirit")
 			local strength = row(groups, "Strength")
 			t.Equal("an attribute's total, grouped, no decimals", if strength then strength.Value else nil, "1,234")
 			t.Equal("its Main marked", if strength then strength.Main else nil, true)

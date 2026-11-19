@@ -91,6 +91,9 @@ export type Fighter = {
 	Away: Away?, -- a lead broken off for its place by its avatar (TR44's A and B)
 	HealRoom: number?, -- what it may still heal this floor (the Tower's heal cap, Rules.Tower.Capped); nil, no cap
 	RegenAt: number, -- a lead's next Regen burst (TR40; Rules.Fight.BurstDue), from its summon
+	-- Its Lifesteal's room (TR49; Rules.Fight.Steal): the damage it may still count, as it stood at StealAt; nil, full.
+	StealRoom: number?,
+	StealAt: number?,
 	Frail: boolean?, -- it falls to the first hit that lands (a Tower's fast floor, Rules.Tower.Fast)
 	Hitters: { [Player]: boolean }, -- players whose lead hit it: a pack belongs to everyone (docs/design.md)
 	Struck: { [string]: boolean }, -- the fighters (by Id) whose hit has landed on it since it last stood home: an Opener's first
@@ -188,7 +191,7 @@ end
 
 -- An action's cooldown for this fighter: its passive may shorten its own (Lyric's Tempo).
 -- A heal toward `wanted`, inside what the fighter may still heal (HealRoom, the Tower's cap; Rules.Tower.Capped): every
--- heal in a fight passes here, its Regen, an action's mend and Lifesteal once it's wired. Returns the health it reached.
+-- heal in a fight passes here, its Regen, an action's mend and Lifesteal (TR49). Returns the health it reached.
 local function heal(f: Fighter, wanted: number): number
 	local room = f.HealRoom
 	if room == nil then
@@ -901,6 +904,8 @@ local function land(f: Fighter, action: Actions.Action, target: Fighter, beat: s
 		Reduction = Passive.Reduction(guard, target.Health, target.Block.Health) + Fight.Shield(target.Shield, at),
 		Critical = Passive.Critical(own, not target.Struck[f.Id]),
 		Resist = Passive.Resist(guard),
+		-- Kindle (TR49, the combat review): its Extra in the hit, through the elemental path, behind the element's gate.
+		Extra = Passive.Extra(own, action.Id, beat, 1),
 	}
 	local result = Hit.Resolve(f.Block, target.Block, hit.Coefficient, rolls, effects)
 	if target.Frail then
@@ -911,13 +916,20 @@ local function land(f: Fighter, action: Actions.Action, target: Fighter, beat: s
 	if not result.Dodged then
 		target.Struck[f.Id] = true
 	end
-	local extra = Passive.Extra(own, action.Id, beat, result.Physical)
-	if extra > 0 then
-		result.Elemental += extra
-		result.Total += extra
-	end
+	-- Kindle's cue when its Extra reached the hit: landed, and the attacker has an element (Rules.Hit's gate).
+	local kindled = (effects.Extra or 0) > 0 and f.Block.Element ~= "" and not result.Dodged and hit.Coefficient > 0
 	local left, fell = Fight.Damage(target.Health, result.Total)
+	local removed = target.Health - left
 	setHealth(target, left)
+	-- Lifesteal (TR49; Rules.Fight.Steal): a share of the health the hit removed, counted up to its cap a second. Through
+	-- heal, so the Tower's cap holds; no number of its own, its trickle shows on the bar.
+	if result.LifestealShare > 0 and f.Health > 0 then
+		local amount, room = Fight.Steal(result.LifestealShare, removed, f.Block.Health, StatsConfig.Lifesteal.DamagePerSecondOfMaxHealth, f.StealRoom, f.StealAt or at, at)
+		f.StealRoom, f.StealAt = room, at
+		if amount > 0 then
+			heal(f, math.min(f.Block.Health, f.Health + amount))
+		end
+	end
 	-- A hit dealt or taken, dodged or not, keeps its player "in a fight" a while (Rules.Home, TR19: HomeService reads it).
 	for _, side in { f, target } do
 		if side.Side == "Lead" and side.Owner then
@@ -971,7 +983,7 @@ local function land(f: Fighter, action: Actions.Action, target: Fighter, beat: s
 		Steady = hit.Steady == true, -- the attacker doesn't hold on it, only the target
 		Health = left,
 		MaxHealth = target.Block.Health,
-		Passive = if extra > 0 and own then own.Id else nil, -- its cue on the attacker (FighterController/Passives)
+		Passive = if kindled and own then own.Id else nil, -- its cue on the attacker (FighterController/Passives)
 	})
 	if fell then
 		fall(target, at)
@@ -1676,7 +1688,10 @@ end
 -- options.For: fought by that player's lead alone (a Hard stage's foe, TR43), as a Tower floor's.
 function FightService.SpawnEnemy(def: string, level: number, at: CFrame, options: { Type: string?, Pack: string?, Ground: string?, Stage: number?, Difficulty: string?, For: Player? }?): Fighter
 	local row = assert(Enemies.ById[def], `no enemy {def}`)
-	local block = Stats.Enemy(def, level, if options then options.Type else nil)
+	-- Hard's lift and the stage's factor (TR49; Config.Enemies.Lift and Stage) on its block.
+	local block = if options
+		then Stats.Enemy(def, level, options.Type, options.Difficulty, options.Stage)
+		else Stats.Enemy(def, level)
 	local kit = if row.Action then { Actions.ById[row.Action] } else {}
 	if row.Signature then
 		table.insert(kit, 1, Actions.ById[row.Signature]) -- tried first, whenever it's ready (TR44)

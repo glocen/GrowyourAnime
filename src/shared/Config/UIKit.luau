@@ -54,6 +54,7 @@ export type Palette = {
 	Light: Color3?, -- a palette's own light: the seam's lit edges, rings and plates
 	Ink: Color3?, -- words on that light
 	Card: { Color3 }?, -- a card over the room, a step up from its panel
+	Face: boolean?, -- a button in this palette wears its own colours, not Seam's (Kit.Button)
 }
 
 -- Equipment's screens in Seam's lit glass (AR43, "The cut in B, for Faber"; TR47): the panel's lift, the screen's
@@ -130,27 +131,27 @@ local equipment: { [string]: Image } = {
 	EmblemZenith = { Id = "rbxassetid://77830852343327", Pixels = Vector2.new(256, 256), Points = Vector2.new(64, 64), Pad = 0 },
 	JewelBlue1 = { Id = "rbxassetid://78673938657069", Pixels = Vector2.new(256, 256), Points = Vector2.new(64, 64), Pad = 0 },
 	JewelBlue2 = { Id = "rbxassetid://86378166667445", Pixels = Vector2.new(256, 256), Points = Vector2.new(64, 64), Pad = 0 },
-	JewelBlue3 = { Id = "rbxassetid://123348081777239", Pixels = Vector2.new(256, 256), Points = Vector2.new(64, 64), Pad = 0 },
+	JewelBlue3 = { Id = "rbxassetid://78880635096825", Pixels = Vector2.new(256, 256), Points = Vector2.new(64, 64), Pad = 0 },
 	JewelBlue4 = { Id = "rbxassetid://111667173458771", Pixels = Vector2.new(256, 256), Points = Vector2.new(64, 64), Pad = 0 },
 	JewelBlue5 = { Id = "rbxassetid://114519528878510", Pixels = Vector2.new(256, 256), Points = Vector2.new(64, 64), Pad = 0 },
 	JewelGreen1 = { Id = "rbxassetid://91406931812686", Pixels = Vector2.new(256, 256), Points = Vector2.new(64, 64), Pad = 0 },
 	JewelGreen2 = { Id = "rbxassetid://121270308310936", Pixels = Vector2.new(256, 256), Points = Vector2.new(64, 64), Pad = 0 },
-	JewelGreen3 = { Id = "rbxassetid://106948897198130", Pixels = Vector2.new(256, 256), Points = Vector2.new(64, 64), Pad = 0 },
+	JewelGreen3 = { Id = "rbxassetid://120589680204103", Pixels = Vector2.new(256, 256), Points = Vector2.new(64, 64), Pad = 0 },
 	JewelGreen4 = { Id = "rbxassetid://86053354969195", Pixels = Vector2.new(256, 256), Points = Vector2.new(64, 64), Pad = 0 },
 	JewelGreen5 = { Id = "rbxassetid://94467737774520", Pixels = Vector2.new(256, 256), Points = Vector2.new(64, 64), Pad = 0 },
 	JewelPurple1 = { Id = "rbxassetid://78814301478471", Pixels = Vector2.new(256, 256), Points = Vector2.new(64, 64), Pad = 0 },
 	JewelPurple2 = { Id = "rbxassetid://110098005794376", Pixels = Vector2.new(256, 256), Points = Vector2.new(64, 64), Pad = 0 },
-	JewelPurple3 = { Id = "rbxassetid://72032300745737", Pixels = Vector2.new(256, 256), Points = Vector2.new(64, 64), Pad = 0 },
+	JewelPurple3 = { Id = "rbxassetid://74775209719384", Pixels = Vector2.new(256, 256), Points = Vector2.new(64, 64), Pad = 0 },
 	JewelPurple4 = { Id = "rbxassetid://120108288225181", Pixels = Vector2.new(256, 256), Points = Vector2.new(64, 64), Pad = 0 },
 	JewelPurple5 = { Id = "rbxassetid://125352761565580", Pixels = Vector2.new(256, 256), Points = Vector2.new(64, 64), Pad = 0 },
 	JewelRed1 = { Id = "rbxassetid://133172100041548", Pixels = Vector2.new(256, 256), Points = Vector2.new(64, 64), Pad = 0 },
 	JewelRed2 = { Id = "rbxassetid://85182758285678", Pixels = Vector2.new(256, 256), Points = Vector2.new(64, 64), Pad = 0 },
-	JewelRed3 = { Id = "rbxassetid://97282097549467", Pixels = Vector2.new(256, 256), Points = Vector2.new(64, 64), Pad = 0 },
+	JewelRed3 = { Id = "rbxassetid://106028308077589", Pixels = Vector2.new(256, 256), Points = Vector2.new(64, 64), Pad = 0 },
 	JewelRed4 = { Id = "rbxassetid://90110547782208", Pixels = Vector2.new(256, 256), Points = Vector2.new(64, 64), Pad = 0 },
 	JewelRed5 = { Id = "rbxassetid://139837692677149", Pixels = Vector2.new(256, 256), Points = Vector2.new(64, 64), Pad = 0 },
 	JewelYellow1 = { Id = "rbxassetid://125461154919045", Pixels = Vector2.new(256, 256), Points = Vector2.new(64, 64), Pad = 0 },
 	JewelYellow2 = { Id = "rbxassetid://82503233267703", Pixels = Vector2.new(256, 256), Points = Vector2.new(64, 64), Pad = 0 },
-	JewelYellow3 = { Id = "rbxassetid://70933555349104", Pixels = Vector2.new(256, 256), Points = Vector2.new(64, 64), Pad = 0 },
+	JewelYellow3 = { Id = "rbxassetid://73189259327611", Pixels = Vector2.new(256, 256), Points = Vector2.new(64, 64), Pad = 0 },
 	JewelYellow4 = { Id = "rbxassetid://120031866112146", Pixels = Vector2.new(256, 256), Points = Vector2.new(64, 64), Pad = 0 },
 	JewelYellow5 = { Id = "rbxassetid://137649433097353", Pixels = Vector2.new(256, 256), Points = Vector2.new(64, 64), Pad = 0 },
 }
@@ -354,6 +355,31 @@ local UIKit = {
 			Light = Color3.fromHex("#EDE4FF"),
 			Ink = Color3.fromHex("#0B0913"),
 			Card = { Color3.fromHex("#4C3E92"), Color3.fromHex("#251D4C") },
+		},
+		-- B's lights on Seam's grounds (AR43's take 2, research's pick, 2026-11-19, 21:28; build/handoff/UI/voidkin_b/
+		-- voidkin_b.json, takes): SeamGlass with Seam's Backing, Panel, Well and Button under its edges, facets and glints,
+		-- so the violet stays at today's. Worn by the Voidkin screen and its bag; Face: a button wears its own colours.
+		SeamDeep = {
+			Panel = { Color3.fromHex("#1A1430"), Color3.fromHex("#0C0A16") },
+			Alpha = 1,
+			Edge = Color3.fromHex("#51477A"),
+			Facet = Color3.fromHex("#A89CD8"),
+			Glint = Color3.fromHex("#F0EAFF"),
+			Text = Color3.fromHex("#F1ECFF"),
+			Soft = Color3.fromHex("#C6BDE4"),
+			Faint = Color3.fromHex("#8279A6"),
+			Channel = Color3.fromHex("#0C0A1A"),
+			Well = Color3.fromHex("#1B1728"), -- a well's top; it falls to Config.Hud.Seam.WellFoot
+			Button = { Color3.fromHex("#2A2244"), Color3.fromHex("#1A1530") },
+			Pressed = { Color3.fromHex("#120E20"), Color3.fromHex("#1A1430") },
+			Ground = Color3.fromHex("#1E1A2C"),
+			Accent = Color3.fromHex("#EDE4FF"),
+			Core = 0.5,
+			Backing = Color3.fromHex("#07060C"),
+			Light = Color3.fromHex("#EDE4FF"),
+			Ink = Color3.fromHex("#0B0913"),
+			Card = { Color3.fromHex("#4C3E92"), Color3.fromHex("#251D4C") },
+			Face = true,
 		},
 		-- The seam's plate of light: its one action (Equip), white falling to the seam's Light, words in Ink.
 		SeamLit = {

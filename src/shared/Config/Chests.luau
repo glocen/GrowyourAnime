@@ -82,8 +82,11 @@ return {
 	-- What a line can be, by weight; never the main stat, never twice. A weapon's lines favour its class's Main. The two
 	-- attributes keep the five's share of the pool, 10 of 21 (TR36, the builder's carry-over, for research to confirm).
 	Pool = {
-		Strength = 5,
-		Endurance = 5,
+		Strength = 2,
+		Agility = 2,
+		Intelligence = 2,
+		Endurance = 2,
+		Spirit = 2,
 		Health = 1,
 		Attack = 1,
 		Defence = 1,

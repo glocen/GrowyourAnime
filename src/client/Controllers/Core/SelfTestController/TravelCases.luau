@@ -23,6 +23,7 @@ local TravelController = require(script.Parent.Parent.Parent.Main.TravelControll
 local Helpers = require(script.Parent.Helpers)
 local UI = script.Parent.Parent.Parent.Parent.UI
 local Screen = require(UI.Kit.Screen)
+local Layers = require(UI.Layers)
 local Button = require(UI.Kit.Button)
 local Toast = require(UI.Kit.Toast)
 local StageScreen = require(UI.StageScreen)
@@ -144,6 +145,17 @@ function TravelCases.Cases(given: { [string]: any }): { any }
 				local shown = card()
 				local title = if shown then shown:FindFirstChild("Title", true) else nil
 				t.Equal("it names where", if title and title:IsA("TextLabel") then title.Text else nil, WorldConfig.Signs.Door.Name)
+				-- The menu sinks away as it closes (Screen.Close's Rise), out of the safe area by design: the card is read once
+				-- it has left.
+				local menus = Layers.Get("Menus")
+				waitFor(t, 1, function(): boolean
+					for _, piece in menus:GetChildren() do
+						if string.sub(piece.Name, -7) == "Leaving" then
+							return false
+						end
+					end
+					return true
+				end)
 				lintClean(t, "the trip's card")
 				t.Wait(REMOTE_GAP)
 				t.Equal("a second pick while it's under way is refused", pick(difficulty, 1).Error, "Busy")

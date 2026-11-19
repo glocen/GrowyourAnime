@@ -117,6 +117,9 @@ type Face = { Glass: any, GlassWords: Color3, Marked: Color3?, Light: Color3, Ch
 local SEAM_FACE: Face = { Glass = SEAM.Panel, GlassWords = SEAM.Text, Light = SEAM_LIGHT, Channel = SEAM.Channel, Edge = SEAM.Edge, Text = SEAM.Text, Soft = SEAM.Soft, Faint = SEAM.Faint }
 local function faceOf(palette: string?): Face
 	local p = if palette then (UIKit.Palettes :: any)[palette] else nil
+	if p and p.Face then -- its own colours, Seam's shape (SeamDeep, AR43's take 2)
+		return { Glass = p.Panel, GlassWords = p.Text, Light = p.Light or SEAM_LIGHT, Channel = p.Channel, Edge = p.Edge, Text = p.Text, Soft = p.Soft, Faint = p.Faint }
+	end
 	if p == nil or p.Primary == nil then
 		return SEAM_FACE
 	end

@@ -399,16 +399,28 @@ return {
 			local owned = lead(data, "Warrior")
 			t.Equal("an unknown rarity refused", Chests.SetSalvage(data, "Shiny").Error, Chests.Unknown)
 			t.Check("Legendary and under", Chests.SetSalvage(data, "Legendary").Ok == true and data.Settings.Salvage == "Legendary")
-			-- Worn: an item in every slot too strong for any Lantern Row roll to beat.
+			-- Worn: an item in every slot too strong for any Lantern Row roll to beat: every stat a roll can carry (its main
+			-- stat or a line, Config.Chests.Main and Pool) far past any roll's. Under the combat review's Combat Power (TR49)
+			-- a stat the worn set lacked, a resist, is a real gain, so the set carries them all.
+			local function strong(): { Profile.ItemLine }
+				local lines: { Profile.ItemLine } = {}
+				for stat in ChestsConfig.Pool do
+					table.insert(lines, { Stat = stat, Value = if Attributes.ById[stat] then 1e5 else 1e6 })
+				end
+				table.sort(lines, function(a: Profile.ItemLine, b: Profile.ItemLine): boolean
+					return a.Stat < b.Stat
+				end)
+				return lines
+			end
 			for _, slot in Gear.Shared do
 				local id = Profile.NewId(data)
-				data.Items[id] = { Id = id, Def = Items.ById[string.lower((string.gsub(Gear.Family(slot), " ", "_")))].Id, Tier = 6, Rarity = "Legendary", Design = 1, Lines = { { Stat = "Attack", Value = 1e6 }, { Stat = "Health", Value = 1e6 }, { Stat = "Strength", Value = 1e5 }, { Stat = "Endurance", Value = 1e5 }, { Stat = "Defence", Value = 1e6 } }, Sockets = {}, Reinforce = 0, Jewels = {} }
+				data.Items[id] = { Id = id, Def = Items.ById[string.lower((string.gsub(Gear.Family(slot), " ", "_")))].Id, Tier = 6, Rarity = "Legendary", Design = 1, Lines = strong(), Sockets = {}, Reinforce = 0, Jewels = {} }
 				Regalia.Put(data.Presets[1], slot, nil, id)
 			end
 			for _, hand in Gear.Hands do
 				local id = Profile.NewId(data)
 				local def = if hand == "Main Hand" then "sword" else "short_sword"
-				data.Items[id] = { Id = id, Def = def, Tier = 6, Rarity = "Legendary", Design = 1, Lines = { { Stat = "Attack", Value = 1e6 }, { Stat = "Strength", Value = 1e5 }, { Stat = "Hit", Value = 1e5 }, { Stat = "Critical", Value = 1e5 } }, Sockets = {}, Reinforce = 0, Jewels = {} }
+				data.Items[id] = { Id = id, Def = def, Tier = 6, Rarity = "Legendary", Design = 1, Lines = strong(), Sockets = {}, Reinforce = 0, Jewels = {} }
 				Regalia.Put(data.Presets[1], hand, "Warrior", id)
 			end
 			local worn = count(data.Items)

@@ -10,6 +10,7 @@ local Profile = require(Shared.Data.Profile)
 local Migrations = require(Shared.Data.Migrations)
 local Growth = require(Shared.Rules.Growth)
 local Stats = require(Shared.Rules.Stats)
+local Chests = require(Shared.Rules.Chests)
 local Collection = require(Shared.Rules.Collection)
 local Voidkin = require(Shared.Definitions.Voidkin)
 local Attributes = require(Shared.Definitions.Attributes)
@@ -182,7 +183,7 @@ return {
 		end,
 	},
 	{
-		Name = "Stats: a Common Warrior at level 1 is its class's shape, converted by the two attributes' rows (TR36)",
+		Name = "Stats: a Common Warrior at level 1 is its class's shape, converted by the five attributes' rows (TR49)",
 		Run = function(t: any)
 			local def = first("Common", "Warrior")
 			t.Check("the roster has one", def ~= nil)
@@ -193,15 +194,15 @@ return {
 				t.Check(`its {id} is its shape's`, near(block.Attributes[id], shape[id]), `{block.Attributes[id]}`)
 			end
 			t.Equal("its Main is Strength", block.Main, "Strength")
-			-- By hand from the rows (docs/balance.md, "The stats", 2026-11-17): Strength 67, Endurance 48
-			t.Check("health: 3 a Strength, 5 an Endurance", near(block.Health, 3 * 67 + 5 * 48), `{block.Health}`)
-			t.Check("attack: Strength's 1 and its Main's 1 more", near(block.Attack, 67 + 67), `{block.Attack}`)
-			t.Check("defence: 1 an Endurance", near(block.Defence, 48), `{block.Defence}`)
-			t.Check("regen: the level's Base, and 0.02 an Endurance", near(block.Regen, StatsConfig.Regen.Base + 0.02 * 48), `{block.Regen}`)
-			t.Check("Strength's Hit and Penetration", near(block.Hit, 0.4 * 67) and near(block.Penetration, 0.4 * 67), `{block.Hit}, {block.Penetration}`)
-			t.Check("no Critical or Dodge: only an Assassin's Main gives them", block.Critical == 0 and block.Dodge == 0)
-			t.Check("Endurance's Block and resists", near(block.Block, 0.3 * 48) and near(block.CriticalResist, 1.5 * 48) and near(block.ElementalResist, 48))
-			t.Equal("no Elemental Attack: a Warrior's Main gives none", block.ElementalAttack, 0)
+			-- By hand from the rows (research's integration pass of the combat review, 2026-11-19): Strength 64, Agility
+			-- 16, Intelligence 16, Endurance 45, Spirit 16; a Warrior's Main gives 0.57 Health and 0.78 Attack a Strength.
+			t.Check("health: 2.3 a Strength and its Main's 0.57, 5 an Endurance, 3.2 a Spirit", near(block.Health, 2.3 * 64 + 0.57 * 64 + 5 * 45 + 3.2 * 16), `{block.Health}`)
+			t.Check("attack: Strength's 1 and its Main's 0.78 more", near(block.Attack, 64 + 0.78 * 64), `{block.Attack}`)
+			t.Check("defence: 1 an Endurance", near(block.Defence, 45), `{block.Defence}`)
+			t.Check("regen: the level's Base, and 0.05 a Spirit", near(block.Regen, StatsConfig.Regen.Base + 0.05 * 16), `{block.Regen}`)
+			t.Check("Agility's Hit, Dodge and Critical", near(block.Hit, 2.5 * 16) and near(block.Dodge, 1.65 * 16) and near(block.Critical, 2.5 * 16), `{block.Hit}, {block.Dodge}, {block.Critical}`)
+			t.Check("Intelligence's Penetration and Elemental Attack", near(block.Penetration, 2 * 16) and near(block.ElementalAttack, 1.05 * 16), `{block.Penetration}, {block.ElementalAttack}`)
+			t.Check("Endurance's Block, Spirit's resists", near(block.Block, 0.067 * 45) and near(block.CriticalResist, 5.1 * 16) and near(block.ElementalResist, 3 * 16), `{block.Block}, {block.CriticalResist}, {block.ElementalResist}`)
 			t.Equal("the critical's base extra", block.CriticalDamage, StatsConfig.CriticalDamage)
 			t.Equal("a Warrior's poise", block.Poise, StatsConfig.Poise.Warrior)
 		end,
@@ -304,7 +305,7 @@ return {
 	{
 		-- TR12: Regen is a value a second from the level (G), never a share; rarity and stars leave the level's own
 		-- alone (docs/design.md, "Health carries"). A Healer's more comes from its Main now (rework part 1).
-		Name = "Stats: TR12, the level's Regen grows with G for every class, Endurance adds to it, and a Healer's Main the most",
+		Name = "Stats: TR12, the level's Regen grows with G for every class, Spirit adds to it (TR49), and a Healer's Main the most",
 		Run = function(t: any)
 			local data = fresh()
 			local regen = StatsConfig.Regen
@@ -317,10 +318,12 @@ return {
 					local first = regen.Base * Growth.G(1)
 					t.Check(`{row.Id} at {level}: its base, the level-1 figure`, near(from(lines, "Base").Regen or 0, first))
 					t.Check(`{row.Id} at {level}: the level adds the rest`, near((from(lines, "Level").Regen or 0) + first, levelled))
-					local endurance = from(lines, "Attr:Endurance").Regen or 0
+					-- The five attributes' rows (TR49): Spirit converts to Regen, Endurance no longer does.
+					local spirit = from(lines, "Attr:Spirit").Regen or 0
 					local main = from(lines, `Main:{block.Main}`).Regen or 0
-					t.Check(`{row.Id} at {level}: the level's, Endurance's and its Main's`, near(block.Regen, levelled + endurance + main), `{block.Regen}`)
-					t.Check(`{row.Id} at {level}: Endurance adds`, endurance > 0)
+					t.Check(`{row.Id} at {level}: the level's, Spirit's and its Main's`, near(block.Regen, levelled + spirit + main), `{block.Regen}`)
+					t.Check(`{row.Id} at {level}: Spirit adds`, spirit > 0)
+					t.Equal(`{row.Id} at {level}: Endurance adds none`, from(lines, "Attr:Endurance").Regen, nil)
 					owned.Stars = VoidkinConfig.MaxStars
 					local _, starred = Stats.Resolve(owned, nil, nil)
 					t.Check(`{row.Id} at {level}: stars leave the level's own alone`, near((from(starred, "Base").Regen or 0) + (from(starred, "Level").Regen or 0), levelled))
@@ -480,13 +483,15 @@ return {
 				local more = table.clone(base) :: any
 				more[stat] += if stat == "CriticalDamage" or stat == "Lifesteal" then 0.01 else 1
 				if stat == "ElementalAttack" then
-					-- Rook has no element: a hit of his has no elemental part (Rules.Hit), so the points add nothing.
-					t.Equal("more Elemental Attack with no element: the same power", Stats.Sum(more), sum)
-					more.Element = "Storm"
+					-- Rook's Fire (TR49, decision 6) carries it: more power. A block with no element has no elemental part
+					-- (Rules.Hit), so there the points add nothing, and an element with no points adds none either.
 					t.Check("more Elemental Attack with an element, more power", Stats.Sum(more) > sum, `{Stats.Sum(more)} over {sum}`)
-					local spare = table.clone(base) :: any
-					spare.Element = "Storm"
-					t.Equal("an element alone adds none", Stats.Sum(spare), sum)
+					local bare, bareMore = table.clone(base) :: any, table.clone(more)
+					bare.Element, bareMore.Element = "", ""
+					t.Equal("more Elemental Attack with no element: the same power", Stats.Sum(bareMore), Stats.Sum(bare))
+					local spent, kept = table.clone(base) :: any, table.clone(base) :: any
+					spent.ElementalAttack, kept.ElementalAttack, kept.Element = 0, 0, ""
+					t.Equal("an element alone adds none", Stats.Sum(spent), Stats.Sum(kept))
 				else
 					t.Check(`more {stat}, more power`, Stats.Sum(more) > sum, `{Stats.Sum(more)} over {sum}`)
 				end
@@ -505,24 +510,30 @@ return {
 		end,
 	},
 	{
-		Name = "Stats: a percent's Combat Power grows with G at its level, a point's doesn't (TR17 fix 10)",
+		Name = "Stats: a percent's line price grows with G at its level, a point's doesn't (TR17 fix 10, on the prices since TR49)",
 		Run = function(t: any)
-			-- Research's seeds: a percent multiplies points, which grow with G, so its weight is its level-1 weight times G.
-			local weights = StatsConfig.Power.Weights
+			-- Research's seeds: a percent multiplies points, which grow with G, so its price is its level-1 weight times G.
+			-- Since the combat review (TR49) Combat Power never reads the weights: they are the line prices alone (Rules.Chests,
+			-- Config.Stats.Power), and Combat Power is the body's against the reference (Stats.Sum), so a block of one stat
+			-- alone, with no health, has none.
+			local power = StatsConfig.Power
+			local weights = power.Weights
 			for _, level in { 1, 20, 60 } do
-				local g = Growth.G(level)
-				local function alone(stat: string, value: number): number
-					local block = Stats.Empty(level) :: any
-					block[stat] += value
-					return Stats.Power(block)
-				end
-				for stat in StatsConfig.Power.ByLevel do
-					local want = math.floor(weights[stat] * g * 0.1 * StatsConfig.Power.Scale + 0.5)
-					t.Equal(`10% {stat} at level {level}: G times its level-1 power`, alone(stat, 0.1), want)
-				end
-				t.Equal(`100 Attack at level {level}: the same at every level`, alone("Attack", 100), math.floor(weights.Attack * 100 * StatsConfig.Power.Scale + 0.5))
+				local lone = Stats.Empty(level) :: any
+				lone.Attack += 100
+				t.Equal(`100 Attack alone at level {level}: no body, no Combat Power`, Stats.Power(lone), 0)
 			end
-			t.Check("a percent's weight is only on the three percents", StatsConfig.Power.ByLevel.Attack == nil and StatsConfig.Power.ByLevel.Health == nil)
+			for stat in power.ByLevel do
+				t.Check(`{stat}: a percent, priced at its level-1 weight (ByLevel times G wherever one is read)`, weights[stat] > 0 and Chests.Price(stat) == weights[stat])
+			end
+			t.Check("a percent's price is only on the three percents", power.ByLevel.Attack == nil and power.ByLevel.Health == nil)
+			for stat, row in StatsConfig.Attributes.Convert do
+				local price = 0
+				for into, rate in row do
+					price += rate * (weights[into] or 0)
+				end
+				t.Check(`{stat}: its price is what it converts into, priced`, math.abs(Chests.Price(stat) - price) <= 1e-9)
+			end
 		end,
 	},
 }

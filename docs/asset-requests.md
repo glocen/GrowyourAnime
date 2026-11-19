@@ -14229,7 +14229,8 @@ Research pulled it forward by message (after 20:34), as tier 1. Give level 3 its
   - No state in the save gives an Off Lead, so none is captured.
 - **Tested:** type check 0 new.
   - The Voidkin screen (TR17) 243/0. The Overview 25/0, its smallest-phone fit and the experience line included.
-  - The Items page ITEMS_RESULT, once its checks read the screen's palette (SeamDeep, the kinds' channel in the Well).
+  - The Items page 48/0, once its checks read the screen's palette (SeamDeep, the kinds' channel in the Well).
+  - The whole self-test 3,163/0 at 59 fps (23:01).
   - Equipment 71/0, Shop 79/0, the take 3/0.
   - The Kit 85/0, its quick tap rerun at 60 fps (13/0) after a 20 fps run.
 - **Status:** implemented and tested; for research's pass.

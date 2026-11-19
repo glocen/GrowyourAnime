@@ -153,14 +153,16 @@ return {
 		end,
 	},
 	{
-		Name = "Stages: each stage's recommended Combat Power is its last foe's, higher stage by stage, and higher again on Hard",
+		Name = "Stages: each stage's recommended Combat Power is its last foe's as it stands there, higher stage by stage, and higher again on Hard",
 		Run = function(t: any)
 			local before = 0
 			for stage = 1, 4 do
 				local normal = Stages.Recommended(GROUND, "Normal", stage)
 				local hard = Stages.Recommended(GROUND, "Hard", stage)
 				local last = Stages.Last(GROUND, stage) :: any
-				t.Equal(`Stage {stage}: its last foe's own`, normal, Stats.Power(Stats.Enemy(last.Def, last.Level)))
+				-- as it stands in the stage: its stage's factor on Normal, Hard's lift and level there (TR49; Config.Enemies)
+				t.Equal(`Stage {stage}: its last foe's own`, normal, Stats.Power(Stats.Enemy(last.Def, last.Level, nil, "Normal", stage)))
+				t.Equal(`Stage {stage}: on Hard, its lifted own`, hard, Stats.Power(Stats.Enemy(last.Def, Stages.Level(last.Level, "Hard"), nil, "Hard", stage)))
 				t.Check(`Stage {stage}: above the one before`, normal > before, `{normal} over {before}`)
 				t.Check(`Stage {stage}: Hard above Normal`, hard > normal, `{hard} over {normal}`)
 				before = normal

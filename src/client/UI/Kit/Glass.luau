@@ -5,7 +5,10 @@
 -- 1-point hairline), laid at cut / 5, so every box keeps the cut corners and its hairline a fifth of them; a light inside
 -- it is a white PressFill under a gradient. A disc is a round frame, a bloom the kit's ScreenBloom. One idle loop runs
 -- every light that moves (Config.Hud.Equipment.Idle), none with the player's reduced motion on. Sizes are points.
---   Glass.Ground(parent, z) -> Frame                       the screen's ground down it, and its top light
+--   Glass.Ground(parent, z, backing?) -> Frame             the screen's ground down it, and its top light; `backing`
+--     its top and foot, Equipment's when nil
+--   Glass.Panel(parent, name, x, y, w, h, palette, z) -> Frame   the kit's panel (seam.json, panel): PanelFill in the
+--     palette's Panel, its sheen across the top, PanelEdge in its Facet lit from above, the light at its top-left corner
 --   Glass.Fill(parent, name, x, y, w, h, cut, tint, z, alpha?) -> ImageLabel     a cut box's body
 --   Glass.Edge(parent, name, x, y, w, h, cut, colour, top, foot?, z) -> ImageLabel   its hairline, `top` strong at its
 --     top falling to `foot` by 0.85 of the way down (lit from above), or `top` all round
@@ -13,7 +16,12 @@
 --   Glass.Glow(parent, name, x, y, w, h, reach, colour, alpha, z) -> ImageLabel   a glow round it, reaching `reach`
 --   Glass.Lit(parent, name, x, y, w, h, fill, glow, z, cut?, glowAlpha?) -> Plate  the lit press's plate, its sheen
 --     running once a loop
---   Glass.Quiet(parent, name, x, y, w, h, edge, z, cut?) -> Frame                 a quiet plate: Seam's button glass
+--   Glass.Quiet(parent, name, x, y, w, h, edge, z, cut?, palette?) -> Frame       a quiet plate: the palette's button
+--     glass, SeamGlass's when nil
+--   Glass.Dress(button, kind, words, why?, dress?)          a bare press's face (Equipment's, AR43): Lit (the one it can
+--     do), Quiet, or Off (the well's, faint words), which says `why` on a tap. `dress`: its Palette (SeamGlass's when
+--     nil), Under (`why` under its name: an Off press's reason, another's note, in the Soft, a lit one's in the Ink),
+--     Mark (the diamond at the words' left, in the Ink: the main action set, Leading), Size (its words', 14 when nil)
 --   Glass.Disc(parent, name, cx, cy, r, tint, z, alpha?) -> Frame
 --   Glass.Circle(parent, name, cx, cy, r, colour, wide, top, foot?, z) -> Frame   a ring's line, lit from above
 --   Glass.Bloom(parent, name, cx, cy, w, h, colour, alpha, z) -> ImageLabel
@@ -35,6 +43,7 @@ local UIKit = require(Shared.Config.UIKit)
 local Theme = require(script.Parent.Parent.Theme)
 local Skin = require(script.Parent.Skin)
 local Text = require(script.Parent.Text)
+local Button = require(script.Parent.Button)
 
 local Glass = {}
 
@@ -46,6 +55,17 @@ local WHITE = Color3.new(1, 1, 1)
 
 export type Tint = Color3 | { Color3 } | ColorSequence
 export type Plate = { Glow: ImageLabel, Fill: ImageLabel, Foot: ImageLabel, Sheen: ImageLabel, Edge: ImageLabel }
+export type Dress = { Palette: UIKit.Palette?, Under: boolean?, Mark: boolean?, Size: number? }
+
+-- The lit press's plate, down the light's stops, and its glow (Config.Hud.Make.Lit).
+local LIT = (function(): ColorSequence
+	local points = {}
+	for _, stop in HudConfig.Make.Lit.Fill do
+		table.insert(points, ColorSequenceKeypoint.new(stop[1] :: number, Color3.fromHex(stop[2] :: string)))
+	end
+	return ColorSequence.new(points)
+end)()
+local LIT_GLOW = HudConfig.Make.Lit.Glow
 
 -- A light's strength down a piece `tall` points, as a gradient's transparency: strength(points from the top).
 local function down(tall: number, strength: (y: number) -> number): NumberSequence
@@ -91,7 +111,7 @@ function Glass.Band(width: number, sigma: number, peak: number): NumberSequence
 	return NumberSequence.new(points)
 end
 
-function Glass.Ground(parent: Instance, z: number): Frame
+function Glass.Ground(parent: Instance, z: number, backing: { Color3 }?): Frame
 	local ground = Instance.new("Frame")
 	ground.Name = "Ground"
 	ground.BorderSizePixel = 0
@@ -100,7 +120,8 @@ function Glass.Ground(parent: Instance, z: number): Frame
 	ground.ZIndex = z
 	local tint = Instance.new("UIGradient")
 	tint.Rotation = 90
-	tint.Color = ColorSequence.new(EQUIPMENT.Backing[1], EQUIPMENT.Backing[2])
+	local ramp = backing or EQUIPMENT.Backing
+	tint.Color = ColorSequence.new(ramp[1], ramp[2])
 	tint.Parent = ground
 	local T = EQUIPMENT.TopLight
 	local top = Instance.new("Frame")
@@ -172,20 +193,90 @@ function Glass.Lit(parent: Instance, name: string, x: number, y: number, w: numb
 	}
 end
 
-function Glass.Quiet(parent: Instance, name: string, x: number, y: number, w: number, h: number, edge: Color3, z: number, cut: number?): Frame
+function Glass.Quiet(parent: Instance, name: string, x: number, y: number, w: number, h: number, edge: Color3, z: number, cut: number?, palette: UIKit.Palette?): Frame
 	local c = cut or 5
+	local p = palette or SEAM
 	local holder = Instance.new("Frame")
 	holder.Name = name
 	holder.BackgroundTransparency = 1
 	holder.Size = UDim2.fromScale(1, 1)
 	holder.ZIndex = z
-	Glass.Fill(holder, "Fill", x, y, w, h, c, SEAM.Button, z)
-	Glass.Wash(holder, "Sheen", x, y, w, h, c, SEAM.Glint, function(at: number): number
+	Glass.Fill(holder, "Fill", x, y, w, h, c, p.Button, z)
+	Glass.Wash(holder, "Sheen", x, y, w, h, c, p.Glint, function(at: number): number
 		return 0.12 * math.exp(-at / 9)
 	end, z + 1)
 	Glass.Edge(holder, "Edge", x, y, w, h, c, edge, 0.9, 0.45, z + 2)
 	holder.Parent = parent
 	return holder
+end
+
+function Glass.Panel(parent: Instance, name: string, x: number, y: number, w: number, h: number, palette: UIKit.Palette, z: number): Frame
+	local P = EQUIPMENT.Panel
+	local frame = Instance.new("Frame")
+	frame.Name = name
+	frame.BackgroundTransparency = 1
+	frame.Position = UDim2.fromOffset(x, y)
+	frame.Size = UDim2.fromOffset(w, h)
+	frame.ZIndex = z
+	frame.Parent = parent
+	Skin.Lay(frame, "PanelFill", { Name = "Fill", Tint = palette.Panel, Z = z })
+	Skin.Lay(frame, "PanelSheen", { Name = "Sheen", W = w, H = 96, Tint = palette.Glint, Alpha = 1 - P.Sheen, Z = z + 1 })
+	local edge = Skin.Lay(frame, "PanelEdge", { Name = "Edge", Tint = palette.Facet, Z = z + 2 })
+	local lit = Instance.new("UIGradient")
+	lit.Rotation = 90
+	lit.Transparency = NumberSequence.new({
+		NumberSequenceKeypoint.new(0, P.Edge[1]),
+		NumberSequenceKeypoint.new(0.85, P.Edge[2]),
+		NumberSequenceKeypoint.new(1, P.Edge[2]),
+	})
+	lit.Parent = edge
+	Skin.Lay(frame, "PanelCornerGlint", { Name = "CornerGlint", Tint = palette.Glint, Alpha = 1 - P.Glint, Z = z + 3 })
+	return frame
+end
+
+function Glass.Dress(button: TextButton, kind: string, words: string, why: string?, dress: Dress?)
+	local p = (dress and dress.Palette) or SEAM
+	local size = (dress and dress.Size) or 14
+	local skin = Skin.Of(button)
+	local old = skin:FindFirstChild("Face")
+	if old then
+		old:Destroy()
+	end
+	local face = Instance.new("Frame")
+	face.Name = "Face"
+	face.BackgroundTransparency = 1
+	face.Size = UDim2.fromScale(1, 1)
+	face.Parent = skin
+	local w, h = button.Size.X.Offset, button.Size.Y.Offset
+	if kind == "Lit" then
+		Glass.Lit(face, "Plate", 0, 0, w, h, LIT, LIT_GLOW, 1)
+	elseif kind == "Quiet" then
+		Glass.Quiet(face, "Plate", 0, 0, w, h, p.Facet, 1, nil, p)
+	else
+		Glass.Fill(face, "Fill", 0, 0, w, h, 5, p.Well, 1)
+		Glass.Edge(face, "Edge", 0, 0, w, h, 5, p.Edge, 0.9, nil, 2)
+	end
+	local ink = p.Ink or SEAM.Ink :: Color3
+	local colour = if kind == "Lit" then ink elseif kind == "Quiet" then p.Text else p.Faint
+	-- Under: `why` in a line under the words, an Off press's reason or another's note (Station's bay), the kit's own rule
+	-- (docs/ui.md, rule 4).
+	local under = why ~= nil and dress ~= nil and dress.Under == true
+	local rise = if under then -8 else 0
+	local label = Glass.Label(face, "Words", words, size, colour, 0, rise, w, h, nil, true, 7)
+	if dress and dress.Mark then -- the diamond and the words centred together
+		local mark = HudConfig.Make.Images.SeamMark
+		local side, gap = HudConfig.Make.Mark.Side, HudConfig.Make.Mark.Shift
+		local wide = Text.Wide(label, words)
+		local left = (w - (side + gap + wide)) / 2
+		label.Position = UDim2.fromOffset((side + gap) / 2, rise)
+		Glass.Mark(face, "Mark", mark, left + side / 2, h / 2 + rise, side, colour, 8)
+	end
+	if under then
+		Glass.Label(face, "Why", why :: string, Theme.Text.Caption, if kind == "Lit" then ink else p.Soft, 0, 9, w, h, nil, false, 7)
+	end
+	button:SetAttribute("Dress", kind)
+	button:SetAttribute("Words", words)
+	Button.Set(button, { Disabled = if kind == "Off" then why or "Not now" else false })
 end
 
 function Glass.Disc(parent: Instance, name: string, cx: number, cy: number, r: number, tint: Tint, z: number, alpha: number?): Frame

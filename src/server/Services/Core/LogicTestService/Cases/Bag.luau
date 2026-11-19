@@ -22,9 +22,7 @@ local Stats = require(Shared.Rules.Stats)
 local Chests = require(Shared.Rules.Chests)
 local Bag = require(Shared.Rules.Bag)
 local Sheet = require(Shared.Rules.Sheet)
-local Growth = require(Shared.Rules.Growth)
 local StatsConfig = require(Shared.Config.Stats)
-local GrowthConfig = require(Shared.Config.Growth)
 
 local NOW = 1_800_000_000
 
@@ -271,16 +269,15 @@ return {
 		-- Research's fix 2 to the rebuild in A (TR28, 22:37): the Bracers' +465 over Health +75 alone. It was right: a card
 		-- shows every stat behind its number, and Health +75 is worth 0.62 × 75 × 10; 0.67 × 75 × 10 since TR36's refit;
 		-- 0.67 × 75 at a tenth's scale (D3, 2026-11-18).
-		Name = "Bag: a card's Combat Power is what its shown lines are worth, so none is hidden",
+		Name = "Bag: a card's Combat Power is the resolver's true change, and every stat that moves it has its row, so none is hidden (TR49)",
 		Run = function(t: any)
+			-- The combat review's decision 7 (TR49): the comparison shows the true Combat Power change, the resolver run twice,
+			-- so it's no longer the sum of its lines' prices; Combat Power never reads the prices (Config.Stats.Power).
 			local power = StatsConfig.Power
-			t.Equal("Health +75 alone is worth +50", math.floor(power.Weights.Health * 75 * power.Scale + 0.5), 50)
 			local data, warrior, ids = stocked()
 			local preset = Stats.PresetOf(data, warrior) :: Profile.Preset
 			local before = Stats.Resolve(warrior, preset, data)
-			local g = Growth.G(math.clamp(before.Level, 1, GrowthConfig.MaxLevel))
-			-- The block the card compares against: the item worn in its slot, or a worn item taken off. A rating's row carries
-			-- its share (Sheet.Rated), so its worth is read from the two blocks' points.
+			-- The block the card compares against: the item worn in its slot, or a worn item taken off.
 			local function afterOf(card: Bag.Card): Stats.Block
 				if card.Worn then
 					local trial: Profile.Preset = { Slots = table.clone(preset.Slots), Hands = {} }
@@ -292,7 +289,7 @@ return {
 				end
 				return (Stats.Compare(data, preset, warrior, card.Id) :: Stats.Change).After
 			end
-			local checked = 0
+			local checked, rising, falling = 0, 0, 0
 			for name, id in ids do
 				local card = Bag.Card(data, warrior, id)
 				if card == nil or not card.Fits or #card.Battle >= Bag.Battle then
@@ -300,25 +297,62 @@ return {
 				end
 				local after = afterOf(card)
 				local shown: { [string]: boolean } = {}
-				local sum = 0
+				local up, down = false, false
 				for _, line in card.Battle do
 					shown[line.Stat] = true
-					local weight = (power.Weights[line.Stat] or 0) * (if power.ByLevel[line.Stat] then g else 1)
-					local function worth(value: number): number
-						return if line.Stat == "CriticalDamage" then math.max(0, value - StatsConfig.CriticalDamage) else value
-					end
-					sum += weight * (worth((after :: any)[line.Stat]) - worth((before :: any)[line.Stat]))
+					up = up or line.Change > 1e-9
+					down = down or line.Change < -1e-9
 				end
 				for stat, weight in power.Weights do
 					local was, now = (before :: any)[stat], (after :: any)[stat]
 					if weight ~= 0 and type(was) == "number" and type(now) == "number" and math.abs(now - was) > 1e-9 then
-						t.Check(`{name}: {stat} changes its worth, so it has its row`, shown[stat] == true)
+						t.Check(`{name}: {stat} changes, so it has its row`, shown[stat] == true)
 					end
 				end
 				checked += 1
-				t.Check(`{name}: its {card.Power} is its lines' {string.format("%.1f", sum * power.Scale)}`, math.abs(sum * power.Scale - card.Power) <= 1)
+				local truth = Stats.Sum(after) - Stats.Sum(before)
+				t.Check(`{name}: its {string.format("%.2f", card.Power)} is the true change, {string.format("%.2f", truth)}`, math.abs(truth - card.Power) <= 1e-6)
+				if not card.Worn then
+					local change = Stats.Compare(data, preset, warrior, id) :: Stats.Change
+					t.Check(`{name}: the same as the comparison's`, math.abs(change.Power - card.Power) <= 1e-6)
+				end
+				-- Combat Power rises with every stat (Rules.Stats.Sum), so a card whose every row rises shows a gain, and one
+				-- whose every row falls a loss.
+				if up and not down then
+					rising += 1
+					t.Check(`{name}: every row rises, so a gain`, card.Power > 0, `{card.Power}`)
+				elseif down and not up then
+					falling += 1
+					t.Check(`{name}: every row falls, so a loss`, card.Power < 0, `{card.Power}`)
+				end
 			end
 			t.Check("every item that fits, checked", checked >= 6, `{checked}`)
+			t.Check("a card that only rises and one that only falls among them", rising >= 1 and falling >= 1, `{rising}, {falling}`)
+		end,
+	},
+	{
+		Name = "Stats: the line prices stand in one proportion to what a point adds to the reference body's Combat Power (TR49)",
+		Run = function(t: any)
+			-- Config.Stats.Power.Weights, the prices Rules.Chests.Price reads: each stat's against the rest as its true gain at
+			-- the reference body (Reference at level 1, its three percents as they are), so no line is over- or under-priced
+			-- against another. One factor for all; its size is research's (asked, TR49).
+			local power = StatsConfig.Power
+			local reference = Stats.Empty(1) :: any
+			for stat, value in power.Reference do
+				reference[stat] = value
+			end
+			reference.Def, reference.Element = "rook", "Reference"
+			local base = Stats.Sum(reference)
+			local first: number? = nil
+			for _, stat in { "Health", "Attack", "Defence", "Hit", "Dodge", "Critical", "CriticalResist", "Block", "Penetration", "ElementalAttack", "ElementalResist", "CriticalDamage", "CriticalGuard", "Lifesteal", "Regen" } do
+				local step = if power.ByLevel[stat] then 0.001 else 0.1
+				local more = table.clone(reference)
+				more[stat] += step
+				local gain = (Stats.Sum(more) - base) / step
+				local ratio = gain / power.Weights[stat]
+				first = first or ratio
+				t.Check(`{stat}: a point adds {string.format("%.4f", gain)}, {string.format("%.3f", ratio)} times its price`, math.abs(ratio / (first :: number) - 1) <= 0.02)
+			end
 		end,
 	},
 	{

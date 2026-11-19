@@ -120,6 +120,92 @@ function HudCases.Cases(given: Given): { any }
 
 	return {
 		{
+			Name = "Take: AR45's skull in its four colours on the foe card at the smallest phone, each held for a still, for research (TR49)",
+			Manual = true,
+			Stay = true,
+			Run = function(t: any)
+				-- Each tier is held until the driver moves ReplicatedStorage.NL_TakeStep on ("White", "Yellow", "Red", "Grey",
+				-- "End") and captures it: an elite at the lead's level with the cuts moved round its cost, then a Shade a level
+				-- under over them. The cuts are put back at the end.
+				local step = Instance.new("StringValue")
+				step.Name = "NL_TakeStep"
+				step.Value = "Ready"
+				step.Parent = ReplicatedStorage
+				local function await(name: string): boolean
+					return waitFor(t, 300, function(): boolean
+						return step.Value == name or step.Value == "End"
+					end) and step.Value == name
+				end
+				local parts = HudController.Parts()
+				local lead = myLead()
+				local level = if lead then lead:GetAttribute("Level") else nil
+				if lead == nil or type(level) ~= "number" then
+					t.Check("the lead is in the world", false)
+					step:Destroy()
+					return
+				end
+				local wasCuts = table.clone(HudConfig.Skulls.Cuts)
+				-- Its foes stand through the take: a hundred times their health, a hundredth of their attack, put back after
+				-- (the card's health reads staged; the skull and the level's colour are what's judged).
+				local Enemies = require(Shared.Config.Enemies) :: any
+				local rows = { "Ordinary", "Elite" }
+				local was: { [string]: { Health: number, Attack: number } } = {}
+				for _, row in rows do
+					was[row] = { Health = Enemies[row].Health, Attack = Enemies[row].Attack }
+					t.Server("Tune", `Enemies.{row}.Health`, Enemies[row].Health * 100)
+					t.Server("Tune", `Enemies.{row}.Attack`, Enemies[row].Attack / 100)
+				end
+				Layers.Force(Theme.Scale.Floor)
+				Layers.Box(Theme.Smallest - Vector2.new(0, GuiService.TopbarInset.Height))
+				local AHEAD, MEET = 12, 20 -- studs ahead a Shade spawns, seconds it may take to be met (as Cases' own)
+				local function meet(def: string, at: number): boolean
+					t.Server("FightSpawn") -- clears the last
+					local camera, root = workspace.CurrentCamera, t.Root()
+					local ahead = Vector3.new(root.CFrame.LookVector.X, 0, root.CFrame.LookVector.Z)
+					if camera and ahead.Magnitude > 1e-3 then -- the view looks where it spawns (ViewController's report)
+						camera.CFrame = CFrame.lookAt(root.Position - ahead.Unit * 10 + Vector3.new(0, 4, 0), root.Position + ahead.Unit * AHEAD)
+						t.Wait(0.5)
+					end
+					local spawned = t.Server("FightSpawn", def, at, AHEAD)
+					return type(spawned) == "table" and spawned.Ok == true and waitFor(t, MEET, function(): boolean
+						return lead:GetAttribute("Target") == spawned.Id and parts.Target.Visible
+					end)
+				end
+				local ok, problem = pcall(function()
+					t.Check("an elite at the lead's level", meet("brawler_elite", level))
+					local tiers: { { Name: string, Cuts: { number } } } = {
+						{ Name = "White", Cuts = { 1e6, 2e6, 3e6 } },
+						{ Name = "Yellow", Cuts = { 1e-6, 2e-6, 1e6 } },
+						{ Name = "Red", Cuts = { 1e-6, 2e-6, 3e-6 } },
+					}
+					for _, tier in tiers do
+						if await(tier.Name) then -- the step lays its state, then the driver captures it
+							t.Server("Tune", "Hud.Skulls.Cuts", tier.Cuts)
+						end
+					end
+					if await("Grey") then
+						t.Server("Tune", "Hud.Skulls.Cuts", { 1e6, 2e6, 3e6 })
+						if level > 1 then
+							t.Check("a Shade a level under", meet("brawler", level - 1))
+						end
+					end
+					await("End")
+				end)
+				t.Server("Tune", "Hud.Skulls.Cuts", wasCuts)
+				t.Server("FightSpawn")
+				for _, row in rows do
+					t.Server("Tune", `Enemies.{row}.Health`, was[row].Health)
+					t.Server("Tune", `Enemies.{row}.Attack`, was[row].Attack)
+				end
+				Layers.Box(nil)
+				Layers.Force(nil)
+				step:Destroy()
+				if not ok then
+					error(problem, 0)
+				end
+			end,
+		},
+		{
 			-- TR19 (docs/test-requests.md, "Home in one tap: the dock's Base tile"): at home the tile is quiet and a tap does
 			-- nothing; out on Lantern Row a tap charges, the tile filling from its foot and the avatar's outline lifting, then the
 			-- player stands at their plot's spawn facing its Breaker with their lead beside them; the cooldown's veil is on the

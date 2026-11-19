@@ -12,9 +12,15 @@
 -- 116, its own ratings), so every target above holds exactly: Health from 881.1, 3172 and 6975, Attack from 5.735, 9.29
 -- and 7.43 ("the build re-authors them and the targets hold exactly", docs/research/rework-2026-11-16.md, part 2).
 
+-- The integration pass of the combat-math review (research, 2026-11-19): solved against the median Rook build on
+-- each stage's first play, one action at a time. Element is a string; Critical Damage a percent, never times G.
 return {
-	Ordinary = { Health = 1096, Attack = 3.718, Defence = 40 },
-	Elite = { Health = 3944, Attack = 6.024, Defence = 40 },
-	Keeper = { Health = 8811, Attack = 4.82, Defence = 40, Dodge = 20, CriticalResist = 30, Block = 30, ElementalResist = 30 },
+	Ordinary = { Health = 660, Attack = 0.9, Defence = 70, Hit = 57, Dodge = 31, Critical = 47, Block = 31, ElementalAttack = 0.225, CriticalDamage = 0.5, Element = "Void" },
+	Elite = { Health = 1800, Attack = 3.4, Defence = 70, Hit = 76, Dodge = 41, Critical = 63, Block = 41, ElementalAttack = 0.85, CriticalDamage = 0.75, Element = "Void" },
+	Keeper = { Health = 6050, Attack = 3.15, Defence = 70, Hit = 76, Dodge = 41, Critical = 63, CriticalResist = 120, Block = 41, Penetration = 83, ElementalAttack = 1.1025, ElementalResist = 97, CriticalDamage = 1, Element = "Fire" },
 	Dummy = { Health = 1e6, Attack = 0, Defence = 40 },
+	-- A difficulty's lift by Kind, times the row (Rules.Stats.Enemy). Normal has none.
+	Lift = { Hard = { Ordinary = { Health = 1.6, Attack = 1.6 }, Elite = { Health = 2.05, Attack = 1.5 }, Keeper = { Health = 1.7, Attack = 1.2 } } } :: { [string]: { [string]: { Health: number, Attack: number } } },
+	-- A stage's factor on every foe in it, by difficulty and stage (Rules.Stats.Enemy). A stage not here has none.
+	Stage = { Normal = { [1] = { Attack = 0.8 }, [3] = { Attack = 1.2 } }, Hard = { [1] = { Attack = 0.8 } } } :: { [string]: { [number]: { Health: number?, Attack: number? } } },
 }

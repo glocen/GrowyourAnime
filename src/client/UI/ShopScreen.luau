@@ -54,11 +54,11 @@ local RATE_GAP = 2 -- authored pixels between the Drop rates' rows
 local KEY = "_shop" -- the featured piece's id in the copy its card is read from
 local RATE_INDENT = 10 -- a Voidkin's row under its rarity's, in the Drop rates, as the Breaker's
 local P = {
-	Text = Seam.Colour.Text,
-	Soft = Seam.Colour.TextDim,
-	Faint = Seam.Colour.Disabled,
-	Line = Seam.Colour.Line,
-	Plate = Seam.Colour.PlateHigh,
+	Text = Seam.Own.Colour.Text,
+	Soft = Seam.Own.Colour.TextDim,
+	Faint = Seam.Own.Colour.Disabled,
+	Line = Seam.Own.Colour.Line,
+	Plate = Seam.Own.Colour.PlateHigh,
 	Light = Seam.Light,
 	Bad = UIKit.Bad,
 	Rarity = HudConfig.Bag.Rarity,
@@ -136,17 +136,18 @@ local function titled(parent: Instance, x: number, y: number, wide: number, cent
 end
 
 -- Where a line's hero stands between `top` and `bottom` of a panel `wide` across, `words` tall under it: over its words,
--- centred, as large as the room leaves up to Hero.Most. Where that falls under Hero.Least (the smallest phone), it
--- stands at the left, as tall as the room, its words at its right.
+-- centred, as large as the room leaves up to Hero.Most, or `most` when given. Where that falls under Hero.Least (the
+-- smallest phone), it stands at the left, as tall as the room, its words at its right.
 type Place = { Side: number, X: number, Y: number, Under: boolean }
-local function place(wide: number, top: number, bottom: number, words: number): Place
+local function place(wide: number, top: number, bottom: number, words: number, most: number?): Place
 	local H = SHOP.Hero
+	local largest = math.min(H.Most, most or H.Most)
 	local room = bottom - top
-	local under = math.floor(math.min(room - words - H.Gap, H.Most, wide - Theme.Size.Pad * 2))
+	local under = math.floor(math.min(room - words - H.Gap, largest, wide - Theme.Size.Pad * 2))
 	if under >= H.Least then
 		return { Side = under, X = math.floor((wide - under) / 2), Y = top + math.floor((room - under - H.Gap - words) / 2), Under = true }
 	end
-	return { Side = math.floor(math.min(room, H.Most, wide * H.Share)), X = Theme.Size.Pad, Y = top, Under = false }
+	return { Side = math.floor(math.min(room, largest, wide * H.Share)), X = Theme.Size.Pad, Y = top, Under = false }
 end
 
 -- How many rows `said` takes in a wrapped label `wide` across (a margin for where the words break).
@@ -213,7 +214,7 @@ local function buyLine(panel: Frame, view: Profile.View, shelf: Shop.Shelf, line
 		Size = UDim2.new(1, -pad * 2, 0, tap),
 		Position = UDim2.new(0, pad, 1, -(pad + tap)),
 		Parent = panel,
-		Palette = Seam.Palette,
+		Palette = Seam.Own.Palette,
 		Lit = true, -- the lit press, its price in ink (research's 16:19); dimmed while it can't act
 		OnPress = function(): boolean?
 			if missing and os.clock() - armedAt > SHOP.Armed then
@@ -260,7 +261,7 @@ end
 
 -- The featured piece apart: its picture, name, slot and whom it fits, rarity, stats, then its foot. None this stock:
 -- where to look for one.
-local function featured(panel: Frame, wide: number, tall: number, view: Profile.View, shelf: Shop.Shelf, on: On)
+local function featured(panel: Frame, wide: number, tall: number, view: Profile.View, shelf: Shop.Shelf, on: On): number?
 	local pad, gap = Theme.Size.Pad, Theme.Size.Gap
 	head(panel, "Featured", `about 1 stock in {math.round(1 / ShopConfig.Featured.Chance)}`)
 	local line = shelf.Lines.Featured
@@ -279,7 +280,7 @@ local function featured(panel: Frame, wide: number, tall: number, view: Profile.
 			AnchorPoint = Vector2.new(0.5, 0.5),
 			Parent = panel,
 		}, "None this stock.\nWhen one is in,\nthe Shop's crown is lit.")
-		return
+		return nil
 	end
 	local tap, line_ = Theme.Size.Tap, SHOP.Row
 	local missing = if row.Class and not hasClass(view, row.Class) then row.Class else nil
@@ -313,6 +314,7 @@ local function featured(panel: Frame, wide: number, tall: number, view: Profile.
 		label({ Name = "Missing", Size = Theme.Text.Caption, Colour = P.Bad, Box = UDim2.new(1, -pad * 2, 0, line_), Position = UDim2.new(0, pad, 1, -(pad + tap + gap + line_ * 2)), Parent = panel }, `You have no {missing} yet`)
 	end
 	buyLine(panel, view, shelf, line, on, card.Name, missing)
+	return at.Side -- the shard's stands no larger
 end
 
 -- The Drop rates' mark: three bars left of its word (the Breaker's, AR30).
@@ -370,7 +372,7 @@ local function rateList(parent: Instance, def: string, position: UDim2, size: UD
 end
 
 -- The Standard shard's line: its picture, name, whom it draws from, a Drop rates row of its own, then its foot.
-local function shards(panel: Frame, wide: number, tall: number, view: Profile.View, shelf: Shop.Shelf, on: On)
+local function shards(panel: Frame, wide: number, tall: number, view: Profile.View, shelf: Shop.Shelf, on: On, most: number?)
 	local pad, gap, tap = Theme.Size.Pad, Theme.Size.Gap, Theme.Size.Tap
 	head(panel, "Shards", `{ShopConfig.Shard.Limit} each player, each stock`)
 	local line = shelf.Lines.Shard
@@ -386,7 +388,7 @@ local function shards(panel: Frame, wide: number, tall: number, view: Profile.Vi
 		-- Its hero over its words, between the head and the Drop rates' row.
 		local bottom = tall - (pad + tap + gap + SHOP.Row + gap) - (tap + gap)
 		local words = SHOP.Row * 2 + 4
-		local at = place(wide, y, bottom, words)
+		local at = place(wide, y, bottom, words, most)
 		local art = HudConfig.ShardArt
 		local from = `a Voidkin of {if ground then ground.Name else row.Ground}`
 		hero(panel, at.X, at.Y, at.Side, Hud.ShardPicture(row.Grade, at.Side, art.Large), named, Seam.Light, SHOP.Hero.Shard)
@@ -407,7 +409,7 @@ local function shards(panel: Frame, wide: number, tall: number, view: Profile.Vi
 		Size = UDim2.new(1, -pad * 2, 0, tap),
 		Position = UDim2.fromOffset(pad, y),
 		Parent = panel,
-		Palette = Seam.Palette,
+		Palette = Seam.Own.Palette,
 		OnPress = function()
 			ShopScreen.Rates(not rates)
 			return true
@@ -485,7 +487,7 @@ end
 local function build(view: Profile.View, shelf: Shop.Shelf, on: On)
 	tickers = {}
 	local pad, gap = Theme.Size.Pad, Theme.Size.Gap
-	local body = Screen.Full(NAME, "Void Shop", Seam.Palette)
+	local body = Screen.Full(NAME, "Void Shop", Seam.Own.Palette)
 	local band = Screen.Band(NAME)
 	if band then
 		local title = label({ Name = "ShopName", Size = Theme.Text.Body, Font = Theme.Font.Strong, Colour = P.Text, Box = UDim2.fromOffset(1, Screen.Row()), Position = UDim2.new(0, Screen.BandLeft + pad, 0.5, 0), AnchorPoint = Vector2.new(0, 0.5), Parent = band }, "Void Shop")
@@ -505,11 +507,11 @@ local function build(view: Profile.View, shelf: Shop.Shelf, on: On)
 	local top = math.max(pad, math.floor((room.Y - tall - gap - SHOP.Row) / 2))
 	local shelfBox = box("Lines", body, UDim2.new(0.5, 0, 0, top), UDim2.fromOffset(wide, tall))
 	shelfBox.AnchorPoint = Vector2.new(0.5, 0)
-	local left = Panel.new({ Name = "Featured", Size = UDim2.new(0.5, -gap / 2, 1, 0), Parent = shelfBox, Palette = Seam.Palette })
-	local right = Panel.new({ Name = "Shards", Size = UDim2.new(0.5, -gap / 2, 1, 0), Position = UDim2.new(0.5, gap / 2, 0, 0), Parent = shelfBox, Palette = Seam.Palette })
+	local left = Panel.new({ Name = "Featured", Size = UDim2.new(0.5, -gap / 2, 1, 0), Parent = shelfBox, Palette = Seam.Own.Palette })
+	local right = Panel.new({ Name = "Shards", Size = UDim2.new(0.5, -gap / 2, 1, 0), Position = UDim2.new(0.5, gap / 2, 0, 0), Parent = shelfBox, Palette = Seam.Own.Palette })
 	local half = math.floor((wide - gap) / 2)
-	featured(left, half, tall, view, shelf, on)
-	shards(right, half, tall, view, shelf, on)
+	local offer = featured(left, half, tall, view, shelf, on)
+	shards(right, half, tall, view, shelf, on, offer)
 	local minutes = ShopConfig.Period / 60
 	label({
 		Name = "Foot",

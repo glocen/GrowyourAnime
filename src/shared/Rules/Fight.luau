@@ -227,6 +227,24 @@ function Fight.Burst(health: number, maxHealth: number, size: number): number
 	return Fight.Regen(health, maxHealth, size, 1)
 end
 
+-- Lifesteal (TR49; the combat review's F9, docs/research/combat-math.md): what a hit that removed `removed` health heals
+-- its attacker, `share` of it (Rules.Hit's LifestealShare, the stat under its cap), counted up to `perSecond` of the
+-- attacker's most health a second (Config.Stats.Lifesteal.DamagePerSecondOfMaxHealth). The count is a room that fills
+-- at that rate up to one second's worth: `room` as it stood at `since` (nil, full), and what it holds after this hit.
+-- Returns the heal and the room left. A bad number heals nothing and leaves the room as it was.
+function Fight.Steal(share: number, removed: number, maxHealth: number, perSecond: number, room: number?, since: number, at: number): (number, number)
+	local most = perSecond * maxHealth
+	if not (most > 0) or most == math.huge then
+		return 0, room or 0
+	end
+	local now = if room == nil then most else math.min(most, room + most * math.max(0, at - since))
+	if not (share > 0) or share == math.huge or not (removed > 0) or removed == math.huge then
+		return 0, now
+	end
+	local counted = math.min(removed, now)
+	return share * counted, now - counted
+end
+
 -- Health after a hit's heal of `share` of the most (Actions.Hit.Heal): never past the most, and a body that's down
 -- stays down. A bad share does nothing.
 function Fight.Mend(health: number, maxHealth: number, share: number): number

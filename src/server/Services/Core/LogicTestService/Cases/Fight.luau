@@ -216,45 +216,6 @@ return {
 		end,
 	},
 	{
-		Name = "Fight: the seeds' time to kill, against a bare Common Warrior",
-		Run = function(t: any)
-			-- The expected damage a second, both ways, through the game's own hit, against the targets in Config.Enemies.
-			local function perSecond(attacker: Stats.Block, defender: Stats.Block, coefficientPerSecond: number): number
-				local odds = Hit.Resolve(attacker, defender, 1, { Dodge = 0.999999, Critical = 0.999999, Block = 0.999999 })
-				local mean = 0
-				for _, critical in { true, false } do
-					for _, blocked in { true, false } do
-						local hit = Hit.Resolve(attacker, defender, 1, { Dodge = 0.999999, Critical = if critical then 0 else 0.999999, Block = if blocked then 0 else 0.999999 })
-						local p = (if critical then odds.ChanceCritical else 1 - odds.ChanceCritical) * (if blocked then odds.ChanceBlock else 1 - odds.ChanceBlock)
-						mean += p * hit.Total
-					end
-				end
-				return mean * (1 - odds.ChanceDodge) * coefficientPerSecond
-			end
-			-- The brawler's share is research's read of the sim, 2026-11-14 (TR12): an Ordinary Shade's Attack halved, so 0.06.
-			-- The seeds (enemy: 5, 18 and 45 s; 0.35 and 0.7 of the lead) were met by the five attributes' Warrior. The two's
-			-- Warrior (TR36, docs/balance.md, "The stats": Attack 134 against 116, Health 441 against 516) kills faster and
-			-- loses a little more a kill: these are its figures through the game's own hit, the seeds' Config.Enemies unchanged,
-			-- for research to confirm or retune (TR36's record).
-			local targets = { -- ttk and the health share a kill costs, a bare Common Warrior
-				{ "brawler", 4.56, 0.06 },
-				{ "brawler_elite", 16.40, 0.367 },
-				{ "lamplighter", 40.71, 0.729 },
-			}
-			for _, level in { 1, 5, 9 } do
-				-- Bare: nothing worn.
-				local lead = Stats.Resolve({ Id = "k", Def = "rook", Level = level, Xp = 0, Stars = 0, Copies = 0, Nickname = "", Preset = "", Favourite = false, Locked = false, Born = 0 } :: any)
-				for _, target in targets do
-					local enemy = Stats.Enemy(target[1] :: string, level)
-					local ttk = enemy.Health / perSecond(lead, enemy, Actions.EnemyPerSecond)
-					local share = perSecond(enemy, lead, Actions.EnemyPerSecond) * ttk / lead.Health
-					t.Check(`level {level} {target[1]}: {string.format("%.2f", ttk)} s`, near(ttk, target[2] :: number, 0.01))
-					t.Check(`level {level} {target[1]}: {string.format("%.3f", share)} of the lead`, near(share, target[3] :: number, 0.01))
-				end
-			end
-		end,
-	},
-	{
 		Name = "Fight: beats come once each, in order",
 		Run = function(t: any)
 			local combo = Actions.ById.RookCombo

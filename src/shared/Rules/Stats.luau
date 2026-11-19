@@ -33,6 +33,9 @@ local Growth = require(Shared.Rules.Growth)
 local Reinforce = require(Shared.Rules.Reinforce)
 local Emblems = require(Shared.Rules.Emblems)
 local Regalia = require(Shared.Rules.Regalia)
+local Passive = require(Shared.Rules.Passive)
+local Actions = require(Shared.Definitions.Actions)
+local Passives = require(Shared.Definitions.Passives)
 
 local Stats = {}
 
@@ -246,24 +249,100 @@ function Stats.Resolve(owned: Profile.OwnedVoidkin, preset: Profile.Preset?, dat
 	return block, lines
 end
 
--- A block's Combat Power unrounded (docs/design.md, "Combat Power"; Config.Stats.Power): its stats weighted, critical
--- damage above its base, a percent's weight times G at the block's level, times the scale. For reading only: nothing in
--- a fight reads it. Elemental Attack counts only for a block with an element: without one a hit has no elemental part
--- (Rules.Hit), so the points add nothing to winning (the director's design review, 2026-11-18). A gain is judged on this
--- sum, never on the rounded figure, so one under half a shown point still counts (D3, 2026-11-18).
-function Stats.Sum(block: Block): number
-	local power = StatsConfig.Power
-	local g = Growth.G(math.clamp(block.Level, 1, GrowthConfig.MaxLevel))
-	local sum = 0
-	for stat, weight in power.Weights do
-		local value = (block :: any)[stat]
-		local used = stat ~= "ElementalAttack" or block.Element ~= ""
-		if used and type(value) == "number" and value == value then
-			local each = if power.ByLevel[stat] then weight * g else weight
-			sum += each * (if stat == "CriticalDamage" then math.max(0, value - StatsConfig.CriticalDamage) else value)
+-- A kit's coefficient a second over a long fight, and the share of it an Extra passive adds again (Pip's Kindle), as
+-- FightService runs it: one action at a time, each busy to its CancelFrom, the signature first whenever it's ready, its
+-- cooldown (a Cooldown passive's, Lyric's Tempo) counted from its start. A Voidkin without a kit fights with the
+-- stand-in's (Actions.KitOf); an enemy with its row's Action and Signature. A keeper's opening (its Enter, its first
+-- slam Keeper.First in) isn't here: over a long fight it's the same rate. 0 for no attack.
+function Stats.Rate(def: string): (number, number)
+	local enemy = Enemies.ById[def]
+	local kit: { Actions.Action } = {}
+	if enemy then
+		if enemy.Signature then
+			table.insert(kit, Actions.ById[enemy.Signature])
+		end
+		if enemy.Action then
+			table.insert(kit, Actions.ById[enemy.Action])
+		end
+	else
+		kit = Actions.KitOf(def)
+	end
+	local row = Passives.ById[def]
+	local combo: Actions.Action?, signature: Actions.Action? = nil, nil
+	for _, action in kit do
+		if action.Cooldown > 0 then
+			signature = signature or action
+		else
+			combo = combo or action
 		end
 	end
-	return sum * power.Scale
+	local function sum(action: Actions.Action): (number, number)
+		local all, extra = 0, 0
+		for beat, hit in action.Hits do
+			all += hit.Coefficient
+			extra += hit.Coefficient * Passive.Extra(row, action.Id, beat, 1)
+		end
+		return all, extra
+	end
+	if combo == nil or not (combo.CancelFrom > 0) then
+		return 0, 0
+	end
+	local each, eachExtra = sum(combo)
+	if signature == nil then
+		return each / combo.CancelFrom, if each > 0 then eachExtra / each else 0
+	end
+	local own, ownExtra = sum(signature)
+	local cooldown = Passive.Cooldown(row, signature.Id, signature.Cooldown)
+	local combos = math.max(0, math.ceil((cooldown - signature.CancelFrom) / combo.CancelFrom - 1e-9))
+	local period = signature.CancelFrom + combos * combo.CancelFrom
+	local total = combos * each + own
+	return total / period, if total > 0 then (combos * eachExtra + ownExtra) / total else 0
+end
+
+-- Config.Stats.Power.Reference's percents, as they are, never times G; and what the reference's bare twin goes without.
+local PERCENT = { CriticalDamage = true, CriticalGuard = true, Lifesteal = true }
+local BARE = { "Defence", "Dodge", "Block", "CriticalResist", "ElementalResist", "CriticalGuard" }
+
+-- Rules.Hit requires this module, so it's required here on first use, never as this one loads, and through an untyped
+-- require, so the type checker sees no cycle.
+local hitRules: any = nil
+
+-- A block's Combat Power unrounded (docs/design.md, "Combat Power"; Config.Stats.Power): Scale x sqrt(EHP x DPS) against
+-- the reference body at the block's level (Power.Reference, each stat times G, the percents as they are), through the
+-- hit's own expected value (Rules.Hit.Expected), so it counts what a fight counts and nothing else: Elemental Attack only
+-- with an element, the kit's rate (Stats.Rate), Kindle and Insulated, Regen and Lifesteal as sustain against what it takes.
+--   DPS  its rate x its expected hit on the reference
+--   EHP  Health x the reference's hit on its bare twin / (the reference's hit on it, less what it heals), a second each
+-- For reading only: nothing in a fight reads it. A gain is judged on this, never on the rounded figure (D3, 2026-11-18).
+function Stats.Sum(block: Block): number
+	if not (block.Health > 0) then
+		return 0
+	end
+	hitRules = hitRules or (require :: any)(Shared.Rules.Hit) -- opaque to the type checker: Rules.Hit requires this module
+	local power = StatsConfig.Power
+	local g = Growth.G(math.clamp(block.Level, 1, GrowthConfig.MaxLevel))
+	local reference = Stats.Empty(block.Level)
+	for stat, value in power.Reference do
+		(reference :: any)[stat] = if PERCENT[stat] then value else value * g
+	end
+	reference.Element = "Reference"
+	local bare = table.clone(reference)
+	for _, stat in BARE do
+		(bare :: any)[stat] = 0
+	end
+	local rate, kindle = Stats.Rate(block.Def)
+	local dps = rate * hitRules.Expected(block, reference, { Extra = kindle })
+	local each = Actions.EnemyPerSecond
+	local taken = each * hitRules.Expected(reference, block, { Resist = Passive.Resist(Passives.ById[block.Def]) })
+	local unit = each * hitRules.Expected(reference, bare)
+	local lifesteal = StatsConfig.Lifesteal
+	local heal = block.Regen * StatsConfig.Regen.Share
+		+ math.clamp(block.Lifesteal, 0, lifesteal.Cap) * math.min(dps, lifesteal.DamagePerSecondOfMaxHealth * block.Health)
+	-- healing past half of what it takes lengthens the fight, never past the even trade, so the root stays finite
+	local net = if heal <= taken / 2 then taken - heal else taken * taken / (4 * heal)
+	local ehp = block.Health * unit / math.max(net, 1e-9)
+	local value = power.Scale * math.sqrt(math.max(0, ehp) * math.max(0, dps))
+	return if value == value then value else 0
 end
 
 -- A block's Combat Power as it shows: the sum rounded to a whole.
@@ -278,9 +357,11 @@ function Stats.Burst(regen: number): number
 	return regen * config.Every * config.Share
 end
 
--- An enemy's stat block at `level`: its Kind's numbers in Config.Enemies times G, nothing else. `type` is the spawn's,
--- else the row's. An unknown id gives an empty block at that level.
-function Stats.Enemy(def: string, level: number, type: string?): Block
+-- An enemy's stat block at `level`: its Kind's numbers in Config.Enemies times G, Health and Attack (its elemental part
+-- with it) times its difficulty's lift for its Kind (Config.Enemies.Lift) and its stage's factor (Config.Enemies.Stage).
+-- Its Element as the row says; Critical Damage and Critical Immunity percents, never times G. `type` is the spawn's,
+-- else the row's; no difficulty or stage, no lift or factor. An unknown id gives an empty block at that level.
+function Stats.Enemy(def: string, level: number, type: string?, difficulty: string?, stage: number?): Block
 	local row = Enemies.ById[def]
 	local clamped = math.clamp(level, 1, GrowthConfig.MaxLevel)
 	local block = Stats.Empty(clamped)
@@ -288,9 +369,20 @@ function Stats.Enemy(def: string, level: number, type: string?): Block
 		return block
 	end
 	local g = Growth.G(clamped)
-	for stat, value in (EnemiesConfig :: any)[row.Kind] :: { [string]: number } do
-		if KNOWN[stat] then
-			(block :: any)[stat] = value * g
+	local lifts = EnemiesConfig.Lift[difficulty or ""]
+	local lift = if lifts then lifts[row.Kind] else nil
+	local stages = EnemiesConfig.Stage[difficulty or "Normal"]
+	local factor = if stages and stage then stages[stage] else nil
+	local health = (if lift then lift.Health else 1) * (if factor then factor.Health or 1 else 1)
+	local attack = (if lift then lift.Attack else 1) * (if factor then factor.Attack or 1 else 1)
+	for stat, value in (EnemiesConfig :: any)[row.Kind] :: { [string]: any } do
+		if stat == "Element" then
+			block.Element = value :: any
+		elseif stat == "CriticalDamage" or stat == "CriticalGuard" then
+			(block :: any)[stat] = value -- a percent, never times G
+		elseif KNOWN[stat] then
+			local by = if stat == "Health" then health elseif stat == "Attack" or stat == "ElementalAttack" then attack else 1
+			(block :: any)[stat] = value * g * by
 		end
 	end
 	block.Def, block.Type = row.Id, type or row.Type

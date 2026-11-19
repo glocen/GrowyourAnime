@@ -4227,3 +4227,36 @@ Faber, 2026-11-19, 03:43 by the clock: the follow-up's item 7 (`docs/production-
   - The type check passes, the 206 checks and every existing case pass, and the self-test passes.
   - **The Stage 1 playtest owed:** a new account plays through Stage 1 on Normal, and the capture records its lowest health and its time. The model says 66%; one play shows whether the packs, swinging together, are lethal.
   - A phone capture shows a Voidkin's sheet with all five attributes, and a foe card's skull in each of its four colours.
+
+### Built in the game (Faber, 2026-11-19, 21:37 to 23:02 by the clock)
+
+- **Merged by hand** from `integration.patch` and `server.patch` onto today's code, keeping TR47's Reinforce, emblems, jewels and level gap and TR48's chests on top:
+  - `Rules.Stats` and `Config.Stats`:
+    - five Basic Attributes (`Definitions.Attributes` adds Agility, Intelligence and Spirit), each converting once by its row, with the class's Main converting once more;
+    - Combat Power as Scale × √(EHP × DPS) against the reference body;
+    - the line prices as the weights.
+  - `Rules.Hit`: F1 (every K × G reads its rating owner's level), F7 (a block multiplies outside the reduction's ceiling), Kindle's Extra through the elemental path, and `Hit.Expected` in closed form.
+  - `Rules.Fight.Steal` with FightService: Lifesteal heals a share of what a hit removed, counted up to its cap a second, through `heal` so the Tower's cap holds. Kindle's old add is gone.
+  - `Config.Enemies`: the rows refitted, Hard's Lift by Kind and the stage's factor (`Rules.Stats.Enemy`), read by FightService, StageService and the stage tile's CR. `Config.Growth.Early` is {2, 4, 6, 8, 10, 12, 14}.
+  - The ten elements in `Definitions.Voidkin`, as the table above.
+  - **The skull:** `Rules.Hud.Cost` (the share of the lead's health one fight takes), `Hud.FoeBlock` and `Hud.FoeTier`, with the cuts at 0.15, 0.5 and 1, never grey for a foe at the lead's level or above.
+  - The sheet shows all five attributes, three then two, on the smallest phone (AR43's take 2, with its record).
+- **The cases:** the draft's checks are in `LogicTestService/Cases/Combat.luau`. Every case that held an old number was re-read and none was weakened: Bag, Chests, Definitions, Fight, Hit, Regalia, Sheet, Stages, Stats. The skull's self-test case reads the tier from both blocks and holds the never-grey rule.
+- **Tested:**
+  - Type check 0 new.
+  - The logic cases 28,782/0, offline and in Studio.
+  - The self-test: the whole suite 3,163/0 at 59 fps (23:01). The touched filters passed before it: the Voidkin screen 243/0, the Overview 25/0, the Items page 48/0, Equipment 71/0, Shop 79/0, HUD's lead card 40/0, TR19's dock 49/0, the Kit's quick tap 13/0, the Clip 3/0.
+- **Captures:**
+  - The sheet with all five attributes: `build/captures/ar43/take2-lead.png`.
+  - The skull's four colours on the smallest phone: `build/captures/ar45/skull-four.png`, from `skull-grey.png`, `skull-white.png`, `skull-yellow.png` and `skull-red.png`. Grey and faint is on a Shade a level under, its level whole; white, yellow and red are on an elite at the lead's level.
+  - They're held by the new "Take: AR45's skull" (Manual), which moves the cuts round the fight's cost and gives the take's foes a hundred times their health so they stand. The card's health reads staged.
+- **NOT VERIFIED:** the Stage 1 playtest owed (a new account through Stage 1 on Normal, its lowest health and its time). Lantern Row's world stands only in the Festival place (TR45), and opening that place waits on the director (item 9).
+- **For research, found in the build:**
+  1. The line prices come out a uniform 1.408 times the reference body's true marginal gains, every line alike, so the ranking between lines holds.
+  2. The draft's time-to-kill targets leave out decision 6's elements: with Fire, Rook fells Stage 1's packs 12 to 19% faster than the targets assume.
+  3. `tools/balance/sim.py`'s dps() predates F1 and F7 (noted in `Rules.Hit`).
+  4. **Tier 1:** Lifesteal's heal shows no number; its trickle shows on the bar. Say if it should have one.
+  5. The keeper is spawned with no Stage, so the stage's factor never reaches it. The factor's rows hold no keeper today, so nothing changes yet.
+  6. The skull case's grey state now uses a Shade a level under, since at the lead's level a foe never reads grey.
+  7. Since every Voidkin has an element now, the Voidkin screen's stage floor glows in its element (TR24's rule), where ten stood on grey.
+- **Status:** implemented and tested; the Stage 1 playtest owed; for research's look.

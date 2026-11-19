@@ -6,34 +6,37 @@
 return {
 	-- Rarity multiplies the Voidkin's own attribute points only (seeds "rarityBase"), never gear.
 	Rarity = { Common = 1.0, Uncommon = 1.08, Rare = 1.16, Epic = 1.26, Legendary = 1.38, Mythical = 1.5 } :: { [string]: number },
-	-- Basic Attributes, two (docs/balance.md, "The stats"; the director's word of 2026-11-17, TR36, which replaced the five
-	-- of 2026-11-16; the ids in Definitions.Attributes). A Voidkin's own points are its class's Shape x its rarity x G(level), and each star
-	-- adds Config.Voidkin.StarShareOfBase of them; gear adds points flat. Every point converts once by its attribute's
-	-- Convert row, every class alike, and its class's Main converts once more by its Main row: that's the whole class
-	-- difference. Everything adds: nothing multiplies an attribute, and Combat Power reads the Battle Attributes only, so
-	-- no point counts twice (Rules.Stats). Research's rows and fitted shapes (docs/balance.md's table, 2026-11-17; read
-	-- back by tools/balance/attributes.py), each class as strong against the rest as before.
+	-- Basic Attributes, five (the director, 2026-11-19, 03:10; the ids in Definitions.Attributes). A Voidkin's own points
+	-- are its class's Shape x its rarity x G(level), and each star adds Config.Voidkin.StarShareOfBase of them; gear adds
+	-- points flat. Every point converts once by its attribute's Convert row, every class alike, and its class's Main
+	-- converts once more by its Main row: that's the whole class difference. Everything adds: nothing multiplies an
+	-- attribute, and Combat Power reads the Battle Attributes only, so no point counts twice (Rules.Stats). Research's
+	-- integration pass of the combat-math review (2026-11-19): rows fitted so each class stands against the rest as
+	-- before, every attribute worth about half its Main's or more, and level-1 bodies kept near today's.
 	Attributes = {
 		-- Battle Attribute points per attribute point, every class.
 		Convert = {
-			Strength = { Attack = 1, Health = 3, Hit = 0.4, Penetration = 0.4 },
-			Endurance = { Health = 5, Defence = 1, Block = 0.3, Regen = 0.02, CriticalResist = 1.5, ElementalResist = 1 },
+			Strength = { Health = 2.3, Attack = 1 },
+			Agility = { Hit = 2.5, Dodge = 1.65, Critical = 2.5 },
+			Intelligence = { Penetration = 2, ElementalAttack = 1.05 },
+			Endurance = { Health = 5, Defence = 1, Block = 0.067 },
+			Spirit = { Health = 3.2, CriticalResist = 5.1, ElementalResist = 3, Regen = 0.05 },
 		} :: { [string]: { [string]: number } },
 		-- Each class's Main, and what one point of it gives on top of its Convert row.
 		Main = {
-			Warrior = { Attribute = "Strength", Gives = { Attack = 1 } },
-			Tank = { Attribute = "Endurance", Gives = { Attack = 0.5, Health = 3, Block = 0.3 } },
-			Assassin = { Attribute = "Strength", Gives = { Attack = 0.6, Critical = 1.6, Dodge = 0.6 } },
-			Mage = { Attribute = "Strength", Gives = { Attack = 0.6, ElementalAttack = 0.25, Penetration = 1.5 } },
-			Healer = { Attribute = "Endurance", Gives = { Attack = 0.7, Regen = 0.06, CriticalResist = 2 } },
+			Warrior = { Attribute = "Strength", Gives = { Health = 0.57, Attack = 0.78 } },
+			Tank = { Attribute = "Endurance", Gives = { Health = 2.3, Attack = 0.3, Block = 0.23 } },
+			Assassin = { Attribute = "Agility", Gives = { Health = 2, Attack = 1.05 } },
+			Mage = { Attribute = "Intelligence", Gives = { Health = 1.55, Attack = 0.93, Penetration = 2, ElementalAttack = 0.135 } },
+			Healer = { Attribute = "Spirit", Gives = { Attack = 0.85, Regen = 0.02 } },
 		} :: { [string]: { Attribute: string, Gives: { [string]: number } } },
 		-- A class's own points at level 1, Common, no stars, its Main the largest.
 		Shape = {
-			Warrior = { Strength = 67, Endurance = 48 },
-			Tank = { Strength = 40, Endurance = 77 },
-			Assassin = { Strength = 67, Endurance = 41 },
-			Mage = { Strength = 67, Endurance = 45 },
-			Healer = { Strength = 38, Endurance = 68 },
+			Warrior = { Strength = 64, Agility = 16, Intelligence = 16, Endurance = 45, Spirit = 16 },
+			Tank = { Strength = 45, Agility = 17, Intelligence = 17, Endurance = 75, Spirit = 17 },
+			Assassin = { Strength = 40, Agility = 47, Intelligence = 19, Endurance = 36, Spirit = 16 },
+			Mage = { Strength = 34, Agility = 14, Intelligence = 43, Endurance = 37, Spirit = 14 },
+			Healer = { Strength = 19, Agility = 16, Intelligence = 16, Endurance = 52, Spirit = 58 },
 		} :: { [string]: { [string]: number } },
 	},
 	-- The even foe (docs/research/rework-2026-11-16.md, part 4): the fixed reference the stat sheet's chances are read
@@ -64,7 +67,8 @@ return {
 		TypeDisadvantage = 0.15, -- into the defender's reduction
 		BlockShare = 0.5, -- a blocked hit adds this to the reduction
 	},
-	Lifesteal = { Cap = 0.1, PerSecondOfMaxHealth = 0.008 }, -- seeds "lifesteal"
+	-- Lifesteal (F9; TR49): heal = Lifesteal x the damage dealt, counted up to DamagePerSecondOfMaxHealth of most health a second.
+	Lifesteal = { Cap = 0.1, PerSecondOfMaxHealth = 0.008, DamagePerSecondOfMaxHealth = 0.08 },
 	-- The level gap (docs/balance.md, "One hit", 8; the director, 2026-11-19, 03:10; Rules.Hit.Gap): past Free levels under
 	-- its target, an attacker's hit is x max(Floor, Rate ^ (gap - Free)). Seeds, through the simulation.
 	Gap = { Free = 2, Rate = 0.85, Floor = 0.05 },
@@ -98,34 +102,32 @@ return {
 	-- every lead walks at Config.Combat.Lead.FollowWalk whatever its Speed, and the catch-up stays. Research's seeds, tier 2,
 	-- 2026-11-14, night.
 	Speed = { Class = { Tank = 14, Warrior = 16, Mage = 16, Healer = 16, Assassin = 19 } :: { [string]: number }, Nudge = 1 },
-	-- Combat Power (docs/design.md, "Combat Power"): one number for how strong a Voidkin is, a weighted sum of its resolved
-	-- stats times Scale, rounded (Rules.Stats.Power); for reading, never for damage. Critical damage counts only above the
-	-- base every fighter has. A weight is what a point adds to winning, Attack's held at 4; a percent's (Critical Damage,
-	-- Critical Immunity, Lifesteal) is its weight at level 1, multiplied by G at the block's level. With no type edge, the
-	-- higher number wins 97% of same-level duels. Research's seeds (TR17 fix 10; tools/balance/seeds.json, "combatPower",
-	-- fitted by tools/balance/sim.py, section 16), tier 2, 2026-11-15, night; refitted on the attribute builds (TR25,
-	-- "Research's answers", 2026-11-16, 19:13; attributes.py, report A8): 97% again, 99.7% where one wins 10% faster.
-	-- Refitted again on the two attributes' builds (docs/balance.md, "The stats", 2026-11-17; TR36): 96.3%, and 99.7%.
-	-- Scale is a tenth of the seeds' 10 (the director, 2026-11-18, D3: 60,382 reads about 6,038), a look that moves no
-	-- balance: the weights and every price made from them (Config.Chests.PowerPerG) stand before it.
+	-- Combat Power (docs/design.md, "Combat Power"; Rules.Stats.Sum): Scale x sqrt(EHP x DPS) against the reference body
+	-- at the block's level, Reference times G (its three percents as they are): how long it lasts against that body and
+	-- how fast it fells it, through the hit's own expected value. For reading, never for damage. Scale sets the look:
+	-- the five kitted leads' Combat Power over G, levels 1 to 60, has today's geometric mean. Weights are the line
+	-- prices (Rules.Chests.Price): what a point adds to the shown Combat Power at the reference body, Scale already in
+	-- them, a percent's at level 1 and times G at the block's level (ByLevel). Combat Power itself never reads them.
+	-- Research's integration pass of the combat-math review, 2026-11-19.
 	Power = {
-		Scale = 1,
+		Scale = 3.431,
+		Reference = { Health = 736.2, Attack = 124.5, Defence = 83.84, Hit = 250.8, Dodge = 129.8, Critical = 270.6, CriticalResist = 443.4, Block = 102.8, Penetration = 227.1, ElementalAttack = 53.73, ElementalResist = 213.8, CriticalDamage = 1, CriticalGuard = 0.175, Lifesteal = 0.035, Regen = 3.42 } :: { [string]: number },
 		Weights = {
-			Health = 0.67,
-			Attack = 4,
-			Defence = 2.9,
-			Regen = 1.6, -- TR40: half of 3.2, as a burst heals half what the rate did, so a point's worth halves
-			Hit = 0.57,
-			Dodge = 1.7,
-			Critical = 0.65,
-			CriticalResist = 0.11,
-			Block = 0.96,
-			Penetration = 0.59,
-			ElementalAttack = 4.0,
-			ElementalResist = 0.21,
-			CriticalDamage = 110,
-			CriticalGuard = 110,
-			Lifesteal = 650,
+			Health = 0.9556,
+			Attack = 4.487,
+			Defence = 1.947,
+			Hit = 0.2681,
+			Dodge = 0.4825,
+			Critical = 0.1744,
+			CriticalResist = 0.08822,
+			Block = 0.3202,
+			Penetration = 0.08318,
+			ElementalAttack = 2.584,
+			ElementalResist = 0.2196,
+			CriticalDamage = 109.1,
+			CriticalGuard = 110.8,
+			Lifesteal = 172.3,
+			Regen = 1.463,
 		} :: { [string]: number },
 		-- The percents, whose weight multiplies by G at the block's level: a percent multiplies points, which grow with G.
 		ByLevel = { CriticalDamage = true, CriticalGuard = true, Lifesteal = true } :: { [string]: boolean },

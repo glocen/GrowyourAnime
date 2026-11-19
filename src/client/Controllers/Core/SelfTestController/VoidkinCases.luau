@@ -27,6 +27,7 @@ local ProfileController = require(script.Parent.Parent.ProfileController)
 local UI = script.Parent.Parent.Parent.Parent.UI
 local Theme = require(UI.Theme)
 local Layers = require(UI.Layers)
+local Text = require(UI.Kit.Text)
 local Read = require(UI.Read)
 local Screen = require(UI.Kit.Screen)
 local Button = require(UI.Kit.Button)
@@ -210,6 +211,10 @@ local function lacquerIn(root: Instance): string
 end
 
 local function labelOf(button: Instance?): string
+	local words = if button then button:GetAttribute("Words") else nil -- a Glass kit face's words (Glass.Dress)
+	if type(words) == "string" then
+		return words
+	end
 	local label = button and button:FindFirstChild("Label", true)
 	return if label and label:IsA("TextLabel") then label.Text else ""
 end
@@ -329,11 +334,13 @@ function VoidkinCases.Cases(given: Given): { any }
 		local row = leads and leads.Parent
 		t.Check(`{where}: no Station on the lead's page`, button("Work") == nil)
 		if leads and row and row:IsA("GuiObject") then
-			local label = leads:FindFirstChild("Label") :: TextLabel?
-			local mark = label and label:FindFirstChild("Mark") :: ImageLabel?
+			-- AR43's take 2: the Glass kit's lit face, the diamond and the word centred together.
+			local label = leads:FindFirstChild("Words", true) :: TextLabel?
+			local mark = leads:FindFirstChild("Mark", true) :: GuiObject?
 			t.Check(`{where}: Leading across the line`, math.abs(leads.AbsoluteSize.X - row.AbsoluteSize.X) <= 1, `{leads.AbsoluteSize.X} of {row.AbsoluteSize.X}`)
-			t.Check(`{where}: its word whole, its mark beside it`, label ~= nil and label.Text == "Leading" and label.TextFits and mark ~= nil and mark.Visible)
-			t.Check(`{where}: in the chosen tab's light, not a dim glass`, leads:GetAttribute("Kind") == "Plate", tostring(leads:GetAttribute("Kind")))
+			t.Check(`{where}: its word whole, its mark beside it`, label ~= nil and label.Text == "Leading" and label.TextFits and mark ~= nil and mark.Visible
+				and mark.AbsolutePosition.X + mark.AbsoluteSize.X <= label.AbsolutePosition.X + (label.AbsoluteSize.X - label.TextBounds.X) / 2 + 1)
+			t.Check(`{where}: lit, not a dim glass`, leads:GetAttribute("Dress") == "Lit", tostring(leads:GetAttribute("Dress")))
 		else
 			t.Check(`{where}: the lead's Leading`, false)
 		end
@@ -543,10 +550,17 @@ function VoidkinCases.Cases(given: Given): { any }
 						local case = VoidkinScreen.Find("Case")
 						local strip = VoidkinScreen.Find("Strip")
 						local items = if strip then strip.Parent else nil
-						-- TR28: the room in the seam's panel, its top a lit edge, and every well the seam's, a Legendary's too.
-						local roomRamp = if case then case:FindFirstChildOfClass("UIGradient") else nil
-						t.Check("Bag: the room in the seam's panel, its top lit", case ~= nil and case:IsA("Frame") and math.abs(case.BackgroundTransparency - (1 - Seam.Alpha)) < 1e-3
-							and roomRamp ~= nil and roomRamp.Color.Keypoints[1].Value == Seam.Panel[1] and case:FindFirstChild("Top") ~= nil)
+						-- TR28: the room in the seam's panel, its top a lit edge, and every well the seam's, a Legendary's too; since
+						-- AR43's take 2 the kit's panel, as the Overview's, in the screen's Panel with its edge lit from above.
+						local fill = if case then case:FindFirstChild("Fill", true) :: ImageLabel? else nil
+						local fillRamp = if fill then fill:FindFirstChildOfClass("UIGradient") else nil
+						local edge = if case then case:FindFirstChild("Edge", true) :: ImageLabel? else nil
+						local split = VoidkinScreen.Find("BagDivider")
+						t.Check("Bag: the room in the seam's panel, its top lit", case ~= nil and case:IsA("Frame") and fill ~= nil and fillRamp ~= nil
+							and fillRamp.Color.Keypoints[1].Value == Seam.Kit.Panel[1] and edge ~= nil and edge:FindFirstChildOfClass("UIGradient") ~= nil
+							and edge.ImageColor3 == Seam.Kit.Facet)
+						t.Check("Bag: the doll's side and the bag's split by the Facet's hairline", split ~= nil and split:IsA("Frame") and split.Visible
+							and split.BackgroundColor3 == Seam.Kit.Facet and split.AbsoluteSize.X <= 2)
 						local wells, odd = 0, ""
 						for _, piece in (if items then items:GetDescendants() else {}) :: { Instance } do
 							if piece:IsA("ImageLabel") and piece.Name == "Well" and piece:GetAttribute("Kit") ~= "DotsWell" then -- a button's dots' well is the kit's
@@ -575,6 +589,27 @@ function VoidkinCases.Cases(given: Given): { any }
 							count += if child:IsA("Frame") then 1 else 0
 						end
 						t.Check(`Stars: {VoidkinConfig.MaxStars} pips`, count == VoidkinConfig.MaxStars, `{count}`)
+						-- AR43's take 2: each won star lit in its trim with the Glint's hairline, each to win in the Well with the
+						-- Facet's, every one seen.
+						local itsRow = Voidkin.ById[owned.Def]
+						local trim = HudConfig.Card.Trim[if itsRow then itsRow.Rarity else "Common"]
+						local wrong = {}
+						for index = 1, VoidkinConfig.MaxStars do
+							local pip = if pips then pips:FindFirstChild(`Star{index}`) else nil
+							local ramp = pip and pip:FindFirstChildOfClass("UIGradient")
+							local hair = pip and pip:FindFirstChild("Hairline") :: UIStroke?
+							local won = index <= owned.Stars
+							local foot = if ramp then ramp.Color.Keypoints[#ramp.Color.Keypoints].Value else nil
+							local well = UIKit.Palettes.SeamDeep.Well
+							local top = if ramp then ramp.Color.Keypoints[1].Value else nil
+							local ok = pip ~= nil and (pip :: GuiObject).Visible and hair ~= nil and hair.Transparency < 1
+								and hair.Color == (if won then UIKit.Palettes.SeamDeep.Glint else UIKit.Palettes.SeamDeep.Facet)
+								and (if won then foot == trim else top == well)
+							if not ok then
+								table.insert(wrong, `Star{index}`)
+							end
+						end
+						t.Check("Stars: each won star lit in its trim, each to win in the well, every one seen", #wrong == 0, table.concat(wrong, ", "))
 						-- Its copies toward the next star (Rules.Hud.Copies): never a count past its total read as N of M.
 						local said = ""
 						for _, child in scroll:GetChildren() do
@@ -705,7 +740,7 @@ function VoidkinCases.Cases(given: Given): { any }
 			end
 			local function says(want: string, called: string?): (boolean, string)
 				local work = button(called or "Work")
-				local reason = work and work:FindFirstChild("Reason") :: TextLabel?
+				local reason = work and work:FindFirstChild("Why", true) :: TextLabel? -- the line under its name (Glass.Dress)
 				local said = if reason and reason.Visible then reason.Text else "none"
 				return said == want and reason ~= nil and reason.TextFits, said
 			end
@@ -946,6 +981,69 @@ function VoidkinCases.Cases(given: Given): { any }
 			t.Wait(SETTLE)
 			local small = VoidkinScreen.Find("Page")
 			if small and small:IsA("ScrollingFrame") then
+				-- AR43's take 2: the five Basic Attributes three a row, then two, all showing with nothing scrolled, and
+				-- no name or number cut or drawn under the size its role draws at this scale (research's condition, 21:28).
+				small.CanvasPosition = Vector2.zero
+				t.Wait(0.1)
+				local basic = Sheet.Basic(block)
+				local foot = small.AbsolutePosition.Y + small.AbsoluteWindowSize.Y + 1
+				local hidden, whole, rows = {} :: { string }, {} :: { string }, {} :: { [number]: number }
+				for _, want in basic do
+					local item = small:FindFirstChild(want.Name, true)
+					if item == nil or not item:IsA("GuiObject") then
+						table.insert(hidden, `{want.Name} missing`)
+						continue
+					end
+					if item.AbsolutePosition.Y + item.AbsoluteSize.Y > foot then
+						table.insert(hidden, `{want.Name} under the fold`)
+					end
+					local many = (item.Parent :: Instance):GetAttribute("Across")
+					local key = if type(many) == "number" then many else 0
+					rows[key] = (rows[key] or 0) + 1
+					for _, part in { "Left", "Right", "Main" } do
+						local label = item:FindFirstChild(part, true)
+						if label and label:IsA("TextLabel") then
+							local least = Text.Legible(if part == "Right" then Theme.Text.Body else Theme.Text.Caption, Layers.Scale())
+							if not label.TextFits or label.TextSize < least or label.AbsolutePosition.X + label.TextBounds.X > item.AbsolutePosition.X + item.AbsoluteSize.X + 1 then
+								table.insert(whole, `{want.Name} {part}: {label.Text} at {label.TextSize}`)
+							end
+						elseif part ~= "Main" then
+							table.insert(whole, `{want.Name} {part} missing`)
+						end
+					end
+				end
+				-- Where each line stands, in points from the list's top, to read a miss by.
+				local scale, stood = Layers.Scale(), {} :: { GuiObject }
+				for _, child in small:GetChildren() do
+					if child:IsA("GuiObject") and child.Visible then
+						table.insert(stood, child)
+					end
+				end
+				table.sort(stood, function(a: GuiObject, b: GuiObject): boolean
+					return a.AbsolutePosition.Y < b.AbsolutePosition.Y
+				end)
+				local lines = {}
+				for index = 1, math.min(#stood, 6) do
+					local child = stood[index]
+					table.insert(lines, `{child.Name} {math.round((child.AbsolutePosition.Y - small.AbsolutePosition.Y) / scale)}+{math.round(child.AbsoluteSize.Y / scale)}`)
+				end
+				local stand = `{table.concat(lines, ", ")}; the foot at {math.round(small.AbsoluteWindowSize.Y / scale)}`
+				t.Check("the smallest phone: all five Basic Attributes show with nothing scrolled", #basic == 5 and #hidden == 0, if #hidden > 0 then `{hidden[1]}: {stand}` else stand)
+				t.Check("the smallest phone: three a row where every word fits a third whole, else two", (rows[3] or 0) + (rows[2] or 0) == #basic, `{rows[3] or 0} three a row, {rows[2] or 0} two`)
+				t.Check("the smallest phone: no attribute's name or number cut or shrunk", #whole == 0, whole[1])
+				-- Its experience on one line, its bar under the words, the line ending at the bar's foot (AR43's take 2).
+				local levelLine = small:FindFirstChild(`Level {owned.Level}`) :: GuiObject?
+				local words = if levelLine then levelLine:FindFirstChild("Under") :: TextLabel? else nil
+				local xpBar = if levelLine then levelLine:FindFirstChild("Xp") :: GuiObject? else nil
+				if levelLine and words and xpBar then
+					local oneLine = words.TextBounds.Y <= words.TextSize * 1.5
+					local under = xpBar.AbsolutePosition.Y >= words.AbsolutePosition.Y + words.TextBounds.Y - 1
+					local ends = math.abs(levelLine.AbsolutePosition.Y + levelLine.AbsoluteSize.Y - (xpBar.AbsolutePosition.Y + xpBar.AbsoluteSize.Y)) <= 1
+					t.Check("the smallest phone: its experience on one line, its bar under the words, the line ending at the bar", oneLine and under and ends and words.TextFits,
+						`{words.Text}: {words.TextBounds.Y} tall at {words.TextSize}, under {under}, ends {ends}`)
+				elseif Growth.XpToNext(owned.Level) then
+					t.Check("the smallest phone: its experience line and bar", false)
+				end
 				small.CanvasPosition = Vector2.new(0, math.max(0, small.AbsoluteCanvasSize.Y - small.AbsoluteWindowSize.Y))
 				t.Wait(0.1)
 				local final = Sheet.Groups[#Sheet.Groups].Stats

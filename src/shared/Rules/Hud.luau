@@ -6,7 +6,12 @@
 
 local Shared = game:GetService("ReplicatedStorage").Shared
 local Hit = require(Shared.Rules.Hit)
+local Stats = require(Shared.Rules.Stats)
+local Passive = require(Shared.Rules.Passive)
+local Passives = require(Shared.Definitions.Passives)
+local StatsConfig = require(Shared.Config.Stats)
 local Profile = require(Shared.Data.Profile)
+local Tower = require(Shared.Rules.Tower)
 
 local Hud = {}
 
@@ -668,9 +673,36 @@ function Hud.Notice(age: number, m: NoticeMotion, wide: number, foot: number, re
 	return { Away = away, Size = size, Number = number, Flash = flash, Knock = knock, Sheen = sheen, Shine = shine, Solid = 1, Done = age >= leave + m.Out }
 end
 
--- The foe card's skull (AR45; Config.Hud.Skulls): 1 grey, 2 white, 3 yellow, 4 red, by the foe's CR over the lead's.
--- Grey under cuts[1]; white up to cuts[2], that ratio included; yellow under cuts[3]; red from it. With no lead CR yet
--- the foe reads white, or red if it has any.
+-- The skull's cost (AR45; Config.Hud.Skulls): the share of `lead`'s health one fight with `foe` takes, from full, both
+-- at their kits' rates (Rules.Stats.Rate) through the hit's expected value (Rules.Hit.Expected), the type edge, Kindle
+-- and Insulated counted, less what the lead heals while it lasts (Regen; Lifesteal of what it deals, up to its cap a
+-- second). Over 1 the lead falls first. A lead that deals nothing pays everything (math.huge); a foe that deals nothing
+-- costs 0. Read by Hud.Skull as the ratio, against 1.
+function Hud.Cost(lead: Stats.Block, foe: Stats.Block): number
+	if not (lead.Health > 0) then
+		return math.huge
+	end
+	local leadRate, kindle = Stats.Rate(lead.Def)
+	local foeRate, foeKindle = Stats.Rate(foe.Def)
+	local dealt = leadRate
+		* Hit.Expected(lead, foe, { Extra = kindle, Resist = Passive.Resist(Passives.ById[foe.Def]) })
+	local taken = foeRate
+		* Hit.Expected(foe, lead, { Extra = foeKindle, Resist = Passive.Resist(Passives.ById[lead.Def]) })
+	if not (taken > 0) then
+		return 0
+	end
+	if not (dealt > 0) then
+		return math.huge
+	end
+	local lifesteal = StatsConfig.Lifesteal
+	local heal = lead.Regen * StatsConfig.Regen.Share
+		+ math.clamp(lead.Lifesteal, 0, lifesteal.Cap) * math.min(dealt, lifesteal.DamagePerSecondOfMaxHealth * lead.Health)
+	return foe.Health / dealt * math.max(0, taken - heal) / lead.Health
+end
+
+-- The foe card's skull (AR45; Config.Hud.Skulls): 1 grey, 2 white, 3 yellow, 4 red, by `foe` over `lead`: the fight's
+-- cost (Hud.Cost) against 1. Grey under cuts[1]; white up to cuts[2], that ratio included; yellow under cuts[3]; red
+-- from it. With no lead yet the foe reads white, or red if it has any.
 function Hud.Skull(foe: number, lead: number, cuts: { number }): number
 	if lead <= 0 then
 		return if foe > 0 then 4 else 2
@@ -684,6 +716,30 @@ function Hud.Skull(foe: number, lead: number, cuts: { number }): number
 		return 3
 	end
 	return 4
+end
+
+-- The block a foe card's skull reads (TR49), from what its model says: a Tower's rival by Rules.Tower.Block, any other
+-- by Rules.Stats.Enemy with its difficulty's lift and its stage's factor; its most health as the model says (a crowd
+-- raises it), when it says one. The server built it the same way, so the skull reads the fight that will be fought.
+function Hud.FoeBlock(kind: string, def: string, level: number, type: string?, difficulty: string?, stage: number?, maxHealth: number?): Stats.Block
+	local block = if kind == "Rival" then Tower.Block({ Def = def, Level = level }) else Stats.Enemy(def, level, type, difficulty, stage)
+	if kind == "Rival" and type then
+		block.Type = type
+	end
+	if maxHealth and maxHealth > 0 and maxHealth < math.huge then
+		block.Health = maxHealth
+	end
+	return block
+end
+
+-- The foe card's skull for `foe` against `lead` (AR45, TR49): the fight's cost against the cuts (Hud.Cost, Hud.Skull),
+-- and never grey for a foe at the lead's level or above (the combat review, decision 8: same level reads white).
+function Hud.FoeTier(lead: Stats.Block, foe: Stats.Block, cuts: { number }): number
+	local tier = Hud.Skull(Hud.Cost(lead, foe), 1, cuts)
+	if tier == 1 and foe.Level >= lead.Level then
+		return 2
+	end
+	return tier
 end
 
 return Hud

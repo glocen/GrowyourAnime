@@ -1,8 +1,10 @@
 --!strict
 -- The seam's skin on the Voidkin screen (TR28; the director's word of 2026-11-17, 02:40: "the inventory ... with that color
 -- style not the old yellow brown"; Modulo's sheet and its notes, AR18): violet-black grounds, edges of pale light, and
--- what's chosen drawn in that light. Its colours are UIKit.Palettes.Seam; its numbers are Config.Hud.Seam. It draws the
--- two things the kit doesn't: a lit edge and the chosen ring (the lit chip is the kit's own now, AR30's make).
+-- what's chosen drawn in that light. Its colours are UIKit.Palettes.SeamDeep since AR43's take 2 (B's lights on Seam's
+-- grounds; research's pick, 2026-11-19, 21:28); its numbers are Config.Hud.Seam. The Void Shop borrows it and keeps Seam's
+-- own (Seam.Own, Seam.Case: the director's scope, "not the other screens"). It draws the two things the kit doesn't: a
+-- lit edge and the chosen ring (the lit chip is the kit's own now, AR30's make).
 
 local Shared = game:GetService("ReplicatedStorage").Shared
 local HudConfig = require(Shared.Config.Hud)
@@ -11,26 +13,47 @@ local Theme = require(script.Parent.Parent.Theme)
 
 local Seam = {}
 
-local K = UIKit.Palettes.Seam
+local K = UIKit.Palettes.SeamDeep
+local OWN = UIKit.Palettes.Seam -- the Void Shop's
 local S = HudConfig.Seam
 local LIGHT = K.Light :: Color3
 
-Seam.Palette = "Seam" -- the kit palette's name: the screen's cover and Back, its panels and buttons
+Seam.Palette = "SeamDeep" -- the kit palette's name: the screen's cover and Back, its panels and buttons
+Seam.Kit = K -- the palette itself, for the Glass kit's pieces
 Seam.Lit = "SeamLit" -- a plate of light's palette: the one action (Equip)
 
--- The screen's colours, under the theme's names where the Overview used the theme's graphite, so each word keeps its role.
-Seam.Colour = {
-	Text = K.Text,
-	TextDim = K.Soft,
-	Disabled = K.Faint,
-	Line = K.Edge,
-	Plate = K.Button[2],
-	PlateHigh = K.Well,
-	Backing = K.Backing :: Color3,
-	Channel = K.Channel,
-	Primary = LIGHT,
-	Heal = Theme.Colour.Heal,
+export type Colours = {
+	Text: Color3,
+	TextDim: Color3,
+	Disabled: Color3,
+	Line: Color3,
+	Plate: Color3,
+	PlateHigh: Color3,
+	Backing: Color3,
+	Channel: Color3,
+	Primary: Color3,
+	Heal: Color3,
 }
+
+-- A palette's colours under the theme's names where the Overview used the theme's graphite, so each word keeps its role.
+local function colours(palette: UIKit.Palette): Colours
+	return {
+		Text = palette.Text,
+		TextDim = palette.Soft,
+		Disabled = palette.Faint,
+		Line = palette.Edge,
+		Plate = palette.Button[2],
+		PlateHigh = palette.Well,
+		Backing = palette.Backing :: Color3,
+		Channel = palette.Channel,
+		Primary = palette.Light :: Color3,
+		Heal = Theme.Colour.Heal,
+	}
+end
+
+Seam.Colour = colours(K)
+-- Seam's own palette, as the screen wore it before AR43's take 2: the Void Shop's, and the roster strip's cells.
+Seam.Own = { Palette = "Seam", Colour = colours(OWN) }
 
 Seam.Light = LIGHT
 Seam.Ink = K.Ink :: Color3
@@ -223,8 +246,8 @@ function Seam.Raise(on: GuiObject, up: boolean)
 	on.ZIndex = if up then 2 else 1
 end
 
--- The room a page stands on (the bag's, AR18's A): the seam's panel over the screen's backing, rounded, its top a lit
--- edge. The Void Shop stands on it too (AR38, research's 15:56).
+-- The Void Shop's room (AR38, research's 15:56; the bag's until AR43's take 2 laid it as the kit's panel): Seam's own
+-- panel over the screen's backing, rounded, its top a lit edge.
 function Seam.Case(parent: Instance, name: string, x: number, y: number, wide: number, tall: number): Frame
 	local made = Instance.new("Frame")
 	made.Name = name
@@ -232,9 +255,9 @@ function Seam.Case(parent: Instance, name: string, x: number, y: number, wide: n
 	made.Position = UDim2.fromOffset(x, y)
 	made.Size = UDim2.fromOffset(wide, tall)
 	made.BackgroundColor3 = Color3.new(1, 1, 1)
-	made.BackgroundTransparency = 1 - Seam.Alpha
+	made.BackgroundTransparency = 1 - OWN.Alpha
 	local ramp = Instance.new("UIGradient")
-	ramp.Color = ColorSequence.new(Seam.Panel[1], Seam.Panel[2])
+	ramp.Color = ColorSequence.new(OWN.Panel[1], OWN.Panel[2])
 	ramp.Rotation = 90
 	ramp.Parent = made
 	local corner = Instance.new("UICorner")

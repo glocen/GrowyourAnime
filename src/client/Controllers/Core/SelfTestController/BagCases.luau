@@ -39,7 +39,7 @@ export type Given = {
 }
 
 local CHEST = "lanternrow_1"
-local KIT = UIKit.Palettes.Seam
+local KIT = UIKit.Palettes.SeamDeep -- the Voidkin screen's: B's lights on Seam's grounds (AR43's take 2)
 
 local function view(): Profile.View
 	return ProfileController.Get() :: Profile.View
@@ -680,7 +680,7 @@ function BagCases.Cases(given: Given): { any }
 				local row, rowEdge, kinds = find("Row"), find("RowEdge"), find("Kinds")
 				local fill, edge = layer(row, "Fill"), layer(rowEdge, "Edge")
 				local veil = find("VeilRight")
-				t.Check("one channel: its fill in Channel at the channel's T, its edge in Edge over the chips and the veils", fill ~= nil and fill.ImageColor3 == KIT.Channel and near(fill.ImageTransparency, MAKE.Channel.Rest, 1e-3)
+				t.Check("one channel: its fill in the Well at the channel's T, its edge in Edge over the chips and the veils", fill ~= nil and fill.ImageColor3 == KIT.Well and near(fill.ImageTransparency, MAKE.Channel.Rest, 1e-3)
 					and edge ~= nil and edge.ImageColor3 == KIT.Edge and rowEdge ~= nil and kinds ~= nil and veil ~= nil and rowEdge.ZIndex > kinds.ZIndex and rowEdge.ZIndex > veil.ZIndex and veil.ZIndex > kinds.ZIndex)
 				t.Check("the row's height a touch, the make's 52", kinds ~= nil and near(kinds.AbsoluteSize.Y / scale, Theme.Size.Tap, 0.6))
 				-- Each chip: its word's width or the least, abutting the one before.

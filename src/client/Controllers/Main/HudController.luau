@@ -38,6 +38,7 @@ local Actions = require(Shared.Definitions.Actions)
 local HomeConfig = require(Shared.Config.Home)
 local Growth = require(Shared.Rules.Growth)
 local Hud = require(Shared.Rules.Hud)
+local Stats = require(Shared.Rules.Stats)
 local Home = require(Shared.Rules.Home)
 local Markers = require(Shared.World.Markers)
 local Net = require(Shared.Net)
@@ -157,6 +158,45 @@ local function fighterById(id: string): Model?
 end
 
 -- A fighter's type and class from its definition: a Voidkin's, or an enemy's (which has a type and no class).
+-- The skull's two blocks (TR49; Rules.Hud.FoeTier). The lead's, resolved from the profile as the server resolves it,
+-- again only when a new copy of the profile arrives; the foe's, from its model's attributes, again only when one of
+-- them moves (a crowd's health, a level).
+local skullLead: { View: Profile.View?, Lead: string?, Block: Stats.Block? } = {}
+local skullFoe: { Key: string?, Block: Stats.Block? } = {}
+
+local function leadBlock(): Stats.Block?
+	local view = ProfileController.Get()
+	local id = if view then view.Roles.Lead else nil
+	if view ~= skullLead.View or id ~= skullLead.Lead then
+		local owned = if view and id then view.Voidkin[id] else nil
+		skullLead.View, skullLead.Lead = view, id
+		skullLead.Block = if view and owned then (Stats.Resolve(owned, Stats.PresetOf(view :: any, owned), view :: any)) else nil
+	end
+	return skullLead.Block
+end
+
+local function foeBlock(foe: Model): Stats.Block?
+	local def, level = foe:GetAttribute("Def"), foe:GetAttribute("Level")
+	if type(def) ~= "string" or type(level) ~= "number" then
+		return nil
+	end
+	local kind, kin, difficulty, stage, most = foe:GetAttribute("Kind"), foe:GetAttribute("Type"), foe:GetAttribute("Difficulty"), foe:GetAttribute("Stage"), foe:GetAttribute("MaxHealth")
+	local key = `{tostring(kind)}|{def}|{level}|{tostring(kin)}|{tostring(difficulty)}|{tostring(stage)}|{tostring(most)}`
+	if key ~= skullFoe.Key then
+		skullFoe.Key = key
+		skullFoe.Block = Hud.FoeBlock(
+			if type(kind) == "string" then kind else "",
+			def,
+			level,
+			if type(kin) == "string" then kin else nil,
+			if type(difficulty) == "string" then difficulty else nil,
+			if type(stage) == "number" then stage else nil,
+			if type(most) == "number" then most else nil
+		)
+	end
+	return skullFoe.Block
+end
+
 local function kindOf(model: Model): (string, string)
 	local def = tostring(model:GetAttribute("Def") or "")
 	local row = Voidkin.ById[def]
@@ -1133,9 +1173,10 @@ local function step(dt: number)
 	if foe then
 		TargetCard.Elite(target, foeKind == "Elite" and boss.Elite == true)
 		showHealth(target.Health, target.HealthText, foe)
-		-- The skull by the foe's CR over the lead's (AR45; Rules.Hud.Skull), read again each frame: it turns as either grows.
-		local theirPower, myPower = foe:GetAttribute("Power"), if model then model:GetAttribute("Power") else nil
-		TargetCard.Tier(target, Hud.Skull(if type(theirPower) == "number" then theirPower else 0, if type(myPower) == "number" then myPower else 0, HudConfig.Skulls.Cuts))
+		-- The skull by what one fight with the foe costs the lead (AR45, TR49; Rules.Hud.FoeTier), read again each frame
+		-- from the two blocks: it turns as either grows. No lead yet, white.
+		local leadSide, foeSide = leadBlock(), foeBlock(foe)
+		TargetCard.Tier(target, if leadSide and foeSide then Hud.FoeTier(leadSide, foeSide, HudConfig.Skulls.Cuts) else 2)
 		TargetCard.Name(target, tostring(foe:GetAttribute("Title") or ""), `Lv {tostring(foe:GetAttribute("Level") or "")}`)
 		local theirs = kindOf(foe)
 		if theirs ~= "" then

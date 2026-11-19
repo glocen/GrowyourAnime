@@ -55,6 +55,7 @@ local Toast = require(UI.Kit.Toast)
 local Skin = require(UI.Kit.Skin)
 local ShardTag = require(UI.ShardTag)
 local Seam = require(script.Parent.Seam)
+local Glass = require(UI.Kit.Glass)
 
 local Bag = {}
 
@@ -968,13 +969,14 @@ local function picker(parent: Instance, name: string, words: string, value: stri
 	return made
 end
 
--- The kinds' row: one channel (AR30's make), its shadow and fill under the chips, its edge over them and their veils.
-local CHANNEL = UIKit.Palettes.Seam
+-- The kinds' row: one channel (AR30's make), its shadow and fill under the chips, its edge over them and their veils:
+-- the Well with its Edge (AR43's take 2, bag.kinds).
+local CHANNEL = Seam.Kit
 local function channel(holder: Frame, over: Frame)
 	local under = Skin.Of(holder)
 	Skin.Lay(under, "ButtonShadow", { Name = "Shadow", Z = 1 })
 	local fill = Skin.Lay(under, "ButtonFill", { Name = "Fill", Z = 2 })
-	Skin.Tint(fill, CHANNEL.Channel)
+	Skin.Tint(fill, CHANNEL.Well)
 	fill.ImageTransparency = HudConfig.Make.Channel.Rest
 	local line = Skin.Lay(Skin.Of(over), "ButtonEdge", { Name = "Edge", Z = 1 })
 	line.ImageColor3 = CHANNEL.Edge
@@ -996,9 +998,18 @@ function Bag.Build(context: Context): (() -> boolean)?
 	lastLayout = at
 	local body = context.Body
 	local taps = context.Taps
-	-- The page's room: the seam's panel over the screen's backing, its top a lit edge, laid under the stage so the
-	-- figure stands on it.
-	Seam.Case(context.Behind, "Case", at.Case.X, at.Case.Y, at.Case.Wide, at.Case.Tall)
+	-- The page's room: the kit's panel, as the Overview's (AR43's take 2, voidkin_b.json, bag.room), laid under the stage
+	-- so the figure stands on it; the doll's side and the bag's split by a hairline of the Facet (bag.divider).
+	Glass.Panel(context.Behind, "Case", at.Case.X, at.Case.Y, at.Case.Wide, at.Case.Tall, Seam.Kit, 1)
+	local divider = Instance.new("Frame")
+	divider.Name = "BagDivider"
+	divider.BorderSizePixel = 0
+	divider.BackgroundColor3 = Seam.Kit.Facet
+	divider.BackgroundTransparency = C.Divider.Alpha
+	divider.Position = UDim2.fromOffset(at.Strip.X - C.Divider.Left, at.Case.Y + C.Inset)
+	divider.Size = UDim2.fromOffset(1, math.max(at.Case.Tall - C.Inset * 2, 1))
+	divider.ZIndex = 5
+	divider.Parent = context.Behind
 	-- The strip: the five kinds' row, scrolling, then the sort or, in Chests, the salvage's steps (AR30's make).
 	local data = context.View :: any
 	local right: TextButton
@@ -1086,7 +1097,7 @@ function Bag.Build(context: Context): (() -> boolean)?
 		made_.Name = name
 		made_.Active = false
 		made_.BorderSizePixel = 0
-		made_.BackgroundColor3 = CHANNEL.Channel
+		made_.BackgroundColor3 = CHANNEL.Well -- the Well fades in over the row's end
 		made_.AnchorPoint = Vector2.new(if onLeft then 0 else 1, 0)
 		made_.Position = if onLeft then UDim2.new() else UDim2.new(1, kinds.Size.X.Offset, 0, 0)
 		made_.Size = UDim2.new(0, C.Veil, 1, 0)

@@ -297,7 +297,8 @@ return {
 				for _, id in Attributes.Ids do
 					t.Equal(`{id}'s change`, change.Attributes[id], after.Attributes[id] - before.Attributes[id])
 				end
-				t.Equal("the Strength it carries", change.Attributes.Strength, 20)
+				-- a difference of two resolved totals, so to the float's last digits (the five attributes' own points aren't whole)
+				t.Check("the Strength it carries", math.abs(change.Attributes.Strength - 20) <= 1e-9, `{change.Attributes.Strength}`)
 				t.Check("a gain is a gain", change.Power > 0)
 			end
 			local wrong, why = Stats.Compare(data, preset, warrior, axe)

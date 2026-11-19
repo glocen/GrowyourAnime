@@ -111,17 +111,18 @@ return {
 		Digit = 0.56, -- a digit's width in its text size, Builder Sans ExtraBold: the unit of Gap
 		-- The plain numbers, dealt, an element's, received and healing: AR44's take B, research's pick at 12:11 (the
 		-- director, by 11:16: "The damages/healing text need a small rework"; the stroke "way to thick"): Oswald Medium,
-		-- calm and tall, a thin outline of 0.8 and a gap of 0.45 of its own digit (Oswald's 0 is 0.36 of its size, measured
-		-- in Studio), on the soft shadow. The critical and the grey word keep Builder Sans.
+		-- calm and tall, a thin outline of 0.8 and a gap of 0.12 of its own digit (Oswald's 0 is 0.36 of its size, measured
+		-- in Studio; 0.45 read as three separate digits, research's pass at competent, AR44), on the soft shadow. The
+		-- critical and the grey word keep Builder Sans.
 		Styles = {
 			-- A hit dealt: pale ivory, upright.
-			Dealt = { Colour = UIKit.Numbers.Plain, Size = 1, Gap = 0.45, Outline = DARK, Weight = 0.8, Italic = false, Face = OSWALD, Font = "Medium", Digit = 0.36, Shadow = true },
+			Dealt = { Colour = UIKit.Numbers.Plain, Size = 1, Gap = 0.12, Outline = DARK, Weight = 0.8, Italic = false, Face = OSWALD, Font = "Medium", Digit = 0.36, Shadow = true },
 			-- An element's second number: the same, in its element's colour, a beat behind.
-			Element = { Size = 1, Gap = 0.45, Outline = DARK, Weight = 0.8, Italic = false, Face = OSWALD, Font = "Medium", Digit = 0.36, Shadow = true },
+			Element = { Size = 1, Gap = 0.12, Outline = DARK, Weight = 0.8, Italic = false, Face = OSWALD, Font = "Medium", Digit = 0.36, Shadow = true },
 			-- Damage the player's lead receives: the same face in muted red, a size larger (the builder's seed, 2026-11-12).
-			Received = { Colour = Color3.fromHex("#E27A6A"), Size = 1.2, Gap = 0.45, Outline = DARK, Weight = 0.8, Italic = false, Face = OSWALD, Font = "Medium", Digit = 0.36, Shadow = true },
+			Received = { Colour = Color3.fromHex("#E27A6A"), Size = 1.2, Gap = 0.12, Outline = DARK, Weight = 0.8, Italic = false, Face = OSWALD, Font = "Medium", Digit = 0.36, Shadow = true },
 			-- Healing: as damage received, in green.
-			Heal = { Colour = UIKit.Numbers.Heal, Size = 1.2, Gap = 0.45, Outline = DARK, Weight = 0.8, Italic = false, Face = OSWALD, Font = "Medium", Digit = 0.36, Shadow = true },
+			Heal = { Colour = UIKit.Numbers.Heal, Size = 1.2, Gap = 0.12, Outline = DARK, Weight = 0.8, Italic = false, Face = OSWALD, Font = "Medium", Digit = 0.36, Shadow = true },
 			-- A dodge, a block, an absorb: a short grey word on a pointer.
 			Word = { Colour = UIKit.Numbers.Miss, Size = 0.72, Gap = 0.12, Outline = DARK, Weight = 1.4, Italic = false },
 		} :: { [string]: Style },
@@ -209,14 +210,12 @@ return {
 		Rung = { Grow = 0.08, Most = 1.5, Rungs = { Critical = 4 } :: { [string]: number }, Default = 2 },
 		Yield = { From = 7, Seconds = 0.1, Aside = 14 },
 	},
-	-- The foe card's difficulty skull (AR45), by the foe's CR over the lead's (Rules.Hud.Skull): grey under Cuts[1], white
-	-- up to Cuts[2], yellow under Cuts[3], red from it. On the game's own scale (AR45, "The cuts against the game's real
-	-- ratios", research, from Faber's 13:39 ratios: an own-level Ordinary is about 0.50 of the lead's, an own-level Elite
-	-- 1.60), replacing the simulation's 0.25, 1.1 and 1.8. Red's edge from 2.0 to 2.4 (research, 14:11, "Red's edge", from
-	-- Faber's Elite fights off the plot: Watt at 8 kept 67% against an Elite at 12, ratio 2.20; a seed). The skull and the
-	-- level wear the tier's colour; the grey skull is faint (Faint, its ImageTransparency).
+	-- The foe card's difficulty skull (AR45), by the share of the lead's health one fight with the foe takes (Rules.Hud.Cost,
+	-- read by Rules.Hud.Skull against 1): grey under Cuts[1], white up to Cuts[2], yellow under Cuts[3], red from it, where
+	-- the lead falls first. Research's integration pass, 2026-11-19: on 1890 pairs the cost's tier is the duels' for 1863.
+	-- The skull and the level wear the tier's colour; the grey skull is faint (Faint, its ImageTransparency).
 	Skulls = {
-		Cuts = { 0.35, 1.2, 2.4 },
+		Cuts = { 0.15, 0.5, 1 },
 		Colours = { Color3.fromHex("#D3D1DC"), Color3.fromHex("#F6F2E8"), Color3.fromHex("#FFC83A"), Color3.fromHex("#FF4F42") },
 		Faint = 0.45,
 	},
@@ -1167,6 +1166,10 @@ return {
 		},
 		Strip = 52,
 		Panel = { Share = 0.44, Least = 300, Most = 420 },
+		-- The Stars page's pips (AR43's take 2, voidkin_b.json, stars.pips): a Side-point square turned 45 degrees, Half
+		-- its height's half, Pitch apart; a won one its trim lit by Lit towards white, its Glint hairline at WonHair, its
+		-- glow Glow points out at GlowAlpha; one to win, the Facet's hairline at EmptyHair.
+		Pips = { Side = 14, Half = 10, Pitch = 24, Lit = 0.35, WonHair = 0.2, EmptyHair = 0.45, Glow = 6, GlowAlpha = 0.5 },
 	},
 	-- The Items page, AR18's C, "the case" (TR28; research's pick at 14:27, its fixes at 15:12, fix 4 at 16:52): a belt of
 	-- the fourteen slots across the top, the bag's six kinds under it, the grid five across, and the Voidkin's half beside
@@ -1178,6 +1181,7 @@ return {
 		Cell = 64, -- a grid cell's side at most (docs/ui.md: about 64); five across or more, never under a touch
 		CellGap = 6,
 		Veil = 32, -- the kinds strip's fade where it hides a chip: past a chip's half pad, so a whole chip at the edge fades too
+		Divider = { Left = 4, Alpha = 0.65 }, -- the doll's side and the bag's split: Left points left of the strip, the Facet at Alpha (AR43's take 2)
 		Peek = 0.5, -- a row scrolled to show the chosen chip keeps this share of its neighbour in view: it ends on a cut chip (AR30, research's must-fix)
 		Ring = 16, -- the cells' holder's margins, 8 each side and over and under: a chosen cell's ring's light (UI.VoidkinScreen.Seam.Reach at 64), the scroll bar inside the right's
 		Empty = { Share = 32 / 44, Tint = Color3.fromHex("#6F6790"), Alpha = 0.45 }, -- an empty slot's mark (AR22's json): its share of the well, its tint (the seam's Faint) at 0.55

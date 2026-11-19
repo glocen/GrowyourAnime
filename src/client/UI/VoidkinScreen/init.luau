@@ -52,7 +52,7 @@ local Screen = require(UI.Kit.Screen)
 local Toast = require(UI.Kit.Toast)
 local Button = require(UI.Kit.Button)
 local Text = require(UI.Kit.Text)
-local Panel = require(UI.Kit.Panel)
+local Glass = require(UI.Kit.Glass)
 local Portrait = require(UI.Kit.Portrait)
 local Hover = require(UI.Kit.Hover)
 local Bar = require(UI.Kit.Bar)
@@ -89,6 +89,7 @@ local SHEET_HEADING = { Line = 34, Caption = 18 }
 -- total's under it, the tap's inset, authored.
 -- A total's quiet line under it (HP Regen's "every 8 s", 4.6) adds its own height to its pair.
 local SHEET = { Line = Theme.Size.Tap, Top = 5, Name = 18, Value = 24, Pad = 8, Under = 16 }
+local sheetWide = 0 -- the Overview's row, authored: the panel's inside less the list's inset, set at each build
 local WALLET = { Icon = 30, Digit = 0.62, Every = 0.5 } -- a chip's icon room, authored; a character's share of its text size; seconds between reads
 
 local player = Players.LocalPlayer
@@ -421,34 +422,41 @@ local function nameLine(over: Frame, x: number, wide: number, owned: Profile.Own
 	return nil
 end
 
--- Lead and Station (or Recall), side by side in `parent`, the line over the panel. On the lead, "Leading" with its mark
--- stands alone across the line: an action the page's own state rules out isn't shown (research's ruling on the
--- director's remark, 2026-11-17, 20:31). A passing block keeps its name and says why under it ("No bay free"); Station
--- and Recall say their bay under their name (docs/ui.md, rule 4).
-local function actions(parent: Instance, view: Profile.View, owned: Profile.OwnedVoidkin, on: On)
+-- Lead and Station (or Recall), side by side in `parent`, the line over the panel, in the Glass kit's faces (AR43's take
+-- 2, voidkin_b.json, actions). On the lead, "Leading" with its mark stands alone across the line, lit, the diamond and the
+-- word in the Ink centred together: an action the page's own state rules out isn't shown (research's ruling on the
+-- director's remark, 2026-11-17, 20:31). Another's Lead is lit, Station (or Recall) quiet in the Text. A passing block is
+-- the Off press, its name kept and why under it ("No bay free"); Station and Recall say their bay under their name
+-- (docs/ui.md, rule 4).
+local function actions(parent: Frame, view: Profile.View, owned: Profile.OwnedVoidkin, on: On)
 	local gap = Theme.Size.Gap
 	local at = Read.Role(view, owned.Id)
 	local leading = at == "Lead"
-	local width = if leading then UDim2.new(1, 0, 0, ROW) else UDim2.new(0.5, -gap / 2, 0, ROW)
-	local lead = Button.new({
-		Palette = Seam.Palette,
-		Name = "Lead",
-		Text = if leading then "Leading" else "Lead",
-		Size = width,
-		Parent = parent,
-		Primary = true, -- leading, it's the main action set: its mark and its word in the light (AR30)
-		Under = true,
-		OnPress = function(): boolean?
-			if leading then
-				return nil -- it leads already: nothing to ask
-			end
-			return refused("Can't lead", on.Act("SetLead", { Voidkin = owned.Id }))
-		end,
-	})
+	local wide = parent.Size.X.Offset
+	local each = if leading then wide else math.floor((wide - gap) / 2)
+	local dress: Glass.Dress = { Palette = Seam.Kit, Under = true, Mark = leading }
+	local function press(name: string, x: number, act: () -> boolean?): TextButton
+		return Button.new({ Name = name, Text = "", Bare = true, Size = UDim2.fromOffset(each, ROW), Position = UDim2.fromOffset(x, 0), Parent = parent, OnPress = act })
+	end
+	local lead = press("Lead", 0, function(): boolean?
+		if leading then
+			return nil -- it leads already: nothing to ask
+		end
+		return refused("Can't lead", on.Act("SetLead", { Voidkin = owned.Id }))
+	end)
+	local worn = "" -- the face it wears: laid again only when its state moves
 	local function leadState()
 		local now = workspace:GetServerTimeNow()
 		local why = if leading then nil else Hud.LeadReason(at, on.Healing()[owned.Id], now, player:GetAttribute("InCombat") == true)
-		Button.Set(lead, { Selected = leading, Disabled = why or false, Note = Hud.LeadNote(at) or false })
+		local blocked: string? = if type(why) == "string" then why else nil
+		local kind = if blocked then "Off" else "Lit"
+		local under = blocked or Hud.LeadNote(at)
+		local key = `{kind}|{tostring(under)}`
+		if key ~= worn then
+			worn = key
+			Glass.Dress(lead, kind, if leading then "Leading" else "Lead", under, dress)
+			Button.Set(lead, { Selected = leading })
+		end
 	end
 	leadState()
 	table.insert(tickers, leadState)
@@ -457,25 +465,19 @@ local function actions(parent: Instance, view: Profile.View, owned: Profile.Owne
 	end
 	local working = string.match(at, "^Bay (%d+)$")
 	local why, bay = Hud.WorkReason(at, view.Base.Bays)
-	local work = Button.new({
-		Palette = Seam.Palette,
-		Name = "Work",
-		Text = if working then "Recall" else "Station",
-		Size = width,
-		Position = UDim2.new(0.5, gap / 2, 0, 0),
-		Parent = parent,
-		Under = true,
-		OnPress = function(): boolean
-			if working then
-				return refused("Can't recall it", on.Act("SetWorker", { Bay = tonumber(working), Voidkin = "" }))
-			end
-			return refused("Can't station it", on.Act("SetWorker", { Bay = bay, Voidkin = owned.Id }))
-		end,
-	})
+	local work = press("Work", each + gap, function(): boolean
+		if working then
+			return refused("Can't recall it", on.Act("SetWorker", { Bay = tonumber(working), Voidkin = "" }))
+		end
+		return refused("Can't station it", on.Act("SetWorker", { Bay = bay, Voidkin = owned.Id }))
+	end)
+	local words = if working then "Recall" else "Station"
 	if working then
-		Button.Set(work, { Note = `Bay {working}` })
+		Glass.Dress(work, "Quiet", words, `Bay {working}`, dress)
+	elseif why then
+		Glass.Dress(work, "Off", words, why, dress)
 	else
-		Button.Set(work, { Disabled = why or false, Note = if bay then `Bay {bay}` else false })
+		Glass.Dress(work, "Quiet", words, if bay then `Bay {bay}` else nil, dress)
 	end
 end
 
@@ -654,16 +656,16 @@ local function line(parent: Instance, order: number, left: string, right: string
 	return item
 end
 
--- One stat's cell (docs/ui.md, "Stats, shown honestly"; rework part 4), two a row: its name over its one total (a rating's
--- percent against an even foe, and nothing else), and an attribute's Main tag right after its own total, never at the
--- cell's far edge where it read as the next cell's (TR24, the director's run); nothing opens [the director, 2026-11-15,
--- night: "Plain list, no taps"]. Each at least as tall as a touch, so the sheet keeps its rhythm.
-local function statCell(pair: Frame, side: number, row: Sheet.Row, tall: number): Frame
+-- One stat's cell (docs/ui.md, "Stats, shown honestly"; rework part 4), `across` a row: its name over its one total (a
+-- rating's percent against an even foe, and nothing else), and an attribute's Main tag right after its own total, never
+-- at the cell's far edge where it read as the next cell's (TR24, the director's run); nothing opens [the director,
+-- 2026-11-15, night: "Plain list, no taps"].
+local function statCell(pair: Frame, side: number, row: Sheet.Row, tall: number, across: number): Frame
 	local item = Instance.new("Frame")
 	item.Name = row.Name
 	item.BackgroundTransparency = 1
-	item.Position = UDim2.fromScale(side * 0.5, 0)
-	item.Size = UDim2.new(0.5, 0, 0, tall)
+	item.Position = UDim2.fromScale(side / across, 0)
+	item.Size = UDim2.new(1 / across, 0, 0, tall)
 	item.Parent = pair
 	text({ Name = "Left", Size = Theme.Text.Caption, Colour = Look.TextDim, Box = UDim2.new(1, -SHEET.Pad, 0, SHEET.Name), Position = UDim2.fromOffset(0, SHEET.Top), Parent = item }, row.Name)
 	-- The total and its tag in one row, each as wide as its words, so the tag sits against its own number.
@@ -685,24 +687,51 @@ local function statCell(pair: Frame, side: number, row: Sheet.Row, tall: number)
 	return item
 end
 
+-- How many of a block's cells stand in a row: the Battle Attributes two; the Basic Attributes three (AR43's take 2,
+-- Modulo's cut, 2026-11-19) when every name and total fits a third of the row whole at the size it draws, else two:
+-- research's condition (21:28), no attribute's name or number cut or shrunk on the smallest phone, the cells wider.
+local function across(group: Sheet.Group): number
+	if group.Heading ~= Sheet.Headings.Basic then
+		return 2
+	end
+	local room = sheetWide / 3 - SHEET.Pad
+	local name = text({ Name = "Probe", Size = Theme.Text.Caption }, "")
+	local total = text({ Name = "Probe", Font = Theme.Font.Number }, "")
+	local tag = text({ Name = "Probe", Size = Theme.Text.Caption, Font = Theme.Font.Strong }, "")
+	local fits = room > 0
+	for _, row in group.Rows do
+		local need = Text.Wide(total, row.Value) + (if row.Main then Theme.Size.Gap + Text.Wide(tag, "Main") else 0)
+		if Text.Wide(name, row.Name) > room or need > room then
+			fits = false
+		end
+	end
+	name:Destroy()
+	total:Destroy()
+	tag:Destroy()
+	return if fits then 3 else 2
+end
+
 -- Its whole stat sheet, from `order` on (docs/ui.md, 5, "Overview's stat sheet"; rework part 4): the Basic Attributes,
--- then the Battle Attributes' three blocks, every stat a line, a zero as 0, each one total from Rules.Sheet, two a row,
--- Offence and Defence paired. A heading is a line of its own with its caption under it; a block's name is a quiet
--- caption over its cells.
+-- then the Battle Attributes' three blocks, every stat a line, a zero as 0, each one total from Rules.Sheet, Offence and
+-- Defence paired. A heading is a line of its own with its caption under it; a block's name is a quiet caption over its
+-- cells. The Battle Attributes two a row, each at least as tall as a touch, so the sheet keeps its rhythm; the five Basic
+-- Attributes three a row, then two, each its words' height, and the first heading with no space above its words, so all
+-- five show on the smallest phone with nothing scrolled (AR43's take 2).
 local function statSheet(scroll: ScrollingFrame, view: Profile.View, owned: Profile.OwnedVoidkin, order: number)
 	local block = resolved(view, owned)
-	for _, group in Sheet.Rows(block) do
+	for index, group in Sheet.Rows(block) do
 		if group.Heading then
 			order += 1
+			local line = if index == 1 then Theme.Text.Body + 6 else SHEET_HEADING.Line
 			local heading = Instance.new("Frame")
 			heading.Name = `Heading{group.Heading}`
 			heading.BackgroundTransparency = 1
 			heading.LayoutOrder = order
-			heading.Size = UDim2.new(1, -8, 0, SHEET_HEADING.Line + (if group.Caption then SHEET_HEADING.Caption else 0))
+			heading.Size = UDim2.new(1, -8, 0, line + (if group.Caption then SHEET_HEADING.Caption else 0))
 			heading.Parent = scroll
-			text({ Name = "Left", Font = Theme.Font.Strong, Box = UDim2.new(1, 0, 0, Theme.Text.Body + 6), Position = UDim2.new(0, 0, 0, SHEET_HEADING.Line - Theme.Text.Body - 6), Parent = heading }, string.upper(group.Heading))
+			text({ Name = "Left", Font = Theme.Font.Strong, Box = UDim2.new(1, 0, 0, Theme.Text.Body + 6), Position = UDim2.new(0, 0, 0, line - Theme.Text.Body - 6), Parent = heading }, string.upper(group.Heading))
 			if group.Caption then
-				text({ Name = "Caption", Size = Theme.Text.Caption, Colour = Look.TextDim, Box = UDim2.new(1, 0, 0, SHEET_HEADING.Caption), Position = UDim2.fromOffset(0, SHEET_HEADING.Line), Parent = heading }, group.Caption)
+				text({ Name = "Caption", Size = Theme.Text.Caption, Colour = Look.TextDim, Box = UDim2.new(1, 0, 0, SHEET_HEADING.Caption), Position = UDim2.fromOffset(0, line), Parent = heading }, group.Caption)
 			end
 		end
 		if group.Name ~= "" then
@@ -717,20 +746,28 @@ local function statSheet(scroll: ScrollingFrame, view: Profile.View, owned: Prof
 			local foot = UDim2.new(0, 0, 1, -(Theme.Text.Caption + 4))
 			text({ Name = "Left", Size = Theme.Text.Caption, Font = Theme.Font.Strong, Colour = Look.TextDim, Box = caption, Position = foot, Parent = head }, group.Name)
 		end
-		for at = 1, #group.Rows, 2 do
+		local many = across(group)
+		local least = if many == 3 then SHEET.Top + SHEET.Name + SHEET.Value else SHEET.Line
+		for at = 1, #group.Rows, many do
 			order += 1
-			local first, second = group.Rows[at], group.Rows[at + 1]
-			local under = first.Under ~= nil or (second ~= nil and second.Under ~= nil)
-			local tall = if under then math.max(SHEET.Line, SHEET.Top + SHEET.Name + SHEET.Value + SHEET.Under) else SHEET.Line
+			local under = false
+			for side = 0, many - 1 do
+				local row = group.Rows[at + side]
+				under = under or (row ~= nil and row.Under ~= nil)
+			end
+			local tall = if under then math.max(least, SHEET.Top + SHEET.Name + SHEET.Value + SHEET.Under) else least
 			local pair = Instance.new("Frame")
-			pair.Name = `Pair{group.Name}{(at + 1) // 2}`
+			pair.Name = `Pair{group.Name}{(at + many - 1) // many}`
 			pair.BackgroundTransparency = 1
 			pair.LayoutOrder = order
 			pair.Size = UDim2.new(1, -8, 0, tall)
+			pair:SetAttribute("Across", many)
 			pair.Parent = scroll
-			statCell(pair, 0, first, tall)
-			if second then
-				statCell(pair, 1, second, tall)
+			for side = 0, many - 1 do
+				local row = group.Rows[at + side]
+				if row then
+					statCell(pair, side, row, tall, many)
+				end
 			end
 		end
 	end
@@ -739,13 +776,22 @@ end
 local function overview(scroll: ScrollingFrame, view: Profile.View, owned: Profile.OwnedVoidkin, on: On)
 	line(scroll, 1, Read.VoidkinLine(owned.Def, true))
 	local need = Growth.XpToNext(owned.Level)
-	local xp = line(scroll, 2, `Level {owned.Level}`, nil, if need then `{Hud.Digits(owned.Xp)} of {Hud.Digits(need)} experience to the next` else "The last level")
+	-- Its experience on one line, its bar right under the words and the line ending at the bar's foot (AR43's take 2,
+	-- voidkin_b.json, overview.heading: the Basic Attributes' heading pulled up, so all five show on the smallest phone).
+	local xp = line(scroll, 2, `Level {owned.Level}`, nil, if need then `{Hud.Digits(owned.Xp)} of {Hud.Digits(need)} to Level {owned.Level + 1}` else "The last level")
 	if need then
-		local bar = Bar.new({ Name = "Xp", Size = UDim2.new(1, 0, 0, Theme.Size.Bar), Position = UDim2.fromOffset(0, 44), Parent = xp, Colour = HudConfig.Card.Xp, Palette = Seam.Palette })
+		local stack = Instance.new("UIListLayout")
+		stack.SortOrder = Enum.SortOrder.LayoutOrder
+		stack.Parent = xp
+		for index, name in { "Left", "Under" } do
+			local piece = xp:FindFirstChild(name) :: GuiObject?
+			if piece then
+				piece.LayoutOrder = index
+			end
+		end
+		local bar = Bar.new({ Name = "Xp", Size = UDim2.new(1, 0, 0, Theme.Size.Bar), Parent = xp, Colour = HudConfig.Card.Xp, Palette = Seam.Palette })
+		bar.LayoutOrder = 3
 		Bar.Set(bar, math.clamp(owned.Xp / need, 0, 1))
-		local spacer = Instance.new("UIPadding")
-		spacer.PaddingBottom = UDim.new(0, Theme.Size.Bar + 4)
-		spacer.Parent = xp
 	end
 	statSheet(scroll, view, owned, 2) -- straight under its level: the page's reason
 	local now = line(scroll, 30, "Now", nil, role(view, owned, on, workspace:GetServerTimeNow()))
@@ -793,21 +839,43 @@ end
 local function starsTab(scroll: ScrollingFrame, view: Profile.View, owned: Profile.OwnedVoidkin, on: On)
 	local row = Voidkin.ById[owned.Def]
 	local trim = HudConfig.Card.Trim[if row then row.Rarity else "Common"] or Look.Line
+	-- The pips (AR43's take 2, voidkin_b.json, stars.pips): a 14-point square turned 45 degrees, 20 tall, 24 apart. A won
+	-- star is its rarity's trim lit from above, a Glint hairline and the trim's glow; one to win, the Well with a Facet
+	-- hairline: seven to win, each seen.
+	local P = HudConfig.Voidkin.Pips
 	local pips = Instance.new("Frame")
 	pips.Name = "Pips"
 	pips.BackgroundTransparency = 1
 	pips.LayoutOrder = 1
-	pips.Size = UDim2.new(1, 0, 0, 22)
+	pips.Size = UDim2.new(1, 0, 0, P.Half * 2 + P.Glow * 2)
 	pips.Parent = scroll
-	list(pips, true)
 	for index = 1, VoidkinConfig.MaxStars do
+		local won = index <= owned.Stars
+		local cx, cy = P.Glow + P.Half + (index - 1) * P.Pitch, P.Glow + P.Half
+		if won then
+			Glass.Glow(pips, `Glow{index}`, cx - P.Half, cy - P.Half, P.Half * 2, P.Half * 2, P.Glow, trim, P.GlowAlpha, 1)
+		end
 		local pip = Instance.new("Frame")
 		pip.Name = `Star{index}`
-		pip.LayoutOrder = index
-		pip.Size = UDim2.fromOffset(20, 20)
-		pip.BorderSizePixel = 0
-		pip.BackgroundColor3 = if index <= owned.Stars then trim else Look.PlateHigh
+		pip.AnchorPoint = Vector2.new(0.5, 0.5)
+		pip.Position = UDim2.fromOffset(cx, cy)
+		pip.Size = UDim2.fromOffset(P.Side, P.Side)
 		pip.Rotation = 45
+		pip.BorderSizePixel = 0
+		pip.BackgroundColor3 = Color3.new(1, 1, 1)
+		pip.ZIndex = 2
+		pip:SetAttribute("Won", won)
+		local ramp = Instance.new("UIGradient")
+		ramp.Rotation = 45 -- the screen's top to foot, the square turned under it
+		ramp.Color = if won then ColorSequence.new(trim:Lerp(Color3.new(1, 1, 1), P.Lit), trim) else ColorSequence.new(Seam.Kit.Well, HudConfig.Seam.WellFoot)
+		ramp.Parent = pip
+		local hair = Instance.new("UIStroke")
+		hair.Name = "Hairline"
+		hair.Thickness = 1
+		hair.Color = if won then Seam.Kit.Glint else Seam.Kit.Facet
+		hair.Transparency = if won then P.WonHair else P.EmptyHair
+		hair.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+		hair.Parent = pip
 		pip.Parent = pips
 	end
 	local cost = Collection.NextStarCost(owned)
@@ -826,25 +894,33 @@ local function starsTab(scroll: ScrollingFrame, view: Profile.View, owned: Profi
 			end
 		end
 		line(scroll, 3, "The next star", `+{Hud.Digits(Stats.Power(after) - before)}`, `{table.concat(gains, " · ")}, {Sheet.Said.Power} on the right`)
+		-- Take the star (stars.press): lit, its words in the Ink; short of copies, the Off press saying how many under it.
 		local take = Button.new({
-			Palette = Seam.Palette,
 			Name = "TakeStar",
-			Text = "Take the star",
-			Size = UDim2.new(1, -8, 0, ROW),
+			Text = "",
+			Bare = true,
+			Size = UDim2.fromOffset(sheetWide, ROW),
 			LayoutOrder = 4,
 			Parent = scroll,
-			Primary = true, -- short of copies, the main action unavailable (AR30)
 			OnPress = function(): boolean
 				return refused("Can't take it", on.Act("SpendCopies", { Voidkin = owned.Id }))
 			end,
 		})
-		Button.Set(take, { Disabled = if owned.Copies < cost then `{cost - owned.Copies} more copies` else false })
+		local short = cost - owned.Copies
+		if short > 0 then
+			Glass.Dress(take, "Off", "Take the star", if short == 1 then "1 more copy" else `{short} more copies`, { Palette = Seam.Kit, Under = true })
+		else
+			Glass.Dress(take, "Lit", "Take the star", nil, { Palette = Seam.Kit })
+		end
 	end
 end
 
 -- The chosen page, filling `parent` from `top` down.
 local function pageBody(parent: Frame, view: Profile.View, owned: Profile.OwnedVoidkin, on: On, top: number)
 	local scroll = scroller("Page", parent, UDim2.fromOffset(0, top), UDim2.new(1, 0, 1, -top), false)
+	scroll.ScrollBarImageColor3 = Look.TextDim -- AR43's take 2: the bar in the Soft at 0.4, 2.4 wide
+	scroll.ScrollBarImageTransparency = 0.4
+	scroll.ScrollBarThickness = 2.4
 	scroll:SetAttribute("Keep", `{owned.Id}{page}`)
 	scroll:SetAttribute("Page", page)
 	if page == "Kit" then
@@ -1050,14 +1126,20 @@ local function wallet(band: Frame, left: number, view: Profile.View)
 		local made = Instance.new("Frame")
 		made.Name = name
 		made.BorderSizePixel = 0
-		made.BackgroundColor3 = Look.PlateHigh
-		made.BackgroundTransparency = 0.2
+		made.BackgroundColor3 = Look.Channel -- AR43's take 2: the chip in the Channel with the Edge
+		made.BackgroundTransparency = 0
 		made.AnchorPoint = Vector2.new(1, 0)
 		made.Position = UDim2.new(1, -right, 0, 0)
 		made.Size = UDim2.fromOffset(wide, BAR)
 		local corner = Instance.new("UICorner")
 		corner.CornerRadius = UDim.new(0, Theme.Size.Corner)
 		corner.Parent = made
+		local edge = Instance.new("UIStroke")
+		edge.Name = "Edge"
+		edge.Color = Look.Line
+		edge.Thickness = 1
+		edge.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+		edge.Parent = made
 		made.Parent = holder
 		Skin.Icon(made, icon, 16, BAR / 2, 20)
 		return text({ Name = "Value", Font = Theme.Font.Number, Align = Enum.TextXAlignment.Right, Box = UDim2.new(1, -(WALLET.Icon + pad), 1, 0), Position = UDim2.fromOffset(WALLET.Icon, 0), Parent = made }, "")
@@ -1088,7 +1170,7 @@ local function strip(body: Instance, at: Place, roster: { Profile.OwnedVoidkin }
 	local healing = on.Healing()
 	for index, owned in roster do
 		local press = Button.new({
-			Palette = Seam.Palette,
+			Palette = Seam.Own.Palette, -- the portraits bring no more violet (AR43's take 2, palette.keep)
 			Name = owned.Id,
 			Text = "",
 			Size = UDim2.fromOffset(cell, cell),
@@ -1169,6 +1251,7 @@ local function build(view: Profile.View, on: On)
 		behind = made
 	end
 	(behind :: Frame):ClearAllChildren()
+	Glass.Ground(behind :: Frame, 1, { Seam.Colour.Backing, Seam.Colour.Backing }) -- AR43's take 2: Seam's Backing, the kit's top light
 	local at = place(Vector2.new(frame.Size.X.Offset, frame.Size.Y.Offset))
 	local owned = if chosen then view.Voidkin[chosen :: string] else nil
 	if owned == nil then
@@ -1221,9 +1304,13 @@ local function build(view: Profile.View, on: On)
 	wallet(band, pageName(band, marks(band, owned, on, nameLine(over, at.Group, at.Span, owned, on))), view)
 	strip(body, at, roster, on)
 	actions(frameOf("Actions", body, UDim2.fromOffset(at.Panel.X, Theme.Size.Pad), UDim2.fromOffset(at.Panel.Wide, ROW)), view, owned, on)
-	local sheet = Panel.new({ Name = "Panel", Size = UDim2.fromOffset(at.Panel.Wide, at.Panel.Tall), Position = UDim2.fromOffset(at.Panel.X, at.Panel.Y), Parent = body, Palette = Seam.Palette })
+	sheetWide = at.Panel.Wide - Theme.Size.Pad * 2 - 8
+	-- The kit's panel (AR43's take 2, voidkin_b.json, panel): PanelFill in the screen's Panel, its sheen, its edge lit from
+	-- above, its corner's glint.
+	local sheet = Glass.Panel(body, "Panel", at.Panel.X, at.Panel.Y, at.Panel.Wide, at.Panel.Tall, Seam.Kit, 2)
 	sheet.Active = true -- a tap on the panel stays on it
 	local inside = frameOf("Inside", sheet, UDim2.fromOffset(Theme.Size.Pad, Theme.Size.Pad), UDim2.new(1, -Theme.Size.Pad * 2, 1, -Theme.Size.Pad * 2))
+	inside.ZIndex = 10 -- over the panel's layers, its siblings
 	pageBody(inside, view, owned, on, 0)
 end
 

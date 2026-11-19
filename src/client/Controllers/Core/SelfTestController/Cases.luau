@@ -5681,12 +5681,24 @@ local cases = {
 				local tier = parts.Target:GetAttribute("Tier")
 				return if type(tier) == "number" then tier else 0
 			end
+			-- TR49: the tier is the fight's cost, the lead's block against the foe's (Rules.Hud.FoeTier), never grey at the
+			-- lead's level or above.
 			local foe = fighterModel(spawned.Id)
-			local theirs = if foe then foe:GetAttribute("Power") else nil
-			local mine = lead:GetAttribute("Power")
-			t.Check("both sides carry their CR", type(theirs) == "number" and type(mine) == "number", `{theirs}, {mine}`)
-			local want = Hud.Skull(if type(theirs) == "number" then theirs else 0, if type(mine) == "number" then mine else 0, skulls.Cuts)
-			t.Check("its tier by the two CRs (Rules.Hud.Skull)", shown() == want, `shown {shown()}, wanted {want}`)
+			local view = ProfileController.Get()
+			local owned = if view then view.Voidkin[view.Roles.Lead] else nil
+			local mine = if view and owned then Stats.Resolve(owned, Stats.PresetOf(view :: any, owned), view :: any) else nil
+			local function theirs(model: Model?): Stats.Block?
+				local def, at = if model then model:GetAttribute("Def") else nil, if model then model:GetAttribute("Level") else nil
+				if model == nil or type(def) ~= "string" or type(at) ~= "number" then
+					return nil
+				end
+				local kind, kin, most = model:GetAttribute("Kind"), model:GetAttribute("Type"), model:GetAttribute("MaxHealth")
+				return Hud.FoeBlock(if type(kind) == "string" then kind else "", def, at, if type(kin) == "string" then kin else nil, nil, nil, if type(most) == "number" then most else nil)
+			end
+			local block = theirs(foe)
+			t.Check("both sides' blocks to read", mine ~= nil and block ~= nil)
+			local want = if mine and block then Hud.FoeTier(mine, block, skulls.Cuts) else 0
+			t.Check("its tier by the fight's cost (Rules.Hud.FoeTier)", shown() == want, `shown {shown()}, wanted {want}`)
 			local skull = parts.TargetSkull :: ImageLabel
 			local words = parts.TargetLevel :: TextLabel
 			local function worn(tier: number): boolean
@@ -5695,19 +5707,32 @@ local cases = {
 				return skull.ImageColor3 == colour and words.TextColor3 == colour and words.TextTransparency == 0 and math.abs(skull.ImageTransparency - faint) < 1e-3
 			end
 			t.Check("the skull and the level in its colour", worn(want))
-			-- Mid-fight, the cuts moved under the ratio and then over it: the skull turns red, then grey and faint, with its
-			-- level whole (research's must-fix 2).
+			-- Mid-fight, the cuts moved under its cost and then over it: the skull turns red, then white, never grey at the
+			-- lead's level (TR49); a foe under the lead's level over them, grey and faint with its level whole (research's
+			-- must-fix 2).
 			local ok, problem = pcall(function()
 				t.Server("Tune", "Hud.Skulls.Cuts", { 1e-6, 2e-6, 3e-6 })
 				local red = waitFor(t, REPLICATE, function(): boolean
 					return shown() == 4
 				end)
-				t.Check("the cuts under the ratio: red, at once", red and worn(4))
+				t.Check("the cuts under its cost: red, at once", red and worn(4))
 				t.Server("Tune", "Hud.Skulls.Cuts", { 1e6, 2e6, 3e6 })
-				local grey = waitFor(t, REPLICATE, function(): boolean
-					return shown() == 1
+				local white = waitFor(t, REPLICATE, function(): boolean
+					return shown() == 2
 				end)
-				t.Check("over it: grey and faint, its level whole", grey and worn(1))
+				t.Check("over it at the lead's level: white, never grey (TR49)", white and worn(2), `shown {shown()}`)
+				if level > 1 then
+					t.Server("FightSpawn") -- clears it
+					lookAhead(t)
+					local low = t.Server("FightSpawn", "brawler", level - 1, SHADE_AHEAD)
+					local met = type(low) == "table" and low.Ok == true and waitFor(t, SHADE_TIMEOUT, function(): boolean
+						return lead:GetAttribute("Target") == low.Id and parts.Target.Visible
+					end)
+					local grey = met and waitFor(t, REPLICATE, function(): boolean
+						return shown() == 1
+					end)
+					t.Check("a Shade a level under, over the cuts: grey and faint, its level whole", grey and worn(1), `shown {shown()}`)
+				end
 			end)
 			t.Server("Tune", "Hud.Skulls.Cuts", wasCuts)
 			t.Server("FightSpawn") -- clears it

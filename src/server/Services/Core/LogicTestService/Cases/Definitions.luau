@@ -23,7 +23,8 @@ local SoundRule = require(Shared.Rules.Sound)
 -- The types, named by the colours they wear (TR36): the id is the name players see.
 local TYPES = { Red = true, Orange = true, Blue = true, Purple = true, Green = true }
 local CLASSES = { Warrior = true, Tank = true, Assassin = true, Mage = true, Healer = true }
-local ELEMENTS = { [""] = true, Fire = true, Frost = true, Storm = true, Void = true }
+-- Every Voidkin has an element since TR49 (the combat review, decision 6); "" stays for the enemies and the empty block.
+local ELEMENTS = { Fire = true, Frost = true, Storm = true, Void = true }
 
 local function unique(t: any, list: { any }, label: string)
 	local seen = {}
@@ -36,20 +37,27 @@ end
 
 return {
 	{
-		-- TR36, the director's word of 2026-11-17: two attributes, Strength and Endurance, and the types named by the colours
-		-- they wear. The type's id is the name players read (the type line, the reveal, the cards' gems).
-		Name = "Definitions: TR36, every class's Main is Strength or Endurance, and every type players see is named by its colour",
+		-- The attributes: five, the director's word of 2026-11-19, 03:10 and 13:53 (TR49, the combat review), in place of
+		-- TR36's two; each class's Main its own. The types named by the colours they wear (TR36, 2026-11-17): the type's id
+		-- is the name players read (the type line, the reveal, the cards' gems).
+		Name = "Definitions: the five attributes, each class's Main its own (TR49), and every type players see is named by its colour (TR36)",
 		Run = function(t: any)
 			local names = {}
 			for _, row in Attributes.List do
 				table.insert(names, row.Name)
 			end
-			t.Equal("the two attributes", table.concat(names, ", "), "Strength, Endurance")
+			t.Equal("the five attributes", table.concat(names, ", "), "Strength, Agility, Intelligence, Endurance, Spirit")
+			local mains = { Warrior = "Strength", Tank = "Endurance", Assassin = "Agility", Mage = "Intelligence", Healer = "Spirit" }
 			for class in CLASSES do
 				local main = StatsConfig.Attributes.Main[class]
-				t.Check(`{class}: its Main is Strength or Endurance`, main ~= nil and (main.Attribute == "Strength" or main.Attribute == "Endurance"), if main then main.Attribute else "none")
+				t.Equal(`{class}: its Main`, if main then main.Attribute else "none", mains[class])
 				local shape: { [string]: number } = StatsConfig.Attributes.Shape[class] or {}
-				t.Check(`{class}: its shape holds the two and nothing else`, shape.Strength ~= nil and shape.Endurance ~= nil and (function(): boolean
+				t.Check(`{class}: its shape holds the five and nothing else`, (function(): boolean
+					for _, row in Attributes.List do
+						if not ((shape[row.Id] or 0) > 0) then
+							return false
+						end
+					end
 					for id in shape do
 						if Attributes.ById[id] == nil then
 							return false
@@ -59,7 +67,7 @@ return {
 				end)())
 			end
 			for id in StatsConfig.Attributes.Convert do
-				t.Check(`{id} converts and is one of the two`, Attributes.ById[id] ~= nil)
+				t.Check(`{id} converts and is one of the five`, Attributes.ById[id] ~= nil)
 			end
 			local beaten = {}
 			for winner, loser in StatsConfig.Beats do

@@ -135,14 +135,15 @@ return {
 		end,
 	},
 	{
-		Name = "Hit: on average, the balance simulation's damage",
+		Name = "Hit: on average, the closed form's damage, every roll's outcome weighed (TR49)",
 		Run = function(t: any)
-			-- tools/balance/sim.py dps(att, dfn, rel) / coef_per_second() for these two, printed 2026-11-15 after the critical
-			-- left the bucket (only the type edge's number moves: the other two never reached the cap).
-			local expected = { [1] = 301.2362535686047, [0] = 240.98900285488378, [-1] = 203.2984873059928 }
+			-- Until TR49 the mean was held to tools/balance/sim.py's dps(); the combat review's F1 and F7 changed the hit, and
+			-- its closed form is now Hit.Expected (research's integration pass, 2026-11-19), held here to the four outcomes
+			-- of the critical and the block, each by its chance, past the dodge. sim.py is research's to bring in line.
 			local defenderType = { [1] = "Red", [0] = "Orange", [-1] = "Green" }
 			local a = fighter(5, { Attack = 300, Hit = 50, Critical = 80, Penetration = 40, ElementalAttack = 60, Element = "Fire", Type = "Blue" })
-			for relation, want in expected do
+			local means = {}
+			for _, relation in { 1, 0, -1 } do
 				local d = fighter(7, {
 					Defence = 120, Dodge = 60, CriticalResist = 30, Block = 40, ElementalResist = 20, CriticalGuard = 0.1,
 					Type = defenderType[relation],
@@ -158,8 +159,11 @@ return {
 					end
 				end
 				mean *= 1 - odds.ChanceDodge
+				local want = Hit.Expected(a, d)
 				t.Check(`relation {relation}: {string.format("%.4f", mean)} against {string.format("%.4f", want)}`, near(mean, want, 1e-9))
+				means[relation] = mean
 			end
+			t.Check("the type edge orders them", means[1] > means[0] and means[0] > means[-1], `{means[1]}, {means[0]}, {means[-1]}`)
 		end,
 	},
 }

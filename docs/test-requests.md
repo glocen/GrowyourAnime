@@ -4040,3 +4040,62 @@ Faber, 2026-11-19, 03:43 by the clock: the follow-up's item 7 (`docs/production-
   - Try, Socket and the transfer pass a retry test.
   - A phone capture shows the Reinforce and War Emblems pages in every state: can try, can't afford, at the cap, success and failure.
   - The gap's case reads the table in `docs/research/combat-math.md`'s item 1.
+
+## TR48. The loot refit, part 1: Hard's own budget, the keeper's count, the Tower, the materials (Faber, after TR47)
+
+- **What it serves:**
+  - D7, "each stage and difficulty rolls on its own budget" (`docs/decisions.md`), which isn't built.
+  - The rarities' pace in `docs/design.md`, "The rarities' pace": a Rare in the first hour, and sure on the first Hard keeper's win.
+  - Research's study (2026-11-19, 16:53; MODEL, Rook lead, under the combat review's patch, 100 players over 12 h): scripts and outputs in `build/scratch/quaestor/loot/` (`out_e1.txt`, `out_e2.txt`, `out_e2b.txt`).
+- **What the block contains:**
+  1. **The keeper's count per difficulty (OBSERVED bug).** `Profile.KeeperWins` counts one per ground, so the first Hard keeper gives a tier-2 chest and no Rare. It becomes one count per ground and difficulty, migrating today's count to Normal.
+  2. **Hard's own budget.**
+     - A chest from a Hard stage reads Drum Court's ladder rows.
+     - Its items roll at G of the stage's last stop level plus 10: G(12), G(15), G(18) and G(19) for stages 1 to 4.
+     - Normal keeps G(9).
+     - MODEL: the median first Rare goes from 7.6 h to 2.0 h, and the Hard stages' median CR rises 0 to 16% over the combat review's solved one. Research re-solves the Hard lifts after, if that's too soft.
+  3. **The first Hard keeper's win is a sure Rare:** `Chests.Keeper.FirstFloor = { Hard = "Rare" }`. With it, MODEL puts the median first Rare at 1.7 h, and 90% of players have one by 2.3 h.
+  4. **The Tower, refit to the build players have** (MODEL). The Lift's excess over 1 is scaled by 0.3.
+
+     | Stat | Lift |
+     |---|---|
+     | Health | 1.41 |
+     | Attack | 1.23 |
+     | Defence | 1.33 |
+     | Hit | 1.25 |
+     | Dodge | 1.91 |
+     | Critical | 1.34 |
+     | Critical Resist | 1.14 |
+     | Block | 1.59 |
+     | Penetration | 1.22 |
+     | Elemental Resist | 1.19 |
+     | Critical Damage | 1.03 |
+
+     - `Tower.Chest`: Base 0 → 0.02, PerFloor 0.0018 → 0.0004.
+     - The Tower's chest row: {59.49, 36.32, 2.86, 0.93, 0.40}. Worked by hand, not simulated.
+     - An expected lead climbs 10 floors at level 10, 23 at 16 and 31 at 20, and gets about 15 to 17.5 chests an hour.
+     - Carried health caps every lead at about 10 to 12 hard floors. `docs/balance.md`'s "17 at level 10" can't be met, so research restates it there.
+  5. **The materials, as `Config.Drops` seeds** (DESIGN, at the "available" ramp). These are TR47's sources.
+
+     | Source | Stones | Emblem | Jewels |
+     |---|---|---|---|
+     | Normal Shade | 22% chance of 1 Low | none | none |
+     | Normal elite | 0.8 Low | 30% | none |
+     | Normal keeper | 2 Low | 75%, the first win sure | none |
+     | Hard Shade | 28% chance of 1 Low | none | none |
+     | Hard elite | 1 Low | 30% | 45% of a level 2, part B |
+     | Hard keeper | 2.5 Low | 75% | 1, part B |
+     | A Tower hard floor | a Shade's of its band | none | 4% |
+
+     - An emblem rolls its rarity on the chest ladder's row.
+     - Drum Court's Mid and High stones: `loot/materials.py`.
+  6. **The stage's real length, measured.** The server logs each stage run's start to its finish, travel and waits included. The model's pace swings 2 to 2.5 times on this one unknown: 50 to 110 s of fighting, against 180 to 210 s assumed before.
+     - At the model's own times, stages give 610 to 686 kill-units an hour, above the 450 of the pace table.
+     - `KillsPerHour` and `Quota` stay until the real number is in.
+- **What waits, for research:**
+  - The Epic and Legendary pace (the long run was stopped for memory). Worked by hand, the Tower row gives an Epic at about 13 h and a Legendary at about 41 h, against design.md's 4 to 6 and 15 to 20. So Hard's rows likely need an Epic, decided on the long run.
+  - The emblem ramp (15% of full at Lantern Row) can't be met with one Uncommon emblem a socket, which gives 6 to 12%. Research's tier 1 call: the ramp is restated, and gear carries the early power.
+- **Done when:**
+  - The count, the budget and the floor have their cases, with a retry test on the keeper's chest.
+  - The Tower's numbers are in Config.
+  - The stage log writes a line per run that research can read.

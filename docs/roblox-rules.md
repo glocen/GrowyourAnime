@@ -38,7 +38,7 @@ Tightened on 2026-05-26: for a game that doesn't comply, "your game will be remo
 
 1. Every roll in the game shows its odds, paid or not. It's the honest design, and it means the rule is nearly met on the day the director wants to sell something.
 2. Credits will be sold for Robux (the director, 2026-11-19, `docs/decisions.md`). So everything random that Credits buy, Reinforce and the Void Shop's shards included, is a paid random item: every outcome's odds shown before the press, and where `ArePaidRandomItemsRestricted` is true, Credits can't be bought (the page's treatment "Blocking the purchase … with an error message"), so players there use earned Credits only.
-3. What the shop sells is known: a shard's type names its fighter. The roll on who you get lives in shards that are only earned.
+3. The Void Shop sells known things and one roll (D6, `docs/decisions.md`). A featured gear piece shows its lines before the press. The Standard shard rolls among its ground's Voidkin, and each outcome's odds show before the press. Under point 2 it counts as a paid random item once Credits are on sale. (Rewritten 2026-11-19 to match D6, which replaced the earlier "a shard's type names its fighter".)
 4. Nothing random, no reroll and no luck is sold until this section is built in and the director has approved the design (the directive, section 15).
 
 ## Feeds that pay for watching

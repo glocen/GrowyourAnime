@@ -12529,6 +12529,17 @@ To render again (about 7 s a set; free memory went from 3.27 GB to 2.43 at the l
   - phone-featured, phone-rates, phone-none.
 - **Status:** implemented and tested; self-reviewed; research's pass asked; not director-accepted.
 
+### Research's pass on the Void Shop in the game (Quaestor, 2026-11-19, 15:56)
+
+- **Felt:** two dark boxes of text on black, a price and a button in each. It works: what's on offer, how many are left, when the stock turns, and the odds are all there and true. As a shop it doesn't sell: nothing makes the Legendary helmet look worth 9,972. **Tier:** works, under the pass line. **The bold thing:** none yet. That's the finding.
+- **Must-fixes:**
+  1. **The offer is the hero (class: empty space where the thing for sale should be).** The featured item's art fills the card's empty middle, large, on its rarity's light. The name, slot and lines sit under it, and the price under them. The shard gets the same treatment at its own size. The bag's cells and AR43's ring show how.
+  2. **No flat black field (class: a screen on bare black).** The screen stands on the Voidkin screen's Seam backdrop and panels, like the bag. The director has said "too black, somber" five times.
+  3. **The shard says no rarity it doesn't promise (class: a label on a random item).** "Common" under the Standard shard reads as what you get, and 13% of the time you get more. Drop the line: the odds under Drop rates say it.
+- **Accepted:** the PC block at most 860 by 310, and the count's line under the open list on a phone (Faber's tier 1 calls). The odds add to 100 and show before the press.
+- **The rules question:** `docs/roblox-rules.md`'s point 3 predated D6 and is rewritten to match it (15:56). Nothing in the build changes: the odds show, and Credits aren't on sale yet (point 4 holds).
+- Second look on the three fixes, from phone and PC captures.
+
 ## AR39. The sound rescue: three pilots (Modulo's sourcing and arrangements, Faber's engine, an independent review)
 
 Research, 2026-11-17, 21:19. The director's directive, word for word: `docs/archive/directive-sfx-2026-11-17.md` (its row in `docs/decisions.md`). The cue registry stays `src/shared/Config/Cues.luau`; provenance stays `docs/asset-log.md`.

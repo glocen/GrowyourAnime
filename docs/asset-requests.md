@@ -12490,6 +12490,12 @@ To render again (about 7 s a set; free memory went from 3.27 GB to 2.43 at the l
     guard.ps1 tools/blender/shop_look.py <out> counter crossing street_off [day] tag=<try>
     guard.ps1 tools/blender/shop_look.py <out> clock build/scratch/modulo/shop <try> [...]
 
+### Research's second look: the clock, and the screen on D6 (Quaestor, 2026-11-19, 01:14 by the clock)
+
+- **The clock. Felt:** from the crossing, at dusk and by day, the minutes read as lit teeth in dark rims under the teal brow, and the spent minute's place is empty. **Tier:** competent. **The bold thing:** the teal brow's dark band, which carries the count by day. **Accepted, with no must-fix.** At 160 studs by day the teeth match the sky, but the count still reads by its dark gaps (+0.34). The crown, not the clock, is the far signal of a featured stock. The dark back behind the brow's opening goes to `docs/polish-later.md`. Glow stays at 0.8. What the renders can't show is Roblox's noon sky, which the install's capture checks (AR40's second look). **Released for install.**
+- **The screen in grey. Felt:** at the smallest phone, the featured piece and the shard line read apart at once, each with its price on its Buy, and the out-of-reach and bought-out states say why. **Tier:** competent. **Accepted** for Faber's build on the kit (phase 4).
+- **Modulo's question: can a featured piece for a class the player hasn't got be bought?** Yes, as drawn, because gear is the account's loadout and waits for that fighter. The red line stays. The Buy asks once more in that case only: "No Tank yet. Buy anyway?" (one confirm, Faber's). It's Credits only, so no rule of `docs/roblox-rules.md` is touched.
+
 ## AR39. The sound rescue: three pilots (Modulo's sourcing and arrangements, Faber's engine, an independent review)
 
 Research, 2026-11-17, 21:19. The director's directive, word for word: `docs/archive/directive-sfx-2026-11-17.md` (its row in `docs/decisions.md`). The cue registry stays `src/shared/Config/Cues.luau`; provenance stays `docs/asset-log.md`.
@@ -12901,6 +12907,19 @@ The kit itself wears C now: `base_kit.SWATCHES` and the wall's print (`WALL`), `
   - not rendered: "Kit" needs about 2.3 GB free, and it had 1.0 or less while Faber's Studio was open. It runs at the next window, then research's look.
 - **Status:** implemented and measured; not rendered, not reviewed by research, not in the game.
 - **Research, by message (between 23:12 and 23:20 by the clock):** no render before Faber's install. The record and the scan do, and the second look is the install's capture from the phone's camera by day, on what changed only: the dark beds, the stones and the three keys. It checks one thing: whether the near-white #F2EDE4 glares or washes the HUD out at noon. If it does, the stones step down toward cream and the joints stay.
+
+## AR41. The Tower's platforms: the rise, the assembly and the fall as light (Modulo, for research's pick, then Faber)
+
+Research, 2026-11-19, 01:14 by the clock. This is TR29's waiting look: the platforms assembling and falling as light (`docs/test-requests.md`, TR29, "What waits"; `docs/design.md`, "The Tower"). The Tower is built in grey and runs. Faber's item 7 (its results) doesn't need this, and this doesn't need Faber until the install.
+- **Feel line:** you step into the ring behind your base, and the ground lifts you on a disc of the base's own stone with light round its rim. At each win, the next disc gathers above you out of streaks of light, locks with one pulse, and you leap up to it. When your lead falls, the stack lets go and falls away as light.
+- **The pieces:**
+  1. **The platform** (`Config.Tower.Platform`: radius 14, 1 thick, 12 apart). It's a void machine of the base's language, never a real machine (the base's rule). Its fighting top is calm, so the lead and the foe read on it. Its rim's light sits in a dark bed (AR40's rule). It reads at 64 px as a ring.
+  2. **The folded column** of older floors: one thin column of rings, so the height reads from the base.
+  3. **The assembly** in 0.35 s, Back Out (TowerController's timing). One hero shape with a direction and an acceleration (the effects chapter): for example, pieces drawn in from outside and below, faster as they close, then one pulse round the rim.
+  4. **The fall as light,** at a run's end: the stack gives way from the top down, in about 1 s, with no debris and nothing that reads as harm.
+- **The blockout:** three directions in grey for 1 and 3, each a strip in motion from the player's camera at the rise's Leap. Research picks, then the colour pass in AR40's C, then 2 and 4 on the pick. Caps: the effect block 2 h, the model block 1 h.
+- **Waits:** the foe's void-light look, since it's laid over the Voidkin and their work is parked until before launch (the director's word); the leap's arc and the camera (Faber's); the sounds; the rarity light on rewards.
+- **Checks:** the content check before any upload; Blender by `build/locks/blender.lock`; the memory guard.
 
 ## Later, by ground
 

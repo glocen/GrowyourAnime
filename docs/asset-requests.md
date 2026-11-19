@@ -14987,6 +14987,16 @@ Research, 2026-11-19, 22:58 by the clock. The states are designed (`docs/design.
 - **Content check:** first BLOCK on Sap only (00:11, the falling drops), then PASS on the re-render at 00:12, all five rows. For the build: Sap's motes stay round and easing out, and a fall or a streak needs a fresh check. Burn's rim stays orange, never crimson, and its embers never fall or settle.
 - **Next:** research's pick, then Faber after TR49's states.
 
+### Research's verdict on the block-in (Quaestor, 2026-11-20, 00:13)
+
+- **Felt:** Frost is the star. The ice climbs the legs, slams shut into a faceted shell and bursts into chips, and you'd know it from across the street. Sap is right for a status: dark, quiet and round, with its violet only a rim. Burn and Shock don't say their element yet.
+- **Tier: works. Frost and Sap are competent and go to colour as they are.** The one bold thing: the shell's shatter.
+- **Must-fixes:**
+  1. **Burn reads as spots, not fire (class: every rising particle):** round orange dots spread evenly over the body, the Shade's mask included, look like a rash. Embers are small tapered sparks stretched along their rise, a white-hot core to orange, flickering, born near the hit and the shoulders, climbing and fading above the head, with a few larger ones. None sits still on a face.
+  2. **Shock is too small to read (class: every arc):** the pink squiggles read as stitched crosses. Arcs jump between two points on the body, two to three times longer, with a white core in the pink glow, and one larger arc per burst. It should read at the 64 px view, where it's only ticks now.
+- **The 64 px question:** Frost and the hit read, which is enough for the far view. Sap stays quiet by design. Shock must read there (fix 2). Burn reads by its shape, not by size (fix 1).
+- The second look judges Burn and Shock alone, at the phone's pixels and at 64 px.
+
 ## AR49. Home's panel: three cards with their own art (Modulo, for research's pick, then Faber)
 
 Research, 2026-11-19, 23:20 by the clock, on the director's word of 23:20 (`docs/decisions.md`, the row): "MAKE IT LOOOK GOOD".

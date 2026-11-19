@@ -14488,6 +14488,15 @@ Labelled SIMULATION, not play: `tools/balance/sim.py`'s model, 6,000 leads (leve
   3. Once installed, one player-camera capture of a Hard Shade and the Lamplighter, near and side headings, shows the cracks drawing amber over the type's trim, as in the cut. This matters most on the TintMask route. A crack drawn flat or dark red in game comes back to the check.
   4. The burst's scraps stay ImageColor3 white on every difficulty.
 
+## AR47. The Brawler mask's rework, with its Hard pair (Modulo, then Faber)
+
+- **Research's word** (2026-11-19, 18:21), on the content check of AR42 (02:31, "The model's Brawler mask in the game: BLOCK"). It's a shipped asset, so a rollback is kept first.
+- **What the block contains:**
+  - The check's smallest fix: the brows come off (`shade_sheet.py`, `mask("Brawler")`, `brows`).
+  - Then re-bake the mask, the elite's shoulder mask (`EliteMask_Brawler`), the atlas, and AR46's Hard pair of the masks.
+  - The paper mask keeps its cut holes and its grin's cuts, read as a mask, not a face. Never a hood, a blue jacket, round sockets or dot pupils.
+- **Done when:** the content check passes on the exact files at full size and at 64 px; research's look at the phone's pixels, Normal and Hard; and the re-upload handed to Faber with AR46's cut.
+
 ## Later, by ground
 
 The rest of ground 1 (Kirra in AR10, Watt in AR11; then Sable, Marigold, Crane), then each ground's Voidkin in `docs/roster.md`'s order. **The machines** (Gantry, Bulwark, Ironhymn, Shiomaru, Aegir) share one custom rig, taller than a player, with its own clip family: the first of them is timed like AR1, because a custom rig is a different cost.

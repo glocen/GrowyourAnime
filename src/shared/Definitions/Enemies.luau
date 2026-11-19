@@ -22,6 +22,9 @@ export type Row = {
 	Scale: number?, -- a rig's size against an ordinary Shade's (the elite's is its box's height over the ordinary's)
 	Size: { number }?, -- Box: width, height, depth
 	Enter: string?, -- an action it holds as it's spawned, to its end, before it does anything else (Definitions.Actions)
+	-- its signature, tried before its Action whenever it's ready; the first ready Config.Combat.Keeper.First seconds after
+	-- its Enter ends (TR44: the Lamplighter's slam)
+	Signature: string?,
 	Idle: string?, -- its own stance's clip, over its rig's Idle (Config.Animations.Rigs; Actions.IdleOf)
 }
 
@@ -30,7 +33,7 @@ local rows: { Row } = {
 	-- An elite wears its mask twice, the second on its Left Arm (AR2, section 5): only the Brawler's is past the content check.
 	{ Id = "brawler_elite", Name = "Brawler", Kind = "Elite", Action = "ShadeSwipe", Type = "Red", Rig = "Shade", Mask = "Brawler", Scale = 1.35 },
 	-- AR7: 1.5 an ordinary Shade's size, the hat's top 10.3 studs up (research's pick: taller than the elite)
-	{ Id = "lamplighter", Name = "the Lamplighter", Kind = "Keeper", Action = "KeeperSwing", Type = "Purple", Rig = "Lamplighter", Scale = 1.5, Enter = "KeeperChallenge", Idle = "LamplighterReady" },
+	{ Id = "lamplighter", Name = "the Lamplighter", Kind = "Keeper", Action = "KeeperSwing", Signature = "KeeperSignature", Type = "Purple", Rig = "Lamplighter", Scale = 1.5, Enter = "KeeperChallenge", Idle = "LamplighterReady" },
 	-- The replay's and the self-test's target: takes every hit, never answers.
 	{ Id = "dummy", Name = "Dummy", Kind = "Dummy", Action = nil, Type = "", Rig = "Box", Mask = "Round", Size = { 2.6, 4.6, 1.6 } },
 }

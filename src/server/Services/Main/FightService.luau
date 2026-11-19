@@ -6,6 +6,8 @@
 -- (a lead's UserId), Health, MaxHealth, State, StateUntil (server time it ends, 0 for open-ended: a fallen lead's return),
 -- Target (a fighter id or ""), Action and ActionAt. ActionAt is written last,
 -- so a client reads the action on its change. Each hit, landed or dodged, goes to every client as the Hit event.
+-- A marked strike's footprint (TR44; Rules.Mark) while it's down: MarkAt (its centre, at the fighter's root height),
+-- MarkRadius, MarkDown and MarkSlam (server times), MarkSlam written last. A lead broken off for its avatar: Away.
 -- Beats are checked every frame against the server's clock; decisions every Config.Combat.Think.
 
 local CollectionService = game:GetService("CollectionService")
@@ -35,10 +37,18 @@ local Tower = require(Shared.Rules.Tower)
 local Carry = require(Shared.Rules.Carry)
 local Markers = require(Shared.World.Markers)
 local Passive = require(Shared.Rules.Passive)
+local MarkRule = require(Shared.Rules.Mark)
 local DataService = require(script.Parent.Parent.Core.DataService)
 
 -- "Home": a fallen lead on its plot, healing and waiting for its player (TR12), never in a fight.
 export type State = "Idle" | "Flinch" | "Stun" | "Down" | "Reset" | "Home"
+
+-- A marked strike's footprint (TR44): its flat centre and its root's height when put down, its radius, when it went down
+-- and when its hit lands (server time), and the fighter it was aimed at.
+export type Mark = { X: number, Z: number, Y: number, Radius: number, Down: number, Slam: number, Target: Fighter? }
+-- A lead broken off for its place by its avatar (FightService.Away): at Speed, held until Until, or else Hold seconds
+-- once it arrives (at most Most seconds on the way); Since, when it broke off.
+export type Away = { Speed: number, Until: number?, Hold: number, Most: number, Since: number, Arrived: number? }
 
 export type Fighter = {
 	Id: string,
@@ -74,6 +84,10 @@ export type Fighter = {
 	For: Player?,
 	-- A lead on a Hard stage (TR43): it fights its player's own foes alone, and no other foe fights it.
 	Solo: boolean?,
+	-- Its marked strike's footprint while it's down (TR44): put down on its action's Aim beat, taken up on its Mark hit or
+	-- when the action ends. Its aim is fixed meanwhile.
+	Mark: Mark?,
+	Away: Away?, -- a lead broken off for its place by its avatar (TR44's A and B)
 	HealRoom: number?, -- what it may still heal this floor (the Tower's heal cap, Rules.Tower.Capped); nil, no cap
 	RegenAt: number, -- a lead's next Regen burst (TR40; Rules.Fight.BurstDue), from its summon
 	Frail: boolean?, -- it falls to the first hit that lands (a Tower's fast floor, Rules.Tower.Fast)
@@ -103,6 +117,9 @@ local FightService = {
 
 FightService.Fell = Signal.new() -- (fighter, hitters: { Player }) once a fighter falls; a Shade is gone FadeSeconds later
 FightService.Rose = Signal.new() -- (fighter) a lead up again: home with its player, or brought back by a test
+FightService.Marked = Signal.new() -- (fighter, mark) a marked strike's footprint is down (TR44)
+-- (fighter, mark, struck: { Fighter }?) taken up: on its hit, with the leads it took; nil when its action ended first
+FightService.Unmarked = Signal.new()
 
 local GROUP_FIGHTERS = "Fighters"
 local GROUP_AVATARS = "Avatars"
@@ -111,6 +128,7 @@ local SHADE_BODY = Color3.fromRGB(46, 46, 52)
 local SHADE_MASK = Color3.fromRGB(214, 214, 214)
 local SHADE_ROOT_HEIGHT = 3 -- the Shade rig's root above its feet, at scale 1 (the recipe's frame)
 local LEAD_ROOT_HEIGHT = 3 -- an R6 lead's root above its feet
+local AWAY_THERE = 1.5 -- studs from its place by the avatar a broken-off lead counts as there (TR44)
 
 local rng = Random.new()
 local fighters: { [string]: Fighter } = {}
@@ -235,7 +253,22 @@ local function stop(f: Fighter)
 	f.Humanoid:MoveTo(f.Root.Position)
 end
 
+-- A footprint taken up (TR44): its attributes cleared, and its hearers told what it took (nil: its action ended first).
+local function takeUp(f: Fighter, struck: { Fighter }?)
+	local mark = f.Mark
+	if mark == nil then
+		return
+	end
+	f.Mark = nil
+	f.Model:SetAttribute("MarkSlam", nil)
+	f.Model:SetAttribute("MarkAt", nil)
+	f.Model:SetAttribute("MarkRadius", nil)
+	f.Model:SetAttribute("MarkDown", nil)
+	FightService.Unmarked:Fire(f, mark, struck)
+end
+
 local function endAction(f: Fighter, at: number)
+	takeUp(f, nil)
 	if f.Action then
 		f.Action = nil
 		f.Model:SetAttribute("Action", "")
@@ -739,6 +772,15 @@ local function glide(f: Fighter, unit: Vector3, amount: number, seconds: number,
 	end)
 end
 
+-- A glide in progress stopped where it is (a lead broken off mid-carry: TR44).
+local function unpush(f: Fighter)
+	if pushing[f] then
+		pushing[f] = nil -- its Heartbeat sees the token gone and lets go
+		f.Push.Enabled = false
+		f.Align.RigidityEnabled = false
+	end
+end
+
 local function push(f: Fighter, direction: Vector3, studs: number, hold: number, seconds: number)
 	local weight = (Combat.Weight :: any)[f.Kind] or 1
 	local amount = studs * weight
@@ -939,6 +981,22 @@ end
 -- and a shield come first, and with no target the fighter still heals and shields itself.
 local function strike(f: Fighter, beat: string, hit: Actions.Hit, at: number)
 	local action = f.Action :: Actions.Action
+	local mark = f.Mark
+	if hit.Mark and mark then
+		-- on its footprint (TR44): every enemy whose centre is inside it, where it stands now, and nothing else
+		local struck: { Fighter } = {}
+		for _, other in fighters do
+			local p = other.Root.Position
+			if against(f, other) and standing(other) and MarkRule.Inside(mark.X, mark.Z, mark.Radius, p.X, p.Z) then
+				table.insert(struck, other)
+			end
+		end
+		for _, other in struck do
+			land(f, action, other, beat, hit, at, flat(other.Root.Position - f.Root.Position))
+		end
+		takeUp(f, struck)
+		return
+	end
 	local target = f.ForcedTarget or f.Target
 	if target ~= nil and not standing(target) then
 		target = nil
@@ -1003,6 +1061,8 @@ end
 
 function fall(f: Fighter, at: number)
 	endAction(f, at)
+	f.Away = nil
+	f.Model:SetAttribute("Away", nil)
 	setTarget(f, nil)
 	stop(f)
 	face(f, nil)
@@ -1110,7 +1170,9 @@ local function forced(f: Fighter, at: number): boolean
 		return false
 	end
 	local target = f.ForcedTarget
-	face(f, if target then target.Root.Position else nil)
+	if f.Mark == nil then -- a footprint down: its aim is fixed (TR44)
+		face(f, if target then target.Root.Position else nil)
+	end
 	if target and at >= f.ForcedNext and not busy(f, at) then
 		local action = Actions.ById[f.Forced]
 		if action then
@@ -1260,6 +1322,29 @@ local function thinkLead(f: Fighter, at: number, dt: number)
 	end
 	if f.State == "Flinch" then
 		return
+	end
+	-- Broken off for its place by the avatar (TR44's A and B; FightService.Away): it goes there, and holds, then fights.
+	local away = f.Away
+	if away then
+		local place = besideAvatar(avatar, f.Owner, f).Position
+		local gap = flat(place - f.Root.Position).Magnitude
+		if away.Arrived == nil and (gap < AWAY_THERE or at - away.Since >= away.Most) then
+			away.Arrived = at
+		end
+		local over = if away.Until then at >= away.Until else (away.Arrived ~= nil and at >= away.Arrived + away.Hold)
+		if over then
+			f.Away = nil
+			f.Model:SetAttribute("Away", nil)
+		else
+			if gap >= AWAY_THERE and (away.Until ~= nil or away.Arrived == nil) then
+				face(f, nil)
+				moveTo(f, Vector3.new(place.X, f.Root.Position.Y, place.Z), away.Speed)
+			else
+				stop(f)
+				face(f, if f.Target then f.Target.Root.Position else nil)
+			end
+			return
+		end
 	end
 	local target = f.Target
 	if mode == "Fight" and target then
@@ -1413,7 +1498,9 @@ local function thinkShade(f: Fighter, at: number)
 		end
 		return
 	end
-	face(f, target.Root.Position)
+	if f.Mark == nil then -- a footprint down: its aim is fixed from its Aim beat (TR44)
+		face(f, target.Root.Position)
+	end
 	if busy(f, at) then
 		return
 	end
@@ -1428,6 +1515,37 @@ local function thinkShade(f: Fighter, at: number)
 		local walk = if f.For and f.Block.Speed > 0 then f.Block.Speed elseif keeper then Combat.Keeper.WalkSpeed else Combat.Shade.WalkSpeed
 		moveTo(f, Vector3.new(slot.X, f.Root.Position.Y, slot.Z), walk)
 	end
+end
+
+-- A marked strike's footprint put down on its action's Aim beat (TR44; Config.Combat.Keeper.Mark): where its Mark hit
+-- will land, from where the fighter faces now. Its aim is held there: the turn it was still making is stopped.
+local function putDown(f: Fighter, action: Actions.Action)
+	local slam: number? = nil
+	for beat, hit in action.Hits do
+		if hit.Mark then
+			slam = action.Beats[beat]
+		end
+	end
+	local aim = action.Aim
+	if slam == nil or aim == nil then
+		return
+	end
+	local mark = Combat.Keeper.Mark
+	local look = flat(f.Root.CFrame.LookVector)
+	if look.Magnitude > 0.05 then
+		f.Humanoid.AutoRotate = false
+		f.Align.CFrame = CFrame.lookAt(Vector3.zero, look.Unit)
+		f.Align.Enabled = true
+	end
+	local p = f.Root.Position
+	local x, z = MarkRule.Centre(p.X, p.Z, look.X, look.Z, mark.Ahead, mark.Left)
+	local m: Mark = { X = x, Z = z, Y = p.Y, Radius = mark.Radius, Down = f.ActionAt + action.Beats[aim], Slam = f.ActionAt + slam, Target = f.Target }
+	f.Mark = m
+	f.Model:SetAttribute("MarkAt", Vector3.new(x, p.Y, z))
+	f.Model:SetAttribute("MarkRadius", m.Radius)
+	f.Model:SetAttribute("MarkDown", m.Down)
+	f.Model:SetAttribute("MarkSlam", m.Slam) -- last: a client draws it on this one's change
+	FightService.Marked:Fire(f, m)
 end
 
 local function step()
@@ -1467,6 +1585,9 @@ local function step()
 				local hit = action.Hits[beat]
 				if hit and f.Action == action then
 					strike(f, beat, hit, at)
+				end
+				if beat == action.Aim and f.Action == action then
+					putDown(f, action)
 				end
 			end
 			if f.Action == action then
@@ -1523,6 +1644,9 @@ function FightService.SpawnEnemy(def: string, level: number, at: CFrame, options
 	local row = assert(Enemies.ById[def], `no enemy {def}`)
 	local block = Stats.Enemy(def, level, if options then options.Type else nil)
 	local kit = if row.Action then { Actions.ById[row.Action] } else {}
+	if row.Signature then
+		table.insert(kit, 1, Actions.ById[row.Signature]) -- tried first, whenever it's ready (TR44)
+	end
 	local name = `{row.Id}_{level}`
 	local model, up
 	if row.Rig == "Box" then
@@ -1547,6 +1671,11 @@ function FightService.SpawnEnemy(def: string, level: number, at: CFrame, options
 	if row.Enter then
 		-- held to its end before it does anything else: busy() keeps it from walking or striking (the keeper's Challenge)
 		start(f, Actions.ById[row.Enter], now())
+	end
+	if row.Signature then
+		-- its first, First seconds after its Enter ends (TR44)
+		local enter = if row.Enter then Actions.ById[row.Enter].Length else 0
+		f.ReadyAt[row.Signature] = now() + enter + Combat.Keeper.First
 	end
 	return f
 end
@@ -1698,6 +1827,21 @@ end
 
 function FightService.All(): { [string]: Fighter }
 	return fighters
+end
+
+-- TR44's ways out of a mark (SlamService): `f`, a standing lead, breaks off what it was doing (its combo lost, a carry
+-- stopped) and goes to its place by its avatar at `speed`, then holds there until `untilAt` (A: the Slam), or else `hold`
+-- seconds once it arrives, at most `most` seconds on the way (B: the Recall's dash). False when it can't.
+function FightService.Away(f: Fighter, speed: number, untilAt: number?, hold: number?, most: number?): boolean
+	if fighters[f.Id] ~= f or f.Side ~= "Lead" or not standing(f) or f.State == "Home" then
+		return false
+	end
+	local at = now()
+	endAction(f, at)
+	unpush(f)
+	f.Away = { Speed = speed, Until = untilAt, Hold = hold or 0, Most = most or math.huge, Since = at, Arrived = nil }
+	f.Model:SetAttribute("Away", true)
+	return true
 end
 
 -- The replay's hold on a lead (Studio): `action` every `every` seconds against `target`, standing still; nil lets it go.

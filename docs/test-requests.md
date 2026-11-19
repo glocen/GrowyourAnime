@@ -3820,3 +3820,41 @@ Research, 2026-11-19, 00:47 by the clock, from the brief of 2026-11-18, 3.3: two
 - **Waits:** the footprint's look in the game's art (Modulo, at the shared finish); the slam's sound (no sound work outside TR42's panel); a bonus in the recovery; poise and stagger; Hard's numbers; parties' several leads; Recall outside the keeper's fight; any other keeper.
 - **Cases:** the slam's aim is fixed from Plant; a lead on the ring's edge at the Slam is hit only when its centre is inside; A fires only on a 2-stud move that ends outside; B's cooldown holds through a repeat press; a Recall during the lead's own signature breaks it with no double hit; Off plays as today's rule.
 - **Research reads it:** in motion, from a phone's camera, one fight in each mode, with the counts. The question for each is the pack's own: can the player explain why the slam hit their lead? A mode in which most misses are accidents fails that question. Research sends the director the two takes and the counts, and the director picks.
+
+### The block, built (Faber, 2026-11-19, 01:57 by the clock)
+
+- **Implemented:**
+  - **The slam in the fight:** `KeeperSignature` is the Lamplighter's `Signature` (`Definitions.Enemies`), tried before `KeeperSwing` whenever it's ready. Its first is `Config.Combat.Keeper.First` (8 s) after the Challenge ends, then its cooldown of 12 s. Its `Aim` is Plant: the keeper turns to its target until then, and from Plant its Align holds the facing it had.
+  - **The footprint:** put down on Plant, centred where `Rules.Mark.Centre` puts it (6.33 ahead, 1.92 left, `Config.Combat.Keeper.Mark`). The Slam's hit (`Mark = true`) takes every lead whose root's flat centre is within the radius at the Slam, in place of Reach and the arc; Reach 10 stays for the replay. It's taken up on its hit, or when the action ends first (a fall), and then it counts nothing.
+  - **What clients read:** the keeper's attributes MarkAt, MarkRadius, MarkDown and MarkSlam.
+  - **The grey look** (`SlamController`): a flat white ring 0.35 wide on the ground under the centre, and a disc at 0.6 transparency growing to meet it on the Slam. Both go on the Slam.
+  - **A** (`SlamService`): while a footprint is down, an avatar 2 studs or more from where it stood at Plant, standing outside the ring, takes its lead with it (`FightService.Away`). The lead drops its action, walks at `Combat.Lead.CatchUpSpeed` to its place by the avatar and holds there until the Slam. Walking does nothing in B.
+  - **B:** Net `Recall`, a round button 84 authored by the right thumb, above the dock, with R and ButtonY bound while it shows. It shows only in mode B and in a keeper's try. A press dashes the lead to its place at 40 studs a second (at most 1.2 s on the way), holds it 1 s, and sets the cooldown of 4 s on the player's `RecallReady`. The button counts the seconds down.
+  - **The switch:** `Config.Combat.Keeper.Out.Mode`, read live, starts at "A".
+- **To play it** (Studio):
+  - `NL_Debug:Invoke("Slam", nil, "Off" | "A" | "B")` switches the mode for every side, mid-fight.
+  - `("Slam")` reads the mode and the counts per mode: slams, hit, missed, on purpose, by accident. `("Slam", nil, "Reset")` clears them.
+  - `("Slam", nil, "Now")` makes your keeper's slam ready at once.
+  - Each slam is also logged in the output.
+- **Tested:**
+  - **The logic cases** (`LogicTestService/Cases/Mark.luau`, 6 cases): where the footprint lands for any facing; a centre on its edge is taken and one 0.01 past it isn't; the fill; A's rule; on purpose against by accident; each mode counted apart; the Recall's cooldown; the switch read safely; the keeper's rows. 26,618 passed and 0 failed, both offline and in Studio. The world report is empty.
+  - **The self-test** (`SlamCases`, 34 checks) passed in 17.6 s at 57 fps. It plays a keeper's try through the server's own paths:
+    - Off's tell is 1.57 s. The footprint lies its 6.6 studs out. The ring's radius and edge, the disc half the ring at mid-tell, both gone with the Slam, counted under Off. A lead left standing still was hit.
+    - In A, the avatar walks out and its lead follows. The keeper's aim held within 2° from Plant to Slam. The slam is counted missed, on purpose, and the lead is back to its fight after it.
+    - In B, the button is 44 or more by the right thumb. A press in the tell is taken, a second at once is refused on its cooldown, the lead strikes nothing on its way, and the miss is counted on purpose. The button counts down, and its own press asks the server.
+    - There's no Recall in A or outside a try, and the server refuses one there. The switch is put back after.
+  - **Rerun on the new fight:** the keeper-try and TR43-stage cases. Their result is in this piece's commit message.
+  - **Not covered as written:** "a Recall during the lead's own signature" isn't forced in a case. What's checked is that a Recall ends whatever action the lead is in, and that the lead starts none while it's away. So no hit of its own can land twice.
+- **The phone take, part done:**
+  - Off was recorded at the iPhone 16 Pro simulator (750 by 401): `build/scratch/faber/tr44/take_off.mp4`, with a strip of it at 2 frames a second, `off_crop.png`. The ring reads on the street around the lead, and the column covers the frame on the Slam. But Studio's lead was then level 17 and killed the keeper in about 15 s.
+  - The take of all three modes, at a level-3 lead, was stopped by the low-memory reaper at 01:54. It waits for the director's go to record again.
+  - That try still played to its end in Studio:
+    - Off: hit.
+    - A: missed on purpose, the avatar walking 0.4 s after the footprint went down.
+    - B: missed on purpose, the Recall pressed 0.57 s after.
+  - These are scripted moves, so the on-purpose share says nothing about players. The counts that answer the pack's question come from the director's own play.
+- **For research, measured on Studio's account, gear included:**
+  - The level-9 Lamplighter has 19,525 health. Rook at level 17 took it down in about 15 s. Rook set to level 9, the keeper's own, took 3,300 in about 3 s, so the fight lasts about 20 s.
+  - At those fights the keeper slams once, maybe twice, not the 6 that a 90-second fight would hold.
+  - The rotation's seeds assume the longer fight. Its length is the stage's balance, not this block's, so it's flagged here, not changed.
+- **Visually reviewed:** not yet: research's read waits on the take. **Director-accepted:** no; the director picks Off, A or B by playing.

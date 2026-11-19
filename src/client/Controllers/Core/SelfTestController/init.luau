@@ -28,6 +28,7 @@ local StripCases = require(script.StripCases)
 local NoticeCases = require(script.NoticeCases)
 local AuditionCases = require(script.AuditionCases)
 local StageCases = require(script.StageCases)
+local SlamCases = require(script.SlamCases)
 local BaseController = require(script.Parent.Parent.Main.BaseController)
 
 local BRIDGE_NAME = "NL_SelfTest"
@@ -197,6 +198,8 @@ local function run(filter: string?): string
 	table.move(audition, 1, #audition, #cases + 1, cases)
 	local stages = StageCases.Cases() -- a ground's stages (TR43), apart for the same reason
 	table.move(stages, 1, #stages, #cases + 1, cases)
+	local slams = SlamCases.Cases() -- the keeper's marked slam (TR44), apart for the same reason
+	table.move(slams, 1, #slams, #cases + 1, cases)
 	for _, case in cases do
 		local chosen = if filter then string.find(case.Name, filter, 1, true) ~= nil else not case.Manual
 		if chosen then

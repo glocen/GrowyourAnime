@@ -189,6 +189,22 @@ return {
 		-- Seconds from its fall until the server takes its body: past the Down clip's Gone, with the longest hold and the
 		-- replication's delay to spare (AR7, section 5: the server keeps the body until Gone; a logic case holds it).
 		FadeSeconds = 2.1,
+		-- Its slam in the fight (docs/test-requests.md, TR44; research's seeds of 2026-11-19, tuned live): the first First
+		-- seconds after its Challenge ends, then each time its Cooldown is up (Definitions.Actions, KeeperSignature).
+		First = 8,
+		-- The slam's footprint (Rules.Mark): put down on its Aim beat (Plant) where the lantern lands, Ahead of the keeper
+		-- and Left of it (AR7, section 7), of Radius. Its Slam takes every lead whose centre is within Radius, in place of
+		-- the hit's Reach and arc. Its look, in grey: a ring Edge studs wide, and a disc growing to meet it on the Slam.
+		Mark = { Ahead = 6.33, Left = 1.92, Radius = 5, Edge = 0.35, Fill = 0.6 },
+		-- The lead's way out of a mark, switched live for the director's pick (TR44): "Off", today's rule; "A", the lead
+		-- follows a move of Moved studs or more from where the avatar stood at the Plant that ends outside the ring, at
+		-- Combat.Lead.CatchUpSpeed to its place by the avatar, held there until the Slam; "B", a Recall: a press dashes the
+		-- lead to its place at Recall.Speed (at most Recall.Most seconds), holds it Recall.Hold, and waits Recall.Cooldown.
+		Out = {
+			Mode = "A",
+			Moved = 2,
+			Recall = { Speed = 40, Most = 1.2, Hold = 1, Cooldown = 4 },
+		},
 	},
 
 	-- The replay (the ga-action skill): an action on a clean pad, from the player's camera, the numbers live.

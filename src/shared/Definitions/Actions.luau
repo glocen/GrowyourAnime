@@ -36,6 +36,9 @@ export type Hit = {
 	-- Studs round the fighter itself: every enemy standing within takes the hit, its target too, whichever way it faces
 	-- (Ground Wire's pulse); the target needn't be in Reach
 	Round: number?,
+	-- It lands on its fighter's footprint (FightService; Rules.Mark; Config.Combat.Keeper.Mark), put down on its action's
+	-- Aim beat: every enemy whose centre is inside it, in place of Reach and the arc (TR44)
+	Mark: boolean?,
 	-- Seconds each enemy it lands on is stopped, unable to act or move (docs/design.md, "States in a fight": Stun), as a
 	-- share of them on a tough kind and never again inside a lock after one (Config.Combat.Stun; Rules.Fight.Stun)
 	Stun: number?,
@@ -67,6 +70,7 @@ export type Action = {
 	Beats: { [string]: number }, -- named moments, seconds from the start
 	Hits: { [string]: Hit }, -- by the beat each lands on
 	Moves: { [string]: Move }?, -- by the beat each starts on: the server carries the body, the clip moves in place
+	Aim: string?, -- the beat from which its aim is fixed: its fighter turns to its target until then, and a Mark hit's footprint is put down on it
 	Range: number, -- studs, root to root: its fighter walks this close before it starts it
 	Heavy: boolean, -- it carries a heavy hit
 	State: string?, -- the state it causes, when it names one (Stun, Knockdown): none in TR2
@@ -430,8 +434,9 @@ local rows: { Action } = {
 		-- The Lamplighter's signature (AR7, sections 6 and 7; AR8, the keeper's signature): it plants its pole, leans its
 		-- lantern out over your fighter as the light gathers in it, wrenches it high on Wrench and slams it down beside them on
 		-- Slam, and the light leaps back up out of the street as a column. Its effect is its rows (Config.Effects.Rows.
-		-- KeeperSignature). In the motion blockout it's pressed only by the replay's hold (KeeperForce): its place in the
-		-- keeper's fight, its cooldown and its coefficient are a seed, signed with the fight's rotation.
+		-- KeeperSignature). In the keeper's fight since TR44: its row's Signature, the first Config.Combat.Keeper.First after
+		-- the Challenge, then on its cooldown; aimed until Plant, where its footprint goes down (Config.Combat.Keeper.Mark)
+		-- and the tell runs to the Slam, 1.57 s. Its cooldown and coefficient are seeds, signed with the fight's rotation.
 		Id = "KeeperSignature",
 		Clip = "LamplighterSignature",
 		Effect = "KeeperSignature",
@@ -439,8 +444,10 @@ local rows: { Action } = {
 		CancelFrom = 3.0333,
 		Cooldown = 12,
 		Beats = { Plant = 0.4, Light = 0.7333, Wrench = 1.7667, Slam = 1.9667 },
+		Aim = "Plant",
 		Hits = {
-			Slam = { Coefficient = ENEMY_PER_SECOND * 3, Heavy = true, Reach = 10, Push = 2.5, Rung = 8 },
+			-- Reach is the replay's and a fighter's with no footprint down; in the fight the footprint decides (Mark)
+			Slam = { Coefficient = ENEMY_PER_SECOND * 3, Heavy = true, Reach = 10, Push = 2.5, Rung = 8, Mark = true },
 		},
 		-- the lantern lands 6.33 studs ahead of the keeper and 1.92 to its left (AR7, section 7): from 7.5 it's down beside
 		-- your fighter, 2.25 from its middle, its drum clear of the body

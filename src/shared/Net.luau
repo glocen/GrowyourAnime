@@ -38,6 +38,7 @@ local REMOTES: { [string]: Spec } = {
 	StageDone = { Kind = "Event", RatePerSecond = 0 }, -- server -> client: (results) a run ended, won or lost, for its card
 	StageGate = { Kind = "Event", RatePerSecond = 0 }, -- server -> client: ({ Stage, Ground }) set back at a gate shut to them
 	-- The fight in the camera's view (FightService, TR24's fixes 2 and 3).
+	Recall = { Kind = "Function", RatePerSecond = 4 }, -- client -> server: () -> { Ok, Error?, Ready? }: the lead dashes to the avatar, or why not (TR44's B)
 	View = { Kind = "Unreliable", RatePerSecond = 8 }, -- client -> server: (bearing) degrees, where the camera looks, flat: atan2(Z, X)
 }
 

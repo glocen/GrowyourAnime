@@ -67,6 +67,11 @@ function StageCases.Cases(): { any }
 		{
 			Name = "Stages (TR43): the gates, a Normal run to its card, Next, leaving, Hard's own foes, the keeper lifted, the picker's locks, a lost run",
 			Run = function(t: any)
+				-- A card a case before left open (a keeper's try lost is Stage 4's run: its card) would read as this run's.
+				if Screen.Current() ~= nil then
+					Screen.Close()
+					t.Wait(0.3)
+				end
 				local before = t.Server("Stage")
 				local was = { Normal = before.Normal and before.Normal.Cleared or 0, Hard = before.Hard and before.Hard.Cleared or 0 }
 				local count = #(Stages.Of(GROUND) :: { any })

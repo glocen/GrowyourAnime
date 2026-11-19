@@ -12,11 +12,11 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **Verdicts owed:** AR30's scrolling row (one phone capture); AR37's build, read in the game; TR10's marker, AR28's Stage I, TR34, AR23, TR29.
 - **With the director:** the store's design (`docs/decisions.md`, "Waiting on the director", item 2).
 
-**Faber (builder).** 2026-11-19, 01:31, on Opus 5.5. The director's listen moves to tomorrow ("i will do that sound audition tomorrow so meanwhile produce the actual game now"): TR42's second round is in the place, 12 tabs (TR42, "The picks in the game, and the second round, built").
-- **Built and tested tonight:** TR43, the stages in grey (TR43, "The block, built"); item 6, Salvage on the item's card; item 8, D5's bays; the music module; Roblox's character sounds removed. Offline logic 26,574/0, Studio's the same; type check 0 new; the touched self-test cases pass.
-- **Now:** TR44, the Lamplighter's slam in its fight, with its footprint, and the lead's two ways out, A and B, behind one switch.
-- **Next, in order:** items 7 and 10, item 4 after research's refit, AR38's Void Shop install, AR40's C install, AR30's rest; the UI sounds' audition after the director's listen.
-- **Open, tests:** TR43's fresh-account case not run (it wipes the save). The full self-test NOT VERIFIED on HEAD; TR41's galaxy case and four timing cases as before.
+**Faber (builder).** 2026-11-19, 02:07, on Opus 5.5. TR44 is built in grey (TR44, "The block, built"): the Lamplighter's slam in its fight, its footprint on the street, and the lead's two ways out behind one switch, counted per mode. The director plays Off, A and B and picks.
+- **Built and tested tonight:** TR43, items 6 and 8, the music module, the character sounds (e739d53); TR44: offline logic 26,618/0, Studio's the same; Slam 34/0, Keeper 67/0, TR43's stages 78/0 on the new fight; type check 0 new.
+- **Now:** the Festival of Battles in its own place in this experience (the director, 02:05, yes at 02:07; their words with research for the register). The base's door and the dock's Map tile, renamed Play, open the Festival's menu; a picked stage teleports there. First, research on how game-mode places are made, then the place and the trip there and back.
+- **Next, in order:** item 7 (the Tower at Radius 24 and Height 18 if 48 across fits the lot), item 10, item 4 after research's refit, AR38's Void Shop install with its one confirm, AR40's C install with Modulo's new swatches, AR30's rest; the UI sounds' audition after the director's listen.
+- **Open, tests:** TR44's phone take of the three modes was stopped by the low-memory reaper at 01:54 and waits for the director's go. TR43's fresh-account case ran by mistake inside a filter and wiped Studio's Test save; restored from the store's 01:56 version (level 17, 18,675 Credits, 7 Voidkin). The full self-test NOT VERIFIED on HEAD.
 
 **Modulo (assets).** 2026-11-19, 01:57, on Opus 5.5. Voidkin work parked until before launch (the director's word, 11:10).
 - **Done:** AR40's must-fix on the road's trail and the crystals (AR40, "The road's trail and the crystals, built"). The trail is warm white in a teal edge on a dark bed, and the crystals are teal glass. Violet stays only in small tips. It's a flat sheet beside today's, with no render, and the atlas passed the content check (01:58).
@@ -43,6 +43,7 @@ For Faber:
 5. **The test rule, in `CLAUDE.md` and `ga-finish`.** Research relays your yes (the register, 2026-11-15, night): at a piece's finish, the cases its change can reach and every offline logic case; the whole suite at a phase's close and after a change to shared code. `CLAUDE.md` changes only on your own word in the builder's session: say "write it" there and it's in.
 6. **Your ear on Haymaker's strike sound**, a library pick (not one of AR13's made takes), heard on its frame. In a playtest, the Server command bar: `game.ServerStorage.NL_Debug:Invoke("Replay", nil, "RookHaymaker")` plays it every 3.5 s, and `Invoke("Replay", nil)` stops it. Two alternates are logged in AR1, section 8.
 7. **Your ear on the audition panel** (TR42), ready for tomorrow: 12 tabs, the nine skills and the Mage's and Healer's hits, and a tab for each of Rook's, Kirra's and Watt's light hits drawn from your 32 keeps. In Studio's Play, the panel is at the left: a tab per hit, "Old" (today's sound) and ten candidates. Tap a row: it plays, and from then on every hit of that kind plays it in the fight. **Keep** the ones you like (more than one is fine), **More** for the next ten, **None of these** when ten hold nothing. **Others off** mutes the fight's other sounds, so you hear the candidate alone. When you're done, leave the Play running and tell Faber: your picks are read from it.
+8. **Pick the slam's rule by playing it** (TR44): Off, A or B. In Studio's Play, start a keeper's try. The Server command bar switches the mode mid-fight: `game.ServerStorage.NL_Debug:Invoke("Slam", nil, "A")` (or `"B"`, `"Off"`), and `Invoke("Slam")` reads the counts. In A, walk out of the ring and your fighter follows; in B, press the round Recall button or R. Research reads a phone take of each first: say go and I record it (the PC's memory stopped it tonight).
 
 ### Notices
 
@@ -116,6 +117,14 @@ For Faber:
 - Tier 2, research, 2026-11-12, on the director's words: weapons belong to a class, in two hands (Main Hand and Off Hand replace Weapon and Shield), a preset holds a pair per class, a weapon drop is for the lead's class; Combat Power made to be watched, its weights fitted by the simulation; each item kind modelled and rendered to its icon (AR6, phase 3) (`docs/design.md`, "Regalia: gear" and "Combat Power"). Faber: the Stats case's `"Weapon"` source becomes `"Main Hand"` when you next touch it. Faber and Modulo: say in your row what you'd change.
 
 ## Entries
+
+### 2026-11-19, 01:58. TR44's slam in the keeper's fight, with its footprint and the switch Off, A, B (Faber)
+
+- **What changed:** the Lamplighter slams in its fight, first 8 s after its Challenge, then every 12 s. From Plant its aim is fixed and a ring opens on the street, filling to its edge on the Slam. The hit takes the leads inside it.
+- **A:** walk 2 studs out of the ring and your fighter follows. **B:** a Recall button by the right thumb (R, ButtonY) dashes it to you, with a 4 s cooldown. One switch, live, and the server counts each slam per mode.
+- **Where:** `Rules/Mark.luau`, `SlamService`, `SlamController`, `FightService` (the footprint, the fixed aim, `Away`), `Config.Combat.Keeper` (First, Mark, Out). Record: TR44, "The block, built".
+- **Open:** research's read waits on the phone take (stopped by the low-memory reaper); the director picks by playing (board, item 8). A fight at the keeper's level lasts about 20 s on Studio's account: one slam, not six (for research).
+- **For:** research and the director.
 
 ### 2026-11-19, 01:31. TR43's stages, items 6 and 8, the music and the character sounds; TR42's second round ready (Faber)
 

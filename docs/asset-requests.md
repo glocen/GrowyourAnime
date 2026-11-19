@@ -13398,6 +13398,29 @@ Research, 2026-11-19, 11:30 by the clock. The director's word of 11:30 (`docs/de
 - **CR's tab:** passes. Its ivory digits follow AR44's plain take once picked.
 - **Accepted on the sheet;** what it can't show is the tier changing when the lead's CR does, mid-fight. That's first seen in Faber's phone capture of the build.
 
+### The cut in B, for Faber (Modulo, 2026-11-19, 12:00 to 12:06 by the clock)
+
+- **Where:** `build/handoff/UI/foes/`. The eight new images are in `images/`, at 4 pixels a point. `foes.json` gives each one's size, tint, anchor and use. `foe_cards_cut.png` is the check sheet. They're drawn by `images` in `tools/blender/foe_cards.py` (`-- <out> cut`).
+- **What's new, and what's the kit's:** the cards are built from the kit's own pieces: the panel's slices tinted in C's system colours, the type gems, and the bar. Only these eight are new:
+  - `Skull`: white-bodied, with a dark rim that stays dark under any tint. It's tinted for its tier, and the faint tier is at ImageTransparency 0.45. It's drawn 16 high in an 18 point box. On a Shade's or elite's card it stands 15 high, on a keeper's 17, with its centre 14 from the card's left on the level's row.
+  - `EdgeArrow`: white, tinted green up or red down (Rotation 180), right of the type gem.
+  - `CardRankEdge`: the brass edge in place of `PanelEdge` on an elite's and a keeper's card. It uses the kit panel's own cut (10 and 3), sliced at Cut 12, and keeps its own colours.
+  - `RankHornLeft` and `RankHornRight`: each horn's root sits on the card's top edge, 14 in from its corner. A keeper's are at 14 high, as drawn, and an elite's at 11.
+  - `RankCrest`: the keeper's three shards, anchored at the top edge's middle.
+  - `PhaseNotch`: drawn for the keeper's 15 point bar and its slant. Anchored on the bar's top edge at a third and two thirds.
+  - `CrTab`: the gold plate, drawn for a 24 point number and scaled with it. "CR" is the game's text over it (#4A2A08, bold, 0.62 of the number's size), with the ivory number right of it.
+- **Research's two must-fixes, as values for the build:**
+  1. The health digits stand on a dark band (B's channel, #0E1D23, at 0.72, slanted like the bar). The light's front and the notches pass under it, as section 3 shows.
+  2. The grey tier's level is **#D3D1DC** at full opacity: 4.6 to 1 over B's panel top, 6.0 over its foot. #A3A1B2 gave only 2.7.
+- **The other levels over B's panel** (top / foot): white 6.2 / 8.0, yellow 4.5 / 5.8, red 2.1 / 2.8. Red is carried by the dark outline every level wears; no red that reads as red reaches 4.5 over the teal.
+- **Content check, 2026-11-19 (by 12:06): PASS** for upload, all eight, on the exact files, with each one at full size and at 64 px over dark. The conditions:
+  1. The skull stays as drawn: no crack, chip, glowing or dripping eye, red mark, "angrier" variant, glow or splatter. Each tier is a flat tint over the white body and keeps the dark rim. Red stays #FF4F42 or lighter.
+  2. The arrow stays a plain block arrow, tinted #7CF0A4 or #FF786E.
+  3. The other six keep their own brass and gold. A redraw into another shape comes back to the check.
+  4. The sheets stay internal.
+  5. Each image is uploaded under the group and logged in `docs/asset-log.md`, with `foe_cards.py`'s `images` as its source.
+- **Status:** cut, self-read and content-checked. It waits on Faber's upload and build, then his phone capture for research.
+
 ## Later, by ground
 
 The rest of ground 1 (Kirra in AR10, Watt in AR11; then Sable, Marigold, Crane), then each ground's Voidkin in `docs/roster.md`'s order. **The machines** (Gantry, Bulwark, Ironhymn, Shiomaru, Aegir) share one custom rig, taller than a player, with its own clip family: the first of them is timed like AR1, because a custom rig is a different cost.

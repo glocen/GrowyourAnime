@@ -14,9 +14,12 @@ shapes, the kit's type gems, and Blender's own face standing in for the game's. 
     CR's tab    "CR" on a small slanted gold tab, the number beside it in pale ivory, upright and wide apart (AR44's
                 plain digits; Blender's face stands in for Oswald): at the lead's feet, on the Overview, on an item's row.
 
-    blender -b --factory-startup --python tools/blender/foe_cards.py -- <abs out>
+    blender -b --factory-startup --python tools/blender/foe_cards.py -- <abs out>        the sheet, foe_cards.png
+    blender -b --factory-startup --python tools/blender/foe_cards.py -- <abs out> cut    research's pick B, cut
 
-Writes foe_cards.png, at 2 pixels a point, the fight views at 1 too.
+The sheet is at 2 pixels a point, its fight views at 1 too. The cut writes <out>/images (the new images at 4 pixels a
+point), foes.json (what each is for, its tint and its place on the card), and foe_cards_cut.png, the check sheet: each
+image alone at full size and at 64 px, the skull's tiers, and B's cards built from the kit's slices and these images.
 """
 
 import sys
@@ -68,7 +71,7 @@ TEETH = [[(-0.115, 0.31), (-0.055, 0.31), (-0.06, 0.45), (-0.11, 0.45)],
          [(0.055, 0.31), (0.115, 0.31), (0.11, 0.45), (0.06, 0.45)]]
 
 
-def skull(t, cx, cy, s, colour, alpha=1.0, ink="#0B0913"):
+def skull(t, cx, cy, s, colour, alpha=1.0, ink="#0B0913", lit=0.2):
     """The difficulty skull, `s` points high: a dark rim round the whole, so it reads over any ground; the right half
     of the crown a facet darker, the upper left lit."""
     shape = lambda pts: t.poly([(cx + x * s, cy + y * s) for x, y in pts])   # noqa: E731
@@ -78,7 +81,7 @@ def skull(t, cx, cy, s, colour, alpha=1.0, ink="#0B0913"):
     t.paint(head - max(0.09 * s, 1.0), ink, 0.9 * alpha)
     t.paint(body, colour, alpha)
     t.paint(np.maximum(body, -(t.x - cx)), "#000000", 0.16 * alpha)
-    t.paint(np.maximum(body, (t.y - cy) + (t.x - cx) * 0.7 + 0.12 * s), "#FFFFFF", 0.2 * alpha)
+    t.paint(np.maximum(body, (t.y - cy) + (t.x - cx) * 0.7 + 0.12 * s), "#FFFFFF", lit * alpha)
 
 
 def pic(t, path, x, y, size, alpha=1.0):
@@ -89,14 +92,15 @@ def pic(t, path, x, y, size, alpha=1.0):
     t.image(rgba, x, y)
 
 
-def arrow(t, cx, cy, s, up):
+def arrow(t, cx, cy, s, up, colour=None):
+    """The type edge's arrow: up, green, the lead hits this foe harder; down, red, it hits the lead harder."""
     k = -1 if up else 1
     t.paint(t.poly([(cx, cy + k * s * 0.5), (cx + s * 0.45, cy - k * s * 0.15), (cx + s * 0.16, cy - k * s * 0.15),
                     (cx + s * 0.16, cy - k * s * 0.5), (cx - s * 0.16, cy - k * s * 0.5), (cx - s * 0.16, cy - k * s * 0.15),
                     (cx - s * 0.45, cy - k * s * 0.15)]) - 0.7, "#0B0913", 0.9)
     t.paint(t.poly([(cx, cy + k * s * 0.5), (cx + s * 0.45, cy - k * s * 0.15), (cx + s * 0.16, cy - k * s * 0.15),
                     (cx + s * 0.16, cy - k * s * 0.5), (cx - s * 0.16, cy - k * s * 0.5), (cx - s * 0.16, cy - k * s * 0.15),
-                    (cx - s * 0.45, cy - k * s * 0.15)]), UP if up else DOWN)
+                    (cx - s * 0.45, cy - k * s * 0.15)]), colour or (UP if up else DOWN))
 
 
 def bar(t, x0, y0, x1, h, share, pal, phases=0):
@@ -119,23 +123,40 @@ def bar(t, x0, y0, x1, h, share, pal, phases=0):
     t.paint(np.maximum(lit, np.abs(t.y - (y0 + 1.6)) - 0.5), "#FFE3B8", 0.55)        # its sheen along the top
     t.paint(np.maximum(lit, -((t.x - xe) + (t.y - y0) * s / h) - 1.2), "#FFFFFF", 0.6)   # its bright front
     for k in range(1, phases):
-        px = x0 + s + (x1 - x0 - s) * k / phases
-        t.paint(t.poly([(px - 0.8 + s * 0.0, y0 - 1.5), (px + 0.8, y0 - 1.5), (px + 0.8 - s, y0 + h + 1.5),
-                        (px - 0.8 - s, y0 + h + 1.5)]), pal["ink"], 0.95)
-        t.paint(t.poly([(px - 2.6, y0 - 4.5), (px + 2.6, y0 - 4.5), (px, y0 - 0.5)]), BRASS[0])
+        notch(t, x0 + s + (x1 - x0 - s) * k / phases, y0, h, s, pal["ink"])
     t.line(d, 0.75, pal["edge"], 0.9)
+
+
+def horn(t, bx, y0, size, side, metal=BRASS):
+    """One of an elite's horns: a shard swept out and up from the frame's top, its root at (bx, y0)."""
+    pts = [(bx - side * 5, y0 + 0.5), (bx + side * 4, y0 + 0.5), (bx + side * (size * 0.9), y0 - size),
+           (bx + side * (size * 0.35), y0 - size * 0.45)]
+    d = t.poly(pts)
+    t.paint(d - 1.0, "#0B0913", 0.9)
+    t.paint(d, t.ramp(metal[0], metal[1], (y0 - t.y) / size * -1 + 1))
+    t.paint(np.maximum(d, (t.x - bx) * side * -1 + (t.y - y0) * 0.2), "#FFFFFF", 0.25)
 
 
 def horns(t, x0, x1, y0, size, metal):
     """An elite's horns: two shards swept out and up from the frame's top corners."""
     for side in (-1, 1):
-        bx = x0 + 14 if side < 0 else x1 - 14
-        pts = [(bx - side * 5, y0 + 0.5), (bx + side * 4, y0 + 0.5), (bx + side * (size * 0.9), y0 - size),
-               (bx + side * (size * 0.35), y0 - size * 0.45)]
-        d = t.poly(pts)
-        t.paint(d - 1.0, "#0B0913", 0.9)
-        t.paint(d, t.ramp(metal[0], metal[1], (y0 - t.y) / size * -1 + 1))
-        t.paint(np.maximum(d, (t.x - bx) * side * -1 + (t.y - y0) * 0.2), "#FFFFFF", 0.25)
+        horn(t, x0 + 14 if side < 0 else x1 - 14, y0, size, side, metal)
+
+
+def notch(t, px, y0, h, s, ink):
+    """A keeper's phase on its bar: a dark notch through the light on the bar's slant, a brass point over it."""
+    t.paint(t.poly([(px - 0.8, y0 - 1.5), (px + 0.8, y0 - 1.5), (px + 0.8 - s, y0 + h + 1.5), (px - 0.8 - s, y0 + h + 1.5)]),
+            ink, 0.95)
+    t.paint(t.poly([(px - 2.6, y0 - 4.5), (px + 2.6, y0 - 4.5), (px, y0 - 0.5)]), BRASS[0])
+
+
+def tab(t, x0, ty, th, tw, slant):
+    """CR's gold tab: a small slanted plate, its top's light, a hairline of deeper gold."""
+    d = t.poly([(x0 + th * slant, ty), (x0 + tw + th * slant, ty), (x0 + tw, ty + th), (x0, ty + th)])
+    t.paint(d - 1.0, INK_GOLD, 0.9)
+    t.paint(d, t.ramp(GOLD[0], GOLD[1], (t.y - ty) / th))
+    t.paint(np.maximum(d, np.abs(t.y - (ty + 1.0)) - 0.45), "#FFFFFF", 0.7)
+    t.line(d, 0.6, "#A8701E", 0.8)
 
 
 def crest(t, cx, y0, size):
@@ -195,12 +216,7 @@ def cr_tab(t, x0, y0, size, value, slant=0.32):
     th = size * 0.72 + size * 0.22
     tw = size * 1.25
     ty = y0 - size * 0.11
-    pts = [(x0 + th * slant, ty), (x0 + tw + th * slant, ty), (x0 + tw, ty + th), (x0, ty + th)]
-    d = t.poly(pts)
-    t.paint(d - 1.0, INK_GOLD, 0.9)
-    t.paint(d, t.ramp(GOLD[0], GOLD[1], (t.y - ty) / th))
-    t.paint(np.maximum(d, np.abs(t.y - (ty + 1.0)) - 0.45), "#FFFFFF", 0.7)
-    t.line(d, 0.6, "#A8701E", 0.8)
+    tab(t, x0, ty, th, tw, slant)
     small = size * 0.62
     t.text(x0 + tw / 2 + th * slant / 2, ty + (th - small * 0.72) / 2, small, "CR", INK_GOLD, "CENTER", shear=0.2,
            bold=0.35)
@@ -329,5 +345,262 @@ def main():
     rs.save(sheet.px, out / "foe_cards.png")
 
 
+# --- the cut: research's pick, B (AR45, "Research's verdict on the sheet", 2026-11-19, 11:59) ---------------------------
+
+KIT_CUT = (10.0, 3.0, 10.0, 3.0)    # the kit's panel: cut 10 at its top left and foot right, 3 at the others (ui_kit.py)
+LEVEL_FAINT_B = "#D3D1DC"           # the grey tier's level on B's teal: 4.6 to 1 over the panel's top (must-fix 2)
+SLICE_INK = "#0E1D23"               # B's ink: a rim that stays dark under any tint
+TINTS = ((LEVEL_FAINT, 0.45), ("#F6F2E8", 0.0), ("#FFC83A", 0.0), ("#FF4F42", 0.0))   # a skull's tint, ImageTransparency
+
+
+def clear(w, h):
+    """A transparent tile, w by h points, at the image's own 4 pixels a point."""
+    sheet = ui.Sheet(w, h, "#000000")
+    sheet.px[:] = 0
+    return sheet.tile(0, 0, w, h)
+
+
+def luminance(code):
+    """WCAG's relative luminance of a colour code."""
+    v = np.array([int(code[i:i + 2], 16) / 255 for i in (1, 3, 5)])
+    v = np.where(v <= 0.04045, v / 12.92, ((v + 0.055) / 1.055) ** 2.4)
+    return 0.2126 * v[0] + 0.7152 * v[1] + 0.0722 * v[2]
+
+
+def contrast(a, b):
+    la, lb = sorted((luminance(a), luminance(b)), reverse=True)
+    return (la + 0.05) / (lb + 0.05)
+
+
+def images():
+    """AR45's new images in B, at 4 pixels a point; every other piece of the cards is the kit's own (the panel's
+    slices tinted in C's system colours, the type gems, the bar). Returns {name: (pixels, entry)}."""
+    ui.K = 4
+    made = {}
+
+    t = clear(18, 18)
+    skull(t, 9, 9, 16, "#F2F2F2", ink=SLICE_INK, lit=0.6)
+    made["Skull"] = (t.px.copy(), dict(
+        points=[18, 18], tint="the tier's colour (ImageColor3); its rim stays dark under any tint",
+        anchor=[9, 9], drawnAt=16,
+        use="the difficulty skull: drawn 16 points high in an 18 point box, its centre the anchor. On a Shade's and an "
+            "elite's card at 15 high (the box 16.9), a keeper's at 17 (19.1); its centre 14 from the card's left, on the "
+            "level's row. The faint tier at ImageTransparency 0.45; the others solid"))
+
+    t = clear(10, 10)
+    arrow(t, 5, 5, 9, True, colour="#FFFFFF")
+    made["EdgeArrow"] = (t.px.copy(), dict(
+        points=[10, 10], tint="green (#7CF0A4) up, red (#FF786E) down", anchor=[5, 5],
+        use="the type edge, right of the type gem, 9 points high: up as drawn; down at Rotation 180"))
+
+    t = clear(32, 32)
+    d = t.poly(ui.cut_box(0, 0, 32, 32, *KIT_CUT))
+    t.line(d, 1.6, BRASS[1])
+    t.line(d, 0.8, BRASS[0], 0.9)
+    made["CardRankEdge"] = (t.px.copy(), dict(
+        points=[32, 32], cut=[12, 12, 12, 12], tint=None,
+        use="an elite's and a keeper's edge, in place of PanelEdge: brass, the kit panel's own cut, sliced like it "
+            "(Cut 12 each side). Its own colours, never tinted"))
+
+    t = clear(20, 17)
+    horn(t, 14.6, 15.5, 14, -1)
+    left = t.px.copy()
+    made["RankHornLeft"] = (left, dict(
+        points=[20, 17], tint=None, anchor=[14.6, 15.5], drawnAt=14,
+        use="a horn's root (the anchor) on the card's top edge, 14 in from its left corner. A keeper's at 14 high, as "
+            "drawn; an elite's at 11 (scale 11/14, its anchor with it). Over the card, under nothing"))
+    made["RankHornRight"] = (np.ascontiguousarray(left[:, ::-1]), dict(
+        points=[20, 17], tint=None, anchor=[5.4, 15.5], drawnAt=14,
+        use="the left horn mirrored: its root 14 in from the card's right corner"))
+
+    t = clear(20, 17)
+    crest(t, 10, 14, 12)
+    made["RankCrest"] = (t.px.copy(), dict(
+        points=[20, 17], tint=None, anchor=[10, 14],
+        use="a keeper's crest: three brass shards, the anchor on the card's top edge at its middle"))
+
+    h, s = 15.0, 15.0 * 0.45
+    t = clear(12, 22)
+    notch(t, 8, 5, h, s, SLICE_INK)
+    made["PhaseNotch"] = (t.px.copy(), dict(
+        points=[12, 22], tint=None, anchor=[8, 5],
+        use="a keeper's phase: the anchor on the bar's top edge, at 1/3 and 2/3 of its length. Drawn for the keeper's "
+            "15 point bar with its slant (0.45 of its height); the dark cut through the light, the brass point above"))
+
+    size = 24.0
+    th, tw = size * 0.94, size * 1.25
+    t = clear(40, 25)
+    tab(t, 1.2, 1.2, th, tw, 0.32)
+    made["CrTab"] = (t.px.copy(), dict(
+        points=[40, 25], tint=None, plate=[1.2, 1.2, round(tw + th * 0.32, 2), round(th, 2)],
+        use="CR's gold tab, drawn for a 24 point number: its plate's left, top, width and height in the box. It scales "
+            "with the number (a 14 point number takes 14/24). \"CR\" is the game's text over it: dark ink #4A2A08, "
+            "bold, 0.62 of the number's size, centred on the plate; the number right of it in ivory #F7F1E3, upright "
+            "and wide apart, with AR44's plain take's outline and shadow"))
+    return made
+
+
+def lay_slice(page, px, cut, x, y, w, h, pad=0.0, tint=None, alpha=1.0):
+    """A kit slice (4 pixels a point) drawn out to w by h points onto a 2 pixel a point page, as the engine slices it."""
+    import ui_kit as uk
+    big = uk.stretch(px, cut, w + 2 * pad, h + 2 * pad).copy()
+    if tint is not None:
+        big[..., :3] *= uk.shade(tint, big.shape[0])
+    big[..., 3] *= alpha
+    rs.paste(page, rs.shrink(big, 0.5), round((x - pad) * 2), round((y - pad) * 2))
+
+
+def put(page, px, x, y, scale=1.0, tint=None, alpha=1.0, turn=False):
+    """An image (4 pixels a point) at `scale`, its box's top left at (x, y) points, onto the 2 pixel a point page."""
+    im = rs.shrink(px, 0.5 * scale).copy()
+    if turn:
+        im = np.ascontiguousarray(im[::-1, ::-1])
+    if tint is not None:
+        im[..., :3] *= np.array(rs.rgb(tint), np.float32)
+    im[..., 3] *= alpha
+    rs.paste(page, im, round(x * 2), round(y * 2))
+
+
+def built(sheet, made, kit, x, y, kind, tier, name, level, share, health, gem, edge):
+    """B's target card as the game builds it: the kit's slices in C's system colours, then AR45's images."""
+    w, h = {"Shade": (216, 42), "Elite": (216, 42), "Keeper": (300, 50)}[kind]
+    page, pal = sheet.px, C_SYS
+    lay_slice(page, kit["PanelShadow"], (28,) * 4, x, y, w, h, pad=16)
+    lay_slice(page, kit["PanelFill"], (12,) * 4, x, y, w, h, tint=pal["panel"], alpha=0.94)
+    lay_slice(page, kit["PanelFacet"], (36, 36, 12, 12), x, y, w, h, tint=pal["facet"], alpha=0.07)
+    if kind == "Shade":
+        lay_slice(page, kit["PanelEdge"], (12,) * 4, x, y, w, h, tint=pal["edge"], alpha=0.95)
+    else:
+        lay_slice(page, made["CardRankEdge"][0], (12,) * 4, x, y, w, h)
+    lay_slice(page, kit["PanelGlint"], (12,) * 4, x, y, w, h, tint=pal["glint"])
+    big = kind == "Keeper"
+    if kind != "Shade":
+        sc = 1.0 if big else 11 / 14
+        put(page, made["RankHornLeft"][0], x + 14 - 14.6 * sc, y - 15.5 * sc, sc)
+        put(page, made["RankHornRight"][0], x + w - 14 - 5.4 * sc, y - 15.5 * sc, sc)
+    if big:
+        put(page, made["RankCrest"][0], x + w / 2 - 10, y - 14)
+    name_size, row = (16, y + 7) if big else (14, y + 6)
+    s = 17 if big else 15
+    colour, see = TINTS[tier]
+    sc = s / 16
+    put(page, made["Skull"][0], x + 14 - 9 * sc, row + name_size * 0.36 - 9 * sc, sc, colour, 1 - see)
+    t = sheet.tile(x, y - 2, w, h + 4)
+    lv = f"Lv {level}"
+    t.text(25, row - y + 2, name_size, lv, LEVEL_FAINT_B if tier == 0 else colour, bold=0.25, layer="outlined")
+    t.text(25 + len(lv) * name_size * 0.5 + 7, row - y + 2, name_size, name, pal["text"], bold=0.12, layer="outlined")
+    gx = x + w - 22
+    gem_px = rs.load(KIT / f"Gem{gem}.png")
+    put(page, gem_px, gx - 7, row - 2.5, 15 * 4 / gem_px.shape[1])
+    if edge is not None:
+        put(page, made["EdgeArrow"][0], gx + 12 - 5, row + 5 - 5, 1.0, UP if edge else DOWN, turn=not edge)
+    bh = 15 if big else 13
+    by = y + h - bh - 5
+    bt = sheet.tile(x, by - 6, w, bh + 8)
+    bar(bt, 5, 6, w - 5, bh, share, pal, phases=0)
+    if big:
+        for k in (1, 2):
+            px_ = 5 + bh * 0.45 + (w - 10 - bh * 0.45) * k / 3
+            put(page, made["PhaseNotch"][0], x + px_ - 8, by - 5)
+    # must-fix 1: the numbers stand on a dark band, so the light's front and the notches pass under them
+    nw = len(health) * 11 * 0.52 + 14
+    band = sheet.tile(x + w / 2 - nw / 2 - 4, by, nw + 8, bh)
+    bd = band.poly([(4 + bh * 0.3, 0.5), (nw + 4, 0.5), (nw + 4 - bh * 0.3, bh - 0.5), (4, bh - 0.5)])
+    band.paint(bd, pal["channel"], 0.72)
+    sheet.tile(x, by, w, bh).text(w / 2, (bh - 11 * 0.72) / 2, 11, health, IVORY, "CENTER", bold=0.1, layer="outlined")
+    return w, h
+
+
+def cut(out):
+    made = images()
+    folder = out / "images"
+    folder.mkdir(parents=True, exist_ok=True)
+    listing = {}
+    for name, (px, entry) in made.items():
+        rs.save(rs.bleed(px), folder / f"{name}.png")
+        listing[name] = dict(file=f"images/{name}.png", pixels=[px.shape[1], px.shape[0]], **entry)
+    ratios = {f"{code} over {pal}": round(contrast(code, pal), 2)
+              for code in (LEVEL_FAINT_B, "#F6F2E8", "#FFC83A", "#FF4F42") for pal in C_SYS["panel"]}
+    import json
+    (out / "foes.json").write_text(json.dumps(dict(
+        pixelsPerPoint=4, palette="C_SYS (AR40's C, the system panel), research's pick B",
+        levels=dict(colours=[LEVEL_FAINT_B, "#F6F2E8", "#FFC83A", "#FF4F42"], contrast=ratios,
+                    note="each over B's panel, top and foot; every level wears the dark outline of AR44's plain take"),
+        images=listing), indent=1), encoding="utf-8")
+    kit = {n: rs.load(KIT / f"{n}.png") for n in ("PanelShadow", "PanelFill", "PanelFacet", "PanelEdge", "PanelGlint")}
+    ui.K = 2
+    W, H = 1100, 860
+    sheet = ui.Sheet(W, H, "#101117")
+    head = sheet.tile(0, 0, W, 90)
+    ink, soft = "#EDE6D6", "#B4AC9C"
+    head.text(16, 16, 20, "AR45, cut in B: the foes' cards' new images (research's pick, 11:59), for the content check and Faber",
+              ink, bold=0.2)
+    head.text(16, 44, 13, "Each image as it ships at 4 pixels a point over dark, then at 64 px over dark. Everything else on the "
+                          "cards is the kit's own: the panel's slices in C's system colours, the type gems, the bar.", soft)
+    # 1. each alone, full size, then 64 px
+    x, y = 16, 76
+    sheet.tile(0, y, W, 20).text(16, 0, 14, "1. Each alone: as it ships (4 px a point, drawn here at 1 px a pixel), and at 64 px", ink)
+    y += 24
+    for name, (px, entry) in made.items():
+        rs.paste(sheet.px, px, round(x * 2), round(y * 2))
+        rs.paste(sheet.px, scaled(px, 64 / max(px.shape[:2])), round(x * 2), round((y + px.shape[0] / 2 + 8) * 2))
+        sheet.tile(x, y + px.shape[0] / 2 + 8 + 36, 120, 14).text(0, 0, 11, name, soft)
+        x += max(px.shape[1] / 2, 36) + 26
+    y += 130
+    # 2. the skull's four tiers, and the arrow both ways
+    sheet.tile(0, y, W, 20).text(16, 0, 14, "2. The skull tinted for its four tiers at 64 px and at 16 points (2 and 1 px a point), "
+                                            "over B's panel; the arrow up and down", ink)
+    y += 24
+    plate = sheet.tile(16, y, 620, 80)
+    plate.paint(plate.poly(ui.cut_box(0, 0, 620, 80, 10, 3, 10, 3)), plate.ramp(C_SYS["panel"][0], C_SYS["panel"][1],
+                                                                                  plate.y / 80))
+    for k, (colour, see) in enumerate(TINTS):
+        sk = made["Skull"][0]
+        put(sheet.px, sk, 26 + k * 90, y + 6, 64 / sk.shape[0] * 2, colour, 1 - see)
+        put(sheet.px, sk, 400 + k * 34, y + 14, 1.0, colour, 1 - see)
+        small = rs.shrink(sk, 0.25).copy()                  # 1 pixel a point, drawn twice the size to be seen
+        small[..., :3] *= np.array(rs.rgb(colour), np.float32)
+        small[..., 3] *= 1 - see
+        rs.paste(sheet.px, np.repeat(np.repeat(small, 2, 0), 2, 1), round((400 + k * 34) * 2), round((y + 44) * 2))
+    put(sheet.px, made["EdgeArrow"][0], 560, y + 16, 1.0, UP)
+    put(sheet.px, made["EdgeArrow"][0], 580, y + 16, 1.0, DOWN, turn=True)
+    sheet.tile(400, y + 64, 240, 14).text(0, 0, 10, "16 pt at 2 px a point; below, at 1 (doubled)", soft)
+    y += 100
+    # 3. the cards, built from the kit's slices and these images
+    sheet.tile(0, y, W, 20).text(16, 0, 14, "3. B's cards built from the kit's slices and these images: a Shade (yellow), an elite "
+                                            "(red), a keeper (white), and the faint tier; the numbers on a dark band (must-fix 1)", ink)
+    y += 40
+    built(sheet, made, kit, 16, y, "Shade", 2, "Brawler", 12, 0.62, "679/1,096", "Strength", True)
+    built(sheet, made, kit, 260, y, "Elite", 3, "Brawler", 14, 0.4, "1,204/3,010", "Technique", False)
+    built(sheet, made, kit, 504, y, "Shade", 0, "Brawler", 9, 0.95, "412/433", "Agility", True)
+    built(sheet, made, kit, 760, y, "Keeper", 1, "The Lamplighter", 15, 0.73, "11,284/15,457", "Intelligence", None)
+    y += 70
+    # 4. CR's tab, built: the image, "CR" and the number as the game's text
+    sheet.tile(0, y, W, 20).text(16, 0, 14, "4. CR's tab built: the image, \"CR\" and the number as the game's text (upright), "
+                                            "for a 14, 18 and 24 point number", ink)
+    y += 30
+    tx = 16
+    th, tw = 24 * 0.94, 24 * 1.25
+    for size in (14, 18, 24):
+        sc = size / 24
+        put(sheet.px, made["CrTab"][0], tx, y, sc)
+        pw, ph = (tw + th * 0.32) * sc, th * sc
+        tt = sheet.tile(tx, y, 200, 30)
+        tt.text(1.2 * sc + pw / 2, 1.2 * sc + (ph - size * 0.62 * 0.72) / 2, size * 0.62, "CR", INK_GOLD, "CENTER", bold=0.35)
+        tt.text(1.2 * sc + pw + size * 0.3, 1.2 * sc + (ph - size * 0.72) / 2, size, "29,070", IVORY, layer="ivory", bold=0.06)
+        tx += 260
+    # the contrast of each tier's level over the panel
+    y += 50
+    sheet.tile(0, y, W, 20).text(16, 0, 12, "Each level's colour over B's panel, top / foot: " + "; ".join(
+        f"{code} {contrast(code, C_SYS['panel'][0]):.1f} / {contrast(code, C_SYS['panel'][1]):.1f}"
+        for code in (LEVEL_FAINT_B, "#F6F2E8", "#FFC83A", "#FF4F42")) + " (to 1). Red is carried by its dark outline.", soft)
+    finish(sheet)
+    rs.save(sheet.px[:round((y + 30) * 2)], out / "foe_cards_cut.png")
+
+
 if __name__ == "__main__":
-    main()
+    rest = sys.argv[sys.argv.index("--") + 1:] if "--" in sys.argv else []
+    if len(rest) > 1 and rest[1] == "cut":
+        cut(bl.out_dir())
+    else:
+        main()

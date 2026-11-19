@@ -1,0 +1,168 @@
+{
+ "pixelsPerPoint": 4,
+ "palette": "C_SYS (AR40's C, the system panel), research's pick B",
+ "levels": {
+  "colours": [
+   "#D3D1DC",
+   "#F6F2E8",
+   "#FFC83A",
+   "#FF4F42"
+  ],
+  "contrast": {
+   "#D3D1DC over #34606C": 4.59,
+   "#D3D1DC over #2A4E5A": 5.96,
+   "#F6F2E8 over #34606C": 6.19,
+   "#F6F2E8 over #2A4E5A": 8.04,
+   "#FFC83A over #34606C": 4.47,
+   "#FFC83A over #2A4E5A": 5.81,
+   "#FF4F42 over #34606C": 2.12,
+   "#FF4F42 over #2A4E5A": 2.76
+  },
+  "note": "each over B's panel, top and foot; every level wears the dark outline of AR44's plain take"
+ },
+ "images": {
+  "Skull": {
+   "file": "images/Skull.png",
+   "pixels": [
+    72,
+    72
+   ],
+   "points": [
+    18,
+    18
+   ],
+   "tint": "the tier's colour (ImageColor3); its rim stays dark under any tint",
+   "anchor": [
+    9,
+    9
+   ],
+   "drawnAt": 16,
+   "use": "the difficulty skull: drawn 16 points high in an 18 point box, its centre the anchor. On a Shade's and an elite's card at 15 high (the box 16.9), a keeper's at 17 (19.1); its centre 14 from the card's left, on the level's row. The faint tier at ImageTransparency 0.45; the others solid"
+  },
+  "EdgeArrow": {
+   "file": "images/EdgeArrow.png",
+   "pixels": [
+    40,
+    40
+   ],
+   "points": [
+    10,
+    10
+   ],
+   "tint": "green (#7CF0A4) up, red (#FF786E) down",
+   "anchor": [
+    5,
+    5
+   ],
+   "use": "the type edge, right of the type gem, 9 points high: up as drawn; down at Rotation 180"
+  },
+  "CardRankEdge": {
+   "file": "images/CardRankEdge.png",
+   "pixels": [
+    128,
+    128
+   ],
+   "points": [
+    32,
+    32
+   ],
+   "cut": [
+    12,
+    12,
+    12,
+    12
+   ],
+   "tint": null,
+   "use": "an elite's and a keeper's edge, in place of PanelEdge: brass, the kit panel's own cut, sliced like it (Cut 12 each side). Its own colours, never tinted"
+  },
+  "RankHornLeft": {
+   "file": "images/RankHornLeft.png",
+   "pixels": [
+    80,
+    68
+   ],
+   "points": [
+    20,
+    17
+   ],
+   "tint": null,
+   "anchor": [
+    14.6,
+    15.5
+   ],
+   "drawnAt": 14,
+   "use": "a horn's root (the anchor) on the card's top edge, 14 in from its left corner. A keeper's at 14 high, as drawn; an elite's at 11 (scale 11/14, its anchor with it). Over the card, under nothing"
+  },
+  "RankHornRight": {
+   "file": "images/RankHornRight.png",
+   "pixels": [
+    80,
+    68
+   ],
+   "points": [
+    20,
+    17
+   ],
+   "tint": null,
+   "anchor": [
+    5.4,
+    15.5
+   ],
+   "drawnAt": 14,
+   "use": "the left horn mirrored: its root 14 in from the card's right corner"
+  },
+  "RankCrest": {
+   "file": "images/RankCrest.png",
+   "pixels": [
+    80,
+    68
+   ],
+   "points": [
+    20,
+    17
+   ],
+   "tint": null,
+   "anchor": [
+    10,
+    14
+   ],
+   "use": "a keeper's crest: three brass shards, the anchor on the card's top edge at its middle"
+  },
+  "PhaseNotch": {
+   "file": "images/PhaseNotch.png",
+   "pixels": [
+    48,
+    88
+   ],
+   "points": [
+    12,
+    22
+   ],
+   "tint": null,
+   "anchor": [
+    8,
+    5
+   ],
+   "use": "a keeper's phase: the anchor on the bar's top edge, at 1/3 and 2/3 of its length. Drawn for the keeper's 15 point bar with its slant (0.45 of its height); the dark cut through the light, the brass point above"
+  },
+  "CrTab": {
+   "file": "images/CrTab.png",
+   "pixels": [
+    160,
+    100
+   ],
+   "points": [
+    40,
+    25
+   ],
+   "tint": null,
+   "plate": [
+    1.2,
+    1.2,
+    37.22,
+    22.56
+   ],
+   "use": "CR's gold tab, drawn for a 24 point number: its plate's left, top, width and height in the box. It scales with the number (a 14 point number takes 14/24). \"CR\" is the game's text over it: dark ink #4A2A08, bold, 0.62 of the number's size, centred on the plate; the number right of it in ivory #F7F1E3, upright and wide apart, with AR44's plain take's outline and shadow"
+  }
+ }
+}

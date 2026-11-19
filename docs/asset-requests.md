@@ -14387,6 +14387,51 @@ Labelled SIMULATION, not play: `tools/balance/sim.py`'s model, 6,000 leads (leve
 - **Faber's part, after the pick:** one switch read from the stage's difficulty, `Config.Shades` holding the Hard look's keys, applied at spawn.
 - **Done when:** research picks a direction from the captures, and the director's pick when present.
 
+### The block: A, B and C in the street (Modulo, 2026-11-19, 17:03 to 17:41 by the clock)
+
+- **The sheet:** `build/scratch/modulo/ember/hard_ember.png`.
+  - Each row is one look: Normal, then A, B and C. In each row:
+    - the whole frame at the phone's pixels;
+    - the near pair and the side Shade at two times;
+    - the Lamplighter at full size.
+  - The last row is the burst at 27 and 29, Normal beside Hard.
+  - The full frames are beside it: `hard_ember_<look>.png` and `hard_ember_keeper_<look>.png`.
+- **How it's made:** `tools/blender/hard_ember.py`.
+  - The real Brawler (three of them) and the Lamplighter, in their delivered clips at the game's glow (`Config.Shades`).
+  - They are laid into Faber's day capture of the street in a fight (TR24's `tr24-07-row-fight.jpg`) through that capture's own camera. Its horizon puts the camera 5.5° down, at 70° and 12.5 studs.
+  - Lit as `lighting.json`'s Day, with bloom at the day's 2.2 threshold.
+  - Stand-ins: the cracks' pattern, the motes, the heat's numbers and the contact shadows.
+- **The three directions as made:**
+  - **A:** a Hard map pair for each mask. The cuts are painted the picker's bloom, `#E85A44`, and the paper's faint glow is off. The tint and strength stay as today.
+    - Round one tried a coral glow tint on the white cuts, and it drew pink by day: the cut's own white, lit by the sun, mixes in.
+    - With the paper's glow tinted as well, the whole mask blushed.
+  - **B:** A, plus ember veins up the coat and legs, and the burst's flame tinted `#FFB4A0` (its `ImageColor3`).
+    - Each vein is one smooth line from the feet, the hem and the cuffs, full there and gone by the chest. Across it, a white-hot core `#FFF4EE` falls to `#FF4739` at its edges (the picker's ramp), at a strength of 7.
+    - The paper scraps keep their cream.
+    - The Shade has no cracks today. A cell-network first try drew round spots at its corners, which could read as holes, so the veins are a noise's ridge line.
+    - The content check (17:38) blocked the first B: flat red, broken dashes sat near scratches, and coral scraps flying from where the body was could read as parts. This is the redraw.
+  - **C:** B, plus a low ember light under each (`#FF8A6A`, lighting the hem and the paving) and five motes behind the legs.
+- **What the game would need, for Faber to weigh after the pick:**
+  - **A:** one more SurfaceAppearance per mask (the Brawler's, which the elite wears twice, and the Lamplighter's head), swapped at spawn. Four images.
+  - **B's veins:** a glow beside the type's. The body's one EmissiveTint is its type colour, which would turn the veins red on the Brawler and magenta on the purple keeper. So they need either a thin shell per body piece with its own surface, or the body's own map pair, taking the type's hue.
+  - **B's burst:** one colour on the flame's pictures on Hard, never on the scraps. The self-test checks it white today (`Cases.luau:2692`).
+  - **C:** a light and an emitter per Hard foe, inside the street's light budget.
+- **My read (for research's pick):**
+  - At the phone's pixels each step is small, and A alone is the subtlest: the pack's grins go red-hot.
+  - B's veins carry the Hard read on the body.
+  - The burst's tint reads most of all.
+  - C's heat is faint by day, as asked, and adds little for its lights.
+  - On the red Brawler, the ember's coral sits near the body's own red edges, so the veins' white cores and the grin carry it, not the hue.
+  - I'd pick B, with C's heat left out.
+- **Content check:** BLOCK on B and C at 17:38 (A passed), then PASS on the redraw at 17:43, as an internal study.
+  - The conditions for the build:
+    - the veins keep their white core, as continuous lines, never flat red, dashed, pointed or blobbed;
+    - nothing runs down from the eyes or the grin;
+    - C's heat is a real light that moves with the foe, never a decal or a patch, never a hard edge or dark red;
+    - the burst's paper stays cream on every difficulty;
+    - the built Shade and Lamplighter on Hard get their own check, at full size and at 64 px over dark, with the burst's frames.
+  - The checker's taste note, for the pick: the white-cored veins read nearer electric arcs than an ember's glow.
+
 ## Later, by ground
 
 The rest of ground 1 (Kirra in AR10, Watt in AR11; then Sable, Marigold, Crane), then each ground's Voidkin in `docs/roster.md`'s order. **The machines** (Gantry, Bulwark, Ironhymn, Shiomaru, Aegir) share one custom rig, taller than a player, with its own clip family: the first of them is timed like AR1, because a custom rig is a different cost.

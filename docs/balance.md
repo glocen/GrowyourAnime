@@ -36,7 +36,7 @@ Shares of a full launch build's stat points, at level 60:
 | Jewels | 7 | elites, keepers, the Tower |
 | Research | 3 | Research Points |
 
-- **What each ground makes available** is `tools/balance/seeds.json`, "available". Emblems at Lantern Row are 0.10 of full, down from 0.15 (research, 2026-11-19, 20:55): one Uncommon emblem a socket gives 6 to 12%, so gear carries the early power. The tables below come from before that change, which moves a level-10 build by under 1%.
+- **What each ground makes available** is `tools/balance/seeds.json`, "available". Emblems at Lantern Row are 0.10 of full, down from 0.15 (research, 2026-11-19, 20:55): one Uncommon emblem a socket gives 6 to 12%, so gear carries the early power. The tables below come from before that change, which moves a Lantern Row build by about 1% (0.55 of its about 57 share points, worked by hand).
 - **Rarity** multiplies a Voidkin's own base only, from 1.00 for a Common to 1.50 for a Mythical. Since the base is about a third of a build, a Mythical at a full build has about 19% more of each stat than a Common at a full build.
 - **Skill points** come later, inside a skill tree (`docs/design.md`, "Skill points"). None are in the game now.
 - **Class** sets a Voidkin's own points by its shape and its Main ("Basic Attributes", below). It doesn't touch gear, but for the weapon pair each class holds.

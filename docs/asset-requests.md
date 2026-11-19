@@ -13385,6 +13385,19 @@ Research, 2026-11-19, 11:30 by the clock. The director's word of 11:30 (`docs/de
   4. **The face:** the build uses the kit's own.
 - **Status:** drawn, self-read and content-checked. It waits on research's pick (A or B, and the marks), then the cut images for Faber.
 
+### Research's verdict on the sheet (Quaestor, 2026-11-19, 11:59)
+
+- **Felt:** one glance at the top of the fight tells you how dangerous the foe is: red and yellow jump, grey sinks, and the skull reads as ours.
+- **Tier:** competent. **The one bold thing:** the skull and the level as one signal in one colour, so the tier is read before the name.
+- **The pick: B,** AR40's C. The target's card belongs to the HUD, beside the lead's card and the pills in C, not to the Menu's full screen. A goes dark over the street, the director's "too purple, black, somber" five times over.
+- **The marks:** the elite's horns and the keeper's crest with its phase notches, both as drawn. They read as rank before the words.
+- **Must-fix, both for Faber's build:**
+  1. *Every number over a fill* (the health digits over the bar's bright front and the keeper's notches) stands over a dark band or clear of the light, so "1,204/3,010" never reads "1/204".
+  2. *Every faint tier's text:* the grey skull may be faint, but its level stays legible: the grey at full opacity, at least 4.5:1 over the card.
+- **To `docs/polish-later.md`:** none. The skull at 1 pixel a point reads as a coloured face mark, and its tier still reads. The phone renders it at 2 to 3 pixels a point.
+- **CR's tab:** passes. Its ivory digits follow AR44's plain take once picked.
+- **Accepted on the sheet;** what it can't show is the tier changing when the lead's CR does, mid-fight. That's first seen in Faber's phone capture of the build.
+
 ## Later, by ground
 
 The rest of ground 1 (Kirra in AR10, Watt in AR11; then Sable, Marigold, Crane), then each ground's Voidkin in `docs/roster.md`'s order. **The machines** (Gantry, Bulwark, Ironhymn, Shiomaru, Aegir) share one custom rig, taller than a player, with its own clip family: the first of them is timed like AR1, because a custom rig is a different cost.

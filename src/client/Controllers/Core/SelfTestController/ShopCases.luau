@@ -17,6 +17,7 @@ local Hud = require(Shared.Rules.Hud)
 local Odds = require(Shared.Rules.Odds)
 local Shop = require(Shared.Rules.Shop)
 local ShopConfig = require(Shared.Config.Shop)
+local HudConfig = require(Shared.Config.Hud)
 local Main = script.Parent.Parent.Parent.Main
 local ShopController = require(Main.ShopController)
 local ProfileController = require(script.Parent.Parent.ProfileController)
@@ -112,6 +113,25 @@ function ShopCases.Cases(): { any }
 				t.Check("Featured: its rarity", said("Rarity", "Featured") == piece.Rarity)
 				t.Check("Featured: its stats", (said("Stats", "Featured") or "") ~= "", said("Stats", "Featured"))
 				t.Check("Shards: the Standard shard", said("Name", "Shards") == "Standard shard")
+				-- Research's 15:56: the offer is the hero, the shard the same at its own size, with no rarity under it, both on
+				-- the bag's room.
+				local function heroOf(panel: string): (Frame?, number)
+					local root = ShopScreen.Find(panel)
+					local found = if root then root:FindFirstChild("Hero") else nil
+					local name = if root then root:FindFirstChild("Name") else nil
+					if found and found:IsA("Frame") and name and name:IsA("GuiObject") and found:FindFirstChild("Picture", true) and found:FindFirstChild("Light", true) then
+						local under = name.AbsolutePosition.Y >= found.AbsolutePosition.Y + found.AbsoluteSize.Y - 1
+						return found, if under then found.Size.X.Offset else -found.Size.X.Offset
+					end
+					return nil, 0
+				end
+				local featHero, featSide = heroOf("Featured")
+				local shardHero, shardSide = heroOf("Shards")
+				local least = HudConfig.Shop.Hero.Least
+				t.Check("Featured: its picture is the hero, large on its light, its words under it", featHero ~= nil and featSide >= least, featSide)
+				t.Check("Shards: the shard's the same at its own size", shardHero ~= nil and shardSide >= least and shardSide <= featSide, shardSide)
+				t.Check("Shards: no rarity under the shard (its odds say it)", said("Rarity", "Shards") == nil, said("Rarity", "Shards"))
+				t.Check("the screen stands on the bag's room", ShopScreen.Find("Room") ~= nil)
 				t.Check("the foot: how a stock works", said("Foot") == `A new stock every {ShopConfig.Period // 60} minutes, in every server. Your counts are your own.`, said("Foot"))
 				local shardLine = shelf.Lines.Shard :: Shop.Line
 				local featLine = shelf.Lines.Featured :: Shop.Line

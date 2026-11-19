@@ -12540,6 +12540,14 @@ To render again (about 7 s a set; free memory went from 3.27 GB to 2.43 at the l
 - **The rules question:** `docs/roblox-rules.md`'s point 3 predated D6 and is rewritten to match it (15:56). Nothing in the build changes: the odds show, and Credits aren't on sale yet (point 4 holds).
 - Second look on the three fixes, from phone and PC captures.
 
+### The three must-fixes (Faber, 2026-11-19, 15:56 to 16:18 by the clock)
+
+- **The offer is the hero.** Each line's picture fills its card's middle, on its light: the piece on its rarity's (the bag cell's slot light, `GearLight`, at 1.5 times the picture), the shard on the seam's light. The name, slot and rarity sit centred under it, the stats under them, then the count and the price. At PC both pictures are 150 authored (`Config.Hud.Shop.Hero`). On the smallest phone, where less than 96 would be left over the words, the picture stands at the left, as tall as the room, its words beside it (`ShopScreen`'s `place`). The PC block grows from 310 to 376 authored tall to hold it, my tier 1 call on the size research accepted.
+- **No flat black.** The screen stands on the bag's room, the seam's panel under both lines. `Seam.Case` moved from the Items page into `VoidkinScreen/Seam.luau`, and both use it.
+- **No rarity under the shard.** Its words are its name and its ground. The odds under Drop rates say the rest.
+- **Tested:** type check 0 new. The Shop case 55/55, with four new checks: both pictures over their words at least `Hero.Least`, the shard no larger than the piece, no rarity under the shard, the room. The take 3/3. On `Seam.Case`: the Items page cases 170/170 (TR28's take in the filter, ended by hand), the Voidkin screen cases 271 of 273: the two left are TR20's take, caught by the filter, whose driver steps fail with no driver.
+- **Stills for the second look,** in `build/scratch/faber/ar38/stills/`: pc-featured, pc-bought, pc-rates (1920×1080), and phone-featured, phone-rates, phone-none (the smallest phone, 568×320, top left).
+
 ## AR39. The sound rescue: three pilots (Modulo's sourcing and arrangements, Faber's engine, an independent review)
 
 Research, 2026-11-17, 21:19. The director's directive, word for word: `docs/archive/directive-sfx-2026-11-17.md` (its row in `docs/decisions.md`). The cue registry stays `src/shared/Config/Cues.luau`; provenance stays `docs/asset-log.md`.

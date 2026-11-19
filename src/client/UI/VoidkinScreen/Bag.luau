@@ -997,12 +997,7 @@ function Bag.Build(context: Context): (() -> boolean)?
 	local taps = context.Taps
 	-- The page's room: the seam's panel over the screen's backing, its top a lit edge, laid under the stage so the
 	-- figure stands on it.
-	local case = plain("Case", context.Behind, at.Case.X, at.Case.Y, at.Case.Wide, at.Case.Tall)
-	case.BackgroundColor3 = Color3.new(1, 1, 1)
-	case.BackgroundTransparency = 1 - Seam.Alpha
-	ramp(case, Seam.Panel)
-	round(case, SEAM.Room.Corner)
-	Seam.Edge(case, "Top", SEAM.Room.Corner, 0, at.Case.Wide - SEAM.Room.Corner * 2, false, SEAM.Edges.Room)
+	Seam.Case(context.Behind, "Case", at.Case.X, at.Case.Y, at.Case.Wide, at.Case.Tall)
 	-- The strip: the five kinds' row, scrolling, then the sort or, in Chests, the salvage's steps (AR30's make).
 	local data = context.View :: any
 	local right: TextButton

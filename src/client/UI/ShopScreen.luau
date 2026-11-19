@@ -106,32 +106,52 @@ local function round(on: GuiObject, radius: number)
 	corner.Parent = on
 end
 
--- A picture's well: the seam's well, rimmed in its rarity's colour (a line's frame, as the bag's cells).
-local function well(parent: Instance, x: number, y: number, rarity: string): Frame
-	local side = SHOP.Well
-	local made = box("Well", parent, UDim2.fromOffset(x, y), UDim2.fromOffset(side, side))
-	made.BackgroundTransparency = 0
-	made.BackgroundColor3 = Color3.new(1, 1, 1)
-	round(made, Theme.Size.Corner)
-	local fall = Instance.new("UIGradient")
-	fall.Color = ColorSequence.new(Seam.Well[1], Seam.Well[2])
-	fall.Rotation = 90
-	fall.Parent = made
-	local rim = Instance.new("UIStroke")
-	rim.Color = P.Rim[rarity] or P.Line
-	rim.Thickness = SHOP.Rim
-	rim.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
-	rim.Parent = made
-	return made
+-- A line's hero: its picture large on its light (the bag's slot light, as its cells wear it, a size larger), in a
+-- square of `side` at x, y of its panel.
+local function hero(panel: Frame, x: number, y: number, side: number, image: string?, words: string, light: Color3, strength: number): Frame
+	local holder = box("Hero", panel, UDim2.fromOffset(x, y), UDim2.fromOffset(side, side))
+	local glow = side * SHOP.Hero.Light
+	Skin.Lay(holder, "GearLight", { Name = "Light", X = (side - glow) / 2, Y = (side - glow) / 2, Scale = glow / UIKit.Images.GearLight.Points.X, Tint = light, Alpha = strength, Z = 1 })
+	if image then
+		local picture = Skin.Icon(holder, image, side / 2, side / 2, side, nil, 2)
+		picture.Name = "Picture"
+	else
+		label({ Name = "Kind", Size = Theme.Text.Caption, Colour = P.Soft, Align = Enum.TextXAlignment.Center, Wrap = true, Parent = holder }, words)
+	end
+	return holder
 end
 
--- A line's three words beside its well: its name, what it is, its rarity in its colour.
-local function titled(parent: Instance, x: number, y: number, name: string, what: string, rarity: string)
+-- A line's words: its name, what it is, then its rarity in its colour when it has one (a shard's outcome is its odds',
+-- never a word under it). Centred under its hero, or at the left beside it. Their height, authored.
+local function titled(parent: Instance, x: number, y: number, wide: number, centred: boolean, name: string, what: string, rarity: string?): number
 	local row = SHOP.Row
-	local wide = UDim2.new(1, -(x + Theme.Size.Pad), 0, row + 4)
-	label({ Name = "Name", Size = Theme.Text.Body, Font = Theme.Font.Strong, Colour = P.Text, Box = wide, Position = UDim2.fromOffset(x, y), Parent = parent, Truncate = true }, name)
-	label({ Name = "What", Size = Theme.Text.Caption, Colour = P.Soft, Box = UDim2.new(1, -(x + Theme.Size.Pad), 0, row), Position = UDim2.fromOffset(x, y + row + 4), Parent = parent, Truncate = true }, what)
-	label({ Name = "Rarity", Size = Theme.Text.Caption, Colour = P.Rarity[rarity] or P.Soft, Box = UDim2.new(1, -(x + Theme.Size.Pad), 0, row), Position = UDim2.fromOffset(x, y + row * 2 + 4), Parent = parent }, rarity)
+	local align = if centred then Enum.TextXAlignment.Center else Enum.TextXAlignment.Left
+	label({ Name = "Name", Size = Theme.Text.Body, Font = Theme.Font.Strong, Colour = P.Text, Align = align, Box = UDim2.fromOffset(wide, row + 4), Position = UDim2.fromOffset(x, y), Parent = parent, Truncate = true }, name)
+	label({ Name = "What", Size = Theme.Text.Caption, Colour = P.Soft, Align = align, Box = UDim2.fromOffset(wide, row), Position = UDim2.fromOffset(x, y + row + 4), Parent = parent, Truncate = true }, what)
+	if rarity == nil then
+		return row * 2 + 4
+	end
+	label({ Name = "Rarity", Size = Theme.Text.Caption, Colour = P.Rarity[rarity] or P.Soft, Align = align, Box = UDim2.fromOffset(wide, row), Position = UDim2.fromOffset(x, y + row * 2 + 4), Parent = parent }, rarity)
+	return row * 3 + 4
+end
+
+-- Where a line's hero stands between `top` and `bottom` of a panel `wide` across, `words` tall under it: over its words,
+-- centred, as large as the room leaves up to Hero.Most. Where that falls under Hero.Least (the smallest phone), it
+-- stands at the left, as tall as the room, its words at its right.
+type Place = { Side: number, X: number, Y: number, Under: boolean }
+local function place(wide: number, top: number, bottom: number, words: number): Place
+	local H = SHOP.Hero
+	local room = bottom - top
+	local under = math.floor(math.min(room - words - H.Gap, H.Most, wide - Theme.Size.Pad * 2))
+	if under >= H.Least then
+		return { Side = under, X = math.floor((wide - under) / 2), Y = top + math.floor((room - under - H.Gap - words) / 2), Under = true }
+	end
+	return { Side = math.floor(math.min(room, H.Most, wide * H.Share)), X = Theme.Size.Pad, Y = top, Under = false }
+end
+
+-- How many rows `said` takes in a wrapped label `wide` across (a margin for where the words break).
+local function rows(made: TextLabel, said: string, wide: number): number
+	return math.max(1, math.ceil(Text.Wide(made, said) * SHOP.Hero.Break / math.max(wide, 1)))
 end
 
 -- A panel's head: its name at the left, its note at the right.
@@ -239,7 +259,7 @@ end
 
 -- The featured piece apart: its picture, name, slot and whom it fits, rarity, stats, then its foot. None this stock:
 -- where to look for one.
-local function featured(panel: Frame, view: Profile.View, shelf: Shop.Shelf, on: On)
+local function featured(panel: Frame, wide: number, tall: number, view: Profile.View, shelf: Shop.Shelf, on: On)
 	local pad, gap = Theme.Size.Pad, Theme.Size.Gap
 	head(panel, "Featured", `about 1 stock in {math.round(1 / ShopConfig.Featured.Chance)}`)
 	local line = shelf.Lines.Featured
@@ -260,22 +280,36 @@ local function featured(panel: Frame, view: Profile.View, shelf: Shop.Shelf, on:
 		}, "None this stock.\nWhen one is in,\nthe Shop's crown is lit.")
 		return
 	end
-	local y = pad + SHOP.Head + gap
-	local side = SHOP.Well
-	local holder = well(panel, pad, y, item.Rarity)
-	if card.Image then
-		local picture = Skin.Icon(holder, card.Image, side / 2, side / 2, side * SHOP.Picture)
-		picture.Name = "Picture"
-	else
-		label({ Name = "Kind", Size = Theme.Text.Caption, Colour = P.Soft, Align = Enum.TextXAlignment.Center, Wrap = true, Parent = holder }, row.Kind)
-	end
-	titled(panel, pad + side + 10, y, card.Name, `{row.Slot}, {if row.Class then `{row.Class} only` else "any class"}`, item.Rarity)
-	y += side + gap
-	label({ Name = "Stats", Size = Theme.Text.Caption, Colour = P.Text, Wrap = true, Box = UDim2.new(1, -pad * 2, 0, SHOP.Row * 2), Position = UDim2.fromOffset(pad, y), Parent = panel }, statsOf(card))
+	local tap, line_ = Theme.Size.Tap, SHOP.Row
 	local missing = if row.Class and not hasClass(view, row.Class) then row.Class else nil
+	local top = pad + SHOP.Head + gap
+	local bottom = tall - (pad + tap + gap + line_ + gap) - (if missing then line_ else 0)
+	local what = `{row.Slot}, {if row.Class then `{row.Class} only` else "any class"}`
+	local said = statsOf(card)
+	local stats = label({ Name = "Stats", Size = Theme.Text.Caption, Colour = P.Text, Wrap = true, Parent = panel }, said)
+	local full = wide - pad * 2
+	local statsTall = rows(stats, said, full) * line_
+	local at = place(wide, top, bottom, line_ * 3 + 4 + SHOP.Hero.Gap + statsTall)
+	if not at.Under then
+		-- Beside it its three words; the stats under both, across the panel.
+		at = place(wide, top, bottom - statsTall - gap, 0)
+	end
+	local rim = P.Rim[item.Rarity] or P.Line
+	hero(panel, at.X, at.Y, at.Side, card.Image, row.Kind, rim:Lerp(Color3.new(1, 1, 1), 0.2), if item.Rarity == "Common" then 0.8 else 1)
+	local statsY: number
+	if at.Under then
+		local y = at.Y + at.Side + SHOP.Hero.Gap
+		statsY = y + titled(panel, pad, y, full, true, card.Name, what, item.Rarity) + SHOP.Hero.Gap
+		stats.TextXAlignment = Enum.TextXAlignment.Center
+	else
+		local x = at.X + at.Side + 10
+		titled(panel, x, at.Y + math.max(0, math.floor((at.Side - (line_ * 3 + 4)) / 2)), wide - x - pad, false, card.Name, what, item.Rarity)
+		statsY = at.Y + at.Side + gap
+	end
+	stats.Size = UDim2.fromOffset(full, statsTall)
+	stats.Position = UDim2.fromOffset(pad, statsY)
 	if missing then
-		local tap = Theme.Size.Tap
-		label({ Name = "Missing", Size = Theme.Text.Caption, Colour = P.Bad, Box = UDim2.new(1, -pad * 2, 0, SHOP.Row), Position = UDim2.new(0, pad, 1, -(pad + tap + gap + SHOP.Row * 2)), Parent = panel }, `You have no {missing} yet`)
+		label({ Name = "Missing", Size = Theme.Text.Caption, Colour = P.Bad, Box = UDim2.new(1, -pad * 2, 0, line_), Position = UDim2.new(0, pad, 1, -(pad + tap + gap + line_ * 2)), Parent = panel }, `You have no {missing} yet`)
 	end
 	buyLine(panel, view, shelf, line, on, card.Name, missing)
 end
@@ -335,7 +369,7 @@ local function rateList(parent: Instance, def: string, position: UDim2, size: UD
 end
 
 -- The Standard shard's line: its picture, name, whom it draws from, a Drop rates row of its own, then its foot.
-local function shards(panel: Frame, tall: number, view: Profile.View, shelf: Shop.Shelf, on: On)
+local function shards(panel: Frame, wide: number, tall: number, view: Profile.View, shelf: Shop.Shelf, on: On)
 	local pad, gap, tap = Theme.Size.Pad, Theme.Size.Gap, Theme.Size.Tap
 	head(panel, "Shards", `{ShopConfig.Shard.Limit} each player, each stock`)
 	local line = shelf.Lines.Shard
@@ -348,13 +382,20 @@ local function shards(panel: Frame, tall: number, view: Profile.View, shelf: Sho
 	local named = `{row.Grade} shard`
 	local y = pad + SHOP.Head + gap
 	if not rates then
-		local side = SHOP.Well
-		local holder = well(panel, pad, y, "Common")
+		-- Its hero over its words, between the head and the Drop rates' row.
+		local bottom = tall - (pad + tap + gap + SHOP.Row + gap) - (tap + gap)
+		local words = SHOP.Row * 2 + 4
+		local at = place(wide, y, bottom, words)
 		local art = HudConfig.ShardArt
-		local picture = Skin.Icon(holder, Hud.ShardPicture(row.Grade, side * SHOP.Picture, art.Large), side / 2, side / 2 + 2, side * SHOP.Picture)
-		picture.Name = "Picture"
-		titled(panel, pad + side + 10, y, named, `a Voidkin of {if ground then ground.Name else row.Ground}`, "Common")
-		y += side + gap
+		local from = `a Voidkin of {if ground then ground.Name else row.Ground}`
+		hero(panel, at.X, at.Y, at.Side, Hud.ShardPicture(row.Grade, at.Side, art.Large), named, Seam.Light, SHOP.Hero.Shard)
+		if at.Under then
+			titled(panel, pad, at.Y + at.Side + SHOP.Hero.Gap, wide - pad * 2, true, named, from, nil)
+		else
+			local x = at.X + at.Side + 10
+			titled(panel, x, at.Y + math.max(0, math.floor((at.Side - words) / 2)), wide - x - pad, false, named, from, nil)
+		end
+		y = bottom + gap
 	end
 	local fold = Button.new({
 		Name = "Rates",
@@ -457,15 +498,17 @@ local function build(view: Profile.View, shelf: Shop.Shelf, on: On)
 	local frame = Screen.Frame(NAME) :: Frame
 	local room = Vector2.new(frame.Size.X.Offset, frame.Size.Y.Offset)
 	builtRoom = room
-	local wide = math.min(room.X - pad * 2, SHOP.Most.X)
+	Seam.Case(body, "Room", pad, 0, room.X - pad * 2, room.Y - pad).ZIndex = 0 -- the bag's room, under the lines
+	local wide = math.min(room.X - pad * 4, SHOP.Most.X)
 	local tall = math.min(room.Y - pad * 3 - gap - SHOP.Row, SHOP.Most.Y)
 	local top = math.max(pad, math.floor((room.Y - tall - gap - SHOP.Row) / 2))
 	local shelfBox = box("Lines", body, UDim2.new(0.5, 0, 0, top), UDim2.fromOffset(wide, tall))
 	shelfBox.AnchorPoint = Vector2.new(0.5, 0)
 	local left = Panel.new({ Name = "Featured", Size = UDim2.new(0.5, -gap / 2, 1, 0), Parent = shelfBox, Palette = Seam.Palette })
 	local right = Panel.new({ Name = "Shards", Size = UDim2.new(0.5, -gap / 2, 1, 0), Position = UDim2.new(0.5, gap / 2, 0, 0), Parent = shelfBox, Palette = Seam.Palette })
-	featured(left, view, shelf, on)
-	shards(right, tall, view, shelf, on)
+	local half = math.floor((wide - gap) / 2)
+	featured(left, half, tall, view, shelf, on)
+	shards(right, half, tall, view, shelf, on)
 	local minutes = ShopConfig.Period / 60
 	label({
 		Name = "Foot",

@@ -223,4 +223,26 @@ function Seam.Raise(on: GuiObject, up: boolean)
 	on.ZIndex = if up then 2 else 1
 end
 
+-- The room a page stands on (the bag's, AR18's A): the seam's panel over the screen's backing, rounded, its top a lit
+-- edge. The Void Shop stands on it too (AR38, research's 15:56).
+function Seam.Case(parent: Instance, name: string, x: number, y: number, wide: number, tall: number): Frame
+	local made = Instance.new("Frame")
+	made.Name = name
+	made.BorderSizePixel = 0
+	made.Position = UDim2.fromOffset(x, y)
+	made.Size = UDim2.fromOffset(wide, tall)
+	made.BackgroundColor3 = Color3.new(1, 1, 1)
+	made.BackgroundTransparency = 1 - Seam.Alpha
+	local ramp = Instance.new("UIGradient")
+	ramp.Color = ColorSequence.new(Seam.Panel[1], Seam.Panel[2])
+	ramp.Rotation = 90
+	ramp.Parent = made
+	local corner = Instance.new("UICorner")
+	corner.CornerRadius = UDim.new(0, S.Room.Corner)
+	corner.Parent = made
+	made.Parent = parent
+	Seam.Edge(made, "Top", S.Room.Corner, 0, wide - S.Room.Corner * 2, false, S.Edges.Room)
+	return made
+end
+
 return Seam

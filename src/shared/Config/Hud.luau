@@ -1001,12 +1001,13 @@ return {
 	-- chip under the HUD's pills in a stock's last Config.Shop.Warn seconds. Most: the two lines' block at the most, so a
 	-- wide screen keeps each line's words near its Buy.
 	Shop = {
-		Most = Vector2.new(860, 310),
+		Most = Vector2.new(860, 376),
 		Head = 24,
 		Row = 20,
-		Well = 66,
-		Rim = 2,
-		Picture = 0.78,
+		-- A line's hero (research's 15:56): its picture at Most at the most, over its words; under Least, at the left of
+		-- them, Share of its panel's width at the most. Its light: Light times its side (the bag's slot light); a shard's at
+		-- Shard. Break: a margin on a wrapped line's measure, for where its words break.
+		Hero = { Most = 150, Least = 96, Gap = 6, Share = 0.4, Light = 1.5, Shard = 0.9, Break = 1.05 },
 		Clock = { Wide = 7, Gap = 3, Tall = 24, Track = 0.72, Words = 82 },
 		Armed = 3,
 		CoinOff = 0.5, -- an off Buy's coin, dimmed with its price

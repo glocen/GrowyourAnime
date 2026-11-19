@@ -1,13 +1,19 @@
 {
  "pixelsPerPoint": 4,
- "palette": "C_SYS (AR40's C, the system panel), research's pick B, on the fight HUD's slant",
+ "palette": "the lead card's own material (lead_card_art.py's VOIDKIN, take A), mirrored to face it (research's pick, 13:35); the skulls, the arrow, the shards and CR's tab as before",
  "card": {
   "points": [
    216,
    42
   ],
   "slant": 0.4,
-  "note": "the Shade's and the elite's card; the keeper keeps TR5's BossBar. The top row starts 0.75 of the lean (12.6) further in than on an upright card; the bar runs from 5 + 0.4 x 5 to 5 + 0.4 x 24 in from the card's ends, at the foot and the top"
+  "mirrored": true,
+  "slot": {
+   "top": 24.0,
+   "foot": 37.0,
+   "inset": 5.0
+  },
+  "note": "the Shade's and the elite's card; the keeper keeps TR5's BossBar. Mirrored: its top left corner square, its ends leaning right (the right end's top 16.8 in from the card's right). The top row starts 4 in, the gem and arrow end clear of the right end. The health light fills the plate's slot exactly: from 24 to 37 down, its ends 5 in from the plate's, leaning right as the plate does: its top left 14.6 from the card's left, its foot right 7 from the card's right. One colour along it, as the lead's (AR12); it still fills from its left"
  },
  "levels": {
   "colours": [
@@ -17,16 +23,16 @@
    "#FF4F42"
   ],
   "contrast": {
-   "#D3D1DC over #34606C": 4.59,
-   "#D3D1DC over #2A4E5A": 5.96,
-   "#F6F2E8 over #34606C": 6.19,
-   "#F6F2E8 over #2A4E5A": 8.04,
-   "#FFC83A over #34606C": 4.47,
-   "#FFC83A over #2A4E5A": 5.81,
-   "#FF4F42 over #34606C": 2.12,
-   "#FF4F42 over #2A4E5A": 2.76
+   "#D3D1DC over #35286B": 8.35,
+   "#D3D1DC over #171033": 12.02,
+   "#F6F2E8 over #35286B": 11.27,
+   "#F6F2E8 over #171033": 16.22,
+   "#FFC83A over #35286B": 8.14,
+   "#FFC83A over #171033": 11.72,
+   "#FF4F42 over #35286B": 3.87,
+   "#FF4F42 over #171033": 5.57
   },
-  "note": "each over B's panel, top and foot; every level wears the dark outline of AR44's plain take"
+  "note": "each over the plate's indigo, top and foot; every level wears the dark outline of AR44's plain take"
  },
  "images": {
   "Skull": {
@@ -194,8 +200,26 @@
     28.0
    ],
    "pad": 8.0,
-   "tint": "C's panel, #34606C at its top to #2A4E5A at its foot (a UIGradient), ImageTransparency 0.06; its shadow stays black under any tint",
-   "use": "the target card's plate, leaning like the lead's card (its ends 0.4 of its height across). Sliced at Cut (left, top, right, foot), its slanted ends inside the end slices: drawn at its own height, it stretches along only. The card's box is the image less Pad on every side."
+   "tint": null,
+   "slot": [
+    [
+     14.6,
+     24.0
+    ],
+    [
+     37.8,
+     24.0
+    ],
+    [
+     43.0,
+     37.0
+    ],
+    [
+     19.8,
+     37.0
+    ]
+   ],
+   "use": "the target card's plate in the lead card's own material (its CardPlate): the Voidkin's indigo from #35286B at its top to #171033 at its foot, a pale line under its top edge, a dark line inside its rim, and the health's slot, dark with a pale lower lip. Mirrored to face the lead's card: its top left corner square, its ends leaning right, 0.4 of its height across. Its own colours, never tinted, ImageTransparency 0. The health light sits in the slot (`slot`: its four corners from the card's top left, top left first). Sliced at Cut (left, top, right, foot), its slanted ends inside the end slices: drawn at its own height, it stretches along only. The card's box is the image less Pad on every side."
   },
   "CardSlantEdge": {
    "file": "images/CardSlantEdge.png",
@@ -214,8 +238,8 @@
     28.0
    ],
    "pad": 8.0,
-   "tint": "C's edge, #E2CFA4",
-   "use": "a Shade's edge over the plate: a hairline, its lit end the left. Sliced at Cut (left, top, right, foot), its slanted ends inside the end slices: drawn at its own height, it stretches along only. The card's box is the image less Pad on every side."
+   "tint": "the Voidkin's lavender, #DCCBFF (Config.UIKit.Systems.Voidkin.Colour), as the lead's CardPlateRim",
+   "use": "a Shade's rim over the plate, 1.5 points, as the lead card's. Sliced at Cut (left, top, right, foot), its slanted ends inside the end slices: drawn at its own height, it stretches along only. The card's box is the image less Pad on every side."
   },
   "CardSlantRankEdge": {
    "file": "images/CardSlantRankEdge.png",
@@ -235,7 +259,7 @@
    ],
    "pad": 8.0,
    "tint": null,
-   "use": "an elite's edge, in place of CardSlantEdge: brass, a hairline of C's edge inside it, its own colours, never tinted. Sliced at Cut (left, top, right, foot), its slanted ends inside the end slices: drawn at its own height, it stretches along only. The card's box is the image less Pad on every side."
+   "use": "an elite's rim, in place of CardSlantEdge: brass, lit along its left end, its own colours, never tinted. Sliced at Cut (left, top, right, foot), its slanted ends inside the end slices: drawn at its own height, it stretches along only. The card's box is the image less Pad on every side."
   },
   "RankShardLeft": {
    "file": "images/RankShardLeft.png",
@@ -252,7 +276,7 @@
     5.5,
     8.0
    ],
-   "use": "an elite's mark: a solid brass shard about 6 points tall, leaning out. Its root (the anchor) on the card's top edge, 14 in from where the top edge starts (the plate's lean, then 14). Its own colours; never scaled down"
+   "use": "an elite's mark: a solid brass shard about 6 points tall, leaning out. Its root (the anchor) on the card's top edge, 14 in from its top left corner. Its own colours; never scaled down"
   },
   "RankShardRight": {
    "file": "images/RankShardRight.png",
@@ -269,7 +293,7 @@
     4.5,
     8.0
    ],
-   "use": "the left shard mirrored: its root 14 in from the card's top right corner"
+   "use": "the left shard mirrored: its root 14 in from where the top edge ends (the card's width less the plate's lean, 16.8, then 14)"
   }
  }
 }

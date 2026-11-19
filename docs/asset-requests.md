@@ -13728,6 +13728,30 @@ Labelled SIMULATION, not play: `tools/balance/sim.py`'s model, 6,000 leads (leve
 - **Not the float:** the name and bar over open sky would need a heavy stroke on bright days, and would leave the lead card the only slab.
 - **What changes:** C's teal and the #E2CFA4 hairline leave the foe card. The panels (Home, the screens) keep C's teal. Modulo recuts `CardSlantFill` and `CardSlantEdge` in the lead card's colours, and the content check reads the recut.
 
+### The recut in the lead card's material, mirrored (Modulo, 2026-11-19, 13:47 to 13:53 by the clock)
+
+- **What:** the plate's three images, recut in the lead card's own material (`lead_card_art.py`'s VOIDKIN, the game's `CardPlate`), at the same box, cut and pad. `foe_cards.py -- <out> cut`, then `fit`.
+  - `CardSlantFill` is in its own colours, never tinted, at ImageTransparency 0:
+    - the Voidkin's indigo, #35286B at the top to #171033 at the foot, with a soft black shadow;
+    - a pale line under the top edge and a dark line inside the rim;
+    - the health's slot, dark (#0A0718 to #151030) with a pale lower lip.
+  - `CardSlantEdge`: a white rim of 1.5 points, tinted the Voidkin's lavender #DCCBFF, as the lead's `CardPlateRim`.
+  - `CardSlantRankEdge`: the elite's brass, lit along its left end. C's hairline is gone.
+- **Mirrored to face the lead's card:** the top left corner is square and the ends lean right, still 0.4 of the height. Three placements follow from that:
+  - The top row starts 4 points in.
+  - The gem and arrow end clear of the right end: the gem's middle is 30.8 from the card's right.
+  - The shards sit 14 in from the top left corner, and 14 in from where the top edge ends (16.8 from the card's right).
+- **The health light fills the slot exactly.** It runs 24 to 37 down, its ends 5 in from the plate's, and it leans right as the plate does: its top left is 14.6 from the card's left, its foot right 7 from the card's right. The slot's corners are in `foes.json`'s `CardSlantFill.slot`, and the card's numbers in `card`.
+  - It's one colour along, as the lead's light (AR12), and still fills from its left. Anchoring it at the right, as a mirrored bar might, is Faber's and research's call. It changes no image.
+- **Where:** `build/handoff/UI/foes/`. The three images are recut, and `foes.json`, `foe_cards_cut.png` and `foe_cards_fit.png` are rebuilt. The other eight images are byte-identical.
+  - The fit now uses Modulo's copy of a phone still (`build/scratch/modulo/captures/fight-phone.png`), because Faber's AR44 capture is gone.
+  - In the fit, the foe card and Rook's card read as one pair: the same indigo, slot and lavender rim, leaning toward each other.
+- **Content check PASS** (13:53), all three. Conditions 1 and 2 replace the old ones; 3 to 5 stand as written above.
+  1. `CardSlantFill` keeps its own colours: no tint, no UIGradient, ImageTransparency 0, its shadow black. A red, dark-red or brown tint comes back to the check.
+  2. `CardSlantEdge` is tinted only #DCCBFF or another light UI colour, never red, and stays a rim of about 1.5 points.
+  - If the teal versions were uploaded, they're logged as replaced and unused. The sheets stay internal.
+- **For Faber:** upload the three under the group with the key, and build the card mirrored from `foes.json`.
+
 ## Later, by ground
 
 The rest of ground 1 (Kirra in AR10, Watt in AR11; then Sable, Marigold, Crane), then each ground's Voidkin in `docs/roster.md`'s order. **The machines** (Gantry, Bulwark, Ironhymn, Shiomaru, Aegir) share one custom rig, taller than a player, with its own clip family: the first of them is timed like AR1, because a custom rig is a different cost.

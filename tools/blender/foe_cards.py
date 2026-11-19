@@ -54,6 +54,11 @@ SEAM = dict(panel=("#1A1430", "#0C0A16"), edge="#3B3358", facet="#8F84B8", glint
 C_SYS = dict(panel=("#34606C", "#2A4E5A"), edge="#E2CFA4", facet="#8FC4C8", glint="#FFF6E2", text="#FFF6E2",
              soft="#D9E8E2", well=("#1B3840", "#14303A"), channel="#0E1D23", ink="#0E1D23")
 TAKES = {"A, the Menu's own (Seam)": SEAM, "B, AR40's C (the system panel)": C_SYS}
+# The lead card's own material (lead_card_art.py's VOIDKIN, take A; the game's CardPlate, its rim tinted
+# Config.UIKit.Systems.Voidkin.Colour): the foe card wears it, mirrored to face the lead's (research's pick, AR45, 13:35,
+# on the director's "that art isnt composited").
+LEAD = dict(panel=("#35286B", "#171033"), edge="#DCCBFF", glint="#FAF7FF", text="#FAF7FF", slot=("#0A0718", "#151030"),
+            channel="#0A0718", ink="#000000")
 
 # The tiers: name, the skull's and the level's colour, the skull's opacity.
 TIERS = (("Much weaker", "#A3A1B2", 0.55), ("About even", "#F6F2E8", 1.0), ("Stronger", "#FFC83A", 1.0),
@@ -109,15 +114,21 @@ def arrow(t, cx, cy, s, up, colour=None):
                     (cx - s * 0.45, cy - k * s * 0.15)]), colour or (UP if up else DOWN))
 
 
-def bar(t, x0, y0, x1, h, share, pal, phases=0):
+def bar(t, x0, y0, x1, h, share, pal, phases=0, lean=None):
     """Health as light in its dark channel, cut on the slant, Ember from its top to its foot; a keeper's phases as
-    notches with a brass point over each."""
-    s = h * 0.45
-    d = t.poly([(x0 + s, y0), (x1, y0), (x1 - s, y0 + h), (x0, y0 + h)])
-    t.paint(d - 1.0, pal["ink"], 0.9)
-    t.paint(d, pal["channel"])
-    xe = x0 + s + (x1 - x0 - s) * share
-    lit = np.maximum(d + 0.8, (t.x - xe) + (t.y - y0) * s / h)
+    notches with a brass point over each. Given `lean` (across per down, negative leaning the other way), the light
+    alone, in the plate's own slot: no channel, no edge."""
+    framed = lean is None
+    s = h * (0.45 if framed else lean)
+    if s >= 0:
+        d = t.poly([(x0 + s, y0), (x1, y0), (x1 - s, y0 + h), (x0, y0 + h)])
+    else:
+        d = t.poly([(x0, y0), (x1 + s, y0), (x1, y0 + h), (x0 - s, y0 + h)])
+    if framed:
+        t.paint(d - 1.0, pal["ink"], 0.9)
+        t.paint(d, pal["channel"])
+    xe = x0 + max(s, 0) + (x1 - x0 - abs(s)) * share
+    lit = np.maximum(d + (0.8 if framed else 0.0), (t.x - xe) + (t.y - y0) * s / h)
     v = np.clip((t.y - y0) / h, 0, 1)
     ramp = np.zeros(t.x.shape + (3,), np.float32)
     stops = [(p, ui.c(code)) for p, code in EMBER]
@@ -130,7 +141,8 @@ def bar(t, x0, y0, x1, h, share, pal, phases=0):
     t.paint(np.maximum(lit, -((t.x - xe) + (t.y - y0) * s / h) - 1.2), "#FFFFFF", 0.6)   # its bright front
     for k in range(1, phases):
         notch(t, x0 + s + (x1 - x0 - s) * k / phases, y0, h, s, pal["ink"])
-    t.line(d, 0.75, pal["edge"], 0.9)
+    if framed:
+        t.line(d, 0.75, pal["edge"], 0.9)
 
 
 def horn(t, bx, y0, size, side, metal=BRASS):
@@ -463,42 +475,54 @@ def images():
             "bold, 0.62 of the number's size, centred on the plate; the number right of it in ivory #F7F1E3, upright "
             "and wide apart, with AR44's plain take's outline and shadow"))
 
-    # --- B on the fight HUD's slant (research's second look, 12:32): the plate in three, and the elite's shards
+    # --- on the fight HUD's slant, in the lead card's material, mirrored to face it (research, 13:35): the plate in
+    # three, and the elite's shards
     sw, sh = SLANT_BOX
     x0, y0, x1, y1 = SLANT_PAD, SLANT_PAD, sw - SLANT_PAD, sh - SLANT_PAD
     lean = (y1 - y0) * SLANT
-    plate = [(x0 + lean, y0), (x1, y0), (x1 - lean, y1), (x0, y1)]
+    plate = [(x0, y0), (x1 - lean, y0), (x1, y1), (x0 + lean, y1)]   # its top left square, its ends leaning right
     common = dict(points=[sw, sh], cut=list(SLANT_CUT), pad=SLANT_PAD)
     slicing = ("Sliced at Cut (left, top, right, foot), its slanted ends inside the end slices: drawn at its own height, "
                "it stretches along only. The card's box is the image less Pad on every side.")
+    sy0, sy1 = y0 + SLOT[0], y0 + SLOT[1]
+    edge_l = lambda y: x0 + (y - y0) * SLANT            # noqa: E731
+    edge_r = lambda y: x1 - lean + (y - y0) * SLANT     # noqa: E731
+    slot = [(edge_l(sy0) + SLOT[2], sy0), (edge_r(sy0) - SLOT[2], sy0), (edge_r(sy1) - SLOT[2], sy1),
+            (edge_l(sy1) + SLOT[2], sy1)]
 
     t = clear(sw, sh)
     d = t.poly(plate)
-    t.glow(d, 6.0, "#000000", 0.4)
-    t.paint(d, "#FFFFFF")
+    t.glow(d, 6.0, "#000000", 0.45)
+    t.paint(d, t.ramp(LEAD["panel"][0], LEAD["panel"][1], (t.y - y0) / (y1 - y0)))
+    t.paint(np.maximum(d, np.abs(t.y - (y0 + 1.9)) - 0.55), LEAD["glint"], 0.3)       # the lacquer's line under the top
+    well = t.poly(slot)
+    ui.over(t.px, t.ramp(LEAD["slot"][0], LEAD["slot"][1], (t.y - sy0) / (sy1 - sy0)), np.clip(0.5 - well * 4, 0, 1) * 0.85)
+    t.paint(np.maximum(well, np.abs(t.y - sy1 + 0.4) - 0.35), LEAD["glint"], 0.18)    # the slot's lower lip
+    t.line(d + 1.5, 0.7, LEAD["ink"], 0.8)                                             # dark inside the rim
     made["CardSlantFill"] = (t.px.copy(), dict(
-        common, tint="C's panel, #34606C at its top to #2A4E5A at its foot (a UIGradient), ImageTransparency 0.06; "
-                     "its shadow stays black under any tint",
-        use="the target card's plate, leaning like the lead's card (its ends 0.4 of its height across). " + slicing))
+        common, tint=None, slot=[[round(x - x0, 2), round(y - y0, 2)] for x, y in slot],
+        use="the target card's plate in the lead card's own material (its CardPlate): the Voidkin's indigo from #35286B "
+            "at its top to #171033 at its foot, a pale line under its top edge, a dark line inside its rim, and the "
+            "health's slot, dark with a pale lower lip. Mirrored to face the lead's card: its top left corner square, "
+            "its ends leaning right, 0.4 of its height across. Its own colours, never tinted, ImageTransparency 0. The "
+            "health light sits in the slot (`slot`: its four corners from the card's top left, top left first). "
+            + slicing))
 
     t = clear(sw, sh)
-    d = t.poly(plate)
-    t.line(d, 1.0, "#FFFFFF", 0.95)
-    t.paint(ui.sd_segment(t.x, t.y, (x0 + 0.6, y1 - 0.8), (x0 + lean + 0.2, y0 + 0.6)) - 0.7, "#FFFFFF")
+    t.line(t.poly(plate), 1.5, "#FFFFFF")
     made["CardSlantEdge"] = (t.px.copy(), dict(
-        common, tint="C's edge, #E2CFA4",
-        use="a Shade's edge over the plate: a hairline, its lit end the left. " + slicing))
+        common, tint="the Voidkin's lavender, #DCCBFF (Config.UIKit.Systems.Voidkin.Colour), as the lead's CardPlateRim",
+        use="a Shade's rim over the plate, 1.5 points, as the lead card's. " + slicing))
 
     t = clear(sw, sh)
     d = t.poly(plate)
     t.line(d, 1.6, BRASS[1])
     t.line(d, 0.8, BRASS[0], 0.9)
-    t.line(d + 1.6, 0.6, C_SYS["edge"], 0.8)
-    t.paint(ui.sd_segment(t.x, t.y, (x0 + 0.6, y1 - 0.8), (x0 + lean + 0.2, y0 + 0.6)) - 0.6, "#FFF3C8", 0.9)
+    t.paint(ui.sd_segment(t.x, t.y, (x0 + 0.2, y0 + 0.6), (x0 + lean - 0.6, y1 - 0.8)) - 0.6, "#FFF3C8", 0.9)
     made["CardSlantRankEdge"] = (t.px.copy(), dict(
         common, tint=None,
-        use="an elite's edge, in place of CardSlantEdge: brass, a hairline of C's edge inside it, its own colours, "
-            "never tinted. " + slicing))
+        use="an elite's rim, in place of CardSlantEdge: brass, lit along its left end, its own colours, never "
+            "tinted. " + slicing))
 
     t = clear(*SHARD_BOX)
     shard(t, *SHARD_ROOT, -1)
@@ -506,11 +530,11 @@ def images():
     made["RankShardLeft"] = (left, dict(
         points=list(SHARD_BOX), tint=None, anchor=list(SHARD_ROOT),
         use="an elite's mark: a solid brass shard about 6 points tall, leaning out. Its root (the anchor) on the card's "
-            "top edge, 14 in from where the top edge starts (the plate's lean, then 14). Its own colours; never scaled "
-            "down"))
+            "top edge, 14 in from its top left corner. Its own colours; never scaled down"))
     made["RankShardRight"] = (np.ascontiguousarray(left[:, ::-1]), dict(
         points=list(SHARD_BOX), tint=None, anchor=[SHARD_BOX[0] - SHARD_ROOT[0], SHARD_ROOT[1]],
-        use="the left shard mirrored: its root 14 in from the card's top right corner"))
+        use="the left shard mirrored: its root 14 in from where the top edge ends (the card's width less the plate's "
+            "lean, 16.8, then 14)"))
     return made
 
 
@@ -520,6 +544,7 @@ SLANT_BOX = (66.0, 58.0)            # a 50 by 42 plate in an 8 point pad, its en
 SLANT_CUT = (29.0, 28.0, 29.0, 28.0)
 SHARD_BOX = (10.0, 10.0)
 SHARD_ROOT = (5.5, 8.0)
+SLOT = (24.0, 37.0, 5.0)            # the health's slot: its top and foot from the card's top, its ends in from the plate's
 UNUSED = {"CardRankEdge": "the upright cut, replaced by B on the slant (research, 12:32)",
           "RankHornLeft": "the thin horns, replaced by the shards (research's must-fix, 12:32)",
           "RankHornRight": "the thin horns, replaced by the shards (research's must-fix, 12:32)",
@@ -567,19 +592,19 @@ def built_slant(sheet, made, x, y, kind, tier, name, level, share, health, gem, 
     """B on the fight HUD's slant as the game builds it: the plate's three images, the shards, then the card's own
     pieces, each clear of the plate's lit end."""
     w, h = 216, 42
-    page, pal = sheet.px, C_SYS
+    page, pal = sheet.px, LEAD
     lean = h * SLANT
-    lay_slice(page, made["CardSlantFill"][0], SLANT_CUT, x, y, w, h, pad=SLANT_PAD, tint=pal["panel"], alpha=0.94)
+    lay_slice(page, made["CardSlantFill"][0], SLANT_CUT, x, y, w, h, pad=SLANT_PAD)
     if kind == "Shade":
         lay_slice(page, made["CardSlantEdge"][0], SLANT_CUT, x, y, w, h, pad=SLANT_PAD, tint=pal["edge"])
     else:
         lay_slice(page, made["CardSlantRankEdge"][0], SLANT_CUT, x, y, w, h, pad=SLANT_PAD)
         if marks:
             ax, ay = SHARD_ROOT
-            put(page, made["RankShardLeft"][0], x + lean + 14 - ax, y - ay)
-            put(page, made["RankShardRight"][0], x + w - 14 - (SHARD_BOX[0] - ax), y - ay)
+            put(page, made["RankShardLeft"][0], x + 14 - ax, y - ay)
+            put(page, made["RankShardRight"][0], x + w - lean - 14 - (SHARD_BOX[0] - ax), y - ay)
     name_size, row = 14, y + 6
-    inset = lean * 0.75
+    inset = 10 * SLANT                                   # the left end at the top row's middle, leaning right
     colour, see = TINTS[tier]
     sc = 15 / 16
     put(page, made["Skull"][0], x + 14 + inset - 9 * sc, row + name_size * 0.36 - 9 * sc, sc, colour, 1 - see)
@@ -588,19 +613,20 @@ def built_slant(sheet, made, x, y, kind, tier, name, level, share, health, gem, 
     t.text(25 + inset, row - y + 2, name_size, lv, LEVEL_FAINT_B if tier == 0 else colour, bold=0.25, layer="outlined")
     t.text(25 + inset + len(lv) * name_size * 0.5 + 7, row - y + 2, name_size, name, pal["text"], bold=0.12,
            layer="outlined")
-    gx = x + w - 22
+    gx = x + w - lean - 14                               # clear of the right end, which leans in at the top
     gem_px = rs.load(KIT / f"Gem{gem}.png")
     put(page, gem_px, gx - 7, row - 2.5, 15 * 4 / gem_px.shape[1])
     if edge is not None:
         put(page, made["EdgeArrow"][0], gx + 12 - 5, row + 5 - 5, 1.0, UP if edge else DOWN, turn=not edge)
-    bh = 13
-    by = y + h - bh - 5
-    bx0, bx1 = 5 + 5 * SLANT, w - 5 - (h - 5 - bh) * SLANT
-    bar(sheet.tile(x, by - 6, w, bh + 8), bx0, 6, bx1, bh, share, pal, phases=0)
+    s0, s1, sin = SLOT
+    bh = s1 - s0
+    by = y + s0
+    bx0, bx1 = s0 * SLANT + sin, w - lean + s1 * SLANT - sin   # the slot's top left and foot right, from the card's left
+    bar(sheet.tile(x, by - 6, w, bh + 8), bx0, 6, bx1, bh, share, pal, phases=0, lean=-SLANT)
     nw = len(health) * 11 * 0.52 + 14
     mid = (bx0 + bx1) / 2
     band = sheet.tile(x + mid - nw / 2 - 4, by, nw + 8, bh)
-    band.paint(band.poly([(4 + bh * 0.3, 0.5), (nw + 4, 0.5), (nw + 4 - bh * 0.3, bh - 0.5), (4, bh - 0.5)]),
+    band.paint(band.poly([(4, 0.5), (nw + 4 - bh * 0.3, 0.5), (nw + 4, bh - 0.5), (4 + bh * 0.3, bh - 0.5)]),
                pal["channel"], 0.72)
     sheet.tile(x, by, w, bh).text(mid, (bh - 11 * 0.72) / 2, 11, health, IVORY, "CENTER", bold=0.1, layer="outlined")
     return w, h
@@ -617,26 +643,34 @@ def cut(out):
         if name in UNUSED:
             listing[name]["unused"] = UNUSED[name]
     ratios = {f"{code} over {pal}": round(contrast(code, pal), 2)
-              for code in (LEVEL_FAINT_B, "#F6F2E8", "#FFC83A", "#FF4F42") for pal in C_SYS["panel"]}
+              for code in (LEVEL_FAINT_B, "#F6F2E8", "#FFC83A", "#FF4F42") for pal in LEAD["panel"]}
     import json
+    s0, s1, sin = SLOT
     (out / "foes.json").write_text(json.dumps(dict(
-        pixelsPerPoint=4, palette="C_SYS (AR40's C, the system panel), research's pick B, on the fight HUD's slant",
-        card=dict(points=[216, 42], slant=SLANT,
-                  note="the Shade's and the elite's card; the keeper keeps TR5's BossBar. The top row starts 0.75 of "
-                       "the lean (12.6) further in than on an upright card; the bar runs from 5 + 0.4 x 5 to 5 + 0.4 x "
-                       "24 in from the card's ends, at the foot and the top"),
+        pixelsPerPoint=4, palette="the lead card's own material (lead_card_art.py's VOIDKIN, take A), mirrored to face "
+                                  "it (research's pick, 13:35); the skulls, the arrow, the shards and CR's tab as before",
+        card=dict(points=[216, 42], slant=SLANT, mirrored=True,
+                  slot=dict(top=s0, foot=s1, inset=sin),
+                  note="the Shade's and the elite's card; the keeper keeps TR5's BossBar. Mirrored: its top left corner "
+                       "square, its ends leaning right (the right end's top 16.8 in from the card's right). The top row "
+                       f"starts {10 * SLANT:g} in, the gem and arrow end clear of the right end. The health light fills "
+                       f"the plate's slot exactly: from {s0:g} to {s1:g} down, its ends {sin:g} in from the plate's, "
+                       f"leaning right as the plate does: its top left {s0 * SLANT + sin:g} from the card's left, its "
+                       f"foot right {16.8 - s1 * SLANT + sin:g} from the card's right. One colour along it, as the "
+                       "lead's (AR12); it still fills from its left"),
         levels=dict(colours=[LEVEL_FAINT_B, "#F6F2E8", "#FFC83A", "#FF4F42"], contrast=ratios,
-                    note="each over B's panel, top and foot; every level wears the dark outline of AR44's plain take"),
+                    note="each over the plate's indigo, top and foot; every level wears the dark outline of AR44's "
+                         "plain take"),
         images=listing), indent=1), encoding="utf-8")
     ui.K = 2
     W, H = 1100, 860
     sheet = ui.Sheet(W, H, "#101117")
     head = sheet.tile(0, 0, W, 90)
     ink, soft = "#EDE6D6", "#B4AC9C"
-    head.text(16, 16, 20, "AR45, cut in B on the fight HUD's slant (research, 12:32), for the content check and Faber",
-              ink, bold=0.2)
-    head.text(16, 44, 13, "Each image in use as it ships at 4 pixels a point over dark, then at 64 px over dark. The rest of the "
-                          "card is the kit's own: the type gems, the bar. The keeper keeps TR5's purple bar.", soft)
+    head.text(16, 16, 20, "AR45, recut in the lead card's material, mirrored to face it (research, 13:35), for the content "
+                          "check and Faber", ink, bold=0.2)
+    head.text(16, 44, 13, "Each image in use as it ships at 4 pixels a point over dark, then at 64 px over dark. The type gems "
+                          "are the kit's own; the health light fills the plate's slot. The keeper keeps TR5's purple bar.", soft)
     # 1. each alone, full size, then 64 px
     x, y = 16, 76
     sheet.tile(0, y, W, 20).text(16, 0, 14, "1. Each in use, alone: as it ships (4 px a point, drawn here at 1 px a pixel), "
@@ -655,7 +689,7 @@ def cut(out):
                                             "over B's panel; the arrow up and down", ink)
     y += 24
     plate = sheet.tile(16, y, 620, 80)
-    plate.paint(plate.poly(ui.cut_box(0, 0, 620, 80, 10, 3, 10, 3)), plate.ramp(C_SYS["panel"][0], C_SYS["panel"][1],
+    plate.paint(plate.poly(ui.cut_box(0, 0, 620, 80, 10, 3, 10, 3)), plate.ramp(LEAD["panel"][0], LEAD["panel"][1],
                                                                                   plate.y / 80))
     for k, (colour, see) in enumerate(TINTS):
         sk = made["Skull"][0]
@@ -695,7 +729,7 @@ def cut(out):
     # the contrast of each tier's level over the panel
     y += 50
     sheet.tile(0, y, W, 20).text(16, 0, 12, "Each level's colour over B's panel, top / foot: " + "; ".join(
-        f"{code} {contrast(code, C_SYS['panel'][0]):.1f} / {contrast(code, C_SYS['panel'][1]):.1f}"
+        f"{code} {contrast(code, LEAD['panel'][0]):.1f} / {contrast(code, LEAD['panel'][1]):.1f}"
         for code in (LEVEL_FAINT_B, "#F6F2E8", "#FFC83A", "#FF4F42")) + " (to 1). Red is carried by its dark outline.", soft)
     finish(sheet)
     rs.save(sheet.px[:round((y + 30) * 2)], out / "foe_cards_cut.png")
@@ -703,9 +737,11 @@ def cut(out):
 
 # --- the fit: the cards over the game's own HUD (the director, 12:24: "make sure it compose well to our game") ----------
 
-FIGHT = REPO / "build" / "scratch" / "faber" / "ar44" / "take-now-fight.jpg"   # Faber's phone capture, ~1.11 px a point
-OLD_CARD = (95, 162, 338, 604)      # the old target card and the floor's title over it, the capture's rows and columns
-OLD_MIDDLE, OLD_TOP = 471, 98       # the old card's middle and top, the capture's pixels
+# A phone still of a fight with the lead's card, ~1.11 px a point: Modulo's copy of Faber's burst-crowded-phone.png
+# (Faber's AR44 capture, take-now-fight.jpg, is gone from his scratch)
+FIGHT = REPO / "build" / "scratch" / "modulo" / "captures" / "fight-phone.png"
+OLD_CARD = (94, 152, 346, 632)      # the old target card, the still's rows and columns
+OLD_MIDDLE, OLD_TOP = 489, 100      # the old card's middle and top, the still's pixels
 SLANT = 0.4                         # the old target card's lean: its ends 0.4 of its height across (the capture)
 
 
@@ -725,8 +761,8 @@ def fit(out):
     sheet = ui.Sheet(W, H, "#101117")
     ink, soft = "#EDE6D6", "#B4AC9C"
     head = sheet.tile(0, 0, W, 66)
-    head.text(16, 16, 20, "AR45, the fit: B on the fight HUD's slant, built from the cut's images, in Faber's phone capture "
-                          "(AR44, Tower floor 1)", ink, bold=0.2)
+    head.text(16, 16, 20, "AR45, the fit: the foe card in the lead card's material, mirrored, built from the cut's images, "
+                          "in a phone still of Lantern Row", ink, bold=0.2)
     head.text(16, 44, 13, "At 2 pixels a point, then each at the phone's own size. Everything but the target card is the game as it "
                           "is; the old card and the floor's title over it are lifted, and the new card laid at its middle and top.",
               soft)

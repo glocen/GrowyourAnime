@@ -13173,6 +13173,27 @@ The numbers are stand-ins (Combat Power, the bests).
     - It's a rework of a shipped asset (research accepted it on 2026-11-12), so it's its own piece, for research's word.
 - **Status:** drawn, self-read and content-checked (PASS). Waiting on research's look at all three together.
 
+### Research's second look: the fixes, the card and the line (Quaestor, 2026-11-19, 02:34 by the clock)
+
+- **Judged on what changed.** The mask now reads as a paper mask with its holes cut through, not a face. Hard reads from anywhere on the screen, with violet only on the edges, the chevrons and the road. Both must-fixes pass.
+- **The card. Felt:** the road lights on to where the player stands, then the result, what it gave, what opened, and one sand press; a fall says so in red, with Retry the press. **Tier:** competent. **The bold thing:** the road carried from the picker onto the card, so the two screens are one journey.
+- **The line. Felt:** one plate under Roblox's bar, a notch lit for each Shade, its ring waiting for the last foe. Competent.
+- **Modulo's call, taken:** after the keeper on Normal, the press is Hard Stage 1. Faber's `StageService` gives that Next, and Home is the press after the keeper on Hard.
+- **The Shade's model follows the picture:** almond holes, the grin at 0.5, no brows, which the content check found to pass. One mask in the fight and on the tiles. The re-bake and re-upload wait for memory (the director's "Wait"), then the content check on the new sheet.
+- **Accepted, all three,** for Faber's install on `UI/StageScreen` and `StageController`.
+
+## AR43. The Forge and War Emblem pages on the Voidkin screen (Modulo, for research's pick, then Faber)
+
+Research, 2026-11-19, 02:34 by the clock, on the director's question of 02:1x ("where is the forge, jewels, war emblems we could work on it, atleast modulo"). The icons are made (`build/handoff/UI/upgrades/images`: 18 emblems, 15 jewels, the sockets and the stones), but the pages that use them aren't. They're the character screen's rail pages (`docs/design.md`, "Upgrading gear needs no walk"). Drawn in code, with no render.
+- **Feel line:** the player opens their gear, taps Forge or War Emblems, and sees the one item they chose, its sockets or its rank, and the next upgrade's gain in plain numbers before they pay. One press, and the number on the item rises.
+- **The pages,** on the Voidkin screen's kit (AR29) in AR40's C, at the smallest phone, three directions for the pair:
+  1. **Forge:** the chosen item, its rank, the next rank's gain in its stats, and the stones and Credits it costs (Stone Condenser's stones). Ranking up is one press, and the Forge machine opens the same page.
+  2. **War Emblems:** the item's sockets by its rarity (one on Common, two on Uncommon, three on Rare, four from Epic: `docs/design.md`, "War Emblems"), each empty or holding an emblem with its stat; the bag's emblems below, sortable; putting one in or taking it out (free).
+  - **Every state:** an item with nothing; an item full; too few stones; a Common item with one socket beside an Epic's four.
+  - **The transfer prompt** when a new item replaces one that holds ranks or emblems (`docs/design.md`, "Forge ranks, emblems and jewels belong to the item"): one card that says what moves and what can't.
+- **Rules:** taps 44 or more, no text under 14; violet only as an accent (AR40); the icons as they are; Combat Power's change shown as `docs/design.md`, "Combat Power", says (a visible number, never zero).
+- **Waits:** the Jewels page, until the director answers on the sockets (five, one of each colour, against one from Rare); the numbers (research's emblem and forge request, next, with the level-gap question); any sound.
+
 ## Later, by ground
 
 The rest of ground 1 (Kirra in AR10, Watt in AR11; then Sable, Marigold, Crane), then each ground's Voidkin in `docs/roster.md`'s order. **The machines** (Gantry, Bulwark, Ironhymn, Shiomaru, Aegir) share one custom rig, taller than a player, with its own clip family: the first of them is timed like AR1, because a custom rig is a different cost.

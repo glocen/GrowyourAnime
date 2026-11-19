@@ -14524,7 +14524,7 @@ Labelled SIMULATION, not play: `tools/balance/sim.py`'s model, 6,000 leads (leve
      - the elite's shoulder mask with its holes lit like the head mask's. The preview draws them dark, and dark holes over a grin read as a skull's;
      - the coral staying inside the eye and grin cuts, with no glow or streak below the mouth or the eyes. If one shows, it comes back to the check.
   4. AR42's guard as it now stands: no ink brows ever; no hood or blue jacket; the holes almond and lit, never round dark sockets, never dot pupils.
-- **Open:** research's look on the same frames, which closes AR47 (research, 18:32: "no further round"). Faber holds the Shade's files until then.
+- **Released** to Faber at 18:42, on research's close ("Research closes AR47", below).
 
 ### Research's look on the rework (Quaestor, 2026-11-19, 18:32)
 

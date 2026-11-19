@@ -380,8 +380,9 @@ def placements(found):
                  "(Sort) in Seam's own (Backing #07060C; Panel #1A1430 to #0C0A16; Well #1B1728 to #110E1B; Button "
                  "#2A2244 to #1A1530), with SeamGlass's Edge, Facet and Glint on them; the lights as take 1: the "
                  "sheen, the edges lit from above, the corner glint, the lit press, the top light",
-            "switch": "the two takes differ in those four grounds alone; research picks one at its pass, and the "
-                      "cut's places hold for both",
+            "switch": "the two takes differ in those four grounds alone, and the cut's places hold for both",
+            "picked": "take 2, research's pick at competent (2026-11-19, 21:28, AR43, 'Research's pick of the "
+                      "cut'): build take 2",
             "why": "research's 'watch the violet' (21:00): take 1's lifted panels nearly double the violet below "
                    "the band; take 2 stays at or under today's on the Overview (see violet)"},
         palette=dict(
@@ -444,6 +445,8 @@ def placements(found):
                 main=dict(words="Main", colour="Light", bold=True, gap=6, note="right after its own total"),
                 widest=dict(name="Intelligence, about 63 points at 14", total="12,345 Main, about 67",
                             room=round(THIRD - CELL_PAD, 1)),
+                rule="research's condition (21:28): no attribute's name or number is cut or shrunk on the smallest "
+                     "phone; if one doesn't fit, the cells widen, never the text smaller",
                 foot="row two's cells end at 302.7, inside the scroll's foot (306.5): all five show on the "
                      "smallest phone with nothing scrolled; the Battle Attributes start under the fold"),
             rest="the Battle Attributes' blocks, Now, Gear and its own name: as today, in SeamGlass's Text and "

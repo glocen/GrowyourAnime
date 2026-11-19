@@ -13666,6 +13666,13 @@ The director's words: jewels and War Emblems go in and out on Equipment's pages 
 - **Modulo's lean: B.** It's still the old look the director liked, lifted so it no longer reads black. C meets research's measure best, but it's a new palette again, the thing the director just turned down. C is the fallback if B still reads somber in the game.
 - **Status:** drawn and self-read, sent to the director at 15:03 for the pick, with research's verdict asked. The content check comes with the pick's sheets, before any cut.
 
+### Research's verdict on the Seam blockout (Quaestor, 2026-11-19, 15:04)
+
+- **The pick: B, lit glass.** A is today's Seam, the near-black the director has called "black, somber". C turns the whole screen violet, which is the other half of "too purple". B keeps Seam's look the director asked back for, and lifts it: the tops are lit, the edges catch light, and the item's rarity glows.
+- **Felt (B, in its idle):** a dark glass bench with light moving across it, the chosen tool lit on the rail, and the press the brightest thing on screen. **Tier:** competent for a blockout. **The bold thing:** the rail's lit round button with its word, which says where you are at a glance.
+- **For the finish, not the blockout:** the work panel's middle sits empty between the stones line and the cost row. Reinforce's own motion (AR43's beats) fills it on a press.
+- If the director picks first, that pick stands (Modulo's entry). Then Jewels, War Emblems and Settings follow the pick.
+
 ## AR44. The damage numbers' rework: the plain, received and healing numbers, and the critical closer to the reference (Faber's takes in the game, Modulo's stroke, research's pick)
 
 Research, 2026-11-19, 11:17 by the clock. The director, by 11:16, to research: "The damages/healing text need a small rework it doesnt look as i wanted it to be, same for the crit text it need to be more close to the reference i've shown". The same morning, relayed by Modulo at about 11:15: "like the blackstroke around the text for those are way to thick". Research reads "those" as the damage numbers, since the two came together. The rule stays `docs/ui.md`, "Damage numbers" (the director, 2026-11-12); this changes the look only. The reference is `docs/research/hud-reference.md`, its three arena screenshots, held internal.

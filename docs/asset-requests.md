@@ -12968,6 +12968,19 @@ Research, 2026-11-19, 01:14 by the clock. This is TR29's waiting look: the platf
 - **From above:** high over the new disc, looking down, for the content check's symbol read. The beats only.
 - Each direction gets its strip, and a sheet compares the three at their beats.
 
+## AR42. The stages' screens: the picker, the results card and the stage's line (Modulo, for research's pick, then Faber)
+
+Research, 2026-11-19, 01:35 by the clock. TR43 is built in grey (`UI/StageScreen`, `StageController`; TR43, "The block, built"). Its look is "art on the tiles", which waited. Drawn in code, with no Blender render, so it fits while AR41's renders are held.
+- **Feel line:** after the first clear, the player opens the Festival Door and sees Lantern Row's four stages as one road, already walked up to where they stand. The next tile is the one that draws the eye. A stage's end is a short card that names what just opened.
+- **The pieces,** on the kit (`Kit/Screen`) in AR40's C, at the smallest phone (568 x 320):
+  1. **The picker:** four tiles, each with its stage, its recommended Combat Power, its best clear, and when locked its condition ("Clear Stage 2 first", "Beat the Lamplighter on Normal"); and the Normal/Hard switch, where Hard reads harder at a glance.
+  2. **The results card:** what the stage gave, Retry, Next and Home, and "Hard is open" on the Lamplighter's Normal win.
+  3. **The stage's line** at the top of the screen in a run (its stage and the quota's count).
+- **Three directions** for the picker, as sheets in code. Each shows every state: open, cleared, locked, Normal and Hard. The pictures on the tiles are drawn in code too, never a render: a stage's mark, the Shade, the elite, the Lamplighter's lantern. Research picks, then 2 and 3 follow the pick.
+- **Rules:** every tap 44 or more and no text under 14 (`docs/ui.md`); violet only as an accent, value range on every panel (AR40); the content check before any upload.
+- **Waits:** the gear budgets on the card (item 4); dailies; the dock's shortcut; any sound.
+- **Before the pick,** research's read of TR43's grey in motion may move a line. The layout follows Faber's built screen, so read `UI/StageScreen` first.
+
 ## Later, by ground
 
 The rest of ground 1 (Kirra in AR10, Watt in AR11; then Sable, Marigold, Crane), then each ground's Voidkin in `docs/roster.md`'s order. **The machines** (Gantry, Bulwark, Ironhymn, Shiomaru, Aegir) share one custom rig, taller than a player, with its own clip family: the first of them is timed like AR1, because a custom rig is a different cost.

@@ -14206,6 +14206,34 @@ Research pulled it forward by message (after 20:34), as tier 1. Give level 3 its
 - **Condition for Faber's install:** "Intelligence" fills its cell to the edge at 14 pt. In the game no attribute's name or number is cut or shrunk on the smallest phone; if it doesn't fit, the cells widen across the panel, never the text smaller.
 - The Stars page's empty stars read as seven now, so polish-later's line on them closes.
 
+### Faber's install of take 2, and the level 3 jewels (Faber, 2026-11-19, 21:37 to 22:52 by the clock, with TR49)
+
+- **Where:** `src/client/UI/VoidkinScreen/` (`init`, `Seam`, `Bag`), `UI/Kit/Glass.luau` (`Ground` takes its backing, `Dress` a note under any press), `UI/ShopScreen.luau`, `Config.Hud.Voidkin.Pips` and `Config.Hud.Bag.Divider`, and `Config.UIKit`'s SeamDeep: B's lights on Seam's colours, worn with Seam's shape (`Face`).
+- **As the cut lays it:**
+  - **The grounds and panels:** the ground is `Glass.Ground` in Seam's Backing top to foot, with no bloom. The Overview's panel and the bag's room are the kit's glass panel in SeamDeep: the sheen, the edge lit from above, the corner glint.
+  - **The band:** its marks' channel and the wallet's chips are in the Channel with their Edge.
+  - **The presses** are dressed by the kit. Leading is lit with its mark. On another Voidkin's page, Lead is lit, and Station or Recall is quiet with its bay under its name. An Off press says why under its name.
+  - **Stars:** the seven pips are 14-point squares turned 45 degrees, 24 apart. A won star is its trim lit from above, with a Glint hairline and the trim's glow. One to win is the Well with a Facet hairline. Take the star is lit, or Off saying how many copies are short.
+  - **The bag:** a Facet hairline between the doll and the bag, and the kinds' channel in the Well.
+- **Seam's own stays where the cut keeps it** (`Seam.Own`): the roster's strip and the Void Shop. The Shop's shard row now leaves room for its featured offer.
+- **Research's condition:** on the smallest phone all five attributes show, three then two, with nothing scrolled and no name or number cut or shrunk. "Intelligence" fits its cell at 14.
+  - **The room it took:** the experience line is now one line, its bar right under the words, and the line ends at the bar's foot (the cut's rule). The first heading moves up from 105 to 80 and the foot of the second row lands at 208, inside 218.
+  - **Tier 1, the words:** "{xp} of {need} experience to the next" wrapped to two lines at 14 there. It reads "{xp} of {need} to Level {n}" now.
+  - A case holds both.
+- **The level 3 jewels:** Modulo's five redrawn crystals were uploaded under the group in place of the first at 22:24, after the content check's PASS. All five read back Approved with the group's key at 22:50, and their ids are swapped in `Config.UIKit` (`docs/asset-log.md`). They draw through the game's `Skin.Icon` at the row's 18 points and at 38: `build/captures/ar43/jewels-level3.png`.
+- **Captures,** the smallest phone boxed in Studio, 852 by 480 pixels, held by the new "Take: AR43's take 2" (Manual): `build/captures/ar43/take2-lead.png` (the Overview, Leading), `take2-other.png` (Marigold: Lead, then Station with "Bay 1"), `take2-kit.png`, `take2-stars.png` and `take2-bag.png`.
+  - Read up close: the lit plate's sheen and glow sit inside its edge, the wells' hairlines are crisp, and Station's quiet glass carries its bay in the Soft.
+- **Seen, not from this cut:**
+  - The stage's floor now glows in each Voidkin's element (Rook's Fire orange, where it stood grey). That's TR49's elements meeting the floor's rule of TR24.
+  - Marigold still stands as the grey stand-in.
+  - No state in the save gives an Off Lead, so none is captured.
+- **Tested:** type check 0 new.
+  - The Voidkin screen (TR17) 243/0. The Overview 25/0, its smallest-phone fit and the experience line included.
+  - The Items page ITEMS_RESULT, once its checks read the screen's palette (SeamDeep, the kinds' channel in the Well).
+  - Equipment 71/0, Shop 79/0, the take 3/0.
+  - The Kit 85/0, its quick tap rerun at 60 fps (13/0) after a 20 fps run.
+- **Status:** implemented and tested; for research's pass.
+
 ## AR44. The damage numbers' rework: the plain, received and healing numbers, and the critical closer to the reference (Faber's takes in the game, Modulo's stroke, research's pick)
 
 Research, 2026-11-19, 11:17 by the clock. The director, by 11:16, to research: "The damages/healing text need a small rework it doesnt look as i wanted it to be, same for the crit text it need to be more close to the reference i've shown". The same morning, relayed by Modulo at about 11:15: "like the blackstroke around the text for those are way to thick". Research reads "those" as the damage numbers, since the two came together. The rule stays `docs/ui.md`, "Damage numbers" (the director, 2026-11-12); this changes the look only. The reference is `docs/research/hud-reference.md`, its three arena screenshots, held internal.
@@ -14417,6 +14445,15 @@ Research pulled it forward by message (after 20:34), as tier 1: judge it at full
 ### Research's pass on the digits (Quaestor, 2026-11-19, 21:00)
 
 - **Felt:** at 0.12, "949" and "+86" read as one number each, at a glance, the way the critical does. At 0.45 they read as three separate digits. **Passes at competent;** Gap 0.12 on Dealt, Element, Received and Heal. Faber's capture of the change in the game is the proof.
+
+### Gap 0.12 in the game (Faber, 2026-11-19, recorded at 22:37 by the clock)
+
+- **The change:** `Gap = 0.12` on Dealt, Element, Received and Heal in `Config.Hud.Numbers.Styles`. The critical and the word are unchanged.
+- **The proof, in the game:** the case "Clip: AR44" in a Tower fight, recorded for 10 s from Studio's window (`build/captures/ar44/numbers-gap-012.mkv`, 39 fps), and one round in 0.1 s steps (`build/captures/ar44/numbers-gap-012-round.jpg`).
+  - The flurry's 608, 917 and 949 each read as one number, and so do the +86 and the 57, beside the critical's 1,204 and the Block.
+  - It's the window's view (1655 by 756 points); the smallest phone draws them about 18% larger in the same proportions.
+- **Tested:** the clip 3/0.
+- **Status:** implemented and tested; research's pass named this capture as its proof.
 
 ## AR45. The foes' cards with their difficulty skulls, and CR's gold tab (Modulo, for research's pick, then Faber)
 
@@ -14830,6 +14867,22 @@ Labelled SIMULATION, not play: `tools/balance/sim.py`'s model, 6,000 leads (leve
 
 - **Felt:** a paper mask with two holes cut through it, the same face as its tile. On Hard, the coral burns behind the holes and the grin, the meanest look the Shade has had. **AR47 passes at competent.** The masks are released to Faber with AR46's cut. The installed Hard capture shows the elite's shoulder mask (the check's condition 3).
 - **Installed** (Faber, 19:20) with AR46, in one upload: AR46, "Faber's install, AR46 with AR47's masks".
+
+## AR48. The element states' cues: Burn, Chill and Freeze, Shock, Sap (Modulo, for research's pick, then Faber)
+
+Research, 2026-11-19, 22:58 by the clock. The states are designed (`docs/design.md`, "States in a fight", tier 2 of 2026-11-12) and wait in TR7. TR49 gives every Voidkin and every Shade an element, so every fight will carry one. These cues make an element read on the body it struck, not only in the number.
+
+- **Feel line:** a Frost lead's third hit lands, and frost creeps up the Shade's legs. Its swings slow, then a shell of ice snaps shut round it. A Fire hit leaves embers rising off the struck for a few seconds, a Storm hit leaves light crackling over it, and a Void hit leaves dark motes falling round it, the heal it receives cut.
+- **The pieces,** one cue per state, on the Shade (R6, the robe set) and on a Voidkin of open legs:
+  1. **Burn (Fire):** embers rising off the body for the burn's time.
+  2. **Chill:** frost creeping up from the feet in steps as the chill fills. **Freeze:** a shell of ice that shuts round the body, holds, and breaks at its end.
+  3. **Shock (Storm):** crackling light over the body while it holds.
+  4. **Sap (Void):** dark motes sinking round the body.
+- **Their colours** are the elements' own (`Config.UIKit`, Fire `#FF8A3D`, Frost `#8FE3FF`, Storm `#FF6FD8`, Void `#B58CFF`). Sap is dark first: its violet is a thin rim on the motes, never a cloud (the "too purple" line).
+- **The measures:** `handbook/visuals/vfx.md` ("Brief an effect", "Value and colour", "On any floor", "Don't"). One hero shape each, with a direction and an acceleration. Each must read at phone size on Lantern Row's paving by day and over the dark Shade. A state is a status, so it reads quieter than a hit's spark and never hides the fighter's silhouette.
+- **Modulo's:** the four as grey block-ins, then their colour, shown in motion beside a plain hit in one strip sheet, in under 2 hours (the effect cap). Then research's pick, and the content check before any upload.
+- **Faber's, after TR49:** the states' rules (`Rules.Fight`, the numbers in Config from `handbook/feel/combat.md`), with cases, then these cues on them.
+- **Waits:** poise and the stagger ring (the states' other half), the elements' sounds, a signature's own state (Rill's Cold Snap keeps its own look).
 
 ## Later, by ground
 

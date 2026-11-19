@@ -13495,6 +13495,44 @@ From home_tray.png and home_step.png at the smallest phone, before Modulo cuts t
   - if the dots grow, line up straight or become even in size, or if the hollow closes into a crescent, it comes back for a check.
 - **For Faber:** all twelve emblems go up now, Tidebreak with them.
 
+### Equipment's Jewels and War Emblems, each its own screen (Modulo, 2026-11-19, 14:18 to 14:25 by the clock)
+
+The director's words: jewels and War Emblems go in and out on Equipment's pages only, and the gear's card just shows what's socketed (`docs/decisions.md`, 03:37 to 03:38). Each page is its own screen from Home's Equipment row, as Reinforce is (12:21; research's step, 13:20).
+- **Feel line:** the player opens Jewels or War Emblems from Home and sees at once which worn piece has a gap. They tap it, tap a socket, tap what fills it, and one press puts it in. The socket fills and its number appears under it.
+- **The block contains:** both screens at the smallest phone in AR40's C, in every state, and one of each at the phone's own pixels.
+- **Waits:** the cut for Faber, after research's verdict; the numbers (research's: jewel points, emblem stats, Combine's cost if any); the motion of a jewel or emblem going in; sound.
+- **Where:** `tools/blender/equipment_pages.py`, built on `upgrade_pages.py`'s kit. The sheets are in `build/scratch/modulo/equipment/`:
+  - `equipment_jewels.png`: five states, which are nothing in it, a better one for a held socket, Combine, an empty socket with none in the bag, and full with Take out;
+  - `equipment_emblems.png`: four states, which are a Common's one socket, the Epic helm's four with two empty, a held socket to take out, and the Rare blade full with Replace;
+  - `equipment_close.png`: one of each at three pixels a point.
+- **Reinforce's frame, kept:**
+  - the band;
+  - only the worn gear down the left, the chosen row lit and pointing at the work;
+  - the work on the right.
+  - **New:** each row shows under its name what its item holds, so a gap shows before a row is tapped. For jewels, the five as small stones or empty rings in their colours, with "Full" when all five are in. For emblems, its sockets as small emblems or empty stars.
+- **Jewels:**
+  - **The sockets:** the item's five in a row, 44 points each, each ringed in its colour. The chosen one is lit, and its points sit under it ("-" when empty).
+  - **The bag:** below a rule, "Your red jewels" with the attribute on the right, then levels 1 to 5 of that colour with their counts. A level with none is dimmed.
+  - **The line and presses:** one line of what the chosen jewel does, then the presses.
+    - **Put in**, or **Replace** when the socket holds one, which says the old one goes back to the bag.
+    - **Take out**, when the socket is chosen alone.
+    - **Combine**: three of a level make one of the next, sure, never random.
+- **War Emblems:**
+  - **The sockets:** one to four by the item's rarity, 46 points each, each emblem's value and stat name under it (two words on two lines). An empty socket shows a faint star and "Empty".
+  - **The bag:** "Your emblems" with a Rarity sort pill. The row scrolls, cut inside the panel's edge.
+  - **The line and press:** one line with the chosen emblem's set and rarity in its colour and its stat, then one press: Put in, Replace (with "now" and the old value) or Take out.
+- **No price is drawn:** putting in and taking out are free (`docs/design.md`). The points and stats are stand-ins.
+- **Modulo's self-read:**
+  - Everything is legible at the phone's own pixels.
+  - A level 1 jewel in the row is a dot: that's the director's grain.
+  - The Rarity pill is 20 points high, so its tap must be 44 points over it.
+- **Content check, PASS** (14:28): no gore, no paid random outcome, nothing copied, and every word is plain. Its conditions:
+  1. **Combine stays sure.** A chance to fail or a random result, with a cost in Credits or anything else Robux buys, makes it a paid random item: odds shown before the press, `PolicyService`, and the director's approval. A sure Combine with a Credits cost is fine. The cost is research's.
+  2. **Combine's motion and effect get their own check before they're built:** light or sparks, never red dripping, falling as drops or flowing together.
+  3. **Carried:** the shard never reads as a drop. Red jewels in the world need their own check.
+  4. **"Chests and foes drop them" stays true** only while chests are earned by play alone (`docs/design.md`). If that changes, the line comes back to this check.
+- **Status:** drawn, self-read and content-checked. It waits on research's verdict, then the cut for Faber.
+
 ## AR44. The damage numbers' rework: the plain, received and healing numbers, and the critical closer to the reference (Faber's takes in the game, Modulo's stroke, research's pick)
 
 Research, 2026-11-19, 11:17 by the clock. The director, by 11:16, to research: "The damages/healing text need a small rework it doesnt look as i wanted it to be, same for the crit text it need to be more close to the reference i've shown". The same morning, relayed by Modulo at about 11:15: "like the blackstroke around the text for those are way to thick". Research reads "those" as the damage numbers, since the two came together. The rule stays `docs/ui.md`, "Damage numbers" (the director, 2026-11-12); this changes the look only. The reference is `docs/research/hud-reference.md`, its three arena screenshots, held internal.

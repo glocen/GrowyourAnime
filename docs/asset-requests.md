@@ -13276,6 +13276,64 @@ Research, 2026-11-19, 11:17 by the clock. The director, by 11:16, to research: "
 - **Waits:** the grey word's look (Dodge, Block, Absorb), unchanged; the numbers' motion (rise, pop, merge), unchanged; any sound.
 - **Order:** Faber after TR46, Modulo after AR43's strips. A small piece: Faber's takes about 1 h, Modulo's stroke about 1 h.
 
+### Modulo's stroke: `CritSweep`, a painted brushstroke (Modulo, 2026-11-19, from AR43's close at 11:18 to 11:31 by the clock)
+
+- **Where:** `build/handoff/UI/hud/images/CritSweep.png` is a new picture under the same name. It's 264 by 120 px, 66 by 30 points at 4 pixels a point. Beside it are its `hud_art.json` entry and the sheet `crit_stroke_sheet.png`. It's drawn by `sweep` in `tools/blender/hud_art.py` on a fixed seed: `-- <out> stroke` redraws it alone, and `strokesheet` draws its sheet. The other 18 images in the folder are untouched.
+- **The stroke:** one stroke of a loaded round brush.
+  - It lands as a round, solid press behind the first digit, about a digit's height and a bit across, sitting low.
+  - It's pulled away up and to the right, climbing half its height over its length, a little faster toward the end.
+  - Past halfway its 34 bristles part into streaks and give out, the outer ones first, so the tail narrows to a few dry streaks.
+  - The slice is white where loaded, and browner toward the tail and at the rim, where the paint pools. The game tints it.
+- **For the builder,** `Config.Hud.Numbers.Critical.Sweep` (the listing's `lay`):
+
+  | Value | Now | New |
+  |---|---|---|
+  | Height | 1 | 1.5 |
+  | Left | 1/3 | 0.5 |
+  | Width | 0.6 | 0.67 |
+  | Least | 3 | 2.2 |
+  | Transparency | 0.3 | 0 |
+  | Tint | #CC661F | kept |
+
+  - Effects.luau's `sweep` lays it as the code stands. Centring it on the digits suits the low head and the tail rising over their top.
+  - With digits of 46 points, every number from 3 to 6 figures takes Least, so the stroke is laid at its drawn shape, 109 by 50 points, on all of them. Its tail ends over the last digit of "339", about two thirds of "1,204", and half of "48,915".
+  - Upload it under the group, then swap `UIKit.Images.CritSweep`'s id. The values are tuned live.
+- **Read on the sheet:** over the dark street and over the lanterns, at 2 pixels a point and at 1, the gold digits come first and the stroke is an orange comet under the first two. At 1 pixel a point it stays a clear orange mark, not a smudge. Blender's face stands in for the game's.
+- **Content check, 2026-11-19 (by 11:29): PASS** on rules 2, 3 and 4. It reads as a comet or a lick of flame, never a slash: a slash would need two points or a thin crescent. For this picture these conditions replace round 2's (AR3, section 3). Each change comes back to the check:
+  1. **Tint:** `#CC661F` is the red and dark limit. Yellower or lighter is free, with green at least half of red. The slice stays neutral grey, its tail and rim no darker than now. Never red, crimson, maroon, magenta, plum or black. Only under a critical the player deals.
+  2. **Opacity:** Transparency 0 to 0.4 is free. Anything more see-through needs a look over the pink end first.
+  3. **Shape:** one mark, a round press behind the first digit, pulled once up and to the right, climbing no more than now.
+     - The taper and the dry bristles are at the tail only.
+     - No curl, hook, second lobe or point at the head.
+     - No drop, bead, run, drip, spatter, fleck, gloss or halo.
+     - Never mirrored, pulled down, crossed, doubled, or turned past the number's slant.
+     - A redraw, a new seed included, is a new picture.
+  4. **Layout** as above. It stretches along its length only and is never squashed taller. It appears and leaves with its number, with no afterimage, and is never left on a body, a portrait or the ground.
+  5. **The digits** stay in the kit's own face.
+  6. **In TR3's view**, at the player's camera and phone size, the mark, its thin tail included, stays orange-brown over the dark street and the violet and pink end. If it goes rose, wine or maroon, or lies across a fighter, it's made yellower or more solid and comes back.
+  7. **It stays our dry-brush stroke.** A pass closer to the reference comes back to the check: a smooth, soft blob, a hooked tip, or the reference's proportions or see-through edge.
+  8. **Provenance:** the `sweep` that wrote the file is committed before the upload (this piece's commit), and the upload is logged in `docs/asset-log.md`.
+- **What I see wrong:**
+  - The dry tail's streaks end in hard steps at twice the size. At the game's size they read soft.
+  - A 7-figure number stretches the stroke to about 1.3 times its drawn length.
+  - It isn't seen in the engine yet, or moving.
+- **Status:** delivered. It waits on Faber's install and phone captures, then research's verdict, one take.
+
+## AR45. The foes' cards with their difficulty skulls, and CR's gold tab (Modulo, for research's pick, then Faber)
+
+Research, 2026-11-19, 11:30 by the clock. The director's word of 11:30 (`docs/decisions.md`, the row): the enemy and elite cards redrawn to match the new UI, a difficulty skull by the foe's CR against the lead, the level's text in its skull's colour, and CR's look replaced. The rules are `docs/ui.md`, "The HUD, in the world": the target's card, "Numbers, short or whole" and "CR's look".
+
+- **Feel line:** before the first hit, one glance at the foe's card tells you whether to fight: a grey skull you walk through, a white one is a fair fight, yellow makes you careful, red tells you to go and grow first.
+- **The pieces,** in the new kit (AR40's C, and AR43's Menu composition), at the smallest phone (568 x 320):
+  1. **The target's card** for a Shade, an elite (its own mark on the frame) and the keeper's bar, with the skull beside the level.
+  2. **The skull** in four tiers: grey and faint, white, yellow, red. It's one original icon of our own, read at 16 pt, never gore (rule 4: a plain stylised skull, no wounds or blood). The level's text takes its tier's colour.
+  3. **CR's tab:** "CR" on a small slanted gold tab, the number in pale ivory in AR44's digits, at the lead's feet and on the item card.
+- **The tiers' thresholds,** research's seeds by the foe's CR over the lead's: grey under 0.6, white up to 1.05, yellow up to 1.3, red above. Research fits them in the simulation so that red means the lead usually loses; they go in `Config.Hud` for Faber.
+- **Modulo's:** one sheet in code with each card in every tier, then research's pick; the content check before any upload.
+- **Faber's:** the cards, the skull and the level's colour from `Rules.Stats.Power` on both sides (never a second sum), and the short form only where `docs/ui.md` says.
+- **Waits:** a skull over the foe's head in the world; any sound.
+- **Order:** Modulo after AR44's stroke; Faber after AR44's takes.
+
 ## Later, by ground
 
 The rest of ground 1 (Kirra in AR10, Watt in AR11; then Sable, Marigold, Crane), then each ground's Voidkin in `docs/roster.md`'s order. **The machines** (Gantry, Bulwark, Ironhymn, Shiomaru, Aegir) share one custom rig, taller than a player, with its own clip family: the first of them is timed like AR1, because a custom rig is a different cost.

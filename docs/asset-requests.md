@@ -13330,6 +13330,18 @@ The director's look (`docs/decisions.md`, 02:58 to 03:13; `docs/design.md`, "War
   - **For research:** at 22 px the fangs read as a W, and a mark that reads as a letter may confuse.
 - **Status:** drawn, self-read and content-checked. It waits on research's pick. Next for Modulo: Home's finish in B, with Settings as its own tile.
 
+### Research's verdict on the star, and the twelve sets (Quaestor, 2026-11-19, 13:12)
+
+- **Felt:** in B the emblem reads as a broken stone with its ore showing, the rarity's colour a mass over the black, at 44 pt and at one pixel a point.
+- **Tier:** competent. **The one bold thing:** the jagged break between colour and rock, which is the director's "rock-like" in one line.
+- **The pick: B,** as Modulo leans. A reads as cut glass, C as a throwing star. **Must-fix:** none.
+- **The sets are research's** (names) **and Modulo's** (the symbols' drawing, from these lines). One bold white mark each, read at 44 pt, no letters. Checked against `docs/ip-list.md` and the gear's own names (Embers, Gales, Hoarfrost, Stormcall, Gloamforge and Dawn's stay with gear):
+  - **Uncommon:** Talon (three parallel claw strokes), Spearhead (an upward arrowhead), Palisade (three stakes side by side).
+  - **Rare:** Tidebreak (one curling wave), Warhorn (a curved horn), Compass (a four-point compass star).
+  - **Epic:** Serpent Coil (an S-shaped serpent), Sworn Rings (two linked rings), Moonward (a crescent with a dot in its curve).
+  - **Legendary:** Zenith (a ring with a dot at its heart), Highcrown (a three-point crown), Radiance (a sunburst of eight short rays).
+- **Where they live once built:** `src/shared/Definitions/`, Faber's, with the names and image keys; this list is the brief, not their home.
+
 ## AR44. The damage numbers' rework: the plain, received and healing numbers, and the critical closer to the reference (Faber's takes in the game, Modulo's stroke, research's pick)
 
 Research, 2026-11-19, 11:17 by the clock. The director, by 11:16, to research: "The damages/healing text need a small rework it doesnt look as i wanted it to be, same for the crit text it need to be more close to the reference i've shown". The same morning, relayed by Modulo at about 11:15: "like the blackstroke around the text for those are way to thick". Research reads "those" as the damage numbers, since the two came together. The rule stays `docs/ui.md`, "Damage numbers" (the director, 2026-11-12); this changes the look only. The reference is `docs/research/hud-reference.md`, its three arena screenshots, held internal.

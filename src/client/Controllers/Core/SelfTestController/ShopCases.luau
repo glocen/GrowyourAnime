@@ -18,6 +18,7 @@ local Odds = require(Shared.Rules.Odds)
 local Shop = require(Shared.Rules.Shop)
 local ShopConfig = require(Shared.Config.Shop)
 local HudConfig = require(Shared.Config.Hud)
+local UIKit = require(Shared.Config.UIKit)
 local Main = script.Parent.Parent.Parent.Main
 local ShopController = require(Main.ShopController)
 local ProfileController = require(script.Parent.Parent.ProfileController)
@@ -42,6 +43,16 @@ local function buyOf(panel: string): TextButton?
 	local root = ShopScreen.Find(panel)
 	local found = if root then root:FindFirstChild("Buy") else nil
 	return if found and found:IsA("TextButton") then found else nil
+end
+
+-- A Buy's plate (Kit.Button's Fill) and its word's colour: the lit press's (research's 16:19).
+local function lit(button: TextButton?): (number?, Color3?)
+	local fill = if button then button:FindFirstChild("Fill", true) else nil
+	local found = if button then button:FindFirstChild("Label") else nil
+	if fill and fill:IsA("ImageLabel") and found and found:IsA("TextLabel") then
+		return fill.ImageTransparency, found.TextColor3
+	end
+	return nil, nil
 end
 
 -- A button's word: its label, or its reason while it's off (Kit.Button).
@@ -137,6 +148,11 @@ function ShopCases.Cases(): { any }
 				local featLine = shelf.Lines.Featured :: Shop.Line
 				local shardBuy, featBuy = buyOf("Shards"), buyOf("Featured")
 				t.Check("each Buy says its price", shardBuy ~= nil and featBuy ~= nil and word(shardBuy) == Read.Number(shardLine.Price) and word(featBuy) == Read.Number(featLine.Price))
+				local LIT = HudConfig.Make.Lit
+				local ink = UIKit.Palettes.Seam.Ink :: Color3
+				local featPlate, featInk = lit(featBuy)
+				local shardPlate, shardInk = lit(shardBuy)
+				t.Check("each Buy the lit press: its plate whole, its price in ink", featPlate == 0 and shardPlate == 0 and featInk == ink and shardInk == ink, featPlate)
 				lintClean(t, "the Shop")
 
 				-- Out of reach: short of the piece by 150.
@@ -146,6 +162,8 @@ function ShopCases.Cases(): { any }
 				end)
 				featBuy = buyOf("Featured")
 				t.Check("out of reach: the count's place says how far, Buy dimmed on its price", said("Count", "Featured") == "Need 150 more" and featBuy ~= nil and Button.State(featBuy) == "Disabled" and word(featBuy) == Read.Number(featLine.Price), said("Count", "Featured"))
+				local offPlate = lit(featBuy)
+				t.Check("out of reach: the lit press dimmed", offPlate ~= nil and math.abs(offPlate - LIT.Off) < 1e-3, offPlate)
 
 				-- A shard bought, twice: into the bag, then bought out.
 				t.Server("DataCredits", featLine.Price + shardLine.Price * 2 - credits())

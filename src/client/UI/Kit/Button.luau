@@ -53,6 +53,7 @@ export type Props = {
 	TextSize: number?,
 	Under: boolean?, -- disabled, it keeps its name and says why under it
 	Quiet: boolean?, -- a secondary press: no accent's base line at rest, so it never reads as the thing to press
+	Lit: boolean?, -- the lit press (Config.Hud.Make.Lit): a plate of light, its words in ink; off, the plate dimmed
 	Inset: number?, -- its label's middle this many pixels right of the button's, room for a mark its owner lays at its left
 	Bare: boolean?, -- no plate of the kit: its owner lays its own face in its skin (the spectate eye's plate), which squeezes as a face does
 	Still: boolean?, -- no squeeze: its owner draws its own press from its State (the dock's tiles sink, UI.Dock)
@@ -74,6 +75,7 @@ type State = {
 	Selected: boolean,
 	Primary: boolean,
 	Quiet: boolean,
+	Lit: boolean,
 	Inset: number,
 	Bare: boolean,
 	Still: boolean,
@@ -118,6 +120,14 @@ local function fall(points: { { number } }): NumberSequence
 	return NumberSequence.new(keys)
 end
 local GLASS_FALL = fall(MAKE.Glass.WashFall)
+local LIT_FILL = (function(): ColorSequence
+	local points = {}
+	for _, stop in MAKE.Lit.Fill do
+		table.insert(points, ColorSequenceKeypoint.new(stop[1] :: number, Color3.fromHex(stop[2] :: string)))
+	end
+	return ColorSequence.new(points)
+end)()
+local LIT_INK = UIKit.Palettes.Seam.Ink :: Color3
 local PRESSED_FALL = fall(MAKE.Channel.PressedFall)
 -- A main action set (Leading, Claimed) wears the rail's chosen tab's light (AR29's B; research's ruling on the director's
 -- remark, 2026-11-17, 20:31): its glow, its fill, its edge, and its wash rising to the foot as the tab's does to the line.
@@ -199,7 +209,8 @@ local function paint(button: TextButton, state: State)
 	local chip, pick = state.Chip, state.Pick
 	-- The kind: glass for a main action, or anything set, on or chosen; the channel otherwise. A picker on stays the
 	-- channel, its value in the light; a chip off the glass has no plate, its row is its channel.
-	local glass = not disabled and (set or main) and pick == nil
+	local lit = state.Lit and not state.Bare
+	local glass = not disabled and (set or main) and pick == nil and not lit
 	local L = if not glass then 0
 		elseif set then (if main then MAKE.L.Set elseif chip or not word then MAKE.L.Chosen else MAKE.L.On)
 		elseif pressed then MAKE.L.Pressed
@@ -239,6 +250,21 @@ local function paint(button: TextButton, state: State)
 	fade(state, layers.FootGlow, if tabbed then 1 - TAB.Meet.GlowAlpha else 1 - G.FootGlow * L, seconds)
 	layers.Foot.Visible = glass
 	layers.Foot.ImageColor3 = light
+	if lit then
+		-- The lit press: the plate down the light's stops, a white hairline, the lavender glow round it; pressed, the
+		-- plate a touch dimmer; off, dimmed, with no glow.
+		local K = MAKE.Lit
+		Skin.Tint(layers.Fill, LIT_FILL)
+		layers.Fill.ImageTransparency = if disabled then K.Off elseif pressed then K.Down else 0
+		layers.Fill.Visible = true
+		layers.Edge.Visible = true
+		layers.Edge.ImageColor3 = Color3.new(1, 1, 1)
+		layers.Edge.ImageTransparency = if disabled then K.OffEdge else K.Edge
+		layers.RingGlow.Visible = not disabled or flash ~= nil
+		layers.RingGlow.ImageColor3 = flash or K.Glow
+		layers.RingGlow.ImageTransparency = if flash then 1 - G.RingGlow * MAKE.L.Main elseif set then K.GlowSet else K.GlowAlpha
+		wash.Visible = false
+	end
 	-- Waiting: a window of light running round the ring; the server's answer: the ring in its colour.
 	layers.Ring.Visible = flash ~= nil or now == "Waiting"
 	layers.Ring.ImageColor3 = flash or light
@@ -258,7 +284,7 @@ local function paint(button: TextButton, state: State)
 		local K = MAKE.Pick
 		underlined, half, lineT, glowT = (pressed or set) and not disabled, K.Under * state.Wide, K.Line[at], K.Glow[at]
 	else
-		underlined = word and not glass and not disabled
+		underlined = word and not glass and not disabled and not lit
 		half = (if pressed then 1 else U.Rest) * math.min(U.Share * state.Wide, U.Most)
 		lineT, glowT = U.Line[at], U.Glow[at]
 	end
@@ -313,7 +339,9 @@ local function paint(button: TextButton, state: State)
 		reason.TextColor3 = SEAM.Soft
 		reason.Position = UDim2.new(0.5, 0, 0.5, MAKE.Word.Fall)
 	end
-	label.TextColor3 = if chip then (if disabled then faint elseif glass or pressed then SEAM.Text else SEAM.Soft)
+	label.TextTransparency = if lit and disabled then MAKE.Lit.OffWords else 0
+	label.TextColor3 = if lit then LIT_INK
+		elseif chip then (if disabled then faint elseif glass or pressed then SEAM.Text else SEAM.Soft)
 		elseif pick then (if disabled then faint elseif set then light else SEAM.Text)
 		elseif disabled then SEAM.Soft
 		elseif marked then light
@@ -613,6 +641,7 @@ function Button.new(props: Props): TextButton
 		Selected = false,
 		Primary = props.Primary == true,
 		Quiet = props.Quiet == true,
+		Lit = props.Lit == true,
 		Inset = props.Inset or 0,
 		Bare = props.Bare == true,
 		Still = props.Still == true,

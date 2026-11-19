@@ -366,6 +366,21 @@ return {
 			PressedEdge = Color3.fromHex("#8B83A3"),
 			PressedFall = { { 0, 0.95 }, { 0.4, 0.915 }, { 0.6, 0.871 }, { 0.75, 0.826 }, { 0.9, 0.772 }, { 1, 0.73 } },
 		},
+		-- The lit press (AR43's B, Modulo's cut: build/handoff/UI/seam/seam.json, "press"): the plate down Fill's stops, its
+		-- hairline white at T Edge, the glow round it in Glow at T GlowAlpha (GlowSet while it's set), its words in the
+		-- seam's Ink. Pressed, the plate at T Down; off, the plate at T Off, its hairline at OffEdge, its words at OffWords,
+		-- and no glow (research's 16:19, on the Shop's Buy). The cut's sheen comes with its idle phase.
+		Lit = {
+			Fill = { { 0, "#FFFFFF" }, { 0.4, "#EEE8FF" }, { 0.55, "#E6DEFF" }, { 0.7, "#E0D5FF" }, { 0.85, "#D9CDFF" }, { 1, "#D4C6FF" } },
+			Edge = 0.1,
+			Glow = Color3.fromHex("#D4C6FF"),
+			GlowAlpha = 0.55,
+			GlowSet = 0.3,
+			Down = 0.15,
+			Off = 0.62,
+			OffEdge = 0.6,
+			OffWords = 0.3,
+		},
 		-- L: a main action at rest and pressed; set (Leading); a second action on (Auto); a chosen chip.
 		L = { Main = 1, Pressed = 1.45, Set = 0.6, On = 0.75, Chosen = 0.9 },
 		-- A press sinks Sink points; the light rises over Down seconds and falls back over Up (the release flash). Research's

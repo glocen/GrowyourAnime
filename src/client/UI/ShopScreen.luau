@@ -214,6 +214,7 @@ local function buyLine(panel: Frame, view: Profile.View, shelf: Shop.Shelf, line
 		Position = UDim2.new(0, pad, 1, -(pad + tap)),
 		Parent = panel,
 		Palette = Seam.Palette,
+		Lit = true, -- the lit press, its price in ink (research's 16:19); dimmed while it can't act
 		OnPress = function(): boolean?
 			if missing and os.clock() - armedAt > SHOP.Armed then
 				armedAt = os.clock()

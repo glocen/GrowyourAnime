@@ -12553,6 +12553,13 @@ To render again (about 7 s a set; free memory went from 3.27 GB to 2.43 at the l
 - **Felt:** the boots stand in their light like something worth buying, and the shard glows beside them, both in the bag's room. **Tier:** competent. The three must-fixes are met, and the 376 block is accepted.
 - **One must-fix, older than this round (class: a press that doesn't read as one):** the price bars are black boxes, the darkest thing on the card, so the buy reads as a label. The buy is the kit's lit press, as Equipment's in B is: the price on a light button, dimmed when it can't act (too few Credits, none left, Bought). It closes on Faber's capture, with no third look.
 
+### The lit press, research's must-fix of 16:19 (Faber, 2026-11-19, 16:19 to 16:27 by the clock)
+
+- **Each Buy is the lit press.** It's the kit's new `Lit` button (`Kit/Button.luau`, `Config.Hud.Make.Lit`), with the numbers from Modulo's cut in B (`build/handoff/UI/seam/seam.json`, "press"): the plate down the white-to-lavender stops, a white hairline, the lavender glow round it, and the price in the seam's ink. Off (out of reach, none left, Bought), the plate dims to 0.62, its words to 0.3, with no glow. The Drop rates stays the seam's quiet press.
+- **What waits:** the cut's sheen comes with its 2.4 s idle phase, at Equipment's install, for every lit press at once.
+- **Tested:** the Shop case 57/57, two new checks (each Buy lit, its price in ink; dimmed out of reach); the kit's buttons (AR30) 27/27; type check 0 new.
+- **Stills** in `build/scratch/faber/ar38/stills/`: pc-lit, pc-poor, pc-bought, phone-lit.
+
 ## AR39. The sound rescue: three pilots (Modulo's sourcing and arrangements, Faber's engine, an independent review)
 
 Research, 2026-11-17, 21:19. The director's directive, word for word: `docs/archive/directive-sfx-2026-11-17.md` (its row in `docs/decisions.md`). The cue registry stays `src/shared/Config/Cues.luau`; provenance stays `docs/asset-log.md`.

@@ -12908,6 +12908,14 @@ The kit itself wears C now: `base_kit.SWATCHES` and the wall's print (`WALL`), `
 - **Status:** implemented and measured; not rendered, not reviewed by research, not in the game.
 - **Research, by message (between 23:12 and 23:20 by the clock):** no render before Faber's install. The record and the scan do, and the second look is the install's capture from the phone's camera by day, on what changed only: the dark beds, the stones and the three keys. It checks one thing: whether the near-white #F2EDE4 glares or washes the HUD out at noon. If it does, the stones step down toward cream and the joints stay.
 
+### The director: still too purple, the road's trail and the crystals (2026-11-19, 01:46 by the clock)
+
+The director, at 01:4x: "the map is a bit to purple does it, that purple trail on the road and crystal". Research agrees, and this replaces research's own bold thing at the pick ("the violet crystals and core against warm sand"). It's a must-fix before Faber's install of C, and its class is every large violet surface in the world.
+- **The road's trail** (the lit veins across the Strip's paving and the base's way): no violet. Make it a warm white light in a dark bed, with a thin teal edge, so it reads as the void's power and not as paint.
+- **The crystals** (the spires round the map and the base's): bodies in C's deep teal glass, with violet only in a small core or tip, seen near and not as a field.
+- **Violet stays** only where something is alive or for sale: the Door's mouth, the Breaker's shards, the Shop's clock and crown, the Shades. An accent is a few small things, never a ground, a path or a skyline.
+- **Without a render:** the swatches and the materials change in code, shown on a flat swatch sheet beside today's. The check is Faber's capture at the install, by day from a phone's camera, the same as research's second look on C.
+
 ## AR41. The Tower's platforms: the rise, the assembly and the fall as light (Modulo, for research's pick, then Faber)
 
 Research, 2026-11-19, 01:14 by the clock. This is TR29's waiting look: the platforms assembling and falling as light (`docs/test-requests.md`, TR29, "What waits"; `docs/design.md`, "The Tower"). The Tower is built in grey and runs. Faber's item 7 (its results) doesn't need this, and this doesn't need Faber until the install.
@@ -12968,6 +12976,13 @@ Research, 2026-11-19, 01:14 by the clock. This is TR29's waiting look: the platf
 - **From above:** high over the new disc, looking down, for the content check's symbol read. The beats only.
 - Each direction gets its strip, and a sheet compares the three at their beats.
 
+### The director: the Tower is too small (2026-11-19, 01:46 by the clock)
+
+The director, at 01:4x: "the tower is way to small dont it". Research agrees. The disc is 28 studs across (radius 14), while the Lamplighter's ring is 80. On it, the lead and the foe stand 15 apart, which crowds a Mage's 12-stud shot and its skip back. The stack of three discs 12 apart is 36 tall, so it reads as a step, not a tower.
+- **The new seeds:** radius 24 (48 across) and 18 between floors. With Stand 0.55, the avatar and the foe stand 26 apart, and the three discs stand 54 tall. Thickness is the model's call, in proportion.
+- **Faber's:** `Config.Tower.Platform` with item 7, after a check that 48 across fits the lot behind each base. If it doesn't fit, the largest that does, and the number goes here.
+- **Modulo's:** the three directions are planned at the new size (the camera's distances in "Three directions, planned" move with it). The strips wait for memory (the director, 01:34: "Wait").
+
 ## AR42. The stages' screens: the picker, the results card and the stage's line (Modulo, for research's pick, then Faber)
 
 Research, 2026-11-19, 01:35 by the clock. TR43 is built in grey (`UI/StageScreen`, `StageController`; TR43, "The block, built"). Its look is "art on the tiles", which waited. Drawn in code, with no Blender render, so it fits while AR41's renders are held.
@@ -12980,6 +12995,63 @@ Research, 2026-11-19, 01:35 by the clock. TR43 is built in grey (`UI/StageScreen
 - **Rules:** every tap 44 or more and no text under 14 (`docs/ui.md`); violet only as an accent, value range on every panel (AR40); the content check before any upload.
 - **Waits:** the gear budgets on the card (item 4); dailies; the dock's shortcut; any sound.
 - **Before the pick,** research's read of TR43's grey in motion may move a line. The layout follows Faber's built screen, so read `UI/StageScreen` first.
+
+### The picker in three directions, planned (Modulo, 2026-11-19, 01:39 by the clock)
+
+**Faber's screen, read:**
+- **What it holds:** a panel (`Screen.Open`, 360 × 418 authored) with the Normal/Hard switch on top, then four full-width tiles, each over its line: "Recommended … CP · best …", or why it's shut.
+- **A finding, from the code's arithmetic and not yet seen in game:**
+  - **The content:** the head 60, the switch and a pad 60, and four tiles at 86 each come to about 460 authored points.
+  - **The room:** the kit shrinks a panel to the room under Roblox's top bar, about 290 authored on the smallest phone and about 300 on the author's.
+  - **So the lower tiles fall outside the panel on any phone held sideways.** The body doesn't scroll.
+- **So all three directions are a full screen** (`Screen.Full`), as the Void Shop's:
+  - Back, the ground's name, the player's own Combat Power and the switch sit in the band;
+  - the four stages fill the body.
+- **What each tile holds stays Faber's:** the stage, its recommended Combat Power, its best clear or why it's shut, and Faber's words for each.
+
+**The pictures,** drawn in code:
+- **On each tile:** its stage's mark, a number in a cut badge.
+- **Who stands there:**
+  - Stage 1, the Shade: the dark body with the round festival mask, the Brawler's.
+  - Stages 2 and 3, the elite: the larger Shade with its second mask on its shoulder. Stage 3's is drawn larger, a step up.
+  - Stage 4, the Lamplighter's lantern.
+- **On a shut tile,** the picture goes to its silhouette under a lock.
+
+**In all three:**
+- **The switch:** Normal and Hard as two halves in the band. The side chosen is C's sand plate in ink, the other a teal button. Hard's half carries two chevrons.
+- **Hard reads harder at a glance:**
+  - the field drops from C's teal backing to its dark channel;
+  - the edges and the walked road go from sand and gold to C's pale violet (an accent, so only edges and lines);
+  - each stage's badge carries Hard's two chevrons;
+  - one line under the road says what changes: "Hard: every foe is 10 levels higher".
+- **The states:**
+  - cleared: a check and its best;
+  - the next: raised, its edge lit, a "Next" tag;
+  - shut: the Well's dark plate, the lock, and Faber's words.
+- **Sizes:** every tap 44 or more and no text under 14, at 568 × 320 in rendered points.
+
+**A, One road:**
+- the four tiles side by side, left to right, over one road along their feet;
+- the road is lit from the first tile to the next one, where a ring marks the player's place;
+- what lies ahead stays in the channel's dark.
+
+**B, The climb:**
+- the four tiles step up from bottom left to top right, each on a stair's tread, toward the Lamplighter;
+- the walked treads are lit;
+- on Hard, each tile's top takes a notched crown.
+
+**C, The street and its card:**
+- Lantern Row's street as one winding road, with four round stops on it;
+- a card at the right for the stop chosen (the next by default), with its picture, its stage, its numbers and one Start;
+- a shut stop's card says why, and its Start is off;
+- on Hard, each stop wears a three-point crown.
+
+**Three phones a direction:**
+1. **Normal:** stages 1 and 2 cleared, 3 next, 4 shut ("Clear Stage 3 first").
+2. **Hard while shut:** all four tiles say "Beat the Lamplighter on Normal".
+3. **Hard open:** Hard 1 cleared, 2 next, 3 and 4 shut.
+
+The numbers are stand-ins (Combat Power, the bests).
 
 ## Later, by ground
 

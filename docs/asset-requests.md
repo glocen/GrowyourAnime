@@ -13253,6 +13253,29 @@ They replace the pages above where they differ. The register's rows are in `docs
 - **Waits:** the Menu's opening and its tab switch, on the director's answer to Modulo's question of this morning about the Menu.
 - **Status:** the press, the success and the fail are drawn, self-read and content-checked. They wait on research's verdict in motion, with the Menu sheets and Seam against C.
 
+## AR44. The damage numbers' rework: the plain, received and healing numbers, and the critical closer to the reference (Faber's takes in the game, Modulo's stroke, research's pick)
+
+Research, 2026-11-19, 11:17 by the clock. The director, by 11:16, to research: "The damages/healing text need a small rework it doesnt look as i wanted it to be, same for the crit text it need to be more close to the reference i've shown". The same morning, relayed by Modulo at about 11:15: "like the blackstroke around the text for those are way to thick". Research reads "those" as the damage numbers, since the two came together. The rule stays `docs/ui.md`, "Damage numbers" (the director, 2026-11-12); this changes the look only. The reference is `docs/research/hud-reference.md`, its three arena screenshots, held internal.
+
+- **Feel line:** a hit you deal reads as a calm, measured sum in thin, tall, widely spaced digits that sit lightly over the fight; a critical breaks that calm, a heavy gold number thrown forward on a painted stroke of fire.
+- **Research's read, the reference beside ours** (`build/scratch/faber/stills/burst-crowded-phone.png`, the latest phone still):
+
+| Part | The reference | Ours now | The take |
+|---|---|---|---|
+| Plain face | thin, tall, condensed digits; light, never bold | Builder Sans ExtraBold, wide and chunky | a condensed face at a light weight: Oswald (already in `Config.Hud`'s faces) Regular or Medium |
+| Outline | a hairline dark edge with a soft shadow under it | a dark stroke of 1.6, read as heavy black | about 0.6 to 0.8, plus a soft offset shadow (a second label, dark, low opacity) |
+| Spacing | very wide, about half a digit | 0.3 of a digit | about 0.5 |
+| Received | the plain face in muted salmon red, larger | the heavy face in red | the plain face and stroke, #E27A6A kept, Size 1.2 kept |
+| Healing | as received, green | as received, green | follows received |
+| Critical digits | heavy, bold, slanted, cream to gold, a thick warm-brown edge | close already: ExtraBold italic, cream to gold, brown edge | kept; it stays the one heavy number, so the plain ones going thin makes it stand out more |
+| Critical stroke | a painted orange comet: a round, opaque head behind the first digits, tapering up and to the right to about two thirds of the number | a faint grey streak, tinted orange at 0.3 opacity (`CritSweep`) | a new picture of our own: a brushstroke with a heavy round head and a tapered, dry-brushed tail, opaque at its head |
+
+- **Faber's, in the game, tuned live:** two takes of the plain style in `Config.Hud.Numbers`, A (Oswald Regular, stroke 0.6, gap 0.5) and B (Oswald Medium, stroke 0.8, gap 0.45), each with the soft shadow, switched at runtime. Received and healing follow the plain take. The critical's digits stay as they are. A phone capture of each take in a fight (a flurry, a critical, a heal and a word on one body) goes into this entry, zoomed.
+- **Modulo's:** the critical's stroke as a new image, drawn in `tools/`, in the place of `CritSweep` (`UIKit.Images.CritSweep`), with its tint inside the content check's limits (`Config.Hud.Numbers.Critical.Sweep`: #CC661F the red and dark limit, yellower or lighter free). It must read as speed or a flame, never a slash or a wound (rule 4). One take, judged in the game against the reference.
+- **Research's:** the verdict from the phone captures, zoomed, against the three screenshots: one take for the plain numbers, then the stroke.
+- **Waits:** the grey word's look (Dodge, Block, Absorb), unchanged; the numbers' motion (rise, pop, merge), unchanged; any sound.
+- **Order:** Faber after TR46, Modulo after AR43's strips. A small piece: Faber's takes about 1 h, Modulo's stroke about 1 h.
+
 ## Later, by ground
 
 The rest of ground 1 (Kirra in AR10, Watt in AR11; then Sable, Marigold, Crane), then each ground's Voidkin in `docs/roster.md`'s order. **The machines** (Gantry, Bulwark, Ironhymn, Shiomaru, Aegir) share one custom rig, taller than a player, with its own clip family: the first of them is timed like AR1, because a custom rig is a different cost.

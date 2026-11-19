@@ -12921,6 +12921,53 @@ Research, 2026-11-19, 01:14 by the clock. This is TR29's waiting look: the platf
 - **Waits:** the foe's void-light look, since it's laid over the Voidkin and their work is parked until before launch (the director's word); the leap's arc and the camera (Faber's); the sounds; the rarity light on rewards.
 - **Checks:** the content check before any upload; Blender by `build/locks/blender.lock`; the memory guard.
 
+### Three directions, planned (Modulo, 2026-11-19, 01:18 by the clock)
+
+**Job and rank:** a beat between floors, under a second, a reward's size, not a skill's. One hero, the gathering; the pulse is its full stop. Nothing else as loud.
+
+**What the player's camera sees** (`lantern_row_look`: 12.5 studs, 20° down, FOV 70; the avatar `Stand` 0.55 r behind the middle):
+- **On the floor,** the eye is 8.8 over the deck and 19.5 from the middle, past the edge.
+- **The new disc** is 3.2 over the eye there: its underside spans the frame's top sixth, its near edge out of frame.
+- **It reads whole only as the camera rises with the leap:** halfway up, the eye is over the new deck, which then fills the frame's middle.
+- **So the strip** follows one take from the win to past the set-down: the gathering, the pulse, and a stand-in leap. The leap's arc is Faber's; the stand-in is a straight rise that slows to the deck, from 0.75 s to `Leap` (1.25 s).
+
+**The beats** (seconds from the win; drawn at 30 a second):
+
+| Beat | Time | What |
+|---|---|---|
+| Gather | 0 to 0.35 | the hero closes on the disc's place, accelerating (an ease-in), with Back's small overshoot at the lock |
+| Lock and pulse | 0.35 to 0.6 | the rim's light flares and settles, and a short upright band lifts off the rim and fades |
+| Leap | 0.75 to 1.25 | the pair rise to the new deck, the camera with them (stand-in) |
+| Set down | 1.25 to 1.5 | standing on the new floor |
+
+`TowerController` today tweens the disc's size with Back Out, which slows into the lock. The hero accelerates into it, so the install moves its pieces on an ease-in and keeps only Back's settle.
+
+**A, the Shutter.**
+- **The platform:** eight wedges of stone with dark seams, and a raised lip at the rim. The light runs in a dark groove round the lip's outer face.
+- **The gathering:** the wedges fly in from twice the radius out and 2 studs below, each on a straight line, faster as they close. Each drags a short streak of light. They meet at the lock. (From 6 below, the first still had the near wedge going through the player's lens.)
+
+**B, the Circuit.**
+- **The platform:** a calm deck inside a heavy collar, with the light in the dark seam between the two. The seam runs through, so its light shows on the top and on the underside.
+- **The gathering:** a head of light runs once round the rim, from slow to fast, and draws the collar behind it. Then the deck closes from the rim to the middle like an iris, also an ease-in.
+
+**C, the Updraft.**
+- **The platform:** a deck with a shallow keel under it (radius 6, 3.5 deep, clear of the avatar's place at 7.7 out) and a lit point at its tip. The light is in a dark bed on the underside at the rim.
+- **The gathering:** twelve streaks rise from the lower deck's rim, accelerating, and lean in to the new rim 12 above. The disc condenses where they arrive, its rim first, and the keel last.
+
+**In all three:**
+- the deck is calm, one flat value, so the lead and the foe read on it;
+- the rim's light lies in a dark bed (AR40's rule);
+- the rim's light reads from below: the player's camera and the yard see the new disc from under it, so a light only on its top never shows at the lock;
+- no sparks, nothing falls, nothing orange or yellow, no metal glowing;
+- the light is the void's, near-white in grey;
+- one pulse a floor; on fast floors that's 0.8 s apart, under one flash a second.
+
+**The block:** in grey, in the yard at base level 2 by the game's day (AR40's C), rendered in Blender (`tools/blender/tower_block.py`):
+- **From the player's camera:** on floor 5, turned toward the base, from the win to the set-down on floor 6, every frame at 30 a second, and an MP4.
+- **From the yard, looking up:** behind a player in the base's back yard 45 studs off, turned up to the stack, so the three platforms and the column read as rings, at 64 px too. The beats only.
+- **From above:** high over the new disc, looking down, for the content check's symbol read. The beats only.
+- Each direction gets its strip, and a sheet compares the three at their beats.
+
 ## Later, by ground
 
 The rest of ground 1 (Kirra in AR10, Watt in AR11; then Sable, Marigold, Crane), then each ground's Voidkin in `docs/roster.md`'s order. **The machines** (Gantry, Bulwark, Ironhymn, Shiomaru, Aegir) share one custom rig, taller than a player, with its own clip family: the first of them is timed like AR1, because a custom rig is a different cost.

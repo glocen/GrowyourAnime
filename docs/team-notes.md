@@ -18,14 +18,14 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **Next, in order:** items 7 and 10, item 4 after research's refit, AR38's Void Shop install, AR40's C install, AR30's rest; the UI sounds' audition after the director's listen.
 - **Open, tests:** TR43's fresh-account case not run (it wipes the save). The full self-test NOT VERIFIED on HEAD; TR41's galaxy case and four timing cases as before.
 
-**Modulo (assets).** 2026-11-19, 01:12, on Opus 5.5. Voidkin work parked until before launch (the director's word, 11:10).
+**Modulo (assets).** 2026-11-19, 01:34, on Opus 5.5. Voidkin work parked until before launch (the director's word, 11:10).
 - **Done tonight:** AR40's three must-fixes on C, built and measured (AR40, "The must-fixes on C, built"). The wells under every light, the Strip's cream stones with warm joints, and the system's keys in C's values. The kit wears C now. Content check passed. Research needs no render before the install: its second look is the install's capture, by day.
 - **For Faber, AR40's install, ready:** 40 base meshes, 4 Strip meshes, the atlas and the paving, with C's lighting keys and system values (`build/handoff/Colour/ar40/directions.json`). The atlas never goes alone, and it supersedes AR36's. The queue before it is unchanged and in each piece's entry: AR29's B, AR30's buttons, AR31, TR10's icons, AR32 to AR36's stages, AR37's `fx_rise_Void`.
-- **Now:** AR38, the Shop in C with its shelf on D6: exported, content-checked, and its clock rendered in colour at dusk and by day (AR38, "The clock in colour"). Not for install before research's second look.
-- **For research:** the clock sheet, `build/scratch/modulo/shop/clock2/clock_look.png`; at 160 by day it reads by its dark gaps, not as lights over the noon sky. The screen redrawn on D6, `build/scratch/modulo/shop/screen_d6/shop_screen.png`, with one question: can a featured piece of a class the player hasn't got be bought?
+- **For Faber, AR38, released for install** (research's second look, 01:14): the Void Shop's three meshes and StripPost in `build/handoff/Strip/`, and the screen in grey on D6 for your build on the kit, with its one confirm ("No Tank yet. Buy anyway?").
+- **AR41, the Tower's platforms, waiting on the director's go to render** (the director: "Wait", 01:34). The plan for three grey directions is written and content-checked (PASS with conditions). The block script is ready, `tools/blender/tower_block.py`. First stills by day moved A's start and every rim light, and the record says why (AR41, "Three directions, planned").
 - **Unchanged:** AR28's Stage I waits on TR37 with Faber. AR19's six re-uploads wait. AR24's A waits on TR34's block. AR39 is stopped; nothing on sound is mine. Sable is after launch.
 
-**Turns.** Studio: Faber's, its Play running on 2026-11-19 for TR44; the director's listen on TR42's panel is tomorrow, in the same place. Blender: nobody (Modulo's clock renders done, 01:10 to 01:12 on 2026-11-19; under 0.9 GB at their peak). Timing tests: nobody.
+**Turns.** Studio: Faber's, its Play running on 2026-11-19 for TR44; the director's listen on TR42's panel is tomorrow, in the same place. Blender: nobody (Modulo's AR41 strips were stopped at 01:33 on 2026-11-19 by Claude Code when the PC ran low on memory; the director said wait at 01:34). Timing tests: nobody.
 
 **The count.** Pieces closed and playable this week: 13. TR2, the circuit in grey (phase 1); Haymaker, on A; the Shade's burst; Pip's Lantern Burst; Lyric's Held Note; TR3, the HUD in the world; TR4, the reveal; AR7, the Lamplighter installed with his fall; his signature; Lantern Burst's exit in 3D (B1); Haymaker's square in 3D (B5); TR18, power in grey; AR12's HUD part 1. Hours are in each piece's entry.
 

@@ -14985,6 +14985,32 @@ Research, 2026-11-19, 23:20 by the clock, on the director's word of 23:20 (`docs
 - **Waits:** Quest's card; any sound.
 - **Order:** Modulo, after the foe card's fix, before AR48. Faber, after TR50.
 
+### The blockout: three compositions (Modulo, 2026-11-19, 23:41 to 23:53 by the clock)
+
+- **The sheet:** `build/scratch/modulo/home_cards/home_cards.png`, with close crops in `closes.png`. Made by `tools/blender/home_cards.py` (`lead`, then `sheet`).
+  - Each composition is shown over Faber's fight capture, the world dimmed to 0.6 with the dock left lit. Left: at rest. Middle: Voidkin pressed. Right: the smallest phone at its own size.
+  - Under them, the Voidkin card on each of the six rarities' lights.
+- **The panel:** dark glass, 371 x 184 points, with cut corners, a cool lacquer line and a pointer down at Home's tile.
+  - It stands right of the lead's card (its edge plus 8 points) and 9 points over the dock. It fits the smallest phone with 6 points to spare.
+  - Every card leans 0.2 like the dock's tiles. Quest's room is a dashed guide only.
+- **The cards,** each its art inside its frame:
+  - **What binds the art to the frame:** a shade in from the edge, a dark at the foot under the word, the rim in the card's light and the lacquer line. The art is clipped to the card, so there's no box behind any slant.
+  - **Voidkin:** the lead waist up, standing in for a live view. It's Rook rendered in his portrait's pose and light. Behind him are his rarity's light and a soft halo of his silhouette.
+    - A ViewportFrame of the lead's own model in its idle works for every Voidkin, with no art per Voidkin. That is the cheaper road for the build.
+  - **Equipment:** the Lanternsteel sword at +7 in the Reinforce ring (tinted brass), a Red jewel set in its guard, and the Highcrown emblem in a brass-edged socket. They sit on a forge's light: a hot core, falling off to dark bronze, with embers. All are the game's own images.
+  - **Settings:** quiet steel, the kit's cog, its word 14.
+  - **The press:** the kit's lit press, with the rim in white light, a glow and a wash in the card's own light.
+- **The compositions:**
+  - **A, the row:** Voidkin (120), Equipment (110), then a narrow column with Settings at its foot and Quest's room above.
+  - **B, the stack:** Voidkin tall at the left (150), Equipment wide on the right (163 x 100), Settings and Quest's room under it.
+  - **C, the stage:** Voidkin in the middle over Home's tile, the lead's head rising 14 points over the frame (the lead card's own move). Equipment at its left, Settings and Quest's room at its right.
+- **Modulo's read:**
+  - All three read as a game's menu rather than a form, and the words read at the smallest phone's size.
+  - With a Common lead, the grey light makes Voidkin quieter than Equipment's forge. The rarity strip shows the higher rarities carry it.
+  - B gives Equipment the least ring. C's rising head is the one bold move.
+  - Where the glass overlaps the dimmed pills on the larger phone, it cuts them mid-word: a build note to fade the corner pieces under Home.
+- **Next:** research's pick, the cut, and the content check before any upload.
+
 ## Later, by ground
 
 The rest of ground 1 (Kirra in AR10, Watt in AR11; then Sable, Marigold, Crane), then each ground's Voidkin in `docs/roster.md`'s order. **The machines** (Gantry, Bulwark, Ironhymn, Shiomaru, Aegir) share one custom rig, taller than a player, with its own clip family: the first of them is timed like AR1, because a custom rig is a different cost.

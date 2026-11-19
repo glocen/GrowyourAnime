@@ -13253,6 +13253,38 @@ They replace the pages above where they differ. The register's rows are in `docs
 - **Waits:** the Menu's opening and its tab switch, on the director's answer to Modulo's question of this morning about the Menu.
 - **Status:** the press, the success and the fail are drawn, self-read and content-checked. They wait on research's verdict in motion, with the Menu sheets and Seam against C.
 
+### Home: the panel of grouped buttons, three directions (Modulo, 2026-11-19, 12:40 to 12:55 by the clock)
+
+The director's yes of about 12:21 to the restatement. The dock's Menu becomes Home, a panel of grouped buttons, each opening its own screen. This replaces 03:37's tabs and their pages across the top (`docs/ui.md`, the dock; `docs/decisions.md`). The concept comes from a recording, never its style.
+- **Feel line:** the player taps Home on the dock, and a panel opens over the dimmed world with the game's screens in their groups. One tap opens a screen, and its Back returns to the panel.
+- **The block contains:** three directions, open in the game's HUD and at the smallest phone; each opening in beats and in a movie; a press; and Reinforce opened as its own screen.
+- **Waits:**
+  - the chosen direction's finish and its images;
+  - the step from a button to its screen, in motion;
+  - the screens' colours (Seam or C, research's pick above);
+  - sound, and Quest.
+- **Where:** `tools/blender/home_panel.py`, which reuses `upgrade_pages.py`'s kit. Drawn in AR40's C, as the foe cards. The renders are in `build/scratch/modulo/home/`:
+  - `home_panel.png`: the three open. On the left, in Faber's phone capture of a fight (the HUD as it is, the world dimmed). On the right, at the smallest phone, with Reinforce pressed.
+  - `home_motion.png`: each opening at 0.03, 0.08, 0.13, 0.20 and 0.34 s, then the press, and Reinforce as its own screen.
+  - `home_motion.mp4`: each opening at real speed, then at a quarter speed.
+- **The directions:**
+  - **A, the side sheet.** A sheet from the right edge. Inventory and Equipment are rows in two columns. Settings, a group of one, is a button in the sheet's head beside the close. It slides in 48 points in 0.2 s, eased out. It covers the Credits and kWh.
+  - **B, the dock's tray.** A tray rises out of the Home tile, a point at its foot meeting the tile. Each group is a row: its heading, then its tiles, leaning 0.2 as the dock's do. Settings closes Equipment's row past a rule. The dock stays lit under it. It grows from 0.55 of its size about the tile's top in 0.22 s, a little past its size (Back 1.2). It covers the middle band only.
+  - **C, the three cards.** One card per group, leaning 0.2. The buttons are rows, and Settings' card is its own button. The cards deal up 28 points, 0.045 s apart, 0.2 s each. It covers the most, and the dock at the smallest phone.
+  - **Every direction:** the world dims to about half in 0.15 s. A press lights its button cream. Taps are 44 points or more, and words 14 or more.
+- **Reinforce as its own screen:** the Menu's tabs and pages go. The band keeps Roblox's buttons, Back, the screen's name, the Credits and the kWh, and Back returns to Home's panel. The page takes the phone's whole width. No screen keeps its group's others across the top: the director's word is each its own screen.
+- **Modulo's lean: B.**
+  - Its lever is the opening's origin: the panel grows out of the tile the thumb touched, and its overshoot is the press's follow-through.
+  - It keeps the most world in view, mid-fight included, and its leaning tiles read as the dock's own.
+  - A is the plain one and reads like a settings list. C has the strongest look, but it covers the most and settles last (0.29 s).
+- **The dock's mark:** mark B, research's pick for the Menu at 03:40: three screens stacked, with a shard cut in the front one. It may still fit Home, since Base's tile already wears a house. Research's word decides.
+- **Content check, PASS** (by 12:55): both sheets and the script, on rules 2, 3 and 4. The conditions:
+  - Nothing comes from the recording but the concept: never its frame, ornament, icons, button order or arrangement, and never a frame traced or laid over.
+  - "Roblox's buttons" on the screen is a stand-in for Roblox's top bar, and never ships as words.
+  - Reinforce's odds and price keep their own rules (`docs/roblox-rules.md`, paid random items), in Reinforce's piece, not Home's.
+  - Each image cut from the chosen direction gets its own check before upload, at full size and at 64 px over dark.
+- **Status:** drawn, self-read and content-checked. It waits on research's pick in motion. Next: the chosen direction's finish and its step into a screen.
+
 ## AR44. The damage numbers' rework: the plain, received and healing numbers, and the critical closer to the reference (Faber's takes in the game, Modulo's stroke, research's pick)
 
 Research, 2026-11-19, 11:17 by the clock. The director, by 11:16, to research: "The damages/healing text need a small rework it doesnt look as i wanted it to be, same for the crit text it need to be more close to the reference i've shown". The same morning, relayed by Modulo at about 11:15: "like the blackstroke around the text for those are way to thick". Research reads "those" as the damage numbers, since the two came together. The rule stays `docs/ui.md`, "Damage numbers" (the director, 2026-11-12); this changes the look only. The reference is `docs/research/hud-reference.md`, its three arena screenshots, held internal.

@@ -13253,6 +13253,70 @@ The numbers are stand-ins (Combat Power, the bests).
 - **The Shade's model follows the picture:** almond holes, the grin at 0.5, no brows, which the content check found to pass. One mask in the fight and on the tiles. The re-bake and re-upload wait for memory (the director's "Wait"), then the content check on the new sheet.
 - **Accepted, all three,** for Faber's install on `UI/StageScreen` and `StageController`.
 
+### The picker in Seam's lit glass (Modulo, 2026-11-19, 16:10 to 16:35 by the clock)
+
+- **Why:** the director's 14:56 scope, as research recorded it (AR43, "Equipment back in Seam"), moves AR42's picker from AR40's C to Seam. Research's B (15:04) is that kit.
+  - **Not covered:** the results card and the run's line aren't named in it, so they keep C.
+  - **The layout stays A's,** research's pick (02:06) with its two must-fixes. Only the glass changes.
+- **Where:** `tools/blender/stage_seam.py` draws into `build/scratch/modulo/stages/`, with `stage_screen.py`'s pictures and `seam_kit.py`'s pieces:
+  - `stage_seam.png`: the three states. Normal; Hard while shut, the same player; Hard open, later.
+  - `stage_seam_64.png`: the three at 64 px high.
+  - `stage_seam_close.png`: the next tile, its road and the switch, at four pixels a point.
+  - `stage_seam_strip.png`: the opening's beats, a tap on Hard and back.
+  - **The clip** (7.6 s: the opening, the idle, Hard and back) is held at frame 86 of 228. Free memory fell to 0.72 GB and Claude Code stopped the guard's watch, so at 16:33 I stopped my Blender run rather than leave it unwatched. The same command resumes where it stopped, when memory allows. The strip carries the beats meanwhile.
+- **In B:**
+  - Every tile is lighter at its top, its hairline lit from above, with the kit's corner glint.
+  - The next tile is raised and washed with light, with a glint down it once a loop and a bloom behind its picture. "Next" is a small lit press.
+  - The walked road is a conduit filling with light to a lit ring, the kit's comet round it, a light along it once a loop.
+  - The switch's chosen side is the lit press, white falling to lavender, its sheen across once a loop.
+  - A stage's number sits on a lit plate, or on the well's when shut.
+- **Hard, must-fix 2's class, in B.** C's violet can't stand out on a violet screen.
+  - Hard's one accent is an ember, white falling to coral. It's on the chosen Hard half, the edges, the chevrons, the walked road, the ring and the bloom.
+  - The ground, every open tile and a shut tile each step a value down.
+  - On Normal, the Hard half keeps its ember chevrons, so the way to Hard shows.
+  - My call, tier 1, for research's word.
+- **Changed from A, said:**
+  - **The player's power leaves the band.** Equipment's band (Roblox's buttons, Back, the title) leaves no room beside the switch at the smallest phone. It stands at the road's start, "Your power 1,480 CR", where the player stands. Hard's line moves to the foot's right.
+  - **"CP" reads "CR",** as Faber's `Sheet.Said.Power` does.
+  - **The Shade's body** is the model's own Void (`#1B1728`, `shade_sheet.py`'s palette), where A drew C's teal.
+- **Motion, for Faber** (`MOTION` in the script):
+  - **The opening:**
+    - the screen rises 12 points as it fades in, 0.22 s (Equipment's);
+    - the tiles rise 18 points left to right, 0.05 s apart, 0.22 s each;
+    - the road fills from the first tile, 0.36 s from 0.30 s;
+    - the ring pops where the light stops, 0.4 to 1, Back 1.8.
+  - **A tap on the switch:**
+    - the two sides crossfade in 0.22 s while the road drains;
+    - the tiles' words go out over the first half and the new come in over the second, never both;
+    - on a side with a next, the road fills again from 0.18 s and its ring pops.
+  - **The idle:** the kit's 2.4 s loop.
+- **The cut, after research's pass, likely needs no new image:**
+  - the tiles are the kit's panel (`PanelFill`, `PanelEdge`, `PanelSheen`, `PanelCornerGlint`);
+  - the plates are its press (`PressFill`, `PressEdge`, `PressGlow`);
+  - the road is its slider (`SliderTrack`, `SliderFill`, `SliderFillLight`, `SliderFillGlow`);
+  - the ring is its knob, with the rail's ring and comet;
+  - the blooms are `ScreenBloom`;
+  - Hard's ember is a tint.
+  - The pictures (the Shade, the elite, the lantern, the lock) are the open question: drawn in code here, with no exported image yet.
+- **Content check: PASS** (16:33 by the clock), on the four sheets at full size and at 64 px:
+  - the coral glow reads as no blood at any size;
+  - the mask's 02:31 conditions hold;
+  - no word is on `docs/ip-list.md`;
+  - nothing imitates another game's UI art.
+  - **Conditions:**
+    - the Hard bloom stays a soft round glow behind the picture: never at the figure's base or under it, never in streaks or drops, and no deeper than `#E85A44`;
+    - the 02:31 conditions stand, plus: no markings above or below the eye holes, and never a plain oval mask with a small closed mouth;
+    - the strip holds Faber's fight capture as a stand-in, so it stays internal;
+    - any image exported from this gets its own check on the exact file.
+- **My read, by eye, not a verdict:**
+  - It's the same family as Equipment's three screens.
+  - On Normal, the next tile is the brightest thing on the screen, as the feel line asks.
+  - Hard reads at a glance, at 64 px too, by its darker ground and the ember.
+  - **Weak, said now:**
+    - Hard's warm haze at the band's top reads a little muddy over the dark;
+    - the player's power at the foot puts the comparison with a tile's CR a glance away, where A's band held it beside the switch.
+- **Status:** drawn, self-read and content-checked. For research's pass, from the strip; the clip follows when memory allows.
+
 ## AR43. The Forge and War Emblem pages on the Voidkin screen (Modulo, for research's pick, then Faber)
 
 Research, 2026-11-19, 02:34 by the clock, on the director's question of 02:1x ("where is the forge, jewels, war emblems we could work on it, atleast modulo"). The icons are made (`build/handoff/UI/upgrades/images`: 18 emblems, 15 jewels, the sockets and the stones), but the pages that use them aren't. They're the character screen's rail pages (`docs/design.md`, "Upgrading gear needs no walk"). Drawn in code, with no render.

@@ -95,6 +95,36 @@ return {
 		end,
 	},
 	{
+		Name = "Tower (TR46): past the opening the foes come from the week, the same on every server, a run keeping the week it began in; its chests stay its own",
+		Run = function(t: any)
+			local monday = 1_794_787_200 -- 2026-11-16 00:00 UTC, a Monday
+			local day = 86_400
+			t.Equal("a Monday's first second starts a week", Tower.Week(monday), Tower.Week(monday - 1) + 1)
+			t.Equal("its Sunday's last second is the same week", Tower.Week(monday + 7 * day - 1), Tower.Week(monday))
+			t.Equal("the next Monday the next", Tower.Week(monday + 7 * day), Tower.Week(monday) + 1)
+			local week = Tower.WeekSeed(Tower.Week(monday))
+			t.Equal("the same week, the same foes' seed", Tower.WeekSeed(Tower.Week(monday + 3 * day + 12_345)), week)
+			t.Check("a seed in the draw's range", week >= 0 and week <= 0x7fffffff and week == math.floor(week), tostring(week))
+			local past, other, same = #TowerConfig.Opening + 1, false, true
+			local following = Tower.WeekSeed(Tower.Week(monday) + 1)
+			for floor = past, past + 20 do
+				other = other or Tower.Foe(floor, week).Def ~= Tower.Foe(floor, following).Def
+				same = same and Tower.Foe(floor, week).Def == Tower.Foe(floor, Tower.WeekSeed(Tower.Week(monday + 6 * day))).Def
+			end
+			t.Check("one week's runs meet the same foes", same)
+			t.Check("the next week, other foes", other)
+			for floor, def in TowerConfig.Opening do
+				t.Equal(`floor {floor} stays the opening's {def}`, Tower.Foe(floor, following).Def, def)
+			end
+			-- Two runs of one week meet the same foes, and their chests roll on each run's own seed.
+			local apart = false
+			for floor = past, 400 do
+				apart = apart or (Tower.Reward(floor, 0, SEED).Chest ~= nil) ~= (Tower.Reward(floor, 0, SEED + 1).Chest ~= nil)
+			end
+			t.Check("two runs' chests roll apart", apart)
+		end,
+	},
+	{
 		Name = "Tower: the ring lies on its lot's crossing end, where the sleeping Tower stood on the drawn plot",
 		Run = function(t: any)
 			local plots = WorldConfig.Plots

@@ -3885,3 +3885,21 @@ The director, 2026-11-19, 02:05 to 02:07 by the clock, then yes to the restateme
 - **Content check:** PASS on "Play", "Home", "Festival of Battles" and "The trip didn't go through. Try again." (02:59).
 - **Tested, 2026-11-19:** offline logic 26,659/0, Studio's the same; the type check 0 new; the world report clean as Main and as the Festival. The base's full suite: 2,843 passed, 15 failed. 3 were the Map tile's old refused look, taught since, with the hover word's own bug fixed (the dock 38/0, TR20 36/0 after). 11 pass alone: TR20's breath, the Items page, Ground Wire and the galaxy's mist, order-dependent. 1 was the stat sheet's case, never taught item 8's "every 8 s" under HP Regen (e739d53): taught, 21/0. The Festival role's suite ran in the main Studio with its role attribute set for that playtest, its world whole and the player at the landing, but the place closed under it before its report was read: NOT VERIFIED. The Festival's own place waits on its Rojo connection (the board, item 9).
 - **Not yet:** a real trip, from the published places (Studio can't teleport); the trip's time measured, for the save's early release.
+
+## TR46. The Tower's follow-up: Retry and Home, the heal cap told once, the week's board, the week's foes (Faber, the follow-up's item 7)
+
+Faber, 2026-11-19, 03:43 by the clock: the follow-up's item 7 (`docs/production-plan.md`, "The design review's follow-up"; the seed research's tier 2, taken). Research's answers to Faber's four questions came at 03:43 and are recorded below as research gave them.
+
+**The feel line:** after a fall the player reads how high they climbed and where that stands this week, and with one tap climbs again or goes home. Past floor 5 everyone meets the same foes all week, so the board is one race.
+
+**The block contains** (in grey):
+- **The week's foes.** From floor 6 on, the foes are drawn from the week, which runs from Monday 00:00 UTC. A run keeps the week it started in. Its chests stay on its own seed. No salt, since a foe is harmless to predict (research: yes).
+- **Retry and Home on the results.** Retry sets the avatar at its ring and starts a new run once the 4 s rest is up. Home sets it down at its plot's spawn, free. The words are "Retry" and "Home" (research: yes).
+- **The week's board, on the card only, with no board in the world** (research: the Tower's lot stays "bare but for a ring", `docs/design.md`, "The Tower").
+  - The card's line is "This week: #12 · floor 23"; tapping it opens the top 10 plus your own row, on the card.
+  - Its title is "This Week's Climb".
+  - With no ranked climb: "This week: no climb yet".
+  - It's kept per week in an OrderedDataStore, which is free with DataStoreService. Research adds the board to `docs/design.md` as a tier 1 line at this piece's finish.
+- **The heal cap told once.** The first time the cap binds, once per account, a toast near the lead's health bar in the quiet style (`docs/ui.md`, rule 2): "Healing capped for this floor: 15% of your lead's health". The share is read from Config and never written into the text. Reduced Motion gives a fade-in.
+
+**What waits:** the card's art and the board's look (the shared finish); parties' boards (after everything else).

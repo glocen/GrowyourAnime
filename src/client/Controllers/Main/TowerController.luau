@@ -16,6 +16,7 @@ local Shared = ReplicatedStorage.Shared
 local TowerConfig = require(Shared.Config.Tower)
 local Markers = require(Shared.World.Markers)
 local Profile = require(Shared.Data.Profile)
+local Net = require(Shared.Net)
 
 local UI = script.Parent.Parent.Parent.UI
 local Theme = require(UI.Theme)
@@ -191,7 +192,15 @@ local function results(view: Profile.View?)
 	if held == nil or Players.LocalPlayer:GetAttribute("Tower") ~= nil or TowerScreen.Told(held.Id) or open then
 		return
 	end
-	TowerScreen.Open(held, { Act = ProfileController.Act })
+	TowerScreen.Open(held, {
+		Act = ProfileController.Act,
+		Retry = function(): { [string]: any }
+			return Net.Client.Invoke("TowerRetry")
+		end,
+		Home = function(): { [string]: any }
+			return Net.Client.Invoke("TowerHome")
+		end,
+	})
 end
 
 function TowerController.Platforms(player: Player): ({ [number]: BasePart }, BasePart?)

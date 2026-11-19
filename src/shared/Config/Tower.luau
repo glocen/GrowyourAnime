@@ -22,6 +22,9 @@ return {
 	-- teaches one fighter (the director's design review of 2026-11-18, on the director's go of that day). An id not in
 	-- the pool falls back to the seed's pick. Past it, the seed picks as before.
 	Opening = { "rook", "pip", "kirra", "lyric", "watt" } :: { string },
+	-- Past the opening, the foes come from the week (TR46): the same on every server all week, so the week's board is one
+	-- race. In seconds: Start, a week's first moment (1970-01-05 00:00 UTC, a Monday), and Length.
+	Week = { Start = 345600, Length = 604800 },
 	HealCap = 0.15, -- healing in one floor tops out at this share of the lead's most health (seeds "healCap")
 	Rise = 2.5, -- seconds from a floor won to the next foe: the rise to its platform (seeds "risePerFloorSec")
 	Leap = 0.5, -- the share of Rise at which the lead and the avatar are set down on the new platform

@@ -52,8 +52,19 @@ function Tower.Level(floor: number): number
 	return math.clamp(math.floor(1 + (math.max(floor, 1) - 1) * TowerConfig.LevelPerFloor + 0.5), 1, GrowthConfig.MaxLevel)
 end
 
--- Floor `floor`'s foe in the run of `seed`: the opening's (Config.Tower.Opening) on its floors, the same for every run,
--- while that Voidkin is in the pool; from the seed past it.
+-- The week the moment `now` (Unix seconds) falls in: weeks begin Monday 00:00 UTC (Config.Tower.Week; TR46).
+function Tower.Week(now: number): number
+	return math.floor((now - TowerConfig.Week.Start) / TowerConfig.Week.Length)
+end
+
+-- The foes' seed for week `week`, the same on every server: a run draws its foes from the week it started in, and its
+-- chests from its own seed (Tower.Reward). A foe is harmless to know ahead, so it's unsalted.
+function Tower.WeekSeed(week: number): number
+	return bit32.band((week * 0x9E3779B1) % 4294967296 + 0x2545F491, 0x7fffffff)
+end
+
+-- Floor `floor`'s foe for the foes' seed `seed` (a run's week's, Tower.WeekSeed): the opening's (Config.Tower.Opening)
+-- on its floors, the same for every run, while that Voidkin is in the pool; from the seed past it.
 function Tower.Foe(floor: number, seed: number): Foe
 	local pool = Tower.Pool()
 	local opening = TowerConfig.Opening[floor]

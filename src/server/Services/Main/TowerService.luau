@@ -12,6 +12,8 @@
 -- Player attributes: Tower, the floor being fought or risen to (nil out of a run); TowerFoe, its foe's name.
 --   TowerService.Begin(player) -> { Ok, Error? }     a run from the ring (the ring's own step, and the debug bridge)
 --   TowerService.Stop(player, why)                   the run ended where it stands
+-- The results' two presses (TR46): Net "TowerRetry" sets the avatar in its ring, where the ring's own step begins the
+-- next run once Rest is up; Net "TowerHome" sets it down at its plot's spawn, free (HomeService.SetDown).
 
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
@@ -25,10 +27,12 @@ local Voidkin = require(Shared.Definitions.Voidkin)
 local Markers = require(Shared.World.Markers)
 local Profile = require(Shared.Data.Profile)
 local Tower = require(Shared.Rules.Tower)
+local Net = require(Shared.Net)
 local Core = script.Parent.Parent.Core
 local DataService = require(Core.DataService)
 local DebugService = require(Core.DebugService)
 local FightService = require(script.Parent.FightService)
+local HomeService = require(script.Parent.HomeService)
 local KeeperService = require(script.Parent.KeeperService)
 local WorldService = require(script.Parent.WorldService)
 
@@ -43,6 +47,7 @@ local FALL_PAUSE = 1.2 -- seconds the fallen lead's fall plays before the fade t
 type Run = {
 	Id: string,
 	Seed: number,
+	Foes: number, -- the foes' seed: the week the run started in (Rules.Tower.WeekSeed); its chests are its Seed's
 	Ring: CFrame, -- the ring's middle on the ground, looking out from the plot: the fight's axis
 	Floor: number, -- the floor being fought, or risen to
 	On: number, -- the floor whose platform holds the avatar: 0 on the ground before floor 1's, Floor - 1 until a rise's Leap
@@ -174,7 +179,7 @@ local function rise(player: Player, run: Run, floor: number)
 			TowerService.Stop(player, "Lost")
 			return
 		end
-		local foe = Tower.Foe(floor, run.Seed)
+		local foe = Tower.Foe(floor, run.Foes)
 		local block = Tower.Block(foe)
 		local _, at = spots(run, floor)
 		local row = Voidkin.ById[foe.Def]
@@ -204,10 +209,11 @@ function TowerService.Begin(player: Player): { [string]: any }
 		return { Ok = false, Error = "NoLead" }
 	end
 	local seed = seeds:NextInteger(1, 2 ^ 31 - 1)
+	local started = os.time()
 	local answer = DataService.Change(player, "TowerStart", function(draft: Profile.Data)
 		Tower.Recover(draft) -- a run left by a crash this join didn't end: ended first, so the new one starts clean
 		local id = Profile.NewId(draft)
-		local run = Tower.Start(draft, id, seed, os.time())
+		local run = Tower.Start(draft, id, seed, started)
 		if run == nil then
 			return { Ok = false, Error = "InRun" }
 		end
@@ -219,6 +225,7 @@ function TowerService.Begin(player: Player): { [string]: any }
 	local run: Run = {
 		Id = answer.Id,
 		Seed = seed,
+		Foes = Tower.WeekSeed(Tower.Week(started)),
 		Ring = ring,
 		Floor = 0,
 		On = 0,
@@ -484,7 +491,36 @@ function TowerService.Init()
 	end)
 end
 
+-- After a run's results (TR46): "Retry", set in its ring to climb again once rested, or "Home", to the plot's spawn.
+-- Refused in a run, a try or a fight.
+local function after(player: Player, what: string): { [string]: any }
+	if runs[player] then
+		return { Ok = false, Error = "InRun" }
+	elseif player:GetAttribute("Try") ~= nil or FightService.InCombat(player) then
+		return { Ok = false, Error = "InCombat" }
+	elseif what == "Home" then
+		return if HomeService.SetDown(player) then { Ok = true } else { Ok = false, Error = "Nowhere" }
+	end
+	local ring = ringOf(player)
+	if ring == nil then
+		return { Ok = false, Error = "NoRing" }
+	elseif leadOf(player) == nil then
+		return { Ok = false, Error = "NoLead" }
+	elseif not KeeperService.Place(player, ring) then
+		return { Ok = false, Error = "Nowhere" }
+	end
+	stepped[player] = true -- a press counts as stepping in afresh
+	local ended = endedAt[player]
+	return { Ok = true, Waits = if ended then math.max(0, TowerConfig.Rest - (os.clock() - ended)) else 0 }
+end
+
 function TowerService.Start()
+	Net.Server.Handle("TowerRetry", function(player: Player): { [string]: any }
+		return after(player, "Retry")
+	end)
+	Net.Server.Handle("TowerHome", function(player: Player): { [string]: any }
+		return after(player, "Home")
+	end)
 	FightService.Fell:Connect(function(f: FightService.Fighter)
 		for player, run in runs do
 			if run.Foe == f and run.Phase == "Fighting" then

@@ -92,6 +92,13 @@ local function jump(player: Player, began: number)
 	Net.Server.Fire("HomeJump", player, true)
 end
 
+-- Sets the player and their lead down at their plot's spawn now, free: no charge and no cooldown (the Tower's results'
+-- Home, TR46: the Tower stands behind their own base). False when there's nowhere, or nothing moves.
+function HomeService.SetDown(player: Player): boolean
+	local at = arrival(player)
+	return at ~= nil and KeeperService.Place(player, at :: CFrame)
+end
+
 -- A tap on the Base tile: the charge begins, or the answer says why not. A second tap in a charge changes nothing.
 function HomeService.Ask(player: Player): { [string]: any }
 	local s = HomeService.Situation(player)

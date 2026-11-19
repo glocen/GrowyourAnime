@@ -4,7 +4,9 @@
 -- ledger once with Rules.Tower's own reward; no heal between floors and at most the cap in one; the lead, its stars and
 -- its Regalia frozen; at most three platforms and the column; the lead's fall ending the run at its last floor won, the ledger
 -- granted once, the record and the results, which open once and clear when closed. Then the avatar stepping off its
--- platform, and a crash's run ended at the next join. The case's record, Credits and chests are put back at its end.
+-- platform, and a crash's run ended at the next join. The results' Home and Retry (TR46): Home sets the avatar down at
+-- its plot's spawn, Retry in its ring, where the next run begins once rested. The case's record, Credits and chests are
+-- put back at its end.
 
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
@@ -49,7 +51,7 @@ end
 function TowerCases.Cases(): { any }
 	return {
 		{
-			Name = "Tower (TR29): a run from the ring, floors won into the ledger, the heal cap, the freeze, three platforms, the fall, the results once, stepping off, a crash's run ended at the join",
+			Name = "Tower (TR29): a run from the ring, floors won into the ledger, the heal cap, the freeze, three platforms, the fall, the results once, stepping off, a crash's run ended at the join; the results' Home and Retry (TR46)",
 			Place = "Main", -- TR45: its world stands in that place only
 			Run = function(t: any)
 				-- The bays step out for the run and back after it: a full battery spills a working bay's power into Credits,
@@ -225,13 +227,19 @@ function TowerCases.Cases(): { any }
 					local parts = TowerScreen.Parts()
 					local floorLine = parts.Floor
 					t.Check("they say the floor", floorLine ~= nil and floorLine:IsA("TextLabel") and floorLine.Text == `Floor {results.Floor}`)
-					local close = parts.Close
-					if close and close:IsA("TextButton") then
-						Button.Press(close)
+					-- Home (TR46): set down at the plot's spawn, free, and the results closed.
+					local home = parts.Home
+					t.Check("in the base, Retry and Home, no Close", home ~= nil and parts.Retry ~= nil and parts.Close == nil)
+					if home and home:IsA("TextButton") then
+						Button.Press(home)
 					end
 					t.Check("closed, they're cleared from the save", waitFor(t, 3, function()
 						return view().Progress.Tower.Results == nil
 					end))
+					local spawn = Markers.Find("Spawn", { Plot = plot })
+					local root = me.Character and me.Character:FindFirstChild("HumanoidRootPart") :: BasePart?
+					local fromSpawn = if spawn and root then (root.Position - Markers.At(spawn).Position) * Vector3.new(1, 0, 1) else nil
+					t.Check("Home sets the avatar down at its plot's spawn", fromSpawn ~= nil and fromSpawn.Magnitude < 6, tostring(fromSpawn and fromSpawn.Magnitude))
 					task.wait(0.5)
 					t.Check("and don't open again", Screen.Current() ~= TowerScreen.Name)
 					-- Stepping off the platform ends a run where it stands.
@@ -272,7 +280,28 @@ function TowerCases.Cases(): { any }
 					t.Check("the join ends it, its ledger granted", waitFor(t, 3, function()
 						return view().Progress.Tower.Run == nil and left ~= nil and view().Currency.Credits == before + left.Credits
 					end))
+					-- Retry (TR46), on the crash's results: set in the ring, and the next run begins once the rest is up.
+					t.Check("the crash's results open", waitFor(t, 3, function()
+						return Screen.Current() == TowerScreen.Name
+					end))
+					t.Server("LeadHeal")
+					local retry = TowerScreen.Parts().Retry
+					if retry and retry:IsA("TextButton") then
+						Button.Press(retry)
+					end
+					local inRing = waitFor(t, 2, function()
+						local at = me.Character and me.Character:FindFirstChild("HumanoidRootPart") :: BasePart?
+						return at ~= nil and ((at.Position - middle) * Vector3.new(1, 0, 1)).Magnitude <= TowerConfig.Ring
+					end)
+					t.Check("Retry sets the avatar in its ring, the results closed", inRing and Screen.Current() ~= TowerScreen.Name)
+					t.Check("and the next run begins once rested", waitFor(t, TowerConfig.Rest + 3, function()
+						return me:GetAttribute("Tower") == 1
+					end))
+					t.Server("TowerEnd")
 					-- Put back: the record, the Credits and the chests the case won.
+					waitFor(t, 3, function()
+						return Screen.Current() == TowerScreen.Name
+					end)
 					if Screen.Current() == TowerScreen.Name then
 						Screen.Close()
 					end

@@ -13540,6 +13540,7 @@ Judged on what changed, from round-moments, critical-pop and its frames at the p
 - **Must-fixes from the first look:** all met. The gap and the narrow comma read as one number at 44 pt, and the five never overlap along their rise.
 - **Must-fix, the critical's landing** (serves impact; the lever is the punch scale): yes to the landing pop, on the critical only. It is born at 1.3 and settles to 1 in 0.12 s, the same swell as `Combat.Numbers.Pop`, with the splash scaling with it. Plain numbers keep landing whole, so the critical's pop stays its own.
 - **Not this piece:** the plain digits' wider tracking ("9 4 9") reads but is loose; it goes to `docs/polish-later.md`.
+- **Faber, 13:36, the landing is in:** a critical lands at `Combat.Numbers.Pop` and settles over `Count`, its splash inside the same UIScale (`Rules.Hud.Land`; `Config.Hud.Numbers.Critical.Land`). Placement reserves the swollen box. The cast take of 13:35 is in the same commit, and the splash now draws at ZIndex 0, under the cast. Tests: logic 26,715/0 offline; the number cases 38/0, 10/0 and 7/0 in the phone simulator. Clip: `build/captures/ar44/critical-landing-cast.mkv` (8 s, a few criticals).
 
 ### The director's word, and research's verdict on the cast (Quaestor, 2026-11-19, 13:35)
 

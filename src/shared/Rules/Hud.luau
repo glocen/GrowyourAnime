@@ -68,6 +68,15 @@ function Hud.Live(c: Count, age: number, seconds: number): boolean
 	return age - (if c.Changed > -math.huge then c.Changed else 0) < seconds
 end
 
+-- How far through its landing it is at `age`: 1 at its birth, 0 once it has settled over `count` (a critical lands
+-- swollen and settles, the same swell a joining hit gives: AR44, research's second look).
+function Hud.Land(age: number, count: number): number
+	if count <= 0 then
+		return 0
+	end
+	return 1 - Hud.Ease(age / count)
+end
+
 -- How far through its swell it is at `age`: 1 the moment an amount joins, 0 once it has settled over `count`.
 function Hud.Swell(c: Count, age: number, count: number): number
 	if c.Changed == -math.huge or count <= 0 then

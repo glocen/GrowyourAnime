@@ -76,6 +76,9 @@ return {
 		-- heavy, slanted, larger, widely spaced, on the swept stroke. Research tunes these live at TR3's blockout.
 		Critical = {
 			Size = 1.6, -- tops the ladder by a clear step: received and heal are 1.2 (research on TR3's three calls, 2026-11-13)
+			-- It lands swollen to Combat.Numbers.Pop, its splash with it, and settles over Count (AR44, research's second
+			-- look: the critical only; the plain numbers land whole).
+			Land = true,
 			Gap = 0.25, -- a quarter of a digit between digits: at 0.4, "1 , 2 0 4" read as separate glyphs (AR44's verdict, fix 2)
 			-- Gold drifting to an olive khaki head to foot, with a darker band two thirds down: the reference's critical
 			-- measured row by row (AR44, "The critical's colours, measured", research, 12:48; the director, by 12:47: "make
@@ -94,8 +97,12 @@ return {
 				ColorSequenceKeypoint.new(1, Color3.fromHex("#CFC27A")),
 			}),
 			Outline = Color3.fromHex("#211306"), -- near-black brown, measured
-			Weight = 1.2, -- one point at a 28 point number, at this size
+			Weight = 2.4, -- the reference's thick dark edge (1.2 read thin and pasted on: the director, 2026-11-19, "that art isnt composited")
 			Italic = true, -- the slant is the face's italic, on or off: about 10 degrees, never another angle
+			-- A hard dark copy of its digits cast down and right onto the splash, binding the two into one picture as the
+			-- reference's critical is (the director, 2026-11-19: "that art isnt composited"; the builder's take, tried live).
+			-- Authored pixels; its edge Spread wide, as wide as the digits' own outline.
+			Cast = { On = true, Colour = Color3.fromHex("#211306"), Offset = Vector2.new(2, 3), Transparency = 0, Spread = 2.4, Soft = 0 },
 			-- The splash (CritSweep, AR44 round 4, Modulo's): behind the number and under its outline, its height 1.5 of the
 			-- digits', centred on them, its left edge half a digit before the first digit, its width 0.67 of the number's and
 			-- never under 2.2 heights; it stretches along, never up. Tint: the content check's limit itself (AR44, "Modulo's
@@ -104,9 +111,9 @@ return {
 			Sweep = {
 				Tint = Color3.fromHex("#CC661F"),
 				Transparency = 0,
-				Height = 1.5,
+				Height = 1.25, -- tucked behind the digits, peeking out at the head and the tail as the reference's (1.5 and 0.67 till 2026-11-19)
 				Left = 0.5,
-				Width = 0.67,
+				Width = 0.55,
 				Least = 2.2,
 			},
 		},

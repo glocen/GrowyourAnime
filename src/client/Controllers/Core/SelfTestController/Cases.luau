@@ -3915,7 +3915,17 @@ local cases = {
 			t.Check("its run of hues, head to foot (AR44's yellow)", gradient ~= nil and gradient.Color.Keypoints[1].Value == critical.Top and gradient.Color.Keypoints[#gradient.Color.Keypoints].Value == critical.Foot
 				and (critical.Ramp == nil or #gradient.Color.Keypoints == #critical.Ramp.Keypoints), if gradient then `{#gradient.Color.Keypoints} stops` else "no gradient")
 			t.Check("in the face's italic, or upright as Config says", c1 ~= nil and (c1.FontFace.Style == Enum.FontStyle.Italic) == critical.Italic)
-			t.Check("the critical keeps its own face, with no shadow (AR44)", c1 ~= nil and c1.FontFace.Family == HudConfig.Numbers.Face and Digits.Shadows[one.Row] == nil, if c1 then c1.FontFace.Family else "no digit")
+			-- Its own face; and its hard cast onto the splash, not the plain numbers' soft shadow (the director, 2026-11-19).
+			local cast = Digits.Shadows[one.Row]
+			local castDigit = if cast then cast:FindFirstChild("C1") :: TextLabel? else nil
+			t.Check("the critical keeps its own face", c1 ~= nil and c1.FontFace.Family == HudConfig.Numbers.Face, if c1 then c1.FontFace.Family else "no digit")
+			if critical.Cast.On then
+				t.Check("its digits cast hard and dark onto the splash, down and right", cast ~= nil and castDigit ~= nil and castDigit.TextColor3 == critical.Cast.Colour
+					and cast.Position.X.Offset == critical.Cast.Offset.X and cast.Position.Y.Offset == critical.Cast.Offset.Y and castDigit.TextTransparency < 0.05
+					and one.Sweep ~= nil and cast.ZIndex > one.Sweep.ZIndex, if cast then `{cast.Position}` else "no cast")
+			else
+				t.Check("no cast", cast == nil)
+			end
 			t.Wait(numbers.Count + 0.05)
 			t.Near("settled", one.Scale.Scale, 1, 0.001)
 			local sweep = one.Sweep
@@ -3959,6 +3969,15 @@ local cases = {
 			t.Check("seven numbers up at once", keys() == 7, `{keys()}`)
 			t.Wait(numbers.Seconds + 0.1)
 			t.Check("all gone a fade after their last", counting[root] == nil, `{keys()} left`)
+			-- A lone critical lands swollen to the pop, its splash with it, and settles over the count (AR44, research's
+			-- second look); a plain number lands whole ("unswollen", above).
+			Effects.Number(root, "SelfTest@9", 1204, { Style = "Critical" }, numbers)
+			local lone = of("SelfTest@9")
+			t.Near("a lone critical lands swollen to the pop", if lone then lone.Scale.Scale else 0, if critical.Land then numbers.Pop else 1, 0.001)
+			t.Check("its splash inside what swells", lone ~= nil and lone.Sweep ~= nil and lone.Sweep.Parent == lone.Scale.Parent)
+			t.Wait(numbers.Count + 0.05)
+			t.Near("and settles over the count", if lone then lone.Scale.Scale else 0, 1, 0.001)
+			t.Wait(numbers.Seconds)
 			root:Destroy()
 		end,
 	},

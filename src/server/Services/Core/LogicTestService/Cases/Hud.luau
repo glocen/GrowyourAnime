@@ -71,6 +71,12 @@ return {
 			t.Equal("swelling the moment a hit joins", Hud.Swell(c, 0.3, COUNT), 1)
 			t.Equal("settled once counted", Hud.Swell(c, 0.3 + COUNT, COUNT), 0)
 			t.Equal("a lone hit never swells", Hud.Swell(Hud.Count(5), 0, COUNT), 0)
+			-- A critical's landing (AR44, research's second look): whole at its birth, settled over the count, out fast.
+			t.Equal("a landing starts whole", Hud.Land(0, COUNT), 1)
+			t.Check("half through the count it's mostly settled", Hud.Land(COUNT / 2, COUNT) < 0.5 and Hud.Land(COUNT / 2, COUNT) > 0)
+			t.Equal("settled once counted", Hud.Land(COUNT, COUNT), 0)
+			t.Equal("and stays settled", Hud.Land(COUNT * 3, COUNT), 0)
+			t.Equal("no count time: no landing", Hud.Land(0, 0), 0)
 			local word = Hud.Count(0)
 			Hud.Add(word, 0, 0.5, COUNT)
 			t.Equal("a word said again stays a word", word.Total, 0)

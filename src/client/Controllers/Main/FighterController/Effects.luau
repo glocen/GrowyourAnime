@@ -1819,7 +1819,11 @@ local function lookOf(style: string, colour: Color3?): (Digits.Look, number)
 	local config = HudConfig.Numbers
 	if style == "Critical" then
 		local c = config.Critical
-		return { Top = c.Top, Foot = c.Foot, Ramp = c.Ramp, Outline = c.Outline, Weight = c.Weight, Gap = c.Gap, Italic = c.Italic }, c.Size
+		local cast = c.Cast
+		local shadow: Digits.Shadow? = if cast.On
+			then { Colour = cast.Colour, Offset = cast.Offset, Transparency = cast.Transparency, Spread = cast.Spread, Soft = cast.Soft }
+			else nil
+		return { Top = c.Top, Foot = c.Foot, Ramp = c.Ramp, Outline = c.Outline, Weight = c.Weight, Gap = c.Gap, Italic = c.Italic, Shadow = shadow }, c.Size
 	end
 	local s = config.Styles[style] or config.Styles.Dealt
 	local look: Digits.Look = {
@@ -1876,7 +1880,7 @@ local function sweep(c: Counting)
 		made.Image = UIKit.Images.CritSweep.Id
 		made.ScaleType = Enum.ScaleType.Stretch
 		made.AnchorPoint = Vector2.new(0, 0.5)
-		made.ZIndex = 1
+		made.ZIndex = 0 -- under the digits' cast (1) and the digits (2): the cast falls on it
 		made.Parent = c.Plate
 		c.Sweep = made
 		local function relay()
@@ -1886,6 +1890,15 @@ local function sweep(c: Counting)
 		c.Plate:GetPropertyChangedSignal("AbsoluteSize"):Connect(relay)
 	end
 	laySweep(c)
+end
+
+-- How swollen it is at `age`: a joining hit's swell, and a critical's landing (Config.Hud.Numbers.Critical.Land).
+local function swellOf(c: Counting, age: number, numbers: Numbers): number
+	local swell = Hud.Swell(c.Count, age, numbers.Count)
+	if c.Big and HudConfig.Numbers.Critical.Land then
+		swell = math.max(swell, Hud.Land(age, numbers.Count))
+	end
+	return 1 + (numbers.Pop - 1) * swell
 end
 
 local function restyle(c: Counting, numbers: Numbers)
@@ -1925,7 +1938,7 @@ local function place(c: Counting, numbers: Numbers)
 		if other.Big then
 			w += 2 * config.Critical.Sweep.Left * config.Digit * (other.Row:GetAttribute("Size") :: number)
 		end
-		local grow = 1 + (numbers.Pop - 1) * Hud.Swell(other.Count, other.Age + ahead, numbers.Count)
+		local grow = swellOf(other, other.Age + ahead, numbers)
 		local tall = other.H * grow
 		local y = v.Y / scale + other.Shift.Y - tall / 2
 		-- Held under the top band as UI.World holds it, its top at the band's edge: it stalls there while one below rises on.
@@ -2053,7 +2066,7 @@ function Effects.Number(root: BasePart, key: string, amount: number?, look: Numb
 				restyle(c, numbers)
 			end
 		end
-		scale.Scale = 1 + (numbers.Pop - 1) * Hud.Swell(c.Count, age, numbers.Count)
+		scale.Scale = swellOf(c, age, numbers)
 		c.Fade = math.clamp((t - 0.6) / 0.4, 0, 1)
 		local yieldAt = c.YieldAt
 		if yieldAt then

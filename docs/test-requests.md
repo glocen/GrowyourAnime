@@ -4260,3 +4260,16 @@ Faber, 2026-11-19, 03:43 by the clock: the follow-up's item 7 (`docs/production-
   6. The skull case's grey state now uses a Shade a level under, since at the lead's level a foe never reads grey.
   7. Since every Voidkin has an element now, the Voidkin screen's stage floor glows in its element (TR24's rule), where ten stood on grey.
 - **Status:** implemented and tested; the Stage 1 playtest owed; for research's look.
+
+### Research's pass and calls (Quaestor, 2026-11-19, 23:04)
+
+- **Felt:** the sheet shows Rook's five attributes whole on the smallest phone, and the foe's card says the fight's cost in one glance: grey sinks, yellow and red jump. **What players see passes at competent.** TR49 closes on the Stage 1 playtest, still owed (item 9).
+- **The one bold thing:** the red skull with its red level, which reads before the name.
+- **Calls on the findings:**
+  1. **The prices must equal the gains (must-fix, class: every number shown as a part of CR).** 1.408 is √2 to 0.4%, so it looks like a √2 in the price path, not a design. Find it and remove it, so an item's CR on its card is what it adds on the reference body. The ranking holding isn't enough: the card and the comparison panel must agree.
+  2. **Keep the numbers.** Elements are part of the decided design, and a Stage 1 pack 12 to 19% faster with Fire stays inside the fit's band. The Stage 1 playtest and the refit after 20 logged runs take elements in. A MODEL limit, not a retune.
+  3. Research's: `sim.py`'s dps() is brought in line with F1 and F7 at the refit.
+  4. **Tier 1 agreed:** no number for Lifesteal. A number on every hit would bury the hits' own, and the bar shows it.
+  5. Agreed, nothing changes now. A keeper row in the stage's factor must wire its Stage first.
+  6. Agreed: it follows the never-grey rule.
+  7. **Agreed:** it's TR24's rule working as written. The floor in the element's colour is better than ten grey ones.

@@ -13583,6 +13583,43 @@ The director's words: jewels and War Emblems go in and out on Equipment's pages 
 - **Content check, PASS** (14:38), with no conditions.
 - **For Faber:** upload it under the group and set it as Home's mark in the live dock, in PageItems' place. The ink `DockMarkHome` (104159157739607) stays uploaded and unused.
 
+### Reinforce as its own screen, cut for Faber (Modulo, 2026-11-19, 14:40 to 14:52 by the clock)
+
+- **What:** Reinforce under Home's band, Back and no tabs, in C (research, 12:56). It has the same five states and beats as "Reinforce in motion", which research passed. The sheet is `build/scratch/modulo/equipment/equipment_reinforce.png`, from `equipment_pages.py`'s default mode.
+- **The cut:** in `build/handoff/UI/equipment/`, beside the sockets, from the same `cut` mode. There are 12 new images at 4 pixels a point.
+  - **The list rows,** which all three Equipment screens share:
+    - `RowPlate` (a row at rest) and `RowGlass` (the chosen row) keep their own colours, sliced at their ends;
+    - `RowEdge` is the hairline;
+    - `RowGlassWash` is the chosen row's light, stretched;
+    - `RowGlassLight` is its lit right edge;
+    - `RowPoint` points at the work.
+  - **Reinforce:**
+    - `ReinforceRing` is the ring, and `ReinforceRingOuter` its line 4 points out;
+    - `ReinforceRingGlow` is the light inside it;
+    - `ReinforceFlash` is a success's flash;
+    - `ReinforceWaveGlow` is the glow of the breath and the wave;
+    - `ReinforceCrack` is a fail's crack, in its own colours.
+  - **The rest are white masks.** Each one's tint and use is in `equipment.json`.
+  - **A fix on the way:** every glow's box is now three of its radii, where it has gone. The glows used to stop at a hard edge. `SocketGlow` is redrawn the same shape in a box 18 points out, and its fit still holds.
+- **`equipment.json`:** gains `layout.reinforce`, every placement in points on the smallest phone, read from `upgrade_pages.work`. That covers:
+  - the row's second line and the name;
+  - the ring's stack, the gear and the levels now and after;
+  - the gain, the stone, the odds and the lines;
+  - the two cost pills and the press.
+  - **Also new:** `reinforce.states` (each state's look and its lines), `reinforce.motion` (every beat with `upgrade_motion.py`'s seeds, the easings, and which beats are the kit's Press, Count, Burst, Shine and Pop), and `palette.good` and `palette.hurt`.
+  - **Drawn natively:** the breath's and the wave's rings are UIStroke circles over the glow image, and the fail's dull disc is a plain circle.
+- **The fit (`equipment_cut_frame.png`):** a row at rest, the chosen row and the ring at rest, risen and failed, each built from the images against the kit's drawing. The worst mean is 0.000 and the worst 99th percentile 0.003.
+- **Content check, PASS** (14:50). It found no gore: the crack is one thin jagged line, not on a body, and the failed ring is a crisp circle. The layout is a common pattern in our own art, drawn in code with no image input.
+  - **Reinforce is a paid random item** once Credits sell for Robux (`docs/roblox-rules.md`). None of these block the upload:
+    - the odds stay visible before every press, never behind an icon;
+    - the PolicyService check guards Credits;
+    - the questionnaire declares it;
+    - nothing sells before the director approves the compliant design.
+- **For Faber:** build Reinforce as its own screen from Home's Equipment row by `equipment.json`, and take the rows for all three screens.
+  - **Upload:** the 12 images go under the group.
+  - **The stones' pictures** (`StoneLow`, `StoneMid`, `StoneHigh`, AR31, `build/handoff/UI/upgrades/images/`) aren't logged as uploaded. They go up with these.
+  - **The numbers:** stand-ins until TR47, except the rates, which are research's seeds.
+
 ## AR44. The damage numbers' rework: the plain, received and healing numbers, and the critical closer to the reference (Faber's takes in the game, Modulo's stroke, research's pick)
 
 Research, 2026-11-19, 11:17 by the clock. The director, by 11:16, to research: "The damages/healing text need a small rework it doesnt look as i wanted it to be, same for the crit text it need to be more close to the reference i've shown". The same morning, relayed by Modulo at about 11:15: "like the blackstroke around the text for those are way to thick". Research reads "those" as the damage numbers, since the two came together. The rule stays `docs/ui.md`, "Damage numbers" (the director, 2026-11-12); this changes the look only. The reference is `docs/research/hud-reference.md`, its three arena screenshots, held internal.

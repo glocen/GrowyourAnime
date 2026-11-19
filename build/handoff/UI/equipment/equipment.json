@@ -1,5 +1,5 @@
 {
-  "what": "AR43, Equipment's Jewels and War Emblems, each its own screen opened from Home's Equipment row as Reinforce is: the sockets' images and every placement, from tools/blender/equipment_pages.py (cut); drawn in code, no image input",
+  "what": "AR43, Equipment's three screens, Reinforce, Jewels and War Emblems, each its own screen opened from Home's Equipment row: the frame's rows, the sockets' and Reinforce's images and every placement, from tools/blender/equipment_pages.py (cut); drawn in code, no image input",
   "pixelsPerPoint": 4,
   "palette": {
     "backing": "#2E525C",
@@ -32,7 +32,9 @@
       "#3C6A76",
       "#2A4E5A"
     ],
-    "note": "AR40's C, as every screen Home opens (research, 12:56)"
+    "good": "#7CF0A4",
+    "hurt": "#FF786E",
+    "note": "AR40's C, as every screen Home opens (research, 12:56); good and hurt a rise's and a fail's"
   },
   "layout": {
     "frame": {
@@ -345,7 +347,314 @@
           "Put in, Replace (84) or Take out (92)"
         ]
       }
-    }
+    },
+    "reinforce": {
+      "rowSecond": {
+        "words": "Reinforce",
+        "at": [
+          62,
+          24
+        ],
+        "colour": "#D9E8E2",
+        "level": {
+          "at": "right of the word, 3 points on",
+          "bold": true,
+          "colour": "the light #F0E2C4; the chosen row's #7CF0A4 once risen, #FF786E once failed"
+        }
+      },
+      "name": {
+        "at": [
+          433.0,
+          66
+        ],
+        "size": 14,
+        "bold": true,
+        "align": "centre",
+        "colour": "the item's rarity"
+      },
+      "ring": {
+        "middle": [
+          433.0,
+          110
+        ],
+        "radius": 27.0,
+        "stack": "ReinforceRingGlow, ReinforceRing, ReinforceRingOuter, then the gear's cell"
+      },
+      "gear": {
+        "cell": [
+          413.0,
+          90
+        ],
+        "size": 40,
+        "note": "the kit's item cell in the item's rarity, the gear's picture at 0.94"
+      },
+      "now": {
+        "word": {
+          "at": [
+            316,
+            88
+          ],
+          "words": "Reinforce",
+          "colour": "#D9E8E2"
+        },
+        "level": {
+          "at": [
+            316,
+            104
+          ],
+          "size": 17,
+          "bold": true,
+          "colour": "the light; #7CF0A4 once risen, #FF786E once failed"
+        },
+        "stat": {
+          "at": [
+            316,
+            126
+          ],
+          "colour": "#FFF6E2",
+          "words": "<stat> <now>"
+        }
+      },
+      "after": {
+        "align": "right",
+        "word": {
+          "at": [
+            550,
+            88
+          ],
+          "words": "Reinforce",
+          "colour": "#D9E8E2"
+        },
+        "level": {
+          "at": [
+            550,
+            104
+          ],
+          "size": 17,
+          "bold": true,
+          "colour": "#F0E2C4"
+        },
+        "stat": {
+          "at": [
+            550,
+            126
+          ],
+          "colour": "#FFF6E2",
+          "words": "<stat> <after>"
+        },
+        "gain": {
+          "at": [
+            550,
+            142
+          ],
+          "bold": true,
+          "colour": "#7CF0A4",
+          "words": "+<gain>"
+        }
+      },
+      "stone": {
+        "cell": [
+          420.0,
+          142
+        ],
+        "size": 26,
+        "note": "the kit's Common item cell, the stone's picture (AR31's StoneLow, StoneMid, StoneHigh) at 0.94, a hairline in the edge #E2CFA4 over its rim"
+      },
+      "odds": {
+        "success": {
+          "at": [
+            427.0,
+            173
+          ],
+          "align": "right",
+          "bold": true,
+          "colour": "#F0E2C4",
+          "words": "Success <rate>%"
+        },
+        "dot": {
+          "at": [
+            433.0,
+            173
+          ],
+          "align": "centre",
+          "colour": "#A9C0BC",
+          "words": "\u00b7"
+        },
+        "fail": {
+          "at": [
+            439.0,
+            173
+          ],
+          "colour": "#D9E8E2",
+          "words": "Fail <100 - rate>%"
+        },
+        "note": "before every press, the two adding to 100"
+      },
+      "said": {
+        "at": [
+          316,
+          192
+        ],
+        "pitch": 17,
+        "note": "its lines by state (reinforce.states)"
+      },
+      "cost": {
+        "stones": {
+          "pill": [
+            318.0,
+            272,
+            382.0,
+            304
+          ],
+          "picture": {
+            "at": [
+              322.0,
+              277
+            ],
+            "size": 22
+          },
+          "count": {
+            "at": [
+              376.0,
+              281
+            ],
+            "align": "right",
+            "bold": true,
+            "colour": "the text; #FF786E when short",
+            "words": "x<need>"
+          }
+        },
+        "credits": {
+          "pill": [
+            388.0,
+            272,
+            462.0,
+            304
+          ],
+          "picture": {
+            "at": [
+              392.0,
+              279
+            ],
+            "size": 18,
+            "image": "CoinMint"
+          },
+          "count": {
+            "at": [
+              456.0,
+              281
+            ],
+            "align": "right",
+            "bold": true,
+            "colour": "#FFF6E2"
+          }
+        },
+        "pill": "the channel #0E1D23, a hairline in the edge, cut 4 at every corner"
+      },
+      "press": {
+        "box": [
+          468.0,
+          266,
+          548.0,
+          310
+        ],
+        "words": "Reinforce",
+        "kind": "lit (one) when it can go; off, the well's plate with faint words, when the stones are short"
+      }
+    },
+    "rowImages": "every screen's list rows: at rest RowPlate and RowEdge; the chosen row RowGlass, RowGlassWash, RowEdge (in the facet), RowGlassLight and RowPoint, gliding as one"
+  },
+  "reinforce": {
+    "states": {
+      "said": {
+        "ready": [
+          "You have <have> <stone> stones (soft)"
+        ],
+        "short": [
+          "You have <have> <stone> stones: <need - have> short (hurt, bold)",
+          "The Stone Condenser makes them (soft)"
+        ],
+        "rose": [
+          "Reinforced to +<level> (good, bold)",
+          "You have <have> <stone> stones (soft)"
+        ],
+        "failed": [
+          "Failed: it stays at +<level> (hurt, bold)",
+          "Spent <need> <stone> stones and <credits> Credits (soft)"
+        ]
+      },
+      "ready": "the press lit; the levels in the light",
+      "short": "the press off; the stones' count in the hurt",
+      "neverReinforced": "+0 to +1 at 100%: the same layout",
+      "rose": "the chosen row's level, the level by the ring, the ring and its glow in the good",
+      "failed": "the same in the hurt; the level stays"
+    },
+    "motion": {
+      "seeds": {
+        "Glide": 0.2,
+        "Slide": 8.0,
+        "Leave": 0.1,
+        "Cross": 0.16,
+        "Answer": 0.4,
+        "Fly": 0.22,
+        "Stones": 3,
+        "Apart": 0.035,
+        "Wave": 26.0,
+        "WaveFor": 0.32,
+        "Inhale": 16.0,
+        "Lift": 0.05,
+        "Pending": 0.6,
+        "Flash": 0.14,
+        "Kick": 0.1,
+        "Texts": 0.3,
+        "Crack": 0.06,
+        "CrackFade": 0.4,
+        "Dim": 0.55,
+        "Sink": 0.04,
+        "Shake": 2.0,
+        "ShakeFor": 0.24,
+        "Settle": 0.8,
+        "note": "upgrade_motion.SEEDS: Answer is the stand-in server's, the game uses the real answer"
+      },
+      "kit": "Config.Hud.Motion.Press (the press), Count (the Credits and the stat), Burst (the sparks), Shine (the gear's one shine) and Config.Hud.Pop at Rungs.Level (the level), as the game has them",
+      "easing": {
+        "out3": "1 - (1 - u)^3",
+        "in3": "u^3",
+        "smooth": "u^2 (3 - 2u)",
+        "expo": "1 - 2^(-10u)"
+      },
+      "rowTapped": [
+        "the row squeezes and springs back past its size (Press), about its middle; nothing waits on the server",
+        "the glass (RowGlass, RowGlassWash, RowGlassLight, RowPoint) glides to it over Glide 0.2 s, out3, no overshoot: a marker",
+        "the old work fades over Leave 0.1 s (smooth) sliding Slide 8 points left; the new one fades in over Cross 0.16 s (out3) from 8 points right, from the touch"
+      ],
+      "reinforce": [
+        "the press squeezes (Press); from Press.Least its light holds at Pending 0.6 until the answer, then returns over 0.1 s",
+        "the stones: 3 of the cost's stone, each k leaving at k x Apart 0.035 s and flying Fly 0.22 s: e = u^2 (eased in) along a quadratic curve from the pill's stone, through (the pill's x, the ring's y), into the ring's middle; its size 1 - 0.4 e; it fades over its last quarter",
+        "the breath, from 0.06 s to the answer + 0.03: u = (t - 0.06) / (Answer - 0.06); a circle (UICorner 0.5, UIStroke 1.6 in the light) of radius 27 + Inhale x (1 - in3(u)), the stroke's transparency 1 - (0.25 + 0.6u); ReinforceWaveGlow scaled to it in the light at transparency 1 - 0.35u; inside, a circle of radius 25 in the glint at transparency 1 - 0.14u",
+        "the gear's cell grows to 1 + Lift x in3(u), Lift 0.05"
+      ],
+      "answer": [
+        "either way the cost leaves: the Credits count down (Count, expo over Count.Seconds)",
+        "the ring (ReinforceRing, ReinforceRingGlow) and the levels, by the ring and in the row, turn over 0.08 s (out3): the old fading as the new one shows"
+      ],
+      "success": [
+        "the flash: ReinforceFlash, transparency 1 - f, f = (1 - age / Flash)^2, Flash 0.14",
+        "the wave, for WaveFor 0.32 s, v = age / WaveFor: a circle of radius 27 + Wave x out3(v), Wave 26, its UIStroke 0.4 + 2.2 (1 - v) wide, white turning #7CF0A4 by min(2.5v, 1), transparency 1 - (1 - v)^1.5; ReinforceWaveGlow scaled with it in the green at transparency 1 - 0.5 (1 - v)",
+        "the sparks: Burst from the ring's edge (radius 23), in #7CF0A4",
+        "the gear: size 1 + Lift x (1 - out3(age / Pop.Seconds)) + Kick x the pop's swell, Kick 0.1; Shine across its picture",
+        "the level pops at its rung (Pop) in #7CF0A4, by the ring and in the row; the stat counts to its after (Count)",
+        "the next rank's lines fade in Texts 0.3 s after the yes, over Cross; the glow is gone by Settle 0.8 s"
+      ],
+      "fail": [
+        "no flash: a circle of radius 26 in #FFD2CC at transparency 1 - 0.3 f",
+        "the crack: ReinforceCrack drawn in left to right over Crack 0.06 s (a clip widening), then faded over CrackFade 0.4 s",
+        "the gear dims to Dim 0.55 over 0.08 s and back by 0.45 s; its size 1 + Lift - (Lift + Sink) x out3(age / 0.1) + Sink x smooth((age - 0.15) / 0.25), Sink 0.04",
+        "the work shakes: x + Shake x sin(age / ShakeFor x 6 pi) x (1 - age / ShakeFor), Shake 2, ShakeFor 0.24: the ring, the gear, the levels, the stat, the lines and the press",
+        "the level stays, in #FF786E; the lines fade in at Texts / 2"
+      ]
+    },
+    "rules": "the odds before every press, adding to 100; nothing protects a fail; the odds and price keep docs/roblox-rules.md's paid random items' rules (Reinforce's piece)"
   },
   "layoutNote": "measured on the smallest phone (568 by 320); the screen takes the phone's whole width as Reinforce's does",
   "presses": {
@@ -440,22 +749,22 @@
     "SocketGlow": {
       "file": "images/SocketGlow.png",
       "pixels": [
-        240,
-        240
+        320,
+        320
       ],
       "points": [
-        60.0,
-        60.0
+        80.0,
+        80.0
       ],
-      "pad": 8.0,
+      "pad": 18.0,
       "cut": [
-        16.0,
-        16.0,
-        16.0,
-        16.0
+        26.0,
+        26.0,
+        26.0,
+        26.0
       ],
       "tint": "the screen's light #F0E2C4 at ImageTransparency 0.45",
-      "use": "the chosen socket's or bag cell's glow, under its fill. Its box is the socket's with Pad on every side. Sliced at Cut 16"
+      "use": "the chosen socket's or bag cell's glow, under its fill. Its box is the socket's with Pad on every side. Sliced at Cut 26"
     },
     "SocketEmptyJewel": {
       "file": "images/SocketEmptyJewel.png",
@@ -508,6 +817,181 @@
       ],
       "tint": "the screen's faint #A9C0BC at ImageTransparency 0.2",
       "use": "a list row's empty emblem socket, a star, its 16 point box centred where the row's emblem would stand"
+    },
+    "RowPlate": {
+      "file": "images/RowPlate.png",
+      "pixels": [
+        128,
+        184
+      ],
+      "points": [
+        32.0,
+        46.0
+      ],
+      "cut": [
+        8.0,
+        0,
+        8.0,
+        0
+      ],
+      "tint": null,
+      "use": "a list row at rest: the well's plate, in its own colours, never tinted; its top left cut 6. Sliced at Cut, its ends only: drawn at its own height (46), it stretches along to the row, 286 points on the smallest phone"
+    },
+    "RowGlass": {
+      "file": "images/RowGlass.png",
+      "pixels": [
+        128,
+        184
+      ],
+      "points": [
+        32.0,
+        46.0
+      ],
+      "cut": [
+        8.0,
+        0,
+        8.0,
+        0
+      ],
+      "tint": null,
+      "use": "the chosen row: the dark glass, in its own colours, never tinted; its top left cut 6. Sliced at Cut, its ends only: drawn at its own height (46), it stretches along to the row, 286 points on the smallest phone"
+    },
+    "RowEdge": {
+      "file": "images/RowEdge.png",
+      "pixels": [
+        136,
+        192
+      ],
+      "points": [
+        34.0,
+        48.0
+      ],
+      "pad": 1,
+      "cut": [
+        9.0,
+        0,
+        9.0,
+        0
+      ],
+      "tint": "at rest the edge #E2CFA4, ImageTransparency 0; on the chosen row the facet #8FC4C8 at 0.2",
+      "use": "a row's hairline over its plate or glass; its box the row's with Pad on every side, sliced as the row"
+    },
+    "RowGlassWash": {
+      "file": "images/RowGlassWash.png",
+      "pixels": [
+        128,
+        184
+      ],
+      "points": [
+        32.0,
+        46.0
+      ],
+      "tint": "the light #F0E2C4 at ImageTransparency 0.78",
+      "use": "the chosen row's light, rising toward its lit right edge, over the glass and under the hairline: stretched to the row (ScaleType Stretch), never sliced"
+    },
+    "RowGlassLight": {
+      "file": "images/RowGlassLight.png",
+      "pixels": [
+        88,
+        264
+      ],
+      "points": [
+        22,
+        66.0
+      ],
+      "tint": "the light #F0E2C4, ImageTransparency 0",
+      "use": "the chosen row's lit right edge and its glow: its box's middle on the row's right edge, its top 10 above the row's"
+    },
+    "RowPoint": {
+      "file": "images/RowPoint.png",
+      "pixels": [
+        40,
+        72
+      ],
+      "points": [
+        10,
+        18
+      ],
+      "tint": "the light #F0E2C4",
+      "use": "the chosen row's point toward the work: its box's left on the row's right edge, its top 14 below the row's"
+    },
+    "ReinforceRing": {
+      "file": "images/ReinforceRing.png",
+      "pixels": [
+        264,
+        264
+      ],
+      "points": [
+        66.0,
+        66.0
+      ],
+      "tint": "at rest the light #F0E2C4; risen #7CF0A4, failed #FF786E; ImageTransparency 0.1",
+      "use": "the ring round the gear: its box's middle on the ring's, 27 points round, 1.6 wide"
+    },
+    "ReinforceRingOuter": {
+      "file": "images/ReinforceRingOuter.png",
+      "pixels": [
+        264,
+        264
+      ],
+      "points": [
+        66.0,
+        66.0
+      ],
+      "tint": "the facet #8FC4C8 at ImageTransparency 0.5",
+      "use": "the ring's outer line, 4 points out: its box's middle on the ring's, 31 points round, 1 wide"
+    },
+    "ReinforceRingGlow": {
+      "file": "images/ReinforceRingGlow.png",
+      "pixels": [
+        512,
+        512
+      ],
+      "points": [
+        128.0,
+        128.0
+      ],
+      "tint": "at rest the glint #FFF6E2; risen #7CF0A4, failed #FF786E; ImageTransparency 0.82",
+      "use": "the light in the ring, under the gear's cell: its box's middle on the ring's"
+    },
+    "ReinforceFlash": {
+      "file": "images/ReinforceFlash.png",
+      "pixels": [
+        352,
+        352
+      ],
+      "points": [
+        88.0,
+        88.0
+      ],
+      "tint": "white; ImageTransparency 1 - f, f = (1 - age / Flash)^2 from the yes",
+      "use": "a success's flash, the ring filled with light and its glow, over the gear: its box's middle on the ring's"
+    },
+    "ReinforceWaveGlow": {
+      "file": "images/ReinforceWaveGlow.png",
+      "pixels": [
+        320,
+        320
+      ],
+      "points": [
+        80.0,
+        80.0
+      ],
+      "tint": "the breath's light, the wave's green: see reinforce.motion",
+      "use": "the soft glow of a ring of light at 27 points: scaled with the breath and the wave, its box's middle on the ring's"
+    },
+    "ReinforceCrack": {
+      "file": "images/ReinforceCrack.png",
+      "pixels": [
+        240,
+        144
+      ],
+      "points": [
+        60.0,
+        36.0
+      ],
+      "tint": null,
+      "use": "a fail's crack across the ring, in its own colours (#FF786E with a pale core), never tinted: its box's middle on the ring's; drawn in left to right, then faded (reinforce.motion)"
     }
   }
 }

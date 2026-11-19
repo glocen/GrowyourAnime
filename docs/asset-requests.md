@@ -14156,6 +14156,31 @@ Research pulled it forward by message (after 20:34), as tier 1. Give level 3 its
 
 - **Felt:** level 3 is now a long crystal laid across the cell, plainly a step past level 2's sliver and short of the triangle, in all five colours, at 38 pt and in the small cut. **Passes at competent.** Dropping the lifted table was right, since it washed the colours out.
 
+### The Voidkin screen and the bag in B, the cut for Faber (Modulo, 2026-11-19, 21:02 to 21:27 by the clock)
+
+- **Research's ask (21:00),** on the director's "sure" (20:57, `docs/decisions.md`): every page of the Voidkin screen (Overview, Kit, Stars) and the bag, built from the kit as Equipment's was. Watch the violet; make room on the Overview for all five attributes at 14 points on the smallest phone.
+- **Where:** `tools/blender/voidkin_b_cut.py` draws `build/handoff/UI/voidkin_b/`: `voidkin_b_cut.png` (each page in two takes at 568 by 320 points, beside Faber's stills of today), `voidkin_b_close.png` (the Overview's panel at three pixels a point) and `voidkin_b.json` (the places, the lines, the colours, the motion). No new images: every piece is the kit's (`../seam/`) or the game's own, so nothing waits on an upload.
+- **The five attributes** (TR49's order: Strength, Agility, Intelligence, Endurance, Spirit), three a row, then two. Each cell is a third of the row (78.1 points; its words get 71.3, and "Intelligence", the widest, takes about 63). A cell is its words' height, 40 points, not a tap's 52, since nothing on the sheet opens (the director, 2026-11-15: "Plain list, no taps"). The heading moves up from 226 to 198, and the second row ends at 302.7, inside the scroll's foot (306.5). Every word is 14 points. Agility's, Intelligence's and Spirit's totals are stand-ins.
+- **The violet, measured** (share of pixels below the band in the violet hue, from the game's own pixels):
+
+  | | Today | Take 1 | Take 2 |
+  |---|---|---|---|
+  | Overview | 0.284 | 0.489 | 0.243 |
+  | The bag | 0.143 | 0.419 | 0.194 |
+
+  - **Take 1 is B as Equipment wears it.** SeamGlass's lifted Backing and Panel nearly double the violet; the panels make the difference (the Overview's panel, 0.128 to 0.305).
+  - **Take 2 is B's lights on Seam's grounds:** the ground's Backing, every panel's fill, the wells and the quiet glass keep Seam's own colours, under the kit's sheen, edges lit from above, corner glint, lit press and top light. It's research's line made literal: the stage's ground as it is, the lit glass carrying the light. The Overview falls under today's. The bag stays a little over (0.194), from Sort's lit edge and the grid's.
+  - **The takes differ only in those four colour pairs** (`takes` in the json); the places hold for both. The cost of take 2: the Voidkin screen's panels are darker than Equipment's, so the gear's two homes don't quite match.
+  - **My pick: take 2.** Research picks at its pass.
+- **The pages:**
+  - **Overview:** Leading is the lit press.
+  - **Kit:** the three lines from the game.
+  - **Stars:** the seven stars are the kit's wells with a Facet hairline, so an empty star reads as one to win (polish-later's line on the empty stars; research's call whether it closes). "Take the star" is lit; a copy short, it's Off and says why.
+  - **The bag:** All lit, the kinds scrolling, with the third word faded where the channel ends, as today's does. Sort is quiet glass.
+  - **The ground:** no bloom. It would sit behind the opaque stage.
+- **Content check (fresh eyes, 21:27): PASS** on both sheets, every word in the json, and the tool. Its note: Roblox's own top bar, drawn on the sheets, never goes into an uploaded image.
+- **Status:** cut and content-checked; for research's pick of the take, then Faber's install.
+
 ## AR44. The damage numbers' rework: the plain, received and healing numbers, and the critical closer to the reference (Faber's takes in the game, Modulo's stroke, research's pick)
 
 Research, 2026-11-19, 11:17 by the clock. The director, by 11:16, to research: "The damages/healing text need a small rework it doesnt look as i wanted it to be, same for the crit text it need to be more close to the reference i've shown". The same morning, relayed by Modulo at about 11:15: "like the blackstroke around the text for those are way to thick". Research reads "those" as the damage numbers, since the two came together. The rule stays `docs/ui.md`, "Damage numbers" (the director, 2026-11-12); this changes the look only. The reference is `docs/research/hud-reference.md`, its three arena screenshots, held internal.

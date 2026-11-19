@@ -1,0 +1,337 @@
+{
+ "what": "AR43, the Voidkin screen's pages (Overview, Kit, Stars) and the bag (its Inventory page) in Seam's lit glass, for Faber (research, 2026-11-19, 21:00, on the director's 'sure' of 20:57; not the other screens). From tools/blender/voidkin_b_cut.py. No new images: every piece is the kit's (../seam/seam.json, the client's Kit/Glass) or the game's own as it stands",
+ "pointsOnTheSmallestPhone": {
+  "size": [
+   568,
+   320
+  ],
+  "floor": 0.85,
+  "note": "the screen is authored at Theme.Author and drawn at 0.85 here; every word is 14 points or more rendered (the Text kit's floor)"
+ },
+ "takes": {
+  "1": "B as Equipment wears it: SeamGlass's Backing and Panel under the kit's lights",
+  "2": "B's lights on Seam's grounds: the ground's Backing, every panel's fill (PanelFill's gradient, the bag's room), the wells (the kinds' channel, an Off press, an empty star) and the quiet glass (Sort) in Seam's own (Backing #07060C; Panel #1A1430 to #0C0A16; Well #1B1728 to #110E1B; Button #2A2244 to #1A1530), with SeamGlass's Edge, Facet and Glint on them; the lights as take 1: the sheen, the edges lit from above, the corner glint, the lit press, the top light",
+  "switch": "the two takes differ in those four grounds alone; research picks one at its pass, and the cut's places hold for both",
+  "why": "research's 'watch the violet' (21:00): take 1's lifted panels nearly double the violet below the band; take 2 stays at or under today's on the Overview (see violet)"
+ },
+ "palette": {
+  "wear": "SeamGlass (Config.UIKit, seam.json's palette) where the screen and the bag wear Seam today: VoidkinScreen/Seam.luau's palette, the band, the panel, the bag's room, its kinds and Sort, the pages' presses; in take 2 with Seam's Backing and Panel (takes)",
+  "keep": [
+   "the stage's ground and its rarity's light: SeamGlass's Ground is Seam's #1E1A2C, and the stage is drawn as it is",
+   "the roster's strip: its cells keep Seam's Button plate (pass 'Seam' there), so the portraits bring no more violet",
+   "the bag's cells and the doll's slots: Bag.Art as it stands",
+   "the Void Shop: it stands on Seam.Case too, and stays Seam's (the director's scope: not the other screens), so Case takes its palette from its caller"
+  ],
+  "colours": {
+   "backing": [
+    "#1F1942",
+    "#0D0B1A"
+   ],
+   "panel": [
+    "#2F2758",
+    "#16122C"
+   ],
+   "edge": "#51477A",
+   "facet": "#A89CD8",
+   "glint": "#F0EAFF",
+   "text": "#F1ECFF",
+   "soft": "#C6BDE4",
+   "faint": "#8279A6",
+   "channel": "#0C0A1A",
+   "well": [
+    "#262044",
+    "#17132E"
+   ],
+   "button": [
+    "#3C3268",
+    "#251E46"
+   ],
+   "light": "#EDE4FF",
+   "ink": "#0B0913",
+   "lit": [
+    "#FFFFFF",
+    "#D4C6FF"
+   ],
+   "card": [
+    "#4C3E92",
+    "#251D4C"
+   ]
+  }
+ },
+ "ground": {
+  "look": "Glass.Ground: the Backing top to foot and the top light (seam.json, ground)",
+  "bloom": "none on these pages: no ScreenBloom. The stage's rarity light is the screen's light; research's 'watch the violet' (21:00)"
+ },
+ "band": {
+  "back": "as it is (B's Back)",
+  "marks": "the three marks' channel in SeamGlass's Channel with its Edge, its hairlines the Edge",
+  "name": "the page's name as it is, in the Text",
+  "wallet": "the chips in the Channel with the Edge, their words in the Text"
+ },
+ "stage": {
+  "box": [
+   7.3,
+   64.7,
+   300.7,
+   264.0
+  ],
+  "note": "as it is: its ground, its light, Rook, the name's line and Combat Power"
+ },
+ "strip": {
+  "box": [
+   7.3,
+   268.7,
+   298.0,
+   312.7
+  ],
+  "note": "as it is (see palette.keep)"
+ },
+ "actions": {
+  "box": [
+   305.3,
+   65.3,
+   560.0,
+   108.7
+  ],
+  "leading": "on the lead: Leading alone across the line, Glass.Lit (the lit press, its glow and its sheen once a loop), the diamond and the word in the Ink, 14 bold, centred together",
+  "other": "another Voidkin: Lead as Glass.Lit, Send to work (or Bring home) as Glass.Quiet in the Text; a passing block is the Off press (the Well, the Edge, its name in the Faint) with why under it in the Soft, as today"
+ },
+ "panel": {
+  "box": [
+   305.3,
+   114.7,
+   560.0,
+   313.3
+  ],
+  "look": "the kit's panel: PanelFill in SeamGlass's Panel, PanelSheen, PanelEdge lit from above, PanelCornerGlint (seam.json, panel)",
+  "inside": [
+   312.1,
+   121.5,
+   553.2,
+   306.5
+  ],
+  "row": [
+   312.1,
+   546.4
+  ],
+  "scroll": "the ScrollingFrame's bar in the Soft at 0.4 transparency, 2.4 wide"
+ },
+ "overview": {
+  "lines": {
+   "kind": {
+    "capitals": 123.0,
+    "words": "Common · Red · Warrior",
+    "colour": "Text",
+    "bold": true
+   },
+   "level": {
+    "capitals": 148.0,
+    "words": "Level 17",
+    "colour": "Text",
+    "bold": true
+   },
+   "xp": {
+    "capitals": 166.0,
+    "colour": "Soft"
+   },
+   "bar": {
+    "box": [
+     312.1,
+     182.0,
+     546.4,
+     188.8
+    ],
+    "look": "Bar in SeamGlass: its channel the Channel with the Edge, its fill Config.Hud.Card.Xp"
+   }
+  },
+  "heading": {
+   "capitals": 198.0,
+   "words": "BASIC ATTRIBUTES",
+   "colour": "Text",
+   "bold": true,
+   "was": 226.0,
+   "how": "pulled up 28 points: the experience line ends at its bar's foot (no padding under it) and the first heading has no space above its words (its Line the words' own 22 authored), so the list's gap (6 authored) is all that stands between"
+  },
+  "attributes": {
+   "order": [
+    "Strength",
+    "Agility",
+    "Intelligence",
+    "Endurance",
+    "Spirit"
+   ],
+   "across": 3,
+   "note": "the five Basic Attributes three a row, then two, each cell a third of the row (THIRD, 78.1 points; its words in 71.3, the cell less SHEET.Pad). The Battle Attributes stay two a row",
+   "cells": [
+    [
+     312.1,
+     217.7
+    ],
+    [
+     390.2,
+     217.7
+    ],
+    [
+     468.3,
+     217.7
+    ],
+    [
+     312.1,
+     262.7
+    ],
+    [
+     390.2,
+     262.7
+    ]
+   ],
+   "cell": {
+    "wide": 78.1,
+    "tall": 40.0,
+    "note": "the words' own height (Top, Name and Value: 47 authored), not the touch's 52: nothing on the sheet opens (the director, 2026-11-15: 'Plain list, no taps'). The Battle Attributes keep theirs"
+   },
+   "name": {
+    "capitals": [
+     224.6,
+     269.6
+    ],
+    "size": 14,
+    "colour": "Soft"
+   },
+   "total": {
+    "capitals": [
+     241.2,
+     286.2
+    ],
+    "size": 14,
+    "colour": "Text",
+    "font": "Theme.Font.Number"
+   },
+   "main": {
+    "words": "Main",
+    "colour": "Light",
+    "bold": true,
+    "gap": 6,
+    "note": "right after its own total"
+   },
+   "widest": {
+    "name": "Intelligence, about 63 points at 14",
+    "total": "12,345 Main, about 67",
+    "room": 71.3
+   },
+   "foot": "row two's cells end at 302.7, inside the scroll's foot (306.5): all five show on the smallest phone with nothing scrolled; the Battle Attributes start under the fold"
+  },
+  "rest": "the Battle Attributes' blocks, Now, Gear and its own name: as today, in SeamGlass's Text and Soft"
+ },
+ "kit": {
+  "lines": "each line: its name 14 bold in the Text, its words 14 in the Soft under it, as today",
+  "first": 124.0,
+  "pitch": "the name 18.7, a wrapped line 17, the gap 5.1"
+ },
+ "stars": {
+  "pips": {
+   "centre": [
+    323.0,
+    129.4
+   ],
+   "pitch": 24.0,
+   "half": 10.0,
+   "full": "the rarity's trim (Config.Hud.Card.Trim) lit from above, a 1-point hairline of the Glint at 0.2 transparency, a glow of the trim",
+   "empty": "the Well (top to WellFoot) with a 1-point hairline of the Facet at 0.45 transparency: seven to win, each seen (polish-later's empty stars)",
+   "note": "a diamond 20 points tall, a 14-point square turned 45 degrees; 24 apart"
+  },
+  "words": "the stars, the copies, the next star and its gains as today, 14, the Text and the Soft",
+  "press": {
+   "box": [
+    312.1,
+    246.0,
+    546.4,
+    290.2
+   ],
+   "can": "Take the star as Glass.Lit, its words in the Ink",
+   "cant": "the Off press: the Well, the Edge, 'Take the star' in the Faint, why under it in the Soft ('1 more copy')"
+  }
+ },
+ "bag": {
+  "room": {
+   "box": [
+    8.0,
+    58.0,
+    561.3,
+    318.7
+   ],
+   "look": "the kit's panel, as the Overview's (Seam.Case in SeamGlass)"
+  },
+  "divider": {
+   "x": 224.0,
+   "colour": "Facet",
+   "transparency": 0.65
+  },
+  "doll": "the slots and the stage as they are; the name's line over the stage as it is",
+  "kinds": {
+   "box": [
+    228.0,
+    61.3,
+    433.3,
+    104.7
+   ],
+   "look": "the Well with its Edge, its corners cut as the panel's",
+   "chosen": {
+    "box": [
+     230.5,
+     64.0,
+     272.0,
+     102.0
+    ],
+    "look": "Glass.Lit, its word in the Ink"
+   },
+   "rest": "their words 14 in the Soft, hairlines of the Edge between",
+   "end": "the kinds scroll: the Well fades in over the channel's last 14 points, over the next word"
+  },
+  "sort": {
+   "box": [
+    439.3,
+    61.3,
+    557.3,
+    104.7
+   ],
+   "look": "Glass.Quiet (SeamGlass's Button, the Facet's hairline)",
+   "words": "'Sort:' in the Soft, the sort in the Text bold, the chevron in the Text"
+  },
+  "cells": "Bag.Art as it stands, on the room",
+  "count": {
+   "capitals": 304.5,
+   "words": "100 / 300 in the bag",
+   "colour": "Soft"
+  }
+ },
+ "violet": {
+  "how": "the share of pixels below the band that are visible violet (hue 245 to 300, saturation 0.3 or more, value 0.15 or more), and their mean strength (saturation x value over the picture)",
+  "found": {
+   "Overview, take 1": {
+    "share": 0.489,
+    "strength": 0.0623
+   },
+   "Overview, take 2": {
+    "share": 0.243,
+    "strength": 0.0211
+   },
+   "the bag, take 1": {
+    "share": 0.419,
+    "strength": 0.0556
+   },
+   "the bag, take 2": {
+    "share": 0.196,
+    "strength": 0.02
+   },
+   "Overview today": {
+    "share": 0.284,
+    "strength": 0.0244
+   },
+   "the bag today": {
+    "share": 0.143,
+    "strength": 0.0134
+   }
+  }
+ },
+ "motion": "seam.json's idle and motion: the lit press's sheen once a loop; a page's open and switch as Equipment's"
+}

@@ -13342,6 +13342,13 @@ The director's look (`docs/decisions.md`, 02:58 to 03:13; `docs/design.md`, "War
   - **Legendary:** Zenith (a ring with a dot at its heart), Highcrown (a three-point crown), Radiance (a sunburst of eight short rays).
 - **Where they live once built:** `src/shared/Definitions/`, Faber's, with the names and image keys; this list is the brief, not their home.
 
+### Research's check of Home in B, finished, and the step into a screen (Quaestor, 2026-11-19, 13:20)
+
+From home_tray.png and home_step.png at the smallest phone, before Modulo cuts the images.
+- **The must-fix is met:** Settings stands as its own tall tile at the tray's end and no longer reads as Equipment's. The stacked headings and the one slant of gaps fit 537 pt and read as one tray.
+- **The step:** the tray folds back into the tile as the screen rises over it, and Back plays it in reverse, so the player always sees where a screen came from and goes back to. One mixed frame each way is fine at that speed.
+- **Tier:** competent. **Must-fix:** none. It goes to Faber as drawn.
+
 ## AR44. The damage numbers' rework: the plain, received and healing numbers, and the critical closer to the reference (Faber's takes in the game, Modulo's stroke, research's pick)
 
 Research, 2026-11-19, 11:17 by the clock. The director, by 11:16, to research: "The damages/healing text need a small rework it doesnt look as i wanted it to be, same for the crit text it need to be more close to the reference i've shown". The same morning, relayed by Modulo at about 11:15: "like the blackstroke around the text for those are way to thick". Research reads "those" as the damage numbers, since the two came together. The rule stays `docs/ui.md`, "Damage numbers" (the director, 2026-11-12); this changes the look only. The reference is `docs/research/hud-reference.md`, its three arena screenshots, held internal.
@@ -13497,6 +13504,15 @@ Research's pick and three must-fixes (12:11), then the measured critical (12:48)
   - *My read at the phone's size:* the five stay apart in every frame. The critical's digits read gold with the darker band two thirds down, and the splash reads orange, not brown.
   - *What the frames show of the pop:* there is none. The critical lands whole, at full size with its splash, in one frame, and holds. A number swells only when its count changes (`Rules.Hud.Swell`; `Combat.Numbers.Pop` 1.3 over 0.12 s), so a lone critical never does. A landing pop would be that same swell at a number's birth, a one-line change. Research's call.
 - **Not this piece:** TR46's "Floor 1 · best 7" over the target card's bar.
+
+### Research's second look (Quaestor, 2026-11-19, 13:20)
+
+Judged on what changed, from round-moments, critical-pop and its frames at the phone's size. The clip itself is first watched whole by the director.
+- **Felt:** the critical now stands apart: gold digits with the darker band, on a burnt-orange splash, held clear of the 949, the red 57 and the green +86. But it arrives like a label, not a blow.
+- **Tier:** competent. **The one bold thing:** the splash's colour against the white and grey plain numbers, so a crit is read before it's counted.
+- **Must-fixes from the first look:** all met. The gap and the narrow comma read as one number at 44 pt, and the five never overlap along their rise.
+- **Must-fix, the critical's landing** (serves impact; the lever is the punch scale): yes to the landing pop, on the critical only. It is born at 1.3 and settles to 1 in 0.12 s, the same swell as `Combat.Numbers.Pop`, with the splash scaling with it. Plain numbers keep landing whole, so the critical's pop stays its own.
+- **Not this piece:** the plain digits' wider tracking ("9 4 9") reads but is loose; it goes to `docs/polish-later.md`.
 
 ## AR45. The foes' cards with their difficulty skulls, and CR's gold tab (Modulo, for research's pick, then Faber)
 

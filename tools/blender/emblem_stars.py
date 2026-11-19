@@ -187,14 +187,21 @@ def symbol(t, key, cx, cy, S):
             d = np.minimum(d, t.poly([P(dx - 0.16, 0.82), P(dx - 0.16, top + 0.26), P(dx, top), P(dx + 0.16, top + 0.26),
                                       P(dx + 0.16, 0.82)]))
         cuts = np.maximum(np.abs(t.y - (cy + 0.3 * S)) - S * 0.035, d)
-    elif key == "Tidebreak":                # one wave on its sea: its back rising from the right, its crest breaking
-        outer = ([P(-0.92, 0.74), P(0.92, 0.74)]           # over to the left, the lip curling into a hollow
-                 + bezier(P(0.92, 0.42), P(0.8, -0.1), P(0.56, -0.8), P(0.0, -0.8), 12)
-                 + bezier(P(0.0, -0.8), P(-0.5, -0.8), P(-0.84, -0.42), P(-0.66, -0.08), 10)[1:]
-                 + bezier(P(-0.66, -0.08), P(-0.52, 0.12), P(-0.24, -0.06), P(-0.32, -0.3), 8)[1:]
-                 + bezier(P(-0.32, -0.3), P(-0.36, -0.5), P(0.02, -0.56), P(0.12, -0.28), 8)[1:]
-                 + bezier(P(0.12, -0.28), P(0.2, 0.0), P(-0.1, 0.42), P(-0.92, 0.42), 10)[1:])
-        d = t.poly(outer)
+    elif key == "Tidebreak":                # one wave breaking left: a long low back, a high crest, a lip of foam
+        # Research's must-fix (14:12): the first curl closed into a "2" over its flat sea. Now the wave has its own
+        # profile: its back slopes long and low to a point on the right, its crest stands high on the left, and its lip
+        # breaks into two fingers of foam over a hollow left open below. The foot swells and runs out to points, never
+        # a base line. Spray flies back off the crest; one line of foam follows the lip.
+        d = t.poly(bezier(P(-0.34, 0.64), P(0.0, 0.5), P(0.42, 0.72), P(0.98, 0.5), 12)          # the swell
+                   + bezier(P(0.98, 0.5), P(0.6, 0.3), P(0.26, -0.62), P(-0.2, -0.74), 14)[1:]   # the back
+                   + bezier(P(-0.2, -0.74), P(-0.62, -0.84), P(-0.94, -0.46), P(-0.84, -0.02), 12)[1:]  # the lip
+                   + [P(-0.72, -0.2), P(-0.6, -0.04)]                                           # its foam
+                   + bezier(P(-0.52, -0.28), P(-0.42, -0.44), P(-0.26, -0.44), P(-0.14, -0.32), 6)  # under it
+                   + bezier(P(-0.14, -0.32), P(-0.02, -0.14), P(0.0, 0.3), P(-0.34, 0.64), 10)[1:-1])  # the face
+        for x, y, rr in ((0.16, -0.8, 0.1), (0.4, -0.66, 0.085), (0.58, -0.46, 0.07)):
+            d = np.minimum(d, np.hypot(t.x - (cx + x * S), t.y - (cy + y * S)) - rr * S)
+        cuts = path(t, bezier(P(-0.04, -0.58), P(-0.36, -0.68), P(-0.62, -0.5), P(-0.66, -0.26), 10),
+                    [S * w for w in np.linspace(0.012, 0.042, 10)])
     elif key == "Warhorn":                  # a horn: a bone mouthpiece, a gentle bend down and left to a flared bell
         line = bezier(P(0.76, -0.7), P(0.62, -0.14), P(0.16, 0.26), P(-0.36, 0.3), 20)
         wide = [S * (0.1 + 0.2 * (i / 19) ** 1.1) for i in range(20)]

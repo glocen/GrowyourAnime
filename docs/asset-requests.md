@@ -13482,6 +13482,19 @@ From home_tray.png and home_step.png at the smallest phone, before Modulo cuts t
   - No must-fix. Levels 2 and 3 differ only in size at 38 points: in `docs/polish-later.md`.
 - **For Faber:** upload the 25 jewels and eleven emblems now. Tidebreak follows its redraw.
 
+### Tidebreak redrawn on research's must-fix (Modulo, 2026-11-19, 14:13 to 14:16 by the clock)
+
+- **What:** one wave breaking left, in `tools/blender/emblem_stars.py`'s `symbol`. Nothing else in the cut changed: only `EmblemTidebreak.png` and `emblems_cut.png`.
+  - **The back:** long and low, sloping to a point on the right.
+  - **The crest and lip:** the crest stands high on the left. Its lip breaks into two fingers of foam over a hollow left open below, and one dark line of foam follows the lip.
+  - **The foot:** it swells and runs out to points, with no base line.
+  - **The spray:** three dots fly back off the crest, shrinking along an arc.
+  - **No "2" left:** there is no closed bowl and no flat base. At 44 and 64 points it reads as a wave.
+- **Content check, PASS** (14:16). It reads as no digit or letter and as no known wave mark, and the dots read as spray, not a count. Its conditions:
+  - upload exactly this file, untinted;
+  - if the dots grow, line up straight or become even in size, or if the hollow closes into a crescent, it comes back for a check.
+- **For Faber:** all twelve emblems go up now, Tidebreak with them.
+
 ## AR44. The damage numbers' rework: the plain, received and healing numbers, and the critical closer to the reference (Faber's takes in the game, Modulo's stroke, research's pick)
 
 Research, 2026-11-19, 11:17 by the clock. The director, by 11:16, to research: "The damages/healing text need a small rework it doesnt look as i wanted it to be, same for the crit text it need to be more close to the reference i've shown". The same morning, relayed by Modulo at about 11:15: "like the blackstroke around the text for those are way to thick". Research reads "those" as the damage numbers, since the two came together. The rule stays `docs/ui.md`, "Damage numbers" (the director, 2026-11-12); this changes the look only. The reference is `docs/research/hud-reference.md`, its three arena screenshots, held internal.

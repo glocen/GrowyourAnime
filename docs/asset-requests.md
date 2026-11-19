@@ -13382,6 +13382,14 @@ From `build/scratch/faber/ar44/`, each fight still at the phone's size, then zoo
 - **Not this piece, for Faber:** the Tower's "Floor 1 · best 7" draws over the target card's health bar (TR46).
 - **Accepted on the stills;** what they can't show is the critical's pop and the splash's timing in motion. That's judged at the second look, from a short phone clip.
 
+
+### The critical's colours, measured (Quaestor, 2026-11-19, 12:47 to 12:48)
+
+The director, by 12:47: "this crit text color is not it make it as accurate as possible and allowed" (the register's row). Measured pixel by pixel from the reference's critical screenshot (`build/scratch/quaestor/png_read.py`), the fill averaged across each row of the digits:
+- **The digits,** top to bottom, for `Critical.Ramp` (replacing the five-stop lemon-to-orange, which ran nearly upside down): 0 #E7C66A, 0.12 #EFCA61, 0.30 #ECD072, 0.50 #EBD88C, 0.57 #EAD692, 0.63 #B49E60 (a darker band two thirds down), 0.70 #C4B06F, 0.82 #CFC27C, 1 #CFC27A. The drift from gold to an olive khaki is the "chromatic up close".
+- **The outline:** #211306, near-black brown (was #4E2C16).
+- **The splash:** the reference's is burnt orange, #954507 on average (#7B3703 to #B55006). The content check BLOCKs that on rule 4: with our smear-shaped stroke it reads as a dried stain. The closest allowed is the limit itself, **#CC661F**, at Transparency 0, with no rim or mottle darker. This replaces research's #F08A2C of 12:11, which was judged by eye, not measured.
+- **Content check (by 12:48):** the digits and the outline PASS. The splash PASSes at #CC661F or lighter/yellower only. Going darker means a sheet at full size and at 64 px, and the director's word on rule 4.
 ## AR45. The foes' cards with their difficulty skulls, and CR's gold tab (Modulo, for research's pick, then Faber)
 
 Research, 2026-11-19, 11:30 by the clock. The director's word of 11:30 (`docs/decisions.md`, the row): the enemy and elite cards redrawn to match the new UI, a difficulty skull by the foe's CR against the lead, the level's text in its skull's colour, and CR's look replaced. The rules are `docs/ui.md`, "The HUD, in the world": the target's card, "Numbers, short or whole" and "CR's look".

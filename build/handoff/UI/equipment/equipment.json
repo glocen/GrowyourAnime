@@ -1,0 +1,513 @@
+{
+  "what": "AR43, Equipment's Jewels and War Emblems, each its own screen opened from Home's Equipment row as Reinforce is: the sockets' images and every placement, from tools/blender/equipment_pages.py (cut); drawn in code, no image input",
+  "pixelsPerPoint": 4,
+  "palette": {
+    "backing": "#2E525C",
+    "panel": [
+      "#34606C",
+      "#2A4E5A"
+    ],
+    "edge": "#E2CFA4",
+    "facet": "#8FC4C8",
+    "glint": "#FFF6E2",
+    "text": "#FFF6E2",
+    "soft": "#D9E8E2",
+    "faint": "#A9C0BC",
+    "channel": "#0E1D23",
+    "well": [
+      "#21414A",
+      "#1B3840"
+    ],
+    "button": [
+      "#447480",
+      "#366270"
+    ],
+    "light": "#F0E2C4",
+    "ink": "#1E3238",
+    "lit": [
+      "#F0E2C4",
+      "#DCCBA6"
+    ],
+    "card": [
+      "#3C6A76",
+      "#2A4E5A"
+    ],
+    "note": "AR40's C, as every screen Home opens (research, 12:56)"
+  },
+  "layout": {
+    "frame": {
+      "band": "Reinforce's (upgrade_pages.band): Roblox's buttons, Back, the screen's name, the Credits and kWh",
+      "title": {
+        "at": [
+          232,
+          20
+        ],
+        "size": 17,
+        "bold": true,
+        "colour": "#FFF6E2"
+      },
+      "list": {
+        "panel": [
+          8,
+          60,
+          300,
+          312
+        ],
+        "rows": {
+          "first": 64,
+          "pitch": 50,
+          "height": 46,
+          "box": [
+            11,
+            297
+          ],
+          "cell": {
+            "at": [
+              14,
+              3
+            ],
+            "size": 40,
+            "note": "the bag's item cell (rarity tint, light, rim), the gear's picture at 0.94"
+          },
+          "name": {
+            "at": [
+              62,
+              5
+            ],
+            "size": 14,
+            "bold": true,
+            "colour": "#FFF6E2"
+          },
+          "holds": {
+            "top": 24,
+            "note": "what the item holds, under its name"
+          },
+          "chosen": "Reinforce's: the dark glass lit from its right edge and the light's point at its right end, toward the work; the others the well's plate",
+          "scroll": "the rows scroll; the panel's foot cuts the last"
+        }
+      },
+      "work": {
+        "panel": [
+          306,
+          60,
+          560,
+          312
+        ]
+      },
+      "panel": "the kit's panel (PanelShadow, PanelFill, PanelEdge) in C"
+    },
+    "jewels": {
+      "rowHolds": {
+        "first": [
+          70,
+          32
+        ],
+        "pitch": 20,
+        "picture": 18,
+        "empty": "RowEmptyJewel, its 12 box",
+        "full": {
+          "at": [
+            166,
+            24
+          ],
+          "words": "Full",
+          "colour": "#A9C0BC",
+          "note": "when all five are in"
+        }
+      },
+      "name": {
+        "at": [
+          433.0,
+          66
+        ],
+        "size": 14,
+        "bold": true,
+        "align": "centre",
+        "colour": "the item's rarity (the bag's)"
+      },
+      "sockets": {
+        "first": [
+          313.0,
+          84
+        ],
+        "pitch": 49,
+        "size": 44,
+        "order": [
+          "Red",
+          "Green",
+          "Blue",
+          "Yellow",
+          "Purple"
+        ],
+        "picture": "the jewel at 40, centred (2 points in)",
+        "value": {
+          "at": [
+            22,
+            48
+          ],
+          "size": 14,
+          "bold": true,
+          "align": "centre",
+          "colour": "#FFF6E2",
+          "words": "+points; '-' in the faint when empty"
+        }
+      },
+      "rule": {
+        "y": 156,
+        "ends": [
+          316,
+          550
+        ],
+        "colour": "#8FC4C8",
+        "transparency": 0.55
+      },
+      "heading": {
+        "at": [
+          318,
+          161
+        ],
+        "words": "Your <colour> jewels",
+        "colour": "#D9E8E2",
+        "right": {
+          "at": [
+            548,
+            161
+          ],
+          "words": "the colour's attribute",
+          "colour": "#D9E8E2"
+        }
+      },
+      "bag": {
+        "first": [
+          321.0,
+          178
+        ],
+        "pitch": 46,
+        "size": 40,
+        "levels": [
+          1,
+          2,
+          3,
+          4,
+          5
+        ],
+        "picture": "the jewel at 36, centred (2 in); at ImageTransparency 0.7 when none is held",
+        "rim": "SocketEdge in the screen's edge at 0.5; the chosen one SocketGlow and SocketEdgeLit",
+        "count": {
+          "box": [
+            18,
+            25,
+            38.5,
+            38.5
+          ],
+          "colour": "#0E1D23",
+          "number": {
+            "at": [
+              28.5,
+              26
+            ],
+            "bold": true
+          },
+          "note": "a Frame in the channel at the cell's foot right, the count in the text colour; none held, no chip"
+        }
+      },
+      "said": {
+        "at": [
+          318,
+          224
+        ],
+        "pitch": 18,
+        "note": "two lines over the presses: the first bold in the text colour, the second soft"
+      },
+      "presses": {
+        "right": 550,
+        "top": 262,
+        "foot": 306,
+        "gap": 8,
+        "order": [
+          "Combine (92 wide)",
+          "Put in, Replace (84) or Take out (92)"
+        ]
+      }
+    },
+    "emblems": {
+      "rowHolds": {
+        "first": [
+          71,
+          32
+        ],
+        "pitch": 22,
+        "picture": 22,
+        "empty": "RowEmptyEmblem, its 16 box centred where the emblem would stand",
+        "count": "the item's sockets by its rarity: Common 1, Uncommon 2, Rare 3, Epic and above 4"
+      },
+      "name": {
+        "at": [
+          433.0,
+          66
+        ],
+        "size": 14,
+        "bold": true,
+        "align": "centre",
+        "colour": "the item's rarity (the bag's)"
+      },
+      "sockets": {
+        "top": 84,
+        "pitch": 60,
+        "size": 46,
+        "centred": 433.0,
+        "note": "n sockets centred: the first's left at the middle - (n - 1) x 30 - 23",
+        "picture": "the emblem at 44, centred (1 point in)",
+        "value": {
+          "at": [
+            23,
+            50
+          ],
+          "size": 14,
+          "bold": true,
+          "align": "centre",
+          "colour": "#FFF6E2"
+        },
+        "stat": {
+          "at": [
+            23,
+            66
+          ],
+          "pitch": 15,
+          "size": 14,
+          "align": "centre",
+          "colour": "#D9E8E2",
+          "note": "the stat's name, a word a line (Critical / Damage)"
+        },
+        "empty": {
+          "mark": "SocketEmptyEmblem, its 28 box centred in the socket",
+          "words": "Empty",
+          "colour": "#A9C0BC",
+          "at": [
+            23,
+            50
+          ]
+        }
+      },
+      "rule": {
+        "y": 188,
+        "ends": [
+          316,
+          550
+        ],
+        "colour": "#8FC4C8",
+        "transparency": 0.55
+      },
+      "heading": {
+        "at": [
+          318,
+          193
+        ],
+        "words": "Your emblems",
+        "colour": "#D9E8E2"
+      },
+      "sort": {
+        "box": [
+          482,
+          191,
+          548,
+          211
+        ],
+        "words": "Rarity",
+        "fill": "#447480",
+        "edge": "#E2CFA4",
+        "tap": "44 points high over the pill, centred on it"
+      },
+      "bag": {
+        "top": 218,
+        "first": 319,
+        "pitch": 46,
+        "size": 40,
+        "clip": [
+          307,
+          552
+        ],
+        "note": "a scrolling row of the bag's item cells (the kit's, its emblems), cut 8 inside the panel's edge; sorted by rarity, highest first; the chosen one SocketGlow under it and SocketEdgeLit over it, both on a box 1.5 outside the cell"
+      },
+      "said": {
+        "at": [
+          318,
+          266
+        ],
+        "pitch": 18,
+        "note": "two lines left of the press: the set and rarity in the rarity's colour, bold; then the stat in the text colour"
+      },
+      "presses": {
+        "right": 550,
+        "top": 262,
+        "foot": 306,
+        "order": [
+          "Put in, Replace (84) or Take out (92)"
+        ]
+      }
+    }
+  },
+  "layoutNote": "measured on the smallest phone (568 by 320); the screen takes the phone's whole width as Reinforce's does",
+  "presses": {
+    "rule": "a press is drawn live only when it can act (research's must-fix, 14:27); with nothing to do it is off, the well's plate with faint words. The lit one is Put in, Replace or Take out; Combine is quiet when live, never lit",
+    "jewels": {
+      "Put in": "a bag jewel chosen and the socket empty",
+      "Replace": "a bag jewel chosen and the socket holding one, which goes back to the bag",
+      "Take out": "the socket chosen alone, holding one",
+      "Combine": "three or more of the chosen level, under level 5; free and sure, its price the three jewels (research, 14:27)"
+    },
+    "emblems": {
+      "Put in": "a bag emblem chosen and the socket empty",
+      "Replace": "a bag emblem chosen and the socket holding one",
+      "Take out": "the socket chosen alone, holding one"
+    },
+    "free": "putting in and taking out are free; no price is drawn"
+  },
+  "numbers": "jewel points by level and emblem stats are stand-ins until TR47 (research)",
+  "images": {
+    "SocketFill": {
+      "file": "images/SocketFill.png",
+      "pixels": [
+        176,
+        176
+      ],
+      "points": [
+        44.0,
+        44.0
+      ],
+      "cut": [
+        8.0,
+        8.0,
+        8.0,
+        8.0
+      ],
+      "tint": null,
+      "use": "a socket's dark well, in its own colours, never tinted; the bottom of every socket and of the Jewels screen's bag cells. Sliced at Cut 8 on every side: one image serves the 40, 44 and 46 point sockets, its corner cut 6.2 at every size"
+    },
+    "SocketLight": {
+      "file": "images/SocketLight.png",
+      "pixels": [
+        176,
+        176
+      ],
+      "points": [
+        44.0,
+        44.0
+      ],
+      "tint": "the socket's colour (a jewel's ring, an emblem's rarity), ImageTransparency 0; its strength is in the picture",
+      "use": "the colour's light rising in a held or coloured socket, over the fill: stretched to the socket (ScaleType Stretch), never sliced. Not on an empty emblem socket or a bag cell"
+    },
+    "SocketEdge": {
+      "file": "images/SocketEdge.png",
+      "pixels": [
+        192,
+        192
+      ],
+      "points": [
+        48.0,
+        48.0
+      ],
+      "pad": 2.0,
+      "cut": [
+        10.0,
+        10.0,
+        10.0,
+        10.0
+      ],
+      "tint": "the socket's colour at ImageTransparency 0.15; a jewel bag cell's and an empty emblem socket's the screen's edge #E2CFA4 at 0.5",
+      "use": "a socket's rim, at rest, 1.4 points on the outline, over the light. Its box is the socket's with Pad on every side. Sliced at Cut 10"
+    },
+    "SocketEdgeLit": {
+      "file": "images/SocketEdgeLit.png",
+      "pixels": [
+        192,
+        192
+      ],
+      "points": [
+        48.0,
+        48.0
+      ],
+      "pad": 2.0,
+      "cut": [
+        10.0,
+        10.0,
+        10.0,
+        10.0
+      ],
+      "tint": "the screen's light #F0E2C4, ImageTransparency 0",
+      "use": "a socket's rim, the chosen socket's or bag cell's, in place of the rest rim, 2.2 points on the outline, over the light. Its box is the socket's with Pad on every side. Sliced at Cut 10"
+    },
+    "SocketGlow": {
+      "file": "images/SocketGlow.png",
+      "pixels": [
+        240,
+        240
+      ],
+      "points": [
+        60.0,
+        60.0
+      ],
+      "pad": 8.0,
+      "cut": [
+        16.0,
+        16.0,
+        16.0,
+        16.0
+      ],
+      "tint": "the screen's light #F0E2C4 at ImageTransparency 0.45",
+      "use": "the chosen socket's or bag cell's glow, under its fill. Its box is the socket's with Pad on every side. Sliced at Cut 16"
+    },
+    "SocketEmptyJewel": {
+      "file": "images/SocketEmptyJewel.png",
+      "pixels": [
+        64,
+        64
+      ],
+      "points": [
+        16,
+        16
+      ],
+      "tint": "the socket's jewel colour at ImageTransparency 0.45",
+      "use": "an empty jewel socket's mark, a diamond, its 16 point box centred in the socket"
+    },
+    "SocketEmptyEmblem": {
+      "file": "images/SocketEmptyEmblem.png",
+      "pixels": [
+        112,
+        112
+      ],
+      "points": [
+        28,
+        28
+      ],
+      "tint": "the screen's faint #A9C0BC at ImageTransparency 0.3",
+      "use": "an empty emblem socket's mark, a star, its 28 point box centred in the socket"
+    },
+    "RowEmptyJewel": {
+      "file": "images/RowEmptyJewel.png",
+      "pixels": [
+        48,
+        48
+      ],
+      "points": [
+        12,
+        12
+      ],
+      "tint": "the jewel's colour at ImageTransparency 0.3",
+      "use": "a list row's empty jewel, a ring, its 12 point box centred where the row's jewel would stand"
+    },
+    "RowEmptyEmblem": {
+      "file": "images/RowEmptyEmblem.png",
+      "pixels": [
+        64,
+        64
+      ],
+      "points": [
+        16,
+        16
+      ],
+      "tint": "the screen's faint #A9C0BC at ImageTransparency 0.2",
+      "use": "a list row's empty emblem socket, a star, its 16 point box centred where the row's emblem would stand"
+    }
+  }
+}

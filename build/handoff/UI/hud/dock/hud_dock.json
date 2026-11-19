@@ -767,6 +767,19 @@
     2.0
    ],
    "use": "something new: over a tile's far corner, over its mark"
+  },
+  "DockMarkHomeMask": {
+   "file": "images/DockMarkHomeMask.png",
+   "pixels": [
+    128,
+    128
+   ],
+   "points": [
+    32.0,
+    32.0
+   ],
+   "tint": "Seam.Text #F1ECFF, as the live dock's other marks",
+   "use": "Home's mark for AR30's seam dock (UI/Dock.luau), in PageItems' place: the same shape as DockMarkHome, white on alpha, the shard cut through the front screen and the gaps between the screens holes. A 32 point cut as the dock's page marks, shown 49.2 points square with its middle where PageItems' is"
   }
  }
 }

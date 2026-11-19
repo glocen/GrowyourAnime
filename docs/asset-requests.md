@@ -13544,6 +13544,45 @@ The director's words: jewels and War Emblems go in and out on Equipment's pages 
   - Jewel points by level and emblem stats by rarity come with the combat review's numbers in TR47. The sheet's stand-ins are fine to cut with.
 - Once the must-fix is met, cut both for Faber. There's no second look: the change is one state's drawing, and Faber's phone capture shows it.
 
+### Equipment's Jewels and War Emblems, cut for Faber (Modulo, 2026-11-19, 14:29 to 14:38 by the clock)
+
+- **The must-fix, met.** Every press is now worked out from what's chosen, and is drawn live only when it can act. With nothing to do it's drawn off.
+  - **Combine** is quiet when it's live, which is only with three or more of the chosen level under 5. Otherwise it's off, in states 1, 2, 4 and 5.
+  - **The lit press** is Put in, Replace or Take out.
+  - **A fix found on the way:** state 1 now shows Put in on an empty socket, where it had shown Replace over a held one.
+  - The sheets in `build/scratch/modulo/equipment/` are redrawn with the fix.
+- **The cut:** `build/handoff/UI/equipment/`, from `equipment_pages.py`'s `cut` mode.
+  - **Nine images at 4 pixels a point.** Every one is a white mask for the game to tint, except `SocketFill`, which keeps its own dark colours:
+    - **`SocketFill`:** the well.
+    - **`SocketLight`:** the colour's light rising in the well. It stretches.
+    - **`SocketEdge`, `SocketEdgeLit`:** the rim at rest, and the chosen one's.
+    - **`SocketGlow`:** the chosen one's glow.
+    - **`SocketEmptyJewel`, `SocketEmptyEmblem`:** an empty socket's diamond and star.
+    - **`RowEmptyJewel`, `RowEmptyEmblem`:** a list row's empty ring and star.
+  - **Slicing:** the socket's well, rims and glow are sliced, so one set serves the 40, 44 and 46 point sockets.
+  - **`equipment.json`:** C's palette and every placement on both screens, in points on the smallest phone, read from the drawing code. That covers the frame, the list rows and what each row holds, the sockets and their values, the rule and heading, the bag (the jewel count chip, the emblem row's scroll and clip), the line and the presses. It also gives each image's tint and use.
+    - **The press rule,** for each press on both screens: when it's live.
+    - **The numbers:** stand-ins until TR47.
+- **The fit (`equipment_cut.png`):** sockets built from the images against the screens' drawn ones.
+  - **The cases:** a held red at 44, the chosen blue at 44, an Epic emblem's at 46, an empty emblem at 46, a bag cell at 40 and the chosen bag cell at 40.
+  - **The difference:** a mean of 0.000 to 0.004, the 99th percentile at most 0.021. The only difference is the corner cut, which slicing holds at 6.2 points where the drawing scales it.
+- **Content check, PASS** (14:35), with no conditions. It covered the nine images, the cut sheet and `equipment.json`'s words. The shapes are generic, nothing is copied and there's no text in any image. Drawn in code, with no image input. Each image is logged when it's uploaded.
+- **For Faber:** build Jewels and War Emblems as their own screens from Home's Equipment row, in Reinforce's frame, by `equipment.json`.
+  - **Upload:** the nine images go under the group.
+  - **What the game builds:** the gear's pictures, the jewels and the emblems are the shipped ones. The panels, the presses, the item cells and the band are the kit's, in C.
+  - **Reinforce isn't in the game yet:** its frame is `upgrade_pages.py`'s, as drawn on these screens.
+
+### Home's mark for the live dock, as a white mask (Modulo, 2026-11-19, 14:35 to 14:38 by the clock)
+
+- **Faber's ask:** the live dock tints its marks Seam.Text #F1ECFF on dark glass #1A1430. That's AR30's seam dock (`UI/Dock.luau`), not AR12's. The ink `DockMarkHome` would vanish there.
+- **What:** `DockMarkHomeMask` is the same shape as `DockMarkHome`, white on alpha. The shard and the gaps between the screens are holes.
+  - It's a 32 point cut, 128 pixels, as the dock's page marks are. It's drawn at half size 12, which makes it 22.8 by 23.5 points of its 32, against PageItems' 23.5 by 21. It sits in PageItems' 49.2 point square with the same middle.
+- **Where:** `build/handoff/UI/hud/dock/images/DockMarkHomeMask.png`, with its entry added to `hud_dock.json`. The other entries are untouched.
+  - `dock_home_mask.png` shows it tinted on the glass beside PageItems, at 49.2 points and at half that.
+  - It comes from `hud_dock_sheet.py`'s new `mask` mode.
+- **Content check, PASS** (14:38), with no conditions.
+- **For Faber:** upload it under the group and set it as Home's mark in the live dock, in PageItems' place. The ink `DockMarkHome` (104159157739607) stays uploaded and unused.
+
 ## AR44. The damage numbers' rework: the plain, received and healing numbers, and the critical closer to the reference (Faber's takes in the game, Modulo's stroke, research's pick)
 
 Research, 2026-11-19, 11:17 by the clock. The director, by 11:16, to research: "The damages/healing text need a small rework it doesnt look as i wanted it to be, same for the crit text it need to be more close to the reference i've shown". The same morning, relayed by Modulo at about 11:15: "like the blackstroke around the text for those are way to thick". Research reads "those" as the damage numbers, since the two came together. The rule stays `docs/ui.md`, "Damage numbers" (the director, 2026-11-12); this changes the look only. The reference is `docs/research/hud-reference.md`, its three arena screenshots, held internal.

@@ -641,6 +641,70 @@ def sheet(out, shots, rows):
     kit.finish(sh, out / "hud_dock.png")
 
 
+# --- Home's mark for the live dock ----------------------------------------------------------------------------------
+# AR30's seam dock (UI/Dock.luau) lays white marks tinted Seam.Text on its dark glass, where the ink DockMarkHome would
+# vanish (Faber, 2026-11-19, 14:3x). Its page marks are 32 point cuts (128 pixels) shown 49.2 points square.
+
+MASK_R = 12.0          # Home's half size in its 32 point box: its screens 22.3 by 23.5, as PageItems' 23.5 by 21
+LIVE_CELL, LIVE_TEXT, LIVE_GLASS = 49.2, "#F1ECFF", "#1A1430"
+
+
+def resized(px, n):
+    """px resampled to n by n pixels, bilinear."""
+    def axis(n_in):
+        at = np.clip((np.arange(n) + 0.5) * n_in / n - 0.5, 0, n_in - 1)
+        lo = np.floor(at).astype(int)
+        return lo, np.minimum(lo + 1, n_in - 1), (at - lo).astype(np.float32)
+    y0, y1, fy = axis(px.shape[0])
+    x0, x1, fx = axis(px.shape[1])
+    row = lambda y: px[y][:, x0] * (1 - fx)[None, :, None] + px[y][:, x1] * fx[None, :, None]  # noqa: E731
+    return row(y0) * (1 - fy)[:, None, None] + row(y1) * fy[:, None, None]
+
+
+def mask_main(out):
+    """DockMarkHomeMask: Home's mark as a white mask, the shard and the gaps between its screens holes, in a 32 point
+    box (128 pixels) as the live dock's page marks; its entry added to hud_dock.json; dock_home_mask.png, the mark in
+    the dock's 49.2 point cell beside PageItems, tinted Seam.Text on the glass."""
+    t = kit.blank(kit.BOX, kit.BOX)
+    t.paint(home(t, kit.BOX / 2, kit.BOX / 2, MASK_R), c(WHITE))
+    px = t.px.copy()
+    px[..., :3] = 1.0
+    rs.save(px, out / "images" / "DockMarkHomeMask.png")
+    path = out / "hud_dock.json"
+    data = json.loads(path.read_text(encoding="utf-8"))
+    data["images"]["DockMarkHomeMask"] = dict(
+        file="images/DockMarkHomeMask.png", pixels=[px.shape[1], px.shape[0]], points=[kit.BOX, kit.BOX],
+        tint=f"Seam.Text {LIVE_TEXT}, as the live dock's other marks",
+        use=f"Home's mark for AR30's seam dock (UI/Dock.luau), in PageItems' place: the same shape as DockMarkHome, "
+            f"white on alpha, the shard cut through the front screen and the gaps between the screens holes. A 32 "
+            f"point cut as the dock's page marks, shown {LIVE_CELL:g} points square with its middle where PageItems' is")
+    path.write_text(json.dumps(data, indent=1), encoding="utf-8", newline="\n")
+    items = rs.load(Path(__file__).resolve().parents[2] / "build" / "handoff" / "UI" / "voidkin" / "chrome" / "images"
+                    / "VoidkinPageItems.png")
+    for name, im in (("PageItems", items), ("DockMarkHomeMask", px)):
+        ys, xs = np.nonzero(im[..., 3] > 0.05)
+        print(f"extent {name}: {(xs.max() - xs.min() + 1) / 4:.1f} by {(ys.max() - ys.min() + 1) / 4:.1f} points of "
+              f"32, ink {im[..., 3].sum() / 16:.0f} square points")
+    ui.K = K4
+    cell = LIVE_CELL
+    sheet = ui.Sheet(40 + 4 * (cell + 40), 60 + cell + 30, "#0E0C16")
+    st = sheet.tile(0, 0, sheet.w, sheet.h)
+    st.text(20, 10, 12, f"DockMarkHomeMask in the live dock's middle cell ({cell:g} points)", "#EDE6D6")
+    st.text(20, 25, 10, f"tinted {LIVE_TEXT} on the glass {LIVE_GLASS}, beside PageItems", "#B4AC9C")
+    n = int(round(cell * K4))
+    for k, (name, im) in enumerate((("PageItems, today", items), ("Home, the mask", px),
+                                    ("PageItems, half size", items), ("Home, half size", px))):
+        size = cell if k < 2 else cell / 2
+        x, y = 20 + k * (cell + 40), 44 + (cell - size) / 2
+        st.paint(st.poly(ui.cut_box(x, y, x + size, y + size, 0, 0, 0, 0)), c(LIVE_GLASS))
+        mark = resized(im, int(round(size * K4)))
+        mark[..., :3] = np.array(rs.rgb(LIVE_TEXT), np.float32)
+        rs.paste(sheet.px, mark, round(x * K4), round(y * K4))
+        st.text(x, 44 + cell + 8, 11, name, "#B4AC9C")
+    kit.finish(sheet, out / "dock_home_mask.png")
+    print(f"wrote {out / 'images' / 'DockMarkHomeMask.png'} ({n} pixels shown), its entry and dock_home_mask.png")
+
+
 def main():
     out = bl.out_dir()
     ui.K = K4
@@ -648,6 +712,8 @@ def main():
     mode = sys.argv[sys.argv.index("--") + 2:]
     if mode[:1] == ["images"]:
         return images_main(out, sheet="nosheet" not in mode)
+    if mode[:1] == ["mask"]:
+        return mask_main(out)
     kit.panels()
     kit.buttons()
     kit.bars()

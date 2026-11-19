@@ -187,31 +187,39 @@ def jewels_work(t, st):
     presses(t, st["presses"])
 
 
-def jewel_state(slot, colour, bag, pick, worn, mode):
-    """A state of the Jewels screen: `mode` is what the chosen pair asks (put, replace, out, combine, none)."""
+def combine_live(bag, pick):
+    """Combine can act: three or more of the chosen level, under the top level (research's must-fix, 14:27)."""
+    return bool(pick) and pick < 5 and bag.get(pick, 0) >= 3
+
+
+def jewel_state(slot, colour, bag, pick, worn):
+    """A state of the Jewels screen, from what's chosen. Every press is drawn live only when it can act:
+        Put in    a bag jewel chosen and the socket empty; Replace in its place when the socket holds one;
+        Take out  the socket chosen alone, holding one;
+        Combine   three or more of the chosen level, under level 5; quiet when live, never the lit one.
+    With nothing it can do, a press is drawn off, the well's plate."""
     attribute = JEWELS["jewels"][colour]["attribute"]
     now = worn.get(slot, {}).get(colour)
     gain = lambda level: f"{attribute} +{POINTS[level - 1]}"  # noqa: E731
-    if mode == "put":
-        lines = [(f"Level {pick}: {gain(pick)}", P["text"], 0.3), ("Free to put in and take out", P["soft"], 0.0)]
-        kinds = [("Combine", "quiet", 92), ("Put in", "one", 84)]
-    elif mode == "replace":
-        lines = [(f"Level {pick}: {gain(pick)}", P["text"], 0.3),
-                 (f"Its level {now} goes back to your bag", P["soft"], 0.0)]
-        kinds = [("Combine", "quiet", 92), ("Replace", "one", 84)]
-    elif mode == "out":
+    combine = ("Combine", "quiet" if combine_live(bag, pick) else "off", 92)
+    if pick:
+        lines = [(f"Level {pick}: {gain(pick)}", P["text"], 0.3)]
+        if now:
+            lines.append((f"Its level {now} goes back to your bag", P["soft"], 0.0))
+        elif combine_live(bag, pick):
+            lines.append((f"Combine 3 into 1 of level {pick + 1}", P["soft"], 0.0))
+        else:
+            lines.append(("Free to put in and take out", P["soft"], 0.0))
+        main = ("Replace" if now else "Put in", "one", 84)
+    elif now:
         lines = [(f"Level {now}: {gain(now)}", P["text"], 0.3), ("It goes back to your bag", P["soft"], 0.0)]
-        kinds = [("Take out", "one", 92)]
-    elif mode == "combine":
-        lines = [(f"3 of level {pick} make 1 of level {pick + 1}", P["text"], 0.3),
-                 (f"You have {bag[pick]}", P["soft"], 0.0)]
-        kinds = [("Put in", "quiet", 84), ("Combine", "one", 92)]
+        main = ("Take out", "one", 92)
     else:
         lines = [(f"No {colour.lower()} jewel in your bag", P["soft"], 0.0),
                  ("Chests and foes drop them", P["faint"], 0.0)]
-        kinds = [("Put in", "off", 84)]
+        main = ("Put in", "off", 84)
     return dict(screen="Jewels", slot=slot, colour=colour, bag=bag, pick=pick, worn=worn, said=lines,
-                presses=kinds)
+                presses=[combine, main])
 
 
 WORN_JEWELS = {
@@ -221,16 +229,16 @@ WORN_JEWELS = {
     "Chest Armor": {"Yellow": 2},
 }
 JEWEL_STATES = [
-    ("Nothing in it: Iron Shoulders, the red socket, a level 2 chosen",
-     jewel_state("Shoulders", "Red", {1: 7, 2: 2}, 2, WORN_JEWELS, "put")),
+    ("Nothing in it: Iron Shoulders' red, a level 2 chosen (two: Combine off)",
+     jewel_state("Shoulders", "Red", {1: 7, 2: 2, 4: 1}, 2, WORN_JEWELS)),
     ("A better one for a held socket: the blade's red, level 3, for a level 4",
-     jewel_state("Main Hand", "Red", {1: 7, 2: 2, 4: 1}, 4, WORN_JEWELS, "replace")),
-    ("Three of a level make one of the next: seven level 1 reds",
-     jewel_state("Main Hand", "Red", {1: 7, 2: 2, 4: 1}, 1, WORN_JEWELS, "combine")),
+     jewel_state("Main Hand", "Red", {1: 7, 2: 2, 4: 1}, 4, WORN_JEWELS)),
+    ("Seven level 1 reds chosen: Combine can act, three into one level 2",
+     jewel_state("Shoulders", "Red", {1: 7, 2: 2, 4: 1}, 1, WORN_JEWELS)),
     ("The socket alone: the blade's yellow, empty, none in the bag",
-     jewel_state("Main Hand", "Yellow", {}, None, WORN_JEWELS, "none")),
-    ("Full: the Stormcall Helm, its blue chosen to take out",
-     jewel_state("Helmet", "Blue", {1: 3}, None, WORN_JEWELS, "out")),
+     jewel_state("Main Hand", "Yellow", {}, None, WORN_JEWELS)),
+    ("Full: the Stormcall Helm, its blue chosen alone, to take out",
+     jewel_state("Helmet", "Blue", {1: 3}, None, WORN_JEWELS)),
 ]
 JEWEL_NOTES = [
     "The director's jewels: every gear piece holds five, one of each colour, each giving its colour's Basic Attribute;",
@@ -324,18 +332,21 @@ WORN_EMBLEMS = {
 BAG = ["Zenith", "Radiance", "SwornRings", "SerpentCoil", "Warhorn", "Tidebreak", "Spearhead", "Talon", "Palisade"]
 
 
-def emblem_state(slot, socket, pick, mode, worn=WORN_EMBLEMS, bag=BAG):
+def emblem_state(slot, socket, pick, worn=WORN_EMBLEMS, bag=BAG):
+    """A state of War Emblems, from what's chosen; its one press live only when it can act, as Jewels' are: Put in
+    (a bag emblem chosen, the socket empty), Replace (the socket holding one), Take out (the socket chosen alone,
+    holding one); off with nothing to do."""
     rarity_of = lambda key: EMBLEMS[key]["rarity"]  # noqa: E731
     line = lambda key: (f"{EMBLEMS[key]['set']} · {rarity_of(key)}", RIM[rarity_of(key)], 0.3)  # noqa: E731
     stat = lambda key: f"{STATS[key][0]} {STATS[key][1]}"  # noqa: E731
     held = worn.get(slot, [])
     now = held[socket] if socket is not None and socket < len(held) else None
-    if mode == "put":
-        lines, kinds = [line(pick), (stat(pick), P["text"], 0.0)], [("Put in", "one", 84)]
-    elif mode == "replace":
+    if pick and now:
         lines = [line(pick), (f"{stat(pick)} (now {now[2]})", P["text"], 0.0)]
         kinds = [("Replace", "one", 84)]
-    elif mode == "out":
+    elif pick:
+        lines, kinds = [line(pick), (stat(pick), P["text"], 0.0)], [("Put in", "one", 84)]
+    elif now:
         lines, kinds = [line(now[0]), (f"{now[1]} {now[2]}", P["text"], 0.0)], [("Take out", "one", 92)]
     else:
         lines = [("Choose one below", P["soft"], 0.0), ("Putting in is free", P["faint"], 0.0)]
@@ -345,10 +356,10 @@ def emblem_state(slot, socket, pick, mode, worn=WORN_EMBLEMS, bag=BAG):
 
 
 EMBLEM_STATES = [
-    ("A Common item's one socket, empty, nothing chosen", emblem_state("Shoulders", 0, None, "none")),
-    ("The Epic helm's four, two empty: Zenith chosen for the third", emblem_state("Helmet", 2, "Zenith", "put")),
-    ("A held socket chosen alone: Moonward, to take out", emblem_state("Helmet", 0, None, "out")),
-    ("The Rare blade full: Radiance chosen for Warhorn's socket", emblem_state("Main Hand", 1, "Radiance", "replace")),
+    ("A Common item's one socket, empty, nothing chosen", emblem_state("Shoulders", 0, None)),
+    ("The Epic helm's four, two empty: Zenith chosen for the third", emblem_state("Helmet", 2, "Zenith")),
+    ("A held socket chosen alone: Moonward, to take out", emblem_state("Helmet", 0, None)),
+    ("The Rare blade full: Radiance chosen for Warhorn's socket", emblem_state("Main Hand", 1, "Radiance")),
 ]
 EMBLEM_NOTES = [
     "The director's War Emblems: a black rock star, its top its rarity's colour, a set's white mark; one socket on Common,",
@@ -392,8 +403,298 @@ def sheet_of(out, name, head, cells, notes, across=2, k=2):
     rs.save(sheet.px, out / name)
 
 
+# --- the cut for Faber ----------------------------------------------------------------------------------------------
+
+HANDOFF = up.REPO / "build" / "handoff" / "UI" / "equipment"
+CORNER = 0.14 * 44                     # a socket's two cut corners, drawn at 44 points
+SLICE, LINE_PAD, GLOW_PAD = 8.0, 2.0, 8.0
+
+
+def socket_box(t, x0, y0, s):
+    return t.poly(ui.cut_box(x0, y0, x0 + s, y0 + s, CORNER, 0, CORNER, 0))
+
+
+def cut_images():
+    """The sockets' own images at 4 pixels a point, drawn at 44 points: the body in its own colours, the light, the
+    rim plain and lit and the glow white for the game to tint; the empty marks white. Returns {name: (px, entry)}."""
+    import foe_cards as fc
+    ui.K = 4
+    made = {}
+    s = 44.0
+    slice_note = (f"Sliced at Cut {SLICE:g} on every side: one image serves the 40, 44 and 46 point sockets, its corner "
+                  f"cut {CORNER:.1f} at every size")
+    t = fc.clear(s, s)
+    t.paint(socket_box(t, 0, 0, s), t.ramp("#0B1418", "#08100F", t.y / s))
+    made["SocketFill"] = (t.px.copy(), dict(points=[s, s], cut=[SLICE] * 4, tint=None,
+                                            use="a socket's dark well, in its own colours, never tinted; the bottom "
+                                                "of every socket and of the Jewels screen's bag cells. " + slice_note))
+    t = fc.clear(s, s)
+    glow = 0.08 + 0.18 * np.exp(-(((t.x - s / 2) / (s * 0.5)) ** 2 + ((t.y - s * 0.6) / (s * 0.5)) ** 2))
+    t.paint(socket_box(t, 0, 0, s), "#FFFFFF", glow)
+    made["SocketLight"] = (t.px.copy(), dict(points=[s, s], tint="the socket's colour (a jewel's ring, an emblem's "
+                                                                 "rarity), ImageTransparency 0; its strength is in the "
+                                                                 "picture",
+                                             use="the colour's light rising in a held or coloured socket, over the "
+                                                 "fill: stretched to the socket (ScaleType Stretch), never sliced. "
+                                                 "Not on an empty emblem socket or a bag cell"))
+    for name, width, tint in (("SocketEdge", 1.4, f"the socket's colour at ImageTransparency 0.15; a jewel bag cell's and an "
+                                                  f"empty emblem socket's the screen's edge {P['edge']} at 0.5"),
+                              ("SocketEdgeLit", 2.2, f"the screen's light {P['light']}, ImageTransparency 0")):
+        w = s + 2 * LINE_PAD
+        t = fc.clear(w, w)
+        t.line(socket_box(t, LINE_PAD, LINE_PAD, s), width, "#FFFFFF")
+        made[name] = (t.px.copy(), dict(points=[w, w], pad=LINE_PAD, cut=[SLICE + LINE_PAD] * 4, tint=tint,
+                                        use=("a socket's rim, " + ("at rest" if name == "SocketEdge" else
+                                                                   "the chosen socket's or bag cell's, in place of "
+                                                                   "the rest rim")
+                                             + f", {width:g} points on the outline, over the light. Its box is the "
+                                               f"socket's with Pad on every side. Sliced at Cut {SLICE + LINE_PAD:g}")))
+    w = s + 2 * GLOW_PAD
+    t = fc.clear(w, w)
+    t.glow(socket_box(t, GLOW_PAD, GLOW_PAD, s), 6.0, "#FFFFFF", 1.0)
+    made["SocketGlow"] = (t.px.copy(), dict(points=[w, w], pad=GLOW_PAD, cut=[SLICE + GLOW_PAD] * 4,
+                                            tint=f"the screen's light {P['light']} at ImageTransparency 0.45",
+                                            use="the chosen socket's or bag cell's glow, under its fill. Its box is "
+                                                f"the socket's with Pad on every side. Sliced at Cut "
+                                                f"{SLICE + GLOW_PAD:g}"))
+    t = fc.clear(16, 16)
+    t.line(np.abs(t.x - 8) + np.abs(t.y - 8) - 7, 1.2, "#FFFFFF")
+    made["SocketEmptyJewel"] = (t.px.copy(), dict(points=[16, 16], tint="the socket's jewel colour at "
+                                                                        "ImageTransparency 0.45",
+                                                  use="an empty jewel socket's mark, a diamond, its 16 point box "
+                                                      "centred in the socket"))
+    t = fc.clear(28, 28)
+    t.line(star_outline(t, 14, 15, 13), 1.2, "#FFFFFF")
+    made["SocketEmptyEmblem"] = (t.px.copy(), dict(points=[28, 28], tint=f"the screen's faint {P['faint']} at "
+                                                                         "ImageTransparency 0.3",
+                                                   use="an empty emblem socket's mark, a star, its 28 point box "
+                                                       "centred in the socket"))
+    t = fc.clear(12, 12)
+    t.line(np.hypot(t.x - 6, t.y - 6) - 4.5, 1.2, "#FFFFFF")
+    made["RowEmptyJewel"] = (t.px.copy(), dict(points=[12, 12], tint="the jewel's colour at ImageTransparency 0.3",
+                                               use="a list row's empty jewel, a ring, its 12 point box centred where "
+                                                   "the row's jewel would stand"))
+    t = fc.clear(16, 16)
+    t.line(star_outline(t, 8, 8.5, 7.5), 1.1, "#FFFFFF")
+    made["RowEmptyEmblem"] = (t.px.copy(), dict(points=[16, 16], tint=f"the screen's faint {P['faint']} at "
+                                                                      "ImageTransparency 0.2",
+                                                use="a list row's empty emblem socket, a star, its 16 point box "
+                                                    "centred where the row's emblem would stand"))
+    return made
+
+
+def placements():
+    """Every piece's place, in points on the smallest phone (568 by 320), from the phone's top left."""
+    lx0, lx1 = LIST
+    wx0, wx1 = WORK
+    cx = (wx0 + wx1) / 2
+    row = dict(first=TOP + 4, pitch=50, height=46, box=[lx0 + 3, lx1 - 3],
+               cell=dict(at=[lx0 + 6, 3], size=40, note="the bag's item cell (rarity tint, light, rim), the gear's "
+                                                        "picture at 0.94"),
+               name=dict(at=[lx0 + 54, 5], size=SMALL, bold=True, colour=P["text"]),
+               holds=dict(top=24, note="what the item holds, under its name"),
+               chosen="Reinforce's: the dark glass lit from its right edge and the light's point at its right end, "
+                      "toward the work; the others the well's plate",
+               scroll="the rows scroll; the panel's foot cuts the last")
+    jewels = dict(
+        rowHolds=dict(first=[lx0 + 62, 32], pitch=20, picture=18, empty="RowEmptyJewel, its 12 box",
+                      full=dict(at=[lx0 + 158, 24], words="Full", colour=P["faint"],
+                                note="when all five are in")),
+        name=dict(at=[cx, TOP + 6], size=SMALL, bold=True, align="centre", colour="the item's rarity (the bag's)"),
+        sockets=dict(first=[round(cx - 120, 2), TOP + 24], pitch=49, size=44, order=COLOURS,
+                     picture="the jewel at 40, centred (2 points in)",
+                     value=dict(at=[22, 48], size=SMALL, bold=True, align="centre", colour=P["text"],
+                                words="+points; '-' in the faint when empty")),
+        rule=dict(y=TOP + 96, ends=[wx0 + 10, wx1 - 10], colour=P["facet"], transparency=0.55),
+        heading=dict(at=[wx0 + 12, TOP + 101], words="Your <colour> jewels", colour=P["soft"],
+                     right=dict(at=[wx1 - 12, TOP + 101], words="the colour's attribute", colour=P["soft"])),
+        bag=dict(first=[round(cx - 112, 2), TOP + 118], pitch=46, size=40, levels=[1, 2, 3, 4, 5],
+                 picture="the jewel at 36, centred (2 in); at ImageTransparency 0.7 when none is held",
+                 rim="SocketEdge in the screen's edge at 0.5; the chosen one SocketGlow and SocketEdgeLit",
+                 count=dict(box=[18, 25, 38.5, 38.5], colour=P["channel"], number=dict(at=[28.5, 26], bold=True),
+                            note="a Frame in the channel at the cell's foot right, the count in the text colour; "
+                                 "none held, no chip")),
+        said=dict(at=[wx0 + 12, TOP + 164], pitch=18, note="two lines over the presses: the first bold in the text "
+                                                           "colour, the second soft"),
+        presses=dict(right=wx1 - 10, top=FOOT - 50, foot=FOOT - 6, gap=8,
+                     order=["Combine (92 wide)", "Put in, Replace (84) or Take out (92)"]))
+    emblems = dict(
+        rowHolds=dict(first=[lx0 + 63, 32], pitch=22, picture=22, empty="RowEmptyEmblem, its 16 box centred where the emblem would stand",
+                      count="the item's sockets by its rarity: Common 1, Uncommon 2, Rare 3, Epic and above 4"),
+        name=jewels["name"],
+        sockets=dict(top=TOP + 24, pitch=60, size=46, centred=cx,
+                     note="n sockets centred: the first's left at the middle - (n - 1) x 30 - 23",
+                     picture="the emblem at 44, centred (1 point in)",
+                     value=dict(at=[23, 50], size=SMALL, bold=True, align="centre", colour=P["text"]),
+                     stat=dict(at=[23, 66], pitch=15, size=SMALL, align="centre", colour=P["soft"],
+                               note="the stat's name, a word a line (Critical / Damage)"),
+                     empty=dict(mark="SocketEmptyEmblem, its 28 box centred in the socket", words="Empty", colour=P["faint"],
+                                at=[23, 50])),
+        rule=dict(y=TOP + 128, ends=[wx0 + 10, wx1 - 10], colour=P["facet"], transparency=0.55),
+        heading=dict(at=[wx0 + 12, TOP + 133], words="Your emblems", colour=P["soft"]),
+        sort=dict(box=[wx1 - 78, TOP + 131, wx1 - 12, TOP + 151], words="Rarity", fill=P["button"][0],
+                  edge=P["edge"], tap="44 points high over the pill, centred on it"),
+        bag=dict(top=TOP + 158, first=wx0 + 13, pitch=46, size=40, clip=[wx0 + 1, wx1 - 8],
+                 note="a scrolling row of the bag's item cells (the kit's, its emblems), cut 8 inside the panel's "
+                      "edge; sorted by rarity, highest first; the chosen one SocketGlow under it and SocketEdgeLit over "
+                      "it, both on a box 1.5 outside the cell"),
+        said=dict(at=[wx0 + 12, FOOT - 46], pitch=18, note="two lines left of the press: the set and rarity in the "
+                                                           "rarity's colour, bold; then the stat in the text colour"),
+        presses=dict(right=wx1 - 10, top=FOOT - 50, foot=FOOT - 6, order=["Put in, Replace (84) or Take out (92)"]))
+    return dict(frame=dict(band="Reinforce's (upgrade_pages.band): Roblox's buttons, Back, the screen's name, the "
+                                "Credits and kWh",
+                           title=dict(at=[232, 20], size=TITLE, bold=True, colour=P["text"]),
+                           list=dict(panel=[lx0, TOP, lx1, FOOT], rows=row),
+                           work=dict(panel=[wx0, TOP, wx1, FOOT]),
+                           panel="the kit's panel (PanelShadow, PanelFill, PanelEdge) in C"),
+                jewels=jewels, emblems=emblems)
+
+
+def stretch(img, w, h):
+    """img resampled to h by w pixels, bilinear."""
+    def axis(n_in, n_out):
+        at = np.clip((np.arange(n_out) + 0.5) * n_in / n_out - 0.5, 0, n_in - 1)
+        lo = np.floor(at).astype(int)
+        return lo, np.minimum(lo + 1, n_in - 1), (at - lo).astype(np.float32)
+    y0, y1, fy = axis(img.shape[0], h)
+    x0, x1, fx = axis(img.shape[1], w)
+    top = img[y0][:, x0] * (1 - fx)[None, :, None] + img[y0][:, x1] * fx[None, :, None]
+    foot = img[y1][:, x0] * (1 - fx)[None, :, None] + img[y1][:, x1] * fx[None, :, None]
+    return top * (1 - fy)[:, None, None] + foot * fy[:, None, None]
+
+
+def slice9(img, cut, w, h):
+    """A sliced image (cut in pixels, every side) laid at w by h pixels, as Roblox's Slice scale type."""
+    c = int(round(cut))
+    out = np.zeros((h, w, 4), np.float32)
+    ys = [(0, c, 0, c), (c, img.shape[0] - c, c, h - c), (img.shape[0] - c, img.shape[0], h - c, h)]
+    xs = [(0, c, 0, c), (c, img.shape[1] - c, c, w - c), (img.shape[1] - c, img.shape[1], w - c, w)]
+    for a0, a1, b0, b1 in ys:
+        for p0, p1, q0, q1 in xs:
+            out[b0:b1, q0:q1] = stretch(img[a0:a1, p0:p1], q1 - q0, b1 - b0)
+    return out
+
+
+def tinted(px, colour, transparency=0.0):
+    """The game's tint on a white image, and its ImageTransparency."""
+    im = px.copy()
+    im[..., :3] *= np.array(rs.rgb(colour), np.float32)
+    im[..., 3] *= 1 - transparency
+    return im
+
+
+def built_socket(made, s, rim, lit, light, rim_t, page):
+    """A socket built from the images onto `page` (opaque, 4 pixels a point, s plus the glow's pad on each side): the
+    glow (chosen), the fill, the light in the rim's colour (a coloured socket), the rim (the lit one when chosen)."""
+    K = 4
+    pad, lp, n = int(GLOW_PAD * K), int(LINE_PAD * K), int(round(s * K))
+    if lit:
+        rs.paste(page, tinted(slice9(made["SocketGlow"][0], (SLICE + GLOW_PAD) * K, n + 2 * pad, n + 2 * pad),
+                              P["light"], 0.45), 0, 0)
+    rs.paste(page, slice9(made["SocketFill"][0], SLICE * K, n, n), pad, pad)
+    if light:
+        rs.paste(page, tinted(stretch(made["SocketLight"][0], n, n), rim), pad, pad)
+    edge = slice9(made["SocketEdgeLit" if lit else "SocketEdge"][0], (SLICE + LINE_PAD) * K, n + 2 * lp, n + 2 * lp)
+    rs.paste(page, tinted(edge, P["light"] if lit else rim, 0.0 if lit else rim_t), pad - lp, pad - lp)
+    return page
+
+
+def drawn_socket(s, rim, lit, light, rim_t):
+    """The same socket as the screens draw it (well())."""
+    ui.K = 4
+    sheet = ui.Sheet(s + 2 * GLOW_PAD, s + 2 * GLOW_PAD, "#000000")
+    sheet.px[:] = 0
+    t = sheet.tile(0, 0, s + 2 * GLOW_PAD, s + 2 * GLOW_PAD)
+    well(t, GLOW_PAD, GLOW_PAD, s, rim if light else None, lit=lit, rim_alpha=1 - rim_t)
+    return sheet.px.copy()
+
+
+def cut(out):
+    """Writes build/handoff/UI/equipment: images/, equipment.json, equipment_cut.png (each image as the game tints it,
+    then the sockets built from the images beside the drawn ones at 40, 44 and 46, with their differences)."""
+    HANDOFF.joinpath("images").mkdir(parents=True, exist_ok=True)
+    made = cut_images()
+    for name, (px, _) in made.items():
+        rs.save(px, HANDOFF / "images" / f"{name}.png")
+    entries = {name: dict(file=f"images/{name}.png", pixels=[px.shape[1], px.shape[0]], **entry)
+               for name, (px, entry) in made.items()}
+    data = dict(
+        what="AR43, Equipment's Jewels and War Emblems, each its own screen opened from Home's Equipment row as "
+             "Reinforce is: the sockets' images and every placement, from tools/blender/equipment_pages.py (cut); "
+             "drawn in code, no image input",
+        pixelsPerPoint=4,
+        palette=dict(P, note="AR40's C, as every screen Home opens (research, 12:56)"),
+        layout=placements(),
+        layoutNote="measured on the smallest phone (568 by 320); the screen takes the phone's whole width as "
+                   "Reinforce's does",
+        presses=dict(
+            rule="a press is drawn live only when it can act (research's must-fix, 14:27); with nothing to do it is "
+                 "off, the well's plate with faint words. The lit one is Put in, Replace or Take out; Combine is "
+                 "quiet when live, never lit",
+            jewels={"Put in": "a bag jewel chosen and the socket empty", "Replace": "a bag jewel chosen and the "
+                    "socket holding one, which goes back to the bag", "Take out": "the socket chosen alone, holding "
+                    "one", "Combine": "three or more of the chosen level, under level 5; free and sure, its price "
+                    "the three jewels (research, 14:27)"},
+            emblems={"Put in": "a bag emblem chosen and the socket empty", "Replace": "a bag emblem chosen and the "
+                     "socket holding one", "Take out": "the socket chosen alone, holding one"},
+            free="putting in and taking out are free; no price is drawn"),
+        numbers="jewel points by level and emblem stats are stand-ins until TR47 (research)",
+        images=entries)
+    (HANDOFF / "equipment.json").write_text(json.dumps(data, indent=2), encoding="utf-8")
+    # the sheet: each image as tinted in the game, then built against drawn
+    ui.K = 4
+    rings = [JEWELS["jewels"][c]["words"] for c in COLOURS]
+    width, height = 1240, 420
+    sheet = ui.Sheet(width, height, "#101117")
+    t = sheet.tile(0, 0, width, height)
+    t.text(20, 16, 20, "AR43, Equipment's sockets: the images as the game tints them, then built against drawn",
+           "#EDE6D6", bold=0.2)
+    shown = [("SocketFill", None, 0.0), ("SocketLight", rings[0], 0.0), ("SocketEdge", rings[2], 0.15),
+             ("SocketEdgeLit", P["light"], 0.0), ("SocketGlow", P["light"], 0.45),
+             ("SocketEmptyJewel", rings[3], 0.45), ("SocketEmptyEmblem", P["faint"], 0.3),
+             ("RowEmptyJewel", rings[1], 0.3), ("RowEmptyEmblem", P["faint"], 0.2)]
+    x = 20.0
+    t.paint(t.poly([(10, 60), (width - 10, 60), (width - 10, 210), (10, 210)]), P["panel"][1])
+    for name, colour, transparency in shown:
+        px = made[name][0]
+        im = tinted(px, colour, transparency) if colour else px
+        rs.paste(sheet.px, im, round(x * 4), round(80 * 4))
+        t.text(x, 186, 12, name, P["soft"])
+        x += max(px.shape[1] / 4 + 30, 128)
+    t.paint(t.poly([(10, 230), (width - 10, 230), (width - 10, 400), (10, 400)]), P["panel"][1])
+    t.text(20, 236, 14, "Built from the images (left of each pair) and drawn by the screens' code (right), on the "
+                        "panel's dark, at 40, 44 and 46", "#EDE6D6")
+    x, worst = 20.0, []
+    cases = [(44, rings[0], False, True, 0.15, "a held red socket"), (44, rings[2], True, True, 0.15, "the chosen blue"),
+             (46, RIM["Epic"], False, True, 0.15, "an Epic emblem's"), (46, P["edge"], False, False, 0.5, "an empty emblem"),
+             (40, P["edge"], False, False, 0.5, "a bag cell"), (40, P["edge"], True, False, 0.5, "the chosen bag cell")]
+    for s, rim, lit, light, rim_t, words in cases:
+        d = drawn_socket(s, rim, lit, light, rim_t)
+        ground = np.zeros_like(d)
+        ground[..., :3], ground[..., 3] = rs.rgb(P["panel"][1]), 1.0
+        gb, gd = ground.copy(), ground.copy()
+        built_socket(made, s, rim, lit, light, rim_t, gb)          # rs.paste keeps the target's alpha: build on ground
+        rs.paste(gd, d, 0, 0)
+        diff = np.abs(gb[..., :3] - gd[..., :3]).max(axis=-1)
+        worst.append((f"{words}, {s}", float(diff.mean()), float(np.percentile(diff, 99))))
+        rs.paste(sheet.px, gb, round(x * 4), round(262 * 4))
+        rs.paste(sheet.px, gd, round((x + s + 2 * GLOW_PAD + 4) * 4), round(262 * 4))
+        t.text(x, 262 + s + 2 * GLOW_PAD + 6, 11, f"{words}, {s}", P["soft"])
+        t.text(x, 262 + s + 2 * GLOW_PAD + 22, 11, f"mean {worst[-1][1]:.3f}, 99th {worst[-1][2]:.3f}", P["faint"])
+        x += 2 * (s + 2 * GLOW_PAD) + 34
+    for layer in ui.text_layers(sheet.px.shape[1], sheet.px.shape[0], sheet.items).values():
+        rs.paste(sheet.px, layer, 0, 0)
+    rs.save(sheet.px, HANDOFF / "equipment_cut.png")
+    for words, mean, p99 in worst:
+        print(f"fit {words}: mean {mean:.4f}, 99th {p99:.4f}")
+    print(f"cut: {len(made)} images and equipment.json into {HANDOFF}")
+
+
 def main():
     out = bl.out_dir()
+    if "cut" in sys.argv[sys.argv.index("--") + 1:]:
+        cut(out)
+        return
     common = "at the smallest phone (568 x 320 points), in AR40's C"
     sheet_of(out, "equipment_jewels.png", f"AR43, Equipment's Jewels, its own screen from Home, {common}",
              JEWEL_STATES, JEWEL_NOTES)

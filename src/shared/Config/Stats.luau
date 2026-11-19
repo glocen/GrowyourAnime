@@ -65,6 +65,9 @@ return {
 		BlockShare = 0.5, -- a blocked hit adds this to the reduction
 	},
 	Lifesteal = { Cap = 0.1, PerSecondOfMaxHealth = 0.008 }, -- seeds "lifesteal"
+	-- The level gap (docs/balance.md, "One hit", 8; the director, 2026-11-19, 03:10; Rules.Hit.Gap): past Free levels under
+	-- its target, an attacker's hit is x max(Floor, Rate ^ (gap - Free)). Seeds, through the simulation.
+	Gap = { Free = 2, Rate = 0.85, Floor = 0.05 },
 	-- Regen: the health a lead heals a second, always, in a fight too (docs/design.md, "Health carries"). A value, never a
 	-- share: the level's own, Base at level 1 times G(level) for every class (a class in Class would carry that many
 	-- times more; none does), plus what Endurance gives and a Healer's Main (Attributes), and later its gear (Regalia's

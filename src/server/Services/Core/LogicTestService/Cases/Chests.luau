@@ -351,7 +351,7 @@ return {
 				t.Check(`{case[1]}: nothing changed`, same(data, before))
 			end
 			for n = 1, ChestsConfig.Bag - count(data.Items) - 2 do
-				data.Items[`fill{n}`] = { Id = `fill{n}`, Def = "ring", Tier = 1, Rarity = "Common", Design = 1, Lines = {}, Sockets = {}, Jewel = "" }
+				data.Items[`fill{n}`] = { Id = `fill{n}`, Def = "ring", Tier = 1, Rarity = "Common", Design = 1, Lines = {}, Sockets = {}, Reinforce = 0, Jewels = {} }
 			end
 			local full = Profile.DeepCopy(data)
 			local answer = Chests.Open(data, id, 3, sequence(1))
@@ -402,13 +402,13 @@ return {
 			-- Worn: an item in every slot too strong for any Lantern Row roll to beat.
 			for _, slot in Gear.Shared do
 				local id = Profile.NewId(data)
-				data.Items[id] = { Id = id, Def = Items.ById[string.lower((string.gsub(Gear.Family(slot), " ", "_")))].Id, Tier = 6, Rarity = "Legendary", Design = 1, Lines = { { Stat = "Attack", Value = 1e6 }, { Stat = "Health", Value = 1e6 }, { Stat = "Strength", Value = 1e5 }, { Stat = "Endurance", Value = 1e5 }, { Stat = "Defence", Value = 1e6 } }, Sockets = {}, Jewel = "" }
+				data.Items[id] = { Id = id, Def = Items.ById[string.lower((string.gsub(Gear.Family(slot), " ", "_")))].Id, Tier = 6, Rarity = "Legendary", Design = 1, Lines = { { Stat = "Attack", Value = 1e6 }, { Stat = "Health", Value = 1e6 }, { Stat = "Strength", Value = 1e5 }, { Stat = "Endurance", Value = 1e5 }, { Stat = "Defence", Value = 1e6 } }, Sockets = {}, Reinforce = 0, Jewels = {} }
 				Regalia.Put(data.Presets[1], slot, nil, id)
 			end
 			for _, hand in Gear.Hands do
 				local id = Profile.NewId(data)
 				local def = if hand == "Main Hand" then "sword" else "short_sword"
-				data.Items[id] = { Id = id, Def = def, Tier = 6, Rarity = "Legendary", Design = 1, Lines = { { Stat = "Attack", Value = 1e6 }, { Stat = "Strength", Value = 1e5 }, { Stat = "Hit", Value = 1e5 }, { Stat = "Critical", Value = 1e5 } }, Sockets = {}, Jewel = "" }
+				data.Items[id] = { Id = id, Def = def, Tier = 6, Rarity = "Legendary", Design = 1, Lines = { { Stat = "Attack", Value = 1e6 }, { Stat = "Strength", Value = 1e5 }, { Stat = "Hit", Value = 1e5 }, { Stat = "Critical", Value = 1e5 } }, Sockets = {}, Reinforce = 0, Jewels = {} }
 				Regalia.Put(data.Presets[1], hand, "Warrior", id)
 			end
 			local worn = count(data.Items)
@@ -483,7 +483,7 @@ return {
 			local def = Items.ById[string.lower((string.gsub(Gear.Family(slot), " ", "_")))].Id
 			local function item(health: number): string
 				local id = Profile.NewId(data)
-				data.Items[id] = { Id = id, Def = def, Tier = 1, Rarity = "Common", Design = 1, Lines = { { Stat = "Health", Value = health } }, Sockets = {}, Jewel = "" }
+				data.Items[id] = { Id = id, Def = def, Tier = 1, Rarity = "Common", Design = 1, Lines = { { Stat = "Health", Value = health } }, Sockets = {}, Reinforce = 0, Jewels = {} }
 				return id
 			end
 			Regalia.Put(data.Presets[1], slot, nil, item(10))
@@ -523,7 +523,7 @@ return {
 			lead(data, "Warrior")
 			local function item(def: string, rarity: string): string
 				local id = Profile.NewId(data)
-				data.Items[id] = { Id = id, Def = def, Tier = 1, Rarity = rarity, Design = 1, Lines = { { Stat = "Attack", Value = 3 } }, Sockets = {}, Jewel = "" }
+				data.Items[id] = { Id = id, Def = def, Tier = 1, Rarity = rarity, Design = 1, Lines = { { Stat = "Attack", Value = 3 } }, Sockets = {}, Reinforce = 0, Jewels = {} }
 				return id
 			end
 			local spare, sword, armour = item("sword", "Uncommon"), item("sword", "Common"), item(Items.List[1].Id, "Common")
@@ -698,8 +698,8 @@ return {
 			local old = Profile.Template()
 			Migrations.Run(old)
 			old.Version = 6
-			old.Items.x = { Id = "x", Def = "sword", Tier = 1, Rarity = "Rare", Lines = {}, Sockets = {}, Jewel = "" } :: any
-			old.Items.kept = { Id = "kept", Def = "sword", Tier = 1, Rarity = "Rare", Design = 3, Lines = {}, Sockets = {}, Jewel = "" }
+			old.Items.x = { Id = "x", Def = "sword", Tier = 1, Rarity = "Rare", Lines = {}, Sockets = {}, Reinforce = 0, Jewels = {} } :: any
+			old.Items.kept = { Id = "kept", Def = "sword", Tier = 1, Rarity = "Rare", Design = 3, Lines = {}, Sockets = {}, Reinforce = 0, Jewels = {} }
 			Migrations.Run(old)
 			t.Equal("an old item takes its launch design", old.Items.x.Design, Items.LaunchDesign("x"))
 			t.Equal("an item with a design keeps it", old.Items.kept.Design, 3)
@@ -708,7 +708,7 @@ return {
 			local held = fresh()
 			local owned = lead(held, "Warrior")
 			local id = Profile.NewId(held)
-			held.Items[id] = { Id = id, Def = "sword", Tier = 3, Rarity = "Epic", Design = 1, Lines = { { Stat = "Attack", Value = 400 }, { Stat = "Strength", Value = 30 } }, Sockets = {}, Jewel = "" }
+			held.Items[id] = { Id = id, Def = "sword", Tier = 3, Rarity = "Epic", Design = 1, Lines = { { Stat = "Attack", Value = 400 }, { Stat = "Strength", Value = 30 } }, Sockets = {}, Reinforce = 0, Jewels = {} }
 			Regalia.Put(held.Presets[1], "Main Hand", "Warrior", id)
 			local powers = {}
 			for design = 1, 3 do

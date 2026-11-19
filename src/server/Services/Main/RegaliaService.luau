@@ -16,6 +16,10 @@ local Attributes = require(Shared.Definitions.Attributes)
 local Stats = require(Shared.Rules.Stats)
 local Regalia = require(Shared.Rules.Regalia)
 local Chests = require(Shared.Rules.Chests)
+local Reinforce = require(Shared.Rules.Reinforce)
+local Emblems = require(Shared.Rules.Emblems)
+local ReinforceConfig = require(Shared.Config.Reinforce)
+local ChestsConfig = require(Shared.Config.Chests)
 local ChestRows = require(Shared.Definitions.Chests)
 local DataService = require(script.Parent.Parent.Core.DataService)
 local DebugService = require(script.Parent.Parent.Core.DebugService)
@@ -28,6 +32,45 @@ local RegaliaService = {
 local seeds = Random.new()
 
 local function registerDebug()
+	-- Forge stones of a grade into (or, with a negative count, out of) the bag (TR47).
+	DebugService.Register("StonesGive", function(who: any, grade: any, count: any): any
+		local player = DebugService.ResolvePlayer(who)
+		if not player or table.find(ReinforceConfig.Grades, grade) == nil or type(count) ~= "number" or count ~= math.floor(count) then
+			return { Ok = false, Error = "BadArgs" }
+		end
+		return DataService.Change(player, "StonesGive", function(draft: Profile.Data): { [string]: any }
+			local held = math.max(0, (draft.Bag.Stones[grade] or 0) + count)
+			draft.Bag.Stones[grade] = if held > 0 then held else nil
+			return { Ok = true, Held = held }
+		end)
+	end)
+	-- War Emblems of one key, "set:stat", into (or out of) the bag (TR47).
+	DebugService.Register("EmblemGive", function(who: any, key: any, count: any): any
+		local player = DebugService.ResolvePlayer(who)
+		if not player or Emblems.Parse(key) == nil or type(count) ~= "number" or count ~= math.floor(count) then
+			return { Ok = false, Error = "BadArgs" }
+		end
+		return DataService.Change(player, "EmblemGive", function(draft: Profile.Data): { [string]: any }
+			local held = math.max(0, (draft.Bag.Emblems[key] or 0) + count)
+			draft.Bag.Emblems[key] = if held > 0 then held else nil
+			return { Ok = true, Held = held }
+		end)
+	end)
+	-- An owned item's Reinforce level, set outright, for a screen's states (TR47).
+	DebugService.Register("ReinforceSet", function(who: any, id: any, level: any): any
+		local player = DebugService.ResolvePlayer(who)
+		if not player or type(id) ~= "string" or type(level) ~= "number" or level ~= math.floor(level) or level < 0 or level > ReinforceConfig.Cap then
+			return { Ok = false, Error = "BadArgs" }
+		end
+		return DataService.Change(player, "ReinforceSet", function(draft: Profile.Data): { [string]: any }
+			local item = draft.Items[id]
+			if item == nil then
+				return { Ok = false, Error = "NotOwned" }
+			end
+			item.Reinforce = level
+			return { Ok = true, Level = level }
+		end)
+	end)
 	-- Studio only. `count` of chest `chest` in the bag (a negative count takes them out, never below none).
 	DebugService.Register("ChestGive", function(who: any, chest: any, count: any): any
 		local player = DebugService.ResolvePlayer(who)
@@ -88,6 +131,10 @@ local function registerDebug()
 			end
 			table.insert(rolled, { Stat = line.Stat, Value = line.Value })
 		end
+		local sockets = {} -- the rarity's empty sockets, as a chest's item has (Rules.Chests)
+		for _ = 1, ChestsConfig.Sockets[grade] or 0 do
+			table.insert(sockets, "")
+		end
 		return DataService.Change(player, "ItemGive", function(draft: Profile.Data): { [string]: any }
 			local id = Profile.NewId(draft)
 			draft.Items[id] = {
@@ -97,8 +144,8 @@ local function registerDebug()
 				Rarity = grade,
 				Design = 1,
 				Lines = rolled,
-				Sockets = {},
-				Jewel = "",
+				Sockets = sockets,
+				Reinforce = 0, Jewels = {},
 			}
 			return { Ok = true, Id = id }
 		end)
@@ -107,8 +154,8 @@ end
 
 function RegaliaService.Init()
 	-- Gear never changes in a fight, and stays frozen through a keeper's try and a Tower run (D10): the client's
-	-- "Not during a fight" answers this refusal.
-	for name, action in Regalia.Actions do
+	-- "Not during a fight" answers this refusal. Reinforce and the emblems change a fighter's stats, so they freeze too.
+	local function frozen(name: string, action: (Profile.Data, any) -> { [string]: any })
 		DataService.Action(name, function(draft: Profile.Data, args: any, player: Player): { [string]: any }
 			if FightService.InCombat(player) or FightService.Frozen(player) then
 				return { Ok = false, Error = "InCombat" }
@@ -116,6 +163,16 @@ function RegaliaService.Init()
 			return action(draft, args)
 		end)
 	end
+	for name, action in Regalia.Actions do
+		frozen(name, action)
+	end
+	for name, action in Emblems.Actions do
+		frozen(name, action)
+	end
+	-- One try, its roll the server's own (TR47): the op id returns a repeat's first answer, so a retry never rolls again.
+	frozen("Reinforce", function(draft: Profile.Data, args: any): { [string]: any }
+		return Reinforce.Try(draft, args, seeds:NextNumber())
+	end)
 	DataService.Action("OpenChests", function(draft: Profile.Data, args: any): { [string]: any }
 		local given = if type(args) == "table" then args else {}
 		local rng = Random.new(seeds:NextInteger(0, 2 ^ 31 - 1))

@@ -495,6 +495,104 @@ return {
 		Open = { Grow = 0.22, From = 0.55, Back = 1.2, Fade = 0.1, Leave = 0.12 },
 		Step = { Lit = 0.06, Leave = 0.12, LeaveTo = 0.55, RiseAt = 0.08, Rise = 0.22, RiseFrom = 24, Cover = 0.08, Sink = 0.14, Uncover = 0.1, BackAt = 0.06 },
 	},
+	-- Equipment's three screens from Home (TR47; AR43, "The cut in B, for Faber": build/handoff/UI/equipment/equipment.json
+	-- and ../seam/seam.json), in Seam's lit glass (UIKit.Palettes.SeamGlass). Every place is the cut's, in points on the
+	-- smallest phone (568 x 320) from the screen's top left; the game lays the Block (the rail, the list and the work)
+	-- from its own top left, scaled to the room it has, at most Grow. Colours are the palette's unless named here.
+	Equipment = {
+		Pages = { "Reinforce", "Jewels", "War Emblems" },
+		Block = { Left = 0, Top = 56, Wide = 568, Tall = 260, Grow = 1.6 },
+		Backing = { Color3.fromHex("#1F1942"), Color3.fromHex("#0D0B1A") }, -- the ground, top to foot
+		Bloom = { At = Vector2.new(433, 150), Size = Vector2.new(750, 600), Tint = Color3.fromHex("#5C48AC"), Alpha = 0.7 },
+		TopLight = { Height = 160, Fall = 40, Strength = 0.06 }, -- the glint down the screen's top: 1 - Strength x exp(-y / Fall)
+		Good = Color3.fromHex("#7CF0A4"), -- a rise's
+		Hurt = Color3.fromHex("#FF786E"), -- a fail's, and too few stones
+		Panel = { Sheen = 0.89, Glint = 0.15, Edge = { 0.1, 0.7 } }, -- the lift's, the corner's and the edge's transparencies
+		Rail = {
+			X = 48,
+			Buttons = { Reinforce = { 48, 104, "VoidkinPageForge" }, Jewels = { 48, 186, "VoidkinPageJewels" }, ["War Emblems"] = { 48, 262, "VoidkinPageWarEmblems" } },
+			Rest = 20,
+			Chosen = 27,
+			Line = { Wide = 1.2, Alpha = 0.55 },
+			Pieces = {
+				Reinforce = { { 66, 77 }, { 157, 166 }, { 231, 242 } },
+				Jewels = { { 66, 84 }, { 149, 159 }, { 239, 242 } },
+				["War Emblems"] = { { 66, 84 }, { 149, 166 }, { 231, 235 } },
+			},
+			Word = { Gap = 7, Chosen = 15, Rest = 14 },
+			Sheen = { Chosen = 0.78, Rest = 0.88 },
+			Light = 0.82,
+			Glow = 0.78,
+			Edge = 0.2,
+			Comet = 0.1,
+			Runner = 0.15,
+		},
+		List = {
+			Panel = { 98, 60, 300, 312 },
+			First = 64,
+			Pitch = 50,
+			Tall = 46,
+			Box = { 101, 297 },
+			Cell = { 3, 3, 40 },
+			Name = { 51, 5 },
+			Holds = 24,
+			Glint = 0.8,
+			Wash = 0.7,
+			Glow = 0.9,
+			EdgeChosen = 0.1,
+		},
+		Work = { 306, 60, 560, 312 },
+		Reinforce = {
+			Name = Vector2.new(433, 66),
+			Ring = Vector2.new(433, 110),
+			Radius = 27,
+			Cell = 40,
+			Now = { X = 316, Word = 88, Level = 104, Stat = 126 },
+			After = { X = 550, Word = 88, Level = 104, Stat = 126, Gain = 142 },
+			Stone = { At = Vector2.new(420, 142), Side = 26 },
+			Odds = { Y = 173, Success = 427, Dot = 433, Fail = 439 },
+			Said = { At = Vector2.new(316, 192), Pitch = 17 },
+			Stones = { 318, 272, 382, 304, Picture = Vector2.new(322, 277), Side = 22, Count = 376 },
+			Credits = { 388, 272, 462, 304, Picture = Vector2.new(392, 279), Side = 18, Count = 456 },
+			Press = { 468, 266, 548, 310 },
+			Bloom = 0.66,
+			-- upgrade_motion.SEEDS (equipment.json, reinforce.motion), in seconds and points: the answer waits on the server.
+			Motion = {
+				Pending = 0.6, Fly = 0.22, Apart = 0.035, Stones = 3, Inhale = 16, Lift = 0.05, Flash = 0.14, Wave = 26, WaveFor = 0.32,
+				Kick = 0.1, Texts = 0.3, Crack = 0.06, CrackFade = 0.4, Dim = 0.55, Sink = 0.04, Shake = 2, ShakeFor = 0.24, Settle = 0.8, Turn = 0.08,
+			},
+		},
+		Emblems = {
+			Name = Vector2.new(433, 66),
+			Sockets = { Top = 84, Pitch = 60, Side = 46, Middle = 433, Value = 50, Stat = 66, StatPitch = 15 },
+			Rule = { Y = 188, Ends = { 316, 550 }, Alpha = 0.55 },
+			Heading = Vector2.new(318, 193),
+			Sort = { 482, 191, 548, 211 },
+			Bag = { Top = 218, First = 319, Pitch = 46, Side = 40, Clip = { 307, 552 } },
+			Said = { At = Vector2.new(318, 266), Pitch = 18 },
+			Press = { Right = 550, Top = 262, Foot = 306, Put = 84, Out = 92 },
+		},
+		Jewels = {
+			Order = { "Red", "Green", "Blue", "Yellow", "Purple" },
+			-- Each colour's words and ring (build/handoff/UI/jewels/jewels.json), and the attribute it gives (part B).
+			Colours = {
+				Red = Color3.fromHex("#FF6B7A"),
+				Green = Color3.fromHex("#5FE39A"),
+				Blue = Color3.fromHex("#6FA8FF"),
+				Yellow = Color3.fromHex("#FFCF4D"),
+				Purple = Color3.fromHex("#B98AFF"),
+			} :: { [string]: Color3 },
+			Attributes = { Red = "Strength", Green = "Agility", Blue = "Intelligence", Yellow = "Endurance", Purple = "Spirit" } :: { [string]: string },
+			Sockets = { First = Vector2.new(313, 84), Pitch = 49, Side = 44, Value = Vector2.new(22, 48) },
+			Rule = { Y = 156, Ends = { 316, 550 }, Alpha = 0.55 },
+			Said = { At = Vector2.new(318, 166), Pitch = 18 },
+		},
+		-- The sockets' looks (equipment.json, images): the rest rim's and the glow's transparencies, the empty marks'.
+		Socket = { Edge = 0.15, EmptyEdge = 0.5, Glow = 0.45, EmptyEmblem = 0.3, EmptyJewel = 0.45 },
+		-- Seam's idle and motion (seam.json): one loop for every idling piece; the opening and a rail switch.
+		Idle = 2.4,
+		Motion = { RowStart = 0.06, RowGap = 0.035, RowTime = 0.2, RowFrom = 24, WorkStart = 0.1, WorkTime = 0.22, Switch = 0.18, Back = 1.2, Glide = 0.2 },
+	},
 	-- The dock of three icons (AR12, in AR30's make: its look is Make.Dock): a touch held LongPress seconds shows the
 	-- cell's word Rise points over its glass, and lifting it then doesn't press.
 	Dock = {

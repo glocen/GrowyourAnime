@@ -15,4 +15,14 @@ return {
 	Share = { Ordinary = 1, Elite = 3.6, Keeper = 9 } :: { [string]: number },
 	-- The account's first kill also drops this shard (docs/decisions.md, D01: Watt, the first worker).
 	First = "named_watt",
+	-- Forge stones and War Emblems (TR47). The builder's seeds of 2026-11-19, for research's loot refit, which sets the
+	-- rates. A fall drops StoneChance x its kind's Share stones of its ground's grade (the whole part sure, the rest a
+	-- chance): Low in the first GroundsAGrade grounds, Mid in the next, High after, as Reinforce spends them by tens.
+	StoneChance = 0.1,
+	GroundsAGrade = 2,
+	-- An elite's or a keeper's fall drops an emblem this often. Its rarity is its chest ladder row's (Config.Chests.Ladder,
+	-- the fall's ground's order plus EmblemTier minus 1), Common counting as Uncommon, since no emblem is Common; its set
+	-- and its stat, one of the rarity's, evenly.
+	EmblemChance = { Elite = 0.2, Keeper = 1 } :: { [string]: number },
+	EmblemTier = { Elite = 2, Keeper = 3 } :: { [string]: number },
 }

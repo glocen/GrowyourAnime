@@ -47,7 +47,7 @@ end
 
 local function give(data: Profile.Data, def: string, rarity: string, lines: { Profile.ItemLine }): string
 	local id = Profile.NewId(data)
-	data.Items[id] = { Id = id, Def = def, Tier = 1, Rarity = rarity, Design = 1, Lines = lines, Sockets = {}, Jewel = "" }
+	data.Items[id] = { Id = id, Def = def, Tier = 1, Rarity = rarity, Design = 1, Lines = lines, Sockets = {}, Reinforce = 0, Jewels = {} }
 	return id
 end
 

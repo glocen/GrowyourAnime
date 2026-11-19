@@ -39,6 +39,7 @@ export type Result = {
 	Bonus: number, -- the attacker's bucket as used, after its ceiling
 	CriticalFactor: number, -- what a critical multiplied by, 1 without one; no ceiling
 	Reduction: number, -- the defender's bucket as used, after its ceiling
+	Gap: number, -- the level gap's factor (Hit.Gap), 1 unless the attacker is more than its Free levels under
 }
 
 -- 1 when `attacker` beats `defender`'s type, -1 the other way round, 0 otherwise.
@@ -70,6 +71,17 @@ function Hit.Odds(attacker: Stats.Block, defender: Stats.Block): (number, number
 	return dodge, critical, block, penetration, mitigation
 end
 
+-- The level gap (docs/balance.md, "One hit", 8; TR47): an attacker more than Free levels under its target deals
+-- x max(Floor, Rate ^ (gap - Free)), physical and elemental: 61% at 5 levels, 27% at 10, 10% at 16. A higher one gets
+-- nothing.
+function Hit.Gap(attackerLevel: number, defenderLevel: number): number
+	local gap, rule = defenderLevel - attackerLevel, StatsConfig.Gap
+	if gap > rule.Free then
+		return math.max(rule.Floor, rule.Rate ^ (gap - rule.Free))
+	end
+	return 1
+end
+
 function Hit.Resolve(attacker: Stats.Block, defender: Stats.Block, coefficient: number, rolls: Rolls, effects: Effects?): Result
 	local buckets = StatsConfig.Buckets
 	local dodge, critical, block, penetration, mitigation = Hit.Odds(attacker, defender)
@@ -92,6 +104,7 @@ function Hit.Resolve(attacker: Stats.Block, defender: Stats.Block, coefficient: 
 		Bonus = 0,
 		CriticalFactor = 1,
 		Reduction = 0,
+		Gap = Hit.Gap(attacker.Level, defender.Level),
 	}
 	if result.Dodged or not (coefficient > 0) then
 		return result
@@ -108,13 +121,13 @@ function Hit.Resolve(attacker: Stats.Block, defender: Stats.Block, coefficient: 
 		reduction = math.min(buckets.ReductionCap, before + buckets.BlockShare)
 	end
 	result.Bonus, result.CriticalFactor, result.Reduction = bonus, factor, reduction
-	result.Physical = math.max(0, attacker.Attack) * coefficient * (1 - mitigation) * (1 + bonus) * factor * (1 - reduction)
+	result.Physical = math.max(0, attacker.Attack) * coefficient * (1 - mitigation) * (1 + bonus) * factor * (1 - reduction) * result.Gap
 	if attacker.Element ~= "" and attacker.ElementalAttack > 0 then
 		local resist = Stats.Chance(StatsConfig.Caps.ElementalResist, defender.ElementalResist, 0, attacker.Level)
 		-- Past Defence, never critical.
 		local fxResist = if effects then effects.Resist or 0 else 0
 		local elementalReduction = if fxResist > 0 then math.min(buckets.ReductionCap, reduction + fxResist) else reduction
-		result.Elemental = attacker.ElementalAttack * coefficient * (1 - resist) * (1 + bonus) * (1 - elementalReduction)
+		result.Elemental = attacker.ElementalAttack * coefficient * (1 - resist) * (1 + bonus) * (1 - elementalReduction) * result.Gap
 	end
 	result.Total = result.Physical + result.Elemental
 	result.LifestealShare = math.clamp(attacker.Lifesteal, 0, StatsConfig.Lifesteal.Cap)

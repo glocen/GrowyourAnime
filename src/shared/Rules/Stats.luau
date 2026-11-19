@@ -11,7 +11,9 @@
 --               fits there (Definitions.Items.Fits), so a save edited by hand applies no wrong weapon (TR26)
 --   2. Attr:<id>  each attribute's total converts once by its row (Config.Stats.Attributes.Convert)
 --   3. Main:<id>  the class's Main converts once more by its class's row (Attributes.Main)
--- Forge ranks, emblems, jewels and research join here as sources when they're built, each a flat line.
+--      Reinforce  the item's Reinforce level: its main line's stat, the level's share of that line (Rules.Reinforce)
+--      Emblem     each War Emblem in the item's sockets: its stat's points (Rules.Emblems)
+-- Jewels and research join here as sources when they're built, each a flat line.
 -- An enemy's block is its Kind's numbers times G (Stats.Enemy): no sources, nothing worn.
 -- Both the server (for truth) and the client (for previews) call it; nothing else adds stats.
 -- No Roblox API: it runs with Studio closed.
@@ -28,6 +30,8 @@ local Attributes = require(Shared.Definitions.Attributes)
 local Gear = require(Shared.Definitions.Gear)
 local Items = require(Shared.Definitions.Items)
 local Growth = require(Shared.Rules.Growth)
+local Reinforce = require(Shared.Rules.Reinforce)
+local Emblems = require(Shared.Rules.Emblems)
 local Regalia = require(Shared.Rules.Regalia)
 
 local Stats = {}
@@ -192,11 +196,24 @@ function Stats.Resolve(owned: Profile.OwnedVoidkin, preset: Profile.Preset?, dat
 			if item == nil or itemRow == nil or not Items.Fits(itemRow, slot, row.Class) then
 				return
 			end
-			for _, itemLine in item.Lines do
-				if Attributes.ById[itemLine.Stat] then
-					point(`Item:{slot}`, itemLine.Stat, itemLine.Value)
+			local function give(source: string, stat: string, value: number)
+				if Attributes.ById[stat] then
+					point(source, stat, value)
 				else
-					add(`Item:{slot}`, itemLine.Stat, itemLine.Value)
+					add(source, stat, value)
+				end
+			end
+			for _, itemLine in item.Lines do
+				give(`Item:{slot}`, itemLine.Stat, itemLine.Value)
+			end
+			local stat, gain = Reinforce.Gain(item)
+			if stat then
+				give(`Reinforce:{slot}`, stat, gain)
+			end
+			for _, key in item.Sockets do
+				local emblemStat, points = Emblems.Points(key)
+				if emblemStat then
+					add(`Emblem:{slot}`, emblemStat, points)
 				end
 			end
 		end

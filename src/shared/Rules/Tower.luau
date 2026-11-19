@@ -16,11 +16,12 @@ local ChestRows = require(Shared.Definitions.Chests)
 local Growth = require(Shared.Rules.Growth)
 local Stats = require(Shared.Rules.Stats)
 local Chests = require(Shared.Rules.Chests)
+local Drops = require(Shared.Rules.Drops)
 
 local Tower = {}
 
 export type Foe = { Def: string, Level: number }
-export type Reward = { Credits: number, Chest: string? }
+export type Reward = { Credits: number, Chest: string?, Stone: string, Stones: number } -- Stone, the grade ("" for none)
 
 -- A draw in [0, 1) from the run's seed, the floor and what it's for: the same three, the same draw.
 local function draw(seed: number, floor: number, salt: number): number
@@ -238,14 +239,21 @@ end
 function Tower.Reward(floor: number, best: number, seed: number, fast: boolean?): Reward
 	local sure = floor == TowerConfig.Chest.First and best < floor
 	if fast then
-		return { Credits = 0, Chest = if sure then chestOf(floor) else nil }
+		return { Credits = 0, Chest = if sure then chestOf(floor) else nil, Stone = "", Stones = 0 }
 	end
 	local credits = DropsConfig.CreditsPerKillPerG * Growth.G(Tower.Level(floor)) * TowerConfig.Credits.Share
 	if floor > best then
 		credits *= TowerConfig.Credits.Record
 	end
 	local chest = if sure or draw(seed, floor, 2) < Tower.ChestChance(floor) then chestOf(floor) else nil
-	return { Credits = math.floor(credits + 0.5), Chest = chest }
+	local ground = Grounds.List[Growth.GroundOf(Tower.Level(floor))]
+	local stones = if ground then TowerConfig.Stones else 0
+	return {
+		Credits = math.floor(credits + 0.5),
+		Chest = chest,
+		Stone = if stones > 0 and ground then Drops.StoneGrade(ground.Id) else "",
+		Stones = stones,
+	}
 end
 
 -- A new run in `data`, with `id` (Profile.NewId) and `seed`, started at `now`. Nil if a run is under way. Results not
@@ -255,7 +263,7 @@ function Tower.Start(data: Profile.Data, id: string, seed: number, now: number):
 	if tower.Run then
 		return nil
 	end
-	local run: Profile.TowerRun = { Id = id, Started = now, Floor = 0, Best = tower.Best, Seed = seed, Credits = 0, Chests = {} }
+	local run: Profile.TowerRun = { Id = id, Started = now, Floor = 0, Best = tower.Best, Seed = seed, Credits = 0, Chests = {}, Stones = {} }
 	tower.Run = run
 	tower.Results = nil
 	return run
@@ -274,6 +282,11 @@ function Tower.Won(data: Profile.Data, id: string, floor: number, fast: boolean?
 	if reward.Chest then
 		run.Chests[reward.Chest] = (run.Chests[reward.Chest] or 0) + 1
 	end
+	if reward.Stones > 0 then
+		local stones = run.Stones or {}
+		stones[reward.Stone] = (stones[reward.Stone] or 0) + reward.Stones
+		run.Stones = stones
+	end
 	return reward
 end
 
@@ -290,6 +303,9 @@ function Tower.End(data: Profile.Data, id: string, now: number): Profile.TowerRe
 	for chest, count in run.Chests do
 		Chests.Grant(data, chest, count)
 	end
+	for grade, count in run.Stones or {} do
+		data.Bag.Stones[grade] = (data.Bag.Stones[grade] or 0) + count
+	end
 	local results: Profile.TowerResults = {
 		Id = run.Id,
 		Floor = run.Floor,
@@ -297,6 +313,7 @@ function Tower.End(data: Profile.Data, id: string, now: number): Profile.TowerRe
 		Record = run.Floor > tower.Best,
 		Credits = run.Credits,
 		Chests = table.clone(run.Chests),
+		Stones = table.clone(run.Stones or {}),
 	}
 	tower.Best = math.max(tower.Best, run.Floor)
 	local week = Tower.Week(run.Started)

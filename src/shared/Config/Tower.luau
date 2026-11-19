@@ -43,6 +43,9 @@ return {
 	-- own rarity row), of the ground the foe's level stands in, which an item's worth is read from.
 	-- First: the floor whose chest is sure the first time the account wins it (the same review: the roll there was 0.9%).
 	Chest = { Base = 0, PerFloor = 0.0018, Most = 0.5, First = 5 },
+	-- Forge stones a hard floor won gives, of the grade of the ground its foe's level stands in (TR47; Rules.Drops.StoneGrade).
+	-- The builder's seed of 2026-11-19, for research's loot refit.
+	Stones = 1,
 	-- The world, in studs (builder's, tuned by playing). The ring lies on its lot's crossing end, where the sleeping
 	-- Tower stood; stepping within Ring of its middle starts a run. Floor f's platform stands f x Height over it.
 	Ring = 5,

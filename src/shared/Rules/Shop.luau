@@ -199,7 +199,8 @@ function Shop.Buy(data: Profile.Data, shelf: Shelf, args: any): { [string]: any 
 				Design = piece.Design,
 				Lines = piece.Lines,
 				Sockets = piece.Sockets,
-				Jewel = piece.Jewel,
+				Reinforce = 0,
+				Jewels = {},
 			}
 			table.insert(kept, id)
 		end

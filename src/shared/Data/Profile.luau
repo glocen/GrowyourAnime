@@ -38,8 +38,9 @@ export type OwnedItem = {
 	Rarity: string,
 	Design: number, -- its design among its kind's at its rarity (Definitions.ItemDesigns), fixed at its drop: look and name only
 	Lines: { ItemLine }, -- the rolled lines
-	Sockets: { string }, -- one entry per socket its rarity gives: an emblem id, or "" when empty
-	Jewel: string, -- a jewel id, or ""
+	Sockets: { string }, -- one entry per socket its rarity gives (Config.Chests.Sockets): an emblem key, or "" when empty
+	Reinforce: number, -- its Reinforce level, 0 to Config.Reinforce.Cap (TR47, Rules.Reinforce)
+	Jewels: { [string]: number }, -- a jewel colour's level in its slot; a colour with none has no key (TR47 part B)
 }
 
 -- A Regalia preset (docs/engineering-plan.md, "Class rules"): the twelve shared slots, and one weapon pair for each class.
@@ -114,6 +115,7 @@ export type TowerRun = {
 	Seed: number, -- the server's draw at the start: each floor's foe and chest roll come from it (Rules.Tower)
 	Credits: number, -- won and not yet granted
 	Chests: { [string]: number }, -- won by chest id and not yet granted
+	Stones: { [string]: number }?, -- forge stones won by grade and not yet granted (TR47); nil in a run begun before them
 }
 
 -- An account's best climb of one week (TR46, Rules.Tower.Score): the week its run started in, the floor, and the score
@@ -128,6 +130,7 @@ export type TowerResults = {
 	Record: boolean, -- it passed the record
 	Credits: number,
 	Chests: { [string]: number },
+	Stones: { [string]: number }?, -- by grade (TR47)
 }
 
 export type Data = {
@@ -138,10 +141,12 @@ export type Data = {
 	Index: { [string]: IndexEntry }, -- by Voidkin definition
 	Items: { [string]: OwnedItem }, -- by Id
 	Presets: { Preset },
-	SlotRanks: { [string]: number }, -- forge rank by slot name; a slot never forged has no key
 	Bag: {
 		Shards: { [string]: number }, -- count by shard definition
 		Chests: { [string]: number }, -- count by chest definition, so identical chests stack (TR27, Rules.Chests)
+		Stones: { [string]: number }, -- forge stones, count by grade (Config.Reinforce.Grades; TR47)
+		Emblems: { [string]: number }, -- War Emblems, count by key, "set:stat" (Rules.Emblems), so identical ones stack
+		Jewels: { [string]: number }, -- jewels, count by "Colour:level" (TR47 part B)
 	},
 	Settings: {
 		Salvage: string, -- an opened item of this rarity or under turns into Credits; "" for none (Rules.Chests)
@@ -207,8 +212,7 @@ function Profile.Template(): Data
 		Index = {},
 		Items = {},
 		Presets = { { Slots = {}, Hands = {} } },
-		SlotRanks = {},
-		Bag = { Shards = {}, Chests = {} },
+		Bag = { Shards = {}, Chests = {}, Stones = {}, Emblems = {}, Jewels = {} },
 		Settings = { Salvage = "" },
 		Currency = { Credits = 0, Research = 0 },
 		Shop = { Stock = 0, Bought = {} },

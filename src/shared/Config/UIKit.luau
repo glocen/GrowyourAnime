@@ -56,7 +56,95 @@ export type Palette = {
 	Card: { Color3 }?, -- a card over the room, a step up from its panel
 }
 
-return {
+-- Equipment's screens in Seam's lit glass (AR43, "The cut in B, for Faber"; TR47): the panel's lift, the screen's
+-- bloom, the rail and the lit press (build/handoff/UI/seam/seam.json); the list's rows, Reinforce's ring and the
+-- sockets (build/handoff/UI/equipment/equipment.json); AR31's forge stones; the twelve War Emblems and the 25 jewels,
+-- in their own colours. Tints and places are Config.Hud.Equipment's; every one is laid by its box, so none has a Pad.
+-- Kept apart and joined below: one table this size is past the type checker's reach.
+local equipment: { [string]: Image } = {
+	PanelCornerGlint = { Id = "rbxassetid://112650480299119", Pixels = Vector2.new(800, 640), Points = Vector2.new(200, 160), Pad = 0 },
+	PanelSheen = { Id = "rbxassetid://94854205679337", Pixels = Vector2.new(128, 384), Points = Vector2.new(32, 96), Cut = { 12, 0, 12, 0 }, Pad = 0 },
+	PressEdge = { Id = "rbxassetid://120528739258873", Pixels = Vector2.new(112, 112), Points = Vector2.new(28, 28), Cut = { 8, 8, 8, 8 }, Pad = 0 },
+	PressFill = { Id = "rbxassetid://101305213707748", Pixels = Vector2.new(112, 112), Points = Vector2.new(28, 28), Cut = { 8, 8, 8, 8 }, Pad = 0 },
+	PressGlow = { Id = "rbxassetid://98155665124055", Pixels = Vector2.new(280, 280), Points = Vector2.new(70, 70), Cut = { 29, 29, 29, 29 }, Pad = 0 },
+	RailComet = { Id = "rbxassetid://72125973646217", Pixels = Vector2.new(252, 252), Points = Vector2.new(63, 63), Pad = 0 },
+	RailDisc = { Id = "rbxassetid://79412566027357", Pixels = Vector2.new(224, 224), Points = Vector2.new(56, 56), Pad = 0 },
+	RailEdge = { Id = "rbxassetid://92035115141602", Pixels = Vector2.new(168, 168), Points = Vector2.new(42, 42), Pad = 0 },
+	RailEdgeChosen = { Id = "rbxassetid://76354984081232", Pixels = Vector2.new(224, 224), Points = Vector2.new(56, 56), Pad = 0 },
+	RailGlow = { Id = "rbxassetid://126383505516836", Pixels = Vector2.new(408, 408), Points = Vector2.new(102, 102), Pad = 0 },
+	RailLight = { Id = "rbxassetid://140270973343825", Pixels = Vector2.new(224, 224), Points = Vector2.new(56, 56), Pad = 0 },
+	RailRing = { Id = "rbxassetid://102494600414517", Pixels = Vector2.new(196, 196), Points = Vector2.new(49, 49), Pad = 0 },
+	RailRingChosen = { Id = "rbxassetid://92255522494439", Pixels = Vector2.new(252, 252), Points = Vector2.new(63, 63), Pad = 0 },
+	RailRunner = { Id = "rbxassetid://82781072271965", Pixels = Vector2.new(16, 384), Points = Vector2.new(4, 96), Pad = 0 },
+	RailSheen = { Id = "rbxassetid://103039053240728", Pixels = Vector2.new(224, 224), Points = Vector2.new(56, 56), Pad = 0 },
+	ScreenBloom = { Id = "rbxassetid://112172577794449", Pixels = Vector2.new(256, 256), Points = Vector2.new(64, 64), Pad = 0 },
+	ReinforceBloom = { Id = "rbxassetid://82722059494454", Pixels = Vector2.new(376, 376), Points = Vector2.new(94, 94), Pad = 0 },
+	ReinforceComet = { Id = "rbxassetid://96855953618162", Pixels = Vector2.new(312, 312), Points = Vector2.new(78, 78), Pad = 0 },
+	ReinforceCrack = { Id = "rbxassetid://99162931836170", Pixels = Vector2.new(240, 144), Points = Vector2.new(60, 36), Pad = 0 },
+	ReinforceFlash = { Id = "rbxassetid://78037417809358", Pixels = Vector2.new(352, 352), Points = Vector2.new(88, 88), Pad = 0 },
+	ReinforceRing = { Id = "rbxassetid://139668693409538", Pixels = Vector2.new(264, 264), Points = Vector2.new(66, 66), Pad = 0 },
+	ReinforceRingOuter = { Id = "rbxassetid://94920501019349", Pixels = Vector2.new(264, 264), Points = Vector2.new(66, 66), Pad = 0 },
+	ReinforceWaveGlow = { Id = "rbxassetid://91806507262727", Pixels = Vector2.new(320, 320), Points = Vector2.new(80, 80), Pad = 0 },
+	RowEdge = { Id = "rbxassetid://73233771995506", Pixels = Vector2.new(136, 192), Points = Vector2.new(34, 48), Cut = { 9, 0, 9, 0 }, Pad = 0 },
+	RowEmptyEmblem = { Id = "rbxassetid://95314047526822", Pixels = Vector2.new(64, 64), Points = Vector2.new(16, 16), Pad = 0 },
+	RowEmptyJewel = { Id = "rbxassetid://123936086246160", Pixels = Vector2.new(48, 48), Points = Vector2.new(12, 12), Pad = 0 },
+	RowGlass = { Id = "rbxassetid://110885326391150", Pixels = Vector2.new(128, 184), Points = Vector2.new(32, 46), Cut = { 8, 0, 8, 0 }, Pad = 0 },
+	RowGlassGlow = { Id = "rbxassetid://86591652602980", Pixels = Vector2.new(296, 352), Points = Vector2.new(74, 88), Cut = { 29, 0, 29, 0 }, Pad = 0 },
+	RowGlassLight = { Id = "rbxassetid://135362292653294", Pixels = Vector2.new(88, 264), Points = Vector2.new(22, 66), Pad = 0 },
+	RowGlassWash = { Id = "rbxassetid://72881865747565", Pixels = Vector2.new(128, 184), Points = Vector2.new(32, 46), Pad = 0 },
+	RowGlint = { Id = "rbxassetid://79891826401133", Pixels = Vector2.new(326, 184), Points = Vector2.new(81.5, 46), Pad = 0 },
+	RowPlate = { Id = "rbxassetid://84612629171808", Pixels = Vector2.new(128, 184), Points = Vector2.new(32, 46), Cut = { 8, 0, 8, 0 }, Pad = 0 },
+	RowPoint = { Id = "rbxassetid://82898977618413", Pixels = Vector2.new(40, 72), Points = Vector2.new(10, 18), Pad = 0 },
+	SocketEdge = { Id = "rbxassetid://133818005731299", Pixels = Vector2.new(192, 192), Points = Vector2.new(48, 48), Cut = { 10, 10, 10, 10 }, Pad = 0 },
+	SocketEdgeLit = { Id = "rbxassetid://134519415615486", Pixels = Vector2.new(192, 192), Points = Vector2.new(48, 48), Cut = { 10, 10, 10, 10 }, Pad = 0 },
+	SocketEmptyEmblem = { Id = "rbxassetid://103080758012046", Pixels = Vector2.new(112, 112), Points = Vector2.new(28, 28), Pad = 0 },
+	SocketEmptyJewel = { Id = "rbxassetid://130501870938977", Pixels = Vector2.new(64, 64), Points = Vector2.new(16, 16), Pad = 0 },
+	SocketFill = { Id = "rbxassetid://77701205448820", Pixels = Vector2.new(176, 176), Points = Vector2.new(44, 44), Cut = { 8, 8, 8, 8 }, Pad = 0 },
+	SocketGlow = { Id = "rbxassetid://93278607411949", Pixels = Vector2.new(320, 320), Points = Vector2.new(80, 80), Cut = { 26, 26, 26, 26 }, Pad = 0 },
+	SocketLight = { Id = "rbxassetid://89161034038453", Pixels = Vector2.new(176, 176), Points = Vector2.new(44, 44), Pad = 0 },
+	StoneHigh = { Id = "rbxassetid://123127755889192", Pixels = Vector2.new(256, 256), Points = Vector2.new(64, 64), Pad = 0 },
+	StoneLow = { Id = "rbxassetid://105458370790435", Pixels = Vector2.new(256, 256), Points = Vector2.new(64, 64), Pad = 0 },
+	StoneMid = { Id = "rbxassetid://98927105470350", Pixels = Vector2.new(256, 256), Points = Vector2.new(64, 64), Pad = 0 },
+	EmblemCompass = { Id = "rbxassetid://103600637964722", Pixels = Vector2.new(256, 256), Points = Vector2.new(64, 64), Pad = 0 },
+	EmblemHighcrown = { Id = "rbxassetid://86791867168283", Pixels = Vector2.new(256, 256), Points = Vector2.new(64, 64), Pad = 0 },
+	EmblemMoonward = { Id = "rbxassetid://97266272557101", Pixels = Vector2.new(256, 256), Points = Vector2.new(64, 64), Pad = 0 },
+	EmblemPalisade = { Id = "rbxassetid://120741448075917", Pixels = Vector2.new(256, 256), Points = Vector2.new(64, 64), Pad = 0 },
+	EmblemRadiance = { Id = "rbxassetid://100139187109857", Pixels = Vector2.new(256, 256), Points = Vector2.new(64, 64), Pad = 0 },
+	EmblemSerpentCoil = { Id = "rbxassetid://89442619839949", Pixels = Vector2.new(256, 256), Points = Vector2.new(64, 64), Pad = 0 },
+	EmblemSpearhead = { Id = "rbxassetid://112048895716704", Pixels = Vector2.new(256, 256), Points = Vector2.new(64, 64), Pad = 0 },
+	EmblemSwornRings = { Id = "rbxassetid://87967894666524", Pixels = Vector2.new(256, 256), Points = Vector2.new(64, 64), Pad = 0 },
+	EmblemTalon = { Id = "rbxassetid://70887483428167", Pixels = Vector2.new(256, 256), Points = Vector2.new(64, 64), Pad = 0 },
+	EmblemTidebreak = { Id = "rbxassetid://103613441821263", Pixels = Vector2.new(256, 256), Points = Vector2.new(64, 64), Pad = 0 },
+	EmblemWarhorn = { Id = "rbxassetid://118391953079903", Pixels = Vector2.new(256, 256), Points = Vector2.new(64, 64), Pad = 0 },
+	EmblemZenith = { Id = "rbxassetid://77830852343327", Pixels = Vector2.new(256, 256), Points = Vector2.new(64, 64), Pad = 0 },
+	JewelBlue1 = { Id = "rbxassetid://78673938657069", Pixels = Vector2.new(256, 256), Points = Vector2.new(64, 64), Pad = 0 },
+	JewelBlue2 = { Id = "rbxassetid://86378166667445", Pixels = Vector2.new(256, 256), Points = Vector2.new(64, 64), Pad = 0 },
+	JewelBlue3 = { Id = "rbxassetid://123348081777239", Pixels = Vector2.new(256, 256), Points = Vector2.new(64, 64), Pad = 0 },
+	JewelBlue4 = { Id = "rbxassetid://111667173458771", Pixels = Vector2.new(256, 256), Points = Vector2.new(64, 64), Pad = 0 },
+	JewelBlue5 = { Id = "rbxassetid://114519528878510", Pixels = Vector2.new(256, 256), Points = Vector2.new(64, 64), Pad = 0 },
+	JewelGreen1 = { Id = "rbxassetid://91406931812686", Pixels = Vector2.new(256, 256), Points = Vector2.new(64, 64), Pad = 0 },
+	JewelGreen2 = { Id = "rbxassetid://121270308310936", Pixels = Vector2.new(256, 256), Points = Vector2.new(64, 64), Pad = 0 },
+	JewelGreen3 = { Id = "rbxassetid://106948897198130", Pixels = Vector2.new(256, 256), Points = Vector2.new(64, 64), Pad = 0 },
+	JewelGreen4 = { Id = "rbxassetid://86053354969195", Pixels = Vector2.new(256, 256), Points = Vector2.new(64, 64), Pad = 0 },
+	JewelGreen5 = { Id = "rbxassetid://94467737774520", Pixels = Vector2.new(256, 256), Points = Vector2.new(64, 64), Pad = 0 },
+	JewelPurple1 = { Id = "rbxassetid://78814301478471", Pixels = Vector2.new(256, 256), Points = Vector2.new(64, 64), Pad = 0 },
+	JewelPurple2 = { Id = "rbxassetid://110098005794376", Pixels = Vector2.new(256, 256), Points = Vector2.new(64, 64), Pad = 0 },
+	JewelPurple3 = { Id = "rbxassetid://72032300745737", Pixels = Vector2.new(256, 256), Points = Vector2.new(64, 64), Pad = 0 },
+	JewelPurple4 = { Id = "rbxassetid://120108288225181", Pixels = Vector2.new(256, 256), Points = Vector2.new(64, 64), Pad = 0 },
+	JewelPurple5 = { Id = "rbxassetid://125352761565580", Pixels = Vector2.new(256, 256), Points = Vector2.new(64, 64), Pad = 0 },
+	JewelRed1 = { Id = "rbxassetid://133172100041548", Pixels = Vector2.new(256, 256), Points = Vector2.new(64, 64), Pad = 0 },
+	JewelRed2 = { Id = "rbxassetid://85182758285678", Pixels = Vector2.new(256, 256), Points = Vector2.new(64, 64), Pad = 0 },
+	JewelRed3 = { Id = "rbxassetid://97282097549467", Pixels = Vector2.new(256, 256), Points = Vector2.new(64, 64), Pad = 0 },
+	JewelRed4 = { Id = "rbxassetid://90110547782208", Pixels = Vector2.new(256, 256), Points = Vector2.new(64, 64), Pad = 0 },
+	JewelRed5 = { Id = "rbxassetid://139837692677149", Pixels = Vector2.new(256, 256), Points = Vector2.new(64, 64), Pad = 0 },
+	JewelYellow1 = { Id = "rbxassetid://125461154919045", Pixels = Vector2.new(256, 256), Points = Vector2.new(64, 64), Pad = 0 },
+	JewelYellow2 = { Id = "rbxassetid://82503233267703", Pixels = Vector2.new(256, 256), Points = Vector2.new(64, 64), Pad = 0 },
+	JewelYellow3 = { Id = "rbxassetid://70933555349104", Pixels = Vector2.new(256, 256), Points = Vector2.new(64, 64), Pad = 0 },
+	JewelYellow4 = { Id = "rbxassetid://120031866112146", Pixels = Vector2.new(256, 256), Points = Vector2.new(64, 64), Pad = 0 },
+	JewelYellow5 = { Id = "rbxassetid://137649433097353", Pixels = Vector2.new(256, 256), Points = Vector2.new(64, 64), Pad = 0 },
+}
+
+local UIKit = {
 	PixelsPerPoint = 4,
 	SliceScale = 0.25,
 	Light = Color3.fromHex("#FFF4D6"), -- health's light, and a plain hit's number
@@ -191,6 +279,29 @@ return {
 			Light = Color3.fromHex("#EDE4FF"),
 			Ink = Color3.fromHex("#0B0913"),
 			Card = { Color3.fromHex("#221A3C"), Color3.fromHex("#0E0B18") },
+		},
+		-- Seam's lit glass (research's B, 2026-11-19, 15:04; build/handoff/UI/seam/seam.json): every screen Home opens.
+		-- Seam's violet lifted at every top. Backing is the gradient's top; its foot is Config.Hud.Equipment.Backing's.
+		SeamGlass = {
+			Panel = { Color3.fromHex("#2F2758"), Color3.fromHex("#16122C") },
+			Alpha = 1,
+			Edge = Color3.fromHex("#51477A"),
+			Facet = Color3.fromHex("#A89CD8"),
+			Glint = Color3.fromHex("#F0EAFF"),
+			Text = Color3.fromHex("#F1ECFF"),
+			Soft = Color3.fromHex("#C6BDE4"),
+			Faint = Color3.fromHex("#8279A6"),
+			Channel = Color3.fromHex("#0C0A1A"),
+			Well = Color3.fromHex("#262044"),
+			Button = { Color3.fromHex("#3C3268"), Color3.fromHex("#251E46") },
+			Pressed = { Color3.fromHex("#120E20"), Color3.fromHex("#1A1430") },
+			Ground = Color3.fromHex("#1E1A2C"),
+			Accent = Color3.fromHex("#EDE4FF"),
+			Core = 0.5,
+			Backing = Color3.fromHex("#1F1942"),
+			Light = Color3.fromHex("#EDE4FF"),
+			Ink = Color3.fromHex("#0B0913"),
+			Card = { Color3.fromHex("#4C3E92"), Color3.fromHex("#251D4C") },
 		},
 		-- The seam's plate of light: its one action (Equip), white falling to the seam's Light, words in Ink.
 		SeamLit = {
@@ -875,3 +986,9 @@ return {
 		},
 	},
 }
+
+for name, image in equipment do
+	UIKit.Images[name] = image
+end
+
+return UIKit

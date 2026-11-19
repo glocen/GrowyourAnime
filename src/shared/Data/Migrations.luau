@@ -167,6 +167,30 @@ local STEPS: { (data: any) -> () } = {
 			data.Funnel[name] = true
 		end
 	end,
+	-- 11: gear's levels belong to the item (TR47; the director, 2026-11-17, 02:40). Touches Items, SlotRanks and Bag. Each
+	-- owned item gains its Reinforce level (0) and its jewel slots (none), and loses `Jewel`, which nothing ever set; the
+	-- profile's SlotRanks goes, since nothing ever wrote it; the bag gains its stones, emblems and jewels.
+	function(data: any)
+		for _, item in (if type(data.Items) == "table" then data.Items else {}) :: { [string]: any } do
+			if type(item) == "table" then
+				if type(item.Reinforce) ~= "number" then
+					item.Reinforce = 0
+				end
+				if type(item.Jewels) ~= "table" then
+					item.Jewels = {}
+				end
+				item.Jewel = nil
+			end
+		end
+		data.SlotRanks = nil
+		if type(data.Bag) == "table" then
+			for _, kind in { "Stones", "Emblems", "Jewels" } do
+				if type(data.Bag[kind]) ~= "table" then
+					data.Bag[kind] = {}
+				end
+			end
+		end
+	end,
 }
 
 -- The version a save reaches once migrated: the number of steps.

@@ -109,8 +109,8 @@ return {
 			-- TR26's class rules: Hands holds each class's pair; Slots keeps the twelve shared slots only.
 			local old = fresh()
 			old.Version = 5
-			old.Items.s = { Id = "s", Def = "sword", Tier = 1, Rarity = "Common", Design = 1, Lines = {}, Sockets = {}, Jewel = "" }
-			old.Items.h = { Id = "h", Def = "helmet", Tier = 1, Rarity = "Common", Design = 1, Lines = {}, Sockets = {}, Jewel = "" }
+			old.Items.s = { Id = "s", Def = "sword", Tier = 1, Rarity = "Common", Design = 1, Lines = {}, Sockets = {}, Reinforce = 0, Jewels = {} }
+			old.Items.h = { Id = "h", Def = "helmet", Tier = 1, Rarity = "Common", Design = 1, Lines = {}, Sockets = {}, Reinforce = 0, Jewels = {} }
 			old.Presets = {
 				{ Slots = { ["Main Hand"] = "s", ["Off Hand"] = "gone", Helmet = "h" } },
 				{ Slots = { ["Off Hand"] = "s" } },
@@ -135,7 +135,7 @@ return {
 			local old = fresh()
 			old.Version = 7
 			local function item(id: string, lines: { any }): any
-				return { Id = id, Def = "sword", Tier = 1, Rarity = "Rare", Design = 1, Lines = lines, Sockets = {}, Jewel = "" }
+				return { Id = id, Def = "sword", Tier = 1, Rarity = "Rare", Design = 1, Lines = lines, Sockets = {}, Reinforce = 0, Jewels = {} }
 			end
 			old.Items.a = item("a", { { Stat = "Attack", Value = 30 }, { Stat = "Might", Value = 4 }, { Stat = "Finesse", Value = 6 }, { Stat = "Spirit", Value = 2 } })
 			old.Items.b = item("b", { { Stat = "Vigor", Value = 9 }, { Stat = "Critical", Value = 12 }, { Stat = "Insight", Value = 5 } })

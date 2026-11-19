@@ -246,7 +246,7 @@ return {
 			end
 			local full = fresh(10 ^ 9)
 			for i = 1, ChestsConfig.Bag do
-				full.Items[`f{i}`] = { Id = `f{i}`, Def = (shelf.Lines.Featured.Item :: any).Def, Tier = 1, Rarity = "Common", Design = 1, Lines = {}, Sockets = {}, Jewel = "" }
+				full.Items[`f{i}`] = { Id = `f{i}`, Def = (shelf.Lines.Featured.Item :: any).Def, Tier = 1, Rarity = "Common", Design = 1, Lines = {}, Sockets = {}, Reinforce = 0, Jewels = {} }
 			end
 			local before = Profile.DeepCopy(full)
 			t.Equal("a full bag: the piece refused", Shop.Buy(full, shelf, { Stock = stock, Line = "Featured", Count = 1 }).Error, Shop.BagFull)

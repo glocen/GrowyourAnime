@@ -165,7 +165,7 @@ end
 local function pieceCard(view: Profile.View, item: Chests.Rolled): Bag.Card?
 	local copy = table.clone(view) :: any
 	copy.Items = table.clone(view.Items)
-	copy.Items[KEY] = { Id = KEY, Def = item.Def, Tier = item.Tier, Rarity = item.Rarity, Design = item.Design, Lines = item.Lines, Sockets = item.Sockets, Jewel = item.Jewel }
+	copy.Items[KEY] = { Id = KEY, Def = item.Def, Tier = item.Tier, Rarity = item.Rarity, Design = item.Design, Lines = item.Lines, Sockets = item.Sockets, Reinforce = 0, Jewels = {} }
 	local lead = view.Voidkin[view.Roles.Lead]
 	return Bag.Card(copy, lead, KEY)
 end

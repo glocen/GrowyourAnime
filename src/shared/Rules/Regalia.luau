@@ -72,9 +72,65 @@ function Regalia.Refusal(data: Profile.Data, slot: string, class: string?, id: s
 	return Regalia.WrongSlot
 end
 
--- Wears `id` in `slot` of preset `index` (an empty or nil id takes off what's there), for `class`'s pair in a hand.
+-- Whether an item holds anything the equip transfer would move: a Reinforce level, an emblem or a jewel (TR47).
+function Regalia.Holds(item: Profile.OwnedItem): boolean
+	if item.Reinforce > 0 or next(item.Jewels) ~= nil then
+		return true
+	end
+	for _, key in item.Sockets do
+		if key ~= "" then
+			return true
+		end
+	end
+	return false
+end
+
+-- The equip transfer (TR47; docs/design.md, "Reinforce levels, emblems and jewels belong to the item"): what `from` holds
+-- moves to `to`, for free, and nothing is ever lost. The two Reinforce levels change places, since an item holds one.
+-- `from`'s emblems fill `to`'s empty sockets in order, and `to` keeps its own; those with no room stay on `from`, packed
+-- to its first sockets. A jewel moves into its colour's slot when `to`'s is empty, and stays on `from` when it isn't.
+-- Each item keeps its own count of sockets. Answers how many emblems moved and how many stayed.
+function Regalia.Transfer(from: Profile.OwnedItem, to: Profile.OwnedItem): (number, number)
+	from.Reinforce, to.Reinforce = to.Reinforce, from.Reinforce
+	for colour, level in from.Jewels do
+		if (to.Jewels[colour] or 0) == 0 then
+			to.Jewels[colour] = level
+			from.Jewels[colour] = nil
+		end
+	end
+	local kept: { string } = {}
+	local moved = 0
+	for _, key in from.Sockets do
+		if key ~= "" then
+			local free = table.find(to.Sockets, "")
+			if free then
+				to.Sockets[free] = key
+				moved += 1
+			else
+				table.insert(kept, key)
+			end
+		end
+	end
+	for index = 1, #from.Sockets do
+		from.Sockets[index] = kept[index] or ""
+	end
+	return moved, #kept
+end
+
+-- What `slot` of `preset` wears for `class`'s pair in a hand, or nil.
+function Regalia.Worn(preset: Profile.Preset, slot: string, class: string?): string?
+	if Gear.IsHand(slot) then
+		local pair = if class then preset.Hands[class] else nil
+		return if pair then pair[slot] else nil
+	end
+	return preset.Slots[slot]
+end
+
+-- Wears `id` in `slot` of preset `index` (an empty or nil id takes off what's there), for `class`'s pair in a hand. With
+-- `move`, the item it replaces gives it its Reinforce level, emblems and jewels first (Regalia.Transfer): the player's Yes
+-- to the prompt the screen shows when that item holds any (Regalia.Holds).
 -- Answers what it did, or a refusal that changed nothing.
-function Regalia.Equip(data: Profile.Data, index: any, slot: any, class: any, id: any): { [string]: any }
+function Regalia.Equip(data: Profile.Data, index: any, slot: any, class: any, id: any, move: any): { [string]: any }
 	local preset = if type(index) == "number" then data.Presets[index] else nil
 	if preset == nil or type(slot) ~= "string" then
 		return { Ok = false, Error = Regalia.Unknown }
@@ -104,15 +160,30 @@ function Regalia.Equip(data: Profile.Data, index: any, slot: any, class: any, id
 			return { Ok = false, Error = refusal }
 		end
 	end
+	local was = Regalia.Worn(preset, slot, owner)
+	local moved, stayed = 0, 0
+	if move == true and wearing and was and was ~= wearing and data.Items[was] then
+		moved, stayed = Regalia.Transfer(data.Items[was], data.Items[wearing])
+	end
 	Regalia.Put(preset, slot, owner, wearing)
-	return { Ok = true, Preset = index, Slot = slot, Class = owner, Item = wearing or "" }
+	return {
+		Ok = true,
+		Preset = index,
+		Slot = slot,
+		Class = owner,
+		Item = wearing or "",
+		Was = was or "",
+		Moved = move == true and wearing ~= nil and was ~= nil and was ~= wearing,
+		Emblems = moved,
+		Stayed = stayed,
+	}
 end
 
--- What a client may ask, by name, through the Act remote. Args: { Preset, Slot, Class?, Item? }.
+-- What a client may ask, by name, through the Act remote. Args: { Preset, Slot, Class?, Item?, Move? }.
 Regalia.Actions = {
 	Equip = function(data: Profile.Data, args: any): { [string]: any }
 		local given = if type(args) == "table" then args else {}
-		return Regalia.Equip(data, given.Preset, given.Slot, given.Class, given.Item)
+		return Regalia.Equip(data, given.Preset, given.Slot, given.Class, given.Item, given.Move)
 	end,
 } :: { [string]: (Profile.Data, any) -> { [string]: any } }
 

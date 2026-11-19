@@ -11,6 +11,8 @@ Run, each a headless Blender job:
   ... --python tools/blender/hud_art.py -- <out> contact     the heads alone, to choose the angles
   ... --python tools/blender/hud_art.py -- <out> make        every image, into <out>/images
   ... --python tools/blender/hud_art.py -- <out> sheet       the review sheet, from the images
+  ... --python tools/blender/hud_art.py -- <out> stroke      the critical's stroke alone, into <out>/images (AR44)
+  ... --python tools/blender/hud_art.py -- <out> strokesheet its sheet, over a phone still of a fight
 Naming Voidkin after `contact` or `make` shoots those alone: `make` then keeps every other image and its listing as
 they are. `review <names>` is the sheet for those alone, beside Rook's, for a portrait added after the launch three.
 """
@@ -210,10 +212,15 @@ def cut(shot, rarity, small, kit):
 
 # --- the critical's sweep -----------------------------------------------------------------------------------------
 
-SWEEP = (72.0, 24.0)    # points: drawn for a 28 point number, whose digits stand 20 high
+SWEEP = (66.0, 30.0)    # points: drawn for a 28 point number, whose digits stand 20 high, the stroke half as tall again
 SHEAR = 0.176           # the critical's slant, 10 degrees (research's table, round 2)
 SWEEP_TINT = "#CC661F"  # burnt orange: the slice's white. Its tail is drawn darker, so the tint goes brown there
-SWEEP_SEE = 0.4         # how see-through the game draws it (ImageTransparency): about 60% opaque
+SWEEP_SEE = 0.0         # how see-through the game draws it (ImageTransparency): none, the slice's own alpha dries the tail
+# Where the game lays it (Config.Hud.Numbers.Critical.Sweep, Effects.luau's `sweep`), proposed for AR44's stroke: its
+# height Height digits' heights, centred on the digits; its left edge Left digits' widths before the first digit; its
+# width Width of the number's, never under Least heights. These put the head behind the first digit and the tail's end
+# over about two thirds of a four- to six-figure number, laid at the length it's drawn (Least is the slice's own shape).
+SWEEP_LAY = dict(height=1.5, left=0.5, width=0.67, least=2.2)
 # Round 2's digits, for the sheet and the builder's Config: the gap between digits as a part of a digit's width, the
 # gradient from the digits' head to their foot, the outline and its width in points at a 28 point number.
 DIGITS = dict(gap=0.4, top="#FFF4D6", foot="#F2B43C", outline="#4E2C16", outlinePoints=1.0, slantDegrees=10)
@@ -221,39 +228,66 @@ SPACE = 1.24            # Blender's letter spacing that gives that gap in its ow
 
 
 def sweep():
-    """The mark under a critical number: one pull of a dry brush, level, leaning with the number. The brush lands
-    loaded at the number's first digit, a square press with a ragged edge, and runs dry along the pull: its bristles
-    part into long streaks and give out one by one, the middle ones last. No curl, no drop, no spatter, no point.
-    A grey slice the game tints: white where the paint is thick, darker toward the dry tail."""
+    """The stroke behind a critical number (AR44): one stroke of a loaded round brush. It lands hard behind the first
+    digit, a round, heavy press of solid paint, then is pulled away up and to the right, climbing a little faster as it
+    goes, and runs dry: past halfway its bristles part into streaks and give out one by one, the outer ones first, the
+    middle ones last, so the tail narrows to a few dry streaks. Speed off a hit, a lick of fire: never a cut. No drop,
+    spatter, fleck, gloss or second mark. A grey slice the game tints: white where the paint is thick, darker toward the
+    dry tail and at the paint's rim, where it pools."""
     w, h = SWEEP
-    rng = np.random.default_rng(11)
+    rng = np.random.default_rng(44)
     rows, cols = round(h * K), round(w * K)
     yy, xx = np.mgrid[0:rows, 0:cols]
-    y = (yy + 0.5) / K
-    x = (xx + 0.5) / K - SHEAR * (h / 2 - y)             # along the pull, the slant taken out
-    u = (x - 4.0) / (w - 9.0)                            # 0 where the brush lands, 1 at the longest bristle's end
-    half = 9.0                                           # the mark is 18 points high
-    v = (y - h / 2) / half
+    y = (yy + 0.5) / K                                   # points, from the top
+    x = (xx + 0.5) / K
     ease = lambda t: np.clip(t, 0, 1) ** 2 * (3 - 2 * np.clip(t, 0, 1))   # noqa: E731
-    # each bristle is a level row: where it lands, where it gives out, how dry it is from the start
-    row_v = v[:, 0]
-    long = 1 - np.abs(np.clip(row_v + 0.12, -1, 1)) ** 2.2          # the longest a little above the middle
-    wander = np.convolve(rng.random(rows + 8), np.ones(9) / 9, "valid")   # neighbours give out near each other
-    end = 0.50 + 0.50 * long + 0.22 * (wander - 0.5) + 0.05 * (rng.random(rows) - 0.5)
-    start = 0.07 * np.abs(row_v) ** 3 + 0.016 * rng.random(rows)
-    dry = np.convolve(rng.random(rows + 2), (0.25, 0.5, 0.25), "valid")
-    # the grain along each bristle: slow along the pull, fine across it
-    coarse = rng.random((rows, 12))
-    grain = np.stack([np.interp(np.linspace(0, 11, cols), np.arange(12), r) for r in coarse])
-    grain = (grain + np.roll(grain, 1, 0) + np.roll(grain, -1, 0)) / 3
-    grain = 0.5 * dry[:, None] + 0.5 * grain
-    t = (u - start[:, None]) / (end[:, None] - start[:, None])
-    load = 1.55 * (1 - np.clip(t, 0, 1)) ** 0.85         # past 1 the paint covers; under it the grain shows
-    alpha = np.clip((load - grain) * 4.0 + 0.5, 0, 1)
-    alpha *= np.clip(0.5 + (u - start[:, None]) * (w - 9.0) * K, 0, 1)    # the landing's edge
-    alpha *= np.clip(0.5 + (1 - np.abs(v)) * half * K, 0, 1)              # the mark's upper and lower edge
-    alpha *= t < 1
-    value = 1.0 - 0.46 * ease(u / 0.85) - 0.07 * (grain - 0.5)
+
+    def wobble(n, knots, at):
+        """Smooth noise in [-1, 1] over `at` in [0, 1]: `n` knots' worth of slow wander."""
+        return np.interp(at, np.linspace(0, 1, knots), rng.uniform(-1, 1, knots) * n)
+
+    radius = 0.36 * h                                    # the press: 10.8 points, a digit's height and a bit across
+    hx, hy = radius + 1.0, 0.6 * h                       # its centre: low, so the head sits behind the digits' lower part
+    length = w - 1.2 - hx                                # from the press's centre to the longest bristle's end
+    rise = 0.5 * h                                       # how far the pull climbs over that length
+    u = (x - hx) / length                                # 0 at the press's centre, 1 at the longest bristle's end
+    ua = np.clip(u, 0, None)
+    centre = hy - rise * ua ** 1.35                      # the pull's middle line, climbing faster toward the tail
+    slope = rise * 1.35 * ua ** 0.35 / length
+    half = radius * (1 - 0.5 * np.clip(ua, 0, 1) ** 1.1) * np.sqrt(1 + slope ** 2)   # measured straight up
+    v = (y - centre) / half                              # across the pull: -1 its upper edge, 1 its lower
+    # the press: a circle with a ragged rim
+    d = np.hypot(x - hx, y - hy)
+    turn = (np.arctan2(y - hy, x - hx) / (2 * np.pi)) % 1
+    rim = radius * (1 + 0.035 * wobble(1, 9, turn))
+    press = np.clip((rim - d) * K + 0.5, 0, 1)
+    # the pull's upper and lower edge, ragged once it has left the press
+    rag = np.where(v < 0, wobble(1, 14, np.clip(ua, 0, 1)), wobble(1, 14, np.clip(ua, 0, 1)))
+    edge = 1 + 0.045 * rag * ease(ua / 0.15)
+    pull = np.clip((edge - np.abs(v)) * half * K + 0.5, 0, 1)
+    shape = np.where(u < 0, press, np.maximum(pull, press * (u < 0.05)))
+    # the bristles: each a streak along the pull, landing loaded and giving out at its own place, the outer ones first
+    count = 34
+    across = np.clip(((np.clip(v, -1, 1) + 1) / 2 * count).astype(int), 0, count - 1)
+    middle = (np.arange(count) + 0.5) / count * 2 - 1
+    wander = np.convolve(rng.random(count + 4), np.ones(5) / 5, "valid")   # neighbours give out near each other
+    end = 1 - 0.5 * np.abs(middle + 0.08) ** 1.6 + 0.16 * (wander - 0.5) + 0.06 * (rng.random(count) - 0.5)
+    end = np.minimum(end / end.max(), 1.0)
+    dry = np.convolve(rng.random(count + 2), (0.25, 0.5, 0.25), "valid")
+    knots = 14
+    coarse = rng.random((count, knots))
+    along = np.clip(ua, 0, 1) * (knots - 1)
+    lo = np.floor(along).astype(int).clip(0, knots - 2)
+    f = along - lo
+    grain = coarse[across, lo] * (1 - f) + coarse[across, lo + 1] * f   # slow along each bristle, its own across
+    grain = 0.45 * dry[across] + 0.55 * grain
+    t = ua / end[across]
+    load = 1.9 * (1 - np.clip(t, 0, 1)) ** 0.9           # past 1 the paint covers; under it the grain shows
+    paint = np.clip((load - grain) * 4.0 + 0.5, 0, 1) * (t < 1)
+    alpha = shape * np.where(u < 0, 1.0, paint)
+    # its value: white where it's loaded, browner toward the dry tail and where the paint pools at the rim
+    outer = np.where(u < 0, d / radius, np.abs(v))
+    value = 1.0 - 0.34 * ease(ua / 0.9) - 0.1 * ease((outer - 0.74) / 0.26) - 0.06 * (grain - 0.5) * (u >= 0)
     px = np.zeros((rows, cols, 4), np.float32)
     px[..., :3] = np.clip(value, 0, 1)[..., None]
     px[..., 3] = alpha
@@ -293,13 +327,27 @@ def make(out: Path, only=()):
             px, entry = cut(shot, rarity, small, kit)
             keep(f"PortraitUnknown{rarity}{'Small' if small else ''}", px, entry,
                  f"a Voidkin with no portrait yet, cut to {frame_name(rarity, small)}")
+    keep_stroke(images, listing)
+    (out / "hud_art.json").write_text(json.dumps(dict(pixelsPerPoint=K, images=listing), indent=1), encoding="utf-8")
+
+
+def keep_stroke(images: Path, listing):
     px = sweep()
-    rs.save(px, images / "CritSweep.png")
+    rs.save(rs.bleed(px), images / "CritSweep.png")
+    lay = SWEEP_LAY
     listing["CritSweep"] = dict(file="images/CritSweep.png", pixels=[px.shape[1], px.shape[0]], points=list(SWEEP), pad=0.0,
-                                tint=SWEEP_TINT, shear=SHEAR, transparency=SWEEP_SEE, number=DIGITS,
-                                use="behind a critical number, under its outline, under its leading half: its height the "
-                                    "digits' own, its left edge a third of a digit before the first digit, its width 0.6 of "
-                                    "the number's and never under three times its height; it stretches along, never up")
+                                tint=SWEEP_TINT, shear=SHEAR, transparency=SWEEP_SEE, lay=lay, number=DIGITS,
+                                use=f"behind a critical number, under its outline: its height {lay['height']} of the digits' "
+                                    f"own, centred on them; its left edge {lay['left']} of a digit before the first digit; its "
+                                    f"width {lay['width']} of the number's and never under {lay['least']} times its height. "
+                                    f"It stretches along, never up")
+
+
+def stroke(out: Path):
+    """AR44: the critical's stroke alone, redrawn into <out>/images with its listing's entry; every other image and
+    its entry stay as they are."""
+    listing = json.loads((out / "hud_art.json").read_text(encoding="utf-8"))["images"]
+    keep_stroke(out / "images", listing)
     (out / "hud_art.json").write_text(json.dumps(dict(pixelsPerPoint=K, images=listing), indent=1), encoding="utf-8")
 
 
@@ -326,29 +374,8 @@ def framed(page, x, y, portrait, rarity, small, scale):
 
 
 def crit_tile(ground, text="1,204"):
-    """A critical number on its mark over a piece of the street, at 2 pixels a point: round 2's digits (wide apart, cream
-    to gold, 10 degrees, a medium warm-brown outline), the mark under their leading half."""
-    tile = ground.copy()
-    h, w = tile.shape[:2]
-    size = 28
-    item = dict(x=w / ui.K / 2, y=h / ui.K / 2 - size * ui.CAP / 2, size=size, text=text, colour="#FFFFFF",
-                align="CENTER", layer="number", shear=SHEAR, bold=0.012, space=SPACE)
-    number = ui.text_layers(w, h, [item])["number"]
-    cover = number[..., 3]
-    filled, across = np.where(cover.any(1))[0], np.where(cover.any(0))[0]
-    top, left, right = filled[0], across[0], across[-1]
-    tall = round(size * ui.CAP * ui.K)                   # the digits' height; the comma hangs under it
-    digit = (right - left) / (len(text) - 0.5 + (len(text) - 1) * DIGITS["gap"])    # a digit's width, the comma half
-    swept = rs.shrink(rs.load(LOADED / "CritSweep.png"), tall / (SWEEP[1] * K))
-    swept[..., :3] *= np.array(rs.rgb(SWEEP_TINT), np.float32)
-    swept[..., 3] *= 1 - SWEEP_SEE
-    rs.paste(tile, swept, round(left - digit / 3), top)
-    ramp = np.clip((np.arange(h) - top) / tall, 0, 1)[:, None]
-    number[..., :3] = (np.array(rs.rgb(DIGITS["top"]), np.float32) * (1 - ramp)
-                       + np.array(rs.rgb(DIGITS["foot"]), np.float32) * ramp)[:, None, :]
-    ui.over(tile, ui.c(DIGITS["outline"]), ui.spread(cover, round(DIGITS["outlinePoints"] * ui.K)))
-    rs.paste(tile, number, 0, 0)
-    return tile
+    """A critical number on its stroke over a piece of the street, at 2 pixels a point, as `crit_laid` lays it."""
+    return crit_laid(ground, text, 28, rs.load(LOADED / "CritSweep.png"))[0]
 
 
 LOADED = None
@@ -364,7 +391,7 @@ def sheet(out: Path):
     W, H = 1640, 1694
     page = rs.canvas(W, H, (0.075, 0.07, 0.085))
     ink, soft = "#F2ECE2", "#B9B2C4"
-    text = [(24, 18, 26, "The HUD's own art: the launch portraits, the silhouette and the critical's stroke, round 2 (AR3, section 3).", ink),
+    text = [(24, 18, 26, "The HUD's own art: the launch portraits, the silhouette (AR3, section 3) and the critical's stroke (AR44).", ink),
             (24, 54, 15, "Each portrait is the Voidkin's own model, the body three-quarter on and the head turned back to the player, cut to its "
                          "rarity frame's mask. Shown in the frame as the game lays it: Back, portrait, frame.", soft)]
     y = 92
@@ -395,8 +422,8 @@ def sheet(out: Path):
         text.append((400 + i * 196 + 52, y + 256, 12, rarity, soft))
         framed(page, 400 + i * 196 + 46, y + 272, f"PortraitUnknown{rarity}", rarity, True, 0.25)
     y += 404 + 20
-    text.append((24, y, 16, "The critical's stroke, round 2: one pull of a dry brush under the number's leading half, no taller than the digits. "
-                            "The digits are round 2's: wide apart, cream to gold, 10 degrees, a medium warm-brown outline", ink))
+    text.append((24, y, 16, "The critical's stroke (AR44): a round press behind the first digit, pulled up and to the right, running dry. "
+                            "The digits: wide apart, cream to gold, 10 degrees, a medium warm-brown outline", ink))
     swept = rs.load(LOADED / "CritSweep.png")
     rs.paste(page, swept, 24, y + 40)
     text.append((24, y + 40 + 104, 12, "alone as it ships: a grey slice, 4 pixels a point", soft))
@@ -423,6 +450,135 @@ def sheet(out: Path):
     rs.paste(page, rs.shrink(amber, 64 / swept.shape[1]), 24 + len(names) * 84 + 84, y + 50)
     rs.paste(page, rs.text_layer(W, H, text), 0, 0)
     rs.save(page, out / "hud_art_sheet.png")
+
+
+STILL = REPO / "build" / "scratch" / "faber" / "stills" / "burst-crowded-phone.png"   # a phone still of a fight, ~1 px a point
+
+
+def stretched(px, width, height):
+    """A picture drawn to `width` by `height` pixels as the engine's Stretch does: bilinear, on premultiplied colour."""
+    pm = px.copy()
+    pm[..., :3] *= pm[..., 3:]
+
+    def axis(n, m):
+        at = np.clip((np.arange(m) + 0.5) * n / m - 0.5, 0, n - 1)
+        lo = np.floor(at).astype(int)
+        return lo, np.minimum(lo + 1, n - 1), (at - lo).astype(np.float32)
+
+    y0, y1, fy = axis(px.shape[0], height)
+    x0, x1, fx = axis(px.shape[1], width)
+    rows = pm[y0] * (1 - fy)[:, None, None] + pm[y1] * fy[:, None, None]
+    res = rows[:, x0] * (1 - fx)[None, :, None] + rows[:, x1] * fx[None, :, None]
+    res[..., :3] /= np.maximum(res[..., 3:], 1e-6)
+    return res
+
+
+def crit_laid(ground, text, size, slice_px):
+    """A critical number on its stroke over `ground` (at ui.K pixels a point), laid as the game lays them
+    (Effects.luau's `sweep`, with SWEEP_LAY): the stroke centred on the digits, its left edge `left` of a digit before
+    the first, its width `width` of the number's and never under `least` heights; the digits cream to gold with their
+    warm-brown outline over it. Returns the tile and the stroke's size in points."""
+    tile = ground.copy()
+    h, w = tile.shape[:2]
+    item = dict(x=w / ui.K / 2, y=h / ui.K / 2 - size * ui.CAP / 2, size=size, text=text, colour="#FFFFFF",
+                align="CENTER", layer="number", shear=SHEAR, bold=0.012, space=SPACE)
+    number = ui.text_layers(w, h, [item])["number"]
+    cover = number[..., 3]
+    filled, cols = np.where(cover.any(1))[0], np.where(cover.any(0))[0]
+    top, left, right = filled[0], cols[0], cols[-1]
+    tall = round(size * ui.CAP * ui.K)
+    commas = text.count(",")
+    digit = (right - left) / (len(text) - 0.5 * commas + (len(text) - 1) * DIGITS["gap"])
+    lay = SWEEP_LAY
+    sh = round(lay["height"] * tall)
+    sw = round(max(lay["width"] * (right - left), lay["least"] * sh))
+    mark = stretched(slice_px, sw, sh)
+    mark[..., :3] *= np.array(rs.rgb(SWEEP_TINT), np.float32)
+    mark[..., 3] *= 1 - SWEEP_SEE
+    rs.paste(tile, mark, round(left - lay["left"] * digit), round(top + tall / 2 - sh / 2))
+    ramp = np.clip((np.arange(h) - top) / tall, 0, 1)[:, None]
+    number[..., :3] = (np.array(rs.rgb(DIGITS["top"]), np.float32) * (1 - ramp)
+                       + np.array(rs.rgb(DIGITS["foot"]), np.float32) * ramp)[:, None, :]
+    ui.over(tile, ui.c(DIGITS["outline"]), ui.spread(cover, round(1.2 * ui.K)))
+    rs.paste(tile, number, 0, 0)
+    return tile, (sw / ui.K, sh / ui.K)
+
+
+def doubled(px):
+    """Twice the size, each pixel a 2 by 2 block softened once: a 1 px a point still under a 2 px a point number."""
+    big = np.repeat(np.repeat(px, 2, 0), 2, 1)
+    return (big + np.roll(big, 1, 0) + np.roll(big, 1, 1) + np.roll(np.roll(big, 1, 0), 1, 1)) / 4
+
+
+def stroke_sheet(out: Path):
+    """AR44's sheet: the stroke alone, then under criticals of three lengths over a phone still's dark street and its
+    lanterns, close (2 pixels a point) and at the phone's own size (1), and laid into the still itself."""
+    global LOADED
+    LOADED = out / "images"
+    slice_px = rs.load(LOADED / "CritSweep.png")
+    still = rs.load(STILL)
+    grounds = {"the street": still[300:365, 200:440].copy(), "the lanterns": still[18:83, 330:570].copy()}
+    size = 46          # points: the critical's digits in the still stand about 33 high
+    texts = ("339", "1,204", "48,915")
+    tiles, spans = {}, {}
+    for name, g in grounds.items():   # before the page: text_layers resets the scene
+        for text in texts:
+            tiles[name, text], spans[text] = crit_laid(doubled(g), text, size, slice_px)
+    spot = doubled(still[250:330, 560:800].copy())
+    placed, _ = crit_laid(spot, "1,204", size, slice_px)
+    rs.OUT = out
+    W, H = 1540, 1460
+    page = rs.canvas(W, H, (0.075, 0.07, 0.085))
+    ink, soft = "#F2ECE2", "#B9B2C4"
+    lay = SWEEP_LAY
+    text = [(24, 18, 26, "AR44: the critical's stroke, a painted brushstroke (CritSweep, a new picture).", ink),
+            (24, 54, 15, "One stroke of a loaded round brush: a heavy round press behind the first digit, pulled away up and to "
+                         "the right, running dry into streaks.", soft)]
+    y = 92
+    rs.paste(page, slice_px, 24, y)
+    tinted = slice_px.copy()
+    tinted[..., :3] *= np.array(rs.rgb(SWEEP_TINT), np.float32)
+    rs.paste(page, tinted, 336, y)
+    sh_, sw_ = slice_px.shape[:2]
+    checker = rs.canvas(sw_, sh_, (0.5, 0.5, 0.5))
+    yy, xx = np.mgrid[0:sh_, 0:sw_]
+    checker[((yy // 12 + xx // 12) % 2 == 0)] = (0.62, 0.62, 0.62, 1)
+    rs.paste(checker, tinted, 0, 0)
+    rs.paste(page, checker, 648, y)
+    text.append((24, y + 132, 12, f"alone as it ships: a grey slice, {SWEEP[0]:g} by {SWEEP[1]:g} points at 4 pixels a point; "
+                                  f"tinted {SWEEP_TINT}; over a checker, where it's clear", soft))
+    text.append((960, y + 4, 13, "Laid as proposed for Config.Hud.Numbers.Critical.Sweep:", ink))
+    for i, line in enumerate((f"Height {lay['height']} (of the digits' height, centred on them)",
+                              f"Left {lay['left']} (of a digit, before the first digit)",
+                              f"Width {lay['width']} (of the number's), Least {lay['least']} (heights)",
+                              f"Transparency {SWEEP_SEE:g}: the head solid, the slice dries the tail",
+                              f"Tint {SWEEP_TINT}, as now")):
+        text.append((960, y + 26 + i * 20, 12, line, soft))
+    y += 168
+    for j, name in enumerate(grounds):
+        text.append((24, y, 15, f"Over {name}, at 2 pixels a point, the digits at {size} points (Blender's face stands in)", ink))
+        for i, t in enumerate(texts):
+            rs.paste(page, tiles[name, t], 24 + i * 496, y + 22)
+        y += 22 + 130 + 14
+    text.append((24, y, 15, "The same six at the phone's own size, 1 pixel a point", ink))
+    for j, name in enumerate(grounds):
+        for i, t in enumerate(texts):
+            rs.paste(page, rs.shrink(tiles[name, t], 0.5), 24 + (j * 3 + i) * 248, y + 22)
+    for i, t in enumerate(texts):
+        sw, sh = spans[t]
+        text.append((24 + i * 248, y + 22 + 72, 11, f"'{t}': the stroke {sw:.0f} by {sh:.0f} pt, "
+                                                   f"{sw / sh / (SWEEP[0] / SWEEP[1]):.2f} of its drawn length", soft))
+    y += 22 + 65 + 40
+    text.append((24, y, 15, "Laid into the phone still at its own size (the street, right of the fight), and that spot twice the size", ink))
+    shot = still.copy()
+    rs.paste(shot, rs.shrink(placed, 0.5), 560, 250)
+    rs.paste(page, shot, 24, y + 22)
+    rs.paste(page, placed, 24 + 950 + 16, y + 22)
+    close = np.repeat(np.repeat(tinted, 2, 0), 2, 1)
+    rs.paste(page, close, 24 + 950 + 16, y + 22 + 160 + 24)
+    text.append((24 + 950 + 16, y + 22 + 160 + 6, 12, "the tinted slice, twice its own size: the press's rim, the dry tail", soft))
+    rs.paste(page, rs.text_layer(W, H, text), 0, 0)
+    rs.save(page, out / "crit_stroke_sheet.png")
 
 
 def review(out: Path, names):
@@ -480,6 +636,10 @@ def main():
         sheet(out)
     elif mode == "review":
         review(out, names)
+    elif mode == "stroke":
+        stroke(out)
+    elif mode == "strokesheet":
+        stroke_sheet(out)
 
 
 if __name__ == "__main__":

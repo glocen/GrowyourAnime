@@ -191,6 +191,16 @@ local STEPS: { (data: any) -> () } = {
 			end
 		end
 	end,
+	-- 12: a keeper's wins counted by difficulty (TR48: one count gave the first Hard win a repeat's chest). Touches
+	-- Progress.Grounds. Each ground's one count becomes its Normal wins, Hard's at none.
+	function(data: any)
+		local progress = if type(data.Progress) == "table" then data.Progress else {}
+		for _, record in (if type(progress.Grounds) == "table" then progress.Grounds else {}) :: { [string]: any } do
+			if type(record) == "table" and type(record.KeeperWins) ~= "table" then
+				record.KeeperWins = { Normal = if type(record.KeeperWins) == "number" then record.KeeperWins else 0, Hard = 0 }
+			end
+		end
+	end,
 }
 
 -- The version a save reaches once migrated: the number of steps.

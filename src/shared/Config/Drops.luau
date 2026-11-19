@@ -15,14 +15,17 @@ return {
 	Share = { Ordinary = 1, Elite = 3.6, Keeper = 9 } :: { [string]: number },
 	-- The account's first kill also drops this shard (docs/decisions.md, D01: Watt, the first worker).
 	First = "named_watt",
-	-- Forge stones and War Emblems (TR47). The builder's seeds of 2026-11-19, for research's loot refit, which sets the
-	-- rates. A fall drops StoneChance x its kind's Share stones of its ground's grade (the whole part sure, the rest a
-	-- chance): Low in the first GroundsAGrade grounds, Mid in the next, High after, as Reinforce spends them by tens.
-	StoneChance = 0.1,
+	-- Forge stones and War Emblems (TR47), at research's rates (TR48, the loot refit of 2026-11-19, 16:53, at the
+	-- "available" ramp). A fall drops StoneChance (by its difficulty) x its kind's Share stones of its ground's grade, the
+	-- whole part sure and the rest a chance: on Normal a Shade 22% of one, an elite 0.8, a keeper 2; on Hard 28%, 1, 2.5.
+	-- Low in the first GroundsAGrade grounds, Mid in the next, High after, as Reinforce spends them by tens.
+	StoneChance = { Normal = 0.22, Hard = 0.28 } :: { [string]: number },
 	GroundsAGrade = 2,
-	-- An elite's or a keeper's fall drops an emblem this often. Its rarity is its chest ladder row's (Config.Chests.Ladder,
-	-- the fall's ground's order plus EmblemTier minus 1), Common counting as Uncommon, since no emblem is Common; its set
-	-- and its stat, one of the rarity's, evenly.
-	EmblemChance = { Elite = 0.2, Keeper = 1 } :: { [string]: number },
+	-- An elite's fall drops an emblem this often, and a keeper's win (Rules.Progress.KeeperWon); on a keeper's first win on
+	-- a difficulty, EmblemFirst's chance instead. Its rarity is its chest ladder row's (Config.Chests.Ladder, the ground's
+	-- order plus EmblemTier minus 1, plus Config.Chests.Hard.Rows on Hard), Common counting as Uncommon, since no emblem is
+	-- Common; its set and its stat, one of the rarity's, evenly.
+	EmblemChance = { Elite = 0.3, Keeper = 0.75 } :: { [string]: number },
+	EmblemFirst = { Normal = 1 } :: { [string]: number },
 	EmblemTier = { Elite = 2, Keeper = 3 } :: { [string]: number },
 }

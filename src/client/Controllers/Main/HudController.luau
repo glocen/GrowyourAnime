@@ -715,7 +715,9 @@ local function stepState(view: Profile.View): Hud.StepState
 	end
 	local won = false
 	for _, ground in view.Progress.Grounds do
-		won = won or ground.KeeperWins > 0
+		for _, wins in ground.KeeperWins do
+			won = won or wins > 0
+		end
 	end
 	-- Out in a ground with a keeper: the keeper's name, near its gate (one ground has one yet).
 	local home = atHome()

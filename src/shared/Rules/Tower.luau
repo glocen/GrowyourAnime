@@ -247,7 +247,7 @@ function Tower.Reward(floor: number, best: number, seed: number, fast: boolean?)
 	end
 	local chest = if sure or draw(seed, floor, 2) < Tower.ChestChance(floor) then chestOf(floor) else nil
 	local ground = Grounds.List[Growth.GroundOf(Tower.Level(floor))]
-	local stones = if ground then TowerConfig.Stones else 0
+	local stones = if ground then Drops.Stones("Ordinary", draw(seed, floor, 3), TowerConfig.Stones) else 0
 	return {
 		Credits = math.floor(credits + 0.5),
 		Chest = chest,

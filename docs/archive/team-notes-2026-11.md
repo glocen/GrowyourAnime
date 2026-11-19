@@ -2,6 +2,22 @@
 
 The oldest entries of `docs/team-notes.md`, moved here as that file passed about 250 lines (`AGENTS.md`, "Team notes"). Newest first.
 
+### 2026-11-17, 14:37. TR40: Regen in bursts (Faber)
+
+- **What changed:** a lead heals one burst every 8 s from its summon, always, half of what 8 s at its rate healed, and Base Regen is 1. A green number and a pop at the chest show it. The sheet and the cards read the burst. Combat Power's Regen weight is halved. Home's heal on the plot is unchanged.
+- **Also:** a capture's freeze of the effects now holds (FighterController wrote it every frame). The fight cases turn the camera toward a test Shade first, so a fresh playtest passes them all (553 of 553).
+- **Where:** TR40, "Built"; `Config.Stats.Regen`, `Rules.Stats.Burst`, `Rules.Fight`, `FightService`, `Effects.RegenPop`, `Rules.Sheet`.
+- **Open:** research's verdict from `build/scratch/faber/stills/burst-phone.png` and `burst-crowded-phone.png`, and its check of `tools/balance/` (sim.py still heals at 4 a second, continuously). Ten Base checks wait for the plan's re-lay.
+- **For:** research, then the director.
+
+### 2026-11-17, 09:01. AR15: the Festival Door's ring tunnel, installed (Faber)
+
+- **What changed:** Modulo's ring tunnel is in the game. Its four rings turn always, at their plan's rates, and the core lights by whether a ground is open, capped at 0.6 of the phase's bloom threshold so it never burns white. The way fits the front ring's opening, and the name is on the plate. The six meshes and the atlas pair are under the group, all Approved.
+- **The Door's collision is Default:** the precise one shut the ring's opening.
+- **Where:** AR15, "Faber's install: the ring tunnel"; `Config.Lighting` (`CoreBloom`), `Config.World` (`Grey.Door`), `BaseController` ("spins"), `WorldService`, `DoorService`, `SignsController`, `src/storage/BaseKit.rbxm`.
+- **Open:** research's pass, from the phone stills in `build/captures/ar15/`. Its two findings: TR24's screen sign repeats the plate's name over the Door, and the shut core barely differs from the open one. Then the director's own look on a phone.
+- **For:** research, then the director.
+
 ### 2026-11-16, 23:47. AR11: Watt's eight clips, delivered (Modulo)
 
 - **What changed:** Watt's clips, Idle, Combo, Ground Wire (butt-down, research's pick), Hit, Down, Up, Reveal and Work, keyed on R6 with his spear as a joint.

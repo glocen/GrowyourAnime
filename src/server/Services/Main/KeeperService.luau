@@ -32,6 +32,7 @@ local Combat = require(Shared.Config.Combat)
 local WorldConfig = require(Shared.Config.World)
 local Markers = require(Shared.World.Markers)
 local Progress = require(Shared.Rules.Progress)
+local Drops = require(Shared.Rules.Drops)
 local Profile = require(Shared.Data.Profile)
 local Core = script.Parent.Parent.Core
 local DataService = require(Core.DataService)
@@ -53,6 +54,12 @@ KeeperService.Won = Signal.new()
 KeeperService.LevelOf = function(_player: Player, level: number): number
 	return level
 end
+-- The difficulty of `player`'s try: Normal, unless StageService's run is on Hard (TR48).
+KeeperService.DifficultyOf = function(_player: Player): string
+	return "Normal"
+end
+
+local rng = Random.new()
 
 local FOLDER = "Keeper"
 local STAND = 3 -- an R6 root stands 3 studs over its floor
@@ -65,6 +72,7 @@ type Try = {
 	Keeper: FightService.Fighter?,
 	Ending: boolean,
 	LeadSide: number?, -- studs right of the avatar its lead was set down (the self-test's read of Combat.Keeper.Side)
+	Difficulty: string, -- its run's, as the keeper stood (KeeperService.DifficultyOf): its win counts there (TR48)
 }
 
 type Copy = { Centre: CFrame } -- its middle, where the keeper starts
@@ -282,7 +290,7 @@ function KeeperService.Try(player: Player): { [string]: any }
 	elseif lead == nil or not FightService.Standing(lead) then
 		return { Ok = false, Error = "NoLead" }
 	end
-	local try: Try = { Plot = plot :: number, Keeper = nil, Ending = false }
+	local try: Try = { Plot = plot :: number, Keeper = nil, Ending = false, Difficulty = KeeperService.DifficultyOf(player) }
 	tries[player] = try
 	KeeperService.Trying:Fire(player, (ring :: any).Ground) -- before its attribute: a stage's run won't begin in a try
 	player:SetAttribute("Try", (ring :: any).Def)
@@ -298,6 +306,7 @@ function KeeperService.Try(player: Player): { [string]: any }
 		local looks = copy.Centre.Position + (ring :: any).ToGate
 		try.Keeper = FightService.SpawnEnemy((ring :: any).Def, KeeperService.LevelOf(player, (ring :: any).Level), CFrame.lookAt(copy.Centre.Position, looks), {
 			Ground = (ring :: any).Ground,
+			Difficulty = if try.Difficulty ~= "Normal" then try.Difficulty else nil,
 		})
 	end)
 	return { Ok = true }
@@ -312,8 +321,9 @@ end
 local function won(player: Player, try: Try)
 	try.Ending = true
 	local ground = (ring :: any).Ground
+	local loot: Drops.Loot = { Stone = 0, Emblem = rng:NextNumber(), Rarity = rng:NextNumber(), Set = rng:NextNumber(), Stat = rng:NextNumber() }
 	local answer = DataService.Change(player, "KeeperWon", function(draft)
-		return Progress.KeeperWon(draft, ground, os.time())
+		return Progress.KeeperWon(draft, ground, os.time(), try.Difficulty, loot)
 	end)
 	if answer.Ok ~= true then
 		Log.Error("KeeperService", `{player.Name}'s win wasn't saved: {tostring(answer.Error)}`)
@@ -395,7 +405,8 @@ local function state(who: any): any
 		FromExit = from(if exit then Markers.At(exit) else nil),
 		FromBefore = from(before),
 		FromHome = from(WorldService.SpawnOf(player)),
-		Wins = if record then record.KeeperWins else 0,
+		Wins = Progress.Wins(record), -- on every difficulty
+		HardWins = Progress.Wins(record, "Hard"),
 		Resting = if data and ring then Progress.Resting(data, (ring :: any).Ground, os.time()) else 0,
 		Radius = if ring then (ring :: any).Radius else 0,
 	}
@@ -470,7 +481,7 @@ function KeeperService.Start()
 			return DataService.Change(player, "KeeperRest", function(draft)
 				local record = draft.Progress.Grounds[ground]
 				if record == nil and seconds > 0 then
-					record = { Opened = os.time(), KeeperWins = 0, Back = nil } :: Profile.GroundProgress
+					record = { Opened = os.time(), KeeperWins = { Normal = 0, Hard = 0 }, Back = nil } :: Profile.GroundProgress
 					draft.Progress.Grounds[ground] = record
 				end
 				if record then

@@ -96,7 +96,7 @@ export type Base = {
 
 export type GroundProgress = {
 	Opened: number, -- os.time() it opened
-	KeeperWins: number,
+	KeeperWins: { [string]: number }, -- its keeper's wins by difficulty, Normal and Hard (TR48); one count before step 12
 	Back: number?, -- os.time() this player's keeper is back, set at each win (TR10, Rules.Progress); nil before the first
 }
 

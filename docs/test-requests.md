@@ -4041,6 +4041,12 @@ Faber, 2026-11-19, 03:43 by the clock: the follow-up's item 7 (`docs/production-
   - A phone capture shows the Reinforce and War Emblems pages in every state: can try, can't afford, at the cap, success and failure.
   - The gap's case reads the table in `docs/research/combat-math.md`'s item 1.
 
+### Part A, built (Faber, 2026-11-19, committed 17:09, 6b640a0)
+
+- **Built:** `Rules.Reinforce` (Try, Cost, the server's roll), `Rules.Emblems` (Socket and Unsocket, `set:stat` keys through the bag), the level gap in `Rules.Hit`, and the transfer on equip (`Move = true` carries Reinforce, emblems and jewels). Save step 11 moves gear levels onto the item. Stones and emblems drop as `Config.Drops` seeds. Equipment's 36 images are uploaded under the group, with their places in `Config.Hud`.
+- **Tested:** type check 0 new; offline logic 27,104 passed; the full self-test 2,994 passed. Try, Socket and the transfer each pass a retry test. The Gear case's fix (a debug item gets its rarity's sockets) passes alone: 10 of 10 (17:20).
+- **Not yet:** the Reinforce and War Emblems pages and their phone capture (Equipment's install in B); part B.
+
 ## TR48. The loot refit, part 1: Hard's own budget, the keeper's count, the Tower, the materials (Faber, after TR47)
 
 - **What it serves:**
@@ -4099,3 +4105,14 @@ Faber, 2026-11-19, 03:43 by the clock: the follow-up's item 7 (`docs/production-
   - The count, the budget and the floor have their cases, with a retry test on the keeper's chest.
   - The Tower's numbers are in Config.
   - The stage log writes a line per run that research can read.
+
+### Built (Faber, 2026-11-19, 17:22)
+
+- **The count:** `Profile.KeeperWins` is `{ Normal, Hard }` per ground; save step 12 moves today's count to Normal. `Progress.KeeperWon(data, ground, now, difficulty, loot)` counts on its difficulty, so a ground's first Hard win gives a first win's chest. `Progress.Wins(record, difficulty?)` reads one or all. The keeper's try takes its run's difficulty as it stands (`KeeperService.DifficultyOf`, set by `StageService`).
+- **Hard's budget:** each Hard stage has its own chests in `Definitions.Chests` (`<ground>_<tier>_hard<stage>`; the keeper's tier 3 only on the stage it ends), at the last stop's level plus `Offset.Hard`, reading `Config.Chests.Hard.Rows` (1) past their ground's row. A run's foes carry `Difficulty` and `Stage`, so `DropService` drops that stage's chest. Normal keeps its ground's rows and G(9).
+- **The floor:** `Config.Chests.Keeper.FirstFloor = { Hard = "Rare" }`: the weights under Rare go to none on a first win's chest on Hard.
+- **The Tower:** the Lift table, `Chest` 0.02 + 0.0004 a floor, and its row, as written above. A hard floor's stones are a Shade's at `Config.Tower.Stones` ("Normal", Lantern Row's band).
+- **The materials:** `Config.Drops.StoneChance` by difficulty (0.22, 0.28), the elite's and keeper's stones by difficulty, `EmblemChance` (elite 0.3, keeper 0.75) and `EmblemFirst = { Normal = 1 }`. A keeper's emblem now comes with its win (`Progress.KeeperWon`), never with its fall.
+- **The stage log:** each run's length, from its beginning to its clear, its fall or its end, is a line in the server's output (`stage run lanternrow Hard 2: Cleared after 74.3 s`), the last 50 in `NL_Debug:Invoke("StageLog")`, and in a live game Roblox's custom event `StageRunSeconds` (Creator Dashboard, Analytics, Custom), its fields the stage and how it ended.
+- **Tested:** type check 0 new; offline logic 27,212 passed, LogicTests in Studio 27,212 passed, with `Cases/Loot.luau`'s six cases (the count, step 12, Hard's chests, the floor with a retry and an interrupted win, the materials' rates, the Tower's numbers). Self-test in the Main place: Gear 10, Tower 63 and HUD 477 passed (the guide reads the new count). NOT VERIFIED, the Festival place (Now board, item 9): the Keeper, Drops and Stages cases, and a real run's log line.
+- **For research:** Hard's chests are per stage, so a ground has up to ten more chest kinds in the bag. The keeper's emblem is sure only on its first Normal win, as the table says.

@@ -30,7 +30,7 @@ return {
 			t.Check("the win is counted", won.Ok == true and won.Ground == first.Id and won.Wins == 1)
 			t.Equal("it opens the next ground", won.Opened, second.Id)
 			t.Check("which stays open", Progress.IsOpen(data, second.Id) and data.Progress.Grounds[second.Id].Opened == NOW)
-			t.Equal("with no wins of its own", data.Progress.Grounds[second.Id].KeeperWins, 0)
+			t.Equal("with no wins of its own", data.Progress.Grounds[second.Id].KeeperWins.Normal, 0)
 			local again = Progress.KeeperWon(data, first.Id, NOW + 60)
 			t.Check("a second win counts", again.Ok == true and again.Wins == 2)
 			t.Equal("and opens nothing new", again.Opened, "")

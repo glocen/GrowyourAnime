@@ -108,12 +108,27 @@ end
 -- The rarity ladder's row a chest reads. A Tower chest reads its own row (Chests.Weights); its step only orders the bag.
 function Chests.Step(chest: ChestRows.Row): number
 	local ground = Grounds.ById[chest.Ground]
-	return math.clamp((if ground then ground.Order else 1) + chest.Tier - 1, 1, #ChestsConfig.Ladder)
+	local past = if chest.Difficulty == "Hard" then ChestsConfig.Hard.Rows else 0
+	return math.clamp((if ground then ground.Order else 1) + chest.Tier - 1 + past, 1, #ChestsConfig.Ladder)
 end
 
--- The rarity weights a chest rolls by, Common to Legendary: the Tower's own row for a Tower chest, else its ladder row.
+-- The rarity weights a chest rolls by, Common to Legendary: the Tower's own row for a Tower chest, else its ladder row,
+-- and a keeper's first win's chest none under its difficulty's floor (Config.Chests.Keeper.FirstFloor, TR48).
 function Chests.Weights(chest: ChestRows.Row): { number }
-	return if chest.Tier == ChestRows.Tower then ChestsConfig.Tower else ChestsConfig.Ladder[Chests.Step(chest)]
+	if chest.Tier == ChestRows.Tower then
+		return ChestsConfig.Tower
+	end
+	local row = ChestsConfig.Ladder[Chests.Step(chest)]
+	local floor = if chest.Tier == ChestsConfig.Keeper.First then ChestsConfig.Keeper.FirstFloor[chest.Difficulty] else nil
+	local least = if floor then table.find(ChestsConfig.Rarities, floor) else nil
+	if least == nil then
+		return row
+	end
+	local weights = table.clone(row)
+	for i = 1, least - 1 do
+		weights[i] = 0
+	end
+	return weights
 end
 
 -- Each rarity's chance from a chest, as its roll draws it.
@@ -174,7 +189,7 @@ end
 function Chests.Roll(chest: ChestRows.Row, classes: { [string]: number }, draw: Draw, override: { number }?): Rolled
 	local ground = Grounds.ById[chest.Ground]
 	local tier = if ground then ground.Order else 1
-	local top = if ground then ground.LevelTo else 1
+	local top = chest.Level or (if ground then ground.LevelTo else 1) -- a Hard stage's: its own level (TR48)
 	local ladder = override or Chests.Weights(chest)
 	local weights: { [string]: number } = {}
 	for i, name in ChestsConfig.Rarities do
@@ -266,9 +281,9 @@ function Chests.Grant(data: Profile.Data, id: string, count: number)
 	data.Bag.Chests[id] = (data.Bag.Chests[id] or 0) + count
 end
 
--- The chest a fall of `kind` in ground `ground` drops for `u` in [0, 1), or nil. `kills` is the account's kills before
--- this one. A keeper's comes from its win, never here.
-function Chests.Dropped(kind: string, ground: string, kills: number, u: number?): string?
+-- The chest a fall of `kind` in ground `ground` drops for `u` in [0, 1), or nil: on Hard, its `stage`'s own (TR48).
+-- `kills` is the account's kills before this one. A keeper's comes from its win, never here.
+function Chests.Dropped(kind: string, ground: string, kills: number, u: number?, difficulty: string?, stage: number?): string?
 	local drop = ChestsConfig.Drop[kind]
 	if drop == nil then
 		return nil
@@ -277,13 +292,15 @@ function Chests.Dropped(kind: string, ground: string, kills: number, u: number?)
 	if not sure and not (type(u) == "number" and u < drop.Chance) then
 		return nil
 	end
-	local row = ChestRows.Of(ground, drop.Tier)
+	local row = ChestRows.Of(ground, drop.Tier, difficulty, stage) or ChestRows.Of(ground, drop.Tier)
 	return if row then row.Id else nil
 end
 
--- The chest a keeper's win in ground `ground` gives, the better on its first (`wins` counts this one), or nil.
-function Chests.KeeperChest(ground: string, wins: number): string?
-	local row = ChestRows.Of(ground, if wins <= 1 then ChestsConfig.Keeper.First else ChestsConfig.Keeper.After)
+-- The chest a keeper's win in ground `ground` on `difficulty` gives, the better on that difficulty's first (`wins`
+-- counts this one), or nil. On Hard, the keeper's stage's own (TR48).
+function Chests.KeeperChest(ground: string, wins: number, difficulty: string?): string?
+	local tier = if wins <= 1 then ChestsConfig.Keeper.First else ChestsConfig.Keeper.After
+	local row = ChestRows.Of(ground, tier, difficulty, ChestRows.KeeperStage[ground]) or ChestRows.Of(ground, tier)
 	return if row then row.Id else nil
 end
 

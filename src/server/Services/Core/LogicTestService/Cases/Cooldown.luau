@@ -60,7 +60,7 @@ return {
 			t.Check("a clock behind never makes it longer", Progress.Resting(data, first.Id, NOW - 1000) <= 300)
 			Progress.KeeperWon(data, first.Id, NOW + 400)
 			t.Equal("the next win rests it again, from that win", Progress.Resting(data, first.Id, NOW + 400), 300)
-			t.Equal("its record keeps both wins", data.Progress.Grounds[first.Id].KeeperWins, 2)
+			t.Equal("its record keeps both wins", data.Progress.Grounds[first.Id].KeeperWins.Normal, 2)
 			t.Equal("an unknown ground rests nothing", Progress.Resting(data, "nowhere", NOW), 0)
 		end,
 	},

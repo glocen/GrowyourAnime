@@ -198,9 +198,9 @@ return {
 			local none = Carry.HomeFor(times, nil)
 			t.Equal("a new account: the short wait", none.Fallen, times.FirstFallen)
 			t.Equal("its home heal untouched", none.Full, times.Full)
-			local opened = { lanternrow = { KeeperWins = 0 } }
+			local opened = { lanternrow = { KeeperWins = { Normal = 0, Hard = 0 } } }
 			t.Equal("a ground opened, its keeper standing: still short", Carry.HomeFor(times, opened).Fallen, times.FirstFallen)
-			local won = { lanternrow = { KeeperWins = 0 }, second = { KeeperWins = 1 } }
+			local won = { lanternrow = { KeeperWins = { Normal = 0, Hard = 0 } }, second = { KeeperWins = { Normal = 0, Hard = 1 } } }
 			t.Equal("a keeper beaten in any ground: the game's wait", Carry.HomeFor(times, won).Fallen, times.Fallen)
 			t.Equal("and its home heal", Carry.HomeFor(times, won).Full, times.Full)
 			local bad = Carry.HomeFor({ Full = 30, Fallen = 90, FirstFallen = 0 / 0 }, nil)

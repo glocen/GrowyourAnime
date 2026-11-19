@@ -9,10 +9,10 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **Verdicts owed:** TR43 and TR44 in motion; AR40's install; AR30, AR37, TR10, AR28's Stage I, TR34, AR23, TR29.
 - **With the director:** the combat review's six decisions; the Voidkin screen and bag in B; the store's design; the sound pick on TR42's panel.
 
-**Faber (builder).** 2026-11-19, 16:36, on Opus 5.5. Done today: TR46; AR44's must-fixes; AR45's foe cards on the slant; AR43's Home tray; AR38's Void Shop, closed at competent (16:28); TR32, the first session measured (95eccbf).
-- **Now:** TR47's part A: data first, then `Rules.Reinforce`, `Rules.Emblems`, the level gap and the transfer, in pure Luau with cases.
-- **Next, in order:** Equipment's three and Settings in B (Modulo's cut: AR43, "The cut in B, for Faber"), whose Reinforce screen reads TR47's `Rules.Reinforce`; AR40's C install; item 4 after research's refit.
-- **Open, tests:** seven cases fail in the phone simulator and pass in the full window (AR44, "Tests"). NOT VERIFIED (the Festival place): the Festival role's suite and the stage tile's "CR". TR44's phone take waits for the director's go. The real trip waits on item 9.
+**Faber (builder).** 2026-11-19, 17:28, on Opus 5.5. Done today: TR48, the loot refit part 1; TR47's part A (6b640a0); TR46; AR44's must-fixes; AR45's foe cards on the slant; AR43's Home tray; AR38's Void Shop, closed at competent; TR32, the first session measured.
+- **Now:** AR42's install in Seam: the tiles' eight pictures uploaded under the group, then the picker, the results card and the run's line; the card's Next offers Hard's Stage 1 after the Normal keeper.
+- **Next, in order:** Equipment's three and Settings in B (AR43, "The cut in B, for Faber"), on TR47's rules; AR40's C install; item 4 after research's refit.
+- **Open, tests:** seven cases fail in the phone simulator and pass in the full window (AR44, "Tests"). NOT VERIFIED (the Festival place, item 9): the Festival role's suite, the stage tile's "CR", and TR48's keeper, drops and run log in a real run. The Base case's dock check reads Home's Inventory tile since AR43's tray: it's fixed with Equipment's install. TR44's phone take waits for the director's go.
 
 **Modulo (assets).** 2026-11-19, 17:00, on Opus 5.5. Voidkin work parked until before launch (the director's word, 11:10).
 - **Now:** AR42 is done on my side. Asking research for my next piece.
@@ -124,6 +124,14 @@ For Faber:
 - Tier 2, research, 2026-11-12, on the director's words: weapons belong to a class, in two hands (Main Hand and Off Hand replace Weapon and Shield), a preset holds a pair per class, a weapon drop is for the lead's class; Combat Power made to be watched, its weights fitted by the simulation; each item kind modelled and rendered to its icon (AR6, phase 3) (`docs/design.md`, "Regalia: gear" and "Combat Power"). Faber: the Stats case's `"Weapon"` source becomes `"Main Hand"` when you next touch it. Faber and Modulo: say in your row what you'd change.
 
 ## Entries
+
+### 2026-11-19, 17:28. TR47 part A and TR48: gear's own levels, the loot refit part 1 (Faber)
+
+- **What changed:** TR47 part A (6b640a0): Reinforce, War Emblems, the level gap and the transfer on equip; save v11. TR48: a keeper's wins count by difficulty (save v12), so the first Hard keeper gives a first win's chest, a sure Rare. Hard's stages roll their own chests at the stage's level on Drum Court's rows. The Tower is refit, stones and emblems drop at research's rates, and each stage run's length is logged (`StageRunSeconds` live, `StageLog` in Studio).
+- **Where:** TR47, "Part A, built", and TR48, "Built" (`docs/test-requests.md`); `Rules.Progress`, `Rules.Chests`, `Rules.Drops`, `Definitions.Chests`, `Config.Chests`, `Config.Drops`, `Config.Tower`.
+- **Tested:** type check 0 new; logic 27,212 passed offline and in Studio; the Gear, Tower and HUD self-tests passed. NOT VERIFIED in the Festival place (item 9).
+- **Open:** the Equipment pages and TR47's phone capture come with the install in B. Research's long run reads TR48's notes.
+- **For:** research.
 
 ### 2026-11-19, 16:36. TR32: the first session measured (Faber)
 
@@ -239,19 +247,3 @@ For Faber:
 - **Where:** AR16, "Delivery 3"; `build/handoff/Base/` (`plan.json`, `manifest.json`, 8 meshes, 11 pictures, 22 looks); `tools/blender/base_kit.py`, `base_plan.py` (`fit()`).
 - **Open:** Faber's install (`Plots.Drawn` = 8, kit_take, the uploads), then research's verdict in the game.
 - **For:** Faber, then research.
-
-### 2026-11-17, 14:37. TR40: Regen in bursts (Faber)
-
-- **What changed:** a lead heals one burst every 8 s from its summon, always, half of what 8 s at its rate healed, and Base Regen is 1. A green number and a pop at the chest show it. The sheet and the cards read the burst. Combat Power's Regen weight is halved. Home's heal on the plot is unchanged.
-- **Also:** a capture's freeze of the effects now holds (FighterController wrote it every frame). The fight cases turn the camera toward a test Shade first, so a fresh playtest passes them all (553 of 553).
-- **Where:** TR40, "Built"; `Config.Stats.Regen`, `Rules.Stats.Burst`, `Rules.Fight`, `FightService`, `Effects.RegenPop`, `Rules.Sheet`.
-- **Open:** research's verdict from `build/scratch/faber/stills/burst-phone.png` and `burst-crowded-phone.png`, and its check of `tools/balance/` (sim.py still heals at 4 a second, continuously). Ten Base checks wait for the plan's re-lay.
-- **For:** research, then the director.
-
-### 2026-11-17, 09:01. AR15: the Festival Door's ring tunnel, installed (Faber)
-
-- **What changed:** Modulo's ring tunnel is in the game. Its four rings turn always, at their plan's rates, and the core lights by whether a ground is open, capped at 0.6 of the phase's bloom threshold so it never burns white. The way fits the front ring's opening, and the name is on the plate. The six meshes and the atlas pair are under the group, all Approved.
-- **The Door's collision is Default:** the precise one shut the ring's opening.
-- **Where:** AR15, "Faber's install: the ring tunnel"; `Config.Lighting` (`CoreBloom`), `Config.World` (`Grey.Door`), `BaseController` ("spins"), `WorldService`, `DoorService`, `SignsController`, `src/storage/BaseKit.rbxm`.
-- **Open:** research's pass, from the phone stills in `build/captures/ar15/`. Its two findings: TR24's screen sign repeats the plate's name over the Door, and the shut core barely differs from the open one. Then the director's own look on a phone.
-- **For:** research, then the director.

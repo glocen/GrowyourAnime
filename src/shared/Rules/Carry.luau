@@ -66,15 +66,17 @@ end
 
 -- The home's times for a player whose grounds' progress is `grounds` (Profile.Progress.Grounds): Fallen is FirstFallen's
 -- until a keeper is beaten in any ground, the first session (TR24's fix 5), and `home` as it is after.
-function Carry.HomeFor(home: Times, grounds: { [string]: { KeeperWins: number } }?): Home
+function Carry.HomeFor(home: Times, grounds: { [string]: { KeeperWins: { [string]: number } } }?): Home
 	local after: Home = { Full = home.Full, Fallen = home.Fallen }
 	local first = home.FirstFallen
 	if not (first >= 0) then
 		return after
 	end
 	for _, ground in grounds or {} do
-		if (ground.KeeperWins or 0) > 0 then
-			return after
+		for _, wins in ground.KeeperWins do
+			if wins > 0 then
+				return after
+			end
 		end
 	end
 	return { Full = home.Full, Fallen = first }

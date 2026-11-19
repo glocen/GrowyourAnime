@@ -335,7 +335,7 @@ return {
 				table.insert(grades, Drops.StoneGrade(ground.Id))
 			end
 			t.Equal("grades by ground, two a grade", table.concat(grades, ","), "Low,Low,Mid,Mid,High,High")
-			local chance = DropsConfig.StoneChance
+			local chance = DropsConfig.StoneChance.Normal
 			t.Check("an ordinary Shade: one stone under its chance, none over", Drops.Stones("Ordinary", chance - 1e-6) == 1 and Drops.Stones("Ordinary", chance + 1e-6) == 0)
 			local elite = chance * DropsConfig.Share.Elite
 			t.Equal("an elite's mean, its whole part sure", Drops.Stones("Elite", 0.999), math.floor(elite))
@@ -353,17 +353,25 @@ return {
 			t.Check("the last ground's keeper, its rarest roll: an emblem that exists, at a rarity its row holds", parsed ~= nil and (Drops.EmblemWeights("Keeper", last) :: any)[parsed.Set.Rarity] > 0, tostring(top))
 			local data = fresh()
 			local loot = { Stone = 0, Emblem = 0, Rarity = 0, Set = 0, Stat = 0 }
-			local answer = Drops.Give(data, "Keeper", 9, "lanternrow", 0.99, 0.99, loot)
-			t.Check("a keeper's fall writes its stones and emblem", answer.Ok == true and answer.Stone == "Low" and answer.Stones >= 1 and data.Bag.Stones.Low == answer.Stones and answer.Emblem == "talon:Attack" and data.Bag.Emblems["talon:Attack"] == 1)
+			local answer = Drops.Give(data, "Elite", 9, "lanternrow", 0.99, 0.99, loot)
+			t.Check("an elite's fall writes its stones and emblem", answer.Ok == true and answer.Stone == "Low" and answer.Stones >= 1 and data.Bag.Stones.Low == answer.Stones and answer.Emblem == "talon:Attack" and data.Bag.Emblems["talon:Attack"] == 1)
+			local keeper = Drops.Give(data, "Keeper", 9, "lanternrow", 0.99, 0.99, loot)
+			t.Check("a keeper's fall: its stones, its emblem left to its win (Rules.Progress)", keeper.Stones >= 2 and keeper.Emblem == "" and data.Bag.Emblems["talon:Attack"] == 1)
 			local plain = Drops.Give(data, "Ordinary", 1, "lanternrow", 0.99, 0.99)
 			t.Check("without the loot's rolls: none", plain.Stone == "" and plain.Stones == 0 and plain.Emblem == "")
 			local climb = fresh()
 			Tower.Start(climb, "run", 7, NOW)
 			local hard = Tower.Won(climb, "run", 1, false)
 			local fast = Tower.Won(climb, "run", 2, true)
-			t.Check("a hard Tower floor: its stones; a fast one none", hard ~= nil and hard.Stones == TowerConfig.Stones and hard.Stone == "Low" and fast ~= nil and fast.Stones == 0)
+			t.Check("a hard Tower floor: a Shade's stones of its band; a fast one none", hard ~= nil and (hard.Stones == 0 or (hard.Stones == 1 and hard.Stone == "Low")) and fast ~= nil and fast.Stones == 0)
 			local results = Tower.End(climb, "run", NOW + 60)
-			t.Check("granted at the run's end, and told in its results", climb.Bag.Stones.Low == TowerConfig.Stones and results ~= nil and (results.Stones :: any).Low == TowerConfig.Stones)
+			t.Check("granted at the run's end, and told in its results", hard ~= nil and (climb.Bag.Stones.Low or 0) == hard.Stones and results ~= nil and ((results.Stones :: any).Low or 0) == hard.Stones)
+			local stones = 0
+			for seed = 1, 2000 do
+				stones += (Tower.Reward(1, 0, seed, false) :: any).Stones
+			end
+			local rate = DropsConfig.StoneChance[TowerConfig.Stones]
+			t.Check("a hard floor's stones: a Normal Shade's rate (TR48)", math.abs(stones / 2000 - rate) < 0.03, `{stones / 2000} against {rate}`)
 		end,
 	},
 	{

@@ -12,9 +12,11 @@ return {
 	-- The foe stands on its own figure (Stats.Resolve, no Regalia) lifted to the seeds' 0.45 build ("enemyFrac"): each
 	-- stat over the own figure, read from the model at level 30 (attributes.fighter_attr(30, 0.45) over (30, 0), a Common
 	-- Warrior; 15 reads lower, 60 the same). A new enemyFrac means a new reading. Stats not named stay as they are.
+	-- Refit to the build players have (TR48, research's MODEL of 2026-11-19, 16:53): each lift's excess over 1 scaled by
+	-- 0.3, so an expected lead climbs 10 floors at level 10, 23 at 16 and 31 at 20.
 	Lift = {
-		Health = 2.36, Attack = 1.76, Defence = 2.1, Hit = 1.84, Dodge = 4.02, Critical = 2.14, CriticalResist = 1.47,
-		Block = 2.97, Penetration = 1.74, ElementalResist = 1.62, CriticalDamage = 1.11,
+		Health = 1.41, Attack = 1.23, Defence = 1.33, Hit = 1.25, Dodge = 1.91, Critical = 1.34, CriticalResist = 1.14,
+		Block = 1.59, Penetration = 1.22, ElementalResist = 1.19, CriticalDamage = 1.03,
 	} :: { [string]: number },
 	Health = 0.55, -- and then this share of its health (seeds "enemyHpShare")
 	-- Its Voidkin: one with a body and moves of its own (a Model and a Kit: Rules.Tower.Pool), picked from the run's seed by floor, no new models.
@@ -42,10 +44,11 @@ return {
 	-- A chest a hard floor won: Base + PerFloor x the floor, at most Most. It's the Tower's own (Config.Chests.Tower, its
 	-- own rarity row), of the ground the foe's level stands in, which an item's worth is read from.
 	-- First: the floor whose chest is sure the first time the account wins it (the same review: the roll there was 0.9%).
-	Chest = { Base = 0, PerFloor = 0.0018, Most = 0.5, First = 5 },
-	-- Forge stones a hard floor won gives, of the grade of the ground its foe's level stands in (TR47; Rules.Drops.StoneGrade).
-	-- The builder's seed of 2026-11-19, for research's loot refit.
-	Stones = 1,
+	-- TR48's refit: about 15 to 17.5 chests an hour for an expected lead.
+	Chest = { Base = 0.02, PerFloor = 0.0004, Most = 0.5, First = 5 },
+	-- A hard floor won drops a Shade's forge stones on this difficulty (Rules.Drops.Stones), of the grade of the ground its
+	-- foe's level stands in (TR48: "a Shade's of its band").
+	Stones = "Normal",
 	-- The world, in studs (builder's, tuned by playing). The ring lies on its lot's crossing end, where the sleeping
 	-- Tower stood; stepping within Ring of its middle starts a run. Floor f's platform stands f x Height over it.
 	Ring = 5,

@@ -79,6 +79,7 @@ export type Fighter = {
 	Pack: string?,
 	Ground: string?, -- the ground an enemy stands in, whose drops it gives (Rules.Drops); nil drops nothing
 	Stage: number?, -- the street's stage it stands in (Config.Stages, TR43): its fall counts for a run of that stage
+	Difficulty: string?, -- a run's foe on Hard (TR48): its drops are Hard's (Rules.Drops); nil for Normal
 	-- A foe fought by this player's lead alone (a Tower floor's, TR29): no other lead sees it or strikes it, and it sees
 	-- and strikes no other.
 	For: Player?,
@@ -1646,7 +1647,7 @@ end
 
 -- An enemy of row `def` at `level`, standing at `at`, which is also its home. `options` gives its type and its pack.
 -- options.For: fought by that player's lead alone (a Hard stage's foe, TR43), as a Tower floor's.
-function FightService.SpawnEnemy(def: string, level: number, at: CFrame, options: { Type: string?, Pack: string?, Ground: string?, Stage: number?, For: Player? }?): Fighter
+function FightService.SpawnEnemy(def: string, level: number, at: CFrame, options: { Type: string?, Pack: string?, Ground: string?, Stage: number?, Difficulty: string?, For: Player? }?): Fighter
 	local row = assert(Enemies.ById[def], `no enemy {def}`)
 	local block = Stats.Enemy(def, level, if options then options.Type else nil)
 	local kit = if row.Action then { Actions.ById[row.Action] } else {}
@@ -1668,6 +1669,7 @@ function FightService.SpawnEnemy(def: string, level: number, at: CFrame, options
 	f.Pack = if options then options.Pack else nil
 	f.Ground = if options then options.Ground else nil
 	f.Stage = if options then options.Stage else nil
+	f.Difficulty = if options then options.Difficulty else nil
 	model:SetAttribute("Type", block.Type)
 	model:SetAttribute("Stage", f.Stage)
 	if options and options.For then

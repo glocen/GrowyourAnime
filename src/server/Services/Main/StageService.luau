@@ -27,7 +27,12 @@
 --   NL_Debug:Invoke("StageFell", nil, group)                 fells a group's standing Shades ("Pack 1", "Elite 1", or a
 --                                                            Hard run's own: "Elite 1 mine"), the player their hitter
 --   NL_Debug:Invoke("StageLine", nil, difficulty, cleared)   the record's cleared count on Lantern Row (0 wipes it)
+--   NL_Debug:Invoke("StageLog", nil)                         the runs this server has logged, newest last
+-- Each run's length is logged at its end (TR48: the pace model swings 2 to 2.5 times on it), from its beginning to its
+-- clear or its end, the walk between stops and every wait included: a line in the server's output, and in a live game
+-- Roblox's custom event "StageRunSeconds" (AnalyticsService), its fields the stage and how it ended. No personal data.
 
+local AnalyticsService = game:GetService("AnalyticsService")
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
@@ -68,9 +73,40 @@ type Run = {
 	Before: Gave, -- the save's counts as it began, for what it gave
 	Ending: boolean,
 	OnStreet: boolean, -- the player has stood on the street since it began: from then, off it ends the run
+	Began: number, -- os.clock() it began, for its length (TR48)
+	Logged: boolean, -- its length is logged
 }
 
 local runs: { [Player]: Run } = {}
+local LOG_KEPT = 50 -- the runs the Studio log keeps
+local logged: { { Stage: string, How: string, Seconds: number } } = {} -- this server's logged runs, oldest first (StageLog)
+
+-- `run`'s length, logged once: "Cleared" at its clear, else how it ended (TR48).
+local function logRun(player: Player, run: Run, how: string)
+	if run.Logged then
+		return
+	end
+	run.Logged = true
+	local rule = run.Rule
+	local seconds = math.floor((os.clock() - run.Began) * 10 + 0.5) / 10
+	local stage = `{rule.Ground} {rule.Difficulty} {rule.Stage}`
+	Log.Info("StageService", `stage run {stage}: {how} after {seconds} s`)
+	table.insert(logged, { Stage = stage, How = how, Seconds = seconds })
+	if #logged > LOG_KEPT then
+		table.remove(logged, 1)
+	end
+	if not RunService:IsStudio() then
+		local ok, err = pcall(function()
+			AnalyticsService:LogCustomEvent(player, "StageRunSeconds", seconds, {
+				[Enum.AnalyticsCustomFieldKeys.CustomField01.Name] = stage,
+				[Enum.AnalyticsCustomFieldKeys.CustomField02.Name] = how,
+			})
+		end)
+		if not ok then
+			Log.Warn("StageService", `a run's length wasn't logged: {err}`)
+		end
+	end
+end
 
 local function counts(data: Profile.Data?): Gave
 	local gave = { Credits = 0, Shards = 0, Chests = 0 }
@@ -121,6 +157,7 @@ local function stand(player: Player, run: Run, name: string)
 			Pack = `{name} for {player.UserId}`,
 			Ground = run.Rule.Ground,
 			Stage = run.Rule.Stage,
+			Difficulty = run.Rule.Difficulty,
 			For = player,
 		})
 		run.Foes[f] = name
@@ -137,6 +174,7 @@ function StageService.End(player: Player)
 		return
 	end
 	runs[player] = nil
+	logRun(player, run, "Ended")
 	run.Ending = true
 	for f in run.Foes do
 		run.Foes[f] = nil
@@ -168,7 +206,7 @@ function StageService.Begin(player: Player, ground: string, difficulty: string, 
 		return { Ok = false, Error = "NoStart" }
 	end
 	StageService.End(player)
-	local run: Run = { Rule = rule, Foes = {}, Groups = {}, Before = counts(data), Ending = false, OnStreet = false }
+	local run: Run = { Rule = rule, Foes = {}, Groups = {}, Before = counts(data), Ending = false, OnStreet = false, Began = os.clock(), Logged = false }
 	runs[player] = run
 	if difficulty ~= "Normal" then
 		FightService.SetSolo(player, true)
@@ -190,6 +228,7 @@ end
 -- The run's end on a win: its clear written once, then its card.
 local function finish(player: Player, run: Run)
 	run.Ending = true
+	logRun(player, run, "Cleared")
 	local rule = run.Rule
 	local answer = DataService.Change(player, "StageClear", function(draft)
 		return Stages.Clear(draft, rule, os.time())
@@ -225,6 +264,7 @@ end
 -- The run's end on its lead's fall: its card says so.
 local function lose(player: Player, run: Run)
 	local rule = run.Rule
+	logRun(player, run, "Fell")
 	StageService.End(player)
 	Net.Server.Fire("StageDone", player, {
 		Won = false,
@@ -474,6 +514,10 @@ function StageService.Start()
 		local run = runs[player]
 		return if run then Stages.Level(level, run.Rule.Difficulty) else level
 	end
+	KeeperService.DifficultyOf = function(player: Player): string
+		local run = runs[player]
+		return if run then run.Rule.Difficulty else "Normal"
+	end
 	Players.PlayerRemoving:Connect(function(player: Player)
 		StageService.End(player)
 		seen[player] = nil
@@ -489,6 +533,9 @@ function StageService.Start()
 	end)
 	if RunService:IsStudio() then
 		DebugService.Register("Stage", state)
+		DebugService.Register("StageLog", function(): any
+			return { Ok = true, Runs = table.clone(logged) }
+		end)
 		DebugService.Register("StageBegin", function(who: any, difficulty: any, stage: any): any
 			local player = DebugService.ResolvePlayer(who)
 			if player == nil or type(difficulty) ~= "string" or type(stage) ~= "number" then

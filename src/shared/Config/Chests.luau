@@ -11,7 +11,12 @@ return {
 		Ordinary = { Chance = 0.05, Tier = 1 },
 		Elite = { Chance = 1, Tier = 2 },
 	} :: { [string]: { Chance: number, Tier: number } },
-	Keeper = { First = 3, After = 2 }, -- the tier of a keeper's chest: its first win, then every win after
+	-- The tier of a keeper's chest: its first win on a difficulty, then every win after; and FirstFloor, the least rarity
+	-- of its first win's chest by difficulty (TR48, research's refit of 2026-11-19, 16:53; docs/design.md, "The rarities'
+	-- pace": a Rare sure on the first Hard keeper's win), its ladder row's weights under it going to none.
+	Keeper = { First = 3, After = 2, FirstFloor = { Hard = "Rare" } :: { [string]: string } },
+	-- A Hard stage's chests read this many ladder rows past their ground's: Lantern Row's read Drum Court's (TR48).
+	Hard = { Rows = 1 },
 	Sure = 3, -- the account's third kill always drops a Shade's chest (the north star's "Build" beat)
 
 	-- Rarity weights, Common to Legendary, one row a step. A chest of the ground in order g at tier t reads row g + t - 1,
@@ -30,9 +35,9 @@ return {
 		{ 53.8, 28.7, 10.5, 6.2, 0.8 },
 		{ 35.4, 29.6, 19.6, 13.5, 1.9 },
 	},
-	-- The Tower's chest reads this row in every ground, never the ladder (research's fit, TR29, 2026-11-16, 20:34): with
-	-- half of play after the first hour in the Tower, a first Rare at 3.5 h, Epic 12.5, Legendary 39.9 (medians).
-	Tower = { 60, 36.32, 2.86, 0.57, 0.24 },
+	-- The Tower's chest reads this row in every ground, never the ladder (research's refit, TR48, 2026-11-19, 16:53,
+	-- worked by hand, not simulated; before it TR29's fit of 2026-11-16, 20:34).
+	Tower = { 59.49, 36.32, 2.86, 0.93, 0.40 },
 
 	-- A weapon is for the lead's class this often; else for one of the other classes the player owns.
 	ClassLean = 0.6,

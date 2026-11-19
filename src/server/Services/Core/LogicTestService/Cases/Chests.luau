@@ -217,7 +217,7 @@ return {
 				t.Equal(`{i}: {rolled.Rarity} has its lines`, #rolled.Lines - 1, ChestsConfig.Lines[rolled.Rarity])
 				t.Equal(`{i}: and its sockets, empty`, #rolled.Sockets, ChestsConfig.Sockets[rolled.Rarity])
 				local seen: { [string]: boolean } = {}
-				local worth = ChestsConfig.PowerPerG * ChestsConfig.Rarity[rolled.Rarity] * Growth.G(ground.LevelTo)
+				local worth = ChestsConfig.PowerPerG * ChestsConfig.Rarity[rolled.Rarity] * Growth.G(row.Level or ground.LevelTo) -- a Hard stage's chest: its own level (TR48)
 				for index, itemLine in rolled.Lines do
 					t.Check(`{i}: {itemLine.Stat} once`, not seen[itemLine.Stat])
 					seen[itemLine.Stat] = true

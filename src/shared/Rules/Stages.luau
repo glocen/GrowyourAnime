@@ -184,7 +184,7 @@ function Stages.Fresh(data: Profile.Data): boolean
 		end
 	end
 	for _, record in data.Progress.Grounds do
-		if record.KeeperWins > 0 then
+		if Progress.Wins(record) > 0 then
 			return false
 		end
 	end

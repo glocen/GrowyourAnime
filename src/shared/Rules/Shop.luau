@@ -88,7 +88,7 @@ local function priced(perG: number, ground: string): number
 end
 
 -- The featured piece's roll stands as a chest of its ground (its tier and worth), on the Shop's weights.
-local FEATURED_ROW: ChestRows.Row = { Id = "shop_featured", Ground = ShopConfig.Featured.Ground, Tier = 0, Name = "", Image = "" }
+local FEATURED_ROW: ChestRows.Row = { Id = "shop_featured", Ground = ShopConfig.Featured.Ground, Tier = 0, Name = "", Image = "", Difficulty = "Normal", Stage = 0 }
 
 -- Every weapon class alike: the shelf is everyone's, so it leans to nobody's lead.
 local CLASSES: { [string]: number } = {}

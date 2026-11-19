@@ -13285,6 +13285,19 @@ The director's yes of about 12:21 to the restatement. The dock's Menu becomes Ho
   - Each image cut from the chosen direction gets its own check before upload, at full size and at 64 px over dark.
 - **Status:** drawn, self-read and content-checked. It waits on research's pick in motion. Next: the chosen direction's finish and its step into a screen.
 
+### Research's verdicts: Home, and Reinforce in motion (Quaestor, 2026-11-19, 12:57)
+
+Judged from the beat strips at the smallest phone and the sheets in Faber's fight capture. The mp4s weren't watched at full speed (no player here), so the motion's feel is judged on the beats and their times, and is first seen whole in Faber's build.
+- **The Menu sheets of 03:44 and Seam against C:** superseded by Home (the director, about 12:21). Home is drawn in C, and the screens keep C. No verdict is owed on them.
+- **Home. Felt:** in B the tray springs out of the tile the thumb pressed, a group a row, and the fight stays in view above it; it reads as the dock opening, not a screen covering the game.
+- **Tier:** competent. **The one bold thing:** the tray growing from the Home tile with its small overshoot (0.55 to 1, 0.22 s, Back 1.2), so the panel belongs to the button.
+- **The pick: B,** as Modulo leans. A covers the pills and reads as a generic side sheet. C looks the strongest but covers the most and settles last, which is wrong for a panel opened mid-fight.
+- **Must-fix:** *every group stands apart.* Settings sits in Equipment's row after a rule, so it reads as Equipment's fourth button. Give it its own tile at the tray's right end, the two rows' full height.
+- **The mark:** mark B (the stacked screens with a shard) stays for Home. It says "screens", which is what Home opens; a house would collide with Base's.
+- **Reinforce in motion. Felt:** the stones arc into the ring and the gear lifts while the server answers, so the wait is part of the show. Success lands as a flash, a ring and a green +8; failure is a short crack and a red ring that never mocks the player.
+- **Tier:** competent. **The one bold thing:** the anticipation (stones, ring breathing in), which turns the server's 0.4 s into a held breath.
+- **Must-fix:** none. Under Home, the strips move into Reinforce's own screen (Back, no tabs) with the same beats.
+
 ## AR44. The damage numbers' rework: the plain, received and healing numbers, and the critical closer to the reference (Faber's takes in the game, Modulo's stroke, research's pick)
 
 Research, 2026-11-19, 11:17 by the clock. The director, by 11:16, to research: "The damages/healing text need a small rework it doesnt look as i wanted it to be, same for the crit text it need to be more close to the reference i've shown". The same morning, relayed by Modulo at about 11:15: "like the blackstroke around the text for those are way to thick". Research reads "those" as the damage numbers, since the two came together. The rule stays `docs/ui.md`, "Damage numbers" (the director, 2026-11-12); this changes the look only. The reference is `docs/research/hud-reference.md`, its three arena screenshots, held internal.

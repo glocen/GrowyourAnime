@@ -20,6 +20,7 @@ Marks: **[D]** the director's: their own words, or a choice the package records 
 | Electricity | what bays make and the Breaker uses [D] |
 | Regalia | the account's gear: fourteen slots, worn by whichever Voidkin fights; worn in its numbers only, a picture in its slot and nothing on the model (the director, 2026-11-15) |
 | Festival of Battles | the grounds where the lead fights [D] |
+| Ground | one of the Festival's places (Lantern Row is the first). Players read it as "Arc" (the director, 2026-11-19); the docs and the code say ground |
 | Keeper | the boss at the end of a ground |
 | Shade | the enemies (`docs/roster.md`) |
 | The Strip | the shared space between the eight bases: the Void Shop, the Clash Grounds, the Calamity [D] |
@@ -226,7 +227,7 @@ One number for how strong the lead is with its preset, made to be watched rising
 
 ## The Festival of Battles
 
-Six grounds at launch (`docs/roster.md`), each a recolour and rearrangement of one festival kit. A ground has ordinary Shades, elites, one keeper, and a gate. Beating the keeper opens the next ground for good, and a shortcut gate back to the base [D].
+Six grounds at launch (`docs/roster.md`), each a recolour and rearrangement of one festival kit. Each ground is a place of its own in the experience, its Normal and Hard played on its one map [D, 2026-11-19]. A ground has ordinary Shades, elites, one keeper, and a gate. Beating the keeper opens the next ground for good, and a shortcut gate back to the base [D].
 
 - **Stages, each played on Normal or Hard** [D, 2026-11-18, D2; the shape is research's, on the director's grant]. Lantern Row is four stages, one mission each, and a Normal clear of the four takes 10 to 15 minutes. Hard opens for the ground when the Lamplighter falls on Normal, and is much harder; a stage needs the one before it on the same difficulty. Each tile shows its recommended Combat Power and, if locked, its condition. Each stage and difficulty rolls gear on its own budget: the first stage's first reward is sure to be an item the chosen fighter can use, and Hard's Keeper shows its Rare chance [D, D7]. The loot's pace is refitted to this length ("Chests", below).
 - **A party plays in a reserved server** [D, 2026-11-18, D1], if parties come at launch ("Out of launch"). Its rules are pure Luau, blind to the transport, and progress travels in the save.

@@ -52,7 +52,6 @@ On the director's word of 2026-11-13 (`docs/decisions.md`): after the whole game
 - **The level-up notice, a long name** (TR41 (c), research, 2026-11-17, 18:00): cut to one word ("Little…"), it loses who levelled. Shrink the name a step before cutting it.
 - **The HUD's machine colours and the world's lights differ** (AR35, Modulo's fact, research, 2026-11-17, 18:39): the power panel gives the Training machine cyan (`#4FD1FF`) where its model glows violet, and the Breaker pale (`#E6ECF7`) where it glows cyan. Whether a machine's HUD colour should match its light is a tier 2 question, not opened until then.
 - **The Breaker strip's ground band at the smallest phone** (TR41 (d), research, 2026-11-17, 18:40): 3.6 points reads as a faint line under the chip's gold edge, not yet as Lantern Row's colour. A step thicker, or the band brighter there.
-- **The Stars page's empty stars** (AR29's read, research, 2026-11-17, 20:06): at 0 of 7 the seven empty stars are nearly invisible on the panel's top. A faint outline would let the row read as seven to win.
 - **A stage lands, the coil** (AR37, research, 2026-11-17, 20:32): C's winding ribbon, Modulo's pick, has more turn than A's hoop. Try it as A's climb once A is in the game, if it reads from the court.
 - **The Void Shop's clock by day from far off** (AR38's second look, research, 2026-11-19, 01:14): at 160 studs at noon the lit teeth are no lighter than the sky. A dark back behind the brow's opening would set the lower teeth on dark. The count reads now by its gaps, and the crown is the far signal.
 - **The stages' tiles share one picture** (AR42's pick, research, 2026-11-19, 02:06): stages 1 to 3 show the Shade, with 2 and 3 identical. Give each stretch its own mark once the stretches differ.
@@ -62,6 +61,7 @@ On the director's word of 2026-11-13 (`docs/decisions.md`): after the whole game
 
 Lines pulled forward and drawn. The record is in each piece's entry.
 
+- **The Stars page's empty stars** (AR29's read, research, 2026-11-17, 20:06): at 0 of 7 the seven empty stars are nearly invisible on the panel's top. A faint outline would let the row read as seven to win. Done: AR43's cut in B draws them with a Facet hairline (research, 2026-11-19, 21:28).
 - **The plain damage digits' tracking** (AR44's second look, research, 2026-11-19, 13:20): pulled forward by research on 2026-11-19. Loose at full speed too, so Modulo set the plain styles' `Gap` to 0.12, and Faber's Config change is next (AR44, "The plain digits' tracking, from polish-later").
 - **Jewels' levels 2 and 3 at 38 points** (AR43, research's pass, 14:12): pulled forward by research on 2026-11-19. Level 3 now lies true at 40 degrees, reaching across the cell, and the content check passed. Faber's upload of the five is next (AR43, "Jewel level 3's own read at 38 points, from polish-later").
 - **TR10's elite icon** (research, 2026-11-17, 16:24): its masks ran near white. It was redrawn on AR47's mask on 2026-11-19, since the old one showed the blocked brows. The paper is now the game's tan, with lit holes and grin, and the content check passed (TR10, "The elite's icon on AR47's mask").

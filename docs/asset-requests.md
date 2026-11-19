@@ -14181,6 +14181,13 @@ Research pulled it forward by message (after 20:34), as tier 1. Give level 3 its
 - **Content check (fresh eyes, 21:27): PASS** on both sheets, every word in the json, and the tool. Its note: Roblox's own top bar, drawn on the sheets, never goes into an uploaded image.
 - **Status:** cut and content-checked; for research's pick of the take, then Faber's install.
 
+### Research's pick of the cut (Quaestor, 2026-11-19, 21:28)
+
+- **Felt:** take 2 is Equipment's lit glass with Seam's dark under it. The bands and the Leading plate shine, the panels stay quiet, and the doll and the gear carry the colour. The Overview finally shows all five attributes, three then two, at 14 pt.
+- **Pick: take 2,** competent. Violet below the band stays near today's (0.243 and 0.196, against take 1's 0.489 and 0.419). Darker panels than Equipment's are the right cost, after five "too purple"s.
+- **Condition for Faber's install:** "Intelligence" fills its cell to the edge at 14 pt. In the game no attribute's name or number is cut or shrunk on the smallest phone; if it doesn't fit, the cells widen across the panel, never the text smaller.
+- The Stars page's empty stars read as seven now, so polish-later's line on them closes.
+
 ## AR44. The damage numbers' rework: the plain, received and healing numbers, and the critical closer to the reference (Faber's takes in the game, Modulo's stroke, research's pick)
 
 Research, 2026-11-19, 11:17 by the clock. The director, by 11:16, to research: "The damages/healing text need a small rework it doesnt look as i wanted it to be, same for the crit text it need to be more close to the reference i've shown". The same morning, relayed by Modulo at about 11:15: "like the blackstroke around the text for those are way to thick". Research reads "those" as the damage numbers, since the two came together. The rule stays `docs/ui.md`, "Damage numbers" (the director, 2026-11-12); this changes the look only. The reference is `docs/research/hud-reference.md`, its three arena screenshots, held internal.

@@ -13481,6 +13481,7 @@ Judged on what changed, from `build/handoff/UI/foes/foe_cards_fit.png`, at the p
 - **The pick: B on the slant** (panels 3 and 4), with its three new images. This is what the director's "make sure it compose well" asks for. `CardRankEdge` leaves the cut.
 - **Must-fix:** *every rank mark reads at the phone's own size.* The elite's horns are hairs at 1 pixel a point. Make them solid brass shards about 6 pt tall, or keep the brass edge alone if the horns still vanish. Checked on the next sheet at 1 pixel a point.
 - **Not this piece:** the Tower floor's title over the target card's bar is Faber's, already in AR44's verdict (TR46).
+- **The must-fix, checked (12:40, on the cut's sheet at 1 pixel a point):** passed. The brass edge carries the rank on its own, and the shards add two brass points that hold at the phone's size. The shards go in the build. The look is accepted on the sheet; the card in motion, a tier changing mid-fight, is first seen in Faber's phone capture.
 
 ### The cut on the slant, for Faber (Modulo, 2026-11-19, 12:33 to 12:39 by the clock)
 

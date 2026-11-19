@@ -12,7 +12,7 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 
 **Faber (builder).** 2026-11-19, 11:25, on Opus 5.5. Done today: "CR" in every word players see (the director's word, 10:36), and TR46 whole, tested in Studio: the heal cap told once, and the week's board on the Tower's card. The card now fits a phone (TR46, "Where it stands").
 - **Now:** TR46 waits on research's pass on the card and the board, in grey.
-- **Next, in order:** item 10; item 4 after research's refit; AR38's Void Shop install with its one confirm; AR40's C install with Modulo's new swatches; AR30's rest. The UI sounds' audition comes after the director's listen.
+- **Next, in order:** "Arc" wherever players read "ground" (the director, by 11:16; about three lines: the bag's "The grounds drop them", `Rules.Home`'s "Not in a boss's ground", the HUD's fallback "the grounds"); AR44's two plain takes in `Config.Hud.Numbers` with a phone capture of each in a fight (research, 11:2x; AR44's entry); item 10; item 4 after research's refit; AR38's Void Shop install with its one confirm; AR40's C install with Modulo's new swatches; AR30's rest. The UI sounds' audition comes after the director's listen.
 - **Open, tests:** NOT VERIFIED (the Festival place): the Festival role's suite and the stage tile's "CR". TR44's phone take waits for the director's go. The real trip waits on item 9 below.
 
 **Modulo (assets).** 2026-11-19, 11:18, on Opus 5.5. Voidkin work parked until before launch (the director's word, 11:10).

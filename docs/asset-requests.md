@@ -13632,6 +13632,20 @@ Judged on what changed, from `build/handoff/UI/foes/foe_cards_fit.png`, at the p
   5. Each is uploaded under the group with the key and logged in `docs/asset-log.md`, with `foe_cards.py`'s `images` as its source. The retired horns and `CardRankEdge` are logged as unused. The sheets stay internal.
 - **Status:** cut, self-read and content-checked. It waits on research's check of the shards at the phone's size, then Faber's upload and build.
 
+### The skulls' thresholds, fitted (Quaestor, 2026-11-19, 13:22)
+
+Labelled SIMULATION, not play: `tools/balance/sim.py`'s model, 6,000 leads (levels 3 to 58, every rarity to Legendary, class, spec and budget) against the game's Ordinary and Elite Shades up to 12 levels away. Each fight is one-on-one, to the end. Script: `build/scratch/quaestor/skulls.py`.
+- **What it found:** a foe's CR isn't on the lead's scale. A Shade carries much of its CR in health, so it's weaker than its CR says.
+  - An on-budget lead's own-level Ordinary Shade is 0.33 of its CR; an own-level Elite is about 1.05.
+  - The lead wins one-on-one at every ratio up to 3. It keeps 90% of its health up to about 1.65, and 75% up to about 2.35.
+- **So the seeds go.** Under them, every ordinary Shade at the lead's level reads grey, against the director's "same level still 1 skull" (white). And red, meant as "the lead usually loses", would almost never be true.
+- **The fit,** by the foe's CR over the lead's: **grey under 0.25; white up to 1.1; yellow up to 1.8; red from 1.8.**
+  - **Grey:** Shades well below the lead's level.
+  - **White:** Shades around its level, and Elites at it.
+  - **Yellow:** Elites above it, which cost 5 to 15% of its health alone.
+  - **Red:** a fifth of its health or more alone, so its pack, or the next pull, can beat the lead.
+- **What it can't show:** the game's real lead after the attribute rework, and packs. Faber's capture of real ratios on Lantern Row checks the cuts, and they live in `Config.Hud` to be tuned there.
+
 ## Later, by ground
 
 The rest of ground 1 (Kirra in AR10, Watt in AR11; then Sable, Marigold, Crane), then each ground's Voidkin in `docs/roster.md`'s order. **The machines** (Gantry, Bulwark, Ironhymn, Shiomaru, Aegir) share one custom rig, taller than a player, with its own clip family: the first of them is timed like AR1, because a custom rig is a different cost.

@@ -14371,6 +14371,22 @@ Labelled SIMULATION, not play: `tools/balance/sim.py`'s model, 6,000 leads (leve
 - **Accepting on captures:** the Elite's brass shows in rows 1, 2, 3 and 5. A Festival play shows it first.
 - The tiers still run on today's CR ratio. If the director takes the combat review's skull measure, only the number behind the colour changes, never the card.
 
+## AR46. Hard's ember in the world: the Shades, the elites and the Lamplighter on Hard (Modulo, for research's pick, then Faber)
+
+- **Feel line:** the player enters Hard Stage 1, and before a number shows, the street's Shades read as a hotter, meaner pack. The ember from the picker burns in their eyes and along their cracks, so Hard is felt in the world, not only in the menu.
+- **Why:** Hard's identity is the ember on every screen (AR42, passed 16:55). In the street, a Hard Shade is today's Shade at 10 levels more, the same to the eye. The director has said "too purple, black, somber" five times, and the ember is warm.
+- **Research's tier 2** (2026-11-19, 17:02): a new asset players see, in Modulo's and Faber's areas. On the Now board's notices.
+- **What the block contains:**
+  - Three directions, as stand-ins on the real Shade and Lamplighter, captured from the player's camera in the street on Normal and on Hard side by side:
+    - A: the ember in the eyes and the mask's cuts only;
+    - B: A, plus the body's cracks and the burst;
+    - C: B, plus a faint ember heat at the feet.
+  - Each keeps the Shade's silhouette and the no-gore rule: light, sparks and heat, never wounds.
+  - The colours are the picker's ember (white falling to coral), checked against the street's day look (AR40).
+- **What waits:** the elite's and the keeper's own Hard accents beyond the shared one; Hard's foe card (AR45 already shows its skulls); sound.
+- **Faber's part, after the pick:** one switch read from the stage's difficulty, `Config.Shades` holding the Hard look's keys, applied at spawn.
+- **Done when:** research picks a direction from the captures, and the director's pick when present.
+
 ## Later, by ground
 
 The rest of ground 1 (Kirra in AR10, Watt in AR11; then Sable, Marigold, Crane), then each ground's Voidkin in `docs/roster.md`'s order. **The machines** (Gantry, Bulwark, Ironhymn, Shiomaru, Aegir) share one custom rig, taller than a player, with its own clip family: the first of them is timed like AR1, because a custom rig is a different cost.

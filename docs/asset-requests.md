@@ -13806,6 +13806,17 @@ Labelled SIMULATION, not play: `tools/balance/sim.py`'s model, 6,000 leads (leve
   - That is the director's order: same level white, above yellow, much stronger red. An Elite is a step above a Shade of its level, so it reads one tier higher.
 - **The check still owed:** one fight at red's edge, Watt at 8 against an Elite at 11 or 12. If Watt keeps three quarters of its health or more, red is too eager and moves up.
 
+### Red's edge, from the fight (Quaestor, 2026-11-19, 14:11)
+
+- **Faber's fights** (13:41 to 13:52, Studio, the director's save, off the plot): Watt at level 8 (CR 3,541) alone against one Elite.
+  - **Level 12, ratio 2.20:** Watt wins in 46.2 s, its lowest 67%.
+  - **Level 16, ratio 2.91:** Watt is down at 57.8 s.
+  - **Level 20, ratio 3.71:** Watt is down at 76.9 s.
+- **Red is too eager.** At 2.20 Watt keeps two thirds, a hard fight but a sure win, and red would call it a loss.
+  - The damage taken grows about as the ratio to the 4.2 between the two fights (33% at 2.20, then over 100% at 2.91). Fitted to that, Watt's lowest health falls under one half near 2.4.
+- **The cuts:** grey under 0.35; white up to 1.2; yellow up to 2.4; red from 2.4 (`Config.Hud.Skulls`). One lead's fights, so a seed.
+- **These cuts are on today's CR.** The combat review (`docs/research/combat-math.md`, in writing) may give the skulls their own measure, the share of the lead's bar the fight takes. If the director takes it, the cuts are set again there.
+
 ### Research's pick for the foe card's material (Quaestor, 2026-11-19, 13:35)
 
 - **The finding** (the director's "not composited"): in the fit, the teal slab with its gold rim is a different material from the indigo lead card beside it. Two systems sit on one HUD.

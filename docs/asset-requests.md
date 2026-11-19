@@ -13205,6 +13205,28 @@ They replace the pages above where they differ. The register's rows are in `docs
 - **Motion** [D, 03:19, `docs/ui.md`, rule 5]: the sheets show the moving parts, not only stills. For the chosen direction, a strip each for the Menu opening, a tab switch, a press, a reinforce succeeding and one failing, with each beat's timing. The verdict is given in motion.
 - **Waits:** the numbers (research's refit).
 
+### Modulo's Menu sheets (2026-11-19, by 03:44 by the clock)
+
+- **Where:** drawn by `tools/blender/upgrade_pages.py`, at the smallest phone. The renders are in `build/scratch/modulo/upgrades/`:
+  - `upgrade_menu.png`: the three tabs. Inventory is on Overview, with today's Voidkin selector under the figure (research's tier 1, by 03:40). Equipment is on Reinforce. Settings shows its three sliders.
+  - `upgrade_equipment.png`: Reinforce's five states. Ready, too few stones, never reinforced, succeeded, failed.
+  - `upgrade_transfer.png`: the prompt, over Inventory's gear slots.
+  - `upgrade_palette.png`: Reinforce in the screen's own colours beside AR40's C.
+  - `upgrade_64.png`: every phone at 64 px.
+- **The frame:**
+  - **Tabs:** a 92 pt strip down the left, each tab's mark over its word. The chosen tab is dark glass, lit from its right edge, as the rail was.
+  - **Pages:** a tab's pages run across the top, 44 pt high. The chosen page is lit over an underline.
+  - **Content:** 212 pt high under the pages. Settings has no pages, so its panel starts under the band.
+  - **Marks:** Inventory's shard and Settings' cog are stand-ins drawn in code. The pages keep their shipped icons.
+- **Reinforce in 212 pt:**
+  - **The list:** rows 50 pt high on 40 pt cells. Four rows show whole, and the fifth is cut by the foot and scrolls.
+  - **The work:** the name; the ring with the gear in it; now on the left, after on the right; the stone under the ring; then the odds and what's held.
+  - **The cost:** two pills and the press, which is 80 by 44.
+- **Colours, research's pick:** the screen's own (Seam) or AR40's C. Modulo's lean is Seam on every tab, because C turns Equipment teal beside Inventory's violet-dark.
+- **The dock's Menu mark:** three tries (`build/scratch/modulo/menu_mark_tries.py`). Research picked B by 03:40: three screens stacked, with a shard cut in the front one. It goes into `tools/blender/hud_dock_sheet.py`.
+- **Content check, PASS** (by 03:43): the three sheets, the mark tries and both scripts, on rules 2, 3 and 4. Before upload, the exported mark gets its own check, at full size and at 64 px over dark.
+- **Status:** drawn, self-read and content-checked. Waiting on research's verdict and its pick of colours. Next: the motion strips (opening, a tab switch, a press, a success, a fail), then the mark in the dock's sheet.
+
 ## Later, by ground
 
 The rest of ground 1 (Kirra in AR10, Watt in AR11; then Sable, Marigold, Crane), then each ground's Voidkin in `docs/roster.md`'s order. **The machines** (Gantry, Bulwark, Ironhymn, Shiomaru, Aegir) share one custom rig, taller than a player, with its own clip family: the first of them is timed like AR1, because a custom rig is a different cost.

@@ -15,11 +15,11 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **Next, in order:** item 7 (the Tower at Radius 24 and Height 18 if 48 across fits the lot), item 10, item 4 after research's refit, AR38's Void Shop install with its one confirm, AR40's C install with Modulo's new swatches, AR30's rest; the UI sounds' audition after the director's listen.
 - **Open, tests:** TR44's phone take of the three modes waits for the director's go. The Studio runs drew at 30 to 45 fps while a Blender ran: their timing cases count as NOT VERIFIED where they failed.
 
-**Modulo (assets).** 2026-11-19, 02:33, on Opus 5.5. Voidkin work parked until before launch (the director's word, 11:10).
-- **Done:** AR42 in A (AR42, "The fixes, the results card and the line, drawn in A"). It has research's two must-fixes (the mask, and Hard a full value darker), the results card in four states, and the run's line in four. The content check passed (by 02:31).
+**Modulo (assets).** 2026-11-19, 03:44, on Opus 5.5. Voidkin work parked until before launch (the director's word, 11:10).
+- **Now, AR43:** the Menu is drawn on the director's three tabs (Inventory, Equipment, Settings), with each tab's pages across the top. Reinforce is drawn in five states, plus the transfer prompt and the palette comparison. The content check passed (AR43, "Modulo's Menu sheets"). Waiting on research's verdict and its pick of colours. Next: the motion strips, then the Menu mark (B) in the dock's sheet.
 - **For Faber, AR40's install:** the atlas pair, and the Strip's eight changed meshes with the manifest, on top of the 40 base meshes, the paving and C's keys already listed in AR40. The atlas never goes alone. The check is your capture by day. AR38's Shop meshes go with AR38.
-- **Now:** AR42 waits on research's look at all three together. The content check blocked the in-game Brawler mask's ink brows (AR42, "Content check"). That's a rework for research's word.
-- **AR41 waits** on the director's go to render, now replanned at radius 24 (research). Unchanged: AR28's Stage I waits on TR37, AR19's re-uploads, AR24's A on TR34, AR39 stopped, Sable after launch.
+- **Then:** the War Emblem star blockout, Equipment's Jewels and War Emblems pages, the 25 jewel icons. Waiting: the Brawler mask's rework (research's word), and AR41's render (the director's go).
+- **Unchanged:** AR28's Stage I waits on TR37, AR19's re-uploads, AR24's A on TR34, AR39 stopped, Sable after launch.
 
 **Turns.** Studio: Faber's, its Play running on 2026-11-19 for TR44; the director's listen on TR42's panel is tomorrow, in the same place. Blender: nobody (Modulo's AR41 strips were stopped at 01:33 on 2026-11-19 by Claude Code when the PC ran low on memory; the director said wait at 01:34). Timing tests: nobody.
 

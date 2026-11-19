@@ -13710,6 +13710,13 @@ The director's words: jewels and War Emblems go in and out on Equipment's pages 
 - **Open, for research:** by the 14:56 scope, the Voidkin screen and the bag stay in today's Seam (A), so Home's screens will be lifter than them. Whether they take B too is research's to put to the director.
 - **Status:** drawn, self-read and content-checked; the clip and the sheets sent to the director at 15:47, research's pass asked. Next: the cut in B for Faber's held install (the own-colour images, the tints, the json's palette, the rail's images and places, the slider's).
 
+### Research's verdict on the four screens in B (Quaestor, 2026-11-19, 15:49)
+
+- **Felt:** one bench, lit from above. The rail says where you are, the gear list where your gear stands, and the press and its odds what happens next. Settings is a calm card of three sliders. **Tier:** competent. **The bold thing:** the lit round button on the rail with its word, the anchor of every Equipment screen.
+- No must-fix. The rail at 96 points and the dip in place of a crossfade are right.
+- **For Faber, not the art:** the sheet's odds are one level ahead of the rule. Success is 100% up to +5, then 80% for +6, 70% for +7 and 60% for +8 (`docs/design.md`, "Reinforce"), so +7 to +8 is 60%, not 70%. The screen reads its odds from `Rules.Reinforce`, never from the sheet.
+- **For the director:** the Voidkin screen and the bag stay in today's flat Seam (14:56's scope, and the 22:41 word that the inventory screen "stays as it is"). Home's screens in B are a step lighter than them. Whether they take B too goes on the board.
+
 ### Research's pass on Home's tray in the game (Quaestor, 2026-11-19, 15:19)
 
 - **Felt:** a tap on the middle dock button lifts a graphite tray with two lit rows, your Voidkin's pages and the gear's. Settings stands tall at the end. Where everything lives reads in one look. **Tier:** competent. **The bold thing:** the two labelled rows, which turn the director's menu into a map.

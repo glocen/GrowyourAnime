@@ -70,6 +70,9 @@ Sheet.Said = {
 	ElementalResist = "Elemental Resist",
 	DamageReduction = "Damage Reduction",
 	Regen = "HP Regen", -- the director's name (2026-11-18): the stat keeps its name, its value is one burst's health
+	-- Combat Power, shortened in every word players see (the director, 2026-11-19, 10:36, through Modulo: "we are
+	-- shorting combat power words to "CR""); the code keeps Power and Combat Power
+	Power = "CR",
 } :: { [string]: string }
 
 -- The ratings, each shown as its share against an even foe (Sheet.Odds), never as its points.

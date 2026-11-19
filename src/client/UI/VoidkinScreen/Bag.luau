@@ -653,7 +653,7 @@ local function itemCard(context: Context, at: Layout, id: string)
 		plate.BackgroundColor3 = P.Seat
 		round(plate, 3)
 		-- the doll's own word (research's fix 3 to the rebuild); the number, right-aligned, keeps the plate's other side
-		label({ Name = "Word", Size = Theme.Text.Caption, Colour = P.Soft, Box = UDim2.fromOffset(wide * 0.6, NUMBER_ROW + 8), Position = UDim2.fromOffset(8, 0), Parent = plate, Truncate = true }, "Combat Power")
+		label({ Name = "Word", Size = Theme.Text.Caption, Colour = P.Soft, Box = UDim2.fromOffset(wide * 0.6, NUMBER_ROW + 8), Position = UDim2.fromOffset(8, 0), Parent = plate, Truncate = true }, Sheet.Said.Power)
 		local number = label({ Name = "Power", Size = Theme.Text.Title, Font = Theme.Font.Number, Colour = colour, Align = Enum.TextXAlignment.Right, Box = UDim2.fromOffset(wide - 8 - 20, NUMBER_ROW + 8), Parent = plate }, Sheet.Change("Power", info.Power))
 		number:SetAttribute("Power", info.Power)
 		if up then
@@ -1015,11 +1015,11 @@ function Bag.Build(context: Context): (() -> boolean)?
 			local nextOne = steps[at_ % #steps + 1]
 			local answer = context.Act("SetSalvage", { Below = nextOne })
 			if said(CHEST_SAID, "Can't set it", answer) then
-				Toast.Show(if nextOne == "" then "Salvage off: every item kept" else `{nextOne} and under turn into Credits, unless they'd raise Combat Power`, Theme.Colour.Text)
+				Toast.Show(if nextOne == "" then "Salvage off: every item kept" else `{nextOne} and under turn into Credits, unless they'd raise {Sheet.Said.Power}`, Theme.Colour.Text)
 			end
 		end)
 	else
-		right = picker(strip, "Sort", "Sort:", sort, sort ~= Rules.Sorts[1], taps, function()
+		right = picker(strip, "Sort", "Sort:", Sheet.Said[sort] or sort, sort ~= Rules.Sorts[1], taps, function()
 			local at_ = table.find(Rules.Sorts, sort) or 1
 			sort = Rules.Sorts[at_ % #Rules.Sorts + 1]
 			context.Rebuild()

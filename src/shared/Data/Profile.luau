@@ -116,6 +116,10 @@ export type TowerRun = {
 	Chests: { [string]: number }, -- won by chest id and not yet granted
 }
 
+-- An account's best climb of one week (TR46, Rules.Tower.Score): the week its run started in, the floor, and the score
+-- the week's board orders by, the earlier of two equal floors first.
+export type TowerWeek = { Week: number, Floor: number, Score: number }
+
 -- The last run's summary, kept until its screen has shown it (Act "TowerSeen" with its id).
 export type TowerResults = {
 	Id: string,
@@ -166,6 +170,7 @@ export type Data = {
 			Run: TowerRun?,
 			Results: TowerResults?,
 			HealTold: boolean?, -- the heal cap has been told once, the first time it bound (TR46); never again
+			Week: TowerWeek?, -- the best climb of the latest week a run was ended in, for the week's board (TR46)
 		},
 	},
 }

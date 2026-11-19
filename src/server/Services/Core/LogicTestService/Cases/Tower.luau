@@ -276,14 +276,14 @@ return {
 			t.Equal("nothing granted before the end", data.Currency.Credits, credits)
 			local chests = table.clone((data.Progress.Tower.Run :: any).Chests)
 			local before = table.clone(data.Bag.Chests)
-			local results = Tower.End(data, "k900")
+			local results = Tower.End(data, "k900", NOW + 600)
 			t.Check("results", results ~= nil and results.Floor == 6 and results.Record and results.Best == 0 and results.Credits == held)
 			t.Equal("its Credits granted", data.Currency.Credits, credits + held)
 			for chest, count in chests do
 				t.Equal(`{chest} granted`, data.Bag.Chests[chest], (before[chest] or 0) + count)
 			end
 			t.Check("the record raised, the run cleared, the results kept", data.Progress.Tower.Best == 6 and data.Progress.Tower.Run == nil and data.Progress.Tower.Results ~= nil)
-			t.Equal("its end again: a no-op", Tower.End(data, "k900"), nil)
+			t.Equal("its end again: a no-op", Tower.End(data, "k900", NOW + 600), nil)
 			t.Equal("nothing granted twice", data.Currency.Credits, credits + held)
 			t.Equal("results not held: not seen", Tower.Seen(data, "k777"), false)
 			t.Equal("the results seen", Tower.Seen(data, "k900"), true)
@@ -293,12 +293,12 @@ return {
 			for floor = 1, 3 do
 				Tower.Won(data, "k902", floor)
 			end
-			local short = Tower.End(data, "k902") :: Profile.TowerResults
+			local short = Tower.End(data, "k902", NOW + 600) :: Profile.TowerResults
 			t.Check("under the record: kept, not a record", short.Record == false and short.Best == 6 and data.Progress.Tower.Best == 6)
 			-- A run ended with no floor won grants nothing and changes the record not at all.
 			Tower.Start(data, "k903", SEED, NOW)
 			t.Equal("a new start drops results not seen", data.Progress.Tower.Results, nil)
-			local none = Tower.End(data, "k903") :: Profile.TowerResults
+			local none = Tower.End(data, "k903", NOW + 600) :: Profile.TowerResults
 			t.Check("no floor won: nothing", none.Floor == 0 and none.Credits == 0 and next(none.Chests) == nil)
 			-- Fast floors (only hard floors pay): the run moves on through them, its ledger taking nothing.
 			local quick = fresh()
@@ -331,18 +331,95 @@ return {
 		Name = "Tower: a run the save still holds at a join ends there, its ledger granted, and the save stays storable",
 		Run = function(t: any)
 			local data = fresh()
-			t.Equal("no run: nothing to end", Tower.Recover(data), nil)
+			t.Equal("no run: nothing to end", Tower.Recover(data, NOW + 600), nil)
 			Tower.Start(data, "k910", SEED, NOW)
 			Tower.Won(data, "k910", 1)
 			Tower.Won(data, "k910", 2)
 			t.Check("storable mid-run", #Saveable.Problems(data, "profile") == 0, table.concat(Saveable.Problems(data, "profile"), "; "))
 			local credits = data.Currency.Credits
 			local ledger = (data.Progress.Tower.Run :: any).Credits
-			local results = Tower.Recover(data)
+			local results = Tower.Recover(data, NOW + 600)
 			t.Check("ended at its last floor won", results ~= nil and results.Floor == 2 and data.Progress.Tower.Run == nil)
 			t.Equal("its Credits granted", data.Currency.Credits, credits + ledger)
 			t.Check("storable with its results", #Saveable.Problems(data, "profile") == 0)
-			t.Equal("once", Tower.Recover(data), nil)
+			t.Equal("once", Tower.Recover(data, NOW + 600), nil)
+		end,
+	},
+	{
+		Name = "Tower: the week's board (TR46): a climb scored by floor then the earlier, the week's climb in the save at each run's end, the board as one player reads it, the card's line",
+		Run = function(t: any)
+			local length = TowerConfig.Week.Length
+			local week = Tower.Week(NOW)
+			local start = TowerConfig.Week.Start + week * length
+			-- The score.
+			t.Equal("a score stands for its floor", Tower.ScoreFloor(Tower.Score(23, week, start + 5000)), 23)
+			t.Check("a higher floor scores higher, however late", Tower.Score(24, week, start + length - 1) > Tower.Score(23, week, start))
+			t.Check("of two equal floors, the earlier scores higher", Tower.Score(23, week, start + 10) > Tower.Score(23, week, start + 20))
+			t.Equal("ended past its week: as at its last second", Tower.Score(5, week, start + length + 900), Tower.Score(5, week, start + length - 1))
+			t.Equal("and its floor kept", Tower.ScoreFloor(Tower.Score(5, week, start + length + 900)), 5)
+			t.Equal("before its week: as at its first second", Tower.Score(5, week, start - 3), Tower.Score(5, week, start))
+			local big = Tower.Score(1_000_000_000, week, start)
+			t.Check("whole and exact at floor 10^9", big == math.floor(big) and big < 2 ^ 53 and Tower.ScoreFloor(big) == 1_000_000_000)
+			-- The week's climb in the save, at each run's end.
+			local data = fresh()
+			t.Equal("no climb yet", Tower.Climb(data, NOW), nil)
+			Tower.Start(data, "k920", SEED, NOW)
+			Tower.End(data, "k920", NOW + 60)
+			t.Equal("a run with no floor won: still none", Tower.Climb(data, NOW + 60), nil)
+			local function climb(id: string, at: number, floors: number, ended: number)
+				Tower.Start(data, id, SEED, at)
+				for floor = 1, floors do
+					Tower.Won(data, id, floor)
+				end
+				Tower.End(data, id, ended)
+			end
+			climb("k921", NOW, 7, NOW + 600)
+			local held = Tower.Climb(data, NOW + 700)
+			t.Check("seven floors: the week's climb", held ~= nil and held.Week == week and held.Floor == 7 and held.Score == Tower.Score(7, week, NOW + 600))
+			climb("k922", NOW + 800, 4, NOW + 900)
+			t.Equal("a lower climb leaves it", (Tower.Climb(data, NOW + 1000) :: any).Floor, 7)
+			climb("k923", NOW + 1000, 7, NOW + 1100)
+			t.Equal("an equal floor later keeps the earlier's score", (Tower.Climb(data, NOW + 1200) :: any).Score, Tower.Score(7, week, NOW + 600))
+			local late = start + length - 30
+			climb("k924", late, 9, late + 300)
+			local over = data.Progress.Tower.Week :: Profile.TowerWeek
+			t.Check("a run over the week's end counts in the week it started", over.Week == week and over.Floor == 9 and Tower.ScoreFloor(over.Score) == 9)
+			t.Equal("read in the next week: no climb yet", Tower.Climb(data, start + length + 60), nil)
+			climb("k925", start + length + 100, 1, start + length + 200)
+			local fresher = Tower.Climb(data, start + length + 300)
+			t.Check("the next week's first climb replaces it, however low", fresher ~= nil and fresher.Week == week + 1 and fresher.Floor == 1)
+			t.Check("storable", #Saveable.Problems(data, "profile") == 0, table.concat(Saveable.Problems(data, "profile"), "; "))
+			-- The board as one player reads it.
+			local function entry(id: number, floor: number, at: number): Tower.Entry
+				return { Id = id, Score = Tower.Score(floor, week, start + at) }
+			end
+			local top = { entry(1, 30, 10), entry(2, 23, 5), entry(3, 23, 50), entry(4, 12, 0) }
+			local rows, mine = Tower.Board(top, 3, top[3].Score, 10)
+			local order = {}
+			for _, row in rows do
+				table.insert(order, `{row.Id}`)
+			end
+			t.Equal("best first, the earlier of an equal floor first", table.concat(order, " "), "1 2 3 4")
+			t.Check("their own row: #3, floor 23", mine ~= nil and mine.Rank == 3 and mine.Floor == 23)
+			t.Equal("the card's line", Tower.WeekLine(mine), "This week: #3 · floor 23")
+			local rows2, mine2 = Tower.Board(top, 4, Tower.Score(25, week, start + 900), 10)
+			t.Check("their save fresher than the page: in its place, the stored row gone", mine2 ~= nil and mine2.Rank == 2 and mine2.Floor == 25 and #rows2 == 4 and rows2[2].Id == 4)
+			local _, mine3 = Tower.Board(top, 99, Tower.Score(1, week, start), 10)
+			t.Check("not stored yet, the page not full: placed in it", mine3 ~= nil and mine3.Rank == 5)
+			local page = TowerConfig.Board.Page
+			local full = {}
+			for i = 1, page do
+				table.insert(full, entry(1000 + i, 200 - i, 0))
+			end
+			local rows4, mine4 = Tower.Board(full, 7, Tower.Score(1, week, start), TowerConfig.Board.Shown)
+			t.Check("the first Shown rows", #rows4 == TowerConfig.Board.Shown and rows4[1].Floor == 199)
+			t.Check("under a full page: unranked", mine4 ~= nil and mine4.Rank == nil and mine4.Floor == 1)
+			t.Equal("its line", Tower.WeekLine(mine4), `This week: #{page}+ · floor 1`)
+			local _, mine5 = Tower.Board(full, 7, Tower.Score(150, week, start + 100), TowerConfig.Board.Shown)
+			t.Check("over a full page's last: ranked inside it", mine5 ~= nil and mine5.Rank == 51, if mine5 then tostring(mine5.Rank) else "none")
+			local _, none = Tower.Board(top, 99, nil, 10)
+			t.Equal("no climb: no own row", none, nil)
+			t.Equal("its line", Tower.WeekLine(nil), "This week: no climb yet")
 		end,
 	},
 }

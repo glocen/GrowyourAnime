@@ -213,7 +213,7 @@ function TowerService.Begin(player: Player): { [string]: any }
 	local seed = seeds:NextInteger(1, 2 ^ 31 - 1)
 	local started = os.time()
 	local answer = DataService.Change(player, "TowerStart", function(draft: Profile.Data)
-		Tower.Recover(draft) -- a run left by a crash this join didn't end: ended first, so the new one starts clean
+		Tower.Recover(draft, started) -- a run left by a crash this join didn't end: ended first, so the new one starts clean
 		local id = Profile.NewId(draft)
 		local run = Tower.Start(draft, id, seed, started)
 		if run == nil then
@@ -280,8 +280,9 @@ function TowerService.Stop(player: Player, why: string)
 	if lead then
 		FightService.SetHealRoom(lead, nil)
 	end
+	local ended = os.time()
 	local answer = DataService.Change(player, "TowerEnd", function(draft: Profile.Data)
-		local results = Tower.End(draft, run.Id)
+		local results = Tower.End(draft, run.Id, ended)
 		if results == nil then
 			return { Ok = false, Error = "NoRun" }
 		end
@@ -358,8 +359,9 @@ end
 
 -- A run the save still holds at a join (a crash, a shutdown): ended at its last floor won, its results kept to be shown.
 local function recover(player: Player): { [string]: any }
+	local now = os.time()
 	return DataService.Change(player, "TowerRecover", function(draft: Profile.Data)
-		local results = Tower.Recover(draft)
+		local results = Tower.Recover(draft, now)
 		return if results then { Ok = true, Floor = results.Floor } else { Ok = false, Error = "NoRun" }
 	end)
 end

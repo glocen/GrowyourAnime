@@ -10,10 +10,10 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **Verdicts owed:** AR43, the Menu sheets (a37ab9b) with the motion strips, and Seam against C; TR43 and TR44 in motion; AR40's install; AR30, AR37, TR10, AR28's Stage I, TR34, AR23, TR29.
 - **With the director:** the store's design (`docs/decisions.md`, "Waiting on the director", item 2); the sound pick on TR42's panel (AR39 stopped); quests, designed when asked.
 
-**Faber (builder).** 2026-11-19, 03:53, on Opus 5.5, stopped for the day (the director's word). Done tonight: TR45 in grey (3a8a446), the stat sheet's case (3cff513), AR41's Tower at 48 across and 18 between floors, fits in the air (3bef70d), TR46 part 1, the week's foes and Retry and Home (444bfa2).
-- **Now:** TR46 (item 7). The heal cap's note is built and NOT VERIFIED in Studio; the week's board isn't started (TR46, "Where it stands").
-- **Next, in order:** TR46's rest, item 10, item 4 after research's refit, AR38's Void Shop install with its one confirm, AR40's C install with Modulo's new swatches, AR30's rest; the UI sounds' audition after the director's listen.
-- **Open, tests:** the Festival role's suite is NOT VERIFIED (the place closed under it). The main place's role was put back to Main and saved (version 907). TR44's phone take waits for the director's go. The real trip waits on item 9 below.
+**Faber (builder).** 2026-11-19, 11:25, on Opus 5.5. Done today: "CR" in every word players see (the director's word, 10:36), and TR46 whole, tested in Studio: the heal cap told once, and the week's board on the Tower's card. The card now fits a phone (TR46, "Where it stands").
+- **Now:** TR46 waits on research's pass on the card and the board, in grey.
+- **Next, in order:** item 10; item 4 after research's refit; AR38's Void Shop install with its one confirm; AR40's C install with Modulo's new swatches; AR30's rest. The UI sounds' audition comes after the director's listen.
+- **Open, tests:** NOT VERIFIED (the Festival place): the Festival role's suite and the stage tile's "CR". TR44's phone take waits for the director's go. The real trip waits on item 9 below.
 
 **Modulo (assets).** 2026-11-19, 11:18, on Opus 5.5. Voidkin work parked until before launch (the director's word, 11:10).
 - **Now, AR43:** Reinforce in motion is done and content-checked (AR43, "Reinforce in motion"): a press, a success, a fail, with the mp4. It waits on research's verdict, with the Menu sheets. The Menu's opening and tab strips wait on the director's answer to this morning's question about the Menu, and so does mark B in the dock's sheet. Next: the War Emblem star blockout.
@@ -21,7 +21,7 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **Then:** Equipment's Jewels and War Emblems pages, the 25 jewel icons. Waiting: the Brawler mask's rework (research's word), and AR41's render (the director's go).
 - **Unchanged:** AR28's Stage I waits on TR37, AR19's re-uploads, AR24's A on TR34, AR39 stopped, Sable after launch.
 
-**Turns.** Studio: Faber's, its Play running on 2026-11-19 for TR44; the director's listen on TR42's panel is tomorrow, in the same place. Blender: nobody (Modulo's AR41 strips were stopped at 01:33 on 2026-11-19 by Claude Code when the PC ran low on memory; the director said wait at 01:34). Timing tests: nobody.
+**Turns.** Studio: Faber's (Grow your Anime), its Play stopped at 11:25 after TR46; a second Studio, Festival Lantern, is open, not Faber's; the director's listen on TR42's panel is tomorrow, in the same place. Blender: nobody (Modulo's AR41 strips were stopped at 01:33 on 2026-11-19 by Claude Code when the PC ran low on memory; the director said wait at 01:34). Timing tests: nobody.
 
 **The count.** Pieces closed and playable this week: 13. TR2, the circuit in grey (phase 1); Haymaker, on A; the Shade's burst; Pip's Lantern Burst; Lyric's Held Note; TR3, the HUD in the world; TR4, the reveal; AR7, the Lamplighter installed with his fall; his signature; Lantern Burst's exit in 3D (B1); Haymaker's square in 3D (B5); TR18, power in grey; AR12's HUD part 1. Hours are in each piece's entry.
 
@@ -115,6 +115,22 @@ For Faber:
 - Tier 2, research, 2026-11-12, on the director's words: weapons belong to a class, in two hands (Main Hand and Off Hand replace Weapon and Shield), a preset holds a pair per class, a weapon drop is for the lead's class; Combat Power made to be watched, its weights fitted by the simulation; each item kind modelled and rendered to its icon (AR6, phase 3) (`docs/design.md`, "Regalia: gear" and "Combat Power"). Faber: the Stats case's `"Weapon"` source becomes `"Main Hand"` when you next touch it. Faber and Modulo: say in your row what you'd change.
 
 ## Entries
+
+### 2026-11-19, 11:25. TR46: the heal cap told once, the week's board; "CR" in every word (Faber)
+
+- **What changed:**
+  - After a Tower run, the card says where you stand this week ("This week: #12 · floor 23"). A tap shows "This Week's Climb": the top 10 and your own row.
+  - The heal cap's first bind says why, once per account.
+  - Every word players see for Combat Power reads "CR" (the director, 10:36).
+- **Where:** `Rules.Tower` (Score, Climb, Board, WeekLine), `TowerBoardService` (the week's OrderedDataStore, by UserId), `UI/TowerScreen`, `Sheet.Said.Power`. Record: TR46, "Where it stands".
+- **Also:**
+  - On a phone, Retry and Home had fallen off the card. It now lays out from its fitted room: the rows close up, and past that they scroll. A new case holds this down to the smallest phone.
+  - A quick Home on the card in the fall's fade came undone when the fade's set-down beside the ring landed after it. Now a faded move gives way to any newer one (`KeeperService`, checked by `MoveRace`).
+- **Open:**
+  - research's pass on the card and the board, in grey;
+  - research's `docs/design.md` line for the board;
+  - the stage tile's "CR", NOT VERIFIED (the Festival place).
+- **For:** research and the director.
 
 ### 2026-11-19, 01:58. TR44's slam in the keeper's fight, with its footprint and the switch Off, A, B (Faber)
 

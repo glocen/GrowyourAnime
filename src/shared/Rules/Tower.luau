@@ -63,6 +63,80 @@ function Tower.WeekSeed(week: number): number
 	return bit32.band((week * 0x9E3779B1) % 4294967296 + 0x2545F491, 0x7fffffff)
 end
 
+-- The week's board (TR46). A climb's score orders a week's climbs by floor, then the earlier first: floor x the week's
+-- Length, plus the seconds still to come in its week at `at` (a run ended past its week's end counts as at its last
+-- second). Whole, and under 2^53 to floor 10^9, so an OrderedDataStore holds it exactly.
+function Tower.Score(floor: number, week: number, at: number): number
+	local length = TowerConfig.Week.Length
+	local into = math.clamp(math.floor(at) - (TowerConfig.Week.Start + week * length), 0, length - 1)
+	return math.max(math.floor(floor), 0) * length + (length - 1 - into)
+end
+
+-- The floor a score stands for.
+function Tower.ScoreFloor(score: number): number
+	return math.floor(score / TowerConfig.Week.Length)
+end
+
+-- The account's climb this week, at `now`: nil before its first floor won in a run started this week.
+function Tower.Climb(data: Profile.Data, now: number): Profile.TowerWeek?
+	local held = data.Progress.Tower.Week
+	return if held and held.Week == Tower.Week(now) and held.Floor > 0 then held else nil
+end
+
+export type Entry = { Id: number, Score: number } -- one board row as stored: a UserId and its score
+export type Row = { Rank: number?, Id: number, Floor: number } -- as shown; a rank nil past a full page
+
+-- The board as player `me` reads it: `top`, the stored page best first (Config.Tower.Board.Page long when full), with
+-- their own `mine` score (their save's, which may be newer than the page) set in its place. Its first `shown` rows, and
+-- their own row: nil without a climb, its rank nil when it falls under a full page. Equal scores go by UserId.
+function Tower.Board(top: { Entry }, me: number, mine: number?, shown: number): ({ Row }, Row?)
+	local page = TowerConfig.Board.Page
+	local list: { Entry } = {}
+	for _, entry in top do
+		if entry.Id ~= me then
+			table.insert(list, entry)
+		end
+	end
+	if mine then
+		table.insert(list, { Id = me, Score = mine })
+	end
+	table.sort(list, function(a: Entry, b: Entry): boolean
+		if a.Score ~= b.Score then
+			return a.Score > b.Score
+		end
+		return a.Id < b.Id
+	end)
+	local rows: { Row } = {}
+	local own: Row? = nil
+	for index, entry in list do
+		if index > page then
+			break
+		end
+		local row: Row = { Rank = index, Id = entry.Id, Floor = Tower.ScoreFloor(entry.Score) }
+		if index <= shown then
+			table.insert(rows, row)
+		end
+		if entry.Id == me then
+			own = row
+		end
+	end
+	if mine and own == nil then
+		-- Only under a full page: where it stands past the page isn't read.
+		local under: Row = { Rank = nil, Id = me, Floor = Tower.ScoreFloor(mine) }
+		own = under
+	end
+	return rows, own
+end
+
+-- The card's line for the player's own row (research's words, TR46).
+function Tower.WeekLine(own: Row?): string
+	if own == nil then
+		return "This week: no climb yet"
+	end
+	local rank = if own.Rank then `#{own.Rank}` else `#{TowerConfig.Board.Page}+`
+	return `This week: {rank} · floor {own.Floor}`
+end
+
 -- Floor `floor`'s foe for the foes' seed `seed` (a run's week's, Tower.WeekSeed): the opening's (Config.Tower.Opening)
 -- on its floors, the same for every run, while that Voidkin is in the pool; from the seed past it.
 function Tower.Foe(floor: number, seed: number): Foe
@@ -203,9 +277,10 @@ function Tower.Won(data: Profile.Data, id: string, floor: number, fast: boolean?
 	return reward
 end
 
--- Run `id` ended at its last floor won: the ledger granted once, the record raised, the results kept to be shown, the run
--- cleared. Nil (nothing changed) when no run of that id is under way.
-function Tower.End(data: Profile.Data, id: string): Profile.TowerResults?
+-- Run `id` ended at its last floor won, at `now`: the ledger granted once, the record raised, the week's climb raised for
+-- the week the run started in (a later week's replaces an earlier's), the results kept to be shown, the run cleared. Nil
+-- (nothing changed) when no run of that id is under way.
+function Tower.End(data: Profile.Data, id: string, now: number): Profile.TowerResults?
 	local tower = data.Progress.Tower
 	local run = tower.Run
 	if run == nil or run.Id ~= id then
@@ -224,15 +299,20 @@ function Tower.End(data: Profile.Data, id: string): Profile.TowerResults?
 		Chests = table.clone(run.Chests),
 	}
 	tower.Best = math.max(tower.Best, run.Floor)
+	local week = Tower.Week(run.Started)
+	local held = tower.Week
+	if run.Floor > 0 and (held == nil or held.Week < week or (held.Week == week and run.Floor > held.Floor)) then
+		tower.Week = { Week = week, Floor = run.Floor, Score = Tower.Score(run.Floor, week, now) }
+	end
 	tower.Results = results
 	tower.Run = nil
 	return results
 end
 
--- A run the save still holds at a join (a crash, a shutdown): ended at its last floor won. Nil when there's none.
-function Tower.Recover(data: Profile.Data): Profile.TowerResults?
+-- A run the save still holds at a join (a crash, a shutdown): ended at its last floor won, at `now`. Nil when there's none.
+function Tower.Recover(data: Profile.Data, now: number): Profile.TowerResults?
 	local run = data.Progress.Tower.Run
-	return if run then Tower.End(data, run.Id) else nil
+	return if run then Tower.End(data, run.Id, now) else nil
 end
 
 -- The results of run `id` shown: cleared. False when they aren't the ones held.

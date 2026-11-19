@@ -20,6 +20,7 @@ local Stages = require(Shared.Rules.Stages)
 local Grounds = require(Shared.Definitions.Grounds)
 local Enemies = require(Shared.Definitions.Enemies)
 local Hud = require(Shared.Rules.Hud)
+local Sheet = require(Shared.Rules.Sheet)
 
 local UI = script.Parent
 local Theme = require(UI.Theme)
@@ -127,7 +128,7 @@ function StageScreen.Pick(ground: string, view: Profile.View, on: On)
 			Button.Set(tile, { Disabled = why(ground, needs, waits) or false, Selected = needs == nil and stage == line.Cleared + 1 })
 			local best = line.Best[stage] or 0
 			local cp = Stages.Recommended(ground, difficulty, stage)
-			lines[stage].Text = `Recommended {Hud.Digits(cp)} CP   ·   {if best > 0 then `best {Read.Clock(best)}` else "not cleared"}`
+			lines[stage].Text = `Recommended {Hud.Digits(cp)} {Sheet.Said.Power}   ·   {if best > 0 then `best {Read.Clock(best)}` else "not cleared"}`
 		end
 	end
 	for index, which in Stages.Difficulties do

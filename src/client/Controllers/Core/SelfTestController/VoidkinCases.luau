@@ -459,7 +459,7 @@ function VoidkinCases.Cases(given: Given): { any }
 				local glow = if plate then plate:FindFirstChild("Glow", true) :: ImageLabel? else nil
 				t.Check("a soft glow behind them", glow ~= nil and glow.ImageColor3 == finish.Glow and math.abs(glow.ImageTransparency - (1 - finish.GlowAlpha)) < 1e-3)
 				local caption = if plate then plate:FindFirstChild("Caption") :: TextLabel? else nil
-				t.Check("its caption in its colour", caption ~= nil and caption.TextColor3 == finish.Caption and caption.Text == "COMBAT POWER")
+				t.Check("its caption in its colour", caption ~= nil and caption.TextColor3 == finish.Caption and caption.Text == string.upper(Sheet.Said.Power), if caption then caption.Text else nil)
 			end
 			for _, name in { "Rail", "Name", "Panel", "Strip", "Lead" } do -- the lead's page: no Station
 				t.Check(`{name} in view`, inView(name))

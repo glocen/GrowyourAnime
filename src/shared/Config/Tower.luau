@@ -25,6 +25,10 @@ return {
 	-- Past the opening, the foes come from the week (TR46): the same on every server all week, so the week's board is one
 	-- race. In seconds: Start, a week's first moment (1970-01-05 00:00 UTC, a Monday), and Length.
 	Week = { Start = 345600, Length = 604800 },
+	-- The week's board (TR46; builder's): each account's best climb of the week in an OrderedDataStore of its own, read as
+	-- one page of the best Page, kept Fresh seconds on a server (GetSortedAsync's budget: 5 + 2 a player a minute). The
+	-- card shows the first Shown and the player's own row; a player under a full page reads "#Page+".
+	Board = { Page = 100, Shown = 10, Fresh = 60 },
 	HealCap = 0.15, -- healing in one floor tops out at this share of the lead's most health (seeds "healCap")
 	Rise = 2.5, -- seconds from a floor won to the next foe: the rise to its platform (seeds "risePerFloorSec")
 	Leap = 0.5, -- the share of Rise at which the lead and the avatar are set down on the new platform

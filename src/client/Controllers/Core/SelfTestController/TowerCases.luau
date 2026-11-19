@@ -5,24 +5,57 @@
 -- its Regalia frozen; at most three platforms and the column; the lead's fall ending the run at its last floor won, the ledger
 -- granted once, the record and the results, which open once and clear when closed. Then the avatar stepping off its
 -- platform, and a crash's run ended at the next join. The results' Home and Retry (TR46): Home sets the avatar down at
--- its plot's spawn, Retry in its ring, where the next run begins once rested. The case's record, Credits and chests are
--- put back at its end.
+-- its plot's spawn, Retry in its ring, where the next run begins once rested. The heal cap told once, under the lead's
+-- corner, and never again; the week's line on the results, its board a tap away and back (TR46). The case's record,
+-- Credits and chests are put back at its end.
 
+local GuiService = game:GetService("GuiService")
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Shared = ReplicatedStorage.Shared
 local TowerConfig = require(Shared.Config.Tower)
+local ChestRows = require(Shared.Definitions.Chests)
 local Profile = require(Shared.Data.Profile)
 local Markers = require(Shared.World.Markers)
 local Tower = require(Shared.Rules.Tower)
 local ProfileController = require(script.Parent.Parent.ProfileController)
 local TowerController = require(script.Parent.Parent.Parent.Main.TowerController)
+local HudController = require(script.Parent.Parent.Parent.Main.HudController)
 local UI = script.Parent.Parent.Parent.Parent.UI
 local Screen = require(UI.Kit.Screen)
 local Button = require(UI.Kit.Button)
 local TowerScreen = require(UI.TowerScreen)
+local Theme = require(UI.Theme)
+local Layers = require(UI.Layers)
 
 local TowerCases = {}
+
+-- Whether `part` shows inside `top`: it and every frame between them visible.
+local function seen(part: Instance?, top: Instance): boolean
+	local at = part
+	while at ~= nil and at ~= top do
+		if at:IsA("GuiObject") and not at.Visible then
+			return false
+		end
+		at = at.Parent
+	end
+	return at == top
+end
+
+-- The children of `parent` (offsets only, as the Tower's card lays them) that end outside a `box` from its top left.
+local function outside(parent: Instance, box: Vector2): { string }
+	local out = {}
+	for _, each in parent:GetChildren() do
+		if each:IsA("GuiObject") and each.Visible then
+			local p, s = each.Position, each.Size
+			local right, foot = p.X.Offset + s.X.Offset, p.Y.Offset + s.Y.Offset
+			if p.X.Offset < -0.5 or p.Y.Offset < -0.5 or right > box.X + 0.5 or foot > box.Y + 0.5 then
+				table.insert(out, `{each.Name} to {math.floor(foot + 0.5)}`)
+			end
+		end
+	end
+	return out
+end
 
 local function view(): Profile.View
 	return ProfileController.Get() :: Profile.View
@@ -51,7 +84,7 @@ end
 function TowerCases.Cases(): { any }
 	return {
 		{
-			Name = "Tower (TR29): a run from the ring, floors won into the ledger, the heal cap, the freeze, three platforms, the fall, the results once, stepping off, a crash's run ended at the join; the results' Home and Retry (TR46)",
+			Name = "Tower (TR29): a run from the ring, floors won into the ledger, the heal cap, the freeze, three platforms, the fall, the results once, stepping off, a crash's run ended at the join; the results' Home and Retry, the heal cap told once (TR46)",
 			Place = "Main", -- TR45: its world stands in that place only
 			Run = function(t: any)
 				-- The bays step out for the run and back after it: a full battery spills a working bay's power into Credits,
@@ -152,6 +185,34 @@ function TowerCases.Cases(): { any }
 								if after.Phase == "Fighting" and after.Floor == s.Floor and type(hurt) == "table" then
 									t.Check("at most the cap healed in the floor", after.LeadHealth - hurt.Health <= TowerConfig.HealCap * after.LeadMax + 1e-3, `{after.LeadHealth - hurt.Health}`)
 								end
+								-- The heal cap told once (TR46): the account made untold, a heal far past the cap shows
+								-- research's line under the lead's corner, with Config's share, and the save keeps it told;
+								-- once the note has faded out, a second capped heal tells nothing. The account's own put back.
+								local told0 = view().Progress.Tower.HealTold == true
+								t.Server("TowerHealTold", false)
+								t.Check("the account untold", waitFor(t, 2, function()
+									return view().Progress.Tower.HealTold ~= true
+								end))
+								t.Server("TowerHurt", 0.3)
+								t.Server("TowerMend", 1e6)
+								local said: string? = nil
+								waitFor(t, 3, function()
+									said = HudController.Noted()
+									return said ~= nil
+								end)
+								local share = `{math.floor(TowerConfig.HealCap * 100 + 0.5)}% of your lead's health`
+								t.Check("the cap told: its line under the lead's corner, Config's share in it", said ~= nil and string.find(said, "Healing capped for this floor", 1, true) ~= nil and string.find(said, share, 1, true) ~= nil, said)
+								t.Check("the save keeps it told", waitFor(t, 2, function()
+									return view().Progress.Tower.HealTold == true
+								end))
+								t.Check("the note fades out on its own", waitFor(t, 8, function()
+									return HudController.Noted() == nil
+								end))
+								t.Server("TowerHurt", 0.3)
+								t.Server("TowerMend", 1e6)
+								t.Wait(1)
+								t.Check("told once: a second capped heal shows nothing", HudController.Noted() == nil, HudController.Noted())
+								t.Server("TowerHealTold", told0)
 							end
 							t.Server("TowerWin")
 							task.wait(0.15)
@@ -227,6 +288,33 @@ function TowerCases.Cases(): { any }
 					local parts = TowerScreen.Parts()
 					local floorLine = parts.Floor
 					t.Check("they say the floor", floorLine ~= nil and floorLine:IsA("TextLabel") and floorLine.Text == `Floor {results.Floor}`)
+					-- The week's board (TR46): the line says the account's place and floor this week, the save's climb;
+					-- a tap shows the board on the card, its title and the player's own row; a tap on it goes back.
+					local climb = view().Progress.Tower.Week
+					t.Check("the save keeps this week's climb, at least this run's floor", climb ~= nil and climb.Week == Tower.Week(os.time()) and climb.Floor >= results.Floor, if climb then `{climb.Week} {climb.Floor}` else "none")
+					local words = parts.WeekWords :: TextLabel?
+					local said = ""
+					waitFor(t, 5, function()
+						said = if words then words.Text else ""
+						return string.find(said, "#", 1, true) ~= nil or said == Tower.WeekLine(nil)
+					end)
+					local rank, floorSaid = string.match(said, "^This week: #(%d+%+?) · floor (%d+)$")
+					t.Check("the week's line: its place and the climb's floor", rank ~= nil and climb ~= nil and tonumber(floorSaid) == climb.Floor, said)
+					t.Check("a tap on it is taken", TowerScreen.Tap("Week"))
+					local board = TowerScreen.Parts().Board :: GuiObject?
+					t.Check("it shows the board on the card", board ~= nil and board.Visible and board:IsDescendantOf(parts.Body))
+					t.Check("the results step aside under it", not seen(parts.Week, parts.Body) and not seen(parts.Floor, parts.Body) and not seen(parts.Home, parts.Body))
+					local title = TowerScreen.Parts().BoardTitle :: TextLabel?
+					t.Check("titled This Week's Climb", title ~= nil and title.Text == "This Week's Climb")
+					local ownRow: TextLabel? = nil
+					for name, part in TowerScreen.Parts() do
+						if name ~= "Floor" and string.sub(name, -5) == "Floor" and part:IsA("TextLabel") and part.TextColor3 == Theme.Colour.Ready then
+							ownRow = part
+						end
+					end
+					t.Check("the player's own row on it, in the record's colour", ownRow ~= nil and climb ~= nil and ownRow.Text == `floor {climb.Floor}`, if ownRow then ownRow.Text else "none")
+					t.Check("a tap on the board goes back to the results", TowerScreen.Tap("Board") and board ~= nil and not board.Visible and Screen.Current() == TowerScreen.Name)
+					t.Check("the results stand again", seen(parts.Week, parts.Body) and seen(parts.Floor, parts.Body) and seen(parts.Home, parts.Body))
 					-- Home (TR46): set down at the plot's spawn, free, and the results closed.
 					local home = parts.Home
 					t.Check("in the base, Retry and Home, no Close", home ~= nil and parts.Retry ~= nil and parts.Close == nil)
@@ -236,10 +324,19 @@ function TowerCases.Cases(): { any }
 					t.Check("closed, they're cleared from the save", waitFor(t, 3, function()
 						return view().Progress.Tower.Results == nil
 					end))
+					-- The server moves the avatar before it answers; the client sees the move a moment later (a run once read it first).
 					local spawn = Markers.Find("Spawn", { Plot = plot })
-					local root = me.Character and me.Character:FindFirstChild("HumanoidRootPart") :: BasePart?
-					local fromSpawn = if spawn and root then (root.Position - Markers.At(spawn).Position) * Vector3.new(1, 0, 1) else nil
-					t.Check("Home sets the avatar down at its plot's spawn", fromSpawn ~= nil and fromSpawn.Magnitude < 6, tostring(fromSpawn and fromSpawn.Magnitude))
+					local fromSpawn: number? = nil
+					local pressed = os.clock()
+					local landed = waitFor(t, 2, function(): boolean
+						local root = me.Character and me.Character:FindFirstChild("HumanoidRootPart") :: BasePart?
+						fromSpawn = if spawn and root then ((root.Position - Markers.At(spawn).Position) * Vector3.new(1, 0, 1)).Magnitude else nil
+						return fromSpawn ~= nil and fromSpawn < 6
+					end)
+					t.Check("Home sets the avatar down at its plot's spawn", landed, `{fromSpawn} studs, seen after {string.format("%.2f", os.clock() - pressed)} s`)
+					-- A Home pressed in the fall's fade once came undone: the set-down beside the ring, asked first, landed after it.
+					local race = t.Server("MoveRace", 30)
+					t.Check("a move made while a faded one waits wins over it", type(race) == "table" and race.Ok == true and race.Off < 1, if type(race) == "table" then tostring(race.Off or race.Error) else "no answer")
 					task.wait(0.5)
 					t.Check("and don't open again", Screen.Current() ~= TowerScreen.Name)
 					-- Stepping off the platform ends a run where it stands.
@@ -318,6 +415,83 @@ function TowerCases.Cases(): { any }
 					t.Check(`bay {bay}'s worker back at work`, t.Server("Act", "SetWorker", { Bay = bay, Voidkin = id }).Ok == true)
 				end
 				t.Server("Tune", "Tower.Lift.Attack", attack)
+				if not ok then
+					error(problem, 0)
+				end
+			end,
+		},
+		{
+			-- TR46: the week's line made the card taller than a phone's room. Laid out from the room it was fitted to, its
+			-- rows close up, and past that its lines scroll; the board's rows close up too. Opened on its own, with the
+			-- results and the board answered here, never the save's or the store's.
+			Name = "Tower card (TR46): the results and the week's board inside the card's body, in this window and on the smallest phone, one chest and three, the fullest board",
+			Place = "Main",
+			Run = function(t: any)
+				local ids = {}
+				for id in ChestRows.ById do
+					table.insert(ids, id)
+				end
+				table.sort(ids)
+				local rows = {}
+				for rank = 1, TowerConfig.Board.Shown do
+					table.insert(rows, { Rank = rank, Name = if rank == 2 then string.rep("W", 20) else `Climber{rank}`, Floor = 400 - rank, Mine = false })
+				end
+				local function answer(): { [string]: any }
+					return { Ok = true }
+				end
+				local on = {
+					Act = answer,
+					Retry = answer,
+					Home = answer,
+					Board = function(): { [string]: any }
+						return { Ok = true, Week = 0, Rows = rows, Mine = { Rank = 57, Floor = 123 } }
+					end,
+				}
+				local ok, problem = pcall(function()
+					for _, room in { "this window", "the smallest phone" } do
+						if room == "the smallest phone" then
+							Layers.Force(Theme.Scale.Floor)
+							Layers.Box(Theme.Smallest - Vector2.new(0, GuiService.TopbarInset.Height))
+							t.Wait(0.2)
+						end
+						for _, count in { 1, 3 } do
+							local chests = {}
+							for index = 1, count do
+								chests[ids[index]] = index * 7
+							end
+							local where = `{room}, {count} {if count == 1 then "chest" else "chests"}`
+							-- Opened and read in one go: a change to the save would close a card it doesn't hold.
+							TowerScreen.Open({ Id = `selftest-card-{room}-{count}`, Floor = 123, Best = 130, Record = false, Credits = 123456, Chests = chests }, on)
+							local parts = TowerScreen.Parts()
+							local body = parts.Body :: Frame
+							local panel = body.Parent :: Frame
+							local box = Vector2.new(panel.Size.X.Offset - Theme.Size.Pad * 4, panel.Size.Y.Offset - Screen.Head - Theme.Size.Pad)
+							local out = outside(body, box)
+							t.Check(`{where}: the results inside the body`, #out == 0, if #out == 0 then `{math.floor(box.Y)} high` else table.concat(out, ", "))
+							local list = parts.Lines :: ScrollingFrame?
+							local week = parts.Week :: GuiObject
+							if list then
+								t.Check(`{where}: past the closed-up rows, the lines scroll to the week's`, week.Position.Y.Offset + week.Size.Y.Offset <= list.CanvasSize.Y.Offset + 0.5 and list.CanvasSize.Y.Offset > list.Size.Y.Offset, `canvas {list.CanvasSize.Y.Offset}, window {list.Size.Y.Offset}`)
+							end
+							t.Row(`{where}: a row, authored px`, nil, nil, (parts.Record :: GuiObject).Size.Y.Offset, if list then "scrolls" else "")
+							t.Check(`{where}: the week's line answered`, (parts.WeekWords :: TextLabel).Text == "This week: #57 · floor 123")
+							t.Check(`{where}: its board opens`, TowerScreen.Tap("Week") and seen(parts.Board, body))
+							local board = parts.Board :: GuiObject
+							local held = outside(board, Vector2.new(board.Size.X.Offset, board.Size.Y.Offset))
+							t.Check(`{where}: the board's ten, its own row and its title inside it`, #held == 0 and board.Size.Y.Offset <= box.Y + 0.5, table.concat(held, ", "))
+							local mine = parts.MineRank :: TextLabel?
+							t.Check(`{where}: its own row under the ten`, mine ~= nil and mine.Text == "#57" and (parts.Row10Rank :: TextLabel?) ~= nil)
+							t.Check(`{where}: back to the results`, TowerScreen.Tap("Board") and not board.Visible and seen(parts.Home, body))
+							Screen.Close()
+							t.Wait(0.4)
+						end
+					end
+				end)
+				Layers.Box(nil)
+				Layers.Force(nil)
+				if Screen.Current() == TowerScreen.Name then
+					Screen.Close()
+				end
 				if not ok then
 					error(problem, 0)
 				end

@@ -103,9 +103,14 @@ local function entryOf(copy: Copy): CFrame
 	return CFrame.lookAt(entry, copy.Centre.Position) * CFrame.Angles(0, math.rad(Combat.Keeper.Turn), 0)
 end
 
+-- Each player's moves, counted: a faded move still waiting gives way to any move made after it was asked (TR46: the
+-- fall's set-down beside the Tower's ring once undid a quick Home on the results).
+local moves: { [Player]: number } = {}
+
 -- Moves the avatar and its lead to `at`, the lead at its side (its left in a try: Combat.Keeper.Side), both looking where
 -- `at` looks.
 local function setDown(player: Player, at: CFrame)
+	moves[player] = (moves[player] or 0) + 1
 	local character = player.Character
 	local root = Parts.Root(character)
 	if character == nil or root == nil then
@@ -129,13 +134,18 @@ local function fade(player: Player): number
 end
 
 -- Sets the player and their lead down at `at` in the middle of a fade: the shortcut's way home, and the Festival Door's
--- (DoorService). Not during a try, which moves the player itself. False when nothing moves.
+-- (DoorService). Not during a try, which moves the player itself. A move made before it lands wins. False when nothing
+-- moves.
 function KeeperService.SetDown(player: Player, at: CFrame): boolean
 	if tries[player] then
 		return false
 	end
+	local move = (moves[player] or 0) + 1
+	moves[player] = move
 	task.delay(fade(player), function()
-		setDown(player, at)
+		if moves[player] == move then
+			setDown(player, at)
+		end
 	end)
 	return true
 end
@@ -433,6 +443,7 @@ function KeeperService.Start()
 	end
 	Players.PlayerRemoving:Connect(function(player: Player)
 		last[player] = nil
+		moves[player] = nil
 	end)
 	WorldService.Laid:Connect(function()
 		lay()
@@ -486,6 +497,23 @@ function KeeperService.Start()
 				return { Ok = false, Error = "BadArgs" }
 			end
 			return { Ok = true }
+		end)
+		-- A faded move `away` studs off asked, then a move at once back where the avatar stands (a Home on the Tower's card
+		-- in the fall's fade): how far it stands from there once the fade's move was due. 0 when the second move wins.
+		DebugService.Register("MoveRace", function(who: any, away: any): any
+			local player = DebugService.ResolvePlayer(who)
+			local root = if player then Parts.Root(player.Character) else nil
+			if player == nil or root == nil or type(away) ~= "number" then
+				return { Ok = false, Error = "BadArgs" }
+			end
+			local there = root.CFrame
+			if not KeeperService.SetDown(player, there + Vector3.new(away, 0, 0)) or not KeeperService.Place(player, there) then
+				return { Ok = false, Error = "NoMove" }
+			end
+			local f = Combat.Keeper.Fade
+			task.wait(f.Out + f.Hold + 0.2)
+			local now = Parts.Root(player.Character)
+			return { Ok = true, Off = if now then ((now.Position - there.Position) * Vector3.new(1, 0, 1)).Magnitude else -1 }
 		end)
 		DebugService.Register("KeeperForce", function(who: any, action: any, every: any): any
 			local player = DebugService.ResolvePlayer(who)

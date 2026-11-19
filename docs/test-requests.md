@@ -3904,7 +3904,37 @@ Faber, 2026-11-19, 03:43 by the clock: the follow-up's item 7 (`docs/production-
 
 **What waits:** the card's art and the board's look (the shared finish); parties' boards (after everything else).
 
-**Where it stands** (Faber, 2026-11-19, 03:53, stopped for the day by the director's word):
-- **Built and tested** (444bfa2): the week's foes (`Rules.Tower.Week`, `WeekSeed`; logic 26,674/0), and Retry and Home on the card, with its lines and buttons now inside its body (the Tower case 51/0; the card read in play).
-- **Built, NOT VERIFIED in Studio:** the heal cap told once. The fight signals a capped heal (`FightService.Capped`), the save keeps `Progress.Tower.HealTold`, the client gets Net "TowerHealCap", and `HudController.Note` shows research's line under the lead's corner (`Config.Hud.Note`). The type check and the logic cases pass. Its self-test step (`TowerHealTold`, `TowerMend` on the debug bridge) and a capture come next.
-- **Not started:** the week's board. The content check on the new lines runs before it's built.
+**Where it stands** (Faber, 2026-11-19, 11:25): built and tested in Studio; the visual review is Faber's own captures; research's pass and the director's acceptance are open.
+- **The week's foes, Retry and Home** (444bfa2): as before.
+- **The heal cap told once:** tested in Studio. The Tower case runs the full path: the cap binds, research's line shows under the lead's corner, the save keeps it as told, the note fades on its own, and a second bind says nothing. Captured in play: "Healing capped for this floor: 15% of your lead's health."
+- **The week's board:**
+  - **The rules:** pure Luau in `Rules.Tower`: `Score`, `Climb`, `Board` and `WeekLine`; `End` raises the save's `Progress.Tower.Week`.
+  - **The store:** `TowerBoardService` posts the climb to the week's OrderedDataStore (raise-only `UpdateAsync`, by UserId) and reads one shared page per server at most every 60 s (`Config.Tower.Board`).
+  - **The client:** Net "TowerBoard", the card's line, and the board on the card.
+  - **In Studio:** the read works on the Test store.
+- **Tests:**
+  - **Logic:** a new case, "Tower: the week's board (TR46)". It covers the score's order and clamps, the climb's updates across weeks, and the board's merge, ranks and lines. All logic cases pass: 26,703 offline, 26,703, 0 failed in Studio.
+  - **Self-test, the Tower case:** it covers the week's line and its floor, the tap to the board, the title, your own row in the record's colour, the results stepping aside, the tap back, and the race below. Its count varies by 4 with how many floors are caught in their fight.
+  - **Self-test, the new card case:** "Tower card (TR46)". It opens the card with 1 chest and with 3, plus the fullest board, in the window and on the smallest phone, and holds everything inside the card's body. It passed 27 of 27 in the window and 28 of 28 on the device simulator.
+  - **The whole self-test:** 2,874 passed and 15 failed in one 469 s run. Every failure was a timing or motion case, and all 12 failed cases passed on a rerun at 55 to 60 fps, so it was a busy stretch, not a regression. The last session's whole run also had 15 failures, a different set.
+  - The type check is 0 new.
+- **A fix the phone found** (Faber's own review on the device simulator, iPhone 16 Pro): the week's line made the card taller than a phone's room, and Retry and Home fell off its foot.
+  - The card now lays out from the room the panel was fitted to.
+  - Its rows close up to 20 px authored at least. Past that, the lines scroll above the buttons, as the bag card's lines do.
+  - The board's rows close up to 16.
+  - Captured after the fix: the card and the board, whole on the phone.
+- **A fix the Tower case found:** a Home tapped on the card in the fall's fade came undone.
+  - The cause: the run's end asks for a set-down beside the ring, landing 0.35 s later (`KeeperService.SetDown`). A quick Home landed first, and the set-down then moved the avatar back, 147 studs from the spawn. Retry had the same race.
+  - The fix: `KeeperService` counts each player's moves, and a faded move still waiting gives way to any move made after it was asked.
+  - The check: `MoveRace` on the debug bridge, in the Tower case. The Home check now also waits up to 2 s for the move to reach the client.
+- **Tier 1 calls, Faber's own:**
+  - A tie on the board goes to the earlier climb: the score's low digits count down through the week.
+  - The page holds 100 climbs; under it, your rank reads "#100+".
+  - "Back" sits at the left of the board's title row, and a tap anywhere on the board goes back.
+  - The line stays dim until the server answers, and is hidden when the board can't be read.
+  - A run over the week's end counts in the week it started.
+  - Names are looked up when the board is shown (the store holds UserIds only), so a renamed player shows their new name.
+- **CR** (the director's word at 10:36): every word players see for Combat Power reads "CR", from `Sheet.Said.Power`.
+  - Tested: the Voidkin and bag self-tests.
+  - NOT VERIFIED in Studio: the stage tile's "Recommended … CR". Its case runs in the Festival place only.
+- **Open:** research's artistic pass on the card and the board, in grey. Research also adds the board's tier 1 line to `docs/design.md`. No capture yet at 1366×768: the card case holds the layout down to the smallest phone.

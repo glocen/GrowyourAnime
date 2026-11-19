@@ -201,6 +201,9 @@ local function results(view: Profile.View?)
 		Home = function(): { [string]: any }
 			return Net.Client.Invoke("TowerHome")
 		end,
+		Board = function(): { [string]: any }
+			return Net.Client.Invoke("TowerBoard")
+		end,
 	})
 end
 

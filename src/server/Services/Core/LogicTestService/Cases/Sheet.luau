@@ -139,6 +139,7 @@ return {
 			t.Equal("Regen as one burst (TR40): 4.26 a second, 8 s, a half", (row(groups, "Regen") :: Sheet.Row).Value, "17")
 			t.Equal("and \"every 8 s\" under it (4.6)", (row(groups, "Regen") :: Sheet.Row).Under, "every 8 s")
 			t.Equal("its name: HP Regen (the director, 2026-11-18)", (row(groups, "Regen") :: Sheet.Row).Name, "HP Regen")
+			t.Equal("Combat Power reads CR (the director, 2026-11-19)", Sheet.Said.Power, "CR")
 			t.Equal("a small burst to a tenth", Sheet.Burst(1.5), "6.0")
 			t.Equal("a card's Regen: the burst alone", Sheet.Amount("Regen", 4.26), "17")
 			t.Equal("a card's Regen change: the burst's", Sheet.Change("Regen", 0.5), "+2.0")

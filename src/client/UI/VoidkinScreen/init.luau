@@ -552,7 +552,7 @@ local function power(parent: Instance, owned: Profile.OwnedVoidkin, block: Stats
 	end
 	-- The caption may run past a narrow plate's ends, over the hands: they stand lower than its line.
 	local finish = HudConfig.Voidkin.Finish
-	local caption = text({ Name = "Caption", Size = Theme.Text.Caption, Colour = finish.Caption, Align = align, Box = UDim2.new(1, if whole then -left else 60, 0, 16), Position = UDim2.fromOffset(if whole then left else -30, 1), Parent = press }, "COMBAT POWER")
+	local caption = text({ Name = "Caption", Size = Theme.Text.Caption, Colour = finish.Caption, Align = align, Box = UDim2.new(1, if whole then -left else 60, 0, 16), Position = UDim2.fromOffset(if whole then left else -30, 1), Parent = press }, string.upper(Sheet.Said.Power))
 	caption.ZIndex = 2
 	-- The digits as large as the plate holds: about 0.62 of their size each.
 	local said = Hud.Digits(value)
@@ -826,7 +826,7 @@ local function starsTab(scroll: ScrollingFrame, view: Profile.View, owned: Profi
 				table.insert(gains, `+{Hud.Digits(gain)} {Sheet.Said[name] or name}`)
 			end
 		end
-		line(scroll, 3, "The next star", `+{Hud.Digits(Stats.Power(after) - before)}`, `{table.concat(gains, " · ")}, Combat Power on the right`)
+		line(scroll, 3, "The next star", `+{Hud.Digits(Stats.Power(after) - before)}`, `{table.concat(gains, " · ")}, {Sheet.Said.Power} on the right`)
 		local take = Button.new({
 			Palette = Seam.Palette,
 			Name = "TakeStar",

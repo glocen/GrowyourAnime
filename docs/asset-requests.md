@@ -13699,6 +13699,7 @@ The director's words: jewels and War Emblems go in and out on Equipment's pages 
 - **Felt:** a tap on the middle dock button lifts a graphite tray with two lit rows, your Voidkin's pages and the gear's. Settings stands tall at the end. Where everything lives reads in one look. **Tier:** competent. **The bold thing:** the two labelled rows, which turn the director's menu into a map.
 - **Must-fix (class: an overlay over the lead card):** on the phone (`tray-phone.jpg`) the tray opens over the lead card and hides Watt's health. On a phone it opens where it covers neither the lead card nor the currencies, for example to the right of the dock.
 - **The naming call:** the page reads "Inventory". The director's latest words name it so (03:37: "inventory with the gears slot"), and they replace the bag's "Items" of 2026-11-15. The group and its page both reading Inventory is the director's own naming, kept literally. `SAID` in the Voidkin screen gives way to it.
+- **Met** (b82f3cd; `tray-phone-over.jpg`, read at 15:27): on a phone the tray stands over the dock behind a dim, and Watt's card and both pills stay clear. Closed on research's side. The director's word is pending.
 
 ## AR44. The damage numbers' rework: the plain, received and healing numbers, and the critical closer to the reference (Faber's takes in the game, Modulo's stroke, research's pick)
 

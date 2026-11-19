@@ -13131,6 +13131,48 @@ The numbers are stand-ins (Combat Power, the bests).
 - **To `docs/polish-later.md`:** stages 1 to 3 share one picture (2 and 3 are identical); the number carries them now.
 - **Next:** the two fixes on A, then the results card and the stage's line in A, for one look together.
 
+### The fixes, the results card and the line, drawn in A (Modulo, 2026-11-19, 02:06 to 02:33 by the clock)
+
+- **Files,** in `build/scratch/modulo/stages/`, drawn by `tools/blender/stage_screen.py` (B and C stay in 5b415c4):
+  - `stage_screen_A.png`: the picker's three states;
+  - `stage_results.png`: the card's four states;
+  - `stage_line.png`: the line's four states;
+  - `stage_screen_64.png`: the picker and the cards at 64 px high;
+  - `stage_screen_pictures.png`: the tiles' pictures.
+- **Must-fix 1, the mask:** the Brawler's paper mask, from `shade_sheet.py`'s outline. It's cream paper cut not quite round, with a tab each side for its strings, on its darker paper rim, with the pressed edge a shade between. It has:
+  - two level almond eye holes cut through, open, the left one wider;
+  - a lopsided grin cut through behind four paper teeth, no two alike, at radius 0.5;
+  - no brows, no nose, no cheeks and no closed eyes. The teeth are drawn only where they're wider than a pixel. The strings are the darker paper, as modelled.
+  - **How it got there:** drawn first as modelled, with half-disc holes under the model's ink brows (low at the middle) and its grin at 0.64. The content check blocked it (by 02:24 by the clock), because it read as a known meme face (slanted brows over narrowed eyes, a toothy grin on a pale face). So the brows came off, the grin narrowed to 0.5, and the holes became round. Round holes with the nose read as a skull, so the nose came off and the holes became level, open almonds.
+  - **It differs from the model** in its eyes (almond holes against the model's lit arches), its grin (0.5 against 0.64) and the brows and nose it lacks. Whether the model follows is research's call (below).
+  - **The class:** every mask, the elite's shoulder mask included, at every size.
+- **Must-fix 2, Hard:** the whole screen steps a full value darker.
+  - The ground stays `glass`, every open tile and the card go to `well` (`#24464F` to `#1C3A42`), and a shut tile a step under (`#132C33`).
+  - Violet only on the edges, the chevrons and the walked road. At 64 px, Hard's two phones read darker than Normal's at a glance.
+- **The results card,** over the street dimmed under it, on the picker's kit, from top to bottom:
+  - **The four marks on their road:** lit on to where the player now stands, the next mark ringed in light, and the stage just cleared with its check lit. The motion for Faber: the light runs on along the road as the card opens.
+  - **The title:** "Stage 3 cleared".
+  - **The time:** with "a new best" in a gold-edged tag, or "3:58 · best 3:40".
+  - **What it gave:** as chips on the game's own pictures (CoinMint in Credits' mint, the standard shard, the stage's chest).
+  - **What it opened:** "Stage 4 is open" in gold, or "Hard is open" as its own band, gold words in a violet edge with Hard's chevrons.
+  - **The presses:** Retry, Next and Home, with Next the one sand press, and Hard's chevrons on a press into a Hard stage.
+  - **A lost run:** "Your lead fell" in Hurt's colour, with Faber's words under it, and Retry as the one press.
+  - **A proposal for Faber:** after the keeper on Normal, StageService gives no Next. The card draws "Stage 1" with Hard's chevrons as the one press, for research's word.
+- **The line,** under Roblox's top bar on a plate of the kit, 368 by 44:
+  - the stage's mark and name, then "7 / 10 Shades", with Faber's words at the right;
+  - under them the Shades on a short road, a notch a Shade, lit as they fall, to the last foe's ring;
+  - the ring lights through when the last foe is up, and takes a check when the stage is cleared;
+  - on the keeper's stage there's no count, and the road runs straight to the keeper.
+- **Content check:**
+  - **The sheets:** PASS (by 02:31 by the clock), on every sheet, at full size and at 64 px, the texts against `docs/ip-list.md` included.
+  - **Conditions that hold:** the sheets' labels never ship; the elite's strap stays at least this thick if a tile shrinks; any picture exported for Roblox gets its own check on the exact file.
+  - **The model's Brawler mask in the game: BLOCK** (by 02:31), on `build/handoff/Shade/shade_model_sheet.png`.
+    - It still nears the same meme face, more weakly: a pale round face, two thick ink brows low at the middle, and a wide toothy grin.
+    - The smallest fix is to take the brows off (`shade_sheet.py`, `mask("Brawler")`, `brows`), then re-bake the mask, the elite's shoulder mask and the atlas, and check the sheet again before re-upload.
+    - Another well-known grinning character was considered and judged not reached. To keep it so, never add a hood, a blue jacket, round sockets or dot pupils to the Brawler Shade.
+    - It's a rework of a shipped asset (research accepted it on 2026-11-12), so it's its own piece, for research's word.
+- **Status:** drawn, self-read and content-checked (PASS). Waiting on research's look at all three together.
+
 ## Later, by ground
 
 The rest of ground 1 (Kirra in AR10, Watt in AR11; then Sable, Marigold, Crane), then each ground's Voidkin in `docs/roster.md`'s order. **The machines** (Gantry, Bulwark, Ironhymn, Shiomaru, Aegir) share one custom rig, taller than a player, with its own clip family: the first of them is timed like AR1, because a custom rig is a different cost.

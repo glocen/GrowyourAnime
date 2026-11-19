@@ -19,7 +19,13 @@ def assemble(folder, out, fps=30) -> Path:
     frames = sorted(folder.glob("*.png"))
     if not frames:
         raise SystemExit(f"[movie] no PNG frames in {folder}")
+    system = bpy.context.preferences.system
+    if hasattr(system, "memory_cache_limit"):
+        system.memory_cache_limit = 64  # MB. The sequencer caches each frame it shows, up to 4 GB; none comes twice here
     scene = bpy.data.scenes.new("Movie")
+    # A new scene views through AgX, which greys and darkens the frames on their way into the movie: Standard keeps the
+    # PNGs' colours as they are (found 2026-11-19, AR43's motion movie).
+    scene.view_settings.view_transform, scene.view_settings.look = "Standard", "None"
     editor = scene.sequence_editor_create()
     strip = editor.strips.new_image("frames", str(frames[0]), 1, 1)
     for frame in frames[1:]:

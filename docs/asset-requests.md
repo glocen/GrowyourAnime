@@ -13229,6 +13229,30 @@ They replace the pages above where they differ. The register's rows are in `docs
 - **Content check, PASS** (by 03:43): the three sheets, the mark tries and both scripts, on rules 2, 3 and 4. Before upload, the exported mark gets its own check, at full size and at 64 px over dark.
 - **Status:** drawn, self-read and content-checked. Waiting on research's verdict and its pick of colours. Next: the motion strips (opening, a tab switch, a press, a success, a fail), then the mark in the dock's sheet.
 
+### Reinforce in motion: the three strips inside Reinforce (Modulo, 2026-11-19, 10:51 to 11:17 by the clock)
+
+- **Where:** drawn by `tools/blender/upgrade_motion.py` from `upgrade_pages.py`'s own functions, so the strips follow the frame when it changes. The renders are in `build/scratch/modulo/upgrades/`:
+  - `upgrade_motion_press.png`, `upgrade_motion_success.png` and `upgrade_motion_fail.png`: each beat at the smallest phone, with its time.
+  - `upgrade_motion_close.png`: the hits at the phone's full pixels.
+  - `upgrade_motion.mp4`: 27.6 s, each strip at real speed and then at a quarter speed, 60 fps.
+- **The levers:**
+  - **A press** (a worn gear's row tapped): the row squeezes and springs back past its size. That overshoot (`Config.Hud.Motion.Press`) is the press's feel. The row's glass glides to it, eased out with no overshoot, because it's a marker. The work crossfades and slides 8 pt. Nothing waits on the server.
+  - **Success:**
+    - *Anticipation, while the server answers:* the press dims. Three of the cost's stones arc from its pill into the ring (eased in), the ring breathes in, and the gear rises 5%.
+    - *The hit, on the yes:* a flash and a ring of light thrown 26 pt. Six sparks (`Burst`), the level popping at its rung in green (`Pop`), and the stat and Credits counting (`Count`).
+    - *Follow-through and settle:* one shine (`Shine`), then the next rank's lines fade in.
+  - **Fail:** the same anticipation, since the client can't know. Then quieter:
+    - a thin crack across the ring, gone in 0.46 s, and the ring turns red;
+    - the gear dims to 55% and sinks, with a 2 pt shake;
+    - the level stays, in red, and the cost leaves all the same.
+- **Numbers:** `Config.Hud`'s Motion and Pop, read from the file. The rest are the sheet's seeds, listed on each sheet, for `Config.Hud.Motion` when Faber builds them. The server's answer is a stand-in at 0.4 s.
+- **Found on the way, for every review movie:**
+  - `tools/blender/frames_to_movie.py` encoded through Blender's default AgX view, which greys and darkens. Every movie it made since 2026-11-12 showed its frames greyer and darker than they are: the effect sheets, the reveal, the level-up notice, Watt's clips and the base door.
+  - It now encodes with Standard, and caps the sequencer's cache: encoding took 0.95 GB and now takes 0.56.
+- **Content check, PASS** (11:17): the three strips, the close sheet and frames from the mp4, on rules 2, 3 and 4.
+- **Waits:** the Menu's opening and its tab switch, on the director's answer to Modulo's question of this morning about the Menu.
+- **Status:** the press, the success and the fail are drawn, self-read and content-checked. They wait on research's verdict in motion, with the Menu sheets and Seam against C.
+
 ## Later, by ground
 
 The rest of ground 1 (Kirra in AR10, Watt in AR11; then Sable, Marigold, Crane), then each ground's Voidkin in `docs/roster.md`'s order. **The machines** (Gantry, Bulwark, Ironhymn, Shiomaru, Aegir) share one custom rig, taller than a player, with its own clip family: the first of them is timed like AR1, because a custom rig is a different cost.

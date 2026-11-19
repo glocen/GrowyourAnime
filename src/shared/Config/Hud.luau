@@ -125,12 +125,12 @@ return {
 		Yield = { From = 7, Seconds = 0.1, Aside = 14 },
 	},
 	-- The foe card's difficulty skull (AR45), by the foe's CR over the lead's (Rules.Hud.Skull): grey under Cuts[1], white
-	-- up to Cuts[2], yellow under Cuts[3], red from it. Fitted in research's simulation, not play (AR45, "The skulls'
-	-- thresholds, fitted", 13:22: a Shade carries much of its CR in health, so an own-level Ordinary is about 0.33 of the
-	-- lead's); checked against the game's ratios on Lantern Row. The skull and the level wear the tier's colour; the
-	-- grey skull is faint (Faint, its ImageTransparency).
+	-- up to Cuts[2], yellow under Cuts[3], red from it. On the game's own scale (AR45, "The cuts against the game's real
+	-- ratios", research, from Faber's 13:39 ratios: an own-level Ordinary is about 0.50 of the lead's, an own-level Elite
+	-- 1.60), replacing the simulation's 0.25, 1.1 and 1.8. The skull and the level wear the tier's colour; the grey skull
+	-- is faint (Faint, its ImageTransparency).
 	Skulls = {
-		Cuts = { 0.25, 1.1, 1.8 },
+		Cuts = { 0.35, 1.2, 2.0 },
 		Colours = { Color3.fromHex("#D3D1DC"), Color3.fromHex("#F6F2E8"), Color3.fromHex("#FFC83A"), Color3.fromHex("#FF4F42") },
 		Faint = 0.45,
 	},

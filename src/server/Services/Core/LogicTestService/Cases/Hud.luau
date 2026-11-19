@@ -26,15 +26,15 @@ return {
 		Run = function(t: any)
 			local cuts = HudConfig.Skulls.Cuts
 			t.Check("three rising cuts, one colour a tier", #cuts == 3 and cuts[1] < cuts[2] and cuts[2] < cuts[3] and #HudConfig.Skulls.Colours == 4)
-			local fixed = { 0.25, 1.1, 1.8 } -- research's fit, 13:22, so the edges are tested whatever Config is tuned to
+			local fixed = { 0.35, 1.2, 2.0 } -- research's cuts on the game's scale, so the edges are tested whatever Config is tuned to
 			t.Equal("well under the lead: grey", Hud.Skull(20, 100, fixed), 1)
-			t.Equal("just under the first cut: grey", Hud.Skull(24.9, 100, fixed), 1)
-			t.Equal("at the first cut: white", Hud.Skull(25, 100, fixed), 2)
-			t.Equal("an own-level Ordinary, a third of the lead's: white (the director's 'same level still 1 skull')", Hud.Skull(33, 100, fixed), 2)
-			t.Equal("at the second cut, included: white", Hud.Skull(110, 100, fixed), 2)
-			t.Equal("past it: yellow", Hud.Skull(111, 100, fixed), 3)
-			t.Equal("just under the third: yellow", Hud.Skull(179, 100, fixed), 3)
-			t.Equal("from the third: red", Hud.Skull(180, 100, fixed), 4)
+			t.Equal("just under the first cut: grey", Hud.Skull(34.9, 100, fixed), 1)
+			t.Equal("at the first cut: white", Hud.Skull(35, 100, fixed), 2)
+			t.Equal("an own-level Ordinary, half the lead's in the game: white (the director's 'same level still 1 skull')", Hud.Skull(50, 100, fixed), 2)
+			t.Equal("at the second cut, included: white", Hud.Skull(120, 100, fixed), 2)
+			t.Equal("past it: yellow", Hud.Skull(121, 100, fixed), 3)
+			t.Equal("just under the third: yellow", Hud.Skull(199, 100, fixed), 3)
+			t.Equal("from the third: red", Hud.Skull(200, 100, fixed), 4)
 			t.Equal("far over: red", Hud.Skull(900, 100, fixed), 4)
 			t.Equal("no lead CR yet: white", Hud.Skull(0, 0, fixed), 2)
 			t.Equal("no lead CR, a foe with some: red", Hud.Skull(50, 0, fixed), 4)

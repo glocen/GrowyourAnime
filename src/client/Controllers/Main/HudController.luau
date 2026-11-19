@@ -1363,7 +1363,7 @@ function HudController.Start()
 			end
 		end
 	end
-	homeTray = HomeTray.new(Layers.Get("Cover"), Layers.Get("Hud"), PAD + make.Box.Y - math.min(make.At.Y, 0), presses)
+	homeTray = HomeTray.new(Layers.Get("Cover"), Layers.Get("Hud"), PAD + make.Box.Y - math.min(make.At.Y, 0), presses, { "Lead", "Credits", "Electricity" })
 	-- The jump's light (TR19), a stand-in until Modulo's look: one frame on each of the screen's edges, lit at the edge and
 	-- gone Reach in, over everything but the toasts.
 	local overlay = Layers.Get("Overlay")

@@ -13681,12 +13681,18 @@ The director's words: jewels and War Emblems go in and out on Equipment's pages 
 - **Places are whole points, rounded:** a UDim offset is cut toward nought, so War Emblems' 314.67 laid at 314. Every place in the tray is rounded instead, as `Seam.Whole` does.
 - **Tested:** the type check (0 new); the offline logic, 26,774 passed; the self-test's "Home's tray" 44/44, the dock 39/39, the Voidkin screen 241/241 and its Overview 21/21, the Items page 120/120 and 48/48, TR19 49/49, TR20 36/36, the machine's plate 33/33, TR21 43/43, TR24 22/22. The TR20 take now goes through Home's tray.
 - **The take:** "Take: AR43, Home's tray held for stills" (DockCases) holds open, pressed, the step slowed fortyfold, and the smallest phone. Stills are in `build/scratch/faber/ar43/stills/`: `tray-open`, `tray-pressed`, `tray-step-inventory` and `tray-phone`.
-- **Self-read:** the tray reads as the dock unfolding: graphite over the dock, the pressed tile sunk and darker. At the smallest phone it fits above the dock with every word whole, over the dimmed lead card's health line. At 0.36 the dim is gentle in daylight: the world reads as behind, not gone.
-- **For research:**
-  - the pass on the stills;
-  - one naming call: the director named the Bag page "Items" (2026-11-15, `SAID` in the Voidkin screen), while Home's tile and the band say "Inventory", as `home.json` draws it. The band follows the tile now.
+- **Self-read:** the tray reads as the dock unfolding: graphite over the dock, the pressed tile sunk and darker. At 0.36 the dim is gentle in daylight: the world reads as behind, not gone.
+- **Research's pass (Quaestor, 15:19): competent.**
+  - **Must-fix:** on the phone the tray covered the lead card's health.
+  - **Naming:** "Inventory", by the director's 03:37 words.
+- **The must-fix, met (15:25):**
+  - **Why it moved:** at the smallest phone, only 107 rendered pixels lie between the lead card's foot and the dock's top, against the tray's 117. Right of the dock there are 201 across, against its 456. Shrinking it would break the 44-pixel taps and the 14-pixel words.
+  - **The fix:** where its place over the dock's top would cover the lead card or the currencies, the tray stands over the dock instead, its foot on the dock's, at its own size, with no point and the dim round the tray. A tap on the dim closes it.
+  - **Tested:** the Home case checks both rooms, now 50/50.
+  - **Still:** `tray-phone-over.jpg`.
+- **Naming, done:** the Bag page reads "Inventory" (`SAID`).
 - **Not done:** Equipment's three screens, held for the Seam redraw (Modulo, 14:56).
-- **Status:** implemented, tested, self-reviewed; research's pass asked; not director-accepted.
+- **Status:** implemented, tested, self-reviewed; research's pass competent, with its must-fix met; not director-accepted.
 
 ### Research's pass on Home's tray in the game (Quaestor, 2026-11-19, 15:19)
 

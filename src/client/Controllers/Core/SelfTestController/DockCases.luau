@@ -274,6 +274,55 @@ function DockCases.Cases(given: Given): { any }
 				HomeTray.Close(tray)
 				t.Wait(home.Open.Leave + 0.1)
 				t.Check("closed: out of sight, the world undimmed, the cell at rest", not tray.Frame.Visible and not tray.Dim.Visible and cell:GetAttribute("Selected") == false)
+				-- Where it stands (research's must-fix, 2026-11-19): over the dock's top, its point on the cell, where that covers
+				-- neither the lead card nor the currencies; on the smallest phone, over the dock instead, the same size.
+				local function covers(): string
+					local body = tray.Group:FindFirstChild("Tray") :: Frame
+					local a0, a1 = body.AbsolutePosition, body.AbsolutePosition + body.AbsoluteSize
+					local hit = {}
+					for _, name in { "Lead", "Credits", "Electricity" } do
+						local piece = hudRoot:FindFirstChild(name)
+						if piece and piece:IsA("GuiObject") and piece.Visible then
+							local b0, b1 = piece.AbsolutePosition, piece.AbsolutePosition + piece.AbsoluteSize
+							if a0.X < b1.X and a1.X > b0.X and a0.Y < b1.Y and a1.Y > b0.Y then
+								table.insert(hit, name)
+							end
+						end
+					end
+					local room = Layers.Get("Cover")
+					local r0, r1 = room.AbsolutePosition, room.AbsolutePosition + room.AbsoluteSize
+					if a0.X < r0.X - 1 or a0.Y < r0.Y - 1 or a1.X > r1.X + 1 or a1.Y > r1.Y + 1 then
+						table.insert(hit, "the room's edge")
+					end
+					return table.concat(hit, ", ")
+				end
+				local function opened(): boolean
+					Button.Press(cell)
+					t.Wait(home.Open.Grow + 0.15)
+					return HomeTray.Shown(tray)
+				end
+				t.Check("this window: over the dock's top, its point on the cell", opened() and not tray.Over and tray.Point.Visible)
+				t.Check("covering neither the lead card nor the currencies", covers() == "", covers())
+				HomeTray.Close(tray)
+				t.Wait(home.Open.Leave + 0.1)
+				Layers.Force(Theme.Scale.Floor)
+				Layers.Box(Theme.Smallest - Vector2.new(0, GuiService.TopbarInset.Height))
+				t.Wait(0.2)
+				t.Check("the smallest phone: over the dock instead, no point", opened() and tray.Over and not tray.Point.Visible)
+				t.Check("covering neither the lead card nor the currencies, inside the room", covers() == "", covers())
+				t.Near("its own size", body.AbsoluteSize.X / Layers.Scale(), home.Size.X, 1)
+				local holeLit = true
+				for _, panel in tray.Panels do
+					local p0, p1 = panel.AbsolutePosition, panel.AbsolutePosition + panel.AbsoluteSize
+					local b0, b1 = body.AbsolutePosition + Vector2.one, body.AbsolutePosition + body.AbsoluteSize - Vector2.one
+					holeLit = holeLit and not (p0.X < b1.X and p1.X > b0.X and p0.Y < b1.Y and p1.Y > b0.Y)
+				end
+				t.Check("the dim round the tray, none over it", holeLit)
+				HomeTray.Close(tray)
+				t.Wait(home.Open.Leave + 0.1)
+				Layers.Box(nil)
+				Layers.Force(nil)
+				t.Wait(0.2)
 			end,
 		},
 		{

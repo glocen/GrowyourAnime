@@ -72,9 +72,10 @@ export type On = { Act: (name: string, args: any) -> { [string]: any }, Healing:
 local NAME = "Voidkin"
 local PAGES = { "Overview", "Bag", "Kit", "Stars", "Forge", "Jewels", "War Emblems" }
 local SOON: { [string]: boolean } = { Forge = true, Jewels = true, ["War Emblems"] = true } -- not built yet: greyed
--- A page's word where it isn't its name: the Bag page reads "Items" (the director, 2026-11-15). Its kinds are Rules.Bag's
--- (TR28, AR18's A).
-local SAID: { [string]: string } = { Bag = "Items" }
+-- A page's word where it isn't its name: the Bag page reads "Inventory", as Home's tile does (the director's 03:37,
+-- "inventory with the gears slot", in place of 2026-11-15's "Items"; research's call, AR43, 2026-11-19). Its kinds are
+-- Rules.Bag's (TR28, AR18's A).
+local SAID: { [string]: string } = { Bag = "Inventory" }
 local ROW = Theme.Size.Tap -- a row of buttons, authored
 local BAR = 28 -- a currency's chip, in the band, authored
 local TITLE = 24 -- the name's line over the stage, authored

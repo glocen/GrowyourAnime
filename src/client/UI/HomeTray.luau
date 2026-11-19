@@ -38,6 +38,7 @@ local HOME = HudConfig.Home
 local PAGES = HudConfig.Voidkin.Chrome.Images -- the Voidkin screen's page icons
 local MARGIN = 16 -- room round the tray inside its group for the plate's shadow and the point: a CanvasGroup clips
 local SOON = "Soon" -- a tile not built yet: its reason
+local GAP = Theme.Size.Gap -- points kept between the tray and what it never covers
 
 type Def = { Name: string, Page: string?, Icon: string, Tall: boolean?, Box: { number }, At: Vector2, Side: number?, Word: Vector2 }
 export type Tile = { Def: Def, Button: TextButton, Layers: { [string]: ImageLabel }, Icon: ImageLabel, Word: TextLabel, Shown: string }
@@ -51,6 +52,9 @@ export type Tray = {
 	Dimmed: number, -- the panels' transparency now
 	Hud: GuiObject,
 	Foot: number,
+	Avoid: { string }, -- the HUD's pieces it never covers, by name: the lead card and the currencies (research, AR43)
+	Over: boolean, -- laid over the dock, its foot on the dock's: a room too short for it over the dock's top
+	Point: ImageLabel,
 	Laid: string, -- where the tray and the dim were laid last: the room and the HUD's foot
 	Tiles: { [string]: Tile },
 	Presses: { [string]: () -> () },
@@ -71,23 +75,58 @@ local function eased(t: number, back: number?): number
 	return t * t -- in
 end
 
--- The tray and the dim laid in the cover from the HUD's foot: the tray's foot on the Home cell's top, the dim round the
--- dock's rect, all in the cover's points.
+-- The tray and the dim laid in the cover from the HUD's foot, all in the cover's points: the tray's foot on the Home
+-- cell's top, its point on the cell, the dim round the dock's rect. Where that would cover the lead card or the
+-- currencies (the smallest phones: 107 rendered pixels between the lead card's foot and the dock's top, for a tray of
+-- 117), it stands over the dock instead, its foot on the dock's, the same size (its taps and words stay whole): no
+-- point, and the dim round the tray itself (research's must-fix on AR43, 2026-11-19).
 local function place(tray: Tray)
 	local cover = tray.Dim.Parent :: GuiObject
 	local hud = tray.Hud
 	local scale = Layers.Scale()
-	local key = `{cover.AbsoluteSize} {hud.AbsolutePosition} {hud.AbsoluteSize} {scale}`
+	local origin = cover.AbsolutePosition
+	local kept: { { number } } = {} -- x0, y0, x1, y1, a gap round each
+	local seen: { string } = {}
+	for _, name in tray.Avoid do
+		local piece = hud:FindFirstChild(name)
+		if piece and piece:IsA("GuiObject") and piece.Visible then
+			local at, size = (piece.AbsolutePosition - origin) / scale, piece.AbsoluteSize / scale
+			table.insert(kept, { at.X - GAP, at.Y - GAP, at.X + size.X + GAP, at.Y + size.Y + GAP })
+			table.insert(seen, `{piece.AbsolutePosition}{piece.AbsoluteSize}`)
+		end
+	end
+	local key = `{cover.AbsoluteSize} {hud.AbsolutePosition} {hud.AbsoluteSize} {scale} {table.concat(seen, " ")}`
 	if key == tray.Laid then
 		return
 	end
 	tray.Laid = key
+	local size = HOME.Size
 	local wide, tall = cover.AbsoluteSize.X / scale, cover.AbsoluteSize.Y / scale
-	local foot = (hud.AbsolutePosition.Y + hud.AbsoluteSize.Y - cover.AbsolutePosition.Y) / scale
-	local middle = (hud.AbsolutePosition.X + hud.AbsoluteSize.X / 2 - cover.AbsolutePosition.X) / scale
-	local left, right, top = middle - HOME.Dim.Side, middle + HOME.Dim.Side, foot - tray.Foot
-	tray.Frame.Position = whole(middle, top)
-	local boxes = { { 0, 0, wide, top }, { 0, foot, wide, tall - foot }, { 0, top, left, tray.Foot }, { right, top, wide - right, tray.Foot } }
+	local foot = (hud.AbsolutePosition.Y + hud.AbsoluteSize.Y - origin.Y) / scale
+	local middle = (hud.AbsolutePosition.X + hud.AbsoluteSize.X / 2 - origin.X) / scale
+	local top = foot - tray.Foot -- the dock's top
+	local function clear(bottom: number): boolean -- the tray's body, its foot at `bottom`, covers none of them
+		local x0, x1, y0 = middle - size.X / 2, middle + size.X / 2, bottom - size.Y
+		for _, box in kept do
+			if x0 < box[3] and x1 > box[1] and y0 < box[4] and bottom > box[2] then
+				return false
+			end
+		end
+		return true
+	end
+	local under = foot - Theme.Size.Pad -- the dock's foot, about
+	local over = not clear(top - HOME.Above) and clear(under)
+	tray.Over = over
+	tray.Point.Visible = not over
+	local frameFoot = if over then under + HOME.Above else top
+	tray.Frame.Position = whole(middle, frameFoot)
+	-- The dim's hole: the dock's rect, Side each side of its middle up to its top; over the dock, the tray's own rect.
+	local left, right, holeTop, holeFoot = middle - HOME.Dim.Side, middle + HOME.Dim.Side, top, foot
+	if over then
+		left, right, holeTop, holeFoot = middle - size.X / 2, middle + size.X / 2, under - size.Y, under
+	end
+	local high = holeFoot - holeTop
+	local boxes = { { 0, 0, wide, holeTop }, { 0, holeFoot, wide, tall - holeFoot }, { 0, holeTop, left, high }, { right, holeTop, wide - right, high } }
 	for index, panel in tray.Panels do
 		local box = boxes[index]
 		panel.Position = whole(box[1], box[2])
@@ -189,7 +228,7 @@ local function step(tray: Tray, def: Def)
 	end)
 end
 
-function HomeTray.new(cover: Instance, hud: GuiObject, foot: number, presses: { [string]: () -> () }): Tray
+function HomeTray.new(cover: Instance, hud: GuiObject, foot: number, presses: { [string]: () -> () }, avoid: { string }?): Tray
 	local size = HOME.Size
 	local frame = Instance.new("Frame")
 	frame.Name = "HomeTray"
@@ -277,6 +316,9 @@ function HomeTray.new(cover: Instance, hud: GuiObject, foot: number, presses: { 
 		Dimmed = 1,
 		Hud = hud,
 		Foot = foot,
+		Avoid = avoid or {},
+		Over = false,
+		Point = point,
 		Laid = "",
 		Tiles = {},
 		Presses = presses,

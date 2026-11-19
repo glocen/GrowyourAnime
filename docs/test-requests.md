@@ -3903,3 +3903,8 @@ Faber, 2026-11-19, 03:43 by the clock: the follow-up's item 7 (`docs/production-
 - **The heal cap told once.** The first time the cap binds, once per account, a toast near the lead's health bar in the quiet style (`docs/ui.md`, rule 2): "Healing capped for this floor: 15% of your lead's health". The share is read from Config and never written into the text. Reduced Motion gives a fade-in.
 
 **What waits:** the card's art and the board's look (the shared finish); parties' boards (after everything else).
+
+**Where it stands** (Faber, 2026-11-19, 03:53, stopped for the day by the director's word):
+- **Built and tested** (444bfa2): the week's foes (`Rules.Tower.Week`, `WeekSeed`; logic 26,674/0), and Retry and Home on the card, with its lines and buttons now inside its body (the Tower case 51/0; the card read in play).
+- **Built, NOT VERIFIED in Studio:** the heal cap told once. The fight signals a capped heal (`FightService.Capped`), the save keeps `Progress.Tower.HealTold`, the client gets Net "TowerHealCap", and `HudController.Note` shows research's line under the lead's corner (`Config.Hud.Note`). The type check and the logic cases pass. Its self-test step (`TowerHealTold`, `TowerMend` on the debug bridge) and a capture come next.
+- **Not started:** the week's board. The content check on the new lines runs before it's built.

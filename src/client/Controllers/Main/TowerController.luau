@@ -25,6 +25,7 @@ local Text = require(UI.Kit.Text)
 local Screen = require(UI.Kit.Screen)
 local TowerScreen = require(UI.TowerScreen)
 local ProfileController = require(script.Parent.Parent.Core.ProfileController)
+local HudController = require(script.Parent.HudController)
 
 local TowerController = {}
 
@@ -213,6 +214,11 @@ function TowerController.Label(): TextLabel?
 end
 
 function TowerController.Start()
+	-- The heal cap, told once per account the first time it binds (TR46; research's words, the share from Config).
+	Net.Client.On("TowerHealCap", function(share: any)
+		local percent = math.floor((if type(share) == "number" then share else TowerConfig.HealCap) * 100 + 0.5)
+		HudController.Note(`Healing capped for this floor: {percent}% of your lead's health.`)
+	end)
 	local function watch(player: Player)
 		player:GetAttributeChangedSignal("Tower"):Connect(function()
 			draw(player)

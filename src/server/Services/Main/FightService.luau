@@ -120,6 +120,7 @@ FightService.Rose = Signal.new() -- (fighter) a lead up again: home with its pla
 FightService.Marked = Signal.new() -- (fighter, mark) a marked strike's footprint is down (TR44)
 -- (fighter, mark, struck: { Fighter }?) taken up: on its hit, with the leads it took; nil when its action ended first
 FightService.Unmarked = Signal.new()
+FightService.Capped = Signal.new() -- (fighter) a heal stopped short by its HealRoom: the Tower's cap bound (TR46)
 
 local GROUP_FIGHTERS = "Fighters"
 local GROUP_AVATARS = "Avatars"
@@ -196,6 +197,9 @@ local function heal(f: Fighter, wanted: number): number
 	local reached, left = Tower.Capped(f.Health, wanted, room)
 	f.HealRoom = left
 	setHealth(f, reached)
+	if reached < wanted then
+		FightService.Capped:Fire(f)
+	end
 	return f.Health
 end
 
@@ -1811,6 +1815,13 @@ function FightService.Calm(player: Player)
 end
 
 -- Studio's tests: `f` at `share` of its most health, standing (a heal's case needs a lead that's hurt).
+-- A heal of `amount` through the fighter's HealRoom, as every heal in a fight goes (the debug bridge's, TR46).
+function FightService.Heal(f: Fighter, amount: number)
+	if fighters[f.Id] == f and f.State ~= "Down" and amount > 0 then
+		heal(f, math.min(f.Health + amount, f.Block.Health))
+	end
+end
+
 function FightService.SetHealthShare(f: Fighter, share: number)
 	if fighters[f.Id] == f and f.State ~= "Down" and share > 0 and share <= 1 then
 		setHealth(f, f.Block.Health * share)

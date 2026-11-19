@@ -165,6 +165,7 @@ export type Data = {
 			Best: number, -- the highest floor ever won (TR29)
 			Run: TowerRun?,
 			Results: TowerResults?,
+			HealTold: boolean?, -- the heal cap has been told once, the first time it bound (TR46); never again
 		},
 	},
 }

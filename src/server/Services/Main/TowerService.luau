@@ -14,6 +14,8 @@
 --   TowerService.Stop(player, why)                   the run ended where it stands
 -- The results' two presses (TR46): Net "TowerRetry" sets the avatar in its ring, where the ring's own step begins the
 -- next run once Rest is up; Net "TowerHome" sets it down at its plot's spawn, free (HomeService.SetDown).
+-- The heal cap told once (TR46): the first time it binds on a run's lead, the save keeps Progress.Tower.HealTold and the
+-- client is told (Net "TowerHealCap", the share), once per account.
 
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
@@ -480,6 +482,26 @@ function TowerService.Init()
 		end)
 	end)
 	-- The heal cap at work: a lead's health set to a share mid-floor, so a case can watch what it heals.
+	-- A heal through the lead's cap, as its own would go; and the account's heal cap told or not, to see it again.
+	DebugService.Register("TowerMend", function(who: any, amount: any)
+		local player = DebugService.ResolvePlayer(who)
+		local lead = if player then FightService.LeadOf(player) else nil
+		if lead == nil or type(amount) ~= "number" then
+			return { Ok = false, Error = "NoLead" }
+		end
+		FightService.Heal(lead, amount)
+		return { Ok = true, Health = lead.Health }
+	end)
+	DebugService.Register("TowerHealTold", function(who: any, told: any)
+		local player = DebugService.ResolvePlayer(who)
+		if player == nil or (told ~= nil and type(told) ~= "boolean") then
+			return { Ok = false, Error = "BadArgs" }
+		end
+		return DataService.Change(player, "TowerHealTold", function(draft: Profile.Data)
+			draft.Progress.Tower.HealTold = if told then true else nil
+			return { Ok = true }
+		end)
+	end)
 	DebugService.Register("TowerHurt", function(who: any, share: any)
 		local player = DebugService.ResolvePlayer(who)
 		local lead = if player then FightService.LeadOf(player) else nil
@@ -514,7 +536,36 @@ local function after(player: Player, what: string): { [string]: any }
 	return { Ok = true, Waits = if ended then math.max(0, TowerConfig.Rest - (os.clock() - ended)) else 0 }
 end
 
+-- The heal cap bound on a fighter: if it's a run's lead and its account was never told, tell it once.
+local telling: { [Player]: boolean } = {}
+local function capped(f: FightService.Fighter)
+	for player, run in runs do
+		if f.Side ~= "Lead" or f.Owner ~= player or run.Phase ~= "Fighting" or telling[player] then
+			continue
+		end
+		local view = DataService.Get(player)
+		if view == nil or view.Progress.Tower.HealTold == true then
+			continue
+		end
+		telling[player] = true
+		task.spawn(function()
+			local answer = DataService.Change(player, "TowerHealTold", function(draft: Profile.Data)
+				if draft.Progress.Tower.HealTold == true then
+					return { Ok = false, Error = "Told" }
+				end
+				draft.Progress.Tower.HealTold = true
+				return { Ok = true }
+			end)
+			if answer.Ok == true and player.Parent ~= nil then
+				Net.Server.Fire("TowerHealCap", player, TowerConfig.HealCap)
+			end
+			telling[player] = nil
+		end)
+	end
+end
+
 function TowerService.Start()
+	FightService.Capped:Connect(capped)
 	Net.Server.Handle("TowerRetry", function(player: Player): { [string]: any }
 		return after(player, "Retry")
 	end)

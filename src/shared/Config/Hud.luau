@@ -186,6 +186,10 @@ return {
 	-- Plates kept apart in a group (UI.World.Apart: the base's machine plates): Gap authored pixels between two, over and
 	-- under, as the command view's chips (Config.BaseView.Chip.Gap). The builder's seed.
 	Plates = { Gap = 6 },
+	-- A quiet note under the lead's corner, where the level-up's notice shows (docs/ui.md, rule 2; TR46: the heal cap told
+	-- once): it fades in over In seconds, sliding Slide points out of the left unless Reduced Motion, holds Hold, fades out
+	-- over Out. Its backing at Back's transparency, Pad points around its words.
+	Note = { In = 0.25, Hold = 4.5, Out = 0.4, Slide = 10, Back = 0.3, Pad = 8 },
 	-- The level-up's notice (AR12, take B, the director's pick of 2026-11-15; Modulo's levelup_notice.json; UI.LevelNotice;
 	-- TR41 (c)). A plate Tall points high, in the lead card's violet, Below the lead's corner (its readout's foot) at the
 	-- card's left edge, Base + the wider of its name and its line across. Its block is Block wide and leans Lean across per

@@ -19,6 +19,7 @@
 
 local CollectionService = game:GetService("CollectionService")
 local GuiService = game:GetService("GuiService")
+local TweenService = game:GetService("TweenService")
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
@@ -311,6 +312,38 @@ local function eyeButton(): TextButton
 	return button
 end
 
+-- The quiet note under the lead's corner (docs/ui.md, rule 2; Config.Hud.Note; TR46): one line on a soft backing, in, read,
+-- out. A new note takes the place of one still shown.
+type Note = { Holder: Frame, Body: Frame, Words: TextLabel, Run: number }
+local function makeNote(parent: Instance): Note
+	local holder = Instance.new("Frame")
+	holder.Name = "Note"
+	holder.BackgroundTransparency = 1
+	holder.Size = UDim2.fromOffset(0, 0)
+	holder.AutomaticSize = Enum.AutomaticSize.XY
+	holder.Visible = false
+	holder.ZIndex = 6
+	holder.Parent = parent
+	local body = Instance.new("Frame")
+	body.Name = "Body"
+	body.BackgroundColor3 = Theme.Colour.Backing
+	body.BorderSizePixel = 0
+	body.Size = UDim2.fromOffset(0, 0)
+	body.AutomaticSize = Enum.AutomaticSize.XY
+	body.Parent = holder
+	local corner = Instance.new("UICorner")
+	corner.CornerRadius = UDim.new(0, 6)
+	corner.Parent = body
+	local pad = Instance.new("UIPadding")
+	local p = UDim.new(0, HudConfig.Note.Pad)
+	pad.PaddingLeft, pad.PaddingRight, pad.PaddingTop, pad.PaddingBottom = p, p, UDim.new(0, HudConfig.Note.Pad / 2), UDim.new(0, HudConfig.Note.Pad / 2)
+	pad.Parent = body
+	local words = Text.new({ Name = "Words", Size = Theme.Text.Caption, Colour = Theme.Colour.Text, Box = UDim2.fromOffset(0, 0), Parent = body })
+	words.AutomaticSize = Enum.AutomaticSize.XY
+	return { Holder = holder, Body = body, Words = words, Run = 0 }
+end
+local note: Note? = nil
+
 -- The lead's corner (AR12; Config.Hud.Readout, Config.Hud.Spectate, tuned live): the readout under the lead's card, the
 -- eye beside it, and after the eye a fallen lead's offer of the next.
 local function placeCorner()
@@ -330,6 +363,10 @@ local function placeCorner()
 	local hud, scale = Layers.Get("Hud"), math.max(Layers.Scale(), 0.01)
 	local chipLeft = if chip then (chip.AbsolutePosition.X - hud.AbsolutePosition.X) / scale else math.huge
 	LevelNotice.Place(card.Position.X.Offset, top + plate.Size + HudConfig.LevelNotice.Below, chipLeft - Theme.Size.Gap - card.Position.X.Offset)
+	-- The quiet note in the same place: the two never meet, a Tower run's lead being frozen (TR46).
+	if note then
+		note.Holder.Position = UDim2.fromOffset(card.Position.X.Offset, top + plate.Size + HudConfig.LevelNotice.Below)
+	end
 end
 
 -- The readout shows only in a fight (TR3's verdict, fix 5): it fades in as the lead takes a target, and out a moment
@@ -1188,9 +1225,47 @@ HudController.OpenView = function() end
 -- The dock's Play tile: the Festival of Battles' menu (StageController sets it, TR45).
 HudController.OpenPlay = function() end
 
+-- Shows `words` as the quiet note under the lead's corner (TR46: the heal cap told once).
+function HudController.Note(words: string)
+	local shown = note
+	if shown == nil then
+		return
+	end
+	local config = HudConfig.Note
+	shown.Run += 1
+	local run = shown.Run
+	shown.Words.Text = words
+	shown.Holder.Visible = true
+	local still = GuiService.ReducedMotionEnabled
+	shown.Body.Position = UDim2.fromOffset(if still then 0 else -config.Slide, 0)
+	shown.Body.BackgroundTransparency, shown.Words.TextTransparency = 1, 1
+	local easeIn = TweenInfo.new(config.In, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
+	TweenService:Create(shown.Body, easeIn, { Position = UDim2.fromOffset(0, 0), BackgroundTransparency = config.Back }):Play()
+	TweenService:Create(shown.Words, easeIn, { TextTransparency = 0 }):Play()
+	task.delay(config.In + config.Hold, function()
+		if shown.Run ~= run then
+			return
+		end
+		local easeOut = TweenInfo.new(config.Out, Enum.EasingStyle.Quad, Enum.EasingDirection.In)
+		TweenService:Create(shown.Body, easeOut, { BackgroundTransparency = 1 }):Play()
+		TweenService:Create(shown.Words, easeOut, { TextTransparency = 1 }):Play()
+		task.delay(config.Out, function()
+			if shown.Run == run then
+				shown.Holder.Visible = false
+			end
+		end)
+	end)
+end
+
+-- The note's words while it shows, else nil: for tests.
+function HudController.Noted(): string?
+	return if note and note.Holder.Visible then note.Words.Text else nil
+end
+
 function HudController.Start()
 	lead = LeadCard.new(Layers.Get("Hud"), UDim2.fromOffset(PAD, TOP))
 	LevelNotice.Mount(Layers.Get("Hud"))
+	note = makeNote(Layers.Get("Hud"))
 	-- The target's card centred, its blade and tab level with the lead's.
 	target = TargetCard.new(Layers.Get("Hud"), UDim2.new(0.5, 0, 0, TOP - UIKit.TargetCard.Offset.Y))
 	targetArrow = arrow(target.Frame, TargetCard.ArrowAt.X, TargetCard.ArrowAt.Y)

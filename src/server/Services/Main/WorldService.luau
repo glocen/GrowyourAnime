@@ -54,6 +54,7 @@ local WORLD = "World"
 local GROUND_TOP = 0.5 -- the ground's top, over a template Baseplate's (0), so the two never fight for a pixel
 local PAVED_TOP = 0.6 -- the Strip, the streets and the plots stand a tenth higher, for the same reason
 local OVERLAY = 0.1 -- a mark on a paved floor: the kept back of a plot, a Tower's footprint
+local GROUND_PAST = 16 -- the base's ground past where a Tower's platform reaches: room to come down from a high floor
 local SPAWN_UP = 3 -- an R6 root stands 3 studs over its floor
 local DRESS = "LanternRow" -- the kit Lantern Row wears: Config.Kits.LanternRow, ServerStorage.Templates.LanternRowKit
 local DRESS_LIFT = 0.05 -- the kit's floors stand a hair over the paving they cover, so the two never fight at a distance
@@ -894,9 +895,11 @@ local function lay(folder: Folder)
 		layStreet(folder, gateZ, stripEnd, groundColour)
 		return
 	end
-	-- The base's ground, out to the Towers' far edges. The Festival of Battles is its own place (TR45): the base's
-	-- Festival Door opens its menu, and the crossing north of the Strip is ground.
-	slab(folder, "Ground", -stripEnd, stripEnd, towers, -towers, GROUND_TOP, groundColour)
+	-- The base's ground, out past the Towers' far edges by as far as a platform reaches over them (Rules.Tower.Reach,
+	-- AR41's 48 across), so an avatar that leaves its run off the far side comes down on ground. The Festival of
+	-- Battles is its own place (TR45): the base's Festival Door opens its menu, and the crossing north of the Strip is ground.
+	local ground = math.max(towers, stripHalf + deep / 2 + Tower.Reach(across, deep, behind, tower).Far + GROUND_PAST)
+	slab(folder, "Ground", -stripEnd, stripEnd, ground, -ground, GROUND_TOP, groundColour)
 	-- The Strip, wearing Lantern Row's paving with the base laid, as its street does: off the stones onto the plates is
 	-- coming home (AR14). With the Strip's own kit, its own tile (Lantern Row's lifted) and its dressing (AR17).
 	local strip = slab(folder, "Strip", -stripEnd, stripEnd, -stripHalf, stripHalf, PAVED_TOP, GREY.Paved)

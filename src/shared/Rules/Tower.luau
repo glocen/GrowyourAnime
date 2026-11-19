@@ -97,6 +97,16 @@ function Tower.RingSpot(across: number, deep: number, behind: number, tower: num
 	return side * (across / 2 - tower / 2), deep / 2 + behind + tower / 2
 end
 
+-- Where a platform over that ring reaches, out to the line a run is left at (its edge, then Out.Side), in the same
+-- frame and the same studs: Side, across from the plot's middle on the ring's side; Near, the least inward (toward the
+-- plot); Far, the most. A platform wider than its lot overhangs it in the air, never the plot's own yard or a
+-- neighbour's half of the gap between them (the logic cases), and the base's ground is laid on past Far.
+function Tower.Reach(across: number, deep: number, behind: number, tower: number): { Side: number, Near: number, Far: number }
+	local x, z = Tower.RingSpot(across, deep, behind, tower, 1)
+	local out = TowerConfig.Platform.Radius + TowerConfig.Out.Side
+	return { Side = x + out, Near = z - out, Far = z + out }
+end
+
 -- Whether a foe of `foeLevel` falls to the lead's first hit (Config.Tower.Fast).
 function Tower.Fast(leadLevel: number, foeLevel: number): boolean
 	return leadLevel - foeLevel >= TowerConfig.Fast.Gap

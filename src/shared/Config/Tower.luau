@@ -39,7 +39,11 @@ return {
 	-- The world, in studs (builder's, tuned by playing). The ring lies on its lot's crossing end, where the sleeping
 	-- Tower stood; stepping within Ring of its middle starts a run. Floor f's platform stands f x Height over it.
 	Ring = 5,
-	Platform = { Radius = 14, Height = 12, Thick = 1 },
+	-- 48 across and 18 between floors (AR41, "The director: the Tower is too small", research's seeds of 2026-11-19 after
+	-- the director's "the tower is way to small"): the avatar and the foe stand 26 apart, three discs 54 tall. Thick in
+	-- proportion to the 28 across it was, until AR41's model. It reaches past its lot's 32 deep, in the air, by
+	-- Rules.Tower.Reach: clear of its yard and its neighbour, and the base's ground runs on under its far side.
+	Platform = { Radius = 24, Height = 18, Thick = 1.7 },
 	-- The avatar off its platform by Side past its edge, or Below under its top, has left: the run ends there.
 	Out = { Side = 3, Below = 8 },
 	Stand = 0.55, -- the avatar is set down this share of the radius behind the middle, the foe as far in front

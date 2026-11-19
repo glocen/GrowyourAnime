@@ -106,7 +106,13 @@ return {
 			t.Check("on the drawn plot, at the silhouette's place", x == 48 and z == 96, `{x}, {z}`)
 			local mx = Tower.RingSpot(across, deep, behind, tower, -1)
 			t.Equal("mirrored with its crossing", mx, -48)
-			t.Check("its platforms stay on its lot's square", TowerConfig.Platform.Radius <= tower / 2)
+			-- Its platforms (out to where a run is left) clear the plot's own yard and the neighbour's half of the gap
+			-- between them (AR41: 48 across overhangs the lot's 32, in the air).
+			local reach = Tower.Reach(across, deep, behind, tower)
+			t.Check("its platforms stay off its own yard", reach.Near >= deep / 2, `{reach.Near} < {deep / 2}`)
+			local between = plots.Between * unit
+			t.Check("and off its neighbour's half of the gap", reach.Side <= across / 2 + between / 2, `{reach.Side} > {across / 2 + between / 2}`)
+			t.Check("and over its own floor, never the one below", TowerConfig.Platform.Height > TowerConfig.Out.Below + TowerConfig.Platform.Thick)
 		end,
 	},
 	{

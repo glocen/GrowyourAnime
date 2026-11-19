@@ -1199,6 +1199,25 @@ Research's word, 2026-11-17, sent with AR31's verdict (AR31, "Research's verdict
   - The elite's masks run near white, so at 28 px they're two pale shapes. That's enough beside the hat, and it goes to polish-later, not here.
   - **Next:** Faber lays them on the marker in place of the letters, beside the grey marker's own capture: the three layouts at phone size from the street, near and far. One verdict covers the marker and its icons in the game.
 
+### The elite's icon on AR47's mask (Modulo, 2026-11-19, 20:57 to 21:02 by the clock)
+
+- **Why:** `MarkerElite.png` was rendered on 2026-11-17 from the mask with ink brows, the face AR42's content check blocked and AR47 reworked. It was never uploaded, so it's redrawn before Faber takes it.
+- **First, a re-render on the reworked mask, as it stood:** no brows, but no face either. The icon's light (the sun, the camera's fill, and the paper's own glow at the model's 12) clipped the paper to white. So the lit holes and grin vanished into it, and at 28 px the masks were two blank shapes, polish-later's note made worse (`build/scratch/modulo/marker_ar47/old_new_x3.png`).
+- **The fix, the masks' light in the icon only** (`tools/blender/marker_icons.py`, `PAPER_LIGHT` and `MASK_GLOW`):
+  - The paper's diffuse is scaled to 0.5, 0.45, 0.39, and its glow is brought from 12 to 3.5.
+  - The paper now draws at about (209, 191, 165), against the game's (205, 179, 152), measured on AR47's capture. The almond holes and the grin glow white on it, as in the game.
+  - The last six of ten takes are in `build/scratch/modulo/marker_ar47/takes/elite_light_takes.png` (`variants.py` beside it). The one used is I.
+  - The camera, the body's glow and its red are unchanged. `MarkerLamplighter.png` is byte-identical.
+- **My read:** at 40 px both masks read as faces, with lit cuts on tan paper. At 28 px the holes still show as two lit cuts on each. That answers polish-later's line, so it moves to Done.
+- **Content check: PASS** (21:02), on the file at 160 px and on the sheet at 80, 40 and 28 px and at 64 px over dark and bright.
+  - Both masks are tan paper with no ink. Their holes are almond and lit, on the small mask too, which meets AR47's condition 3. There are no dark sockets or dot pupils, and no hood.
+  - **Conditions:**
+    1. Upload this exact file under the group, and log it with `marker_icons.py` as its source.
+    2. A change to `PAPER_LIGHT`, `MASK_GLOW`, `BODY_GLOW`, `RED` or `VIEW` that clips the paper white or darkens the holes comes back to the check.
+    3. TR10's conditions 1, 4 and 5 stand.
+    4. AR47's condition 4 holds for every picture of this Shade.
+- **For Faber:** upload the files as they stand in `build/handoff/UI/marker/images/`, with TR10's install. Nothing else changes.
+
 ## TR11. Spectate, a toggle on the HUD (Faber)
 
 Research's entry, 2026-11-14, night, on the director's words of the same night (`docs/decisions.md`): the player's camera is never moved in a fight, and a small button follows the lead instead. "Change it now."

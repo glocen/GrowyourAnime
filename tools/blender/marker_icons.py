@@ -4,7 +4,8 @@ its icon hangs over the empty square or the keeper's gate with the time left, so
 Read at 40 points over the street, each shows its face and its sign, from the character's own delivery (its meshes and
 maps in build/handoff, the surfaces as Roblox draws them):
   Elite        the Brawler's mask over its shoulder, and the second, smaller mask on its arm, both turned to you: the
-               two masks are what make it the elite and not a pack's Brawler
+               two masks are what make it the elite and not a pack's Brawler. AR47's mask (2026-11-19): no ink, its
+               almond holes and grin lit white on tan paper, as the game draws it
   Lamplighter  his masked head under the hat, and his lantern lit beside it, brought in from the pole's end for the
                picture (the pole itself stays out: at 40 points it is a line across the face)
 
@@ -42,10 +43,29 @@ VIEW = dict(Elite=dict(azimuth=204.0, elevation=4.0, centre=(-0.55, 0.0, 4.3), s
 # The body's glow in the icon, a share of the game's: the type's colour as a hint at the edges, not a lit seam down
 # the middle of a 40-point picture (the elite's red there read as a stripe under its mask).
 BODY_GLOW = 0.25
+# The elite's masks as the game draws them: tan paper with its holes and grin lit white (AR47's capture: the paper
+# about (205, 179, 152), the cuts (255, 255, 229)). The icon's sun, fill and the paper's own glow at the model's 12
+# clipped the paper to white, so with AR47's brows gone the lit cuts vanished into it. Here the paper's diffuse is
+# scaled and warmed and the glow brought down, which draws the paper at about (209, 191, 165).
+PAPER_LIGHT = (0.5, 0.45, 0.39)
+MASK_GLOW = 3.5
 
 
 def piece(folder, record_name, name, material):
     return ha.delivered_piece(name, json.loads((folder / record_name).read_text(encoding="utf-8")), material)
+
+
+def paper_lit(material):
+    """The mask's diffuse scaled by PAPER_LIGHT (its glow, which the cuts carry, untouched)."""
+    nodes, links = material.node_tree.nodes, material.node_tree.links
+    bsdf = nodes["Principled BSDF"]
+    source = bsdf.inputs["Base Color"].links[0].from_socket
+    dim = nodes.new("ShaderNodeMix")
+    dim.data_type, dim.blend_type = "RGBA", "MULTIPLY"
+    dim.inputs[0].default_value = 1.0
+    links.new(source, dim.inputs[6])
+    dim.inputs[7].default_value = (*PAPER_LIGHT, 1.0)
+    links.new(dim.outputs[2], bsdf.inputs["Base Color"])
 
 
 def elite():
@@ -57,7 +77,8 @@ def elite():
     body, lit = sm.baked("ShadeBody", paths)
     lit(RED, sm.HOT * BODY_GLOW)
     mask, lit = sm.baked("ShadeMask", paths)
-    lit(sm.MASK_TINT, sm.MASK_HOT)
+    lit(sm.MASK_TINT, MASK_GLOW)
+    paper_lit(mask)
     objects = [piece(folder, f"{n}.json", n, body) for n in ("Shade_Torso", "Shade_RightArm", "Shade_LeftArm")]
     objects.append(piece(folder, recipe["masks"]["Brawler"]["mesh"], "Mask", mask))
     second = recipe["elite"]["masks"]["Brawler"]

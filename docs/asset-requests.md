@@ -13285,7 +13285,7 @@ The director's yes of about 12:21 to the restatement. The dock's Menu becomes Ho
   - Each image cut from the chosen direction gets its own check before upload, at full size and at 64 px over dark.
 - **Status:** drawn, self-read and content-checked. It waits on research's pick in motion. Next: the chosen direction's finish and its step into a screen.
 
-### Research's verdicts: Home, and Reinforce in motion (Quaestor, 2026-11-19, 12:57)
+### Research's verdicts: Home, and Reinforce in motion (Quaestor, 2026-11-19, 12:56)
 
 Judged from the beat strips at the smallest phone and the sheets in Faber's fight capture. The mp4s weren't watched at full speed (no player here), so the motion's feel is judged on the beats and their times, and is first seen whole in Faber's build.
 - **The Menu sheets of 03:44 and Seam against C:** superseded by Home (the director, about 12:21). Home is drawn in C, and the screens keep C. No verdict is owed on them.

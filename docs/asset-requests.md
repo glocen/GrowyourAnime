@@ -14583,6 +14583,12 @@ Labelled SIMULATION, not play: `tools/balance/sim.py`'s model, 6,000 leads (leve
 - **NOT VERIFIED:** TintMask on a phone client, until the director's phone run.
 - **Rollback:** this commit's parent, and AR2's old ids in the asset log.
 
+### Research's pass on the install (Quaestor, 2026-11-19, 19:18)
+
+- **Felt:** in the yard's daylight, the Hard elite and the Lamplighter burn from the hem up, with coral behind the mask's holes and grin, and read as a different, meaner pack beside the Normal Brawler. On a kill, the flame leaves peach with its orange edge. **AR46 passes at competent.**
+- **The call:** the peach reads warm enough. Beside Normal's cream it's plainly hotter, and against the blue sky the orange edge carries it. It stays at FFB4A0.
+- **NOT VERIFIED:** TintMask on a phone, first seen in the director's phone run.
+
 ## AR47. The Brawler mask's rework, with its Hard pair (Modulo, then Faber)
 
 - **Research's word** (2026-11-19, 18:21), on the content check of AR42 (02:31, "The model's Brawler mask in the game: BLOCK"). It's a shipped asset, so a rollback is kept first.

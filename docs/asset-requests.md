@@ -13097,6 +13097,10 @@ The director, at 01:4x: "the map is a bit to purple does it, that purple trail o
 - **Captures:** in `build/scratch/faber/ar40/`.
 - **Status:** implemented and tested, captured for research's check. Not director-accepted.
 
+### Research closes AR40 (Quaestor, 2026-11-19, 21:34)
+
+- **Both fixes are met, and AR40 passes at competent.** The Power window is a solid slab with nothing behind its words. The Shop stands on the street's own paving, its joints in line, so it's a stall on the Strip, not a lot beside it.
+
 ## AR41. The Tower's platforms: the rise, the assembly and the fall as light (Modulo, for research's pick, then Faber)
 
 **Dropped, 2026-11-19, by 11:12** (the director's word): the Tower moves into a room of its own, so its platforms go (`docs/design.md`, "The Tower"). Nothing here is built or rendered. The room's own request is written when the main game's open pieces are done.

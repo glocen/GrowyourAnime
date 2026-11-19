@@ -266,6 +266,19 @@ return {
 			t.Equal("tight, thousands", Hud.Health(1165.5, 1166, 18, true), "1,166/1,166")
 			t.Equal("tight just fits", #Hud.Health(1234567, 1234567, 19, true), 19)
 			t.Equal("tight, too wide: compact", Hud.Health(1249999, 1250000, 18, true), "1.24M/1.25M")
+			-- One fight keeps one form (research's must-fix, AR45, 23:38): the foe card's room at the smallest phone held
+			-- "35,942/709,920" but not "709,920/709,920", so the readout turned from compact to digits as the foe fell.
+			t.Equal("the most doesn't fit: compact from the first hit", Hud.Health(704000, 709920, 14, true), "704K/709K")
+			t.Equal("and still compact once the digits would fit", Hud.Health(35942, 709920, 14, true), "35.9K/709K")
+			t.Equal("the most fits: the digits to the end", Hud.Health(35942, 709920, 15, true), "35,942/709,920")
+			for _, room in { 9, 12, 14, 15, 18 } do
+				local compact = string.find(Hud.Health(709920, 709920, room, true), "K") ~= nil
+				local kept = true
+				for share = 0.99, 0.001, -0.007 do
+					kept = kept and (string.find(Hud.Health(709920 * share, 709920, room, true), "K") ~= nil) == compact
+				end
+				t.Check(`at room {room}, one form from full to a sliver`, kept)
+			end
 		end,
 	},
 	{

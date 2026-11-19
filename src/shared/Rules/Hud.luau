@@ -193,18 +193,19 @@ end
 
 -- A card's health in whole points: a fighter still standing shows at least 1, and never more than its most, which is
 -- whole points too ("882 / 881" came from rounding the most but not the health). `room`, when given, is how many
--- characters its bar holds: past it, both take their compact form (Hud.Short), if that's shorter. `tight`: no spaces round
--- the slash (the lead's card, 2026-11-13: its digits as set in the mock the director picked).
+-- characters its bar holds: when the most over the most doesn't fit, both take their compact form (Hud.Short), if
+-- that's shorter. The form is chosen by the most alone, so one fight keeps one form as its health falls (research's
+-- must-fix, AR45, 23:38: "704K/709K" turned "35,942/709,920"). `tight`: no spaces round the slash (the lead's card,
+-- 2026-11-13: its digits as set in the mock the director picked).
 function Hud.Health(health: number, most: number, room: number?, tight: boolean?): string
 	local top = math.max(math.ceil(most - 1e-6), 0)
 	local now = math.clamp(math.ceil(health - 1e-6), 0, top)
 	local slash = if tight then "/" else " / "
-	local full = `{Hud.Digits(now)}{slash}{Hud.Digits(top)}`
-	if room == nil or #full <= room then
-		return full
+	local widest = `{Hud.Digits(top)}{slash}{Hud.Digits(top)}`
+	if room == nil or #widest <= room or #`{Hud.Short(top)}{slash}{Hud.Short(top)}` >= #widest then
+		return `{Hud.Digits(now)}{slash}{Hud.Digits(top)}`
 	end
-	local short = `{Hud.Short(now)}{slash}{Hud.Short(top)}`
-	return if #short < #full then short else full
+	return `{Hud.Short(now)}{slash}{Hud.Short(top)}`
 end
 
 -- What a control says (docs/ui.md, rule 4: "A disabled button says why"): "…" while it waits on the server, its reason

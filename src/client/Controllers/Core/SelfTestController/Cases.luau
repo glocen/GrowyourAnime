@@ -5414,8 +5414,8 @@ local cases = {
 			local health, most = lead:GetAttribute("Health") :: number, lead:GetAttribute("MaxHealth") :: number
 			t.Near("its health bar is its share of health", parts.LeadHealth:GetAttribute("Share") :: number, health / most, 0.01)
 			local under = (parts.LeadHealthText :: TextLabel).Text
-			-- whole, or in its compact form where the whole is wider than its bar holds (TR3's fix 6)
-			t.Check("with its health and its most under it, set tight", under == Hud.Health(health, most, #under, true), under)
+			-- whole, or in its compact form where the most over the most is wider than its bar holds (TR3's fix 6; AR45)
+			t.Check("with its health and its most under it, set tight", under == Hud.Health(health, most, nil, true) or under == Hud.Health(health, most, 0, true), under)
 			local def = Voidkin.ById[lead:GetAttribute("Def") :: string]
 			t.Check("its portrait in its rarity's frame", def ~= nil and parts.LeadPortrait:GetAttribute("Voidkin") == def.Id and parts.LeadPortrait:GetAttribute("Rarity") == def.Rarity, `{parts.LeadPortrait:GetAttribute("Face")}`)
 			t.Check("and its type's gem", def ~= nil and parts.LeadGem:GetAttribute("Kit") == `Gem{def.Type}`, `{parts.LeadGem:GetAttribute("Kit")}`)

@@ -13338,11 +13338,11 @@ The director's look (`docs/decisions.md`, 02:58 to 03:13; `docs/design.md`, "War
 - **The sets are research's** (names) **and Modulo's** (the symbols' drawing, from these lines). One bold white mark each, read at 44 pt, no letters. Checked against `docs/ip-list.md` and the gear's own names (Embers, Gales, Hoarfrost, Stormcall, Gloamforge and Dawn's stay with gear):
   - **Uncommon:** Talon (three parallel claw strokes), Spearhead (an upward arrowhead), Palisade (three stakes side by side).
   - **Rare:** Tidebreak (one curling wave), Warhorn (a curved horn), Compass (a four-point compass star).
-  - **Epic:** Serpent Coil (an S-shaped serpent), Sworn Rings (two linked rings), Moonward (a half-lit moon: a full disc, its dark half a ring line; changed 13:37, since the star's check bars a crescent on a star).
+  - **Epic:** Serpent Coil (an S-shaped serpent), Sworn Rings (two linked rings), Moonward (a half-lit moon: a full disc, its dark half a ring line; changed 13:36, since the star's check bars a crescent on a star).
   - **Legendary:** Zenith (a ring with a dot at its heart), Highcrown (a three-point crown), Radiance (a sunburst of eight short rays).
 - **Where they live once built:** `src/shared/Definitions/`, Faber's, with the names and image keys; this list is the brief, not their home.
 
-### Home's tray takes the dock's graphite (Quaestor, 2026-11-19, 13:37)
+### Home's tray takes the dock's graphite (Quaestor, 2026-11-19, 13:36)
 
 - The director's "not composited" (about 13:24, AR44's entry) covers the tray too. It's C's flat teal over the HUD, beside the dock's graphite and the lead card's indigo.
 - **The pick,** Modulo's lean: the tray is the dock unfolding, so its plate takes the dock body's graphite and its tiles light as the dock's do. The screens it opens stay in C. Modulo recuts it before Faber's upload, and the content check reads the recut.

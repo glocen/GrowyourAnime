@@ -1,0 +1,766 @@
+{
+  "what": "AR43, Seam's lit glass (research's B, 15:04; the four screens passed at 15:49): the kit every screen Home opens wears, beside Config.UIKit's Seam. Equipment's rows and Reinforce's ring are in ../equipment/equipment.json. From tools/blender/seam_cut.py; drawn in code, no image input",
+  "pixelsPerPoint": 4,
+  "palette": {
+    "SeamGlass": {
+      "Panel": [
+        "#2F2758",
+        "#16122C"
+      ],
+      "Alpha": 0,
+      "Edge": "#51477A",
+      "Facet": "#A89CD8",
+      "Glint": "#F0EAFF",
+      "Text": "#F1ECFF",
+      "Soft": "#C6BDE4",
+      "Faint": "#8279A6",
+      "Channel": "#0C0A1A",
+      "Well": "#262044",
+      "WellFoot": "#17132E",
+      "Button": [
+        "#3C3268",
+        "#251E46"
+      ],
+      "Pressed": [
+        "#120E20",
+        "#1A1430"
+      ],
+      "Ground": "#1E1A2C",
+      "Accent": "#EDE4FF",
+      "Core": 0.5,
+      "Backing": [
+        "#1F1942",
+        "#0D0B1A"
+      ],
+      "Light": "#EDE4FF",
+      "Ink": "#0B0913",
+      "Card": [
+        "#4C3E92",
+        "#251D4C"
+      ]
+    },
+    "SeamGlassLit": {
+      "Panel": [
+        "#FFFFFF",
+        "#D4C6FF"
+      ],
+      "Button": [
+        "#FFFFFF",
+        "#D4C6FF"
+      ],
+      "note": "SeamLit with its Panel and Button white falling to this lavender; the rest SeamLit's"
+    },
+    "note": "beside Seam and SeamLit in Config.UIKit's Palettes, for every screen Home opens (Equipment's three, Settings; AR42's picker later, by the register's scope). Seam's own values where B kept them (Pressed, Ground, Core); Backing is a gradient here, top to foot; Well's foot is WellFoot, as Config.Hud.Seam.WellFoot is Seam's. The Voidkin screen and the bag stay on Seam until the director's word"
+  },
+  "ground": {
+    "backing": "a Frame over the whole screen, under the band: UIGradient Rotation 90, Color Backing top to foot",
+    "bloom": {
+      "image": "ScreenBloom",
+      "equipment": [
+        433,
+        150
+      ],
+      "settings": [
+        284.0,
+        186.0
+      ],
+      "note": "its middle, in points on the smallest phone: on Equipment the work panel's middle across, 90 under the page's top; on Settings the card's middle"
+    },
+    "topLight": {
+      "colour": "#F0EAFF",
+      "height": 160,
+      "transparency": [
+        [
+          0.0,
+          0.94
+        ],
+        [
+          0.0625,
+          0.9533
+        ],
+        [
+          0.125,
+          0.9636
+        ],
+        [
+          0.25,
+          0.9779
+        ],
+        [
+          0.375,
+          0.9866
+        ],
+        [
+          0.5625,
+          0.9937
+        ],
+        [
+          0.75,
+          0.997
+        ],
+        [
+          1.0,
+          0.9989
+        ]
+      ],
+      "note": "a Frame across the screen's top under the band, the glint, a UIGradient down it (Rotation 90) with these Transparency stops: 1 - 0.06 exp(-y / 40)"
+    }
+  },
+  "panel": {
+    "stack": [
+      "PanelFill (the kit's): a UIGradient down it (Rotation 90), Color Panel top to foot; ImageTransparency 0, the panel solid",
+      "PanelSheen: across the panel's top at its own height, the glint at 0.89",
+      "PanelEdge (the kit's): the facet, a UIGradient down it (Rotation 90), Transparency 0.1 at 0, 0.7 at 0.85 and at 1: lit from above",
+      "PanelCornerGlint: its top left on the panel's, the glint at 0.15"
+    ],
+    "corners": "the kit's PanelFill and PanelEdge corners (10 and 3), as the game has them; the sheets drew 8 and 0, and seam_cut.png's fit is drawn on the kit's",
+    "shadow": "none: the sheets draw none"
+  },
+  "rail": {
+    "x": 48,
+    "top": 66,
+    "foot": 306,
+    "width": 96,
+    "buttons": [
+      {
+        "name": "Reinforce",
+        "middle": [
+          48,
+          104
+        ],
+        "mark": "VoidkinPageForge"
+      },
+      {
+        "name": "Jewels",
+        "middle": [
+          48,
+          186
+        ],
+        "mark": "VoidkinPageJewels"
+      },
+      {
+        "name": "War Emblems",
+        "middle": [
+          48,
+          262
+        ],
+        "mark": "VoidkinPageWarEmblems"
+      }
+    ],
+    "radius": {
+      "rest": 20.0,
+      "chosen": 27.0
+    },
+    "line": {
+      "width": 1.2,
+      "colour": "#A89CD8",
+      "transparency": 0.55,
+      "pieces": {
+        "Reinforce": [
+          [
+            66,
+            77.0
+          ],
+          [
+            157.0,
+            166.0
+          ],
+          [
+            231.0,
+            242.0
+          ]
+        ],
+        "Jewels": [
+          [
+            66,
+            84.0
+          ],
+          [
+            149.0,
+            159.0
+          ],
+          [
+            239.0,
+            242.0
+          ]
+        ],
+        "War Emblems": [
+          [
+            66,
+            84.0
+          ],
+          [
+            149.0,
+            166.0
+          ],
+          [
+            231.0,
+            235.0
+          ]
+        ]
+      },
+      "note": "Frames centred on x, in pieces (top, foot) by the open screen: between the buttons, never through a button or a word"
+    },
+    "runner": "RailRunner, clipped to the pieces",
+    "chosen": [
+      "RailGlow",
+      "RailDisc (the Card)",
+      "RailSheen at 0.78",
+      "RailLight",
+      "RailRingChosen",
+      "RailEdgeChosen",
+      "the mark (1.05 r high, the glint)",
+      "the word",
+      "RailComet"
+    ],
+    "rest": [
+      "RailDisc (the Button)",
+      "RailSheen at 0.88",
+      "RailRing",
+      "RailEdge",
+      "the mark (1.05 r high, the soft)",
+      "the word"
+    ],
+    "words": {
+      "top": "the button's middle + r + 7",
+      "chosen": {
+        "size": 15,
+        "bold": true,
+        "colour": "#EDE4FF"
+      },
+      "rest": {
+        "size": 14,
+        "bold": false,
+        "colour": "#C6BDE4"
+      },
+      "align": "centre on x 48"
+    },
+    "touch": "the button's disc and its word, at least 44 points each way; a tap on the open one does nothing",
+    "back": "Back stays top left and returns to Home; the title reads Equipment (the director, 14:59)"
+  },
+  "press": {
+    "stack": [
+      "PressGlow",
+      "PressFill",
+      "PressEdge",
+      "the words in the Ink, 14 bold, centred",
+      "the sheen"
+    ],
+    "fill": [
+      [
+        0.0,
+        "#FFFFFF"
+      ],
+      [
+        0.4,
+        "#EEE8FF"
+      ],
+      [
+        0.55,
+        "#E6DEFF"
+      ],
+      [
+        0.7,
+        "#E0D5FF"
+      ],
+      [
+        0.85,
+        "#D9CDFF"
+      ],
+      [
+        1.0,
+        "#D4C6FF"
+      ]
+    ],
+    "sheen": "once a loop, a white band across the press, 0.75 at its middle, 6 points round (exp(-(d / 6)^2)), leaning 0.5 points left for each point down, its middle at the top running from 30 left of the press to 30 right of it with the idle's phase: the kit's Shine (UI/Kit/Shine) on a white copy of PressFill keeps it inside the press's cut corners",
+    "note": "the lit press only (Put in, Replace, Take out, Reinforce); quiet and off presses stay Seam's"
+  },
+  "settings": {
+    "card": [
+      88,
+      68,
+      480,
+      304
+    ],
+    "rows": [
+      122.0,
+      186.0,
+      250.0
+    ],
+    "name": {
+      "x": 110,
+      "size": 15,
+      "bold": true,
+      "colour": "#F1ECFF",
+      "held": "#EDE4FF",
+      "note": "its middle on the row's"
+    },
+    "slider": {
+      "start": 208,
+      "end": 402
+    },
+    "value": {
+      "right": 458,
+      "size": 14,
+      "colour": "#C6BDE4",
+      "held": "#EDE4FF",
+      "words": "Off at 0, else N%",
+      "note": "bold when held"
+    },
+    "dividers": {
+      "at": "between the rows",
+      "left": 106,
+      "right": 462,
+      "height": 1,
+      "colour": "#51477A",
+      "transparency": 0.4
+    },
+    "stack": [
+      "SliderTrack",
+      "SliderFill",
+      "SliderFillLight",
+      "SliderFillGlow",
+      "SliderKnobGlow",
+      "SliderKnob",
+      "SliderKnobSheen",
+      "SliderKnobEdge",
+      "SliderKnobRing (held)"
+    ],
+    "held": "while dragged: the knob 12.5 (from 10) over 0.08 s (out3), its ring shown, the fill's light at 0.55 and its glow at 0.70, the knob's glow at 0.35, the name and value in the light; back the same way on release. Each change is heard or seen at once",
+    "touch": "the whole row drags its slider; the knob's touch at least 44 points"
+  },
+  "idle": {
+    "loop": 2.4,
+    "phase": "(time mod loop) / loop, one phase for every piece on the screen",
+    "pieces": [
+      "ReinforceComet and RailComet: Rotation 360 x phase",
+      "RailRunner down the rail's line",
+      "RowGlint down the chosen row (../equipment)",
+      "the lit press's sheen"
+    ],
+    "reducedMotion": "with the player's reduced motion on, nothing idles (as the kit's Shine)"
+  },
+  "motion": {
+    "numbers": {
+      "open_time": 0.22,
+      "open_rise": 12.0,
+      "row_start": 0.06,
+      "row_gap": 0.035,
+      "row_time": 0.2,
+      "row_from": 24.0,
+      "work_start": 0.1,
+      "work_time": 0.22,
+      "ring_start": 0.14,
+      "ring_time": 0.3,
+      "pop_start": 0.14,
+      "pop_time": 0.24,
+      "pop_from": 0.8,
+      "pop_back": 1.2,
+      "switch_time": 0.18,
+      "switch_back": 1.2,
+      "cross_time": 0.18
+    },
+    "easing": {
+      "out3": "1 - (1 - u)^3",
+      "smooth": "u^2 (3 - 2u)",
+      "backOut": "1 + (s + 1)(u - 1)^3 + s (u - 1)^2"
+    },
+    "open": [
+      "the screen fades in over open_time (out3), rising open_rise points to its place, over the game",
+      "row k fades in sliding from row_from points left, from row_start + k x row_gap over row_time (out3)",
+      "the work fades in from work_start over work_time (out3)",
+      "Reinforce's ring draws round once, clockwise from the top, from ring_start over ring_time (smooth)",
+      "the gear grows from pop_from to 1 from pop_start over pop_time (backOut, s = pop_back), fading in over its first third",
+      "the band and the rail are there from the start"
+    ],
+    "switch": [
+      "a rail tap: the tapped button grows 20 to 27 as the last shrinks 27 to 20, over switch_time (backOut, s = switch_back); their looks, chosen or at rest, change at the tap",
+      "the rail's words and the rows crossfade over cross_time (smooth)",
+      "the work dips: the old fades out over the first half of cross_time, the new in over the second (smooth), never both at once; the panel stays"
+    ],
+    "clip": "build/scratch/modulo/equipment/seam_motion.mp4 (sent to research at 15:47)"
+  },
+  "images": {
+    "PanelSheen": {
+      "file": "images/PanelSheen.png",
+      "pixels": [
+        128,
+        384
+      ],
+      "points": [
+        32,
+        96.0
+      ],
+      "cut": [
+        12,
+        0,
+        12,
+        0
+      ],
+      "tint": "the glint #F0EAFF at ImageTransparency 0.89",
+      "use": "the panel's lift: across its top at its own height (96), sliced at its ends, over PanelFill"
+    },
+    "PanelCornerGlint": {
+      "file": "images/PanelCornerGlint.png",
+      "pixels": [
+        800,
+        640
+      ],
+      "points": [
+        200.0,
+        160.0
+      ],
+      "tint": "the glint #F0EAFF at ImageTransparency 0.15",
+      "use": "the light along the panel's top-left corner, over PanelEdge: its top left on the panel's; on a panel under 200 by 160 points, clipped to it"
+    },
+    "ScreenBloom": {
+      "file": "images/ScreenBloom.png",
+      "pixels": [
+        256,
+        256
+      ],
+      "points": [
+        64.0,
+        64.0
+      ],
+      "laid": [
+        750.0,
+        600.0
+      ],
+      "tint": "#5C48AC at ImageTransparency 0.70",
+      "use": "the bloom behind the work: laid at 750 by 600 points (its two radii 150 and 120, drawn to 2.5 of each), its middle on the bloom's (seam.json, ground); a smooth falloff, so 256 pixels serve it stretched"
+    },
+    "RailDisc": {
+      "file": "images/RailDisc.png",
+      "pixels": [
+        224,
+        224
+      ],
+      "points": [
+        56.0,
+        56.0
+      ],
+      "tint": "a UIGradient down it (Rotation 90): Color the Card top to foot when chosen, the Button's at rest, held at 1/56 and 55/56 (the disc's top and foot)",
+      "use": "a rail button's glass: its middle on the button's, laid at 2 (r + 1) points for its radius r"
+    },
+    "RailSheen": {
+      "file": "images/RailSheen.png",
+      "pixels": [
+        224,
+        224
+      ],
+      "points": [
+        56.0,
+        56.0
+      ],
+      "tint": "the glint #F0EAFF at ImageTransparency 0.78 chosen, 0.88 at rest",
+      "use": "the light on a rail button's top: laid as RailDisc"
+    },
+    "RailLight": {
+      "file": "images/RailLight.png",
+      "pixels": [
+        224,
+        224
+      ],
+      "points": [
+        56.0,
+        56.0
+      ],
+      "tint": "the light #EDE4FF at ImageTransparency 0.82",
+      "use": "the chosen button's glass lit toward its right: laid as RailDisc; chosen only"
+    },
+    "RailGlow": {
+      "file": "images/RailGlow.png",
+      "pixels": [
+        408,
+        408
+      ],
+      "points": [
+        102.0,
+        102.0
+      ],
+      "pad": 24,
+      "tint": "the light #EDE4FF at ImageTransparency 0.78",
+      "use": "the chosen button's glow, under its disc: laid at 2 (r + 24) points; chosen only"
+    },
+    "RailEdge": {
+      "file": "images/RailEdge.png",
+      "pixels": [
+        168,
+        168
+      ],
+      "points": [
+        42.0,
+        42.0
+      ],
+      "tint": "the edge #51477A at ImageTransparency 0.2",
+      "use": "a button's hairline, 1 point wide inside its disc, drawn at 20: laid at 2 (r + 1) points"
+    },
+    "RailEdgeChosen": {
+      "file": "images/RailEdgeChosen.png",
+      "pixels": [
+        224,
+        224
+      ],
+      "points": [
+        56.0,
+        56.0
+      ],
+      "tint": "the facet #A89CD8 at ImageTransparency 0.2",
+      "use": "a button's hairline, 1 point wide inside its disc, drawn at 27: laid at 2 (r + 1) points"
+    },
+    "RailRing": {
+      "file": "images/RailRing.png",
+      "pixels": [
+        196,
+        196
+      ],
+      "points": [
+        49.0,
+        49.0
+      ],
+      "tint": "the facet #A89CD8",
+      "use": "a button's outer ring, 1 wide just inside 23.5 points round, broken top left and foot right, lit from above: laid at 2 (r + 4.5) points"
+    },
+    "RailRingChosen": {
+      "file": "images/RailRingChosen.png",
+      "pixels": [
+        252,
+        252
+      ],
+      "points": [
+        63.0,
+        63.0
+      ],
+      "tint": "the light #EDE4FF",
+      "use": "a button's outer ring, 1.6 wide just inside 30.5 points round, broken top left and foot right, lit from above: laid at 2 (r + 4.5) points"
+    },
+    "RailComet": {
+      "file": "images/RailComet.png",
+      "pixels": [
+        252,
+        252
+      ],
+      "points": [
+        63.0,
+        63.0
+      ],
+      "tint": "the glint #F0EAFF at ImageTransparency 0.10",
+      "use": "the idle's comet on the chosen button's ring, its head at the top: laid as RailRingChosen, Rotation 360 x the idle's phase (clockwise); it runs on over the ring's two gaps, which a turning image can't keep"
+    },
+    "RailRunner": {
+      "file": "images/RailRunner.png",
+      "pixels": [
+        16,
+        384
+      ],
+      "points": [
+        4,
+        96
+      ],
+      "tint": "the glint #F0EAFF at ImageTransparency 0.15",
+      "use": "the idle's light down the rail's line: its middle at x 48 and y = the rail's top + (its foot - its top) x the idle's phase; clipped to each piece of the line"
+    },
+    "PressFill": {
+      "file": "images/PressFill.png",
+      "pixels": [
+        112,
+        112
+      ],
+      "points": [
+        28,
+        28
+      ],
+      "cut": [
+        8,
+        8,
+        8,
+        8
+      ],
+      "tint": "a UIGradient down it (Rotation 90), Color as seam.json's press.fill: white falling to lavender, its foot more so",
+      "use": "the lit press's body: its box the press's, sliced"
+    },
+    "PressEdge": {
+      "file": "images/PressEdge.png",
+      "pixels": [
+        112,
+        112
+      ],
+      "points": [
+        28,
+        28
+      ],
+      "cut": [
+        8,
+        8,
+        8,
+        8
+      ],
+      "tint": "white at ImageTransparency 0.1",
+      "use": "the lit press's hairline: as PressFill"
+    },
+    "PressGlow": {
+      "file": "images/PressGlow.png",
+      "pixels": [
+        280,
+        280
+      ],
+      "points": [
+        70.0,
+        70.0
+      ],
+      "cut": [
+        29.0,
+        29.0,
+        29.0,
+        29.0
+      ],
+      "pad": 21.0,
+      "tint": "the lavender #D4C6FF at ImageTransparency 0.55",
+      "use": "the lit press's glow, under it: its box the press's with Pad on every side, sliced"
+    },
+    "SliderTrack": {
+      "file": "images/SliderTrack.png",
+      "pixels": [
+        64,
+        32
+      ],
+      "points": [
+        16,
+        8
+      ],
+      "cut": [
+        4,
+        0,
+        4,
+        0
+      ],
+      "tint": null,
+      "use": "the slider's channel, in its own colours: from the slider's start to its end, 8 high on its middle, sliced at its ends"
+    },
+    "SliderFill": {
+      "file": "images/SliderFill.png",
+      "pixels": [
+        64,
+        24
+      ],
+      "points": [
+        16,
+        6
+      ],
+      "cut": [
+        3,
+        0,
+        3,
+        0
+      ],
+      "tint": "a UIGradient across it (Rotation 0): Color the facet to the light",
+      "use": "the light filling the channel: from 1 past its start to the knob's middle, 6 high; hidden under 6 points long"
+    },
+    "SliderFillLight": {
+      "file": "images/SliderFillLight.png",
+      "pixels": [
+        64,
+        24
+      ],
+      "points": [
+        16,
+        6
+      ],
+      "cut": [
+        3,
+        0,
+        3,
+        0
+      ],
+      "tint": "white at ImageTransparency 0.75, 0.55 held",
+      "use": "the fill's lit top: laid as SliderFill"
+    },
+    "SliderFillGlow": {
+      "file": "images/SliderFillGlow.png",
+      "pixels": [
+        160,
+        120
+      ],
+      "points": [
+        40.0,
+        30.0
+      ],
+      "cut": [
+        15.0,
+        0,
+        15.0,
+        0
+      ],
+      "pad": 12.0,
+      "tint": "the light #EDE4FF at ImageTransparency 0.86, 0.70 held",
+      "use": "the fill's glow, over the fill: SliderFill's box with Pad on every side, sliced at its ends"
+    },
+    "SliderKnob": {
+      "file": "images/SliderKnob.png",
+      "pixels": [
+        108,
+        108
+      ],
+      "points": [
+        27.0,
+        27.0
+      ],
+      "tint": "a UIGradient down it (Rotation 90): Color #FFFFFF to #D4C6FF, held at 1/27 and 26/27 (the disc's top and foot)",
+      "use": "the knob, drawn at its held radius 12.5: its middle on the fill's end, laid at 2 (r + 1) points, r 10 at rest"
+    },
+    "SliderKnobSheen": {
+      "file": "images/SliderKnobSheen.png",
+      "pixels": [
+        108,
+        108
+      ],
+      "points": [
+        27.0,
+        27.0
+      ],
+      "tint": "white at ImageTransparency 0.4",
+      "use": "the knob's lit top: laid as SliderKnob"
+    },
+    "SliderKnobEdge": {
+      "file": "images/SliderKnobEdge.png",
+      "pixels": [
+        88,
+        88
+      ],
+      "points": [
+        22.0,
+        22.0
+      ],
+      "tint": "the facet #A89CD8 at ImageTransparency 0.1",
+      "use": "the knob's hairline, drawn at rest (10): laid at 2 (r + 1) points, so held it is 1.25 wide"
+    },
+    "SliderKnobGlow": {
+      "file": "images/SliderKnobGlow.png",
+      "pixels": [
+        224,
+        224
+      ],
+      "points": [
+        56.0,
+        56.0
+      ],
+      "pad": 18,
+      "tint": "the lavender #D4C6FF at ImageTransparency 0.65, 0.35 held",
+      "use": "the knob's glow, under it, drawn at rest: laid at 2 (r + 18) x r / 10 points"
+    },
+    "SliderKnobRing": {
+      "file": "images/SliderKnobRing.png",
+      "pixels": [
+        144,
+        144
+      ],
+      "points": [
+        36.0,
+        36.0
+      ],
+      "tint": "the light #EDE4FF at ImageTransparency 0.15",
+      "use": "held only: the ring round the knob, 1.4 wide just inside 17 points round, laid at 36 points on the knob's middle"
+    }
+  }
+}

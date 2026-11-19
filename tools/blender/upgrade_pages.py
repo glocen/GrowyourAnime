@@ -487,7 +487,7 @@ def prompt(t, st):
 
 
 READY = dict(slot="Main Hand", rank=(7, 8), stat=("Attack", "412", "436", "+24"), stone="Mid", need=6, have=14,
-             credits="1,200", rate=70)
+             credits="1,200", rate=60)          # docs/design.md, "Reinforce": 100% to +5, then 80, 70, 60, 50
 MENU = [
     ("Inventory, on its Overview", dict(tab="Inventory")),
     ("Equipment, on Reinforce, the blade ready", dict(READY)),
@@ -508,7 +508,7 @@ STATES = [
         slot="Shoulders", rank=(0, 1), stat=("Defense", "38", "41", "+3"), stone="Low", need=2, have=31, credits="80",
         rate=100)),
     ("Succeeded: the blade at +8, lit green", dict(
-        READY, rank=(8, 9), stat=("Attack", "436", "461", "+25"), have=8, credits="1,350", rate=60, done="rose")),
+        READY, rank=(8, 9), stat=("Attack", "436", "461", "+25"), have=8, credits="1,350", rate=50, done="rose")),
     ("Failed: the blade stays at +7, the cost spent", dict(READY, have=8, done="failed")),
 ]
 NOTES = [

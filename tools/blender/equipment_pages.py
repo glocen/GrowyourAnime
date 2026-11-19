@@ -612,7 +612,8 @@ def placements():
                            title=dict(at=[232, 20], size=TITLE, bold=True, colour=P["text"]),
                            list=dict(panel=[lx0, TOP, lx1, FOOT], rows=row),
                            work=dict(panel=[wx0, TOP, wx1, FOOT]),
-                           panel="the kit's panel (PanelShadow, PanelFill, PanelEdge) in C"),
+                           panel="the kit's panel (PanelShadow, PanelFill, PanelEdge) in Seam's lit glass, with "
+                                 "seam.json's lift"),
                 jewels=jewels, emblems=emblems)
 
 
@@ -679,6 +680,28 @@ def drawn_socket(s, rim, lit, light, rim_t):
 
 ROW_H, ROW_SLICE, ROW_PIECE = 46.0, 8.0, 32.0   # a list row's height; its end slices; the piece it's drawn as
 RING_R = 27.0                                    # Reinforce's ring (upgrade_pages.work)
+# The ring's two lines as seam_kit.ring draws them, lit from above: their alpha at the top and at the foot
+RING_LINES = (("ReinforceRing", RING_R, 1.8, f"at rest the light {P['light']}; risen {up.GOOD}, failed {up.HURT}",
+               (0.95, 0.35), "the ring round the gear"),
+              ("ReinforceRingOuter", RING_R + 4, 1.0, f"the facet {P['facet']}", (0.65, 0.25),
+               "the ring's outer line, 4 points out"))
+
+
+def top_lit(radius, box, top, foot):
+    """A ring's light from above, as a UIGradient down its image: alpha `top` at the ring's top, `foot` at its foot."""
+    at = (box / 2 - radius) / box
+    return (f"a UIGradient down it (Rotation 90), Transparency {1 - top:.2f} at {at:.3f} and {1 - foot:.2f} at "
+            f"{1 - at:.3f}, held past both: lit from above")
+
+
+def graded(px, box, radius, top, foot):
+    """An image's alpha under that gradient, for the fits."""
+    h = px.shape[0]
+    y = (np.arange(h) + 0.5) / h
+    at = (box / 2 - radius) / box
+    out = px.copy()
+    out[..., 3] *= np.interp(y, [at, 1 - at], [top, foot]).astype(np.float32)[:, None]
+    return out
 
 
 def cut_frame_reinforce_images():
@@ -692,54 +715,81 @@ def cut_frame_reinforce_images():
     along = (f"Sliced at Cut, its ends only: drawn at its own height ({h:g}), it stretches along to the row, "
              f"{LIST[1] - LIST[0] - 6:g} points on the smallest phone")
     for name, fill, what in (("RowPlate", P["well"], "a list row at rest: the well's plate"),
-                             ("RowGlass", P["card"], "the chosen row: the dark glass")):
+                             ("RowGlass", P["card"], "the chosen row: the glass, its top lit")):
         t = fc.clear(w, h)
-        t.paint(t.poly(ui.cut_box(0, 0, w, h, 6, 0, 0, 0)), up.shade(t, fill, 0, h))
+        d = t.poly(ui.cut_box(0, 0, w, h, 6, 0, 0, 0))
+        t.paint(d, up.shade(t, fill, 0, h))
+        if name == "RowGlass":
+            t.paint(d, P["glint"], 0.16 * np.exp(-t.y / 9))
         made[name] = (t.px.copy(), dict(points=[w, h], cut=row_cut, tint=None,
                                         use=f"{what}, in its own colours, never tinted; its top left cut 6. {along}"))
     t = fc.clear(w + 2, h + 2)
     t.line(t.poly(ui.cut_box(1, 1, w + 1, h + 1, 6, 0, 0, 0)), 1.0, "#FFFFFF")
     made["RowEdge"] = (t.px.copy(), dict(points=[w + 2, h + 2], pad=1, cut=[ROW_SLICE + 1, 0, ROW_SLICE + 1, 0],
                                          tint=f"at rest the edge {P['edge']}, ImageTransparency 0; on the chosen "
-                                              f"row the facet {P['facet']} at 0.2",
+                                              f"row the facet {P['facet']} at 0.1",
                                          use="a row's hairline over its plate or glass; its box the row's with Pad on "
                                              "every side, sliced as the row"))
     t = fc.clear(w, h)
-    t.paint(t.poly([(0, 0), (w, 0), (w, h), (0, h)]), "#FFFFFF", np.clip(t.x / w, 0, 1) ** 2)
-    made["RowGlassWash"] = (t.px.copy(), dict(points=[w, h], tint=f"the light {P['light']} at ImageTransparency 0.78",
+    t.paint(t.poly([(0, 0), (w, 0), (w, h), (0, h)]), "#FFFFFF", np.clip(t.x / w, 0, 1) ** 1.6)
+    made["RowGlassWash"] = (t.px.copy(), dict(points=[w, h], tint=f"the light {P['light']} at ImageTransparency 0.7",
                                               use="the chosen row's light, rising toward its lit right edge, over the "
                                                   "glass and under the hairline: stretched to the row (ScaleType "
                                                   "Stretch), never sliced"))
     t = fc.clear(22, h + 20)
-    t.glow(t.poly([(9.5, 10), (12.5, 10), (12.5, h + 10), (9.5, h + 10)]), 3.0, "#FFFFFF", 0.55)
+    t.glow(t.poly([(9.5, 10), (12.5, 10), (12.5, h + 10), (9.5, h + 10)]), 3.5, "#FFFFFF", 0.6)
     t.stroke([(11, 10), (11, h + 10)], 2.4, "#FFFFFF")
     made["RowGlassLight"] = (t.px.copy(), dict(points=[22, h + 20], tint=f"the light {P['light']}, ImageTransparency 0",
                                                use="the chosen row's lit right edge and its glow: its box's middle "
                                                    "on the row's right edge, its top 10 above the row's"))
+    g = 3 * 7.0                                  # the glass's outer glow, 7 round, gone by three radii
+    t = fc.clear(w + 2 * g, h + 2 * g)
+    t.glow(t.poly(ui.cut_box(g, g, w + g, h + g, 6, 0, 0, 0)), 7.0, "#FFFFFF", 1.0)
+    made["RowGlassGlow"] = (t.px.copy(), dict(points=[w + 2 * g, h + 2 * g], pad=g,
+                                              cut=[ROW_SLICE + g, 0, ROW_SLICE + g, 0],
+                                              tint=f"the light {P['light']} at ImageTransparency 0.9",
+                                              use="the chosen row's soft glow, under its glass: its box the row's with "
+                                                  "Pad on every side, sliced at its ends as the row"))
+    gw = h * 0.6 + 6 * 9.0                       # the idle's glint: a band 9 round, leaning 0.6 across the row
+    t = fc.clear(gw, h)
+    t.paint(t.poly([(0, 0), (gw, 0), (gw, h), (0, h)]), "#FFFFFF",
+            np.exp(-(((t.x - 27) - t.y * 0.6) / 9) ** 2))
+    made["RowGlint"] = (t.px.copy(), dict(points=[gw, h], tint=f"the glint {P['glint']} at ImageTransparency 0.8",
+                                          use="the idle's glint down the chosen row: its left at at - 27, where at "
+                                              "runs from the row's left - 40 to its right + 40 once a loop (seam.json, "
+                                              "idle), its top on the row's; clipped to the row"))
     t = fc.clear(10, 18)
     t.paint(t.poly([(0, 1), (9, 9), (0, 17)]), "#FFFFFF")
     made["RowPoint"] = (t.px.copy(), dict(points=[10, 18], tint=f"the light {P['light']}",
                                           use="the chosen row's point toward the work: its box's left on the row's "
                                               "right edge, its top 14 below the row's"))
     s = 2 * (RING_R + 6)
-    for name, radius, width, tint, use in (
-            ("ReinforceRing", RING_R, 1.6, f"at rest the light {P['light']}; risen {up.GOOD}, failed {up.HURT}; "
-                                           f"ImageTransparency 0.1", "the ring round the gear"),
-            ("ReinforceRingOuter", RING_R + 4, 1.0, f"the facet {P['facet']} at ImageTransparency 0.5",
-             "the ring's outer line, 4 points out")):
+    for name, radius, width, colour, (top, foot), use in RING_LINES:
         t = fc.clear(s, s)
         t.line(np.hypot(t.x - s / 2, t.y - s / 2) - radius, width, "#FFFFFF")
-        made[name] = (t.px.copy(), dict(points=[s, s], tint=tint, use=f"{use}: its box's middle on the ring's, "
-                                                                       f"{radius:g} points round, {width:g} wide"))
-    g = 128.0                                    # the glow, 24.3 round, gone by 64 out
-    t = fc.clear(g, g)
-    t.glow(t.poly([(g / 2 - 1, g / 2 - 1), (g / 2 + 1, g / 2 - 1), (g / 2 + 1, g / 2 + 1), (g / 2 - 1, g / 2 + 1)]),
-           RING_R * 0.9, "#FFFFFF", 1.0)
-    made["ReinforceRingGlow"] = (t.px.copy(), dict(points=[g, g], tint=f"at rest the glint {P['glint']}; risen "
-                                                                       f"{up.GOOD}, failed {up.HURT}; "
-                                                                       "ImageTransparency 0.82",
-                                                   use="the light in the ring, under the gear's cell: its box's middle "
-                                                       "on the ring's"))
+        made[name] = (t.px.copy(), dict(points=[s, s], tint=f"{colour}; {top_lit(radius, s, top, foot)}",
+                                        use=f"{use}: its box's middle on the ring's, {radius:g} points round, "
+                                            f"{width:g} wide"))
+    b = 2 * (RING_R + 20)                        # the rarity's bloom behind the gear, cut square at the ring + 20
+    t = fc.clear(b, b)
+    t.paint(t.poly([(0, 0), (b, 0), (b, b), (0, b)]), "#FFFFFF",
+            np.exp(-(np.hypot(t.x - b / 2, t.y - b / 2) / (RING_R * 0.85)) ** 2))
+    made["ReinforceBloom"] = (t.px.copy(), dict(points=[b, b], tint=f"the item's rarity; risen {up.GOOD}, failed "
+                                                                    f"{up.HURT}; ImageTransparency 0.66",
+                                                use="the bloom behind the gear, under the ring: its box's middle on "
+                                                    "the ring's"))
+    c = 2 * (RING_R + 12)
+    t = fc.clear(c, c)
+    ang = np.arctan2(t.y - c / 2, t.x - c / 2)
+    behind = np.mod(-np.pi / 2 - ang, 2 * np.pi)
+    t.line(np.hypot(t.x - c / 2, t.y - c / 2) - RING_R + 0.2, 2.6, "#FFFFFF",
+           0.95 * np.where(behind < 1.4, np.exp(-behind * 2.6), 0.0))
+    t.glow(t.poly([(c / 2 - 1, c / 2 - RING_R - 1), (c / 2 + 1, c / 2 - RING_R - 1), (c / 2 + 1, c / 2 - RING_R + 1),
+                   (c / 2 - 1, c / 2 - RING_R + 1)]), 3.5, "#FFFFFF", 0.75)
+    made["ReinforceComet"] = (t.px.copy(), dict(points=[c, c], tint=f"the glint {P['glint']}",
+                                                use="the idle's comet round the ring, its head at the top and its tail "
+                                                    "behind it: its box's middle on the ring's, Rotation 360 x the "
+                                                    "idle's phase (clockwise)"))
     f = 88.0
     t = fc.clear(f, f)
     d = np.hypot(t.x - f / 2, t.y - f / 2) - (RING_R - 1)
@@ -783,7 +833,7 @@ def reinforce_placements():
                                          f"{up.HURT} once failed")),
         name=dict(at=[cx, y0 + 6], size=SMALL, bold=True, align="centre", colour="the item's rarity"),
         ring=dict(middle=[cx, y0 + 50], radius=RING_R,
-                  stack="ReinforceRingGlow, ReinforceRing, ReinforceRingOuter, then the gear's cell"),
+                  stack="ReinforceBloom, ReinforceRing, ReinforceRingOuter, ReinforceComet, then the gear's cell"),
         gear=dict(cell=[cx - 20, y0 + 30], size=40, note="the kit's item cell in the item's rarity, the gear's picture "
                                                          "at 0.94"),
         now=dict(word=dict(at=[x0 + 10, y0 + 28], words="Reinforce", colour=P["soft"]),
@@ -851,7 +901,7 @@ def reinforce_motion():
             f"the gear's cell grows to 1 + Lift x in3(u), Lift {s['Lift']:g}"],
         answer=[
             "either way the cost leaves: the Credits count down (Count, expo over Count.Seconds)",
-            "the ring (ReinforceRing, ReinforceRingGlow) and the levels, by the ring and in the row, turn over 0.08 s "
+            "the ring (ReinforceRing, ReinforceBloom) and the levels, by the ring and in the row, turn over 0.08 s "
             "(out3): the old fading as the new one shows"],
         success=[
             f"the flash: ReinforceFlash, transparency 1 - f, f = (1 - age / Flash)^2, Flash {s['Flash']:g}",
@@ -905,12 +955,16 @@ def row_fit(made, chosen):
     drawn = sheet.px.copy()
     n = int(round(wide * K))
     plate = made["RowGlass" if chosen else "RowPlate"][0]
+    if chosen:
+        g = int(round(21 * K))
+        glow = slice_ends(made["RowGlassGlow"][0], ROW_SLICE * K + g, n + 2 * g)
+        rs.paste(built, tinted(glow, P["light"], 0.9), int(x0 * K) - g, int(y0 * K) - g)
     rs.paste(built, slice_ends(plate, ROW_SLICE * K, n), int(x0 * K), int(y0 * K))
     if chosen:
-        rs.paste(built, tinted(stretch(made["RowGlassWash"][0], n, int(ROW_H * K)), P["light"], 0.78),
+        rs.paste(built, tinted(stretch(made["RowGlassWash"][0], n, int(ROW_H * K)), P["light"], 0.7),
                  int(x0 * K), int(y0 * K))
     edge = slice_ends(made["RowEdge"][0], (ROW_SLICE + 1) * K, n + 2 * K)
-    rs.paste(built, tinted(edge, P["facet"] if chosen else P["edge"], 0.2 if chosen else 0.0),
+    rs.paste(built, tinted(edge, P["facet"] if chosen else P["edge"], 0.1 if chosen else 0.0),
              int((x0 - 1) * K), int((y0 - 1) * K))
     if chosen:
         rs.paste(built, tinted(made["RowGlassLight"][0], P["light"]), int((x1 - 11) * K), int((y0 - 10) * K))
@@ -926,14 +980,16 @@ def ring_fit(made, lit):
     t = sheet.tile(0, 0, s, s)
     t.paint(t.poly([(0, 0), (s, 0), (s, s), (0, s)]), P["panel"][1])
     built = sheet.px.copy()
+    sk.NOW.update(phase=0.0, rarity="Rare")
     up.ring(t, s / 2, s / 2, RING_R, lit)
     drawn = sheet.px.copy()
-    for name, colour, transparency in (("ReinforceRingGlow", lit or P["glint"], 0.82),
-                                       ("ReinforceRing", lit or P["light"], 0.1),
-                                       ("ReinforceRingOuter", P["facet"], 0.5)):
-        px = made[name][0]
-        rs.paste(built, tinted(px, colour, transparency), int(round((s / 2) * K - px.shape[1] / 2)),
-                 int(round((s / 2) * K - px.shape[0] / 2)))
+    box = 2 * (RING_R + 6)
+    layers = [tinted(made["ReinforceBloom"][0], lit or RIM["Rare"], 0.66)]
+    for (name, radius, _, _, (top, foot), _), colour in zip(RING_LINES, (lit or P["light"], P["facet"])):
+        layers.append(tinted(graded(made[name][0], box, radius, top, foot), colour))
+    layers.append(tinted(made["ReinforceComet"][0], P["glint"]))
+    for px in layers:
+        rs.paste(built, px, int(round((s / 2) * K - px.shape[1] / 2)), int(round((s / 2) * K - px.shape[0] / 2)))
     return built, drawn
 
 
@@ -941,16 +997,18 @@ def reinforce_fit(made, path):
     """equipment_cut_frame.png: the frame's and Reinforce's images as tinted, then rows and rings built against drawn.
     Returns [(case, mean, 99th)]."""
     ui.K = 4
-    width, height = 1240, 620
+    width, height = 1560, 620
     sheet = ui.Sheet(width, height, "#101117")
     t = sheet.tile(0, 0, width, height)
     t.text(20, 16, 20, "AR43, the Equipment frame's rows and Reinforce's ring: the images as tinted, then built "
                        "against drawn", "#EDE6D6", bold=0.2)
     t.paint(t.poly([(10, 56), (width - 10, 56), (width - 10, 216), (10, 216)]), P["panel"][1])
     shown = [("RowPlate", None, 0.0), ("RowGlass", None, 0.0), ("RowEdge", P["edge"], 0.0),
-             ("RowGlassWash", P["light"], 0.78), ("RowGlassLight", P["light"], 0.0), ("RowPoint", P["light"], 0.0),
+             ("RowGlassGlow", P["light"], 0.9), ("RowGlassWash", P["light"], 0.7), ("RowGlint", P["glint"], 0.8),
+             ("RowGlassLight", P["light"], 0.0), ("RowPoint", P["light"], 0.0),
              ("ReinforceRing", P["light"], 0.1), ("ReinforceRingOuter", P["facet"], 0.5),
-             ("ReinforceRingGlow", P["glint"], 0.82), ("ReinforceFlash", "#FFFFFF", 0.0),
+             ("ReinforceBloom", RIM["Rare"], 0.66), ("ReinforceComet", P["glint"], 0.0),
+             ("ReinforceFlash", "#FFFFFF", 0.0),
              ("ReinforceWaveGlow", up.GOOD, 0.5), ("ReinforceCrack", None, 0.0)]
     x = 20.0
     for name, colour, transparency in shown:
@@ -1001,11 +1059,13 @@ def cut(out):
              "Home's Equipment row: the frame's rows, the sockets' and Reinforce's images and every placement, from "
              "tools/blender/equipment_pages.py (cut); drawn in code, no image input",
         pixelsPerPoint=4,
-        palette=dict(P, good=up.GOOD, hurt=up.HURT, note="AR40's C, as every screen Home opens (research, 12:56); "
-                                                         "good and hurt a rise's and a fail's"),
+        palette=dict(P, good=up.GOOD, hurt=up.HURT, note="Seam's lit glass (research's B, 15:04), as every screen "
+                                                         "Home opens; its kit is build/handoff/UI/seam/seam.json; good "
+                                                         "and hurt a rise's and a fail's"),
         layout=dict(placements(), reinforce=reinforce_placements(),
-                    rowImages="every screen's list rows: at rest RowPlate and RowEdge; the chosen row RowGlass, "
-                              "RowGlassWash, RowEdge (in the facet), RowGlassLight and RowPoint, gliding as one"),
+                    rowImages="every screen's list rows: at rest RowPlate and RowEdge; the chosen row RowGlassGlow, "
+                              "RowGlass, RowGlassWash, RowGlint (clipped to the row), RowEdge (in the facet), "
+                              "RowGlassLight and RowPoint, gliding as one"),
         reinforce=dict(states=dict(
             said=REINFORCE_STATES_SAID,
             ready="the press lit; the levels in the light", short="the press off; the stones' count in the hurt",

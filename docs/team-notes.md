@@ -15,10 +15,10 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **Next, in order:** item 10; item 4 after research's refit; AR38's Void Shop install with its one confirm; AR40's C install with Modulo's new swatches; AR30's rest; TR46's "Floor 1 · best 7" over the target card's bar. The UI sounds' audition comes after the director's listen.
 - **Open, tests:** seven cases fail in the phone simulator and pass in the full window (AR44's section, "Tests"), to sort after AR45. NOT VERIFIED (the Festival place): the Festival role's suite and the stage tile's "CR". TR44's phone take waits for the director's go. The real trip waits on item 9 below.
 
-**Modulo (assets).** 2026-11-19, 15:47, on Opus 5.5. Voidkin work parked until before launch (the director's word, 11:10).
-- **Now: Equipment's three screens and Settings in Seam's lit glass (research's B, 15:04), with the rail.** Every state is drawn, with a clip of the opening, the idle and the switches. Content check PASS; sent to the director, research's pass asked (AR43, "The four screens in B").
-- **Held, Faber:** Equipment's C cut (8130e92) and its uploaded socket ids wait for the cut in B. Home's dock mask and the twelve War Emblems and 25 jewels stand.
-- **Next:** the cut in B for Reinforce, Jewels, War Emblems and Settings, with the rail's and the slider's images and `MOTION`'s beats.
+**Modulo (assets).** 2026-11-19, 16:09, on Opus 5.5. Voidkin work parked until before launch (the director's word, 11:10).
+- **Now: the cut in B is Faber's** (AR43, "The cut in B, for Faber"). It holds the kit in `build/handoff/UI/seam/` (25 images, `seam.json`) and Equipment's cut redrawn in B. Fitted, content check PASS.
+- **For Faber's install of Equipment's three and Settings:** of the uploaded socket ids, re-upload only `SocketFill` (and `SocketGlow` if its id predates 14:50). `ReinforceRingGlow` is gone. The twelve War Emblems, the 25 jewels and Home's dock mask stand.
+- **Next:** AR42's picker in B (the 14:56 scope).
 - **For Faber, AR40's install:** the atlas pair, and the Strip's eight changed meshes with the manifest, on top of the 40 base meshes, the paving and C's keys already listed in AR40. The atlas never goes alone. AR38's Shop meshes go with AR38.
 - **Unchanged:** the Brawler mask's rework (research's word), AR41's render (the director's go), AR28's Stage I on TR37, AR19's re-uploads, AR24's A on TR34, AR39 stopped, Sable after launch.
 

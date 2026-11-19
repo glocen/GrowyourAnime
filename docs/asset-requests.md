@@ -13761,6 +13761,39 @@ The director's words: jewels and War Emblems go in and out on Equipment's pages 
 - **For Faber, not the art:** the sheet's odds are one level ahead of the rule. Success is 100% up to +5, then 80% for +6, 70% for +7 and 60% for +8 (`docs/design.md`, "Reinforce"), so +7 to +8 is 60%, not 70%. The screen reads its odds from `Rules.Reinforce`, never from the sheet.
 - **For the director:** the Voidkin screen and the bag stay in today's flat Seam (14:56's scope, and the 22:41 word that the inventory screen "stays as it is"). Home's screens in B are a step lighter than them. Whether they take B too goes on the board.
 
+### The cut in B, for Faber (Modulo, 2026-11-19, 15:50 to 16:08 by the clock)
+
+- **On research's verdict (15:49), "Cut them for Faber":** two cuts, for Faber's held install of Equipment's three screens and Settings. AR42's picker takes B later, by the register's scope.
+- **The kit, `build/handoff/UI/seam/`** (`tools/blender/seam_cut.py`): 25 images, `seam.json` and `seam_cut.png`.
+  - **The palette:** `SeamGlass` and `SeamGlassLit`, beside Seam and SeamLit. Seam's own values stay where B kept them.
+  - **The ground:** the backing as a gradient; `ScreenBloom` behind the work; the top light as a gradient, with no image.
+  - **The panel:** the kit's PanelFill and PanelEdge with their UIGradients, plus `PanelSheen` and `PanelCornerGlint`. The corners stay the kit's, 10 and 3, where the sheets drew 8 and 0.
+  - **The rail:** ten images, the disc, its sheen, light and glow, the hairline and the broken ring at each size, the comet and the runner. The line is frames, in pieces by the open screen. The marks are the game's own `VoidkinPageForge`, `VoidkinPageJewels` and `VoidkinPageWarEmblems`.
+  - **The lit press:** `PressFill`, whose one Color gradient holds the lavender foot, plus `PressEdge` and `PressGlow`. The sheen is the kit's Shine on a white PressFill, which keeps it inside the cut corners.
+  - **Settings' slider:** nine images, and the card's layout.
+  - **The idle and the motion:** one 2.4 s phase for every idling piece, then `MOTION` with its easings.
+- **Equipment's cut in B, `build/handoff/UI/equipment/`, regenerated:**
+  - **Redrawn:** `RowGlass` (its top lit), `RowPlate` and `SocketFill` (B's colours), `RowGlassWash` (^1.6, at 0.7), `RowGlassLight` (3.5 at 0.6), and `ReinforceRing` (1.8 wide).
+  - **Lit from above:** both ring lines, by a UIGradient.
+  - **New:** `RowGlassGlow`, `RowGlint`, `ReinforceBloom` (in the rarity) and `ReinforceComet`. `ReinforceRingGlow` is gone; ReinforceBloom takes its place.
+  - **For the uploads:**
+    - Of the nine socket images with ids, only `SocketFill` changed. `SocketGlow` was last redrawn at 14:50: re-upload it too if its id is older.
+    - The row and ring images had no ids yet, so upload them as they stand.
+- **Fits** (built from the images as the game lays them, against the kit's drawing), as the 99th percentile:
+  - Equipment's rows and rings: 0.0035 at most.
+  - The panel: 0.0016.
+  - The rail: 0.0007.
+  - The press: 0.0031.
+  - A slider at rest: 0.0023. Held: 0.050, because the knob's hairline and glow are scaled up from their rest size.
+- **Two differences the game can't keep:**
+  - The rail's comet runs on over its ring's two gaps, which a turning image can't keep.
+  - `RowGlint`, clipped by a frame, can show in the row's 6-point cut corner. Faber's call whether the kit's Shine does it instead.
+- **The odds (research's note):**
+  - `upgrade_pages.py`'s states now take the rule's numbers: +7 to +8 at 60%, +8 to +9 at 50% (`docs/design.md`, "Reinforce").
+  - The cut carries no number: the screen reads `Rules.Reinforce`.
+- **Content check (fresh eyes, 16:08): PASS** on both sheets, a sample of the images at full size, and `seam.json`'s words. It saw the thumbnails over dark on the sheets, not a 64 px sheet of its own.
+- **Status:** cut, fitted and content-checked; sent to Faber.
+
 ### Research's pass on Home's tray in the game (Quaestor, 2026-11-19, 15:19)
 
 - **Felt:** a tap on the middle dock button lifts a graphite tray with two lit rows, your Voidkin's pages and the gear's. Settings stands tall at the end. Where everything lives reads in one look. **Tier:** competent. **The bold thing:** the two labelled rows, which turn the director's menu into a map.

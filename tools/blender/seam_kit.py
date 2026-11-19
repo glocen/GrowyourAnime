@@ -60,11 +60,12 @@ def backdrop(t, bloom_at=BLOOM_AT):
     t.paint(whole, P["glint"], 0.06 * np.exp(-t.y / 40))
 
 
-def panel(t, x0, y0, x1, y1):
+def panel(t, x0, y0, x1, y1, cuts=(8, 0, 8, 0)):
+    """`cuts`: the sheets' corners; the cut's fit draws it on the kit's PanelFill corners (seam_cut.KIT_CUTS)."""
     if not rich():
         return ORIG["panel"](t, x0, y0, x1, y1)
     P = up.P
-    d = t.poly(ui.cut_box(x0, y0, x1, y1, 8, 0, 8, 0))
+    d = t.poly(ui.cut_box(x0, y0, x1, y1, *cuts))
     t.paint(d, up.shade(t, P["panel"], y0, y1))
     t.paint(d, P["glint"], NOW["style"]["sheen"] * np.exp(-np.maximum(t.y - y0, 0) / 24))
     down = np.clip(1 - (t.y - y0) / ((y1 - y0) * 0.85), 0, 1)
@@ -168,16 +169,22 @@ RAIL_R, RAIL_R_CHOSEN, RAIL_WORD, RAIL_WORD_CHOSEN = 20.0, 27.0, SMALL, 15
 LIST = (98, 300)              # the list, right of the rail: "War Emblems" lit at 15 bold spans ~86 of its 96 points
 
 
+def rail_spans(chosen, size):
+    """The rail's line, (top, foot) pieces between the buttons: it never runs through a button or a word."""
+    spans, y = [], RAIL_TOP
+    for name, cy in RAIL:
+        spans.append((y, cy - size[name]))
+        y = cy + size[name] + 7 + (RAIL_WORD_CHOSEN if name == chosen else RAIL_WORD) + 4
+    return [(a, b) for a, b in spans if b > a]
+
+
 def rail(t, chosen):
     """Equipment's screens down the left on one line: each a round button, its outer ring broken where the kit cuts its
     corners (top left, foot right); the chosen one larger, its glass lit, its word bright, the comet on its ring."""
     P = up.P
     size = NOW.get("sizes") or {name: (RAIL_R_CHOSEN if name == chosen else RAIL_R) for name, _ in RAIL}
-    spans, y = [], RAIL_TOP                          # the line runs between the buttons, never through a word
-    for name, cy in RAIL:
-        spans.append(((RAIL_X, y), (RAIL_X, cy - size[name])))
-        y = cy + size[name] + 7 + (RAIL_WORD_CHOSEN if name == chosen else RAIL_WORD) + 4
-    line = np.minimum.reduce([ui.sd_segment(t.x, t.y, a, b) for a, b in spans if b[1] > a[1]]) - 0.6
+    line = np.minimum.reduce([ui.sd_segment(t.x, t.y, (RAIL_X, a), (RAIL_X, b))
+                              for a, b in rail_spans(chosen, size)]) - 0.6
     t.paint(line, P["facet"], 0.45)
     if rich():
         at = RAIL_TOP + (RAIL_FOOT - RAIL_TOP) * NOW["phase"]   # a light down the line once a loop

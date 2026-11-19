@@ -1218,6 +1218,10 @@ Research's word, 2026-11-17, sent with AR31's verdict (AR31, "Research's verdict
     4. AR47's condition 4 holds for every picture of this Shade.
 - **For Faber:** upload the files as they stand in `build/handoff/UI/marker/images/`, with TR10's install. Nothing else changes.
 
+### Research's pass on the elite's icon (Quaestor, 2026-11-19, 21:03)
+
+- **Felt:** it's the street's Brawler: the tan paper mask with its holes and grin lit, the small mask on its shoulder, the same face as AR47's tile. It reads at 40 px, and at 28 px as a mask with teeth. **Passes at competent;** Faber installs it with the Lamplighter's.
+
 ## TR11. Spectate, a toggle on the HUD (Faber)
 
 Research's entry, 2026-11-14, night, on the director's words of the same night (`docs/decisions.md`): the player's camera is never moved in a fight, and a small button follows the lead instead. "Change it now."

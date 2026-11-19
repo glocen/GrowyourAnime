@@ -32,6 +32,7 @@ local NoticeCases = require(script.NoticeCases)
 local AuditionCases = require(script.AuditionCases)
 local StageCases = require(script.StageCases)
 local SlamCases = require(script.SlamCases)
+local ShopCases = require(script.ShopCases)
 local BaseController = require(script.Parent.Parent.Main.BaseController)
 local Screen = require(script.Parent.Parent.Parent.UI.Kit.Screen)
 
@@ -210,6 +211,8 @@ local function run(filter: string?): string
 	table.move(stages, 1, #stages, #cases + 1, cases)
 	local slams = SlamCases.Cases() -- the keeper's marked slam (TR44), apart for the same reason
 	table.move(slams, 1, #slams, #cases + 1, cases)
+	local shop = ShopCases.Cases() -- the Void Shop's screen and counter (AR38), apart for the same reason
+	table.move(shop, 1, #shop, #cases + 1, cases)
 	local elsewhere = 0
 	pcall(serverCall, "TravelStub", true) -- no case ever leaves the place: each trip asked for is recorded (TR45)
 	for _, case in cases do

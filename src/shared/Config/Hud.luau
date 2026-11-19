@@ -995,4 +995,21 @@ return {
 		Room = { Corner = 6 }, -- the Items room's panel
 		Shade = { Wide = 8, Alpha = 0.45 }, -- the card's shadow on the grid, left of its sliding edge
 	},
+	-- The Void Shop's screen (AR38, UI.ShopScreen; Modulo's grey sheet on D6, research's second look of 2026-11-19), authored:
+	-- a line's head and each text row; a picture's well, its rim and the picture's share of it; the band's clock, a light a
+	-- minute; the seconds the Buy of a piece for a class the player hasn't got waits for its second press; the countdown
+	-- chip under the HUD's pills in a stock's last Config.Shop.Warn seconds. Most: the two lines' block at the most, so a
+	-- wide screen keeps each line's words near its Buy.
+	Shop = {
+		Most = Vector2.new(860, 310),
+		Head = 24,
+		Row = 20,
+		Well = 66,
+		Rim = 2,
+		Picture = 0.78,
+		Clock = { Wide = 7, Gap = 3, Tall = 24, Track = 0.72, Words = 82 },
+		Armed = 3,
+		CoinOff = 0.5, -- an off Buy's coin, dimmed with its price
+		Chip = { Wide = 196, Tall = 30 }, -- as wide as its words once shown
+	},
 }

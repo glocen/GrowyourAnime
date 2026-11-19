@@ -150,6 +150,12 @@ export type Data = {
 		Credits: number,
 		Research: number, -- Research Points
 	},
+	-- What was bought from the Void Shop on its latest stock bought from (AR38, Rules.Shop): the stock's number and each
+	-- line's count, so a server hop never refills a line; a buy on a later stock starts the counts again.
+	Shop: {
+		Stock: number,
+		Bought: { [string]: number }, -- by line name ("Shard", "Featured")
+	},
 	Roles: {
 		Lead: string, -- the lead's Id, or ""
 	},
@@ -202,6 +208,7 @@ function Profile.Template(): Data
 		Bag = { Shards = {}, Chests = {} },
 		Settings = { Salvage = "" },
 		Currency = { Credits = 0, Research = 0 },
+		Shop = { Stock = 0, Bought = {} },
 		Roles = { Lead = "" },
 		Base = {
 			Level = 1,

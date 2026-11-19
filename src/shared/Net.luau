@@ -44,6 +44,8 @@ local REMOTES: { [string]: Spec } = {
 	Travel = { Kind = "Event", RatePerSecond = 0 }, -- server -> client: (state, info) "Leaving" { To }: the trip's card; "Failed" { Result }: the screen back, with a line; "Back": the screen back; "Arrived": the far side stands, the arrival card lifts
 	StageDone = { Kind = "Event", RatePerSecond = 0 }, -- server -> client: (results) a run ended, won or lost, for its card
 	StageGate = { Kind = "Event", RatePerSecond = 0 }, -- server -> client: ({ Stage, Ground }) set back at a gate shut to them
+	-- The Void Shop (ShopService, AR38).
+	Shop = { Kind = "Function", RatePerSecond = 2 }, -- client -> server: () -> { Ok, Shelf?, Left?, Error? }: the standing stock's shelf and its seconds left
 	-- The fight in the camera's view (FightService, TR24's fixes 2 and 3).
 	Recall = { Kind = "Function", RatePerSecond = 4 }, -- client -> server: () -> { Ok, Error?, Ready? }: the lead dashes to the avatar, or why not (TR44's B)
 	View = { Kind = "Unreliable", RatePerSecond = 8 }, -- client -> server: (bearing) degrees, where the camera looks, flat: atan2(Z, X)

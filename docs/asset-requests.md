@@ -12496,6 +12496,39 @@ To render again (about 7 s a set; free memory went from 3.27 GB to 2.43 at the l
 - **The screen in grey. Felt:** at the smallest phone, the featured piece and the shard line read apart at once, each with its price on its Buy, and the out-of-reach and bought-out states say why. **Tier:** competent. **Accepted** for Faber's build on the kit (phase 4).
 - **Modulo's question: can a featured piece for a class the player hasn't got be bought?** Yes, as drawn, because gear is the account's loadout and waits for that fighter. The red line stays. The Buy asks once more in that case only: "No Tank yet. Buy anyway?" (one confirm, Faber's). It's Credits only, so no rule of `docs/roblox-rules.md` is touched.
 
+### The install: the screen, the counter and the chip (Faber, 2026-11-19, to 15:54 by the clock)
+
+- **What's in.**
+  - **The server** (`ShopService`, `Rules/Shop`): the shelf drawn from world time and a salt kept in a DataStore key of its own, the same in every server. `Net` "Shop" reads the shelf, and `Act` "ShopBuy" buys in one transaction with its op id.
+  - **The screen** (`UI/ShopScreen`, on the kit in the Seam palette):
+    - The band: Void Shop, the five-light clock with "Next stock" and its time, and the Credits.
+    - Featured: the piece's well in its rarity's rim, with its name, slot and class, rarity and stats. The red "You have no Tank yet" line and the one confirm, "Buy anyway?" under "No Tank yet", follow research's 01:14 answer.
+    - Shards: the Standard shard, with Drop rates before the press. The list is clear of the lit button's glow and shows only whole rows, and the count waits under it till it folds.
+    - Each Buy carries its price. The count's place says "1 left", "Need 150 more" (in red, the Buy and its coin dimmed on the price), or "None left" (the Buy reads Bought).
+    - A refusal toasts why, and a stock that turned refetches.
+    - At PC the two lines stand as one block of at most 860×310, centred. The smallest phone fills its room, as sheet A.
+  - **The counter:** a prompt at the Shop's marker ("Void Shop", Open).
+  - **The chip:** "Void Shop restock m:ss" under the pills in a stock's last 60 s, hidden while the Shop is open (`docs/ui.md`, "Under the pills").
+  - **Studio's debug commands:** ShopStock stands on a featured stock and keeps the clock's time left. ShopForget clears the stock's counts.
+- **Not in this block:**
+  - the building's crown and clock, which install with AR40's C (the Strip's VoidShop, VoidShopMinute and VoidShopCrown with Modulo's manifest);
+  - a featured piece's Preview (the bag's item card);
+  - the rare offer's light and sound;
+  - the Epic-or-rarer offer and the Enriched and Prismatic lines (D6: they wait for a roster).
+- **The seeds** (`Config/Shop`): a stock every 300 s; a Standard shard at 299, 2 a player a stock; a featured piece about 1 stock in 6, on Lantern Row's chest roll with the ladder 0/0/70/25/5 and 1,000, 2,000 or 4,500 a G (Zansho, the Afterglow, a Legendary Helmet, reads 9,972). They're seeds, not balanced: `docs/balance.md` doesn't hold them yet.
+- **Tested.**
+  - The type check: 0 new.
+  - The logic cases offline: 26,774 passed, the Shop's 8 cases among them (the stock, the salt, the featured chance, a buy, a server hop, a piece, refusals, a repeat).
+  - The self-test "Shop: the Void Shop's counter and screen (AR38)": 51/51 on the final code.
+  - HUD: 477/477.
+  - The take: 3/3.
+  - A stock turned live with the screen open (0:45 to 4:45), and the new shelf came in on its own.
+- **Self-review.** Fixed in this pass: the panels stretched to the full height at PC; the test clock read 18:32; an off Buy's coin stayed bright; the Drop rates' first row sat in the button's glow and the last was cut. Left as it is: at PC each panel's middle is empty under the stats, kept so each Buy stands at the panel's foot.
+- **Stills** (`build/scratch/faber/ar38/stills/`):
+  - pc-featured, pc-poor, pc-bought, pc-rates, pc-turned-none;
+  - phone-featured, phone-rates, phone-none.
+- **Status:** implemented and tested; self-reviewed; research's pass asked; not director-accepted.
+
 ## AR39. The sound rescue: three pilots (Modulo's sourcing and arrangements, Faber's engine, an independent review)
 
 Research, 2026-11-17, 21:19. The director's directive, word for word: `docs/archive/directive-sfx-2026-11-17.md` (its row in `docs/decisions.md`). The cue registry stays `src/shared/Config/Cues.luau`; provenance stays `docs/asset-log.md`.

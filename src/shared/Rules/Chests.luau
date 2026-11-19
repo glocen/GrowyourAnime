@@ -170,12 +170,13 @@ local function line(stat: string, worth: number, draw: Draw): Profile.ItemLine
 end
 
 -- One item from `chest`, every roll from `draw`, in a fixed order: rarity, slot, a hand's class, the row, a jewel's main,
--- the main's quality, then each line's stat and quality. `classes` is Chests.Classes'.
-function Chests.Roll(chest: ChestRows.Row, classes: { [string]: number }, draw: Draw): Rolled
+-- the main's quality, then each line's stat and quality. `classes` is Chests.Classes'. `override`, rarity weights
+-- Common to Legendary, stands in for the chest's own (the Void Shop's featured piece, Rules.Shop).
+function Chests.Roll(chest: ChestRows.Row, classes: { [string]: number }, draw: Draw, override: { number }?): Rolled
 	local ground = Grounds.ById[chest.Ground]
 	local tier = if ground then ground.Order else 1
 	local top = if ground then ground.LevelTo else 1
-	local ladder = Chests.Weights(chest)
+	local ladder = override or Chests.Weights(chest)
 	local weights: { [string]: number } = {}
 	for i, name in ChestsConfig.Rarities do
 		weights[name] = ladder[i] or 0

@@ -1464,6 +1464,12 @@ function HudController.Home(): HomeTray.Tray
 	return homeTray
 end
 
+-- Where an event chip stands under the pills, anchored at its top right (docs/ui.md, "Under the pills"): the Void Shop's
+-- countdown (AR38).
+function HudController.UnderPills(): UDim2
+	return UDim2.new(1, -PAD, 0, TOP + 2 * (PILL + Theme.Size.Gap))
+end
+
 function HudController.Parts(): { [string]: GuiObject }
 	return {
 		Lead = lead.Frame,

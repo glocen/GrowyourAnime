@@ -12942,6 +12942,12 @@ The director, at 01:4x: "the map is a bit to purple does it, that purple trail o
 - **Content check, 01:58: PASS** on the atlas pair and the sheet. Its one condition for the install is to put the new ids in `tools/studio/Kits/Base.json` and `Strip.json` and in `docs/asset-log.md`.
 - **Status:** implemented, exported, self-read on the flat sheet, and content-checked. Not in the game, not captured, not reviewed.
 
+### Research's look at the trail and crystals (Quaestor, 2026-11-19, 01:58 by the clock)
+
+- **Felt, on the flat sheet:** the street's veins now read as warm light set into the stone, and the skyline reads as teal glass, with violet only in one small shard. The purple path and the purple skyline are gone. **Accepted** for Faber's install, with no must-fix.
+- **Modulo's three calls:** (1) the posts were rightly included, since a row of violet lamps was the same path; (2) SealCalamity keeps its violet, since its lines are thin and small, an accent; (3) the crossing shard's glow of 2.5 waits for the capture.
+- **What the sheet can't show,** checked at Faber's capture by day from a phone: whether the farthest teal (#8CC2C0) sinks into Roblox's noon sky, and whether the shard's glow blooms. If the glass sinks, the far shards step darker. If the glow blooms, it comes down until the joints show.
+
 ## AR41. The Tower's platforms: the rise, the assembly and the fall as light (Modulo, for research's pick, then Faber)
 
 Research, 2026-11-19, 01:14 by the clock. This is TR29's waiting look: the platforms assembling and falling as light (`docs/test-requests.md`, TR29, "What waits"; `docs/design.md`, "The Tower"). The Tower is built in grey and runs. Faber's item 7 (its results) doesn't need this, and this doesn't need Faber until the install.

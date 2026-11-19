@@ -9,9 +9,9 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **Verdicts owed:** TR43 and TR44 in motion; AR40's install; AR30, AR37, TR10, AR28's Stage I, TR34, AR23, TR29.
 - **With the director:** the combat review's six decisions; the Voidkin screen and bag in B; the store's design; the sound pick on TR42's panel.
 
-**Faber (builder).** 2026-11-19, 16:29, on Opus 5.5. Done today: TR46; AR44's must-fixes; AR45's foe cards on the slant; AR43's Home tray; and AR38's Void Shop, installed and closed at competent (16:28), with the kit's new lit press (`Lit` in `Kit/Button.luau`).
-- **Now:** TR32, the first session measured. The rule and its logic cases pass offline; the service and its Studio case are next.
-- **Next, in order:** TR47 when research writes it; Equipment's three and Settings in B (Modulo's cut: AR43, "The cut in B, for Faber"), whose Reinforce screen reads TR47's `Rules.Reinforce`; AR40's C install; item 4 after research's refit.
+**Faber (builder).** 2026-11-19, 16:36, on Opus 5.5. Done today: TR46; AR44's must-fixes; AR45's foe cards on the slant; AR43's Home tray; AR38's Void Shop, closed at competent (16:28); TR32, the first session measured (95eccbf).
+- **Now:** TR47's part A: data first, then `Rules.Reinforce`, `Rules.Emblems`, the level gap and the transfer, in pure Luau with cases.
+- **Next, in order:** Equipment's three and Settings in B (Modulo's cut: AR43, "The cut in B, for Faber"), whose Reinforce screen reads TR47's `Rules.Reinforce`; AR40's C install; item 4 after research's refit.
 - **Open, tests:** seven cases fail in the phone simulator and pass in the full window (AR44, "Tests"). NOT VERIFIED (the Festival place): the Festival role's suite and the stage tile's "CR". TR44's phone take waits for the director's go. The real trip waits on item 9.
 
 **Modulo (assets).** 2026-11-19, 16:35, on Opus 5.5. Voidkin work parked until before launch (the director's word, 11:10).
@@ -20,7 +20,7 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **For Faber, AR40's install:** the atlas pair, and the Strip's eight changed meshes with the manifest, on top of the 40 base meshes, the paving and C's keys already listed in AR40. The atlas never goes alone. AR38's Shop meshes go with AR38.
 - **Unchanged:** the Brawler mask's rework (research's word), AR41's render (the director's go), AR28's Stage I on TR37, AR19's re-uploads, AR24's A on TR34, AR39 stopped, Sable after launch.
 
-**Turns.** Studio: Faber's (Grow your Anime), in Play for TR32; a second Studio, Festival Lantern, is open, not Faber's; the director's listen on TR42's panel is tomorrow, in the same place. Blender: nobody (Modulo's AR41 strips were stopped at 01:33 on 2026-11-19 by Claude Code when the PC ran low on memory; the director said wait at 01:34). Timing tests: nobody.
+**Turns.** Studio: Faber's (Grow your Anime), in Play for TR47; a second Studio, Festival Lantern, is open, not Faber's; the director's listen on TR42's panel is tomorrow, in the same place. Blender: nobody (Modulo's AR41 strips were stopped at 01:33 on 2026-11-19 by Claude Code when the PC ran low on memory; the director said wait at 01:34). Timing tests: nobody.
 
 **The count.** Pieces closed and playable this week: 13. TR2, the circuit in grey (phase 1); Haymaker, on A; the Shade's burst; Pip's Lantern Burst; Lyric's Held Note; TR3, the HUD in the world; TR4, the reveal; AR7, the Lamplighter installed with his fall; his signature; Lantern Burst's exit in 3D (B1); Haymaker's square in 3D (B5); TR18, power in grey; AR12's HUD part 1. Hours are in each piece's entry.
 
@@ -123,6 +123,13 @@ For Faber:
 - Tier 2, research, 2026-11-12, on the director's words: weapons belong to a class, in two hands (Main Hand and Off Hand replace Weapon and Shield), a preset holds a pair per class, a weapon drop is for the lead's class; Combat Power made to be watched, its weights fitted by the simulation; each item kind modelled and rendered to its icon (AR6, phase 3) (`docs/design.md`, "Regalia: gear" and "Combat Power"). Faber: the Stats case's `"Weapon"` source becomes `"Main Hand"` when you next touch it. Faber and Modulo: say in your row what you'd change.
 
 ## Entries
+
+### 2026-11-19, 16:36. TR32: the first session measured (Faber)
+
+- **What changed:** Roblox's onboarding funnel logs the first session's eight steps, from Arrive to Want, once an account, from the server's own acts. Each step is marked on the save before it's logged, so a repeat, a retry or a rejoin never logs it twice. Saves that played before today have all eight marked (migration step 10).
+- **Where:** TR32, "The build". `Rules.Funnel`, `FunnelService`, `Profile.Funnel`, and `DataService.Changed`, which now carries the act's label.
+- **Open:** Want's case runs in the Festival place only (item 9). The dashboard's read waits for live players.
+- **For:** research (the count), and the director at the soft opening.
 
 ### 2026-11-19, 16:29. AR38: the Void Shop, installed and closed at competent (Faber)
 

@@ -13693,7 +13693,7 @@ Labelled SIMULATION, not play: `tools/balance/sim.py`'s model, 6,000 leads (leve
   - **Red:** a fifth of its health or more alone, so its pack, or the next pull, can beat the lead.
 - **What it can't show:** the game's real lead after the attribute rework, and packs. Faber's capture of real ratios on Lantern Row checks the cuts, and they live in `Config.Hud` to be tuned there.
 
-### The cuts against the game's real ratios (Quaestor, 2026-11-19, 13:43)
+### The cuts against the game's real ratios (Quaestor, 2026-11-19, 13:40)
 
 - **Faber's reading** (13:39, Studio, the director's save; lead Watt at level 8, CR 3,541): an own-level Ordinary is 0.50 and an own-level Elite 1.60. The sim said 0.33 and 1.05.
   - The Shades match the game's own `Stats.Power`, read offline under Lune: an Ordinary is 3.14 times `Stats.EvenFoe`'s Power, and an Elite 10.08, at every level.

@@ -43,8 +43,8 @@ local function flat(a: Vector3, b: Vector3): number
 	return Vector3.new(a.X - b.X, 0, a.Z - b.Z).Magnitude
 end
 
-local function pick(difficulty: string, stage: number): { [string]: any }
-	local ok, answer = pcall(Net.Client.Invoke, "Stage", GROUND, difficulty, stage)
+local function pick(difficulty: string): { [string]: any }
+	local ok, answer = pcall(Net.Client.Invoke, "Stage", GROUND, difficulty)
 	return if ok and type(answer) == "table" then answer else { Ok = false, Error = tostring(answer) }
 end
 
@@ -61,18 +61,16 @@ local function closeScreen(t: any)
 end
 
 -- The first stage this save keeps shut, Normal then Hard, or nil when it opens every one.
-local function shutStage(): (string?, number?)
+-- Whether this save keeps Hard shut (TR50: a run begins at its checkpoint, so only Hard's lock can shut a pick).
+local function hardShut(): boolean
 	local view = ProfileController.Get()
-	local count = #((Stages.Of(GROUND) or {}) :: { any })
-	for _, difficulty in { "Normal", "Hard" } do
-		for stage = 1, count do
-			local needs = if view then Stages.Needs(view :: any, GROUND, difficulty, stage) else nil
-			if needs ~= nil and needs ~= Stages.Unknown then
-				return difficulty, stage
-			end
-		end
-	end
-	return nil, nil
+	return view ~= nil and Stages.Needs(view :: any, GROUND, "Hard", 1) == Stages.Keeper
+end
+
+-- The checkpoint a run on `difficulty` begins at, by this save.
+local function checkpoint(difficulty: string): number
+	local view = ProfileController.Get()
+	return if view then Stages.Checkpoint(view :: any, GROUND, difficulty) else 1
 end
 
 function TravelCases.Cases(given: { [string]: any }): { any }
@@ -80,7 +78,7 @@ function TravelCases.Cases(given: { [string]: any }): { any }
 	local streamed, walkThrough, lintClean = given.streamed, given.walkThrough, given.lintClean
 	return {
 		{
-			Name = "Places (TR45): in the base, the plot's door and the dock's Play tile open the Festival's menu; a pick is the trip there with its stage on the ticket and its card up; a failed trip says so; a shut stage stays",
+			Name = "Places (TR45): in the base, the plot's door and the dock's Play tile open the Arc panel; a pick is the trip there with its checkpoint on the ticket and its card up; a failed trip says so; a shut Hard stays",
 			Place = "Main",
 			Stay = true, -- it moves the avatar itself; the next case's reset takes it back to the pad
 			Run = function(t: any)
@@ -117,14 +115,15 @@ function TravelCases.Cases(given: { [string]: any }): { any }
 				t.Check("a second tap closes it", Button.Press(tile) and waitFor(t, 1, function(): boolean
 					return Screen.Current() == nil
 				end), tostring(Screen.Current()))
-				-- A pick: the trip there, the stage on its ticket, the card up.
+				-- A pick: the trip there, the run's checkpoint on its ticket, the card up.
 				Button.Press(tile)
 				waitFor(t, 1, function(): boolean
-					return StageScreen.Parts().Stage1 ~= nil
+					return StageScreen.Parts().Normal ~= nil
 				end)
-				local difficulty = StageScreen.Difficulty()
-				local first = StageScreen.Parts().Stage1 :: TextButton?
-				t.Check("the menu has Stage 1", first ~= nil)
+				local difficulty = "Normal"
+				local at = checkpoint(difficulty)
+				local first = StageScreen.Parts().Normal :: TextButton?
+				t.Check("the panel has Normal", first ~= nil)
 				if first == nil then
 					return
 				end
@@ -135,7 +134,7 @@ function TravelCases.Cases(given: { [string]: any }): { any }
 					return trip ~= nil
 				end))
 				local ticket = if trip then trip.Ticket else nil
-				t.Check("its ticket names the stage", type(ticket) == "table" and ticket.Go == "Stage" and ticket.Ground == GROUND and ticket.Difficulty == difficulty and ticket.Stage == 1, if type(ticket) == "table" then `{ticket.Go} {ticket.Ground} {ticket.Difficulty} {ticket.Stage}` else "none")
+				t.Check("its ticket names the run's checkpoint", type(ticket) == "table" and ticket.Go == "Stage" and ticket.Ground == GROUND and ticket.Difficulty == difficulty and ticket.Stage == at, if type(ticket) == "table" then `{ticket.Go} {ticket.Ground} {ticket.Difficulty} {ticket.Stage}` else "none")
 				t.Check("the menu closes", waitFor(t, 1, function(): boolean
 					return Screen.Current() == nil
 				end), tostring(Screen.Current()))
@@ -158,7 +157,7 @@ function TravelCases.Cases(given: { [string]: any }): { any }
 				end)
 				lintClean(t, "the trip's card")
 				t.Wait(REMOTE_GAP)
-				t.Equal("a second pick while it's under way is refused", pick(difficulty, 1).Error, "Busy")
+				t.Equal("a second pick while it's under way is refused", pick(difficulty).Error, "Busy")
 				-- Roblox refuses it: the screen back, with a line.
 				t.Check("Roblox refuses the trip", t.Server("TravelFail", "Unauthorized") == true)
 				t.Check("the card goes", waitFor(t, REPLICATE, function(): boolean
@@ -168,7 +167,7 @@ function TravelCases.Cases(given: { [string]: any }): { any }
 				t.Equal("nothing under way", t.Server("TravelSent").Going, false)
 				-- A flooded server: tried again after its wait, under way meanwhile.
 				t.Wait(REMOTE_GAP)
-				t.Check("a pick again", pick(difficulty, 1).Ok == true)
+				t.Check("a pick again", pick(difficulty).Ok == true)
 				t.Server("TravelFail", "Flooded")
 				record = t.Server("TravelSent")
 				t.Check("Roblox's server flooded: still under way, to be tried again", record.Going == true and record.Failed == 1, `going {record.Going}, failed {record.Failed}`)
@@ -176,16 +175,16 @@ function TravelCases.Cases(given: { [string]: any }): { any }
 				t.Check("the stub's reset brings the screen back quietly", waitFor(t, REPLICATE, function(): boolean
 					return card() == nil
 				end))
-				-- A stage the save keeps shut, and one that isn't a stage: refused, no trip asked.
-				local shutDifficulty, shutStageAt = shutStage()
-				if shutDifficulty and shutStageAt then
+				-- Hard while the save keeps it shut, and a difficulty that isn't one: refused, no trip asked.
+				local shutHard = hardShut()
+				if shutHard then
 					t.Wait(REMOTE_GAP)
-					t.Equal(`{shutDifficulty} Stage {shutStageAt}, shut: refused`, pick(shutDifficulty, shutStageAt).Error, Stages.Locked)
+					t.Equal("Hard, shut: refused", pick("Hard").Error, Stages.Locked)
 				end
 				t.Wait(REMOTE_GAP)
-				t.Equal("Stage 99: unknown", pick("Normal", 99).Error, Stages.Unknown)
+				t.Equal("a difficulty that isn't one: unknown", pick("Nightmare").Error, Stages.Unknown)
 				record = t.Server("TravelSent")
-				t.Check(`neither asks for a trip{if shutDifficulty then "" else " (this save keeps no stage shut)"}`, #record.Sent == 0 and record.Going == false, `{#record.Sent} asked`)
+				t.Check(`neither asks for a trip{if shutHard then "" else " (this save keeps Hard open)"}`, #record.Sent == 0 and record.Going == false, `{#record.Sent} asked`)
 			end,
 		},
 		{
@@ -212,22 +211,25 @@ function TravelCases.Cases(given: { [string]: any }): { any }
 					nearest = math.min(nearest, flat(Markers.At(pack).Position, at.Position))
 				end
 				t.Check("no pack within the lead's leash of it", nearest > Combat.Lead.Leash, `{math.floor(nearest)} studs to the nearest`)
-				-- A ticket's stage begins on arrival, set down at its start.
+				-- A ticket's run begins on arrival at its checkpoint, set down at that stretch's start.
 				t.Root().CFrame = at + Vector3.new(0, R6_ROOT_HEIGHT, 0)
 				t.Server("LeadHeal")
 				t.Wait(0.5)
-				t.Check("a ticket for Normal Stage 1 is taken", t.Server("StageArriveBy", "Normal", 1).Ok == true)
-				t.Check("its run begins", waitFor(t, REPLICATE + 1, function(): boolean
-					return player:GetAttribute("StageRun") == "Normal 1"
-				end), tostring(player:GetAttribute("StageRun")))
+				t.Check("a ticket for Normal is taken", t.Server("StageArriveBy", "Normal", 1).Ok == true)
+				local reached = checkpoint("Normal")
+				t.Check("its run begins at the checkpoint", waitFor(t, REPLICATE + 1, function(): boolean
+					return player:GetAttribute("StageRun") == `Normal {reached}`
+				end), `{player:GetAttribute("StageRun")}, the checkpoint {reached}`)
+				if reached ~= 1 then
+					start = streamed(t, "StageStart", { Ground = GROUND, Stage = reached }) or start
+				end
 				t.Wait(MOVE)
 				t.Near("set down at its start (studs off)", flat(t.Root().Position, Markers.At(start).Position), 0, SET_DOWN)
 				t.Check("with no menu up", Screen.Current() == nil, tostring(Screen.Current()))
-				-- A ticket for a stage the save keeps shut, as a forged or stale one would be: the menu, no run.
-				local shutDifficulty, shutStageAt = shutStage()
-				if shutDifficulty and shutStageAt then
-					t.Server("StageArriveBy", shutDifficulty, shutStageAt)
-					t.Check(`a ticket for {shutDifficulty} Stage {shutStageAt}, shut: the menu instead`, waitFor(t, REPLICATE + 1, function(): boolean
+				-- A ticket for Hard while the save keeps it shut, as a forged or stale one would be: the panel, no run.
+				if hardShut() then
+					t.Server("StageArriveBy", "Hard", 1)
+					t.Check("a ticket for Hard, shut: the panel instead", waitFor(t, REPLICATE + 1, function(): boolean
 						return Screen.Current() == StageScreen.Name
 					end), tostring(Screen.Current()))
 					t.Check("and no run", player:GetAttribute("StageRun") == nil, tostring(player:GetAttribute("StageRun")))

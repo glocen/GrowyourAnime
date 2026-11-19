@@ -4310,3 +4310,40 @@ Faber, 2026-11-19, 03:43 by the clock: the follow-up's item 7 (`docs/production-
   5. **Hard** opens when the Lamplighter falls on Normal, as now. The first Hard win's Rare floor stays the keeper's.
 - **Waits:** a second Arc on the panel; any new art (AR42's pieces carry it).
 - **Done when:** the cases cover a full run, a fall at stretch 3 resuming at 3, the checkpoint clearing on the keeper's fall, and Hard's lock; a phone capture shows Play to the Arc panel and a stretch's line.
+
+### Built in the game (Faber, 2026-11-19, 23:19 to 23:58 by the clock)
+
+- **Play:** the dock's Play and the base's door open the Arc panel straight away. No mode panel exists in code yet, so there's nothing to skip.
+- **The Arc panel** (`UI/StageScreen.luau`, `StageScreen.Pick`; `Config.Hud`, `Stages.Arc`):
+  - one tile for Lantern Row, on AR42's glass: the Lamplighter's picture, the ground's name, and Normal and Hard as two presses inside it;
+  - each press shows its recommended CR and its four marks (cleared, the checkpoint ringed, the rest shut), with "Stretch k of 4" and what comes next ("To the Lamplighter", "Continue from here", or the best run's time);
+  - Hard, while shut, shows the lock and "Beat the Lamplighter on Normal";
+  - AR42's four stage tiles and the difficulty switch are gone.
+  - **Recommended CR:** the builder's seed, tier 2 for research: the keeper's own CR on that difficulty, at his level there, lifted as TR49 lifts him (`Rules.Stages.Recommended`). Research can flip it to the run's first stretch.
+- **The run** (`Rules.Stages`, `StageService`):
+  - **Begin:** `Net` "Stage" is `(ground, difficulty)`, and the server picks the stretch: the checkpoint (`Stages.Checkpoint`).
+  - **Stretch to stretch:** a clear writes the stretch once and moves on after `Results.After` with no card, and the gate behind the run opens (`Stages.Through`).
+  - **The card,** once, at the end (`StageScreen.Results`):
+    - on a win: "Lantern Row cleared", the whole run's time, chests, credits and shards, and "a new best" only for a run that began at stretch 1;
+    - on Normal's keeper: "Hard is open", and the lit press goes into Hard;
+    - on a fall: "Your lead fell" and "Your next run starts at Stretch k of 4".
+  - **Stretches unchanged:** each stretch's quota, chests and experience are the same, so TR48's pace and TR49's fit stay put.
+- **Checkpoints** (`Profile.StageLine.Reached`):
+  - the last stretch reached per difficulty, saved on each clear;
+  - kept on a fall and on leaving the street or the place;
+  - cleared when that difficulty's keeper falls.
+  - Hard opens on the Lamplighter's fall on Normal, as before.
+- **The line:** "Stretch 2 of 4" under the top bar. The toast at a shut gate reads "Clear Stretch k to go on".
+- **Tested:**
+  - Type check: 0 new.
+  - Logic, offline: 28,834/0. `Cases/Stages` covers a full run, a fall at stretch 3 resuming at 3, the checkpoint clearing on the keeper's fall, Hard's lock, and a ticket's arrival at the checkpoint.
+  - In the main place: the base's travel case 35/0 (Play opens the Arc panel; the ticket carries the checkpoint; Hard while shut is refused), the dock 39/0, and "Take: TR50" 6/0.
+  - **NOT VERIFIED:** the Festival place's run case "Stages (TR50)", rewritten to the run (a run moving on, leaving, the panel at the checkpoint, the keeper's card opening Hard, Hard moving on, a fall at stretch 3), and the Festival travel case. They wait for the Festival place (item 9).
+- **Captures** (the smallest phone, in `build/captures/tr50/`):
+  - `panel.png`: Play to the Arc panel, Normal at stretch 1 and Hard shut;
+  - `panel-stretch3.png`: a checkpoint at stretch 3;
+  - `line.png`: a stretch's line, in the main place from the run's attributes on the client;
+  - all three in `play-panel-line.png`, and `hard-lock-zoomed.png`.
+- **For research:**
+  - Hard's lock is the Voidkin chrome's `Lock`, AR42's own, but at phone size its shackle reads open. A closed lock may read better.
+  - The line's badge says "2" beside "Stretch 2 of 4". The number shows twice; I've kept it as the block's words.

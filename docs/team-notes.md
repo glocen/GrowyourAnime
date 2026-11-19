@@ -9,11 +9,11 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **Verdicts owed:** TR43 and TR44 in motion; AR40's install; AR30, AR37, TR10, AR28's Stage I, TR34, AR23, TR29.
 - **With the director:** the combat review's six decisions; the Voidkin screen and bag in B; the store's design; the sound pick on TR42's panel.
 
-**Faber (builder).** 2026-11-19, 23:23, on Opus 5.5. Done today:
-- TR10's icons installed (the down marker's tile wears `MarkerElite` and `MarkerLamplighter`, both Approved): implemented, tested in the main place by `DownController.Try` (16/0); the phone stills and the in-world verdict wait (below).
-- TR49, the combat review, with research's must-fix (the prices are the gains, db39f40), passed at competent; its Stage 1 playtest is owed (the Festival place, item 9). TR48, AR40's C, AR43, AR46, AR42, TR47's part A, TR46, AR44, AR45's foe cards, AR38, TR32.
-- **Next, research's order (23:19):** AR45's foe card re-upload when Modulo hands it, then TR50 (one mission per Arc), then TR10's stills (the take "Take: TR10's down marker", held, three steps).
-- **Open, tests:** NOT VERIFIED (the Festival place, item 9): the Festival role's suite, TR48's keeper, drops and run log in a real run, AR42's Stage cases, TR49's Stage 1 playtest, TR10's marker in its world. TintMask on a phone. TR44's phone take waits for the director's go.
+**Faber (builder).** 2026-11-19, 23:58, on Opus 5.5. Done today:
+- TR50, one mission per Arc: Play opens the Arc panel, the stretches run on to one card, checkpoints in the save (TR50, "Built in the game"). Tested in the main place 35/0, 39/0, 6/0, and 28,834 logic cases; stills in `build/captures/tr50/` for research.
+- AR45's foe card closed at competent, its readout in one form (39b66e5). TR10's icons installed. TR49, TR48, AR40's C, AR43, AR46, AR42, TR47's part A, TR46, AR44, AR38, TR32.
+- **Next:** AR44, the critical's shine from Modulo's cut (C), then TR10's stills, then AR48's states once Modulo's sheet is picked.
+- **Open, tests:** NOT VERIFIED (the Festival place, item 9): TR50's run cases, the Festival role's suite, TR48's keeper in a real run, TR49's Stage 1 playtest, TR10's marker in its world. TintMask on a phone. TR44's phone take waits for the director's go.
 
 **Modulo (assets).** 2026-11-19, 21:30, on Opus 5.5. Voidkin work parked until before launch (the director's word, 11:10). Done: the Voidkin screen and the bag cut in B (AR43, `build/handoff/UI/voidkin_b/`, content check PASS): all five attributes at 14 points; take 2, B's lights on Seam's grounds, picked by research at competent (21:28). Next: nothing unblocked in my area; I ask research when idle.
 - **In the game:** AR46's Hard looks with AR47's masks, on TintMask (a856f06), passed at competent (19:18). AR42's tiles in Seam, passed at competent (f9f3636).
@@ -119,6 +119,16 @@ For Faber:
 - Tier 2, research, 2026-11-12, on the director's words: weapons belong to a class, in two hands (Main Hand and Off Hand replace Weapon and Shield), a preset holds a pair per class, a weapon drop is for the lead's class; Combat Power made to be watched, its weights fitted by the simulation; each item kind modelled and rendered to its icon (AR6, phase 3) (`docs/design.md`, "Regalia: gear" and "Combat Power"). Faber: the Stats case's `"Weapon"` source becomes `"Main Hand"` when you next touch it. Faber and Modulo: say in your row what you'd change.
 
 ## Entries
+
+### 2026-11-19, 23:58. TR50, one mission per Arc (Faber)
+
+- **What changed:**
+  - The dock's Play opens the Arc panel: Lantern Row's tile with Normal and Hard, each with its recommended CR, its four marks and its checkpoint; Hard shows its lock and why.
+  - A run goes through the four stretches with the line "Stretch 2 of 4" and one card at the end. A fall keeps the checkpoint; the keeper's fall clears it.
+- **Where:** TR50, "Built in the game"; `Rules.Stages`, `StageService`, `UI/StageScreen.luau`, `StageController`.
+- **Tested:** type check 0 new; 28,834 logic cases offline; in the main place, travel 35/0, the dock 39/0, the take 6/0.
+- **Open:** the Festival place's run cases, NOT VERIFIED (item 9). Two looks for research: Hard's lock reads open at phone size, and the line shows its number twice.
+- **For:** research's pass on `build/captures/tr50/play-panel-line.png`.
 
 ### 2026-11-19, 23:02. TR49, the combat review built, with AR43's take 2 of the Voidkin screen and bag (Faber)
 
@@ -233,11 +243,3 @@ For Faber:
 - **Tested:** the tag 42/0, the galaxy 42/0, the Items page 112/0, the Voidkin screen 249/0, logic 24,051/0; type check 0 new.
 - **Open:** the two-line name and the bag's ground filter wait, as the design's block says. TR18's take fails at the generator's prompt, not from this piece.
 - **For:** research's read (`build/scratch/faber/stills/tr41d-*`).
-
-### 2026-11-17, 17:58. TR41 (c): the level-up notice, take B, installed (Faber)
-
-- **What changed:** a level gained shows Modulo's notice under the lead's corner: it slides in, its number lands with a flash and a knock, one sheen crosses, and it slides back. The old toast and the word over the lead are gone; the column of light stays.
-- **Where:** `UI/LevelNotice.luau`, `Rules.Hud.Notice`, `Config/Hud.luau` (`LevelNotice`), `HudController`, `Effects.LevelUp`. Cases: logic "Hud", self-test "HUD: TR41 (c)" (`NoticeCases.luau`), "Take: TR41 (c)".
-- **Tested:** HUD 445/0, the notice 39/0, logic 24,032/0; type check 0 new.
-- **Open:** the plate is three plain image pieces, since a Roblox 9-slice drew it wrong under the layer's scale. The number sits on the block as drawn (30.75), not on the json's 28.9.
-- **For:** research's read from the strip (`build/scratch/faber/stills/tr41c-strip-zoom.png`).

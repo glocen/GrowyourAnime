@@ -1,12 +1,15 @@
 --!strict
--- A ground's stages (TR43), apart: Cases is at the type checker's limit. One case walks a run through the server's own
--- paths (StageService), the falls through the fight's (StageFell fells a group with the player as its hitter):
--- the gates shut and the set-back at one; a stage that's shut refused; Stage 1 on Normal counted to its quota and its
--- elite, written once, its card with what opened and Next; Next set down at Stage 2's start; the street left ending a
--- run; Hard's own foes for this player alone, ten levels up, the lead solo, the elite before the quota and the run done
--- after; the keeper lifted on Hard; the picker's locks; and the lead's fall's card. The player's record is put back at
--- its end. A fresh account through the Door is its own case, Manual: it wipes the save.
+-- A ground's run of stretches (TR43, TR50), apart: Cases is at the type checker's limit. One case walks a run through
+-- the server's own paths (StageService), the falls through the fight's (StageFell fells a group with the player as its
+-- hitter): the gates shut and the set-back at one; Hard refused while shut; a Normal run from the first stretch counted
+-- to its quota and its elite, written once and moving on to the next stretch with no card, the gate behind it open; the
+-- street left ending the run, its checkpoint kept; the Arc panel at that checkpoint, Hard's lock and why; the keeper's
+-- fall on Normal, its card opening Hard; Hard's own foes for this player alone, ten levels up, the lead solo, the run
+-- moving on to its next stretch's own foes; the keeper lifted on Hard; and a fall at stretch 3, its card and the next run
+-- there. The player's record is put back at its end. A fresh account through the Door is its own case, Manual: it wipes
+-- the save.
 
+local GuiService = game:GetService("GuiService")
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Shared = ReplicatedStorage.Shared
@@ -20,12 +23,15 @@ local Parts = require(Shared.Util.Parts)
 local Profile = require(Shared.Data.Profile)
 local ProfileController = require(script.Parent.Parent.ProfileController)
 local StageController = require(script.Parent.Parent.Parent.Main.StageController)
+local HudController = require(script.Parent.Parent.Parent.Main.HudController)
 local Helpers = require(script.Parent.Helpers)
 local UI = script.Parent.Parent.Parent.Parent.UI
 local Screen = require(UI.Kit.Screen)
 local Button = require(UI.Kit.Button)
 local Toast = require(UI.Kit.Toast)
 local StageScreen = require(UI.StageScreen)
+local Layers = require(UI.Layers)
+local Theme = require(UI.Theme)
 
 local StageCases = {}
 
@@ -53,8 +59,8 @@ local function mine(stage: number, standing: boolean?): { Model }
 	return found
 end
 
-local function begin(difficulty: string, stage: number): { [string]: any }
-	local ok, answer = pcall(Net.Client.Invoke, "Stage", GROUND, difficulty, stage)
+local function begin(difficulty: string): { [string]: any }
+	local ok, answer = pcall(Net.Client.Invoke, "Stage", GROUND, difficulty)
 	return if ok and type(answer) == "table" then answer else { Ok = false, Error = tostring(answer) }
 end
 
@@ -66,22 +72,27 @@ end
 function StageCases.Cases(): { any }
 	return {
 		{
-			Name = "Stages (TR43): the gates, a Normal run to its card, Next, leaving, Hard's own foes, the keeper lifted, the picker's locks, a lost run",
+			Name = "Stages (TR50): the gates, a Normal run moving on from its first stretch, leaving, the Arc panel at the checkpoint, the keeper's card opening Hard, Hard's own foes moving on, the keeper lifted, a fall at stretch 3",
 			Place = "Festival", -- TR45: its world stands in that place only
 			Run = function(t: any)
-				-- A card a case before left open (a keeper's try lost is Stage 4's run: its card) would read as this run's.
+				-- A card a case before left open (a keeper's try lost is the keeper's stretch's run: its card) would read as
+				-- this run's.
 				if Screen.Current() ~= nil then
 					Screen.Close()
 					t.Wait(0.3)
 				end
 				local before = t.Server("Stage")
-				local was = { Normal = before.Normal and before.Normal.Cleared or 0, Hard = before.Hard and before.Hard.Cleared or 0 }
+				local held = before.Checkpoint or { Normal = 1, Hard = 1 }
+				local was = {
+					Normal = { before.Normal and before.Normal.Cleared or 0, held.Normal },
+					Hard = { before.Hard and before.Hard.Cleared or 0, held.Hard },
+				}
 				local count = #(Stages.Of(GROUND) :: { any })
 				local function restore()
 					t.Server("StageBegin", "Normal", 1) -- ends any run (refused when shut, which ends nothing: then the walk off does)
 					t.Server("StageLine", "Hard", 0)
-					t.Server("StageLine", "Normal", was.Normal)
-					t.Server("StageLine", "Hard", was.Hard)
+					t.Server("StageLine", "Normal", was.Normal[1], was.Normal[2])
+					t.Server("StageLine", "Hard", was.Hard[1], was.Hard[2])
 					t.Server("KeeperRest", 0)
 					t.Server("LeadHeal")
 					for _, name in { "Pack 1", Helpers.SQUARE.Name, "Elite 1" } do
@@ -91,6 +102,11 @@ function StageCases.Cases(): { any }
 						Screen.Close()
 					end
 				end
+				local function cardTitle(): string?
+					local title = StageScreen.Parts().Title :: TextLabel?
+					return if Screen.Current() == StageScreen.Name and title then title.Text else nil
+				end
+				local named = (require(Shared.Definitions.Grounds) :: any).ById[GROUND].Name
 				t.Server("LeadHeal")
 				t.Server("StageLine", "Hard", 0)
 				t.Server("StageLine", "Normal", 0)
@@ -99,7 +115,7 @@ function StageCases.Cases(): { any }
 				-- The gates on the client, and a walk across the first.
 				local served = t.Server("TestStream", "StageGate", { Stage = 1 })
 				local gate = if typeof(served) == "Vector3" then served else nil
-				t.Check("Stage 1's gate laid", gate ~= nil)
+				t.Check("stretch 1's gate laid", gate ~= nil)
 				if gate == nil then
 					restore()
 					return
@@ -117,7 +133,7 @@ function StageCases.Cases(): { any }
 					humanoid:MoveTo(Vector3.new(gate.X, floorY, gate.Z - 14))
 				end
 				t.Check("a walk across it shut is set back before it", waitFor(t, 4, function(): boolean
-					return table.find(Toast.Shown(), "Clear Stage 1 to go on") ~= nil
+					return table.find(Toast.Shown(), "Clear Stretch 1 to go on") ~= nil
 				end), table.concat(Toast.Shown(), " | "))
 				t.Wait(0.3)
 				local r = root()
@@ -125,12 +141,10 @@ function StageCases.Cases(): { any }
 				if humanoid and r then
 					humanoid:MoveTo(r.Position)
 				end
-				-- A shut stage refused, Stage 1 begun.
-				local refused = begin("Normal", 2)
-				t.Check("Stage 2 refused, waiting for Stage 1", refused.Ok == false and refused.Needs == Stages.Before and refused.Waits == 1, `{refused.Error} {refused.Needs} {refused.Waits}`)
-				t.Equal("Hard refused, waiting for the keeper", begin("Hard", 1).Needs, Stages.Keeper)
-				local first = begin("Normal", 1)
-				t.Check("Stage 1 on Normal begins", first.Ok == true, tostring(first.Error))
+				-- Hard refused while shut; Normal begun at its first stretch.
+				t.Equal("Hard refused, waiting for the keeper", begin("Hard").Needs, Stages.Keeper)
+				local first = begin("Normal")
+				t.Check("Normal begins at the first stretch", first.Ok == true and first.Stage == 1, `{first.Error} {first.Stage}`)
 				t.Check("its run on the player", waitFor(t, REPLICATE, function(): boolean
 					return player:GetAttribute("StageRun") == "Normal 1"
 				end))
@@ -138,9 +152,9 @@ function StageCases.Cases(): { any }
 				t.Equal("its quota, Config.Stages'", player:GetAttribute("StageQuota"), row.Quota)
 				local said = ""
 				t.Check("its line at the top of the screen", waitFor(t, REPLICATE, function(): boolean
-					local shown, words = StageController.Said()
+					local up, words = StageController.Said()
 					said = words
-					return shown and string.find(words, "Stage 1", 1, true) ~= nil and string.find(words, `0 / {row.Quota}`, 1, true) ~= nil
+					return up and string.find(words, `Stretch 1 of {count}`, 1, true) ~= nil and string.find(words, `0 / {row.Quota}`, 1, true) ~= nil
 				end), said)
 				-- The quota through Pack 1's falls, the pack stood again between.
 				local fallen = 0
@@ -159,44 +173,78 @@ function StageCases.Cases(): { any }
 				t.Server("PackBack", "Elite 1")
 				local elite = t.Server("StageFell", "Elite 1")
 				t.Check("its elite falls", elite.Ok == true, tostring(elite.Error))
-				t.Check("its card opens, Results.After later", waitFor(t, StagesConfig.Results.After + REPLICATE, function(): boolean
-					return Screen.Current() == StageScreen.Name and StageScreen.Parts().Title ~= nil
-				end))
-				local parts = StageScreen.Parts()
-				local title, opened = parts.Title :: TextLabel?, parts.Opened :: TextLabel?
-				t.Equal("it names the stage cleared", if title then title.Text else nil, "Stage 1 cleared")
-				t.Equal("it says what opened", if opened then opened.Text else nil, "Stage 2 is open")
-				t.Check("Retry, Next and Home", parts.Retry ~= nil and parts.Next ~= nil and parts.Home ~= nil)
-				t.Check("written once: Stage 1 cleared on Normal", waitFor(t, REPLICATE, function(): boolean
-					return line("Normal").Cleared == 1 and (line("Normal").Best[1] or 0) >= 0
-				end), `{line("Normal").Cleared}`)
-				t.Check("the run over", player:GetAttribute("StageRun") == nil)
-				t.Check("Stage 1's gate opens to the player", waitFor(t, 1, function(): boolean
+				-- The stretch's clear: written once, the run moving on, no card between stretches.
+				t.Check("written once: stretch 1 cleared on Normal, the checkpoint at stretch 2", waitFor(t, REPLICATE, function(): boolean
+					return line("Normal").Cleared == 1 and line("Normal").Reached == 2
+				end), `{line("Normal").Cleared} {line("Normal").Reached}`)
+				t.Check("the run moves on to stretch 2, Results.After later", waitFor(t, StagesConfig.Results.After + REPLICATE, function(): boolean
+					return player:GetAttribute("StageRun") == "Normal 2" and player:GetAttribute("StageKills") == 0
+				end), tostring(player:GetAttribute("StageRun")))
+				t.Check("no card between stretches", Screen.Current() == nil, tostring(Screen.Current()))
+				t.Check("its line says stretch 2", waitFor(t, REPLICATE, function(): boolean
+					local up, words = StageController.Said()
+					said = words
+					return up and string.find(words, `Stretch 2 of {count}`, 1, true) ~= nil
+				end), said)
+				t.Check("stretch 1's gate opens to the player, behind the run", waitFor(t, 1, function(): boolean
 					return StageController.Gate(1) == false
 				end))
-				-- Next: Stage 2, set down at its start.
-				local stage2 = Markers.Find("StageStart", { Stage = 2 })
-				t.Check("Next begins Stage 2", parts.Next ~= nil and Button.Press(parts.Next :: TextButton))
-				t.Check("set down at Stage 2's start", stage2 ~= nil and waitFor(t, MOVE + 1, function(): boolean
-					local at = root()
-					return at ~= nil and stage2 ~= nil and (at.Position - Markers.At(stage2).Position).Magnitude < 8
-				end))
-				t.Equal("its run", player:GetAttribute("StageRun"), "Normal 2")
-				-- Off the street ends it.
+				-- Off the street ends the run; its checkpoint stays.
 				local first1 = t.Server("TestStream", "StageStart", { Stage = 1 })
 				local off = (if typeof(first1) == "Vector3" then first1 else gate) + Vector3.new(0, R6_ROOT_HEIGHT, StagesConfig.Off + 20)
 				t.Server("TestStandAt", off, off + Vector3.new(0, 0, 1))
 				t.Check("off the street, the run ends", waitFor(t, 1.5, function(): boolean
 					return player:GetAttribute("StageRun") == nil
 				end))
-				-- Hard: its own foes, the lead solo.
-				t.Server("StageLine", "Normal", count)
-				t.Check("Hard opens with every Normal stage cleared", waitFor(t, REPLICATE, function(): boolean
-					local view = ProfileController.Get()
-					return view ~= nil and Stages.Needs(view, GROUND, "Hard", 1) == nil
+				t.Equal("its checkpoint stays at stretch 2", line("Normal").Reached, 2)
+				-- The Arc panel through the Door: Normal at its checkpoint, Hard shut and why.
+				t.Server("StageArrive")
+				t.Check("through the Door, not fresh: the Arc panel", waitFor(t, REPLICATE, function(): boolean
+					return Screen.Current() == StageScreen.Name and StageScreen.Parts().Normal ~= nil
 				end))
-				local hard = begin("Hard", 1)
-				t.Check("Hard Stage 1 begins", hard.Ok == true, tostring(hard.Error))
+				local pick = StageScreen.Parts()
+				local normalSays, hardSays = pick.NormalSays :: TextLabel?, pick.HardSays :: TextLabel?
+				t.Equal("Normal: the next run starts at stretch 2", if normalSays then normalSays.Text else nil, `Stretch 2 of {count}`)
+				t.Equal("its checkpoint, the save's", if pick.Normal then (pick.Normal :: Instance):GetAttribute("Checkpoint") else nil, 2)
+				t.Equal("Hard shut", if pick.Hard then Button.State(pick.Hard :: TextButton) else nil, "Disabled")
+				t.Check("and why", hardSays ~= nil and string.find(hardSays.Text, "on Normal", 1, true) ~= nil, if hardSays then hardSays.Text else nil)
+				for _, which in Stages.Difficulties do
+					local cp = pick[`{which}Power`] :: TextLabel?
+					t.Check(`{which}'s recommended Combat Power`, cp ~= nil and string.find(cp.Text, Sheet.Said.Power, 1, true) ~= nil, if cp then cp.Text else nil)
+				end
+				Helpers.lintClean(t, "the Arc panel")
+				t.Check("Normal's press begins the run at its checkpoint", pick.Normal ~= nil and Button.Press(pick.Normal :: TextButton) and waitFor(t, REPLICATE, function(): boolean
+					return player:GetAttribute("StageRun") == "Normal 2"
+				end), tostring(player:GetAttribute("StageRun")))
+				t.Check("the panel closes", waitFor(t, 1, function(): boolean
+					return Screen.Current() == nil
+				end))
+				-- The keeper's fall on Normal: the run's card, Hard opened, its press into Hard.
+				t.Server("StageLine", "Normal", count - 1, count)
+				t.Server("KeeperRest", 0)
+				local keeperRun = begin("Normal")
+				t.Check("a run at the keeper's stretch, the checkpoint", keeperRun.Ok == true and keeperRun.Stage == count, `{keeperRun.Error} {keeperRun.Stage}`)
+				t.Wait(MOVE)
+				local try = t.Server("KeeperTry")
+				t.Check("a try", try.Ok == true, tostring(try.Error))
+				t.Wait(MOVE)
+				t.Server("KeeperEnd", "Win")
+				t.Check("the keeper's fall: the run's card", waitFor(t, StagesConfig.Results.After + REPLICATE + 2, function(): boolean
+					return cardTitle() == `{named} cleared`
+				end), tostring(cardTitle()))
+				local done = StageScreen.Parts()
+				local opened = done.Opened :: TextLabel?
+				t.Equal("it says Hard is open", if opened then opened.Text else nil, "Hard is open")
+				t.Check("Retry, Hard and Home", done.Retry ~= nil and done.Next ~= nil and done.Home ~= nil)
+				t.Check("the keeper's stretch written, the checkpoint cleared", waitFor(t, REPLICATE, function(): boolean
+					return line("Normal").Cleared == count and line("Normal").Reached == nil
+				end), `{line("Normal").Cleared} {line("Normal").Reached}`)
+				Helpers.lintClean(t, "the run's card")
+				t.Wait(MOVE + 2) -- the win's pause and fade out of the copy
+				-- Hard: its own foes, the lead solo, the run moving on to the next stretch's.
+				t.Check("its Hard press begins Hard at its first stretch", done.Next ~= nil and Button.Press(done.Next :: TextButton) and waitFor(t, REPLICATE, function(): boolean
+					return player:GetAttribute("StageRun") == "Hard 1"
+				end), tostring(player:GetAttribute("StageRun")))
 				local packs, eliteLevel = 0, 0
 				for _, stop in row.Stops do
 					packs += if stop.Kind == "Pack" then stop.Count or 1 else 0
@@ -210,8 +258,7 @@ function StageCases.Cases(): { any }
 					lifted = lifted or model:GetAttribute("Level") == Stages.Level(eliteLevel, "Hard")
 				end
 				t.Check("ten levels up", lifted)
-				local state = t.Server("Stage")
-				t.Check("the lead fights alone", state.Alone == true)
+				t.Check("the lead fights alone", t.Server("Stage").Alone == true)
 				local hardElite = t.Server("StageFell", "Elite 1 mine")
 				t.Check("its elite first", hardElite.Ok == true and waitFor(t, REPLICATE, function(): boolean
 					return player:GetAttribute("StageLast") == true
@@ -221,84 +268,68 @@ function StageCases.Cases(): { any }
 				for _ = 1, 4 do
 					local some = t.Server("StageFell", "Pack 1 mine")
 					hardFallen += some.Felled or 0
-					if player:GetAttribute("StageRun") == nil or hardFallen >= row.Quota then
+					if player:GetAttribute("StageRun") ~= "Hard 1" or hardFallen >= row.Quota then
 						break
 					end
-					-- its own pack stands again Row.Respawn after its last falls, while the run lasts (the fallen, still
+					-- its own pack stands again Row.Respawn after its last falls, while the stretch lasts (the fallen, still
 					-- fading, aren't counted)
 					t.Wait(0.5)
 					waitFor(t, WorldConfig.Row.Respawn + 2, function(): boolean
 						return #mine(1, true) >= packs
 					end)
 				end
-				t.Check("its quota after the elite: done, its card", waitFor(t, StagesConfig.Results.After + REPLICATE, function(): boolean
-					local cardTitle = StageScreen.Parts().Title :: TextLabel?
-					return cardTitle ~= nil and cardTitle.Text == "Hard Stage 1 cleared"
-				end), `{hardFallen} felled`)
-				t.Check("its own foes gone with it", waitFor(t, REPLICATE, function(): boolean
-					return #mine(1) == 0
-				end))
-				t.Check("the lead fights the street again", t.Server("Stage").Alone == false)
-				-- The keeper on Hard: lifted ten.
-				t.Server("StageLine", "Hard", count - 1)
+				t.Check("its quota after the elite: the run moves on to stretch 2", waitFor(t, StagesConfig.Results.After + REPLICATE, function(): boolean
+					return player:GetAttribute("StageRun") == "Hard 2"
+				end), `{hardFallen} felled, {player:GetAttribute("StageRun")}`)
+				t.Check("stretch 1's own foes gone, stretch 2's standing", waitFor(t, REPLICATE, function(): boolean
+					return #mine(1) == 0 and #mine(2) > 0
+				end), `{#mine(1)} and {#mine(2)}`)
+				t.Check("no card between stretches", Screen.Current() == nil, tostring(Screen.Current()))
+				-- The keeper on Hard: lifted ten, its card with nothing after.
+				t.Server("StageLine", "Hard", count - 1, count)
 				t.Server("KeeperRest", 0)
-				local keeperRun = begin("Hard", count)
-				t.Check("Hard's keeper stage begins", keeperRun.Ok == true, tostring(keeperRun.Error))
+				local hardKeeper = begin("Hard")
+				t.Check("Hard's keeper stretch begins, its checkpoint", hardKeeper.Ok == true and hardKeeper.Stage == count, `{hardKeeper.Error} {hardKeeper.Stage}`)
 				t.Wait(MOVE)
-				local try = t.Server("KeeperTry")
-				t.Check("a try", try.Ok == true, tostring(try.Error))
+				local hardTry = t.Server("KeeperTry")
+				t.Check("a try", hardTry.Ok == true, tostring(hardTry.Error))
 				local keeperDef = (Stages.Last(GROUND, count) :: any)
 				t.Check("the keeper ten levels up", waitFor(t, MOVE + 1, function(): boolean
 					return (t.Server("Keeper").KeeperLevel or 0) == Stages.Level(keeperDef.Level, "Hard")
 				end), `{t.Server("Keeper").KeeperLevel}`)
 				t.Server("KeeperEnd", "Win")
-				t.Check("its fall clears the keeper's stage on Hard", waitFor(t, StagesConfig.Results.After + REPLICATE + 2, function(): boolean
-					return line("Hard").Cleared == count
-				end), `{line("Hard").Cleared}`)
-				t.Wait(MOVE + 2) -- the win's pause and fade out of the copy
-				-- The picker's locks.
-				t.Server("StageLine", "Hard", 0)
-				t.Server("StageLine", "Normal", 1)
-				t.Wait(REPLICATE)
+				t.Check("its fall clears Hard's keeper stretch, the checkpoint cleared", waitFor(t, StagesConfig.Results.After + REPLICATE + 2, function(): boolean
+					return line("Hard").Cleared == count and line("Hard").Reached == nil
+				end), `{line("Hard").Cleared} {line("Hard").Reached}`)
+				t.Check("its card: Retry and Home, nothing after", waitFor(t, REPLICATE, function(): boolean
+					return cardTitle() == `{named} cleared`
+				end) and StageScreen.Parts().Next == nil and StageScreen.Parts().Home ~= nil)
+				t.Wait(MOVE + 2)
+				-- A fall at stretch 3: its card, and the next run starts there.
 				if Screen.Current() then
 					Screen.Close()
 					t.Wait(0.4)
 				end
-				t.Server("StageArrive")
-				t.Check("through the Door, not fresh: the picker", waitFor(t, REPLICATE, function(): boolean
-					return Screen.Current() == StageScreen.Name and StageScreen.Parts().Stage1 ~= nil
-				end))
-				local pick = StageScreen.Parts()
-				t.Check("a tile a stage", pick[`Stage{count}`] ~= nil)
-				t.Equal("Stage 2 open after Stage 1", if pick.Stage2 then Button.State(pick.Stage2 :: TextButton) ~= "Disabled" else nil, true)
-				t.Equal("Stage 3 shut", if pick.Stage3 then Button.State(pick.Stage3 :: TextButton) else nil, "Disabled")
-				local line3 = pick.Stage3Power :: TextLabel?
-				t.Check("each tile's recommended Combat Power", line3 ~= nil and string.find(line3.Text, Sheet.Said.Power, 1, true) ~= nil, if line3 then line3.Text else nil)
-				Helpers.lintClean(t, "the picker")
-				t.Check("Hard's side", pick.Hard ~= nil and Button.Press(pick.Hard :: TextButton) and waitFor(t, 0.5, function(): boolean
-					return StageScreen.Difficulty() == "Hard"
-				end))
-				t.Equal("Hard's first tile shut while Hard is", if pick.Stage1 then Button.State(pick.Stage1 :: TextButton) else nil, "Disabled")
-				Helpers.lintClean(t, "the picker on Hard, shut")
-				if pick.Normal then
-					Button.Press(pick.Normal :: TextButton)
-				end
-				Screen.Close()
-				-- A lost run's card.
-				local lost = begin("Normal", 1)
-				t.Check("a run to lose", lost.Ok == true, tostring(lost.Error))
+				t.Server("StageLine", "Normal", 2, 3)
+				t.Server("LeadHeal")
+				local third = begin("Normal")
+				t.Check("a run from the checkpoint at stretch 3", third.Ok == true and third.Stage == 3, `{third.Error} {third.Stage}`)
 				t.Server("FightHealth", 0)
 				t.Check("the lead's fall: its card says so", waitFor(t, REPLICATE, function(): boolean
-					local cardTitle = StageScreen.Parts().Title :: TextLabel?
-					return Screen.Current() == StageScreen.Name and cardTitle ~= nil and cardTitle.Text == "Your lead fell"
-				end))
-				t.Check("Retry and Home, no Next", StageScreen.Parts().Retry ~= nil and StageScreen.Parts().Home ~= nil and StageScreen.Parts().Next == nil)
-				Helpers.lintClean(t, "the lost card")
+					return cardTitle() == "Your lead fell"
+				end), tostring(cardTitle()))
+				local fell = StageScreen.Parts()
+				local time = fell.Time
+				local where = if time then time:FindFirstChild("Said") :: TextLabel? else nil
+				t.Equal("and where the next run starts", if where then where.Text else nil, `Your next run starts at Stretch 3 of {count}`)
+				t.Check("Retry and Home, no Hard", fell.Retry ~= nil and fell.Home ~= nil and fell.Next == nil)
+				t.Equal("the checkpoint stays at stretch 3", line("Normal").Reached, 3)
+				Helpers.lintClean(t, "the fall's card")
 				restore()
 			end,
 		},
 		{
-			Name = "Stages (TR43): a fresh account through the Festival Door is in Stage 1 on Normal with no screen (wipes the save)",
+			Name = "Stages (TR43): a fresh account through the Festival Door is in the run's first stretch on Normal with no screen (wipes the save)",
 			Place = "Festival", -- TR45: its world stands in that place only
 			Manual = true,
 			Run = function(t: any)
@@ -306,10 +337,88 @@ function StageCases.Cases(): { any }
 				t.Wait(REPLICATE)
 				t.Check("fresh", t.Server("Stage").Fresh == true)
 				t.Server("StageArrive")
-				t.Check("Stage 1 on Normal at once", waitFor(t, REPLICATE, function(): boolean
+				t.Check("the first stretch on Normal at once", waitFor(t, REPLICATE, function(): boolean
 					return player:GetAttribute("StageRun") == "Normal 1"
 				end))
 				t.Check("no screen", Screen.Current() == nil)
+			end,
+		},
+		{
+			Name = "Take: TR50, the dock's Play to the Arc panel at the save's checkpoint and at stretch 3, then a stretch's line, at the smallest phone, each held for a still, for research",
+			Place = "Main",
+			Manual = true,
+			Stay = true,
+			Run = function(t: any)
+				-- Each state is held until the driver moves ReplicatedStorage.NL_TakeStep on ("Panel", "Stretch3", "Line",
+				-- "End") and captures it. The panel opens from the dock's Play as a player taps it; stretch 3 is the record set
+				-- to Normal's stretch 2 cleared, its checkpoint at 3; the line is the run's attributes set on this client alone
+				-- (the line reads them), the same line a run in the Festival shows. The record is put back after.
+				local step = Instance.new("StringValue")
+				step.Name = "NL_TakeStep"
+				step.Value = "Ready"
+				step.Parent = ReplicatedStorage
+				local function await(name: string): boolean
+					return waitFor(t, 300, function(): boolean
+						return step.Value == name or step.Value == "End"
+					end) and step.Value == name
+				end
+				local before = t.Server("Stage")
+				local held = before.Checkpoint or { Normal = 1, Hard = 1 }
+				local was = { before.Normal and before.Normal.Cleared or 0, held.Normal }
+				local count = #(Stages.Of(GROUND) :: { any })
+				local tile = HudController.Parts().Map :: TextButton
+				local function open()
+					if Screen.Current() ~= nil then
+						Screen.Close()
+						t.Wait(0.5)
+					end
+					t.Check("the dock's Play opens the Arc panel", Button.Press(tile) and waitFor(t, 2, function(): boolean
+						return Screen.Current() == StageScreen.Name and StageScreen.Parts().Normal ~= nil
+					end), tostring(Screen.Current()))
+					t.Wait(1) -- its rise and the plays' ease
+				end
+				Layers.Force(Theme.Scale.Floor)
+				Layers.Box(Theme.Smallest - Vector2.new(0, GuiService.TopbarInset.Height))
+				local ok, problem = pcall(function()
+					if await("Panel") then
+						open()
+					end
+					if await("Stretch3") then
+						t.Server("StageLine", "Normal", math.max(was[1], 2), 3)
+						t.Wait(REPLICATE)
+						open()
+						local says = StageScreen.Parts().NormalSays :: TextLabel?
+						t.Equal("Normal's checkpoint reads stretch 3", if says then says.Text else nil, `Stretch 3 of {count}`)
+					end
+					if await("Line") then
+						Screen.Close()
+						t.Wait(0.5)
+						local row = (Stages.Of(GROUND) :: any)[2]
+						player:SetAttribute("StageQuota", row.Quota)
+						player:SetAttribute("StageKills", math.floor(row.Quota / 2))
+						player:SetAttribute("StageRun", "Normal 2")
+						local said = ""
+						t.Check("the stretch's line", waitFor(t, 2, function(): boolean
+							local up, words = StageController.Said()
+							said = words
+							return up and string.find(words, `Stretch 2 of {count}`, 1, true) ~= nil
+						end), said)
+					end
+					await("End")
+				end)
+				player:SetAttribute("StageRun", nil)
+				player:SetAttribute("StageKills", nil)
+				player:SetAttribute("StageQuota", nil)
+				t.Server("StageLine", "Normal", was[1], was[2])
+				if Screen.Current() ~= nil then
+					Screen.Close()
+				end
+				Layers.Box(nil)
+				Layers.Force(nil)
+				step:Destroy()
+				if not ok then
+					error(problem, 0)
+				end
 			end,
 		},
 	}

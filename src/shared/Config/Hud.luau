@@ -72,12 +72,17 @@ local stages = {
 		Lock = { Side = 26, Down = 53 },
 	},
 	Badge = { Side = 26, Corner = 5, In = 4, Glow = 4, GlowAlpha = 0.3, Box = 18, Space = 3 },
-	Check = { Radius = 10, In = 15 },
-	Tag = { Wide = 46, Tall = 20, Right = 6, Up = 9 }, -- "Next", on the next tile's top right
 	Road = { Y = 280, Half = 5, Fill = 3, Glow = 4, GlowAlpha = 0.22, Light = 0.55 },
-	Ring = { Radius = 7.5, Outer = 4.5, Glow = 7, GlowAlpha = 0.55 },
 	Foot = { Down = 15, Power = 84 },
-	Switch = { Wide = 156, Gap = 2, Lock = 10 },
+	-- The Arc panel (TR50, the director's word of 2026-11-19, 23:19): one tile for the ground, the keeper's picture on its
+	-- bed (Picture times the cut's size) and its name under it, and beside it Normal and Hard, one press each, Gap apart.
+	-- A choice: its name at In and Top, what it recommends at its top right, the run's marks along Road from In, their
+	-- middle Marks down, and where the next run starts past them.
+	Arc = {
+		Title = "Festival of Battles",
+		Bed = Vector2.new(150, 153), Picture = 1.4, Gap = 8,
+		Choice = { In = 12, Top = 6, Head = 24, Marks = 60, Road = 214, Words = 12 },
+	},
 	-- The card at a run's end, over the street dimmed (Dim, the cover's transparency).
 	Card = {
 		Left = 124, Wide = 320, Corner = 8, Edge = 1.4, Space = 8, In = 12, Foot = 10, Before = 14,

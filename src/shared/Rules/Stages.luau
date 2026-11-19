@@ -1,10 +1,12 @@
 --!strict
--- Stages (pure rules): a ground's street in stages, each played on Normal or Hard (TR43; the director, 2026-11-18, D2;
--- docs/design.md, "The Festival of Battles"; Config.Stages). A stage needs the one before it on the same difficulty, and
--- Hard opens for a ground when its keeper's stage falls on Normal. A stage played is a run, held by the server while it
--- lasts and never saved: its ordinary Shades count to its quota, its last stop's fall counts too, and once both are in it
--- ends, in either order, and its clear is written once. The server decides each fall; this only counts and writes. No
--- Roblox API.
+-- Stages (pure rules): a ground's one mission, a run of its stretches to its keeper, on Normal or Hard (TR50; the
+-- director, 2026-11-19, 23:19, replacing D2's four stages; docs/design.md, "The Festival of Battles"; Config.Stages).
+-- A run begins at its difficulty's checkpoint, the last stretch reached there, or the first once that difficulty's keeper
+-- has fallen; Hard opens for a ground when its keeper falls on Normal. A run is held by the server while it lasts and
+-- never saved. In each stretch its ordinary Shades count to its quota and its last stop's fall counts too; once both are
+-- in, in either order, that stretch's clear is written once (the checkpoint moves on with it) and the run moves on to the
+-- next stretch, until the keeper's ends it. A stretch's gate on the street lets the run's player by once that stretch is
+-- done. The server decides each fall; this only counts and writes. No Roblox API.
 
 local Shared = script.Parent.Parent
 local Profile = require(Shared.Data.Profile)
@@ -30,12 +32,14 @@ Stages.Keeper = "Keeper" -- for Hard: the keeper's stage, on Normal
 export type Run = {
 	Ground: string,
 	Difficulty: string,
-	Stage: number,
+	Stage: number, -- the stretch it's on
+	From: number, -- the stretch it began at
 	Started: number, -- os.time() it began
-	Kills: number, -- its ordinary Shades that fell to the player, up to the quota
-	Last: boolean, -- its last stop's foe fell to the player
-	Done: boolean, -- both: the quota met and its last stop fallen
-	Claimed: boolean, -- its clear is written
+	Since: number, -- os.time() its stretch began
+	Kills: number, -- its stretch's ordinary Shades that fell to the player, up to the quota
+	Last: boolean, -- its stretch's last stop's foe fell to the player
+	Done: boolean, -- both: the quota met and its stretch's last stop fallen
+	Claimed: boolean, -- its stretch's clear is written
 }
 
 -- A ground's stages, or nil for a ground with none.
@@ -81,6 +85,14 @@ local function written(data: Profile.Data, ground: string): Profile.StageProgres
 	return record :: Profile.StageProgress
 end
 
+-- The stretch a run on `difficulty` begins at: the last reached there, or the first (none reached, or its keeper fallen
+-- since, TR50). 1 for a ground with no stretches.
+function Stages.Checkpoint(data: Profile.Data, ground: string, difficulty: string): number
+	local count = #((Stages.Of(ground) or {}) :: { StagesConfig.Stage })
+	local reached = Stages.Line(data, ground, difficulty).Reached
+	return if type(reached) == "number" and reached % 1 == 0 then math.clamp(reached, 1, math.max(count, 1)) else 1
+end
+
 -- Nil when the stage is open to this player; else what it waits for, and for Stages.Before the stage it needs.
 -- Stages.Unknown for no such ground, difficulty or stage.
 function Stages.Needs(data: Profile.Data, ground: string, difficulty: string, stage: number): (string?, number?)
@@ -108,7 +120,7 @@ function Stages.Start(data: Profile.Data, ground: string, difficulty: string, st
 	elseif needs then
 		return nil, Stages.Locked
 	end
-	return { Ground = ground, Difficulty = difficulty, Stage = stage, Started = now, Kills = 0, Last = false, Done = false, Claimed = false }, nil
+	return { Ground = ground, Difficulty = difficulty, Stage = stage, From = stage, Started = now, Since = now, Kills = 0, Last = false, Done = false, Claimed = false }, nil
 end
 
 -- A foe of the run's stage fell with the player among its hitters: an ordinary Shade of one of its packs counts to the
@@ -136,11 +148,13 @@ function Stages.Kill(run: Run, def: string): boolean
 	return run.Done
 end
 
--- Writes the run's clear at `now`, once: the stage counted cleared on its difficulty, its best time kept. { Ok, First,
--- Seconds, Best, Opened, Next } where First is the first clear of that stage on that difficulty, Opened what that first
--- clear opened ("Stage" for the next stage, "Hard" when the keeper's stage falls on Normal, "" for none), and Next and
--- NextDifficulty the stage its card offers next: the next on its difficulty, Hard's first after the keeper's stage on
--- Normal (AR42's card), nil after Hard's last.
+-- Writes the clear of the run's stretch at `now`, once: the stretch counted cleared on its difficulty, its best time kept,
+-- and the checkpoint moved on to the next stretch, or cleared with the keeper's. { Ok, First, Seconds, Best, Opened,
+-- Next, Ends, Run, RunBest, Then } where First is the first clear of that stretch on that difficulty; Opened what it
+-- opened ("Stage" for the next stretch, "Hard" when the keeper falls on Normal, "" for none); Next the stretch the run
+-- moves on to (Stages.Advance), nil when the keeper's clear Ends it. At the end: Run its seconds from its beginning,
+-- RunBest the best whole run's (begun at the first stretch), and Then the difficulty its card offers next: Hard after
+-- Normal's, nil after Hard's.
 function Stages.Clear(data: Profile.Data, run: Run, now: number): { [string]: any }
 	local rows = Stages.Of(run.Ground)
 	if rows == nil or not valid(run.Ground, run.Difficulty, run.Stage) then
@@ -152,7 +166,7 @@ function Stages.Clear(data: Profile.Data, run: Run, now: number): { [string]: an
 	end
 	run.Claimed = true
 	local line = (written(data, run.Ground) :: any)[run.Difficulty] :: Profile.StageLine
-	local seconds = math.max(0, now - run.Started)
+	local seconds = math.max(0, now - run.Since)
 	local first = line.Cleared < run.Stage
 	line.Cleared = math.max(line.Cleared, run.Stage)
 	local best = line.Best[run.Stage] or 0
@@ -166,11 +180,15 @@ function Stages.Clear(data: Profile.Data, run: Run, now: number): { [string]: an
 	elseif first and run.Difficulty == "Normal" then
 		opened = "Hard"
 	end
-	local nextStage: number?, nextDifficulty: string? = nil, nil
-	if run.Stage < count then
-		nextStage, nextDifficulty = run.Stage + 1, run.Difficulty
-	elseif run.Difficulty == "Normal" then
-		nextStage, nextDifficulty = 1, "Hard" -- clearing the keeper's stage on Normal opened Hard (Stages.Needs)
+	local ends = run.Stage >= count
+	local whole = math.max(0, now - run.Started)
+	if ends then
+		line.Reached = nil -- the keeper fell: the next run begins at the first stretch
+		if run.From == 1 and (line.Run == nil or line.Run == 0 or whole < line.Run) then
+			line.Run = whole
+		end
+	else
+		line.Reached = run.Stage + 1
 	end
 	return {
 		Ok = true,
@@ -178,9 +196,34 @@ function Stages.Clear(data: Profile.Data, run: Run, now: number): { [string]: an
 		Seconds = seconds,
 		Best = line.Best[run.Stage],
 		Opened = opened,
-		Next = nextStage,
-		NextDifficulty = nextDifficulty,
+		Next = if ends then nil else run.Stage + 1,
+		Ends = ends,
+		Run = if ends then whole else nil,
+		RunBest = if ends then line.Run else nil,
+		Then = if ends and run.Difficulty == "Normal" then "Hard" else nil, -- the keeper on Normal opened Hard (Stages.Needs)
 	}
+end
+
+-- Moves a run whose stretch's clear is written on to the next stretch at `now`, its count begun again. Whether it moved:
+-- not past the last stretch, nor before the clear.
+function Stages.Advance(run: Run, now: number): boolean
+	local count = #((Stages.Of(run.Ground) or {}) :: { StagesConfig.Stage })
+	if not run.Claimed or run.Stage >= count then
+		return false
+	end
+	run.Stage += 1
+	run.Since = now
+	run.Kills = 0
+	run.Last = false
+	run.Done = false
+	run.Claimed = false
+	return true
+end
+
+-- Whether stretch `gate`'s gate lets a run's player by, the run on stretch `stage` (`done`: that stretch's quota and last
+-- stop in): a stretch behind it, or its own once done (TR50). The run's own order, whatever the record says.
+function Stages.Through(gate: number, stage: number, done: boolean): boolean
+	return gate < stage or (gate == stage and done)
 end
 
 -- Whether this player has cleared nothing yet, a stage or a keeper anywhere: the Festival Door then sends them straight
@@ -199,8 +242,8 @@ function Stages.Fresh(data: Profile.Data): boolean
 	return true
 end
 
--- Whether stage `stage`'s gate on the street lets this player by, going up it: once they've cleared that stage on
--- Normal (TR43). Its gate shuts the way to the next stage, so a stage played before is a stage passed.
+-- Whether stage `stage`'s gate on the street lets this player by, going up it, outside a run: once they've cleared that
+-- stage on Normal (TR43). In a run, the run's own order (Stages.Through).
 function Stages.Passes(data: Profile.Data, ground: string, stage: number): boolean
 	return Stages.Line(data, ground, "Normal").Cleared >= stage
 end

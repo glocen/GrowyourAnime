@@ -1,7 +1,9 @@
 --!strict
--- Logic cases (pure): a ground's stages on Normal and Hard (TR43; Rules.Stages; Config.Stages). A stage needs the one
--- before it on the same difficulty, Hard opens when the keeper's stage falls on Normal, a run counts its quota of Shades
--- before its last stop, and its clear is written once, best time kept. Runs in Studio (LogicTests) and with Studio closed.
+-- Logic cases (pure): a ground's one run of stretches on Normal and Hard (TR43, TR50; Rules.Stages; Config.Stages). A
+-- stretch needs the one before it on the same difficulty, Hard opens when the keeper falls on Normal, a stretch counts its
+-- quota of Shades before its last stop, its clear is written once, best time kept, and the run moves on from it; a run
+-- begins at its difficulty's checkpoint, which the keeper's fall clears. Runs in Studio (LogicTests) and with Studio
+-- closed.
 
 local Shared = game:GetService("ReplicatedStorage").Shared
 local Profile = require(Shared.Data.Profile)
@@ -39,6 +41,19 @@ local function play(data: Profile.Data, difficulty: string, stage: number, secon
 	end
 	Stages.Kill(run, (Stages.Last(GROUND, stage) :: any).Def)
 	return Stages.Clear(data, run, NOW + seconds)
+end
+
+-- Plays the run's stretch through: its quota of its packs' Shades, then its last stop.
+local function through(run: Stages.Run)
+	local row = (Stages.Of(GROUND) :: any)[run.Stage]
+	local pack: string? = nil
+	for _, stop in row.Stops do
+		pack = if stop.Kind == "Pack" then stop.Def else pack
+	end
+	for _ = 1, row.Quota do
+		Stages.Kill(run, pack :: string)
+	end
+	Stages.Kill(run, (Stages.Last(GROUND, run.Stage) :: any).Def)
 end
 
 return {
@@ -85,7 +100,7 @@ return {
 			t.Equal("a locked stage won't start", refused, Stages.Locked)
 			t.Check("every gate shut to a new account", not Stages.Passes(data, GROUND, 1) and not Stages.Passes(data, GROUND, 3))
 			local first = play(data, "Normal", 1, 170)
-			t.Check("Stage 1 clears, first, opening Stage 2", first.Ok and first.First and first.Opened == "Stage" and first.Next == 2 and first.NextDifficulty == "Normal", `{first.Error}`)
+			t.Check("Stage 1 clears, first, opening Stage 2, the run moving on to it", first.Ok and first.First and first.Opened == "Stage" and first.Next == 2 and not first.Ends, `{first.Error}`)
 			t.Check("Stage 1's gate lets it by, Stage 2's not yet", Stages.Passes(data, GROUND, 1) and not Stages.Passes(data, GROUND, 2))
 			t.Check("no longer fresh", not Stages.Fresh(data))
 			t.Equal("Stage 2 open now", Stages.Needs(data, GROUND, "Normal", 2), nil)
@@ -93,7 +108,7 @@ return {
 			play(data, "Normal", 3, 190)
 			t.Equal("Hard still shut before the keeper", Stages.Needs(data, GROUND, "Hard", 1), Stages.Keeper)
 			local keeper = play(data, "Normal", 4, 120)
-			t.Check("the keeper's stage on Normal opens Hard, its card's Next Hard's first", keeper.Ok and keeper.Opened == "Hard" and keeper.Next == 1 and keeper.NextDifficulty == "Hard", `{keeper.Opened}`)
+			t.Check("the keeper's stage on Normal opens Hard and ends the run, its card's next Hard", keeper.Ok and keeper.Opened == "Hard" and keeper.Ends and keeper.Next == nil and keeper.Then == "Hard", `{keeper.Opened}`)
 			t.Equal("Hard Stage 1 open", Stages.Needs(data, GROUND, "Hard", 1), nil)
 			t.Check("every gate open after the keeper's stage on Normal", Stages.Passes(data, GROUND, 1) and Stages.Passes(data, GROUND, 3))
 			local hardNeeds, hardStage = Stages.Needs(data, GROUND, "Hard", 2)
@@ -104,7 +119,7 @@ return {
 				play(data, "Hard", stage, 200)
 			end
 			local hardKeeper = play(data, "Hard", 4, 200)
-			t.Check("the keeper's stage on Hard again: no first, opens nothing", hardKeeper.Ok and not hardKeeper.First and hardKeeper.Opened == "" and hardKeeper.Next == nil)
+			t.Check("the keeper's stage on Hard again: no first, opens nothing, nothing after", hardKeeper.Ok and not hardKeeper.First and hardKeeper.Opened == "" and hardKeeper.Next == nil and hardKeeper.Then == nil)
 			t.Equal("all four on Hard", Stages.Line(data, GROUND, "Hard").Cleared, 4)
 			local old = fresh()
 			Progress.KeeperWon(old, GROUND, NOW)
@@ -150,6 +165,80 @@ return {
 			t.Equal("the Best list is whole, so it saves", #Stages.Line(data, GROUND, "Normal").Best, 4)
 			local problems = Saveable.Problems(data.Progress.Stages, "Stages")
 			t.Check("the record saves", #problems == 0, table.concat(problems, "; "))
+		end,
+	},
+	{
+		Name = "Stages (TR50): one run of four stretches, each clear moving it on and the checkpoint with it, the keeper's ending it with the whole run's time",
+		Run = function(t: any)
+			local data = fresh()
+			t.Equal("a new account begins at the first stretch", Stages.Checkpoint(data, GROUND, "Normal"), 1)
+			local run = Stages.Start(data, GROUND, "Normal", Stages.Checkpoint(data, GROUND, "Normal"), NOW) :: Stages.Run
+			t.Check("the run begins there", run ~= nil and run.Stage == 1 and run.From == 1)
+			t.Check("not before its clear: no moving on", not Stages.Advance(run, NOW))
+			local at = NOW
+			for stretch = 1, 3 do
+				at += 180
+				through(run)
+				t.Check(`stretch {stretch}: done`, run.Done)
+				t.Check(`stretch {stretch}: its gate lets the run by once done, the next not`, Stages.Through(stretch, run.Stage, run.Done) and not Stages.Through(stretch + 1, run.Stage, run.Done))
+				local clear = Stages.Clear(data, run, at)
+				t.Check(`stretch {stretch}: cleared in its own time, the run moving on`, clear.Ok and clear.Seconds == 180 and clear.Next == stretch + 1 and not clear.Ends, `{clear.Error} {clear.Seconds}`)
+				t.Equal(`stretch {stretch}: the checkpoint moves on`, Stages.Checkpoint(data, GROUND, "Normal"), stretch + 1)
+				t.Equal(`stretch {stretch}: the same clear again is refused`, Stages.Clear(data, run, at).Error, Stages.Claimed)
+				t.Check(`stretch {stretch}: the run moves on`, Stages.Advance(run, at) and run.Stage == stretch + 1 and run.Kills == 0 and not run.Last and not run.Done and not run.Claimed)
+				t.Check(`stretch {stretch}: its gate stays open behind the run`, Stages.Through(stretch, run.Stage, run.Done))
+			end
+			t.Equal("on Normal, Hard still shut before the keeper", Stages.Needs(data, GROUND, "Hard", 1), Stages.Keeper)
+			at += 120
+			through(run)
+			local keeper = Stages.Clear(data, run, at)
+			t.Check("the keeper's fall ends the run: no next stretch, Hard next on its card", keeper.Ok and keeper.Ends and keeper.Next == nil and keeper.Then == "Hard" and keeper.Opened == "Hard")
+			t.Equal("the card's time is the whole run's", keeper.Run, 3 * 180 + 120)
+			t.Equal("begun at the first stretch: the whole run's best", keeper.RunBest, 3 * 180 + 120)
+			t.Check("past the keeper, nowhere to move on to", not Stages.Advance(run, at))
+			t.Equal("the keeper's fall clears the checkpoint", Stages.Checkpoint(data, GROUND, "Normal"), 1)
+			t.Equal("Hard opens", Stages.Needs(data, GROUND, "Hard", 1), nil)
+			t.Equal("Hard's checkpoint is its own: its first", Stages.Checkpoint(data, GROUND, "Hard"), 1)
+			local problems = Saveable.Problems(data.Progress.Stages, "Stages")
+			t.Check("the record saves", #problems == 0, table.concat(problems, "; "))
+		end,
+	},
+	{
+		Name = "Stages (TR50): a fall at stretch 3 ends the run, and the next begins at 3, until the keeper falls; Hard keeps its own",
+		Run = function(t: any)
+			local data = fresh()
+			local run = Stages.Start(data, GROUND, "Normal", 1, NOW) :: Stages.Run
+			for _ = 1, 2 do
+				through(run)
+				Stages.Clear(data, run, NOW + 100)
+				Stages.Advance(run, NOW + 100)
+			end
+			t.Equal("on stretch 3", run.Stage, 3)
+			Stages.Kill(run, "brawler") -- a Shade, then the lead falls: the server drops the run, nothing written
+			t.Equal("a fall at 3: the next run begins at 3", Stages.Checkpoint(data, GROUND, "Normal"), 3)
+			local again = Stages.Start(data, GROUND, "Normal", Stages.Checkpoint(data, GROUND, "Normal"), NOW + 500) :: Stages.Run
+			t.Check("it begins there, from there", again ~= nil and again.Stage == 3 and again.From == 3 and again.Kills == 0)
+			local fell = Stages.Start(data, GROUND, "Normal", Stages.Checkpoint(data, GROUND, "Normal"), NOW + 900) :: Stages.Run
+			t.Equal("another fall there: still 3", fell.Stage, 3)
+			through(again)
+			Stages.Clear(data, again, NOW + 700)
+			Stages.Advance(again, NOW + 700)
+			t.Equal("stretch 3 cleared: the checkpoint at the keeper", Stages.Checkpoint(data, GROUND, "Normal"), 4)
+			through(again)
+			local keeper = Stages.Clear(data, again, NOW + 800)
+			t.Check("the keeper falls: the run ends", keeper.Ok and keeper.Ends)
+			t.Equal("a run begun at 3: no whole run's best", keeper.RunBest, nil)
+			t.Equal("the checkpoint cleared: the next run at the first", Stages.Checkpoint(data, GROUND, "Normal"), 1)
+			local hard = Stages.Start(data, GROUND, "Hard", Stages.Checkpoint(data, GROUND, "Hard"), NOW) :: Stages.Run
+			through(hard)
+			Stages.Clear(data, hard, NOW + 200)
+			t.Check("Hard's checkpoint moves on alone", Stages.Checkpoint(data, GROUND, "Hard") == 2 and Stages.Checkpoint(data, GROUND, "Normal") == 1)
+			local broken = fresh()
+			Stages.Start(broken, GROUND, "Normal", 1, NOW)
+			;(Stages.Line(broken, GROUND, "Normal") :: any).Reached = 9
+			t.Equal("a blank record's checkpoint is the first, whatever a blank holds", Stages.Checkpoint(broken, GROUND, "Normal"), 1)
+			local problems = Saveable.Problems(data.Progress.Stages, "Stages")
+			t.Check("the record saves, its checkpoints in", #problems == 0, table.concat(problems, "; "))
 		end,
 	},
 	{

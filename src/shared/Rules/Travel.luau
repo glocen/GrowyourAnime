@@ -9,6 +9,7 @@ local Shared = script.Parent.Parent
 local Profile = require(Shared.Data.Profile)
 local TravelConfig = require(Shared.Config.Travel)
 local Stages = require(Shared.Rules.Stages)
+local StagesConfig = require(Shared.Config.Stages)
 
 local Travel = {}
 
@@ -81,12 +82,15 @@ function Travel.Next(result: string, failed: number, routed: boolean): Step?
 	return nil
 end
 
--- What a player arriving in the Festival starts. A ticket's stage begins if the save opens it; refused, or with no ticket,
--- a fresh player begins Stage 1 on Normal (TR43) and anyone else gets the menu where they land.
+-- What a player arriving in the Festival starts. A ticket's run begins at its checkpoint if the save opens it (TR50);
+-- refused, or with no ticket, a fresh player begins the first stretch on Normal (TR43) and anyone else gets the Arc
+-- panel where they land.
 function Travel.Arrival(ticket: Ticket?, data: Profile.Data, ground: string): Arrival
 	local refused: string? = nil
 	if ticket and ticket.Go == "Stage" and ticket.Ground == ground then
-		local difficulty, stage = ticket.Difficulty :: string, ticket.Stage :: number
+		-- the run begins at its checkpoint, as the save has it on arrival (TR50); the ticket's stage is the one it saw
+		local difficulty = ticket.Difficulty :: string
+		local stage = if StagesConfig.Offset[difficulty] ~= nil then Stages.Checkpoint(data, ground, difficulty) else ticket.Stage :: number
 		local needs = Stages.Needs(data, ground, difficulty, stage)
 		if needs == nil then
 			return { Begin = true, Difficulty = difficulty, Stage = stage }

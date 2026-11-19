@@ -2,6 +2,14 @@
 
 The oldest entries of `docs/team-notes.md`, moved here as that file passed about 250 lines (`AGENTS.md`, "Team notes"). Newest first.
 
+### 2026-11-17, 17:58. TR41 (c): the level-up notice, take B, installed (Faber)
+
+- **What changed:** a level gained shows Modulo's notice under the lead's corner: it slides in, its number lands with a flash and a knock, one sheen crosses, and it slides back. The old toast and the word over the lead are gone; the column of light stays.
+- **Where:** `UI/LevelNotice.luau`, `Rules.Hud.Notice`, `Config/Hud.luau` (`LevelNotice`), `HudController`, `Effects.LevelUp`. Cases: logic "Hud", self-test "HUD: TR41 (c)" (`NoticeCases.luau`), "Take: TR41 (c)".
+- **Tested:** HUD 445/0, the notice 39/0, logic 24,032/0; type check 0 new.
+- **Open:** the plate is three plain image pieces, since a Roblox 9-slice drew it wrong under the layer's scale. The number sits on the block as drawn (30.75), not on the json's 28.9.
+- **For:** research's read from the strip (`build/scratch/faber/stills/tr41c-strip-zoom.png`).
+
 ### 2026-11-17, 16:52. AR17: the Strip installed at 128; TR41 (a)'s two must-fixes (Faber)
 
 - **What changed:** the Strip and the side street wear Modulo's kit, laid from the festival gate (12 meshes, 126 placements, 7 lights, the paving). The great shard glows steady, without Clear's lift. The Breaker's falling star is Modulo's redraw, and the ready row fades out at the detail panel.

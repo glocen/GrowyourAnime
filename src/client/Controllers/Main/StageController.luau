@@ -1,13 +1,14 @@
 --!strict
--- StageController (client): a ground's stages as this player sees them (docs/test-requests.md, TR43; StageService). The
--- picker opens when the server sends it (StagePick, through the Festival Door), the results card at a run's end
--- (StageDone; UI.StageScreen). The run reads under Roblox's top bar from the player's attributes (StageRun, StageKills,
--- StageQuota, StageLast), on the picker's glass (AR42; tools/blender/stage_seam.py's stage_line): the stage's mark and
--- name, its Shades on a short road with a notch a Shade, lit as they fall, to its last foe's ring, and what's left at the
--- right ("then its last foe"). A fall steps the count at once and eases the light onto its notch with a flash; the last
--- foe's ring pops lit as it rises, and takes a check once the stage is cleared. Each stage gate shows shut to this player
--- until they've cleared its stage on Normal, and clear once they have; a set-back at one says why. Another player's Hard
--- foes (their For) stand faded for this one: not theirs to fight.
+-- StageController (client): a ground's run of stretches as this player sees it (docs/test-requests.md, TR43, TR50;
+-- StageService). The Arc panel opens from the dock's Play or when the server sends it (StagePick, through the Festival
+-- Door), the run's card at its end (StageDone; UI.StageScreen). The run reads under Roblox's top bar from the player's
+-- attributes (StageRun, StageKills, StageQuota, StageLast), on the panel's glass (AR42; tools/blender/stage_seam.py's
+-- stage_line): the stretch's mark and "Stretch 2 of 4", its Shades on a short road with a notch a Shade, lit as they
+-- fall, to its last foe's ring, and what's left at the right ("then its last foe"). A fall steps the count at once and
+-- eases the light onto its notch with a flash; the last foe's ring pops lit as it rises, and takes a check once the
+-- stretch is cleared. Each stretch's gate shows as the server keeps it: in a run, open behind the run and at its own
+-- stretch once done (Rules.Stages.Through); outside one, open once cleared on Normal. A set-back at one says why. Another
+-- player's Hard foes (their For) stand faded for this one: not theirs to fight.
 --   StageController.Said() -> (boolean, string)   whether the run's line shows, and its words, for tests
 --   StageController.Gate(stage) -> boolean?       whether stage's gate shows shut, nil before it's streamed in
 
@@ -73,8 +74,8 @@ type Line = {
 local line: Line? = nil
 
 local on: StageScreen.On = {
-	Begin = function(ground: string, difficulty: string, stage: number): { [string]: any }
-		local ok, answer = pcall(Net.Client.Invoke, "Stage", ground, difficulty, stage)
+	Begin = function(ground: string, difficulty: string): { [string]: any }
+		local ok, answer = pcall(Net.Client.Invoke, "Stage", ground, difficulty)
 		return if ok and type(answer) == "table" then answer else { Ok = false, Error = "NoAnswer" }
 	end,
 	Home = function(): { [string]: any }
@@ -138,7 +139,8 @@ local function build(key: string, hard: boolean, stage: number, quota: number): 
 	list.Padding = UDim.new(0, 12)
 	list.SortOrder = Enum.SortOrder.LayoutOrder
 	list.Parent = head
-	local name = Glass.Label(head, "Name", if hard then `Hard Stage {stage}` else `Stage {stage}`, LOOK.Text.Title, SEAM.Text, 0, 0, 0, 22, Enum.TextXAlignment.Left, true, 7)
+	local stretches = #((Stages.Of(WorldConfig.Row.Ground) or {}) :: { any })
+	local name = Glass.Label(head, "Name", `Stretch {stage} of {stretches}`, LOOK.Text.Title, SEAM.Text, 0, 0, 0, 22, Enum.TextXAlignment.Left, true, 7)
 	name.AutomaticSize = Enum.AutomaticSize.X
 	name.LayoutOrder = 1
 	local count = Glass.Label(head, "Count", "", LOOK.Text.Small, SEAM.Text, 0, 0, 0, 22, Enum.TextXAlignment.Left, false, 7)
@@ -305,13 +307,21 @@ end
 
 local function look()
 	local view = ProfileController.Get()
-	-- The gates, shut or open to this player.
+	-- The gates, shut or open to this player: in a run, by the run's own order (its stretch done once its quota and its
+	-- last stop are in), else by the record (StageService's `shut`).
+	local run = player:GetAttribute("StageRun")
+	local at = if type(run) == "string" then tonumber(string.match(run, "(%d+)$")) else nil
+	local kills, quota = player:GetAttribute("StageKills"), player:GetAttribute("StageQuota")
+	local done = player:GetAttribute("StageLast") == true and (if type(kills) == "number" then kills else 0) >= (if type(quota) == "number" then quota else 0)
 	for _, gate in Markers.All("StageGate") do
 		if not gate:IsA("BasePart") then
 			continue
 		end
 		local stage, ground = gate:GetAttribute("Stage"), gate:GetAttribute("Ground")
-		local open = view ~= nil and type(stage) == "number" and type(ground) == "string" and Stages.Passes(view, ground, stage)
+		local open = false
+		if type(stage) == "number" and type(ground) == "string" then
+			open = if at then Stages.Through(stage, at, done) else view ~= nil and Stages.Passes(view, ground, stage)
+		end
 		gate.Transparency = if open then 1 else SHUT
 	end
 	-- Another player's Hard foes, faded.
@@ -376,18 +386,19 @@ function StageController.Start()
 	end)
 	Net.Client.On("StageDone", function(results: any)
 		if type(results) == "table" and type(results.Ground) == "string" and type(results.Stage) == "number" then
-			StageScreen.Results(results, on, ProfileController.Get())
+			StageScreen.Results(results, on)
 		end
 	end)
 	Net.Client.On("StageGate", function(payload: any)
 		local now = os.clock()
 		if type(payload) == "table" and type(payload.Stage) == "number" and now - saidAt > SAY_GAP then
 			saidAt = now
-			Toast.Show(`Clear Stage {payload.Stage} to go on`)
+			Toast.Show(`Clear Stretch {payload.Stage} to go on`)
 		end
 	end)
 	for _, name in { "StageRun", "StageKills", "StageQuota", "StageLast" } do
 		player:GetAttributeChangedSignal(name):Connect(showLine)
+		player:GetAttributeChangedSignal(name):Connect(look)
 	end
 	showLine()
 	-- The screen's room changed: the line stands again clear of the HUD's pieces, built again if its width changes.

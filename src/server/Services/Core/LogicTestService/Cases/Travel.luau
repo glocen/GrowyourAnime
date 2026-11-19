@@ -98,18 +98,18 @@ return {
 		end,
 	},
 	{
-		Name = "Travel: an arrival begins the ticket's stage only if the player's own save opens it; otherwise Stage 1 for a fresh player, the menu for anyone else",
+		Name = "Travel: an arrival begins the ticket's difficulty at the player's own checkpoint if their save opens it (TR50); otherwise Stage 1 for a fresh player, the menu for anyone else",
 		Run = function(t: any)
 			local two = cleared(1)
 			local go = Travel.Arrival(Travel.Stage(GROUND, "Normal", 2, nil, NOW), two, GROUND)
-			t.Check("Stage 2, open after Stage 1: it begins", go.Begin and go.Difficulty == "Normal" and go.Stage == 2 and go.Refused == nil)
+			t.Check("Stage 1 cleared: the run begins at its checkpoint, 2", go.Begin and go.Difficulty == "Normal" and go.Stage == 2 and go.Refused == nil)
 			local skip = Travel.Arrival(Travel.Stage(GROUND, "Normal", 4, nil, NOW), two, GROUND)
-			t.Check("Stage 4, not open: refused, the menu", not skip.Begin and skip.Refused == Stages.Before)
+			t.Check("a ticket for Stage 4: the save's checkpoint still, 2, never past it", skip.Begin and skip.Stage == 2 and skip.Refused == nil)
 			local hard = Travel.Arrival(Travel.Stage(GROUND, "Hard", 1, nil, NOW), two, GROUND)
 			t.Check("Hard before the keeper fell on Normal: refused", not hard.Begin and hard.Refused == Stages.Keeper)
 			local new = fresh()
 			local forged = Travel.Arrival(Travel.Stage(GROUND, "Normal", 4, nil, NOW), new, GROUND)
-			t.Check("a fresh player's forged Stage 4: Stage 1 on Normal instead", forged.Begin and forged.Difficulty == "Normal" and forged.Stage == 1 and forged.Refused == Stages.Before)
+			t.Check("a fresh player's forged Stage 4: Stage 1 on Normal, its checkpoint", forged.Begin and forged.Difficulty == "Normal" and forged.Stage == 1)
 			local none = Travel.Arrival(nil, new, GROUND)
 			t.Check("a fresh player with no ticket: Stage 1 on Normal", none.Begin and none.Stage == 1 and none.Refused == nil)
 			local back = Travel.Arrival(nil, two, GROUND)

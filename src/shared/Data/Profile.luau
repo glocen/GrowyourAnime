@@ -104,7 +104,12 @@ export type GroundProgress = {
 -- by the transaction that ends it. A run never resumes: one left in the save by a crash is ended at the next join.
 -- A ground's stages on one difficulty (TR43, Rules.Stages): how many are cleared, from the first (a stage needs the one
 -- before it, so the clears are always the first ones), and each stage's fastest clear in seconds, 0 before one is timed.
-export type StageLine = { Cleared: number, Best: { number } }
+export type StageLine = {
+	Cleared: number, -- the furthest stretch cleared
+	Best: { number }, -- each stretch's best seconds, 0 before one is timed
+	Reached: number?, -- the checkpoint: the stretch the next run begins at, nil for the first (TR50)
+	Run: number?, -- the best whole run's seconds, begun at the first stretch (TR50)
+}
 export type StageProgress = { Normal: StageLine, Hard: StageLine }
 
 export type TowerRun = {

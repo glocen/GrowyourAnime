@@ -1,32 +1,40 @@
 --!strict
--- StageService (server): a ground's stages on Normal and Hard, in grey (docs/test-requests.md, TR43; Rules.Stages;
--- Config.Stages). A run is one player's play of one stage, held here while it lasts and never saved.
+-- StageService (server): a ground's one mission on Normal and Hard, a run of its stretches to its keeper (docs/test-
+-- requests.md, TR43, TR50; Rules.Stages; Config.Stages). A run is one player's, held here while it lasts and never saved;
+-- it begins at its difficulty's checkpoint (Rules.Stages.Checkpoint). A stretch's clear is written (the checkpoint moves
+-- on), its line's check plays for Config.Stages.Results.After, and the run moves on to the next stretch; the keeper's
+-- clear ends it with its one card. A stage below is a stretch.
 -- * Normal plays the shared street: the stage's packs and its elite are everyone's (PackService), and a fall counts for
 --   every hitter running that stage, the elite's for everyone who hit it.
 -- * Hard stands the stage's own foes for the player alone, Config.Stages.Offset.Hard levels up, on the same markers
 --   (FightService's For), and their lead fights alone (FightService.SetSolo): the street's Shades and it leave each other
 --   be. A pack of them stands again Config.World.Row.Respawn after its last falls, while the run lasts. The keeper's stage
 --   on Hard lifts the keeper's level (KeeperService.LevelOf).
--- * A stage's gate (StageGate) is shut to a player until they've cleared that stage on Normal: a walk across it going up
---   the street sets them back Config.World.Row.GateSet before it. A set-down past it isn't a walk (the picker's, the
---   keeper's exit, a test's: Config.Stages.Gate), and walking back down is always free.
--- * The Festival Door: a fresh player (Rules.Stages.Fresh) starts Stage 1 on Normal where it lands, with no screen;
---   anyone else is sent the picker (Net StagePick), and its tiles begin a run (Net Stage) where that stage starts.
--- * A keeper's try is its stage's run: one on Normal begins with it when the stage is open and no run of it is on, and
---   the try's win (KeeperService.Won) is its stage's last stop.
--- * A run ends when it's done (its clear written once, then its card: Net StageDone, Config.Stages.Results.After later),
---   when another begins, when the player leaves the street (Config.Stages.Off: once they've stood on it in the run, so a
---   set-down still fading in from afar isn't a leave) or the game, or when their lead falls (its card says so).
--- The player's attributes carry the run to the client: StageRun ("Normal 2"), StageKills, StageQuota, StageLast.
+-- * A stretch's gate (StageGate) is shut to a player in a run until the run's stretch there is done (Rules.Stages.Through),
+--   and outside a run until they've cleared that stretch on Normal: a walk across it going up the street sets them back
+--   Config.World.Row.GateSet before it. A set-down past it isn't a walk (the panel's, the keeper's exit, a test's:
+--   Config.Stages.Gate), and walking back down is always free.
+-- * The Festival Door: a fresh player (Rules.Stages.Fresh) starts the first stretch on Normal where it lands, with no
+--   screen; anyone else is sent the Arc panel (Net StagePick), whose Normal and Hard begin a run (Net Stage) at that
+--   difficulty's checkpoint, set down where that stretch starts.
+-- * A keeper's try is its stretch's: a run on Normal begins at it when no run is on there and the stretch is open, and
+--   the try's win (KeeperService.Won) is its stretch's last stop.
+-- * A run ends when the keeper's stretch is done (its card: Net StageDone, Config.Stages.Results.After later), when
+--   another begins, when the player leaves the street (Config.Stages.Off: once they've stood on it in the run, so a
+--   set-down still fading in from afar isn't a leave) or the game, or when their lead falls (its card says so, and where
+--   the next run begins). The checkpoint stays through all but the keeper's fall.
+-- The player's attributes carry the run to the client: StageRun ("Normal 2", its stretch), StageKills, StageQuota,
+-- StageLast.
 -- Studio:
 --   NL_Debug:Invoke("Stage")                                 the run, the gates shut to the player, their record
---   NL_Debug:Invoke("StageBegin", nil, difficulty, stage)    a run begins, as the picker asks one
+--   NL_Debug:Invoke("StageBegin", nil, difficulty, stage?)   a run begins, at `stage` or the checkpoint as the panel
 --   NL_Debug:Invoke("StageArrive", nil)                      as if the player had just come through the base's door: the
 --                                                            menu there; in the Festival, an arrival with no ticket
 --   NL_Debug:Invoke("StageArriveBy", nil, difficulty, stage)  in the Festival, an arrival with a ticket for that stage
 --   NL_Debug:Invoke("StageFell", nil, group)                 fells a group's standing Shades ("Pack 1", "Elite 1", or a
 --                                                            Hard run's own: "Elite 1 mine"), the player their hitter
---   NL_Debug:Invoke("StageLine", nil, difficulty, cleared)   the record's cleared count on Lantern Row (0 wipes it)
+--   NL_Debug:Invoke("StageLine", nil, difficulty, cleared, reached?)  the record on Lantern Row: its cleared count (0
+--                                                            wipes it) and its checkpoint (nil or 1: the first)
 --   NL_Debug:Invoke("StageLog", nil)                         the runs this server has logged, newest last
 -- Each run's length is logged at its end (TR48: the pace model swings 2 to 2.5 times on it), from its beginning to its
 -- clear or its end, the walk between stops and every wait included: a line in the server's output, and in a live game
@@ -89,7 +97,7 @@ local function logRun(player: Player, run: Run, how: string)
 	run.Logged = true
 	local rule = run.Rule
 	local seconds = math.floor((os.clock() - run.Began) * 10 + 0.5) / 10
-	local stage = `{rule.Ground} {rule.Difficulty} {rule.Stage}`
+	local stage = if rule.From == rule.Stage then `{rule.Ground} {rule.Difficulty} {rule.Stage}` else `{rule.Ground} {rule.Difficulty} {rule.From}-{rule.Stage}`
 	Log.Info("StageService", `stage run {stage}: {how} after {seconds} s`)
 	table.insert(logged, { Stage = stage, How = how, Seconds = seconds })
 	if #logged > LOG_KEPT then
@@ -146,6 +154,9 @@ end
 -- A Hard run's group `name` standing at its marker, for `player` alone, its level lifted.
 local function stand(player: Player, run: Run, name: string)
 	local marker = run.Groups[name]
+	if marker == nil then
+		return -- its stretch is behind the run now
+	end
 	local def, level, count, type_ = marker:GetAttribute("Def"), marker:GetAttribute("Level"), marker:GetAttribute("Count"), marker:GetAttribute("Type")
 	if type(def) ~= "string" or type(level) ~= "number" then
 		return
@@ -184,9 +195,20 @@ function StageService.End(player: Player)
 	publish(player, nil)
 end
 
--- A run of `stage` on `difficulty` begins for `player`, set down at its start unless `stay` (the Door's own landing).
--- { Ok } or { Ok = false, Error, Needs?, Waits? }.
-function StageService.Begin(player: Player, ground: string, difficulty: string, stage: number, stay: boolean?): { [string]: any }
+-- A Hard run's own Shades of its stretch, standing for `player` alone: each group at its marker.
+local function standStretch(player: Player, run: Run)
+	for _, kind in { "Pack", "Elite" } do
+		for _, marker in markersOf(run.Rule, kind) do
+			local name = marker.Name
+			run.Groups[name] = marker
+			stand(player, run, name)
+		end
+	end
+end
+
+-- A run on `difficulty` begins for `player` at stretch `stage`, or at that difficulty's checkpoint (nil), set down at its
+-- start unless `stay` (the Door's own landing). { Ok, Stage } or { Ok = false, Error, Needs?, Waits? }.
+function StageService.Begin(player: Player, ground: string, difficulty: string, stage: number?, stay: boolean?): { [string]: any }
 	local data = DataService.Get(player)
 	local lead = FightService.LeadOf(player)
 	if data == nil then
@@ -196,12 +218,13 @@ function StageService.Begin(player: Player, ground: string, difficulty: string, 
 	elseif lead == nil or not FightService.Standing(lead) then
 		return { Ok = false, Error = "NoLead" }
 	end
-	local rule, refusal = Stages.Start(data, ground, difficulty, stage, os.time())
+	local at = stage or Stages.Checkpoint(data, ground, difficulty)
+	local rule, refusal = Stages.Start(data, ground, difficulty, at, os.time())
 	if rule == nil then
-		local needs, waits = Stages.Needs(data, ground, difficulty, stage)
+		local needs, waits = Stages.Needs(data, ground, difficulty, at)
 		return { Ok = false, Error = refusal, Needs = needs, Waits = waits }
 	end
-	local start = Markers.Find("StageStart", { Stage = stage, Ground = ground })
+	local start = Markers.Find("StageStart", { Stage = at, Ground = ground })
 	if start == nil then
 		return { Ok = false, Error = "NoStart" }
 	end
@@ -210,35 +233,51 @@ function StageService.Begin(player: Player, ground: string, difficulty: string, 
 	runs[player] = run
 	if difficulty ~= "Normal" then
 		FightService.SetSolo(player, true)
-		for _, kind in { "Pack", "Elite" } do
-			for _, marker in markersOf(rule, kind) do
-				local name = marker.Name
-				run.Groups[name] = marker
-				stand(player, run, name)
-			end
-		end
+		standStretch(player, run)
 	end
 	publish(player, run)
 	if not stay then
 		KeeperService.SetDown(player, Markers.At(start))
 	end
-	return { Ok = true }
+	return { Ok = true, Stage = at }
 end
 
--- The run's end on a win: its clear written once, then its card.
+-- A stretch done: its clear written once (the checkpoint moves on with it), and its line's check plays. Then,
+-- Config.Stages.Results.After later, the run moves on to the next stretch (a Hard run's own Shades of it standing), or at
+-- the keeper's it ends with its card: the whole run's time and what it gave.
 local function finish(player: Player, run: Run)
-	run.Ending = true
-	logRun(player, run, "Cleared")
 	local rule = run.Rule
+	local count = #(Stages.Of(rule.Ground) :: { any })
 	local answer = DataService.Change(player, "StageClear", function(draft)
 		return Stages.Clear(draft, rule, os.time())
 	end)
 	if answer.Ok ~= true then
 		Log.Error("StageService", `{player.Name}'s clear of {rule.Ground} {rule.Difficulty} {rule.Stage} wasn't saved: {tostring(answer.Error)}`)
+		rule.Claimed = true -- the run still moves on; only the record missed it
+	end
+	local ends = rule.Stage >= count
+	if ends then
+		run.Ending = true
+		logRun(player, run, "Cleared")
 	end
 	publish(player, run)
 	task.delay(StagesConfig.Results.After, function()
 		if runs[player] ~= run then
+			return
+		end
+		if not ends then
+			if run.Ending or not Stages.Advance(rule, os.time()) then
+				return
+			end
+			if rule.Difficulty ~= "Normal" then
+				for f in run.Foes do
+					run.Foes[f] = nil
+					FightService.Remove(f)
+				end
+				table.clear(run.Groups)
+				standStretch(player, run)
+			end
+			publish(player, run)
 			return
 		end
 		local now = counts(DataService.Get(player))
@@ -247,13 +286,13 @@ local function finish(player: Player, run: Run)
 			Ground = rule.Ground,
 			Difficulty = rule.Difficulty,
 			Stage = rule.Stage,
-			Count = #(Stages.Of(rule.Ground) :: { any }),
-			Seconds = answer.Seconds,
-			Best = answer.Best,
+			From = rule.From,
+			Count = count,
+			Seconds = answer.Run,
+			Best = answer.RunBest,
 			First = answer.First,
 			Opened = answer.Opened or "",
-			Next = answer.Next,
-			NextDifficulty = answer.NextDifficulty,
+			Then = answer.Then,
 			Credits = math.max(0, now.Credits - run.Before.Credits),
 			Shards = math.max(0, now.Shards - run.Before.Shards),
 			Chests = math.max(0, now.Chests - run.Before.Chests),
@@ -262,17 +301,20 @@ local function finish(player: Player, run: Run)
 	end)
 end
 
--- The run's end on its lead's fall: its card says so.
+-- The run's end on its lead's fall: its card says so, and where the next run on its difficulty begins.
 local function lose(player: Player, run: Run)
 	local rule = run.Rule
 	logRun(player, run, "Fell")
 	StageService.End(player)
+	local data = DataService.Get(player)
 	Net.Server.Fire("StageDone", player, {
 		Won = false,
 		Ground = rule.Ground,
 		Difficulty = rule.Difficulty,
 		Stage = rule.Stage,
+		From = rule.From,
 		Count = #(Stages.Of(rule.Ground) :: { any }),
+		Checkpoint = if data then Stages.Checkpoint(data, rule.Ground, rule.Difficulty) else rule.Stage,
 	})
 end
 
@@ -328,12 +370,17 @@ local function fell(f: FightService.Fighter, hitters: { Player })
 	end
 end
 
--- Whether `gate` is shut to `player`: its stage not cleared on Normal.
+-- Whether `gate` is shut to `player`: in a run there, its stretch not done in it yet; outside one, its stretch not
+-- cleared on Normal.
 local function shut(player: Player, gate: Instance): boolean
 	local data = DataService.Get(player)
 	local stage, ground = gate:GetAttribute("Stage"), gate:GetAttribute("Ground")
 	if type(stage) ~= "number" or type(ground) ~= "string" then
 		return false
+	end
+	local run = runs[player]
+	if run and not run.Ending and run.Rule.Ground == ground then
+		return not Stages.Through(stage, run.Rule.Stage, run.Rule.Done)
 	end
 	return data == nil or not Stages.Passes(data, ground, stage)
 end
@@ -384,9 +431,9 @@ local function watch()
 	end
 end
 
--- A pick in the base's place: the trip to the Festival, into that stage, if the save opens it and the lead stands.
--- The Festival checks again on arrival (Travel.Arrival).
-function StageService.Travel(player: Player, ground: string, difficulty: string, stage: number): { [string]: any }
+-- A pick in the base's place: the trip to the Festival, into that difficulty's run at its checkpoint, if the save opens
+-- it and the lead stands. The Festival checks again on arrival (Travel.Arrival).
+function StageService.Travel(player: Player, ground: string, difficulty: string): { [string]: any }
 	local data = DataService.Get(player)
 	if data == nil then
 		return { Ok = false, Error = "NoData" }
@@ -395,6 +442,7 @@ function StageService.Travel(player: Player, ground: string, difficulty: string,
 	elseif not FightService.Standing(FightService.LeadOf(player)) then
 		return { Ok = false, Error = "NoLead" }
 	end
+	local stage = Stages.Checkpoint(data, ground, difficulty)
 	local needs, waits = Stages.Needs(data, ground, difficulty, stage)
 	if needs == Stages.Unknown then
 		return { Ok = false, Error = Stages.Unknown }
@@ -458,11 +506,12 @@ local function state(who: any): any
 	local ground = WorldConfig.Row.Ground
 	return {
 		Ok = true,
-		Run = if run then { Difficulty = run.Rule.Difficulty, Stage = run.Rule.Stage, Kills = run.Rule.Kills, Last = run.Rule.Last, Done = run.Rule.Done, Foes = foes } else nil,
+		Run = if run then { Difficulty = run.Rule.Difficulty, Stage = run.Rule.Stage, From = run.Rule.From, Kills = run.Rule.Kills, Last = run.Rule.Last, Done = run.Rule.Done, Foes = foes } else nil,
 		Shut = shutTo,
 		Fresh = if data then Stages.Fresh(data) else nil,
 		Normal = if data then Stages.Line(data, ground, "Normal") else nil,
 		Hard = if data then Stages.Line(data, ground, "Hard") else nil,
+		Checkpoint = if data then { Normal = Stages.Checkpoint(data, ground, "Normal"), Hard = Stages.Checkpoint(data, ground, "Hard") } else nil,
 		Alone = (function()
 			local lead = FightService.LeadOf(player)
 			return lead ~= nil and lead.Solo == true
@@ -471,14 +520,14 @@ local function state(who: any): any
 end
 
 function StageService.Start()
-	Net.Server.Handle("Stage", function(player: Player, ground: any, difficulty: any, stage: any): { [string]: any }
-		if type(ground) ~= "string" or type(difficulty) ~= "string" or type(stage) ~= "number" then
+	Net.Server.Handle("Stage", function(player: Player, ground: any, difficulty: any): { [string]: any }
+		if type(ground) ~= "string" or type(difficulty) ~= "string" then
 			return { Ok = false, Error = Stages.Unknown }
 		end
 		if not FESTIVAL then
-			return StageService.Travel(player, ground, difficulty, stage)
+			return StageService.Travel(player, ground, difficulty)
 		end
-		return StageService.Begin(player, ground, difficulty, stage)
+		return StageService.Begin(player, ground, difficulty)
 	end)
 	FightService.Fell:Connect(fell)
 	-- The base's Festival Door opens the menu, for everyone (the director, 2026-11-19: "the teleport point of the base will
@@ -539,7 +588,7 @@ function StageService.Start()
 		end)
 		DebugService.Register("StageBegin", function(who: any, difficulty: any, stage: any): any
 			local player = DebugService.ResolvePlayer(who)
-			if player == nil or type(difficulty) ~= "string" or type(stage) ~= "number" then
+			if player == nil or type(difficulty) ~= "string" or (stage ~= nil and type(stage) ~= "number") then
 				return { Ok = false, Error = "BadArgs" }
 			end
 			return StageService.Begin(player, WorldConfig.Row.Ground, difficulty, stage)
@@ -587,25 +636,33 @@ function StageService.Start()
 			task.spawn(StageService.Arrived, player, ticket)
 			return { Ok = true }
 		end)
-		DebugService.Register("StageLine", function(who: any, difficulty: any, cleared: any): any
+		DebugService.Register("StageLine", function(who: any, difficulty: any, cleared: any, reached: any): any
 			local player = DebugService.ResolvePlayer(who)
 			local ground = WorldConfig.Row.Ground
 			local count = #(Stages.Of(ground) :: { any })
 			if player == nil or (difficulty ~= "Normal" and difficulty ~= "Hard") or type(cleared) ~= "number" or cleared < 0 or cleared > count or cleared % 1 ~= 0 then
 				return { Ok = false, Error = "BadArgs" }
+			elseif reached ~= nil and (type(reached) ~= "number" or reached < 1 or reached > count or reached % 1 ~= 0 or reached > cleared + 1) then
+				return { Ok = false, Error = "BadArgs" }
 			end
 			return DataService.Change(player, "StageLine", function(draft)
-				local record = draft.Progress.Stages[ground]
+				local record: Profile.StageProgress? = draft.Progress.Stages[ground]
 				if record == nil then
-					record = { Normal = { Cleared = 0, Best = table.create(count, 0) }, Hard = { Cleared = 0, Best = table.create(count, 0) } }
-					draft.Progress.Stages[ground] = record
+					local made: Profile.StageProgress = { Normal = { Cleared = 0, Best = table.create(count, 0) }, Hard = { Cleared = 0, Best = table.create(count, 0) } }
+					draft.Progress.Stages[ground] = made
+					record = made
 				end
-				local line = (record :: any)[difficulty] :: Profile.StageLine
+				local whole = record :: Profile.StageProgress
+				local line = (whole :: any)[difficulty] :: Profile.StageLine
 				line.Cleared = cleared
+				line.Reached = if reached and reached > 1 then reached else nil
 				for stage = 1, count do
 					line.Best[stage] = if stage <= cleared then line.Best[stage] else 0
 				end
-				if record.Normal.Cleared == 0 and record.Hard.Cleared == 0 then
+				if cleared < count then
+					line.Run = nil
+				end
+				if whole.Normal.Cleared == 0 and whole.Hard.Cleared == 0 then
 					draft.Progress.Stages[ground] = nil
 				end
 				return { Ok = true }

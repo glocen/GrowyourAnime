@@ -37,8 +37,8 @@ local REMOTES: { [string]: Spec } = {
 	TowerHealCap = { Kind = "Event", RatePerSecond = 0 }, -- server -> client: (share) the heal cap bound for the first time on this account
 	TowerBoard = { Kind = "Function", RatePerSecond = 1 }, -- client -> server: () -> { Ok, Rows, Mine? }: the week's board (TowerBoardService)
 	HomeJump = { Kind = "Event", RatePerSecond = 0 }, -- server -> client: (landed, says?) the jump home, or the charge broken and why
-	-- A ground's stages (StageService, TR43).
-	Stage = { Kind = "Function", RatePerSecond = 2 }, -- client -> server: (ground, difficulty, stage) -> { Ok, Error?, Needs?, Waits? }: a run begins there, or why not
+	-- A ground's one run of stretches (StageService, TR43, TR50).
+	Stage = { Kind = "Function", RatePerSecond = 2 }, -- client -> server: (ground, difficulty) -> { Ok, Error?, Needs?, Waits? }: a run begins at that difficulty's checkpoint, or why not
 	StagePick = { Kind = "Event", RatePerSecond = 0 }, -- server -> client: ({ Ground, Refused? }) the picker opens: by the base's Festival Door, or on arriving in the Festival with no stage to begin
 	-- The trip between places (TravelService, TR45).
 	Travel = { Kind = "Event", RatePerSecond = 0 }, -- server -> client: (state, info) "Leaving" { To }: the trip's card; "Failed" { Result }: the screen back, with a line; "Back": the screen back; "Arrived": the far side stands, the arrival card lifts

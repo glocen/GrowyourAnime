@@ -1,21 +1,22 @@
 --!strict
--- StageScreen (client): a ground's stages in Seam's lit glass (AR42; TR43's screens; research's B, 2026-11-19, 15:04).
--- Laid as Modulo's cut draws them (tools/blender/stage_seam.py; build/handoff/UI/stages/stages.json), its numbers in
+-- StageScreen (client): the Festival of Battles' Arc panel and a run's card, in Seam's lit glass (AR42; TR43, TR50).
+-- Laid on Modulo's cut (tools/blender/stage_seam.py; build/handoff/UI/stages/stages.json), its numbers in
 -- Config.Hud.Stages, its pieces the glass kit's (UI/Kit/Glass). Two faces of one full screen:
--- * The picker, from the Festival Door (StageService's StagePick) or the dock's Play: the ground's name and a Normal and
---   Hard switch in the band, the chosen half the lit press; four tiles side by side over one road. A tile is its stage's
---   picture on its bed, its mark, the Combat Power it recommends (Rules.Stages.Recommended) and its best clear, or why
---   it's shut ("Clear Stage 2 first"; Hard's tiles while Hard is shut). The next is raised, washed with light and tagged,
---   the road lit from the first tile to a ring under it; the player's own power stands at the road's start. A tile
---   begins its run (Net Stage). Hard's one accent is an ember; it keeps Normal's value.
--- * The results, at a run's end (StageDone): a glass card over the street dimmed. The four marks on their road, lit to
---   the stage just cleared and then on to the next; the stage cleared and its time (a new best in Ready's gold), what it
---   gave, what it opened ("Hard is open" its own band), and Retry, Next and Home, the one press lit. After the keeper's
---   stage on Normal, Next is Hard's Stage 1 (Rules.Stages.Clear). A lost run says the lead fell; Retry is the press.
---   StageScreen.Pick(ground, view, on)          the picker, on the switch's side (Normal, unless Hard was last picked)
---   StageScreen.Results(results, on, view?)    the results card; `view` marks the stages cleared
---   StageScreen.Parts()                        its pieces by name, for tests
---   StageScreen.Difficulty()                   the switch's side
+-- * The Arc panel, from the dock's Play or the Festival Door (StageService's StagePick): one tile for the ground (one
+--   mission per Arc, the director's word of 2026-11-19, 23:19), its keeper's picture on its bed and its name, and beside
+--   it Normal and Hard, one press each. A choice shows the Combat Power its run recommends (its keeper's,
+--   Rules.Stages.Recommended), the run's four marks lit to its checkpoint and ringing it, and where the next run starts
+--   ("Stretch 3 of 4"); Hard while shut, its lock and why. A press begins its run there (Net Stage); the player's own
+--   power stands at the foot. Hard's one accent is an ember; it keeps Normal's value.
+-- * The card, at a run's end (StageDone): a glass card over the street dimmed. The run's marks, all checked and the
+--   keeper's just, or lit to where the next run starts after a fall; the ground cleared and the run's time (a new best in
+--   Ready's gold, a best only for a run from the first stretch), what the run gave, "Hard is open" its own band, and
+--   Retry, Hard and Home, the one press lit. After the keeper on Normal, the lit press is Hard. A lost run says the lead
+--   fell and where the next run starts; Retry is the press.
+--   StageScreen.Pick(ground, view, on)    the Arc panel
+--   StageScreen.Results(results, on)     the run's card
+--   StageScreen.Parts()                  its pieces by name, for tests
+--   StageScreen.Difficulty()             the difficulty last begun from the panel
 
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local GuiService = game:GetService("GuiService")
@@ -46,18 +47,17 @@ local StageScreen = {}
 StageScreen.Name = "Stages"
 
 export type On = {
-	Begin: (ground: string, difficulty: string, stage: number) -> { [string]: any }, -- Net Stage
+	Begin: (ground: string, difficulty: string) -> { [string]: any }, -- Net Stage: the run, at its checkpoint
 	Home: () -> { [string]: any }, -- Net Home
 	Say: (words: string) -> (), -- a toast
 }
 
 local LOOK = HudConfig.Stages
 local SEAM = UIKit.Palettes.SeamGlass
-local TILE, BED, BADGE, ROAD, RING, MOTION = LOOK.Tile, LOOK.Bed, LOOK.Badge, LOOK.Road, LOOK.Ring, LOOK.Motion
+local TILE, BED, BADGE, ROAD, ARC, MOTION = LOOK.Tile, LOOK.Bed, LOOK.Badge, LOOK.Road, LOOK.Arc, LOOK.Motion
 local SMALL, TITLE, BIG = LOOK.Text.Small, LOOK.Text.Title, LOOK.Text.Big
 local W, T = LOOK.Block.Wide, LOOK.Block.Top -- the cut's width; its band's foot, where a block's y starts
-local WIDE = (W - 2 * TILE.Pad - 3 * TILE.Gap) / 4
-local MARGIN = 18 -- round each tile's group: its glow and its tag stand past it
+local MARGIN = 18 -- round the tile's group: its glow stands past it
 local WHITE = Color3.new(1, 1, 1)
 local INK = SEAM.Ink :: Color3
 local CHEVRONS = UIKit.Images.LevelChevrons :: UIKit.Image
@@ -84,10 +84,6 @@ local function litFill(hard: boolean): Glass.Tint
 	return if hard then LOOK.Accent.Hard.Lit else LIT_NORMAL
 end
 
-local function x(k: number): number
-	return TILE.Pad + (k - 1) * (WIDE + TILE.Gap)
-end
-
 -- The keeper's name as a title: "the Lamplighter" reads "Lamplighter".
 local function keeperName(ground: string): string
 	local row = Grounds.ById[ground]
@@ -97,12 +93,12 @@ local function keeperName(ground: string): string
 	return string.upper(string.sub(name, 1, 1)) .. string.sub(name, 2)
 end
 
--- What a shut stage waits for, in the player's words.
+-- What a shut stretch or difficulty waits for, in the player's words.
 local function why(ground: string, needs: string?, waits: number?): string?
 	if needs == nil then
 		return nil
 	elseif needs == Stages.Before then
-		return `Clear Stage {waits} first`
+		return `Clear Stretch {waits} first`
 	elseif needs == Stages.Keeper then
 		return `Beat the {keeperName(ground)} on Normal`
 	elseif needs == Stages.Ground then
@@ -111,8 +107,8 @@ local function why(ground: string, needs: string?, waits: number?): string?
 	return "Not here"
 end
 
-local function begin(on: On, ground: string, which: string, stage: number): boolean
-	local answer = on.Begin(ground, which, stage)
+local function begin(on: On, ground: string, which: string): boolean
+	local answer = on.Begin(ground, which)
 	if answer.Ok == true then
 		Screen.Close()
 		return true
@@ -274,41 +270,6 @@ local function check(parent: Instance, name: string, cx: number, cy: number, r: 
 	return holder
 end
 
--- The ring where the player stands: a lit disc with its outer ring lit from above, the kit's comet round it.
-local function ring(parent: Instance, cx: number, cy: number, hard: boolean, z: number): Frame
-	local a = accent(hard)
-	local r, outer = RING.Radius, RING.Radius + RING.Outer
-	local holder = Instance.new("Frame")
-	holder.Name = "Ring"
-	holder.BackgroundTransparency = 1
-	holder.Position = UDim2.fromOffset(cx, cy)
-	holder.ZIndex = z
-	local scale = Instance.new("UIScale")
-	scale.Parent = holder
-	local glow = 2 * (r + RING.Glow) * 1.5
-	Glass.Bloom(holder, "Glow", 0, 0, glow, glow, a.Glow, RING.GlowAlpha, z)
-	Glass.Disc(holder, "Disc", 0, 0, r, a.Lit, z + 1)
-	local top = Glass.Disc(holder, "Top", 0, 0, r, WHITE, z + 2)
-	local fall = Instance.new("UIGradient")
-	fall.Rotation = 90
-	fall.Transparency = NumberSequence.new({
-		NumberSequenceKeypoint.new(0, 0.4),
-		NumberSequenceKeypoint.new(0.2, 1 - 0.6 * math.exp(-0.4 * r / (r * 0.35))),
-		NumberSequenceKeypoint.new(0.45, 1),
-		NumberSequenceKeypoint.new(1, 1),
-	})
-	fall.Parent = top
-	Glass.Circle(holder, "Edge", 0, 0, r, WHITE, 1, 0.9, nil, z + 3)
-	Glass.Circle(holder, "Outer", 0, 0, outer, a.Edge, 1.2, 0.85, 0.3, z + 3)
-	local side = 63 * outer / 30.3 -- RailComet: its comet 30.3 points round in 63 (seam_cut.py)
-	local comet = Glass.Mark(holder, "Comet", UIKit.Images.RailComet, 0, 0, side, SEAM.Glint, z + 4, 0.9)
-	Glass.Idle(comet, function(phase: number)
-		comet.Rotation = 360 * phase
-	end)
-	holder.Parent = parent
-	return holder
-end
-
 -- A road's light from x0 to x1 (its colours spread to `span`), `half` each side of y: lit at its top edge, glowing; in a
 -- holder that clips it, `Run` its share shown.
 local function roadLight(parent: Instance, name: string, x0: number, x1: number, y: number, half: number, span: number, hard: boolean, z: number): (Frame, (run: number) -> ())
@@ -346,319 +307,6 @@ local function roadLight(parent: Instance, name: string, x0: number, x1: number,
 	run(1)
 	holder.Parent = parent
 	return holder, run
-end
-
--- A tile's face, laid again on every paint: `state` is "next", "cleared", "open" or "shut".
-local function lay(face: Frame, ground: string, k: number, state: string, hard: boolean, cp: number, best: number?, waits: string?)
-	face:ClearAllChildren()
-	local a = accent(hard)
-	local lift = if state == "next" then TILE.Lift else 0
-	local w, h = WIDE, TILE.Foot - TILE.Top + lift
-	local shut = state == "shut"
-	local cut = TILE.Corner
-	if state == "next" then
-		Glass.Glow(face, "Glow", 0, 0, w, h, TILE.Next.Glow, a.Glow, TILE.Next.GlowAlpha, 1)
-	end
-	Glass.Fill(face, "Fill", 0, 0, w, h, cut, if shut then TILE.Shut else TILE.Fill, 2)
-	if not shut then
-		Glass.Wash(face, "Sheen", 0, 0, w, h, cut, SEAM.Glint, function(at: number): number
-			return TILE.Sheen.Alpha * math.exp(-at / TILE.Sheen.Fall)
-		end, 3)
-	end
-	if state == "next" then
-		Glass.Wash(face, "Wash", 0, 0, w, h, cut, a.Edge, function(at: number): number
-			return TILE.Next.Wash * math.clamp(1 - at / (h * 0.85), 0, 1)
-		end, 3)
-		local glint = Glass.Fill(face, "Glint", 0, 0, w, h, cut, SEAM.Glint, 4)
-		local band = Instance.new("UIGradient")
-		band.Rotation = 90
-		band.Transparency = Glass.Band(h, 10, TILE.Next.Glint)
-		band.Offset = Vector2.new(0, -2)
-		band.Parent = glint
-		Glass.Idle(glint, function(phase: number)
-			band.Offset = Vector2.new(0, (-40 + (h + 80) * phase) / h - 0.5)
-		end)
-		Glass.Edge(face, "Edge", 0, 0, w, h, cut, a.Edge, 1, 0.55, 5)
-		Glass.Edge(face, "EdgeIn", 0.8, 0.8, w - 1.6, h - 1.6, cut - 0.8, a.Edge, 1, 0.55, 5)
-	elseif shut then
-		Glass.Edge(face, "Edge", 0, 0, w, h, cut, SEAM.Edge, TILE.ShutEdge, nil, 5)
-	else
-		Glass.Edge(face, "Edge", 0, 0, w, h, cut, if hard then a.Edge else SEAM.Facet, TILE.Edge.Top, TILE.Edge.Foot, 5)
-		cornerGlint(face, "CornerGlint", 0, 0, w, h, cut, TILE.CornerGlint, 6)
-	end
-	-- The bed: its picture on its own light.
-	local bx, by, bw, bh = BED.Inset, BED.Inset, w - 2 * BED.Inset, BED.Tall
-	local bed = Instance.new("Frame")
-	bed.Name = "Bed"
-	bed.BackgroundTransparency = 1
-	bed.ClipsDescendants = true
-	bed.Position = UDim2.fromOffset(bx, by)
-	bed.Size = UDim2.fromOffset(bw, bh)
-	bed.ZIndex = 7
-	bed.Parent = face
-	Glass.Fill(bed, "Fill", 0, 0, bw, bh, BED.Corner, BED.Fill, 7)
-	if not shut then
-		local strength = if state == "next" then a.Pictures.Next else a.Pictures.Open
-		Glass.Bloom(bed, "Bloom", bw * BED.Bloom.Middle.X, bh * BED.Bloom.Middle.Y, BED.Bloom.Size.X, BED.Bloom.Size.Y, a.Bloom, strength, 8)
-	end
-	local named = LOOK.Pictures[k]
-	local record = if named then IMAGES[if shut then `{named}Shut` else named] else nil
-	if record then
-		local picture = Instance.new("ImageLabel")
-		picture.Name = "Picture"
-		picture.BackgroundTransparency = 1
-		picture.Image = record.Id
-		picture.Size = UDim2.fromOffset(BED.Picture.X, BED.Picture.Y)
-		picture.Position = UDim2.fromOffset((bw - BED.Picture.X) / 2, 0)
-		picture.ZIndex = 9
-		picture.Parent = bed
-	end
-	Glass.Edge(face, "BedEdge", bx, by, bw, bh, BED.Corner, SEAM.Edge, BED.EdgeAlpha, nil, 10)
-	if shut then
-		Glass.Mark(face, "Lock", LOCK, bx + bw / 2, by + BED.Lock.Down, BED.Lock.Side, SEAM.Soft, 11)
-	end
-	badge(face, "Mark", bx + BADGE.In, by + BADGE.In, k, hard, not shut, 12)
-	if state == "cleared" then
-		check(face, "Check", bx + bw - LOOK.Check.In, by + LOOK.Check.In, LOOK.Check.Radius, hard, 12)
-	end
-	if state == "next" then
-		local G = LOOK.Tag
-		local tx, ty = w - G.Right - G.Wide, -G.Up
-		Glass.Lit(face, "Tag", tx, ty, G.Wide, G.Tall, litFill(hard), a.Glow, 16, 4, 0.3)
-		Glass.Label(face, "TagWords", "Next", SMALL, INK, tx, ty, G.Wide, G.Tall, nil, true, 21)
-	end
-	-- Its words, under the bed.
-	local y = BED.Inset + BED.Tall + 8
-	local title = if k == #((Stages.Of(ground) or {}) :: { any }) and (Stages.Last(ground, k) or {} :: any).Kind == "Keeper" then keeperName(ground) else `Stage {k}`
-	Glass.Label(face, "Title", title, TITLE, if shut then SEAM.Soft else SEAM.Text, 0, y - 2, w, TITLE + 4, nil, true, 12)
-	Glass.Label(face, "Recommended", "Recommended", SMALL, SEAM.Soft, 0, y + 21, w, SMALL + 4, nil, false, 12)
-	Glass.Label(face, "Power", `{Hud.Digits(cp)} {Sheet.Said.Power}`, TITLE, if shut then SEAM.Soft else SEAM.Text, 0, y + 36, w, TITLE + 4, nil, true, 12)
-	local words: { string } = {}
-	if state == "cleared" and best and best > 0 then
-		words = { `Best {Read.Clock(best)}` }
-	elseif state == "next" then
-		words = { "Not cleared" }
-	elseif shut and waits and string.sub(waits, 1, 11) == "Clear Stage" then
-		words = { string.sub(waits, 1, -7), "first" }
-	elseif shut and waits and not hard then
-		words = { waits }
-	end
-	for index, line in words do
-		Glass.Label(face, `Words{index}`, line, SMALL, if state == "next" then SEAM.Text else SEAM.Soft, 0, y + 58 + (index - 1) * 17, w, SMALL + 4, nil, false, 12)
-	end
-end
-
--- A switch half's face: the lit press when chosen, else quiet; Hard's with its chevrons, and its lock while shut.
-local function half(face: Frame, which: string, chosen: boolean, hardShut: boolean, w: number, h: number)
-	face:ClearAllChildren()
-	local hard = which == "Hard"
-	if chosen then
-		Glass.Lit(face, "Plate", 0, 0, w, h, litFill(hard), accent(hard).Glow, 1)
-	else
-		Glass.Quiet(face, "Plate", 0, 0, w, h, if hard then LOOK.Accent.Hard.Edge else SEAM.Facet, 1)
-	end
-	local colour = if chosen then INK else SEAM.Text
-	if hard then
-		chevrons(face, "Chevrons", 16, h / 2, 11, if chosen then INK else LOOK.Accent.Hard.Edge, 7)
-		Glass.Label(face, "Words", which, SMALL, colour, 27, 0, w - 27, h, Enum.TextXAlignment.Left, true, 7)
-		if hardShut then
-			Glass.Mark(face, "Lock", LOCK, w - 9, 9, LOOK.Switch.Lock, if chosen then INK else SEAM.Soft, 7)
-		end
-	else
-		Glass.Label(face, "Words", which, SMALL, colour, 0, 0, w, h, nil, true, 7)
-	end
-end
-
--- A face in a bare button's skin, under its press.
-local function faceOf(button: TextButton): Frame
-	local face = Instance.new("Frame")
-	face.Name = "Face"
-	face.BackgroundTransparency = 1
-	face.Size = UDim2.fromScale(1, 1)
-	face.Parent = Skin.Of(button)
-	return face
-end
-
-function StageScreen.Pick(ground: string, view: Profile.View, on: On)
-	table.clear(parts)
-	local data = view :: any
-	local hardShut = Stages.Needs(data, ground, "Hard", 1) == Stages.Keeper
-	if hardShut then
-		difficulty = "Normal" -- its side opens on Normal while Hard is shut; Hard's tiles then say why
-	end
-	local named = Grounds.ById[ground] and Grounds.ById[ground].Name or "Stages"
-	local opening = Screen.Current() ~= StageScreen.Name
-	if opening then
-		Screen.Rise({ From = MOTION.Rise, Seconds = MOTION.Open, Cover = MOTION.Open, Sink = 0.14, Uncover = 0.12 })
-	end
-	local body = Screen.Full(StageScreen.Name, named, "SeamGlass")
-	parts.Body = body
-	Glass.Ground(body, 1)
-	local room = block(body, "Picker")
-	room.ZIndex = 2
-	parts.Block = room
-	local count = #((Stages.Of(ground) or {}) :: { any })
-	-- The band: the ground's name, then the switch at its right.
-	local band = Screen.Band(StageScreen.Name)
-	local switch: { [string]: { Button: TextButton, Face: Frame } } = {}
-	local tall = Screen.Row()
-	local each = (LOOK.Switch.Wide - LOOK.Switch.Gap) / 2
-	if band then
-		local title = Glass.Label(band, "Title", named, TITLE, SEAM.Text, Screen.BandLeft + 4, 0, 220, 0, Enum.TextXAlignment.Left, true, 3)
-		title.Size = UDim2.new(0, 220, 1, 0)
-		parts.Title = title
-	end
-	-- The tiles, each in a group that fades as it rises in.
-	local tiles: { { Group: CanvasGroup, Button: TextButton, Face: Frame } } = {}
-	for k = 1, count do
-		local group = Instance.new("CanvasGroup")
-		group.Name = `Tile{k}`
-		group.BackgroundTransparency = 1
-		group.Size = UDim2.fromOffset(WIDE + 2 * MARGIN, TILE.Foot - TILE.Top + TILE.Lift + 2 * MARGIN)
-		group.Position = UDim2.fromOffset(x(k) - MARGIN, TILE.Top - TILE.Lift - T - MARGIN)
-		group.ZIndex = 3
-		group.Parent = room
-		local stage = k
-		local button = Button.new({
-			Name = `Stage{k}`,
-			Text = "",
-			Bare = true,
-			Size = UDim2.fromOffset(WIDE, TILE.Foot - TILE.Top),
-			Position = UDim2.fromOffset(MARGIN, MARGIN + TILE.Lift),
-			Parent = group,
-			OnPress = function(): boolean
-				return begin(on, ground, difficulty, stage)
-			end,
-		})
-		tiles[k] = { Group = group, Button = button, Face = faceOf(button) }
-		parts[`Stage{k}`] = button
-	end
-	-- The road along their feet, the ring under the next, the player's power at its start.
-	local roadY = ROAD.Y - T
-	Glass.Fill(room, "Road", TILE.Pad, roadY - ROAD.Half, W - 2 * TILE.Pad, 2 * ROAD.Half, 3, SEAM.Channel, 2)
-	Glass.Edge(room, "RoadEdge", TILE.Pad, roadY - ROAD.Half, W - 2 * TILE.Pad, 2 * ROAD.Half, 3, SEAM.Edge, 0.9, nil, 2)
-	local footY = ROAD.Y + LOOK.Foot.Down - T
-	Glass.Label(room, "YourPower", "Your power", SMALL, SEAM.Soft, TILE.Pad + 2, footY, 80, SMALL + 4, Enum.TextXAlignment.Left, false, 2)
-	local mine = power(view)
-	Glass.Label(room, "Power", if mine then `{Hud.Digits(mine)} {Sheet.Said.Power}` else "No lead", TITLE, SEAM.Text, TILE.Pad + LOOK.Foot.Power, footY - 2, 120, TITLE + 4, Enum.TextXAlignment.Left, true, 2)
-	local hardWords = Glass.Label(room, "HardWords", "", SMALL, SEAM.Text, W - TILE.Pad - 2 - 330, footY, 330, SMALL + 4, Enum.TextXAlignment.Right, false, 2)
-	parts.HardWords = hardWords
-	local bloom: ImageLabel? = nil
-	local lit: Frame? = nil
-	local ringAt: Frame? = nil
-	-- Lays every face for the switch's side; `beat` runs the road and the ring in.
-	local function paint(beat: boolean)
-		local hard = difficulty == "Hard"
-		local a = accent(hard)
-		local line = Stages.Line(data, ground, difficulty)
-		local nextK: number? = nil
-		for k, tile in tiles do
-			local needs, waits = Stages.Needs(data, ground, difficulty, k)
-			local reason = why(ground, needs, waits)
-			local state = if reason then "shut" elseif k <= line.Cleared then "cleared" else "next"
-			if state == "next" and nextK ~= nil then
-				state = "open"
-			end
-			if state == "next" then
-				nextK = k
-			end
-			local lift = if state == "next" then TILE.Lift else 0
-			tile.Button.Position = UDim2.fromOffset(MARGIN, MARGIN + TILE.Lift - lift)
-			tile.Button.Size = UDim2.fromOffset(WIDE, TILE.Foot - TILE.Top + lift)
-			Button.Set(tile.Button, { Disabled = reason or false })
-			tile.Button:SetAttribute("Look", state)
-			lay(tile.Face, ground, k, state, hard, Stages.Recommended(ground, difficulty, k), line.Best[k], reason)
-			parts[`Stage{k}Power`] = tile.Face:FindFirstChild("Power") :: any
-		end
-		for which, s in switch do
-			half(s.Face, which, which == difficulty, hardShut, each, tall)
-		end
-		hardWords.Text = if not hard then "" elseif hardShut then `Hard opens when you beat the {keeperName(ground)} on Normal` else `Hard: every foe is {StagesConfig.Offset.Hard} levels higher`
-		-- The ground's bloom behind where the player stands, the road lit to it: the next tile, or the last cleared once
-		-- every stage is (the whole road walked).
-		if bloom then
-			bloom:Destroy()
-		end
-		local stand = nextK or (if line.Cleared > 0 then math.min(line.Cleared, #tiles) else nil)
-		local bx = if stand then x(stand) + WIDE / 2 else W / 2
-		local by = if stand then TILE.Top + BED.Inset + BED.Tall / 2 - T else 170 - T
-		bloom = Glass.Bloom(room, "Bloom", bx, by, 750, 600, a.Bloom, a.BloomAlpha, 1)
-		if lit then
-			lit:Destroy()
-			lit = nil
-		end
-		if ringAt then
-			ringAt:Destroy()
-			ringAt = nil
-		end
-		if stand then
-			local fromX, toX = TILE.Pad + 2, x(stand) + WIDE / 2
-			local holder, run = roadLight(room, "RoadLit", fromX, toX, roadY, 3, toX - fromX, hard, 3)
-			lit = holder
-			local made = ring(room, toX, roadY, hard, 6)
-			ringAt = made
-			parts.Ring = made
-			if beat and not GuiService.ReducedMotionEnabled then
-				run(0)
-				local pop = made:FindFirstChildOfClass("UIScale") :: UIScale
-				pop.Scale = 0
-				task.delay(if opening then MOTION.RoadAt else MOTION.Drain, function()
-					Glass.Ease(holder, MOTION.RoadSeconds, run, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut)
-				end)
-				task.delay((if opening then MOTION.RingAt else MOTION.Drain + MOTION.RoadSeconds * 0.8), function()
-					pop.Scale = MOTION.RingFrom
-					TweenService:Create(pop, TweenInfo.new(MOTION.RingSeconds, Enum.EasingStyle.Back, Enum.EasingDirection.Out), { Scale = 1 }):Play()
-				end)
-			end
-		end
-	end
-	if band then
-		for index, which in Stages.Difficulties do
-			local button = Button.new({
-				Name = which,
-				Text = "",
-				Bare = true,
-				Size = UDim2.fromOffset(each, tall),
-				Position = UDim2.new(1, -(TILE.Pad + LOOK.Switch.Wide) + (index - 1) * (each + LOOK.Switch.Gap), 0.5, 0),
-				AnchorPoint = Vector2.new(0, 0.5),
-				Parent = band,
-				OnPress = function(): boolean
-					if difficulty == which then
-						return true
-					end
-					difficulty = which
-					-- The switch: the tiles cross-fade, the road drains and fills again.
-					local fade = MOTION.Switch / 2
-					for _, tile in tiles do
-						TweenService:Create(tile.Group, TweenInfo.new(fade), { GroupTransparency = 1 }):Play()
-					end
-					task.delay(if GuiService.ReducedMotionEnabled then 0 else fade, function()
-						if room.Parent == nil then
-							return
-						end
-						paint(true)
-						for _, tile in tiles do
-							TweenService:Create(tile.Group, TweenInfo.new(fade), { GroupTransparency = 0 }):Play()
-						end
-					end)
-					return true
-				end,
-			})
-			switch[which] = { Button = button, Face = faceOf(button) }
-			parts[which] = button
-		end
-	end
-	paint(opening)
-	-- The opening: each tile rises in, Step apart, as the road fills to the ring.
-	if opening and not GuiService.ReducedMotionEnabled then
-		for k, tile in tiles do
-			local at = tile.Group.Position
-			tile.Group.GroupTransparency = 1
-			tile.Group.Position = at + UDim2.fromOffset(0, TILE.Rise)
-			local info = TweenInfo.new(TILE.Seconds, Enum.EasingStyle.Cubic, Enum.EasingDirection.Out, 0, false, TILE.Start + (k - 1) * TILE.Step)
-			TweenService:Create(tile.Group, info, { GroupTransparency = 0, Position = at }):Play()
-		end
-	end
 end
 
 -- The card's marks: the four stages on their road, lit to the one just cleared and on (`run`) to where the player now
@@ -722,6 +370,218 @@ local function marks(parent: Instance, x0: number, x1: number, y: number, rows: 
 	return play
 end
 
+-- A face in a bare button's skin, under its press.
+local function faceOf(button: TextButton): Frame
+	local face = Instance.new("Frame")
+	face.Name = "Face"
+	face.BackgroundTransparency = 1
+	face.Size = UDim2.fromScale(1, 1)
+	face.Parent = Skin.Of(button)
+	return face
+end
+
+-- One difficulty's choice on the Arc's tile, `w` by `h`: its name (Hard's with its chevrons), the Combat Power its run
+-- recommends at its top right, and the run's marks lit to its checkpoint and ringing it, with where the next run starts;
+-- while shut, its lock and why. Returns the marks' light, to run in, or nil while shut.
+local function choice(face: Frame, data: any, ground: string, which: string, w: number, h: number, reason: string?): ((number) -> ())?
+	face:ClearAllChildren()
+	local C = ARC.Choice
+	local hard, shut = which == "Hard", reason ~= nil
+	local a = accent(hard)
+	local cut = TILE.Corner
+	Glass.Fill(face, "Fill", 0, 0, w, h, cut, if shut then TILE.Shut else TILE.Fill, 2)
+	if shut then
+		Glass.Edge(face, "Edge", 0, 0, w, h, cut, SEAM.Edge, TILE.ShutEdge, nil, 5)
+	else
+		Glass.Wash(face, "Sheen", 0, 0, w, h, cut, SEAM.Glint, function(at: number): number
+			return TILE.Sheen.Alpha * math.exp(-at / TILE.Sheen.Fall)
+		end, 3)
+		Glass.Wash(face, "Wash", 0, 0, w, h, cut, a.Edge, function(at: number): number
+			return TILE.Next.Wash * math.clamp(1 - at / (h * 0.85), 0, 1)
+		end, 3)
+		Glass.Edge(face, "Edge", 0, 0, w, h, cut, a.Edge, TILE.Edge.Top, TILE.Edge.Foot, 5)
+		cornerGlint(face, "CornerGlint", 0, 0, w, h, cut, TILE.CornerGlint, 6)
+	end
+	local text = if shut then SEAM.Soft else SEAM.Text
+	if hard then
+		local name = chevronWords(face, "Name", which, TITLE, text, 11, if shut then SEAM.Soft else a.Edge, C.In, C.Top, 120, C.Head, 12)
+		local list = name:FindFirstChildOfClass("UIListLayout") :: UIListLayout
+		list.HorizontalAlignment = Enum.HorizontalAlignment.Left
+	else
+		Glass.Label(face, "Name", which, TITLE, text, C.In, C.Top, 120, C.Head, Enum.TextXAlignment.Left, true, 12)
+	end
+	local count = #((Stages.Of(ground) or {}) :: { any })
+	local top = Instance.new("Frame")
+	top.Name = "Recommends"
+	top.BackgroundTransparency = 1
+	top.Position = UDim2.fromOffset(C.In, C.Top)
+	top.Size = UDim2.fromOffset(w - 2 * C.In, C.Head)
+	top.ZIndex = 12
+	top.Parent = face
+	local list = Instance.new("UIListLayout")
+	list.FillDirection = Enum.FillDirection.Horizontal
+	list.HorizontalAlignment = Enum.HorizontalAlignment.Right
+	list.VerticalAlignment = Enum.VerticalAlignment.Center
+	list.Padding = UDim.new(0, 6)
+	list.SortOrder = Enum.SortOrder.LayoutOrder
+	list.Parent = top
+	local said = Glass.Label(top, "Said", "Recommended", SMALL, SEAM.Soft, 0, 0, 0, C.Head, nil, false, 12)
+	said.AutomaticSize = Enum.AutomaticSize.X
+	said.LayoutOrder = 1
+	local power = Glass.Label(top, "Power", `{Hud.Digits(Stages.Recommended(ground, which, count))} {Sheet.Said.Power}`, TITLE, text, 0, 0, 0, C.Head, nil, true, 12)
+	power.AutomaticSize = Enum.AutomaticSize.X
+	power.LayoutOrder = 2
+	parts[`{which}Power`] = power
+	if shut then
+		Glass.Mark(face, "Lock", LOCK, C.In + 9, C.Marks, 18, SEAM.Soft, 12)
+		parts[`{which}Says`] = Glass.Label(face, "Words", reason :: string, SMALL, SEAM.Soft, C.In + 26, C.Marks - 10, w - 2 * C.In - 26, 20, Enum.TextXAlignment.Left, false, 12)
+		return nil
+	end
+	local at = Stages.Checkpoint(data, ground, which)
+	local rows: { string } = {}
+	for k = 1, count do
+		rows[k] = if k < at then "cleared" elseif k == at then "next" else "shut"
+	end
+	local play = marks(face, C.In, C.In + C.Road, C.Marks, rows, hard, 12)
+	local wx = C.In + C.Road + C.Words
+	local ww = w - wx - C.In
+	parts[`{which}Says`] = Glass.Label(face, "Words", `Stretch {at} of {count}`, SMALL, SEAM.Text, wx, C.Marks - 19, ww, 18, Enum.TextXAlignment.Left, true, 12)
+	local best = Stages.Line(data, ground, which).Run
+	local after = if at > 1 then "Continue from here" elseif best then `Best run {Read.Clock(best)}` else `To the {keeperName(ground)}`
+	Glass.Label(face, "Then", after, SMALL, SEAM.Soft, wx, C.Marks + 1, ww, 18, Enum.TextXAlignment.Left, false, 12)
+	return play
+end
+
+-- The Arc panel: the ground's one tile, Normal and Hard on it, a press each (TR50).
+function StageScreen.Pick(ground: string, view: Profile.View, on: On)
+	table.clear(parts)
+	local data = view :: any
+	local named = Grounds.ById[ground] and Grounds.ById[ground].Name or "Stages"
+	local opening = Screen.Current() ~= StageScreen.Name
+	if opening then
+		Screen.Rise({ From = MOTION.Rise, Seconds = MOTION.Open, Cover = MOTION.Open, Sink = 0.14, Uncover = 0.12 })
+	end
+	local body = Screen.Full(StageScreen.Name, ARC.Title, "SeamGlass")
+	parts.Body = body
+	Glass.Ground(body, 1)
+	local room = block(body, "Arc")
+	room.ZIndex = 2
+	parts.Block = room
+	local band = Screen.Band(StageScreen.Name)
+	if band then
+		local title = Glass.Label(band, "Title", ARC.Title, TITLE, SEAM.Text, Screen.BandLeft + 4, 0, 260, 0, Enum.TextXAlignment.Left, true, 3)
+		title.Size = UDim2.new(0, 260, 1, 0)
+		parts.Title = title
+	end
+	-- The tile, in a group that fades as it rises in.
+	local w, h = W - 2 * TILE.Pad, TILE.Foot - TILE.Top
+	local group = Instance.new("CanvasGroup")
+	group.Name = "ArcTile"
+	group.BackgroundTransparency = 1
+	group.Size = UDim2.fromOffset(w + 2 * MARGIN, h + 2 * MARGIN)
+	group.Position = UDim2.fromOffset(TILE.Pad - MARGIN, TILE.Top - T - MARGIN)
+	group.ZIndex = 3
+	group.Parent = room
+	local tile = Instance.new("Frame")
+	tile.Name = "Tile"
+	tile.BackgroundTransparency = 1
+	tile.Position = UDim2.fromOffset(MARGIN, MARGIN)
+	tile.Size = UDim2.fromOffset(w, h)
+	tile.Parent = group
+	parts.Arc = tile
+	local a = accent(false)
+	Glass.Glow(tile, "Glow", 0, 0, w, h, TILE.Next.Glow, a.Glow, TILE.Next.GlowAlpha, 1)
+	Glass.Fill(tile, "Fill", 0, 0, w, h, TILE.Corner, TILE.Fill, 2)
+	Glass.Wash(tile, "Sheen", 0, 0, w, h, TILE.Corner, SEAM.Glint, function(at: number): number
+		return TILE.Sheen.Alpha * math.exp(-at / TILE.Sheen.Fall)
+	end, 3)
+	Glass.Edge(tile, "Edge", 0, 0, w, h, TILE.Corner, SEAM.Facet, TILE.Edge.Top, TILE.Edge.Foot, 5)
+	cornerGlint(tile, "CornerGlint", 0, 0, w, h, TILE.Corner, TILE.CornerGlint, 6)
+	-- The bed: the keeper's picture on its own light, the ground's name under it.
+	local bx, by, bw, bh = BED.Inset, BED.Inset, ARC.Bed.X, ARC.Bed.Y
+	local bed = Instance.new("Frame")
+	bed.Name = "Bed"
+	bed.BackgroundTransparency = 1
+	bed.ClipsDescendants = true
+	bed.Position = UDim2.fromOffset(bx, by)
+	bed.Size = UDim2.fromOffset(bw, bh)
+	bed.ZIndex = 7
+	bed.Parent = tile
+	Glass.Fill(bed, "Fill", 0, 0, bw, bh, BED.Corner, BED.Fill, 7)
+	Glass.Bloom(bed, "Bloom", bw * BED.Bloom.Middle.X, bh * BED.Bloom.Middle.Y, BED.Bloom.Size.X * ARC.Picture, BED.Bloom.Size.Y * ARC.Picture, a.Bloom, a.Pictures.Next, 8)
+	local record = IMAGES[LOOK.Pictures[#LOOK.Pictures]]
+	if record then
+		local pw, ph = BED.Picture.X * ARC.Picture, BED.Picture.Y * ARC.Picture
+		local picture = Instance.new("ImageLabel")
+		picture.Name = "Picture"
+		picture.BackgroundTransparency = 1
+		picture.Image = record.Id
+		picture.Size = UDim2.fromOffset(pw, ph)
+		picture.Position = UDim2.fromOffset((bw - pw) / 2, (bh - ph) / 2)
+		picture.ZIndex = 9
+		picture.Parent = bed
+	end
+	Glass.Edge(tile, "BedEdge", bx, by, bw, bh, BED.Corner, SEAM.Edge, BED.EdgeAlpha, nil, 10)
+	parts.Ground = Glass.Label(tile, "Ground", named, TITLE, SEAM.Text, bx, by + bh, bw, h - by - bh - BED.Inset, nil, true, 12)
+	-- Normal and Hard beside it, one press each.
+	local cx = bx + bw + ARC.Gap
+	local cw, ch = w - cx - BED.Inset, (h - 2 * BED.Inset - ARC.Gap) / 2
+	local plays: { (number) -> () } = {}
+	for index, which in Stages.Difficulties do
+		local needs, waits = Stages.Needs(data, ground, which, 1)
+		local reason = why(ground, needs, waits)
+		local button = Button.new({
+			Name = which,
+			Text = "",
+			Bare = true,
+			Size = UDim2.fromOffset(cw, ch),
+			Position = UDim2.fromOffset(cx, BED.Inset + (index - 1) * (ch + ARC.Gap)),
+			Parent = tile,
+			OnPress = function(): boolean
+				local begun = begin(on, ground, which)
+				if begun then
+					difficulty = which
+				end
+				return begun
+			end,
+		})
+		button.ZIndex = 14
+		Button.Set(button, { Disabled = reason or false })
+		button:SetAttribute("Look", if reason then "shut" else "open")
+		button:SetAttribute("Checkpoint", Stages.Checkpoint(data, ground, which))
+		parts[which] = button
+		local play = choice(faceOf(button), data, ground, which, cw, ch, reason)
+		if play then
+			table.insert(plays, play)
+		end
+	end
+	-- The foot: the player's own power, and what Hard is once it's open.
+	local footY = ROAD.Y + LOOK.Foot.Down - T
+	Glass.Label(room, "YourPower", "Your power", SMALL, SEAM.Soft, TILE.Pad + 2, footY, 80, SMALL + 4, Enum.TextXAlignment.Left, false, 2)
+	local mine = power(view)
+	Glass.Label(room, "Power", if mine then `{Hud.Digits(mine)} {Sheet.Said.Power}` else "No lead", TITLE, SEAM.Text, TILE.Pad + LOOK.Foot.Power, footY - 2, 120, TITLE + 4, Enum.TextXAlignment.Left, true, 2)
+	local hardOpen = Stages.Needs(data, ground, "Hard", 1) == nil
+	parts.HardWords = Glass.Label(room, "HardWords", if hardOpen then `Hard: every foe is {StagesConfig.Offset.Hard} levels higher` else "", SMALL, SEAM.Text, W - TILE.Pad - 2 - 330, footY, 330, SMALL + 4, Enum.TextXAlignment.Right, false, 2)
+	-- The opening: the tile rises in, then each run's light fills to its checkpoint's ring.
+	if opening and not GuiService.ReducedMotionEnabled then
+		local at = group.Position
+		group.GroupTransparency = 1
+		group.Position = at + UDim2.fromOffset(0, TILE.Rise)
+		TweenService:Create(group, TweenInfo.new(TILE.Seconds, Enum.EasingStyle.Cubic, Enum.EasingDirection.Out, 0, false, TILE.Start), { GroupTransparency = 0, Position = at }):Play()
+		task.delay(MOTION.RoadAt, function()
+			for _, play in plays do
+				if room.Parent then
+					Glass.Ease(room, MOTION.RoadSeconds, play, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut)
+				end
+			end
+		end)
+	else
+		for _, play in plays do
+			play(1)
+		end
+	end
+end
+
 -- One press on the card: the lit press (an ember into a Hard stage, with Hard's chevrons) or a quiet one.
 local function press(parent: Instance, name: string, words: string, x0: number, y0: number, w: number, one: boolean, intoHard: boolean, act: () -> boolean): TextButton
 	local button = Button.new({
@@ -750,9 +610,10 @@ local function press(parent: Instance, name: string, words: string, x0: number, 
 	return button
 end
 
-function StageScreen.Results(results: { [string]: any }, on: On, view: Profile.View?)
+function StageScreen.Results(results: { [string]: any }, on: On)
 	table.clear(parts)
 	local ground, which, stage = results.Ground :: string, results.Difficulty :: string, results.Stage :: number
+	local count = if type(results.Count) == "number" then results.Count else #((Stages.Of(ground) or {}) :: { any })
 	local hard, won = which == "Hard", results.Won == true
 	local C = LOOK.Card
 	local rows = C.Rows
@@ -776,10 +637,9 @@ function StageScreen.Results(results: { [string]: any }, on: On, view: Profile.V
 	local room = block(body, "Card")
 	room.ZIndex = 2
 	-- Its rows, top to foot.
-	local named = if hard then `Hard Stage {stage}` else `Stage {stage}`
+	local named = Grounds.ById[ground] and Grounds.ById[ground].Name or "The run"
 	local opened = results.Opened :: string?
-	local nextStage = results.Next :: number?
-	local nextWhich = (results.NextDifficulty :: string?) or which
+	local resume = if type(results.Checkpoint) == "number" then results.Checkpoint else stage
 	local gave: { { Icon: string, Words: string, Colour: Color3 } } = {}
 	if won then
 		if (results.Credits or 0) > 0 then
@@ -801,9 +661,6 @@ function StageScreen.Results(results: { [string]: any }, on: On, view: Profile.V
 	if won and opened == "Hard" then
 		openedWords = "Hard is open"
 		table.insert(spans, { Kind = "Opened", Tall = rows.Hard })
-	elseif won and opened == "Stage" and nextStage then
-		openedWords = `{if hard then "Hard " else ""}Stage {nextStage} is open`
-		table.insert(spans, { Kind = "Opened", Tall = rows.Opened })
 	end
 	local inner = 0
 	for _, span in spans do
@@ -817,12 +674,15 @@ function StageScreen.Results(results: { [string]: any }, on: On, view: Profile.V
 	local y0 = (high - total) / 2
 	local cx = x0 + w / 2
 	plate(room, x0, y0, w, total, hard, C.Corner, 1)
-	-- The marks: which stages are cleared, by the player's record; the one just played.
-	local cleared = if view then Stages.Line(view :: any, ground, which).Cleared else (if won then stage else stage - 1)
+	-- The marks: the run's stretches, all checked and the keeper's just on a win; on a fall, checked to where the next
+	-- run starts and ringing it.
 	local markRows: { string } = {}
-	local count = #((Stages.Of(ground) or {}) :: { any })
 	for k = 1, count do
-		markRows[k] = if won and k == stage then "just" elseif k <= cleared then "cleared" elseif k == cleared + 1 then "next" else "shut"
+		if won then
+			markRows[k] = if k == stage then "just" else "cleared"
+		else
+			markRows[k] = if k < resume then "cleared" elseif k == resume then "next" else "shut"
+		end
 	end
 	local y = y0 + C.In
 	local play: ((number) -> ())? = nil
@@ -833,7 +693,9 @@ function StageScreen.Results(results: { [string]: any }, on: On, view: Profile.V
 		elseif span.Kind == "Title" then
 			parts.Title = Glass.Label(room, "Title", if won then `{named} cleared` else "Your lead fell", BIG, if won then SEAM.Text else Theme.Colour.Hurt, x0, y, w, h, nil, true, 6)
 		elseif span.Kind == "Time" then
+			-- The whole run's time; its best only for a run from the first stretch (Rules.Stages.Clear's RunBest).
 			local seconds, best = results.Seconds :: number?, results.Best :: number?
+			local from = if type(results.From) == "number" then results.From else 1
 			local row = Instance.new("Frame")
 			row.Name = "Time"
 			row.BackgroundTransparency = 1
@@ -843,7 +705,7 @@ function StageScreen.Results(results: { [string]: any }, on: On, view: Profile.V
 			row.Parent = room
 			parts.Time = row
 			if not won or seconds == nil then
-				Glass.Label(row, "Said", if won then "Cleared" else `{named}: try it again, or grow first`, SMALL, SEAM.Soft, 0, 0, w, h, nil, false, 6)
+				Glass.Label(row, "Said", if won then "Cleared" else `Your next run starts at Stretch {resume} of {count}`, SMALL, SEAM.Soft, 0, 0, w, h, nil, false, 6)
 			elseif best and best >= seconds then
 				local list = Instance.new("UIListLayout")
 				list.FillDirection = Enum.FillDirection.Horizontal
@@ -865,8 +727,10 @@ function StageScreen.Results(results: { [string]: any }, on: On, view: Profile.V
 				Glass.Fill(chip, "Fill", 0, 0, 98, h, 4, LOOK.Socket, 6)
 				Glass.Edge(chip, "Edge", 0, 0, 98, h, 4, LOOK.Ready, 1, nil, 7)
 				Glass.Label(chip, "Words", "a new best", SMALL, LOOK.Ready, 0, 0, 98, h, nil, true, 8)
+			elseif best then
+				Glass.Label(row, "Said", `{Read.Clock(seconds)}   ·   best {Read.Clock(best)}`, SMALL, SEAM.Soft, 0, 0, w, h, nil, false, 6)
 			else
-				Glass.Label(row, "Said", `{Read.Clock(seconds)}   ·   best {Read.Clock(best or seconds)}`, SMALL, SEAM.Soft, 0, 0, w, h, nil, false, 6)
+				Glass.Label(row, "Said", `{Read.Clock(seconds)}   ·   from Stretch {from}`, SMALL, SEAM.Soft, 0, 0, w, h, nil, false, 6)
 			end
 		elseif span.Kind == "Gave" then
 			local row = Instance.new("Frame")
@@ -934,11 +798,12 @@ function StageScreen.Results(results: { [string]: any }, on: On, view: Profile.V
 		end
 		y += h + C.Space
 	end
-	-- Retry, Next and Home, the one press lit: Next, else Retry on a lost run, else Home.
+	-- Retry, Hard and Home, the one press lit: Hard after the keeper on Normal (Clear's Then), else Retry on a lost run,
+	-- else Home. Retry begins the run again at its checkpoint.
 	local P = C.Presses
 	local presses: { { Name: string, Words: string, Wide: number, One: boolean, Hard: boolean, Act: () -> boolean } } = {}
 	local retry = function(): boolean
-		return begin(on, ground, which, stage)
+		return begin(on, ground, which)
 	end
 	local home = function(): boolean
 		local answer = on.Home()
@@ -951,11 +816,10 @@ function StageScreen.Results(results: { [string]: any }, on: On, view: Profile.V
 		end
 		return false
 	end
-	if won and nextStage then
-		local into = nextWhich
+	if won and results.Then == "Hard" then
 		table.insert(presses, { Name = "Retry", Words = "Retry", Wide = P.Quiet, One = false, Hard = false, Act = retry })
-		table.insert(presses, { Name = "Next", Words = `Stage {nextStage}`, Wide = P.One, One = true, Hard = into == "Hard", Act = function(): boolean
-			return begin(on, ground, into, nextStage)
+		table.insert(presses, { Name = "Next", Words = "Hard", Wide = P.One, One = true, Hard = true, Act = function(): boolean
+			return begin(on, ground, "Hard")
 		end })
 		table.insert(presses, { Name = "Home", Words = "Home", Wide = P.Quiet, One = false, Hard = false, Act = home })
 	elseif won then

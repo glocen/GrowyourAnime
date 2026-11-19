@@ -9,7 +9,6 @@ local GuiService = game:GetService("GuiService")
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
-local TweenService = game:GetService("TweenService")
 local PathfindingService = game:GetService("PathfindingService")
 local ProximityPromptService = game:GetService("ProximityPromptService")
 local Shared = ReplicatedStorage.Shared
@@ -376,17 +375,12 @@ return function(given: Given): { any }
 					moment("not played: a flick to the right, the one before")
 					t.Check("a flick right", gesture(Vector2.new(swipe.Distance + 60, -6), swipe.Time / 2) == "Swipe")
 					t.Wait(2)
-					local function railTap(name: string, read: number)
-						moment(`not played: the rail's {name} tapped`)
-						local rail = VoidkinScreen.Find("Rail")
-						t.Check(`the rail's {name}`, VoidkinScreen.Tap(rail and rail:FindFirstChild(name)))
-						t.Wait(read)
+					-- Each page its own screen (AR43): shown in turn, its name in the band.
+					for _, name in { "Bag", "Kit", "Stars", "Overview" } do
+						moment(`not played: the {name} page`)
+						VoidkinScreen.Show(name)
+						t.Wait(TAKE_READ - 0.5)
 					end
-					for _, name in { "Bag", "Kit", "Stars" } do
-						railTap(name, TAKE_READ - 0.5)
-					end
-					-- The pages not built yet aren't on the rail (AR29's B: hidden until they open).
-					railTap("Overview", TAKE_READ - 0.5)
 					moment(`Lead: the strip's {free[1]}, then Lead`)
 					press(free[1])
 					t.Wait(1)
@@ -477,15 +471,6 @@ return function(given: Given): { any }
 					Layers.Force(Theme.Scale.Floor)
 					Layers.Box(Theme.Smallest - Vector2.new(0, GuiService.TopbarInset.Height))
 					t.Wait(TAKE_READ)
-					local rail = VoidkinScreen.Find("Rail")
-					for _, foot in { true, false } do
-						moment(if foot then "not played: its rail dragged to its foot" else "not played: and back")
-						if rail and rail:IsA("ScrollingFrame") then
-							local to = if foot then math.max(rail.AbsoluteCanvasSize.Y - rail.AbsoluteWindowSize.Y, 0) else 0
-							TweenService:Create(rail, TweenInfo.new(0.5, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), { CanvasPosition = Vector2.new(0, to) }):Play()
-						end
-						t.Wait(1.5)
-					end
 					Layers.Box(nil)
 					Layers.Force(nil)
 					moment("this window's room again")
@@ -988,7 +973,7 @@ return function(given: Given): { any }
 					moment(`the dock, by {Hover.Kind()}`)
 					t.Check("the driver moves on to the Voidkin screen", await("Voidkin"))
 					if Screen.Current() ~= VoidkinScreen.Name then
-						t.Wait(1) -- the driver's own click on the dock's tile opens it
+						t.Wait(1) -- the driver's own clicks open it: Home, then its Inventory tile (AR43)
 					end
 					moment(`the Voidkin screen's cards, by {Hover.Kind()} ({Screen.Current() or "no screen"})`)
 					t.Check("the driver moves on to the Breaker's chambers", await("Breaker"))

@@ -21,8 +21,11 @@
 --     own face on a bare button, once, when the screen opens (the Voidkin screen's seam, AR29 B: no plate)
 --   Screen.Band(name) -> a full screen's band to fill, Back in it; nil for any other
 --   Screen.Row() -> how tall a button stands in the band now, authored
---   Screen.Close()
+--   Screen.Close(how?)  how: "Back" when its own exit closed it; Closed fires (name, how)
 --   Screen.Current() -> the open screen's name, or nil
+--   Screen.Rise(rise)   the next screen opened rises into place from rise.From points under in rise.Seconds, its cover
+--     and fade in Cover, in place of growing in; its exit sinks it back From in Sink, uncovering in Uncover (Home's
+--     step, AR43: Config.Hud.Home.Step)
 
 local TweenService = game:GetService("TweenService")
 
@@ -37,7 +40,7 @@ local HudConfig = require(Shared.Config.Hud)
 local UIKit = require(Shared.Config.UIKit)
 
 local Screen = {}
-Screen.Closed = Signal.new() -- (name)
+Screen.Closed = Signal.new() -- (name, how): how is "Back" when its own exit closed it
 Screen.Back = Vector2.new(68, Theme.Size.Tap) -- a full screen's Back, authored, at the most; Theme.Size.Pad from the band's left
 Screen.BandLeft = Theme.Size.Pad + Screen.Back.X + Theme.Size.Gap -- where the band is free, authored from its left
 
@@ -64,7 +67,9 @@ end
 
 local BAND_MARGIN = 3 -- authored pixels a button keeps from the band's top and foot
 
-local open: { Name: string, Frame: Frame, Stage: CanvasGroup, Size: Vector2?, Cover: Frame?, Band: CanvasGroup? }? = nil
+export type Rise = { From: number, Seconds: number, Cover: number, Sink: number, Uncover: number }
+local open: { Name: string, Frame: Frame, Stage: CanvasGroup, Size: Vector2?, Cover: Frame?, Band: CanvasGroup?, Rise: Rise? }? = nil
+local rising: Rise? = nil -- the next screen's entrance (Screen.Rise)
 
 -- A button's height in the band: the band's, less its margins, never under a touch nor over a tap.
 function Screen.Row(): number
@@ -124,7 +129,7 @@ local function tween(stage: CanvasGroup, seconds: number, style: Enum.EasingStyl
 	return fade
 end
 
-function Screen.Close()
+function Screen.Close(how: string?)
 	local current = open
 	if current == nil then
 		return
@@ -142,8 +147,17 @@ function Screen.Close()
 		band.Name = `{current.Name}BandLeaving`
 	end
 	local motion = HudConfig.Motion.Screen
-	tween(stage, motion.Exit, Enum.EasingStyle.Quad, Enum.EasingDirection.In, 1, motion.To, cover, band)
-	task.delay(motion.Exit, function()
+	local rise = current.Rise
+	local gone = motion.Exit
+	if rise then -- it sinks back where it rose from
+		gone = math.max(rise.Sink, rise.Uncover)
+		local info = TweenInfo.new(rise.Sink, Enum.EasingStyle.Quad, Enum.EasingDirection.In)
+		TweenService:Create(stage, info, { Position = UDim2.new(0.5, 0, 0.5, rise.From) }):Play()
+		tween(stage, rise.Uncover, Enum.EasingStyle.Quad, Enum.EasingDirection.In, 1, 1, cover, band)
+	else
+		tween(stage, motion.Exit, Enum.EasingStyle.Quad, Enum.EasingDirection.In, 1, motion.To, cover, band)
+	end
+	task.delay(gone, function()
 		stage:Destroy()
 		if cover then
 			cover:Destroy()
@@ -152,7 +166,11 @@ function Screen.Close()
 			band:Destroy()
 		end
 	end)
-	Screen.Closed:Fire(current.Name)
+	Screen.Closed:Fire(current.Name, how)
+end
+
+function Screen.Rise(rise: Rise?)
+	rising = rise
 end
 
 function Screen.Current(): string?
@@ -268,7 +286,9 @@ local function show(name: string, title: string, size: Vector2?, palette: string
 	end
 	frame.Active = true -- a tap on the screen stays on it
 	fit(frame, size)
-	local record = { Name = name, Frame = frame, Stage = stage, Size = size, Cover = cover, Band = band }
+	local rise = rising
+	rising = nil
+	local record = { Name = name, Frame = frame, Stage = stage, Size = size, Cover = cover, Band = band, Rise = rise }
 	local refit = function()
 		fit(frame, record.Size)
 	end
@@ -299,7 +319,9 @@ local function show(name: string, title: string, size: Vector2?, palette: string
 		Position = if full then UDim2.new(1, -Theme.Size.Pad, 0, Theme.Size.Pad / 2) else UDim2.new(1, -close.In, 0, close.In),
 		AnchorPoint = Vector2.new(1, 0),
 		Parent = band or frame,
-		OnPress = Screen.Close,
+		OnPress = function()
+			Screen.Close("Back")
+		end,
 		Palette = if full then palette else nil,
 	})
 	exit.ZIndex = 3
@@ -321,7 +343,14 @@ local function show(name: string, title: string, size: Vector2?, palette: string
 	end
 	body.Parent = frame
 	stage.Parent = Layers.Get("Menus")
-	tween(stage, motion.Enter, Enum.EasingStyle.Quart, Enum.EasingDirection.Out, 0, 1, cover, band)
+	if rise then -- Home's step: it rises into place, whole size, and covers the world quickly
+		scale.Scale = 1
+		stage.Position = UDim2.new(0.5, 0, 0.5, rise.From)
+		TweenService:Create(stage, TweenInfo.new(rise.Seconds, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), { Position = UDim2.fromScale(0.5, 0.5) }):Play()
+		tween(stage, rise.Cover, Enum.EasingStyle.Quad, Enum.EasingDirection.Out, 0, 1, cover, band)
+	else
+		tween(stage, motion.Enter, Enum.EasingStyle.Quart, Enum.EasingDirection.Out, 0, 1, cover, band)
+	end
 	open = record
 	return body
 end

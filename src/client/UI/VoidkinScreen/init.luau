@@ -4,11 +4,8 @@
 --   in Roblox's top bar, right of its buttons (the Screen kit's band; research's call, 2026-11-15), AR29's B, the
 --     seam (the director's pick, 2026-11-17): Back with no plate, its chevron and word over a line of light; then
 --     favourite, lock and rename in one cut channel of three cells, each a touch or more; at its right the currencies;
---   a thin rail down the far left (B): a line of light down its right edge, strongest at the chosen page, and each
---     page's icon free beside it: Overview, Items, Kit and Stars, then Forge, Jewels and War Emblems once they're
---     built (hidden until then). The chosen one is a tab of dark glass opening from the line, its icon over its word;
---     each opens its page in the panel on the right. A row is a touch tall or more, and where they don't fit they
---     close up evenly, every page in sight (Rules.Hud.RailRows);
+--   after the channel, the page's name: each page is its own screen, opened from its tile in Home's tray (AR43; the
+--     rail of pages that stood down the far left is retired, 2026-11-19);
 --   its own model, live, on a stage lit by its rarity, the floor glowing its element (Figure): a drag turns it, a tap
 --     plays the end of its Reveal, a flick goes to the next or the one before. Over the stage, its name on one line with
 --     its rarity in the rarity's colour, and the figure under it (research's fix 2);
@@ -21,7 +18,7 @@
 --   the panel: the chosen page on the save's own numbers, the bag first (the player's whole inventory by kind; only
 --     shards exist yet), Overview its facts and its whole stat sheet, a plain list where nothing opens;
 --   the portraits of every Voidkin owned along the foot of the stage, a tap on one to switch.
--- The dock's Voidkin opens it on the lead. Every change is asked of the server through the owner's Act, and the screen is
+-- Home's tiles open it on the lead. Every change is asked of the server through the owner's Act, and the screen is
 -- rebuilt from the server's copy, the figure kept as long as it's the same Voidkin. Another Voidkin whose body isn't in
 -- memory yet is fetched first: the one shown stays, with its panel, and both change in one beat (research's fix 1).
 -- TR15's stat board was taken out on the director's word (2026-11-14, night: "Remove now, tree later").
@@ -69,7 +66,8 @@ local BagRules = require(Shared.Rules.Bag)
 local VoidkinScreen = {}
 
 -- `Page`: the page a fresh open shows, the Items page when none is named ("Send another" asks for Overview, where Lead is).
-export type On = { Act: (name: string, args: any) -> { [string]: any }, Healing: () -> { [string]: number }, Page: string? }
+-- `Said`: its name in the band, its tile's in Home's tray (Config.Hud.Home), else its own.
+export type On = { Act: (name: string, args: any) -> { [string]: any }, Healing: () -> { [string]: number }, Page: string?, Said: string? }
 
 local NAME = "Voidkin"
 local PAGES = { "Overview", "Bag", "Kit", "Stars", "Forge", "Jewels", "War Emblems" }
@@ -110,6 +108,7 @@ local REFUSED: { [string]: string } = {
 
 local chosen: string? = nil
 local page = "Bag"
+local named: string? = nil -- the page's name in the band
 local editing = false -- the name's row is a box to type a nickname in
 local draft: string? = nil -- what's typed there, kept across a rebuild
 local builtRoom = Vector2.zero -- the room it was built in
@@ -184,7 +183,6 @@ type Box = { X: number, Y: number, Wide: number, Tall: number }
 -- Where each piece stands, authored, in the room the Screen kit gives a full screen.
 type Place = {
 	Room: Vector2,
-	Rail: Box,
 	Stage: Box,
 	Panel: Box,
 	Group: number, -- where the name's line and the feet's row start in the stage
@@ -195,13 +193,12 @@ local function place(room: Vector2): Place
 	local pad, gap = Theme.Size.Pad, Theme.Size.Gap
 	local config = HudConfig.Voidkin
 	local panelWide = math.clamp(config.Panel.Share * room.X, config.Panel.Least, config.Panel.Most)
-	local stageX = pad + config.Rail.Width + pad
+	local stageX = pad
 	local stageWide = math.max(room.X - pad - panelWide - gap - stageX, 1)
 	local stageTall = math.max(room.Y - pad * 2 - config.Strip - gap, 1)
 	local span = math.min(stageWide, config.Span * stageTall)
 	return {
 		Room = room,
-		Rail = { X = pad, Y = 0, Wide = config.Rail.Width, Tall = math.max(room.Y, 1) }, -- the room's whole height: Back stands in the band
 		Stage = { X = stageX, Y = pad, Wide = stageWide, Tall = stageTall },
 		Panel = { X = room.X - pad - panelWide, Y = pad + ROW + gap, Wide = panelWide, Tall = math.max(room.Y - pad * 2 - ROW - gap, 1) },
 		Group = (stageWide - span) / 2,
@@ -237,6 +234,7 @@ local function show(name: string)
 		return
 	end
 	page = name
+	named = SAID[name] or name
 	rebuild()
 end
 
@@ -858,17 +856,7 @@ local function pageBody(parent: Frame, view: Profile.View, owned: Profile.OwnedV
 end
 
 -- AR29's B, the seam (the director's pick, 2026-11-17, 14:04; Modulo's numbers, 14:15; Config.Hud.Voidkin.Chrome): the
--- rail's and the bar's icons are Modulo's, white on alpha, tinted here.
-local ICONS: { [string]: string } = {
-	Overview = "PageOverview",
-	Bag = "PageItems",
-	Kit = "PageKit",
-	Stars = "PageStars",
-	Forge = "PageForge",
-	Jewels = "PageJewels",
-	["War Emblems"] = "PageWarEmblems",
-}
-
+-- bar's icons are Modulo's, white on alpha, tinted here.
 -- One of the chrome's icons, `side` across, its middle at `at`, named "Icon" (its image's name as its "Kit").
 local Whole, Thin = Seam.Whole, Seam.Thin -- B's points made whole before a UDim cuts them (Seam.Whole)
 
@@ -1006,144 +994,6 @@ local function marks(band: Frame, owned: Profile.OwnedVoidkin, on: On, save: (()
 	return x
 end
 
--- The menu (AR29's B): a line of Light down the rail's right edge, strongest at the chosen page, and each page's icon
--- free beside it with a short tick on the line; the chosen page a tab of dark glass opening from the line, washed in
--- Light toward it, its icon over its word. A page not built yet isn't on the rail until it opens (the director's pick
--- of B: hidden). A row's tap is the rail's width and a touch tall or more; where the rows don't fit they close up evenly,
--- every page in sight (Rules.Hud.RailRows; research's call on seven rows), and only a room too short for even that
--- scrolls. A pad each side of the rail for the glow (the room's edge on the left, the stage's gap on the right).
-local function rail(body: Instance, at: Place)
-	local chrome = HudConfig.Voidkin.Chrome
-	local look = chrome.Rail
-	local tab = look.Tab
-	local images = chrome.Images
-	local pad = Theme.Size.Pad
-	local wide = at.Rail.Wide
-	local shown: { string } = {}
-	for _, name in PAGES do
-		if not SOON[name] then
-			table.insert(shown, name)
-		end
-	end
-	local size = Text.Legible(tab.Word, Layers.Scale())
-	local function lines(name: string): { string }
-		return string.split(SAID[name] or name, " ")
-	end
-	local need = 0
-	for _, name in shown do
-		need = math.max(need, Hud.RailNeed(#lines(name), size, look.Drawn, tab))
-	end
-	local chosenNeed = Hud.RailNeed(#lines(page), size, look.Drawn, tab)
-	local pitch, whole = Hud.RailRows(math.max(at.Rail.Tall - pad * 2, 1), #shown, look.Row, look.Least, need, chosenNeed)
-	local chosenTall = math.max(pitch, chosenNeed)
-	local rows = pitch * (#shown - 1) + chosenTall
-	local canvas = math.max(at.Rail.Tall, rows + pad * 2)
-	local holder = Instance.new("ScrollingFrame")
-	holder.Name = "Rail"
-	holder.BackgroundTransparency = 1
-	holder.BorderSizePixel = 0
-	holder.Position = UDim2.fromOffset(at.Rail.X - pad, at.Rail.Y)
-	holder.Size = UDim2.fromOffset(wide + pad * 2, at.Rail.Tall)
-	holder.CanvasSize = UDim2.fromOffset(0, Whole(canvas))
-	holder.ScrollBarThickness = 0
-	holder.ScrollBarImageTransparency = 1 -- a touch device draws its thumb even at nought
-	holder.ScrollingDirection = Enum.ScrollingDirection.Y
-	holder.ScrollingEnabled = not whole
-	holder:SetAttribute("Whole", whole)
-	holder:SetAttribute("Pitch", pitch)
-	holder.Parent = body
-	local tops: { [string]: number } = {}
-	local y = pad
-	for _, name in shown do
-		tops[name] = y
-		y += if name == page then chosenTall else pitch
-	end
-	local seam = wide - look.Line.In -- the line's middle, from the rail's left
-	local peak = (tops[page] or pad) + chosenTall / 2
-	local length = canvas - pad * 2
-	local line = Seam.Edge(holder, "Line", pad + seam, pad, length, true, { Spread = look.Line.Spread / length, Floor = look.Line.Floor, Strength = 1 }, (peak - pad) / length, Seam.Bands(look.Line.Wide, look.Line.Glow, look.Line.GlowAlpha))
-	line:SetAttribute("Peak", peak)
-	local cx = wide / 2 - look.Aside -- an icon's middle
-	for index, name in shown do
-		local on_ = name == page
-		local tall = if on_ then chosenTall else pitch
-		local press = Instance.new("TextButton")
-		press.Name = name
-		press.Text = ""
-		press.AutoButtonColor = false
-		press.BackgroundTransparency = 1
-		press.Position = UDim2.fromOffset(pad, Whole(tops[name]))
-		press.Size = UDim2.fromOffset(wide, Whole(tall))
-		press.ZIndex = 3
-		press.LayoutOrder = index
-		press:SetAttribute("Chosen", on_)
-		press.Parent = holder
-		if on_ then
-			local x0, y0 = tab.Inset, tab.Inset
-			local w, h = seam - x0, tall - tab.Inset * 2
-			local function plate(record: any, called: string, tint: Color3 | { Color3 }, alpha: number, z: number): ImageLabel
-				return Skin.LayOwn(press, record, called, { X = Whole(x0), Y = Whole(y0), W = Whole(x0 + w) - Whole(x0), H = Whole(y0 + h) - Whole(y0), Tint = tint, Alpha = alpha, Z = z })
-			end
-			plate(images.TabGlow, "Glow", Seam.Light, tab.Glow, 1)
-			plate(images.TabFill, "Fill", Seam.Panel, tab.Fill, 2)
-			local wash = plate(images.TabFill, "Wash", Seam.Light, 1, 3)
-			local shades = {}
-			for i = 0, 10 do
-				local t = i / 10
-				table.insert(shades, NumberSequenceKeypoint.new(t, 1 - (tab.Wash.Base + tab.Wash.Rise * t ^ tab.Wash.Power)))
-			end
-			local gradient = Instance.new("UIGradient")
-			gradient.Rotation = 0 -- its left to the line
-			gradient.Transparency = NumberSequence.new(shades)
-			gradient.Parent = wash
-			plate(images.TabEdge, "Edge", Seam.Light, tab.Edge, 4)
-			Seam.Edge(press, "Meet", seam, y0, h, true, { Spread = 1e3, Floor = 1, Strength = 1 }, nil, Seam.Bands(tab.Meet.Wide, tab.Meet.Glow, tab.Meet.GlowAlpha)).ZIndex = 5
-			-- Its icon over its word, the two centred in the tab; the word under the icon, kept inside the glass.
-			local said = lines(name)
-			local wordTall = #said * size * tab.Lines
-			local top = (tall - (tab.Top + look.Drawn + tab.Under + wordTall)) / 2
-			chromeIcon(press, ICONS[name], look.Icon, UDim2.fromOffset(Whole(cx), Whole(top + tab.Top + look.Drawn / 2)), Look.Text, 7)
-			local label = text({
-				Name = "Label",
-				Size = tab.Word,
-				Font = Theme.Font.Strong,
-				Colour = Look.Text,
-				Align = Enum.TextXAlignment.Center,
-				Box = UDim2.fromOffset(Whole(w), Thin(wordTall)),
-				Position = UDim2.fromOffset(Whole(cx), Whole(top + tab.Top + look.Drawn + tab.Under)),
-				Parent = press,
-			}, table.concat(said, "\n"))
-			label.AnchorPoint = Vector2.new(0.5, 0)
-			label.LineHeight = tab.Lines
-			label.ZIndex = 8
-			local across = 0
-			for _, each in said do
-				across = math.max(across, Text.Wide(label, each))
-			end
-			local margin = tab.Inset * 2
-			local least, most = x0 + margin + across / 2, x0 + w - margin - across / 2
-			label.Position = UDim2.fromOffset(Whole(if least > most then x0 + w / 2 else math.clamp(cx, least, most)), label.Position.Y.Offset)
-		else
-			chromeIcon(press, ICONS[name], look.Icon, UDim2.fromOffset(Whole(cx), Whole(tall / 2)), look.Idle, 2)
-			local tick = Instance.new("Frame")
-			tick.Name = "Tick"
-			tick.BorderSizePixel = 0
-			tick.BackgroundColor3 = Seam.Light
-			tick.BackgroundTransparency = 1 - look.Tick.Alpha
-			tick.AnchorPoint = Vector2.new(1, 0.5)
-			tick.Position = UDim2.fromOffset(Whole(seam), Whole(tall / 2))
-			tick.Size = UDim2.fromOffset(Thin(look.Tick.Long), Thin(look.Tick.Tall))
-			tick.ZIndex = 2
-			tick.Parent = press
-		end
-		local function onTap()
-			show(name)
-		end
-		press.Activated:Connect(onTap)
-		taps[press] = onTap
-	end
-end
-
 -- At its feet, Combat Power alone, under the figure's middle: the Overview shows no gear slots (the director,
 -- 2026-11-17: "overview ui shouldn't show any gears slot"; gear is the Items page's).
 local function feet(over: Frame, at: Place, owned: Profile.OwnedVoidkin, block: Stats.Block)
@@ -1156,6 +1006,15 @@ end
 -- as its number. They never cross what stands right of `left` (authored, from the band's left; research's must-fix on
 -- TR28, 2026-11-17): in a band too narrow, they step down until they fit: the battery without its capacity, then what
 -- it holds alone (its bolt says what it is), then Credits short (Hud.Short), then the battery alone.
+-- The page's name in the band from `left` (authored), in the seam's text; returns where it ends.
+local function pageName(band: Frame, left: number): number
+	local said = named or page
+	local label = text({ Name = "PageName", Size = Theme.Text.Body, Font = Theme.Font.Strong, Box = UDim2.fromOffset(1, BAR), Position = UDim2.new(0, left + Theme.Size.Pad, 0.5, 0), AnchorPoint = Vector2.new(0, 0.5), Parent = band }, said)
+	local wide = math.ceil(Text.Wide(label, said))
+	label.Size = UDim2.fromOffset(wide, BAR)
+	return left + Theme.Size.Pad + wide
+end
+
 local function wallet(band: Frame, left: number, view: Profile.View)
 	local pad, gap = Theme.Size.Pad, Theme.Size.Gap
 	local size = Text.Legible(Theme.Text.Body, Layers.Scale())
@@ -1320,7 +1179,6 @@ local function build(view: Profile.View, on: On)
 		text({ Name = "Empty", Size = Theme.Text.Title, Align = Enum.TextXAlignment.Center, Box = UDim2.new(1, -at.Stage.X * 2, 0, 30), Position = UDim2.new(0, at.Stage.X, 0.5, -15), Parent = body }, "No Voidkin yet · break a shard at the Breaker")
 		return
 	end
-	rail(body, at)
 	if page == "Bag" then
 		-- The Items page is AR18's A (TR28): right of the rail, the doll with the figure between its slots, then the grid.
 		local block = resolved(view, owned)
@@ -1348,7 +1206,7 @@ local function build(view: Profile.View, on: On)
 				power(feet, owned, block, wide)
 			end,
 		})
-		wallet(band, marks(band, owned, on, save), view)
+		wallet(band, pageName(band, marks(band, owned, on, save)), view)
 		return
 	end
 	local where, size = UDim2.fromOffset(at.Stage.X, at.Stage.Y), UDim2.fromOffset(at.Stage.Wide, at.Stage.Tall)
@@ -1359,7 +1217,7 @@ local function build(view: Profile.View, on: On)
 	local over = frameOf("Over", body, where, size)
 	feet(over, at, owned, (resolved(view, owned)))
 	-- The band: Back is the kit's; its marks beside it, the currencies at the right.
-	wallet(band, marks(band, owned, on, nameLine(over, at.Group, at.Span, owned, on)), view)
+	wallet(band, pageName(band, marks(band, owned, on, nameLine(over, at.Group, at.Span, owned, on))), view)
 	strip(body, at, roster, on)
 	actions(frameOf("Actions", body, UDim2.fromOffset(at.Panel.X, Theme.Size.Pad), UDim2.fromOffset(at.Panel.Wide, ROW)), view, owned, on)
 	local sheet = Panel.new({ Name = "Panel", Size = UDim2.fromOffset(at.Panel.Wide, at.Panel.Tall), Position = UDim2.fromOffset(at.Panel.X, at.Panel.Y), Parent = body, Palette = Seam.Palette })
@@ -1378,6 +1236,7 @@ function VoidkinScreen.Open(view: Profile.View, on: On)
 	local fresh = Screen.Current() ~= NAME
 	if fresh then -- a fresh open starts on the lead and the bag (research's call, 2026-11-15), never on a choice left from before
 		chosen, page, slideFrom, shownPower = nil, if on.Page and table.find(PAGES, on.Page) and not SOON[on.Page] then on.Page else "Bag", 0, {}
+		named = on.Said or SAID[page] or page
 		editing, draft, awaited = false, nil, nil
 		BagPage.Reset()
 	end

@@ -9,7 +9,7 @@
 -- Electricity stored over its cap with the rate and a thread of charge. Under the lead's card, the signature's readout
 -- (UI.Readout): its well fills over the cooldown, it's white-hot when ready and empties in a flash as the move fires;
 -- beside it the spectate eye. Bottom centre, the dock of three icons (UI.Dock): Base takes the player home in one tap
--- (TR19), Inventory opens the Voidkin screen, open while it is, and the Map tile, its word Play, the Festival of Battles'
+-- (TR19), Home opens Home's tray (AR43; UI.HomeTray), each tile its own screen, and the Map tile, its word Play, the Festival of Battles'
 -- menu (TR45: HudController.OpenPlay, set by StageController); over the dock the
 -- shards' hint while a shard waits and the player is home. The HUD's text wears one face
 -- (Config.Hud.Face), switched at runtime. Everything reads the fighters' attributes (FightService) or the save's copy
@@ -59,6 +59,7 @@ local LevelNotice = require(UI.LevelNotice)
 local VoidkinScreen = require(UI.VoidkinScreen)
 local TargetCard = require(UI.TargetCard)
 local Dock = require(UI.Dock)
+local HomeTray = require(UI.HomeTray)
 local BossBar = require(UI.BossBar)
 local Screen = require(UI.Kit.Screen)
 local Toast = require(UI.Kit.Toast)
@@ -115,6 +116,9 @@ local nextButton: TextButton -- under a fallen lead's card: sends out the next (
 local dock: { [string]: TextButton } = {}
 local dockHolder: Frame
 local dockUi: Dock.Dock -- the dock of three icons (AR12; UI.Dock): dock[screen] is its tile's button
+local homeTray: HomeTray.Tray -- Home's tray (AR43), and the dock's Home cell that opens it
+local homeButton: TextButton
+local trayWas = false -- whether the tray was open at the last frame: the chip follows it
 local keeperBar: BossBar.Bar
 local lastView: Profile.View? = nil
 local healBand: Frame -- a heal of the lead's own: a band in the heal's green along its health light (Config.Hud.Card.Heal)
@@ -629,12 +633,13 @@ end
 
 -- The Voidkin screen (UI/VoidkinScreen): one Voidkin at a time, on the lead first (TR17). A fresh open shows `page`,
 -- the Items page when none is named.
-local function voidkinScreen(page: string?)
+-- The Voidkin screen on `page`, its own screen, `said` its name in the band (Home's tiles, AR43).
+local function voidkinScreen(page: string?, said: string?)
 	local view = ProfileController.Get()
 	if view == nil then
 		return
 	end
-	VoidkinScreen.Open(view, { Act = ProfileController.Act, Healing = healing, Page = page })
+	VoidkinScreen.Open(view, { Act = ProfileController.Act, Healing = healing, Page = page, Said = said })
 end
 
 -- Where a shard just won comes from: the nearest fallen Shade to the avatar, within Config.Effects.Drop.From.
@@ -778,7 +783,8 @@ local function showChip(view: Profile.View)
 	-- nothing in a keeper's try: the fight has the screen
 	local step = if player:GetAttribute("Try") ~= nil then nil else Hud.NextStep(stepState(view))
 	shownStep = step
-	chip.Visible = step ~= nil
+	-- Home's tray stands where the chip does: it steps out while the tray is open (AR43).
+	chip.Visible = step ~= nil and not (homeTray ~= nil and HomeTray.Shown(homeTray))
 	if step then
 		chipText.Text = step.Line
 	end
@@ -834,7 +840,7 @@ local function showView(view: Profile.View)
 	for _ in view.Voidkin do
 		owned += 1
 	end
-	Button.Set(dock.Voidkin, { Disabled = Hud.VoidkinReason(owned) or false })
+	Button.Set(homeButton, { Disabled = Hud.VoidkinReason(owned) or false }) -- every built tile shows a Voidkin
 	if Screen.Current() == "Voidkin" then
 		voidkinScreen()
 	end
@@ -1131,6 +1137,19 @@ local function step(dt: number)
 		end
 	end
 	stepHome()
+	local home = HomeTray.Shown(homeTray) or HomeTray.Holds(homeTray)
+	if homeButton:GetAttribute("Selected") ~= home then
+		homeButton:SetAttribute("Selected", home)
+		Button.Set(homeButton, { Selected = home })
+	end
+	if HomeTray.Shown(homeTray) ~= trayWas then -- the chip steps out for the tray, and back
+		trayWas = HomeTray.Shown(homeTray)
+		local view = ProfileController.Get()
+		if view then
+			showChip(view)
+		end
+	end
+	HomeTray.Paint(homeTray)
 	Dock.Paint(dockUi)
 	local view = ProfileController.Get()
 	if view and os.clock() - baseReadAt >= BASE_EVERY then
@@ -1254,7 +1273,7 @@ function HudController.Start()
 		AnchorPoint = Vector2.new(0, 0.5),
 		Parent = Layers.Get("Hud"),
 		OnPress = function()
-			voidkinScreen("Overview") -- where Lead stands: the Items page has none (TR28)
+			voidkinScreen("Overview", "Overview") -- where Lead stands: the Items page has none (TR28)
 		end,
 	})
 	nextButton.Visible = false
@@ -1310,22 +1329,20 @@ function HudController.Start()
 	chip, chipText = hint.Frame, hint.Value
 	World.Foot(chip) -- the edge's arrow stands over it
 	chip.Visible = false
-	-- The dock of three icons (AR12): Inventory opens the Voidkin screen, open while it is; Base takes the player home
-	-- (TR19: goHome), and the Base screen opens from a bay's prompt; the Map tile opens the Festival's menu (TR45).
-	local function toggle(name: string, open: () -> ())
-		return function()
-			if Screen.Current() == name then
-				Screen.Close()
-			else
-				open()
-			end
-		end
-	end
+	-- The dock of three icons (AR12): Home opens Home's tray and closes it (AR43); Base takes the player home (TR19:
+	-- goHome), and the Base screen opens from a bay's prompt; the Map tile opens the Festival's menu (TR45).
 	dockUi = Dock.new(Layers.Get("Hud"), {
-		Inventory = toggle("Voidkin", function()
-			voidkinScreen()
-		end),
-		Base = goHome,
+		Home = function()
+			if HomeTray.Shown(homeTray) then
+				HomeTray.Close(homeTray)
+			else
+				HomeTray.Open(homeTray)
+			end
+		end,
+		Base = function()
+			HomeTray.Close(homeTray) -- the way home leaves the tray
+			goHome()
+		end,
 		Map = function() -- its word is Play: the Festival of Battles' menu, in either place (TR45)
 			HudController.OpenPlay()
 		end,
@@ -1334,7 +1351,19 @@ function HudController.Start()
 	dockHolder = dockUi.Frame
 	dockHolder.AnchorPoint = Vector2.new(0.5, 1)
 	dockHolder.Position = UDim2.new(0.5, 0, 1, -PAD)
-	dock.Voidkin = dockUi.Tiles.Inventory.Button
+	homeButton = dockUi.Tiles.Home.Button
+	-- Home's tray grows about the Home cell's top middle; each built tile opens its page of the Voidkin screen alone.
+	local make = HudConfig.Make.Dock
+	local presses: { [string]: () -> () } = {}
+	for _, tile in HudConfig.Home.Tiles do
+		local page = (tile :: any).Page :: string?
+		if page then
+			presses[tile.Name] = function()
+				voidkinScreen(page, tile.Name)
+			end
+		end
+	end
+	homeTray = HomeTray.new(Layers.Get("Cover"), Layers.Get("Hud"), PAD + make.Box.Y - math.min(make.At.Y, 0), presses)
 	-- The jump's light (TR19), a stand-in until Modulo's look: one frame on each of the screen's edges, lit at the edge and
 	-- gone Reach in, over everything but the toasts.
 	local overlay = Layers.Get("Overlay")
@@ -1430,6 +1459,11 @@ function HudController.FoeFoot(): number
 	return target.Frame.Position.Y.Offset + target.Frame.Size.Y.Offset
 end
 
+-- Home's tray, for tests (UI.HomeTray's own calls).
+function HudController.Home(): HomeTray.Tray
+	return homeTray
+end
+
 function HudController.Parts(): { [string]: GuiObject }
 	return {
 		Lead = lead.Frame,
@@ -1465,7 +1499,10 @@ function HudController.Parts(): { [string]: GuiObject }
 		Next = nextButton,
 		Chip = chip,
 		ChipText = chipText,
-		Voidkin = dock.Voidkin,
+		Voidkin = homeTray.Tiles.Inventory.Button, -- the way to the Items page: Home's Inventory tile
+		Home = homeButton,
+		HomeTray = homeTray.Frame,
+		HomeDim = homeTray.Dim,
 		Base = dockUi.Tiles.Base.Button,
 		Map = dockUi.Tiles.Map.Button,
 		HomeEdge = edges[1],

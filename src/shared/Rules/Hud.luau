@@ -333,20 +333,6 @@ function Hud.BatteryCells(kwh: number, capacity: number): number
 	return math.clamp(math.ceil(kwh / capacity * 3 - 1e-9), 1, 2)
 end
 
--- The Voidkin screen's page rail (AR29, B; Modulo's numbers, research's call on seven rows, 2026-11-17, 14:17): each page
--- a row of `row`, and the chosen one's tab as tall as its icon and word need where that's more (`need`, the longest of
--- them: War Emblems' two lines). Where `count` rows and that tab's extra don't fit `room`, every row closes up by the same
--- amount, keeping room for the longest tab, to `least` at the least, so every page stays in sight; the pitch never
--- depends on which page is chosen. Returns the pitch, and whether the rows stand whole in `room` with `chosen` the
--- chosen tab's need (else the rail scrolls).
-function Hud.RailRows(room: number, count: number, row: number, least: number, need: number, chosen: number): (number, boolean)
-	local slot = row
-	if count > 1 and count * row + math.max(0, need - row) > room + 1e-6 then
-		slot = math.max(least, (room - need) / (count - 1))
-	end
-	return slot, slot * (count - 1) + math.max(slot, chosen) <= room + 1e-6
-end
-
 -- The contrast of two colours, WCAG's: (L1 + 0.05) / (L2 + 0.05) of their relative luminances, the lighter over the
 -- darker (docs/ui.md: text and icons 4.5:1 or more on their ground).
 -- The Stars page's copies toward the next star: "3 of 5 copies for the next" while short of it, and once past it the
@@ -367,12 +353,6 @@ function Hud.Contrast(a: Color3, b: Color3): number
 	end
 	local la, lb = luminance(a), luminance(b)
 	return (math.max(la, lb) + 0.05) / (math.min(la, lb) + 0.05)
-end
-
--- What the chosen tab needs for its word of `lines` lines drawn at `size` (authored; Config.Hud.Voidkin.Chrome.Rail): its
--- insets at top and foot, then Top, the icon's drawing `drawn`, Under and the word's lines.
-function Hud.RailNeed(lines: number, size: number, drawn: number, tab: { Inset: number, Top: number, Under: number, Lines: number }): number
-	return tab.Inset * 2 + tab.Top + drawn + tab.Under + lines * size * tab.Lines
 end
 
 -- The festival tag on a shard's picture shown `side` points across (Config.Hud.ShardTag; TR41 (d)): the tag with its

@@ -174,7 +174,7 @@ function BagCases.Cases(given: Given): { any }
 				t.Check("All the strip's first tab, lit, holding the gear and the chests", Rules.Kinds[1] == "All" and firstChip ~= nil and firstChip:GetAttribute("Chosen") == true and gearIn and chestIn)
 				-- AR30's make: the chosen chip the glass, its word in Text; the others no plate, in Soft.
 				t.Check("the chosen chip the glass, its word in Text, the others no plate and Soft", chipChosen(firstChip) and chipIdle(if kindsStrip then kindsStrip:FindFirstChild(Rules.Kinds[2]) else nil))
-				for _, name in { "Rail", "Case", "Doll", "Strip", "Page", "Over", "CardRoom", "BagCount" } do
+				for _, name in { "Case", "Doll", "Strip", "Page", "Over", "CardRoom", "BagCount" } do
 					t.Check(`{name} in view`, inView(find(name)))
 				end
 				local count, page = find("BagCount"), find("Page")

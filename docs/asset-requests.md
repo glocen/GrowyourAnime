@@ -13673,6 +13673,21 @@ The director's words: jewels and War Emblems go in and out on Equipment's pages 
 - **For the finish, not the blockout:** the work panel's middle sits empty between the stones line and the cost row. Reinforce's own motion (AR43's beats) fills it on a press.
 - If the director picks first, that pick stands (Modulo's entry). Then Jewels, War Emblems and Settings follow the pick.
 
+### Home's tray in the game (Faber, 2026-11-19, installed and tested by 15:17 by the clock)
+
+- **What's in:** the dock's middle cell is Home (`DockMarkHomeMask`, tinted Seam.Text). A tap opens the tray grown from its top, built from `home.json` in the dock's graphite: Inventory's four, Equipment's three, Settings tall at the end. A tile lights, the tray folds back into it as its screen rises, and that screen's Back sinks it and brings the tray back. A tap on the dim, or Home again, closes it. Overview, Kit, Inventory and Stars each open their page alone. The four not built yet (Reinforce, Jewels, War Emblems, Settings) show at 0.55 and refuse with "Soon", and the tray stays. The Voidkin screen lost its rail: each page is its own screen, named in the band by its tile.
+- **The dim** is `home.json`'s: #05090B at 0.36 over the world and the HUD, edge to edge, all but the dock's rect (100 points each side of it, up to its top), which stays lit. It's four panels round that rect on the Cover layer, each closing the tray on a tap.
+- **Where:** `src/client/UI/HomeTray.luau` (new), `Controllers/Main/HudController.luau`, `UI/Dock.luau`, `UI/Kit/Screen.luau` (`Screen.Rise`, the step), `UI/VoidkinScreen/init.luau`, `Config/Hud.luau` (`Home`), `Config/UIKit.luau`, `Rules/Hud.luau`.
+- **Places are whole points, rounded:** a UDim offset is cut toward nought, so War Emblems' 314.67 laid at 314. Every place in the tray is rounded instead, as `Seam.Whole` does.
+- **Tested:** the type check (0 new); the offline logic, 26,774 passed; the self-test's "Home's tray" 44/44, the dock 39/39, the Voidkin screen 241/241 and its Overview 21/21, the Items page 120/120 and 48/48, TR19 49/49, TR20 36/36, the machine's plate 33/33, TR21 43/43, TR24 22/22. The TR20 take now goes through Home's tray.
+- **The take:** "Take: AR43, Home's tray held for stills" (DockCases) holds open, pressed, the step slowed fortyfold, and the smallest phone. Stills are in `build/scratch/faber/ar43/stills/`: `tray-open`, `tray-pressed`, `tray-step-inventory` and `tray-phone`.
+- **Self-read:** the tray reads as the dock unfolding: graphite over the dock, the pressed tile sunk and darker. At the smallest phone it fits above the dock with every word whole, over the dimmed lead card's health line. At 0.36 the dim is gentle in daylight: the world reads as behind, not gone.
+- **For research:**
+  - the pass on the stills;
+  - one naming call: the director named the Bag page "Items" (2026-11-15, `SAID` in the Voidkin screen), while Home's tile and the band say "Inventory", as `home.json` draws it. The band follows the tile now.
+- **Not done:** Equipment's three screens, held for the Seam redraw (Modulo, 14:56).
+- **Status:** implemented, tested, self-reviewed; research's pass asked; not director-accepted.
+
 ## AR44. The damage numbers' rework: the plain, received and healing numbers, and the critical closer to the reference (Faber's takes in the game, Modulo's stroke, research's pick)
 
 Research, 2026-11-19, 11:17 by the clock. The director, by 11:16, to research: "The damages/healing text need a small rework it doesnt look as i wanted it to be, same for the crit text it need to be more close to the reference i've shown". The same morning, relayed by Modulo at about 11:15: "like the blackstroke around the text for those are way to thick". Research reads "those" as the damage numbers, since the two came together. The rule stays `docs/ui.md`, "Damage numbers" (the director, 2026-11-12); this changes the look only. The reference is `docs/research/hud-reference.md`, its three arena screenshots, held internal.

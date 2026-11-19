@@ -3,6 +3,7 @@
 -- HudCases (Cases' one table had passed what the type solver checks in one piece). The dock of three icons in AR30's make
 -- (UI.Dock; Config.Hud.Make.Dock): each cell's glass, light, foot, icon and touch, its light by its state, its call.
 
+local GuiService = game:GetService("GuiService")
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
@@ -13,9 +14,12 @@ local HudController = require(script.Parent.Parent.Parent.Main.HudController)
 local UI = script.Parent.Parent.Parent.Parent.UI
 local Button = require(UI.Kit.Button)
 local Dock = require(UI.Dock)
+local HomeTray = require(UI.HomeTray)
 local Screen = require(UI.Kit.Screen)
 local StageScreen = require(UI.StageScreen)
+local Layers = require(UI.Layers)
 local Theme = require(UI.Theme)
+local VoidkinScreen = require(UI.VoidkinScreen)
 
 local DockCases = {}
 
@@ -55,8 +59,8 @@ function DockCases.Cases(given: Given): { any }
 			local chip = parts.Chip :: GuiObject
 			local clear = (frame.AbsolutePosition.Y - (chip.AbsolutePosition.Y + chip.AbsoluteSize.Y)) / scale
 			t.Check("the next step's chip stands a gap clear over its frame", clear >= Theme.Size.Gap - 0.5, string.format("%.1f clear", clear))
-			local hues = { Base = HudConfig.Make.Light.Power, Inventory = seam.Light, Map = HudConfig.Make.Light.Map }
-				local kits = { Base = "DockSeamBase", Inventory = "PageItems", Map = "DockSeamMap" }
+			local hues = { Base = HudConfig.Make.Light.Power, Home = seam.Light, Map = HudConfig.Make.Light.Map }
+				local kits = { Base = "DockSeamBase", Home = "DockSeamHome", Map = "DockSeamMap" }
 				local function piece(name: string): ImageLabel
 					return frame:FindFirstChild(name) :: ImageLabel
 				end
@@ -84,26 +88,27 @@ function DockCases.Cases(given: Given): { any }
 						t.Check(`{name}: its glass, light, foot, icon and touch`, false)
 					end
 				end
-				local inventory = parts.Voidkin :: TextButton
+				local inventory = parts.Home :: TextButton
 				local function looks(button: TextButton, want: string): boolean
 					return waitFor(t, 0.5, function(): boolean
 						return button:GetAttribute("Look") == want
 					end)
 				end
-				t.Check("Inventory's cell at rest", looks(inventory, "Rest"), tostring(inventory:GetAttribute("Look")))
-				local mark = piece("InventoryMark")
+				t.Check("Home's cell at rest", looks(inventory, "Rest"), tostring(inventory:GetAttribute("Look")))
+				local mark = piece("HomeMark")
 				local restY = mark.AbsolutePosition.Y
 				Button.Touch(inventory, true)
-				t.Check("held, its light rises to a press's", looks(inventory, "Pressed") and math.abs(lit("Inventory") - make.L.Pressed) < 0.02, string.format("L %.2f", lit("Inventory")))
+				t.Check("held, its light rises to a press's", looks(inventory, "Pressed") and math.abs(lit("Home") - make.L.Pressed) < 0.02, string.format("L %.2f", lit("Home")))
 				t.Near("and nothing sinks", (mark.AbsolutePosition.Y - restY) / scale, 0, 0.3)
 				Button.Touch(inventory, false)
 				t.Check("let go, it's back at rest", looks(inventory, "Rest"), tostring(inventory:GetAttribute("Look")))
-				t.Check("a tap opens the Voidkin screen", Button.Press(inventory) and waitFor(t, 1, function(): boolean
-					return Screen.Current() == "Voidkin"
+				local tray = HudController.Home()
+				t.Check("a tap opens Home's tray (AR43)", Button.Press(inventory) and waitFor(t, 1, function(): boolean
+					return HomeTray.Shown(tray)
 				end))
-				t.Check("and its cell is open while it is, at L Open", looks(inventory, "Open") and math.abs(lit("Inventory") - make.L.Open) < 0.02, string.format("L %.2f", lit("Inventory")))
-				Screen.Close()
-				t.Check("and at rest once it closes", looks(inventory, "Rest"), tostring(inventory:GetAttribute("Look")))
+				t.Check("and its cell is open while it is, at L Open", looks(inventory, "Open") and math.abs(lit("Home") - make.L.Open) < 0.02, string.format("L %.2f", lit("Home")))
+				t.Check("a second tap closes it", Button.Press(inventory) and not HomeTray.Shown(tray))
+				t.Check("and its cell is at rest once it closes", looks(inventory, "Rest"), tostring(inventory:GetAttribute("Look")))
 				t.Wait(HudConfig.Motion.Screen.Exit + 0.1)
 				-- A dock of the test's own for what this save's state may not show: a call, a charge, a quiet cell.
 				local gui = Instance.new("ScreenGui")
@@ -117,18 +122,18 @@ function DockCases.Cases(given: Given): { any }
 				local function ownL(name: string): number
 					return make.Top * (1 - its(`{name}Light`).ImageTransparency)
 				end
-				Dock.Pip(own, "Inventory", true)
+				Dock.Pip(own, "Home", true)
 				Dock.Paint(own)
-				local call, glow, ring = its("InventoryCall"), its("InventoryPipGlow"), its("InventoryPip")
+				local call, glow, ring = its("HomeCall"), its("HomePipGlow"), its("HomePip")
 				local ownScale = own.Frame.AbsoluteSize.X / make.Box.X
 				local px = (ring.AbsolutePosition.X - ownFrame.AbsolutePosition.X) / ownScale
 				local py = (ring.AbsolutePosition.Y - ownFrame.AbsolutePosition.Y) / ownScale
 				local pw = ring.AbsoluteSize.X / ownScale
 				local cell = make.Cells[2]
-				t.Check("calling, its light at L Calling and its whole edge lit in its colour", math.abs(ownL("Inventory") - make.L.Calling) < 0.02 and call.Visible and call.ImageColor3 == seam.Light, string.format("L %.2f", ownL("Inventory")))
-				t.Check("and the pip on its far corner, its glow in its colour over an ink ring", glow.Visible and ring.Visible and ring.ImageColor3 == seam.Ink and its("InventoryPipHue").Visible and its("InventoryPipLight").Visible and near(px + pw / 2, cell.Pip.X) and near(py + pw / 2, cell.Pip.Y) and near(pw, make.Pip.Rings[1]), string.format("%.1f, %.1f, %.1f across", px + pw / 2, py + pw / 2, pw))
-				Dock.Pip(own, "Inventory", false)
-				t.Check("its call gone, back at L Rest", not call.Visible and not ring.Visible and math.abs(ownL("Inventory") - make.L.Rest) < 0.02)
+				t.Check("calling, its light at L Calling and its whole edge lit in its colour", math.abs(ownL("Home") - make.L.Calling) < 0.02 and call.Visible and call.ImageColor3 == seam.Light, string.format("L %.2f", ownL("Home")))
+				t.Check("and the pip on its far corner, its glow in its colour over an ink ring", glow.Visible and ring.Visible and ring.ImageColor3 == seam.Ink and its("HomePipHue").Visible and its("HomePipLight").Visible and near(px + pw / 2, cell.Pip.X) and near(py + pw / 2, cell.Pip.Y) and near(pw, make.Pip.Rings[1]), string.format("%.1f, %.1f, %.1f across", px + pw / 2, py + pw / 2, pw))
+				Dock.Pip(own, "Home", false)
+				t.Check("its call gone, back at L Rest", not call.Visible and not ring.Visible and math.abs(ownL("Home") - make.L.Rest) < 0.02)
 				Dock.Charges(own, "Base", true)
 				Dock.Fill(own, "Base", 0.5)
 				Dock.Paint(own)
@@ -140,15 +145,15 @@ function DockCases.Cases(given: Given): { any }
 				Dock.Paint(own)
 				t.Check("quiet: at L Quiet, its icon in Soft, its glass back in the Panel gradient", ownBase:GetAttribute("Look") == "Quiet" and math.abs(ownL("Base") - make.L.Quiet) < 0.02 and its("BaseMark").ImageColor3 == seam.Soft and inked:FindFirstChildOfClass("UIGradient") ~= nil)
 				gui:Destroy()
-				local word = dock:FindFirstChild("InventoryWord", true) :: TextLabel
+				local word = dock:FindFirstChild("HomeWord", true) :: TextLabel
 				Dock.Hold(inventory, true)
 				t.Check("a long press shows its word", waitFor(t, HudConfig.Dock.LongPress + 0.3, function(): boolean
 					return word.Visible
-				end) and word.Text == "Inventory", word.Text)
+				end) and word.Text == "Home", word.Text)
 				Button.Press(inventory)
 				Dock.Hold(inventory, false)
 				t.Wait(0.4)
-				t.Check("and its lift doesn't open the screen", Screen.Current() == nil, tostring(Screen.Current()))
+				t.Check("and its lift doesn't open the tray", Screen.Current() == nil and not HomeTray.Shown(tray), tostring(Screen.Current()))
 				t.Check("the word goes a moment after", waitFor(t, 1, function(): boolean
 					return not word.Visible
 				end))
@@ -160,6 +165,198 @@ function DockCases.Cases(given: Given): { any }
 					return Screen.Current() == StageScreen.Name
 				end), tostring(Screen.Current()))
 				Screen.Close()
+			end,
+		},
+		{
+			Name = "HUD: Home's tray (AR43): grows out of the Home cell over the dimmed world; Inventory's four and Equipment's three, Settings tall; a tile steps into its own screen, Back brings the tray back; the unbuilt ones refused",
+			Run = function(t: any)
+				-- AR43 in B (UI.HomeTray; Config.Hud.Home): the dock's Home cell opens a tray grown from its top, a group a row
+				-- and Settings tall at the end; a tile lights, the tray folds back as its screen rises, that screen's Back sinks it
+				-- and brings the tray back; a tap on the dimmed world closes it.
+				Screen.Close()
+				local home = HudConfig.Home
+				local parts = HudController.Parts()
+				local tray = HudController.Home()
+				local cell = parts.Home :: TextButton
+				if HomeTray.Shown(tray) then
+					HomeTray.Close(tray)
+				end
+				t.Wait(home.Open.Leave + 0.1)
+				t.Check("closed, it's out of sight and so is its dim", not tray.Frame.Visible and not tray.Dim.Visible)
+				t.Check("Home's cell opens it", Button.Press(cell) and HomeTray.Shown(tray) and tray.Frame.Visible)
+				t.Near("it starts small, from the cell", tray.Scale.Scale, home.Open.From, 0.05)
+				local most = 0
+				local began = os.clock()
+				while os.clock() - began < home.Open.Grow + 0.05 do
+					most = math.max(most, tray.Scale.Scale)
+					t.Wait(0)
+				end
+				t.Wait(0.1)
+				t.Check("it grows past its size a little and settles", most > 1.005 and most < 1.15 and math.abs(tray.Scale.Scale - 1) < 1e-3, string.format("most %.3f, now %.3f", most, tray.Scale.Scale))
+				t.Near("shown whole", tray.Group.GroupTransparency, 0, 1e-3)
+				-- The dim: the world and the HUD under it edge to edge, all but the dock's rect (home.json), which stays lit.
+				local even = true
+				for _, panel in tray.Panels do
+					even = even and math.abs(1 - panel.BackgroundTransparency - home.Dim.Amount) < 1e-3
+				end
+				t.Check("the world and the HUD dimmed under it", even)
+				local cover = tray.Dim.Parent :: GuiObject
+				local hudGui = (parts.Dock :: GuiObject):FindFirstAncestorOfClass("ScreenGui") :: ScreenGui
+				local coverGui = cover:FindFirstAncestorOfClass("ScreenGui") :: ScreenGui
+				t.Check("over the HUD's layer", coverGui.DisplayOrder > hudGui.DisplayOrder)
+				local area = 0
+				for _, panel in tray.Panels do
+					area += panel.AbsoluteSize.X * panel.AbsoluteSize.Y
+				end
+				local wide, tall = cover.AbsoluteSize.X, cover.AbsoluteSize.Y
+				local seamTop = ((parts.Dock :: Frame):FindFirstChild("Seam") :: GuiObject).AbsolutePosition.Y
+				local hudRoot = (parts.Dock :: GuiObject).Parent :: GuiObject
+				local footY = hudRoot.AbsolutePosition.Y + hudRoot.AbsoluteSize.Y
+				local middleX = hudRoot.AbsolutePosition.X + hudRoot.AbsoluteSize.X / 2
+				local s = Layers.Scale()
+				local hole = Rect.new(middleX - home.Dim.Side * s, seamTop, middleX + home.Dim.Side * s, footY)
+				local holeArea = hole.Width * hole.Height
+				t.Check("edge to edge but for the dock's rect", math.abs(area + holeArea - wide * tall) <= wide + tall, string.format("%.0f + %.0f of %.0f px", area, holeArea, wide * tall))
+				local docked = parts.Dock :: GuiObject
+				local dx0, dx1 = docked.AbsolutePosition.X, docked.AbsolutePosition.X + docked.AbsoluteSize.X
+				t.Check("the dock inside the lit rect", dx0 >= hole.Min.X - 1 and dx1 <= hole.Max.X + 1 and seamTop >= hole.Min.Y - 1, string.format("%.0f..%.0f in %.0f..%.0f", dx0, dx1, hole.Min.X, hole.Max.X))
+				t.Check("a tap on it closes the tray: its panels take taps", tray.Dim.Interactable and (tray.Panels[1] :: TextButton):IsA("TextButton"))
+				local seam = (parts.Dock :: Frame):FindFirstChild("Seam") :: GuiObject
+				local scale = s -- the layer's own: an offset is whole points, so the frame's 536.8 lays as 536
+				local foot = tray.Frame.AbsolutePosition.Y + tray.Frame.AbsoluteSize.Y
+				local middle = tray.Frame.AbsolutePosition.X + tray.Frame.AbsoluteSize.X / 2
+				t.Check("its point on the Home cell's top, at its middle", math.abs(foot - seam.AbsolutePosition.Y) / scale <= 1 and math.abs(middle - (cell.AbsolutePosition.X + cell.AbsoluteSize.X / 2)) / scale <= 1, string.format("%.1f, %.1f off", (foot - seam.AbsolutePosition.Y) / scale, (middle - (cell.AbsolutePosition.X + cell.AbsoluteSize.X / 2)) / scale))
+				t.Check("Home's cell open while it is", cell:GetAttribute("Selected") == true)
+				t.Check("the next step's chip steps out for it", not (parts.Chip :: GuiObject).Visible)
+				-- Every tile at its box, its icon and its word; the built ones at rest, the others refused.
+				local body = tray.Group:FindFirstChild("Tray") :: GuiObject
+				for _, def in home.Tiles do
+					local tile = tray.Tiles[def.Name]
+					if tile == nil then
+						t.Check(`{def.Name}: a tile`, false)
+						continue
+					end
+					local b = tile.Button
+					local x, y = (b.AbsolutePosition.X - body.AbsolutePosition.X) / scale, (b.AbsolutePosition.Y - body.AbsolutePosition.Y) / scale
+					local built = (def :: any).Page ~= nil
+					t.Check(`{def.Name}: at its box, its icon and its word`, math.abs(x - def.Box[1]) <= 0.5 and math.abs(y - def.Box[2]) <= 0.5 and tile.Icon:GetAttribute("Kit") == def.Icon and tile.Word.Text == def.Name, string.format("%.1f, %.1f", x, y))
+					t.Equal(`{def.Name}: {if built then "at rest" else "not built yet: faint"}`, b:GetAttribute("Look"), if built then "Rest" else "Soon")
+				end
+				t.Check("its two headings", body:FindFirstChild("InventoryHeading") ~= nil and body:FindFirstChild("EquipmentHeading") ~= nil)
+				local soon = tray.Tiles.Reinforce.Button
+				t.Check("an unbuilt tile refuses, and the tray stays", not Button.Press(soon) and HomeTray.Shown(tray) and Screen.Current() == nil)
+				-- A tile: lit, the tray folds back to its cell, its page rises as its own screen.
+				local kit = tray.Tiles.Kit.Button
+				t.Check("Kit's tile takes the press", Button.Press(kit))
+				t.Wait(home.Step.Lit / 2)
+				t.Equal("lit while it steps", kit:GetAttribute("Look"), "Pressed")
+				local stage: GuiObject? = nil
+				t.Check("Kit's page opens", waitFor(t, home.Step.Lit + home.Step.RiseAt + 0.5, function(): boolean
+					stage = Screen.Stage(VoidkinScreen.Name)
+					return Screen.Current() == VoidkinScreen.Name and stage ~= nil
+				end), tostring(Screen.Current()))
+				local risen = if stage then (stage :: GuiObject).Position.Y.Offset else 0
+				t.Check("rising into place", risen > 0 and risen <= home.Step.RiseFrom, string.format("%.1f under", risen))
+				t.Check("the tray folding away as it does", not HomeTray.Shown(tray))
+				t.Wait(home.Step.Rise + 0.1)
+				t.Check("its own screen: no rail, its name in the band", VoidkinScreen.Find("Rail") == nil and (VoidkinScreen.Find("PageName") :: TextLabel?) ~= nil and (VoidkinScreen.Find("PageName") :: TextLabel).Text == "Kit")
+				local page = VoidkinScreen.Find("Page")
+				t.Check("the panel shows Kit", page ~= nil and page:GetAttribute("Page") == "Kit")
+				t.Check("the tray away, Home's cell still open", not tray.Frame.Visible and cell:GetAttribute("Selected") == true)
+				-- Back: it sinks, and the tray comes back.
+				Screen.Close("Back")
+				t.Check("Back brings the tray back", waitFor(t, home.Step.Sink + home.Step.BackAt + 0.5, function(): boolean
+					return HomeTray.Shown(tray)
+				end) and Screen.Current() == nil)
+				t.Wait(home.Open.Grow + 0.1)
+				t.Check("whole again", math.abs(tray.Scale.Scale - 1) < 1e-3 and tray.Group.GroupTransparency < 1e-3)
+				-- Closed by the world's tap (its dim's close) and by the cell: it folds into the cell, the chip back.
+				HomeTray.Close(tray)
+				t.Wait(home.Open.Leave + 0.1)
+				t.Check("closed: out of sight, the world undimmed, the cell at rest", not tray.Frame.Visible and not tray.Dim.Visible and cell:GetAttribute("Selected") == false)
+			end,
+		},
+		{
+			Name = "Take: AR43, Home's tray held for stills: open, a tile pressed, the step into its screen slowed, then the smallest phone, for research",
+			Manual = true,
+			Stay = true,
+			Run = function(t: any)
+				-- AR43's captures: each state is held until the driver moves ReplicatedStorage.NL_TakeStep on ("Open",
+				-- "Pressed", "Step", "Phone", "PhonePressed", "End") and captures it. "Step" plays Inventory's step forty
+				-- times slower, so a capture lands inside it; its numbers are put back before anything else.
+				local step = Instance.new("StringValue")
+				step.Name = "NL_TakeStep"
+				step.Value = "Ready"
+				step.Parent = ReplicatedStorage
+				local tray = HudController.Home()
+				local cell = HudController.Parts().Home :: TextButton
+				local inventory = tray.Tiles.Inventory.Button
+				local timings = HudConfig.Home.Step :: { [string]: number }
+				local kept: { [string]: number } = {}
+				for key, value in timings do
+					kept[key] = value
+				end
+				local function restore()
+					for key, value in kept do
+						timings[key] = value
+					end
+				end
+				local function opened()
+					Screen.Close()
+					if not HomeTray.Shown(tray) then
+						Button.Press(cell)
+					end
+					t.Wait(HudConfig.Home.Open.Grow + 0.2)
+				end
+				local states = {
+					Open = opened,
+					Pressed = function()
+						Button.Touch(inventory, true)
+					end,
+					Step = function()
+						Button.Touch(inventory, false)
+						for key in timings do
+							if key ~= "RiseFrom" and key ~= "LeaveTo" then
+								timings[key] *= 40
+							end
+						end
+						Button.Press(inventory)
+						t.Wait(timings.Lit + timings.RiseAt + timings.Rise * 0.4)
+					end,
+					Phone = function()
+						restore()
+						Screen.Close()
+						t.Wait(HudConfig.Motion.Screen.Exit + 0.1)
+						Layers.Force(Theme.Scale.Floor)
+						Layers.Box(Theme.Smallest - Vector2.new(0, GuiService.TopbarInset.Height))
+						t.Wait(0.2)
+						opened()
+					end,
+					PhonePressed = function()
+						Button.Touch(inventory, true)
+					end,
+				}
+				local shown = step.Value
+				local began = os.clock()
+				while step.Value ~= "End" and os.clock() - began < 300 do
+					if step.Value ~= shown then
+						shown = step.Value
+						local apply = states[shown]
+						if apply then
+							apply()
+						end
+						step:SetAttribute("Shown", shown)
+					end
+					t.Wait(0.1)
+				end
+				Button.Touch(inventory, false)
+				restore()
+				Layers.Box(nil)
+				Layers.Force(nil)
+				HomeTray.Close(tray)
+				Screen.Close()
+				step:Destroy()
+				t.Check("the driver ended it", shown == "End" or step.Value == "End", shown)
 			end,
 		},
 	}

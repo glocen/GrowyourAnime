@@ -19,7 +19,7 @@
 --   dim       refused for now: as a disabled cell
 -- Over a cell's glass, under its icon, two of its owner's measures in the glass's own shape: a fill rising from its foot
 -- (a charge), and a veil over the share still to come, swept away left to right (a cooldown).
---   Dock.new(parent, presses)          the dock; presses[name] is each cell's OnPress (Base, Inventory, Map: its word Play)
+--   Dock.new(parent, presses)          the dock; presses[name] is each cell's OnPress (Base, Home, Map: its word Play)
 --   Dock.Pip(dock, name, on)           something new on a cell: it calls
 --   Dock.Mood(dock, name, mood?)       "Quiet", "Dim", or nil for its button's own look
 --   Dock.Reason(dock, name, why?)      why it's refused, its word on a long press or a hover; nil for its name
@@ -105,11 +105,8 @@ local function hue(name: string): Color3
 	return if name == "Base" then MAKE.Light.Power elseif name == "Map" then MAKE.Light.Map else LIGHT
 end
 
--- Each cell's icon: the bag's is the Voidkin screen's Items page's own.
+-- Each cell's icon, the seam dock's own.
 local function icon(name: string): (UIKit.Image, string)
-	if name == "Inventory" then
-		return HudConfig.Voidkin.Chrome.Images.PageItems, "PageItems"
-	end
 	return MAKE.Images[`DockSeam{name}`], `DockSeam{name}`
 end
 

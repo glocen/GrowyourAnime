@@ -779,6 +779,20 @@ return {
 		EdgeArrow = { Id = "rbxassetid://75745566571381", Pixels = Vector2.new(40, 40), Points = Vector2.new(10, 10), Pad = 0 },
 		CardFoeHealth = { Id = "rbxassetid://83666929491890", Pixels = Vector2.new(261, 52), Points = Vector2.new(65.25, 13), Cut = { 5.7, 6.25, 5.7, 6.25 }, Pad = 0 },
 		CardFoeBand = { Id = "rbxassetid://109247033366238", Pixels = Vector2.new(136, 52), Points = Vector2.new(34, 13), Cut = { 4.4, 6.25, 4.4, 6.25 }, Pad = 0 },
+		-- Home's tray (AR43 in B, the dock's graphite; build/handoff/UI/home/home.json): white masks tinted as Config.Hud.Home
+		-- says, but HomePoint, in its own colours. A row tile is sliced along only, drawn at its own height; Settings' tall
+		-- tile is never sliced.
+		HomeTileFill = { Id = "rbxassetid://82384929902011", Pixels = Vector2.new(208, 208), Points = Vector2.new(52, 52), Cut = { 12.4, 0, 12.4, 0 }, Pad = 0 },
+		HomeTileEdge = { Id = "rbxassetid://129849746975129", Pixels = Vector2.new(216, 216), Points = Vector2.new(54, 54), Cut = { 13.4, 0, 13.4, 0 }, Pad = 1 },
+		HomeTileGlint = { Id = "rbxassetid://125431604794395", Pixels = Vector2.new(216, 216), Points = Vector2.new(54, 54), Cut = { 13.4, 0, 13.4, 0 }, Pad = 1 },
+		HomeTileGlow = { Id = "rbxassetid://113101413894279", Pixels = Vector2.new(272, 272), Points = Vector2.new(68, 68), Cut = { 20.4, 0, 20.4, 0 }, Pad = 8 },
+		HomeTallFill = { Id = "rbxassetid://93790428603496", Pixels = Vector2.new(379, 456), Points = Vector2.new(94.75, 114), Pad = 0 },
+		HomeTallEdge = { Id = "rbxassetid://94436443612722", Pixels = Vector2.new(387, 464), Points = Vector2.new(96.75, 116), Pad = 1 },
+		HomeTallGlint = { Id = "rbxassetid://70804910113617", Pixels = Vector2.new(387, 464), Points = Vector2.new(96.75, 116), Pad = 1 },
+		HomeTallGlow = { Id = "rbxassetid://132228444167207", Pixels = Vector2.new(443, 520), Points = Vector2.new(110.75, 130), Pad = 8 },
+		HomePoint = { Id = "rbxassetid://129367016870679", Pixels = Vector2.new(112, 56), Points = Vector2.new(28, 14), Pad = 0 },
+		HomeMarkSettings = { Id = "rbxassetid://100189975821409", Pixels = Vector2.new(128, 128), Points = Vector2.new(32, 32), Pad = 0 },
+		HomeMarkInventory = { Id = "rbxassetid://137236473927105", Pixels = Vector2.new(128, 128), Points = Vector2.new(32, 32), Pad = 0 },
 	} :: { [string]: Image },
 	-- The lead card's shape, in its own points: images are laid at their At (tools/blender/lead_card_art.py).
 	LeadCard = {

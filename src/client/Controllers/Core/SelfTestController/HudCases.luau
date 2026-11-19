@@ -364,11 +364,11 @@ function HudCases.Cases(given: Given): { any }
 				local dock = parts.Dock :: Frame
 				local make = HudConfig.Make.Dock
 				local scale = dock.AbsoluteSize.X / make.Box.X
-				local inventory = parts.Voidkin :: TextButton
-				local tile = dock:FindFirstChild("InventoryGlass", true) :: ImageLabel
-				local cellLight = dock:FindFirstChild("InventoryLight", true) :: ImageLabel
-				local edge = dock:FindFirstChild("InventoryRim", true) :: ImageLabel
-				local word = dock:FindFirstChild("InventoryWord", true) :: TextLabel
+				local inventory = parts.Home :: TextButton
+				local tile = dock:FindFirstChild("HomeGlass", true) :: ImageLabel
+				local cellLight = dock:FindFirstChild("HomeLight", true) :: ImageLabel
+				local edge = dock:FindFirstChild("HomeRim", true) :: ImageLabel
+				local word = dock:FindFirstChild("HomeWord", true) :: TextLabel
 				local others = { dock:FindFirstChild("BaseGlass", true) :: ImageLabel, dock:FindFirstChild("MapGlass", true) :: ImageLabel }
 				local function at(piece: GuiObject): Vector2
 					return piece.AbsolutePosition
@@ -393,7 +393,7 @@ function HudCases.Cases(given: Given): { any }
 				t.Check("nothing round it moves, nor its tap", still())
 				t.Check("its word shows after a moment", waitFor(t, motion.Word + 0.3, function(): boolean
 					return word.Visible
-				end) and word.Text == "Inventory", word.Text)
+				end) and word.Text == "Home", word.Text)
 				-- Fix 1 (research's verdict on TR20): the word on a plate of its own, centred on its tile, over everything
 				-- round it in its layer, the chip among them.
 				local plate = word.Parent :: Frame
@@ -546,7 +546,7 @@ function HudCases.Cases(given: Given): { any }
 					Hover.Pretend(nil)
 					return
 				end
-				t.Check("the Voidkin screen opens", Button.Press(inventory) and waitFor(t, 1, function(): boolean
+				t.Check("the Voidkin screen opens", Button.Press(parts.Voidkin :: TextButton) and waitFor(t, 1, function(): boolean
 					return Screen.Current() == "Voidkin"
 				end))
 				t.Wait(HudConfig.Motion.Screen.Enter + 0.1)

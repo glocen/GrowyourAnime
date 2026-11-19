@@ -324,6 +324,8 @@ return {
 			DockSeamFootMid = { Id = "rbxassetid://114305255121830", Pixels = Vector2.new(267, 232), Points = Vector2.new(66.75, 58), Pad = 0 },
 			DockSeamFootWing = { Id = "rbxassetid://106010594765096", Pixels = Vector2.new(227, 192), Points = Vector2.new(56.75, 48), Pad = 0 },
 			DockSeamGlassMid = { Id = "rbxassetid://133510593265528", Pixels = Vector2.new(267, 232), Points = Vector2.new(66.75, 58), Pad = 0 },
+			-- Home's mark (AR43): Modulo's DockMarkHomeMask, a white mask in the Items page's place and square.
+			DockSeamHome = { Id = "rbxassetid://108425291864907", Pixels = Vector2.new(128, 128), Points = Vector2.new(32, 32), Pad = 0 },
 			DockSeamGlassWing = { Id = "rbxassetid://110774430206065", Pixels = Vector2.new(227, 192), Points = Vector2.new(56.75, 48), Pad = 0 },
 			DockSeamLightMid = { Id = "rbxassetid://71451440044467", Pixels = Vector2.new(411, 376), Points = Vector2.new(102.75, 94), Pad = 0 },
 			DockSeamLightWing = { Id = "rbxassetid://124228959542597", Pixels = Vector2.new(371, 336), Points = Vector2.new(92.75, 84), Pad = 0 },
@@ -425,13 +427,58 @@ return {
 			Glass = { Wing = Vector2.new(56.8, 48), Mid = Vector2.new(66.8, 58) },
 			Cells = {
 				{ Name = "Base", Kind = "Wing", Glass = Vector2.new(2, 12), Icon = Vector2.new(30.4, 33.5), Side = 39.4, Pip = Vector2.new(57.8, 13), Tap = { 0, 10, 60.8, 52 } },
-				{ Name = "Inventory", Kind = "Mid", Glass = Vector2.new(62.8, 2), Icon = Vector2.new(96.2, 28.5), Side = 49.2, Pip = Vector2.new(128.6, 3), Tap = { 60.8, 0, 70.8, 62 } },
+				-- Home (AR43): Home's tray.
+				{ Name = "Home", Kind = "Mid", Glass = Vector2.new(62.8, 2), Icon = Vector2.new(96.2, 28.5), Side = 49.2, Pip = Vector2.new(128.6, 3), Tap = { 60.8, 0, 70.8, 62 } },
 				-- Its word (a long press) is Word: the director, 2026-11-19, "the map button that should be renamed to play or
 				-- something else and open FOB" (TR45). Its name stays the cell's, for its images and light.
 				{ Name = "Map", Word = "Play", Kind = "Wing", Glass = Vector2.new(133.6, 12), Icon = Vector2.new(162, 33.5), Side = 39.4, Pip = Vector2.new(189.4, 13), Tap = { 131.6, 10, 60.8, 52 } },
 			},
 			Pip = { Glow = 54.2, GlowT = 0.2, Rings = { 24.6, 18.7, 10.8 } },
 		},
+	},
+	-- Home's tray (AR43 in B, research's pick of 12:56; the dock's graphite, 13:36; UI.HomeTray): the dock's middle cell
+	-- opens it over all but the dock dimmed, a group a row, each tile its own screen (docs/ui.md). Every place is in
+	-- points from the tray's top left, measured on the smallest phone (568 × 320; build/handoff/UI/home/home.json), and
+	-- the tray keeps its size on every phone, centred, its foot Above over the dock's top. Its plate is the kit's panel in
+	-- the dock body's graphite, opaque; HomePoint stands on its foot at the middle, its Point on it. A heading is its
+	-- mark (Mark across, its middle at At) in the lavender over its group's word (its capitals' middle at Word); a tile
+	-- its images in Box, its icon Side across on Icon, its word on Word, in ink. Rule: a 1 point line between the rows
+	-- and Settings. Open: it grows from From of its size to 1 about the Home cell's top middle in Grow seconds, a Back
+	-- ease of strength Back, and fades in in Fade; it leaves the same way, eased in, over Leave. Step: a tile's screen
+	-- rises from RiseFrom points under over Rise once the tray has begun to leave (RiseAt), and its Back brings the tray
+	-- back BackAt after the screen begins to sink. Seeds from Modulo's cut, tuned live.
+	Home = {
+		Size = Vector2.new(536.8, 138),
+		Above = 12,
+		Plate = { Fill = { Color3.fromHex("#323845"), Color3.fromHex("#22262F") }, Edge = Color3.fromHex("#434A57") },
+		Point = Vector2.new(14, 2),
+		Headings = {
+			{ Group = "Inventory", Mark = "HomeMarkInventory", At = Vector2.new(65.4, 29), Side = 19.2, Word = Vector2.new(65.4, 49) },
+			{ Group = "Equipment", Mark = "PageForge", At = Vector2.new(53, 91), Side = 18, Word = Vector2.new(53, 111) },
+		},
+		-- Each tile's Page is the Voidkin screen's page it opens alone; a tile with no Page isn't built yet (Soon).
+		Tiles = {
+			{ Name = "Overview", Page = "Overview", Icon = "PageOverview", Box = { 108.4, 12, 86.4, 52 }, At = Vector2.new(151.6, 28), Word = Vector2.new(151.6, 48) },
+			{ Name = "Kit", Page = "Kit", Icon = "PageKit", Box = { 190.4, 12, 86.4, 52 }, At = Vector2.new(233.6, 28), Word = Vector2.new(233.6, 48) },
+			{ Name = "Inventory", Page = "Bag", Icon = "PageItems", Box = { 272.4, 12, 86.4, 52 }, At = Vector2.new(315.6, 28), Word = Vector2.new(315.6, 48) },
+			{ Name = "Stars", Page = "Stars", Icon = "PageStars", Box = { 354.4, 12, 86.4, 52 }, At = Vector2.new(397.6, 28), Word = Vector2.new(397.6, 48) },
+			{ Name = "Reinforce", Icon = "PageForge", Box = { 96, 74, 113.73, 52 }, At = Vector2.new(152.87, 90), Word = Vector2.new(152.87, 110) },
+			{ Name = "Jewels", Icon = "PageJewels", Box = { 205.33, 74, 113.73, 52 }, At = Vector2.new(262.2, 90), Word = Vector2.new(262.2, 110) },
+			{ Name = "War Emblems", Icon = "PageWarEmblems", Box = { 314.67, 74, 113.73, 52 }, At = Vector2.new(371.53, 90), Word = Vector2.new(371.53, 110) },
+			{ Name = "Settings", Icon = "HomeMarkSettings", Tall = true, Box = { 430, 12, 94.8, 114 }, At = Vector2.new(479.4, 59), Side = 27.73, Word = Vector2.new(475.4, 88) },
+		},
+		Side = 20, -- a row tile's icon
+		Words = 14,
+		Rule = { Middle = Vector2.new(435.4, 69), Long = 104, Rotation = 11.31, Colour = Color3.fromHex("#8A93A6"), T = 0.4 },
+		Colours = { Heading = Color3.fromHex("#F3EFE6"), Mark = Color3.fromHex("#DCCBFF"), Ink = Color3.fromHex("#14161B") },
+		Soon = 0.55, -- a tile not built yet: its icon and word this see-through (the builder's, for research's read)
+		Rest = { Fill = { Color3.fromHex("#E4D6FF"), Color3.fromHex("#B7A4EB") }, Edge = Color3.fromHex("#7C66CC"), EdgeT = 0.45, Glint = Color3.fromHex("#FAF7FF"), GlintT = 0.65 },
+		Pressed = { Fill = { Color3.fromHex("#A28EE0"), Color3.fromHex("#C3B1F2") }, Edge = Color3.fromHex("#DCCBFF"), Glow = Color3.fromHex("#DCCBFF"), GlowT = 0.6 },
+		-- The dim over the world and the HUD, edge to edge, all but the dock: Side points each side of the middle, from the
+		-- foot up to the dock's top (home.json).
+		Dim = { Colour = Color3.fromHex("#05090B"), Amount = 0.36, Seconds = 0.15, Side = 100 },
+		Open = { Grow = 0.22, From = 0.55, Back = 1.2, Fade = 0.1, Leave = 0.12 },
+		Step = { Lit = 0.06, Leave = 0.12, LeaveTo = 0.55, RiseAt = 0.08, Rise = 0.22, RiseFrom = 24, Cover = 0.08, Sink = 0.14, Uncover = 0.1, BackAt = 0.06 },
 	},
 	-- The dock of three icons (AR12, in AR30's make: its look is Make.Dock): a touch held LongPress seconds shows the
 	-- cell's word Rise points over its glass, and lifting it then doesn't press.
@@ -775,13 +822,9 @@ return {
 		} :: { [string]: { Colour: Color3, Second: Color3, Tag: UIKit.Image, Mark: UIKit.Image } },
 	},
 	-- TR17's Voidkin screen in grey (UI/VoidkinScreen): one Voidkin at a time, full screen, in the director's layout
-	-- (2026-11-15, TR17, "The director's layout"): a thin rail of round buttons down the far left, its own model live
+	-- (2026-11-15, TR17, "The director's layout"): its own model live
 	-- between two columns of gear slots, its two hands and Combat Power at its feet, the chosen page on the right, the
 	-- portraits along the foot.
-	--   Rail     the menu: Width its column's, authored (each button's tap area is that wide and Theme.Size.Tap high or
-	--            more); Dot and Chosen the drawn circles' widths, at rest and selected; Line the line's thickness;
-	--            Spread the most authored pixels between two buttons; Run seconds the light takes to run along the
-	--            line to a newly chosen one
 	--   Span     how wide the name's line and the feet's row stand over the stage, at most this share of its height
 	--            (no gear slots on the Overview: the director, 2026-11-17)
 	--   Figure   Top: authored pixels kept clear over its crown (it stands from there down to the feet's row); Fov: the
@@ -806,7 +849,6 @@ return {
 	--   Strip    a portrait's cell, authored
 	--   Panel    the page's panel: Share of the room's width, between Least and Most authored
 	Voidkin = {
-		Rail = { Width = 68 }, -- the rail's width; its look is Chrome's (AR29, B)
 		-- AR29, B, the seam (the director's pick, 2026-11-17, 14:04; Modulo's numbers, 14:15; research's call on seven rows,
 		-- 14:17): the rail and the bar, in authored points. Images: Modulo's 13 icons, white on alpha for the game to tint
 		-- (build/handoff/UI/voidkin/chrome/images/; their drawing 104 of 128 pixels, centred), and the two cut plates the
@@ -832,22 +874,11 @@ return {
 				ChannelFill = { Id = "rbxassetid://77652759335656", Pixels = Vector2.new(64, 64), Points = Vector2.new(16, 16), Cut = { 8, 8, 8, 8 }, Pad = 0 },
 				ChannelEdge = { Id = "rbxassetid://110614215738990", Pixels = Vector2.new(64, 64), Points = Vector2.new(16, 16), Cut = { 8, 8, 8, 8 }, Pad = 0 },
 			} :: { [string]: UIKit.Image },
+			-- The page rail's sizes (AR29, B), the rail retired with Home's tray (AR43, 2026-11-19): Icon and Drawn size the
+			-- band's icons, and Tab is the kit's tab (Kit.Button).
 			Rail = {
-				-- A row, and the least it closes up to where every page must be in sight: 30.6 points on the smallest phone,
-				-- whose room is 248, so its seven stand whole with War Emblems' two lines chosen (research's call, 2026-11-17,
-				-- 20:06): Rules.Hud.RailRows.
-				Row = 52,
-				Least = 36,
 				Icon = 35, -- an icon's image, square: its drawing is 28 across, 24 points on the smallest phone
 				Drawn = 28,
-				Aside = 3.4, -- an icon's middle, left of the rail's middle
-				-- An idle icon's tint: research's seed, the seam's soft text (about 9:1), tuned in play so the chosen page is
-				-- the brightest thing on the rail, never under 4.5:1 on the panel.
-				Idle = UIKit.Palettes.Seam.Soft :: Color3,
-				-- The line down the rail's right edge: its middle In from it, its strength Floor + (1 - Floor) e^-(dy/Spread)^2
-				-- from the chosen row's middle, with a glow Glow wide each side at GlowAlpha of that.
-				Line = { Wide = 1, In = 0.85, Floor = 0.16, Spread = 60, Glow = 2.6, GlowAlpha = 0.28 },
-				Tick = { Long = 5, Tall = 1, Alpha = 0.5 }, -- at each idle row's middle, running left from the line
 				-- The chosen tab: its row less Inset at top and foot, from the rail's left + Inset to the line. Its fill the
 				-- panel's at Fill, washed with Light at Base + Rise t^Power from its left (t 0) to the line (t 1); its edge
 				-- Light at Edge, its glow at Glow; where it meets the line, the line Meet.Wide in full Light with its glow.

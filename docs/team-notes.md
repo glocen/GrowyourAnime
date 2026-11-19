@@ -4,10 +4,11 @@
 
 Each teammate rewrites its own row: two to five lines. Open asks sit under "Waiting on the director".
 
-**Quaestor (research).** 2026-11-19, 16:55, on Opus 5.5. The combat review is published: `docs/research/combat-math.md`, with five studies, an independent check, and the changes ready to diff in `build/scratch/quaestor/integrate/out/`. Its six decisions wait on the director (below, item 10). Verdicts today: AR38 competent (the lit buy press closes on Faber's capture), AR43's four screens in B competent, AR45's foe card, the emblems and jewels.
-- **Next, mine (20:58):** the loot refit is done: TR48 part 2 (the Epic and Legendary pace, for Faber), and balance.md's Tower and emblem lines restated. Next: AR43's Equipment and Settings pass on Faber's phone captures, and Modulo's two polish items. Passed tonight: AR42's install, AR46 with AR47's masks, AR47 closed.
-- **Verdicts owed:** TR43 and TR44 in motion; AR40's install; AR30, AR37, TR10, AR28's Stage I, TR34, AR23, TR29.
-- **With the director:** the combat review's six decisions; the Voidkin screen and bag in B; the store's design; the sound pick on TR42's panel.
+**Quaestor (research).** 2026-11-20, 00:14, on Opus 5.5. Stopped at the director's wrap-up. Closed tonight: TR49, the combat review built (it closes on the Stage 1 playtest, item 9); TR50, one mission per Arc (the director, 23:19); AR40, AR43's take 2, AR44's digits and AR45's foe card, reopened and closed on the director's catch. Picked: AR44's critical shine C, AR49's Home panel C (cut passed with two build conditions).
+- **Next, mine:** AR48's second look on Burn and Shock; AR49's install pass from Faber's capture; AR44's shine in the game.
+- **Queued for Modulo:** after AR48, the picker's violet ground and the lantern tile's ground (TR50, the older line).
+- **Verdicts owed:** TR43, TR44, AR30, AR37, TR10, AR28's Stage I, TR34, AR23, TR29.
+- **With the director:** opening the Festival place (item 9); the store's design; the sound pick on TR42's panel.
 
 **Faber (builder).** 2026-11-19, 23:58, on Opus 5.5. Done today:
 - TR50, one mission per Arc: Play opens the Arc panel, the stretches run on to one card, checkpoints in the save (TR50, "Built in the game"). Tested in the main place 35/0, 39/0, 6/0, and 28,834 logic cases; stills in `build/captures/tr50/` for research.
@@ -15,7 +16,7 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **Next:** AR44, the critical's shine from Modulo's cut (C), then TR10's stills, then AR48's states once Modulo's sheet is picked.
 - **Open, tests:** NOT VERIFIED (the Festival place, item 9): TR50's run cases, the Festival role's suite, TR48's keeper in a real run, TR49's Stage 1 playtest, TR10's marker in its world. TintMask on a phone. TR44's phone take waits for the director's go.
 
-**Modulo (assets).** 2026-11-20, 00:14, on Opus 5.5. Voidkin work parked until before launch (the director's word, 11:10). Done: AR49's C cut for Faber, with research's four must-fixes (`build/handoff/UI/home_cards/`, e30f7bb), and AR48's block-in of the four state cues (34c9cf1, Sap reworked on the content check), both content check PASS. Both wait on research: AR49's second look, AR48's pick.
+**Modulo (assets).** 2026-11-20, 00:14, on Opus 5.5. Voidkin work parked until before launch (the director's word, 11:10). Done: AR49's C cut for Faber, with research's four must-fixes (`build/handoff/UI/home_cards/`, e30f7bb), and AR48's block-in of the four state cues (34c9cf1, Sap reworked on the content check), both content check PASS. Stopped on the director's wrap-up (00:15). Next session: research's AR48 verdict in its entry, then AR49's second look when it comes.
 - **In the game:** AR46's Hard looks with AR47's masks, on TintMask (a856f06), passed at competent (19:18). AR42's tiles in Seam, passed at competent (f9f3636).
 - **For Faber:** AR49, Home's panel in C (`home_cards.json`): 12 images to upload under the group, a ViewportFrame of the lead between `HomeVoidkinRimTop` and `HomeVoidkinFrame`, the words as TextLabels; after research's second look. AR44, the critical's shine (`build/handoff/UI/hud/critical_shine.json`). AR43, upload the five `Jewel<Colour>3.png` and swap their ids, if not done. TR10: take `MarkerElite.png` as it stands at the marker's install.
 - **For Faber, AR40's install:** the atlas pair, and the Strip's eight changed meshes with the manifest, on top of the 40 base meshes, the paving and C's keys already listed in AR40. The atlas never goes alone. AR38's Shop meshes go with AR38.

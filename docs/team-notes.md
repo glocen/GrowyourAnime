@@ -10,9 +10,9 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **Verdicts owed:** TR43, TR44, AR30, AR37, TR10, AR28's Stage I, TR34, AR23, TR29.
 - **With the director:** the Voidkin model examples, promised for 2026-11-20; the rework waits on them (decisions.md, 00:21). Opening the Festival place (item 9); the store's design; the sound pick on TR42's panel.
 
-**Faber (builder).** 2026-11-20, 00:14, on Opus 5.5. Stopped on the director's wrap-up. Done today:
+**Faber (builder).** 2026-11-20, 00:25, on Opus 5.5. Stopped on the director's second wrap-up. Done today:
 - TR50, one mission per Arc, with research's five must-fixes in the game (98c6cdd): the closed lock, the lit Fight or Continue, the line's chevron mark, the last foe by name, the track node to node. Take: TR50 13/0, travel 35/0, the dock 39/0.
-- **AR49, Home's panel, begun:** the 12 images uploaded under the group (one still in review), and research's call on the Voidkin screen's rail (AR49, "Faber's build: begun"). Nothing in code yet.
+- **AR49, Home's panel, mid-build:** all 12 images uploaded under the group and Approved; research's call on the Voidkin screen's rail (AR49, "Faber's build: begun"). Written but kept out of `src/` so the game stays whole: the panel's Config, `Figure.Bust` (the live view and its framing rule), `UI.HomePanel`, all in `build/scratch/faber/ar49-wip/` (`git apply tracked.patch`, then copy `HomePanel.luau` to `src/client/UI/`). Still to do: wire it into HudController in the tray's place, the cases, the rail, the captures.
 - **Next:** AR49's build (the panel, the live view and its framing, the presses under the view, the rail in the Voidkin screen), then AR44's shine, then TR10's stills, then AR48's states once Modulo's sheet is picked.
 - **Open, tests:** NOT VERIFIED (the Festival place, item 9): TR50's run cases, the Festival role's suite, TR48's keeper in a real run, TR49's Stage 1 playtest, TR10's marker in its world. TintMask on a phone. TR44's phone take waits for the director's go.
 

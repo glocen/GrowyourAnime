@@ -13443,6 +13443,37 @@ From home_tray.png and home_step.png at the smallest phone, before Modulo cuts t
   - **For research, not content:** at 64 px Serpent Coil leans toward an S and Tidebreak has a faint "2" echo. Both read as their thing at full size and in the 44 point cell.
 - **For Faber:** upload the twelve under the group. The set names and image keys go in `src/shared/Definitions/` as research's entry says.
 
+### The 25 jewels, five colours by five levels, cut for Faber (Modulo, 2026-11-19, 14:04 to 14:11 by the clock)
+
+- **What:** the director's jewels (`docs/design.md`, "Jewels"). Each colour is its Basic Attribute: red Strength, green Agility, blue Intelligence, yellow Endurance, purple Spirit. The shape grows with the level.
+  - **The pictures:** each is a cut stone face up, built from flat facets in code and toned on AR31's faceted renderer (`tools/blender/jewel_icons.py`). There is no setting, and they stay apart from the shards' raw crystals.
+  - **The levels:**
+    1. a small round brilliant;
+    2. a small long hexagon, step cut;
+    3. a bigger long octagon with pointed ends, three steps;
+    4. an equilateral triangle;
+    5. a square with clipped corners, three steps.
+  - **They replace AR31's jewels by type** (Critical Damage, Critical Immunity, Lifesteal).
+- **The director's notes on the first pass (14:07):** "those jewel have good shape lvl 1 need to be even smaller but they need to look more shiny and mature", then "the triangle need to be straight and perfect draw". Made in the same sitting:
+  - **Level 1:** smaller, from 0.46 of its square to 0.34.
+  - **Mature:** deep, saturated body tones, most facets in the rich colour and only a few lit toward white.
+  - **Shiny:** a line of light along every facet's edge, two reflection streaks across the table, and one restrained four-ray glint on the upper left.
+  - **The triangle:** equilateral, with straight sides and sharp corners, point up. It is seen square on, its depth set against the view's tilt, so it is true on the screen, with three concentric steps.
+- **Where:** `build/handoff/UI/jewels/`.
+  - `images/Jewel<Colour><Level>.png`: 256 px, transparent, never tinted.
+  - `jewels.json`: each colour's attribute, its words colour and its five images.
+  - `jewels_cut.png`: each jewel close, at 38 points and at 64 px, plus a bag row beside an item.
+- **Content check:** the first pass passed at about 14:07, and the redraw passed at 14:11.
+  - **What it found:** every red stone reads as a cut ruby at every size, the level 1 grain included, with nothing drop-like or wet. The triangle is a plain stepped stone, with no sign or logo in it. The glint reads as a sparkle. The jewels stay apart from the shards.
+  - **Its conditions:**
+    - Upload only the 25 `Jewel<Colour><Level>.png`. The sheet and its crops stay internal.
+    - Log each image's id in `docs/asset-log.md` at the upload.
+    - Any in-world use of the red jewels needs its own check first: a drop from a foe, grains on the ground, a burst near a hit.
+- **For Faber:**
+  - Upload the 25 under the group, untinted.
+  - `jewels.json` holds each colour's attribute and the colour for its words.
+  - AR31's jewels by type are retired.
+
 ## AR44. The damage numbers' rework: the plain, received and healing numbers, and the critical closer to the reference (Faber's takes in the game, Modulo's stroke, research's pick)
 
 Research, 2026-11-19, 11:17 by the clock. The director, by 11:16, to research: "The damages/healing text need a small rework it doesnt look as i wanted it to be, same for the crit text it need to be more close to the reference i've shown". The same morning, relayed by Modulo at about 11:15: "like the blackstroke around the text for those are way to thick". Research reads "those" as the damage numbers, since the two came together. The rule stays `docs/ui.md`, "Damage numbers" (the director, 2026-11-12); this changes the look only. The reference is `docs/research/hud-reference.md`, its three arena screenshots, held internal.

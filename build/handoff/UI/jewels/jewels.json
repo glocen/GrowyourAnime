@@ -1,0 +1,73 @@
+{
+  "what": "AR43, Jewels: the 25 pictures, five colours (each its Basic Attribute) by five levels (each its cut), drawn in code by tools/blender/jewel_icons.py on AR31's faceted renderer; no image input",
+  "use": "laid as a gear picture is, its square 0.94 of the cell, centred, never tinted; a jewel's cell keeps the plain edge, no rarity's bar, rim or light. The level's number and the stack's count are the bag's",
+  "pixels": [
+    256,
+    256
+  ],
+  "levels": {
+    "1": "a small round grain",
+    "2": "a tiny long crystal",
+    "3": "a bigger long crystal",
+    "4": "a triangle",
+    "5": "a square"
+  },
+  "jewels": {
+    "Red": {
+      "attribute": "Strength",
+      "words": "#FF6B7A",
+      "images": [
+        "images/JewelRed1.png",
+        "images/JewelRed2.png",
+        "images/JewelRed3.png",
+        "images/JewelRed4.png",
+        "images/JewelRed5.png"
+      ]
+    },
+    "Green": {
+      "attribute": "Agility",
+      "words": "#5FE39A",
+      "images": [
+        "images/JewelGreen1.png",
+        "images/JewelGreen2.png",
+        "images/JewelGreen3.png",
+        "images/JewelGreen4.png",
+        "images/JewelGreen5.png"
+      ]
+    },
+    "Blue": {
+      "attribute": "Intelligence",
+      "words": "#6FA8FF",
+      "images": [
+        "images/JewelBlue1.png",
+        "images/JewelBlue2.png",
+        "images/JewelBlue3.png",
+        "images/JewelBlue4.png",
+        "images/JewelBlue5.png"
+      ]
+    },
+    "Yellow": {
+      "attribute": "Endurance",
+      "words": "#FFCF4D",
+      "images": [
+        "images/JewelYellow1.png",
+        "images/JewelYellow2.png",
+        "images/JewelYellow3.png",
+        "images/JewelYellow4.png",
+        "images/JewelYellow5.png"
+      ]
+    },
+    "Purple": {
+      "attribute": "Spirit",
+      "words": "#B98AFF",
+      "images": [
+        "images/JewelPurple1.png",
+        "images/JewelPurple2.png",
+        "images/JewelPurple3.png",
+        "images/JewelPurple4.png",
+        "images/JewelPurple5.png"
+      ]
+    }
+  },
+  "replaces": "AR31's jewels by type (Critical Damage, Critical Immunity, Lifesteal), retired by the director's five colours (2026-11-19, 03:10)"
+}

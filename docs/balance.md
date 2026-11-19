@@ -36,6 +36,7 @@ Shares of a full launch build's stat points, at level 60:
 | Jewels | 7 | elites, keepers, the Tower |
 | Research | 3 | Research Points |
 
+- **What each ground makes available** is `tools/balance/seeds.json`, "available". Emblems at Lantern Row are 0.10 of full, down from 0.15 (research, 2026-11-19, 20:55): one Uncommon emblem a socket gives 6 to 12%, so gear carries the early power. The tables below come from before that change, which moves a level-10 build by under 1%.
 - **Rarity** multiplies a Voidkin's own base only, from 1.00 for a Common to 1.50 for a Mythical. Since the base is about a third of a build, a Mythical at a full build has about 19% more of each stat than a Common at a full build.
 - **Skill points** come later, inside a skill tree (`docs/design.md`, "Skill points"). None are in the game now.
 - **Class** sets a Voidkin's own points by its shape and its Main ("Basic Attributes", below). It doesn't touch gear, but for the weapon pair each class holds.
@@ -140,6 +141,7 @@ Seeds for how long each ground takes a player who keeps a 70% build ("on budget"
 | 45 | 73 | 78 | 82 | 2.0 | 69 |
 | 60 | 101 | 104 | 109 | 2.5 | 99 |
 
+- **Restated for launch** (research, 2026-11-19, 20:55; MODEL, `build/scratch/quaestor/loot/`, under the combat review's patch and TR48's Lift): the table above is TR29's, before the refit. With the Lift's excess scaled by 0.3, an expected lead climbs 10 floors at level 10, 23 at 16 and 31 at 20, and the health it carries caps it at about 10 to 12 hard floors. The 17 at level 10 no longer holds.
 - **Power shows as floors:** at level 30 a full build climbs 14 floors past a weak one.
 - **A run at launch** (levels 10 to 15) lasts about a minute, nearly all of it hard floors. Whether that length feels good is judged in play.
 - **Fast floors** take 12 s at level 15. Past level 25 the stretch passes 30 s (51 s at 30, 129 s at 60), against the design's "takes seconds", and at 60 only 5 hard floors follow it. It isn't a launch problem; it's refit when the grounds above Lantern Row open.
@@ -159,7 +161,7 @@ Seeds for how long each ground takes a player who keeps a 70% build ("on budget"
 - **SIMULATED** on the fit, a player alone on budget (the median first; 10% to 90% of players): Uncommon 0.3 h; Rare 3.5 h (1.5 to 6.2); Epic 12.5 h (10.3 to 16.4); Legendary 39.8 h (35.7 to 47.4). Eight players on a server are slower by up to 1.3 h, since they share the elite.
 - **About 43 chests an hour,** 18 of them from elites, about 2,450 over the climb to level 60: bulk opening and auto-salvage are what make that many pleasant.
 - **Salvage** pays at most 10% of a kill's Credits on Lantern Row and 16% on Mirror Pavilion, so fighting stays the income and the base's prices hold.
-- **At launch,** with Lantern Row alone, its rows give Common and Uncommon, and a Rare only at the keeper's first win. Rare and better come from the Tower, whose own chest row is fitted to the same windows ("The Tower").
+- **At launch,** with Lantern Row alone, Hard's chests read Drum Court's rows (TR48), and its elites and keepers carry their own Epic and Legendary weights (TR48, part 2). MODEL: Rare about 2 h, Epic about 4.3 h, Legendary about 18 h. The Tower's row is TR48's.
 
 ## What the simulation showed (2026-11-11)
 

@@ -31,7 +31,7 @@
   "choosable": { "singleStatFactor": 3, "defFactor": 2.3, "elemFactor": 0.8 },
 
   "available": [
-    { "gear": "Uncommon",  "forge": 5,  "emblems": 0.15, "jewels": 0.00, "research": 0.10, "stars": 1 },
+    { "gear": "Uncommon",  "forge": 5,  "emblems": 0.10, "jewels": 0.00, "research": 0.10, "stars": 1 },
     { "gear": "Rare",      "forge": 10, "emblems": 0.30, "jewels": 0.10, "research": 0.25, "stars": 2 },
     { "gear": "Rare",      "forge": 15, "emblems": 0.50, "jewels": 0.30, "research": 0.45, "stars": 2 },
     { "gear": "Epic",      "forge": 20, "emblems": 0.70, "jewels": 0.50, "research": 0.65, "stars": 3 },

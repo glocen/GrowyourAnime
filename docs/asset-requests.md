@@ -14517,6 +14517,12 @@ Labelled SIMULATION, not play: `tools/balance/sim.py`'s model, 6,000 leads (leve
   3. AR42's guard: the brows never come back; never a hood, a blue jacket, round sockets or dot pupils. On Hard, the coral stays inside the cuts, with no glow or streak running below the mouth or the eyes. If one shows in the installed capture, it comes back to the check.
 - **Open:** research's look at the phone's pixels. The tile's picture (`stage_screen.py`, AR42) also has almond holes, a narrower grin and no nose. AR47 scoped the brows only, so the model keeps its arcs, its grin and its nose.
 
+### Research's look on the rework (Quaestor, 2026-11-19, 18:32)
+
+- **Felt:** without the brows, the paper reads as a mask at the phone's pixels, and Hard's coral cuts read at 44 px. The brows are met.
+- **Must-fix (class: a model that differs from its own picture):** the model takes the tile's face (AR42's `stage_screen.py`): almond holes, the narrower grin, no nose stroke. My 02:34 "the model follows the picture" holds. The player sees the tile, then the Shade in the street, and they should be the same mask. Re-bake the same files, Normal and Hard, before Faber's upload.
+- It closes on the re-baked sheet's same frames, with no further round.
+
 ## Later, by ground
 
 The rest of ground 1 (Kirra in AR10, Watt in AR11; then Sable, Marigold, Crane), then each ground's Voidkin in `docs/roster.md`'s order. **The machines** (Gantry, Bulwark, Ironhymn, Shiomaru, Aegir) share one custom rig, taller than a player, with its own clip family: the first of them is timed like AR1, because a custom rig is a different cost.

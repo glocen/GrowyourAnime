@@ -13536,6 +13536,13 @@ Judged on what changed, from round-moments, critical-pop and its frames at the p
 - **Must-fix, the critical's landing** (serves impact; the lever is the punch scale): yes to the landing pop, on the critical only. It is born at 1.3 and settles to 1 in 0.12 s, the same swell as `Combat.Numbers.Pop`, with the splash scaling with it. Plain numbers keep landing whole, so the critical's pop stays its own.
 - **Not this piece:** the plain digits' wider tracking ("9 4 9") reads but is loose; it goes to `docs/polish-later.md`.
 
+### The director's word, and research's verdict on the cast (Quaestor, 2026-11-19, 13:35)
+
+- **The director,** about 13:24, via Faber, on the critical and AR45's card: "that art isnt composited i mean look", then "foe new card and crit number". Faber's take answers it: Weight 2.4, a hard #211306 cast at (2, 3) (`Config.Hud.Numbers.Critical.Cast`), the splash tucked behind (Height 1.25, Width 0.55). Comparison: `build/captures/ar44/critical-cast-take.png`.
+- **Felt:** the digits now sit on the splash as one stamped piece, heavy and lit, where before they floated over a sticker.
+- **Tier:** competent. The take stays as the default.
+- **Must-fix, the splash is painted, not cut** (serves composition; Modulo's): `CritSweep` becomes a brushed smear in place of the flat fill. It has a soft, ragged tail to the upper right and a bristle-streaked body. Its colour is lightest in the core (about #E8873A) and darkens to #CC661F along the lower edge, and never darker (rule 4's limit of 12:47). Faber's Tint and Transparency stay; the image changes. The content check runs before upload.
+
 ## AR45. The foes' cards with their difficulty skulls, and CR's gold tab (Modulo, for research's pick, then Faber)
 
 Research, 2026-11-19, 11:30 by the clock. The director's word of 11:30 (`docs/decisions.md`, the row): the enemy and elite cards redrawn to match the new UI, a difficulty skull by the foe's CR against the lead, the level's text in its skull's colour, and CR's look replaced. The rules are `docs/ui.md`, "The HUD, in the world": the target's card, "Numbers, short or whole" and "CR's look".
@@ -13667,6 +13674,14 @@ Labelled SIMULATION, not play: `tools/balance/sim.py`'s model, 6,000 leads (leve
   - **Yellow:** Elites above it, which cost 5 to 15% of its health alone.
   - **Red:** a fifth of its health or more alone, so its pack, or the next pull, can beat the lead.
 - **What it can't show:** the game's real lead after the attribute rework, and packs. Faber's capture of real ratios on Lantern Row checks the cuts, and they live in `Config.Hud` to be tuned there.
+
+### Research's pick for the foe card's material (Quaestor, 2026-11-19, 13:35)
+
+- **The finding** (the director's "not composited"): in the fit, the teal slab with its gold rim is a different material from the indigo lead card beside it. Two systems sit on one HUD.
+- **The pick: the lead card's own material, mirrored.** The foe card takes the same indigo body, bevel and bar frame as the lead card. It leans the other way, with its plate facing the lead's, so the top of the screen reads as one pair: you against it.
+  - The skull, the level's colour, the red bar and the elite's brass shards say which is the foe.
+- **Not the float:** the name and bar over open sky would need a heavy stroke on bright days, and would leave the lead card the only slab.
+- **What changes:** C's teal and the #E2CFA4 hairline leave the foe card. The panels (Home, the screens) keep C's teal. Modulo recuts `CardSlantFill` and `CardSlantEdge` in the lead card's colours, and the content check reads the recut.
 
 ## Later, by ground
 

@@ -13275,6 +13275,7 @@ Research, 2026-11-19, 11:17 by the clock. The director, by 11:16, to research: "
 - **Research's:** the verdict from the phone captures, zoomed, against the three screenshots: one take for the plain numbers, then the stroke.
 - **Waits:** the grey word's look (Dodge, Block, Absorb), unchanged; the numbers' motion (rise, pop, merge), unchanged; any sound.
 - **Order:** Faber after TR46, Modulo after AR43's strips. A small piece: Faber's takes about 1 h, Modulo's stroke about 1 h.
+- **The director, about 11:46** (the register's row): the comet below is rejected, "horrendous". The critical takes a new idea, not a patch: an orange splash behind it, and its digits yellow with a slight chromatic sheen seen up close. The plain numbers' takes are unchanged. Research's spec asked for the comet's round head and tapered tail, so the miss is the spec's as much as the drawing's.
 
 ### Modulo's stroke: `CritSweep`, a painted brushstroke (Modulo, 2026-11-19, from AR43's close at 11:18 to 11:31 by the clock)
 

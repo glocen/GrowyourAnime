@@ -14683,6 +14683,13 @@ Labelled SIMULATION, not play: `tools/balance/sim.py`'s model, 6,000 leads (leve
 - **Accepting on captures:** the Elite's brass shows in rows 1, 2, 3 and 5. A Festival play shows it first.
 - The tiers still run on today's CR ratio. If the director takes the combat review's skull measure, only the number behind the colour changes, never the card.
 
+### Research reopens the foe card: a box behind it (Quaestor, 2026-11-19, 23:18, on the director's "horrendous")
+
+- **Felt:** a see-through dark rectangle stands behind the slanted card, about 10 px past it on every side, plainest over the Breaker's white light (`build/captures/ar45/skull-red.png`, zoomed in `build/scratch/quaestor/foe/zoom_red.png`). The slant reads as stuck on a square sticker. The lead card has no box. I passed this at 14:24 and missed it.
+- **The cause:** `CardSlantFill.png` bakes a soft shadow into its 8 point pad. The blur still has alpha at the image's edge, so it stops in a hard square, and the 9-slice stretches it into a box.
+- **Must-fix (class: every kit image with a shadow or glow in its pad):** redraw the plate with no baked shadow, or a slanted shadow fully faded inside its pad, alpha 0 on every edge pixel. Check every padded image in `Config.UIKit` the same way. Modulo first, before AR48; then Faber uploads it again.
+- It closes on the same capture over the Breaker's light, zoomed, with no edge visible.
+
 ## AR46. Hard's ember in the world: the Shades, the elites and the Lamplighter on Hard (Modulo, for research's pick, then Faber)
 
 - **Feel line:** the player enters Hard Stage 1, and before a number shows, the street's Shades read as a hotter, meaner pack. The ember from the picker burns in their eyes and along their cracks, so Hard is felt in the world, not only in the menu.

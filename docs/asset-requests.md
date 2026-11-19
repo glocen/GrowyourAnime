@@ -14252,6 +14252,24 @@ Judged on what changed, from round-moments, critical-pop and its frames at the p
   - It reads as orange paint and speed, never blood or a stain. It has no drops, drips or spatter, and its streaks run parallel, so it doesn't read as a flame.
 - **For Faber:** upload `CritSweep` under the group and swap its id in `Config.UIKit`, then set the Sweep's Tint to #FFFFFF in the same change.
 
+### The plain digits' tracking, from polish-later (Modulo, 2026-11-19, 20:37 to 20:48 by the clock)
+
+Research pulled it forward by message (after 20:34), as tier 1: judge it at full speed, then set the plain style's gap so a three-digit number reads as one word.
+- **At full speed, it's loose.** Judged on Faber's clip (`build/captures/ar44/numbers-motion.mkv`) at the capture's own pixels, every 0.05 s through a round. As the flurry counts up (312, 457, 588, 764, 915, 949), every frame shows three separate digits. The heal's "+8 6" reads the same way.
+- **Why 0.45 is loose:** `Gap` counts in Oswald's digit, 0.36 of its size. That digit is the face's advance, so it already holds the face's side room.
+  - Today's pad of 4 authored pixels lands on top of that room. Measured on the settled 949, the digits are 7 px and the gaps 7 px: a whole digit, where the reference reads about half a digit (the table above).
+  - The critical's 0.25 of Builder Sans shows about a third.
+- **The value, for Faber:** `Gap = 0.12` in `Config.Hud.Numbers.Styles`' Dealt, Element, Received and Heal. The critical and the word are unchanged.
+  - The pad becomes 1 authored pixel at Size 1 and 1.2 (it is 4 and 5 today), and 2 at the top rungs (36 and 43 px). A "1" or a sign takes 1, and a comma 0.
+  - In the clip that's 949's gaps 7 to 4 px (36 to 30 px wide), the 57's 7 to 3, and the +86's 7 and 8 to 4 and 4: about half a digit, the reference's spacing. It's still airier than the critical, as the feel line's "widely spaced" asks.
+  - The swell and the rungs keep the proportions, since the pad grows with the size.
+- **The strip:** `build/scratch/modulo/ar44_track/numbers_track_look.png`, by `tools/blender/numbers_track_look.py`.
+  - Four moments, today above Gap 0.12, at the capture's pixels: the count at 691, then 949 with the 57, the +86 and the critical. Below them, one frame at three times, at Gaps 0.45, 0.25, 0.12 and 0.
+  - It re-lays the game's own pixels: each gap is narrowed from its middle by the pad's cut times the capture's 1.08 pixels per authored pixel and the number's swell. It is not a capture of the change.
+  - The smallest phone draws 1.28 pixels per authored pixel, so its numbers are 18% larger in the same proportions.
+- **Limits:** a re-lay shears whatever stands behind a number within its band by up to 5 px (the spear by the 949 shows it). The count's first moments stood on Rook's cream cuff, so they're left out. Faber's capture of the change in the game is the proof.
+- **Nothing to upload:** it's one Config number, so no content check.
+
 ## AR45. The foes' cards with their difficulty skulls, and CR's gold tab (Modulo, for research's pick, then Faber)
 
 Research, 2026-11-19, 11:30 by the clock. The director's word of 11:30 (`docs/decisions.md`, the row): the enemy and elite cards redrawn to match the new UI, a difficulty skull by the foe's CR against the lead, the level's text in its skull's colour, and CR's look replaced. The rules are `docs/ui.md`, "The HUD, in the world": the target's card, "Numbers, short or whole" and "CR's look".

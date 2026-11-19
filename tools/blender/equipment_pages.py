@@ -9,9 +9,11 @@ colour, each giving flat points of its colour's Basic Attribute; three of one le
 2026-11-17). An item holds one emblem on Common, two on Uncommon, three on Rare, four from Epic; each emblem carries
 one stat; putting one in or taking it out is free (docs/design.md, "Jewels", "War Emblems").
 
-Reinforce's frame, kept: the band (Roblox's buttons, Back, the screen's name, the Credits and kWh); only the worn gear
-down the left, a row each, the chosen one lit and pointing at the work; the chosen item's work on the right. In AR40's
-C, as every screen Home opens. Each list row shows what its item holds, so a gap is seen before a row is tapped:
+Equipment's frame: the band (Roblox's buttons, Back to Home, "Equipment", the Credits and kWh); Equipment's rail of
+its three screens down the left, the open one larger and lit (the director, 14:59); the worn gear right of it, a row
+each, the chosen one lit and pointing at the work; the chosen item's work on the right. In Seam's lit glass
+(seam_kit.py; the director, 14:56, research's B, 15:04), as every screen Home opens; Settings too, with no rail. Each
+list row shows what its item holds, so a gap is seen before a row is tapped:
     Jewels        the five sockets in a row, each ringed in its colour, its points under it; under them the bag's
                   jewels of the chosen socket's colour, levels 1 to 5 with their counts; one line of what the chosen
                   one does, and the presses: Put in (Replace when the socket holds one, Take out when the socket is
@@ -23,8 +25,9 @@ out are free and Combine's cost, if any, is research's.
 
     blender -b --factory-startup --python tools/blender/equipment_pages.py -- <abs out>
 
-Writes equipment_jewels.png and equipment_emblems.png (each screen's states) and equipment_close.png (one state of
-each at the phone's own pixels, three to a point, to read the small parts).
+Writes home_settings.png, equipment_jewels.png, equipment_emblems.png and equipment_reinforce.png (each screen's
+states) and equipment_close.png (one state of two at the phone's own pixels, three to a point, to read the small
+parts); "settings" after the out folder writes Settings' sheet alone, "cut" the cut for Faber.
 """
 
 import json
@@ -38,12 +41,13 @@ import blcommon as bl  # noqa: E402
 import rook_sheet as rs  # noqa: E402
 import ui_sheet as ui  # noqa: E402
 import upgrade_pages as up  # noqa: E402
+import seam_kit as sk  # noqa: E402
 
-P = dict(up.C_SYS)
-up.P = P                                       # the kit draws in C, as every screen Home opens (research, 12:56)
+P = up.P
+sk.wear("B")                                   # Seam's lit glass, as every screen Home opens (research's B, 15:04)
 W, H, SMALL, TITLE = up.W, up.H, up.SMALL, up.TITLE
 TOP, FOOT = 60, up.FOOT                        # a screen's page under its band, as Reinforce's (home_panel.screen)
-LIST, WORK = (8, 300), (306, 560)
+LIST, WORK = sk.LIST, (306, 560)              # the list right of Equipment's rail
 JEWELS = json.loads((up.UI / "jewels" / "jewels.json").read_text())
 EMBLEMS = {e["image"].removeprefix("Emblem"): e for e in json.loads((up.UI / "emblems" / "emblems.json").read_text())["emblems"]}
 JEWEL_DIR, EMBLEM_DIR = up.UI / "jewels", up.UI / "emblems" / "images"
@@ -63,10 +67,12 @@ def emblem_pic(key):
 
 # --- the frame ------------------------------------------------------------------------------------------------------
 
-def frame(t, name):
-    up.box(t, 0, 0, W, H, P["backing"], cut=0)
+def frame(t, page):
+    """The ground, the band titled Equipment, and the rail with `page` open."""
+    sk.backdrop(t)
     up.band(t, "Equipment")
-    t.text(232, 20, TITLE, name, P["text"], bold=0.35)
+    t.text(232, 20, TITLE, "Equipment", P["text"], bold=0.35)
+    sk.rail(t, page)
 
 
 def gear_rows(t, chosen, holds):
@@ -96,7 +102,7 @@ def well(t, x, y, s, rim=None, lit=False, rim_alpha=0.85):
     d = t.poly(ui.cut_box(x, y, x + s, y + s, s * 0.14, 0, s * 0.14, 0))
     if lit:
         t.glow(d, 6.0, P["light"], 0.55)
-    t.paint(d, t.ramp("#0B1418", "#08100F", (t.y - y) / s))
+    t.paint(d, t.ramp(*sk.SOCKET_DARK, (t.y - y) / s))
     if rim:
         t.paint(d, rim, 0.08 + 0.18 * np.exp(-(((t.x - x - s / 2) / (s * 0.5)) ** 2 + ((t.y - y - s * 0.6) / (s * 0.5)) ** 2)))
     t.line(d, 2.2 if lit else 1.4, P["light"] if lit else (rim or P["edge"]), 1.0 if lit else rim_alpha)
@@ -371,23 +377,66 @@ EMBLEM_NOTES = [
 
 
 # --- Reinforce, its own screen ----------------------------------------------------------------------------------------
-# upgrade_pages.py's Reinforce (research's verdicts, 03:44 and 12:56), moved under Home's band as home_panel.screen()
-# does: Back and no tabs, in C as every screen Home opens. Its list and work are the kit's own functions.
+# upgrade_pages.py's Reinforce (research's verdicts, 03:44 and 12:56), under Home's band with Equipment's rail (the
+# director, 14:59), in Seam's lit glass. Its list and work are the kit's own functions, worn by seam_kit.
 
 up.TOP = TOP                                       # the kit's page top, under the band rather than the Menu's pages
 REINFORCE_STATES = [(words, dict(st, screen="Reinforce")) for words, st in up.STATES]
 REINFORCE_NOTES = [
-    "Reinforce, its own screen from Home's Equipment row (research, 12:56): the band (Back returns to Home), the worn",
-    "gear down the left, the chosen row lit and pointing at the work; the gear in its ring, now and after on either",
+    "Reinforce, from Home's Equipment row: the band (Back returns to Home), Equipment's rail with Reinforce open, the",
+    "worn gear, the chosen row lit and pointing at the work; the gear in its ring, now and after on either",
     "side, the stone under the ring, the odds before every press (adding to 100), what's held, the cost and one press,",
-    "lit only when it can go. In AR40's C. Rates are research's seeds; every other number is a stand-in.",
+    "lit only when it can go. In Seam's lit glass. Rates are research's seeds; every other number is a stand-in.",
 ]
 
 
 # --- the sheets -----------------------------------------------------------------------------------------------------
 
+# --- Settings, Home's other screen ----------------------------------------------------------------------------------
+# Plain (the director's three sliders), in the same lit glass as Equipment's (research's scope of 14:56), with no rail:
+# it's a group of one. One card in the middle, a row each.
+
+SETTINGS = (88, 480)                               # the card, across the middle
+SETTING_ROW = 64
+
+
+def settings_work(t, st):
+    x0, x1 = SETTINGS
+    up.panel(t, x0, TOP + 8, x1, FOOT - 8)
+    mid = (TOP + FOOT) / 2
+    for k, (name, value) in enumerate(st["values"]):
+        cy = mid + (k - 1) * SETTING_ROW
+        held = name == st.get("held")
+        t.text(x0 + 22, cy - 7, 15, name, P["light"] if held else P["text"], bold=0.3)
+        sk.slider(t, x0 + 120, x1 - 78, cy, value, held)
+        t.text(x1 - 22, cy - 7, SMALL, "Off" if value == 0 else f"{round(value * 100)}%",
+               P["light"] if held else P["soft"], "RIGHT", bold=0.3 if held else 0.0)
+        if k:
+            t.stroke([(x0 + 18, cy - SETTING_ROW / 2), (x1 - 18, cy - SETTING_ROW / 2)], 1.0, P["edge"], 0.6)
+
+
+REST = (("Music", 0.7), ("Sound", 0.85), ("Effects", 1.0))
+SETTINGS_STATES = [
+    ("At rest: the three as saved", dict(screen="Settings", values=REST)),
+    ("Sound held, dragged to 40%: the knob grows, its ring and the row lit",
+     dict(screen="Settings", values=(("Music", 0.7), ("Sound", 0.4), ("Effects", 1.0)), held="Sound")),
+    ("Music off: the fill gone, the knob at the start, Off", dict(screen="Settings", values=(("Music", 0.0),) + REST[1:])),
+]
+SETTINGS_NOTES = [
+    "Settings, Home's tall tile: the band (Back returns to Home, Settings), one card of three sliders, a row each. No",
+    "rail, since it's a group of one. A slider is the kit's conduit filling with light, its knob the lit press's white;",
+    "held, the knob grows from 10 to 12.5 points and its ring lights. Each change is heard or seen at once.",
+]
+
+
 def phone(sheet, ox, oy, st):
     t = sheet.tile(ox, oy, W, H)
+    if st["screen"] == "Settings":
+        sk.backdrop(t, ((SETTINGS[0] + SETTINGS[1]) / 2, (TOP + FOOT) / 2))
+        up.band(t, "Settings")
+        t.text(232, 20, TITLE, "Settings", P["text"], bold=0.35)
+        settings_work(t, st)
+        return
     frame(t, st["screen"])
     if st["screen"] == "Reinforce":
         up.gear_list(t, st, *LIST)
@@ -441,7 +490,7 @@ def cut_images():
     slice_note = (f"Sliced at Cut {SLICE:g} on every side: one image serves the 40, 44 and 46 point sockets, its corner "
                   f"cut {CORNER:.1f} at every size")
     t = fc.clear(s, s)
-    t.paint(socket_box(t, 0, 0, s), t.ramp("#0B1418", "#08100F", t.y / s))
+    t.paint(socket_box(t, 0, 0, s), t.ramp(*sk.SOCKET_DARK, t.y / s))
     made["SocketFill"] = (t.px.copy(), dict(points=[s, s], cut=[SLICE] * 4, tint=None,
                                             use="a socket's dark well, in its own colours, never tinted; the bottom "
                                                 "of every socket and of the Jewels screen's bag cells. " + slice_note))
@@ -1036,7 +1085,11 @@ def main():
     if "cut" in sys.argv[sys.argv.index("--") + 1:]:
         cut(out)
         return
-    common = "at the smallest phone (568 x 320 points), in AR40's C"
+    common = "at the smallest phone (568 x 320 points), in Seam's lit glass"
+    sheet_of(out, "home_settings.png", f"AR43, Settings, its own screen from Home, {common}", SETTINGS_STATES,
+             SETTINGS_NOTES)
+    if "settings" in sys.argv[sys.argv.index("--") + 1:]:
+        return
     sheet_of(out, "equipment_jewels.png", f"AR43, Equipment's Jewels, its own screen from Home, {common}",
              JEWEL_STATES, JEWEL_NOTES)
     sheet_of(out, "equipment_emblems.png", f"AR43, Equipment's War Emblems, its own screen from Home, {common}",

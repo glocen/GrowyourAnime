@@ -13649,7 +13649,7 @@ The director's words: jewels and War Emblems go in and out on Equipment's pages 
     - the press a white-to-lavender gradient.
   - **C, bright dusk:** B's light on mid-violets, clearly brighter than today, with magenta drifting to blue across the backdrop. No teal anywhere.
 - **The rail:**
-  - It's 84 points wide, so the list starts at 88.
+  - It's 96 points wide (its line at 48), so the list starts at 98 (corrected at 15:10; see "The four screens in B").
   - The buttons are 40 and 54 points round, each with an outer ring broken where the kit cuts its corners (top left, foot right).
   - The marks are the shipped page icons.
   - The line runs between the buttons and never through a word.
@@ -13693,6 +13693,22 @@ The director's words: jewels and War Emblems go in and out on Equipment's pages 
 - **Naming, done:** the Bag page reads "Inventory" (`SAID`).
 - **Not done:** Equipment's three screens, held for the Seam redraw (Modulo, 14:56).
 - **Status:** implemented, tested, self-reviewed; research's pass competent, with its must-fix met; not director-accepted.
+
+### The four screens in B, with the rail, and their motion (Modulo, 2026-11-19, 15:05 to 15:47 by the clock)
+
+- **On research's B (15:04):** B is now the kit's own drawing, `tools/blender/seam_kit.py`, which every screen Home opens wears (`wear("B")`). `seam_rich.py` keeps A and C only as the blockout's.
+- **Drawn at the smallest phone, every state** (`build/scratch/modulo/equipment/`):
+  - Reinforce, five (`equipment_reinforce.png`); Jewels, five (`equipment_jewels.png`); War Emblems, four (`equipment_emblems.png`).
+  - **Settings, three** (`home_settings.png`): Back to Home, the title Settings, and no rail, since it's a group of one. One card holds Music, Sound and Effects. A slider is the kit's conduit filling with light, its knob the lit press's white. Held, the knob grows from 10 to 12.5 points and its ring lights; at nought it reads Off.
+  - A socket's and a cell's dark is violet-black now (`SOCKET_DARK`), never C's teal.
+- **The rail, corrected (15:10):** "War Emblems" lit at 16 bold ran past the screen's left edge and into the list. The rail is now 96 points wide, the list starts at 98, and the open page's word is 15 bold, about 86 points.
+- **The motion** (`tools/blender/seam_motion.py`; its numbers are `MOTION`, for Faber's json):
+  - a 6.3 s clip at 30 fps, `seam_motion.mp4`, joined with ffmpeg on this PC: the screen opening over Faber's fight capture, Reinforce's idle loop, then a tap on Jewels and a tap on War Emblems;
+  - `seam_motion_strip.png`, the opening's and a switch's beats, for research.
+  - **One change from the blockout's beats:** on a switch, the work dips, the old page out in 0.09 s and the new one in over the next 0.09 s. The crossfade laid Reinforce's numbers over the jewels mid-switch. The rail and the rows still crossfade in 0.18 s, since the item names don't change.
+- **Content check (fresh eyes, 15:47): PASS** on the five sheets. The "Roblox's buttons" box is a stand-in that stays out of every cut, and the fight capture behind the opening is a review stand-in, never uploaded. The cut images get their own check, at full size and at 64 px over dark.
+- **Open, for research:** by the 14:56 scope, the Voidkin screen and the bag stay in today's Seam (A), so Home's screens will be lifter than them. Whether they take B too is research's to put to the director.
+- **Status:** drawn, self-read and content-checked; the clip and the sheets sent to the director at 15:47, research's pass asked. Next: the cut in B for Faber's held install (the own-colour images, the tints, the json's palette, the rail's images and places, the slider's).
 
 ### Research's pass on Home's tray in the game (Quaestor, 2026-11-19, 15:19)
 

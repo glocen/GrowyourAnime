@@ -1,0 +1,212 @@
+{
+ "take": "AR49, C the stage: research's pick (2026-11-19, 23:54) with its four must-fixes",
+ "units": "points; every box is left, top, width, height from the glass's top left; images at 4 pixels a point",
+ "panel": {
+  "size": [
+   371.0,
+   184.0
+  ],
+  "place": "its left max(the lead's card's right + 8, the phone's middle - half its width), and never past the phone's right less 6; its foot 9 over the dock's top",
+  "dim": 0.6,
+  "dimNote": "the world under Home dims to 0.6 toward #05090B, the dock left lit; the HUD's corner pieces fade with it (the glass would cut the pills mid-word)"
+ },
+ "order": "bottom to top as `images` lists them; a press image shows only while its card is held",
+ "images": {
+  "HomeGlass": {
+   "box": [
+    -16.0,
+    -16.0,
+    403.0,
+    216.0
+   ],
+   "tint": null,
+   "use": "the panel's dark glass, its shadow faded inside its pad"
+  },
+  "HomePointer": {
+   "box": [
+    -12.0,
+    181.0,
+    24.0,
+    13.0
+   ],
+   "tint": null,
+   "use": "the point down at Home's tile, its box's middle on the tile's middle"
+  },
+  "HomeVoidkinBack": {
+   "box": [
+    102.0,
+    -2.0,
+    187.6,
+    188.0
+   ],
+   "tint": null,
+   "use": "the Voidkin card's dark ground and its shadow"
+  },
+  "HomeVoidkinGlow": {
+   "box": [
+    102.0,
+    -2.0,
+    187.6,
+    188.0
+   ],
+   "tint": "the lead's light",
+   "use": "the rarity's back glow, white: ImageColor3 the lead's light"
+  },
+  "HomeVoidkinRimTop": {
+   "box": [
+    102.0,
+    -2.0,
+    187.6,
+    188.0
+   ],
+   "tint": "the lead's light",
+   "use": "the rim's top edge, white, under the live view so the head rises in front of it: ImageColor3 the lead's light"
+  },
+  "HomeVoidkinFrame": {
+   "box": [
+    102.0,
+    -2.0,
+    187.6,
+    188.0
+   ],
+   "tint": null,
+   "use": "over the live view: the glass where the view's box spills past the card's sides, the shade in from the sides, the dark at the foot"
+  },
+  "HomeVoidkinRim": {
+   "box": [
+    102.0,
+    -2.0,
+    187.6,
+    188.0
+   ],
+   "tint": "the lead's light",
+   "use": "the rim's sides and foot, white, over the live view: ImageColor3 the lead's light"
+  },
+  "HomeEquipment": {
+   "box": [
+    -2.0,
+    -2.0,
+    149.6,
+    188.0
+   ],
+   "tint": null,
+   "use": "the Equipment card whole: the forge, the ring, the blade, the jewel, the emblem, the binding, the rim"
+  },
+  "HomeSettings": {
+   "box": [
+    244.0,
+    -2.0,
+    128.6,
+    188.0
+   ],
+   "tint": null,
+   "use": "the Settings card, its cog the kit's HomeMarkSettings over it"
+  },
+  "HomeVoidkinPress": {
+   "box": [
+    102.0,
+    -2.0,
+    187.6,
+    188.0
+   ],
+   "tint": "the lead's light",
+   "use": "the press, white: ImageColor3 the lead's light"
+  },
+  "HomeEquipmentPress": {
+   "box": [
+    -2.0,
+    -2.0,
+    149.6,
+    188.0
+   ],
+   "tint": "#FF8A3D",
+   "use": "the press, white: ImageColor3 the forge's #FF8A3D"
+  },
+  "HomeSettingsPress": {
+   "box": [
+    244.0,
+    -2.0,
+    128.6,
+    188.0
+   ],
+   "tint": "#AEB7C2",
+   "use": "the press, white: ImageColor3 the steel's #AEB7C2"
+  }
+ },
+ "liveView": {
+  "box": [
+   112.0,
+   -16.0,
+   167.6,
+   192.0
+  ],
+  "laid": "between HomeVoidkinRimTop and HomeVoidkinFrame; BackgroundTransparency 1",
+  "framing": "the lead's own model in its idle, waist up: its hair's top 14 points over the card's top (-6), its belt 6 over the card's foot, its head on the card's middle; turned 34 degrees to its right, the head brought back 22 (the portrait's pose)",
+  "light": "LightColor the lead's light, LightDirection from behind and above (the rim); Ambient #B4B8C2 so the face stays the brightest thing on the card"
+ },
+ "lights": {
+  "Common": "#A3A7AE",
+  "Uncommon": "#B0F6C6",
+  "Rare": "#A9D3FF",
+  "Epic": "#E4C4FF",
+  "Legendary": "#FFE7AD",
+  "Mythical": "#FFB7BF"
+ },
+ "lightsNote": "the lead's light: Config.Hud.Card.Trim lifted 40% toward white, so Common's grey still lights",
+ "cog": {
+  "image": "HomeMarkSettings (AR43's, in build/handoff/UI/home/images)",
+  "centre": [
+   310.99,
+   78.56
+  ],
+  "size": 30.0,
+  "colour": "#C9D0D9",
+  "laid": "over HomeSettings"
+ },
+ "words": [
+  {
+   "text": "Equipment",
+   "x": 20.0,
+   "y": 153.1,
+   "size": 17.9,
+   "colour": "#F5EFE2",
+   "align": "LEFT"
+  },
+  {
+   "text": "Voidkin",
+   "x": 124.0,
+   "y": 150.2,
+   "size": 22,
+   "colour": "#F5EFE2",
+   "align": "LEFT"
+  },
+  {
+   "text": "Settings",
+   "x": 293.3,
+   "y": 156.9,
+   "size": 14.0,
+   "colour": "#F5EFE2",
+   "align": "CENTER"
+  },
+  {
+   "text": "+7",
+   "x": 45.5,
+   "y": 33.8,
+   "size": 16.5,
+   "colour": "#FFD36B",
+   "align": "LEFT",
+   "bold": 0.45
+  }
+ ],
+ "wordsNote": "TextLabels in the kit's face, bold and italic (leaning with the cards); x, y their capitals' top left (Settings' its middle); a soft dark copy under each, 0.8 right and 1.2 down, at #000000",
+ "ring": {
+  "centre": [
+   75.19,
+   80.06
+  ],
+  "size": 82.56,
+  "note": "Equipment's art is one image; +7 is a label, for the build to keep or bind"
+ },
+ "press": "the kit's lit press: the card's press image shown while held, with the dock's squeeze",
+ "sheet": "build/handoff/UI/home_cards/home_cards_cut.png"
+}

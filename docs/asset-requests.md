@@ -15022,6 +15022,29 @@ Research, 2026-11-19, 23:20 by the clock, on the director's word of 23:20 (`docs
   4. **Every word whole in every crop:** `closes.png` shows "–" where "Equipment" stands in the sheet. Check that the label is drawn in every state.
 - **Next:** the cut on these four, then Faber, after TR50 and AR44's shine.
 
+### C cut for Faber, with the four must-fixes (Modulo, 2026-11-20, 00:01 to 00:06 by the clock)
+
+- **Where:** `build/handoff/UI/home_cards/`. It holds 12 images in `images/` (4 pixels a point, every edge alpha 0), `home_cards.json`, and the sheet `home_cards_cut.png`. The sheet is built from the images as the json lays them. Made by `tools/blender/home_cards.py` (`lead`, then `cut`); the blockout's modes are in 230d739.
+- **The must-fixes:**
+  1. **The lead is the brightest thing.** The Voidkin card is a near-black ground (#1C2234 to #040509). The rarity's light is a back glow behind the head and shoulders, plus the card's rim, and the foot is left dark. The light is Config.Hud.Card.Trim lifted 40% toward white, so Common's grey still lights; `lights` lists all six.
+     - The forge is down a step (0.55 to 0.4, 0.5 to 0.3, 18 embers to 14).
+     - On the sheet's six rarities the face beats the forge on each.
+  2. **Equipment shows its whole job.**
+     - JewelRed4 sits in the guard at a quarter of the blade's width, on a dark seat.
+     - EmblemRadiance sits in the kit's socket (SocketFill, SocketEdge in brass), set over the ring's foot right.
+     - +7 moved to the ring's top left, off the blade's tip.
+  3. **No guide.** Settings is a tall card filling its column (246 to 321). Quest can split it later.
+  4. **Every word in every state.** At rest, with each card pressed, at the smallest phone and on six rarities, "Equipment", "Voidkin", "Settings" and "+7" are all whole. The "–" was the ember loop reusing the word's size, fixed before this cut.
+- **The live view (the json's `liveView`):** a ViewportFrame of the lead's own model in its idle, waist up, in the portrait's pose.
+  - Its box reaches 24 points over the card's top for the hair. It is laid between `HomeVoidkinRimTop` and `HomeVoidkinFrame`.
+  - The head rises in front of the frame because the rim's top edge is under the view. The frame over it shades only the sides and the foot, and draws no lacquer line.
+  - `HomeVoidkinFrame` repaints the glass where the view's box spills past the card's slanted sides, so the glass is opaque.
+  - Lit: LightColor is the lead's light from behind (the rim), Ambient #B4B8C2. These are starting numbers for Faber to tune in game.
+- **The words are TextLabels** (`words`): Equipment 17.9, Voidkin 22, Settings 14, +7 16.5, all bold italic with the lean and a soft dark copy under. The cog is AR43's HomeMarkSettings, 30 points, #C9D0D9.
+- **Placement:** the panel's left is max(the lead's card's right + 8, the phone's middle − 185.5), and never past the phone's right less 6. Its foot sits 9 over the dock's top. The pointer's middle is on Home's tile. The world under it dims 0.6 with the dock lit, and the HUD's corner pieces fade under Home (the glass would cut the pills mid-word).
+- **Content check:** PASS 2026-11-20, 00:05, all 12 images and the sheet. PASS again at 00:06 on HomeEquipment and the sheet, redrawn with the socket.
+- **Next:** research's second look at the sheet, then Faber after TR50's must-fixes. Faber uploads the 12 images under the group.
+
 ## Later, by ground
 
 The rest of ground 1 (Kirra in AR10, Watt in AR11; then Sable, Marigold, Crane), then each ground's Voidkin in `docs/roster.md`'s order. **The machines** (Gantry, Bulwark, Ironhymn, Shiomaru, Aegir) share one custom rig, taller than a player, with its own clip family: the first of them is timed like AR1, because a custom rig is a different cost.

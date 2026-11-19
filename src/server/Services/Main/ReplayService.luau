@@ -13,6 +13,7 @@
 --   NL_Debug:Invoke("FightDefeat", who, id)                 one of those falls at once, its fall seen whole
 --   NL_Debug:Invoke("Fighters")                             every fighter: kind, state, health, target, action, place
 --   NL_Debug:Invoke("FightHealth", who, 0.5)                the player's lead at half its health, to see a heal; 0 downs it
+--   NL_Debug:Invoke("FoeHealth", who, id, 0.5)             a spawned Shade at half its health, to see its card (AR45)
 --   NL_Debug:Invoke("FightHealth", who, 0.05, true)         at most that share: lowered to it, never raised (a take's held fall)
 -- Staged as the game frames a fight (FightService's slot, Rules/Fight.Beyond): the dummy at the pad's middle, the avatar
 -- Replay.Behind behind it and Lead.Side to the left, so its own body hides neither, all facing down the pad; the lead
@@ -236,6 +237,15 @@ local function fightHealth(who: any, share: any, cap: any): any
 	return { Ok = true, Health = lead.Health }
 end
 
+local function foeHealth(_who: any, id: any, share: any): any
+	local f = if type(id) == "number" or type(id) == "string" then FightService.All()[tostring(id)] else nil
+	if f == nil or spawned[f] == nil or type(share) ~= "number" or not (share > 0 and share <= 1) then
+		return { Ok = false, Error = "BadArgs" }
+	end
+	FightService.SetHealthShare(f, share)
+	return { Ok = true, Health = f.Health }
+end
+
 local function fighters(): any
 	local list: { { [string]: any } } = {}
 	for id, f in FightService.All() do
@@ -268,6 +278,7 @@ function ReplayService.Start()
 	DebugService.Register("FightDefeat", fightDefeat)
 	DebugService.Register("Fighters", fighters)
 	DebugService.Register("FightHealth", fightHealth)
+	DebugService.Register("FoeHealth", foeHealth)
 	Players.PlayerRemoving:Connect(stopFor)
 end
 

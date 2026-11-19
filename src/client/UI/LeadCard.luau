@@ -25,6 +25,7 @@ local UIKit = require(Shared.Config.UIKit)
 local HudConfig = require(Shared.Config.Hud)
 local Voidkin = require(Shared.Definitions.Voidkin)
 local Theme = require(script.Parent.Theme)
+local Layers = require(script.Parent.Layers)
 local Skin = require(script.Parent.Kit.Skin)
 local Text = require(script.Parent.Kit.Text)
 
@@ -65,6 +66,7 @@ local VOIDKIN = UIKit.Systems.Voidkin -- the card's colours, as each pill wears 
 -- corner (from 99) and the eye (from 102).
 local BOX = Vector2.new(P.Plate[3], 89)
 local DIGITS_INK = Color3.fromHex("#0B0C10") -- the outline of the health digits on a light (the target's card)
+local DIGITS_LINE = 2 -- its width in points, solid: it holds over the light's front at any fill (research, 23:31)
 
 -- Lays the kit image `name` at its place in the card, in a holder whose top left is at `origin` in the card's points
 -- (`size`: a sliced image's box, past its pad).
@@ -158,8 +160,16 @@ local function digits(health: Frame): TextLabel
 	label.ZIndex = 3
 	local outline = Instance.new("UIStroke")
 	outline.Color = DIGITS_INK
-	outline.Thickness = 1
+	outline.Transparency = 0
+	outline.LineJoinMode = Enum.LineJoinMode.Round
+	outline.Thickness = DIGITS_LINE * Layers.Scale() -- a stroke's width isn't grown by the layer's UIScale
 	outline.Parent = label
+	local rescaled = Layers.Changed:Connect(function(scale: number)
+		outline.Thickness = DIGITS_LINE * scale
+	end)
+	label.Destroying:Connect(function()
+		rescaled:Disconnect()
+	end)
 	return label
 end
 

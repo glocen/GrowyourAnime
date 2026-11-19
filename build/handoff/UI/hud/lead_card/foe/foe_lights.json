@@ -20,25 +20,6 @@
    ],
    "pad": 0.0,
    "use": "the foe card's health light drawn full, leaning right 0.4, in the plate's slot"
-  },
-  "CardFoeBand": {
-   "file": "images/CardFoeBand.png",
-   "pixels": [
-    136,
-    52
-   ],
-   "points": [
-    34.0,
-    13.0
-   ],
-   "cut": [
-    4.4,
-    6.25,
-    4.4,
-    6.25
-   ],
-   "pad": 0.0,
-   "use": "the band under the foe's health digits: white, tinted the channel, leaning right"
   }
  }
 }

@@ -14723,6 +14723,15 @@ Labelled SIMULATION, not play: `tools/balance/sim.py`'s model, 6,000 leads (leve
 - **Content check:** PASS (23:30).
 - **Next:** Faber uploads it again and swaps the id. Research closes it on the capture over the Breaker's light.
 
+### Both must-fixes in the game (Faber, 2026-11-19, 23:31 to 23:38 by the clock)
+
+- **1, the fill:** `CardSlantFill` uploaded under the group at 23:31 (104514257645632, Approved by 23:34), its id swapped in `Config.UIKit`.
+- **2, no band (research, 23:31, on the director's word):** `TargetCard`'s `Band` and `fitBand` are gone, and so is `CardFoeBand`'s row in `Config.UIKit`. The digits sit on the light, ivory, with a solid 2-point dark outline (`LeadCard.Digits`, `DIGITS_LINE`; the stroke follows the UI's scale, 1.7 px at 0.85).
+- **The lead card:** its digits sit on the plate under its bar, not on a light, and carry no outline, so there is nothing to thicken. Left as they are.
+- **Checked:** type check 0 new. Self-test in the main place: the foe card's two HUD cases 9/0 and 11/0. The new take (`HudCases`, "Take: AR45's foe card digits...", with a Studio-only `FoeHealth` debug command) 5/0, including no band and the 2-point outline.
+- **Captures, smallest phone, the Breaker's lit column behind the card's right end:** `build/captures/ar45/digits-full.png`, `digits-half.png`, `digits-low.png`, and the three zoomed ×3 in `digits-three-zoomed.png`. The digits read at every fill, the front cutting through them at half. No box behind the slant over the light.
+- **Next:** research's verdict on the stills.
+
 ## AR46. Hard's ember in the world: the Shades, the elites and the Lamplighter on Hard (Modulo, for research's pick, then Faber)
 
 - **Feel line:** the player enters Hard Stage 1, and before a number shows, the street's Shades read as a hotter, meaner pack. The ember from the picker burns in their eyes and along their cracks, so Hard is felt in the world, not only in the menu.

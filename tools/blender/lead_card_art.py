@@ -828,7 +828,6 @@ def sheet(out: Path):
 
 FOE_LEAN = 0.4  # across per down, leaning right (foe_cards.py's SLANT)
 FOE_H = 13.0  # the plate's slot, 24 to 37 down (foe_cards.py's SLOT)
-FOE_BAND_RUN = 3.9  # the digits' band's lean across its height less half a point top and foot (the fit's bh * 0.3)
 
 
 def foe_light():
@@ -846,27 +845,12 @@ def foe_light():
     return image, across(image, run + 0.5, run + 0.5)
 
 
-def foe_band():
-    """The band under the foe's health digits (AR45's must-fix 1): white, tinted the plate's channel in the game, leaning
-    right, half a point clear of the slot's top and foot (the fit's band). Its box from its top left to its foot right."""
-    h, run = FOE_H, FOE_BAND_RUN
-    lay = Layer()
-    t = lay.t
-    ty, tx = 40.0, 40.0
-    te = tx + 30.0
-    lit = t.poly([(tx, ty + 0.5), (te, ty + 0.5), (te + run, ty + h - 0.5), (tx + run, ty + h - 0.5)])
-    t.paint(lit, c("#FFFFFF"))
-    image = lay.crop(tx, ty, te + run, ty + h)
-    return image, across(image, run + 0.5, run + 0.5)
-
-
 def foe(out: Path):
     images = out / "images"
     images.mkdir(parents=True, exist_ok=True)
     listing = {}
     for name, (px, cut), use in (
-            ("CardFoeHealth", foe_light(), "the foe card's health light drawn full, leaning right 0.4, in the plate's slot"),
-            ("CardFoeBand", foe_band(), "the band under the foe's health digits: white, tinted the channel, leaning right")):
+            ("CardFoeHealth", foe_light(), "the foe card's health light drawn full, leaning right 0.4, in the plate's slot"),):
         rs.save(rs.bleed(px), images / f"{name}.png")
         listing[name] = dict(file=f"images/{name}.png", pixels=[px.shape[1], px.shape[0]],
                              points=[px.shape[1] / K, px.shape[0] / K], cut=cut, pad=0.0, use=use)

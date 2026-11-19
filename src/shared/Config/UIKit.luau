@@ -962,7 +962,7 @@ local UIKit = {
 		SlotEmptyOffHandWarrior = { Id = "rbxassetid://128064287623574", Pixels = Vector2.new(128, 128), Points = Vector2.new(32, 32), Pad = 0 },
 		SlotEmptyRing = { Id = "rbxassetid://117078692283931", Pixels = Vector2.new(128, 128), Points = Vector2.new(32, 32), Pad = 0 },
 		SlotEmptyShoulders = { Id = "rbxassetid://81543940119149", Pixels = Vector2.new(128, 128), Points = Vector2.new(32, 32), Pad = 0 },
-		CardSlantFill = { Id = "rbxassetid://119180727485467", Pixels = Vector2.new(264, 232), Points = Vector2.new(66, 58), Cut = { 29, 28, 29, 28 }, Pad = 8 },
+		CardSlantFill = { Id = "rbxassetid://104514257645632", Pixels = Vector2.new(264, 232), Points = Vector2.new(66, 58), Cut = { 29, 28, 29, 28 }, Pad = 8 },
 		CardSlantEdge = { Id = "rbxassetid://129146398694981", Pixels = Vector2.new(264, 232), Points = Vector2.new(66, 58), Cut = { 29, 28, 29, 28 }, Pad = 8 },
 		CardSlantRankEdge = { Id = "rbxassetid://134082242402029", Pixels = Vector2.new(264, 232), Points = Vector2.new(66, 58), Cut = { 29, 28, 29, 28 }, Pad = 8 },
 		RankShardLeft = { Id = "rbxassetid://83506516675547", Pixels = Vector2.new(40, 40), Points = Vector2.new(10, 10), Pad = 0 },
@@ -970,7 +970,6 @@ local UIKit = {
 		Skull = { Id = "rbxassetid://126210701643533", Pixels = Vector2.new(72, 72), Points = Vector2.new(18, 18), Pad = 0 },
 		EdgeArrow = { Id = "rbxassetid://75745566571381", Pixels = Vector2.new(40, 40), Points = Vector2.new(10, 10), Pad = 0 },
 		CardFoeHealth = { Id = "rbxassetid://83666929491890", Pixels = Vector2.new(261, 52), Points = Vector2.new(65.25, 13), Cut = { 5.7, 6.25, 5.7, 6.25 }, Pad = 0 },
-		CardFoeBand = { Id = "rbxassetid://109247033366238", Pixels = Vector2.new(136, 52), Points = Vector2.new(34, 13), Cut = { 4.4, 6.25, 4.4, 6.25 }, Pad = 0 },
 		-- Home's tray (AR43 in B, the dock's graphite; build/handoff/UI/home/home.json): white masks tinted as Config.Hud.Home
 		-- says, but HomePoint, in its own colours. A row tile is sliced along only, drawn at its own height; Settings' tall
 		-- tile is never sliced.

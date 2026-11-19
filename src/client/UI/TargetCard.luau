@@ -5,10 +5,10 @@
 -- `card`; Config.UIKit.FoeCard). Its top row: the difficulty skull and "Lv N" in the tier's colour (Config.Hud.Skulls,
 -- Rules.Hud.Skull), the name in the card's pale, then the type's gem and the type edge's arrow (Rules.Hud.Arrow), green
 -- up or red down. Under it the health light in the plate's slot, leaning with it and filling from its left, its digits
--- on a dark band so the light's front never runs through them (research's must-fix 1). An elite's card wears the brass
--- edge and two brass shards on its top edge in place of the lavender rim (research's must-fix, 12:32). Every word wears
--- a hairline dark outline. The plate is Modulo's (foe_cards.py), the light and the band the builder's kit
--- (lead_card_art.py, `foe`).
+-- straight on the light, ivory in a solid dark outline that holds over the light's front at any fill (LeadCard.Digits;
+-- research's must-fix 2, 2026-11-19, 23:31: no band behind them). An elite's card wears the brass edge and two brass
+-- shards on its top edge in place of the lavender rim (research's must-fix, 12:32). Every other word wears a hairline
+-- dark outline. The plate is Modulo's (foe_cards.py), the light the builder's kit (lead_card_art.py, `foe`).
 --   TargetCard.new(parent, position)      the card, hidden; its top centre at `position`
 --   TargetCard.Name(card, name, level)    the name and the level, the name cut with "…" before the gem
 --   TargetCard.Tier(card, tier)           the skull's tier, 1 grey and faint to 4 red, and the level's colour with it
@@ -61,9 +61,6 @@ local WORDS = 16 -- the words' box, high
 local SHARD_ROOT = 14 -- an elite's shard's root on the top edge, in from where that edge starts and ends
 local INK = Color3.fromHex("#0B0913") -- the words' hairline outline (foe_cards.py's `finish`)
 local IVORY = Color3.fromHex("#F7F1E3") -- the health's digits
-local BAND = Color3.fromHex("#0A0718") -- the band under the digits: the slot's own dark, at BAND_SEE
-local BAND_SEE = 0.28
-local BAND_MORE = 14 -- the band reaches past the digits this far in all
 
 local function outline(label: TextLabel)
 	local stroke = Instance.new("UIStroke")
@@ -95,18 +92,6 @@ local function shard(parent: Instance, kit: string, x: number, anchor: Vector2):
 	return image
 end
 
--- The band under the digits, fitted to them as they change (measured at the size the label draws: it grows on a small
--- phone), its middle the light's at half its height.
-local function fitBand(band: ImageLabel, label: TextLabel)
-	local wide = if label.Text == "" then 0 else Text.Wide(label, label.Text) + BAND_MORE
-	band.Visible = wide > 0
-	if wide > 0 then
-		Skin.Set(band, "CardFoeBand", { X = LIGHT_MID - LIGHT_LEFT - wide / 2, Y = 0, W = wide, H = SLOT_H })
-		band.ImageColor3 = BAND
-		band.ImageTransparency = BAND_SEE
-	end
-end
-
 function TargetCard.new(parent: Instance, position: UDim2): Card
 	local card = Instance.new("Frame")
 	card.Name = "Target"
@@ -122,21 +107,9 @@ function TargetCard.new(parent: Instance, position: UDim2): Card
 	-- The light in the slot: its top edge from the slot's top left to the full front, leaning right (LeadCard.Fill's Lean).
 	local health = LeadCard.Light(card, "Health", "CardFoeHealth", { LIGHT_LEFT, SLOT_TOP, LIGHT_RIGHT, SLOT_H }, LIGHT_LEFT, 3)
 	health:SetAttribute("Lean", F.Lean)
-	local band = Instance.new("ImageLabel")
-	band.Name = "Band"
-	band.BackgroundTransparency = 1
-	band.BorderSizePixel = 0
-	band.ZIndex = 2
-	band.Visible = false
-	band.Parent = health
 	local digits = LeadCard.Digits(health)
 	digits.TextColor3 = IVORY
 	digits.Position = UDim2.fromOffset(LIGHT_MID - (LIGHT_LEFT + LIGHT_RIGHT) / 2, 0) -- centred on the light's middle
-	local function refit()
-		fitBand(band, digits)
-	end
-	digits:GetPropertyChangedSignal("Text"):Connect(refit)
-	digits:GetPropertyChangedSignal("TextSize"):Connect(refit)
 	local skull = Instance.new("ImageLabel")
 	skull.Name = "Skull"
 	skull.BackgroundTransparency = 1

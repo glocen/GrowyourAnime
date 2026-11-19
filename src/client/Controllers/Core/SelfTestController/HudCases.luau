@@ -319,6 +319,67 @@ function HudCases.Cases(given: Given): { any }
 			end,
 		},
 		{
+			Name = "Take: AR45's foe card digits on the light at full, half and near-empty health at the smallest phone, each held for a still, for research",
+			Manual = true,
+			Stay = true,
+			Run = function(t: any)
+				-- Each fill is held until the driver moves ReplicatedStorage.NL_TakeStep on ("Full", "Half", "Low", "End") and
+				-- captures it over the Breaker's light: an elite at the lead's level, its health set by FoeHealth (research's
+				-- must-fix 2, 23:31: the digits straight on the light, no band). Its foes stand through the take: a hundred
+				-- times their health, a hundredth of their attack, put back after.
+				local step = Instance.new("StringValue")
+				step.Name = "NL_TakeStep"
+				step.Value = "Ready"
+				step.Parent = ReplicatedStorage
+				local function await(name: string): boolean
+					return waitFor(t, 300, function(): boolean
+						return step.Value == name or step.Value == "End"
+					end) and step.Value == name
+				end
+				local parts = HudController.Parts()
+				local lead = myLead()
+				local level = if lead then lead:GetAttribute("Level") else nil
+				if lead == nil or type(level) ~= "number" then
+					t.Check("the lead is in the world", false)
+					step:Destroy()
+					return
+				end
+				local Enemies = require(Shared.Config.Enemies) :: any
+				local was = { Health = Enemies.Elite.Health, Attack = Enemies.Elite.Attack }
+				t.Server("Tune", "Enemies.Elite.Health", was.Health * 100)
+				t.Server("Tune", "Enemies.Elite.Attack", was.Attack / 100)
+				Layers.Force(Theme.Scale.Floor)
+				Layers.Box(Theme.Smallest - Vector2.new(0, GuiService.TopbarInset.Height))
+				local ok, problem = pcall(function()
+					t.Server("FightSpawn")
+					local spawned = t.Server("FightSpawn", "brawler_elite", level, 12)
+					local id = if type(spawned) == "table" then spawned.Id else nil
+					t.Check("an elite met", id ~= nil and waitFor(t, 20, function(): boolean
+						return lead:GetAttribute("Target") == id and parts.Target.Visible
+					end))
+					local digits = parts.Target:FindFirstChild("Value", true) :: TextLabel?
+					local stroke = if digits then digits:FindFirstChildOfClass("UIStroke") else nil
+					t.Check("no band behind the digits", parts.Target:FindFirstChild("Band", true) == nil)
+					t.Check("the digits' outline: solid, 2 points", stroke ~= nil and stroke.Transparency == 0 and math.abs(stroke.Thickness - 2 * Layers.Scale()) < 1e-3, if stroke then `{stroke.Thickness} px at {Layers.Scale()}` else "none")
+					for _, fill in { { Name = "Full", Share = 1 }, { Name = "Half", Share = 0.5 }, { Name = "Low", Share = 0.06 } } do
+						if await(fill.Name) then -- the step lays its fill, then the driver captures it
+							t.Server("FoeHealth", id, fill.Share)
+						end
+					end
+					await("End")
+				end)
+				t.Server("FightSpawn")
+				t.Server("Tune", "Enemies.Elite.Health", was.Health)
+				t.Server("Tune", "Enemies.Elite.Attack", was.Attack)
+				Layers.Box(nil)
+				Layers.Force(nil)
+				step:Destroy()
+				if not ok then
+					error(problem, 0)
+				end
+			end,
+		},
+		{
 			-- TR19 (docs/test-requests.md, "Home in one tap: the dock's Base tile"): at home the tile is quiet and a tap does
 			-- nothing; out on Lantern Row a tap charges, the tile filling from its foot and the avatar's outline lifting, then the
 			-- player stands at their plot's spawn facing its Breaker with their lead beside them; the cooldown's veil is on the

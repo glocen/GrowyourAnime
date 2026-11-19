@@ -129,12 +129,15 @@ def mask(t, mx, my, rx, ry, tilt):
 
 
 def shade(t, cx, cy, s, elite=False, dim=False):
-    """A Shade: a festival-goer the Void has filled, a dark hooded body in a glowing outline, the Brawler's festival
-    mask; an elite is larger, with its second mask worn on its shoulder by a strap (docs/roster.md, "Enemies: Shades")."""
-    cloak = t.poly([(cx + s * 0.04, cy - s * 0.98), (cx + s * 0.4, cy - s * 0.66), (cx + s * 0.74, cy - s * 0.16),
-                    (cx + s * 0.88, cy + s * 0.9), (cx - s * 0.88, cy + s * 0.9), (cx - s * 0.74, cy - s * 0.16),
-                    (cx - s * 0.4, cy - s * 0.66)])
-    d = np.minimum(cloak, circle(t, cx, cy - s * 0.52, s * 0.4))
+    """A Shade: a festival-goer the Void has filled, a dark body in a glowing outline, broad shoulders and a round head,
+    the Brawler's festival mask worn pushed to one side on its cord, so it reads as a mask and the dark head shows
+    beside it; an elite is larger, with its second mask worn on its shoulder by a strap (docs/roster.md, "Enemies:
+    Shades"; the content check's conditions 1 and 3, AR42)."""
+    hx, hy = cx, cy - s * 0.5
+    body = t.poly([(cx - s * 0.52, cy - s * 0.14), (cx + s * 0.52, cy - s * 0.14), (cx + s * 0.8, cy + s * 0.9),
+                   (cx - s * 0.8, cy + s * 0.9)])
+    d = np.minimum.reduce([body, circle(t, hx, hy, s * 0.38), circle(t, cx - s * 0.52, cy + s * 0.05, s * 0.22),
+                           circle(t, cx + s * 0.52, cy + s * 0.05, s * 0.22)])
     if dim:
         t.paint(d, C["well"])
         t.line(d, 1.2, C["faint"])
@@ -142,10 +145,11 @@ def shade(t, cx, cy, s, elite=False, dim=False):
     t.glow(d, 4.0, SHADE_GLOW, 0.3)
     t.paint(d, SHADE_BODY)
     t.line(d, 1.5, SHADE_GLOW)
-    mask(t, cx - s * 0.02, cy - s * 0.48, s * 0.24, s * 0.31, -0.18)
+    t.stroke([(hx - s * 0.37, hy - s * 0.1), (hx + s * 0.37, hy - s * 0.04)], s * 0.045, C["ready"])   # the cord
+    mask(t, hx + s * 0.13, hy + s * 0.02, s * 0.22, s * 0.28, 0.32)
     if elite:
-        t.stroke([(cx + s * 0.5, cy + s * 0.12), (cx + s * 0.16, cy - s * 0.24)], s * 0.05, C["ready"])
-        mask(t, cx + s * 0.52, cy + s * 0.14, s * 0.15, s * 0.19, 0.22)
+        t.stroke([(cx + s * 0.52, cy + s * 0.14), (cx + s * 0.2, cy - s * 0.14)], s * 0.05, C["ready"])
+        mask(t, cx + s * 0.54, cy + s * 0.18, s * 0.15, s * 0.19, 0.22)
 
 
 def lantern(t, cx, cy, s, dim=False):
@@ -286,7 +290,7 @@ KEEPER_WHY_LONG = "Hard opens when you beat the Lamplighter on Normal"
 def climb_b(t, state):
     """B: the climb, each tile on a stair's tread, stepping up toward the Lamplighter."""
     hard, rows = state["hard"], state["rows"]
-    wide, high, step = 124.0, 176.0, 20.0
+    wide, high, step = 124.0, 178.0, 20.0
     gap = (W - 2 * PAD - 4 * wide) / 3
     nxt = next((k for k, r in enumerate(rows) if r[0] == "next"), None)
     for k, (n, title, kind) in enumerate(STAGES):
@@ -305,7 +309,7 @@ def climb_b(t, state):
                 a = x0 + 10 + j * (wide - 20) / (teeth - 1)
                 t.paint(t.poly([(a - 6, y0 - lift + 1), (a, y0 - lift - 6), (a + 6, y0 - lift + 1)]),
                         C["accent"] if row[0] != "shut" else C["row"])
-        tile(t, x0, y0 - lift, x0 + wide, y0 + high, n, title, kind, row, hard, 74)
+        tile(t, x0, y0 - lift, x0 + wide, y0 + high, n, title, kind, row, hard, 64)
     if hard:
         words = (["Hard opens when you beat", "the Lamplighter on Normal"] if state["hard_shut"]
                  else ["Hard: every foe is", "10 levels higher"])
@@ -314,8 +318,7 @@ def climb_b(t, state):
 
 
 STOPS = [(64, 258), (146, 206), (226, 150), (292, 98)]
-STREET = [(PAD, 300), (40, 282), (64, 258), (100, 238), (146, 206), (186, 186), (226, 150), (262, 128), (292, 98),
-          (306, 76)]
+STREET = [(PAD, 300), (40, 282), (64, 258), (100, 238), (146, 206), (186, 186), (226, 150), (262, 128), (292, 98)]
 
 
 def street_c(t, state):
@@ -457,6 +460,17 @@ def main():
             shot = px[round(y * 2):round((y + H) * 2), round(x * 2):round((x + W) * 2)]
             rs.paste(all_px, rs.shrink(shot, scale), gap + k * (pw + gap), gap + r * (ph + gap))
     rs.save(all_px, out / "stage_screen_all.png")
+    # the nine again at 64 pixels high, over dark: the content check's small read (AR42, condition 7)
+    small = 64 / (H * 2)
+    sw, sh = round(W * 2 * small), 64
+    tiny = np.zeros((3 * (sh + gap) + gap, 3 * (sw + gap) + gap, 4), dtype=np.float32)
+    tiny[..., :3], tiny[..., 3] = ui.c("#101117"), 1.0
+    for r, (d, (px, top, left)) in enumerate(pages.items()):
+        for k in range(3):
+            x, y = left + (k % 2) * (W + 24), top + (k // 2) * (H + 40)
+            shot = px[round(y * 2):round((y + H) * 2), round(x * 2):round((x + W) * 2)]
+            rs.paste(tiny, rs.shrink(shot, small), gap + k * (sw + gap), gap + r * (sh + gap))
+    rs.save(tiny, out / "stage_screen_64.png")
     pictures(out)
 
 

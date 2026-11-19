@@ -13085,20 +13085,41 @@ Research, 2026-11-19, 01:35 by the clock. TR43 is built in grey (`UI/StageScreen
 
 The numbers are stand-ins (Combat Power, the bests).
 
-### Drawn, then parked for AR40's must-fix (Modulo, 2026-11-19, 01:43 to 01:47 by the clock)
+### The picker drawn in three directions (Modulo, 2026-11-19, 01:43 to 02:03 by the clock, parked 01:47 to 01:58 for AR40)
 
-- **Where:** `tools/blender/stage_screen.py` draws `stage_screen_A.png`, `_B.png`, `_C.png`, `_all.png` (the nine at half size) and `_pictures.png` (each picture large, at a tile's size open and shut, and at 64 px) into `build/scratch/modulo/stages/`.
+- **Where:** `tools/blender/stage_screen.py` draws into `build/scratch/modulo/stages/`:
+  - `stage_screen_A.png`, `_B.png` and `_C.png`: each direction's three phones at full size, with notes;
+  - `_all.png`: the nine at half size;
+  - `_64.png`: the nine at 64 px high;
+  - `_pictures.png`: each picture large, at a tile's size open and shut, and at 64 px.
 - **The plan's content check (01:41) passed with conditions:**
-  1. the mask must lead with its own festival look;
+  1. the mask leads with its own festival look;
   2. no blood reading;
   3. the elite's second mask is worn;
   4. the lantern has no glyph;
-  5. the crowns have three points or notches, and the chevrons are symmetric;
+  5. the crowns have three points or plain notches, and the chevrons are symmetric;
   6. the drawing is our own;
-  7. the sheets are checked at full size and at 64 px before the pick.
-  The mask has a gold rim, gold cheeks and a wide grin, and the elite's second mask hangs by a strap.
-- **Open, in my own look before research's:** the hooded body tried at 01:45, a tall dark shape under an oval mask, leans toward condition 1's first case, so the body goes back to shoulders and a round head. C's Hard crowns are read at full size against condition 5. The face stands in for Builder Sans, so its "1" reads as "I".
-- **Status:** drawn; not self-reviewed in full, not content-checked as sheets, not picked. It resumes after AR40's road and crystals.
+  7. the sheets are checked at full size and at 64 px.
+- **The pictures, drawn to them:**
+  - The Shade is a shouldered dark body with a round head in a glowing outline.
+  - Its festival mask is a tilted cream oval in a gold rim, with gold cheeks, laughing eye slits and a wide ink grin. It's worn pushed to one side on a cord, so the dark head shows beside it.
+  - The elite is larger, with a second mask on its shoulder by a strap.
+  - The lantern is ribbed paper with no glyph.
+  - C's crowns have three points; B's are plain notches.
+  - A hooded body tried at 01:45, a tall dark shape under an oval mask, leaned toward condition 1's first case and was replaced.
+- **Fixed in my own look:** B's shut tiles had their second line on the tile's edge, so the pictures are 64 tall; C's street ran past the last stop as a nub.
+- **My read, by eye, not a verdict:**
+  - **A, One road, is my lean.** Every stage's numbers read at once. The lit road ends at the ring under the raised, glowing Next, which is the feel line as drawn. It reads at 64 px. It's the plainest to build on Faber's kit: four tiles in a row over a bar.
+  - **B, The climb,** says progress best, with the Lamplighter on the top step. Its stairs take room from the text, and Hard's line crowds the top left.
+  - **C, The street and its card,** is the most a place, and its card has the most room. But it shows one stage's numbers at a time, so nothing compares at a glance, and a stage that isn't the next takes two taps.
+- **Weak in all three, said now:**
+  - Hard's darker field is a small step, so Hard reads by its violet edges, chevrons and line, and by the switch. While Hard is shut, every tile is the Well's plate, and the switch and the line carry it.
+  - The face stands in for Builder Sans, so "1" reads as "I".
+- **Content check on the sheets, 02:05: PASS,** with all seven conditions met and the 64 px read seen. Its conditions going forward:
+  - the sheets' labels never ship;
+  - the elite's strap stays at least this thick if a tile shrinks;
+  - any picture later exported for Roblox gets its own check on the exact file, at full size and at 64 px.
+- **Status:** drawn, self-read and content-checked. Not picked.
 
 ## Later, by ground
 

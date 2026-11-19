@@ -13201,6 +13201,7 @@ They replace the pages above where they differ. The register's rows are in `docs
 - **Gear cells** show only the +level. The socket pips go.
 - **War Emblems and jewels** go on the gear's own card, scrolled down. The War Emblems page is dropped, and the shipped emblem icons are rejected. The new star: `docs/design.md`, "War Emblems".
 - **The Menu** [D, 03:19, `docs/ui.md`, the dock]: Equipment is a tab of the Menu, beside Voidkin and Settings, off the Voidkin screen's rail. Draw the page in the Menu's frame, with a Settings tab as a plain state (music, sound, effects). Quest waits.
+- **Motion** [D, 03:19, `docs/ui.md`, rule 5]: the sheets show the moving parts, not only stills. For the chosen direction, a strip each for the Menu opening, a tab switch, a press, a reinforce succeeding and one failing, with each beat's timing. The verdict is given in motion.
 - **Waits:** the numbers (research's refit).
 
 ## Later, by ground

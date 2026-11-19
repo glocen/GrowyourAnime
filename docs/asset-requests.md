@@ -14004,6 +14004,37 @@ The director's words: jewels and War Emblems go in and out on Equipment's pages 
 - **The naming call:** the page reads "Inventory". The director's latest words name it so (03:37: "inventory with the gears slot"), and they replace the bag's "Items" of 2026-11-15. The group and its page both reading Inventory is the director's own naming, kept literally. `SAID` in the Voidkin screen gives way to it.
 - **Met** (b82f3cd; `tray-phone-over.jpg`, read at 15:27): on a phone the tray stands over the dock behind a dim, and Watt's card and both pills stay clear. Closed on research's side. The director's word is pending.
 
+### The Voidkin screen and the bag in B, for the board's item 11 (Modulo, 2026-11-19, 18:43 to 18:58 by the clock)
+
+- **Research's ask (18:43):** a cheap blockout for the director's yes or no on the Now board's item 11, "the Voidkin screen and the bag in B, like Equipment's". One sheet each, today's beside B, at the smallest phone and on PC, on the real content. The cap is about an hour, with no cut and no polish.
+- **What it is:** a paintover of Faber's own captures (18:53, `build/scratch/faber/ar43/stills/`).
+  - The Overview: Rook leading.
+  - Inventory: All, sorted by rarity, 100 of 300 in the bag, the doll wearing 13 of its 14 slots.
+  - Today's pixels are on the left and the same pixels in B on the right, so only the skin differs.
+- **B as painted,** following `seam_kit.py`:
+  - Seam's violet-darks are lifted to SeamGlass's: a gain of about 1.8 on the grounds, 1.4 on an edge and none on the light. The backing is lit at its top.
+  - Each main panel gets its top sheen, its outline lit from above, and its corner glint.
+  - A bloom shows round the doll.
+  - The chosen kind ("All") becomes the lit press, with its words in ink.
+  - **Kept as they are:**
+    - the stage, since SeamGlass's Ground is Seam's;
+    - Rook and the gear;
+    - the rarity frames;
+    - the CR number;
+    - the Voidkin's portraits.
+- **Where:**
+  - The tool is `tools/blender/screen_b_look.py`.
+  - The sheets are `build/scratch/modulo/screens_b/voidkin_b.png` and `bag_b.png`.
+  - The PC capture (2483 by 1134) is shown at half size; the smallest phone (852 by 480) at its own pixels.
+- **Self-read:**
+  - **The Overview changes least.** The stage keeps its ground, and it fills half the screen. B shows on the band, the Leading plate and the sheet's card, and the card reads as Equipment's glass.
+  - **The bag changes most.** The room, the kinds strip and the wells lift, and "All" becomes the screen's one plate of light. With Equipment in B, the gear's two homes would match.
+  - **"Too purple, black, somber":** B's violet is brighter than today's, so it reads more violet and less black. It's the same lift research picked for Equipment at 15:04.
+- **Limits:**
+  - It's a paintover, not the build. The lift reads colours, not the game's frames, so a few antialiased edges and the darkest pixels of the Common frames lift a touch.
+  - On a yes, Faber builds B from the kit (`build/handoff/UI/seam/`, and `Config.UIKit`'s SeamGlass), as for Equipment. Nothing here is cut.
+- **Status:** drawn and self-read at 18:58, for research to put before the director with item 11. It's thrown away on a no.
+
 ## AR44. The damage numbers' rework: the plain, received and healing numbers, and the critical closer to the reference (Faber's takes in the game, Modulo's stroke, research's pick)
 
 Research, 2026-11-19, 11:17 by the clock. The director, by 11:16, to research: "The damages/healing text need a small rework it doesnt look as i wanted it to be, same for the crit text it need to be more close to the reference i've shown". The same morning, relayed by Modulo at about 11:15: "like the blackstroke around the text for those are way to thick". Research reads "those" as the damage numbers, since the two came together. The rule stays `docs/ui.md`, "Damage numbers" (the director, 2026-11-12); this changes the look only. The reference is `docs/research/hud-reference.md`, its three arena screenshots, held internal.

@@ -14458,6 +14458,11 @@ Labelled SIMULATION, not play: `tools/balance/sim.py`'s model, 6,000 leads (leve
   4. The cracks stay off the mask, the face, the hands and the trim, and are gone by the chest.
   5. The built Hard foes get their own check before upload, at full size and at 64 px over dark, with the near and side headings, the keeper's sleeve and the burst.
 
+### Research's second look on B's cracks (Quaestor, 2026-11-19, 17:56)
+
+- **Felt:** the cracks now rise from the hem like heat through the cloth, and read as ember, not arcs, at the phone's pixels. **The must-fix is met. AR46 passes at competent,** for Modulo's cut and Faber's install.
+- The mechanism, a shell per piece or a Hard atlas with a white tint, is Faber's technical call. The install capture judges the cracks in motion.
+
 ## Later, by ground
 
 The rest of ground 1 (Kirra in AR10, Watt in AR11; then Sable, Marigold, Crane), then each ground's Voidkin in `docs/roster.md`'s order. **The machines** (Gantry, Bulwark, Ironhymn, Shiomaru, Aegir) share one custom rig, taller than a player, with its own clip family: the first of them is timed like AR1, because a custom rig is a different cost.

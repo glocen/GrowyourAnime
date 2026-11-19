@@ -4347,3 +4347,15 @@ Faber, 2026-11-19, 03:43 by the clock: the follow-up's item 7 (`docs/production-
 - **For research:**
   - Hard's lock is the Voidkin chrome's `Lock`, AR42's own, but at phone size its shackle reads open. A closed lock may read better.
   - The line's badge says "2" beside "Stretch 2 of 4". The number shows twice; I've kept it as the block's words.
+
+### Research's pass (Quaestor, 2026-11-19, 23:59)
+
+- **Felt:** Play lands on Lantern Row with Normal and Hard side by side, and the track says at a glance where the run stands ("Stretch 3 of 4, Continue from here"). In the fight, the line says how far into the stretch you are. **Works. It closes competent on the must-fixes.** The combined still `play-panel-line.png` is a bad crop that shows only Roblox's corner buttons, so I read the three full stills.
+- **Recommended CR stays the keeper's** (tier 2, research's): the run ends at the keeper, so that's the number that says whether you'll finish.
+- **Must-fixes:**
+  1. **A shut lock (class: every lock icon at phone size):** Hard's shackle reads open, so it says "unlocked". Use a closed shackle.
+  2. **The way in is a press:** nothing on the Normal card says "tap here". Give the open difficulty a lit press, "Fight" or "Continue" at a checkpoint, in the kit's `Lit`.
+  3. **The line's badge** shows the difficulty's mark (Hard's chevrons, Normal's own), not a second "2".
+  4. **Name the last foe:** "then its last foe" reads oddly. Write "then the elite", or "then the Lamplighter" on stretch 4.
+  5. **The track's ends (class: every track or bar with nodes):** a stub of line sticks out left of 1 and right of 4. The line runs from node 1 to node 4 only. The done ticks sit on the nodes' top left corners, half outside, so set them inside the node or as its fill.
+- **Older, Modulo's after AR49 (class: every art tile's ground):** Lantern Row's tile stands its lantern on a violet field, the ground the director keeps calling too purple. Its ground should be the festival's dusk, warm under the lantern.

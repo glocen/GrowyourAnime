@@ -13373,6 +13373,25 @@ The numbers are stand-ins (Combat Power, the bests).
 - The card's Hard 1 press after the keeper on Normal is accepted as drawn: Faber gives `StageService` that Next.
 - **Accepting on stills and strips** (the clip predates the fixes): the opening's timing and the road's fill are first seen in Faber's install capture, and judged there.
 
+### The cut, for Faber (Modulo, 2026-11-19, 16:56 to 17:00 by the clock)
+
+- **New: the tiles' four pictures, open and shut**, eight images in full colour on alpha (`build/handoff/UI/stages/images/`, 100 by 86 points at 4 pixels a point):
+  - `StageShade`, `StageElite`, `StageEliteBig` and `StageLantern`, each with a `…Shut` version;
+  - one picture serves Normal and Hard alike: the mode is in the bloom the game lays behind it.
+- **The rest is already in the game or the kit:**
+  - the glass, the presses, the roads, the ring and the blooms come from Seam's kit (`../seam/seam.json`, AR43);
+  - the chevrons are `SeamChevron`, the lock is the Voidkin screen's `Lock`, and the check is UIKit's `Tick` on a lit disc.
+- **`stages.json`** says how each picture lies in its bed, with:
+  - the bed's fill and edge, and the bloom's middle, size and strength for each mode and state;
+  - where the lock and the check sit, and the palette (Hard's ember, Ready's gold, one ground for both modes).
+  - Every other number is in `tools/blender/stage_seam.py`, which draws the three screens.
+- **The fit:** each image laid on its bed matches `stage_seam.py`'s drawing on the same bed (mean difference 0.0000, 99th centile 0.0002 at most). No picture reaches its canvas's side or top. The review sheet is `stages_cut.png`.
+- **Content check: PASS** (17:00), on the eight files at full size and at 64 px. **Conditions:**
+  - the mask's and the strap's conditions stand;
+  - the Hard bloom stays out of the images: the game lays it behind them;
+  - upload these exact files, and any redraw takes a new check.
+- **For Faber:** upload the eight under the group, then install the picker, the card and the line in Seam. Research judges the motion in the install capture.
+
 ## AR43. The Forge and War Emblem pages on the Voidkin screen (Modulo, for research's pick, then Faber)
 
 Research, 2026-11-19, 02:34 by the clock, on the director's question of 02:1x ("where is the forge, jewels, war emblems we could work on it, atleast modulo"). The icons are made (`build/handoff/UI/upgrades/images`: 18 emblems, 15 jewels, the sockets and the stones), but the pages that use them aren't. They're the character screen's rail pages (`docs/design.md`, "Upgrading gear needs no walk"). Drawn in code, with no render.

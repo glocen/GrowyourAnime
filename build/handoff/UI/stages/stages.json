@@ -1,0 +1,220 @@
+{
+  "what": "AR42, the stages' tile pictures (research's second look, 2026-11-19, 16:55: passed for Faber's install). The rest of the picker, the results card and the run's line are Seam's kit (../seam/seam.json) laid as tools/blender/stage_seam.py draws them. From tools/blender/stage_cut.py; drawn in code, no image input",
+  "pixelsPerPoint": 4,
+  "images": {
+    "StageShade": {
+      "file": "images/StageShade.png",
+      "pixels": [
+        400,
+        344
+      ],
+      "points": [
+        100.0,
+        86.0
+      ],
+      "stage": "Stage 1: a Shade",
+      "state": "open",
+      "fit": {
+        "mean": 0.0,
+        "p99": 0.0
+      }
+    },
+    "StageShadeShut": {
+      "file": "images/StageShadeShut.png",
+      "pixels": [
+        400,
+        344
+      ],
+      "points": [
+        100.0,
+        86.0
+      ],
+      "stage": "Stage 1: a Shade",
+      "state": "shut",
+      "fit": {
+        "mean": 0.0,
+        "p99": 0.0
+      }
+    },
+    "StageElite": {
+      "file": "images/StageElite.png",
+      "pixels": [
+        400,
+        344
+      ],
+      "points": [
+        100.0,
+        86.0
+      ],
+      "stage": "Stage 2: an elite",
+      "state": "open",
+      "fit": {
+        "mean": 0.0,
+        "p99": 0.0
+      }
+    },
+    "StageEliteShut": {
+      "file": "images/StageEliteShut.png",
+      "pixels": [
+        400,
+        344
+      ],
+      "points": [
+        100.0,
+        86.0
+      ],
+      "stage": "Stage 2: an elite",
+      "state": "shut",
+      "fit": {
+        "mean": 0.0,
+        "p99": 0.0
+      }
+    },
+    "StageEliteBig": {
+      "file": "images/StageEliteBig.png",
+      "pixels": [
+        400,
+        344
+      ],
+      "points": [
+        100.0,
+        86.0
+      ],
+      "stage": "Stage 3: a bigger elite",
+      "state": "open",
+      "fit": {
+        "mean": 0.0,
+        "p99": 2e-05
+      }
+    },
+    "StageEliteBigShut": {
+      "file": "images/StageEliteBigShut.png",
+      "pixels": [
+        400,
+        344
+      ],
+      "points": [
+        100.0,
+        86.0
+      ],
+      "stage": "Stage 3: a bigger elite",
+      "state": "shut",
+      "fit": {
+        "mean": 0.0,
+        "p99": 0.0
+      }
+    },
+    "StageLantern": {
+      "file": "images/StageLantern.png",
+      "pixels": [
+        400,
+        344
+      ],
+      "points": [
+        100.0,
+        86.0
+      ],
+      "stage": "the Lamplighter",
+      "state": "open",
+      "fit": {
+        "mean": 1e-05,
+        "p99": 0.00021
+      }
+    },
+    "StageLanternShut": {
+      "file": "images/StageLanternShut.png",
+      "pixels": [
+        400,
+        344
+      ],
+      "points": [
+        100.0,
+        86.0
+      ],
+      "stage": "the Lamplighter",
+      "state": "shut",
+      "fit": {
+        "mean": 0.0,
+        "p99": 0.0
+      }
+    }
+  },
+  "lay": {
+    "picture": "an ImageLabel the bed's full height (86 points at the smallest phone), 100 by 86, centred across the bed, over the bed and its bloom; the bed clips it. The open picture on every open tile, the shut one on a shut tile, on Normal and on Hard alike",
+    "bed": {
+      "fill": [
+        "#0E0B1A",
+        "#08070F"
+      ],
+      "edge": "#51477A",
+      "edgeTransparency": 0.2,
+      "corner": 4,
+      "note": "a Frame inset 6 points in the tile; UIGradient Rotation 90, fill top to foot"
+    },
+    "bloom": {
+      "image": "ScreenBloom (../seam)",
+      "middle": [
+        0.5,
+        0.593
+      ],
+      "laid": [
+        231.8,
+        180.6
+      ],
+      "strength": {
+        "next, normal": 0.75,
+        "next, hard": 0.55,
+        "open, normal": 0.42,
+        "open, hard": 0.32
+      },
+      "note": "behind the picture, under it in the bed: the mode's bloom colour at ImageTransparency 1 - strength; none on a shut tile. Its middle as a fraction of the bed, its size in points (ScreenBloom drawn out to 2.5 radii each way)"
+    },
+    "lock": "the Voidkin screen's Lock (Config.Hud), the soft colour, 26 points, its middle across the bed's and 53 points under its top, on a shut tile",
+    "check": "on a cleared tile: a lit disc of 10 points' radius, its middle 15 in from the bed's top right (the mode's lit pair down it), UIKit's Tick in ink across it, 11 by 9",
+    "chevrons": "SeamChevron, the ember edge, on Hard's badge and the switch"
+  },
+  "palette": {
+    "accent": {
+      "normal": {
+        "edge": "#EDE4FF",
+        "lit": [
+          "#FFFFFF",
+          "#D4C6FF"
+        ],
+        "road": [
+          "#A89CD8",
+          "#EDE4FF"
+        ],
+        "bloom": "#5C48AC",
+        "glow": "#D4C6FF"
+      },
+      "hard": {
+        "edge": "#FF9A80",
+        "lit": [
+          "#FFF4EE",
+          "#FFB4A0"
+        ],
+        "road": [
+          "#C2503F",
+          "#FFC2B2"
+        ],
+        "bloom": "#E85A44",
+        "glow": "#FF9A80"
+      }
+    },
+    "ready": "#FFD880",
+    "ground": [
+      "#1F1942",
+      "#0D0B1A"
+    ],
+    "tile": [
+      "#2F2758",
+      "#16122C"
+    ],
+    "shut": [
+      "#1C1834",
+      "#110E20"
+    ],
+    "note": "Hard keeps Normal's value (research's must-fix 2): ground, tile and shut are one for both"
+  }
+}

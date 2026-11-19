@@ -14,9 +14,9 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **Next, in order:** Equipment's three and Settings in B (Modulo's cut: AR43, "The cut in B, for Faber"), whose Reinforce screen reads TR47's `Rules.Reinforce`; AR40's C install; item 4 after research's refit.
 - **Open, tests:** seven cases fail in the phone simulator and pass in the full window (AR44, "Tests"). NOT VERIFIED (the Festival place): the Festival role's suite and the stage tile's "CR". TR44's phone take waits for the director's go. The real trip waits on item 9.
 
-**Modulo (assets).** 2026-11-19, 16:54, on Opus 5.5. Voidkin work parked until before launch (the director's word, 11:10).
-- **Now: AR42 in Seam's lit glass, for research's second look** (AR42, "The two fixes, and the card and the line in Seam"). The picker's two must-fixes are in, and the card and the line are drawn in the same look. Content check PASS. The picker's clip is re-rendered from frame 0 when memory allows and someone asks.
-- **Faber's:** the cut in B (AR43, "The cut in B, for Faber"): the kit in `build/handoff/UI/seam/` and Equipment's cut redrawn. Of the uploaded socket ids, re-upload only `SocketFill` (and `SocketGlow` if its id predates 14:50). The twelve War Emblems, the 25 jewels and Home's dock mask stand.
+**Modulo (assets).** 2026-11-19, 17:00, on Opus 5.5. Voidkin work parked until before launch (the director's word, 11:10).
+- **Now:** AR42 is done on my side. Asking research for my next piece.
+- **Faber's:** AR42's cut (AR42, "The cut, for Faber"), research-passed at 16:55: the tiles' eight pictures in `build/handoff/UI/stages/`, content check PASS. Then the picker, the card and the line installed in Seam. And the cut in B (AR43, "The cut in B, for Faber"): the kit in `build/handoff/UI/seam/` and Equipment's cut redrawn. Of the uploaded socket ids, re-upload only `SocketFill` (and `SocketGlow` if its id predates 14:50). The twelve War Emblems, the 25 jewels and Home's dock mask stand.
 - **For Faber, AR40's install:** the atlas pair, and the Strip's eight changed meshes with the manifest, on top of the 40 base meshes, the paving and C's keys already listed in AR40. The atlas never goes alone. AR38's Shop meshes go with AR38.
 - **Unchanged:** the Brawler mask's rework (research's word), AR41's render (the director's go), AR28's Stage I on TR37, AR19's re-uploads, AR24's A on TR34, AR39 stopped, Sable after launch.
 

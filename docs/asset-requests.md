@@ -14966,6 +14966,27 @@ Research, 2026-11-19, 22:58 by the clock. The states are designed (`docs/design.
 - **Faber's, after TR49:** the states' rules (`Rules.Fight`, the numbers in Config from `handbook/feel/combat.md`), with cases, then these cues on them.
 - **Waits:** poise and the stagger ring (the states' other half), the elements' sounds, a signature's own state (Rill's Cold Snap keeps its own look).
 
+### The block-in: four cues beside a plain hit, grey then colour (Modulo, 2026-11-19, before AR49's pause, and 2026-11-20, 00:07 to 00:13 by the clock)
+
+- **The sheet:** `build/scratch/modulo/ar48/element_states.png` (grey rows, then colour, every tile at the smallest phone's pixels, off/on counts by the handbook), with `element_states_close.png` at twice the pixels and `element_states_64.png` (every colour frame 64 pixels across, on the dark).
+  - Shown on the Shade and Rook from the player's camera on Lantern Row's paving by day, with a grey stand-in lead.
+  - Made by `tools/blender/element_states_fx.py` (`Shade`, `Rook`, then `sheet`). Each body is one process, so a run stays under 1.1 GB.
+- **Hero shapes, one each:**
+  - **Burn:** embers rising off the body, lifted fast, then drifting and shrinking out, 3 s.
+  - **Chill:** a sleeve of ice round the legs, its top a crown of teeth, climbing a step a frost hit (three steps 0.8 s apart, feet to hips).
+  - **Freeze:** a faceted shell. It snaps up out of the sleeve and shuts in 0.1 s, its edges flash once, and it holds clear for 2 s with a glint crossing it. Then it breaks into chips about half a facet's size, flung out and falling in 0.4 s.
+  - **Shock:** short jagged arcs crawling over the body, three frames each, in bursts about three a second.
+  - **Sap:** dark motes circling in round the upper body and sinking slowly, each round with a thin violet rim on its top, dark first.
+    - The content check (00:11) blocked the first take: its motes fell under gravity and stretched with a trail, which can read as dark drips off a struck body.
+    - Now each mote eases out, never speeds up, stays a circle, and shrinks to a point above the knees, never reaching the ground.
+  - Each state is quieter than the hit's spark, and the silhouette shows through every frame. The ice is laid at 0.42 for the fill.
+- **The fix from the paused take:** the ice's facet edges drew black and red lines. An edge thinner than a pixel blended with the fill in the ID pass, matched neither key, and left bare body showing through the frost.
+  - The ID pass is now by object colour, with everything that isn't ice in black, and the keys are unmixed in linear light.
+  - The edges went from 0.045 to 0.07 studs (the sleeve's from 0.04 to 0.06), so they read as pale ice lines.
+- **Modulo's read:** at 64 pixels, only Frost and the hit's spark read; Sap is a few dark specks and Shock a few pink ticks. At the phone's own pixels all four read on both bodies. A state is meant to read quieter than a hit, so this is research's call: say if Sap or Shock should read louder at phone size.
+- **Content check:** first BLOCK on Sap only (00:11, the falling drops), then PASS on the re-render at 00:12, all five rows. For the build: Sap's motes stay round and easing out, and a fall or a streak needs a fresh check. Burn's rim stays orange, never crimson, and its embers never fall or settle.
+- **Next:** research's pick, then Faber after TR49's states.
+
 ## AR49. Home's panel: three cards with their own art (Modulo, for research's pick, then Faber)
 
 Research, 2026-11-19, 23:20 by the clock, on the director's word of 23:20 (`docs/decisions.md`, the row): "MAKE IT LOOOK GOOD".

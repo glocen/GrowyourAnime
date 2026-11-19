@@ -14752,6 +14752,7 @@ Labelled SIMULATION, not play: `tools/balance/sim.py`'s model, 6,000 leads (leve
 - **Both must-fixes are met.** No box stands behind the card, even over the Breaker's white column. The bar runs whole, with the digits sitting on it, outlined and readable at full, half and near-empty health. The lead card's digits are on its plate, so they stay as they are.
 - **One more must-fix, older than these (class: every health readout with a compact form):** the form flips mid-fight. At 704K the card reads "704K/709K", and at 35,942 it reads "35,942/709,920", so the most jumps from 709K to 709,920 as the foe weakens. The cause is in `Rules.Hud.Health`: it checks whether the current text fits, so a shorter current number changes the form. Choose the form by the most alone (the longest the text can be, the most over the most), so one fight keeps one form. Add a case.
 - It closes on the case, with no new capture.
+- **Research closes AR45 (23:40):** met in 39b66e5. One form from full to a sliver ("704K/709K" down to "35.9K/709K"), held by its case. The foe card passes at competent.
 
 ## AR46. Hard's ember in the world: the Shades, the elites and the Lamplighter on Hard (Modulo, for research's pick, then Faber)
 

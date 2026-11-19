@@ -528,6 +528,7 @@ def main():
     scene = bl.reset_scene()
     materials = ss.materials("Strength")
     surfaces(materials)
+    ss.SHIPPED_PACK = True  # the Brawler's cuts packed as shipped, then moved to today's shapes (AR47)
     joints, groups = take_pieces(scene, materials)
     hidden = total = 0
     for index, piece in enumerate(PIECES):
@@ -538,6 +539,7 @@ def main():
     whole = bl.join([o for piece in PIECES for o in groups[piece]], "Shade")
     area, density = rm.unwrap(whole, SURFACES, LIT)
     print(f"faces {total}, unseen {hidden}; seen area {area:.1f} sq studs; {density:.0f} px per stud at {SIZE}")
+    print(f"settled: {ss.settle(whole)} points of the Brawler's cuts and teeth moved to today's shapes")
     paths = bake(whole, out)
     made = split(whole)
     recipe = export(made, paths, out, density)

@@ -28,6 +28,9 @@ TYPES = {"Strength": "#EA4B4F", "Endurance": "#F4902A", "Agility": "#3F9DF2", "I
 MASKS = {"Brawler": ("Strength", "round, grinning"), "Guard": ("Endurance", "square, with a brow"),
          "Dasher": ("Agility", "long, pointed"), "Support": ("Intelligence", "a half-mask, veiled")}
 MASK_Y = 0.76  # the mask's back face: it hangs just clear of the collar
+# Set by shade_model.py: the Brawler's cuts and teeth are built in their shapes as first shipped (AR2), each carrying
+# its move to today's shape, so the atlas packs as it shipped and only the mask's own texels change (pinned, settle).
+SHIPPED_PACK = False
 PIVOTS = rs.PIVOTS
 B = rs.B
 
@@ -62,6 +65,46 @@ def plate(name, outline, y0, thick, material):
 def arc(cx, cz, r, a0, a1, n):
     return [(cx + r * math.cos(math.radians(a0 + (a1 - a0) * i / n)), cz + r * math.sin(math.radians(a0 + (a1 - a0) * i / n)))
             for i in range(n + 1)]
+
+
+def almond(cx, cz, a, b, n=8):
+    """An almond hole: a lens of two arcs, `a` half wide and `b` half tall, its corners level at cz."""
+    rr = (a * a + b * b) / (2 * b)
+    t = math.degrees(math.asin(a / rr))
+    return arc(cx, cz - (rr - b), rr, 90 - t, 90 + t, n)[:-1] + arc(cx, cz + (rr - b), rr, 270 - t, 270 + t, n)[:-1]
+
+
+def pinned(now, then):
+    """`then`, a piece in its shape as first shipped, carrying in the point attribute `move` the way to `now`, its
+    shape today, which is removed. The unwrap packs the shipped shapes and settle() then moves the points, so a new
+    cut keeps its old cut's place on the atlas and no other island moves. Both have the same points in the same order
+    round the same way, so the shipped triangles stay whole on today's shape."""
+    a, b = then.data.vertices, now.data.vertices
+    if len(a) != len(b):
+        raise ValueError(f"{then.name}: {len(a)} points as shipped, {len(b)} today")
+    move = then.data.attributes.new("move", "FLOAT_VECTOR", "POINT")
+    for i, (p, q) in enumerate(zip(a, b)):
+        move.data[i].vector = q.co - p.co
+    mesh = now.data
+    bpy.data.objects.remove(now)
+    bpy.data.meshes.remove(mesh)
+    return then
+
+
+def settle(obj):
+    """Moves each point by its `move`, then drops the attribute. Returns how many points moved."""
+    mesh = obj.data
+    move = mesh.attributes.get("move")
+    if move is None:
+        return 0
+    d = np.empty(len(mesh.vertices) * 3, np.float32)
+    move.data.foreach_get("vector", d)
+    co = np.empty_like(d)
+    mesh.vertices.foreach_get("co", co)
+    mesh.vertices.foreach_set("co", co + d)
+    mesh.attributes.remove(move)
+    mesh.update()
+    return int(np.count_nonzero(np.abs(d.reshape(-1, 3)).max(1) > 1e-7))
 
 
 def disc(cx, cz, r, n=16):
@@ -163,10 +206,13 @@ def mask(kind, m):
     and the mouth cut through to the light, and ink where a brush went."""
     paper, y = m["Paper"], MASK_Y
     if kind == "Brawler":
-        # Cut by hand from one sheet: not quite round, a tab each side for the strings. The grin is cut lopsided
-        # behind four teeth no two alike, and one eye laughs wider than the other. No brows: the content check's block
-        # (AR42, 02:31) found the two ink strokes low at the middle nearing a known meme face, so AR47 took them off.
+        # Cut by hand from one sheet: not quite round, a tab each side for the strings. Two level almond holes, one
+        # wider than the other, and a lopsided grin behind four paper teeth no two alike, as the stage tile draws it
+        # (stage_screen.py, mask). No ink: the content check's block (AR42, 02:31) found the brows low at the middle
+        # nearing a known meme face, so AR47 took them off, and research matched the model to the tile (18:32): the
+        # arched eyes became the almond holes, the grin narrowed from 0.64 to 0.5, and the nose's stroke went.
         c = 4.85
+        grin_r = 0.5
         radii = (1.0, 0.96, 1.03, 0.98, 1.02, 0.95, 1.0, 1.04, 0.97, 1.01, 0.96, 1.02)
         face = []
         for i, r in enumerate(radii):
@@ -176,15 +222,28 @@ def mask(kind, m):
                 face += [(-1.26, c + 0.17), (-1.26, c - 0.15)]
             if i == 11:
                 face += [(1.26, c - 0.17), (1.26, c + 0.15)]
-        low = arc(0.02, c + 0.1, 0.64, 200, 340, 12)
-        grin = turned(low + [(x, low[0][1] + (z - low[0][1]) * 0.3) for x, z in reversed(low[1:-1])], 6, (0, c))
-        eyes = [cut("Eye", arc(e * 0.38, c + 0.2, r, 15, 165, 8) + arc(e * 0.38, c + 0.2, r * 0.5, 165, 15, 8), m)
-                for e, r in ((-1, 0.25), (1, 0.19))]
-        teeth = [rs.slab("Tooth", (x, y + 0.16, c - 0.36 + dz), (w, 0.02, 0.5), paper, rot=(0, tilt, 0))
-                 for x, w, dz, tilt in ((-0.4, 0.09, 0.0, 4), (-0.14, 0.06, -0.02, -3), (0.14, 0.1, 0.02, 2), (0.4, 0.06, 0.05, 7))]
-        nose = rs.slab("InkNose", (0.02, y + 0.15, c + 0.06), (0.07, 0.016, 0.2), m["Ink"], rot=(0, 5, 0))
-        return [raised("Mask", face, y, 0.14, paper, inset=0.84), rim(face, m, 1.07), cut("Grin", grin, m), *eyes, *teeth, nose,
-                *ties(m, c, 1.22)]
+        def grin(r, at):
+            low = arc(0.02, at, r, 200, 340, 12)
+            return cut("Grin", turned(low + [(x, low[0][1] + (z - low[0][1]) * 0.3) for x, z in reversed(low[1:-1])],
+                                      6, (0, c)), m)
+
+        def eye(e, now):  # today's almond, or as shipped: an arc over a half-size arc, 18 points either way
+            if now:
+                a, b = {-1: (0.2, 0.125), 1: (0.17, 0.105)}[e]
+                return cut("Eye", almond(e * 0.38, c + 0.22, a, b, n=9), m)
+            r = {-1: 0.25, 1: 0.19}[e]
+            return cut("Eye", arc(e * 0.38, c + 0.2, r, 15, 165, 8) + arc(e * 0.38, c + 0.2, r * 0.5, 165, 15, 8), m)
+
+        def tooth(x, w, dz, tilt, spread):
+            return rs.slab("Tooth", (x * spread, y + 0.16, c - 0.36 + dz), (w, 0.02, 0.5), paper, rot=(0, tilt, 0))
+
+        teeth_at = ((-0.4, 0.09, 0.0, 4), (-0.14, 0.06, -0.02, -3), (0.14, 0.1, 0.02, 2), (0.4, 0.06, 0.05, 7))
+        if SHIPPED_PACK:
+            cuts = [pinned(grin(grin_r, c), grin(0.64, c + 0.1)), *(pinned(eye(e, True), eye(e, False)) for e in (-1, 1)),
+                    *(pinned(tooth(*t, grin_r / 0.64), tooth(*t, 1.0)) for t in teeth_at)]
+        else:
+            cuts = [grin(grin_r, c), eye(-1, True), eye(1, True), *(tooth(*t, grin_r / 0.64) for t in teeth_at)]
+        return [raised("Mask", face, y, 0.14, paper, inset=0.84), rim(face, m, 1.07), *cuts, *ties(m, c, 1.22)]
     if kind == "Guard":  # a square under two heavy brows that meet low in the middle and jut past its sides
         face = [(-0.95, 4.2), (-0.7, 3.95), (0.7, 3.95), (0.95, 4.2), (0.95, 5.75), (-0.95, 5.75)]
         brows = [rs.slab("Brow", (e * 0.6, y + 0.22, 5.3), (1.3, 0.44, 0.34), m["PaperShade"], rot=(0, -13 * e, 0)) for e in (-1, 1)]

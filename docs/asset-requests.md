@@ -14497,13 +14497,19 @@ Labelled SIMULATION, not play: `tools/balance/sim.py`'s model, 6,000 leads (leve
   - The paper mask keeps its cut holes and its grin's cuts, read as a mask, not a face. Never a hood, a blue jacket, round sockets or dot pupils.
 - **Done when:** the content check passes on the exact files at full size and at 64 px; research's look at the phone's pixels, Normal and Hard; and the re-upload handed to Faber with AR46's cut.
 
-### The rework, for Faber (Modulo, 2026-11-19, 18:22 to 18:31 by the clock)
+### The rework, for Faber (Modulo, 2026-11-19, 18:22 to 18:40 by the clock)
 
-- **What changed:** the two ink brows are off the Brawler mask (`tools/blender/shade_sheet.py`, `mask("Brawler")`). Its paper keeps the cut eye arcs, the lopsided grin with its four teeth, the nose's ink stroke and the ties. The mask is 500 triangles (was 524), and the Brawler with its body is 2944.
+- **What changed:** the Brawler mask now has the stage tile's face (`stage_screen.py`, `mask`). First the brows came off (18:31); then research asked that the model match the tile (18:32). In `tools/blender/shade_sheet.py`, `mask("Brawler")`:
+  - two level almond holes, one wider than the other, where the arched eyes were;
+  - the grin narrowed from 0.64 to 0.5 and centred on the mask, its four teeth spaced to it;
+  - no ink at all: the brows and the nose's stroke are gone.
+  - The paper, its rim, its tabs and its ties are unchanged. The mask is 488 triangles (was 524), and the Brawler with its body is 2932.
+  - The tile draws the model's x as its own left to right, so it shows the mask as from behind: its wider eye is on the viewer's left, the model's on the viewer's right. The model keeps its own side, as before.
+- **The atlas's pack is pinned** to the shipped one. The unwrap packs every lit island together, so a new cut's shape had moved every island. Now the Brawler's cuts and teeth are unwrapped in their shapes as shipped, then moved to today's (`shade_sheet.py`, `SHIPPED_PACK`, `pinned` and `settle`; 152 points). Each has the same points round the same way, so its triangles stay whole.
 - **Re-baked, in `build/handoff/Shade/`** (`shade_model.py`, then `shade_elite_bare.py write`, then `hard_cut.py shade` and `sheet`):
-  - `Shade_MaskBrawler.json`, and `Shade_MaskBrawlerBare.json`, the elite's shoulder mask (`EliteMask_Brawler`, 440 triangles). Its centre is unchanged, so the recipe's `elite` placement and `ELITE_SIZE` stand. Its points lie on the whole mask's within 0.00001 studs.
-  - `Shade_Color.png` and `Shade_Emissive.png`: only the mask's face island changed (texels x 355 to 468, y 888 to 971). `Shade_Roughness.png` and the other eight pieces are byte-identical.
-  - AR46's Hard pair for the Shade, re-cut on the new atlas: `hard/Shade_Color_HardRed.png`, `Shade_Color_HardTint.png` and `Shade_Emissive_Hard.png`. `hard.json`'s fit is 8.88 (was 8.92). The Lamplighter's are unchanged.
+  - `Shade_MaskBrawler.json`, and `Shade_MaskBrawlerBare.json`, the elite's shoulder mask (`EliteMask_Brawler`, 428 triangles). Its centre is unchanged, so the recipe's `elite` placement and `ELITE_SIZE` stand. Its points lie on the whole mask's within 0.00001 studs.
+  - `Shade_Color.png` and `Shade_Emissive.png`: only the mask's face island changed (about 3,800 texels, x 380 to 479, y 850 to 946). `Shade_Roughness.png` and the other eight pieces are identical to the shipped ones.
+  - AR46's Hard pair for the Shade, re-cut on the new atlas: `hard/Shade_Color_HardRed.png`, `Shade_Color_HardTint.png` and `Shade_Emissive_Hard.png`. `hard.json`'s fit is 8.84 (was 8.92). The Lamplighter's are unchanged.
   - `Shade.recipe.json` (its triangle counts), `shade_model_sheet.png` and `shade_elite_bare.png`.
 - **Rollback:** the shipped files are in git at d5389f4. The scratch model as it was is in `build/scratch/modulo/shade/model-before-ar47-2026-11-19/`.
 - **The look:** `build/scratch/modulo/ember/brawler_mask_look.png` (`tools/blender/brawler_mask_look.py`). It shows Normal and Hard in Faber's day capture at twice its size, at the smallest phone's 450 pixels high (where the near mask is about 44 pixels tall), and at 64 px over dark.
@@ -14511,11 +14517,14 @@ Labelled SIMULATION, not play: `tools/balance/sim.py`'s model, 6,000 leads (leve
 - **For Faber, one upload with AR46's cut:**
   - Re-upload under the group, together: the meshes `Shade_MaskBrawler` and `Shade_MaskBrawlerBare` (new ids in `tools/studio/Models/Shade.luau`'s MESHES), the maps `Shade_Color` and `Shade_Emissive` (MAPS), and the Shade's three Hard maps as his route needs.
   - `Shade_Roughness` and the other meshes stay as they are.
-- **Content check:** PASS 2026-11-19, 18:30, with three conditions:
-  1. Only the maps and the two meshes go up. The sheets and the before copy stay internal.
+- **Content check:** PASS on the brows alone (18:30), then PASS on the tile's face (2026-11-19, 18:41), with four conditions:
+  1. Only these go up, under the group: `Shade_Color` and `Shade_Emissive`, the Shade's three Hard maps, and the meshes `Shade_MaskBrawler` (488 triangles) and `Shade_MaskBrawlerBare` (428), new ids in `Shade.luau`. Every sheet, the before copy and the stand-in frames stay internal.
   2. AR46's four conditions of 18:19 still hold.
-  3. AR42's guard: the brows never come back; never a hood, a blue jacket, round sockets or dot pupils. On Hard, the coral stays inside the cuts, with no glow or streak running below the mouth or the eyes. If one shows in the installed capture, it comes back to the check.
-- **Open:** research's look at the phone's pixels. The tile's picture (`stage_screen.py`, AR42) also has almond holes, a narrower grin and no nose. AR47 scoped the brows only, so the model keeps its arcs, its grin and its nose.
+  3. The installed player-camera capture of a Hard Shade also shows two things:
+     - the elite's shoulder mask with its holes lit like the head mask's. The preview draws them dark, and dark holes over a grin read as a skull's;
+     - the coral staying inside the eye and grin cuts, with no glow or streak below the mouth or the eyes. If one shows, it comes back to the check.
+  4. AR42's guard as it now stands: no ink brows ever; no hood or blue jacket; the holes almond and lit, never round dark sockets, never dot pupils.
+- **Open:** research's look on the same frames, which closes AR47 (research, 18:32: "no further round"). Faber holds the Shade's files until then.
 
 ### Research's look on the rework (Quaestor, 2026-11-19, 18:32)
 

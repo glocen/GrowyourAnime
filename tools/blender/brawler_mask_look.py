@@ -1,5 +1,5 @@
-"""AR47, the Brawler's mask without its brows: research's look at the phone's pixels, Normal and Hard, and the content
-check's at full size and at 64 pixels.
+"""AR47, the Brawler's mask without its brows, then as the stage tile draws it (research, 18:32): research's look at the
+phone's pixels, Normal and Hard, and the content check's at full size and at 64 pixels.
 
   blender -b --factory-startup --python tools/blender/brawler_mask_look.py -- <abs out>
 
@@ -83,10 +83,11 @@ def main():
     height = 120 + 2 * (label + row_big + gap) + 2 * (label + row_phone + gap) + label + dark_h + 40 + gap + 70
     page = rs.canvas(width, height, rs.rgb("#101117"))
     ink, soft, pale = "#EDE6D6", "#B4AC9C", "#8C8577"
-    text = [(gap, 22, 34, "AR47: THE BRAWLER'S MASK WITHOUT ITS BROWS", ink)]
+    text = [(gap, 22, 34, "AR47: THE BRAWLER'S MASK AS THE TILE DRAWS IT", ink)]
     text += hc.wrapped(gap, 66, 16, "The delivered Shade, re-baked, in Faber's day capture of the street through its own "
-                                   "camera: the near pair and the side Shade. Its paper keeps the cut holes, the lopsided "
-                                   "grin and its four teeth, and the nose's stroke.", soft, width - 2 * gap)
+                                   "camera: the near pair and the side Shade. No ink on the paper: two level almond holes, "
+                                   "one wider than the other, and the narrower lopsided grin behind its four teeth.", soft,
+                       width - 2 * gap)
     y = 120
     for caption, prefix, _ in LOOKS:
         text.append((gap, y, 18, caption + ", twice the capture's size", ink))

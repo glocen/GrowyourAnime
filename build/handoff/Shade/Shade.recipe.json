@@ -118,7 +118,7 @@
     2.108,
     1.75
    ],
-   "tris": 500,
+   "tris": 488,
    "type": "Strength",
    "top": 5.91
   },
@@ -201,7 +201,7 @@
  ],
  "tris": {
   "body": 2444,
-  "Brawler": 2944,
+  "Brawler": 2932,
   "Guard": 2640,
   "Dasher": 2544,
   "Support": 2752

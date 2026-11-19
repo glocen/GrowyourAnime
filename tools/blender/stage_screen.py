@@ -159,7 +159,7 @@ def ellipse(t, cx, cy, rx, ry, angle=0.0):
 
 BRAWLER = (1.0, 0.96, 1.03, 0.98, 1.02, 0.95, 1.0, 1.04, 0.97, 1.01, 0.96, 1.02)   # shade_sheet.py's radii, by 30°
 TEETH = ((-0.4, 0.09, 0.0, 4), (-0.14, 0.06, -0.02, -3), (0.14, 0.1, 0.02, 2), (0.4, 0.06, 0.05, 7))
-GRIN = 0.5   # the grin's radius: the model's 0.64 narrowed, so it doesn't run cheek to cheek (the content check, AR42, 02:24)
+GRIN = 0.5   # the grin's radius, 0.64 narrowed so it doesn't run cheek to cheek (the content check, AR42, 02:24); the model's since AR47
 
 
 def mask(t, mx, my, r, tilt):

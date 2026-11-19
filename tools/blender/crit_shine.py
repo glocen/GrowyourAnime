@@ -51,7 +51,9 @@ SHEEN = ((0.0, "#FFFFFF", 0.1), (0.3, "#FFFFFF", 1.0), (0.47, "#FFFFFF", 1.0), (
          (0.62, "#3A1800", 1.0), (0.9, "#FFFFFF", 1.0), (1.0, "#FFFFFF", 0.5))
 GLINT = dict(start=0.08, seconds=0.25, width=0.1, trail=0.13, slant=-70)  # half widths, of the number's width
 FLASH = 4 / 60
-SPLIT = dict(cyan="#3DEBFF", red="#FF3D5E", wide=7.0, rest=3.4, seconds=0.2, alpha=0.85, rest_alpha=0.75)
+# C's split: struck `wide` apart on the land, drawn in to `rest` over `seconds`, eased out. Research's condition on its
+# pick (23:36): a hairline each side at rest at the phone's size by day; 3.4 vanished, 5.8 doubled the 1 (crit_rest.png)
+SPLIT = dict(cyan="#3DEBFF", red="#FF3D5E", wide=7.0, rest=4.6, seconds=0.2, alpha=0.85, rest_alpha=0.95)
 TAKES = ("Now", "A", "B", "C")
 NAMES = {"Now": "Now: the measured gold to khaki (AR44)", "A": "A, gold chrome: a polished ramp, a white flash, one glint",
          "B": "B, prism foil: a drifting rainbow under A's light", "C": "C, chromatic split: A with a cyan and a red fringe"}
@@ -160,6 +162,69 @@ def lettered(sheet, words, band=360):
             rs.paste(sheet, rs.text_layer(width, band + 40, items), 0, top)
 
 
+def rests(out, number, grounds, w, h, tries=(3.4, 4.2, 4.6, 5.0, 5.8)):
+    """C at rest (frame 45) with its split's resting width tried wider, at the phone's size and at 2 px a point."""
+    gap, margin, head = 8, 16, 22
+    width = margin * 2 + len(tries) * (w + gap)
+    height = 70 + len(grounds) * (head + h + 10 + h // 2 + 10) + 20
+    sheet = rs.canvas(width, height, tuple(rs.rgb("#101117")))
+    words = [(margin, 12, 20, "C at rest (frame 45): the split's resting width, each beside the next", "#EDE6D6"),
+             (margin, 40, 13, "Each try at 2 pixels a point, then at the phone's own size under it. The fringe should read "
+                              "as a hairline each side, never as a second number.", "#A9A398")]
+    y = 70
+    keep = dict(SPLIT)
+    rest_alpha = SPLIT["rest_alpha"]
+    for gname, ground in grounds.items():
+        words.append((margin, y + 3, 14, f"over {gname}", "#EDE6D6"))
+        for i, rest in enumerate(tries):
+            SPLIT["rest"], SPLIT["rest_alpha"] = rest, rest_alpha
+            big, ox, oy = popped(number.badge("C", 0.75), 0.75)
+            tile = ground.copy()
+            rs.paste(tile, big, ox, oy)
+            x = margin + i * (w + gap)
+            rs.paste(sheet, tile, x, y + head)
+            rs.paste(sheet, rs.shrink(tile, 0.5), x, y + head + h + 6)
+            words.append((x + w // 2 + 8, y + head + h + 10, 13, f"rest {rest:g} pt", "#EDE6D6"))
+        y += head + h + 10 + h // 2 + 10
+    SPLIT.update(keep)
+    lettered(sheet, words)
+    rs.save(sheet, out / "crit_rest.png")
+
+
+def cut():
+    """C, research's pick (23:36), as numbers for Config.Hud.Numbers.Critical: what changes, and the labels it adds."""
+    import json
+    path = REPO / "build" / "handoff" / "UI" / "hud" / "critical_shine.json"
+    keys = lambda stops: [[p, c] for p, c in stops]   # noqa: E731
+    path.write_text(json.dumps(dict(
+        take="C, the chromatic split (research's pick, 2026-11-19, 23:36), on the director's \"the crit text isnt "
+             "chromatic shiny right now it look sad and meh\" (about 23:28)",
+        keeps="the splash (Sweep), Outline #211306 at Weight 2.4, the Cast, Italic, Gap and the pop (Land, Pop, Count): "
+              "unchanged",
+        ramp=dict(stops=keys(CHROME), note="replaces Critical.Ramp, top to foot (Rotation 90). The two stops at 0.49 and "
+                                           "0.5 make the hard horizon: keep them apart by no more"),
+        split=dict(cyan=SPLIT["cyan"], red=SPLIT["red"], landPoints=SPLIT["wide"], restPoints=SPLIT["rest"],
+                   seconds=SPLIT["seconds"], ease="quad out", landTransparency=round(1 - SPLIT["alpha"], 2),
+                   restTransparency=round(1 - SPLIT["rest_alpha"], 2),
+                   note="two copies of the digits, no stroke, behind the critical's own label and over its cast and "
+                        "splash: cyan moved left and up, red right and down, each by d along and d/4 across (authored "
+                        "pixels), d from landPoints to restPoints over seconds from the land; their TextTransparency "
+                        "from land to rest with it. They pop and rise with the number"),
+        flash=dict(seconds=round(FLASH, 4), colour="#FFFFFF",
+                   note="a white copy of the digits over the critical's label, no stroke: TextTransparency 0 at the "
+                        "land to 1 at `seconds`, linear"),
+        glint=dict(start=GLINT["start"], seconds=GLINT["seconds"], halfWidth=GLINT["width"], trail=GLINT["trail"],
+                   trailStrength=0.6, trailHalfWidth=round(GLINT["width"] * 0.35, 3), strength=0.95,
+                   note="a white copy of the digits over the label, no stroke, its UIGradient's Transparency 1 but for "
+                        "a band (0.05 at its middle, 0.5 at about halfWidth, 1 by twice it) and a thinner trailing "
+                        "band `trail` behind it at trailStrength. The band leans with the italic, its top to the right, "
+                        "about 20 degrees off upright. Its Offset carries the band from 0.15 of the number's width "
+                        "before it to 0.15 past it, linear, from `start` seconds after the land over `seconds`. Once"),
+        sheet="build/scratch/modulo/crit/crit_shine.png (C's rows), crit_rest.png (the resting split)",
+    ), indent=1), encoding="utf-8")
+    print(f"wrote {path}")
+
+
 def main():
     out = bl.out_dir()
     rs.OUT = out
@@ -175,6 +240,11 @@ def main():
     crop = day[dy0:dy0 + round(TILE[1] * k), dx0:dx0 + round(TILE[0] * k)].copy()
     gday = ha.stretched(crop, w, h)
     grounds = {"the dark fight": gd, "Lantern Row by day": gday}
+    if sys.argv[-1] == "rest":
+        rests(out, number, grounds, w, h)
+        return
+    if sys.argv[-1] == "cut":
+        cut()
     tiles = {}
     for take in TAKES:
         for gname, ground in grounds.items():

@@ -601,6 +601,9 @@ local UIKit = {
 		CardStudGlow = { Id = "rbxassetid://124487950691758", Pixels = Vector2.new(164, 164), Points = Vector2.new(41, 41), Pad = 12 },
 		CardStud = { Id = "rbxassetid://110074874376223", Pixels = Vector2.new(164, 164), Points = Vector2.new(41, 41), Pad = 12 },
 		LevelChevrons = { Id = "rbxassetid://75727116138230", Pixels = Vector2.new(128, 128), Points = Vector2.new(32, 32), Pad = 0 },
+		-- One chevron in LevelChevrons' stroke, stood where its two stand: Normal's own mark (TR50, research's must-fix 3;
+		-- tools/ui/chevron_single.ps1).
+		ChevronSingle = { Id = "rbxassetid://106111525882911", Pixels = Vector2.new(128, 128), Points = Vector2.new(32, 32), Pad = 0 },
 		LevelPlate = { Id = "rbxassetid://126334652302553", Pixels = Vector2.new(216, 88), Points = Vector2.new(54, 22), Cut = { 24, 0, 8, 0 }, Pad = 0 },
 		LevelPlateEdge = { Id = "rbxassetid://103428031612838", Pixels = Vector2.new(216, 88), Points = Vector2.new(54, 22), Cut = { 24, 0, 8, 0 }, Pad = 0 },
 		DockBody = { Id = "rbxassetid://111782312620304", Pixels = Vector2.new(896, 384), Points = Vector2.new(224, 96), Pad = 0, At = Vector2.new(-14, -14) },

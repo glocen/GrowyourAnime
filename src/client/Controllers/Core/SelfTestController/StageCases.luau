@@ -16,6 +16,7 @@ local Shared = ReplicatedStorage.Shared
 local Net = require(Shared.Net)
 local WorldConfig = require(Shared.Config.World)
 local StagesConfig = require(Shared.Config.Stages)
+local HudConfig = require(Shared.Config.Hud)
 local Markers = require(Shared.World.Markers)
 local Stages = require(Shared.Rules.Stages)
 local Sheet = require(Shared.Rules.Sheet)
@@ -206,6 +207,8 @@ function StageCases.Cases(): { any }
 				local normalSays, hardSays = pick.NormalSays :: TextLabel?, pick.HardSays :: TextLabel?
 				t.Equal("Normal: the next run starts at stretch 2", if normalSays then normalSays.Text else nil, `Stretch 2 of {count}`)
 				t.Equal("its checkpoint, the save's", if pick.Normal then (pick.Normal :: Instance):GetAttribute("Checkpoint") else nil, 2)
+				local way = pick.NormalPress :: TextLabel?
+				t.Equal("its lit press says Continue", if way then way.Text else nil, "Continue")
 				t.Equal("Hard shut", if pick.Hard then Button.State(pick.Hard :: TextButton) else nil, "Disabled")
 				t.Check("and why", hardSays ~= nil and string.find(hardSays.Text, "on Normal", 1, true) ~= nil, if hardSays then hardSays.Text else nil)
 				for _, which in Stages.Difficulties do
@@ -382,13 +385,28 @@ function StageCases.Cases(): { any }
 				local ok, problem = pcall(function()
 					if await("Panel") then
 						open()
+						local pick = StageScreen.Parts()
+						local way = pick.NormalPress :: TextLabel?
+						t.Equal("Normal's lit press", if way then way.Text else nil, if was[2] > 1 then "Continue" else "Fight")
+						local hardPress = pick.Hard :: Instance?
+						local lock = if hardPress then hardPress:FindFirstChild("Lock", true) else nil
+						t.Check("Hard shut wears the closed lock", lock ~= nil and lock:IsA("ImageLabel") and lock.Image == HudConfig.Voidkin.Chrome.Images.LockOn.Id)
+						local normalPress = pick.Normal :: Instance?
+						local marks = if normalPress then normalPress:FindFirstChild("MarksRoad", true) else nil
+						local first = if normalPress then normalPress:FindFirstChild("Mark1Fill", true) else nil
+						t.Check("the track starts under node 1, no stub before it", marks ~= nil and first ~= nil and (marks :: GuiObject).AbsolutePosition.X > (first :: GuiObject).AbsolutePosition.X)
 					end
 					if await("Stretch3") then
 						t.Server("StageLine", "Normal", math.max(was[1], 2), 3)
 						t.Wait(REPLICATE)
 						open()
-						local says = StageScreen.Parts().NormalSays :: TextLabel?
+						local pick = StageScreen.Parts()
+						local says = pick.NormalSays :: TextLabel?
 						t.Equal("Normal's checkpoint reads stretch 3", if says then says.Text else nil, `Stretch 3 of {count}`)
+						local way = pick.NormalPress :: TextLabel?
+						t.Equal("its lit press says Continue", if way then way.Text else nil, "Continue")
+						local face = pick.Normal :: Instance?
+						t.Check("cleared nodes wear their tick, not their number", face ~= nil and face:FindFirstChild("Check1", true) ~= nil and face:FindFirstChild("Mark1Number", true) == nil and face:FindFirstChild("Mark3Number", true) ~= nil)
 					end
 					if await("Line") then
 						Screen.Close()
@@ -403,6 +421,9 @@ function StageCases.Cases(): { any }
 							said = words
 							return up and string.find(words, `Stretch 2 of {count}`, 1, true) ~= nil
 						end), said)
+						t.Check("its last foe by name", string.find(said, "then the elite", 1, true) ~= nil, said)
+						local shown = Players.LocalPlayer.PlayerGui:FindFirstChild("StageRun", true)
+						t.Check("its badge the difficulty's chevron, no second number", shown ~= nil and shown:FindFirstChild("MarkChevrons") ~= nil and shown:FindFirstChild("MarkNumber") == nil)
 					end
 					await("End")
 				end)

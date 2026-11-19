@@ -71,7 +71,7 @@ local stages = {
 		Picture = Vector2.new(100, 86),
 		Lock = { Side = 26, Down = 53 },
 	},
-	Badge = { Side = 26, Corner = 5, In = 4, Glow = 4, GlowAlpha = 0.3, Box = 18, Space = 3 },
+	Badge = { Side = 26, Corner = 5, In = 4, Glow = 4, GlowAlpha = 0.3, Box = 18, Space = 3, Mark = 18 }, -- Mark: the line's chevrons' side
 	Road = { Y = 280, Half = 5, Fill = 3, Glow = 4, GlowAlpha = 0.22, Light = 0.55 },
 	Foot = { Down = 15, Power = 84 },
 	-- The Arc panel (TR50, the director's word of 2026-11-19, 23:19): one tile for the ground, the keeper's picture on its
@@ -81,7 +81,8 @@ local stages = {
 	Arc = {
 		Title = "Festival of Battles",
 		Bed = Vector2.new(150, 153), Picture = 1.4, Gap = 8,
-		Choice = { In = 12, Top = 6, Head = 24, Marks = 60, Road = 214, Words = 12 },
+		-- Says: where the run starts, its top this far from the marks' middle; Press: the lit plate's height under it.
+		Choice = { In = 12, Top = 6, Head = 24, Marks = 60, Road = 214, Words = 12, Says = -26, Press = 28 },
 	},
 	-- The card at a run's end, over the street dimmed (Dim, the cover's transparency).
 	Card = {

@@ -61,7 +61,8 @@ local MARGIN = 18 -- round the tile's group: its glow stands past it
 local WHITE = Color3.new(1, 1, 1)
 local INK = SEAM.Ink :: Color3
 local CHEVRONS = UIKit.Images.LevelChevrons :: UIKit.Image
-local LOCK = HudConfig.Voidkin.Chrome.Images.Lock :: UIKit.Image
+local LOCK = HudConfig.Voidkin.Chrome.Images.LockOn :: UIKit.Image -- the closed shackle: shut (research's must-fix 1 on TR50)
+local CHEVRON = UIKit.Images.ChevronSingle :: UIKit.Image
 local IMAGES = LOOK.Images :: { [string]: UIKit.Image }
 local LIT_NORMAL = (function(): ColorSequence
 	local points = {}
@@ -233,7 +234,8 @@ local function plate(parent: Instance, x0: number, y0: number, w: number, h: num
 end
 
 -- A stage's mark: its number on a lit plate (or the well's, shut); on Hard, Hard's chevrons in a box beside it.
-local function badge(parent: Instance, name: string, x0: number, y0: number, n: number, hard: boolean, lit: boolean, z: number)
+-- A node's square: lit in its difficulty's light, or dark.
+local function square(parent: Instance, name: string, x0: number, y0: number, hard: boolean, lit: boolean, z: number)
 	local s, a = BADGE.Side, accent(hard)
 	if lit then
 		Glass.Glow(parent, `{name}Glow`, x0, y0, s, s, BADGE.Glow, a.Glow, BADGE.GlowAlpha, z)
@@ -246,7 +248,14 @@ local function badge(parent: Instance, name: string, x0: number, y0: number, n: 
 		Glass.Fill(parent, `{name}Fill`, x0, y0, s, s, BADGE.Corner, SEAM.Well, z + 1)
 		Glass.Edge(parent, `{name}Edge`, x0, y0, s, s, BADGE.Corner, SEAM.Edge, 1, nil, z + 3)
 	end
-	Glass.Label(parent, `{name}Number`, tostring(n), TITLE, if lit then INK else SEAM.Soft, x0, y0, s, s, nil, true, z + 4)
+end
+
+local function badge(parent: Instance, name: string, x0: number, y0: number, n: number, hard: boolean, lit: boolean, z: number, ticked: boolean?)
+	local s, a = BADGE.Side, accent(hard)
+	square(parent, name, x0, y0, hard, lit, z)
+	if not ticked then
+		Glass.Label(parent, `{name}Number`, tostring(n), TITLE, if lit then INK else SEAM.Soft, x0, y0, s, s, nil, true, z + 4)
+	end
 	if hard then
 		local bx = x0 + s + BADGE.Space
 		Glass.Fill(parent, `{name}Hard`, bx, y0, BADGE.Box, s, 4, LOOK.HardBox, z + 1)
@@ -255,8 +264,16 @@ local function badge(parent: Instance, name: string, x0: number, y0: number, n: 
 	end
 end
 
--- A cleared stage's check: a lit disc, the kit's tick in ink.
-local function check(parent: Instance, name: string, cx: number, cy: number, r: number, hard: boolean, z: number): Frame
+-- The run's mark on its line: a lit square holding its difficulty's own, Hard's two chevrons or Normal's one, never a
+-- second count beside "Stretch 2 of 4" (research's must-fix 3 on TR50).
+local function mark(parent: Instance, name: string, x0: number, y0: number, hard: boolean, z: number)
+	local s = BADGE.Side
+	square(parent, name, x0, y0, hard, true, z)
+	Glass.Mark(parent, `{name}Chevrons`, if hard then CHEVRONS else CHEVRON, x0 + s / 2, y0 + s / 2, BADGE.Mark, INK, z + 4)
+end
+
+-- A cleared stage's check: a lit disc, the kit's tick in ink, `tick` wide (r * 1.1 if nil).
+local function check(parent: Instance, name: string, cx: number, cy: number, r: number, hard: boolean, z: number, tick: number?): Frame
 	local holder = Instance.new("Frame")
 	holder.Name = name
 	holder.BackgroundTransparency = 1
@@ -265,7 +282,7 @@ local function check(parent: Instance, name: string, cx: number, cy: number, r: 
 	local scale = Instance.new("UIScale")
 	scale.Parent = holder
 	Glass.Disc(holder, "Disc", 0, 0, r, accent(hard).Lit, z)
-	Glass.Mark(holder, "Tick", UIKit.Images.Tick, 0, 0, r * 1.1, INK, z + 1)
+	Glass.Mark(holder, "Tick", UIKit.Images.Tick, 0, 0, tick or r * 1.1, INK, z + 1)
 	holder.Parent = parent
 	return holder
 end
@@ -319,16 +336,19 @@ local function marks(parent: Instance, x0: number, x1: number, y: number, rows: 
 	for k = 1, 4 do
 		xs[k] = x0 + 6 + (k - 1) * step
 	end
-	Glass.Fill(parent, "MarksRoad", x0, y - 3, x1 - x0, 6, 1.5, SEAM.Channel, z)
-	Glass.Edge(parent, "MarksRoadEdge", x0, y - 3, x1 - x0, 6, 1.5, SEAM.Edge, 0.9, nil, z)
+	-- The track runs from node 1's middle to node 4's, under them: nothing past either end (research's must-fix 5).
+	local half = BADGE.Side / 2
+	local first, last = xs[1] + half, xs[#xs] + half
+	Glass.Fill(parent, "MarksRoad", first, y - 3, last - first, 6, 1.5, SEAM.Channel, z)
+	Glass.Edge(parent, "MarksRoadEdge", first, y - 3, last - first, 6, 1.5, SEAM.Edge, 0.9, nil, z)
 	local nextK, just = table.find(rows, "next"), table.find(rows, "just")
-	local stop = if nextK then xs[nextK] + 13 else x1 - 1
-	local start = if just then xs[just] + 13 else stop
+	local stop = if nextK then xs[nextK] + half else last
+	local start = if just then xs[just] + half else stop
 	if nextK and just and nextK < just then
 		start = stop
 	end
-	local _, run = roadLight(parent, "MarksLit", x0 + 1, stop, y, 2, stop - x0, hard, z + 1)
-	local share0 = (start - x0 - 1) / math.max(stop - x0 - 1, 1)
+	local _, run = roadLight(parent, "MarksLit", first, stop, y, 2, stop - first, hard, z + 1)
+	local share0 = (start - first) / math.max(stop - first, 1)
 	run(share0)
 	local ringed: Frame? = nil
 	for k, row in rows do
@@ -345,11 +365,13 @@ local function marks(parent: Instance, x0: number, x1: number, y: number, rows: 
 			Glass.Edge(r, "EdgeIn", bx - 2.2, by - 2.2, 30.4 + tab, 30.4, 5.2, a.Edge, 1, nil, z + 2)
 			ringed = r
 		end
-		badge(parent, `Mark{k}`, bx, by, k, hard, row ~= "shut", z + 3)
+		local ticked = row == "cleared" or row == "just"
+		badge(parent, `Mark{k}`, bx, by, k, hard, row ~= "shut", z + 3, ticked)
+		-- the tick inside its node, as its fill (research's must-fix 5)
 		if row == "cleared" then
-			check(parent, `Check{k}`, bx, by, 6, hard, z + 8)
+			check(parent, `Check{k}`, bx + half, by + half, 9, hard, z + 8, 15)
 		elseif row == "just" then
-			local made = check(parent, `Check{k}`, bx, by, 7.5, hard, z + 8)
+			local made = check(parent, `Check{k}`, bx + half, by + half, 9, hard, z + 8, 15)
 			Glass.Bloom(made, "Glow", 0, 0, 34, 34, a.Glow, 0.7, z + 7)
 			parts.Just = made
 		end
@@ -443,12 +465,14 @@ local function choice(face: Frame, data: any, ground: string, which: string, w: 
 		rows[k] = if k < at then "cleared" elseif k == at then "next" else "shut"
 	end
 	local play = marks(face, C.In, C.In + C.Road, C.Marks, rows, hard, 12)
+	-- Where the run starts, and under it the way in: a lit press, Fight, or Continue at a checkpoint (research's must-fix
+	-- 2). The whole card is the press; the plate says so.
 	local wx = C.In + C.Road + C.Words
 	local ww = w - wx - C.In
-	parts[`{which}Says`] = Glass.Label(face, "Words", `Stretch {at} of {count}`, SMALL, SEAM.Text, wx, C.Marks - 19, ww, 18, Enum.TextXAlignment.Left, true, 12)
-	local best = Stages.Line(data, ground, which).Run
-	local after = if at > 1 then "Continue from here" elseif best then `Best run {Read.Clock(best)}` else `To the {keeperName(ground)}`
-	Glass.Label(face, "Then", after, SMALL, SEAM.Soft, wx, C.Marks + 1, ww, 18, Enum.TextXAlignment.Left, false, 12)
+	parts[`{which}Says`] = Glass.Label(face, "Words", `Stretch {at} of {count}`, SMALL, SEAM.Text, wx, C.Marks + C.Says, ww, 16, nil, true, 12)
+	local py = C.Marks + C.Says + 18
+	Glass.Lit(face, "Plate", wx, py, ww, C.Press, litFill(hard), accent(hard).Glow, 12)
+	parts[`{which}Press`] = Glass.Label(face, "Press", if at > 1 then "Continue" else "Fight", TITLE, INK, wx, py, ww, C.Press, nil, true, 17)
 	return play
 end
 
@@ -868,6 +892,8 @@ end
 -- The card's pieces, for the run's line (StageController): its glass, a stage's mark, a check and a road's light.
 StageScreen.Plate = plate
 StageScreen.Badge = badge
+StageScreen.Mark = mark
+StageScreen.KeeperName = keeperName
 StageScreen.Check = check
 StageScreen.Road = roadLight
 StageScreen.Accent = accent
@@ -882,7 +908,7 @@ end
 
 -- Its images made ready before the first opening: the picker's, the line's and the card's.
 do
-	local own: { UIKit.Image } = { CHEVRONS, LOCK }
+	local own: { UIKit.Image } = { CHEVRONS, CHEVRON, LOCK }
 	for _, name in { "Tick", "RailComet", "CoinMint", "ShardStandardSmall", "ChestShade", "ChestKeeper" } do
 		local record = UIKit.Images[name]
 		if record then

@@ -4359,3 +4359,14 @@ Faber, 2026-11-19, 03:43 by the clock: the follow-up's item 7 (`docs/production-
   4. **Name the last foe:** "then its last foe" reads oddly. Write "then the elite", or "then the Lamplighter" on stretch 4.
   5. **The track's ends (class: every track or bar with nodes):** a stub of line sticks out left of 1 and right of 4. The line runs from node 1 to node 4 only. The done ticks sit on the nodes' top left corners, half outside, so set them inside the node or as its fill.
 - **Older, Modulo's after AR49 (class: every art tile's ground):** Lantern Row's tile stands its lantern on a violet field, the ground the director keeps calling too purple. Its ground should be the festival's dusk, warm under the lantern.
+
+### Research's must-fixes in the game (Faber, 2026-11-20, 00:00 to 00:10 by the clock)
+
+1. **A shut lock:** Hard's lock is the closed shackle, `Voidkin.Chrome.Images.LockOn`. The Arc panel was the only place a lock stood for "shut"; the Voidkin screen's toggle keeps its open/closed pair.
+2. **The way in:** the open difficulty's card carries a lit press, "Fight", or "Continue" at a checkpoint, in the kit's `Lit` (Hard's in its ember). It sits under "Stretch k of 4" (`Config.Hud`, `Stages.Arc.Choice.Says` and `Press`). The whole card stays the tap. "Continue from here", the best run and "To the Lamplighter" leave the card: the press says it.
+3. **The line's badge:** a lit square holding the difficulty's mark, Hard's two chevrons or Normal's one (`StageScreen.Mark`). Normal's one chevron is new: `ChevronSingle`, drawn in code in LevelChevrons' stroke (`tools/ui/chevron_single.ps1`; content check PASS; 106111525882911, Approved).
+4. **The last foe by name:** "then the elite", "then the Lamplighter" on the keeper's stretch, and "the elite down".
+5. **The track** runs from node 1's middle to node 4's, under them, with nothing past either end, on the panel and the run's card. A cleared node wears its tick as its fill, centred, with no number.
+
+- **Tested:** type check 0 new. In the main place: "Take: TR50" 13/0 (the press's words, the closed lock, the track's start, the ticks in their nodes, the line's chevron and its last foe), travel 35/0, the dock 39/0. The Festival case checks the press says Continue at the checkpoint (NOT VERIFIED, item 9).
+- **Stills:** `build/captures/tr50/fixes-panel-line.png`, the three full frames stacked. Hard's line at the keeper's stretch is in `fix-line-hard-zoomed.png`.

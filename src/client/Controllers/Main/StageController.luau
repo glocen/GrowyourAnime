@@ -4,7 +4,7 @@
 -- Door), the run's card at its end (StageDone; UI.StageScreen). The run reads under Roblox's top bar from the player's
 -- attributes (StageRun, StageKills, StageQuota, StageLast), on the panel's glass (AR42; tools/blender/stage_seam.py's
 -- stage_line): the stretch's mark and "Stretch 2 of 4", its Shades on a short road with a notch a Shade, lit as they
--- fall, to its last foe's ring, and what's left at the right ("then its last foe"). A fall steps the count at once and
+-- fall, to its last foe's ring, and what's left at the right ("then the elite"). A fall steps the count at once and
 -- eases the light onto its notch with a flash; the last foe's ring pops lit as it rises, and takes a check once the
 -- stretch is cleared. Each stretch's gate shows as the server keeps it: in a run, open behind the run and at its own
 -- stretch once done (Rules.Stages.Through); outside one, open once cleared on Normal. A set-back at one says why. Another
@@ -124,8 +124,8 @@ local function build(key: string, hard: boolean, stage: number, quota: number): 
 	frame.Size = UDim2.fromOffset(wide, L.Tall)
 	frame.Position = UDim2.fromOffset(x0, L.Down)
 	StageScreen.Plate(frame, 0, 0, wide, L.Tall, hard, L.Corner, 1)
-	StageScreen.Badge(frame, "Mark", 8, 9, stage, hard, true, 6)
-	local tx = 8 + LOOK.Badge.Side + (if hard then LOOK.Badge.Box + LOOK.Badge.Space + 3 else 0) + 10
+	StageScreen.Mark(frame, "Mark", 8, 9, hard, 6)
+	local tx = 8 + LOOK.Badge.Side + 10
 	local head = Instance.new("Frame")
 	head.Name = "Head"
 	head.BackgroundTransparency = 1
@@ -278,10 +278,14 @@ local function showLine()
 	end
 	now.Frame.Visible = true
 	now.Count.Text = if q <= 0 then "" elseif now.Tight then `{math.min(k, q)} / {q}` else `{math.min(k, q)} / {q} Shades`
+	-- Its last foe by name: the elite, or on the keeper's stretch the keeper (research's must-fix 4 on TR50).
+	local ground = WorldConfig.Row.Ground
+	local final = Stages.Last(ground, tonumber(stage) or 1)
+	local foe = if final and final.Kind == "Keeper" then `the {StageScreen.KeeperName(ground)}` else "the elite"
 	if last == true then
-		now.Words.Text = if q > 0 and k < q then "its last foe down" else "cleared"
+		now.Words.Text = if q > 0 and k < q then `{foe} down` else "cleared"
 	else
-		now.Words.Text = if q > 0 then "then its last foe" else "the keeper"
+		now.Words.Text = if q > 0 then `then {foe}` else foe
 	end
 	-- The light: to the Shades fallen, or through to the ring once the last foe is up.
 	local left, stop = now.Left, now.Wide - END_IN - 6

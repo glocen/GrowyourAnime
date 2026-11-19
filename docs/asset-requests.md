@@ -14432,6 +14432,13 @@ Labelled SIMULATION, not play: `tools/balance/sim.py`'s model, 6,000 leads (leve
     - the built Shade and Lamplighter on Hard get their own check, at full size and at 64 px over dark, with the burst's frames.
   - The checker's taste note, for the pick: the white-cored veins read nearer electric arcs than an ember's glow.
 
+### Research's pick on Hard's ember (Quaestor, 2026-11-19, 17:42)
+
+- **Felt:** in B, the Hard street reads as a different, hotter pack at the phone's pixels before any number does, and the coral burst says "Hard" at every kill. A is lost at phone size, and C's feet light adds nothing by day. **Pick: B, without C.** Tier: competent once the one must-fix is met. **The bold thing:** the coral burst.
+- **Must-fix (class: a glow line that reads as electricity):** the veins are thin white zigzags, so they read as Watt's arcs, and this game's electricity is its own theme. Redraw them as cracks lit from within. They should be wider and tapering, with a warm core that falls to coral at the edges and no sharp angle. On the keeper, they stay inside his coat, off the purple trim.
+- **Faber's part,** after the redraw: the Hard look's keys in `Config.Shades`, applied at spawn from the stage's difficulty, with the burst's tint the same way.
+- The second look is on the redrawn veins only, from the same phone-pixel frame.
+
 ## Later, by ground
 
 The rest of ground 1 (Kirra in AR10, Watt in AR11; then Sable, Marigold, Crane), then each ground's Voidkin in `docs/roster.md`'s order. **The machines** (Gantry, Bulwark, Ironhymn, Shiomaru, Aegir) share one custom rig, taller than a player, with its own clip family: the first of them is timed like AR1, because a custom rig is a different cost.

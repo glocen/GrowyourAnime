@@ -37,6 +37,10 @@ local FunnelCases = require(script.FunnelCases)
 local GearCases = require(script.GearCases)
 local BaseController = require(script.Parent.Parent.Main.BaseController)
 local Screen = require(script.Parent.Parent.Parent.UI.Kit.Screen)
+local Button = require(script.Parent.Parent.Parent.UI.Kit.Button)
+local Layers = require(script.Parent.Parent.Parent.UI.Layers)
+local Theme = require(script.Parent.Parent.Parent.UI.Theme)
+local GuiService = game:GetService("GuiService")
 
 local BRIDGE_NAME = "NL_SelfTest"
 local BASELINE = "Baseline" -- the preset the cases are written against
@@ -275,6 +279,36 @@ function SelfTestController.Start()
 	bridge.Name = BRIDGE_NAME
 	bridge.OnInvoke = run
 	bridge.Parent = ReplicatedStorage
+	-- A kit button pressed by its path under PlayerGui, as a tap would: the MCP's mouse can't reach Roblox's top-bar row,
+	-- where a band's buttons sit (Back, the stages' switch). game.ReplicatedStorage.NL_ClientPress:Invoke("NL_Band.Root...")
+	local press = Instance.new("BindableFunction")
+	press.Name = "NL_ClientPress"
+	press.OnInvoke = function(path: string): (boolean, string)
+		local at: Instance? = Players.LocalPlayer:FindFirstChildOfClass("PlayerGui")
+		for name in string.gmatch(path, "[^%.]+") do
+			at = if at then at:FindFirstChild(name) else nil
+		end
+		if at == nil or not at:IsA("TextButton") then
+			return false, `no kit button at {path}`
+		end
+		return Button.Press(at), at:GetFullName()
+	end
+	press.Parent = ReplicatedStorage
+	-- The smallest phone for a capture: NL_ClientLayout:Invoke(true) lays every layer as the cases do (Theme.Smallest at
+	-- the scale's floor, from the window's top left), :Invoke(false) the window again.
+	local layout = Instance.new("BindableFunction")
+	layout.Name = "NL_ClientLayout"
+	layout.OnInvoke = function(smallest: boolean): string
+		if smallest then
+			Layers.Force(Theme.Scale.Floor)
+			Layers.Box(Theme.Smallest - Vector2.new(0, GuiService.TopbarInset.Height))
+		else
+			Layers.Box(nil)
+			Layers.Force(nil)
+		end
+		return `scale {Layers.Scale()}`
+	end
+	layout.Parent = ReplicatedStorage
 end
 
 return SelfTestController

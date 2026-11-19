@@ -138,8 +138,9 @@ end
 
 -- Writes the run's clear at `now`, once: the stage counted cleared on its difficulty, its best time kept. { Ok, First,
 -- Seconds, Best, Opened, Next } where First is the first clear of that stage on that difficulty, Opened what that first
--- clear opened ("Stage" for the next stage, "Hard" when the keeper's stage falls on Normal, "" for none) and Next the
--- next stage's number, or nil after the last.
+-- clear opened ("Stage" for the next stage, "Hard" when the keeper's stage falls on Normal, "" for none), and Next and
+-- NextDifficulty the stage its card offers next: the next on its difficulty, Hard's first after the keeper's stage on
+-- Normal (AR42's card), nil after Hard's last.
 function Stages.Clear(data: Profile.Data, run: Run, now: number): { [string]: any }
 	local rows = Stages.Of(run.Ground)
 	if rows == nil or not valid(run.Ground, run.Difficulty, run.Stage) then
@@ -165,13 +166,20 @@ function Stages.Clear(data: Profile.Data, run: Run, now: number): { [string]: an
 	elseif first and run.Difficulty == "Normal" then
 		opened = "Hard"
 	end
+	local nextStage: number?, nextDifficulty: string? = nil, nil
+	if run.Stage < count then
+		nextStage, nextDifficulty = run.Stage + 1, run.Difficulty
+	elseif run.Difficulty == "Normal" then
+		nextStage, nextDifficulty = 1, "Hard" -- clearing the keeper's stage on Normal opened Hard (Stages.Needs)
+	end
 	return {
 		Ok = true,
 		First = first,
 		Seconds = seconds,
 		Best = line.Best[run.Stage],
 		Opened = opened,
-		Next = if run.Stage < count then run.Stage + 1 else nil,
+		Next = nextStage,
+		NextDifficulty = nextDifficulty,
 	}
 end
 

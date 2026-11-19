@@ -13392,6 +13392,41 @@ The numbers are stand-ins (Combat Power, the bests).
   - upload these exact files, and any redraw takes a new check.
 - **For Faber:** upload the eight under the group, then install the picker, the card and the line in Seam. Research judges the motion in the install capture.
 
+### Faber's install (Faber, 2026-11-19, 17:24 to 18:50 by the clock)
+
+- **Uploaded** under the group with the key, after the content check's PASS of 17:00: the eight pictures (their ids in `docs/asset-log.md`, the row of 2026-11-19).
+- **The kit:** `UI/Kit/Glass.luau` (new) draws Seam's lit glass in code: plates, edges, sheens, blooms, discs, labels and eases. Equipment's install in B reuses it. `Screen.Dim` sets a screen's cover: the card dims the street at 0.5.
+- **The picker** (`UI/StageScreen.luau`, rewritten on Glass, its numbers in `Config/Hud.luau`, `Stages`):
+  - the four tiles on one road, lit up to where the player stands, with the next tile's bloom and ring;
+  - the band's switch, with Hard's chevrons and its lock;
+  - the tiles' opening and the switch's swap, timed by `stage_seam.py`'s strips.
+- **The card:**
+  - the marks, the title, the time and best, what the run gave, and what it opened;
+  - Retry, Next and Home. After the Normal keeper, Next offers Hard's Stage 1 (`Rules/Stages.NextDifficulty`, `StageService`, with a logic case).
+  - The HUD steps back while the card is up.
+- **The run's line** (`StageController`): the stage's mark, name and count, the road, and the last foe's ring, waiting, risen and cleared.
+- **The builder's calls** (tier 1; research, say in your row what you'd change):
+  - **Hard's chevrons** are the kit's `LevelChevrons` (two rising), as the cut draws them; `SeamChevron` is a single one.
+  - **The line stands clear of the lead's card and the Credits.** It is centred when it can be. It moves right when the middle would meet the lead's card (on a phone, about 26 points). It narrows between them only on the smallest phone (334 of its 368). There, text keeps its legible floor, so the count drops "Shades" ("7 / 10"); if that still meets the words, the words step out, and the ring still marks the last foe. The cut's sheet had no HUD beside the line.
+  - **The card's room** grows to the card plus 4 above and below. The keeper's card, the tallest, ran 4 points past the foot of a phone's screen.
+- **Fixed on the way:**
+  - **The first opening stood half drawn.** The picker's first opening showed its words alone until 0.4 s, its plates, pictures, switch and road missing; the card's reward icons until 0.48 s. Fetched isn't ready: an image the screen draws for the first time stands empty about 0.3 s, fetched or not, as the Figure found for meshes. `Glass.Preload` draws each image the screens use once ahead, 2 points wide and almost clear, until it says it's loaded. In the strips, the first opening now comes in whole.
+  - **The Shop's chip** (AR38's, mine): its words outgrew it at the smallest phone (126 in 120, the HUD case's one FAIL). It now fits its words when the layers change.
+- **Tests:**
+  - type check 0 new;
+  - logic offline 27,212 passed;
+  - self-test HUD 479 passed, 1 failed in the full run (LevelNotice's labels, the notice shown mid-run by a level-up; its case alone 40 passed), after the ShopChip fix (that case 23/23 earlier);
+  - the Stage cases belong to the Festival role: NOT VERIFIED (item 9).
+- **Captures:**
+  - **where:** `build/scratch/faber/ar42/`;
+  - **screens:** Studio's window (1655 by 756), the phone simulator (iPhone 16 Pro), and the smallest phone laid by `NL_ClientLayout`;
+  - **states:** the picker on Normal and on Hard; the card for a Normal win with a new best, a Hard win that isn't a best, and the keeper with Hard opening; the line mid-run, risen, cleared and on the keeper;
+  - **the motion:** real frames grabbed from the screen at about 25 a second, each from a fresh playtest's first opening: `strip_picker_open.png` (the tiles in turn from 0.07 s, the road from 0.39 s, the ring at its end by 0.8 s), `strip_picker_open2.png` (a second opening), `strip_card_open.png` (a Normal win with a new best: the card whole at 0.11 s, the check on 3 at 0.39 s, the road to 4 from 0.49 to 0.84 s).
+- **Studio-only hooks for captures:**
+  - `NL_ClientPress` presses a kit button by its path (the MCP's mouse can't reach the band's row);
+  - `NL_ClientLayout` lays every layer at the smallest phone.
+- **Open:** research's pass on the install and its verdict on the motion.
+
 ## AR43. The Forge and War Emblem pages on the Voidkin screen (Modulo, for research's pick, then Faber)
 
 Research, 2026-11-19, 02:34 by the clock, on the director's question of 02:1x ("where is the forge, jewels, war emblems we could work on it, atleast modulo"). The icons are made (`build/handoff/UI/upgrades/images`: 18 emblems, 15 jewels, the sockets and the stones), but the pages that use them aren't. They're the character screen's rail pages (`docs/design.md`, "Upgrading gear needs no walk"). Drawn in code, with no render.

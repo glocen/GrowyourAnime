@@ -150,6 +150,15 @@ local function makeChip()
 	chip, chipWords = made, words
 end
 
+-- The chip's width fits its words at the layers' scale: measured again when the words change or the scale does (the
+-- text keeps its legible floor on the smallest phone, so it grows there against the chip).
+local function fitChip()
+	local made, words = chip, chipWords
+	if made and words and words.Text ~= "" then
+		made.Size = UDim2.fromOffset(math.ceil(Text.Wide(words, words.Text)) + Theme.Size.Pad * 2, HudConfig.Shop.Chip.Tall)
+	end
+end
+
 local function tick()
 	local now = workspace:GetServerTimeNow()
 	local left = Shop.Ends(Shop.Stock(now)) - now
@@ -161,7 +170,7 @@ local function tick()
 			local said = `Void Shop restock {Hud.Clock(left)}`
 			if words.Text ~= said then
 				words.Text = said
-				made.Size = UDim2.fromOffset(math.ceil(Text.Wide(words, said)) + Theme.Size.Pad * 2, HudConfig.Shop.Chip.Tall)
+				fitChip()
 			end
 			made:SetAttribute("Left", left)
 		end
@@ -177,6 +186,9 @@ end
 
 function ShopController.Start()
 	makeChip()
+	Layers.Changed:Connect(function()
+		task.defer(fitChip)
+	end)
 	ProfileController.Changed:Connect(function(view)
 		local shown = ShopScreen.Shelf()
 		if shown then

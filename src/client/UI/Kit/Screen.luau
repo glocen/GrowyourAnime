@@ -23,6 +23,8 @@
 --   Screen.Row() -> how tall a button stands in the band now, authored
 --   Screen.Close(how?)  how: "Back" when its own exit closed it; Closed fires (name, how)
 --   Screen.Current() -> the open screen's name, or nil
+--   Screen.Dim(see)     the next full screen opened covers the world only to `see` (its cover's transparency), the
+--     street dimmed under it (AR42's results card); nil, hidden
 --   Screen.Rise(rise)   the next screen opened rises into place from rise.From points under in rise.Seconds, its cover
 --     and fade in Cover, in place of growing in; its exit sinks it back From in Sink, uncovering in Uncover (Home's
 --     step, AR43: Config.Hud.Home.Step)
@@ -70,6 +72,7 @@ local BAND_MARGIN = 3 -- authored pixels a button keeps from the band's top and 
 export type Rise = { From: number, Seconds: number, Cover: number, Sink: number, Uncover: number }
 local open: { Name: string, Frame: Frame, Stage: CanvasGroup, Size: Vector2?, Cover: Frame?, Band: CanvasGroup?, Rise: Rise? }? = nil
 local rising: Rise? = nil -- the next screen's entrance (Screen.Rise)
+local dimming: number? = nil -- the next full screen's cover, short of hiding the world (Screen.Dim)
 
 -- A button's height in the band: the band's, less its margins, never under a touch nor over a tap.
 function Screen.Row(): number
@@ -114,12 +117,12 @@ local function rescroll(body: Instance, kept: Kept)
 	task.delay(0, apply)
 end
 
-local function tween(stage: CanvasGroup, seconds: number, style: Enum.EasingStyle, direction: Enum.EasingDirection, see: number, size: number, cover: Frame?, band: CanvasGroup?): Tween
+local function tween(stage: CanvasGroup, seconds: number, style: Enum.EasingStyle, direction: Enum.EasingDirection, see: number, size: number, cover: Frame?, band: CanvasGroup?, veil: number?): Tween
 	local info = TweenInfo.new(seconds, style, direction)
 	local scale = stage:FindFirstChildOfClass("UIScale") :: UIScale
 	TweenService:Create(scale, info, { Scale = size }):Play()
 	if cover then
-		TweenService:Create(cover, info, { BackgroundTransparency = see }):Play()
+		TweenService:Create(cover, info, { BackgroundTransparency = if see < 1 and veil then veil else see }):Play()
 	end
 	if band then
 		TweenService:Create(band, info, { GroupTransparency = see }):Play()
@@ -173,6 +176,10 @@ function Screen.Rise(rise: Rise?)
 	rising = rise
 end
 
+function Screen.Dim(see: number?)
+	dimming = see
+end
+
 function Screen.Current(): string?
 	return if open then open.Name else nil
 end
@@ -211,6 +218,8 @@ end
 -- `dress`: Back bare, its face its owner's.
 local function show(name: string, title: string, size: Vector2?, palette: string?, dress: ((exit: TextButton) -> ())?): Frame
 	local full = size == nil
+	local veil = dimming
+	dimming = nil
 	local current = open
 	local again = current and current.Name == name and current.Frame:FindFirstChild("Body")
 	local named = current and current.Frame:FindFirstChild("Title")
@@ -220,6 +229,9 @@ local function show(name: string, title: string, size: Vector2?, palette: string
 		named.Text = title
 		current.Size = size
 		fit(current.Frame, size)
+		if current.Cover then
+			current.Cover.BackgroundTransparency = veil or 0
+		end
 		local bar = current.Band
 		if bar then
 			(bar:FindFirstChild("Body") :: Frame):ClearAllChildren()
@@ -347,9 +359,9 @@ local function show(name: string, title: string, size: Vector2?, palette: string
 		scale.Scale = 1
 		stage.Position = UDim2.new(0.5, 0, 0.5, rise.From)
 		TweenService:Create(stage, TweenInfo.new(rise.Seconds, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), { Position = UDim2.fromScale(0.5, 0.5) }):Play()
-		tween(stage, rise.Cover, Enum.EasingStyle.Quad, Enum.EasingDirection.Out, 0, 1, cover, band)
+		tween(stage, rise.Cover, Enum.EasingStyle.Quad, Enum.EasingDirection.Out, 0, 1, cover, band, veil)
 	else
-		tween(stage, motion.Enter, Enum.EasingStyle.Quart, Enum.EasingDirection.Out, 0, 1, cover, band)
+		tween(stage, motion.Enter, Enum.EasingStyle.Quart, Enum.EasingDirection.Out, 0, 1, cover, band, veil)
 	end
 	open = record
 	return body

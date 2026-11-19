@@ -22,6 +22,88 @@ export type Style = {
 local OSWALD = "rbxasset://fonts/families/Oswald.json" -- the plain numbers' face (AR44)
 local DARK = Color3.fromHex("#15120E") -- a warm near-black: an outline that reads over the dusk street's pink end and its dark side
 
+-- The stages' three screens in Seam's lit glass (AR42; build/handoff/UI/stages/stages.json, laid as
+-- tools/blender/stage_seam.py draws them): the picker, the results card and the run's line. Places are the cut's, in
+-- points on the smallest phone (568 x 320); the picker and the card lay their Block from the band's foot (Top), scaled
+-- to the room under it, at most Grow. Kept apart and joined below: the table under it is past the type checker's reach.
+local stages = {
+	-- The tiles' pictures, open and shut (uploaded under the group, 2026-11-19; docs/asset-log.md), Stage 1 to 4's.
+	Images = {
+		StageShade = { Id = "rbxassetid://101131336057213", Pixels = Vector2.new(400, 344), Points = Vector2.new(100, 86), Pad = 0 },
+		StageShadeShut = { Id = "rbxassetid://118891517960594", Pixels = Vector2.new(400, 344), Points = Vector2.new(100, 86), Pad = 0 },
+		StageElite = { Id = "rbxassetid://115142114348580", Pixels = Vector2.new(400, 344), Points = Vector2.new(100, 86), Pad = 0 },
+		StageEliteShut = { Id = "rbxassetid://92031257350308", Pixels = Vector2.new(400, 344), Points = Vector2.new(100, 86), Pad = 0 },
+		StageEliteBig = { Id = "rbxassetid://91179208057157", Pixels = Vector2.new(400, 344), Points = Vector2.new(100, 86), Pad = 0 },
+		StageEliteBigShut = { Id = "rbxassetid://78262016594651", Pixels = Vector2.new(400, 344), Points = Vector2.new(100, 86), Pad = 0 },
+		StageLantern = { Id = "rbxassetid://128569720153333", Pixels = Vector2.new(400, 344), Points = Vector2.new(100, 86), Pad = 0 },
+		StageLanternShut = { Id = "rbxassetid://91569063445168", Pixels = Vector2.new(400, 344), Points = Vector2.new(100, 86), Pad = 0 },
+	},
+	Pictures = { "StageShade", "StageElite", "StageEliteBig", "StageLantern" },
+	Block = { Top = 58, Wide = 568, Tall = 262, Grow = 1.6 },
+	-- Each mode's one accent: Normal's is Seam's light, Hard's an ember (research's pass, 16:34). Edge: the edges, the
+	-- chevrons; Lit: a lit plate's fill, top to foot; Road: the walked road's, start to end; Bloom: the ground's light
+	-- behind the next tile (at BloomAlpha) and each picture's (Pictures: the next's, any open one's); Glow: round a lit
+	-- plate. Hard keeps Normal's value: one ground, one tile, one shut tile for both.
+	Accent = {
+		Normal = { Edge = Color3.fromHex("#EDE4FF"), Lit = { Color3.fromHex("#FFFFFF"), Color3.fromHex("#D4C6FF") }, Road = { Color3.fromHex("#A89CD8"), Color3.fromHex("#EDE4FF") }, Bloom = Color3.fromHex("#5C48AC"), Glow = Color3.fromHex("#D4C6FF"), BloomAlpha = 0.3, Pictures = { Next = 0.75, Open = 0.42 } },
+		Hard = { Edge = Color3.fromHex("#FF9A80"), Lit = { Color3.fromHex("#FFF4EE"), Color3.fromHex("#FFB4A0") }, Road = { Color3.fromHex("#C2503F"), Color3.fromHex("#FFC2B2") }, Bloom = Color3.fromHex("#E85A44"), Glow = Color3.fromHex("#FF9A80"), BloomAlpha = 0.24, Pictures = { Next = 0.55, Open = 0.32 } },
+	},
+	HardBox = { Color3.fromHex("#2A1626"), Color3.fromHex("#170C16") }, -- the box Hard's chevrons sit in, by a mark
+	Ready = Color3.fromHex("#FFD880"), -- what a run opened, a new best (Theme.Colour.Ready)
+	Socket = { Color3.fromHex("#1B1728"), Color3.fromHex("#0E0B18") }, -- a dark socket: a new best's chip, Hard's band
+	Text = { Small = 14, Title = 17, Big = 22 },
+	-- The picker: four tiles side by side over one road (A's One road, research's pick).
+	Tile = {
+		Top = 71, Foot = 266, Pad = 7, Gap = 5, Corner = 6, Lift = 6, -- the next one stands Lift higher
+		Fill = { Color3.fromHex("#2F2758"), Color3.fromHex("#16122C") },
+		Shut = { Color3.fromHex("#1C1834"), Color3.fromHex("#110E20") },
+		Sheen = { Alpha = 0.11, Fall = 24 }, -- the glint down an open tile's top: Alpha x exp(-y / Fall)
+		Next = { Glow = 8, GlowAlpha = 0.38, Wash = 0.12, Edge = 2, Glint = 0.14 }, -- its glint runs down it once a loop
+		Edge = { Top = 0.9, Foot = 0.3 }, -- an open tile's hairline, lit from above (the next's: 1 and 0.55)
+		ShutEdge = 0.8,
+		CornerGlint = 0.7, -- the light at an open tile's top left
+		Rise = 18, Start = 0.04, Step = 0.05, Seconds = 0.22, -- each tile rises in from Rise points under, Step apart
+	},
+	Bed = {
+		Inset = 6, Tall = 86, Corner = 4, EdgeAlpha = 0.8,
+		Fill = { Color3.fromHex("#0E0B1A"), Color3.fromHex("#08070F") },
+		Bloom = { Middle = Vector2.new(0.5, 0.593), Size = Vector2.new(231.8, 180.6) },
+		Picture = Vector2.new(100, 86),
+		Lock = { Side = 26, Down = 53 },
+	},
+	Badge = { Side = 26, Corner = 5, In = 4, Glow = 4, GlowAlpha = 0.3, Box = 18, Space = 3 },
+	Check = { Radius = 10, In = 15 },
+	Tag = { Wide = 46, Tall = 20, Right = 6, Up = 9 }, -- "Next", on the next tile's top right
+	Road = { Y = 280, Half = 5, Fill = 3, Glow = 4, GlowAlpha = 0.22, Light = 0.55 },
+	Ring = { Radius = 7.5, Outer = 4.5, Glow = 7, GlowAlpha = 0.55 },
+	Foot = { Down = 15, Power = 84 },
+	Switch = { Wide = 156, Gap = 2, Lock = 10 },
+	-- The card at a run's end, over the street dimmed (Dim, the cover's transparency).
+	Card = {
+		Left = 124, Wide = 320, Corner = 8, Edge = 1.4, Space = 8, In = 12, Foot = 10, Before = 14,
+		Rows = { Marks = 30, Title = 28, Time = 22, Gave = 28, Opened = 20, Hard = 34 },
+		Presses = { Quiet = 82, One = 124, Retry = 170, Home = 124, Gap = 6 },
+		Shadow = 0.4,
+		Dim = 0.5,
+		Margin = 4, -- kept above and below the card when the screen's room is the card's (the cut: 4 at the smallest phone)
+	},
+	-- The run's line under Roblox's top bar, in the Hud layer.
+	-- It stands clear of the HUD's pieces named in Clear, Gap from them; between them it narrows, to Least at most: Hard's
+	-- longest head ("Hard Stage 3  10 / 10 Shades") still clears its words there.
+	Line = { Wide = 368, Least = 330, Down = 4, Tall = 44, Corner = 6, Edge = 1.2, Gap = 8, Clear = { "Lead", "Credits", "Electricity" } },
+	-- Its beats (stage_seam.py's strips): the picker's opening, the switch, the card's two beats, the line's.
+	Motion = {
+		Rise = 12, Open = 0.22, -- the screen rises Rise points as it fades in
+		RoadAt = 0.3, RoadSeconds = 0.36, -- the road fills
+		RingAt = 0.6, RingSeconds = 0.26, RingFrom = 0.4, -- the ring pops, backing out
+		Switch = 0.22, Drain = 0.18, -- a switch crossfades; its road drains and fills again
+		Idle = 2.4, -- one loop for every idling light
+		CheckAt = 0.22, CheckSeconds = 0.12, CheckOver = 1.3, -- the card's check pops in a little over
+		RunAt = 0.34, RunSeconds = 0.36, -- then the light runs on to the next mark
+		Notch = 0.18, Pop = 1.35, Settle = 0.2, -- a Shade's fall eases the light onto its notch; the last foe's ring pops
+	},
+}
+
 return {
 	Numbers = {
 		-- Roblox's own face, with a stroke (research's call, 2026-11-12): Builder Sans, which has a true italic at ExtraBold.
@@ -495,6 +577,7 @@ return {
 		Open = { Grow = 0.22, From = 0.55, Back = 1.2, Fade = 0.1, Leave = 0.12 },
 		Step = { Lit = 0.06, Leave = 0.12, LeaveTo = 0.55, RiseAt = 0.08, Rise = 0.22, RiseFrom = 24, Cover = 0.08, Sink = 0.14, Uncover = 0.1, BackAt = 0.06 },
 	},
+	Stages = stages,
 	-- Equipment's three screens from Home (TR47; AR43, "The cut in B, for Faber": build/handoff/UI/equipment/equipment.json
 	-- and ../seam/seam.json), in Seam's lit glass (UIKit.Palettes.SeamGlass). Every place is the cut's, in points on the
 	-- smallest phone (568 x 320) from the screen's top left; the game lays the Block (the rail, the list and the work)

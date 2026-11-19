@@ -15,6 +15,7 @@ local WorldConfig = require(Shared.Config.World)
 local StagesConfig = require(Shared.Config.Stages)
 local Markers = require(Shared.World.Markers)
 local Stages = require(Shared.Rules.Stages)
+local Sheet = require(Shared.Rules.Sheet)
 local Parts = require(Shared.Util.Parts)
 local Profile = require(Shared.Data.Profile)
 local ProfileController = require(script.Parent.Parent.ProfileController)
@@ -135,11 +136,12 @@ function StageCases.Cases(): { any }
 				end))
 				local row = (Stages.Of(GROUND) :: any)[1]
 				t.Equal("its quota, Config.Stages'", player:GetAttribute("StageQuota"), row.Quota)
-				local label: TextLabel? = nil
+				local said = ""
 				t.Check("its line at the top of the screen", waitFor(t, REPLICATE, function(): boolean
-					label = StageController.Label()
-					return label ~= nil and label.Visible and string.find(label.Text, "Stage 1", 1, true) ~= nil and string.find(label.Text, `0 / {row.Quota}`, 1, true) ~= nil
-				end), if label then (label :: TextLabel).Text else "no line")
+					local shown, words = StageController.Said()
+					said = words
+					return shown and string.find(words, "Stage 1", 1, true) ~= nil and string.find(words, `0 / {row.Quota}`, 1, true) ~= nil
+				end), said)
 				-- The quota through Pack 1's falls, the pack stood again between.
 				local fallen = 0
 				for _ = 1, 4 do
@@ -270,8 +272,8 @@ function StageCases.Cases(): { any }
 				t.Check("a tile a stage", pick[`Stage{count}`] ~= nil)
 				t.Equal("Stage 2 open after Stage 1", if pick.Stage2 then Button.State(pick.Stage2 :: TextButton) ~= "Disabled" else nil, true)
 				t.Equal("Stage 3 shut", if pick.Stage3 then Button.State(pick.Stage3 :: TextButton) else nil, "Disabled")
-				local line3 = pick.Stage3Line :: TextLabel?
-				t.Check("each tile's recommended Combat Power", line3 ~= nil and string.find(line3.Text, "Recommended", 1, true) ~= nil, if line3 then line3.Text else nil)
+				local line3 = pick.Stage3Power :: TextLabel?
+				t.Check("each tile's recommended Combat Power", line3 ~= nil and string.find(line3.Text, Sheet.Said.Power, 1, true) ~= nil, if line3 then line3.Text else nil)
 				Helpers.lintClean(t, "the picker")
 				t.Check("Hard's side", pick.Hard ~= nil and Button.Press(pick.Hard :: TextButton) and waitFor(t, 0.5, function(): boolean
 					return StageScreen.Difficulty() == "Hard"

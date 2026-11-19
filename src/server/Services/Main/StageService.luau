@@ -253,6 +253,7 @@ local function finish(player: Player, run: Run)
 			First = answer.First,
 			Opened = answer.Opened or "",
 			Next = answer.Next,
+			NextDifficulty = answer.NextDifficulty,
 			Credits = math.max(0, now.Credits - run.Before.Credits),
 			Shards = math.max(0, now.Shards - run.Before.Shards),
 			Chests = math.max(0, now.Chests - run.Before.Chests),

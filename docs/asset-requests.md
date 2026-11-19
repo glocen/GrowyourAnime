@@ -13402,7 +13402,47 @@ From home_tray.png and home_step.png at the smallest phone, before Modulo cuts t
   2. The tints come from `home.json` as written. A later warm or red tint on these masks, above all the shard or the glow, needs a fresh check.
 - **For Faber:** the upload held since 65295ff goes ahead with this cut. The eleven go under the group, and the tints come from `home.json`.
 
-## AR44. The damage numbers' rework: the plain, received and healing numbers, and the critical closer to the reference (Faber's takes in the game, Modulo's stroke, research's pick)
+### The twelve sets on star B, cut for Faber (Modulo, 2026-11-19, 13:57 to 14:03 by the clock)
+
+- **What:** research's twelve sets (13:12; Moonward changed 13:36), each drawn as one bold white mark on star B in its rarity, with no letters.
+  - **Drawing:** in code from shapes (`symbol` in `tools/blender/emblem_stars.py`). Each mark is 0.43 of the star's R, with a dark rim and soft shadow so it reads over the colour and the rock alike, and dark cuts inside where a shape needs them.
+  - **Uncommon:**
+    - Talon: three claw strokes, sharp at both ends.
+    - Spearhead: a leaf blade with its ridge, collar and socket.
+    - Palisade: three pointed stakes with the middle tallest, bound by one lashing.
+  - **Rare:**
+    - Tidebreak: a wave on its sea, its crest breaking left into a hollow.
+    - Warhorn: a gently bent horn, its mouthpiece, two bands and a flared bell.
+    - Compass: a rose of four long points and four short, with a dark heart.
+  - **Epic:**
+    - Serpent Coil: a leaning S of a snake, with a wedge head, an eye and a pointed tail.
+    - Sworn Rings: two rings, each passing over the other once.
+    - Moonward: a half-lit moon, the lit half solid with three craters and the dark half a ring line.
+  - **Legendary:**
+    - Zenith: a ring with a dot at its heart.
+    - Highcrown: three points on a band.
+    - Radiance: a disc with eight short rays apart from it.
+- **The self-read's fixes, in one round:**
+  - Tidebreak read as a letter C, so it is now a filled wave on its sea.
+  - Warhorn was thin, its curve close to a crescent, so it is now straighter and heavier, with bands and a bell.
+  - Serpent Coil read as a letter S, so it now leans, with a wedge head and an eye.
+  - Moonward read as the contrast icon, so it now has craters.
+  - All four now read as their thing at 64 px and in the 44 point cell.
+- **Where:** `build/handoff/UI/emblems/`.
+  - `images/Emblem<Set>.png`: 256 px (64 points), transparent around the star, never tinted.
+  - `emblems.json`: each image's set and rarity, the star's middle and R, and how the bag's 44 point cell takes it (40 points square at (2, 2)).
+  - `emblems_cut.png`: each symbol alone, the emblem at 96 points, in the cell, and at 64 px.
+- **Content check, PASS on all twelve** (14:06). It looked at each symbol alone and on its star, at full size and at 64 px.
+  - The 13:08 conditions hold: no red, the star upright, the ridges never tip to tip, no crescent, no cross.
+  - No symbol makes a flag, a crest or a brand. Talon isn't Monster's mark, Compass isn't NATO's, Sworn Rings isn't Audi's or the Olympics', and Radiance isn't the rising sun, the Black Sun, a chaos star or the Philippine sun.
+  - Its conditions:
+    1. These files are uploaded as they are, never tinted. A recolour needs a fresh check, above all red anywhere, Zenith or Radiance in red, Serpent Coil in green or silver, or Talon in green.
+    2. Highcrown stays three-pointed. A set moving to another rarity's colour gets a fresh check.
+    3. Sworn Rings' text players see frames it as an oath between comrades, never marriage or love (Roblox's Community Standards ban romantic content). That text gets its own check when written.
+    4. The twelve are logged with their group ids once uploaded.
+  - **For research, not content:** at 64 px Serpent Coil leans toward an S and Tidebreak has a faint "2" echo. Both read as their thing at full size and in the 44 point cell.
+- **For Faber:** upload the twelve under the group. The set names and image keys go in `src/shared/Definitions/` as research's entry says.
+ The damage numbers' rework: the plain, received and healing numbers, and the critical closer to the reference (Faber's takes in the game, Modulo's stroke, research's pick)
 
 Research, 2026-11-19, 11:17 by the clock. The director, by 11:16, to research: "The damages/healing text need a small rework it doesnt look as i wanted it to be, same for the crit text it need to be more close to the reference i've shown". The same morning, relayed by Modulo at about 11:15: "like the blackstroke around the text for those are way to thick". Research reads "those" as the damage numbers, since the two came together. The rule stays `docs/ui.md`, "Damage numbers" (the director, 2026-11-12); this changes the look only. The reference is `docs/research/hud-reference.md`, its three arena screenshots, held internal.
 

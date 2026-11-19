@@ -1,0 +1,88 @@
+{
+  "what": "AR43, War Emblems: the twelve sets' emblems on star B, each its rarity's colour over the black rock with its set's white symbol (research's sets, 13:12; Moonward a half-lit moon, 13:36). Drawn in code by tools/blender/emblem_stars.py (cut); no image input",
+  "pixelsPerPoint": 4,
+  "points": [
+    64.0,
+    64.0
+  ],
+  "pixels": [
+    256,
+    256
+  ],
+  "use": "an ImageLabel, never tinted, ImageTransparency 0, its colour in the picture; transparent round the star. The star's middle at (32, 33.92) points, its R 28.16",
+  "inCell": "in the bag's 44 point cell (AR18: its well, its rarity's tint and rim), the image 40 points square, its top left at (2, 2), so the star is the cell's 0.4 as drawn in emblems_cut.png",
+  "emblems": [
+    {
+      "image": "EmblemTalon",
+      "set": "Talon",
+      "rarity": "Uncommon",
+      "colour": "#7CF0A0"
+    },
+    {
+      "image": "EmblemSpearhead",
+      "set": "Spearhead",
+      "rarity": "Uncommon",
+      "colour": "#7CF0A0"
+    },
+    {
+      "image": "EmblemPalisade",
+      "set": "Palisade",
+      "rarity": "Uncommon",
+      "colour": "#7CF0A0"
+    },
+    {
+      "image": "EmblemTidebreak",
+      "set": "Tidebreak",
+      "rarity": "Rare",
+      "colour": "#6FB6FF"
+    },
+    {
+      "image": "EmblemWarhorn",
+      "set": "Warhorn",
+      "rarity": "Rare",
+      "colour": "#6FB6FF"
+    },
+    {
+      "image": "EmblemCompass",
+      "set": "Compass",
+      "rarity": "Rare",
+      "colour": "#6FB6FF"
+    },
+    {
+      "image": "EmblemSerpentCoil",
+      "set": "Serpent Coil",
+      "rarity": "Epic",
+      "colour": "#D29CFF"
+    },
+    {
+      "image": "EmblemSwornRings",
+      "set": "Sworn Rings",
+      "rarity": "Epic",
+      "colour": "#D29CFF"
+    },
+    {
+      "image": "EmblemMoonward",
+      "set": "Moonward",
+      "rarity": "Epic",
+      "colour": "#D29CFF"
+    },
+    {
+      "image": "EmblemZenith",
+      "set": "Zenith",
+      "rarity": "Legendary",
+      "colour": "#FFD777"
+    },
+    {
+      "image": "EmblemHighcrown",
+      "set": "Highcrown",
+      "rarity": "Legendary",
+      "colour": "#FFD777"
+    },
+    {
+      "image": "EmblemRadiance",
+      "set": "Radiance",
+      "rarity": "Legendary",
+      "colour": "#FFD777"
+    }
+  ]
+}

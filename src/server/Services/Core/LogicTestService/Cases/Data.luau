@@ -162,6 +162,45 @@ return {
 		end,
 	},
 	{
+		Name = "Data: step 9 keeps the bays a base's level opens, 2, 3 and 4, its first ones, its Voidkin still owned (D5)",
+		Run = function(t: any)
+			local function base(level: number, bays: number): any
+				local old = fresh()
+				old.Version = 8
+				old.Base.Level = level
+				old.Base.Bays = {}
+				for index = 1, bays do
+					table.insert(old.Base.Bays, { Worker = `w{index}`, Level = index })
+				end
+				return old
+			end
+			local three = base(3, 6)
+			local owned = 0
+			for _ in three.Voidkin do
+				owned += 1
+			end
+			t.Equal("one step ran", Migrations.Run(three), Migrations.Latest - 8)
+			t.Equal("level 3 keeps four", #three.Base.Bays, 4)
+			t.Equal("its first ones, as they were", `{three.Base.Bays[1].Worker} {three.Base.Bays[4].Worker} {three.Base.Bays[4].Level}`, "w1 w4 4")
+			local count = 0
+			for _ in three.Voidkin do
+				count += 1
+			end
+			t.Equal("no Voidkin goes", count, owned)
+			local two = base(2, 4)
+			Migrations.Run(two)
+			t.Equal("level 2 keeps three", #two.Base.Bays, 3)
+			local one = base(1, 2)
+			Migrations.Run(one)
+			t.Equal("level 1's two untouched", #one.Base.Bays, 2)
+			local fewer = base(3, 3)
+			Migrations.Run(fewer)
+			t.Equal("fewer than its level opens: none added here (the level's rule adds them)", #fewer.Base.Bays, 3)
+			local problems = Saveable.Problems(three, "profile")
+			t.Check("still saves whole", #problems == 0, table.concat(problems, "; "))
+		end,
+	},
+	{
 		Name = "Data: a newer save is left alone",
 		Run = function(t: any)
 			local data = fresh()

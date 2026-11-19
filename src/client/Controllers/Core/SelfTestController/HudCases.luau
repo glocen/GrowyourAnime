@@ -137,7 +137,7 @@ function HudCases.Cases(given: Given): { any }
 				local where = if type(plot) == "number" then { Plot = plot } else nil
 				local spawn = if where then streamed(t, "Spawn", where) else nil
 				local breaker = if where then streamed(t, "Breaker", where) else nil
-				local elite = streamed(t, "Elite")
+				local elite = streamed(t, "Elite", { Stage = Helpers.SQUARE.Stage })
 				t.Check("the plot's spawn and Breaker, and the elite's square", spawn ~= nil and breaker ~= nil and elite ~= nil)
 				if not (spawn and breaker and elite) then
 					return
@@ -161,11 +161,11 @@ function HudCases.Cases(given: Given): { any }
 					t.Server("LeadHeal")
 					t.Root().CFrame = CFrame.new(Markers.At(spawn).Position + Vector3.new(0, R6_ROOT_HEIGHT, 0))
 					t.Wait(0.5)
-					t.Server("PackBack", "Elite")
+					t.Server("PackBack", Helpers.SQUARE.Name)
 				end
 				t.Server("HomeReady")
 				t.Server("LeadCalm") -- out of any fight a case before left it in: a lead with a target is "In a fight"
-				t.Check("the elite's square is cleared", t.Server("PackDefeat", "Elite").Ok == true)
+				t.Check("the elite's square is cleared", t.Server("PackDefeat", Helpers.SQUARE.Name).Ok == true)
 				local square = Markers.At(elite).Position + Vector3.new(0, R6_ROOT_HEIGHT, 0)
 				local home = Markers.At(spawn).Position
 				-- At home: quiet, and a tap opens the base's command view (TR21's blockout; its build retires the quiet look).

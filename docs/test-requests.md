@@ -3766,6 +3766,16 @@ The director's "Done", then "we need more audition sfx for the skills of our cur
 - **Healer cues:** "laser shot" is off Lyric's look, since her speakers throw sound, not light. Use "sonic pulse" in its place. For HealerShot, HealerHit and HeldNote, a single tone or chime isn't music: the music filter drops only a recording with a tune.
 - **The pilots' entry stays this one;** each kept sound joins its cue through the engine as before.
 
+### The picks in the game, and the second round, built (Faber, 2026-11-19, to 01:31 by the clock)
+
+- **The picks are the cues:** LightHit plays the director's 32 keeps, HeavyHit 22, ShadeSwipe 9, each whole, never the same take twice running; ids and authors in `docs/asset-log.md`. Those three tabs are Done and the finder skips them.
+- **The second round, 12 tabs** (`Config/Audition.luau`): the nine pilots (Haymaker, Scarf Step, Lantern Burst, Ground Wire, Held Note, the Fire Mage's cast and hit, the Healer's cast and hit), and research's split, a tab for each melee fighter's light hits (Rook, Kirra, Watt), each drawn from the 32 keeps, not the library (`Keeps`). Until the director picks, each fighter plays the single pool (`Config.Cues.Own`).
+- **The finder:** 50 candidates where the library has them; MageShot 8, HealerShot 20, MageHit 23 and HealerHit 25 after the filters. The tonal rule is in: a Healer's or Held Note's chime passes, a tune doesn't (`Tonal`). "laser shot" is "sonic pulse".
+- **Fixed on the way:** the finder's answer passed a StringValue's 200,000 characters at the end of a 70-minute run and was lost. It's kept in parts now, and the panel gets only what it reads. It measures six finds at once, so the re-run took 9 minutes.
+- **Fixed on the way:** the fight's own cues share their voices by take list and bus, so the three fighters' tabs don't triple the light hit's voices.
+- **Tests:** type check 0 new; logic offline 26,574/0, the same in Studio, world report empty. The audition cases 89/0, and the sound cases on the beat cues 10/0, both in one playtest.
+- **Open:** the director's listen, put off to tomorrow by the director ("i will do that sound audition tomorrow"); the panel and its candidates stay in the place. `Audition.Clear()` before a public build. Queued after it: the UI sounds' audition.
+
 ## TR43. Lantern Row's stages on Normal and Hard, in grey (Faber, the follow-up's item 2)
 
 Research, 2026-11-18, 22:44, on D2 and D7 (`docs/decisions.md`; `docs/design.md`, "The Festival of Battles"). Answers Faber's four questions of this evening.
@@ -3777,6 +3787,13 @@ Research, 2026-11-18, 22:44, on D2 and D7 (`docs/decisions.md`; `docs/design.md`
 - **The results (d):** what the stage gave, Retry, Next and Home, and what just opened. Dailies aren't named until they're designed. The Lamplighter's Normal win says "Hard is open", in place of "Drum Court opened" at launch (the follow-up's 4.9).
 - **Waits:** gear budgets by stage (item 4, after research's loot refit), the party's anything, art on the tiles, the dock's shortcut to the picker.
 - **Research reads it:** in motion, from a phone's camera: the first 90 seconds of a fresh account, one stage's results, and one Hard stage's first fight.
+
+### The block, built (Faber, 2026-11-19, to 01:31 by the clock)
+
+- **Where:** the rules `Rules/Stages.luau` and their numbers `Config/Stages.luau` (the quotas, Hard's +10, the card's delay, the gate); the server `StageService` (the run, the gates, the Door, the keeper's stage, the save's one transaction); the client `StageController` (the stage's line at the top, the gates) and `UI/StageScreen` (the picker's four tiles with the Normal/Hard switch, and the results card with Retry, Next and Home). The save and its contract: `docs/engineering-plan.md`, "A ground's stages".
+- **The street:** each stop of Lantern Row's street carries its Stage (`Config.World.Row.Stops`), with its own elite on stages 1 to 3, and a `StageGate` and a `StageStart` for each. On Hard, the stage's foes belong to the player and stand again after their last falls. The lead fights only them while the run lasts, and the street's Shades leave it alone.
+- **Tests:** logic offline 26,574/0 (the Stages cases among them); the self-test's TR43 case 78/0. It covers the gates, a Normal run to its card, Next, leaving, Hard's own foes, the keeper lifted, the picker's locks, and a lost run. Its first run failed three checks, all in the case itself: it read the stage's line a frame early, and it counted a fallen foe still fading as standing. Not run: the fresh account's case, which wipes the save.
+- **Open:** research's read from a phone's camera.
 
 ## TR44. The Lamplighter's slam in its fight, and two ways to move the lead out of it (Faber, the follow-up's item 3)
 

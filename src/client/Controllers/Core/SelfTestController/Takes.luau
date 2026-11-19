@@ -39,6 +39,7 @@ local BaseView = require(UI.BaseView)
 local VoidkinScreen = require(UI.VoidkinScreen)
 local Figure = require(UI.VoidkinScreen.Figure)
 local VoidkinCases = require(script.Parent.VoidkinCases)
+local Helpers = require(script.Parent.Helpers)
 local Hud = require(Shared.Rules.Hud)
 local Read = require(UI.Read)
 local Button = require(UI.Kit.Button)
@@ -1805,7 +1806,7 @@ return function(given: Given): { any }
 						end
 					end)
 					t.Wait(2)
-					local elite = streamed(t, "Elite")
+					local elite = streamed(t, "Elite", { Stage = Helpers.SQUARE.Stage })
 					t.Check("the elite's square", elite ~= nil)
 					if elite == nil then
 						camera:Disconnect()

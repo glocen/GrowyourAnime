@@ -47,18 +47,8 @@ local Config = {
 	Strength = { 2, 8 }, -- the rungs (Config.Combat.Hitstop) a hit's strength runs over, from none to full
 
 	-- Modulo's takes (build/handoff/Audio/test6/test6.json): each layer's, matched in loudness, so a play's Volume spread is
-	-- the only one inside a layer.
+	-- the only one inside a layer. Those of the hits and the swipe left with the director's keeps (TR42, 2026-11-19).
 	Takes = {
-		ShadeTell = {
-			{ Id = 97312586605765, Seconds = 0.25, Peak = 0.1956 }, -- ShadeTell_1
-			{ Id = 137300621783110, Seconds = 0.25, Peak = 0.1924 }, -- ShadeTell_2
-			{ Id = 103776257086025, Seconds = 0.25, Peak = 0.1871 }, -- ShadeTell_3
-		},
-		ShadeSwipe = {
-			{ Id = 94311601578482, Seconds = 0.32, Peak = 0.2070 }, -- ShadeSwipe_1
-			{ Id = 125055624173226, Seconds = 0.32, Peak = 0.1690 }, -- ShadeSwipe_2
-			{ Id = 88090019338072, Seconds = 0.32, Peak = 0.2241 }, -- ShadeSwipe_3
-		},
 		ShadeHurtSpark = {
 			{ Id = 97910398854788, Seconds = 0.07, Peak = 0.0015 }, -- ShadeHurtSpark_1
 			{ Id = 111484288931351, Seconds = 0.06, Peak = 0.0015 }, -- ShadeHurtSpark_2
@@ -72,32 +62,10 @@ local Config = {
 			{ Id = 121773721624039, Seconds = 0.31, Peak = 0.0016 }, -- ShadeBurstTicks_1
 			{ Id = 88194747580265, Seconds = 0.31, Peak = 0.0013 }, -- ShadeBurstTicks_2
 		},
-		LightHitSpark = {
-			{ Id = 75782635990998, Seconds = 0.1, Peak = 0.0013 }, -- LightHitSpark_1
-			{ Id = 86552286887294, Seconds = 0.11, Peak = 0.0013 }, -- LightHitSpark_2
-			{ Id = 119152742564388, Seconds = 0.095, Peak = 0.0015 }, -- LightHitSpark_3
-			{ Id = 82434748319026, Seconds = 0.105, Peak = 0.0016 }, -- LightHitSpark_4
-			{ Id = 129008793593363, Seconds = 0.1, Peak = 0.0018 }, -- LightHitSpark_5
-		},
 		HeavyRiser = {
 			{ Id = 97515716318295, Seconds = 0.18, Peak = 0.1720 }, -- HeavyRiser_1
 			{ Id = 114077736762662, Seconds = 0.15, Peak = 0.1415 }, -- HeavyRiser_2
 			{ Id = 132895683656890, Seconds = 0.2, Peak = 0.1902 }, -- HeavyRiser_3
-		},
-		HeavySub = {
-			{ Id = 131024884243061, Seconds = 0.42, Peak = 0.0070 }, -- HeavySub_1
-			{ Id = 120793628140783, Seconds = 0.36, Peak = 0.0065 }, -- HeavySub_2
-			{ Id = 107728705766262, Seconds = 0.48, Peak = 0.0075 }, -- HeavySub_3
-		},
-		HeavyImpacts = {
-			{ Id = 76017942066366, Seconds = 0.205, Peak = 0.0018 }, -- HeavyImpacts_1
-			{ Id = 81050093874356, Seconds = 0.183, Peak = 0.0031 }, -- HeavyImpacts_2
-			{ Id = 125931756554986, Seconds = 0.251, Peak = 0.0017 }, -- HeavyImpacts_3
-		},
-		HeavyTail = {
-			{ Id = 133486795651631, Seconds = 0.7, Peak = 0.0177 }, -- HeavyTail_1
-			{ Id = 103173593979012, Seconds = 0.7, Peak = 0.0308 }, -- HeavyTail_2
-			{ Id = 81041412529438, Seconds = 0.7, Peak = 0.0230 }, -- HeavyTail_3
 		},
 		CritShing = {
 			{ Id = 91060945362019, Seconds = 0.26, Peak = 0.0202 }, -- CritShing_1
@@ -150,19 +118,89 @@ local Config = {
 			{ Id = 9118106802, Seconds = 0.25, Peak = 0.1904, From = 0.008, To = 0.258, In = 0.003, Out = 0.03, Gain = 2.414 }, -- Record Sleeve Pulled Out Back In 9 (SFX), ProSoundEffects
 		},
 		-- AR39's library lists: end
+		-- TR42's keeps: begin (the director's 63 on the audition panel, 2026-11-19; build/scratch/faber/tr42/kept.py writes
+		-- between these lines). Each the finder's cut of its library file, its first event whole; Gain sets it at its cue's
+		-- matched loudness, today's LightHit then (-42.5 LUFS short-term) plus Config.Audition.Levels, as the panel played it.
+		KeptLight = {
+			{ Id = 101093315205711, Seconds = 0.64213, Peak = 0.00769, From = 0.05287, To = 0.69500, In = 0, Out = 0.020, Gain = 0.236 }, -- Audio_Axe_kick_hit_1, djtaothuatday1
+			{ Id = 78108149531620, Seconds = 0.32694, Peak = 0.00588, From = 0.04306, To = 0.37000, In = 0, Out = 0.020, Gain = 0.191 }, -- punch kick beefy hit sfx 3, Axellatic
+			{ Id = 76673854191773, Seconds = 0.35900, Peak = 0.00719, From = 0.04600, To = 0.40500, In = 0, Out = 0.020, Gain = 0.125 }, -- punch kick beefy hit sfx 4, Axellatic
+			{ Id = 126976659766267, Seconds = 0.49066, Peak = 0.00791, From = 0.05434, To = 0.54500, In = 0, Out = 0.020, Gain = 0.252 }, -- Hit - Impact - Punch - Blunt, lorenzosaudiostash
+			{ Id = 137163256711828, Seconds = 0.51340, Peak = 0.00688, From = 0.07100, To = 0.58440, In = 0, Out = 0.010, Gain = 0.179 }, -- Punch, guesttown82
+			{ Id = 74041775202019, Seconds = 0.46303, Peak = 0.00669, From = 0.08697, To = 0.55000, In = 0, Out = 0.020, Gain = 0.490 }, -- Impact - Punch - Hit - Blunt, lorenzosaudiostash
+			{ Id = 139697578472716, Seconds = 0.27759, Peak = 0.00797, From = 0.04241, To = 0.32000, In = 0, Out = 0.020, Gain = 0.320 }, -- punch, frankprogamer_Y
+			{ Id = 114637695466966, Seconds = 0.28731, Peak = 0.00422, From = 0.01269, To = 0.30000, In = 0, Out = 0.020, Gain = 0.119 }, -- Kick Hit 1, Generic_Username3510
+			{ Id = 80766153538417, Seconds = 0.49519, Peak = 0.00800, From = 0.28481, To = 0.78000, In = 0, Out = 0.020, Gain = 0.259 }, -- combat-sword-swing-hit, 0Estetic_girl0
+			{ Id = 139897497838184, Seconds = 0.63606, Peak = 0.00794, From = 0.05394, To = 0.69000, In = 0, Out = 0.020, Gain = 0.118 }, -- punch6, ProKartallar165456
+			{ Id = 131741758254583, Seconds = 0.49966, Peak = 0.00766, From = 0.13034, To = 0.63000, In = 0, Out = 0.020, Gain = 0.359 }, -- punch sound, SVPJSP
+			{ Id = 137972233621112, Seconds = 0.34500, Peak = 0.00556, From = 0.00000, To = 0.34500, In = 0, Out = 0.020, Gain = 0.181 }, -- LiTDoom | Combat Knife Generic Hit, xxxnewmakcxxx
+			{ Id = 124216736896680, Seconds = 0.64219, Peak = 0.00462, From = 0.09781, To = 0.74000, In = 0, Out = 0.020, Gain = 0.338 }, -- melee knife hit 1, Alika0946
+			{ Id = 8595975878, Seconds = 0.64841, Peak = 0.00728, From = 0.06659, To = 0.71500, In = 0, Out = 0.020, Gain = 0.230 }, -- hit_kick_m, h3artevil
+			{ Id = 94197481990296, Seconds = 0.53497, Peak = 0.00666, From = 0.04503, To = 0.58000, In = 0, Out = 0.020, Gain = 0.103 }, -- Punch Hit 4 ALT, Generic_Username3510
+			{ Id = 8595975458, Seconds = 0.24975, Peak = 0.00250, From = 0.13106, To = 0.38081, In = 0, Out = 0.010, Gain = 0.504 }, -- hit_kick_l, h3artevil
+			{ Id = 8595980577, Seconds = 0.38559, Peak = 0.00800, From = 0.01166, To = 0.39725, In = 0, Out = 0.010, Gain = 0.340 }, -- hit_punch_l, h3artevil
+			{ Id = 119801699610817, Seconds = 0.39250, Peak = 0.00591, From = 0.02866, To = 0.42116, In = 0, Out = 0.010, Gain = 0.149 }, -- hit_kick2, mostimayuri
+			{ Id = 119316959874813, Seconds = 0.59552, Peak = 0.00637, From = 0.05666, To = 0.65218, In = 0, Out = 0.010, Gain = 0.144 }, -- LiTDoom | Combat Knife Fresh hit, xxxnewmakcxxx
+			{ Id = 110562992588060, Seconds = 0.50206, Peak = 0.00575, From = 0.03794, To = 0.54000, In = 0, Out = 0.020, Gain = 0.325 }, -- combat_melee_hit2, BWMixezz
+			{ Id = 86860520324860, Seconds = 0.66225, Peak = 0.00753, From = 0.10275, To = 0.76500, In = 0, Out = 0.020, Gain = 0.163 }, -- combat_sword_hit2, BWMixezz
+			{ Id = 139795256698131, Seconds = 0.32053, Peak = 0.00728, From = 0.08447, To = 0.40500, In = 0, Out = 0.020, Gain = 0.826 }, -- punchhit2, 0btain_TheGrain
+			{ Id = 140626490819228, Seconds = 0.35109, Peak = 0.00191, From = 0.00891, To = 0.36000, In = 0, Out = 0.010, Gain = 0.113 }, -- punch7, ProKartallar165456
+			{ Id = 9117969687, Seconds = 0.35488, Peak = 0.00753, From = 0.03012, To = 0.38500, In = 0, Out = 0.020, Gain = 0.204 }, -- Punch Kit Beefy Hit 2 (SFX), ProSoundEffects
+			{ Id = 109496822316417, Seconds = 0.50756, Peak = 0.00694, From = 0.05244, To = 0.56000, In = 0, Out = 0.020, Gain = 0.307 }, -- melee knife hit 2, Alika0946
+			{ Id = 9117969717, Seconds = 0.28663, Peak = 0.00800, From = 0.05337, To = 0.34000, In = 0, Out = 0.020, Gain = 0.179 }, -- Punch Kit Beefy Hit 3 (SFX), ProSoundEffects
+			{ Id = 79476956608476, Seconds = 0.51950, Peak = 0.00797, From = 0.12550, To = 0.64500, In = 0, Out = 0.020, Gain = 0.436 }, -- Hit - Punch - Impact - Blunt - Debris - Downslam, lorenzosaudiostash
+			{ Id = 139890294541073, Seconds = 0.57853, Peak = 0.00706, From = 0.06147, To = 0.64000, In = 0, Out = 0.020, Gain = 0.294 }, -- combat_melee_hit1, BWMixezz
+			{ Id = 106617636342358, Seconds = 0.43719, Peak = 0.00616, From = 0.04781, To = 0.48500, In = 0, Out = 0.020, Gain = 0.297 }, -- combat_melee_hit3, BWMixezz
+			{ Id = 132851203831922, Seconds = 0.49519, Peak = 0.00800, From = 0.28481, To = 0.78000, In = 0, Out = 0.020, Gain = 0.259 }, -- combat-sword-swing-hit, tammmmmkung
+			{ Id = 130907980308479, Seconds = 0.41952, Peak = 0.00744, From = 0.02506, To = 0.44458, In = 0, Out = 0.010, Gain = 0.111 }, -- Kick Hit 2, Generic_Username3510
+			{ Id = 129240409121774, Seconds = 0.52250, Peak = 0.00737, From = 0.15250, To = 0.67500, In = 0, Out = 0.020, Gain = 0.338 }, -- melee knife hit 4, Alika0946
+		},
+		KeptHeavy = {
+			{ Id = 82235785832022, Seconds = 0.66428, Peak = 0.00203, From = 0.00072, To = 0.66500, In = 0, Out = 0.020, Gain = 0.214 }, -- Heavy_punch_impact_#3-1770242809040, MegaBloxxy
+			{ Id = 79157071156981, Seconds = 1.08425, Peak = 0.00706, From = 0.05575, To = 1.14000, In = 0, Out = 0.020, Gain = 0.300 }, -- bee strong impact, HuskerTheWulf2
+			{ Id = 136097290040379, Seconds = 0.94141, Peak = 0.00759, From = 0.14359, To = 1.08500, In = 0, Out = 0.020, Gain = 0.183 }, -- Power hit 10, MobbyTheSlayer
+			{ Id = 97949571394241, Seconds = 1.23588, Peak = 0.00703, From = 0.04412, To = 1.28000, In = 0, Out = 0.020, Gain = 0.321 }, -- Heavy Rifle Bullet Hit, NNTTWW7
+			{ Id = 97522871949213, Seconds = 1.12256, Peak = 0.00737, From = 0.12244, To = 1.24500, In = 0, Out = 0.020, Gain = 0.380 }, -- Audio_ground_slam, Tofah_89
+			{ Id = 84636875169658, Seconds = 1.39431, Peak = 0.00797, From = 0.11069, To = 1.50500, In = 0, Out = 0.020, Gain = 0.296 }, -- Heavy Sword Hit 1, prescr_ption
+			{ Id = 135370885522783, Seconds = 0.72356, Peak = 0.00400, From = 0.17644, To = 0.90000, In = 0, Out = 0.020, Gain = 0.323 }, -- Heavy Hit 1, GleonoffG
+			{ Id = 97005077227469, Seconds = 1.37159, Peak = 0.00578, From = 0.50341, To = 1.87500, In = 0, Out = 0.020, Gain = 0.065 }, -- Strong Impact, GleonoffG
+			{ Id = 102109874814687, Seconds = 1.37294, Peak = 0.00759, From = 0.14706, To = 1.52000, In = 0, Out = 0.020, Gain = 0.296 }, -- blastaway throw punch heavy sfx hit, Axellatic
+			{ Id = 138379788001813, Seconds = 0.34356, Peak = 0.00637, From = 0.07144, To = 0.41500, In = 0, Out = 0.020, Gain = 0.461 }, -- Heavy Punch, projay2951
+			{ Id = 3908308607, Seconds = 1.04906, Peak = 0.00644, From = 0.11094, To = 1.16000, In = 0, Out = 0.020, Gain = 0.405 }, -- Metal Door Slam, S1xty
+			{ Id = 105223250998958, Seconds = 1.33813, Peak = 0.00553, From = 0.27187, To = 1.61000, In = 0, Out = 0.020, Gain = 0.449 }, -- Really strong impact, lucsanti31
+			{ Id = 93704409008888, Seconds = 1.33891, Peak = 0.00306, From = 0.03609, To = 1.37500, In = 0, Out = 0.020, Gain = 0.219 }, -- Echoing Smash/Impact SFX, DragonndineWhite2
+			{ Id = 76385508400544, Seconds = 1.12509, Peak = 0.00709, From = 0.09066, To = 1.21575, In = 0, Out = 0.010, Gain = 0.183 }, -- Heavy Punch, Vxsion_Fear
+			{ Id = 99021683276237, Seconds = 0.49797, Peak = 0.00759, From = 0.02703, To = 0.52500, In = 0, Out = 0.020, Gain = 0.289 }, -- Heavy_Punch_1, aarondeminecraft1
+			{ Id = 9113964478, Seconds = 1.09163, Peak = 0.00562, From = 0.26837, To = 1.36000, In = 0, Out = 0.020, Gain = 1.288 }, -- Cracky Punch 6 (SFX), ProSoundEffects
+			{ Id = 5951832571, Seconds = 0.75428, Peak = 0.00100, From = 0.15572, To = 0.91000, In = 0, Out = 0.020, Gain = 0.411 }, -- Sword Hit heavy 4 beyond x OTH, tushai
+			{ Id = 87860406137843, Seconds = 0.86987, Peak = 0.00159, From = 0.00013, To = 0.87000, In = 0, Out = 0.020, Gain = 0.233 }, -- hit_blunt_heavy_00_0, Sanya790228
+			{ Id = 88385100345706, Seconds = 1.38472, Peak = 0.00622, From = 0.21528, To = 1.60000, In = 0, Out = 0.020, Gain = 0.356 }, -- Heavy Sword Hit 3, prescr_ption
+			{ Id = 127429272097426, Seconds = 1.28366, Peak = 0.00709, From = 0.19634, To = 1.48000, In = 0, Out = 0.020, Gain = 0.112 }, -- heavy Punch, SillyShippo
+			{ Id = 127605012393667, Seconds = 1.09419, Peak = 0.00384, From = 0.41581, To = 1.51000, In = 0, Out = 0.020, Gain = 0.937 }, -- Dreamer Power Slam Hit, tarvoski
+			{ Id = 131871609905735, Seconds = 0.46950, Peak = 0.00769, From = 0.10519, To = 0.57469, In = 0, Out = 0.010, Gain = 0.326 }, -- hit 1 power heavy sfx, Axellatic
+		},
+		KeptSwipe = {
+			{ Id = 130845581077634, Seconds = 0.84000, Peak = 0.25956, From = 0.00000, To = 0.84000, In = 0, Out = 0.020, Gain = 0.128 }, -- teleport, SLASH43415
+			{ Id = 101359410446176, Seconds = 0.91500, Peak = 0.17181, From = 0.00000, To = 0.91500, In = 0, Out = 0.020, Gain = 0.078 }, -- Coyote Claw Swipe, StickBugDistraction
+			{ Id = 136949335117661, Seconds = 0.51500, Peak = 0.01959, From = 0.00000, To = 0.51500, In = 0, Out = 0.020, Gain = 0.314 }, -- Slash_hit, Bobismad689
+			{ Id = 137431264282253, Seconds = 0.39000, Peak = 0.14409, From = 0.04000, To = 0.43000, In = 0, Out = 0.020, Gain = 0.231 }, -- Audio_swoosh, thy_doggeth
+			{ Id = 93311226362113, Seconds = 0.57500, Peak = 0.14772, From = 0.02500, To = 0.60000, In = 0, Out = 0.020, Gain = 0.161 }, -- m1 whoosh swing sfx miss, Axellatic
+			{ Id = 136833367092810, Seconds = 0.67765, Peak = 0.23081, From = 0.00000, To = 0.67765, In = 0, Out = 0.010, Gain = 0.083 }, -- hit_slash_m, h3artevil
+			{ Id = 123240796092086, Seconds = 0.76500, Peak = 0.02706, From = 0.07500, To = 0.84000, In = 0, Out = 0.020, Gain = 0.197 }, -- sword hit or swing, tarvoski
+			{ Id = 92188315735827, Seconds = 0.91500, Peak = 0.01256, From = 0.00000, To = 0.91500, In = 0, Out = 0.020, Gain = 0.187 }, -- Slash Hit Impact, Divinicalll
+			{ Id = 140228522212884, Seconds = 0.52665, Peak = 0.14097, From = 0.00000, To = 0.52665, In = 0, Out = 0.010, Gain = 0.648 }, -- Slash 4, Sunny_CIover
+		},
+		-- TR42's keeps: end
 	} :: { [string]: { Take } },
 
 	Cues = {
-		-- 1. A Shade's swipe, on its clock, landed or not: the tell rising from the wind-up, then the whoosh topping on the
-		-- hit. Quieter than the lead's hits. Library layers (paper rustle, paper-edged whoosh) wait on the shortlist.
+		-- 1. A Shade's swipe, on its clock, landed or not: one of the director's nine keeps (TR42, 2026-11-19), its rise
+		-- whole and its top on the hit. Quieter than the lead's hits.
 		ShadeSwipe = {
-			Layers = {
-				{ Takes = "ShadeTell", At = -0.2, Volume = 0.25 }, -- about a third of the swipe's (Modulo's seed)
-				{ Takes = "ShadeSwipe", At = 0, Lead = "Peak", Volume = 0.7 },
-			},
+			Layers = { { Takes = "KeptSwipe", At = 0, Lead = "Peak", Volume = 1 } },
 			Bus = "Shade",
-			Pitch = { 0.92, 1.08 },
-			Volume = { 0.85, 1 },
+			Pitch = { 0.97, 1.03 }, -- seeds: the panel played each at 1, so a play stays close to what was kept
+			Volume = { 0.9, 1 },
 			Voices = 4,
 			Near = 20,
 			Range = 120,
@@ -191,13 +229,12 @@ local Config = {
 			Near = 30,
 			Range = 160,
 		} :: Cue,
-		-- 4. A light hit, on the touch: the spark tick an octave lower. No sub: it stays fast. Its library snap and body wait
-		-- on the shortlist.
+		-- 4. A light hit, on the touch: one of the director's 32 keeps (TR42, 2026-11-19), never the same twice running.
 		LightHit = {
-			Layers = { { Takes = "LightHitSpark", At = 0, Volume = 1 } },
+			Layers = { { Takes = "KeptLight", At = 0, Volume = 1 } },
 			Bus = "Lead",
-			Pitch = { 0.92, 1.08 },
-			Volume = { 0.85, 1 },
+			Pitch = { 0.97, 1.03 },
+			Volume = { 0.9, 1 },
 			Voices = 4,
 			Near = 30,
 			Range = 160,
@@ -212,17 +249,12 @@ local Config = {
 			Near = 30,
 			Range = 160,
 		} :: Cue,
-		-- 5b. A heavy hit, on the touch: the sub, the micro-impacts and the tail by the hit's strength. The library's body is
-		-- the strike's own cue where it has one (Haymaker's, Config.Sounds).
+		-- 5b. A heavy hit, on the touch: one of the director's 22 keeps (TR42, 2026-11-19), never the same twice running.
 		HeavyHit = {
-			Layers = {
-				{ Takes = "HeavySub", At = 0, Volume = 1 },
-				{ Takes = "HeavyImpacts", At = 0, Volume = 0.9 },
-				{ Takes = "HeavyTail", At = 0, Volume = 0.7, Strength = true },
-			},
+			Layers = { { Takes = "KeptHeavy", At = 0, Volume = 1 } },
 			Bus = "Lead",
-			Pitch = { 0.92, 1.08 },
-			Volume = { 0.85, 1 },
+			Pitch = { 0.97, 1.03 },
+			Volume = { 0.9, 1 },
 			Voices = 2,
 			Near = 30,
 			Range = 160,
@@ -242,13 +274,82 @@ local Config = {
 	-- AR39, the sound rescue's A/B: a pilot's cue played as it was ("Old") or as one of its arrangements, by name, switched
 	-- while playing: NL_Debug:Invoke("Tune", "Cues.Use.LightHit", "A"). An arrangement is a whole cue of its own, so
 	-- the old one stays as it is beside it. A name with no arrangement plays the old cue.
-	Use = { LightHit = "Old", HeavyHit = "Old", ShadeSwipe = "Old" },
+	Use = {
+		LightHit = "Old",
+		HeavyHit = "Old",
+		ShadeSwipe = "Old",
+		Haymaker = "Old",
+		ScarfStep = "Old",
+		LanternBurst = "Old",
+		GroundWire = "Old",
+		HeldNote = "Old",
+		MageShot = "Old",
+		MageHit = "Old",
+		HealerShot = "Old",
+		HealerHit = "Old",
+		RookHit = "Old",
+		KirraHit = "Old",
+		WattHit = "Old",
+	},
+	-- TR42's second round (the director, 2026-11-19: "we need more audition sfx for the skills of our current voidskin
+	-- rooster + the m1 of ranged class like mage etc"): an action's own cues, in place of the ones every hit plays. Beat
+	-- plays on its attacker's clock in place of the heavy wind-up (Rules.Sound.Beat), on each of its hits' beats, or on
+	-- At's alone; Contact on the struck body in place of the light or heavy hit (Rules.Sound.Contact). Each own cue
+	-- starts as what played in its place before (below), so nothing changes until the audition's pick. The ranged M1s
+	-- are named by class: the Mage's are a Fire Mage's (a Mage of another element gets its own), a later Healer's combo
+	-- joins Lyric's. The melee fighters' combo hits split the light hit's keeps between them (research, 2026-11-19).
+	Own = {
+		RookHaymaker = { Beat = "Haymaker" },
+		KirraScarfStep = { Beat = "ScarfStep" },
+		PipLanternBurst = { Beat = "LanternBurst" },
+		WattGroundWire = { Beat = "GroundWire" },
+		LyricHeldNote = { Beat = "HeldNote", At = "Note" }, -- once, as the note begins: its crests come a quarter second apart
+		PipCombo = { Beat = "MageShot", Contact = "MageHit" },
+		LyricCombo = { Beat = "HealerShot", Contact = "HealerHit" },
+		RookCombo = { Contact = "RookHit" },
+		KirraCombo = { Contact = "KirraHit" },
+		WattCombo = { Contact = "WattHit" },
+	} :: { [string]: { Beat: string?, At: string?, Contact: string? } },
 	Arrangements = {} :: { [string]: { [string]: Cue } },
 	-- AR39, the A/B at matched level (research, 2026-11-17): while On, an arrangement plays Db louder, so it meets its old
 	-- cue's short-term loudness. Db is CueCheck's Match, measured on the mix with this off, and is measured again after
 	-- every round. For the listen only: the level that ships is gate 4's. NL_Debug:Invoke("Tune", "Cues.Match.On", false).
 	Match = { On = true, Db = {} :: { [string]: { [string]: number } } },
 }
+
+-- TR42's second round: each own cue (Own) as what played in its place before, a copy of its layers, so a change to one
+-- never reaches the other: the heavy wind-up for a signature's beat, the light hit for a ranged M1's touch, and nothing
+-- for a ranged M1's cast or the held note, which had no sound of their own.
+local function before(from: Cue?, voices: number): Cue
+	local layers: { Layer } = {}
+	for _, layer in if from then from.Layers else {} do
+		table.insert(layers, table.clone(layer))
+	end
+	return {
+		Layers = layers,
+		Bus = "Lead",
+		Pitch = if from then table.clone(from.Pitch) else { 0.97, 1.03 },
+		Volume = if from then table.clone(from.Volume) else { 0.9, 1 },
+		Voices = voices,
+		Near = 30,
+		Range = 160,
+	}
+end
+do
+	local cues = Config.Cues
+	cues.Haymaker = before(cues.HeavyWind, 2)
+	cues.ScarfStep = before(cues.HeavyWind, 2)
+	cues.LanternBurst = before(cues.HeavyWind, 2)
+	cues.GroundWire = before(cues.HeavyWind, 2)
+	cues.HeldNote = before(nil, 2)
+	cues.MageShot = before(nil, 3)
+	cues.MageHit = before(cues.LightHit, 4)
+	cues.HealerShot = before(nil, 3)
+	cues.HealerHit = before(cues.LightHit, 4)
+	cues.RookHit = before(cues.LightHit, 4)
+	cues.KirraHit = before(cues.LightHit, 4)
+	cues.WattHit = before(cues.LightHit, 4)
+end
 
 -- An arrangement of a pilot: its own layers, and its pilot's bus, spreads, voices and reach.
 local function like(pilot: Cue, layers: { Layer }): Cue

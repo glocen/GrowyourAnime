@@ -34,8 +34,15 @@ local specs: { [string]: Spec } = {
 	FestivalGate = { Tag = "GA_FestivalGate", Attributes = {}, Count = 1, Ground = true },
 	-- A pack's spawn: Count Shades of Def at Level, spread round it. Pack is its number down the street. Type: the outline's
 	-- colour, else the Def's own. Ground: the ground it stands in (Definitions.Grounds), whose Standard shard it drops.
-	Pack = { Tag = "GA_Pack", Attributes = { Pack = "number", Def = "string", Level = "number", Count = "number", Type = "string?", Ground = "string" }, Ground = true },
-	Elite = { Tag = "GA_Elite", Attributes = { Def = "string", Level = "number", Type = "string?", Ground = "string" }, Count = 1, Ground = true },
+	-- Stage: the stage of the street it belongs to (Config.Stages, TR43), its elite's too: one elite to a stage of packs.
+	Pack = { Tag = "GA_Pack", Attributes = { Pack = "number", Def = "string", Level = "number", Count = "number", Type = "string?", Ground = "string", Stage = "number" }, Ground = true },
+	Elite = { Tag = "GA_Elite", Attributes = { Def = "string", Level = "number", Type = "string?", Ground = "string", Stage = "number" }, Ground = true },
+	-- A stage's gate (TR43): across the street after stage Stage's last stop, shut to a player until they've cleared that
+	-- stage on Normal. A part whose pivot is its middle; the server sets back whoever crosses it shut, the client shows it.
+	StageGate = { Tag = "GA_StageGate", Attributes = { Stage = "number", Ground = "string" } },
+	-- Where a stage's run sets the player down, facing into it: the first by the Door's landing, the next past each gate,
+	-- the keeper's before its gate.
+	StageStart = { Tag = "GA_StageStart", Attributes = { Stage = "number", Ground = "string" }, Ground = true },
 	KeeperGate = { Tag = "GA_KeeperGate", Attributes = {}, Count = 1, Ground = true },
 	-- The keeper's ring: a model whose pivot is its centre, on the floor. A try is fought in a copy of it (KeeperService).
 	-- Ground: the ground whose keeper it is (Definitions.Grounds), which a win counts on.

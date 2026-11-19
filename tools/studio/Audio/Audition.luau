@@ -18,6 +18,7 @@
 -- server's AuditionService hands it to the panel. Audition.Clear() takes it away.
 
 local HttpService = game:GetService("HttpService")
+local MarketplaceService = game:GetService("MarketplaceService")
 local ServerStorage = game:GetService("ServerStorage")
 local SoundService = game:GetService("SoundService")
 local Shared = game:GetService("ReplicatedStorage").Shared
@@ -47,6 +48,9 @@ local VOICE_MUSIC = {
 	"talking", "speech", "laugh", "laughing", "cry", "crying", "male", "female", "man", "woman", "girl", "boy", "grunt",
 	"yell", "shout", "kiai", "efforts", "scream", "moan", "groan", "heh",
 }
+-- A Tonal pilot's (Config.Audition): a single tone's or chime's titles may say these; a tune's other words still leave
+-- it out.
+local TONAL_PASS = { music = true, musical = true }
 
 local Audition = {}
 
@@ -77,20 +81,47 @@ local function holder(): Folder
 	return folder :: Folder
 end
 
+-- A StringValue holds under 200,000 characters: a longer value is kept in parts, `name`, then `name_2`, `name_3`...
+local PART = 190000
+local BATCH = 6 -- finds measured at once
+
 local function keep(name: string, value: string)
-	local at = holder():FindFirstChild(name)
-	if at == nil then
-		at = Instance.new("StringValue")
-		at.Name = name
-		at.Parent = holder()
+	local folder = holder()
+	local parts = math.max(math.ceil(#value / PART), 1)
+	for n = 1, parts do
+		local key = if n == 1 then name else `{name}_{n}`
+		local at = folder:FindFirstChild(key)
+		if at == nil then
+			at = Instance.new("StringValue")
+			at.Name = key
+			at.Parent = folder
+		end
+		(at :: StringValue).Value = string.sub(value, (n - 1) * PART + 1, n * PART)
 	end
-	(at :: StringValue).Value = value
+	local n = parts + 1
+	while folder:FindFirstChild(`{name}_{n}`) do
+		(folder:FindFirstChild(`{name}_{n}`) :: Instance):Destroy()
+		n += 1
+	end
 end
 
 local function kept(name: string): string?
 	local folder = ServerStorage:FindFirstChild(FOLDER)
 	local at = folder and folder:FindFirstChild(name)
-	return if at and at:IsA("StringValue") then at.Value else nil
+	if folder == nil or at == nil or not at:IsA("StringValue") then
+		return nil
+	end
+	local parts = { at.Value }
+	local n = 2
+	while true do
+		local more = folder:FindFirstChild(`{name}_{n}`)
+		if more == nil or not more:IsA("StringValue") then
+			break
+		end
+		table.insert(parts, more.Value)
+		n += 1
+	end
+	return table.concat(parts)
 end
 
 local function load(id: number): AudioPlayer?
@@ -147,6 +178,9 @@ end
 -- Today's cue's short-term loudness, as CueCheck reads it: each take once, the mean.
 local function oldLevel(name: string): number?
 	local cue = Cues.Cues[name]
+	if cue == nil or #cue.Layers == 0 then
+		return nil -- no sound in its place today (Config.Cues.Own: a cast, the held note)
+	end
 	local most = 1
 	for _, layer in cue.Layers do
 		most = math.max(most, #(Cues.Takes[layer.Takes] or {}))
@@ -164,7 +198,7 @@ local function oldLevel(name: string): number?
 end
 
 -- Why a find is left out by its words, or nil.
-local function wordsOut(title: string, description: string): string?
+local function wordsOut(title: string, description: string, tonal: boolean?): string?
 	local t = Shortlist.Normalized(title)
 	if not string.find(t, "%a") then
 		return "its title is hidden by the filter"
@@ -175,7 +209,16 @@ local function wordsOut(title: string, description: string): string?
 	if Shortlist.Mentions(t, Shortlist.Lists.Gore) > 0 then
 		return "a gore word"
 	end
-	if Shortlist.Mentions(t, VOICE_MUSIC) > 0 then
+	local words = VOICE_MUSIC
+	if tonal then
+		words = {}
+		for _, word in VOICE_MUSIC do
+			if not TONAL_PASS[word] then
+				table.insert(words, word)
+			end
+		end
+	end
+	if Shortlist.Mentions(t, words) > 0 then
 		return "music or a voice"
 	end
 	return nil
@@ -334,9 +377,33 @@ local function inTurn(found: { any }): { any }
 	end
 end
 
-local function run(status: (string) -> ())
+-- A picked cue's takes as finds (a Keeps cue's candidates), each with its title and author from the store, in its list's
+-- order.
+local function keepsOf(name: string): { any }
+	local cue = Cues.Cues[name]
+	local finds = {}
+	for _, take in Cues.Takes[cue.Layers[1].Takes] or {} do
+		local ok, info = pcall(MarketplaceService.GetProductInfo, MarketplaceService, take.Id, Enum.InfoType.Asset)
+		local title = if ok and type(info) == "table" and type(info.Name) == "string" then info.Name else `keep {take.Id}`
+		local author = if ok and type(info) == "table" and type(info.Creator) == "table" then tostring(info.Creator.Name) else "?"
+		table.insert(finds, { Id = take.Id, Title = title, Description = "", Creator = author, Licensed = false, Keyword = `{name}'s keeps` })
+	end
+	return finds
+end
+
+local function run(status: (string) -> (), only: { [string]: boolean }?)
 	local stale = require(Shared.Config.Cues) :: any
 	local result: { [string]: any } = { Made = os.date("!%Y-%m-%dT%H:%M:%SZ"), Trim = Cues.Trim, Levels = Config.Levels, Old = {}, Cues = {}, LeftOut = {}, Searched = {} }
+	local last = if only then kept("Candidates") else nil
+	if last then
+		-- the cues not run again keep their lists as the last run left them
+		local before = HttpService:JSONDecode(last)
+		for _, field in { "Cues", "LeftOut", "Searched" } do
+			for name, value in before[field] or {} do
+				result[field][name] = value
+			end
+		end
+	end
 	result.Stale = stale.Trim ~= Cues.Trim or stale.Volume ~= Cues.Volume -- Rules.Sound would read an older Config.Cues: restart Studio
 	for _, spec in Config.Cues do
 		status(`today's {spec.Name}`)
@@ -346,28 +413,52 @@ local function run(status: (string) -> ())
 	assert(reference, "today's LightHit didn't load: no reference to match to")
 	result.Reference = reference
 	for _, spec in Config.Cues do
+		if spec.Done or (only and not only[spec.Name]) then
+			continue -- picked: its candidates aren't searched again; or not in this run
+		end
 		status(`searching {spec.Name}`)
-		local finds = inTurn(Library.Search(spec.Words, { AnyAuthor = true, Pages = Config.Pages }))
+		local finds = if spec.Keeps then keepsOf(spec.Keeps) else inTurn(Library.Search(spec.Words, { AnyAuthor = true, Pages = Config.Pages }))
 		result.Searched[spec.Name] = #finds
 		local target = reference + (Config.Levels[spec.Name] or 0)
 		local list: { Candidate } = {}
 		local left: { Left } = {}
-		for n, found in finds do
-			if #list >= Config.Keep then
-				break
+		local first = 1
+		while first <= #finds and #list < Config.Keep do
+			local last = math.min(first + BATCH - 1, #finds)
+			status(`{spec.Name}: {last} of {#finds}, {#list} kept`)
+			local answers: { { Candidate: Candidate?, Why: string? } } = {}
+			local pending = 0
+			for n = first, last do
+				local found = finds[n]
+				local why = wordsOut(found.Title, found.Description or "", spec.Tonal)
+				if why ~= nil then
+					answers[n - first + 1] = { Why = why }
+					continue
+				end
+				pending += 1
+				task.spawn(function()
+					local ok, candidate, reason = pcall(measure, found, spec, target)
+					answers[n - first + 1] = if ok then { Candidate = candidate, Why = reason } else { Why = `the measure failed: {candidate}` }
+					pending -= 1
+				end)
 			end
-			status(`{spec.Name}: {n} of {#finds}, {#list} kept`)
-			local why = wordsOut(found.Title, found.Description or "")
-			local candidate = nil
-			if why == nil then
-				candidate, why = measure(found, spec, target)
+			while pending > 0 do
+				task.wait(0.03)
 			end
-			if candidate then
-				candidate.Number = #list + 1
-				table.insert(list, candidate)
-			else
-				table.insert(left, { Id = found.Id, Title = found.Title, Why = why or "?" })
+			for n = first, last do
+				local found, answer = finds[n], answers[n - first + 1]
+				if #list >= Config.Keep then
+					break
+				end
+				if answer and answer.Candidate then
+					local candidate = answer.Candidate :: Candidate
+					candidate.Number = #list + 1
+					table.insert(list, candidate)
+				else
+					table.insert(left, { Id = found.Id, Title = found.Title, Why = (answer and answer.Why) or "?" })
+				end
 			end
+			first = last + 1
 			task.wait()
 		end
 		result.Cues[spec.Name] = list
@@ -376,13 +467,22 @@ local function run(status: (string) -> ())
 	keep("Candidates", HttpService:JSONEncode(result))
 end
 
--- Finds every pilot's candidates, detached. Its answer stays under ServerStorage.NL_Audition until the next Start.
-function Audition.Start()
+-- Finds every pilot's candidates, detached, or only the named ones', merged into the last answer. Its answer stays under
+-- ServerStorage.NL_Audition until the next Start.
+function Audition.Start(names: { string }?)
 	keep("Status", "starting")
+	local only: { [string]: boolean }? = nil
+	if names then
+		local set = {}
+		for _, name in names do
+			set[name] = true
+		end
+		only = set
+	end
 	task.spawn(function()
 		local ok, err = pcall(run, function(line: string)
 			keep("Status", line)
-		end)
+		end, only)
 		keep("Status", if ok then "done" else `failed: {err}`)
 	end)
 	return "started"
@@ -401,6 +501,9 @@ function Audition.Report(): string
 	local result = HttpService:JSONDecode(text)
 	local lines = { `made {result.Made}; reference (today's LightHit) {string.format("%.1f", result.Reference)} LUFS short-term{if result.Stale then "; STALE Config.Cues: restart Studio" else ""}` }
 	for _, spec in Config.Cues do
+		if spec.Done then
+			continue
+		end
 		local list, left = result.Cues[spec.Name] or {}, result.LeftOut[spec.Name] or {}
 		local hottest, longest = -math.huge, 0
 		for _, c in list do

@@ -32,6 +32,11 @@ local REMOTES: { [string]: Spec } = {
 	-- Home in one tap (HomeService, TR19).
 	Home = { Kind = "Function", RatePerSecond = 4 }, -- client -> server: () -> { Ok, Refusal?, Says? }: the charge begins, or why not
 	HomeJump = { Kind = "Event", RatePerSecond = 0 }, -- server -> client: (landed, says?) the jump home, or the charge broken and why
+	-- A ground's stages (StageService, TR43).
+	Stage = { Kind = "Function", RatePerSecond = 2 }, -- client -> server: (ground, difficulty, stage) -> { Ok, Error?, Needs?, Waits? }: a run begins there, or why not
+	StagePick = { Kind = "Event", RatePerSecond = 0 }, -- server -> client: ({ Ground }) through the Festival Door, not fresh: the picker opens
+	StageDone = { Kind = "Event", RatePerSecond = 0 }, -- server -> client: (results) a run ended, won or lost, for its card
+	StageGate = { Kind = "Event", RatePerSecond = 0 }, -- server -> client: ({ Stage, Ground }) set back at a gate shut to them
 	-- The fight in the camera's view (FightService, TR24's fixes 2 and 3).
 	View = { Kind = "Unreliable", RatePerSecond = 8 }, -- client -> server: (bearing) degrees, where the camera looks, flat: atan2(Z, X)
 }

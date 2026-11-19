@@ -18,6 +18,9 @@ local SoundCases = {}
 
 local QUIET = 1e-4 -- an analyzer's peak at or under this is silence
 local MAX_VOLUME = 10 -- an AudioPlayer's Volume stops here (read back on a client, 2026-11-18; CueMix.Engine.MaxVolume)
+-- One of our own uploads, whole (Modulo's ShadeSwipe_1, docs/asset-log.md): the engine's cases play a known file of
+-- their own, whatever the fight's cues play.
+local OUR_TAKE = { Id = 94311601578482, Seconds = 0.32, Peak = 0.2070 }
 local REPLAY_PAUSE = 5 -- seconds past the action before a second press, longer than the case waits, as Cases'
 
 local function waitFor(t: any, seconds: number, ok: () -> boolean): boolean
@@ -97,6 +100,9 @@ function SoundCases.Cases(): { any }
 				t.Check("every take's voices loaded", loaded, `{ready} of {all}`)
 				local camera = workspace.CurrentCamera
 				for name, cue in CuesConfig.Cues do
+					if #cue.Layers == 0 then
+						continue -- an action's own cue with no sound before its pick (Config.Cues.Own): silent by design
+					end
 					local analyzer, done = listen(cue.Bus)
 					if analyzer == nil then
 						t.Check(`{name}: its bus ({cue.Bus}) is built`, false)
@@ -177,6 +183,14 @@ function SoundCases.Cases(): { any }
 						t.Check(`the kit has a {if pair[2] then "heavy" else "light"} press`, false)
 						continue
 					end
+					-- the cues this action plays: its own where Config.Cues.Own names them, else the shared ones
+					local windName: string?, hitName: string? = nil, nil
+					for beat, hit in action.Hits do
+						if hit.Heavy == pair[2] then
+							windName = windName or SoundRule.Beat(action.Id, hit.Heavy, "Lead", beat)
+							hitName = hitName or SoundRule.Contact(hit.Heavy, "Lead", "Shade", action.Id)[1]
+						end
+					end
 					local started = t.Server("Replay", action.Id, action.Length + REPLAY_PAUSE)
 					t.Check(`the replay presses {action.Id}`, type(started) == "table" and started.Ok == true)
 					local wound: number?, struck: number?, tapped: number? = nil, nil, nil
@@ -184,17 +198,19 @@ function SoundCases.Cases(): { any }
 					while os.clock() - began < action.Length + 1 do
 						RunService.Heartbeat:Wait()
 						local now = os.clock()
-						wound = wound or (if Cues.Playing("HeavyWind") > 0 then now else nil)
-						struck = struck or (if Cues.Playing("HeavyHit") > 0 then now else nil)
-						tapped = tapped or (if Cues.Playing("LightHit") > 0 then now else nil)
+						local winding = if windName then Cues.Playing(windName :: string) > 0 else false
+						local touching = if hitName then Cues.Playing(hitName :: string) > 0 else false
+						wound = wound or (if winding then now else nil)
+						struck = struck or (if pair[2] and touching then now else nil)
+						tapped = tapped or (if not pair[2] and touching then now else nil)
 					end
 					t.Server("Replay")
 					if pair[2] then
-						t.Check(`{action.Id}: its wind-up heard`, wound ~= nil)
+						t.Check(`{action.Id}: its wind-up heard`, wound ~= nil, tostring(windName))
 						t.Check(`{action.Id}: its heavy touch heard`, struck ~= nil)
 						t.Check(`{action.Id}: the wind-up before the touch`, wound ~= nil and struck ~= nil and wound < struck, string.format("%.3f s before", (struck or 0) - (wound or 0)))
 					else
-						t.Check(`{action.Id}: its light touch heard`, tapped ~= nil)
+						t.Check(`{action.Id}: its light touch heard`, tapped ~= nil, tostring(hitName))
 						t.Check(`{action.Id}: no wind-up`, wound == nil)
 					end
 					t.Wait(1)
@@ -206,7 +222,7 @@ function SoundCases.Cases(): { any }
 			Run = function(t: any)
 				local camera = workspace.CurrentCamera
 				local config = CuesConfig :: any
-				local source = CuesConfig.Takes.ShadeSwipe[1]
+				local source = OUR_TAKE
 				-- a slice of one of our own takes, as a library take is given: 0.08 to 0.28 s of its file
 				local slice = { Id = source.Id, Seconds = 0.2, Peak = 0.05, From = 0.08, To = 0.28, In = 0.05, Out = 0.06 }
 				local cue = { Layers = { { Takes = "NL_TestSlice", At = 0, Volume = 1 } }, Bus = "Shade", Pitch = { 1, 1 }, Volume = { 1, 1 }, Voices = 1, Near = 30, Range = 160 }
@@ -352,7 +368,8 @@ function SoundCases.Cases(): { any }
 					w.TargetInstance = after
 					w.Parent = after
 					after.Parent = limiter
-					local cue = { Layers = { { Takes = "ShadeSwipe", At = 0, Volume = 1 / (CuesConfig.Volume * CuesConfig.Trim) } }, Bus = "Shade", Pitch = { 1, 1 }, Volume = { 1, 1 }, Voices = 1, Near = 30, Range = 160 }
+					config.Takes.NL_TestHot = { OUR_TAKE }
+					local cue = { Layers = { { Takes = "NL_TestHot", At = 0, Volume = 1 / (CuesConfig.Volume * CuesConfig.Trim) } }, Bus = "Shade", Pitch = { 1, 1 }, Volume = { 1, 1 }, Voices = 1, Near = 30, Range = 160 }
 					config.Cues.NL_TestHot = cue
 					Cues.Try("NL_TestHot", cue :: any)
 					local voice = Cues.Voice("NL_TestHot", 1, 1)
@@ -376,6 +393,7 @@ function SoundCases.Cases(): { any }
 					after:Destroy()
 					Cues.Try("NL_TestHot", nil)
 					config.Cues.NL_TestHot = nil
+					config.Takes.NL_TestHot = nil
 				else
 					t.Check("the Shades' bus has its limiter", false)
 				end

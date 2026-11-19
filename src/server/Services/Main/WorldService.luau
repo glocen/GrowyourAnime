@@ -964,6 +964,8 @@ local function lay(folder: Folder)
 	folder:SetAttribute("Street", Vector2.new(0, rowHalf))
 	local landingAt = CFrame.lookAt(Vector3.new(0, PAVED_TOP, gateZ + doors.Landing), Vector3.new(0, PAVED_TOP, gateZ + doors.Landing) + north)
 	Markers.Stamp(spot(folder, "Door landing", landingAt), "DoorLanding", { Ground = row.Ground })
+	-- The first stage starts where the Door sets a player down (TR43).
+	Markers.Stamp(spot(folder, `Stage {row.Stops[1].Stage}'s start`, landingAt), "StageStart", { Stage = row.Stops[1].Stage, Ground = row.Ground })
 
 	-- Lantern Row's stops, and its stall fronts with the elite's square opened out of them.
 	local street = Instance.new("Folder")
@@ -979,16 +981,18 @@ local function lay(folder: Folder)
 		local at = CFrame.lookAt(Vector3.new(0, PAVED_TOP, z), Vector3.new(0, PAVED_TOP, z) + Vector3.new(0, 0, 1)) -- facing the way the player comes
 		if stop.Kind == "Pack" then
 			pack += 1
-			Markers.Stamp(spot(street, `Pack {pack}`, at), "Pack", { Pack = pack, Def = stop.Def, Level = stop.Level, Count = stop.Count or 1, Ground = row.Ground })
+			Markers.Stamp(spot(street, `Pack {pack}`, at), "Pack", { Pack = pack, Def = stop.Def, Level = stop.Level, Count = stop.Count or 1, Ground = row.Ground, Stage = stop.Stage })
 		elseif stop.Kind == "Elite" then
-			under(slab(street, "Square", -squareHalf, squareHalf, z - squareHalf, z + squareHalf, PAVED_TOP + OVERLAY, GREY.Plot))
-			table.insert(openings, { z - squareHalf, z + squareHalf })
-			for _, side in { -1, 1 } do
-				under(wallZ(street, side * (squareHalf + 1), z - squareHalf, z + squareHalf, high))
-				under(wallX(street, z - squareHalf - 1, side * (rowHalf + 1), side * (squareHalf + 2), high))
-				under(wallX(street, z + squareHalf + 1, side * (rowHalf + 1), side * (squareHalf + 2), high))
+			if stop.Square then
+				under(slab(street, "Square", -squareHalf, squareHalf, z - squareHalf, z + squareHalf, PAVED_TOP + OVERLAY, GREY.Plot))
+				table.insert(openings, { z - squareHalf, z + squareHalf })
+				for _, side in { -1, 1 } do
+					under(wallZ(street, side * (squareHalf + 1), z - squareHalf, z + squareHalf, high))
+					under(wallX(street, z - squareHalf - 1, side * (rowHalf + 1), side * (squareHalf + 2), high))
+					under(wallX(street, z + squareHalf + 1, side * (rowHalf + 1), side * (squareHalf + 2), high))
+				end
 			end
-			Markers.Stamp(spot(street, "Elite", at), "Elite", { Def = stop.Def, Level = stop.Level, Ground = row.Ground })
+			Markers.Stamp(spot(street, `Elite {stop.Stage}`, at), "Elite", { Def = stop.Def, Level = stop.Level, Ground = row.Ground, Stage = stop.Stage })
 		elseif stop.Kind == "Keeper" then
 			local keeperAt = CFrame.lookAt(Vector3.new(0, PAVED_TOP, z), Vector3.new(0, PAVED_TOP, z) + north)
 			local keeperGate = gate(street, "Keeper's gate", keeperAt, studs(row.Wide), high, true)
@@ -1011,6 +1015,25 @@ local function lay(folder: Folder)
 				block(ring, "Rail", Vector3.new(length, 3, 1), spotAt, GREY.Wall)
 			end
 			Markers.Stamp(ring, "Ring", { Def = stop.Def, Level = stop.Level, Ground = row.Ground })
+			-- The keeper's stage starts before its gate, facing it.
+			local startAt = Vector3.new(0, PAVED_TOP, z + row.GateSet)
+			Markers.Stamp(spot(street, `Stage {stop.Stage}'s start`, CFrame.lookAt(startAt, startAt + north)), "StageStart", { Stage = stop.Stage, Ground = row.Ground })
+		end
+		-- A stage's gate (TR43), halfway from its last stop to the next stage's first, outside the square (Spacing's 80
+		-- studs over the square's 32 to its edge); the next stage starts past it, the keeper's before its own gate.
+		local after = stops[index + 1]
+		if after and after.Stage ~= stop.Stage then
+			local stageGateZ = (z + stopZ(index + 1)) / 2
+			local shut = block(street, `Stage {stop.Stage}'s gate`, Vector3.new(studs(row.Wide), high, 1), CFrame.new(0, PAVED_TOP + high / 2, stageGateZ), GREY.Locked)
+			shut.Transparency = 0.5
+			shut.CanCollide = false -- per player: the server sets back whoever crosses it shut (StageService)
+			shut.CanQuery = false
+			shut.CanTouch = false
+			Markers.Stamp(shut, "StageGate", { Stage = stop.Stage, Ground = row.Ground })
+			if after.Kind ~= "Keeper" then
+				local startAt = Vector3.new(0, PAVED_TOP, stageGateZ - row.GateSet)
+				Markers.Stamp(spot(street, `Stage {after.Stage}'s start`, CFrame.lookAt(startAt, startAt + north)), "StageStart", { Stage = after.Stage, Ground = row.Ground })
+			end
 		end
 	end
 	-- The stall fronts, from the gate to the keeper's gate, open at the square; then round the ring to the shut gate.

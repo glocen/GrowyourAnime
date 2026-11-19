@@ -12,17 +12,11 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **Verdicts owed:** AR30's scrolling row (one phone capture); AR37's build, read in the game; TR10's marker, AR28's Stage I, TR34, AR23, TR29.
 - **With the director:** the store's design (`docs/decisions.md`, "Waiting on the director", item 2).
 
-**Faber (builder).** 2026-11-18, 22:53, on Opus 5.5. TR42's audition panel waits on the director's listen (item 7; TR42, "The block, built"). AR40's Breaker panel is captured in today's colours and in A, B and C (AR40, "The Breaker panel captured").
-- **The review's follow-up, built, Studio check owed:**
-  - item 1: the four picks are on main and pushed;
-  - item 5, D3: Combat Power at a tenth, a gain judged on `Stats.Sum` (48ec4f0);
-  - item 11, D8: the names kept from translation by `NameGuardController`, checked by the UI lint (0eee676).
-  - Offline logic 24,710 passed, 0 failed; type check 0 new.
-  - The self-test waits on Rojo's connect in the reopened Studio (asked of the director).
-- **Now:** TR43, the stages in grey. Its pure core is in (41a274e): `Config.Stages`, the save's `Progress.Stages`, `Rules.Stages` and four offline cases. The street's three stretches with their gates, Hard's own foes, the Door's first-time entry, the picker and the results follow in Studio, after items 1, 5 and 11 pass there on today's street.
-- **For research:** the bag's kinds row on the simulated phone, at rest and scrolled to its end: `build/scratch/faber/ar30/chips/row_both.png`. And: the target card's light (`CardLightHealth`) keeps its glow ahead of its front; the same way as the lead's?
-- **Next, in order:** AR30's rest (the Breaker's shards and Drop rates, the card's X and Tower's Close), then the follow-up's items 3, 6, 7, 8 and 10, item 4 after research's refit, then the queue.
-- **Open, tests:** the full self-test NOT VERIFIED on HEAD. TR41's galaxy case fails at the smallest phone on chamber 1's time-left label (75 px in 62), older than AR40. Four timing cases stay NOT VERIFIED (AR11).
+**Faber (builder).** 2026-11-19, 01:31, on Opus 5.5. The director's listen moves to tomorrow ("i will do that sound audition tomorrow so meanwhile produce the actual game now"): TR42's second round is in the place, 12 tabs (TR42, "The picks in the game, and the second round, built").
+- **Built and tested tonight:** TR43, the stages in grey (TR43, "The block, built"); item 6, Salvage on the item's card; item 8, D5's bays; the music module; Roblox's character sounds removed. Offline logic 26,574/0, Studio's the same; type check 0 new; the touched self-test cases pass.
+- **Now:** TR44, the Lamplighter's slam in its fight, with its footprint, and the lead's two ways out, A and B, behind one switch.
+- **Next, in order:** items 7 and 10, item 4 after research's refit, AR38's Void Shop install, AR40's C install, AR30's rest; the UI sounds' audition after the director's listen.
+- **Open, tests:** TR43's fresh-account case not run (it wipes the save). The full self-test NOT VERIFIED on HEAD; TR41's galaxy case and four timing cases as before.
 
 **Modulo (assets).** 2026-11-19, 01:12, on Opus 5.5. Voidkin work parked until before launch (the director's word, 11:10).
 - **Done tonight:** AR40's three must-fixes on C, built and measured (AR40, "The must-fixes on C, built"). The wells under every light, the Strip's cream stones with warm joints, and the system's keys in C's values. The kit wears C now. Content check passed. Research needs no render before the install: its second look is the install's capture, by day.
@@ -31,7 +25,7 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **For research:** the clock sheet, `build/scratch/modulo/shop/clock2/clock_look.png`; at 160 by day it reads by its dark gaps, not as lights over the noon sky. The screen redrawn on D6, `build/scratch/modulo/shop/screen_d6/shop_screen.png`, with one question: can a featured piece of a class the player hasn't got be bought?
 - **Unchanged:** AR28's Stage I waits on TR37 with Faber. AR19's six re-uploads wait. AR24's A waits on TR34's block. AR39 is stopped; nothing on sound is mine. Sable is after launch.
 
-**Turns.** Studio: Faber's, its Play back from 00:08 on 2026-11-19 for TR43's test (Studio about 5 GB with it); from 00:14 the director is on TR42's audition panel in it, so TR43's Studio test waits for their word. Blender: nobody (Modulo's clock renders done, 01:10 to 01:12 on 2026-11-19; under 0.9 GB at their peak). Timing tests: nobody.
+**Turns.** Studio: Faber's, its Play running on 2026-11-19 for TR44; the director's listen on TR42's panel is tomorrow, in the same place. Blender: nobody (Modulo's clock renders done, 01:10 to 01:12 on 2026-11-19; under 0.9 GB at their peak). Timing tests: nobody.
 
 **The count.** Pieces closed and playable this week: 13. TR2, the circuit in grey (phase 1); Haymaker, on A; the Shade's burst; Pip's Lantern Burst; Lyric's Held Note; TR3, the HUD in the world; TR4, the reveal; AR7, the Lamplighter installed with his fall; his signature; Lantern Burst's exit in 3D (B1); Haymaker's square in 3D (B5); TR18, power in grey; AR12's HUD part 1. Hours are in each piece's entry.
 
@@ -49,7 +43,7 @@ For Faber:
 
 5. **The test rule, in `CLAUDE.md` and `ga-finish`.** Research relays your yes (the register, 2026-11-15, night): at a piece's finish, the cases its change can reach and every offline logic case; the whole suite at a phase's close and after a change to shared code. `CLAUDE.md` changes only on your own word in the builder's session: say "write it" there and it's in.
 6. **Your ear on Haymaker's strike sound**, a library pick (not one of AR13's made takes), heard on its frame. In a playtest, the Server command bar: `game.ServerStorage.NL_Debug:Invoke("Replay", nil, "RookHaymaker")` plays it every 3.5 s, and `Invoke("Replay", nil)` stops it. Two alternates are logged in AR1, section 8.
-7. **Your ear on the audition panel** (TR42), ready: about 10 to 15 minutes, in Studio's Play. The panel is at the left: a tab per hit, "Old" (today's sound) and ten candidates. Tap a row: it plays, and from then on every hit of that kind plays it in the fight. **Keep** the ones you like (more than one is fine), **More** for the next ten, **None of these** when ten hold nothing. **Others off** mutes the fight's other sounds, so you hear the candidate alone. When you're done, leave the Play running and tell Faber: your picks are read from it.
+7. **Your ear on the audition panel** (TR42), ready for tomorrow: 12 tabs, the nine skills and the Mage's and Healer's hits, and a tab for each of Rook's, Kirra's and Watt's light hits drawn from your 32 keeps. In Studio's Play, the panel is at the left: a tab per hit, "Old" (today's sound) and ten candidates. Tap a row: it plays, and from then on every hit of that kind plays it in the fight. **Keep** the ones you like (more than one is fine), **More** for the next ten, **None of these** when ten hold nothing. **Others off** mutes the fight's other sounds, so you hear the candidate alone. When you're done, leave the Play running and tell Faber: your picks are read from it.
 
 ### Notices
 
@@ -123,6 +117,15 @@ For Faber:
 - Tier 2, research, 2026-11-12, on the director's words: weapons belong to a class, in two hands (Main Hand and Off Hand replace Weapon and Shield), a preset holds a pair per class, a weapon drop is for the lead's class; Combat Power made to be watched, its weights fitted by the simulation; each item kind modelled and rendered to its icon (AR6, phase 3) (`docs/design.md`, "Regalia: gear" and "Combat Power"). Faber: the Stats case's `"Weapon"` source becomes `"Main Hand"` when you next touch it. Faber and Modulo: say in your row what you'd change.
 
 ## Entries
+
+### 2026-11-19, 01:31. TR43's stages, items 6 and 8, the music and the character sounds; TR42's second round ready (Faber)
+
+- **TR43:** Lantern Row in four stages on Normal and Hard, in grey: the gates, the Door's first-time entry, the picker, the results card, Hard's own foes (TR43, "The block, built"). For research's read from a phone's camera.
+- **Item 6:** Salvage on the item's card, left of Equip: a first tap asks with its Credits, a second salvages, and a worn item says "Take it off first". The full bag's line says how to free a slot (`UI/VoidkinScreen/Bag.luau`).
+- **Item 8, D5:** the bays are 2, 3 and 4 at the base's levels 1 to 3; bays 5 and 6 stand locked, "Opens with more Voidkin" (`Config.Base`). Save step 9 trims a base holding more, freeing those workers. HP Regen's sheet line reads its burst with "every 8 s" under it.
+- **The music:** `Config/Music.luau`, where the director pastes the ids; `MusicController` shuffles them, never one twice running. **The character sounds:** Roblox's walk, jump and fall sounds are gone (`src/overrides`).
+- **TR42:** the picks are the cues, and the second round's 12 tabs wait on the director's listen, tomorrow.
+- **Tests:** offline logic 26,574/0, Studio's the same, world report empty; the touched self-test cases pass (stages 78, bag 121, base 38, audition 89, sound 10).
 
 ### 2026-11-17, 23:24. AR39 stopped; the sounds go to the director's ear, TR42 (Quaestor)
 

@@ -15,6 +15,7 @@ local Profile = require(Shared.Data.Profile)
 local Items = require(Shared.Definitions.Items)
 local Voidkin = require(Shared.Definitions.Voidkin)
 local Rules = require(Shared.Rules.Bag)
+local Chests = require(Shared.Rules.Chests)
 local HudController = require(script.Parent.Parent.Parent.Main.HudController)
 local ProfileController = require(script.Parent.Parent.ProfileController)
 local UI = script.Parent.Parent.Parent.Parent.UI
@@ -329,6 +330,9 @@ function BagCases.Cases(given: Given): { any }
 				t.Check("a tap on the doll's Main Hand opens what it wears", VoidkinScreen.Tap(hand :: GuiObject?) and Bag.State().Chosen == weapon)
 				t.Wait(HudConfig.Bag.Slide + 0.1)
 				local off = find("TakeOff")
+				-- the follow-up's item 6: a worn item can't be salvaged, and the card says what to do first
+				local wornSalvage = find("SalvageItem")
+				t.Check("a worn item's Salvage off, saying to take it off first", wornSalvage ~= nil and wornSalvage:IsA("TextButton") and Button.State(wornSalvage) == "Disabled" and wornSalvage:GetAttribute("Disabled") == "Take it off first", if wornSalvage then tostring(wornSalvage:GetAttribute("Disabled")) else "none")
 				t.Check("Take off pressed", off ~= nil and off:IsA("TextButton") and Button.Press(off))
 				t.Check("the save wears nothing there", waitFor(t, ANSWER, function(): boolean
 					return Rules.Worn(view() :: any, view().Voidkin[lead])["Main Hand"] == nil
@@ -344,6 +348,31 @@ function BagCases.Cases(given: Given): { any }
 				t.Check("Equip off, saying why", blocked ~= nil and blocked:IsA("TextButton") and Button.State(blocked) == "Disabled" and blocked:GetAttribute("Disabled") == why)
 				t.Check("Equip off in the seam's own button, no light", blocked ~= nil and blocked:GetAttribute("Palette") == Seam.Palette and blocked:FindFirstChild("Glow", true) == nil)
 				t.Check("the close shuts the card", VoidkinScreen.Tap(find("Close")) and Bag.State().Chosen == nil)
+				-- Salvage on the card (the follow-up's item 6): beside Equip, a first tap asks, a second salvages for its
+				-- Credits, and the card goes.
+				local spare = give("ring", "Common", { { Stat = "Critical", Value = 5 } })
+				local spareItem = if spare then view().Items[spare] else nil
+				local worth = if spareItem then Chests.Salvage(spareItem) else -1
+				local creditsBefore = view().Currency.Credits
+				t.Wait(0.2)
+				t.Check("a spare item's card", spare ~= nil and VoidkinScreen.Tap(find(spare :: string)) and Bag.State().Chosen == spare)
+				t.Wait(HudConfig.Bag.Slide + 0.1)
+				local salvageIt = find("SalvageItem")
+				local equipBeside = find("Equip")
+				t.Check("Salvage at Equip's left in the card's foot, each a touch, Equip still the glass", salvageIt ~= nil and equipBeside ~= nil and salvageIt:IsA("GuiObject") and equipBeside:IsA("GuiObject") and touches(salvageIt) and touches(equipBeside) and inView(salvageIt) and salvageIt.AbsolutePosition.X + salvageIt.AbsoluteSize.X <= equipBeside.AbsolutePosition.X + 1 and equipBeside:GetAttribute("Kind") == "Glass" and salvageIt:GetAttribute("Kind") ~= "Glass")
+				t.Check("a first tap asks", salvageIt ~= nil and salvageIt:IsA("TextButton") and Button.Press(salvageIt))
+				t.Wait(0.4)
+				t.Check("and nothing is salvaged", spare ~= nil and view().Items[spare :: string] ~= nil and view().Currency.Credits == creditsBefore and salvageIt ~= nil and salvageIt.Parent ~= nil)
+				t.Check("a second tap salvages it for its Credits", salvageIt ~= nil and salvageIt:IsA("TextButton") and Button.Press(salvageIt) and waitFor(t, ANSWER, function(): boolean
+					return view().Items[spare :: string] == nil and view().Currency.Credits == creditsBefore + worth
+				end), `{view().Currency.Credits - creditsBefore} for {worth}`)
+				t.Check("it says so, and the card goes", waitFor(t, 1, function(): boolean
+					local toasted = false
+					for _, line in Toast.Shown() do
+						toasted = toasted or string.find(line, "^Salvaged for ") ~= nil
+					end
+					return toasted and Bag.State().Chosen == nil
+				end), table.concat(Toast.Shown(), "; "))
 				-- The kinds: each shows its own list.
 				for _, kind in { "Gear", "Jewelry", "Chests" } do
 					t.Check(`the {kind} chip`, VoidkinScreen.Tap(find(kind)) and Bag.State().Kind == kind)

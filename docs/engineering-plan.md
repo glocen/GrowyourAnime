@@ -140,6 +140,14 @@ The builder's, 2026-11-16, written before the systems (research's order, `docs/r
 - **The world:** each plot's `TowerRing` marker, in `Shared.World.Tags`, with the world report counting one per owned plot. Platforms are the client's, from the run's floor attribute, never more than three. The server holds one floor's collision.
 - **Checks:** health carried between floors; the heal cap; the ledger each floor; a disconnect granting what was won; a rejoin showing the results once; at most three platforms; captures of the climb and the results.
 
+**A ground's stages** (TR43; `Rules.Stages`, `Config.Stages`, `StageService`).
+- **The save:** `Progress.Stages[ground]` holds `Normal` and `Hard`, each `{ Cleared, Best }`: the highest stage cleared on it, and each stage's best seconds, 0 before one is timed. It's written from the first clear. A run is never saved.
+- **A clear is one transaction** (`DataService.Change` with `Rules.Stages.Clear`): `Cleared` raised and the best kept, once a run (its `Claimed`), and its answer says what opened.
+- **The run is the server's** (`StageService`): its kills come from `FightService.Fell`, for each hitter running that stage (on Hard, only the player's own foes, `For`); the keeper's stage from the try's win (`KeeperService.Won`). A leave, the street left or the lead's fall ends it with nothing written.
+- **Hard's foes** are the player's (`FightService.SpawnEnemy`'s `For`), and the lead fights alone while it runs (`SetSolo`). **The gates** are the server's per player: a walk across one shut is set back (`Rules.Stages.Passes`), the client only shows it.
+- **The world:** `StageGate` and `StageStart` markers, and each `Pack` and `Elite` marker's `Stage`, in `Shared.World.Tags`.
+- **Checks:** the offline cases (`Cases/Stages.luau`); the self-test's TR43 case (the gates, a Normal run to its card, Hard's own foes, the keeper lifted, the picker's locks, a lost run); a fresh account through the Door, Manual, since it wipes the save.
+
 **The responsive layout** (part 6).
 - **One module, `UI.Layout`:**
   - `Class()` gives Compact, Regular or Wide, from the viewport less the safe insets (`ScreenGui.ScreenInsets`, `GuiService:GetGuiInset`), on thresholds in `Config.UIKit.Layout`.

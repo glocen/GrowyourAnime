@@ -18,7 +18,16 @@ local Helpers = require(script.Parent.Helpers)
 
 local AuditionCases = {}
 
-local PILOT = "LightHit"
+-- The first pilot left to pick that has a sound today (Config.Audition's order), so the cases follow the panel's rounds.
+local PILOT = (function(): string
+	for _, spec in Config.Cues do
+		local cue = CuesConfig.Cues[spec.Name]
+		if not spec.Done and cue and #cue.Layers > 0 then
+			return spec.Name
+		end
+	end
+	return "LightHit"
+end)()
 local USE = CuesConfig.Use :: { [string]: string }
 
 -- Two known library sounds as candidates: Haymaker's strike's slice (0.7 s, long enough to be heard across a switch) and
@@ -120,15 +129,19 @@ function AuditionCases.Cases(): { any }
 				t.Check("Old goes live", Audition.Choose(PILOT, "Old", true) and USE[PILOT] == "Old" and Audition.Live(PILOT) == "Old")
 				t.Wait(0.8)
 				local before = Cues.Playing(PILOT)
-				Cues.Play(PILOT, here())
+				-- as the fight plays it: a wind-up led by its length ends on its moment, so it begins that far ahead
+				Cues.Play(PILOT, here(), { In = Cues.Ahead(PILOT) })
 				local heard = false
 				for k = 1, #CuesConfig.Takes[oldTakes] do
-					for nth = 1, voices do
-						local player = Cues.Voice(PILOT, 1, k, nth)
-						heard = heard or (player ~= nil and player.IsPlaying)
+					local nth = 1
+					while Cues.Voice(PILOT, 1, k, nth) do -- a shared take's voices may be more than the cue's own count
+						local player = Cues.Voice(PILOT, 1, k, nth) :: AudioPlayer
+						heard = heard or player.IsPlaying
+						nth += 1
 					end
 				end
-				t.Check("a hit plays today's cue's own voices", heard and Cues.Playing(PILOT) == before + 1 and Cues.Playing(keyOf(LONG)) == 0 and Cues.Playing(keyOf(SHORT)) == 0)
+				t.Check("a hit plays today's cue's own voices", heard and Cues.Playing(PILOT) == before + 1 and Cues.Playing(keyOf(LONG)) == 0 and Cues.Playing(keyOf(SHORT)) == 0,
+					`{PILOT}: heard {heard}, plays {before} to {Cues.Playing(PILOT)}, long {Cues.Playing(keyOf(LONG))}, short {Cues.Playing(keyOf(SHORT))}`)
 				t.Check("today's cue is untouched", CuesConfig.Cues[PILOT] == oldCue and oldCue.Layers[1].Takes == oldTakes and Cues.Ahead(PILOT) == SoundRule.Ahead(oldCue))
 				t.Equal("no play missed", Cues.Missed(), missed)
 				Audition.Forget(PILOT, LONG)
@@ -141,7 +154,7 @@ function AuditionCases.Cases(): { any }
 			Run = function(t: any)
 				local pilots: { [string]: boolean } = {}
 				for _, spec in Config.Cues do
-					pilots[spec.Name] = true
+					pilots[spec.Name] = not spec.Done or nil -- a picked one is silenced with the others
 				end
 				local names: { string } = {}
 				for name in CuesConfig.Cues do
@@ -209,6 +222,9 @@ function AuditionCases.Cases(): { any }
 				end
 				local data = game:GetService("HttpService"):JSONDecode((value :: StringValue).Value)
 				for _, spec in Config.Cues do
+					if spec.Done then
+						continue -- picked: the finder searches it no more
+					end
 					local list = data.Cues[spec.Name] or {}
 					local target = data.Reference + ((Config.Levels :: any)[spec.Name] or 0)
 					local off, hot, long, quiet = 0, -math.huge, 0, 0

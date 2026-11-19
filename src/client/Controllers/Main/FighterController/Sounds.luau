@@ -43,12 +43,13 @@ local function named(name: string): SoundGroup
 end
 
 local group: SoundGroup? = nil
+local quiet = false -- the audition panel's Others off (TR42): the world's cues silent, the screen's as they are
 local function combat(): SoundGroup
 	if group == nil or group.Parent == nil then
 		group = named(GROUP_NAME)
 	end
 	local g = group :: SoundGroup
-	g.Volume = Config.Combat * duck
+	g.Volume = if quiet then 0 else Config.Combat * duck
 	return g
 end
 
@@ -127,8 +128,14 @@ function Sounds.Duck(db: number)
 	if group == nil or (group :: SoundGroup).Parent == nil then
 		group = named(GROUP_NAME)
 	end
-	TweenService:Create(group :: SoundGroup, TweenInfo.new(DUCK_TIME), { Volume = Config.Combat * duck }):Play()
+	TweenService:Create(group :: SoundGroup, TweenInfo.new(DUCK_TIME), { Volume = if quiet then 0 else Config.Combat * duck }):Play()
 	Cues.Under(db) -- and the layered cues' buses with them
+end
+
+-- The world's cues silenced, or back at their level: the audition panel's Others (TR42), so a candidate is heard alone.
+function Sounds.Quiet(on: boolean)
+	quiet = on
+	combat()
 end
 
 -- A cue's slice in seconds at speed 1, or nil for an unknown cue.

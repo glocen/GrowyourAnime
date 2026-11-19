@@ -39,6 +39,7 @@ local Shards = require(Shared.Definitions.Shards)
 local ChestRows = require(Shared.Definitions.Chests)
 local Voidkin = require(Shared.Definitions.Voidkin)
 local Rules = require(Shared.Rules.Bag)
+local Chests = require(Shared.Rules.Chests)
 local Sheet = require(Shared.Rules.Sheet)
 local Hud = require(Shared.Rules.Hud)
 local HudConfig = require(Shared.Config.Hud)
@@ -98,7 +99,15 @@ local P = {
 local GROUP_KIND = { "Gear", "Gear", "Jewelry" } -- each slot group's kind on the strip
 local TIER_WORD = { "Shade", "Elite", "Keeper's", "Tower" } -- a chest's kind on its cell, never a rarity's word
 local NUMBER_ROW = 22 -- the card's Combat Power line
-local CHEST_SAID: { [string]: string } = { NotEnough = "Not that many held", BagFull = "The bag is full", Unknown = "Not now" }
+-- The full bag's way out (the follow-up's item 6): what frees a slot, said wherever a full bag stops an open.
+local FREE_A_SLOT = "salvage an item from its card to free a slot"
+local CHEST_SAID: { [string]: string } = { NotEnough = "Not that many held", BagFull = `The bag is full: {FREE_A_SLOT}`, Unknown = "Not now" }
+local SALVAGE_SAID: { [string]: string } = {
+	NotOwned = "It isn't in the bag",
+	Worn = "Take it off first",
+	Unknown = "Not now",
+}
+local ARMED = 3 -- s the salvage's second tap is waited for
 local EQUIP_SAID: { [string]: string } = {
 	NotOwned = "It isn't in the bag",
 	WrongSlot = "It doesn't go there",
@@ -714,14 +723,15 @@ local function itemCard(context: Context, at: Layout, id: string)
 			label({ Name = "Value", Size = Theme.Text.Caption, Font = Theme.Font.Number, Colour = P.Text, Align = Enum.TextXAlignment.Right, Parent = line }, Sheet.Amount(each.Stat, each.Value))
 		end
 	end
-	-- The foot: the card's one action, across the card under the right thumb.
+	-- The foot: Equip, the card's main action, under the right thumb, and Salvage at its left (the follow-up's item 6).
 	local owned = context.Owned
 	local class = (Voidkin.ById[owned.Def] :: Voidkin.Row?) and (Voidkin.ById[owned.Def] :: Voidkin.Row).Class
+	local half = math.floor((wide - 6) / 2)
 	local equip = Button.new({
 		Name = if info.Worn then "TakeOff" else "Equip",
 		Text = if info.Worn then "Take off" else "Equip",
-		Size = UDim2.fromOffset(wide, touch()),
-		Position = UDim2.fromOffset(pad, bottom),
+		Size = UDim2.fromOffset(half, touch()),
+		Position = UDim2.fromOffset(pad + half + 6, bottom),
 		Parent = made,
 		Primary = not info.Worn, -- the glass; one that doesn't fit, the main action unavailable (AR30)
 		Quiet = info.Worn ~= nil,
@@ -737,6 +747,48 @@ local function itemCard(context: Context, at: Layout, id: string)
 	})
 	if why then
 		Button.Set(equip, { Disabled = why })
+	end
+	-- Salvage: a first tap says what it gives, a second within ARMED seconds salvages, so one slip never loses an item.
+	-- An item a preset wears is refused on the server; here it's off with the reason.
+	local item = context.View.Items[id]
+	local credits = if item then Chests.Salvage(item) else 0
+	local armedAt = 0
+	local salvage: TextButton
+	salvage = Button.new({
+		Name = "SalvageItem", -- Chests' picker is "Salvage"
+		Text = "Salvage",
+		Size = UDim2.fromOffset(half, touch()),
+		Position = UDim2.fromOffset(pad, bottom),
+		Parent = made,
+		Quiet = true,
+		Under = true,
+		Palette = Seam.Palette,
+		OnPress = function(): boolean?
+			if os.clock() - armedAt > ARMED then
+				armedAt = os.clock()
+				local at = armedAt
+				Button.Set(salvage, { Text = "Confirm", Selected = true, Note = `+{Hud.Digits(credits)} Credits` })
+				task.delay(ARMED, function()
+					if armedAt == at and salvage.Parent then
+						armedAt = 0
+						Button.Set(salvage, { Text = "Salvage", Selected = false, Note = false })
+					end
+				end)
+				return nil -- asked, not answered: no tick
+			end
+			armedAt = 0
+			local answer = context.Act("SalvageItem", { Item = id })
+			if not said(SALVAGE_SAID, "Can't salvage it", answer) then
+				Button.Set(salvage, { Text = "Salvage", Selected = false, Note = false })
+				return false
+			end
+			Toast.Show(`Salvaged for {Hud.Digits(tonumber(answer.Credits) or credits)} Credits`, Theme.Colour.Text)
+			close()
+			return true
+		end,
+	})
+	if info.Worn or Chests.IsWorn(data, id) then
+		Button.Set(salvage, { Disabled = if info.Worn then "Take it off first" else "Another Voidkin wears it" })
 	end
 	card = made
 	if carded ~= id then
@@ -786,7 +838,12 @@ local function chestCard(context: Context, at: Layout, id: string)
 		label({ Name = "Name", Size = Theme.Text.Caption, Font = Theme.Font.Strong, Colour = P.Rarity[each.Rarity] or P.Text, Parent = line }, each.Rarity)
 		label({ Name = "Chance", Size = Theme.Text.Caption, Font = Theme.Font.Number, Colour = P.Text, Align = Enum.TextXAlignment.Right, Parent = line }, Sheet.Percent(each.Chance))
 	end
-	label({ Name = "Room", Size = Theme.Text.Caption, Colour = P.Faint, Box = UDim2.fromOffset(wide, C.Row), Parent = odds }, `Room for {Hud.Digits(info.Room)} in the bag`).LayoutOrder = #info.Odds + 1
+	if info.Room > 0 then
+		label({ Name = "Room", Size = Theme.Text.Caption, Colour = P.Faint, Box = UDim2.fromOffset(wide, C.Row), Parent = odds }, `Room for {Hud.Digits(info.Room)} in the bag`).LayoutOrder = #info.Odds + 1
+	else
+		-- a full bag says how to free a slot (the follow-up's item 6), two lines where the room's one stood
+		label({ Name = "Room", Size = Theme.Text.Caption, Colour = P.Down, Box = UDim2.fromOffset(wide, C.Row * 2), Parent = odds, Wrap = true }, `The bag is full: {FREE_A_SLOT}`).LayoutOrder = #info.Odds + 1
+	end
 	local action = touch()
 	local function open(count: number): boolean
 		local answer = context.Act("OpenChests", { Chest = id, Count = count })

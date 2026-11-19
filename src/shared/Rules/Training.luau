@@ -1,8 +1,9 @@
 --!strict
 -- Training (shared, pure): the Training machine (docs/design.md, "The base", "The Training machine"; TR12). One Voidkin at
 -- a time earns a fixed amount of experience a second, at any level, with no cap (the director, 2026-11-14: "Fixed rate,
--- no cap"): Config.Growth.Training.Share of what fighting earns in Lantern Row, KillsPerHour kills an hour of its packs
--- and its elite, each kill as Rules.Drops pays it. Each level costs more, so it slows as levels rise. It draws power like
+-- no cap"): Config.Growth.Training.Share of what fighting earns in Lantern Row, KillsPerHour kills an hour as its stages
+-- are played (Config.Stages, TR43: each stage's quota of its packs' Shades, then its elite), each kill as Rules.Drops pays
+-- it. Each level costs more, so it slows as levels rise. It draws power like
 -- every machine (TR18): the base's clock (Rules.Breaker) trains whoever's on it at the machine's speed, the seconds it gets
 -- counted at full power, while the player is in the game and for the time away, when the lead trains.
 --   Training.Rate()                      experience a second at full power, at any level
@@ -14,20 +15,29 @@ local Shared = game:GetService("ReplicatedStorage").Shared
 local Profile = require(Shared.Data.Profile)
 local GrowthConfig = require(Shared.Config.Growth)
 local WorldConfig = require(Shared.Config.World)
+local StagesConfig = require(Shared.Config.Stages)
 local DropsConfig = require(Shared.Config.Drops)
 local Growth = require(Shared.Rules.Growth)
 
 local Training = {}
 
--- What a kill in Lantern Row pays on average: its packs' and its elite's, each kill as Rules.Drops pays it.
+-- What a kill in Lantern Row pays on average as its stages are played: each stage of packs and an elite, its quota of
+-- Shades at its packs' levels, then its elite, each kill as Rules.Drops pays it. The keeper's stage isn't counted.
 local function rowXpPerKill(): number
 	local kills, xp = 0, 0
-	for _, stop in WorldConfig.Row.Stops do
-		local share = if stop.Kind == "Pack" then DropsConfig.Share.Ordinary elseif stop.Kind == "Elite" then DropsConfig.Share.Elite else nil
-		if share then
-			local count = if stop.Kind == "Pack" then stop.Count or 1 else 1
-			kills += count
-			xp += count * GrowthConfig.XpPerKillPerG * Growth.G(stop.Level) * share
+	for _, stage in StagesConfig.Grounds[WorldConfig.Row.Ground] or {} do
+		local last = stage.Stops[#stage.Stops]
+		local packs, g = 0, 0
+		for _, stop in stage.Stops do
+			if stop.Kind == "Pack" then
+				packs += 1
+				g += Growth.G(stop.Level)
+			end
+		end
+		if last and last.Kind == "Elite" and packs > 0 then
+			kills += stage.Quota + 1
+			xp += GrowthConfig.XpPerKillPerG
+				* (stage.Quota * g / packs * DropsConfig.Share.Ordinary + Growth.G(last.Level) * DropsConfig.Share.Elite)
 		end
 	end
 	return if kills > 0 then xp / kills else 0

@@ -136,7 +136,8 @@ return {
 			end
 			t.Equal("Damage Bonus with nothing giving it: 0%", (row(groups, "DamageBonus") :: Sheet.Row).Value, "0%")
 			t.Equal("points grouped", (row(groups, "Health") :: Sheet.Row).Value, "1,234")
-			t.Equal("Regen as one burst, every 8 s (TR40): 4.26 a second, 8 s, a half", (row(groups, "Regen") :: Sheet.Row).Value, "17 every 8 s")
+			t.Equal("Regen as one burst (TR40): 4.26 a second, 8 s, a half", (row(groups, "Regen") :: Sheet.Row).Value, "17")
+			t.Equal("and \"every 8 s\" under it (4.6)", (row(groups, "Regen") :: Sheet.Row).Under, "every 8 s")
 			t.Equal("its name: HP Regen (the director, 2026-11-18)", (row(groups, "Regen") :: Sheet.Row).Name, "HP Regen")
 			t.Equal("a small burst to a tenth", Sheet.Burst(1.5), "6.0")
 			t.Equal("a card's Regen: the burst alone", Sheet.Amount("Regen", 4.26), "17")
@@ -147,7 +148,7 @@ return {
 			for index = 2, #rated do
 				for _, each in rated[index].Rows do
 					local isRated = table.find(RATED, each.Stat) ~= nil
-					t.Equal(`{each.Stat}: its name and its one total, nothing to open`, keys(each), "Name,Stat,Value")
+					t.Equal(`{each.Stat}: its name and its one total, nothing to open`, keys(each), if each.Stat == "Regen" then "Name,Stat,Under,Value" else "Name,Stat,Value")
 					t.Check(`{each.Stat}: only its number, a rating its percent alone, never "up to"`, plain(each.Value) and (not isRated or string.match(each.Value, "^[%d%.]+%%$") ~= nil), each.Value)
 				end
 			end

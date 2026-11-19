@@ -44,7 +44,8 @@ return {
 	Levels = {
 		Cap = 3, -- the launch's: higher levels need items, designed when it rises (the director, 2026-11-15, night)
 		Price = { [2] = 840, [3] = 18000 } :: { [number]: number }, -- Credits to reach each level: about 20 minutes, then 5 hours
-		Bays = { 2, 4, 6 }, -- bays open at each base level
+		Bays = { 2, 3, 4 }, -- bays open at each base level (D5, the director's yes of 2026-11-18)
+		Plot = 6, -- bays every plot lays: those past the launch's levels stand locked, "Opens with more Voidkin" (D5)
 		Ceiling = { 2, 6, 30 }, -- the highest level any machine reaches at each base level
 		Battery = { 60, 150, 400 }, -- kWh the battery holds at each base level (seeds "baseLevels.batteryKwh")
 		Cells = { 2, 4, 8 }, -- cells its bank shows at each base level, lit one after another as it charges (Modulo's count, AR15, section 4)

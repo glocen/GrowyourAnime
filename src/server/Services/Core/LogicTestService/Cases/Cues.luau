@@ -17,8 +17,15 @@ return {
 	{
 		Name = "Cues: every cue's layers play takes that exist, each an upload with its numbers",
 		Run = function(t: any)
+			local own: { [string]: boolean } = {}
+			for _, mine in Cues.Own do
+				for _, name in { mine.Beat, mine.Contact } do
+					own[name :: string] = true
+				end
+			end
 			for name, cue in Cues.Cues do
-				t.Check(`{name}: has layers`, #cue.Layers > 0)
+				-- an action's own cue may stand silent until its pick: a ranged cast, the held note (TR42's second round)
+				t.Check(`{name}: has layers`, #cue.Layers > 0 or own[name] == true)
 				t.Check(`{name}: plays on a bus`, cue.Bus == "Lead" or cue.Bus == "Shade", cue.Bus)
 				t.Check(`{name}: its speed spread about ±8%, never past ±25%`, within(cue.Pitch, 0.8, 1.25))
 				t.Check(`{name}: its volume spread inside 0 to 1.5`, within(cue.Volume, 0.01, 1.5))
@@ -69,7 +76,10 @@ return {
 		Name = "Sound: a beat, a touch and a critical play the cues AR13 names, and every cue is one they play",
 		Run = function(t: any)
 			t.Check("a Shade's swing plays its swipe on its clock", Sound.Beat("ShadeSwipe", false, "Shade") == "ShadeSwipe")
-			t.Check("a fighter's heavy hit winds up on its clock", Sound.Beat("RookHaymaker", true, "Lead") == "HeavyWind")
+			t.Check("a fighter's heavy hit with no cue of its own winds up on its clock", Sound.Beat("AnyHeavy", true, "Lead") == "HeavyWind")
+			t.Check("a signature's own cue plays in the wind-up's place", Sound.Beat("RookHaymaker", true, "Lead", "Strike") == "Haymaker")
+			t.Check("one led by At plays on that beat alone", Sound.Beat("LyricHeldNote", false, "Lead", "Note") == "HeldNote" and Sound.Beat("LyricHeldNote", false, "Lead", "Crest2") == nil)
+			t.Check("a ranged M1 casts on each beat", Sound.Beat("PipCombo", false, "Lead", "Shot2") == "MageShot" and Sound.Beat("LyricCombo", false, "Lead", "Shot1") == "HealerShot")
 			t.Check("a light hit has no wind-up", Sound.Beat("RookCombo", false, "Lead") == nil)
 			t.Check("a keeper's heavy swing isn't a fighter's wind-up", Sound.Beat("KeeperSignature", true, "Shade") == nil)
 			local function same(a: { string }, b: { string }): boolean
@@ -78,22 +88,35 @@ return {
 			t.Check("a fighter's light hit on a Shade: the hit and the Shade's hurt", same(Sound.Contact(false, "Lead", "Shade"), { "LightHit", "ShadeHurt" }))
 			t.Check("a fighter's heavy hit on the dummy: the heavy hit only", same(Sound.Contact(true, "Lead", nil), { "HeavyHit" }))
 			t.Check("a Shade's hit on a fighter: none of the six", same(Sound.Contact(false, "Shade", "Lead"), {}))
+			t.Check("a Mage's M1 on a Shade: its class's hit and the Shade's hurt", same(Sound.Contact(false, "Lead", "Shade", "PipCombo"), { "MageHit", "ShadeHurt" }))
+			t.Check("a signature with only a beat of its own lands the heavy hit", same(Sound.Contact(true, "Lead", "Shade", "RookHaymaker"), { "HeavyHit", "ShadeHurt" }))
+			-- every own cue's action and beat exist, and each names a written cue
+			local byId: { [string]: any } = {}
+			for _, action in Actions.List do
+				byId[action.Id] = action
+			end
+			for id, mine in Cues.Own do
+				local action = byId[id]
+				t.Check(`{id}: an action, its own cues written`, action ~= nil and (mine.Beat == nil or Cues.Cues[mine.Beat] ~= nil) and (mine.Contact == nil or Cues.Cues[mine.Contact] ~= nil))
+				t.Check(`{id}: its At one of its hits' beats`, mine.At == nil or (action ~= nil and action.Hits[mine.At] ~= nil), mine.At)
+			end
 			t.Check("a fighter's critical shings", Sound.Critical("Lead") == "Critical")
 			t.Check("a Shade's critical doesn't", Sound.Critical("Shade") == nil)
 			t.Check("the lightest rung has no strength", Sound.Strength(Cues.Strength[1]) == 0 and Sound.Strength(1) == 0)
 			t.Check("the heaviest has all of it", Sound.Strength(Cues.Strength[2]) == 1 and Sound.Strength(99) == 1)
 			t.Check("halfway is half", math.abs(Sound.Strength((Cues.Strength[1] + Cues.Strength[2]) / 2) - 0.5) < 1e-9)
 			-- every cue the rules can name is written, and every one written is named (the burst's is played by name)
-			local named: { [string]: boolean } = { ShadeBurst = true }
+			-- the wind-up stays every heavy hit's that has no cue of its own
+			local named: { [string]: boolean } = { ShadeBurst = true, [Sound.Beat("AnyHeavy", true, "Lead") :: string] = true }
 			for _, action in Actions.List do
-				for _, hit in action.Hits do
+				for name, hit in action.Hits do
 					for _, side in { "Lead", "Shade" } do
-						local beat = Sound.Beat(action.Id, hit.Heavy, side)
+						local beat = Sound.Beat(action.Id, hit.Heavy, side, name)
 						if beat then
 							named[beat] = true
 						end
 						for _, struck in { "Lead", "Shade" } do
-							for _, cue in Sound.Contact(hit.Heavy, side, struck) do
+							for _, cue in Sound.Contact(hit.Heavy, side, struck, action.Id) do
 								named[cue] = true
 							end
 						end
@@ -129,12 +152,12 @@ return {
 					end
 				end
 			end
-			t.Check("the swipe's tell starts 0.2 s before the hit", math.abs(Sound.Start(Cues.Cues.ShadeSwipe.Layers[1], Cues.Takes.ShadeTell[1], 1) + 0.2) < 1e-9)
+			t.Check("the swipe tops on the hit, its rise before it", Cues.Cues.ShadeSwipe.Layers[1].Lead == "Peak" and Cues.Cues.ShadeSwipe.Layers[1].At == 0)
 			-- a beat's cue begins inside its press: its whole lead fits between the action's start and the beat
 			for _, action in Actions.List do
 				for beat, hit in action.Hits do
 					for _, side in { "Lead", "Shade" } do
-						local name = Sound.Beat(action.Id, hit.Heavy, side)
+						local name = Sound.Beat(action.Id, hit.Heavy, side, beat)
 						local cue = if name then Cues.Cues[name] else nil
 						if cue then
 							local at = action.Beats[beat]

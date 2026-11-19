@@ -259,6 +259,7 @@ end
 -- on the target itself (drawnBy); when it does, the spark stays off and the target's hold waits for the effect to reach
 -- it. A beat shown from the clock is its own rung; the server's hit raises it for a critical or a kill (raise).
 local function show(attacker: View, target: View?, rung: number, heavy: boolean, steady: boolean, key: string, draw: ((landed: () -> ()) -> boolean)?)
+	local actionId = if attacker.Action then attacker.Action.Id else nil -- read now: a drawn hit lands after its action may end
 	local each = if target then `{key}#{target.Id}` else key
 	if attacker.Shown[each] then
 		return
@@ -286,7 +287,7 @@ local function show(attacker: View, target: View?, rung: number, heavy: boolean,
 			strike(target, lever, hold, holds)
 			-- its cues on the struck body (Rules.Sound.Contact; AR13), the Shades' bus ducked under the player's own lead's
 			local struckAt = chest(target)
-			for _, cue in SoundRule.Contact(heavy, sideOf(attacker), sideOf(target)) do
+			for _, cue in SoundRule.Contact(heavy, sideOf(attacker), sideOf(target), actionId) do
 				Cues.Play(cue, struckAt, { Strength = SoundRule.Strength(rung) })
 			end
 			if isMine(attacker) then
@@ -827,12 +828,13 @@ local function stepView(view: View, dt: number, now: number): boolean
 		local before = view.Clock
 		view.Clock += step
 		-- A beat's cue (Rules.Sound.Beat; AR13) starts its lead ahead of the beat, landed or not: a Shade's swing, a heavy
-		-- hit's wind-up. Begun once a press, never once the beat's gone by.
+		-- hit's wind-up, an action's own. Begun once a press, on the frame its lead is reached, or late by a frame's part
+		-- when the lead is shorter than a frame (it plays from where it would be), never once the beat's gone by.
 		for beat, hit in action.Hits do
-			local cue = SoundRule.Beat(action.Id, hit.Heavy, sideOf(view))
+			local cue = SoundRule.Beat(action.Id, hit.Heavy, sideOf(view), beat)
 			local beatAt = action.Beats[beat]
 			local written = if cue then Cues.Ahead(cue) else nil
-			if cue and written and beatAt and not view.Cued[beat] and view.Clock >= beatAt - written and view.Clock < beatAt then
+			if cue and written and beatAt and not view.Cued[beat] and view.Clock >= beatAt - written and before < beatAt then
 				view.Cued[beat] = true
 				Cues.Play(cue, view.Root.Position, { In = beatAt - view.Clock })
 			end

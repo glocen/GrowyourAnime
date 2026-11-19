@@ -5,7 +5,8 @@
 -- NL_Debug:Invoke("Tune", "World.Row.Spacing", 6).
 
 -- One stop down Lantern Row. Kind: Pack (Count Shades), Elite or Keeper.
-export type Stop = { Kind: string, Def: string, Level: number, Count: number? }
+-- Stage: the stage it belongs to (Config.Stages, TR43). Square: the elite stands in the square (one stop at most).
+export type Stop = { Kind: string, Def: string, Level: number, Count: number?, Stage: number, Square: boolean? }
 
 return {
 	Walk = 16, -- studs a second the times are worked at: Roblox's default walk
@@ -150,19 +151,23 @@ return {
 		Wide = 2.75, -- 44 studs between the stall fronts (research's verdict on TR2, 2026-11-12)
 		FirstPack = 2, -- from the gate to the first pack, in view of it
 		Spacing = 5, -- 80 studs from stop to stop, past the lead's leash (Config.Combat.Lead.Leash)
-		-- The street's rhythm, from the gate: three packs, the elite's square, three packs, the keeper's gate.
-		-- Levels: the builder's seeds (tier 2, for research), 2026-11-12. Pack 2 at level 1 is research's second lever for a
-		-- new account's first fights (its verdict on TR2, 2026-11-12: no down before the elite, an early pack in 15 to 20 s).
+		-- The street's rhythm, from the gate, in TR43's four stages (Config.Stages reads its stages from here): Stage 1, a
+		-- pack and its elite in the street; Stage 2, a pack and the elite's square; Stage 3, two packs and its elite in the
+		-- street; Stage 4, the keeper's gate. Eight stops at the kit's eight places (Config.Kits.LanternRow's plan), so its
+		-- dressing still fits; each stage's gate stands between its last stop and the next stage's first. Levels: the
+		-- builder's seeds (tier 2, for research), 2026-11-18; the first pack at level 1 keeps research's lever for a new
+		-- account's first fight (its verdict on TR2, 2026-11-12), four to a pack where a stage has one.
 		Stops = {
-			{ Kind = "Pack", Def = "brawler", Count = 3, Level = 1 },
-			{ Kind = "Pack", Def = "brawler", Count = 3, Level = 1 },
-			{ Kind = "Pack", Def = "brawler", Count = 3, Level = 3 },
-			{ Kind = "Elite", Def = "brawler_elite", Level = 4 },
-			{ Kind = "Pack", Def = "brawler", Count = 3, Level = 5 },
-			{ Kind = "Pack", Def = "brawler", Count = 3, Level = 6 },
-			{ Kind = "Pack", Def = "brawler", Count = 3, Level = 7 },
-			{ Kind = "Keeper", Def = "lamplighter", Level = 9 },
+			{ Kind = "Pack", Def = "brawler", Count = 4, Level = 1, Stage = 1 },
+			{ Kind = "Elite", Def = "brawler_elite", Level = 2, Stage = 1 },
+			{ Kind = "Pack", Def = "brawler", Count = 4, Level = 3, Stage = 2 },
+			{ Kind = "Elite", Def = "brawler_elite", Level = 5, Stage = 2, Square = true },
+			{ Kind = "Pack", Def = "brawler", Count = 3, Level = 6, Stage = 3 },
+			{ Kind = "Pack", Def = "brawler", Count = 3, Level = 7, Stage = 3 },
+			{ Kind = "Elite", Def = "brawler_elite", Level = 8, Stage = 3 },
+			{ Kind = "Keeper", Def = "lamplighter", Level = 9, Stage = 4 },
 		} :: { Stop },
+		GateSet = 6, -- studs before a shut stage gate a player who crossed it is set down, facing back into its stage
 		Square = 4, -- the elite's square, 64 studs across, so anyone near can join
 		Ring = 5, -- the Lamplighter's ring, 80 studs across, behind the keeper's gate
 		Beyond = 1.5, -- from the ring's far edge to Drum Court's gate, shut, in view

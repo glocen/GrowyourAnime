@@ -27,7 +27,8 @@
     },
     "StarterPlayer": {
       "StarterPlayerScripts": {
-        "Client": { "$path": "src/client" }
+        "Client": { "$path": "src/client" },
+        "RbxCharacterSounds": { "$path": "src/overrides/RbxCharacterSounds.client.luau" }
       }
     }
   }

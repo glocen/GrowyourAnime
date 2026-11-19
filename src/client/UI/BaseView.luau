@@ -149,16 +149,6 @@ local function spread(now: State)
 	end
 end
 
--- The base level that opens bay `index`, or nil past the launch's cap.
-local function opensAt(index: number): number?
-	for level = 1, BaseLevels.Top() do
-		if BaseLevels.Bays(level) >= index then
-			return level
-		end
-	end
-	return nil
-end
-
 -- What a chip says: its name and level, and what it's doing now.
 local function said(name: string, at: Read.Base): (string, string)
 	local data = at.Data
@@ -188,8 +178,8 @@ local function said(name: string, at: Read.Base): (string, string)
 	local index = tonumber(string.match(name, "^Bay(%d+)$")) or 0
 	local bay = base.Bays[index]
 	if bay == nil then
-		local level = opensAt(index)
-		return `Bay {index}`, if level then `Opens at base level {level}` else "Locked"
+		local level = BaseLevels.OpensAt(index)
+		return `Bay {index}`, if level then `Opens at base level {level}` else "Opens with more Voidkin"
 	end
 	local worker = if bay.Worker ~= "" then data.Voidkin[bay.Worker] else nil
 	local doing = if worker

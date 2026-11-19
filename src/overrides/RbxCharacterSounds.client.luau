@@ -1,0 +1,6 @@
+--!strict
+-- RbxCharacterSounds (client, empty on purpose): Roblox copies its own RbxCharacterSounds into every player's scripts
+-- unless StarterPlayerScripts already holds a script of that name, and its sounds (running, jumping, landing, falling,
+-- climbing, swimming, the splash, getting up, dying) play on every avatar. The game plays none of them (the director,
+-- 2026-11-19: "we need to remove roblox added sfx like when humanoid walk jump etc let remove everything we wont put
+-- any"), so this one stands in its place and does nothing. Its name is the one Roblox looks for: never rename it.

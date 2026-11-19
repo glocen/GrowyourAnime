@@ -1,7 +1,8 @@
 --!strict
--- DownController (client): the marker while Lantern Row's elite, or this player's own keeper, is down
--- (docs/test-requests.md, TR10; the director, 2026-11-14), in grey. Over the elite's square while the server's one timer
--- runs (the Elite marker's BackAt, server time, from PackService); at the keeper's gate while this player's own runs (their
+-- DownController (client): the marker while one of Lantern Row's elites, or this player's own keeper, is down
+-- (docs/test-requests.md, TR10; the director, 2026-11-14), in grey. Over the elite while the server's timer for it runs
+-- (its Elite marker's BackAt, server time, from PackService), the nearest down elite to the player when more than one of
+-- the stages' three is (TR43); at the keeper's gate while this player's own runs (their
 -- save's Progress.Grounds[ground].Back, Rules.Progress.Resting), the gate's Challenge hidden for them meanwhile. Each
 -- shows its icon (a grey stand-in until Modulo's), its name, the time left, and a small card of its loot with each drop's
 -- chance (Rules.Drops.Card, Rules.Hud.Chance): when to come back, and why. Config.Hud.Down picks the layout, tuned live;
@@ -64,6 +65,7 @@ type Plate = {
 
 local plates: { [string]: Plate } = {}
 local found: { [string]: Instance? } = {}
+local elites: { Instance } = {}
 local lookedAt = -math.huge
 
 local function marker(name: string): Instance?
@@ -75,13 +77,14 @@ local function marker(name: string): Instance?
 end
 
 local function look()
-	if os.clock() - lookedAt < FIND_EVERY and marker("Elite") and marker("KeeperGate") and marker("Ring") then
+	if os.clock() - lookedAt < FIND_EVERY and elites[1] and elites[1].Parent and marker("KeeperGate") and marker("Ring") then
 		return
 	end
 	lookedAt = os.clock()
-	for _, name in { "Elite", "KeeperGate", "Ring" } do
+	for _, name in { "KeeperGate", "Ring" } do
 		found[name] = Markers.Find(name)
 	end
+	elites = Markers.All("Elite")
 end
 
 -- The gate's Challenge: KeeperService's own part at the gate's foot.
@@ -251,12 +254,20 @@ end
 -- What's down now, the seconds left, and where its marker stands on the floor: the elite's square, or the keeper's gate.
 local function down(kind: string, now: number): (What?, number, Vector3?)
 	if kind == "Elite" then
-		local elite = marker("Elite")
+		-- The down elite nearest the player.
+		local root = Parts.Root(player.Character)
+		local elite: Instance?, left, nearest = nil, 0, math.huge
+		for _, each in elites do
+			local backAt = each:GetAttribute("BackAt")
+			local its = if each.Parent then Cooldown.Left(if type(backAt) == "number" then backAt else nil, now, "Elite") else 0
+			local away = if root then (Markers.At(each).Position - root.Position).Magnitude else 0
+			if its > 0 and away < nearest then
+				elite, left, nearest = each, its, away
+			end
+		end
 		if elite == nil then
 			return nil, 0, nil
 		end
-		local backAt = elite:GetAttribute("BackAt")
-		local left = Cooldown.Left(if type(backAt) == "number" then backAt else nil, now, "Elite")
 		local def, level, ground = elite:GetAttribute("Def"), elite:GetAttribute("Level"), elite:GetAttribute("Ground")
 		if left <= 0 or type(def) ~= "string" or type(level) ~= "number" then
 			return nil, 0, nil

@@ -88,7 +88,8 @@ local SHEET_HEAD = 22 -- a stat group's caption line, the space above it include
 local SHEET_HEADING = { Line = 34, Caption = 18 }
 -- A stat's cell (a tap, so the kit's touch size: 44 rendered at the smallest scale), its name's line from Top and its
 -- total's under it, the tap's inset, authored.
-local SHEET = { Line = Theme.Size.Tap, Top = 5, Name = 18, Value = 24, Pad = 8 }
+-- A total's quiet line under it (HP Regen's "every 8 s", 4.6) adds its own height to its pair.
+local SHEET = { Line = Theme.Size.Tap, Top = 5, Name = 18, Value = 24, Pad = 8, Under = 16 }
 local WALLET = { Icon = 30, Digit = 0.62, Every = 0.5 } -- a chip's icon room, authored; a character's share of its text size; seconds between reads
 
 local player = Players.LocalPlayer
@@ -678,6 +679,9 @@ local function statCell(pair: Frame, side: number, row: Sheet.Row, tall: number)
 		tag.AutomaticSize = Enum.AutomaticSize.X
 		tag.LayoutOrder = 1
 	end
+	if row.Under then
+		text({ Name = "Under", Size = Theme.Text.Caption, Colour = Look.TextDim, Box = UDim2.new(1, -SHEET.Pad, 0, SHEET.Under), Position = UDim2.fromOffset(0, SHEET.Top + SHEET.Name + SHEET.Value), Parent = item }, row.Under)
+	end
 	item:SetAttribute("Stat", row.Stat)
 	return item
 end
@@ -717,7 +721,8 @@ local function statSheet(scroll: ScrollingFrame, view: Profile.View, owned: Prof
 		for at = 1, #group.Rows, 2 do
 			order += 1
 			local first, second = group.Rows[at], group.Rows[at + 1]
-			local tall = SHEET.Line
+			local under = first.Under ~= nil or (second ~= nil and second.Under ~= nil)
+			local tall = if under then math.max(SHEET.Line, SHEET.Top + SHEET.Name + SHEET.Value + SHEET.Under) else SHEET.Line
 			local pair = Instance.new("Frame")
 			pair.Name = `Pair{group.Name}{(at + 1) // 2}`
 			pair.BackgroundTransparency = 1
@@ -750,8 +755,14 @@ local function overview(scroll: ScrollingFrame, view: Profile.View, owned: Profi
 		nowLabel.Text = role(view, owned, on, workspace:GetServerTimeNow())
 	end)
 	local own = Voidkin.ById[owned.Def]
-	if own then -- the stage has no room for a caption: which preset its slots show, and its class's pair of hands
-		line(scroll, 31, `Gear · preset {owned.Preset}`, nil, `{Gear.Kind("Main Hand", own.Class)} and {Gear.Kind("Off Hand", own.Class)} in hand · nothing worn yet`)
+	if own then -- the stage has no room for a caption: which preset its slots show, its class's pair of hands, and what
+		-- the preset has it wear, read from the preset (the follow-up's 4.10)
+		local worn = 0
+		for _ in BagRules.Worn(view, owned) do
+			worn += 1
+		end
+		local wears = if worn == 0 then "nothing worn yet" elseif worn == 1 then "1 piece worn" else `{worn} pieces worn`
+		line(scroll, 31, `Gear · preset {owned.Preset}`, nil, `{Gear.Kind("Main Hand", own.Class)} and {Gear.Kind("Off Hand", own.Class)} in hand · {wears}`)
 	end
 	if owned.Nickname ~= "" then
 		line(scroll, 32, "Its own name", nil, if own then own.Name else owned.Def)

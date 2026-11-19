@@ -110,7 +110,7 @@ function BaseCases.Cases(given: Given): { any }
 					t.Check(`bay {index}: {if awake then "awake" else "asleep"}`, shows(pad, awake) and ((sleeping == nil and awake) or shows(sleeping, not awake)),
 						`pad {if pad and pad:IsA("BasePart") then pad.Transparency else "none"}, asleep {if sleeping and sleeping:IsA("BasePart") then sleeping.Transparency else "none"}`)
 				end
-				t.Equal("every bay the base can open, on the plot", seen, BaseLevels.Bays(BaseLevels.Top()))
+				t.Equal("every bay on the plot, the two no level at launch opens among them (D5)", seen, BaseLevels.Plot())
 				-- The cells: as many as the level holds, each lit by its share of the charge, its glow from low to full.
 				local cells: { BasePart } = {}
 				for _, item in (battery :: Instance):GetChildren() do

@@ -8,6 +8,7 @@
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
 local ServerStorage = game:GetService("ServerStorage")
+local HttpService = game:GetService("HttpService")
 
 local DebugService = require(script.Parent.DebugService)
 
@@ -81,11 +82,30 @@ function AuditionService.Start()
 	end
 	local found = ServerStorage:FindFirstChild(FOLDER)
 	local candidates = found and found:FindFirstChild("Candidates")
-	if candidates and candidates:IsA("StringValue") then
-		local copy = Instance.new("StringValue")
-		copy.Name = FOLDER
-		copy.Value = candidates.Value
-		copy.Parent = ReplicatedStorage
+	if found and candidates and candidates:IsA("StringValue") then
+		-- the finder keeps a long answer in parts (Candidates, Candidates_2...); the panel gets it without what was
+		-- left out, which only the finder's Report reads
+		local parts = { candidates.Value }
+		local n = 2
+		while found:FindFirstChild(`Candidates_{n}`) do
+			table.insert(parts, ((found :: Instance):FindFirstChild(`Candidates_{n}`) :: StringValue).Value)
+			n += 1
+		end
+		local ok, data = pcall(HttpService.JSONDecode, HttpService, table.concat(parts))
+		if ok and type(data) == "table" then
+			data.LeftOut = nil
+			local text = HttpService:JSONEncode(data)
+			if #text < 200000 then
+				local copy = Instance.new("StringValue")
+				copy.Name = FOLDER
+				copy.Value = text
+				copy.Parent = ReplicatedStorage
+			else
+				warn(`[NL] Audition: the panel's candidates run {#text} characters, past a StringValue's 200,000`)
+			end
+		else
+			warn(`[NL] Audition: the finder's candidates didn't read: {data}`)
+		end
 	end
 	DebugService.Register("AuditionReport", report)
 	DebugService.Register("Audition", readout)

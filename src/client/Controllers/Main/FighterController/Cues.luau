@@ -68,6 +68,11 @@ local listeners: { [string]: AudioListener } = {}
 -- pools[cue][layer][take]: that take's voices
 local pools: { [string]: { { { Voice } } } } = {}
 local plays: { [string]: { Play } } = {}
+-- The fight's own cues that play one take list on one bus share its voices (TR42's second round: the per-fighter hits
+-- and the ranged hits all start as the light hit's 32 keeps, six cues on one set, not six sets): a take's voices as many
+-- as the most any of them asks. Built once by Preload, and never taken away by Try.
+local banks: { [string]: { { Voice } } } = {}
+local banked: { [{ Voice }]: boolean } = {}
 local last: { [string]: number } = {} -- the take each cue's layer played last, by `cue#layer`
 local under = 1 -- every bus's share while a screen's sounds play above the fight (Sounds.Duck)
 local ducked = 0 -- the Shades' duck's own count: a later duck's release replaces an earlier one's
@@ -206,16 +211,32 @@ local function begin(voice: Voice, cue: Config.Cue, take: Config.Take, at: Vecto
 	end
 end
 
--- One cue's voices under `key`, loading: a player a take a voice, a library take's on its slice of its file.
-local function build(key: string, cue: Config.Cue)
+-- One cue's voices under `key`, loading: a player a take a voice, a library take's on its slice of its file. Shared,
+-- a layer's voices are its take list's bank on its bus (above).
+local function build(key: string, cue: Config.Cue, shared: boolean?)
 	local layers = {}
 	for i, layer in cue.Layers do
 		local takes = {}
+		local bankKey = if shared then `{layer.Takes}_{cue.Bus}` else nil
+		local bank = if bankKey then banks[bankKey] else nil
+		if bankKey and bank == nil then
+			bank = {}
+			banks[bankKey] = bank :: { { Voice } }
+		end
 		for k, take in (Config.Takes :: { [string]: { Config.Take } })[layer.Takes] or {} do
-			local voices = {}
-			for v = 1, math.max(cue.Voices, 1) do
+			local voices: { Voice }? = if bank then bank[k] else nil
+			if voices == nil then
+				local made: { Voice } = {}
+				if bank then
+					bank[k] = made
+					banked[made] = true
+				end
+				voices = made
+			end
+			assert(voices, "a take's voices")
+			for v = #voices + 1, math.max(cue.Voices, 1) do
 				local point = Instance.new("Attachment")
-				point.Name = `{key}_{i}_{k}_{v}`
+				point.Name = if bankKey then `{bankKey}_{k}_{v}` else `{key}_{i}_{k}_{v}`
 				local emitter = Instance.new("AudioEmitter")
 				emitter.AudioInteractionGroup = `{GROUP}{cue.Bus}`
 				emitter.Parent = point
@@ -280,7 +301,7 @@ function Cues.Preload()
 	hear()
 	workspace:GetPropertyChangedSignal("CurrentCamera"):Connect(hear)
 	for name, cue in Config.Cues do
-		build(name, cue)
+		build(name, cue, true)
 	end
 	for name, set in Config.Arrangements do
 		for variant, cue in set do
@@ -404,6 +425,9 @@ function Cues.Try(name: string, cue: Config.Cue?)
 	for _, layers in { pools[name] or {} } do
 		for _, takes in layers do
 			for _, voices in takes do
+				if banked[voices] then
+					continue -- the fight's own, shared: another cue plays them
+				end
 				for _, voice in voices do
 					stop(voice)
 					voice.Point:Destroy()

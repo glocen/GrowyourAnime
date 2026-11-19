@@ -136,6 +136,21 @@ local STEPS: { (data: any) -> () } = {
 			item.Lines = kept
 		end
 	end,
+	-- 9: the bays by base level, 2, 3 and 4 (D5, the director's yes of 2026-11-18), in place of 2, 4 and 6. Touches
+	-- Base.Bays: a base holding more than its level opens keeps its first ones. A worker in a bay that goes is free again
+	-- (the Voidkin stays owned: a bay only names it), and the bay's own level goes with it. Only Studio's Test saves can
+	-- hold one, since the game hadn't opened. The counts are written here, not read from Config, so the step never moves.
+	function(data: any)
+		local base = data.Base
+		if type(base) ~= "table" or type(base.Bays) ~= "table" then
+			return
+		end
+		local level = if type(base.Level) == "number" then math.clamp(math.floor(base.Level), 1, 3) else 1
+		local open = ({ 2, 3, 4 })[level]
+		while #base.Bays > open do
+			table.remove(base.Bays)
+		end
+	end,
 }
 
 -- The version a save reaches once migrated: the number of steps.

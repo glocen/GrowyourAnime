@@ -31,20 +31,27 @@ function Sound.Volume(cue: Config.Cue, db: number, screen: boolean?): number
 	return cue.Volume * math.clamp(gain, Config.Gain[1], Config.Gain[2]) * 10 ^ (db / 20)
 end
 
--- The cue a hit's beat plays on its attacker's clock, landed or not: a Shade's swing, or anyone else's heavy hit's wind-up.
-function Sound.Beat(action: string, heavy: boolean, side: string?): string?
+-- The cue a hit's beat plays on its attacker's clock, landed or not: a Shade's swing, an action's own (Config.Cues.Own; on
+-- every beat of its hits, or on its At's alone), or anyone else's heavy hit's wind-up.
+function Sound.Beat(action: string, heavy: boolean, side: string?, beat: string?): string?
 	if action == "ShadeSwipe" then
 		return "ShadeSwipe"
+	end
+	local own = Cues.Own[action]
+	if own and own.Beat then
+		return if own.At == nil or own.At == beat then own.Beat else nil
 	end
 	return if heavy and side ~= "Shade" then "HeavyWind" else nil
 end
 
--- The cues a hit plays as it lands, on the struck body: the attacker's light or heavy hit unless it's a Shade's, and a
--- Shade's hurt when a Shade is struck. A Shade's hit on a fighter plays none of the six (the lead's own hurt waits).
-function Sound.Contact(heavy: boolean, side: string?, struck: string?): { string }
+-- The cues a hit plays as it lands, on the struck body: the attacker's light or heavy hit unless it's a Shade's, or its
+-- action's own in their place (Config.Cues.Own), and a Shade's hurt when a Shade is struck. A Shade's hit on a fighter
+-- plays none of them (the lead's own hurt waits).
+function Sound.Contact(heavy: boolean, side: string?, struck: string?, action: string?): { string }
 	local cues = {}
 	if side ~= "Shade" then
-		table.insert(cues, if heavy then "HeavyHit" else "LightHit")
+		local own = if action then Cues.Own[action] else nil
+		table.insert(cues, if own and own.Contact then own.Contact elseif heavy then "HeavyHit" else "LightHit")
 	end
 	if struck == "Shade" then
 		table.insert(cues, "ShadeHurt")

@@ -434,8 +434,8 @@ return {
 			local up = act(data, "UpgradeBase", { Level = 2 }, T0 + 20, "op-up")
 			t.Check("level 2 for 840", up.Ok == true and up.Level == 2 and up.Spent == 840 and data.Base.Level == 2, `{up.Error}`)
 			t.Equal("its Credits spent", data.Currency.Credits, 160)
-			t.Equal("four bays", #data.Base.Bays, 4)
-			t.Check("the new bays empty, at level 1", data.Base.Bays[3].Worker == "" and data.Base.Bays[4].Level == 1)
+			t.Equal("three bays (D5)", #data.Base.Bays, 3)
+			t.Check("the new bay empty, at level 1", data.Base.Bays[3].Worker == "" and data.Base.Bays[3].Level == 1)
 			local again, changed = act(data, "UpgradeBase", { Level = 2 }, T0 + 21, "op-up")
 			t.Check("the same op answered again, nothing changed", again.Ok == true and not changed and data.Currency.Credits == 160)
 			t.Equal("a second tap, a fresh op: refused, not charged", act(data, "UpgradeBase", { Level = 2 }, T0 + 22, "op-up-2").Error, Base.Stale)
@@ -443,7 +443,7 @@ return {
 			t.Equal("a level skipped: refused", act(data, "UpgradeBase", { Level = 4 }, T0 + 23).Error, Base.Stale)
 			t.Equal("level 3 short", act(data, "UpgradeBase", { Level = 3 }, T0 + 24).Error, Base.Short)
 			data.Currency.Credits = 20000
-			t.Check("level 3 for 18,000: six bays", act(data, "UpgradeBase", { Level = 3 }, T0 + 25).Ok == true and #data.Base.Bays == 6)
+			t.Check("level 3 for 18,000: four bays", act(data, "UpgradeBase", { Level = 3 }, T0 + 25).Ok == true and #data.Base.Bays == 4)
 			t.Equal("the launch's cap ends it", act(data, "UpgradeBase", { Level = 4 }, T0 + 26).Error, Base.Cap)
 			t.Equal("2,000 Credits left", data.Currency.Credits, 2000)
 			for _, bad in { {}, { Level = "4" }, { Level = 3.5 }, { Level = 0 / 0 }, { Level = math.huge } } :: { any } do

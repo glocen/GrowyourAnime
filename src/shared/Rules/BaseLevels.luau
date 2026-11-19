@@ -45,6 +45,21 @@ function BaseLevels.Bays(level: number): number
 	return at(BaseConfig.Levels.Bays, level)
 end
 
+-- The bays every plot lays (Config.Base.Levels.Plot), the ones no level at launch opens among them (D5).
+function BaseLevels.Plot(): number
+	return BaseConfig.Levels.Plot
+end
+
+-- The base level that opens bay `index`, or nil when none at launch does: it opens with more Voidkin (D5).
+function BaseLevels.OpensAt(index: number): number?
+	for level = 1, BaseLevels.Top() do
+		if BaseLevels.Bays(level) >= index then
+			return level
+		end
+	end
+	return nil
+end
+
 function BaseLevels.Ceiling(level: number): number
 	return at(BaseConfig.Levels.Ceiling, level)
 end

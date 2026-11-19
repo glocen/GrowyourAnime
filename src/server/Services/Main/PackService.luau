@@ -1,14 +1,15 @@
 --!strict
 -- PackService (server): the Shades of Lantern Row (docs/design.md, "The world, in grey"). Each Pack marker stands Count
--- Shades of its Def at its Level round it (Rules.Fight.PackRing, Config.World.Row.Spread apart), and the Elite marker one.
+-- Shades of its Def at its Level round it (Rules.Fight.PackRing, Config.World.Row.Spread apart), and each Elite marker
+-- one, a stage's ("Elite 1" to "Elite 3", TR43). Every Shade carries its marker's Stage.
 -- A pack belongs to everyone: FightService shares its notice and keeps every hitter. When a pack's last Shade falls it's
--- back Config.World.Row.Respawn seconds later; the elite, Config.World.Row.Back.Elite later, one timer for the whole server
--- (TR10, Rules.Cooldown). While a group is down its marker's BackAt attribute holds the server time it's back, so every
--- client shows when (DownController). The world laid again (WorldService.Laid) stands every pack anew on its moved marker.
+-- back Config.World.Row.Respawn seconds later; an elite, Config.World.Row.Back.Elite later, each one timer for the whole
+-- server (TR10, Rules.Cooldown). While a group is down its marker's BackAt attribute holds the server time it's back, so
+-- every client shows when (DownController). The world laid again (WorldService.Laid) stands every pack anew on its moved marker.
 -- Studio:
 --   NL_Debug:Invoke("Packs")                  each pack: its marker, Shades standing, the gap between them, when it's back
 --   NL_Debug:Invoke("PackDefeat", "Pack 1")   fells that pack's Shades at once, for tests
---   NL_Debug:Invoke("PackBack", "Elite")      stands a group that's down at once, its timer cut short
+--   NL_Debug:Invoke("PackBack", "Elite 2")    stands a group that's down at once, its timer cut short
 
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
@@ -29,7 +30,8 @@ local PackService = {
 }
 
 type Group = {
-	Name: string, -- "Pack 1", "Elite": FightService's pack id too
+	Name: string, -- "Pack 1", "Elite 2": FightService's pack id too
+	Kind: string, -- "Pack" or "Elite": its comeback's wait (Rules.Cooldown)
 	Marker: Instance,
 	Alive: { [FightService.Fighter]: boolean },
 	BackAt: number?, -- server time it comes back, while it's down
@@ -45,6 +47,7 @@ local function stand(group: Group)
 	local count = marker:GetAttribute("Count")
 	local type_ = marker:GetAttribute("Type")
 	local ground = marker:GetAttribute("Ground")
+	local stage = marker:GetAttribute("Stage")
 	if type(def) ~= "string" or type(level) ~= "number" then
 		Log.Warn("PackService", `{group.Name}'s marker has no Def or Level: the world report says what's wrong`)
 		return
@@ -57,6 +60,7 @@ local function stand(group: Group)
 			Type = if type(type_) == "string" then type_ else nil,
 			Pack = group.Name,
 			Ground = if type(ground) == "string" then ground else nil,
+			Stage = if type(stage) == "number" then stage else nil,
 		})
 		group.Alive[f] = true
 		-- Gone without falling (a cleanup): counted as fallen, so the pack still comes back.
@@ -74,7 +78,7 @@ function PackService.Down(group: Group)
 	if next(group.Alive) ~= nil or group.BackAt ~= nil or groups[group.Name] ~= group then
 		return
 	end
-	local wait = Cooldown.Wait(if group.Name == "Elite" then "Elite" else "Pack")
+	local wait = Cooldown.Wait(group.Kind)
 	group.BackAt = workspace:GetServerTimeNow() + wait
 	group.Marker:SetAttribute("BackAt", group.BackAt)
 	task.delay(wait, function()
@@ -94,18 +98,18 @@ local function standAll()
 			FightService.Remove(f)
 		end
 	end
-	local function add(name: string, marker: Instance)
-		local group: Group = { Name = name, Marker = marker, Alive = {}, BackAt = nil }
+	local function add(name: string, kind: string, marker: Instance)
+		local group: Group = { Name = name, Kind = kind, Marker = marker, Alive = {}, BackAt = nil }
 		groups[name] = group
 		stand(group)
 	end
 	for _, marker in Markers.All("Pack") do
 		local number = marker:GetAttribute("Pack")
-		add(`Pack {if type(number) == "number" then number else "?"}`, marker)
+		add(`Pack {if type(number) == "number" then number else "?"}`, "Pack", marker)
 	end
-	local elite = Markers.Find("Elite")
-	if elite then
-		add("Elite", elite)
+	for _, marker in Markers.All("Elite") do
+		local stage = marker:GetAttribute("Stage")
+		add(`Elite {if type(stage) == "number" then stage else "?"}`, "Elite", marker)
 	end
 end
 
@@ -136,6 +140,7 @@ local function packs(who: any): any
 			Gap = if gap == math.huge then 0 else gap,
 			BackIn = if group.BackAt then math.max(0, group.BackAt - now) else 0,
 			Ground = group.Marker:GetAttribute("Ground"),
+			Stage = group.Marker:GetAttribute("Stage"),
 			At = Markers.At(group.Marker).Position, -- the marker, for a client that has the street streamed out
 			HitBy = hitBy, -- its standing Shades the asking player's lead has hit: each one's fall pays them
 		})

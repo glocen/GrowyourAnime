@@ -22,6 +22,7 @@ local Shards = require(Shared.Definitions.Shards)
 local Voidkin = require(Shared.Definitions.Voidkin)
 local Power = require(Shared.Rules.Power)
 local Breaker = require(Shared.Rules.Breaker)
+local BaseLevels = require(Shared.Rules.BaseLevels)
 local Markers = require(Shared.World.Markers)
 local Kit = require(Shared.World.Kit)
 local BaseManifest: any = require(Shared.Config.Kits.Base.Manifest) -- each piece's centre, for the pieces that turn about their origin
@@ -125,6 +126,12 @@ local pickingBay: number? = nil
 local countdowns: { { Label: TextLabel, Chamber: number, Prefix: string } } = {}
 type Shown = { Frame: Instance, Stage: RevealStage.Handle, Card: Frame?, Carded: number, Name: string, Rarity: string, Outcome: string }
 local reveal: Shown? = nil
+
+-- A shut bay's line: the base level that opens it, or "more Voidkin" for the ones no level at launch does (D5).
+local function shut(index: number): string
+	local level = BaseLevels.OpensAt(index)
+	return if level then `Bay {index} · opens at base level {level}` else `Bay {index} · opens with more Voidkin`
+end
 
 local function act(name: string, args: any?): { [string]: any }
 	local answer = ProfileController.Act(name, args)
@@ -446,7 +453,7 @@ local function bayRows(list: ScrollingFrame, view: Profile.View, now: Read.Base)
 	end
 	for index in bays do
 		if index > #view.Base.Bays then
-			add({ Name = `Bay{index}`, Text = `Bay {index} · locked`, Colour = Theme.Colour.TextDim })
+			add({ Name = `Bay{index}`, Text = shut(index), Colour = Theme.Colour.TextDim })
 		end
 	end
 	local charge = now.Data.Base.Charge
@@ -853,7 +860,7 @@ function BaseController.Refresh()
 		local worker = if bay and bay.Worker ~= "" then view.Voidkin[bay.Worker] else nil
 		-- An empty bay the next step sends a Voidkin to says nothing: the step's line says it, and the prompt is there.
 		local sent = step ~= nil and step.Target == "Bay" and step.Bay == index
-		local line: string? = if bay == nil then `Bay {index} · locked`
+		local line: string? = if bay == nil then shut(index)
 			elseif worker then `{Read.VoidkinName(worker)} · {Read.Kw(Power.Output(worker))}`
 			elseif sent then nil
 			else `Bay {index} · nobody works here`

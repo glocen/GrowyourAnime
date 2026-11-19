@@ -9,9 +9,12 @@
 --   Helpers.openReadyDown(t, def, keep)     opens them, the oldest first, down to `keep`
 --   Helpers.breakerPart(name)               a piece of the open Breaker screen, by name at any depth under its body
 --   Helpers.batteryCells(t, mark, kwh, cap, where)  the battery mark's cells lit as the charge says (UI.BatteryMark)
+--   Helpers.SQUARE                          the elite in the square (one elite a stage, TR43): its group's Name ("Elite 2"),
+--                                           its marker's Stage, and the pack before it (Before, "Pack 2")
 
 local Shared = game:GetService("ReplicatedStorage").Shared
 local HudConfig = require(Shared.Config.Hud)
+local WorldConfig = require(Shared.Config.World)
 local Hud = require(Shared.Rules.Hud)
 local ProfileController = require(script.Parent.Parent.ProfileController)
 local UI = script.Parent.Parent.Parent.Parent.UI
@@ -25,6 +28,16 @@ local Helpers = {}
 
 Helpers.ANSWER = 3
 Helpers.SKIP_ALL = 3600
+Helpers.SQUARE = (function(): { Name: string, Stage: number, Before: string }
+	local packs = 0
+	for _, stop in WorldConfig.Row.Stops do
+		packs += if stop.Kind == "Pack" then 1 else 0
+		if stop.Kind == "Elite" and stop.Square then
+			return { Name = `Elite {stop.Stage}`, Stage = stop.Stage, Before = `Pack {packs}` }
+		end
+	end
+	return { Name = "Elite", Stage = 0, Before = "Pack 1" }
+end)()
 
 function Helpers.waitFor(t: any, seconds: number, ok: () -> boolean): boolean
 	local began = os.clock()

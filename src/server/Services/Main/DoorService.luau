@@ -4,7 +4,8 @@
 -- player down at the gate of the ground it goes to, today Lantern Row's DoorLanding, facing up the street; walking into
 -- that ground's own door sets them down on their plot's spawn. Each move is the keeper's fade with the lead at the side
 -- (KeeperService.SetDown), never during a try, and once a second at most a player. The doors are found again whenever the
--- grey world is laid.
+-- grey world is laid. DoorService.Through (player, kind) once a door has taken a player: StageService starts a fresh
+-- player's first stage, or sends the picker (TR43).
 
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
@@ -12,6 +13,7 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Shared = ReplicatedStorage.Shared
 local WorldConfig = require(Shared.Config.World)
 local Markers = require(Shared.World.Markers)
+local Signal = require(Shared.Util.Signal)
 
 local KeeperService = require(script.Parent.KeeperService)
 local WorldService = require(script.Parent.WorldService)
@@ -19,6 +21,8 @@ local WorldService = require(script.Parent.WorldService)
 local DoorService = {
 	Priority = 46, -- after the keeper, whose set-down it uses
 }
+
+DoorService.Through = Signal.new() -- (player, kind) a door took them: "FestivalDoor" or "GroundDoor"
 
 local GAP = 1 -- seconds before a player's next way through
 
@@ -49,6 +53,7 @@ local function hook(door: Instance, kind: string)
 		local at = goal(player, kind)
 		if at and KeeperService.SetDown(player, at) then
 			last[player] = now
+			DoorService.Through:Fire(player, kind)
 		end
 	end)
 end

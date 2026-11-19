@@ -11,8 +11,10 @@
 --     a hit plays one cue's voices, never two. A sound already playing finishes. One that doesn't load is marked and
 --     skipped: the live sound stays.
 --   - Keep and None go to the server as they change; NL_Debug:Invoke("Audition") reads them out.
---   - "Others" silences the fight's cues that aren't pilots (the Shade's hurt on the same touch, the heavy wind-up, the
---     critical, the burst), so a candidate can be heard alone on its hit; on by default, the fight as it is.
+--   - "Others" silences the fight's cues that aren't open pilots (the Shade's hurt on the same touch, the heavy wind-up,
+--     the critical, the burst, the picked hits), the strike's own slices (Config.Sounds) and the music, so a candidate
+--     can be heard alone on its hit; on by default, the fight as it is.
+--   - A pilot marked Done (Config.Audition) is picked: it has no tab, and the panel opens on the first that's left.
 --   - A level changed live (Tune "Audition.Levels.<cue>") reaches every candidate within a quarter second.
 
 local Players = game:GetService("Players")
@@ -25,6 +27,7 @@ local Net = require(Shared.Net)
 local Config = require(Shared.Config.Audition)
 local CuesConfig = require(Shared.Config.Cues)
 local Cues = require(script.Parent.Parent.Main.FighterController.Cues)
+local Sounds = require(script.Parent.Parent.Main.FighterController.Sounds)
 
 local AuditionController = {}
 
@@ -34,6 +37,9 @@ local DATA = "NL_Audition" -- the finder's answer, as AuditionService hands it o
 local GUI = "Studio_Audition" -- not NL_: the UI lint reads the game's own screens by that, and this is a tool, never a player's
 local LOAD = 4 -- s a tapped sound has to load in
 local LEVELS = 0.25 -- s between reads of Config.Audition.Levels
+local COLUMNS = 3 -- tabs a line
+local TAB_LINE = 34 -- px a line of tabs takes
+local MUSIC = "GA_Music" -- MusicController's group, silenced with the others
 
 export type Candidate = {
 	Number: number,
@@ -63,7 +69,7 @@ type Tab = {
 
 local data: any = nil
 local tabs: { [string]: Tab } = {}
-local shown = "LightHit"
+local shown = "LightHit" -- the panel opens on the first pilot not Done
 local built: { [string]: Candidate } = {} -- the cues made, by their voices' key
 local refresh: () -> () = function() end
 
@@ -251,8 +257,14 @@ function AuditionController.Others(on: boolean)
 		return
 	end
 	muted = not on
+	Sounds.Quiet(muted)
+	local music = game:GetService("SoundService"):FindFirstChild(MUSIC)
+	if music and music:IsA("SoundGroup") then
+		music.Volume = if muted then 0 else 1
+	end
 	for name, base in CuesConfig.Cues do
-		if specOf(name) ~= nil then
+		local spec = specOf(name)
+		if spec ~= nil and not spec.Done then
 			continue
 		end
 		if on then
@@ -428,18 +440,32 @@ function AuditionController.Mount(): ScreenGui?
 	body.Size = UDim2.new(1, -24, 1, -50)
 	body.Parent = panel
 
+	-- the pilots left to pick, COLUMNS a line; everything under the tabs moves down by their extra lines
+	local open: { any } = {}
+	for _, spec in Config.Cues do
+		if not spec.Done then
+			table.insert(open, spec)
+		end
+	end
+	if #open > 0 and (specOf(shown) == nil or specOf(shown).Done) then
+		shown = open[1].Name
+	end
+	local shift = (math.max(math.ceil(#open / COLUMNS), 1) - 1) * TAB_LINE
+	local tall = 560 + shift
+	panel.Size = UDim2.fromOffset(390, tall)
 	local tabButtons: { [string]: TextButton } = {}
-	local count = #Config.Cues
-	for i, spec in Config.Cues do
-		local b = button(body, spec.Label, UDim2.new(1 / count, -4, 0, 30), UDim2.new((i - 1) / count, 2, 0, 0))
+	for i, spec in open do
+		local column, line = (i - 1) % COLUMNS, (i - 1) // COLUMNS
+		local b = button(body, spec.Label, UDim2.new(1 / COLUMNS, -4, 0, 30), UDim2.new(column / COLUMNS, 2, 0, line * TAB_LINE))
 		b.Name = `Tab{spec.Name}`
+		b.TextSize = 13
 		tabButtons[spec.Name] = b
 		b.MouseButton1Click:Connect(function()
 			shown = spec.Name
 			refresh()
 		end)
 	end
-	local info = label(body, "", 13, Enum.Font.BuilderSans, COLOURS.Dim, UDim2.new(1, 0, 0, 18), UDim2.fromOffset(2, 36))
+	local info = label(body, "", 13, Enum.Font.BuilderSans, COLOURS.Dim, UDim2.new(1, 0, 0, 18), UDim2.fromOffset(2, 36 + shift))
 	info.Name = "Info"
 
 	type Row = { Frame: TextButton, Number: TextLabel, Title: TextLabel, By: TextLabel, Length: TextLabel, Keep: TextButton, Item: (Candidate | string)? }
@@ -451,7 +477,7 @@ function AuditionController.Mount(): ScreenGui?
 		f.Text = ""
 		f.BackgroundColor3 = COLOURS.Row
 		f.Size = UDim2.new(1, 0, 0, ROW)
-		f.Position = UDim2.fromOffset(0, 58 + (r - 1) * (ROW + 3))
+		f.Position = UDim2.fromOffset(0, 58 + shift + (r - 1) * (ROW + 3))
 		local c = Instance.new("UICorner")
 		c.CornerRadius = UDim.new(0, 6)
 		c.Parent = f
@@ -489,7 +515,7 @@ function AuditionController.Mount(): ScreenGui?
 		end)
 	end
 
-	local footY = 58 + (Config.Page + 1) * (ROW + 3) + 4
+	local footY = 58 + shift + (Config.Page + 1) * (ROW + 3) + 4
 	local more = button(body, "More", UDim2.fromOffset(80, 30), UDim2.fromOffset(0, footY))
 	more.Name = "More"
 	local none = button(body, "None of these", UDim2.fromOffset(126, 30), UDim2.fromOffset(86, footY))
@@ -512,7 +538,7 @@ function AuditionController.Mount(): ScreenGui?
 	hide.MouseButton1Click:Connect(function()
 		hidden = not hidden
 		body.Visible = not hidden
-		panel.Size = if hidden then UDim2.fromOffset(390, 44) else UDim2.fromOffset(390, 560)
+		panel.Size = if hidden then UDim2.fromOffset(390, 44) else UDim2.fromOffset(390, tall)
 		hide.Text = if hidden then "Show" else "Hide"
 	end)
 
@@ -553,9 +579,10 @@ function AuditionController.Mount(): ScreenGui?
 			local loading = id ~= 0 and tab.Loading == id
 			row.Frame.BackgroundColor3 = if live then COLOURS.Live else COLOURS.Row
 			if type(item) == "string" then
+				local silent = #CuesConfig.Cues[shown].Layers == 0
 				row.Number.Text = "Old"
-				row.Title.Text = "Today's cue"
-				row.By.Text = "AR13's takes, at today's level"
+				row.Title.Text = if silent then "Silence" else "Today's cue"
+				row.By.Text = if silent then "nothing plays here today" else "what plays here today, at its level"
 				row.Length.Text = ""
 			else
 				local c = item :: Candidate

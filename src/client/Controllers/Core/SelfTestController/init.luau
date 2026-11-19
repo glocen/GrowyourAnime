@@ -27,6 +27,7 @@ local BreakerCases = require(script.BreakerCases)
 local StripCases = require(script.StripCases)
 local NoticeCases = require(script.NoticeCases)
 local AuditionCases = require(script.AuditionCases)
+local StageCases = require(script.StageCases)
 local BaseController = require(script.Parent.Parent.Main.BaseController)
 
 local BRIDGE_NAME = "NL_SelfTest"
@@ -194,6 +195,8 @@ local function run(filter: string?): string
 	table.move(buttons, 1, #buttons, #cases + 1, cases)
 	local audition = AuditionCases.Cases() -- the sound audition panel (TR42), apart for the same reason
 	table.move(audition, 1, #audition, #cases + 1, cases)
+	local stages = StageCases.Cases() -- a ground's stages (TR43), apart for the same reason
+	table.move(stages, 1, #stages, #cases + 1, cases)
 	for _, case in cases do
 		local chosen = if filter then string.find(case.Name, filter, 1, true) ~= nil else not case.Manual
 		if chosen then

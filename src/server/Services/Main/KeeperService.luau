@@ -25,6 +25,7 @@ local Shared = ReplicatedStorage.Shared
 local Net = require(Shared.Net)
 local Parts = require(Shared.Util.Parts)
 local Log = require(Shared.Util.Log)
+local Signal = require(Shared.Util.Signal)
 local Enemies = require(Shared.Definitions.Enemies)
 local Actions = require(Shared.Definitions.Actions)
 local Combat = require(Shared.Config.Combat)
@@ -41,6 +42,15 @@ local WorldService = require(script.Parent.WorldService)
 local KeeperService = {
 	Priority = 45, -- after the world, the fight and the packs
 }
+
+-- A try begins (player, ground), before its fade: StageService makes it the keeper's stage's run (TR43).
+KeeperService.Trying = Signal.new()
+-- A try won (player, ground), its win saved: the keeper's stage cleared (StageService, TR43).
+KeeperService.Won = Signal.new()
+-- The keeper's level in `player`'s try: the ring's, unless StageService lifts it for a run on Hard (TR43).
+KeeperService.LevelOf = function(_player: Player, level: number): number
+	return level
+end
 
 local FOLDER = "Keeper"
 local STAND = 3 -- an R6 root stands 3 studs over its floor
@@ -260,6 +270,7 @@ function KeeperService.Try(player: Player): { [string]: any }
 	end
 	local try: Try = { Plot = plot :: number, Keeper = nil, Ending = false }
 	tries[player] = try
+	KeeperService.Trying:Fire(player, (ring :: any).Ground) -- before its attribute: a stage's run won't begin in a try
 	player:SetAttribute("Try", (ring :: any).Def)
 	task.delay(fade(player), function()
 		if tries[player] ~= try or ring == nil then
@@ -271,7 +282,7 @@ function KeeperService.Try(player: Player): { [string]: any }
 			try.LeadSide = (lead.Root.Position - root.Position):Dot(root.CFrame.RightVector)
 		end
 		local looks = copy.Centre.Position + (ring :: any).ToGate
-		try.Keeper = FightService.SpawnEnemy((ring :: any).Def, (ring :: any).Level, CFrame.lookAt(copy.Centre.Position, looks), {
+		try.Keeper = FightService.SpawnEnemy((ring :: any).Def, KeeperService.LevelOf(player, (ring :: any).Level), CFrame.lookAt(copy.Centre.Position, looks), {
 			Ground = (ring :: any).Ground,
 		})
 	end)
@@ -293,6 +304,7 @@ local function won(player: Player, try: Try)
 	if answer.Ok ~= true then
 		Log.Error("KeeperService", `{player.Name}'s win wasn't saved: {tostring(answer.Error)}`)
 	end
+	KeeperService.Won:Fire(player, ground)
 	task.delay(Combat.Keeper.WinPause, function()
 		if tries[player] ~= try then
 			return
@@ -356,6 +368,7 @@ local function state(who: any): any
 		LeadSide = if try then try.LeadSide or 0 else 0,
 		Keeper = if keeper then keeper.Id else "",
 		KeeperHealth = if keeper then keeper.Health else 0,
+		KeeperLevel = if keeper then keeper.Block.Level else 0, -- lifted on a Hard run (TR43)
 		-- Who each is fighting, for "the fight is joined": the keeper's target and the lead's, by id.
 		Lead = if lead then lead.Id else "",
 		LeadHealth = if lead then lead.Health else 0,

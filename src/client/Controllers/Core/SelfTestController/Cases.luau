@@ -170,7 +170,8 @@ local ANSWER = Helpers.ANSWER
 local STREAM_IN = 3 -- seconds a far place may take to stream in to this client once the server asks
 -- Where TR10's case watches the elite's square from: Past studs beyond the badge's Near, toward the gate, by the square of
 -- Pack, felled for the case (Lantern Row: Pack 3 stands 80 studs short of the elite).
-local ELITE_STAND = { Past = 10, Pack = "Pack 3" }
+local SQUARE_ELITE = Helpers.SQUARE
+local ELITE_STAND = { Past = 10, Pack = SQUARE_ELITE.Before }
 local PLATE_TICK = 0.4 -- seconds for the plates and pills to show a change (BaseController and HudController read at 4 Hz)
 local SKIP_ALL = Helpers.SKIP_ALL
 local DOOR_RUN = 4 -- studs before a Festival Door the avatar starts its walk in
@@ -1041,7 +1042,7 @@ local cases = {
 			t.Check("the dressing report is empty, but for the plots' grey trial", type(problems) == "table" and #problems == 0, if first then `{first} (and {#problems - 1} more)` else nil)
 			-- The paper as this client shows it (research's TR8 verdict): each box streamed in stands in Config.Lighting.Paper's
 			-- band over the paving, in its tint (its rate is the logic case's).
-			streamed(t, "Elite")
+			streamed(t, "Elite", { Stage = SQUARE_ELITE.Stage })
 			local band = LightingConfig.Paper
 			local seen, off = 0, {}
 			for _, item in CollectionService:GetTagged(Kit.Tag) do
@@ -1287,15 +1288,18 @@ local cases = {
 			for _, row in rows do
 				byName[row.Name] = row
 			end
-			local packs = 0
+			local packs, elites = 0, 0
 			for _, stop in WorldConfig.Row.Stops do
 				packs += if stop.Kind == "Pack" then 1 else 0
+				elites += if stop.Kind == "Elite" then 1 else 0
 			end
-			local found = 0
-			for name in byName do
+			local found, foundElites = 0, 0
+			for name, row in byName do
 				found += if string.sub(name, 1, 5) == "Pack " then 1 else 0
+				foundElites += if string.sub(name, 1, 6) == "Elite " and row.Stage ~= nil then 1 else 0
 			end
-			t.Check("a pack at each pack stop, and the elite", found == packs and byName.Elite ~= nil, `{found} packs for {packs} stops`)
+			t.Check("a pack at each pack stop", found == packs, `{found} packs for {packs} stops`)
+			t.Check("an elite at each elite stop, each its stage's (TR43)", foundElites == elites, `{foundElites} elites for {elites} stops`)
 			for name, row in byName do
 				t.Check(`{name} stands {row.Count}`, row.Standing == row.Count, `{row.Standing} standing`)
 				if row.Count > 1 then
@@ -6062,26 +6066,26 @@ local cases = {
 			local was = { Layout = config.Layout, Compare = config.Compare, Near = config.Near }
 			local function restore()
 				config.Layout, config.Compare, config.Near = was.Layout, was.Compare, was.Near
-				t.Server("PackBack", "Elite")
+				t.Server("PackBack", SQUARE_ELITE.Name)
 				t.Server("PackBack", ELITE_STAND.Pack)
 				t.Server("KeeperRest", 0)
 			end
 			-- Down the street from the square, past the badge's Near, so the place stays streamed in (the test pad is too
 			-- far to keep it) and its card waits: the pack there felled first, so nothing notices the avatar.
-			local served = t.Server("TestStream", "Elite")
+			local served = t.Server("TestStream", "Elite", { Stage = SQUARE_ELITE.Stage })
 			if typeof(served) == "Vector3" then
 				t.Server("PackDefeat", ELITE_STAND.Pack)
 				local at = served + Vector3.new(0, R6_ROOT_HEIGHT + 0.6, config.Near + ELITE_STAND.Past)
 				t.Server("TestStandAt", at, served)
 			end
-			local elite = streamed(t, "Elite")
+			local elite = streamed(t, "Elite", { Stage = SQUARE_ELITE.Stage })
 			t.Check("the elite's square", elite ~= nil)
 			t.Check("the keeper's gate and its ring", streamed(t, "KeeperGate") ~= nil and streamed(t, "Ring") ~= nil)
 			if elite == nil then
 				restore()
 				return
 			end
-			local felled = t.Server("PackDefeat", "Elite")
+			local felled = t.Server("PackDefeat", SQUARE_ELITE.Name)
 			t.Check("the elite falls", felled.Ok == true, tostring(felled.Error))
 			local function plateOf(kind: string, layout: string?): Frame?
 				return DownController.Plate(kind, layout)
@@ -6141,7 +6145,7 @@ local cases = {
 			t.Wait(0.1)
 			t.Check("one again", shows("Elite", "Stack") and not shows("Elite", "Row") and not shows("Elite", "Badge"))
 			-- Back: its marker goes.
-			t.Check("the elite is back at once for the test", t.Server("PackBack", "Elite").Ok == true)
+			t.Check("the elite is back at once for the test", t.Server("PackBack", SQUARE_ELITE.Name).Ok == true)
 			t.Check("its marker goes", waitFor(t, REPLICATE, function(): boolean
 				return not shows("Elite")
 			end))

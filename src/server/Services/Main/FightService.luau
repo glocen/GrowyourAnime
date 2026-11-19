@@ -68,9 +68,12 @@ export type Fighter = {
 	Home: CFrame?, -- a Shade's spawn
 	Pack: string?,
 	Ground: string?, -- the ground an enemy stands in, whose drops it gives (Rules.Drops); nil drops nothing
+	Stage: number?, -- the street's stage it stands in (Config.Stages, TR43): its fall counts for a run of that stage
 	-- A foe fought by this player's lead alone (a Tower floor's, TR29): no other lead sees it or strikes it, and it sees
 	-- and strikes no other.
 	For: Player?,
+	-- A lead on a Hard stage (TR43): it fights its player's own foes alone, and no other foe fights it.
+	Solo: boolean?,
 	HealRoom: number?, -- what it may still heal this floor (the Tower's heal cap, Rules.Tower.Capped); nil, no cap
 	RegenAt: number, -- a lead's next Regen burst (TR40; Rules.Fight.BurstDue), from its summon
 	Frail: boolean?, -- it falls to the first hit that lands (a Tower's fast floor, Rules.Tower.Fast)
@@ -184,6 +187,9 @@ local function against(f: Fighter, other: Fighter): boolean
 		return false
 	end
 	if f.For and other.Owner ~= f.For then
+		return false
+	end
+	if (f.Solo and other.For ~= f.Owner) or (other.Solo and f.For ~= other.Owner) then
 		return false
 	end
 	return other.For == nil or other.For == f.Owner
@@ -1233,7 +1239,7 @@ local function thinkLead(f: Fighter, at: number, dt: number)
 	end
 	local candidates: { Fight.Candidate } = {}
 	for _, other in fighters do
-		if other.Side == "Shade" and other.Kind ~= "Dummy" and standing(other) and (other.For == nil or other.For == f.Owner) then
+		if other.Side == "Shade" and other.Kind ~= "Dummy" and standing(other) and against(f, other) then
 			table.insert(candidates, {
 				Id = other.Id,
 				Distance = distance(f.Root, other.Root),
@@ -1383,7 +1389,7 @@ local function thinkShade(f: Fighter, at: number)
 	local struck = if f.Pack then packHit[f.Pack] else nil
 	local candidates: { Fight.Candidate } = {}
 	for _, lead in leads do
-		if standing(lead) and (f.For == nil or lead.Owner == f.For) then
+		if standing(lead) and against(f, lead) then
 			table.insert(candidates, {
 				Id = lead.Id,
 				Distance = distance(f.Root, lead.Root),
@@ -1512,7 +1518,8 @@ function FightService.SetBlock(f: Fighter, block: Stats.Block)
 end
 
 -- An enemy of row `def` at `level`, standing at `at`, which is also its home. `options` gives its type and its pack.
-function FightService.SpawnEnemy(def: string, level: number, at: CFrame, options: { Type: string?, Pack: string?, Ground: string? }?): Fighter
+-- options.For: fought by that player's lead alone (a Hard stage's foe, TR43), as a Tower floor's.
+function FightService.SpawnEnemy(def: string, level: number, at: CFrame, options: { Type: string?, Pack: string?, Ground: string?, Stage: number?, For: Player? }?): Fighter
 	local row = assert(Enemies.ById[def], `no enemy {def}`)
 	local block = Stats.Enemy(def, level, if options then options.Type else nil)
 	local kit = if row.Action then { Actions.ById[row.Action] } else {}
@@ -1530,7 +1537,13 @@ function FightService.SpawnEnemy(def: string, level: number, at: CFrame, options
 	f.Home = model:GetPivot()
 	f.Pack = if options then options.Pack else nil
 	f.Ground = if options then options.Ground else nil
+	f.Stage = if options then options.Stage else nil
 	model:SetAttribute("Type", block.Type)
+	model:SetAttribute("Stage", f.Stage)
+	if options and options.For then
+		f.For = options.For
+		model:SetAttribute("For", options.For.UserId)
+	end
 	if row.Enter then
 		-- held to its end before it does anything else: busy() keeps it from walking or striking (the keeper's Challenge)
 		start(f, Actions.ById[row.Enter], now())
@@ -1560,6 +1573,16 @@ function FightService.SpawnRival(player: Player, block: Stats.Block, at: CFrame,
 	model:SetAttribute("For", player.UserId)
 	model:SetAttribute("Type", block.Type)
 	return f
+end
+
+-- A lead fought alone, or not (TR43, a Hard stage's): it takes only its player's own foes (For), and no other foe takes
+-- it. Its target dropped when it changes.
+function FightService.SetSolo(player: Player, alone: boolean)
+	local f = leads[player]
+	if f and (f.Solo == true) ~= alone then
+		f.Solo = if alone then true else nil
+		setTarget(f, nil)
+	end
 end
 
 -- Sets what `f` may still heal (the Tower's cap for its floor), or nil for no cap.

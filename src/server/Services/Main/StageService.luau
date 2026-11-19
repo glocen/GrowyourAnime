@@ -1,0 +1,494 @@
+--!strict
+-- StageService (server): a ground's stages on Normal and Hard, in grey (docs/test-requests.md, TR43; Rules.Stages;
+-- Config.Stages). A run is one player's play of one stage, held here while it lasts and never saved.
+-- * Normal plays the shared street: the stage's packs and its elite are everyone's (PackService), and a fall counts for
+--   every hitter running that stage, the elite's for everyone who hit it.
+-- * Hard stands the stage's own foes for the player alone, Config.Stages.Offset.Hard levels up, on the same markers
+--   (FightService's For), and their lead fights alone (FightService.SetSolo): the street's Shades and it leave each other
+--   be. A pack of them stands again Config.World.Row.Respawn after its last falls, while the run lasts. The keeper's stage
+--   on Hard lifts the keeper's level (KeeperService.LevelOf).
+-- * A stage's gate (StageGate) is shut to a player until they've cleared that stage on Normal: a walk across it going up
+--   the street sets them back Config.World.Row.GateSet before it. A set-down past it isn't a walk (the picker's, the
+--   keeper's exit, a test's: Config.Stages.Gate), and walking back down is always free.
+-- * The Festival Door: a fresh player (Rules.Stages.Fresh) starts Stage 1 on Normal where it lands, with no screen;
+--   anyone else is sent the picker (Net StagePick), and its tiles begin a run (Net Stage) where that stage starts.
+-- * A keeper's try is its stage's run: one on Normal begins with it when the stage is open and no run of it is on, and
+--   the try's win (KeeperService.Won) is its stage's last stop.
+-- * A run ends when it's done (its clear written once, then its card: Net StageDone, Config.Stages.Results.After later),
+--   when another begins, when the player leaves the street (Config.Stages.Off: once they've stood on it in the run, so a
+--   set-down still fading in from afar isn't a leave) or the game, or when their lead falls (its card says so).
+-- The player's attributes carry the run to the client: StageRun ("Normal 2"), StageKills, StageQuota, StageLast.
+-- Studio:
+--   NL_Debug:Invoke("Stage")                                 the run, the gates shut to the player, their record
+--   NL_Debug:Invoke("StageBegin", nil, difficulty, stage)    a run begins, as the picker asks one
+--   NL_Debug:Invoke("StageArrive", nil)                      as if the Festival Door had just taken the player
+--   NL_Debug:Invoke("StageFell", nil, group)                 fells a group's standing Shades ("Pack 1", "Elite 1", or a
+--                                                            Hard run's own: "Elite 1 mine"), the player their hitter
+--   NL_Debug:Invoke("StageLine", nil, difficulty, cleared)   the record's cleared count on Lantern Row (0 wipes it)
+
+local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local RunService = game:GetService("RunService")
+
+local Shared = ReplicatedStorage.Shared
+local Net = require(Shared.Net)
+local WorldConfig = require(Shared.Config.World)
+local StagesConfig = require(Shared.Config.Stages)
+local Markers = require(Shared.World.Markers)
+local Stages = require(Shared.Rules.Stages)
+local Fight = require(Shared.Rules.Fight)
+local Profile = require(Shared.Data.Profile)
+local Parts = require(Shared.Util.Parts)
+local Log = require(Shared.Util.Log)
+local Core = script.Parent.Parent.Core
+local DataService = require(Core.DataService)
+local DebugService = require(Core.DebugService)
+local FightService = require(script.Parent.FightService)
+local KeeperService = require(script.Parent.KeeperService)
+local DoorService = require(script.Parent.DoorService)
+
+local StageService = {
+	Priority = 48, -- after the packs, the keeper and the doors, whose signals it hears
+}
+
+type Gave = { Credits: number, Shards: number, Chests: number }
+type Run = {
+	Rule: Stages.Run,
+	Foes: { [FightService.Fighter]: string }, -- a Hard run's own Shades, by their group's marker name
+	Groups: { [string]: Instance }, -- a Hard run's markers, by name: where each group stands again
+	Before: Gave, -- the save's counts as it began, for what it gave
+	Ending: boolean,
+	OnStreet: boolean, -- the player has stood on the street since it began: from then, off it ends the run
+}
+
+local runs: { [Player]: Run } = {}
+
+local function counts(data: Profile.Data?): Gave
+	local gave = { Credits = 0, Shards = 0, Chests = 0 }
+	if data then
+		gave.Credits = data.Currency.Credits
+		for _, n in data.Bag.Shards do
+			gave.Shards += n
+		end
+		for _, n in data.Bag.Chests do
+			gave.Chests += n
+		end
+	end
+	return gave
+end
+
+-- The run, as the client reads it.
+local function publish(player: Player, run: Run?)
+	local rule = if run then run.Rule else nil
+	local row = if rule then (Stages.Of(rule.Ground) :: { any })[rule.Stage] else nil
+	player:SetAttribute("StageRun", if rule then `{rule.Difficulty} {rule.Stage}` else nil)
+	player:SetAttribute("StageKills", if rule then rule.Kills else nil)
+	player:SetAttribute("StageQuota", if row then row.Quota else nil)
+	player:SetAttribute("StageLast", if rule then rule.Last else nil)
+end
+
+-- A run's markers of one kind ("Pack" or "Elite") in its stage.
+local function markersOf(rule: Stages.Run, kind: string): { Instance }
+	local found = {}
+	for _, marker in Markers.All(kind) do
+		if marker:GetAttribute("Stage") == rule.Stage and marker:GetAttribute("Ground") == rule.Ground then
+			table.insert(found, marker)
+		end
+	end
+	return found
+end
+
+-- A Hard run's group `name` standing at its marker, for `player` alone, its level lifted.
+local function stand(player: Player, run: Run, name: string)
+	local marker = run.Groups[name]
+	local def, level, count, type_ = marker:GetAttribute("Def"), marker:GetAttribute("Level"), marker:GetAttribute("Count"), marker:GetAttribute("Type")
+	if type(def) ~= "string" or type(level) ~= "number" then
+		return
+	end
+	local at = Markers.At(marker)
+	for _, offset in Fight.PackRing(if type(count) == "number" then count else 1, WorldConfig.Row.Spread) do
+		local f = FightService.SpawnEnemy(def, Stages.Level(level, run.Rule.Difficulty), at * CFrame.new(offset[1], 0, offset[2]), {
+			Type = if type(type_) == "string" then type_ else nil,
+			Pack = `{name} for {player.UserId}`,
+			Ground = run.Rule.Ground,
+			Stage = run.Rule.Stage,
+			For = player,
+		})
+		run.Foes[f] = name
+		f.Model.Destroying:Connect(function()
+			run.Foes[f] = nil -- gone without falling: a cleanup
+		end)
+	end
+end
+
+-- Ends `player`'s run, if any: its own foes go, its lead fights the street again. No card.
+function StageService.End(player: Player)
+	local run = runs[player]
+	if run == nil then
+		return
+	end
+	runs[player] = nil
+	run.Ending = true
+	for f in run.Foes do
+		run.Foes[f] = nil
+		FightService.Remove(f)
+	end
+	FightService.SetSolo(player, false)
+	publish(player, nil)
+end
+
+-- A run of `stage` on `difficulty` begins for `player`, set down at its start unless `stay` (the Door's own landing).
+-- { Ok } or { Ok = false, Error, Needs?, Waits? }.
+function StageService.Begin(player: Player, ground: string, difficulty: string, stage: number, stay: boolean?): { [string]: any }
+	local data = DataService.Get(player)
+	local lead = FightService.LeadOf(player)
+	if data == nil then
+		return { Ok = false, Error = "NoData" }
+	elseif player:GetAttribute("Try") ~= nil then
+		return { Ok = false, Error = "InTry" }
+	elseif lead == nil or not FightService.Standing(lead) then
+		return { Ok = false, Error = "NoLead" }
+	end
+	local rule, refusal = Stages.Start(data, ground, difficulty, stage, os.time())
+	if rule == nil then
+		local needs, waits = Stages.Needs(data, ground, difficulty, stage)
+		return { Ok = false, Error = refusal, Needs = needs, Waits = waits }
+	end
+	local start = Markers.Find("StageStart", { Stage = stage, Ground = ground })
+	if start == nil then
+		return { Ok = false, Error = "NoStart" }
+	end
+	StageService.End(player)
+	local run: Run = { Rule = rule, Foes = {}, Groups = {}, Before = counts(data), Ending = false, OnStreet = false }
+	runs[player] = run
+	if difficulty ~= "Normal" then
+		FightService.SetSolo(player, true)
+		for _, kind in { "Pack", "Elite" } do
+			for _, marker in markersOf(rule, kind) do
+				local name = marker.Name
+				run.Groups[name] = marker
+				stand(player, run, name)
+			end
+		end
+	end
+	publish(player, run)
+	if not stay then
+		KeeperService.SetDown(player, Markers.At(start))
+	end
+	return { Ok = true }
+end
+
+-- The run's end on a win: its clear written once, then its card.
+local function finish(player: Player, run: Run)
+	run.Ending = true
+	local rule = run.Rule
+	local answer = DataService.Change(player, "StageClear", function(draft)
+		return Stages.Clear(draft, rule, os.time())
+	end)
+	if answer.Ok ~= true then
+		Log.Error("StageService", `{player.Name}'s clear of {rule.Ground} {rule.Difficulty} {rule.Stage} wasn't saved: {tostring(answer.Error)}`)
+	end
+	publish(player, run)
+	task.delay(StagesConfig.Results.After, function()
+		if runs[player] ~= run then
+			return
+		end
+		local now = counts(DataService.Get(player))
+		Net.Server.Fire("StageDone", player, {
+			Won = true,
+			Ground = rule.Ground,
+			Difficulty = rule.Difficulty,
+			Stage = rule.Stage,
+			Count = #(Stages.Of(rule.Ground) :: { any }),
+			Seconds = answer.Seconds,
+			Best = answer.Best,
+			First = answer.First,
+			Opened = answer.Opened or "",
+			Next = answer.Next,
+			Credits = math.max(0, now.Credits - run.Before.Credits),
+			Shards = math.max(0, now.Shards - run.Before.Shards),
+			Chests = math.max(0, now.Chests - run.Before.Chests),
+		})
+		StageService.End(player)
+	end)
+end
+
+-- The run's end on its lead's fall: its card says so.
+local function lose(player: Player, run: Run)
+	local rule = run.Rule
+	StageService.End(player)
+	Net.Server.Fire("StageDone", player, {
+		Won = false,
+		Ground = rule.Ground,
+		Difficulty = rule.Difficulty,
+		Stage = rule.Stage,
+		Count = #(Stages.Of(rule.Ground) :: { any }),
+	})
+end
+
+-- Whether `f`'s fall counts for `player`'s run.
+local function countsFor(run: Run, player: Player, f: FightService.Fighter): boolean
+	local rule = run.Rule
+	local last = Stages.Last(rule.Ground, rule.Stage)
+	if last and last.Kind == "Keeper" then
+		return false -- the try's own win counts it (KeeperService.Won)
+	elseif f.Stage ~= rule.Stage or f.Ground ~= rule.Ground then
+		return false
+	end
+	return if rule.Difficulty == "Normal" then f.For == nil else f.For == player
+end
+
+local function fell(f: FightService.Fighter, hitters: { Player })
+	-- A Hard run's own foe: its pack stands again once the last of it is down.
+	for player, run in runs do
+		local name = run.Foes[f]
+		if name == nil then
+			continue
+		end
+		run.Foes[f] = nil
+		local marker = run.Groups[name]
+		local isPack = marker and marker:GetAttribute("Pack") ~= nil
+		local left = false
+		for _, other in run.Foes do
+			left = left or other == name
+		end
+		if isPack and not left then
+			task.delay(WorldConfig.Row.Respawn, function()
+				if runs[player] == run and not run.Ending then
+					stand(player, run, name)
+				end
+			end)
+		end
+	end
+	for _, player in hitters do
+		local run = runs[player]
+		if run and not run.Ending and countsFor(run, player, f) then
+			if Stages.Kill(run.Rule, f.Def) then
+				finish(player, run)
+			else
+				publish(player, run)
+			end
+		end
+	end
+	if f.Side == "Lead" and f.Owner then
+		local run = runs[f.Owner]
+		if run and not run.Ending then
+			lose(f.Owner, run)
+		end
+	end
+end
+
+-- Whether `gate` is shut to `player`: its stage not cleared on Normal.
+local function shut(player: Player, gate: Instance): boolean
+	local data = DataService.Get(player)
+	local stage, ground = gate:GetAttribute("Stage"), gate:GetAttribute("Ground")
+	if type(stage) ~= "number" or type(ground) ~= "string" then
+		return false
+	end
+	return data == nil or not Stages.Passes(data, ground, stage)
+end
+
+-- The gates and the street's edge, every Config.Stages.Gate.Every seconds.
+local seen: { [Player]: Vector3 } = {}
+local function watch()
+	local gates = Markers.All("StageGate")
+	for _, player in Players:GetPlayers() do
+		local root = Parts.Root(player.Character)
+		if root == nil then
+			seen[player] = nil
+			continue
+		end
+		local now, before = root.Position, seen[player]
+		seen[player] = now
+		local run = runs[player]
+		if run and run.Rule.Difficulty ~= "Normal" and not run.Ending then
+			FightService.SetSolo(player, true) -- a lead summoned anew mid-run fights alone too
+		end
+		if run and not run.Ending and player:GetAttribute("Try") == nil then
+			local first = Markers.Find("StageStart", { Stage = 1, Ground = run.Rule.Ground })
+			local off = first ~= nil and now.Z > Markers.At(first).Position.Z + StagesConfig.Off
+			if off and run.OnStreet then
+				StageService.End(player) -- off the street, back toward the Strip
+			elseif first and not off then
+				run.OnStreet = true
+			end
+		end
+		if before == nil or (now - before).Magnitude >= StagesConfig.Gate.Walk then
+			continue
+		end
+		for _, gate in gates do
+			if not gate:IsA("BasePart") then
+				continue
+			end
+			local z = gate.Position.Z
+			local across = before.Z > z and now.Z <= z -- up the street is -Z
+			if across and math.abs(now.X - gate.Position.X) < gate.Size.X / 2 + 4 and shut(player, gate) then
+				local back = Vector3.new(now.X, now.Y, z + WorldConfig.Row.GateSet)
+				root.AssemblyLinearVelocity = Vector3.zero
+				root.CFrame = CFrame.lookAt(back, back + Vector3.new(0, 0, -1))
+				seen[player] = back
+				Net.Server.Fire("StageGate", player, { Stage = gate:GetAttribute("Stage"), Ground = gate:GetAttribute("Ground") })
+				break
+			end
+		end
+	end
+end
+
+-- Through the Festival Door: a fresh player's first stage begins where they land; anyone else is sent the picker.
+function StageService.Arrived(player: Player)
+	local data = DataService.Get(player)
+	if data == nil then
+		return
+	end
+	local ground = WorldConfig.Row.Ground
+	if Stages.Fresh(data) then
+		local answer = StageService.Begin(player, ground, "Normal", 1, true)
+		if answer.Ok ~= true then
+			Log.Warn("StageService", `{player.Name}'s first stage didn't begin: {tostring(answer.Error)}`)
+		end
+	else
+		StageService.End(player)
+		Net.Server.Fire("StagePick", player, { Ground = ground })
+	end
+end
+
+local function state(who: any): any
+	local player = DebugService.ResolvePlayer(who)
+	if player == nil then
+		return { Ok = false, Error = "NoPlayer" }
+	end
+	local data = DataService.Get(player)
+	local run = runs[player]
+	local shutTo = {}
+	for _, gate in Markers.All("StageGate") do
+		if shut(player, gate) then
+			table.insert(shutTo, gate:GetAttribute("Stage"))
+		end
+	end
+	table.sort(shutTo)
+	local foes = 0
+	for _ in if run then run.Foes else {} do
+		foes += 1
+	end
+	local ground = WorldConfig.Row.Ground
+	return {
+		Ok = true,
+		Run = if run then { Difficulty = run.Rule.Difficulty, Stage = run.Rule.Stage, Kills = run.Rule.Kills, Last = run.Rule.Last, Done = run.Rule.Done, Foes = foes } else nil,
+		Shut = shutTo,
+		Fresh = if data then Stages.Fresh(data) else nil,
+		Normal = if data then Stages.Line(data, ground, "Normal") else nil,
+		Hard = if data then Stages.Line(data, ground, "Hard") else nil,
+		Alone = (function()
+			local lead = FightService.LeadOf(player)
+			return lead ~= nil and lead.Solo == true
+		end)(),
+	}
+end
+
+function StageService.Start()
+	Net.Server.Handle("Stage", function(player: Player, ground: any, difficulty: any, stage: any): { [string]: any }
+		if type(ground) ~= "string" or type(difficulty) ~= "string" or type(stage) ~= "number" then
+			return { Ok = false, Error = Stages.Unknown }
+		end
+		return StageService.Begin(player, ground, difficulty, stage)
+	end)
+	FightService.Fell:Connect(fell)
+	DoorService.Through:Connect(function(player: Player, kind: string)
+		if kind == "FestivalDoor" then
+			StageService.Arrived(player)
+		else
+			StageService.End(player)
+		end
+	end)
+	KeeperService.Trying:Connect(function(player: Player, ground: string)
+		local run = runs[player]
+		local count = #((Stages.Of(ground) or {}) :: { any })
+		if count > 0 and not (run and run.Rule.Ground == ground and run.Rule.Stage == count) then
+			StageService.Begin(player, ground, "Normal", count, true) -- refused, quietly, when the stage isn't open
+		end
+	end)
+	KeeperService.Won:Connect(function(player: Player, ground: string)
+		local run = runs[player]
+		local last = if run then Stages.Last(ground, run.Rule.Stage) else nil
+		if run and not run.Ending and run.Rule.Ground == ground and last and last.Kind == "Keeper" and Stages.Kill(run.Rule, last.Def) then
+			finish(player, run)
+		end
+	end)
+	KeeperService.LevelOf = function(player: Player, level: number): number
+		local run = runs[player]
+		return if run then Stages.Level(level, run.Rule.Difficulty) else level
+	end
+	Players.PlayerRemoving:Connect(function(player: Player)
+		StageService.End(player)
+		seen[player] = nil
+	end)
+	task.spawn(function()
+		while true do
+			task.wait(StagesConfig.Gate.Every)
+			local ok, err = pcall(watch)
+			if not ok then
+				Log.Error("StageService", `the gates' watch: {err}`)
+			end
+		end
+	end)
+	if RunService:IsStudio() then
+		DebugService.Register("Stage", state)
+		DebugService.Register("StageBegin", function(who: any, difficulty: any, stage: any): any
+			local player = DebugService.ResolvePlayer(who)
+			if player == nil or type(difficulty) ~= "string" or type(stage) ~= "number" then
+				return { Ok = false, Error = "BadArgs" }
+			end
+			return StageService.Begin(player, WorldConfig.Row.Ground, difficulty, stage)
+		end)
+		DebugService.Register("StageFell", function(who: any, group: any): any
+			local player = DebugService.ResolvePlayer(who)
+			if player == nil or type(group) ~= "string" then
+				return { Ok = false, Error = "BadArgs" }
+			end
+			local pack = string.gsub(group, " mine$", ` for {player.UserId}`)
+			local felled = 0
+			for _, f in FightService.All() do
+				if f.Pack == pack and FightService.Standing(f) then
+					f.Hitters[player] = true
+					FightService.Defeat(f)
+					felled += 1
+				end
+			end
+			return { Ok = felled > 0, Felled = felled, Error = if felled == 0 then "NoneStanding" else nil }
+		end)
+		DebugService.Register("StageArrive", function(who: any): any
+			local player = DebugService.ResolvePlayer(who)
+			if player == nil then
+				return { Ok = false, Error = "NoPlayer" }
+			end
+			StageService.Arrived(player)
+			return { Ok = true }
+		end)
+		DebugService.Register("StageLine", function(who: any, difficulty: any, cleared: any): any
+			local player = DebugService.ResolvePlayer(who)
+			local ground = WorldConfig.Row.Ground
+			local count = #(Stages.Of(ground) :: { any })
+			if player == nil or (difficulty ~= "Normal" and difficulty ~= "Hard") or type(cleared) ~= "number" or cleared < 0 or cleared > count or cleared % 1 ~= 0 then
+				return { Ok = false, Error = "BadArgs" }
+			end
+			return DataService.Change(player, "StageLine", function(draft)
+				local record = draft.Progress.Stages[ground]
+				if record == nil then
+					record = { Normal = { Cleared = 0, Best = table.create(count, 0) }, Hard = { Cleared = 0, Best = table.create(count, 0) } }
+					draft.Progress.Stages[ground] = record
+				end
+				local line = (record :: any)[difficulty] :: Profile.StageLine
+				line.Cleared = cleared
+				for stage = 1, count do
+					line.Best[stage] = if stage <= cleared then line.Best[stage] else 0
+				end
+				if record.Normal.Cleared == 0 and record.Hard.Cleared == 0 then
+					draft.Progress.Stages[ground] = nil
+				end
+				return { Ok = true }
+			end)
+		end)
+	end
+end
+
+return StageService

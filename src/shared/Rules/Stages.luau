@@ -2,8 +2,9 @@
 -- Stages (pure rules): a ground's street in stages, each played on Normal or Hard (TR43; the director, 2026-11-18, D2;
 -- docs/design.md, "The Festival of Battles"; Config.Stages). A stage needs the one before it on the same difficulty, and
 -- Hard opens for a ground when its keeper's stage falls on Normal. A stage played is a run, held by the server while it
--- lasts and never saved: its ordinary Shades count to its quota, then its last stop's fall ends it, and its clear is
--- written once. The server decides each fall; this only counts and writes. No Roblox API.
+-- lasts and never saved: its ordinary Shades count to its quota, its last stop's fall counts too, and once both are in it
+-- ends, in either order, and its clear is written once. The server decides each fall; this only counts and writes. No
+-- Roblox API.
 
 local Shared = script.Parent.Parent
 local Profile = require(Shared.Data.Profile)
@@ -32,7 +33,8 @@ export type Run = {
 	Stage: number,
 	Started: number, -- os.time() it began
 	Kills: number, -- its ordinary Shades that fell to the player, up to the quota
-	Done: boolean, -- its last stop fell after the quota
+	Last: boolean, -- its last stop's foe fell to the player
+	Done: boolean, -- both: the quota met and its last stop fallen
 	Claimed: boolean, -- its clear is written
 }
 
@@ -106,11 +108,12 @@ function Stages.Start(data: Profile.Data, ground: string, difficulty: string, st
 	elseif needs then
 		return nil, Stages.Locked
 	end
-	return { Ground = ground, Difficulty = difficulty, Stage = stage, Started = now, Kills = 0, Done = false, Claimed = false }, nil
+	return { Ground = ground, Difficulty = difficulty, Stage = stage, Started = now, Kills = 0, Last = false, Done = false, Claimed = false }, nil
 end
 
 -- A foe of the run's stage fell with the player among its hitters: an ordinary Shade of one of its packs counts to the
--- quota, and its last stop's foe ends the run once the quota is met (before it, that fall counts for nothing here).
+-- quota, and its last stop's foe counts once. The run is done when both are in, in either order: on Normal the elite is
+-- the street's, back only Config.World.Row.Back.Elite after its fall, so one felled before the quota still counts.
 -- Whether the run is done.
 function Stages.Kill(run: Run, def: string): boolean
 	local rows = Stages.Of(run.Ground)
@@ -120,16 +123,17 @@ function Stages.Kill(run: Run, def: string): boolean
 	end
 	local last = row.Stops[#row.Stops]
 	if def == last.Def and last.Kind ~= "Pack" then
-		run.Done = run.Kills >= row.Quota
-		return run.Done
-	end
-	for _, stop in row.Stops do
-		if stop.Kind == "Pack" and stop.Def == def then
-			run.Kills = math.min(row.Quota, run.Kills + 1)
-			break
+		run.Last = true
+	else
+		for _, stop in row.Stops do
+			if stop.Kind == "Pack" and stop.Def == def then
+				run.Kills = math.min(row.Quota, run.Kills + 1)
+				break
+			end
 		end
 	end
-	return false
+	run.Done = run.Last and run.Kills >= row.Quota
+	return run.Done
 end
 
 -- Writes the run's clear at `now`, once: the stage counted cleared on its difficulty, its best time kept. { Ok, First,
@@ -185,6 +189,12 @@ function Stages.Fresh(data: Profile.Data): boolean
 		end
 	end
 	return true
+end
+
+-- Whether stage `stage`'s gate on the street lets this player by, going up it: once they've cleared that stage on
+-- Normal (TR43). Its gate shuts the way to the next stage, so a stage played before is a stage passed.
+function Stages.Passes(data: Profile.Data, ground: string, stage: number): boolean
+	return Stages.Line(data, ground, "Normal").Cleared >= stage
 end
 
 -- A foe's level in a stage on `difficulty`: its stop's, lifted on Hard.

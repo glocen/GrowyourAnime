@@ -28,7 +28,8 @@ local Sheet = {}
 
 -- A line: its stat, the name players read, its total as shown (a rating's: its chance or effect against an even foe),
 -- and whether it's its class's Main.
-export type Row = { Stat: string, Name: string, Value: string, Main: boolean? }
+-- Under: a quiet line under the total, HP Regen's "every 8 s" (the follow-up's 4.6, 2026-11-18).
+export type Row = { Stat: string, Name: string, Value: string, Main: boolean?, Under: string? }
 -- A block of lines under its caption. The first of a heading's blocks carries the heading, and its caption line under it.
 export type Group = { Name: string, Rows: { Row }, Heading: string?, Caption: string? }
 
@@ -105,14 +106,14 @@ function Sheet.Burst(regen: number): string
 end
 
 -- One total as its stat is read: points, a share as a percent (Critical Damage with its +; a rating's `value` is its
--- share, Sheet.Odds), Regen as one burst and how often it comes, Speed in studs a second.
+-- share, Sheet.Odds), Regen as one burst (how often it comes is its row's Under), Speed in studs a second.
 local function amount(stat: string, value: number): string
 	if stat == "CriticalDamage" then
 		return `+{Sheet.Percent(value)}`
 	elseif PERCENTS[stat] or Sheet.Rated[stat] then
 		return Sheet.Percent(value)
 	elseif stat == "Regen" then
-		return `{Sheet.Burst(value)} every {Hud.Digits(StatsConfig.Regen.Every)} s`
+		return Sheet.Burst(value)
 	elseif stat == "Speed" then
 		return `{if value == math.floor(value) then tostring(value) else string.format("%.1f", value)} studs a second`
 	end
@@ -193,6 +194,7 @@ function Sheet.Row(stat: string, block: Stats.Block, odds: { [string]: number }?
 		Stat = stat,
 		Name = Sheet.Said[stat] or stat,
 		Value = amount(stat, if type(value) == "number" then value else 0),
+		Under = if stat == "Regen" then `every {Hud.Digits(StatsConfig.Regen.Every)} s` else nil,
 	}
 end
 

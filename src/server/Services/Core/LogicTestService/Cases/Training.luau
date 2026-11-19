@@ -15,6 +15,7 @@ local Hud = require(Shared.Rules.Hud)
 local Combat = require(Shared.Config.Combat)
 local GrowthConfig = require(Shared.Config.Growth)
 local WorldConfig = require(Shared.Config.World)
+local StagesConfig = require(Shared.Config.Stages)
 local DropsConfig = require(Shared.Config.Drops)
 
 local NOW = 1_800_000_000
@@ -101,20 +102,30 @@ return {
 		Run = function(t: any)
 			local share = GrowthConfig.Training.Share
 			t.Check("about a third", share >= 0.25 and share <= 0.4, `{share}`)
-			-- Lantern Row's fighting, a second: its packs' and its elite's kills, each as Drops pays it (the director,
-			-- 2026-11-14: "Fixed rate, no cap").
+			-- Lantern Row's fighting, a second, as its stages are played (TR43): in each stage of packs and an elite, its
+			-- quota of Shades, one of its packs' levels each in turn, then its elite, each kill as Drops pays it (the
+			-- director, 2026-11-14: "Fixed rate, no cap").
 			local kills, xp = 0, 0
-			for _, stop in WorldConfig.Row.Stops do
-				local kind = if stop.Kind == "Pack" then "Ordinary" elseif stop.Kind == "Elite" then "Elite" else nil
-				if kind then
-					local count = if stop.Kind == "Pack" then stop.Count or 1 else 1
-					kills += count
-					xp += count * GrowthConfig.XpPerKillPerG * Growth.G(stop.Level) * DropsConfig.Share[kind]
+			for _, stage in StagesConfig.Grounds[WorldConfig.Row.Ground] do
+				local last = stage.Stops[#stage.Stops]
+				local levels: { number } = {}
+				for _, stop in stage.Stops do
+					if stop.Kind == "Pack" then
+						table.insert(levels, stop.Level)
+					end
+				end
+				if last.Kind == "Elite" and #levels > 0 then
+					for kill = 1, stage.Quota do
+						kills += 1
+						xp += GrowthConfig.XpPerKillPerG * Growth.G(levels[(kill - 1) % #levels + 1]) * DropsConfig.Share.Ordinary
+					end
+					kills += 1
+					xp += GrowthConfig.XpPerKillPerG * Growth.G(last.Level) * DropsConfig.Share.Elite
 				end
 			end
 			local fight = GrowthConfig.KillsPerHour / 3600 * xp / kills
 			t.Check("a third of what fighting earns in Lantern Row", near(Training.Rate(), share * fight), string.format("%.4f a second, fighting %.4f", Training.Rate(), fight))
-			t.Check("about 39 a minute, today's numbers", Training.Rate() * 60 > 30 and Training.Rate() * 60 < 50, string.format("%.1f", Training.Rate() * 60))
+			t.Check("about 43 a minute on the stages' seeds (39 on the street before them)", Training.Rate() * 60 > 30 and Training.Rate() * 60 < 50, string.format("%.1f", Training.Rate() * 60))
 			local one = owned(5)
 			local gained, left = Training.Gain(one, levelSeconds(5) / 2)
 			t.Check("half a level's time: half its experience", gained == 0 and math.abs(one.Xp - (Growth.XpToNext(5) :: number) / 2) <= 1, `{one.Xp}`)

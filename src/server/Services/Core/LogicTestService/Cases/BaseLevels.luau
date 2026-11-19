@@ -7,6 +7,7 @@ local Shared = game:GetService("ReplicatedStorage").Shared
 local BaseLevels = require(Shared.Rules.BaseLevels)
 local Breaker = require(Shared.Rules.Breaker)
 local BaseConfig = require(Shared.Config.Base)
+local WorldConfig = require(Shared.Config.World)
 
 local function gainOf(offer: BaseLevels.Offer, what: string): BaseLevels.Gain?
 	for _, each in offer.Gains do
@@ -26,12 +27,20 @@ return {
 			t.Equal("level 2: 840 Credits", BaseLevels.Price(2), 840)
 			t.Equal("level 3: 18,000 Credits", BaseLevels.Price(3), 18000)
 			t.Equal("nothing past the cap", BaseLevels.Price(4), nil)
-			for level, want in { { 2, 60, 2 }, { 4, 150, 6 }, { 6, 400, 30 } } do
+			for level, want in { { 2, 60, 2 }, { 3, 150, 6 }, { 4, 400, 30 } } do
 				t.Equal(`level {level}: {want[1]} bays`, BaseLevels.Bays(level), want[1])
 				t.Equal(`level {level}: the battery holds {want[2]} kWh`, BaseLevels.Battery(level), want[2])
 				t.Equal(`level {level}: a machine's ceiling {want[3]}`, BaseLevels.Ceiling(level), want[3])
 			end
-			t.Equal("six bays at most at launch", BaseLevels.Bays(BaseLevels.Top()), 6)
+			t.Equal("four bays at most at launch (D5)", BaseLevels.Bays(BaseLevels.Top()), 4)
+			t.Equal("six on every plot", BaseLevels.Plot(), 6)
+			for index, want in { 1, 1, 2, 3 } do
+				t.Equal(`bay {index} opens at base level {want}`, BaseLevels.OpensAt(index), want)
+			end
+			t.Check("bays 5 and 6 open with more Voidkin, at no level at launch", BaseLevels.OpensAt(5) == nil and BaseLevels.OpensAt(6) == nil)
+			for studs, layout in WorldConfig.Fit.Layouts :: { [string]: any } do
+				t.Equal(`the {studs}-stud plot lays every bay`, 2 + #layout.laterBays, BaseLevels.Plot())
+			end
 		end,
 	},
 	{
@@ -42,7 +51,7 @@ return {
 			t.Equal("its price", first.Price, 840)
 			t.Equal("840 Credits buy it", first.Why, nil)
 			local bays = gainOf(first, "Bays")
-			t.Check("it shows its bays, 2 to 4", bays ~= nil and bays.From == 2 and bays.To == 4)
+			t.Check("it shows its bays, 2 to 3", bays ~= nil and bays.From == 2 and bays.To == 3)
 			local battery = gainOf(first, "Battery")
 			t.Check("and the battery, 60 to 150 kWh", battery ~= nil and battery.From == 60 and battery.To == 150)
 			local ceiling = gainOf(first, "Ceiling")

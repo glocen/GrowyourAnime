@@ -69,7 +69,7 @@ return {
 		end,
 	},
 	{
-		Name = "Stages: a stage needs the one before it on its difficulty, and Hard opens when the keeper's stage falls on Normal",
+		Name = "Stages: a stage needs the one before it on its difficulty, Hard opens when the keeper's stage falls on Normal, and a stage's gate opens with its Normal clear",
 		Run = function(t: any)
 			local data = fresh()
 			t.Check("a new account is fresh: the Door sends it straight in", Stages.Fresh(data))
@@ -83,8 +83,10 @@ return {
 			t.Equal("a ground not open yet", Stages.Needs(data, "drumcourt", "Normal", 1), if Stages.Of("drumcourt") then Stages.Ground else Stages.Unknown)
 			local _, refused = Stages.Start(data, GROUND, "Normal", 3, NOW)
 			t.Equal("a locked stage won't start", refused, Stages.Locked)
+			t.Check("every gate shut to a new account", not Stages.Passes(data, GROUND, 1) and not Stages.Passes(data, GROUND, 3))
 			local first = play(data, "Normal", 1, 170)
 			t.Check("Stage 1 clears, first, opening Stage 2", first.Ok and first.First and first.Opened == "Stage" and first.Next == 2, `{first.Error}`)
+			t.Check("Stage 1's gate lets it by, Stage 2's not yet", Stages.Passes(data, GROUND, 1) and not Stages.Passes(data, GROUND, 2))
 			t.Check("no longer fresh", not Stages.Fresh(data))
 			t.Equal("Stage 2 open now", Stages.Needs(data, GROUND, "Normal", 2), nil)
 			play(data, "Normal", 2, 180)
@@ -93,6 +95,7 @@ return {
 			local keeper = play(data, "Normal", 4, 120)
 			t.Check("the keeper's stage on Normal opens Hard", keeper.Ok and keeper.Opened == "Hard" and keeper.Next == nil, `{keeper.Opened}`)
 			t.Equal("Hard Stage 1 open", Stages.Needs(data, GROUND, "Hard", 1), nil)
+			t.Check("every gate open after the keeper's stage on Normal", Stages.Passes(data, GROUND, 1) and Stages.Passes(data, GROUND, 3))
 			local hardNeeds, hardStage = Stages.Needs(data, GROUND, "Hard", 2)
 			t.Check("Hard Stage 2 waits for Hard Stage 1", hardNeeds == Stages.Before and hardStage == 1)
 			local hard = play(data, "Hard", 4, 100)
@@ -109,23 +112,33 @@ return {
 		end,
 	},
 	{
-		Name = "Stages: a run counts its quota of Shades before its last stop, and its clear is written once with the best time",
+		Name = "Stages: a run needs its quota of Shades and its last stop's fall, in either order, and its clear is written once with the best time",
 		Run = function(t: any)
 			local data = fresh()
 			local run = Stages.Start(data, GROUND, "Normal", 1, NOW) :: Stages.Run
 			local row = (Stages.Of(GROUND) :: any)[1]
 			local last = (Stages.Last(GROUND, 1) :: any).Def
-			t.Check("the elite before the quota: not done", not Stages.Kill(run, last))
+			t.Check("the elite before the quota: not done yet", not Stages.Kill(run, last) and run.Last)
 			t.Equal("unfinished can't be cleared", Stages.Clear(data, run, NOW + 60).Error, Stages.Unfinished)
 			t.Equal("a foe of no pack here counts nothing", (function()
 				Stages.Kill(run, "lamplighter")
 				return run.Kills
 			end)(), 0)
-			for _ = 1, row.Quota + 5 do
+			for _ = 1, row.Quota - 1 do
+				Stages.Kill(run, "brawler")
+			end
+			t.Check("one Shade short: not done", not run.Done)
+			t.Check("the quota's last Shade, the elite already down: done", Stages.Kill(run, "brawler"))
+			for _ = 1, 5 do
 				Stages.Kill(run, "brawler")
 			end
 			t.Equal("the quota stops at its count", run.Kills, row.Quota)
-			t.Check("the elite after the quota: done", Stages.Kill(run, last))
+			local other = Stages.Start(data, GROUND, "Normal", 1, NOW) :: Stages.Run
+			for _ = 1, row.Quota do
+				Stages.Kill(other, "brawler")
+			end
+			t.Check("the quota first, the elite not yet: not done", not other.Done)
+			t.Check("the elite after the quota: done", Stages.Kill(other, last))
 			local clear = Stages.Clear(data, run, NOW + 175)
 			t.Check("cleared in its time", clear.Ok and clear.Seconds == 175 and clear.Best == 175)
 			t.Equal("the same run again: refused, nothing doubled", Stages.Clear(data, run, NOW + 180).Error, Stages.Claimed)

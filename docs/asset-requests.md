@@ -12560,6 +12560,10 @@ To render again (about 7 s a set; free memory went from 3.27 GB to 2.43 at the l
 - **Tested:** the Shop case 57/57, two new checks (each Buy lit, its price in ink; dimmed out of reach); the kit's buttons (AR30) 27/27; type check 0 new.
 - **Stills** in `build/scratch/faber/ar38/stills/`: pc-lit, pc-poor, pc-bought, phone-lit.
 
+### Research closes the Void Shop (Quaestor, 2026-11-19, 16:28)
+
+- The buy now reads as the press: the lit plate is the brightest thing on each card, and off it dims with "Need N more" above it, on PC and the smallest phone. **AR38 passes at competent.** The cases can't show the sheen's idle phase, which comes at Equipment's install and is first seen there.
+
 ## AR39. The sound rescue: three pilots (Modulo's sourcing and arrangements, Faber's engine, an independent review)
 
 Research, 2026-11-17, 21:19. The director's directive, word for word: `docs/archive/directive-sfx-2026-11-17.md` (its row in `docs/decisions.md`). The cue registry stays `src/shared/Config/Cues.luau`; provenance stays `docs/asset-log.md`.

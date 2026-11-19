@@ -16,11 +16,13 @@ are drawn over the frame from their 3D paths through the same camera, hidden beh
 behind it. Every tile is the smallest phone's own pixels (852 by 480, 1.5 a point).
 
 Hero shapes, one each (a status reads quieter than a hit, and never hides the silhouette):
-- Burn: embers rising off the body, lifted fast, then drifting and shrinking out. Hot core, Fire body, a dark red rim.
+- Burn: tapered sparks, white-hot at the head to an orange tail, stretched along their rise and flickering, born off the
+  shoulders' tops and at the hit, lifted fast, then drifting and fading above the head; one in seven larger.
 - Chill: a sleeve of ice round the legs, its top a crown of teeth, climbing from the feet a step a frost hit. Freeze: a faceted shell of ice snapping
   up and shut round the body (0.1 s), its edges flashing once, held clear (the body shows through), then broken into
   chips flung out and falling.
-- Shock: short jagged arcs crawling over the body, three frames each, in bursts about three a second.
+- Shock: jagged arcs leaping off the body between two of its points, three frames each, in bursts about three a
+  second: one big arc a burst (1.6 to 2.6 studs) and one or two smaller, each a white core in the pink glow.
 - Sap: dark motes circling in round the body and sinking slowly, easing out, each round with a thin violet rim on its
   top, shrinking to a point above the knees: dark first. Never a fall or a stretch (a dark falling drop reads as a drip).
 The plain hit beside them is a stand-in for the game's flinch spark (a four-point glint, sparks along the blow, dust).
@@ -384,7 +386,7 @@ def add(img, box, amount, colour):
     img[y0:y1, x0:x1] = img[y0:y1, x0:x1] + colour * amount[..., None]
 
 
-def bright(img, pts, r, k, pal, glow=3.0, rim=True):
+def bright(img, pts, r, k, pal, glow=3.0, rim=True, core=0.5):
     """A lit stroke: a dark rim (it holds on a bright floor), the glow, the body, the hot core."""
     box = bbox(pts, r + glow * 3 + 2)
     if box[2] <= box[0] or box[3] <= box[1]:
@@ -394,7 +396,30 @@ def bright(img, pts, r, k, pal, glow=3.0, rim=True):
         over(img, box, np.clip(r + 1.6 - d, 0, 1) * 0.55 * min(k, 1), pal["rim"])
     add(img, box, np.exp(-(d / glow) ** 2) * 0.35 * k, pal["glow"])
     over(img, box, np.clip(r + 0.5 - d, 0, 1) * min(k, 1), pal["body"])
-    over(img, box, np.clip(r * 0.5 + 0.5 - d, 0, 1) * min(k, 1), pal["core"])
+    over(img, box, np.clip(r * core + 0.5 - d, 0, 1) * min(k, 1), pal["core"])
+
+
+WHITE_HOT = np.ones(3, dtype=np.float32)
+
+
+def taper(img, head, tail, r, k, pal, glow=3.0):
+    """A spark stretched along its flight: widest and white-hot at its head, thinning to an orange tail."""
+    box = bbox([head, tail], r + glow * 3 + 2)
+    if box[2] <= box[0] or box[3] <= box[1]:
+        return
+    x0, y0, x1, y1 = box
+    ys, xs = np.mgrid[y0:y1, x0:x1].astype(np.float32) + 0.5
+    ab = np.asarray(tail, dtype=np.float32) - np.asarray(head, dtype=np.float32)
+    l2 = max(float(ab @ ab), 1e-6)
+    s = np.clip(((xs - head[0]) * ab[0] + (ys - head[1]) * ab[1]) / l2, 0, 1)    # 0 at the head, 1 at the tail
+    d = np.hypot(xs - (head[0] + s * ab[0]), ys - (head[1] + s * ab[1]))
+    w = r * (1 - s) ** 0.8                     # a needle: no round head, thinning to nothing at the tail
+    a = min(k, 1)
+    over(img, box, np.clip(w + 1.0 - d, 0, 1) * 0.35 * a, pal["rim"])
+    add(img, box, np.exp(-(d / glow) ** 2) * 0.3 * k * (1 - 0.6 * s), pal["glow"])
+    over(img, box, np.clip(w + 0.5 - d, 0, 1) * a, pal["body"])
+    over(img, box, np.clip(w * 0.6 + 0.5 - d, 0, 1) * a * (1 - s) ** 0.5, pal["core"])
+    over(img, box, np.clip(w * 0.4 + 0.5 - d, 0, 1) * a * np.clip(1 - 1.6 * s, 0, 1), WHITE_HOT)
 
 
 def mote(img, head, tail, r, a, pal):
@@ -446,16 +471,36 @@ class Cues:
             d = axis + g.normal(0, 0.55, 3) * [1, 0.2, 0.8]
             self.sparks.append((d / np.linalg.norm(d) * g.uniform(22, 34), g.uniform(0.22, 0.32)))
         self.dust = [(g.normal(0, 1, 3) * [1.2, 0.4, 0.6] + [0, -0.6, 0.4], g.uniform(0.3, 0.45)) for _ in range(4)]
-        # Burn: births over the body's upper surfaces, plus a puff at the hit
-        up_ok = (nrm[:, 2] > -0.3) & (pts[:, 2] > 1.2)
+        # Burn: tapered sparks born off the shoulders' tops and at the hit, never on a face (research, 00:13: round
+        # dots over the body read as a rash), rising past the head; one in seven larger
+        # The head's column (its half-width, from the points above the neck) stays clear: births outside it, and every
+        # spark drifts outward, away from the face, as it climbs.
+        head = pts[:, 2] > 0.84 * z1
+        self.head_w = float(np.abs(pts[head, 0] - self.mid[0]).max()) if head.any() else 0.6
+        lateral = pts[:, 0] - self.mid[0]
+        shoulder = (nrm[:, 2] > 0.5) & (pts[:, 2] > 0.55 * z1) & (pts[:, 2] < 0.82 * z1) & \
+                   (np.abs(lateral) > self.head_w + 0.1)
+        if not shoulder.any():
+            shoulder = (nrm[:, 2] > -0.3) & (pts[:, 2] > 0.5 * z1) & (pts[:, 2] < 0.8 * z1) & \
+                       (np.abs(lateral) > self.head_w + 0.1)
         n = int(18 * BURN)
-        idx = area_pick(surf, g, up_ok, n)
-        self.embers = [(g.uniform(0, BURN), pts[i] + nrm[i] * 0.05, nrm[i], g.uniform(0.9, 1.4), g.uniform(0.1, 0.15),
-                        g.uniform(0, 6.28)) for i in idx]
-        for _ in range(10):
-            d = g.normal(0, 1, 3) * [1, 1, 0.4] + [0, 0, 1.4]
-            self.embers.append((g.uniform(0, 0.03), self.hit, d / np.linalg.norm(d) * 2.4, g.uniform(0.5, 0.8),
-                                g.uniform(0.12, 0.16), g.uniform(0, 6.28)))
+        idx = area_pick(surf, g, shoulder, n)
+        self.embers = []                                     # (born, p0, v0, life, size, phase, side, lift)
+        for k, i in enumerate(idx):
+            at_hit = k % 5 < 2                               # two in five from the hit's own spot, peeling off sideways
+            side = (1.0 if k % 2 else -1.0) if at_hit else float(np.sign(lateral[i]) or 1.0)
+            if at_hit:
+                p0 = self.hit + g.normal(0, 0.08, 3) + [side * 0.25, 0.1, 0]
+                v0, lift = np.array([side * g.uniform(1.8, 2.6), g.uniform(0.2, 0.5), 0.0]), 0.3
+            else:
+                p0, v0, lift = pts[i] + nrm[i] * 0.12, nrm[i] * 0.3 + [side * 0.3, 0, 0], 1.6
+            size = g.uniform(0.06, 0.08) * (1.7 if g.random() < 0.15 else 1.0)
+            self.embers.append((g.uniform(0, BURN), p0, v0, g.uniform(0.8, 1.2), size, g.uniform(0, 6.28), side, lift))
+        for k in range(10):                                  # the catch: a fan out to both sides, never up the face
+            side = 1.0 if k % 2 else -1.0
+            d = np.array([side * g.uniform(1.0, 1.8), g.uniform(0.0, 0.6), g.uniform(0.2, 0.8)])
+            self.embers.append((g.uniform(0, 0.03), self.hit + [side * 0.15, 0.1, 0], d / np.linalg.norm(d) * 2.6,
+                                g.uniform(0.45, 0.7), g.uniform(0.08, 0.1), g.uniform(0, 6.28), side, 0.0))
         # Sap: births in the air round the upper body, circling in and sinking slowly, never falling (the content
         # check, 2026-11-20: a dark mote that drops under gravity and stretches reads as a drip)
         self.motes = []
@@ -466,8 +511,9 @@ class Cues:
             z0 = g.uniform(0.6, 0.95) * z1
             self.motes.append((born, a, rr, z0, g.uniform(1.3, 2.0), g.uniform(0.11, 0.16)))
         # Shock: arcs between nearby points on the body
-        self.arc_pts = pts[(pts[:, 2] > 0.6) & (pts[:, 2] < z1 - 0.3)]
-        self.arc_nrm = nrm[(pts[:, 2] > 0.6) & (pts[:, 2] < z1 - 0.3)]
+        body_only = (pts[:, 2] > 0.6) & (pts[:, 2] < 0.8 * z1)       # the arcs' ends on the body, under the head
+        self.arc_pts = pts[body_only]
+        self.arc_nrm = nrm[body_only]
 
     def at(self, cue, t):
         return self.plain(t) if cue == "Hit" else getattr(self, cue.lower())(t)
@@ -494,21 +540,23 @@ class Cues:
 
     def burn(self, t):
         prims = []
-        for born, p0, n0, life, r0, ph in self.embers:
+        for born, p0, n0, life, r0, ph, side, lift in self.embers:
             age = t - born
             if not 0 <= age < life or born > BURN:
                 continue
-            p, v = np.array(p0, dtype=np.float64), np.array(n0) * 0.6 + [0, 0, 0.8]
+            p, v = np.array(p0, dtype=np.float64), np.array(n0) + [0, 0, lift]
             dt = 1 / 120
             for s in range(int(age / dt)):
                 a = s * dt
-                acc = np.array([0.7 * math.sin(6 * a + ph), 0.7 * math.cos(5 * a + ph), 3.5 * math.exp(-a / 0.5)]) - v * 1.2
+                acc = np.array([0.6 * math.sin(7 * a + ph) + 0.7 * side, 0.6 * math.cos(6 * a + ph),
+                                4.0 * math.exp(-a / 0.4)]) - v * 1.4
                 v = v + acc * dt
                 p = p + v * dt
             u = age / life
-            r = r0 * (1 - u ** 2)
-            k = (0.8 + 0.2 * math.sin(2 * math.pi * 8 * age + ph)) * (1 - u ** 3)
-            prims.append(("streak", p, p - v * 0.06, r, k))
+            r = r0 * (1 - u ** 1.5)
+            flicker = 0.55 + 0.45 * abs(math.sin(2 * math.pi * 11 * age + ph) * math.sin(2 * math.pi * 7 * age + 2 * ph))
+            k = flicker * (1 - u ** 3) * clamp(age / 0.05)
+            prims.append(("taper", p, p - v * 0.16, r, k))       # stretched along its rise
         return prims
 
     def freeze(self, t):
@@ -522,26 +570,31 @@ class Cues:
                 continue
             g = np.random.default_rng(1000 * b + 7 + len(self.body["name"]))
             jit = np.random.default_rng(1000 * b + 31 * f + len(self.body["name"]))
-            for _ in range(4 if b == 0 else int(g.integers(2, 4))):
+            # one big arc a burst, jumping between two far points of the body, and one or two smaller (research,
+            # 00:13: arcs two to three times longer, a white core in the pink glow, read at 64 pixels)
+            arcs = [(1.6, 2.6, 0.085, 0.32, 11, True)]
+            arcs += [(0.9, 1.6, 0.05, 0.18, 9, False)] * (2 if b == 0 else int(g.integers(1, 3)))
+            for lo, hi, width, lift, steps, big in arcs:
                 i = int(g.integers(len(self.arc_pts)))
                 p0, n0 = self.arc_pts[i], self.arc_nrm[i]
                 d = np.linalg.norm(self.arc_pts - p0, axis=1)
-                near = np.nonzero((d > 0.45) & (d < 1.05))[0]
+                near = np.nonzero((d > lo) & (d < hi))[0]
                 if not len(near):
                     continue
                 j = int(near[g.integers(len(near))])
                 p1, n1 = self.arc_pts[j], self.arc_nrm[j]
+                span = float(d[j])
                 path = []
-                for s in np.linspace(0, 1, 7):
+                for s in np.linspace(0, 1, steps):
                     nn = n0 * (1 - s) + n1 * s
-                    off = nn * (0.1 + 0.1 * math.sin(math.pi * s))
+                    off = nn * (0.08 + lift * math.sin(math.pi * s))   # leaping off the body between its two points
                     if 0 < s < 1:
-                        off = off + jit.normal(0, 0.11, 3)
+                        off = off + jit.normal(0, 0.07 * span, 3)
                     path.append(p0 * (1 - s) + p1 * s + off)
                 k = (1.0, 0.75, 0.45)[f]
-                prims.append(("arc", path, 0.045, k))
-                prims.append(("star", path[0], 0.2, 0.7 * k))
-                prims.append(("star", path[-1], 0.2, 0.7 * k))
+                prims.append(("arc", path, width, k, 6.0 if big else 4.0))
+                prims.append(("glow", path[0], 0.35 if big else 0.22, 0.7 * k))    # a soft contact, no cross: the
+                prims.append(("glow", path[-1], 0.35 if big else 0.22, 0.7 * k))  # crosses read as stitches
         return prims
 
     def sap(self, t):
@@ -577,9 +630,12 @@ def draw(img, body, prims, pal, masks):
         if kind == "streak":
             (a, _), (b, _) = project(camera, prim[1]), project(camera, prim[2])
             bright(img, [a, b], max(prim[3] * s, 0.6), prim[4], pal)
+        elif kind == "taper":
+            (a, _), (b, _) = project(camera, prim[1]), project(camera, prim[2])
+            taper(img, a, b, max(prim[3] * s, 0.7), prim[4], pal)
         elif kind == "arc":
             pts = [project(camera, p)[0] for p in prim[1]]
-            bright(img, pts, max(prim[2] * s, 0.6), prim[3], pal, glow=4.0)
+            bright(img, pts, max(prim[2] * s, 0.6), prim[3], pal, glow=prim[4], core=0.62)
         elif kind == "star":
             arm = prim[2] * s
             for d in ((arm, 0), (0, arm)):

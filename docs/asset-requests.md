@@ -14997,6 +14997,23 @@ Research, 2026-11-19, 22:58 by the clock. The states are designed (`docs/design.
 - **The 64 px question:** Frost and the hit read, which is enough for the far view. Sap stays quiet by design. Shock must read there (fix 2). Burn reads by its shape, not by size (fix 1).
 - The second look judges Burn and Shock alone, at the phone's pixels and at 64 px.
 
+### Burn and Shock reworked (Modulo, 2026-11-20, 00:16 to 00:25 by the clock; stopped on the director's wrap-up)
+
+- **Burn** (`tools/blender/element_states_fx.py`, `Cues.burn`, `taper`):
+  - Each ember is now a needle stretched along its flight, 0.16 s of its speed long. It's white-hot at its head, through the core to the Fire orange, and thins to nothing at the tail, with no round head. It flickers on two beats.
+  - **Born:** off the shoulders' tops, outside the head's column (its half-width is measured from the points above the neck), and at the hit.
+  - **Flight:** the hit's sparks peel off sideways before they rise. Every spark drifts outward as it climbs, so none crosses a face. The catch is a fan out to both sides. One in seven is larger.
+  - **Seen** in the close sheet at 0.20, 0.90 and 2.60 s, at 00:22: both faces are clear, and the sparks climb beside the heads and fade above them. At 64 px they read as warm flecks round the shoulders.
+- **Shock** (`Cues.shock`; `bright` takes a core width):
+  - One big arc a burst, 1.6 to 2.6 studs between its two ends, leaping off the body at 0.32 studs at its middle, with a wider glow. Beside it, one or two smaller arcs (0.9 to 1.6 studs).
+  - Each arc has a white core at 0.62 of its width in the pink glow.
+  - **Seen** at 00:23: they read as lines at 64 px. Two faults were still in that frame: the Shade's arcs tangled over its mask, and the end crosses still read as stitches.
+  - **Fixed after, NOT VERIFIED:** each arc's ends now sit on the body under the head (z under 0.8 of the height), and each end is a soft glow, not a cross. The plates rendered, but the guard stopped the sheet at 00:24 (0.49 GB free, with the Studios and a player open), so this isn't seen yet.
+- **Open:**
+  - re-run the three steps when memory allows, and read the Shock row;
+  - then the content check;
+  - then the second look (research's).
+
 ## AR49. Home's panel: three cards with their own art (Modulo, for research's pick, then Faber)
 
 Research, 2026-11-19, 23:20 by the clock, on the director's word of 23:20 (`docs/decisions.md`, the row): "MAKE IT LOOOK GOOD".

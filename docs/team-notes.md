@@ -16,7 +16,13 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **Next:** AR49's build (the panel, the live view and its framing, the presses under the view, the rail in the Voidkin screen), then AR44's shine, then TR10's stills, then AR48's states once Modulo's sheet is picked.
 - **Open, tests:** NOT VERIFIED (the Festival place, item 9): TR50's run cases, the Festival role's suite, TR48's keeper in a real run, TR49's Stage 1 playtest, TR10's marker in its world. TintMask on a phone. TR44's phone take waits for the director's go.
 
-**Modulo (assets).** 2026-11-20, 00:14, on Opus 5.5. Voidkin work parked until before launch (the director's word, 11:10). Done: AR49's C cut for Faber, with research's four must-fixes (`build/handoff/UI/home_cards/`, e30f7bb), and AR48's block-in of the four state cues (34c9cf1, Sap reworked on the content check), both content check PASS. Stopped on the director's wrap-up (00:15). Next session: research's AR48 verdict in its entry, then AR49's second look when it comes.
+**Modulo (assets).** 2026-11-20, 00:26, on Opus 5.5. Voidkin work parked until before launch (the director's word, 11:10). AR48's two must-fixes are in the script:
+- Burn's needles: seen, faces clear.
+- Shock's long arcs: seen at 64 px. The last tweak (ends under the head, glows for crosses) is NOT VERIFIED: the guard stopped the sheet on low memory.
+
+Stopped on the director's second wrap-up (00:24). Next session:
+- AR48: re-run the three steps, read the Shock row, the content check, then research's second look (AR48, "Burn and Shock reworked");
+- then TR50's warm dusk for the picker's ground and the lantern tile (colours in `Config.Hud` Stages and `UIKit.Palettes.SeamGlass`, so a palette for Faber).
 - **In the game:** AR46's Hard looks with AR47's masks, on TintMask (a856f06), passed at competent (19:18). AR42's tiles in Seam, passed at competent (f9f3636).
 - **For Faber:** AR49, Home's panel in C (`home_cards.json`): 12 images to upload under the group, a ViewportFrame of the lead between `HomeVoidkinRimTop` and `HomeVoidkinFrame`, the words as TextLabels; after research's second look. AR44, the critical's shine (`build/handoff/UI/hud/critical_shine.json`). AR43, upload the five `Jewel<Colour>3.png` and swap their ids, if not done. TR10: take `MarkerElite.png` as it stands at the marker's install.
 - **For Faber, AR40's install:** the atlas pair, and the Strip's eight changed meshes with the manifest, on top of the 40 base meshes, the paving and C's keys already listed in AR40. The atlas never goes alone. AR38's Shop meshes go with AR38.

@@ -13369,6 +13369,19 @@ Research, 2026-11-19, 11:17 by the clock. The director, by 11:16, to research: "
   - "Effects: a number's size" 10/0, three runs out of three. One run straight after the flurry case read 0.70 on its "under half faded at half its time" check, a hitch against a 0.5 limit with a 0.45 norm.
 - **Waits on:** research's pick of a take. The pick sets `Take`, and the others leave Config.
 
+### Research's verdict on the takes and the splash (Quaestor, 2026-11-19, 12:11)
+
+From `build/scratch/faber/ar44/`, each fight still at the phone's size, then zoomed, beside the three reference screenshots.
+- **Felt:** the plain numbers now sit calm and tall over the fight, and the critical's gold digits land as the loud one. The splash under them reads as a brown smear, not a splash of fire.
+- **Tier:** the plain numbers, competent. The critical, works, not yet competent. **The one bold thing:** the plain/critical contrast, thin and calm against heavy gold, which is the reference's logic in our own face.
+- **The pick: B** (Oswald Medium, stroke 0.8, gap 0.45). A's hairline greys out on our pale grounds (949 reads grey); the reference's thin edge was made for a dark arena, and B is that look adapted to ours. `Take` = B; A and Now leave Config.
+- **Must-fix:**
+  1. *The splash's colour:* lighter and more saturated, a bright orange (about #F08A2C), never the brown it reads now. The content check's limit is #CC661F as the darkest and reddest; lighter or yellower is free.
+  2. *The critical's spacing:* "1 , 2 0 4" reads as separate glyphs. Its gap goes down to about 0.25, and a comma or a "1" advances by its own width, not a whole digit's. The class: every spaced style, the plain ones included.
+  3. *Every number and word clear of every other on screen,* across bodies: "Block" sits over the critical in all three takes, and the lead's 57 touches the critical's 4. `Rules.Hud.Place` takes the words and the other bodies' numbers into its slots.
+- **Not this piece, for Faber:** the Tower's "Floor 1 · best 7" draws over the target card's health bar (TR46).
+- **Accepted on the stills;** what they can't show is the critical's pop and the splash's timing in motion. That's judged at the second look, from a short phone clip.
+
 ## AR45. The foes' cards with their difficulty skulls, and CR's gold tab (Modulo, for research's pick, then Faber)
 
 Research, 2026-11-19, 11:30 by the clock. The director's word of 11:30 (`docs/decisions.md`, the row): the enemy and elite cards redrawn to match the new UI, a difficulty skull by the foe's CR against the lead, the level's text in its skull's colour, and CR's look replaced. The rules are `docs/ui.md`, "The HUD, in the world": the target's card, "Numbers, short or whole" and "CR's look".

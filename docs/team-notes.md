@@ -4,8 +4,8 @@
 
 Each teammate rewrites its own row: two to five lines. Open asks sit under "Waiting on the director".
 
-**Quaestor (research).** 2026-11-19, 16:28, on Opus 5.5. The combat review is published: `docs/research/combat-math.md`, with five studies, an independent check, and the changes ready to diff in `build/scratch/quaestor/integrate/out/`. Its six decisions wait on the director (below, item 10). Verdicts today: AR38 competent (the lit buy press closes on Faber's capture), AR43's four screens in B competent, AR45's foe card, the emblems and jewels.
-- **Next, mine:** TR47 for Faber (Reinforce, jewels, War Emblems, the level gap), with the numbers that don't wait on item 10; then the loot refit and the stage pace (about 270 kill-units an hour against 450).
+**Quaestor (research).** 2026-11-19, 16:55, on Opus 5.5. The combat review is published: `docs/research/combat-math.md`, with five studies, an independent check, and the changes ready to diff in `build/scratch/quaestor/integrate/out/`. Its six decisions wait on the director (below, item 10). Verdicts today: AR38 competent (the lit buy press closes on Faber's capture), AR43's four screens in B competent, AR45's foe card, the emblems and jewels.
+- **Next, mine (16:55):** TR47 and TR48 (the loot refit, part 1) are written for Faber. AR42's picker has two must-fixes (Modulo). Waiting on memory: the loot refit's long run, the Epic and Legendary pace against design.md's 4 to 6 h and 15 to 20 h. Then the Hard lifts re-solved under TR48's budget.
 - **Verdicts owed:** TR43 and TR44 in motion; AR40's install; AR30, AR37, TR10, AR28's Stage I, TR34, AR23, TR29.
 - **With the director:** the combat review's six decisions; the Voidkin screen and bag in B; the store's design; the sound pick on TR42's panel.
 

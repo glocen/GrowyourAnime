@@ -111,8 +111,9 @@ MAPS = {"Kit": ("#FFFFFF", kit.GLOW), "Court1": ("#FFFFFF", COURT_GLOW), "Yard":
 # Swatches: the colour at the head, at the foot, and how much it glows. Pale concrete, the current in Power's yellow
 # (the HUD's own), the Breaker's light in cyan. AR40's C, sandstone and teal (research's pick, 2026-11-18, 22:52, on the
 # director's "too purple/black and somber"; tools/colour/ar40_directions.py): the void machines' stone is warm pale
-# sand, their frames teal bronze, their fittings cream, the steel a pale sea grey, the trim and the far shards violet.
-# The void's light (`void`, `cyan`) and the deck are as they were. Before AR40: the stone a dark violet, navy frames.
+# sand, their frames teal bronze, their fittings cream, the steel a pale sea grey, the trim violet, the far shards
+# teal glass. The void's light (`void`, `cyan`) and the deck are as they were; the road's own light is `trail`. Before
+# AR40: the stone a dark violet, navy frames.
 SWATCHES = {
     "steel": ("#A9C2C8", "#62808A", 0.0), "girder": ("#46A39C", "#1F5E64", 0.0), "bone": ("#FFF4DC", "#C2AE8C", 0.0),
     "concrete": ("#C8CAD2", "#82858F", 0.0), "yellow": ("#FFD23E", "#B07A28", 0.05), "rubber": ("#2C2A44", "#181628", 0.0),
@@ -124,11 +125,14 @@ SWATCHES = {
     "doormouth": ("#FF9038", "#FF9038", 1.0),
     "dawn": ("#FF9AD2", "#FF4FA6", 0.55),      # the Tower's own light, faint
     # The distance, painted in (AR20): with no haze to pale them, the far shards, the Tower asleep and the shards
-    # breaking out beside the crossing stood as black cut-outs against the day sky. Each wears a lighter void stone:
-    # the farthest palest.
-    "far": ("#B8A8E0", "#8878BC", 0.0),        # the great shards past the map's edge (the Strip's FarShard pieces)
-    "tower": ("#A898D4", "#7868AE", 0.0),      # the Tower asleep, a violet slate
-    "outcrop": ("#B0A0DC", "#8070B8", 0.0),    # the Strip's ShardOutcrop, nearer, a little deeper
+    # breaking out beside the crossing stood as black cut-outs against the day sky, so each is lighter than a near
+    # body, the farthest palest. AR40's must-fix on the director's "the map is a bit to purple ... that purple trail on
+    # the road and crystal" (2026-11-19, 01:46): the crystals' bodies are C's deep teal glass, lit at the head as light
+    # comes through glass, never violet; violet stays only in a small core or tip seen near (the outcrop's one shard of
+    # light). Before: violet slate, #B8A8E0 to #8878BC, #A898D4 to #7868AE, #B0A0DC to #8070B8.
+    "far": ("#8CC2C0", "#3E7A80", 0.0),        # the great shards past the map's edge (the Strip's FarShard pieces)
+    "tower": ("#7AB4B4", "#336C74", 0.0),      # the Tower asleep, teal glass a step nearer
+    "outcrop": ("#6AA6A8", "#28606A", 0.0),    # the Strip's ShardOutcrop, nearer, the deepest
     "doorarc1": ("#FFA448", "#FFA448", 1.0), "doorarc2": ("#FFB65C", "#FFB65C", 1.0),
     "doorarc3": ("#FFC977", "#FFC977", 1.0), "doorarc4": ("#FFDA98", "#FFDA98", 1.0),
     "doorcore": ("#FFCF7E", "#FF9A3C", 1.0),   # the core: its middle (the head) the palest, its rim (the foot) amber; gold
@@ -140,6 +144,12 @@ SWATCHES = {
     # in its channel). Deep teal, one value head to foot, so two wells that meet never show a seam; the light stands a
     # hair proud of it. Never a body's colour: only the bed a line, a lamp or a ring of light sits in.
     "well": ("#1A353C", "#1A353C", 0.0),
+    # The road's trail (AR40's must-fix, 2026-11-19, 01:46): the cracks of the void's power down the Strip and out to
+    # each base's gate, its lamps and the crossing's light are a warm white in a dark bed (well), never violet, so they
+    # read as power and not as paint. Its head is the main line's, its foot the branches', dimmer and warmer, about 2 to
+    # 1 in light. The thin teal edge between the light and its bed glows a little, cooler than the light.
+    "trail": ("#FFF8EA", "#DDB078", 1.0),
+    "trailedge": ("#8FC4C8", "#5FA0A6", 0.5),
 }
 SWATCH_AT = {name: ((i % 16) * CELL[0], (i // 16) * CELL[1]) for i, name in enumerate(SWATCHES)}
 # The wall's print, its darkest and its lightest: drawn on its old ramp (WALL_FROM) and moved along it to AR40's C

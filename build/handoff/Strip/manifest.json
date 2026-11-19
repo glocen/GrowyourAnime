@@ -36,15 +36,15 @@
       7.7,
       -0.0
      ],
-     "colour": "#C9B0FF"
+     "colour": "#FFE6C4"
     }
    ],
    "note": "10.2 high. Its shard hangs in its ring 2 out toward +X and 7.7 up: turn the post so +X looks at the street's middle. A PointLight at Lamp only where the plan lights one; the shard glows anyway"
   },
   "VeinWide": {
    "mesh": "meshes/VeinWide.json",
-   "triangles": 44,
-   "vertices": 58,
+   "triangles": 68,
+   "vertices": 88,
    "centre": [
     0.54151,
     0.0575,
@@ -61,12 +61,12 @@
    "glowStrength": 2.4,
    "collision": "none",
    "lights": [],
-   "note": "a crack of the void's light, flat in the stones, 30 long from its back to its front. The wide one, for near the crossing: 2.2 at its widest, two side cracks. It glows without a Light. No shadow. Look only: it lies 0.07 over the floor"
+   "note": "a crack of the void's power, warm white in a teal edge on a dark bed, flat in the stones, 30 long from its back to its front. The wide one, for near the crossing: 2.2 at its widest, two side cracks. It glows without a Light. No shadow. Look only: it lies 0.07 over the floor"
   },
   "VeinThin": {
    "mesh": "meshes/VeinThin.json",
-   "triangles": 26,
-   "vertices": 35,
+   "triangles": 40,
+   "vertices": 53,
    "centre": [
     0.74945,
     0.0575,
@@ -83,12 +83,12 @@
    "glowStrength": 2.4,
    "collision": "none",
    "lights": [],
-   "note": "a crack of the void's light, flat in the stones, 30 long from its back to its front. The thin one, for far down the street: 0.8 at its widest, one side crack. It glows without a Light. No shadow. Look only: it lies 0.07 over the floor"
+   "note": "a crack of the void's power, warm white in a teal edge on a dark bed, flat in the stones, 30 long from its back to its front. The thin one, for far down the street: 0.8 at its widest, one side crack. It glows without a Light. No shadow. Look only: it lies 0.07 over the floor"
   },
   "VeinBranch": {
    "mesh": "meshes/VeinBranch.json",
-   "triangles": 16,
-   "vertices": 20,
+   "triangles": 24,
+   "vertices": 30,
    "centre": [
     -0.0103,
     0.055,
@@ -105,7 +105,7 @@
    "glowStrength": 2.4,
    "collision": "none",
    "lights": [],
-   "note": "a crack of the void's light, flat in the stones, 21 long from its back to its front. A branch from the street's crack to a gate, thinner and dimmer than the street's own: 0.36 at its widest, thinning toward its front. It glows without a Light. No shadow. Look only: it lies 0.07 over the floor"
+   "note": "a crack of the void's power, warm white in a teal edge on a dark bed, flat in the stones, 21 long from its back to its front. A branch from the street's crack to a gate, thinner and dimmer than the street's own: 0.36 at its widest, thinning toward its front. It glows without a Light. No shadow. Look only: it lies 0.07 over the floor"
   },
   "CrossingShard": {
    "mesh": "meshes/CrossingShard.json",
@@ -134,10 +134,10 @@
       24.0,
       -0.0
      ],
-     "colour": "#B58CFF"
+     "colour": "#FFE6C4"
     }
    ],
-   "note": "hangs over the crossing's mark, from 8.5 to 46 over the floor, about 17 across. Its three parts are void stone; the light inside them and the four small shards glow. One PointLight at Heart. It may turn slowly and rise and fall a little, the builder's call. A place for the Void Rift to open, if research wants one: the piece asks for nothing"
+   "note": "hangs over the crossing's mark, from 8.5 to 46 over the floor, about 17 across. Its three parts are void stone; the road's warm light inside them and the four small violet shards glow. One PointLight at Heart. It may turn slowly and rise and fall a little, the builder's call. A place for the Void Rift to open, if research wants one: the piece asks for nothing"
   },
   "ShardOutcrop": {
    "mesh": "meshes/ShardOutcrop.json",
@@ -159,7 +159,7 @@
    "glowStrength": 2.4,
    "collision": "the tallest shard, as a post 2 square, if anything",
    "lights": [],
-   "note": "shards breaking out of the ground, 7.6 high and about 6 across: five of void stone, a lighter violet than the near pieces' so none stands black against the day sky (AR20), and one of the void's light, which glows without a Light. Turned as the plan says, no two look alike"
+   "note": "shards breaking out of the ground, 7.6 high and about 6 across: five of teal glass, lit at the head so none stands black against the day sky (AR20, AR40), and one small one of the void's violet light, which glows without a Light. Turned as the plan says, no two look alike"
   },
   "SealCalamity": {
    "mesh": "meshes/SealCalamity.json",
@@ -267,7 +267,7 @@
    "glowStrength": 2.4,
    "collision": "none",
    "lights": [],
-   "note": "a great shard of void stone, 80 high and 16 wide, far past the map's edge: unlit, in a pale void stone painted for the distance, since no haze pales it now (AR20). It leans a little toward +X, and its foot goes 30 under the floor, for where the ground has ended. No hull, no shadow, nobody reaches it"
+   "note": "a great shard of teal glass, 80 high and 16 wide, far past the map's edge: unlit, in a pale teal painted for the distance, since no haze pales it now (AR20). It leans a little toward +X, and its foot goes 30 under the floor, for where the ground has ended. No hull, no shadow, nobody reaches it"
   },
   "FarShardMid": {
    "mesh": "meshes/FarShardMid.json",
@@ -289,7 +289,7 @@
    "glowStrength": 2.4,
    "collision": "none",
    "lights": [],
-   "note": "a great shard of void stone, 125 high and 22 wide, far past the map's edge: unlit, in a pale void stone painted for the distance, since no haze pales it now (AR20). It leans a little toward +X, and its foot goes 30 under the floor, for where the ground has ended. No hull, no shadow, nobody reaches it"
+   "note": "a great shard of teal glass, 125 high and 22 wide, far past the map's edge: unlit, in a pale teal painted for the distance, since no haze pales it now (AR20). It leans a little toward +X, and its foot goes 30 under the floor, for where the ground has ended. No hull, no shadow, nobody reaches it"
   },
   "FarShardTall": {
    "mesh": "meshes/FarShardTall.json",
@@ -311,7 +311,7 @@
    "glowStrength": 2.4,
    "collision": "none",
    "lights": [],
-   "note": "a great shard of void stone, 180 high and 30 wide, far past the map's edge: unlit, in a pale void stone painted for the distance, since no haze pales it now (AR20). It leans a little toward +X, and its foot goes 30 under the floor, for where the ground has ended. No hull, no shadow, nobody reaches it"
+   "note": "a great shard of teal glass, 180 high and 30 wide, far past the map's edge: unlit, in a pale teal painted for the distance, since no haze pales it now (AR20). It leans a little toward +X, and its foot goes 30 under the floor, for where the ground has ended. No hull, no shadow, nobody reaches it"
   },
   "VoidShop": {
    "mesh": "meshes/VoidShop.json",

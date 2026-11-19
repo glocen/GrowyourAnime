@@ -12916,6 +12916,32 @@ The director, at 01:4x: "the map is a bit to purple does it, that purple trail o
 - **Violet stays** only where something is alive or for sale: the Door's mouth, the Breaker's shards, the Shop's clock and crown, the Shades. An accent is a few small things, never a ground, a path or a skyline.
 - **Without a render:** the swatches and the materials change in code, shown on a flat swatch sheet beside today's. The check is Faber's capture at the install, by day from a phone's camera, the same as research's second look on C.
 
+### The road's trail and the crystals, built (Modulo, 2026-11-19, 01:48 to 01:57 by the clock)
+
+- **Where:**
+  - the swatches are in `base_kit.SWATCHES`, the pieces and the lights' colour (`LIGHT`) in `strip_kit.py`;
+  - the flat sheet is `build/scratch/modulo/ar40/ar40_trail.png`, from `tools/blender/ar40_trail_sheet.py`: today beside the new, sampled as the atlas samples them.
+- **The trail:** two swatches were added at the atlas's end, so no other piece's UV moves:
+  - `trail`, warm white #FFF8EA at the head to #DDB078 at the foot, which the branches to the gates take, dimmer and warmer, about 2 to 1;
+  - `trailedge`, a thin teal edge #8FC4C8 to #5FA0A6 that glows at half.
+  - A crack is now its light in the teal edge on a `well` bed. Before, it was violet on the violet `dark`.
+  - The same light goes into the posts' shards and veins, the crossing mark's ring, and the crossing shard's inner light and veins. Their PointLights go from #C9B0FF and #B58CFF to #FFE6C4.
+  - The posts are research's class, past its two names: a row of violet lamps along the street was a violet path.
+- **The crystals:** `far`, `tower` and `outcrop` are C's teal glass, lit at the head, the farthest palest:
+  - `far` #8CC2C0 to #3E7A80;
+  - `tower` #7AB4B4 to #336C74;
+  - `outcrop` #6AA6A8 to #28606A.
+  - Before, they were violet slate. On the sheet, none stands black against the day sky (AR20's failure).
+  - Violet stays only in small tips seen near: the outcrop's one shard of light, and the four small shards adrift round the crossing's.
+- **The seals:** their leaves and the lock's disc move from `dark` to `well`, since they were 42 wide of violet across each end of the Strip.
+- **Changed for the install:** `Base_Kit_Color.png` and `Base_Kit_Glow.png`, and eight Strip meshes with the manifest: the three cracks, StripPost, CrossingMark, CrossingShard, SealCalamity and SealClash. No base mesh changes; the Tower asleep takes its new colour from the atlas.
+- **Left, for research's word:**
+  - SealCalamity's thin lines of light, the seam, the arch's edge and its shard, stay the void's violet. The Calamity behind them is the void's own.
+  - The base's violet trim, `dark` (C's pick), is small, so it's outside this class.
+  - The crossing shard's glow is 2.5 times the kit's (research's fix 3, set for violet). In warm white it may bloom at noon, and Faber's capture shows it.
+- **Content check, 01:58: PASS** on the atlas pair and the sheet. Its one condition for the install is to put the new ids in `tools/studio/Kits/Base.json` and `Strip.json` and in `docs/asset-log.md`.
+- **Status:** implemented, exported, self-read on the flat sheet, and content-checked. Not in the game, not captured, not reviewed.
+
 ## AR41. The Tower's platforms: the rise, the assembly and the fall as light (Modulo, for research's pick, then Faber)
 
 Research, 2026-11-19, 01:14 by the clock. This is TR29's waiting look: the platforms assembling and falling as light (`docs/test-requests.md`, TR29, "What waits"; `docs/design.md`, "The Tower"). The Tower is built in grey and runs. Faber's item 7 (its results) doesn't need this, and this doesn't need Faber until the install.

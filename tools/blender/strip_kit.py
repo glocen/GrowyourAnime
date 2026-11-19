@@ -85,11 +85,15 @@ THREE = ((90.0, 8.5, 46.0), (210.0, 11.5, 40.0), (330.0, 10.0, 35.0))
 # A place where shards break out of the ground: (across, along, high, half width, the way it leans in degrees, how far).
 OUTCROP = ((0.0, 0.0, 7.6, 1.5, 20, 0.2), (-2.0, 1.0, 4.3, 1.0, 160, 0.38), (1.8, -0.8, 5.2, 1.1, 320, 0.4),
            (0.5, 2.1, 2.7, 0.7, 80, 0.15), (-1.1, -1.8, 3.1, 0.8, 230, 0.3))
+# AR40's must-fix (the director, 2026-11-19, 01:4x: "that purple trail on the road and crystal"): the road's light is
+# `trail`, warm white, and its PointLights are LIGHT; before, the void's violet (#C9B0FF the posts', #B58CFF the heart's).
+LIGHT = "#FFE6C4"
 
 
-def crack(m, points, widths, sw="void", lift=0.07, bright=0.5):
-    """A crack of the void's light, flat in the stones, on a bed of dark a little wider: a line through `points`
-    (across, along), `widths` its half width at each, `bright` where it samples its swatch (1 its head, the brightest)."""
+def crack(m, points, widths, sw="trail", lift=0.07, bright=0.5):
+    """A crack of the void's power, flat in the stones: a warm white light in a thin teal edge on a dark bed a little
+    wider (AR40's must-fix, 2026-11-19: no violet on the road), a line through `points` (across, along), `widths` its
+    half width at each, `bright` where it samples its swatch (1 its head, the brightest)."""
     pts = [Vector((x, y, 0.0)) for x, y in points]
     last = len(pts) - 1
 
@@ -98,7 +102,8 @@ def crack(m, points, widths, sw="void", lift=0.07, bright=0.5):
         n = Vector((-along.y, along.x, 0.0))
         return pts[k] - n * half + Vector((0, 0, z)), pts[k] + n * half + Vector((0, 0, z))
 
-    for tone, grow, z in ((kit.sw_uv("dark", 0.5, 0.6), 1.0, lift - 0.03), (kit.sw_uv(sw, 0.0, bright), 0.0, lift)):
+    for tone, grow, z in ((kit.sw_uv("well", 0.5, 0.6), 1.0, lift - 0.03), (kit.sw_uv("trailedge", 0.0, bright), 0.35, lift - 0.015),
+                          (kit.sw_uv(sw, 0.0, bright), 0.0, lift)):
         for k in range(last):
             r0, l0 = edge(k, widths[k] * (1 + grow) + 0.08 * grow, z)
             r1, l1 = edge(k + 1, widths[k + 1] * (1 + grow) + 0.08 * grow, z)
@@ -112,7 +117,7 @@ def cracked(name, line, long, note):
         crack(m, points, widths, bright=RANK[name])
         for side, thin in sides:
             crack(m, side, thin, lift=0.075, bright=RANK[name])
-        return Piece(name, m, note=f"a crack of the void's light, flat in the stones, {long:g} long from its back to its "
+        return Piece(name, m, note=f"a crack of the void's power, warm white in a teal edge on a dark bed, flat in the stones, {long:g} long from its back to its "
                                    f"front. {note} It glows without a Light. No shadow. Look only: it lies 0.07 over the floor")
     return make
 
@@ -127,20 +132,21 @@ def facing(m, at, r0, r1, thick, sides, sw):
 
 
 def strip_post():
-    """The Strip's lamp: a slender standing stone of void stone on a steel foot, a vein of the void's light on the
-    edge that looks at the street, and a shard of that light hung in a ring of void stone from a peg toward +X."""
+    """The Strip's lamp: a slender standing stone of void stone on a steel foot, a vein of the road's light on the
+    edge that looks at the street, and a shard of that light hung in a ring of void stone from a peg toward +X. The
+    road's light, warm white (AR40's must-fix, 2026-11-19): a row of violet lamps along the street was a violet path."""
     m = Mesh()
     out, up = LAMP
     m.box((1.7, 1.7, 0.4), (0, 0, 0.2), "girder", ink=True)
     stone, widths = [(0, 0, 0.4), (-0.3, 0, 5.4), (0.1, 0, 10.2)], [0.62, 0.52, 0.16]
     horn(m, stone, widths, "abyss", deep=0.9)
-    vein(m, stone[:2], widths[:2], (6.0, 0, 3.0), r=0.04)
+    vein(m, stone[:2], widths[:2], (6.0, 0, 3.0), sw="trail", r=0.04)
     horn(m, [(-0.1, 0, 8.7), (out + 0.3, 0, 9.35)], [0.2, 0.12], "abyss", ink=False)
     m.box((0.07, 0.07, 0.56), (out, 0, up + 1.24), "rubber")
     facing(m, (out, 0, up), 0.78, 1.0, 0.16, 8, "abyss")
     facing(m, (out, 0, up), 0.77, 0.88, 0.18, 8, "well")              # the ring's dark lip round the shard (AR40)
-    shard(m, (out, 0, up + 0.05), 0.36, 1.5, "void")
-    return Piece("StripPost", m, lights=[("Lamp", (out, 0.0, up), "#C9B0FF")], solid="the foot, 1.7 square, and the stone",
+    shard(m, (out, 0, up + 0.05), 0.36, 1.5, "trail")
+    return Piece("StripPost", m, lights=[("Lamp", (out, 0.0, up), LIGHT)], solid="the foot, 1.7 square, and the stone",
                  note=f"10.2 high. Its shard hangs in its ring {out:g} out toward +X and {up:g} up: turn the post so +X "
                       "looks at the street's middle. A PointLight at Lamp only where the plan lights one; the shard glows "
                       "anyway")
@@ -165,7 +171,7 @@ def seal(name, light, where):
         horn(m, [(sx * 21.2, 0, 0.0), (sx * 21.8, 0, 7.0), (sx * 21.0, 0, 14.5)], [2.9, 2.4, 0.3], "abyss", deep=0.9)   # the fang
         horn(m, [(sx * 9.4, 1.0, 17.0), (sx * 4.3, 1.0, 17.0)], [0.45, 0.7], "abyss", deep=0.7)    # the bar
     edge = [(half, 0.6), (half, 25.0), (half - 2.3, 31.0), (half - 6.0, 35.6), (0.0, point)]
-    dark = kit.sw_uv("dark", 0.5, 0.6)
+    dark = kit.sw_uv("well", 0.5, 0.6)           # the leaves, deep teal (AR40's must-fix: no large violet surface)
     for (x0, z0), (x1, z1) in zip(edge, edge[1:]):
         for sx in (-1, 1):
             pts = [(0, 0.4, z0), (sx * x0, 0.4, z0), (sx * x1, 0.4, z1)] + ([(0, 0.4, z1)] if x1 else [])
@@ -177,7 +183,7 @@ def seal(name, light, where):
         m.tube([(sx * (x - 0.25), 0.62, z) for x, z in edge[1:]], 0.07, light)                    # light round the arch's edge
     facing(m, (0, 1.0, 17.0), 3.3, 4.4, 0.9, 10, "abyss")
     m.flat([Vector((0, 1.0, 17.0)) + Vector((3.3 * math.cos(math.tau * i / 10), 0.0, 3.3 * math.sin(math.tau * i / 10)))
-            for i in range(10)], "dark")
+            for i in range(10)], "well")
     horn(m, [(0, 1.3, 15.2), (0, 1.3, 17.0), (0, 1.3, 18.8)], [0.04, 0.8, 0.04], light, ink=False)   # the lock's own shard
     shard(m, (0, 0, 46.0), 1.7, 7.0, light)
     return Piece(name, m, lights=[("Shard", (0.0, 0.0, 46.0), {"void": "#B58CFF", "cyan": "#7CE8FF"}[light])],
@@ -194,7 +200,7 @@ def crossing_mark():
     strongest shape). The street's cracks end at that ring; the great shard hangs over it."""
     m = Mesh(None)
     z, sides = 0.06, 40
-    tone, lit, dark = kit.sw_uv("bone", 0.3, 0.7), kit.sw_uv("void", 0.0, 1.0), kit.sw_uv("ink", 1.0, 0.0)
+    tone, lit, dark = kit.sw_uv("bone", 0.3, 0.7), kit.sw_uv("trail", 0.0, 1.0), kit.sw_uv("ink", 1.0, 0.0)
     m.face([(8.7 * math.cos(math.tau * i / sides), 8.7 * math.sin(math.tau * i / sides), 0.04) for i in range(sides)], [dark] * sides)
     for r0, r1, uv in ((19.0, 19.9, tone), (8.6, HEART + 0.2, lit)):
         for i in range(sides):
@@ -217,15 +223,17 @@ def crossing_shard():
         mid = foot + (tip - foot) * 0.42
         stone, widths = [out * 1.5 + Vector((0, 0, foot)), out * 5.0 + Vector((0, 0, mid)), out * 1.3 + Vector((0, 0, tip))], [0.3, 3.3, 0.3]
         horn(m, stone, widths, "abyss", flat=flat, deep=0.82)
-        vein(m, stone, widths, (0, 0, mid), r=0.16)
-    shard(m, (0, 0, 24.0), 1.7, 30.0, "void", lean=0.55)
+        vein(m, stone, widths, (0, 0, mid), sw="trail", r=0.16)
+    # the light inside is the road's, where its cracks rise (AR40's must-fix, 2026-11-19); the four small shards adrift
+    # keep the void's violet, the crystal's small tips seen near
+    shard(m, (0, 0, 24.0), 1.7, 30.0, "trail", lean=0.55)
     for turn, far, high, r, long in ((40, 9.5, 15.0, 0.6, 4.0), (135, 11.0, 30.0, 0.5, 3.4), (250, 8.5, 21.0, 0.75, 5.0), (300, 12.0, 37.0, 0.45, 3.0)):
         a = math.radians(turn)
         shard(m, (far * math.cos(a), far * math.sin(a), high), r, long, "void")
-    return Piece("CrossingShard", m, lights=[("Heart", (0.0, 0.0, 24.0), "#B58CFF")],
+    return Piece("CrossingShard", m, lights=[("Heart", (0.0, 0.0, 24.0), LIGHT)],
                  solid="none: it hangs 8.5 over the floor, and players walk under it",
                  note="hangs over the crossing's mark, from 8.5 to 46 over the floor, about 17 across. Its three parts are "
-                      "void stone; the light inside them and the four small shards glow. One PointLight at Heart. It may "
+                      "void stone; the road's warm light inside them and the four small violet shards glow. One PointLight at Heart. It may "
                       "turn slowly and rise and fall a little, the builder's call. A place for the Void Rift to open, if "
                       "research wants one: the piece asks for nothing")
 
@@ -242,8 +250,8 @@ def outcrop():
              [wide * 0.8, wide, 0.05], "outcrop", flat=flat, deep=0.8)
     horn(m, [(1.0, 1.0, -0.3), (1.2, 1.1, 1.3), (1.7, 1.3, 3.6)], [0.36, 0.46, 0.04], "void", flat=(0.6, -0.8, 0.0), ink=False)
     return Piece("ShardOutcrop", m, solid="the tallest shard, as a post 2 square, if anything",
-                 note="shards breaking out of the ground, 7.6 high and about 6 across: five of void stone, a lighter "
-                      "violet than the near pieces' so none stands black against the day sky (AR20), and one of the void's "
+                 note="shards breaking out of the ground, 7.6 high and about 6 across: five of teal glass, lit at the "
+                      "head so none stands black against the day sky (AR20, AR40), and one small one of the void's violet "
                       "light, which glows without a Light. Turned as the plan says, no two look alike")
 
 
@@ -254,8 +262,8 @@ def far_shard(name):
         m = Mesh(None)
         horn(m, [(0, 0, -30.0), (wide * 0.1, 0, high * 0.3), (wide * 0.22, 0, high)], [wide * 0.36, wide * 0.5, 0.3], "far",
              deep=0.8, ink=False)
-        return Piece(name, m, note=f"a great shard of void stone, {high:g} high and {wide:g} wide, far past "
-                                   "the map's edge: unlit, in a pale void stone painted for the distance, since no haze pales it "
+        return Piece(name, m, note=f"a great shard of teal glass, {high:g} high and {wide:g} wide, far past "
+                                   "the map's edge: unlit, in a pale teal painted for the distance, since no haze pales it "
                                    "now (AR20). It leans a little toward +X, and its foot "
                                    "goes 30 under the floor, for where the ground has ended. "
                                    "No hull, no shadow, nobody reaches it")

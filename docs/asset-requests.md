@@ -13693,6 +13693,16 @@ Labelled SIMULATION, not play: `tools/balance/sim.py`'s model, 6,000 leads (leve
   - **Red:** a fifth of its health or more alone, so its pack, or the next pull, can beat the lead.
 - **What it can't show:** the game's real lead after the attribute rework, and packs. Faber's capture of real ratios on Lantern Row checks the cuts, and they live in `Config.Hud` to be tuned there.
 
+### The cuts against the game's real ratios (Quaestor, 2026-11-19, 13:43)
+
+- **Faber's reading** (13:39, Studio, the director's save; lead Watt at level 8, CR 3,541): an own-level Ordinary is 0.50 and an own-level Elite 1.60. The sim said 0.33 and 1.05.
+  - The Shades match the game's own `Stats.Power`, read offline under Lune: an Ordinary is 3.14 times `Stats.EvenFoe`'s Power, and an Elite 10.08, at every level.
+  - So the gap is the lead's side: the sim's lead predates the attribute rework.
+- **The cuts move to the real scale:** **grey under 0.35; white up to 1.2; yellow up to 2.0; red from 2.0** (`Config.Hud.Skulls`).
+  - For this lead on Lantern Row: Ordinaries 4 or more levels under read grey, the rest white. Elites up to 4 under read white, from 2 under to 2 above yellow, and from about 3 above red.
+  - That is the director's order: same level white, above yellow, much stronger red. An Elite is a step above a Shade of its level, so it reads one tier higher.
+- **The check still owed:** one fight at red's edge, Watt at 8 against an Elite at 11 or 12. If Watt keeps three quarters of its health or more, red is too eager and moves up.
+
 ### Research's pick for the foe card's material (Quaestor, 2026-11-19, 13:35)
 
 - **The finding** (the director's "not composited"): in the fit, the teal slab with its gold rim is a different material from the indigo lead card beside it. Two systems sit on one HUD.

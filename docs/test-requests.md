@@ -4297,3 +4297,16 @@ Faber, 2026-11-19, 03:43 by the clock: the follow-up's item 7 (`docs/production-
 
 - **The must-fix is met:** every price is its gain within 0.03%, and no line's points moved. The 0.710 was research's own normaliser in the price run, not the game's, and my √2 guess was wrong. `docs/balance.md`, "The stats", is restated as built (4b77430). Gear's strength stays where it is.
 - TR49 now closes only on the Stage 1 playtest (item 9).
+
+## TR50. One mission per Arc (Faber, after the foe card's upload)
+
+- **Feel line:** the player taps Play, sees Lantern Row with Normal and Hard, taps one and is in. The four stretches run on one after another to the Lamplighter, with a line between them saying how far they've come. A lead that falls late comes back at its stretch, not at the gate.
+- **The director's word:** 2026-11-19, 23:19 (`docs/decisions.md`, the row; `docs/design.md`, "The Festival of Battles").
+- **What the block contains:**
+  1. **Play** opens the Arc panel straight away. The mode panel stays in code for later modes, skipped while there's one.
+  2. **The Arc panel:** one tile for Lantern Row, with Normal and Hard as its two choices: recommended CR, Hard's lock and its condition, and the run's checkpoint ("Stretch 3 of 4"). AR42's picker art is reused, its four stage tiles going.
+  3. **The run:** `Rules.Stages` keeps its four rows as stretches. A stretch's clear moves straight on to the next with AR42's stage line ("Stretch 2 of 4"), and the results card shows once, at the run's end. A stretch's chests, experience and quota are as they are now, so TR48's pace and TR49's fit stay put, the stage factors included.
+  4. **Checkpoints,** in the save: the last stretch reached per difficulty, until that difficulty's keeper falls. A fall ends the run. Leaving the place keeps the checkpoint.
+  5. **Hard** opens when the Lamplighter falls on Normal, as now. The first Hard win's Rare floor stays the keeper's.
+- **Waits:** a second Arc on the panel; any new art (AR42's pieces carry it).
+- **Done when:** the cases cover a full run, a fall at stretch 3 resuming at 3, the checkpoint clearing on the keeper's fall, and Hard's lock; a phone capture shows Play to the Arc panel and a stretch's line.

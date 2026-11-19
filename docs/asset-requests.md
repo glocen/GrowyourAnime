@@ -13376,6 +13376,18 @@ From home_tray.png and home_step.png at the smallest phone, before Modulo cuts t
 - **For Faber:** upload the eleven under the group, then build the tray from `home.json`. Its tray, headings, tiles and rule are measured on the smallest phone. The tray keeps its size on every phone, centred, its foot 12 above the dock's top. The press's squeeze is `Config.Hud.Motion.Press`, as for every press.
 - **Status:** cut and content-checked; not uploaded. Next for Modulo: the dock's Home mark (B), then the twelve set symbols.
 
+### The dock's Home mark (Modulo, 2026-11-19, 13:33 to 13:37 by the clock)
+
+- **What:** `DockMarkHome` is mark B as research picked it: three screens stacked, a shard cut through the front one. It's `home()` in `tools/blender/hud_dock_sheet.py`, and the dock's middle button is now named Home there.
+  - It goes in the same box, middle and size as `DockMarkInventory`. Only `Mark.Image` changes, and the row's name.
+  - The other sixteen dock images came out byte-identical.
+  - The dead satchel tries (`inventory_standing`, `inventory_face`) are gone.
+- **Where:** `build/handoff/UI/hud/dock/images/DockMarkHome.png`. `hud_dock.json` and `hud_dock_images.png` are rebuilt, with the dock stacked from the images in every state.
+  - The parity outside the marks is unchanged: over eight steps on at most 0.03% of pixels.
+  - `hud_dock.png` stays AR12's record with the satchel: its street frames are no longer in Modulo's scratch.
+- **Content check PASS** (13:36), no conditions. A stack of windows is a free function. The kit's cut corners and the shard are ours, and it matches neither Roblox's menu button nor its logo.
+- **For Faber:** upload `DockMarkHome` and swap it into UIKit's dock row. `DockMarkInventory` stays uploaded and unused.
+
 ## AR44. The damage numbers' rework: the plain, received and healing numbers, and the critical closer to the reference (Faber's takes in the game, Modulo's stroke, research's pick)
 
 Research, 2026-11-19, 11:17 by the clock. The director, by 11:16, to research: "The damages/healing text need a small rework it doesnt look as i wanted it to be, same for the crit text it need to be more close to the reference i've shown". The same morning, relayed by Modulo at about 11:15: "like the blackstroke around the text for those are way to thick". Research reads "those" as the damage numbers, since the two came together. The rule stays `docs/ui.md`, "Damage numbers" (the director, 2026-11-12); this changes the look only. The reference is `docs/research/hud-reference.md`, its three arena screenshots, held internal.

@@ -2,9 +2,9 @@
 make a ui around it, it need to be a very cool ui well composed", then "All three icons"; docs/ui.md, the HUD).
 
 One piece, not three buttons: a graphite body cut as the kit's buttons are, three tiles set in it, each a block of its
-system's colour with its mark in ink, as V2, Block's pills carry theirs. Everything leans as a bar's front does. Inventory
-stands in the middle, taller, since the dock is built round it; Base and Map are its wings. Under each tile runs its
-light. No word: a long press shows it (the build's).
+system's colour with its mark in ink, as V2, Block's pills carry theirs. Everything leans as a bar's front does. Home
+(Inventory until the director's Home, 2026-11-19; AR43) stands in the middle, taller, since the dock is built round it;
+Base and Map are its wings. Under each tile runs its light. No word: a long press shows it (the build's).
 
     blender -b --factory-startup --python tools/blender/hud_dock_sheet.py -- build/handoff/UI/hud/dock
     blender -b --factory-startup --python tools/blender/hud_dock_sheet.py -- build/handoff/UI/hud/dock images
@@ -62,16 +62,8 @@ def route(t, cx, cy, r):
     return np.maximum(h.g_map(t, cx, cy, r), -np.minimum.reduce(dashes + [ring]))
 
 
-def _ridge(t, cx, cy, r, w):
-    return np.minimum(h.seg(t, (cx + 0.12 * r, cy - 0.66 * r), (cx, cy + 0.12 * r), w),
-                      h.seg(t, (cx, cy + 0.12 * r), (cx - 0.14 * r, cy + 0.66 * r), w))
-
-
 def _pts(t, cx, cy, r, pts):
     return t.poly([(cx + r * u, cy + r * v) for u, v in pts])
-
-
-SATCHEL = ((-1.0, 0.04), (1.0, 0.04), (0.88, 0.76), (0.62, 1.0), (-0.62, 1.0), (-0.88, 0.76))
 
 
 FLAP = ((-0.7, -0.86), (0.7, -0.86), (1.0, -0.56), (1.0, -0.2), (0.2, -0.2), (0.2, 0.06), (-0.2, 0.06), (-0.2, -0.2),
@@ -88,24 +80,28 @@ def inventory(t, cx, cy, r):
     return np.minimum(flap, np.maximum(body, -h.g_shard(t, cx, cy + 0.57 * r, 0.3 * r)))
 
 
-def inventory_standing(t, cx, cy, r):
-    """A shard standing in a satchel, the satchel cut clear of it."""
-    body = _pts(t, cx, cy, r, SATCHEL)
-    sy, sr = cy - 0.22 * r, 0.8 * r
-    shard = h.g_shard(t, cx, sy, sr)
-    return np.minimum(np.maximum(body, -(shard - 0.13 * r)), np.maximum(shard, -_ridge(t, cx, sy, sr, 0.12 * r)))
+def _screen(t, cx, cy, r, x0, y0, x1, y1):
+    """A screen: a box with the kit's cut on its top left and foot right."""
+    return t.poly(ui.cut_box(cx + x0 * r, cy + y0 * r, cx + x1 * r, cy + y1 * r, 0.3 * r, 0, 0.3 * r, 0))
 
 
-def inventory_face(t, cx, cy, r):
-    """A carry bag, its handle over it, a shard cut clean through its face."""
-    body = _pts(t, cx, cy, r, ((-0.95, -0.42), (0.95, -0.42), (0.84, 0.74), (0.58, 1.0), (-0.58, 1.0), (-0.84, 0.74)))
-    handle = np.maximum(np.abs(np.hypot(t.x - cx, t.y - cy + 0.42 * r) - 0.46 * r) - 0.12 * r, t.y - cy + 0.42 * r)
-    return np.minimum(np.maximum(body, -h.g_shard(t, cx, cy + 0.26 * r, 0.56 * r)), handle)
+def home(t, cx, cy, r):
+    """Home, the panel of every screen (the director, 2026-11-19, 12:21; AR43): three screens stacked, each a step up and
+    right, the front one with a shard cut through its face: the screens Home opens, and your Voidkin's. Research's pick
+    for the Menu at 03:40, kept for Home at 12:56: a house would be Base's."""
+    front = _screen(t, cx, cy, r, -0.92, -0.52, 0.5, 0.98)
+    mid = _screen(t, cx, cy, r, -0.7, -0.75, 0.72, 0.75)
+    back = _screen(t, cx, cy, r, -0.48, -0.98, 0.94, 0.52)
+    gap = 0.13 * r
+    back = np.maximum(back, -(np.minimum(front, mid) - gap))
+    mid = np.maximum(mid, -(front - gap))
+    face = np.maximum(front, -h.g_shard(t, cx - 0.21 * r, cy + 0.24 * r, 0.5 * r))
+    return np.minimum.reduce([face, mid, back])
 
 
-# Left to right. The dock is built round Inventory, so it takes the middle.
-BUTTONS = (("Base", plant, h.POWER), ("Inventory", inventory, h.VOIDKIN), ("Map", route, h.MAP))
-VARIANTS = (("a shard standing in a satchel", inventory_standing), ("a carry bag, a shard in its face", inventory_face))
+# Left to right. The dock is built round Home (Inventory's place until the director's Home, 2026-11-19), the middle.
+BUTTONS = (("Base", plant, h.POWER), ("Home", home, h.VOIDKIN), ("Map", route, h.MAP))
+VARIANTS = (("Inventory's satchel, replaced by Home", inventory),)
 
 
 # --- the dock --------------------------------------------------------------------------------------------------------
@@ -204,7 +200,7 @@ def dock(st, x, y, states=("rest",) * 3, dots=(), s=1.0, marks=None):
 ORIGIN = {}  # an image's top left in the dock's points, from the body's top left, at its first place
 PARTS = []  # the images' names, in the order they're made
 SYSTEM = {h.POWER: "Base", h.VOIDKIN: "Voidkin", h.MAP: "Map"}  # hud_colour.json's row for each tile's colour
-MARK_BOX, MARK_R = 64.0, 24.0  # a mark's image and the half size it's drawn at: large, since Inventory's shows at 51
+MARK_BOX, MARK_R = 64.0, 24.0  # a mark's image and the half size it's drawn at: large, since Home's shows at 51
 HALO, STEP = 22.0, 0.004  # how far an open tile's light reaches; half the width of a hard step in a tile's gradient
 
 
@@ -249,7 +245,7 @@ def parts():
     for key, (x0, w, tall) in (("Wing", spots[0]), ("Mid", spots[1])):
         y0 = YB - tall
         box = (OX + x0 - 0.25, y0, OX + x0 + w + LEAN * tall + 0.25, YB)
-        whose = "Base's and the Map's" if key == "Wing" else "Inventory's"
+        whose = "Base's and the Map's" if key == "Wing" else "Home's"
         p = Part(*box)
         p.t.paint(p.lean(x0, x0 + w, y0, YB), c(WHITE))
         p.keep(f"DockTile{key}", "the state's gradient, top to foot (buttons.<state>.tile)",
@@ -289,7 +285,7 @@ def parts():
         else:
             p.t.paint(d, c(WHITE))
             p.keep(name, "rest: the system's colour; pressed: its deep; open: white", (4.0, 0.0, 4.0, 0.0),
-                   "the light under a tile; it stretches between its cut ends, 8 longer under Inventory")
+                   "the light under a tile; it stretches between its cut ends, 8 longer under Home")
     for name, fn, _ in BUTTONS:
         t = kit.blank(MARK_BOX, MARK_BOX)
         t.paint(fn(t, MARK_BOX / 2, MARK_BOX / 2, MARK_R), c(h.INK))
@@ -479,7 +475,7 @@ def images_shot():
     st.text(x + 22, 92, 9, "LightGlow", h.NOTE, "CENTER")
     st.lay("DockPip", x + 64, 36)
     st.text(x + 77, 92, 9, "Pip", h.NOTE, "CENTER")
-    st.text(250, 108, 9, "A wing's layers serve Base and the Map; Mid is Inventory's. Each tile has a pressed twin, "
+    st.text(250, 108, 9, "A wing's layers serve Base and the Map; Mid is Home's. Each tile has a pressed twin, "
             "1.6 points shorter.", h.NOTE)
     st.text(250, 121, 9, "LightGlow is shown in Power's colour, the halos below in the Map's and the Voidkin's.", h.NOTE)
     st.lay("DockHaloWing", 12, 146, tint=h.MAP)
@@ -536,8 +532,8 @@ def images_main(out, sheet=True):
     t = page.tile(0, 0, page.w, page.h)
     t.text(m, 14, 17, "Grow your Anime: the dock's images, as delivered (AR12)", h.HEAD)
     h.add(page, *shot, m, 44)
-    t.text(m, 44 + 504 + 8, 10, "The same stack, four pixels a point: at rest with a pip on Inventory; Base pressed, "
-           "Inventory open, a pip on the Map.", h.NOTE)
+    t.text(m, 44 + 504 + 8, 10, "The same stack, four pixels a point: at rest with a pip on Home; Base pressed, "
+           "Home open, a pip on the Map.", h.NOTE)
     h.add(page, close, [], m, 44 + 504 + 26)
     kit.finish(page, out / "hud_dock_images.png")
     h.stage("the images' sheet")
@@ -598,7 +594,7 @@ def marks_row():
     This row is halved onto the sheet, so 32 points here are 64 pixels there."""
     st = kit.Stage(ROW_W, MARKS_H, h.PARTS_GROUND)
     st.text(12, 8, 11, "Each mark alone: on its colour; then flat, at 64 and at 32 pixels, white on dark and ink on pale. "
-            "Right: Inventory's two other tries, not picked.", h.HEAD)
+            "Right: Inventory's satchel, which Home replaces.", h.HEAD)
     every = [(n, f, a, True) for n, f, a in BUTTONS] + [(n, f, h.VOIDKIN, False) for n, f in VARIANTS]
     for i, (name, fn, accent, picked) in enumerate(every):
         x = 16 + i * 160 + (24 if not picked else 0)
@@ -608,8 +604,8 @@ def marks_row():
         chip(st, x + 64, 72, 36.0, fn, 16.0, h.INK, h.PALE_GROUND)
         chip(st, x + 104, 80, 20.0, fn, 8.0, h.INK, h.PALE_GROUND)
         st.text(x, 116, 11 if picked else 9, name if picked else name.capitalize(), h.HEAD if picked else h.NOTE)
-    st.text(16, 138, 10, "Inventory: a satchel, its flap and strap over a shard cut through its face: your whole bag and "
-            "your Voidkin in one shape. Base keeps the plant and its bolt, the Map its folded sheet and its way.", h.NOTE)
+    st.text(16, 138, 10, "Home: three screens stacked, a shard cut through the front one: the screens it opens, your "
+            "Voidkin's first. Base keeps the plant and its bolt, the Map its folded sheet and its way.", h.NOTE)
     return h.bytes8(h.halve(st.px)), st.items
 
 
@@ -626,9 +622,9 @@ def sheet(out, shots, rows):
     t = sh.tile(0, 0, sh.w, head)
     t.text(m, 14, 17, "Grow your Anime: the dock as three icons (AR12)", h.HEAD)
     t.text(m, 40, 10, "One piece: a graphite body cut as the kit's buttons are, three tiles set in it, each a block of its "
-           "system's colour with its mark in ink, as the pills carry theirs. Inventory stands taller in the middle;", h.NOTE)
+           "system's colour with its mark in ink, as the pills carry theirs. Home stands taller in the middle;", h.NOTE)
     t.text(m, 54, 10, f"Base and Map are its wings. {DW:g} by {DH:g} points, bottom centre; a wing's tile is "
-           f"{WING[0]:g} by {WING[1]:g}, Inventory's {MID[0]:g} by {MID[1]:g}. No word: a long press shows it (the build's).",
+           f"{WING[0]:g} by {WING[1]:g}, Home's {MID[0]:g} by {MID[1]:g}. No word: a long press shows it (the build's).",
            h.NOTE)
     y = head
     for (px, items), caption in shots:
@@ -660,7 +656,7 @@ def main():
     h.card_images()
     parts()
     noon, dusk = h.SCENES[2], h.SCENES[0]
-    shots = [(screen(noon, dots=(1,)), "Noon, a pale street: the dock at rest, a pip on Inventory for something new. "
+    shots = [(screen(noon, dots=(1,)), "Noon, a pale street: the dock at rest, a pip on Home for something new. "
               "It stands clear of the thumbstick and the jump button."),
              (screen(dusk), "Dusk, in a fight: the dock at rest, beside the lead's card and the pills.")]
     h.stage("the screens")
@@ -669,7 +665,7 @@ def main():
              ("rest", "rest")), ROW_H),
         (row("Its states. Pressed sinks and darkens; open turns white-hot; a pip for something new.",
              (("pressed", "open", "rest"), (2,)), (("open", "rest", "pressed"), (1,)),
-             ("Base pressed · Inventory open · a pip on the Map", "Base open · a pip on Inventory · the Map pressed")), ROW_H),
+             ("Base pressed · Home open · a pip on the Map", "Base open · a pip on Home · the Map pressed")), ROW_H),
         (marks_row(), MARKS_H),
     ]
     h.stage("the rows")

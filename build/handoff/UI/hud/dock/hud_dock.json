@@ -175,7 +175,7 @@
    }
   },
   {
-   "name": "Inventory",
+   "name": "Home",
    "system": "Voidkin",
    "colour": "#DCCBFF",
    "pale": "#FAF7FF",
@@ -244,7 +244,7 @@
     ]
    },
    "mark": {
-    "image": "DockMarkInventory",
+    "image": "DockMarkHome",
     "middle": [
      98.44,
      30.8
@@ -601,7 +601,7 @@
     5.0
    ],
    "tint": "the state's gradient, top to foot (buttons.<state>.tile)",
-   "use": "Inventory's tile, at rest and open"
+   "use": "Home's tile, at rest and open"
   },
   "DockTileMidPressed": {
    "file": "images/DockTileMidPressed.png",
@@ -618,7 +618,7 @@
     6.5
    ],
    "tint": "pressed's gradient, top to foot (buttons.pressed.tile)",
-   "use": "Inventory's tile, pressed: 1.6 shorter, its foot where it was"
+   "use": "Home's tile, pressed: 1.6 shorter, its foot where it was"
   },
   "DockSheenMid": {
    "file": "images/DockSheenMid.png",
@@ -691,7 +691,7 @@
     4.0,
     0.0
    ],
-   "use": "the light under a tile; it stretches between its cut ends, 8 longer under Inventory"
+   "use": "the light under a tile; it stretches between its cut ends, 8 longer under Home"
   },
   "DockLightGlow": {
    "file": "images/DockLightGlow.png",
@@ -728,8 +728,8 @@
    ],
    "use": "Base's mark, in ink, on its tile"
   },
-  "DockMarkInventory": {
-   "file": "images/DockMarkInventory.png",
+  "DockMarkHome": {
+   "file": "images/DockMarkHome.png",
    "pixels": [
     256,
     256
@@ -738,7 +738,7 @@
     64.0,
     64.0
    ],
-   "use": "Inventory's mark, in ink, on its tile"
+   "use": "Home's mark, in ink, on its tile"
   },
   "DockMarkMap": {
    "file": "images/DockMarkMap.png",

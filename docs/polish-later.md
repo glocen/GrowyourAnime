@@ -56,6 +56,7 @@ On the director's word of 2026-11-13 (`docs/decisions.md`): after the whole game
 - **The Void Shop's clock by day from far off** (AR38's second look, research, 2026-11-19, 01:14): at 160 studs at noon the lit teeth are no lighter than the sky. A dark back behind the brow's opening would set the lower teeth on dark. The count reads now by its gaps, and the crown is the far signal.
 - **The stages' tiles share one picture** (AR42's pick, research, 2026-11-19, 02:06): stages 1 to 3 show the Shade, with 2 and 3 identical. Give each stretch its own mark once the stretches differ.
 - **The stages' band's Back** (AR42's install, research, 2026-11-19, 18:51): a black plate, the darkest thing on the lit-glass screen. It could be the kit's quiet glass press.
+- **The bag's tab row's edge** (AR43's take 2 pass, research, 2026-11-19, 22:59): at the smallest phone, "Chests" is cut to "Ches" at the row's right edge with no fade. A soft fade at the scrolling edge would show the row goes on.
 
 ## Done
 

@@ -14234,6 +14234,12 @@ Research pulled it forward by message (after 20:34), as tier 1. Give level 3 its
   - The Kit 85/0, its quick tap rerun at 60 fps (13/0) after a 20 fps run.
 - **Status:** implemented and tested; for research's pass.
 
+### Research's pass on take 2 in the game (Quaestor, 2026-11-19, 22:59)
+
+- **Felt:** the Overview reads as one lit room. Rook's five attributes sit in two clean rows, the Main is named beside its number, and Leading is the brightest thing on the page. **The condition is met:** on the smallest phone all five show, "Intelligence" included, with nothing cut or shrunk. **Take 2 passes at competent,** with the level 3 jewels.
+- **The one bold thing:** the lit Leading plate, which says at once which Voidkin is out.
+- **No must-fix.** The bag's tab row cuts "Chests" to "Ches" at its edge with no fade. That's older than this cut, and goes to polish-later.
+
 ## AR44. The damage numbers' rework: the plain, received and healing numbers, and the critical closer to the reference (Faber's takes in the game, Modulo's stroke, research's pick)
 
 Research, 2026-11-19, 11:17 by the clock. The director, by 11:16, to research: "The damages/healing text need a small rework it doesnt look as i wanted it to be, same for the crit text it need to be more close to the reference i've shown". The same morning, relayed by Modulo at about 11:15: "like the blackstroke around the text for those are way to thick". Research reads "those" as the damage numbers, since the two came together. The rule stays `docs/ui.md`, "Damage numbers" (the director, 2026-11-12); this changes the look only. The reference is `docs/research/hud-reference.md`, its three arena screenshots, held internal.
@@ -14454,6 +14460,10 @@ Research pulled it forward by message (after 20:34), as tier 1: judge it at full
   - It's the window's view (1655 by 756 points); the smallest phone draws them about 18% larger in the same proportions.
 - **Tested:** the clip 3/0.
 - **Status:** implemented and tested; research's pass named this capture as its proof.
+
+### Research closes AR44's digits (Quaestor, 2026-11-19, 22:59)
+
+- **Felt:** the flurry's 608, 917 and 949 each read at a glance as one number, beside the critical's 1,204. **Gap 0.12 is met, and AR44 passes at competent.**
 
 ## AR45. The foes' cards with their difficulty skulls, and CR's gold tab (Modulo, for research's pick, then Faber)
 

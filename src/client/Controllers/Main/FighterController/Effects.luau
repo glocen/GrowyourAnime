@@ -39,6 +39,7 @@ local ShadeBurstArt = require(ReplicatedStorage.Shared.Config.ShadeBurstArt)
 local Shades = require(ReplicatedStorage.Shared.Config.Shades)
 local Sounds = require(script.Parent.Sounds)
 local Rows = require(script.Parent.Rows)
+local SettingsController = require(script.Parent.Parent.Parent.Core.SettingsController)
 local UI = script.Parent.Parent.Parent.Parent.UI
 local Theme = require(UI.Theme)
 local World = require(UI.World)
@@ -2352,7 +2353,7 @@ function Effects.Arrive(at: Vector3, width: number, seconds: number, colour: Col
 end
 
 function Effects.Jolt(add: number)
-	trauma = Fight.Trauma(trauma, add)
+	trauma = Fight.Trauma(trauma, add * SettingsController.Level("Effects")) -- the player's Effects level (AR43's Settings)
 end
 
 function Effects.Trauma(): number -- for the self-test

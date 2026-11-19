@@ -77,6 +77,17 @@ local equipment: { [string]: Image } = {
 	RailRingChosen = { Id = "rbxassetid://92255522494439", Pixels = Vector2.new(252, 252), Points = Vector2.new(63, 63), Pad = 0 },
 	RailRunner = { Id = "rbxassetid://82781072271965", Pixels = Vector2.new(16, 384), Points = Vector2.new(4, 96), Pad = 0 },
 	RailSheen = { Id = "rbxassetid://103039053240728", Pixels = Vector2.new(224, 224), Points = Vector2.new(56, 56), Pad = 0 },
+	-- Settings' slider (seam.json, "settings"): the channel in its own colours, the rest white masks; the fill's glow is laid on
+	-- the fill's box with 12 points on every side, the knob's glow by its radius (Config.Hud.Settings).
+	SliderFill = { Id = "rbxassetid://118214484845234", Pixels = Vector2.new(64, 24), Points = Vector2.new(16, 6), Cut = { 3, 0, 3, 0 }, Pad = 0 },
+	SliderFillGlow = { Id = "rbxassetid://97606607494358", Pixels = Vector2.new(160, 120), Points = Vector2.new(40, 30), Cut = { 15, 0, 15, 0 }, Pad = 0 },
+	SliderFillLight = { Id = "rbxassetid://103688823125619", Pixels = Vector2.new(64, 24), Points = Vector2.new(16, 6), Cut = { 3, 0, 3, 0 }, Pad = 0 },
+	SliderKnob = { Id = "rbxassetid://72027710222375", Pixels = Vector2.new(108, 108), Points = Vector2.new(27, 27), Pad = 0 },
+	SliderKnobEdge = { Id = "rbxassetid://82099210290783", Pixels = Vector2.new(88, 88), Points = Vector2.new(22, 22), Pad = 0 },
+	SliderKnobGlow = { Id = "rbxassetid://112008110787627", Pixels = Vector2.new(224, 224), Points = Vector2.new(56, 56), Pad = 0 },
+	SliderKnobRing = { Id = "rbxassetid://113965242031369", Pixels = Vector2.new(144, 144), Points = Vector2.new(36, 36), Pad = 0 },
+	SliderKnobSheen = { Id = "rbxassetid://125580744410955", Pixels = Vector2.new(108, 108), Points = Vector2.new(27, 27), Pad = 0 },
+	SliderTrack = { Id = "rbxassetid://137161371839360", Pixels = Vector2.new(64, 32), Points = Vector2.new(16, 8), Cut = { 4, 0, 4, 0 }, Pad = 0 },
 	ScreenBloom = { Id = "rbxassetid://112172577794449", Pixels = Vector2.new(256, 256), Points = Vector2.new(64, 64), Pad = 0 },
 	ReinforceBloom = { Id = "rbxassetid://82722059494454", Pixels = Vector2.new(376, 376), Points = Vector2.new(94, 94), Pad = 0 },
 	ReinforceComet = { Id = "rbxassetid://96855953618162", Pixels = Vector2.new(312, 312), Points = Vector2.new(78, 78), Pad = 0 },

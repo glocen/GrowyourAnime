@@ -34,6 +34,7 @@ local TweenService = game:GetService("TweenService")
 
 local Config = require(ReplicatedStorage.Shared.Config.Cues)
 local SoundRule = require(ReplicatedStorage.Shared.Rules.Sound)
+local SettingsController = require(script.Parent.Parent.Parent.Core.SettingsController)
 
 local Cues = {}
 
@@ -108,6 +109,15 @@ local function hear()
 		listener.Parent = camera
 	end
 end
+
+local heads: { AudioFader } = {} -- each bus's first fader, at the player's Sound level (AR43's Settings)
+SettingsController.Changed:Connect(function(name: string, level: number)
+	if name == "Sound" then
+		for _, head in heads do
+			head.Volume = level
+		end
+	end
+end)
 
 local function fader(bus: string): AudioFader
 	return faders[bus]
@@ -291,7 +301,13 @@ function Cues.Preload()
 		limiter.MaxLevel = Config.Limiter.MaxLevel
 		limiter.Release = Config.Limiter.Release
 		limiter.Parent = SoundService
-		wire(listener, f)
+		local head = Instance.new("AudioFader")
+		head.Name = `{GROUP}{bus}Level`
+		head.Volume = SettingsController.Level("Sound")
+		head.Parent = SoundService
+		table.insert(heads, head)
+		wire(listener, head)
+		wire(head, f)
 		wire(f, limiter)
 		wire(limiter, out)
 		listeners[bus] = listener

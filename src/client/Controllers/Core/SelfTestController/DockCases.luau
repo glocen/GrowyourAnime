@@ -168,7 +168,7 @@ function DockCases.Cases(given: Given): { any }
 			end,
 		},
 		{
-			Name = "HUD: Home's tray (AR43): grows out of the Home cell over the dimmed world; Inventory's four and Equipment's three, Settings tall; a tile steps into its own screen, Back brings the tray back; the unbuilt ones refused",
+			Name = "HUD: Home's tray (AR43): grows out of the Home cell over the dimmed world; Inventory's four and Equipment's three, Settings tall; a tile steps into its own screen, Back brings the tray back; every tile built",
 			Run = function(t: any)
 				-- AR43 in B (UI.HomeTray; Config.Hud.Home): the dock's Home cell opens a tray grown from its top, a group a row
 				-- and Settings tall at the end; a tile lights, the tray folds back as its screen rises, that screen's Back sinks it
@@ -238,13 +238,11 @@ function DockCases.Cases(given: Given): { any }
 					end
 					local b = tile.Button
 					local x, y = (b.AbsolutePosition.X - body.AbsolutePosition.X) / scale, (b.AbsolutePosition.Y - body.AbsolutePosition.Y) / scale
-					local built = (def :: any).Page ~= nil
+					local built = (def :: any).Page ~= nil or (def :: any).Screen ~= nil
 					t.Check(`{def.Name}: at its box, its icon and its word`, math.abs(x - def.Box[1]) <= 0.5 and math.abs(y - def.Box[2]) <= 0.5 and tile.Icon:GetAttribute("Kit") == def.Icon and tile.Word.Text == def.Name, string.format("%.1f, %.1f", x, y))
 					t.Equal(`{def.Name}: {if built then "at rest" else "not built yet: faint"}`, b:GetAttribute("Look"), if built then "Rest" else "Soon")
 				end
 				t.Check("its two headings", body:FindFirstChild("InventoryHeading") ~= nil and body:FindFirstChild("EquipmentHeading") ~= nil)
-				local soon = tray.Tiles.Reinforce.Button
-				t.Check("an unbuilt tile refuses, and the tray stays", not Button.Press(soon) and HomeTray.Shown(tray) and Screen.Current() == nil)
 				-- A tile: lit, the tray folds back to its cell, its page rises as its own screen.
 				local kit = tray.Tiles.Kit.Button
 				t.Check("Kit's tile takes the press", Button.Press(kit))

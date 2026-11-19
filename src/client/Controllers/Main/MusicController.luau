@@ -18,6 +18,7 @@ local MusicConfig = require(Shared.Config.Music)
 local Music = require(Shared.Rules.Music)
 local Markers = require(Shared.World.Markers)
 local PlaceRole = require(Shared.Util.PlaceRole)
+local SettingsController = require(script.Parent.Parent.Core.SettingsController)
 
 local MusicController = {}
 
@@ -157,9 +158,14 @@ end
 function MusicController.Start()
 	local made = Instance.new("SoundGroup")
 	made.Name = GROUP
-	made.Volume = 1
+	made.Volume = SettingsController.Level("Music") -- the player's Music level (AR43's Settings)
 	made.Parent = SoundService
 	group = made
+	SettingsController.Changed:Connect(function(name: string, level: number)
+		if name == "Music" then
+			made.Volume = level
+		end
+	end)
 	RunService.Heartbeat:Connect(step)
 end
 

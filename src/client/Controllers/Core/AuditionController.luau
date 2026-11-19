@@ -28,6 +28,7 @@ local Config = require(Shared.Config.Audition)
 local CuesConfig = require(Shared.Config.Cues)
 local Cues = require(script.Parent.Parent.Main.FighterController.Cues)
 local Sounds = require(script.Parent.Parent.Main.FighterController.Sounds)
+local SettingsController = require(script.Parent.SettingsController)
 
 local AuditionController = {}
 
@@ -260,7 +261,7 @@ function AuditionController.Others(on: boolean)
 	Sounds.Quiet(muted)
 	local music = game:GetService("SoundService"):FindFirstChild(MUSIC)
 	if music and music:IsA("SoundGroup") then
-		music.Volume = if muted then 0 else 1
+		music.Volume = if muted then 0 else SettingsController.Level("Music")
 	end
 	for name, base in CuesConfig.Cues do
 		local spec = specOf(name)

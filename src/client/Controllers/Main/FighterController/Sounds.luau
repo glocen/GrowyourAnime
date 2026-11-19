@@ -14,6 +14,7 @@ local TweenService = game:GetService("TweenService")
 
 local Config = require(ReplicatedStorage.Shared.Config.Sounds)
 local Cues = require(script.Parent.Cues)
+local SettingsController = require(script.Parent.Parent.Parent.Core.SettingsController)
 local SoundRule = require(ReplicatedStorage.Shared.Rules.Sound)
 
 local Sounds = {}
@@ -49,7 +50,7 @@ local function combat(): SoundGroup
 		group = named(GROUP_NAME)
 	end
 	local g = group :: SoundGroup
-	g.Volume = if quiet then 0 else Config.Combat * duck
+	g.Volume = if quiet then 0 else Config.Combat * duck * SettingsController.Level("Sound")
 	return g
 end
 
@@ -118,9 +119,26 @@ end
 -- The group a screen's sounds go through, made once, at its fader.
 function Sounds.Group(name: string, volume: number): SoundGroup
 	local g = named(name)
-	g.Volume = volume
+	g:SetAttribute("Base", volume) -- its own volume, under the player's Sound level (AR43's Settings)
+	g.Volume = volume * SettingsController.Level("Sound")
 	return g
 end
+
+-- The player's Sound level (SettingsController): the world's group and each screen's, at once.
+SettingsController.Changed:Connect(function(name: string, level: number)
+	if name ~= "Sound" then
+		return
+	end
+	if group and (group :: SoundGroup).Parent then
+		combat()
+	end
+	for _, each in SoundService:GetChildren() do
+		local base = each:GetAttribute("Base")
+		if each:IsA("SoundGroup") and type(base) == "number" then
+			each.Volume = base * level
+		end
+	end
+end)
 
 -- The world's groups taken down by `db` (0 puts them back), over a moment: a screen's sounds above them.
 function Sounds.Duck(db: number)
@@ -128,7 +146,7 @@ function Sounds.Duck(db: number)
 	if group == nil or (group :: SoundGroup).Parent == nil then
 		group = named(GROUP_NAME)
 	end
-	TweenService:Create(group :: SoundGroup, TweenInfo.new(DUCK_TIME), { Volume = if quiet then 0 else Config.Combat * duck }):Play()
+	TweenService:Create(group :: SoundGroup, TweenInfo.new(DUCK_TIME), { Volume = if quiet then 0 else Config.Combat * duck * SettingsController.Level("Sound") }):Play()
 	Cues.Under(db) -- and the layered cues' buses with them
 end
 

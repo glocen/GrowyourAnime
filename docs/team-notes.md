@@ -9,10 +9,10 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **Verdicts owed:** TR43 and TR44 in motion; AR40's install; AR30, AR37, TR10, AR28's Stage I, TR34, AR23, TR29.
 - **With the director:** the combat review's six decisions; the Voidkin screen and bag in B; the store's design; the sound pick on TR42's panel.
 
-**Faber (builder).** 2026-11-19, 19:25, on Opus 5.5. Done today: AR46's Hard looks with AR47's masks (TintMask, eight uploads Approved), passed at competent (19:18); AR42's install in Seam, passed at competent (18:51); TR48, the loot refit part 1; TR47's part A (6b640a0); TR46; AR44's must-fixes; AR45's foe cards; AR43's Home tray; AR38's Void Shop; TR32.
-- **Now:** Equipment's three (Reinforce, Jewels, War Emblems) and Settings in B (AR43, "The cut in B, for Faber"), on TR47's rules, from Home's tray.
-- **Next, in order:** AR40's C install; item 4 after research's refit.
-- **Open, tests:** seven cases fail in the phone simulator and pass in the full window (AR44, "Tests"). NOT VERIFIED (the Festival place, item 9): the Festival role's suite, the stage tile's "CR", TR48's keeper, drops and run log in a real run, and AR42's Stage cases; TintMask on a phone. The Base case's dock check is fixed with Equipment's install. TR44's phone take waits for the director's go.
+**Faber (builder).** 2026-11-19, 20:33, on Opus 5.5. Done today: AR43's Equipment three and Settings in B, from Home's tray (implemented and tested; captures and research's pass wait on the PC unlocked); AR46's Hard looks with AR47's masks, passed at competent (19:18); AR42's install in Seam, passed at competent (18:51); TR48; TR47's part A; TR46; AR44's must-fixes; AR45's foe cards; AR43's Home tray; AR38's Void Shop; TR32.
+- **Now:** AR40's C install.
+- **Next, in order:** item 4 after research's refit. When the PC is unlocked: AR43's phone captures of every state, then research's pass (AR43, "Faber's install of Equipment's three and Settings in B").
+- **Open, tests:** seven cases fail in the phone simulator and pass in the full window (AR44, "Tests"). NOT VERIFIED while the PC is locked (RenderStepped 0, tweens still): Reinforce's beat in frames, the Home tray's grow, the cue fades and ducks, the lint on Equipment and Settings. NOT VERIFIED (the Festival place, item 9): the Festival role's suite, the stage tile's "CR", TR48's keeper, drops and run log in a real run, and AR42's Stage cases; TintMask on a phone. TR44's phone take waits for the director's go.
 
 **Modulo (assets).** 2026-11-19, 19:19, on Opus 5.5. Voidkin work parked until before launch (the director's word, 11:10). Free for the next piece. Last drawn: the blockout for the board's item 11 (AR43, "The Voidkin screen and the bag in B"), now with the director.
 - **In the game:** AR46's Hard looks with AR47's masks, on TintMask (a856f06), passed by research at competent (19:18). The per-type Hard maps stay internal. AR42's tiles are in Faber's install in Seam, passed at competent (f9f3636).
@@ -20,7 +20,7 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **For Faber, AR40's install:** the atlas pair, and the Strip's eight changed meshes with the manifest, on top of the 40 base meshes, the paving and C's keys already listed in AR40. The atlas never goes alone. AR38's Shop meshes go with AR38.
 - **Unchanged:** AR41's render (the director's go), AR28's Stage I on TR37, AR19's re-uploads, AR24's A on TR34, AR39 stopped, Sable after launch.
 
-**Turns.** Studio: Faber's (Grow your Anime), in Play for TR47; a second Studio, Festival Lantern, is open, not Faber's; the director's listen on TR42's panel is tomorrow, in the same place. Blender: nobody (Modulo's AR41 strips were stopped at 01:33 on 2026-11-19 by Claude Code when the PC ran low on memory; the director said wait at 01:34). Timing tests: nobody.
+**Turns.** Studio: Faber's (Grow your Anime), in Play for AR43's tests; a second Studio, Festival Lantern, is open, not Faber's; the director's listen on TR42's panel is tomorrow, in the same place. Blender: nobody (Modulo's AR41 strips were stopped at 01:33 on 2026-11-19 by Claude Code when the PC ran low on memory; the director said wait at 01:34). Timing tests: nobody.
 
 **The count.** Pieces closed and playable this week: 13. TR2, the circuit in grey (phase 1); Haymaker, on A; the Shade's burst; Pip's Lantern Burst; Lyric's Held Note; TR3, the HUD in the world; TR4, the reveal; AR7, the Lamplighter installed with his fall; his signature; Lantern Burst's exit in 3D (B1); Haymaker's square in 3D (B5); TR18, power in grey; AR12's HUD part 1. Hours are in each piece's entry.
 
@@ -53,6 +53,7 @@ For Faber:
 
 ### Notices
 
+- Tier 1, Faber, 2026-11-19, AR43 in B: Settings' Effects covers the fight's particles and the camera's shake; the words the cut left open are mine ("Shades and keepers drop them", "Not enough Credits", "It's at +N already", the emblem bag's Sort pill, "Jewels are coming", "Not saved: try again"). The list is in AR43, "Faber's install of Equipment's three and Settings in B". Research: say in your row what you'd change.
 - Tier 2, research, 2026-11-19, 17:02: Hard's ember in the world (AR46). Hard's Shades, elites and Lamplighter wear the picker's ember, in three directions to capture before the pick. Faber's part is one switch at spawn. Also: TR47's and TR48's seeds (Reinforce, emblems, the materials, Hard's own budget, the Tower's Lift).
 - Tier 2, research, 2026-11-17, 21:10: the Void Shop's rules (`docs/design.md`, "The Strip"): six lines a stock, a rare offer about once an hour (a Named shard, never a roll), each player's own limit, the shelf fitted to the farthest ground, bought at the counter. Faber: say in your row what you'd change.
 - Tier 1, Modulo, 2026-11-18, AR38: the Shop's shelf follows D6. Its two lights are the Standard shards, and between them stands the featured piece's cradle, dark until a featured stock lights a stone in it with the crown (AR38, "The clock's fix, and the Shop in AR40's C"). Research: say in your row what you'd change.
@@ -124,6 +125,14 @@ For Faber:
 - Tier 2, research, 2026-11-12, on the director's words: weapons belong to a class, in two hands (Main Hand and Off Hand replace Weapon and Shield), a preset holds a pair per class, a weapon drop is for the lead's class; Combat Power made to be watched, its weights fitted by the simulation; each item kind modelled and rendered to its icon (AR6, phase 3) (`docs/design.md`, "Regalia: gear" and "Combat Power"). Faber: the Stats case's `"Weapon"` source becomes `"Main Hand"` when you next touch it. Faber and Modulo: say in your row what you'd change.
 
 ## Entries
+
+### 2026-11-19, 20:33. AR43 in B: Equipment's three and Settings, from Home's tray (Faber)
+
+- **What changed:** Home's tray opens Reinforce, Jewels and War Emblems on Equipment's screen in SeamGlass, and Settings on its own: one card of Music, Sound and Effects sliders, saved once on release and heard at once. Every tile in the tray is built.
+- **Where:** AR43, "Faber's install of Equipment's three and Settings in B"; `src/client/UI/EquipmentScreen/`, `src/client/UI/SettingsScreen.luau`, `Rules.Settings`, `SettingsService`, `SettingsController`, `Config.Hud.Equipment` and `Settings`.
+- **Tested:** type check 0 new; logic 27,226 passed offline; Equipment's three cases and Settings' case passed. The frame-bound checks are NOT VERIFIED: the PC is locked.
+- **Open:** the phone captures of every state, then research's pass.
+- **For:** research.
 
 ### 2026-11-19, 17:28. TR47 part A and TR48: gear's own levels, the loot refit part 1 (Faber)
 
@@ -232,18 +241,3 @@ For Faber:
 - **Fix 3:** the farthest gate is 288 from the crossing. From there the great shard reads 3.7 to 1, against 3.2 from the 372 view research passed (the same measure on both).
 - **Where:** `build/handoff/Strip/` (`plan.json` and the eleven views); the record is AR17, "The plan laid again at 128".
 - **Open:** research's pass, then Faber's install.
-
-### 2026-11-17, 15:45. AR30: the phone sheet on the smallest phone (Modulo)
-
-- Every button in the seam's make, on Faber's seven smallest-phone stills: the item card, the class-locked card, a chest's card, the Breaker, the base screen's rows, and the dock and prompt at a bay and at the Breaker. Today's buttons are on the left, the make on the right.
-- **Where:** `build/handoff/UI/buttons/buttons_phone.png`; the record is AR30, "The phone sheet on the smallest phone". Content check PASS.
-- **Open:** research's read. One note goes beyond the buttons: the item card covers the bag's chips at this size.
-
-### 2026-11-17, 15:31. AR16: the plan laid again at 128 (Modulo)
-
-- **What changed:** AR16's star is recomposed into the 128 square. The machines keep their size, and only the space between them shrinks. The generator stands at 52 in, and the Breaker and the Door at 26 in. The plan passes part 7's tests: the Breaker is 1.79 s from the gate, the least gap is 12.2 and the widest corner is 50.4° of 51.2°.
-- **The FloodMasts** stand at 35 in, 9 behind the Door's line. Ray-tested from the game's camera, no mast crosses the Door from the way in, the spawn or the gate.
-- **Also re-laid:** the floors, in 32-stud blocks to the back wall; the walls; 6 pylons; the transformers.
-- **Where:** AR16, "Delivery 3"; `build/handoff/Base/` (`plan.json`, `manifest.json`, 8 meshes, 11 pictures, 22 looks); `tools/blender/base_kit.py`, `base_plan.py` (`fit()`).
-- **Open:** Faber's install (`Plots.Drawn` = 8, kit_take, the uploads), then research's verdict in the game.
-- **For:** Faber, then research.

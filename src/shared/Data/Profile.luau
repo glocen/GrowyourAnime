@@ -150,6 +150,9 @@ export type Data = {
 	},
 	Settings: {
 		Salvage: string, -- an opened item of this rarity or under turns into Credits; "" for none (Rules.Chests)
+		Music: number, -- the player's levels, 0 to 1 in hundredths (Rules.Settings; AR43's Settings): the music's volume,
+		Sound: number, -- every other sound's,
+		Effects: number, -- and how much of the fight's particles and camera shake plays
 	},
 	Currency: {
 		Credits: number,
@@ -213,7 +216,7 @@ function Profile.Template(): Data
 		Items = {},
 		Presets = { { Slots = {}, Hands = {} } },
 		Bag = { Shards = {}, Chests = {}, Stones = {}, Emblems = {}, Jewels = {} },
-		Settings = { Salvage = "" },
+		Settings = { Salvage = "", Music = 1, Sound = 1, Effects = 1 },
 		Currency = { Credits = 0, Research = 0 },
 		Shop = { Stock = 0, Bought = {} },
 		Roles = { Lead = "" },

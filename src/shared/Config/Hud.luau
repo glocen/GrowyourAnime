@@ -553,16 +553,17 @@ return {
 			{ Group = "Inventory", Mark = "HomeMarkInventory", At = Vector2.new(65.4, 29), Side = 19.2, Word = Vector2.new(65.4, 49) },
 			{ Group = "Equipment", Mark = "PageForge", At = Vector2.new(53, 91), Side = 18, Word = Vector2.new(53, 111) },
 		},
-		-- Each tile's Page is the Voidkin screen's page it opens alone; a tile with no Page isn't built yet (Soon).
+		-- Each tile's Page is the page it opens alone: the Voidkin screen's, or its Screen's (Equipment's); a tile with a
+		-- Screen and no Page opens that screen (Settings); one with neither isn't built yet (Soon).
 		Tiles = {
 			{ Name = "Overview", Page = "Overview", Icon = "PageOverview", Box = { 108.4, 12, 86.4, 52 }, At = Vector2.new(151.6, 28), Word = Vector2.new(151.6, 48) },
 			{ Name = "Kit", Page = "Kit", Icon = "PageKit", Box = { 190.4, 12, 86.4, 52 }, At = Vector2.new(233.6, 28), Word = Vector2.new(233.6, 48) },
 			{ Name = "Inventory", Page = "Bag", Icon = "PageItems", Box = { 272.4, 12, 86.4, 52 }, At = Vector2.new(315.6, 28), Word = Vector2.new(315.6, 48) },
 			{ Name = "Stars", Page = "Stars", Icon = "PageStars", Box = { 354.4, 12, 86.4, 52 }, At = Vector2.new(397.6, 28), Word = Vector2.new(397.6, 48) },
-			{ Name = "Reinforce", Icon = "PageForge", Box = { 96, 74, 113.73, 52 }, At = Vector2.new(152.87, 90), Word = Vector2.new(152.87, 110) },
-			{ Name = "Jewels", Icon = "PageJewels", Box = { 205.33, 74, 113.73, 52 }, At = Vector2.new(262.2, 90), Word = Vector2.new(262.2, 110) },
-			{ Name = "War Emblems", Icon = "PageWarEmblems", Box = { 314.67, 74, 113.73, 52 }, At = Vector2.new(371.53, 90), Word = Vector2.new(371.53, 110) },
-			{ Name = "Settings", Icon = "HomeMarkSettings", Tall = true, Box = { 430, 12, 94.8, 114 }, At = Vector2.new(479.4, 59), Side = 27.73, Word = Vector2.new(475.4, 88) },
+			{ Name = "Reinforce", Page = "Reinforce", Screen = "Equipment", Icon = "PageForge", Box = { 96, 74, 113.73, 52 }, At = Vector2.new(152.87, 90), Word = Vector2.new(152.87, 110) },
+			{ Name = "Jewels", Page = "Jewels", Screen = "Equipment", Icon = "PageJewels", Box = { 205.33, 74, 113.73, 52 }, At = Vector2.new(262.2, 90), Word = Vector2.new(262.2, 110) },
+			{ Name = "War Emblems", Page = "War Emblems", Screen = "Equipment", Icon = "PageWarEmblems", Box = { 314.67, 74, 113.73, 52 }, At = Vector2.new(371.53, 90), Word = Vector2.new(371.53, 110) },
+			{ Name = "Settings", Screen = "Settings", Icon = "HomeMarkSettings", Tall = true, Box = { 430, 12, 94.8, 114 }, At = Vector2.new(479.4, 59), Side = 27.73, Word = Vector2.new(475.4, 88) },
 		},
 		Side = 20, -- a row tile's icon
 		Words = 14,
@@ -593,7 +594,7 @@ return {
 		Panel = { Sheen = 0.89, Glint = 0.15, Edge = { 0.1, 0.7 } }, -- the lift's, the corner's and the edge's transparencies
 		Rail = {
 			X = 48,
-			Buttons = { Reinforce = { 48, 104, "VoidkinPageForge" }, Jewels = { 48, 186, "VoidkinPageJewels" }, ["War Emblems"] = { 48, 262, "VoidkinPageWarEmblems" } },
+			Buttons = { Reinforce = { 48, 104, "PageForge" }, Jewels = { 48, 186, "PageJewels" }, ["War Emblems"] = { 48, 262, "PageWarEmblems" } }, -- the marks: the Voidkin screen's page icons (Voidkin.Chrome.Images)
 			Rest = 20,
 			Chosen = 27,
 			Line = { Wide = 1.2, Alpha = 0.55 },
@@ -639,8 +640,21 @@ return {
 			Credits = { 388, 272, 462, 304, Picture = Vector2.new(392, 279), Side = 18, Count = 456 },
 			Press = { 468, 266, 548, 310 },
 			Bloom = 0.66,
-			-- upgrade_motion.SEEDS (equipment.json, reinforce.motion), in seconds and points: the answer waits on the server.
+			-- upgrade_motion.SEEDS (equipment.json, reinforce.motion), in seconds and points: the answer waits on the server,
+			-- and shows no sooner than Least, so the stones land and the ring breathes (the cut's stand-in answer).
 			Motion = {
+				Least = 0.4,
+				-- reinforce.motion's shapes: the breath from Breath.From, its ring Breath.Line wide at Breath.Light[1] + [2] u of
+				-- light, its glow to Breath.Glow, the fill inside it to Breath.Fill, Breath.Inner round; the wave's line Waves.Line[1]
+				-- + [2] (1 - v) wide, white turned green by Waves.Green v, its glow Waves.Glow; the sparks from Edge round; a fail's dull
+				-- light Dull.Alpha of Dull.Tint, Dull.Round round; the gear dims over DimIn, back from DimFrom to DimBack, sinks over
+				-- SinkIn, rises again from SinkFrom over SinkFor; the press's light back over Return.
+				Breath = { From = 0.06, Line = 1.6, Light = { 0.25, 0.6 }, Glow = 0.35, Fill = 0.14, Inner = 25 },
+				Waves = { Line = { 0.4, 2.2 }, Green = 2.5, Glow = 0.5 },
+				Edge = 23,
+				Dull = { Tint = Color3.fromHex("#FFD2CC"), Alpha = 0.3, Round = 26 },
+				DimIn = 0.08, DimFrom = 0.2, DimBack = 0.45, SinkIn = 0.1, SinkFrom = 0.15, SinkFor = 0.25,
+				Return = 0.1,
 				Pending = 0.6, Fly = 0.22, Apart = 0.035, Stones = 3, Inhale = 16, Lift = 0.05, Flash = 0.14, Wave = 26, WaveFor = 0.32,
 				Kick = 0.1, Texts = 0.3, Crack = 0.06, CrackFade = 0.4, Dim = 0.55, Sink = 0.04, Shake = 2, ShakeFor = 0.24, Settle = 0.8, Turn = 0.08,
 			},
@@ -671,10 +685,38 @@ return {
 			Said = { At = Vector2.new(318, 166), Pitch = 18 },
 		},
 		-- The sockets' looks (equipment.json, images): the rest rim's and the glow's transparencies, the empty marks'.
-		Socket = { Edge = 0.15, EmptyEdge = 0.5, Glow = 0.45, EmptyEmblem = 0.3, EmptyJewel = 0.45 },
+		-- Transparencies (equipment.json's images): a rim, an empty one's, the chosen one's glow, the empty marks in a socket
+		-- and in a list row.
+		Socket = { Edge = 0.15, EmptyEdge = 0.5, Glow = 0.45, EmptyEmblem = 0.3, EmptyJewel = 0.45, RowEmblem = 0.2, RowJewel = 0.3 },
 		-- Seam's idle and motion (seam.json): one loop for every idling piece; the opening and a rail switch.
 		Idle = 2.4,
-		Motion = { RowStart = 0.06, RowGap = 0.035, RowTime = 0.2, RowFrom = 24, WorkStart = 0.1, WorkTime = 0.22, Switch = 0.18, Back = 1.2, Glide = 0.2 },
+		-- Opening: row k slides in RowFrom points from the left from RowStart + k RowGap over RowTime; the work fades in from
+		-- WorkStart over WorkTime; Reinforce's ring draws round from Ring.Start over Ring.Time; the gear grows from Pop.From.
+		-- A rail tap: the buttons grow or shrink over Switch (a Back ease), the work dips over Cross, the rows' words cross.
+		-- A row tapped: the glass glides over Glide; the old work leaves over Leave sliding Slide left, the new comes in over
+		-- Enter from Slide right (reinforce.motion, rowTapped).
+		Motion = {
+			RowStart = 0.06, RowGap = 0.035, RowTime = 0.2, RowFrom = 24, WorkStart = 0.1, WorkTime = 0.22, Switch = 0.18, Back = 1.2,
+			Glide = 0.2, Cross = 0.18, Slide = 8, Leave = 0.1, Enter = 0.16,
+			Ring = { Start = 0.14, Time = 0.3, Swap = 0.1 }, -- drawn, the copies cross to the ring lit from above over Swap
+			Pop = { Start = 0.14, Time = 0.24, From = 0.8, Back = 1.2 },
+		},
+	},
+	-- Settings in B (AR43, "The cut in B, for Faber": build/handoff/UI/seam/seam.json, "settings"): one card of three
+	-- sliders, Music, Sound and Effects (Rules.Settings), on Equipment's block, in the cut's points like Equipment's.
+	-- Transparencies are ImageTransparency, at rest and held.
+	Settings = {
+		Card = { 88, 68, 480, 304 },
+		Rows = { 122, 186, 250 }, -- each row's middle; the whole row, the card wide and Pitch tall, drags its slider
+		Pitch = 64,
+		Name = { X = 110, Size = 15 }, -- bold, in the palette's Text, the light held
+		Value = { Right = 458, Size = 14 }, -- "Off" or "N%", in Soft, the light and bold held
+		Slider = { Start = 208, End = 402 },
+		Track = 8, -- the channel's height, on the row's middle
+		Fill = { Tall = 6, Light = { 0.75, 0.55 }, Glow = { 0.86, 0.7 }, Pad = 12 }, -- from 1 past the start to the knob
+		Knob = { Rest = 10, Held = 12.5, Grow = 0.08, Sheen = 0.4, Edge = 0.1, Glow = { 0.65, 0.35 }, GlowPad = 18, Ring = 36, RingAlpha = 0.15, Foot = Color3.fromHex("#D4C6FF") },
+		Divider = { Left = 106, Right = 462, Alpha = 0.4 }, -- between the rows, in the palette's Edge
+		Glow = Color3.fromHex("#D4C6FF"), -- the knob's glow, lavender
 	},
 	-- The dock of three icons (AR12, in AR30's make: its look is Make.Dock): a touch held LongPress seconds shows the
 	-- cell's word Rise points over its glass, and lifting it then doesn't press.

@@ -36,6 +36,8 @@ local SlamCases = require(script.SlamCases)
 local ShopCases = require(script.ShopCases)
 local FunnelCases = require(script.FunnelCases)
 local GearCases = require(script.GearCases)
+local EquipmentCases = require(script.EquipmentCases)
+local SettingsCases = require(script.SettingsCases)
 local BaseController = require(script.Parent.Parent.Main.BaseController)
 local Screen = require(script.Parent.Parent.Parent.UI.Kit.Screen)
 local Button = require(script.Parent.Parent.Parent.UI.Kit.Button)
@@ -226,6 +228,10 @@ local function run(filter: string?): string
 	table.move(funnel, 1, #funnel, #cases + 1, cases)
 	local gear = GearCases.Cases() -- gear's own levels (TR47), apart for the same reason
 	table.move(gear, 1, #gear, #cases + 1, cases)
+	local equipment = EquipmentCases.Cases() -- Equipment's three in B (AR43), apart for the same reason
+	table.move(equipment, 1, #equipment, #cases + 1, cases)
+	local settings = SettingsCases.Cases() -- Settings in B (AR43), apart for the same reason
+	table.move(settings, 1, #settings, #cases + 1, cases)
 	local elsewhere = 0
 	pcall(serverCall, "TravelStub", true) -- no case ever leaves the place: each trip asked for is recorded (TR45)
 	for _, case in cases do

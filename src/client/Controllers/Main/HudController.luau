@@ -57,6 +57,8 @@ local Readout = require(UI.Readout)
 local LeadCard = require(UI.LeadCard)
 local LevelNotice = require(UI.LevelNotice)
 local VoidkinScreen = require(UI.VoidkinScreen)
+local EquipmentScreen = require(UI.EquipmentScreen)
+local SettingsScreen = require(UI.SettingsScreen)
 local TargetCard = require(UI.TargetCard)
 local Dock = require(UI.Dock)
 local HomeTray = require(UI.HomeTray)
@@ -642,6 +644,17 @@ local function voidkinScreen(page: string?, said: string?)
 	VoidkinScreen.Open(view, { Act = ProfileController.Act, Healing = healing, Page = page, Said = said })
 end
 
+-- Equipment's screen (UI/EquipmentScreen; AR43, TR47's part A) on `page`: Reinforce, Jewels or War Emblems.
+local function equipmentScreen(page: string)
+	local view = ProfileController.Get()
+	if view == nil then
+		return
+	end
+	EquipmentScreen.Open(page, view, { Act = ProfileController.Act, Say = function(words: string)
+		Toast.Show(words)
+	end })
+end
+
 -- Where a shard just won comes from: the nearest fallen Shade to the avatar, within Config.Effects.Drop.From.
 local function fallenNear(): Vector3?
 	local at = avatarAt()
@@ -845,6 +858,10 @@ local function showView(view: Profile.View)
 	Button.Set(homeButton, { Disabled = Hud.VoidkinReason(owned) or false }) -- every built tile shows a Voidkin
 	if Screen.Current() == "Voidkin" then
 		voidkinScreen()
+	elseif Screen.Current() == EquipmentScreen.Name then
+		EquipmentScreen.Refresh(view)
+	elseif Screen.Current() == SettingsScreen.Name then
+		SettingsScreen.Refresh(view)
 	end
 end
 
@@ -1354,14 +1371,26 @@ function HudController.Start()
 	dockHolder.AnchorPoint = Vector2.new(0.5, 1)
 	dockHolder.Position = UDim2.new(0.5, 0, 1, -PAD)
 	homeButton = dockUi.Tiles.Home.Button
-	-- Home's tray grows about the Home cell's top middle; each built tile opens its page of the Voidkin screen alone.
+	-- Home's tray grows about the Home cell's top middle; each tile opens its page alone: of the Voidkin screen, or of its
+	-- Screen (Equipment's), or its Screen (Settings).
 	local make = HudConfig.Make.Dock
 	local presses: { [string]: () -> () } = {}
 	for _, tile in HudConfig.Home.Tiles do
 		local page = (tile :: any).Page :: string?
-		if page then
+		local screen = (tile :: any).Screen :: string?
+		if page and screen == "Equipment" then
+			presses[tile.Name] = function()
+				equipmentScreen(page)
+			end
+		elseif page then
 			presses[tile.Name] = function()
 				voidkinScreen(page, tile.Name)
+			end
+		elseif screen == "Settings" then
+			presses[tile.Name] = function()
+				SettingsScreen.Open({ Act = ProfileController.Act, Say = function(words: string)
+					Toast.Show(words)
+				end })
 			end
 		end
 	end

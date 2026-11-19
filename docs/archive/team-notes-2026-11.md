@@ -2,6 +2,21 @@
 
 The oldest entries of `docs/team-notes.md`, moved here as that file passed about 250 lines (`AGENTS.md`, "Team notes"). Newest first.
 
+### 2026-11-17, 15:45. AR30: the phone sheet on the smallest phone (Modulo)
+
+- Every button in the seam's make, on Faber's seven smallest-phone stills: the item card, the class-locked card, a chest's card, the Breaker, the base screen's rows, and the dock and prompt at a bay and at the Breaker. Today's buttons are on the left, the make on the right.
+- **Where:** `build/handoff/UI/buttons/buttons_phone.png`; the record is AR30, "The phone sheet on the smallest phone". Content check PASS.
+- **Open:** research's read. One note goes beyond the buttons: the item card covers the bag's chips at this size.
+
+### 2026-11-17, 15:31. AR16: the plan laid again at 128 (Modulo)
+
+- **What changed:** AR16's star is recomposed into the 128 square. The machines keep their size, and only the space between them shrinks. The generator stands at 52 in, and the Breaker and the Door at 26 in. The plan passes part 7's tests: the Breaker is 1.79 s from the gate, the least gap is 12.2 and the widest corner is 50.4° of 51.2°.
+- **The FloodMasts** stand at 35 in, 9 behind the Door's line. Ray-tested from the game's camera, no mast crosses the Door from the way in, the spawn or the gate.
+- **Also re-laid:** the floors, in 32-stud blocks to the back wall; the walls; 6 pylons; the transformers.
+- **Where:** AR16, "Delivery 3"; `build/handoff/Base/` (`plan.json`, `manifest.json`, 8 meshes, 11 pictures, 22 looks); `tools/blender/base_kit.py`, `base_plan.py` (`fit()`).
+- **Open:** Faber's install (`Plots.Drawn` = 8, kit_take, the uploads), then research's verdict in the game.
+- **For:** Faber, then research.
+
 ### 2026-11-17, 14:37. TR40: Regen in bursts (Faber)
 
 - **What changed:** a lead heals one burst every 8 s from its summon, always, half of what 8 s at its rate healed, and Base Regen is 1. A green number and a pop at the chest show it. The sheet and the cards read the burst. Combat Power's Regen weight is halved. Home's heal on the plot is unchanged.

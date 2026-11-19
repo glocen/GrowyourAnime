@@ -14035,6 +14035,33 @@ The director's words: jewels and War Emblems go in and out on Equipment's pages 
   - On a yes, Faber builds B from the kit (`build/handoff/UI/seam/`, and `Config.UIKit`'s SeamGlass), as for Equipment. Nothing here is cut.
 - **Status:** drawn and self-read at 18:58, for research to put before the director with item 11. It's thrown away on a no.
 
+### Faber's install of Equipment's three and Settings in B (Faber, 2026-11-19, 19:25 to 20:33 by the clock)
+
+- **From Home's tray:** Reinforce, Jewels and War Emblems open Equipment's screen at their page (`src/client/UI/EquipmentScreen/`); Settings opens its own (`src/client/UI/SettingsScreen.luau`). Every tile in the tray is built now.
+- **Equipment in SeamGlass,** on the cut's points (`Config.Hud.Equipment`): the ground and bloom, the two panels with their sheen, lit edge and corner glint (`Look.Panel`, on a block scaled to the room, `Look.Room`), the rail with the Voidkin screen's page marks, the list and the work.
+  - **Reinforce:** the beat on `upgrade_motion`'s seeds (`Motion`, `Reinforce`), the odds and the cost from `Rules.Reinforce`. If frames stall, a timer ends the beat, so the press never stays busy.
+  - **War Emblems:** the bag's cells, Put in and Take out, the sockets showing what they hold.
+  - **Jewels (TR47's part A):** the five slots empty and marked as coming; the press is off and says so.
+- **Settings:** one card of Music, Sound and Effects. The whole row drags its slider. Held, the knob grows and its ring lights over 0.08 s, and each change plays at once; the release saves once (the `Settings` action: `src/shared/Rules/Settings.luau`, `src/server/Services/Main/SettingsService.luau`). At nought it reads Off.
+  - **Where each level plays** (`src/client/Controllers/Core/SettingsController.luau`): Music on the music's group; Sound on every other sound's group and on each cue bus, by a fader at the bus's head before its limiter; Effects on the fight's particles and the camera's shake.
+  - **The save:** `Profile.Settings` gains `Music`, `Sound` and `Effects`, each at 1. Old saves get them on load (Reconcile).
+  - **Uploads:** the kit's nine slider images, under the group at 20:12 (`docs/asset-log.md`, the row of Seam's lit glass), on the kit's content check of 16:08.
+- **Tier-1 calls, for research's pass:**
+  - Effects covers the fight's particles and the camera's shake.
+  - The words the cut left open: "Shades and keepers drop them" (no stones, no emblems yet); "Not enough Credits"; "It's at +N already" (the cap); the Sort pill in the emblem bag; "Jewels are coming"; "Not saved: try again" (a refused setting).
+- **Tests:**
+- **The type check:** 0 new. **The logic cases, offline:** 27,226 passed, 0 failed, with `Settings`' case (`LogicTestService/Cases/Settings.luau`): the defaults, a value rounded to hundredths, nought, and each refusal changing nothing.
+  - **The self-test,** in Grow your Anime's Studio with the PC locked (RenderStepped 0, the viewport 1 by 1, and a tween doesn't move: a 0.2 s tween still read 0 after 0.6 s):
+    - **Settings:** 18 passed, 0 failed. From Home's tall tile, each row at the save's level; Music to 40% is saved and the music's group is at 0.4; Sound at nought reads Off and every cue bus's head is silent; Effects to half; Back brings the tray back; the levels put back.
+    - **Equipment's three:** 44 passed, 0 failed. Reinforce from the tray's tile (the rows, Ready, the odds, the press, +1 saved, its cost, "Reinforced to +1", then Off and "short" without stones); War Emblems in and out; Jewels' five slots, coming, the press off.
+    - **The lint on each page and on Settings:** one real miss, fixed. War Emblems' prompt "Choose an emblem below" was 200 pixels in a 178-pixel box; it reads "Choose an emblem" over "for the lit socket" now. That fix's rerun: 24 passed, the one left frame-bound (below).
+  - **NOT VERIFIED while the PC is locked, all frame-bound:**
+    - The Home tray's grow and fold. Its scale stays at 0.55, so in later cases its words read at 7.9 pixels and its tiles at 40 by 24 (20 of the tray case's checks, and the lint's size, tap and safe-area checks on every page).
+    - A screen's rise from a tile; `NL_Hud.Root.Spectate` in the safe area (it sits at -22, -80 with the viewport 1 by 1).
+    - The cue voices' fades and the Shades' duck: six of the Sound cases' checks and one of Audition's. The heads read 1 where they should, so the level mutes nothing.
+    - Reinforce's beat in frames. The timer ends it, so the press frees.
+- **Status:** implemented and tested as above. Visually reviewed: no, the PC is locked, so no captures. The phone captures of every state and research's pass wait for it to be unlocked.
+
 ## AR44. The damage numbers' rework: the plain, received and healing numbers, and the critical closer to the reference (Faber's takes in the game, Modulo's stroke, research's pick)
 
 Research, 2026-11-19, 11:17 by the clock. The director, by 11:16, to research: "The damages/healing text need a small rework it doesnt look as i wanted it to be, same for the crit text it need to be more close to the reference i've shown". The same morning, relayed by Modulo at about 11:15: "like the blackstroke around the text for those are way to thick". Research reads "those" as the damage numbers, since the two came together. The rule stays `docs/ui.md`, "Damage numbers" (the director, 2026-11-12); this changes the look only. The reference is `docs/research/hud-reference.md`, its three arena screenshots, held internal.

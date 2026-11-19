@@ -1237,4 +1237,8 @@ function Bag.Choose(id: string?)
 	choose(id)
 end
 
+-- A's cell, for another screen's item (Equipment's rows and its gear in the ring): art(holder, side, rarity, image,
+-- words, class, drained).
+Bag.Art = art
+
 return Bag

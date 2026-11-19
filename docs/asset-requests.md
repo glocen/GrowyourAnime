@@ -14463,6 +14463,31 @@ Labelled SIMULATION, not play: `tools/balance/sim.py`'s model, 6,000 leads (leve
 - **Felt:** the cracks now rise from the hem like heat through the cloth, and read as ember, not arcs, at the phone's pixels. **The must-fix is met. AR46 passes at competent,** for Modulo's cut and Faber's install.
 - The mechanism, a shell per piece or a Hard atlas with a white tint, is Faber's technical call. The install capture judges the cracks in motion.
 
+### The cut, for Faber (Modulo, 2026-11-19, 17:57 to 18:20 by the clock)
+
+- **The maps:** `build/handoff/Shade/hard/` and `build/handoff/Lamplighter/hard/`, 1024 px on each foe's own atlas, with the keys in each `hard.json`. Per foe:
+  - `<Foe>_Emissive_Hard.png`, the glow map: the masks' paper dark, their cuts lit as today, and the cracks at 7 over the body's 16.
+  - `<Foe>_Color_Hard<Type>.png`, the colour map for one type, the stand-in's (the Shade's Red, the keeper's Purple). The cuts are painted `#E85A44` and the cracks' ramp painted in. The type's colour sits under the body's glow, so on Hard the body's tint goes white and every lit texel draws as on Normal.
+  - `<Foe>_Color_HardTint.png`: the same colour map untinted, its alpha the type's share, for SurfaceAppearance's TintMask.
+  - The roughness, and the keeper's metalness, stay the foe's own.
+- **How it's made:** `tools/blender/hard_cut.py` bakes the stand-in's cracks into each foe's own atlas and classes each texel as body or mask. It then composes the Hard maps from the delivered ones and renders them on the foes in the stand-in's frame.
+  - The masks' stitches and rim wear the swatch strip's paper, which no bake draws. Its glow is off on Hard by the foes' own rule: only a mask wears paper.
+  - Each island's margin is grown here from its own texels, never over a neighbour's. The bake's own margin blended the classes at the islands' edges and painted the trim's edges as cuts.
+- **The check:** `build/scratch/modulo/ember/hard_cut.png`. The fit against the stand-in B, where a foe stands, in 8-bit steps: the Shade's pack has a mean of 8.9 (median 2), the keeper 3.3. Two things differ:
+  - a crack's edge is a touch softer in the atlas's texels (69 a stud on the Shade, 60 on the keeper);
+  - the trim's daylit part is a touch redder, because the type's colour is in the colour map.
+- **On Hard, whatever the route:** the body's EmissiveTint is white at 16, and the masks keep `#FFE2B8` at 6. The burst's `ImageColor3` is `#FFB4A0` on every `Kind` but scrap, and the scraps stay white.
+- **The routes and their cost, Faber's pick** (five types today, `Config.Shades.Tint`; both foes take the type's tint at spawn):
+  - **The atlas, a colour map per type:** no new parts or meshes. Per foe, five colour maps and the glow map: 12 images for the two. A Hard foe wears its type's pair, through a Hard template per foe and type, or a Hard SurfaceAppearance per type cloned in at spawn. Each new type adds a map per foe. Only Red and Purple are made; the other types are one run of `hard_cut.py`'s `colours` mode, seconds.
+  - **The atlas with TintMask:** type-free, 4 images for the two foes. On Hard, AlphaMode is TintMask, SurfaceAppearance.Color is the type's colour and the EmissiveTint is white. Unchecked: TintMask is still a beta (Roblox's announcement), and nothing read says whether its tint reaches the glow. A few minutes in Studio show it; if it doesn't, the trim glows white.
+  - **A shell:** the body keeps its maps and tint. Each body piece gets a second, slightly larger MeshPart carrying only the cracks (a transparent colour map and a glow map, type-free), and the masks still wear the Hard pair. For the two foes: 10 meshes and 8 images to upload, then 5 more MeshParts and welds on each Hard foe at spawn, and a transparent layer that can sort or fight with the body. Not made.
+  - **My read:** TintMask if Studio shows its tint reaching the glow; else a map per type. The shell costs the most and draws the least surely.
+- **Content check** (the same checker, 18:19): PASS on the six maps and the sheet. Its conditions for the upload:
+  1. Only the six maps go up, under the group. The sheet and the stand-in's frames stay internal.
+  2. On the per-type route, the other types' colour maps get their own check before upload; the batch at 64 px is enough.
+  3. Once installed, one player-camera capture of a Hard Shade and the Lamplighter, near and side headings, shows the cracks drawing amber over the type's trim, as in the cut. This matters most on the TintMask route. A crack drawn flat or dark red in game comes back to the check.
+  4. The burst's scraps stay ImageColor3 white on every difficulty.
+
 ## Later, by ground
 
 The rest of ground 1 (Kirra in AR10, Watt in AR11; then Sable, Marigold, Crane), then each ground's Voidkin in `docs/roster.md`'s order. **The machines** (Gantry, Bulwark, Ironhymn, Shiomaru, Aegir) share one custom rig, taller than a player, with its own clip family: the first of them is timed like AR1, because a custom rig is a different cost.

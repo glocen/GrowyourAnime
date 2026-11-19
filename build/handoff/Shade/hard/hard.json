@@ -1,0 +1,46 @@
+{
+  "what": "AR46, Hard's ember on the Shade (the Brawler, Red): the masks' cuts in the ember with the paper's glow off, and the coat's cracks lit from within. Research's pick B without C (2026-11-19, 17:42), the cracks' second look passed at competent (17:56). From tools/blender/hard_cut.py, baked from hard_ember.py's stand-in",
+  "maps": {
+    "Emissive": "Shade_Emissive_Hard.png",
+    "Color": "Shade_Color_HardRed.png",
+    "TintMask": "Shade_Color_HardTint.png",
+    "same": [
+      "Roughness"
+    ],
+    "note": "All of the foe's pieces share one atlas: on Hard, the five body pieces, the four masks and the elite's second mask wear the Hard glow map and one Hard colour map; the roughness stays the foe's own. Shade_Color_HardRed.png is the Red type's, checked against the stand-in; the other 4 types' are one run of hard_cut.py's `colours` mode, on the atlas route's pick. A mask's texels are the same in every type's map"
+  },
+  "on_hard": {
+    "body": {
+      "EmissiveTint": "#FFFFFF",
+      "EmissiveStrength": 16.0,
+      "note": "the type's colour is in the colour map under the body's glow; at Config.Shades' body strength (16) every lit pixel draws as on Normal and the cracks draw their own amber"
+    },
+    "masks": {
+      "EmissiveTint": "#FFE2B8",
+      "EmissiveStrength": 6.0,
+      "note": "as today: the maps carry the cuts' ember and the paper's dark"
+    },
+    "burst": {
+      "ImageColor3": "#FFB4A0",
+      "on": "every picture whose Kind is not scrap (charge, flare, flame)",
+      "scraps": "ImageColor3 white, on every difficulty (the content check's condition)"
+    }
+  },
+  "fit": {
+    "mean": 8.923,
+    "p99": 42.49,
+    "note": "the cut's frame against the stand-in B's, in 8-bit steps, where a foe stands: a crack's edge is a touch softer in the atlas's texels, and the trim's daylit part a touch redder"
+  },
+  "ways": {
+    "the atlas, a colour map per type": "no new parts or meshes. Per foe, 5 Hard colour maps (one per type, Config.Shades.Tint) and one Hard glow map: 12 images for the two foes. A Hard foe wears its type's pair: a Hard template per foe and type, or a Hard SurfaceAppearance per type cloned onto the pieces at spawn. Each new type adds a colour map per foe",
+    "the atlas, with TintMask": "no new parts or meshes, and type-free: per foe, the TintMask colour map and the Hard glow map, 4 images for the two foes. On Hard, AlphaMode TintMask, SurfaceAppearance.Color the type's colour, EmissiveTint white. Unchecked: TintMask is still a beta (Roblox's announcement), and nothing read says whether its tint reaches the glow; a few minutes in Studio show it. If it doesn't, the trim glows white",
+    "a shell": "the body's maps and tint stay as they are. Each body piece gets a second, slightly larger MeshPart carrying only the cracks, with a transparent colour map and a glow map, type-free: per foe 5 more meshes to upload and 2 images, and the masks still wear the Hard pair (2 images, type-free): 10 meshes and 8 images for the two foes, then 5 more MeshParts and welds on each Hard foe at spawn, and a transparent layer that can sort or fight with the body. Not made: on Faber's pick"
+  },
+  "conditions": [
+    "each crack keeps its ramp, amber at its core falling to coral, never flat or dark red",
+    "every crack is anchored at a hem, a cuff or a foot, or tapers at both ends; none ends in a bead",
+    "no short isolated marks; nothing on the mask, the face, the hands or the trim; gone by the chest",
+    "the burst's paper stays cream on every difficulty",
+    "the built Hard foes get their own content check before upload"
+  ]
+}

@@ -351,11 +351,12 @@ def glows(materials, body_names):
             links.new(gate.outputs[0], inside.inputs[0])
             links.new(sides.outputs["Result"], inside.inputs[1])
             crack = nodes.new("ShaderNodeMath")
-            crack.operation = "MULTIPLY"
+            crack.operation, crack.name = "MULTIPLY", "Crack"     # hard_cut.py bakes these two by name
             links.new(line.outputs["Result"], crack.inputs[0])
             links.new(inside.outputs[0], crack.inputs[1])
             # across a crack: its middle the warm core, falling to coral at its edges
             core = nodes.new("ShaderNodeMapRange")
+            core.name = "Core"
             core.interpolation_type = "SMOOTHSTEP"
             core.inputs["From Min"].default_value, core.inputs["From Max"].default_value = CRACK["core"], 1.0
             links.new(line.outputs["Result"], core.inputs["Value"])

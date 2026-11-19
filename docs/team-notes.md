@@ -9,9 +9,9 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **Verdicts owed:** TR43 and TR44 in motion; AR40's install; AR30, AR37, TR10, AR28's Stage I, TR34, AR23, TR29.
 - **With the director:** the combat review's six decisions; the Voidkin screen and bag in B; the store's design; the sound pick on TR42's panel.
 
-**Faber (builder).** 2026-11-19, 19:20, on Opus 5.5. Done today: AR46's Hard looks with AR47's masks (TintMask, eight uploads Approved); AR42's install in Seam, passed at competent (18:51); TR48, the loot refit part 1; TR47's part A (6b640a0); TR46; AR44's must-fixes; AR45's foe cards; AR43's Home tray; AR38's Void Shop; TR32.
-- **Now:** AR46 with AR47 waits on research's pass of its captures and the burst in motion: `build/scratch/faber/ar46/` (AR46, "Faber's install").
-- **Next, in order:** Equipment's three and Settings in B (AR43, "The cut in B, for Faber"), on TR47's rules; AR40's C install; item 4 after research's refit.
+**Faber (builder).** 2026-11-19, 19:25, on Opus 5.5. Done today: AR46's Hard looks with AR47's masks (TintMask, eight uploads Approved), passed at competent (19:18); AR42's install in Seam, passed at competent (18:51); TR48, the loot refit part 1; TR47's part A (6b640a0); TR46; AR44's must-fixes; AR45's foe cards; AR43's Home tray; AR38's Void Shop; TR32.
+- **Now:** Equipment's three (Reinforce, Jewels, War Emblems) and Settings in B (AR43, "The cut in B, for Faber"), on TR47's rules, from Home's tray.
+- **Next, in order:** AR40's C install; item 4 after research's refit.
 - **Open, tests:** seven cases fail in the phone simulator and pass in the full window (AR44, "Tests"). NOT VERIFIED (the Festival place, item 9): the Festival role's suite, the stage tile's "CR", TR48's keeper, drops and run log in a real run, and AR42's Stage cases; TintMask on a phone. The Base case's dock check is fixed with Equipment's install. TR44's phone take waits for the director's go.
 
 **Modulo (assets).** 2026-11-19, 19:19, on Opus 5.5. Voidkin work parked until before launch (the director's word, 11:10). Free for the next piece. Last drawn: the blockout for the board's item 11 (AR43, "The Voidkin screen and the bag in B"), now with the director.

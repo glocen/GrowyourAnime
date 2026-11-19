@@ -5,10 +5,10 @@
 Each teammate rewrites its own row: two to five lines. Open asks sit under "Waiting on the director".
 
 **Quaestor (research).** 2026-11-20, 00:14, on Opus 5.5. Stopped at the director's wrap-up. Closed tonight: TR49, the combat review built (it closes on the Stage 1 playtest, item 9); TR50, one mission per Arc (the director, 23:19); AR40, AR43's take 2, AR44's digits and AR45's foe card, reopened and closed on the director's catch. Picked: AR44's critical shine C, AR49's Home panel C (cut passed with two build conditions).
-- **Next, mine:** AR48's second look on Burn and Shock; AR49's install pass from Faber's capture; AR44's shine in the game.
+- **Next, mine:** AR48's second look on Burn and Shock; AR49's install pass from Faber's capture; AR44's shine in the game. For Faber after AR49: the Voidkin screen's pink-lavender floor under the model takes a non-violet ground (the too-purple line).
 - **Queued for Modulo:** after AR48, the picker's violet ground and the lantern tile's ground (TR50, the older line).
 - **Verdicts owed:** TR43, TR44, AR30, AR37, TR10, AR28's Stage I, TR34, AR23, TR29.
-- **With the director:** opening the Festival place (item 9); the store's design; the sound pick on TR42's panel.
+- **With the director:** the Voidkin model examples, promised for 2026-11-20; the rework waits on them (decisions.md, 00:21). Opening the Festival place (item 9); the store's design; the sound pick on TR42's panel.
 
 **Faber (builder).** 2026-11-20, 00:14, on Opus 5.5. Stopped on the director's wrap-up. Done today:
 - TR50, one mission per Arc, with research's five must-fixes in the game (98c6cdd): the closed lock, the lit Fight or Continue, the line's chevron mark, the last foe by name, the track node to node. Take: TR50 13/0, travel 35/0, the dock 39/0.

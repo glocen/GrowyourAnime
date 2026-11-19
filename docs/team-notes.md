@@ -15,13 +15,10 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **Next, in order:** item 10; item 4 after research's refit; AR38's Void Shop install with its one confirm; AR40's C install with Modulo's new swatches; AR30's rest; TR46's "Floor 1 · best 7" over the target card's bar. The UI sounds' audition comes after the director's listen.
 - **Open, tests:** seven cases fail in the phone simulator and pass in the full window (AR44's section, "Tests"), to sort after AR45. NOT VERIFIED (the Festival place): the Festival role's suite and the stage tile's "CR". TR44's phone take waits for the director's go. The real trip waits on item 9 below.
 
-**Modulo (assets).** 2026-11-19, 14:53, on Opus 5.5. Voidkin work parked until before launch (the director's word, 11:10).
-- **Done, cut for Faber,** each content-checked PASS:
-  - Reinforce as its own screen in C: the list rows all three Equipment screens share, the ring, the flash, the wave and the crack, its layout, states and every beat in `equipment.json` (AR43, "Reinforce as its own screen, cut for Faber"; the design is research's passed one, moved under Home's band);
-  - Equipment's Jewels and War Emblems, each its own screen, research's must-fix met (AR43, "… cut for Faber"); Home's mark as a white mask for the live dock (AR43, "Home's mark for the live dock");
-  - the twelve War Emblems (06f5f8c, Tidebreak 7e553fa) and the 25 jewels (3b38895).
-  - For Faber: upload each as its AR section says; AR31's three stones go up with Reinforce's.
-- **Now:** the next piece from research's queue; Equipment's three screens are cut whole.
+**Modulo (assets).** 2026-11-19, 15:03, on Opus 5.5. Voidkin work parked until before launch (the director's word, 11:10).
+- **Now: Equipment back in Seam, richer, with its rail down the left** (the director, 14:56 and 14:59). The blockout is three directions with their idle beats, sent to the director for the pick, with research's verdict asked. Modulo leans B (AR43, "Equipment back in Seam, richer …").
+- **Held, Faber:** Equipment's C cut (8130e92) and its uploaded socket ids wait for the recut in the pick. Home's dock mask (AR43, "Home's mark for the live dock") and the twelve War Emblems and 25 jewels stand.
+- **Next:** Jewels, War Emblems and Settings in the pick, with the opening and switching strips, then the cut.
 - **For Faber, AR40's install:** the atlas pair, and the Strip's eight changed meshes with the manifest, on top of the 40 base meshes, the paving and C's keys already listed in AR40. The atlas never goes alone. AR38's Shop meshes go with AR38.
 - **Unchanged:** the Brawler mask's rework (research's word), AR41's render (the director's go), AR28's Stage I on TR37, AR19's re-uploads, AR24's A on TR34, AR39 stopped, Sable after launch.
 

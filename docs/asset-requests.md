@@ -13620,6 +13620,52 @@ The director's words: jewels and War Emblems go in and out on Equipment's pages 
   - **The stones' pictures** (`StoneLow`, `StoneMid`, `StoneHigh`, AR31, `build/handoff/UI/upgrades/images/`) aren't logged as uploaded. They go up with these.
   - **The numbers:** stand-ins until TR47, except the rates, which are research's seeds.
 
+### Equipment back in Seam, richer, with its rail down the left: the blockout (Modulo, 2026-11-19, 14:56 to 15:03 by the clock)
+
+- **The director's words, to Modulo:**
+  - **14:56:** "i do not look like this green ui makeover i liked the old one before but maybe we can use a bit more gradiant and animation and make it much better".
+    - **Covers,** as research recorded it at 14:56: Equipment's three screens, Settings and AR42's picker go back from AR40's C to Seam, the screen's own palette in `Config.UIKit`, as the Voidkin screen and the bag wear it. This replaces research's "the screens keep C" of 12:56.
+    - **Not covered:** the world's C, Home's graphite tray and the HUD.
+    - **"Maybe"** makes the gradients and motion a blockout direction, not a spec.
+  - **14:59,** with a screenshot of another game's Equipment screen: "it would be cool for the left ui button to return to equipement be like this". The screenshot stays out of the repo, and only its function is taken.
+    - **Covers,** in Modulo's reading: Equipment's three screens get a rail down the left again. Reinforce, Jewels and War Emblems sit on one line as round buttons. The chosen one is larger and lit, with its word, and a tap switches between them.
+    - Back stays at the top left and returns to Home. The band's title reads Equipment.
+    - It covers Equipment only.
+- **Research's measure (14:56):** "too purple, black, somber" has been said five times. The gradients must lift Seam with lighter tops and lit edges, never a deeper fall to black, and one direction must be clearly brighter than today's.
+- **Feel line:** from Home, the player opens Equipment and the screen reads as the Voidkin screen's violet glass come alive. Light gathers where the gear sits, the rail shows which of the three pages is open, and the press, the ring and the chosen row move gently while nothing is pressed.
+- **The block contains:** Reinforce's ready state in three directions at the smallest phone, with the rail in each. It also shows the idle loop's beats for B and C, three each.
+- **Waits:**
+  - the pick;
+  - Jewels, War Emblems and Settings in the pick;
+  - the opening and switching strips;
+  - the cut again, after which Faber's held install goes ahead.
+- **Where:** `tools/blender/seam_rich.py`, drawn in code over `equipment_pages.py`'s frame. The sheet is `build/scratch/modulo/equipment/seam_rich.png`. Nothing is cut.
+- **The directions:**
+  - **A, Seam today:** flat, as the Voidkin screen in the game.
+  - **B, lit glass:**
+    - Seam's violet lifted at every top;
+    - the hairlines lit from above;
+    - a bloom in the item's rarity colour behind the ring;
+    - the press a white-to-lavender gradient.
+  - **C, bright dusk:** B's light on mid-violets, clearly brighter than today, with magenta drifting to blue across the backdrop. No teal anywhere.
+- **The rail:**
+  - It's 84 points wide, so the list starts at 88.
+  - The buttons are 40 and 54 points round, each with an outer ring broken where the kit cuts its corners (top left, foot right).
+  - The marks are the shipped page icons.
+  - The line runs between the buttons and never through a word.
+- **The idle, a 2.4 s loop in B and C:**
+  - a comet circles the ring and the chosen button's ring;
+  - a sheen crosses the lit press;
+  - a glint runs down the chosen row;
+  - a light runs down the rail.
+- **The opening and the switch, for the pick's strips:**
+  - The screen rises 12 points as it fades in over 0.22 s.
+  - The rows cascade in from 24 points left, 0.035 s apart.
+  - The ring draws round once as the gear pops in.
+  - A rail button tapped grows to its size (0.18 s, Back 1.2) as the last one shrinks, and the work crossfades.
+- **Modulo's lean: B.** It's still the old look the director liked, lifted so it no longer reads black. C meets research's measure best, but it's a new palette again, the thing the director just turned down. C is the fallback if B still reads somber in the game.
+- **Status:** drawn and self-read, sent to the director at 15:03 for the pick, with research's verdict asked. The content check comes with the pick's sheets, before any cut.
+
 ## AR44. The damage numbers' rework: the plain, received and healing numbers, and the critical closer to the reference (Faber's takes in the game, Modulo's stroke, research's pick)
 
 Research, 2026-11-19, 11:17 by the clock. The director, by 11:16, to research: "The damages/healing text need a small rework it doesnt look as i wanted it to be, same for the crit text it need to be more close to the reference i've shown". The same morning, relayed by Modulo at about 11:15: "like the blackstroke around the text for those are way to thick". Research reads "those" as the damage numbers, since the two came together. The rule stays `docs/ui.md`, "Damage numbers" (the director, 2026-11-12); this changes the look only. The reference is `docs/research/hud-reference.md`, its three arena screenshots, held internal.

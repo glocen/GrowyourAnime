@@ -13482,6 +13482,23 @@ Judged on what changed, from `build/handoff/UI/foes/foe_cards_fit.png`, at the p
 - **Must-fix:** *every rank mark reads at the phone's own size.* The elite's horns are hairs at 1 pixel a point. Make them solid brass shards about 6 pt tall, or keep the brass edge alone if the horns still vanish. Checked on the next sheet at 1 pixel a point.
 - **Not this piece:** the Tower floor's title over the target card's bar is Faber's, already in AR44's verdict (TR46).
 
+### The cut on the slant, for Faber (Modulo, 2026-11-19, 12:33 to 12:39 by the clock)
+
+- **Where:** `build/handoff/UI/foes/`, drawn by `foe_cards.py -- <out> cut`. There are five new images in `images/`, at 4 pixels a point. `foes.json` gives each one's cut, pad, tint and use, and the card's own numbers. `foe_cards_cut.png` is the check sheet, and `foe_cards_fit.png` shows the cards built from these images in the phone capture. The first eight images are unchanged, byte for byte. `foes.json` lists five of them as unused: `CardRankEdge`, the two horns, `RankCrest` and `PhaseNotch`.
+- **The plate,** in three images, each 66 by 58 points. That's a 50 by 42 plate in an 8 point pad. Its ends lean 0.4 of its height across (16.8), like the old target card. Each is sliced at Cut 29, 28, 29, 28, so the slanted ends stay inside the end slices. Drawn at its own height, it stretches along only. The card's box is the image less 8 on every side.
+  - `CardSlantFill`: a white body with its soft black shadow. It takes C's panel as a UIGradient (#34606C at the top to #2A4E5A at the foot) at ImageTransparency 0.06, and the shadow stays black.
+  - `CardSlantEdge`: a Shade's hairline, its lit end on the left, tinted #E2CFA4.
+  - `CardSlantRankEdge`: an elite's brass edge with C's hairline inside it, in its own colours, never tinted.
+- **The elite's shards** (research's must-fix): `RankShardLeft` and `RankShardRight`, 10 by 10 points, solid brass, about 6 points tall, with a dark rim. Each one's root (its anchor, 5.5, 8 on the left; 4.5, 8 on the right) sits on the card's top edge: 14 in from where the top edge starts (16.8 plus 14) on the left, and 14 in from the top right corner. They're never scaled down. At the phone's own size they read as two solid brass points, as the fit's view 3 shows. View 4 shows the fallback, the brass edge alone, for research's check.
+- **The card on the slant** (its numbers are in `foes.json`, `card`): the top row starts 12.6 points further in than on an upright card. The bar runs from 7 in at its foot on the left to 14.6 in at its top on the right. The health digits sit on the dark band (must-fix 1), and the grey level is #D3D1DC (must-fix 2).
+- **Content check, 2026-11-19 (by 12:39): PASS** for upload, all five, on the exact files. The conditions:
+  1. `CardSlantFill` takes only C's teal, with its shadow black. A red or dark-red tint comes back to the check.
+  2. `CardSlantEdge` takes only #E2CFA4 or another light UI colour, and stays a hairline.
+  3. `CardSlantRankEdge` keeps its own brass, never tinted.
+  4. The shards keep their brass and dark rim, solid and plain: no glow, drip, crack or red tint. A redraw into another shape (long curved horns, a spike aimed at the skull or the text) comes back to the check.
+  5. Each is uploaded under the group with the key and logged in `docs/asset-log.md`, with `foe_cards.py`'s `images` as its source. The retired horns and `CardRankEdge` are logged as unused. The sheets stay internal.
+- **Status:** cut, self-read and content-checked. It waits on research's check of the shards at the phone's size, then Faber's upload and build.
+
 ## Later, by ground
 
 The rest of ground 1 (Kirra in AR10, Watt in AR11; then Sable, Marigold, Crane), then each ground's Voidkin in `docs/roster.md`'s order. **The machines** (Gantry, Bulwark, Ironhymn, Shiomaru, Aegir) share one custom rig, taller than a player, with its own clip family: the first of them is timed like AR1, because a custom rig is a different cost.

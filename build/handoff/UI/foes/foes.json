@@ -1,6 +1,14 @@
 {
  "pixelsPerPoint": 4,
- "palette": "C_SYS (AR40's C, the system panel), research's pick B",
+ "palette": "C_SYS (AR40's C, the system panel), research's pick B, on the fight HUD's slant",
+ "card": {
+  "points": [
+   216,
+   42
+  ],
+  "slant": 0.4,
+  "note": "the Shade's and the elite's card; the keeper keeps TR5's BossBar. The top row starts 0.75 of the lean (12.6) further in than on an upright card; the bar runs from 5 + 0.4 x 5 to 5 + 0.4 x 24 in from the card's ends, at the foot and the top"
+ },
  "levels": {
   "colours": [
    "#D3D1DC",
@@ -73,7 +81,8 @@
     12
    ],
    "tint": null,
-   "use": "an elite's and a keeper's edge, in place of PanelEdge: brass, the kit panel's own cut, sliced like it (Cut 12 each side). Its own colours, never tinted"
+   "use": "an elite's and a keeper's edge, in place of PanelEdge: brass, the kit panel's own cut, sliced like it (Cut 12 each side). Its own colours, never tinted",
+   "unused": "the upright cut, replaced by B on the slant (research, 12:32)"
   },
   "RankHornLeft": {
    "file": "images/RankHornLeft.png",
@@ -91,7 +100,8 @@
     15.5
    ],
    "drawnAt": 14,
-   "use": "a horn's root (the anchor) on the card's top edge, 14 in from its left corner. A keeper's at 14 high, as drawn; an elite's at 11 (scale 11/14, its anchor with it). Over the card, under nothing"
+   "use": "a horn's root (the anchor) on the card's top edge, 14 in from its left corner. A keeper's at 14 high, as drawn; an elite's at 11 (scale 11/14, its anchor with it). Over the card, under nothing",
+   "unused": "the thin horns, replaced by the shards (research's must-fix, 12:32)"
   },
   "RankHornRight": {
    "file": "images/RankHornRight.png",
@@ -109,7 +119,8 @@
     15.5
    ],
    "drawnAt": 14,
-   "use": "the left horn mirrored: its root 14 in from the card's right corner"
+   "use": "the left horn mirrored: its root 14 in from the card's right corner",
+   "unused": "the thin horns, replaced by the shards (research's must-fix, 12:32)"
   },
   "RankCrest": {
    "file": "images/RankCrest.png",
@@ -126,7 +137,8 @@
     10,
     14
    ],
-   "use": "a keeper's crest: three brass shards, the anchor on the card's top edge at its middle"
+   "use": "a keeper's crest: three brass shards, the anchor on the card's top edge at its middle",
+   "unused": "the keeper keeps TR5's BossBar (the director, 12:24)"
   },
   "PhaseNotch": {
    "file": "images/PhaseNotch.png",
@@ -143,7 +155,8 @@
     8,
     5
    ],
-   "use": "a keeper's phase: the anchor on the bar's top edge, at 1/3 and 2/3 of its length. Drawn for the keeper's 15 point bar with its slant (0.45 of its height); the dark cut through the light, the brass point above"
+   "use": "a keeper's phase: the anchor on the bar's top edge, at 1/3 and 2/3 of its length. Drawn for the keeper's 15 point bar with its slant (0.45 of its height); the dark cut through the light, the brass point above",
+   "unused": "the keeper keeps TR5's BossBar (the director, 12:24)"
   },
   "CrTab": {
    "file": "images/CrTab.png",
@@ -163,6 +176,100 @@
     22.56
    ],
    "use": "CR's gold tab, drawn for a 24 point number: its plate's left, top, width and height in the box. It scales with the number (a 14 point number takes 14/24). \"CR\" is the game's text over it: dark ink #4A2A08, bold, 0.62 of the number's size, centred on the plate; the number right of it in ivory #F7F1E3, upright and wide apart, with AR44's plain take's outline and shadow"
+  },
+  "CardSlantFill": {
+   "file": "images/CardSlantFill.png",
+   "pixels": [
+    264,
+    232
+   ],
+   "points": [
+    66.0,
+    58.0
+   ],
+   "cut": [
+    29.0,
+    28.0,
+    29.0,
+    28.0
+   ],
+   "pad": 8.0,
+   "tint": "C's panel, #34606C at its top to #2A4E5A at its foot (a UIGradient), ImageTransparency 0.06; its shadow stays black under any tint",
+   "use": "the target card's plate, leaning like the lead's card (its ends 0.4 of its height across). Sliced at Cut (left, top, right, foot), its slanted ends inside the end slices: drawn at its own height, it stretches along only. The card's box is the image less Pad on every side."
+  },
+  "CardSlantEdge": {
+   "file": "images/CardSlantEdge.png",
+   "pixels": [
+    264,
+    232
+   ],
+   "points": [
+    66.0,
+    58.0
+   ],
+   "cut": [
+    29.0,
+    28.0,
+    29.0,
+    28.0
+   ],
+   "pad": 8.0,
+   "tint": "C's edge, #E2CFA4",
+   "use": "a Shade's edge over the plate: a hairline, its lit end the left. Sliced at Cut (left, top, right, foot), its slanted ends inside the end slices: drawn at its own height, it stretches along only. The card's box is the image less Pad on every side."
+  },
+  "CardSlantRankEdge": {
+   "file": "images/CardSlantRankEdge.png",
+   "pixels": [
+    264,
+    232
+   ],
+   "points": [
+    66.0,
+    58.0
+   ],
+   "cut": [
+    29.0,
+    28.0,
+    29.0,
+    28.0
+   ],
+   "pad": 8.0,
+   "tint": null,
+   "use": "an elite's edge, in place of CardSlantEdge: brass, a hairline of C's edge inside it, its own colours, never tinted. Sliced at Cut (left, top, right, foot), its slanted ends inside the end slices: drawn at its own height, it stretches along only. The card's box is the image less Pad on every side."
+  },
+  "RankShardLeft": {
+   "file": "images/RankShardLeft.png",
+   "pixels": [
+    40,
+    40
+   ],
+   "points": [
+    10.0,
+    10.0
+   ],
+   "tint": null,
+   "anchor": [
+    5.5,
+    8.0
+   ],
+   "use": "an elite's mark: a solid brass shard about 6 points tall, leaning out. Its root (the anchor) on the card's top edge, 14 in from where the top edge starts (the plate's lean, then 14). Its own colours; never scaled down"
+  },
+  "RankShardRight": {
+   "file": "images/RankShardRight.png",
+   "pixels": [
+    40,
+    40
+   ],
+   "points": [
+    10.0,
+    10.0
+   ],
+   "tint": null,
+   "anchor": [
+    4.5,
+    8.0
+   ],
+   "use": "the left shard mirrored: its root 14 in from the card's top right corner"
   }
  }
 }

@@ -15,9 +15,14 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **Next, in order:** item 10; item 4 after research's refit; AR38's Void Shop install with its one confirm; AR40's C install with Modulo's new swatches; AR30's rest; TR46's "Floor 1 · best 7" over the target card's bar. The UI sounds' audition comes after the director's listen.
 - **Open, tests:** seven cases fail in the phone simulator and pass in the full window (AR44's section, "Tests"), to sort after AR45. NOT VERIFIED (the Festival place): the Festival role's suite and the stage tile's "CR". TR44's phone take waits for the director's go. The real trip waits on item 9 below.
 
-**Modulo (assets).** 2026-11-19, 13:32, on Opus 5.5. Voidkin work parked until before launch (the director's word, 11:10).
-- **Done, Home in B cut for Faber** (65295ff): eleven images, `home.json` and the fit in `build/handoff/UI/home/`, built against drawn at a mean difference of 0.003. Content check PASS. For Faber, after AR45: upload the eleven and build the tray (AR43, "Home in B, cut for Faber"). The War Emblem star is B (research, 13:12).
-- **Now: the dock's Home mark (B),** three screens stacked with a shard in the front one. **Then** the twelve set symbols on star B, then Equipment's Jewels and War Emblems pages and the 25 jewel icons.
+**Modulo (assets).** 2026-11-19, 13:56, on Opus 5.5. Voidkin work parked until before launch (the director's word, 11:10).
+- **Done, the three recuts** (the director's "not composited"; research's one sitting):
+  - the splash painted (4d372e1);
+  - the foe card in the lead card's material, mirrored (2ce7631);
+  - Home's tray in the dock's graphite (ec30265);
+  - the dock's Home mark (13c15d5).
+  - All four passed the content check. For Faber: upload each as its AR section says.
+- **Now: the twelve set symbols on star B,** cut as twelve emblems. **Then** the 25 jewel icons, then Equipment's Jewels and War Emblems pages.
 - **For Faber, AR40's install:** the atlas pair, and the Strip's eight changed meshes with the manifest, on top of the 40 base meshes, the paving and C's keys already listed in AR40. The atlas never goes alone. AR38's Shop meshes go with AR38.
 - **Unchanged:** the Brawler mask's rework (research's word), AR41's render (the director's go), AR28's Stage I on TR37, AR19's re-uploads, AR24's A on TR34, AR39 stopped, Sable after launch.
 

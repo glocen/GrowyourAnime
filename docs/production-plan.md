@@ -129,6 +129,8 @@ Each ends on something playable. No dates are promised past phase 1: see "The da
 - **After early access:** the second form (D4).
 - **Research disagrees, one line:** the shop's draw on the Unix time can't be shared code alone, or a client predicts the next stock: it's salted on the server (`docs/design.md`, "The Strip").
 
+**The Tower's room** (the director, 2026-11-19, by 11:12): built after the main game's open pieces, each player's own copy of one detailed room, with the entrance and the record's marker on the lot behind the base (`docs/design.md`, "The Tower"). Until then the grey Tower runs as it is.
+
 **Phase 4. Breadth.** The Void Shop. The Rift moves after launch (the director, 2026-11-17, 02:40). Both shops, the Robux store and the Void Shop, are designed and set up here (the director, 2026-11-12).
 
 **Phase 5. The Strip.** The Clash Grounds; the Calamity after launch (the director, 2026-11-15).

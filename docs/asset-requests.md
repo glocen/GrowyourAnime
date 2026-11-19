@@ -12950,6 +12950,8 @@ The director, at 01:4x: "the map is a bit to purple does it, that purple trail o
 
 ## AR41. The Tower's platforms: the rise, the assembly and the fall as light (Modulo, for research's pick, then Faber)
 
+**Dropped, 2026-11-19, by 11:12** (the director's word): the Tower moves into a room of its own, so its platforms go (`docs/design.md`, "The Tower"). Nothing here is built or rendered. The room's own request is written when the main game's open pieces are done.
+
 Research, 2026-11-19, 01:14 by the clock. This is TR29's waiting look: the platforms assembling and falling as light (`docs/test-requests.md`, TR29, "What waits"; `docs/design.md`, "The Tower"). The Tower is built in grey and runs. Faber's item 7 (its results) doesn't need this, and this doesn't need Faber until the install.
 - **Feel line:** you step into the ring behind your base, and the ground lifts you on a disc of the base's own stone with light round its rim. At each win, the next disc gathers above you out of streaks of light, locks with one pulse, and you leap up to it. When your lead falls, the stack lets go and falls away as light.
 - **The pieces:**

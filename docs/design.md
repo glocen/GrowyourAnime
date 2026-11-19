@@ -251,16 +251,18 @@ Six grounds at launch (`docs/roster.md`), each a recolour and rearrangement of o
 
 ## The Tower
 
-Behind each base [D], its lot bare but for a ring in the ground where the first platform rises [D, 2026-11-16: the package's point 4, replacing the line-up of three, the authored floors and the sleeping silhouette of 00:43]. The launch loop: fight, win, rise, fight, die, rewards, reset.
+Its entrance stands behind each base [D], and the fight is in a room of its own [D, 2026-11-19, by 11:12, replacing the ring and the rising platforms of the package's point 4]. The launch loop: fight, win, the next foe, fight, die, rewards, reset.
 
-- **A run:** the player steps into the ring with their lead. A circular platform rises with them on it and an enemy Voidkin appears, fought automatically. On a win a new platform assembles above, and the lead and the avatar leap up to it together; the camera stays the player's. The lead and its Regalia are frozen from the first fight to the end, as at a keeper.
+- **The room:** one big circular room, well detailed, the same for everyone. Each player who steps in gets their own copy, set far from the map where nobody else sees it, made when they enter and removed when they leave, so a server holds eight at most. It's a move within the place, never a teleport to another.
+- **The lot behind the base** keeps the entrance and a marker of the player's record floor, so a visitor still sees how high they've climbed.
+- **A run:** the player steps into the entrance with their lead and stands in the room. An enemy Voidkin appears, fought automatically. On a win the next one appears in the same room and the floor's number rises; the camera stays the player's. The lead and its Regalia are frozen from the first fight to the end, as at a keeper.
 - **Enemies:** our own Voidkin in an enemy look, darkened with void light, so no new models. Their level rises with the floor, on a lighter build than a player's (`docs/balance.md`, "The Tower").
 - **Health carries:** nothing heals between floors. In a fight, healing tops out at a share of the lead's health a floor, the heal cap.
-- **Death ends the run:** the platforms fall away as light, and the results open: the highest floor this run and the record if it's beaten, opponents defeated, Credits, items and chests, rare rewards in their rarity's light. The next run starts from the ground.
-- **Fast floors:** a floor far below the lead's power falls in one hit and the rise quickens, so the climb to where it gets hard takes seconds.
+- **Death ends the run:** the results open: the highest floor this run and the record if it's beaten, opponents defeated, Credits, items and chests, rare rewards in their rarity's light. The next run starts from the ground.
+- **Fast floors:** a floor far below the lead's power falls in one hit and the next foe comes at once, so the climb to where it gets hard takes seconds.
 - **Rewards** by floor won: Credits rising with the floor, a chest chance rising with it, and a first-time bonus past the record. Fast floors pay nothing: they're the free ride to where it gets hard. One exception: floor 5's chest is sure the first time the account wins it, fast or not. Floors 1 to 5 are always Rook, Pip, Kirra, Lyric and Watt; the draw starts at floor 6 (branch `claude/design-review-rules`, a7cbd28, 2026-11-18). The Tower's chest has its own rarity row, so it gives Rare and better while Lantern Row is the only ground (`docs/balance.md`, "The Tower"). Each is written to the run's ledger on the server when its floor is won, and granted once when the run ends; a run's id makes a repeated claim a no-op.
 - **Interruptions:** leaving the ring, going home, a disconnect or a shutdown end the run at its last floor won, and nothing won is lost. The results open once at the next join. A run never resumes.
-- **At most three platforms stand,** the current one and two below. Older ones fold into one thin column of rings, so the height still reads.
+- **The order** [D, 2026-11-19]: the room is built after the main game's open pieces. Until then the grey Tower, its platforms included, runs as it is.
 - **Not at launch** [D]: milestone bosses, cash-outs, branches, extra currencies.
 
 ## The world, in grey

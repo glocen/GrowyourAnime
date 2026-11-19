@@ -4,11 +4,10 @@
 
 Each teammate rewrites its own row: two to five lines. Open asks sit under "Waiting on the director".
 
-**Quaestor (research).** 2026-11-19, 13:22, on Opus 5.5. Since 11:30: Arc places, skulls, short numbers, CR's gold tab, the critical's measured colours, Home and the keeper's purple bar recorded with their rows (`docs/decisions.md`). Verdicts: AR44 second look (the critical takes a landing pop); AR45 B on the slant, shards passed, skull thresholds fitted in the sim (grey <0.25, white to 1.1, yellow to 1.8, red from 1.8); AR43 Home B and its step, Reinforce in motion, the emblem star B with the twelve sets' names. Next, mine: the level-gap factor through the sim, the refit to five attributes, the loot refit; AR45's real ratios when Faber's capture lands.
-- **Next, mine:** AR43's verdict (the sheets and Reinforce in motion); the skulls' thresholds in the simulation (AR45); AR44's pick when Faber's takes land; the level-gap factor through the simulation; the refit to five attributes (class shapes, rows, Combat Power weights); then the loot refit (`chests.py`, the four stages on Normal and Hard plus the Tower) with the stages' recommended power. Then Faber's one request: the level gap, five attributes, Reinforce, the Menu, the policy check for Credits.
-- **Modulo:** AR43, the Menu's three tabs and Reinforce's five states, then the motion strips, the emblem star, the Jewels and War Emblems pages. The dock mark is B.
-- **Verdicts owed:** AR43, the Menu sheets (a37ab9b) with the motion strips, and Seam against C; TR43 and TR44 in motion; AR40's install; AR30, AR37, TR10, AR28's Stage I, TR34, AR23, TR29.
-- **With the director:** the store's design (`docs/decisions.md`, "Waiting on the director", item 2); the sound pick on TR42's panel (AR39 stopped); quests, designed when asked.
+**Quaestor (research).** 2026-11-19, 16:28, on Opus 5.5. The combat review is published: `docs/research/combat-math.md`, with five studies, an independent check, and the changes ready to diff in `build/scratch/quaestor/integrate/out/`. Its six decisions wait on the director (below, item 10). Verdicts today: AR38 competent (the lit buy press closes on Faber's capture), AR43's four screens in B competent, AR45's foe card, the emblems and jewels.
+- **Next, mine:** TR47 for Faber (Reinforce, jewels, War Emblems, the level gap), with the numbers that don't wait on item 10; then the loot refit and the stage pace (about 270 kill-units an hour against 450).
+- **Verdicts owed:** TR43 and TR44 in motion; AR40's install; AR30, AR37, TR10, AR28's Stage I, TR34, AR23, TR29.
+- **With the director:** the combat review's six decisions; the Voidkin screen and bag in B; the store's design; the sound pick on TR42's panel.
 
 **Faber (builder).** 2026-11-19, 13:19, on Opus 5.5. Done today: "CR" in every word players see (the director's word, 10:36); "Arc" in the three lines that said ground (the director, by 11:16); TR46 whole, tested in Studio; and AR44's three must-fixes with the measured critical, tested, with a phone clip for research's second look (AR44, "Faber's must-fixes, the measured colours, and the clip"). The critical lands without a pop: research's call, in that section.
 - **Now:** AR45, the foes' cards on the slant. Its 13 images are uploaded under the group, all Approved.
@@ -43,6 +42,15 @@ For Faber:
 7. **Your ear on the audition panel** (TR42), ready for tomorrow: 12 tabs, the nine skills and the Mage's and Healer's hits, and a tab for each of Rook's, Kirra's and Watt's light hits drawn from your 32 keeps. In Studio's Play, the panel is at the left: a tab per hit, "Old" (today's sound) and ten candidates. Tap a row: it plays, and from then on every hit of that kind plays it in the fight. **Keep** the ones you like (more than one is fine), **More** for the next ten, **None of these** when ten hold nothing. **Others off** mutes the fight's other sounds, so you hear the candidate alone. When you're done, leave the Play running and tell Faber: your picks are read from it.
 8. **Pick the slam's rule by playing it** (TR44): Off, A or B. In Studio's Play, start a keeper's try. The Server command bar switches the mode mid-fight: `game.ServerStorage.NL_Debug:Invoke("Slam", nil, "A")` (or `"B"`, `"Off"`), and `Invoke("Slam")` reads the counts. In A, walk out of the ring and your fighter follows; in B, press the round Recall button or R. Research reads a phone take of each first: say go and I record it (the PC's memory stopped it tonight).
 9. **The Festival's place, for a real trip** (TR45). In Studio, open the place 110443456684004 (File → Open from Roblox) and connect Rojo on port 34876; Faber sets its role and saves it. Then, on the Creator Dashboard, under the experience's Places: its name (Faber's suggestion: Festival of Battles), its server size 8, and its Direct Access set to "Secure within universe only". Publish both places (Alt+P in each), and add the id to `CLAUDE.md`'s "Places" when you like.
+
+10. **The combat review's six decisions** (`docs/research/combat-math.md`, "For the director"). Each is written as a restatement, and nothing is built before your yes:
+    1. Levels count only through your 0.85 rule (no hidden bonus).
+    2. Combat Power measures the fight, and the skulls read the fight's cost.
+    3. The Shades get every stat and are re-authored for the gear players have.
+    4. Block, Lifesteal and Kindle fixed.
+    5. Spirit also gives Health (research recommends it).
+    6. Every Voidkin gets an element.
+11. **The Voidkin screen and the bag in B,** like Equipment's: yes or no.
 
 ### Notices
 

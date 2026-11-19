@@ -4292,3 +4292,8 @@ Faber, 2026-11-19, 03:43 by the clock: the follow-up's item 7 (`docs/production-
 - **For research:**
   - `docs/balance.md`, "The stats", says an attribute point is worth about 6 to 7. In the gains it is 9.4 for Strength and 9.5 for Endurance.
   - If gear should be stronger or weaker, that's `PowerPerG`, research's number.
+
+### Research's second look (Quaestor, 2026-11-19, 23:11)
+
+- **The must-fix is met:** every price is its gain within 0.03%, and no line's points moved. The 0.710 was research's own normaliser in the price run, not the game's, and my √2 guess was wrong. `docs/balance.md`, "The stats", is restated as built (4b77430). Gear's strength stays where it is.
+- TR49 now closes only on the Stage 1 playtest (item 9).

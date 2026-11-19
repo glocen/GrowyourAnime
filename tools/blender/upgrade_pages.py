@@ -182,12 +182,7 @@ def band(t, tab):
     t.text(196, 22, SMALL, "<  BACK", P["text"], "CENTER", bold=0.3)
     t.stroke([(178, 44), (214, 44)], 1.4, P["light"], 0.8)
     if tab == "Inventory":
-        box(t, 230, 8, 362, 50, P["channel"], P["edge"], 1.0, cuts=(0, 0, 6, 0))
-        for k, name in enumerate(("VoidkinFavourite", "VoidkinLock", "VoidkinRename")):
-            cx = 252 + k * 44
-            pic(t, CHROME / f"{name}.png", cx - 11, 18, 22, tint=P["text"])
-            if k:
-                t.stroke([(cx - 22, 18), (cx - 22, 40)], 1.0, P["edge"])
+        voidkin_marks(t)
     for x0, x1, words in ((372, 458, "15,274"), (464, 548, "60.00")):
         box(t, x0, 14, x1, 44, P["channel"], P["edge"], 1.0, 4)
         t.text(x1 - 8, 23, SMALL, words, P["text"], "RIGHT", bold=0.3)
@@ -195,16 +190,36 @@ def band(t, tab):
     ui.bolt(t, 480, 29, 7)
 
 
-def tabs(t, chosen):
-    """The Menu's tabs in a darker strip down the left, each its mark over its word; the chosen one dark glass lit
-    from its right edge, as the rail's was."""
+def voidkin_marks(t):
+    """The Voidkin's three marks in the band (favourite, lock, rename): Inventory's alone, its pages being a Voidkin's."""
+    box(t, 230, 8, 362, 50, P["channel"], P["edge"], 1.0, cuts=(0, 0, 6, 0))
+    for k, name in enumerate(("VoidkinFavourite", "VoidkinLock", "VoidkinRename")):
+        cx = 252 + k * 44
+        pic(t, CHROME / f"{name}.png", cx - 11, 18, 22, tint=P["text"])
+        if k:
+            t.stroke([(cx - 22, 18), (cx - 22, 40)], 1.0, P["edge"])
+
+
+def tab_y(k):
+    """The top of the k-th tab, down the strip."""
+    return 58 + k * 62
+
+
+def strip_ground(t):
     t.paint(t.poly([(0, 54), (STRIP, 54), (STRIP, H), (0, H)]), P["channel"])
     t.stroke([(STRIP, 54), (STRIP, H)], 1.0, P["edge"])
+
+
+def tabs(t, chosen, glass=True, ground=True):
+    """The Menu's tabs in a darker strip down the left, each its mark over its word; the chosen one dark glass lit
+    from its right edge, as the rail's was. Without its ground and glass, the marks and words alone (the motion's)."""
+    if ground:
+        strip_ground(t)
     for k, name in enumerate(TABS):
-        y0 = 58 + k * 62
+        y0 = tab_y(k)
         cx, cy = (STRIP - 2) / 2, y0 + 29
         on = name == chosen
-        if on:
+        if on and glass:
             tab_glass(t, 2, y0, STRIP - 4, y0 + 58)
         mark(t, name, cx, cy - 9, 22, P["light"] if on else P["text"], 1.0 if on else 0.7, tab=True)
         t.text(cx, cy + 8, SMALL, name, P["text"] if on else P["soft"], "CENTER", bold=0.3 if on else 0.0)

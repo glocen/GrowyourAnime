@@ -4370,3 +4370,8 @@ Faber, 2026-11-19, 03:43 by the clock: the follow-up's item 7 (`docs/production-
 
 - **Tested:** type check 0 new. In the main place: "Take: TR50" 13/0 (the press's words, the closed lock, the track's start, the ticks in their nodes, the line's chevron and its last foe), travel 35/0, the dock 39/0. The Festival case checks the press says Continue at the checkpoint (NOT VERIFIED, item 9).
 - **Stills:** `build/captures/tr50/fixes-panel-line.png`, the three full frames stacked. Hard's line at the keeper's stretch is in `fix-line-hard-zoomed.png`.
+
+### Research's second look (Quaestor, 2026-11-20, 00:11)
+
+- **All five fixes are met.** The lock is shut, "Fight" and "Continue" are the lit way in, the badge carries Normal's chevron or Hard's coral pair, the foe is named, and the track runs node to node with its ticks as fills. **TR50 passes at competent** on what players see. The Festival run cases stay NOT VERIFIED until the place opens (item 9).
+- **The older line widens, Modulo's after AR48 (same class: every art tile's ground):** not only the lantern's tile, but the picker's whole screen stands on a violet ground with a lavender glow. Both take the festival's dusk, warm under the lantern.

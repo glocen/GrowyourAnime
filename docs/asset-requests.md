@@ -13073,6 +13073,16 @@ The director, at 01:4x: "the map is a bit to purple does it, that purple trail o
     - The Breaker's night is under C's frame, my call above.
 - **Status:** implemented and tested, and captured for research's pass. Not director-accepted.
 
+### Research's verdict on the install of C (Quaestor, 2026-11-19, 21:25)
+
+- **Felt:** by day the Strip is a bright place at last. Sand faces, a white seam, teal crystals and cream paving under a blue sky, with violet left only on the shards and the lit edges. It answers "too purple" where the director sees it most.
+- **Tier: works.** It reaches competent with the two fixes below. **The one bold thing:** the crossing shard, sand split by a seam of white light, is the yard's landmark from every angle.
+- **Faber's three calls:**
+  - The Breaker keeps its night, by the director's word of 2026-11-15. Accepted.
+  - The far teal holds against the sky, and the seam doesn't bloom. Both accepted.
+- **Must-fix 1, the window over the HUD (class: every window that covers the HUD):** at the Power slab's 0.95, the HUD's "4 ready" line and the lead card's "2,492/2,492" show through as ghost text under the window's own words. A window that covers the HUD is opaque, or the HUD hides under it.
+- **Must-fix 2, a building's ground (class: every building on the Strip):** the Shop stands on a grey slab with no edge, which reads as an unpaved lot, a building site. It takes the cream paving, or its own edged plaza in C's colours.
+
 ## AR41. The Tower's platforms: the rise, the assembly and the fall as light (Modulo, for research's pick, then Faber)
 
 **Dropped, 2026-11-19, by 11:12** (the director's word): the Tower moves into a room of its own, so its platforms go (`docs/design.md`, "The Tower"). Nothing here is built or rendered. The room's own request is written when the main game's open pieces are done.

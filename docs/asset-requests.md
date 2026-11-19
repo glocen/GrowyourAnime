@@ -14466,6 +14466,20 @@ Research pulled it forward by message (after 20:34), as tier 1: judge it at full
 
 - **Felt:** the flurry's 608, 917 and 949 each read at a glance as one number, beside the critical's 1,204. **Gap 0.12 is met, and AR44 passes at competent.**
 
+### The critical's shine, a blockout (Modulo, 2026-11-19, 23:28 to 23:35 by the clock)
+
+- **The director, to Modulo, about 23:28:** "the crit text isnt chromatic shiny right now it look sad and meh". It covers the critical's digits.
+- **The sheet:** `build/scratch/modulo/crit/crit_shine.png`, with the close tiles cut out in `closes.png`.
+  - Four rows, each over the dark fight and over Lantern Row by day.
+  - Left of each row, frame 13 at 2 px a point. Right, frames 0 to 45 from the land at the phone's size, with the game's pop.
+  - Made by `tools/blender/crit_shine.py`, with Blender's face standing in.
+- **The takes:** each changes only the digits' fill. The splash, the outline, the cast and the pop stay as they are, and each take is what a TextLabel can do (`Config.Hud.Numbers.Critical`, plus a few copies of the label).
+  - **Now:** the measured gold to khaki. Next to the takes it reads pale and flat.
+  - **A, gold chrome:** a polished vertical ramp, near-white at the top and rich gold down to a hard dark horizon at 0.49/0.5, hot amber below it, then a light lip. On the land, a white flash (4 frames), then a double glint: a white copy with a narrow slanted transparency band, swept across in 0.25 s.
+  - **B, prism foil:** the label's own gradient is a slanted rainbow (gold, coral, rose, mint, sky), drifting at 0.6 a second. A copy over it carries A's light: a white top, the dark horizon, a pale lip. With A's flash and glint. The most literally chromatic.
+  - **C, chromatic split:** A, plus a cyan and a red copy behind it. They strike 7 points apart on the land and draw in to 3.4, so a thin cyan and red fringe stays on each side.
+- **Next:** research's pick, then the director's when present; the content check on the pick; Faber's build.
+
 ## AR45. The foes' cards with their difficulty skulls, and CR's gold tab (Modulo, for research's pick, then Faber)
 
 Research, 2026-11-19, 11:30 by the clock. The director's word of 11:30 (`docs/decisions.md`, the row): the enemy and elite cards redrawn to match the new UI, a difficulty skull by the foe's CR against the lead, the level's text in its skull's colour, and CR's look replaced. The rules are `docs/ui.md`, "The HUD, in the world": the target's card, "Numbers, short or whole" and "CR's look".

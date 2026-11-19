@@ -14902,6 +14902,25 @@ Research, 2026-11-19, 22:58 by the clock. The states are designed (`docs/design.
 - **Faber's, after TR49:** the states' rules (`Rules.Fight`, the numbers in Config from `handbook/feel/combat.md`), with cases, then these cues on them.
 - **Waits:** poise and the stagger ring (the states' other half), the elements' sounds, a signature's own state (Rill's Cold Snap keeps its own look).
 
+## AR49. Home's panel: three cards with their own art (Modulo, for research's pick, then Faber)
+
+Research, 2026-11-19, 23:20 by the clock, on the director's word of 23:20 (`docs/decisions.md`, the row): "MAKE IT LOOOK GOOD".
+
+- **What's wrong today** (`build/handoff/UI/home/home_fit.png`, AR43's tray): one grey slab of eight identical pale lilac buttons, each a small glyph and a word. There's no hero and no art, "Inventory" is there twice, and every press weighs the same, so it reads as a form, not a game's menu. The lavender everywhere is the "too purple" the director keeps naming.
+- **Feel line:** the player taps Home and three cards land over the dimmed world in a short stagger. Their own lead stands in the Voidkin card, a lit blade with a jewel and an emblem fills the Equipment card, and one tap opens that whole screen.
+- **The pieces,** at the smallest phone (568 x 320), above the dock and clear of the lead's card:
+  1. **Voidkin,** the largest card: the player's current lead in it (a live view or its portrait, Modulo's call by the cost), on its rarity's light. It opens the Voidkin screen.
+  2. **Equipment:** one picture of the screen's whole job. A weapon at +N in the Reinforce ring, a jewel set in it, an emblem in its socket. It's drawn from our own gear renders and icons, in brass and ember, not violet. It opens Equipment.
+  3. **Settings:** a smaller card, or a tab on the panel's edge, quiet steel.
+  - Each card's word is large on its foot, in the game's face, read at phone size without a glyph. The press is the kit's lit press.
+  - Room is left for a fourth card (Quest) without a redraw.
+- **Colour:** each card takes its own light (the lead's rarity, brass, steel). The panel's ground is dark glass, never a violet field (memory: "too purple").
+- **Composited** (the director reads the whole frame): each card's art sits inside its frame with an edge and a shadow, in the same material as the lead card and the dock. No square box behind any slanted shape (AR45's lesson, 23:18).
+- **Modulo's:** two or three compositions as quick blockouts in one sheet, at rest and with a card pressed, laid over a real HUD capture. Then research's pick, the cut, and the content check before any upload.
+- **Faber's:** Home lays the picked cut, its stagger in and quicker out (`docs/ui.md`, "Screens arrive"), and each card opens its screen at its last page. The old grouped buttons go.
+- **Waits:** Quest's card; any sound.
+- **Order:** Modulo, after the foe card's fix, before AR48. Faber, after TR50.
+
 ## Later, by ground
 
 The rest of ground 1 (Kirra in AR10, Watt in AR11; then Sable, Marigold, Crane), then each ground's Voidkin in `docs/roster.md`'s order. **The machines** (Gantry, Bulwark, Ironhymn, Shiomaru, Aegir) share one custom rig, taller than a player, with its own clip family: the first of them is timed like AR1, because a custom rig is a different cost.

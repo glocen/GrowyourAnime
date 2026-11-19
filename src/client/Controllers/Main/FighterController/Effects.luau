@@ -50,6 +50,9 @@ local UIKit = require(ReplicatedStorage.Shared.Config.UIKit)
 
 local Effects = {}
 Effects.TimeScale = 1
+-- Studio's takes: while set, only numbers whose key starts with it are drawn, so a held frame isn't piled with the fight's
+-- (AR44's take).
+Effects.Only = nil :: string?
 
 local LIGHT = Color3.fromRGB(225, 225, 225) -- the stand-ins' grey
 local SPARK = Color3.fromRGB(255, 255, 255)
@@ -1816,10 +1819,21 @@ local function lookOf(style: string, colour: Color3?): (Digits.Look, number)
 	local config = HudConfig.Numbers
 	if style == "Critical" then
 		local c = config.Critical
-		return { Top = c.Top, Foot = c.Foot, Outline = c.Outline, Weight = c.Weight, Gap = c.Gap, Italic = c.Italic }, c.Size
+		return { Top = c.Top, Foot = c.Foot, Ramp = c.Ramp, Outline = c.Outline, Weight = c.Weight, Gap = c.Gap, Italic = c.Italic }, c.Size
 	end
 	local s = config.Styles[style] or config.Styles.Dealt
-	return { Colour = colour or s.Colour, Outline = s.Outline, Weight = s.Weight, Gap = s.Gap, Italic = s.Italic }, s.Size
+	local look: Digits.Look = { Colour = colour or s.Colour, Outline = s.Outline, Weight = s.Weight, Gap = s.Gap, Italic = s.Italic }
+	-- AR44: the plain numbers wear the take being tried, its face, outline, gap and shadow.
+	local take = config.Takes[config.Take]
+	if take and table.find(config.Plain, style) then
+		look.Face = take.Face
+		look.Font = (Enum.FontWeight :: any)[take.Font] :: Enum.FontWeight
+		look.Digit = take.Digit
+		look.Weight = take.Weight
+		look.Gap = take.Gap
+		look.Shadow = if take.Shadow then config.Shadow else nil
+	end
+	return look, s.Size
 end
 
 local function textOf(c: Counting, numbers: Numbers): string
@@ -1829,14 +1843,33 @@ local function textOf(c: Counting, numbers: Numbers): string
 	return c.Prefix .. Hud.Digits(Hud.Shown(c.Count, c.Age, numbers.Count))
 end
 
--- The critical's stroke behind its digits (CritSweep, round 2; Config.Hud.Numbers.Critical.Sweep).
-local function sweep(c: Counting, size: number, look: Digits.Look)
+-- The critical's splash behind its digits (CritSweep, AR44 round 4; Config.Hud.Numbers.Critical.Sweep), laid on the
+-- row's real width once it's laid out: the estimate (Digits.Width) gives a "1" and a "," a digit's share, so it laid
+-- 1,204's splash about a digit early, its head before the first digit instead of behind it. The real width is the row's
+-- absolute one in the plate's own pixels (the pop's UIScale and the layer's divided out); before the first layout,
+-- the estimate.
+local function laySweep(c: Counting)
+	local s = c.Sweep
+	local look = Digits.Looks[c.Row]
+	if s == nil or look == nil then
+		return
+	end
 	local config = HudConfig.Numbers.Critical.Sweep
+	local size = c.Row:GetAttribute("Size") :: number
 	local w = Digits.Width(c.Text, size, look)
+	local across, authored = c.Plate.AbsoluteSize.X, c.Plate.Size.X.Offset
+	if across > 0 and authored > 0 and c.Row.AbsoluteSize.X > 0 then
+		w = c.Row.AbsoluteSize.X * authored / across
+	end
 	local h = config.Height * GLYPH * size
-	local digit = HudConfig.Numbers.Digit * size
-	local image = c.Sweep
-	if image == nil then
+	local digit = (look.Digit or HudConfig.Numbers.Digit) * size
+	s.ImageColor3 = config.Tint
+	s.Size = UDim2.fromOffset(math.max(config.Width * w, config.Least * h), h)
+	s.Position = UDim2.new(0.5, -w / 2 - config.Left * digit, 0.5, 0)
+end
+
+local function sweep(c: Counting)
+	if c.Sweep == nil then
 		local made = Instance.new("ImageLabel")
 		made.Name = "Sweep"
 		made.BackgroundTransparency = 1
@@ -1845,13 +1878,14 @@ local function sweep(c: Counting, size: number, look: Digits.Look)
 		made.AnchorPoint = Vector2.new(0, 0.5)
 		made.ZIndex = 1
 		made.Parent = c.Plate
-		image = made
 		c.Sweep = made
+		local function relay()
+			laySweep(c)
+		end
+		c.Row:GetPropertyChangedSignal("AbsoluteSize"):Connect(relay)
+		c.Plate:GetPropertyChangedSignal("AbsoluteSize"):Connect(relay)
 	end
-	local s = image :: ImageLabel
-	s.ImageColor3 = config.Tint
-	s.Size = UDim2.fromOffset(math.max(config.Width * w, config.Least * h), h)
-	s.Position = UDim2.new(0.5, -w / 2 - config.Left * digit, 0.5, 0)
+	laySweep(c)
 end
 
 local function restyle(c: Counting, numbers: Numbers)
@@ -1861,7 +1895,7 @@ local function restyle(c: Counting, numbers: Numbers)
 	c.W, c.H = Digits.Width(c.Text, size, look), size * 1.2
 	c.Plate.Size = UDim2.fromOffset(c.W + size, c.H)
 	if c.Style == "Critical" then
-		sweep(c, size, look)
+		sweep(c)
 	end
 end
 
@@ -1903,6 +1937,10 @@ local function place(c: Counting, rise: number)
 end
 
 function Effects.Number(root: BasePart, key: string, amount: number?, look: NumberLook, numbers: Numbers)
+	local only = Effects.Only
+	if only and string.sub(key, 1, #only) ~= only then
+		return
+	end
 	local onBody = counting[root] or {}
 	counting[root] = onBody
 	local live = onBody[key]

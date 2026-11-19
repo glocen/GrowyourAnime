@@ -333,7 +333,7 @@ return {
 		PortraitUnknownLegendarySmall = { Id = "rbxassetid://118288597827765", Pixels = Vector2.new(368, 400), Points = Vector2.new(92, 100), Pad = 26 },
 		PortraitUnknownMythical = { Id = "rbxassetid://98593618149707", Pixels = Vector2.new(736, 800), Points = Vector2.new(184, 200), Pad = 52 },
 		PortraitUnknownMythicalSmall = { Id = "rbxassetid://86180007801723", Pixels = Vector2.new(368, 400), Points = Vector2.new(92, 100), Pad = 26 },
-		CritSweep = { Id = "rbxassetid://104612895906533", Pixels = Vector2.new(288, 96), Points = Vector2.new(72, 24), Pad = 0 },
+		CritSweep = { Id = "rbxassetid://77833596766702", Pixels = Vector2.new(264, 120), Points = Vector2.new(66, 30), Pad = 0 },
 		CardHousing = { Id = "rbxassetid://109555693764119", Pixels = Vector2.new(728, 179), Points = Vector2.new(182, 44.75), Pad = 6, At = Vector2.new(40, 34) },
 		CardHousingRim = { Id = "rbxassetid://78605976933377", Pixels = Vector2.new(728, 179), Points = Vector2.new(182, 44.75), Pad = 6, At = Vector2.new(40, 34) },
 		CardTab = { Id = "rbxassetid://109983495712787", Pixels = Vector2.new(393, 114), Points = Vector2.new(98.25, 28.5), Cut = { 15.28, 14, 15.28, 14 }, Pad = 5, At = Vector2.new(53.635, 18) },

@@ -13342,6 +13342,33 @@ Research, 2026-11-19, 11:17 by the clock. The director, by 11:16, to research: "
 - **What I see wrong:** it isn't seen in the engine yet, or moving. A 7-figure number stretches it to about 1.3 times its drawn length.
 - **Status:** delivered and content-checked. It waits on Faber's upload, its id and the digits' gradient in Config, then phone captures and research's verdict.
 
+### Faber's takes, the splash in the game, and the captures (Faber, 2026-11-19, 11:44 to 12:10 by the clock)
+
+- **The takes,** in `Config.Hud.Numbers`:
+  - `Takes` holds A (Oswald Regular, stroke 0.6, gap 0.5), B (Oswald Medium, stroke 0.8, gap 0.45) and Now (Builder Sans ExtraBold, 1.6, 0.3, no shadow, as it was).
+  - `Take` names the one played, A for now. `Plain` names the styles that wear it: Dealt, Element, Received and Heal. The critical and the grey word keep their own face.
+  - Switch at runtime with `NL_Debug:Invoke("Tune", "Hud.Numbers.Take", "B")`. The next number wears it.
+  - Each take's `Digit` is its face's measured digit width (Oswald's 0 is 0.36 of its size), so its gap is half or 0.45 of its own digit.
+- **The shadow** (`Config.Hud.Numbers.Shadow`, `UI/Kit/Digits.luau`): a dark copy of the row, 1 by 2 px down and right, under it. It is 0.45 see-through, with a soft 2.5 px edge at 0.82, and fades with its number.
+- **The splash:** `CritSweep` is uploaded under the group as 77833596766702 (Approved; Modulo's asset-log row), at 264 by 120. `Critical.Sweep` takes round 4's layout: Height 1.5, Left 0.5, Width 0.67, Least 2.2, Transparency 0, tint #CC661F.
+  - The critical's digits are one five-stop UIGradient, `Critical.Ramp`, from #EEFFC4 to #FF9340.
+- **A fix the splash showed:** the splash was laid from the estimated width, which counts a "1" and a "," as whole digits. That put 1,204's head about a digit before the "1" (20.5 px against 11.4 drawn).
+  - It's now laid from the row's real width once laid out, re-laid on every layout (`Effects.luau`, `laySweep`).
+  - The case checks it: 9.75 px before the first digit, against 10.75 wanted.
+- **The captures,** a Tower fight on the phone (iPhone 16 Pro), each take held by the case "Take: AR44" (Manual, Stay). Only the take's own numbers are drawn: a 949 flurry, a 1,204 critical and "Block" on the foe, and 57 received and +86 healed on the lead.
+  - Take A: `build/scratch/faber/ar44/take-a-fight.jpg`, zoomed in `take-a-zoom.png`.
+  - Take B: `take-b-fight.jpg` and `take-b-zoom.png`.
+  - Now: `take-now-fight.jpg` and `take-now-zoom.png`.
+- **What I see wrong:**
+  - A's thin digits and hairline lose contrast on the pale ground: 949 reads grey. B holds better. Now reads boldest, but wide and round.
+  - When a critical and a word land within 0.1 s, "Block" sits over the critical's first digits in all three takes. That's the word's lane, not the takes: in a real fight it's rarer.
+  - On the phone, the Tower's "Floor 1 · best 7" draws over the target card's health bar. It isn't from this piece.
+- **Tested:**
+  - Type check 0 new.
+  - "Fight: a flurry is one counting number" 36/0. It covers each take's face, outline, gap and shadow, the critical and the word kept, a live switch through each take, the five-stop gradient and the splash's place.
+  - "Effects: a number's size" 10/0, three runs out of three. One run straight after the flurry case read 0.70 on its "under half faded at half its time" check, a hitch against a 0.5 limit with a 0.45 norm.
+- **Waits on:** research's pick of a take. The pick sets `Take`, and the others leave Config.
+
 ## AR45. The foes' cards with their difficulty skulls, and CR's gold tab (Modulo, for research's pick, then Faber)
 
 Research, 2026-11-19, 11:30 by the clock. The director's word of 11:30 (`docs/decisions.md`, the row): the enemy and elite cards redrawn to match the new UI, a difficulty skull by the foe's CR against the lead, the level's text in its skull's colour, and CR's look replaced. The rules are `docs/ui.md`, "The HUD, in the world": the target's card, "Numbers, short or whole" and "CR's look".

@@ -1011,7 +1011,12 @@ local function lay(folder: Folder)
 		clock.Shape = Enum.PartType.Cylinder
 	end
 	Markers.Stamp(shop, "Shop")
-	slab(folder, "Shop's floor", -crossingHalf, crossingHalf, stripHalf, stripHalf + deep, PAVED_TOP, GREY.Plot)
+	-- Its floor is the Strip's own paving, run on from the street with its joints in line (both on the tile's 8 studs):
+	-- a grey lot under it read as a building site (research's must-fix 2 on AR40's C, 2026-11-19, 21:25).
+	local shopFloor = slab(folder, "Shop's floor", -crossingHalf, crossingHalf, stripHalf, stripHalf + deep, PAVED_TOP, if stone then GREY.Paved else GREY.Plot)
+	if stone then
+		stone:Clone().Parent = shopFloor
+	end
 end
 
 -- The Festival's place (TR45): Lantern Row from its forecourt, where a trip sets the player down before the gate, to

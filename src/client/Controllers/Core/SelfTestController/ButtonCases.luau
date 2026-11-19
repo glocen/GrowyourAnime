@@ -254,6 +254,35 @@ function ButtonCases.Cases(): { any }
 				step:Destroy()
 			end,
 		},
+		{
+			Name = "Kit: a window over the HUD is opaque in every palette, so none of the HUD's words show through it",
+			Run = function(t: any)
+				-- Research's must-fix 1 on AR40's C (2026-11-19, 21:25): at the system panel's 0.95, the HUD's "4 ready" and
+				-- the lead card's health read through the Power window as ghost text. Every panel palette, the default first.
+				local names: { string } = {}
+				for name, p in UIKit.Palettes :: any do
+					if type(p) == "table" and p.Panel ~= nil and p.Alpha ~= nil then
+						table.insert(names, name)
+					end
+				end
+				table.sort(names)
+				table.insert(names, 1, "")
+				local clear = 0
+				for _, name in names do
+					local palette = if name == "" then nil else name
+					Screen.Open("SelfTestScreen", "Self-test", Vector2.new(300, 200), palette)
+					local frame = Screen.Frame("SelfTestScreen")
+					local skin = if frame then frame:FindFirstChild("NL_Skin") else nil
+					local fill = if skin then skin:FindFirstChild("Fill", true) :: ImageLabel? else nil
+					if fill == nil or fill.ImageTransparency ~= 0 then
+						clear += 1
+						t.Check(`{name ~= "" and name or "the default"}'s slab is opaque`, false, if fill then string.format("%.2f see-through", fill.ImageTransparency) else "no fill")
+					end
+				end
+				t.Check(`every one of {#names} slabs is opaque`, clear == 0 and #names > 1, `{clear} see-through`)
+				Screen.Close()
+			end,
+		},
 	}
 end
 

@@ -295,6 +295,9 @@ local function show(name: string, title: string, size: Vector2?, palette: string
 			AnchorPoint = Vector2.new(0.5, 0.5),
 			Parent = stage,
 			Palette = palette,
+			-- Opaque whatever its palette's alpha: a window over the HUD showed the HUD's words through it as ghost text
+			-- (research's must-fix 1 on AR40's C, 2026-11-19, 21:25, for every window that covers the HUD).
+			Transparency = 0,
 		})
 	end
 	frame.Active = true -- a tap on the screen stays on it

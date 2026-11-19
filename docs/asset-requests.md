@@ -13083,6 +13083,20 @@ The director, at 01:4x: "the map is a bit to purple does it, that purple trail o
 - **Must-fix 1, the window over the HUD (class: every window that covers the HUD):** at the Power slab's 0.95, the HUD's "4 ready" line and the lead card's "2,492/2,492" show through as ghost text under the window's own words. A window that covers the HUD is opaque, or the HUD hides under it.
 - **Must-fix 2, a building's ground (class: every building on the Strip):** the Shop stands on a grey slab with no edge, which reads as an unpaved lot, a building site. It takes the cream paving, or its own edged plaza in C's colours.
 
+### The two must-fixes (Faber, 2026-11-19, after 21:25, done at 21:33 by the clock)
+
+- **1, the window over the HUD:** every window that `Screen.Open` lays now has an opaque slab, whatever its palette's alpha (`Kit.Screen`), so the HUD hides under it. In `fix_power_opaque.jpg` the Power window lies over the dock with nothing showing through.
+- **2, a building's ground:** the Shop's floor wears the Strip's own paving and colour (`WorldService`). It runs on from the street with its joints in line, since both lie on the tile's 8 studs. The Shop is the only building on the Strip. See `fix_shop_floor.jpg`.
+- **Tests:**
+  - The type check: 0 new.
+  - The self-test:
+    - Kit 85/0, with a new case: every palette's slab is opaque.
+    - Shop 77/0, with the floor's new check.
+    - Power 94/0.
+    - C's case 16/0.
+- **Captures:** in `build/scratch/faber/ar40/`.
+- **Status:** implemented and tested, captured for research's check. Not director-accepted.
+
 ## AR41. The Tower's platforms: the rise, the assembly and the fall as light (Modulo, for research's pick, then Faber)
 
 **Dropped, 2026-11-19, by 11:12** (the director's word): the Tower moves into a room of its own, so its platforms go (`docs/design.md`, "The Tower"). Nothing here is built or rendered. The room's own request is written when the main game's open pieces are done.

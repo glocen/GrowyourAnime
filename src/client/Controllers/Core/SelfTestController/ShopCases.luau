@@ -290,6 +290,18 @@ function ShopCases.Cases(): { any }
 				local face = (building :: BasePart).CFrame:PointToObjectSpace(if counter and counter:IsA("BasePart") then counter.Position else Vector3.zero)
 				-- In the building's own frame its counter's face stands 5 before its middle (the mesh: 9 behind the Shop's place).
 				t.Check("the counter's prompt just before the counter", counter ~= nil and face.Z < -5 and face.Z > -8 and math.abs(face.X) < 8, tostring(face))
+				-- It stands on the Strip's own paving, never a grey lot (research's must-fix 2 on AR40's C, 2026-11-19, 21:25).
+				local world = marker.Parent
+				local floor = if world then world:FindFirstChild("Shop's floor") else nil
+				local strip = if world then world:FindFirstChild("Strip") else nil
+				local stones = if floor then floor:FindFirstChildOfClass("Texture") else nil
+				local street = if strip then strip:FindFirstChildOfClass("Texture") else nil
+				t.Check(
+					"its floor wears the Strip's paving, the street's colour and tile",
+					floor ~= nil and strip ~= nil and stones ~= nil and street ~= nil and stones.Texture == street.Texture
+						and stones.StudsPerTileU == street.StudsPerTileU and (floor :: BasePart).Color == (strip :: BasePart).Color,
+					if floor == nil then "no floor" elseif stones == nil then "bare" else stones.Texture
+				)
 				local light: Light? = nil
 				for _, item in marker:GetDescendants() do
 					if item:IsA("Light") and item.Parent and item.Parent.Name == "Crown" then

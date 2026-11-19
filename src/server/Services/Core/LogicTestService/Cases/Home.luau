@@ -33,7 +33,7 @@ return {
 			t.Equal("a refused tile's word is its toast's", Home.Word("Fight", out({ Engaged = true })), "In a fight")
 			t.Equal("a ready tile has no word of its own", Home.Word(nil, out()), nil)
 			t.Equal("in a keeper's try: a boss's ground", Home.Refusal(out({ Try = true }), RULES), "Boss")
-			t.Equal("its words", Home.Says("Boss", out({ Try = true })), "Not in a boss's ground")
+			t.Equal("its words", Home.Says("Boss", out({ Try = true })), "Not in a boss's arena")
 			t.Equal("an event on", Home.Refusal(out({ Event = true }), RULES), "Event")
 			t.Equal("its words", Home.Says("Event", out({ Event = true })), "Not during an event")
 			t.Equal("a hit just now: in a fight", Home.Refusal(out({ HitAt = NOW }), RULES), "Fight")

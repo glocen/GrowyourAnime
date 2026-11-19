@@ -984,7 +984,7 @@ local EMPTY: { [string]: { string } } = {
 	Gear = { "No gear yet", "Shades and keepers drop it" },
 	Jewelry = { "No jewelry yet", "Shades and keepers drop it" },
 	Chests = { "No chests yet", "Shades drop them, and keepers" },
-	Materials = { "No shards yet", "The grounds drop them" },
+	Materials = { "No shards yet", "The Arcs drop them" },
 }
 
 function Bag.Build(context: Context): (() -> boolean)?

@@ -781,7 +781,7 @@ local function stepState(view: Profile.View): Hud.StepState
 		Worked = worked,
 		Won = won,
 		Keeper = keeper,
-		Ground = if firstGround then firstGround.Name else "the grounds",
+		Ground = if firstGround then firstGround.Name else "the Arcs", -- players read a ground as an Arc (the director, 2026-11-19)
 	}
 end
 

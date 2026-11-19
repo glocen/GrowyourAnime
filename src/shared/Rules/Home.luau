@@ -45,7 +45,7 @@ end
 
 function Home.Says(refusal: Refusal?, s: Situation): string?
 	if refusal == "Boss" then
-		return "Not in a boss's ground"
+		return "Not in a boss's arena" -- the keeper's street, never the Arc: players read a ground as an Arc
 	elseif refusal == "Event" then
 		return "Not during an event"
 	elseif refusal == "Fight" then

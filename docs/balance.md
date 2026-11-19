@@ -11,9 +11,9 @@ The director, 2026-11-11: "avoid compounding (which was an issue i noticed on ne
 **Things add. Almost nothing multiplies.**
 
 1. Every source of power (level, gear, forge, emblems, jewels, research, stars) gives **flat points** to a stat. None gives "a percent of your attack".
-2. Two exceptions, both a percent of the thing's **own base** and both linear: a slot's forge rank on the item in that slot, and a Voidkin's stars on its own base stats. Neither touches the total.
+2. Two exceptions, both a percent of the thing's **own base** and both linear: an item's Reinforce level on that item, and a Voidkin's stars on its own base stats. Neither touches the total.
 3. Growth comes from **authored tables**: a level's row, an item tier's row. Getting stronger means a better row, not another multiplier.
-4. A hit multiplies in **three places only,** each with a ceiling: the defender's mitigation, the attacker's bonus bucket, the defender's reduction bucket. Everything that would be "a damage boost" is a number added into one of the two buckets.
+4. A hit multiplies in **four places only,** each with a ceiling: the defender's mitigation, the attacker's bonus bucket, the defender's reduction bucket, and the level gap [D, 2026-11-19, 03:10]. Everything that would be "a damage boost" is a number added into one of the two buckets.
 5. Every earning rate (Credits, experience, electricity, luck) has **one bucket** of bonuses that add, and a ceiling.
 
 A new system joins by adding points to a stat or a number to a bucket. If it can't be written that way, it's a core change and goes to the director.
@@ -31,7 +31,7 @@ Shares of a full launch build's stat points, at level 60:
 | The Voidkin's own base (level and rarity) | 35 | fighting |
 | Its stars | 3.5 | duplicates |
 | Gear | 27 | drops, the shop |
-| Forge ranks | 13.5 | stones and Credits |
+| Reinforce levels | 13.5 | stones and Credits, by chance past +5 |
 | War Emblems | 11 | drops, the shop |
 | Jewels | 7 | elites, keepers, the Tower |
 | Research | 3 | Research Points |
@@ -67,7 +67,7 @@ The Battle Attributes, which every fight reads:
 
 **Combat Power** is one number shown to the player: a weighted sum of the stats, its weights fitted by the simulation so the higher number wins more often with no type edge. It's for reading, matchmaking and the Clash's rewards. It's never used to compute damage. How it's shown: `docs/design.md`, "Combat Power". Its weights (`tools/balance/seeds.json`, "combatPower"; refit on the attribute builds by `attributes.py`, report A8, with the sim's section 16 method) are what a point adds to winning, Attack's held at 4. A percent's weight is given at level 1 and multiplies by G at the Voidkin's level, since a percent multiplies points that grow with G. With them the higher number wins 97% of same-level duels with no type edge, and 99.7% where one side wins 10% faster (2026-11-16). Its limit is a sum's: it can't see that spreading points beats stacking them, so of one budget spent two ways it picks the better about half the time (`docs/polish-later.md`).
 
-**Basic Attributes** [D, 2026-11-17: two, Strength and Endurance; they replace the five of 2026-11-16] feed the Battle Attributes and no fight reads them itself (`docs/design.md`, "Voidkin"). Each attribute converts by one row, every class alike, and the class's Main once more by its own. A class's points at level 1 are its shape, fitted so the class stands against every class and spec as it did before. The rows and the shapes: `src/shared/Config/Stats.luau`, "Attributes", once Faber lands TR36. The model reads them there: `py tools/balance/attributes.py`, or a proposed copy through `ATTR_STATS`.
+**Basic Attributes** [D, 2026-11-19, 03:10: five, Strength, Agility, Intelligence, Endurance and Spirit, one per class's Main; research's refit replaces the two-attribute rows below, which stand until it lands] feed the Battle Attributes and no fight reads them itself (`docs/design.md`, "Voidkin"). Each attribute converts by one row, every class alike, and the class's Main once more by its own. A class's points at level 1 are its shape, fitted so the class stands against every class and spec as it did before. The rows and the shapes: `src/shared/Config/Stats.luau`, "Attributes", once Faber lands TR36. The model reads them there: `py tools/balance/attributes.py`, or a proposed copy through `ATTR_STATS`.
 
 | Attribute | Its job | It feeds, every class | As a Main, on top |
 |---|---|---|---|
@@ -96,6 +96,7 @@ Done by the server, once per attack, by one function (`docs/engineering-plan.md`
 5. `final = physical x (1 + bonus) x critical x (1 - reduction)`, the critical x1 on a hit that isn't one.
 6. **Elemental,** if the attacker has it: `Elemental Attack x coefficient x (1 - resist)`, through the same two buckets but never critical. Shown as the second, coloured number.
 7. **Lifesteal** heals from the health actually removed, with a ceiling per second.
+8. **The level gap** [D, 2026-11-19, 03:10]: when the attacker's level is below the defender's by more than 2, the hit (physical and elemental) is multiplied by `max(0.05, 0.85 ^ (gap - 2))`: 61% at 5 levels, 27% at 10, 10% at 16. A higher attacker gets nothing. Seeds, through the simulation before the build; Hard's recommended power is refit with it.
 
 ## Type
 

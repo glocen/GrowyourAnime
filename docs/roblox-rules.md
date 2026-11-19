@@ -26,18 +26,18 @@ What Roblox requires of this game, and what we do about it. Read on 2026-11-09 b
 Tightened on 2026-05-26: for a game that doesn't comply, "your game will be removed and your account will be suspended" (official [25]).
 
 - **What counts** (official [2][25]): a random item bought with Robux, or with anything Robux buys. A bundle with one random item in it counts whole. Random rewards that can't be bought, directly or indirectly, are outside the rule.
-- **Odds** (official [24][25]): every outcome, in numbers that add up to 100 percent, shown before the purchase. A "Details" pop-up is accepted. A lone (i) icon isn't. No outcome may be a pure loss.
+- **Odds** (official [24][25]): every outcome, in numbers that add up to 100 percent, shown before the purchase. A "Details" pop-up is accepted. A lone (i) icon isn't. The page, read again on 2026-11-19, says nothing on an outcome that gives nothing; research's earlier "no pure loss" isn't on it. An "Upgrade spell with some chance of working" is named as a paid random item, and so is currency bought with Robux ("This policy also applies to indirect purchases").
 - **The check in code** (official [26]): `PolicyService:GetPolicyInfoForPlayerAsync`. `ArePaidRandomItemsRestricted` true means hide, replace or block. `IsPaidItemTradingAllowed` false means no trading of any paid item.
 - **Where it's restricted** (official [25][28][29]): Australia, Belgium, the Netherlands, the United Kingdom and Brazil, with the list kept by Roblox.
 - **The questionnaire** (official [27][28]): paid random items are declared in the Maturity and Compliance Questionnaire. Declared without the check in code, the game is closed to under-18s in the UK and Brazil.
 - **Luck sold for Robux** (official [24][25]): a "probability modifier". Its effect is shown in numbers before purchase, and the shown odds update while it runs. Luck passes count.
 - **Rerolls** (official [24]): a reroll token bought with Robux needs the odds shown before it's spent. A paid reroll of a shop's stock: asked on the forum, never answered.
-- **Fusing and mutating** (official [2][24]): covered as items "consumed or exchanged in combination with other items to access random outcomes". A paid fuse that can fail and give nothing would break the no-loss rule (inferred).
+- **Fusing and mutating** (official [2][24]): covered as items "consumed or exchanged in combination with other items to access random outcomes". A paid fuse or upgrade that can fail is allowed with its odds shown (read again 2026-11-19).
 
 **What we do,** as proposed in `docs/design.md`:
 
 1. Every roll in the game shows its odds, paid or not. It's the honest design, and it means the rule is nearly met on the day the director wants to sell something.
-2. Credits are never sold for Robux while credits buy anything random.
+2. Credits will be sold for Robux (the director, 2026-11-19, `docs/decisions.md`). So everything random that Credits buy, Reinforce and the Void Shop's shards included, is a paid random item: every outcome's odds shown before the press, and where `ArePaidRandomItemsRestricted` is true, Credits can't be bought (the page's treatment "Blocking the purchase … with an error message"), so players there use earned Credits only.
 3. What the shop sells is known: a shard's type names its fighter. The roll on who you get lives in shards that are only earned.
 4. Nothing random, no reroll and no luck is sold until this section is built in and the director has approved the design (the directive, section 15).
 

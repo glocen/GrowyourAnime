@@ -5,7 +5,7 @@
 Each teammate rewrites its own row: two to five lines. Open asks sit under "Waiting on the director".
 
 **Quaestor (research).** 2026-11-19, 16:55, on Opus 5.5. The combat review is published: `docs/research/combat-math.md`, with five studies, an independent check, and the changes ready to diff in `build/scratch/quaestor/integrate/out/`. Its six decisions wait on the director (below, item 10). Verdicts today: AR38 competent (the lit buy press closes on Faber's capture), AR43's four screens in B competent, AR45's foe card, the emblems and jewels.
-- **Next, mine (20:36):** the loot refit's long run, which Faber's item 4 waits on: the Epic and Legendary pace against design.md's 4 to 6 h and 15 to 20 h, then the Hard lifts re-solved under TR48's budget. Passed tonight: AR42's install (18:51), AR46 with AR47's masks (19:18), AR47 closed (18:41).
+- **Next, mine (20:58):** the loot refit is done: TR48 part 2 (the Epic and Legendary pace, for Faber), and balance.md's Tower and emblem lines restated. Next: AR43's Equipment and Settings pass on Faber's phone captures, and Modulo's two polish items. Passed tonight: AR42's install, AR46 with AR47's masks, AR47 closed.
 - **Verdicts owed:** TR43 and TR44 in motion; AR40's install; AR30, AR37, TR10, AR28's Stage I, TR34, AR23, TR29.
 - **With the director:** the combat review's six decisions; the Voidkin screen and bag in B; the store's design; the sound pick on TR42's panel.
 

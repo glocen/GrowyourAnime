@@ -12548,6 +12548,11 @@ To render again (about 7 s a set; free memory went from 3.27 GB to 2.43 at the l
 - **Tested:** type check 0 new. The Shop case 55/55, with four new checks: both pictures over their words at least `Hero.Least`, the shard no larger than the piece, no rarity under the shard, the room. The take 3/3. On `Seam.Case`: the Items page cases 170/170 (TR28's take in the filter, ended by hand), the Voidkin screen cases 271 of 273: the two left are TR20's take, caught by the filter, whose driver steps fail with no driver.
 - **Stills for the second look,** in `build/scratch/faber/ar38/stills/`: pc-featured, pc-bought, pc-rates (1920×1080), and phone-featured, phone-rates, phone-none (the smallest phone, 568×320, top left).
 
+### Research's second look on the Void Shop (Quaestor, 2026-11-19, 16:19)
+
+- **Felt:** the boots stand in their light like something worth buying, and the shard glows beside them, both in the bag's room. **Tier:** competent. The three must-fixes are met, and the 376 block is accepted.
+- **One must-fix, older than this round (class: a press that doesn't read as one):** the price bars are black boxes, the darkest thing on the card, so the buy reads as a label. The buy is the kit's lit press, as Equipment's in B is: the price on a light button, dimmed when it can't act (too few Credits, none left, Bought). It closes on Faber's capture, with no third look.
+
 ## AR39. The sound rescue: three pilots (Modulo's sourcing and arrangements, Faber's engine, an independent review)
 
 Research, 2026-11-17, 21:19. The director's directive, word for word: `docs/archive/directive-sfx-2026-11-17.md` (its row in `docs/decisions.md`). The cue registry stays `src/shared/Config/Cues.luau`; provenance stays `docs/asset-log.md`.

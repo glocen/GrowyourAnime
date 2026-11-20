@@ -1,19 +1,24 @@
 --!strict
 -- Collection cases (pure): the first of a Voidkin is a new record, a duplicate a copy, a copy past the last star sells;
 -- stars cost their copies in order, by hand, and the last star sells what's left; the showcase at the gate stands the
--- one picked, else the strongest (TR22).
+-- one picked, else the strongest (TR22). A star bought under one op id is bought once, an interrupted one spends nothing,
+-- and the last star's sale pays once (section 9).
 -- Runs in Studio (LogicTests) and with Studio closed (tools/checks/logic_offline.luau).
 
 local Shared = game:GetService("ReplicatedStorage").Shared
 local Profile = require(Shared.Data.Profile)
 local Migrations = require(Shared.Data.Migrations)
 local Saveable = require(Shared.Data.Saveable)
+local Transaction = require(Shared.Data.Transaction)
 local Collection = require(Shared.Rules.Collection)
 local VoidkinConfig = require(Shared.Config.Voidkin)
 local Voidkin = require(Shared.Definitions.Voidkin)
 local Stats = require(Shared.Rules.Stats)
 
 local NOW = 1_800_000_000
+local OP = "3b241101-e2bb-4255-8caf-4136c566a962"
+local OTHER_OP = "6fa459ea-ee8a-3ca4-894e-db77e160355e"
+local THIRD_OP = "9c858901-8a57-4791-81fe-4c455b099bc9"
 
 local function fresh(): Profile.Data
 	local data = Profile.Template()
@@ -207,6 +212,49 @@ return {
 			twin.Voidkin[b].Def = "rook"
 			local first = (Collection.Showcase(twin) :: Profile.OwnedVoidkin).Id
 			t.Check("two alike: always the same one, so it never flickers", first == (if a < b then a else b) and (Collection.Showcase(twin) :: Profile.OwnedVoidkin).Id == first, `{a}, {b}: {first}`)
+		end,
+	},
+	{
+		Name = "Collection (section 9): a star bought under one op id is bought once, an interrupted one spends nothing, and the last star's sale pays once",
+		Run = function(t: any)
+			local data = fresh()
+			local id = Collection.Uncover(data, "pip", NOW).Id
+			local owned = data.Voidkin[id]
+			owned.Copies = VoidkinConfig.StarCopies[1] + VoidkinConfig.StarCopies[2] - 1 -- one star, and one copy short of the next
+			local function spend(cut: boolean?): Transaction.Change
+				return function(draft: Profile.Data): Transaction.Answer
+					local answer = Collection.Actions.SpendCopies(draft, { Voidkin = id }, NOW, 0)
+					if cut then
+						error("interrupted")
+					end
+					return answer
+				end
+			end
+			local first, changed = Transaction.Run(data, OP, spend(), 8)
+			t.Check("the first star", first.Ok == true and changed and data.Voidkin[id].Stars == 1)
+			local before = Profile.DeepCopy(data)
+			local again, againChanged = Transaction.Run(data, OP, spend(), 8)
+			t.Check("the repeat buys no second star", not againChanged and data.Voidkin[id].Stars == 1 and data.Voidkin[id].Copies == before.Voidkin[id].Copies)
+			t.Equal("and answers as the first did", again.Stars, 1)
+			local short, shortChanged = Transaction.Run(data, OTHER_OP, spend(), 8)
+			t.Check("a new request without the copies is refused, unchanged", short.Error == Collection.NotEnough and not shortChanged)
+			data.Voidkin[id].Copies += 1
+			local cut, cutChanged, why = Transaction.Run(data, OTHER_OP, spend(true), 8)
+			t.Check("an interrupted spend keeps the copies and the stars", cut.Ok == false and not cutChanged and why ~= nil and data.Voidkin[id].Stars == 1 and data.Voidkin[id].Copies == VoidkinConfig.StarCopies[2])
+			local retry = Transaction.Run(data, OTHER_OP, spend(), 8)
+			t.Check("its retry under the same id buys the star, once", retry.Ok == true and data.Voidkin[id].Stars == 2 and data.Voidkin[id].Copies == 0)
+			-- the last star sells what's left: a repeat pays nothing again
+			local last = data.Voidkin[id]
+			last.Stars = VoidkinConfig.MaxStars - 1
+			last.Copies = VoidkinConfig.StarCopies[VoidkinConfig.MaxStars] + 5
+			local credits = data.Currency.Credits
+			local sold = Transaction.Run(data, THIRD_OP, spend(), 8)
+			local paid = data.Currency.Credits - credits
+			t.Check("the last star sells five copies", sold.Ok == true and paid == 5 * VoidkinConfig.SellCredits.Common and sold.Credits == paid, `{paid}`)
+			Transaction.Run(data, THIRD_OP, spend(), 8)
+			t.Equal("its repeat pays nothing more", data.Currency.Credits - credits, paid)
+			local problems = Saveable.Problems(data, "profile")
+			t.Check("the save stays whole", #problems == 0, table.concat(problems, "; "))
 		end,
 	},
 }

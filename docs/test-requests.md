@@ -3920,6 +3920,12 @@ The director, 2026-11-19, 02:05 to 02:07 by the clock, then yes to the restateme
 - **Tested, 2026-11-19:** offline logic 26,659/0, Studio's the same; the type check 0 new; the world report clean as Main and as the Festival. The base's full suite: 2,843 passed, 15 failed. 3 were the Map tile's old refused look, taught since, with the hover word's own bug fixed (the dock 38/0, TR20 36/0 after). 11 pass alone: TR20's breath, the Items page, Ground Wire and the galaxy's mist, order-dependent. 1 was the stat sheet's case, never taught item 8's "every 8 s" under HP Regen (e739d53): taught, 21/0. The Festival role's suite ran in the main Studio with its role attribute set for that playtest, its world whole and the player at the landing, but the place closed under it before its report was read: NOT VERIFIED. The Festival's own place waits on its Rojo connection (the board, item 9).
 - **Not yet:** a real trip, from the published places (Studio can't teleport); the trip's time measured, for the save's early release.
 
+**Faber's cloud session (2026-11-20, offline, no Studio; 939e049).**
+- **Made pure:** `Rules.Travel.Joined` (a joining player's ticket is read only when they came from one of this universe's places; TravelService's inline check), and `Rules.Stages.Way` (the base's pick: its checkpoint, or the refusal with what it waits for; StageService.Travel's).
+- **Case:** "Travel (TR45): the base's pick carries the save's checkpoint…" walks the round trip. It covers Way, Joined from the base and the Festival against a foreign, missing or text place id, and the arrival beginning the run where the base sent it. Mutation-checked on Joined's place check.
+- **Tested:** offline 28,938/0 at that commit; the type check 0 new, 11 known.
+- **NOT VERIFIED:** a real trip between the published places, and the Festival place's self-test.
+
 ## TR46. The Tower's follow-up: Retry and Home, the heal cap told once, the week's board, the week's foes (Faber, the follow-up's item 7)
 
 Faber, 2026-11-19, 03:43 by the clock: the follow-up's item 7 (`docs/production-plan.md`, "The design review's follow-up"; the seed research's tier 2, taken). Research's answers to Faber's four questions came at 03:43 and are recorded below as research gave them.
@@ -4070,6 +4076,11 @@ Faber, 2026-11-19, 03:43 by the clock: the follow-up's item 7 (`docs/production-
 - **Tested:** type check 0 new; offline logic 27,104 passed; the full self-test 2,994 passed. Try, Socket and the transfer each pass a retry test. The Gear case's fix (a debug item gets its rarity's sockets) passes alone: 10 of 10 (17:20).
 - **Not yet:** the Reinforce and War Emblems pages and their phone capture (Equipment's install in B); part B.
 
+### Faber's cloud session: the transfer under repeats (2026-11-20, offline; ab3f963)
+
+- **A seeded case in `Cases/Regalia`:** 400 equips with Move over six rings and two presets, with a ledger of 8 so ids leave and come back, and a sixth of the equips cut short after they ran. No Reinforce level, emblem or jewel is made or lost, a repeat changes nothing, and a cut equip changes nothing.
+- **Mutation-checked** against Transfer's swap, its kept emblems, the ledger's memory and Transaction's rollback. Offline 28,941/0 at that commit; the type check 0 new. It's pure, so Studio's `LogicTests` runs the same code.
+
 ## TR48. The loot refit, part 1: Hard's own budget, the keeper's count, the Tower, the materials (Faber, after TR47)
 
 - **What it serves:**
@@ -4194,6 +4205,14 @@ Faber, 2026-11-19, 03:43 by the clock: the follow-up's item 7 (`docs/production-
   - Eight older checks compared a chest's weights to its ladder row by identity, and now read the row under the least shares. The Tower case's "no ladder row of Lantern Row's" gives a Legendary is now "more often than Lantern Row's ladder chests".
   - The self-test: the Items page's chest card shows 0.3% and 0.05% (Items page 121/0).
 - **Status:** implemented and tested. Research's MODEL stands for the pace. Not director-accepted.
+
+### Faber's cloud session: the keeper in a run (2026-11-20, offline, no Studio; f511b0a)
+
+- **A keeper's win is never granted twice (section 9).** `Progress.KeeperWon` now refuses with `Resting` while the keeper rests from this player's last win. No try begins in the rest (`KeeperService.Try`), so a win then can only be that win again. Before, only KeeperService's in-memory flag stopped a second chest and emblem, since a server's own change carries no op id.
+- **Made pure:** StageService's keeper hooks, `Stages.TryAt` (the stretch a try begins at) and `Stages.KeeperFell` (the win as the run's last stop).
+- **Cases:** "Progress (section 9): a keeper's win repeated while the keeper rests…", and the keeper in a run on Normal and Hard in `Cases/Stages` (TryAt, KeeperFell, Level +10 on Hard). The older Progress case's second win moves from 60 s to 400 s, past the 300 s rest. Mutation-checked on the rest guard and TryAt's ground check.
+- **Tested:** offline 28,923/0 at that commit; the type check 0 new.
+- **NOT VERIFIED (the Festival place):** the keeper in a real run.
 
 ## TR49. The combat review, built: the six decisions (Faber, after AR40's C)
 
@@ -4375,3 +4394,11 @@ Faber, 2026-11-19, 03:43 by the clock: the follow-up's item 7 (`docs/production-
 
 - **All five fixes are met.** The lock is shut, "Fight" and "Continue" are the lit way in, the badge carries Normal's chevron or Hard's coral pair, the foe is named, and the track runs node to node with its ticks as fills. **TR50 passes at competent** on what players see. The Festival run cases stay NOT VERIFIED until the place opens (item 9).
 - **The older line widens, Modulo's after AR48 (same class: every art tile's ground):** not only the lantern's tile, but the picker's whole screen stands on a violet ground with a lavender glow. Both take the festival's dusk, warm under the lantern.
+
+### Faber's cloud session: the run's rules made pure (2026-11-20, offline, no Studio; 5058a78)
+
+- **Moved from StageService into `Rules.Stages`:** which falls count (`Counts`), when a Hard pack stands again (`Regrows`), whether a gate is shut (`Shut`), the save's holdings and the run's two cards (`Holdings`, `Won`, `Lost`), the run's attributes and their reading back (`Published`, `Parse`, which StageController now shares), and the log's name (`Label`). The service only wires them; nothing players see changed.
+- **Cases:** three in `Cases/Stages`: the falls and the regrowth, the gate, and the cards with the attributes. A gain is floored at 0 when Credits were spent past it during the run. Each was mutation-checked.
+- **Tested:** offline 28,896/0 at that commit; the type check 0 new, 11 known; the Rojo build.
+- **NOT VERIFIED (the Festival place):** the run case "Stages (TR50)" in its playtest, and the run's log line in a real run.
+- **Found, not fixed:** the client's `look()` gate rule skips the server's ground check and its Ending state. It can't show while there's one ground; at ground 2 it should call `Rules.Stages.Shut`.

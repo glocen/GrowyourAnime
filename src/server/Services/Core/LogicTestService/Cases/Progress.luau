@@ -9,6 +9,7 @@ local Migrations = require(Shared.Data.Migrations)
 local Saveable = require(Shared.Data.Saveable)
 local Grounds = require(Shared.Definitions.Grounds)
 local Progress = require(Shared.Rules.Progress)
+local Transaction = require(Shared.Data.Transaction)
 
 local NOW = 1_800_000_000
 
@@ -31,7 +32,7 @@ return {
 			t.Equal("it opens the next ground", won.Opened, second.Id)
 			t.Check("which stays open", Progress.IsOpen(data, second.Id) and data.Progress.Grounds[second.Id].Opened == NOW)
 			t.Equal("with no wins of its own", data.Progress.Grounds[second.Id].KeeperWins.Normal, 0)
-			local again = Progress.KeeperWon(data, first.Id, NOW + 60)
+			local again = Progress.KeeperWon(data, first.Id, NOW + 400) -- after its rest: no try begins before (TR10)
 			t.Check("a second win counts", again.Ok == true and again.Wins == 2)
 			t.Equal("and opens nothing new", again.Opened, "")
 			t.Equal("the next ground keeps its first opening", data.Progress.Grounds[second.Id].Opened, NOW)
@@ -60,6 +61,42 @@ return {
 				after += 1
 			end
 			t.Equal("nothing changed", after, before)
+		end,
+	},
+	{
+		Name = "Progress (section 9): a keeper's win repeated while the keeper rests from it grants nothing twice, with no op id; the refusal changes nothing; after the rest a win counts again",
+		Run = function(t: any)
+			local first = Grounds.List[1]
+			local data = fresh()
+			local roll = { Stone = 0, Emblem = 0, Rarity = 0, Set = 0, Stat = 0 } -- every emblem roll lands
+			local won = Progress.KeeperWon(data, first.Id, NOW, "Normal", roll)
+			t.Check("the win: a chest and an emblem", won.Ok == true and won.Chest ~= "" and won.Emblem ~= "", `{won.Chest} {won.Emblem}`)
+			local function held(): string
+				local chests, emblems = 0, 0
+				for _, n in data.Bag.Chests do
+					chests += n
+				end
+				for _, n in data.Bag.Emblems do
+					emblems += n
+				end
+				local record = data.Progress.Grounds[first.Id]
+				return `{chests} chests, {emblems} emblems, {record.KeeperWins.Normal}+{record.KeeperWins.Hard} wins, back at {record.Back}`
+			end
+			local once = held()
+			local again = Progress.KeeperWon(data, first.Id, NOW, "Normal", roll)
+			t.Check("the same win again: refused, the keeper resting", again.Ok == false and again.Error == Progress.Rest, tostring(again.Error))
+			t.Equal("nothing twice", held(), once)
+			t.Check("on Hard during the rest: refused too", Progress.KeeperWon(data, first.Id, NOW + 299, "Hard", roll).Ok == false)
+			t.Equal("still nothing twice", held(), once)
+			local _, changed = Transaction.Run(data, nil, function(draft: Profile.Data): any
+				return Progress.KeeperWon(draft, first.Id, NOW + 1, "Normal", roll)
+			end, 8)
+			t.Check("a server change with no op id, repeated: not applied", not changed)
+			t.Equal("and still nothing twice", held(), once)
+			local back = Progress.KeeperWon(data, first.Id, NOW + 300, "Normal", roll)
+			t.Check("its rest over: a new win counts", back.Ok == true and back.Wins == 2)
+			t.Equal("an unknown ground still answers unknown", Progress.KeeperWon(data, "nowhere", NOW).Error, Progress.Unknown)
+			t.Equal("the save stays saveable", #Saveable.Problems(data), 0)
 		end,
 	},
 }

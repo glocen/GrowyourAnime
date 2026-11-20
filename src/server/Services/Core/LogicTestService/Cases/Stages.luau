@@ -412,4 +412,43 @@ return {
 			t.Equal("begun where it is: one stretch", Stages.Label(one), `{GROUND} Normal 3`)
 		end,
 	},
+	-- TR48's keeper in a run, as StageService hears KeeperService (Trying, Won, LevelOf, DifficultyOf): the engine-free part
+	-- of the Festival place's Keeper case.
+	{
+		Name = "Stages (TR48): a keeper's try begins the keeper's stretch on Normal unless the run is there already; its win ends that stretch on the run's difficulty, the keeper ten levels up on Hard and its win counted there",
+		Run = function(t: any)
+			local count = #(Stages.Of(GROUND) :: { any })
+			local keeper = Stages.Last(GROUND, count) :: any
+			t.Equal("no run: the try begins the keeper's stretch", Stages.TryAt(nil, GROUND), count)
+			t.Equal("a ground with no stretches: none", Stages.TryAt(nil, "nowhere"), nil)
+			local data = fresh()
+			local early = Stages.Start(data, GROUND, "Normal", 1, NOW) :: Stages.Run
+			t.Equal("a run at stretch 1: the try begins the keeper's instead", Stages.TryAt(early, GROUND), count)
+			t.Check("the keeper's win doesn't count for stretch 1", not Stages.KeeperFell(early, GROUND) and not early.Last)
+			for stretch = 1, count - 1 do
+				through(early)
+				Stages.Clear(data, early, NOW + 10 * stretch)
+				Stages.Advance(early, NOW + 10 * stretch)
+			end
+			t.Equal("the run reached the keeper: the try begins nothing new", Stages.TryAt(early, GROUND), nil)
+			t.Equal("its keeper at its own level on Normal", Stages.Level(keeper.Level, early.Difficulty), keeper.Level)
+			t.Check("a win on another ground: not this run's", not Stages.KeeperFell(early, "elsewhere"))
+			t.Check("its keeper's win: the stretch done, no quota", Stages.KeeperFell(early, GROUND) and early.Done)
+			local clear = Stages.Clear(data, early, NOW + 100)
+			t.Check("the run ends, Hard opened and offered", clear.Ok and clear.Ends and clear.Opened == "Hard" and clear.Then == "Hard")
+			local win = Progress.KeeperWon(data, GROUND, NOW + 100, early.Difficulty)
+			t.Check("the try's win counts on Normal", win.Ok == true and win.Difficulty == "Normal" and data.Progress.Grounds[GROUND].KeeperWins.Normal == 1)
+			;(Stages.Line(data, GROUND, "Hard") :: any).Cleared = count - 1 -- Hard played to its keeper
+			local hard = Stages.Start(data, GROUND, "Hard", count, NOW + 500) :: Stages.Run
+			t.Check("a Hard run at the keeper's stretch", hard ~= nil and hard.Difficulty == "Hard")
+			t.Equal("its try begins nothing new: Hard's keeper is fought as Hard's", Stages.TryAt(hard, GROUND), nil)
+			t.Equal("the keeper ten levels up", Stages.Level(keeper.Level, hard.Difficulty), keeper.Level + 10)
+			t.Check("its win ends Hard's keeper stretch", Stages.KeeperFell(hard, GROUND))
+			local hardClear = Stages.Clear(data, hard, NOW + 600)
+			t.Check("Hard's card offers nothing after", hardClear.Ok and hardClear.Ends and hardClear.Then == nil)
+			local hardWin = Progress.KeeperWon(data, GROUND, NOW + 600, hard.Difficulty)
+			t.Check("the win counts on Hard, apart from Normal's", hardWin.Ok == true and data.Progress.Grounds[GROUND].KeeperWins.Hard == 1 and data.Progress.Grounds[GROUND].KeeperWins.Normal == 1)
+			t.Equal("both checkpoints back at the first", Stages.Checkpoint(data, GROUND, "Hard") + Stages.Checkpoint(data, GROUND, "Normal"), 2)
+		end,
+	},
 }

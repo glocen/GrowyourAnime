@@ -484,15 +484,14 @@ function StageService.Start()
 	end
 	KeeperService.Trying:Connect(function(player: Player, ground: string)
 		local run = runs[player]
-		local count = #((Stages.Of(ground) or {}) :: { any })
-		if count > 0 and not (run and run.Rule.Ground == ground and run.Rule.Stage == count) then
-			StageService.Begin(player, ground, "Normal", count, true) -- refused, quietly, when the stage isn't open
+		local at = Stages.TryAt(if run then run.Rule else nil, ground)
+		if at then
+			StageService.Begin(player, ground, "Normal", at, true) -- refused, quietly, when the stage isn't open
 		end
 	end)
 	KeeperService.Won:Connect(function(player: Player, ground: string)
 		local run = runs[player]
-		local last = if run then Stages.Last(ground, run.Rule.Stage) else nil
-		if run and not run.Ending and run.Rule.Ground == ground and last and last.Kind == "Keeper" and Stages.Kill(run.Rule, last.Def) then
+		if run and not run.Ending and Stages.KeeperFell(run.Rule, ground) then
 			finish(player, run)
 		end
 	end)

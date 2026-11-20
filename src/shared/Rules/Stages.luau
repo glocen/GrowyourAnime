@@ -161,6 +161,27 @@ function Stages.Counts(run: Run, foe: { Ground: string?, Stage: number?, For: an
 	return if run.Difficulty == "Normal" then foe.For == nil else who ~= nil and foe.For == who
 end
 
+-- The stretch a keeper's try on `ground` begins a run at (StageService, on KeeperService.Trying): the keeper's, on Normal,
+-- so its win is that stretch's last stop; nil when the player's run is already there (on either difficulty: a Hard run's
+-- keeper is fought as Hard's), or the ground has no stretches.
+function Stages.TryAt(run: Run?, ground: string): number?
+	local count = #((Stages.Of(ground) or {}) :: { StagesConfig.Stage })
+	if count == 0 or (run and run.Ground == ground and run.Stage == count) then
+		return nil
+	end
+	return count
+end
+
+-- A keeper's try on `ground` won (KeeperService.Won): counted as the run's last stop when the run is on that ground's
+-- keeper's stretch. Whether the run is done.
+function Stages.KeeperFell(run: Run, ground: string): boolean
+	local last = Stages.Last(run.Ground, run.Stage)
+	if run.Ground ~= ground or last == nil or last.Kind ~= "Keeper" then
+		return false
+	end
+	return Stages.Kill(run, last.Def)
+end
+
 -- Whether a Hard run's group `name` stands again for its player: a pack, once the last of its foes is down (`standing`:
 -- the run's own foes still up, each by its group's name). An elite never does while the run lasts.
 function Stages.Regrows(standing: { [any]: string }, name: string, isPack: boolean): boolean

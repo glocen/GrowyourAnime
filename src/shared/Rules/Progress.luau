@@ -15,6 +15,7 @@ local DropsConfig = require(Shared.Config.Drops)
 local Progress = {}
 
 Progress.Unknown = "Unknown" -- no ground by that id
+Progress.Rest = "Resting" -- the keeper rests from this player's last win: a win now can only be that win again
 
 -- A ground's record, made when it first counts as opened.
 local function opened(data: Profile.Data, id: string, now: number): Profile.GroundProgress
@@ -51,6 +52,11 @@ function Progress.KeeperWon(data: Profile.Data, id: any, now: number, difficulty
 	local row = if type(id) == "string" then Grounds.ById[id] else nil
 	if row == nil then
 		return { Ok = false, Error = Progress.Unknown }
+	end
+	if Progress.Resting(data, row.Id, now) > 0 then
+		-- No try begins while it rests (KeeperService.Try), so this is a repeat of the win that rested it: nothing twice
+		-- (section 9), whether the server's flag or an op id caught it first or not.
+		return { Ok = false, Error = Progress.Rest }
 	end
 	local level = if difficulty == "Hard" then "Hard" else "Normal"
 	local record = opened(data, row.Id, now)

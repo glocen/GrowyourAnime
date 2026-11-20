@@ -1,6 +1,8 @@
 --!strict
 -- OpLedger (shared, pure): the operation ids a profile has already applied, each with its first answer, so a request the
--- client repeats (a retry, a double tap, a lag spike) gets that answer again and changes nothing (the directive, section 9).
+-- client sends again under its id (ProfileController.Act's retry, a resend after lag) gets that answer again and changes
+-- nothing (the directive, section 9). A second press is a new request with its own id: the UI kit's Button refuses it
+-- while the first is pending, and the rule itself refuses what the save can no longer pay for.
 -- The ledger lives inside the saved profile and is written in the same change as what the operation did, so a repeat after
 -- a crash or a server hop is caught too. No Roblox API: it runs with Studio closed (tools/checks/logic_offline.luau).
 

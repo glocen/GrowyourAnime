@@ -2,12 +2,13 @@
 -- Tower cases (pure): TR29's rules (Rules.Tower; docs/design.md, "The Tower"). Each floor's foe and its level from the
 -- seed; its block lifted to the build and cut to its health share; fast floors; the heal cap; each floor's reward; and
 -- the run's ledger: a floor won once and only the next, the end granting once, the record, the results kept until seen,
--- a crash's run ended at the next join. Runs in Studio (LogicTests) and with Studio closed (tools/checks/logic_offline.luau).
+-- a crash's run ended at the next join, an end cut short granting nothing and leaving the run for that join (section 9). Runs in Studio (LogicTests) and with Studio closed (tools/checks/logic_offline.luau).
 
 local Shared = game:GetService("ReplicatedStorage").Shared
 local Profile = require(Shared.Data.Profile)
 local Migrations = require(Shared.Data.Migrations)
 local Saveable = require(Shared.Data.Saveable)
+local Transaction = require(Shared.Data.Transaction)
 local TowerConfig = require(Shared.Config.Tower)
 local DropsConfig = require(Shared.Config.Drops)
 local GrowthConfig = require(Shared.Config.Growth)
@@ -420,6 +421,51 @@ return {
 			local _, none = Tower.Board(top, 99, nil, 10)
 			t.Equal("no climb: no own row", none, nil)
 			t.Equal("its line", Tower.WeekLine(nil), "This week: no climb yet")
+		end,
+	},
+	{
+		Name = "Tower (section 9): an end cut short grants nothing and leaves the run, the next join's recovery grants it once, and an ended run recovers nothing",
+		Run = function(t: any)
+			local data = fresh()
+			Tower.Start(data, "k920", SEED, NOW)
+			for floor = 1, 12 do
+				Tower.Won(data, "k920", floor)
+			end
+			local run = data.Progress.Tower.Run :: Profile.TowerRun
+			local ledger, credits = run.Credits, data.Currency.Credits
+			t.Check("a ledger with Credits to grant", ledger > 0, `{ledger}`)
+			local before = Profile.DeepCopy(data)
+			-- the server falls over once the end has granted, before its change finishes: one transaction, so none of it lands
+			local cut, changed, why = Transaction.Run(data, nil, function(draft: Profile.Data): Transaction.Answer
+				Tower.End(draft, "k920", NOW + 600)
+				error("interrupted")
+			end, 8)
+			t.Check("the cut end changed nothing", cut.Ok == false and not changed and why ~= nil)
+			t.Check("the run still in the save, its ledger whole", data.Progress.Tower.Run ~= nil and (data.Progress.Tower.Run :: any).Credits == ledger and data.Currency.Credits == credits)
+			local kept = true
+			for chest, count in run.Chests do
+				kept = kept and (data.Bag.Chests[chest] or 0) == (before.Bag.Chests[chest] or 0) and count > 0
+			end
+			t.Check("the chests not granted", kept)
+			local recovered = Transaction.Run(data, nil, function(draft: Profile.Data): Transaction.Answer
+				local results = Tower.Recover(draft, NOW + 900)
+				return if results then { Ok = true, Floor = results.Floor } else { Ok = false, Error = "None" }
+			end, 8)
+			t.Check("the next join ends it at its last floor", recovered.Ok == true and recovered.Floor == 12 and data.Progress.Tower.Run == nil)
+			t.Equal("its Credits granted once", data.Currency.Credits, credits + ledger)
+			t.Equal("a second join finds nothing", Tower.Recover(data, NOW + 1200), nil)
+			t.Equal("still once", data.Currency.Credits, credits + ledger)
+			-- a run ended on leaving, then a join on another server: the save has no run, so nothing is granted again
+			Tower.Start(data, "k921", SEED, NOW + 2000)
+			Tower.Won(data, "k921", 1)
+			local second = (data.Progress.Tower.Run :: any).Credits
+			Tower.End(data, "k921", NOW + 2100)
+			local after = data.Currency.Credits
+			t.Equal("ended on leaving: granted", after, credits + ledger + second)
+			t.Equal("its join recovers nothing", Tower.Recover(data, NOW + 2200), nil)
+			t.Equal("nothing twice", data.Currency.Credits, after)
+			local problems = Saveable.Problems(data, "profile")
+			t.Check("the save stays whole", #problems == 0, table.concat(problems, "; "))
 		end,
 	},
 }

@@ -1,7 +1,8 @@
 --!strict
 -- Breaker cases (pure): a base over time, a power plant (TR18). Full power, shortage (slowed in proportion, never
 -- stopped), overflow past the cap, away and back, a shard taken out mid-work, the line fed shortest first, a clock stepping
--- back, many small advances landing where one large one does; the split (Auto and shares), the floor, the Training
+-- back, many small advances landing where one large one does, an advance repeated at one moment paying nothing twice
+-- (section 9); the split (Auto and shares), the floor, the Training
 -- machine on the base's clock, voltage's price and the migration to kWh. Expected values come from Config wherever they
 -- can.
 -- Runs in Studio (LogicTests) and with Studio closed (tools/checks/logic_offline.luau).
@@ -479,6 +480,37 @@ return {
 			t.Equal("behind a Standard: Watt's", Breaker.SelfOpening({ work(STANDARD), work("named_watt") }, true), 2)
 			t.Equal("the oldest of two first", Breaker.SelfOpening({ work("starter_rook"), work("named_watt") }, true), 1)
 			t.Equal("an unknown shard waits", Breaker.SelfOpening({ work("no_such_shard") }, true), nil)
+		end,
+	},
+	{
+		Name = "Breaker (section 9): an advance repeated at the same moment pays its overflow once, and small advances, each twice, pay what one large one does",
+		Run = function(t: any)
+			local function build(): Profile.Data
+				local data = fresh(0)
+				withWatt(data)
+				return data
+			end
+			local sample = build()
+			local rate = perSecond(Power.Generation(sample))
+			local at = T0 + math.ceil(Breaker.Capacity(sample.Base) / rate) + 3600 -- an hour past full
+			local once = build()
+			Breaker.Advance(once, at)
+			local credits, spill, charge = once.Currency.Credits, once.Base.Spill, once.Base.Charge
+			t.Check("the overflow paid Credits", credits > 0, `{credits}`)
+			-- two wakes in one moment, as when a rejoin and a machine's change both advance the base in a frame
+			local again = Breaker.Advance(once, at)
+			t.Check("the same moment again pays nothing", again.Credits == 0 and again.Overflow == 0 and again.Made == 0, `{again.Credits} Credits, {again.Overflow} kWh`)
+			t.Check("and changes nothing", once.Currency.Credits == credits and once.Base.Spill == spill and once.Base.Charge == charge and once.Base.Stamp == at)
+			local steps = build()
+			for second = 7, at - T0, 7 do
+				Breaker.Advance(steps, T0 + second)
+				Breaker.Advance(steps, T0 + second)
+			end
+			Breaker.Advance(steps, at)
+			local whole, part = steps.Currency.Credits + steps.Base.Spill, credits + spill
+			t.Check("Credits and their carried rest add up as in one advance", near(whole, part, 1e-3), `{whole} against {part}`)
+			t.Check("whole Credits at most one apart, from rounding", math.abs(steps.Currency.Credits - credits) <= 1, `{steps.Currency.Credits} against {credits}`)
+			t.Check("the rest carried stays under a Credit", steps.Base.Spill >= 0 and steps.Base.Spill < 1, `{steps.Base.Spill}`)
 		end,
 	},
 }

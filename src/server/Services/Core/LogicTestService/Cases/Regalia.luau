@@ -319,4 +319,114 @@ return {
 			t.Check("a ring on the head is no comparison", helmet == nil and onHead == Regalia.WrongSlot)
 		end,
 	},
+	{
+		Name = "Regalia (section 9): equips with Move, repeated, fresh or interrupted in any order, never make or lose a Reinforce level, an emblem or a jewel",
+		Run = function(t: any)
+			local seed = 20261120
+			local function roll(n: number): number -- Park-Miller, exact in doubles: the same steps every run
+				seed = (seed * 16807) % 2147483647
+				return seed % n + 1
+			end
+			local KEEP = 8 -- the ledger's length here, short so ids fall out of it and come back as new ones
+			local KEYS = { "talon:Attack", "warhorn:Hit", "zenith:Hit", "moonward:Lifesteal" }
+			local COLOURS = { "Red", "Blue", "Green" }
+			local SLOTS = { "Ring I", "Ring II" }
+			local data = fresh()
+			table.insert(data.Presets, { Slots = {}, Hands = {} } :: Profile.Preset)
+			local rings: { string } = {}
+			for _ = 1, 6 do
+				local id = item(data, "ring", {})
+				local ring = data.Items[id]
+				ring.Reinforce = roll(8) - 1
+				for _ = 1, roll(4) - 1 do
+					table.insert(ring.Sockets, if roll(3) == 1 then "" else KEYS[roll(#KEYS)])
+				end
+				for _, colour in COLOURS do
+					if roll(2) == 1 then
+						ring.Jewels[colour] = roll(5)
+					end
+				end
+				table.insert(rings, id)
+			end
+			-- Everything the items hold, as one text: the items and their socket counts, the Reinforce levels, the socketed
+			-- emblems and the jewels, each sorted, and the bag's emblems and jewels.
+			local function holdings(): string
+				local items: { string }, levels: { string }, emblems: { string }, jewels: { string }, bag: { string } = {}, {}, {}, {}, {}
+				for id, owned in data.Items do
+					table.insert(items, `{id}#{#owned.Sockets}`)
+					table.insert(levels, tostring(owned.Reinforce))
+					for _, key in owned.Sockets do
+						if key ~= "" then
+							table.insert(emblems, key)
+						end
+					end
+					for colour, level in owned.Jewels do
+						table.insert(jewels, `{colour}{level}`)
+					end
+				end
+				for key, count in data.Bag.Emblems do
+					table.insert(bag, `{key}={count}`)
+				end
+				for key, count in data.Bag.Jewels do
+					table.insert(bag, `{key}={count}`)
+				end
+				for _, list in { items, levels, emblems, jewels, bag } do
+					table.sort(list)
+				end
+				return table.concat({ table.concat(items, ","), table.concat(levels, ","), table.concat(emblems, ","), table.concat(jewels, ","), table.concat(bag, ",") }, "|")
+			end
+			local start = holdings()
+			local held: { string } = {} -- what the ledger should hold, oldest first
+			local sent: { [string]: any } = {} -- each id's request while it's live, so a repeat is a true retry
+			local moves, repeats, interrupted, broken = 0, 0, 0, 0
+			for step = 1, 400 do
+				local op = string.format("%08x-0000-4000-8000-%012x", roll(12), 0)
+				local args = sent[op]
+				if args == nil then
+					args = { Preset = roll(2), Slot = SLOTS[roll(2)], Item = if roll(8) == 1 then "" else rings[roll(#rings)], Move = roll(4) ~= 1 }
+					sent[op] = args
+				end
+				local cut = roll(6) == 1 -- the server falls over after the equip, before the change finishes
+				local before = Profile.DeepCopy(data)
+				local answer, changed = Transaction.Run(data, op, function(draft: Profile.Data): Transaction.Answer
+					local done = Regalia.Actions.Equip(draft, args)
+					if cut then
+						error("interrupted")
+					end
+					return done
+				end, KEEP)
+				local again = table.find(held, op) ~= nil
+				if again then
+					repeats += 1
+					if changed or not same(data, before) then
+						broken += 1
+						t.Check(`step {step}: a repeat of {op} changes nothing`, false)
+					end
+				elseif cut then
+					interrupted += 1
+					if changed or not same(data, before) then
+						broken += 1
+						t.Check(`step {step}: an interrupted equip changes nothing`, false)
+					end
+				elseif answer.Ok == true then
+					table.insert(held, op)
+					if #held > KEEP then
+						sent[table.remove(held, 1) :: string] = nil -- its next use is a new request
+					end
+					if answer.Moved then
+						moves += 1
+					end
+				end
+				if holdings() ~= start then
+					broken += 1
+					t.Check(`step {step}: everything held is still held, once`, false, holdings())
+					break
+				end
+			end
+			t.Equal("no step made or lost anything", broken, 0)
+			t.Check(`the run covered moves ({moves}), repeats ({repeats}) and interruptions ({interrupted})`, moves >= 20 and repeats >= 20 and interrupted >= 20)
+			local problems = Saveable.Problems(data, "profile")
+			t.Check("the save stays whole", #problems == 0, table.concat(problems, "; "))
+		end,
+	},
 }

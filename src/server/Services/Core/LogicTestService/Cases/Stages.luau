@@ -259,4 +259,157 @@ return {
 			t.Equal("no such stage: none", Stages.Recommended(GROUND, "Normal", 9), 0)
 		end,
 	},
+	-- The engine-free parts of the Festival place's run case, "Stages (TR50)" (StageCases), as StageService plays them:
+	-- which falls count, the gates, the card and the run's attributes. The players are stand-in tables.
+	{
+		Name = "Stages (TR50): a fall counts for a run when its foe is of the run's ground and stretch, the street's on Normal and the run's own on Hard, never on the keeper's stretch; a Hard pack stands again once its last is down, an elite never",
+		Run = function(t: any)
+			local me, other = {}, {}
+			local data = fresh()
+			local run = Stages.Start(data, GROUND, "Normal", 1, NOW) :: Stages.Run
+			t.Check("Normal: a street Shade of its stretch", Stages.Counts(run, { Ground = GROUND, Stage = 1 }, me))
+			t.Check("Normal: not another player's Hard foe", not Stages.Counts(run, { Ground = GROUND, Stage = 1, For = other }, me))
+			t.Check("Normal: not its own Hard foe either", not Stages.Counts(run, { Ground = GROUND, Stage = 1, For = me }, me))
+			t.Check("not a foe of the next stretch", not Stages.Counts(run, { Ground = GROUND, Stage = 2 }, me))
+			t.Check("not a foe of another ground", not Stages.Counts(run, { Ground = "elsewhere", Stage = 1 }, me))
+			t.Check("not a foe of no stretch (a base's, a try's)", not Stages.Counts(run, { Ground = GROUND }, me))
+			local hard: Stages.Run = { Ground = GROUND, Difficulty = "Hard", Stage = 1, From = 1, Started = NOW, Since = NOW, Kills = 0, Last = false, Done = false, Claimed = false }
+			t.Check("Hard: its own foe", Stages.Counts(hard, { Ground = GROUND, Stage = 1, For = me }, me))
+			t.Check("Hard: not the street's", not Stages.Counts(hard, { Ground = GROUND, Stage = 1 }, me))
+			t.Check("Hard: not another player's", not Stages.Counts(hard, { Ground = GROUND, Stage = 1, For = other }, me))
+			t.Check("Hard: no player, nothing counts", not Stages.Counts(hard, { Ground = GROUND, Stage = 1 }, nil))
+			local count = #(Stages.Of(GROUND) :: { any })
+			local keeper: Stages.Run = { Ground = GROUND, Difficulty = "Normal", Stage = count, From = count, Started = NOW, Since = NOW, Kills = 0, Last = false, Done = false, Claimed = false }
+			t.Equal("the last stretch is the keeper's", (Stages.Last(GROUND, count) :: any).Kind, "Keeper")
+			t.Check("the keeper's stretch: no fall counts, its try's win does", not Stages.Counts(keeper, { Ground = GROUND, Stage = count }, me))
+			-- A stretch played as the server hears its falls: each counts only through Counts, then Kill.
+			local row = (Stages.Of(GROUND) :: any)[1]
+			local pack: string? = nil
+			for _, stop in row.Stops do
+				pack = if stop.Kind == "Pack" then stop.Def else pack
+			end
+			local function fall(foe: { Ground: string?, Stage: number?, For: any }, def: string): boolean
+				return Stages.Counts(run, foe, me) and Stages.Kill(run, def)
+			end
+			for _ = 1, row.Quota do
+				fall({ Ground = GROUND, Stage = 2 }, pack :: string) -- the next stretch's: never counted
+				fall({ Ground = GROUND, Stage = 1, For = other }, pack :: string) -- another's Hard foe: never counted
+			end
+			t.Equal("others' falls: none counted", run.Kills, 0)
+			for _ = 1, row.Quota + 3 do
+				fall({ Ground = GROUND, Stage = 1 }, pack :: string)
+			end
+			t.Equal("its own: counted up to the quota", run.Kills, row.Quota)
+			t.Check("not done before its elite", not run.Done)
+			t.Check("its elite: done", fall({ Ground = GROUND, Stage = 1 }, (Stages.Last(GROUND, 1) :: any).Def))
+			-- A Hard run's own groups, standing by name.
+			local standing: { [string]: string } = { a = "Pack 1", b = "Pack 1", c = "Elite 1", d = "Pack 2" }
+			t.Check("a pack with one still up: not yet", not Stages.Regrows(standing, "Pack 1", true))
+			standing.a = nil
+			t.Check("its other one still up: not yet", not Stages.Regrows(standing, "Pack 1", true))
+			standing.b = nil
+			t.Check("its last down: it stands again", Stages.Regrows(standing, "Pack 1", true))
+			standing.c = nil
+			t.Check("an elite down: never in the run", not Stages.Regrows(standing, "Elite 1", false))
+			t.Check("another pack's own still up", not Stages.Regrows(standing, "Pack 2", true))
+		end,
+	},
+	{
+		Name = "Stages (TR50): a stretch's gate is shut to a fresh save and with no save; in a run it opens behind the run and at its own stretch once done, whatever the record; outside a run, or in one elsewhere, by the Normal record",
+		Run = function(t: any)
+			local data = fresh()
+			t.Check("a fresh save: stretch 1's gate shut", Stages.Shut(data, nil, GROUND, 1))
+			t.Check("no save loaded: shut", Stages.Shut(nil, nil, GROUND, 1))
+			local run = Stages.Start(data, GROUND, "Normal", 1, NOW) :: Stages.Run
+			t.Check("in the run, its own stretch not done: shut", Stages.Shut(data, run, GROUND, 1))
+			through(run)
+			t.Check("its stretch done: open, before the clear is written", not Stages.Shut(data, run, GROUND, 1))
+			t.Check("the next one's still shut", Stages.Shut(data, run, GROUND, 2))
+			Stages.Clear(data, run, NOW + 60)
+			Stages.Advance(run, NOW + 60)
+			t.Check("moved on: the gate behind it open", not Stages.Shut(data, run, GROUND, 1))
+			t.Check("its new stretch's gate shut", Stages.Shut(data, run, GROUND, 2))
+			t.Check("the run over (nil): stretch 1 open by the record", not Stages.Shut(data, nil, GROUND, 1))
+			t.Check("and stretch 2 shut by it", Stages.Shut(data, nil, GROUND, 2))
+			local elsewhere: Stages.Run = { Ground = "elsewhere", Difficulty = "Normal", Stage = 3, From = 3, Started = NOW, Since = NOW, Kills = 0, Last = false, Done = false, Claimed = false }
+			t.Check("a run on another ground: this one's gates by the record", not Stages.Shut(data, elsewhere, GROUND, 1) and Stages.Shut(data, elsewhere, GROUND, 2))
+			local count = #(Stages.Of(GROUND) :: { any })
+			;(Stages.Line(data, GROUND, "Normal") :: any).Cleared = count -- every stretch cleared on Normal
+			local hard = Stages.Start(data, GROUND, "Hard", 1, NOW) :: Stages.Run
+			t.Check("Hard opened by the keeper on Normal", hard ~= nil)
+			t.Check("a Hard run at 1: its own gate shut though the record has passed it", Stages.Shut(data, hard, GROUND, 1))
+			t.Check("outside it, the record lets them by", not Stages.Shut(data, nil, GROUND, 1))
+		end,
+	},
+	{
+		Name = "Stages (TR50): the keeper's card carries the whole run's time, its best, what it opened and what it gave, never below 0; a fall's card the save's checkpoint; the run's attributes read back as written, and its log name",
+		Run = function(t: any)
+			t.Check("no save: holds nothing", (function()
+				local none = Stages.Holdings(nil)
+				return none.Credits == 0 and none.Shards == 0 and none.Chests == 0
+			end)())
+			local data = fresh()
+			data.Currency.Credits = 500
+			data.Bag.Shards.a = 2
+			data.Bag.Shards.b = 3
+			data.Bag.Chests.c = 1
+			local before = Stages.Holdings(data)
+			t.Check("it sums every kind", before.Credits == 500 and before.Shards == 5 and before.Chests == 1, `{before.Credits} {before.Shards} {before.Chests}`)
+			local run = Stages.Start(data, GROUND, "Normal", 1, NOW) :: Stages.Run
+			local count = #(Stages.Of(GROUND) :: { any })
+			local answer: { [string]: any } = {}
+			for stretch = 1, count do
+				through(run)
+				answer = Stages.Clear(data, run, NOW + 100 * stretch)
+				Stages.Advance(run, NOW + 100 * stretch)
+			end
+			-- what the run gave: Credits and a chest in, a shard spent
+			data.Currency.Credits += 120
+			data.Bag.Chests.c += 2
+			data.Bag.Shards.a -= 1
+			local card = Stages.Won(run, answer, before, Stages.Holdings(data))
+			t.Check("won, at the keeper, begun at the first", card.Won == true and card.Stage == count and card.From == 1 and card.Count == count)
+			t.Equal("its whole run's seconds", card.Seconds, 100 * count)
+			t.Equal("its best whole run", card.Best, 100 * count)
+			t.Check("first, it opened Hard, and offers it next", card.First == true and card.Opened == "Hard" and card.Then == "Hard")
+			t.Equal("the Credits it gave", card.Credits, 120)
+			t.Equal("the chests it gave", card.Chests, 2)
+			t.Equal("a shard spent: 0 given, never less", card.Shards, 0)
+			local spent = Stages.Holdings(data)
+			spent.Credits = before.Credits - 300 -- more spent at the Forge than the run gave
+			t.Equal("Credits spent past the gain: 0, never less", Stages.Won(run, answer, before, spent).Credits, 0)
+			local missed = Stages.Won(run, { Ok = false, Error = "Saving" }, before, before)
+			t.Check("a clear the save missed: the card still comes, with nothing opened", missed.Won == true and missed.Opened == "" and missed.Seconds == nil and missed.Credits == 0)
+			-- a fall at stretch 3
+			local again = Stages.Start(data, GROUND, "Normal", 1, NOW) :: Stages.Run
+			for stretch = 1, 2 do
+				through(again)
+				Stages.Clear(data, again, NOW + 10 * stretch)
+				Stages.Advance(again, NOW + 10 * stretch)
+			end
+			local lost = Stages.Lost(again, data)
+			t.Check("the fall's card: lost at 3, begun at 1", lost.Won == false and lost.Stage == 3 and lost.From == 1 and lost.Count == count)
+			t.Equal("the next run begins at the save's checkpoint", lost.Checkpoint, 3)
+			t.Equal("no save loaded: at the run's stretch", Stages.Lost(again, nil).Checkpoint, 3)
+			t.Equal("a fall carries no gain", lost.Credits, nil)
+			-- the attributes the client reads (StageController), and back
+			local none = Stages.Published(nil)
+			t.Check("no run: every attribute cleared", none.StageRun == nil and none.StageKills == nil and none.StageQuota == nil and none.StageLast == nil)
+			again.Kills = 4
+			local view = Stages.Published(again)
+			t.Equal("its difficulty and stretch", view.StageRun, "Normal 3")
+			t.Check("its count, its stretch's quota, its last stop", view.StageKills == 4 and view.StageQuota == (Stages.Of(GROUND) :: any)[3].Quota and view.StageLast == false)
+			local difficulty, stretch = Stages.Parse(view.StageRun)
+			t.Check("read back as written", difficulty == "Normal" and stretch == 3, `{difficulty} {stretch}`)
+			local d2, s2 = Stages.Parse("Hard 12")
+			t.Check("Hard and two digits", d2 == "Hard" and s2 == 12)
+			for _, junk in { nil :: any, 5, "", "Normal", "Normal x", " Normal 2", "Normal 2 " } do
+				local d, s = Stages.Parse(junk)
+				t.Check(`{tostring(junk)}: nothing`, d == nil and s == nil)
+			end
+			t.Equal("a run begun earlier: its log name spans", Stages.Label(again), `{GROUND} Normal 1-3`)
+			local one = Stages.Start(data, GROUND, "Normal", 3, NOW) :: Stages.Run
+			t.Equal("begun where it is: one stretch", Stages.Label(one), `{GROUND} Normal 3`)
+		end,
+	},
 }

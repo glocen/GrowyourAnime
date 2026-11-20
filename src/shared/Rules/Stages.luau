@@ -148,6 +148,33 @@ function Stages.Kill(run: Run, def: string): boolean
 	return run.Done
 end
 
+-- Whether a foe's fall counts for `who`'s run (StageService, before Stages.Kill): a foe of the run's ground and stretch, on
+-- Normal one of the street's (no `For`), on Hard one of the run's own (`For` is `who`). Never on a keeper's stretch: the
+-- try's own win counts it (KeeperService.Won).
+function Stages.Counts(run: Run, foe: { Ground: string?, Stage: number?, For: any }, who: any): boolean
+	local last = Stages.Last(run.Ground, run.Stage)
+	if last and last.Kind == "Keeper" then
+		return false
+	elseif foe.Stage ~= run.Stage or foe.Ground ~= run.Ground then
+		return false
+	end
+	return if run.Difficulty == "Normal" then foe.For == nil else who ~= nil and foe.For == who
+end
+
+-- Whether a Hard run's group `name` stands again for its player: a pack, once the last of its foes is down (`standing`:
+-- the run's own foes still up, each by its group's name). An elite never does while the run lasts.
+function Stages.Regrows(standing: { [any]: string }, name: string, isPack: boolean): boolean
+	if not isPack then
+		return false
+	end
+	for _, group in standing do
+		if group == name then
+			return false
+		end
+	end
+	return true
+end
+
 -- Writes the clear of the run's stretch at `now`, once: the stretch counted cleared on its difficulty, its best time kept,
 -- and the checkpoint moved on to the next stretch, or cleared with the keeper's. { Ok, First, Seconds, Best, Opened,
 -- Next, Ends, Run, RunBest, Then } where First is the first clear of that stretch on that difficulty; Opened what it
@@ -246,6 +273,109 @@ end
 -- stage on Normal (TR43). In a run, the run's own order (Stages.Through).
 function Stages.Passes(data: Profile.Data, ground: string, stage: number): boolean
 	return Stages.Line(data, ground, "Normal").Cleared >= stage
+end
+
+-- Whether stretch `gate`'s gate on `ground` is shut to a player (StageService's watch): in a run on that ground, by the
+-- run's own order (Stages.Through); outside one, or in a run on another ground, until they've cleared that stretch on
+-- Normal (Stages.Passes); with no save loaded, shut. `run` is nil when there's none or it is ending.
+function Stages.Shut(data: Profile.Data?, run: Run?, ground: string, gate: number): boolean
+	if run and run.Ground == ground then
+		return not Stages.Through(gate, run.Stage, run.Done)
+	end
+	return data == nil or not Stages.Passes(data, ground, gate)
+end
+
+-- The run's contract with the client and its card (StageService; StageController, StageScreen).
+
+export type Gave = { Credits: number, Shards: number, Chests: number }
+
+-- What a save holds of what a run gives: its Credits, and its shards and chests of every kind, summed. A run's card says
+-- what it gave as the change from its beginning to its end (Stages.Won). No save: nothing.
+function Stages.Holdings(data: Profile.Data?): Gave
+	local gave = { Credits = 0, Shards = 0, Chests = 0 }
+	if data then
+		gave.Credits = data.Currency.Credits
+		for _, n in data.Bag.Shards do
+			gave.Shards += n
+		end
+		for _, n in data.Bag.Chests do
+			gave.Chests += n
+		end
+	end
+	return gave
+end
+
+-- The run's card at its keeper's clear (Net StageDone, Won): `answer` is that clear's (Stages.Clear, whose Run, RunBest,
+-- First, Opened and Then it carries), `before` and `after` the save's holdings as the run began and now. What it gave is
+-- never below 0, so a spend during the run never reads as a loss.
+function Stages.Won(run: Run, answer: { [string]: any }, before: Gave, after: Gave): { [string]: any }
+	return {
+		Won = true,
+		Ground = run.Ground,
+		Difficulty = run.Difficulty,
+		Stage = run.Stage,
+		From = run.From,
+		Count = #((Stages.Of(run.Ground) or {}) :: { StagesConfig.Stage }),
+		Seconds = answer.Run,
+		Best = answer.RunBest,
+		First = answer.First,
+		Opened = answer.Opened or "",
+		Then = answer.Then,
+		Credits = math.max(0, after.Credits - before.Credits),
+		Shards = math.max(0, after.Shards - before.Shards),
+		Chests = math.max(0, after.Chests - before.Chests),
+	}
+end
+
+-- The run's card on its lead's fall (Net StageDone, lost): where it fell, and the checkpoint the next run on its
+-- difficulty begins at, the save's (the run's stretch when no save is loaded).
+function Stages.Lost(run: Run, data: Profile.Data?): { [string]: any }
+	return {
+		Won = false,
+		Ground = run.Ground,
+		Difficulty = run.Difficulty,
+		Stage = run.Stage,
+		From = run.From,
+		Count = #((Stages.Of(run.Ground) or {}) :: { StagesConfig.Stage }),
+		Checkpoint = if data then Stages.Checkpoint(data, run.Ground, run.Difficulty) else run.Stage,
+	}
+end
+
+export type Published = { StageRun: string?, StageKills: number?, StageQuota: number?, StageLast: boolean? }
+
+-- The run as the client reads it, the player's attributes: StageRun, its difficulty and stretch ("Normal 2", read back by
+-- Stages.Parse), StageKills, StageQuota (its stretch's), StageLast. All nil with no run.
+function Stages.Published(run: Run?): Published
+	if run == nil then
+		return {}
+	end
+	local rows = Stages.Of(run.Ground)
+	local row = if rows then rows[run.Stage] else nil
+	return {
+		StageRun = `{run.Difficulty} {run.Stage}`,
+		StageKills = run.Kills,
+		StageQuota = if row then row.Quota else nil,
+		StageLast = run.Last,
+	}
+end
+
+-- A StageRun attribute read back: its difficulty and stretch, or nil for none or anything else.
+function Stages.Parse(text: any): (string?, number?)
+	if type(text) ~= "string" then
+		return nil, nil
+	end
+	local difficulty, stage = string.match(text, "^(%a+) (%d+)$")
+	if difficulty == nil then
+		return nil, nil
+	end
+	return difficulty, tonumber(stage)
+end
+
+-- A run's name in the server's log and its analytics field (TR48): "Lantern Row Normal 2", or "Lantern Row Normal 1-4" for
+-- one that began at an earlier stretch.
+function Stages.Label(run: Run): string
+	local stretch = if run.From == run.Stage then `{run.Stage}` else `{run.From}-{run.Stage}`
+	return `{run.Ground} {run.Difficulty} {stretch}`
 end
 
 -- A foe's level in a stage on `difficulty`: its stop's, lifted on Hard.

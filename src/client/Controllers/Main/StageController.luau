@@ -259,7 +259,7 @@ local function showLine()
 		end
 		return
 	end
-	local difficulty, stage = string.match(run, "^(%a+) (%d+)$")
+	local difficulty, stage = Stages.Parse(run)
 	local kills, quota, last = player:GetAttribute("StageKills"), player:GetAttribute("StageQuota"), player:GetAttribute("StageLast")
 	local q = if type(quota) == "number" then quota else 0
 	local k = if type(kills) == "number" then kills else 0
@@ -271,7 +271,7 @@ local function showLine()
 		if was then
 			was.Frame:Destroy()
 		end
-		now = build(key, difficulty == "Hard", tonumber(stage) or 1, q)
+		now = build(key, difficulty == "Hard", stage or 1, q)
 		line = now
 	else
 		now = was
@@ -280,7 +280,7 @@ local function showLine()
 	now.Count.Text = if q <= 0 then "" elseif now.Tight then `{math.min(k, q)} / {q}` else `{math.min(k, q)} / {q} Shades`
 	-- Its last foe by name: the elite, or on the keeper's stretch the keeper (research's must-fix 4 on TR50).
 	local ground = WorldConfig.Row.Ground
-	local final = Stages.Last(ground, tonumber(stage) or 1)
+	local final = Stages.Last(ground, stage or 1)
 	local foe = if final and final.Kind == "Keeper" then `the {StageScreen.KeeperName(ground)}` else "the elite"
 	if last == true then
 		now.Words.Text = if q > 0 and k < q then `{foe} down` else "cleared"
@@ -313,8 +313,7 @@ local function look()
 	local view = ProfileController.Get()
 	-- The gates, shut or open to this player: in a run, by the run's own order (its stretch done once its quota and its
 	-- last stop are in), else by the record (StageService's `shut`).
-	local run = player:GetAttribute("StageRun")
-	local at = if type(run) == "string" then tonumber(string.match(run, "(%d+)$")) else nil
+	local _, at = Stages.Parse(player:GetAttribute("StageRun"))
 	local kills, quota = player:GetAttribute("StageKills"), player:GetAttribute("StageQuota")
 	local done = player:GetAttribute("StageLast") == true and (if type(kills) == "number" then kills else 0) >= (if type(quota) == "number" then quota else 0)
 	for _, gate in Markers.All("StageGate") do

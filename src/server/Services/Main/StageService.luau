@@ -73,12 +73,11 @@ local StageService = {
 	Priority = 48, -- after the packs, the keeper and the doors, whose signals it hears
 }
 
-type Gave = { Credits: number, Shards: number, Chests: number }
 type Run = {
 	Rule: Stages.Run,
 	Foes: { [FightService.Fighter]: string }, -- a Hard run's own Shades, by their group's marker name
 	Groups: { [string]: Instance }, -- a Hard run's markers, by name: where each group stands again
-	Before: Gave, -- the save's counts as it began, for what it gave
+	Before: Stages.Gave, -- the save's holdings as it began, for what it gave (Stages.Won)
 	Ending: boolean,
 	OnStreet: boolean, -- the player has stood on the street since it began: from then, off it ends the run
 	Began: number, -- os.clock() it began, for its length (TR48)
@@ -95,9 +94,8 @@ local function logRun(player: Player, run: Run, how: string)
 		return
 	end
 	run.Logged = true
-	local rule = run.Rule
 	local seconds = math.floor((os.clock() - run.Began) * 10 + 0.5) / 10
-	local stage = if rule.From == rule.Stage then `{rule.Ground} {rule.Difficulty} {rule.Stage}` else `{rule.Ground} {rule.Difficulty} {rule.From}-{rule.Stage}`
+	local stage = Stages.Label(run.Rule)
 	Log.Info("StageService", `stage run {stage}: {how} after {seconds} s`)
 	table.insert(logged, { Stage = stage, How = how, Seconds = seconds })
 	if #logged > LOG_KEPT then
@@ -116,28 +114,13 @@ local function logRun(player: Player, run: Run, how: string)
 	end
 end
 
-local function counts(data: Profile.Data?): Gave
-	local gave = { Credits = 0, Shards = 0, Chests = 0 }
-	if data then
-		gave.Credits = data.Currency.Credits
-		for _, n in data.Bag.Shards do
-			gave.Shards += n
-		end
-		for _, n in data.Bag.Chests do
-			gave.Chests += n
-		end
-	end
-	return gave
-end
-
--- The run, as the client reads it.
+-- The run, as the client reads it (Stages.Published).
 local function publish(player: Player, run: Run?)
-	local rule = if run then run.Rule else nil
-	local row = if rule then (Stages.Of(rule.Ground) :: { any })[rule.Stage] else nil
-	player:SetAttribute("StageRun", if rule then `{rule.Difficulty} {rule.Stage}` else nil)
-	player:SetAttribute("StageKills", if rule then rule.Kills else nil)
-	player:SetAttribute("StageQuota", if row then row.Quota else nil)
-	player:SetAttribute("StageLast", if rule then rule.Last else nil)
+	local view = Stages.Published(if run then run.Rule else nil)
+	player:SetAttribute("StageRun", view.StageRun)
+	player:SetAttribute("StageKills", view.StageKills)
+	player:SetAttribute("StageQuota", view.StageQuota)
+	player:SetAttribute("StageLast", view.StageLast)
 end
 
 -- A run's markers of one kind ("Pack" or "Elite") in its stage.
@@ -229,7 +212,7 @@ function StageService.Begin(player: Player, ground: string, difficulty: string, 
 		return { Ok = false, Error = "NoStart" }
 	end
 	StageService.End(player)
-	local run: Run = { Rule = rule, Foes = {}, Groups = {}, Before = counts(data), Ending = false, OnStreet = false, Began = os.clock(), Logged = false }
+	local run: Run = { Rule = rule, Foes = {}, Groups = {}, Before = Stages.Holdings(data), Ending = false, OnStreet = false, Began = os.clock(), Logged = false }
 	runs[player] = run
 	if difficulty ~= "Normal" then
 		FightService.SetSolo(player, true)
@@ -280,54 +263,16 @@ local function finish(player: Player, run: Run)
 			publish(player, run)
 			return
 		end
-		local now = counts(DataService.Get(player))
-		Net.Server.Fire("StageDone", player, {
-			Won = true,
-			Ground = rule.Ground,
-			Difficulty = rule.Difficulty,
-			Stage = rule.Stage,
-			From = rule.From,
-			Count = count,
-			Seconds = answer.Run,
-			Best = answer.RunBest,
-			First = answer.First,
-			Opened = answer.Opened or "",
-			Then = answer.Then,
-			Credits = math.max(0, now.Credits - run.Before.Credits),
-			Shards = math.max(0, now.Shards - run.Before.Shards),
-			Chests = math.max(0, now.Chests - run.Before.Chests),
-		})
+		Net.Server.Fire("StageDone", player, Stages.Won(rule, answer, run.Before, Stages.Holdings(DataService.Get(player))))
 		StageService.End(player)
 	end)
 end
 
 -- The run's end on its lead's fall: its card says so, and where the next run on its difficulty begins.
 local function lose(player: Player, run: Run)
-	local rule = run.Rule
 	logRun(player, run, "Fell")
 	StageService.End(player)
-	local data = DataService.Get(player)
-	Net.Server.Fire("StageDone", player, {
-		Won = false,
-		Ground = rule.Ground,
-		Difficulty = rule.Difficulty,
-		Stage = rule.Stage,
-		From = rule.From,
-		Count = #(Stages.Of(rule.Ground) :: { any }),
-		Checkpoint = if data then Stages.Checkpoint(data, rule.Ground, rule.Difficulty) else rule.Stage,
-	})
-end
-
--- Whether `f`'s fall counts for `player`'s run.
-local function countsFor(run: Run, player: Player, f: FightService.Fighter): boolean
-	local rule = run.Rule
-	local last = Stages.Last(rule.Ground, rule.Stage)
-	if last and last.Kind == "Keeper" then
-		return false -- the try's own win counts it (KeeperService.Won)
-	elseif f.Stage ~= rule.Stage or f.Ground ~= rule.Ground then
-		return false
-	end
-	return if rule.Difficulty == "Normal" then f.For == nil else f.For == player
+	Net.Server.Fire("StageDone", player, Stages.Lost(run.Rule, DataService.Get(player)))
 end
 
 local function fell(f: FightService.Fighter, hitters: { Player })
@@ -339,12 +284,7 @@ local function fell(f: FightService.Fighter, hitters: { Player })
 		end
 		run.Foes[f] = nil
 		local marker = run.Groups[name]
-		local isPack = marker and marker:GetAttribute("Pack") ~= nil
-		local left = false
-		for _, other in run.Foes do
-			left = left or other == name
-		end
-		if isPack and not left then
+		if Stages.Regrows(run.Foes, name, marker ~= nil and marker:GetAttribute("Pack") ~= nil) then
 			task.delay(WorldConfig.Row.Respawn, function()
 				if runs[player] == run and not run.Ending then
 					stand(player, run, name)
@@ -354,7 +294,7 @@ local function fell(f: FightService.Fighter, hitters: { Player })
 	end
 	for _, player in hitters do
 		local run = runs[player]
-		if run and not run.Ending and countsFor(run, player, f) then
+		if run and not run.Ending and Stages.Counts(run.Rule, f, player) then
 			if Stages.Kill(run.Rule, f.Def) then
 				finish(player, run)
 			else
@@ -370,19 +310,15 @@ local function fell(f: FightService.Fighter, hitters: { Player })
 	end
 end
 
--- Whether `gate` is shut to `player`: in a run there, its stretch not done in it yet; outside one, its stretch not
--- cleared on Normal.
+-- Whether `gate` is shut to `player` (Stages.Shut): in a run there, its stretch not done in it yet; outside one, its
+-- stretch not cleared on Normal.
 local function shut(player: Player, gate: Instance): boolean
-	local data = DataService.Get(player)
 	local stage, ground = gate:GetAttribute("Stage"), gate:GetAttribute("Ground")
 	if type(stage) ~= "number" or type(ground) ~= "string" then
 		return false
 	end
 	local run = runs[player]
-	if run and not run.Ending and run.Rule.Ground == ground then
-		return not Stages.Through(stage, run.Rule.Stage, run.Rule.Done)
-	end
-	return data == nil or not Stages.Passes(data, ground, stage)
+	return Stages.Shut(DataService.Get(player), if run and not run.Ending then run.Rule else nil, ground, stage)
 end
 
 -- The gates and the street's edge, every Config.Stages.Gate.Every seconds.

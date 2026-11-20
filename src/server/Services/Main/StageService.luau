@@ -378,14 +378,11 @@ function StageService.Travel(player: Player, ground: string, difficulty: string)
 	elseif not FightService.Standing(FightService.LeadOf(player)) then
 		return { Ok = false, Error = "NoLead" }
 	end
-	local stage = Stages.Checkpoint(data, ground, difficulty)
-	local needs, waits = Stages.Needs(data, ground, difficulty, stage)
-	if needs == Stages.Unknown then
-		return { Ok = false, Error = Stages.Unknown }
-	elseif needs then
-		return { Ok = false, Error = Stages.Locked, Needs = needs, Waits = waits }
+	local way = Stages.Way(data, ground, difficulty)
+	if not way.Ok then
+		return way
 	end
-	local ok, err = TravelService.ToStage(player, ground, difficulty, stage)
+	local ok, err = TravelService.ToStage(player, ground, difficulty, way.Stage)
 	return { Ok = ok, Error = err, Travel = true }
 end
 

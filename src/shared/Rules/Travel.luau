@@ -66,6 +66,21 @@ function Travel.Read(data: any): Ticket?
 	return Travel.Stage(ground, difficulty, stage, text(data.From), data.Sent)
 end
 
+-- The ticket a joining player brought (TravelService, from Player:GetJoinData()), read only when they came by teleport
+-- from one of this universe's places (`places`: Config.Game.Places), so teleport data from anywhere else is none; Read
+-- keeps the rest well formed.
+function Travel.Joined(join: any, places: { [string]: number }): Ticket?
+	if type(join) ~= "table" or type(join.SourcePlaceId) ~= "number" then
+		return nil
+	end
+	for _, id in places do
+		if id == join.SourcePlaceId then
+			return Travel.Read(join.TeleportData)
+		end
+	end
+	return nil
+end
+
 -- After a failed trip: the next try, or nil to give up. `failed` counts this trip's failures so far, this one included;
 -- `routed` when it asked for one server. A flood waits long, a plain failure briefly; a server full or gone sends the
 -- player to any server of the place instead, once. Anything else is final.

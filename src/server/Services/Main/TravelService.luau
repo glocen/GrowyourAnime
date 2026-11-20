@@ -167,13 +167,7 @@ function TravelService.Home(player: Player): (boolean, string?)
 end
 
 local function arrived(player: Player, data: Profile.Data)
-	local join = player:GetJoinData()
-	local source = join.SourcePlaceId
-	local ours = false
-	for _, id in GameConfig.Places do
-		ours = ours or id == source
-	end
-	local ticket = if ours then Travel.Read(join.TeleportData) else nil
+	local ticket = Travel.Joined(player:GetJoinData(), GameConfig.Places)
 	if ticket then
 		if ticket.From then
 			from[player] = ticket.From

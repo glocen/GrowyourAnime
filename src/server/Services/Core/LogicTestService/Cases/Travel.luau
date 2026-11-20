@@ -10,6 +10,7 @@ local Migrations = require(Shared.Data.Migrations)
 local TravelConfig = require(Shared.Config.Travel)
 local Stages = require(Shared.Rules.Stages)
 local Travel = require(Shared.Rules.Travel)
+local GameConfig = require(Shared.Config.Game)
 
 local NOW = 1_800_000_000
 local GROUND = "lanternrow"
@@ -127,6 +128,38 @@ return {
 			t.Equal("6.5 s", Travel.Took(ticket, NOW + 6.5), 6.5)
 			t.Equal("arrived before it left", Travel.Took(ticket, NOW - 3), nil)
 			t.Equal("ten minutes", Travel.Took(ticket, NOW + 600), nil)
+		end,
+	},
+	-- The engine-free part of the Festival suite's travel cases, "Places (TR45)" (TravelCases): the base's pick, the far
+	-- side's trust in a joining player's ticket, and the round trip.
+	{
+		Name = "Travel (TR45): the base's pick carries the save's checkpoint, Hard refused before the keeper with what it waits for; the far side reads a ticket only from this universe's places, and the round trip begins the run where the base sent it",
+		Run = function(t: any)
+			local new = fresh()
+			local first = Stages.Way(new, GROUND, "Normal")
+			t.Check("a fresh save: Normal at its first stretch", first.Ok == true and first.Stage == 1)
+			local hard = Stages.Way(new, GROUND, "Hard")
+			t.Check("Hard shut, waiting for the keeper", hard.Ok == false and hard.Error == Stages.Locked and hard.Needs == Stages.Keeper)
+			t.Equal("no such ground", Stages.Way(new, "nowhere", "Normal").Error, Stages.Unknown)
+			t.Equal("no such difficulty", Stages.Way(new, GROUND, "Nightmare").Error, Stages.Unknown)
+			local data = cleared(2)
+			local way = Stages.Way(data, GROUND, "Normal")
+			t.Check("two stretches cleared: the pick goes to 3", way.Ok == true and way.Stage == 3)
+			local ticket = Travel.Stage(GROUND, "Normal", way.Stage, "job-a", NOW)
+			local main, festival = GameConfig.Places.Main, GameConfig.Places.Festival
+			t.Check("the two places differ", type(main) == "number" and type(festival) == "number" and main ~= festival)
+			local came = Travel.Joined({ SourcePlaceId = main, TeleportData = ticket }, GameConfig.Places)
+			t.Check("from the base: the ticket whole", came ~= nil and came.Go == "Stage" and came.Stage == 3 and came.From == "job-a" and came.Sent == NOW)
+			local arrival = Travel.Arrival(came, data, GROUND)
+			t.Check("the round trip: the run begins where the base sent it", arrival.Begin and arrival.Difficulty == "Normal" and arrival.Stage == 3 and arrival.Refused == nil)
+			t.Check("from the Festival's own place (a hop): read", Travel.Joined({ SourcePlaceId = festival, TeleportData = Travel.Home(NOW) }, GameConfig.Places) ~= nil)
+			t.Equal("from another experience's place: none", Travel.Joined({ SourcePlaceId = 1234567, TeleportData = ticket }, GameConfig.Places), nil)
+			t.Equal("no source place (a plain join): none", Travel.Joined({ TeleportData = ticket }, GameConfig.Places), nil)
+			t.Equal("a source place as text: none", Travel.Joined({ SourcePlaceId = tostring(main), TeleportData = ticket }, GameConfig.Places), nil)
+			t.Equal("no join data: none", Travel.Joined(nil, GameConfig.Places), nil)
+			t.Equal("from the base, broken: none", Travel.Joined({ SourcePlaceId = main, TeleportData = { V = 1, Go = "Stage" } }, GameConfig.Places), nil)
+			local menu = Travel.Arrival(Travel.Joined({ SourcePlaceId = 1234567, TeleportData = ticket }, GameConfig.Places), data, GROUND)
+			t.Check("a foreign ticket on a played save: the Arc panel, nothing begun", not menu.Begin and menu.Refused == nil)
 		end,
 	},
 }

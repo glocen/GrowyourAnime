@@ -93,6 +93,19 @@ function Stages.Checkpoint(data: Profile.Data, ground: string, difficulty: strin
 	return if type(reached) == "number" and reached % 1 == 0 then math.clamp(reached, 1, math.max(count, 1)) else 1
 end
 
+-- Where a run on `difficulty` begins for this player and whether it may (the base's pick, StageService.Travel): { Ok,
+-- Stage } at its checkpoint, or { Ok = false, Error (Unknown or Locked), Needs?, Waits? } as Stages.Needs says.
+function Stages.Way(data: Profile.Data, ground: string, difficulty: string): { [string]: any }
+	local stage = Stages.Checkpoint(data, ground, difficulty)
+	local needs, waits = Stages.Needs(data, ground, difficulty, stage)
+	if needs == Stages.Unknown then
+		return { Ok = false, Error = Stages.Unknown }
+	elseif needs then
+		return { Ok = false, Error = Stages.Locked, Needs = needs, Waits = waits }
+	end
+	return { Ok = true, Stage = stage }
+end
+
 -- Nil when the stage is open to this player; else what it waits for, and for Stages.Before the stage it needs.
 -- Stages.Unknown for no such ground, difficulty or stage.
 function Stages.Needs(data: Profile.Data, ground: string, difficulty: string, stage: number): (string?, number?)

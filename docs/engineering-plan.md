@@ -289,7 +289,7 @@ A model is the asset maker's recipe and the builder's install, built by one asse
 | Stats and the hit | pure-rule cases: each source alone, all together, each ceiling, the breakdown summing to the total, no source multiplying another | the game's rows run through `tools/balance/sim.py`, so the simulation and the game read one set of numbers |
 | The Breaker, bays, battery | pure-rule cases over time: shortage, overflow, away and back, a chamber emptied mid-work | a real leave and rejoin |
 | Odds | a large sample of breaks against the odds shown | |
-| Transactions | repeat and interrupt each one, offline where the rule is pure (the Regalia transfer's seeded run, a star, the Tower's end, a repeated advance, a keeper's win) | two clients |
+| Transactions | repeat and interrupt each one, offline where the rule is pure (seeded runs of the shard's way, gear's way and the Regalia transfer; a star, the Tower's end, a repeated advance, a keeper's win) | two clients |
 | Combat in the world | the self-test in a Run: leash, reset, defeat, a keeper's freeze | captures from the player's camera, research's verdict |
 | Several players | two clients on a local server: plots, a leave, a join, an elite shared | a real second player |
 | Screens | the UI lint at phone size with empty, full and long-name states, both themes | the rendered screen by eye |

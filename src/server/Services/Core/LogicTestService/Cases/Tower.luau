@@ -2,7 +2,8 @@
 -- Tower cases (pure): TR29's rules (Rules.Tower; docs/design.md, "The Tower"). Each floor's foe and its level from the
 -- seed; its block lifted to the build and cut to its health share; fast floors; the heal cap; each floor's reward; and
 -- the run's ledger: a floor won once and only the next, the end granting once, the record, the results kept until seen,
--- a crash's run ended at the next join, an end cut short granting nothing and leaving the run for that join (section 9). Runs in Studio (LogicTests) and with Studio closed (tools/checks/logic_offline.luau).
+-- a crash's run ended at the next join, an end cut short granting nothing and leaving the run for that join; and runs
+-- seeded through starts, floors, ends and joins, repeated, stale and cut short, granting each floor once (section 9). Runs in Studio (LogicTests) and with Studio closed (tools/checks/logic_offline.luau).
 
 local Shared = game:GetService("ReplicatedStorage").Shared
 local Profile = require(Shared.Data.Profile)
@@ -464,6 +465,189 @@ return {
 			t.Equal("ended on leaving: granted", after, credits + ledger + second)
 			t.Equal("its join recovers nothing", Tower.Recover(data, NOW + 2200), nil)
 			t.Equal("nothing twice", data.Currency.Credits, after)
+			local problems = Saveable.Problems(data, "profile")
+			t.Check("the save stays whole", #problems == 0, table.concat(problems, "; "))
+		end,
+	},
+	{
+		Name = "Tower (section 9): runs seeded through starts, floors, ends and joins, repeated, stale and cut short in any order, grant each floor's reward once",
+		Run = function(t: any)
+			local seed = 20261121
+			local function roll(n: number): number
+				seed = (seed * 16807) % 2147483647
+				return seed % n + 1
+			end
+			local function same(a: any, b: any): boolean
+				if type(a) ~= type(b) then
+					return false
+				elseif type(a) ~= "table" then
+					return a == b
+				end
+				for key, value in a do
+					if not same(value, b[key]) then
+						return false
+					end
+				end
+				for key in b do
+					if a[key] == nil then
+						return false
+					end
+				end
+				return true
+			end
+			local function sum(map: { [string]: number }?): number
+				local n = 0
+				for _, count in map or {} do
+					n += count
+				end
+				return n
+			end
+			local data = fresh()
+			local credits0, chests0, stones0 = data.Currency.Credits, sum(data.Bag.Chests), sum(data.Bag.Stones)
+			-- The model: the run the save should hold, built only from the rewards the rule handed back, and what was granted.
+			local open: { Id: string, Floor: number, Credits: number, Chests: number, Stones: number }? = nil
+			local ids: { string } = { "never-a-run" }
+			local granted, chests, stones, best = 0, 0, 0, 0
+			local now = NOW
+			local count: { [string]: number } = {}
+			local cuts, replays, broken = 0, 0, 0
+			local function close(results: any): string?
+				local was = open
+				if was == nil then
+					return if results then "an end granted with no run under way" else nil
+				elseif results == nil then
+					return `the run {was.Id} didn't end`
+				elseif results.Id ~= was.Id or results.Floor ~= was.Floor or results.Credits ~= was.Credits or sum(results.Chests) ~= was.Chests or sum(results.Stones) ~= was.Stones then
+					return `the results of {was.Id} aren't its ledger`
+				end
+				granted += was.Credits
+				chests += was.Chests
+				stones += was.Stones
+				best = math.max(best, was.Floor)
+				open = nil
+				return nil
+			end
+			local function check(): string?
+				local tower = data.Progress.Tower -- read fresh: a commit replaces the save's tables
+				local run = tower.Run
+				if data.Currency.Credits ~= credits0 + granted then
+					return `Credits: {data.Currency.Credits} against {credits0 + granted}`
+				elseif sum(data.Bag.Chests) ~= chests0 + chests then
+					return `chests: {sum(data.Bag.Chests)} against {chests0 + chests}`
+				elseif sum(data.Bag.Stones) ~= stones0 + stones then
+					return `stones: {sum(data.Bag.Stones)} against {stones0 + stones}`
+				elseif tower.Best ~= best then
+					return `the record {tower.Best} against {best}`
+				elseif (run == nil) ~= (open == nil) then
+					return if run then `the save holds run {run.Id}, which should have ended` else "the save lost the run under way"
+				elseif run and open and (run.Id ~= open.Id or run.Floor ~= open.Floor or run.Credits ~= open.Credits or sum(run.Chests) ~= open.Chests or sum(run.Stones) ~= open.Stones) then
+					return `run {run.Id}'s ledger: floor {run.Floor}, {run.Credits} Credits, against floor {open.Floor}, {open.Credits}`
+				end
+				return nil
+			end
+			local last: { Name: string, Id: string, Floor: number, Fast: boolean, Seed: number }? = nil
+			for step = 1, 500 do
+				now += roll(120)
+				local ask: { Name: string, Id: string, Floor: number, Fast: boolean, Seed: number }
+				local replay = last ~= nil and roll(5) == 1 -- the same call again: a doubled event, a retried step
+				if replay and last then
+					ask = last
+					replays += 1
+				else
+					local pick = roll(20)
+					local id = if open and roll(6) > 1 then open.Id else ids[roll(#ids)]
+					local floor = if open then open.Floor + ({ 1, 1, 1, 1, 0, 2 })[roll(6)] else roll(3)
+					-- runs long enough to reach the chest floors, with a start soon after each end
+					local name = if pick == 1 or (open == nil and pick <= 8) then "Start" elseif pick == 2 then "StartRaw" elseif pick <= 18 then "Won" elseif pick == 19 then "End" else "Recover"
+					ask = { Name = name, Id = id, Floor = floor, Fast = roll(4) == 1, Seed = roll(1_000_000) }
+				end
+				local cut = roll(6) == 1
+				local before = Profile.DeepCopy(data)
+				local answer, changed = Transaction.Run(data, nil, function(draft: Profile.Data): Transaction.Answer
+					local done: Transaction.Answer
+					if ask.Name == "Start" then -- as the service starts one: a run a crash left is ended first
+						local ended = Tower.Recover(draft, now)
+						local run = Tower.Start(draft, Profile.NewId(draft), ask.Seed, now)
+						done = { Ok = run ~= nil, Ended = ended, Run = run and run.Id }
+					elseif ask.Name == "StartRaw" then
+						local run = Tower.Start(draft, Profile.NewId(draft), ask.Seed, now)
+						done = { Ok = run ~= nil, Run = run and run.Id }
+					elseif ask.Name == "Won" then
+						local reward = Tower.Won(draft, ask.Id, ask.Floor, ask.Fast)
+						done = { Ok = reward ~= nil, Reward = reward }
+					elseif ask.Name == "End" then
+						local results = Tower.End(draft, ask.Id, now)
+						done = { Ok = results ~= nil, Results = results }
+					else
+						local results = Tower.Recover(draft, now)
+						done = { Ok = results ~= nil, Results = results }
+					end
+					if cut then
+						error("interrupted")
+					end
+					return done
+				end, 8)
+				local wrong: string? = nil
+				if cut then
+					cuts += 1
+					if changed or not same(data, before) then
+						wrong = "a cut changed the save"
+					end
+				else
+					local was = open
+					local key = `{ask.Name} {if answer.Ok then "Ok" else "refused"}`
+					count[key] = (count[key] or 0) + 1
+					if ask.Name == "Start" or ask.Name == "StartRaw" then
+						if ask.Name == "StartRaw" and was then
+							wrong = if answer.Ok then `a run started over {was.Id}, its ledger lost` else nil
+						elseif not answer.Ok then
+							wrong = "a start refused with no run under way"
+						else
+							wrong = close(answer.Ended)
+							open = { Id = answer.Run, Floor = 0, Credits = 0, Chests = 0, Stones = 0 }
+							table.insert(ids, answer.Run)
+						end
+					elseif ask.Name == "Won" then
+						local next = was ~= nil and ask.Id == was.Id and ask.Floor == was.Floor + 1
+						if answer.Ok ~= next then
+							wrong = `floor {ask.Floor} of {ask.Id} {if answer.Ok then "paid" else "refused"}, the run at {if was then `{was.Id} floor {was.Floor}` else "none"}`
+						elseif next and was then
+							local reward = answer.Reward
+							was.Floor = ask.Floor
+							was.Credits += reward.Credits
+							was.Chests += if reward.Chest then 1 else 0
+							was.Stones += reward.Stones
+						end
+					elseif ask.Name == "End" then
+						if was and ask.Id == was.Id then
+							wrong = close(answer.Results)
+						elseif answer.Ok then
+							wrong = `an end of {ask.Id} granted while {if was then was.Id else "no run"} stood`
+						end
+					else
+						wrong = close(answer.Results)
+					end
+					if not answer.Ok and not same(data, before) then
+						wrong = wrong or `a refused {ask.Name} changed the save`
+					end
+				end
+				last = ask
+				local failed: string? = (wrong :: any) or check() -- any: the refinements above confuse the checker
+				if failed then
+					broken += 1
+					t.Check(`step {step} ({ask.Name}{if replay then ", again" else ""}): each floor paid once, each run granted once`, false, failed)
+					break
+				end
+			end
+			t.Equal("no step paid twice or lost a run", broken, 0)
+			local each = {}
+			for _, key in { "Start Ok", "StartRaw refused", "Won Ok", "Won refused", "End Ok", "End refused", "Recover Ok", "Recover refused" } do
+				table.insert(each, `{key} {count[key] or 0}`)
+			end
+			t.Check(
+				`every call made, cut ({cuts}) and repeated ({replays}) often: {table.concat(each, ", ")}; granted {granted} Credits, {chests} chests, {stones} stones, the record at {best}`,
+				granted > 0 and chests >= 3 and stones >= 3 and (count["Start Ok"] or 0) >= 10 and (count["StartRaw refused"] or 0) >= 3 and (count["Won Ok"] or 0) >= 50 and (count["Won refused"] or 0) >= 20 and (count["End Ok"] or 0) >= 5 and (count["End refused"] or 0) >= 5 and (count["Recover Ok"] or 0) >= 3 and (count["Recover refused"] or 0) >= 3 and cuts >= 20 and replays >= 20
+			)
 			local problems = Saveable.Problems(data, "profile")
 			t.Check("the save stays whole", #problems == 0, table.concat(problems, "; "))
 		end,

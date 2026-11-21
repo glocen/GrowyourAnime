@@ -3,7 +3,8 @@
 -- server runs it. The first circuit on a fresh account, each action repeated with one op id and interrupted half way,
 -- hostile arguments, one role at a time, a change of workers never reaching back in time, and a return after hours away
 -- with work left partly done (the package's gates B and D, docs/test-requests.md, TR2); voltage and the plant's split
--- (TR18); the base's levels and its machines', bought once each, and what each level does to the plant (TR21).
+-- (TR18); the base's levels and its machines', bought once each, and what each level does to the plant (TR21). A seeded
+-- run of the shard's whole way, with repeats and cuts, never makes or loses a shard or a fighter (section 9).
 -- Runs in Studio (LogicTests) and with Studio closed (tools/checks/logic_offline.luau).
 
 local Shared = game:GetService("ReplicatedStorage").Shared
@@ -527,6 +528,145 @@ return {
 			t.Check("and not before", #early.Base.Ready == 0)
 			t.Check("the same kWh either way", math.abs(fastKwh - slowKwh) < 1e-6 and math.abs(slowKwh - (kwh :: number)) < 1e-6, `{fastKwh}, {slowKwh}, {kwh}`)
 			t.Check("the Breaker's speed shown", math.abs(Breaker.Rates(early).Speed - 1.2) < 1e-9, `{Breaker.Rates(early).Speed}`)
+		end,
+	},
+	{
+		Name = "Base (section 9): the shard's whole way, seeded, repeated and cut short in any order, never makes or loses a shard or a fighter",
+		Run = function(t: any)
+			local seed = 20261121
+			local function roll(n: number): number -- Park-Miller, exact in doubles: the same steps every run
+				seed = (seed * 16807) % 2147483647
+				return seed % n + 1
+			end
+			local KEEP = 8 -- short, so ids leave the ledger and come back as new requests
+			local data = fresh()
+			data.Base.Charge = Breaker.Capacity(data.Base) -- full power, so shards finish inside the run
+			data.Bag.Shards[STANDARD] = 14
+			data.Bag.Shards.named_watt = 3
+			data.Bag.Shards.starter_pip = 1
+			local DEFS = { STANDARD, STANDARD, STANDARD, "named_watt", "starter_pip" }
+			local function shards(of: Profile.Data?): number
+				local d = of or data
+				local held = #d.Base.Line + #d.Base.Ready
+				for _, n in d.Bag.Shards do
+					held += n
+				end
+				for _, chamber in d.Base.Chambers do
+					held += if chamber.Work then 1 else 0
+				end
+				return held
+			end
+			local function found(): number
+				local n = 0
+				for _, entry in data.Index do
+					n += entry.Count
+				end
+				return n
+			end
+			-- The fighters: each kind owned once, every find a new one or a copy, the lead owned and in no bay, no one in two.
+			local function fighters(): string?
+				local kinds, copies, owned = {}, 0, 0
+				for id, v in data.Voidkin do
+					if kinds[v.Def] then
+						return `{v.Def} owned twice`
+					end
+					kinds[v.Def] = id
+					copies += v.Copies
+					owned += 1
+				end
+				if owned + copies ~= found() then
+					return `{owned} owned and {copies} copies for {found()} found`
+				end
+				local lead = data.Roles.Lead
+				if lead ~= "" and data.Voidkin[lead] == nil then
+					return "a lead not owned"
+				end
+				local placed: { [string]: boolean } = {}
+				for _, bay in data.Base.Bays do
+					if bay.Worker ~= "" then
+						if placed[bay.Worker] or bay.Worker == lead or data.Voidkin[bay.Worker] == nil then
+							return `{bay.Worker} placed wrong`
+						end
+						placed[bay.Worker] = true
+					end
+				end
+				return nil
+			end
+			local function owned(): string
+				local ids = {}
+				for id in data.Voidkin do
+					table.insert(ids, id)
+				end
+				table.sort(ids)
+				return if #ids == 0 then "" else ids[roll(#ids)]
+			end
+			local whole = shards() + found()
+			local held: { string } = {}
+			local sent: { [string]: { Name: string, Args: any, U: number } } = {}
+			local now = T0
+			local opened, repeats, cuts, broken = 0, 0, 0, 0
+			for step = 1, 300 do
+				now += roll(90) - 1
+				local op = string.format("%08x-0000-4000-8000-%012x", roll(24), 1)
+				local ask = sent[op]
+				if ask == nil then
+					local pick = roll(10)
+					if pick <= 3 then
+						ask = { Name = "AddShard", Args = { Shard = DEFS[roll(#DEFS)] }, U = 0.5 }
+					elseif pick <= 6 then
+						ask = { Name = "Open", Args = if roll(2) == 1 then {} else { Index = roll(3) }, U = (roll(999) - 0.5) / 999 }
+					elseif pick == 7 then
+						ask = { Name = "TakeOut", Args = { Chamber = roll(#data.Base.Chambers) }, U = 0.5 }
+					elseif pick <= 9 then
+						local worker = data.Base.Bays[roll(#data.Base.Bays)].Worker -- a worker a third of the time: a move between bays
+						local who = if roll(4) == 1 then "" elseif worker ~= "" and roll(3) == 1 then worker else owned()
+						ask = { Name = "SetWorker", Args = { Bay = roll(#data.Base.Bays), Voidkin = who }, U = 0.5 }
+					else
+						local worker = data.Base.Bays[roll(#data.Base.Bays)].Worker -- a worker half the time: the lead's recall
+						ask = { Name = "SetLead", Args = { Voidkin = if worker ~= "" and roll(2) == 1 then worker else owned() }, U = 0.5 }
+					end
+					sent[op] = ask
+				end
+				local action = Base.Actions[ask.Name] or Collection.Actions[ask.Name]
+				local cut = roll(6) == 1 -- the server falls over after the action, before its change finishes
+				local before = Profile.DeepCopy(data)
+				local answer, changed = Transaction.Run(data, op, function(draft: Profile.Data): any
+					local done = action(draft, ask.Args, now, ask.U)
+					if cut then
+						error("interrupted")
+					end
+					return done
+				end, KEEP)
+				local again = table.find(held, op) ~= nil
+				if again or cut then
+					if again then
+						repeats += 1
+					else
+						cuts += 1
+					end
+					if changed or data.Base.Stamp ~= before.Base.Stamp or shards() ~= shards(before) or count(data.Voidkin) ~= count(before.Voidkin) or #data.Ops.Order ~= #before.Ops.Order then
+						broken += 1
+						t.Check(`step {step}: a {if again then "repeat" else "cut"} of {ask.Name} changes nothing`, false)
+					end
+				elseif answer.Ok == true then
+					if ask.Name == "Open" then
+						opened += 1
+					end
+					table.insert(held, op)
+					if #held > KEEP then
+						sent[table.remove(held, 1) :: string] = nil -- its next use is a new request
+					end
+				end
+				local wrong = fighters()
+				if shards() + found() ~= whole or wrong then
+					broken += 1
+					t.Check(`step {step} ({ask.Name}): every shard is still a shard or one find`, false, wrong or `{shards()} + {found()} against {whole}`)
+					break
+				end
+			end
+			t.Equal("no step made or lost anything", broken, 0)
+			t.Check(`the run opened ({opened}), repeated ({repeats}) and was cut ({cuts}) often`, opened >= 8 and repeats >= 20 and cuts >= 20)
+			saves(t, data, "after the run")
 		end,
 	},
 }

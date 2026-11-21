@@ -3,7 +3,8 @@
 -- roll fixed by its draws and priced at its item's worth; the shares over many rolls; 1,000 opened in steps, each chest
 -- removed once and each item granted once; a repeat answering its first answer and a refusal changing nothing; the
 -- salvage, which never takes what would raise Combat Power; the drops at a fall and a keeper's win; the save at a full
--- bag. Runs in Studio (LogicTests) and with Studio closed (tools/checks/logic_offline.luau).
+-- bag; and gear's whole way, seeded, repeated and cut short, never making or losing a chest, an item, a Credit, a stone
+-- or an emblem (section 9). Runs in Studio (LogicTests) and with Studio closed (tools/checks/logic_offline.luau).
 
 local Shared = game:GetService("ReplicatedStorage").Shared
 local Profile = require(Shared.Data.Profile)
@@ -21,6 +22,9 @@ local Chests = require(Shared.Rules.Chests)
 local Drops = require(Shared.Rules.Drops)
 local Progress = require(Shared.Rules.Progress)
 local Regalia = require(Shared.Rules.Regalia)
+local Reinforce = require(Shared.Rules.Reinforce)
+local Emblems = require(Shared.Rules.Emblems)
+local ReinforceConfig = require(Shared.Config.Reinforce)
 local Growth = require(Shared.Rules.Growth)
 local Collection = require(Shared.Rules.Collection)
 local Stats = require(Shared.Rules.Stats)
@@ -730,6 +734,234 @@ return {
 			end
 			t.Check("worn, the sword raises Combat Power", powers[1] > Stats.Power((Stats.Resolve(owned, nil, held))))
 			t.Check("every design, the same Combat Power", powers[1] == powers[2] and powers[2] == powers[3], `{powers[1]}, {powers[2]}, {powers[3]}`)
+		end,
+	},
+	{
+		Name = "Chests (section 9): gear's whole way, seeded, repeated and cut short in any order, never makes or loses a chest, an item, a Credit, a stone or an emblem",
+		Run = function(t: any)
+			local seed = 20261121
+			local function roll(n: number): number -- Park-Miller, exact in doubles: the same steps every run
+				seed = (seed * 16807) % 2147483647
+				return seed % n + 1
+			end
+			local function unit(): number
+				return (roll(9999) - 0.5) / 9999
+			end
+			local KEEP = 8 -- short, so ids leave the ledger and come back as new requests
+			local data = fresh()
+			lead(data, "Warrior")
+			local CHESTS = { ChestRows.List[1].Id, ChestRows.List[2].Id }
+			local KEYS = { "talon:Attack", "talon:Hit", "warhorn:Defence" }
+			for _, chest in CHESTS do
+				data.Bag.Chests[chest] = 12
+			end
+			for _, key in KEYS do
+				data.Bag.Emblems[key] = 3
+			end
+			for _, grade in ReinforceConfig.Grades do
+				data.Bag.Stones[grade] = 30
+			end
+			data.Currency.Credits = 40_000
+			local function sum(map: { [string]: number }): number
+				local n = 0
+				for _, count in map do
+					n += count
+				end
+				return n
+			end
+			local function socketed(of: Profile.Data): number
+				local n = 0
+				for _, item in of.Items do
+					for _, key in item.Sockets do
+						n += if key ~= "" then 1 else 0
+					end
+				end
+				return n
+			end
+			local function items(): { string }
+				local ids = {}
+				for id in data.Items do
+					table.insert(ids, id)
+				end
+				table.sort(ids)
+				return ids
+			end
+			local function any(): string
+				local ids = items()
+				return if #ids == 0 then "none" else ids[roll(#ids)]
+			end
+			-- Each action as its service runs it, by the name a request carries.
+			local DO: { [string]: (Profile.Data, any, number, Chests.Draw) -> { [string]: any } } = {
+				Open = function(draft: Profile.Data, args: any, _: number, draws: Chests.Draw): { [string]: any }
+					return Chests.Open(draft, args.Chest, args.Count, draws)
+				end,
+				Try = function(draft: Profile.Data, args: any, u: number): { [string]: any }
+					return Reinforce.Try(draft, args, u)
+				end,
+				Socket = function(draft: Profile.Data, args: any): { [string]: any }
+					return Emblems.Socket(draft, args)
+				end,
+				Unsocket = function(draft: Profile.Data, args: any): { [string]: any }
+					return Emblems.Unsocket(draft, args)
+				end,
+				Equip = function(draft: Profile.Data, args: any): { [string]: any }
+					return Regalia.Actions.Equip(draft, args)
+				end,
+				SalvageItem = function(draft: Profile.Data, args: any): { [string]: any }
+					return Chests.SalvageItem(draft, args.Item)
+				end,
+				SetSalvage = function(draft: Profile.Data, args: any): { [string]: any }
+					return Chests.SetSalvage(draft, args.Below)
+				end,
+			}
+			local chests0, credits0, stones0, emblems0 = sum(data.Bag.Chests), data.Currency.Credits, sum(data.Bag.Stones), sum(data.Bag.Emblems)
+			local opened, made, salvaged, creditsIn, creditsOut, stonesOut, emblemsGone = 0, 0, 0, 0, 0, 0, 0
+			local autoSalvaged, carried = 0, 0 -- items salvaged as they came out, and emblems a Move carried over
+			local held: { string } = {}
+			local sent: { [string]: { Name: string, Args: any, U: number } } = {}
+			local applied, repeats, cuts, broken = {} :: { [string]: number }, 0, 0, 0
+			local function check(step: number, name: string): string?
+				if sum(data.Bag.Chests) + opened ~= chests0 then
+					return `chests: {sum(data.Bag.Chests)} held and {opened} opened of {chests0}`
+				elseif #items() ~= made - salvaged then
+					return `items: {#items()} held, {made} made, {salvaged} salvaged`
+				elseif data.Currency.Credits ~= credits0 + creditsIn - creditsOut or data.Currency.Credits < 0 then
+					return `Credits: {data.Currency.Credits} against {credits0 + creditsIn - creditsOut}`
+				elseif sum(data.Bag.Stones) ~= stones0 - stonesOut then
+					return `stones: {sum(data.Bag.Stones)} against {stones0 - stonesOut}`
+				elseif sum(data.Bag.Emblems) + socketed(data) ~= emblems0 - emblemsGone then
+					return `emblems: {sum(data.Bag.Emblems)} + {socketed(data)} against {emblems0 - emblemsGone}`
+				end
+				for _, preset in data.Presets do
+					for slot, id in preset.Slots do
+						if data.Items[id] == nil then
+							return `{slot} wears {id}, which is gone`
+						end
+					end
+				end
+				for id, item in data.Items do
+					if item.Reinforce < 0 or item.Reinforce > ReinforceConfig.Cap then
+						return `{id} at Reinforce {item.Reinforce}`
+					end
+				end
+				return nil
+			end
+			for step = 1, 400 do
+				local op = string.format("%08x-0000-4000-8000-%012x", roll(24), 2)
+				local ask = sent[op]
+				if ask == nil then
+					local pick = roll(12)
+					if pick <= 3 then
+						ask = { Name = "Open", Args = { Chest = CHESTS[roll(#CHESTS)], Count = roll(3) }, U = 0 }
+					elseif pick <= 5 then
+						ask = { Name = "Try", Args = { Item = any() }, U = unit() }
+					elseif pick <= 7 then
+						local id = any()
+						local sockets = if data.Items[id] then #data.Items[id].Sockets else 0
+						ask = { Name = "Socket", Args = { Item = id, Socket = if sockets > 0 then roll(sockets) else 1, Emblem = KEYS[roll(#KEYS)] }, U = 0 }
+					elseif pick == 8 then
+						-- a filled socket when there is one, so the emblem comes out
+						local filled: { { Item: string, Socket: number } } = {}
+						for _, id in items() do
+							for index, key in data.Items[id].Sockets do
+								if key ~= "" then
+									table.insert(filled, { Item = id, Socket = index })
+								end
+							end
+						end
+						ask = { Name = "Unsocket", Args = if #filled > 0 then filled[roll(#filled)] else { Item = any(), Socket = 1 }, U = 0 }
+					elseif pick <= 10 then
+						-- half the time, a Move onto a worn piece that holds emblems, so they follow the new one
+						local moves: { { Slot: string, Item: string } } = {}
+						if roll(2) == 1 then
+							for slot, wornId in data.Presets[1].Slots do
+								local worn = data.Items[wornId]
+								if worn and socketed({ Items = { worn } } :: any) > 0 then
+									for _, id in items() do
+										local row = Items.ById[data.Items[id].Def]
+										if id ~= wornId and row and row.Slot == (string.gsub(slot, " I+$", "")) then
+											table.insert(moves, { Slot = slot, Item = id })
+										end
+									end
+								end
+							end
+						end
+						if #moves > 0 then
+							local move = moves[roll(#moves)]
+							ask = { Name = "Equip", Args = { Preset = 1, Slot = move.Slot, Item = move.Item, Move = true }, U = 0 }
+						else
+							local id = any()
+							local row = if data.Items[id] then Items.ById[data.Items[id].Def] else nil
+							local slot = if row == nil then "Helmet" elseif row.Slot == "Ring" or row.Slot == "Earring" then `{row.Slot} {if roll(2) == 1 then "I" else "II"}` else row.Slot
+							ask = { Name = "Equip", Args = { Preset = 1, Slot = slot, Item = id, Move = roll(2) == 1 }, U = 0 }
+						end
+					elseif pick == 11 then
+						ask = { Name = "SalvageItem", Args = { Item = any() }, U = 0 }
+					else
+						ask = { Name = "SetSalvage", Args = { Below = ({ "", "Common", "Uncommon" })[roll(3)] }, U = 0 }
+					end
+					sent[op] = ask
+				end
+				local cut = roll(6) == 1 -- the server falls over after the action, before its change finishes
+				local before = Profile.DeepCopy(data)
+				local draws = sequence(roll(2147483646))
+				local answer, changed = Transaction.Run(data, op, function(draft: Profile.Data): Transaction.Answer
+					local done = DO[ask.Name](draft, ask.Args, ask.U, draws)
+					if cut then
+						error("interrupted")
+					end
+					return done
+				end, KEEP)
+				local again = table.find(held, op) ~= nil
+				if again or cut then
+					if again then
+						repeats += 1
+					else
+						cuts += 1
+					end
+					if changed or not same(data, before) then
+						broken += 1
+						t.Check(`step {step}: a {if again then "repeat" else "cut"} of {ask.Name} changes nothing`, false)
+					end
+				elseif changed then
+					local name: any = ask.Name
+					applied[name] = (applied[name] or 0) + 1
+					if name == "Open" then
+						opened += answer.Opened
+						made += answer.Opened - answer.Salvaged
+						creditsIn += answer.Credits
+						autoSalvaged += answer.Salvaged
+					elseif name == "SalvageItem" then
+						salvaged += 1
+						creditsIn += answer.Credits
+						emblemsGone += socketed({ Items = { before.Items[answer.Item] } } :: any) -- an item's emblems go with it
+					elseif name == "Try" then
+						creditsOut += answer.Credits
+						stonesOut += answer.Stones
+					elseif name == "Equip" and answer.Moved then
+						local was = before.Items[before.Presets[1].Slots[ask.Args.Slot]]
+						carried += if was and socketed({ Items = { was } } :: any) > 0 then 1 else 0
+					end
+					table.insert(held, op)
+					if #held > KEEP then
+						sent[table.remove(held, 1) :: string] = nil -- its next use is a new request
+					end
+				end
+				local wrong = check(step, ask.Name)
+				if wrong then
+					broken += 1
+					t.Check(`step {step} ({ask.Name}): everything is held or accounted for, once`, false, wrong)
+					break
+				end
+			end
+			t.Equal("no step made or lost anything", broken, 0)
+			local each = {}
+			for _, name in { "Open", "Try", "Socket", "Unsocket", "Equip", "SalvageItem" } do
+				table.insert(each, `{name} {applied[name] or 0}`)
+			end
+			t.Check(`every action applied, repeated ({repeats}) and cut ({cuts}) often: {table.concat(each, ", ")}, {autoSalvaged} salvaged on opening, {carried} Moves carrying emblems`, (applied.Open or 0) >= 5 and (applied.Try or 0) >= 5 and (applied.Socket or 0) >= 5 and (applied.Unsocket or 0) >= 3 and (applied.Equip or 0) >= 5 and (applied.SalvageItem or 0) >= 3 and autoSalvaged >= 3 and carried >= 3 and repeats >= 20 and cuts >= 20)
+			local problems = Saveable.Problems(data, "profile")
+			t.Check("the save stays whole", #problems == 0, table.concat(problems, "; "))
 		end,
 	},
 }

@@ -26,6 +26,8 @@ The branch is `claude/faber-cloud-offline-tests-6kqqad`, cut from main at `d51d2
 | Base (section 9, 5aa02fc): the shard's whole way, 300 seeded steps of the nine base actions and SetLead, repeated or cut short, never makes or loses a shard or a fighter | Open's take from Ready, AddShard's spend, SetWorker's move, Uncover's one of a kind, SetLead's recall, the ledger's memory, Transaction's rollback (7 of 7) |
 | Chests (section 9, d00eca5): gear's whole way, 400 seeded steps of Open, Reinforce, Socket, Unsocket, Equip with Move, SalvageItem and SetSalvage, never makes or loses a chest, an item, a Credit, a stone or an emblem | salvaging a worn item, auto-salvage's Credits, Open's chest removal, Reinforce's stones, Socket's swap back to the bag, Unsocket's clearing, Transfer's kept emblems, the ledger's memory, Transaction's rollback (9 of 9) |
 | Regalia (section 9): 400 seeded equips with Move, repeated, fresh or cut short | Transfer's swap, its kept emblems, the ledger's memory, Transaction's rollback |
+| Shop (section 9, 57787dc): 400 seeded buys over about forty stocks, pressed late, past a limit, too poor, repeated and cut short: each Credit spent once, no line past its limit, the piece the shelf's own | the limit, the spend, the Poor check, the count's reset at a new stock, the late press's refusal, an extra shard, an extra piece, the ledger's memory, Transaction's rollback (9 of 9) |
+| Tower (section 9, d3f7e58): 500 seeded server calls through starts, floors won, ends and joins' recoveries, doubled, stale and cut short: each floor pays once, each run is granted once | a floor paying again, a stale run's floor, End leaving the run, End's Credits, stones and chests, a stale end, a start over a run, Transaction's rollback (9 of 9) |
 | Breaker (section 9): an advance repeated at one moment pays its overflow once | the stamp, the carried rest |
 | Collection (section 9): a star under one op id is bought once, and a cut one spends nothing | the copies' spend |
 | Tower (section 9): an end cut short grants nothing, and the next join recovers it once | End's clearing, Transaction's rollback |
@@ -42,12 +44,12 @@ Breaking Open's chest removal also makes the older "1,000 opened in steps" case 
 
 ```
 luau check: 0 new, 11 known, 0 gone since the freeze (5.9 s)
-LOGIC OFFLINE PASSED: 28974 passed, 0 failed, 0 need Studio (4.28 s, Lune)
+LOGIC OFFLINE PASSED: 28980 passed, 0 failed, 0 need Studio (4.43 s, Lune)
 Built project to check.rbxl                      (rojo build default.project.json)
 hooks selftest: 126 passed, 0 failed
 ```
 
-Main at `d51d2ee`, the same runner: 28,834 passed, 0 failed, so the branch adds 140 checks.
+Main at `d51d2ee`, the same runner: 28,834 passed, 0 failed, so the branch adds 146 checks.
 
 ## What needs Studio (NOT VERIFIED)
 
@@ -78,10 +80,10 @@ Not installed. Here the hooks run under `python3`, and the self-test passes 126/
    - Only `docs/test-requests.md` and `docs/engineering-plan.md` can conflict, if main appended to the same TR entries.
    - My parts are whole sections, so keep both sides.
    - Quaestor's cloud branch merges the same way. It keeps the board and the design docs, which this branch didn't touch.
-4. **Check:** run `py tools/checks/luau_check.py`, then `lune run tools/checks/logic_offline.luau src/server/Services/Core/LogicTestService/Cases`. Expect 0 new, and 28,974/0 plus whatever main gained.
+4. **Check:** run `py tools/checks/luau_check.py`, then `lune run tools/checks/logic_offline.luau src/server/Services/Core/LogicTestService/Cases`. Expect 0 new, and 28,980/0 plus whatever main gained.
 5. **Reconnect:** restart Rojo with `tools/rojo-serve.ps1` on port 34876, since a pull crashes it. The director then reconnects each Studio.
    - Check Studio has the code: StageService's `Source` should contain `Stages.Published`.
 6. **Studio checks:** run `LogicTests`, then the Festival place's playtest for the items above (`/ga-studio-test` first).
 7. **Push main.** Delete the cloud branch only with the director's OK.
 
-**For Faber's Now row,** on the board's next rewrite: TR50's run rules, TR48's keeper and TR45's trip checks are now pure and offline, and a keeper's win can't be granted twice, and seeded runs prove the shard's way and gear's way never make or lose a valuable. "Open, tests" adds the Festival run of these cases and the gate drift note.
+**For Faber's Now row,** on the board's next rewrite: TR50's run rules, TR48's keeper and TR45's trip checks are now pure and offline, and a keeper's win can't be granted twice, and seeded runs prove the shard's way, gear's way, the shop and the Tower never make, lose or double-spend a valuable. "Open, tests" adds the Festival run of these cases and the gate drift note.

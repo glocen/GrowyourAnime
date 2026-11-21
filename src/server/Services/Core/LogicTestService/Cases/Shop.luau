@@ -3,7 +3,8 @@
 -- the shelf for a stock, the same from every server and new with the salt; how often a piece is featured and what it
 -- is; a buy, a refusal at the limit and every other refusal changing nothing; a repeated request answering its first
 -- answer; the count kept against the stock's number, so a server hop never refills a line and a new stock does; the save
--- after it. Runs in Studio (LogicTests) and with Studio closed (tools/checks/logic_offline.luau).
+-- after it; and buys seeded over many stocks, pressed late, repeated and cut short, spending each Credit once and never
+-- passing a line's limit (section 9). Runs in Studio (LogicTests) and with Studio closed (tools/checks/logic_offline.luau).
 
 local Shared = game:GetService("ReplicatedStorage").Shared
 local Profile = require(Shared.Data.Profile)
@@ -290,6 +291,158 @@ return {
 			t.Check("the repeat changes nothing", not changed and same(data, before))
 			t.Check("and answers the first answer", again.Ok == true and again.Credits == first.Credits)
 			t.Equal("spent once", data.Currency.Credits, line.Price * 9)
+		end,
+	},
+	{
+		Name = "Shop (section 9): buys seeded over many stocks, pressed late, repeated and cut short in any order, spend each Credit once and never pass a line's limit",
+		Run = function(t: any)
+			local seed = 20261121
+			local function roll(n: number): number
+				seed = (seed * 16807) % 2147483647
+				return seed % n + 1
+			end
+			local KEEP = 8
+			local LIMITS = { Shard = ShopConfig.Shard.Limit, Featured = ShopConfig.Featured.Limit }
+			local stock = featuredFrom(Shop.Stock(NOW), SALT)
+			local shelf = Shop.Shelf(stock, SALT)
+			local data = fresh(3_000)
+			local function sum(map: { [string]: number }): number
+				local n = 0
+				for _, count in map do
+					n += count
+				end
+				return n
+			end
+			local function count(map: { [string]: any }): number
+				local n = 0
+				for _ in map do
+					n += 1
+				end
+				return n
+			end
+			local credits0, shards0, items0 = data.Currency.Credits, sum(data.Bag.Shards), count(data.Items)
+			local earned, spent, shards, pieces = 0, 0, 0, 0
+			local mine: { [number]: { [string]: number } } = {} -- what the player bought on each stock, by line
+			local held: { string } = {}
+			local sent: { [string]: { Stock: number, Line: string, Count: number } } = {}
+			local bought: { [string]: number } = {}
+			local refused: { [string]: number } = {}
+			local repeats, cuts, turns, broken = 0, 0, 0, 0
+			local function check(): string?
+				if data.Currency.Credits ~= credits0 + earned - spent or data.Currency.Credits < 0 then
+					return `Credits: {data.Currency.Credits} against {credits0 + earned - spent}`
+				elseif sum(data.Bag.Shards) ~= shards0 + shards then
+					return `shards: {sum(data.Bag.Shards)} against {shards0 + shards}`
+				elseif count(data.Items) ~= items0 + pieces then
+					return `items: {count(data.Items)} against {items0 + pieces}`
+				end
+				for at, lines in mine do
+					for name, n in lines do
+						if n > LIMITS[name] then
+							return `{n} of {name} bought on stock {at}, past its limit {LIMITS[name]}`
+						end
+					end
+				end
+				for name in LIMITS do
+					local mineHere = if mine[stock] then mine[stock][name] or 0 else 0
+					if Shop.Bought(data, stock, name) ~= mineHere then
+						return `the save counts {Shop.Bought(data, stock, name)} of {name} on this stock, the player bought {mineHere}`
+					end
+				end
+				return nil
+			end
+			for step = 1, 400 do
+				if roll(12) == 1 then -- the stock turns, half the time onto one with a piece
+					stock = if roll(2) == 1 then featuredFrom(stock + 1, SALT) else stock + roll(2)
+					shelf = Shop.Shelf(stock, SALT)
+					turns += 1
+				end
+				if roll(25) == 1 then -- Credits come in from elsewhere: a fall, a salvage
+					data.Currency.Credits += 1_500
+					earned += 1_500
+				end
+				local op = string.format("%08x-0000-4000-8000-%012x", roll(24), 3)
+				local ask = sent[op]
+				if ask == nil then
+					local pick = roll(10)
+					local line = if pick <= 6 then "Shard" elseif pick <= 9 then "Featured" else "Nothing"
+					ask = {
+						Stock = if roll(8) == 1 then stock - 1 else stock, -- pressed as the stock turned
+						Line = line,
+						Count = if roll(12) == 1 then 0 else roll((LIMITS[line] or 2) + 1), -- now and then one past the limit
+					}
+					sent[op] = ask
+				end
+				local cut = roll(6) == 1 -- the server falls over after the buy, before its change finishes
+				local before = Profile.DeepCopy(data)
+				local answer, changed = Transaction.Run(data, op, function(draft: Profile.Data): Transaction.Answer
+					local done = Shop.Buy(draft, shelf, ask)
+					if cut then
+						error("interrupted")
+					end
+					return done
+				end, KEEP)
+				local again = table.find(held, op) ~= nil
+				local wrong: string? = nil
+				if again or cut then
+					if again then
+						repeats += 1
+					else
+						cuts += 1
+					end
+					if changed or not same(data, before) then
+						wrong = `a {if again then "repeat" else "cut"} changed the save`
+					end
+				elseif changed then
+					local line = shelf.Lines[answer.Line]
+					bought[answer.Line] = (bought[answer.Line] or 0) + 1
+					mine[stock] = mine[stock] or {}
+					mine[stock][answer.Line] = (mine[stock][answer.Line] or 0) + answer.Count
+					spent += answer.Credits
+					if ask.Stock ~= stock then
+						wrong = `a press on stock {ask.Stock} bought from stock {stock}`
+					elseif line == nil or answer.Credits ~= line.Price * answer.Count then
+						wrong = `{answer.Line} cost {answer.Credits}`
+					elseif answer.Line == "Shard" then
+						shards += answer.Count
+					else
+						pieces += answer.Count
+						for _, id in answer.Items do
+							local piece, shelved = data.Items[id], line.Item :: any
+							if piece == nil or piece.Def ~= shelved.Def or piece.Rarity ~= shelved.Rarity or piece.Tier ~= shelved.Tier then
+								wrong = `the piece {id} isn't the shelf's own`
+							end
+						end
+					end
+					table.insert(held, op)
+					if #held > KEEP then
+						sent[table.remove(held, 1) :: string] = nil -- its next use is a new request
+					end
+				else
+					refused[answer.Error] = (refused[answer.Error] or 0) + 1
+					sent[op] = nil -- a refusal isn't kept: the next press is a new request
+					if not same(data, before) then
+						wrong = `a refusal ({answer.Error}) changed the save`
+					end
+				end
+				wrong = wrong or check()
+				if wrong then
+					broken += 1
+					t.Check(`step {step} ({ask.Line} x{ask.Count}): every Credit spent once, every line within its limit`, false, wrong)
+					break
+				end
+			end
+			t.Equal("no step spent twice or passed a limit", broken, 0)
+			local each = {}
+			for _, reason in { Shop.Gone, Shop.Limit, Shop.Poor, Shop.Unknown } do
+				table.insert(each, `{reason} {refused[reason] or 0}`)
+			end
+			t.Check(
+				`bought, refused, repeated ({repeats}) and cut ({cuts}) often over {turns} turns: Shard {bought.Shard or 0}, Featured {bought.Featured or 0}; refused {table.concat(each, ", ")}`,
+				(bought.Shard or 0) >= 20 and (bought.Featured or 0) >= 3 and (refused[Shop.Gone] or 0) >= 3 and (refused[Shop.Limit] or 0) >= 5 and (refused[Shop.Poor] or 0) >= 3 and (refused[Shop.Unknown] or 0) >= 3 and repeats >= 20 and cuts >= 20 and turns >= 15
+			)
+			local problems = Saveable.Problems(data, "profile")
+			t.Check("the save stays whole", #problems == 0, table.concat(problems, "; "))
 		end,
 	},
 }

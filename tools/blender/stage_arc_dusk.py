@@ -2,7 +2,10 @@
 violet field, and the picker's whole screen on a violet ground with a lavender glow. Both take the festival's dusk, warm
 under the lantern. A colour block-in for research's pick: the Arc panel as it stands today, beside three steps of dusk.
 
-    blender -b --factory-startup --python tools/blender/stage_arc_dusk.py -- <abs out>
+    blender -b --factory-startup --python tools/blender/stage_arc_dusk.py -- <abs out> [take]
+
+With a take's name (B, B_KIT), it also writes arc_dusk.json: that take for Faber, each colour under the name Config
+keeps it by today, and what has no home there yet.
 
 Writes stage_arc_dusk.png (the four at the smallest phone's own pixels, 1.5 a point), stage_arc_dusk.json (each
 direction's colours) and, on research's pick of B (2026-11-23, 00:19), stage_arc_dusk_follow.png: what follows from B,
@@ -232,6 +235,53 @@ def follow(out):
     write(sheet, out / "stage_arc_dusk_follow.png")
 
 
+def delivery(name, p):
+    """A take for Faber: what changes from today's, by its home in Config, and what stays."""
+    bed_tall = 153.0
+    wide, tall = 150 * 0.38 * POOL[0], bed_tall * 0.42 * POOL[1]
+    low = (bed_tall / 2 + 3 + bed_tall * p["bed_low"]) / bed_tall
+    made = {
+        "what": "TR50's older line: the Arc panel's ground in the festival's dusk (docs/test-requests.md, TR50). "
+                "Colours only, no image changes. Drawn in tools/blender/stage_arc_dusk.py.",
+        "take": name,
+        "ground": {
+            "Backing": {"value": list(p["backing"]), "today": "Glass.Ground's default (Equipment's backing)",
+                        "how": "Glass.Ground(body, 1, backing) on the Arc screen only"},
+            "Bloom": {"colour": p["ground_bloom"][0], "alpha": p["ground_bloom"][1],
+                      "middle": "the bed's middle", "falls to a third at": [150, 120],
+                      "today": "none on the Arc screen", "how": "a new Glass.Bloom on the ground, under the tile"},
+        },
+        "bed": {
+            "Hud.stages.Bed.Fill": list(p["bed"]),
+            "bloom colour": {"value": p["bed_bloom"][0], "today": "Accent.Normal.Bloom, shared with Normal's lights: "
+                             "the bed needs its own"},
+            "bloom alpha": {"value": p["bed_bloom"][1], "today": "Accent.Normal.Pictures.Next"},
+            "Hud.stages.Bed.Bloom.Middle": [0.5, round(low, 2)],
+            "bloom's reach": {"falls to a third at": [round(wide, 1), round(tall, 1)], "in": "points on the 150 x 153 "
+                              "bed, clipped by it", "how": "Bed.Bloom.Size matched to the sheet at the phone's pixels: "
+                              "about half again as wide and two thirds as tall as today's"},
+            "edge": {"value": p["bed_edge"], "today": "SeamGlass.Edge at Bed.EdgeAlpha"},
+        },
+        "panel": {
+            "glow": {"value": p["panel_glow"], "today": "Accent.Normal.Glow at Tile.Next.GlowAlpha"},
+            "rim": {"value": p["panel_edge"], "today": "SeamGlass.Facet at Tile.Edge",
+                    "also": "Back's underline in the band"},
+        },
+        "results card": {
+            "cover": {"value": p["cover"], "today": "SeamGlass.Backing at Card.Dim (Screen.Full's look.Backing)",
+                      "how": "the cover's colour for the results card only; Card.Dim stays 0.5"},
+        },
+    }
+    lights = {k: p[k] for k in ("lit", "lit_glow", "road", "accent") if p[k] != TODAY[k]}
+    if lights:
+        made["Normal's lights"] = {"Accent.Normal.Lit": list(p["lit"]), "Accent.Normal.Glow": p["lit_glow"],
+                                   "Accent.Normal.Road": list(p["road"]), "Accent.Normal.Edge": p["accent"]}
+    else:
+        made["stays"] = ("Normal's lights (Accent.Normal's Edge, Lit, Road, Glow; Make.Lit.Fill), Hard's ember, "
+                         "Seam's glass and its words, the run's line, every image")
+    return made
+
+
 def main():
     out = bl.out_dir()
     ui.K = K
@@ -251,6 +301,11 @@ def main():
     follow(out)
     (out / "stage_arc_dusk.json").write_text(json.dumps(dict({name: p for name, p, _ in TAKES}, B_KIT=B_KIT), indent=1))
     print(f"wrote {out / 'stage_arc_dusk.json'}")
+    named = dict({name: p for name, p, _ in TAKES}, B_KIT=B_KIT)
+    take = next((a for a in sys.argv[sys.argv.index("--") + 2:] if a in named), None)
+    if take:
+        (out / "arc_dusk.json").write_text(json.dumps(delivery(take, named[take]), indent=1))
+        print(f"wrote {out / 'arc_dusk.json'}: {take}")
 
 
 if __name__ == "__main__":

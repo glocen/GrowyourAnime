@@ -4436,6 +4436,19 @@ Faber, 2026-11-19, 03:43 by the clock: the follow-up's item 7 (`docs/production-
 - **Status:** drawn and self-read. It waits on research's word on the clash. Then the palette goes to Faber under Config's own names. Not in the game.
 - **Research, 00:29: yes to the third column, competent.** Seen: in B, Continue's cream over Fight's coral are two pale warm plates, and the road's cream sits too near "a new best"'s gold. With Normal's lights left Seam's, Normal reads lavender and Hard reads coral at a glance, on the panel, the card and the line. The dusk keeps the ground, the bed, the panel's light and rim, and the card's cover. That is all the line asked: violet is off the ground and stays on what's lit. The palette goes to Faber, after AR49.
 
+### The dusk palette, delivered (Modulo, 2026-11-23, 00:31 by the clock)
+
+- **For Faber, after AR49:** `build/handoff/UI/stages/arc_dusk.json`, with the two sheets beside it (`stage_arc_dusk.png`, `stage_arc_dusk_follow.png`: the third column is the one to match). No image changes and nothing to upload.
+- **What changes,** each under the home it has in Config today:
+  - **The ground behind the glass:** the Arc screen's own backing (`#5E2A3A` to `#1E0E12`, through `Glass.Ground`'s third argument), and a bloom on it behind the bed (`#FF8246` at 0.38). The bloom is new: the Arc screen has none today.
+  - **The bed:** `Stages.Bed.Fill` (`#1E0F16` to `#4A2324`), its bloom in `#FF9A50` at 0.62, lower and flatter (`Bed.Bloom.Middle` 0.5, 0.88), and its edge in `#7A5048`.
+  - **The panel:** its glow in `#FFCF98` and its rim in `#FFEBD2`, with Back's underline.
+  - **The results card:** its cover in `#2A1219`, at the same `Card.Dim`.
+- **Three colours need a home of their own,** since Normal's lights stay as they are: the bed's bloom (today `Accent.Normal.Bloom`), the panel's glow (today `Accent.Normal.Glow`) and the card's cover (today `SeamGlass.Backing`). Where they live in Config is Faber's call.
+- **The bed's bloom is matched by eye:** the json gives where the drawn light falls to a third (85.5 by 39.8 points on the bed). `Bed.Bloom.Size` is set against the sheet at the phone's pixels, since the kit's bloom has its own falloff.
+- **Stays:** Normal's lights, Hard's ember, Seam's glass and its words, the run's line, every image.
+- **Status:** made, self-read, passed by research at competent (00:29), delivered. Not content-checked (colours on checked screens, nothing uploaded). Not in the game: the first capture of the installed panel is read at the smallest phone, with Hard open.
+
 ### Faber's cloud session: the run's rules made pure (2026-11-20, offline, no Studio; 5058a78)
 
 - **Moved from StageService into `Rules.Stages`:** which falls count (`Counts`), when a Hard pack stands again (`Regrows`), whether a gate is shut (`Shut`), the save's holdings and the run's two cards (`Holdings`, `Won`, `Lost`), the run's attributes and their reading back (`Published`, `Parse`, which StageController now shares), and the log's name (`Label`). The service only wires them; nothing players see changed.

@@ -1,0 +1,74 @@
+{
+ "what": "TR50's older line: the Arc panel's ground in the festival's dusk (docs/test-requests.md, TR50). Colours only, no image changes. Drawn in tools/blender/stage_arc_dusk.py.",
+ "take": "B_KIT",
+ "ground": {
+  "Backing": {
+   "value": [
+    "#5E2A3A",
+    "#1E0E12"
+   ],
+   "today": "Glass.Ground's default (Equipment's backing)",
+   "how": "Glass.Ground(body, 1, backing) on the Arc screen only"
+  },
+  "Bloom": {
+   "colour": "#FF8246",
+   "alpha": 0.38,
+   "middle": "the bed's middle",
+   "falls to a third at": [
+    150,
+    120
+   ],
+   "today": "none on the Arc screen",
+   "how": "a new Glass.Bloom on the ground, under the tile"
+  }
+ },
+ "bed": {
+  "Hud.stages.Bed.Fill": [
+   "#1E0F16",
+   "#4A2324"
+  ],
+  "bloom colour": {
+   "value": "#FF9A50",
+   "today": "Accent.Normal.Bloom, shared with Normal's lights: the bed needs its own"
+  },
+  "bloom alpha": {
+   "value": 0.62,
+   "today": "Accent.Normal.Pictures.Next"
+  },
+  "Hud.stages.Bed.Bloom.Middle": [
+   0.5,
+   0.88
+  ],
+  "bloom's reach": {
+   "falls to a third at": [
+    85.5,
+    39.8
+   ],
+   "in": "points on the 150 x 153 bed, clipped by it",
+   "how": "Bed.Bloom.Size matched to the sheet at the phone's pixels: about half again as wide and two thirds as tall as today's"
+  },
+  "edge": {
+   "value": "#7A5048",
+   "today": "SeamGlass.Edge at Bed.EdgeAlpha"
+  }
+ },
+ "panel": {
+  "glow": {
+   "value": "#FFCF98",
+   "today": "Accent.Normal.Glow at Tile.Next.GlowAlpha"
+  },
+  "rim": {
+   "value": "#FFEBD2",
+   "today": "SeamGlass.Facet at Tile.Edge",
+   "also": "Back's underline in the band"
+  }
+ },
+ "results card": {
+  "cover": {
+   "value": "#2A1219",
+   "today": "SeamGlass.Backing at Card.Dim (Screen.Full's look.Backing)",
+   "how": "the cover's colour for the results card only; Card.Dim stays 0.5"
+  }
+ },
+ "stays": "Normal's lights (Accent.Normal's Edge, Lit, Road, Glow; Make.Lit.Fill), Hard's ember, Seam's glass and its words, the run's line, every image"
+}

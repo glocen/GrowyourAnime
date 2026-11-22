@@ -16,13 +16,13 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **Next:** AR49's build (the panel, the live view and its framing, the presses under the view, the rail in the Voidkin screen), then AR44's shine, then TR10's stills, then AR48's states once Modulo's sheet is picked.
 - **Open, tests:** NOT VERIFIED (the Festival place, item 9): TR50's run cases, the Festival role's suite, TR48's keeper in a real run, TR49's Stage 1 playtest, TR10's marker in its world. TintMask on a phone. TR44's phone take waits for the director's go.
 
-**Modulo (assets).** 2026-11-23, 00:18, on Fable 5.2. Voidkin work parked until before launch (the director's word, 11:10).
-- **AR48 delivered** (`build/handoff/FxKit/states/`): the five cues' block-in, content-checked. Burn passed research's second look; Shock closed at competent on must-fix 3 (arcs spread over the body's height, never on a head). Faber's, after TR49's states.
-- **Now:** TR50's older line, the Arc panel's ground in the festival's dusk: a colour block-in, three steps beside today's, for research's pick (`tools/blender/stage_arc_dusk.py`).
+**Modulo (assets).** 2026-11-23, 00:31, on Fable 5.2. Voidkin work parked until before launch (the director's word, 11:10).
+- **Delivered today:** AR48's five cues as a block-in (`build/handoff/FxKit/states/`, Faber's after TR49's states), and TR50's dusk palette for the Arc panel and the results card's cover (`build/handoff/UI/stages/arc_dusk.json`, Faber's after AR49).
+- **Now:** nothing queued. The next request is research's to write.
 - **In the game:** AR46's Hard looks with AR47's masks, on TintMask (a856f06), passed at competent (19:18). AR42's tiles in Seam, passed at competent (f9f3636).
 - **For Faber:** AR49, Home's panel in C (`home_cards.json`): 12 images to upload under the group, a ViewportFrame of the lead between `HomeVoidkinRimTop` and `HomeVoidkinFrame`, the words as TextLabels; after research's second look. AR44, the critical's shine (`build/handoff/UI/hud/critical_shine.json`). AR43, upload the five `Jewel<Colour>3.png` and swap their ids, if not done. TR10: take `MarkerElite.png` as it stands at the marker's install.
 - **For Faber, AR40's install:** the atlas pair, and the Strip's eight changed meshes with the manifest, on top of the 40 base meshes, the paving and C's keys already listed in AR40. The atlas never goes alone. AR38's Shop meshes go with AR38.
-- **Unchanged:** AR41's render (the director's go), AR28's Stage I on TR37, AR19's re-uploads, AR24's A on TR34, AR39 stopped, Sable after launch.
+- **Unchanged:** AR28's Stage I on TR37, AR19's re-uploads, AR24's A on TR34, AR39 stopped, Sable after launch.
 
 **Turns.** Studio: Faber's (Grow your Anime), open, not in Play; a second Studio, Festival Lantern, is open, not Faber's; the director's listen on TR42's panel is tomorrow, in the same place. Blender: nobody (Modulo's AR41 strips were stopped at 01:33 on 2026-11-19 by Claude Code when the PC ran low on memory; the director said wait at 01:34). Timing tests: nobody.
 
@@ -122,6 +122,13 @@ For Faber:
 - Tier 2, research, 2026-11-12, on the director's words: weapons belong to a class, in two hands (Main Hand and Off Hand replace Weapon and Shield), a preset holds a pair per class, a weapon drop is for the lead's class; Combat Power made to be watched, its weights fitted by the simulation; each item kind modelled and rendered to its icon (AR6, phase 3) (`docs/design.md`, "Regalia: gear" and "Combat Power"). Faber: the Stats case's `"Weapon"` source becomes `"Main Hand"` when you next touch it. Faber and Modulo: say in your row what you'd change.
 
 ## Entries
+
+### 2026-11-23, 00:31. TR50's older line: the Arc panel's ground in the festival's dusk, a palette (Modulo)
+
+- **What:** the screen behind the picker's glass and the lantern's bed take Lantern Row's dusk, the lantern's light pooled under it; the panel's glow and rim are lantern light; the results card's cover is dark wine, so the street under it stays its dusk. Research picked B, then B with Normal's lights left Seam's: in cream they ran into Hard's coral and Ready's gold once Hard was open.
+- **Where:** `build/handoff/UI/stages/arc_dusk.json` and its two sheets; `tools/blender/stage_arc_dusk.py`; the record in TR50 (`docs/test-requests.md`).
+- **Open:** not in the game. Three colours need their own home in Config (the bed's bloom, the panel's glow, the card's cover). The run's line doesn't change.
+- **For:** Faber, after AR49.
 
 ### 2026-11-23, 00:18. AR48: the element states' cues, delivered as a block-in (Modulo)
 

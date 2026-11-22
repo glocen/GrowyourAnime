@@ -4,11 +4,11 @@
 
 Each teammate rewrites its own row: two to five lines. Open asks sit under "Waiting on the director".
 
-**Quaestor (research).** 2026-11-20, 00:14, on Opus 5.5. Stopped at the director's wrap-up. Closed tonight: TR49, the combat review built (it closes on the Stage 1 playtest, item 9); TR50, one mission per Arc (the director, 23:19); AR40, AR43's take 2, AR44's digits and AR45's foe card, reopened and closed on the director's catch. Picked: AR44's critical shine C, AR49's Home panel C (cut passed with two build conditions).
-- **Next, mine:** AR48's second look on Burn and Shock; AR49's install pass from Faber's capture; AR44's shine in the game. For Faber after AR49: the Voidkin screen's pink-lavender floor under the model takes a non-violet ground (the too-purple line).
+**Quaestor (research).** 2026-11-23, 00:14, on Opus 5.5. Back at work. **The director's order (decisions.md, 00:05): the main map and the systems first; the Festival places are open to the team, and their work comes after.** Done this session: AR48's second look, where Burn passes at competent and Shock has one must-fix (the arcs over the body's whole height), which Modulo closes on its own read.
+- **Next, mine:** AR49's install pass from Faber's capture; AR44's shine in the game. For Faber after AR49: the Voidkin screen's pink-lavender floor under the model takes a non-violet ground (the too-purple line).
 - **Queued for Modulo:** after AR48, the picker's violet ground and the lantern tile's ground (TR50, the older line).
-- **Verdicts owed:** TR43, TR44, AR30, AR37, TR10, AR28's Stage I, TR34, AR23, TR29.
-- **With the director:** the Voidkin model examples, promised for 2026-11-20; the rework waits on them (decisions.md, 00:21). Opening the Festival place (item 9); the store's design; the sound pick on TR42's panel.
+- **Verdicts owed, main map first:** AR37, AR28's Stage I, AR30, AR23, TR10 (each read in the game at its install); then TR43, TR44, TR34, TR29 (Festival and Tower, after).
+- **With the director:** the Voidkin model examples (the rework stays parked); the store's design; the sound pick on TR42's panel.
 
 **Faber (builder).** 2026-11-20, 00:25, on Opus 5.5. Stopped on the director's second wrap-up. Done today:
 - TR50, one mission per Arc, with research's five must-fixes in the game (98c6cdd): the closed lock, the lit Fight or Continue, the line's chevron mark, the last foe by name, the track node to node. Take: TR50 13/0, travel 35/0, the dock 39/0.
@@ -48,7 +48,7 @@ For Faber:
 6. **Your ear on Haymaker's strike sound**, a library pick (not one of AR13's made takes), heard on its frame. In a playtest, the Server command bar: `game.ServerStorage.NL_Debug:Invoke("Replay", nil, "RookHaymaker")` plays it every 3.5 s, and `Invoke("Replay", nil)` stops it. Two alternates are logged in AR1, section 8.
 7. **Your ear on the audition panel** (TR42), ready for tomorrow: 12 tabs, the nine skills and the Mage's and Healer's hits, and a tab for each of Rook's, Kirra's and Watt's light hits drawn from your 32 keeps. In Studio's Play, the panel is at the left: a tab per hit, "Old" (today's sound) and ten candidates. Tap a row: it plays, and from then on every hit of that kind plays it in the fight. **Keep** the ones you like (more than one is fine), **More** for the next ten, **None of these** when ten hold nothing. **Others off** mutes the fight's other sounds, so you hear the candidate alone. When you're done, leave the Play running and tell Faber: your picks are read from it.
 8. **Pick the slam's rule by playing it** (TR44): Off, A or B. In Studio's Play, start a keeper's try. The Server command bar switches the mode mid-fight: `game.ServerStorage.NL_Debug:Invoke("Slam", nil, "A")` (or `"B"`, `"Off"`), and `Invoke("Slam")` reads the counts. In A, walk out of the ring and your fighter follows; in B, press the round Recall button or R. Research reads a phone take of each first: say go and I record it (the PC's memory stopped it tonight).
-9. **The Festival's place, for a real trip** (TR45). In Studio, open the place 110443456684004 (File → Open from Roblox) and connect Rojo on port 34876; Faber sets its role and saves it. Then, on the Creator Dashboard, under the experience's Places: its name (Faber's suggestion: Festival of Battles), its server size 8, and its Direct Access set to "Secure within universe only". Publish both places (Alt+P in each), and add the id to `CLAUDE.md`'s "Places" when you like.
+9. **The Festival's place, after the main map and the systems** (TR45; your word of 2026-11-23, 00:05: the team has full access to it). When its work opens, the Creator Dashboard's settings stay yours to confirm: its name (Faber's suggestion: Festival of Battles), its server size 8, and its Direct Access set to "Secure within universe only". Then the id goes into `CLAUDE.md`'s "Places".
 
 ### Notices
 

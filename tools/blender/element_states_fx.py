@@ -525,8 +525,10 @@ class Cues:
         # Shock: arcs between two points of the body. Never on what the head carries, and never across it on the
         # screen: the Shade's mask hangs over its collar, so an arc between two chest points crossed its face. The
         # head's box on the screen, Pad studs wider (the arc's jitter and its glow), stays clear of every arc.
+        # In this sheet an arc's ends face the camera, so no burst hides behind its body (one did, at 163 px);
+        # in the game they stand all round it.
         hd = body["head"]
-        body_only = (pts[:, 2] > 0.6) & ~hd
+        body_only = (pts[:, 2] > 0.6) & ~hd & (((body["camera"]["eye"] - pts) * nrm).sum(1) > 0)
         self.arc_pts = pts[body_only]
         self.arc_nrm = nrm[body_only]
         xy, depth = project(body["camera"], pts[hd])
@@ -592,13 +594,22 @@ class Cues:
             # 00:13: arcs two to three times longer, a white core in the pink glow, read at 64 pixels)
             arcs = [(1.6, 2.6, 0.085, 0.32, 11, True)]
             arcs += [(0.9, 1.6, 0.05, 0.18, 9, False)] * (2 if b == 0 else int(g.integers(1, 3)))
-            for lo, hi, width, lift, steps, big in arcs:
+            # A burst's arcs start in different bands of the body's height (research, 2026-11-23: ends on the hips
+            # alone stacked the arcs in a belt), and each runs slanted or upright: its ends at least half its length
+            # apart in height.
+            z = self.arc_pts[:, 2]
+            edges = np.linspace(z.min(), z.max() + 1e-6, 5)
+            first = int(g.integers(4))
+            for a, (lo, hi, width, lift, steps, big) in enumerate(arcs):
+                band = (first + (0, 2, 1, 3)[a % 4]) % 4
+                starts = np.nonzero((z >= edges[band]) & (z < edges[band + 1]))[0]
                 smooth = None
-                for _ in range(16):          # its two ends, drawn again while its leap would cross the head's box
-                    i = int(g.integers(len(self.arc_pts)))
+                for n in range(48):          # its two ends, drawn again while its leap would cross the head's box;
+                    banded = n < 24 and len(starts)     # past 24 tries from anywhere, so no burst leaves a body bare
+                    i = int(starts[g.integers(len(starts))]) if banded else int(g.integers(len(self.arc_pts)))
                     p0, n0 = self.arc_pts[i], self.arc_nrm[i]
                     d = np.linalg.norm(self.arc_pts - p0, axis=1)
-                    near = np.nonzero((d > lo) & (d < hi))[0]
+                    near = np.nonzero((d > lo) & (d < hi) & (np.abs(z - p0[2]) >= 0.5 * d))[0]
                     if not len(near):
                         continue
                     j = int(near[g.integers(len(near))])

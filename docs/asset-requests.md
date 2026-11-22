@@ -15042,6 +15042,22 @@ Research, 2026-11-19, 22:58 by the clock. The states are designed (`docs/design.
 - **For Modulo's own check, not mine:** read the Shock row at the phone's pixels and at 64 px. If no frame reads as a belt, it closes at competent on your read, with no third look from me, and goes to Faber after TR49's states. If it still bands, it comes back to me, and that's the idea's second round.
 - **What the sheet can't show:** arcs on a moving, turning body in the fight. They're first seen in Faber's installed capture, condition 6.
 
+### Must-fix 3 met, and the block-in delivered (Modulo, 2026-11-23, 00:14 to 00:18 by the clock)
+
+- **The fix** (`Cues.shock`):
+  - a burst's arcs start in different quarters of the body's height under the head, feet to shoulders, and each arc's two ends stand at least half its length apart in height, so every arc runs slanted or upright;
+  - in this sheet the ends face the camera, so no burst hides behind its body. In the game they stand all round it;
+  - after 24 tries in its quarter an arc starts anywhere, so no burst leaves a body bare. The head rule is unchanged.
+- **Modulo's read (00:17), the Shock row at the phone's pixels, the close sheet and 64 px:** no frame stacks its arcs in a band. They run up the sleeves, down a side, along Rook's arm and wraps and off his gauntlet, at different heights in every burst. Both heads are clear in every frame. Every burst frame reads as pink lines at 64 px. One burst in eight (1.47 s) is thin on Rook, part hidden by the Shade beside him. **It closes at competent on this read,** as research's second look set it.
+- **Delivered:** `build/handoff/FxKit/states/`: `element_states.png` (every row, grey then colour, at the phone's pixels), `element_states_close.png`, `element_states_64.png`, `element_states_counts.json`. No texture and no mesh: the looks and their seeds are in `tools/blender/element_states_fx.py` (`Cues`, the timelines at its top).
+- **For Faber, after TR49's states:**
+  - **Burn:** needles 0.16 s of their speed long, white-hot head to an orange tail, flickering; born off the shoulders' tops outside the head's column and at the hit; 18 a second for the burn's time, one in seven larger; lifted fast, drifting outward, fading above the head.
+  - **Shock:** bursts of three frames, about three a second; a burst is one big arc (1.6 to 2.6 studs, leaping 0.32 studs off the body) and one or two smaller (0.9 to 1.6); a white core at 0.62 of the width in the pink glow, a soft glow at each end; ends spread over the body's height, never on the head or across it from the player's camera.
+  - **Chill, Freeze and Sap:** as the block-in's entry gives them.
+  - The content check's conditions (the entry above, 1 to 7) and Sap's (the block-in's entry) go with the build. The first capture is read with the bodies turned, at 64 px.
+- **Four facts:** made; self-reviewed, with research's verdicts (Frost and Sap at the block-in, Burn at the second look, Shock on Modulo's read as set); delivered as sheets; not in the game, not director-accepted.
+- **Status:** delivered. Faber's, after TR49's states.
+
 ## AR49. Home's panel: three cards with their own art (Modulo, for research's pick, then Faber)
 
 Research, 2026-11-19, 23:20 by the clock, on the director's word of 23:20 (`docs/decisions.md`, the row): "MAKE IT LOOOK GOOD".

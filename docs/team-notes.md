@@ -16,13 +16,9 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **Next:** AR49's build (the panel, the live view and its framing, the presses under the view, the rail in the Voidkin screen), then AR44's shine, then TR10's stills, then AR48's states once Modulo's sheet is picked.
 - **Open, tests:** NOT VERIFIED (the Festival place, item 9): TR50's run cases, the Festival role's suite, TR48's keeper in a real run, TR49's Stage 1 playtest, TR10's marker in its world. TintMask on a phone. TR44's phone take waits for the director's go.
 
-**Modulo (assets).** 2026-11-20, 00:26, on Opus 5.5. Voidkin work parked until before launch (the director's word, 11:10). AR48's two must-fixes are in the script:
-- Burn's needles: seen, faces clear.
-- Shock's long arcs: seen at 64 px. The last tweak (ends under the head, glows for crosses) is NOT VERIFIED: the guard stopped the sheet on low memory.
-
-Stopped on the director's second wrap-up (00:24). Next session:
-- AR48: re-run the three steps, read the Shock row, the content check, then research's second look (AR48, "Burn and Shock reworked");
-- then TR50's warm dusk for the picker's ground and the lantern tile (colours in `Config.Hud` Stages and `UIKit.Palettes.SeamGlass`, so a palette for Faber).
+**Modulo (assets).** 2026-11-23, 00:18, on Fable 5.2. Voidkin work parked until before launch (the director's word, 11:10).
+- **AR48 delivered** (`build/handoff/FxKit/states/`): the five cues' block-in, content-checked. Burn passed research's second look; Shock closed at competent on must-fix 3 (arcs spread over the body's height, never on a head). Faber's, after TR49's states.
+- **Now:** TR50's older line, the Arc panel's ground in the festival's dusk: a colour block-in, three steps beside today's, for research's pick (`tools/blender/stage_arc_dusk.py`).
 - **In the game:** AR46's Hard looks with AR47's masks, on TintMask (a856f06), passed at competent (19:18). AR42's tiles in Seam, passed at competent (f9f3636).
 - **For Faber:** AR49, Home's panel in C (`home_cards.json`): 12 images to upload under the group, a ViewportFrame of the lead between `HomeVoidkinRimTop` and `HomeVoidkinFrame`, the words as TextLabels; after research's second look. AR44, the critical's shine (`build/handoff/UI/hud/critical_shine.json`). AR43, upload the five `Jewel<Colour>3.png` and swap their ids, if not done. TR10: take `MarkerElite.png` as it stands at the marker's install.
 - **For Faber, AR40's install:** the atlas pair, and the Strip's eight changed meshes with the manifest, on top of the 40 base meshes, the paving and C's keys already listed in AR40. The atlas never goes alone. AR38's Shop meshes go with AR38.
@@ -126,6 +122,13 @@ For Faber:
 - Tier 2, research, 2026-11-12, on the director's words: weapons belong to a class, in two hands (Main Hand and Off Hand replace Weapon and Shield), a preset holds a pair per class, a weapon drop is for the lead's class; Combat Power made to be watched, its weights fitted by the simulation; each item kind modelled and rendered to its icon (AR6, phase 3) (`docs/design.md`, "Regalia: gear" and "Combat Power"). Faber: the Stats case's `"Weapon"` source becomes `"Main Hand"` when you next touch it. Faber and Modulo: say in your row what you'd change.
 
 ## Entries
+
+### 2026-11-23, 00:18. AR48: the element states' cues, delivered as a block-in (Modulo)
+
+- **What:** Burn, Chill and Freeze, Shock and Sap, grey then colour beside a plain hit, on the Shade and Rook from the player's camera. Frost and Sap passed at the block-in, Burn at research's second look, Shock on Modulo's read after must-fix 3, as research set it.
+- **Where:** `build/handoff/FxKit/states/` (three sheets and the counts); the seeds in `tools/blender/element_states_fx.py`; the record in AR48.
+- **Open:** nothing is in the game. The content check's conditions go with the build, and the first installed capture is read with the bodies turned, at 64 px.
+- **For:** Faber, after TR49's states.
 
 ### 2026-11-19, 23:58. TR50, one mission per Arc (Faber)
 

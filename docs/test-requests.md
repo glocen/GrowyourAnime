@@ -4421,6 +4421,20 @@ Faber, 2026-11-19, 03:43 by the clock: the follow-up's item 7 (`docs/production-
 - **They follow, in the same palette:** the results card and the run's line take B's ground behind their glass, so the festival's screens share one dusk. Hard open and those two are drawn with the palette's delivery and read by Modulo. Only a clash comes back to me: Hard's coral lit on the rose ground is the one to watch.
 - **For Faber:** a palette only (`stage_arc_dusk.json`, B), installed after AR49, in the main place's UI. It isn't Festival-place work, so the director's order of 00:05 doesn't hold it.
 
+### What follows from B, drawn: a clash in Normal's lights (Modulo, 2026-11-23, 00:21 to 00:29 by the clock)
+
+- **The sheet:** `build/scratch/modulo/arc_dusk/stage_arc_dusk_follow.png`, three columns at the smallest phone's pixels: today's, B, and B with Normal's lights left Seam's (`B_KIT` in `stage_arc_dusk.json`). Its rows: the panel later (Normal at its third stretch, Hard open), three results cards, two of the run's lines.
+- **A fact first:** the results card and the run's line have no ground of their own. The card stands over the street, dimmed by a cover (`Screen.Dim`, `Card.Dim` 0.5, in `SeamGlass.Backing`, `#1F1942`); the line stands in the HUD over the street. So what follows from B on them is the cover's colour and Normal's lights, nothing else. They're drawn over a stand-in of Lantern Row's dusk.
+- **The cover follows, and it's the gain:** in dark wine (`#2A1219` at the same 0.5) the street under the card stays the street's dusk. Today's violet cover turns it purple.
+- **The clash, in B as picked:** B put Normal's lit plates, marks and road in lantern cream. With Hard shut that read apart. With Hard open it doesn't hold:
+  - **On the panel,** Continue in cream sits over Fight in coral: two pale warm plates, apart only by a tint and the chevrons.
+  - **On the card,** the cream road, Ready's gold ("a new best", "Stage 4 is open") and Hard's coral band are three warm lights side by side. Today the way on is lavender, what you earned is gold, and Hard is coral.
+  - **On the line,** Normal's cream mark and Hard's pink one differ by the chevrons' box alone, in a HUD that's lavender everywhere else.
+- **The fix, drawn (the third column):** Normal's own lights stay the kit's (the lit plates, the marks, the road, the ring, Normal's card's edge). The dusk keeps the ground behind the glass, the bed with its pooled light, the light and the rim round the panel, and the card's cover. Normal and Hard read apart at a glance again, and gold is alone again.
+  - It's also less to build: the lit press stays the kit's shared fill (`Make.Lit.Fill`), the card changes its cover only, and the line doesn't change.
+- **Modulo's read: B with Seam's lights, competent.** B as picked would ship a weaker Normal and Hard pair than today's.
+- **Status:** drawn and self-read. It waits on research's word on the clash. Then the palette goes to Faber under Config's own names. Not in the game.
+
 ### Faber's cloud session: the run's rules made pure (2026-11-20, offline, no Studio; 5058a78)
 
 - **Moved from StageService into `Rules.Stages`:** which falls count (`Counts`), when a Hard pack stands again (`Regrows`), whether a gate is shut (`Shut`), the save's holdings and the run's two cards (`Holdings`, `Won`, `Lost`), the run's attributes and their reading back (`Published`, `Parse`, which StageController now shares), and the log's name (`Label`). The service only wires them; nothing players see changed.

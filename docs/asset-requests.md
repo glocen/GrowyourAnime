@@ -15014,6 +15014,26 @@ Research, 2026-11-19, 22:58 by the clock. The states are designed (`docs/design.
   - then the content check;
   - then the second look (research's).
 
+### Shock off the head, seen; the content check (Modulo, 2026-11-23, 00:05 to 00:12 by the clock)
+
+- **The 00:24 tweak, seen at last (00:06):** the ends are soft glows and the stitches are gone, but on the Shade two of the close sheet's three frames still crossed the mask. Its mask hangs over the collar, so an arc between two chest points under 0.8 of the height ran over the face.
+- **The fix** (`Cues.shock`, `surface`):
+  - the body's plates now say which faces the head carries (whatever hangs under the head's joint: the mask, hair, a hat), and no arc ends on one;
+  - an arc whose leap would cross the head's box on the screen, 0.45 studs wider, draws its two ends again. It's tested before the jitter, so a burst's three frames keep the same ends.
+- **Seen** at 00:10, in all ten Shock frames at the phone's pixels and at 64 px: no arc on or across either head; the arcs run over the hips, the sleeves and Rook's arm and wraps, and read as pink lines with a white core at 64 px. Counts on the body: 550 to 1,770 px a burst frame, against the plain hit's 3,740 at its first frame.
+- **Modulo's read, for the second look:** with the Shade's chest behind its mask, most of its arcs now sit from the waist down, so in some bursts they read as a belt. Say if they should reach the shoulders' outer ends.
+- **Burn:** unchanged since 00:22; its row is in the same sheet.
+- **Content check (00:12): PASS on both rows,** with conditions for the build:
+  1. Burn stays white-hot to Fire orange. The palette's rust rim `#7A2410` never shows as a red edge, tint or fade; one capture on Rook's red jacket.
+  2. Burn's sparks never fall, settle, pool or leave a mark or a lasting glow; the hit's glow ends within about half a second.
+  3. Shock's arcs keep the white core and the halo at every distance and quality level: never a bare pink or plum line on a torso.
+  4. Shock's bursts stay short and leave nothing behind; the ends are soft glows, never crosses.
+  5. Shock's arcs stay off the head and neck on every rig, big and small Shades included.
+  6. The installed capture, bodies turned, is read at 64 px before the piece closes.
+  7. Any spark or arc texture comes from our scripts, is logged, and gets its own check in the tint it ships in.
+- **The sheet:** `build/scratch/modulo/ar48/element_states.png`, `_close.png`, `_64.png` (the plates are kept: `sheet keep` draws the cues again in 20 s without the bodies' runs).
+- **Status:** drawn, self-read and content-checked. It waits on research's second look at Burn and Shock, then Faber after TR49's states.
+
 ## AR49. Home's panel: three cards with their own art (Modulo, for research's pick, then Faber)
 
 Research, 2026-11-19, 23:20 by the clock, on the director's word of 23:20 (`docs/decisions.md`, the row): "MAKE IT LOOOK GOOD".

@@ -6,7 +6,7 @@ blender.exe -b --factory-startup --python tools/blender/element_states_fx.py -- 
 blender.exe -b --factory-startup --python tools/blender/element_states_fx.py -- <out_dir> Rook
 blender.exe -b --factory-startup --python tools/blender/element_states_fx.py -- <out_dir> sheet
 (one model a process, so a run stays under 1.1 GB: each body's plates are kept in <out_dir>/_<body>.npz, read by the
-sheet's run and deleted after it.)
+sheet's run and deleted after it; `sheet keep` leaves them, to draw the cues again without the bodies' runs.)
 
 Each body is built as its clip scripts build it (shade_clips.build, rook_clips.build), stood side by side in one view
 (each rendered alone with the camera moved, then laid together, Rook's shadow carried over), with a grey stand-in lead
@@ -22,7 +22,8 @@ Hero shapes, one each (a status reads quieter than a hit, and never hides the si
   up and shut round the body (0.1 s), its edges flashing once, held clear (the body shows through), then broken into
   chips flung out and falling.
 - Shock: jagged arcs leaping off the body between two of its points, three frames each, in bursts about three a
-  second: one big arc a burst (1.6 to 2.6 studs) and one or two smaller, each a white core in the pink glow.
+  second: one big arc a burst (1.6 to 2.6 studs) and one or two smaller, each a white core in the pink glow, its
+  ends a soft glow on the body, never on the head or across it on the screen.
 - Sap: dark motes circling in round the body and sinking slowly, easing out, each round with a thin violet rim on its
   top, shrinking to a point above the knees: dark first. Never a fall or a stretch (a dark falling drop reads as a drip).
 The plain hit beside them is a stand-in for the game's flinch spark (a four-point glint, sparks along the blow, dust).
@@ -119,10 +120,19 @@ def render(scene, out, name):
     return img
 
 
-def surface(objects):
-    """Points on the body's faces, area-weighted, with their normals (world, studs)."""
+def under(obj, joint):
+    while obj is not None:
+        if obj == joint:
+            return True
+        obj = obj.parent
+    return False
+
+
+def surface(objects, head_joint):
+    """Points on the body's faces, area-weighted, with their normals (world, studs), and which of them the head
+    carries (the head, its face, a mask, hair, a hat: whatever hangs under the head's joint)."""
     dg = bpy.context.evaluated_depsgraph_get()
-    pts, nrm, area, verts = [], [], [], []
+    pts, nrm, area, verts, head = [], [], [], [], []
     for obj in objects:
         eo = obj.evaluated_get(dg)
         me = eo.to_mesh()
@@ -132,9 +142,10 @@ def surface(objects):
             pts.append(tuple(m @ p.center))
             nrm.append(tuple((m.to_3x3() @ p.normal).normalized()))
             area.append(p.area * k * k)
+        head.extend([under(obj, head_joint)] * len(me.polygons))
         verts.extend(tuple(m @ v.co) for v in me.vertices)
         eo.to_mesh_clear()
-    return np.array(pts), np.array(nrm), np.array(area), np.array(verts)
+    return (np.array(pts), np.array(nrm), np.array(area), np.array(verts)), np.array(head, bool)
 
 
 class Ice:
@@ -284,7 +295,8 @@ def phase(name, out, times):
     cam.location.x -= offset
     scene.camera = cam
     bpy.context.view_layer.update()
-    surf = surface(body)
+    surf, head = surface(body, rig.joints["Head"])
+    print(f"{name}: {int(head.sum())} of {len(head)} faces are the head's")
     v = surf[3]
     bounds = (tuple(v.min(0)), tuple(v.max(0)))
     rng = random.Random(48 + len(name))
@@ -338,7 +350,7 @@ def phase(name, out, times):
         ices[t] = (lit[..., :3], ids[..., :3], ice.flash)
     m = cam.matrix_world
     camera = dict(eye=np.array(m.translation), R=np.array(m.to_3x3()), f=(H / 2) / math.tan(cam.data.angle_y / 2))
-    return dict(name=name, plates=plates, ices=ices, surf=surf, bounds=bounds, camera=camera)
+    return dict(name=name, plates=plates, ices=ices, surf=surf, head=head, bounds=bounds, camera=camera)
 
 
 # --- projection and drawing ------------------------------------------------------------------------------------------
@@ -510,10 +522,16 @@ class Cues:
             rr = self.r + g.uniform(0.15, 0.55)
             z0 = g.uniform(0.6, 0.95) * z1
             self.motes.append((born, a, rr, z0, g.uniform(1.3, 2.0), g.uniform(0.11, 0.16)))
-        # Shock: arcs between nearby points on the body
-        body_only = (pts[:, 2] > 0.6) & (pts[:, 2] < 0.8 * z1)       # the arcs' ends on the body, under the head
+        # Shock: arcs between two points of the body. Never on what the head carries, and never across it on the
+        # screen: the Shade's mask hangs over its collar, so an arc between two chest points crossed its face. The
+        # head's box on the screen, Pad studs wider (the arc's jitter and its glow), stays clear of every arc.
+        hd = body["head"]
+        body_only = (pts[:, 2] > 0.6) & ~hd
         self.arc_pts = pts[body_only]
         self.arc_nrm = nrm[body_only]
+        xy, depth = project(body["camera"], pts[hd])
+        pad = 0.45 * px_per_stud(body["camera"], float(depth.mean()))
+        self.head_box = (xy[:, 0].min() - pad, xy[:, 1].min() - pad, xy[:, 0].max() + pad, xy[:, 1].max() + pad)
 
     def at(self, cue, t):
         return self.plain(t) if cue == "Hit" else getattr(self, cue.lower())(t)
@@ -575,22 +593,28 @@ class Cues:
             arcs = [(1.6, 2.6, 0.085, 0.32, 11, True)]
             arcs += [(0.9, 1.6, 0.05, 0.18, 9, False)] * (2 if b == 0 else int(g.integers(1, 3)))
             for lo, hi, width, lift, steps, big in arcs:
-                i = int(g.integers(len(self.arc_pts)))
-                p0, n0 = self.arc_pts[i], self.arc_nrm[i]
-                d = np.linalg.norm(self.arc_pts - p0, axis=1)
-                near = np.nonzero((d > lo) & (d < hi))[0]
-                if not len(near):
+                smooth = None
+                for _ in range(16):          # its two ends, drawn again while its leap would cross the head's box
+                    i = int(g.integers(len(self.arc_pts)))
+                    p0, n0 = self.arc_pts[i], self.arc_nrm[i]
+                    d = np.linalg.norm(self.arc_pts - p0, axis=1)
+                    near = np.nonzero((d > lo) & (d < hi))[0]
+                    if not len(near):
+                        continue
+                    j = int(near[g.integers(len(near))])
+                    p1, n1 = self.arc_pts[j], self.arc_nrm[j]
+                    span = float(d[j])
+                    # leaping off the body between its two points
+                    leap = [p0 * (1 - s) + p1 * s + (n0 * (1 - s) + n1 * s) * (0.08 + lift * math.sin(math.pi * s))
+                            for s in np.linspace(0, 1, steps)]
+                    xy, _ = project(self.body["camera"], np.array(leap))
+                    x0, y0, x1, y1 = self.head_box
+                    if not ((xy[:, 0] > x0) & (xy[:, 0] < x1) & (xy[:, 1] > y0) & (xy[:, 1] < y1)).any():
+                        smooth = leap
+                        break
+                if smooth is None:
                     continue
-                j = int(near[g.integers(len(near))])
-                p1, n1 = self.arc_pts[j], self.arc_nrm[j]
-                span = float(d[j])
-                path = []
-                for s in np.linspace(0, 1, steps):
-                    nn = n0 * (1 - s) + n1 * s
-                    off = nn * (0.08 + lift * math.sin(math.pi * s))   # leaping off the body between its two points
-                    if 0 < s < 1:
-                        off = off + jit.normal(0, 0.07 * span, 3)
-                    path.append(p0 * (1 - s) + p1 * s + off)
+                path = [p + jit.normal(0, 0.07 * span, 3) if 0 < s < steps - 1 else p for s, p in enumerate(smooth)]
                 k = (1.0, 0.75, 0.45)[f]
                 prims.append(("arc", path, width, k, 6.0 if big else 4.0))
                 prims.append(("glow", path[0], 0.35 if big else 0.22, 0.7 * k))    # a soft contact, no cross: the
@@ -694,7 +718,7 @@ def keep(body, path):
              ice_times=np.array(ts), ice_lit=np.array([body["ices"][t][0] for t in ts], np.float16),
              ice_ids=np.array([body["ices"][t][1] for t in ts], np.float16),
              ice_flash=np.array([body["ices"][t][2] for t in ts]), pts=body["surf"][0], nrm=body["surf"][1],
-             area=body["surf"][2], verts=body["surf"][3], bounds=np.array(body["bounds"]),
+             area=body["surf"][2], verts=body["surf"][3], head=body["head"], bounds=np.array(body["bounds"]),
              eye=body["camera"]["eye"], R=body["camera"]["R"], f=body["camera"]["f"])
 
 
@@ -703,7 +727,7 @@ def fetch(path):
     lit, ids, flash = z["ice_lit"], z["ice_ids"], z["ice_flash"]  # each read once: a key read again re-reads its file
     ices = {float(t): (lit[i], ids[i], bool(flash[i])) for i, t in enumerate(z["ice_times"])}
     return dict(name=str(z["name"]), plates={k: z[f"plate_{k}"] for k in ("plate", "floor", "mask", "lead")},
-                ices=ices, surf=(z["pts"], z["nrm"], z["area"], z["verts"]),
+                ices=ices, surf=(z["pts"], z["nrm"], z["area"], z["verts"]), head=z["head"],
                 bounds=tuple(tuple(b) for b in z["bounds"]), camera=dict(eye=z["eye"], R=z["R"], f=float(z["f"])))
 
 
@@ -844,8 +868,9 @@ def main():
     report = {f"{cue} {'grey' if grey else 'colour'} {t:.3f}": v for (cue, grey, t), v in counts.items()}
     (out / "element_states_counts.json").write_text(json.dumps(report, indent=1))
     print(f"wrote {out / 'element_states_counts.json'}")
-    for name in SPOTS:
-        (out / f"_{name}.npz").unlink()
+    if "keep" not in sys.argv:           # `sheet keep`: the plates stay, to draw the cues again without the bodies' runs
+        for name in SPOTS:
+            (out / f"_{name}.npz").unlink()
 
 
 if __name__ == "__main__":

@@ -15034,6 +15034,14 @@ Research, 2026-11-19, 22:58 by the clock. The states are designed (`docs/design.
 - **The sheet:** `build/scratch/modulo/ar48/element_states.png`, `_close.png`, `_64.png` (the plates are kept: `sheet keep` draws the cues again in 20 s without the bodies' runs).
 - **Status:** drawn, self-read and content-checked. It waits on research's second look at Burn and Shock, then Faber after TR49's states.
 
+### Research's second look: Burn and Shock (Quaestor, 2026-11-23, 00:13)
+
+- **Felt:** Burn is fire now. Hot needles peel off the shoulders and climb past both heads, and the faces stay clear. Shock crackles and reads at 64 px. But on the Shade it lives in one horizontal band at the hips, so a burst reads as a lit belt, part of the outfit, not light running over the body.
+- **Tier:** Burn passes, competent; fix 1 is closed. Shock holds on one must-fix; fix 2's size and core are closed.
+- **Must-fix 3, Shock (class: where every arc's ends fall, on every rig):** spread a burst over the body's whole height under the head. Use the outer shoulders and arms down to the hands, the hips and the legs, with ends at different heights, so most arcs run on a slant or upright and none of the three frames stacks them in one band. Yes to the shoulders' outer ends: they're outside the mask's column. This serves "crackling over it". The head rule and the content check's seven conditions stay.
+- **For Modulo's own check, not mine:** read the Shock row at the phone's pixels and at 64 px. If no frame reads as a belt, it closes at competent on your read, with no third look from me, and goes to Faber after TR49's states. If it still bands, it comes back to me, and that's the idea's second round.
+- **What the sheet can't show:** arcs on a moving, turning body in the fight. They're first seen in Faber's installed capture, condition 6.
+
 ## AR49. Home's panel: three cards with their own art (Modulo, for research's pick, then Faber)
 
 Research, 2026-11-19, 23:20 by the clock, on the director's word of 23:20 (`docs/decisions.md`, the row): "MAKE IT LOOOK GOOD".

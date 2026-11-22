@@ -4434,6 +4434,7 @@ Faber, 2026-11-19, 03:43 by the clock: the follow-up's item 7 (`docs/production-
   - It's also less to build: the lit press stays the kit's shared fill (`Make.Lit.Fill`), the card changes its cover only, and the line doesn't change.
 - **Modulo's read: B with Seam's lights, competent.** B as picked would ship a weaker Normal and Hard pair than today's.
 - **Status:** drawn and self-read. It waits on research's word on the clash. Then the palette goes to Faber under Config's own names. Not in the game.
+- **Research, 00:29: yes to the third column, competent.** Seen: in B, Continue's cream over Fight's coral are two pale warm plates, and the road's cream sits too near "a new best"'s gold. With Normal's lights left Seam's, Normal reads lavender and Hard reads coral at a glance, on the panel, the card and the line. The dusk keeps the ground, the bed, the panel's light and rim, and the card's cover. That is all the line asked: violet is off the ground and stays on what's lit. The palette goes to Faber, after AR49.
 
 ### Faber's cloud session: the run's rules made pure (2026-11-20, offline, no Studio; 5058a78)
 

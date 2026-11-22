@@ -4395,6 +4395,23 @@ Faber, 2026-11-19, 03:43 by the clock: the follow-up's item 7 (`docs/production-
 - **All five fixes are met.** The lock is shut, "Fight" and "Continue" are the lit way in, the badge carries Normal's chevron or Hard's coral pair, the foe is named, and the track runs node to node with its ticks as fills. **TR50 passes at competent** on what players see. The Festival run cases stay NOT VERIFIED until the place opens (item 9).
 - **The older line widens, Modulo's after AR48 (same class: every art tile's ground):** not only the lantern's tile, but the picker's whole screen stands on a violet ground with a lavender glow. Both take the festival's dusk, warm under the lantern.
 
+### The Arc panel's ground in the festival's dusk: a colour block-in (Modulo, 2026-11-23, 00:12 to 00:20 by the clock)
+
+- **The sheet:** `build/scratch/modulo/arc_dusk/stage_arc_dusk.png`: the Arc panel as it stands today and three steps of dusk, each at the smallest phone's own pixels. Drawn by `tools/blender/stage_arc_dusk.py` from `Config.Hud`'s Stages and Faber's capture, as a stand-in for the layout. Each step's colours are in `stage_arc_dusk.json`, under the names Config keeps them by.
+- **No image changes.** The lantern's picture is clear round the lantern: its violet field is the bed's fill and bloom (`Stages.Bed.Fill`, `Accent.Normal.Bloom`), so every step is a palette for Faber.
+- **The steps,** each over the one before:
+  - **A, the bed only.** The lantern's field is the dusk street: dark wine over the lantern (`#1E0F16`), rosewood at its foot (`#4A2324`), its light pooled low in amber (`#FF9A50` at 0.62, its middle 0.36 of the bed under the lantern's). The lantern's gold needs a dark field behind its paper, so the warmth sits under it, where its light would fall.
+  - **B, and the ground.** The screen behind the glass in the street's rose (`#5E2A3A` to `#1E0E12`, a bloom of `#FF8246` at 0.38 behind the bed), the light round the panel and Normal's lit plates in lantern light (`#FFCF98`; white to `#FFE0B4`). The glass stays Seam's.
+  - **C, and the glass.** The panel, its cards, its wells and its words in rosewood and ivory.
+- **A scope to keep:** the director's word of 2026-11-19, 14:56 put the picker back in Seam ("i liked the old one before"; AR43, "Equipment back in Seam"). A and B keep Seam's glass. C leaves it on this screen, so C is past that scope and would be the director's to say.
+- **Modulo's read:**
+  - A fixes the tile and nothing else: the screen still stands on violet.
+  - B answers the line. The ground and the bed are the ground's own dusk and the violet glass is one colour among others. It also scales: each ground gives its bed and its screen their colours, and the kit stays one kit. Its weak spots: the band's dark plates stay violet-black on the rose, and Normal's cream press sits nearer Hard's coral than lavender did.
+  - C is the most of one piece, but it's all one warm brown-rose, and it drops the kit on one screen.
+  - **Modulo recommends B.** The first take's ground (`#3E1F26` to `#170C0F`) read as a dull maroon, so it was moved to the street's rose.
+- **Not drawn:** Hard open, the results card and the run's line, which keep Seam's ground; say if they follow.
+- **Status:** drawn and self-read. Not content-checked (colours on a checked screen, nothing uploaded), not picked, not in the game. It waits on research's pick, then the palette for Faber.
+
 ### Faber's cloud session: the run's rules made pure (2026-11-20, offline, no Studio; 5058a78)
 
 - **Moved from StageService into `Rules.Stages`:** which falls count (`Counts`), when a Hard pack stands again (`Regrows`), whether a gate is shut (`Shut`), the save's holdings and the run's two cards (`Holdings`, `Won`, `Lost`), the run's attributes and their reading back (`Published`, `Parse`, which StageController now shares), and the log's name (`Label`). The service only wires them; nothing players see changed.

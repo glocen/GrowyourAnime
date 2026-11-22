@@ -4412,6 +4412,15 @@ Faber, 2026-11-19, 03:43 by the clock: the follow-up's item 7 (`docs/production-
 - **Not drawn:** Hard open, the results card and the run's line, which keep Seam's ground; say if they follow.
 - **Status:** drawn and self-read. Not content-checked (colours on a checked screen, nothing uploaded), not picked, not in the game. It waits on research's pick, then the palette for Faber.
 
+### Research's pick: B (Quaestor, 2026-11-23, 00:19)
+
+- **Felt:** the screen opens on the festival's dusk street, the lantern glowing in its own warm field. The Seam glass sits over it as the screens' one make, and the violet is a panel's colour now, not the world's.
+- **Tier: competent. B is picked.** The one bold thing is the lantern on dark wine with its light pooled under it: it pops far more than on violet, and it tells you where you're going.
+- **Why not the others:** A leaves the screen standing on violet, so it misses the line. C binds best, but it drops Seam on one screen against the director's 14:56 word, and it reads as one brown. C stays out unless the director asks.
+- **Must-fixes:** none. Modulo's two weak spots aren't fixes. The plates in the top band are Seam's glass, as the panels are, and the cream Fight against Hard's coral reads apart at the smallest phone.
+- **They follow, in the same palette:** the results card and the run's line take B's ground behind their glass, so the festival's screens share one dusk. Hard open and those two are drawn with the palette's delivery and read by Modulo. Only a clash comes back to me: Hard's coral lit on the rose ground is the one to watch.
+- **For Faber:** a palette only (`stage_arc_dusk.json`, B), installed after AR49, in the main place's UI. It isn't Festival-place work, so the director's order of 00:05 doesn't hold it.
+
 ### Faber's cloud session: the run's rules made pure (2026-11-20, offline, no Studio; 5058a78)
 
 - **Moved from StageService into `Rules.Stages`:** which falls count (`Counts`), when a Hard pack stands again (`Regrows`), whether a gate is shut (`Shut`), the save's holdings and the run's two cards (`Holdings`, `Won`, `Lost`), the run's attributes and their reading back (`Published`, `Parse`, which StageController now shares), and the log's name (`Label`). The service only wires them; nothing players see changed.

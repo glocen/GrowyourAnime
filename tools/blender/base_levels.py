@@ -11,7 +11,7 @@ studs is seen: a level needs a low sign and a high one.
   the gate's teal over the floor's second ring and of its size, wide of the generator at every stage, its gate side
   raised so its face shows, turning slowly; at level 3 a second on the same axle, wider and higher, turning the other
   way (research's call of 2026-11-23, 03:22: the sky echoes the floor, and level 3 stays one halo).
-And a bay that wakes lights its line: the bus's current runs on to it and its ground's frame lights.
+And a bay that wakes lights its line: the current runs out to it from the ring and its ground's frame lights.
 
 The pieces (base_kit.py takes PIECES), each stood in the plot's frame by tables(), plan.json's machines.baseLevels:
   LevelFloor      level 2's light on the deck: the way in's two lines and the second ring
@@ -20,7 +20,7 @@ The pieces (base_kit.py takes PIECES), each stood in the plot's frame by tables(
   LevelFinOuter   level 3's, lower, outside them
   LevelRing       level 2's ring afloat; it turns
   LevelRingOuter  level 3's; it turns the other way
-  BayWake         a woken bay's lit line and frame, in the bay's own frame (bays 3 and 4)
+  BayWake3, BayWake4   a woken bay's lit line and frame, in the bay's own frame: each bay's line is its own (AR54)
 
 Nothing here is violet (AR40: violet only on what's alive). The floor's light is the current's yellow, as the
 conduits'; the rings' is the void's teal. Every light on a body lies in a dark bed (AR40).
@@ -40,14 +40,18 @@ from mathutils import Matrix, Vector
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import base_machines as bm  # noqa: E402
+import base_star as star  # noqa: E402
 import lantern_row_kit as kit  # noqa: E402
 from base_mill import Mesh, at, prism, put, turned  # noqa: E402
 from lantern_row_kit import Piece  # noqa: E402
 
-# The plot's own numbers, base_kit.py's (which takes this module's pieces, so they're held to it in tables())
-GATE, ROW, LANE, RING, OUTER, FAR, SLEEPS = 22.0, 52.0, 12.5, 18.0, 31.5, 54.5, 6.2
+# The plot's own numbers: the star's (base_star.py), and the gate's, base_kit.py's (which takes this module's pieces,
+# so it's held to it in tables())
+GATE = 22.0
+ROW, LANE, RING, SLEEPS = star.ROW, star.LANE, star.RING, star.SLEEPS
 
-SECOND = 23.0                         # the second ring on the deck, round the well: clear of the bays' frames by 2
+SECOND = 23.0                         # the second ring on the deck, round the well: clear of every ground (the nearest is
+                                      # the Breaker's Stage III corner, 23.9 from the heart)
 MEETS = math.degrees(math.asin(LANE / SECOND))   # where a line of the way in runs into it, from the line to the gate
 LIT, BED, SLICE = 0.17, 0.11, 0.06    # a light on the deck and its dark bed: their middles up, and how thick each is
 FINS = {"LevelFin": dict(tall=12.5, wide=1.9, reach=4.6), "LevelFinOuter": dict(tall=9.5, wide=1.7, reach=8.4)}
@@ -154,8 +158,8 @@ def level_floor():
     arc(g, SECOND - 0.25, SECOND + 0.25, LIT - SLICE / 2, LIT + SLICE / 2, start, end, "power", 60, ink=False)
     arc(g, SECOND - 0.55, SECOND + 0.55, BED - SLICE / 2, BED + SLICE / 2, start - 0.6, end + 0.6, "well", 60, ink=False)
     put(m, g, at(0, -ROW, 0))
-    for q in (start, end, 0.0, 180.0, 45.0, 135.0, 225.0, 315.0, 270.0):   # where it meets the way in's lines and
-        where = _p(SECOND, q, 0.0)                                         # crosses each line leaving the heart
+    for q in (start, end, *star.bearings().values()):   # where it meets the way in's lines and crosses each line
+        where = _p(SECOND, q, 0.0)                       # leaving the heart, live or not
         node(m, (where.x, where.y - ROW), turn=q + 45.0)
     return Piece("LevelFloor", m,
                  note=f"base level 2's light on the deck, from level 2 on: the way in's two lines lit from the sill "
@@ -164,46 +168,66 @@ def level_floor():
                       f"floors' pictures. Stood at the plot's front edge, on its middle line. Look only, CastShadow off")
 
 
+def ray_bearings():
+    """Where level 3's rays lie: between each two lines leaving the heart, evenly, about 11 degrees apart, and none
+    across the way in (between the Breaker's slant and the Door's)."""
+    lines = sorted(star.bearings().values())
+    made = []
+    for a, b in zip(lines, lines[1:] + [lines[0] + 360.0]):
+        if a < 90.0 < b:
+            continue
+        count = round((b - a) / 11.25) - 1
+        made += [(a + (b - a) * (k + 1) / (count + 1)) % 360.0 for k in range(count)]
+    return made
+
+
 def level_rays():
     m = Mesh(None)
     r0, r1 = RING + 1.4, SECOND - 1.1
     centre = Vector((0.0, -ROW, 0.0))
-    count = 0
-    for k in range(16):
-        q = math.radians((k + 0.5) * 22.5)
+    bearings = ray_bearings()
+    for bearing in bearings:
+        q = math.radians(bearing)
         o, s = Vector((math.cos(q), math.sin(q), 0.0)), Vector((-math.sin(q), math.cos(q), 0.0))
-        if o.y > 0 and abs(o.x) * SECOND < LANE + 2.0:   # none on the way in
-            continue
-        count += 1
         for sw, grow, z in (("power", 0.0, LIT), ("well", 0.3, BED)):
             lift = Vector((0, 0, z))
             rim = [centre + o * (r0 - grow) - s * (0.45 + grow) + lift, centre + o * (r1 + grow) - s * (0.16 + grow) + lift,
                    centre + o * (r1 + grow) + s * (0.16 + grow) + lift, centre + o * (r0 - grow) + s * (0.45 + grow) + lift]
             prism(m, rim, SLICE, sw, centre + o * (r0 + r1) / 2 + lift)
     return Piece("LevelRays", m,
-                 note=f"base level 3's light on the deck, beside LevelFloor: {count} rays from the first ring out to "
-                      f"the second, each narrowing outward, none across the way in. Stood at the plot's front edge, "
-                      f"on its middle line. Look only, CastShadow off")
+                 note=f"base level 3's light on the deck, beside LevelFloor: {len(bearings)} rays from the first ring out "
+                      f"to the second, each narrowing outward, laid between the lines that leave the heart and none "
+                      f"across the way in. Stood at the plot's front edge, on its middle line. Look only, CastShadow off")
 
 
-def bay_wake():
-    m = Mesh(None)
-    for k in range(4):                                  # the ground's frame, heavy at its corners, as the open bay's
-        rot = Matrix.Rotation(math.pi / 2 * k, 3, "Z")
-        for size, where, bed in (((2 * SLEEPS, 0.24), (0.0, SLEEPS), 0.22), ((2.6, 0.6), (SLEEPS - 1.3, SLEEPS), 0.22),
-                                 ((2.6, 0.6), (-(SLEEPS - 1.3), SLEEPS), 0.22)):
-            for sw, grow, z in (("power", 0.0, LIT), ("well", bed, BED)):
-                m.box((size[0] + 2 * grow, size[1] + 2 * grow, SLICE), tuple(rot @ Vector((*where, z))), sw, rot=rot)
-    reach = FAR - OUTER - SLEEPS                        # the bus's current, on from the bay before it
-    m.box((reach - SLEEPS - 0.9, 0.64, SLICE), ((reach + SLEEPS) / 2, 0.0, LIT), "power")
-    for x in (SLEEPS + 0.05, reach):
-        node(m, (x, 0.0), size=1.1)
-    return Piece("BayWake", m,
-                 note=f"a woken bay's light on the deck, for bays 3 and 4 (the bus's line outward): its ground's "
-                      f"frame lit, {2 * SLEEPS:g} square and heavy at its corners as an open bay's is in the floor's "
-                      f"picture, and the bus's current run on to it from the bay before, over the dead casing. In the "
-                      f"bay's own frame, stood at the bay's place with the bay's turn (0 on the plot's left, 180 on "
-                      f"its right), while the bay is awake. Look only, CastShadow off")
+WAKES = {3: "BayWake3", 4: "BayWake4"}   # the bays a level wakes at launch, and each one's light
+
+
+def bay_wake(index):
+    def make():
+        name = f"bay{index}"
+        m = Mesh(None)
+        for k in range(4):                              # the ground's frame, heavy at its corners, as the open bay's
+            rot = Matrix.Rotation(math.pi / 2 * k, 3, "Z")
+            for size, where, bed in (((2 * SLEEPS, 0.24), (0.0, SLEEPS), 0.22), ((2.6, 0.6), (SLEEPS - 1.3, SLEEPS), 0.22),
+                                     ((2.6, 0.6), (-(SLEEPS - 1.3), SLEEPS), 0.22)):
+                for sw, grow, z in (("power", 0.0, LIT), ("well", bed, BED)):
+                    m.box((size[0] + 2 * grow, size[1] + 2 * grow, SLICE), tuple(rot @ Vector((*where, z))), sw, rot=rot)
+        # the current, run out to it from the ring over the dead casing: the bay's own line (base_star.lines), in the
+        # bay's own frame, which the plan turns with the bay
+        line, (bx, bz, turn) = star.lines()[name], star.PLAN[name]
+        back = Matrix.Rotation(-math.radians(turn), 2)
+        a, b = (back @ Vector((x - bx, -(z - bz))) for x, z in (line["a"], line["b"]))
+        run, mid = (b - a).length, (a + b) / 2
+        m.box((run - 1.6, 0.64, SLICE), (mid.x, mid.y, LIT), "power", rot=(0.0, 0.0, math.atan2(b.y - a.y, b.x - a.x)))
+        for end in (a, b):
+            node(m, (end.x, end.y), size=1.1)
+        return Piece(WAKES[index], m,
+                     note=f"bay {index}'s light on the deck while it's awake: its ground's frame lit, {2 * SLEEPS:g} "
+                          f"square and heavy at its corners as an open bay's is in the floor's picture, and the current "
+                          f"run out to it from the ring, {run:.1f} studs over its dead casing. In the bay's own frame, "
+                          f"stood at the bay's place with the bay's turn. Look only, CastShadow off")
+    return make
 
 
 # --- the fins --------------------------------------------------------------------------------------------------------
@@ -267,9 +291,10 @@ def ring(name):
     return make
 
 
-PIECES = {"LevelFloor": level_floor, "LevelRays": level_rays, "BayWake": bay_wake, "LevelFin": fin("LevelFin"),
+PIECES = {"LevelFloor": level_floor, "LevelRays": level_rays, **{name: bay_wake(index) for index, name in WAKES.items()},
+          "LevelFin": fin("LevelFin"),
           "LevelFinOuter": fin("LevelFinOuter"), "LevelRing": ring("LevelRing"), "LevelRingOuter": ring("LevelRingOuter")}
-FLAT = ("LevelFloor", "LevelRays", "BayWake")   # light on the deck: these cast no shadow
+FLAT = ("LevelFloor", "LevelRays", *WAKES.values())   # light on the deck: these cast no shadow
 
 
 # --- where each stands ------------------------------------------------------------------------------------------------
@@ -302,8 +327,7 @@ def rows(level):
 
 def tables():
     import base_kit as base
-    assert (GATE, ROW, LANE, RING, OUTER, FAR, SLEEPS) == (base.GATE, base.ROW, base.LANE, base.RING, base.OUTER, base.FAR,
-                                                           base.SLEEPS), "base_levels.py's plot numbers aren't base_kit's"
+    assert GATE == base.GATE, "base_levels.py's gate isn't base_kit's"
     return dict(baseLevels=dict(
         note="AR50: what the yard gains at base levels 2 and 3, over level 1's plan. Not a machine: it stands with the "
              "base's level (Config.Base), and a level's pieces stand beside those of the level under it, never in "
@@ -313,16 +337,18 @@ def tables():
              "CFrame.Angles(0, 0, math.rad(lean)) * CFrame.Angles(math.rad(tilt), 0, 0) * CFrame.Angles(0, angle * "
              "sign, 0) in the plot's frame: `tilt` raises its gate side, `lean` dips its right side as seen from the "
              "gate, and `axle` is where its axle then points, in Roblox's frame, to check the turn by. LevelFloor, "
-             "LevelRays and BayWake are light on the deck: no collision, CastShadow off. The fins and the rings are "
+             "LevelRays, BayWake3 and BayWake4 are light on the deck: no collision, CastShadow off. The fins and the rings are "
              "the gate's teal with their light in the mesh's glow, never Neon. The two rings share one axle (the same "
              "`tilt`, `lean` and `axle`), through the plot's heart: LevelRing over the floor's second ring and of its "
              "size, LevelRingOuter further up it, so its `along` is a little behind the heart's line. Measured against "
              "the exported meshes over a full turn (docs/asset-requests.md, AR50, the rings' refit): both pass every "
              "stage of the generator and every other piece on the plot by more than 1.2.",
         levels={str(level): dict(pieces=rows(level)) for level in (2, 3)},
-        bayWake=dict(piece="BayWake", bays=[3, 4],
-                     note="stood at the bay's own place with the bay's turn while that bay is awake; bays 5 and 6, "
-                          "whose line runs back along the wall, wait for their levels")))
+        bayWake=dict(pieces={str(index): name for index, name in WAKES.items()},
+                     note="a bay's own piece, stood at the bay's place with the bay's turn while that bay is awake: "
+                          "bay 3 from base level 2, bay 4 from level 3 (AR54: each bay's line runs out to it from the "
+                          "ring, so each has its own; it was one BayWake for both). Bays 5 and 6 stay locked at "
+                          "launch")))
 
 
 def stood(level, spin=0.0):
@@ -332,8 +358,9 @@ def stood(level, spin=0.0):
         for row in rows(at_level):
             made.append((row["piece"], row["across"], -row["along"], row["up"], 0.0,
                          lean_of(row["piece"], spin) if row["piece"] in RINGS else None))
-    for index in range(2, {1: 2, 2: 3, 3: 4}[level]):   # docs/design.md, "The base": two bays, then three, then four
-        made.append(("BayWake", (-FAR, FAR)[index - 2], ROW, 0.0, (0.0, 180.0)[index - 2], None))
+    for index in range(3, {1: 2, 2: 3, 3: 4}[level] + 1):   # docs/design.md, "The base": two bays, then three, then four
+        x, inward, turn = star.PLAN[f"bay{index}"]
+        made.append((WAKES[index], x, inward, 0.0, turn, None))
     return made
 
 

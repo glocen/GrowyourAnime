@@ -379,7 +379,7 @@ def yard_without_generator(out: Path, fast):
     for name, where in PLAYERS.items():
         yard.person(where, name)
     for obj in yard.kit.pieces:
-        if obj.name.startswith(("PowerSpan", "Court", "Yard", "Wings")):
+        if obj.name.startswith(("PowerSpan", "Floor")):
             obj.visible_shadow = False
     look.sky(scene, d)
     look.sun(scene, d)

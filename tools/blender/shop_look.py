@@ -113,7 +113,7 @@ def see(out: Path, only, fast, tag=""):
             stand = (world.counter_at, 0)
         world.person(stand[0], "AtView")
         for obj in world.kit.pieces:
-            if obj.name.startswith(("PowerSpan", "Court", "Yard", "Wings", "Vein", "FarShard", "CrossingMark",
+            if obj.name.startswith(("PowerSpan", "Floor", "Vein", "FarShard", "CrossingMark",
                                     "VoidShopMinute", "VoidShopCrown")):
                 obj.visible_shadow = False
         look.sky(scene, d)

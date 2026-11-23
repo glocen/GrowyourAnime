@@ -1,8 +1,8 @@
 {
- "what": "AR14 and AR16, the base dressed and spread: where the base's own kit stands on a plot, by the base's level",
+ "what": "AR14, AR16 and AR54, the base dressed and spread: where the base's own kit stands on a plot, by the base's level, laid for Stage III's footprints",
  "kit": "manifest.json, beside this file: every piece named here is one of its pieces",
  "origin": "the middle of the plot's front edge (the edge on the Strip), on the plot's floor",
- "axes": "`across` is the plot's own +X, to the right as the spawn looks; `along` is studs out of the front edge toward the Strip, so everything on the plot is negative; `turn` is degrees anticlockwise seen from above",
+ "axes": "`across` is the plot's own +X, the Breaker's side, to the left as the spawn looks; `along` is studs out of the front edge toward the Strip, so everything on the plot is negative; `turn` is degrees anticlockwise seen from above",
  "toRoblox": "in the plot's own frame (WorldService.plot's `at`), Kit.Place(placement, piece, front, floorY) with front = -deep / 2: CFrame.new(across, floorY, front - along) * CFrame.Angles(0, math.rad(turn), 0) * centre. A light the same way, by Kit.Light.",
  "levels": {
   "1": {
@@ -10,57 +10,105 @@
    "bays": 2,
    "placements": [
     {
-     "piece": "Court1",
-     "across": 0,
-     "along": 0,
-     "turn": 0.0
-    },
-    {
      "piece": "Gate1",
      "across": 0,
      "along": 0,
      "turn": 0.0
     },
     {
-     "piece": "Wings",
-     "across": 0,
-     "along": 0,
+     "piece": "FloorA1",
+     "across": 54.0,
+     "along": -0.0,
      "turn": 0.0
     },
     {
-     "piece": "YardLive",
-     "across": 0,
-     "along": -32,
+     "piece": "FloorA2",
+     "across": 54.0,
+     "along": -32.0,
      "turn": 0.0
     },
     {
-     "piece": "WingsLive",
-     "across": 0,
-     "along": -32,
+     "piece": "FloorA3",
+     "across": 54.0,
+     "along": -64.0,
      "turn": 0.0
     },
     {
-     "piece": "YardBack",
-     "across": 0,
-     "along": -64,
+     "piece": "FloorA4",
+     "across": 54.0,
+     "along": -96.0,
      "turn": 0.0
     },
     {
-     "piece": "WingsBack",
-     "across": 0,
-     "along": -64,
+     "piece": "FloorB1",
+     "across": 22.0,
+     "along": -0.0,
      "turn": 0.0
     },
     {
-     "piece": "Yard",
-     "across": 0,
-     "along": -96,
+     "piece": "FloorB2",
+     "across": 22.0,
+     "along": -32.0,
      "turn": 0.0
     },
     {
-     "piece": "Wings",
-     "across": 0,
-     "along": -96,
+     "piece": "FloorB3",
+     "across": 22.0,
+     "along": -64.0,
+     "turn": 0.0
+    },
+    {
+     "piece": "FloorB4",
+     "across": 22.0,
+     "along": -96.0,
+     "turn": 0.0
+    },
+    {
+     "piece": "FloorC1",
+     "across": -22.0,
+     "along": -0.0,
+     "turn": 0.0
+    },
+    {
+     "piece": "FloorC2",
+     "across": -22.0,
+     "along": -32.0,
+     "turn": 0.0
+    },
+    {
+     "piece": "FloorC3",
+     "across": -22.0,
+     "along": -64.0,
+     "turn": 0.0
+    },
+    {
+     "piece": "FloorC4",
+     "across": -22.0,
+     "along": -96.0,
+     "turn": 0.0
+    },
+    {
+     "piece": "FloorD1",
+     "across": -54.0,
+     "along": -0.0,
+     "turn": 0.0
+    },
+    {
+     "piece": "FloorD2",
+     "across": -54.0,
+     "along": -32.0,
+     "turn": 0.0
+    },
+    {
+     "piece": "FloorD3",
+     "across": -54.0,
+     "along": -64.0,
+     "turn": 0.0
+    },
+    {
+     "piece": "FloorD4",
+     "across": -54.0,
+     "along": -96.0,
      "turn": 0.0
     },
     {
@@ -246,85 +294,85 @@
     {
      "piece": "Pylon",
      "across": -59.5,
-     "along": -16,
+     "along": -13,
      "turn": 90
     },
     {
      "piece": "Pylon",
      "across": -59.5,
-     "along": -64,
+     "along": -61,
      "turn": 90
     },
     {
      "piece": "PowerSpan",
      "across": -59.5,
-     "along": -64,
+     "along": -61,
      "turn": 90
     },
     {
      "piece": "Pylon",
      "across": -59.5,
-     "along": -112,
+     "along": -109,
      "turn": 90
     },
     {
      "piece": "PowerSpan",
      "across": -59.5,
-     "along": -112,
+     "along": -109,
      "turn": 90
     },
     {
      "piece": "Pylon",
      "across": 59.5,
-     "along": -16,
+     "along": -13,
      "turn": 90
     },
     {
      "piece": "Pylon",
      "across": 59.5,
-     "along": -64,
+     "along": -61,
      "turn": 90
     },
     {
      "piece": "PowerSpan",
      "across": 59.5,
-     "along": -64,
+     "along": -61,
      "turn": 90
     },
     {
      "piece": "Pylon",
      "across": 59.5,
-     "along": -112,
+     "along": -109,
      "turn": 90
     },
     {
      "piece": "PowerSpan",
      "across": 59.5,
-     "along": -112,
+     "along": -109,
      "turn": 90
     },
     {
      "piece": "FloodMast",
-     "across": -13.6,
-     "along": -35.0,
+     "across": -11.8,
+     "along": -40.2,
      "turn": 0
     },
     {
      "piece": "FloodMast",
-     "across": 13.6,
-     "along": -35.0,
+     "across": 11.8,
+     "along": -40.2,
      "turn": 0
     },
     {
      "piece": "Transformer",
-     "across": -21.65,
-     "along": -57.5,
+     "across": -30.0,
+     "along": -68.0,
      "turn": 0
     },
     {
      "piece": "Transformer",
-     "across": 21.65,
-     "along": -57.5,
+     "across": -27.1,
+     "along": -99.7,
      "turn": 0
     },
     {
@@ -337,8 +385,8 @@
    "lights": [
     {
      "name": "FloodLeft",
-     "across": -13.6,
-     "along": -32.0,
+     "across": -11.8,
+     "along": -37.199999999999996,
      "up": 12.0,
      "colour": "#EAF6FF",
      "kind": "spot",
@@ -346,8 +394,8 @@
     },
     {
      "name": "FloodRight",
-     "across": 13.6,
-     "along": -32.0,
+     "across": 11.8,
+     "along": -37.199999999999996,
      "up": 12.0,
      "colour": "#EAF6FF",
      "kind": "spot",
@@ -355,8 +403,8 @@
     },
     {
      "name": "BreakerLamp",
-     "across": 26.0,
-     "along": -26.0,
+     "across": 20.5,
+     "along": -30.5,
      "up": 10.0,
      "colour": "#8CF6FF",
      "kind": "point",
@@ -365,7 +413,7 @@
     {
      "name": "VoidWell",
      "across": 0.0,
-     "along": -52.0,
+     "along": -56.8,
      "up": 1.6,
      "colour": "#B98CFF",
      "kind": "point",
@@ -373,8 +421,8 @@
     },
     {
      "name": "DoorInside",
-     "across": -29.0,
-     "along": -25.4,
+     "across": -33.6,
+     "along": -23.8,
      "up": 6.4,
      "colour": "#FFC27A",
      "kind": "point",
@@ -382,8 +430,8 @@
     },
     {
      "name": "DoorMouth",
-     "across": -22.4,
-     "along": -26.0,
+     "across": -27.0,
+     "along": -24.4,
      "up": 0.8,
      "colour": "#FFC27A",
      "kind": "point",
@@ -403,27 +451,36 @@
     "piece": "Gate1",
     "across": 0.0,
     "along": 0.0,
-    "up": 16.0,
+    "up": 21.6,
     "size": [
      11.0,
      4.4
     ],
     "depth": 2.2,
-    "note": "the level's number on the gate's plate, on both faces (+Y and -Y), in Power's yellow (#FFD23E): the builder's text"
+    "note": "the level's number on the gate's plate, on both faces (+Y and -Y), in Power's yellow (#FFD23E): the builder's text. The plate stands on two posts over the truss (AR54): out of the gate's view from inside, read whole from the Strip"
    },
    "budget": {
-    "pieces": 54,
-    "triangles": 14472,
+    "pieces": 62,
+    "triangles": 14520,
     "lights": 7,
     "counts": {
-     "Court1": 1,
      "Gate1": 1,
-     "Wings": 2,
-     "YardLive": 1,
-     "WingsLive": 1,
-     "YardBack": 1,
-     "WingsBack": 1,
-     "Yard": 1,
+     "FloorA1": 1,
+     "FloorA2": 1,
+     "FloorA3": 1,
+     "FloorA4": 1,
+     "FloorB1": 1,
+     "FloorB2": 1,
+     "FloorB3": 1,
+     "FloorB4": 1,
+     "FloorC1": 1,
+     "FloorC2": 1,
+     "FloorC3": 1,
+     "FloorC4": 1,
+     "FloorD1": 1,
+     "FloorD2": 1,
+     "FloorD3": 1,
+     "FloorD4": 1,
      "Wall": 26,
      "WallHalf": 2,
      "WallEnd": 2,
@@ -454,7 +511,7 @@
   "note": "until each machine has its model: the boxes in the kit's colours, so nothing on a plot is grey. One steel body for every machine and one accent each; the chambers glow (Neon)."
  },
  "layout": {
-  "note": "AR16, the spread: where each thing a player walks to stands, across and in from the front edge (`along` is minus `in`). Modulo's proposal for the builder's Config.World: the floor's pictures are drawn for these places, so a place that moves takes its picture with it. The placement is a star round the generator, which stands at the plot's heart inside a ring of current open toward the gate: the Breaker and the Door on the two slants toward the gate, level 1's bays at the bus's ends, the battery and the Training machine on the two slants toward the back. The way in is `avenue` studs wide down the middle line, clear from the gate to the generator. The Breaker's chambers and waiting places keep their offsets from its body, and every machine keeps its turn. What the base will wake stands asleep where it will stand, dark, on a dead line that lights out to it when it wakes: bays 3 and 4 on the bus's line outward (level 2), bays 5 and 6 back along the side walls (level 3), and in the back half the Lab on the main line with the Forge and the Condenser on a spoke each (`sleeping`). Nothing new stands between the gate and the generator. Laid at 128 (research's pick of 2026-11-17, 12:01): recomposed, the machines at their size, and held by part 7's tests on the game's own footprints (Rules.BaseFit on Config.World.Fit): `fit` is the plan's measure, taken as BaseFit.Measure takes it.",
+  "note": "AR16 and AR54, the spread: where each thing a player walks to stands, across and in from the front edge (`along` is minus `in`). The floor's pictures are drawn for these places, so a place that moves takes its picture with it. The placement is a star round the generator, which stands at the plot's heart inside a ring of current open toward the gate, with the Breaker and the Door on the two slants toward the gate. Laid again for Stage III (AR54; research's pick and second look, 2026-11-23): the yard is no longer the same on its two sides. The Door's side holds bays 1 and 2, the Training machine and the Forge; the Condenser stands at the back, between the generator and the Breaker; bays 3 and 4 stand outside the Breaker, the battery and the Lab's stone behind it; bays 5 and 6 stay locked at launch, asleep at the back and behind the Door. Each machine was placed by what the game's camera sees of it from the gate. The way in is `avenue` studs wide down the middle line, clear from the gate to the generator. The Breaker's chambers and waiting places keep their offsets from its body, and every machine keeps its turn: a bay's is its placement's (0 on the Door's side, 180 on the Breaker's). What the base will wake stands asleep where it will stand, dark, on a line with no current that lights out to it when it wakes (`sleeping`, `laterBays`). Nothing stands between the gate and the generator. `fit` is the plan's measure at each stage's footprints, taken as BaseFit.Measure takes it on the handoff's own meshes (tools/blender/base_fit.py): the game's Config.World.Fit takes its \"128\" layout from this table and its Prints from Stage III's.",
   "avenue": 20.0,
   "least": 12.0,
   "ring": 18.0,
@@ -471,172 +528,234 @@
   "stations": {
    "generator": {
     "across": 0.0,
-    "inward": 52.0
+    "inward": 56.8
    },
    "breaker": {
-    "across": 26.0,
-    "inward": 26.0
+    "across": 20.5,
+    "inward": 30.5
    },
    "door": {
-    "across": -26.0,
-    "inward": 26.0
+    "across": -30.6,
+    "inward": 24.4
    },
    "battery": {
-    "across": 29.0,
-    "inward": 78.0
+    "across": 56.7,
+    "inward": 44.9
    },
    "training": {
-    "across": -29.0,
-    "inward": 78.0
+    "across": -55.1,
+    "inward": 76.4
    },
    "bay1": {
-    "across": -31.5,
-    "inward": 52.0
+    "across": -33.2,
+    "inward": 59.2
    },
    "bay2": {
-    "across": 31.5,
-    "inward": 52.0
+    "across": -30.3,
+    "inward": 90.9
    }
   },
   "laterBays": [
    {
-    "across": -54.5,
-    "inward": 52.0
+    "across": 51.1,
+    "inward": 73.6,
+    "turn": 180.0
    },
    {
-    "across": 54.5,
-    "inward": 52.0
+    "across": 49.7,
+    "inward": 97.6,
+    "turn": 180.0
    },
    {
-    "across": -54.5,
-    "inward": 78.0
+    "across": -0.7,
+    "inward": 95.6,
+    "turn": 0.0
    },
    {
-    "across": 54.5,
-    "inward": 78.0
+    "across": -54.6,
+    "inward": 42.3,
+    "turn": 0.0
    }
   ],
   "sleeping": {
    "forge": {
-    "across": -26.0,
-    "inward": 98.0
+    "across": -53.4,
+    "inward": 99.3
    },
    "condenser": {
-    "across": 26.0,
-    "inward": 98.0
+    "across": 25.5,
+    "inward": 99.0
    },
    "lab": {
-    "across": 0.0,
-    "inward": 94.0
+    "across": 32.7,
+    "inward": 51.6
    }
   },
   "check": {
    "nearest": [
-    20.2,
-    "battery",
-    "condenser"
+    23.0,
+    "forge",
+    "training"
    ],
    "inTheWay": []
   },
   "fit": {
    "size": 128.0,
-   "breaker": 1.79,
-   "least": [
-    12.2,
-    "bay1",
-    "training"
-   ],
-   "way": [],
-   "outside": [],
-   "widest": [
-    50.38,
-    "breaker"
-   ],
-   "halfView": 51.22,
+   "stages": {
+    "1": {
+     "breaker": 1.85,
+     "least": [
+      12.19,
+      "breaker",
+      "generator"
+     ],
+     "way": [],
+     "outside": [],
+     "widest": [
+      50.78,
+      "door"
+     ],
+     "halfView": 51.22,
+     "passes": true
+    },
+    "2": {
+     "breaker": 1.67,
+     "least": [
+      12.17,
+      "breaker",
+      "generator"
+     ],
+     "way": [],
+     "outside": [],
+     "widest": [
+      50.78,
+      "door"
+     ],
+     "halfView": 51.22,
+     "passes": true
+    },
+    "3": {
+     "breaker": 1.63,
+     "least": [
+      12.17,
+      "breaker",
+      "generator"
+     ],
+     "way": [],
+     "outside": [],
+     "widest": [
+      50.79,
+      "breaker"
+     ],
+     "halfView": 51.22,
+     "passes": true
+    }
+   },
    "passes": true
+  },
+  "grounds": {
+   "note": "each place's ground as the floor's pictures draw it, for a prompt or a marker: across from and to, inward from and to. A machine's is its Stage III footprint and 0.9 round it; a bay's and the Lab's stone's is a frame 12.4 square about its spot.",
+   "breaker": [
+    9.31,
+    45.69,
+    23.15,
+    34.81
+   ],
+   "door": [
+    -37.4,
+    -26.99,
+    16.39,
+    32.41
+   ],
+   "battery": [
+    52.54,
+    60.86,
+    41.74,
+    48.06
+   ],
+   "training": [
+    -60.88,
+    -49.33,
+    67.39,
+    82.17
+   ],
+   "forge": [
+    -59.84,
+    -46.96,
+    93.99,
+    104.61
+   ],
+   "condenser": [
+    18.8,
+    32.2,
+    93.69,
+    104.81
+   ],
+   "bay1": [
+    -39.4,
+    -27.0,
+    53.0,
+    65.4
+   ],
+   "bay2": [
+    -36.5,
+    -24.1,
+    84.7,
+    97.1
+   ],
+   "bay3": [
+    44.9,
+    57.3,
+    67.4,
+    79.8
+   ],
+   "bay4": [
+    43.5,
+    55.9,
+    91.4,
+    103.8
+   ],
+   "bay5": [
+    -6.9,
+    5.5,
+    89.4,
+    101.8
+   ],
+   "bay6": [
+    -60.8,
+    -48.4,
+    36.1,
+    48.5
+   ],
+   "lab": [
+    26.5,
+    38.9,
+    45.4,
+    57.8
+   ]
   }
  },
  "current": {
-  "note": "the live conduits drawn in the floor, each from the generator's end outward: where the current runs. For a pulse of light along each, if the builder's effect takes it: a small touch, at research's verdict.",
+  "note": "the conduits drawn in the floor, each from the heart's end outward, across and along: `runs` where the current runs at level 1, `dormant` the casings with none yet (the Lab's and the sleeping bays'). For a pulse of light along each live one, if the builder's effect takes it: a small touch, at research's verdict.",
   "runs": [
-   {
-    "across": [
-     9.6,
-     18.0
-    ],
-    "along": [
-     -52.0,
-     -52.0
-    ]
-   },
    {
     "across": [
      -9.6,
      -18.0
     ],
     "along": [
-     -52.0,
-     -52.0
+     -56.8,
+     -56.8
     ]
    },
    {
     "across": [
-     18.0,
-     25.3
+     9.6,
+     18.0
     ],
     "along": [
-     -52.0,
-     -52.0
-    ]
-   },
-   {
-    "across": [
-     -18.0,
-     -25.3
-    ],
-    "along": [
-     -52.0,
-     -52.0
-    ]
-   },
-   {
-    "across": [
-     12.73,
-     20.8
-    ],
-    "along": [
-     -39.27,
-     -31.2
-    ]
-   },
-   {
-    "across": [
-     -12.73,
-     -20.8
-    ],
-    "along": [
-     -39.27,
-     -31.2
-    ]
-   },
-   {
-    "across": [
-     12.73,
-     20.8
-    ],
-    "along": [
-     -64.73,
-     -72.8
-    ]
-   },
-   {
-    "across": [
-     -12.73,
-     -20.8
-    ],
-    "along": [
-     -64.73,
-     -72.8
+     -56.8,
+     -56.8
     ]
    },
    {
@@ -645,154 +764,296 @@
      0.0
     ],
     "along": [
-     -61.6,
-     -70.0
+     -66.4,
+     -74.8
+    ]
+   },
+   {
+    "across": [
+     12.73,
+     21.99
+    ],
+    "along": [
+     -44.07,
+     -34.81
+    ]
+   },
+   {
+    "across": [
+     -12.73,
+     -26.99
+    ],
+    "along": [
+     -44.07,
+     -29.81
+    ]
+   },
+   {
+    "across": [
+     -17.95,
+     -27.0
+    ],
+    "along": [
+     -58.1,
+     -58.75
+    ]
+   },
+   {
+    "across": [
+     -11.96,
+     -24.79
+    ],
+    "along": [
+     -70.26,
+     -84.7
+    ]
+   },
+   {
+    "across": [
+     9.31,
+     22.29
+    ],
+    "along": [
+     -72.21,
+     -93.69
+    ]
+   },
+   {
+    "across": [
+     -17.42,
+     -49.33
+    ],
+    "along": [
+     -76.4,
+     -76.4
+    ]
+   },
+   {
+    "across": [
+     -55.1,
+     -55.1
+    ],
+    "along": [
+     -82.17,
+     -93.99
+    ]
+   },
+   {
+    "across": [
+     45.69,
+     56.7
+    ],
+    "along": [
+     -30.73,
+     -41.74
+    ]
+   }
+  ],
+  "dormant": [
+   {
+    "across": [
+     0.0,
+     0.0
+    ],
+    "along": [
+     -101.8,
+     -130.0
+    ]
+   },
+   {
+    "across": [
+     17.78,
+     26.5
+    ],
+    "along": [
+     -53.97,
+     -52.59
+    ]
+   },
+   {
+    "across": [
+     17.1,
+     44.9
+    ],
+    "along": [
+     -62.42,
+     -71.56
+    ]
+   },
+   {
+    "across": [
+     13.91,
+     43.5
+    ],
+    "along": [
+     -68.22,
+     -92.51
+    ]
+   },
+   {
+    "across": [
+     -17.4,
+     -48.4
+    ],
+    "along": [
+     -52.18,
+     -43.95
+    ]
+   },
+   {
+    "across": [
+     0.0,
+     0.0
+    ],
+    "along": [
+     -74.8,
+     -89.4
     ]
    }
   ],
   "ring": {
    "across": 0.0,
-   "along": -52.0,
+   "along": -56.8,
    "radius": 18.0,
    "open": 90.0,
-   "note": "the ring round the well: a circle of this radius about the generator, less the quarter that faces the gate. Its current runs from the bus's two joints and the main line's, toward its open ends."
+   "note": "the ring round the well: a circle of this radius about the generator, less the quarter that faces the gate. Its current runs from the two links at its sides and the one at its back, toward its open ends."
   }
  },
  "machines": {
-  "note": "AR15: the machines that have their model, each in place of the builder's stand-in, at every level. Laid as a placement is, raised by `up`. A chamber is its own piece so the builder lights each by its state (EmissiveStrength: full while it breaks a shard, low when empty). A bay's halo is its own piece in one pale swatch: it stands only while a worker works there, in the worker's rarity colour (TR22). The list is level 1's: bays 3 to 6 stand the same way on the yard's lots (`layout.laterBays`). The Festival Door is five pieces and a core: a ring's `spin` is its turn about its own origin, degrees a second, always: CFrame.Angles(0, 0, math.rad(spin) * t), so a positive spin goes anticlockwise seen from the mouth (the part's +Z looks out of it).",
+  "note": "AR15: the machines that have their model, each in place of the builder's stand-in, at every level. Laid as a placement is, raised by `up`. A chamber is its own piece so the builder lights each by its state (EmissiveStrength: full while it breaks a shard, low when empty). A bay's halo is its own piece in one pale swatch: it stands only while a worker works there, in the worker's rarity colour (TR22). The list is level 1's: bays 3 to 6 stand the same way on the yard's lots (`layout.laterBays`, each with its turn). The Festival Door is five pieces and a core: a ring's `spin` is its turn about its own origin, degrees a second, always: CFrame.Angles(0, 0, math.rad(spin) * t), so a positive spin goes anticlockwise seen from the mouth (the part's +Z looks out of it).",
   "placements": [
    {
     "piece": "Breaker",
-    "across": 26.0,
-    "along": -26.0,
+    "across": 20.5,
+    "along": -30.5,
     "up": 0.0,
     "turn": 0.0,
     "standsFor": "the Breaker's body"
    },
    {
     "piece": "BreakerChamber",
-    "across": 22.5,
-    "along": -26.0,
+    "across": 17.0,
+    "along": -30.5,
     "up": 5.0,
     "turn": 0.0,
     "standsFor": "chamber 1"
    },
    {
     "piece": "BreakerChamber",
-    "across": 29.5,
-    "along": -26.0,
+    "across": 24.0,
+    "along": -30.5,
     "up": 5.0,
     "turn": 0.0,
     "standsFor": "chamber 2"
    },
    {
     "piece": "BreakerWaiting",
-    "across": 35.0,
-    "along": -26.0,
+    "across": 29.5,
+    "along": -30.5,
     "up": 0.0,
     "turn": 0.0,
     "standsFor": "waiting place 1"
    },
    {
     "piece": "BreakerWaiting",
-    "across": 38.0,
-    "along": -26.0,
+    "across": 32.5,
+    "along": -30.5,
     "up": 0.0,
     "turn": 0.0,
     "standsFor": "waiting place 2"
    },
    {
     "piece": "BreakerWaiting",
-    "across": 41.0,
-    "along": -26.0,
+    "across": 35.5,
+    "along": -30.5,
     "up": 0.0,
     "turn": 0.0,
     "standsFor": "waiting place 3"
    },
    {
     "piece": "Bay",
-    "across": -31.5,
-    "along": -52.0,
+    "across": -33.2,
+    "along": -59.2,
     "up": 0.0,
     "turn": 0.0,
     "standsFor": "bay 1"
    },
    {
     "piece": "BayHalo",
-    "across": -31.5,
-    "along": -52.0,
+    "across": -33.2,
+    "along": -59.2,
     "up": 0.0,
     "turn": 0.0,
     "standsFor": "bay 1's light, while a worker works there"
    },
    {
     "piece": "Bay",
-    "across": 31.5,
-    "along": -52.0,
+    "across": -30.3,
+    "along": -90.9,
     "up": 0.0,
-    "turn": 180.0,
+    "turn": 0.0,
     "standsFor": "bay 2"
    },
    {
     "piece": "BayHalo",
-    "across": 31.5,
-    "along": -52.0,
+    "across": -30.3,
+    "along": -90.9,
     "up": 0.0,
-    "turn": 180.0,
+    "turn": 0.0,
     "standsFor": "bay 2's light, while a worker works there"
    },
    {
     "piece": "BaySleeping",
-    "across": -54.5,
-    "along": -52.0,
+    "across": 51.1,
+    "along": -73.6,
     "up": 0.0,
-    "turn": 0.0,
+    "turn": 180.0,
     "standsFor": "bay 3, asleep until level 2"
    },
    {
     "piece": "BaySleeping",
-    "across": 54.5,
-    "along": -52.0,
+    "across": 49.7,
+    "along": -97.6,
     "up": 0.0,
     "turn": 180.0,
-    "standsFor": "bay 4, asleep until level 2"
+    "standsFor": "bay 4, asleep until level 3"
    },
    {
     "piece": "BaySleeping",
-    "across": -54.5,
-    "along": -78.0,
+    "across": -0.7,
+    "along": -95.6,
     "up": 0.0,
     "turn": 0.0,
-    "standsFor": "bay 5, asleep until level 3"
+    "standsFor": "bay 5, locked at launch"
    },
    {
     "piece": "BaySleeping",
-    "across": 54.5,
-    "along": -78.0,
+    "across": -54.6,
+    "along": -42.3,
     "up": 0.0,
-    "turn": 180.0,
-    "standsFor": "bay 6, asleep until level 3"
+    "turn": 0.0,
+    "standsFor": "bay 6, locked at launch"
    },
    {
     "piece": "SleepingStone",
-    "across": -26.0,
-    "along": -98.0,
+    "across": -53.4,
+    "along": -99.3,
     "up": 0.0,
     "turn": 0.0,
     "standsFor": "the Forge's place, asleep"
    },
    {
     "piece": "SleepingStone",
-    "across": 26.0,
-    "along": -98.0,
+    "across": 25.5,
+    "along": -99.0,
     "up": 0.0,
     "turn": 0.0,
     "standsFor": "the Condenser's place, asleep"
    },
    {
     "piece": "SleepingStone",
-    "across": 0.0,
-    "along": -94.0,
+    "across": 32.7,
+    "along": -51.6,
     "up": 0.0,
     "turn": 0.0,
     "standsFor": "the Lab's place, asleep"
@@ -809,7 +1070,7 @@
    {
     "piece": "Generator",
     "across": 0.0,
-    "along": -52.0,
+    "along": -56.8,
     "up": 0.0,
     "turn": 0.0,
     "standsFor": "the generator, the Void Mill: all of it that stands still"
@@ -817,7 +1078,7 @@
    {
     "piece": "GeneratorWheel",
     "across": 0.0,
-    "along": -52.0,
+    "along": -56.8,
     "up": 10.0,
     "turn": 0.0,
     "standsFor": "the generator's wheel, turning about the line to the gate, faster as the plant generates more"
@@ -825,7 +1086,7 @@
    {
     "piece": "GeneratorArc1",
     "across": 0.0,
-    "along": -52.0,
+    "along": -56.8,
     "up": 0.0,
     "turn": 0.0,
     "standsFor": "the gauge's step 1 of 8, shown while the generation lights it"
@@ -833,7 +1094,7 @@
    {
     "piece": "GeneratorArc2",
     "across": 0.0,
-    "along": -52.0,
+    "along": -56.8,
     "up": 0.0,
     "turn": 0.0,
     "standsFor": "the gauge's step 2 of 8, shown while the generation lights it"
@@ -841,7 +1102,7 @@
    {
     "piece": "GeneratorArc3",
     "across": 0.0,
-    "along": -52.0,
+    "along": -56.8,
     "up": 0.0,
     "turn": 0.0,
     "standsFor": "the gauge's step 3 of 8, shown while the generation lights it"
@@ -849,7 +1110,7 @@
    {
     "piece": "GeneratorArc4",
     "across": 0.0,
-    "along": -52.0,
+    "along": -56.8,
     "up": 0.0,
     "turn": 0.0,
     "standsFor": "the gauge's step 4 of 8, shown while the generation lights it"
@@ -857,7 +1118,7 @@
    {
     "piece": "GeneratorArc5",
     "across": 0.0,
-    "along": -52.0,
+    "along": -56.8,
     "up": 0.0,
     "turn": 0.0,
     "standsFor": "the gauge's step 5 of 8, shown while the generation lights it"
@@ -865,7 +1126,7 @@
    {
     "piece": "GeneratorArc6",
     "across": 0.0,
-    "along": -52.0,
+    "along": -56.8,
     "up": 0.0,
     "turn": 0.0,
     "standsFor": "the gauge's step 6 of 8, shown while the generation lights it"
@@ -873,7 +1134,7 @@
    {
     "piece": "GeneratorArc7",
     "across": 0.0,
-    "along": -52.0,
+    "along": -56.8,
     "up": 0.0,
     "turn": 0.0,
     "standsFor": "the gauge's step 7 of 8, shown while the generation lights it"
@@ -881,7 +1142,7 @@
    {
     "piece": "GeneratorArc8",
     "across": 0.0,
-    "along": -52.0,
+    "along": -56.8,
     "up": 0.0,
     "turn": 0.0,
     "standsFor": "the gauge's step 8 of 8, shown while the generation lights it"
@@ -889,47 +1150,47 @@
    {
     "piece": "GeneratorDemand",
     "across": 0.0,
-    "along": -52.0,
+    "along": -56.8,
     "up": 10.0,
     "turn": 0.0,
     "standsFor": "the demand's mark, turned about the axle by the demand's share"
    },
    {
     "piece": "BatteryRack",
-    "across": 29.0,
-    "along": -78.0,
+    "across": 56.7,
+    "along": -44.9,
     "up": 0.0,
     "turn": 0.0,
     "standsFor": "the battery"
    },
    {
     "piece": "BatteryCell",
-    "across": 28.25,
-    "along": -78.95,
+    "across": 55.95,
+    "along": -45.85,
     "up": 0.6,
     "turn": 0.0,
     "standsFor": "the battery's cell 1"
    },
    {
     "piece": "BatteryCell",
-    "across": 29.75,
-    "along": -78.95,
+    "across": 57.45,
+    "along": -45.85,
     "up": 0.6,
     "turn": 0.0,
     "standsFor": "the battery's cell 2"
    },
    {
     "piece": "Door",
-    "across": -26.0,
-    "along": -26.0,
+    "across": -30.6,
+    "along": -24.4,
     "up": 0.0,
     "turn": 90.0,
     "standsFor": "the Festival Door: its step, its front ring and the name's plate, its mouth looking down the way in"
    },
    {
     "piece": "DoorRing1",
-    "across": -27.7,
-    "along": -25.75,
+    "across": -32.3,
+    "along": -24.15,
     "up": 5.95,
     "turn": 90.0,
     "standsFor": "the Door's ring 1, turning about the tunnel's axis",
@@ -937,8 +1198,8 @@
    },
    {
     "piece": "DoorRing2",
-    "across": -29.0,
-    "along": -25.5,
+    "across": -33.6,
+    "along": -23.9,
     "up": 6.3,
     "turn": 90.0,
     "standsFor": "the Door's ring 2, turning about the tunnel's axis",
@@ -946,8 +1207,8 @@
    },
    {
     "piece": "DoorRing3",
-    "across": -30.1,
-    "along": -25.25,
+    "across": -34.7,
+    "along": -23.65,
     "up": 6.65,
     "turn": 90.0,
     "standsFor": "the Door's ring 3, turning about the tunnel's axis",
@@ -955,8 +1216,8 @@
    },
    {
     "piece": "DoorRing4",
-    "across": -31.0,
-    "along": -25.0,
+    "across": -35.6,
+    "along": -23.4,
     "up": 7.0,
     "turn": 90.0,
     "standsFor": "the Door's ring 4, turning about the tunnel's axis",
@@ -964,24 +1225,24 @@
    },
    {
     "piece": "DoorWay",
-    "across": -31.9,
-    "along": -24.75,
+    "across": -36.5,
+    "along": -23.15,
     "up": 7.35,
     "turn": 90.0,
     "standsFor": "the Door's core, its light the Door's state"
    },
    {
     "piece": "Training",
-    "across": -29.0,
-    "along": -78.0,
+    "across": -55.1,
+    "along": -76.4,
     "up": 0.0,
     "turn": 0.0,
     "standsFor": "the Training machine, its pad toward the front"
    },
    {
     "piece": "TrainingCrown",
-    "across": -29.0,
-    "along": -78.0,
+    "across": -55.1,
+    "along": -76.4,
     "up": 8.0,
     "turn": 0.0,
     "standsFor": "the Training machine's crown, turning about its own upright while a Voidkin trains"
@@ -994,14 +1255,14 @@
      {
       "piece": "Generator",
       "across": 0.0,
-      "along": -52.0,
+      "along": -56.8,
       "up": 0.0,
       "moves": "still"
      },
      {
       "piece": "GeneratorWheel",
       "across": 0.0,
-      "along": -52.0,
+      "along": -56.8,
       "up": 10.0,
       "moves": "turns",
       "rate": 1.0
@@ -1009,7 +1270,7 @@
      {
       "piece": "GeneratorArc1",
       "across": 0.0,
-      "along": -52.0,
+      "along": -56.8,
       "up": 0.0,
       "moves": "gauge",
       "step": 1
@@ -1017,7 +1278,7 @@
      {
       "piece": "GeneratorArc2",
       "across": 0.0,
-      "along": -52.0,
+      "along": -56.8,
       "up": 0.0,
       "moves": "gauge",
       "step": 2
@@ -1025,7 +1286,7 @@
      {
       "piece": "GeneratorArc3",
       "across": 0.0,
-      "along": -52.0,
+      "along": -56.8,
       "up": 0.0,
       "moves": "gauge",
       "step": 3
@@ -1033,7 +1294,7 @@
      {
       "piece": "GeneratorArc4",
       "across": 0.0,
-      "along": -52.0,
+      "along": -56.8,
       "up": 0.0,
       "moves": "gauge",
       "step": 4
@@ -1041,7 +1302,7 @@
      {
       "piece": "GeneratorArc5",
       "across": 0.0,
-      "along": -52.0,
+      "along": -56.8,
       "up": 0.0,
       "moves": "gauge",
       "step": 5
@@ -1049,7 +1310,7 @@
      {
       "piece": "GeneratorArc6",
       "across": 0.0,
-      "along": -52.0,
+      "along": -56.8,
       "up": 0.0,
       "moves": "gauge",
       "step": 6
@@ -1057,7 +1318,7 @@
      {
       "piece": "GeneratorArc7",
       "across": 0.0,
-      "along": -52.0,
+      "along": -56.8,
       "up": 0.0,
       "moves": "gauge",
       "step": 7
@@ -1065,7 +1326,7 @@
      {
       "piece": "GeneratorArc8",
       "across": 0.0,
-      "along": -52.0,
+      "along": -56.8,
       "up": 0.0,
       "moves": "gauge",
       "step": 8
@@ -1073,7 +1334,7 @@
      {
       "piece": "GeneratorDemand",
       "across": 0.0,
-      "along": -52.0,
+      "along": -56.8,
       "up": 10.0,
       "moves": "demand",
       "degrees": 117.88
@@ -1083,14 +1344,14 @@
      {
       "piece": "Generator2",
       "across": 0.0,
-      "along": -52.0,
+      "along": -56.8,
       "up": 0.0,
       "moves": "still"
      },
      {
       "piece": "Generator2Wheel",
       "across": 0.0,
-      "along": -52.0,
+      "along": -56.8,
       "up": 10.0,
       "moves": "turns",
       "rate": 1.0
@@ -1098,7 +1359,7 @@
      {
       "piece": "Generator2Pinion",
       "across": 5.196,
-      "along": -48.6,
+      "along": -53.4,
       "up": 7.0,
       "moves": "turns",
       "rate": -2.4
@@ -1106,7 +1367,7 @@
      {
       "piece": "Generator2Arc1",
       "across": 0.0,
-      "along": -52.0,
+      "along": -56.8,
       "up": 0.0,
       "moves": "gauge",
       "step": 1
@@ -1114,7 +1375,7 @@
      {
       "piece": "Generator2Arc2",
       "across": 0.0,
-      "along": -52.0,
+      "along": -56.8,
       "up": 0.0,
       "moves": "gauge",
       "step": 2
@@ -1122,7 +1383,7 @@
      {
       "piece": "Generator2Arc3",
       "across": 0.0,
-      "along": -52.0,
+      "along": -56.8,
       "up": 0.0,
       "moves": "gauge",
       "step": 3
@@ -1130,7 +1391,7 @@
      {
       "piece": "Generator2Arc4",
       "across": 0.0,
-      "along": -52.0,
+      "along": -56.8,
       "up": 0.0,
       "moves": "gauge",
       "step": 4
@@ -1138,7 +1399,7 @@
      {
       "piece": "Generator2Arc5",
       "across": 0.0,
-      "along": -52.0,
+      "along": -56.8,
       "up": 0.0,
       "moves": "gauge",
       "step": 5
@@ -1146,7 +1407,7 @@
      {
       "piece": "Generator2Arc6",
       "across": 0.0,
-      "along": -52.0,
+      "along": -56.8,
       "up": 0.0,
       "moves": "gauge",
       "step": 6
@@ -1154,7 +1415,7 @@
      {
       "piece": "Generator2Arc7",
       "across": 0.0,
-      "along": -52.0,
+      "along": -56.8,
       "up": 0.0,
       "moves": "gauge",
       "step": 7
@@ -1162,7 +1423,7 @@
      {
       "piece": "Generator2Arc8",
       "across": 0.0,
-      "along": -52.0,
+      "along": -56.8,
       "up": 0.0,
       "moves": "gauge",
       "step": 8
@@ -1170,7 +1431,7 @@
      {
       "piece": "Generator2Demand",
       "across": 0.0,
-      "along": -52.0,
+      "along": -56.8,
       "up": 10.0,
       "moves": "demand",
       "degrees": 114.54
@@ -1180,14 +1441,14 @@
      {
       "piece": "Generator3",
       "across": 0.0,
-      "along": -52.0,
+      "along": -56.8,
       "up": 0.0,
       "moves": "still"
      },
      {
       "piece": "Generator2Wheel",
       "across": 0.0,
-      "along": -52.0,
+      "along": -56.8,
       "up": 10.0,
       "moves": "turns",
       "rate": 1.0
@@ -1195,7 +1456,7 @@
      {
       "piece": "Generator2Pinion",
       "across": 5.196,
-      "along": -48.6,
+      "along": -53.4,
       "up": 7.0,
       "moves": "turns",
       "rate": -2.4
@@ -1203,7 +1464,7 @@
      {
       "piece": "Generator3Pinion",
       "across": -5.196,
-      "along": -48.6,
+      "along": -53.4,
       "up": 7.0,
       "moves": "turns",
       "rate": -2.4
@@ -1211,7 +1472,7 @@
      {
       "piece": "Generator3Arc1",
       "across": 0.0,
-      "along": -52.0,
+      "along": -56.8,
       "up": 0.0,
       "moves": "gauge",
       "step": 1
@@ -1219,7 +1480,7 @@
      {
       "piece": "Generator3Arc2",
       "across": 0.0,
-      "along": -52.0,
+      "along": -56.8,
       "up": 0.0,
       "moves": "gauge",
       "step": 2
@@ -1227,7 +1488,7 @@
      {
       "piece": "Generator3Arc3",
       "across": 0.0,
-      "along": -52.0,
+      "along": -56.8,
       "up": 0.0,
       "moves": "gauge",
       "step": 3
@@ -1235,7 +1496,7 @@
      {
       "piece": "Generator3Arc4",
       "across": 0.0,
-      "along": -52.0,
+      "along": -56.8,
       "up": 0.0,
       "moves": "gauge",
       "step": 4
@@ -1243,7 +1504,7 @@
      {
       "piece": "Generator3Arc5",
       "across": 0.0,
-      "along": -52.0,
+      "along": -56.8,
       "up": 0.0,
       "moves": "gauge",
       "step": 5
@@ -1251,7 +1512,7 @@
      {
       "piece": "Generator3Arc6",
       "across": 0.0,
-      "along": -52.0,
+      "along": -56.8,
       "up": 0.0,
       "moves": "gauge",
       "step": 6
@@ -1259,7 +1520,7 @@
      {
       "piece": "Generator3Arc7",
       "across": 0.0,
-      "along": -52.0,
+      "along": -56.8,
       "up": 0.0,
       "moves": "gauge",
       "step": 7
@@ -1267,7 +1528,7 @@
      {
       "piece": "Generator3Arc8",
       "across": 0.0,
-      "along": -52.0,
+      "along": -56.8,
       "up": 0.0,
       "moves": "gauge",
       "step": 8
@@ -1275,7 +1536,7 @@
      {
       "piece": "Generator3Demand",
       "across": 0.0,
-      "along": -52.0,
+      "along": -56.8,
       "up": 10.0,
       "moves": "demand",
       "degrees": 114.54
@@ -1293,36 +1554,36 @@
    "up": 0.6,
    "seats": [
     {
-     "across": 28.25,
-     "along": -78.95
+     "across": 55.95,
+     "along": -45.85
     },
     {
-     "across": 29.75,
-     "along": -78.95
+     "across": 57.45,
+     "along": -45.85
     },
     {
-     "across": 28.25,
-     "along": -77.05
+     "across": 55.95,
+     "along": -43.95
     },
     {
-     "across": 29.75,
-     "along": -77.05
+     "across": 57.45,
+     "along": -43.95
     },
     {
-     "across": 26.75,
-     "along": -78.95
+     "across": 54.45,
+     "along": -45.85
     },
     {
-     "across": 31.25,
-     "along": -78.95
+     "across": 58.95,
+     "along": -45.85
     },
     {
-     "across": 26.75,
-     "along": -77.05
+     "across": 54.45,
+     "along": -43.95
     },
     {
-     "across": 31.25,
-     "along": -77.05
+     "across": 58.95,
+     "along": -43.95
     }
    ]
   },
@@ -2858,7 +3119,7 @@
    }
   },
   "baseLevels": {
-   "note": "AR50: what the yard gains at base levels 2 and 3, over level 1's plan. Not a machine: it stands with the base's level (Config.Base), and a level's pieces stand beside those of the level under it, never in their place. Each row is in the plot's frame, laid as a placement is: `across` from its middle line, `along` from its front edge (toward the gate above zero), `up`. `moves`: still; turns, always, about the piece's own axle at `rate` turns a second, the way `sign` gives. A ring stands at its row's place as CFrame.Angles(0, 0, math.rad(lean)) * CFrame.Angles(math.rad(tilt), 0, 0) * CFrame.Angles(0, angle * sign, 0) in the plot's frame: `tilt` raises its gate side, `lean` dips its right side as seen from the gate, and `axle` is where its axle then points, in Roblox's frame, to check the turn by. LevelFloor, LevelRays and BayWake are light on the deck: no collision, CastShadow off. The fins and the rings are the gate's teal with their light in the mesh's glow, never Neon. The two rings share one axle (the same `tilt`, `lean` and `axle`), through the plot's heart: LevelRing over the floor's second ring and of its size, LevelRingOuter further up it, so its `along` is a little behind the heart's line. Measured against the exported meshes over a full turn (docs/asset-requests.md, AR50, the rings' refit): both pass every stage of the generator and every other piece on the plot by more than 1.2.",
+   "note": "AR50: what the yard gains at base levels 2 and 3, over level 1's plan. Not a machine: it stands with the base's level (Config.Base), and a level's pieces stand beside those of the level under it, never in their place. Each row is in the plot's frame, laid as a placement is: `across` from its middle line, `along` from its front edge (toward the gate above zero), `up`. `moves`: still; turns, always, about the piece's own axle at `rate` turns a second, the way `sign` gives. A ring stands at its row's place as CFrame.Angles(0, 0, math.rad(lean)) * CFrame.Angles(math.rad(tilt), 0, 0) * CFrame.Angles(0, angle * sign, 0) in the plot's frame: `tilt` raises its gate side, `lean` dips its right side as seen from the gate, and `axle` is where its axle then points, in Roblox's frame, to check the turn by. LevelFloor, LevelRays, BayWake3 and BayWake4 are light on the deck: no collision, CastShadow off. The fins and the rings are the gate's teal with their light in the mesh's glow, never Neon. The two rings share one axle (the same `tilt`, `lean` and `axle`), through the plot's heart: LevelRing over the floor's second ring and of its size, LevelRingOuter further up it, so its `along` is a little behind the heart's line. Measured against the exported meshes over a full turn (docs/asset-requests.md, AR50, the rings' refit): both pass every stage of the generator and every other piece on the plot by more than 1.2.",
    "levels": {
     "2": {
      "pieces": [
@@ -2886,7 +3147,7 @@
       {
        "piece": "LevelRing",
        "across": 0.0,
-       "along": -52.0,
+       "along": -56.8,
        "up": 14.0,
        "moves": "turns",
        "tilt": 9.0,
@@ -2927,7 +3188,7 @@
       {
        "piece": "LevelRingOuter",
        "across": 0.0,
-       "along": -53.66,
+       "along": -58.46,
        "up": 24.47,
        "moves": "turns",
        "tilt": 9.0,
@@ -2944,12 +3205,11 @@
     }
    },
    "bayWake": {
-    "piece": "BayWake",
-    "bays": [
-     3,
-     4
-    ],
-    "note": "stood at the bay's own place with the bay's turn while that bay is awake; bays 5 and 6, whose line runs back along the wall, wait for their levels"
+    "pieces": {
+     "3": "BayWake3",
+     "4": "BayWake4"
+    },
+    "note": "a bay's own piece, stood at the bay's place with the bay's turn while that bay is awake: bay 3 from base level 2, bay 4 from level 3 (AR54: each bay's line runs out to it from the ring, so each has its own; it was one BayWake for both). Bays 5 and 6 stay locked at launch"
    }
   }
  },

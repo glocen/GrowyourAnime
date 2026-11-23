@@ -453,7 +453,7 @@ class Yard:
         yard.kit.block("Strip", (3 * plan.PLOT, plan.STRIP, 0.4), (0, plan.STRIP / 2, -0.22), yard.stone)
         yard.kit.block("Ground", (5 * plan.PLOT, 4 * plan.PLOT, 0.4), (0, plan.STRIP / 2, -0.3), yard.flat["ground"])
         for obj in yard.kit.pieces:
-            if obj.name.startswith(("PowerSpan", "Court", "Yard", "Wings") + base.levels.FLAT):
+            if obj.name.startswith(("PowerSpan", "Floor") + base.levels.FLAT):
                 obj.visible_shadow = False
         self.views = []
         for k, (dx, dy) in enumerate(STAND):

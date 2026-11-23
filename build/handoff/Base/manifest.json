@@ -4,164 +4,363 @@
  "frame": "Roblox's: a piece's front (Blender +Y) is -Z. A MeshPart goes at the piece's place times `centre`. A light's `at` is in the piece's own frame.",
  "surface": "one SurfaceAppearance per MeshPart: ColorMap `colour`, EmissiveMaskContent `glow`, EmissiveTint `glowTint`, EmissiveStrength from `glowStrength` (tuned in the engine). Single sided: each piece's ink is in its mesh, a hull turned inside out on the atlas's ink texel.",
  "ink": "the drawn edge is a hull 0.11 studs out (base_ink.py); Lantern Row's is 0.14",
- "shadows": "CastShadow off on PowerSpan and the floors (Court1, Yard, Wings, YardLive, YardBack, WingsLive, WingsBack), and on the light laid on the deck (LevelFloor, LevelRays, BayWake).",
+ "shadows": "CastShadow off on PowerSpan and the sixteen floors (every piece named Floor: FloorA1 to FloorD4), and on the light laid on the deck (LevelFloor, LevelRays, BayWake3, BayWake4).",
+ "floors": "the deck's look is a grid of sixteen floors over the plot, each in its own pair of pictures: A to D across from the Breaker's side wall to the Door's (left to right, seen from the gate), 1 to 4 from the gate in. A and D are 20 studs across, B and C 44, each 32 in. They replace Court1, Yard, YardLive, YardBack, Wings, WingsLive and WingsBack (AR54): the yard isn't the same on its two sides, so no picture is mirrored.",
  "maps": {
   "Base_Deck_Color.png": "the plain deck, a tile 8 studs square (four plates), for a Texture on a Part"
  },
  "pieces": {
-  "Court1": {
-   "mesh": "meshes/Court1.json",
-   "triangles": 4,
-   "vertices": 6,
+  "FloorA1": {
+   "mesh": "meshes/FloorA1.json",
+   "triangles": 2,
+   "vertices": 4,
    "centre": [
     0.0,
     0.06,
     16.0
    ],
    "size": [
-    88.0,
+    20.0,
     0.0,
     32.0
    ],
-   "colour": "maps/Base_Court1_Color.png",
-   "glow": "maps/Base_Court1_Glow.png",
+   "colour": "maps/Base_FloorA1_Color.png",
+   "glow": "maps/Base_FloorA1_Glow.png",
    "glowTint": "#FFFFFF",
    "glowStrength": 1.0,
    "collision": "floor",
    "lights": [],
-   "note": "lies 0.06 over the deck, its front edge on the plot's; a Part under it carries the walking"
+   "note": "lies 0.06 over the deck, 20 studs across by 32 in, its front edge at its place; a Part under it carries the walking. A floor's look: its glow turns with the night"
   },
-  "Yard": {
-   "mesh": "meshes/Yard.json",
-   "triangles": 4,
-   "vertices": 6,
+  "FloorA2": {
+   "mesh": "meshes/FloorA2.json",
+   "triangles": 2,
+   "vertices": 4,
    "centre": [
     0.0,
     0.06,
     16.0
    ],
    "size": [
-    88.0,
+    20.0,
     0.0,
     32.0
    ],
-   "colour": "maps/Base_Yard_Color.png",
-   "glow": "maps/Base_Yard_Glow.png",
+   "colour": "maps/Base_FloorA2_Color.png",
+   "glow": "maps/Base_FloorA2_Glow.png",
    "glowTint": "#FFFFFF",
    "glowStrength": 1.0,
    "collision": "floor",
    "lights": [],
-   "note": "lies 0.06 over the deck behind the court, block after block; a Part under it carries the walking"
+   "note": "lies 0.06 over the deck, 20 studs across by 32 in, its front edge at its place; a Part under it carries the walking. A floor's look: its glow turns with the night"
   },
-  "Wings": {
-   "mesh": "meshes/Wings.json",
-   "triangles": 4,
-   "vertices": 8,
+  "FloorA3": {
+   "mesh": "meshes/FloorA3.json",
+   "triangles": 2,
+   "vertices": 4,
    "centre": [
     0.0,
     0.06,
     16.0
    ],
    "size": [
-    128.0,
+    20.0,
     0.0,
     32.0
    ],
-   "colour": "maps/Base_Wings_Color.png",
-   "glow": "maps/Base_Wings_Glow.png",
+   "colour": "maps/Base_FloorA3_Color.png",
+   "glow": "maps/Base_FloorA3_Glow.png",
    "glowTint": "#FFFFFF",
    "glowStrength": 1.0,
    "collision": "floor",
    "lights": [],
-   "note": "lies 0.06 over the deck each side of the court and of the yard's blocks, the two sides one mesh; a Part under it carries the walking"
+   "note": "lies 0.06 over the deck, 20 studs across by 32 in, its front edge at its place; a Part under it carries the walking. A floor's look: its glow turns with the night"
   },
-  "YardLive": {
-   "mesh": "meshes/YardLive.json",
-   "triangles": 4,
-   "vertices": 6,
+  "FloorA4": {
+   "mesh": "meshes/FloorA4.json",
+   "triangles": 2,
+   "vertices": 4,
    "centre": [
     0.0,
     0.06,
     16.0
    ],
    "size": [
-    88.0,
+    20.0,
     0.0,
     32.0
    ],
-   "colour": "maps/Base_YardLive_Color.png",
-   "glow": "maps/Base_YardLive_Glow.png",
+   "colour": "maps/Base_FloorA4_Color.png",
+   "glow": "maps/Base_FloorA4_Glow.png",
    "glowTint": "#FFFFFF",
    "glowStrength": 1.0,
    "collision": "floor",
    "lights": [],
-   "note": "lies 0.06 over the deck behind the court, block after block; a Part under it carries the walking"
+   "note": "lies 0.06 over the deck, 20 studs across by 32 in, its front edge at its place; a Part under it carries the walking. A floor's look: its glow turns with the night"
   },
-  "YardBack": {
-   "mesh": "meshes/YardBack.json",
-   "triangles": 4,
-   "vertices": 6,
+  "FloorB1": {
+   "mesh": "meshes/FloorB1.json",
+   "triangles": 2,
+   "vertices": 4,
    "centre": [
     0.0,
     0.06,
     16.0
    ],
    "size": [
-    88.0,
+    44.0,
     0.0,
     32.0
    ],
-   "colour": "maps/Base_YardBack_Color.png",
-   "glow": "maps/Base_YardBack_Glow.png",
+   "colour": "maps/Base_FloorB1_Color.png",
+   "glow": "maps/Base_FloorB1_Glow.png",
    "glowTint": "#FFFFFF",
    "glowStrength": 1.0,
    "collision": "floor",
    "lights": [],
-   "note": "lies 0.06 over the deck behind the court, block after block; a Part under it carries the walking"
+   "note": "lies 0.06 over the deck, 44 studs across by 32 in, its front edge at its place; a Part under it carries the walking. A floor's look: its glow turns with the night"
   },
-  "WingsLive": {
-   "mesh": "meshes/WingsLive.json",
-   "triangles": 4,
-   "vertices": 8,
+  "FloorB2": {
+   "mesh": "meshes/FloorB2.json",
+   "triangles": 2,
+   "vertices": 4,
    "centre": [
     0.0,
     0.06,
     16.0
    ],
    "size": [
-    128.0,
+    44.0,
     0.0,
     32.0
    ],
-   "colour": "maps/Base_WingsLive_Color.png",
-   "glow": "maps/Base_WingsLive_Glow.png",
+   "colour": "maps/Base_FloorB2_Color.png",
+   "glow": "maps/Base_FloorB2_Glow.png",
    "glowTint": "#FFFFFF",
    "glowStrength": 1.0,
    "collision": "floor",
    "lights": [],
-   "note": "lies 0.06 over the deck each side of the court and of the yard's blocks, the two sides one mesh; a Part under it carries the walking"
+   "note": "lies 0.06 over the deck, 44 studs across by 32 in, its front edge at its place; a Part under it carries the walking. A floor's look: its glow turns with the night"
   },
-  "WingsBack": {
-   "mesh": "meshes/WingsBack.json",
-   "triangles": 4,
-   "vertices": 8,
+  "FloorB3": {
+   "mesh": "meshes/FloorB3.json",
+   "triangles": 2,
+   "vertices": 4,
    "centre": [
     0.0,
     0.06,
     16.0
    ],
    "size": [
-    128.0,
+    44.0,
     0.0,
     32.0
    ],
-   "colour": "maps/Base_WingsBack_Color.png",
-   "glow": "maps/Base_WingsBack_Glow.png",
+   "colour": "maps/Base_FloorB3_Color.png",
+   "glow": "maps/Base_FloorB3_Glow.png",
    "glowTint": "#FFFFFF",
    "glowStrength": 1.0,
    "collision": "floor",
    "lights": [],
-   "note": "lies 0.06 over the deck each side of the court and of the yard's blocks, the two sides one mesh; a Part under it carries the walking"
+   "note": "lies 0.06 over the deck, 44 studs across by 32 in, its front edge at its place; a Part under it carries the walking. A floor's look: its glow turns with the night"
+  },
+  "FloorB4": {
+   "mesh": "meshes/FloorB4.json",
+   "triangles": 2,
+   "vertices": 4,
+   "centre": [
+    0.0,
+    0.06,
+    16.0
+   ],
+   "size": [
+    44.0,
+    0.0,
+    32.0
+   ],
+   "colour": "maps/Base_FloorB4_Color.png",
+   "glow": "maps/Base_FloorB4_Glow.png",
+   "glowTint": "#FFFFFF",
+   "glowStrength": 1.0,
+   "collision": "floor",
+   "lights": [],
+   "note": "lies 0.06 over the deck, 44 studs across by 32 in, its front edge at its place; a Part under it carries the walking. A floor's look: its glow turns with the night"
+  },
+  "FloorC1": {
+   "mesh": "meshes/FloorC1.json",
+   "triangles": 2,
+   "vertices": 4,
+   "centre": [
+    0.0,
+    0.06,
+    16.0
+   ],
+   "size": [
+    44.0,
+    0.0,
+    32.0
+   ],
+   "colour": "maps/Base_FloorC1_Color.png",
+   "glow": "maps/Base_FloorC1_Glow.png",
+   "glowTint": "#FFFFFF",
+   "glowStrength": 1.0,
+   "collision": "floor",
+   "lights": [],
+   "note": "lies 0.06 over the deck, 44 studs across by 32 in, its front edge at its place; a Part under it carries the walking. A floor's look: its glow turns with the night"
+  },
+  "FloorC2": {
+   "mesh": "meshes/FloorC2.json",
+   "triangles": 2,
+   "vertices": 4,
+   "centre": [
+    0.0,
+    0.06,
+    16.0
+   ],
+   "size": [
+    44.0,
+    0.0,
+    32.0
+   ],
+   "colour": "maps/Base_FloorC2_Color.png",
+   "glow": "maps/Base_FloorC2_Glow.png",
+   "glowTint": "#FFFFFF",
+   "glowStrength": 1.0,
+   "collision": "floor",
+   "lights": [],
+   "note": "lies 0.06 over the deck, 44 studs across by 32 in, its front edge at its place; a Part under it carries the walking. A floor's look: its glow turns with the night"
+  },
+  "FloorC3": {
+   "mesh": "meshes/FloorC3.json",
+   "triangles": 2,
+   "vertices": 4,
+   "centre": [
+    0.0,
+    0.06,
+    16.0
+   ],
+   "size": [
+    44.0,
+    0.0,
+    32.0
+   ],
+   "colour": "maps/Base_FloorC3_Color.png",
+   "glow": "maps/Base_FloorC3_Glow.png",
+   "glowTint": "#FFFFFF",
+   "glowStrength": 1.0,
+   "collision": "floor",
+   "lights": [],
+   "note": "lies 0.06 over the deck, 44 studs across by 32 in, its front edge at its place; a Part under it carries the walking. A floor's look: its glow turns with the night"
+  },
+  "FloorC4": {
+   "mesh": "meshes/FloorC4.json",
+   "triangles": 2,
+   "vertices": 4,
+   "centre": [
+    0.0,
+    0.06,
+    16.0
+   ],
+   "size": [
+    44.0,
+    0.0,
+    32.0
+   ],
+   "colour": "maps/Base_FloorC4_Color.png",
+   "glow": "maps/Base_FloorC4_Glow.png",
+   "glowTint": "#FFFFFF",
+   "glowStrength": 1.0,
+   "collision": "floor",
+   "lights": [],
+   "note": "lies 0.06 over the deck, 44 studs across by 32 in, its front edge at its place; a Part under it carries the walking. A floor's look: its glow turns with the night"
+  },
+  "FloorD1": {
+   "mesh": "meshes/FloorD1.json",
+   "triangles": 2,
+   "vertices": 4,
+   "centre": [
+    0.0,
+    0.06,
+    16.0
+   ],
+   "size": [
+    20.0,
+    0.0,
+    32.0
+   ],
+   "colour": "maps/Base_FloorD1_Color.png",
+   "glow": "maps/Base_FloorD1_Glow.png",
+   "glowTint": "#FFFFFF",
+   "glowStrength": 1.0,
+   "collision": "floor",
+   "lights": [],
+   "note": "lies 0.06 over the deck, 20 studs across by 32 in, its front edge at its place; a Part under it carries the walking. A floor's look: its glow turns with the night"
+  },
+  "FloorD2": {
+   "mesh": "meshes/FloorD2.json",
+   "triangles": 2,
+   "vertices": 4,
+   "centre": [
+    0.0,
+    0.06,
+    16.0
+   ],
+   "size": [
+    20.0,
+    0.0,
+    32.0
+   ],
+   "colour": "maps/Base_FloorD2_Color.png",
+   "glow": "maps/Base_FloorD2_Glow.png",
+   "glowTint": "#FFFFFF",
+   "glowStrength": 1.0,
+   "collision": "floor",
+   "lights": [],
+   "note": "lies 0.06 over the deck, 20 studs across by 32 in, its front edge at its place; a Part under it carries the walking. A floor's look: its glow turns with the night"
+  },
+  "FloorD3": {
+   "mesh": "meshes/FloorD3.json",
+   "triangles": 2,
+   "vertices": 4,
+   "centre": [
+    0.0,
+    0.06,
+    16.0
+   ],
+   "size": [
+    20.0,
+    0.0,
+    32.0
+   ],
+   "colour": "maps/Base_FloorD3_Color.png",
+   "glow": "maps/Base_FloorD3_Glow.png",
+   "glowTint": "#FFFFFF",
+   "glowStrength": 1.0,
+   "collision": "floor",
+   "lights": [],
+   "note": "lies 0.06 over the deck, 20 studs across by 32 in, its front edge at its place; a Part under it carries the walking. A floor's look: its glow turns with the night"
+  },
+  "FloorD4": {
+   "mesh": "meshes/FloorD4.json",
+   "triangles": 2,
+   "vertices": 4,
+   "centre": [
+    0.0,
+    0.06,
+    16.0
+   ],
+   "size": [
+    20.0,
+    0.0,
+    32.0
+   ],
+   "colour": "maps/Base_FloorD4_Color.png",
+   "glow": "maps/Base_FloorD4_Glow.png",
+   "glowTint": "#FFFFFF",
+   "glowStrength": 1.0,
+   "collision": "floor",
+   "lights": [],
+   "note": "lies 0.06 over the deck, 20 studs across by 32 in, its front edge at its place; a Part under it carries the walking. A floor's look: its glow turns with the night"
   },
   "Wall": {
    "mesh": "meshes/Wall.json",
@@ -231,16 +430,16 @@
   },
   "Gate1": {
    "mesh": "meshes/Gate1.json",
-   "triangles": 880,
-   "vertices": 612,
+   "triangles": 928,
+   "vertices": 644,
    "centre": [
     0.0,
-    10.245,
+    11.9,
     0.0
    ],
    "size": [
     64.0,
-    20.71,
+    24.02,
     4.82
    ],
    "colour": "maps/Base_Kit_Color.png",
@@ -249,7 +448,7 @@
    "glowStrength": 2.4,
    "collision": "a box round each tower's foot, 4.6 square, and the two shoulders as walls",
    "lights": [],
-   "note": "clear between the towers' feet: 39.4 studs, 14 under the floods; the plate's faces are +Y and -Y, 11 by 4.4 at 16 up: the base's level is the builder's text on both"
+   "note": "clear between the towers' feet: 39.4 studs, 14 under the floods; the plate's faces are +Y and -Y, 11 by 4.4 at 21.6 up: the base's level is the builder's text on both"
   },
   "Pylon": {
    "mesh": "meshes/Pylon.json",
@@ -2043,17 +2242,17 @@
   },
   "LevelFloor": {
    "mesh": "meshes/LevelFloor.json",
-   "triangles": 1280,
-   "vertices": 696,
+   "triangles": 1352,
+   "vertices": 744,
    "centre": [
-    0.0,
+    -0.11888,
     0.15,
-    39.0
+    41.4
    ],
    "size": [
-    48.404,
+    48.041,
     0.14,
-    74.404
+    79.204
    ],
    "colour": "maps/Base_Kit_Color.png",
    "glow": "maps/Base_Kit_Glow.png",
@@ -2065,17 +2264,17 @@
   },
   "LevelRays": {
    "mesh": "meshes/LevelRays.json",
-   "triangles": 288,
-   "vertices": 192,
+   "triangles": 384,
+   "vertices": 256,
    "centre": [
-    0.0,
+    0.01011,
     0.14,
-    56.57352
+    61.21146
    ],
    "size": [
-    43.726,
+    44.311,
     0.12,
-    34.579
+    35.016
    ],
    "colour": "maps/Base_Kit_Color.png",
    "glow": "maps/Base_Kit_Glow.png",
@@ -2083,21 +2282,21 @@
    "glowStrength": 2.4,
    "collision": "none",
    "lights": [],
-   "note": "base level 3's light on the deck, beside LevelFloor: 12 rays from the first ring out to the second, each narrowing outward, none across the way in. Stood at the plot's front edge, on its middle line. Look only, CastShadow off"
+   "note": "base level 3's light on the deck, beside LevelFloor: 16 rays from the first ring out to the second, each narrowing outward, laid between the lines that leave the heart and none across the way in. Stood at the plot's front edge, on its middle line. Look only, CastShadow off"
   },
-  "BayWake": {
-   "mesh": "meshes/BayWake.json",
+  "BayWake3": {
+   "mesh": "meshes/BayWake3.json",
    "triangles": 348,
    "vertices": 232,
    "centre": [
-    5.71175,
+    14.31175,
     0.15,
-    0.0
+    2.90175
    ],
    "size": [
-    24.864,
+    42.063,
     0.14,
-    13.44
+    19.243
    ],
    "colour": "maps/Base_Kit_Color.png",
    "glow": "maps/Base_Kit_Glow.png",
@@ -2105,7 +2304,29 @@
    "glowStrength": 2.4,
    "collision": "none",
    "lights": [],
-   "note": "a woken bay's light on the deck, for bays 3 and 4 (the bus's line outward): its ground's frame lit, 12.4 square and heavy at its corners as an open bay's is in the floor's picture, and the bus's current run on to it from the bay before, over the dead casing. In the bay's own frame, stood at the bay's place with the bay's turn (0 on the plot's left, 180 on its right), while the bay is awake. Look only, CastShadow off"
+   "note": "bay 3's light on the deck while it's awake: its ground's frame lit, 12.4 square and heavy at its corners as an open bay's is in the floor's picture, and the current run out to it from the ring, 29.3 studs over its dead casing. In the bay's own frame, stood at the bay's place with the bay's turn. Look only, CastShadow off"
+  },
+  "BayWake4": {
+   "mesh": "meshes/BayWake4.json",
+   "triangles": 348,
+   "vertices": 232,
+   "centre": [
+    15.20675,
+    0.15,
+    12.00175
+   ],
+   "size": [
+    43.854,
+    0.14,
+    37.444
+   ],
+   "colour": "maps/Base_Kit_Color.png",
+   "glow": "maps/Base_Kit_Glow.png",
+   "glowTint": "#FFFFFF",
+   "glowStrength": 2.4,
+   "collision": "none",
+   "lights": [],
+   "note": "bay 4's light on the deck while it's awake: its ground's frame lit, 12.4 square and heavy at its corners as an open bay's is in the floor's picture, and the current run out to it from the ring, 38.3 studs over its dead casing. In the bay's own frame, stood at the bay's place with the bay's turn. Look only, CastShadow off"
   },
   "LevelFin": {
    "mesh": "meshes/LevelFin.json",

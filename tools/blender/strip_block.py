@@ -244,7 +244,7 @@ def see(out: Path, only, fast, clear):
     for name, (at, _) in STANDS.items():
         world.person(at, f"At{name}")
     for obj in world.kit.pieces:
-        if obj.name.startswith(("PowerSpan", "Court", "Yard", "Wings", "Field", "Far")):
+        if obj.name.startswith(("PowerSpan", "Floor", "Field", "Far")):
             obj.visible_shadow = False
     look.sky(scene, d)
     look.sun(scene, d)

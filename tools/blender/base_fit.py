@@ -4,8 +4,8 @@ The plan at 128 was laid on Stage I's footprints. At Stage III the machines are 
 (TR51's Studio run). PLAN is the plan laid again: every machine's spot, held at its Stage III footprint by part 7's
 tests and by what the gate's eye sees.
 
-    py tools/blender/base_fit.py [today]                the measure: Rules.BaseFit's tests on each stage's footprints
-    py tools/blender/base_fit.py seen [today]           and what the gate sees of each machine, at each level
+    py tools/blender/base_fit.py                        the measure: Rules.BaseFit's tests on each stage's footprints
+    py tools/blender/base_fit.py seen                   and what the gate sees of each machine, at each level
     py tools/blender/base_fit.py prints                 and each stage's footprints, as Config.World.Fit.Prints holds one
 
 How it measures:
@@ -49,11 +49,6 @@ PLAN = dict(
     bay6=(-54.6, 42.3, 0.0),
     condenser=(25.5, 99.0, 0.0), bay3=(51.1, 73.6, 180.0), bay4=(49.7, 97.6, 180.0), battery=(56.7, 44.9, 0.0),
     lab=(32.7, 51.6, 0.0), bay5=(-0.7, 95.6, 0.0))
-TODAY = dict(
-    generator=(0.0, 52.0, 0.0), breaker=(26.0, 26.0, 0.0), door=(-26.0, 26.0, 90.0),
-    bay1=(-31.5, 52.0, 0.0), bay2=(31.5, 52.0, 180.0), bay3=(-54.5, 52.0, 0.0), bay4=(54.5, 52.0, 180.0),
-    bay5=(-54.5, 78.0, 0.0), bay6=(54.5, 78.0, 180.0), battery=(29.0, 78.0, 0.0), training=(-29.0, 78.0, 0.0),
-    forge=(-26.0, 98.0, 0.0), condenser=(26.0, 98.0, 0.0), lab=(0.0, 94.0, 0.0))
 TOUCHED = {1: ("breaker", "door", "bay1", "bay2", "forge", "training", "condenser", "battery"),
            2: ("breaker", "door", "bay1", "bay2", "forge", "training", "condenser", "bay3", "battery"),
            3: ("breaker", "door", "bay1", "bay2", "forge", "training", "condenser", "bay3", "bay4", "battery")}
@@ -254,8 +249,7 @@ def seen(plan, level, eye="player"):
 
 def main():
     args = sys.argv[1:]
-    name = "today's plan" if "today" in args else "AR54's plan"
-    plan = TODAY if "today" in args else PLAN
+    name, plan = "AR54's plan", PLAN
     for stage in (1, 2, 3):
         m = measure(plan, stage)
         print(f"{name}, Stage {'I' * stage}'s footprints: {'PASS' if m['passes'] else 'FAIL'}. The Breaker {m['breaker']} s "

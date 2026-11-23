@@ -26,8 +26,10 @@ from pathlib import Path
 import numpy as np
 from scipy.spatial import cKDTree
 
+import base_star as star
+
 LEAST, PITCH, STEP = 1.2, 0.6, 3
-ROW, AXLE_UP = 52.0, 10.0                      # the heart's line in from the front edge; the wheel's axle over the deck
+ROW, AXLE_UP = star.ROW, 10.0                  # the heart's line in from the front edge; the wheel's axle over the deck
 SIZE, FOV, PITCH_DOWN, ZOOM, FOCUS = (852, 480), 70.0, 20.0, 12.5, 4.5   # the smallest phone; the game's camera at its
 # start zoom behind a player (lantern_row_look's numbers), the same four stands as base_levels_block.py: (across, out of
 # the front edge), then where the player looks

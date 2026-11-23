@@ -15832,3 +15832,49 @@ From `base_fit_gate.png`, the game's camera behind a player at the gate, levels 
   - Modulo's finish (the floor's pictures, the masts, `PLATE_UP` 21.6, the handoff);
   - then Faber's part from the handoff: `Config.World.Fit`'s "128" layout with Stage III's `Prints`, the trial's case, and the ring capped at 25.
 
+### Modulo's finish: the floor drawn for the lay, the masts, the plate, the handoff (2026-11-23, 17:16; started 16:36)
+
+The four facts: **made** (the kit, the plan and the levels' deck light, laid on the second lay); **self-reviewed** (the measures below, and the frames from the game's camera); **delivered** (`build/handoff/Base`, committed); **not in the game** (Faber's install; research's read of the back row on a phone is there).
+
+**The sheets:** `build/handoff/Base/base_fit_look.png` (the game's camera at the gate at levels 1 and 3, from over the gate, a player before the ring turned to each side, behind the generator, the Strip, and the plate from inside and from the road; each at 64 px) and `base_fit_plan.png` (the plan from above with its measures). The handoff's own pictures of the yard (`base_1_*.png`) are rendered again on this lay.
+
+**What the deck shows now.** The yard isn't the same on its two sides, so no floor picture is mirrored any more. `tools/blender/base_star.py` holds the geometry, and the floor, the levels' light and the plan all read it:
+- **A ground for each machine,** its Stage III footprint and 0.9 round it, so the deck is drawn once for what the machine grows into. At Stage I a machine stands on a ground larger than itself: the Breaker's is 36 by 12 under a Stage I footprint 25 by 7 (level 1's frames). I read it as a dais kept for it. Research's eye.
+- **A line to each place, none crossing another's ground** (`py tools/blender/base_star.py` checks it):
+  - the ring round the well, open toward the gate, and its two ends on the slant to the Breaker's ground and the Door's, as before;
+  - a line straight out of the heart to bays 1 and 2 and the Condenser, and a dark casing to the Lab's stone and to sleeping bays 3, 4 and 6;
+  - bay 5's is the main line, straight back from the ring, and on, dark, to the way out;
+  - three places can't be reached straight from the heart. The Training machine's line leaves bay 2's at a junction box and runs across to it; the Forge's runs on from the Training machine's ground along the wall; the battery's runs on from the Breaker's ground on the slant.
+- **The way in's dashed edges** stand at 8.5 from the middle line (they were at 12.5): the Breaker's Stage III ground comes to 9.3, and the way stays 20 wide by part 7's test.
+- **The deck's joints and the court's side lines** stop at a ground's edge.
+
+**What stands, and where it moved** (tier 1, mine; each measured on the handoff's meshes):
+- **The flood masts:** 11.8 each side, 40.2 in (they were at 13.6, 35). From the gate's camera each stands before the generator's own flank (12.8 degrees off the middle line; the generator reaches 13.6), inside the Breaker's inner end at every stage (16.0, 15.3 and 13.6 degrees at Stages I, II and III), and between the ring and level 2's second ring on the deck. Their lights follow (`FloodLeft`, `FloodRight`, 37.2 in).
+- **The pylons:** 3 studs nearer the gate (13, 61 and 109 in; they were at 16, 64, 112), each in a gap between two grounds of the outer column: 3.9 from the Training machine's and bay 3's, 1.9 from the Forge's.
+- **The transformers:** one at each open bay's back corner on the heart's side (-30.0, 68.0 and -27.1, 99.7), outside the generator's own clear.
+- **The gate's plate:** its middle 21.6 up, on two posts over the truss (`PLATE_UP`; `levelMark.up` follows). Out of the gate's view from inside, whole from the Strip and from the road (the sheet's last row).
+
+**The levels' light on the deck** (AR50's pieces, laid on the star):
+- `LevelFloor`: the way in's two lines at 8.5, and a node on the second ring where each line out of the heart crosses it (they stood every 45 degrees).
+- `LevelRays`: 16 rays, laid between the lines out of the heart and none across the way in. Laid every 22.5 degrees as they were, a ray would lie against bay 1's line and bay 3's (4 degrees off each, 1.5 studs).
+- `BayWake3` and `BayWake4` replace `BayWake`: each bay's line runs out to it from the ring now, so each has its own piece, in the bay's own frame with the bay's turn.
+- The rings afloat stand as they did, about the new heart. `py tools/blender/base_levels_clear.py`: PASS. Level 2's ring clears the generator's body by 6.30 and its turning parts by 4.81 at level 3; its nearest other piece is now the Breaker's Stage III, 1.31 (the bar is 1.2). It stands whole in the frame from the gate's line.
+
+**The measures.**
+- `py tools/blender/base_fit.py`, on the exported handoff: PASS at Stages I, II and III (least clear 12.19, 12.17, 12.17; the widest corner 50.79 of 51.22). What the gate sees of each machine is the second lay's: no spot moved.
+- The plan's budget at level 1: 62 pieces (from 54: sixteen floors for eight), 14,520 triangles (from 14,472), 7 lights.
+- The floor pictures: 32 (sixteen pairs), 1024 by 512 for columns B and C, 512 by 512 for A and D. 12.6 million pixels against the seven mirrored floors' 14.7, and no axis under 16 px a stud (it was 11.6 across). Three glow pictures are black, nothing lit on their ground: `FloorA3`, `FloorA4`, `FloorD1`.
+
+**For Faber, the handoff's changes** (`build/handoff/Base`; `tools/world/kit_take.py` takes it):
+1. **Sixteen floors replace seven.** `FloorA1` to `FloorD4` replace `Court1`, `Yard`, `YardLive`, `YardBack`, `Wings`, `WingsLive` and `WingsBack`, whose meshes and 14 pictures are gone from the handoff. Columns A to D run from the Breaker's side wall to the Door's (left to right, seen from the gate), rows 1 to 4 from the gate in. Each is a flat face with its front edge at its place, in its own colour and glow pictures (`manifest.json`, `floors`). `Kit.Floors` (`src/shared/World/Kit.luau`) names the old floors: it wants every piece named Floor, for the glow that turns with the night. CastShadow off on all sixteen.
+2. **`plan.json`, `layout`:** the second lay's spots under the same names and in the same orders (`stations`, `laterBays`, `sleeping`; the machines' placements by piece and index). New in it: each later bay's `turn`; `grounds`, each place's ground as the floor draws it, for a prompt or a marker; and `fit` is now one measure for each stage (it was one flat table).
+3. **`plan.json`, `current`:** `runs` are the live lines as laid (no longer mirrored), `dormant` the dark casings, `ring` the circle less the gate's quarter.
+4. **`plan.json`, `machines.baseLevels.bayWake`:** `pieces` by bay ("3": `BayWake3`, "4": `BayWake4`); it was one `piece`.
+5. **The level's mark** on the gate's plate: `levelMark.up` 21.6.
+6. **Research's list, unchanged:** `Config.World.Fit`'s "128" layout from `layout`, its `Prints` from Stage III's (`py tools/blender/base_fit.py prints`), the trial's case, the ring capped at 25.
+
+**Not shown.** Night and dusk on the new deck beyond the handoff's own dusk pictures; level 2 alone (levels 1 and 3 are); the Breaker's shards and a worker's own model. The frames are Blender's, by day: the game's light is read at the install.
+
+**The tools.** `base_star.py` is new. `base_fit_block.py` became `base_fit_look.py`, the finished yard through the game's camera (`see <level> [view ...]`, `sheet`); the block-in's ground and its compare with the old plan are gone, and `base_fit.py` holds one plan. `base_kit.py`, `base_plan.py` and `base_levels.py` take every place from the star.
+
+**The content check** (fresh eyes, before the upload): PASS, fresh eyes, 2026-11-23, 17:13, on the 32 floor pictures, the lay from above and the sheet: no gore, no text, no symbol from above, every mark drawn in code. It read the pictures as first drawn, 1024 rows; the handoff's were exported again at 17:12 at 512 rows, the same drawing.

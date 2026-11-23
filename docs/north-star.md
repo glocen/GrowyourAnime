@@ -35,7 +35,7 @@ Not a stopwatch. The first session has to make a new player want the second one,
 | Find | the first enemy drops a shard with a name on it | I want to know who's inside |
 | Work | puts the second Voidkin in a bay and the power comes on | the base runs because of who I found |
 | Build | the first piece of gear, the first forge rank | I'm getting stronger and I can see why |
-| Want | sees the keeper's gate, the next ground behind it, a rarer shard in the shop | there's a lot here |
+| Want | sees what's next in this game: the Lamplighter on Hard, the Tower's door, the shop's featured stock | there's a lot here |
 
 Nothing in the first session waits more than about half a minute, asks for Robux, or explains with a wall of text.
 

@@ -21,6 +21,7 @@ local PROPERTIES: { [string]: { string } } = {
 	TextBox = { "BackgroundTransparency", "TextTransparency", "TextStrokeTransparency" },
 	ImageLabel = { "BackgroundTransparency", "ImageTransparency" },
 	ImageButton = { "BackgroundTransparency", "ImageTransparency" },
+	ViewportFrame = { "BackgroundTransparency", "ImageTransparency" }, -- a live view (Home's lead, AR49)
 	UIStroke = { "Transparency" },
 }
 

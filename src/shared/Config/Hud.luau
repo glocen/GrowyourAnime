@@ -529,7 +529,7 @@ return {
 			Glass = { Wing = Vector2.new(56.8, 48), Mid = Vector2.new(66.8, 58) },
 			Cells = {
 				{ Name = "Base", Kind = "Wing", Glass = Vector2.new(2, 12), Icon = Vector2.new(30.4, 33.5), Side = 39.4, Pip = Vector2.new(57.8, 13), Tap = { 0, 10, 60.8, 52 } },
-				-- Home (AR43): Home's tray.
+				-- Home (AR49): Home's panel (UI.HomePanel).
 				{ Name = "Home", Kind = "Mid", Glass = Vector2.new(62.8, 2), Icon = Vector2.new(96.2, 28.5), Side = 49.2, Pip = Vector2.new(128.6, 3), Tap = { 60.8, 0, 70.8, 62 } },
 				-- Its word (a long press) is Word: the director, 2026-11-19, "the map button that should be renamed to play or
 				-- something else and open FOB" (TR45). Its name stays the cell's, for its images and light.
@@ -538,50 +538,82 @@ return {
 			Pip = { Glow = 54.2, GlowT = 0.2, Rings = { 24.6, 18.7, 10.8 } },
 		},
 	},
-	-- Home's tray (AR43 in B, research's pick of 12:56; the dock's graphite, 13:36; UI.HomeTray): the dock's middle cell
-	-- opens it over all but the dock dimmed, a group a row, each tile its own screen (docs/ui.md). Every place is in
-	-- points from the tray's top left, measured on the smallest phone (568 × 320; build/handoff/UI/home/home.json), and
-	-- the tray keeps its size on every phone, centred, its foot Above over the dock's top. Its plate is the kit's panel in
-	-- the dock body's graphite, opaque; HomePoint stands on its foot at the middle, its Point on it. A heading is its
-	-- mark (Mark across, its middle at At) in the lavender over its group's word (its capitals' middle at Word); a tile
-	-- its images in Box, its icon Side across on Icon, its word on Word, in ink. Rule: a 1 point line between the rows
-	-- and Settings. Open: it grows from From of its size to 1 about the Home cell's top middle in Grow seconds, a Back
-	-- ease of strength Back, and fades in in Fade; it leaves the same way, eased in, over Leave. Step: a tile's screen
-	-- rises from RiseFrom points under over Rise once the tray has begun to leave (RiseAt), and its Back brings the tray
-	-- back BackAt after the screen begins to sink. Seeds from Modulo's cut, tuned live.
+	-- Home's panel (AR49 in C: research's pick of 2026-11-19, 23:54, its second look of 2026-11-20, 00:07; UI.HomePanel;
+	-- build/handoff/UI/home_cards/home_cards.json). The dock's middle cell opens it over the world dimmed, the dock lit: three
+	-- cards, Equipment, Voidkin (the lead, live) and Settings, each opening its whole screen on the page last shown. Every
+	-- place is in points from the glass's top left, at the same size on every phone. Its left is the lead's card's right
+	-- plus Gap, or the phone's middle less half its width if that's further right, never past the phone's right less Edge;
+	-- its foot Above over the dock's top; the pointer's middle on the Home cell's. Each image lies whole in its box
+	-- (Images: kit name, left, top, wide, tall), in its card, bottom to top; a card's press image shows while it's held or
+	-- lit, laid under the live view on Voidkin (research's condition 1). Tap: each card's column, split at the seams'
+	-- middles (measured on the images' alpha). Words: TextLabels in the face's bold italic, their capitals' top left at
+	-- x, y (Settings' its middle), a dark copy Shadow under. Open: the glass grows from From about the pointer with a Back
+	-- ease over Grow and fades in over Fade, the cards landing Stagger apart, each rising Rise points and fading in over
+	-- Land; it leaves quicker, over Leave, all at once. Seeds from Modulo's cut, tuned live.
 	Home = {
-		Size = Vector2.new(536.8, 138),
-		Above = 12,
-		Plate = { Fill = { Color3.fromHex("#323845"), Color3.fromHex("#22262F") }, Edge = Color3.fromHex("#434A57") },
-		Point = Vector2.new(14, 2),
-		Headings = {
-			{ Group = "Inventory", Mark = "HomeMarkInventory", At = Vector2.new(65.4, 29), Side = 19.2, Word = Vector2.new(65.4, 49) },
-			{ Group = "Equipment", Mark = "PageForge", At = Vector2.new(53, 91), Side = 18, Word = Vector2.new(53, 111) },
+		Size = Vector2.new(371, 184),
+		Gap = 8,
+		Edge = 6,
+		Above = 9,
+		Glass = { "HomeGlass", -16, -16, 403, 216 },
+		Pointer = { "HomePointer", -12, 181, 24, 13 }, -- its left and wide about the Home cell's middle
+		Cards = {
+			{
+				Name = "Equipment",
+				Screen = "Equipment",
+				Tap = { 0, 0, 124.7, 184 },
+				Z = 3,
+				Images = { { "HomeEquipment", -2, -2, 149.6, 188 } },
+				Press = { "HomeEquipmentPress", -2, -2, 149.6, 188, Color3.fromHex("#FF8A3D") },
+				Words = { { "Word", "Equipment", 20, 153.1, 17.9, "Left" }, { "Level", "+7", 45.5, 33.8, 16.5, "Left", Color3.fromHex("#FFD36B") } },
+			},
+			{
+				Name = "Voidkin",
+				Screen = "Voidkin",
+				Tap = { 124.7, 0, 141.9, 184 },
+				Z = 2,
+				-- under the live view (Lit: tinted the lead's light), then over it
+				Images = { { "HomeVoidkinBack", 102, -2, 187.6, 188 }, { "HomeVoidkinGlow", 102, -2, 187.6, 188, "Lit" }, { "HomeVoidkinRimTop", 102, -2, 187.6, 188, "Lit" } },
+				Over = { { "HomeVoidkinFrame", 102, -2, 187.6, 188 }, { "HomeVoidkinRim", 102, -2, 187.6, 188, "Lit" } },
+				Press = { "HomeVoidkinPress", 102, -2, 187.6, 188, "Lit" }, -- over the Back, under the Glow and the view
+				Words = { { "Word", "Voidkin", 124, 150.2, 22, "Left" } },
+			},
+			{
+				Name = "Settings",
+				Screen = "Settings",
+				Tap = { 266.6, 0, 104.4, 184 },
+				Z = 3,
+				Images = { { "HomeSettings", 244, -2, 128.6, 188 } },
+				Press = { "HomeSettingsPress", 244, -2, 128.6, 188, Color3.fromHex("#AEB7C2") },
+				Words = { { "Word", "Settings", 293.3, 156.9, 14, "Centre" } },
+				Mark = { "HomeMarkSettings", 310.99, 78.56, 30, Color3.fromHex("#C9D0D9") },
+			},
 		},
-		-- Each tile's Page is the page it opens alone: the Voidkin screen's, or its Screen's (Equipment's); a tile with a
-		-- Screen and no Page opens that screen (Settings); one with neither isn't built yet (Soon).
-		Tiles = {
-			{ Name = "Overview", Page = "Overview", Icon = "PageOverview", Box = { 108.4, 12, 86.4, 52 }, At = Vector2.new(151.6, 28), Word = Vector2.new(151.6, 48) },
-			{ Name = "Kit", Page = "Kit", Icon = "PageKit", Box = { 190.4, 12, 86.4, 52 }, At = Vector2.new(233.6, 28), Word = Vector2.new(233.6, 48) },
-			{ Name = "Inventory", Page = "Bag", Icon = "PageItems", Box = { 272.4, 12, 86.4, 52 }, At = Vector2.new(315.6, 28), Word = Vector2.new(315.6, 48) },
-			{ Name = "Stars", Page = "Stars", Icon = "PageStars", Box = { 354.4, 12, 86.4, 52 }, At = Vector2.new(397.6, 28), Word = Vector2.new(397.6, 48) },
-			{ Name = "Reinforce", Page = "Reinforce", Screen = "Equipment", Icon = "PageForge", Box = { 96, 74, 113.73, 52 }, At = Vector2.new(152.87, 90), Word = Vector2.new(152.87, 110) },
-			{ Name = "Jewels", Page = "Jewels", Screen = "Equipment", Icon = "PageJewels", Box = { 205.33, 74, 113.73, 52 }, At = Vector2.new(262.2, 90), Word = Vector2.new(262.2, 110) },
-			{ Name = "War Emblems", Page = "War Emblems", Screen = "Equipment", Icon = "PageWarEmblems", Box = { 314.67, 74, 113.73, 52 }, At = Vector2.new(371.53, 90), Word = Vector2.new(371.53, 110) },
-			{ Name = "Settings", Screen = "Settings", Icon = "HomeMarkSettings", Tall = true, Box = { 430, 12, 94.8, 114 }, At = Vector2.new(479.4, 59), Side = 27.73, Word = Vector2.new(475.4, 88) },
+		Word = Color3.fromHex("#F5EFE2"),
+		Shadow = { Offset = Vector2.new(0.8, 1.2), Colour = Color3.fromHex("#000000"), T = 0.45 },
+		CapTop = 0.24, -- the face's capitals' top, a share of its size under the label's top
+		Lift = 0.4, -- the lead's light: its rarity's Card.Trim lifted this share toward white
+		-- The live view (research's condition 2): the lead's own model in its idle, head and chest. Its head's top at Crown and
+		-- the share Chest down its torso at Foot (panel points), its head's middle at the card's middle across (Across), turned
+		-- Yaw degrees, its head brought back Head; Fov the camera's. Each Voidkin's own offsets in Each (any of Yaw, Head,
+		-- Chest, X and Y in points) keep a held weapon whole or out of frame. Lit from behind and above in the lead's light,
+		-- the face by Ambient.
+		Live = {
+			Box = { 112, -16, 167.6, 192 },
+			Crown = -6,
+			Foot = 176,
+			Chest = 0.55,
+			Across = 195.8,
+			Yaw = -34,
+			Head = 22,
+			Fov = 20,
+			Ambient = Color3.fromHex("#B4B8C2"),
+			Light = Vector3.new(0.3, -0.7, -1),
+			Each = {} :: { [string]: { Yaw: number?, Head: number?, Chest: number?, X: number?, Y: number? } },
 		},
-		Side = 20, -- a row tile's icon
-		Words = 14,
-		Rule = { Middle = Vector2.new(435.4, 69), Long = 104, Rotation = 11.31, Colour = Color3.fromHex("#8A93A6"), T = 0.4 },
-		Colours = { Heading = Color3.fromHex("#F3EFE6"), Mark = Color3.fromHex("#DCCBFF"), Ink = Color3.fromHex("#14161B") },
-		Soon = 0.55, -- a tile not built yet: its icon and word this see-through (the builder's, for research's read)
-		Rest = { Fill = { Color3.fromHex("#E4D6FF"), Color3.fromHex("#B7A4EB") }, Edge = Color3.fromHex("#7C66CC"), EdgeT = 0.45, Glint = Color3.fromHex("#FAF7FF"), GlintT = 0.65 },
-		Pressed = { Fill = { Color3.fromHex("#A28EE0"), Color3.fromHex("#C3B1F2") }, Edge = Color3.fromHex("#DCCBFF"), Glow = Color3.fromHex("#DCCBFF"), GlowT = 0.6 },
-		-- The dim over the world and the HUD, edge to edge, all but the dock: Side points each side of the middle, from the
-		-- foot up to the dock's top (home.json).
-		Dim = { Colour = Color3.fromHex("#05090B"), Amount = 0.36, Seconds = 0.15, Side = 100 },
-		Open = { Grow = 0.22, From = 0.55, Back = 1.2, Fade = 0.1, Leave = 0.12 },
-		Step = { Lit = 0.06, Leave = 0.12, LeaveTo = 0.55, RiseAt = 0.08, Rise = 0.22, RiseFrom = 24, Cover = 0.08, Sink = 0.14, Uncover = 0.1, BackAt = 0.06 },
+		Dim = { Colour = Color3.fromHex("#05090B"), Amount = 0.6, Seconds = 0.15, Side = 100 },
+		Open = { Grow = 0.22, From = 0.9, Back = 1.2, Fade = 0.12, Stagger = 0.045, Order = { "Voidkin", "Equipment", "Settings" }, Land = 0.16, Rise = 8, Leave = 0.12, LeaveTo = 0.96 },
+		Step = { Lit = 0.06, Leave = 0.12, LeaveTo = 0.96, RiseAt = 0.08, Rise = 0.22, RiseFrom = 24, Cover = 0.08, Sink = 0.14, Uncover = 0.1, BackAt = 0.06 },
 	},
 	Stages = stages,
 	-- Equipment's three screens from Home (TR47; AR43, "The cut in B, for Faber": build/handoff/UI/equipment/equipment.json
@@ -1117,7 +1149,7 @@ return {
 				ChannelFill = { Id = "rbxassetid://77652759335656", Pixels = Vector2.new(64, 64), Points = Vector2.new(16, 16), Cut = { 8, 8, 8, 8 }, Pad = 0 },
 				ChannelEdge = { Id = "rbxassetid://110614215738990", Pixels = Vector2.new(64, 64), Points = Vector2.new(16, 16), Cut = { 8, 8, 8, 8 }, Pad = 0 },
 			} :: { [string]: UIKit.Image },
-			-- The page rail's sizes (AR29, B), the rail retired with Home's tray (AR43, 2026-11-19): Icon and Drawn size the
+			-- AR29's page rail sizes, its rail replaced by the Equipment screen's (AR49; Voidkin.Rail): Icon and Drawn size the
 			-- band's icons, and Tab is the kit's tab (Kit.Button).
 			Rail = {
 				Icon = 35, -- an icon's image, square: its drawing is 28 across, 24 points on the smallest phone
@@ -1172,6 +1204,11 @@ return {
 		},
 		Strip = 52,
 		Panel = { Share = 0.44, Least = 300, Most = 420 },
+		-- The page rail (AR49, research's call of 2026-11-20, 00:12): the Equipment screen's (UI.Kit.Rail), its four pages
+		-- down a column Width wide at the room's left, Margin in from its top and foot. Its words are the rail's; its discs
+		-- take a share of the rail's radii, the most that lets four stand whole in the room (the smallest phone's 248 points
+		-- hold them at about 0.65), and its pitch grows with the room up to Pitch.
+		Rail = { Pages = { "Overview", "Kit", "Bag", "Stars" }, Width = 68, Margin = 4, Pitch = 82, Least = 0.5 },
 		-- The Stars page's pips (AR43's take 2, voidkin_b.json, stars.pips): a Side-point square turned 45 degrees, Half
 		-- its height's half, Pitch apart; a won one its trim lit by Lit towards white, its Glint hairline at WonHair, its
 		-- glow Glow points out at GlowAlpha; one to win, the Facet's hairline at EmptyHair.

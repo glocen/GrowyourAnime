@@ -66,6 +66,7 @@ function BreakerCases.Cases(): { any }
 	local function openBag(t: any): boolean
 		Screen.Close()
 		local hud = HudController.Parts()
+		VoidkinScreen.Last("Bag") -- the card opens the page last shown (AR49)
 		local open = Button.Press(hud.Voidkin :: TextButton) and waitFor(t, 1, function(): boolean
 			return Screen.Current() == VoidkinScreen.Name
 		end)

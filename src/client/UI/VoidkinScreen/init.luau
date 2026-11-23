@@ -4,8 +4,8 @@
 --   in Roblox's top bar, right of its buttons (the Screen kit's band; research's call, 2026-11-15), AR29's B, the
 --     seam (the director's pick, 2026-11-17): Back with no plate, its chevron and word over a line of light; then
 --     favourite, lock and rename in one cut channel of three cells, each a touch or more; at its right the currencies;
---   after the channel, the page's name: each page is its own screen, opened from its tile in Home's tray (AR43; the
---     rail of pages that stood down the far left is retired, 2026-11-19);
+--   after the channel, the page's name; down the room's left, the rail of its four pages, the Equipment screen's
+--     (AR49, research's call, 2026-11-20; UI.Kit.Rail), the page shown lit; Home's Voidkin card opens the page last shown;
 --   its own model, live, on a stage lit by its rarity, the floor glowing its element (Figure): a drag turns it, a tap
 --     plays the end of its Reveal, a flick goes to the next or the one before. Over the stage, its name on one line with
 --     its rarity in the rarity's colour, and the figure under it (research's fix 2);
@@ -61,12 +61,13 @@ local Figure = require(script.Figure)
 local Seam = require(script.Seam)
 local Look = Seam.Colour -- the seam's colours under the theme's names (TR28): one palette across the tabs
 local BagPage = require(script.Bag)
+local Rail = require(script.Parent.Kit.Rail)
 local BagRules = require(Shared.Rules.Bag)
 
 local VoidkinScreen = {}
 
 -- `Page`: the page a fresh open shows, the Items page when none is named ("Send another" asks for Overview, where Lead is).
--- `Said`: its name in the band, its tile's in Home's tray (Config.Hud.Home), else its own.
+-- `Said`: its name in the band where it isn't the page's own word (SAID).
 export type On = { Act: (name: string, args: any) -> { [string]: any }, Healing: () -> { [string]: number }, Page: string?, Said: string? }
 
 local NAME = "Voidkin"
@@ -110,6 +111,7 @@ local REFUSED: { [string]: string } = {
 
 local chosen: string? = nil
 local page = "Bag"
+local railShown: string? = nil -- the page the rail lit at the last build, so a switch grows from it
 local named: string? = nil -- the page's name in the band
 local editing = false -- the name's row is a box to type a nickname in
 local draft: string? = nil -- what's typed there, kept across a rebuild
@@ -185,6 +187,7 @@ type Box = { X: number, Y: number, Wide: number, Tall: number }
 -- Where each piece stands, authored, in the room the Screen kit gives a full screen.
 type Place = {
 	Room: Vector2,
+	Rail: Box, -- the page rail's column (AR49)
 	Stage: Box,
 	Panel: Box,
 	Group: number, -- where the name's line and the feet's row start in the stage
@@ -195,12 +198,13 @@ local function place(room: Vector2): Place
 	local pad, gap = Theme.Size.Pad, Theme.Size.Gap
 	local config = HudConfig.Voidkin
 	local panelWide = math.clamp(config.Panel.Share * room.X, config.Panel.Least, config.Panel.Most)
-	local stageX = pad
+	local stageX = pad + config.Rail.Width + pad
 	local stageWide = math.max(room.X - pad - panelWide - gap - stageX, 1)
 	local stageTall = math.max(room.Y - pad * 2 - config.Strip - gap, 1)
 	local span = math.min(stageWide, config.Span * stageTall)
 	return {
 		Room = room,
+		Rail = { X = pad, Y = 0, Wide = config.Rail.Width, Tall = math.max(room.Y, 1) },
 		Stage = { X = stageX, Y = pad, Wide = stageWide, Tall = stageTall },
 		Panel = { X = room.X - pad - panelWide, Y = pad + ROW + gap, Wide = panelWide, Tall = math.max(room.Y - pad * 2 - ROW - gap, 1) },
 		Group = (stageWide - span) / 2,
@@ -1224,6 +1228,61 @@ local function strip(body: Instance, at: Place, roster: { Profile.OwnedVoidkin }
 	end
 end
 
+-- The page rail (AR49; UI.Kit.Rail): the Equipment screen's rail, its four pages down the room's left. Its words are the
+-- rail's sizes; its discs the largest share of the rail's radii that stands four whole in the room's height: the first lit
+-- at the top, a lit one over a rested one at each step, the last lit at the foot (Config.Hud.Voidkin.Rail).
+local function railSpec(at: Place): Rail.Spec
+	local R, mine = HudConfig.Equipment.Rail, HudConfig.Voidkin.Rail
+	local word = R.Word
+	local ring = 4.5 -- a disc's ring stands this far out of it
+	local under = word.Gap + word.Chosen + 2 -- a lit word's box under its disc
+	local tall = at.Room.Y - mine.Margin * 2
+	local fixed = ring + 3 * (under + ring) + under
+	local share = math.clamp((tall - fixed) / (R.Chosen + 3 * (R.Chosen + R.Rest) + R.Chosen), mine.Least, 1)
+	local chosen, rest = R.Chosen * share, R.Rest * share
+	local least = chosen + under + rest + ring
+	local pitch = math.clamp((tall - (chosen + ring) - (chosen + under)) / 3, least, math.max(least, mine.Pitch))
+	local x = at.Rail.X + at.Rail.Wide / 2
+	local first = mine.Margin + chosen + ring
+	local places: { [string]: Vector2 } = {}
+	local marks: { [string]: string } = {}
+	local MARKS = { Overview = "PageOverview", Kit = "PageKit", Bag = "PageItems", Stars = "PageStars" }
+	for k, name in mine.Pages do
+		places[name] = Vector2.new(x, first + (k - 1) * pitch)
+		marks[name] = MARKS[name]
+	end
+	local foot = first + (#mine.Pages - 1) * pitch + chosen + under
+	local tap = math.min(pitch - 1, 79)
+	return {
+		Pages = mine.Pages,
+		At = places,
+		Marks = marks,
+		Words = SAID,
+		Line = { x, mine.Margin, foot },
+		Rest = rest,
+		Chosen = chosen,
+		Tap = Vector2.new(math.min(at.Rail.Wide + Theme.Size.Pad, 92), tap),
+		TapTop = math.min(chosen + 4, tap / 2),
+		Switch = function(name: string): boolean
+			if name ~= page then
+				show(name)
+			end
+			return true
+		end,
+	}
+end
+
+local function rail(body: Frame, at: Place)
+	local made = Rail.new(body, railSpec(at), railShown or page)
+	if railShown and railShown ~= page then
+		Rail.Paint(made, page, railShown)
+	end
+	railShown = page
+	Glass.Idle(made.Holder, function(phase: number)
+		Rail.Idle(made, phase)
+	end)
+end
+
 local function build(view: Profile.View, on: On)
 	lastView, lastOn = view, on
 	tickers = {}
@@ -1263,6 +1322,7 @@ local function build(view: Profile.View, on: On)
 		text({ Name = "Empty", Size = Theme.Text.Title, Align = Enum.TextXAlignment.Center, Box = UDim2.new(1, -at.Stage.X * 2, 0, 30), Position = UDim2.new(0, at.Stage.X, 0.5, -15), Parent = body }, "No Voidkin yet · break a shard at the Breaker")
 		return
 	end
+	rail(body, at)
 	if page == "Bag" then
 		-- The Items page is AR18's A (TR28): right of the rail, the doll with the figure between its slots, then the grid.
 		local block = resolved(view, owned)
@@ -1326,6 +1386,7 @@ function VoidkinScreen.Open(view: Profile.View, on: On)
 		chosen, page, slideFrom, shownPower = nil, if on.Page and table.find(PAGES, on.Page) and not SOON[on.Page] then on.Page else "Bag", 0, {}
 		named = on.Said or SAID[page] or page
 		editing, draft, awaited = false, nil, nil
+		railShown = nil
 		BagPage.Reset()
 	end
 	build(view, on)
@@ -1338,6 +1399,14 @@ function VoidkinScreen.Open(view: Profile.View, on: On)
 			end
 		end
 	end
+end
+
+-- The page last shown, where Home's Voidkin card opens it (AR49); `set` puts one there (a test's start).
+function VoidkinScreen.Last(set: string?): string
+	if set and Screen.Current() ~= NAME and table.find(PAGES, set) and not SOON[set] then
+		page = set
+	end
+	return page
 end
 
 function VoidkinScreen.Tick()

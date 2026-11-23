@@ -3,8 +3,8 @@
 -- own beside Cases, which joins it as it joins Takes. On the screen as it stands at home (Stay): opened from the dock,
 -- full screen over a cover that hides the world and the HUD, Back, its marks and the currencies in Roblox's band, its
 -- name and rarity on one line over the stage, the figure whole under it at its measured share, no gear slot and Combat
--- Power alone at its feet (the director, 2026-11-17), each built page on its own with its name in the band (AR43: the rail
--- retired, 2026-11-19), on the save's numbers, Lead and Send to work over
+-- Power alone at its feet (the director, 2026-11-17), each built page with its name in the band and lit on the rail of
+-- pages (AR49, the Equipment screen's rail), on the save's numbers, Lead and Send to work over
 -- the panel (the lead's lit, its work off with why under its name), favourite and lock set and cleared, a switch by the
 -- strip and by a flick, a switch to a body still being fetched (the one shown stays with its panel), a tap's flourish,
 -- a turn, one sent to work and brought home, a rename, the UI lint in this window and on the smallest phone, and Back.
@@ -224,6 +224,45 @@ local function button(name: string): TextButton?
 	return if found and found:IsA("TextButton") then found else nil
 end
 
+-- The page rail (AR49, research's call of 2026-11-20, 00:12): the Equipment screen's, its four pages down the room's left,
+-- each word whole and in the room, the page shown lit, its column clear of the stage, every button a finger's size.
+local function railWhole(t: any, where: string, shown: string)
+	local holder = VoidkinScreen.Find("Rail")
+	t.Check(`{where}: the rail of pages`, holder ~= nil)
+	if holder == nil then
+		return
+	end
+	local stage = VoidkinScreen.Find("Stage")
+	local stageLeft = if stage and stage:IsA("GuiObject") then stage.AbsolutePosition.X else math.huge
+	local least = math.huge
+	local wrong = {}
+	for _, name in HudConfig.Voidkin.Rail.Pages do
+		local button = holder:FindFirstChild(`Rail{name}`) :: GuiObject?
+		local face = holder:FindFirstChild(`{name}Face`) :: Frame?
+		local word = holder:FindFirstChild(`{name}Word`) :: TextLabel?
+		if button == nil or face == nil or word == nil then
+			table.insert(wrong, `{name} missing`)
+			continue
+		end
+		least = math.min(least, button.AbsoluteSize.X, button.AbsoluteSize.Y)
+		if not word.TextFits or word.Text ~= (VoidkinScreen.Said[name] or name) then
+			table.insert(wrong, `{name}'s word cut`)
+		end
+		if not inView(`{name}Word`) then
+			table.insert(wrong, `{name}'s word out of the room`)
+		end
+		local right = word.AbsolutePosition.X + word.AbsoluteSize.X / 2 + word.TextBounds.X / 2
+		if right > stageLeft + 1 then
+			table.insert(wrong, `{name}'s word over the stage`)
+		end
+		if (face:GetAttribute("Chosen") == true) ~= (name == shown) then
+			table.insert(wrong, `{name} lit wrong`)
+		end
+	end
+	t.Check(`{where}: its four pages whole, {shown} lit, clear of the stage`, #wrong == 0, table.concat(wrong, ", "))
+	t.Check(`{where}: each page a finger's size`, least >= Theme.Size.Touch - 0.5, string.format("%.1f px", least))
+end
+
 function VoidkinCases.Cases(given: Given): { any }
 	local ANSWER = given.ANSWER
 	local waitFor, lintClean = given.waitFor, given.lintClean
@@ -357,6 +396,7 @@ function VoidkinCases.Cases(given: Given): { any }
 			end
 			Screen.Close()
 			local hud = HudController.Parts()
+			VoidkinScreen.Last("Bag") -- the card opens the page last shown (AR49)
 			t.Check("Home's Inventory tile opens it", Button.Press(hud.Voidkin :: TextButton) and waitFor(t, 1, function(): boolean
 				return Screen.Current() == VoidkinScreen.Name
 			end))
@@ -470,8 +510,8 @@ function VoidkinCases.Cases(given: Given): { any }
 			t.Check("the bag's kinds the bag's five, weapons and armor one Gear", table.concat(VoidkinScreen.Kinds, ", ") == "All, Gear, Jewelry, Chests, Materials", table.concat(VoidkinScreen.Kinds, ", "))
 			-- Its name over the stage: one line inside it, its rarity after it in the rarity's colour.
 			nameLine(t, "this window", owned)
-			-- Its own screen (AR43): no rail of pages, and the page shown named in the band.
-			t.Check("no rail of pages", VoidkinScreen.Find("Rail") == nil)
+			-- The rail of pages (AR49), and the page shown named in the band.
+			railWhole(t, "this window", "Overview")
 			local pageName = VoidkinScreen.Find("PageName")
 			t.Check("Overview shown: its name in the band", pageName ~= nil and pageName:IsA("TextLabel") and pageName.Text == "Overview", if pageName and pageName:IsA("TextLabel") then pageName.Text else "none")
 			local leads, panel = button("Lead"), VoidkinScreen.Find("Panel")
@@ -506,6 +546,7 @@ function VoidkinCases.Cases(given: Given): { any }
 				end
 				VoidkinScreen.Show(name)
 				t.Wait(SETTLE)
+				railWhole(t, name, name)
 				local title = VoidkinScreen.Find("PageName")
 				local want = VoidkinScreen.Said[name] or name
 				t.Check(`{name}: its name in the band`, title ~= nil and title:IsA("TextLabel") and title.Text == want, if title and title:IsA("TextLabel") then title.Text else "none")
@@ -820,6 +861,7 @@ function VoidkinCases.Cases(given: Given): { any }
 					t.Wait(SETTLE)
 					lintClean(t, `the smallest phone, {name}`)
 					bandClear(t, `the smallest phone, {name}`)
+					railWhole(t, `the smallest phone, {name}`, name)
 				end
 			end
 			whole(t, "the smallest phone")
@@ -884,6 +926,7 @@ function VoidkinCases.Cases(given: Given): { any }
 			room:Destroy()
 			Screen.Close()
 			local hud = HudController.Parts()
+			VoidkinScreen.Last("Bag") -- the card opens the page last shown (AR49)
 			t.Check("the dock's Voidkin opens it", Button.Press(hud.Voidkin :: TextButton) and waitFor(t, 1, function(): boolean
 				return Screen.Current() == VoidkinScreen.Name
 			end))
@@ -1093,6 +1136,7 @@ function VoidkinCases.Cases(given: Given): { any }
 			step.Value = "Large Overview off"
 			step.Parent = ReplicatedStorage
 			Screen.Close()
+			VoidkinScreen.Last("Bag") -- the card opens the page last shown (AR49)
 			Button.Press(HudController.Parts().Voidkin :: TextButton)
 			t.Check("the Voidkin screen opens", waitFor(t, 1, function(): boolean
 				return Screen.Current() == VoidkinScreen.Name

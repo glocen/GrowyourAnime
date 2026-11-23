@@ -21,6 +21,7 @@
 --   Figure.Flourish(figure) -> true when its Reveal's end started
 --   Figure.Slide(figure, from)        comes in from `from` authored pixels to its side, fading in
 --   Figure.Gesture(figure, delta, took) -> "Tap" | "Swipe" | "Turn"   what a touch did, by its travel and its time
+--   Figure.Bust(def, light, look) -> bust    Home's live view: head and chest in its idle, no stage, no touch (AR49)
 --   Figure.Destroy(figure)
 
 local ContentProvider = game:GetService("ContentProvider")
@@ -358,6 +359,89 @@ function Figure.Slide(figure: Figure, from: number)
 		Position = UDim2.fromOffset(0, 0),
 		ImageTransparency = 0,
 	}):Play()
+end
+
+-- A body's own part (its `<Model>_<name>` mesh), else the rig's.
+local function partOf(body: Model, model: string?, name: string): BasePart?
+	local own = if model then body:FindFirstChild(`{model}_{name}`, true) else nil
+	if own and own:IsA("BasePart") then
+		return own
+	end
+	local plain = body:FindFirstChild(name, true)
+	return if plain and plain:IsA("BasePart") then plain else nil
+end
+
+export type Bust = { Def: string, View: ViewportFrame, Body: Model, Idle: AnimationTrack? }
+export type BustLook = {
+	Box: { number },
+	Crown: number,
+	Foot: number,
+	Chest: number,
+	Across: number,
+	Yaw: number,
+	Head: number,
+	Fov: number,
+	Ambient: Color3,
+	Light: Vector3,
+	Each: { [string]: { Yaw: number?, Head: number?, Chest: number?, X: number?, Y: number? } },
+}
+
+-- Home's live view (AR49): its body in its idle, head and chest, with no stage and no touch, in a ViewportFrame its
+-- owner lays at look.Box. Turned look.Yaw, its head brought back look.Head toward the camera, the camera framing its head's
+-- top at look.Crown and the share look.Chest down its torso at look.Foot, its head's middle across at look.Across, all in
+-- the box's own points; lit by `light` from behind and above, its face by look.Ambient. Its model's own offsets are in
+-- look.Each[model]. Nil when there's no body to show.
+function Figure.Bust(def: string, light: Color3, look: BustLook): Bust?
+	local source, idle = pick(def)
+	if source == nil then
+		return nil
+	end
+	local row = Voidkin.ById[def]
+	local model = if row then row.Model else nil
+	local each: { Yaw: number?, Head: number?, Chest: number?, X: number?, Y: number? } = look.Each[model or def] or {}
+	local view = Instance.new("ViewportFrame")
+	view.Name = "Live"
+	view.BackgroundTransparency = 1
+	view.Ambient = look.Ambient
+	view.LightColor = light
+	view.LightDirection = look.Light.Unit
+	local world = Instance.new("WorldModel")
+	world.Parent = view
+	local body = source:Clone()
+	local root = body:FindFirstChild("HumanoidRootPart") :: BasePart?
+	if root then
+		body.PrimaryPart = root
+		root.Anchored = true
+	end
+	body:PivotTo(CFrame.Angles(0, math.rad(each.Yaw or look.Yaw), 0))
+	local neck = body:FindFirstChild("Neck", true)
+	if neck and neck:IsA("Motor6D") then -- the head turned back about the torso's up, at the joint
+		local at = neck.C0.Position
+		neck.C0 = CFrame.new(at) * CFrame.Angles(0, math.rad(each.Head or look.Head), 0) * CFrame.new(-at) * neck.C0
+	end
+	body.Parent = world
+	local head = partOf(body, model, "Head")
+	local torso = partOf(body, model, "Torso")
+	local box = look.Box
+	if head and torso then
+		local crown = head.Position.Y + head.Size.Y / 2
+		local chest = torso.Position.Y + torso.Size.Y * (0.5 - (each.Chest or look.Chest))
+		local k = (look.Foot - look.Crown) / math.max(crown - chest, 0.1) -- points a stud
+		local middle = Vector2.new(box[1] + box[3] / 2, box[2] + box[4] / 2)
+		local y = crown - (middle.Y - look.Crown - (each.Y or 0)) / k
+		local x = head.Position.X - (middle.X - look.Across - (each.X or 0)) / k -- the camera's right is the world's -X
+		local distance = (box[4] / k) / (2 * math.tan(math.rad(look.Fov) / 2))
+		local camera = Instance.new("Camera")
+		camera.FieldOfView = look.Fov
+		camera.CFrame = CFrame.lookAt(Vector3.new(x, y, head.Position.Z - distance), Vector3.new(x, y, head.Position.Z))
+		camera.Parent = view
+		view.CurrentCamera = camera
+	end
+	local track = load(body, idle, true, Enum.AnimationPriority.Idle)
+	if track then
+		track:Play(0)
+	end
+	return { Def = def, View = view, Body = body, Idle = track }
 end
 
 function Figure.Destroy(figure: Figure)

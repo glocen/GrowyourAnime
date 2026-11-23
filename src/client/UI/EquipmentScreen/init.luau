@@ -8,6 +8,7 @@
 --   EquipmentScreen.Open(page, view, on)   opens on `page`, or switches to it when open
 --   EquipmentScreen.Refresh(view)          the save changed: the band, the rows and the work painted again (never mid-try)
 --   EquipmentScreen.Switch(page)           a rail tap; EquipmentScreen.Choose(id) a row's: for tests
+--   EquipmentScreen.Last()                 the page last shown: Home's card opens it there (AR49)
 --   EquipmentScreen.State()                the open page, the chosen item and whether a try is under way: for tests
 --   EquipmentScreen.Parts()                its pieces by name, for tests
 
@@ -30,6 +31,7 @@ local Screen = require(UI.Kit.Screen)
 local Glass = require(UI.Kit.Glass)
 local Skin = require(UI.Kit.Skin)
 local Fade = require(UI.Kit.Fade)
+local Rail = require(UI.Kit.Rail)
 local Text = require(UI.Kit.Text)
 local Count = require(UI.Kit.Count)
 local Look = require(script.Look)
@@ -71,7 +73,7 @@ local state = {
 local room: Frame? = nil -- the block
 local page: Look.Page? = nil -- the open work
 local work: CanvasGroup? = nil -- its group
-local railFaces: { [string]: Frame } = {}
+local railed: Rail.Rail? = nil -- the rail (UI.Kit.Rail), one rail with the Voidkin screen's
 local creditsShown = 0
 
 
@@ -152,169 +154,35 @@ local function band(view: Profile.View)
 	end)
 end
 
--- The rail (seam.json, rail): a button for each page down the left, the open one grown and lit, a line between them in
--- pieces, a light running down it once a loop.
-local function railFace(parent: Instance, name: string, chosen: boolean): Frame
-	local def = BUTTONS[name]
-	local r = if chosen then RAIL.Chosen else RAIL.Rest
-	local side = 2 * (RAIL.Chosen + 24)
-	local face = Instance.new("Frame")
-	face.Name = `{name}Face`
-	face.BackgroundTransparency = 1
-	face.AnchorPoint = Vector2.new(0.5, 0.5)
-	face.Position = UDim2.fromOffset(X(def[1]), Y(def[2]))
-	face.Size = UDim2.fromOffset(side, side)
-	face.ZIndex = 3
-	face.Parent = parent
-	local scale = Instance.new("UIScale")
-	scale.Name = "Grow"
-	scale.Parent = face
-	local function lay(image: string, laid: number, tint: Color3?, alpha: number, z: number): ImageLabel
-		local made = Skin.Lay(face, image, { Name = image, Tint = tint, Alpha = alpha, Z = z })
-		made.AnchorPoint = Vector2.new(0.5, 0.5)
-		made.Position = UDim2.fromScale(0.5, 0.5)
-		made.Size = UDim2.fromOffset(laid, laid)
-		return made
-	end
-	if chosen then
-		lay("RailGlow", 2 * (r + 24), LIGHT, 1 - RAIL.Glow, 3)
-	end
-	local disc = lay("RailDisc", 2 * (r + 1), nil, 1, 4)
-	local colours = (if chosen then SEAM.Card else SEAM.Button) :: { Color3 }
-	local gradient = Instance.new("UIGradient")
-	gradient.Rotation = 90
-	gradient.Color = ColorSequence.new({
-		ColorSequenceKeypoint.new(0, colours[1]),
-		ColorSequenceKeypoint.new(1 / 56, colours[1]),
-		ColorSequenceKeypoint.new(55 / 56, colours[2]),
-		ColorSequenceKeypoint.new(1, colours[2]),
-	})
-	gradient.Parent = disc
-	lay("RailSheen", 2 * (r + 1), SEAM.Glint, 1 - (if chosen then RAIL.Sheen.Chosen else RAIL.Sheen.Rest), 5)
-	if chosen then
-		lay("RailLight", 2 * (r + 1), LIGHT, 1 - RAIL.Light, 6)
-		lay("RailRingChosen", 2 * (r + 4.5), LIGHT, 1, 7)
-		lay("RailEdgeChosen", 2 * (r + 1), SEAM.Facet, 1 - RAIL.Edge, 8)
-		local comet = lay("RailComet", 2 * (r + 4.5), SEAM.Glint, 1 - RAIL.Comet, 10)
-		comet.Name = "Comet"
-	else
-		lay("RailRing", 2 * (r + 4.5), SEAM.Facet, 1, 7)
-		lay("RailEdge", 2 * (r + 1), SEAM.Edge, 1 - RAIL.Edge, 8)
-	end
-	local record = UIKit.Images[def[3]] or HudConfig.Voidkin.Chrome.Images[def[3]]
-	local tall = 1.05 * r
-	local mark = Glass.Mark(face, "Mark", record, side / 2, side / 2, tall * record.Points.X / record.Points.Y, if chosen then SEAM.Glint else SEAM.Soft, 9)
-	mark.Name = "Mark"
-	face:SetAttribute("Chosen", chosen)
-	return face
-end
-
-local function railWord(parent: Instance, name: string, chosen: boolean): TextLabel
-	local def = BUTTONS[name]
-	local r = if chosen then RAIL.Chosen else RAIL.Rest
-	local size = if chosen then RAIL.Word.Chosen else RAIL.Word.Rest
-	local word = Look.Text(parent, `{name}Word`, name, size, if chosen then LIGHT else SEAM.Soft, X(def[1]), Y(def[2] + r + RAIL.Word.Gap), "Centre", chosen, 3, 92)
-	return word
-end
-
 local switch: (name: string) -> boolean
 
-local function rail(parent: Frame)
-	local holder = Instance.new("Frame")
-	holder.Name = "Rail"
-	holder.BackgroundTransparency = 1
-	holder.Size = UDim2.fromScale(1, 1)
-	holder.ZIndex = 3
-	holder.Parent = parent
-	parts.Rail = holder
-	local line = Instance.new("Frame")
-	line.Name = "Line"
-	line.BackgroundTransparency = 1
-	line.Size = UDim2.fromScale(1, 1)
-	line.ZIndex = 1
-	line.Parent = holder
-	for _, name in E.Pages do
-		local def = BUTTONS[name]
-		local button = Button.new({
-			Name = `Rail{name}`,
-			Text = "",
-			Bare = true,
-			Size = UDim2.fromOffset(92, 79),
-			Position = UDim2.fromOffset(X(def[1]) - 46, Y(def[2]) - 31),
-			Parent = holder,
-			Still = true,
-			OnPress = function(): boolean
-				return switch(name)
-			end,
-		})
-		button.ZIndex = 4
-		parts[`Rail{name}`] = button
+-- The rail (seam.json, rail; UI.Kit.Rail): a button for each page down the left, the open one grown and lit, a line
+-- between them in pieces, a light running down it once a loop. Its places are the cut's, laid in the block.
+local function railSpec(): Rail.Spec
+	local at: { [string]: Vector2 } = {}
+	local marks: { [string]: string } = {}
+	for name, def in BUTTONS do
+		at[name] = Vector2.new(X(def[1]), Y(def[2]))
+		marks[name] = def[3]
 	end
-end
-
--- The rail's line in the open page's pieces, with the runner's light clipped to each.
-local function railLine()
-	local holder = parts.Rail :: Frame
-	local line = holder:FindFirstChild("Line") :: Frame
-	line:ClearAllChildren()
-	for k, piece in PIECES[state.Page] do
-		local clip = Instance.new("Frame")
-		clip.Name = `Piece{k}`
-		clip.BackgroundTransparency = 1
-		clip.ClipsDescendants = true
-		clip.Position = UDim2.fromOffset(X(RAIL.X) - 2, Y(piece[1]))
-		clip.Size = UDim2.fromOffset(4, piece[2] - piece[1])
-		clip.ZIndex = 1
-		clip.Parent = line
-		local stroke = Instance.new("Frame")
-		stroke.Name = "Stroke"
-		stroke.BorderSizePixel = 0
-		stroke.BackgroundColor3 = SEAM.Facet
-		stroke.BackgroundTransparency = RAIL.Line.Alpha
-		stroke.Position = UDim2.fromOffset(2 - RAIL.Line.Wide / 2, 0)
-		stroke.Size = UDim2.new(0, RAIL.Line.Wide, 1, 0)
-		stroke.ZIndex = 1
-		stroke.Parent = clip
-		local runner = Skin.Lay(clip, "RailRunner", { Name = "Runner", Tint = SEAM.Glint, Alpha = 1 - RAIL.Runner, Z = 2 })
-		runner.Position = UDim2.fromOffset(0, -200)
-		runner:SetAttribute("Top", piece[1])
+	local pieces: { [string]: { { number } } } = {}
+	for name, list in PIECES do
+		local laid = {}
+		for _, piece in list do
+			table.insert(laid, { Y(piece[1]), Y(piece[2]) })
+		end
+		pieces[name] = laid
 	end
-end
-
--- The rail's faces and words for the open page; `grow` runs the switch's grow from the last.
-local function railPaint(last: string?)
-	local holder = parts.Rail :: Frame
-	for _, name in E.Pages do
-		local chosen = name == state.Page
-		local old = railFaces[name]
-		local was = if old then old:GetAttribute("Chosen") == true else nil
-		local word = holder:FindFirstChild(`{name}Word`)
-		if old and was == chosen then
-			continue
-		end
-		if old then
-			old:Destroy()
-		end
-		if word then
-			word:Destroy()
-		end
-		local face = railFace(holder, name, chosen)
-		railFaces[name] = face
-		local made = railWord(holder, name, chosen)
-		if last ~= nil and old ~= nil then
-			local from = if chosen then RAIL.Rest / RAIL.Chosen else RAIL.Chosen / RAIL.Rest
-			local grow = face:FindFirstChild("Grow") :: UIScale
-			grow.Scale = from
-			Glass.Ease(face, MOTION.Switch, function(u: number)
-				grow.Scale = from + (1 - from) * Look.BackOut(u, MOTION.Back)
-			end, Enum.EasingStyle.Linear)
-			Fade.Set(made, 0)
-			Glass.Ease(made, MOTION.Cross, function(u: number)
-				Fade.Set(made, Look.Smooth(u))
-			end, Enum.EasingStyle.Linear)
-		end
-	end
-	railLine()
+	return {
+		Pages = E.Pages,
+		At = at,
+		Marks = marks,
+		Line = { X(RAIL.X), Y(66), Y(306) },
+		Pieces = pieces,
+		Switch = function(name: string): boolean
+			return switch(name)
+		end,
+	}
 end
 
 -- A row's words under its name, the open page's (equipment.json: rowSecond, rowHolds). Returns Reinforce's level, which
@@ -638,7 +506,9 @@ switch = function(name: string): boolean
 	local last = state.Page
 	state.Page = name
 	state.Tint = nil
-	railPaint(last)
+	if railed then
+		Rail.Paint(railed, name, last)
+	end
 	local view = state.View
 	if view then
 		for _, row in rows do
@@ -685,20 +555,8 @@ end
 -- The idle (seam.json, idle): one phase for the rail's comet and runner and the chosen row's glint; the plates
 -- squeeze with their rows.
 local function idle(phase: number)
-	local comet = railFaces[state.Page] and railFaces[state.Page]:FindFirstChild("Comet") :: ImageLabel?
-	if comet then
-		comet.Rotation = 360 * phase
-	end
-	local line = (parts.Rail :: Frame):FindFirstChild("Line")
-	if line then
-		local y = 66 + (306 - 66) * phase
-		for _, clip in line:GetChildren() do
-			local runner = clip:FindFirstChild("Runner") :: ImageLabel?
-			local top = if runner then runner:GetAttribute("Top") else nil
-			if runner and type(top) == "number" then
-				runner.Position = UDim2.fromOffset(0, y - top - 48)
-			end
-		end
+	if railed then
+		Rail.Idle(railed, phase)
 	end
 	local marker = parts.Marker :: Frame?
 	local glint = if marker then marker:FindFirstChild("GlintClip") and (marker:FindFirstChild("GlintClip") :: Frame):FindFirstChild("Glint") :: ImageLabel? else nil
@@ -727,7 +585,7 @@ function EquipmentScreen.Open(name: string, view: Profile.View, on: On)
 		page = nil
 	end
 	table.clear(parts)
-	table.clear(railFaces)
+	railed = nil
 	state.Page, state.Busy, state.Tint = wanted, false, nil
 	local body = Screen.Full(EquipmentScreen.Name, "Equipment", "SeamGlass")
 	parts.Body = body
@@ -742,8 +600,12 @@ function EquipmentScreen.Open(name: string, view: Profile.View, on: On)
 	band(view)
 	panel(made, "ListPanel", LIST.Panel, 2)
 	panel(made, "WorkPanel", E.Work, 2)
-	rail(made)
-	railPaint(nil)
+	local made_ = Rail.new(made, railSpec(), state.Page)
+	railed = made_
+	parts.Rail = made_.Holder
+	for name, button in made_.Buttons do
+		parts[`Rail{name}`] = button
+	end
 	list(made, view)
 	local ids = worn(view)
 	state.Item = if state.Item and table.find(ids, state.Item) then state.Item else ids[1]
@@ -799,6 +661,11 @@ end
 
 function EquipmentScreen.Switch(name: string): boolean
 	return switch(name)
+end
+
+-- The page last shown, where Home's Equipment card opens it (AR49).
+function EquipmentScreen.Last(): string
+	return state.Page
 end
 
 function EquipmentScreen.Choose(id: string): boolean

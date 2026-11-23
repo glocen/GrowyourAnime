@@ -13,7 +13,7 @@ local SettingsController = require(script.Parent.Parent.SettingsController)
 local UI = script.Parent.Parent.Parent.Parent.UI
 local Button = require(UI.Kit.Button)
 local Screen = require(UI.Kit.Screen)
-local HomeTray = require(UI.HomeTray)
+local HomePanel = require(UI.HomePanel)
 local SettingsScreen = require(UI.SettingsScreen)
 local Helpers = require(script.Parent.Helpers)
 
@@ -29,17 +29,17 @@ end
 function SettingsCases.Cases(): { any }
 	return {
 		{
-			Name = "Settings (AR43, B) from Home's tall tile: Music, Sound and Effects on one card; a slider let go saves once and is heard at once; Off at nought",
+			Name = "Settings (AR43, B) from Home's Settings card (AR49): Music, Sound and Effects on one card; a slider let go saves once and is heard at once; Off at nought",
 			Run = function(t: any)
 				Screen.Close()
 				local before = (t.Server("Data") :: any).Settings
 				local home = HudConfig.Home
-				local tray = HudController.Home()
-				if not HomeTray.Shown(tray) then
+				local panel = HudController.Home()
+				if not HomePanel.Shown(panel) then
 					Button.Press(HudController.Parts().Home :: TextButton)
 				end
 				t.Wait(home.Open.Grow + 0.1)
-				t.Check("Settings' tile opens its screen", Button.Press(tray.Tiles.Settings.Button) and waitFor(t, home.Step.Lit + home.Step.RiseAt + 1, function(): boolean
+				t.Check("Settings' card opens its screen", Button.Press(panel.Cards.Settings.Button) and waitFor(t, home.Step.Lit + home.Step.RiseAt + 1, function(): boolean
 					return Screen.Current() == SettingsScreen.Name
 				end), tostring(Screen.Current()))
 				t.Wait(home.Step.Rise + 0.4)
@@ -79,10 +79,10 @@ function SettingsCases.Cases(): { any }
 					t.Server("Act", "Settings", { Name = name, Value = before[name] })
 				end
 				Screen.Close("Back")
-				t.Check("Back sinks it, and the tray comes back", waitFor(t, home.Step.Sink + home.Step.BackAt + 0.5, function(): boolean
-					return HomeTray.Shown(tray)
+				t.Check("Back sinks it, and the panel comes back", waitFor(t, home.Step.Sink + home.Step.BackAt + 0.5, function(): boolean
+					return HomePanel.Shown(panel)
 				end))
-				HomeTray.Close(tray)
+				HomePanel.Close(panel)
 				t.Check("the levels put back, and heard", waitFor(t, 2, function(): boolean
 					local ok = true
 					for _, name in Settings.Levels do

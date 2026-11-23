@@ -806,6 +806,7 @@ function HudCases.Cases(given: Given): { any }
 					Hover.Pretend(nil)
 					return
 				end
+				VoidkinScreen.Last("Bag") -- the card opens the page last shown (AR49)
 				t.Check("the Voidkin screen opens", Button.Press(parts.Voidkin :: TextButton) and waitFor(t, 1, function(): boolean
 					return Screen.Current() == "Voidkin"
 				end))

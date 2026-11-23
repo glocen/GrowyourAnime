@@ -155,6 +155,7 @@ function BagCases.Cases(given: Given): { any }
 				end
 				Screen.Close()
 				local hud = HudController.Parts()
+				VoidkinScreen.Last("Bag") -- the card opens the page last shown (AR49)
 				t.Check("the dock's Voidkin opens it, on the Items page", Button.Press(hud.Voidkin :: TextButton) and waitFor(t, 1, function(): boolean
 					local page = find("Page")
 					return Screen.Current() == VoidkinScreen.Name and page ~= nil and page:GetAttribute("Page") == "Bag"
@@ -533,6 +534,7 @@ function BagCases.Cases(given: Given): { any }
 				end
 				-- An empty kind first, before it gives anything.
 				Screen.Close()
+				VoidkinScreen.Last("Bag") -- the card opens the page last shown (AR49)
 				t.Check("the Items page opens", Button.Press(HudController.Parts().Voidkin :: TextButton) and waitFor(t, 1, function(): boolean
 					local page = find("Page")
 					return page ~= nil and page:GetAttribute("Page") == "Bag"
@@ -663,6 +665,7 @@ function BagCases.Cases(given: Given): { any }
 				Screen.Close()
 				Bag.Reset()
 				local hud = HudController.Parts()
+				VoidkinScreen.Last("Bag") -- the card opens the page last shown (AR49)
 				t.Check("the dock's bag opens the Items page", Button.Press(hud.Voidkin :: TextButton) and waitFor(t, 1, function(): boolean
 					local page = find("Page")
 					return page ~= nil and page:GetAttribute("Page") == "Bag"

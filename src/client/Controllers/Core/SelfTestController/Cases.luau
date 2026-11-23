@@ -91,7 +91,7 @@ local NumberCases = require(script.Parent.NumberCases)
 local BaseCases = require(script.Parent.BaseCases)
 local Helpers = require(script.Parent.Helpers)
 local TravelCases = require(script.Parent.TravelCases)
-local HomeTray = require(UI.HomeTray)
+local HomePanel = require(UI.HomePanel)
 
 local R6_ROOT_HEIGHT = 3 -- an R6 body's root stands 3 studs above the floor (legs 2, half the torso 1): an engine fact
 local TUNE_PATH = "Game.Version" -- a string any build has; the case puts it back
@@ -7540,15 +7540,15 @@ local cases = {
 			t.Wait(0.1) -- a frame of the plates' step
 			t.Check("the world's layer shows with no screen open", layer.Visible)
 			-- The Base screen opens from a bay's prompt (the dock's Base tile is the way home, TR19); the Voidkin screen from
-			-- Home's Inventory tile (AR43), the dock's Home cell selected while it holds it.
+			-- Home's Voidkin card (AR49), the dock's Home cell selected while it holds it.
 			for _, name in { "Base", "Voidkin" } do
 				local hud = HudController.Parts()
 				if name == "Base" then
 					BaseController.Open()
 				end
-				-- The Voidkin screen as a player opens it: Home's tray first, then its Inventory tile, which steps into it.
+				-- The Voidkin screen as a player opens it: Home's panel first, then its Voidkin card, which steps into it.
 				local home = HudConfig.Home
-				if name == "Voidkin" and not HomeTray.Shown(HudController.Home()) then
+				if name == "Voidkin" and not HomePanel.Shown(HudController.Home()) then
 					Button.Press(hud.Home :: TextButton)
 					t.Wait(home.Open.Grow + 0.1)
 				end
@@ -7559,8 +7559,8 @@ local cases = {
 				t.Check(`the world's layer hides while {name} is open`, waitFor(t, 0.5, function(): boolean
 					return not layer.Visible
 				end))
-				if name == "Voidkin" then -- from Home's Inventory tile since AR43: the dock's Home cell holds its screen
-					t.Check(`the dock's Home is selected while {name} is open from its tray`, waitFor(t, 0.5, function(): boolean
+				if name == "Voidkin" then -- from Home's Voidkin card since AR49: the dock's Home cell holds its screen
+					t.Check(`the dock's Home is selected while {name} is open from its panel`, waitFor(t, 0.5, function(): boolean
 						return Button.State(hud.Home :: TextButton) == "Selected"
 					end), Button.State(hud.Home :: TextButton))
 				end
@@ -7731,6 +7731,7 @@ local cases = {
 			t.Wait(1)
 			t.Server("DataCredits", 40)
 			t.Wait(1.5)
+			VoidkinScreen.Last("Bag") -- the card opens the page last shown (AR49)
 			tap(parts.Voidkin :: TextButton)
 			t.Wait(1.5)
 			tap(closeOf("Voidkin"))

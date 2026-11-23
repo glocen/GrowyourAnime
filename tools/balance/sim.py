@@ -478,7 +478,7 @@ def game():
         kinds[kind] = dict(hp=float(m[1]), atk=float(m[2]), df=float(m[3]))
     world = lua("src/shared/Config/World.luau")
     stops = [dict(kind=m[1], count=int(m[2] or 1), level=int(m[3])) for m in
-             re.finditer(r'\{ Kind = "(\w+)", Def = "\w+"(?:, Count = (\d+))?, Level = (\d+) \}', world)]
+             re.finditer(r'\{ Kind = "(\w+)", Def = "\w+"(?:, Count = (\d+))?, Level = (\d+)(?:, \w+ = \w+)* \}', world)]
     row = re.search(r"Row = \{.*?FirstPack = ([\d.]+).*?Spacing = ([\d.]+)", world, re.S)
     combat = lua("src/shared/Config/Combat.luau")
     notice = float(re.search(r"Shade = \{\s*Notice = ([\d.]+)", combat)[1])
@@ -1110,6 +1110,56 @@ def report_cp(pairs=4000, seed=7):
           f"{worst:.0%} apart) it's near a coin. Every refit tried traded duels away for it.")
 
 
+# ---------------------------------------------------------------- launch power (F3, research, 2026-11-23)
+
+def report_launch_power():
+    """Electricity at launch only, from the game's own Config: Lantern Row's Standard shards (the only grade that drops
+    or sells), the five Voidkin, base levels 1 to 3, the Breaker, the Training machine and the Stone Condenser. Answers
+    docs/research/design-holes.md, H4: does running every machine ask more than the bays make?"""
+    base, cond = lua("src/shared/Config/Base.luau"), lua("src/shared/Config/Condenser.luau")
+    shards, drops, shop = lua("src/shared/Config/Shards.luau"), lua("src/shared/Config/Drops.luau"), lua("src/shared/Config/Shop.luau")
+    num = lambda src, pat: float(re.search(pat, src, re.S)[1])
+    kw_apt, per_lvl = num(base, r"KwPerAptitude = ([\d.]+)"), num(base, r"Bays = \{.*?PerLevel = ([\d.]+)")
+    bay_out, brk_speed = num(base, r"BayOutput = ([\d.]+)"), num(base, r"BreakerSpeed = ([\d.]+)")
+    brk_kw, trn_kw = num(base, r"Breaker = \{.*?Kw = ([\d.]+)"), num(base, r"Training = \{.*?Kw = ([\d.]+)")
+    away = num(base, r"AwayHours = ([\d.]+)")
+    batt = [int(x) for x in re.search(r"Battery = \{ ([\d, ]+) \}", base)[1].split(",")]
+    bays_at = [int(x) for x in re.search(r"Bays = \{ ([\d, ]+) \}", base)[1].split(",")]
+    c_kw, c_first, c_per = num(cond, r"Kw = ([\d.]+)"), num(cond, r"First = ([\d.]+)"), num(cond, r"PerLevel = ([\d.]+)")
+    c_wakes = int(num(cond, r"Wakes = (\d+)"))
+    std_s = num(shards, r"Standard = \{ BreakSeconds = ([\d.]+)")
+    least = num(shards, r"MinSavedSeconds = ([\d.]+)")
+    chance = num(drops, r"ShardChance = ([\d.]+)")
+    period, limit = num(shop, r"Period = ([\d.]+)"), num(shop, r"Shard = \{.*?Limit = ([\d.]+)")
+    apts = {}
+    for vid in ("watt", "rook", "pip", "lyric", "kirra"):
+        apts[vid] = int(re.search(r'Id = "' + vid + r'".*?Aptitude = (\d+)', lua("src/shared/Definitions/Voidkin.luau"))[1])
+    print("\n== 17. Electricity at launch (F3): Lantern Row only, the five, base levels 1 to 3 ==")
+    print(f"Only Standard shards exist at launch: {std_s:.0f} s at {brk_kw:.0f} kW, {brk_kw * std_s / 3600:.3f} kWh each. "
+          f"Voltage is never offered under {least:.0f} s saved, so at launch it is never offered.")
+    drop_h = 450 * chance * 1.1  # 450 kills an hour (seeds), ShardChance, elites' share adding about a tenth (section 11)
+    shop_h = 3600 / period * limit
+    print(f"Shards an hour: about {drop_h:.0f} from drops, up to {shop_h:.0f} more bought in the shop.")
+    # (label, base level, Voidkin level, machine level, Training on)
+    points = (("20 min", 2, 4, 2), ("5 h", 3, 22, 6), ("18 h", 3, 38, 12), ("machines 30", 3, 50, 30))
+    line("point", "base lv", "workers", "gen kW", "breaker kW", "train kW", "cond kW", "demand kW", "gen/demand", "batt full h", w=12)
+    for label, lvl, vl, ml in points:
+        order = sorted(apts.values(), reverse=True)
+        for training in (False, True):
+            free = len(order) - 1 - (1 if training else 0)  # the lead fights; one trains if the machine runs
+            n = min(bays_at[lvl - 1], free)
+            gen = sum(order[:n]) * kw_apt * (1 + per_lvl * (vl - 1)) * (1 + bay_out * (ml - 1))
+            brk = (drop_h + shop_h) * brk_kw * std_s / 3600  # kWh an hour = average kW; the speed level keeps kWh a shard
+            trn = trn_kw if training else 0
+            cnd = c_kw * (c_first + c_per * (ml - 1)) / c_first if lvl >= c_wakes else 0
+            dem = brk + trn + cnd
+            spare = gen - dem
+            line(label if not training else " + training", lvl, n, f"{gen:.0f}", f"{brk:.1f}", f"{trn:.0f}", f"{cnd:.1f}",
+                 f"{dem:.1f}", f"x{gen / dem:.1f}" if dem else "-", f"{batt[lvl - 1] / spare:.1f}" if spare > 0 else "-", w=12)
+    print(f"The battery holds {batt} kWh by base level; away, the bays make for {away:.0f} h at most. Its only sinks at launch "
+          f"are voltage (never offered) and overflow at the poor rate.")
+
+
 if __name__ == "__main__":
     ROSTER.extend(roster())
     assert len(ROSTER) >= 30, f"roster rows read: {len(ROSTER)}"
@@ -1129,4 +1179,5 @@ if __name__ == "__main__":
     report_speed()
     report_power()
     report_base()
+    report_launch_power()
     report_cp()

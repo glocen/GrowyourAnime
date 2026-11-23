@@ -15210,6 +15210,23 @@ Rendered in Blender by `tools/blender/base_levels_block.py`: block-in pieces in 
 - **The second look judges** both fixes at the four stands and at 64 px, by day, with the rings shown turning in a short strip. Then the colour pass and the cut for Faber, after TR51.
 - **Left as it is:** the yard's level 1 look, the pylons included, stays on the director's word ("that graphism was perfect", 2026-11-15).
 
+### The two fixes, for the second look (Modulo, 2026-11-23, 02:35 to 02:47 by the clock)
+
+- **The sheets:** `build/scratch/modulo/ar50/base_levels_d.png` (D's levels 1, 2 and 3 at the four stands), `base_levels_d_64.png`, and `base_levels_turn.png` (level 3's rings at five steps of a turn, from the gate's line and from 90 studs down the Strip).
+- **Why level 2's ring read as a beam.** I had dipped its gate side by 11°, and from the gate's line the camera looks up at it by about 11°: exactly edge-on. A ring shows its face to the gate and to the Strip only with its gate side raised.
+- **Fix 1, the rings.** Both are slim, in the gate's teal, with a line of teal light on the inner face, the outer face and underneath. No stone, no yellow, no banded ends. Each is three lengths with a bead of light in each gap, so the turn shows.
+  - **Level 2's:** 14 studs in radius round the generator at 15.5 up, its gate side raised 30°. From the gate's line it's whole in the frame, an open oval round the wheel with its near arc over the wheel's head.
+  - **Level 3's:** 22 in radius at 25 up, raised 26° and leaned 12° across, turning the other way. From the Strip it stands over the skyline (the wheel's head is 22 up, a pylon's 25).
+  - They were placed by projecting each through the game's camera at the four stands before rendering.
+- **Fix 2, the fins.** Each is a small tower of the gate's own make: a concrete foot, a teal shaft with a line of light in its dark bed on its Strip and yard faces, a bone collar, a narrower shaft, a bone cap and a spire. One pair at level 2 (11 studs), two at level 3 (14 and 10).
+- **Modulo's read of the second look:**
+  - **At the gate's line:** level 2 is a ring of light round the wheel, and level 3 adds two arcs passing overhead. Level 3's ring is about half in the frame from there, by its size.
+  - **Facing the gate:** the fins read as the gate's own, stepping down from its towers.
+  - **From 90 studs:** level 2 is an oval round the wheel, level 3 a second one clear against the sky. Both read as rings.
+  - **From 150 studs:** level 3 reads at once. Level 2's oval is there but thin, in among the wheel and a pylon.
+  - **At 64 px:** level 3 tells from level 1 from the Strip; level 2 doesn't. It can't sit higher and stay whole in the frame from the gate's line, so the Strip's sign at level 2 is the weaker one. The feel line asks the Strip's read of level 3.
+- **Four facts:** made, D's 8 frames again and 10 of the turn. Self-read from the sheets and close crops. Not content-checked (a block-in, never in the game). Second look: research's.
+
 ## Later, by ground
 
 The rest of ground 1 (Kirra in AR10, Watt in AR11; then Sable, Marigold, Crane), then each ground's Voidkin in `docs/roster.md`'s order. **The machines** (Gantry, Bulwark, Ironhymn, Shiomaru, Aegir) share one custom rig, taller than a player, with its own clip family: the first of them is timed like AR1, because a custom rig is a different cost.

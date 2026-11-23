@@ -28,7 +28,10 @@ base_levels_<stand>.png for each, and base_levels_64.png (every frame at 64 px h
 
 D came out of the first three's read (AR50, "The blockout"): no one lever is seen from every stand, so D takes one
 sign for each stand and adds one of each a level: B's floor for the owner at the gate, A's fins on the gate's
-shoulders for a visitor, in the machines' pale stone, and C's ring, high and tilted, for the Strip.
+shoulders for a visitor, and C's ring for the Strip. Research picked D with two fixes (AR50, "Research's verdict and
+pick: D"), drawn here: the rings slim, in teal, tilted to show their face, and the fins in the gate towers' make.
+`see ... spin=<degrees>` writes a frame with the rings turned (<key><level>_<stand>_t<degrees>.png); `second` lays D's
+second look: base_levels_d.png, base_levels_d_64.png and base_levels_turn.png.
 """
 
 import math
@@ -247,17 +250,59 @@ def c_shard(tall, ring=False):
 
 # --- D: one sign a stand, one more a level ---------------------------------------------------------------------------------
 
+SPIN = 0.0      # how far D's rings have turned, in degrees: the turning strip's frames
+
+
 def d_fins(level):
+    """A fin on each of the gate's shoulders, then two: the gate towers' own make (research's fix 2), a teal shaft on
+    a concrete foot, a line of light in its dark bed on its Strip and yard faces, a bone collar and cap, a spire."""
     def make():
         m = Mesh()
-        for side in (-1, 1):                                                    # A's fins at the gate's shoulders, in the
-            for reach, tall in (((4.4, 11.0),) if level == 2 else ((4.4, 14.0), (8.0, 10.0))):   # machines' pale stone
+        for side in (-1, 1):
+            for reach, tall in (((4.6, 11.0),) if level == 2 else ((4.6, 14.0), (8.4, 10.0))):
                 x = side * (GATE + reach)
-                m.box((1.5, 2.2, tall), (x, 0, tall / 2), "abyss", ink=True)
-                m.box((1.62, 2.32, 1.2), (x, 0, 0.6), "girder", ink=True)
-                m.box((1.9, 2.6, 0.45), (x, 0, tall + 0.22), "girder", ink=True)
-                light_line(m, (0.3, 2.32, tall - 6.4), (x, 0, 5.6 + (tall - 6.4) / 2), 1, 0)
+                waist = round(tall * 0.62, 2)
+                m.box((2.8, 2.8, 1.2), (x, 0, 0.6), "concrete", ink=True)
+                m.box((1.9, 1.9, waist - 1.2), (x, 0, (waist + 1.2) / 2), "girder", ink=True)
+                light_line(m, (0.6, 2.02, waist - 3.4), (x, 0, (waist + 1.2) / 2 + 0.3), 1, 0)
+                m.box((2.3, 2.3, 0.4), (x, 0, waist + 0.2), "bone", ink=True)
+                m.box((1.3, 1.3, tall - waist - 2.4), (x, 0, (tall + waist - 1.6) / 2), "girder", ink=True)
+                m.box((1.7, 1.7, 0.35), (x, 0, tall - 1.82), "bone", ink=True)
+                m.lathe([(0.0, tall), (0.62, tall - 1.65)], (x, 0, 0), 4, "girder", spin=math.pi / 4)
         return Piece(f"D{level}Fins", m)
+    return make
+
+
+def d_ring(radius, up, tilt, roll, section, way, arcs=3, gap=11.0, blocks=72):
+    """A ring afloat about the generator, tilted so its face shows from the gate's line and from the Strip (research's
+    fix 1): slim, in the gate's teal, a line of the void's teal light on its inner and outer faces and under it, in
+    `arcs` lengths with a bead of light afloat in each gap. `tilt` raises its gate side, `roll` leans it across the
+    plot; it turns about its own upright, `way` to a degree of SPIN."""
+    def make():
+        from mathutils import Matrix, Vector
+        m = Mesh()
+        lean = Matrix.Rotation(math.radians(roll), 3, "Y") @ Matrix.Rotation(math.radians(tilt), 3, "X")
+        lift = Vector((0, 0, up))
+        wide, tall = section
+        long = math.tau * radius / blocks * 1.04
+        turned = math.radians(way * SPIN)
+        for k in range(blocks):
+            a = math.tau * k / blocks
+            if (math.degrees(a) + gap / 2) % (360.0 / arcs) < gap:               # the gap: sky, and a bead in it
+                continue
+            a += turned
+            turn = lean @ Matrix.Rotation(a + math.pi / 2, 3, "Z")
+            out = Vector((math.cos(a), math.sin(a), 0.0))
+            m.box((long, wide, tall), tuple(lean @ (out * radius) + lift), "girder", rot=turn, ink=True)
+            for r in (radius - wide / 2 - 0.02, radius + wide / 2 + 0.02):       # the light on its inner and outer faces
+                m.box((long, 0.1, tall * 0.6), tuple(lean @ (out * r) + lift), "cyan", rot=turn)
+            m.box((long, wide * 0.6, 0.1), tuple(lean @ (out * radius - Vector((0, 0, tall / 2 + 0.02))) + lift), "cyan",
+                  rot=turn)                                                      # and under it, seen from the yard
+        for k in range(arcs):
+            a = math.tau * k / arcs + turned
+            x, y, z = lean @ Vector((radius * math.cos(a), radius * math.sin(a), 0.0)) + lift
+            m.lathe([(0.0, z + 1.5), (0.75, z), (0.0, z - 1.5)], (x, y, 0), 4, "cyan")
+        return Piece(f"Ring{radius:g}", m)
     return make
 
 
@@ -282,9 +327,11 @@ PIECES = {
     "CHalo16": c_halo(16.0, 13.5, 0.0, 24, 4, 76.0), "CHalo24": c_halo(24.0, 29.0, 11.0, 28, 4),
     "CShard4": c_shard(4.0), "CShard5": c_shard(5.0), "CShard5Ring": c_shard(5.0, True),
 }
-# D's rings stand wide of the wheel, so they needn't clear its top: low enough to be in the camera's frame from the
-# gate's line (the first's gate side dips to 18 studs) and whole from 90 studs down the Strip
-PIECES.update({"DHalo20": c_halo(20.0, 22.0, -11.0, 24, 4), "DHalo28": c_halo(28.0, 28.0, 0.0, 32, 4, roll=9.0)})
+# D's rings, by projection through the game's camera at each stand: the first, 14 in radius, is whole in the frame
+# from the gate's line with its near arc 2 studs over the wheel's head; the second, 22 in radius, stands over the
+# skyline from the Strip (the wheel's head is 22 up, a pylon's 25) and passes overhead from the gate's line
+PIECES.update({"DRing14": d_ring(14.0, 15.5, 30.0, 0.0, (1.3, 0.9), 1.0),
+               "DRing22": d_ring(22.0, 25.0, 26.0, -12.0, (2.0, 1.3), -0.6)})
 
 
 def bay_line(level):
@@ -331,9 +378,9 @@ def grown(key, level):
             made.append(("CHalo24", 0.0, ROW, 0.0))
             made += [("CShard5", x, i, 9.0) for x, i in corners]
     elif key == "D":                    # for the owner the floor's light, at the gate the fins, from afar the halo
-        made += [("B2Floor", 0.0, 0.0, 0.0), (f"D{level}Fins", 0.0, 0.0, 0.0), ("DHalo20", 0.0, ROW, 0.0)]
+        made += [("B2Floor", 0.0, 0.0, 0.0), (f"D{level}Fins", 0.0, 0.0, 0.0), ("DRing14", 0.0, ROW, 0.0)]
         if level == 3:
-            made += [("DRays", 0.0, 0.0, 0.0), ("DHalo28", 0.0, ROW, 0.0)]
+            made += [("DRays", 0.0, 0.0, 0.0), ("DRing22", 0.0, ROW, 0.0)]
     return made
 
 
@@ -347,8 +394,10 @@ def behind(at, toward):
     return tuple(eye), tuple(focus)
 
 
-def see(out: Path, key, level, fast, only=()):
+def see(out: Path, key, level, fast, only=(), spin=None):
     import bpy  # noqa: F401
+    global SPIN
+    SPIN = spin or 0.0
     base.BAYS_AT.update(BAYS_AT)
     base.PIECES.update(PIECES)
     look.SIZE = SIZE
@@ -396,7 +445,7 @@ def see(out: Path, key, level, fast, only=()):
         for obj in bpy.data.objects:                                # the player stands only in their own view
             if obj.name.startswith("Stand"):
                 obj.hide_render = not obj.name.startswith(f"Stand{name}")
-        path = out / f"{key}{level}_{name}"
+        path = out / (f"{key}{level}_{name}" + ("" if spin is None else f"_t{spin:03.0f}"))
         rs.save(look.finish(look.render_linear(scene, path.with_suffix(".exr")), d), path.with_suffix(".png"))
         path.with_suffix(".exr").unlink(missing_ok=True)
     print(f"AR50: {key}{level} done, {len(yard.kit.pieces)} objects")
@@ -438,13 +487,57 @@ def sheet(out: Path):
     print("AR50: sheets done")
 
 
+def second(out: Path):
+    """The second look at D: its levels at each stand, the same at 64 px high, and the rings turning."""
+    rs.OUT = out
+    w, h = SIZE
+    pad, head = 10, 24
+    board = rs.canvas(3 * (w + pad) + pad, len(VIEWS) * (h + head) + pad + 30, (0.93, 0.93, 0.94))
+    words = [(pad, 8, 17, "AR50, D after research's two fixes: levels 1, 2 and 3 at the four stands. By day, the player's "
+              "camera, the smallest phone's pixels", "#16182A")]
+    small = rs.canvas(3 * (int(w * 64 / h) + 6) + 6, len(VIEWS) * 70 + 6, (0.93, 0.93, 0.94))
+    for row, (view, what) in enumerate(VIEWS):
+        y = 30 + row * (h + head) + head
+        words.append((pad, y - 19, 14, what[0].upper() + what[1:], "#16182A"))
+        for level in (1, 2, 3):
+            page = rs.load(out / f"{'A' if level == 1 else 'D'}{level}_{view}.png")
+            page[..., 3] = 1.0
+            rs.paste(board, page, pad + (level - 1) * (w + pad), y)
+            tile = rs.shrink(page, 64 / h)
+            rs.paste(small, tile, 6 + (level - 1) * (tile.shape[1] + 6), 6 + row * 70)
+    rs.paste(board, rs.text_layer(board.shape[1], board.shape[0], words), 0, 0)
+    rs.save(board, out / "base_levels_d.png")
+    rs.save(small, out / "base_levels_d_64.png")
+    frames = sorted(out.glob("D3_strip_t*.png"))
+    if frames:
+        half = 0.5
+        tw, th = int(w * half), int(h * half)
+        board = rs.canvas(len(frames) * (tw + 6) + 6, 2 * (th + head) + 36, (0.93, 0.93, 0.94))
+        words = [(6, 8, 15, "AR50, D's rings turning, each its own way: level 3 from the gate's line (above) and from 90 "
+                  "studs down the Strip, at half the phone's pixels", "#16182A")]
+        for row, view in enumerate(("in", "strip")):
+            for col, file in enumerate(frames):
+                page = rs.load(file.with_name(file.name.replace("_strip_", f"_{view}_")))
+                page[..., 3] = 1.0
+                rs.paste(board, rs.shrink(page, half), 6 + col * (tw + 6), 34 + row * (th + head))
+                words.append((6 + col * (tw + 6), 34 + row * (th + head) + th + 3, 13, f"turned {file.stem[-3:].lstrip('0') or '0'} degrees",
+                              "#16182A"))
+        rs.paste(board, rs.text_layer(board.shape[1], board.shape[0], words), 0, 0)
+        rs.save(board, out / "base_levels_turn.png")
+    print("AR50: second look laid")
+
+
 def main():
     out = bl.out_dir()
     args = sys.argv[sys.argv.index("--") + 2:]
     if args[0] == "sheet":
         sheet(out)
+    elif args[0] == "second":
+        second(out)
     else:
-        see(out, args[1], int(args[2]), "fast" in args, [a for a in args[3:] if a != "fast"])
+        spin = [float(a[5:]) for a in args if a.startswith("spin=")]
+        see(out, args[1], int(args[2]), "fast" in args, [a for a in args[3:] if a != "fast" and "=" not in a],
+            spin[0] if spin else None)
 
 
 if __name__ == "__main__":

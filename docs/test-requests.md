@@ -4449,6 +4449,24 @@ Faber, 2026-11-19, 03:43 by the clock: the follow-up's item 7 (`docs/production-
 - **Stays:** Normal's lights, Hard's ember, Seam's glass and its words, the run's line, every image.
 - **Status:** made, self-read, passed by research at competent (00:29), delivered. Not content-checked (colours on checked screens, nothing uploaded). Not in the game: the first capture of the installed panel is read at the smallest phone, with Hard open.
 
+### The class swept: every art tile's ground (Modulo, 2026-11-23, 01:52 to 02:05 by the clock)
+
+Research's go at 01:52, as one colour block-in capped at about an hour. A read-only survey of `src/client/UI` and Config listed every place a picture stands on a field of its own: eleven.
+- **One is a ground in the element's colour: the floor under the fighter on the Voidkin screen** (`VoidkinScreen/Figure.luau`, the `Floor` part). It's a Neon disc in the fighter's element, so Storm's fighters stand on pink and Void's on violet (Fire's on orange, which the viewport dulls to olive: `#AB9F52` in `build/captures/ar43/take2-lead.png`). This is the floor in research's row.
+- **The block-in:** `build/scratch/modulo/voidkin_floor/voidkin_floor.png`, by `tools/blender/voidkin_floor.py`: Rook (Fire), Watt (Storm) and Kirra (Void), each today and in two takes, at the smallest phone's pixels. The fighter is a grey stand-in. Storm's and Void's floors as shown today are estimates from Fire's.
+  - **A, one floor:** pale stone for every fighter (`#A9A59B` as shown, with the stage's light on it). The element stays in the fighter's words.
+  - **B, the element as a rim:** the same stone, and a thin ring of the element's light round its edge, 0.03 of the floor across.
+  - **Modulo's read: B.** The floor reads as the stage's stone, and the element is an accent again, one small thing. A is calmer, but it drops the only place the element shows as colour on this screen.
+  - **For the build, either take:** the viewport dulls a Neon part, so the stone's and the rim's colours are matched to the sheet in the game. B's rim is one more part in the figure's world.
+- **Left as they are, with the reason:**
+  - **Seam's own glass:** the bag's, Equipment's and Reinforce's cells, the sockets, the results card's chips, the dock's tiles, the Void Shop's hero. A well in the kit's glass isn't a ground, and the director's word of 2026-11-19, 14:56 keeps these screens in Seam.
+  - **Already not violet:** the lead card's and Home's fields behind a fighter (navy), the portraits' wells (graphite), the Breaker's chamber (teal glass).
+  - **The Voidkin screen's stage** behind the fighter (`Seam.Stage`, violet-black, lit from below by the rarity): the screen's own glass, kept.
+- **Two that aren't palettes, for research to weigh, not drawn:**
+  - **The reveal's room** (`reveal_room.png`) is baked violet-black, `#2B2542` to `#07050C`: a whole room as the ground. It's a closed piece, and a change is a new image.
+  - **Equipment's ground** (`Hud.Equipment.Backing` with its violet bloom) is the ground the picker just left. The 14:56 word keeps it.
+- **Status:** drawn and self-read, 13 minutes of the hour. Not picked, not content-checked (colours on a checked screen), not in the game.
+
 ### Faber's cloud session: the run's rules made pure (2026-11-20, offline, no Studio; 5058a78)
 
 - **Moved from StageService into `Rules.Stages`:** which falls count (`Counts`), when a Hard pack stands again (`Regrows`), whether a gate is shut (`Shut`), the save's holdings and the run's two cards (`Holdings`, `Won`, `Lost`), the run's attributes and their reading back (`Published`, `Parse`, which StageController now shares), and the log's name (`Label`). The service only wires them; nothing players see changed.

@@ -266,7 +266,7 @@ Its entrance stands behind each base [D], and the fight is in a room of its own 
 - **Fast floors:** a floor far below the lead's power falls in one hit and the next foe comes at once, so the climb to where it gets hard takes seconds.
 - **Rewards** by floor won: Credits rising with the floor, a chest chance rising with it, and a first-time bonus past the record. Fast floors pay nothing: they're the free ride to where it gets hard. One exception: floor 5's chest is sure the first time the account wins it, fast or not. Floors 1 to 5 are always Rook, Pip, Kirra, Lyric and Watt; the draw starts at floor 6 (branch `claude/design-review-rules`, a7cbd28, 2026-11-18). The Tower's chest has its own rarity row, so it gives Rare and better while Lantern Row is the only ground (`docs/balance.md`, "The Tower"). Each is written to the run's ledger on the server when its floor is won, and granted once when the run ends; a run's id makes a repeated claim a no-op.
 - **Interruptions:** leaving the ring, going home, a disconnect or a shutdown end the run at its last floor won, and nothing won is lost. The results open once at the next join. A run never resumes.
-- **The order** [D, 2026-11-19]: the room is built after the main game's open pieces. Until then the grey Tower, its platforms included, runs as it is.
+- **The order** [D, 2026-11-19]: the room is built after the main game's open pieces. Until then the grey Tower, its platforms included, runs as it is. Its look is drawn ahead by Modulo [D, 2026-11-23, by 20:01: AR56]; the build keeps this order.
 - **Not at launch** [D]: milestone bosses, cash-outs, branches, extra currencies.
 
 ## The world, in grey

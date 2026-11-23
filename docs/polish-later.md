@@ -31,6 +31,8 @@ On the director's word of 2026-11-13 (`docs/decisions.md`): after the whole game
 
 ## From the pieces
 
+- **The away rule said on the Power screen** (research, 2026-11-23, 20:07, from TR31's dropped line "Your bays worked 2 h of your 9 h away"): the workers generate for `Config.Base.Battery.AwayHours` away, then the machines run on the battery. Said beside the battery's hours, if players misread a return.
+
 - **The 2D cartoon fire is redone, the director's word (13:59, 2026-11-17):** "i despise those 2d cartoonish fire vfx cant we fix it later on i shared a long batch of real vfx". It covers Pip's Lantern Burst (its coil's burn and the flames left standing at the target, AR4 and AR8) and every fire drawn the same way, flat and outlined. The redo starts from the shared packs' fire (`docs/research/vfx-reference.md`, "From the vault"), adapted to our look and logged, as a new blockout judged in motion. It waits with the Voidkin work for the end (`docs/decisions.md`).
 - **Moved into the effects pass, 2026-11-13** (`docs/asset-requests.md`, AR8, on the director's word of that day): Haymaker's B5 (its block-in and costs in AR1, section 9), Pip's Lantern Burst's planned rework (AR4, section 8), the billboards drawn a picture late (AR2, section 13), and the level-up's flat ring (TR3).
 - **Planned rework, the director's word (2026-11-12): the Voidkin's faces.** "we shouldnt give them all those identical face." Rook, Pip and Lyric keep their faces for now. The rework gives each Voidkin a face of its own, part of its silhouette, and every new Voidkin is designed with its own face from the start (`docs/roster.md`).

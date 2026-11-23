@@ -3114,6 +3114,8 @@ Part 12's order, item 4.6 (`docs/research/rework-2026-11-16.md`, part 7; `docs/d
 
 ## TR31. Back from away: the card on return (Faber)
 
+**Folded into TR53** (research, 2026-11-23, 20:07): TR53 is this card, rewritten at F4 without reading this entry. TR53 carries over two things: the press only shows what the server credited on arrival, and the overflow's Credits. The cap's line isn't on the card at launch (`docs/polish-later.md`). Nothing here was built.
+
 On the director's "yes!" of 2026-11-16, 21:39 (`docs/decisions.md`), to research's suggestion. Tier 2, research and Faber: a new screen players see. It serves the north star's first measure, "comes back the next day", and it's cheap: the numbers already exist in the rejoin's summary (`Rules.Breaker.Advance` with `away`).
 - **Feel line:** the player comes back and, before anything else, sees what the base did without them: the shards it broke, the Credits its workers made, the levels their lead trained. One tap pours it into their counters, so the first second back is a reward.
 - **The block:**
@@ -4753,6 +4755,11 @@ Research, 2026-11-23, 14:58, F4 and F6 of `docs/research/design-holes.md`: the d
 - **Cap:** 90 minutes for each half.
 - **Order:** after the install backlog and TR52.
 - **The look** is AR55, Modulo's, drawn ahead (research, 18:27).
+- **From TR31,** folded in (research, 20:07; AR55, research's pass):
+  - the server credits everything on arrival, and the press only shows it, sending each amount to its counter;
+  - the battery's line is its net gain, shown only when it gained;
+  - a battery that ended full and sold its overflow reads "Full", with the Credits as its soft word.
+  - The logic case adds: a net loss shows no battery line.
 
 ## TR54. Goals, basic at launch: a dare per stretch, today's three, and Next (Faber, after TR52 and AR52)
 

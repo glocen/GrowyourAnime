@@ -15235,6 +15235,12 @@ The rules now live in `docs/design.md`, "States in a fight", below "No lock". Fa
   - Director-accepted: no.
 - **Status:** the rules are in. The cues are Scintilla's once that seat opens, worn by these names.
 
+### Research's answers on the even-elements check (Quaestor, 2026-11-23, 20:07)
+
+1. **It passes.** Every element is within 10% of the mean on clear time (5.4% at most) and on damage taken (8.1% at most), the measure set at 18:05. Frost isn't ahead.
+2. **Burn stays at 3 s.** Fire's trail is under 2 standard errors, inside the bar, and its cause is known: the deferral. Cutting it on that evidence would tune to noise, and 3 s is the length players read the burn by. The full check looks at it again.
+3. **The full check waits for poise.** Once Shock has its effect, one check of about 50 runs an element covers all four elements as they really play, pairwise at 10% on damage taken. Run now, it would only be run again.
+
 ## AR49. Home's panel: three cards with their own art (Modulo, for research's pick, then Faber)
 
 Research, 2026-11-19, 23:20 by the clock, on the director's word of 23:20 (`docs/decisions.md`, the row): "MAKE IT LOOOK GOOD".
@@ -16214,3 +16220,55 @@ Made; self-reviewed as stills at the smallest phone, up close at twice its pixel
   2. **The notice's second line has no room to grow.** "Its Voidkin waits at home." fills the 183 the pill leaves; a longer line would need a third line or a smaller size.
   3. The widths are the sheet's face; TR53's first capture checks the battery's line and the notice in the game's own.
 - **For Faber, TR53:** `return.json` holds the layout. Upload the three under the group at the build. The shard's picture on the card and the tab is the shard's that broke.
+
+### Research's pass on the finish: competent, one must-fix, and one of AR53's (Quaestor, 2026-11-23, 20:07)
+
+From the two sheets, the pictures at twice the phone's pixels, and at 64 pixels.
+- **Felt:** home from a run, a slim slab rises at the right with the battery's picture and "+12.40 kWh" large beside it, the yard still whole behind, and one gold Reveal under the thumb. On the street, the shard's tab ticks under the run's line and opens into its two lines when the shard breaks.
+- **Tier:** competent.
+- **The one bold thing:** the gain set large beside the machine's picture in its lit well, and it holds at five lines.
+- **Modulo's two numbers,** accepted: the card 188 wide, for the kWh to the hundredth; 21 a line at five lines, so the card stays under the Electricity pill.
+- **Must-fix 1: every well names its line at the phone's size** (the class). The Training machine's well is a blank cyan tile at twice the phone's pixels: nothing in it says training. Either draw it to read as the machine at the well's size, or put the Voidkin's portrait from the kit in it, as TR31 had the lead's. Modulo's call. The battery, the stones and the shard read.
+- **Must-fix 2, AR53's: an unfolded dare lies over no other HUD piece, at any phone** (the class). At the smallest phone the second dare's line ends at 448, covering the Electricity pill's rate (from 392) for its 3 s. A dare whose line would come within 6 of the pill breaks at a word into two lines, as the notice does, with the base's tab riding the foot as it does now. Measure all five (the four and the fallback) at the smallest phone.
+- **TR31 folded into TR53** (research's miss: TR31 asked for this card on 2026-11-16). Its lines, as words for Faber, with no redraw:
+  - the battery's line is its net gain, shown only when it gained;
+  - when the battery ended full and sold its overflow, the line reads "Full", with "+340 Credits" as its soft word. So an overnight return stays at five lines at most.
+  - Content check: PASS on "Full" and "+340 Credits" (20:08).
+- **What the stills can't show:**
+  - the card's rise and the press sending each amount to its counter (TR53's motion);
+  - whether a card after every run reads as a reward or a chore (TR53's verdict in motion);
+  - the widths in the game's face.
+- **The second look** judges the two fixes only.
+
+## AR56. The Tower's room: one great round room where the climb is fought (Modulo, for research's pick, then its finish; Faber's install after the main game)
+
+Research, 2026-11-23, 20:07, on the director's word by 20:01, "Tower room now", to research's question (`docs/decisions.md`, the top row).
+- **The room is the director's** of 2026-11-19 (`docs/design.md`, "The Tower"): one big, detailed circular room, the same for everyone. Whoever steps in gets their own copy, far from the map and out of sight. A win brings the next foe into the same room, and the floor rises.
+- **Drawn ahead,** as AR53 and AR55 were: Faber builds it after the main game's open pieces, and the grey Tower runs until then.
+- **A major landmark:** it aims at exceptional, with fresh eyes beside research's verdict at the blockout and at the finish.
+- **Feel line:** you step through the door behind your base into a great round room high above everything, your lead facing a void-lit Voidkin across its floor. At each win the next one comes in and the floor's number climbs, and the room makes you feel how high you've come.
+- **The question the blockout answers:** how one room that never changes says "high, and climbing" from the player's camera. Three directions in grey, each its own idea, Modulo's to choose. For example: a closed hall lit from an opening overhead; an open floor at a tower's top with the sky all round; a floor in a shaft whose rings rise out of sight.
+- **What each direction shows,** at the smallest phone, from the player's camera (the grey Tower's, or `lantern_row_look` until it has its own):
+  - **a fight's frame:** the lead and the foe as grey stand-ins at the fight's distance, the player beside. They read first; the room frames them and never competes;
+  - **the room whole,** once, as the player enters;
+  - **where the floor's number lives** in the room, if it does, beside the HUD's;
+  - **where the next foe comes from;**
+  - **its size:** the fight's floor at least the elite's square (64 studs), the room far bigger than the grey disc (radius 14);
+  - **its count:** parts and triangles, since a server holds up to eight copies.
+- **Its look:**
+  - anime: the Voidkin's world and the void's, in the base's language where it helps, since the Tower stands behind the base;
+  - none of Lantern Row's festival (lanterns, masks, drums, stalls), and no real machinery;
+  - bright enough to stand beside the deck: violet only on what's alive, so on the foes, never the room's floor, walls or sky.
+- **The block contains:** the three directions as stills and one short take each (the entrance's first look, then a fight's frame), in stand-in grey. Nothing cut, nothing in the game, nothing uploaded. It gets a landmark's time, about 3 hours as a guide.
+- **After the pick:**
+  - the room's finish, as a kit Faber installs;
+  - then, in its language, the entrance on the lot behind the base and the record marker visitors see (the director's "Entrance + record marker").
+- **What waits:**
+  - Faber's install and the room's copies;
+  - the foe's void-light look (the Voidkin's work is parked until before launch);
+  - the next foe's arrival effect (Scintilla), and the sounds (Sonus);
+  - the results screen's look.
+- **Checks:**
+  - the content check before the finish;
+  - Blender by `build/locks/blender.lock`, heavy runs in the foreground with the memory guard;
+  - research's pick, with fresh eyes.

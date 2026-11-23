@@ -4,7 +4,7 @@
  "frame": "Roblox's: a piece's front (Blender +Y) is -Z. A MeshPart goes at the piece's place times `centre`. A light's `at` is in the piece's own frame.",
  "surface": "one SurfaceAppearance per MeshPart: ColorMap `colour`, EmissiveMaskContent `glow`, EmissiveTint `glowTint`, EmissiveStrength from `glowStrength` (tuned in the engine). Single sided: each piece's ink is in its mesh, a hull turned inside out on the atlas's ink texel.",
  "ink": "the drawn edge is a hull 0.11 studs out (base_ink.py); Lantern Row's is 0.14",
- "shadows": "CastShadow off on PowerSpan and the floors (Court1, Yard, Wings, YardLive, YardBack, WingsLive, WingsBack).",
+ "shadows": "CastShadow off on PowerSpan and the floors (Court1, Yard, Wings, YardLive, YardBack, WingsLive, WingsBack), and on the light laid on the deck (LevelFloor, LevelRays, BayWake).",
  "maps": {
   "Base_Deck_Color.png": "the plain deck, a tile 8 studs square (four plates), for a Texture on a Part"
  },
@@ -2040,6 +2040,160 @@
    "collision": "the deck, 8.6 square and 0.5 high, and the panel as a box 6.9 by 1 by 6.0",
    "lights": [],
    "note": "Stage III of the Stone Condenser, from its level 15, in place of Condenser: Stage I's comb and 5 cups up each horn, 47 in all, dark when empty. A cup's stone or jewel is CondenserStone or CondenserJewel stood in it, the core CondenserCore: plan.json, machines.condenserStages"
+  },
+  "LevelFloor": {
+   "mesh": "meshes/LevelFloor.json",
+   "triangles": 1280,
+   "vertices": 696,
+   "centre": [
+    0.0,
+    0.15,
+    39.0
+   ],
+   "size": [
+    48.404,
+    0.14,
+    74.404
+   ],
+   "colour": "maps/Base_Kit_Color.png",
+   "glow": "maps/Base_Kit_Glow.png",
+   "glowTint": "#FFFFFF",
+   "glowStrength": 2.4,
+   "collision": "none",
+   "lights": [],
+   "note": "base level 2's light on the deck, from level 2 on: the way in's two lines lit from the sill to a second ring round the well, 23 in radius, open toward the gate between them, a node where it crosses each line leaving the heart. Its lights' tops are 0.2 up, over the floors' pictures. Stood at the plot's front edge, on its middle line. Look only, CastShadow off"
+  },
+  "LevelRays": {
+   "mesh": "meshes/LevelRays.json",
+   "triangles": 288,
+   "vertices": 192,
+   "centre": [
+    0.0,
+    0.14,
+    56.57352
+   ],
+   "size": [
+    43.726,
+    0.12,
+    34.579
+   ],
+   "colour": "maps/Base_Kit_Color.png",
+   "glow": "maps/Base_Kit_Glow.png",
+   "glowTint": "#FFFFFF",
+   "glowStrength": 2.4,
+   "collision": "none",
+   "lights": [],
+   "note": "base level 3's light on the deck, beside LevelFloor: 12 rays from the first ring out to the second, each narrowing outward, none across the way in. Stood at the plot's front edge, on its middle line. Look only, CastShadow off"
+  },
+  "BayWake": {
+   "mesh": "meshes/BayWake.json",
+   "triangles": 348,
+   "vertices": 232,
+   "centre": [
+    5.71175,
+    0.15,
+    0.0
+   ],
+   "size": [
+    24.864,
+    0.14,
+    13.44
+   ],
+   "colour": "maps/Base_Kit_Color.png",
+   "glow": "maps/Base_Kit_Glow.png",
+   "glowTint": "#FFFFFF",
+   "glowStrength": 2.4,
+   "collision": "none",
+   "lights": [],
+   "note": "a woken bay's light on the deck, for bays 3 and 4 (the bus's line outward): its ground's frame lit, 12.4 square and heavy at its corners as an open bay's is in the floor's picture, and the bus's current run on to it from the bay before, over the dead casing. In the bay's own frame, stood at the bay's place with the bay's turn (0 on the plot's left, 180 on its right), while the bay is awake. Look only, CastShadow off"
+  },
+  "LevelFin": {
+   "mesh": "meshes/LevelFin.json",
+   "triangles": 212,
+   "vertices": 140,
+   "centre": [
+    0.0,
+    7.395,
+    0.0
+   ],
+   "size": [
+    3.02,
+    15.01,
+    3.02
+   ],
+   "colour": "maps/Base_Kit_Color.png",
+   "glow": "maps/Base_Kit_Glow.png",
+   "glowTint": "#FFFFFF",
+   "glowStrength": 2.4,
+   "collision": "a box, 2.8 square, 12.5 high",
+   "lights": [],
+   "note": "a fin of the gate's own make, level 2's, one on each shoulder of the gate: a teal shaft on a concrete foot, a line of light in its dark bed on its Strip and yard faces, a bone collar, a narrowing shaft, a bone cap and a spire to 12.5, a bead of teal light afloat over it. It stands astride the gate's shoulder wall, 26.6 from the plot's middle line, the same piece on both sides"
+  },
+  "LevelFinOuter": {
+   "mesh": "meshes/LevelFinOuter.json",
+   "triangles": 212,
+   "vertices": 140,
+   "centre": [
+    0.0,
+    5.895,
+    0.0
+   ],
+   "size": [
+    2.82,
+    12.01,
+    2.82
+   ],
+   "colour": "maps/Base_Kit_Color.png",
+   "glow": "maps/Base_Kit_Glow.png",
+   "glowTint": "#FFFFFF",
+   "glowStrength": 2.4,
+   "collision": "a box, 2.6 square, 9.5 high",
+   "lights": [],
+   "note": "a fin of the gate's own make, level 3's, lower, one outside each of level 2's: a teal shaft on a concrete foot, a line of light in its dark bed on its Strip and yard faces, a bone collar, a narrowing shaft, a bone cap and a spire to 9.5, a bead of teal light afloat over it. It stands astride the gate's shoulder wall, 30.4 from the plot's middle line, the same piece on both sides"
+  },
+  "LevelRing": {
+   "mesh": "meshes/LevelRing.json",
+   "triangles": 1184,
+   "vertices": 880,
+   "centre": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "size": [
+    28.72,
+    2.3,
+    28.72
+   ],
+   "colour": "maps/Base_Kit_Color.png",
+   "glow": "maps/Base_Kit_Glow.png",
+   "glowTint": "#FFFFFF",
+   "glowStrength": 2.4,
+   "collision": "none",
+   "lights": [],
+   "note": "a ring afloat, level 2's, round the generator: 29.3 across, 1.3 by 0.9 in section, in the gate's teal, in 4 lengths drawn to a point at each end, a bead of teal light in each gap, a line of teal light in its dark bed on its inner and outer faces and under it. Built lying flat, its origin its middle, its axle the piece's Z (Roblox's Y). It stands tilted and turns about its own axle by machines.baseLevels. Look only"
+  },
+  "LevelRingOuter": {
+   "mesh": "meshes/LevelRingOuter.json",
+   "triangles": 1240,
+   "vertices": 920,
+   "centre": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "size": [
+    45.329,
+    3.2,
+    46.207
+   ],
+   "colour": "maps/Base_Kit_Color.png",
+   "glow": "maps/Base_Kit_Glow.png",
+   "glowTint": "#FFFFFF",
+   "glowStrength": 2.4,
+   "collision": "none",
+   "lights": [],
+   "note": "a ring afloat, level 3's, wider and higher: 46 across, 2 by 1.3 in section, in the gate's teal, in 4 lengths drawn to a point at each end, a bead of teal light in each gap, a line of teal light in its dark bed on its inner and outer faces and under it. Built lying flat, its origin its middle, its axle the piece's Z (Roblox's Y). It stands tilted and turns about its own axle by machines.baseLevels. Look only"
   }
  }
 }

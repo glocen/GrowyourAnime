@@ -30,6 +30,7 @@ import base_battery as battery  # noqa: E402
 import base_bay as bays  # noqa: E402
 import base_breaker as breaker  # noqa: E402
 import base_ink as ink  # noqa: E402
+import base_levels as levels  # noqa: E402
 import base_machines as machines  # noqa: E402
 import base_forge as forge  # noqa: E402
 import base_forge_stages as forge_stages  # noqa: E402
@@ -744,7 +745,8 @@ PIECES = {"Court1": court(1), "Yard": yard, "Wings": wings, "YardLive": lambda: 
           **bays.PIECES,           # and the bays' Stages II and III (AR33, base_bay.py)
           **battery.PIECES,        # and the battery's Stages II and III (AR34, base_battery.py)
           **training.PIECES,       # and the Training machine's Stages II and III (AR35, base_training.py)
-          **forge_stages.PIECES}   # and the Forge's and the Condenser's Stages II and III (AR36, base_forge_stages.py)
+          **forge_stages.PIECES,   # and the Forge's and the Condenser's Stages II and III (AR36, base_forge_stages.py)
+          **levels.PIECES}         # and what the yard gains at base levels 2 and 3 (AR50, base_levels.py)
 
 
 def build(name):
@@ -807,7 +809,8 @@ def export(out: Path):
                 "`glowTint`, EmissiveStrength from `glowStrength` (tuned in the engine). Single sided: each piece's ink "
                 "is in its mesh, a hull turned inside out on the atlas's ink texel.",
         ink=f"the drawn edge is a hull {ink.INK:g} studs out (base_ink.py); Lantern Row's is {ink.SHARED:g}",
-        shadows="CastShadow off on PowerSpan and the floors (Court1, Yard, Wings, YardLive, YardBack, WingsLive, WingsBack).",
+        shadows="CastShadow off on PowerSpan and the floors (Court1, Yard, Wings, YardLive, YardBack, WingsLive, WingsBack), "
+                "and on the light laid on the deck (LevelFloor, LevelRays, BayWake).",
         maps={"Base_Deck_Color.png": f"the plain deck, a tile {DECK[1]:g} studs square (four plates), for a Texture on a Part"},
         pieces=listing)
     (out / "manifest.json").write_text(json.dumps(manifest, indent=1), encoding="utf-8")

@@ -413,7 +413,7 @@
    },
    "budget": {
     "pieces": 54,
-    "triangles": 13544,
+    "triangles": 14472,
     "lights": 7,
     "counts": {
      "Court1": 1,
@@ -2855,6 +2855,101 @@
       }
      ]
     }
+   }
+  },
+  "baseLevels": {
+   "note": "AR50: what the yard gains at base levels 2 and 3, over level 1's plan. Not a machine: it stands with the base's level (Config.Base), and a level's pieces stand beside those of the level under it, never in their place. Each row is in the plot's frame, laid as a placement is: `across` from its middle line, `along` from its front edge (toward the gate above zero), `up`. `moves`: still; turns, always, about the piece's own axle at `rate` turns a second, the way `sign` gives. A ring stands at its row's place as CFrame.Angles(0, 0, math.rad(lean)) * CFrame.Angles(math.rad(tilt), 0, 0) * CFrame.Angles(0, angle * sign, 0) in the plot's frame: `tilt` raises its gate side, `lean` dips its right side as seen from the gate, and `axle` is where its axle then points, in Roblox's frame, to check the turn by. LevelFloor, LevelRays and BayWake are light on the deck: no collision, CastShadow off. The fins and the rings are the gate's teal with their light in the mesh's glow, never Neon. OPEN, 2026-11-23: LevelRing's place isn't final. Measured against the generator's own stages it passes within 0.54 of Generator2 and through Generator3 (docs/asset-requests.md, AR50, the cut's record): stand no LevelRing before its refit. The floor's light, the fins, BayWake and LevelRingOuter (5.4 clear) stand as listed.",
+   "levels": {
+    "2": {
+     "pieces": [
+      {
+       "piece": "LevelFloor",
+       "across": 0.0,
+       "along": 0.0,
+       "up": 0.0,
+       "moves": "still"
+      },
+      {
+       "piece": "LevelFin",
+       "across": -26.6,
+       "along": 0.0,
+       "up": 0.0,
+       "moves": "still"
+      },
+      {
+       "piece": "LevelFin",
+       "across": 26.6,
+       "along": 0.0,
+       "up": 0.0,
+       "moves": "still"
+      },
+      {
+       "piece": "LevelRing",
+       "across": 0.0,
+       "along": -52.0,
+       "up": 15.5,
+       "moves": "turns",
+       "tilt": 30.0,
+       "lean": 0.0,
+       "sign": 1,
+       "rate": 0.02,
+       "axle": [
+        0.0,
+        0.866,
+        0.5
+       ]
+      }
+     ]
+    },
+    "3": {
+     "pieces": [
+      {
+       "piece": "LevelRays",
+       "across": 0.0,
+       "along": 0.0,
+       "up": 0.0,
+       "moves": "still"
+      },
+      {
+       "piece": "LevelFinOuter",
+       "across": -30.4,
+       "along": 0.0,
+       "up": 0.0,
+       "moves": "still"
+      },
+      {
+       "piece": "LevelFinOuter",
+       "across": 30.4,
+       "along": 0.0,
+       "up": 0.0,
+       "moves": "still"
+      },
+      {
+       "piece": "LevelRingOuter",
+       "across": 0.0,
+       "along": -52.0,
+       "up": 25.0,
+       "moves": "turns",
+       "tilt": 26.0,
+       "lean": 12.0,
+       "sign": -1,
+       "rate": 0.012,
+       "axle": [
+        -0.1869,
+        0.8792,
+        0.4384
+       ]
+      }
+     ]
+    }
+   },
+   "bayWake": {
+    "piece": "BayWake",
+    "bays": [
+     3,
+     4
+    ],
+    "note": "stood at the bay's own place with the bay's turn while that bay is awake; bays 5 and 6, whose line runs back along the wall, wait for their levels"
    }
   }
  },

@@ -15248,6 +15248,39 @@ Rendered in Blender by `tools/blender/base_levels_block.py`: block-in pieces in 
 - **Accepted on the sheets:** level 2's ring doesn't read at 64 px from the Strip. It reads at the phone's pixels from 90 studs, and the feel line asks the Strip's read of level 3, which holds. Its first test is in the game, at the far stand, once the generator's Stage II stands under it (TR51).
 - **Next, after the wrap-up:** the colour pass and the cut for Faber, who installs it after TR51.
 
+### The colour pass and the cut: six pieces stand, level 2's ring is open (Modulo, 2026-11-23, 02:55 to 03:21 by the clock)
+
+D as base kit pieces, in the machines' stages' own shape: `tools/blender/base_levels.py` (`PIECES` into `base_kit.py`, `tables()` into `plan.json`, `machines.baseLevels`). The export only added: seven new meshes, the manifest's and the plan's new entries, the manifest's `shadows` line naming the three deck pieces. One old line changed, the plan's level 1 triangle total (13544 to 14472): it was stale against the committed manifest. No map, no swatch and no other mesh changed (`git status`).
+
+| Piece | From | Triangles | Stands | Collision |
+|---|---|---|---|---|
+| `LevelFloor` | level 2 | 1280 | the plot's front edge, middle line | none, CastShadow off |
+| `LevelRays` | level 3 | 288 | the same | none, CastShadow off |
+| `BayWake` | bays 3 and 4 awake | 348 | the bay's place and turn | none, CastShadow off |
+| `LevelFin` | level 2 | 212 | 26.6 either side of the middle line, on the front edge | a box, 2.8 square, 12.5 high |
+| `LevelFinOuter` | level 3 | 212 | 30.4 either side | a box, 2.6 square, 9.5 high |
+| `LevelRing` | level 2 | 1184 | over the generator, 15.5 up, gate side raised 30 | none |
+| `LevelRingOuter` | level 3 | 1240 | over the generator, 25 up, raised 26, leaned 12 | none |
+
+- **What the finish changed from the blockout.**
+  - The floor: the way in's light now lies on its own two dashed lines (12.5 either side), from the sill to the second ring (23 in radius, open toward the gate between them), with a node where the ring crosses each line leaving the heart. Level 3's rays are 12, narrowing outward, none across the way in. Every light is a slice 0.2 up in a dark bed, over the floors' pictures: no floor picture changed.
+  - A woken bay (`BayWake`): its ground's frame lit, heavy at the corners as an open bay's is, and the bus's current run on to it.
+  - The fins: a tapered upper shaft, a bone cap, a spire, and a bead of teal light afloat over the tip. One piece serves both sides.
+  - The rings: four lengths each, drawn to a point at both ends, a bead in each gap, teal light in a dark bed on the inner and outer faces and under. Built lying flat with the origin on the axle. They turn at 0.02 and 0.012 turns a second, opposite ways. The plan's note gives the CFrame order, and each row an `axle` to check the turn by.
+- **Open, a must-fix of my own: `LevelRing` passes through the generator's later stages.** The blockout stood every level over the generator's Stage I, and so did the second look's sheets. The finish's review stands each level over its own stage (`base_levels_block.staged`), and I measured the ring against the exported meshes over a full turn (`build/scratch/modulo/ar50/ring_clear.py`): it comes within 0.54 studs of `Generator2`'s body and passes through `Generator3`'s (the left arm, 14.3 across, 16.8 up, 2.9 toward the gate), and within 1 stud of the wheel. `LevelRingOuter` is clear by 5.4.
+  - A search over radius 16 to 18.5, height 11 to 17 and tilt 12 to 34 found no place round the axle that clears both stages by 1.2 and stays whole in the gate-line frame (`ring_fit.py`): Stage III's body reaches 18.5 from the axle and 27.1 up, and the frame's top is at about 23 there.
+  - So level 2's ring needs a new place, not a nudge. What I'd try first, for research's call: the ring stood forward of the generator, between it and the gate, round nothing; or a smaller ring over the wheel's crown, cut by the gate-line frame and whole from the Strip. Neither is drawn.
+  - The plan's note says the same, so nobody stands `LevelRing` before its refit.
+- **Self-read, on the sheets** (`build/handoff/Base/base_levels_finish.png`, `_64.png`, `_turn.png`, `_above.png`; by day, the player's camera):
+  - At the gate's line the floor is the strongest sign: the two lit lines and the ring read at 64 px.
+  - Facing the gate, one pair of fins then two reads at 64 px, in the gate's own make.
+  - From the Strip, level 3's ring stands over the skyline at 90 studs and is faint at 64 px from 150. Level 2's doesn't read at 64 px from the Strip, the limit research accepted.
+  - A fault found and fixed on the way: a turned shape closed to a point of no radius lost its faces, so the spires showed their ink and the beads were missing; points now keep a radius of 0.05.
+- **Content check:** PASS for the handoff, all seven, 03:15. Held for the upload check: each mesh alone on a sheet, full size and 64 px over dark; `LevelFloor` with `LevelRays` from straight above (`base_levels_finish_above.png` is the yard's); a row in the asset log.
+- **For Faber, after TR51:** `py tools/world/kit_take.py Base`, seven meshes to upload under the group (six until the ring's refit), and code for `machines.baseLevels`: a level's pieces beside those of the level under it, the rings' turn, `BayWake` while bays 3 and 4 are awake.
+- **Four facts:** made, the seven pieces and their rows; self-read on the sheets, with `LevelRing`'s clash open; delivered to `build/handoff/Base`, not uploaded; nothing in the game. Research's pass on the finish isn't asked yet: the ring's place comes first.
+- **Stopped on the director's wrap-up (by research).**
+
 ## Later, by ground
 
 The rest of ground 1 (Kirra in AR10, Watt in AR11; then Sable, Marigold, Crane), then each ground's Voidkin in `docs/roster.md`'s order. **The machines** (Gantry, Bulwark, Ironhymn, Shiomaru, Aegir) share one custom rig, taller than a player, with its own clip family: the first of them is timed like AR1, because a custom rig is a different cost.

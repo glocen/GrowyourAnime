@@ -381,7 +381,26 @@ def grown(key, level):
         made += [("B2Floor", 0.0, 0.0, 0.0), (f"D{level}Fins", 0.0, 0.0, 0.0), ("DRing14", 0.0, ROW, 0.0)]
         if level == 3:
             made += [("DRays", 0.0, 0.0, 0.0), ("DRing22", 0.0, ROW, 0.0)]
+    elif key == "F":                    # the finish: the kit's own pieces, as base_levels.py stands them
+        made = base.levels.stood(level, SPIN)
     return made
+
+
+def staged(level):
+    """The plan's machines with the generator at the stage its base's level gives it (base_mill.stages)."""
+    whole = plan.machines
+
+    def machines(at_level=1):
+        made = whole(at_level)
+        if at_level != level or level == 1:
+            return made
+        table = base.mill.stages()
+        rows = table.get(level) or table[str(level)]
+        rows = rows["pieces"] if isinstance(rows, dict) else rows
+        gx, gy = base.GENERATOR
+        return [row for row in made if not row[0].startswith("Generator")] + [
+            (row["piece"], gx + row["at"][0], gy - row["at"][1], row["at"][2], 0.0, "") for row in rows]
+    return machines
 
 
 def behind(at, toward):
@@ -407,9 +426,14 @@ def see(out: Path, key, level, fast, only=(), spin=None):
     scene = bl.reset_scene()
     base.write_pictures(out / "maps")
     yard = plan.Yard(scene, level, out / "maps")
+    if key == "F":
+        plan.machines = staged(level)
     yard.plot(0.0, 1)
-    for i, (name, x, inward, up) in enumerate(grown(key, level)):
-        yard.stock.stand(name, f"G{i}", yard.at(0.0, 1, x, inward, up), 0.0)
+    for i, row in enumerate(grown(key, level)):
+        name, x, inward, up = row[:4]
+        obj = yard.stock.stand(name, f"G{i}", yard.at(0.0, 1, x, inward, up), row[4] if len(row) > 4 else 0.0)
+        if len(row) > 5 and row[5] is not None:                     # a ring afloat, tilted
+            obj.rotation_euler = row[5].to_euler()
     yard.level = 1                                                  # across the road: a base at level 1
     yard.plot(plan.STRIP, -1)
     yard.kit.block("Strip", (3 * plan.PLOT, plan.STRIP, 0.4), (0, plan.STRIP / 2, -0.22), yard.stone)
@@ -417,11 +441,14 @@ def see(out: Path, key, level, fast, only=(), spin=None):
     stands = {"in": (THRESHOLD, (0.0, -ROW)), "gate": (ARRIVING, (0.0, 0.0)), "strip": (WALKER, (0.0, WALKER[1])),
               "far": (FAR, (0.0, FAR[1]))}
     stands = {name: stand for name, stand in stands.items() if not only or name in only}
+    if "above" in only:                 # the deck's light from straight above, as a moderator's queue would show it
+        stands["above"] = None
     for obj in yard.kit.pieces:
-        if obj.name.startswith(("PowerSpan", "Court", "Yard", "Wings", "B2Floor", "B3Floor", "BayLine", "BBeam", "DRays")):
+        if obj.name.startswith(("PowerSpan", "Court", "Yard", "Wings", "B2Floor", "B3Floor", "BayLine", "BBeam", "DRays") + base.levels.FLAT):
             obj.visible_shadow = False
-    for name, (at, _) in stands.items():
-        yard.person(at, f"Stand{name}")
+    for name, stand in stands.items():
+        if stand:
+            yard.person(stand[0], f"Stand{name}")
     look.sky(scene, d)
     look.sun(scene, d)
     r = scene.render
@@ -439,8 +466,8 @@ def see(out: Path, key, level, fast, only=(), spin=None):
             setattr(scene.eevee, attr, val)
         except AttributeError:
             pass
-    for name, (at, toward) in stands.items():
-        eye, target = behind(at, toward)
+    for name, stand in stands.items():
+        eye, target = behind(*stand) if stand else ((0.0, -38.9, 64.0), (0.0, -39.0, 0.0))
         scene.camera = plan.camera(scene, name, eye, target)
         for obj in bpy.data.objects:                                # the player stands only in their own view
             if obj.name.startswith("Stand"):
@@ -487,33 +514,36 @@ def sheet(out: Path):
     print("AR50: sheets done")
 
 
-def second(out: Path):
-    """The second look at D: its levels at each stand, the same at 64 px high, and the rings turning."""
+def second(out: Path, key="D"):
+    """The second look at D, or the finish's (F): its levels at each stand, the same at 64 px high, and the rings
+    turning."""
+    tag = "d" if key == "D" else "finish"
+    title = "D after research's two fixes" if key == "D" else "the finish, the kit's own pieces"
     rs.OUT = out
     w, h = SIZE
     pad, head = 10, 24
     board = rs.canvas(3 * (w + pad) + pad, len(VIEWS) * (h + head) + pad + 30, (0.93, 0.93, 0.94))
-    words = [(pad, 8, 17, "AR50, D after research's two fixes: levels 1, 2 and 3 at the four stands. By day, the player's "
+    words = [(pad, 8, 17, f"AR50, {title}: levels 1, 2 and 3 at the four stands. By day, the player's "
               "camera, the smallest phone's pixels", "#16182A")]
     small = rs.canvas(3 * (int(w * 64 / h) + 6) + 6, len(VIEWS) * 70 + 6, (0.93, 0.93, 0.94))
     for row, (view, what) in enumerate(VIEWS):
         y = 30 + row * (h + head) + head
         words.append((pad, y - 19, 14, what[0].upper() + what[1:], "#16182A"))
         for level in (1, 2, 3):
-            page = rs.load(out / f"{'A' if level == 1 else 'D'}{level}_{view}.png")
+            page = rs.load(out / f"{'A' if level == 1 else key}{level}_{view}.png")
             page[..., 3] = 1.0
             rs.paste(board, page, pad + (level - 1) * (w + pad), y)
             tile = rs.shrink(page, 64 / h)
             rs.paste(small, tile, 6 + (level - 1) * (tile.shape[1] + 6), 6 + row * 70)
     rs.paste(board, rs.text_layer(board.shape[1], board.shape[0], words), 0, 0)
-    rs.save(board, out / "base_levels_d.png")
-    rs.save(small, out / "base_levels_d_64.png")
-    frames = sorted(out.glob("D3_strip_t*.png"))
+    rs.save(board, out / f"base_levels_{tag}.png")
+    rs.save(small, out / f"base_levels_{tag}_64.png")
+    frames = sorted(out.glob(f"{key}3_strip_t*.png"))
     if frames:
         half = 0.5
         tw, th = int(w * half), int(h * half)
         board = rs.canvas(len(frames) * (tw + 6) + 6, 2 * (th + head) + 36, (0.93, 0.93, 0.94))
-        words = [(6, 8, 15, "AR50, D's rings turning, each its own way: level 3 from the gate's line (above) and from 90 "
+        words = [(6, 8, 15, f"AR50, {key}'s rings turning, each its own way: level 3 from the gate's line (above) and from 90 "
                   "studs down the Strip, at half the phone's pixels", "#16182A")]
         for row, view in enumerate(("in", "strip")):
             for col, file in enumerate(frames):
@@ -523,7 +553,7 @@ def second(out: Path):
                 words.append((6 + col * (tw + 6), 34 + row * (th + head) + th + 3, 13, f"turned {file.stem[-3:].lstrip('0') or '0'} degrees",
                               "#16182A"))
         rs.paste(board, rs.text_layer(board.shape[1], board.shape[0], words), 0, 0)
-        rs.save(board, out / "base_levels_turn.png")
+        rs.save(board, out / f"base_levels_{tag}_turn.png")
     print("AR50: second look laid")
 
 

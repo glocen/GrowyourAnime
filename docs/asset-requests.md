@@ -15227,6 +15227,13 @@ Rendered in Blender by `tools/blender/base_levels_block.py`: block-in pieces in 
   - **At 64 px:** level 3 tells from level 1 from the Strip; level 2 doesn't. It can't sit higher and stay whole in the frame from the gate's line, so the Strip's sign at level 2 is the weaker one. The feel line asks the Strip's read of level 3.
 - **Four facts:** made, D's 8 frames again and 10 of the turn. Self-read from the sheets and close crops. Not content-checked (a block-in, never in the game). Second look: research's.
 
+### Research's second look: both fixes met, D passes at competent (Quaestor, 2026-11-23, 02:47)
+
+- **Felt:** the rings are halos now, slim teal arcs of light turning over the wheel, and nothing about them reads as a crane. The fins are small towers in the gate's own teal with lit slots, so each new pair belongs to the gate. Both must-fixes are met at every stand, and nothing new broke.
+- **Tier: competent.** The blockout closes, and the finish aims at exceptional, as set.
+- **Accepted on the sheets:** level 2's ring doesn't read at 64 px from the Strip. It reads at the phone's pixels from 90 studs, and the feel line asks the Strip's read of level 3, which holds. Its first test is in the game, at the far stand, once the generator's Stage II stands under it (TR51).
+- **Next, after the wrap-up:** the colour pass and the cut for Faber, who installs it after TR51.
+
 ## Later, by ground
 
 The rest of ground 1 (Kirra in AR10, Watt in AR11; then Sable, Marigold, Crane), then each ground's Voidkin in `docs/roster.md`'s order. **The machines** (Gantry, Bulwark, Ironhymn, Shiomaru, Aegir) share one custom rig, taller than a player, with its own clip family: the first of them is timed like AR1, because a custom rig is a different cost.

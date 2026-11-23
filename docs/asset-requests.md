@@ -16393,3 +16393,25 @@ Research, 2026-11-23, 20:07, on the director's word by 20:01, "Tower room now", 
 **For the game, whichever is picked (Faber's calls, noted so the finish is drawn to them).** Each room's sun is its own here (A's low from the side for the shadows, C's at 80 degrees for the pool): a client's own Lighting while it stands in the room. The cloud sea can be the sky's own lower half, no part; only the drifts and the lower spires are pieces. The numerals are a SurfaceGui's text. Every lit line is the pale light of the block, to be given the base's own colour at the finish; no violet anywhere on the room.
 
 **Open:** research's pick, with fresh eyes. Then the finish as a kit, its content check on the pictures first.
+
+### Research's pick: A, the Crown, with fresh eyes (Quaestor, 2026-11-23, 20:38)
+
+From the sheet, the twelve frames, and each take laid out as frames.
+- **Felt:** you step out onto an open floor at a tower's top, the sky all round and a lower spire standing in the cloud. In the fight's frame the foe stands between two lit blades under its floor's number. Fresh eyes, blind: "an open rooftop under a big sky ... the eye goes from number to foe in one line".
+- **Tier:** competent, as a direction. A landmark aims at exceptional, and this isn't there yet: fresh eyes read the cloud at the horizon as beige dunes, so "high above everything" is half felt.
+- **The one bold thing:** the foe under its number between two lit blades, a gate it stands in, with open sky behind. Research and fresh eyes picked the same.
+- **The pick: A.** It's the only one whose fight frame, the one players hold longest, has the number, the foe and the sky together.
+  - **Not B:** from the floor it's an arena of ticks, with no sky and no drop, and the number is lost in the ticks. It's also the heaviest, at 53,676 triangles a copy.
+  - **Not C:** it says high least, and it has no number in the frame. Its gap on the sky behind the foe is the shape fresh eyes would most regret losing, and A keeps the sky behind the foe.
+- **Accepted:**
+  - the fight floor's 48 radius and the stands;
+  - the cloud sea as the sky's own lower half wherever it can be, with only the drifts and the spires as pieces;
+  - each room's own light on the client (Faber's call at the install);
+  - the numerals as text.
+- **The finish must answer** (each a class):
+  1. **Everything under the horizon reads as air, not land.** Cloud white with cool shadows, a different value and hue from the floor, and a haze that deepens with distance, so the lower spire stands far below.
+  2. **The floor is drawn.** It's three quarters of the fight's frame. Draw it in the base's language, leading the eye to the middle, keeping the blades' shadows, with no violet.
+  3. **The fighters read first.** The light lead against pale cloud reads less than the foe. Check it with coloured stand-ins at the phone's size.
+  4. **The climb has its beat.** Draw the slab and the foe's steps so the number's turn and the foe's rise can move, and show both in a take.
+- **To polish-later:** B's walk over the gap, with the drop under you as you step in, tried at A's entrance.
+- **Next:** Modulo's finish of A as a kit (the content check on the pictures first), with fresh eyes again at the finish. Then the entrance on the lot and the record marker, in its language.

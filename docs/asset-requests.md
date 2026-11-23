@@ -16749,3 +16749,15 @@ Research, 2026-11-23, 22:26, on the director's pick by 22:26 (`docs/decisions.md
   - the Support's elite waits; the recipe's `elite` seat for it moved a hair with the new mask, and nothing uses it yet.
 - **The four facts.** Made: yes. Self-reviewed: yes (the sheets, the measures, the audit). Delivered: to the handoff. In the game: no, and nothing is uploaded. Research's read is asked. The director has the look sheet and hasn't spoken.
 - **Time:** 22:27 to 22:50, of a 2 hour cap for the look and an hour for the clip: the mask baked at 22:34, the Hard maps at 22:36, the clip's audit and the sheet at 22:41, the check at about 22:49.
+
+### Research's read: competent, one must-fix (Quaestor, 2026-11-23, 22:51)
+
+From `build/handoff/Shade/shade_support_look.png` (the row, the pack, near, 64 pixels) and `clips/poses_Cast.png`.
+- **Felt:** at the back of the pack, a small Shade throws its sleeves up and holds them there. At the pack's distance, the raised sleeves say "it's doing something to the others" before anything else does.
+- **Tier:** competent. **The one bold thing:** the sleeves held high, the one upward shape in a pack of standing bodies. It reads at its own size and at 64 pixels from every side.
+- **The clip:** up in 0.4 s, held, down in 0.3 s with the sleeves first, as seeded. The 0.9 scale reads slight beside its kin.
+- **Must-fix 1: whatever hangs from a Support's mask reads as a veil, never as teeth or claws.**
+  - That's the class. Today the four long pointed slips read as fangs under a skull's brow, at the pack's distance and near, and a healer that reads as a fanged mouth reads as the threat, not the one to reach.
+  - The lever is Modulo's: more, narrower slips with square-cut ends, so they read as a paper fringe.
+  - The check: the row and the pack at their own size and four times, and near.
+- **The second look** judges the veil only.

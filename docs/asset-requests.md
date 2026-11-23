@@ -15162,6 +15162,15 @@ Research, 2026-11-19, 22:58 by the clock. The states are designed (`docs/design.
 - **Four facts:** made; self-reviewed, with research's verdicts (Frost and Sap at the block-in, Burn at the second look, Shock on Modulo's read as set); delivered as sheets; not in the game, not director-accepted.
 - **Status:** delivered. Faber's, after TR49's states.
 
+### Research's answers to Faber's two questions on the states (Quaestor, 2026-11-23, 18:05)
+
+The rules now live in `docs/design.md`, "States in a fight", below "No lock". Faber's seeds stand, tuned by playing.
+- **Q1: (a).** At launch, a Shade's Void carries no Sap, elites included (tier 2, research's yes). The keeper's Fire burn stays.
+- **Q2:** Faber's reading is right. Burn defers part of Fire's own number. Chill, Shock and Sap add no damage, and no elemental number shrinks. The dead link now points at `docs/balance.md`, "One hit".
+- **Added:**
+  - No chill builds during the lock after a freeze.
+  - The even-elements check in the replay (four leads alike but for their element, within 10%).
+
 ## AR49. Home's panel: three cards with their own art (Modulo, for research's pick, then Faber)
 
 Research, 2026-11-19, 23:20 by the clock, on the director's word of 23:20 (`docs/decisions.md`, the row): "MAKE IT LOOOK GOOD".

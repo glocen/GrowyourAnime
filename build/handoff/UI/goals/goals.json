@@ -1,0 +1,947 @@
+{
+ "what": "AR53, the goals' look, for TR54: research's pick B (2026-11-23, 17:49) with its must-fix 1 and the fall's card. Every word is TR54's (docs/test-requests.md, TR54: the dares, today's three, the Ledger's lines, Next, the labels): this file holds where words sit, never the words.",
+ "units": "points at the smallest phone (568 x 320); every box is left, top, width, height; a word's y is its capitals' top; images at 4 pixels a point, edge alpha 0. An image's `origin` is where its lay point sits in it, in points from its top left (times 4 for pixels): a lay's `origin` is where that point goes",
+ "sheets": [
+  "goals_dare_line.png",
+  "goals_dare_card.png",
+  "goals_today.png",
+  "goals_ledger.png",
+  "goals_cut.png"
+ ],
+ "dare": {
+  "line": {
+   "note": "the run's line as StageController builds it; boxes from the line's glass's top left",
+   "unfolded": {
+    "grows": 24,
+    "rule": {
+     "y": 46,
+     "inset": 8,
+     "height": 1,
+     "colour": "#51477A",
+     "transparency": 0.1
+    },
+    "tag": {
+     "image": "DareTag",
+     "origin": [
+      21,
+      46
+     ],
+     "scale": 0.875
+    },
+    "words": {
+     "x": "the stretch's name's left",
+     "y": 51,
+     "size": 14,
+     "colour": "#F1ECFF"
+    },
+    "held": "about 3 s from the stretch's start (a seed: TR54's Config), then it folds"
+   },
+   "folded": {
+    "tab": {
+     "box": [
+      8,
+      30,
+      26,
+      40
+     ],
+     "make": "the line's own glass, under it, corners cut 4"
+    },
+    "tag": {
+     "origin": [
+      20,
+      44
+     ],
+     "scale": 1.0,
+     "images": {
+      "holds": "DareTag",
+      "broken": "DareTagDark",
+      "kept": "DareTagKept"
+     }
+    },
+    "broken": "the tag's image swaps to DareTagDark; no words, no sound",
+    "kept": "DareTagKept once, as the stretch clears"
+   },
+   "hard": "the same row and tab in the Hard line's glass (the ember's edge)"
+  },
+  "card": {
+   "tags": {
+    "image": "DareTagKept",
+    "scale": 0.9375,
+    "origin": "7 right of stretch k's mark's right edge, 2 under the road's middle, for each k kept"
+   },
+   "chip": {
+    "row": "last on the time's row, the row's gap (8) before it; on the fall's card a row of its own under the line that says where the next run starts, 26 tall, the chip centred, 2 down",
+    "height": 22,
+    "corners": 4,
+    "fill": [
+     "#0E0B1A",
+     "#08070F"
+    ],
+    "edge": {
+     "colour": "#C9BA9C",
+     "width": 1.2
+    },
+    "glow": {
+     "colour": "#FFF6E2",
+     "strength": 0.22,
+     "reach": 5
+    },
+    "tag": {
+     "image": "DareTagKept",
+     "origin": [
+      10,
+      1.5
+     ],
+     "scale": 0.8125
+    },
+    "words": {
+     "text": "TR54's chip label",
+     "x": 19,
+     "y": 4,
+     "size": 14,
+     "bold": true,
+     "colour": "#EFE6D2"
+    },
+    "stone": {
+     "left": "the words' right + 6",
+     "top": -2,
+     "size": 26.0,
+     "make": "the kit's Common item cell with the forge stone's picture of the ground's grade (StoneLow on Lantern Row) at 0.94 and a hairline in the edge #E2CFA4 over its rim, as Reinforce draws its stone"
+    },
+    "count": {
+     "left": "the cell's right + 4",
+     "y": 3,
+     "size": 17,
+     "bold": true,
+     "colour": "#F1ECFF",
+     "words": "+N, one stone a kept dare"
+    },
+    "pad": 7,
+    "width": "follows its words",
+    "widest": "with a new best the row is about 297 of the card's 320 by the sheet's letter widths: not measured in the game's face, so the first capture checks it"
+   },
+   "none": "no dare kept: no tag, no chip, on either card"
+  }
+ },
+ "today": {
+  "note": "boxes from Home's glass's top left (build/handoff/UI/home_cards/home_cards.json). HomeSettings, HomeSettingsPress and the Settings label leave the panel: Settings is the cog tile",
+  "cog": {
+   "images": [
+    "HomeCog",
+    "HomeCogPress"
+   ],
+   "origin": [
+    0,
+    0
+   ],
+   "tap": [
+    278.0,
+    8.0,
+    85.0,
+    44.0
+   ],
+   "mark": {
+    "image": "HomeMarkSettings (AR43's)",
+    "centre": [
+     320.7,
+     30.0
+    ],
+    "size": 24,
+    "colour": "#C9D0D9"
+   }
+  },
+  "card": {
+   "images": [
+    "HomeToday",
+    "HomeTodayWaits",
+    "HomeTodayPress"
+   ],
+   "origin": [
+    0,
+    0
+   ],
+   "tap": [
+    254.0,
+    58.0,
+    99.0,
+    118.0
+   ],
+   "waits": "HomeTodayWaits shows while any goal, today's or banked, waits to be claimed",
+   "shard": {
+    "image": "the Lantern Row shard's small picture (shard_standard_small)",
+    "box": [
+     287.5,
+     72.0,
+     40.0,
+     40.0
+    ]
+   },
+   "pips": {
+    "images": {
+     "open": "GoalPipOpen",
+     "done": "GoalPipDone",
+     "claimed": "GoalPipClaimed"
+    },
+    "centres": [
+     [
+      287.7,
+      130.0
+     ],
+     [
+      300.7,
+      130.0
+     ],
+     [
+      313.7,
+      130.0
+     ]
+    ],
+    "note": "today's three in the lists' order: fight, base, roster"
+   },
+   "word": {
+    "x": 293.3,
+    "y": 156.92,
+    "size": 14,
+    "colour": "#F5EFE2",
+    "align": "CENTER",
+    "make": "Home's words: bold, leaning, a soft dark under"
+   }
+  },
+  "list": {
+   "note": "in the glass alone: the three cards, the cog tile and the Today card hidden, HomeGlass and HomePointer kept",
+   "back": {
+    "chevron": [
+     [
+      22,
+      11
+     ],
+     [
+      16,
+      17
+     ],
+     [
+      22,
+      23
+     ]
+    ],
+    "width": 1.8,
+    "colour": "#F5EFE2",
+    "tap": "at least 44 each way"
+   },
+   "head": {
+    "x": 32,
+    "y": 11,
+    "size": 17,
+    "colour": "#F5EFE2"
+   },
+   "ledger": {
+    "right": 343.0,
+    "y": 12,
+    "size": 14,
+    "colour": "#AEB7C2",
+    "chevron": [
+     [
+      349.0,
+      12.0
+     ],
+     [
+      354.0,
+      17.0
+     ],
+     [
+      349.0,
+      22.0
+     ]
+    ],
+    "tap": "at least 44 each way; the Ledger's one way in at launch"
+   },
+   "rows": {
+    "left": 10.0,
+    "top": 32.0,
+    "height": 44.0,
+    "gap": 4.0,
+    "images": {
+     "open": "GoalRow",
+     "done": "GoalRowDone",
+     "claimed": "GoalRowClaimed",
+     "press": "GoalRowPress"
+    },
+    "origin": "a row's top, its foot's left corner",
+    "words": {
+     "x": 18.4,
+     "y": 15,
+     "size": 14,
+     "colour": "#F5EFE2",
+     "claimed": "#7E879A"
+    },
+    "shard": {
+     "box": [
+      306.4,
+      6.0,
+      32.0,
+      32.0
+     ],
+     "open": "at 0.5",
+     "done": "at 1"
+    },
+    "right": {
+     "x": 298.4,
+     "y": 15,
+     "size": 14,
+     "align": "RIGHT",
+     "count": "#AEB7C2",
+     "claim": {
+      "colour": "#FFD880",
+      "bold": true
+     }
+    },
+    "check": {
+     "image": "GoalCheck",
+     "origin": [
+      322.4,
+      22.0
+     ]
+    },
+    "done": "the whole row is the claim's press",
+    "claimed": "stays until the day turns"
+   },
+   "day": {
+    "height": 22,
+    "x": 24.0,
+    "y": 4,
+    "size": 14,
+    "colour": "#8F99A6"
+   },
+   "scroll": {
+    "shows": "three rows",
+    "thumb": {
+     "x": 366.0,
+     "width": 2,
+     "colour": "#55607A"
+    }
+   }
+  }
+ },
+ "ledger": {
+  "note": "a Seam page in the Stages screen's make (its glass, wells, quiet plate and road); boxes on the phone",
+  "band": {
+   "back": "the screens' Back",
+   "title": {
+    "x": 232,
+    "y": 20,
+    "size": 17,
+    "bold": true,
+    "colour": "#F1ECFF"
+   }
+  },
+  "next": {
+   "box": [
+    73.0,
+    65.0,
+    488.0,
+    40.0
+   ],
+   "make": "the quiet plate, its edge the facet",
+   "label": {
+    "x": 85,
+    "y": 79,
+    "size": 14,
+    "bold": true,
+    "colour": "#8279A6"
+   },
+   "lines": {
+    "x": 125,
+    "y": [
+     71,
+     88
+    ],
+    "alone": 79,
+    "size": 14,
+    "colours": [
+     "#F1ECFF",
+     "#C6BDE4"
+    ],
+    "note": "the step, then what it opens: TR54's line split at its first full stop; the last line stands alone"
+   }
+  },
+  "rail": {
+   "x": [
+    7,
+    67
+   ],
+   "top": 65,
+   "pitch": 62.5,
+   "height": 58,
+   "kinds": [
+    "Brawler",
+    "Guard",
+    "Dasher",
+    "Lamplighter"
+   ],
+   "chosen": "the card's shade, the light's hairline 1.4, its glow",
+   "rest": "the well, the edge's hairline",
+   "mask": {
+    "images": {
+     "Brawler": [
+      "LedgerMarkBrawler",
+      "LedgerMarkBrawlerUnlit"
+     ],
+     "Guard": [
+      "LedgerMarkGuard",
+      "LedgerMarkGuardUnlit"
+     ],
+     "Dasher": [
+      "LedgerMarkDasher",
+      "LedgerMarkDasherUnlit"
+     ],
+     "Lamplighter": [
+      "LedgerMarkLamplighter",
+      "LedgerMarkLamplighterUnlit"
+     ]
+    },
+    "origin": "the tile's middle",
+    "lit": "once one of its kind has fallen"
+   }
+  },
+  "wall": {
+   "box": [
+    73.0,
+    111.0,
+    174.0,
+    202.0
+   ],
+   "make": "a tile's glass; unlit, the channel over it at 0.3",
+   "pool": {
+    "image": "LedgerPool",
+    "origin": [
+     160,
+     196.0
+    ],
+    "colour": "#FFDFA6",
+    "transparency": 0.64,
+    "shows": "lit only"
+   },
+   "mask": {
+    "images": {
+     "Brawler": [
+      "LedgerMaskBrawler",
+      "LedgerMaskBrawlerUnlit"
+     ],
+     "Guard": [
+      "LedgerMaskGuard",
+      "LedgerMaskGuardUnlit"
+     ],
+     "Dasher": [
+      "LedgerMaskDasher",
+      "LedgerMaskDasherUnlit"
+     ],
+     "Lamplighter": [
+      "LedgerMaskLamplighter",
+      "LedgerMaskLamplighterUnlit"
+     ]
+    },
+    "origin": [
+     160,
+     130
+    ],
+    "note": "lit, then unlit; the knot is the origin, the tilt is in the image"
+   },
+   "name": {
+    "x": 160,
+    "y": 264,
+    "size": 17,
+    "bold": true,
+    "align": "CENTER",
+    "colour": "#F1ECFF",
+    "unlit": "#C6BDE4"
+   },
+   "count": {
+    "y": 287,
+    "number": {
+     "size": 17,
+     "bold": true,
+     "colour": "#F1ECFF",
+     "unlit": "#8279A6"
+    },
+    "label": {
+     "size": 14,
+     "colour": "#C6BDE4",
+     "unlit": "#8279A6",
+     "gap": 6,
+     "down": 2
+    },
+    "note": "the number and its label centred together under the name"
+   }
+  },
+  "says": {
+   "box": [
+    253.0,
+    111.0,
+    308.0,
+    202.0
+   ],
+   "make": "a tile's glass",
+   "pitch": 66,
+   "first": 117,
+   "entry": "each line's badge, words, road and rule are measured from its own top: first + k x pitch",
+   "counts": {
+    "shades": [
+     10,
+     100,
+     1000
+    ],
+    "keeper": [
+     1,
+     10,
+     100
+    ]
+   },
+   "badge": {
+    "box": [
+     263,
+     2,
+     46,
+     22
+    ],
+    "corners": 4,
+    "reached": {
+     "edge": "#C9BA9C",
+     "words": "#EFE6D2"
+    },
+    "waiting": {
+     "make": "the well",
+     "words": "#8279A6"
+    }
+   },
+   "words": {
+    "x": 320,
+    "y": 5,
+    "pitch": 17,
+    "size": 14,
+    "colour": "#F1ECFF",
+    "right": 551,
+    "note": "wrapped, three rows at most"
+   },
+   "road": {
+    "box": [
+     320,
+     10,
+     229,
+     6
+    ],
+    "shows": "on the first line not reached, filled to count / need"
+   },
+   "rule": {
+    "y": 61,
+    "left": 263,
+    "right": 551,
+    "colour": "#51477A",
+    "transparency": 0.4,
+    "under": "the first and the second line"
+   }
+  }
+ },
+ "images": {
+  "DareTag": {
+   "file": "images/DareTag.png",
+   "pixels": [
+    144,
+    168
+   ],
+   "origin": [
+    16.0,
+    6.0
+   ],
+   "use": "the dare's tag, lit while the dare holds"
+  },
+  "DareTagKept": {
+   "file": "images/DareTagKept.png",
+   "pixels": [
+    144,
+    168
+   ],
+   "origin": [
+    16.0,
+    6.0
+   ],
+   "use": "the dare's tag, its flare, kept"
+  },
+  "DareTagDark": {
+   "file": "images/DareTagDark.png",
+   "pixels": [
+    144,
+    168
+   ],
+   "origin": [
+    16.0,
+    6.0
+   ],
+   "use": "the dare's tag, dark once broken"
+  },
+  "HomeCog": {
+   "file": "images/HomeCog.png",
+   "pixels": [
+    420,
+    256
+   ],
+   "origin": [
+    -268.0,
+    2.0
+   ],
+   "use": "Settings, a cog tile at the head of Settings' column"
+  },
+  "HomeCogPress": {
+   "file": "images/HomeCogPress.png",
+   "pixels": [
+    420,
+    256
+   ],
+   "origin": [
+    -268.0,
+    2.0
+   ],
+   "tint": "the kit's lit press",
+   "use": "over the cog tile while it's held"
+  },
+  "HomeToday": {
+   "file": "images/HomeToday.png",
+   "pixels": [
+    492,
+    568
+   ],
+   "origin": [
+    -242.0,
+    -46.0
+   ],
+   "use": "the Today card, under the cog tile"
+  },
+  "HomeTodayWaits": {
+   "file": "images/HomeTodayWaits.png",
+   "pixels": [
+    492,
+    568
+   ],
+   "origin": [
+    -242.0,
+    -46.0
+   ],
+   "use": "over the Today card while a goal waits to be claimed"
+  },
+  "HomeTodayPress": {
+   "file": "images/HomeTodayPress.png",
+   "pixels": [
+    492,
+    568
+   ],
+   "origin": [
+    -242.0,
+    -46.0
+   ],
+   "tint": "the kit's lit press",
+   "use": "over the Today card while it's held"
+  },
+  "GoalPipOpen": {
+   "file": "images/GoalPipOpen.png",
+   "pixels": [
+    112,
+    112
+   ],
+   "origin": [
+    14.0,
+    14.0
+   ],
+   "use": "one of today's three on the card: open"
+  },
+  "GoalPipDone": {
+   "file": "images/GoalPipDone.png",
+   "pixels": [
+    112,
+    112
+   ],
+   "origin": [
+    14.0,
+    14.0
+   ],
+   "use": "one of today's three on the card: done"
+  },
+  "GoalPipClaimed": {
+   "file": "images/GoalPipClaimed.png",
+   "pixels": [
+    112,
+    112
+   ],
+   "origin": [
+    14.0,
+    14.0
+   ],
+   "use": "one of today's three on the card: claimed"
+  },
+  "GoalRow": {
+   "file": "images/GoalRow.png",
+   "pixels": [
+    1500,
+    272
+   ],
+   "origin": [
+    12.0,
+    12.0
+   ],
+   "use": "a goal's row: open"
+  },
+  "GoalRowDone": {
+   "file": "images/GoalRowDone.png",
+   "pixels": [
+    1500,
+    272
+   ],
+   "origin": [
+    12.0,
+    12.0
+   ],
+   "use": "a goal's row: done"
+  },
+  "GoalRowClaimed": {
+   "file": "images/GoalRowClaimed.png",
+   "pixels": [
+    1500,
+    272
+   ],
+   "origin": [
+    12.0,
+    12.0
+   ],
+   "use": "a goal's row: claimed"
+  },
+  "GoalRowPress": {
+   "file": "images/GoalRowPress.png",
+   "pixels": [
+    1500,
+    272
+   ],
+   "origin": [
+    12.0,
+    12.0
+   ],
+   "tint": "the kit's lit press",
+   "use": "over a done row while it's held: the row is the claim's press"
+  },
+  "GoalCheck": {
+   "file": "images/GoalCheck.png",
+   "pixels": [
+    96,
+    96
+   ],
+   "origin": [
+    12.0,
+    12.0
+   ],
+   "use": "a claimed goal's check, where its shard was"
+  },
+  "LedgerMaskBrawler": {
+   "file": "images/LedgerMaskBrawler.png",
+   "pixels": [
+    464,
+    608
+   ],
+   "origin": [
+    58.0,
+    18.0
+   ],
+   "use": "the Brawler's mask hung on the page, lit; its knot the origin"
+  },
+  "LedgerMarkBrawler": {
+   "file": "images/LedgerMarkBrawler.png",
+   "pixels": [
+    216,
+    216
+   ],
+   "origin": [
+    27.0,
+    27.0
+   ],
+   "use": "the Brawler's mask on the rail, lit"
+  },
+  "LedgerMaskBrawlerUnlit": {
+   "file": "images/LedgerMaskBrawlerUnlit.png",
+   "pixels": [
+    464,
+    608
+   ],
+   "origin": [
+    58.0,
+    18.0
+   ],
+   "use": "the Brawler's mask hung on the page, unlit; its knot the origin"
+  },
+  "LedgerMarkBrawlerUnlit": {
+   "file": "images/LedgerMarkBrawlerUnlit.png",
+   "pixels": [
+    216,
+    216
+   ],
+   "origin": [
+    27.0,
+    27.0
+   ],
+   "use": "the Brawler's mask on the rail, unlit"
+  },
+  "LedgerMaskGuard": {
+   "file": "images/LedgerMaskGuard.png",
+   "pixels": [
+    464,
+    608
+   ],
+   "origin": [
+    58.0,
+    18.0
+   ],
+   "use": "the Guard's mask hung on the page, lit; its knot the origin"
+  },
+  "LedgerMarkGuard": {
+   "file": "images/LedgerMarkGuard.png",
+   "pixels": [
+    216,
+    216
+   ],
+   "origin": [
+    27.0,
+    27.0
+   ],
+   "use": "the Guard's mask on the rail, lit"
+  },
+  "LedgerMaskGuardUnlit": {
+   "file": "images/LedgerMaskGuardUnlit.png",
+   "pixels": [
+    464,
+    608
+   ],
+   "origin": [
+    58.0,
+    18.0
+   ],
+   "use": "the Guard's mask hung on the page, unlit; its knot the origin"
+  },
+  "LedgerMarkGuardUnlit": {
+   "file": "images/LedgerMarkGuardUnlit.png",
+   "pixels": [
+    216,
+    216
+   ],
+   "origin": [
+    27.0,
+    27.0
+   ],
+   "use": "the Guard's mask on the rail, unlit"
+  },
+  "LedgerMaskDasher": {
+   "file": "images/LedgerMaskDasher.png",
+   "pixels": [
+    464,
+    608
+   ],
+   "origin": [
+    58.0,
+    18.0
+   ],
+   "use": "the Dasher's mask hung on the page, lit; its knot the origin"
+  },
+  "LedgerMarkDasher": {
+   "file": "images/LedgerMarkDasher.png",
+   "pixels": [
+    216,
+    216
+   ],
+   "origin": [
+    27.0,
+    27.0
+   ],
+   "use": "the Dasher's mask on the rail, lit"
+  },
+  "LedgerMaskDasherUnlit": {
+   "file": "images/LedgerMaskDasherUnlit.png",
+   "pixels": [
+    464,
+    608
+   ],
+   "origin": [
+    58.0,
+    18.0
+   ],
+   "use": "the Dasher's mask hung on the page, unlit; its knot the origin"
+  },
+  "LedgerMarkDasherUnlit": {
+   "file": "images/LedgerMarkDasherUnlit.png",
+   "pixels": [
+    216,
+    216
+   ],
+   "origin": [
+    27.0,
+    27.0
+   ],
+   "use": "the Dasher's mask on the rail, unlit"
+  },
+  "LedgerMaskLamplighter": {
+   "file": "images/LedgerMaskLamplighter.png",
+   "pixels": [
+    464,
+    608
+   ],
+   "origin": [
+    58.0,
+    18.0
+   ],
+   "use": "the Lamplighter's mask hung on the page, lit; its knot the origin"
+  },
+  "LedgerMarkLamplighter": {
+   "file": "images/LedgerMarkLamplighter.png",
+   "pixels": [
+    216,
+    216
+   ],
+   "origin": [
+    27.0,
+    27.0
+   ],
+   "use": "the Lamplighter's mask on the rail, lit"
+  },
+  "LedgerMaskLamplighterUnlit": {
+   "file": "images/LedgerMaskLamplighterUnlit.png",
+   "pixels": [
+    464,
+    608
+   ],
+   "origin": [
+    58.0,
+    18.0
+   ],
+   "use": "the Lamplighter's mask hung on the page, unlit; its knot the origin"
+  },
+  "LedgerMarkLamplighterUnlit": {
+   "file": "images/LedgerMarkLamplighterUnlit.png",
+   "pixels": [
+    216,
+    216
+   ],
+   "origin": [
+    27.0,
+    27.0
+   ],
+   "use": "the Lamplighter's mask on the rail, unlit"
+  },
+  "LedgerPool": {
+   "file": "images/LedgerPool.png",
+   "pixels": [
+    696,
+    816
+   ],
+   "origin": [
+    87.0,
+    102.0
+   ],
+   "tint": "#FFDFA6 at ImageTransparency 0.64",
+   "use": "a lantern's pool on the wall behind a lit mask"
+  }
+ },
+ "motion": "nothing moves here beyond what the kit does (a press, a screen opening). The unfold, the fold into the tab and the flare are TR54's block, and research reads them in motion there"
+}

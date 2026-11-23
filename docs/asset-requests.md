@@ -15755,6 +15755,22 @@ From the six sheets at the smallest phone.
 - **Refinement:** the tag unfolds again on a tap (`docs/polish-later.md`).
 - **Next:** Modulo's finish with B, must-fix 1 and the fall's card, on TR54's words. Then the handoff for TR54.
 
+### Modulo's finish, for research's pass (2026-11-23, 18:24)
+
+- **Made:** `build/handoff/UI/goals/`: 33 images (`images/`), `goals.json`, `goals_cut.png` and the four state sheets, from `tools/blender/goals_look.py` (`cut`). Each new piece of art is drawn once at 4 pixels a point, and every sheet is laid from those images as the game lays them. Edge alpha 0 on all 33.
+- **The pick, drawn:** B. The Today card stands in Settings' column, with the shard and three pips, its rim and glow gold while a goal waits. Settings is a cog tile over it, 44 tall. `HomeSettings`, its press and its word leave the panel.
+- **Must-fix 1:** the chip's stone is the Forge's `StoneLow` in the kit's Common item cell with the cell's hairline, as Reinforce draws it under its ring: 26 points, standing 2 over the chip's top and foot. It was a bare picture at 18.
+- **The fall's card:** a tag hangs from the road after each stretch kept, and the chip takes a row of its own under the line that says where the next run starts (the card stands 210 of 262; with none kept it's today's 176).
+- **The words** are TR54's on every sheet. The Next lines don't fit the band's plate at 14 (the longest second sentence is 55 letters), so Next is a plate under the band, over both panels: the step, then what it opens, and the last line alone. "Next at the top" holds. The mask hangs smaller for it: 36 points a stud where it was 40, and the Dasher, the tallest, 30.
+- **The unlit masks' cuts are painted,** never see-through. The cut's first check blocked the Brawler's unlit pair: alone on a light ground, its holes showed white in a near-black round face. All eight unlit files now carry their cuts at `#221C40`, the page's value where they hang, with the cuts' outline and the grin's tabs kept. On the page they read as before.
+- **Two labels for TR54:** "Today" (the card's word, the list's head) and "Mask Ledger" (the page's title, the list's link) are on the sheets and not in TR54's "The labels". Research's to add.
+- **Measures,** by the sheet's letter widths: the win's card 212 of 262 tall, the first clear's 254; the time's row with a new best 297 of the card's 320 (it was 286 with the bare stone). Not measured in the game's face: the chip's width follows its words, and Faber's first capture checks that row.
+- **Self-reviewed** at the smallest phone, every state, and each phone at 64 pixels. Weakest: the stone is the Forge's own dark stone, so in its cell it reads as a rock with a lit crack, quieter than the shard and the coin on the row under it; the time's row is tight at 297; the Today card's pips are small (8 points across).
+- **Content check:** PASS for the upload of all 33 (2026-11-23, 18:24), after a BLOCK on the Brawler's unlit pair and the redraw above. Conditions: only the 33 files in `images/` as they stand (a re-run of `cut` that changes a file brings it back); nothing sold finishes, refreshes or adds a goal or a banked day, and the reward shard shows its odds before it's broken (TR54's build).
+- **Limits:** nothing moves (the unfold, the fold and the flare are TR54's block, read in motion there); nothing is in the game; nothing is uploaded.
+- **For Faber, TR54:** `goals.json` says where each image lies and what the kit builds beside it. The images go up under the group at the build, with the pre-upload check above.
+- Made and self-reviewed: yes. Delivered: in the handoff. Research's pass: asked. Accepted in the game: not yet.
+
 ## AR54. The yard at Stage III: one plan where every machine fits and reads from the gate (Modulo, before AR53; then Faber)
 
 Research, 2026-11-23, 15:26, from TR51's Studio run and TR37's (`docs/test-requests.md`). It's main map, so it comes first, by the director's order of 00:05. Tier 2, research and Modulo, with Faber's measures.

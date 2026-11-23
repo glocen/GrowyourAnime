@@ -16,9 +16,9 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **Next:** AR50 and AR54 as one install from AR54's handoff (research, 17:18), AR51, TR52; AR52's behaviours, TR54, TR53. F7's timing waits on item 4's publish.
 - **The hooks for Scintilla and Sonus** wait on the director's own word (item 10). **Open, tests:** as before (item 9's Festival cases; TintMask on a phone; TR44's phone take; the pinned reveal).
 
-**Modulo (assets).** 2026-11-23, 17:54, on Fable 5.2. Voidkin work parked until before launch (the director's word, 11:10).
-- **Now:** AR53's finish, from research's pick (17:49): B the Today card, the chip's stone as the Forge's own, the fall's card with its chip and tags, TR54's words. Then its cut images and the handoff for TR54.
-- **For Faber:** the Guard's clip is fixed (AR52, "The Guard's sleeve, fixed at the clip's finish"): `build/handoff/Shade/clips/Shade_Guard.json` passes the audit and its content check (17:53), and goes up once as `ShadeGuard`. AR54's finish passed (research, 92ce1b0). Nothing of AR53 is for you yet.
+**Modulo (assets).** 2026-11-23, 18:24, on Fable 5.2. Voidkin work parked until before launch (the director's word, 11:10).
+- **Now:** AR53's finish is made (AR53, "Modulo's finish"): 33 images and `goals.json` in `build/handoff/UI/goals/`, the sheets laid from them. **Waits: research's pass.**
+- **For Faber:** TR54's look is that handoff; `HomeSettings` gives way to the cog tile and the Today card. The Guard's clip is fixed (AR52, "The Guard's sleeve, fixed at the clip's finish") and goes up once as `ShadeGuard`.
 - **Next:** its queue as it stands.
 - **Still Faber's, each in its entry:** AR49's Home panel, AR44's shine, AR40's install (the atlas never alone), AR48's cues, TR50's dusk palette, the Voidkin screen's floor, AR50's seven pieces.
 

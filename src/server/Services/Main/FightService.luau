@@ -469,6 +469,16 @@ local function light(look: SurfaceAppearance, onMask: boolean, tint: Color3, har
 	end
 end
 
+-- The body's colour: the spawn's type, else the row's (Config.Shades.Tint), on Hard its Hard.Tint where it has one; with
+-- no type, a mask's own.
+local function tintOf(type: string, row: Enemies.Row, hard: boolean): Color3
+	local key = if Shades.Tint[type] then type elseif Shades.Tint[row.Type] then row.Type else nil
+	if key == nil then
+		return Shades.MaskTint
+	end
+	return if hard then Shades.Hard.Tint[key] or Shades.Tint[key] else Shades.Tint[key]
+end
+
 -- A Shade in AR2's rig (ServerStorage.Templates.Shade, tools/studio/Models/Shade.luau): the row's mask kept and the
 -- others dropped, an elite's second mask on its Left Arm too, the body's lit edges in its type's colour and the masks in
 -- their own (Config.Shades), at the row's scale. On Hard, the body and masks wear the Shade's Hard look.
@@ -488,7 +498,7 @@ local function buildShade(row: Enemies.Row, name: string, type: string, hard: bo
 			part:Destroy()
 		end
 	end
-	local tint = Shades.Tint[type] or Shades.Tint[row.Type] or Shades.MaskTint
+	local tint = tintOf(type, row, hard)
 	for _, look in model:GetDescendants() do
 		if look:IsA("SurfaceAppearance") then
 			local on = (look.Parent :: Instance).Name
@@ -511,7 +521,7 @@ local function buildRig(row: Enemies.Row, name: string, type: string, hard: bool
 	local model = (templates:WaitForChild(row.Rig) :: Model):Clone()
 	model.Name = name
 	model.PrimaryPart = model:FindFirstChild("HumanoidRootPart") :: BasePart -- set in code: a synced .rbxm can drop it
-	local tint = Shades.Tint[type] or Shades.Tint[row.Type] or Shades.MaskTint
+	local tint = tintOf(type, row, hard)
 	for _, look in model:GetDescendants() do
 		if look:IsA("SurfaceAppearance") then
 			local glow = look:GetAttribute("Glow")

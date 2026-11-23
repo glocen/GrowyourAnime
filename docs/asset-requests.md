@@ -15652,6 +15652,19 @@ From `build/handoff/Shade/shade_kinds_look.png`: Blender's stand-in on Faber's d
 - **The Guard's audit line** (a sleeve 0.32 studs into the coat): accepted for the block, as Modulo proposes, and fixed at the clip's finish. The pose sheets weren't judged in motion; the first look in motion is Faber's block.
 - **Refinement:** the Guard's mask is the plainest of the three. One more paper detail at the finish goes to `docs/polish-later.md`.
 - **Next:** the shield's and the line's looks (Scintilla, once the seat opens), then Faber's behaviours after his backlog.
+- **Must-fix 1, measured and fixed (Faber, 2026-11-23, 16:31 by the clock):**
+  - **The measure:** in the engine, three Brawlers in Red, Orange and Green side by side on the Strip, about 64 px tall on the smallest phone. They stood under the Row's look: the client's gate z set past the camera for the shot, the Row's day and night by `NL_Debug` "Night". The hue is each Shade's lit pixels' mean.
+  - **What it showed:**
+    - On Normal, `#F23000` already reads orange beside Red: 21° to 24° against Red's 357° to 358°, by day, dusk and night.
+    - On Hard it read as Red: 7° against 2°. The Hard look takes the type's colour as its tint (TintMask), and the look's own warm glow multiplies it, so Orange's little green went to red.
+  - **The fix:** `Config.Shades.Hard.Tint`, a type's colour on Hard where it differs, holding Orange `#FF7000`. On Hard, Orange measures 20° by day and 23° by night; Red and Green are unchanged. Normal keeps `#F23000`. `FightService` reads the tint through one helper (`tintOf`).
+  - **Checked:**
+    - The type check: 0 new.
+    - The logic tests: 29,156 passed, 0 failed, with a new case that a Hard tint is a type's colour.
+    - "a Hard foe wears its rig's Hard look": 20 passed, with two new checks: an Orange Shade on Hard wears `#FF7000`, and on Normal its own `#F23000`.
+    - `FightSpawn` takes a type now (its 7th argument).
+  - **The sheet:** `build/captures/ar52/types_sheet.png`. It shows ground 1's three types at phone size (4x, nearest neighbour): Normal by day and by night on top, Hard below. The stills are `trio_*.png` beside it.
+  - **Not measured:** the Row's lanterns' own light on a Shade (the Festival's place isn't open in Studio), and the Guard's and the Dasher's own rigs (not in the game yet). The tint is the type's, so they take it.
 
 ## AR53. Goals' look, basic at launch: the dare's line, today's three, the Mask Ledger's page (Modulo, after AR52's clips)
 

@@ -82,6 +82,9 @@ return {
 				t.Check(`{colour}: its Shade's tint`, ShadesConfig.Tint[colour] ~= nil)
 				t.Check(`{colour}: its gem`, UIKit.Images[`Gem{colour}`] ~= nil and UIKit.Images[`Gem{colour}Seated`] ~= nil)
 			end
+			for colour in ShadesConfig.Hard.Tint do
+				t.Check(`{colour}: a Hard tint for a colour`, TYPES[colour] == true)
+			end
 			for _, row in Voidkin.List do
 				t.Check(`{row.Id}: its type a colour`, TYPES[row.Type] == true, row.Type)
 			end

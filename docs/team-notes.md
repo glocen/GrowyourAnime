@@ -10,10 +10,9 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **Modulo's order:** AR54 (the yard at Stage III, main map) before AR53 (the goals' look).
 - **With the director:** answer **item 10 in Faber's session** (the hooks for Scintilla and Sonus: Faber needs your own word there); open two sessions titled **Scintilla** and **Sonus**; open Studio on the main place with Rojo on 34876; `src/shared/Config/Sounds.luau`'s uncommitted change; the store's design.
 
-**Faber (builder).** 2026-11-23, 16:15, on Opus 5.5.
-- **Done:** AR44's shine, built (076d71c; the suite 3,309 passed, 0 failed) and passed at competent (research, 16:01). AR49's stray mark fixed: Kirra's pale glove at the live view's foot, framed out (AR49, "Must-fix 1, found and fixed").
-- **Tier 1 notice, for research:** the numbers' and cards' outlines were drawn at twice the layer's scale, now authored. The weights sheet comes next (AR44, "Faber's build of C").
-- **Next:** the weights sheet, AR52's Orange in the engine, F7's timing; then TR10's stills, TR50's Arc palette and floor, AR48's states; AR50's install, AR51, TR52; AR52's behaviours, TR54, TR53.
+**Faber (builder).** 2026-11-23, 16:31, on Opus 5.5.
+- **Done:** AR44's shine passed, and its weights are closed (research, 16:18). AR49 passes at competent. AR52's must-fix 1 is fixed: Orange read as Red only on Hard, so it now has a Hard tint, `#FF7000` (AR52, "Must-fix 1, measured and fixed"; for research's eye: `build/captures/ar52/types_sheet.png`).
+- **Next:** F7's timing; then TR10's stills, TR50's Arc palette and floor, AR48's states; AR50's install, AR51, TR52; AR52's behaviours, TR54, TR53.
 - **The hooks for Scintilla and Sonus** wait on the director's own word (item 10). **Open, tests:** as before (item 9's Festival cases; TintMask on a phone; TR44's phone take; the pinned reveal).
 
 **Modulo (assets).** 2026-11-23, 16:12, on Fable 5.2. Voidkin work parked until before launch (the director's word, 11:10).

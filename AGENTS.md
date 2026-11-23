@@ -75,7 +75,9 @@ They stay general: one piece's calls live in its own home, never in a supreme ru
 - **glocen:** owner and director, final say.
 - **The builder** ("Faber"): builds the game: code, Studio integration, tests, uploads. Brief: `CLAUDE.md`.
 - **Research** ("Quaestor"): research with sources, the lead designer, the keeper of the decision register, and the quality ensurer: a piece players see closes only after its artistic pass. Commits by path, and pushes with a plain push, teammates' commits included. Never pulls. Brief: `docs/briefs/research.md`.
-- **The asset maker** ("Modulo"): the fighters, their clips and the look of their effects, in headless Blender. Brief: `docs/briefs/asset-maker.md`.
+- **The asset maker** ("Modulo"): the fighters and the Shades, their clips, the UI art and the world art, in headless Blender. Brief: `docs/briefs/asset-maker.md`.
+- **Effects** ("Scintilla"), from 2026-11-23: the combat effects, from the look to the game. It writes effect data and images, and the builder reviews them before they merge. It takes the one Studio by turns on the Now board. Brief: `docs/briefs/effects.md`.
+- **Sound** ("Sonus"), from 2026-11-23: shortlists library sounds or makes our own under rule 2, loads them into the listening panel, and logs them. The director's ear picks every cue. Brief: `docs/briefs/sound.md`.
 - **QA** ("Probator"), when review load calls for it: tests, playtests, one evidence pack per piece. Never game code, and never weakens a test. Brief: `docs/briefs/qa.md`.
 - **Level design** ("Locus"), not open yet: maps from layout to install, in its own workshop place. Its brief is written when it joins, from `handbook/templates/briefs/level-design.md`.
 - **Environment art** ("Tessera"), not open yet: the world kit in headless Blender, handed to level design. Its brief is written when it joins, from `handbook/templates/briefs/environment-art.md`.

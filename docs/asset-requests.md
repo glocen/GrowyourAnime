@@ -15443,6 +15443,50 @@ Made 14:36 to 14:40 by the files' clock, by the same two scripts: `tools/blender
 
 **Four facts.** Made: two images, two specs, two sheets. Self-read: the card in its four states at the phone's size and 3 times; the chip and the arrow at 64 pixels over dark and pale. Delivered: `build/handoff/Base/` and `build/handoff/UI/hud/colour/`; nothing uploaded, nothing in the game. Accepted: no; research's pass on the finish is asked. Content check PASS for the upload of `PowerChipCondenser.png` and of `ArrowRight.png`, as these exact files (sha1 5cfb4aff and 96023fc5), and for the card's words; a changed file needs a new check, and the two sheets stay internal.
 
+### Research's pass on the finish: competent, no must-fix (Quaestor, 2026-11-23, 14:54)
+
+Read from `condenser_card.png` and `condenser_share.png`, every state, in the frame and cut 3 times.
+- **Felt:** the card reads at the phone's size in all four states. Dimming the cost line says "can't start" before the words do.
+- **The one bold thing** stays the stones' line. The card grew from 148 by 58 to 172 by 70 points to reach the 14-point floor. That's right: the floor wins over the blockout's size, and the card still clears the avatar and the Comb.
+- **Must-fix 1** is in: asleep, the cost line is dimmed with no second line. **Must-fix 2,** the row at the fold, is Faber's at the build.
+- The chip is six-sided, on the others' 22-point tile, and it parts on the slab. The arrow is a new white image, since EdgeArrow is held to two tints. Both passed the content check.
+- **Next:** Faber's build, after AR50's install, from `condenser_card.json` and `condenser_share.json`.
+
+## AR52. The Guard and the Dasher: two more Shades, so each stretch of Lantern Row asks its own question (Modulo now, then the effects teammate, then Faber)
+
+Research, 2026-11-23, 14:54, on the director's word of about 14:50: F2 of `docs/research/design-holes.md`, "Now, beside the map". It answers the director's word of 03:25: each phase of the run must play differently and be fun. Tier 2: the behaviours are already designed in `docs/roster.md`, "Enemies: Shades".
+
+- **Why:** every Shade in the game is a Red Brawler, so every stretch asks the same question, and one lead always wins (`design-holes.md`, H2).
+- **Feel lines:**
+  - **The Guard:** a Shade lifts a paper shield and your fighter's hits glance off. You either let your fighter work on the others until it drops, or you break it open with a heavy hit or your signature.
+  - **The Dasher:** a Shade crouches, and a line opens on the street toward your fighter. Move, and your fighter steps off the line and the lunge hits empty stone; stay, and it hits.
+- **The stretches,** research's seeds, tuned in play:
+  1. Brawlers, Red: learn the fight.
+  2. Brawlers with Guards, Green: wait, or break through.
+  3. Brawlers with Dashers, Orange: read the line, move.
+  4. The Lamplighter, Purple: all of it at once.
+
+  On the ring, Blue beats Red, Purple beats Green, Red beats Orange and Orange beats Purple. So Kirra, Pip, Rook and Watt each have a stretch where they're the right lead, and Lyric carries the whole run's health. No one lead is the answer, and choosing one is a plan for the run.
+- **The block contains:**
+  - **Modulo:** the two masks on the Shade's rig, in the Brawler mask's make after AR47: a paper mask read as a mask, never a face. The Guard's is square, with its brow cut into the paper, not drawn as an eyebrow. The Dasher's is long and pointed.
+  - **Modulo:** block clips:
+    - the Guard's raise, hold and drop (seeds: raise 0.3 s, held 2.0 s, open 2.5 s);
+    - the Dasher's crouch, lunge and recovery (seeds: a 1.0 s tell, a 0.25 s lunge of about 12 studs, 0.8 s of recovery with its back open).
+  - **Modulo:** the outlines in Green and Orange beside Red, on Normal and on Hard (AR46's ember), read at the phone's size.
+  - **The effects teammate, when its seat opens:** the shield's look and the line's look. Until then, Faber uses a grey stand-in in the block.
+  - **Faber, after his install backlog:**
+    - the two behaviours in the Shade's rules;
+    - the shield cuts damage (seed: to 20%), and a heavy hit or a signature breaks it (stagger 1.0 s);
+    - the Dasher's line uses TR44's marked-strike rule, whichever of A or B the director picks, so moving the lead works the same here as at the slam;
+    - the stretches' packs from `Config.Shades`.
+- **What waits:** the Support Shade, the third behaviour, after these two are judged; each mask's finish; the sounds; the masks' elite versions.
+- **Checks:**
+  - the content check on the masks before building;
+  - research's pick on the masks at phone size, on Normal and Hard;
+  - the block played: each stretch judged in motion from the player's camera. The Dasher's hits and misses are counted, as TR44 counts them.
+- **Cap:** the masks and clips in 2 hours; each behaviour in about 90 minutes. An ordinary piece, closed at competent.
+- **Order:** Modulo now. The director put this piece beside the main map, against the order of 00:05, for this piece only.
+
 ## Later, by ground
 
 The rest of ground 1 (Kirra in AR10, Watt in AR11; then Sable, Marigold, Crane), then each ground's Voidkin in `docs/roster.md`'s order. **The machines** (Gantry, Bulwark, Ironhymn, Shiomaru, Aegir) share one custom rig, taller than a player, with its own clip family: the first of them is timed like AR1, because a custom rig is a different cost.

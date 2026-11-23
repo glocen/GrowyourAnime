@@ -4547,3 +4547,34 @@ Research, 2026-11-23, 01:55 by the clock, on the director's order of 00:05 ("fir
   - the landing's light brightness, tuned on the capture.
 - **Visually reviewed:** not yet. **Director-accepted:** not yet.
 - **Tier 1, Faber:** the plate reads "Level n" under the name rather than the bare number, so a passer-by reads a level beside a name. Research: say in your row what you'd change.
+
+## TR52. The signature on a tap: a block, judged in motion (Faber, after the Studio run)
+
+Research, 2026-11-23, 14:54, on the director's word of about 14:50: F1 of `docs/research/design-holes.md`, "Block it first". It's a try in a block, tier 1. Whether it joins launch is the director's call after the verdict, since manual signatures are under "Out of launch" (`docs/design.md`).
+- **Why:** in a fight the player does almost nothing, and every auto battler studied leaves the ultimate's timing to the player (H1).
+- **Feel line:** the ring at the right edge fills as your fighter fights. When it's full it lights and waits. You tap it at the moment that matters: a Guard's shield up, the pack bunched, the keeper's recovery. Your fighter fires its signature at once, and you know the hit was yours.
+- **The block contains:**
+  - the signature's readout (`docs/ui.md`, the right edge, low) becomes the button. It fills on the signature's cooldown as today, lights when full, and fires on a tap, with no new element on the HUD;
+  - an **Auto** toggle beside it, on by default in the block. On, it fires as today, so parked play stays allowed;
+  - the tap answers on the frame. The signature starts its own clip at once, and a full ring held for 0.5 s pulses once, so a ready signature is never missed (seed).
+  - **Measure first:** the ring's place against Roblox's jump button on a phone. If they meet, the ring moves, and the measure is written here.
+- **What waits:** a keyboard key on desktop (seed Q, after the verdict); the ring's finished look; the Tower's fights; the sound.
+- **Checks:**
+  - the logic case: a tap with the ring not full does nothing and changes nothing; a full ring fires once, and a repeated tap never fires twice;
+  - captures on the smallest phone, the ring empty, full and fired;
+  - research's verdict and the director's, from one Lantern Row run with Auto on and one with it off, judged in motion.
+- **Cap:** 90 minutes.
+- **Order:** after the Studio run of AR49, TR51 and TR37, beside the small ones.
+
+## TR53. The base between runs: what it made while you were away, and its state during a run (Faber, after the install backlog)
+
+Research, 2026-11-23, 14:58, F4 and F6 of `docs/research/design-holes.md`: the director left these to research ("whatever best in your opinion"). Tier 2 (research, and Faber's area): a new moment players see. The look of the card is Modulo's, in the system slab's make.
+- **Why:** the base and the fights are two islands (H7), and nothing marks a return home. Pillar 3 promises "a shard cracking while you fight".
+- **Feel line:** you come home from Lantern Row, or log in the next day, and one card says what the base did while you were gone: power stored, stones made, a fighter trained, a shard broken. One tap takes it all, and the base looks busier for it. During a run, a quiet line tells you your shard is still breaking at home, and a notice says when it's done.
+- **The block contains:**
+  - **The return card:** shown once on arriving at the base after a run, or on joining, when anything changed: the battery's gain in kWh, the Condenser's stones, the Training machine's levels, a shard ready to reveal. One "Collect" or "Reveal" press takes it. If nothing changed, no card.
+  - **In the Festival place:** the profile is shared across the universe, so the run's HUD shows one line of the base's state (the shard breaking and its time left), and one notice when it breaks: "Your shard broke. Its Voidkin waits at home." The reveal stays at home.
+- **What waits:** the card's finished look; a sound; an opt-in experience notification (Roblox: one a day, ages 13+, never required), which comes after the director's word.
+- **Checks:** the logic case that a return shows each change once, and a repeat shows nothing; captures on the smallest phone; research's verdict in motion.
+- **Cap:** 90 minutes for each half.
+- **Order:** after the install backlog and TR52.

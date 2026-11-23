@@ -58,12 +58,20 @@ def hang(rig, arm, offset, hint):
     return r6.reach(rig, arm, HAND, cuff, hint)
 
 
+def shifted(rig, arm, place, hint, move):
+    """A reach with the sleeve then slid off its shoulder by `move` (the coat's own right, up and back, studs): the
+    sleeve keeps the reach's angles, so its cuff lands `move` from `place`. An R6 arm turns on its inner corner, so two
+    sleeves brought together in front sink that corner into the coat's front. Nobody is in this coat: the sleeve
+    slides clear instead, and hinges on the coat's front edge like a shutter."""
+    return (*r6.reach(rig, arm, HAND, place, hint), *move)
+
+
 def _flip(a):
     """An arm's or a leg's pose for the other side."""
     if a is None:
         return None
     if a[0] == "reach":
-        return ("reach", (-a[1][0], a[1][1], a[1][2]), (a[2][0], -a[2][1], -a[2][2]))
+        return ("reach", (-a[1][0], a[1][1], a[1][2]), (a[2][0], -a[2][1], -a[2][2]), *((-m[0], m[1], m[2]) for m in a[3:]))
     if a[0] == "hang":
         return ("hang", a[1], (a[2][0], -a[2][1], -a[2][2]))
     return (a[0], -a[1], -a[2])
@@ -174,6 +182,8 @@ class Take(rc.Take):
         self.mirror = mirror
 
     def _arm(self, arm, a):
+        if a[0] == "reach" and len(a) > 3:
+            return shifted(self.rig, rc.SHORT[arm], W(*a[1]), a[2], a[3])
         if a[0] == "reach":
             return r6.reach(self.rig, rc.SHORT[arm], HAND, W(*a[1]), a[2])
         if a[0] == "hang":
@@ -194,7 +204,7 @@ class Take(rc.Take):
         """Keys the pose at clip frame `f`. `ease` shapes the move that starts here. `label` puts it on the pose sheet.
         Changes: T (pitch, turn, roll, right, _, forward), feet {leg: (right, forward), or None for a leg given by its
         angles in RL / LL}, crouch, look (a stage place) or H (the mask's angles: pitch, turn, tilt), RA / LA (angles,
-        or ("reach", place, hint))."""
+        or ("reach", place, hint), or ("reach", place, hint, shift): the sleeve slid off its shoulder)."""
         s, rig, frame = self.state, self.rig, self.start + f
         if self.mirror:
             changes = mirrored(changes)
@@ -303,7 +313,8 @@ def guard(t):
 
     AR52's seeds: up in 0.3 s (`Raise`), held 2.0 s, let go at `Drop`. The hold hardly moves, so the game may stretch
     or shorten it by the track's speed between the two markers."""
-    shut_r, shut_l = ("reach", (0.7, 2.2, 3.3), (68, 0, -28)), ("reach", (-0.7, 2.2, 3.3), (68, 0, 28))
+    shut_r = ("reach", (0.7, 2.2, 3.3), (68, 0, -28), (0.15, 0.0, -0.4))
+    shut_l = ("reach", (-0.7, 2.2, 3.3), (68, 0, 28), (-0.15, 0.0, -0.4))
     t.key(0)
     t.key(7, ease="out", T=(3, -8, 0, 0, 0, -0.12), RA=(-16, 0, 12), LA=(-16, 0, -12), H=(-4, 8, 6))
     t.key(18, "shut", T=(22, 0, 0, 0, 0, 0.34), RA=shut_r, LA=shut_l, H=(-20, 0, 2), crouch=0.4)

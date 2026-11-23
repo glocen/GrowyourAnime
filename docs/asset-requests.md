@@ -15672,6 +15672,18 @@ From `types_sheet.png`, at phone size, by day and by night, on Normal and Hard: 
 - **What the cases can't show:** the Row's lanterns' light on a Shade, and the Guard's and the Dasher's own rigs. Both are first seen in the Festival's place at AR52's clips, and research reads the types again there.
 - Director-accepted: not yet.
 
+### The Guard's sleeve, fixed at the clip's finish (Modulo, 2026-11-23, 17:54)
+
+- **Made:** `Shade_Guard.json` and `poses_Guard.png` in `build/handoff/Shade/clips/`, from `tools/blender/shade_clips.py`. At the shut pose each sleeve keeps its angles and slides off its shoulder, 0.15 studs out and 0.4 forward (`shifted`: a reach takes a fourth item, the slide). The slide eases in from frame 7 to the shut at 18, and out from `Drop` (138) to 149. An R6 arm turns on its inner corner, so two sleeves brought together in front sink that corner into the coat's front. Nobody is in this coat, so the sleeve slides clear.
+- **The audit,** on the handoff's file (`r6parity`): "Arm through body" was 0.324 studs at 0.3 s, and is 0.044 at 0.167 s (during the rise), under the 0.05 limit. AUDIT PASS. Pop (1.654x) and Limb flip (9.457 degrees) are as they were.
+- **Tried:** re-solving the reach so each cuff stayed on its mark pitched the sleeves up and turned the cuffs inward, and still needed a bigger slide: dropped. With the angles kept: 0.1 out and 0.5 forward gave 0.053, 0.12 and 0.45 gave 0.052 (both over); 0.2 and 0.3 gave 0.037, wider apart, and wasn't rendered.
+- **What the pose kept and lost:** the cuffs stay square at the player and the sleeves level from the side, as in the block. The gap between the cuffs grew from 0.4 to 0.7 studs, and the sleeves sit 0.4 forward of the shoulders.
+- **Unchanged:** the timing, the markers (`Raise` at 0.3 s, `Drop` at 2.3 s), and the other eight clips with `Shade.clips.json`, which export byte for byte as the handoff holds them.
+- **Self-reviewed** as poses: the pose sheet (the player's camera and the side) and the clip's pack (its beats dressed, the bare rig, the low views). Not seen in motion; nothing tried in Studio.
+- **Content check:** PASS (17:53) for the upload of `Shade_Guard.json` as `ShadeGuard` under the group, in place of the 15:22 check for this clip. Its conditions: only that file goes up, as it stands in the handoff now; a further change to `guard`, `shifted` or `Take._arm`, or to the reach or the export that changes this clip, brings it back; if Faber's first look in motion from the player's camera shows a sleeve reading as an arm come off the body, it comes back with that capture. Its limits: poses, not motion; the bare rig at three-quarter only.
+- **For Faber:** nothing new to do but take this file: `ShadeGuard` was never uploaded, so it goes up once, with `ShadeLunge` as it was.
+- Delivered: in the handoff. Accepted in the game: not yet.
+
 ## AR53. Goals' look, basic at launch: the dare's line, today's three, the Mask Ledger's page (Modulo, after AR52's clips)
 
 Research, 2026-11-23, 15:24 (`docs/design.md`, "Goals"; the build is TR54, Faber's).

@@ -4,9 +4,9 @@
 
 Each teammate rewrites its own row: two to five lines. Open asks sit under "Waiting on the director".
 
-**Quaestor (research).** 2026-11-23, 03:20, on Opus 5.5. Stopped at the director's wrap-up. **The director's order (decisions.md, 00:05): the main map and the systems first; the Festival places come after.** Done today: AR48's second look (Burn competent; Shock closed on Modulo's read); TR50's Arc dusk B with Seam's lights and the Voidkin floor B; TR51 and AR50 written; AR50's D picked and passed at competent on its second look; TR37's scope after TR47 and the Condenser's two seeds (wakes at base level 2; 10 kW at level 1).
-- **Next, mine:** AR49 and TR51 in the game, from Faber's captures once Studio is open (the gate and the Strip); AR50's colour pass; TR37's verdict in the game.
-- **Faber's order:** TR37 (the Condenser, the Forge standing), then the small ones (AR44's shine, TR10's stills, TR50's Arc palette and Voidkin floor, AR48's states). Then AR50's install.
+**Quaestor (research).** 2026-11-23, 13:07, on Opus 5.5 at xhigh (the director's word). **The director's order (decisions.md, 00:05): the main map and the systems first; the Festival places come after.** Now: the director's "the dock is a bit too shiny" (13:00), agreed and reopened: AR30, "The dock's shine, reopened on the director's word" (the halo at rest goes; the foot bars stay).
+- **Next, mine:** AR49 and TR51 in the game, from Faber's captures once Studio is open (the gate and the Strip); AR50's colour pass; TR37's verdict in the game; the dock's shine read on the phone.
+- **Faber's order:** the Studio run of AR49, TR51 and TR37, then the small ones (the dock's shine, AR44's shine, TR10's stills, TR50's Arc palette and Voidkin floor, AR48's states). Then AR50's install.
 - **Verdicts owed, main map first:** AR37, AR28's Stage I, AR30, AR23, TR10 (each read in the game at its install); then TR43, TR44, TR34, TR29 (Festival and Tower, after).
 - **With the director:** open Studio on the main place with Rojo on 34876, so tonight's code is seen; the PC's keep-awake (restart it, or the screen never off on mains); `src/shared/Config/Sounds.luau`'s uncommitted change, nobody's; the Voidkin model examples; the store's design; the sound pick on TR42's panel.
 

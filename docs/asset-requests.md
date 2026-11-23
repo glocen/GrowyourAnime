@@ -10755,6 +10755,28 @@ From Faber's stills (dc4d341, `build/scratch/faber/ar30/chips/`).
 - **Faber's calls stand:** the words at 16 bold, the 24 gap, Salvage on the same picker, the press as an underline only, and the foot glow cut at the scrolling row's foot.
 - **Must-fix, its class: a row that scrolls shows that it scrolls.** At the smallest phone, the row shows exactly Gear and Jewelry, edge to edge. Nothing says All, Chests and Materials exist. Wherever a row scrolls (this one, and any other row in the kit), its visible end cuts an item partway, or the edge fades, so more always shows.
 
+### The dock's shine, reopened on the director's word (Quaestor, 2026-11-23, 13:07)
+
+The director, 2026-11-23, about 13:00: "imo the Button ui down center are a bit to shiny". It covers the dock (Base, Home, Play), nothing else (`docs/decisions.md`).
+- **Research agrees, and the 17th's pass missed it.** Read from the phone stills (`build/captures/ar45/phone-shade-grey.jpg`, `build/scratch/faber/ar43/dock_zoom.png`):
+  - At rest, every cell wears its halo: `Config.Hud.Make.Dock`'s Light layer at L 1 of Top 1.45, so 69% opaque, 18 points past the glass.
+  - On the pale deck it reads as bloom: a white haze round Home, a red one round Play, a yellow wash under Base.
+  - It's the only piece of the HUD that glows at rest. The pills, the hint and the cards are flat, with a lit edge.
+  - It also breaks the make's own rule (AR30, "The make"): "No bright plate at rest… the seam's Light is the one bright thing, and it means 'this one'." Three halos at rest say "this one" three times, so calling and pressing have less to rise to.
+- **Must-fix, its class: at rest, a cell's colour lives in its foot bar and stays inside its glass.** A halo past the glass means "this one" (calling, pressed, a pointer or a pad over it), never "idle".
+  - **Seeds, tuned live on the phone:** L.Rest 1 → 0.4; Open 0.75 → 0.6; Quiet 0.45 → 0.2. Pressed 1.3 and Calling 1.45 stay. Their order stays as it was: Dim < Quiet < Rest < Open < Pressed < Calling.
+  - If a faint halo still shows past the glass at 0.4, the reach comes in, not the foot. How is Faber's call.
+- **What holds:**
+  - the three foot bars at full, in Power's yellow, the seam's Light and the map's red, so the three still read apart at a glance;
+  - the raised Home cell, the icons in Text, the touch areas, and the calling pip and ring;
+  - the press, which now rises from a quieter rest, so it shows more.
+- **Not covered:** the other buttons in the seam's make, the pills and the hint. The director named the dock.
+- **Checks:**
+  - Faber's phone stills of the dock at rest, calling, pressed, open, Quiet at home and Dim, on the pale deck and on the dark yard;
+  - the dock's self-test case, its light numbers moved with these;
+  - research's read up close at phone size.
+- **Tier 1, research's, on the director's ask:** numbers only, no new image. Faber's after the Studio run of AR49, TR51 and TR37, with the small ones.
+
 ## AR31. Forge stones, War Emblems and jewels: their pictures (Modulo, for research's verdict, then Faber)
 
 Phase 3's order, Modulo's item 5 (`docs/production-plan.md`). It's for TR37's Stones tab, TR38's War Emblems page and item card, and TR39's Jewels page, each of which waits on these icons. The design: `docs/design.md`, "Regalia: gear" (the emblems' sockets, the jewels' tiers [D: "Each type has its own colour, and its shape grows with its tier"]). The study: `docs/research/gear-icons.md`.

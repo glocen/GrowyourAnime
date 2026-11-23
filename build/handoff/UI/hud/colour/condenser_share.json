@@ -1,0 +1,119 @@
+{
+ "piece": "AR51: the Stone Condenser's share on the Power screen (docs/asset-requests.md, AR51, 'The finish')",
+ "note": "Read with power_images.json: the same bar, the same stack, one more light. A machine's light stands in the machines' order (the Void Breaker, the Training machine, the Stone Condenser), then the battery's; three handles, one on each cut. An idle machine's light wears the battery's gradient, as the others do. The list's third row must not stand half under the foot on the smallest phone (research's must-fix 2: the build's choice). DESIGN: drawn in Blender, untried in Studio.",
+ "colour": "#FF8FAE",
+ "light": {
+  "colour": "#FF8FAE",
+  "gradient": [
+   [
+    0.0,
+    "#A85E73"
+   ],
+   [
+    0.0625,
+    "#B06479"
+   ],
+   [
+    0.125,
+    "#B96C82"
+   ],
+   [
+    0.1875,
+    "#C77B90"
+   ],
+   [
+    0.25,
+    "#D691A4"
+   ],
+   [
+    0.3125,
+    "#E29EB1"
+   ],
+   [
+    0.375,
+    "#E99AB0"
+   ],
+   [
+    0.4375,
+    "#F399B2"
+   ],
+   [
+    0.5,
+    "#FF9FBA"
+   ],
+   [
+    0.5625,
+    "#F295AF"
+   ],
+   [
+    0.625,
+    "#E68CA5"
+   ],
+   [
+    0.6875,
+    "#DA839B"
+   ],
+   [
+    0.75,
+    "#CE7A92"
+   ],
+   [
+    0.8125,
+    "#C37289"
+   ],
+   [
+    0.875,
+    "#B96B80"
+   ],
+   [
+    0.9375,
+    "#AF6479"
+   ],
+   [
+    1.0,
+    "#A85E73"
+   ]
+  ]
+ },
+ "chip": {
+  "file": "images/PowerChipCondenser.png",
+  "pixels": [
+   88,
+   88
+  ],
+  "points": [
+   22.0,
+   22.0
+  ],
+  "pad": 5.0,
+  "box": [
+   12.0,
+   12.0
+  ],
+  "use": "the Stone Condenser row's chip; its colour is its own",
+  "like": "PowerChipBreaker and PowerChipTraining (Config.Hud, Power): the same pixels, points and pad"
+ },
+ "row": {
+  "name": "Stone Condenser",
+  "order": 3
+ },
+ "arrow": {
+  "file": "images/ArrowRight.png",
+  "pixels": [
+   48,
+   64
+  ],
+  "points": [
+   12.0,
+   16.0
+  ],
+  "pad": 2.0,
+  "box": [
+   8.0,
+   12.0
+  ],
+  "tint": "its user's colour",
+  "use": "the convert card's arrow between the two stones, tinted the system slab's Edge",
+  "note": "the convert card's (condenser_card.json, cost.arrow): white on alpha"
+ }
+}

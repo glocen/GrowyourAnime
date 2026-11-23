@@ -1,0 +1,182 @@
+{
+ "piece": "AR51, B: the Stone Condenser's convert card (docs/asset-requests.md, AR51, 'The finish')",
+ "units": "points at Theme.Author (812 by 375), from the card's top-left corner; a text's y is its cap's top",
+ "note": "A screen card at fixed points beside the cradle, the machines' plates' kin (World.Plate): the cost in the stones' pictures, then how the convert stands. Its numbers and stones come from Config.Condenser.Convert (Take, From, Give, To), never from this file's example. Shown as the Comb's plate is shown. Asleep, the card keeps the cost line dimmed at the shorter size and has no second line: the plate alone says what wakes it (research's must-fix 1). DESIGN: drawn in Blender, untried in Studio.",
+ "card": {
+  "size": [
+   172.0,
+   70.0
+  ],
+  "sizeAsleep": [
+   172.0,
+   44.0
+  ],
+  "corners": {
+   "cut": [
+    7.0,
+    2.1,
+    7.0,
+    2.1
+   ],
+   "order": "top-left, top-right, bottom-right, bottom-left"
+  },
+  "fill": {
+   "top": "#34606C",
+   "bottom": "#2A4E5A",
+   "alpha": 0.95,
+   "home": "Config.UIKit, System: Panel"
+  },
+  "edge": {
+   "width": 1.2,
+   "alpha": 0.95
+  },
+  "shadow": {
+   "reach": 3.0,
+   "colour": "#000000",
+   "alpha": 0.3
+  }
+ },
+ "place": {
+  "anchor": "the cradle's top (the Condenser's convert prompt's part)",
+  "leftAndTop": [
+   22.0,
+   -50.0
+  ],
+  "note": "the card's left edge 22 right of the anchor's point on the screen and its top 50 above it, so it stands beside the cradle and clear of the Comb's tray; the plates' own rules (under the top band, apart from other plates, off the avatar) are the build's"
+ },
+ "cost": {
+  "take": {
+   "digit": {
+    "leftAndCapTop": [
+     12.0,
+     15.0
+    ],
+    "size": 20.0,
+    "text": "Convert.Take"
+   },
+   "stone": {
+    "leftTopSize": [
+     26.0,
+     4.0,
+     36.0
+    ],
+    "image": "StoneLow (Config.UIKit; the stone Convert.From names)"
+   }
+  },
+  "arrow": {
+   "left": 69.0,
+   "middle": 22.0,
+   "size": [
+    8.0,
+    12.0
+   ],
+   "colour": "#E2CFA4",
+   "image": "ArrowRight (images/ArrowRight.png, new: white, tinted; its box is this size, its tile 2 more on every side)"
+  },
+  "give": {
+   "digit": {
+    "leftAndCapTop": [
+     85.0,
+     15.0
+    ],
+    "size": 20.0,
+    "text": "Convert.Give"
+   },
+   "stone": {
+    "leftTopSize": [
+     98.0,
+     4.0,
+     36.0
+    ],
+    "image": "StoneMid (Config.UIKit; the stone Convert.To names)"
+   }
+  }
+ },
+ "second": {
+  "bar": {
+   "leftTopWidthHeight": [
+    12.0,
+    50.0,
+    64.0,
+    10.0
+   ],
+   "bed": "#070A0C",
+   "inset": 1.0,
+   "corners": "cut 4 at the top-left and bottom-right; plain frames serve at this size"
+  },
+  "word": {
+   "leftAndCapTop": [
+    84.0,
+    50.0
+   ],
+   "size": 14.0
+  }
+ },
+ "states": {
+  "ready": {
+   "edge": "#E2CFA4",
+   "costAlpha": 1.0,
+   "digits": "#FFF6E2",
+   "bar": {
+    "share": 1.0,
+    "colour": "#F6FCFF"
+   },
+   "word": {
+    "text": "Ready",
+    "colour": "#FFF6E2"
+   }
+  },
+  "running": {
+   "edge": "#E2CFA4",
+   "costAlpha": 1.0,
+   "digits": "#FFF6E2",
+   "bar": {
+    "share": "the share of the convert's time done",
+    "colour": "#FFB878"
+   },
+   "word": {
+    "text": "<time> left",
+    "colour": "#FFF6E2"
+   }
+  },
+  "short": {
+   "edge": "#A9C0BC",
+   "costAlpha": 0.55,
+   "digits": "#A9C0BC",
+   "bar": {
+    "share": "the bag's count over the take",
+    "colour": "#A9C0BC"
+   },
+   "word": {
+    "text": "<n> of <take> <From>",
+    "colour": "#D9E8E2"
+   }
+  },
+  "asleep": {
+   "edge": "#A9C0BC",
+   "costAlpha": 0.55,
+   "digits": "#A9C0BC",
+   "size": "sizeAsleep",
+   "bar": null,
+   "word": null
+  }
+ },
+ "when": {
+  "ready": "awake, none running, the bag holds the take",
+  "running": "a convert runs",
+  "short": "awake, none running, the bag holds less than the take",
+  "asleep": "below Config.Condenser.Wakes"
+ },
+ "colours": {
+  "text": "#FFF6E2",
+  "soft": "#D9E8E2",
+  "faint": "#A9C0BC",
+  "edge": "#E2CFA4",
+  "seam": "#FFB878",
+  "home": "Config.UIKit, System; seam is the stones' own (AR31)"
+ },
+ "text": {
+  "digits": "Theme.Text.Title (20), the number face",
+  "word": "Theme.Text.Caption (14)"
+ }
+}

@@ -13,7 +13,13 @@ nothing exported.
 
 Writes condenser_panel_A.png, _B.png, _C.png and condenser_panel_glance.png into the out dir. The plates, the tag and
 the slate's face are drawn here in Blender's face, standing in for the game's; the prompt's own button isn't drawn.
+
+The finish (AR51, "Research's pick": B), with `finish` in place of `fast`: B's card at the game's own sizes (text at
+Theme.Text's 14 or more, where the blockout's stood at 10.5) and with the pick's first must-fix (asleep, the card keeps
+its cost line dimmed and says nothing the plate says), beside the Comb's plate as the build draws it. Writes
+condenser_card.json, the card's spec for the build, from the numbers below, and condenser_card.png.
 """
+import json
 import math
 import sys
 from pathlib import Path
@@ -131,6 +137,164 @@ def tag(state):
             gauge(t, 14, 41, 60, 8, have / 5, FAINT)
             t.text(80, 41, 10.5, f"{have} of 5 Low", SOFT)
     return card(w + 8, h + 8, draw)
+
+
+# --- the finish: B's card at the game's sizes ---------------------------------------------------------------------------
+# Points at Theme.Author (812 by 375), from the card's top-left corner. One home for the numbers: condenser_card.json
+# is written from this table.
+CARD = dict(
+    size=(172.0, 70.0), asleep=(172.0, 44.0), corners=(7.0, 2.1, 7.0, 2.1), fill=SLAB, fillAlpha=0.95, edgeWidth=1.2,
+    digits=20.0, word=14.0,                       # Theme.Text.Title and Theme.Text.Caption
+    take=dict(digit=(12.0, 15.0), stone=(26.0, 4.0, 36.0)),      # a digit's left and cap top; a stone's left, top, size
+    arrow=dict(left=69.0, middle=22.0, size=(8.0, 12.0)),        # ArrowRight (condenser_power.py), tinted Edge
+    give=dict(digit=(85.0, 15.0), stone=(98.0, 4.0, 36.0)),
+    bar=dict(box=(12.0, 50.0, 64.0, 10.0), bed="#070A0C", inset=1.0),
+    line=(84.0, 50.0),                            # the second line's word: its left and cap top
+    place=(22.0, -50.0),                          # the card's left and top from the cradle's point on the screen
+)
+CARD_STATES = dict(
+    ready=dict(edge=EDGE, cost=1.0, digits=TEXT, bar=(1.0, "#F6FCFF"), word=("Ready", TEXT)),
+    running=dict(edge=EDGE, cost=1.0, digits=TEXT, bar=("the share of the convert's time done", SEAM), word=("<time> left", TEXT)),
+    short=dict(edge=FAINT, cost=0.55, digits=FAINT, bar=("the bag's count over the take", FAINT), word=("<n> of <take> <From>", SOFT)),
+    asleep=dict(edge=FAINT, cost=0.55, digits=FAINT, bar=None, word=None),
+)
+PLATE = dict(width=204.0, line=20.0, pad=8.0, text=14.0)      # BaseController: CONDENSER_WIDTH, PLATE_LINE, Theme's
+
+
+def card_final(state):
+    """B's card as the build draws it: the cost in the stones' pictures, then how it stands; asleep, the cost alone."""
+    k = CARD
+    awake, done, have = state["awake"], state["done"], state["have"]
+    name = "asleep" if not awake else "running" if done is not None else "ready" if have >= 5 else "short"
+    st = CARD_STATES[name]
+    (w, h), o = (k["asleep"] if name == "asleep" else k["size"]), 4.0
+
+    def draw(t):
+        d = t.poly(ui.cut_box(o, o, o + w, o + h, *k["corners"]))
+        t.glow(d, 3.0, ui.BLACK, 0.3)
+        t.paint(d, t.ramp(SLAB[0], SLAB[1], (t.y - o) / h), k["fillAlpha"])
+        t.line(d, k["edgeWidth"], c(st["edge"]), 0.95 * (1.0 if st["cost"] == 1.0 else 0.55))
+        for part, grade, digit in ((k["take"], "Low", "5"), (k["give"], "Mid", "1")):
+            t.text(o + part["digit"][0], o + part["digit"][1], k["digits"], digit, st["digits"])
+            stone(t, grade, o + part["stone"][0], o + part["stone"][1], part["stone"][2], st["cost"])
+        a = k["arrow"]
+        t.paint(t.poly([(o + a["left"], o + a["middle"] - a["size"][1] / 2), (o + a["left"] + a["size"][0], o + a["middle"]),
+                        (o + a["left"], o + a["middle"] + a["size"][1] / 2)]), c(EDGE), st["cost"])
+        if st["bar"] is None:
+            return
+        share = 1.0 if name == "ready" else done if name == "running" else have / 5
+        bx, by, bw, bh = k["bar"]["box"]
+        gauge(t, o + bx, o + by, bw, bh, share, st["bar"][1])
+        word = "Ready" if name == "ready" else minutes(done) if name == "running" else f"{have} of 5 Low"
+        t.text(o + k["line"][0], o + k["line"][1], k["word"], word, st["word"][1])
+    return card(w + 2 * o, h + 2 * o, draw)
+
+
+def plate_final(state):
+    """The Comb's plate as BaseController draws it: its name, then its tray or the level that wakes it."""
+    k = PLATE
+    lines = [("Stone Condenser", TEXT), ("Tray 2 of 12 Low", TEXT) if state["awake"] else ("Wakes at base level 2", SOFT)]
+    w, h = k["width"], len(lines) * k["line"] + k["pad"]
+
+    def draw(t):
+        slab(t, 4, 4, w + 4, h + 4, cut=6.0)
+        for i, (text, colour) in enumerate(lines):
+            t.text(4 + w / 2, 4 + k["pad"] / 2 + 5 + i * k["line"], k["text"], text, colour, "CENTER")
+    return card(w + 8, h + 8, draw)
+
+
+def spec(out):
+    k = CARD
+    data = dict(
+        piece="AR51, B: the Stone Condenser's convert card (docs/asset-requests.md, AR51, 'The finish')",
+        units="points at Theme.Author (812 by 375), from the card's top-left corner; a text's y is its cap's top",
+        note="A screen card at fixed points beside the cradle, the machines' plates' kin (World.Plate): the cost in the "
+             "stones' pictures, then how the convert stands. Its numbers and stones come from Config.Condenser.Convert "
+             "(Take, From, Give, To), never from this file's example. Shown as the Comb's plate is shown. Asleep, the "
+             "card keeps the cost line dimmed at the shorter size and has no second line: the plate alone says what "
+             "wakes it (research's must-fix 1). DESIGN: drawn in Blender, untried in Studio.",
+        card=dict(size=list(k["size"]), sizeAsleep=list(k["asleep"]),
+                  corners=dict(cut=list(k["corners"]), order="top-left, top-right, bottom-right, bottom-left"),
+                  fill=dict(top=SLAB[0], bottom=SLAB[1], alpha=k["fillAlpha"], home="Config.UIKit, System: Panel"),
+                  edge=dict(width=k["edgeWidth"], alpha=0.95), shadow=dict(reach=3.0, colour="#000000", alpha=0.3)),
+        place=dict(anchor="the cradle's top (the Condenser's convert prompt's part)",
+                   leftAndTop=list(k["place"]),
+                   note="the card's left edge 22 right of the anchor's point on the screen and its top 50 above it, so it "
+                        "stands beside the cradle and clear of the Comb's tray; the plates' own rules (under the top "
+                        "band, apart from other plates, off the avatar) are the build's"),
+        cost=dict(
+            take=dict(digit=dict(leftAndCapTop=list(k["take"]["digit"]), size=k["digits"], text="Convert.Take"),
+                      stone=dict(leftTopSize=list(k["take"]["stone"]), image="StoneLow (Config.UIKit; the stone Convert.From names)")),
+            arrow=dict(left=k["arrow"]["left"], middle=k["arrow"]["middle"], size=list(k["arrow"]["size"]),
+                       colour=EDGE, image="ArrowRight (images/ArrowRight.png, new: white, tinted; its box is this "
+                                           "size, its tile 2 more on every side)"),
+            give=dict(digit=dict(leftAndCapTop=list(k["give"]["digit"]), size=k["digits"], text="Convert.Give"),
+                      stone=dict(leftTopSize=list(k["give"]["stone"]), image="StoneMid (Config.UIKit; the stone Convert.To names)"))),
+        second=dict(bar=dict(leftTopWidthHeight=list(k["bar"]["box"]), bed=k["bar"]["bed"], inset=k["bar"]["inset"],
+                             corners="cut 4 at the top-left and bottom-right; plain frames serve at this size"),
+                    word=dict(leftAndCapTop=list(k["line"]), size=k["word"])),
+        states={name: dict(edge=st["edge"], costAlpha=st["cost"], digits=st["digits"],
+                           **({"bar": dict(share=st["bar"][0], colour=st["bar"][1]),
+                               "word": dict(text=st["word"][0], colour=st["word"][1])} if st["bar"] else
+                              {"size": "sizeAsleep", "bar": None, "word": None}))
+                for name, st in CARD_STATES.items()},
+        when=dict(ready="awake, none running, the bag holds the take", running="a convert runs",
+                  short="awake, none running, the bag holds less than the take", asleep="below Config.Condenser.Wakes"),
+        colours=dict(text=TEXT, soft=SOFT, faint=FAINT, edge=EDGE, seam=SEAM, home="Config.UIKit, System; seam is the stones' own (AR31)"),
+        text=dict(digits="Theme.Text.Title (20), the number face", word="Theme.Text.Caption (14)"))
+    (out / "condenser_card.json").write_text(json.dumps(data, indent=1), encoding="utf-8", newline="\n")
+    print("AR51: wrote", out / "condenser_card.json")
+
+
+def finish(out):
+    """B alone, as picked and fixed: the four states at the stand, the reach's edge, the cuts, the cards whole."""
+    flats = {name: (plate_final(s), card_final(s)) for name, _, s in STATES}
+    made, boxes = {}, {}
+    for asleep in (False, True):
+        yard = Yard(out, False, asleep)
+        for k in range(len(STAND)):
+            cx, cy = yard.seen(k, (CRADLE[0], CRADLE[1], 2.9))
+            boxes[k] = (round(cx), round(cy))
+        for name, _, s in STATES:
+            if s["awake"] == asleep:
+                continue
+            yard.stand(f"BStones_{name}")
+            for k in range(len(STAND)):
+                if k == 1 and name != "ready":
+                    continue
+                px = yard.shot(k, f"card_{name}_{k}")
+                px_, py_ = yard.seen(k, (0.0, -0.4, 11.3))
+                lay(px, flats[name][0], px_, py_ - 30)
+                tx, ty = yard.seen(k, (CRADLE[0], CRADLE[1], 2.2))
+                lay(px, flats[name][1], tx + CARD["place"][0] + CARD["size"][0] / 2, ty + CARD["place"][1] - 4)
+                made[name, k] = px
+            yard.clear()
+    ui.K = 1
+    m, gap = 20, 14
+    whole = max(f[1].shape[0] for f in flats.values())
+    sheet = ui.Sheet(2 * m + 2 * SIZE[0] + gap, 70 + 2 * (SIZE[1] + 22) + 22 + 2 * 342 + 22 + SIZE[1] + 22 + 2 * (whole + 12) + 40, GROUND)
+    t = sheet.tile(0, 0, sheet.w, sheet.h)
+    t.text(m, 16, 19, "Grow your Anime, AR51's finish: the Stone Condenser's convert card (B), at the game's sizes", HEAD)
+    t.text(m, 44, 11, "The game's camera behind a player 6.7 studs from the cradle, by day, at 852 by 480, a point drawn as a pixel. "
+                      "The plate and the card are stand-ins in Blender's face, at the build's sizes (text 14 and 20).", NOTE)
+    for i, (name, label, _) in enumerate(STATES):
+        x, y = m + (i % 2) * (SIZE[0] + gap), 70 + (i // 2) * (SIZE[1] + 22)
+        t.text(x, y, 11, label, NOTE)
+        rs.paste(sheet.px, made[name, 0], x, y + 16)
+    y = 70 + 2 * (SIZE[1] + 22)
+    t.text(m, y, 11, "The card cut from each frame and drawn 3 times its size, pixel for pixel: ready, running, can't start, asleep", NOTE)
+    for i, (name, _, _) in enumerate(STATES):
+        rs.paste(sheet.px, cut(made[name, 0], boxes[0], right=80), m + (i % 2) * (SIZE[0] + gap), y + 16 + (i // 2) * 342)
+    y += 16 + 2 * 342
+    t.text(m, y, 11, "Ready, from the edge of the prompt's reach, 9.9 studs off; and its card 3 times its size", NOTE)
+    rs.paste(sheet.px, made["ready", 1], m, y + 16)
+    rs.paste(sheet.px, cut(made["ready", 1], boxes[1], right=80), m + SIZE[0] + gap, y + 16)
+    y += 16 + SIZE[1] + 8
+    t.text(m, y, 11, "The four cards whole, at 4 pixels a point, as condenser_card.json measures them", NOTE)
+    for i, (name, _, _) in enumerate(STATES):
+        rs.paste(sheet.px, flats[name][1], m + (i % 2) * (SIZE[0] + gap), y + 16 + (i // 2) * (whole + 12))
+    uk.finish(sheet, out / "condenser_card.png")
+    spec(out)
 
 
 FACE_PTS = (112.0, 80.0)      # A's face: a SurfaceGui 2.8 by 2.0 studs at 40 pixels a stud
@@ -467,6 +631,9 @@ def sheets(out, made, boxes):
 
 def main():
     out = bl.out_dir()
+    if "finish" in sys.argv:
+        finish(out)
+        return
     fast = "fast" in sys.argv
     made, boxes = frames(out, fast)
     sheets(out, made, boxes)

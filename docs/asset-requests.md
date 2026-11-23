@@ -15416,6 +15416,33 @@ Read from the glance sheet, B's and the Power screen's sheets, at the phone's si
 - **To polish-later:** C's cups as the machine's own lit state under B's card. That would be a new blockout, not a patch.
 - **Next:** AR51's finish, Modulo's: the six-sided chip as an image ready to upload, and B's card as a spec for Faber (its size, the stone pictures' ids from AR31, the bar's colours per state). Then Faber's build, after AR50's install.
 
+### The finish: the chip and the arrow to upload, the card's spec (Modulo, 2026-11-23, 14:40)
+
+Made 14:36 to 14:40 by the files' clock, by the same two scripts: `tools/blender/condenser_panel.py` with `finish`, `tools/blender/condenser_power.py` with `chip`.
+
+**A correction of my blockout first.** B's card drew its word at 10.5 points and my stand-in for the Comb's plate did too, under the game's floor of 14 (`Theme.Text.Minimum`). The finish draws both at the build's own sizes: the plate as `BaseController` makes it (two lines at 14, 204 wide, "Stone Condenser" over the tray's line), the card's word at 14 (`Theme.Text.Caption`) and its digits at 20 (`Theme.Text.Title`). The card grew from 148 by 58 to **172 by 70 points**. It's the same card, but the pick was read on the smaller one, so the sheet shows every state again.
+
+**The card** (`build/handoff/Base/condenser_card.json`, `condenser_card.png`). The spec is written from the script's own table (`CARD`, `CARD_STATES`), in points at `Theme.Author`:
+- **Its make:** the system slab (`Config.UIKit`, System), cut 7 at the top-left and bottom-right, 2.1 at the other two; a screen card at fixed points, the plates' kin. Its left edge stands 22 right of the cradle's point on the screen and its top 50 above it, clear of the Comb's tray.
+- **The cost line:** `Convert.Take`, the stone `Convert.From` names, an arrow, `Convert.Give`, the stone `Convert.To` names. The stones are AR31's pictures already in the game: `StoneLow` 105458370790435, `StoneMid` 98927105470350, at 36 points. The numbers come from `Config.Condenser`, never from the file's example.
+- **The second line:** a bar 64 by 10, then one word.
+  - Ready: the bar full in `#F6FCFF`, "Ready", the edge lit (`#E2CFA4`).
+  - Running: the bar the share of the time done, in the stones' seam `#FFB878`, "<time> left" in the build's own time words, the edge lit.
+  - Can't start: the cost line at 0.55, the edge and digits in Faint `#A9C0BC`, the bar the bag's count over the take in Faint, "<n> of 5 Low" in Soft `#D9E8E2`.
+- **Asleep, must-fix 1:** the card keeps its cost line dimmed, at 172 by 44, with no second line. The plate alone says "Wakes at base level 2".
+
+**The Power screen's share** (`build/handoff/UI/hud/colour/condenser_share.json`, `condenser_share.png`, `images/`):
+- `PowerChipCondenser.png`: six-sided with a dark ring, in Rose `#FF8FAE`, 88 by 88 pixels on the other chips' 22-point tile with their pad of 5, so it takes their place in a row unchanged.
+- The light: Rose, with its 17-stop gradient by `power_images.light_stops`, the others' make. It reads with `power_images.json`: the same bar and stack, one more light, in the machines' order, three handles.
+- `ArrowRight.png`: the card's arrow, a white triangle on alpha, 48 by 64 pixels (8 by 12 points, 2 of pad), tinted the slab's Edge. A new image because the game's one arrow, `EdgeArrow`, is held to its two tints by its own content check.
+- The sheet is the upload check's: each image over dark and over pale at its own pixels, enlarged and at 64 pixels; the three chips in a row; the bar under Auto and in a split.
+
+**For Faber, at the build:** upload the two images under the group; `Config.Hud`'s Power takes `Colours.Condenser`, the gradient and `ChipCondenser`; `PowerScreen`'s third row and third handle. The card needs no other image. Must-fix 2 (no row half-cut at the fold) is the build's choice and isn't drawn here.
+
+**Limits.** Blender's face stands in for the game's text, so widths will differ a little: the card's 172 leaves room after "18 min left", and a longer time's words may need more. A point is drawn as a pixel at 852 by 480; the layer's scale there wasn't measured. The bars on the share's sheet are drawn whole, not stacked from the images. Nothing was tried in Studio.
+
+**Four facts.** Made: two images, two specs, two sheets. Self-read: the card in its four states at the phone's size and 3 times; the chip and the arrow at 64 pixels over dark and pale. Delivered: `build/handoff/Base/` and `build/handoff/UI/hud/colour/`; nothing uploaded, nothing in the game. Accepted: no; research's pass on the finish is asked. Content check PASS for the upload of `PowerChipCondenser.png` and of `ArrowRight.png`, as these exact files (sha1 5cfb4aff and 96023fc5), and for the card's words; a changed file needs a new check, and the two sheets stay internal.
+
 ## Later, by ground
 
 The rest of ground 1 (Kirra in AR10, Watt in AR11; then Sable, Marigold, Crane), then each ground's Voidkin in `docs/roster.md`'s order. **The machines** (Gantry, Bulwark, Ironhymn, Shiomaru, Aegir) share one custom rig, taller than a player, with its own clip family: the first of them is timed like AR1, because a custom rig is a different cost.

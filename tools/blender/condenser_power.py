@@ -8,7 +8,14 @@ battery's plate in the head. The numbers are made up for the picture. Text is Bl
 
 Writes condenser_power.png. The world behind is Faber's stills of TR18 (build/captures/tr18), cut as
 power_vivid_sheet.py's head says.
+
+The finish (AR51, "Research's pick": Rose, the six-sided chip), with `chip` after the out dir: writes
+images/PowerChipCondenser.png, the chip in power_images.py's make and size; images/ArrowRight.png, the convert card's
+arrow, white for the game to tint (condenser_panel.py's CARD holds its place); condenser_share.json, the Condenser's
+light for the bar (its colour and its gradient, by power_images.light_stops) and where it stands; and
+condenser_share.png, the upload check's sheet. The check copies go to build/scratch/modulo/power_images/.
 """
+import json
 import sys
 import textwrap
 from pathlib import Path
@@ -55,18 +62,36 @@ def stills():
             rs.save(px[19:19 + 430, 11:11 + 936].copy(), pv.STILLS / f"power_{key}.png")
 
 
-def cup_chip(st, x, cy, colour, size=13.0):
-    """The Condenser's key to its light: a six-sided cup of its Comb, in the chips' own make."""
-    pad, r = 5.0, size / 2
-    t = kit.blank(size + 2 * pad, size + 2 * pad)
-    mid = pad + r
+CHIP, CHIP_PAD, CUP = 12.0, 5.0, 13.0     # the chips' box and pad (power_images.py); the cup across its corners
+
+
+def cup_tile(colour):
+    """The Condenser's key to its light: a six-sided cup of its Comb, in the chips' own make and on their tile."""
+    pad, r = CHIP_PAD, CUP / 2
+    t = kit.blank(CHIP + 2 * pad, CHIP + 2 * pad)
+    mid = pad + CHIP / 2
     d = t.poly([(mid + r * np.cos(np.radians(a)), mid + r * np.sin(np.radians(a))) for a in range(0, 360, 60)])
     t.glow(d, 3.0, c(colour), 0.35)
     t.paint(d - 1.1, c(h.STROKE))
-    t.paint(d, t.ramp(h.mix(colour, "#FFFFFF", 0.45), colour, (t.y - pad) / size))
+    t.paint(d, t.ramp(h.mix(colour, "#FFFFFF", 0.45), colour, (t.y - mid + r) / CUP))
     t.paint(d + 3.4, c(h.STROKE), 0.5)                                # the cup's dark middle
-    t.paint(d + 4.4, t.ramp(colour, h.mix(colour, "#FFFFFF", 0.5), (t.y - pad) / size))
-    h.place(st, t, x - pad, cy - size / 2 - pad)
+    t.paint(d + 4.4, t.ramp(colour, h.mix(colour, "#FFFFFF", 0.5), (t.y - mid + r) / CUP))
+    return t
+
+
+ARROW, ARROW_PAD = (8.0, 12.0), 2.0
+
+
+def arrow_tile():
+    """The convert card's arrow: a filled triangle pointing right, white, tinted by the game."""
+    w, hh = ARROW
+    t = kit.blank(w + 2 * ARROW_PAD, hh + 2 * ARROW_PAD)
+    t.paint(t.poly([(ARROW_PAD, ARROW_PAD), (ARROW_PAD + w, ARROW_PAD + hh / 2), (ARROW_PAD, ARROW_PAD + hh)]), ui.WHITE)
+    return t
+
+
+def cup_chip(st, x, cy, colour):
+    h.place(st, cup_tile(colour), x - CHIP_PAD, cy - CHIP / 2 - CHIP_PAD)
 
 
 def bus(st, x, y, w, hh, cuts, colours, p):
@@ -114,7 +139,7 @@ def well(st, ty, th, p):
 def row(st, top, p, r, colour, hexa=False, cut=None):
     name, reading, speed, share, (no_minus, no_plus) = r
     if hexa:
-        cup_chip(st, BX - 0.5, top + 11, colour)
+        cup_chip(st, BX, top + 11, colour)
     else:
         pv.chip(st, BX, top + 11, colour, top=cut)
     if cut is not None:
@@ -198,8 +223,113 @@ NOTES = (
 )
 
 
+ROSE = COLOURS[0][1]
+CHIP_NOTES = (
+    "The Stone Condenser's chip for the Power screen (AR51's finish): six-sided with a dark middle, a cup of its Comb, in "
+    "the pick's rose, on the other chips' 22-point tile so it takes their place in a row unchanged. Top: the image over "
+    "dark and over a pale ground at its own pixels, 4 times its size, and at 64 pixels. Then the three chips beside their "
+    "rows' names on the system slab, and the bar with the Condenser's light under Auto and in a split, its row under it.",
+    "ArrowRight is the convert card's arrow between its two stones: a white triangle on alpha, 8 by 12 points on a 12 by "
+    "16 tile, tinted by the game. The light is the other lights' make: PowerBusLight through its window with condenser_share.json's gradient. The "
+    "bars here are drawn whole, not stacked from the images. Stand-ins: Blender's face for the game's text.",
+)
+
+
+def finish(out):
+    """The chip as an image ready to upload, the light's numbers, the check's sheet."""
+    import power_images as pi
+    h.stage("started")
+    sv.slices()
+    name = "PowerChipCondenser"
+    kit.keep(name, cup_tile(ROSE), None, None, CHIP_PAD, "the Stone Condenser row's chip; its colour is its own")
+    kit.keep("ArrowRight", arrow_tile(), "its user's colour", None, ARROW_PAD,
+             "the convert card's arrow between the two stones, tinted the system slab's Edge")
+    pi.chip("Breaker", BREAKER)
+    pi.chip("Training", TRAINING)
+    im = kit.IMAGES[name]
+    (out / "images").mkdir(exist_ok=True)
+    pi.CHECK.mkdir(parents=True, exist_ok=True)
+    shipped = {n: kit.IMAGES[n] for n in (name, "ArrowRight")}
+    for n, one in shipped.items():
+        px = one["px"].copy()
+        kit.bleed(px)
+        rs.save(px, out / "images" / f"{n}.png")
+        rs.save(pi.over_dark(one["px"]), pi.CHECK / f"{n}_whole.png")
+        rs.save(pi.over_dark(one["px"], 64), pi.CHECK / f"{n}_64.png")
+    arrow = shipped["ArrowRight"]
+    data = dict(
+        piece="AR51: the Stone Condenser's share on the Power screen (docs/asset-requests.md, AR51, 'The finish')",
+        note="Read with power_images.json: the same bar, the same stack, one more light. A machine's light stands in the "
+             "machines' order (the Void Breaker, the Training machine, the Stone Condenser), then the battery's; three "
+             "handles, one on each cut. An idle machine's light wears the battery's gradient, as the others do. The "
+             "list's third row must not stand half under the foot on the smallest phone (research's must-fix 2: the "
+             "build's choice). DESIGN: drawn in Blender, untried in Studio.",
+        colour=ROSE, light=dict(colour=ROSE, gradient=pi.light_stops(ROSE)),
+        chip=dict(file=f"images/{name}.png", pixels=[im["px"].shape[1], im["px"].shape[0]], points=[im["w"], im["h"]],
+                  pad=im["pad"], box=[CHIP, CHIP], use=im["use"],
+                  like="PowerChipBreaker and PowerChipTraining (Config.Hud, Power): the same pixels, points and pad"),
+        row=dict(name="Stone Condenser", order=3),
+        arrow=dict(file="images/ArrowRight.png", pixels=[arrow["px"].shape[1], arrow["px"].shape[0]],
+                   points=[arrow["w"], arrow["h"]], pad=arrow["pad"], box=list(ARROW), tint=arrow["tint"], use=arrow["use"],
+                   note="the convert card's (condenser_card.json, cost.arrow): white on alpha"))
+    (out / "condenser_share.json").write_text(json.dumps(data, indent=1), encoding="utf-8", newline="\n")
+    h.stage("the image and its numbers")
+
+    p = ROOM
+    st = kit.Stage(W, 40.0, h.GROUND)
+    kit.panel(st, PX, 2, PW, 36, p)
+    x = BX
+    for chip, label in (("PowerChipBreaker", "Void Breaker"), ("PowerChipTraining", "Training machine"), (name, "Stone Condenser")):
+        st.lay(chip, x, 20 - CHIP / 2)
+        pv.word(st, x + 18, 20, 14, label, p["text"])
+        x += 190
+    rows = [("The three chips beside their rows' names, on the system slab:", (h.bytes8(h.halve(st.px)), st.items)),
+            ("Under Auto, the Training machine idle:", strip(p, "auto", ROSE, True)),
+            ("A split the player made, all three at work:", strip(p, "split", ROSE, True))]
+    pale = "#E9E4D8"
+
+    def over(one, colour, size=None, times=1):
+        im8 = one["px"].copy() if size is None else kit.fit(one["px"], size)
+        if one["tint"] and colour == pale:
+            im8[..., :3] = c("#2A4E5A")                               # a white image shown dark over the pale ground
+        ground = rs.canvas(im8.shape[1] if size is None else size, im8.shape[0] if size is None else size, tuple(c(colour)))
+        rs.paste(ground, im8, (ground.shape[1] - im8.shape[1]) // 2, (ground.shape[0] - im8.shape[0]) // 2)
+        return np.repeat(np.repeat(ground, times, axis=0), times, axis=1)
+
+    kit.IMAGES.clear()
+    ui.K = 2
+    m = 20.0
+    lines = [line for note in CHIP_NOTES for line in textwrap.wrap(note, 190)]
+    extra = sum(14.0 + shot[0].shape[0] / 2 + 8.0 for _, shot in rows)
+    sh = ui.Sheet(2 * m + W, 62 + 176 + 30 + extra + len(lines) * 15 + 14, h.GROUND)
+    t = sh.tile(0, 0, sh.w, sh.h)
+    t.text(m, 14, 17, "Grow your Anime, AR51's finish: PowerChipCondenser and ArrowRight, the upload check's sheet", h.HEAD)
+    t.text(m, 44, 11, "Each image over dark and over pale: at its own pixels, enlarged (the chip 4 times, the arrow twice), and at 64 pixels. "
+                      "The arrow is white: shown dark over pale.", h.HEAD)
+    x = m
+    for one in shipped.values():
+        for colour in (h.PARTS_GROUND, pale):
+            for size, times in ((None, 1), (None, 4 if one is im else 2), (64, 1)):
+                px = over(one, colour, size, times)
+                kit.put(sh, px, x * 2, 62 * 2)
+                x += px.shape[1] / 2 + 8
+            x += 8
+    y = 62 + 176 + 30
+    for caption, shot in rows:
+        t.text(m, y, 10, caption, h.NOTE)
+        h.add(sh, *shot, m, y + 14)
+        y += 14.0 + shot[0].shape[0] / 2 + 8.0
+    for i, line in enumerate(lines):
+        t.text(m, y + i * 15, 10, line, h.NOTE)
+    kit.finish(sh, out / "condenser_share.png")
+    h.stage("the sheet")
+
+
 def main():
     out = bl.out_dir()
+    if "chip" in sys.argv:
+        finish(out)
+        return
     h.stage("started")
     stills()
     sv.slices()

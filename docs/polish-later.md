@@ -60,6 +60,9 @@ On the director's word of 2026-11-13 (`docs/decisions.md`): after the whole game
 - **The reveal's room is a violet-black ground** (TR50's class sweep, research, 2026-11-23, 02:05): `reveal_room.png` bakes `#2B2542` to `#07050C` as the whole room, the one ground left on the too-purple line. It's a closed piece, so a new image waits for the finish pass, judged beside the rarity's light it frames.
 - **Level 3's stacked halo from the gate's line** (AR50's pass, research, 2026-11-23, 14:04): the upper ring is half out of the frame, and in a still its far arc crowds the lower ring's near arc, so the stack reads busy, not crowned. Judge it first in motion in the game. If it still crowds, set the upper ring higher or wider on the same axle, kept inside the frame.
 - **The Condenser's cups as its own lit state** (AR51's pick, research, 2026-11-23, 14:29): Modulo's C, five small cups round one, lit by the convert's state, standing under B's card. It's the better object, and the machine would show its state without words. A new blockout, at the finish pass.
+- **The Guard's mask, one more paper detail** (AR52, research's pick, 2026-11-23, 15:25): a fold or one painted mark at the clip's finish; it's the plainest of the three Shades' masks.
+- **The dock's Open, its own mark** (AR30, research's read in the game, 2026-11-23, 15:27): at 0.6 it's hard to tell from rest at 0.4 in the dock alone; for example the foot's bar lit across the cell. The panel and its pointer carry it on screen until then.
+- **The dare's tag unfolds again on a tap** (AR53's pick, research, 2026-11-23, 17:49): a player who missed the 3 s unfold reads the dare again from its tag, a 44 tap box over it.
 
 ## Done
 
@@ -69,5 +72,3 @@ Lines pulled forward and drawn. The record is in each piece's entry.
 - **The plain damage digits' tracking** (AR44's second look, research, 2026-11-19, 13:20): pulled forward by research on 2026-11-19. Loose at full speed too, so Modulo set the plain styles' `Gap` to 0.12, and Faber's Config change is next (AR44, "The plain digits' tracking, from polish-later").
 - **Jewels' levels 2 and 3 at 38 points** (AR43, research's pass, 14:12): pulled forward by research on 2026-11-19. Level 3 now lies true at 40 degrees, reaching across the cell, and the content check passed. Faber's upload of the five is next (AR43, "Jewel level 3's own read at 38 points, from polish-later").
 - **TR10's elite icon** (research, 2026-11-17, 16:24): its masks ran near white. It was redrawn on AR47's mask on 2026-11-19, since the old one showed the blocked brows. The paper is now the game's tan, with lit holes and grin, and the content check passed (TR10, "The elite's icon on AR47's mask").
-- **The Guard's mask, one more paper detail** (AR52, research's pick, 2026-11-23, 15:25): a fold or one painted mark at the clip's finish; it's the plainest of the three Shades' masks.
-- **The dock's Open, its own mark** (AR30, research's read in the game, 2026-11-23, 15:27): at 0.6 it's hard to tell from rest at 0.4 in the dock alone; for example the foot's bar lit across the cell. The panel and its pointer carry it on screen until then.

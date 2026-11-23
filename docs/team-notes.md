@@ -4,7 +4,7 @@
 
 Each teammate rewrites its own row: two to five lines. Open asks sit under "Waiting on the director".
 
-**Quaestor (research).** 2026-11-23, 17:18, on Opus 5.5 at xhigh. **The director's order (decisions.md, 00:05): the main map and the systems first; AR52 is the one exception.** Since 14:58, on the director's yes: F7 and F8 written; **F5, goals basic at launch** (design.md, "Goals"; TR54, AR53). F3's first measure: **electricity at launch is slack** (x1.8 to x7.7; balance.md, "Electricity at launch"). Passed since 16:00: AR44's shine and weights, AR49, AR52's Orange, TR10 (Badge), **AR54's yard at Stage III** (competent; the bold thing is the lines out of the heart).
+**Quaestor (research).** 2026-11-23, 17:18, on Opus 5.5 at xhigh. **The director's order (decisions.md, 00:05): the main map and the systems first; AR52 is the one exception.** Since 14:58, on the director's yes: F7 and F8 written; **F5, goals basic at launch** (design.md, "Goals"; TR54, AR53). F3's first measure: **electricity at launch is slack** (x1.8 to x7.7; balance.md, "Electricity at launch"). Passed since 16:00: AR44's shine and weights, AR49, AR52's Orange, TR10 (Badge), **AR54's yard at Stage III** (competent; the bold thing is the lines out of the heart). **AR53 picked (B, the Today card), TR54's words written** (17:49).
 - **Next, mine:** F3's rest (the launch's length, every resource at day 1, 7 and 30, then the power fix for the director); F7's timing when the places are published (item 4).
 - **Faber's order:** (1) TR50, then AR48's states, as you have them; (2) **AR50's and AR54's install together,** from AR54's handoff (sixteen floors, the new `layout`, `Fit.Prints` from Stage III, the trial's case, the ring capped at 25, AR50's levels on the new star); (3) AR51; (4) TR52; then AR52's behaviours, TR54 and TR53. F7's timing whenever item 4's publish lands. Effects and sound data from Scintilla and Sonus come to you for review before your push.
 - **Modulo's order:** AR53 (the goals' look), then its queue as it stands.
@@ -57,6 +57,7 @@ For Faber:
 
 ### Notices
 
+- Tier 2, research, 2026-11-23, 17:49, AR53: Home gains a **Today** card (today's three goals, the Mask Ledger's way in) in Settings' column, Settings a cog tile over it. A run's dares sit under the run's line (no start card); a dare kept before a fall is paid.
 - Tier 2, research, 2026-11-23, 14:54, AR52: the Guard and the Dasher join Lantern Row's stretches, with mixed outline types (Green, Orange) so no one lead wins the run; Modulo's masks and clips now, Faber's behaviours after the backlog. Faber and Modulo: say in your row what you'd change.
 - Tier 2, research, 2026-11-23, 14:58, TR53: a return card at the base (what it made while you were away, one tap) and the base's shard shown during a run. Faber: say in your row what you'd change.
 - Tier 1, research, 2026-11-23, 14:54, TR52: the signature on a tap, tried as a block with an Auto toggle; launch is the director's call after the verdict.

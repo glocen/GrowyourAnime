@@ -4680,19 +4680,19 @@ Research, 2026-11-23, 14:58, F4 and F6 of `docs/research/design-holes.md`: the d
 - **Cap:** 90 minutes for each half.
 - **Order:** after the install backlog and TR52.
 
-## TR54. Goals, basic at launch: a dare per stage, today's three, the Mask Ledger (Faber, after TR52 and AR52)
+## TR54. Goals, basic at launch: a dare per stretch, today's three, the Mask Ledger (Faber, after TR52 and AR52)
 
 Research, 2026-11-23, 15:24, on the director's yes and "js basic at launch" (`docs/design.md`, "Goals"; `docs/decisions.md`, the row of 15:23). The look is AR53's, Modulo's.
-- **Feel line:** at a stage's start the card dares you to play it one way; at its results, "Dare kept" and a stone. Home shows three plain goals that finish themselves while you play. The Ledger fills with masks, and each one tells you a little about who wore it.
+- **Feel line:** as a stretch starts, its dare unfolds under the run's line and folds to a paper tag that holds while you keep it; on the run's card, "Dare kept" and the stones. Home shows three plain goals that finish themselves while you play. The Ledger fills with masks, and each one tells you a little about who wore it.
 - **The block contains:**
-  - **Dares,** one fixed dare per stage, checked on the server, paid at the results:
+  - **Dares,** one fixed dare per stretch (research, 17:49: the run has four stretches and no start card), checked on the server. Each is paid when its stretch is cleared with it kept, and a later fall takes nothing back. The run's card shows them all, the fall's card too (AR53):
     1. "Finish with your lead above half."
     2. "Break a raised shield with your signature." (needs TR52's tap and AR52's Guard)
     3. "Let no Dasher's line touch you." (needs AR52's Dasher)
     4. "Stand outside every slam." (needs TR44's lead movement)
-    Until a dare's piece is in, that stage's dare is "Finish without your lead falling." Kept: one forge stone of the stage's grade (seed).
+    Until a dare's piece is in, that stretch's dare is "Finish without your lead falling." Kept: one forge stone of the ground's grade (seed).
   - **Today's three:** one from each list, drawn on the server at 00:00 UTC, banked up to three days (nine at most), each paying one Lantern Row shard.
-    - Fight: "Keep a dare." / "Clear a stage on Hard." / "Win three Tower floors." / "Beat the Lamplighter."
+    - Fight: "Keep a dare." / "Clear a stretch on Hard." / "Win three Tower floors." / "Knock the Lamplighter's mask loose."
     - Base: "Let every bay run a full hour." / "Break three shards." / "Collect the Condenser's tray." / "Train a Voidkin for an hour."
     - Roster: "Lead a run with someone new." (a Voidkin not led today) / "Raise a Voidkin a level." / "Forge once."
   - **The Mask Ledger:** a count per Shade kind, and a line shown at each count (Shades at 10, 100 and 1,000; the keeper at 1, 10 and 100):
@@ -4700,7 +4700,16 @@ Research, 2026-11-23, 15:24, on the director's yes and "js basic at launch" (`do
     - **Guard:** "Square masks were for the ones who came to watch, not to dance." / "A Guard holds its shield the way they'd hold a shutter in the rain." / "They wake on the curb with sore arms, sure they'd been holding something up."
     - **Dasher:** "The pointed masks were the runners'. They raced the lantern carts every year." / "The Void keeps what it finds. In a runner, it found the start line." / "They come to on the far side of the street, out of breath, and laugh without knowing why."
     - **The Lamplighter:** "Someone has to light the lanterns. For forty years, it was them." / "The Void came in through the last lantern they lit." / "They light the row again each evening, and never ask why the last lantern sticks."
-    - **Next:** the account's one next step, with what it opens. The rule picks the first not done of: Stage 4 on Normal, base level 2, the Lamplighter on Hard, base level 3, Tower floor 25.
+    - **Next:** the account's one next step, with what it opens, the first not done of:
+      1. "Knock the Lamplighter's mask loose. Hard opens on Lantern Row."
+      2. "Raise the base to level 2. A third bay opens, and the Condenser wakes."
+      3. "Knock the Lamplighter's mask loose on Hard. The first time, its chest holds a Rare or better."
+      4. "Raise the base to level 3. A fourth bay opens, and machines can climb to level 30."
+      5. "Climb the Tower to floor 25. Each floor past your record pays a first-time bonus."
+      6. All done: "Drum Court's gate stays shut, for now."
+      Each says only what launch opens (`Config.Base`, `Config.Condenser.Wakes`, `Config.Chests.Keeper`); an update that changes one changes its line.
+  - **The labels** (research, 17:49): the count "knocked loose"; the kinds "The Brawler", "The Guard", "The Dasher", "The Lamplighter"; the banked days "Yesterday", "Two days ago"; a done goal's press "Claim"; the card's chip "Dare kept" with "+N". The Ledger's one way in is the link at the Today list's head.
+  - **Content check** on the lines and labels above: PASS (2026-11-23, 17:49). It blocked the last Next line's first wording ("opens in an update": our word, not the world's), and the rewrite above passed.
 - **The rules in pure Luau** (`Rules.Goals`): the draw, the banking, the reset, each goal's check, the Ledger's counts. Logic cases:
   - a goal pays once;
   - a repeat or interrupted claim pays nothing more (the op ledger);

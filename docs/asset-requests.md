@@ -15709,6 +15709,31 @@ Four facts: **made** (sheets, below); **self-reviewed** at the phone's size, eve
 - **The baked content check** (17:41): PASS. The nine conditions are met as drawn, with one ruling: the Lamplighter's closed crescents and round mouth stand, the keeper's only (lit it's a lantern first, it's the model's own, and it's in the game); the Guard's and the Dasher's slits are the models' own and hold nothing. Two drawing notes, both done before this record: unlit, the lantern's hoops and ribs stay drawn in the rim's line; unlit, the Brawler's grin takes one outline and its teeth none. Every string on the sheets passes the list and the goals' wording rules. The checker saw the sheets reduced (the 64 pixel row at about 41). Carried to TR54's build: the shard's odds before breaking. Any image that goes up later takes the pre-upload check as its own file.
 - **Not made, the finish's:** the cut images and their handoff for TR54 (the tag's three states, the tab, the chip, the slip or the card, the row's three states, the pips, each mask lit and unlit at two sizes, the hook and strings), measured in the game's face; nothing moves yet beyond what the kit does.
 
+### Research's pick: B, with one must-fix, and the five answers (Quaestor, 2026-11-23, 17:49)
+
+From the six sheets at the smallest phone.
+- **Felt:**
+  - As a stretch starts, its dare opens under the run's line, then folds into a small paper tag. The tag stays lit while you hold the dare and flares when you clear the stretch. On the card, the tags hang from the road.
+  - Today's three wait behind one card with a shard on it.
+  - The Ledger hangs each mask on its hook, with its lines beside it.
+  - All of it is quiet and made of the festival's own paper.
+- **Tier:** competent, as a direction.
+- **The one bold thing:** the paper tag. It's one mark for the dare, on the line and on the card, lit, dark or flaring, with no words.
+- **Home's entry: B, the Today card.**
+  - The goals must be in view (F5), and the shard on the card says what waits there: a reveal.
+  - A's slip is a 26-point tab on the glass's edge, quiet until something is done, so it's missed until it's needed.
+  - Home's line in `docs/ui.md` already gave quests a card. Settings becomes a cog tile, where players look for it. AR49's "for now" on Settings' column ends here.
+- **Must-fix 1, class "a reward drawn unlike itself":** the chip's stone is the forge stone as the Forge draws it, at a size where it reads. Today it's a dark pebble at 18 points.
+- **The answers:**
+  1. Yes: one stone per kept dare, and the chip sums them. A dare kept on a stretch cleared before a fall is paid. The next run starts past that stretch, so holding it back would lose it for good. The fall's card shows the chip and the road's tags when one or more were kept, and nothing when none were.
+  2. B.
+  3. The link at the Today list's head is the Ledger's one way in at launch.
+  4. The strings are written in TR54 ("Next", "The labels"), with the content check passed. Two goals are reworded: "Clear a stretch on Hard." and "Knock the Lamplighter's mask loose."
+  5. The Lamplighter's mask stands as modelled, the keeper's only, as the content check ruled.
+- **What the sheets can't show:** the unfold, the fold into the tab and the flare at full speed. Research reads them in motion at TR54's build.
+- **Refinement:** the tag unfolds again on a tap (`docs/polish-later.md`).
+- **Next:** Modulo's finish with B, must-fix 1 and the fall's card, on TR54's words. Then the handoff for TR54.
+
 ## AR54. The yard at Stage III: one plan where every machine fits and reads from the gate (Modulo, before AR53; then Faber)
 
 Research, 2026-11-23, 15:26, from TR51's Studio run and TR37's (`docs/test-requests.md`). It's main map, so it comes first, by the director's order of 00:05. Tier 2, research and Modulo, with Faber's measures.

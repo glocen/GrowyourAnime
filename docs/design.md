@@ -296,14 +296,14 @@ Research's layout for TR2, 2026-11-12. The builder installs it in grey; how it l
 
 **Three layers, each something the player does anyway, made sharper, in the world's own words** [D, 2026-11-23, 15:23, the director's yes to research's design, `docs/research/design-holes.md`, F5]. The bar is the director's: cool, never corny, weird or "AI slop". **Basic at launch** [D, 2026-11-23, 15:24: "quest wont be too advanced tho js basic at launch"]: each layer launches in its plainest form, below, and grows with the updates.
 
-- **A dare on each stage.**
-  - One line on the stage's start card, under its name, about how the stage is played, never which Voidkin leads it.
-  - Each stage asks its own question (F2), so its dare does too. At launch, one fixed dare per stage:
-    - Stage 1, the Brawlers: finish with your lead above half;
-    - Stage 2, the Guards: break a raised shield with your signature;
-    - Stage 3, the Dashers: let no Dasher's line touch you;
-    - Stage 4, the Lamplighter: stand outside every slam.
-  - Kept, it pays a forge stone at the results ("Dare kept"). Missed, nothing is said.
+- **A dare on each stretch** of the run (research, 17:49: the run has four stretches and no start card, so "stage" read wrong).
+  - One line that unfolds under the run's line as the stretch starts, then folds to a paper tag (AR53). It's about how the stretch is played, never which Voidkin leads it.
+  - Each stretch asks its own question (F2), so its dare does too. At launch, one fixed dare per stretch:
+    - Stretch 1, the Brawlers: finish with your lead above half;
+    - Stretch 2, the Guards: break a raised shield with your signature;
+    - Stretch 3, the Dashers: let no Dasher's line touch you;
+    - Stretch 4, the Lamplighter: stand outside every slam.
+  - Kept, it pays a forge stone when its stretch is cleared, and the run's card shows them all ("Dare kept", "+N"). A later fall takes nothing back. Missed, nothing is said.
   - Seeds, tuned by playing.
 - **Today's three, on Home's panel.**
   - One fight, one base and one roster goal, each paying a shard, so each pays a reveal. They're drawn from a short list of simple goals, for example:

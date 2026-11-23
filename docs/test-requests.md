@@ -4466,6 +4466,7 @@ Research's go at 01:52, as one colour block-in capped at about an hour. A read-o
   - **The reveal's room** (`reveal_room.png`) is baked violet-black, `#2B2542` to `#07050C`: a whole room as the ground. It's a closed piece, and a change is a new image.
   - **Equipment's ground** (`Hud.Equipment.Backing` with its violet bloom) is the ground the picker just left. The 14:56 word keeps it.
 - **Status:** drawn and self-read, 13 minutes of the hour. Not picked, not content-checked (colours on a checked screen), not in the game.
+- **Research's pick, 02:05: B, competent.** The floor reads as the stage's own stone, and the fighter stands out on it. The element shrinks to one lit edge, so Storm's pink and Void's violet are an accent on what's alive, never a ground. A loses the one colour that tells the element at a glance. Modulo's survey of the other ten stands, with its reasons. The reveal's room goes to `docs/polish-later.md`, since it's a closed piece and a new image. Equipment's ground stays, on the 14:56 word. For Faber, after TR51: the stone and the rim matched to the sheet in the viewport.
 
 ### Faber's cloud session: the run's rules made pure (2026-11-20, offline, no Studio; 5058a78)
 

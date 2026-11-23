@@ -1,0 +1,455 @@
+{
+ "origin": "the fight floor's middle, at the floor's level",
+ "axes": "`at` is Roblox's (x, up, z): the entrance is at +Z, the foe's way in at -Z; `turn` is degrees anticlockwise seen from above; `scale` is the same on every axis",
+ "toRoblox": "CFrame.new(at) * CFrame.Angles(0, math.rad(turn), 0), then the piece's `centre`",
+ "floor": {
+  "radius": 48.0,
+  "stand": 13.0,
+  "stepRing": [
+   48.0,
+   60.0
+  ],
+  "stepDown": 1.5
+ },
+ "placements": [
+  {
+   "piece": "CrownFloor",
+   "tag": "A",
+   "at": [
+    0,
+    0,
+    0
+   ],
+   "turn": 0,
+   "scale": 1
+  },
+  {
+   "piece": "CrownFloor",
+   "tag": "C",
+   "at": [
+    0,
+    0,
+    0
+   ],
+   "turn": 180,
+   "scale": 1
+  },
+  {
+   "piece": "CrownFloorM",
+   "tag": "B",
+   "at": [
+    0,
+    0,
+    0
+   ],
+   "turn": 0,
+   "scale": 1
+  },
+  {
+   "piece": "CrownFloorM",
+   "tag": "D",
+   "at": [
+    0,
+    0,
+    0
+   ],
+   "turn": 180,
+   "scale": 1
+  },
+  {
+   "piece": "CrownBody",
+   "tag": "",
+   "at": [
+    0,
+    0,
+    0
+   ],
+   "turn": 0,
+   "scale": 1
+  },
+  {
+   "piece": "CrownBladeLow",
+   "tag": "0",
+   "at": [
+    56.357,
+    -1.5,
+    -23.344
+   ],
+   "turn": -67.5,
+   "scale": 1
+  },
+  {
+   "piece": "CrownBladeTall",
+   "tag": "1",
+   "at": [
+    23.344,
+    -1.5,
+    -56.357
+   ],
+   "turn": -22.5,
+   "scale": 1
+  },
+  {
+   "piece": "CrownBladeTall",
+   "tag": "2",
+   "at": [
+    -23.344,
+    -1.5,
+    -56.357
+   ],
+   "turn": 22.5,
+   "scale": 1
+  },
+  {
+   "piece": "CrownBladeLow",
+   "tag": "3",
+   "at": [
+    -56.357,
+    -1.5,
+    -23.344
+   ],
+   "turn": 67.5,
+   "scale": 1
+  },
+  {
+   "piece": "CrownBlade",
+   "tag": "4",
+   "at": [
+    -56.357,
+    -1.5,
+    23.344
+   ],
+   "turn": 112.5,
+   "scale": 1
+  },
+  {
+   "piece": "CrownBlade",
+   "tag": "5",
+   "at": [
+    -23.344,
+    -1.5,
+    56.357
+   ],
+   "turn": 157.5,
+   "scale": 1
+  },
+  {
+   "piece": "CrownBlade",
+   "tag": "6",
+   "at": [
+    23.344,
+    -1.5,
+    56.357
+   ],
+   "turn": 202.5,
+   "scale": 1
+  },
+  {
+   "piece": "CrownBlade",
+   "tag": "7",
+   "at": [
+    56.357,
+    -1.5,
+    23.344
+   ],
+   "turn": 247.5,
+   "scale": 1
+  },
+  {
+   "piece": "CrownSlab",
+   "tag": "",
+   "at": [
+    0.0,
+    20.0,
+    -63.0
+   ],
+   "turn": 0,
+   "scale": 1
+  },
+  {
+   "piece": "CrownStep",
+   "tag": "Foe0",
+   "at": [
+    0.0,
+    -1.0,
+    -66.0
+   ],
+   "turn": 0,
+   "scale": 1
+  },
+  {
+   "piece": "CrownStep",
+   "tag": "Foe1",
+   "at": [
+    0.0,
+    -1.3,
+    -80.0
+   ],
+   "turn": 0,
+   "scale": 1
+  },
+  {
+   "piece": "CrownStep",
+   "tag": "Foe2",
+   "at": [
+    0.0,
+    -1.6,
+    -95.0
+   ],
+   "turn": 0,
+   "scale": 1
+  },
+  {
+   "piece": "CrownStep",
+   "tag": "Foe3",
+   "at": [
+    0.0,
+    -2.0,
+    -111.0
+   ],
+   "turn": 0,
+   "scale": 1
+  },
+  {
+   "piece": "CrownStep",
+   "tag": "In0",
+   "at": [
+    0.0,
+    -3.0,
+    67.0
+   ],
+   "turn": 180,
+   "scale": 1
+  },
+  {
+   "piece": "CrownStep",
+   "tag": "In1",
+   "at": [
+    0.0,
+    -9.0,
+    82.0
+   ],
+   "turn": 180,
+   "scale": 1
+  },
+  {
+   "piece": "CloudDriftB",
+   "tag": "Drift0",
+   "at": [
+    -171.0,
+    -5.0,
+    -171.0
+   ],
+   "turn": 30.0,
+   "scale": 1.3
+  },
+  {
+   "piece": "CloudDrift",
+   "tag": "Drift1",
+   "at": [
+    150.0,
+    -10.0,
+    -142.0
+   ],
+   "turn": 0.0,
+   "scale": 1.1
+  },
+  {
+   "piece": "CloudDrift",
+   "tag": "Drift2",
+   "at": [
+    14.0,
+    -16.0,
+    -255.0
+   ],
+   "turn": 200.0,
+   "scale": 1.6
+  },
+  {
+   "piece": "CloudDriftB",
+   "tag": "Drift3",
+   "at": [
+    172.0,
+    -3.0,
+    -62.0
+   ],
+   "turn": 110.0,
+   "scale": 1.0
+  },
+  {
+   "piece": "CloudDrift",
+   "tag": "Drift4",
+   "at": [
+    -178.0,
+    -9.0,
+    -40.0
+   ],
+   "turn": 250.0,
+   "scale": 1.2
+  },
+  {
+   "piece": "CloudDrift",
+   "tag": "Drift5",
+   "at": [
+    -150.0,
+    -12.0,
+    80.0
+   ],
+   "turn": 300.0,
+   "scale": 1.3
+  },
+  {
+   "piece": "CloudDriftB",
+   "tag": "Drift6",
+   "at": [
+    140.0,
+    1.0,
+    90.0
+   ],
+   "turn": 70.0,
+   "scale": 1.0
+  },
+  {
+   "piece": "CloudDrift",
+   "tag": "Drift7",
+   "at": [
+    -40.0,
+    -10.0,
+    180.0
+   ],
+   "turn": 150.0,
+   "scale": 1.2
+  },
+  {
+   "piece": "CloudDriftB",
+   "tag": "Drift8",
+   "at": [
+    60.0,
+    -16.0,
+    170.0
+   ],
+   "turn": 20.0,
+   "scale": 1.0
+  },
+  {
+   "piece": "CloudDriftB",
+   "tag": "Drift9",
+   "at": [
+    -40.0,
+    -30.0,
+    -88.0
+   ],
+   "turn": 0.0,
+   "scale": 1.6
+  }
+ ],
+ "drift": {
+  "note": "each CloudDrift passes along +X at its speed, studs a second, and comes round again out of sight: seeds, slow enough to be felt and never watched",
+  "speed": {
+   "Drift0": 7.0,
+   "Drift1": 6.0,
+   "Drift2": 5.0,
+   "Drift3": 8.0,
+   "Drift4": 8.0,
+   "Drift5": 6.0,
+   "Drift6": 7.0,
+   "Drift7": 6.0,
+   "Drift8": 6.0,
+   "Drift9": 9.0
+  }
+ },
+ "lot": {
+  "note": "the entrance on the lot behind the base and the record's marker: its own frame, the lot's middle at the ground, the base and its path at +Z. The slab's numerals show the owner's record floor on both faces, so a visitor reads it from the base and from the street behind. GateVeil is the door: Transparency about 0.55, no shadow, no collision; stepping through it starts a run",
+  "placements": [
+   {
+    "piece": "GateDais",
+    "tag": "",
+    "at": [
+     0.0,
+     0.0,
+     -0.0
+    ],
+    "turn": 0.0,
+    "scale": 1.0
+   },
+   {
+    "piece": "GateVeil",
+    "tag": "",
+    "at": [
+     0.0,
+     0.0,
+     -1.0
+    ],
+    "turn": 0.0,
+    "scale": 1.0
+   },
+   {
+    "piece": "CrownBlade",
+    "tag": "GateL",
+    "at": [
+     -9.0,
+     0.6,
+     -1.5
+    ],
+    "turn": 20.0,
+    "scale": 0.55
+   },
+   {
+    "piece": "CrownBlade",
+    "tag": "GateR",
+    "at": [
+     9.0,
+     0.6,
+     -1.5
+    ],
+    "turn": -20.0,
+    "scale": 0.55
+   },
+   {
+    "piece": "CrownSlab",
+    "tag": "Record",
+    "at": [
+     0.0,
+     15.2,
+     -1.0
+    ],
+    "turn": 0.0,
+    "scale": 0.66
+   }
+  ]
+ },
+ "number": {
+  "piece": "CrownSlab",
+  "text": "a SurfaceGui on each face's well, 16.8 studs wide by 7.2 tall, the well's middle 2.4 over the slab's place (all three times the slab's scale on the lot); in the room the face toward the floor shows the floor's number and the back waits with the next; on the lot both show the record",
+  "colour": "#FFF8EA"
+ },
+ "beat": {
+  "note": "seeds, seconds from a win, for Config.Tower.Rise of 2.5; a fast floor keeps the turn and the leap",
+  "slabTurn": [
+   0.0,
+   0.5
+  ],
+  "stepRise": 0.35,
+  "stepStagger": 0.15,
+  "firstStep": 0.2,
+  "stepRest": {
+   "Foe0": -10.0,
+   "Foe1": -13.0,
+   "Foe2": -16.0,
+   "Foe3": -20.0
+  },
+  "restNote": "a foe's step waits this far under its place and rises to it, the farthest first, with a small overshoot; all four sink again once the foe is in",
+  "climb": [
+   0.85,
+   1.75
+  ],
+  "leap": [
+   1.75,
+   2.35
+  ],
+  "sink": [
+   2.4,
+   2.9
+  ]
+ }
+}

@@ -16543,3 +16543,46 @@ From `build/scratch/modulo/ar56/gate/gate.png`, five frames at the smallest phon
   - the step through the door into the room, at Faber's install;
   - the gate among the base's real yard, since the lot here is a stand-in.
 - The gate on the lot stands whichever height the director picks.
+
+### Modulo's finish: the Crown as a kit, the grey test of the raised stand, and the entrance (2026-11-23, 21:46; started 20:44)
+
+- **Where:** `build/handoff/TowerRoom/`. `manifest.json` (every piece, its size, its collision, its surface), `plan.json` (the room's 30 places, the drifts' speeds, the number, the climb's beat, and `lot`), `lighting.json`, `meshes/` (12), `maps/` (10 pictures), and the sheets `crown.png`, `gate.png`, four stills and the take `crown_beat.mp4`. The generator is `tools/blender/tower_room_kit.py` (its header lists the modes; a `look` run takes about 20 s in Eevee).
+- **The room,** 10 meshes, 30 parts and 12,256 triangles a copy (98,048 for eight):
+  - the fight floor, 48 in radius, as four quarter parts (two meshes, one mirrored) on one drawn picture: the lane from the entrance to the foe's way in, the rings, the pads, a teal band at the rim;
+  - the body (the step ring 1.5 under, the neck and the shaft), one part; eight blades in three heights leaning out of the rim, the two the foe stands between 15.9 degrees either side of the lane;
+  - the number's slab afloat over the far rim, its numerals text; six steps, the foe's four among them, waiting under the rim; ten cloud drifts at the rim's height.
+- **The sky** is six faces of our own (`skies`): the haze under the room and every far cloud head are painted into them and cost no part. `lighting.json` holds the sun, the ambient and the haze, for the client to set in the room and put back on leaving.
+- **The climb's beat** (`plan.json`, "beat"; seeds for `Config.Tower.Rise` of 2.5): the slab turns its next face, the four steps rise from under the rim, the farthest first, the foe climbs them and leaps in, and the steps sink.
+- **Research's two must-fixes** (the look of 21:18), rendered at 21:35:
+  1. The white sea is gone. Under the room: a deep blue haze paling to the horizon with no line, and cloud heads apart in three layers (small near ones laid by the eye, 2.6 to 6.4 degrees under the horizon; the far deck; a low layer for a player at the rim). The drifts are rounder under and move, 5 to 9 studs a second. No lower tower: at 400, 900, 1,300 and 2,000 studs the fight's camera read only its blades, as pale spikes.
+  2. The heart's stone is a mid tan (`FLOOR_TONES`), the steel deck a tone deeper.
+- **The grey test research asked at the second look** (21:40 to 21:42; `stand` mode; `build/scratch/modulo/ar56/stand/crown_stand.png`), the player's camera unchanged:
+
+  | The stand | Under the horizon seen, past the far rim | What the frame shows |
+  |---|---|---|
+  | on the floor, 13 from the middle (as built) | 6.9 degrees | the fight whole; cloud at eye height |
+  | 6 up, 13 from the middle | 10.9 | cloud tops under the rim; the avatar and the dais cover half of both fighters |
+  | 12 up, 13 from the middle | 14.7 | the drop reads; the fighters are wholly covered |
+  | 6 up, 30 from the middle | 9.1 | the fighters clear the avatar's head, small |
+  | 12 up, 30 from the middle | 12.3 | the drop reads; the fighters are behind the avatar's head |
+  | 12 up, 30 from the middle, 9 off the lane | 12.3 | the drop and the foe both read; the foe about half as tall as today, the lead behind the avatar's shoulder |
+
+  - The numbers are the script's (`band`). The reads are mine, from the frames; research's blind read is its section above, and it dropped the stand.
+  - **My finding:** a camera 20 degrees down looks through the avatar at the floor under it, so a raised stand on the lane buys the drop with the fight's read, and "fighters read first" was one of the pick's four classes.
+  - **What I proposed from it, now research's option 2:** the fight stays on the floor and the drop goes to the way in, on a landing about 12 up at the entrance's end with steps down. Its grey test is next, with cloud laid deeper under the horizon. If it's picked, the sky's faces change and a landing joins the kit, so those come back through the content check and a new export.
+- **The entrance and the record marker** (`plan.json`, "lot"; `gate.png`): two of the room's blades at 0.55 of their size, the room's slab between their heads carrying the owner's record floor on both faces, and under it a door of light on a round dais. 5 parts, 1,276 triangles, two new meshes (`GateDais`, `GateVeil`). Its origin is the middle of the Tower's 32-stud footprint, the base's back wall 32 studs in front. From the base's way out the number stands whole in the frame, and it reads over the back wall from the base's heart.
+- **Content check:** PASS at about 21:19, and again at about 21:40 on the changed pictures and the entrance. Every picture and mesh in the folder is byte for byte the checked one (hashes compared after the export of 21:43; only `plan.json`'s words on the number's well differ, corrected to the slab's own measures). Conditions kept:
+  - one lane only, eight straight blades mirrored across it, nothing but numerals in a well, lit lines white, no violet on floor, kit or sky, cloud as soft volumes;
+  - at the entrance: two blades only, never crossed, never a beam across or over their heads; the door's pane plain light; any icon, map mark or thumbnail drawn from the gate comes back to the check first;
+  - a changed picture or mesh comes back before its upload.
+- **Limits:**
+  - Eevee's sun shadows are soft whatever is set; the engine draws the blades' shadows firm.
+  - The figures are box stand-ins, and the numerals on the stills are Blender's font: neither is delivered.
+  - The take was read by its frames, not at speed. The drifts' speeds and the beat's times are seeds.
+  - The dark lead and the foe's stand-in share a navy: the foe's look waits (research's second look).
+- **For Faber, at the install** (after the main game, research's order):
+  - Upload the ten pictures in `maps/` under the group. The four floor parts take one SurfaceAppearance, the rest the kit's atlas.
+  - Check in the game: the floor's four parts meet with no seam; the blades' shadows lie across the floor; the number's SurfaceGui sits in the well (`plan.json`, "number"); the steps rise in the beat's order; the drifts pass and come round out of sight; from the rim, cloud heads lie under you.
+  - `lot` stands on the lot as placed, research's look passed (its section above); the content check's conditions for the gate hold at the install.
+
+Made; self-reviewed as stills at the smallest phone, the take by its frames; the room and the entrance delivered to `build/handoff/TowerRoom/` on research's passes at competent. Not in the game, nothing uploaded.

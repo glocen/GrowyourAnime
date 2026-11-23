@@ -16,10 +16,10 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **Next:** TR52; then AR52's behaviours, TR54 and TR53 (with TR31 folded in). F7's timing waits on item 4's publish.
 - **The hooks for Scintilla and Sonus** wait on the director's own word (item 10). **Open, tests:** as before.
 
-**Modulo (assets).** 2026-11-23, 20:38, on Fable 5.2. Voidkin work parked until before launch (the director's word, 11:10).
-- **Now:** AR56's blockout is made (AR56, "Modulo's blockout"): the Tower's room three ways in grey, A the Crown (open top), B the Well (an island in a shaft of rings), C the Gate hall (a closed hall, one gate on the sky); the sheet and three takes in `build/scratch/modulo/ar56/block/`. My lean is A. **Waits: research's pick, with fresh eyes.** Stills only, nothing in the game. AR55 is closed (research's second look, daa985a).
+**Modulo (assets).** 2026-11-23, 21:46, on Fable 5.2. Voidkin work parked until before launch (the director's word, 11:10).
+- **Now:** AR56's finish is made and the room delivered: A, the Crown, as a kit in `build/handoff/TowerRoom/` (AR56, "Modulo's finish"; 30 parts and 12,256 triangles a copy; research's pass at competent). The entrance and the record marker are in the same folder (research's look: competent). The raised stand's grey test is read and dropped: it hides the fighters. **On: the grey test of the height at the door** (a landing about 12 up, cloud laid deeper; AR56, "Research's read of the stand test"), then the director's pick. Nothing in the game, nothing uploaded.
 - **For Faber:** TR53's look is `build/handoff/UI/return/` (the kit builds the slab, the lines and the presses; three images to upload; the Training line takes the kit's small portrait). The dare's open tab is in `goals.json`, "unfolded". My sheets are the strict case: the game has a sixth more room at the smallest phone. TR54's look is the goals' handoff: `DareMark*` where `DareTag*` stood (the origin is now the mark's middle), one `GoalNext` plate that holds the back press, no Ledger; `HomeSettings` gives way to the cog tile and the Today card. The Guard's clip is fixed (AR52, "The Guard's sleeve, fixed at the clip's finish") and goes up once as `ShadeGuard`.
-- **Next:** AR56's finish, on research's pick.
+- **Next:** the landing in the room's make and a new export, if the director picks the height at the door.
 - **Still Faber's, each in its entry:** AR49's Home panel, AR44's shine, AR40's install (the atlas never alone), AR48's cues, TR50's dusk palette, the Voidkin screen's floor, AR50's seven pieces.
 
 **Turns.** Studio: Faber's, on the main place, the playtest stopped between pieces (2026-11-23, 15:15); the director's listen on TR42's panel is tomorrow, in the same place. Blender: nobody (Modulo's AR41 strips were stopped at 01:33 on 2026-11-19 by Claude Code when the PC ran low on memory; the director said wait at 01:34). Timing tests: nobody.
@@ -138,6 +138,14 @@ For Faber:
 - Tier 2, research, 2026-11-12, on the director's words: weapons belong to a class, in two hands (Main Hand and Off Hand replace Weapon and Shield), a preset holds a pair per class, a weapon drop is for the lead's class; Combat Power made to be watched, its weights fitted by the simulation; each item kind modelled and rendered to its icon (AR6, phase 3) (`docs/design.md`, "Regalia: gear" and "Combat Power"). Faber: the Stats case's `"Weapon"` source becomes `"Main Hand"` when you next touch it. Faber and Modulo: say in your row what you'd change.
 
 ## Entries
+
+### 2026-11-23, 21:46. AR56: the Tower's room, the Crown, delivered as a kit (Modulo)
+
+- **What changed:** the Tower's room exists as art: an open floor at a tower's top, eight blades leaning out of the rim, the floor's number on a slab afloat, the foe up four steps over the far rim, cloud under the horizon in the sky's faces. Its entrance and record marker for the lot are drawn in the same make.
+- **Where:** `build/handoff/TowerRoom/`; AR56, "Modulo's finish"; `tools/blender/tower_room_kit.py`.
+- **Checked:** content check PASS twice; research's passes at competent, the room at its second look and the entrance at its first. Stills and a take only.
+- **Open:** the drop doesn't read from the fight's camera (the rim hides all but 7 degrees), and a raised stand hid the fighters. A grey test of a landing at the door is next, then the director's pick; if picked, the sky's faces and one piece change.
+- **For:** research (the test); Faber at the install, after the main game: ten pictures to upload, and the checks in the entry.
 
 ### 2026-11-23, 21:18. AR51, the Stone Condenser's two faces, built (Faber)
 

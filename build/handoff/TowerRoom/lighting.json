@@ -1,0 +1,59 @@
+{
+ "note": "the room's own Lighting, set on the client while it stands in the room and put back as it leaves",
+ "sky": {
+  "faces": {
+   "Ft": "maps/TowerRoom_Sky_Ft.png",
+   "Lf": "maps/TowerRoom_Sky_Lf.png",
+   "Bk": "maps/TowerRoom_Sky_Bk.png",
+   "Rt": "maps/TowerRoom_Sky_Rt.png",
+   "Up": "maps/TowerRoom_Sky_Up.png",
+   "Dn": "maps/TowerRoom_Sky_Dn.png"
+  },
+  "StarCount": 0,
+  "SunAngularSize": 0,
+  "MoonAngularSize": 0,
+  "note": "the cloud and the haze under it are in the faces, under the horizon; Ft is toward the foe's way in (-Z)"
+ },
+ "sun": {
+  "toward": [
+   -0.821,
+   0.559,
+   -0.115
+  ],
+  "elevationDegrees": 34.0,
+  "colour": "#FFF6E8",
+  "strength": 1.35,
+  "shadows": true,
+  "note": "low and from the side, so the blades' shadows lie across the floor; `toward` is the unit vector to it"
+ },
+ "ambient": {
+  "colour": "#C2CDE4",
+  "strength": 0.8,
+  "asOne": "#B0BACF"
+ },
+ "atmosphere": {
+  "Color": "#D2E2F8",
+  "Decay": "#D2E2F8",
+  "hazeAt": {
+   "150": 0.05,
+   "400": 0.15,
+   "1000": 0.34
+  },
+  "note": "`hazeAt` is how much of a thing the haze has taken at that many studs in these frames: a drift barely; the far cloud is in the sky's faces, its haze with it"
+ },
+ "bloom": {
+  "here": {
+   "threshold": 1.4,
+   "intensity": 0.4,
+   "sizesPx": [
+    6,
+    20
+   ]
+  }
+ },
+ "exposure": 1.0570180405613803,
+ "glow": {
+  "Kit": 1.3,
+  "Floor": 1.1
+ }
+}

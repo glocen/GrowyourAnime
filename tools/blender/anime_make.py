@@ -357,7 +357,7 @@ class Hair:
 
     def shell(self, hairline, segments=36):
         """The scalp's cover, down to `hairline(degrees round from the face's middle)`."""
-        rings, c = [], self.colour(0.0, 0.8)
+        rings, c = [], self.colour(0.3, 0.9)
         top = CENTRE.z + SCALP_TOP
         for i in range(segments):
             deg = (i / segments * 2 - 1) * 180
@@ -568,7 +568,8 @@ def stand_in(joints, folder):
                                mouth=[(-0.075, 0.232), (0.0, 0.224), (0.08, 0.238)]))
     hair = Hair("#33241F", "#A87B52", seed=7)
     hair.shell(hairline())
-    hair.flow(8, 6, (-180, 180), 52, 0.46, flick=0.16, sweep=34)
+    hair.flow(9, 3, (-180, 180), 56, 0.54, flick=0.16, sweep=38, jitter=0.12)
+    hair.flow(7, 16, (-160, 200), 44, 0.46, flick=0.2, sweep=30)
     hair.flow(12, 34, (40, 320), 50, 0.44, flick=0.2, sweep=20)
     hair.flow(12, 66, (62, 298), 44, 0.4, flick=0.18, sweep=10)
     hair.flow(9, 96, (92, 268), 30, 0.34, flick=0.12, sweep=4, thick=0.11)

@@ -377,6 +377,11 @@ return {
 		Armed = 0.06,
 		Pulse = { Hold = 0.5, Length = 0.4, Scale = 0.16 },
 		Auto = { Width = 100 },
+		-- Where the ring stands (TR52, research's add for the director's run): "Card", under the lead's card, the left
+		-- thumb's, the one that walks; "Jump", over Roblox's jump button, the right thumb's, its centre over the button's
+		-- and Jump.Above points clear of its top. The eye and Auto stay in the corner either way.
+		At = "Card",
+		Jump = { Above = 12 },
 	},
 	-- The spectate toggle (TR11; the director, 2026-11-14, night: the player's camera is never moved in a fight, and a small
 	-- button follows the lead instead). The eye (AR12: one family with the readout): its plate Plate across, open and lit

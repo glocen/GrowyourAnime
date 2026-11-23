@@ -351,16 +351,39 @@ local function makeNote(parent: Instance): Note
 end
 local note: Note? = nil
 
--- The lead's corner (AR12; Config.Hud.Readout, Config.Hud.Spectate, tuned live): the readout under the lead's card, the
--- eye beside it, and after the eye a fallen lead's offer of the next.
+-- Roblox's jump button, in GUI space (AbsolutePosition's): the touch controls' own while they show, else where Roblox's
+-- jump would stand in the HUD's box (70 px a side when the box's short side is 500 or less, else 120), so the ring's
+-- "Jump" place reads the same in a desktop playtest.
+function HudController.JumpBox(): (Vector2, Vector2)
+	local gui = player:FindFirstChildOfClass("PlayerGui")
+	local touch = if gui then gui:FindFirstChild("TouchGui") else nil
+	local button = if touch and touch:IsA("ScreenGui") and touch.Enabled then touch:FindFirstChild("JumpButton", true) else nil
+	if button and button:IsA("GuiObject") and button.Visible and button.AbsoluteSize.X > 0 then
+		return button.AbsolutePosition, button.AbsoluteSize
+	end
+	local hud = Layers.Get("Hud")
+	local high = hud.AbsolutePosition + hud.AbsoluteSize
+	local side = if math.min(hud.AbsoluteSize.X, hud.AbsoluteSize.Y) <= 500 then 70 else 120
+	return Vector2.new(high.X - (side * 1.5 - 10), high.Y - (if side == 70 then side + 20 else side * 1.75)), Vector2.new(side, side)
+end
+
+-- The lead's corner (AR12; Config.Hud.Readout, Config.Hud.Spectate, tuned live): the readout under the lead's card, or
+-- over the jump button (Readout.At), the eye beside the card, and after the eye a fallen lead's offer of the next.
 local function placeCorner()
 	local plate, look = HudConfig.Readout, HudConfig.Spectate
 	local card = lead.Frame
+	local hud, scale = Layers.Get("Hud"), math.max(Layers.Scale(), 0.01)
 	local left = card.Position.X.Offset + plate.Right
 	local top = card.Position.Y.Offset + card.Size.Y.Offset + plate.Under
 	local piece = readout.Piece.Frame
 	piece.Size = UDim2.fromOffset(plate.Size, plate.Size)
-	piece.Position = UDim2.fromOffset(left + plate.Size / 2, top + plate.Size / 2)
+	if plate.At == "Jump" then
+		local at, size = HudController.JumpBox()
+		local origin = hud.AbsolutePosition
+		piece.Position = UDim2.fromOffset((at.X + size.X / 2 - origin.X) / scale, (at.Y - origin.Y) / scale - plate.Jump.Above - plate.Size / 2)
+	else
+		piece.Position = UDim2.fromOffset(left + plate.Size / 2, top + plate.Size / 2)
+	end
 	local x, y = left + plate.Size + look.Right + look.Plate / 2, top + look.Lower + look.Plate / 2
 	eye.Size = UDim2.fromOffset(look.Size, look.Size)
 	eye.Position = UDim2.fromOffset(x, y)
@@ -369,7 +392,6 @@ local function placeCorner()
 	auto.Position = nextButton.Position -- never both: the readout hides with a fallen lead
 	-- The level-up's notice under the corner's row, at the card's left edge (AR12, take B; TR41 (c)), stopping a gap short
 	-- of the step's chip over the dock, which shares its row on a phone.
-	local hud, scale = Layers.Get("Hud"), math.max(Layers.Scale(), 0.01)
 	local chipLeft = if chip then (chip.AbsolutePosition.X - hud.AbsolutePosition.X) / scale else math.huge
 	LevelNotice.Place(card.Position.X.Offset, top + plate.Size + HudConfig.LevelNotice.Below, chipLeft - Theme.Size.Gap - card.Position.X.Offset)
 	-- The quiet note in the same place: the two never meet, a Tower run's lead being frozen (TR46).
@@ -402,7 +424,7 @@ local function stepReadout(model: Model?, fighting: boolean, dt: number)
 	local on = player:GetAttribute("SignatureAuto") ~= false
 	if on ~= autoOn then
 		autoOn = on
-		Button.Set(auto, { Selected = on, Text = if on then "AUTO ON" else "AUTO OFF" })
+		Button.Set(auto, { Selected = on, Text = if on then "Auto on" else "Auto off" }) -- the kit's sentence case
 	end
 	piece.Frame:SetAttribute("Seen", readout.Seen)
 	if not can or model == nil then
@@ -1432,7 +1454,7 @@ function HudController.Start()
 	-- off, only on a tap. For this server only, on the player (FightService.SetAuto).
 	auto = Button.new({
 		Name = "SignatureAuto",
-		Text = "AUTO ON",
+		Text = "Auto on",
 		Size = UDim2.fromOffset(HudConfig.Readout.Auto.Width, Theme.Size.Tap),
 		AnchorPoint = Vector2.new(0, 0.5),
 		Parent = Layers.Get("Hud"),

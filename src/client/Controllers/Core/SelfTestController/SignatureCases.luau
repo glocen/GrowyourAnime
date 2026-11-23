@@ -16,8 +16,20 @@ local FightRule = require(Shared.Rules.Fight)
 local HudController = require(script.Parent.Parent.Parent.Main.HudController)
 local UI = script.Parent.Parent.Parent.Parent.UI
 local Button = require(UI.Kit.Button)
+local Layers = require(UI.Layers)
 
 local SignatureCases = {}
+
+-- A button's words as drawn: its labels' text.
+local function says(button: Instance): string
+	local words = {}
+	for _, item in button:GetDescendants() do
+		if item:IsA("TextLabel") and item.Text ~= "" then
+			table.insert(words, item.Text)
+		end
+	end
+	return table.concat(words, " ")
+end
 
 -- Cases' own helpers and measures, one home each.
 export type Given = {
@@ -73,6 +85,9 @@ function SignatureCases.Cases(given: Given): { any }
 					t.Check("its toggle turns Auto off", waitFor(t, 2, function(): boolean
 						return me:GetAttribute("SignatureAuto") == false
 					end))
+					t.Check("and says so, in the kit's sentence case", waitFor(t, 1, function(): boolean
+						return says(auto) == "Auto off"
+					end), says(auto))
 					local pulses, last, fires = 0, 0, 0
 					local acted: { string } = {}
 					local pulseWatch = RunService.RenderStepped:Connect(function()
@@ -147,9 +162,56 @@ function SignatureCases.Cases(given: Given): { any }
 					t.Check("its toggle turns Auto back on", waitFor(t, 2, function(): boolean
 						return me:GetAttribute("SignatureAuto") ~= false
 					end))
+					t.Check("and says so", waitFor(t, 1, function(): boolean
+						return says(auto) == "Auto on"
+					end), says(auto))
 				end)
 				Net.Client.Invoke("Signature", "Auto", true)
 				t.Server("FightSpawn")
+				if not ok then
+					error(err, 0)
+				end
+			end,
+		},
+		{
+			Name = "HUD: TR52, the ring's place, tuned live: over the jump button for the right thumb, clear of it and on screen, the eye kept in the corner; back under the card",
+			Run = function(t: any)
+				-- Research's add for the director's run (TR52, "Research's read of the block"): Config.Hud.Readout.At. The
+				-- readout's Always shows the ring out of a fight, so no Shade is needed.
+				t.Server("LeadHeal")
+				t.Server("LeadCalm")
+				t.Wait(LEAD_SETTLE)
+				local parts = HudController.Parts()
+				local ring, eye = parts.Signature, parts.Spectate
+				local wasAt, wasAlways = HudConfig.Readout.At, HudConfig.Readout.Always
+				local ok, err = pcall(function()
+					t.Server("Tune", "Hud.Readout.At", "Card")
+					t.Server("Tune", "Hud.Readout.Always", true)
+					t.Check("the ring shows out of a fight (Always)", waitFor(t, 2, function(): boolean
+						return ring.Visible
+					end))
+					t.Wait(0.3)
+					local card, eyeAt = ring.AbsolutePosition + ring.AbsoluteSize / 2, eye.AbsolutePosition
+					t.Server("Tune", "Hud.Readout.At", "Jump")
+					t.Wait(0.2)
+					local at, size = HudController.JumpBox()
+					local low, wide = ring.AbsolutePosition, ring.AbsoluteSize
+					local off = (low.X + wide.X / 2) - (at.X + size.X / 2)
+					t.Check("at Jump, the ring stands centred over the jump button", math.abs(off) <= 1, string.format("%+.1f px", off))
+					local gap = at.Y - (low.Y + wide.Y)
+					t.Check("clear of its top", gap > 0, string.format("%.1f px", gap))
+					local hud = Layers.Get("Hud")
+					local inside = low.X >= hud.AbsolutePosition.X and low.Y >= hud.AbsolutePosition.Y
+						and low.X + wide.X <= hud.AbsolutePosition.X + hud.AbsoluteSize.X
+					t.Check("and on screen", inside, `{math.floor(low.X)},{math.floor(low.Y)} {math.floor(wide.X)}x{math.floor(wide.Y)}`)
+					t.Check("the eye stays in the corner", (eye.AbsolutePosition - eyeAt).Magnitude <= 1)
+					t.Server("Tune", "Hud.Readout.At", "Card")
+					t.Wait(0.2)
+					local back = (ring.AbsolutePosition + ring.AbsoluteSize / 2 - card).Magnitude
+					t.Check("tuned back, it stands under the card again", back <= 1, string.format("%.1f px off", back))
+				end)
+				t.Server("Tune", "Hud.Readout.At", wasAt)
+				t.Server("Tune", "Hud.Readout.Always", wasAlways)
 				if not ok then
 					error(err, 0)
 				end

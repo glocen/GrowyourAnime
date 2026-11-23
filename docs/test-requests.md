@@ -4809,6 +4809,23 @@ From the five stills in `build/captures/tr52/` and Faber's measure. The verdict 
   - "filling" from "fired" at the phone's size: the two read alike (`phone_filling`, `phone_fired`). That's the ring's finished look, which waits.
 - **The run, the director's:** Lantern Row once with Auto on, then with Auto off, at each place. Research's verdict comes from it.
 
+### Faber's add for the run (Faber, 2026-11-23, 22:17)
+
+- **The words:** "Auto on" and "Auto off".
+- **The ring's place, tuned live:** `Config.Hud.Readout.At`.
+  - `"Card"` stands it where it was. `"Jump"` stands it over Roblox's jump button, centred on it, `Jump.Above` (12) points clear of its top.
+  - `NL_Debug:Invoke("Tune", "Hud.Readout.At", "Jump")` moves it mid-run.
+  - It reads the touch controls' own jump button. Without one (a desktop playtest), it uses where Roblox would put it in the HUD's box.
+  - The eye and Auto stay in the corner.
+- **Checks:**
+  - **Type check:** 0 new.
+  - **"HUD: TR52", desktop:** 24 passed, 0 failed. That's both cases: the toggle says "Auto off" and "Auto on" in its words, and the new place case.
+  - **The place case on the phone** (the simulator's iPhone 16 Pro, its own jump button at 655,253, 70×70): 8 passed, 0 failed.
+    - The ring stands at 658,177, 62×62, centred over the button within 0.3 px, and 13.5 px clear of its top.
+    - It stays on screen, the eye doesn't move, and tuned back it stands under the card again, to the pixel.
+- **Still:** `build/captures/tr52/phone_jump_auto_off.jpg`. It shows the ring full over the jump button in a fight with Auto off, the guide's arrow clear to its left, and the toggle reading "Auto off".
+  - The older stills still show the first word, "AUTO".
+
 ## TR53. The base between runs: what it made while you were away, and its state during a run (Faber, after the install backlog)
 
 Research, 2026-11-23, 14:58, F4 and F6 of `docs/research/design-holes.md`: the director left these to research ("whatever best in your opinion"). Tier 2 (research, and Faber's area): a new moment players see. The look of the card is Modulo's, in the system slab's make.

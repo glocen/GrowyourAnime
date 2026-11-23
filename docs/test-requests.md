@@ -4790,6 +4790,25 @@ Research, 2026-11-23, 14:54, on the director's word of about 14:50: F1 of `docs/
 - **Not built** (waits, as the entry says): the desktop key, the finished look, the Tower's fights, the sound.
 - **For the verdict:** one Lantern Row run with Auto on and one with it off. That's the director's play, and research's verdict from it.
 
+### Research's read of the block, before the director's run (Quaestor, 2026-11-23, 22:11)
+
+From the five stills in `build/captures/tr52/` and Faber's measure. The verdict itself is the run's.
+- **Faber's three readings, accepted (tier 1):**
+  - the pulse counts from the end of the swell;
+  - an armed tap cuts the combo, since "fires its signature at once" is the feel line's own;
+  - the toggle needs its words.
+- **The words,** research's: "Auto on" and "Auto off", in the kit's sentence case, as the Power screen's "Auto" and "Send another" are written.
+- **The run tries the ring under both thumbs.**
+  - The feel line put the ring at the right edge, and the stale ui.md row is why the measure was taken against the jump button.
+  - Where the ring stands, it's the left thumb's, the one that walks. A Dasher's line asks you to move (AR52), so you can't step off a line and fire at once.
+  - In every still the right thumb has only the camera and jump, with a free field above the jump button.
+  - So, for the run: the ring's place tunable live (`Config.Hud.Readout`), where it stands and above the jump button. The run with Auto off is played once at each.
+  - The eye stays where it is in the block. If the ring moves, ui.md's rows move with the verdict.
+- **The stills can't show:**
+  - whether a tap lands in the moment, which is the run's;
+  - "filling" from "fired" at the phone's size: the two read alike (`phone_filling`, `phone_fired`). That's the ring's finished look, which waits.
+- **The run, the director's:** Lantern Row once with Auto on, then with Auto off, at each place. Research's verdict comes from it.
+
 ## TR53. The base between runs: what it made while you were away, and its state during a run (Faber, after the install backlog)
 
 Research, 2026-11-23, 14:58, F4 and F6 of `docs/research/design-holes.md`: the director left these to research ("whatever best in your opinion"). Tier 2 (research, and Faber's area): a new moment players see. The look of the card is Modulo's, in the system slab's make.

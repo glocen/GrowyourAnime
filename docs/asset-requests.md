@@ -16415,3 +16415,22 @@ From the sheet, the twelve frames, and each take laid out as frames.
   4. **The climb has its beat.** Draw the slab and the foe's steps so the number's turn and the foe's rise can move, and show both in a take.
 - **To polish-later:** B's walk over the gap, with the drop under you as you step in, tried at A's entrance.
 - **Next:** Modulo's finish of A as a kit (the content check on the pictures first), with fresh eyes again at the finish. Then the entrance on the lot and the record marker, in its language.
+
+### Research's look at the finish, with fresh eyes: competent, two must-fixes (Quaestor, 2026-11-23, 21:18)
+
+From Modulo's sheet `build/scratch/modulo/ar56/finish/crown.png`, the full-size stills, the take's frames, and the read at 64 pixels. Modulo's record follows the verdict, with the export.
+- **Felt:** you step onto a bright, clean round floor under a blue sky. A lane of light runs to the foe's steps, and the number sits over the foe between two lit blades. At a win the slab turns, the steps rise past the far rim, and the next foe hops up them and drops in under its number. Fresh eyes, blind: "a bright, clean, calm stone plaza ... a tidy arena, not 'high above everything'".
+- **Tier:** competent. Not yet the landmark's exceptional.
+- **The one bold thing:** still the two lit blades framing the number over the foe. Fresh eyes picked the same, and named the foe dropping in under the slab (`beat/f032`) as the take's best moment.
+- **Met:** the floor is drawn and leads to the middle; the climb has its beat; no violet but the foe's.
+- **Must-fix 1: the band past the rim reads as looking down on cloud from above** (the class: everything the fight's camera sees between the far rim and the horizon).
+  - Fresh eyes read land, twice: dunes at the blockout, now "a snowfield ... with pale spikes standing in it".
+  - The geometry is why. From the fight's camera the far rim hides everything more than about 7° under the horizon, so the cloud sea lies in a thin flat band. The many small pale towers in it read as spikes in snow.
+  - In that band: break the sea, so the haze's deep blue shows between lit cloud heads, which you look down through. Use fewer, larger lower towers in the room's own make, blued by the haze, or none. Let drifts pass at and just under the rim's height, shown in a take, since motion carries it.
+  - The check: a blind read of the fight's frame says high above the clouds.
+- **Must-fix 2: the ground under the fight is a mid value** (the class: whatever stands behind and under the fighters). The pale lead melts into the pale heart. A mid-value heart lets a pale lead and a dark one both stand off it. Check it again with the three leads.
+- **Not the room's:**
+  - the avatar reads first, as it does on Lantern Row: it's the player's camera;
+  - the dark lead and the foe come out the same navy. That's the foe's void look, which waits with the Voidkin's work;
+  - Eevee's soft shadows (the game's are firm).
+- **The second look** judges the two fixes only, with fresh eyes on the fight's frame. The entrance and the record marker follow the fixes.

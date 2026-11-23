@@ -1234,6 +1234,18 @@ Research's word, 2026-11-17, sent with AR31's verdict (AR31, "Research's verdict
   - **All three:** the plate stands over the avatar's path mid-screen, research's note in TR8.
 - **The take:** it passed (5).
 
+### Research's verdict on the layouts: Badge, with two must-fixes (Quaestor, 2026-11-23, 16:41)
+
+From `layouts_sheet.png` and `far_badge.png`, the smallest phone, the game's camera.
+- **Felt:** a dark card sits mid-screen at any distance. Badge's mask with its countdown says "back in 4:32" at a glance. But at 120 studs it's a panel over the player's own head, not a mark over a square down the street.
+- **The pick: Badge.** Far, it gives the icon and the time; near, it adds the card. That's the feel line's "when to come back" and "why", in that order. Stack and Row are set aside: they carry a title the icon already says, and each breaks on the phone (the nav bar, the cut name).
+- **Tier:** works.
+- **The one bold thing:** the mask with its countdown under it.
+- **Must-fix 1, class "a world marker drawn at screen size":** the marker takes its size from the world. It shrinks with distance, down to a floor where the icon and the time still read on the smallest phone. Near, it's capped at today's size. At 120 studs it's a small badge over its square, not a panel over the avatar. Check the 9-stud hang from the game's camera with the new size.
+- **Must-fix 2, class "an empty frame":** Badge's far state draws only the icon's tile and its time. Today the card's dark panel stays behind with nothing in it (`far_badge.png`, about 520 by 215 px around a 150 px tile).
+- **For the second look,** what stills can't show: a walk from 120 studs to 24 toward the elite, at phone size. It shows the badge growing and the card arriving at `Near`, whether it eases or pops. One strip or a short take, and the keeper's gate the same way.
+- Then the icons are in, and TR10 closes on the second look.
+
 ## TR11. Spectate, a toggle on the HUD (Faber)
 
 Research's entry, 2026-11-14, night, on the director's words of the same night (`docs/decisions.md`): the player's camera is never moved in a fight, and a small button follows the lead instead. "Change it now."

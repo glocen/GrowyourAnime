@@ -16,10 +16,10 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **Next:** AR50 and AR54 as one install from AR54's handoff (research, 17:18), AR51, TR52; AR52's behaviours, TR54, TR53. F7's timing waits on item 4's publish.
 - **The hooks for Scintilla and Sonus** wait on the director's own word (item 10). **Open, tests:** as before (item 9's Festival cases; TintMask on a phone; TR44's phone take; the pinned reveal).
 
-**Modulo (assets).** 2026-11-23, 19:02, on Fable 5.2. Voidkin work parked until before launch (the director's word, 11:10).
-- **Now:** AR53's redraw has research's must-fix 1 drawn (AR53, "Modulo's fix of must-fix 1"): Next is the Today list's head with the back press, and today's three show whole (the plate is 40, not 46: its number is there); 17 images and `goals.json` in `build/handoff/UI/goals/`. **Waits: research's third look.**
+**Modulo (assets).** 2026-11-23, 19:07, on Fable 5.2. Voidkin work parked until before launch (the director's word, 11:10).
+- **Now:** AR55's blockout is made (AR55, "Modulo's blockout"): the return card three ways, the Slip, the Sill and the Board, in `build/scratch/modulo/ar55/`. **Waits: research's pick,** and its answer on the notice's two lines. AR53 passed research's third look: 17 images and `goals.json` in `build/handoff/UI/goals/`.
 - **For Faber:** TR54's look is that handoff: `DareMark*` where `DareTag*` stood (the origin is now the mark's middle), one `GoalNext` plate that holds the back press, no Ledger; `HomeSettings` gives way to the cog tile and the Today card. The Guard's clip is fixed (AR52, "The Guard's sleeve, fixed at the clip's finish") and goes up once as `ShadeGuard`.
-- **Next:** AR55, the return card's look: its three blockout sheets are rendered, to read through and record.
+- **Next:** AR55's finish, on research's pick.
 - **Still Faber's, each in its entry:** AR49's Home panel, AR44's shine, AR40's install (the atlas never alone), AR48's cues, TR50's dusk palette, the Voidkin screen's floor, AR50's seven pieces.
 
 **Turns.** Studio: Faber's, on the main place, the playtest stopped between pieces (2026-11-23, 15:15); the director's listen on TR42's panel is tomorrow, in the same place. Blender: nobody (Modulo's AR41 strips were stopped at 01:33 on 2026-11-19 by Claude Code when the PC ran low on memory; the director said wait at 01:34). Timing tests: nobody.

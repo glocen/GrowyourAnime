@@ -16084,3 +16084,29 @@ Research, 2026-11-23, 18:27. This is TR53's look, drawn ahead as AR53 was for TR
 - **Out of the piece:** a sound (Sonus's), motion beyond the card's rise (TR53's block), and an experience notification (the director's word first).
 - **Checks:** the content check; research's pick from three directions, then the finish; the sheets laid as the game lays them, at 64 pixels too.
 - **Order:** Modulo's next. Faber's TR53 stays after the install backlog and TR52.
+
+### Modulo's blockout: three directions for research's pick (2026-11-23, 19:07; started 18:30, set down from 18:40 to 19:02 for AR53's redraw)
+
+Made and self-reviewed as stills at the smallest phone. A blockout: nothing cut, nothing in the game, nothing uploaded, nothing read in motion.
+
+- **The sheets,** `build/scratch/modulo/ar55/`: `return_card_A.png`, `return_card_B.png`, `return_card_C.png`, and `return_card_small.png` (the fifteen phones at 64 pixels high). Each direction has five cells: one change (the battery alone); all four with a shard, so the press is "Reveal"; a shard alone; during a run, the shard breaking with its time left; the notice.
+- **How they're laid:** the yard is Faber's capture (`build/captures/tr51/phone_stage3_court.png`), the Festival the sheets' street stand-in. The HUD's pieces stand where the game has them on this phone, measured on `build/captures/tr50/fix-line.png`: the lead's card, the run's line (163 to 448), Credits and Electricity, the game's toast under them, the next step's plate, the dock. Every piece is the system slab's make; the pictures are the game's own (the battery, the stone, the Training chip, the shard's small picture).
+- **A, the Slip.** A narrow slab at the right under the pills (380 to 560, its foot at 314), a line a change: picture, the gain large, one faint word. It grows up from its foot with each change; the press runs across its foot under the right thumb. The yard's middle and the dock stay as they are.
+  - During a run: a third pill under Electricity, the shard's picture and its time. The notice: a toast at the toasts' place, in the slab's make.
+  - Its cost: with all four it's about 180 tall (132 to 314) and stands in the toasts' place while it's up. During a run the third pill pushes every toast down by its height.
+- **B, the Sill.** A low slab across the foot, grown from the right as far as its changes reach, its head on a tab over it; a cell a change, the press at its right end. The yard stays whole above it.
+  - During a run: a tab hung from the run's line beside the dare's tab, the shard's picture and its time. The notice: that tab opens out under the line, two lines.
+  - Its cost: with all four it's 553 of the phone's 568 by the sheet's letters, so a longer word or a fifth change has no room. The dock gives way while it's up. With one change it's small and low, under the thumb and far from the eye. The notice has 150 between the dare's tab and the Electricity pill, and the sentence's second line fills it.
+- **C, the Board.** A slab in the middle (160 to 450) in the Power screen's rows: a machine a row, its name, a gauge of what came (the battery's bar with the gain lit, the tray's cups, the levels' steps), the gain at the right; "Away 3 h 12 min" at the foot's left, the press at its right.
+  - During a run: the next step's plate speaks for the base, in the slab's teal, so the HUD gains no piece. The notice: that plate, grown to two lines.
+  - Its cost: it covers the yard's middle, which the feel line wants seen, and with four rows it stands over the Electricity pill, so the HUD recedes under it. It's the nearest to a modal. During a run the next step's plate can't say its own step while it speaks for the base.
+- **My read: A's card, with B's tab for the run.**
+  - A keeps the machines in view behind the card, which is the feel line's last clause, and keeps the dock; its press is under the right thumb at every count.
+  - For the run, the request asks for the state "beside the run's line": B's tab is that, and it's the dare's tab's kin. A's pill reads as a third currency.
+  - C says the most (where each machine stands, not only what came), and it's the one I'd pass over: the gauges repeat the Power screen one tap away.
+  - The three parts are independent: any card goes with any run state and any notice.
+- **A finding on the notice, research's to answer:** "Your shard broke. Its Voidkin waits at home." is 44 letters. The kit's toast holds one line, about 141 wide at 10.5 on this phone (`UI/Kit/Toast.luau`, read from the capture). So the notice is two lines in every direction here: a taller toast, or shorter words.
+- **Stand-ins, research's to write:** the head "While you were away"; "Away 3 h 12 min"; the faint words "stored", "Low stones", "Rook", "ready"; the machines' names as the game has them; "Shard breaking"; "12:40"; "Ready". From the request: "Collect", "Reveal" and the notice.
+- **Content check:** PASS on the plan before drawing (`build/scratch/modulo/ar55/plan.md`), on conditions, all kept on the sheets: no mark of a purchase or a boost; "Reveal" shows only the shard's picture; no burst, rays or confetti; the breaking shard's mark clean and hard-edged; the captures stay internal. Research's final words get their own check, and so does any cut before an upload.
+- **The script,** `tools/blender/return_card.py`: one run writes the four sheets.
+- **Limits:** stills only. The HUD's pieces are grey stand-ins at measured places. Widths are the sheet's face, which is wider than the game's. The card's rise is TR53's block.

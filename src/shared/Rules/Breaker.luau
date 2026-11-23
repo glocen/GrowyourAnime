@@ -22,6 +22,7 @@ local Profile = require(Shared.Data.Profile)
 local Power = require(Shared.Rules.Power)
 local Training = require(Shared.Rules.Training)
 local BaseLevels = require(Shared.Rules.BaseLevels)
+local Condenser = require(Shared.Rules.Condenser)
 
 export type Summary = {
 	Finished: number, -- shards that moved to Ready
@@ -30,6 +31,8 @@ export type Summary = {
 	Credits: number, -- whole Credits the overflow paid
 	Trained: string?, -- who the Training machine trained, if anyone
 	Levels: number, -- the levels it gained them
+	Stones: number, -- stones the Stone Condenser made into its tray (TR37)
+	Converted: number, -- converts it finished
 	Steps: number, -- events stepped through, for tests
 }
 
@@ -42,6 +45,7 @@ export type Rates = {
 	Busy: boolean, -- a chamber is breaking
 	Capacity: number, -- kWh the battery holds at most at the base's level (TR21)
 	Trainee: string?, -- who's on the Training machine
+	Condenser: number, -- the Stone Condenser's speed, 1 at full power or idle (TR37)
 }
 
 local EPSILON = 1e-6
@@ -137,9 +141,10 @@ local function flowNow(data: Profile.Data, generation: number, training: boolean
 	return Power.Flow(generation, Power.Demand(data, training), data.Base.Power, data.Base.Charge > EPSILON)
 end
 
--- Seconds until the next event in this flow: a shard finishing, the battery emptying, or the battery filling.
+-- Seconds until the next event in this flow: a shard finishing, the battery emptying or filling, or the Stone
+-- Condenser's next stone or convert.
 local function nextEvent(base: Profile.Base, flow: Power.Flow): number
-	local soonest = math.huge
+	local soonest = Condenser.Next(base, flow.Speed.Condenser or 1)
 	local speed = (flow.Speed.Breaker or 1) * pace(base)
 	if speed > 0 then
 		for _, chamber in base.Chambers do
@@ -181,6 +186,12 @@ local function step(data: Profile.Data, seconds: number, generation: number, tra
 			summary.Trained = trainee.Id
 			summary.Levels += gained
 			base.Power.Open = true -- a machine beside the Breaker has drawn power: the Power screen opens
+		end
+		if (flow.Demand.Condenser or 0) > 0 then
+			local stones, converted = Condenser.Work(base, flow.Speed.Condenser or 1, dt)
+			summary.Stones += stones
+			summary.Converted += converted
+			base.Power.Open = true
 		end
 		summary.Made += generation * dt / 3600
 		local capacity = Breaker.Capacity(base)
@@ -224,6 +235,7 @@ function Breaker.Rates(data: Profile.Data): Rates
 		Busy = busy,
 		Capacity = Breaker.Capacity(data.Base),
 		Trainee = if trainee then trainee.Id else nil,
+		Condenser = flow.Speed.Condenser or 1,
 	}
 end
 
@@ -231,7 +243,7 @@ end
 -- workers' generation stops after Config.Base.Battery.AwayHours and the lead trains. A base never advanced takes `now`
 -- as its stamp. A `now` before the stamp (a clock step back) changes nothing.
 function Breaker.Advance(data: Profile.Data, now: number, away: boolean?): Summary
-	local summary: Summary = { Finished = 0, Made = 0, Overflow = 0, Credits = 0, Levels = 0, Steps = 0 }
+	local summary: Summary = { Finished = 0, Made = 0, Overflow = 0, Credits = 0, Levels = 0, Stones = 0, Converted = 0, Steps = 0 }
 	local base = data.Base
 	if base.Stamp == 0 then
 		base.Stamp = now
@@ -253,11 +265,12 @@ function Breaker.Advance(data: Profile.Data, now: number, away: boolean?): Summa
 	return summary
 end
 
--- Seconds from the stamp until the next shard finishes or the battery empties or fills, or nil when nothing is breaking.
--- The server wakes a base then, so Ready fills while the player watches.
+-- Seconds from the stamp until the next shard finishes, the battery empties or fills, or the Stone Condenser makes a
+-- stone or finishes a convert; nil when nothing is breaking and the Condenser rests. The server wakes a base then, so
+-- Ready and the tray fill while the player watches.
 function Breaker.NextEvent(data: Profile.Data): number?
 	local base = data.Base
-	local busy = false
+	local busy = Condenser.Working(base)
 	for _, chamber in base.Chambers do
 		busy = busy or chamber.Work ~= nil
 	end

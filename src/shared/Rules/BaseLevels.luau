@@ -1,11 +1,11 @@
 --!strict
 -- BaseLevels (shared, pure): the base's levels and its machines' (TR21; docs/design.md, "The base"; docs/balance.md,
 -- "Earning"). The base's level, 1 to Config.Base.Levels.Cap, opens bays, holds the battery's cap and sets the ceiling
--- every machine can reach; a machine's level raises its own work, a bay its output and the Breaker its speed, then its
--- third and fourth chambers. Each level costs Credits, and its gain is shown before it's bought, so an offer gives the
+-- every machine can reach; a machine's level raises its own work, a bay its output, the Breaker its speed, then its
+-- third and fourth chambers, and the Stone Condenser its rate and its tray (TR37). Each level costs Credits, and its gain is shown before it's bought, so an offer gives the
 -- price, the gain, and why it can't be bought when it can't. No Roblox API: it runs with Studio closed.
 --   BaseLevels.Next(baseLevel, credits)                     the base's next level, as an offer
---   BaseLevels.NextMachine(machine, level, baseLevel, credits)  a machine's next level ("Breaker" or "Bay"), as an offer
+--   BaseLevels.NextMachine(machine, level, baseLevel, credits)  a machine's next level ("Breaker", "Bay" or "Condenser"), as an offer
 --   BaseLevels.Stage(level)                                 a machine's stage at its level: 1, 2 or 3
 --   BaseLevels.GeneratorStage(baseLevel)                    the generator's: a machine's at the base's ceiling
 --   BaseLevels.Stages(base)                                 every machine's stage on a base, as the world stands it (TR51)
@@ -13,10 +13,11 @@
 
 local Shared = game:GetService("ReplicatedStorage").Shared
 local BaseConfig = require(Shared.Config.Base)
+local Condenser = require(Shared.Rules.Condenser)
 
 local BaseLevels = {}
 
-export type Machine = "Breaker" | "Bay"
+export type Machine = "Breaker" | "Bay" | "Condenser"
 -- Every machine's stage on a base (TR51): the Breaker's and each bay's by its own level (AR32, AR33), the generator's,
 -- the battery's and the Training machine's, which have none, at the base's (AR19, AR34, AR35).
 export type Stages = { Generator: number, Breaker: number, Battery: number, Training: number, Bays: { number } }
@@ -162,6 +163,7 @@ function BaseLevels.Next(baseLevel: number, credits: number): Offer
 	gain(gains, "Bays", BaseLevels.Bays(baseLevel), BaseLevels.Bays(level))
 	gain(gains, "Battery", BaseLevels.Battery(baseLevel), BaseLevels.Battery(level))
 	gain(gains, "Ceiling", BaseLevels.Ceiling(baseLevel), BaseLevels.Ceiling(level))
+	gain(gains, "Condenser", if Condenser.Awake(baseLevel) then 1 else 0, if Condenser.Awake(level) then 1 else 0) -- it wakes (TR37)
 	return { Level = level, Price = price, Why = if credits < price then BaseLevels.Short else nil, Gains = gains }
 end
 
@@ -175,6 +177,9 @@ function BaseLevels.NextMachine(machine: Machine, level: number, baseLevel: numb
 	if machine == "Breaker" then
 		gain(gains, "Speed", BaseLevels.BreakerSpeed(level), BaseLevels.BreakerSpeed(next))
 		gain(gains, "Chambers", BaseLevels.Chambers(level), BaseLevels.Chambers(next))
+	elseif machine == "Condenser" then
+		gain(gains, "Rate", Condenser.Rate(level), Condenser.Rate(next)) -- stones an hour at full power
+		gain(gains, "Tray", Condenser.Cap(level), Condenser.Cap(next))
 	else
 		gain(gains, "Output", BaseLevels.BayOutput(level), BaseLevels.BayOutput(next))
 	end

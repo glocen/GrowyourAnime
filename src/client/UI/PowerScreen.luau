@@ -63,8 +63,9 @@ local CHARGE = 8 -- the plate's charge bar, authored high
 local MARK = 28 -- the battery's mark (AR12's V2 Battery; TR41 (e)): its side in points
 local MARK_INK = 25 -- its drawing across in points (0.88 of its side), where the frames' stand-in stood: the words start past it
 
--- The machines in the bar's order (Rules.Power.Machines), by name, each with its light's colour and its chip; the
--- battery takes what's left, in its own light.
+-- The machines in the bar's order (Rules.Power.Machines, its first two), by name, each with its light's colour and its
+-- chip; the battery takes what's left, in its own light. The Stone Condenser (TR37) shares under Auto and keeps the share
+-- it has under a split: its own light, handle and chip wait for the screen's next piece.
 local MACHINES: { { Id: string, Name: string, Colour: Color3, Chip: string } } = {
 	{ Id = "Breaker", Name = "Void Breaker", Colour = POWER.Colours.Breaker, Chip = "ChipBreaker" },
 	{ Id = "Training", Name = "Training machine", Colour = POWER.Colours.Training, Chip = "ChipTraining" },
@@ -260,7 +261,13 @@ end
 local function askCuts(): { [string]: any }
 	local first = snap(cuts[1])
 	local both = math.max(first, snap(cuts[2]))
-	return ask({ Auto = false, Shares = { Breaker = first, Training = both - first } })
+	local view = lastView
+	local kept = if view then view.Base.Power.Shares.Condenser else nil -- the bar doesn't hold it: never cleared by it
+	local shares: { [string]: number } = { Breaker = first, Training = both - first }
+	if type(kept) == "number" and kept > 0 then
+		shares.Condenser = math.min(kept, math.max(0, 1 - both))
+	end
+	return ask({ Auto = false, Shares = shares })
 end
 
 local build: (view: Profile.View) -> ()
@@ -678,6 +685,8 @@ end
 PowerScreen.Name = NAME
 PowerScreen.Palette = PALETTE
 PowerScreen.Machines = MACHINES
-assert(#MACHINES == #Power.Machines, "PowerScreen: one row for each of Rules.Power's machines")
+for index, machine in MACHINES do
+	assert(Power.Machines[index] == machine.Id, "PowerScreen: its rows are Rules.Power's machines, in its order")
+end
 
 return PowerScreen

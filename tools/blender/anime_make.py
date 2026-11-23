@@ -36,7 +36,7 @@ FACE_PPU = 256     # and on the head
 R = 0.625          # the head's radius
 CHIN = 3.875       # the head's lowest point
 CENTRE = Vector((0.0, 0.0, 4.5))  # the scalp's middle
-SCALP, SCALP_TOP = 0.685, 0.69    # the hair's shell: its radius, and its top above the middle
+SCALP, SCALP_TOP = 0.78, 0.8      # the hair's mass under its spikes, an egg: its radius, and its top above the middle
 INK = "#1B161A"
 
 
@@ -337,9 +337,19 @@ def draw_face(p, look):
 
 # --- the hair --------------------------------------------------------------------------------------------------------
 
+def bent(d, degrees):
+    """`d` turned toward the ground by `degrees` (below zero: toward the sky), never past it."""
+    goal = Vector((0, 0, -1.0 if degrees >= 0 else 1.0))
+    axis = d.cross(goal)
+    if axis.length < 1e-5:
+        return d.copy()
+    return Matrix.Rotation(min(math.radians(abs(degrees)), d.angle(goal)), 3, axis.normalized()) @ d
+
+
 class Hair:
-    """One mesh of hair: a shell over the scalp and locks laid on it in rings. Each lock is a thin blade drawn to a
-    point, smooth across its ridge and sharp along its two edges, its root's colour running to its end's."""
+    """One mesh of hair: a dark egg over the scalp, spikes standing off it in rings and arcing to the ground, and locks
+    hanging down the face. Each is a three-sided blade drawn to a point, its faces flat so its ridge and edges are
+    sharp, dark at its root and under it, light toward its end."""
 
     def __init__(self, root, tip, seed=1):
         self.bm = bmesh.new()
@@ -355,111 +365,93 @@ class Hair:
     def colour(self, u, k=1.0):
         return np.clip((self.pair[0] * (1 - u) + self.pair[1] * u) * k, 0, 1)
 
+    def at(self, a, ph):
+        """A point on the egg, the way out of it there and the way down it: `a` degrees round from the face's middle
+        toward his left, `ph` degrees down from the crown."""
+        a = math.radians(a)
+        flat = Vector((-math.sin(a), math.cos(a), 0))
+
+        def point(deg):
+            q = math.radians(min(max(deg, 0.0), 150.0))
+            return CENTRE + flat * (SCALP * math.sin(q) ** 0.75) + Vector((0, 0, SCALP_TOP * math.cos(q)))
+
+        ph = min(max(ph, 1.5), 148.0)
+        down = (point(ph + 1) - point(ph - 1)).normalized()
+        return point(ph), down.cross(Vector((-math.cos(a), -math.sin(a), 0))).normalized(), down
+
     def shell(self, hairline, segments=36):
         """The scalp's cover, down to `hairline(degrees round from the face's middle)`."""
-        rings, c = [], self.colour(0.3, 0.9)
-        top = CENTRE.z + SCALP_TOP
+        rings, c = [], self.colour(0.0, 0.6)
         for i in range(segments):
             deg = (i / segments * 2 - 1) * 180
             a, low = math.radians(deg), hairline(abs(deg))
-            line = [(0.5, top - 0.005), (0.63, top - 0.06), (SCALP, top - 0.17)]
-            line += [(SCALP, top - 0.17 + (low - top + 0.17) * f) for f in (0.34, 0.67, 1.0)] + [(R * 0.98, low)]
-            rings.append([self._vert((-r * math.sin(a), r * math.cos(a), z), c) for r, z in line])
-        crown = self._vert((0, 0, top), c)
+            end = math.degrees(math.acos(max(-0.1, min(0.95, (low + 0.03 - CENTRE.z) / SCALP_TOP))))
+            line = [self.at(deg, end * f)[0] for f in (0.18, 0.36, 0.54, 0.72, 0.88, 1.0)]
+            line.append(Vector((-math.sin(a) * R * 0.98, math.cos(a) * R * 0.98, low)))
+            rings.append([self._vert(q, c) for q in line])
+        crown = self._vert(CENTRE + Vector((0, 0, SCALP_TOP)), c)
         for i in range(segments):
             n = (i + 1) % segments
             self.bm.faces.new((crown, rings[i][0], rings[n][0])).smooth = True
             for k in range(len(rings[0]) - 1):
                 self.bm.faces.new((rings[i][k], rings[i][k + 1], rings[n][k + 1], rings[n][k])).smooth = True
 
-    def lock(self, root, mid, tip, width, thick, samples=9, k=1.0, point=1.0):
-        root, mid, tip = Vector(root), Vector(mid), Vector(tip)
+    def lock(self, root, mid, tip, width, thick, face, samples=7, k=1.0, point=1.0):
+        """A blade along the curve from `root` past `mid` to `tip`, its ridge on the side `face` looks to."""
+        root, mid, tip, face = Vector(root), Vector(mid), Vector(tip), Vector(face)
         rings = []
         for i in range(samples):
             u = i / (samples - 1)
             at = root * (1 - u) ** 2 + mid * (2 * u * (1 - u)) + tip * (u * u)
             along = ((mid - root) * (1 - u) + (tip - mid) * u).normalized()
-            out = at - CENTRE
-            out -= along * out.dot(along)
-            if out.length < 0.05:
-                out = Vector((0, 0, 1)) - along * along.z
-            out = out.normalized() if out.length > 1e-4 else along.orthogonal().normalized()
+            out = face - along * face.dot(along)
+            out = out.normalized() if out.length > 1e-3 else along.orthogonal().normalized()
             side = along.cross(out).normalized()
-            s = min(1.0, 0.7 + u * 1.5) * (1 - u ** point) ** 0.8
-            c = self.colour(u ** 1.2, k)
+            s = min(1.0, 0.8 + u * 1.2) * (1 - u ** point)
+            c = self.colour(u ** 0.7, k * (0.62 + 0.38 * min(1.0, u * 2.4)))
             if i == samples - 1:
-                rings.append([self._vert(at, c)])
+                rings.append([self._vert(at, np.clip(c * 1.08, 0, 1))] * 5)
             else:
-                rings.append([self._vert(at + side * (width / 2 * s), c * 0.86), self._vert(at + out * (thick * 0.56 * s), np.clip(c * 1.1, 0, 1)),
-                              self._vert(at - side * (width / 2 * s), c * 0.86), self._vert(at - out * (thick * 0.44 * s), c * 0.55)])
-        self.bm.faces.new(list(reversed(rings[0])))
-        for a, b in zip(rings, rings[1:]):
-            for q in range(4):
-                n = (q + 1) % 4
-                f = self.bm.faces.new((a[q], a[n], b[n], b[q]) if len(b) == 4 else (a[q], a[n], b[0]))
-                f.smooth = True
-            if len(b) == 4:
-                for q in (0, 2):
-                    self.bm.edges.get((a[q], b[q])).smooth = False
-            else:
-                for q in (0, 2):
-                    self.bm.edges.get((a[q], b[0])).smooth = False
-        for q in range(4):
-            self.bm.edges.get((rings[0][q], rings[0][(q + 1) % 4])).smooth = False
+                left, right = at + side * (width / 2 * s), at - side * (width / 2 * s)
+                rings.append([self._vert(left, c * 0.8), self._vert(at + out * (thick * s), np.clip(c * 1.14, 0, 1)), self._vert(right, c * 0.8),
+                              self._vert(right, c * 0.5), self._vert(left, c * 0.5)])
+        last = samples - 2
+        for j, (a, b) in enumerate(zip(rings, rings[1:])):
+            for q, n in ((0, 1), (1, 2), (3, 4)):  # the ridge's two faces, and the one under the blade
+                self.bm.faces.new((a[q], a[n], b[n], b[q]) if j < last else (a[q], a[n], b[0]))
         self.locks += 1
 
-    def ring(self, count, polar, around, length, width, lift, droop=0.0, sweep=0.0, bend=0.0, jitter=0.2, thick=0.1):
-        """A ring of locks. `polar`: degrees down from the crown. `around`: the degrees it runs through round the
-        head, 0 at the face's middle, growing toward his left. `lift`: 1 stands a lock straight off the scalp, 0 lays
-        it down along it. `droop`: how far its end falls, in its own lengths. `sweep`: how far it turns round the head,
-        toward his left above zero. `bend`: how far its middle bows off the scalp."""
+    def spike(self, a, ph, length, width, lift, curl=0.0, sweep=0.0, thick=0.12, point=1.0, k=1.0):
+        """One spike. It roots `a` degrees round and `ph` down from the crown, leaves the egg `lift` degrees off it
+        (0 lies down the head, 90 stands straight off it), turned `sweep` degrees round the head toward his left, and
+        by its end has bent `curl` degrees toward the ground (below zero, toward the sky)."""
+        root, n, down = self.at(a, ph)
+        t = Matrix.Rotation(math.radians(sweep), 3, n) @ down
+        up = math.radians(lift)
+        d0 = t * math.cos(up) + n * math.sin(up)
+        mid = root + d0 * (length * 0.5)
+        self.lock(root - n * 0.08 - d0 * 0.04, mid, mid + bent(d0, curl) * (length * 0.5), width, thick,
+                  n * math.cos(up) - t * math.sin(up), k=k, point=point)
+
+    def spikes(self, count, polar, around, length, width, lift, curl=0.0, sweep=0.0, jitter=0.25, thick=0.12, point=1.0):
+        """A ring of spikes through the degrees `around`, each a little off the ring's own measures."""
         a0, a1 = around
         step = (a1 - a0) / count
-        up = Vector((0, 0, 1))
+        j = lambda: self.rng.uniform(-1, 1) * jitter  # noqa: E731
         for i in range(count):
-            a = math.radians(a0 + step * (i + 0.5 + self.rng.uniform(-1, 1) * jitter))
-            ph = math.radians(polar + self.rng.uniform(-1, 1) * jitter * 14)
-            long_, wide = length * (1 + self.rng.uniform(-1, 1) * jitter), width * (1 + self.rng.uniform(-1, 1) * jitter * 0.6)
-            out = Vector((-math.sin(a), math.cos(a), 0))
-            v = out * math.sin(ph) + up * math.cos(ph)
-            reach = SCALP / max(math.sin(ph), 1e-6)
-            if math.cos(ph) > 1e-6:
-                reach = min(reach, SCALP_TOP / math.cos(ph))
-            root = CENTRE + v * (reach - 0.07)
-            down, round_ = out * math.cos(ph) - up * math.sin(ph), Vector((-math.cos(a), -math.sin(a), 0))
-            d = (v * lift + down * (1 - lift) + round_ * sweep).normalized()
-            mid = root + d * (long_ * 0.55) + v * (bend * long_)
-            tip = root + d * long_ - up * (droop * long_) + round_ * (sweep * long_ * 0.4)
-            self.lock(root, mid, tip, wide, thick, k=1 + self.rng.uniform(-1, 1) * 0.07)
+            self.spike(a0 + step * (i + 0.5 + j()), polar + j() * 14, length * (1 + j()), width * (1 + j() * 0.5), lift + j() * 36,
+                       curl + j() * 30, sweep + j() * 50, thick, point, 1 + self.rng.uniform(-1, 1) * 0.07)
 
-    def on_scalp(self, a, ph, off=0.0):
-        """A point on the shell (and straight down from its rim, below it): `a` degrees round, `ph` down from the crown."""
-        a, ph = math.radians(a), math.radians(min(ph, 172))
-        v = Vector((-math.sin(a) * math.sin(ph), math.cos(a) * math.sin(ph), math.cos(ph)))
-        reach = SCALP / max(math.sin(ph), 1e-6)
-        if math.cos(ph) > 1e-6:
-            reach = min(reach, SCALP_TOP / math.cos(ph))
-        flat = Vector((v.x, v.y, 0))
-        out = (v if math.cos(ph) > 0.3 else flat).normalized()
-        return CENTRE + v * reach + out * off, out
-
-    def flow(self, count, polar, around, fall, width, flick=0.1, sweep=0.0, jitter=0.2, thick=0.13, point=2.2, off=0.05):
-        """A ring of clumps that lie along the head: each starts `polar` degrees down from the crown, runs `fall`
-        degrees further down hugging the shell, turns `sweep` degrees round the head on the way, and ends standing
-        `flick` studs off it."""
-        a0, a1 = around
-        step = (a1 - a0) / count
-        for i in range(count):
-            a = a0 + step * (i + 0.5 + self.rng.uniform(-1, 1) * jitter)
-            ph = polar + self.rng.uniform(-1, 1) * jitter * 10
-            run = fall * (1 + self.rng.uniform(-1, 1) * jitter)
-            turn = sweep * (1 + self.rng.uniform(-1, 1) * jitter)
-            wide = width * (1 + self.rng.uniform(-1, 1) * jitter * 0.6)
-            root, _ = self.on_scalp(a, ph, -0.06)
-            through, _ = self.on_scalp(a + turn * 0.5, ph + run * 0.5, off)
-            end, out = self.on_scalp(a + turn, ph + run, off * 0.5)
-            tip = end + out * (flick * (1 + self.rng.uniform(-1, 1) * jitter))
-            self.lock(root, through * 2 - (root + tip) / 2, tip, wide, thick, k=1 + self.rng.uniform(-1, 1) * 0.07, point=point)
+    def fall(self, a, ph, to, width, turn=0.0, off=0.06, bulge=0.07, thick=0.09, point=1.0):
+        """One lock that hangs down the head: from `a` degrees round and `ph` down, to `to` studs above the chin and
+        `turn` degrees further round, its end `off` studs clear of the head."""
+        root, n, _ = self.at(a, ph)
+        way = lambda deg: Vector((-math.sin(math.radians(deg)), math.cos(math.radians(deg)), 0))  # noqa: E731
+        tip = way(a + turn) * (R + off) + Vector((0, 0, CHIN + to))
+        reach = max(math.hypot(root.x, root.y), R + off) + bulge
+        through = way(a + turn * 0.5) * reach + Vector((0, 0, root.z * 0.45 + tip.z * 0.55))
+        self.lock(root - n * 0.08, through * 2 - (root + tip) / 2, tip, width, thick, way(a + turn * 0.5),
+                  k=1 + self.rng.uniform(-1, 1) * 0.07, point=point)
 
     def build(self, name="Hair"):
         mesh = bpy.data.meshes.new(name)
@@ -566,17 +558,23 @@ def stand_in(joints, folder):
     draw_face(head.paint, dict(skin=SKIN, iris="#3F8FD0", eye_w=0.31, eye_h=0.175, eye_x=0.27, eye_y=0.54, tilt=0.022,
                                shut=0.2, brow_y=0.7, brow_tilt=-0.03, brow="#3B2A24",
                                mouth=[(-0.075, 0.232), (0.0, 0.224), (0.08, 0.238)]))
-    hair = Hair("#33241F", "#A87B52", seed=7)
+    hair = Hair("#4A2F22", "#C99A66", seed=7)
     hair.shell(hairline())
-    hair.flow(9, 3, (-180, 180), 56, 0.54, flick=0.16, sweep=38, jitter=0.12)
-    hair.flow(7, 16, (-160, 200), 44, 0.46, flick=0.2, sweep=30)
-    hair.flow(12, 34, (40, 320), 50, 0.44, flick=0.2, sweep=20)
-    hair.flow(12, 66, (62, 298), 44, 0.4, flick=0.18, sweep=10)
-    hair.flow(9, 96, (92, 268), 30, 0.34, flick=0.12, sweep=4, thick=0.11)
-    hair.flow(7, 26, (-66, 66), 50, 0.36, flick=0.06, sweep=12, thick=0.11)
-    hair.flow(3, 52, (-104, -62), 46, 0.28, flick=0.05, thick=0.1)
-    hair.flow(3, 52, (62, 104), 46, 0.28, flick=0.05, thick=0.1)
-    hair.ring(5, 22, (-150, 150), 0.42, 0.3, 0.8, droop=0.1, sweep=0.3, thick=0.12)
+    # the mass: a tuft on the crown, then rings that stand out and arc to the ground, longer and lower each
+    hair.spikes(6, 12, (-180, 180), 0.46, 0.42, 70, curl=15, sweep=30, thick=0.14)
+    hair.spikes(10, 30, (-170, 190), 0.52, 0.46, 64, curl=35, sweep=22, thick=0.14)
+    hair.spikes(12, 46, (34, 326), 0.58, 0.48, 52, curl=48, sweep=16, thick=0.14)
+    hair.spikes(13, 62, (50, 310), 0.6, 0.48, 40, curl=50, sweep=10, thick=0.14)
+    hair.spikes(12, 84, (68, 292), 0.54, 0.44, 30, curl=40, sweep=6, thick=0.14)
+    hair.spikes(9, 104, (96, 264), 0.42, 0.38, 22, curl=20)
+    # the fringe: locks hanging to the brows, the two beside the nose and the two past the eyes longer
+    for a, ph, to, width, turn in ((-52, 44, 0.42, 0.32, -4), (-38, 40, 0.68, 0.38, 6), (-22, 38, 0.6, 0.38, 8), (-6, 36, 0.5, 0.3, 4),
+                                   (8, 38, 0.62, 0.38, -6), (24, 38, 0.66, 0.38, 4), (40, 42, 0.58, 0.36, -4), (54, 46, 0.4, 0.32, 4)):
+        hair.fall(a, ph, to, width, turn)
+    # and one before each ear
+    for s in (-1, 1):
+        hair.fall(s * 74, 54, 0.3, 0.32, s * 6)
+        hair.fall(s * 90, 60, 0.22, 0.3, s * -4)
     made["head"], made["hair"] = head.build(folder), hair.build()
     wt.on(joints, "neck", made["head"], made["hair"])
     print(f"hair: {hair.locks} locks")
@@ -619,6 +617,25 @@ def views(scene, joints, shots, key):
     rs.shoot(scene, shots / f"{key}_bust.png", azimuth, BUST["elevation"], BUST["centre"], BUST["span"])
 
 
+def turnaround(scene, joints, shots, key):
+    """The head from six sides in one picture: face on, each three-quarter, a side, the back and the game's camera."""
+    for joint in joints.values():
+        joint.rotation_quaternion = (1, 0, 0, 0)
+    joints["root"].location = wt.PIVOTS["root"]
+    rs.POSES["square"](joints)
+    rm.eevee(scene, 420, 420)
+    tiles = []
+    for azimuth, elevation in ((180, 4), (146, 8), (214, 8), (90, 4), (0, 6), rs.GAME):
+        rm.sun_for(scene, azimuth)
+        fill_for(scene, azimuth)
+        rs.shoot(scene, shots / f"{key}_turn.png", azimuth, elevation, (0.0, 0.0, 4.55), 2.9)
+        tiles.append(rs.load(shots / f"{key}_turn.png"))
+    page = rs.canvas(420 * 3, 420 * 2, rs.rgb("#2A2D36"))
+    for i, tile in enumerate(tiles):
+        rs.paste(page, tile, (i % 3) * 420, (i // 3) * 420)
+    rs.save(page, shots / f"{key}_turn.png")
+
+
 def run(out):
     shots, folder = out / "shots", out / "tex"
     shots.mkdir(parents=True, exist_ok=True)
@@ -631,6 +648,7 @@ def run(out):
     tris = sum(len(f.vertices) - 2 for o in made.values() for f in o.data.polygons)
     print(f"stand-in: {tris} triangles, hair {sum(len(f.vertices) - 2 for f in made['hair'].data.polygons)}")
     views(scene, joints, shots, "standin")
+    turnaround(scene, joints, shots, "standin")
 
 
 if __name__ == "__main__":

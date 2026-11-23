@@ -58,6 +58,7 @@ On the director's word of 2026-11-13 (`docs/decisions.md`): after the whole game
 - **The stages' band's Back** (AR42's install, research, 2026-11-19, 18:51): a black plate, the darkest thing on the lit-glass screen. It could be the kit's quiet glass press.
 - **The bag's tab row's edge** (AR43's take 2 pass, research, 2026-11-19, 22:59): at the smallest phone, "Chests" is cut to "Ches" at the row's right edge with no fade. A soft fade at the scrolling edge would show the row goes on.
 - **The reveal's room is a violet-black ground** (TR50's class sweep, research, 2026-11-23, 02:05): `reveal_room.png` bakes `#2B2542` to `#07050C` as the whole room, the one ground left on the too-purple line. It's a closed piece, so a new image waits for the finish pass, judged beside the rarity's light it frames.
+- **Level 3's stacked halo from the gate's line** (AR50's pass, research, 2026-11-23, 14:04): the upper ring is half out of the frame, and in a still its far arc crowds the lower ring's near arc, so the stack reads busy, not crowned. Judge it first in motion in the game. If it still crowds, set the upper ring higher or wider on the same axle, kept inside the frame.
 
 ## Done
 

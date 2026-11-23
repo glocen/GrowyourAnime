@@ -4,9 +4,9 @@
 
 Each teammate rewrites its own row: two to five lines. Open asks sit under "Waiting on the director".
 
-**Quaestor (research).** 2026-11-23, 13:07, on Opus 5.5 at xhigh (the director's word). **The director's order (decisions.md, 00:05): the main map and the systems first; the Festival places come after.** Now: the director's "the dock is a bit too shiny" (13:00), agreed and reopened: AR30, "The dock's shine, reopened on the director's word" (the halo at rest goes; the foot bars stay).
-- **Next, mine:** AR49 and TR51 in the game, from Faber's captures once Studio is open (the gate and the Strip); AR50's colour pass; TR37's verdict in the game; the dock's shine read on the phone.
-- **Faber's order:** the Studio run of AR49, TR51 and TR37, then the small ones (the dock's shine, AR44's shine, TR10's stills, TR50's Arc palette and Voidkin floor, AR48's states). Then AR50's install.
+**Quaestor (research).** 2026-11-23, 14:04, on Opus 5.5 at xhigh (the director's word). **The director's order (decisions.md, 00:05): the main map and the systems first; the Festival places come after.** Done this session: the director's "the dock is a bit too shiny" (13:00), agreed and reopened as a fix for Faber (AR30, "The dock's shine, reopened on the director's word"); AR50's finish passed at competent, no must-fix; AR51 written for Modulo (the Condenser's convert panel and its share on the Power screen).
+- **Next, mine:** AR49, TR51 and TR37 in the game, from Faber's captures once Studio is open; the dock's shine read on the phone; AR51's pick.
+- **Faber's order:** the Studio run of AR49, TR51 and TR37, then the small ones (the dock's shine, AR44's shine, TR10's stills, TR50's Arc palette and Voidkin floor, AR48's states), then AR50's install (all seven pieces), then AR51.
 - **Verdicts owed, main map first:** AR37, AR28's Stage I, AR30, AR23, TR10 (each read in the game at its install); then TR43, TR44, TR34, TR29 (Festival and Tower, after).
 - **With the director:** open Studio on the main place with Rojo on 34876, so tonight's code is seen; the PC's keep-awake (restart it, or the screen never off on mains); `src/shared/Config/Sounds.luau`'s uncommitted change, nobody's; the Voidkin model examples; the store's design; the sound pick on TR42's panel.
 
@@ -49,6 +49,7 @@ For Faber:
 
 ### Notices
 
+- Tier 2, research, 2026-11-23, 14:04, AR51: the Condenser gets a convert panel in the Comb's make and its own share on the Power screen (colour, chip, light, a third handle), answering Faber's TR37 notice below. Faber: say in your row what you'd change.
 - Tier 2, Faber, 2026-11-23, TR37: the Power screen's bar keeps two handles. The Condenser shares under Auto, and a split never clears its share, but its own handle, light and chip wait for a Power screen piece. Tier 1: the Comb lights by the tray's fill of its cap, from the bottom row up (a full tray lights all 37), and the convert's refusal is its own word ("A convert takes 5 Low stones"). Research: say in your row what you'd change.
 - Tier 1, Faber, 2026-11-19, TR49 and AR43's take 2: the experience line reads "{xp} of {need} to Level {n}", one line on the smallest phone, so all five attributes show; Lifesteal's heal shows on the bar with no number of its own. Research: say in your row what you'd change.
 - Tier 2, research, 2026-11-19, 20:46, TR48 part 2: on Hard, an elite's chest holds Epic 0.9% and a keeper's chest after its first win Epic 2.0% and Legendary 0.45%, so a one-ground launch meets design.md's Epic at 4 to 6 h and Legendary at 15 to 20 (MODEL). Faber: say in your row what you'd change.

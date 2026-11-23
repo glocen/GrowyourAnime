@@ -15350,6 +15350,34 @@ D as base kit pieces, in the machines' stages' own shape: `tools/blender/base_le
 - **For Faber, after TR51:** all seven pieces now, as one install. `py tools/world/kit_take.py Base`; the rings' rows as `machines.baseLevels` gives them; `py tools/blender/base_levels_clear.py` after any later export.
 - **Four facts:** made, both rings refitted and exported. Self-reviewed on the sheets and by the audit, PASS. Delivered to `build/handoff/Base`, not uploaded. Nothing in the game; research's pass on the whole finish is asked now.
 
+### Research's pass on the finish: competent, no must-fix (Quaestor, 2026-11-23, 14:04)
+
+From `base_levels_finish.png`, `_64.png` and `_turn.png`, each level over its own generator stage.
+- **Felt:** step out at level 2 and a wide teal halo hangs round the wheel, over the floor's lit ring. At level 3 a second band rises above it. Down the Strip the oval stands over the wall, against the plain level 1 base across the road. Sky and floor say the same thing.
+- **My call's parenthesis was wrong:** the floor's ring circles the generator. Modulo kept the call's reason, and that's the right reading. No new blockout.
+- **Tier: competent.** **The one bold thing:** one axle, so the floor's ring and the sky's rings share one centre. A level reads as one shape from the gate, from the Strip and from above.
+- **The bar is met as measured.** Level 2 is also better than the night's: whole under the truss when facing the gate, and readable from 150 studs.
+- **Exceptional isn't there on the sheets.** At level 3, from the gate's line, the upper ring is half out of the frame. In a still, its far arc crowds the lower ring's near arc, so the stack reads busy, not crowned. That goes to `docs/polish-later.md`, not the fix list.
+- **What the sheets can't show,** first seen at the install: the glow in the engine, the two rings crossing opposite ways, and Stage III under them on a phone. Research reads all of it in the game from the four stands.
+- **Next:** Faber installs all seven as one, after TR51 (the record's "For Faber").
+
+## AR51. The Stone Condenser's two faces: its convert panel and its share on the Power screen (Modulo, for research's pick, then Faber)
+
+Research, 2026-11-23, 14:04, on the director's order of 00:05 (the main map and the systems first). TR37 built the Condenser's rules and its Comb, and left two parts grey (TR37, "Faber's build"):
+- the convert panel on the kit, `Config.World.Condenser.Panel`, which is a grey plate;
+- its share on the Power screen: the design splits one bar among the machines (`docs/design.md`, "The base", the Power screen), and today's bar has the Breaker's and the Training machine's handles only, so the Condenser shares under Auto with no handle, light or chip of its own.
+
+Tier 2: a look players see that nothing covers, in Modulo's area, then Faber's.
+- **Feel line:** at the Comb, the owner sees at a glance what a convert costs (5 Low into 1 Mid), whether it can start, and how long the one running has left, then starts it with one press on the machine's own panel. On the Power screen the Condenser is a third share in its own colour, so giving it power is a choice the player sees and makes.
+- **The block contains:**
+  - **The panel:** two or three directions in the Comb's own make (AR28, AR36), shown on the machine at Stage I from the prompt's reach at the player's camera, at the smallest phone's pixels. Each in its four states: ready, running with its time, can't start (with its reason), and asleep below base level 2.
+  - **The Power screen:** the Condenser's colour, its chip's mark and its light, on today's screen beside the Breaker's and the Training machine's, in Auto and in a split, at the smallest phone.
+- **What holds:** Power's yellow and Credits' teal; the stones' grades as AR31 drew them; violet only on what's alive (AR40); AR30's make for anything pressed; the panel stays off the way in.
+- **What waits:** the Comb's Stages II and III under the panel (AR36, at TR51's install); the convert's sound (sound work is stopped); jewels in the tray (TR39). The third handle's code is Faber's, at the build.
+- **Checks:** the content check; research's pick at phone size, every state, read up close; then Faber's build, with captures from the prompt's reach and of the Power screen on the smallest phone.
+- **Cap:** the blockout in 2 hours. It's an ordinary piece, so it closes at competent.
+- **Order:** Modulo's next piece, now. Faber's build comes after AR50's install.
+
 ## Later, by ground
 
 The rest of ground 1 (Kirra in AR10, Watt in AR11; then Sable, Marigold, Crane), then each ground's Voidkin in `docs/roster.md`'s order. **The machines** (Gantry, Bulwark, Ironhymn, Shiomaru, Aegir) share one custom rig, taller than a player, with its own clip family: the first of them is timed like AR1, because a custom rig is a different cost.

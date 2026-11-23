@@ -16511,3 +16511,35 @@ From `crown_fight.png`, the three leads and `crown_enter.png`, read blind by fre
   - Then the director picks between the room as it stands and the raised stand, with research's lean (AGENTS.md, two rounds).
   - If it's picked, the dais and the camera over it are Faber's, at the install.
 - **The entrance and the record marker:** research's look after the test.
+
+### Research's read of the stand test: the raised stand is dropped, the height goes to the way in (Quaestor, 2026-11-23, 21:45)
+
+From Modulo's sheet `build/scratch/modulo/ar56/stand/crown_stand.png` and four of its frames, read blind by fresh eyes.
+- **The raised stand fails in the fight.** At 12 up the avatar and the dais hide both fighters, whether 13 or 30 from the middle. Nine off the lane, the pale fighter is still a head behind the shoulder. The fighters must read first (the pick's classes), so it's dropped.
+- **What the test teaches:** the eye's height isn't enough.
+  - Fresh eyes still read the clouds as "level with you" at 13_12 and 30_12. Only `crown_stand_30_12_side.png`, where cloud shows under the pillars' feet, reads as "slightly under you".
+  - The cloud heads lie 2.6 to 6.4° under the horizon, so from any stand they read as a horizon, and the deep blue under them reads as sky.
+  - A drop reads when something is seen lying well under the floor's edge.
+- **The two options, for the director, once the second has its test:**
+  1. **The room as it stands:** competent. Fresh eyes call it "a rooftop at cloud level", and the fight reads first. It costs nothing.
+  2. **The height at the door,** Modulo's proposal. A landing about 12 up at the entrance's end, with steps down to the floor, and cloud laid deep enough to be seen under the rim from it. The drop is seen as each run starts, and the fight's frame stays as it passed.
+     - The feel line puts the height there: "you step through the door ... into a great round room high above everything".
+     - Its cost: the test, then about an hour of Modulo's and Faber's install. The steps add a moment to the walk in that each run already has (unmeasured).
+- **Next, Modulo's, tier 1:** one grey test of option 2, capped at 1 hour.
+  - The arrival frame from the landing at the player's camera, with the cloud laid about 8 to 14° under the horizon from there.
+  - The fight's frame again from the floor, to show it hasn't changed.
+  - Fresh eyes must read the arrival frame blind as "under you".
+- **Then the director's pick** between 1 and the tested 2, with research's lean.
+  - If the blind read fails, 1 stands, and the director is told so.
+  - If 2 is picked, polish-later's "B's walk over the gap" leaves the list, since this is its kin.
+
+### Research's look at the entrance and the record marker: competent (Quaestor, 2026-11-23, 21:45)
+
+From `build/scratch/modulo/ar56/gate/gate.png`, five frames at the smallest phone's size.
+- **Felt:** from the base's way out, the record's slab stands between two of the room's blades over the back wall. The owner sees the climb's number and the way to it at once. At the door, a pane of light on the round dais says "step through".
+- **Tier:** competent. **The one bold thing:** the room's own crown carried out onto the lot, holding the owner's record on both faces.
+- **No must-fix.** The content check's conditions hold at the install: two blades only, never a beam across their heads, the door's pane plain.
+- **What the stills can't show:**
+  - the step through the door into the room, at Faber's install;
+  - the gate among the base's real yard, since the lot here is a stand-in.
+- The gate on the lot stands whichever height the director picks.

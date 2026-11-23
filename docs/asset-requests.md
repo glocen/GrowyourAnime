@@ -10793,6 +10793,15 @@ The director, 2026-11-23, about 13:00: "imo the Button ui down center are a bit 
 - **Seen, for research's read:** Home open at 0.6 is hard to tell from rest at 0.4 in the dock alone. On screen, the panel and its pointer say which is open.
 - **Visually reviewed:** research's read asked. **Director-accepted:** not yet.
 
+### Research's read in the game: passed at competent, no must-fix (Quaestor, 2026-11-23, 15:27)
+
+From `dock_zoom_sheet.png`, pale and dark.
+- **Felt:** the dock sits quiet under the play now. The shine is gone, and only a call glows. This answers the director's "a bit to shiny".
+- **Tier:** competent.
+- **The one bold thing:** Play's calling ring, the one bright thing on the dock, so the eye goes there.
+- **Refinement,** to `docs/polish-later.md`: Open gets its own mark at the finish. The panel and its pointer carry it on screen, so it doesn't hold the pass.
+- **Director-accepted:** the director's own look, next time they play.
+
 ## AR31. Forge stones, War Emblems and jewels: their pictures (Modulo, for research's verdict, then Faber)
 
 Phase 3's order, Modulo's item 5 (`docs/production-plan.md`). It's for TR37's Stones tab, TR38's War Emblems page and item card, and TR39's Jewels page, each of which waits on these icons. The design: `docs/design.md`, "Regalia: gear" (the emblems' sockets, the jewels' tiers [D: "Each type has its own colour, and its shape grows with its tier"]). The study: `docs/research/gear-icons.md`.
@@ -15211,6 +15220,15 @@ Research, 2026-11-19, 23:20 by the clock, on the director's word of 23:20 (`docs
     - Marigold has no body yet (the grey StandIn rig), so her bust and her portrait are grey. That's her model's wait, not the panel's.
 - **Visually reviewed:** research's verdict asked (the per-Voidkin framing from Rook's and Kirra's). **Director-accepted:** not yet.
 
+### Research's verdict in the game (Quaestor, 2026-11-23, 15:27)
+
+From `build/captures/ar49/phone_lead_kirra.png`, the smallest phone.
+- **Felt:** Home opens three cards above the dock, and the lead's face fills the middle one. It reads as your fighter, not a menu.
+- **Tier:** competent.
+- **The one bold thing:** Kirra's face filling the lead card.
+- **Must-fix 1, class "a stray mark":** a small white mark sits under "Voidkin" at the lead card's foot (about x 405, y 350 in the still). Find what it is. If it's a label meant to be there, it's unreadable at that size; if not, it goes.
+- **Not judged:** Marigold's framing, until her model replaces the grey rig.
+
 ## AR50. The base's levels 2 and 3: the whole yard's look, read from the gate (Modulo, for research's pick, then Faber)
 
 Research, 2026-11-23, 01:56 by the clock, on the director's order of 00:05 (`docs/decisions.md`: the main map first). The design: `docs/design.md`, "The base", "The look": at launch, levels 1, 2 and 3 each have a look of their own for the whole base, readable from the gate [D, 2026-11-12: "the whole base visuals, changed based of the levels of the base itself"]. Levels 2 and 3 were never made (AR14's and AR16's "Waits"). The machines' stages come from their own levels and go in with TR51. This is the yard around them.
@@ -15580,3 +15598,19 @@ Research, 2026-11-23, 15:24 (`docs/design.md`, "Goals"; the build is TR54, Faber
 - **What waits:** the masks on the base; sound (Sonus); motion beyond the kit's.
 - **Checks:** the content check; sheets at the smallest phone's size, every state; research's pick.
 - **Order:** after AR52's clips.
+
+## AR54. The yard at Stage III: one plan where every machine fits and reads from the gate (Modulo, before AR53; then Faber)
+
+Research, 2026-11-23, 15:26, from TR51's Studio run and TR37's (`docs/test-requests.md`). It's main map, so it comes first, by the director's order of 00:05. Tier 2, research and Modulo, with Faber's measures.
+- **Feel line:** at every stage, the player at the gate sees every machine they use, each on its own ground, and walks to any of them without threading between two.
+- **What fails today:** Stage III's footprints break the plan (the clear is 8.3 between the generator and the Training machine, 10.5 at two more pairs, and 11.9 at a third). The Breaker stands 58° off the gate's line, past the camera's 51°. The Forge and the Condenser hide behind the generator from the gate. The generator's floor ring runs about 28 studs, under the Breaker and across the court.
+- **Research's rules for the plan:**
+  - Clear 12 at Stage III, at every pair;
+  - the Breaker inside the gate's 51°;
+  - every machine the player touches is seen from the gate, at least its top;
+  - the ring ends inside the generator's own clear;
+  - the plot stays 128 studs if the plan allows it (Faber's trial sizes failed only on spots, not room). Stage I and II follow the same spots.
+- **The block contains:** a top-down plan with every machine's Stage III print and spot, and a gate's-eye sheet at Stage I and Stage III at the smallest phone's size. Faber's `Config.World.Fit.Prints` and the trial's logic case are the check.
+- **Checks:** the trial's case passes at Stage III; research's pick from the gate's sheet.
+- **Order:** before AR53.
+

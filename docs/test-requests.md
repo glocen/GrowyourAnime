@@ -3313,6 +3313,12 @@ TR51 is Faber's previous piece, and this is the next, on the director's order of
     - `phone_forge`, `phone_condenser` and `phone_condenser_asleep`, at the smallest phone's 1,334 by 750, the world only.
     - Neither machine shows from the gate: both stand in the back row behind the generator (TR51's gate frames).
 - **Visually reviewed:** research's verdict in grey asked. **Director-accepted:** not yet.
+- **Research's verdict in grey (Quaestor, 2026-11-23, 15:27),** from `phone_condenser_asleep`:
+  - **Felt:** the Condenser in grey reads as a pad on the floor, not a machine, and from the gate it isn't there at all.
+  - **Tier:** works, as grey.
+  - **The one bold thing:** none yet. That's the finding, and AR51's card and AR50's machines carry it.
+  - **Must-fix 1, class "the yard at Stage III":** neither machine is seen from the gate. Folded into AR54's plan.
+  - **Not a fix:** the grey disc's words cut at "5 Low into 1…". AR51's card replaces them.
 
 ## TR38. War Emblems (Faber, after TR37)
 
@@ -4575,6 +4581,13 @@ Research, 2026-11-23, 01:55 by the clock, on the director's order of 00:05 ("fir
     - `stage3_breaker_shards`.
 - **Visually reviewed:** research's verdict asked. **Director-accepted:** not yet.
 - **Tier 1, Faber:** the plate reads "Level n" under the name rather than the bare number, so a passer-by reads a level beside a name. Research: say in your row what you'd change.
+- **Research's verdict (Quaestor, 2026-11-23, 15:26),** from `phone_stage1_gate`, `phone_stage3_gate` and `phone_stage3_court`:
+  - **Felt:** walking in, a level-3 base is told from a level-1 base at a glance. The Breaker sprouts horns around its shard, and the generator a crown of spikes.
+  - **Tier:** competent.
+  - **The one bold thing:** the Breaker's Stage III horns around the floating shard, a silhouette that reads across the yard.
+  - **Must-fix 1, class "text cut by the frame's edge":** the plate's name runs off the top of the gate's view at every stage. Raise the plate until it leaves the gate's view, so it's read whole from the Strip, where passers-by are. The owner reads their level on Home. "Level n" (Faber's tier 1) stays.
+  - **Must-fix 2, class "the yard at Stage III":** today's plan doesn't hold Stage III's footprints (Faber's measures above), and the Forge and the Condenser stand behind the generator from the gate (TR37). It's one plan, so one piece: AR54, Modulo's, on research's rules. The generator's floor ring belongs in it: the ring ends inside its own clear, never under another machine or across the court.
+  - **Not judged here:** the landing in motion. Faber's frames and their timing (0.35 s between the peaks) are accepted on the measures; it's first seen in motion at a live base level-up.
 
 ## TR52. The signature on a tap: a block, judged in motion (Faber, after the Studio run)
 
@@ -4623,10 +4636,10 @@ Research, 2026-11-23, 15:24, on the director's yes and "js basic at launch" (`do
     - Base: "Let every bay run a full hour." / "Break three shards." / "Collect the Condenser's tray." / "Train a Voidkin for an hour."
     - Roster: "Lead a run with someone new." (a Voidkin not led today) / "Raise a Voidkin a level." / "Forge once."
   - **The Mask Ledger:** a count per Shade kind, and a line shown at each count (Shades at 10, 100 and 1,000; the keeper at 1, 10 and 100):
-    - **Brawler:** "Round masks sold out first. Everyone wanted to grin that night." / "The grin is painted on. Most of the ones under it were scared." / "By dawn they're home, with paint on their fingers and no idea whose."
+    - **Brawler:** "Round masks sold out first. Everyone wanted to grin that night." / "The grin is painted on. Most of the ones under it were scared." / "By dawn they're home, still grinning, with no idea why."
     - **Guard:** "Square masks were for the ones who came to watch, not to dance." / "A Guard holds its shield the way they'd hold a shutter in the rain." / "They wake on the curb with sore arms, sure they'd been holding something up."
     - **Dasher:** "The pointed masks were the runners'. They raced the lantern carts every year." / "The Void keeps what it finds. In a runner, it found the start line." / "They come to on the far side of the street, out of breath, and laugh without knowing why."
-    - **The Lamplighter:** "Someone has to light the lanterns. For forty years, it was them." / "The Void came in through the last lantern they lit." / "They light the row again each evening. Nobody has told them what happened, and nobody will."
+    - **The Lamplighter:** "Someone has to light the lanterns. For forty years, it was them." / "The Void came in through the last lantern they lit." / "They light the row again each evening, and never ask why the last lantern sticks."
     - **Next:** the account's one next step, with what it opens. The rule picks the first not done of: Stage 4 on Normal, base level 2, the Lamplighter on Hard, base level 3, Tower floor 25.
 - **The rules in pure Luau** (`Rules.Goals`): the draw, the banking, the reset, each goal's check, the Ledger's counts. Logic cases:
   - a goal pays once;
@@ -4634,7 +4647,7 @@ Research, 2026-11-23, 15:24, on the director's yes and "js basic at launch" (`do
   - the bank holds nine at most;
   - the reset is on UTC, whatever the server.
 - **What waits:** the masks on the base, the dares' pools, weekly goals.
-- **Content check:** every line above, before it's built.
+- **Content check:** PASS on every line above (2026-11-23, 15:29). It blocked the Brawler's third line first: an echo of "blood on their hands". Both that line and the Lamplighter's third were rewritten as the check proposed, so the Lamplighter's reads as alive.
 - **Checks:** the logic cases; captures of the card, the results and Home on the smallest phone; research's verdict in motion.
 - **Cap:** about 10 hours of build (research's guess; Faber's estimate replaces it).
 - **Order:** after TR52 and AR52's behaviours.

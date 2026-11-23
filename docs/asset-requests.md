@@ -15160,6 +15160,45 @@ Research, 2026-11-23, 01:56 by the clock, on the director's order of 00:05 (`doc
 - **Cap:** the blockout in 2 hours. It's a major landmark, so the finish aims at exceptional, named at the pick.
 - **Order:** Modulo's next piece, after the art tiles' block-in (TR50's class line).
 
+### The blockout: four directions, and what the camera lets a level show (Modulo, 2026-11-23, 02:05 to 02:30 by the clock)
+
+Rendered in Blender by `tools/blender/base_levels_block.py`: block-in pieces in the kit's own swatches, on the plan as it stands, in the game's day (AR40's C), at 852 by 480. Nothing is exported and no kit file is changed.
+- **The sheets:** `build/scratch/modulo/ar50/base_levels_in.png`, `_gate.png`, `_strip.png`, `_far.png` (each direction's levels 1, 2 and 3), and `base_levels_64.png` (all 48 at 64 px high). Each frame alone is beside them (`D2_in.png`).
+- **What the camera shows.** The game's camera looks 20° down, so its frame ends 15° above level. A thing H studs tall is whole in it only from (H − 8.8) / 0.268 studs away: a gate 42 tall needs 124 studs.
+  - From near, only what stands under about 20 studs is seen, so a level needs a low sign and a high one.
+  - Facing the gate from the Strip, the truss hides everything over the yard above 8° up: the generator's top just fits under it.
+- **Four stands,** each from the game's camera at its start zoom:
+  - **In:** the owner at the gate's line, looking in at the yard.
+  - **Gate:** a visitor in the Strip's middle, facing the gate, 24 studs away.
+  - **Strip:** a passer-by 90 studs down the Strip, looking along it, this base on the right and a level 1 base across the road on the left.
+  - **Far:** the same from 150 studs.
+- **In every direction:** the level's new bay stands awake with its line lit. The machines keep their level 1 models (their stages are TR51's).
+- **A, the edge rises:** the gate gains an arch a level and its towers climb (27 studs, then about 43 with a crest and a shard); every wall post gets a taller head, the corners become towers, and a fin stands on each of the gate's shoulders, then two.
+- **B, the current climbs:** the edge keeps its shape and the light grows. A blade of light on every post, the gate's towers lit on every face, a second ring round the well and the way in lit down both edges; at level 3, a standing current at each corner and over the gate.
+- **C, the halo:** a broken ring of the yard's stone floats round the generator just over its axle's height, and a shard over each gate tower; at level 3, a second, wider ring above, tilted, and a shard over each corner.
+- **The read, by stand** (Modulo's, from the sheets):
+
+| | In | Gate | Strip, 90 | Far, 150 |
+|---|---|---|---|---|
+| A | level 2 and 3 look like level 1: the posts are at the frame's sides | the fins read, one pair then two; heavy in dark teal at level 3 | level 2 is the near corner's tower; level 3's is cut by the frame | level 2 doesn't read; level 3 is a dark mass at the gate |
+| B | the strongest: the lit way and the second ring; level 3 adds little | the lit towers and the way seen through the gate | thin sticks of light; level 3's beams read | level 2 doesn't read; level 3's beams are hairlines |
+| C | level 2's ring is edge-on at eye height, a few blocks; level 3's is cut by the frame | nothing at level 2 | nothing at level 2; level 3's ring is cut by the frame | level 2 doesn't read; level 3's ring is the clearest sign of all |
+
+- **No one lever is seen from every stand.** The floor's light wins for the owner, the edge at eye level wins at the gate, and a shape afloat wins from the Strip. No direction's level 2 reads from the Strip.
+- **D, one sign a stand, one more of each a level** (drawn from that read, inside the cap):
+  - **For the owner, the floor:** at level 2 the way in is lit down both edges and a second ring runs round the well. Level 3 joins the two rings by rays.
+  - **At the gate, the fins:** A's, on the gate's shoulders, in the machines' pale stone with teal caps: one pair at level 2 (11 studs), two at level 3 (14 and 10).
+  - **From the Strip, the halo:** one ring at level 2, 20 studs in radius at 22 up, its gate side dipped to 18 so it's in the frame from the gate's line. A second at level 3, 28 in radius at 28 up, leaning the other way. They stand wide of the wheel, so they needn't clear its top.
+  - **Its read:** every stand tells level 1 from 2 from 3. From 90 studs a ring over the base against none across the road reads at once, and from 150 it still does. It adds no violet.
+- **Modulo's read: D.** Its weak points, for the finish:
+  - Level 3 from inside is the smallest step: the rays barely show, and the second ring is mostly over the frame. The generator's own Stage III lands at the same moment (TR51) and isn't in these frames.
+  - The first ring's near arc sits just over the wheel's head from the way in. It wants 2 more studs, or its gap turned toward the gate.
+  - The rings are still here. In the game they'd turn, slowly, each its own way.
+- **The class, checked on D:** nothing unfinished stands anywhere; nothing electrical is added (stone, light and fins); the way in is clear, with light on its edges only and no ray across it; the wall, the gate and the pylons are level 1's own.
+- **For the finish, a flag:** `base_kit.BAYS_AT` still holds 2, 4 and 6 bays. The design is 2, 3 and 4 (`docs/design.md`, "The base"), so the floor pictures' frames for a level's new bay follow that.
+- **Not shown:** dusk and night, any motion, the neighbours' plots beside this one, and the HUD over the frame.
+- **Four facts:** made, 36 frames (28 for A, B and C with level 1, and D's 8). Self-read from the sheets at the phone's pixels. Not content-checked (a block-in, never in the game). Not picked.
+
 ## Later, by ground
 
 The rest of ground 1 (Kirra in AR10, Watt in AR11; then Sable, Marigold, Crane), then each ground's Voidkin in `docs/roster.md`'s order. **The machines** (Gantry, Bulwark, Ironhymn, Shiomaru, Aegir) share one custom rig, taller than a player, with its own clip family: the first of them is timed like AR1, because a custom rig is a different cost.

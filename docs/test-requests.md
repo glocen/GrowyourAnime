@@ -4488,3 +4488,37 @@ Research, 2026-11-23, 01:55 by the clock, on the director's order of 00:05 ("fir
 - **Checks:** a logic case for each machine's stage at levels 5, 6, 14 and 15, and one that a join shows the stage with no landing; the flash guard's case (0.34 s); the self-test; captures from the gate and from the court, at stages I, II and III, at the smallest phone.
 - **Research's verdict in the game** reads: the landing at full speed, at the Breaker and from the court; a base level-up's machines starting on one frame; the Highlight's fill at the court's distance; the plate and the plinth from the Strip.
 - **Order:** Faber's next piece after AR49. It goes ahead of AR44's shine, TR10's stills, TR50's Arc palette and AR48's states. TR37 follows it.
+
+### Faber's build (Faber, 2026-11-23, 02:08 to 02:50 by the clock: 38d01a8, ad1372b, e086d9e)
+
+- **Implemented,** the three steps in order.
+  1. **Stages II and III in the world** (38d01a8).
+     - Each machine is laid as its kit's three stages, each a "Stage n" (`WorldService`). `BaseService` stands the one its level takes (`Rules.BaseLevels.Stages`): the Breaker and a bay by their own level, the battery and the Training machine by the base's.
+     - The Breaker's chambers are laid once, with a lid where the save hasn't the chamber yet. BreakerLamp moves to its stage's crystal. The hinges and a bay's rings turn while a chamber breaks or a worker works.
+     - Debug: `MachineLevel`.
+  2. **AR37's landing** (ad1372b): pick A to Modulo's recipe (`Config.Landing`, tunable live; `Rules.Landing`; `LandingController`).
+     - The server holds the old stage until the swap, 35 frames after the landing's start.
+     - It schedules each plot's landings by the flash guard (Gap 0.34 s), so a base level-up's machines swap on one instant.
+     - A join, a respawn or a plot changing hands plays none.
+     - `fx_rise_Void` is uploaded under the group, 84217908322822. Until the kit's rbxm is rebuilt in Studio, the hoop and the shaft are Neon.
+  3. **TR22's gate and plinth** (e086d9e).
+     - The plate: the owner's display name over "Level n", on both faces (`Config.World.Plate`).
+     - The plinth: the showcase Voidkin (`Collection.Showcase`) at its middle, facing the Strip, playing its Idle and turning 0.08 turns a second, with its CR over it (`Config.World.Showcase`).
+- **Tested.**
+  - Type check 0 new; logic offline 29,036 passed. The logic cases cover each machine's stage at levels 5, 6, 14 and 15; a join or respawn showing the stage with no landing; the landing's beats and size; and the flash guard over 400 seeded runs (never early, never closer than the gap, at most 3 swaps a second).
+  - In-game cases written in `BaseCases` but not run:
+    - each machine at its stage;
+    - the swap under the full cover, read frame by frame;
+    - a base level-up's three machines on one frame, and the Breaker's landing after the gap;
+    - a respawn playing none;
+    - the plate, the plinth's figure, and a pick and its return.
+  - NOT VERIFIED in Studio: the Studio MCP saw no open place all session.
+- **Waits on Studio:**
+  - the self-test and the world report;
+  - FxKit.rbxm rebuilt with `fx_rise_Void`'s look;
+  - the shards' place inside the chambers;
+  - Config.World's Fit Prints at Stage III;
+  - the captures from the gate and the court at stages I, II and III, and on the smallest phone;
+  - the landing's light brightness, tuned on the capture.
+- **Visually reviewed:** not yet. **Director-accepted:** not yet.
+- **Tier 1, Faber:** the plate reads "Level n" under the name rather than the bare number, so a passer-by reads a level beside a name. Research: say in your row what you'd change.

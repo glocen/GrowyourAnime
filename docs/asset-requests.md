@@ -15150,6 +15150,20 @@ Research, 2026-11-19, 23:20 by the clock, on the director's word of 23:20 (`docs
 - **The Voidkin screen's pages (Research, 00:12, by message):** Home's tray was the only way to Kit and Stars (the screen has had no rail since AR43). The Voidkin screen gets the Equipment screen's rail as it stands: the same faces, words and comet, with its four pages (Overview, Kit, Inventory, Stars), opening on the last page shown. It's one rail in both screens, so Modulo has nothing new to draw. Tier 1 for the build. Its check: on the smallest phone, the rail's four words are whole, and the attribute grid's fit (AR43's condition) still holds under it.
 - **Not built yet:** the panel (`UI.HomeTray` gives way to it), the live view and its framing rule in Config, the presses under the view, the rail. Stopped on the director's wrap-up (00:14).
 
+### Faber's build (Faber, 2026-11-23, committed 02:08 by the clock, 04b45b5)
+
+- **Implemented.**
+  - The dock's Home cell opens three cards on dark glass over the dimmed world (`UI.HomePanel`; `Config.Hud.Home`): Equipment, Voidkin, Settings.
+  - The Voidkin card shows the lead live under its frame (`Figure.Bust`), with its press under the live view.
+  - A card lights when pressed. The panel makes way as its screen rises, on the page last shown, and Back brings it back. `UI.HomeTray` is gone.
+  - The Voidkin screen takes the Equipment screen's rail (`UI.Kit.Rail`, lifted from `EquipmentScreen`), its four pages down its left (`Config.Hud.Voidkin.Rail`; research's call of 00:12).
+- **Tested.**
+  - Type check 0 new; logic offline 28,980 passed.
+  - Cases written but not run: Home's panel and its stills take (`DockCases`); the rail on each page and on the smallest phone (`VoidkinCases`).
+  - NOT VERIFIED in Studio: the Studio MCP saw no open place all session.
+- **Visually reviewed:** not yet. The phone stills and the per-Voidkin framing wait on Studio.
+- **Director-accepted:** not yet.
+
 ## AR50. The base's levels 2 and 3: the whole yard's look, read from the gate (Modulo, for research's pick, then Faber)
 
 Research, 2026-11-23, 01:56 by the clock, on the director's order of 00:05 (`docs/decisions.md`: the main map first). The design: `docs/design.md`, "The base", "The look": at launch, levels 1, 2 and 3 each have a look of their own for the whole base, readable from the gate [D, 2026-11-12: "the whole base visuals, changed based of the levels of the base itself"]. Levels 2 and 3 were never made (AR14's and AR16's "Waits"). The machines' stages come from their own levels and go in with TR51. This is the yard around them.

@@ -2,6 +2,47 @@
 
 The oldest entries of `docs/team-notes.md`, moved here as that file passed about 250 lines (`AGENTS.md`, "Team notes"). Newest first.
 
+### 2026-11-19, 01:58. TR44's slam in the keeper's fight, with its footprint and the switch Off, A, B (Faber)
+
+- **What changed:** the Lamplighter slams in its fight, first 8 s after its Challenge, then every 12 s. From Plant its aim is fixed and a ring opens on the street, filling to its edge on the Slam. The hit takes the leads inside it.
+- **A:** walk 2 studs out of the ring and your fighter follows. **B:** a Recall button by the right thumb (R, ButtonY) dashes it to you, with a 4 s cooldown. One switch, live, and the server counts each slam per mode.
+- **Where:** `Rules/Mark.luau`, `SlamService`, `SlamController`, `FightService` (the footprint, the fixed aim, `Away`), `Config.Combat.Keeper` (First, Mark, Out). Record: TR44, "The block, built".
+- **Open:** research's read waits on the phone take (stopped by the low-memory reaper); the director picks by playing (board, item 8). A fight at the keeper's level lasts about 20 s on Studio's account: one slam, not six (for research).
+- **For:** research and the director.
+
+### 2026-11-19, 01:31. TR43's stages, items 6 and 8, the music and the character sounds; TR42's second round ready (Faber)
+
+- **TR43:** Lantern Row in four stages on Normal and Hard, in grey: the gates, the Door's first-time entry, the picker, the results card, Hard's own foes (TR43, "The block, built"). For research's read from a phone's camera.
+- **Item 6:** Salvage on the item's card, left of Equip: a first tap asks with its Credits, a second salvages, and a worn item says "Take it off first". The full bag's line says how to free a slot (`UI/VoidkinScreen/Bag.luau`).
+- **Item 8, D5:** the bays are 2, 3 and 4 at the base's levels 1 to 3; bays 5 and 6 stand locked, "Opens with more Voidkin" (`Config.Base`). Save step 9 trims a base holding more, freeing those workers. HP Regen's sheet line reads its burst with "every 8 s" under it.
+- **The music:** `Config/Music.luau`, where the director pastes the ids; `MusicController` shuffles them, never one twice running. **The character sounds:** Roblox's walk, jump and fall sounds are gone (`src/overrides`).
+- **TR42:** the picks are the cues, and the second round's 12 tabs wait on the director's listen, tomorrow.
+- **Tests:** offline logic 26,574/0, Studio's the same, world report empty; the touched self-test cases pass (stages 78, bag 121, base 38, audition 89, sound 10).
+
+### 2026-11-17, 23:24. AR39 stopped; the sounds go to the director's ear, TR42 (Quaestor)
+
+- **What changed:** the sound rescue is stopped. Two more attempts passed every measure and failed at the director's first listen: 13 layers made by code ("horrendous sfx.."), then round 2's library recordings, sliced and stacked ("it sounds like everything but not a sfx"). Nobody on the team can hear, and the measures don't predict the ear.
+- **The director's pick:** an audition panel in the dev place. Every cue is one finished library sound, any author, played whole, and the director keeps the one that's right.
+- **Where:** `docs/asset-requests.md`, AR39 (the stop, and research's errors); `docs/test-requests.md`, TR42 (the panel); `docs/decisions.md`, the top rows.
+- **Stands:** Faber's engine and its measures (starts on the mixer's clock, counted misses, the A/B switch, the match). Today's cues play.
+- **Open:** TR42's build and the director's listen. AR40's renders and captures, for research's colour pick.
+- **For:** Faber (TR42 first), Modulo (nothing on sound), the director (about 10 to 15 minutes on the panel).
+
+### 2026-11-17, 18:49. TR41 (e): the HUD's V2 leftovers answered, the Training machine training (Faber)
+
+- **What changed:** of AR12's 30 V2 images, 17 were already in the game. The battery's mark is now installed on the Power screen's plate, in place of its stand-in drawn from frames. 8 were replaced by later pieces (the dock's own images; the halos the director took off). 4 stay unspent until a pill or hint wears them.
+- **Where:** `PowerScreen.luau`, `Config.Hud.Power.Images.Battery`; cases "Power: the generator ..." and "Take: TR41 (e)".
+- **Tested:** the Power case 90/0, the take 6/0, type check 0 new. The Training machine's cyan was seen in the game, with the lead training.
+- **Research's verdict:** works, one must-fix (the mark's cells disagreed with the reading), and yes to the mark in the Power pill. Both are in at 19:08: its cells follow the charge by thirds, on the plate and in the pill (`UI/BatteryMark.luau`, `Rules.Hud.BatteryCells`; TR41, "(e)", "Faber's fix").
+
+### 2026-11-17, 18:38. TR41 (d): where a shard came from, the festival tag, installed (Faber)
+
+- **What changed:** a shard's picture wears its ground's look. In a chamber, the tag hangs from the crystal's shoulder. In a bag cell, the mark sits on a disc at the crystal's left foot, since the count holds the right. On a Breaker chip, a band of the ground's colour runs along its foot. At the smallest phone the Breaker's chambers give way so the strip stays inside the panel; its chips had hung past it, cut.
+- **Where:** `UI/ShardTag.luau`, `Rules.Hud.ShardTag`, `Config/Hud.luau` (`ShardTag`), `BreakerScreen.luau`, `VoidkinScreen/Bag.luau`. Cases: logic "Hud: TR41 (d)", self-test "Breaker: TR41 (d)", "Take: TR41 (d)".
+- **Tested:** the tag 42/0, the galaxy 42/0, the Items page 112/0, the Voidkin screen 249/0, logic 24,051/0; type check 0 new.
+- **Open:** the two-line name and the bag's ground filter wait, as the design's block says. TR18's take fails at the generator's prompt, not from this piece.
+- **For:** research's read (`build/scratch/faber/stills/tr41d-*`).
+
 ### 2026-11-17, 17:58. TR41 (c): the level-up notice, take B, installed (Faber)
 
 - **What changed:** a level gained shows Modulo's notice under the lead's corner: it slides in, its number lands with a flash and a knock, one sheen crosses, and it slides back. The old toast and the word over the lead are gone; the column of light stays.

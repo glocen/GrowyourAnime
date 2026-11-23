@@ -10,11 +10,10 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **Verdicts owed, main map first:** AR37, AR28's Stage I, AR30, AR23, TR10 (each read in the game at its install); then TR43, TR44, TR34, TR29 (Festival and Tower, after).
 - **With the director:** the PC's keep-awake (stopped on low memory; restart it, or set the screen to never turn off on mains); the Voidkin model examples (the rework stays parked); the store's design; the sound pick on TR42's panel.
 
-**Faber (builder).** 2026-11-20, 00:25, on Opus 5.5. Stopped on the director's second wrap-up. Done today:
-- TR50, one mission per Arc, with research's five must-fixes in the game (98c6cdd): the closed lock, the lit Fight or Continue, the line's chevron mark, the last foe by name, the track node to node. Take: TR50 13/0, travel 35/0, the dock 39/0.
-- **AR49, Home's panel, mid-build:** all 12 images uploaded under the group and Approved; research's call on the Voidkin screen's rail (AR49, "Faber's build: begun"). Written but kept out of `src/` so the game stays whole: the panel's Config, `Figure.Bust` (the live view and its framing rule), `UI.HomePanel`, all in `build/scratch/faber/ar49-wip/` (`git apply tracked.patch`, then copy `HomePanel.luau` to `src/client/UI/`). Still to do: wire it into HudController in the tray's place, the cases, the rail, the captures.
-- **Next:** AR49's build (the panel, the live view and its framing, the presses under the view, the rail in the Voidkin screen), then AR44's shine, then TR10's stills, then AR48's states once Modulo's sheet is picked.
-- **Open, tests:** NOT VERIFIED (the Festival place, item 9): TR50's run cases, the Festival role's suite, TR48's keeper in a real run, TR49's Stage 1 playtest, TR10's marker in its world. TintMask on a phone. TR44's phone take waits for the director's go.
+**Faber (builder).** 2026-11-23, 02:51, on Opus 5.5. Stopped on the director's wrap-up (02:40, through research). Done this session, each implemented and type-checked, none run in Studio: the Studio MCP saw no open place all session.
+- AR49, Home's panel in C and the Voidkin screen's rail (04b45b5). TR51, the base grows, all three steps: the stages II and III (38d01a8), AR37's landing with the flash guard (ad1372b; `fx_rise_Void` uploaded, 84217908322822), TR22's gate plate and plinth (e086d9e). Records: AR49's and TR51's "Faber's build".
+- **Next:** the Studio run of AR49 and TR51 (the self-test; FxKit.rbxm rebuilt with the landing's look; the Fit Prints; the captures from the gate and the court at each stage, and on the smallest phone). Then TR37 (the Forge and the Condenser), then the small ones (AR44's shine, TR10's stills, TR50's Arc palette and Voidkin floor, AR48's states).
+- **Open, tests:** NOT VERIFIED: AR49 and TR51; and, in the Festival place (item 9), TR50's run cases, the Festival role's suite, TR48's keeper, TR49's Stage 1 playtest and TR10's marker. TintMask on a phone. TR44's phone take waits for the director's go.
 
 **Modulo (assets).** 2026-11-23, 02:48, on Fable 5.2. Voidkin work parked until before launch (the director's word, 11:10). Stopped on the director's wrap-up: committed, nothing running, no lock held.
 - **Delivered today:** AR48's five cues as a block-in (`build/handoff/FxKit/states/`, Faber's after TR49's states), and TR50's dusk palette for the Arc panel and the results card's cover (`build/handoff/UI/stages/arc_dusk.json`, Faber's after AR49), and the Voidkin screen's floor in B, pale stone with the element as a rim of light (`build/handoff/UI/voidkin/voidkin_floor.json`, research's pick at 02:05, Faber's after TR51).
@@ -25,7 +24,7 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **For Faber, AR40's install:** the atlas pair, and the Strip's eight changed meshes with the manifest, on top of the 40 base meshes, the paving and C's keys already listed in AR40. The atlas never goes alone. AR38's Shop meshes go with AR38.
 - **Unchanged:** AR28's Stage I on TR37, AR19's re-uploads, AR24's A on TR34, AR39 stopped, Sable after launch.
 
-**Turns.** Studio: Faber's (Grow your Anime), open, not in Play; a second Studio, Festival Lantern, is open, not Faber's; the director's listen on TR42's panel is tomorrow, in the same place. Blender: nobody (Modulo's AR41 strips were stopped at 01:33 on 2026-11-19 by Claude Code when the PC ran low on memory; the director said wait at 01:34). Timing tests: nobody.
+**Turns.** Studio: Faber's turn released (2026-11-23, 02:51); the Studio MCP sees one Studio, with no place open; the director's listen on TR42's panel is tomorrow, in the same place. Blender: nobody (Modulo's AR41 strips were stopped at 01:33 on 2026-11-19 by Claude Code when the PC ran low on memory; the director said wait at 01:34). Timing tests: nobody.
 
 **The count.** Week of 2026-11-23: 0 pieces closed and playable so far. Today's closes are art and picks (AR48, TR50's palettes, AR50's pick), all waiting on their install, which is how they become playable.
 
@@ -124,6 +123,16 @@ For Faber:
 
 ## Entries
 
+### 2026-11-23, 02:51. AR49 and TR51 built, not yet run in Studio (Faber)
+- **AR49** (04b45b5): Home's panel in C, three cards on dark glass, the lead live under the Voidkin card's frame; the Voidkin screen takes the Equipment screen's rail. Record: AR49, "Faber's build".
+- **TR51** (38d01a8, ad1372b, e086d9e):
+  - every machine's stages II and III stand by their level;
+  - a rise seen on its owner's plot plays AR37's landing, the swap under its cover, a plot's landings on one instant or 0.34 s apart;
+  - the gate's plate says the owner's name over "Level n", and the plinth turns their showcase Voidkin with its CR.
+  - Record: TR51, "Faber's build".
+- **Checks:** type check 0 new; logic offline 29,036 passed. The in-game cases are written, NOT VERIFIED: the Studio MCP saw no open place.
+- **For research:** the in-game verdicts on AR49 and TR51, after Faber's Studio run and captures. **For the director:** Grow your Anime open in Studio, Rojo connected on 34876, for that run.
+
 ### 2026-11-23, 00:31. TR50's older line: the Arc panel's ground in the festival's dusk, a palette (Modulo)
 
 - **What:** the screen behind the picker's glass and the lantern's bed take Lantern Row's dusk, the lantern's light pooled under it; the panel's glow and rim are lantern light; the results card's cover is dark wine, so the street under it stays its dusk. Research picked B, then B with Normal's lights left Seam's: in cream they ran into Hard's coral and Ready's gold once Hard was open.
@@ -220,44 +229,3 @@ For Faber:
   - research's `docs/design.md` line for the board;
   - the stage tile's "CR", NOT VERIFIED (the Festival place).
 - **For:** research and the director.
-
-### 2026-11-19, 01:58. TR44's slam in the keeper's fight, with its footprint and the switch Off, A, B (Faber)
-
-- **What changed:** the Lamplighter slams in its fight, first 8 s after its Challenge, then every 12 s. From Plant its aim is fixed and a ring opens on the street, filling to its edge on the Slam. The hit takes the leads inside it.
-- **A:** walk 2 studs out of the ring and your fighter follows. **B:** a Recall button by the right thumb (R, ButtonY) dashes it to you, with a 4 s cooldown. One switch, live, and the server counts each slam per mode.
-- **Where:** `Rules/Mark.luau`, `SlamService`, `SlamController`, `FightService` (the footprint, the fixed aim, `Away`), `Config.Combat.Keeper` (First, Mark, Out). Record: TR44, "The block, built".
-- **Open:** research's read waits on the phone take (stopped by the low-memory reaper); the director picks by playing (board, item 8). A fight at the keeper's level lasts about 20 s on Studio's account: one slam, not six (for research).
-- **For:** research and the director.
-
-### 2026-11-19, 01:31. TR43's stages, items 6 and 8, the music and the character sounds; TR42's second round ready (Faber)
-
-- **TR43:** Lantern Row in four stages on Normal and Hard, in grey: the gates, the Door's first-time entry, the picker, the results card, Hard's own foes (TR43, "The block, built"). For research's read from a phone's camera.
-- **Item 6:** Salvage on the item's card, left of Equip: a first tap asks with its Credits, a second salvages, and a worn item says "Take it off first". The full bag's line says how to free a slot (`UI/VoidkinScreen/Bag.luau`).
-- **Item 8, D5:** the bays are 2, 3 and 4 at the base's levels 1 to 3; bays 5 and 6 stand locked, "Opens with more Voidkin" (`Config.Base`). Save step 9 trims a base holding more, freeing those workers. HP Regen's sheet line reads its burst with "every 8 s" under it.
-- **The music:** `Config/Music.luau`, where the director pastes the ids; `MusicController` shuffles them, never one twice running. **The character sounds:** Roblox's walk, jump and fall sounds are gone (`src/overrides`).
-- **TR42:** the picks are the cues, and the second round's 12 tabs wait on the director's listen, tomorrow.
-- **Tests:** offline logic 26,574/0, Studio's the same, world report empty; the touched self-test cases pass (stages 78, bag 121, base 38, audition 89, sound 10).
-
-### 2026-11-17, 23:24. AR39 stopped; the sounds go to the director's ear, TR42 (Quaestor)
-
-- **What changed:** the sound rescue is stopped. Two more attempts passed every measure and failed at the director's first listen: 13 layers made by code ("horrendous sfx.."), then round 2's library recordings, sliced and stacked ("it sounds like everything but not a sfx"). Nobody on the team can hear, and the measures don't predict the ear.
-- **The director's pick:** an audition panel in the dev place. Every cue is one finished library sound, any author, played whole, and the director keeps the one that's right.
-- **Where:** `docs/asset-requests.md`, AR39 (the stop, and research's errors); `docs/test-requests.md`, TR42 (the panel); `docs/decisions.md`, the top rows.
-- **Stands:** Faber's engine and its measures (starts on the mixer's clock, counted misses, the A/B switch, the match). Today's cues play.
-- **Open:** TR42's build and the director's listen. AR40's renders and captures, for research's colour pick.
-- **For:** Faber (TR42 first), Modulo (nothing on sound), the director (about 10 to 15 minutes on the panel).
-
-### 2026-11-17, 18:49. TR41 (e): the HUD's V2 leftovers answered, the Training machine training (Faber)
-
-- **What changed:** of AR12's 30 V2 images, 17 were already in the game. The battery's mark is now installed on the Power screen's plate, in place of its stand-in drawn from frames. 8 were replaced by later pieces (the dock's own images; the halos the director took off). 4 stay unspent until a pill or hint wears them.
-- **Where:** `PowerScreen.luau`, `Config.Hud.Power.Images.Battery`; cases "Power: the generator ..." and "Take: TR41 (e)".
-- **Tested:** the Power case 90/0, the take 6/0, type check 0 new. The Training machine's cyan was seen in the game, with the lead training.
-- **Research's verdict:** works, one must-fix (the mark's cells disagreed with the reading), and yes to the mark in the Power pill. Both are in at 19:08: its cells follow the charge by thirds, on the plate and in the pill (`UI/BatteryMark.luau`, `Rules.Hud.BatteryCells`; TR41, "(e)", "Faber's fix").
-
-### 2026-11-17, 18:38. TR41 (d): where a shard came from, the festival tag, installed (Faber)
-
-- **What changed:** a shard's picture wears its ground's look. In a chamber, the tag hangs from the crystal's shoulder. In a bag cell, the mark sits on a disc at the crystal's left foot, since the count holds the right. On a Breaker chip, a band of the ground's colour runs along its foot. At the smallest phone the Breaker's chambers give way so the strip stays inside the panel; its chips had hung past it, cut.
-- **Where:** `UI/ShardTag.luau`, `Rules.Hud.ShardTag`, `Config/Hud.luau` (`ShardTag`), `BreakerScreen.luau`, `VoidkinScreen/Bag.luau`. Cases: logic "Hud: TR41 (d)", self-test "Breaker: TR41 (d)", "Take: TR41 (d)".
-- **Tested:** the tag 42/0, the galaxy 42/0, the Items page 112/0, the Voidkin screen 249/0, logic 24,051/0; type check 0 new.
-- **Open:** the two-line name and the bag's ground filter wait, as the design's block says. TR18's take fails at the generator's prompt, not from this piece.
-- **For:** research's read (`build/scratch/faber/stills/tr41d-*`).

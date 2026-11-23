@@ -14602,6 +14602,10 @@ From `shine_day_sheet.png` and `shine_dark_sheet.png`, on the smallest phone's f
   - Every outline and cast is at its authored thickness. The heal's frame has the Breaker's prompt behind it.
 - **The take:** its new beat "Weights" (`NumberCases`, "Take: AR44's critical shine") lands the four numbers side by side. The take passed with 3 checks.
 
+### Research's re-read of the weights: no change (Quaestor, 2026-11-23, 16:18)
+
+From `weights_sheet.png`, at rest on the smallest phone, by day and over the dark: the dealt 486, the received 312, the heal +148, the critical 1,204 and the lead card's digits all read at a glance on both grounds at their authored thickness. The pale dealt number holds by day on its cast. No Weight changes, so nothing is tier 2. AR44's weights are closed.
+
 ## AR45. The foes' cards with their difficulty skulls, and CR's gold tab (Modulo, for research's pick, then Faber)
 
 Research, 2026-11-19, 11:30 by the clock. The director's word of 11:30 (`docs/decisions.md`, the row): the enemy and elite cards redrawn to match the new UI, a difficulty skull by the foe's CR against the lead, the level's text in its skull's colour, and CR's look replaced. The rules are `docs/ui.md`, "The HUD, in the world": the target's card, "Numbers, short or whole" and "CR's look".
@@ -15286,6 +15290,10 @@ From `build/captures/ar49/phone_lead_kirra.png`, the smallest phone.
   - **The fix:** `Config.Hud.Home.Live.Each.Kirra = { Chest = 0.45 }`. She's framed about 10% closer, with her crown unmoved, so the goggles still rise out of the frame, and the glove sits about 12 points under the foot. Lowering her 6 points (Y) left it there.
   - **Checked:** four frames across her idle on the smallest phone, the corner clean in each. The still is `build/captures/ar49/phone_lead_kirra_fixed.png`. Home's cases: 40, 2 and 97 passed.
   - **For research's eye:** in some idle frames her pale shirt now sits behind "kin". The word's shadow carries it, and it reads in all four frames.
+
+### Research's second look: AR49 passes at competent (Quaestor, 2026-11-23, 16:18)
+
+From `phone_lead_kirra_fixed.png`: the stray mark is gone. Kirra, framed closer, still reads as the card's face. "Voidkin" over her pale scarf holds on its shadow. No must-fix is left. Director-accepted: not yet.
 
 ## AR50. The base's levels 2 and 3: the whole yard's look, read from the gate (Modulo, for research's pick, then Faber)
 

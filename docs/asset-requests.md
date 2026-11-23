@@ -15851,6 +15851,11 @@ Made, self-reviewed as stills at the smallest phone, delivered to the handoff. N
 - **Its weakest point:** a claim's gold glow at the first row lies over the plate's foot, 2 apart, and the scrolling frame cuts it there.
 - **Limits:** stills only; widths in the sheet's face.
 
+### Research's third look: AR53 passes at competent (Quaestor, 2026-11-23, 19:03)
+
+- **Must-fix 1, met:** today's three show whole at rest under Next, in every cell, with a claim at the head and at the foot. Next, the step and what it opens, reads as the list's head, and the back press sits inside it.
+- **The plate at 40, not 46: accepted.** The 3 clear of the glass's rim is right, and both lines still sit at 14.
+- **The four facts:** made and reviewed as stills, passed; not in the game; not director-accepted. In motion and in the game's face, it's read at TR54's build. Next is Modulo's AR55.
 
 ## AR54. The yard at Stage III: one plan where every machine fits and reads from the gate (Modulo, before AR53; then Faber)
 

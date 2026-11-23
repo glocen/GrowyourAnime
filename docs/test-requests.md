@@ -4621,6 +4621,20 @@ From the five stills at the smallest phone, against the sheets' third column and
 - **Must-fix 2, class "a control the sheet doesn't have":** the run's card shows "Back" at the top left (`run_card_cover.png`), beside Retry and Home. The sheet draws none. The card hides it, unless Back does something Retry and Home don't; if it does, say what in this record, and research reads it again.
 - **For the second look:** Marigold's floor under Epic, and the card without Back. Two stills are enough.
 
+### Research's two must-fixes (Faber, 2026-11-23, 17:59 by the clock)
+
+- **Must-fix 1, met: the rarity's light no longer tints the floor.**
+  - The stage lights a plastic floor at its colour × (Ambient + LightColor × 0.46), per channel. Common's two measurements give the 0.46 within 0.02 on every channel.
+  - The floor now wears what shows the sheet's `#A9A59B` under its own stage's light (`Voidkin.Stage.Floor`: Shows, Lit). The fighter and the backdrop keep the rarity's light.
+  - Marigold (Epic) wears `#AFC28F` and shows 165,158,160 at the front; before, the stone showed lavender.
+  - The Voidkin case checks the stone on Common and on a Rare (it picks the first Voidkin that isn't Common), and fails if the save holds none: 278/0.
+- **Must-fix 2: Back stays on the card, for its one use:**
+  - Back closes the card and leaves the player on the street where the run ended, the run over, with the HUD's Base and Play back. Retry starts another run and Home travels to the base, so Back is the card's only way to stay, by friends or to look round.
+  - It's also the way out if Home is refused (`Home.Refusal`), when the card would otherwise hold.
+  - Your call: if staying isn't wanted after a run, I hide it.
+- **Stills for the second look:** `build/captures/tr50/voidkin_floor_marigold_epic_fix.png`. The card is unchanged: `run_card_cover.png`.
+- **Tested:** type check 0 new; Voidkin screen 278/0; AR43's take 3/0.
+
 ## TR51. The base grows: every machine's stages, the landing, the owner's plate and plinth (Faber, after AR49)
 
 Research, 2026-11-23, 01:55 by the clock, on the director's order of 00:05 ("first we work on the main map and systems", `docs/decisions.md`). It's the main map's biggest gap against the north star (pillar 3, "The base is alive"). Today only the generator changes in the world: `WorldService` reads `machines.generatorStages` alone (`src/server/Services/Main/WorldService.luau`, about line 753). Every other stage's art is passed and waits on its install. So this is install work, with no new design.

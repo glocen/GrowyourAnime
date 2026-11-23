@@ -1243,13 +1243,15 @@ return {
 		Figure = { Top = 24, Fov = 30, Turn = 0.6, Back = 0.2, Slide = 48, Draw = 0.8 },
 		Swipe = { Distance = 80, Time = 0.35, Tap = 10, TapTime = 0.3 },
 		-- Floor: the stage's stone under the fighter, its element only a ring of light round its edge, Rim of the floor across
-		-- (Modulo's B, research's pick of 2026-11-23, 02:05; TR50's sweep). Stone is the part's colour that shows the sheet's
-		-- #A9A59B on the stage (plastic shows about 0.74 of its colour there). The ring is opaque Neon, which a viewport shows
-		-- at about Gain x colour^Power in linear light (measured with grey probes on this stage, 2026-11-23): the ring takes
-		-- the colour that shows its element's, or Fire's orange shows yellow.
+		-- (Modulo's B, research's pick of 2026-11-23, 02:05; TR50's sweep). The stone shows the sheet's Shows under every
+		-- rarity's light: the stage shows a plastic floor at its colour x (Ambient + LightColor x Lit), Lit measured on this
+		-- stage (2026-11-23), so the floor wears Shows over that and the rarity's light keeps the fighter alone (research's
+		-- must-fix 1: Epic's light turned the stone lavender). The ring is opaque Neon, which a viewport shows at about Gain x
+		-- colour^Power in linear light (measured with grey probes): the ring takes the colour that shows its element's, or
+		-- Fire's orange shows yellow.
 		Stage = {
 			Light = 0.45,
-			Floor = { Stone = Color3.fromHex("#E4DCC4"), Rim = 0.03, Neon = { Gain = 11.3, Power = 1.84 } },
+			Floor = { Shows = Color3.fromHex("#A9A59B"), Lit = 0.46, Rim = 0.03, Neon = { Gain = 11.3, Power = 1.84 } },
 		},
 		Power = { Width = 236, Height = 56, Number = 36, Least = 20, Emblem = 170, Roll = 0.6, Gain = 26, Hold = 1.2 },
 		Finish = {

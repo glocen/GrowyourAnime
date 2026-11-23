@@ -224,6 +224,28 @@ local function button(name: string): TextButton?
 	return if found and found:IsA("TextButton") then found else nil
 end
 
+-- The stage's stone shows the same under every rarity's light (TR50, research's must-fix 1): the floor's colour, lit as
+-- the stage lights a plastic floor (its Ambient + LightColor x Lit, as measured), is the stone's Shows. 3 levels is the
+-- room for a part's 8-bit colour.
+local function stoneShows(t: any, figure: any, who: string)
+	local floor = if figure then figure.Floor :: BasePart? else nil
+	local view = if floor then floor:FindFirstAncestorOfClass("ViewportFrame") else nil
+	if floor == nil or view == nil then
+		t.Check(`{who}: the stone shows the sheet's under its rarity's light`, false, "no floor")
+		return
+	end
+	local look = HudConfig.Voidkin.Stage.Floor
+	local function lit(colour: number, ambient: number, light: number): number
+		return colour * (ambient + light * look.Lit)
+	end
+	local a, l, c = view.Ambient, view.LightColor, floor.Color
+	local shows = Color3.new(lit(c.R, a.R, l.R), lit(c.G, a.G, l.G), lit(c.B, a.B, l.B))
+	local off = math.max(math.abs(shows.R - look.Shows.R), math.abs(shows.G - look.Shows.G), math.abs(shows.B - look.Shows.B))
+	local row = Voidkin.ById[figure.Def]
+	t.Check(`{who}: the stone shows the sheet's under its rarity's light`, off < 3 / 255,
+		`{if row then row.Rarity else "?"}: wears {c:ToHex()}, shows {shows:ToHex()} for {look.Shows:ToHex()}`)
+end
+
 -- The page rail (AR49, research's call of 2026-11-20, 00:12): the Equipment screen's, its four pages down the room's left,
 -- each word whole and in the room, the page shown lit, its column clear of the stage, every button a finger's size.
 local function railWhole(t: any, where: string, shown: string)
@@ -479,8 +501,8 @@ function VoidkinCases.Cases(given: Given): { any }
 			local rim = if floor and floor.Parent then floor.Parent:FindFirstChild("FloorRim") :: BasePart? else nil
 			local element = if row and row.Element ~= "" then UIKit.Elements[row.Element] else nil
 			local stone = HudConfig.Voidkin.Stage.Floor
-			t.Check("it stands on the stage's stone", floor ~= nil and floor.Color:ToHex() == stone.Stone:ToHex() and floor.Material == Enum.Material.SmoothPlastic,
-				if floor then `{floor.Color:ToHex()}, {floor.Material.Name}` else "no floor")
+			t.Check("it stands on the stage's stone, plastic", floor ~= nil and floor.Material == Enum.Material.SmoothPlastic, if floor then floor.Material.Name else "no floor")
+			stoneShows(t, figure, "the lead")
 			-- The ring shows its element: its colour through the viewport's Neon, as measured, is the element's. A part keeps
 			-- its colour in 8 bits, and the curve's slope turns one step into up to about 4 levels shown: 6 is the room.
 			local function throughNeon(value: number): number
@@ -752,6 +774,34 @@ function VoidkinCases.Cases(given: Given): { any }
 				end), tostring(VoidkinScreen.Chosen()))
 				local chosen = button(id)
 				t.Check(`its cell marked`, chosen ~= nil and Button.State(chosen) == "Selected")
+				stoneShows(t, VoidkinScreen.Figure(), `Voidkin {index}`)
+			end
+			-- Under a rarity's own light: the first not Common, when the save has one (Epic's turned the stone lavender).
+			do
+				local mine = (ProfileController.Get() :: Profile.View).Voidkin
+				local other: string? = nil
+				for _, id in ids do
+					local each = Voidkin.ById[mine[id].Def]
+					if each and each.Rarity ~= "Common" then
+						other = id
+						break
+					end
+				end
+				t.Check("the save holds a Voidkin not Common, to light the stone by", other ~= nil)
+				if other then
+					local def = mine[other].Def
+					VoidkinScreen.Choose(other)
+					t.Check("a Voidkin not Common on the stage", waitFor(t, 3, function(): boolean
+						local now = VoidkinScreen.Figure()
+						return VoidkinScreen.Chosen() == other and now ~= nil and now.Def == def
+					end), tostring(VoidkinScreen.Chosen()))
+					stoneShows(t, VoidkinScreen.Figure(), "a Voidkin not Common")
+					VoidkinScreen.Choose(ids[3])
+					t.Check("and the third again", waitFor(t, 3, function(): boolean
+						local now = VoidkinScreen.Figure()
+						return VoidkinScreen.Chosen() == ids[3] and now ~= nil and now.Def == mine[ids[3]].Def
+					end), tostring(VoidkinScreen.Chosen()))
+				end
 			end
 			-- A flick: the left brings the next (round to the first), the right the one before.
 			local swipe = HudConfig.Voidkin.Swipe

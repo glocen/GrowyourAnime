@@ -217,6 +217,16 @@ local function showing(colour: Color3, neon: { Gain: number, Power: number }): C
 	return Color3.new(channel(colour.R), channel(colour.G), channel(colour.B))
 end
 
+-- The colour the floor wears to show the stone's under this stage's light, whatever the rarity's (Config.Hud.Voidkin.
+-- Stage.Floor: Shows, Lit).
+local function stoneFor(view: ViewportFrame, floor: { Shows: Color3, Lit: number }): Color3
+	local function channel(shows: number, ambient: number, light: number): number
+		return math.clamp(shows / math.max(ambient + light * floor.Lit, 1e-3), 0, 1)
+	end
+	local a, l, want = view.Ambient, view.LightColor, floor.Shows
+	return Color3.new(channel(want.R, a.R, l.R), channel(want.G, a.G, l.G), channel(want.B, a.B, l.B))
+end
+
 function Figure.new(def: string, stage: Frame, height: number, feet: number, onSwipe: (step: number) -> ()): Figure?
 	local source, idle, reveal = pick(def)
 	if source == nil then
@@ -256,7 +266,7 @@ function Figure.new(def: string, stage: Frame, height: number, feet: number, onS
 	floor.Shape = Enum.PartType.Cylinder
 	floor.Anchored = true
 	floor.Material = Enum.Material.SmoothPlastic
-	floor.Color = look.Floor.Stone
+	floor.Color = stoneFor(view, look.Floor)
 	floor.Size = Vector3.new(0.1, stone, stone)
 	floor.CFrame = CFrame.new(0, -0.05, 0) * CFrame.Angles(0, 0, math.rad(90))
 	floor.Parent = world

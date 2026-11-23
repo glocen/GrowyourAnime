@@ -383,6 +383,15 @@ Each fix gives what it is, the lesson behind it, its cost in active hours (seeds
   - **Changes:** the first session's last beat, and possibly where the first fight is.
   - **Replaces:** "sees the keeper's gate, the next ground behind it".
   - **Touches:** `docs/north-star.md`, "The first session"; `docs/design.md`, "The world, in grey"; TR32's funnel steps.
+- **The director's yes, 2026-11-23, 15:06** (`docs/decisions.md`): the "Want" beat and the gate are written.
+- **The check, the first fight before the first teleport** (research, 2026-11-23, 15:08):
+  - **Today's path for a new player:** join the base; break a starter shard; walk into the door; the stages' menu opens (every player's door opens it: the director's words, TR45); pick Stage 1; the trip's card; stand on Lantern Row; the first hit. The first drop then needs a second trip home before "Work" can happen in a bay.
+  - **What the code allows:** both places run the whole of `src/`, and only `StageService` is gated to the Festival (`PlaceRole.Is("Festival")`). Shades can be spawned in the base's place without a new system. How many hours that takes is Faber's estimate, not research's.
+  - **What isn't known:**
+    - The trip's length on a phone: Studio can't teleport, and no real trip has been timed (`docs/engineering-plan.md`, "Places").
+    - Whether Roblox's analytics count a same-experience teleport against the session: still UNVERIFIED. No official page was found. Developer reports say the root place's average playtime fell after teleports were added, and point to the experience-level Engagement page instead (excerpt: devforum.roblox.com/t/average-playtime-goes-down-after-adding-places-for-performance-boost/2272687, /t/cross-place-session-time-persistence-behavior/3488946).
+  - **The cheap test first:** Faber times a new save on the published places, from join to the first hit, and the trip alone: in the PC's Roblox player, then on a phone when the director takes one. The gate: the first hit within 90 s of joining, and the trip under 10 s. These are research's bars, from the first-two-minutes lessons in section 2, not measurements.
+  - **If it fails, the fix (tier 3, the director's):** the first breach. On a fresh player's first join only, the starter shard's break opens a crack in the yard, and three Brawlers step out. The lead fights them at home. The last one drops the named shard, so "Fight", "Find" and "Work" all happen before any teleport, and the first trip to Lantern Row is the player's own choice. It also answers H7: the Void comes to your base. It never repeats, so the Festival stays the place where fights live.
 
 **F8. Updates as a cadence, not one drop** (answers H9; tier 3, the director's word of 2026-11-17).
 - **What:** the delayed content ships as named updates every two to four weeks (Sable, the Rift, Drum Court, and so on), each with its own featured stock on the shop.

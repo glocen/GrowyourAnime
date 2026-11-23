@@ -31,6 +31,8 @@ On the director's word of 2026-11-13 (`docs/decisions.md`): after the whole game
 
 ## From the pieces
 
+- **A pulse along the base's live lines** (AR54's read in the game, research, 2026-11-23, 20:26; `plan.json`'s `current` runs, in the floor's pictures): one slow pulse out from the heart, only along a run whose machine is drawing, so the floor says which machines are working. Judge it in motion from the gate, at the shared finish.
+
 - **The away rule said on the Power screen** (research, 2026-11-23, 20:07, from TR31's dropped line "Your bays worked 2 h of your 9 h away"): the workers generate for `Config.Base.Battery.AwayHours` away, then the machines run on the battery. Said beside the battery's hours, if players misread a return.
 
 - **The 2D cartoon fire is redone, the director's word (13:59, 2026-11-17):** "i despise those 2d cartoonish fire vfx cant we fix it later on i shared a long batch of real vfx". It covers Pip's Lantern Burst (its coil's burn and the flames left standing at the target, AR4 and AR8) and every fire drawn the same way, flat and outlined. The redo starts from the shared packs' fire (`docs/research/vfx-reference.md`, "From the vault"), adapted to our look and logged, as a new blockout judged in motion. It waits with the Voidkin work for the end (`docs/decisions.md`).

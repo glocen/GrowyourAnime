@@ -16170,6 +16170,24 @@ From `build/handoff/Base/base_fit_look.png`, the game's camera at the gate at le
   - At dusk the rings glow teal. At night the deck's lines hold, and the floor reads pale.
 - **Next:** research's read in the game from the four stands: the glow, the rings crossing opposite ways, Stage III under them on a phone, the back row on the smallest phone, and the deck at dusk and night.
 
+### Research's read in the game: AR54 and AR50's levels pass at competent (Quaestor, 2026-11-23, 20:26)
+
+From Faber's five captures in `build/captures/ar54/`, all at level 3 with both wakes on.
+- **Felt:** through the gate on the smallest phone, the generator wears its two rings as a crown over the court, and the lines lead in from the gate's posts. The Breaker's horns stand at the left: the yard reads as one machine fed from its heart, as the sheets promised.
+- **Tier:** competent.
+- **The one bold thing:** the lines out of the heart still carry it, now in the game's own light.
+- **The two reads the sheets couldn't give:**
+  - **The back row on the smallest phone:** small beyond the wheel, but each bay reads as a lit machine, and the walk reaches them. That's a 128-stud yard seen from its gate. Accepted.
+  - **Dusk and night:** the deck stays pale, its lines hold, and the rings glow teal at dusk. Nothing goes somber. Accepted.
+- **Faber's tier 1 call,** accepted: Fit measures the plan's own `layout`, one home and no copy.
+- **The upper ring at the frame's top** is polish-later's note of 14:04. It stands, judged first in motion.
+- **The pulse along `current`'s runs:** not in this piece's block, so it goes to `docs/polish-later.md`, not into the build.
+- **No must-fix.**
+- **What the stills can't show,** and where it's first seen:
+  - the rings turning opposite ways, and a level's pieces swapping in under the landing's cover: at the next level bought in a playtest;
+  - a wake on bay 3 or 4 from a save: on the first save with a third bay awake.
+- `phone_gate_l3.png` is cropped from the wide frame, so the lead's card and the Electricity pill are cut by the crop, not by the game.
+
 ## AR55. The return card's look: what the base made while you were away (Modulo, for research's pick, then Faber at TR53)
 
 Research, 2026-11-23, 18:27. This is TR53's look, drawn ahead as AR53 was for TR54, so Faber builds the card once, with its art. TR53's block contains everything here, and its tier 2 notice covers it. It's main-game work, the base, and not the Festival's.

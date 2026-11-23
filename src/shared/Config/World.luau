@@ -193,12 +193,13 @@ return {
 	Forge = { Lift = 0.16, Strike = 0.06, Hold = 0.07, Back = 0.34 },
 	-- The Stone Condenser (TR37; AR28's Comb, Stage I): its core turns Core turns a second at full power while it works,
 	-- slower with less power and still when it rests. Its tray's cups light by the tray's fill of its cap, so a full tray
-	-- lights the whole comb (37 cups at Stage I over a cap of 12 at level 1: the builder's, TR37). Panel: the convert's small
-	-- grey panel on the kit, a block-in: Size in studs, At (across, toward the gate, up) in the Condenser's own frame, Tilt
-	-- back in degrees, its words drawn at PixelsPerStud.
+	-- lights the whole comb (37 cups at Stage I over a cap of 12 at level 1: the builder's, TR37). Cradle: the top of
+	-- AR28's cradle on the Comb's front corner (tools/blender/base_forge.py, `cradle(m, -3.0, 3.2)`), across, toward the
+	-- gate and up in the Condenser's own frame: the convert's prompt stands there, and its card beside it (AR51's B,
+	-- Config.Hud.Convert), in place of TR37's grey block-in.
 	Condenser = {
 		Core = 0.2,
-		Panel = { Size = Vector3.new(2.6, 1.7, 0.2), At = { 3.6, 3.9, 2.2 }, Tilt = 20, PixelsPerStud = 60, Grey = Color3.fromHex("#8A8D96") },
+		Cradle = { -3.0, 3.2, 1.2 },
 	},
 	-- TR22's showcase (TR51 step 3): the owner's Voidkin (Collection.Showcase: the one picked, else the strongest) stands at
 	-- the plinth's middle, Up over the piece's foot, its root Hip over that, facing the Strip and turning Turn turns a

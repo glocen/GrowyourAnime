@@ -109,15 +109,19 @@ local function barLook(t: any)
 	local rim, gap = look.Bar.Rim * k, look.Bar.Gap * k
 	local span = box.AbsoluteSize.X - 2 * rim
 	local cuts = PowerScreen.Cuts()
-	local edges = { 0, cuts[1], cuts[2], 1 }
-	for index = 1, 3 do
+	local edges = { 0 }
+	for index, cut in cuts do
+		edges[index + 1] = cut
+	end
+	table.insert(edges, 1)
+	for index = 1, #cuts + 1 do
 		local segment = parts[`Segment{index}`] :: Frame?
 		local light = image(segment, "Light")
 		local arrive = image(segment, "Arrive")
 		local share = edges[index + 1] - edges[index]
 		if segment and light and arrive and share * span > 2 * gap + 1 then
 			local left = box.AbsolutePosition.X + rim + span * edges[index] + (if index > 1 then gap else 0)
-			local right = box.AbsolutePosition.X + rim + span * edges[index + 1] - (if index < 3 then gap else 0)
+			local right = box.AbsolutePosition.X + rim + span * edges[index + 1] - (if index <= #cuts then gap else 0)
 			t.Check(`light {index}: its window from cut to cut, the gap kept at a cut between two`, segment.ClipsDescendants
 				and math.abs(segment.AbsolutePosition.X - left) < 1 and math.abs(segment.AbsolutePosition.X + segment.AbsoluteSize.X - right) < 1,
 				string.format("%.1f to %.1f, want %.1f to %.1f", segment.AbsolutePosition.X, segment.AbsolutePosition.X + segment.AbsoluteSize.X, left, right))
@@ -140,7 +144,7 @@ local function barLook(t: any)
 				string.format("%.3f at its right, %.3f before its ramp", at(right), at(right - look.Bar.Arrive.Points * k - 2)))
 		end
 	end
-	for index = 1, 2 do
+	for index = 1, #cuts do
 		local handle = parts[`Handle{index}`] :: GuiObject?
 		local grip = image(handle, "Grip")
 		local want = box.AbsolutePosition.X + rim + span * cuts[index]
@@ -182,7 +186,7 @@ local function batteryPlate(t: any, now: Read.Base)
 	local charge = part("BatteryCharge")
 	local share = if charge then charge:GetAttribute("Share") else nil
 	t.Check("its charge as a bar, lit to its share", type(share) == "number" and math.abs(share - now.Data.Base.Charge / capacity) < 0.02, `{share} against {now.Data.Base.Charge / capacity}`)
-	t.Check("no row of its own in the list", (part("Machines") :: Instance):FindFirstChild("Battery") == nil and part("Share3") == nil)
+	t.Check("no row of its own in the list", (part("Machines") :: Instance):FindFirstChild("Battery") == nil and part(`Share{#PowerScreen.Machines + 1}`) == nil)
 end
 
 function PowerCases.Cases(given: Given): { any }
@@ -246,7 +250,18 @@ function PowerCases.Cases(given: Given): { any }
 					t.Check("the Power screen opens", Screen.Current() == PowerScreen.Name, tostring(Screen.Current()))
 					now = Read.Base(ProfileController.Get() :: Profile.View, workspace:GetServerTimeNow())
 					t.Equal("generation against demand at its head", said("Plant"), `Generation {Read.Kw(now.Rates.Generation)} · Demand {Read.Kw(now.Rates.Demand)}`)
-					t.Check("one bar, three segments, two handles", part("Track") ~= nil and part("Segment3") ~= nil and part("Handle1") ~= nil and part("Handle2") ~= nil)
+					local count = #PowerScreen.Machines
+					local laid = part("Track") ~= nil and part(`Segment{count + 1}`) ~= nil and part(`Segment{count + 2}`) == nil and part(`Handle{count + 1}`) == nil
+					for index = 1, count do
+						laid = laid and part(`Handle{index}`) ~= nil
+					end
+					t.Check(`one bar: a light for each of the {count} machines and the battery's, a handle each`, laid)
+					for index, machine in PowerScreen.Machines do
+						local row = (part("Machines") :: Instance):FindFirstChild(machine.Id)
+						local chip = if row then row:FindFirstChild("Chip") else nil
+						local stone = if chip then chip:FindFirstChild("Stone", true) else nil
+						t.Check(`{machine.Name}: its row, its own chip`, stone ~= nil and stone:IsA("ImageLabel") and stone.Image == HudConfig.Power.Images[machine.Chip].Id)
+					end
 					t.Check("Auto, as it starts", Button.State(part("Auto") :: TextButton) == "Selected", Button.State(part("Auto") :: TextButton))
 					for index, machine in PowerScreen.Machines do
 						local rating = now.Rates.Flow.Demand[machine.Id] or 0
@@ -263,6 +278,14 @@ function PowerCases.Cases(given: Given): { any }
 						local p = plant()
 						return p ~= nil and not p.Auto and (p.Shares.Breaker or 0) == 0
 					end), start.Error)
+					-- The handles after it, each to the start too: no share left but the battery's.
+					for handle = 2, count do
+						PowerScreen.Drag(handle, 0)
+					end
+					t.Check("every handle at the start: nothing shared", waitFor(t, ANSWER, function(): boolean
+						local p = plant()
+						return p ~= nil and (p.Shares.Breaker or 0) == 0 and (p.Shares.Training or 0) == 0 and (p.Shares.Condenser or 0) == 0
+					end))
 					local second = PowerScreen.Drag(2, 0.6)
 					t.Check("the second handle let go at 60%: asked and taken", second.Ok == true and second.Auto == false, second.Error)
 					t.Check("the bar keeps it while the save's copy comes", waitFor(t, ANSWER, function(): boolean
@@ -277,10 +300,20 @@ function PowerCases.Cases(given: Given): { any }
 						local p = plant()
 						return p ~= nil and not p.Auto and math.abs((p.Shares.Breaker or 0) - 0.3) < 1e-6 and math.abs((p.Shares.Training or 0) - 0.6) < 1e-6
 					end))
-					t.Check("the screen shows it: 30%, 60%, and the battery's 10% as the bar's rest", waitFor(t, 1, function(): boolean
-						local rest = part("Segment3") :: Frame?
-						return said("Share1") == "30%" and said("Share2") == "60%" and rest ~= nil and math.abs((tonumber(rest:GetAttribute("Share")) or 0) - 0.1) < 1e-6
-					end), `{said("Share1")}, {said("Share2")}`)
+					t.Check("the screen shows it: 30%, 60%, the Condenser's 0%, and the battery's 10% as the bar's rest", waitFor(t, 1, function(): boolean
+						local rest = part(`Segment{count + 1}`) :: Frame?
+						return said("Share1") == "30%" and said("Share2") == "60%" and said("Share3") == "0%" and rest ~= nil and math.abs((tonumber(rest:GetAttribute("Share")) or 0) - 0.1) < 1e-6
+					end), `{said("Share1")}, {said("Share2")}, {said("Share3")}`)
+					-- The Stone Condenser's handle (AR51): its own share out of the battery's rest.
+					local third = PowerScreen.Drag(3, 0.95)
+					t.Check("the third handle at 95%: the Condenser's 5% asked and taken", third.Ok == true and waitFor(t, ANSWER, function(): boolean
+						local p = plant()
+						return p ~= nil and math.abs((p.Shares.Condenser or 0) - 0.05) < 1e-6 and math.abs((p.Shares.Training or 0) - 0.6) < 1e-6
+					end))
+					t.Check("the screen shows it: 5%, and the battery's 5%", waitFor(t, 1, function(): boolean
+						local rest = part(`Segment{count + 1}`) :: Frame?
+						return said("Share3") == "5%" and rest ~= nil and math.abs((tonumber(rest:GetAttribute("Share")) or 0) - 0.05) < 1e-6
+					end), said("Share3"))
 					local flow = Read.Base(ProfileController.Get() :: Profile.View, workspace:GetServerTimeNow()).Rates.Flow
 					for index, machine in PowerScreen.Machines do
 						local segment = part(`Segment{index}`)
@@ -309,9 +342,9 @@ function PowerCases.Cases(given: Given): { any }
 					end))
 					-- The whole given: + can't give more.
 					local full = PowerScreen.Drag(2, 1)
-					t.Check("the second handle at the end: the whole given", full.Ok == true and waitFor(t, ANSWER, function(): boolean
+					t.Check("the second handle at the end: the whole given, the Condenser's squeezed out at the bar's end", full.Ok == true and waitFor(t, ANSWER, function(): boolean
 						local p = plant()
-						return p ~= nil and math.abs((p.Shares.Breaker or 0) + (p.Shares.Training or 0) - 1) < 1e-6
+						return p ~= nil and math.abs((p.Shares.Breaker or 0) + (p.Shares.Training or 0) - 1) < 1e-6 and (p.Shares.Condenser or 0) == 0
 					end))
 					t.Check("and + gives no more", waitFor(t, 1, function(): boolean
 						local plus = part("Plus1")
@@ -325,6 +358,20 @@ function PowerCases.Cases(given: Given): { any }
 						t.Wait(0.1) -- laid out again
 						lintClean(t, `the Power screen with a split, in {at.Name}`)
 						plateClear(t, `with a split, in {at.Name}`)
+						-- No row cut at the list's foot (AR51, research's must-fix 2): each whole above it, or wholly past it.
+						local list = part("Machines") :: GuiObject?
+						local cut: { string } = {}
+						for _, machine in PowerScreen.Machines do
+							local row = if list then list:FindFirstChild(machine.Id) :: GuiObject? else nil
+							if list and row then
+								local foot = list.AbsolutePosition.Y + list.AbsoluteSize.Y
+								local head, bottom = row.AbsolutePosition.Y, row.AbsolutePosition.Y + row.AbsoluteSize.Y
+								if bottom > foot + 0.5 and head < foot - 0.5 then
+									table.insert(cut, string.format("%s, %.1f of %.1f under the foot", machine.Name, bottom - foot, row.AbsoluteSize.Y))
+								end
+							end
+						end
+						t.Check(`in {at.Name}: no machine's row cut at the list's foot`, list ~= nil and #cut == 0, table.concat(cut, "; "))
 					end
 					Layers.Force(nil)
 					Layers.Box(nil)

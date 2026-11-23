@@ -27,6 +27,7 @@ local Power = require(Shared.Rules.Power)
 
 local UI = script.Parent
 local Theme = require(UI.Theme)
+local Layers = require(UI.Layers)
 -- AR40's C: the window on the system panel's slab (Config.UIKit's System), its words in its ink (Theme.Ink), read again
 -- at each build so a live tune reaches the next.
 local PALETTE = "System"
@@ -63,23 +64,25 @@ local CHARGE = 8 -- the plate's charge bar, authored high
 local MARK = 28 -- the battery's mark (AR12's V2 Battery; TR41 (e)): its side in points
 local MARK_INK = 25 -- its drawing across in points (0.88 of its side), where the frames' stand-in stood: the words start past it
 
--- The machines in the bar's order (Rules.Power.Machines, its first two), by name, each with its light's colour and its
--- chip; the battery takes what's left, in its own light. The Stone Condenser (TR37) shares under Auto and keeps the share
--- it has under a split: its own light, handle and chip wait for the screen's next piece.
+-- The machines in the bar's order (Rules.Power.Machines), by name, each with its light's colour and its chip; the
+-- battery takes what's left, in its own light. The Stone Condenser's Rose and six-sided chip are AR51's (research's pick of
+-- 2026-11-23, 14:29).
 local MACHINES: { { Id: string, Name: string, Colour: Color3, Chip: string } } = {
 	{ Id = "Breaker", Name = "Void Breaker", Colour = POWER.Colours.Breaker, Chip = "ChipBreaker" },
 	{ Id = "Training", Name = "Training machine", Colour = POWER.Colours.Training, Chip = "ChipTraining" },
+	{ Id = "Condenser", Name = "Stone Condenser", Colour = POWER.Colours.Condenser, Chip = "ChipCondenser" },
 }
+local COUNT = #MACHINES -- a handle each, at the cut after its share; the battery's light is the one after them
 local REST = "Battery" -- the light of the bar's rest, and of an idle machine's share
 
 local lastView: Profile.View? = nil
 local lastOn: On? = nil
 local parts: { [string]: Instance } = {}
 local tickers: { (now: Read.Base) -> () } = {}
-local cuts: { number } = { 0, 0 } -- the bar's cuts, 0 to 1: after the Breaker's share, after the Training machine's
--- A held handle: Keep, the Training machine's share as the hold began; Pick, the two handles on one spot, so the first
--- move says which is held.
-local held: { Handle: number, Input: InputObject?, StartX: number, From: number, Keep: number, Pick: boolean }? = nil
+local cuts: { number } = table.create(COUNT, 0) -- the bar's cuts, 0 to 1: after each machine's share, in their order
+-- A held handle: Start, the cuts as the hold began; Pick, another handle on its spot, so the first move says which is
+-- held.
+local held: { Handle: number, Input: InputObject?, StartX: number, From: number, Start: { number }, Pick: boolean }? = nil
 local waiting = false -- a rebuild asked while a handle was held
 local sent = false -- a let-go's split asked, the save's copy not back yet: the bar keeps it rather than jump back
 local wired = false
@@ -119,8 +122,13 @@ local function sharesNow(now: Read.Base): { number }
 end
 
 local function cutsOf(shares: { number }): { number }
-	local first = math.clamp(shares[1] or 0, 0, 1)
-	return { first, math.clamp(first + (shares[2] or 0), first, 1) }
+	local out: { number } = {}
+	local at = 0
+	for index = 1, COUNT do
+		at = math.clamp(at + (shares[index] or 0), at, 1)
+		out[index] = at
+	end
+	return out
 end
 
 -- The split a +/- press asks: one share moved by `by`, never under 0, never past what's left of the whole.
@@ -175,11 +183,15 @@ end
 -- side of a cut between two lights; the light inside it is the bar's whole image at the bar's own place, so its ends
 -- stay true. Every place across the bar is a share of it.
 local function lay()
-	local edges = { 0, cuts[1], cuts[2], 1 }
+	local edges = { 0 }
+	for index = 1, COUNT do
+		edges[index + 1] = cuts[index]
+	end
+	table.insert(edges, 1)
 	local wide = barWidth()
-	for index = 1, 3 do
+	for index = 1, COUNT + 1 do
 		local left = across(edges[index], if index > 1 then LOOK.Gap else 0, wide)
-		local right = across(edges[index + 1], if index < 3 then -LOOK.Gap else 0, wide)
+		local right = across(edges[index + 1], if index <= COUNT then -LOOK.Gap else 0, wide)
 		local share = math.max(0, edges[index + 1] - edges[index])
 		local width = right - left
 		local shown = width > 1e-6 and share > 0
@@ -217,13 +229,13 @@ local function lay()
 			tick.Position = UDim2.new(across(at, -LOOK.Ticks.Size.X / 2, wide), 0, 1, LOOK.Ticks.Under)
 		end
 	end
-	for index = 1, 2 do
+	for index = 1, COUNT do
 		local handle = parts[`Handle{index}`] :: GuiObject?
 		if handle then
 			handle.Position = UDim2.fromScale(across(cuts[index], 0, wide), 0.5)
 		end
 	end
-	for index = 1, 3 do
+	for index = 1, COUNT do
 		local share = parts[`Share{index}`] :: TextLabel?
 		if share then
 			share.Text = `{math.floor((edges[index + 1] - edges[index]) * 100 + 0.5)}%`
@@ -231,22 +243,33 @@ local function lay()
 	end
 end
 
--- A handle moved to `to` of the bar. The Void Breaker's keeps the Training machine's share behind it, squeezing it only
--- at the bar's end, so what it gives up goes to the battery (research, TR18); the Training machine's stays past it.
+-- A handle moved to `to` of the bar, never back past the handle before it. It keeps the shares behind it as the hold
+-- began, squeezing them only at the bar's end, so what its machine gives up goes to the battery (research, TR18).
 local function move(handle: number, to: number)
-	if handle == 1 then
-		local keep = if held then held.Keep else cuts[2] - cuts[1]
-		cuts[1] = math.clamp(to, 0, 1)
-		cuts[2] = math.min(cuts[1] + keep, 1)
-	else
-		cuts[2] = math.clamp(to, cuts[1], 1)
+	local start = if held then held.Start else cuts
+	cuts[handle] = math.clamp(to, cuts[handle - 1] or 0, 1)
+	for index = handle + 1, COUNT do
+		cuts[index] = math.min(cuts[handle] + (start[index] - start[handle]), 1)
 	end
 	lay()
 end
 
+-- The handles on `handle`'s spot, from the first to the last.
+local function together(handle: number): (number, number)
+	local first, last = handle, handle
+	while first > 1 and math.abs(cuts[first - 1] - cuts[handle]) < 1e-6 do
+		first -= 1
+	end
+	while last < COUNT and math.abs(cuts[last + 1] - cuts[handle]) < 1e-6 do
+		last += 1
+	end
+	return first, last
+end
+
 -- A hold on `handle` from `x`, a finger's or the mouse's (`input` a touch's, nil for the mouse).
 local function grab(handle: number, input: InputObject?, x: number)
-	held = { Handle = handle, Input = input, StartX = x, From = cuts[handle], Keep = cuts[2] - cuts[1], Pick = math.abs(cuts[2] - cuts[1]) < 1e-6 }
+	local first, last = together(handle)
+	held = { Handle = handle, Input = input, StartX = x, From = cuts[handle], Start = table.clone(cuts), Pick = first ~= last }
 end
 
 local function ask(args: { [string]: any }): { [string]: any }
@@ -259,15 +282,23 @@ end
 
 -- The split the bar's cuts say, asked of the server.
 local function askCuts(): { [string]: any }
-	local first = snap(cuts[1])
-	local both = math.max(first, snap(cuts[2]))
-	local view = lastView
-	local kept = if view then view.Base.Power.Shares.Condenser else nil -- the bar doesn't hold it: never cleared by it
-	local shares: { [string]: number } = { Breaker = first, Training = both - first }
-	if type(kept) == "number" and kept > 0 then
-		shares.Condenser = math.min(kept, math.max(0, 1 - both))
+	local shares: { [string]: number } = {}
+	local before = 0
+	for index, machine in MACHINES do
+		local at = math.max(before, snap(cuts[index]))
+		shares[machine.Id] = at - before
+		before = at
 	end
 	return ask({ Auto = false, Shares = shares })
+end
+
+-- Each machine's share snapped, by its id: a split's ask.
+local function snapped(shares: { number }): { [string]: number }
+	local out: { [string]: number } = {}
+	for index, machine in MACHINES do
+		out[machine.Id] = snap(shares[index] or 0)
+	end
+	return out
 end
 
 local build: (view: Profile.View) -> ()
@@ -301,13 +332,14 @@ local function wire()
 		end
 		local moving = input.UserInputType == Enum.UserInputType.MouseMovement or (hold.Input ~= nil and input == hold.Input)
 		if moving then
-			-- By how far the finger went, never where it is: the same in every layer's inset. Two handles on one spot: a
-			-- move left holds the Void Breaker's, a move right the Training machine's.
+			-- By how far the finger went, never where it is: the same in every layer's inset. Handles on one spot: a move
+			-- left holds the first of them, a move right the last.
 			local span = track.AbsoluteSize.X - 2 * RIM * track.AbsoluteSize.Y / TRACK
 			local by = (input.Position.X - hold.StartX) / math.max(span, 1)
 			if hold.Pick and math.abs(by) > 1e-6 then
 				hold.Pick = false
-				hold.Handle = if by < 0 then 1 else 2
+				local first, last = together(hold.Handle)
+				hold.Handle = if by < 0 then first else last
 			end
 			move(hold.Handle, hold.From + by)
 		end
@@ -386,8 +418,7 @@ local function head(body: Frame, now: Read.Base)
 		OnPress = function()
 			if auto then
 				-- Off: the split starts where Auto had it.
-				local shares = sharesNow(now)
-				return ask({ Auto = false, Shares = { Breaker = snap(shares[1]), Training = snap(shares[2]) } }).Ok == true
+				return ask({ Auto = false, Shares = snapped(sharesNow(now)) }).Ok == true
 			end
 			return ask({ Auto = true }).Ok == true
 		end,
@@ -427,7 +458,7 @@ local function bar(body: Frame, top: number)
 	Skin.Lay(well, "ButtonFill", { Tint = colours.Well, Alpha = LOOK.Well.Fill, Z = 1 })
 	Skin.Lay(well, "ButtonEdge", { Tint = colours.Edge, Alpha = LOOK.Well.Line, Z = 2 })
 	Skin.LayOwn(box, images.Channel, "Channel", { Tint = colours.Channel, Z = 3 })
-	for index = 1, 3 do
+	for index = 1, COUNT + 1 do
 		local glow = Instance.new("Frame")
 		glow.Name = `Glow{index}`
 		glow.BackgroundTransparency = 1
@@ -443,7 +474,7 @@ local function bar(body: Frame, top: number)
 	track.ZIndex = 5
 	track.Parent = box
 	parts.Track = track
-	for index = 1, 3 do
+	for index = 1, COUNT + 1 do
 		local segment = Instance.new("Frame")
 		segment.Name = `Segment{index}`
 		segment.BackgroundTransparency = 1
@@ -467,7 +498,7 @@ local function bar(body: Frame, top: number)
 		tick.Parent = box
 		parts[`Tick{index}`] = tick
 	end
-	for index = 1, 2 do
+	for index = 1, COUNT do
 		local handle = Instance.new("TextButton")
 		handle.Name = `Handle{index}`
 		handle.Text = ""
@@ -503,7 +534,7 @@ local function bar(body: Frame, top: number)
 		Skin.Tint(segment:FindFirstChild("Light") :: ImageLabel, POWER.Lights[name])
 		Skin.Tint(glow:FindFirstChild("Image") :: ImageLabel, colours[name])
 	end
-	wear(3, REST)
+	wear(COUNT + 1, REST)
 	table.insert(tickers, function(at: Read.Base)
 		for index, machine in MACHINES do
 			wear(index, if (at.Rates.Flow.Demand[machine.Id] or 0) > 0 then machine.Id else REST)
@@ -624,6 +655,16 @@ build = function(view: Profile.View)
 	top += HANDLE + gap
 	local list = Row.List(body, "Machines", UDim2.new(1, 0, 1, -top), UDim2.fromOffset(0, top))
 	parts.Machines = list
+	-- Whole rows (AR51, research's must-fix 2): the list's foot falls between two rows, never through one, at every size
+	-- the room gives; the rows past it scroll in. Three fit where the room allows; the smallest phone shows two.
+	local between = (list:FindFirstChildOfClass("UIListLayout") :: UIListLayout).Padding.Offset
+	local function wholeRows()
+		local room = body.AbsoluteSize.Y / math.max(Layers.Scale(), 1e-3) - top
+		local rows = math.clamp(math.floor((room + between) / (STEP + between) + 1e-3), 1, #MACHINES)
+		list.Size = UDim2.new(1, 0, 0, rows * STEP + (rows - 1) * between)
+	end
+	body:GetPropertyChangedSignal("AbsoluteSize"):Connect(wholeRows)
+	wholeRows()
 	for index in MACHINES do
 		machineRow(list, index, now)
 	end
@@ -685,6 +726,7 @@ end
 PowerScreen.Name = NAME
 PowerScreen.Palette = PALETTE
 PowerScreen.Machines = MACHINES
+assert(#Power.Machines == COUNT, "PowerScreen: a row for each of Rules.Power's machines")
 for index, machine in MACHINES do
 	assert(Power.Machines[index] == machine.Id, "PowerScreen: its rows are Rules.Power's machines, in its order")
 end

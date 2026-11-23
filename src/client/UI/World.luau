@@ -27,6 +27,10 @@
 --   World.Off(plate)                          never over the player's own avatar: where it would stand over the avatar's
 --                                             box on the screen, it hides (research's must-fix on AR16, 2026-11-17: the
 --                                             base's plates stacked over the avatar on arrival)
+--   World.Beside(plate, prompt, gap)          its left edge at least `gap` authored pixels right of the prompt's card, shown
+--                                             or not (its largest size held), and never past the screen's right edge by more:
+--                                             Roblox's card is drawn under every layer, so a plate over it hides its words
+--                                             (AR51: the convert's card beside its prompt on the cradle)
 --   World.Remove(plate)
 --   World.Where(plate)                        the world point it stands over now, or nil: for tests
 -- Roblox's own prompt cards are kept too: every prompt that shows is pushed under the top band (deeper where it would
@@ -48,7 +52,7 @@ local Screen = require(script.Parent.Kit.Screen)
 
 local World = {}
 
-type Plate = { Frame: Frame, Where: () -> Vector3?, Reach: number, Shift: Vector2, Below: boolean, Open: boolean, Slide: number?, Drop: number?, Swell: UIScale?, Apart: string?, Clear: (() -> (Vector2?, Vector2?))?, Off: boolean? }
+type Plate = { Frame: Frame, Where: () -> Vector3?, Reach: number, Shift: Vector2, Below: boolean, Open: boolean, Slide: number?, Drop: number?, Swell: UIScale?, Apart: string?, Clear: (() -> (Vector2?, Vector2?))?, Off: boolean?, Beside: { Prompt: ProximityPrompt, Gap: number, Card: Vector2? }? }
 -- A plate on the screen, authored pixels from the layer's corner: its middle, its foot, half its width, its height; and how
 -- far its point stands from the camera, if known.
 export type Row = { Frame: Frame, Middle: number, Foot: number, Half: number, Tall: number, Depth: number? }
@@ -141,6 +145,13 @@ function World.Off(frame: Frame)
 	local plate = plates[frame]
 	if plate then
 		plate.Off = true
+	end
+end
+
+function World.Beside(frame: Frame, prompt: ProximityPrompt, gap: number)
+	local plate = plates[frame]
+	if plate then
+		plate.Beside = { Prompt = prompt, Gap = gap }
 	end
 end
 
@@ -422,6 +433,23 @@ RunService:BindToRenderStep("NL_WorldPlates", Enum.RenderPriority.Camera.Value +
 		local on = Vector2.new(screen.X, screen.Y) - inset - corner -- on the layer, in its pixels
 		-- By scale, so the layer's UIScale sizes the plate and never moves it.
 		local shift = plate.Shift
+		local beside = plate.Beside
+		local from = if beside then promptPoint(beside.Prompt) else nil
+		if beside and from then
+			-- Right of its prompt's card, where the card is now or would stand: its largest size read while it shows, held
+			-- after, so the plate stays put as the prompt comes and goes. The largest: Roblox's card opens from its key's
+			-- width, and a prompt shown for a moment held that (72 wide, the convert's take, 2026-11-23). Kept on the
+			-- screen first, the card's side second.
+			if prompts[beside.Prompt] then
+				beside.Card = (beside.Card or PROMPT_CARD):Max(promptCard(beside.Prompt))
+			end
+			local card = beside.Card or PROMPT_CARD
+			local its = camera:WorldToViewportPoint(from)
+			local half = frame.Size.X.Offset / 2
+			local past = (its.X + beside.Prompt.UIOffset.X + card.X / 2 - inset.X - corner.X - on.X) / scale + beside.Gap + half
+			local inside = (room.X - on.X) / scale - beside.Gap - half
+			shift = Vector2.new(math.min(math.max(shift.X, past), math.max(inside, shift.X)), shift.Y)
+		end
 		local edge = band
 		if plate.Below and edge then
 			-- Anchored at its foot, so its top is its point less its height, in authored pixels from the layer's top, the

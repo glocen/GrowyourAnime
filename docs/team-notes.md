@@ -10,11 +10,11 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **Modulo's order:** **AR56's two must-fixes** (the band past the rim reads as cloud from above; a mid-value ground under the fight), then the entrance and the record marker in its language. Faber's install comes after the main game.
 - **With the director:** answer **item 10 in Faber's session** (the hooks for Scintilla and Sonus); **item 4**, publish both places and Faber's OK to run the player once; open two sessions titled **Scintilla** and **Sonus**; `src/shared/Config/Sounds.luau`'s uncommitted change; the store's design.
 
-**Faber (builder).** 2026-11-23, 20:24, on Opus 5.5.
-- **AR50's and AR54's install is in the game** (AR54, "Faber's install, with AR50's levels"). That's the sixteen floors, the plan's `layout` with each bay's turn, part 7's measure on that layout (the trial retired), Stage III's prints, the landing's ring held at 25, and AR50's seven pieces at each level's swap. The checks: 29247 logic, 364 "Base:" self-test cases with 0 failed, and an empty world report. **Waits: research's read in the game** (stills in `build/captures/ar54/`).
-- **Done today, passed:** TR50, AR48's states in the game (research's answers of 20:07 taken), TR10, AR44's shine, AR49.
-- **Next:** AR51, TR52; AR52's behaviours, TR54, TR53 (with TR31 folded in). F7's timing waits on item 4's publish.
-- **The hooks for Scintilla and Sonus** wait on the director's own word (item 10). **Open, tests:** as before (item 9's Festival cases; TintMask on a phone; TR44's phone take; the pinned reveal).
+**Faber (builder).** 2026-11-23, 21:18, on Opus 5.5.
+- **AR51 is in the game** (AR51, "Faber's build"). That's B's card in its four states beside the cradle, and the Condenser's Rose share with its chip, third row and third handle. Must-fix 2 is answered with whole rows: the foot falls between two. The card now stands clear of Roblox's prompt card (`UI.World.Beside`). The checks: 29247 logic; TR37 41, "Power:" 108 and "Base:" 371 passed, 0 failed. **Waits: research's pass** (stills in `build/captures/ar51/`).
+- **For research's call:** the guide's arrow stands mid-screen on the smallest phone, over the avatar and the prompt's key. My proposal: hide it while a prompt shows. That's the guide's piece.
+- **Next:** TR52; then AR52's behaviours, TR54 and TR53 (with TR31 folded in). F7's timing waits on item 4's publish.
+- **The hooks for Scintilla and Sonus** wait on the director's own word (item 10). **Open, tests:** as before.
 
 **Modulo (assets).** 2026-11-23, 20:38, on Fable 5.2. Voidkin work parked until before launch (the director's word, 11:10).
 - **Now:** AR56's blockout is made (AR56, "Modulo's blockout"): the Tower's room three ways in grey, A the Crown (open top), B the Well (an island in a shaft of rings), C the Gate hall (a closed hall, one gate on the sky); the sheet and three takes in `build/scratch/modulo/ar56/block/`. My lean is A. **Waits: research's pick, with fresh eyes.** Stills only, nothing in the game. AR55 is closed (research's second look, daa985a).
@@ -139,6 +139,15 @@ For Faber:
 
 ## Entries
 
+### 2026-11-23, 21:18. AR51, the Stone Condenser's two faces, built (Faber)
+
+- **What changed:** B's convert card beside the cradle, asleep, ready, short and running. The Power screen has the Condenser's Rose share, its six-sided chip, and a third row and handle. On the smallest phone the list is cut to whole rows (must-fix 2).
+- **A finding fixed:** Roblox's prompt card is drawn under our layers, and the card hid its words. The card now stands right of it (`UI.World.Beside`). The phone take is faithful now: the camera's field, the World layer and the guide's arrow are all framed as the phone's.
+- **Where:** AR51, "Faber's build"; the asset log's row 145 (two uploads, Approved).
+- **Tested:** type check 0 new; 29247 logic; TR37 41, the guide 11, "Power:" 108, "Base:" 371, 0 failed.
+- **Open:** the guide's arrow over the avatar and the prompt on the smallest phone (for research's call); B's 3D stones on the cradle, not built.
+- **For:** research's pass, with stills in `build/captures/ar51/`.
+
 ### 2026-11-23, 20:24. AR50's and AR54's install, built (Faber)
 
 - **What changed:**
@@ -231,15 +240,3 @@ For Faber:
 - **Tested:** type check 0 new; 28,834 logic cases offline; in the main place, travel 35/0, the dock 39/0, the take 6/0.
 - **Open:** the Festival place's run cases, NOT VERIFIED (item 9). Two looks for research: Hard's lock reads open at phone size, and the line shows its number twice.
 - **For:** research's pass on `build/captures/tr50/play-panel-line.png`.
-
-### 2026-11-19, 23:02. TR49, the combat review built, with AR43's take 2 of the Voidkin screen and bag (Faber)
-
-- **What changed:**
-  - Five Basic Attributes, Combat Power from EHP × DPS, F1 and F7 in the hit, Lifesteal and Kindle as the review set them, the enemy rows refitted, the ten elements, and the first levels faster.
-  - The foe card's skull now reads the fight's cost, never grey at the lead's level or above.
-  - The Voidkin screen and bag wear take 2, all five attributes on the smallest phone.
-  - Also: AR44's Gap 0.12, and AR43's five level 3 jewels (Approved).
-- **Where:** TR49, "Built in the game"; AR43, "Faber's install of take 2"; AR44, "Gap 0.12 in the game".
-- **Tested:** type check 0 new; 28,782 logic cases offline and in Studio; the self-test 3,163/0 at 59 fps.
-- **Open:** the Stage 1 playtest, NOT VERIFIED until the Festival place opens (item 9). Seven findings for research in TR49.
-- **For:** research's pass on the captures in `build/captures/ar43/`, `ar45/` and `ar44/`.

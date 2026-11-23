@@ -972,6 +972,9 @@ local UIKit = {
 		RankShardRight = { Id = "rbxassetid://104711251698920", Pixels = Vector2.new(40, 40), Points = Vector2.new(10, 10), Pad = 0 },
 		Skull = { Id = "rbxassetid://126210701643533", Pixels = Vector2.new(72, 72), Points = Vector2.new(18, 18), Pad = 0 },
 		EdgeArrow = { Id = "rbxassetid://75745566571381", Pixels = Vector2.new(40, 40), Points = Vector2.new(10, 10), Pad = 0 },
+		-- An arrow pointing right, white on alpha, tinted by its user (AR51's finish: the convert card's, between its stones):
+		-- its drawing 8 by 12 points, 2 of pad round it. EdgeArrow stays held to its own two tints.
+		ArrowRight = { Id = "rbxassetid://129196466380666", Pixels = Vector2.new(48, 64), Points = Vector2.new(12, 16), Pad = 2 },
 		CardFoeHealth = { Id = "rbxassetid://83666929491890", Pixels = Vector2.new(261, 52), Points = Vector2.new(65.25, 13), Cut = { 5.7, 6.25, 5.7, 6.25 }, Pad = 0 },
 		-- Home's panel (AR49 in C; build/handoff/UI/home_cards/home_cards.json): each image at 4 pixels a point, its edge
 		-- alpha 0, laid whole in its box (Config.Hud.Home). The Glow, the rims and the presses are white, tinted in the game.

@@ -379,6 +379,24 @@ return {
 	-- Plates kept apart in a group (UI.World.Apart: the base's machine plates): Gap authored pixels between two, over and
 	-- under, as the command view's chips (Config.BaseView.Chip.Gap). The builder's seed.
 	Plates = { Gap = 6 },
+	-- The Stone Condenser's convert card (AR51's B, research's pick and pass of 2026-11-23; Modulo's condenser_card.json;
+	-- BaseController): a plate's kin on the system slab, beside the cradle, shown as the Comb's plate is. Its left edge
+	-- Place.X right of the cradle's point on the screen and its top Place.Y under it (negative: above), in points, and
+	-- never nearer than Plates.Gap to the right of the convert prompt's card (UI.World.Beside: Roblox draws that card
+	-- under every layer, so the card over it hid its words, the build's finding at AR51's capture). Size
+	-- while awake, Asleep high while the base is under Config.Condenser.Wakes (the cost line alone, dimmed; the Comb's
+	-- plate says what wakes it). Wider when its word needs it: Word.At plus the word plus Word.End.
+	--   Cost: each number at Digit points in the number face, its stone Stone points across, Gap after the number; the
+	--         Arrow box Before and After it; the whole line Top down, Left in. Dim, its transparency when it can't start.
+	--   Bar:  At and Size, its Bed's colour, its fill Inset inside, Ready's and Running's colours (the stones' own seam).
+	Convert = {
+		Size = Vector2.new(172, 70),
+		Asleep = 44,
+		Place = Vector2.new(22, -50),
+		Cost = { Left = 12, Top = 4, Digit = 20, Stone = 36, Gap = 3, Arrow = Vector2.new(8, 12), Before = 7, After = 8, Dim = 0.45 },
+		Bar = { At = Vector2.new(12, 50), Size = Vector2.new(64, 10), Bed = Color3.fromHex("#070A0C"), Inset = 1, Ready = Color3.fromHex("#F6FCFF"), Running = Color3.fromHex("#FFB878") },
+		Word = { At = 84, End = 12 },
+	},
 	-- A quiet note under the lead's corner, where the level-up's notice shows (docs/ui.md, rule 2; TR46: the heal cap told
 	-- once): it fades in over In seconds, sliding Slide points out of the left unless Reduced Motion, holds Hold, fades out
 	-- over Out. Its backing at Back's transparency, Pad points around its words.
@@ -1056,6 +1074,8 @@ return {
 			Handle = { Id = "rbxassetid://90514113048264", Pixels = Vector2.new(100, 224), Points = Vector2.new(25, 56), Pad = 8 },
 			ChipBreaker = { Id = "rbxassetid://130456525982318", Pixels = Vector2.new(88, 88), Points = Vector2.new(22, 22), Pad = 5 },
 			ChipTraining = { Id = "rbxassetid://114149720582348", Pixels = Vector2.new(88, 88), Points = Vector2.new(22, 22), Pad = 5 },
+			-- The Stone Condenser's, six-sided, in its Rose (AR51's finish; images/PowerChipCondenser.png).
+			ChipCondenser = { Id = "rbxassetid://109967765766548", Pixels = Vector2.new(88, 88), Points = Vector2.new(22, 22), Pad = 5 },
 			Ember = { Id = "rbxassetid://90007328405959", Pixels = Vector2.new(580, 168), Points = Vector2.new(580, 168), Pad = 0 },
 			-- The battery's mark on its plate in the head, one of AR12's V2 images (build/handoff/UI/hud/colour/images/Battery.png;
 			-- TR41 (e)): drawn in its own gold and dark rim, never tinted. Its drawing spans 0.88 of its side across, centred.
@@ -1078,6 +1098,7 @@ return {
 		Colours = {
 			Breaker = Color3.fromHex("#E6ECF7"),
 			Training = Color3.fromHex("#4FD1FF"),
+			Condenser = Color3.fromHex("#FF8FAE"), -- Rose (AR51, research's pick of 14:29): no other light or word here is near it
 			Battery = Color3.fromHex("#FFE266"),
 			Ember = Color3.fromHex("#F2A63B"),
 			Caution = Color3.fromHex("#FF9A4D"),
@@ -1091,6 +1112,7 @@ return {
 		Lights = {
 			Breaker = ColorSequence.new({ ColorSequenceKeypoint.new(0, Color3.fromHex("#989CA3")), ColorSequenceKeypoint.new(0.0625, Color3.fromHex("#9FA3AA")), ColorSequenceKeypoint.new(0.125, Color3.fromHex("#A8ACB4")), ColorSequenceKeypoint.new(0.1875, Color3.fromHex("#B6BAC1")), ColorSequenceKeypoint.new(0.25, Color3.fromHex("#C7CBD1")), ColorSequenceKeypoint.new(0.3125, Color3.fromHex("#D3D6DD")), ColorSequenceKeypoint.new(0.375, Color3.fromHex("#D7DCE3")), ColorSequenceKeypoint.new(0.4375, Color3.fromHex("#DFE3EC")), ColorSequenceKeypoint.new(0.5, Color3.fromHex("#EAEFF8")), ColorSequenceKeypoint.new(0.5625, Color3.fromHex("#DDE2EC")), ColorSequenceKeypoint.new(0.625, Color3.fromHex("#D2D6DF")), ColorSequenceKeypoint.new(0.6875, Color3.fromHex("#C6CBD3")), ColorSequenceKeypoint.new(0.75, Color3.fromHex("#BBC0C8")), ColorSequenceKeypoint.new(0.8125, Color3.fromHex("#B1B5BD")), ColorSequenceKeypoint.new(0.875, Color3.fromHex("#A7ABB3")), ColorSequenceKeypoint.new(0.9375, Color3.fromHex("#9FA3AA")), ColorSequenceKeypoint.new(1, Color3.fromHex("#989CA3")) }),
 			Training = ColorSequence.new({ ColorSequenceKeypoint.new(0, Color3.fromHex("#348AA8")), ColorSequenceKeypoint.new(0.0625, Color3.fromHex("#3990B0")), ColorSequenceKeypoint.new(0.125, Color3.fromHex("#409AB9")), ColorSequenceKeypoint.new(0.1875, Color3.fromHex("#50A8C7")), ColorSequenceKeypoint.new(0.25, Color3.fromHex("#69BAD6")), ColorSequenceKeypoint.new(0.3125, Color3.fromHex("#77C6E2")), ColorSequenceKeypoint.new(0.375, Color3.fromHex("#6DC9E9")), ColorSequenceKeypoint.new(0.4375, Color3.fromHex("#65CEF3")), ColorSequenceKeypoint.new(0.5, Color3.fromHex("#68D8FF")), ColorSequenceKeypoint.new(0.5625, Color3.fromHex("#60CCF2")), ColorSequenceKeypoint.new(0.625, Color3.fromHex("#59C1E6")), ColorSequenceKeypoint.new(0.6875, Color3.fromHex("#51B6DA")), ColorSequenceKeypoint.new(0.75, Color3.fromHex("#4BACCE")), ColorSequenceKeypoint.new(0.8125, Color3.fromHex("#44A2C3")), ColorSequenceKeypoint.new(0.875, Color3.fromHex("#3E99B9")), ColorSequenceKeypoint.new(0.9375, Color3.fromHex("#3890AF")), ColorSequenceKeypoint.new(1, Color3.fromHex("#348AA8")) }),
+			Condenser = ColorSequence.new({ ColorSequenceKeypoint.new(0, Color3.fromHex("#A85E73")), ColorSequenceKeypoint.new(0.0625, Color3.fromHex("#B06479")), ColorSequenceKeypoint.new(0.125, Color3.fromHex("#B96C82")), ColorSequenceKeypoint.new(0.1875, Color3.fromHex("#C77B90")), ColorSequenceKeypoint.new(0.25, Color3.fromHex("#D691A4")), ColorSequenceKeypoint.new(0.3125, Color3.fromHex("#E29EB1")), ColorSequenceKeypoint.new(0.375, Color3.fromHex("#E99AB0")), ColorSequenceKeypoint.new(0.4375, Color3.fromHex("#F399B2")), ColorSequenceKeypoint.new(0.5, Color3.fromHex("#FF9FBA")), ColorSequenceKeypoint.new(0.5625, Color3.fromHex("#F295AF")), ColorSequenceKeypoint.new(0.625, Color3.fromHex("#E68CA5")), ColorSequenceKeypoint.new(0.6875, Color3.fromHex("#DA839B")), ColorSequenceKeypoint.new(0.75, Color3.fromHex("#CE7A92")), ColorSequenceKeypoint.new(0.8125, Color3.fromHex("#C37289")), ColorSequenceKeypoint.new(0.875, Color3.fromHex("#B96B80")), ColorSequenceKeypoint.new(0.9375, Color3.fromHex("#AF6479")), ColorSequenceKeypoint.new(1, Color3.fromHex("#A85E73")) }),
 			Battery = ColorSequence.new({ ColorSequenceKeypoint.new(0, Color3.fromHex("#A89543")), ColorSequenceKeypoint.new(0.0625, Color3.fromHex("#B09C48")), ColorSequenceKeypoint.new(0.125, Color3.fromHex("#B9A550")), ColorSequenceKeypoint.new(0.1875, Color3.fromHex("#C7B35F")), ColorSequenceKeypoint.new(0.25, Color3.fromHex("#D6C478")), ColorSequenceKeypoint.new(0.3125, Color3.fromHex("#E2D085")), ColorSequenceKeypoint.new(0.375, Color3.fromHex("#E9D57E")), ColorSequenceKeypoint.new(0.4375, Color3.fromHex("#F3DB78")), ColorSequenceKeypoint.new(0.5, Color3.fromHex("#FFE67C")), ColorSequenceKeypoint.new(0.5625, Color3.fromHex("#F2DA73")), ColorSequenceKeypoint.new(0.625, Color3.fromHex("#E6CE6B")), ColorSequenceKeypoint.new(0.6875, Color3.fromHex("#DAC363")), ColorSequenceKeypoint.new(0.75, Color3.fromHex("#CEB85C")), ColorSequenceKeypoint.new(0.8125, Color3.fromHex("#C3AE55")), ColorSequenceKeypoint.new(0.875, Color3.fromHex("#B9A44E")), ColorSequenceKeypoint.new(0.9375, Color3.fromHex("#AF9C48")), ColorSequenceKeypoint.new(1, Color3.fromHex("#A89543")) }),
 		} :: { [string]: ColorSequence },
 		Bar = {

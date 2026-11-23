@@ -29,6 +29,8 @@ local Sheet = require(Shared.Rules.Sheet)
 local Hud = require(Shared.Rules.Hud)
 local Condenser = require(Shared.Rules.Condenser)
 local CondenserConfig = require(Shared.Config.Condenser)
+local HudConfig = require(Shared.Config.Hud)
+local UIKit = require(Shared.Config.UIKit)
 local ReinforceRules = require(Shared.Rules.Reinforce)
 local ReinforceConfig = require(Shared.Config.Reinforce)
 local PowerConfig = require(Shared.Config.Base).Power
@@ -47,6 +49,7 @@ local Grounds = require(Shared.Definitions.Grounds)
 local ProfileController = require(script.Parent.Parent.ProfileController)
 local UI = script.Parent.Parent.Parent.Parent.UI
 local Layers = require(UI.Layers)
+local Theme = require(UI.Theme)
 local Screen = require(UI.Kit.Screen)
 local EquipmentScreen = require(UI.EquipmentScreen)
 local World = require(UI.World)
@@ -1360,7 +1363,7 @@ function BaseCases.Cases(given: Given): { any }
 			end,
 		},
 		{
-			Name = "Base: TR37, the Forge and the Stone Condenser in their sleeping places: the Condenser sleeps on its stone below its base level and wakes at it, its comb lit by its tray, full, part-full and empty, its core turning while it works; a tap collects the tray, the grey panel runs a convert; the Forge's prompt opens Reinforce, and a try strikes its ram",
+			Name = "Base: TR37, the Forge and the Stone Condenser in their sleeping places: the Condenser sleeps on its stone below its base level and wakes at it, its comb lit by its tray, full, part-full and empty, its core turning while it works; a tap collects the tray; the convert's card beside its cradle (AR51) asleep, ready, short and running, its prompt on the cradle runs a convert; the Forge's prompt opens Reinforce, and a try strikes its ram",
 			Place = "Main", -- TR45: its world stands in that place only
 			Run = function(t: any)
 				local view = ProfileController.Get()
@@ -1406,10 +1409,42 @@ function BaseCases.Cases(given: Given): { any }
 					return plateLine() == `Wakes at base level {CondenserConfig.Wakes}`
 				end), plateLine())
 				t.Check("nothing to collect", BaseController.Parts().CondenserPrompt == nil)
+				-- The convert's card (AR51's B): asleep, its cost line alone, 44 high, nothing to start.
+				local look = HudConfig.Convert
+				local function card(): Frame?
+					local found = BaseController.Parts().ConvertCard
+					return if found and found:IsA("Frame") then found else nil
+				end
+				local function cardPart(name: string): GuiObject?
+					local found = card()
+					local panel = if found then found:FindFirstChild("Panel") else nil
+					local part = if panel then panel:FindFirstChild(name) else nil
+					return if part and part:IsA("GuiObject") then part else nil
+				end
+				local function word(): string
+					local label = cardPart("Word")
+					return if label and label:IsA("TextLabel") then label.Text else ""
+				end
+				local function cardState(): string
+					local found = card()
+					return if found then tostring(found:GetAttribute("State")) else "no card"
+				end
+				t.Check("asleep: the card's cost line alone, 44 high", waitFor(t, ANSWER, function(): boolean
+					local found, bar, said = card(), cardPart("Bar"), cardPart("Word")
+					return found ~= nil and cardState() == "Asleep" and found.Size.Y.Offset == look.Asleep and bar ~= nil and not bar.Visible
+						and said ~= nil and not said.Visible
+				end), cardState())
+				local stones = { cardPart("From"), cardPart("To") }
+				t.Check("its cost in the stones' own pictures, the take and the give", (stones[1] :: ImageLabel?) ~= nil and (stones[2] :: ImageLabel?) ~= nil
+					and (stones[1] :: ImageLabel).Image == UIKit.Images[`Stone{CondenserConfig.Convert.From}`].Id and (stones[2] :: ImageLabel).Image == UIKit.Images[`Stone{CondenserConfig.Convert.To}`].Id
+					and (cardPart("Take") :: TextLabel?) ~= nil and (cardPart("Take") :: TextLabel).Text == tostring(CondenserConfig.Convert.Take)
+					and (cardPart("Give") :: TextLabel?) ~= nil and (cardPart("Give") :: TextLabel).Text == tostring(CondenserConfig.Convert.Give))
+				local asleepPrompt = BaseController.Parts().ConvertPrompt :: ProximityPrompt?
+				t.Check("nothing to start", asleepPrompt ~= nil and not asleepPrompt.Enabled)
 				-- Awake: its Comb, the stone gone. An empty tray first, so the fills below are its own.
 				t.Server("BaseLevel", math.max(levelWas, CondenserConfig.Wakes))
 				t.Check("awake at its level: its Comb, the stone gone", waitFor(t, ANSWER + 2, function(): boolean
-					return shownOf("Frame") and shownOf("Core") and shownOf("Panel") and not shownOf("Asleep")
+					return shownOf("Frame") and shownOf("Core") and not shownOf("Asleep")
 				end), `stone {shownOf("Asleep")}, comb {shownOf("Frame")}`)
 				ProfileController.Act("CollectTray")
 				t.Check("empty: the comb dark", waitFor(t, ANSWER, function(): boolean
@@ -1471,22 +1506,92 @@ function BaseCases.Cases(given: Given): { any }
 				t.Check("nothing left to tap", waitFor(t, ANSWER, function(): boolean
 					return BaseController.Parts().CondenserPrompt == nil
 				end))
-				-- The grey panel: a convert begins, says its time, refuses a second, and lands its Mid in the tray.
-				local panel = BaseController.Parts().ConvertPanel
-				local function state(): string
-					local line = if panel then panel:FindFirstChild("State") else nil
-					return if line and line:IsA("TextLabel") then line.Text else ""
+				-- The card: ready, short and running; its prompt on the cradle begins a convert, which says its time, refuses a
+				-- second, and lands its Mid in the tray.
+				local c = CondenserConfig.Convert
+				local cradle = WorldConfig.Condenser.Cradle
+				local at = (Markers.At(machine) * CFrame.new(cradle[1], cradle[3], -cradle[2])).Position
+				local onCradle = BaseController.Parts().ConvertPrompt :: ProximityPrompt?
+				local holder = if onCradle then onCradle.Parent else nil
+				t.Check("the convert's prompt on the cradle", holder ~= nil and holder:IsA("BasePart") and (holder.Position - at).Magnitude < 0.01,
+					if holder and holder:IsA("BasePart") then tostring(holder.Position) else "no prompt")
+				local function fill(): number
+					local bar = cardPart("Bar")
+					local lit = if bar then bar:FindFirstChild("Fill") :: Frame? else nil
+					if not (bar and lit) then
+						return -1
+					end
+					return if lit.Visible then lit.Size.X.Offset / (bar.Size.X.Offset - 2 * look.Bar.Inset) else 0
 				end
-				t.Check("the convert's panel on the kit", panel ~= nil and panel:IsA("SurfaceGui") and (panel :: SurfaceGui).Adornee == machine:FindFirstChild("Panel"))
+				local function have(): number
+					return (ProfileController.Get() :: any).Bag.Stones[c.From] or 0
+				end
+				if have() < c.Take then
+					t.Server("StonesGive", c.From, c.Take - have())
+				end
+				t.Check("ready: its bar full, its word, its prompt", waitFor(t, ANSWER, function(): boolean
+					local found = card()
+					return found ~= nil and cardState() == "Ready" and word() == "Ready" and math.abs(fill() - 1) < 1e-6
+						and found.Size.Y.Offset == look.Size.Y and onCradle ~= nil and onCradle.Enabled
+				end), `{cardState()}, {word()}, {fill()}`)
+				-- In reach, beside its prompt (UI.World.Beside): Roblox's card draws under every layer, so the card stands right
+				-- of it, or at the screen's right edge.
+				local stand = (Markers.At(machine) * CFrame.new(1.0, 3, -8.6)).Position
+				t.Server("TestStandAt", stand, Vector3.new(at.X, stand.Y, at.Z))
+				local function promptShown(): boolean
+					local gui = Players.LocalPlayer:FindFirstChildOfClass("PlayerGui")
+					local cards = if gui then gui:FindFirstChild("ProximityPrompts") else nil
+					for _, item in if cards then cards:GetChildren() else {} do
+						if item:IsA("BillboardGui") and item.Adornee ~= nil and item.Adornee == holder and item.AbsoluteSize.X > 0 then
+							return true
+						end
+					end
+					return false
+				end
+				local said = ""
+				local promptRight: number? = nil -- where its card ended, for the card once the prompt has gone
+				t.Check("in reach: the card clear of its prompt's card", waitFor(t, ANSWER + 2, function(): boolean
+					local found = card()
+					local low: Vector2?, high: Vector2? = nil, nil
+					if onCradle then
+						low, high = World.PromptBox(onCradle)
+					end
+					if not (found and found.Visible and low and high and promptShown()) then
+						said = `card {found ~= nil and found.Visible}, prompt {promptShown()}`
+						return false
+					end
+					local gap = HudConfig.Plates.Gap * Layers.Scale()
+					local left, right = found.AbsolutePosition.X, found.AbsolutePosition.X + found.AbsoluteSize.X
+					local room = (found.Parent :: GuiObject).AbsoluteSize.X
+					local edge = (high :: Vector2).X
+					promptRight = edge
+					said = string.format("its left %.1f, the prompt's right %.1f", left, edge)
+					return left >= edge + gap - 1 or right >= room - gap - 1
+				end), said)
+				-- Short: the bag one stone short of a hand's worth, the bar at what it holds, nothing to start.
+				local short = c.Take - 1
+				t.Server("StonesGive", c.From, short - have())
+				t.Check(`short: "{short} of {c.Take} {c.From}", its bar at {short} of {c.Take}`, waitFor(t, ANSWER, function(): boolean
+					return cardState() == "Short" and word() == `{short} of {c.Take} {c.From}` and math.abs(fill() - short / c.Take) < 0.03
+						and onCradle ~= nil and not onCradle.Enabled
+				end), `{cardState()}, {word()}, {fill()}`)
+				t.Server("StonesGive", c.From, c.Take - have())
 				t.Check("it can start", waitFor(t, ANSWER, function(): boolean
-					local prompt = BaseController.Parts().ConvertPrompt :: ProximityPrompt?
-					return prompt ~= nil and prompt.Enabled and string.sub(state(), 1, 5) == "Ready"
-				end), state())
+					return onCradle ~= nil and onCradle.Enabled and cardState() == "Ready"
+				end), cardState())
 				local begun = BaseController.Convert()
 				t.Check("a convert begins", begun.Ok == true, tostring(begun.Error))
-				t.Check("its panel counts its time down", waitFor(t, ANSWER, function(): boolean
-					return string.find(state(), "left", 1, true) ~= nil
-				end), state())
+				t.Check("running: its card counts its time down, its bar at the share done", waitFor(t, ANSWER, function(): boolean
+					local share = fill()
+					return cardState() == "Running" and string.find(word(), " left$") ~= nil and share >= 0 and share < 1 and onCradle ~= nil and not onCradle.Enabled
+				end), `{cardState()}, {word()}, {fill()}`)
+				-- Still clear of where the prompt's card stood: its whole size held once it has gone (a prompt shown for a
+				-- moment as the convert began held its opening width, 72, and the card slid over the Voidkin, AR51's take).
+				local found = card()
+				local stayed = found ~= nil and promptRight ~= nil and (found.AbsolutePosition.X >= (promptRight :: number) + HudConfig.Plates.Gap * Layers.Scale() - 1
+					or found.AbsolutePosition.X + found.AbsoluteSize.X >= (found.Parent :: GuiObject).AbsoluteSize.X - HudConfig.Plates.Gap * Layers.Scale() - 1)
+				t.Check("running: the card still beside where its prompt stood", stayed,
+					if found and promptRight then string.format("its left %.1f, the prompt's right %.1f", found.AbsolutePosition.X, promptRight :: number) else "no card")
 				t.Equal("one at a time", ProfileController.Act("Convert").Error, "Busy")
 				t.Server("BaseSkip", CondenserConfig.Convert.Seconds / floor + 5)
 				t.Check("its Mid lands in the tray", waitFor(t, ANSWER + 2, function(): boolean
@@ -1553,6 +1658,142 @@ function BaseCases.Cases(given: Given): { any }
 					t.Check("an item and the ram to strike", false, `ram {ram ~= nil}, item {tostring(item)}`)
 				end
 				t.Server("BaseLevel", levelWas)
+			end,
+		},
+		{
+			Name = "Take: AR51, the convert's card from the prompt's reach in the smallest phone's proportions, each state as the driver writes, then the Power screen at the smallest phone with the Condenser's share, for research",
+			Manual = true,
+			Stay = true,
+			Run = function(t: any)
+				-- AR51's captures (docs/asset-requests.md, AR51). The driver writes ReplicatedStorage.NL_TakeStep: Asleep, Ready,
+				-- Short or Running, the card in that state from Modulo's stand (across 1.0, along 8.6 in the Condenser's frame),
+				-- the game's camera there held. The smallest phone whole in the viewport's middle: every layer at its floor in a
+				-- box its size there, and the camera's field widened so that box sees the phone's own field, so the world, the
+				-- plates and Roblox's prompt card (drawn in its own points, never scaled by the layers) all stand as they do on
+				-- it. Then Power and Auto, the Power screen in the cases' smallest-phone box, the Condenser converting so its
+				-- light is its own; End puts back the level, the split, the bag and the camera, the convert run out and its Mid
+				-- collected. "Shown" says what is up.
+				local view = ProfileController.Get()
+				local plot = Players.LocalPlayer:GetAttribute("Plot")
+				local machine = if type(plot) == "number" then Markers.Find("Condenser", { Plot = plot }) else nil
+				t.Check("a save and the Condenser", view ~= nil and machine ~= nil)
+				if view == nil or machine == nil then
+					return
+				end
+				local c = CondenserConfig.Convert
+				local levelWas = view.Base.Level
+				local power = { Open = view.Base.Power.Open, Auto = view.Base.Power.Auto, Shares = table.clone(view.Base.Power.Shares) }
+				local bagWas = table.clone(view.Bag.Stones)
+				local step = Instance.new("StringValue")
+				step.Name = "NL_TakeStep"
+				step.Value = "Ready"
+				step.Parent = ReplicatedStorage
+				local function have(): number
+					return (ProfileController.Get() :: any).Bag.Stones[c.From] or 0
+				end
+				local function hold(count: number)
+					if have() ~= count then
+						t.Server("StonesGive", c.From, count - have())
+					end
+				end
+				local function stateOf(): string
+					local card = BaseController.Parts().ConvertCard
+					return if card then tostring(card:GetAttribute("State")) else "none"
+				end
+				-- The stand, and the game's camera there: 12.07 behind and 4.74 up, at the head (AR15's measure).
+				local home = Markers.At(machine)
+				local stand = (home * CFrame.new(1.0, 3, -8.6)).Position
+				local middle = home.Position + Vector3.new(0, 3, 0)
+				t.Server("TestStandAt", stand, Vector3.new(middle.X, stand.Y, middle.Z))
+				local camera = workspace.CurrentCamera
+				local cameraWas, fieldWas = camera.CameraType, camera.FieldOfView
+				local flat = Vector3.new(stand.X - middle.X, 0, stand.Z - middle.Z).Unit
+				local top = GuiService.TopbarInset.Height
+				local function phoneWorld()
+					local view, phone = camera.ViewportSize, Theme.Smallest
+					camera.CameraType = Enum.CameraType.Scriptable
+					camera.FieldOfView = 2 * math.deg(math.atan(math.tan(math.rad(fieldWas / 2)) * view.Y / phone.Y))
+					camera.CFrame = CFrame.lookAt(stand + flat * 12.07 + Vector3.new(0, 4.74, 0), stand + Vector3.new(0, 1.5, 0))
+					Layers.Force(Theme.Scale.Floor)
+					Layers.Box(phone - Vector2.new(0, top), (view - phone) / 2)
+					step:SetAttribute("Frame", `{math.round((view.X - phone.X) / 2)},{math.round((view.Y - phone.Y) / 2)}`)
+				end
+				local converting = false
+				local shown = ""
+				waitFor(t, 900, function(): boolean
+					if step.Value ~= shown then
+						shown = step.Value
+						if shown == "Asleep" or shown == "Ready" or shown == "Short" or shown == "Running" then
+							if Screen.Current() then
+								Screen.Close()
+							end
+							t.Server("BaseLevel", if shown == "Asleep" then CondenserConfig.Wakes - 1 else math.max(levelWas, CondenserConfig.Wakes))
+							hold(if shown == "Short" then c.Take - 1 else math.max(have(), c.Take))
+							if shown == "Running" and not converting then
+								converting = BaseController.Convert().Ok == true
+							end
+							phoneWorld()
+							waitFor(t, ANSWER + 2, function(): boolean
+								return stateOf() == shown
+							end)
+							t.Wait(0.5)
+							step:SetAttribute("Shown", stateOf())
+						elseif shown == "Power" or shown == "Auto" then
+							t.Server("BaseLevel", math.max(levelWas, CondenserConfig.Wakes))
+							if not converting then
+								hold(math.max(have(), c.Take))
+								converting = BaseController.Convert().Ok == true
+							end
+							t.Server("PowerOpen", true)
+							local asked = if shown == "Auto" then { Auto = true } else { Auto = false, Shares = { Breaker = 0.4, Training = 0.2, Condenser = 0.25 } }
+							local answer = ProfileController.Act("SetPower", asked)
+							if Screen.Current() then
+								Screen.Close()
+							end
+							camera.FieldOfView = fieldWas
+							Layers.Force(Theme.Scale.Floor)
+							Layers.Box(Theme.Smallest - Vector2.new(0, top))
+							t.Wait(0.3)
+							BaseController.OpenPower()
+							t.Wait(1)
+							step:SetAttribute("Shown", `{shown} {answer.Ok == true} {tostring(Screen.Current())}`)
+						end
+					end
+					return step.Value == "End"
+				end)
+				if Screen.Current() then
+					Screen.Close()
+				end
+				Layers.Box(nil)
+				Layers.Force(nil)
+				camera.CameraType, camera.FieldOfView = cameraWas, fieldWas
+				local back = ProfileController.Act("SetPower", if power.Auto then { Auto = true } else { Auto = false, Shares = power.Shares })
+				t.Check("the split put back", back.Ok == true, tostring(back.Error))
+				if not power.Open then
+					t.Server("PowerOpen", false)
+				end
+				if converting then
+					-- The convert run out at the floor's speed, its Mid collected, and the bag put back below: the skip's time,
+					-- the battery's charge with it, is the take's one lasting change (the test store's save).
+					t.Server("BaseSkip", c.Seconds / PowerConfig.MinSpeed + 5)
+					waitFor(t, ANSWER + 2, function(): boolean
+						return Condenser.ConvertLeft((ProfileController.Get() :: any).Base) == nil
+					end)
+					ProfileController.Act("CollectTray")
+				end
+				for grade, count in bagWas do
+					local change = count - ((ProfileController.Get() :: any).Bag.Stones[grade] or 0)
+					if change ~= 0 then
+						t.Server("StonesGive", grade, change)
+					end
+				end
+				for grade, count in (ProfileController.Get() :: any).Bag.Stones do
+					if bagWas[grade] == nil and count > 0 then
+						t.Server("StonesGive", grade, -count)
+					end
+				end
+				t.Server("BaseLevel", levelWas)
+				step:Destroy()
 			end,
 		},
 	}

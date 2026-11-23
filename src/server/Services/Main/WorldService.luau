@@ -709,8 +709,8 @@ end
 --   of the ram's travel). The client strikes it (BaseController). Stages II and III wait (AR36);
 -- * the Stone Condenser, AR28's Comb at Stage I, over its sleeping stone ("Asleep"): its frame, its core (a turner) and
 --   a stone in each of its comb's cups ("Cup", its filling order), all a later level's and hidden until BaseService shows
---   them once the base wakes it, the cups lit by its tray; and the convert's small grey panel on the kit, a block-in
---   (Config.World.Condenser.Panel), which its owner's client writes on;
+--   them once the base wakes it, the cups lit by its tray. The convert's prompt and card are its owner's client's, at the
+--   cradle (Config.World.Condenser.Cradle; AR51);
 -- * the Lab's sleeping stone, look only.
 -- Without the base's kit none of them stands.
 local function layBack(base: Instance, number: number, at: CFrame, front: number)
@@ -773,13 +773,6 @@ local function layBack(base: Instance, number: number, at: CFrame, front: number
 				end
 			end
 			condenser:SetAttribute("Cups", #cups)
-			local panel = WorldConfig.Condenser.Panel
-			local p = later(block(condenser, "Panel", panel.Size, origin * CFrame.new(panel.At[1], panel.At[3], -panel.At[2]) * CFrame.Angles(math.rad(panel.Tilt), 0, 0), panel.Grey))
-			if p then
-				p.Material = Enum.Material.SmoothPlastic
-				p:SetAttribute("Solid", false)
-				p.CanCollide, p.CanQuery, p.CanTouch = false, false, false
-			end
 			Markers.Stamp(condenser, "Condenser", { Plot = number })
 		else
 			condenser:Destroy()
@@ -1873,7 +1866,7 @@ function WorldService.Init()
 					if cups == 0 or cups ~= condenser:GetAttribute("Cups") then
 						table.insert(problems, `Plot {number}: the Condenser has {cups} cups, its comb {condenser:GetAttribute("Cups")}`)
 					end
-					for _, name in { "Core", "Panel", "Asleep" } do
+					for _, name in { "Core", "Asleep" } do
 						if condenser:FindFirstChild(name) == nil then
 							table.insert(problems, `Plot {number}: the Condenser has no {name}`)
 						end

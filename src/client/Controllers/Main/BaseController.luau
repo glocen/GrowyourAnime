@@ -31,6 +31,8 @@ local Markers = require(Shared.World.Markers)
 local Kit = require(Shared.World.Kit)
 local BaseManifest: any = require(Shared.Config.Kits.Base.Manifest) -- each piece's centre, for the pieces that turn about their origin
 local WorldConfig = require(Shared.Config.World)
+local HudConfig = require(Shared.Config.Hud)
+local UIKit = require(Shared.Config.UIKit)
 local Parts = require(Shared.Util.Parts)
 local UI = script.Parent.Parent.Parent.UI
 local Theme = require(UI.Theme)
@@ -38,6 +40,7 @@ local Read = require(UI.Read)
 local World = require(UI.World)
 local Panel = require(UI.Kit.Panel)
 local Text = require(UI.Kit.Text)
+local Skin = require(UI.Kit.Skin)
 local Row = require(UI.Kit.Row)
 local Screen = require(UI.Kit.Screen)
 local Toast = require(UI.Kit.Toast)
@@ -98,7 +101,6 @@ local CONDENSER_WIDTH = 204 -- "Tray 12 of 12 Low · 1 Mid"
 local FORGE_UP = 4 -- the Forge's prompt, before its seat (TR37)
 local FORGE_PLATE = 9.5 -- and its plate over its head (12.5 up)
 local FORGE_WIDTH = 160
-local CONVERT_LINES = { Title = 30, Line = 24 } -- the convert panel's lines, in its pixels (Config.World.Condenser.Panel)
 -- Wide enough that a row's name and its second line fit beside its button at the smallest scale: 191 authored pixels,
 -- against "Intelligence · Mage · Fire" at 178, the longest line before the types took their colours' names (TR36),
 -- and "Chamber 2 · 1 min 59 s" at 164.
@@ -136,9 +138,22 @@ local machine: Spot? = nil -- the Training machine (TR12)
 local generator: Spot? = nil -- the generator (TR18)
 local condenser: Spot? = nil -- the Stone Condenser (TR37): its plate, and its prompt while its tray holds a stone
 local forge: Spot? = nil -- the Forge (TR37): its plate and its prompt, which opens Reinforce
--- The convert's grey panel on the Condenser (TR37): its words, drawn on the kit's block, and its prompt beside it.
-type ConvertPanel = { Part: BasePart, Gui: SurfaceGui, Anchor: Part, Prompt: ProximityPrompt, Lines: { [string]: TextLabel } }
-local convert: ConvertPanel? = nil
+-- The convert's card beside the Condenser's cradle (AR51's B), and its prompt on the cradle.
+type ConvertCard = {
+	Anchor: Part,
+	Prompt: ProximityPrompt,
+	Card: Frame,
+	Panel: Frame,
+	Take: TextLabel,
+	Give: TextLabel,
+	From: ImageLabel,
+	To: ImageLabel,
+	Arrow: ImageLabel,
+	Bar: Frame,
+	Fill: Frame,
+	Word: TextLabel,
+}
+local convert: ConvertCard? = nil
 local bays: { [number]: Spot } = {}
 local starters: { [string]: Part } = {}
 local pickingBay: number? = nil
@@ -270,7 +285,7 @@ local function clearAll()
 	end
 	breaker, battery, machine, generator, condenser, forge, bays = nil, nil, nil, nil, nil, nil, {}
 	if convert then
-		convert.Gui:Destroy()
+		World.Remove(convert.Card)
 		convert.Anchor:Destroy()
 		convert = nil
 	end
@@ -692,54 +707,124 @@ local function spotFor(marker: Instance, name: string, up: number, lines: number
 	return spot
 end
 
--- The convert's panel (TR37): words on the Condenser's grey block, toward the gate (its title, what it turns into what,
--- how it stands), and its prompt before the block. This client's own: the block is the server's.
-local function convertPanel(part: BasePart): ConvertPanel
-	local look = WorldConfig.Condenser.Panel
-	local gui = Instance.new("SurfaceGui")
-	gui.Name = "NL_ConvertPanel"
-	gui.Face = Enum.NormalId.Front
-	gui.Adornee = part
-	gui.SizingMode = Enum.SurfaceGuiSizingMode.PixelsPerStud
-	gui.PixelsPerStud = look.PixelsPerStud
-	gui.LightInfluence = 0
-	gui.MaxDistance = REACH
-	gui.ResetOnSpawn = false
-	local lines: { [string]: TextLabel } = {}
-	local wide = look.Size.X * look.PixelsPerStud
-	local top = 8
-	local rows: { { Name: string, Size: number, Font: Font } } = {
-		{ Name = "Title", Size = CONVERT_LINES.Title, Font = Theme.Font.Strong },
-		{ Name = "What", Size = CONVERT_LINES.Line, Font = Theme.Font.Body },
-		{ Name = "State", Size = CONVERT_LINES.Line, Font = Theme.Font.Body },
-	}
-	for _, row in rows do
-		local label = Instance.new("TextLabel")
-		label.Name = row.Name
-		label.BackgroundTransparency = 1
-		label.FontFace = row.Font
-		label.TextSize = row.Size
-		label.TextColor3 = WorldConfig.Showcase.Shade
-		label.TextXAlignment = Enum.TextXAlignment.Center
-		label.TextTruncate = Enum.TextTruncate.AtEnd
-		label.Size = UDim2.fromOffset(wide - 12, row.Size)
-		label.Position = UDim2.fromOffset(6, top)
-		label.Text = ""
-		label.Parent = gui
-		lines[row.Name] = label
-		top += row.Size + 4
-	end
-	lines.Title.Text = "Convert"
+-- The convert's card (AR51's B, research's pick and pass of 2026-11-23; Config.Hud.Convert; Modulo's condenser_card.json):
+-- a plate's kin on the system slab beside the Condenser's cradle, shown as the Comb's plate is: the cost in the stones'
+-- own pictures (Config.Condenser.Convert), then how the convert stands, a bar and one word. The convert's prompt stands on
+-- the cradle (Config.World.Condenser.Cradle). This client's own; setConvert fills it.
+local function convertCard(marker: Instance, spot: Spot): ConvertCard
+	local look = HudConfig.Convert
+	local cradle = WorldConfig.Condenser.Cradle
+	local anchor = anchorAt("ConvertCradle", (Markers.At(marker) * CFrame.new(cradle[1], cradle[3], -cradle[2])).Position)
+	local card = World.Plate("ConvertCard", look.Size, function(): Vector3?
+		return if anchor.Parent and speaks(spot) and not BaseView.IsOpen() then anchor.Position else nil
+	end, REACH)
+	World.Below(card)
+	World.Apart(card, "Base") -- the Comb's plate is its neighbour
+	World.Off(card)
+	local panel = Panel.new({ Palette = "System", Name = "Panel", Size = UDim2.fromScale(1, 1), Parent = card })
+	local cost = look.Cost
 	local c = CondenserConfig.Convert
-	lines.What.Text = `{c.Take} {c.From} into {c.Give} {c.To}`
-	gui.Parent = player:FindFirstChildOfClass("PlayerGui") or base()
-	local anchor = anchorAt("ConvertPanel", part.Position + part.CFrame.LookVector * 0.6)
+	local function digit(name: string, number: number): TextLabel
+		local label = Text.new({ Name = name, Size = cost.Digit, Font = Theme.Font.Number, Box = UDim2.fromOffset(cost.Stone, cost.Stone), Parent = panel })
+		label.ZIndex = 8
+		label.Text = tostring(number)
+		return label
+	end
+	local function stone(name: string, grade: string): ImageLabel
+		return Skin.Lay(panel, `Stone{grade}`, { Name = name, Scale = cost.Stone / UIKit.Images[`Stone{grade}`].Points.X, Z = 8 })
+	end
+	local arrow = UIKit.Images.ArrowRight
+	local bar = Instance.new("Frame")
+	bar.Name = "Bar"
+	bar.BorderSizePixel = 0
+	bar.BackgroundColor3 = look.Bar.Bed
+	bar.Position = UDim2.fromOffset(look.Bar.At.X, look.Bar.At.Y)
+	bar.Size = UDim2.fromOffset(look.Bar.Size.X, look.Bar.Size.Y)
+	bar.ZIndex = 8
+	bar.Parent = panel
+	local fill = Instance.new("Frame")
+	fill.Name = "Fill"
+	fill.BorderSizePixel = 0
+	fill.Position = UDim2.fromOffset(look.Bar.Inset, look.Bar.Inset)
+	fill.ZIndex = 9
+	fill.Parent = bar
+	local word = Text.new({
+		Name = "Word",
+		Size = Theme.Text.Caption,
+		Box = UDim2.fromOffset(look.Size.X - look.Word.At - look.Word.End, 20),
+		Position = UDim2.fromOffset(look.Word.At, look.Bar.At.Y + look.Bar.Size.Y / 2),
+		AnchorPoint = Vector2.new(0, 0.5),
+		Parent = panel,
+	})
+	word.ZIndex = 8
 	local p = prompt(anchor, "NL_Convert", "Stone Condenser", "Convert")
 	p.Enabled = false
+	World.Beside(card, p, HudConfig.Plates.Gap) -- clear of the prompt's card, which Roblox draws under the plates
 	p.Triggered:Connect(function()
 		BaseController.Convert()
 	end)
-	return { Part = part, Gui = gui, Anchor = anchor, Prompt = p, Lines = lines }
+	return {
+		Anchor = anchor,
+		Prompt = p,
+		Card = card,
+		Panel = panel,
+		Take = digit("Take", c.Take),
+		From = stone("From", c.From),
+		Arrow = Skin.Lay(panel, "ArrowRight", { Name = "Arrow", Scale = cost.Arrow.X / (arrow.Points.X - 2 * arrow.Pad), Z = 8 }),
+		Give = digit("Give", c.Give),
+		To = stone("To", c.To),
+		Bar = bar,
+		Fill = fill,
+		Word = word,
+	}
+end
+
+-- The card in `state` (Ready, Running, Short or Asleep; its "State" attribute, for tests): `share` of its bar lit and
+-- `said` its word; asleep, its cost line alone. Dimmed, edged and inked as condenser_card.json's states say, in the system
+-- palette's words; as wide as its word needs, its left and top kept where Config.Hud.Convert puts them.
+local function setConvert(card: ConvertCard, state: string, share: number, said: string)
+	local look, cost = HudConfig.Convert, HudConfig.Convert.Cost
+	local p = Panel.Palette(card.Panel) :: any
+	local live = state == "Ready" or state == "Running"
+	local ink: Color3 = if live then p.Text else p.Faint
+	local dim = if live then 0 else cost.Dim
+	-- The cost line, laid by its numbers' widths: a number, its stone, the arrow, a number, its stone.
+	local x = cost.Left
+	local middle = cost.Top + cost.Stone / 2
+	for _, pair in { { card.Take, card.From }, { card.Give, card.To } } do
+		local number, picture = pair[1] :: TextLabel, pair[2] :: ImageLabel
+		local wide = math.ceil(Text.Wide(number, number.Text))
+		number.Size = UDim2.fromOffset(wide, cost.Stone)
+		number.Position = UDim2.fromOffset(x, cost.Top)
+		number.TextColor3 = ink
+		number.TextTransparency = dim
+		x += wide + cost.Gap
+		picture.Position = UDim2.fromOffset(x, cost.Top)
+		picture.ImageTransparency = dim
+		x += cost.Stone
+		if number == card.Take then
+			local pad = UIKit.Images.ArrowRight.Pad
+			card.Arrow.Position = UDim2.fromOffset(x + cost.Before - pad, middle - cost.Arrow.Y / 2 - pad)
+			card.Arrow.ImageColor3 = if live then p.Edge else p.Faint
+			card.Arrow.ImageTransparency = dim
+			x += cost.Before + cost.Arrow.X + cost.After
+		end
+	end
+	local awake = state ~= "Asleep"
+	card.Bar.Visible, card.Word.Visible = awake, awake
+	card.Word.Text = said
+	card.Word.TextColor3 = if state == "Short" then p.Soft else p.Text
+	local inner = look.Bar.Size - Vector2.one * 2 * look.Bar.Inset
+	card.Fill.Size = UDim2.fromOffset(math.floor(inner.X * math.clamp(share, 0, 1) + 0.5), inner.Y)
+	card.Fill.BackgroundColor3 = if state == "Ready" then look.Bar.Ready elseif state == "Running" then look.Bar.Running else p.Faint
+	card.Fill.Visible = share > 0
+	local wide = math.max(look.Size.X, math.ceil(look.Word.At + Text.Wide(card.Word, said) + look.Word.End))
+	local high = if awake then look.Size.Y else look.Asleep
+	card.Word.Size = UDim2.fromOffset(wide - look.Word.At - look.Word.End, 20)
+	card.Card.Size = UDim2.fromOffset(wide, high)
+	World.Shift(card.Card, Vector2.new(look.Place.X + wide / 2, look.Place.Y + high))
+	Panel.Trim(card.Panel, if live then p.Edge else p.Faint)
+	card.Card:SetAttribute("State", state)
 end
 
 local function stale(spot: Spot?, marker: Instance?): boolean
@@ -802,11 +887,9 @@ local function find()
 		bays[index] = spot
 	end
 	if condenserMarker then
-		condenser = spotFor(condenserMarker, "Condenser", CONDENSER_UP, 2, CONDENSER_WIDTH, CONDENSER_PLATE)
-		local block = condenserMarker:FindFirstChild("Panel")
-		if block and block:IsA("BasePart") then
-			convert = convertPanel(block)
-		end
+		local spot = spotFor(condenserMarker, "Condenser", CONDENSER_UP, 2, CONDENSER_WIDTH, CONDENSER_PLATE)
+		condenser = spot
+		convert = convertCard(condenserMarker, spot)
 	end
 	if forgeMarker then
 		local f = spotFor(forgeMarker, "Forge", FORGE_UP, 2, FORGE_WIDTH, FORGE_PLATE)
@@ -1011,14 +1094,22 @@ function BaseController.Refresh()
 		end
 	end
 	if convert then
-		-- The job as it stands: its time left at the Condenser's speed now, or whether the bag holds its stones.
+		-- The job as it stands: its time left at the Condenser's speed now, or whether the bag holds its stones; asleep,
+		-- the cost alone (the Comb's plate says what wakes it: research's must-fix 1).
 		local c = CondenserConfig.Convert
 		local left = Condenser.ConvertLeft(home)
 		local have = view.Bag.Stones[c.From] or 0
-		convert.Lines.State.Text = if not awake then `Wakes at base level {CondenserConfig.Wakes}`
-			elseif left then `{Read.Seconds(left / math.max(now.Rates.Condenser, 1e-3))} left`
-			elseif have >= c.Take then `Ready · {have} {c.From} in the bag`
-			else `{have} of {c.Take} {c.From} in the bag`
+		if not awake then
+			setConvert(convert, "Asleep", 0, "")
+		elseif left then
+			local seconds = left / math.max(now.Rates.Condenser, 1e-3)
+			local said = if seconds < 60 then Read.Seconds(seconds) else Read.Hours(math.ceil(seconds / 60) / 60)
+			setConvert(convert, "Running", 1 - left / c.Seconds, `{said} left`)
+		elseif have >= c.Take then
+			setConvert(convert, "Ready", 1, "Ready")
+		else
+			setConvert(convert, "Short", have / c.Take, `{have} of {c.Take} {c.From}`)
+		end
 		convert.Prompt.Enabled = awake and left == nil and have >= c.Take
 	end
 	if forge then
@@ -1089,7 +1180,7 @@ function BaseController.Parts(): { [string]: Instance }
 		parts.CondenserPrompt = condenser.Prompt :: any
 	end
 	if convert then
-		parts.ConvertPanel = convert.Gui
+		parts.ConvertCard = convert.Card
 		parts.ConvertPrompt = convert.Prompt
 	end
 	if forge then

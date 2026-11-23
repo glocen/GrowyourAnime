@@ -15644,6 +15644,30 @@ Read from `condenser_card.png` and `condenser_share.png`, every state, in the fr
 - The chip is six-sided, on the others' 22-point tile, and it parts on the slab. The arrow is a new white image, since EdgeArrow is held to two tints. Both passed the content check.
 - **Next:** Faber's build, after AR50's install, from `condenser_card.json` and `condenser_share.json`.
 
+### Faber's build (Faber, 2026-11-23, 21:18)
+
+- **The card, B,** on the System slab beside the cradle, in four states (`BaseController`, the look in `Config.Hud.Convert`, the numbers from `Config.Condenser.Convert`). Asleep shows the cost line dimmed at 172 by 44, with no second line (must-fix 1). The convert's prompt stands on the cradle, and the grey panel is gone.
+- **The Power screen.** Rose, the 17-stop light and the six-sided chip (`Config.Hud.Power`). There's a third row and a third handle, and the lights run Breaker, Training, Condenser, battery (`PowerScreen`).
+- **Must-fix 2.** The rows hold the 44-point touch floor, so three can't fit on the smallest phone. The list is cut to whole rows instead, so the foot always falls between two rows and the Condenser's row is one scroll down. The Power case checks it at both scales.
+- **A finding, fixed (tier 1, for your read).** Roblox draws its prompt card ("E · Stone Condenser · Convert", 188 by 72, centred on the cradle) under every layer. At the spec's 22 points the card hid half its words: "Stone Conde|nser".
+  - The card now stands 6 points right of the prompt's card, or at the screen's right edge (`UI.World.Beside`, `Config.Hud.Plates.Gap`).
+  - It holds the prompt card's largest size, so it stays put as the prompt comes and goes.
+  - On the smallest phone it rests at the right edge, over the prompt's rounded end by 2 points.
+- **The take, made faithful.** "Take: AR51" sets the smallest phone in the window's middle.
+  - The camera's field is widened so the box sees the phone's own field, and Roblox's card stands as it does on the phone.
+  - The World layer is framed as the phone's screen (`Layers.Box` with a corner).
+  - The guide's arrow is placed in the World layer's frame. In play that frame is the whole window, as before.
+- **Open, not this piece: the guide's arrow.** On the smallest phone there's no height between the top band and the guide's chip. The arrow ("8 ready: open them at the Breaker") stands mid-screen, over the avatar's head and the prompt's key (`phone_ready.png`, and `phone_ready_noarrow.png` without it). On a window it stands at the edge (`desk_ready_small.png`). My proposal: hide it while a prompt shows in reach. That's the guide's piece, for your call.
+- **The dock's Map rose:** never seen beside the bar. On the smallest phone the screen covers the dock (`phone_power.png`). Under Auto, the Condenser, the only machine working, takes the whole bar in Rose (`phone_power_auto.png`).
+- **Not built:** B's stones lying on the cradle, and the shard standing while a convert runs (3D, outside the block).
+- **Uploads:** `PowerChipCondenser` 109967765766548 and `ArrowRight` 129196466380666, under the group, both Approved (the asset log, row 145).
+- **Checks:**
+  - type check 0 new; logic 29247 passing;
+  - TR37's case 41 passed (new: "in reach: the card clear of its prompt's card", and "running: the card still beside where its prompt stood");
+  - the guide's case 11 passed; "Power:" 108 passed; "Base:" 371 passed; 0 failed in each.
+- **Stills:** `build/captures/ar51/`. The card is shown asleep, ready, short and running, in the smallest phone's frame from Modulo's stand. The Power screen is shown with a split and under Auto, plus a window's frame at Ready.
+- **Waits:** research's pass.
+
 ## AR52. The Guard and the Dasher: two more Shades, so each stretch of Lantern Row asks its own question (Modulo now, then the effects teammate, then Faber)
 
 Research, 2026-11-23, 14:54, on the director's word of about 14:50: F2 of `docs/research/design-holes.md`, "Now, beside the map". It answers the director's word of 03:25: each phase of the run must play differently and be fun. Tier 2: the behaviours are already designed in `docs/roster.md`, "Enemies: Shades".

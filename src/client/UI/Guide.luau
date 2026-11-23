@@ -245,19 +245,27 @@ local function stepEdge()
 		return
 	end
 	local screen = camera:WorldToViewportPoint(middle + Vector3.new(0, CONFIG.Lift, 0))
-	local view = camera.ViewportSize
+	-- The frame is the World layer's, from its top left in the viewport's pixels: the window in play, a take's phone where
+	-- the take frames one (UI.Layers.Box with a corner, AR51), so the arrow stands at that phone's edge as on the phone.
+	local layer = a.Parent :: GuiObject
+	local origin = layer.AbsolutePosition + GuiService:GetGuiInset()
+	local view = layer.AbsoluteSize
+	if view.X <= 0 or view.Y <= 0 then
+		a.Visible = false
+		return
+	end
+	local seen = Vector2.new(screen.X, screen.Y) - origin
 	local scale = Layers.Scale()
 	local margin, top, bottom = CONFIG.Margin * scale, CONFIG.Top * scale, CONFIG.Bottom * scale
 	-- Never under the HUD's top band (the cards and the pills, UI.World.Band): the arrow drawn under the wallet was unseen
 	-- (TR24's fix 1, read on an unlocked screen, 2026-11-16).
 	-- In view is judged on the frame's own inset: a chevron in the sky over the band still shows, and no arrow with it.
-	local inside = screen.Z > 0 and screen.X >= margin and screen.X <= view.X - margin and screen.Y >= top and screen.Y <= view.Y - bottom
+	local inside = screen.Z > 0 and seen.X >= margin and seen.X <= view.X - margin and seen.Y >= top and seen.Y <= view.Y - bottom
 	if inside then
 		a.Visible = false
 		return
 	end
 	local band = World.Edge()
-	local layer = a.Parent :: GuiObject
 	-- The arrow's middle keeps half its size inside the inset, and its nudge along the way (below), so the whole of it
 	-- stays clear of the HUD's edges (the next step's chip under it).
 	local pad = (CONFIG.Edge.Size * 0.5 + NUDGE) * scale
@@ -267,15 +275,14 @@ local function stepEdge()
 	-- and over the next step's chip where it stands higher than the inset (research's must-fix, 2026-11-17)
 	local chipTop = World.FootTop()
 	if chipTop then
-		bottom = math.max(bottom, view.Y - chipTop + pad + CONFIG.Edge.Clear * scale)
+		bottom = math.max(bottom, view.Y - (chipTop - origin.Y) + pad + CONFIG.Edge.Clear * scale)
 	end
 	if band then
-		local under = layer.AbsolutePosition.Y + GuiService:GetGuiInset().Y + band * scale + pad
-		top = math.max(top, under)
+		top = math.max(top, band * scale + pad)
 	end
 	-- The way to it from the frame's middle (behind the camera, the way is turned round), cut at the inset edge.
 	local centre = Vector2.new(view.X / 2, (top + view.Y - bottom) / 2)
-	local way = Vector2.new(screen.X, screen.Y) - centre
+	local way = seen - centre
 	if screen.Z <= 0 then
 		way = -way
 	end
@@ -287,15 +294,9 @@ local function stepEdge()
 	local point = centre + way * reach
 	local unit = way.Unit
 	point += unit * (bob() / CONFIG.Bob) * NUDGE * scale -- it nudges along its way, as the chevrons bob
-	-- A viewport pixel less the top bar's inset is a GUI pixel, less the layer's corner (as UI.World places its plates).
-	-- By scale, so the layer's UIScale sizes the arrow and never moves it.
-	local room = layer.AbsoluteSize
-	if room.X <= 0 or room.Y <= 0 then
-		a.Visible = false
-		return
-	end
-	local on = point - GuiService:GetGuiInset() - layer.AbsolutePosition
-	a.Position = UDim2.fromScale(on.X / room.X, on.Y / room.Y)
+	-- On the layer already (as UI.World places its plates). By scale, so the layer's UIScale sizes the arrow and never
+	-- moves it.
+	a.Position = UDim2.fromScale(point.X / view.X, point.Y / view.Y)
 	a.Rotation = math.deg(math.atan2(unit.Y, unit.X)) - 90
 	a.Visible = Screen.Current() == nil
 end

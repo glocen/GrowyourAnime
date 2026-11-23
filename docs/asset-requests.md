@@ -15310,6 +15310,45 @@ D as base kit pieces, in the machines' stages' own shape: `tools/blender/base_le
 - **The bar for the refit,** measured as before: both rings clear the generator's Stages II and III by 1.2 over a full turn, level 2's stands whole in the gate-line frame, and both read from the Strip at 90 studs at the phone's pixels. The 64 px limit at level 2 stays accepted.
 - **Next session:** Modulo's refit of `LevelRing` and `LevelRingOuter`, then research's pass on the whole finish. Faber's other six pieces wait for it, after TR51, so the base's levels go in as one.
 
+### The rings' refit: one axle through the heart, level 2's ring over the floor's (Modulo, 2026-11-23, 13:03 to 13:37 by the clock)
+
+- **A fact first, for research's pass.** The floor's second ring isn't forward of the generator: it runs round the well, centred on the heart, where the generator stands (`LevelFloor`; both are 52 in from the front edge). So no place is both "over the floor's second ring" and "forward of the generator, between it and the gate".
+  - I kept the call's reason and dropped its parenthesis: the axle stands on the heart's own upright, and the rings are wide of the generator, never forward of it. Level 2's ring is the floor's second ring lifted, the same 23 in radius, so the sky does echo the floor.
+  - Forward of the generator on the middle line is the way in, where the floor's ring is open. A ring there would hang over the way in and echo nothing, and from the gate's line it would lie across the wheel. Not drawn. If research meant that place all the same, it's a new blockout: say so at the pass.
+- **Why a wide ring fits where a close one couldn't.** The night's search stopped at 18.5 in radius, inside Stage III's reach. At 23 the ring passes outside the generator's body at every stage, and the nearest thing to it is a flood mast's head.
+
+| Ring | Radius | Its middle | Section | Triangles | Turns |
+|---|---|---|---|---|---|
+| `LevelRing`, level 2 | 23 | over the heart, 14 up | 1.6 by 1.05 | 1296 | 0.02 a second |
+| `LevelRingOuter`, level 3 | 27 | 10.6 further up the axle: 24.47 up, 1.66 behind the heart's line | 2.1 by 1.35 | 1296 | 0.012, the other way |
+
+- **The one axle:** its top leans into the plot by 9°, so both rings' gate sides are raised 9° and neither leans across (`tilt` 9, `lean` 0, the same `axle` in both rows). At 9° and 14 up, level 2's ring is whole in the gate-line frame with its top 13 px under the frame's; two degrees more and it leaves it.
+- **The make is the one that passed:** four lengths drawn to a point at each end, a bead of teal light in each gap, teal light in a dark bed on the inner and outer faces and under. Only the sizes grew with the radius (the gaps, the tips, the beads). No swatch and no map changed.
+- **Measured against the exported meshes, over a full turn** (`py tools/blender/base_levels_clear.py`, new: it reads the handoff, needs no Blender, and exits 1 under the bar). The generator's stage by its triangles, its wheel and demand mark as their sweep; every other piece on the plot by its box, the machines at Stage III on every bay awake at level 3. Points are 0.6 apart, so a gap can read that much over.
+
+| | The generator's body | Its turning parts | The nearest other piece | From the gate's line | From the Strip, 90 |
+|---|---|---|---|---|---|
+| `LevelRing`, Stage II | 8.28 | 6.78 | 1.88, a flood mast's head | whole: 304 by 101 px | whole: 223 by 42 px |
+| `LevelRing`, Stage III | 6.30 | 4.81 | 1.88, the same | the same | the same |
+| `LevelRingOuter`, Stage III | 13.28 | 11.77 | 6.17, a bay at Stage III | 53% in the frame: its far arc and both sides | 81% in the frame, 286 by 72 px |
+
+- **The bar:** met on the three measured lines (1.2 clear at Stages II and III; level 2's ring whole from the gate's line; both in the Strip's frame at 90). The old place read 0.0 on the same measure, the clash as found.
+- **Self-read, on the sheets** (`build/handoff/Base/base_levels_finish.png`, `_64.png`, `_turn.png`, `_above.png`, all four redrawn; by day, the player's camera, each level over its own generator stage):
+  - **At the gate's line:** level 2 is a wide halo worn by the wheel, its near arc over the wheel's head and its sides coming down behind the flood masts. Level 3 adds an arc behind the crown and two sides rising out of the frame.
+  - **Facing the gate:** new. Level 2's ring is whole under the truss, round the wheel, where the first place showed nothing; level 3's is cut by the truss.
+  - **From 90 studs:** level 2 is a clear oval round the wheel, nearly twice as wide as before (223 px against 119) and flatter (42 high against 65). Level 3 is two ovals stacked, the upper clear against the sky.
+  - **From 150 studs:** level 2's oval reads now, where it was "thin, in among the wheel and a pylon". Level 3 reads at once.
+  - **From above:** the two rings are round the well with the floor's two rings, on one centre.
+- **Limits, as they stand:**
+  - `LevelRingOuter`'s right end leaves the frame from 90 studs (19% of it, behind a pylon). At 25 in radius it would be 11%; I kept 27 so the two rings differ in size and read as a stack, not a coil. From 150 it's whole.
+  - At 64 px, level 2 from the Strip is still faint: the limit research accepted.
+  - The two rings' arcs lie close in the gate-line frame at level 3 (the upper's far arc just over the lower's near one). It reads as one halo with a second band, which is the call; in motion they cross opposite ways.
+  - A flood mast's head is 1.9 under level 2's ring. Clear, and seen from the way in as the ring passing over the masts.
+- **Changed:** `tools/blender/base_levels.py` (`AXLE`, `RINGS`, the rows and the plan's note, whose "stand no LevelRing" line is gone); `build/handoff/Base/meshes/LevelRing.json` and `LevelRingOuter.json`, their two manifest entries, their two rows in `plan.json`, and the four sheets. Nothing else in the export moved (`git status`). The rows' fields are the same, so the note's CFrame order stands; `LevelRingOuter`'s `along` is now -53.66.
+- **Content check:** PASS for the handoff, both rings, 13:36. Held for the upload check, added to the night's: each ring alone, full size and 64 px over dark, from above and three-quarter; and one clean frame from straight above of both rings with `LevelFloor` and `LevelRays` at level 3, to show the rays straight.
+- **For Faber, after TR51:** all seven pieces now, as one install. `py tools/world/kit_take.py Base`; the rings' rows as `machines.baseLevels` gives them; `py tools/blender/base_levels_clear.py` after any later export.
+- **Four facts:** made, both rings refitted and exported. Self-reviewed on the sheets and by the audit, PASS. Delivered to `build/handoff/Base`, not uploaded. Nothing in the game; research's pass on the whole finish is asked now.
+
 ## Later, by ground
 
 The rest of ground 1 (Kirra in AR10, Watt in AR11; then Sable, Marigold, Crane), then each ground's Voidkin in `docs/roster.md`'s order. **The machines** (Gantry, Bulwark, Ironhymn, Shiomaru, Aegir) share one custom rig, taller than a player, with its own clip family: the first of them is timed like AR1, because a custom rig is a different cost.

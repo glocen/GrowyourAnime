@@ -7,8 +7,10 @@ studs is seen: a level needs a low sign and a high one.
   ring round the well; at level 3 rays join the two rings.
   For a visitor at the gate, the fins: a small tower of the gate's own make on each of its shoulders at level 2, a
   second pair outside them at level 3.
-  For the Strip, the rings afloat: at level 2 a slim ring of the gate's teal round the generator, its gate side
-  raised so its face shows, turning slowly; at level 3 a second, wider and higher, leaned and turning the other way.
+  For the Strip, the rings afloat, a halo stacked on one axle through the plot's heart: at level 2 a slim ring of
+  the gate's teal over the floor's second ring and of its size, wide of the generator at every stage, its gate side
+  raised so its face shows, turning slowly; at level 3 a second on the same axle, wider and higher, turning the other
+  way (research's call of 2026-11-23, 03:22: the sky echoes the floor, and level 3 stays one halo).
 And a bay that wakes lights its line: the bus's current runs on to it and its ground's frame lights.
 
 The pieces (base_kit.py takes PIECES), each stood in the plot's frame by tables(), plan.json's machines.baseLevels:
@@ -26,6 +28,8 @@ conduits'; the rings' is the void's teal. Every light on a body lies in a dark b
 The review, the finish at the blockout's four stands by day, and the rings turning:
 blender.exe -b --factory-startup --python-exit-code 1 --python tools/blender/base_levels.py -- <abs out_dir> see <2|3> [fast] [in] [gate] [strip] [far] [spin=<degrees>]
 blender.exe -b --factory-startup --python-exit-code 1 --python tools/blender/base_levels.py -- <abs out_dir> sheet
+
+The rings' audit, after every export (no Blender): py tools/blender/base_levels_clear.py
 """
 
 import math
@@ -47,17 +51,20 @@ SECOND = 23.0                         # the second ring on the deck, round the w
 MEETS = math.degrees(math.asin(LANE / SECOND))   # where a line of the way in runs into it, from the line to the gate
 LIT, BED, SLICE = 0.17, 0.11, 0.06    # a light on the deck and its dark bed: their middles up, and how thick each is
 FINS = {"LevelFin": dict(tall=12.5, wide=1.9, reach=4.6), "LevelFinOuter": dict(tall=9.5, wide=1.7, reach=8.4)}
+# The rings' one axle: it stands on the heart's own upright at level 2's ring's middle, AXLE_UP over the deck, its top
+# leant into the plot so each ring's gate side is raised (`tilt`), and across it not at all (`lean`: above zero, a
+# ring's right side from the gate dips). Measured by base_levels_clear.py, after every export, against everything that
+# stands on a plot at levels 2 and 3: at this tilt and height level 2's ring is whole in the frame from the gate's line
+# and passes over the flood masts' heads; two degrees more and it leaves the frame's top.
+AXLE_UP, AXLE = 14.0, dict(tilt=9.0, lean=0.0)
 # A ring afloat: its radius, its section (across, up), its lengths in degrees, a bead in each gap, its tips' length;
-# where its middle stands over the generator, how far its gate side is raised and how far it leans across the plot
-# (above zero, its right side from the gate dips), and its turning, in turns a second.
+# how far up the axle its middle stands from level 2's ring's, and its turning, in turns a second.
 RINGS = {
-    "LevelRing": dict(radius=14.0, section=(1.3, 0.9), spans=[(k * 90.0 + 6.0, k * 90.0 + 84.0) for k in range(4)],
-                      beads=[0.0, 90.0, 180.0, 270.0], bead=(0.5, 1.15), tips=1.8, up=15.5, tilt=30.0, lean=0.0,
-                      sign=1, rate=0.02),
-    "LevelRingOuter": dict(radius=22.0, section=(2.0, 1.3),
-                           spans=[(4.5, 116.5), (125.5, 175.5), (184.5, 296.5), (305.5, 355.5)],
-                           beads=[0.0, 121.0, 180.0, 301.0], bead=(0.7, 1.6), tips=2.6, up=25.0, tilt=26.0, lean=12.0,
-                           sign=-1, rate=0.012),
+    "LevelRing": dict(radius=SECOND, section=(1.6, 1.05), spans=[(k * 90.0 + 4.5, k * 90.0 + 85.5) for k in range(4)],
+                      beads=[0.0, 90.0, 180.0, 270.0], bead=(0.6, 1.3), tips=2.4, rise=0.0, sign=1, rate=0.02),
+    "LevelRingOuter": dict(radius=27.0, section=(2.1, 1.35),
+                           spans=[(3.75, 117.25), (124.75, 176.25), (183.75, 297.25), (304.75, 356.25)],
+                           beads=[0.0, 121.0, 180.0, 301.0], bead=(0.8, 1.8), tips=3.0, rise=10.6, sign=-1, rate=0.012),
 }
 QUARTER = Matrix.Rotation(math.pi / 4, 4, "Z")   # a four-sided turned shape, its faces square to the piece
 TIP = 0.05                            # a point's own radius: a turned shape closed to nothing loses its faces
@@ -249,7 +256,8 @@ def ring(name):
                 strip(m, la, lb, n, sw, (radius - reach, -tall / 2 - out), (radius + reach, -tall / 2 - out), (radius, 0.0))
         for q in r["beads"]:
             bead(m, tuple(_p(radius, q, 0.0)), *r["bead"])
-        which = ("level 2's, round the generator" if name == "LevelRing" else "level 3's, wider and higher")
+        which = ("level 2's, over the floor's second ring and of its size" if name == "LevelRing"
+                 else "level 3's, wider and higher on the same axle")
         return Piece(name, m,
                      note=f"a ring afloat, {which}: {2 * r1:g} across, {wide:g} by {tall:g} in section, in the gate's "
                           f"teal, in {len(r['spans'])} lengths drawn to a point at each end, a bead of teal light in "
@@ -268,9 +276,8 @@ FLAT = ("LevelFloor", "LevelRays", "BayWake")   # light on the deck: these cast 
 
 def lean_of(name, turned_by=0.0):
     """A ring's turn in Blender's piece frame: about its own axle, then its gate side raised, then its lean."""
-    r = RINGS[name]
-    return (Matrix.Rotation(math.radians(-r["lean"]), 3, "Y") @ Matrix.Rotation(math.radians(r["tilt"]), 3, "X")
-            @ Matrix.Rotation(math.radians(turned_by * r["sign"]), 3, "Z"))
+    return (Matrix.Rotation(math.radians(-AXLE["lean"]), 3, "Y") @ Matrix.Rotation(math.radians(AXLE["tilt"]), 3, "X")
+            @ Matrix.Rotation(math.radians(turned_by * RINGS[name]["sign"]), 3, "Z"))
 
 
 def rows(level):
@@ -284,8 +291,10 @@ def rows(level):
         elif name in RINGS:
             r = RINGS[name]
             axle = lean_of(name) @ Vector((0, 0, 1))
-            made.append(dict(piece=name, across=0.0, along=-ROW, up=r["up"], moves="turns", tilt=r["tilt"], lean=r["lean"],
-                             sign=r["sign"], rate=r["rate"], axle=[round(axle.x, 4), round(axle.z, 4), round(-axle.y, 4)]))
+            middle = Vector((0.0, -ROW, AXLE_UP)) + axle * r["rise"]   # both rings' middles are on the one axle
+            made.append(dict(piece=name, across=round(middle.x, 2), along=round(middle.y, 2), up=round(middle.z, 2),
+                             moves="turns", tilt=AXLE["tilt"], lean=AXLE["lean"], sign=r["sign"], rate=r["rate"],
+                             axle=[round(axle.x, 4), round(axle.z, 4), round(-axle.y, 4)]))
         else:
             made.append(dict(piece=name, across=0.0, along=0.0, up=0.0, moves="still"))
     return made
@@ -305,10 +314,11 @@ def tables():
              "sign, 0) in the plot's frame: `tilt` raises its gate side, `lean` dips its right side as seen from the "
              "gate, and `axle` is where its axle then points, in Roblox's frame, to check the turn by. LevelFloor, "
              "LevelRays and BayWake are light on the deck: no collision, CastShadow off. The fins and the rings are "
-             "the gate's teal with their light in the mesh's glow, never Neon. OPEN, 2026-11-23: LevelRing's place isn't "
-             "final. Measured against the generator's own stages it passes within 0.54 of Generator2 and through "
-             "Generator3 (docs/asset-requests.md, AR50, the cut's record): stand no LevelRing before its refit. The "
-             "floor's light, the fins, BayWake and LevelRingOuter (5.4 clear) stand as listed.",
+             "the gate's teal with their light in the mesh's glow, never Neon. The two rings share one axle (the same "
+             "`tilt`, `lean` and `axle`), through the plot's heart: LevelRing over the floor's second ring and of its "
+             "size, LevelRingOuter further up it, so its `along` is a little behind the heart's line. Measured against "
+             "the exported meshes over a full turn (docs/asset-requests.md, AR50, the rings' refit): both pass every "
+             "stage of the generator and every other piece on the plot by more than 1.2.",
         levels={str(level): dict(pieces=rows(level)) for level in (2, 3)},
         bayWake=dict(piece="BayWake", bays=[3, 4],
                      note="stood at the bay's own place with the bay's turn while that bay is awake; bays 5 and 6, "

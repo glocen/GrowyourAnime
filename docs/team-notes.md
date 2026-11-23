@@ -15,9 +15,9 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **Next:** the Studio run of AR49, TR51 and TR37: the self-test, LogicTests and WorldReport; FxKit.rbxm rebuilt with the landing's look; the Fit Prints; captures from the gate at each stage and on the smallest phone, for research. Then the small ones (AR44's shine, TR10's stills, TR50's Arc palette and Voidkin floor, AR48's states), then AR50's install.
 - **Open, tests:** NOT VERIFIED: AR49, TR51 and TR37; and, in the Festival place (item 9), TR50's run cases, the Festival role's suite, TR48's keeper, TR49's Stage 1 playtest and TR10's marker. TintMask on a phone. TR44's phone take waits for the director's go.
 
-**Modulo (assets).** 2026-11-23, 03:21, on Fable 5.2. Voidkin work parked until before launch (the director's word, 11:10). Stopped on the director's wrap-up (by research): committed, nothing running, no lock held.
-- **Delivered today:** AR48's five cues as a block-in (`build/handoff/FxKit/states/`, Faber's after TR49's states), and TR50's dusk palette for the Arc panel and the results card's cover (`build/handoff/UI/stages/arc_dusk.json`, Faber's after AR49), and the Voidkin screen's floor in B, pale stone with the element as a rim of light (`build/handoff/UI/voidkin/voidkin_floor.json`, research's pick at 02:05, Faber's after TR51).
-- **Now:** AR50's cut is in `build/handoff/Base` (seven kit pieces, `machines.baseLevels`; content check PASS). Six stand. Open: `LevelRing` passes through the generator's Stages II and III, measured, and no place round the axle fits; level 2's ring needs a new place, research's call (AR50, "The colour pass and the cut"). Next session starts there. Faber installs after TR51, without `LevelRing` until its refit.
+**Modulo (assets).** 2026-11-23, 13:38, on Fable 5.2. Voidkin work parked until before launch (the director's word, 11:10).
+- **Now:** AR50's rings refitted and delivered (`build/handoff/Base`): both on one axle through the heart, `LevelRing` 23 in radius over the floor's second ring, `LevelRingOuter` 27 further up it. Clear of every generator stage by 4.8 or more and of everything else by 1.9, level 2's whole in the gate-line frame (`py tools/blender/base_levels_clear.py`, PASS); content check PASS. A fact for research in the record: the floor's ring is round the generator, not forward of it (AR50, "The rings' refit"). **Waits: research's pass on the whole finish.** Then all seven are Faber's, after TR51, as one install.
+- **Delivered earlier today:** AR48's five cues as a block-in (`build/handoff/FxKit/states/`, Faber's after TR49's states), TR50's dusk palette (`build/handoff/UI/stages/arc_dusk.json`, Faber's after AR49), and the Voidkin screen's floor in B (`build/handoff/UI/voidkin/voidkin_floor.json`, Faber's after TR51).
 - **In the game:** AR46's Hard looks with AR47's masks, on TintMask (a856f06), passed at competent (19:18). AR42's tiles in Seam, passed at competent (f9f3636).
 - **For Faber:** AR49, Home's panel in C (`home_cards.json`): 12 images to upload under the group, a ViewportFrame of the lead between `HomeVoidkinRimTop` and `HomeVoidkinFrame`, the words as TextLabels; after research's second look. AR44, the critical's shine (`build/handoff/UI/hud/critical_shine.json`). AR43, upload the five `Jewel<Colour>3.png` and swap their ids, if not done. TR10: take `MarkerElite.png` as it stands at the marker's install.
 - **For Faber, AR40's install:** the atlas pair, and the Strip's eight changed meshes with the manifest, on top of the 40 base meshes, the paving and C's keys already listed in AR40. The atlas never goes alone. AR38's Shop meshes go with AR38.
@@ -124,6 +124,13 @@ For Faber:
 - Tier 2, research, 2026-11-12, on the director's words: weapons belong to a class, in two hands (Main Hand and Off Hand replace Weapon and Shield), a preset holds a pair per class, a weapon drop is for the lead's class; Combat Power made to be watched, its weights fitted by the simulation; each item kind modelled and rendered to its icon (AR6, phase 3) (`docs/design.md`, "Regalia: gear" and "Combat Power"). Faber: the Stats case's `"Weapon"` source becomes `"Main Hand"` when you next touch it. Faber and Modulo: say in your row what you'd change.
 
 ## Entries
+
+### 2026-11-23, 13:38. AR50: the rings afloat refitted on one axle (Modulo)
+
+- **What:** level 2's ring no longer passes through the generator. Both rings stand on one axle through the plot's heart, leant 9° into the plot: `LevelRing` is the floor's second ring lifted (23 in radius, 14 up), `LevelRingOuter` 27 in radius 10.6 further up it, turning the other way. Level 2's ring now reads from 150 studs and through the gate.
+- **Where:** `build/handoff/Base` (the two meshes, their manifest entries and plan rows, four sheets); `tools/blender/base_levels.py`; the audit, `tools/blender/base_levels_clear.py`; the record in AR50, "The rings' refit".
+- **Open:** research's pass on the whole finish. Research's call placed the floor's ring forward of the generator; it's round it, so the rings went wide of the generator instead (the record's first line). Nothing uploaded, nothing in the game.
+- **For:** research now; Faber after TR51, all seven pieces as one install.
 
 ### 2026-11-23, 03:25. TR37 built, not yet run in Studio (Faber)
 

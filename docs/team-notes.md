@@ -10,9 +10,10 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **Modulo's order:** AR54 (the yard at Stage III, main map) before AR53 (the goals' look).
 - **With the director:** answer **item 10 in Faber's session** (the hooks for Scintilla and Sonus: Faber needs your own word there); open two sessions titled **Scintilla** and **Sonus**; open Studio on the main place with Rojo on 34876; `src/shared/Config/Sounds.luau`'s uncommitted change; the store's design.
 
-**Faber (builder).** 2026-11-23, 16:31, on Opus 5.5.
-- **Done:** AR44's shine passed, and its weights are closed (research, 16:18). AR49 passes at competent. AR52's must-fix 1 is fixed: Orange read as Red only on Hard, so it now has a Hard tint, `#FF7000` (AR52, "Must-fix 1, measured and fixed"; for research's eye: `build/captures/ar52/types_sheet.png`).
-- **Next:** F7's timing; then TR10's stills, TR50's Arc palette and floor, AR48's states; AR50's install, AR51, TR52; AR52's behaviours, TR54, TR53.
+**Faber (builder).** 2026-11-23, 16:40, on Opus 5.5.
+- **Done and passed:** AR44's shine, its weights closed (research, 16:18); AR49; and AR52's must-fix 1, where Orange on Hard now wears `#FF7000` (research passed it at competent: AR52, "Research's second look").
+- **TR10's stills** for research: `build/captures/tr10/layouts_sheet.png` (TR10, "The stills for research's verdict").
+- **Next:** TR50's Arc palette and floor, AR48's states (F7's timing waits on item 4's publish); AR50's install, AR51, TR52; AR52's behaviours, TR54, TR53.
 - **The hooks for Scintilla and Sonus** wait on the director's own word (item 10). **Open, tests:** as before (item 9's Festival cases; TintMask on a phone; TR44's phone take; the pinned reveal).
 
 **Modulo (assets).** 2026-11-23, 16:36, on Fable 5.2. Voidkin work parked until before launch (the director's word, 11:10).
@@ -36,6 +37,10 @@ Nothing blocks the start. When you want them (`docs/decisions.md`, "Waiting on t
 For Faber:
 
 4. **Publish the build, for your phone run** (TR24's fix 1 is in, and research gives the go). The place is saved with it, and the Studio tool can't publish: in Studio, File → Publish to Roblox (Alt+P). The experience stays private.
+   - **The same publish unblocks F7's timing** (`docs/research/design-holes.md`, F7, "The check"). Faber times the published places: the door, the trip, and Lantern Row's first hit. The starter shard is timed in Studio, on a new Test save. Your Live save is never wiped.
+   - **What Faber needs from you:**
+     - the Festival's place published too, with today's build;
+     - your OK for Faber to start the PC's Roblox player into the private game under your account, for one timed run.
 
 5. **The test rule, in `CLAUDE.md` and `ga-finish`.** Research relays your yes (the register, 2026-11-15, night): at a piece's finish, the cases its change can reach and every offline logic case; the whole suite at a phase's close and after a change to shared code. `CLAUDE.md` changes only on your own word in the builder's session: say "write it" there and it's in.
 6. **Your ear on Haymaker's strike sound**, a library pick (not one of AR13's made takes), heard on its frame. In a playtest, the Server command bar: `game.ServerStorage.NL_Debug:Invoke("Replay", nil, "RookHaymaker")` plays it every 3.5 s, and `Invoke("Replay", nil)` stops it. Two alternates are logged in AR1, section 8.

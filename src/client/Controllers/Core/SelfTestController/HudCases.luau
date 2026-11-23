@@ -187,7 +187,9 @@ function HudCases.Cases(given: Given): { any }
 			Stay = true,
 			Run = function(t: any)
 				-- Each state is held until the driver moves ReplicatedStorage.NL_TakeStep on ("Near", "Far", "Keeper", "End"):
-				-- the elite's plate in the picked layout 24 studs ahead, then 120, then the keeper's.
+				-- the elite's plate in the picked layout 24 studs ahead, then 120, then the keeper's. On the smallest phone's
+				-- frame inside Studio's window, as AR44's take: the HUD boxed to the window's left 16:9 at the scale the
+				-- smallest phone's would be at that height, so a capture of that 16:9 is the phone's picture, larger.
 				local step = Instance.new("StringValue")
 				step.Name = "NL_TakeStep"
 				step.Value = "Ready"
@@ -204,8 +206,9 @@ function HudCases.Cases(given: Given): { any }
 					Screen.Close()
 					t.Wait(0.5)
 				end
-				Layers.Force(Theme.Scale.Floor)
-				Layers.Box(Theme.Smallest - Vector2.new(0, GuiService.TopbarInset.Height))
+				local tall = workspace.CurrentCamera.ViewportSize.Y
+				Layers.Force(Theme.Scale.Floor * tall / Theme.Smallest.Y)
+				Layers.Box(Vector2.new(tall * Theme.Smallest.X / Theme.Smallest.Y, tall) - Vector2.new(0, GuiService.TopbarInset.Height))
 				local ok, problem = pcall(function()
 					if await("Near") then
 						standDown(t, "Elite", "brawler_elite", 24)

@@ -1222,6 +1222,18 @@ Research's word, 2026-11-17, sent with AR31's verdict (AR31, "Research's verdict
 
 - **Felt:** it's the street's Brawler: the tan paper mask with its holes and grin lit, the small mask on its shoulder, the same face as AR47's tile. It reads at 40 px, and at 28 px as a mask with teeth. **Passes at competent;** Faber installs it with the Lamplighter's.
 
+### The stills for research's verdict (Faber, 2026-11-23, 16:40 by the clock)
+
+- **The sheet:** `build/captures/tr10/layouts_sheet.png`, with the nine stills beside it. Its columns are Stack, Row and Badge; its rows are the elite's plate at 24 studs, at 120, and the keeper's.
+  - Every still is on the smallest phone's frame (the take now frames as AR44's does), on the Strip under the Row's look, from the game's camera behind the avatar. Modulo's two pictures are on the tiles.
+  - The home-only step chip is hidden for the stills: on a ground it never shows the Breaker's line.
+- **What I saw:**
+  - At 120 studs the plate stands where it does at 24. It hangs 9 studs over its marker, so from the game's camera both sit near the horizon. Only Badge changes, dropping its card past Near.
+  - **Stack:** its last row ("Lantern Row shard") runs under the nav bar.
+  - **Row:** the keeper's title is cut ("The Lamplighter · …").
+  - **All three:** the plate stands over the avatar's path mid-screen, research's note in TR8.
+- **The take:** it passed (5).
+
 ## TR11. Spectate, a toggle on the HUD (Faber)
 
 Research's entry, 2026-11-14, night, on the director's words of the same night (`docs/decisions.md`): the player's camera is never moved in a fight, and a small button follows the lead instead. "Change it now."

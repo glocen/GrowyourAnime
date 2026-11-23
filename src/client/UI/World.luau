@@ -30,7 +30,8 @@
 --   World.Beside(plate, prompt, gap)          its left edge at least `gap` authored pixels right of the prompt's card, shown
 --                                             or not (its largest size held), and never past the screen's right edge by more:
 --                                             Roblox's card is drawn under every layer, so a plate over it hides its words
---                                             (AR51: the convert's card beside its prompt on the cradle)
+--                                             (AR51: the convert's card beside its prompt on the cradle); and under every
+--                                             HUD piece in its column by Config.Hud.Plates.Gap (research's must-fix 3)
 --   World.Remove(plate)
 --   World.Where(plate)                        the world point it stands over now, or nil: for tests
 -- Roblox's own prompt cards are kept too: every prompt that shows is pushed under the top band (deeper where it would
@@ -342,6 +343,41 @@ function World.PromptBox(prompt: ProximityPrompt): (Vector2?, Vector2?)
 	return middle - half, middle + half
 end
 
+-- What the guide's edge arrow keeps off, in the viewport's pixels: the avatar's box, each prompt's card that shows, each
+-- plate that shows (UI.Guide; research's call on AR51, 2026-11-23: never over the avatar or a prompt).
+function World.Taken(): { { Low: Vector2, High: Vector2 } }
+	local boxes: { { Low: Vector2, High: Vector2 } } = {}
+	local low, high = World.AvatarBox()
+	if low and high then
+		table.insert(boxes, { Low = low, High = high })
+	end
+	for prompt in prompts do
+		local from, to = World.PromptBox(prompt)
+		if from and to then
+			table.insert(boxes, { Low = from, High = to })
+		end
+	end
+	local inset = GuiService:GetGuiInset()
+	for frame in plates do
+		if frame.Parent and frame.Visible then
+			local at = frame.AbsolutePosition + inset
+			table.insert(boxes, { Low = at, High = at + frame.AbsoluteSize })
+		end
+	end
+	return boxes
+end
+
+-- The foot piece's box in the viewport's pixels while it shows, or nil: the next step's chip, which the edge's arrow
+-- rides where its own spot is taken (UI.Guide).
+function World.FootBox(): (Vector2?, Vector2?)
+	local piece = foot
+	if piece == nil or piece.Parent == nil or not piece.Visible then
+		return nil, nil
+	end
+	local at = piece.AbsolutePosition + GuiService:GetGuiInset()
+	return at, at + piece.AbsoluteSize
+end
+
 ProximityPromptService.PromptShown:Connect(function(prompt: ProximityPrompt)
 	prompts[prompt] = true
 end)
@@ -490,6 +526,17 @@ RunService:BindToRenderStep("NL_WorldPlates", Enum.RenderPriority.Camera.Value +
 				local was = plate.Slide
 				local slide = if was and by < was then was + (by - was) * math.min(1, dt * HudConfig.Numbers.Slide.Rate) else by
 				plate.Slide = slide
+				if plate.Beside then
+					-- Beside its prompt, often held at the screen's edge: under every piece in its column by the kit's gap,
+					-- the band's pieces and those under them (the shop's countdown), each span's margin taken off (research's
+					-- must-fix 3 on AR51: the card's top met the restock line flush).
+					local margin, gap = HudConfig.Numbers.Band, HudConfig.Plates.Gap
+					local middle, half = on.X / scale + shift.X + slide, frame.Size.X.Offset * swell / 2
+					local crossed = crossing(middle, half - margin, top + drop + margin - gap)
+					if crossed then
+						drop = math.max(drop, crossed - margin + gap - top)
+					end
+				end
 				shift += Vector2.new(slide, drop)
 			end
 		end

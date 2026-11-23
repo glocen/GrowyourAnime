@@ -941,6 +941,7 @@ end
 -- card, one span over the readout, the eye and the next's offer when it shows: a plate under the band starts right of it
 -- (research's pass on AR12 at phone size: the eye stood over "Bay 1 · no one works here").
 local banded: { GuiObject } = {}
+local beneath: { GuiObject } = {} -- pieces under the band's, a span each but no say in its edge (HudController.Beneath)
 local function band()
 	local world = Layers.Get("World")
 	local origin, scale, margin = world.AbsolutePosition, Layers.Scale(), HudConfig.Numbers.Band
@@ -960,6 +961,14 @@ local function band()
 	local toasts = Toast.Stack()
 	if toasts then
 		table.insert(spans, span(toasts))
+	end
+	for index = #beneath, 1, -1 do
+		local frame = beneath[index]
+		if frame.Parent == nil then
+			table.remove(beneath, index)
+		elseif frame.Visible then
+			table.insert(spans, span(frame))
+		end
 	end
 	local corner: World.Span? = nil
 	for _, frame in { readout.Piece.Frame, eye, nextButton } :: { GuiObject } do
@@ -1563,6 +1572,14 @@ end
 
 -- Where an event chip stands under the pills, anchored at its top right (docs/ui.md, "Under the pills"): the Void Shop's
 -- countdown (AR38).
+-- A piece on the HUD under the band's (the shop's countdown under the pills): a plate keeps clear of it as of the band's,
+-- and it never lowers the band's edge (research's must-fix 3 on AR51). Dropped once it leaves the HUD.
+function HudController.Beneath(frame: GuiObject)
+	if table.find(beneath, frame) == nil then
+		table.insert(beneath, frame)
+	end
+end
+
 function HudController.UnderPills(): UDim2
 	return UDim2.new(1, -PAD, 0, TOP + 2 * (PILL + Theme.Size.Gap))
 end

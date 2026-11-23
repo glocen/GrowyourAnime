@@ -33,6 +33,7 @@ local chevrons: { Frame } = {}
 local edge: Frame? = nil
 local colour = UIKit.Systems.Voidkin.Colour
 local hidden = true -- near the target, or none
+local rides = false -- the edge's arrow on the next step's chip, its own spot taken
 local held: { Instance }? = nil -- a test's targets, over Point's
 local wanted: { Instance } = {} -- Point's last
 
@@ -146,14 +147,14 @@ function Guide.Test(list: { Instance }?)
 	apply(if list then list else wanted)
 end
 
-function Guide.Read(): { Count: number, Shown: number, Edge: boolean, Arrow: Frame? }
+function Guide.Read(): { Count: number, Shown: number, Edge: boolean, Arrow: Frame?, Rides: boolean }
 	local shown = 0
 	for _, frame in chevrons do
 		if frame.Visible then
 			shown += 1
 		end
 	end
-	return { Count = #targets, Shown = shown, Edge = edge ~= nil and edge.Visible, Arrow = edge }
+	return { Count = #targets, Shown = shown, Edge = edge ~= nil and edge.Visible, Arrow = edge, Rides = rides }
 end
 
 -- The edge's arrow drawn pointing down, its turn set each frame: a round dark backing rimmed in the guide's colour, and an
@@ -293,6 +294,46 @@ local function stepEdge()
 	local reach = math.min(if math.abs(way.X) > 1e-6 then halfX / math.abs(way.X) else math.huge, if math.abs(way.Y) > 1e-6 then halfY / math.abs(way.Y) else math.huge)
 	local point = centre + way * reach
 	local unit = way.Unit
+	-- Never over the avatar, a prompt's card or a plate (research's call on AR51, 2026-11-23: on the smallest phone the
+	-- band and the chip leave it no height, and it stood mid-screen over the avatar and the convert's prompt). Where its
+	-- spot is taken it rides the next step's chip, Clear points off its end toward the target, else the other end, still
+	-- turned to the target; with neither free, it waits. Judged on its box and its nudge both ways, so it never flickers.
+	local reachOf = CONFIG.Edge.Size * scale / 2 + NUDGE * scale
+	local taken = World.Taken()
+	local function free(spotAt: Vector2): boolean
+		local low, high = spotAt + origin - Vector2.one * reachOf, spotAt + origin + Vector2.one * reachOf
+		if spotAt.X - reachOf < 0 or spotAt.X + reachOf > view.X then
+			return false
+		end
+		for _, box in taken do
+			if low.X < box.High.X and high.X > box.Low.X and low.Y < box.High.Y and high.Y > box.Low.Y then
+				return false
+			end
+		end
+		return true
+	end
+	rides = false
+	if not free(point) then
+		local low, high = World.FootBox()
+		local spot: Vector2? = nil
+		if low and high then
+			local off = CONFIG.Edge.Clear * scale + reachOf
+			local level = (low.Y + high.Y) / 2 - origin.Y
+			for _, side in if unit.X < 0 then { -1, 1 } else { 1, -1 } do
+				local beside = Vector2.new((if side > 0 then high.X + off else low.X - off) - origin.X, level)
+				if free(beside) then
+					spot = beside
+					break
+				end
+			end
+		end
+		if spot == nil then
+			a.Visible = false
+			return
+		end
+		point = spot :: Vector2
+		rides = true
+	end
 	point += unit * (bob() / CONFIG.Bob) * NUDGE * scale -- it nudges along its way, as the chevrons bob
 	-- On the layer already (as UI.World places its plates). By scale, so the layer's UIScale sizes the arrow and never
 	-- moves it.

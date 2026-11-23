@@ -15682,6 +15682,23 @@ From the ten stills in `build/captures/ar51/`, in the smallest phone's frame and
 - **Not built:** B's stones on the cradle, and the shard during a convert. Both are 3D outside the block, and stay as they are.
 - **The second look** judges must-fix 3 only.
 
+### Faber's fixes: must-fix 3 and the guide's arrow (Faber, 2026-11-23, 21:29)
+
+- **Must-fix 3, the class.** A plate kept beside its prompt (`UI.World.Beside`) stands under every HUD piece in its column by `Config.Hud.Plates.Gap`. That's the band's pieces and those under them, each span's margin taken off.
+  - The shop's restock countdown now joins the pieces plates keep clear of (`HudController.Beneath`). It's a span, so it never lowers the band.
+  - In the capture the card's top stands 5 px under the countdown, `Plates.Gap` at the phone's scale (`phone_running_restock.png`, `_zoom`).
+  - TR37's case checks it with a stand-in piece in the card's column: under it by the gap, and back up once it's gone.
+- **The guide's arrow** (`UI.Guide`) never stands over the avatar, a prompt's card or a plate.
+  - Where its spot is taken, it rides the next step's chip, `Edge.Clear` off the chip's end toward the target, else the other end, still turned to the target.
+  - With neither end free, it waits. That's the floor.
+  - It's judged on its box with its nudge both ways, so it never flickers between the two.
+  - On the smallest phone it rides the chip's left end, clear of the avatar, the prompt and the card (`phone_ready.png`, `phone_running.png`).
+  - On a window, straight behind, the bottom middle is the avatar's too, so it rides there as well. Behind and to the side, it stands at the edge as before.
+  - The guide's case adds "never over the avatar" twice, and the chip check reads "over it, or riding beside it".
+- **Checks:**
+  - type check 0 new;
+  - TR37's case 43 passed and the guide's case 13 passed, 0 failed in each.
+
 ## AR52. The Guard and the Dasher: two more Shades, so each stretch of Lantern Row asks its own question (Modulo now, then the effects teammate, then Faber)
 
 Research, 2026-11-23, 14:54, on the director's word of about 14:50: F2 of `docs/research/design-holes.md`, "Now, beside the map". It answers the director's word of 03:25: each phase of the run must play differently and be fun. Tier 2: the behaviours are already designed in `docs/roster.md`, "Enemies: Shades".

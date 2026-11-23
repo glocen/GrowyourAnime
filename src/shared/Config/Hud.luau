@@ -456,7 +456,8 @@ return {
 	Guide = { Lift = 1.5, Bob = 0.35, Rate = 0.9, Size = 36, Margin = 56, Top = 84, Bottom = 120, Near = 12, Reach = 800,
 		-- The edge's arrow (TR24's fix 2: it read as a small lilac stroke on the sky): an arrow, shaft and head, on a round
 		-- dark backing Size points across, the backing in the chevrons' ink at Backing, rimmed in the guide's colour at Rim;
-		-- Clear points between its foot and the next step's chip.
+		-- Clear points between its foot and the next step's chip, or off the chip's end where it rides the chip (its own spot
+		-- over the avatar, a prompt or a plate: research's call on AR51, 2026-11-23).
 		Edge = { Size = 60, Backing = 0.15, Rim = 0.3, Clear = 6 } },
 	-- AR30, every button in the seam's make (Modulo's numbers, 2026-11-17, 15:00; asset-requests, AR30, "The cut, the images
 	-- and the numbers for Faber"): a pressable thing is dark glass lit from its foot at L in its light colour, or the plain

@@ -1568,6 +1568,37 @@ function BaseCases.Cases(given: Given): { any }
 					said = string.format("its left %.1f, the prompt's right %.1f", left, edge)
 					return left >= edge + gap - 1 or right >= room - gap - 1
 				end), said)
+				-- Under every HUD piece in its column by the kit's gap (research's must-fix 3 on AR51: its top met the shop's
+				-- restock line flush): a stand-in piece under the band's, its foot 4 pixels into the card's top.
+				local shown = card()
+				local before = if shown then shown.AbsolutePosition.Y else 0
+				local hud = Layers.Get("Hud")
+				local piece = Instance.new("Frame")
+				piece.Name = "NL_SelfTestColumnPiece"
+				piece.BackgroundTransparency = 1
+				if shown then
+					local scale = Layers.Scale()
+					local from = shown.AbsolutePosition - hud.AbsolutePosition
+					piece.Position = UDim2.fromOffset(from.X / scale, (from.Y + 4) / scale - 20)
+					piece.Size = UDim2.fromOffset(shown.AbsoluteSize.X / scale, 20)
+				end
+				piece.Parent = hud
+				HudController.Beneath(piece)
+				local under = ""
+				t.Check("under a HUD piece in its column by the kit's gap", shown ~= nil and waitFor(t, 2, function(): boolean
+					local found = card()
+					if found == nil then
+						return false
+					end
+					local foot = piece.AbsolutePosition.Y + piece.AbsoluteSize.Y
+					under = string.format("its top %.1f, the piece's foot %.1f", found.AbsolutePosition.Y, foot)
+					return found.AbsolutePosition.Y >= foot + HudConfig.Plates.Gap * Layers.Scale() - 1
+				end), under)
+				piece:Destroy()
+				t.Check("back up once it's gone", waitFor(t, 2, function(): boolean
+					local found = card()
+					return found ~= nil and math.abs(found.AbsolutePosition.Y - before) < 1
+				end))
 				-- Short: the bag one stone short of a hand's worth, the bar at what it holds, nothing to start.
 				local short = c.Take - 1
 				t.Server("StonesGive", c.From, short - have())

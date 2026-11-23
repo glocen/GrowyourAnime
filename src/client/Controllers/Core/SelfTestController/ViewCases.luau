@@ -296,7 +296,9 @@ function ViewCases.Cases(given: Given): { any }
 					t.Wait(0.2)
 					read = Guide.Read()
 					t.Check("high in view, over the band: its chevron, and no arrow", read.Shown == 1 and not read.Edge, `edge {read.Edge}, {read.Shown} shown`)
-					target.Position = avatar - look * 40
+					-- Behind and to the side: straight behind, its spot at the bottom middle is the avatar's, and it rides the chip
+					-- (below, with a stand-in chip; the test's guide shows none).
+					target.Position = avatar - look * 40 + look:Cross(Vector3.yAxis) * 40
 					t.Wait(0.2)
 					read = Guide.Read()
 					t.Check("behind the camera: the arrow at the frame's edge", read.Edge and read.Shown == 0, `edge {read.Edge}, {read.Shown} shown`)
@@ -305,11 +307,21 @@ function ViewCases.Cases(given: Given): { any }
 					local backing = if arrow then arrow:FindFirstChild("Backing") else nil
 					t.Check("the arrow: a shaft and a head on a dark backing, at its size", arrow ~= nil and backing ~= nil and backing:IsA("Frame") and backing.BackgroundColor3.R < 0.2 and arrow:FindFirstChild("Shaft") ~= nil and arrow:FindFirstChild("Left") ~= nil and arrow:FindFirstChild("Right") ~= nil
 						and math.abs(arrow.AbsoluteSize.X - HudConfig.Guide.Edge.Size * Layers.Scale()) <= 1, if arrow then tostring(arrow.AbsoluteSize) else "none")
-					-- the whole of it inside the frame's inset, never under the next step's chip at the foot
+					-- the whole of it inside the frame's inset, never under the next step's chip at the foot; or, its spot taken,
+					-- riding the chip, beside it (research's call on AR51, 2026-11-23)
+					local function clearOf(low: Vector2?, high: Vector2?): boolean
+						if arrow == nil or low == nil or high == nil then
+							return true
+						end
+						local from = arrow.AbsolutePosition + GuiService:GetGuiInset()
+						local to = from + arrow.AbsoluteSize
+						return from.X >= high.X - 1 or to.X <= low.X + 1 or from.Y >= high.Y - 1 or to.Y <= low.Y + 1
+					end
 					if arrow then
+						t.Check("never over the avatar", clearOf(World.AvatarBox()), if read.Rides then "riding the chip" else "at the edge")
 						local foot = arrow.AbsolutePosition.Y + arrow.AbsoluteSize.Y + GuiService:GetGuiInset().Y
 						local floor = camera.ViewportSize.Y - HudConfig.Guide.Bottom * Layers.Scale()
-						t.Check("its foot over the frame's bottom inset", foot <= floor + 1, string.format("%.0f, the inset %.0f", foot, floor))
+						t.Check("its foot over the frame's bottom inset, or riding the chip", Guide.Read().Rides or foot <= floor + 1, string.format("%.0f, the inset %.0f", foot, floor))
 						-- straight behind, it stands at the bottom middle: over the next step's chip, never under it (research, 2026-11-17).
 						-- A stand-in chip, its top well over the inset, so the rule is met whatever step the save is at.
 						local hud = Layers.Get("Hud")
@@ -321,10 +333,14 @@ function ViewCases.Cases(given: Given): { any }
 						stand.Size = UDim2.fromOffset(200, HudConfig.Guide.Bottom + 60)
 						stand.Parent = hud
 						World.Foot(stand)
+						target.Position = avatar - look * 40
 						t.Wait(0.15)
 						local chipTop = World.FootTop()
 						foot = arrow.AbsolutePosition.Y + arrow.AbsoluteSize.Y + GuiService:GetGuiInset().Y
-						t.Check("its foot over the next step's chip, where it stands higher than the inset", chipTop ~= nil and foot <= chipTop + 1, string.format("%.0f, the chip's top %s", foot, tostring(chipTop)))
+						local riding = Guide.Read().Rides
+						t.Check("never under the next step's chip: over it where it stands higher than the inset, or riding beside it", chipTop ~= nil and arrow.Visible
+							and (if riding then clearOf(World.FootBox()) else foot <= chipTop + 1), string.format("%s, its foot %.0f, the chip's top %s", if riding then "riding" else "over", foot, tostring(chipTop)))
+						t.Check("and never over the avatar there", not arrow.Visible or clearOf(World.AvatarBox()))
 						World.Foot(HudController.Parts().Chip)
 						stand:Destroy()
 					end

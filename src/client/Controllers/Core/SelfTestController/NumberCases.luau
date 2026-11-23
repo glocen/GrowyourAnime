@@ -282,7 +282,8 @@ function NumberCases.Cases(given: Given): { any }
 				-- A critical lands on a stand-in body in the frame's middle, 16 studs out, and is held at the beat the driver
 				-- names in ReplicatedStorage.NL_TakeStep (Effects.TimeScale at 0.05, then 0): "Land" (the flash, the split
 				-- wide), "Flash" (0.04 s), "Glint" (the band mid-number), "Rest" (0.4 s: the glint gone, the fade not begun), "Live" (one every 1.6 s at full speed),
-				-- "End". The attribute Shown says which beat stands.
+				-- "Weights" (a dealt, a received, a heal and a critical side by side at Rest, for the outlines' weights at their
+				-- authored thickness, research's re-read of 2026-11-23), "End". The attribute Shown says which beat stands.
 				local numbers = Combat.Numbers
 				local me = Players.LocalPlayer
 				local camera = workspace.CurrentCamera
@@ -302,24 +303,38 @@ function NumberCases.Cases(given: Given): { any }
 				step:SetAttribute("Frame", `{math.round(wide)}x{math.round(tall)}`)
 				local glint = HudConfig.Numbers.Critical.Shine.Glint
 				local beats: { [string]: number } = { Land = 0, Flash = 0.04, Glint = glint.Start + glint.Seconds * 0.45, Rest = 0.4 }
-				local root: BasePart? = nil
+				local roots: { BasePart } = {}
 				local count = 0
-				local function land(): any
-					if root then
-						root:Destroy()
+				local function clear()
+					for _, body in roots do
+						body:Destroy()
 					end
-					local ray = camera:ViewportPointToRay(wide / 2, tall * 0.55)
+					table.clear(roots)
+				end
+				-- A number on a stand-in body 16 studs out under the frame's point (across, 0.55 down).
+				local function put(across: number, amount: number, style: string): any
+					local ray = camera:ViewportPointToRay(wide * across, tall * 0.55)
 					local body = Instance.new("Part")
 					body.Name = "HumanoidRootPart"
 					body.Anchored, body.CanCollide, body.CanQuery, body.Transparency = true, false, false, 1
 					body.CFrame = CFrame.new(ray.Origin + ray.Direction * 16 - Vector3.new(0, 3, 0))
 					body.Parent = workspace
-					root = body
+					table.insert(roots, body)
 					count += 1
 					local key = `SelfTest:take{count}`
-					Effects.Number(body, key, 1204, { Style = "Critical" }, numbers)
+					Effects.Number(body, key, amount, { Style = style }, numbers)
 					return Effects.Counting[body][key]
 				end
+				local function land(): any
+					clear()
+					return put(0.5, 1204, "Critical")
+				end
+				local weights: { { Across: number, Amount: number, Style: string } } = {
+					{ Across = 0.2, Amount = 486, Style = "Dealt" },
+					{ Across = 0.4, Amount = 312, Style = "Received" },
+					{ Across = 0.6, Amount = 148, Style = "Heal" },
+					{ Across = 0.8, Amount = 1204, Style = "Critical" },
+				}
 				local ok, problem = pcall(function()
 					local shown = ""
 					local began = os.clock()
@@ -328,7 +343,21 @@ function NumberCases.Cases(given: Given): { any }
 						if step.Value ~= shown then
 							shown = step.Value
 							local beat = beats[shown]
-							if beat then
+							if shown == "Weights" then
+								Effects.TimeScale = 0
+								clear()
+								local last
+								for _, w in weights do
+									last = put(w.Across, w.Amount, w.Style)
+								end
+								Effects.TimeScale = 0.05
+								while last.Age < beats.Rest and os.clock() - began < 600 do
+									t.Wait()
+								end
+								Effects.TimeScale = 0
+								t.Wait(0.2)
+								step:SetAttribute("Age", math.round(last.Age * 1000) / 1000)
+							elseif beat then
 								Effects.TimeScale = 0
 								local c = land()
 								if beat > 0 then
@@ -353,9 +382,7 @@ function NumberCases.Cases(given: Given): { any }
 					end
 				end)
 				Effects.TimeScale = 1
-				if root then
-					root:Destroy()
-				end
+				clear()
 				Layers.Box(nil)
 				Layers.Force(nil)
 				if audition then

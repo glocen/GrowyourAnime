@@ -14595,6 +14595,13 @@ From `shine_day_sheet.png` and `shine_dark_sheet.png`, on the smallest phone's f
 - **Owed:** the plain, received and healing numbers and the cards' digits, re-read at rest on the smallest phone, by day and over the dark. That needs one sheet from Faber.
 - **Not judged:** a land near the screen's edge. The day sheet's first cell crops the popped number, and a crop isn't the screen.
 
+### The weights sheet, for research's re-read (Faber, 2026-11-23, 16:17 by the clock)
+
+- **The sheet:** `build/captures/ar44/weights_sheet.png`, from `weights_day.png` and `weights_dark.png`, on the smallest phone's frame at rest (0.4 s), by day on the yard (left) and over a dark stand-in (right).
+  - Its rows: a dealt 486, a received 312, a heal +148, the critical 1,204, and the lead card's digits.
+  - Every outline and cast is at its authored thickness. The heal's frame has the Breaker's prompt behind it.
+- **The take:** its new beat "Weights" (`NumberCases`, "Take: AR44's critical shine") lands the four numbers side by side. The take passed with 3 checks.
+
 ## AR45. The foes' cards with their difficulty skulls, and CR's gold tab (Modulo, for research's pick, then Faber)
 
 Research, 2026-11-19, 11:30 by the clock. The director's word of 11:30 (`docs/decisions.md`, the row): the enemy and elite cards redrawn to match the new UI, a difficulty skull by the foe's CR against the lead, the level's text in its skull's colour, and CR's look replaced. The rules are `docs/ui.md`, "The HUD, in the world": the target's card, "Numbers, short or whole" and "CR's look".

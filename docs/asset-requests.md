@@ -16812,3 +16812,25 @@ Research, 2026-11-23, 22:53, on the director's pick by 22:52 (`docs/decisions.md
 - **What waits:** the basic attack's clip, effect and sound (AR26, not covered); the portrait's render, after the finish; Faber's install, in his order.
 - **Time:** a signature piece gets the time it needs. The blockout is about 3 hours, as a guide.
 - **Order:** Modulo's next, after AR58's must-fix.
+
+### Modulo's blockout: three directions (2026-11-23, 23:48; started 23:19)
+
+Sheet: `build/handoff/Rook/takes/rook_takes.png` (1900 x 2882), and its five parts beside it: `_full`, `_bust`, `_fight`, `_row`, `_small`. Script: `tools/blender/rook_takes.py` (modes `takes`, `rook`, `shade`, `sheet`). Rough meshes on the R6 body, flat colours, never finished.
+- **A, the stray:** wild black hair swept up and over to one side, one clump of it red. A bone cropped jacket lined red over a black top, its right sleeve cut off at the shoulder. A dark iron gauntlet with a red ram, 1.15 of today's. A taped left hand, the tape's end swinging. Amber eyes, a grin.
+- **B, the captain:** a long teal-grey tail tied high with a red cord, two long bangs. A long navy coat worn open, lined red, over a white shirt, its right sleeve rolled. A slim steel gauntlet, 0.84 of today's. A white ribbon on the left cuff. Narrow grey eyes, a flat mouth.
+- **C, the sleeper:** a heavy sand-olive mop over his left eye. A big rolled bone hood-collar over a sleeveless charcoal top, very wide oxblood trousers. A bone-white gauntlet to the elbow with a red ram, 1.4 of today's. Tape on the left forearm. One half-shut gold eye.
+- **What the sheet shows, as the block asked:** each from the three-quarter front and from the game's camera; the bust in the lead card's pose, then at the card's size on the smallest phone; in a fight beside a Brawler from the player's camera at 450 pixels high; a row at the lead's distance with today's Rook; at 64 pixels over night, over the deck, and as an outline.
+- **The rig holds in all three:** the gauntlet is on the right arm with a ram to slide, and something light swings from the left arm. Only the idle pose was drawn: no take has been run through the clips.
+- **Content check:** the written directions first (A PASS; B and C changed before building: B's hair from crimson to teal-grey and its wrist cord to a white ribbon, C's hair from ash to sand-olive and its eye from red to gold). The drawn sheet: PASS for A, B, C and the words, on these bytes (sha1 `d71c20ff` for the whole). Its hold points for the finish:
+  - all three: the ram stays a flat, matte, hard-edged plate in one colour;
+  - A: the red stays hair, never a band; the jacket's back stays plain; the torso covered; one sleeve cut; plain tape on one hand; the collar's lining reads as one band with the front trim;
+  - B: one teal-grey tail, always tied; the collar's red reads as a lining, never a hood; a thin cord; no lone red patch between the legs or at the vent at 64 pixels;
+  - C: a smooth rolled collar joined to the top, no fur and no hanging tail; the hair stays muted and falling forward; the top covers the whole torso; Second Wind never stages him asleep.
+- **What I see, before research's read:**
+  - A follows the feel line's order most plainly: hair, face, the cut sleeve, the gauntlet. Light jacket against dark hair and legs gives three values at 64 pixels. Its outline is also the genre's commonest.
+  - B has the outline most its own from behind, where the player's camera is. The coat's tails are a built layer, more than AR11's comparison gives a Common, and from behind he's one dark mass. His gauntlet is the smallest, so the Warrior reads least.
+  - C's collar hides his mouth and chin, so his face reads least at the card's size. His gauntlet reads most.
+  - My lean is A. Research picks.
+- **Stand-ins:** the deck in the fight pictures is drawn (pale plates, a day sky); the camera, the light and the sizes are the game's. The hair is faceted blades, the faces flat slabs.
+- **Not in the repo:** the director's example batches (2026-11-20, `docs/decisions.md`). The bar used is AR11's comparison.
+- **The four facts:** made (a blockout sheet); self-reviewed at full size and at the phone's sizes; delivered for research's pick; not in the game, nothing uploaded.

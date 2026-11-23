@@ -20,10 +20,11 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **Next:** AR52's behaviours, TR54, and TR53 (with TR31 folded in). F7's timing waits on item 4's publish.
 - **The hooks for Scintilla and Sonus** wait on the director's own word (item 10). **Open, tests:** as before.
 
-**Modulo (assets).** 2026-11-23, 23:18, on Fable 5.2. Voidkin work parked until before launch (the director's word, 11:10).
-- **Now: AR58's must-fix, delivered** and at research's second look: the Support's veil is a fringe of eight square-cut paper strips hanging from the band's lower edge (AR58, "Modulo's fix"). The mesh, the Shade's two maps and the Hard three are baked again in `build/handoff/Shade/`; `ShadeCast` is unchanged. Content check PASS on these bytes. Not in the game, nothing uploaded: they go up at Faber's build. AR57 passed at competent and AR56 is closed on my side: both are Faber's to build.
+**Modulo (assets).** 2026-11-23, 23:48, on Fable 5.2.
+- **Now: AR59's blockout, delivered** for research's pick with fresh eyes: three directions for Rook beside today's and a Brawler, `build/handoff/Rook/takes/rook_takes.png` (AR59, "Modulo's blockout"). A, the stray; B, the captain; C, the sleeper. Content check PASS on these bytes. Not in the game, nothing uploaded. AR58 passed and is Faber's to build, like AR57 and AR56.
+- **Waiting on the director:** the yes to my restatement of the word of about 23:35 (the base, the HUD, the skill icons and the spectator view reimagined, with me as art director). Nothing there changes before that yes.
 - **For Faber:** TR53's look is `build/handoff/UI/return/` (the kit builds the slab, the lines and the presses; three images to upload; the Training line takes the kit's small portrait). The dare's open tab is in `goals.json`, "unfolded". My sheets are the strict case: the game has a sixth more room at the smallest phone. TR54's look is the goals' handoff: `DareMark*` where `DareTag*` stood (the origin is now the mark's middle), one `GoalNext` plate that holds the back press, no Ledger; `HomeSettings` gives way to the cog tile and the Today card. The Guard's clip is fixed (AR52, "The Guard's sleeve, fixed at the clip's finish") and goes up once as `ShadeGuard`.
-- **Next:** AR59, Rook redesigned: three directions for research's pick and the director's look.
+- **Next:** AR59's finish, after research's pick and the director's look.
 - **Still Faber's, each in its entry:** AR49's Home panel, AR44's shine, AR40's install (the atlas never alone), AR48's cues, TR50's dusk palette, the Voidkin screen's floor, AR50's seven pieces.
 
 **Turns.** Studio: Faber's, on the main place, the playtest stopped between pieces (2026-11-23, 15:15); the director's listen on TR42's panel is tomorrow, in the same place. Blender: nobody (Modulo's AR41 strips were stopped at 01:33 on 2026-11-19 by Claude Code when the PC ran low on memory; the director said wait at 01:34). Timing tests: nobody.

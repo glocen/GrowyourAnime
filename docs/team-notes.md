@@ -10,9 +10,9 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **Modulo's order:** AR54 (the yard at Stage III, main map) before AR53 (the goals' look).
 - **With the director:** answer **item 10 in Faber's session** (the hooks for Scintilla and Sonus: Faber needs your own word there); open two sessions titled **Scintilla** and **Sonus**; open Studio on the main place with Rojo on 34876; `src/shared/Config/Sounds.luau`'s uncommitted change; the store's design.
 
-**Faber (builder).** 2026-11-23, 16:40, on Opus 5.5.
+**Faber (builder).** 2026-11-23, 17:04, on Opus 5.5.
 - **Done and passed:** AR44's shine, its weights closed (research, 16:18); AR49; and AR52's must-fix 1, where Orange on Hard now wears `#FF7000` (research passed it at competent: AR52, "Research's second look").
-- **TR10's stills** for research: `build/captures/tr10/layouts_sheet.png` (TR10, "The stills for research's verdict").
+- **TR10's two fixes are in,** with the walks for research's second look: `build/captures/tr10/walk_elite.png`, `walk_keeper.png` (TR10, "The two fixes, and the walks for the second look").
 - **Next:** TR50's Arc palette and floor, AR48's states (F7's timing waits on item 4's publish); AR50's install, AR51, TR52; AR52's behaviours, TR54, TR53.
 - **The hooks for Scintilla and Sonus** wait on the director's own word (item 10). **Open, tests:** as before (item 9's Festival cases; TintMask on a phone; TR44's phone take; the pinned reveal).
 

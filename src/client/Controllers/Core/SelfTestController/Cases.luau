@@ -6175,16 +6175,16 @@ local cases = {
 	},
 	{
 		-- TR10 (research's entry, 2026-11-14): the elite down shows its marker over its square, with the server's time left
-		-- and its loot's chances from Rules.Drops, in each layout, and the three side by side; this player's keeper resting
+		-- and its loot's chances from Rules.Drops, its card folded far and unfolding near (Badge); this player's keeper resting
 		-- shows at its gate, its Challenge hidden for them, and a try asked meanwhile is refused.
 		Name = "World: TR10, the elite's and the keeper's markers while they're down, and a resting keeper refuses a try",
 		Place = "Festival", -- TR45: its world stands in that place only
 		Run = function(t: any)
 			t.Wait(LEAD_SETTLE)
 			local config = HudConfig.Down
-			local was = { Layout = config.Layout, Compare = config.Compare, Near = config.Near }
+			local was = { Near = config.Near }
 			local function restore()
-				config.Layout, config.Compare, config.Near = was.Layout, was.Compare, was.Near
+				config.Near = was.Near
 				t.Server("PackBack", SQUARE_ELITE.Name)
 				t.Server("PackBack", ELITE_STAND.Pack)
 				t.Server("KeeperRest", 0)
@@ -6206,11 +6206,11 @@ local cases = {
 			end
 			local felled = t.Server("PackDefeat", SQUARE_ELITE.Name)
 			t.Check("the elite falls", felled.Ok == true, tostring(felled.Error))
-			local function plateOf(kind: string, layout: string?): Frame?
-				return DownController.Plate(kind, layout)
+			local function plateOf(kind: string): Frame?
+				return DownController.Plate(kind)
 			end
-			local function shows(kind: string, layout: string?): boolean
-				local plate = plateOf(kind, layout)
+			local function shows(kind: string): boolean
+				local plate = plateOf(kind)
 				return plate ~= nil and World.Where(plate) ~= nil and ((plate:GetAttribute("Left") or 0) :: number) > 0
 			end
 			t.Check("its marker shows over its square", waitFor(t, REPLICATE, function(): boolean
@@ -6238,31 +6238,17 @@ local cases = {
 			t.Equal("Credits, experience and the shard", plate:GetAttribute("Lines"), 3)
 			t.Wait(1.2)
 			t.Check("it counts down", (plate:GetAttribute("Left") :: number) < left)
-			-- Each layout in the marker's place; the badge's card only near.
-			for _, layout in { "Stack", "Row", "Badge" } do
-				config.Layout = layout
-				t.Check(`{layout}: it shows`, waitFor(t, 0.5, function(): boolean
-					return shows("Elite", layout)
-				end))
-				local each = plateOf("Elite", layout)
-				if each then
-					t.Check(`{layout}: its card`, each:GetAttribute("Card") == (layout ~= "Badge"))
-					t.Check(`{layout}: as tall as it holds`, each.Size.Y.Offset > config.Icon and each.Size.Y.Offset < 260, `{each.Size.Y.Offset}`)
-				end
-			end
+			-- Badge (research's pick, 2026-11-23): past Near its card stays folded, only the tile and its time; near, it unfolds.
+			t.Check("far: its card folded", plate:GetAttribute("Unfold") == 0 and plate:GetAttribute("Card") == false)
 			config.Near = 1e6
-			t.Wait(0.1)
-			local badge = plateOf("Elite", "Badge")
-			t.Check("Badge: its card shows near", badge ~= nil and badge:GetAttribute("Card") == true)
+			t.Check("near: its card unfolds whole", waitFor(t, config.Unfold + 0.5, function(): boolean
+				return plate:GetAttribute("Card") == true
+			end))
+			t.Check("as tall as it holds", plate.Size.Y.Offset > config.Icon and plate.Size.Y.Offset < 260, `{plate.Size.Y.Offset}`)
 			config.Near = was.Near
-			-- The three side by side, for one capture.
-			config.Layout = "Stack"
-			config.Compare = true
-			t.Wait(0.1)
-			t.Check("compared: the three show at once", shows("Elite", "Stack") and shows("Elite", "Row") and shows("Elite", "Badge"))
-			config.Compare = false
-			t.Wait(0.1)
-			t.Check("one again", shows("Elite", "Stack") and not shows("Elite", "Row") and not shows("Elite", "Badge"))
+			t.Check("far again: it folds away", waitFor(t, config.Unfold + 0.5, function(): boolean
+				return plate:GetAttribute("Unfold") == 0
+			end))
 			-- Back: its marker goes.
 			t.Check("the elite is back at once for the test", t.Server("PackBack", SQUARE_ELITE.Name).Ok == true)
 			t.Check("its marker goes", waitFor(t, REPLICATE, function(): boolean

@@ -1246,6 +1246,27 @@ From `layouts_sheet.png` and `far_badge.png`, the smallest phone, the game's cam
 - **For the second look,** what stills can't show: a walk from 120 studs to 24 toward the elite, at phone size. It shows the badge growing and the card arriving at `Near`, whether it eases or pops. One strip or a short take, and the keeper's gate the same way.
 - Then the icons are in, and TR10 closes on the second look.
 
+### The two fixes, and the walks for the second look (Faber, 2026-11-23, 17:04 by the clock)
+
+- **Fix 1, the world size.** The badge takes a scale of `Hud.Down.Full / distance` from the camera, capped at 1 near. Full is 75, the camera's distance when the avatar stands at Near. The floor is `Least`: 28 px for the tile on the smallest phone, a scale of 0.69 there. The time and the card's words keep 14 px or more on the smallest phone at every size. Measured: 1.00 at 12 and 60 studs, 0.75 at 100, 0.69 at 200.
+- **The hang.** In the first walk, held under the whole top band, the small badge still stood on the avatar's head from the game's camera. It now stands open, like the band's other open plates: over its square near the horizon, between the lead's card and the wallet, and it moves aside only from a piece it would cross. At 24 studs the card hangs from the top of the frame to just over the avatar's head, clear of the lead's card and the wallet. That holds for both, the elite's at 9 studs and the keeper's at 11.
+- **Fix 2, the empty frame.** Far, the badge draws only the tile and the time: 60 authored px wide, under half the card's 176. The panel shows only from Near. There the card opens downward from the tile in 0.18 s (`Hud.Down.Unfold`, quad out), fading in as it widens. The tile stays where it was (0 px).
+- **Removed:** Stack, Row and the comparison: from Config, the controller and the cases.
+- **The take now centres the phone on the window.** The world is drawn across the whole window, so only a centred phone has the world standing under its HUD as it does on a phone. `Layers.Box` now takes the box's place. The 16:40 stills had it at the window's left, with the avatar right of centre.
+- **The walks.** The game's camera (20° down, 12.5 studs, FOV 70), by day, on the Strip, walking at 16 studs/s from 120 studs to 24:
+  - `build/captures/tr10/walk_elite.png` and `walk_keeper.png`: ten frames each, at the phone's size. They show 120 studs standing, the walk, the four frames of the unfold, and 24 studs.
+  - `unfold_elite.png` and `unfold_keeper.png`: twenty frames in a row at about 30 fps, cropped to the badge.
+  - All the frames: `build/scratch/faber/tr10_walk_elite/` and `tr10_walk_keeper/` (gitignored).
+- **What I saw:**
+  - The badge grows smoothly to full size by Near.
+  - The card arrives in four frames, eased, not popped.
+  - For two of those frames the rows are cut at the panel's sides ("redits 190"), a wipe from the middle. If that reads as a glitch, one change would fix it: the rows fade in once the width lands.
+- **Checked:**
+  - "HUD: TR10": 53 passed. Its new case checks the size at 12, 60, 100 and 200 studs, the time readable, the tile never under 28 px, far showing only the tile and the time, the tile still while the card opens, and the lint clean near and far.
+  - After `Layers.Box`'s change: "HUD: a keeper's try" 2 passed and "Tower card (TR46)" 27 passed.
+  - The take passed (5). The type check: 0 new.
+  - The Festival case "World: TR10" is rewritten to the fold and unfold. It runs only in the Festival's place, which isn't published yet.
+
 ## TR11. Spectate, a toggle on the HUD (Faber)
 
 Research's entry, 2026-11-14, night, on the director's words of the same night (`docs/decisions.md`): the player's camera is never moved in a fight, and a small button follows the lead instead. "Change it now."

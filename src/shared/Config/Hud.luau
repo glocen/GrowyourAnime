@@ -921,21 +921,25 @@ return {
 		-- Channel: the bar's empty part, the world through it; Rim: the bar's rim and caps; Rule: the title's rules and crest.
 		Look = { Channel = 0.45, Rim = 0.15, Glow = 0.82, Rule = 0.3 },
 	},
-	-- TR10's marker while the elite, or this player's keeper, is down (DownController; research's entry, 2026-11-14), in
-	-- grey: its icon (a stand-in until Modulo's), the time left, and a small card of its loot with each drop's chance
-	-- (Rules.Drops.Card). Layout: "Stack" (the icon over its name and the time, the card under), "Row" (the icon beside
-	-- its name and the time, the card under) or "Badge" (the icon with the time on it, the card only within Near studs of
-	-- it). Compare shows the three side by side over the elite's square, for one capture. Up: studs over its marker it
-	-- stands. Reach: studs from the camera it shows, the street's length. Icon and Width, authored pixels. The builder's
-	-- numbers, tuned live.
+	-- TR10's marker while the elite, or this player's keeper, is down (DownController; research's entry, 2026-11-14), as
+	-- Badge (research's pick, 2026-11-23, 16:41). Far, its icon with the time on its foot, nothing round them. Within Near
+	-- studs of the avatar, a card of its loot with each drop's chance (Rules.Drops.Card) unfolds from the tile over Unfold
+	-- seconds.
+	-- It takes its size from the world (research's must-fix 1), as a thing there does: today's size within Full studs of
+	-- the camera, Full / distance of it past them. It never shrinks under Least, the icon's side in rendered pixels on the
+	-- smallest phone (Modulo's read: both icons still part at 28, TR10), and its words stay at Theme.Text.Minimum there.
+	-- Full is the camera's distance when the avatar walks within Near, so the card always unfolds at today's size.
+	-- Up: studs over its marker it stands. Reach: studs from the camera it shows, the street's length. Icon (its tile's
+	-- side) and Width (the card's), authored pixels. The builder's numbers, tuned live.
 	Down = {
-		Layout = "Stack",
-		Compare = false,
 		Near = 60,
 		Reach = 320,
 		Up = { Elite = 9, Keeper = 11 },
-		Icon = 40,
+		Icon = 48,
 		Width = 176,
+		Full = 75,
+		Least = 28,
+		Unfold = 0.18,
 	},
 	-- TR9's Breaker screen in grey (UI/BreakerScreen), Machine by the director's pick (2026-11-14, night): the chambers
 	-- side by side over a strip of what's ready, waiting and in the bag, the chosen shard's odds beside them. Cell: a

@@ -1,15 +1,17 @@
 --!strict
 -- DownController (client): the marker while one of Lantern Row's elites, or this player's own keeper, is down
--- (docs/test-requests.md, TR10; the director, 2026-11-14), in grey. Over the elite while the server's timer for it runs
--- (its Elite marker's BackAt, server time, from PackService), the nearest down elite to the player when more than one of
--- the stages' three is (TR43); at the keeper's gate while this player's own runs (their
--- save's Progress.Grounds[ground].Back, Rules.Progress.Resting), the gate's Challenge hidden for them meanwhile. Each
--- shows its icon (Modulo's picture, its row's Marker, on the tile; the name's letter for a row without one), its name, the time left, and a small card of its loot with each drop's
--- chance (Rules.Drops.Card, Rules.Hud.Chance): when to come back, and why. Config.Hud.Down picks the layout, tuned live;
--- Compare shows the three side by side over the elite's square, for one capture.
---   DownController.Plate(kind, layout?)   the plate of "Elite" or "Keeper" in that layout (the picked one), or nil before
---                                         it's first shown: for the self-test, with its attributes Kind, Layout, Left
---                                         (whole seconds), Lines (its card's), Chances ("1,1,0.144"), Card (shown or not)
+-- (docs/test-requests.md, TR10; the director, 2026-11-14). Over the elite while the server's timer for it runs (its
+-- Elite marker's BackAt, server time, from PackService), the nearest down elite to the player when more than one of the
+-- stages' three is (TR43); at the keeper's gate while this player's own runs (their save's Progress.Grounds[ground].Back,
+-- Rules.Progress.Resting), the gate's Challenge hidden for them meanwhile.
+-- Badge, research's pick (TR10, 2026-11-23, 16:41): far, its icon (Modulo's picture, its row's Marker, on the tile; the
+-- name's letter for a row without one) with the time left on the tile's foot, and nothing round them (must-fix 2). Near,
+-- a card of its loot with each drop's chance (Rules.Drops.Card, Rules.Hud.Chance) unfolds from the tile, the tile held
+-- still: when to come back, and why. It takes its size from the world (must-fix 1; Config.Hud.Down).
+--   DownController.Plate(kind)            the plate of "Elite" or "Keeper", or nil before it's first shown: for the
+--                                         self-test, with its attributes Kind, Left (whole seconds), Lines (its card's),
+--                                         Chances ("1,1,0.144"), Picture, Size (its world size, 1 today's), Unfold (its
+--                                         card's, 0 folded to 1 whole) and Card (whole)
 --   DownController.Challenge()            the keeper gate's Challenge prompt, or nil
 --   DownController.Try(kind, what?, left?, floor?)  the self-test's and its takes' only: stands `kind`'s marker for
 --                                         `what` ({ Kind, Def, Level, Ground }) over `floor`, `left` seconds, as if it
@@ -44,29 +46,30 @@ local DownController = {}
 
 local player = Players.LocalPlayer
 
-local LAYOUTS = { "Stack", "Row", "Badge" }
 local KINDS = { "Elite", "Keeper" }
-local LINE = 20 -- authored pixels a card's line takes
-local NAME = 18 -- the name's line
-local TIME = 26 -- the time's line
+local LINE = 20 -- authored pixels a card's line takes, at least
 local PAD = 6 -- inside the plate, round its pieces
-local APART = 12 -- authored pixels between plates side by side (Compare)
+local MARGIN = 16 -- round the card's group: the panel's shadow stands past it (UIKit's PanelShadow, its Pad)
+local OUTLINE = 2 -- the time's dark outline, authored: it reads over the street with no panel behind it
 local FIND_EVERY = 1 -- seconds between looks for the markers: a relaid world replaces them
 
 -- What's down, for its card: its kind for Rules.Drops, its definition, level and ground.
 type What = { Kind: string, Def: string, Level: number, Ground: string }
 type Plate = {
 	Kind: string, -- "Elite" or "Keeper"
-	Layout: string,
 	Frame: Frame,
+	Size: UIScale, -- its size from the world
+	Back: CanvasGroup, -- the card's panel and its lines, fading as they unfold
 	Icon: Frame,
 	Initial: TextLabel,
 	Picture: ImageLabel,
-	Name: TextLabel,
 	Time: TextLabel,
-	Card: Frame,
+	Card: Frame, -- the window its lines show through, as tall as it has unfolded
+	Rows: { Frame },
+	Words: { TextLabel }, -- the card's labels
 	Key: string, -- what its card was last filled for
 	Lines: number,
+	Unfold: number, -- the card's, 0 folded to 1 whole, before its ease
 	Point: Vector3?, -- where it stands now, or nil while hidden
 }
 
@@ -104,13 +107,6 @@ function DownController.Challenge(): ProximityPrompt?
 	return if holder then holder:FindFirstChildOfClass("ProximityPrompt") else nil
 end
 
--- A name as a plate's title writes it: "the Lamplighter" is "The Lamplighter".
-local function title(def: string): string
-	local row = Enemies.ById[def]
-	local name = if row then row.Name else def
-	return string.upper(string.sub(name, 1, 1)) .. string.sub(name, 2)
-end
-
 -- The stand-in icon's letter: the name's first, past "the ".
 local function initial(def: string): string
 	local row = Enemies.ById[def]
@@ -127,21 +123,45 @@ local function lineText(line: Drops.Line): string
 	return Read.ShardName(line.Shard)
 end
 
-local function make(kind: string, layout: string): Plate
+local function make(kind: string): Plate
 	local config = HudConfig.Down
-	local frame = World.Plate(`Down{kind}{layout}`, Vector2.new(config.Width, 100), function(): Vector3?
-		local plate = plates[`{kind}/{layout}`]
+	local frame = World.Plate(`Down{kind}`, Vector2.new(config.Icon, config.Icon), function(): Vector3?
+		local plate = plates[kind]
 		return if plate then plate.Point else nil
 	end, config.Reach)
-	World.Below(frame)
+	-- Its world size, made before World.Below so the band's rule reads it (a plate's UIScale, grown from its foot). Open:
+	-- it stands over its square between the band's pieces, only stepping from one it would cross. Held under the whole
+	-- band, it stood on the avatar's head from the game's camera at any distance (TR10's walk, 2026-11-23).
+	local size = Instance.new("UIScale")
+	size.Name = "WorldSize"
+	size.Parent = frame
+	World.Below(frame, true)
 	frame:SetAttribute("Kind", kind)
-	frame:SetAttribute("Layout", layout)
-	local panel = Panel.new({ Name = "Panel", Size = UDim2.fromScale(1, 1), Parent = frame })
+	-- The card: its panel and its lines in one group, past the plate by MARGIN for the panel's shadow.
+	local back = Instance.new("CanvasGroup")
+	back.Name = "Back"
+	back.BackgroundTransparency = 1
+	back.Position = UDim2.fromOffset(-MARGIN, -MARGIN)
+	back.Size = UDim2.new(1, 2 * MARGIN, 1, 2 * MARGIN)
+	back.GroupTransparency = 1
+	back.Visible = false
+	back.ZIndex = 1
+	back.Parent = frame
+	Panel.new({ Name = "Panel", Position = UDim2.fromOffset(MARGIN, MARGIN), Size = UDim2.new(1, -2 * MARGIN, 1, -2 * MARGIN), Parent = back })
+	local card = Instance.new("Frame")
+	card.Name = "Card"
+	card.BackgroundTransparency = 1
+	card.ClipsDescendants = true
+	card.ZIndex = 2
+	card.Parent = back
 	local icon = Instance.new("Frame")
 	icon.Name = "Icon"
+	icon.AnchorPoint = Vector2.new(0.5, 0)
+	icon.Position = UDim2.new(0.5, 0, 0, PAD)
 	icon.BackgroundColor3 = Theme.Colour.PlateHigh
 	icon.BorderSizePixel = 0
-	icon.Parent = panel
+	icon.ZIndex = 2
+	icon.Parent = frame
 	local corner = Instance.new("UICorner")
 	corner.CornerRadius = UDim.new(0.25, 0)
 	corner.Parent = icon
@@ -163,27 +183,32 @@ local function make(kind: string, layout: string): Plate
 	local clip = Instance.new("UICorner")
 	clip.CornerRadius = corner.CornerRadius
 	clip.Parent = picture
-	local name = Text.new({ Name = "Name", Size = Theme.Text.Caption, Colour = Theme.Colour.TextDim, Truncate = true, Parent = panel })
-	local time = Text.new({ Name = "Time", Size = Theme.Text.Title, Font = Theme.Font.Number, Parent = panel })
-	local card = Instance.new("Frame")
-	card.Name = "Card"
-	card.BackgroundTransparency = 1
-	card.Parent = panel
+	-- The time across the tile's foot, outlined: far, nothing stands behind its lower half but the street.
+	local time = Text.new({ Name = "Time", Size = Theme.Text.Title, Font = Theme.Font.Number, Align = Enum.TextXAlignment.Center, Parent = frame })
+	time.AnchorPoint = Vector2.new(0.5, 0.5)
+	time.ZIndex = 3
+	local outline = Instance.new("UIStroke")
+	outline.Color = Theme.Colour.Channel
+	outline.Thickness = OUTLINE
+	outline.Parent = time
 	local plate: Plate = {
 		Kind = kind,
-		Layout = layout,
 		Frame = frame,
+		Size = size,
+		Back = back,
 		Icon = icon,
 		Initial = letter,
 		Picture = picture,
-		Name = name,
 		Time = time,
 		Card = card,
+		Rows = {},
+		Words = {},
 		Key = "",
 		Lines = 0,
+		Unfold = 0,
 		Point = nil,
 	}
-	plates[`{kind}/{layout}`] = plate
+	plates[kind] = plate
 	return plate
 end
 
@@ -195,6 +220,8 @@ local function fill(plate: Plate, what: What)
 	end
 	plate.Key = key
 	plate.Card:ClearAllChildren()
+	table.clear(plate.Rows)
+	table.clear(plate.Words)
 	local chances = {}
 	local count = 0
 	for _, line in Drops.Card(what.Kind, what.Level, what.Ground) do
@@ -206,17 +233,18 @@ local function fill(plate: Plate, what: What)
 		local row = Instance.new("Frame")
 		row.Name = `Line{count}`
 		row.BackgroundTransparency = 1
-		row.Size = UDim2.new(1, 0, 0, LINE)
-		row.Position = UDim2.fromOffset(0, (count - 1) * LINE)
+		row.AnchorPoint = Vector2.new(0.5, 0)
 		row.Parent = plate.Card
 		local left = Text.new({ Name = "What", Size = Theme.Text.Caption, Truncate = true, Box = UDim2.new(1, -44, 1, 0), Parent = row })
 		left.Text = lineText(line)
 		local right = Text.new({ Name = "Chance", Size = Theme.Text.Caption, Font = Theme.Font.Strong, Align = Enum.TextXAlignment.Right, Box = UDim2.fromScale(1, 1), Parent = row })
 		right.Text = Hud.Chance(line.Chance)
 		right.TextColor3 = if line.Chance >= 1 then Theme.Colour.TextDim else Theme.Colour.Ready
+		table.insert(plate.Rows, row)
+		table.insert(plate.Words, left)
+		table.insert(plate.Words, right)
 	end
 	plate.Lines = count
-	plate.Name.Text = if plate.Layout == "Row" then `{title(what.Def)} · back in` else title(what.Def)
 	plate.Initial.Text = initial(what.Def)
 	local row = Enemies.ById[what.Def]
 	local image = if row and row.Marker then UIKit.Images[row.Marker] else nil
@@ -228,57 +256,63 @@ local function fill(plate: Plate, what: What)
 	plate.Frame:SetAttribute("Chances", table.concat(chances, ","))
 end
 
--- Lays its pieces out for its layout, the card shown or not; the plate as tall as what it holds.
-local function lay(plate: Plate, card: boolean)
+-- A label authored at `authored` in a plate drawn at `size` of today's: large enough to read at Theme.Text.Minimum on
+-- the smallest phone (Text.Legible, at the floor's scale times the plate's), the same on every screen, so the marker
+-- keeps the phone's proportions and a take on the phone's frame shows them.
+local function legible(authored: number, size: number): number
+	return math.max(authored, math.ceil(Theme.Text.Minimum / (Theme.Scale.Floor * size)))
+end
+
+local function sized(label: TextLabel, want: number)
+	if label.TextSize ~= want then
+		label.TextSize = want
+	end
+end
+
+local function easeOut(x: number): number
+	local k = math.clamp(x, 0, 1)
+	return 1 - (1 - k) * (1 - k)
+end
+
+-- Lays its pieces out at `size` of today's, its card unfolded by `k` (0 folded to 1 whole). Far, the tile and its time
+-- alone, the plate as wide as the wider. As it unfolds, the panel grows from round them to the card's width and down
+-- over its lines, fading in. The tile stays where it stood: the plate is shifted down by what it grew.
+local function lay(plate: Plate, size: number, k: number)
 	local config = HudConfig.Down
-	local width, size = config.Width, config.Icon
-	local inner = width - 2 * PAD
-	local cardHigh = if card then plate.Lines * LINE else 0
-	local high: number
-	plate.Name.Visible = plate.Layout ~= "Badge"
-	if plate.Layout == "Row" then
-		local head = math.max(size, NAME + TIME)
-		plate.Icon.Size = UDim2.fromOffset(size, size)
-		plate.Icon.Position = UDim2.fromOffset(PAD, PAD + (head - size) / 2)
-		local beside = PAD + size + PAD
-		plate.Name.Size = UDim2.fromOffset(width - beside - PAD, NAME)
-		plate.Name.Position = UDim2.fromOffset(beside, PAD + (head - NAME - TIME) / 2)
-		plate.Time.Size = UDim2.fromOffset(width - beside - PAD, TIME)
-		plate.Time.Position = UDim2.fromOffset(beside, PAD + (head - NAME - TIME) / 2 + NAME)
-		plate.Time.TextXAlignment = Enum.TextXAlignment.Left
-		plate.Card.Position = UDim2.fromOffset(PAD, PAD + head + (if card then PAD else 0))
-		high = PAD + head + (if card then PAD + cardHigh else 0) + PAD
-	elseif plate.Layout == "Badge" then
-		-- The icon, a touch larger, with the time on a strip across its foot.
-		local big = size + 8
-		plate.Icon.Size = UDim2.fromOffset(big, big)
-		plate.Icon.Position = UDim2.fromOffset((width - big) / 2, PAD)
-		plate.Time.Size = UDim2.fromOffset(inner, TIME)
-		plate.Time.Position = UDim2.fromOffset(PAD, PAD + big - TIME / 2)
-		plate.Time.TextXAlignment = Enum.TextXAlignment.Center
-		local head = big + TIME / 2
-		plate.Card.Position = UDim2.fromOffset(PAD, PAD + head + (if card then PAD else 0))
-		high = PAD + head + (if card then PAD + cardHigh else 0) + PAD
-	else -- Stack
-		plate.Icon.Size = UDim2.fromOffset(size, size)
-		plate.Icon.Position = UDim2.fromOffset((width - size) / 2, PAD)
-		plate.Name.Size = UDim2.fromOffset(inner, NAME)
-		plate.Name.Position = UDim2.fromOffset(PAD, PAD + size + 2)
-		plate.Name.TextXAlignment = Enum.TextXAlignment.Center
-		plate.Time.Size = UDim2.fromOffset(inner, TIME)
-		plate.Time.Position = UDim2.fromOffset(PAD, PAD + size + 2 + NAME)
-		plate.Time.TextXAlignment = Enum.TextXAlignment.Center
-		local head = size + 2 + NAME + TIME
-		plate.Card.Position = UDim2.fromOffset(PAD, PAD + head + (if card then PAD else 0))
-		high = PAD + head + (if card then PAD + cardHigh else 0) + PAD
+	local side = config.Icon
+	plate.Size.Scale = size
+	local timeSize, wordSize = legible(Theme.Text.Title, size), legible(Theme.Text.Caption, size)
+	sized(plate.Time, timeSize)
+	sized(plate.Initial, timeSize)
+	for _, label in plate.Words do
+		sized(label, wordSize)
 	end
-	if plate.Layout ~= "Stack" then
-		plate.Name.TextXAlignment = Enum.TextXAlignment.Left
+	local tall = timeSize + 6
+	local wide = math.max(side, Text.Wide(plate.Time, plate.Time.Text) + 2 * OUTLINE + 2)
+	local head = PAD + side + tall / 2
+	local line = math.max(LINE, wordSize + 3)
+	local lines = plate.Lines * line
+	local folded = wide + 2 * PAD
+	local whole = math.max(config.Width, folded)
+	local width = folded + (whole - folded) * k
+	local grown = (PAD + lines) * k
+	plate.Frame.Size = UDim2.fromOffset(width, head + grown + PAD)
+	plate.Icon.Size = UDim2.fromOffset(side, side)
+	plate.Time.Size = UDim2.fromOffset(wide, tall)
+	plate.Time.Position = UDim2.new(0.5, 0, 0, PAD + side)
+	-- The card's window inside the panel: its lines centred in it at their whole width, shown as far as it has grown.
+	plate.Card.Position = UDim2.fromOffset(MARGIN + PAD, MARGIN + head + PAD)
+	plate.Card.Size = UDim2.fromOffset(width - 2 * PAD, lines * k)
+	for index, row in plate.Rows do
+		row.Position = UDim2.new(0.5, 0, 0, (index - 1) * line)
+		row.Size = UDim2.fromOffset(whole - 2 * PAD, line)
 	end
-	plate.Card.Size = UDim2.fromOffset(inner, cardHigh)
-	plate.Card.Visible = card
-	plate.Frame.Size = UDim2.fromOffset(width, high)
-	plate.Frame:SetAttribute("Card", card)
+	plate.Back.Visible = k > 0
+	plate.Back.GroupTransparency = 1 - k
+	World.Shift(plate.Frame, Vector2.new(0, grown * size))
+	plate.Frame:SetAttribute("Size", size)
+	plate.Frame:SetAttribute("Unfold", k)
+	plate.Frame:SetAttribute("Card", k >= 1)
 end
 
 local tries: { [string]: { What: What, Left: number, Floor: Vector3 } } = {}
@@ -338,11 +372,18 @@ local function near(point: Vector3): boolean
 	return Vector2.new(gap.X, gap.Z).Magnitude <= HudConfig.Down.Near
 end
 
-local function step()
+-- Its size `away` studs from the camera: today's within Full, Full / away past it, never under Least's floor.
+local function worldSize(away: number): number
+	local config = HudConfig.Down
+	local least = math.min(1, config.Least / (config.Icon * Theme.Scale.Floor))
+	return math.clamp(config.Full / math.max(away, 1e-3), least, 1)
+end
+
+local function step(dt: number)
 	look()
 	local config = HudConfig.Down
 	local now = workspace:GetServerTimeNow()
-	local pick = if table.find(LAYOUTS, config.Layout) then config.Layout else "Stack"
+	local camera = workspace.CurrentCamera
 	for _, kind in KINDS do
 		local what, left, floor = down(kind, now)
 		if kind == "Keeper" then
@@ -352,32 +393,31 @@ local function step()
 				prompt.Enabled = open -- this player's alone: a prompt set on a client stays on it
 			end
 		end
-		local compare = config.Compare == true and kind == "Elite"
-		for index, layout in LAYOUTS do
-			local wanted = what ~= nil and floor ~= nil and (layout == pick or compare)
-			local plate = plates[`{kind}/{layout}`]
-			if not wanted then
-				if plate then
-					plate.Point = nil
-					plate.Frame:SetAttribute("Left", 0)
-				end
-				continue
+		local plate = plates[kind]
+		if what == nil or floor == nil then
+			if plate then
+				plate.Point = nil
+				plate.Unfold = 0 -- shown again, it starts folded
+				plate.Frame:SetAttribute("Left", 0)
 			end
-			local shown = plate or make(kind, layout)
-			fill(shown, what :: What)
-			local up = (config.Up :: any)[kind] or 10
-			shown.Point = (floor :: Vector3) + Vector3.new(0, up, 0)
-			lay(shown, layout ~= "Badge" or near(floor :: Vector3))
-			World.Shift(shown.Frame, Vector2.new(if compare then (index - 2) * (config.Width + APART) else 0, 0))
-			local clock = Hud.Clock(left)
-			shown.Time.Text = clock
-			shown.Frame:SetAttribute("Left", math.ceil(left - 1e-9))
+			continue
 		end
+		local shown = plate or make(kind)
+		fill(shown, what)
+		local up = (config.Up :: any)[kind] or 10
+		local point = floor + Vector3.new(0, up, 0)
+		shown.Point = point
+		local want = if near(floor) then 1 else 0
+		local rate = if config.Unfold > 0 then dt / config.Unfold else 1
+		shown.Unfold = if want > shown.Unfold then math.min(want, shown.Unfold + rate) else math.max(want, shown.Unfold - rate)
+		shown.Time.Text = Hud.Clock(left)
+		lay(shown, worldSize(if camera then (point - camera.CFrame.Position).Magnitude else config.Full), easeOut(shown.Unfold))
+		shown.Frame:SetAttribute("Left", math.ceil(left - 1e-9))
 	end
 end
 
-function DownController.Plate(kind: string, layout: string?): Frame?
-	local plate = plates[`{kind}/{layout or HudConfig.Down.Layout}`]
+function DownController.Plate(kind: string): Frame?
+	local plate = plates[kind]
 	return if plate then plate.Frame else nil
 end
 

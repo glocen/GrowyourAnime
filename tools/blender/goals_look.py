@@ -101,17 +101,6 @@ def bounds(pts, pad):
     return (math.floor(min(xs) - pad), math.floor(min(ys) - pad), math.ceil(max(xs) + pad), math.ceil(max(ys) + pad))
 
 
-def wrap(words, most):
-    lines, line = [], ""
-    for word in words.split():
-        if line and len(line) + 1 + len(word) > most:
-            lines.append(line)
-            line = word
-        else:
-            line = f"{line} {word}".strip()
-    return lines + [line]
-
-
 def circle(t, cx, cy, r):
     return np.hypot(t.x - cx, t.y - cy) - r
 
@@ -390,27 +379,29 @@ CARD_NOTES = [
 # --- today's three, on Home's panel ---------------------------------------------------------------------------------
 
 HOME = {}
-ROW_H, ROW_GAP, LIST_TOP = 44.0, 4.0, 32.0
+ROW_H, ROW_GAP, LIST_PAD = 44.0, 2.0, 3.0   # the list's inset from the glass's top and foot
 ROW_X = (10.0, 352.0)                  # a row's foot, in the glass's points
 ROW_W = ROW_X[1] - ROW_X[0]
 COG = (hc.TOP, hc.TOP + 44.0)          # Settings' cog tile: its top and foot, in the glass's points
 TODAY_Y = (hc.TOP + 50.0, hc.FOOT)     # the Today card's
 PIPS = {"open": "GoalPipOpen", "done": "GoalPipDone", "claimed": "GoalPipClaimed"}
 ROWS = {"open": "GoalRow", "done": "GoalRowDone", "claimed": "GoalRowClaimed"}
-LIST_FOOT = hc.PANEL[1] - 4.0          # the rows scroll between Next's foot and here
-NEXT_LINE = 17.0                       # Next's lines' pitch
-NEXT_MOST = 52                         # letters a line of Next holds at 14 in the plate, in the sheet's face (6.04 a
-                                       # letter, measured on the sheet; the plate holds 314)
+LIST_FOOT = hc.PANEL[1] - LIST_PAD     # the rows' foot: 3 + 40 + 2 + 3 x 44 + 2 x 2 + 3 = 184, the glass
+NEXT_H = 40.0                          # Next's plate, the list's head (research's 46 less 6: the list keeps 3 clear of
+                                       # the glass's rim at its top and its foot)
+NEXT_X, NEXT_Y, NEXT_ONE = 50.0, (6.0, 23.0), 15.0     # its words' left; its two lines' capitals' tops; a line alone
+NEXT_MOST = 45                         # letters in what Next opens (TR54): 272 of the 280 the row holds in the sheet's face
+BACK = [(29.0, 14.0), (23.0, 20.0), (29.0, 26.0)]      # the back press's chevron, from the plate's top and foot's left
+BACK_END = 40.0                        # where the back press ends: a hairline in the plate
 NEXT_BLUE = "#AFC6F0"                  # Next's bar and its label: the Today card's pale light
 NEXTS = [                              # TR54's Next lines: the step, then what it opens
     ("Bring down the Lamplighter.", "Hard opens on Lantern Row."),
     ("Raise the base to level 2.", "A third bay opens, and the Condenser wakes."),
-    ("Bring down the Lamplighter on Hard.", "The first time, its chest holds a Rare or better."),
-    ("Raise the base to level 3.", "A fourth bay opens, and machines can climb to level 30."),
-    ("Climb the Tower to floor 25.", "Each floor past your record pays a first-time bonus."),
+    ("Bring down the Lamplighter on Hard.", "Its first chest holds a Rare or better."),
+    ("Raise the base to level 3.", "A fourth bay opens. Machines reach level 30."),
+    ("Climb the Tower to floor 25.", "Each new floor pays a first-time bonus."),
     ("Drum Court's gate stays shut, for now.",),
 ]
-NEXT_PLATES = {1: "GoalNext1", 2: "GoalNext2", 3: "GoalNext3"}     # by its lines
 
 
 def home_made():
@@ -569,44 +560,40 @@ def goal_row(t, px0, y0, words, state, count=None, whole=True):
         said(t, sx - 8, y0 + 15, SMALL, count, "#AEB7C2", "RIGHT")
 
 
-def next_lines(k):
-    step, *opens = NEXTS[k]
-    return [step] + (wrap(opens[0], NEXT_MOST) if opens else [])
-
-
-def next_tall(n):
-    return 12.0 + NEXT_LINE * n
-
-
-def next_plate(t, n):
-    """Next's plate alone, for `n` lines, its top at 0 and its foot's left corner at x 0. Pinned, never a press: deeper
-    than a row, its top hairline lit, a pale bar down its leaning left side."""
-    h = next_tall(n)
+def next_plate(t):
+    """Next's plate alone, the list's head, its top at 0 and its foot's left corner at x 0. Never a press but for the
+    back press at its left, which ends at a hairline: deeper than a row, its top hairline lit, a pale bar down its
+    leaning left side."""
+    h = NEXT_H
     d = t.poly(leaned(0, ROW_W, 0, h))
     t.paint(d, t.ramp("#1B2333", "#0A0D14", t.y / h))
     t.line(d, 1.0, "#55607A", 0.9)
     t.paint(np.maximum(d, np.abs(t.y - 1.4) - 0.6), "#CFDBFF", 0.3)
     t.paint(np.maximum(d, t.x - hc.LEAN * (h - t.y) - 3.5), NEXT_BLUE, 0.9)
+    rule = np.maximum(np.abs(t.x - hc.LEAN * (h - t.y) - BACK_END) - 0.5, np.maximum(7 - t.y, t.y - (h - 7)))
+    t.paint(rule, "#55607A", 0.8)
 
 
 def today_list(t, px0, py0, st):
-    """The list in the glass: Back and "Today" at its head; Next pinned under it; then the rows, scrolling between
-    Next's foot and the glass's (a row past the foot is cut there, as the game's scrolling frame cuts it)."""
-    t.stroke([(px0 + 22, py0 + 11), (px0 + 16, py0 + 17), (px0 + 22, py0 + 23)], 1.8, IVORY)
-    said(t, px0 + 32, py0 + 11, TITLE, st.get("head", "Today"), IVORY)
-    lines = next_lines(st["next"])
-    tall = next_tall(len(lines))
-    xl, yn = px0 + ROW_X[0], py0 + LIST_TOP
-    lay(t, NEXT_PLATES[len(lines)], xl, yn)
+    """The list in the glass: Next at its head, a plate that holds the back press and the account's next step; under
+    it the rows, today's three whole at rest. With a banked day they scroll between Next's foot and the glass's."""
+    step, *opens = NEXTS[st["next"]]
+    assert not opens or len(opens[0]) <= NEXT_MOST, opens
+    xl, yn = px0 + ROW_X[0], py0 + LIST_PAD
+    lay(t, "GoalNext", xl, yn)
+    t.stroke([(xl + x, yn + y) for x, y in BACK], 1.8, IVORY)
+    lines = [step] + opens
     for j, words in enumerate(lines):
-        x = xl + hc.LEAN * (tall - 14 - j * NEXT_LINE) + 14
+        y = NEXT_Y[j] if len(lines) > 1 else NEXT_ONE
+        x = xl + NEXT_X + hc.LEAN * (NEXT_H - 5 - y)
         if j == 0:
-            said(t, x, yn + 7, SMALL, "Next", NEXT_BLUE, bold=0.45)
+            said(t, x, yn + y, SMALL, "Next", NEXT_BLUE, bold=0.45)
             x += 38
-        said(t, x, yn + 7 + j * NEXT_LINE, SMALL, words, IVORY if j == 0 else "#AEB7C2")
-    top, foot = yn + tall + ROW_GAP, py0 + LIST_FOOT
+        said(t, x, yn + y, SMALL, words, IVORY if j == 0 else "#AEB7C2")
+    top, foot = yn + NEXT_H + ROW_GAP, py0 + LIST_FOOT
     k = t.px.shape[0] / t.h
-    keep = t.px[round(foot * k):].copy()
+    above = t.px[:round((yn + NEXT_H) * k)].copy()       # the scrolling frame: from Next's foot to the glass's
+    below = t.px[round((py0 + hc.PANEL[1]) * k):].copy()
     y = top
     for row in st["rows"]:
         if y >= foot:
@@ -618,8 +605,9 @@ def today_list(t, px0, py0, st):
             continue
         goal_row(t, px0, y, *row, whole=y + 31 <= foot)
         y += ROW_H + ROW_GAP
-    t.px[round(foot * k):] = keep
-    a, b = st.get("thumb", (0.0, min(1.0, (foot - top) / (3 * ROW_H + 2 * ROW_GAP))))     # the list scrolls: its thumb
+    t.px[:above.shape[0]] = above
+    t.px[t.px.shape[0] - below.shape[0]:] = below
+    a, b = st.get("thumb", (0.0, 1.0))                   # at rest today's three fill the frame: no thumb
     if b - a < 1:
         x = px0 + hc.PANEL[0] - 5
         t.stroke([(x, top + 2 + a * (foot - top - 4)), (x, top + 2 + b * (foot - top - 4))], 2.0, "#55607A")
@@ -642,37 +630,38 @@ TODAY = [
      dict(mode="card", pips=("done", "open", "open"))),
     ("Nothing waiting: one claimed, two open",
      dict(mode="card", pips=("claimed", "open", "open"))),
-    ("The list, Next's first line: one done (the row is its claim), one counting",
+    ("The list at rest: Next its head, with the back press; today's three whole, one its claim, one counting",
      dict(mode="list", next=0, rows=[("Keep a dare.", "done"), ("Break three shards.", "open", "1 / 3"),
                                      ("Lead a run with someone new.", "open")])),
-    ("Next's second line; all three claimed: the list rests until the day turns",
-     dict(mode="list", next=1, rows=[("Keep a dare.", "claimed"), ("Break three shards.", "claimed"),
-                                     ("Lead a run with someone new.", "claimed")])),
-    ("Next's third line; banked days, scrolled",
-     dict(mode="list", next=2, thumb=(0.42, 0.7), rows=["Yesterday", ("Win three Tower floors.", "done"),
-                                                        ("Let every bay run a full hour.", "open", "0:42 / 1:00")])),
-    ("Next's fourth, the longest: the one line that takes a third row here",
+    ("The longest Next (what it opens: 44 letters) over three open goals",
      dict(mode="list", next=3, rows=[("Let every bay run a full hour.", "open", "0:15 / 1:00"),
                                      ("Collect the Condenser's tray.", "open"),
                                      ("Lead a run with someone new.", "open")])),
-    ("Next's fifth line",
-     dict(mode="list", next=4, rows=[("Bring down the Lamplighter.", "open"), ("Train a Voidkin for an hour.", "open", "0:15 / 1:00"),
-                                     ("Raise a Voidkin a level.", "open")])),
-    ("Everything done: Next's last line stands alone, on one row",
-     dict(mode="list", next=5, rows=[("Clear a stretch on Hard.", "claimed"), ("Break three shards.", "done"),
+    ("The longest step; a claim waiting at the list's foot",
+     dict(mode="list", next=2, rows=[("Clear a stretch on Hard.", "open"), ("Train a Voidkin for an hour.", "open", "0:15 / 1:00"),
+                                     ("Raise a Voidkin a level.", "done")])),
+    ("All three claimed: the list rests until the day turns",
+     dict(mode="list", next=1, rows=[("Keep a dare.", "claimed"), ("Break three shards.", "claimed"),
+                                     ("Lead a run with someone new.", "claimed")])),
+    ("Banked days, scrolled: the rows pass under Next, and the thumb shows",
+     dict(mode="list", next=4, thumb=(0.3, 0.6), rows=["Yesterday", ("Win three Tower floors.", "done"),
+                                                       ("Let every bay run a full hour.", "open", "0:42 / 1:00"),
+                                                       "Two days ago"])),
+    ("Everything done: Next's last line stands alone",
+     dict(mode="list", next=5, rows=[("Bring down the Lamplighter.", "claimed"), ("Break three shards.", "done"),
                                      ("Forge once.", "open")])),
 ]
 TODAY_NOTES = [
     "Research's pick, B: today's three sit behind a Today card in Settings' column, the shard its picture (what waits",
     "there), three pips for the three goals; Settings is a cog tile over it, 44 tall. The card's rim and glow turn gold",
-    "while a goal waits to be claimed. It opens the list in the glass. Next is pinned at its head: the account's one",
-    "next step, then what it opens, on a plate that isn't a press (deeper than a row, a pale bar down its side). The",
-    "plate is as tall as its lines: one, two or three at 14. Only the fourth line (55 letters) takes a third row, in",
-    "the sheet's face; the game's is narrower, so the first capture says whether it does there. The rows scroll under",
-    "Next: a leaning row a goal, its shard at the right. Open: the shard dim, a count where the goal counts. Done: the",
-    "whole row is the claim's press, lit gold. Claimed: the row sinks and takes a check until the day turns. In this",
-    "glass (184 tall) the three goals never all show at once: two rows under a Next of two lines, one and most of a",
-    "second under three. Rows 44 tall; no word under 14. The words are TR54's. Stand-ins: the fight, the counts.",
+    "while a goal waits to be claimed. It opens the list in the glass. Next is the list's head (research's second",
+    "look): a plate that holds the back press at its left, up to a hairline, then the account's one next step and what",
+    "it opens, at 14. It isn't a press beyond the hairline: deeper than a row, a pale bar down its side. Under it today's",
+    "three show whole at once: 3 + 40 + 2 + 3 x 44 + 2 x 2 + 3 = 184, the glass. The plate is 40, not 46: at 46 the list",
+    "lies on the glass's rim at its top and its foot; at 40 it keeps 3 clear of both, and its two lines still sit at 14.",
+    "A leaning row a goal, its shard at the right. Open: the shard dim, a count where the goal counts. Done: the whole",
+    "row is the claim's press, lit gold. Claimed: the row sinks and takes a check until the day turns. Banked days",
+    "scroll under Next. Rows 44 tall; no word under 14. The words are TR54's. Stand-ins: the fight, the counts.",
 ]
 
 
@@ -698,9 +687,8 @@ def cut_pieces():
     piece("GoalRowPress", row, lambda t: hc.press(t, t.poly(leaned(0, ROW_W, 0, ROW_H)), 12), tint="the kit's lit press",
           use="over a done row while it's held: the row is the claim's press")
     piece("GoalCheck", (-12, -12, 12, 12), row_check, use="a claimed goal's check, where its shard was")
-    for n, name in NEXT_PLATES.items():
-        piece(name, bounds(leaned(0, ROW_W, 0, next_tall(n)), 12), lambda t, n=n: next_plate(t, n),
-              use=f"Next's plate at the list's head, for {n} line{'s' if n > 1 else ''}: pinned, never a press")
+    piece("GoalNext", bounds(leaned(0, ROW_W, 0, NEXT_H), 12), next_plate,
+          use="Next's plate, the Today list's head: pinned; the back press at its left, up to its hairline")
 
 
 def r2(v):
@@ -724,7 +712,7 @@ def record():
     return dict(
         what="AR53, the goals' look, for TR54: research's pick B (2026-11-23, 17:49) with its must-fix 1 and the fall's "
              "card, redrawn on the director's cut of the Mask Ledger (2026-11-23, by 18:38): the dare's mark in the "
-             "kit's make, Next pinned at the Today list's head. Every word is TR54's (docs/test-requests.md, TR54: the "
+             "kit's make, Next the Today list's head (research's second look, 18:54). Every word is TR54's (docs/test-requests.md, TR54: the "
              "dares, today's three, Next, the labels): this file holds where words sit, never the words.",
         units="points at the smallest phone (568 x 320); every box is left, top, width, height; a word's y is its "
               "capitals' top; images at 4 pixels a point, edge alpha 0. An image's `origin` is where its lay point sits "
@@ -781,19 +769,21 @@ def record():
             list=dict(
                 note="in the glass alone: the three cards, the cog tile and the Today card hidden, HomeGlass and "
                      "HomePointer kept",
-                back=dict(chevron=[[22, 11], [16, 17], [22, 23]], width=1.8, colour=IVORY, tap="at least 44 each way"),
-                head=dict(x=32, y=11, size=TITLE, colour=IVORY),
-                next=dict(note="pinned at the list's head, never a press, never scrolling; TR54's line split at its "
-                               "first full stop: the step, then what it opens, wrapped; the last line stands alone",
-                          left=ROW_X[0], top=LIST_TOP, images=NEXT_PLATES, origin="the plate's top, its foot's left corner",
-                          height="12 + 17 a line: 29, 46 or 63", pitch=NEXT_LINE,
-                          lines=dict(x="14 + 0.2 x (the plate's height - 14 - 17 j) for line j: the plate's lean",
-                                     y="7 + 17 j", size=SMALL, wrap="at the plate's width less 28 (314): in the sheet's "
-                                     "face only the 55-letter line takes a third row", colours=[IVORY, "#AEB7C2"]),
-                          label=dict(colour=NEXT_BLUE, bold=True, note="on line 0, the step 38 to its right")),
-                rows=dict(left=ROW_X[0], top="Next's foot + 4", foot=LIST_FOOT, height=ROW_H, gap=ROW_GAP,
+                next=dict(note="the list's head: pinned, never scrolling. TR54's line split at its first full stop: the "
+                               "step, then what it opens (45 letters or fewer: one row each); the last line stands alone",
+                          image="GoalNext", left=ROW_X[0], top=LIST_PAD, height=NEXT_H,
+                          origin="the plate's top, its foot's left corner",
+                          back=dict(chevron=r2([[ROW_X[0] + x, LIST_PAD + y] for x, y in BACK]), width=1.8, colour=IVORY,
+                                    tap=r2([ROW_X[0] - 2, 1, 46, 44]),
+                                    note="the plate's one press: it ends at the hairline drawn in the image"),
+                          lines=dict(x=f"{NEXT_X:g} + 0.2 x ({NEXT_H - 5:g} - y) from the plate's left: the plate's lean",
+                                     y=list(NEXT_Y), alone=NEXT_ONE, size=SMALL, colours=[IVORY, "#AEB7C2"],
+                                     holds="280 points: 45 letters are 272 in the sheet's face"),
+                          label=dict(colour=NEXT_BLUE, bold=True, note="on the first line, the step 38 to its right")),
+                rows=dict(left=ROW_X[0], top=LIST_PAD + NEXT_H + ROW_GAP, foot=LIST_FOOT, height=ROW_H, gap=ROW_GAP,
                           images=dict(ROWS, press="GoalRowPress"), origin="a row's top, its foot's left corner",
-                          frame="the rows scroll between Next's foot + 4 and the glass's foot - 4, cut there",
+                          frame=f"the scrolling frame runs from Next's foot ({LIST_PAD + NEXT_H:g}) to the glass's "
+                                f"({hc.PANEL[1]:g}), its rows padded {ROW_GAP:g} at the top and {LIST_PAD:g} at the foot",
                           words=dict(x=r2(lean / 2 + 14), y=15, size=SMALL, colour=IVORY, claimed="#7E879A"),
                           shard=dict(box=r2([sx, 6, 32, 32]), open="at 0.5", done="at 1"),
                           right=dict(x=r2(sx - 8), y=15, size=SMALL, align="RIGHT", count="#AEB7C2",
@@ -801,8 +791,8 @@ def record():
                           check=dict(image="GoalCheck", origin=r2([sx + 16, 22])),
                           done="the whole row is the claim's press", claimed="stays until the day turns"),
                 day=dict(height=22, x=r2(ROW_X[0] + 14), y=4, size=SMALL, colour="#8F99A6"),
-                scroll=dict(shows="111, 94 or 77 points of rows under a Next of one, two or three lines: today's three "
-                                  "(140) always scroll",
+                scroll=dict(shows="136 points of rows: today's three whole at rest (3 x 44 + 2 x 2); the list scrolls "
+                                  "only with a banked day",
                             thumb=dict(x=r2(hc.PANEL[0] - 5), width=2, colour="#55607A")))),
         images=images,
         motion="nothing moves here beyond what the kit does (a press, a screen opening). The unfold, the fold into the "
@@ -885,7 +875,7 @@ def pictures(out, crops):
         t.text(x + 8, y + 112, SMALL, {"lit": "the dare holds", "kept": "kept", "dark": "broken"}[state], "#B4AC9C")
     y += 150
     names = ("the dare unfolded under the line", "folded: its mark in the line's tab", "the marks on the card's road",
-             "\"Dare kept\" on the card's time row", "the list, Next pinned at its head")
+             "\"Dare kept\" on the card's time row", "the list, Next its head")
     for c, name in zip(doubled, names):
         t.text(gap, y + 2, SMALL, f"{name}, at twice the phone's pixels", "#B4AC9C")
         rs.paste(sheet.px, c, round(gap * 2), round((y + 22) * 2))
@@ -896,20 +886,20 @@ def pictures(out, crops):
 
 
 def grounds(out):
-    """For the content check: the redraw's six files as they are, over the page's dark and over white: the mark's
-    three at their own pixels and at 64 pixels high, then Next's three plates."""
+    """For the content check: the redraw's four files as they are, over the page's dark and over white: the mark's
+    three at their own pixels and at 64 pixels high, then Next's plate at its own pixels and at 64 pixels high."""
     ui.K = CUT_K
-    marks, plates = list(MARKS.values()), list(NEXT_PLATES.values())
+    marks, plates = list(MARKS.values()), ["GoalNext"]
 
     def size(name):
         b = PIECES[name]["box"]
         return b[2] - b[0], b[3] - b[1]
     gap = 14
     cw = max(size(n)[0] for n in plates) + gap
-    tall = 44 + 40 + gap + 16 + gap + sum(size(n)[1] + gap for n in plates)
+    tall = 44 + 40 + gap + 16 + gap + sum(size(n)[1] + gap + 16 + gap for n in plates)
     sheet = ui.Sheet(gap + 2 * (cw + gap), tall + gap, "#101117")
     t = sheet.tile(0, 0, sheet.w, sheet.h)
-    t.text(gap, 12, 14, "AR53's redraw, the new files: the mark at its own pixels and at 64 pixels high, Next's plates; on the "
+    t.text(gap, 12, 14, "AR53's redraw, the new files: the mark and Next's plate, at their own pixels and at 64 pixels high; on the "
            "page's dark, on white", "#EDE6D6")
     for col, ground in enumerate(("#241F3D", "#FFFFFF")):
         x0 = gap + col * (cw + gap)
@@ -926,6 +916,9 @@ def grounds(out):
             b = PIECES[name]["box"]
             lay(t, name, x0 - b[0], y - b[1])
             y += size(name)[1] + gap
+            px = PIECES[name]["px"]
+            t.image(rs.shrink(px, 64 / px.shape[0]), x0, y)
+            y += 16 + gap
     for layer in ui.text_layers(sheet.px.shape[1], sheet.px.shape[0], sheet.items).values():
         rs.paste(sheet.px, layer, 0, 0)
     rs.save(sheet.px, out / "goals_new.png")

@@ -15836,6 +15836,22 @@ Made, self-reviewed as stills at the smallest phone, delivered to the handoff. N
   They also clear the content check's note that "its chest" could read as the keeper's body.
 - **For the third look:** `goals_today.png` again, with the longest Next and three open goals, and with a claim waiting. One sheet is enough.
 
+### Modulo's fix of must-fix 1, for research's third look (2026-11-23, 19:02; started 18:56)
+
+Made, self-reviewed as stills at the smallest phone, delivered to the handoff. Not in the game, nothing uploaded, nothing read in motion.
+
+- **Next is the list's head:** one plate that holds the back press at its left, up to a hairline drawn in the plate, then "Next", the step, and what it opens under it, at 14. "Today" has left the head; the card carries the word.
+- **Today's three show whole at once.** The glass is 184: 3 + 40 + 2 + 3 x 44 + 2 x 2 + 3.
+- **The measure's number: the plate is 40, not 46.** At 46 the sum is the glass exactly, so the plate lies on the glass's rim and top hairline and the last row on its foot. At 40 the list keeps 3 clear of both. The plate's two lines still sit at 14 (capitals' tops at 6 and 23), and the back press's tap is 44 each way (1 to 45 in the glass, to the hairline). Rows stay 44, the gaps 2.
+- **One plate, `GoalNext`,** where `GoalNext1` to `3` stood: what Next opens is 45 letters or fewer (TR54, 18:54), so it never takes a second row, and the last line stands alone at the plate's middle. The row holds 280 points; 45 letters are 272 in the sheet's face.
+- **Banked days** scroll under Next: the frame runs from Next's foot (43) to the glass's foot, and the thumb shows only then.
+- **The sheet,** `build/handoff/UI/goals/goals_today.png`: cell 3, the list at rest with a claim waiting at its head; cell 4, the longest Next (what it opens, 44 letters) over three open goals; cell 5, the longest step with a claim at the foot; cell 6, all claimed; cell 7, banked days scrolled; cell 8, Next's last line alone.
+- **The handoff:** 17 images. `GoalNext` is new; the other 16 are byte for byte as they stood (git shows none changed, the three marks included). `goals.json`: `today.list.next` gives the plate, the back press's chevron and tap, and the lines; `today.list.rows` gives the top (45), the foot (181) and the frame. `goals_cut.png` is laid again.
+- **Content check:** PASS for the upload of `GoalNext.png` (2026-11-23, 19:02), the file exactly as it stands; the image alone was judged, the chevron and the words being the game's.
+- **Its weakest point:** a claim's gold glow at the first row lies over the plate's foot, 2 apart, and the scrolling frame cuts it there.
+- **Limits:** stills only; widths in the sheet's face.
+
+
 ## AR54. The yard at Stage III: one plan where every machine fits and reads from the gate (Modulo, before AR53; then Faber)
 
 Research, 2026-11-23, 15:26, from TR51's Studio run and TR37's (`docs/test-requests.md`). It's main map, so it comes first, by the director's order of 00:05. Tier 2, research and Modulo, with Faber's measures.

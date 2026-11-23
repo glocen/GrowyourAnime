@@ -15666,6 +15666,12 @@ From `build/handoff/Shade/shade_kinds_look.png`: Blender's stand-in on Faber's d
   - **The sheet:** `build/captures/ar52/types_sheet.png`. It shows ground 1's three types at phone size (4x, nearest neighbour): Normal by day and by night on top, Hard below. The stills are `trio_*.png` beside it.
   - **Not measured:** the Row's lanterns' own light on a Shade (the Festival's place isn't open in Studio), and the Guard's and the Dasher's own rigs (not in the game yet). The tint is the type's, so they take it.
 
+### Research's second look: AR52 passes at competent (Quaestor, 2026-11-23, 16:32)
+
+From `types_sheet.png`, at phone size, by day and by night, on Normal and Hard: the three types now read as three. Orange stands apart from Red on both difficulties and in both lights, and Green never comes close. The fix is the class, not the still: a type's colour on Hard is its own row, so a later type that drifts under the Hard glow is fixed the same way. Nothing the fix touched broke.
+- **What the cases can't show:** the Row's lanterns' light on a Shade, and the Guard's and the Dasher's own rigs. Both are first seen in the Festival's place at AR52's clips, and research reads the types again there.
+- Director-accepted: not yet.
+
 ## AR53. Goals' look, basic at launch: the dare's line, today's three, the Mask Ledger's page (Modulo, after AR52's clips)
 
 Research, 2026-11-23, 15:24 (`docs/design.md`, "Goals"; the build is TR54, Faber's).

@@ -16661,3 +16661,17 @@ Research, 2026-11-23, 21:54, on the director's pick of 21:53 (`docs/decisions.md
   - if the elite's own clip isn't wanted, the ordinary one is measured clear with the second mask on too.
 - **The four facts.** Made: yes. Self-reviewed: yes (the sheets, the measures, the audits). Delivered: to the handoff. In the game: no, and nothing is uploaded. Research's read is asked. The director has the look sheet (sent 22:15) and hasn't spoken.
 - **Time:** the look, 21:55 to 22:06, of a 2 hour cap; the two clips, 22:06 to 22:23, of an hour each.
+
+### Research's read: competent, no must-fix (Quaestor, 2026-11-23, 22:25)
+
+From `build/handoff/Shade/shade_elites_look.png` (at its own size and four times), and `spacing_GuardElite.png` and `spacing_LungeElite.png` beside their kin.
+- **Felt:** from the square's edge each elite is its kin grown big, with its mask worn again on the shoulder. The square mask and the long spike say the question before it moves.
+- **Tier:** competent. **The one bold thing:** the mask worn twice. At 13 pixels the second mask reads as an echo of the face, so "elite" reads without a word.
+- **The clips:** the weight is in the spacing, as asked. The Guard's elite swings its arms out before the raise, and the Dasher's elite rises before it drops into the crouch, in the same timings.
+- **Modulo's three, ruled:**
+  1. **Orange beside Red:** not this piece's. One elite stands in the square at a time, so the two never stand side by side. The mask tells the kind, and the target card's gem tells the type.
+  2. **The Dasher's elite's second mask, edge-on for about 0.73 s:** accepted. In the tell, the eye is on the crouch and the line. Its turning face-out is a re-pose that goes back to the check, so it goes to polish-later.
+  3. **The row on flat paving:** accepted for the sheet.
+- **What the stills can't show:** the elites in the street's square at dusk and at night, among the packs. That's first seen at Faber's build.
+- **The seed for Faber's build:** on Normal the square holds the Guard's elite; on Hard it holds the Dasher's elite. It's tuned in play.
+- **Next:** Faber's build, after AR52's behaviours.

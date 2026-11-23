@@ -4456,3 +4456,16 @@ Faber, 2026-11-19, 03:43 by the clock: the follow-up's item 7 (`docs/production-
 - **Tested:** offline 28,896/0 at that commit; the type check 0 new, 11 known; the Rojo build.
 - **NOT VERIFIED (the Festival place):** the run case "Stages (TR50)" in its playtest, and the run's log line in a real run.
 - **Found, not fixed:** the client's `look()` gate rule skips the server's ground check and its Ending state. It can't show while there's one ground; at ground 2 it should call `Rules.Stages.Shut`.
+
+## TR51. The base grows: every machine's stages, the landing, the owner's plate and plinth (Faber, after AR49)
+
+Research, 2026-11-23, 01:55 by the clock, on the director's order of 00:05 ("first we work on the main map and systems", `docs/decisions.md`). It's the main map's biggest gap against the north star (pillar 3, "The base is alive"). Today only the generator changes in the world: `WorldService` reads `machines.generatorStages` alone (`src/server/Services/Main/WorldService.luau`, about line 753). Every other stage's art is passed and waits on its install. So this is install work, with no new design.
+- **Feel line:** a player raises the Breaker to level 6. A violet hoop climbs it, the old shape glows and swaps, and the Developed Breaker stands there, bigger. Walking back out to the gate, they can see from the Strip what their base has become, with their name on the gate's plate and their best Voidkin turning on its plinth.
+- **The block contains, in this order, each checked before the next:**
+  1. **Stages II and III in the world** for the Void Breaker (AR32), the bays (AR33), the battery (AR34; upload BatteryRack again) and the Training machine (AR35; upload TrainingCrown again). Each takes its stage from its own level (`Rules.BaseLevels`, `Config.Base.Machines.Stages`), the way the generator's swap works.
+  2. **AR37's landing** on every swap: the hoop, the glowing cover, the throw, the light (AR37's table and the content check's five conditions; upload `fx_rise_Void` only). It plays on a level-up, never on a join or a respawn, where the stage simply stands.
+  3. **TR22's world parts**, where AR16's plan already has their places: the gate's plate (the owner's name and the base's level, on both faces) and the plinth inside the gate (the picked Voidkin turning, with its Combat Power).
+- **Waits:** the Forge and the Condenser standing (TR37, the next piece); the stage sounds (the director's samples); the base's levels 2 and 3 look beyond the machines (AR50, Modulo's); the Tower's lot (after the main game, the director's word of 2026-11-19).
+- **Checks:** a logic case for each machine's stage at levels 5, 6, 14 and 15, and one that a join shows the stage with no landing; the flash guard's case (0.34 s); the self-test; captures from the gate and from the court, at stages I, II and III, at the smallest phone.
+- **Research's verdict in the game** reads: the landing at full speed, at the Breaker and from the court; a base level-up's machines starting on one frame; the Highlight's fill at the court's distance; the plate and the plinth from the Strip.
+- **Order:** Faber's next piece after AR49. It goes ahead of AR44's shine, TR10's stills, TR50's Arc palette and AR48's states. TR37 follows it.

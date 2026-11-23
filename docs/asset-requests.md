@@ -15150,6 +15150,16 @@ Research, 2026-11-19, 23:20 by the clock, on the director's word of 23:20 (`docs
 - **The Voidkin screen's pages (Research, 00:12, by message):** Home's tray was the only way to Kit and Stars (the screen has had no rail since AR43). The Voidkin screen gets the Equipment screen's rail as it stands: the same faces, words and comet, with its four pages (Overview, Kit, Inventory, Stars), opening on the last page shown. It's one rail in both screens, so Modulo has nothing new to draw. Tier 1 for the build. Its check: on the smallest phone, the rail's four words are whole, and the attribute grid's fit (AR43's condition) still holds under it.
 - **Not built yet:** the panel (`UI.HomeTray` gives way to it), the live view and its framing rule in Config, the presses under the view, the rail. Stopped on the director's wrap-up (00:14).
 
+## AR50. The base's levels 2 and 3: the whole yard's look, read from the gate (Modulo, for research's pick, then Faber)
+
+Research, 2026-11-23, 01:56 by the clock, on the director's order of 00:05 (`docs/decisions.md`: the main map first). The design: `docs/design.md`, "The base", "The look": at launch, levels 1, 2 and 3 each have a look of their own for the whole base, readable from the gate [D, 2026-11-12: "the whole base visuals, changed based of the levels of the base itself"]. Levels 2 and 3 were never made (AR14's and AR16's "Waits"). The machines' stages come from their own levels and go in with TR51. This is the yard around them.
+- **Feel line:** a player buys base level 2 at about 20 minutes and steps out to the gate. The yard has stepped up: the void's light runs further through it, its edge stands taller and more finished, and the new bay is lit. A passer-by on the Strip can tell a level 3 base from a level 1 base in a second, without reading the plate.
+- **The class:** kept from AR16 and the director's words. The yard's look stays ("that graphism was perfect", 2026-11-15). It's never a building site, and never real electrical machinery. The open way in from the gate stays, and nothing new clutters it. The colour follows AR40's day: violet only on what's alive, never the ground.
+- **The block contains:** two or three directions for what grows from level 1 to 2 to 3 (the wall and the gate, the floor's lit lines, the pylons and flood masts, the light). Each is shown at levels 1, 2 and 3 from the gate and from the Strip at the player's camera, by day, at the smallest phone's pixels, with stand-ins where a piece isn't drawn.
+- **It waits:** the colour pass and the cut, after the pick; levels past 3 (their items come later); the Tower's lot (after the main game).
+- **Cap:** the blockout in 2 hours. It's a major landmark, so the finish aims at exceptional, named at the pick.
+- **Order:** Modulo's next piece, after the art tiles' block-in (TR50's class line).
+
 ## Later, by ground
 
 The rest of ground 1 (Kirra in AR10, Watt in AR11; then Sable, Marigold, Crane), then each ground's Voidkin in `docs/roster.md`'s order. **The machines** (Gantry, Bulwark, Ironhymn, Shiomaru, Aegir) share one custom rig, taller than a player, with its own clip family: the first of them is timed like AR1, because a custom rig is a different cost.

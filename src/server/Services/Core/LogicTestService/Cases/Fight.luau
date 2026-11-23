@@ -260,6 +260,34 @@ return {
 		end,
 	},
 	{
+		Name = "Fight: TR52, the signature on a tap: a ring not full does nothing, a full one fires once, Auto off holds it",
+		Run = function(t: any)
+			local kit = Actions.KitOf("rook")
+			local signature = Fight.Signature(kit)
+			t.Equal("the signature is the kit's action with a cooldown", if signature then signature.Id else nil, "RookHaymaker")
+			t.Check("a kit with no cooldown has none", Fight.Signature({ Actions.ById.RookCombo }) == nil)
+			-- not full: nothing, and nothing changes
+			local readyAt = { RookHaymaker = 10 }
+			t.Check("a tap with the ring not full arms nothing", not Fight.Tap(signature, readyAt, 9.99, false))
+			t.Equal("and changes nothing", readyAt.RookHaymaker, 10)
+			-- full: it arms once; armed, a second tap arms nothing
+			local armed = Fight.Tap(signature, readyAt, 10, false)
+			t.Check("a full ring's tap arms it", armed)
+			t.Check("a repeated tap, armed: nothing more", not Fight.Tap(signature, readyAt, 10.01, armed))
+			-- Auto off: the choice holds the signature until a tap arms it
+			local held = if armed then nil else "RookHaymaker"
+			t.Equal("armed, the signature goes next", (Fight.Choose(kit, readyAt, 10, held) :: any).Id, "RookHaymaker")
+			t.Equal("Auto off and not armed: the combo, the ring full", (Fight.Choose(kit, readyAt, 10, "RookHaymaker") :: any).Id, "RookCombo")
+			t.Equal("Auto on: as ever, the signature", (Fight.Choose(kit, readyAt, 10) :: any).Id, "RookHaymaker")
+			-- its start empties the ring and disarms it: a tap after it, however quick, fires nothing
+			readyAt.RookHaymaker = 10 + Actions.ById.RookHaymaker.Cooldown
+			t.Check("fired: the next tap, on the same frame, arms nothing", not Fight.Tap(signature, readyAt, 10, false))
+			t.Check("nor a tap just before it's full again", not Fight.Tap(signature, readyAt, readyAt.RookHaymaker - 0.01, false))
+			t.Check("full again: a tap arms it", Fight.Tap(signature, readyAt, readyAt.RookHaymaker, false))
+			t.Check("no signature: a tap arms nothing", not Fight.Tap(nil, {}, 0, false))
+		end,
+	},
+	{
 		Name = "Fight: the lead fights near the avatar and comes back",
 		Run = function(t: any)
 			local leash = Combat.Lead.Leash

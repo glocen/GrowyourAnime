@@ -100,6 +100,9 @@ type Signature = {
 	Full: boolean,
 	FoughtAt: number, -- os.clock() the lead last had a target
 	Seen: number, -- 0 hidden to 1 shown: it fades in as a fight starts, out a moment after it ends
+	ShownAt: number, -- os.clock() it last began to fade in
+	TappedAt: number, -- os.clock() of the last tap on it (TR52)
+	Armed: boolean, -- a full ring tapped: the tap's own word until the server's answer or the fire (TR52)
 }
 
 local lead: LeadCard.Card
@@ -115,6 +118,8 @@ local chip: Frame
 local chipText: TextLabel
 local readout: Signature
 local eye: TextButton -- the spectate toggle (TR11)
+local auto: TextButton -- the signature's Auto, after the eye (TR52's block)
+local autoOn = true -- as its words last said
 local nextButton: TextButton -- under a fallen lead's card: sends out the next (TR12)
 local dock: { [string]: TextButton } = {}
 local dockHolder: Frame
@@ -360,6 +365,8 @@ local function placeCorner()
 	eye.Size = UDim2.fromOffset(look.Size, look.Size)
 	eye.Position = UDim2.fromOffset(x, y)
 	nextButton.Position = UDim2.fromOffset(x + look.Size / 2 + Theme.Size.Gap, y)
+	auto.Size = UDim2.fromOffset(plate.Auto.Width, Theme.Size.Tap)
+	auto.Position = nextButton.Position -- never both: the readout hides with a fallen lead
 	-- The level-up's notice under the corner's row, at the card's left edge (AR12, take B; TR41 (c)), stopping a gap short
 	-- of the step's chip over the dock, which shares its row on a phone.
 	local hud, scale = Layers.Get("Hud"), math.max(Layers.Scale(), 0.01)
@@ -384,8 +391,19 @@ local function stepReadout(model: Model?, fighting: boolean, dt: number)
 	end
 	local want = can and now - readout.FoughtAt <= config.Linger
 	local by = dt / math.max(if want then config.FadeIn else config.FadeOut, 1e-3)
+	local was = readout.Seen
 	readout.Seen = if can then math.clamp(readout.Seen + (if want then by else -by), 0, 1) else 0
+	if was <= 0 and readout.Seen > 0 then
+		readout.ShownAt = now
+	end
 	piece.Frame.Visible = readout.Seen > 0
+	auto.Visible = readout.Seen > 0 and not nextButton.Visible
+	-- Its state in its words: the kit's set light alone read the same on and off at the phone's size (TR52's capture).
+	local on = player:GetAttribute("SignatureAuto") ~= false
+	if on ~= autoOn then
+		autoOn = on
+		Button.Set(auto, { Selected = on, Text = if on then "AUTO ON" else "AUTO OFF" })
+	end
 	piece.Frame:SetAttribute("Seen", readout.Seen)
 	if not can or model == nil then
 		return
@@ -394,6 +412,7 @@ local function stepReadout(model: Model?, fighting: boolean, dt: number)
 	local ready = if type(readyAt) == "number" then readyAt else 0
 	if ready > readout.Ready + 1e-3 then
 		readout.FiredAt = now -- it fired: the server set when it's ready again
+		readout.Armed = false
 	end
 	readout.Ready = ready
 	local share = Hud.Ready(ready, cooldown :: number, workspace:GetServerTimeNow())
@@ -406,17 +425,45 @@ local function stepReadout(model: Model?, fighting: boolean, dt: number)
 	local flash = if since < config.Flash then 1 - since / config.Flash else 0
 	local swell = now - readout.ReadyAt
 	local back = if swell < config.Ready then math.sin(math.pi * swell / config.Ready) else 0
+	-- TR52: a full ring left untapped pulses once, Pulse.Hold after its swell or its fade in; a tap answers on its frame,
+	-- squeezed in and back; armed, waiting for its target's range, it stays in a little.
+	local pulseConfig = config.Pulse
+	local held = now - math.max(readout.ReadyAt + config.Ready, readout.ShownAt + config.FadeIn) - pulseConfig.Hold
+	local pulse = if full and held >= 0 and held < pulseConfig.Length then math.sin(math.pi * held / pulseConfig.Length) else 0
+	local pressed = now - readout.TappedAt
+	local press = if pressed < config.PressTime then 1 - pressed / config.PressTime else 0
+	local armed = readout.Armed or model:GetAttribute("Armed") == true
+	press = math.max(press, if armed then config.Armed / config.Press else 0)
 	local _, class = kindOf(model)
 	Readout.Step(piece, {
 		Share = share,
 		Full = full,
 		Flash = flash,
 		Swell = back,
+		Pulse = pulse,
+		Press = press,
 		Seen = readout.Seen,
 		Action = signatureOf(tostring(model:GetAttribute("Def") or "")),
 		Class = class,
 	})
 	piece.Frame:SetAttribute("Flash", flash)
+	piece.Frame:SetAttribute("Pulse", pulse)
+	piece.Frame:SetAttribute("Armed", armed)
+end
+
+-- A tap on the signature's readout (TR52's block): it answers on the frame (the squeeze), and a full ring takes the look
+-- of armed at once; the server arms and fires it (FightService.Tap), or says why not, and only a refusal takes that back.
+local function tapSignature()
+	readout.TappedAt = os.clock()
+	if readout.Full and readout.Seen > 0 then
+		readout.Armed = true
+	end
+	task.spawn(function()
+		local ok, answer = pcall(Net.Client.Invoke, "Signature", "Tap")
+		if not ok or type(answer) ~= "table" or (answer.Ok ~= true and answer.Error ~= "Armed") then
+			readout.Armed = false
+		end
+	end)
 end
 
 -- The HUD's face (Config.Hud.Face, FaceSmall; docs/ui.md, rule 3): every kit label on the HUD's layers wears it, and
@@ -1349,7 +1396,24 @@ function HudController.Start()
 		Full = true,
 		FoughtAt = -math.huge,
 		Seen = 0,
+		ShownAt = -math.huge,
+		TappedAt = -math.huge,
+		Armed = false,
 	}
+	-- The readout is the button (TR52's block): the touch going down fires, as a fight's buttons do, not the let go.
+	local tap = Instance.new("TextButton")
+	tap.Name = "Tap"
+	tap.Text = ""
+	tap.AutoButtonColor = false
+	tap.BackgroundTransparency = 1
+	tap.Size = UDim2.fromScale(1, 1)
+	tap.ZIndex = 20
+	tap.Parent = readout.Piece.Frame
+	tap.InputBegan:Connect(function(input: InputObject)
+		if input.UserInputType == Enum.UserInputType.Touch or input.UserInputType == Enum.UserInputType.MouseButton1 then
+			tapSignature()
+		end
+	end)
 	eye = eyeButton()
 	-- A fallen lead's card offers the next (TR12; docs/design.md, "The next lead"): it opens the Voidkin screen, where any
 	-- whole one goes out at once, out of combat. In grey: the kit's button in the lead's corner, after the eye (placeCorner).
@@ -1364,6 +1428,20 @@ function HudController.Start()
 		end,
 	})
 	nextButton.Visible = false
+	-- The signature's Auto (TR52's block): selected while on, its lead's signature going as soon as it's ready, as ever;
+	-- off, only on a tap. For this server only, on the player (FightService.SetAuto).
+	auto = Button.new({
+		Name = "SignatureAuto",
+		Text = "AUTO ON",
+		Size = UDim2.fromOffset(HudConfig.Readout.Auto.Width, Theme.Size.Tap),
+		AnchorPoint = Vector2.new(0, 0.5),
+		Parent = Layers.Get("Hud"),
+		OnPress = function()
+			local ok, answer = pcall(Net.Client.Invoke, "Signature", "Auto", player:GetAttribute("SignatureAuto") == false)
+			return ok and type(answer) == "table" and answer.Ok == true
+		end,
+	})
+	auto.Visible = false
 	-- Experience's pop: white over the thread's lit share, brightest at its new end (Config.Hud.Pop).
 	glint = Instance.new("Frame")
 	glint.Name = "Glint"
@@ -1584,6 +1662,11 @@ function HudController.UnderPills(): UDim2
 	return UDim2.new(1, -PAD, 0, TOP + 2 * (PILL + Theme.Size.Gap))
 end
 
+-- A tap on the signature's readout, as a finger's (TR52; tests).
+function HudController.TapSignature()
+	tapSignature()
+end
+
 function HudController.Parts(): { [string]: GuiObject }
 	return {
 		Lead = lead.Frame,
@@ -1617,6 +1700,7 @@ function HudController.Parts(): { [string]: GuiObject }
 		Signature = readout.Piece.Frame,
 		Spectate = eye,
 		Next = nextButton,
+		SignatureAuto = auto,
 		Chip = chip,
 		ChipText = chipText,
 		Voidkin = homePanel.Cards.Voidkin.Button, -- the way to the Voidkin screen: Home's Voidkin card, on the page last shown

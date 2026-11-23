@@ -4742,6 +4742,54 @@ Research, 2026-11-23, 14:54, on the director's word of about 14:50: F1 of `docs/
 - **Cap:** 90 minutes.
 - **Order:** after the Studio run of AR49, TR51 and TR37, beside the small ones.
 
+### Faber's block (Faber, 2026-11-23, 22:08)
+
+- **The measure, first.** Studio's Device Simulator, iPhone 16 Pro (750×401), in GUI pixels under its 58 px top inset.
+  - The readout stands top left, under the lead's card (AR12), at 11,124, 62×62. The Auto toggle stands after the eye, at 141,127, 107×56.
+  - Roblox's jump button is at 655,253, 70×70, bottom right. The ring and the jump button don't meet: 582 px apart.
+  - The dynamic thumbstick starts wherever a left thumb lands in x −100 to 300, y 114 to 443. The ring and Auto stand inside that zone's top edge.
+  - The HUD draws over Roblox's touch controls (DisplayOrder 10 against 0), so a touch on the ring is the ring's. A real touch in the simulator fired the signature once, its clip 62 ms after the touch, and the stick never started.
+  - So the ring stays where it stands (research, 721e825 at 21:33, ui.md's row). The cost to weigh in motion: it's the left thumb's, the thumb that walks the avatar; the right thumb only turns the camera.
+- **Built:**
+  - **The rule,** `Rules.Fight`:
+    - `Fight.Tap` arms the signature only while it's ready and not armed already;
+    - `Fight.Signature` names it: the kit's action with a cooldown;
+    - `Fight.Choose` takes a held action, the signature with Auto off and nothing armed.
+    - Armed, the signature is the next action, and its start disarms it.
+  - **The server,** `FightService`:
+    - the `Signature` remote takes "Tap" and "Auto";
+    - armed, the signature fires at once when its target is in range, cutting the combo wherever it is; out of range, it fires the moment it can;
+    - Auto lives on the player (`SignatureAuto`), on this server only and not saved: the block's.
+  - **The readout** (`HudController`, `UI.Readout`):
+    - a touch going down fires it, as a fight's buttons do, not on the let-go;
+    - it squeezes in on the frame (`Press` 0.12 over `PressTime` 0.14 s);
+    - armed and waiting for range, it stays in a little (`Armed` 0.06);
+    - a full ring left untapped pulses once (`Pulse`: `Hold` 0.5, `Length` 0.4, `Scale` 0.16). My reading of the seed: its 0.5 s counts from the end of the ready swell or the fade-in, so the two never merge.
+  - **The Auto toggle:** the kit's button after the eye, in the place of a fallen lead's "Send another" (never both). It reads "AUTO ON" / "AUTO OFF": the kit's set light alone read the same either way at the phone's size.
+  - Every number is in `Config.Hud.Readout`, tuned live.
+- **Checks:**
+  - **Type check:** 0 new.
+  - **Logic offline:** 29260 passed. The new case:
+    - a tap with the ring not full arms nothing and changes nothing;
+    - a full ring arms once, and a repeated tap arms nothing;
+    - after the fire, a tap on the same frame arms nothing;
+    - Auto off holds the signature, and armed it goes first.
+  - **"HUD: TR52"** (`SelfTestController/SignatureCases.luau`), 16 passed at 55 fps:
+    - Auto off holds a full ring: 0 fires in 2.7 s;
+    - it pulses once;
+    - the tap squeezes it in on the HUD's next frame, to 0.893;
+    - the clip starts 147 ms after the tap: Studio's round trip;
+    - three taps on one frame fire once;
+    - with the ring not full, the server answers NotReady and nothing changes.
+  - **The suites:** "HUD:" 548 passed, 0 failed, TR52's case in it. Its first run failed TR52's case 9 times: a case before left the lead idle with the camera turned away, so the Shade spawned ahead was never taken on (fix 6). The case now heals, calms and clears first, and its Shade comes for the lead. "Kit:" 85, "Camera:" 37 and "Fight: each lead's passive" 23, 0 failed. "Fight:" 640 passed, 8 failed, all eight in Watt's Ground Wire. That's the order effect noted on 2026-11-19 (TR49's run): alone in a fresh playtest it's 20/0, and after TR52's case 20/0. TR12's take stops at its first check, "Rook and Ironhymn owned": the test save owns no Ironhymn (kirra, lyric, marigold, pip, rook, sable, watt). That's a precondition of the save, not TR52's.
+- **Captures,** smallest phone, from the simulator: `build/captures/tr52/`.
+  - `phone_full`: white-hot, waiting with Auto off.
+  - `phone_fired`: emptied as it fires.
+  - `phone_filling`: the front partway up.
+  - `phone_auto_on`, `phone_auto_off`: the toggle's two words.
+- **Not built** (waits, as the entry says): the desktop key, the finished look, the Tower's fights, the sound.
+- **For the verdict:** one Lantern Row run with Auto on and one with it off. That's the director's play, and research's verdict from it.
+
 ## TR53. The base between runs: what it made while you were away, and its state during a run (Faber, after the install backlog)
 
 Research, 2026-11-23, 14:58, F4 and F6 of `docs/research/design-holes.md`: the director left these to research ("whatever best in your opinion"). Tier 2 (research, and Faber's area): a new moment players see. The look of the card is Modulo's, in the system slab's make.

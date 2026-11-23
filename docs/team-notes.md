@@ -10,10 +10,14 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **Modulo's order:** **AR57, the Guard's and the Dasher's elites** (the director, by 21:53). AR56 is closed and kept as it is; Faber's install comes after the main game.
 - **With the director:** answer **item 10 in Faber's session** (the hooks for Scintilla and Sonus); **item 4**, publish both places and Faber's OK to run the player once; open two sessions titled **Scintilla** and **Sonus**; `src/shared/Config/Sounds.luau`'s uncommitted change; the store's design.
 
-**Faber (builder).** 2026-11-23, 21:18, on Opus 5.5.
-- **AR51 is in the game** (AR51, "Faber's build"). That's B's card in its four states beside the cradle, and the Condenser's Rose share with its chip, third row and third handle. Must-fix 2 is answered with whole rows: the foot falls between two. The card now stands clear of Roblox's prompt card (`UI.World.Beside`). The checks: 29247 logic; TR37 41, "Power:" 108 and "Base:" 371 passed, 0 failed. **Waits: research's pass** (stills in `build/captures/ar51/`).
-- **For research's call:** the guide's arrow stands mid-screen on the smallest phone, over the avatar and the prompt's key. My proposal: hide it while a prompt shows. That's the guide's piece.
-- **Next:** TR52; then AR52's behaviours, TR54 and TR53 (with TR31 folded in). F7's timing waits on item 4's publish.
+**Faber (builder).** 2026-11-23, 22:08, on Opus 5.5.
+- **AR51 is closed** at competent (research's second look, 721e825). Must-fix 3 and the guide's arrow riding the chip are in (23980a0).
+- **TR52's block is in the game** (TR52, "Faber's block"):
+  - the readout is the button; a full ring left untapped pulses once; Auto sits after the eye.
+  - The measure: the ring and the jump button don't meet (582 px apart). The ring stands at the dynamic stick's top edge, and a touch on it never starts the stick.
+  - Captures are in `build/captures/tr52/`.
+  - **Waits:** the director's Lantern Row run with Auto on and one off, then research's verdict.
+- **Next:** AR52's behaviours, TR54, and TR53 (with TR31 folded in). F7's timing waits on item 4's publish.
 - **The hooks for Scintilla and Sonus** wait on the director's own word (item 10). **Open, tests:** as before.
 
 **Modulo (assets).** 2026-11-23, 21:55, on Fable 5.2. Voidkin work parked until before launch (the director's word, 11:10).
@@ -139,6 +143,15 @@ For Faber:
 
 ## Entries
 
+### 2026-11-23, 22:08. TR52, the signature on a tap, a block in the game (Faber)
+
+- **What changed:** the signature's readout is the button, firing as the touch goes down, and it squeezes in on that frame. An **AUTO ON / AUTO OFF** toggle stands after the eye. With Auto off, a full ring waits for the tap and pulses once. A tap fires the signature once, cutting the combo when its target is in range. A ring not full does nothing.
+- **The measure:** the ring and Roblox's jump button don't meet (582 px apart on the smallest phone). The ring stands at the dynamic stick's top edge, and a touch there is the ring's: the stick never starts.
+- **Where:** TR52, "Faber's block"; `Rules.Fight.Tap`, `FightService.Tap`, the `Signature` remote, `Config.Hud.Readout`, `SelfTestController/SignatureCases.luau`.
+- **Tested:** type check 0 new; 29260 logic; "HUD: TR52" 16/0; "HUD:" 548/0, "Kit:" 85/0, "Camera:" 37/0; "Fight:" 640/8, all eight Ground Wire's known order effect (20/0 alone and after TR52).
+- **Open:** the director's Lantern Row run with Auto on and one off, then research's verdict.
+- **For:** research and the director, with captures in `build/captures/tr52/`.
+
 ### 2026-11-23, 21:46. AR56: the Tower's room, the Crown, delivered as a kit (Modulo)
 
 - **What changed:** the Tower's room exists as art: an open floor at a tower's top, eight blades leaning out of the rim, the floor's number on a slab afloat, the foe up four steps over the far rim, cloud under the horizon in the sky's faces. Its entrance and record marker for the lot are drawn in the same make.
@@ -238,13 +251,3 @@ For Faber:
 - **Where:** `build/handoff/FxKit/states/` (three sheets and the counts); the seeds in `tools/blender/element_states_fx.py`; the record in AR48.
 - **Open:** nothing is in the game. The content check's conditions go with the build, and the first installed capture is read with the bodies turned, at 64 px.
 - **For:** Faber, after TR49's states.
-
-### 2026-11-19, 23:58. TR50, one mission per Arc (Faber)
-
-- **What changed:**
-  - The dock's Play opens the Arc panel: Lantern Row's tile with Normal and Hard, each with its recommended CR, its four marks and its checkpoint; Hard shows its lock and why.
-  - A run goes through the four stretches with the line "Stretch 2 of 4" and one card at the end. A fall keeps the checkpoint; the keeper's fall clears it.
-- **Where:** TR50, "Built in the game"; `Rules.Stages`, `StageService`, `UI/StageScreen.luau`, `StageController`.
-- **Tested:** type check 0 new; 28,834 logic cases offline; in the main place, travel 35/0, the dock 39/0, the take 6/0.
-- **Open:** the Festival place's run cases, NOT VERIFIED (item 9). Two looks for research: Hard's lock reads open at phone size, and the line shows its number twice.
-- **For:** research's pass on `build/captures/tr50/play-panel-line.png`.

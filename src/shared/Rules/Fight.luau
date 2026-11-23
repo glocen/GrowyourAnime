@@ -35,13 +35,31 @@ function Fight.CatchTo(action: Actions.Action, beat: string, clock: number): num
 end
 
 -- The first action of `kit` (in its order) that's off its cooldown at `now`. `readyAt` holds when each may go again.
-function Fight.Choose(kit: { Actions.Action }, readyAt: { [string]: number }, now: number): Actions.Action?
+-- `held`, an action's id the choice passes over: a lead's signature while its Auto is off and no tap has armed it (TR52).
+function Fight.Choose(kit: { Actions.Action }, readyAt: { [string]: number }, now: number, held: string?): Actions.Action?
 	for _, action in kit do
-		if now >= (readyAt[action.Id] or -math.huge) then
+		if action.Id ~= held and now >= (readyAt[action.Id] or -math.huge) then
 			return action
 		end
 	end
 	return nil
+end
+
+-- A lead's signature: the first action in its kit with a cooldown (Actions.Kits puts it first), or nil.
+function Fight.Signature(kit: { Actions.Action }): Actions.Action?
+	for _, action in kit do
+		if action.Cooldown > 0 then
+			return action
+		end
+	end
+	return nil
+end
+
+-- A tap on the signature's ring (TR52): whether it arms the signature now. Only a ready one that isn't armed already, so
+-- a tap on a ring not full does nothing and changes nothing, and a second tap never arms it twice. Armed, the signature
+-- is the lead's next action (Choose, nothing held); its start disarms it and empties the ring, so it fires once.
+function Fight.Tap(signature: Actions.Action?, readyAt: { [string]: number }, now: number, armed: boolean): boolean
+	return signature ~= nil and not armed and now >= (readyAt[signature.Id] or -math.huge)
 end
 
 export type Candidate = {

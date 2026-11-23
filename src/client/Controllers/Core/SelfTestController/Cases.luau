@@ -7812,6 +7812,18 @@ end
 for _, case in ViewCases.Cases({ LEAD_SETTLE = LEAD_SETTLE, SHADE_AHEAD = SHADE_AHEAD, waitFor = waitFor, myLead = myLead }) do
 	table.insert(cases, case)
 end
+-- TR52's block, the signature on a tap, given theirs. Its module cast: typed, its require alone tipped this file past what
+-- the type solver checks (32 internal errors, 2026-11-23); the module checks itself.
+for _, case in (require(script.Parent.SignatureCases) :: any).Cases({
+	LEAD_SETTLE = LEAD_SETTLE,
+	SHADE_AHEAD = SHADE_AHEAD,
+	SHADE_TOUGHER = SHADE_TOUGHER,
+	SHADE_TIMEOUT = SHADE_TIMEOUT,
+	waitFor = waitFor,
+	myLead = myLead,
+}) do
+	table.insert(cases, case)
+end
 -- AR44's numbers in a fight, given theirs: clear of each other along their rise, and the clip for research.
 for _, case in NumberCases.Cases({ myLead = myLead }) do
 	table.insert(cases, case)

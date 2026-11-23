@@ -76,6 +76,10 @@ export type Fighter = {
 	ActionAt: number,
 	Checked: number, -- the action's clock at the last beat check
 	ReadyAt: { [string]: number },
+	-- A lead's signature (Rules.Fight.Signature) and whether a tap has armed it (TR52): armed, it's the next action, and
+	-- its start disarms it. Its owner's Auto off (the player's SignatureAuto attribute), the choice holds it until armed.
+	Signature: Actions.Action?,
+	Armed: boolean,
 	ResetClosest: number, -- walking home: the nearest it has come, and when (Rules.Fight.ResetStuck)
 	ResetSince: number,
 	SkippedAt: number, -- a ranged lead's last skip back (Combat.Skip)
@@ -328,6 +332,10 @@ local function start(f: Fighter, action: Actions.Action, at: number)
 	if rate ~= f.ActionRate then
 		f.ActionRate = rate
 		f.Model:SetAttribute("ActionRate", if rate ~= 1 then rate else nil)
+	end
+	if f.Armed and f.Signature and action.Id == f.Signature.Id then
+		f.Armed = false
+		f.Model:SetAttribute("Armed", nil)
 	end
 	local cooldown = cooldownOf(f, action)
 	if cooldown > 0 then
@@ -615,6 +623,8 @@ local function register(model: Model, side: "Lead" | "Shade", kind: string, def:
 		ActionAt = 0,
 		Checked = -1,
 		ReadyAt = {},
+		Signature = if side == "Lead" then Fight.Signature(kit) else nil,
+		Armed = false,
 		ResetClosest = math.huge,
 		ResetSince = 0,
 		SkippedAt = -math.huge,
@@ -1245,6 +1255,8 @@ local function rise(f: Fighter, at: number)
 	setHealth(f, f.Block.Health)
 	f.ReadyAt = {}
 	f.Model:SetAttribute("Ready", 0)
+	f.Armed = false
+	f.Model:SetAttribute("Armed", nil)
 	setState(f, "Idle")
 	FightService.Rose:Fire(f)
 end
@@ -1283,6 +1295,8 @@ local function goHome(f: Fighter, at: number)
 	end
 	f.ReadyAt = {}
 	f.Model:SetAttribute("Ready", 0)
+	f.Armed = false
+	f.Model:SetAttribute("Armed", nil)
 	setHealth(f, 0)
 	setState(f, "Home", at + FightService.HomeOf(f.Owner).Fallen)
 end
@@ -1410,6 +1424,15 @@ local function trySkip(f: Fighter, target: Fighter, avatar: BasePart, at: number
 	return false -- cornered or surrounded: it fights where it stands
 end
 
+-- The action a lead's choice passes over (TR52): its signature while its owner's Auto is off and no tap has armed it.
+local function held(f: Fighter): string?
+	local signature = f.Signature
+	if signature == nil or f.Armed or f.Owner == nil or f.Owner:GetAttribute("SignatureAuto") ~= false then
+		return nil
+	end
+	return signature.Id
+end
+
 -- A lead's turn to decide.
 local function thinkLead(f: Fighter, at: number, dt: number)
 	local avatar = avatarRoot(f)
@@ -1498,7 +1521,7 @@ local function thinkLead(f: Fighter, at: number, dt: number)
 		if trySkip(f, target, avatar, at) then
 			return
 		end
-		local action = Fight.Choose(f.Kit, f.ReadyAt, at)
+		local action = Fight.Choose(f.Kit, f.ReadyAt, at, held(f))
 		local range = if action then action.Range else 4
 		local gap = distance(f.Root, target.Root)
 		local slot, off = slotFor(f, target, math.max(0, range - Combat.Approach))
@@ -1999,6 +2022,39 @@ function FightService.SetHealthShare(f: Fighter, share: number)
 	end
 end
 
+-- A tap on the signature's ring (TR52's block): armed only while it's ready (Rules.Fight.Tap), so a tap on a ring not
+-- full changes nothing and a repeated tap never fires twice. Armed, it goes at once when it can: a target in its range,
+-- the lead standing in its fight and not sent off for its place, the combo cut wherever it is. Else it goes first the
+-- moment it can (thinkLead's choice, nothing held).
+function FightService.Tap(player: Player): { Ok: boolean, Error: string?, Fired: boolean? }
+	local f = leads[player]
+	if f == nil or not standing(f) then
+		return { Ok = false, Error = "NoLead" }
+	end
+	local at = now()
+	if not Fight.Tap(f.Signature, f.ReadyAt, at, f.Armed) then
+		return { Ok = false, Error = if f.Armed then "Armed" else "NotReady" }
+	end
+	f.Armed = true
+	f.Model:SetAttribute("Armed", true)
+	local action = f.Signature :: Actions.Action
+	local target = f.Target
+	if target and standing(target) and f.State ~= "Flinch" and f.Away == nil and f.Forced == nil
+		and distance(f.Root, target.Root) <= action.Range then
+		endAction(f, at)
+		face(f, target.Root.Position)
+		start(f, action, at)
+		return { Ok = true, Fired = true }
+	end
+	return { Ok = true, Fired = false }
+end
+
+-- The player's Auto for their lead's signature (TR52's block): on, it goes as soon as it's ready, as ever; off, only on
+-- a tap. For this server only: the block keeps it on the player, not in the save.
+function FightService.SetAuto(player: Player, on: boolean)
+	player:SetAttribute("SignatureAuto", on)
+end
+
 function FightService.LeadOf(player: Player): Fighter?
 	return leads[player]
 end
@@ -2107,6 +2163,15 @@ function FightService.Start()
 		end
 		local r = math.rad(bearing)
 		views[player] = { Look = Vector3.new(math.cos(r), 0, math.sin(r)), At = os.clock() }
+	end)
+	Net.Server.Handle("Signature", function(player: Player, what: any, on: any): { [string]: any }
+		if what == "Tap" then
+			return FightService.Tap(player) :: any
+		elseif what == "Auto" and type(on) == "boolean" then
+			FightService.SetAuto(player, on)
+			return { Ok = true, Auto = on }
+		end
+		return { Ok = false, Error = "BadArgs" }
 	end)
 	Players.PlayerRemoving:Connect(function(player: Player)
 		views[player] = nil

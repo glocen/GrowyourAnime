@@ -368,6 +368,15 @@ return {
 		Linger = 1,
 		FadeOut = 0.35,
 		Always = false,
+		-- TR52's block, the signature on a tap: the readout is the button. A tap squeezes it by Press, gone over PressTime,
+		-- on the frame it lands; armed and waiting for its target's range, it stays in by Armed. A full ring left untapped
+		-- pulses once by Pulse.Scale over Pulse.Length, Pulse.Hold seconds after its ready swell or its fade in, so the two
+		-- never merge (the seed's 0.5 s). The Auto toggle after the eye, Auto.Width points wide.
+		Press = 0.12,
+		PressTime = 0.14,
+		Armed = 0.06,
+		Pulse = { Hold = 0.5, Length = 0.4, Scale = 0.16 },
+		Auto = { Width = 100 },
 	},
 	-- The spectate toggle (TR11; the director, 2026-11-14, night: the player's camera is never moved in a fight, and a small
 	-- button follows the lead instead). The eye (AR12: one family with the readout): its plate Plate across, open and lit

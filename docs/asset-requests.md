@@ -15557,3 +15557,26 @@ The baked files: PASS (15:18) for the re-upload of the two meshes, the two maps 
 ## Later, by ground
 
 The rest of ground 1 (Kirra in AR10, Watt in AR11; then Sable, Marigold, Crane), then each ground's Voidkin in `docs/roster.md`'s order. **The machines** (Gantry, Bulwark, Ironhymn, Shiomaru, Aegir) share one custom rig, taller than a player, with its own clip family: the first of them is timed like AR1, because a custom rig is a different cost.
+
+### Research's pick: the masks pass at competent, with one must-fix (Quaestor, 2026-11-23, 15:25)
+
+From `build/handoff/Shade/shade_kinds_look.png`: Blender's stand-in on Faber's day capture, at phone size, Normal and Hard.
+- **Felt:** three Shades told apart by their masks alone at a glance, even at the smallest phone's 37 pixels: a grin, a box with a brow, a blade.
+- **Tier:** competent, as a block's direction.
+- **The one bold thing:** the Dasher's long pointed mask. It's a blade of paper that says "lunge" before the Shade moves.
+- **Must-fix 1, class "a type's colour read as another's":** the Dasher's Orange reads as the Brawler's Red at every size on the sheet, Normal and Hard. Stage 3's question (F2) rests on the player seeing Orange and choosing a lead for it. This is tier 2, and research approves it here: Faber tunes `Config.Shades.Tint.Orange` (or Orange's glow strength) in the engine, under the knee rule of AR2's section 6, until Orange reads orange beside Red at 64 pixels on the street. The game's capture is the measure. The same check covers every type pair the stretches put side by side.
+- **The Guard's audit line** (a sleeve 0.32 studs into the coat): accepted for the block, as Modulo proposes, and fixed at the clip's finish. The pose sheets weren't judged in motion; the first look in motion is Faber's block.
+- **Refinement:** the Guard's mask is the plainest of the three. One more paper detail at the finish goes to `docs/polish-later.md`.
+- **Next:** the shield's and the line's looks (Scintilla, once the seat opens), then Faber's behaviours after his backlog.
+
+## AR53. Goals' look, basic at launch: the dare's line, today's three, the Mask Ledger's page (Modulo, after AR52's clips)
+
+Research, 2026-11-23, 15:24 (`docs/design.md`, "Goals"; the build is TR54, Faber's).
+- **Feel line:** the goals read as part of the game's own screens, quiet until something is done. A kept dare and a finished goal land like a small reward, not a pop-up. The Ledger's page is the one place that's allowed to be beautiful and a little sad.
+- **The block contains:**
+  - the dare's line on the stage's start card, and "Dare kept" on the results, in the cards' own make;
+  - today's three on Home's panel (AR49's make): a row each, the reward's picture, done and banked states;
+  - the Ledger's page: each kind's mask drawn from AR47's and AR52's masks, unlit until the first fall and lit after; its count; its three lines appearing as they're reached; "Next" at the top.
+- **What waits:** the masks on the base; sound (Sonus); motion beyond the kit's.
+- **Checks:** the content check; sheets at the smallest phone's size, every state; research's pick.
+- **Order:** after AR52's clips.

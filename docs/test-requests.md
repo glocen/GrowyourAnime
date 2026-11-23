@@ -4606,3 +4606,35 @@ Research, 2026-11-23, 14:58, F4 and F6 of `docs/research/design-holes.md`: the d
 - **Checks:** the logic case that a return shows each change once, and a repeat shows nothing; captures on the smallest phone; research's verdict in motion.
 - **Cap:** 90 minutes for each half.
 - **Order:** after the install backlog and TR52.
+
+## TR54. Goals, basic at launch: a dare per stage, today's three, the Mask Ledger (Faber, after TR52 and AR52)
+
+Research, 2026-11-23, 15:24, on the director's yes and "js basic at launch" (`docs/design.md`, "Goals"; `docs/decisions.md`, the row of 15:23). The look is AR53's, Modulo's.
+- **Feel line:** at a stage's start the card dares you to play it one way; at its results, "Dare kept" and a stone. Home shows three plain goals that finish themselves while you play. The Ledger fills with masks, and each one tells you a little about who wore it.
+- **The block contains:**
+  - **Dares,** one fixed dare per stage, checked on the server, paid at the results:
+    1. "Finish with your lead above half."
+    2. "Break a raised shield with your signature." (needs TR52's tap and AR52's Guard)
+    3. "Let no Dasher's line touch you." (needs AR52's Dasher)
+    4. "Stand outside every slam." (needs TR44's lead movement)
+    Until a dare's piece is in, that stage's dare is "Finish without your lead falling." Kept: one forge stone of the stage's grade (seed).
+  - **Today's three:** one from each list, drawn on the server at 00:00 UTC, banked up to three days (nine at most), each paying one Lantern Row shard.
+    - Fight: "Keep a dare." / "Clear a stage on Hard." / "Win three Tower floors." / "Beat the Lamplighter."
+    - Base: "Let every bay run a full hour." / "Break three shards." / "Collect the Condenser's tray." / "Train a Voidkin for an hour."
+    - Roster: "Lead a run with someone new." (a Voidkin not led today) / "Raise a Voidkin a level." / "Forge once."
+  - **The Mask Ledger:** a count per Shade kind, and a line shown at each count (Shades at 10, 100 and 1,000; the keeper at 1, 10 and 100):
+    - **Brawler:** "Round masks sold out first. Everyone wanted to grin that night." / "The grin is painted on. Most of the ones under it were scared." / "By dawn they're home, with paint on their fingers and no idea whose."
+    - **Guard:** "Square masks were for the ones who came to watch, not to dance." / "A Guard holds its shield the way they'd hold a shutter in the rain." / "They wake on the curb with sore arms, sure they'd been holding something up."
+    - **Dasher:** "The pointed masks were the runners'. They raced the lantern carts every year." / "The Void keeps what it finds. In a runner, it found the start line." / "They come to on the far side of the street, out of breath, and laugh without knowing why."
+    - **The Lamplighter:** "Someone has to light the lanterns. For forty years, it was them." / "The Void came in through the last lantern they lit." / "They light the row again each evening. Nobody has told them what happened, and nobody will."
+    - **Next:** the account's one next step, with what it opens. The rule picks the first not done of: Stage 4 on Normal, base level 2, the Lamplighter on Hard, base level 3, Tower floor 25.
+- **The rules in pure Luau** (`Rules.Goals`): the draw, the banking, the reset, each goal's check, the Ledger's counts. Logic cases:
+  - a goal pays once;
+  - a repeat or interrupted claim pays nothing more (the op ledger);
+  - the bank holds nine at most;
+  - the reset is on UTC, whatever the server.
+- **What waits:** the masks on the base, the dares' pools, weekly goals.
+- **Content check:** every line above, before it's built.
+- **Checks:** the logic cases; captures of the card, the results and Home on the smallest phone; research's verdict in motion.
+- **Cap:** about 10 hours of build (research's guess; Faber's estimate replaces it).
+- **Order:** after TR52 and AR52's behaviours.

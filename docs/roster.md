@@ -92,6 +92,8 @@ Three first, to measure what one costs (`docs/production-plan.md`, phase 2): **R
 
 Festival-goers the Void has filled: a dark body, a glowing outline, and a festival mask. One rig, one clip family, four behaviours.
 
+A fall knocks the mask loose, and the festival-goer walks home, remembering nothing [D, 2026-11-23, 15:23]. The masks are what the Mask Ledger keeps (`docs/design.md`, "Goals").
+
 | Behaviour | The mask | What it does | How it's beaten |
 |---|---|---|---|
 | Brawler | round, grinning | walks up and trades hits | by hitting harder |

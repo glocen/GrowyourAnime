@@ -15709,3 +15709,19 @@ Made and self-reviewed. Not in the game. Research's pick is open. Nothing is exp
 - **The plate:** raised in the block to 21.6 (its underside at 19.4, on two posts over the truss). The held eye's frame ends at 18.8 there, so it's out of the gate's view. From the Strip it's read whole by a level eye. Under the game's camera, 20° down, it's whole only from 56 studs off or more (today's, at 16, from 35): the Strip's middle doesn't show it. That's the cost of the raise, for research. `base_kit.PLATE_UP` stays 16 until the pick; `levelMark` follows it.
 - **Blocked in, for the finish after the pick:** the floor on this plan is the plain deck with the pads, the ring and the lines drawn over it. The floor's five pictures (drawn for today's star), the flood masts, the transformers, the pylons against the outer columns, the kit's places, and the handoff's export wait for the pick. Faber's part then: `Config.World.Fit`'s "128" layout and Stage III's `Prints`, the trial's case, the ring's cap.
 - **The gate's eye:** TR51's captures hold the camera level, 10 up and 11.5 before the gate's line. The game's own camera at its start looks 20° down from 8.8 up. The shares differ by a few points; the plate differs wholly (out of the game's camera at 16 already).
+
+### Research's pick: the plan, with the machines placed by what the player touches (Quaestor, 2026-11-23, 16:12)
+
+From `base_fit_gate.png`, judged by the game's camera behind a player (call 3: the player's camera is the measure from now on, and the held eye is only for comparing with TR51).
+- **Felt:** from the gate, the Breaker and the generator stand side by side as the yard's two heroes, with the Door at the edge and the court open in front. At level 3 the Breaker's horns fill their whole side.
+- **Tier:** competent, as a direction. It passes the plan's tests at every stage on Modulo's measure; Faber's case is the check.
+- **The one bold thing:** the Breaker and the generator side by side, with the path's line running straight to the generator.
+- **Call 1, must-fix 1, class "what the player touches stands in the open":** the open five spots (the Door's side) go first to what the player uses most, in this order:
+  1. bays 1 and 2 (the first session's "Work");
+  2. the Forge ("Build");
+  3. the Training machine;
+  4. the Condenser.
+  Behind the Breaker go bays 3 and 4 (they open later, and their tops show) and the battery (nothing to touch; its state is on the HUD). Today's zigzag has it the other way round for the battery and the Training machine, and leaves bay 1 at 47% through the Door's ring at level 1. Lay it again with `base_fit.py` to this order. Where a footprint won't fit a spot, the tool decides and the order bends least.
+- **Call 2, the plate:** raise it to 21.6. Its cost is accepted: it's read whole from 56 studs, across the Strip, and the owner's view of the yard is clean every time they walk in.
+- **The ring:** the generator's own clear is 25.1, so Faber caps the landing's ring at 25.
+- **Next:** Modulo's lay again, then research's second look on what changed. Then the finish (the floor's pictures, the masts, the handoff), and Faber's `Fit` with the trial's case.

@@ -3289,6 +3289,22 @@ TR51 is Faber's previous piece, and this is the next, on the director's order of
 - **Waits:** jewels in the tray (TR39); Stages II and III in the world (AR36, after this); the rank-up's effect and sound; the Research Lab (after launch).
 - **Checks:** the logic cases (the rate by level and by power, the tray's cap, the away time, the convert, a repeat never collecting twice); the self-test; captures from the gate at the smallest phone. Research's verdict is in the game.
 
+### Faber's build (2026-11-23, steps 1 at 03:06 and 2 at 03:23)
+
+- **Research's yes to two seeds** (Quaestor, before 03:06, recorded here at research's word): the Condenser **wakes at base level 2**, its asleep state reading as waiting like the Lab's, and it **asks 10 kW at level 1**, rising with its pace to 24.5 at 30. Also research's: a case where a full tray with a convert running still lands its Mid (added).
+- **Step 1, the rules (6b97f0b):** `Rules.Condenser`, `Config.Condenser`. It's a third machine in `Rules.Power`, worked through `Rules.Breaker`'s event steps online and away. `Rules.Base` gains CollectTray and Convert, each in one step, and UpgradeMachine takes the Condenser. The save gains `Base.Condenser` and `Machines.Condenser` (Reconcile fills them). Ten cases in `Cases/Condenser`.
+- **Step 2, the world (ca3dbb1):**
+  - **The Condenser:** AR28's Comb at Stage I (frame, core, 37 cups) stands over its sleeping stone, which shows below level 2 with its plate saying "Wakes at base level 2".
+    - **The tray from the gate:** the plate says "Tray n of 12 Low", "Tray full", and any Mid. The core turns while it works, at its power's speed, and stops on a full tray.
+    - **Collect and convert:** a Collect prompt shows while the tray holds a stone. A small grey panel on the kit runs the convert, with its own prompt.
+  - **The Forge:** AR28's Press at Stage I. Its prompt opens Equipment on Reinforce, and every try strikes the ram on every client: anticipation to its tell, a fast strike, a hitstop on the plate, an eased settle. The gears turn with its travel. The timing is in `Rules.Forge` and `Config.World.Forge`, tunable live.
+- **The builder's tier-1 calls:**
+  - **The comb lights by the tray's fill of its cap** (`Rules.Condenser.Lit`): 37 cups over a cap of 12 at level 1, so a full tray lights it whole. Mid stones aren't in the cups; the plate and the panel say them.
+  - **The convert's refusal is its own word** (`Base.Stones`: "A convert takes 5 Low stones"), not the battery's.
+- **Tier-2 notice, the Power screen:** its bar keeps two handles. The Condenser shares under Auto, and a split never clears its share, but its own handle, light and chip wait for a Power screen piece.
+- **Implemented, offline-tested:** type check 0 new; logic offline 29155 passed (cases Condenser and Forge).
+- **Not yet run in Studio:** the self-test's TR37 case, LogicTests, WorldReport and the captures from the gate. The Studio MCP saw only a blank Studio window all session. Not visually reviewed, not accepted.
+
 ## TR38. War Emblems (Faber, after TR37)
 
 Research's request, 2026-11-17, 11:57, item 7 of phase 3's order. The design: `docs/design.md`, "Regalia: gear" (sockets, the move across). Emblems are 11 of a full build (`docs/balance.md`, "Where power comes from").

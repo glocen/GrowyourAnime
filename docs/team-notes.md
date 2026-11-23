@@ -10,10 +10,10 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **Verdicts owed, main map first:** AR37, AR28's Stage I, AR30, AR23, TR10 (each read in the game at its install); then TR43, TR44, TR34, TR29 (Festival and Tower, after).
 - **With the director:** open Studio on the main place with Rojo on 34876, so tonight's code is seen; the PC's keep-awake (restart it, or the screen never off on mains); `src/shared/Config/Sounds.luau`'s uncommitted change, nobody's; the Voidkin model examples; the store's design; the sound pick on TR42's panel.
 
-**Faber (builder).** 2026-11-23, 02:51, on Opus 5.5. Stopped on the director's wrap-up (02:40, through research). Done this session, each implemented and type-checked, none run in Studio: the Studio MCP saw no open place all session.
-- AR49, Home's panel in C and the Voidkin screen's rail (04b45b5). TR51, the base grows, all three steps: the stages II and III (38d01a8), AR37's landing with the flash guard (ad1372b; `fx_rise_Void` uploaded, 84217908322822), TR22's gate plate and plinth (e086d9e). Records: AR49's and TR51's "Faber's build".
-- **Next:** the Studio run of AR49 and TR51 (the self-test; FxKit.rbxm rebuilt with the landing's look; the Fit Prints; the captures from the gate and the court at each stage, and on the smallest phone). Then TR37 (the Forge and the Condenser), then the small ones (AR44's shine, TR10's stills, TR50's Arc palette and Voidkin floor, AR48's states).
-- **Open, tests:** NOT VERIFIED: AR49 and TR51; and, in the Festival place (item 9), TR50's run cases, the Festival role's suite, TR48's keeper, TR49's Stage 1 playtest and TR10's marker. TintMask on a phone. TR44's phone take waits for the director's go.
+**Faber (builder).** 2026-11-23, 03:25, on Opus 5.5. Stopped at the director's wrap-up (through research). Built today, each implemented and offline-tested, none run in Studio: the Studio MCP attaches to a blank Studio window, never the one with Grow your Anime open.
+- TR37 in two steps: the Condenser's rules (6b97f0b), then the Forge and the Condenser in their sleeping places (ca3dbb1). Record: TR37, "Faber's build". Earlier: AR49 (04b45b5) and TR51's three steps (38d01a8, ad1372b, e086d9e).
+- **Next:** the Studio run of AR49, TR51 and TR37: the self-test, LogicTests and WorldReport; FxKit.rbxm rebuilt with the landing's look; the Fit Prints; captures from the gate at each stage and on the smallest phone, for research. Then the small ones (AR44's shine, TR10's stills, TR50's Arc palette and Voidkin floor, AR48's states), then AR50's install.
+- **Open, tests:** NOT VERIFIED: AR49, TR51 and TR37; and, in the Festival place (item 9), TR50's run cases, the Festival role's suite, TR48's keeper, TR49's Stage 1 playtest and TR10's marker. TintMask on a phone. TR44's phone take waits for the director's go.
 
 **Modulo (assets).** 2026-11-23, 03:21, on Fable 5.2. Voidkin work parked until before launch (the director's word, 11:10). Stopped on the director's wrap-up (by research): committed, nothing running, no lock held.
 - **Delivered today:** AR48's five cues as a block-in (`build/handoff/FxKit/states/`, Faber's after TR49's states), and TR50's dusk palette for the Arc panel and the results card's cover (`build/handoff/UI/stages/arc_dusk.json`, Faber's after AR49), and the Voidkin screen's floor in B, pale stone with the element as a rim of light (`build/handoff/UI/voidkin/voidkin_floor.json`, research's pick at 02:05, Faber's after TR51).
@@ -23,7 +23,7 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **For Faber, AR40's install:** the atlas pair, and the Strip's eight changed meshes with the manifest, on top of the 40 base meshes, the paving and C's keys already listed in AR40. The atlas never goes alone. AR38's Shop meshes go with AR38.
 - **Unchanged:** AR28's Stage I on TR37, AR19's re-uploads, AR24's A on TR34, AR39 stopped, Sable after launch.
 
-**Turns.** Studio: Faber's turn released (2026-11-23, 02:51); the Studio MCP sees one Studio, with no place open; the director's listen on TR42's panel is tomorrow, in the same place. Blender: nobody (Modulo's AR41 strips were stopped at 01:33 on 2026-11-19 by Claude Code when the PC ran low on memory; the director said wait at 01:34). Timing tests: nobody.
+**Turns.** Studio: Faber's turn released (2026-11-23, 03:25); the Studio MCP is attached to the blank Studio window, not the one with Grow your Anime open (item 10); the director's listen on TR42's panel is tomorrow, in the same place. Blender: nobody (Modulo's AR41 strips were stopped at 01:33 on 2026-11-19 by Claude Code when the PC ran low on memory; the director said wait at 01:34). Timing tests: nobody.
 
 **The count.** Week of 2026-11-23: 0 pieces closed and playable so far. Today's closes are art and picks (AR48, TR50's palettes, AR50's pick), all waiting on their install, which is how they become playable.
 
@@ -45,8 +45,11 @@ For Faber:
 8. **Pick the slam's rule by playing it** (TR44): Off, A or B. In Studio's Play, start a keeper's try. The Server command bar switches the mode mid-fight: `game.ServerStorage.NL_Debug:Invoke("Slam", nil, "A")` (or `"B"`, `"Off"`), and `Invoke("Slam")` reads the counts. In A, walk out of the ring and your fighter follows; in B, press the round Recall button or R. Research reads a phone take of each first: say go and I record it (the PC's memory stopped it tonight).
 9. **The Festival's place, after the main map and the systems** (TR45; your word of 2026-11-23, 00:05: the team has full access to it). When its work opens, the Creator Dashboard's settings stay yours to confirm: its name (Faber's suggestion: Festival of Battles), its server size 8, and its Direct Access set to "Secure within universe only". Then the id goes into `CLAUDE.md`'s "Places".
 
+10. **The Studio MCP on the Grow your Anime window.** Two Studios are open, and the MCP is attached to the blank one ("Place is not open"), so nothing of tonight's three pieces has run. Close the blank Studio window, or turn the MCP server on in the Grow your Anime window (the Assistant's settings), with Rojo connected on 34876. Faber runs the tests as soon as it shows.
+
 ### Notices
 
+- Tier 2, Faber, 2026-11-23, TR37: the Power screen's bar keeps two handles. The Condenser shares under Auto, and a split never clears its share, but its own handle, light and chip wait for a Power screen piece. Tier 1: the Comb lights by the tray's fill of its cap, from the bottom row up (a full tray lights all 37), and the convert's refusal is its own word ("A convert takes 5 Low stones"). Research: say in your row what you'd change.
 - Tier 1, Faber, 2026-11-19, TR49 and AR43's take 2: the experience line reads "{xp} of {need} to Level {n}", one line on the smallest phone, so all five attributes show; Lifesteal's heal shows on the bar with no number of its own. Research: say in your row what you'd change.
 - Tier 2, research, 2026-11-19, 20:46, TR48 part 2: on Hard, an elite's chest holds Epic 0.9% and a keeper's chest after its first win Epic 2.0% and Legendary 0.45%, so a one-ground launch meets design.md's Epic at 4 to 6 h and Legendary at 15 to 20 (MODEL). Faber: say in your row what you'd change.
 - Tier 1, Faber, 2026-11-19, AR43 in B: Settings' Effects covers the fight's particles and the camera's shake; the words the cut left open are mine ("Shades and keepers drop them", "Not enough Credits", "It's at +N already", the emblem bag's Sort pill, "Jewels are coming", "Not saved: try again"). The list is in AR43, "Faber's install of Equipment's three and Settings in B". Research: say in your row what you'd change.
@@ -121,6 +124,15 @@ For Faber:
 - Tier 2, research, 2026-11-12, on the director's words: weapons belong to a class, in two hands (Main Hand and Off Hand replace Weapon and Shield), a preset holds a pair per class, a weapon drop is for the lead's class; Combat Power made to be watched, its weights fitted by the simulation; each item kind modelled and rendered to its icon (AR6, phase 3) (`docs/design.md`, "Regalia: gear" and "Combat Power"). Faber: the Stats case's `"Weapon"` source becomes `"Main Hand"` when you next touch it. Faber and Modulo: say in your row what you'd change.
 
 ## Entries
+
+### 2026-11-23, 03:25. TR37 built, not yet run in Studio (Faber)
+
+- **The Stone Condenser:** its rules in pure Luau (`Rules.Condenser`, `Config.Condenser`), a third machine in `Rules.Power`, worked online and away through `Rules.Breaker`'s steps. CollectTray and Convert are each the server's, in one step. Its save is `Base.Condenser`, filled by Reconcile.
+- **In the world:**
+  - **The Condenser:** AR28's Comb over its sleeping stone, which stands until base level 2. Its cups light by the tray's fill, and the plate reads the tray from the gate. There's a tap to collect and a small grey panel for the convert (5 Low into 1 Mid).
+  - **The Forge:** AR28's Press. Its prompt opens Equipment on Reinforce, and each try strikes its ram: lift, strike, hitstop, settle (`Rules.Forge`, `Config.World.Forge`).
+- **Checks:** type check 0 new; logic offline 29155 passed. The self-test's TR37 case, the world report and the captures wait for the MCP on the right Studio window (item 10).
+- **Where:** TR37, "Faber's build"; the save contract in `docs/engineering-plan.md`. For research: the verdict in the game, once captured.
 
 ### 2026-11-23, 02:51. AR49 and TR51 built, not yet run in Studio (Faber)
 - **AR49** (04b45b5): Home's panel in C, three cards on dark glass, the lead live under the Voidkin card's frame; the Voidkin screen takes the Equipment screen's rail. Record: AR49, "Faber's build".

@@ -3280,6 +3280,15 @@ Research's request, 2026-11-17, 11:17, item 7 of phase 3's order (`docs/producti
 
 **Order in the queue:** item 7, after TR29's fixes and TR10's captures. Emblems (TR38) and jewels (TR39) follow, written by research before Faber reaches them.
 
+### Research's scope today (Quaestor, 2026-11-23, 02:53): what's left after TR47
+
+TR51 is Faber's previous piece, and this is the next, on the director's order of 00:05 (the main map and the systems). The Forge's ranks above are **already built as Reinforce** (TR47: `Rules.Reinforce`, a chance a try, paid in stones and Credits, cap 30, grades by tens). They replace this entry's "a rank never fails" and its rank prices, and nothing of the Forge's rules is built again. What's left:
+- **The Condenser's rules in pure Luau** (`Rules.Condenser`, `Config.Condenser`) with their cases. It makes Low stones online and away into its tray (1 an hour at level 1, plus 0.05 a level), drawing electricity like the Breaker (`Rules.Power`) and slower with less. The tray holds 12 hours of work, and a full tray stops. Its second job turns 5 Low into 1 Mid, one at a time, in 30 minutes. **This matters at launch:** only Low stones drop on the first ground (`Config.Drops`, `GroundsAGrade` 2), and Reinforce spends Mid from level 11, so the Condenser's convert is the way past 10. The away time is worked out on return, as the Training machine's is, and every collect or convert is the server's, in one step.
+- **The Condenser in the world:** AR28's Comb at Stage I in its sleeping place, the tray readable from the gate (full, part-full, empty), a tap to collect, and the convert job in a small grey panel on the kit.
+- **The Forge in the world:** AR28's Press at Stage I in its sleeping place. Its prompt opens Equipment's Reinforce page, and the ram strikes on a press made there (design.md, "Upgrading gear needs no walk").
+- **Waits:** jewels in the tray (TR39); Stages II and III in the world (AR36, after this); the rank-up's effect and sound; the Research Lab (after launch).
+- **Checks:** the logic cases (the rate by level and by power, the tray's cap, the away time, the convert, a repeat never collecting twice); the self-test; captures from the gate at the smallest phone. Research's verdict is in the game.
+
 ## TR38. War Emblems (Faber, after TR37)
 
 Research's request, 2026-11-17, 11:57, item 7 of phase 3's order. The design: `docs/design.md`, "Regalia: gear" (sockets, the move across). Emblems are 11 of a full build (`docs/balance.md`, "Where power comes from").

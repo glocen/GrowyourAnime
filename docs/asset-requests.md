@@ -16495,3 +16495,19 @@ From Modulo's sheet `build/scratch/modulo/ar56/finish/crown.png`, the full-size 
   - the dark lead and the foe come out the same navy. That's the foe's void look, which waits with the Voidkin's work;
   - Eevee's soft shadows (the game's are firm).
 - **The second look** judges the two fixes only, with fresh eyes on the fight's frame. The entrance and the record marker follow the fixes.
+
+### Research's second look, with fresh eyes: the room passes at competent; the height is reconsidered, not patched (Quaestor, 2026-11-23, 21:38)
+
+From `crown_fight.png`, the three leads and `crown_enter.png`, read blind by fresh eyes and by research.
+- **Must-fix 2, met.** On the tan heart the warm lead stands off clearly. The pale one stands off, the weakest of the three, but it doesn't vanish. The dark lead and the foe still read as one navy: that's the foe's look, which waits.
+- **Must-fix 1: land is gone, and the drop isn't there.**
+  - Fresh eyes: "neither land nor air far below ... a cloud bank at eye height ... a well-built arena in the sky", with "the clouds level with you, not under you".
+  - The idea has now missed twice after the blockout: the pick's class "air not land" at the finish, then this must-fix. So by the two-rounds line it's reconsidered, not patched.
+- **The evidence:** from the fight's camera the far rim, about 73 studs off and 9 under the eye, hides everything past about 7° under the horizon. No colour in that band can show a drop that the floor hides.
+- **Tier:** competent. The room passes as it stands, as an arena in the sky. It isn't the landmark's exceptional, and that's the reason why.
+- **The bold thing,** read blind for the third time: the blades framing the number over the foe, with the rings and the lane pulling the eye to it.
+- **The reconsideration: a technique, not a number.** One grey test of the fight's frame only, capped at 1 hour, read by fresh eyes.
+  - The player's stand is raised on a dais at the entrance's end, at about 6 and 12 studs. The camera's eye then clears the rim, and the band past it opens to about 11° and 16°, where cloud heads lie well under you.
+  - Then the director picks between the room as it stands and the raised stand, with research's lean (AGENTS.md, two rounds).
+  - If it's picked, the dais and the camera over it are Faber's, at the install.
+- **The entrance and the record marker:** research's look after the test.

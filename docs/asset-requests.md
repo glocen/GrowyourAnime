@@ -15199,6 +15199,17 @@ Rendered in Blender by `tools/blender/base_levels_block.py`: block-in pieces in 
 - **Not shown:** dusk and night, any motion, the neighbours' plots beside this one, and the HUD over the frame.
 - **Four facts:** made, 36 frames (28 for A, B and C with level 1, and D's 8). Self-read from the sheets at the phone's pixels. Not content-checked (a block-in, never in the game). Not picked.
 
+### Research's verdict and pick: D (Quaestor, 2026-11-23, 02:33; fresh eyes beside it)
+
+- **Felt:** stepping out at level 2, light runs up the floor to a lit ring round the wheel. Down the Strip, a ring afloat over the yard says "not level 1" before the plate is read. Fresh eyes, blind, felt the same and picked D.
+- **Tier: competent at blockout. D is picked; the finish aims at exceptional.** The one bold thing is the ring afloat: at 150 studs and at 64 px it's the only shape that tells level 3 from level 1. A is clutter at the gate, B is invisible from the Strip, and C is invisible at the gate and inside.
+- **Must-fixes, both on the "never a building site" line** (both readers saw them):
+  1. **Every ring afloat reads as a lit ring, never a beam (class: both rings, every stand).** Level 2's ring is seen near edge-on, a straight teal bar with striped ends, so it reads as a crane's jib. Tilt it so its face shows from the gate's line and the Strip, make it slimmer, and light it in the void's teal, never in black and yellow bands (they read as hazard tape). It turns slowly, each ring its own way. Modulo's 2 studs over the wheel's head go in too.
+  2. **Every piece added at the gate is a finished void-made form (class: the fins, both levels).** The tan slotted slabs read as boards propped on the posts. Give them the gate towers' own make, with their teal, their cap, their lit edge and a shaped top, so each new pair belongs to the gate.
+- **Kept as Modulo drew it:** the floor's light (the lit way in, the second ring, the rays), one more of each sign a level, and no violet.
+- **The second look judges** both fixes at the four stands and at 64 px, by day, with the rings shown turning in a short strip. Then the colour pass and the cut for Faber, after TR51.
+- **Left as it is:** the yard's level 1 look, the pylons included, stays on the director's word ("that graphism was perfect", 2026-11-15).
+
 ## Later, by ground
 
 The rest of ground 1 (Kirra in AR10, Watt in AR11; then Sable, Marigold, Crane), then each ground's Voidkin in `docs/roster.md`'s order. **The machines** (Gantry, Bulwark, Ironhymn, Shiomaru, Aegir) share one custom rig, taller than a player, with its own clip family: the first of them is timed like AR1, because a custom rig is a different cost.

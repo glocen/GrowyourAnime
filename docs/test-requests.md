@@ -4769,15 +4769,15 @@ Research, 2026-11-23, 15:24, on the director's yes and "js basic at launch" (`do
     - Fight: "Keep a dare." / "Clear a stretch on Hard." / "Win three Tower floors." / "Bring down the Lamplighter."
     - Base: "Let every bay run a full hour." / "Break three shards." / "Collect the Condenser's tray." / "Train a Voidkin for an hour."
     - Roster: "Lead a run with someone new." (a Voidkin not led today) / "Raise a Voidkin a level." / "Forge once."
-  - **Next,** pinned at the Today list's head, above the goals: the account's one next step, with what it opens, the first not done of:
+  - **Next,** the Today list's head, above the goals, holding its back press (research, 18:54, at AR53's redraw): the account's one next step, with what it opens, the first not done of:
     1. "Bring down the Lamplighter. Hard opens on Lantern Row."
     2. "Raise the base to level 2. A third bay opens, and the Condenser wakes."
-    3. "Bring down the Lamplighter on Hard. The first time, its chest holds a Rare or better."
-    4. "Raise the base to level 3. A fourth bay opens, and machines can climb to level 30."
-    5. "Climb the Tower to floor 25. Each floor past your record pays a first-time bonus."
+    3. "Bring down the Lamplighter on Hard. Its first chest holds a Rare or better."
+    4. "Raise the base to level 3. A fourth bay opens. Machines reach level 30."
+    5. "Climb the Tower to floor 25. Each new floor pays a first-time bonus."
     6. All done: "Drum Court's gate stays shut, for now."
-    Each says only what launch opens (`Config.Base`, `Config.Condenser.Wakes`, `Config.Chests.Keeper`). An update that changes one changes its line.
-  - **The labels:** "Today", the card's word and the list's head; "Next"; the banked days "Yesterday" and "Two days ago"; a done goal's press, "Claim"; the card's chip, "Dare kept" with "+N".
+    Each says only what launch opens (`Config.Base`, `Config.Condenser.Wakes`, `Config.Chests.Keeper`). An update that changes one changes its line. What it opens stays at 45 letters or fewer, so it never takes a third row (three lines shortened at 18:54; content check PASS at 18:55).
+  - **The labels:** "Today", the card's word; "Next"; the banked days "Yesterday" and "Two days ago"; a done goal's press, "Claim"; the card's chip, "Dare kept" with "+N".
 - **The rules in pure Luau** (`Rules.Goals`): the draw, the banking, the reset, and each goal's check. Logic cases:
   - a goal pays once;
   - a repeat or interrupted claim pays nothing more (the op ledger);

@@ -15821,6 +15821,20 @@ Made, self-reviewed as stills at the smallest phone, delivered to the handoff. N
 - **Limits:** stills only. Widths are the sheet's face, not the game's. The mark's flare, its split and the fold into the tab are TR54's block, read in motion there.
 - **AR55** waits behind this: its three blockout sheets are rendered and not yet read through (`build/scratch/modulo/ar55/`).
 
+### Research's second look at the redraw: the mark passes, one must-fix on the list (Quaestor, 2026-11-23, 18:54)
+
+- **The dare's mark passes.** The four-point mark reads at its smallest on the road, in the tab and in the chip, and nothing of the festival is left. Broken reads by its split. That lit and kept differ only by the flare is accepted: the flare is TR54's motion, read there.
+- **Next's plate passes as a look:** a header, not a press, in the Today card's light.
+- **Must-fix 1, class "a list that hides its own content at rest" (Modulo's finding 1):** today's three show whole at once, with Next in view.
+  - Next becomes the list's head: one plate 46 tall that holds the back press at its left and Next's two lines. "Today" leaves the head; the card that opens the list carries the word.
+  - The rows stay 44, with the gaps 2: 46 + 2 + 3 x 44 + 2 x 2 = 184, the glass as it is. The banked days scroll under it as before.
+  - If the measure says otherwise, the smallest change that shows all three wins, and its number goes here. Rows under 44 and words under 14 stay out.
+- **Finding 2, answered with words:** what Next opens stays at 45 letters or fewer, so with the back press beside it, no line takes a third row. Three lines are shortened in TR54:
+  - "Its first chest holds a Rare or better."
+  - "A fourth bay opens. Machines reach level 30."
+  - "Each new floor pays a first-time bonus."
+  They also clear the content check's note that "its chest" could read as the keeper's body.
+- **For the third look:** `goals_today.png` again, with the longest Next and three open goals, and with a claim waiting. One sheet is enough.
 
 ## AR54. The yard at Stage III: one plan where every machine fits and reads from the gate (Modulo, before AR53; then Faber)
 

@@ -154,13 +154,66 @@ local function showWorker(bay: Instance, number: number, index: number, id: stri
 	end
 end
 
-local function showPlot(number: number, data: Profile.Data?)
+-- AR37's landing (TR51): a machine's stage that rose on its owner's plot while it was shown (`seen`: the same owner's
+-- plot, not a join, a respawn or a plot changing hands) counts one more "Rose", which the client plays
+-- (BaseController). Set after its stage's pieces stand, so the client finds the new stage standing.
+local function rose(holder: Instance, was: any, stage: number, seen: boolean)
+	if seen and BaseLevels.Lands(if type(was) == "number" then was else nil, stage) then
+		local count = holder:GetAttribute("Rose")
+		holder:SetAttribute("Rose", (if type(count) == "number" then count else 0) + 1)
+	end
+end
+
+-- A machine's stage shown (TR51; AR32 to AR35): its "Stage", its stage's pieces standing and the others' hidden, none
+-- of them while it's asleep (`awake` false: a bay not yet opened).
+local function showStage(holder: Instance, stage: number, seen: boolean, awake: boolean?)
+	local was = holder:GetAttribute("Stage")
+	holder:SetAttribute("Stage", stage)
+	for _, group in holder:GetChildren() do
+		local at = group:GetAttribute("Stage")
+		if group:IsA("Model") and type(at) == "number" then
+			for _, part in group:GetChildren() do
+				if part:IsA("BasePart") then
+					WorldService.Stand(part, awake ~= false and at == stage)
+				end
+			end
+		end
+	end
+	if awake ~= false then
+		rose(holder, was, stage, seen)
+	end
+end
+
+-- Every turning stage piece in `holder` (a Breaker's hinges, a bay's rings) on or off.
+local function spin(holder: Instance, on: boolean)
+	for _, part in holder:GetDescendants() do
+		if part:GetAttribute("Spinning") ~= nil then
+			part:SetAttribute("Spinning", on)
+		end
+	end
+end
+
+local NO_BASE: BaseLevels.StagedBase = { Level = 1, Machines = {}, Bays = {} }
+
+-- What the stages read of a save's base (Rules.BaseLevels.Stages).
+local function staged(base: Profile.Base): BaseLevels.StagedBase
+	local bays = {}
+	for index, bay in base.Bays do
+		bays[index] = { Level = bay.Level }
+	end
+	return { Level = base.Level, Machines = base.Machines, Bays = bays }
+end
+
+local function showPlot(number: number, data: Profile.Data?, seen: boolean?)
 	local plant = Markers.Find("Generator", { Plot = number })
 	local rates = if data then Breaker.Rates(data) else nil
 	local generation = if rates then rates.Generation else 0
 	local gauge = Power.Gauge(generation, if rates then rates.Demand else 0, WorldConfig.Grey.Generator.Gauge)
+	local stages = BaseLevels.Stages(if data then staged(data.Base) else NO_BASE)
+	local landing = seen == true and data ~= nil
 	if plant then
-		local stage = BaseLevels.GeneratorStage(if data then data.Base.Level else 1)
+		local stage = stages.Generator
+		local was = plant:GetAttribute("Stage")
 		plant:SetAttribute("Stage", stage)
 		for _, group in plant:GetChildren() do
 			local at = group:GetAttribute("Stage")
@@ -187,24 +240,33 @@ local function showPlot(number: number, data: Profile.Data?)
 				end
 			end
 		end
+		rose(plant, was, stage, landing)
 	end
 	local open = if data then #data.Base.Bays else BaseLevels.Bays(1)
 	for _, bay in Markers.All("Bay") do
 		local index = bay:GetAttribute("Bay")
+		if bay:GetAttribute("Plot") ~= number or type(index) ~= "number" then
+			continue
+		end
+		local awake = index <= open
 		local pad, sleeping = bay:FindFirstChild("Pad"), bay:FindFirstChild("Sleeping")
-		if bay:GetAttribute("Plot") == number and type(index) == "number" and pad and sleeping and pad:IsA("BasePart") and sleeping:IsA("BasePart") then
-			WorldService.Stand(pad, index <= open)
-			WorldService.Stand(sleeping, index > open)
+		if sleeping and sleeping:IsA("BasePart") then
+			WorldService.Stand(sleeping, not awake)
+			if pad and pad:IsA("BasePart") then -- the grey stand-in's pad, or the kit's before its stages
+				WorldService.Stand(pad, awake)
+			end
 		end
-		if bay:GetAttribute("Plot") == number and type(index) == "number" then
-			local seat = if data and index <= open then data.Base.Bays[index] else nil
-			local id = if seat then seat.Worker else ""
-			local owned = if id ~= "" and data then data.Voidkin[id] else nil
-			showWorker(bay, number, index, id, if owned then owned.Def else nil)
-		end
+		-- Its stage at its own level while it's awake (TR51; AR33), its rings turning while a worker works there.
+		showStage(bay, stages.Bays[index] or 1, landing, awake)
+		local seat = if data and awake then data.Base.Bays[index] else nil
+		local id = if seat then seat.Worker else ""
+		local owned = if id ~= "" and data then data.Voidkin[id] else nil
+		showWorker(bay, number, index, id, if owned then owned.Def else nil)
+		spin(bay, owned ~= nil)
 	end
 	local battery = Markers.Find("Battery", { Plot = number })
 	if battery then
+		showStage(battery, stages.Battery, landing) -- its rack at the base's level (TR51; AR34)
 		local shown = BaseLevels.Cells(if data then data.Base.Level else 1)
 		local lit = if data then Breaker.Cells(data.Base) else {}
 		for _, cell in battery:GetChildren() do
@@ -216,22 +278,52 @@ local function showPlot(number: number, data: Profile.Data?)
 		end
 	end
 	local trainer = Markers.Find("Training", { Plot = number })
-	local crown = if trainer then trainer:FindFirstChild("Crown") else nil
-	if crown then
-		crown:SetAttribute("Training", data ~= nil and Breaker.Trainee(data) ~= nil)
+	if trainer then
+		showStage(trainer, stages.Training, landing) -- its crown at the base's level (TR51; AR35)
+		local training = data ~= nil and Breaker.Trainee(data) ~= nil
+		for _, crown in trainer:GetDescendants() do
+			if crown.Name == "Crown" and crown:GetAttribute("Training") ~= nil then
+				crown:SetAttribute("Training", training)
+			end
+		end
 	end
 	local breaker = Markers.Find("Breaker", { Plot = number })
 	if breaker == nil then
 		return
 	end
+	-- Its stage at its own level (TR51; AR32), BreakerLamp at that stage's crystal, its chambers that stage has, each
+	-- shown while the Breaker has it and its lid until it does, and its hinges turning while any chamber breaks.
+	local stage = stages.Breaker
+	if breaker:GetAttribute("Stage") ~= stage then
+		local group = breaker:FindFirstChild(`Stage {stage}`)
+		local lampAt = if group then group:GetAttribute("Lamp") else nil
+		local dressing = (breaker.Parent :: Instance):FindFirstChild("Dressing")
+		local lamp = if dressing then dressing:FindFirstChild("BreakerLamp") else nil
+		if typeof(lampAt) == "CFrame" and lamp and lamp:IsA("BasePart") then
+			lamp.CFrame = lampAt
+		end
+	end
+	showStage(breaker, stage, landing)
+	local has = if data then #data.Base.Chambers else BaseConfig.Start.Chambers
+	local breaking = false
 	local index = 1
 	while true do
 		local chamber = breaker:FindFirstChild(`Chamber {index}`)
 		if chamber == nil then
 			break
 		end
+		local from = chamber:GetAttribute("From")
+		local there = type(from) ~= "number" or from <= stage
+		if type(from) == "number" and chamber:IsA("BasePart") then
+			WorldService.Stand(chamber, there and index <= has)
+		end
+		local lid = breaker:FindFirstChild(`Lid {index}`)
+		if lid and lid:IsA("BasePart") then
+			WorldService.Stand(lid, there and index > has)
+		end
 		local held = if data then data.Base.Chambers[index] else nil
 		local working = held ~= nil and held.Work ~= nil
+		breaking = breaking or working
 		if chamber:GetAttribute("Working") ~= nil then
 			chamber:SetAttribute("Working", working)
 		end
@@ -241,6 +333,7 @@ local function showPlot(number: number, data: Profile.Data?)
 		end
 		index += 1
 	end
+	spin(breaker, breaking)
 end
 
 local shown: { [Player]: number } = {} -- the plot whose machines show each player's base
@@ -253,7 +346,7 @@ local function show(player: Player)
 	end
 	shown[player] = number
 	if number then
-		showPlot(number, DataService.Get(player))
+		showPlot(number, DataService.Get(player), was == number) -- a rise lands only on the plot it was seen on
 	end
 end
 
@@ -358,6 +451,29 @@ local function registerDebug()
 		return DataService.Change(player, "BaseLevel", function(draft: Profile.Data): { [string]: any }
 			local was = draft.Base.Level
 			draft.Base.Level = level
+			return { Ok = true, Was = was, Level = level }
+		end)
+	end)
+	-- Studio only. A machine's level set as it is (the Breaker's, or bay `bay`'s), nothing else touched, not even its
+	-- chambers, so a case shows each stage, a lid where the Breaker hasn't its chamber yet, and puts the level back
+	-- (TR51). Bought levels go through Act("UpgradeMachine").
+	DebugService.Register("MachineLevel", function(who: any, machine: any, level: any, bay: any): any
+		local player = DebugService.ResolvePlayer(who)
+		if not player or (machine ~= "Breaker" and machine ~= "Bay") or type(level) ~= "number" or level ~= math.floor(level) or level < 1 then
+			return { Ok = false, Error = "BadArgs" }
+		end
+		return DataService.Change(player, "MachineLevel", function(draft: Profile.Data): { [string]: any }
+			if machine == "Breaker" then
+				local was = draft.Base.Machines.Breaker or 1
+				draft.Base.Machines.Breaker = level
+				return { Ok = true, Was = was, Level = level }
+			end
+			local seat = if type(bay) == "number" then draft.Base.Bays[bay] else nil
+			if seat == nil then
+				return { Ok = false, Error = "NoBay" }
+			end
+			local was = seat.Level
+			seat.Level = level
 			return { Ok = true, Was = was, Level = level }
 		end)
 	end)

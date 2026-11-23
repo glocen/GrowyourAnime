@@ -72,7 +72,7 @@ function BaseCases.Cases(given: Given): { any }
 				local plot = Players.LocalPlayer:GetAttribute("Plot")
 				local function rackOf(): Instance?
 					local found = if type(plot) == "number" then Markers.Find("Battery", { Plot = plot }) else nil
-					return if found then found:FindFirstChild("Rack") else nil
+					return if found then (BaseController.StageOf(found) or found):FindFirstChild("Rack") else nil -- its stage's (TR51)
 				end
 				-- Read at home: a case before may leave the avatar at the crossing, where the base streams out.
 				if type(plot) == "number" and rackOf() == nil then
@@ -101,10 +101,14 @@ function BaseCases.Cases(given: Given): { any }
 						Players.LocalPlayer:RequestStreamAroundAsync(Markers.At(bay).Position, 2)
 					end)
 					local awake = index <= open
+					-- Its pad: its stage's (TR51), or the grey one's.
+					local function padOf(): Instance?
+						return (BaseController.StageOf(bay) or bay):FindFirstChild("Pad")
+					end
 					waitFor(t, ANSWER, function(): boolean
-						return bay:FindFirstChild("Pad") ~= nil and (awake or bay:FindFirstChild("Sleeping") ~= nil)
+						return padOf() ~= nil and (awake or bay:FindFirstChild("Sleeping") ~= nil)
 					end)
-					local pad, sleeping = bay:FindFirstChild("Pad"), bay:FindFirstChild("Sleeping")
+					local pad, sleeping = padOf(), bay:FindFirstChild("Sleeping")
 					local function shows(part: Instance?, want: boolean): boolean
 						return part ~= nil and part:IsA("BasePart") and (part.Transparency == 0) == want
 							and part.CanCollide == (want and part:GetAttribute("Solid") == true)
@@ -163,7 +167,7 @@ function BaseCases.Cases(given: Given): { any }
 				-- turned about the axle to the demand's share at its stage's degrees, on one scale (Rules.Power.Gauge).
 				local plant = Markers.Find("Generator", { Plot = plot })
 				local function standing(): Instance?
-					return if plant then BaseController.MillStage(plant) else nil
+					return if plant then BaseController.StageOf(plant) else nil
 				end
 				local wheel = if standing() then (standing() :: Instance):FindFirstChild("Wheel") else nil
 				local mark = if standing() then (standing() :: Instance):FindFirstChild("Demand") else nil
@@ -299,7 +303,7 @@ function BaseCases.Cases(given: Given): { any }
 				-- The crown: the server's word on whether a Voidkin trains, and turning only then. Then the client's turning
 				-- alone, by its word set here, and the server's put back.
 				local trainer = Markers.Find("Training", { Plot = plot })
-				local crown = if trainer then trainer:FindFirstChild("Crown") else nil
+				local crown = if trainer then (BaseController.StageOf(trainer) or trainer):FindFirstChild("Crown") else nil -- its stage's (TR51)
 				t.Check("the crown says whether a Voidkin trains, as the save has it", waitFor(t, ANSWER, function(): boolean
 					local on = Players.LocalPlayer:GetAttribute("Training")
 					return crown ~= nil and crown:GetAttribute("Training") == (type(on) == "string" and on ~= "")
@@ -316,6 +320,162 @@ function BaseCases.Cases(given: Given): { any }
 					end
 					crown:SetAttribute("Training", server)
 				end
+			end,
+		},
+		{
+			Name = "Base: each machine at its stage (TR51; AR32 to AR35): the Breaker and a bay at their own level, the battery and the Training machine at the base's, one stage standing and the others hidden, the Breaker's lids where it hasn't a chamber yet and its lamp on its stage's crystal, the turners by their work, a rise that lands and a fall or a respawn that doesn't",
+			Place = "Main", -- TR45: its world stands in that place only
+			Run = function(t: any)
+				local view = ProfileController.Get()
+				local plot = Players.LocalPlayer:GetAttribute("Plot")
+				local function find(kind: string, bay: number?): Instance?
+					if type(plot) ~= "number" then
+						return nil
+					end
+					return Markers.Find(kind, if bay then { Plot = plot, Bay = bay } else { Plot = plot })
+				end
+				local function staged(): boolean
+					local breaker = find("Breaker")
+					return breaker ~= nil and breaker:FindFirstChild("Stage 1") ~= nil
+				end
+				-- Read at home: a case before may leave the avatar at the crossing, where the base streams out.
+				if type(plot) == "number" and not staged() then
+					t.Server("Respawn")
+					waitFor(t, 8, staged)
+				end
+				if view == nil or type(plot) ~= "number" or not staged() then
+					t.Check("a plot, a save, and the Breaker in its stages", false, if view == nil then "no save yet" elseif type(plot) ~= "number" then "no plot yet" else "no stages: a grey base, or the kit lacks them")
+					return
+				end
+				-- `holder` at stage `want`: that stage's pieces standing, the others hidden with their solids open, and
+				-- none while it's asleep.
+				local function wrong(holder: Instance?, want: number, awake: boolean?): string?
+					if holder == nil then
+						return "not streamed in"
+					elseif holder:GetAttribute("Stage") ~= want then
+						return `at stage {tostring(holder:GetAttribute("Stage"))}, not {want}`
+					end
+					for _, group in holder:GetChildren() do
+						local at = group:GetAttribute("Stage")
+						if not group:IsA("Model") or type(at) ~= "number" then
+							continue
+						end
+						local on = awake ~= false and at == want
+						for _, part in group:GetChildren() do
+							if part:IsA("BasePart") and ((part.Transparency == 0) ~= on or (not on and part.CanCollide)) then
+								return `stage {at}: {part.Name} {if part.Transparency == 0 then "shown" else "hidden"}`
+							end
+						end
+					end
+					return nil
+				end
+				local function stands(label: string, holder: Instance?, want: number, awake: boolean?)
+					t.Check(label, waitFor(t, ANSWER, function(): boolean
+						return wrong(holder, want, awake) == nil
+					end), wrong(holder, want, awake))
+				end
+				local function rises(holder: Instance?): number
+					local count = if holder then holder:GetAttribute("Rose") else nil
+					return if type(count) == "number" then count else 0
+				end
+				local breaker = find("Breaker")
+				local base = (view :: any).Base
+				local breakerWas = base.Machines.Breaker or 1
+				local bayWas = base.Bays[1].Level
+				local levelWas = base.Level
+				-- The Breaker by its own level, at each stage's edges (Config.Base.Machines.Stages: 1, 6, 15), its chambers
+				-- as many as the save holds, a lid on each place its stage has and the save hasn't, its lamp on the crystal.
+				local had = #base.Chambers
+				for _, level in { 1, 5, 6, 14, 15 } do
+					t.Server("MachineLevel", "Breaker", level)
+					local want = BaseLevels.Stage(level)
+					stands(`the Breaker at level {level}: stage {want}`, breaker, want)
+					local chambers: string? = nil
+					for index = 1, 4 do
+						local chamber, lid = (breaker :: Instance):FindFirstChild(`Chamber {index}`), (breaker :: Instance):FindFirstChild(`Lid {index}`)
+						local from = if chamber then chamber:GetAttribute("From") else nil
+						local there = chamber ~= nil and (type(from) ~= "number" or from <= want)
+						local shown = chamber ~= nil and chamber:IsA("BasePart") and chamber.Transparency == 0
+						local covered = lid ~= nil and lid:IsA("BasePart") and lid.Transparency == 0
+						if shown ~= (there and index <= had) or (lid ~= nil and covered ~= (there and index > had)) then
+							chambers = `chamber {index}: {if shown then "shown" else "hidden"}, its lid {if covered then "shown" elseif lid then "hidden" else "none"}`
+							break
+						end
+					end
+					t.Check(`the Breaker at level {level}: its {had} chambers, a lid where it has none yet`, chambers == nil, chambers)
+					local group = (breaker :: Instance):FindFirstChild(`Stage {want}`)
+					local dressing = ((breaker :: Instance).Parent :: Instance):FindFirstChild("Dressing")
+					local lamp = if dressing then dressing:FindFirstChild("BreakerLamp") else nil
+					local lampAt = if group then group:GetAttribute("Lamp") else nil
+					if lamp and lamp:IsA("BasePart") and typeof(lampAt) == "CFrame" then
+						t.Check(`the Breaker at level {level}: its lamp on stage {want}'s crystal`, lamp.CFrame.Position:FuzzyEq(lampAt.Position, 0.05), `{lamp.Position} vs {lampAt.Position}`)
+					end
+				end
+				-- A rise lands, once (AR37); a fall doesn't, nor a respawn on the same plot, nor the same stage again.
+				local before = rises(breaker)
+				t.Server("MachineLevel", "Breaker", 5)
+				t.Server("MachineLevel", "Breaker", 6)
+				t.Check("Breaker 5 to 6: the rise lands once", waitFor(t, ANSWER, function(): boolean
+					return rises(breaker) == before + 1
+				end), `{rises(breaker) - before} landings`)
+				t.Server("MachineLevel", "Breaker", 7)
+				t.Server("MachineLevel", "Breaker", 5)
+				t.Wait(0.5)
+				t.Equal("Breaker 6 to 7 (the same stage) and 7 to 5 (a fall): no landing", rises(breaker) - before, 1)
+				t.Server("MachineLevel", "Breaker", 6)
+				waitFor(t, ANSWER, function(): boolean
+					return rises(breaker) == before + 2
+				end)
+				local old = Players.LocalPlayer.Character
+				t.Server("Respawn")
+				waitFor(t, 8, function(): boolean
+					return Players.LocalPlayer.Character ~= old
+				end)
+				t.Wait(0.5)
+				t.Equal("a respawn on stage II: no landing", rises(breaker) - before, 2)
+				t.Server("MachineLevel", "Breaker", breakerWas)
+				-- Its hinges turn while a chamber breaks and stand while none does (the server's word).
+				local breaking = false
+				for _, held in base.Chambers do
+					breaking = breaking or held.Work ~= nil
+				end
+				local hinges = 0
+				for _, part in (breaker :: Instance):GetDescendants() do
+					if part:GetAttribute("Spinning") ~= nil then
+						hinges += 1
+						t.Check(`{part.Parent and part.Parent.Name} {part.Name}: turning only while a chamber breaks`, part:GetAttribute("Spinning") == breaking, tostring(part:GetAttribute("Spinning")))
+						break
+					end
+				end
+				t.Check("the Breaker's jaws turn on their hinges", hinges > 0)
+				-- A bay by its own level, its rings turning only while a worker works there; a bay asleep shows no stage.
+				local bay = find("Bay", 1)
+				for _, level in { 1, 5, 6, 14, 15 } do
+					t.Server("MachineLevel", "Bay", level, 1)
+					stands(`bay 1 at level {level}: stage {BaseLevels.Stage(level)}`, bay, BaseLevels.Stage(level))
+				end
+				t.Server("MachineLevel", "Bay", bayWas, 1)
+				local worked = base.Bays[1].Worker ~= ""
+				for _, part in (if bay then bay:GetDescendants() else {}) do
+					if part:GetAttribute("Spinning") ~= nil then
+						t.Check(`bay 1's {part.Name}: turning only while a worker works there`, waitFor(t, ANSWER, function(): boolean
+							return part:GetAttribute("Spinning") == worked
+						end), tostring(part:GetAttribute("Spinning")))
+					end
+				end
+				local asleep = #base.Bays + 1
+				if asleep <= BaseLevels.Plot() then
+					stands(`bay {asleep}, asleep: no stage of it stands`, find("Bay", asleep), 1, false)
+				end
+				-- The battery and the Training machine by the base's level, as the mill (AR19).
+				local battery, trainer = find("Battery"), find("Training")
+				for level = 1, BaseLevels.Top() do
+					t.Server("BaseLevel", level)
+					local want = BaseLevels.GeneratorStage(level)
+					stands(`base level {level}: the battery at stage {want}`, battery, want)
+					stands(`base level {level}: the Training machine at stage {want}`, trainer, want)
+				end
+				t.Server("BaseLevel", levelWas)
 			end,
 		},
 		{

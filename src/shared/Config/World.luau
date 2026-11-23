@@ -212,6 +212,12 @@ return {
 		-- before it toward the gate (the kit's pad, AR15, section 5), where a fallen lead comes home, facing the machine.
 		-- Its crown turns Crown turns a second about its upright while a Voidkin trains (the builder's seed).
 		Training = { Size = Vector3.new(6, 4, 5), Spot = -6, Crown = 0.12 },
+		-- The stages' moving parts (TR51; AR32, AR33), turns a second about their own axles (the builder's seeds): the
+		-- Breaker's jaw hinges while any chamber breaks, a bay's toothed rings while a worker works there, the outer
+		-- one at its teeth's ratio to the inner's (16 to 22), each the way its row's sign says.
+		Hinge = 0.2,
+		Cog = 0.12,
+		CogOuter = 0.12 * 16 / 22,
 		-- The generator (TR18) at the plot's heart, where the layout says: a box Size while its kit isn't laid. Its spot
 		-- stands more than BaseController's near (13 studs) from every other: a player at one hears only that one.
 		-- The Void Mill (AR19, Stage I): its wheel turns Least turns a second and PerKw more for each kW its owner's plant

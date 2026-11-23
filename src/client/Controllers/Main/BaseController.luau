@@ -986,12 +986,15 @@ end
 -- * the demand's mark ("demand") about the same axle, to the demand's share of the gauge at its stage's degrees
 --   (`Turn`, the row's; `Generator.Gauge.Turn` without one), gliding there over `Gauge.Glide` seconds
 --   (Rules.Power.Gauge); the axle is its piece's origin, the manifest's centre away from the part;
--- * the Training machine's crown about its own upright while a Voidkin trains, still when none does (AR15, section 5);
+-- * the Training machine's crown about its own upright while a Voidkin trains, still when none does (AR15, section 5;
+--   each stage's crown alike, AR35);
+-- * a stage's own turning pieces (TR51: the Breaker's hinges, AR32; a bay's rings, AR33) about their own axle ("Axis",
+--   Z or X), "Speed" turns a second the way their "Sign" says while the server says they're "Spinning";
 -- * the Festival Door's rings ("spins") about the tunnel's axis, each its own origin's Z, always and whatever the Door's
 --   state, at their plan's `Spin` in degrees a second, anticlockwise seen from the mouth for a positive one: drawn as
 --   CFrame.Angles(0, 0, -angle), so the angle runs against the spin (AR15, section 7).
 -- A hidden stage's pieces keep their angle, and are moved once they're shown.
-type Turning = { Rest: CFrame, Angle: number, Drawn: number, Axis: "Z" | "Y", Pivot: CFrame, Rate: number, Follows: boolean }
+type Turning = { Rest: CFrame, Angle: number, Drawn: number, Axis: "Z" | "Y" | "X", Way: number, Pivot: CFrame, Rate: number, Follows: boolean }
 local turning: { [BasePart]: Turning } = {}
 local WRAP = 5 * 2 * math.pi
 
@@ -1022,16 +1025,29 @@ local function watchWorker(item: Instance)
 	end)
 end
 
+-- A Training machine's crown, at any stage (AR35: TrainingCrown, TrainingCrown2, TrainingCrown3 turn alike).
+local function crowned(kind: any): boolean
+	return type(kind) == "string" and string.match(kind, "^TrainingCrown%d*$") ~= nil
+end
+
 local function watchTurning(item: Instance)
 	if not item:IsA("BasePart") then
 		return
 	end
 	local kind = item:GetAttribute("Piece")
 	local moves = item:GetAttribute("Moves")
-	local axis: ("Z" | "Y")? = if kind == "TrainingCrown" then "Y" elseif moves == "turns" or moves == "demand" or moves == "spins" then "Z" else nil
+	local own = item:GetAttribute("Axis")
+	local axis: ("Z" | "Y" | "X")? = if crowned(kind) then "Y"
+		elseif own == "X" then "X"
+		elseif moves == "turns" or moves == "demand" or moves == "spins" then "Z"
+		else nil
 	if axis == nil then
 		return
 	end
+	-- Drawn as CFrame.Angles(0, 0, -angle) about Z and (0, angle, 0) about Y, as ever; a stage's own turner as its row
+	-- says, CFrame.Angles(0, 0, angle * sign) or (angle * sign, 0, 0) (AR32, AR33).
+	local sign = item:GetAttribute("Sign")
+	local way = if type(sign) == "number" then sign elseif axis == "Z" then -1 else 1
 	-- The part stands at its piece's origin times the manifest's centre; it turns about the origin.
 	local piece = if type(kind) == "string" then BaseManifest.pieces[kind] else nil
 	local c = if piece then piece.centre else { 0, 0, 0 }
@@ -1042,6 +1058,7 @@ local function watchTurning(item: Instance)
 		Angle = 0,
 		Drawn = 0,
 		Axis = axis,
+		Way = way,
 		Pivot = CFrame.new(c[1], c[2], c[3]),
 		Rate = r,
 		Follows = moves == "turns" and r ~= 1,
@@ -1068,7 +1085,10 @@ local function angleOf(part: BasePart, turn: Turning, dt: number): number
 		return (turn.Angle - math.rad(if type(spin) == "number" then spin else 0) * dt) % WRAP
 	end
 	local speed = 0
-	if part:GetAttribute("Piece") == "TrainingCrown" then
+	local own = part:GetAttribute("Speed")
+	if type(own) == "number" then
+		speed = if part:GetAttribute("Spinning") == true then own else 0
+	elseif crowned(part:GetAttribute("Piece")) then
 		speed = if part:GetAttribute("Training") == true then training.Crown else 0
 	else
 		local kw = part:GetAttribute("Generation")
@@ -1092,18 +1112,20 @@ local function turnPieces(dt: number)
 			turn.Angle = angleOf(part, turn, dt)
 			if turn.Angle ~= turn.Drawn and part.Transparency < 1 then
 				turn.Drawn = turn.Angle
-				local angle = turn.Angle
+				local angle = turn.Angle * turn.Way
 				part.CFrame = if turn.Axis == "Z"
-					then turn.Rest * turn.Pivot:Inverse() * CFrame.Angles(0, 0, -angle) * turn.Pivot
+					then turn.Rest * turn.Pivot:Inverse() * CFrame.Angles(0, 0, angle) * turn.Pivot
+					elseif turn.Axis == "X" then turn.Rest * turn.Pivot:Inverse() * CFrame.Angles(angle, 0, 0) * turn.Pivot
 					else turn.Rest * CFrame.Angles(0, angle, 0)
 			end
 		end
 	end
 end
 
--- The model of the stage a plot's mill stands at (AR19; BaseService's "Stage"), nil before it's shown.
-function BaseController.MillStage(plant: Instance): Instance?
-	return plant:FindFirstChild(`Stage {plant:GetAttribute("Stage")}`)
+-- The model of the stage a plot's machine stands at (BaseService's "Stage": the mill's, AR19; the Breaker's, a bay's,
+-- the battery's and the Training machine's, TR51), nil before it's shown.
+function BaseController.StageOf(holder: Instance): Instance?
+	return holder:FindFirstChild(`Stage {holder:GetAttribute("Stage")}`)
 end
 
 -- For the self-test: a turning piece's angle so far, nil for one not watched.

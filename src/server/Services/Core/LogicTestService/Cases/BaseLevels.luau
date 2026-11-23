@@ -122,6 +122,33 @@ return {
 		end,
 	},
 	{
+		Name = "Stages on a base (TR51): the Breaker and each bay by their own level, I at 5, II at 6 and 14, III at 15; the generator, the battery and the Training machine by the base's",
+		Run = function(t: any)
+			for level, want in { [5] = 1, [6] = 2, [14] = 2, [15] = 3 } do
+				local stages = BaseLevels.Stages({ Level = 3, Machines = { Breaker = level }, Bays = { { Level = level }, { Level = 1 } } })
+				t.Equal(`the Breaker at level {level}: stage {want}`, stages.Breaker, want)
+				t.Equal(`a bay at level {level}: stage {want}`, stages.Bays[1], want)
+				t.Equal("each bay its own", stages.Bays[2], 1)
+			end
+			for level, want in { 1, 2, 3 } do
+				local stages = BaseLevels.Stages({ Level = level, Machines = {}, Bays = {} })
+				t.Equal(`base level {level}: the battery's stage {want}`, stages.Battery, want)
+				t.Equal(`base level {level}: the Training machine's stage {want}`, stages.Training, want)
+				t.Equal(`base level {level}: the generator's stage {want}`, stages.Generator, BaseLevels.GeneratorStage(level))
+				t.Equal("a Breaker with no level yet stands at stage I", stages.Breaker, 1)
+			end
+		end,
+	},
+	{
+		Name = "Landing (TR51, AR37): a stage swap lands only on a rise from a stage already seen; a join, a respawn and a fall show it standing",
+		Run = function(t: any)
+			t.Check("a rise lands", BaseLevels.Lands(1, 2) and BaseLevels.Lands(2, 3) and BaseLevels.Lands(1, 3))
+			t.Check("a join or a respawn (nothing seen yet) doesn't", not BaseLevels.Lands(nil, 1) and not BaseLevels.Lands(nil, 3))
+			t.Check("the same stage again doesn't", not BaseLevels.Lands(2, 2))
+			t.Check("a fall (a wiped save) doesn't", not BaseLevels.Lands(3, 1))
+		end,
+	},
+	{
 		Name = "Battery: its bank shows 2, 4 and 8 cells at the base's levels, lit one after another as it charges",
 		Run = function(t: any)
 			for level, want in { 2, 4, 8 } do

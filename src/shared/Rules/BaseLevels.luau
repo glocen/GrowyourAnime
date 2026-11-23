@@ -8,6 +8,8 @@
 --   BaseLevels.NextMachine(machine, level, baseLevel, credits)  a machine's next level ("Breaker" or "Bay"), as an offer
 --   BaseLevels.Stage(level)                                 a machine's stage at its level: 1, 2 or 3
 --   BaseLevels.GeneratorStage(baseLevel)                    the generator's: a machine's at the base's ceiling
+--   BaseLevels.Stages(base)                                 every machine's stage on a base, as the world stands it (TR51)
+--   BaseLevels.Lands(was, now)                              whether a stage swap plays AR37's landing: only a rise seen
 
 local Shared = game:GetService("ReplicatedStorage").Shared
 local BaseConfig = require(Shared.Config.Base)
@@ -15,6 +17,11 @@ local BaseConfig = require(Shared.Config.Base)
 local BaseLevels = {}
 
 export type Machine = "Breaker" | "Bay"
+-- Every machine's stage on a base (TR51): the Breaker's and each bay's by its own level (AR32, AR33), the generator's,
+-- the battery's and the Training machine's, which have none, at the base's (AR19, AR34, AR35).
+export type Stages = { Generator: number, Breaker: number, Battery: number, Training: number, Bays: { number } }
+-- What Stages reads of a base (Data.Profile's Base), so the rule needs no profile.
+export type StagedBase = { Level: number, Machines: { [string]: number }, Bays: { { Level: number } } }
 export type Gain = { What: string, From: number, To: number }
 export type Offer = {
 	Level: number, -- the level it would reach
@@ -83,6 +90,29 @@ end
 -- ceiling would, and the plant's heart changes when the base levels up (docs/design.md; AR19).
 function BaseLevels.GeneratorStage(baseLevel: number): number
 	return BaseLevels.Stage(BaseLevels.Ceiling(baseLevel))
+end
+
+-- Every machine's stage on `base`: the Breaker and each bay at their own machine level's (Stages: I to 5, II from 6, III
+-- from 15), the generator, the battery and the Training machine at the base's (I at level 1, II at 2, III at 3).
+function BaseLevels.Stages(base: StagedBase): Stages
+	local byBase = BaseLevels.GeneratorStage(base.Level)
+	local bays = {}
+	for index, bay in base.Bays do
+		bays[index] = BaseLevels.Stage(bay.Level)
+	end
+	return {
+		Generator = byBase,
+		Breaker = BaseLevels.Stage(base.Machines.Breaker or 1),
+		Battery = byBase,
+		Training = byBase,
+		Bays = bays,
+	}
+end
+
+-- Whether a machine going from stage `was` to `now` plays AR37's landing: only a rise from a stage already seen, so a
+-- join, a respawn or a plot streaming in (`was` nil) shows its stage standing, and nothing plays on a fall.
+function BaseLevels.Lands(was: number?, now: number): boolean
+	return was ~= nil and now > was
 end
 
 -- Cells the battery's bank shows at the base's `level` (AR15, section 4).

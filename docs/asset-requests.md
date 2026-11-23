@@ -15771,6 +15771,21 @@ From the six sheets at the smallest phone.
 - **For Faber, TR54:** `goals.json` says where each image lies and what the kit builds beside it. The images go up under the group at the build, with the pre-upload check above.
 - Made and self-reviewed: yes. Delivered: in the handoff. Research's pass: asked. Accepted in the game: not yet.
 
+### Research's pass on the finish: AR53 passes at competent (Quaestor, 2026-11-23, 18:27)
+
+Read from the four sheets, the cut and the pictures at twice the phone's pixels, every state at the smallest phone, and each at 64 pixels.
+- **Felt:** the goals look like the festival's own things. A paper tag hangs from the road wherever a dare was kept, a gold row is its own claim, and the Ledger's masks hang like things left behind. Nothing reads as a quest log.
+- **Tier:** competent.
+- **The one bold thing:** the Ledger's hung mask, lit from inside on a dark page, with nobody behind it.
+- **Must-fix 1, met:** "Dare kept" carries the Forge's own stone in the kit's Common cell. It's quieter than the shard and the coin on the row under it. That's right for a forge material, and the tag and the words carry the chip.
+- **Modulo's three:**
+  1. Next on a plate under the band, over both panels: accepted. "Next at the top" meant the page's head, not the band itself.
+  2. "Today" and "Mask Ledger" are added to TR54's labels.
+  3. The unlit cuts painted at the page's value: accepted.
+- **What the stills can't show, at TR54's build:** the dare's unfold, fold and flare in motion. Faber's first capture also checks:
+  - the time's row in the game's face (297 of 320 by the sheet's widths);
+  - the Today card's 8-point pips on a phone.
+
 ## AR54. The yard at Stage III: one plan where every machine fits and reads from the gate (Modulo, before AR53; then Faber)
 
 Research, 2026-11-23, 15:26, from TR51's Studio run and TR37's (`docs/test-requests.md`). It's main map, so it comes first, by the director's order of 00:05. Tier 2, research and Modulo, with Faber's measures.
@@ -15981,3 +15996,20 @@ From `build/handoff/Base/base_fit_look.png`, the game's camera at the gate at le
   - the deck's light at dusk and night.
 - **Next:** Faber's install of the handoff, with AR50's levels on the new star, then research's read in the game.
 
+## AR55. The return card's look: what the base made while you were away (Modulo, for research's pick, then Faber at TR53)
+
+Research, 2026-11-23, 18:27. This is TR53's look, drawn ahead as AR53 was for TR54, so Faber builds the card once, with its art. TR53's block contains everything here, and its tier 2 notice covers it. It's main-game work, the base, and not the Festival's.
+- **Feel line:** you step back into your yard after a run, or join the next day. One card rises over the base and says, in pictures and plain numbers, what it did while you were away. One press takes it all, and the machines behind it look busier for it.
+- **The pieces,** at the smallest phone (568 x 320), on the kit in AR40's C:
+  1. **The return card:** a line for each change, each with its own picture from the machine's plate or its screen:
+     - the battery's gain in kWh;
+     - the Condenser's stones;
+     - the Training machine's levels;
+     - a shard ready to reveal.
+     One press under the right thumb: "Collect", or "Reveal" when a shard is ready. Draw it with one line, with all four, and with a shard ready.
+  2. **The run's line of the base's state,** in the Festival place: the shard breaking and its time left, quiet, beside the run's line without crowding it.
+  3. **The notice when the shard breaks:** "Your shard broke. Its Voidkin waits at home." A toast from ui.md's shared pieces, never a modal over a fight.
+- **Its make:** the system slab's (`Config.UIKit`, System), the base's own screens' kin. It's the base speaking, not a reward screen: no burst, no confetti. The gain reads by its numbers and the machines behind it.
+- **Out of the piece:** a sound (Sonus's), motion beyond the card's rise (TR53's block), and an experience notification (the director's word first).
+- **Checks:** the content check; research's pick from three directions, then the finish; the sheets laid as the game lays them, at 64 pixels too.
+- **Order:** Modulo's next. Faber's TR53 stays after the install backlog and TR52.

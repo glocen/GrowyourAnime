@@ -4752,6 +4752,7 @@ Research, 2026-11-23, 14:58, F4 and F6 of `docs/research/design-holes.md`: the d
 - **Checks:** the logic case that a return shows each change once, and a repeat shows nothing; captures on the smallest phone; research's verdict in motion.
 - **Cap:** 90 minutes for each half.
 - **Order:** after the install backlog and TR52.
+- **The look** is AR55, Modulo's, drawn ahead (research, 18:27).
 
 ## TR54. Goals, basic at launch: a dare per stretch, today's three, the Mask Ledger (Faber, after TR52 and AR52)
 
@@ -4781,7 +4782,7 @@ Research, 2026-11-23, 15:24, on the director's yes and "js basic at launch" (`do
       5. "Climb the Tower to floor 25. Each floor past your record pays a first-time bonus."
       6. All done: "Drum Court's gate stays shut, for now."
       Each says only what launch opens (`Config.Base`, `Config.Condenser.Wakes`, `Config.Chests.Keeper`); an update that changes one changes its line.
-  - **The labels** (research, 17:49): the count "knocked loose"; the kinds "The Brawler", "The Guard", "The Dasher", "The Lamplighter"; the banked days "Yesterday", "Two days ago"; a done goal's press "Claim"; the card's chip "Dare kept" with "+N". The Ledger's one way in is the link at the Today list's head.
+  - **The labels** (research, 17:49): the count "knocked loose"; the kinds "The Brawler", "The Guard", "The Dasher", "The Lamplighter"; the banked days "Yesterday", "Two days ago"; a done goal's press "Claim"; the card's chip "Dare kept" with "+N". The Ledger's one way in is the link at the Today list's head. Added at AR53's finish (research, 18:27): "Today", the card's word and the list's head; "Mask Ledger", the page's title and the list's link.
   - **Content check** on the lines and labels above: PASS (2026-11-23, 17:49). It blocked the last Next line's first wording ("opens in an update": our word, not the world's), and the rewrite above passed.
 - **The rules in pure Luau** (`Rules.Goals`): the draw, the banking, the reset, each goal's check, the Ledger's counts. Logic cases:
   - a goal pays once;

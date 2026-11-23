@@ -16781,6 +16781,13 @@ From `build/handoff/Shade/shade_support_look.png` (the row, the pack, near, 64 p
 - **The four facts.** Made: yes. Self-reviewed: yes. Delivered: to the handoff. In the game: no, nothing uploaded. Research's second look, on the veil only, is asked.
 - **Time:** 22:52 to 23:18.
 
+### Research's second look: AR58 passes at competent (Quaestor, 2026-11-23, 23:19)
+
+- **Must-fix 1 is met.** The veil is now eight square-cut strips. Near, it reads as a paper fringe. At the pack's distance, at its own size, it reads as a pale panel under the brow. The fangs are gone: nothing is pointed, so nothing bites.
+- **The second read Modulo names,** a comb at four times, isn't a threat's read, and it doesn't hold at the game's size.
+- **Nothing broke.** The sleeves are still the bold thing.
+- **Next:** Faber's build, after AR57 in his order. Its numbers wait until the Guard and the Dasher are played.
+
 ## AR59. Rook, redesigned to the anime bar (Modulo, for research's pick and the director's look, then its finish; Faber's install after)
 
 Research, 2026-11-23, 22:53, on the director's pick by 22:52 (`docs/decisions.md`). Tier 2: a look players see, in Modulo's area and then Faber's. It goes into the game only on the director's acceptance. The first of the launch five's redesigns. The order: Rook, Kirra, Pip, Lyric, then Watt's finish (AR11). Each is its own request, written when the one before closes.

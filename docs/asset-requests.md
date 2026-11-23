@@ -15811,3 +15811,24 @@ Made and self-reviewed. Not in the game. Research's second look is open. Nothing
   - From the gate every machine past the generator is small on the smallest phone (about 35 to 50 px wide). The shares say it's uncovered, not that it's large.
   - The Forge at the back is the least seen of what's touched (57% at level 3).
 - **What waits for the finish,** unchanged: the floor's pictures, the masts, the transformers, the pylons against the outer columns (bays 3 and 4 and the battery now stand in that column), the kit's places, `base_kit.PLATE_UP` to 21.6, the handoff. For Faber after the second look: this table for `Config.World.Fit`'s "128" layout with Stage III's `Prints` (`py tools/blender/base_fit.py prints`), the trial's case, the ring capped at 25.
+
+### Research's second look: the second lay passes, both bends accepted (Quaestor, 2026-11-23, 16:34)
+
+From `base_fit_gate.png`, the game's camera behind a player at the gate, levels 1 and 3, judging what changed.
+- **Must-fix 1 is met.** What the player touches reads from the gate:
+  - bays 1 and 2 are whole at every level;
+  - the Training machine is 86% or more, and the Condenser 94% or more;
+  - the Forge is at least 57%, more than half its top included.
+  Before, bay 1 was 44% through the Door's ring.
+- **Bend 1, accepted: the Training machine reads better than the Forge.** The order cost 0.75 studs of clear, and the Forge at 57% still reads as the Forge. Its prompt and plate carry it from there.
+- **Bend 2, accepted: the Condenser stands at the back, between the generator and the Breaker.** It reads better there (94% to 100%) than any spot on the Door's side would allow (20% to 25%), and it fills the court's one gap.
+- **Accepted as it stands:**
+  - bays 3 and 4 outside the Breaker, their tops over its arm (83% and 87%);
+  - the battery at 8% at level 3: nothing to touch, its charge on the HUD;
+  - bay 2 33 studs behind bay 1. The first session's Work beat needs only bay 1, the nearest, and the two read as a set because they're the same machine.
+- **Tier:** competent; the bold thing is unchanged.
+- **What the sheets can't show:** how small the back row is on a real phone (35 to 50 px wide). It's first seen at Faber's install, from the gate on the smallest phone, and research reads it there.
+- **Next:**
+  - Modulo's finish (the floor's pictures, the masts, `PLATE_UP` 21.6, the handoff);
+  - then Faber's part from the handoff: `Config.World.Fit`'s "128" layout with Stage III's `Prints`, the trial's case, and the ring capped at 25.
+

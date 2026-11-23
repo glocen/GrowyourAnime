@@ -15797,6 +15797,31 @@ The director's words of 18:35, to Modulo, then "Cut it" to research's question (
 - **Checks:** the content check on the new images, then research's second look on the two redraws.
 - **Order:** before AR55. AR53 is open again until this lands, and TR54 needs it before TR53 needs AR55.
 
+### Modulo's redraw, for research's second look (2026-11-23, 18:52; started 18:40)
+
+Made, self-reviewed as stills at the smallest phone, delivered to the handoff. Not in the game, nothing uploaded, nothing read in motion.
+
+- **The dare's mark:** a hard four-point shape in the kit's ivory, 16 tall and 12.8 wide, in a dark socket's rim so it reads on the lit road.
+  - Holds: lit. Kept: the same with its flare. Broken: dark in a thin rim, split across, its lower half dropped, so it reads by its shape as well as its value.
+  - `DareMark`, `DareMarkKept`, `DareMarkDark`: 40 points square, the mark's middle the origin (the tag's was its knot, so every lay point moved: `goals.json`, `dare`).
+  - Where it sits: in the line's tab under the stretch's mark; at the unfolded dare's left, at 14; on the card's road 10 right of each kept stretch's mark, on the road's middle, at 15 (the tag hung under the road); in the chip at 13.
+  - Why this shape: today's pips are the kit's diamonds and a stretch's mark is its cut square, and a four-point shape is neither at 13.
+  - Its weakest states: lit and kept differ only by the glow, as the tag's did, so the flare's motion carries "kept" on the line (TR54's block); broken is dark on the tab's dark glass and reads by its rim.
+- **Next at the Today list's head:** a plate pinned under "Today", never a press: deeper than a row, its top hairline lit, a pale bar down its leaning side in the Today card's light, "Next" in that blue, the step in ivory, what it opens in the soft grey. "Mask Ledger >" is gone.
+  - It's as tall as its lines: 29, 46 or 63 points (`GoalNext1`, `GoalNext2`, `GoalNext3`: a leaning plate can't be sliced taller). The rows start 4 under its foot and scroll to 4 over the glass's.
+  - All six of TR54's lines are drawn at 14 (`goals_today.png`, cells 3 to 8).
+- **Two findings, research's to answer:**
+  1. **Today's three never all show at once.** The glass is 184 tall. Under "Today" (32) and a Next of two lines (46), 94 points of rows remain: two rows. Under three lines, 77: one row and most of a second. Three rows need 140, so the thumb always shows. Three ways to show all three, none drawn: the list's glass 42 taller (AR49's glass redrawn for the list); Next in the head's row beside "Today" with the step alone; rows of 30 (under the claim's 44). I drew what was asked.
+  2. **Only Next's fourth line takes a third row,** in the sheet's face: "A fourth bay opens, and machines can climb to level 30." is 55 letters and leaves "30." alone on its row. The game's face is narrower (AR12 measured its capitals at 1/1.2 of the sheet's), so it may stand on one row there: Faber's first capture says. At 50 letters or fewer it fits here too, and the three-row plate is never used.
+- **The handoff,** `build/handoff/UI/goals/`: 19 images. 13 are as passed, byte for byte (git shows none of them changed); 6 are new. Dropped: the Ledger's 16 masks and its pool, the three tags, `goals_ledger.png`.
+  - `goals.json`: `dare` gives `mark` where it gave `tag`; `today.list` gives `next` where it gave `ledger`, and the rows' top and frame; `ledger` is gone.
+  - `goals_dare_line.png`, `goals_dare_card.png`, `goals_today.png`, `goals_cut.png`: laid again from the cut.
+- **The script,** `tools/blender/goals_look.py`: the masks, the pool and the Ledger's page are out; `dare_mark` and `next_plate` are in. Without `cut` it also writes the review sheets (`build/scratch/modulo/ar53/redraw/`: `goals_pictures.png`, the mark large and each piece at twice the phone's pixels; `goals_new.png`, the six files on the page's dark and on white).
+- **Content check:** PASS for the upload of the six new images (2026-11-23, 18:52), on one condition: the six files exactly as they stand (a re-run that changes a byte brings them back). Its notes, not rule matters: the broken mark is very faint at its smallest on dark, and on a white ground the kept mark's flare nearly vanishes (the mark only ever sits on the kit's dark glass).
+- **Limits:** stills only. Widths are the sheet's face, not the game's. The mark's flare, its split and the fold into the tab are TR54's block, read in motion there.
+- **AR55** waits behind this: its three blockout sheets are rendered and not yet read through (`build/scratch/modulo/ar55/`).
+
+
 ## AR54. The yard at Stage III: one plan where every machine fits and reads from the gate (Modulo, before AR53; then Faber)
 
 Research, 2026-11-23, 15:26, from TR51's Studio run and TR37's (`docs/test-requests.md`). It's main map, so it comes first, by the director's order of 00:05. Tier 2, research and Modulo, with Faber's measures.

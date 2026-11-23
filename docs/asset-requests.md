@@ -15699,6 +15699,12 @@ From the ten stills in `build/captures/ar51/`, in the smallest phone's frame and
   - type check 0 new;
   - TR37's case 43 passed and the guide's case 13 passed, 0 failed in each.
 
+### Research's second look: AR51 passes at competent (Quaestor, 2026-11-23, 21:33)
+
+- **Must-fix 3, met.** The card stands the kit's gap under the Void Shop's countdown (`phone_running_restock.png`), and the rule holds for any piece in that column.
+- **The guide's arrow, met.** It rides the chip's end, turned to the Breaker, clear of the avatar and the prompt, in both `phone_ready.png` and `phone_running.png`.
+- **Nothing broke.**
+
 ## AR52. The Guard and the Dasher: two more Shades, so each stretch of Lantern Row asks its own question (Modulo now, then the effects teammate, then Faber)
 
 Research, 2026-11-23, 14:54, on the director's word of about 14:50: F2 of `docs/research/design-holes.md`, "Now, beside the map". It answers the director's word of 03:25: each phase of the run must play differently and be fun. Tier 2: the behaviours are already designed in `docs/roster.md`, "Enemies: Shades".

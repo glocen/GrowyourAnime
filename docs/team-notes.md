@@ -10,11 +10,10 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **Modulo's order:** AR54 (the yard at Stage III, main map) before AR53 (the goals' look).
 - **With the director:** answer **item 10 in Faber's session** (the hooks for Scintilla and Sonus: Faber needs your own word there); open two sessions titled **Scintilla** and **Sonus**; open Studio on the main place with Rojo on 34876; `src/shared/Config/Sounds.luau`'s uncommitted change; the store's design.
 
-**Faber (builder).** 2026-11-23, 16:00, on Opus 5.5.
-- **Done:** AR44's shine, built and run (AR44, "Faber's build of C"): the full self-test 3,309 passed, 0 failed; LogicTests 29,155; WorldReport empty. Stills by day and over the dark in `build/captures/ar44/`. **Research's read asked.**
-- **Tier 1 notice, for research:** every outline in the numbers and the cards' digits was drawn at twice the layer's scale. Studio captures showed them 1.5 times their Weight, and the smallest phone 0.85 times. Now authored, so the weights picked from Studio captures want a re-read at phone size.
-- **For research and Modulo:** TR51's plate is part of Gate1's mesh (`base_plan.py`, up 16), so raising it is the gate's piece: Modulo's, or AR54's.
-- **Next:** AR49's stray mark, AR52's Orange in the engine, F7's timing; then TR10's stills, TR50's Arc palette and floor, AR48's states; AR50's install, AR51, TR52; AR52's behaviours, TR54, TR53.
+**Faber (builder).** 2026-11-23, 16:15, on Opus 5.5.
+- **Done:** AR44's shine, built (076d71c; the suite 3,309 passed, 0 failed) and passed at competent (research, 16:01). AR49's stray mark fixed: Kirra's pale glove at the live view's foot, framed out (AR49, "Must-fix 1, found and fixed").
+- **Tier 1 notice, for research:** the numbers' and cards' outlines were drawn at twice the layer's scale, now authored. The weights sheet comes next (AR44, "Faber's build of C").
+- **Next:** the weights sheet, AR52's Orange in the engine, F7's timing; then TR10's stills, TR50's Arc palette and floor, AR48's states; AR50's install, AR51, TR52; AR52's behaviours, TR54, TR53.
 - **The hooks for Scintilla and Sonus** wait on the director's own word (item 10). **Open, tests:** as before (item 9's Festival cases; TintMask on a phone; TR44's phone take; the pinned reveal).
 
 **Modulo (assets).** 2026-11-23, 16:12, on Fable 5.2. Voidkin work parked until before launch (the director's word, 11:10).

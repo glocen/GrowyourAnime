@@ -640,7 +640,12 @@ return {
 			Fov = 20,
 			Ambient = Color3.fromHex("#B4B8C2"),
 			Light = Vector3.new(0.3, -0.7, -1),
-			Each = {} :: { [string]: { Yaw: number?, Head: number?, Chest: number?, X: number?, Y: number? } },
+			Each = {
+				-- Framed a little closer (the chest's line at 0.45, about 10% larger, the crown unmoved): in her idle the top of
+				-- her pale glove rose to the window's foot, a white sliver under "Voidkin" (research's must-fix 1 on AR49,
+				-- 2026-11-23). 6 points lower (Y) still left it there; at 0.45 it sits about 12 points under the foot.
+				Kirra = { Chest = 0.45 },
+			} :: { [string]: { Yaw: number?, Head: number?, Chest: number?, X: number?, Y: number? } },
 		},
 		Dim = { Colour = Color3.fromHex("#05090B"), Amount = 0.6, Seconds = 0.15, Side = 100 },
 		Open = { Grow = 0.22, From = 0.9, Back = 1.2, Fade = 0.12, Stagger = 0.045, Order = { "Voidkin", "Equipment", "Settings" }, Land = 0.16, Rise = 8, Leave = 0.12, LeaveTo = 0.96 },

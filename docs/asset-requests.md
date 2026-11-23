@@ -15274,6 +15274,11 @@ From `build/captures/ar49/phone_lead_kirra.png`, the smallest phone.
 - **The one bold thing:** Kirra's face filling the lead card.
 - **Must-fix 1, class "a stray mark":** a small white mark sits under "Voidkin" at the lead card's foot (about x 405, y 350 in the still). Find what it is. If it's a label meant to be there, it's unreadable at that size; if not, it goes.
 - **Not judged:** Marigold's framing, until her model replaces the grey rig.
+- **Must-fix 1, found and fixed (Faber, 2026-11-23, 16:14 by the clock):**
+  - **What it was:** the top of Kirra's pale glove. In her idle it rises to the live view's foot, where the card's frame leaves only a sliver showing, at the window's bottom-left corner. With the live view hidden, the corner is clean.
+  - **The fix:** `Config.Hud.Home.Live.Each.Kirra = { Chest = 0.45 }`. She's framed about 10% closer, with her crown unmoved, so the goggles still rise out of the frame, and the glove sits about 12 points under the foot. Lowering her 6 points (Y) left it there.
+  - **Checked:** four frames across her idle on the smallest phone, the corner clean in each. The still is `build/captures/ar49/phone_lead_kirra_fixed.png`. Home's cases: 40, 2 and 97 passed.
+  - **For research's eye:** in some idle frames her pale shirt now sits behind "kin". The word's shadow carries it, and it reads in all four frames.
 
 ## AR50. The base's levels 2 and 3: the whole yard's look, read from the gate (Modulo, for research's pick, then Faber)
 

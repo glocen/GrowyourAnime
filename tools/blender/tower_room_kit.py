@@ -39,6 +39,7 @@ Run, each `guard.ps1 tools/blender/tower_room_kit.py <abs out> <mode>` (Eevee, n
     movie     <out>/crown_beat.mp4, from those
     sheet     <out>/crown.png and crown_64.png, from those
     stand     research's grey test, the player's stand raised: <out>/crown_stand_<back>_<height>.png and crown_stand.png
+    landing   research's grey test of the height at the door: <out>/crown_landing_<frame>.png and crown_landing.png
     lot       the entrance on the lot and the record's marker: <out>/gate_<approach|door|visitor|far|back>.png
     lotsheet  <out>/gate.png, from those
     pictures  the maps alone, into <out>/maps
@@ -102,6 +103,7 @@ SEA_LAYERS = (dict(heads=72, reach=(600.0, 1900.0), under=(2.6, 6.4), tall=(0.02
               dict(heads=34, reach=(2800.0, SEA_REACH), top=(-95.0, -50.0), tall=(60.0, 120.0), wide=(220.0, 520.0), cuts=3, puffs=8),
               dict(heads=44, reach=(220.0, 1300.0), top=(-150.0, -75.0), tall=(30.0, 60.0), wide=(90.0, 200.0), cuts=4, puffs=10))
 EYE = 8.8                                         # the player's eye over the floor in a fight's frame
+SEA_EXTRA = []                                    # a test's own layers, after the room's (the room's heads keep their places)
 SEA_GAP = 7.0                                     # degrees each side of the foe's way in that the near layer leaves open
 HAZE = ((1000.0, "#4686E4"), (1800.0, "#6BA0EC"), (3000.0, "#A3C5F4"), (4500.0, "#CDE0F9"), (6000.0, "#DCEAFB"))   # the haze under the cloud, by how far off: deep, then the horizon's
 # The floor's plates: each ring's inner and outer edge, its count of plates and its turn in plates; the two tones of
@@ -525,24 +527,30 @@ def cloud_sea(scene):
         return verts, tris
 
     verts, faces, lifts, count = [], [], [], 0
-    for layer in SEA_LAYERS:
+    for layer in SEA_LAYERS + tuple(SEA_EXTRA):
         middles, sizes, feet = [], [], []
         r0, r1 = layer["reach"]
         made = 0
         while made < layer["heads"]:
             a, r = rng.uniform(0, 2 * math.pi), r0 + (r1 - r0) * rng.random() ** (1.0 if "under" in layer else 1.3)
-            if r < SEA_LAYERS[0]["reach"][1] and abs(math.degrees(a) - 90.0) < SEA_GAP:
+            x, y, eye = r * math.cos(a), r * math.sin(a), EYE
+            if "eye" in layer:                                 # laid by sight from another eye: r is the way from it
+                a = math.radians(90.0 + (a / math.pi - 1.0) * layer["fan"])
+                x, y, eye = layer["eye"][0] + r * math.cos(a), layer["eye"][1] + r * math.sin(a), layer["eye"][2]
+                if math.hypot(x, y) < layer["clear"]:
+                    continue                                   # never under the tower itself
+            elif r < SEA_LAYERS[0]["reach"][1] and abs(math.degrees(a) - 90.0) < SEA_GAP:
                 continue                                       # the foe's way in keeps the deep haze behind it
             made += 1
             if "under" in layer:
                 wide, tall = r * rng.uniform(*layer["wide"]), r * rng.uniform(*layer["tall"])
-                top = EYE - r * math.tan(math.radians(rng.uniform(*layer["under"])))
+                top = eye - r * math.tan(math.radians(rng.uniform(*layer["under"])))
             else:
                 grow = 1.0 + (r - r0) / (r1 - r0) * 0.6
                 wide, tall = rng.uniform(*layer["wide"]) * grow, rng.uniform(*layer["tall"])
                 top = rng.uniform(*layer["top"])
             foot = top - tall
-            middle = Vector((r * math.cos(a), r * math.sin(a), foot + tall * 0.45))
+            middle = Vector((x, y, foot + tall * 0.45))
             lumps = [(middle, (wide * 0.5, wide * 0.5 * rng.uniform(0.7, 1.0), tall * 0.45))]
             for _ in range(layer["puffs"]):
                 turn, lift = rng.uniform(0, 2 * math.pi), math.radians(rng.uniform(15.0, 80.0))
@@ -743,9 +751,30 @@ def band(height, back):
     return math.degrees(min(math.atan2(eye.z, FLOOR_R - eye.y), math.atan2(eye.z + STEP_DOWN, STEP_R - eye.y)))
 
 
-def stand_test(out):
+def grey_sheet(out, file, title, tiles, notes, cols=3):
+    """A grey test's page: its frames at half size, each under its line, and the notes."""
     import ui_sheet as ui
 
+    gap = 14
+    tw, th = block.SIZE[0] // 2, block.SIZE[1] // 2
+    rows = -(-len(tiles) // cols)
+    text = [ln for n in notes for ln in textwrap.wrap(n, 63 * cols)]
+    ui.K = 1
+    page = ui.Sheet(gap + cols * (tw + gap), 52 + rows * (th + 22 + gap) + 16 + len(text) * 19, "#14151C")
+    t = page.tile(0, 0, page.w, page.h)
+    t.text(gap, 14, 20, title, "#EDE6D6", bold=0.2)
+    for k, (name, said) in enumerate(tiles):
+        x, y = gap + (k % cols) * (tw + gap), 48 + (k // cols) * (th + 22 + gap)
+        t.text(x, y, 13, said, "#EDE6D6")
+        rs.paste(page.px, rs.shrink(rs.load(out / f"{name}.png"), 0.5), x, y + 20)
+    for n, ln in enumerate(text):
+        t.text(gap, 48 + rows * (th + 22 + gap) + 4 + n * 19, 14, ln, "#B4AC9C")
+    for layer in ui.text_layers(page.px.shape[1], page.px.shape[0], page.items).values():
+        rs.paste(page.px, layer, 0, 0)
+    rs.save(page.px, out / file)
+
+
+def stand_test(out):
     b = build(out)
     cast(b)
     grey = look.painted("StandIn", "#A2A2A2", "#6C6C6C")
@@ -764,8 +793,6 @@ def stand_test(out):
         tiles.append((name, f"the stand {height:g} up, {back:g} from the middle{f', {abs(side):g} off the lane' if side else ''}: "
                       f"{band(height, back):.1f} degrees under the horizon seen"
                       if height else f"as it stands, on the floor: {band(height, back):.1f} degrees under the horizon seen"))
-    gap = 14
-    tw, th = block.SIZE[0] // 2, block.SIZE[1] // 2
     notes = [
         "Research's grey test (AR56, the second look): the fight's frame with the player's stand raised on a grey dais, the camera "
         "the player's own (12.5 studs behind the avatar, 20 degrees down, FOV 70), at the smallest phone's size. The room, the "
@@ -775,22 +802,101 @@ def stand_test(out):
         "avatar, at the cost of a narrower band and smaller fighters. Its first frame also sets the dais 9 studs off the lane, the "
         "camera still looking straight up the room, so the fighters stand beside the avatar and not behind it.",
     ]
-    text = [ln for n in notes for ln in textwrap.wrap(n, 190)]
-    ui.K = 1
-    page = ui.Sheet(gap + 3 * (tw + gap), 52 + 2 * (th + 22 + gap) + 16 + len(text) * 19, "#14151C")
-    t = page.tile(0, 0, page.w, page.h)
-    t.text(gap, 14, 20, "Grow your Anime, the Tower's room (AR56): the player's stand raised, a grey test", "#EDE6D6", bold=0.2)
-    for k, (name, said) in enumerate(tiles):
-        col, row = k % 3, k // 3
-        x, y = gap + col * (tw + gap), 48 + row * (th + 22 + gap)
-        t.text(x, y, 13, said, "#EDE6D6")
-        rs.paste(page.px, rs.shrink(rs.load(out / f"{name}.png"), 0.5), x, y + 20)
-    for n, ln in enumerate(text):
-        t.text(gap, 48 + 2 * (th + 22 + gap) + 4 + n * 19, 14, ln, "#B4AC9C")
-    for layer in ui.text_layers(page.px.shape[1], page.px.shape[0], page.items).values():
-        rs.paste(page.px, layer, 0, 0)
-    rs.save(page.px, out / "crown_stand.png")
+    grey_sheet(out, "crown_stand.png", "Grow your Anime, the Tower's room (AR56): the player's stand raised, a grey test", tiles, notes)
     print("AR56: stand done", [(h, back, side, round(band(h, back), 1)) for h, back, side in STAND_TEST])
+
+
+# --- the height at the door: research's second grey test ---------------------------------------------------------------
+
+# The drop given to the way in (AR56, "Research's read of the stand test"): the player arrives on a landing over the
+# entrance's end and walks down steps to the floor, where the fight's frame stays as it passed. Grey stand-ins.
+# The landing's middle along the lane and its height; its slab; the steps' count and a tread (wide, deep, thick).
+LANDING = dict(at=-76.0, up=12.0, slab=(14.0, 12.0, 1.2), steps=11, tread=(8.0, 2.4, 0.6))
+# Cloud laid by sight from the landing's eye: what research asked (8 to 14 degrees under the horizon), and a few deeper,
+# close in, for the frame's lower corners (mine). `fan`: degrees either side of the lane; `clear`: never this near the shaft.
+LANDING_CLOUD = (dict(heads=46, reach=(260.0, 680.0), under=(8.0, 14.0), tall=(0.02, 0.036), wide=(0.07, 0.15), cuts=3, puffs=8,
+                      fan=80.0, clear=110.0),
+                 dict(heads=12, reach=(130.0, 330.0), under=(15.0, 24.0), tall=(0.03, 0.05), wide=(0.1, 0.2), cuts=3, puffs=8,
+                      fan=75.0, clear=110.0))
+
+
+def past_rim(eye, off):
+    """Degrees under the horizon seen past the step ring's far edge, from `eye`, looking `off` degrees off the lane; None
+    where the look misses the room altogether."""
+    back, s = -eye.y, math.sin(math.radians(off))
+    inside = STEP_R ** 2 - (back * s) ** 2
+    if inside < 0:
+        return None
+    return math.degrees(math.atan2(eye.z + STEP_DOWN, back * math.cos(math.radians(off)) + math.sqrt(inside)))
+
+
+def landing_test(out):
+    at, up = LANDING["at"], LANDING["up"]
+    eye, _ = block.behind(0.0, at, up, 20.0)
+    SEA_EXTRA.extend(dict(layer, eye=(eye.x, eye.y, eye.z)) for layer in LANDING_CLOUD)
+    b = build(out)
+    cast(b)
+    grey = look.painted("StandIn", "#A2A2A2", "#6C6C6C")
+    w, d, h = LANDING["slab"]
+    slab = tb.solid(b.scene, "Landing", block.box(w, d, h), grey)
+    slab.location = (0.0, at, up - h)
+    made = [slab]
+    front, (tw, td, th) = at + d / 2, LANDING["tread"]
+    run = (-FLOOR_R - 1.0 - front) / (LANDING["steps"] - 1) if LANDING["steps"] > 1 else 0.0
+    drop = up / (LANDING["steps"] + 1)
+
+    def tread(k):
+        return front + 1.0 + k * run, up - (k + 1) * drop
+
+    for k in range(LANDING["steps"]):
+        y, top = tread(k)
+        step = tb.solid(b.scene, f"Tread{k}", block.box(tw, td, th), grey)
+        step.location = (0.0, y, top - th)
+        made.append(step)
+    mid = LANDING["steps"] // 2
+    foot = -STEP_DOWN + 0.28
+    frames = (
+        ("today", "today: in on the step ring", (0.0, -54.0, foot), (3.5, -51.5, foot), False),
+        ("arrive", f"arriving on the landing, {up:g} up", (0.0, at, up), (3.5, at + 2.5, up), True),
+        ("steps", "halfway down the steps", (0.0, *tread(mid)), (3.0, *tread(mid + 1)), True),
+        ("fight", "the fight's frame, from the floor", None, None, True),
+        ("whole", "the room with its landing", None, None, True),
+    )
+    tiles = []
+    for name, said, avatar, lead, shown in frames:
+        fight(b)
+        for obj in made:
+            obj.hide_render = not shown
+        if avatar:
+            b.avatar.at(*avatar)
+            b.leads["pale"].at(*lead)
+            b.foe.at(0.0, STAND)
+            view = block.behind(*avatar, 20.0)
+        elif name == "fight":
+            view = block.behind(0.0, -STAND, 0.0, 20.0)
+        else:
+            steps_at(b, 1.0)
+            view = (Vector((125.0, -185.0, 80.0)), Vector((0.0, -22.0, 2.0)))
+        shot(b, *view, out / f"crown_landing_{name}.png")
+        tiles.append((f"crown_landing_{name}", said))
+    walk = (-STAND - at, -STAND + 54.0)
+    seen = {off: past_rim(eye, off) for off in (0, 20, 30, 40)}
+    notes = [
+        "Research's second grey test (AR56, the read of the stand test): the height at the door. The player arrives on a landing "
+        f"{up:g} studs up over the entrance's end, {-at - STEP_R:g} studs out past the step ring, and walks down {LANDING['steps']} "
+        "steps to the floor, where the fight is as it passed. The landing and the steps are grey stand-ins; the room, the fighters "
+        "and the camera are the finish's (12.5 studs behind the avatar, 20 degrees down, FOV 70), at the smallest phone's size.",
+        f"From the landing the far rim hides everything more than {seen[0]:.1f} degrees under the horizon straight up the lane, "
+        f"{seen[20]:.1f} at 20 degrees off it, {seen[30]:.1f} at 30 and {seen[40]:.1f} at 40; past about "
+        f"{math.degrees(math.asin(STEP_R / -eye.y)):.0f} degrees off the lane the look misses the room and nothing hides the drop. "
+        "The cloud added for this test lies 8 to 14 degrees under the horizon from the landing's eye (research's ask), with a few "
+        "heads deeper and closer for the frame's lower corners (mine). In the game the sky is six pictures with no depth, so these "
+        "heads would be painted at those angles.",
+        f"The walk from the landing to the stand is {walk[0]:g} studs, against {walk[1]:g} today from the step ring: "
+        f"{walk[0] - walk[1]:g} more, about {(walk[0] - walk[1]) / 16:.1f} s at 16 studs a second.",
+    ]
+    grey_sheet(out, "crown_landing.png", "Grow your Anime, the Tower's room (AR56): the height at the door, a grey test", tiles, notes)
+    print("AR56: landing done", {k: round(v, 1) for k, v in seen.items()}, walk)
 
 
 # --- the climb's beat ------------------------------------------------------------------------------------------------------
@@ -1243,6 +1349,8 @@ def main():
         sheet(out)
     elif mode == "stand":
         stand_test(out)
+    elif mode == "landing":
+        landing_test(out)
     elif mode == "lot":
         lot_looks(out)
     elif mode == "lotsheet":

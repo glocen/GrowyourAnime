@@ -67,8 +67,9 @@ GAINS = {
                 image="StoneLow (build/handoff/UI/upgrades)"),
     "mid": dict(pic=UI / "upgrades" / "images" / "StoneMid.png", grow=1.15, gain="+1", what="Mid stone", colour=ROSE,
                 image="StoneMid (build/handoff/UI/upgrades)"),
-    "training": dict(pic=UI / "hud" / "colour" / "images" / "PowerChipTraining.png", grow=1.3, gain="+2 levels", what="Rook",
-                     colour=CYAN, image="PowerChipTraining (build/handoff/UI/hud/colour)"),
+    "training": dict(pic=UI / "hud" / "images" / "PortraitRookSmall.png", face=True, grow=1.0, gain="+2 levels", what="Rook",
+                     colour=CYAN, image="the Voidkin's own face: the kit's small portrait (Portrait<Name>Small, or "
+                                        "PortraitUnknown<Rarity>Small), its face's square"),
     "shard": dict(pic=UI / "shards" / "shard_standard_small.png", grow=1.2, gain="1 shard", what="ready", colour=SILVER,
                   image="the shard's small picture, of the shard that broke (build/handoff/UI/shards)"),
 }
@@ -77,6 +78,7 @@ X0, X1, FOOT = 372.0, 560.0, 314.0     # the slab: its sides and its foot, from 
                                        # battery's line is ten characters as Read.Kwh writes it ("+12.40 kWh")
 PITCH, TIGHT = 26.0, 21.0              # a line's height: up to four lines, and with five (186 lie under the pills)
 SEAT = 22.0                            # the well, as cut; the game scales it to the line (pitch - 4)
+FACE = (110, 112, 148)                 # a small portrait's face: this square of its 368 x 400 pixels (left, top, side)
 LINE = (163, 448, 62)                  # the run's line as the game lays it on this phone (build/captures/tr50/line.png)
 DARE_TAB = (8, 30, 34, 70)             # AR53's tab, from the line's glass's top left
 TAB = (40, 30, 112, 70)                # the base's tab beside it
@@ -89,13 +91,17 @@ def wide(text, size, bold=False):
     return ss.wide_of(text, size) * (1.05 if bold else 1.0)
 
 
-def picture(t, key, cx, cy, size, alpha=1.0):
-    """A line's picture, `size` points high, its middle at (cx, cy)."""
-    g = GAINS[key]
-    if key not in _px:
-        _px[key] = rs.load(g["pic"])
+def picture(t, key, cx, cy, size, alpha=1.0, g=None):
+    """A line's picture, `size` points high, its middle at (cx, cy). A Voidkin's is its face's square."""
+    g = g or GAINS[key]
+    path = str(g["pic"])
+    if path not in _px:
+        _px[path] = rs.load(g["pic"])
+        if g.get("face"):
+            x, y, side = FACE
+            _px[path] = _px[path][y:y + side, x:x + side].copy()
     s = size * g["grow"]
-    im = rs.shrink(_px[key], s * ui.K / _px[key].shape[0])
+    im = rs.shrink(_px[path], s * ui.K / _px[path].shape[0])
     im[..., 3] *= alpha
     t.image(im, cx - im.shape[1] / ui.K / 2, cy - s / 2)
 
@@ -176,7 +182,7 @@ def card(t, keys, says=None):
         t.stroke([(X0 + 8, y), (X1 - 8, y)], 1.0, SYS["facet"], 0.22)
         gl.lay(t, "ReturnSeat", X0 + 9, y + 2, scale=s / SEAT)
         gl.lay(t, "ReturnSeatLight", X0 + 9, y + 2, scale=s / SEAT, tint=g["colour"])
-        picture(t, key, X0 + 9 + s / 2, y + 2 + s / 2, s - 5)
+        picture(t, key, X0 + 9 + s / 2, y + 2 + s / 2, s - 4 if g.get("face") else s - 5, g=g)
         gx = X0 + 9 + s + 7
         t.text(gx, y + p / 2 - TITLE * 0.42, TITLE, g["gain"], SYS["text"], bold=0.35)
         t.text(X1 - 11, y + p / 2 - SMALL * 0.42, SMALL, g["what"], SYS["soft"], "RIGHT")
@@ -207,10 +213,10 @@ def pill(t, x0, y0, x1, y1, colour, words):
     t.text(x1 - 7, (y0 + y1) / 2 - SMALL * 0.42, SMALL, words, "#FFFFFF", "RIGHT", bold=0.3)
 
 
-def hud(t, stored, step=False, made=True):
+def hud(t, stored, step=False):
     ghost(t, 8, 77, 155, 150, "the lead's card")
     pill(t, 455, 72, 560, 97, CREDITS, "46,310")
-    pill(t, 392, 103, 560, 128, POWER, ("2.4 kW      " if made else "") + stored)
+    pill(t, 392, 103, 560, 128, POWER, "2.4 kW      " + stored)
     for k in range(3):
         ghost(t, 203 + k * 56, 262, 253 + k * 56, 304)
     if step:
@@ -232,11 +238,11 @@ def home(t, st):
 # --- during a run, in the Festival --------------------------------------------------------------------------------------
 
 def run_line(t, dare=None):
-    """The run's line as StageController builds it. `dare`: the stretch has just started, and its dare is unfolded under
-    the line (AR53), which grows 24."""
+    """The run's line as StageController builds it. `dare`: the stretch has just started, and its dare's tab is open
+    under the line (AR53, research's must-fix of 20:07): the rows `dare` breaks into."""
     acc = sm.ACC[False]
     x0, x1, y0 = LINE
-    sm.glass(t, x0, y0, x1, y0 + (64 if dare else 40), False, 6, 1.2)
+    sm.glass(t, x0, y0, x1, y0 + 40, False, 6, 1.2)
     sm.badge(t, x0 + 7, y0 + 7, 2, False, True)
     tx = x0 + 41
     t.text(tx, y0 + 5, TITLE, "Stretch 2 of 4", P["text"], bold=0.3)
@@ -250,10 +256,8 @@ def run_line(t, dare=None):
     disc = t.poly([(ex + 6.5 * np.cos(a), ry + 6.5 * np.sin(a)) for a in np.linspace(0, 2 * np.pi, 24, endpoint=False)])
     t.paint(disc, P["channel"])
     t.line(disc, 1.2, P["edge"])
-    if dare:
-        t.stroke([(x0 + 8, y0 + 46), (x1 - 8, y0 + 46)], 1.0, P["edge"], 0.9)
-        gl.dare_mark(t, x0 + 21, y0 + 57, 14.0)
-        t.text(tx, y0 + 51, SMALL, dare, P["text"])
+    for k, row in enumerate(dare or ()):
+        t.text(tx, y0 + (51 if len(dare) == 1 else 48 + 18 * k), SMALL, row, P["text"])
 
 
 def tab_wide(words):
@@ -267,17 +271,22 @@ def festival(t, st):
     sm.stand_in(t)
     x0, _x1, y0 = LINE
     state, dare = st["state"], st.get("dare")
-    hud(t, "31.4 kWh", step=True, made=not dare)        # the unfolded dare lies over the pill's left end
-    down = 24 if dare else 0                             # the tabs ride the line's foot
-    if not dare:
-        a = DARE_TAB
-        sm.glass(t, x0 + a[0], y0 + a[1], x0 + a[2], y0 + a[3], False, 4, 1.0)
+    hud(t, "31.4 kWh", step=True)
+    a = DARE_TAB
+    rows = gl.broken(dare, OPEN[2] - 8 - 41) if dare else None
+    foot = (a[3] if len(rows) == 1 else OPEN[3]) if rows else 40
+    down = foot - 40                                     # the base's tab rides the open dare's foot
     b = OPEN if state == "open" else TAB
     right = b[2] if state == "open" else b[0] + tab_wide(st["words"])
     sm.glass(t, x0 + b[0], y0 + b[1] + down, x0 + right, y0 + b[3] + down, False, 6 if state == "open" else 4, 1.0)
-    run_line(t, dare)
-    if not dare:
-        gl.dare_mark(t, x0 + 21, y0 + 57, gl.MARK_H)
+    if rows:                                             # the dare's tab, open to the right
+        end = min(OPEN[2], 41 + max(gl.face_wide(r, SMALL) for r in rows) + 10)
+        sm.glass(t, x0 + a[0], y0 + a[1], x0 + end, y0 + foot, False, 4 if len(rows) == 1 else 6, 1.0)
+        print(f"run sheet, dare {dare!r}: {len(rows)} row(s) in {OPEN[2] - 8 - 41:.0f}, right {end:.0f}")
+    else:
+        sm.glass(t, x0 + a[0], y0 + a[1], x0 + a[2], y0 + a[3], False, 4, 1.0)
+    run_line(t, rows)
+    gl.dare_mark(t, x0 + 21, y0 + 57, gl.MARK_H)
     if state == "open":
         picture(t, "shard", x0 + 51, y0 + 64, 20)
         t.text(x0 + 62, y0 + 48, SMALL, NOTICE[0], P["text"], bold=0.3)
@@ -289,7 +298,7 @@ def festival(t, st):
         picture(t, "shard", x0 + 54, cy, 16)
         t.text(x0 + right - 8, cy - SMALL * 0.42, SMALL, st["words"], P["text"] if state == "ready" else P["soft"], "RIGHT",
                bold=0.35 if state == "ready" else 0.0)
-    SPOTS.setdefault(f"tab_{state}{'_dare' if dare else ''}", (x0 - 6, y0 - 6, 400, y0 + 100))
+    SPOTS.setdefault(f"tab_{state}{'_dare' if dare else ''}", (x0 - 6, y0 - 6, 400, y0 + (124 if dare else 100)))
 
 
 # --- the sheets ---------------------------------------------------------------------------------------------------------
@@ -302,13 +311,15 @@ CARD_CELLS = [
      dict(keys=ORDER, says=dict(shard=dict(gain="2 shards")))),
     ("A shard alone", dict(keys=("shard",))),
     ("Stones and one level: \"level\" is singular at 1",
-     dict(keys=("low", "mid", "training"), says=dict(low=dict(gain="+11"), training=dict(gain="+1 level", what="Lyric")))),
+     dict(keys=("low", "mid", "training"), says=dict(low=dict(gain="+11"), training=dict(gain="+1 level", what="Lyric",
+                                                           pic=UI / "hud" / "images" / "PortraitLyricSmall.png")))),
 ]
 CARD_NOTES = [
     "Research's pick, A: a narrow system slab at the right under the pills, from 372 to 560, its foot at 314. A line a",
     "change, in the machines' order: its picture in a small well lit in the machine's colour (the battery's yellow, the",
     "Condenser's rose, the Training machine's cyan, the Breaker's silver), the gain large at 17, one soft word at 14 at",
-    "the right. The press runs across the foot, 44 tall, under the right thumb: Collect on the kit's sand plate, Reveal",
+    "the right. The Training machine's line shows who trained: the Voidkin's own face from the kit's portrait.",
+    "The press runs across the foot, 44 tall, under the right thumb: Collect on the kit's sand plate, Reveal",
     "on the slab's Ready gold when a shard is among the lines. The card grows up from its foot: 78 and 26 a line. With",
     "five lines (a convert's Mid stone beside all four) a line is 21, so the card still stands under the Electricity",
     "pill: 186 points lie between that pill and the card's foot, and the card is 182 tall with four lines, 183 with",
@@ -320,26 +331,29 @@ CARD_NOTES = [
 ]
 RUN_CELLS = [
     ("During a run: the shard breaking at home, its time left, right of the dare's tab", dict(state="breaking", words="12:40")),
-    ("A stretch starts: the dare unfolds for its 3 seconds, and the base's tab rides the line's foot",
+    ("A stretch starts: the dare's tab opens for its 3 seconds, in two rows, and the base's tab rides its foot",
      dict(state="breaking", words="12:40", dare="Break a raised shield with your signature.")),
     ("The shard breaks: the tab opens into the notice, two lines, clear of the fight's middle", dict(state="open")),
     ("After it: the tab reads Ready until the player is home", dict(state="ready", words="Ready")),
     ("A long break: the tab follows its words", dict(state="breaking", words="1:42:10")),
+    ("A short dare opens on one row, and the base's tab rides that",
+     dict(state="breaking", words="12:40", dare="Stand outside every slam.")),
 ]
 RUN_NOTES = [
     "Research's pick, B's tab: the base's state hangs from the",
     "run's line right of the dare's tab, in the line's own glass,",
     "40 tall like its neighbour: the shard's own picture and its",
-    "time left, at 14. It rides the line's foot, so it drops 24",
-    "while a dare is unfolded. As the shard breaks it opens to",
+    "time left, at 14. While the dare's tab is open (AR53) it",
+    "rides that tab's foot. As the shard breaks it opens to",
     "the right into the notice, two lines, its right edge 6 short",
     "of the Electricity pill; a notice that falls due while a",
-    "dare is unfolded waits for the fold. After the notice the",
+    "dare is open waits for its close. After the notice the",
     "tab reads Ready, a soft silver glow behind the shard, until",
     "the player is home. No shard in the Breaker: no tab.",
     "The kit builds the glass and the words; the cut is the glow.",
-    "A finding, AR53's: at this phone the unfolded dare lies",
-    "over the Electricity pill's left 56 points for its 3 s.",
+    "The open dare stops 6 short of the Electricity pill, as the",
+    "notice does, and breaks at a word when it is too long: no",
+    "piece under the line lies over another piece of the HUD.",
 ]
 
 
@@ -364,6 +378,10 @@ def record():
         units="points at the smallest phone (568 x 320); every box is left, top, width, height; a word's y is its capitals' "
               "top; images at 4 pixels a point, edge alpha 0. An image's `origin` is where its lay point sits in it, in "
               "points from its top left (times 4 for pixels)",
+        strict="the sheets stand the HUD's pieces where a capture has them on screen (build/captures/tr50/fix-line.png) and "
+               "draw the kit's sizes at one to one. The game draws at 0.85 on that phone (Theme.Scale.Floor), so it has "
+               "about a sixth more room than the sheets: every fit here is the strict case. Anchor to the pieces (the "
+               "Electricity pill's foot, the screen's right and foot, the line's foot), not to these screen numbers",
         sheets=["return_card.png", "return_run.png", "return_cut.png"],
         card=dict(
             note="the kit builds it: Panel in the System palette, a line a change, one Button. Boxes from the screen's top "
@@ -380,6 +398,9 @@ def record():
                 seat=dict(images=["ReturnSeat", "ReturnSeatLight"], origin=[9, 2], scale=f"(pitch - 4) / {SEAT:g}",
                           light="ReturnSeatLight tinted the line's colour"),
                 picture=dict(centre="the well's middle", height="(pitch - 9) x the picture's grow",
+                             face=dict(of="the Training machine's line: the Voidkin's small portrait's face, no frame",
+                                       rect=dict(offset=[FACE[0], FACE[1]], size=[FACE[2], FACE[2]], of=[368, 400]),
+                                       side="pitch - 8: the well inset 2, so its corners meet the well's cuts"),
                              images={k: GAINS[k]["image"] for k in ORDER}, grow={k: GAINS[k]["grow"] for k in ORDER}),
                 colours={k: GAINS[k]["colour"] for k in ORDER},
                 gain=dict(x="9 + (pitch - 4) + 7", y="the line's middle", size=TITLE, bold=True, colour=SYS["text"]),
@@ -398,13 +419,15 @@ def record():
                      picture=dict(image=GAINS["shard"]["image"], centre=[54, 57], height=r2(16 * GAINS["shard"]["grow"])),
                      words=dict(right="8 from the tab's right", y=r2(57 - SMALL * 0.42), size=SMALL, colour=P["soft"],
                                 text="the time left, as Read gives it"),
-                     rides="the line's foot: 24 lower while a dare is unfolded",
+                     rides="the open dare's foot while a dare is open (build/handoff/UI/goals/goals.json, dare, line, "
+                           "unfolded): its top as far above that foot as above the line's, so 26 lower under one row, 44 "
+                           "under two, in goals.json's points",
                      hard="the same tab in the Hard line's glass", none="no shard in the Breaker: no tab"),
             notice=dict(box=ltwh(OPEN), make="the same glass, corners cut 6, opened to the right from the tab",
                         picture=dict(centre=[51, 64], height=r2(20 * GAINS["shard"]["grow"])),
                         lines=[dict(x=62, y=48, size=SMALL, bold=True, colour=P["text"]),
                                dict(x=62, y=66, size=SMALL, colour=P["soft"])],
-                        right="6 short of the Electricity pill at this phone", waits="for the fold when a dare is unfolded",
+                        right="6 short of the Electricity pill at this phone", waits="for the dare's close when a dare is open",
                         note="not the kit's toast: that stays one line"),
             ready=dict(glow=dict(image="ReturnGlow", origin=[54, 57], tint=SILVER),
                        words=dict(colour=P["text"], bold=True), until="the player is home")),

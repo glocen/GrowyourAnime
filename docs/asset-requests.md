@@ -16240,6 +16240,33 @@ From the two sheets, the pictures at twice the phone's pixels, and at 64 pixels.
   - the widths in the game's face.
 - **The second look** judges the two fixes only.
 
+### Modulo's fix of the two must-fixes: the Voidkin's face in the Training line; the dare opens as its tab (2026-11-23, 20:20; started 20:08)
+
+Made and self-reviewed as stills at the smallest phone, up close at twice its pixels; delivered to the two handoffs. No image is new or changed: the cut's three are byte for byte the files that passed at 19:21, and the goals' 17 weren't written. Not in the game, nothing uploaded, nothing read in motion.
+
+- **Must-fix 1, the Training line's well: the Voidkin's own face.** My call of the two: the line already says who trained ("+2 levels", "Rook"), so the well shows that Voidkin, and no well on the card is a bare tile.
+  - It is the kit's small portrait (`Portrait<Name>Small`, or `PortraitUnknown<Rarity>Small`), its face's square (148 pixels from 110, 112 of its 368 by 400), with no rarity frame.
+  - It stands in the well inset 2, so its corners meet the well's cuts: 18 points in a 22 well, 13 at five lines. The cyan light stays behind it.
+  - `return_card.png`, phones 3, 4 and 6 (Rook, Rook at five lines, Lyric); `return_pictures.png` up close. No new image: the portraits are in the game.
+- **Must-fix 2, AR53's: the dare opens as its tab, and the line never grows.**
+  - The folded tab opens to the right in the line's own glass, as the base's notice opens from its tab, and closes round its mark after its 3 s. The mark stays where it is folded.
+  - Its right is its widest row's end and 10, and never past 6 short of the Electricity pill. One row stands in the tab's own height (foot 70); two rows in the notice's (foot 88), broken at the word that leaves the rows most alike.
+  - The base's tab rides the open dare's foot: 26 lower under one row, 44 under two.
+  - **The five, measured** in the sheet's face at 14, against the smallest phone's room (263 from the line's left to the pill less 6; 211 for the words, 187 on Hard, whose mark is 24 wider):
+
+    | The dare | Wide | Rows | On Hard |
+    |---|---|---|---|
+    | "Finish with your lead above half." | 180 | 1 | 1, with 7 to spare |
+    | "Break a raised shield with your signature." | 232 | 2: "Break a raised shield" / "with your signature." | 2 |
+    | "Let no Dasher's line touch you." | 176 | 1 | 1 |
+    | "Stand outside every slam." | 143 | 1 | 1 |
+    | "Finish without your lead falling." (the fallback) | 174 | 1 | 1 |
+
+  - So one dare of the five breaks. The rule is the game's to run on the widths it measures: the table is the sheet's face, and Hard's first dare is the one to watch in a capture.
+  - `build/handoff/UI/goals/goals_dare_line.png` (phones 1, 5 and 6) and `goals.json` ("dare", "line", "unfolded") hold it; `return_run.png`, phones 2 and 6, show it beside the pills with the base's tab under it.
+- **A fact about my sheets, for research and Faber.** They stand the HUD's pieces where a capture has them on screen and draw the kit's sizes at one to one. The game draws at 0.85 on the smallest phone (`Theme.Scale.Floor`), so it has about a sixth more room than a sheet shows. Every fit on these sheets is the strict case: on `return_run.png` the words have 174, not 211. `return.json` says so ("strict") and asks for anchors to the pieces, not to the screen numbers. The card's 21 at five lines is the strict case too: in the game 26 may fit under the pill, and a capture can say.
+- **`goals_look.py` has a `line` mode:** the dare's sheet and `goals.json` alone, no image touched. The whole cut was stopped twice by the memory guard with a Studio open (0.59 and 0.63 GB free).
+
 ## AR56. The Tower's room: one great round room where the climb is fought (Modulo, for research's pick, then its finish; Faber's install after the main game)
 
 Research, 2026-11-23, 20:07, on the director's word by 20:01, "Tower room now", to research's question (`docs/decisions.md`, the top row).

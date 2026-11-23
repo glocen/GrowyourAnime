@@ -20,6 +20,8 @@ TR54's; widths are the sheet's face, not the game's.
 
     blender -b --factory-startup --python tools/blender/goals_look.py -- <abs out>
     blender -b --factory-startup --python tools/blender/goals_look.py -- <abs build/handoff/UI/goals> cut
+    blender -b --factory-startup --python tools/blender/goals_look.py -- <abs build/handoff/UI/goals> line
+                                        (the dare's line alone: its sheet and goals.json, no image touched)
 
 Writes:
     goals_dare_line.png     the run's line: a stretch's start, the mark lit, dark and kept, Hard, the keeper
@@ -65,7 +67,7 @@ READY = sm.READY
 IVORY = hc.IVORY
 STONE = up.UPG / "StoneLow.png"
 SHARD = ss.ICONS["shards"]
-LINE_H = 150
+LINE_H = 166
 SPOTS = {}                             # a few drawn boxes, in a phone's points, for the pictures sheet
 CUT_K = 4                              # the cut's pixels a point, the kit's
 PIECES = {}                            # the cut's images by name: px, box (its own points), tint, use
@@ -142,6 +144,35 @@ MARKS = {"lit": "DareMark", "kept": "DareMarkKept", "dark": "DareMarkDark"}
 
 # --- the dare on the run's line -------------------------------------------------------------------------------------
 
+DARE_RIGHT = 263.0                     # the opened dare's right, from the line's left, at the smallest phone: 6 short of
+                                       # the Electricity pill (392 of 568 on screen, the line's left at 163, drawn at 0.85)
+
+
+def face_wide(words, size):
+    """How wide the sheet's face sets a line, in points (Blender's face stands in for the game's)."""
+    import bpy
+    curve = bpy.data.curves.new("Measure", "FONT")
+    curve.body, curve.size = words, size
+    obj = bpy.data.objects.new("Measure", curve)
+    bpy.context.scene.collection.objects.link(obj)
+    bpy.context.view_layer.update()
+    wide = float(obj.dimensions.x)
+    bpy.data.objects.remove(obj)
+    bpy.data.curves.remove(curve)
+    return wide
+
+
+def broken(words, room, size=14.0):
+    """A dare's rows: one when it fits `room`, else two, broken at the word that leaves the rows most alike."""
+    if face_wide(words, size) <= room:
+        return [words]
+    parts = words.split(" ")
+    rows = min(([" ".join(parts[:k]), " ".join(parts[k:])] for k in range(1, len(parts))),
+               key=lambda r: max(face_wide(r[0], size), face_wide(r[1], size)))
+    assert max(face_wide(r, size) for r in rows) <= room, (words, room)
+    return rows
+
+
 def run_line(t, st):
     """The run's line as StageController builds it (the stretch's mark, "Stretch 2 of 4", its Shades on their road),
     with the dare: unfolded under it as the stretch starts, then its mark in a tab under the line's foot."""
@@ -149,7 +180,14 @@ def run_line(t, st):
     acc = sm.ACC[hard]
     x0, x1, y0 = 100, 468, ss.BAND + 4
     said = st.get("dare")
-    y1 = y0 + 44 + (24 if said else 0)
+    y1 = y0 + 44
+    tx = x0 + 8 + 26 + (24 if hard else 0) + 10
+    rows = broken(said, DARE_RIGHT - 8 - (tx - x0)) if said else []
+    if said:                                             # unfolded: the dare's tab opened to the right, never the line grown
+        right = min(DARE_RIGHT, tx - x0 + max(face_wide(r, SMALL) for r in rows) + 10)
+        sm.glass(t, x0 + 8, y0 + 30, x0 + right, y0 + (70 if len(rows) == 1 else 88), hard, 4 if len(rows) == 1 else 6, 1.0)
+        print(f"dare {'Hard ' if hard else ''}{said!r}: {face_wide(said, SMALL):.0f} wide in {DARE_RIGHT - 8 - (tx - x0):.0f}, "
+              f"{len(rows)} row(s), the panel's right {right:.0f}")
     if st.get("mark"):                                   # folded: a tab of the line's own glass under the stretch's mark
         sm.glass(t, x0 + 8, y0 + 30, x0 + 34, y0 + 70, hard, 4, 1.0)
     sm.glass(t, x0, y0, x1, y1, hard, 6, 1.2)
@@ -157,7 +195,6 @@ def run_line(t, st):
         lay(t, MARKS[st["mark"]], x0 + 21, y0 + 57)
         SPOTS.setdefault("tab", (x0 - 6, y0 - 4, x0 + 150, y0 + 78))
     sm.badge(t, x0 + 8, y0 + 9, st["stage"], hard, True)
-    tx = x0 + 8 + 26 + (24 if hard else 0) + 10
     name = f"Stretch {st['stage']} of 4"
     t.text(tx, y0 + 6, TITLE, name, P["text"], bold=0.3)
     if quota:
@@ -182,10 +219,10 @@ def run_line(t, st):
         t.paint(disc, P["channel"])
         t.line(disc, 1.2, P["edge"])
     if said:
-        t.stroke([(x0 + 8, y0 + 46), (x1 - 8, y0 + 46)], 1.0, P["edge"], 0.9)
-        lay(t, "DareMark", x0 + 21, y0 + 57, 14 / MARK_H)
-        t.text(tx, y0 + 51, SMALL, said, P["text"])
-        SPOTS.setdefault("line", (x0 - 6, y0 - 4, x1 + 6, y1 + 8))
+        lay(t, "DareMark", x0 + 21, y0 + 57)
+        for k, row in enumerate(rows):
+            t.text(tx, y0 + (51 if len(rows) == 1 else 48 + 18 * k), SMALL, row, P["text"])
+        SPOTS.setdefault("line", (x0 - 6, y0 - 4, x1 + 6, y0 + 96))
 
 
 def line_cell(sheet, ox, oy, st):
@@ -197,8 +234,9 @@ def line_cell(sheet, ox, oy, st):
 
 DARES = ["Finish with your lead above half.", "Break a raised shield with your signature.",
          "Let no Dasher's line touch you.", "Stand outside every slam."]
+FALLBACK = "Finish without your lead falling."        # a stretch's dare until its own piece is in (TR54)
 LINES = [
-    ("Stretch 2 starts: its dare unfolds under the line, for about 3 s",
+    ("Stretch 2 starts: its dare's tab opens under the line, for about 3 s. A long dare breaks at a word",
      dict(hard=False, stage=2, quota=10, kills=0, last=False, right="then the elite", dare=DARES[1])),
     ("Then it folds to its mark, lit while the dare holds",
      dict(hard=False, stage=2, quota=10, kills=5, last=False, right="then the elite", mark="lit")),
@@ -206,18 +244,20 @@ LINES = [
      dict(hard=False, stage=3, quota=10, kills=4, last=False, right="then the elite", mark="dark")),
     ("The stretch cleared, its dare kept: the mark flares once",
      dict(hard=False, stage=2, quota=10, kills=10, last=True, right="cleared", mark="kept")),
-    ("Hard, Stretch 1 starts: the same row in the ember's edge",
+    ("Hard, Stretch 1 starts: the same tab in the ember's edge; Hard's wider mark leaves less room",
      dict(hard=True, stage=1, quota=10, kills=0, last=False, right="then the elite", dare=DARES[0])),
-    ("Stretch 4, the keeper's: its dare",
+    ("Stretch 4, the keeper's: a short dare stays on one row, in the tab's own height",
      dict(hard=False, stage=4, quota=0, kills=0, last=False, right="the Lamplighter", dare=DARES[3])),
 ]
 LINE_NOTES = [
-    "The game has no start card: a run is four stretches under one line. So a stretch's dare unfolds under that line as",
-    "the stretch starts (a second row, the line's own glass), and folds after about 3 s to its mark, in a tab of that",
-    "glass under the stretch's mark. The mark is a hard four-point shape in the kit's ivory, the dare's mark everywhere:",
-    "lit while the dare holds, dark and split once it's broken (no words, no sound), a flare when the stretch is cleared",
-    "with it kept. The longest dare (Stretch 2's) fits in 14. Stand-ins: the words at the line's right, the street,",
-    "Roblox's buttons.",
+    "The game has no start card: a run is four stretches under one line. So a stretch's dare hangs under that line in a",
+    "tab of the line's own glass, under the stretch's mark. As the stretch starts the tab is open to the right with the",
+    "dare's words, and after about 3 s it closes round its mark, which never moves. The line itself never grows: an open",
+    "dare lies over no other piece of the HUD. Its right stops 6 short of the Electricity pill (263 from the line's left",
+    "at the smallest phone), and a dare too long for that breaks at a word into two rows, in the height of the base's",
+    "notice (AR55). The mark is a hard four-point shape in the kit's ivory, the dare's mark everywhere: lit while the",
+    "dare holds, dark and split once it's broken (no words, no sound), a flare when the stretch is cleared with it kept.",
+    "Stand-ins: the words at the line's right, the street, Roblox's buttons.",
 ]
 
 
@@ -721,10 +761,20 @@ def record():
         dare=dict(
             line=dict(
                 note="the run's line as StageController builds it; boxes from the line's glass's top left",
-                unfolded=dict(grows=24, rule=dict(y=46, inset=8, height=1, colour=P["edge"], transparency=0.1),
-                              mark=dict(image="DareMark", origin=[21, 57], scale=14 / MARK_H),
-                              words=dict(x="the stretch's name's left", y=51, size=SMALL, colour=P["text"]),
-                              held="about 3 s from the stretch's start (a seed: TR54's Config), then it folds"),
+                unfolded=dict(
+                    make="the folded tab opened to the right, in the line's own glass, under the line. The line never "
+                         "grows, and the mark stays where it is folded (origin 21, 57, scale 1)",
+                    box=dict(left=8, top=30, foot=dict(one_row=70, two_rows=88), corners=dict(one_row=4, two_rows=6),
+                             right="its widest row's end and 10, and never past the limit"),
+                    limit="6 short of any HUD piece the open dare would lie over: the Electricity pill, 263 from the "
+                          "line's left at the smallest phone. An open dare lies over no other HUD piece, at any phone "
+                          "(research's must-fix, 2026-11-23, 20:07)",
+                    words=dict(x="the stretch's name's left", size=SMALL, colour=P["text"], y=dict(one_row=51, two_rows=[48, 66]),
+                               rows="one when the dare ends 8 inside the limit; else two, broken at the word that leaves "
+                                    "the rows most alike"),
+                    beside="the base's tab (AR55, build/handoff/UI/return/return.json) rides the open dare's foot, its top "
+                           "14 above it as under the line: 26 lower under one row, 44 under two",
+                    held="about 3 s from the stretch's start (a seed: TR54's Config), then it closes to the tab"),
                 folded=dict(tab=dict(box=[8, 30, 26, 40], make="the line's own glass, under it, corners cut 4"),
                             mark=dict(origin=[21, 57], scale=1.0,
                                       images=dict(holds="DareMark", broken="DareMarkDark", kept="DareMarkKept")),
@@ -934,11 +984,17 @@ def main():
     rs.OUT = out
     home_made()
     cut_pieces()
+    for words in DARES + [FALLBACK]:                     # the five dares in the sheet's face, against the smallest phone's room
+        print(f"measure {words!r}: {face_wide(words, SMALL):.0f} wide; rows in 211: {len(broken(words, 211))}, "
+              f"in Hard's 187: {len(broken(words, 187))}")
     common = "at the smallest phone (568 x 320 points)"
     lines = ss.sheet_of(out, "goals_dare_line.png", f"AR53, the dare on the run's line, {common}", LINES, LINE_H,
                         LINE_NOTES, line_cell)
     crops = [crop(lines[0], SPOTS["line"]), crop(lines[1], SPOTS["tab"])]
     del lines
+    if sys.argv[-1] == "line":                           # the dare's line alone: its sheet and goals.json, no image touched
+        (out / "goals.json").write_text(json.dumps(record(), indent=1), encoding="utf-8", newline="\n")
+        return
     cards = ss.sheet_of(out, "goals_dare_card.png", f"AR53, the dare on the run's card, {common}", CARDS, H, CARD_NOTES,
                         card_cell)
     for said_, st in CARDS:

@@ -1,6 +1,7 @@
 {
  "what": "AR55, the return card's look, for TR53: research's pick of 2026-11-23, 19:09 (A's card; B's tab for the run; the notice out of the tab). Every word is research's (docs/asset-requests.md, AR55, 'Research's pick'): this file holds where words sit, never the words.",
  "units": "points at the smallest phone (568 x 320); every box is left, top, width, height; a word's y is its capitals' top; images at 4 pixels a point, edge alpha 0. An image's `origin` is where its lay point sits in it, in points from its top left (times 4 for pixels)",
+ "strict": "the sheets stand the HUD's pieces where a capture has them on screen (build/captures/tr50/fix-line.png) and draw the kit's sizes at one to one. The game draws at 0.85 on that phone (Theme.Scale.Floor), so it has about a sixth more room than the sheets: every fit here is the strict case. Anchor to the pieces (the Electricity pill's foot, the screen's right and foot, the line's foot), not to these screen numbers",
  "sheets": [
   "return_card.png",
   "return_run.png",
@@ -59,18 +60,36 @@
    "picture": {
     "centre": "the well's middle",
     "height": "(pitch - 9) x the picture's grow",
+    "face": {
+     "of": "the Training machine's line: the Voidkin's small portrait's face, no frame",
+     "rect": {
+      "offset": [
+       110,
+       112
+      ],
+      "size": [
+       148,
+       148
+      ],
+      "of": [
+       368,
+       400
+      ]
+     },
+     "side": "pitch - 8: the well inset 2, so its corners meet the well's cuts"
+    },
     "images": {
      "battery": "Battery (build/handoff/UI/hud/colour)",
      "low": "StoneLow (build/handoff/UI/upgrades)",
      "mid": "StoneMid (build/handoff/UI/upgrades)",
-     "training": "PowerChipTraining (build/handoff/UI/hud/colour)",
+     "training": "the Voidkin's own face: the kit's small portrait (Portrait<Name>Small, or PortraitUnknown<Rarity>Small), its face's square",
      "shard": "the shard's small picture, of the shard that broke (build/handoff/UI/shards)"
     },
     "grow": {
      "battery": 1.0,
      "low": 1.15,
      "mid": 1.15,
-     "training": 1.3,
+     "training": 1.0,
      "shard": 1.2
     }
    },
@@ -130,7 +149,7 @@
     "colour": "#C6BDE4",
     "text": "the time left, as Read gives it"
    },
-   "rides": "the line's foot: 24 lower while a dare is unfolded",
+   "rides": "the open dare's foot while a dare is open (build/handoff/UI/goals/goals.json, dare, line, unfolded): its top as far above that foot as above the line's, so 26 lower under one row, 44 under two, in goals.json's points",
    "hard": "the same tab in the Hard line's glass",
    "none": "no shard in the Breaker: no tab"
   },
@@ -165,7 +184,7 @@
     }
    ],
    "right": "6 short of the Electricity pill at this phone",
-   "waits": "for the fold when a dare is unfolded",
+   "waits": "for the dare's close when a dare is open",
    "note": "not the kit's toast: that stays one line"
   },
   "ready": {

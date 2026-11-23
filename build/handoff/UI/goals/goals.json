@@ -11,29 +11,36 @@
   "line": {
    "note": "the run's line as StageController builds it; boxes from the line's glass's top left",
    "unfolded": {
-    "grows": 24,
-    "rule": {
-     "y": 46,
-     "inset": 8,
-     "height": 1,
-     "colour": "#51477A",
-     "transparency": 0.1
+    "make": "the folded tab opened to the right, in the line's own glass, under the line. The line never grows, and the mark stays where it is folded (origin 21, 57, scale 1)",
+    "box": {
+     "left": 8,
+     "top": 30,
+     "foot": {
+      "one_row": 70,
+      "two_rows": 88
+     },
+     "corners": {
+      "one_row": 4,
+      "two_rows": 6
+     },
+     "right": "its widest row's end and 10, and never past the limit"
     },
-    "mark": {
-     "image": "DareMark",
-     "origin": [
-      21,
-      57
-     ],
-     "scale": 0.875
-    },
+    "limit": "6 short of any HUD piece the open dare would lie over: the Electricity pill, 263 from the line's left at the smallest phone. An open dare lies over no other HUD piece, at any phone (research's must-fix, 2026-11-23, 20:07)",
     "words": {
      "x": "the stretch's name's left",
-     "y": 51,
      "size": 14,
-     "colour": "#F1ECFF"
+     "colour": "#F1ECFF",
+     "y": {
+      "one_row": 51,
+      "two_rows": [
+       48,
+       66
+      ]
+     },
+     "rows": "one when the dare ends 8 inside the limit; else two, broken at the word that leaves the rows most alike"
     },
-    "held": "about 3 s from the stretch's start (a seed: TR54's Config), then it folds"
+    "beside": "the base's tab (AR55, build/handoff/UI/return/return.json) rides the open dare's foot, its top 14 above it as under the line: 26 lower under one row, 44 under two",
+    "held": "about 3 s from the stretch's start (a seed: TR54's Config), then it closes to the tab"
    },
    "folded": {
     "tab": {

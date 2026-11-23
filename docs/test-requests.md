@@ -4754,10 +4754,10 @@ Research, 2026-11-23, 14:58, F4 and F6 of `docs/research/design-holes.md`: the d
 - **Order:** after the install backlog and TR52.
 - **The look** is AR55, Modulo's, drawn ahead (research, 18:27).
 
-## TR54. Goals, basic at launch: a dare per stretch, today's three, the Mask Ledger (Faber, after TR52 and AR52)
+## TR54. Goals, basic at launch: a dare per stretch, today's three, and Next (Faber, after TR52 and AR52)
 
-Research, 2026-11-23, 15:24, on the director's yes and "js basic at launch" (`docs/design.md`, "Goals"; `docs/decisions.md`, the row of 15:23). The look is AR53's, Modulo's.
-- **Feel line:** as a stretch starts, its dare unfolds under the run's line and folds to a paper tag that holds while you keep it; on the run's card, "Dare kept" and the stones. Home shows three plain goals that finish themselves while you play. The Ledger fills with masks, and each one tells you a little about who wore it.
+Research, 2026-11-23, 15:24, on the director's yes and "js basic at launch" (`docs/design.md`, "Goals"; `docs/decisions.md`, the row of 15:23). **The Mask Ledger is cut** (the director, 2026-11-23, by 18:38; `docs/decisions.md`): nothing in the goals wears Lantern Row's festival, and no mask goes on the base. The look is AR53's, Modulo's, with its redraw.
+- **Feel line:** as a stretch starts, its dare unfolds under the run's line and folds to a small mark that holds while you keep it. On the run's card: "Dare kept" and the stones. Home shows three plain goals that finish themselves while you play, with the account's next step pinned above them.
 - **The block contains:**
   - **Dares,** one fixed dare per stretch (research, 17:49: the run has four stretches and no start card), checked on the server. Each is paid when its stretch is cleared with it kept, and a later fall takes nothing back. The run's card shows them all, the fall's card too (AR53):
     1. "Finish with your lead above half."
@@ -4766,31 +4766,25 @@ Research, 2026-11-23, 15:24, on the director's yes and "js basic at launch" (`do
     4. "Stand outside every slam." (needs TR44's lead movement)
     Until a dare's piece is in, that stretch's dare is "Finish without your lead falling." Kept: one forge stone of the ground's grade (seed).
   - **Today's three:** one from each list, drawn on the server at 00:00 UTC, banked up to three days (nine at most), each paying one Lantern Row shard.
-    - Fight: "Keep a dare." / "Clear a stretch on Hard." / "Win three Tower floors." / "Knock the Lamplighter's mask loose."
+    - Fight: "Keep a dare." / "Clear a stretch on Hard." / "Win three Tower floors." / "Bring down the Lamplighter."
     - Base: "Let every bay run a full hour." / "Break three shards." / "Collect the Condenser's tray." / "Train a Voidkin for an hour."
     - Roster: "Lead a run with someone new." (a Voidkin not led today) / "Raise a Voidkin a level." / "Forge once."
-  - **The Mask Ledger:** a count per Shade kind, and a line shown at each count (Shades at 10, 100 and 1,000; the keeper at 1, 10 and 100):
-    - **Brawler:** "Round masks sold out first. Everyone wanted to grin that night." / "The grin is painted on. Most of the ones under it were scared." / "By dawn they're home, still grinning, with no idea why."
-    - **Guard:** "Square masks were for the ones who came to watch, not to dance." / "A Guard holds its shield the way they'd hold a shutter in the rain." / "They wake on the curb with sore arms, sure they'd been holding something up."
-    - **Dasher:** "The pointed masks were the runners'. They raced the lantern carts every year." / "The Void keeps what it finds. In a runner, it found the start line." / "They come to on the far side of the street, out of breath, and laugh without knowing why."
-    - **The Lamplighter:** "Someone has to light the lanterns. For forty years, it was them." / "The Void came in through the last lantern they lit." / "They light the row again each evening, and never ask why the last lantern sticks."
-    - **Next:** the account's one next step, with what it opens, the first not done of:
-      1. "Knock the Lamplighter's mask loose. Hard opens on Lantern Row."
-      2. "Raise the base to level 2. A third bay opens, and the Condenser wakes."
-      3. "Knock the Lamplighter's mask loose on Hard. The first time, its chest holds a Rare or better."
-      4. "Raise the base to level 3. A fourth bay opens, and machines can climb to level 30."
-      5. "Climb the Tower to floor 25. Each floor past your record pays a first-time bonus."
-      6. All done: "Drum Court's gate stays shut, for now."
-      Each says only what launch opens (`Config.Base`, `Config.Condenser.Wakes`, `Config.Chests.Keeper`); an update that changes one changes its line.
-  - **The labels** (research, 17:49): the count "knocked loose"; the kinds "The Brawler", "The Guard", "The Dasher", "The Lamplighter"; the banked days "Yesterday", "Two days ago"; a done goal's press "Claim"; the card's chip "Dare kept" with "+N". The Ledger's one way in is the link at the Today list's head. Added at AR53's finish (research, 18:27): "Today", the card's word and the list's head; "Mask Ledger", the page's title and the list's link.
-  - **Content check** on the lines and labels above: PASS (2026-11-23, 17:49). It blocked the last Next line's first wording ("opens in an update": our word, not the world's), and the rewrite above passed.
-- **The rules in pure Luau** (`Rules.Goals`): the draw, the banking, the reset, each goal's check, the Ledger's counts. Logic cases:
+  - **Next,** pinned at the Today list's head, above the goals: the account's one next step, with what it opens, the first not done of:
+    1. "Bring down the Lamplighter. Hard opens on Lantern Row."
+    2. "Raise the base to level 2. A third bay opens, and the Condenser wakes."
+    3. "Bring down the Lamplighter on Hard. The first time, its chest holds a Rare or better."
+    4. "Raise the base to level 3. A fourth bay opens, and machines can climb to level 30."
+    5. "Climb the Tower to floor 25. Each floor past your record pays a first-time bonus."
+    6. All done: "Drum Court's gate stays shut, for now."
+    Each says only what launch opens (`Config.Base`, `Config.Condenser.Wakes`, `Config.Chests.Keeper`). An update that changes one changes its line.
+  - **The labels:** "Today", the card's word and the list's head; "Next"; the banked days "Yesterday" and "Two days ago"; a done goal's press, "Claim"; the card's chip, "Dare kept" with "+N".
+- **The rules in pure Luau** (`Rules.Goals`): the draw, the banking, the reset, and each goal's check. Logic cases:
   - a goal pays once;
   - a repeat or interrupted claim pays nothing more (the op ledger);
   - the bank holds nine at most;
   - the reset is on UTC, whatever the server.
-- **What waits:** the masks on the base, the dares' pools, weekly goals.
-- **Content check:** PASS on every line above (2026-11-23, 15:29). It blocked the Brawler's third line first: an echo of "blood on their hands". Both that line and the Lamplighter's third were rewritten as the check proposed, so the Lamplighter's reads as alive.
+- **What waits:** the dares' pools, weekly goals.
+- **Content check:** PASS on the lines and labels (15:29 and 17:49). "Bring down the Lamplighter", which replaced the masks' wording at 18:38, passed its own check at 18:39.
 - **Checks:** the logic cases; captures of the card, the results and Home on the smallest phone; research's verdict in motion.
 - **Cap:** about 10 hours of build (research's guess; Faber's estimate replaces it).
 - **Order:** after TR52 and AR52's behaviours.

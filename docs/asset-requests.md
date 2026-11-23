@@ -15786,6 +15786,17 @@ Read from the four sheets, the cut and the pictures at twice the phone's pixels,
   - the time's row in the game's face (297 of 320 by the sheet's widths);
   - the Today card's 8-point pips on a phone.
 
+### The director cuts the Mask Ledger: what Modulo redraws (Quaestor, 2026-11-23, 18:39)
+
+The director's words of 18:35, to Modulo, then "Cut it" to research's question (`docs/decisions.md`, the top row): nothing in the goals wears Lantern Row's festival, and no mask goes on the base. "We make an anime game." The pass above stands for everything kept.
+- **Redraw:**
+  1. **The Today list, with Next pinned at its head,** above the goals and the banked days, which scroll under it. "Mask Ledger >" goes. Next shows the step, then what it opens, at 14, at the smallest phone, with all six of TR54's lines.
+  2. **The dare's mark,** in place of the paper tag, in three states (holds, kept, broken). It's a shape from the kit's own make, read at its smallest on the road, with nothing of the festival. It appears on the run's line, on the road of the run's card and the fall's card, and in the "Dare kept" chip.
+- **Dropped from the handoff:** the Ledger's masks (lit and unlit, hung and for the rail), the lantern's pool, and `goals_ledger.png`. `goals.json` and the asset log's row follow.
+- **Kept as passed:** the Today card and Settings' cog, the claim rows, the chip with the Forge's stone, and the cards' layout.
+- **Checks:** the content check on the new images, then research's second look on the two redraws.
+- **Order:** before AR55. AR53 is open again until this lands, and TR54 needs it before TR53 needs AR55.
+
 ## AR54. The yard at Stage III: one plan where every machine fits and reads from the gate (Modulo, before AR53; then Faber)
 
 Research, 2026-11-23, 15:26, from TR51's Studio run and TR37's (`docs/test-requests.md`). It's main map, so it comes first, by the director's order of 00:05. Tier 2, research and Modulo, with Faber's measures.

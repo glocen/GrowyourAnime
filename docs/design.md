@@ -297,10 +297,10 @@ Research's layout for TR2, 2026-11-12. The builder installs it in grey; how it l
 
 ## Goals
 
-**Three layers, each something the player does anyway, made sharper, in the world's own words** [D, 2026-11-23, 15:23, the director's yes to research's design, `docs/research/design-holes.md`, F5]. The bar is the director's: cool, never corny, weird or "AI slop". **Basic at launch** [D, 2026-11-23, 15:24: "quest wont be too advanced tho js basic at launch"]: each layer launches in its plainest form, below, and grows with the updates.
+**Two layers and the next step, each something the player does anyway, made sharper** [D, 2026-11-23, 15:23, the director's yes to research's design, `docs/research/design-holes.md`, F5; the third layer, the Mask Ledger, cut by the director by 18:38]. The bar is the director's: cool, never corny, weird or "AI slop". **Basic at launch** [D, 2026-11-23, 15:24: "quest wont be too advanced tho js basic at launch"]: each layer launches in its plainest form, below, and grows with the updates.
 
 - **A dare on each stretch** of the run (research, 17:49: the run has four stretches and no start card, so "stage" read wrong).
-  - One line that unfolds under the run's line as the stretch starts, then folds to a paper tag (AR53). It's about how the stretch is played, never which Voidkin leads it.
+  - One line that unfolds under the run's line as the stretch starts, then folds to a small mark in the kit's own make (AR53). It's about how the stretch is played, never which Voidkin leads it.
   - Each stretch asks its own question (F2), so its dare does too. At launch, one fixed dare per stretch:
     - Stretch 1, the Brawlers: finish with your lead above half;
     - Stretch 2, the Guards: break a raised shield with your signature;
@@ -315,18 +315,16 @@ Research's layout for TR2, 2026-11-12. The builder installs it in grey; how it l
     - "Lead a run with someone new."
   - They're done in ordinary play, about five minutes past it.
   - They reset at 00:00 UTC and bank up to three days: no streak to lose, and no timer on the HUD.
-- **The Mask Ledger.**
-  - A page per Shade kind (the Brawler, the Guard, the Dasher, the Lamplighter, and each new kind an update brings). Its mask is drawn on the page, unlit until the first one falls.
-  - At 10, 100 and 1,000 falls, a line about the festival-goer under that mask.
-  - After launch, the last line also hangs that mask on the player's base, where visitors see it.
-  - At the top, **Next:** the account's one next step (the Lamplighter on Hard, base level 3, a Tower floor) and what it opens.
+- **Next,** pinned at the Today list's head: the account's one next step (the Lamplighter on Hard, base level 3, a Tower floor) and what it opens.
+- **Nothing in the goals wears a ground's festival** [D, 2026-11-23, by 18:38: "dont make the whole game about lantern drum festival like those mask item to increase base i want to remind you that we make an anime game!", then "Cut it" to research's restatement]. No masks, lanterns or festival lines outside Lantern Row's own fights, and no mask on the base. A ground's look stays in its ground (the hub's word of 2026-11-16).
 - **The words:**
   - no exclamation marks, no "Defeat X", and no "Complete" or "Earn" headers;
   - one concrete detail a line, in a dry voice a little older than the player;
-  - each line passes "would this world say it?".
+  - each line passes "would this world say it?";
+  - no filler that sounds generated: the director called the run's line "then its last foe" "corny ai slop" (2026-11-23, 18:35). It already reads "then the elite" (TR50's fix 4).
   - Research writes them; the content check reads them before they're built.
 - **Rewards** are forge stones and shards only: never Robux, and never anything sold.
-- **Not at launch:** the masks on the base, a pool of dares per stage, weekly goals, a pass, titles.
+- **Not at launch:** a pool of dares per stretch, weekly goals, a pass, titles.
 
 ## What the player holds
 

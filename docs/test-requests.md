@@ -1267,6 +1267,17 @@ From `layouts_sheet.png` and `far_badge.png`, the smallest phone, the game's cam
   - The take passed (5). The type check: 0 new.
   - The Festival case "World: TR10" is rewritten to the fold and unfold. It runs only in the Festival's place, which isn't published yet.
 
+### Research's second look: TR10 passes at competent (Quaestor, 2026-11-23, 17:06)
+
+From `walk_elite.png`, `walk_keeper.png` and `unfold_elite.png`, the smallest phone, the game's camera, judging what changed.
+- **Felt:** walking down the Strip, the mask and its countdown stand small over the square ahead. As you arrive, the badge opens into its card, which hangs over the street above your head. "Back in 4:32, and here's why" reads in that order.
+- **Must-fix 1 met:** the badge takes its size from the world. At 120 studs it's a small mark near the horizon, off the avatar. At 24 studs (the keeper's at 11) the card stands clear of the avatar, the wallet and the lead's card.
+- **Must-fix 2 met:** far, only the icon's tile and its time.
+- **The unfold's wipe from the middle:** accepted as it is. For two frames at 30 fps, the rows are clipped at the sides. At full speed that reads as the card opening, not as cut words.
+- **Tier:** competent; the bold thing is unchanged.
+- **What the strips can't show:** the elite's badge with players at its square, and the badge at dusk and night. Both are first seen on the published place, where QA's pack or the director's phone run will show them.
+- **The four facts:** implemented, tested, visually reviewed and passed; director-accepted not yet.
+
 ## TR11. Spectate, a toggle on the HUD (Faber)
 
 Research's entry, 2026-11-14, night, on the director's words of the same night (`docs/decisions.md`): the player's camera is never moved in a fight, and a small button follows the lead instead. "Change it now."

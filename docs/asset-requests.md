@@ -16358,3 +16358,38 @@ Research, 2026-11-23, 20:07, on the director's word by 20:01, "Tower room now", 
   - the content check before the finish;
   - Blender by `build/locks/blender.lock`, heavy runs in the foreground with the memory guard;
   - research's pick, with fresh eyes.
+
+### Modulo's blockout: three rooms in grey, for research's pick (2026-11-23, 20:38; started 20:21)
+
+**Made and self-reviewed as stills; the takes rendered and encoded, read by their frames, not judged in motion by me. Nothing cut, nothing in the game, nothing uploaded, no fresh eyes yet (the pick's).**
+
+- **The sheet:** `build/scratch/modulo/ar56/block/tower_room.png`: each direction as the player steps in, at a fight's frame, with the camera tilted 8 degrees up, and whole. Every frame is the smallest phone's size; the full frames are `<A|B|C>_<enter|fight|up|whole>.png` beside it, at twice that.
+- **The takes:** `tower_room_A.mp4`, `_B.mp4`, `_C.mp4` in the same folder: the walk in from the entrance to the stand at Roblox's walk speed while the foe comes in its own way, then the fight's frame held 1.5 s. Rendered at 15 a second, shown at 30.
+- **The generator:** `tools/blender/tower_room_block.py` (`see` writes the stills, the take's frames and each direction's `.json`; `movie`; `sheet`). Eevee, about 7 s a run, no lock needed. The sky is the game's painted day (`base_light`), the figures are grey boxes.
+- **The content check:** PASS on the plan (`build/scratch/modulo/ar56/plan.md`) before the first render at 20:31, with conditions the block keeps: C's marks short, separate arcs along their ring, never rays, never twelve; the blades mirror-symmetric about their radius; the dome a plain stepped shell, the openings plain slots; no throne, seat or statue; lights pale, never red, never violet. The pictures get their own check before the finish, as the request says.
+
+**One fact that shapes all three.** At the player's camera the frame's top is 15 degrees over the horizon and its foot 55 under it. Nothing overhead is in a fight's frame: "high" has to be said at the horizon and below it, or by the floor. The tilted-up column on the sheet shows what a player gets only by turning the camera.
+
+**The same in all three:** the fight floor, 48 in radius (the elite's 64 square has a half diagonal of 45.3; the old grey disc is 24); the entrance at one end, the foe's way in opposite; the avatar set down 13 behind the middle and the foe 13 in front (`Config.Tower.Stand` on the old radius); the floor shown is 17.
+
+| | A, the Crown | B, the Well | C, the Gate hall |
+|---|---|---|---|
+| The idea | the tower's open top: no wall, no roof, eight blades leaning out of the rim | an island in a wide shaft of rings, a gap all round, two bridges | a closed domed hall, the sun through its top in one pool, one great gate on the sky |
+| How it says high | cloud heads at the horizon and under it, drifts at the floor's height, a lower spire of the same make in the cloud sea | rings over you and under you; from the bridge the island stands on a pillar going down into bright mist | the sky and cloud heads through the gate and the slots; the pool of sun from far overhead |
+| How it says climbing | the foe comes up floating steps over the far rim | every ring is a floor, ticked like a measure | ten marks round the pool, one lit a floor, a pip a full turn |
+| The floor's number | lit numerals on a slab afloat over the foe's steps; in the fight's frame, near its top | a plate on the wall over the foe's doorway; in the fight's frame | no numeral in the room: the marks; the HUD's alone carries the number |
+| The next foe | over the far rim, up the steps | across the far bridge, from a lit doorway | through the gate, dark against the light |
+| Size | step ring to 60, blades to about 73, steps out to 120; 50 high over the floor | shaft 84 in radius (90 outside); drawn 144 up and 162 down | hall 72 in radius (76 outside), 81 high |
+| The block's count, a copy | 30 parts, 5,652 triangles | 89 parts, 53,676 triangles (48 tick blocks a ring on 17 rings; a finish paints them) | 37 parts, 11,300 triangles |
+| Outside the room | cloud sea, 70 cloud heads, 8 drifts, 3 spires: 257 parts, 19,904 triangles | the mist's disc | cloud sea, heads and drifts: 227 parts, 18,464 triangles |
+
+**My read, at the phone's size.**
+
+- **A** says "high" soonest and in every frame, the fight's included: sky, cloud under the horizon, a lower tower. The blades' shadows cross the floor, which is most of the frame. The number and the foe's way in stand in the fight's frame together. Weak: the light lead against pale cloud reads less than the dark foe does; "climbing" rests on the steps and the number alone; the floor between the shadows is plain.
+- **B** has the strongest first look, the walk over the bridge with the depth on both sides, and says "climbing" best. Weak: from the floor's middle the gap is hidden by the floor's own edge, so a fight's frame is two rings, a doorway and the number, and no depth; it is the palest of the three and shows no sky; it is the heaviest.
+- **C** has the cleanest fight's frame when the camera faces the gate: the foe against the sky, the pool under the fight. Weak: it says "high" least, a bright round hall with sky in its openings; the gate's read needs the camera turned to it; the marks ask the player to learn a count.
+- **My lean: A.** It answers the question from the frame players hold longest. The pick is research's.
+
+**For the game, whichever is picked (Faber's calls, noted so the finish is drawn to them).** Each room's sun is its own here (A's low from the side for the shadows, C's at 80 degrees for the pool): a client's own Lighting while it stands in the room. The cloud sea can be the sky's own lower half, no part; only the drifts and the lower spires are pieces. The numerals are a SurfaceGui's text. Every lit line is the pale light of the block, to be given the base's own colour at the finish; no violet anywhere on the room.
+
+**Open:** research's pick, with fresh eyes. Then the finish as a kit, its content check on the pictures first.

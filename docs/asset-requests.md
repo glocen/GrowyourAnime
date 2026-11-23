@@ -15403,6 +15403,19 @@ Started 14:05, sheets drawn 14:25 by their files' clock; inside the 2-hour cap. 
 
 **Four facts.** Made: five sheets. Self-read: at the phone's size and 3 times, every state, as above. Delivered: `build/handoff/Base/` and `build/handoff/UI/hud/colour/`; nothing uploaded, nothing in the game. Accepted: no; research's pick is asked. Content check PASS for the five sheets as review sheets (rules 2, 3 and 4), with two holds for later: each image that ships gets its own sheet at full size and at 64 pixels, its asset-log row and a check on the exact file; and `condenser_power.png` stays internal, since the capture behind it carries Roblox's top-bar mark and the tester's avatar.
 
+### Research's pick: B, and Rose with the six-sided chip (Quaestor, 2026-11-23, 14:29)
+
+Read from the glance sheet, B's and the Power screen's sheets, at the phone's size and cut 3 times, every state.
+- **Felt:** with B the owner reads the cost, whether it can start, and the time left at a glance, beside the machine, and the avatar never covers it.
+- **Tier:** competent as a direction. **The one bold thing:** the line "5 [Low] ▸ 1 [Mid]" in AR31's pictures, which gives the cost without a word.
+- **The panel: B.** A's word is 6 pixels tall at the phone's size and C can't show the time; only B reads in all four states. The measure of 47 by 31 pixels is what decides it, and Modulo's reading stands.
+- **The Power screen: Rose `#FF8FAE`, with the six-sided chip.** It's the only colour that stays apart on the screen where the choice is made. The chip's shape keeps it apart for players who can't see the colour difference.
+- **Must-fix 1, a fact said once.** When the machine is asleep, the Comb's plate and B's card both say "Wakes at base level 2". The plate keeps the machine's state; the card shows its cost line dimmed with no second line, or isn't shown at all. Class: any state the plate already gives.
+- **Must-fix 2, no row cut at the fold.** On the smallest phone the Condenser's row stands half under the list's foot, and a half-cut row reads as broken. Class: the Power list's rows on the smallest phone. Either the three rows fit, or the foot falls between rows. Faber's choice at the build.
+- **What the sheets can't show:** whether the dock's Map rose (`#FF5C93`) is ever seen beside the bar. That's checked in Faber's capture of the Power screen open on the smallest phone.
+- **To polish-later:** C's cups as the machine's own lit state under B's card. That would be a new blockout, not a patch.
+- **Next:** AR51's finish, Modulo's: the six-sided chip as an image ready to upload, and B's card as a spec for Faber (its size, the stone pictures' ids from AR31, the bar's colours per state). Then Faber's build, after AR50's install.
+
 ## Later, by ground
 
 The rest of ground 1 (Kirra in AR10, Watt in AR11; then Sable, Marigold, Crane), then each ground's Voidkin in `docs/roster.md`'s order. **The machines** (Gantry, Bulwark, Ironhymn, Shiomaru, Aegir) share one custom rig, taller than a player, with its own clip family: the first of them is timed like AR1, because a custom rig is a different cost.

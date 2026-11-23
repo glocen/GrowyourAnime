@@ -4604,6 +4604,23 @@ Research's go at 01:52, as one colour block-in capped at about an hour. A read-o
   4. Back's underline wears the ivory in the kit's soft rest state, not the sheet's crisp line.
 - **Status:** implemented and tested in the main place. Waits on research's pass. Not director-accepted.
 
+### Research's look at the install: competent, two must-fixes (Quaestor, 2026-11-23, 17:54)
+
+From the five stills at the smallest phone, against the sheets' third column and the floor's B.
+- **Felt:**
+  - The Arc panel reads as one evening at the festival: the lantern glows amber in its bed, Normal sits in cool ivory, Hard in ember.
+  - On the Voidkin screen, the fighter stands on pale stone, its element a ring of light round the edge.
+- **Tier:** competent.
+- **The one bold thing:** the lantern's warm pool against the cool ivory panel.
+- **The four differences:**
+  1. The bed's pool, broader and browner: accepted. At phone size it reads as the lantern's light, not mud.
+  2. No halo on the ring: accepted. The crisp ring carries the element, and Faber is right that a stepped halo would read as more rings.
+  3. The Epic's light on the stone: **must-fix 1**, below.
+  4. Back's soft underline: accepted. It's the kit's own rest state, the same on every Back.
+- **Must-fix 1, class "violet on a ground":** a rarity's stage light stops tinting the floor. The stone stays the stone under every rarity, and the light keeps the fighter and the backdrop. Under Marigold's Epic the stone reads lavender today, and the floor is the one neutral the element's ring needs. The way is Faber's: the light's angle or range, or the stone's own colour.
+- **Must-fix 2, class "a control the sheet doesn't have":** the run's card shows "Back" at the top left (`run_card_cover.png`), beside Retry and Home. The sheet draws none. The card hides it, unless Back does something Retry and Home don't; if it does, say what in this record, and research reads it again.
+- **For the second look:** Marigold's floor under Epic, and the card without Back. Two stills are enough.
+
 ## TR51. The base grows: every machine's stages, the landing, the owner's plate and plinth (Faber, after AR49)
 
 Research, 2026-11-23, 01:55 by the clock, on the director's order of 00:05 ("first we work on the main map and systems", `docs/decisions.md`). It's the main map's biggest gap against the north star (pillar 3, "The base is alive"). Today only the generator changes in the world: `WorldService` reads `machines.generatorStages` alone (`src/server/Services/Main/WorldService.luau`, about line 753). Every other stage's art is passed and waits on its install. So this is install work, with no new design.

@@ -16110,3 +16110,25 @@ Made and self-reviewed as stills at the smallest phone. A blockout: nothing cut,
 - **Content check:** PASS on the plan before drawing (`build/scratch/modulo/ar55/plan.md`), on conditions, all kept on the sheets: no mark of a purchase or a boost; "Reveal" shows only the shard's picture; no burst, rays or confetti; the breaking shard's mark clean and hard-edged; the captures stay internal. Research's final words get their own check, and so does any cut before an upload.
 - **The script,** `tools/blender/return_card.py`: one run writes the four sheets.
 - **Limits:** stills only. The HUD's pieces are grey stand-ins at measured places. Widths are the sheet's face, which is wider than the game's. The card's rise is TR53's block.
+
+### Research's pick: A's card, B's tab for the run, the notice out of the tab (Quaestor, 2026-11-23, 19:09)
+
+From the three sheets and the fifteen phones at 64 pixels.
+- **Felt:** A's Slip says what the base did in one glance at the right: the machine's own picture and the gain set large. The yard and its machines stay in view behind it, and the press sits under the right thumb at every count.
+- **Tier:** competent, as a blockout.
+- **The one bold thing:** the gain set large beside the machine's picture ("+12.4 kWh"), the number doing the talking.
+- **The pick:** Modulo's read.
+  - **The card is A.** C covers the yard the feel line wants seen and repeats the Power screen. B's card spans the screen with four changes, and with one it sits far from the eye.
+  - **During a run, B's tab** hangs from the run's line, right of the dare's tab, with the shard's picture and its time. A's pill reads as a third currency. C costs the next step's plate its own message.
+  - **The notice opens out of that tab,** two lines, under the line and clear of the fight's middle. It's not a toast, so the kit's toast stays one line and the sentence stays whole. After it, the tab reads "Ready" until the player is home.
+- **The words** (the stand-ins become these):
+  - the head: "While you were away"; no time away;
+  - the battery: "+12.4 kWh", "stored";
+  - the Condenser: "+6", "Low stones", the grade as the game words it (`BaseController`). A convert's Mid gets its own line: "+1", "Mid stone";
+  - the Training machine: "+2 levels" (or "+1 level") and the Voidkin's name;
+  - the Breaker: "1 shard" (or "2 shards"), "ready";
+  - the press: "Collect", or "Reveal" with a shard ready;
+  - the run's tab: the time left, then "Ready";
+  - the notice: "Your shard broke." / "Its Voidkin waits at home."
+  - Content check: PASS on these words (19:09).
+- **For the finish:** A's card at one, two and four changes and with a Mid line; B's tab breaking, opened and Ready; each at 64 pixels; the cut and its content check.

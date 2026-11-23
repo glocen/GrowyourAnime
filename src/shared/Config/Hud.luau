@@ -169,22 +169,51 @@ return {
 			-- look: the critical only; the plain numbers land whole).
 			Land = true,
 			Gap = 0.25, -- a quarter of a digit between digits: at 0.4, "1 , 2 0 4" read as separate glyphs (AR44's verdict, fix 2)
-			-- Gold drifting to an olive khaki head to foot, with a darker band two thirds down: the reference's critical
-			-- measured row by row (AR44, "The critical's colours, measured", research, 12:48; the director, by 12:47: "make
-			-- it as accurate as possible and allowed"). Top and Foot are its ends.
-			Top = Color3.fromHex("#E7C66A"),
-			Foot = Color3.fromHex("#CFC27A"),
+			-- Polished gold chrome, head to foot: near-white at the top, rich gold down to a hard dark horizon at the middle,
+			-- hot amber below it, then a light lip (AR44, "The critical's shine": take C, research's pick, 2026-11-19, 23:36,
+			-- on the director's "the crit text isnt chromatic shiny right now it look sad and meh"; Modulo's cut,
+			-- build/handoff/UI/hud/critical_shine.json). The stops at 0.49 and 0.5 make the horizon: keep them that close.
+			-- Top and Foot are its ends.
+			Top = Color3.fromHex("#FFFDF0"),
+			Foot = Color3.fromHex("#FFF0B8"),
 			Ramp = ColorSequence.new({
-				ColorSequenceKeypoint.new(0, Color3.fromHex("#E7C66A")),
-				ColorSequenceKeypoint.new(0.12, Color3.fromHex("#EFCA61")),
-				ColorSequenceKeypoint.new(0.3, Color3.fromHex("#ECD072")),
-				ColorSequenceKeypoint.new(0.5, Color3.fromHex("#EBD88C")),
-				ColorSequenceKeypoint.new(0.57, Color3.fromHex("#EAD692")),
-				ColorSequenceKeypoint.new(0.63, Color3.fromHex("#B49E60")),
-				ColorSequenceKeypoint.new(0.7, Color3.fromHex("#C4B06F")),
-				ColorSequenceKeypoint.new(0.82, Color3.fromHex("#CFC27C")),
-				ColorSequenceKeypoint.new(1, Color3.fromHex("#CFC27A")),
+				ColorSequenceKeypoint.new(0, Color3.fromHex("#FFFDF0")),
+				ColorSequenceKeypoint.new(0.15, Color3.fromHex("#FFF2B0")),
+				ColorSequenceKeypoint.new(0.35, Color3.fromHex("#FFD84A")),
+				ColorSequenceKeypoint.new(0.49, Color3.fromHex("#FFB300")),
+				ColorSequenceKeypoint.new(0.5, Color3.fromHex("#7A3A00")),
+				ColorSequenceKeypoint.new(0.58, Color3.fromHex("#B85E00")),
+				ColorSequenceKeypoint.new(0.75, Color3.fromHex("#FF9A1A")),
+				ColorSequenceKeypoint.new(0.92, Color3.fromHex("#FFD36B")),
+				ColorSequenceKeypoint.new(1, Color3.fromHex("#FFF0B8")),
 			}),
+			-- Its shine on the land (take C): three levers, each a copy of the digits with no outline, laid in the plate so
+			-- they pop and rise with it. Read at the number's birth, so a Tune shows on the next critical.
+			Shine = {
+				On = true,
+				-- The chromatic split, an impact's aberration that settles: a cyan copy left and up, a red one right and down,
+				-- behind the digits and over their cast. Each is Points along (authored pixels at the critical's own size,
+				-- grown with a heavier hit's number) and a quarter of that across, from Land to Rest over Seconds, eased
+				-- out; its transparency from LandClear to RestClear with it. At rest a hairline each side by day (4.6:
+				-- 3.4 vanished, 5.8 doubled the 1). The content check's condition: the two always together and symmetric.
+				Split = {
+					Cyan = Color3.fromHex("#3DEBFF"),
+					Red = Color3.fromHex("#FF3D5E"),
+					Land = 7,
+					Rest = 4.6,
+					Across = 0.25,
+					Seconds = 0.2,
+					LandClear = 0.15,
+					RestClear = 0.05,
+				},
+				-- The hit flash: a white copy over the digits, clear from opaque over Seconds, straight.
+				Flash = { Colour = Color3.fromHex("#FFFFFF"), Seconds = 0.0667 },
+				-- The specular glint, once: a white band over the digits, leaning Lean degrees with the italic (its top to
+				-- the right), carried from Reach of the number's width before it to Reach past it, from Start after the land
+				-- over Seconds. Its middle Strength opaque, half that at Half of the width, nothing by twice Half; a thinner
+				-- band Trail behind it, TrailStrength opaque, TrailHalf wide.
+				Glint = { Start = 0.08, Seconds = 0.25, Reach = 0.15, Lean = 20, Strength = 0.95, Half = 0.1, Trail = 0.13, TrailStrength = 0.6, TrailHalf = 0.035 },
+			},
 			Outline = Color3.fromHex("#211306"), -- near-black brown, measured
 			Weight = 2.4, -- the reference's thick dark edge (1.2 read thin and pasted on: the director, 2026-11-19, "that art isnt composited")
 			Italic = true, -- the slant is the face's italic, on or off: about 10 degrees, never another angle

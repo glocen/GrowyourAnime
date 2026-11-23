@@ -10,12 +10,12 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **Modulo's order:** AR54 (the yard at Stage III, main map) before AR53 (the goals' look).
 - **With the director:** answer **item 10 in Faber's session** (the hooks for Scintilla and Sonus: Faber needs your own word there); open two sessions titled **Scintilla** and **Sonus**; open Studio on the main place with Rojo on 34876; `src/shared/Config/Sounds.luau`'s uncommitted change; the store's design.
 
-**Faber (builder).** 2026-11-23, 15:15, on Opus 5.5.
-- **Done:** the Studio run of AR49, TR51 and TR37 (ef86dab: 3,288 passed, 1 failed, TR42's flake; LogicTests 29,155; WorldReport empty), with every capture research asked for. AR30's dock seeds are in, with their stills. **Research's reads asked:** TR51, TR37 in grey, AR49, AR30. Each record says where its captures are.
-- **Tier 2, for research and Modulo:** Stage III's footprints don't fit today's plan. The Fit Prints stay at Stage I (TR51, "The Studio run").
-- **The hooks for Scintilla and Sonus** wait on the director's own word: they grant Studio tools and the group key's uploads (item 10 below).
-- **Next:** AR44's shine, TR10's stills, TR50's Arc palette and Voidkin floor, AR48's states; then AR50's install, AR51, TR52, AR52's behaviours, TR53.
-- **Open, tests:** in the Festival place (item 9), TR50's run cases, the Festival role's suite, TR48's keeper, TR49's Stage 1 playtest and TR10's marker. TintMask on a phone. TR44's phone take waits for the director's go. A suite case leaves the reveal pinned open (Watt, its clock at 1.6 s); found while capturing, not yet traced.
+**Faber (builder).** 2026-11-23, 16:00, on Opus 5.5.
+- **Done:** AR44's shine, built and run (AR44, "Faber's build of C"): the full self-test 3,309 passed, 0 failed; LogicTests 29,155; WorldReport empty. Stills by day and over the dark in `build/captures/ar44/`. **Research's read asked.**
+- **Tier 1 notice, for research:** every outline in the numbers and the cards' digits was drawn at twice the layer's scale. Studio captures showed them 1.5 times their Weight, and the smallest phone 0.85 times. Now authored, so the weights picked from Studio captures want a re-read at phone size.
+- **For research and Modulo:** TR51's plate is part of Gate1's mesh (`base_plan.py`, up 16), so raising it is the gate's piece: Modulo's, or AR54's.
+- **Next:** AR49's stray mark, AR52's Orange in the engine, F7's timing; then TR10's stills, TR50's Arc palette and floor, AR48's states; AR50's install, AR51, TR52; AR52's behaviours, TR54, TR53.
+- **The hooks for Scintilla and Sonus** wait on the director's own word (item 10). **Open, tests:** as before (item 9's Festival cases; TintMask on a phone; TR44's phone take; the pinned reveal).
 
 **Modulo (assets).** 2026-11-23, 15:19, on Fable 5.2. Voidkin work parked until before launch (the director's word, 11:10).
 - **Now:** AR52's masks and block clips delivered (`build/handoff/Shade/`; AR52, "The masks, the block clips and the outlines"): the Guard's square mask with its brow cut into the paper, the Dasher's folded kite with two blades, both on the shipped atlas pack; AR46's Hard maps re-cut; `ShadeGuard` and `ShadeLunge` re-timed to the seeds, with markers. Content check PASS on the design and on the baked files. **Waits: research's pick on the masks at phone size** (`shade_kinds_look.png`).
@@ -133,6 +133,13 @@ For Faber:
 - Tier 2, research, 2026-11-12, on the director's words: weapons belong to a class, in two hands (Main Hand and Off Hand replace Weapon and Shield), a preset holds a pair per class, a weapon drop is for the lead's class; Combat Power made to be watched, its weights fitted by the simulation; each item kind modelled and rendered to its icon (AR6, phase 3) (`docs/design.md`, "Regalia: gear" and "Combat Power"). Faber: the Stats case's `"Weapon"` source becomes `"Main Hand"` when you next touch it. Faber and Modulo: say in your row what you'd change.
 
 ## Entries
+
+### 2026-11-23, 16:00. AR44's critical shine, built (Faber)
+
+- **What:** take C on the critical. The chrome ramp; a cyan and red split that lands at 7 points and settles to a 4.6 hairline; a white flash; one glint across the number. Live in `Config.Hud.Numbers.Critical.Shine`; the copies in `FighterController/Shine.luau`.
+- **Found:** the numbers' and cards' outlines were scaled twice (1.5 times in Studio, 0.85 on the smallest phone). Now authored: a tier 1 notice to research for a re-read of the weights.
+- **Run:** the self-test 3,309 passed, 0 failed; LogicTests 29,155; WorldReport empty. Stills in `build/captures/ar44/`.
+- **For research:** AR44's read, and the weights. **For Modulo:** TR51's plate lives in Gate1's mesh.
 
 ### 2026-11-23, 15:15. The Studio run of AR49, TR51 and TR37; AR30's dock seeds (Faber)
 

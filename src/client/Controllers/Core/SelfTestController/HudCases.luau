@@ -360,7 +360,7 @@ function HudCases.Cases(given: Given): { any }
 					local digits = parts.Target:FindFirstChild("Value", true) :: TextLabel?
 					local stroke = if digits then digits:FindFirstChildOfClass("UIStroke") else nil
 					t.Check("no band behind the digits", parts.Target:FindFirstChild("Band", true) == nil)
-					t.Check("the digits' outline: solid, 2 points", stroke ~= nil and stroke.Transparency == 0 and math.abs(stroke.Thickness - 2 * Layers.Scale()) < 1e-3, if stroke then `{stroke.Thickness} px at {Layers.Scale()}` else "none")
+					t.Check("the digits' outline: solid, 2 points, authored", stroke ~= nil and stroke.Transparency == 0 and math.abs(stroke.Thickness - 2) < 1e-3, if stroke then `{stroke.Thickness} points, grown by the layer's UIScale` else "none")
 					for _, fill in { { Name = "Full", Share = 1 }, { Name = "Half", Share = 0.5 }, { Name = "Low", Share = 0.06 } } do
 						if await(fill.Name) then -- the step lays its fill, then the driver captures it
 							t.Server("FoeHealth", id, fill.Share)

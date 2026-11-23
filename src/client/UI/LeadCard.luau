@@ -25,7 +25,6 @@ local UIKit = require(Shared.Config.UIKit)
 local HudConfig = require(Shared.Config.Hud)
 local Voidkin = require(Shared.Definitions.Voidkin)
 local Theme = require(script.Parent.Theme)
-local Layers = require(script.Parent.Layers)
 local Skin = require(script.Parent.Kit.Skin)
 local Text = require(script.Parent.Kit.Text)
 
@@ -162,14 +161,8 @@ local function digits(health: Frame): TextLabel
 	outline.Color = DIGITS_INK
 	outline.Transparency = 0
 	outline.LineJoinMode = Enum.LineJoinMode.Round
-	outline.Thickness = DIGITS_LINE * Layers.Scale() -- a stroke's width isn't grown by the layer's UIScale
+	outline.Thickness = DIGITS_LINE -- authored: the layer's UIScale grows it (Digits, style)
 	outline.Parent = label
-	local rescaled = Layers.Changed:Connect(function(scale: number)
-		outline.Thickness = DIGITS_LINE * scale
-	end)
-	label.Destroying:Connect(function()
-		rescaled:Disconnect()
-	end)
 	return label
 end
 

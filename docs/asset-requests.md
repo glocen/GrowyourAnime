@@ -14549,6 +14549,42 @@ Research pulled it forward by message (after 20:34), as tier 1: judge it at full
 - **Next:** Faber's build, after TR50, unless the director picks another take.
 - **Research, 23:40:** the condition is met. At 4.6 the fringe reads as a hairline each side at phone size, by day and over the dark, with no second number. C stands for Faber's build.
 
+### Faber's build of C (2026-11-23, 15:47 by the clock)
+
+- **Built as cut,** riding the number's pop, rise and fade:
+  - **The chrome:** `Config.Hud.Numbers.Critical`'s Ramp, Top and Foot from the cut. **The shine:** `Critical.Shine` holds the split, the flash and the glint, each live in Tune.
+  - **`FighterController/Shine.luau`:** copies of the digits with no outline (`Digits`' new `Bare`), in the number's plate.
+    - **The split:** cyan and red, behind the digits and over their cast. The two are always together and symmetric (the content check's condition). They draw in from 7 to 4.6 points in 0.2 s, quad out, and grow with a heavier hit.
+    - **The flash:** white, clear in 4 frames.
+    - **The glint:** white, in a CanvasGroup under one UIGradient. It runs from 0.08 s for 0.25 s, leaning 20° with its trail.
+    - The flash and the glint are destroyed once played.
+- **Two things measured on the way:**
+  1. **Every stroke in `Digits`, and the cards' digits in `LeadCard`, was scaled twice.** A UIStroke grows with its layer's UIScale (a 6 under a UIScale of 2 draws 12), and the code multiplied it by the scale as well.
+     - So every capture judged in Studio (scale 1.5) showed outlines and casts 1.5 times their Weight, and the smallest phone (0.85) showed them 0.85 times. That hid the split under the outline.
+     - Now authored. Against what was judged, Studio shows them at 2/3, and the smallest phone at 1.18 times.
+     - **Tier 1 notice to research:** the numbers' and cards' weights were picked at 1.5 times. A re-read at phone size is owed, and a Weight raised in Config would be tier 2.
+  2. **A UIGradient turns in screen pixels,** with the top to the right for a positive Rotation. Its 0..1 spans 0.93 to 1.12 of the box's width, by the box's shape, always centred. So the glint is one gradient over the whole number: bands laid character by character broke at each character's edge.
+- **Checks:**
+  - The type check: 0 new.
+  - "a critical lands with its shine": 29 passed. It covers the split at land and at rest, symmetric, with its colours and its z order; the flash cleared; and the glint unlit before its Start, at its Strength, crossing left to right, and gone after.
+  - The flurry 38, "stays clear" 7, the target's card 9, the foe card's skull 11. The take: 3 passed, three times. AR45's foe card take, its outline check made authored: 5 passed.
+  - The full self-test: 3,309 passed, 0 failed (58 fps). LogicTests: 29,155 passed. WorldReport: empty.
+- **Captures** in `build/captures/ar44/`, on the take's phone frame (the smallest phone's layout), at land, flash (0.04 s), glint (0.19 s) and rest (0.4 s):
+  - `shine_day_sheet.png`: by day on the yard;
+  - `shine_dark_sheet.png`: over a dark stand-in backdrop, the 4 over the avatar's white arm;
+  - `shine_dark_glint_zoom.png`: the glint, zoomed.
+- **Seen by me:**
+  - The land is white, with the split wide.
+  - At 0.04 s the chrome comes through the flash.
+  - The glint is one light pass over the 2.
+  - At rest a cyan and a red hairline show each side, by day and over the dark, with no second number.
+- **Four facts:**
+  - Implemented.
+  - Tested, as above.
+  - Reviewed by me. Research's pass is to come.
+  - Not director-accepted.
+- **Next:** research's read of the two sheets, and the re-read of the weights.
+
 ## AR45. The foes' cards with their difficulty skulls, and CR's gold tab (Modulo, for research's pick, then Faber)
 
 Research, 2026-11-19, 11:30 by the clock. The director's word of 11:30 (`docs/decisions.md`, the row): the enemy and elite cards redrawn to match the new UI, a difficulty skull by the foe's CR against the lead, the level's text in its skull's colour, and CR's look replaced. The rules are `docs/ui.md`, "The HUD, in the world": the target's card, "Numbers, short or whole" and "CR's look".

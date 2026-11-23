@@ -3873,7 +3873,7 @@ local cases = {
 			local function wears(label: TextLabel?, family: string?, weight: string?): boolean
 				return label ~= nil and label.FontFace.Family == (family or HudConfig.Numbers.Face) and label.FontFace.Weight == (Enum.FontWeight :: any)[weight or "ExtraBold"]
 			end
-			t.Near("its outline grows with the layer", if stroke then stroke.Thickness else 0, plain.Weight * Layers.Scale(), 0.01)
+			t.Near("its outline authored, grown by the layer's UIScale alone", if stroke then stroke.Thickness else 0, plain.Weight, 0.01)
 			t.Check("in the plain numbers' face and weight", wears(c1, plain.Face, plain.Font), if c1 then `{c1.FontFace.Family} {c1.FontFace.Weight.Name}` else "no digit")
 			local pad = if c1 then c1:FindFirstChildOfClass("UIPadding") else nil
 			t.Near("spaced by its gap, in its own digit (a whole pixel)", if pad then pad.PaddingRight.Offset else 0, plain.Gap * (plain.Digit or HudConfig.Numbers.Digit) * (one.Row:GetAttribute("Size") :: number), 0.5)

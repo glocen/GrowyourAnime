@@ -16834,3 +16834,27 @@ Sheet: `build/handoff/Rook/takes/rook_takes.png` (1900 x 2882), and its five par
 - **Stand-ins:** the deck in the fight pictures is drawn (pale plates, a day sky); the camera, the light and the sizes are the game's. The hair is faceted blades, the faces flat slabs.
 - **Not in the repo:** the director's example batches (2026-11-20, `docs/decisions.md`). The bar used is AR11's comparison.
 - **The four facts:** made (a blockout sheet); self-reviewed at full size and at the phone's sizes; delivered for research's pick; not in the game, nothing uploaded.
+
+### The director's word: the make is rejected, Rook is redone (Quaestor, 2026-11-23, 23:53)
+
+- **The director, about 23:45 to 23:52** (`docs/decisions.md`, the top row): "DONT MAKE THOSE MODEL WITH THOSE STYLE", "LOOK AT ANIME VANGUARD ANIME ADVENTURE THEN REDO". The rejection is of the make, and all three takes share it. Nothing of A, B or C carries over.
+- **Research's miss:** AR11's comparison (2026-11-15, "The comparison") had already found how Anime Vanguards makes a unit. AR59 never named that make, and research picked A at competent within it, with fresh eyes given no benchmark.
+- **OBSERVED,** from `build/reference/anime-vanguards/` (`sheet_low.png`, `compare_bodies.png`, `compare_heads.png`, `kokashi-*.webp` and `todays-strongest-*.webp` at full size; Modulo's own read agrees). Anime Adventures: no pictures found yet, so UNVERIFIED.
+  1. **The body:** plain R6 blocks at their own size. The clothes are drawn on the blocks' faces, in two or three tones with soft shade, ink lines, folds, seams, trims and fastenings.
+  2. **The head:** Roblox's round head, smooth. The face is drawn: almond eyes with a coloured iris and a highlight, a heavy upper lash line, thin brows, a tick for the nose, a short mouth, and the fringe's shadow on the brow.
+  3. **The hair:** the one sculpted piece. Dozens of thin tapering locks, smooth-shaded from root to tip, about 1.3 to 1.6 heads wide, rising above the crown.
+  4. **Built pieces:** few and thin (a blade, a headband, a mask, a hat). Nothing is chunkier than the limb it sits on. Weapons are slim and long.
+  5. **Colour:** two or three large clear areas, light against dark.
+- **AR59's takes against them:** garments built as thick volumes, a cube head, slab eyes, faceted blades for hair, a gauntlet up to 1.4 times today's, flat facets in the render.
+- **The redo, DESIGN** (the make is taken; no unit's design, face, outfit or picture is):
+  1. **The make:** the five points above. It's the make for every redesign, from Rook to Watt's finish.
+  2. **The design:** a side-cast archetype of the genre's famous shows, made our own (the director's "basics or our own"). Rook stays Common, Red, a Warrior, and keeps Haymaker's function and Second Wind.
+  3. **The weapon:** the oversized gauntlet goes. His fists are a glove or wraps drawn on the arm, with at most one thin built piece, no thicker than his forearm. Whether `Rook_Piston` stays in the rig, so the clips keep their keys, or is dropped is Modulo's technical call. Haymaker's weight is carried by the clip and the effect, never by size.
+  4. **The takes:** two or three, each with its face, hair and clothes drawn in the make. A rough mesh is read as the style, so none is rough.
+  5. **The render:** smooth shading, in a light close to the game's. No flat facets.
+- **Checks:**
+  1. Each take beside Anime Vanguards units at the same height, internally (never uploaded or published), and at the card's portrait and from the player's camera at the smallest phone's size.
+  2. Fresh eyes given that same Anime Vanguards sheet as its example.
+  3. The content check, with the Fighters test (`docs/decisions.md`, "Fighters").
+  4. Research's pick, then the director's look, then the finish.
+- **Time:** the make kit gets the time it needs, as the make for the whole cast. Rook's takes follow, as a guide 2 to 3 hours.

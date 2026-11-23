@@ -15828,6 +15828,57 @@ From `types_sheet.png`, at phone size, by day and by night, on Normal and Hard: 
 - **For Faber:** nothing new to do but take this file: `ShadeGuard` was never uploaded, so it goes up once, with `ShadeLunge` as it was.
 - Delivered: in the handoff. Accepted in the game: not yet.
 
+### Faber's build: the two behaviours, the packs and the install (Faber, 2026-11-23, 23:58)
+
+- **In the game, as a block:**
+  - **The Guard** (`GuardRaise` in `Definitions.Actions`; clip `ShadeGuard`): its sleeves come up and shut by `Raise` (0.3 s) and hold to `Drop` (2.3 s), then it swings as a Brawler until it's ready again 2.5 s later. While raised, each hit on it lets `Config.Combat.Guard.Keep` (20%) through. A heavy hit or a signature breaks it: the shield drops and the Guard stands stunned for `Guard.Stagger` (1.0 s). The rules are pure Luau: `Rules.Fight.Guarded` and `Breaks`.
+  - **The Dasher** (`DasherLunge`; clip `ShadeLunge`): within 10 studs of its target it folds down, and its line opens on the street at `Line` (0.27 s), its aim fixed there. It holds dead still to `Lunge` (1.0 s), then runs 12 studs down the line in 0.25 s, through whoever stands on it. At `Land` (1.25 s) it hits whoever is on the line (`Rules.Mark.OnLine`), and it lies with its back open to `Close` (2.05 s). Moving the lead works as at the Lamplighter's slam: TR44's switch, rule A in the game.
+  - **My calls, tier 1:**
+    - The Dasher runs on through the lead to the line's end rather than stopping at it, so a hit and a miss end in the same place, and the lunge reads as a commitment.
+    - Its aim stays held from `Line` to its action's end (`aimHeld` in `FightService`), so it lies with its back to whoever it passed and doesn't turn back to face them.
+    - Each is ready `First` seconds after it spawns: the Guard at 0, the Dasher at 1.5. A stretch's pack stands long before its fight, so each opens with its own move.
+  - **The grey stand-ins** (`SlamController`), until Scintilla's looks:
+    - The shield is a pale pane, 3.4 by 3.8 studs, 1.6 ahead, at 0.25 transparency (it was 0.45, too faint under the lanterns). It brightens as a hit glances off and flashes white on a break.
+    - The line is a white strip on the street that fills to its end on the hit.
+  - **The stretches' packs** (`Config.World`, the Row's `Stops`, each with a `With`, spread through its ring by `Rules.Fight.PackDefs`):
+    - stretch 2: four Shades, two Brawlers and two Guards;
+    - stretch 3: two packs of three, each with one Dasher.
+- **Installed under the group** (`docs/asset-log.md`), Modulo's handoff as it stands:
+  - the meshes `Shade_MaskGuard` 127743903192427 and `Shade_MaskDasher` 74976108708708;
+  - the maps `Shade_Color` 139710228211756 and `Shade_Emissive` 122098856371571, with Hard's `HardTint` 88064997894432 and `Emissive_Hard` 117193991278361. These are AR58's bake, the same bytes its content check passed (sha1 in AR58's record);
+  - the clips `ShadeGuard` 110693664240912 and `ShadeLunge` 102847424758672, the first Shade clips up.
+  - The template `src/storage/Shade.rbxm` and `HardLooks.rbxm` were built again from them, with every weld read. In the game both clips load from their ids (2.73 s and 2.30 s long).
+- **Checked:**
+  - The type check: 0 new.
+  - The logic tests: 29,375 passed, 0 failed, with `Cases/Shades.luau` new.
+  - The self-test:
+    - "Shades (AR52)": 40 passed, 0 failed, on the installed assets in the Festival's role.
+    - Before the install, on the same code: "Slam (TR44)" 34/0, "Packs: each stop" 18/0, "Drops: the Shades" 14/0.
+    - "Fight:" 659 passed, 2 failed (185 s, 59 fps). Both failures were mine: I moved the avatar, set the leash to 0 and cleared the debug Shades while the suite ran. Run alone, each passes, 8/0 and 24/0.
+- **Judged in motion on the street** (Festival role, the player's camera):
+  - **Stretch 2, at an even level:** the Guards raise twice each and drop. Glances show small numbers (4, 33, 37) beside full hits (328, 758), and the pack fell in about 9 s.
+  - **Stretch 3:** the line reads clearly on the street, and so do the run through and the back left open.
+  - **The Dasher's hit and miss, as TR44 counts them** (the self-test's case): staying on the line, the lead is hit, and the Dasher runs its 12 studs on through and lies with its back to the lead. Walked off the line, the hit lands on empty stone, and the Dasher still runs 12.
+  - The stills are in `build/captures/ar52/`:
+    - `lineup_*`: a Red Brawler, a Green Guard and an Orange Dasher at the smallest phone, Normal and Hard;
+    - `guard_raise_live_strip.png`;
+    - `dasher_tell_live_*`, and `dasher_tell_hard_day_held_strip.png` with `dasher_tell_hard_day_060.png`: the installed `ShadeLunge` held at 0.55 to 2.0 s on a Hard Dasher by day, facing the camera, nothing in front of it;
+    - `stretch2_guards*`, `stretch3_dasher_line_zoom.png`, `dasher_through_back_open.png`.
+- **Content check on the installed look: PASS** (fresh eyes, from these captures):
+  - 1: on Hard, the coral stays inside the cuts.
+  - 2: the Dasher's collar stays a thin hoop, with no haze in the hollow or down the chest.
+  - 3: in the tell, the open collar faces the camera as a ring around a dark hollow, with the mask hung below it on its string, so it reads as an empty coat bowed forward. The check asked for the held, uncovered take before passing this.
+  - 4: the Guard's sleeves stay against the coat through the raise.
+  - The Hard streaks read as embers. Not seen: the folded hold from low behind.
+- **Known limits:**
+  - B's Recall only works in a keeper's try.
+  - A blow that lands mid-lunge pushes the Dasher off its line.
+  - The hit lands at `Land`, just after the pass.
+  - The elites are still `brawler_elite`: AR57 isn't installed.
+  - The template's Support mask is still the earlier shape, while the atlas carries AR58's veil. No row uses the Support yet.
+- **For research, balance:** at level 5, Rook's Haymaker (842) fells a stretch 2 Guard (829 HP) in one blow, through the raise, so the Guard's question is only asked at an even level.
+- Implemented and tested: as above. Visually reviewed: my stills; research's pass is asked. Director-accepted: not yet.
+
 ## AR53. Goals' look, basic at launch: the dare's line, today's three, the Mask Ledger's page (Modulo, after AR52's clips)
 
 Research, 2026-11-23, 15:24 (`docs/design.md`, "Goals"; the build is TR54, Faber's).

@@ -1405,7 +1405,17 @@ function layStreet(folder: Folder, gateZ: number, stripEnd: number, groundColour
 		local at = CFrame.lookAt(Vector3.new(0, PAVED_TOP, z), Vector3.new(0, PAVED_TOP, z) + Vector3.new(0, 0, 1)) -- facing the way the player comes
 		if stop.Kind == "Pack" then
 			pack += 1
-			Markers.Stamp(spot(street, `Pack {pack}`, at), "Pack", { Pack = pack, Def = stop.Def, Level = stop.Level, Count = stop.Count or 1, Ground = row.Ground, Stage = stop.Stage })
+			local with = stop.With
+			Markers.Stamp(spot(street, `Pack {pack}`, at), "Pack", {
+				Pack = pack,
+				Def = stop.Def,
+				Level = stop.Level,
+				Count = stop.Count or 1,
+				With = if with then with.Def else nil,
+				WithCount = if with then with.Count else nil,
+				Ground = row.Ground,
+				Stage = stop.Stage,
+			})
 		elseif stop.Kind == "Elite" then
 			if stop.Square then
 				under(slab(street, "Square", -squareHalf, squareHalf, z - squareHalf, z + squareHalf, PAVED_TOP + OVERLAY, GREY.Plot))

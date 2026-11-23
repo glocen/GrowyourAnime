@@ -42,7 +42,7 @@ local specs: { [string]: Spec } = {
 	-- A pack's spawn: Count Shades of Def at Level, spread round it. Pack is its number down the street. Type: the outline's
 	-- colour, else the Def's own. Ground: the ground it stands in (Definitions.Grounds), whose Standard shard it drops.
 	-- Stage: the stage of the street it belongs to (Config.Stages, TR43), its elite's too: one elite to a stage of packs.
-	Pack = { Tag = "GA_Pack", Place = "Festival", Attributes = { Pack = "number", Def = "string", Level = "number", Count = "number", Type = "string?", Ground = "string", Stage = "number" }, Ground = true },
+	Pack = { Tag = "GA_Pack", Place = "Festival", Attributes = { Pack = "number", Def = "string", Level = "number", Count = "number", Type = "string?", With = "string?", WithCount = "number?", Ground = "string", Stage = "number" }, Ground = true },
 	Elite = { Tag = "GA_Elite", Place = "Festival", Attributes = { Def = "string", Level = "number", Type = "string?", Ground = "string", Stage = "number" }, Ground = true },
 	-- A stage's gate (TR43): across the street after stage Stage's last stop, shut to a player until they've cleared that
 	-- stage on Normal. A part whose pivot is its middle; the server sets back whoever crosses it shut, the client shows it.

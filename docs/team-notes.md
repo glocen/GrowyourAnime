@@ -10,21 +10,19 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **Modulo's order:** **the make kit, then AR59 redone in it** (AR59, "The redo": R6 blocks with clothes drawn on, a round head with a drawn face, dense smooth hair, nothing built chunkier than its limb) (the director, by 22:52: the redesigns now, one at a time: Rook, Kirra, Pip, Lyric, then Watt's finish). AR57 passed at competent and AR56 is closed; both are Faber's to build, in his order.
 - **With the director:** **TR52's run**, the signature on a tap: Lantern Row once with Auto on, then with Auto off with the ring at each thumb (TR52, research's read); answer **item 10 in Faber's session** (the hooks for Scintilla and Sonus); **item 4**, publish both places and Faber's OK to run the player once; open two sessions titled **Scintilla** and **Sonus**; `src/shared/Config/Sounds.luau`'s uncommitted change; the store's design.
 
-**Faber (builder).** 2026-11-23, 22:08, on Opus 5.5.
-- **AR51 is closed** at competent (research's second look, 721e825). Must-fix 3 and the guide's arrow riding the chip are in (23980a0).
-- **TR52's block is in the game** (TR52, "Faber's block"):
-  - the readout is the button; a full ring left untapped pulses once; Auto sits after the eye.
-  - The measure: the ring and the jump button don't meet (582 px apart). The ring stands at the dynamic stick's top edge, and a touch on it never starts the stick.
-  - Captures are in `build/captures/tr52/`.
-  - **Waits:** the director's Lantern Row run with Auto on and one off, then research's verdict.
-- **Next:** AR52's behaviours, TR54, and TR53 (with TR31 folded in). F7's timing waits on item 4's publish.
-- **The hooks for Scintilla and Sonus** wait on the director's own word (item 10). **Open, tests:** as before.
+**Faber (builder).** 2026-11-23, 23:59, on Opus 5.5.
+- **AR52's behaviours are in the game** (AR52, "Faber's build"). The Guard raises its paper shield, and hits glance off until a heavy hit or a signature breaks it. The Dasher draws its line, lunges 12 studs on through and lies open. Stretch 2's pack has two Guards; stretch 3's packs one Dasher each. The masks, the maps, the Hard maps and both clips are uploaded under the group. **Content check PASS** on the installed look, all four conditions. "Shades (AR52)" 40/0.
+  - **Waits:** research's pass in the game (captures in `build/captures/ar52/`).
+  - **For research, balance:** at level 5, Rook's Haymaker fells a stretch 2 Guard in one blow, through the raise.
+- **TR52** waits on the director's run, then research's verdict.
+- **Next:** TR54, then TR53 (with TR31 folded in); AR57's elites, AR58's Support and AR56 after them. F7's timing waits on item 4's publish.
+- **The hooks for Scintilla and Sonus** wait on the director's own word (item 10).
 
-**Modulo (assets).** 2026-11-23, 23:48, on Fable 5.2.
-- **Now: AR59's blockout, delivered** for research's pick with fresh eyes: three directions for Rook beside today's and a Brawler, `build/handoff/Rook/takes/rook_takes.png` (AR59, "Modulo's blockout"). A, the stray; B, the captain; C, the sleeper. Content check PASS on these bytes. Not in the game, nothing uploaded. AR58 passed and is Faber's to build, like AR57 and AR56.
+**Modulo (assets).** 2026-11-24, 00:01, on Fable 5.2.
+- **Now: AR59's redo.** The director rejected the three takes' make (AR59, "The director's word"). The kit for the new make is written and committed: `tools/blender/anime_make.py` (plain R6 blocks with the clothes drawn on their faces, Roblox's round head with a drawn anime face, hair as one smooth mesh of clumps). A plain stand-in shows it, in `build/scratch/modulo/make/shots/`, and is in front of the director. Not in the game, nothing uploaded.
 - **Waiting on the director:** the yes to my restatement of the word of about 23:35 (the base, the HUD, the skill icons and the spectator view reimagined, with me as art director). Nothing there changes before that yes.
 - **For Faber:** TR53's look is `build/handoff/UI/return/` (the kit builds the slab, the lines and the presses; three images to upload; the Training line takes the kit's small portrait). The dare's open tab is in `goals.json`, "unfolded". My sheets are the strict case: the game has a sixth more room at the smallest phone. TR54's look is the goals' handoff: `DareMark*` where `DareTag*` stood (the origin is now the mark's middle), one `GoalNext` plate that holds the back press, no Ledger; `HomeSettings` gives way to the cog tile and the Today card. The Guard's clip is fixed (AR52, "The Guard's sleeve, fixed at the clip's finish") and goes up once as `ShadeGuard`.
-- **Next:** AR59's finish, after research's pick and the director's look.
+- **Next:** Rook's two or three takes drawn with the kit, beside Anime Vanguards units at the same height, for research's pick.
 - **Still Faber's, each in its entry:** AR49's Home panel, AR44's shine, AR40's install (the atlas never alone), AR48's cues, TR50's dusk palette, the Voidkin screen's floor, AR50's seven pieces.
 
 **Turns.** Studio: Faber's, on the main place, the playtest stopped between pieces (2026-11-23, 15:15); the director's listen on TR42's panel is tomorrow, in the same place. Blender: nobody (Modulo's AR41 strips were stopped at 01:33 on 2026-11-19 by Claude Code when the PC ran low on memory; the director said wait at 01:34). Timing tests: nobody.
@@ -62,6 +60,7 @@ For Faber:
 
 ### Notices
 
+- Tier 1, Faber, 2026-11-23, AR52: the Dasher runs on through the lead to its line's end, keeps its aim to its action's end (its back to whoever it passed), and is first ready 1.5 s after it spawns, the Guard at once. The shield's grey pane stands at 0.25 transparency. Research: say in your row what you'd change.
 - Tier 2, research, 2026-11-23, 20:07, TR53: TR31 folded in. The battery's line shows only a net gain, and reads "Full" with the overflow's Credits when it sold. Faber: say in your row what you'd change.
 - Tier 2, research, 2026-11-23, 17:49, AR53: Home gains a **Today** card (today's three goals, Next at the list's head) in Settings' column, Settings a cog tile over it. A run's dares sit under the run's line (no start card); a dare kept before a fall is paid.
 - Tier 2, research, 2026-11-23, 14:54, AR52: the Guard and the Dasher join Lantern Row's stretches, with mixed outline types (Green, Orange) so no one lead wins the run; Modulo's masks and clips now, Faber's behaviours after the backlog. Faber and Modulo: say in your row what you'd change.
@@ -143,6 +142,15 @@ For Faber:
 - Tier 2, research, 2026-11-12, on the director's words: weapons belong to a class, in two hands (Main Hand and Off Hand replace Weapon and Shield), a preset holds a pair per class, a weapon drop is for the lead's class; Combat Power made to be watched, its weights fitted by the simulation; each item kind modelled and rendered to its icon (AR6, phase 3) (`docs/design.md`, "Regalia: gear" and "Combat Power"). Faber: the Stats case's `"Weapon"` source becomes `"Main Hand"` when you next touch it. Faber and Modulo: say in your row what you'd change.
 
 ## Entries
+
+### 2026-11-23, 23:59. AR52, the Guard and the Dasher, built in the game (Faber)
+
+- **What changed:** the Guard (Green) raises a paper shield from its sleeves for 2 s, and hits glance off it (20% through) until a heavy hit or a signature breaks it, into a 1 s stagger. The Dasher (Orange) folds behind its mask, its line opens on the street, and it lunges 12 studs on through whoever stands there, its back left open. Stretch 2 has two Guards with two Brawlers; stretch 3 a Dasher in each pack. The shield and the line are grey stand-ins until Scintilla's.
+- **Uploaded under the group:** the two masks, the maps with AR58's veil, the Hard maps, `ShadeGuard` and `ShadeLunge`. The ids and the rollback are in `docs/asset-log.md`.
+- **Tested:** type check 0 new; logic 29,375/0; "Shades (AR52)" 40/0 on the installed assets. "Fight:" 659/2, both failures my own interference while it ran; the two pass alone, 8/0 and 24/0. Content check PASS on the installed look.
+- **Where:** AR52, "Faber's build"; `Definitions.Actions` (`GuardRaise`, `DasherLunge`), `Rules.Fight.Guarded`, `Breaks` and `PackDefs`, `Rules.Mark.OnLine`, `SelfTestController/ShadeCases.luau`, `LogicTestService/Cases/Shades.luau`.
+- **Open:** research's pass in the game, and the balance note (Rook at level 5 fells a Guard in one blow).
+- **For:** research, with captures in `build/captures/ar52/`.
 
 ### 2026-11-23, 22:50. AR58, the Support Shade, delivered (Modulo)
 
@@ -228,22 +236,3 @@ For Faber:
 - **TR37:** the Forge and the Condenser, awake and asleep, in `build/captures/tr37/`. **AR49:** stills with Rook and Kirra in `build/captures/ar49/`; its take now sets the lead through the save.
 - **AR30:** Rest 0.4, Open 0.6, Quiet 0.2, with a take and six stills on the pale deck and the dark lane (`build/captures/ar30/`). Nothing blooms past the glass, so the reach stays.
 - **For research:** four reads. **For the director:** the new seats' hooks (item 10).
-
-### 2026-11-23, 03:25. TR37 built, not yet run in Studio (Faber)
-
-- **The Stone Condenser:** its rules in pure Luau (`Rules.Condenser`, `Config.Condenser`), a third machine in `Rules.Power`, worked online and away through `Rules.Breaker`'s steps. CollectTray and Convert are each the server's, in one step. Its save is `Base.Condenser`, filled by Reconcile.
-- **In the world:**
-  - **The Condenser:** AR28's Comb over its sleeping stone, which stands until base level 2. Its cups light by the tray's fill, and the plate reads the tray from the gate. There's a tap to collect and a small grey panel for the convert (5 Low into 1 Mid).
-  - **The Forge:** AR28's Press. Its prompt opens Equipment on Reinforce, and each try strikes its ram: lift, strike, hitstop, settle (`Rules.Forge`, `Config.World.Forge`).
-- **Checks:** type check 0 new; logic offline 29155 passed. The self-test's TR37 case, the world report and the captures wait for the MCP on the right Studio window (item 10).
-- **Where:** TR37, "Faber's build"; the save contract in `docs/engineering-plan.md`. For research: the verdict in the game, once captured.
-
-### 2026-11-23, 02:51. AR49 and TR51 built, not yet run in Studio (Faber)
-- **AR49** (04b45b5): Home's panel in C, three cards on dark glass, the lead live under the Voidkin card's frame; the Voidkin screen takes the Equipment screen's rail. Record: AR49, "Faber's build".
-- **TR51** (38d01a8, ad1372b, e086d9e):
-  - every machine's stages II and III stand by their level;
-  - a rise seen on its owner's plot plays AR37's landing, the swap under its cover, a plot's landings on one instant or 0.34 s apart;
-  - the gate's plate says the owner's name over "Level n", and the plinth turns their showcase Voidkin with its CR.
-  - Record: TR51, "Faber's build".
-- **Checks:** type check 0 new; logic offline 29,036 passed. The in-game cases are written, NOT VERIFIED: the Studio MCP saw no open place.
-- **For research:** the in-game verdicts on AR49 and TR51, after Faber's Studio run and captures. **For the director:** Grow your Anime open in Studio, Rojo connected on 34876, for that run.

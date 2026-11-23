@@ -5,7 +5,14 @@
 -- middle and meets the ring on the Slam, so the fill tells the time; both go on the Slam, and the column takes over.
 -- Nothing else is marked: no screen text, no icon. In mode B (Config.Combat.Keeper.Out.Mode, read live), and only in a
 -- keeper's try, the Recall: a round button by the right thumb, R and the gamepad's ButtonY, its cooldown on its face.
+-- AR52's two tells, in grey until the effects teammate's looks (Config.Combat.Guard.Look, Dasher.Line):
+-- * a Dasher's line (MarkTo set): a lane outlined on the ground from its feet to the line's end, its fill growing from
+--   the Dasher and reaching the end on the hit;
+-- * a Guard's raised shield (GuardUntil): a grey pane before it, that brightens as a hit glances off and flashes white
+--   and goes when one breaks it (GuardBroke).
 --   SlamController.Ring(fighter) -> (ring, disc)?   a fighter's footprint's two adornments, for tests
+--   SlamController.Line(fighter) -> (edges, fill)?  a Dasher's line's outline and fill, for tests
+--   SlamController.Pane(fighter) -> BoxHandleAdornment?   a Guard's raised pane, for tests
 --   SlamController.Recall() -> TextButton?          the Recall button while it shows, for tests
 --   SlamController.Press() -> { [string]: any }     a Recall as a press asks it, the server's answer
 
@@ -36,9 +43,25 @@ local RECALL_SIDE = 84 -- the button's side, authored: past the 52 a touch needs
 local RECALL_INSET = Vector2.new(28, 118) -- from the screen's bottom right corner: by the right thumb, over the dock's line
 local ACTION = "NL_Recall"
 
-type Drawn = { Holder: BasePart, Ring: CylinderHandleAdornment, Disc: CylinderHandleAdornment, Slam: number, Down: number, Radius: number }
+-- A footprint drawn: the keeper's ring and disc, or a line's outline and fill (Length long).
+type Drawn = {
+	Holder: BasePart,
+	Ring: CylinderHandleAdornment?,
+	Disc: CylinderHandleAdornment?,
+	Edges: { BoxHandleAdornment }?,
+	Fill: BoxHandleAdornment?,
+	Length: number,
+	Slam: number,
+	Down: number,
+	Radius: number,
+}
+-- A Guard's pane: its adornment, and when a glance last brightened it (os.clock).
+type Pane = { Box: BoxHandleAdornment, Glanced: number }
 
 local drawn: { [Model]: Drawn } = {}
+local panes: { [Model]: Pane } = {}
+local PANE_GREY = Color3.fromRGB(196, 199, 206)
+local PANE_THICK = 0.12
 local recall: TextButton? = nil
 local recallFace: Frame? = nil
 local recallWord: TextLabel? = nil
@@ -74,14 +97,7 @@ local function erase(model: Model)
 	end
 end
 
-local function draw(model: Model)
-	erase(model)
-	local at, radius, down, slam = model:GetAttribute("MarkAt"), model:GetAttribute("MarkRadius"), model:GetAttribute("MarkDown"), model:GetAttribute("MarkSlam")
-	if typeof(at) ~= "Vector3" or type(radius) ~= "number" or type(down) ~= "number" or type(slam) ~= "number" then
-		return
-	end
-	local look = Combat.Keeper.Mark
-	local y = groundUnder(at :: Vector3)
+local function holderAt(cframe: CFrame): BasePart
 	local holder = Instance.new("Part")
 	holder.Name = "NL_Mark"
 	holder.Anchored = true
@@ -90,8 +106,60 @@ local function draw(model: Model)
 	holder.CanTouch = false
 	holder.Transparency = 1
 	holder.Size = Vector3.new(0.2, 0.2, 0.2)
+	holder.CFrame = cframe
+	return holder
+end
+
+-- A Dasher's line (AR52): the holder at its start, looking down it, so a box's -Z runs along the line.
+local function drawLine(model: Model, at: Vector3, to: Vector3, half: number, down: number, slam: number)
+	local line = Combat.Dasher.Line
+	local y = groundUnder(at)
+	local from = Vector3.new(at.X, y + RING_UP, at.Z)
+	local way = Vector3.new(to.X - at.X, 0, to.Z - at.Z)
+	local length = way.Magnitude
+	if length < 0.1 then
+		return
+	end
+	local holder = holderAt(CFrame.lookAt(from, from + way))
+	local function box(name: string, size: Vector3, offset: CFrame, transparency: number): BoxHandleAdornment
+		local a = Instance.new("BoxHandleAdornment")
+		a.Name = name
+		a.Adornee = holder
+		a.Size = size
+		a.CFrame = offset
+		a.Color3 = Color3.new(1, 1, 1)
+		a.Transparency = transparency
+		a.AlwaysOnTop = false
+		a.ZIndex = 1
+		a.Parent = holder
+		return a
+	end
+	local edge = math.min(line.Edge, half)
+	local edges = {
+		box("Left", Vector3.new(edge, RING_THICK, length), CFrame.new(-half + edge / 2, 0, -length / 2), 0.05),
+		box("Right", Vector3.new(edge, RING_THICK, length), CFrame.new(half - edge / 2, 0, -length / 2), 0.05),
+		box("End", Vector3.new(half * 2, RING_THICK, edge), CFrame.new(0, 0, -length + edge / 2), 0.05),
+	}
+	local fill = box("Fill", Vector3.new(math.max(0.01, half * 2 - edge * 2), RING_THICK, 0.01), CFrame.new(0, 0, -0.005), line.Fill)
+	holder.Parent = workspace
+	drawn[model] = { Holder = holder, Edges = edges, Fill = fill, Length = length, Slam = slam, Down = down, Radius = half }
+end
+
+local function draw(model: Model)
+	erase(model)
+	local at, radius, down, slam = model:GetAttribute("MarkAt"), model:GetAttribute("MarkRadius"), model:GetAttribute("MarkDown"), model:GetAttribute("MarkSlam")
+	if typeof(at) ~= "Vector3" or type(radius) ~= "number" or type(down) ~= "number" or type(slam) ~= "number" then
+		return
+	end
+	local to = model:GetAttribute("MarkTo")
+	if typeof(to) == "Vector3" then
+		drawLine(model, at :: Vector3, to :: Vector3, radius :: number, down :: number, slam :: number)
+		return
+	end
+	local look = Combat.Keeper.Mark
+	local y = groundUnder(at :: Vector3)
 	-- a cylinder adornment's axis is its CFrame's look: turned to stand up, it lies flat on the ground
-	holder.CFrame = CFrame.new((at :: Vector3).X, y + RING_UP, (at :: Vector3).Z) * CFrame.Angles(math.rad(90), 0, 0)
+	local holder = holderAt(CFrame.new((at :: Vector3).X, y + RING_UP, (at :: Vector3).Z) * CFrame.Angles(math.rad(90), 0, 0))
 	local function adorn(name: string, transparency: number): CylinderHandleAdornment
 		local a = Instance.new("CylinderHandleAdornment")
 		a.Name = name
@@ -110,7 +178,63 @@ local function draw(model: Model)
 	local disc = adorn("Disc", look.Fill)
 	disc.Radius = 0.01
 	holder.Parent = workspace
-	drawn[model] = { Holder = holder, Ring = ring, Disc = disc, Slam = slam :: number, Down = down :: number, Radius = radius :: number }
+	drawn[model] = { Holder = holder, Ring = ring, Disc = disc, Length = 0, Slam = slam :: number, Down = down :: number, Radius = radius :: number }
+end
+
+local function paneOff(model: Model)
+	local pane = panes[model]
+	if pane then
+		panes[model] = nil
+		pane.Box:Destroy()
+	end
+end
+
+-- A Guard's shield raised (AR52): its grey pane before its root, while the server's GuardUntil holds.
+local function paneOn(model: Model)
+	local untilTime = model:GetAttribute("GuardUntil")
+	local root = model:FindFirstChild("HumanoidRootPart")
+	if type(untilTime) ~= "number" or now() >= untilTime or root == nil or not root:IsA("BasePart") then
+		paneOff(model)
+		return
+	end
+	if panes[model] then
+		return
+	end
+	local look = Combat.Guard.Look
+	local box = Instance.new("BoxHandleAdornment")
+	box.Name = "NL_GuardPane"
+	box.Adornee = root
+	box.Size = Vector3.new(look.Wide, look.High, PANE_THICK)
+	box.CFrame = CFrame.new(0, look.Up, -look.Ahead)
+	box.Color3 = PANE_GREY
+	box.Transparency = look.Transparency
+	box.AlwaysOnTop = false
+	box.ZIndex = 1
+	box.Parent = root
+	panes[model] = { Box = box, Glanced = -math.huge }
+end
+
+-- Broken open: a white flash where the pane stood, gone in Flash seconds.
+local function paneBreak(model: Model)
+	paneOff(model)
+	local root = model:FindFirstChild("HumanoidRootPart")
+	if root == nil or not root:IsA("BasePart") then
+		return
+	end
+	local look = Combat.Guard.Look
+	local box = Instance.new("BoxHandleAdornment")
+	box.Name = "NL_GuardBreak"
+	box.Adornee = root
+	box.Size = Vector3.new(look.Wide * 1.15, look.High * 1.15, PANE_THICK)
+	box.CFrame = CFrame.new(0, look.Up, -look.Ahead)
+	box.Color3 = Color3.new(1, 1, 1)
+	box.Transparency = 0.05
+	box.AlwaysOnTop = false
+	box.ZIndex = 1
+	box.Parent = root
+	task.delay(look.Flash, function()
+		box:Destroy()
+	end)
 end
 
 local function watch(model: Instance)
@@ -127,8 +251,16 @@ local function watch(model: Instance)
 			erase(model)
 		end
 	end)
+	paneOn(model)
+	model:GetAttributeChangedSignal("GuardUntil"):Connect(function()
+		paneOn(model)
+	end)
+	model:GetAttributeChangedSignal("GuardBroke"):Connect(function()
+		paneBreak(model)
+	end)
 	model.Destroying:Connect(function()
 		erase(model)
+		paneOff(model)
 	end)
 end
 
@@ -139,8 +271,28 @@ local function stepMarks()
 			erase(model) -- gone on the Slam: the column takes over
 			continue
 		end
-		-- the fill tells the time: it meets the ring on the Slam
-		d.Disc.Radius = math.max(0.01, d.Radius * MarkRule.Fill(t, d.Down, d.Slam))
+		-- the fill tells the time: it meets the ring on the Slam, or the line's end on its hit
+		local share = MarkRule.Fill(t, d.Down, d.Slam)
+		local disc, fill = d.Disc, d.Fill
+		if disc then
+			disc.Radius = math.max(0.01, d.Radius * share)
+		elseif fill then
+			local long = math.max(0.01, d.Length * share)
+			fill.Size = Vector3.new(fill.Size.X, RING_THICK, long)
+			fill.CFrame = CFrame.new(0, 0, -long / 2)
+		end
+	end
+	local look = Combat.Guard.Look
+	for model, pane in panes do
+		local untilTime = model:GetAttribute("GuardUntil")
+		if model.Parent == nil or type(untilTime) ~= "number" or t >= untilTime or model:GetAttribute("State") == "Down" then
+			paneOff(model)
+			continue
+		end
+		-- a glance brightens it, easing back over Flash
+		local since = os.clock() - pane.Glanced
+		local lift = math.clamp(1 - since / math.max(look.Flash, 0.01), 0, 1)
+		pane.Box.Transparency = look.Transparency * (1 - 0.7 * lift)
 	end
 end
 
@@ -242,6 +394,16 @@ function SlamController.Ring(model: Model): (CylinderHandleAdornment?, CylinderH
 	return if d then d.Ring else nil, if d then d.Disc else nil
 end
 
+function SlamController.Line(model: Model): ({ BoxHandleAdornment }?, BoxHandleAdornment?)
+	local d = drawn[model]
+	return if d then d.Edges else nil, if d then d.Fill else nil
+end
+
+function SlamController.Pane(model: Model): BoxHandleAdornment?
+	local pane = panes[model]
+	return if pane then pane.Box else nil
+end
+
 function SlamController.Recall(): TextButton?
 	return if recall and recall.Visible then recall else nil
 end
@@ -263,6 +425,12 @@ function SlamController.Start()
 	end
 	RunService.RenderStepped:Connect(stepMarks)
 	RunService.Heartbeat:Connect(stepRecall)
+	Net.Client.On("Hit", function(hit: any)
+		local pane = if type(hit) == "table" and hit.Guarded == "Glanced" then panes[hit.T] else nil
+		if pane then
+			pane.Glanced = os.clock()
+		end
+	end)
 end
 
 return SlamController

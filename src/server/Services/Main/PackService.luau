@@ -55,8 +55,11 @@ local function stand(group: Group)
 	group.BackAt = nil
 	marker:SetAttribute("BackAt", nil)
 	local at = Markers.At(marker)
-	for _, offset in Fight.PackRing(if type(count) == "number" then count else 1, WorldConfig.Row.Spread) do
-		local f = FightService.SpawnEnemy(def, level, at * CFrame.new(offset[1], 0, offset[2]), {
+	local n = if type(count) == "number" then count else 1
+	local with, withCount = marker:GetAttribute("With"), marker:GetAttribute("WithCount")
+	local defs = Fight.PackDefs(def, n, if type(with) == "string" then with else nil, if type(withCount) == "number" then withCount else nil)
+	for index, offset in Fight.PackRing(n, WorldConfig.Row.Spread) do
+		local f = FightService.SpawnEnemy(defs[index], level, at * CFrame.new(offset[1], 0, offset[2]), {
 			Type = if type(type_) == "string" then type_ else nil,
 			Pack = group.Name,
 			Ground = if type(ground) == "string" then ground else nil,

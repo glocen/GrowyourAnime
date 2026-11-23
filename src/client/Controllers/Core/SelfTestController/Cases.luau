@@ -7824,6 +7824,17 @@ for _, case in (require(script.Parent.SignatureCases) :: any).Cases({
 }) do
 	table.insert(cases, case)
 end
+-- AR52's Guard and Dasher in a fight, given theirs, cast as SignatureCases is.
+for _, case in (require(script.Parent.ShadeCases) :: any).Cases({
+	LEAD_SETTLE = LEAD_SETTLE,
+	SHADE_AHEAD = SHADE_AHEAD,
+	SHADE_TOUGHER = SHADE_TOUGHER,
+	SHADE_TIMEOUT = SHADE_TIMEOUT,
+	waitFor = waitFor,
+	myLead = myLead,
+}) do
+	table.insert(cases, case)
+end
 -- AR44's numbers in a fight, given theirs: clear of each other along their rise, and the clip for research.
 for _, case in NumberCases.Cases({ myLead = myLead }) do
 	table.insert(cases, case)

@@ -370,6 +370,17 @@ function Fight.Toward(current: number, want: number, step: number): number
 	return Fight.Wrap(current + math.clamp(Fight.Wrap(want - current), -step, step))
 end
 
+-- Each Shade of a pack, place by place round its ring (AR52: each stretch asks its own question): `with` of them `other`
+-- and the rest `def`, the others spread evenly through the ring so they never stand together. No other: all `def`.
+function Fight.PackDefs(def: string, count: number, other: string?, with: number?): { string }
+	local defs = table.create(count, def)
+	local n = if other then math.clamp(math.floor(with or 0), 0, count) else 0
+	for k = 1, n do
+		defs[math.floor((k - 0.5) * count / n) + 1] = other :: string
+	end
+	return defs
+end
+
 -- Where a pack's `count` Shades stand round its spawn: on one circle, each `spacing` from its neighbours, the first straight
 -- ahead (-Z, the spawn's look). Offsets { X, Z } in studs, in the spawn's own frame. One Shade stands on the spawn.
 function Fight.PackRing(count: number, spacing: number): { { number } }
@@ -393,6 +404,20 @@ function Fight.Stun(seconds: number?, share: number?, at: number, locked: number
 		return 0
 	end
 	return seconds * math.clamp(share or 1, 0, 1)
+end
+
+-- The Guard's paper shield (AR52; Actions.Hit.Guard): the share of a hit it lets through at `at`, its Keep while it's
+-- raised, all of it once it's down or broken. Outside the Reduction bucket and its ceiling: its own cut.
+function Fight.Guarded(guard: { Keep: number, Until: number }?, at: number): number
+	if guard == nil or at >= guard.Until then
+		return 1
+	end
+	return math.clamp(guard.Keep, 0, 1)
+end
+
+-- Whether a hit breaks a raised shield open (AR52): a heavy hit, or any hit of its fighter's signature.
+function Fight.Breaks(heavy: boolean, signature: boolean): boolean
+	return heavy or signature
 end
 
 -- The share less damage a fighter's shield takes off a hit at `at` (Actions.Hit.Shield): its Share until it lapses.

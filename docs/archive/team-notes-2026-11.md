@@ -2,6 +2,25 @@
 
 The oldest entries of `docs/team-notes.md`, moved here as that file passed about 250 lines (`AGENTS.md`, "Team notes"). Newest first.
 
+### 2026-11-23, 03:25. TR37 built, not yet run in Studio (Faber)
+
+- **The Stone Condenser:** its rules in pure Luau (`Rules.Condenser`, `Config.Condenser`), a third machine in `Rules.Power`, worked online and away through `Rules.Breaker`'s steps. CollectTray and Convert are each the server's, in one step. Its save is `Base.Condenser`, filled by Reconcile.
+- **In the world:**
+  - **The Condenser:** AR28's Comb over its sleeping stone, which stands until base level 2. Its cups light by the tray's fill, and the plate reads the tray from the gate. There's a tap to collect and a small grey panel for the convert (5 Low into 1 Mid).
+  - **The Forge:** AR28's Press. Its prompt opens Equipment on Reinforce, and each try strikes its ram: lift, strike, hitstop, settle (`Rules.Forge`, `Config.World.Forge`).
+- **Checks:** type check 0 new; logic offline 29155 passed. The self-test's TR37 case, the world report and the captures wait for the MCP on the right Studio window (item 10).
+- **Where:** TR37, "Faber's build"; the save contract in `docs/engineering-plan.md`. For research: the verdict in the game, once captured.
+
+### 2026-11-23, 02:51. AR49 and TR51 built, not yet run in Studio (Faber)
+- **AR49** (04b45b5): Home's panel in C, three cards on dark glass, the lead live under the Voidkin card's frame; the Voidkin screen takes the Equipment screen's rail. Record: AR49, "Faber's build".
+- **TR51** (38d01a8, ad1372b, e086d9e):
+  - every machine's stages II and III stand by their level;
+  - a rise seen on its owner's plot plays AR37's landing, the swap under its cover, a plot's landings on one instant or 0.34 s apart;
+  - the gate's plate says the owner's name over "Level n", and the plinth turns their showcase Voidkin with its CR.
+  - Record: TR51, "Faber's build".
+- **Checks:** type check 0 new; logic offline 29,036 passed. The in-game cases are written, NOT VERIFIED: the Studio MCP saw no open place.
+- **For research:** the in-game verdicts on AR49 and TR51, after Faber's Studio run and captures. **For the director:** Grow your Anime open in Studio, Rojo connected on 34876, for that run.
+
 ### 2026-11-23, 13:38. AR50: the rings afloat refitted on one axle (Modulo)
 
 - **What:** level 2's ring no longer passes through the generator. Both rings stand on one axle through the plot's heart, leant 9° into the plot: `LevelRing` is the floor's second ring lifted (23 in radius, 14 up), `LevelRingOuter` 27 in radius 10.6 further up it, turning the other way. Level 2's ring now reads from 150 studs and through the gate.

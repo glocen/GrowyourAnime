@@ -138,9 +138,11 @@ function Markers.Report(plots: number, owned: { [number]: boolean }?, place: str
 					problem(`{name}: {where}'s {attribute} is a {typeof(value)}, not a {want}`)
 				end
 			end
-			local def = item:GetAttribute("Def")
-			if s.Attributes.Def and type(def) == "string" and Enemies.ById[def] == nil then
-				problem(`{name}: {where} names no enemy "{def}"`)
+			for _, attribute in { "Def", "With" } do
+				local def = item:GetAttribute(attribute)
+				if s.Attributes[attribute] and type(def) == "string" and Enemies.ById[def] == nil then
+					problem(`{name}: {where}'s {attribute} names no enemy "{def}"`)
+				end
 			end
 			local ground = item:GetAttribute("Ground")
 			if s.Attributes.Ground and type(ground) == "string" and Grounds.ById[ground] == nil then

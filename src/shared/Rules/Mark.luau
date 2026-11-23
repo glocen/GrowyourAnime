@@ -4,6 +4,9 @@
 -- lead out and counts the slams. No Roblox API: its cases run with Studio closed. Flat positions are (x, z) pairs.
 --   Mark.Centre(x, z, lookX, lookZ, ahead, left) -> (x, z)   where it lands: `ahead` along the look, `left` to its left
 --   Mark.Inside(cx, cz, radius, x, z) -> boolean             a centre within the radius: the hit takes it
+--   Mark.OnLine(x0, z0, dx, dz, length, half, x, z) -> boolean  AR52, the Dasher's line: a centre within `half` of the
+--                                                            segment from (x0, z0), `length` along the unit (dx, dz)
+--   Mark.Covers(shape, x, z) -> boolean                      a ring's Inside, or a line's OnLine when it has a Length
 --   Mark.Fill(now, down, slam) -> number                     the disc's share of the ring: 0 when it's put down, 1 on the Slam
 --   Mark.Follows(moved, outside, least) -> boolean           A: the avatar stands `least` or more from where it stood at
 --                                                            the Plant, outside the ring: its lead breaks off
@@ -19,6 +22,9 @@ export type Mode = "Off" | "A" | "B"
 export type Kind = "OnPurpose" | "Accident"
 export type Tally = { Slams: number, Hit: number, Missed: number, OnPurpose: number, Accident: number }
 export type Counts = { [string]: Tally }
+-- A footprint's shape: a ring of Radius round (X, Z); with Length, a line from (X, Z) along the unit (DirX, DirZ), Radius
+-- either side of it.
+export type Shape = { X: number, Z: number, Radius: number, Length: number?, DirX: number?, DirZ: number? }
 
 function Mark.Centre(x: number, z: number, lookX: number, lookZ: number, ahead: number, left: number): (number, number)
 	local length = math.sqrt(lookX * lookX + lookZ * lookZ)
@@ -33,6 +39,21 @@ end
 function Mark.Inside(cx: number, cz: number, radius: number, x: number, z: number): boolean
 	local dx, dz = x - cx, z - cz
 	return dx * dx + dz * dz <= radius * radius
+end
+
+function Mark.OnLine(x0: number, z0: number, dx: number, dz: number, length: number, half: number, x: number, z: number): boolean
+	local px, pz = x - x0, z - z0
+	local along = math.clamp(px * dx + pz * dz, 0, length)
+	local ex, ez = px - dx * along, pz - dz * along
+	return ex * ex + ez * ez <= half * half
+end
+
+function Mark.Covers(shape: Shape, x: number, z: number): boolean
+	local length = shape.Length
+	if length and shape.DirX and shape.DirZ then
+		return Mark.OnLine(shape.X, shape.Z, shape.DirX, shape.DirZ, length, shape.Radius, x, z)
+	end
+	return Mark.Inside(shape.X, shape.Z, shape.Radius, x, z)
 end
 
 function Mark.Fill(now: number, down: number, slam: number): number

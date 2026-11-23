@@ -145,8 +145,11 @@ local function stand(player: Player, run: Run, name: string)
 		return
 	end
 	local at = Markers.At(marker)
-	for _, offset in Fight.PackRing(if type(count) == "number" then count else 1, WorldConfig.Row.Spread) do
-		local f = FightService.SpawnEnemy(def, Stages.Level(level, run.Rule.Difficulty), at * CFrame.new(offset[1], 0, offset[2]), {
+	local n = if type(count) == "number" then count else 1
+	local with, withCount = marker:GetAttribute("With"), marker:GetAttribute("WithCount")
+	local defs = Fight.PackDefs(def, n, if type(with) == "string" then with else nil, if type(withCount) == "number" then withCount else nil)
+	for index, offset in Fight.PackRing(n, WorldConfig.Row.Spread) do
+		local f = FightService.SpawnEnemy(defs[index], Stages.Level(level, run.Rule.Difficulty), at * CFrame.new(offset[1], 0, offset[2]), {
 			Type = if type(type_) == "string" then type_ else nil,
 			Pack = `{name} for {player.UserId}`,
 			Ground = run.Rule.Ground,

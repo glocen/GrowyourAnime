@@ -229,6 +229,19 @@ return {
 		},
 	},
 
+	-- AR52's two Shades (docs/asset-requests.md, AR52; docs/roster.md, "Enemies: Shades"), research's seeds, tuned in play.
+	-- The Guard (Definitions.Actions, GuardRaise): its raised shield lets Keep of each hit through, a cut of its own past the
+	-- Reduction bucket and its ceiling, until it drops on the raise's Drop or a heavy hit or a signature breaks it open,
+	-- Stagger seconds stunned (Rules.Fight.Guarded, Breaks). Its grey stand-in (SlamController): a pane Wide by High studs,
+	-- Ahead of its root, Transparency through, brightening as a hit glances off and easing back over Flash seconds; a
+	-- break flashes white for Flash.
+	Guard = { Keep = 0.2, Stagger = 1.0, Look = { Wide = 3.4, High = 3.8, Ahead = 1.6, Up = 0.4, Transparency = 0.25, Flash = 0.15 } },
+	-- The Dasher (DasherLunge): its line, put down on the lunge's Aim (Line), runs from its feet along its look for its Along
+	-- move's Most and Past more, Half either side; each enemy whose centre is on it at Land is hit (Rules.Mark.OnLine). Its
+	-- grey stand-in, as the keeper's ring: an outline Edge studs wide, a fill of Fill's transparency growing to the line's
+	-- end on Land.
+	Dasher = { Line = { Half = 2, Past = 2, Edge = 0.35, Fill = 0.6 } },
+
 	-- The replay (the ga-action skill): an action on a clean pad, from the player's camera, the numbers live.
 	Replay = {
 		Distance = 0, -- the lead stands this far beyond the dummy; 0 is the action's own spacing, where a lead fights from (Range - Approach)

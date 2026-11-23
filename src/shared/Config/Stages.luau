@@ -8,7 +8,8 @@
 
 local World = require(script.Parent.World)
 
-export type Stop = { Kind: string, Def: string, Level: number, Count: number?, Stage: number, Square: boolean? }
+-- With: a pack's others (AR52), Count of its Count Shades of that Def, spread through its ring (Rules.Fight.PackDefs).
+export type Stop = { Kind: string, Def: string, Level: number, Count: number?, Stage: number, Square: boolean?, With: { Def: string, Count: number }? }
 export type Stage = {
 	Stops: { Stop }, -- Kind: Pack (Count Shades), Elite or Keeper; the last is the one whose fall it needs
 	Quota: number, -- its packs' Shades that must fall to the player; 0 for a keeper's stage

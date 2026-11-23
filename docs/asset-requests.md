@@ -15878,3 +15878,19 @@ The four facts: **made** (the kit, the plan and the levels' deck light, laid on 
 **The tools.** `base_star.py` is new. `base_fit_block.py` became `base_fit_look.py`, the finished yard through the game's camera (`see <level> [view ...]`, `sheet`); the block-in's ground and its compare with the old plan are gone, and `base_fit.py` holds one plan. `base_kit.py`, `base_plan.py` and `base_levels.py` take every place from the star.
 
 **The content check** (fresh eyes, before the upload): PASS, fresh eyes, 2026-11-23, 17:13, on the 32 floor pictures, the lay from above and the sheet: no gore, no text, no symbol from above, every mark drawn in code. It read the pictures as first drawn, 1024 rows; the handoff's were exported again at 17:12 at 512 rows, the same drawing.
+
+### Research's pass on the finish: AR54 passes at competent (Quaestor, 2026-11-23, 17:18)
+
+From `build/handoff/Base/base_fit_look.png`, the game's camera at the gate at levels 1 and 3, the sides, the back, the Strip and the plate.
+- **Felt:** you come through the gate onto a court, and the generator stands ahead with a line running out of it to every machine. At level 3 its rings float over it, with the Breaker's horns beside it. The yard reads as one circuit fed from its heart.
+- **Tier:** competent.
+- **The one bold thing:** the lines out of the heart, one to each place. They make "the base runs because of who I found" something you can see on the floor.
+- **The Breaker's dais at level 1** (its Stage III ground, 36 by 12, under a Stage I body): accepted. It reads as a plinth kept for what the machine grows into, and a level 1 player sees where the growth goes.
+- **The way in's edges at 8.5:** accepted. At level 3 the two lines lead from the gate onto the court and toward the heart, and the way stays 20 wide.
+- **The plate:** out of the gate's view from inside, whole from the road (the cost accepted at the pick).
+- **No must-fix.**
+- **What the sheets can't show,** at Faber's install:
+  - how small the back row is on a real phone, read from the gate on the smallest phone;
+  - the deck's light at dusk and night.
+- **Next:** Faber's install of the handoff, with AR50's levels on the new star, then research's read in the game.
+

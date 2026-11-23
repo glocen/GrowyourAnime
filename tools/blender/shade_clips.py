@@ -7,7 +7,8 @@ blender.exe -b --factory-startup --python tools/blender/shade_clips.py -- <out_d
   arcs (one dot a frame).
 - audit: the export without the review packs.
 - With no clip named, the nine (Shade.clips.json). The elites' own (ELITES: GuardElite, LungeElite) are a set apart:
-  name them to key them, and an export of both writes Shade_Elite.clips.json.
+  name them to key them, and an export of both writes Shade_Elite.clips.json. The Support's own (SUPPORT: Cast) is a
+  third set, with Shade_Support.clips.json.
 - spacing: an elite's clip beside the one it's made from, at the same frames (name both: Guard GuardElite).
 
 Needs shade_model.py's output (shade_model.blend, Shade.recipe.json and the maps) in MODEL. The keying is
@@ -433,6 +434,35 @@ def lunge_elite(t):
     t.key(138, T=HUB["T"], RA=DOWN_R, LA=DOWN_L, H=HUB["H"], crouch=0.0)
 
 
+def cast(t):
+    """It lifts both empty sleeves wide over its mask, the cuffs open to the sky, and the coat stretches up after them
+    as if it were hung from them: a slight thing made as tall and as wide as it can be, so you see who's doing it from
+    across a pack. It holds there, hardly swaying, and then the sleeves drop first and the coat sinks after.
+
+    AR58's seeds: up in 0.4 s (`Cast`, where the heal's or the shield's look opens), held, down in 0.3 s from `Lower`.
+    The hold hardly moves, so the game may stretch or shorten it by the track's speed between the two markers. The
+    sleeves go up at its sides, never along its facing."""
+    def up(side, out, slid=1.0):
+        """A sleeve raised `out` degrees from hanging, at its side, slid off its shoulder as it passes level: an R6 arm
+        turns below its top, so raised past level its top would swing down into the coat. Nobody is in this coat."""
+        return (10, 0, side * out, side * 0.62 * slid, 0.3 * slid, 0.0)
+
+    t.key(0)
+    t.key(6, "gathers", ease="out", T=(11, -6, 0, 0, 0, 0.04), RA=(-6, 0, 10), LA=(-6, 0, -10), H=(-12, 8, 6), crouch=0.1)
+    t.sleeves(14, RA=up(1, 62, 0.45), LA=up(-1, 62, 0.45))  # out wide first: they come up from the sides
+    t.key(19, "the coat goes up", ease="sine", T=(1, -2, 0, 0, 0, -0.06), RA=up(1, 112), LA=up(-1, 112), H=(2, 2, 2), crouch=0.0)
+    t.key(24, "lifted", ease="sine", T=(-1, 0, 0, 0, 0, -0.08), RA=up(1, 146), LA=up(-1, 146), H=(6, 0, 0))
+    t.mark(24, "Cast")
+    t.key(31, ease="sine", T=(0, 0, 0, 0, 0, -0.06), RA=up(1, 138), LA=up(-1, 138), H=(4, 0, 0))
+    t.key(56, "held", ease="sine", T=(1, 2, 1, 0, 0, -0.05), RA=up(1, 140), LA=up(-1, 136), H=(5, -3, -2))
+    t.key(84, "still held", ease="in", T=(0, -1, -1, 0, 0, -0.06), RA=up(1, 138), LA=up(-1, 138), H=(4, 2, 2))
+    t.mark(84, "Lower")
+    t.sleeves(90, RA=up(1, 66, 0.5), LA=up(-1, 66, 0.5))
+    t.key(95, "the sleeves first", ease="sine", T=(5, -6, 0, 0, 0, -0.02), RA=("hang", (0.3, 0.0), (4, 0, 8)), LA=("hang", (0.3, 0.0), (4, 0, -8)),
+          H=(-2, 8, 6), crouch=0.06)
+    t.key(102, "hung again", T=HUB["T"], RA=DOWN_R, LA=DOWN_L, H=HUB["H"], crouch=0.0)
+
+
 def knocked(t, pitch, twist, roll, forward, mask):
     """The coat's key and the mask's for a blow that twists the coat `twist` degrees from where it hangs, its left
     shoulder going back (its right in the mirror, by the same amount: the coat hangs a little turned, so a plain mirror
@@ -486,11 +516,14 @@ CLIPS = {"Idle": (idle, "Brawler", False), "Walk": (walk, "Brawler", False), "At
 # The elites' own (AR57), a set apart: keyed on the nine's timeline they move the nine's numbers in the fifth decimal,
 # so an export keys one set or the other, never both. A sheet may name clips of both.
 ELITES = {"GuardElite": (guard_elite, "Guard", False), "LungeElite": (lunge_elite, "Dasher", False)}
+# The Support's own (AR58), a third set for the same reason.
+SUPPORT = {"Cast": (cast, "Support", False)}
+SETS = ((CLIPS, "Shade.clips.json"), (ELITES, "Shade_Elite.clips.json"), (SUPPORT, "Shade_Support.clips.json"))
 # A clip's Play and Stop fades, in seconds: the game's own where it has them (Shared.Config.Animations.Fades, which
 # Author.SaveBaked checks these against). Guard's and Lunge's are proposed here: the game doesn't play them yet.
 FADES = {"Idle": (0.2, 0.2), "Walk": (0.15, 0.15), "Attack": (0.06, 0.15), "AttackLeft": (0.06, 0.15), "Guard": (0.08, 0.15),
          "Lunge": (0.06, 0.15), "Hit": (0.03, 0.1), "HitLeft": (0.03, 0.1), "Burst": (0.03, 0.05),
-         "GuardElite": (0.08, 0.15), "LungeElite": (0.06, 0.15)}
+         "GuardElite": (0.08, 0.15), "LungeElite": (0.06, 0.15), "Cast": (0.1, 0.15)}
 
 
 # --- outputs --------------------------------------------------------------------------------------------------------
@@ -609,15 +642,14 @@ def main():
     out = bl.out_dir()
     args = sys.argv[sys.argv.index("--") + 2:]
     mode = args[0] if args and args[0] in ("poses", "export", "audit", "collar", "spacing") else "poses"
-    named = [a for a in args if a in CLIPS or a in ELITES]
-    if all(a in CLIPS for a in named):
-        table, facts_file = CLIPS, "Shade.clips.json"
-    elif all(a in ELITES for a in named):
-        table, facts_file = ELITES, "Shade_Elite.clips.json"
-    else:  # both, for a sheet
-        table, facts_file = {**CLIPS, **ELITES}, None
+    named = [a for a in args if any(a in table for table, _ in SETS)]
+    own = [pair for pair in SETS if all(a in pair[0] for a in named)]  # with nothing named, the nine
+    if own:
+        table, facts_file = own[0]
+    else:  # clips of more than one set, for a sheet
+        table, facts_file = {name: clip for table, _ in SETS for name, clip in table.items()}, None
         if mode in ("export", "audit"):
-            raise SystemExit("shade_clips.py: export the nine or the elites' own, never both on one timeline")
+            raise SystemExit("shade_clips.py: export one set (the nine, the elites' own, the Support's), never two on one timeline")
     wanted = named or list(table)
     scene, rig, undress, wear, feet = build()
     takes = {}

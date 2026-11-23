@@ -28,7 +28,8 @@ TYPES = {"Strength": "#EA4B4F", "Endurance": "#F4902A", "Agility": "#3F9DF2", "I
 MASKS = {"Brawler": ("Strength", "round, grinning"), "Guard": ("Endurance", "square, with a brow"),
          "Dasher": ("Agility", "long, pointed"), "Support": ("Intelligence", "a half-mask, veiled")}
 MASK_Y = 0.76  # the mask's back face: it hangs just clear of the collar
-# Set by shade_model.py: the Brawler's cuts and teeth, and the Guard's and the Dasher's pieces (AR52), are built in their
+# Set by shade_model.py: the Brawler's cuts and teeth, and the Guard's, the Dasher's (AR52) and the Support's (AR58)
+# pieces, are built in their
 # shapes as first shipped (AR2), each carrying its move to today's shape, so the atlas packs as it shipped and only
 # the masks' own texels change (pinned, settle).
 SHIPPED_PACK = False
@@ -204,7 +205,7 @@ def turned(points, degrees, about):
 def mask(kind, m):
     """The four masks, each about two studs across: larger than a head, as a festival mask is. Each has its own
     outline, so a behaviour is told by a shape before a colour. All four are pressed or folded paper, with the eyes
-    and the mouth cut through to the light. Only the Support's slips carry ink."""
+    and the mouth cut through to the light. None carries ink (AR47, AR52, AR58)."""
     paper, y = m["Paper"], MASK_Y
     if kind == "Brawler":
         # Cut by hand from one sheet: not quite round, a tab each side for the strings. Two level almond holes, one
@@ -299,18 +300,36 @@ def mask(kind, m):
                 marks.append(pinned(bl.object_from_bmesh("Tucked", bm, m["Ink"]), then))
         return [folded("Mask", y, rise, paper), rim(face, m, 1.07), *(pinned(eye(e, True), eye(e, False)) for e in (-1, 1)),
                 *marks, *ties(m, 5.5, 0.6)]
-    # Support: a wide, low band across the eyes, its ends drawn out sideways like a boat's, and a veil of four paper
-    # slips under it, each cut to a point, two long and two short
-    band = [(-0.8, 4.55), (0.8, 4.55), (1.4, 5.22), (0.7, 5.08), (0, 5.14), (-0.7, 5.08), (-1.4, 5.22)]
+    # Support: a half-mask, a wide low band across the eyes that narrows to a point each side, and a veil of four
+    # paper slips hung under it, each cut to a point, two long and two short, the coat showing between them. Two thin
+    # holes are cut through the band, each falling toward its outer end, and nothing else is on it (AR58). AR2's band
+    # swept up at its ends and its slips met edge to edge: at 64 pixels they read as horns over a beard (the content
+    # check's read), so the ends came down and the slips apart. Its round eyes are the thin holes now, and the ink
+    # line on each slip is gone. Packed as shipped, each piece is the old one moved, the lines tucked inside the band.
+    band = [(-0.8, 4.55), (0.8, 4.55), (1.36, 4.9), (0.7, 5.12), (0, 5.17), (-0.7, 5.12), (-1.36, 4.9)]
+    was = [(-0.8, 4.55), (0.8, 4.55), (1.4, 5.22), (0.7, 5.08), (0, 5.14), (-0.7, 5.08), (-1.4, 5.22)]
     edges = (-0.9, -0.45, 0.0, 0.45, 0.9)
-    slips = []
+    hung = []  # in the shipped order: a slip, its line, the next slip
     for j in range(4):
         a, b, low = edges[j], edges[j + 1], 3.5 if j % 2 else 3.3
-        slip = [(a * 0.86, 4.62), (b * 0.86, 4.62), (b, low + 0.22), ((a + b) / 2, low), (a, low + 0.22)]
-        slips.append(plate("Slip", slip, y + (0.19 if j % 2 else 0.15), 0.03, m["PaperShade"] if j % 2 else paper))
-        slips.append(rs.slab("InkLine", ((a + b) / 2, y + (0.225 if j % 2 else 0.185), low + 0.42), (0.26, 0.012, 0.045), m["Ink"]))
-    return [plate("Mask", band, y, 0.14, paper), rim(band, m, 1.06), *slips,
-            *[cut("Eye", disc(e * 0.44, 4.86, 0.14, 12), m) for e in (-1, 1)], *ties(m, 4.9, 0.9)]
+        c, paper_j, y_j = (a + b) / 2, m["PaperShade"] if j % 2 else paper, y + (0.19 if j % 2 else 0.15)
+        slip = plate("Slip", [(c - 0.14, 4.62), (c + 0.14, 4.62), (c + 0.155, low + 0.2), (c, low), (c - 0.155, low + 0.2)], y_j, 0.03, paper_j)
+        if not SHIPPED_PACK:
+            hung.append(slip)
+            continue
+        hung.append(pinned(slip, plate("Slip", [(a * 0.86, 4.62), (b * 0.86, 4.62), (b, low + 0.22), (c, low), (a, low + 0.22)], y_j, 0.03, paper_j)))
+        hung.append(pinned(rs.slab("Tucked", (c, y + 0.07, 4.84), (0.2, 0.02, 0.04), m["Ink"]),
+                           rs.slab("InkLine", (c, y + (0.225 if j % 2 else 0.185), low + 0.42), (0.26, 0.012, 0.045), m["Ink"])))
+
+    def eye(e, now):  # today's thin hole, or as shipped: a round one, 12 points either way, round the same way
+        if now:
+            return cut("Eye", turned(almond(e * 0.46, 4.85, 0.3, 0.1, n=6), -e * 13, (e * 0.46, 4.85)), m)
+        return cut("Eye", disc(e * 0.44, 4.86, 0.14, 12), m)
+
+    if not SHIPPED_PACK:
+        return [plate("Mask", band, y, 0.14, paper), rim(band, m, 1.06), *hung, eye(-1, True), eye(1, True), *ties(m, 4.9, 0.9)]
+    return [pinned(plate("Mask", band, y, 0.14, paper), plate("Mask", was, y, 0.14, paper)), pinned(rim(band, m, 1.06), rim(was, m, 1.06)),
+            *hung, *(pinned(eye(e, True), eye(e, False)) for e in (-1, 1)), *ties(m, 4.9, 0.9)]
 
 
 def build(scene, kind, m):

@@ -1,0 +1,27 @@
+{
+  "Fps": 60,
+  "Clips": {
+    "Cast": {
+      "File": "Shade_Cast.json",
+      "Name": "ShadeCast",
+      "Fades": [
+        0.1,
+        0.15
+      ],
+      "Frames": 103,
+      "Seconds": 1.7,
+      "Loop": false,
+      "Markers": [
+        [
+          24,
+          "Cast"
+        ],
+        [
+          84,
+          "Lower"
+        ]
+      ],
+      "ShownIn": "Support"
+    }
+  }
+}

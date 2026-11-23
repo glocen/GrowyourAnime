@@ -16696,3 +16696,56 @@ Research, 2026-11-23, 22:26, on the director's pick by 22:26 (`docs/decisions.md
 - **Checks:** the content check on the mask and the veil; research's read of the sheet; then Faber's build.
 - **Cap:** the look in 2 hours, the clip in 1 hour. It's an ordinary piece, so it closes at competent.
 - **Order:** Modulo's next, now.
+
+### Modulo's finish: the Support's mask, its look and its cast (2026-11-23, 22:50; started 22:27)
+
+- **Where:** `build/handoff/Shade/`.
+  - The mask: `Shade_MaskSupport.json` (308 triangles), in the place of AR2's shape; `Shade.recipe.json` (its centre, its size 2.883 by 1.886 by 1.8, its top at 5.19).
+  - The maps, baked and cut again for it: `Shade_Color.png`, `Shade_Emissive.png`, and in `hard/` `Shade_Color_HardRed.png`, `Shade_Color_HardTint.png`, `Shade_Emissive_Hard.png`. `Shade_Roughness.png` and the other eight meshes are byte for byte as delivered.
+  - The clip: `clips/Shade_Cast.json` as `ShadeCast`, its facts in `clips/Shade_Support.clips.json`, and `clips/poses_Cast.png`.
+  - The sheets: `shade_support_look.png`, `shade_support_design.png`, and `shade_model_sheet.png` drawn again.
+  - The scripts, in `tools/blender/`: `shade_sheet.py` (the Support's mask), `shade_kinds.py` (`support`, the design sheet), `shade_clips.py` (`cast`, a set of its own), `shade_support.py` (new, the look).
+- **The mask,** in AR52's make: paper, cut through to the light, no ink.
+  - A flat band over the upper face, low and wide, narrowing to a point each side. Two thin holes are cut through it, each falling toward its outer end.
+  - Under it hang four narrow pointed slips of paper, set apart so the coat shows between them, two in the paper's shade and a hair forward.
+  - It's the lowest of the four masks and has no peak. AR2's ink lines are gone: packed as shipped, they're tucked inside the band's paper, 0.06 studs from either face and at least 0.23 inside its outline (measured on the delivered mesh, 32 points).
+- **The atlas keeps its pack** (`SHIPPED_PACK`): each new piece is an old one moved, so only the Support's texels change. Measured against the last commit, texel by texel:
+  - `Shade_Color.png`: 18,782 texels differ on the Support's islands; past them 6 (in a gutter, on no mesh's face, 5 steps at most) and 12 by one step.
+  - `Shade_Emissive.png`: 8,133 on its islands; the same 6 past them.
+  - the Hard colour maps: 17,296 on its islands, none past them. `Shade_Emissive_Hard.png`: 3,806, and the same 6.
+- **The look:** the Shade at 0.9 in the stretch's Orange, on Normal and on Hard (AR46's cut: the eyes go red, the slips stay paper).
+  - The sheet has the four kinds in a row at a pack's distance (14 studs past the avatar) at the smallest phone (450 pixels high) and four times; a pack with the Support casting at its back; the Support near in Faber's street capture, hung and casting; and 64 pixels a body from three headings, on dark and on day.
+  - At the back of the pack on that phone it stands about 50 pixels to its mask's top, its mask about 26 wide, and its raised sleeves span about 64.
+  - The row and the pack stand on the paving's flat colour, said on the sheet, as AR57's row does.
+- **The cast,** one block clip, 103 frames, 1.7 s, not looped, fades 0.1 in and 0.15 out:
+  - it gathers for 6 frames (the mask dips, the sleeves in), then both sleeves go up wide at its sides and the coat rises after them: up at 0.4 s, the marker `Cast` (frame 24);
+  - it holds for 1.0 s with a small drift; the marker `Lower` is at 1.4 s (frame 84);
+  - the sleeves fall first and the coat settles after: down in 0.3 s.
+  - A raised sleeve slides 0.62 out and 0.3 up off its shoulder: an R6 arm turns below its top, so raised past level its top would swing into the coat.
+  - Audit PASS: arm through body 0.002 (the line is 0.05), legs cross 0.006, leg out of hip 0.001, under the floor 0.000, salute held 0.000 s, nod 6.0 degrees.
+- **What I see wrong:**
+  - From the player's camera the band foreshortens, so at a pack's distance the mask reads as a pale band with two glints over four prongs: a fringed mask first, and a mask with long teeth or a comb second. "Veiled" is the weaker read at that size. The lever is the slips: more of them and shorter, or wider with less coat between them. That's a new bake of the same islands.
+  - Idle, it's told from the Dasher by its mask and its size only: both are Orange. The raised sleeves are what say who casts.
+  - From behind, the mask is a low brim over the collar and the slips are hidden. There, the size and the cast say it.
+  - The held pose is the same both sides and nearly still, so it's stiff. The slips are part of the mask's one mesh and don't swing.
+  - I judged the clip from frames, not in motion.
+- **Content check:** the design, PASS for the bake at about 22:31, with three conditions; the baked mask and the clip, PASS at about 22:49: the three are met. What binds:
+  1. The slips stay paper: never the glow or a red tint, on any stretch or elite.
+  2. The shape stays low and split: no peak over the crown, the veil never one unbroken sheet.
+  3. The mesh and the clip byte for byte. Their sha1:
+     - `Shade_MaskSupport.json`: `1873abd75a234fd27ef013e00518fe5308064b9b`
+     - `clips/Shade_Cast.json`: `4cb54e41e523d2a9b2c48c70b6e4a27a1523b3ad`. A second export gave the same bytes.
+  4. The maps: the check opened four of the five at full size (not `Shade_Color_HardRed.png`) and found an abstract atlas. It didn't judge AR46's streaks again. Their sha1:
+     - `Shade_Color.png`: `9d973de70cb10fe0e29764056129ddce79eaf99a`
+     - `Shade_Emissive.png`: `8fc6c138b0e0a1baf72374544a0bcfb0a780f942`
+     - `hard/Shade_Color_HardRed.png`: `7e7c11326ecf2a29820c058508561da21264711a`
+     - `hard/Shade_Color_HardTint.png`: `bc37a0d9e8e7ad5c6bde059c24298f7b2341cfca`
+     - `hard/Shade_Emissive_Hard.png`: `616ba0c74b671a41fc9e886f93749164f54b9274`
+  5. Its read at a pack's distance (a mask with long teeth, as a second read) is left to research; no rule is touched. It's paper with no dome, nose or jaw.
+- **For Faber,** at the build:
+  - `tools/studio/Models/Shade.luau` holds the earlier shape's id for `Shade_MaskSupport`: the new mesh goes up under the group, and with it the two maps and the Hard three (the other meshes and the roughness map stand);
+  - one animation, `ShadeCast`, under the group. `Cast` is where the effect starts, `Lower` where the sleeves come down. Between them the pose barely moves, so a longer or shorter cast is the track's speed between the two markers;
+  - the scale's seed is 0.9, and the outline is the stretch's Orange;
+  - the Support's elite waits; the recipe's `elite` seat for it moved a hair with the new mask, and nothing uses it yet.
+- **The four facts.** Made: yes. Self-reviewed: yes (the sheets, the measures, the audit). Delivered: to the handoff. In the game: no, and nothing is uploaded. Research's read is asked. The director has the look sheet and hasn't spoken.
+- **Time:** 22:27 to 22:50, of a 2 hour cap for the look and an hour for the clip: the mask baked at 22:34, the Hard maps at 22:36, the clip's audit and the sheet at 22:41, the check at about 22:49.

@@ -1,10 +1,11 @@
 """AR52, the Guard and the Dasher beside the Brawler: the masks' design, then their look in the street.
 
-  blender -b --factory-startup --python tools/blender/shade_kinds.py -- <abs out> design|normal|hard|look
+  blender -b --factory-startup --python tools/blender/shade_kinds.py -- <abs out> design|support|normal|hard|look
 
 - `design` writes <out>/shade_kinds_design.png from shade_sheet.py's blockout (Workbench, no GPU turn): each mask from
   the front and as the player's camera sees it, its outline alone, and the three at 64 pixels over dusk, day and paper.
-  For the content check before the bake.
+  For the content check before the bake. `support` writes the same with AR58's Support as a fourth, into
+  <out>/shade_support_design.png; its look in the street is shade_support.py's.
 - `normal` and `hard` render the baked model (shade_model.py's, in shade_clips.MODEL) on its rig in the game's Idle, at
   the game's glow, each kind in its stretch's colour (Config.Shades.Tint: the Brawler Red, the Guard Green, the Dasher
   Orange), where hard_ember.py's near and side Shades stand, into <out>/layers. `hard` wears AR46's cut as
@@ -29,13 +30,16 @@ KINDS = (("Brawler", "Strength", "Red", "round, grinning"), ("Guard", "Technique
          ("Dasher", "Endurance", "Orange", "long, pointed"))
 
 
-def design(out):
+SUPPORT = ("Support", "Endurance", "Orange", "a half-mask, veiled")
+
+
+def design(out, KINDS=KINDS, title="AR52: the Guard and the Dasher, beside the Brawler", file="shade_kinds_design.png"):
     ss.OUT = out
     shots = {kind: ss.take(kind, colour, "hung", {"front": ss.BUST, "player": ss.PLAYER}) for kind, colour, _, _ in KINDS}
-    W, H = 1500, 900
+    W, H = 30 + 490 * len(KINDS), 900
     page = rs.canvas(W, H, ss.PAPER)
     ink, soft = "#1E1B22", "#6A655E"
-    text = [(30, 22, 30, "AR52: the Guard and the Dasher, beside the Brawler", ink),
+    text = [(30, 22, 30, title, ink),
             (30, 62, 17, "Paper masks, cut through to the light, no ink. The blockout's picture: the glow is drawn on, not rendered.", soft)]
     y = 100
     for i, (kind, _, name, words) in enumerate(KINDS):
@@ -46,20 +50,22 @@ def design(out):
         text += [(x + 328, y + 6, 22, kind, ink), (x + 328, y + 36, 14, words, soft), (x + 328, y + 58, 14, f"here {name}", soft)]
     y = 450
     text.append((30, y - 24, 16, "as the player's camera sees it", soft))
-    rs.fill(page, 30, y, 1440, 300, ss.NIGHT)
-    rs.fill(page, 750, y, 720, 300, ss.DAY)
+    wide = (W - 60) // 2
+    rs.fill(page, 30, y, 2 * wide, 300, ss.NIGHT)
+    rs.fill(page, 30 + wide, y, wide, 300, ss.DAY)
     for half in range(2):
         for i, (kind, _, _, _) in enumerate(KINDS):
-            rs.stand(page, rs.shrink(shots[kind]["player"], 0.36), 40 + half * 720 + i * 235, y + 296, 230)
+            rs.stand(page, rs.shrink(shots[kind]["player"], 0.36), 40 + half * wide + i * (wide - 15) // len(KINDS), y + 296, 230)
     y = 790
     text.append((30, y - 24, 16, "at 64 pixels: dusk, day, the outline", soft))
+    band = 8 + 104 * len(KINDS)
     for r, (ground, dark) in enumerate(((ss.NIGHT, False), (ss.DAY, False), (ss.PAPER, True))):
-        rs.fill(page, 30 + r * 330, y, 320, 80, ground)
+        rs.fill(page, 30 + r * (band + 10), y, band, 80, ground)
         for c, (kind, _, _, _) in enumerate(KINDS):
             shot = rs.shrink(shots[kind]["player"], 64 / 500)
-            rs.stand(page, ss.solid(shot) if dark else shot, 40 + r * 330 + c * 104, y + 76, 100)
+            rs.stand(page, ss.solid(shot) if dark else shot, 40 + r * (band + 10) + c * 104, y + 76, 100)
     rs.paste(page, rs.text_layer(W, H, text), 0, 0)
-    rs.save(page, out / "shade_kinds_design.png")
+    rs.save(page, out / file)
     print("; ".join(f"{kind} {shots[kind]['tris']} triangles with its body" for kind, *_ in KINDS))
 
 
@@ -218,7 +224,10 @@ def main():
     out = bl.out_dir()
     rs.OUT = out
     mode = sys.argv[sys.argv.index("--") + 2]
-    runs = {"design": design, "normal": normal_run, "hard": hard_run, "look": look_run}
+    runs = {"design": design, "normal": normal_run, "hard": hard_run, "look": look_run,
+            # AR58: the Support's mask beside the three, for the content check before the bake
+            "support": lambda out: design(out, (*KINDS, SUPPORT), "AR58: the Support, beside the Brawler, the Guard and the Dasher",
+                                          "shade_support_design.png")}
     if mode in runs:
         runs[mode](out)
     else:

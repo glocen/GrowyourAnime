@@ -1,0 +1,228 @@
+{
+ "what": "AR55, the return card's look, for TR53: research's pick of 2026-11-23, 19:09 (A's card; B's tab for the run; the notice out of the tab). Every word is research's (docs/asset-requests.md, AR55, 'Research's pick'): this file holds where words sit, never the words.",
+ "units": "points at the smallest phone (568 x 320); every box is left, top, width, height; a word's y is its capitals' top; images at 4 pixels a point, edge alpha 0. An image's `origin` is where its lay point sits in it, in points from its top left (times 4 for pixels)",
+ "sheets": [
+  "return_card.png",
+  "return_run.png",
+  "return_cut.png"
+ ],
+ "card": {
+  "note": "the kit builds it: Panel in the System palette, a line a change, one Button. Boxes from the screen's top left unless said",
+  "slab": {
+   "left": 372.0,
+   "right": 560.0,
+   "foot": 314.0,
+   "height": "78 + lines x pitch",
+   "pitch": {
+    "up_to_four": 26.0,
+    "five": 21.0
+   },
+   "corners": "8 and 2.4, as the system windows",
+   "palette": "Config.UIKit, System",
+   "stands": "under the Electricity pill (its foot at 128): 186 points to the card's foot; the card is 182 tall with four lines, 183 with five. The dock, the pills and the lead's card stay; the next step's plate waits while the card is up"
+  },
+  "head": {
+   "x": 10,
+   "y": 7,
+   "size": 14,
+   "colour": "#D9E8E2",
+   "frame": "from the slab's top left"
+  },
+  "lines": {
+   "frame": "from the slab's top left; line k's top is 26 + k x pitch",
+   "order": [
+    "battery",
+    "low",
+    "mid",
+    "training",
+    "shard"
+   ],
+   "rule": {
+    "y": 0,
+    "inset": 8,
+    "height": 1,
+    "colour": "#A9DCD4",
+    "transparency": 0.78
+   },
+   "seat": {
+    "images": [
+     "ReturnSeat",
+     "ReturnSeatLight"
+    ],
+    "origin": [
+     9,
+     2
+    ],
+    "scale": "(pitch - 4) / 22",
+    "light": "ReturnSeatLight tinted the line's colour"
+   },
+   "picture": {
+    "centre": "the well's middle",
+    "height": "(pitch - 9) x the picture's grow",
+    "images": {
+     "battery": "Battery (build/handoff/UI/hud/colour)",
+     "low": "StoneLow (build/handoff/UI/upgrades)",
+     "mid": "StoneMid (build/handoff/UI/upgrades)",
+     "training": "PowerChipTraining (build/handoff/UI/hud/colour)",
+     "shard": "the shard's small picture, of the shard that broke (build/handoff/UI/shards)"
+    },
+    "grow": {
+     "battery": 1.0,
+     "low": 1.15,
+     "mid": 1.15,
+     "training": 1.3,
+     "shard": 1.2
+    }
+   },
+   "colours": {
+    "battery": "#FFE266",
+    "low": "#FF8FAE",
+    "mid": "#FF8FAE",
+    "training": "#4FD1FF",
+    "shard": "#E6ECF7"
+   },
+   "gain": {
+    "x": "9 + (pitch - 4) + 7",
+    "y": "the line's middle",
+    "size": 17,
+    "bold": true,
+    "colour": "#FFF6E2"
+   },
+   "word": {
+    "right": "11 from the slab's right",
+    "y": "the line's middle",
+    "size": 14,
+    "colour": "#D9E8E2",
+    "align": "RIGHT"
+   },
+   "widest": "the battery's: ten characters as Read.Kwh writes a gain under 100 ('+12.40 kWh') beside 'stored'; the slab's 188 holds it in the sheet's face"
+  },
+  "press": {
+   "box": "inset 8 from the slab's sides, its top 50 over the slab's foot, 44 tall",
+   "collect": "the kit's Primary button",
+   "reveal": "the kit's Ready button, when a shard is among the lines",
+   "size": 17
+  }
+ },
+ "run": {
+  "note": "boxes from the run's line's glass's top left, as AR53's dare (build/handoff/UI/goals/goals.json)",
+  "tab": {
+   "box": [
+    40.0,
+    30.0,
+    72.0,
+    40.0
+   ],
+   "make": "the line's own glass, under it, corners cut 4: the dare's tab's twin, 6 to its right; its place holds when the dare's tab is absent",
+   "width": "14 + 16 + 6 + its words + 8, never under 72",
+   "picture": {
+    "image": "the shard's small picture, of the shard that broke (build/handoff/UI/shards)",
+    "centre": [
+     54,
+     57
+    ],
+    "height": 19.2
+   },
+   "words": {
+    "right": "8 from the tab's right",
+    "y": 51.12,
+    "size": 14,
+    "colour": "#C6BDE4",
+    "text": "the time left, as Read gives it"
+   },
+   "rides": "the line's foot: 24 lower while a dare is unfolded",
+   "hard": "the same tab in the Hard line's glass",
+   "none": "no shard in the Breaker: no tab"
+  },
+  "notice": {
+   "box": [
+    40.0,
+    30.0,
+    183.0,
+    58.0
+   ],
+   "make": "the same glass, corners cut 6, opened to the right from the tab",
+   "picture": {
+    "centre": [
+     51,
+     64
+    ],
+    "height": 24.0
+   },
+   "lines": [
+    {
+     "x": 62,
+     "y": 48,
+     "size": 14,
+     "bold": true,
+     "colour": "#F1ECFF"
+    },
+    {
+     "x": 62,
+     "y": 66,
+     "size": 14,
+     "colour": "#C6BDE4"
+    }
+   ],
+   "right": "6 short of the Electricity pill at this phone",
+   "waits": "for the fold when a dare is unfolded",
+   "note": "not the kit's toast: that stays one line"
+  },
+  "ready": {
+   "glow": {
+    "image": "ReturnGlow",
+    "origin": [
+     54,
+     57
+    ],
+    "tint": "#E6ECF7"
+   },
+   "words": {
+    "colour": "#F1ECFF",
+    "bold": true
+   },
+   "until": "the player is home"
+  }
+ },
+ "images": {
+  "ReturnSeat": {
+   "file": "images/ReturnSeat.png",
+   "pixels": [
+    120,
+    120
+   ],
+   "origin": [
+    4.0,
+    4.0
+   ],
+   "use": "a line's well, under its picture"
+  },
+  "ReturnSeatLight": {
+   "file": "images/ReturnSeatLight.png",
+   "pixels": [
+    120,
+    120
+   ],
+   "origin": [
+    4.0,
+    4.0
+   ],
+   "tint": "the line's machine's colour",
+   "use": "over the well, under the picture: the machine's light"
+  },
+  "ReturnGlow": {
+   "file": "images/ReturnGlow.png",
+   "pixels": [
+    144,
+    144
+   ],
+   "origin": [
+    18.0,
+    18.0
+   ],
+   "tint": "the Breaker's silver",
+   "use": "behind the shard's picture in the run's tab once it reads Ready"
+  }
+ },
+ "motion": "nothing moves here beyond what the kit does. The card's rise, a line's count, the tab's opening and its fold back to Ready are TR53's block, and research reads them in motion there"
+}

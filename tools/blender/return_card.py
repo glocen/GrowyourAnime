@@ -1,28 +1,39 @@
-"""AR55, the return card's look, the blockout (docs/asset-requests.md, AR55; docs/test-requests.md, TR53): what the base
-made while the player was away, three directions for research's pick, at the smallest phone (568 x 320 points, two
-pixels a point). Each direction is drawn five times: the card with one line, with all four, and with a shard alone; the
-base's state beside the run's line in the Festival; and the notice as the shard breaks.
+"""AR55, the return card's look, the finish (docs/asset-requests.md, AR55; docs/test-requests.md, TR53): what the base
+made while the player was away, on research's pick of 2026-11-23, 19:09, at the smallest phone (568 x 320 points, two
+pixels a point).
 
-    A, the Slip     a narrow slab under the pills, a line a change, the press at its foot under the right thumb. During
-                    a run: a third pill under Electricity. The notice: a toast under it.
-    B, the Sill     a low slab across the screen's foot, a cell a change, the press at its right end; the yard whole
-                    above it. During a run: a tab hung from the run's line. The notice: the tab opens out.
-    C, the Board    a slab in the middle in the Power screen's rows, a gauge a change. During a run: the next
-                    step's plate, in the slab's teal. The notice: that plate, grown.
+    the card        A, the Slip: a narrow system slab at the right under the pills, a line a change (the machine's own
+                    picture in a small well lit in the machine's colour, the gain large, one soft word), the press across
+                    its foot under the right thumb: "Collect", or "Reveal" with a shard ready. It grows up from its foot
+                    with each line; the yard and the dock stay in view.
+    during a run    a tab hung from the run's line, right of the dare's tab (AR53), in the line's own glass: the shard's
+                    picture and its time left. As the shard breaks the tab opens into the notice, two lines, under the
+                    line and clear of the fight's middle. After it the tab reads "Ready" until the player is home.
 
-All in the system slab's make (Config.UIKit, System): the base speaking, not a reward. The content check's conditions on
-the plan (2026-11-23) are kept: nothing sold or sped up on any piece; "Reveal" shows the shard's own picture and
-promises nothing; no burst, rays or confetti; the breaking's mark is the shard's picture.
+The game's kit builds nearly all of it (Config.UIKit, System: the slab, the rows, the Primary and Ready presses; the
+run's line's glass). The cut is the three images the kit lacks: a line's well, its light, and the Ready tab's glow. The
+pictures are the game's own, already made. The words are research's (AR55, "Research's pick"). The blockout's three
+directions are in git (ec6c82a).
 
-A block-in: the pictures are the game's own (the Power screen's battery and chips, the forge stone, the Lantern Row
-shard), the yard is Faber's capture of TR51, the Festival's street and the HUD's other pieces are stand-ins, the words
-are stand-ins but the three the request gives, and the text is Blender's face.
+The content check's conditions on the plan are kept: nothing sold or sped up on any piece; "Reveal" promises nothing;
+no burst, rays or confetti; the breaking's mark is the shard's own picture.
 
     blender -b --factory-startup --python tools/blender/return_card.py -- <abs out>
+    blender -b --factory-startup --python tools/blender/return_card.py -- <abs build/handoff/UI/return> cut
 
-Writes return_card_A.png, _B.png, _C.png, and return_card_small.png (every phone at 64 pixels high).
+Writes:
+    return_card.png         the card on the yard: one, two and four changes, four and a Mid line, a shard alone, singulars
+    return_run.png          the run's tab: breaking, under an unfolded dare, opened into the notice, Ready, a long time
+    return_small.png        every phone at 64 pixels high
+    return_pictures.png     for the content check: the card and the tab's states at twice the phone's pixels
+    return_new.png          for the content check: the cut's files on the slab's teal, the page's dark and white
+With `cut`, in place of the last three:
+    images/*.png            the cut
+    return.json             where everything lies, and what the game's kit builds
+    return_cut.png          every image over the page's dark
 """
 import gc
+import json
 import sys
 from pathlib import Path
 
@@ -35,32 +46,42 @@ import ui_sheet as ui  # noqa: E402
 import upgrade_pages as up  # noqa: E402
 import stage_screen as ss  # noqa: E402
 import stage_seam as sm  # noqa: E402
+import goals_look as gl  # noqa: E402
 
 W, H = ss.W, ss.H
 SMALL, TITLE = ss.SMALL, ss.TITLE
 P = sm.P
 UI = up.REPO / "build" / "handoff" / "UI"
 YARD = up.REPO / "build" / "captures" / "tr51" / "phone_stage3_court.png"
-# Config.UIKit, System: the deep teal slab in a sand edge, ivory ink; Main, the one main action's sand plate in ink
+# Config.UIKit, System: the deep teal slab in a sand edge, ivory ink; Primary, the one main action's sand plate in ink
 SYS = dict(panel=("#34606C", "#2A4E5A"), edge="#E2CFA4", facet="#A9DCD4", glint="#F2FFF9", text="#FFF6E2", soft="#D9E8E2",
-           faint="#A9C0BC", channel="#0E1D23", row="#3C6A76", main=("#F0E2C4", "#DCCBA6"), ready=("#FFE29A", "#F2C766"),
-           ink="#1E3238")
+           channel="#0E1D23", well="#21414A", main=("#F0E2C4", "#DCCBA6"), ready=("#FFE29A", "#F2C766"), ink="#1E3238")
 POWER, ROSE, CYAN, SILVER, CREDITS = ui.CHARGE, "#FF8FAE", "#4FD1FF", "#E6ECF7", "#40DCC6"
-HEAD, AWAY = "While you were away", "3 h 12 min"
+HEAD = "While you were away"
 NOTICE = ("Your shard broke.", "Its Voidkin waits at home.")
-LEFT = "12:40"
-# A change: its picture (and how large it's drawn against its box), the gain, what it is, its machine, its light
+# A line: its picture (and how large it's drawn against its box), the gain, its soft word, its machine's colour
 GAINS = {
-    "battery": dict(pic=UI / "hud" / "colour" / "images" / "Battery.png", grow=1.0, gain="+12.4 kWh", what="stored",
-                    name="Battery", colour=POWER),
-    "stones": dict(pic=UI / "upgrades" / "images" / "StoneLow.png", grow=1.05, gain="+6", what="Low stones",
-                   name="Stone Condenser", colour=ROSE),
-    "training": dict(pic=UI / "hud" / "colour" / "images" / "PowerChipTraining.png", grow=1.4, gain="+2 levels", what="Rook",
-                     name="Training machine", colour=CYAN),
-    "shard": dict(pic=UI / "shards" / "shard_standard_small.png", grow=1.15, gain="1 shard", what="ready",
-                  name="Void Breaker", colour=SILVER),
+    "battery": dict(pic=UI / "hud" / "colour" / "images" / "Battery.png", grow=1.0, gain="+12.40 kWh", what="stored",
+                    colour=POWER, image="Battery (build/handoff/UI/hud/colour)"),
+    "low": dict(pic=UI / "upgrades" / "images" / "StoneLow.png", grow=1.15, gain="+6", what="Low stones", colour=ROSE,
+                image="StoneLow (build/handoff/UI/upgrades)"),
+    "mid": dict(pic=UI / "upgrades" / "images" / "StoneMid.png", grow=1.15, gain="+1", what="Mid stone", colour=ROSE,
+                image="StoneMid (build/handoff/UI/upgrades)"),
+    "training": dict(pic=UI / "hud" / "colour" / "images" / "PowerChipTraining.png", grow=1.3, gain="+2 levels", what="Rook",
+                     colour=CYAN, image="PowerChipTraining (build/handoff/UI/hud/colour)"),
+    "shard": dict(pic=UI / "shards" / "shard_standard_small.png", grow=1.2, gain="1 shard", what="ready", colour=SILVER,
+                  image="the shard's small picture, of the shard that broke (build/handoff/UI/shards)"),
 }
-ALL = ("battery", "stones", "training", "shard")
+ORDER = ("battery", "low", "mid", "training", "shard")
+X0, X1, FOOT = 372.0, 560.0, 314.0     # the slab: its sides and its foot, from the screen's top left. 188 wide: the
+                                       # battery's line is ten characters as Read.Kwh writes it ("+12.40 kWh")
+PITCH, TIGHT = 26.0, 21.0              # a line's height: up to four lines, and with five (186 lie under the pills)
+SEAT = 22.0                            # the well, as cut; the game scales it to the line (pitch - 4)
+LINE = (163, 448, 62)                  # the run's line as the game lays it on this phone (build/captures/tr50/line.png)
+DARE_TAB = (8, 30, 34, 70)             # AR53's tab, from the line's glass's top left
+TAB = (40, 30, 112, 70)                # the base's tab beside it
+OPEN = (40, 30, 223, 88)               # opened into the notice: its right 6 short of the Electricity pill
+SPOTS = {}
 _px = {}
 
 
@@ -69,22 +90,53 @@ def wide(text, size, bold=False):
 
 
 def picture(t, key, cx, cy, size, alpha=1.0):
-    """A change's picture, `size` points across, its middle at (cx, cy)."""
+    """A line's picture, `size` points high, its middle at (cx, cy)."""
     g = GAINS[key]
-    if key == "stones":                                  # the Forge's stone in the kit's Common item cell, as AR53 drew it
-        up.cell(t, cx - size / 2, cy - size / 2, size, "Common", g["pic"])
-        return
     if key not in _px:
         _px[key] = rs.load(g["pic"])
     s = size * g["grow"]
     im = rs.shrink(_px[key], s * ui.K / _px[key].shape[0])
     im[..., 3] *= alpha
-    t.image(im, cx - s / 2, cy - s / 2)
+    t.image(im, cx - im.shape[1] / ui.K / 2, cy - s / 2)
 
 
-# --- the system slab's parts --------------------------------------------------------------------------------------------
+# --- the cut's three images ---------------------------------------------------------------------------------------------
+
+def seat_shape(t):
+    return t.poly(ui.cut_box(0, 0, SEAT, SEAT, 4, 1, 4, 1))
+
+
+def seat(t):
+    """A line's well, its top left at 0: the slab's channel falling to its well, a shade under its upper lip, a facet rim."""
+    d = seat_shape(t)
+    t.paint(d, t.ramp(SYS["channel"], SYS["well"], t.y / SEAT))
+    t.paint(d, "#04090B", 0.4 * np.exp(-np.maximum(t.y, 0) / 3.0))
+    t.line(d, 1.0, SYS["facet"], 0.45)
+
+
+def seat_light(t):
+    """The light in a well, white: the game tints it the line's machine's colour."""
+    d = seat_shape(t)
+    t.paint(d + 1.0, "#FFFFFF", 0.6 * np.exp(-(((t.x - SEAT / 2) / 8.0) ** 2 + ((t.y - SEAT * 0.62) / 7.0) ** 2)))
+
+
+def soft_glow(t):
+    """The Ready tab's glow behind the shard's picture, white, its middle the origin: the game tints it."""
+    t.paint(np.full_like(t.x, -1.0), "#FFFFFF", 0.6 * np.exp(-(t.x ** 2 + t.y ** 2) / 49.0))
+
+
+def cut_pieces():
+    gl.piece("ReturnSeat", (-4, -4, SEAT + 4, SEAT + 4), seat, use="a line's well, under its picture")
+    gl.piece("ReturnSeatLight", (-4, -4, SEAT + 4, SEAT + 4), seat_light, tint="the line's machine's colour",
+             use="over the well, under the picture: the machine's light")
+    gl.piece("ReturnGlow", (-18, -18, 18, 18), soft_glow, tint="the Breaker's silver",
+             use="behind the shard's picture in the run's tab once it reads Ready")
+
+
+# --- the card -----------------------------------------------------------------------------------------------------------
 
 def slab(t, x0, y0, x1, y1, cut=8.0, alpha=0.95):
+    """The kit's system panel, as Panel builds it."""
     pts = lambda dy: ui.cut_box(x0, y0 + dy, x1, y1 + dy, cut, cut * 0.3, cut, cut * 0.3)  # noqa: E731
     t.glow(t.poly(pts(3)), 8.0, "#04090B", 0.5)
     d = t.poly(pts(0))
@@ -95,7 +147,7 @@ def slab(t, x0, y0, x1, y1, cut=8.0, alpha=0.95):
 
 
 def press(t, x0, y0, x1, y1, word):
-    """The card's one press: the main action's sand plate in ink; "Reveal" on the slab's Ready gold."""
+    """The card's one press, the kit's: Primary's sand plate in ink for "Collect"; the slab's Ready gold for "Reveal"."""
     fill = SYS["ready"] if word == "Reveal" else SYS["main"]
     d = t.poly(ui.cut_box(x0, y0, x1, y1, 6, 2, 6, 2))
     t.glow(d, 5.0, fill[0], 0.32 if word == "Reveal" else 0.16)
@@ -104,112 +156,39 @@ def press(t, x0, y0, x1, y1, word):
     t.text((x0 + x1) / 2, (y0 + y1) / 2 - TITLE * 0.42, TITLE, word, SYS["ink"], "CENTER", bold=0.45)
 
 
-def word_of(keys):
-    return "Reveal" if "shard" in keys else "Collect"
+def pitch_of(n):
+    return PITCH if n <= 4 else TIGHT
 
 
-def bar(t, x, y, w, spans):
-    """A gauge's bed with its lit spans: (from, to, colour, how solid), shares of its length."""
-    d = t.poly(ui.cut_box(x, y, x + w, y + 7, 2, 0, 2, 0))
-    t.paint(d, SYS["channel"])
-    for a, b, colour, solid in spans:
-        lit = np.maximum.reduce([d + 1.0, (x + 1 + (w - 2) * a) - t.x, t.x - (x + 1 + (w - 2) * b)])
-        if solid >= 1:
-            t.glow(lit, 3.0, colour, 0.35)
-        t.paint(lit, colour, solid)
+def card_top(n):
+    return FOOT - (78 + n * pitch_of(n))
 
 
-def gauge(t, key, x, y, w):
-    """C's gauge of a change, from its machine's screen: what there was, dim, and what came, lit."""
-    colour = GAINS[key]["colour"]
-    if key == "battery":                                 # 19 of 60 kWh before, 31.4 now
-        bar(t, x, y, w, [(0, 19 / 60, colour, 0.4), (19 / 60, 31.4 / 60, colour, 1.0)])
-    elif key == "stones":                                # the tray's twelve cups: 2 lay there, 6 came
-        for k in range(12):
-            cx = x + 5 + k * (w - 10) / 11
-            d = t.poly([(cx + 4.2 * np.cos(np.radians(a)), y + 3.5 + 4.2 * np.sin(np.radians(a))) for a in range(0, 360, 60)])
-            t.paint(d, SYS["channel"])
-            if k < 8:
-                if k >= 2:
-                    t.glow(d, 2.5, colour, 0.3)
-                t.paint(d + 1.0, colour, 0.4 if k < 2 else 1.0)
-    elif key == "training":                              # level 7 to 9: two whole steps, then a little of the next
-        for k, (solid, share) in enumerate(((1.0, 1.0), (1.0, 1.0), (0.4, 0.3))):
-            x0 = x + k * (w + 4) / 3
-            bar(t, x0, y, (w - 8) / 3, [(0, share, colour, solid)])
-    else:                                                # the shard is through: its bar whole
-        bar(t, x, y, w, [(0, 1.0, colour, 1.0)])
-
-
-# --- the card, three ways -----------------------------------------------------------------------------------------------
-
-def slip(t, keys):
-    """A: a narrow slab that rises on the right, under the pills; a line a change; the press at its foot."""
-    x0, x1, y1 = 380, 560, 314
-    y0 = y1 - (6 + 18 + len(keys) * 26 + 4 + 44 + 6)
-    slab(t, x0, y0, x1, y1)
-    t.text(x0 + 10, y0 + 7, SMALL, HEAD, SYS["soft"])
+def card(t, keys, says=None):
+    """The card: its head, a line a change in the machines' order, the press across its foot."""
+    n, p = len(keys), pitch_of(len(keys))
+    y0, s = card_top(n), pitch_of(len(keys)) - 4
+    slab(t, X0, y0, X1, FOOT)
+    t.text(X0 + 10, y0 + 7, SMALL, HEAD, SYS["soft"])
     y = y0 + 26
     for key in keys:
-        g = GAINS[key]
-        t.stroke([(x0 + 8, y), (x1 - 8, y)], 1.0, SYS["facet"], 0.22)
-        picture(t, key, x0 + 21, y + 13, 22)
-        t.text(x0 + 38, y + 5, TITLE, g["gain"], SYS["text"], bold=0.35)
-        t.text(x1 - 12, y + 7, SMALL, g["what"], SYS["soft"], "RIGHT")
-        y += 26
-    press(t, x0 + 8, y1 - 50, x1 - 8, y1 - 6, word_of(keys))
+        g = dict(GAINS[key], **(says or {}).get(key, {}))
+        t.stroke([(X0 + 8, y), (X1 - 8, y)], 1.0, SYS["facet"], 0.22)
+        gl.lay(t, "ReturnSeat", X0 + 9, y + 2, scale=s / SEAT)
+        gl.lay(t, "ReturnSeatLight", X0 + 9, y + 2, scale=s / SEAT, tint=g["colour"])
+        picture(t, key, X0 + 9 + s / 2, y + 2 + s / 2, s - 5)
+        gx = X0 + 9 + s + 7
+        t.text(gx, y + p / 2 - TITLE * 0.42, TITLE, g["gain"], SYS["text"], bold=0.35)
+        t.text(X1 - 11, y + p / 2 - SMALL * 0.42, SMALL, g["what"], SYS["soft"], "RIGHT")
+        clear = (X1 - 11 - wide(g["what"], SMALL)) - (gx + wide(g["gain"], TITLE, True))
+        print(f"line {key:9s} {g['gain']:>10s} | {g['what']:<10s} clear between them {clear:5.1f}")
+        assert clear >= 0, (key, clear)                  # by ss.wide_of, which runs wide of the sheet's face
+        y += p
+    press(t, X0 + 8, FOOT - 50, X1 - 8, FOOT - 6, "Reveal" if "shard" in keys else "Collect")
+    SPOTS.setdefault(f"card{n}", (X0 - 10, y0 - 10, X1 + 8, FOOT + 6))
 
 
-def sill(t, keys):
-    """B: a low slab across the foot, grown from the right as far as its changes reach; its head a tab on its top."""
-    cells = [26 + 6 + max(wide(GAINS[k]["gain"], TITLE, True), wide(GAINS[k]["what"], SMALL)) for k in keys]
-    x1, y0, y1 = 560, 248, 312
-    x0 = x1 - (8 + sum(cells) + 6 * (len(keys) - 1) + 8 + 78 + 8)
-    tw = wide(HEAD, SMALL) + 18
-    tab = t.poly(ui.cut_box(x0, y0 - 21, x0 + tw, y0 + 6, 6, 6, 0, 0))
-    t.glow(tab, 6.0, "#04090B", 0.4)
-    t.paint(tab, SYS["panel"][1], 0.95)
-    t.line(tab, 1.0, SYS["edge"], 0.7)
-    slab(t, x0, y0, x1, y1)
-    t.text(x0 + 9, y0 - 16, SMALL, HEAD, SYS["soft"])
-    x = x0 + 8
-    for k, key in enumerate(keys):
-        g = GAINS[key]
-        if k:
-            t.stroke([(x - 3, y0 + 12), (x - 3, y1 - 12)], 1.0, SYS["facet"], 0.25)
-        picture(t, key, x + 13, y0 + 32, 26)
-        t.text(x + 32, y0 + 13, TITLE, g["gain"], SYS["text"], bold=0.35)
-        t.text(x + 32, y0 + 35, SMALL, g["what"], SYS["soft"])
-        x += cells[k] + 6
-    press(t, x1 - 86, y0 + 10, x1 - 8, y1 - 10, word_of(keys))
-
-
-def board(t, keys):
-    """C: a slab in the middle, in the Power screen's rows: a machine a row, its gauge showing what came."""
-    tall = 8 + 26 + len(keys) * 38 + 4 + 44 + 8
-    x0, x1 = 160, 450
-    y0 = max(62, 186 - tall / 2)
-    y1 = y0 + tall
-    slab(t, x0, y0, x1, y1)
-    t.text(x0 + 14, y0 + 10, TITLE, HEAD, SYS["text"], bold=0.3)
-    y = y0 + 34
-    for key in keys:
-        g = GAINS[key]
-        t.paint(t.poly(ui.cut_box(x0 + 8, y, x1 - 8, y + 34, 4, 1, 4, 1)), SYS["row"], 0.55)
-        picture(t, key, x0 + 27, y + 17, 24)
-        t.text(x0 + 46, y + 4, SMALL, g["name"], SYS["text"])
-        gauge(t, key, x0 + 46, y + 23, 130)
-        t.text(x1 - 16, y + 2, TITLE, g["gain"], SYS["text"], "RIGHT", bold=0.35)
-        t.text(x1 - 16, y + 19, SMALL, g["what"], SYS["soft"], "RIGHT")
-        y += 38
-    t.text(x0 + 14, y1 - 36, SMALL, "Away " + AWAY, SYS["faint"])
-    press(t, x1 - 110, y1 - 52, x1 - 8, y1 - 8, word_of(keys))
-
-
-CARDS = {"A": slip, "B": sill, "C": board}
-
-
-# --- the HUD round them: stand-ins ---------------------------------------------------------------------------------------
+# --- the HUD round it: stand-ins ----------------------------------------------------------------------------------------
 
 def ghost(t, x0, y0, x1, y1, *words):
     d = up.box(t, x0, y0, x1, y1, "#0B0D14", None, 1.0, 5)
@@ -218,40 +197,27 @@ def ghost(t, x0, y0, x1, y1, *words):
         t.text((x0 + x1) / 2, (y0 + y1) / 2 - len(words) * 8 + k * 16 + 1, SMALL, w, "#8A90A0", "CENTER")
 
 
-def pill(t, x0, y0, x1, y1, colour, words, key=None, lit=False):
+def pill(t, x0, y0, x1, y1, colour, words):
     """A pill of the HUD's column: its block in its system's colour, its reading."""
     d = t.poly(ui.cut_box(x0, y0, x1, y1, 5, 2, 5, 2))
-    t.glow(d, 5.0, colour if lit else "#04090B", 0.4)
+    t.glow(d, 5.0, "#04090B", 0.4)
     t.paint(d, t.ramp("#1A222C", "#0D1218", (t.y - y0) / (y1 - y0)), 0.94)
     t.line(d, 1.2, colour, 0.95)
-    block = np.maximum(d, t.x - (x0 + y1 - y0))
-    t.paint(block, colour, 0.9)
-    if key:
-        picture(t, key, x0 + (y1 - y0) / 2, (y0 + y1) / 2, (y1 - y0) - 6)
+    t.paint(np.maximum(d, t.x - (x0 + y1 - y0)), colour, 0.9)
     t.text(x1 - 7, (y0 + y1) / 2 - SMALL * 0.42, SMALL, words, "#FFFFFF", "RIGHT", bold=0.3)
 
 
-def pills(t, stored, under=False):
-    """Credits and Electricity. `under`: the board stands over Electricity's left, so the sheet leaves its words out
-    (a sheet's words are laid last, over every piece)."""
-    pill(t, 455, 72, 560, 97, CREDITS, "46,310")
-    pill(t, 392, 103, 560, 128, POWER, stored if under else "2.4 kW      " + stored)
-
-
-def lead(t):
+def hud(t, stored, step=False, made=True):
     ghost(t, 8, 77, 155, 150, "the lead's card")
-
-
-def step(t):
-    ghost(t, 162, 222, 405, 247, "the next step's plate")
-
-
-def dock(t):
+    pill(t, 455, 72, 560, 97, CREDITS, "46,310")
+    pill(t, 392, 103, 560, 128, POWER, ("2.4 kW      " if made else "") + stored)
     for k in range(3):
         ghost(t, 203 + k * 56, 262, 253 + k * 56, 304)
+    if step:
+        ghost(t, 162, 222, 405, 247, "the next step's plate")
 
 
-def home(t, way, keys):
+def home(t, st):
     """The yard as the player comes back to it (TR51's capture), the HUD's pieces as stand-ins, and the card."""
     if "yard" not in _px:
         px = rs.load(YARD)
@@ -259,160 +225,299 @@ def home(t, way, keys):
     t.px[..., :3], t.px[..., 3] = ui.c("#9DB0BA"), 1.0
     t.image(_px["yard"], 0, 0)
     sm.stand_in(t)
-    lead(t)
-    pills(t, "19.0 kWh", under=way == "C" and len(keys) > 2)
-    if way == "A":                                       # the slip leaves the dock where it is; the other two take its place
-        dock(t)
-    if way == "C":                                       # the board stands over the pills' column: the HUD recedes under it
-        t.paint(np.full_like(t.x, -1.0), "#06090C", 0.45)
-    CARDS[way](t, keys)
+    hud(t, "19.0 kWh")
+    card(t, st["keys"], st.get("says"))
 
 
 # --- during a run, in the Festival --------------------------------------------------------------------------------------
 
-LINE = (163, 448, 62)       # the run's line as the game lays it on this phone (build/captures/tr50/line.png)
-
-
-def run_line(t):
+def run_line(t, dare=None):
+    """The run's line as StageController builds it. `dare`: the stretch has just started, and its dare is unfolded under
+    the line (AR53), which grows 24."""
     acc = sm.ACC[False]
     x0, x1, y0 = LINE
-    sm.glass(t, x0, y0, x1, y0 + 40, False, 6, 1.2)
+    sm.glass(t, x0, y0, x1, y0 + (64 if dare else 40), False, 6, 1.2)
     sm.badge(t, x0 + 7, y0 + 7, 2, False, True)
     tx = x0 + 41
     t.text(tx, y0 + 5, TITLE, "Stretch 2 of 4", P["text"], bold=0.3)
-    t.text(x1 - 10, y0 + 7, SMALL, "5 / 10", P["soft"], "RIGHT")
+    t.text(x1 - 10, y0 + 7, SMALL, "0 / 10" if dare else "5 / 10", P["soft"], "RIGHT")
     ry, ex = y0 + 31, x1 - 16
     d = t.poly(ui.cut_box(tx, ry - 3, ex - 6, ry + 3, 2, 2, 2, 2))
     t.paint(d, P["channel"])
     t.line(d, 1.0, P["edge"], 0.9)
-    sm.fill(t, tx + 1, tx + (ex - 6 - tx) * 0.5, ry, 1.6, acc, ex - 6)
+    if not dare:
+        sm.fill(t, tx + 1, tx + (ex - 6 - tx) * 0.5, ry, 1.6, acc, ex - 6)
     disc = t.poly([(ex + 6.5 * np.cos(a), ry + 6.5 * np.sin(a)) for a in np.linspace(0, 2 * np.pi, 24, endpoint=False)])
     t.paint(disc, P["channel"])
     t.line(disc, 1.2, P["edge"])
+    if dare:
+        t.stroke([(x0 + 8, y0 + 46), (x1 - 8, y0 + 46)], 1.0, P["edge"], 0.9)
+        gl.dare_mark(t, x0 + 21, y0 + 57, 14.0)
+        t.text(tx, y0 + 51, SMALL, dare, P["text"])
 
 
-def two_lines(t, x, y, colour=SYS["text"], soft=SYS["soft"]):
-    t.text(x, y, SMALL, NOTICE[0], colour, bold=0.3)
-    t.text(x, y + 18, SMALL, NOTICE[1], soft)
+def tab_wide(words):
+    """The tab follows its words: 72 with five characters."""
+    return max(72.0, 14 + 16 + 6 + wide(words, SMALL) + 8)
 
 
-def festival(t, way, broke):
-    """The run's HUD on a stand-in street: the base's state beside the run's line, then the notice as the shard breaks."""
+def festival(t, st):
+    """The run's HUD on a stand-in street: the base's tab beside the dare's, under the run's line."""
     ui.world(t, "noon")
     sm.stand_in(t)
-    lead(t)
-    pills(t, "31.4 kWh")
-    dock(t)
-    if way != "C":
-        step(t)
-    x0, x1, y0 = LINE
-    if way == "A":                                       # a third pill under Electricity; the toasts step down under it
-        run_line(t)
-        pill(t, 482, 134, 560, 157, SILVER, "Ready" if broke else LEFT, "shard", lit=broke)
-        if broke:
-            slab(t, 318, 164, 560, 210, 6)
-            picture(t, "shard", 338, 187, 28)
-            two_lines(t, 358, 171)
-    elif way == "B":                                     # a tab hung from the line beside the dare's; it opens into the notice
-        sm.glass(t, x0 + 8, y0 + 30, x0 + 34, y0 + 64, False, 4, 1.0)      # the dare's tab (AR53), its neighbour
-        if broke:                                        # clear of the Electricity pill, 5 under the line's right end
-            sm.glass(t, x0 + 40, y0 + 30, 386, y0 + 88, False, 6, 1.2)
-            run_line(t)
-            picture(t, "shard", x0 + 54, y0 + 65, 24)
-            two_lines(t, x0 + 68, y0 + 48, P["text"], P["soft"])
-        else:
-            sm.glass(t, x0 + 40, y0 + 30, x0 + 112, y0 + 64, False, 4, 1.0)
-            run_line(t)
-            picture(t, "shard", x0 + 54, y0 + 52, 16)
-            t.text(x0 + 104, y0 + 46, SMALL, LEFT, P["soft"], "RIGHT")
-    else:                                                # the next step's plate speaks for the base, in its teal; it grows
-        run_line(t)
-        if broke:
-            slab(t, 162, 201, 405, 247, 6)
-            picture(t, "shard", 182, 224, 28)
-            two_lines(t, 202, 208)
-        else:
-            slab(t, 162, 222, 405, 247, 5)
-            picture(t, "shard", 177, 234.5, 16)
-            t.text(190, 228, SMALL, "Shard breaking", SYS["soft"])
-            t.text(397, 228, SMALL, LEFT, SYS["text"], "RIGHT", bold=0.3)
+    x0, _x1, y0 = LINE
+    state, dare = st["state"], st.get("dare")
+    hud(t, "31.4 kWh", step=True, made=not dare)        # the unfolded dare lies over the pill's left end
+    down = 24 if dare else 0                             # the tabs ride the line's foot
+    if not dare:
+        a = DARE_TAB
+        sm.glass(t, x0 + a[0], y0 + a[1], x0 + a[2], y0 + a[3], False, 4, 1.0)
+    b = OPEN if state == "open" else TAB
+    right = b[2] if state == "open" else b[0] + tab_wide(st["words"])
+    sm.glass(t, x0 + b[0], y0 + b[1] + down, x0 + right, y0 + b[3] + down, False, 6 if state == "open" else 4, 1.0)
+    run_line(t, dare)
+    if not dare:
+        gl.dare_mark(t, x0 + 21, y0 + 57, gl.MARK_H)
+    if state == "open":
+        picture(t, "shard", x0 + 51, y0 + 64, 20)
+        t.text(x0 + 62, y0 + 48, SMALL, NOTICE[0], P["text"], bold=0.3)
+        t.text(x0 + 62, y0 + 66, SMALL, NOTICE[1], P["soft"])
+    else:
+        cy = y0 + 57 + down
+        if state == "ready":
+            gl.lay(t, "ReturnGlow", x0 + 54, cy, tint=SILVER)
+        picture(t, "shard", x0 + 54, cy, 16)
+        t.text(x0 + right - 8, cy - SMALL * 0.42, SMALL, st["words"], P["text"] if state == "ready" else P["soft"], "RIGHT",
+               bold=0.35 if state == "ready" else 0.0)
+    SPOTS.setdefault(f"tab_{state}{'_dare' if dare else ''}", (x0 - 6, y0 - 6, 400, y0 + 100))
 
 
 # --- the sheets ---------------------------------------------------------------------------------------------------------
 
-CELLS = [
+CARD_CELLS = [
     ("One change: the battery alone", dict(keys=("battery",))),
-    ("All four, a shard among them: the press is Reveal", dict(keys=ALL)),
+    ("Two changes", dict(keys=("battery", "low"))),
+    ("Four changes, a shard among them: the press is Reveal", dict(keys=("battery", "low", "training", "shard"))),
+    ("Four changes and a convert's Mid stone: five lines, at the tighter pitch",
+     dict(keys=ORDER, says=dict(shard=dict(gain="2 shards")))),
     ("A shard alone", dict(keys=("shard",))),
-    ("During a run: the shard breaking at home, its time left", dict(broke=False)),
-    ("The shard breaks: the notice, never over the fight's middle", dict(broke=True)),
+    ("Stones and one level: \"level\" is singular at 1",
+     dict(keys=("low", "mid", "training"), says=dict(low=dict(gain="+11"), training=dict(gain="+1 level", what="Lyric")))),
 ]
-NAMES = {
-    "A": "A, the Slip",
-    "B": "B, the Sill",
-    "C": "C, the Board",
-}
-NOTES = {
-    "A": [
-        "A, the Slip. A narrow slab rises on the right, under the pills: a line a change,",
-        "the gain large, the press across its foot under the right thumb. It grows up",
-        "from the foot with each change; the dock and the pills stay. With all four it",
-        "stands in the toasts' place for as long as it's up. During a run the base is a",
-        "third pill under Electricity, the Breaker's silver: the toasts step down under",
-        "it. The notice is a toast, two lines tall (the sentence is 44 letters; the",
-        "kit's toast holds one line).",
-        "In all three the next step's plate waits while the card is up.",
-        "Stand-ins: the words but Collect, Reveal and the notice; the HUD's grey boxes.",
-    ],
-    "B": [
-        "B, the Sill. A low slab across the foot, grown from the right as far as its",
-        "changes reach, its head a tab on its top: a cell a change, the press at its",
-        "right end. The yard stays whole above it; the dock steps down while it's up.",
-        "With all four it's the screen's width: 553 of 568 by the sheet's letters.",
-        "During a run the base is a tab hung from the run's line beside the dare's tab,",
-        "and the notice opens out of that tab, clear of the Electricity pill (it sits",
-        "5 under the line's right end).",
-        "In all three the next step's plate waits while the card is up.",
-        "Stand-ins: the words but Collect, Reveal and the notice; the HUD's grey boxes.",
-    ],
-    "C": [
-        "C, the Board. A slab in the middle in the Power screen's rows: a machine a row,",
-        "its name, and a gauge of what came (the battery's bar with the gain lit, the",
-        "tray's cups, the levels' steps), the gain at the right, the press at the foot's",
-        "right. The most said, and the most covered: with four rows it stands over",
-        "the Electricity pill, so the HUD recedes under it, as under Home.",
-        "During a run the next step's plate speaks for the base, in the slab's teal",
-        "(no new piece on the HUD), and the notice is that plate, grown to two lines.",
-        "In all three the next step's plate waits while the card is up.",
-        "Stand-ins: the words but Collect, Reveal and the notice; the HUD's grey boxes.",
-    ],
-}
+CARD_NOTES = [
+    "Research's pick, A: a narrow system slab at the right under the pills, from 372 to 560, its foot at 314. A line a",
+    "change, in the machines' order: its picture in a small well lit in the machine's colour (the battery's yellow, the",
+    "Condenser's rose, the Training machine's cyan, the Breaker's silver), the gain large at 17, one soft word at 14 at",
+    "the right. The press runs across the foot, 44 tall, under the right thumb: Collect on the kit's sand plate, Reveal",
+    "on the slab's Ready gold when a shard is among the lines. The card grows up from its foot: 78 and 26 a line. With",
+    "five lines (a convert's Mid stone beside all four) a line is 21, so the card still stands under the Electricity",
+    "pill: 186 points lie between that pill and the card's foot, and the card is 182 tall with four lines, 183 with",
+    "five. The yard, the dock and the pills stay as they are; the",
+    "next step's plate waits while the card is up. The kit builds the slab, the lines' words and the press; the cut is",
+    "the well and its light. The slab is 188 wide, 8 more than the blockout's: the game reads kWh to the hundredth",
+    "under 100, so the battery's line is ten characters. The words are research's. Stand-ins: the numbers, the names,",
+    "the HUD's grey boxes.",
+]
+RUN_CELLS = [
+    ("During a run: the shard breaking at home, its time left, right of the dare's tab", dict(state="breaking", words="12:40")),
+    ("A stretch starts: the dare unfolds for its 3 seconds, and the base's tab rides the line's foot",
+     dict(state="breaking", words="12:40", dare="Break a raised shield with your signature.")),
+    ("The shard breaks: the tab opens into the notice, two lines, clear of the fight's middle", dict(state="open")),
+    ("After it: the tab reads Ready until the player is home", dict(state="ready", words="Ready")),
+    ("A long break: the tab follows its words", dict(state="breaking", words="1:42:10")),
+]
+RUN_NOTES = [
+    "Research's pick, B's tab: the base's state hangs from the",
+    "run's line right of the dare's tab, in the line's own glass,",
+    "40 tall like its neighbour: the shard's own picture and its",
+    "time left, at 14. It rides the line's foot, so it drops 24",
+    "while a dare is unfolded. As the shard breaks it opens to",
+    "the right into the notice, two lines, its right edge 6 short",
+    "of the Electricity pill; a notice that falls due while a",
+    "dare is unfolded waits for the fold. After the notice the",
+    "tab reads Ready, a soft silver glow behind the shard, until",
+    "the player is home. No shard in the Breaker: no tab.",
+    "The kit builds the glass and the words; the cut is the glow.",
+    "A finding, AR53's: at this phone the unfolded dare lies",
+    "over the Electricity pill's left 56 points for its 3 s.",
+]
+
+
+def r2(v):
+    return [r2(x) for x in v] if isinstance(v, (list, tuple)) else round(float(v), 2)
+
+
+def ltwh(box):
+    x0, y0, x1, y1 = box
+    return r2([x0, y0, x1 - x0, y1 - y0])
+
+
+def record():
+    """return.json: where everything lies and what the game's own kit builds. Points, the smallest phone."""
+    images = {name: dict(file=f"images/{name}.png", pixels=[p["px"].shape[1], p["px"].shape[0]],
+                         origin=r2([-p["box"][0], -p["box"][1]]), **({"tint": p["tint"]} if p["tint"] else {}), use=p["use"])
+              for name, p in gl.PIECES.items()}
+    return dict(
+        what="AR55, the return card's look, for TR53: research's pick of 2026-11-23, 19:09 (A's card; B's tab for the run; "
+             "the notice out of the tab). Every word is research's (docs/asset-requests.md, AR55, 'Research's pick'): this "
+             "file holds where words sit, never the words.",
+        units="points at the smallest phone (568 x 320); every box is left, top, width, height; a word's y is its capitals' "
+              "top; images at 4 pixels a point, edge alpha 0. An image's `origin` is where its lay point sits in it, in "
+              "points from its top left (times 4 for pixels)",
+        sheets=["return_card.png", "return_run.png", "return_cut.png"],
+        card=dict(
+            note="the kit builds it: Panel in the System palette, a line a change, one Button. Boxes from the screen's top "
+                 "left unless said",
+            slab=dict(left=X0, right=X1, foot=FOOT, height="78 + lines x pitch", pitch=dict(up_to_four=PITCH, five=TIGHT),
+                      corners="8 and 2.4, as the system windows", palette="Config.UIKit, System",
+                      stands="under the Electricity pill (its foot at 128): 186 points to the card's foot; the card is 182 "
+                             "tall with four lines, 183 with five. The dock, the pills and the lead's card stay; the next "
+                             "step's plate waits while the card is up"),
+            head=dict(x=10, y=7, size=SMALL, colour=SYS["soft"], frame="from the slab's top left"),
+            lines=dict(
+                frame="from the slab's top left; line k's top is 26 + k x pitch", order=list(ORDER),
+                rule=dict(y=0, inset=8, height=1, colour=SYS["facet"], transparency=0.78),
+                seat=dict(images=["ReturnSeat", "ReturnSeatLight"], origin=[9, 2], scale=f"(pitch - 4) / {SEAT:g}",
+                          light="ReturnSeatLight tinted the line's colour"),
+                picture=dict(centre="the well's middle", height="(pitch - 9) x the picture's grow",
+                             images={k: GAINS[k]["image"] for k in ORDER}, grow={k: GAINS[k]["grow"] for k in ORDER}),
+                colours={k: GAINS[k]["colour"] for k in ORDER},
+                gain=dict(x="9 + (pitch - 4) + 7", y="the line's middle", size=TITLE, bold=True, colour=SYS["text"]),
+                word=dict(right="11 from the slab's right", y="the line's middle", size=SMALL, colour=SYS["soft"],
+                          align="RIGHT"),
+                widest="the battery's: ten characters as Read.Kwh writes a gain under 100 ('+12.40 kWh') beside "
+                       "'stored'; the slab's 188 holds it in the sheet's face"),
+            press=dict(box="inset 8 from the slab's sides, its top 50 over the slab's foot, 44 tall",
+                       collect="the kit's Primary button", reveal="the kit's Ready button, when a shard is among the lines",
+                       size=TITLE)),
+        run=dict(
+            note="boxes from the run's line's glass's top left, as AR53's dare (build/handoff/UI/goals/goals.json)",
+            tab=dict(box=ltwh(TAB), make="the line's own glass, under it, corners cut 4: the dare's tab's twin, 6 to its "
+                                         "right; its place holds when the dare's tab is absent",
+                     width="14 + 16 + 6 + its words + 8, never under 72",
+                     picture=dict(image=GAINS["shard"]["image"], centre=[54, 57], height=r2(16 * GAINS["shard"]["grow"])),
+                     words=dict(right="8 from the tab's right", y=r2(57 - SMALL * 0.42), size=SMALL, colour=P["soft"],
+                                text="the time left, as Read gives it"),
+                     rides="the line's foot: 24 lower while a dare is unfolded",
+                     hard="the same tab in the Hard line's glass", none="no shard in the Breaker: no tab"),
+            notice=dict(box=ltwh(OPEN), make="the same glass, corners cut 6, opened to the right from the tab",
+                        picture=dict(centre=[51, 64], height=r2(20 * GAINS["shard"]["grow"])),
+                        lines=[dict(x=62, y=48, size=SMALL, bold=True, colour=P["text"]),
+                               dict(x=62, y=66, size=SMALL, colour=P["soft"])],
+                        right="6 short of the Electricity pill at this phone", waits="for the fold when a dare is unfolded",
+                        note="not the kit's toast: that stays one line"),
+            ready=dict(glow=dict(image="ReturnGlow", origin=[54, 57], tint=SILVER),
+                       words=dict(colour=P["text"], bold=True), until="the player is home")),
+        images=images,
+        motion="nothing moves here beyond what the kit does. The card's rise, a line's count, the tab's opening and its "
+               "fold back to Ready are TR53's block, and research reads them in motion there",
+    )
+
+
+def cut(out):
+    """The images, return.json and the cut's own sheet: every image over the page's dark, at half its pixels."""
+    images = out / "images"
+    images.mkdir(parents=True, exist_ok=True)
+    for old in images.glob("*.png"):
+        old.unlink()
+    for name, p in gl.PIECES.items():
+        rs.save(p["px"], images / f"{name}.png")
+        a = p["px"][..., 3]
+        edge = float(max(a[0].max(), a[-1].max(), a[:, 0].max(), a[:, -1].max()))
+        print(f"{name:20s} {a.shape[1]}x{a.shape[0]}  edge alpha {edge * 255:.1f}")
+        assert edge * 255 < 1.0, f"{name} has alpha at its edge"
+    (out / "return.json").write_text(json.dumps(record(), indent=1), encoding="utf-8", newline="\n")
+    grounds(out, "return_cut.png", f"AR55, the return card's cut: {len(gl.PIECES)} images at 4 pixels a point")
+
+
+def grounds(out, name, title):
+    """The cut's files as they are, at their own pixels and at 64 pixels high: over the slab's teal, the page's dark and
+    white. The two lights are white images, shown too in the tint the game gives them."""
+    ui.K = gl.CUT_K
+    gap, cw = 14, 150
+    sheet = ui.Sheet(gap + 3 * (cw + gap), 48 + 3 * 60 + gap / 2, "#101117")
+    t = sheet.tile(0, 0, sheet.w, sheet.h)
+    t.text(gap, 8, 11, title, "#EDE6D6")
+    t.text(gap, 22, 9, "on the slab's teal, the page's dark and white: as cut, as tinted, at 64 pixels high", "#B4AC9C")
+    tints = {"ReturnSeat": None, "ReturnSeatLight": POWER, "ReturnGlow": SILVER}
+    for col, ground in enumerate((SYS["panel"][1], "#241F3D", "#FFFFFF")):
+        x0 = gap + col * (cw + gap)
+        up.box(t, x0 - gap / 2, 38, x0 + cw - gap / 2, sheet.h - gap / 2, ground, cut=0.0)
+        y = 48
+        for piece in gl.PIECES:
+            b = gl.PIECES[piece]["box"]
+            gl.lay(t, piece, x0 + 4 - b[0], y - b[1])
+            if tints[piece]:
+                gl.lay(t, piece, x0 + 54 - b[0], y - b[1], tint=tints[piece])
+            px = gl.PIECES[piece]["px"]
+            t.image(rs.shrink(px, 64 / px.shape[0]), x0 + 110, y)
+            y += 60
+    for layer in ui.text_layers(sheet.px.shape[1], sheet.px.shape[0], sheet.items).values():
+        rs.paste(sheet.px, layer, 0, 0)
+    rs.save(sheet.px, out / name)
+
+
+def pictures(out, crops, names):
+    """For the content check: the card and the tab's states at twice the phone's pixels."""
+    ui.K = 2
+    gap = 14
+    doubled = [np.repeat(np.repeat(c, 2, axis=0), 2, axis=1) for c in crops]
+    per = 3
+    rows = [doubled[k:k + per] for k in range(0, len(doubled), per)]
+    wide_ = max(sum(c.shape[1] / 2 + gap for c in row) for row in rows) + gap
+    tall = 50 + sum(max(c.shape[0] for c in row) / 2 + gap + 22 for row in rows)
+    sheet = ui.Sheet(wide_, tall, "#101117")
+    t = sheet.tile(0, 0, 1, 1)
+    t.text(gap, 16, 20, "AR55's finish: the card and the run's tab, at twice the phone's pixels", "#EDE6D6", bold=0.2)
+    y, k = 50, 0
+    for row in rows:
+        x = gap
+        for c in row:
+            t.text(x, y + 2, SMALL, names[k], "#B4AC9C")
+            rs.paste(sheet.px, c, round(x * 2), round((y + 22) * 2))
+            x += c.shape[1] / 2 + gap
+            k += 1
+        y += max(c.shape[0] for c in row) / 2 + gap + 22
+    for layer in ui.text_layers(sheet.px.shape[1], sheet.px.shape[0], sheet.items).values():
+        rs.paste(sheet.px, layer, 0, 0)
+    rs.save(sheet.px, out / "return_pictures.png")
+
+
+def crop(shot, box):
+    x0, y0, x1, y1 = (round(v * 2) for v in box)
+    return shot[max(y0, 0):y1, max(x0, 0):x1].copy()
 
 
 def main():
     out = bl.out_dir()
     rs.OUT = out
-    groups = []
-    for way in "ABC":
-        def cell(sheet, ox, oy, st, way=way):
-            t = sheet.tile(ox, oy, W, H)
-            if "keys" in st:
-                home(t, way, st["keys"])
-            else:
-                festival(t, way, st["broke"])
-        shots = ss.sheet_of(out, f"return_card_{way}.png",
-                            f"AR55, the return card, {NAMES[way]}: a blockout at the smallest phone (568 x 320 points)", CELLS, H,
-                            NOTES[way], cell)
-        groups.append([rs.shrink(shot, 64 / (H * 2)) for shot in shots])
-        del shots
-        gc.collect()
+    cut_pieces()
+    common = "at the smallest phone (568 x 320 points)"
+    cards = ss.sheet_of(out, "return_card.png", f"AR55, the return card, {common}", CARD_CELLS, H, CARD_NOTES,
+                        lambda sheet, ox, oy, st: home(sheet.tile(ox, oy, W, H), st))
+    crops = [crop(cards[k], SPOTS[f"card{n}"]) for k, n in ((2, 4), (3, 5), (0, 1))]
+    names = ["four changes", "five lines", "one change"]
+    groups = [[rs.shrink(shot, 64 / (H * 2)) for shot in cards]]
+    del cards
+    runs = ss.sheet_of(out, "return_run.png", f"AR55, the base's tab on the run's line, {common}", RUN_CELLS, H, RUN_NOTES,
+                       lambda sheet, ox, oy, st: festival(sheet.tile(ox, oy, W, H), st))
+    crops += [crop(runs[0], SPOTS["tab_breaking"]), crop(runs[2], SPOTS["tab_open"]), crop(runs[3], SPOTS["tab_ready"])]
+    names += ["the tab, breaking", "opened: the notice", "Ready"]
+    groups.append([rs.shrink(shot, 64 / (H * 2)) for shot in runs])
+    del runs
+    gc.collect()
+    if sys.argv[-1] == "cut":
+        cut(out)
+        return
     gap = 12
     sw = groups[0][0].shape[1]
-    page = rs.canvas(gap + len(CELLS) * (sw + gap), gap + 3 * (64 + gap), tuple(rs.rgb("#101117")))
+    page = rs.canvas(gap + max(len(g) for g in groups) * (sw + gap), gap + len(groups) * (64 + gap), tuple(rs.rgb("#101117")))
     for r, shots in enumerate(groups):
         for k, shot in enumerate(shots):
             rs.paste(page, shot, gap + k * (sw + gap), gap + r * (64 + gap))
-    rs.save(page, out / "return_card_small.png")
+    rs.save(page, out / "return_small.png")
+    pictures(out, crops, names)
+    grounds(out, "return_new.png", "AR55's finish: the three new files")
 
 
 if __name__ == "__main__":

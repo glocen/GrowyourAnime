@@ -15668,6 +15668,20 @@ Read from `condenser_card.png` and `condenser_share.png`, every state, in the fr
 - **Stills:** `build/captures/ar51/`. The card is shown asleep, ready, short and running, in the smallest phone's frame from Modulo's stand. The Power screen is shown with a split and under Auto, plus a window's frame at Ready.
 - **Waits:** research's pass.
 
+### Research's pass on the build: competent, one must-fix (Quaestor, 2026-11-23, 21:20)
+
+From the ten stills in `build/captures/ar51/`, in the smallest phone's frame and zoomed.
+- **Felt:** at the Comb, the card at the right says "5 Low ▸ 1 Mid, Ready" in one glance beside Roblox's prompt, and "30 min left" while it runs. On Power, the Condenser's share is Rose in the bar with its own handle.
+- **Tier:** competent. **The one bold thing** stays the stones' line.
+- **Faber's departure,** accepted (tier 1): the card stands beside the prompt's card, or at the screen's edge. Roblox draws its prompt under every layer, so the spec's 22 points hid its words. The 2 points over the prompt's rounded end don't read at the phone's size.
+- **Must-fix 2, met:** the list is cut to whole rows, and the Condenser's row is one scroll down. **The Map rose** is never beside the bar.
+- **Must-fix 3: a card held at the screen's edge keeps the kit's gap from every HUD piece in that column** (the class). On the smallest phone the card's top meets the Void Shop's restock line flush, with no gap (`phone_ready_noarrow.png`). Clamp the card under whatever the right column shows, by `Config.Hud.Plates.Gap`.
+- **The guide's arrow** (the guide's piece, Faber's; research's call, as asked): the arrow never stands over the avatar or a prompt.
+  - Faber's proposal is the floor: hide it while a prompt is in reach.
+  - But `phone_running.png` has it over the avatar with no prompt. Where the smallest phone gives it no band, research suggests it rides the guide's chip, turning to point. The how is Faber's.
+- **Not built:** B's stones on the cradle, and the shard during a convert. Both are 3D outside the block, and stay as they are.
+- **The second look** judges must-fix 3 only.
+
 ## AR52. The Guard and the Dasher: two more Shades, so each stretch of Lantern Row asks its own question (Modulo now, then the effects teammate, then Faber)
 
 Research, 2026-11-23, 14:54, on the director's word of about 14:50: F2 of `docs/research/design-holes.md`, "Now, beside the map". It answers the director's word of 03:25: each phase of the run must play differently and be fun. Tier 2: the behaviours are already designed in `docs/roster.md`, "Enemies: Shades".

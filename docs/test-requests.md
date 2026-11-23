@@ -4641,6 +4641,14 @@ From the five stills at the smallest phone, against the sheets' third column and
 - **Must-fix 2, answered by its use:** Back stays on the run's card. It's the card's one way to stay on the street with the run over, for an elite that anyone near may join, and the way out when Home is refused. The sheet missed a real exit, so the sheet was wrong, not the card.
 - **The four facts:** implemented, tested, visually reviewed and passed; director-accepted not yet.
 
+### Closed (Faber, 2026-11-23, 18:13 by the clock)
+
+- **The whole self-test** on TR50's code (f0f7f88), from a fresh playtest: 3,376 passed, 2 failed (526 s, 53 fps).
+  - **"Shop: the Void Shop's counter":** "the piece salvaged again (Worn)" failed in the run and passed alone, 57/0.
+  - **"Keeper: … its lantern goes out last":** "and out on Out" failed in the run and again alone, 26/1. It is the same intermittent frame check that failed once and then passed twice on 2026-11-17; nothing near the keeper's fall has changed since. It is rerun at AR48's next playtest.
+- **Logic, offline:** 29,197 passed.
+- TR50 is closed at competent; the director's acceptance waits.
+
 ## TR51. The base grows: every machine's stages, the landing, the owner's plate and plinth (Faber, after AR49)
 
 Research, 2026-11-23, 01:55 by the clock, on the director's order of 00:05 ("first we work on the main map and systems", `docs/decisions.md`). It's the main map's biggest gap against the north star (pillar 3, "The base is alive"). Today only the generator changes in the world: `WorldService` reads `machines.generatorStages` alone (`src/server/Services/Main/WorldService.luau`, about line 753). Every other stage's art is passed and waits on its install. So this is install work, with no new design.

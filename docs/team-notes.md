@@ -10,9 +10,9 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **Modulo's order:** AR53 (the goals' look), then its queue as it stands.
 - **With the director:** answer **item 10 in Faber's session** (the hooks for Scintilla and Sonus); **item 4**, publish both places and Faber's OK to run the player once; open two sessions titled **Scintilla** and **Sonus**; `src/shared/Config/Sounds.luau`'s uncommitted change; the store's design.
 
-**Faber (builder).** 2026-11-23, 18:00, on Opus 5.5.
+**Faber (builder).** 2026-11-23, 18:13, on Opus 5.5.
 - **Done and passed:** AR44's shine, its weights closed (research, 16:18); AR49; AR52's must-fix 1, where Orange on Hard now wears `#FF7000`; and **TR10, closed at competent** (research, 17:06).
-- **TR50's two must-fixes, answered** (TR50, "Research's two must-fixes"): the stone shows #A9A59B under every rarity's light; Back stays on the run's card as the one way to stay on the street, unless research would rather it hidden. Waiting on research's second look. **Now:** AR48's states.
+- **TR50, closed at competent** (research, 18:00). **Now: AR48's states.** The rules are built, with research's answers (Shades' Void saps nothing, no chill during the lock); the even-elements check is next. The cues are Scintilla's once that seat opens: the hooks wear each state's look by name.
 - **Next:** AR50 and AR54 as one install from AR54's handoff (research, 17:18), AR51, TR52; AR52's behaviours, TR54, TR53. F7's timing waits on item 4's publish.
 - **The hooks for Scintilla and Sonus** wait on the director's own word (item 10). **Open, tests:** as before (item 9's Festival cases; TintMask on a phone; TR44's phone take; the pinned reveal).
 
@@ -137,6 +137,15 @@ For Faber:
 - Tier 2, research, 2026-11-12, on the director's words: weapons belong to a class, in two hands (Main Hand and Off Hand replace Weapon and Shield), a preset holds a pair per class, a weapon drop is for the lead's class; Combat Power made to be watched, its weights fitted by the simulation; each item kind modelled and rendered to its icon (AR6, phase 3) (`docs/design.md`, "Regalia: gear" and "Combat Power"). Faber: the Stats case's `"Weapon"` source becomes `"Main Hand"` when you next touch it. Faber and Modulo: say in your row what you'd change.
 
 ## Entries
+
+### 2026-11-23, 18:13. TR50, one mission per Arc, closed at competent (Faber)
+
+- **What changed today:** the Arc panel and the run's card in the festival's dusk (Modulo's palette B), and the Voidkin stage's floor B: stone and a Neon ring of the element. Research had two must-fixes:
+  - the stone now shows `#A9A59B` under every rarity's light, by the stage's measured light model (`Voidkin.Stage.Floor`: Shows, Lit);
+  - Back stays on the run's card, as its one way to stay on the street.
+- **Where:** TR50, from "The dusk palette and the Voidkin floor, installed" to "Closed"; `Config.Hud` (Stages.Arc, Voidkin.Stage), `StageScreen`, `VoidkinScreen/Figure`, `Kit/Button` (Underline), `Kit/Screen`.
+- **Run:** self-test 3,376 passed, 2 failed: the shop's passes alone, and the keeper lantern's is an intermittent frame check (since 2026-11-17), rerun next. Logic offline: 29,197 passed. Stills in `build/captures/tr50/`.
+- **For:** research, who passed it at 18:00. The director's acceptance waits.
 
 ### 2026-11-23, 17:33. TR10, the down badge, closed at competent (Faber)
 

@@ -9,10 +9,11 @@ below and from behind (AR2, section 6). A mask on an arm needs no ties, so the c
 same triangles, normals and UVs, so it wears the same surface and the same three maps. Only its centre moves, because a
 published mesh is centred on its own box, and shade_elite.py's placement follows it.
 
-Writes to <out_dir>: Shade_Mask<Kind>Bare.json for each kind in KINDS, and shade_elite_bare.png: close on the arm in
-Idle and Guard, from below and from behind as the builder looked, the copy with its ties above and without below, and
-the Guard from the player's camera. Needs shade_model.py's output in shade_clips.MODEL. `write` copies the meshes into
-build/handoff/Shade/ and writes the recipe's `elite` again (shade_elite.write).
+Writes to <out_dir>: Shade_Mask<Kind>Bare.json for each kind in KINDS, and a sheet a kind (shade_elite_bare.png for the
+Brawler, shade_elite_bare_<Kind>.png for the others): close on the arm in Idle and Guard, from below and from behind
+as the builder looked, the copy with its ties above and without below, and the Guard from the player's camera; the
+Dasher's adds its Lunge, folded before and after. Needs shade_model.py's output in shade_clips.MODEL. `write` copies
+the meshes into build/handoff/Shade/ and writes the recipe's `elite` again (shade_elite.write).
 """
 import json
 import math
@@ -32,7 +33,9 @@ import shade_clips as sc  # noqa: E402
 import shade_elite as se  # noqa: E402
 
 HANDOFF = se.RECIPE.parent
-KINDS = ("Brawler",)  # the elites that go in: the others wait on their own sheet and check (AR2, section 5, condition 5)
+# the elites that go in: the Brawler's (AR2), the Guard's and the Dasher's (AR57); the Support's waits on its own sheet
+# and check (AR2, section 5, condition 5)
+KINDS = ("Brawler", "Guard", "Dasher")
 BEHIND = -0.5         # Roblox z past which a piece reaches behind the mask's back (-0.73): only the ties go there
 TIES = 5              # two strings, a knot and the knot's two tails, each its own island
 # the builder's looks: idle and the guard braced, close on the arm from below and from behind; then the player's camera
@@ -42,7 +45,10 @@ SHOTS = [("Idle", 0, "below, front left", (300, -40, 4.5)), ("Idle", 0, "below, 
          ("Guard", 44, "below, front left", (300, -40, 4.5)), ("Guard", 44, "below, left", (250, -45, 4.5)),
          ("Guard", 44, "behind", (200, 6, 5.0)), ("Guard", 44, "behind, left", (235, 10, 5.0)),
          ("Guard", 44, "the player's camera", None)]
-START = {"Idle": 0, "Guard": 1000}
+# the Dasher's own clip beside them (AR57): folded behind its mask's point, and lying folded after the lunge
+MORE = {"Dasher": [("Lunge", 40, "the tell, front left", (300, 8, 4.5)), ("Lunge", 40, "the tell, the player's camera", None),
+                   ("Lunge", 97, "folded, behind, left", (235, 10, 5.0)), ("Lunge", 97, "folded, the player's camera", None)]}
+START = {"Idle": 0, "Guard": 1000, "Lunge": 2000}
 
 
 def bare(kind, out):
@@ -153,6 +159,7 @@ def main():
     bpy.context.view_layer.update()
     costume = bpy.data.objects[recipe["masks"]["Brawler"]["name"]]
     material = costume.material_slots[0].material
+    scene.render.resolution_x, scene.render.resolution_y = 300, 300
     copies = {}
     for kind, (record, to_p) in made.items():
         whole = json.loads((HANDOFF / f"Shade_Mask{kind}.json").read_text())
@@ -168,27 +175,31 @@ def main():
     for clip in START:
         key(rig, clip)
 
-    tied, cut = copies["Brawler"]
-    shots = []
-    for i, (clip, frame, label, view) in enumerate(SHOTS):
-        f = START[clip] + frame
-        if view is None:
-            cam = r6.body_camera(scene, rig, f, 336.0, 18.0, distance=13.0, name=f"player {i}")
-        else:
-            cam = near(scene, rig, cut, f, *view, f"near {i}")
-        shots.append((cam, f, f"{clip} {frame}, {label}"))
-    scene.render.resolution_x, scene.render.resolution_y = 300, 300
-    rows = []
-    for name, shown in (("tied", tied), ("bare", cut)):
-        tied.hide_render, cut.hide_render = shown is not tied, shown is not cut
-        path = r6.render_shots(scene, [(cam, f, f"{name}: {label}") for cam, f, label in shots],
-                               out / f"_{name}.png", columns=len(shots))
-        rows.append(rs.load(path))
-        Path(path).unlink()
-    sheet = np.concatenate(rows, axis=0)
-    sheet[..., 3] = 1.0
-    rs.save(sheet, out / "shade_elite_bare.png")
-    print(f"wrote {out / 'shade_elite_bare.png'}: with its ties above, the copy below")
+    for kind, (tied, cut) in copies.items():
+        dress(kind)
+        for other, pair in copies.items():
+            for obj in pair:
+                obj.hide_render = True
+        shots = []
+        for i, (clip, frame, label, view) in enumerate(SHOTS + MORE.get(kind, [])):
+            f = START[clip] + frame
+            if view is None:
+                cam = r6.body_camera(scene, rig, f, 336.0, 18.0, distance=13.0, name=f"player {kind} {i}")
+            else:
+                cam = near(scene, rig, cut, f, *view, f"near {kind} {i}")
+            shots.append((cam, f, f"{clip} {frame}, {label}"))
+        rows = []
+        for name, shown in (("tied", tied), ("bare", cut)):
+            tied.hide_render, cut.hide_render = shown is not tied, shown is not cut
+            path = r6.render_shots(scene, [(cam, f, f"{name}: {label}") for cam, f, label in shots],
+                                   out / f"_{name}.png", columns=len(shots))
+            rows.append(rs.load(path))
+            Path(path).unlink()
+        sheet = np.concatenate(rows, axis=0)
+        sheet[..., 3] = 1.0
+        file = "shade_elite_bare.png" if kind == "Brawler" else f"shade_elite_bare_{kind}.png"  # the Brawler's keeps its name
+        rs.save(sheet, out / file)
+        print(f"wrote {out / file}: with its ties above, the copy below")
 
     if write:
         for kind in KINDS:

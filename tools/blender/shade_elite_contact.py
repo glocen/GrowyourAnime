@@ -2,7 +2,11 @@
 with its second mask on, the copy without ties where the game puts it, in the clips an elite plays, from the player's
 camera, at 64 px on dark and bright, with the ordinary Shade beside it where the 16/6 check asks.
 
-blender.exe -b --factory-startup --python tools/blender/shade_elite_contact.py -- <out_dir>
+blender.exe -b --factory-startup --python tools/blender/shade_elite_contact.py -- <out_dir> [Kind [folder ...]]
+
+Kind is Brawler (the default), Guard or Dasher (AR57: SETS). A folder is searched before the handoff for a clip or a
+second mask, so a trial is measured before it's delivered. The Brawler's sheet is shade_elite_contact.png, another
+kind's shade_elite_contact_<Kind>.png.
 
 Drawn on the baked model (shade_model.py's blend) riding the rig (shade_clips.build), lit as the maps draw in Eevee: the
 body's glow in Strength's tint at the game's strength and the masks' in their own warm white at theirs (Config.Shades,
@@ -37,30 +41,60 @@ import shade_model as sm  # noqa: E402
 HANDOFF = se.RECIPE.parent
 # the clips an elite plays: condition 9's four first, its swing being Attack every time, never AttackLeft (research's
 # pick, AR2 section 10: in AttackLeft the second mask cuts into the first), then the rest in the delivered order
-CLIPS = ("Guard", "Attack", "HitLeft", "Burst", "Idle", "Walk", "Lunge", "Hit")
+
 GAP = 400                     # frames between clips on the one timeline
 VIEW = (336.0, 18.0, 13.0)    # the player's camera on a Shade that faces the lead: its front and its left (body_camera)
 SUN = (540 - VIEW[0]) % 360   # the same heading in rook_sheet's measure, for the sun over the camera's left shoulder
 FOV, PX = 38.0, 640
-TINT, BODY, MASK = "#E80000", 16.0, 6.0  # Config.Shades: Strength's glow tint, the body's strength, a mask's
+TINT, BODY, MASK = "#E80000", 16.0, 6.0  # Config.Shades: Strength's glow tint (the Brawler's), the body's strength, a mask's
 STUD = PX / (2 * VIEW[2] * math.tan(math.radians(FOV / 2)))  # pixels a stud at the body, in a render
 F64 = 64 / (5 * STUD)         # a 5 stud body 64 px tall
 BIG = 0.5
 # the frames condition 9 names in the four first: the guard braced (its left sleeve level under the first mask), the
 # left swing's hit, the blow from the left, the last frame before the burst
-NAMED = {"Guard": (44, "braced"), "Attack": (30, "Hit"), "HitLeft": (3, "struck"), "Burst": (27, "Burst")}
+
 # the 16/6 check's condition 2: the ordinary Shade and the elite side by side. None is the clip's widest frame.
-SIDE_BY_SIDE = (("HitLeft", None), ("Burst", 20), ("Burst", 27))
-NEAR = ("Torso", "RightArm", "Mask")  # what the second mask may not sink into: the coat, the other sleeve, the first mask
-SEEN = ("The elite swings Attack every time, never AttackLeft (research's pick, AR2 section 10): in AttackLeft its second mask",
-        "cuts into the first from 26 to 31, so that swing is the ordinary Shade's only. Nothing here crosses anything.")
+
+# what the second mask may not sink into: the coat, the other sleeve, the first mask, and either leg (a low crouch
+# brings the thighs up to the sleeves: AR57's check)
+NEAR = ("Torso", "RightArm", "Mask", "LeftLeg", "RightLeg")
+# An elite's kind: its stretch's colour, the clips it plays (the four the sheet shows larger first), the frame the sheet
+# names in each of those four, the pairs shown beside the ordinary Shade (its clip, the elite's, the frame: None is the
+# widest), and what was seen.
+SETS = {
+    "Brawler": dict(type="Red", clips=("Guard", "Attack", "HitLeft", "Burst", "Idle", "Walk", "Lunge", "Hit"),
+                    named={"Guard": (44, "braced"), "Attack": (30, "Hit"), "HitLeft": (3, "struck"), "Burst": (27, "Burst")},
+                    side=(("HitLeft", "HitLeft", None), ("Burst", "Burst", 20), ("Burst", "Burst", 27)),
+                    seen=("The elite swings Attack every time, never AttackLeft (research's pick, AR2 section 10): in AttackLeft its second mask",
+        "cuts into the first from 26 to 31, so that swing is the ordinary Shade's only. Nothing here crosses anything.")),
+    # AR57: each plays its own move's elite clip; the ordinary one is measured beside it
+    "Guard": dict(type="Green", clips=("GuardElite", "Guard", "Attack", "HitLeft", "Burst", "Idle", "Walk", "Hit"),
+                  named={"GuardElite": (44, "braced"), "Guard": (44, "braced"), "Attack": (30, "Hit"), "HitLeft": (3, "struck")},
+                  side=(("Guard", "GuardElite", 24), ("Guard", "GuardElite", 44), ("Burst", "Burst", 27)),
+                  seen=()),
+    "Dasher": dict(type="Orange", clips=("LungeElite", "Lunge", "Attack", "HitLeft", "Burst", "Idle", "Walk", "Hit"),
+                   named={"LungeElite": (40, "the tell"), "Lunge": (40, "the tell"), "Attack": (30, "Hit"), "HitLeft": (3, "struck")},
+                   side=(("Lunge", "LungeElite", 40), ("Lunge", "LungeElite", 98), ("Burst", "Burst", 27)),
+                   # the landing, where both sleeves are flung forward (the check's second condition)
+                   also=(("LungeElite", 81, "the mask arrives"), ("LungeElite", 88, "the rest arrives")),
+                   seen=()),
+}
 
 
-def key_clips(rig):
+def found_in(folders, file):
+    for folder in folders:
+        if (folder / file).exists():
+            return folder / file
+    raise SystemExit(f"No {file} in {', '.join(map(str, folders))}")
+
+
+
+
+def key_clips(rig, clips, folders):
     """Every clip on its own stretch of the timeline: {clip: (start, last frame)}."""
     spans = {}
-    for i, clip in enumerate(CLIPS):
-        data = json.loads((HANDOFF / "clips" / f"Shade_{clip}.json").read_text())
+    for i, clip in enumerate(clips):
+        data = json.loads(found_in(folders, f"Shade_{clip}.json").read_text())
         start, last = i * GAP, 0
         for frame in data["Frames"]:
             f = round(frame["T"] * data["Fps"])
@@ -76,16 +110,16 @@ def key_clips(rig):
     return spans
 
 
-def glow(objects):
-    """The game's glow: the body in Strength's tint at its strength, every mask in its own tint at a mask's."""
+def glow(objects, colour):
+    """The game's glow: the body in `colour` at its strength, every mask in its own tint at a mask's."""
     for material in {slot.material for o in objects for slot in o.material_slots}:
         nodes = material.node_tree.nodes
         tint = next(n for n in nodes if n.bl_idname == "ShaderNodeMix" and n.blend_type == "MULTIPLY")
         strength = next(n for n in nodes if n.bl_idname == "ShaderNodeMath" and n.operation == "MULTIPLY")
         mask = "Mask" in material.name
-        tint.inputs[7].default_value = rs.srgb(sm.MASK_TINT if mask else TINT)
+        tint.inputs[7].default_value = rs.srgb(sm.MASK_TINT if mask else colour)
         strength.inputs[1].default_value = MASK if mask else BODY
-        print(f"{material.name}: {sm.MASK_TINT if mask else TINT} at {MASK if mask else BODY}")
+        print(f"{material.name}: {sm.MASK_TINT if mask else colour} at {MASK if mask else BODY}")
 
 
 def across(rig, frame):
@@ -123,6 +157,7 @@ def measure(scene, rig, spans, shown, copy, near):
         right = across(rig, start)
         widest = (0.0, start)
         gaps = {name: (math.inf, start) for name in near}
+        low = (math.inf, start)  # the second mask's lowest point over the floor
         crossed = {name: [] for name in near}
         for f in range(start, start + last + 1):
             scene.frame_set(f)
@@ -130,6 +165,7 @@ def measure(scene, rig, spans, shown, copy, near):
             widest = max(widest, (float(xs.max() - xs.min()), f))
             mask = tree(copy)
             world = [copy.matrix_world @ v.co for v in copy.data.vertices]
+            low = min(low, (min(p.z for p in world), f))
             for name, o in near.items():
                 piece = tree(o)
                 if mask.overlap(piece):
@@ -139,10 +175,11 @@ def measure(scene, rig, spans, shown, copy, near):
                     gaps[name] = (gap, f)
         found[clip] = {"widest": (widest[1] - start, round(widest[0], 2)),
                        "near": {name: (round(g, 3), f - start) for name, (g, f) in gaps.items()},
-                       "crossed": crossed}
+                       "crossed": crossed, "floor": (round(low[0], 3), low[1] - start)}
         print(f"{clip}: widest at {widest[1] - start} ({widest[0]:.2f} studs across the camera); nearest "
               + ", ".join(f"{name} {g:.3f} at {f - start}" for name, (g, f) in gaps.items())
-              + "; crossing " + (", ".join(f"{n} at {c}" for n, c in crossed.items() if c) or "none"))
+              + "; crossing " + (", ".join(f"{n} at {c}" for n, c in crossed.items() if c) or "none")
+              + f"; lowest {low[0]:.2f} over the floor at {low[1] - start}")
     return found
 
 
@@ -165,19 +202,31 @@ def main():
     rs.OUT = out
     recipe = json.loads(se.RECIPE.read_text(encoding="utf-8"))
     scene, rig, undress, wear, feet = sc.build()
-    wear("Brawler")
+    args = sys.argv[sys.argv.index("--") + 2:]
+    kind = args[0] if args else "Brawler"
+    folders = [Path(a) for a in args[1:]] + [HANDOFF / "clips", HANDOFF]
+    clips, named, side, seen = (SETS[kind][k] for k in ("clips", "named", "side", "seen"))
+    tint = TINT
+    if kind != "Brawler":
+        import hard_cut as hc
+        tint = "#" + hc.type_tints()[SETS[kind]["type"]]
+    stem = "shade_elite_contact" if kind == "Brawler" else f"shade_elite_contact_{kind}"
+    wear(kind)
     bpy.context.view_layer.update()
-    first = bpy.data.objects[recipe["masks"]["Brawler"]["name"]]
-    bare = json.loads((HANDOFF / "Shade_MaskBrawlerBare.json").read_text())
-    copy = eb.mesh_object("EliteBrawlerBare", bare, first.material_slots[0].material)
-    eb.wear(rig, copy, recipe["elite"]["masks"]["Brawler"])
+    first = bpy.data.objects[recipe["masks"][kind]["name"]]
+    bare = json.loads(found_in(folders, f"Shade_Mask{kind}Bare.json").read_text())
+    copy = eb.mesh_object(f"Elite{kind}Bare", bare, first.material_slots[0].material)
+    eb.wear(rig, copy, recipe["elite"]["masks"]["Brawler"] if kind == "Brawler" else se.placement(kind, bare["c"]))
     bpy.data.objects["Floor"].hide_render = True
     body = [bpy.data.objects[p["name"]] for p in recipe["pieces"]]
-    glow(body + [first])
-    spans = key_clips(rig)
+    glow(body + [first], tint)
+    spans = key_clips(rig, clips, folders)
     by_part = {p["name"]: p["on"] for p in recipe["pieces"]}
     near = {"Torso": next(o for o in body if by_part[o.name] == "Torso"),
-            "RightArm": next(o for o in body if by_part[o.name] == "Right Arm"), "Mask": first}
+            "RightArm": next(o for o in body if by_part[o.name] == "Right Arm"), "Mask": first,
+            "LeftLeg": next(o for o in body if by_part[o.name] == "Left Leg"),
+            "RightLeg": next(o for o in body if by_part[o.name] == "Right Leg")}
+    assert tuple(near) == NEAR
     found = measure(scene, rig, spans, body + [first, copy], copy, near)
 
     shots = {}
@@ -193,26 +242,29 @@ def main():
 
     # band A's columns: each clip's widest frame, and for the four first the frame condition 9 names
     row = []
-    for clip in CLIPS:
+    for clip in clips:
         row.append((clip, found[clip]["widest"][0], "widest"))
-        if clip in NAMED and NAMED[clip][0] != found[clip]["widest"][0]:
-            row.append((clip, *NAMED[clip]))
+        if clip in named and named[clip][0] != found[clip]["widest"][0]:
+            row.append((clip, *named[clip]))
     # band B: the four first's named frame, then where the second mask comes nearest anything, or first crosses it
     close = []
-    for clip in CLIPS[:4]:
-        close.append((clip, *NAMED[clip]))
+    for clip in clips[:4]:
+        close.append((clip, *named[clip]))
         crossings = sorted(f for c in found[clip]["crossed"].values() for f in c)
         gap, at = min(found[clip]["near"].values())
         what, at = ("crosses", crossings[0]) if crossings else (f"nearest, {gap:.2f}", at)
-        if at != NAMED[clip][0]:
+        if at != named[clip][0]:
             close.append((clip, at, what))
 
-    W, H = 2400, 1640
+    also = list(SETS[kind].get("also", ()))
+    row += also
+    close += also
+    W, H = max(2400, 40 + 120 * len(row) + 40 + 6 * 112 + 40), 1640
     ink, soft, pale = "#1E1B22", "#6A655E", "#B9B4C6"
     page = rs.canvas(W, H, rs.PAPER)
     text = [(40, 26, 40, "THE ELITE, CONTACT SHEET", ink),
-            (40, 80, 17, f"AR2, section 5, condition 9. The Brawler elite ({se.SCALE:g}) with its second mask, the copy without ties where the game "
-                         f"puts it, from the player's camera. Body {TINT} at {BODY:g}, masks {sm.MASK_TINT} at {MASK:g}, lit in Eevee: no engine "
+            (40, 80, 17, f"AR2, section 5, condition 9. The {kind} elite ({se.SCALE:g}) with its second mask, the copy without ties where the game "
+                         f"puts it, from the player's camera. Body {tint} at {BODY:g}, masks {sm.MASK_TINT} at {MASK:g}, lit in Eevee: no engine "
                          "tone map, no bloom.", soft)]
     # band A: at 64 px, dusk on dark, day on bright
     x0, y0, col = 40, 150, 120
@@ -223,19 +275,19 @@ def main():
         for c, (clip, frame, _) in enumerate(row):
             rs.stand(page, rs.shrink(picture(clip, frame, dusk), F64 * se.SCALE), x0 + c * col, y + 120, col)
     for c, (clip, frame, label) in enumerate(row):
-        first4 = clip in NAMED
+        first4 = clip in named
         text.append((x0 + c * col + 6, y0 + 268, 13, clip, ink if first4 else soft))
         text.append((x0 + c * col + 6, y0 + 286, 13, f"{frame}, {label}", ink if first4 else soft))
     # band A, right: the ordinary Shade and the elite side by side
     x1, pc = x0 + col * len(row) + 40, 112
     text.append((x1, y0 - 34, 16, "Beside the ordinary Shade (16/6 check, condition 2)", soft))
-    for c, (clip, frame) in enumerate(SIDE_BY_SIDE):
+    for c, (clip, big, frame) in enumerate(side):
         frame = found[clip]["widest"][0] if frame is None else frame
         for r, dusk in enumerate((True, False)):
             y = y0 + r * 132
             rs.fill(page, x1 + c * 2 * pc, y, 2 * pc, 128, rs.NIGHT if dusk else rs.DAY)
             rs.stand(page, rs.shrink(picture(clip, frame, dusk, worn=False), F64), x1 + c * 2 * pc, y + 120, pc)
-            rs.stand(page, rs.shrink(picture(clip, frame, dusk), F64 * se.SCALE), x1 + c * 2 * pc + pc - 14, y + 120, pc)
+            rs.stand(page, rs.shrink(picture(big, frame, dusk), F64 * se.SCALE), x1 + c * 2 * pc + pc - 14, y + 120, pc)
         text.append((x1 + c * 2 * pc + 6, y0 + 268, 13, f"{clip} {frame}", ink))
     text.append((x1, y0 + 296, 13, "Each pair: the ordinary Shade, then the elite.", soft))
     text.append((x1, y0 + 314, 13, "The Shade has no fallen pose: Burst 27 is its last,", soft))
@@ -243,35 +295,44 @@ def main():
 
     # band B: the four first, larger, at dusk
     y1, bc = 560, 236
-    text.append((x0, y1 - 30, 16, "Guard, Attack, HitLeft, Burst, larger, at dusk: the frame condition 9 names, then where the second mask comes nearest the coat, the other sleeve or the first mask", soft))
+    text.append((x0, y1 - 30, 16, ", ".join(clips[:4]) + ", larger, at dusk: the frame condition 9 names, then where the second mask comes nearest the coat, the other sleeve, the first mask or a leg", soft))
     rs.fill(page, x0, y1, bc * len(close), 330, rs.NIGHT)
     for c, (clip, frame, label) in enumerate(close):
         rs.stand(page, rs.shrink(picture(clip, frame, True), BIG * se.SCALE), x0 + c * bc, y1 + 318, bc)
-        text.append((x0 + c * bc + 10, y1 + 8, 14, f"{clip} {frame}, {label}", pale))
+        text.append((x0 + c * bc + 10, y1 + 336, 14, f"{clip} {frame}, {label}", ink))
     # band C: each at its widest, larger, at dusk
     y2 = 960
     text.append((x0, y2 - 30, 16, "Each clip the elite plays at its widest, larger, at dusk", soft))
-    rs.fill(page, x0, y2, bc * len(CLIPS), 330, rs.NIGHT)
-    for c, clip in enumerate(CLIPS):
+    rs.fill(page, x0, y2, bc * len(clips), 330, rs.NIGHT)
+    for c, clip in enumerate(clips):
         frame = found[clip]["widest"][0]
         rs.stand(page, rs.shrink(picture(clip, frame, True), BIG * se.SCALE), x0 + c * bc, y2 + 318, bc)
-        text.append((x0 + c * bc + 10, y2 + 8, 14, f"{clip} {frame}", pale))
+        text.append((x0 + c * bc + 10, y2 + 336, 14, f"{clip} {frame}", ink))
     # the measures
     y3 = 1340
-    text.append((x0, y3, 16, "Every frame of every clip, at an ordinary Shade's size: the second mask's nearest approach to the coat, the other sleeve and the first mask "
+    text.append((x0, y3, 16, "Every frame of every clip, at an ordinary Shade's size: the second mask's nearest approach to the coat, the other sleeve, the first mask and the legs "
                              "(studs, at its frame), and any frame where its triangles cross theirs", ink))
-    for i, clip in enumerate(CLIPS):
+    for i, clip in enumerate(clips):
         near_, crossed = found[clip]["near"], found[clip]["crossed"]
+        legs = min(near_["LeftLeg"], near_["RightLeg"])
         crossing = "; crosses " + ", ".join(f"{n} at {c[0]} to {c[-1]}" for n, c in crossed.items() if c) if any(crossed.values()) else "; crosses nothing"
         line = (f"{clip}: coat {near_['Torso'][0]:.2f} at {near_['Torso'][1]}, sleeve {near_['RightArm'][0]:.2f} at {near_['RightArm'][1]}, "
-                f"first mask {near_['Mask'][0]:.2f} at {near_['Mask'][1]}{crossing}")
-        text.append((x0 + (i // 5) * 1180, y3 + 34 + (i % 5) * 24, 14, line, ink if clip in NAMED else soft))
-    for i, line in enumerate(SEEN):
+                f"first mask {near_['Mask'][0]:.2f} at {near_['Mask'][1]}, legs {legs[0]:.2f} at {legs[1]}{crossing}")
+        text.append((x0 + (i // 5) * 1180, y3 + 34 + (i % 5) * 24, 14, line, ink if clip in named else soft))
+    for i, line in enumerate(seen):
         text.append((x0 + 1180, y3 + 34 + (4 + i) * 24, 14, line, ink))
     rs.paste(page, rs.text_layer(W, H, text), 0, 0)
-    rs.save(page, out / "shade_elite_contact.png")
-    (out / "shade_elite_contact.json").write_text(json.dumps(found, indent=1))
-    print(f"wrote {out / 'shade_elite_contact.png'}")
+    rs.save(page, out / f"{stem}.png")
+    # its parts as their own files, each under 2,000 pixels wide, so a reader sees the 64 px tiles at their own size
+    parts = [("64", (0, y0 - 44, x0 + col * len(row) + 20, 350)), ("beside", (x1 - 20, y0 - 44, 6 * pc + 40, 400)),
+             ("widest", (0, y2 - 40, x0 + bc * len(clips) + 20, 400))]
+    for i in range(0, len(close), 8):  # the larger band, eight tiles a file
+        n = min(8, len(close) - i)
+        parts.append((f"large{i // 8 + 1}", (x0 + bc * i - 20 if i else 0, y1 - 40, bc * n + (40 if i else x0 + 20), 400)))
+    for part, (x, y, w, h) in parts:
+        rs.save(page[y:y + h, x:x + w].copy(), out / f"{stem}_{part}.png")
+    (out / f"{stem}.json").write_text(json.dumps(found, indent=1))
+    print(f"wrote {out / (stem + '.png')}")
 
 if __name__ == "__main__":
     main()

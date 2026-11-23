@@ -1,0 +1,59 @@
+{
+  "Fps": 60,
+  "Clips": {
+    "GuardElite": {
+      "File": "Shade_GuardElite.json",
+      "Name": "ShadeGuardElite",
+      "Fades": [
+        0.08,
+        0.15
+      ],
+      "Frames": 165,
+      "Seconds": 2.733,
+      "Loop": false,
+      "Markers": [
+        [
+          18,
+          "Raise"
+        ],
+        [
+          138,
+          "Drop"
+        ]
+      ],
+      "ShownIn": "Guard",
+      "EliteOf": "Guard"
+    },
+    "LungeElite": {
+      "File": "Shade_LungeElite.json",
+      "Name": "ShadeLungeElite",
+      "Fades": [
+        0.06,
+        0.15
+      ],
+      "Frames": 139,
+      "Seconds": 2.3,
+      "Loop": false,
+      "Markers": [
+        [
+          16,
+          "Line"
+        ],
+        [
+          60,
+          "Lunge"
+        ],
+        [
+          75,
+          "Land"
+        ],
+        [
+          123,
+          "Close"
+        ]
+      ],
+      "ShownIn": "Dasher",
+      "EliteOf": "Lunge"
+    }
+  }
+}

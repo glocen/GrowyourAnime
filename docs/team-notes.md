@@ -20,10 +20,10 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **Next:** AR52's behaviours, TR54, and TR53 (with TR31 folded in). F7's timing waits on item 4's publish.
 - **The hooks for Scintilla and Sonus** wait on the director's own word (item 10). **Open, tests:** as before.
 
-**Modulo (assets).** 2026-11-23, 21:55, on Fable 5.2. Voidkin work parked until before launch (the director's word, 11:10).
-- **Now: AR57, the Guard's and the Dasher's elites,** in progress (the look first, then the two clips at the elite's scale in AR52's timings). AR56 is closed on my side: the director keeps the Tower room as it is (decisions.md, by 21:53); the room, its entrance and record marker are in `build/handoff/TowerRoom/` (AR56, "Modulo's finish"), for Faber's install after the main game. The two grey tests of the height stay in the generator (`stand`, `landing`). Nothing in the game, nothing uploaded.
+**Modulo (assets).** 2026-11-23, 22:23, on Fable 5.2. Voidkin work parked until before launch (the director's word, 11:10).
+- **Now: AR57, the Guard's and the Dasher's elites, delivered** and at research's read: the look, the two second masks and the elites' own clips (`ShadeGuardElite`, `ShadeLungeElite`, in AR52's timings) are in `build/handoff/Shade/` (AR57, "Modulo's finish"). Content check PASS on the look and on the clips, its conditions in the record. Not in the game, nothing uploaded. AR56 is closed on my side: the Tower room, its entrance and record marker are in `build/handoff/TowerRoom/` for Faber's install after the main game.
 - **For Faber:** TR53's look is `build/handoff/UI/return/` (the kit builds the slab, the lines and the presses; three images to upload; the Training line takes the kit's small portrait). The dare's open tab is in `goals.json`, "unfolded". My sheets are the strict case: the game has a sixth more room at the smallest phone. TR54's look is the goals' handoff: `DareMark*` where `DareTag*` stood (the origin is now the mark's middle), one `GoalNext` plate that holds the back press, no Ledger; `HomeSettings` gives way to the cog tile and the Today card. The Guard's clip is fixed (AR52, "The Guard's sleeve, fixed at the clip's finish") and goes up once as `ShadeGuard`.
-- **Next:** whatever research orders after AR57.
+- **Next:** a fix round on AR57 if research's read asks one, then whatever research orders.
 - **Still Faber's, each in its entry:** AR49's Home panel, AR44's shine, AR40's install (the atlas never alone), AR48's cues, TR50's dusk palette, the Voidkin screen's floor, AR50's seven pieces.
 
 **Turns.** Studio: Faber's, on the main place, the playtest stopped between pieces (2026-11-23, 15:15); the director's listen on TR42's panel is tomorrow, in the same place. Blender: nobody (Modulo's AR41 strips were stopped at 01:33 on 2026-11-19 by Claude Code when the PC ran low on memory; the director said wait at 01:34). Timing tests: nobody.
@@ -143,6 +143,14 @@ For Faber:
 
 ## Entries
 
+### 2026-11-23, 22:23. AR57, the Guard's and the Dasher's elites, delivered (Modulo)
+
+- **What changed:** each elite is the Shade at 1.35 with its own mask a second time on the Left Arm (the mask's mesh without ties), in Green and Orange, on Normal and Hard. Each has its own clip in AR52's lengths and markers, heavier in its spacing: `ShadeGuardElite`, `ShadeLungeElite`. AR52's nine clips are untouched.
+- **Where:** `build/handoff/Shade/` (two meshes, the recipe's `elite`, `clips/`, the sheets `shade_elites_look.png` and `shade_elite_contact_Guard.png` / `_Dasher.png`); the record is AR57, "Modulo's finish".
+- **Checked:** the second mask crosses nothing in any clip either elite plays; both audits pass; content check PASS on the look and the clips.
+- **Open:** research's read at the phone's size (Orange beside Red reads close; the Dasher's second mask is seen edge-on in its tell). Not in the game, nothing uploaded.
+- **For:** research (the read), then Faber (two meshes and two animations to upload, at his build).
+
 ### 2026-11-23, 22:08. TR52, the signature on a tap, a block in the game (Faber)
 
 - **What changed:** the signature's readout is the button, firing as the touch goes down, and it squeezes in on that frame. An **AUTO ON / AUTO OFF** toggle stands after the eye. With Auto off, a full ring waits for the tap and pulses once. A tap fires the signature once, cutting the combo when its target is in range. A ring not full does nothing.
@@ -237,17 +245,3 @@ For Faber:
   - Record: TR51, "Faber's build".
 - **Checks:** type check 0 new; logic offline 29,036 passed. The in-game cases are written, NOT VERIFIED: the Studio MCP saw no open place.
 - **For research:** the in-game verdicts on AR49 and TR51, after Faber's Studio run and captures. **For the director:** Grow your Anime open in Studio, Rojo connected on 34876, for that run.
-
-### 2026-11-23, 00:31. TR50's older line: the Arc panel's ground in the festival's dusk, a palette (Modulo)
-
-- **What:** the screen behind the picker's glass and the lantern's bed take Lantern Row's dusk, the lantern's light pooled under it; the panel's glow and rim are lantern light; the results card's cover is dark wine, so the street under it stays its dusk. Research picked B, then B with Normal's lights left Seam's: in cream they ran into Hard's coral and Ready's gold once Hard was open.
-- **Where:** `build/handoff/UI/stages/arc_dusk.json` and its two sheets; `tools/blender/stage_arc_dusk.py`; the record in TR50 (`docs/test-requests.md`).
-- **Open:** not in the game. Three colours need their own home in Config (the bed's bloom, the panel's glow, the card's cover). The run's line doesn't change.
-- **For:** Faber, after AR49.
-
-### 2026-11-23, 00:18. AR48: the element states' cues, delivered as a block-in (Modulo)
-
-- **What:** Burn, Chill and Freeze, Shock and Sap, grey then colour beside a plain hit, on the Shade and Rook from the player's camera. Frost and Sap passed at the block-in, Burn at research's second look, Shock on Modulo's read after must-fix 3, as research set it.
-- **Where:** `build/handoff/FxKit/states/` (three sheets and the counts); the seeds in `tools/blender/element_states_fx.py`; the record in AR48.
-- **Open:** nothing is in the game. The content check's conditions go with the build, and the first installed capture is read with the bodies turned, at 64 px.
-- **For:** Faber, after TR49's states.

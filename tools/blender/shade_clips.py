@@ -6,6 +6,9 @@ blender.exe -b --factory-startup --python tools/blender/shade_clips.py -- <out_d
 - export: Shade_<Clip>.json for the builder (r6anim.export, with its audit), one review pack a clip, and the cuffs'
   arcs (one dot a frame).
 - audit: the export without the review packs.
+- With no clip named, the nine (Shade.clips.json). The elites' own (ELITES: GuardElite, LungeElite) are a set apart:
+  name them to key them, and an export of both writes Shade_Elite.clips.json.
+- spacing: an elite's clip beside the one it's made from, at the same frames (name both: Guard GuardElite).
 
 Needs shade_model.py's output (shade_model.blend, Shade.recipe.json and the maps) in MODEL. The keying is
 rook_clips.py's: every clip at 60 fps on its own stretch of one timeline, starting from HUB; feet given as places on
@@ -363,6 +366,73 @@ def lunge(t):
     t.key(138, T=HUB["T"], RA=DOWN_R, LA=DOWN_L, H=HUB["H"], crouch=0.0)
 
 
+def guard_elite(t):
+    """The elite's Guard (AR57): the same shut in the same time, by a coat a third bigger. It gathers longer and
+    further back, its sleeves swung wide, then shuts late and all at once, and the coat drops onto the shut sleeves
+    and sinks under its own weight before it settles. It holds lower than the Guard. When it lets go the sleeves fall
+    first, and the coat stays braced a moment before it comes up after them.
+
+    The Guard's own markers and length, so AR52's seeds hold: `Raise` at 0.3 s, `Drop` at 2.3 s, 2.73 s in all."""
+    def shut(up):  # the Guard's shut, as low as the coat has sunk: the sleeves ride down with it, never into it
+        return {"RA": ("reach", (0.7, 2.2, up), (68, 0, -28), (0.15, 0.0, -0.4)),
+                "LA": ("reach", (-0.7, 2.2, up), (68, 0, 28), (-0.15, 0.0, -0.4))}
+
+    t.key(0)
+    t.key(11, "gathers", ease="in", T=(-6, -6, 0, 0, 0, -0.22), RA=(-22, 0, 30), LA=(-22, 0, -30), H=(-9, 6, 5), crouch=0.08)
+    t.sleeves(15, RA=(44, 0, 30), LA=(44, 0, -30))  # round the front from wide, clear of the coat: two doors swung to
+    t.key(18, "shut", ease="out", T=(22, 0, 0, 0, 0, 0.34), H=(-20, 0, 2), crouch=0.44, **shut(3.2),
+          feet={"Right Leg": (0.85, 0.12), "Left Leg": (-0.85, -0.1)})  # its feet slide wide under it: braced
+    t.mark(18, "Raise")
+    t.key(24, "sinks", ease="sine", T=(23, 0, 0, 0, 0, 0.35), H=(-22, 0, 2), crouch=0.6, **shut(3.04))
+    t.key(36, ease="sine", T=(20, 0, 0, 0, 0, 0.31), H=(-19, 0, 2), crouch=0.46, **shut(3.18))
+    t.key(62, "braced", ease="sine", T=(21, 0, 0, 0, 0, 0.32), H=(-19, 0, 1), crouch=0.49, **shut(3.15))
+    t.key(100, ease="sine", T=(20, 0, 0, 0, 0, 0.31), H=(-20, 0, 2), crouch=0.46, **shut(3.18))
+    t.key(138, "still braced", ease="in", T=(21, 0, 0, 0, 0, 0.32), H=(-19, 0, 2), crouch=0.48, **shut(3.16))
+    t.mark(138, "Drop")
+    t.key(146, "the sleeves go", ease="sine", T=(20, -2, 0, 0, 0, 0.3), RA=("hang", (0.4, -0.1), (0, 0, 6)),
+          LA=("hang", (0.4, 0.05), (0, 0, -6)), H=(-16, 4, 3), crouch=0.42)  # hung clear of the wide legs
+    t.key(155, "the coat after", T=(7, -8, 0), H=(-6, 12, 9), crouch=0.05, feet=HUB["feet"])
+    t.key(164, T=HUB["T"], RA=DOWN_R, LA=DOWN_L, H=HUB["H"], crouch=0.0)
+
+
+def lunge_elite(t):
+    """The elite's Lunge (AR57): the same line in the same time, from lower. It lifts a hair first, then drops behind
+    its mask all at once, sinks past where it will wait and comes back up to it: the crouch of something heavy. It
+    waits lower and further back than the Dasher. It lands deeper, the coat piling onto its knees, and when it's
+    picked up the coat comes first and the mask and the sleeves hang behind.
+
+    The Lunge's own markers and length, so AR52's seeds hold: `Line` at 0.27 s, `Lunge` at 1.0 s, `Land` 0.25 s
+    after, `Close` 0.8 s after that, 2.3 s in all."""
+    loose = {"Right Leg": None, "Left Leg": None}
+    t.key(0)
+    t.key(6, "lifts a hair", ease="in", T=(-5, 0, 0, 0, 0, -0.06), RA=(-14, 0, 12), LA=(-16, 0, -10), H=(-6, 0, 0))
+    t.key(16, "the line", ease="out", T=(45, 0, 0, 0, 0, -0.42), crouch=0.66, RA=(-58, 0, 16), LA=(-62, 0, -14),
+          H=(10, 0, 0), feet={"Right Leg": (0.92, -0.5), "Left Leg": (-0.92, 0.34)})  # wide, to get under itself
+    t.mark(16, "Line")
+    t.key(22, "sinks", ease="sine", T=(48, 0, 0, 0, 0, -0.46), crouch=0.78, RA=(-64, 0, 16), LA=(-68, 0, -14), H=(8, 0, 0))
+    t.key(32, ease="sine", T=(45, 0, 0, 0, 0, -0.43), crouch=0.68, RA=(-58, 0, 16), LA=(-62, 0, -14), H=(10, 0, 0))
+    t.key(50, "dead still", ease="sine", T=(46, 0, 0, 0, 0, -0.44), crouch=0.69, RA=(-60, 0, 16), LA=(-64, 0, -14), H=(10, 0, 0))
+    t.key(60, "drawn back", ease="in", T=(49, 0, 0, 0, 0, -0.54), crouch=0.76, RA=(-66, 0, 16), LA=(-70, 0, -14), H=(12, 0, 0))
+    t.mark(60, "Lunge")
+    t.key(64, "gone", ease="lin", T=(60, 0, 0, 0, 0, 0.5), feet=loose, RL=(24, 0, 5), LL=(-16, 0, -4),
+          RA=(-76, 0, 5), LA=(-82, 0, -5), H=(22, 0, 0), crouch=0.0)
+    t.key(69, ease="lin", T=(61, 0, 1, 0, 0, 0.5), RL=(-12, 0, 2), LL=(20, 0, -6), RA=(-80, 0, 8), LA=(-72, 0, -3), H=(21, 0, 2))
+    t.key(75, T=(62, 0, 2, 0, 0, 0.5), RL=(16, 0, 6), LL=(-14, 0, -2), RA=(-84, 0, 6), LA=(-74, 0, -6), H=(20, 0, 3))
+    t.mark(75, "Land")
+    t.key(81, "the mask arrives", T=(30, 0, 0, 0, 0, 0.25), RL=(-34, 0, 4), LL=(-52, 0, -5), crouch=0.0,
+          RA=(-30, 0, 10), LA=(-40, 0, -10), H=(-18, 0, 4))
+    t.key(88, "the rest arrives", T=(30, -4, 0, 0, 0, 0.2), feet={"Right Leg": (0.8, 0.5), "Left Leg": (-0.8, -0.34)},
+          RA=(58, 0, 8), LA=(64, 0, -8), H=(-14, 6, 8), crouch=0.44)
+    t.key(98, "its back open", ease="sine", T=(52, -5, 2, 0, 0, 0.24), RA=("hang", (0.5, 0.25), (0, 0, 6)), LA=("hang", (0.5, 0.3), (0, 0, -6)),
+          H=(26, 4, 8), crouch=0.56)
+    t.key(112, ease="in", T=(54, -5, 2, 0, 0, 0.24), H=(28, 4, 9), crouch=0.6)
+    t.mark(123, "Close")
+    t.key(123, "the coat first", ease="sine", T=(15, -8, 0, 0, 0, 0.05), RA=("hang", (0.08, -0.1), (0, 0, 6)), LA=("hang", (0.08, 0.05), (0, 0, -6)),
+          H=(10, 10, 10), crouch=0.14, feet=HUB["feet"])
+    t.key(131, "the mask after", T=(3, -3, 0), H=(-13, 6, 6), crouch=0.02)
+    t.key(138, T=HUB["T"], RA=DOWN_R, LA=DOWN_L, H=HUB["H"], crouch=0.0)
+
+
 def knocked(t, pitch, twist, roll, forward, mask):
     """The coat's key and the mask's for a blow that twists the coat `twist` degrees from where it hangs, its left
     shoulder going back (its right in the mirror, by the same amount: the coat hangs a little turned, so a plain mirror
@@ -413,10 +483,14 @@ def burst(t):
 CLIPS = {"Idle": (idle, "Brawler", False), "Walk": (walk, "Brawler", False), "Attack": (attack, "Brawler", False),
          "AttackLeft": (attack, "Brawler", True), "Guard": (guard, "Guard", False), "Lunge": (lunge, "Dasher", False),
          "Hit": (hit, "Brawler", False), "HitLeft": (hit, "Brawler", True), "Burst": (burst, "Brawler", False)}
+# The elites' own (AR57), a set apart: keyed on the nine's timeline they move the nine's numbers in the fifth decimal,
+# so an export keys one set or the other, never both. A sheet may name clips of both.
+ELITES = {"GuardElite": (guard_elite, "Guard", False), "LungeElite": (lunge_elite, "Dasher", False)}
 # A clip's Play and Stop fades, in seconds: the game's own where it has them (Shared.Config.Animations.Fades, which
 # Author.SaveBaked checks these against). Guard's and Lunge's are proposed here: the game doesn't play them yet.
 FADES = {"Idle": (0.2, 0.2), "Walk": (0.15, 0.15), "Attack": (0.06, 0.15), "AttackLeft": (0.06, 0.15), "Guard": (0.08, 0.15),
-         "Lunge": (0.06, 0.15), "Hit": (0.03, 0.1), "HitLeft": (0.03, 0.1), "Burst": (0.03, 0.05)}
+         "Lunge": (0.06, 0.15), "Hit": (0.03, 0.1), "HitLeft": (0.03, 0.1), "Burst": (0.03, 0.05),
+         "GuardElite": (0.08, 0.15), "LungeElite": (0.06, 0.15)}
 
 
 # --- outputs --------------------------------------------------------------------------------------------------------
@@ -431,6 +505,22 @@ def pose_sheet(scene, cams, take, out):
              for view in ("game", "side") for f, label in beats]
     scene.render.resolution_x, scene.render.resolution_y = 380, 420
     path = r6.render_shots(scene, shots, out / f"poses_{take.name}.png", columns=len(beats))
+    print(f"wrote {path}")
+
+
+# An elite's clip beside the one it's made from (AR57), at the same frames: where it opens, then where it ends.
+PAIRS = {"GuardElite": ("Guard", (0, 6, 11, 14, 16, 18, 24, 36), (138, 142, 146, 149, 152, 155, 160, 164)),
+         "LungeElite": ("Lunge", (0, 6, 11, 16, 22, 32, 50, 60), (64, 75, 81, 88, 98, 112, 123, 131))}
+
+
+def spacing_sheet(scene, cams, takes, name, out):
+    """Four rows from the player's camera: the ordinary clip then the elite's at the same frames, twice. The timings
+    are one clip's, so what differs between two rows is the spacing alone. Both are drawn at one size: the game
+    scales the elite."""
+    base, opens, ends = PAIRS[name]
+    shots = [(cams["game"], takes[n].start + f, f"{n} {f}") for frames in (opens, ends) for n in (base, name) for f in frames]
+    scene.render.resolution_x, scene.render.resolution_y = 250, 300
+    path = r6.render_shots(scene, shots, out / f"spacing_{name}.png", columns=len(opens))
     print(f"wrote {path}")
 
 
@@ -518,11 +608,20 @@ def collar_sheet(scene, rig, take, wear, out, frames=None):
 def main():
     out = bl.out_dir()
     args = sys.argv[sys.argv.index("--") + 2:]
-    mode = args[0] if args and args[0] in ("poses", "export", "audit", "collar") else "poses"
-    wanted = [a for a in args if a in CLIPS] or list(CLIPS)
+    mode = args[0] if args and args[0] in ("poses", "export", "audit", "collar", "spacing") else "poses"
+    named = [a for a in args if a in CLIPS or a in ELITES]
+    if all(a in CLIPS for a in named):
+        table, facts_file = CLIPS, "Shade.clips.json"
+    elif all(a in ELITES for a in named):
+        table, facts_file = ELITES, "Shade_Elite.clips.json"
+    else:  # both, for a sheet
+        table, facts_file = {**CLIPS, **ELITES}, None
+        if mode in ("export", "audit"):
+            raise SystemExit("shade_clips.py: export the nine or the elites' own, never both on one timeline")
+    wanted = named or list(table)
     scene, rig, undress, wear, feet = build()
     takes = {}
-    for i, (name, (clip, _, mirror)) in enumerate(CLIPS.items()):
+    for i, (name, (clip, _, mirror)) in enumerate(table.items()):
         if name in wanted:
             takes[name] = take = Take(rig, feet, name, 1000 * i, mirror)
             clip(take)
@@ -532,20 +631,26 @@ def main():
     cams = cameras(scene, rig)
     facts = {}
     for name, take in takes.items():
-        wear(CLIPS[name][1])
+        wear(table[name][1])
         facts[name] = {"File": f"Shade_{name}.json", "Name": f"Shade{name}", "Fades": list(FADES[name]), "Frames": take.end + 1, "Seconds": round(take.end / FPS, 3), "Loop": take.loop,
-                       "Markers": [[round(t * FPS), label] for t, label in take.markers], "ShownIn": CLIPS[name][1]}
-        if CLIPS[name][2]:
-            facts[name]["MirrorOf"] = next(n for n, c in CLIPS.items() if c[0] is CLIPS[name][0] and not c[2])
+                       "Markers": [[round(t * FPS), label] for t, label in take.markers], "ShownIn": table[name][1]}
+        if name in PAIRS:  # an elite's own: the game plays it where its ordinary kin plays the other
+            facts[name]["EliteOf"] = PAIRS[name][0]
+        if table[name][2]:
+            facts[name]["MirrorOf"] = next(n for n, c in table.items() if c[0] is table[name][0] and not c[2])
         if name == "Walk":  # the floor it covers in one loop: the builder sets the walk's speed from it, or the feet slide
             scene.frame_set(take.start)
             r6._refresh()
             a, b = leg_ends(rig)
             facts[name]["Stride"] = round(2 * abs(a.z - b.z), 2)
             facts[name]["StudsPerSecond"] = round(2 * abs(a.z - b.z) / (take.end / FPS), 2)
-        print(f"{name}: {take.end + 1} frames, {take.end / FPS:.2f} s, in the {CLIPS[name][1]}'s mask")
+        print(f"{name}: {take.end + 1} frames, {take.end / FPS:.2f} s, in the {table[name][1]}'s mask")
         if mode == "poses":
             pose_sheet(scene, cams, take, out)
+            continue
+        if mode == "spacing":
+            if name in PAIRS and PAIRS[name][0] in takes:
+                spacing_sheet(scene, cams, takes, name, out)
             continue
         if mode == "collar":
             collar_sheet(scene, rig, take, wear, out, [int(a) for a in args if a.isdigit()])
@@ -564,9 +669,9 @@ def main():
         strip = [take.start + round(i * take.end / 11) for i in range(12)]
         r6.review_pack(scene, rig, out / f"pack_{name}", [(take.start + f, f"{name} {f}: {label}") for f, label in take.beats],
                        lambda frame: cams["game"], bare=GAME[0], strip=strip, undress=undress, notes=heard.getvalue())
-    if mode != "poses" and len(takes) == len(CLIPS):
-        (out / "Shade.clips.json").write_text(json.dumps({"Fps": FPS, "Clips": facts}, indent=2) + "\n", encoding="utf-8")
-        print(f"wrote {out / 'Shade.clips.json'}")
+    if mode in ("export", "audit") and len(takes) == len(table):
+        (out / facts_file).write_text(json.dumps({"Fps": FPS, "Clips": facts}, indent=2) + "\n", encoding="utf-8")
+        print(f"wrote {out / facts_file}")
 
 
 if __name__ == "__main__":

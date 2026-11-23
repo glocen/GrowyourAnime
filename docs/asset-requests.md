@@ -16615,3 +16615,49 @@ Research, 2026-11-23, 21:54, on the director's pick of 21:53 (`docs/decisions.md
 - **Checks:** the content check on each new mask (only the Brawler's second mask has passed); research's read of the sheet at the phone's size; then Faber's build.
 - **Cap:** the look in 2 hours, each block clip in 1 hour. It's an ordinary piece, so it closes at competent.
 - **Order:** Modulo's next, now.
+
+### Modulo's finish: the two elites' look, their second masks and their own clips (2026-11-23, 22:23; started 21:55)
+
+- **Where:** `build/handoff/Shade/`.
+  - The second masks: `Shade_MaskGuardBare.json` (136 triangles) and `Shade_MaskDasherBare.json` (40), and `Shade.recipe.json`'s `elite`, which now names them with their places.
+  - The clips: `clips/Shade_GuardElite.json`, `clips/Shade_LungeElite.json`, and their facts in `clips/Shade_Elite.clips.json` (`EliteOf`, markers, fades).
+  - The sheets: `shade_elites_look.png`; `shade_elite_contact_Guard.png` and `shade_elite_contact_Dasher.png`; `shade_elite_bare_Guard.png` and `shade_elite_bare_Dasher.png`; in `clips/`, `poses_GuardElite.png`, `poses_LungeElite.png`, `spacing_GuardElite.png`, `spacing_LungeElite.png`.
+  - The scripts, in `tools/blender/`: `shade_elites.py` (new, the look), `shade_elite_bare.py` (the three kinds), `shade_elite_contact.py` (any elite's kind, the legs and the floor measured), `shade_clips.py` (`guard_elite`, `lunge_elite`, the `spacing` sheet), `shade_elite.py` (the recipe's note).
+- **The look.** Each elite is the Shade at 1.35 wearing its own mask a second time at 0.6 on the Left Arm's front corner, the Brawler elite's place and make: the mask's mesh less its five tie pieces, nothing added, the same maps. Green and Orange, on Normal and on Hard (AR46's cut).
+  - The sheet has the row of five from the square's edge (32 studs from the avatar) at the smallest phone (450 pixels high) and four times; each figure near, in Faber's street capture; and the two new elites at 64 pixels a body from three headings, on dark and on day.
+  - The row stands on the paving's flat colour, said on the sheet: in the one street capture the avatar and the lead stand where the row would.
+  - At the edge an elite stands about 68 pixels tall, its mask about 18 and its second mask about 13.
+- **The clips,** the elite's own: `ShadeGuardElite` and `ShadeLungeElite`, in AR52's lengths, markers and fades, so the rules' seeds hold (`Raise` 0.3 s and `Drop` 2.3 s in 2.73 s; `Line` 0.27 s, `Lunge` 1.0 s, `Land` 1.25 s and `Close` 2.05 s in 2.3 s). The weight is in the spacing.
+  - **The Guard's elite** gathers back and wide for 11 frames where the Guard takes 7, swings both sleeves to from wide in the last 7, and the coat drops onto them and sinks (crouch 0.6) before it settles. It holds lower than the Guard (0.46 to 0.49 against 0.34 to 0.36) on feet slid wide. At `Drop` the sleeves fall first and the coat comes up after them.
+  - **The Dasher's elite** lifts a hair, drops in 10 frames to a crouch of 0.66 on wide feet, sinks to 0.78 and comes back up. It waits lower and further back than the Dasher (0.4). The flight is the Dasher's. It lands deeper (0.44 to 0.6 against 0.26 to 0.3), and at `Close` the coat rises first, the mask and the sleeves after.
+  - AR52's `Guard` and `Lunge` are untouched. The nine clips re-export byte for byte as delivered: the elites' two are keyed as a set apart, because on the nine's timeline they moved the nine's numbers in the fifth decimal.
+- **Measured** (`shade_elite_contact.py`: every frame of every clip either elite plays, triangle against triangle, at the ordinary size):
+  - the second mask crosses nothing: the coat, the other sleeve, the first mask, either leg;
+  - nearest: the Guard's elite 0.23 studs from its first mask and 0.41 from the coat (frame 15); the Dasher's elite 0.43 from its left leg (frame 56) and 0.62 from the coat;
+  - never under the floor: lowest 0.85 studs over it, in the flight;
+  - both audits pass (arm through body 0.021 and 0.025, the line being 0.05).
+- **What I see wrong:**
+  - Orange beside Red reads close at the square's edge (AR52's note stands). The Dasher's elite is told by its mask's outline.
+  - In the Dasher's tell and flight the arms are swept back, so its second mask is seen edge-on for about 0.73 s: a pale strip beside the sleeve, not a mask. The content check passes it and leaves the read to research. The lever is the left arm's keys in `lunge_elite`, checked again as a re-pose.
+  - From behind the second mask is hidden, and from the lead's other side it's a sliver, as the Brawler elite's: there the size says elite.
+  - The crouch's depth reads less from the player's camera than from the side; the wide feet carry it. In the elite's crouch a leg slides 0.73 to 0.9 studs up into the coat (the script's warning line is 0.6; the delivered `HitLeft` has 0.81). The coat hides it in the sheets. It's one look in the engine.
+  - I judged the spacing from frames side by side, not in motion.
+- **Content check:** the look, PASS with conditions at about 22:06; the clips, PASS with conditions at about 22:19, and its follow-up PASS at about 22:22: the legs are in the measure, the two landing frames (81 and 88) are drawn with the second mask on, and the PASS carries to the delivered exports, which were keyed again as a set apart after its first read (largest difference 0.00145). What binds:
+  1. The two meshes and the two clips byte for byte. Another export or a re-key comes back. Their sha1:
+     - `Shade_MaskGuardBare.json`: `0c83124a5fc72ac8c7192578f4498f907024b9c4`
+     - `Shade_MaskDasherBare.json`: `453975f9ae61bef270963ef108c76e40b118f443`
+     - `clips/Shade_GuardElite.json`: `0fe3c83ecf685c6ae38d6b1925137d82d1d8a470`. Its audit: PASS; legs cross 0.006, arm through body 0.021 at 0.27 s, leg out of hip 0.029, under the floor 0.000, salute held 0.000 s.
+     - `clips/Shade_LungeElite.json`: `526a6a1427cfe62319a9205b5ee4b9540dc773a8`. Its audit: PASS; legs cross 0.006, arm through body 0.025 at 0.93 s, leg out of hip 0.041, under the floor 0.000, salute held 0.000 s.
+     - A second export from the script as committed gave the same bytes.
+  2. AR2 section 5's conditions carry over to both: the same surface, tint and strength, 0.6, the recipe's seat, nothing else marking an elite, the mask moving only with the Left Arm and going with the coat in the burst.
+  3. After the upload, one look in the engine with the game's bloom: both elites, Normal and Hard, at 64 pixels on dark and bright, from the player's camera, the other side, behind and below, in Idle, the Guard, and the Lunge's tell and folded hold. It comes back if a pale strip stands out of a sleeve, if the Dasher's point shows past the arm's back, or if on Hard a crack or red haze gathers at a second mask.
+  4. The Dasher's small point is never lengthened, sharpened, darkened or made metal, and no effect, line or trail starts from it (for Scintilla's line).
+  5. The sheets cover Green and Orange as drawn. Either elite in Strength's red is a look in the engine.
+  6. The self-test's case that an elite never plays `AttackLeft` names the two new elites.
+  7. The Support's elite still waits on its own sheet and check.
+- **For Faber,** at the build:
+  - two meshes and two animations to upload under the group; the second mask's place is `Shade.recipe.json`, `elite.masks.Guard` and `.Dasher`;
+  - the elite plays `ShadeGuardElite` where the Guard plays `ShadeGuard`, and `ShadeLungeElite` where the Dasher plays `ShadeLunge` (`Shade_Elite.clips.json`, `EliteOf`). The markers and fades are the same, so one behaviour drives both;
+  - if the elite's own clip isn't wanted, the ordinary one is measured clear with the second mask on too.
+- **The four facts.** Made: yes. Self-reviewed: yes (the sheets, the measures, the audits). Delivered: to the handoff. In the game: no, and nothing is uploaded. Research's read is asked. The director has the look sheet (sent 22:15) and hasn't spoken.
+- **Time:** the look, 21:55 to 22:06, of a 2 hour cap; the two clips, 22:06 to 22:23, of an hour each.

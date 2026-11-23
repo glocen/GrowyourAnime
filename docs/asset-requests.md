@@ -16733,14 +16733,14 @@ Research, 2026-11-23, 22:26, on the director's pick by 22:26 (`docs/decisions.md
   1. The slips stay paper: never the glow or a red tint, on any stretch or elite.
   2. The shape stays low and split: no peak over the crown, the veil never one unbroken sheet.
   3. The mesh and the clip byte for byte. Their sha1:
-     - `Shade_MaskSupport.json`: `1873abd75a234fd27ef013e00518fe5308064b9b`
+     - `Shade_MaskSupport.json`: `4ac0297ec781cdf304fbc009f89cfa59807646fe`
      - `clips/Shade_Cast.json`: `4cb54e41e523d2a9b2c48c70b6e4a27a1523b3ad`. A second export gave the same bytes.
   4. The maps: the check opened four of the five at full size (not `Shade_Color_HardRed.png`) and found an abstract atlas. It didn't judge AR46's streaks again. Their sha1:
-     - `Shade_Color.png`: `9d973de70cb10fe0e29764056129ddce79eaf99a`
-     - `Shade_Emissive.png`: `8fc6c138b0e0a1baf72374544a0bcfb0a780f942`
-     - `hard/Shade_Color_HardRed.png`: `7e7c11326ecf2a29820c058508561da21264711a`
-     - `hard/Shade_Color_HardTint.png`: `bc37a0d9e8e7ad5c6bde059c24298f7b2341cfca`
-     - `hard/Shade_Emissive_Hard.png`: `616ba0c74b671a41fc9e886f93749164f54b9274`
+     - `Shade_Color.png`: `5b6593b595cfdce63fecf669039ffb7ea528ceb2`
+     - `Shade_Emissive.png`: `42a5ffe0261f1f6de547cd96dbeeb4020402b604`
+     - `hard/Shade_Color_HardRed.png`: `745c7c3bc499ccfee505f302658c463529c903a5`
+     - `hard/Shade_Color_HardTint.png`: `2fc3ab6e44f556814a427fa873b78aa465af6111`
+     - `hard/Shade_Emissive_Hard.png`: `d3b6a267b31e1fd7a50d080f69b483bc2ebf78dc`
   5. Its read at a pack's distance (a mask with long teeth, as a second read) is left to research; no rule is touched. It's paper with no dome, nose or jaw.
 - **For Faber,** at the build:
   - `tools/studio/Models/Shade.luau` holds the earlier shape's id for `Shade_MaskSupport`: the new mesh goes up under the group, and with it the two maps and the Hard three (the other meshes and the roughness map stand);
@@ -16761,6 +16761,25 @@ From `build/handoff/Shade/shade_support_look.png` (the row, the pack, near, 64 p
   - The lever is Modulo's: more, narrower slips with square-cut ends, so they read as a paper fringe.
   - The check: the row and the pack at their own size and four times, and near.
 - **The second look** judges the veil only.
+
+### Modulo's fix: the veil as a fringe (2026-11-23, 23:18; started 22:52)
+
+- **Must-fix 1, done:** what hangs from the mask is a fringe of eight narrow strips of paper, cut square. Each is 0.17 studs wide, 0.03 from the next and about 1.0 to 1.1 long, none quite the length of its neighbour. All are one paper, in the band's own front plane, hanging from its lower edge as if slit from the one sheet. The band and its two holes are as they were.
+- **Where:** the same files in `build/handoff/Shade/`: `Shade_MaskSupport.json` (308 triangles, now 2.883 by 1.726 by 1.736), the two maps and `hard/`'s three, `Shade.recipe.json`, and the sheets drawn again (`shade_support_look.png`, `shade_support_design.png`, `shade_model_sheet.png`, `clips/poses_Cast.png`). `clips/Shade_Cast.json` is byte for byte the one delivered. The sha1 in the finish above are now these files'.
+- **Three bakes to get there:**
+  1. 22:54: four strips in front of four shaded ones. They still read as four, so it went no further.
+  2. 22:57: all eight in one paper and one plane, laid over the band's face. The content check passed it at about 23:06 and found ember in Hard's map, in the crack a hundredth deep between each strip's back and the band's face.
+  3. 23:10: the crack removed at its source, not painted over: the strips hang from the band's edge and overlap nothing.
+- **The pack is kept:** AR2's four slips and the four ink lines on them are the eight strips, each an old piece moved, so the atlas' islands stay where they were. No ink is left in the mesh. Eight is the most this pack holds: a ninth strip is a new pack, and every Shade mesh and map uploaded again.
+- **Measured:**
+  - of the mask's 33,118 texels, 3,201 are lit (Normal's glow over 0.13, Hard's glow, or Hard's paint): 1,423 on the two holes and their footprint, 1,777 on the rim, as on the other masks. The strips hold 17,986 texels and none is lit or painted, on any face. The one lit texel below the band's edge is the rim's;
+  - against the last commit the five maps differ only on the Support's islands (23,120 texels in `Shade_Color.png`) and in 18 gutter texels (x 423 to 459, y 169 to 170) that lie on no mesh's face;
+  - the three second masks without ties come out byte for byte the same.
+- **What I see wrong:** near, it reads as a fringe. At the pack's distance at its own size the gaps close: a pale band over a pale block. Four times enlarged, a comb or a row of long square teeth is still a possible second read; the content check says the same and leaves it to research.
+- **Content check:** PASS at about 23:06 on the second bake, and PASS at about 23:17 on these bytes: the ember bands on the strips' islands and the dashed column on the band's face are gone. Conditions 1 and 2 of the finish stand (the strips stay paper; low and split).
+- **For Faber:** the finish's list holds as written.
+- **The four facts.** Made: yes. Self-reviewed: yes. Delivered: to the handoff. In the game: no, nothing uploaded. Research's second look, on the veil only, is asked.
+- **Time:** 22:52 to 23:18.
 
 ## AR59. Rook, redesigned to the anime bar (Modulo, for research's pick and the director's look, then its finish; Faber's install after)
 

@@ -30,7 +30,7 @@ KINDS = (("Brawler", "Strength", "Red", "round, grinning"), ("Guard", "Technique
          ("Dasher", "Endurance", "Orange", "long, pointed"))
 
 
-SUPPORT = ("Support", "Endurance", "Orange", "a half-mask, veiled")
+SUPPORT = ("Support", "Endurance", "Orange", "a half-mask, a fringe")
 
 
 def design(out, KINDS=KINDS, title="AR52: the Guard and the Dasher, beside the Brawler", file="shade_kinds_design.png"):

@@ -20,10 +20,10 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **Next:** AR52's behaviours, TR54, and TR53 (with TR31 folded in). F7's timing waits on item 4's publish.
 - **The hooks for Scintilla and Sonus** wait on the director's own word (item 10). **Open, tests:** as before.
 
-**Modulo (assets).** 2026-11-23, 22:50, on Fable 5.2. Voidkin work parked until before launch (the director's word, 11:10).
-- **Now: AR58, the Support Shade, delivered** and at research's read: the half-mask and its veil of four slips (baked into the Shade's atlas, the Hard maps cut again), its look at 0.9 in Orange, and one block clip, `ShadeCast` (up in 0.4 s, held 1.0 s, down in 0.3 s), are in `build/handoff/Shade/` (AR58, "Modulo's finish"). Content check PASS on the baked mask and the clip. Not in the game, nothing uploaded: the Support's mesh, the Shade's two maps and the Hard three go up again at Faber's build. AR57 passed at competent and AR56 is closed on my side: both are Faber's to build.
+**Modulo (assets).** 2026-11-23, 23:18, on Fable 5.2. Voidkin work parked until before launch (the director's word, 11:10).
+- **Now: AR58's must-fix, delivered** and at research's second look: the Support's veil is a fringe of eight square-cut paper strips hanging from the band's lower edge (AR58, "Modulo's fix"). The mesh, the Shade's two maps and the Hard three are baked again in `build/handoff/Shade/`; `ShadeCast` is unchanged. Content check PASS on these bytes. Not in the game, nothing uploaded: they go up at Faber's build. AR57 passed at competent and AR56 is closed on my side: both are Faber's to build.
 - **For Faber:** TR53's look is `build/handoff/UI/return/` (the kit builds the slab, the lines and the presses; three images to upload; the Training line takes the kit's small portrait). The dare's open tab is in `goals.json`, "unfolded". My sheets are the strict case: the game has a sixth more room at the smallest phone. TR54's look is the goals' handoff: `DareMark*` where `DareTag*` stood (the origin is now the mark's middle), one `GoalNext` plate that holds the back press, no Ledger; `HomeSettings` gives way to the cog tile and the Today card. The Guard's clip is fixed (AR52, "The Guard's sleeve, fixed at the clip's finish") and goes up once as `ShadeGuard`.
-- **Next:** a fix round on AR58 if research's read asks one, then whatever research orders.
+- **Next:** AR59, Rook redesigned: three directions for research's pick and the director's look.
 - **Still Faber's, each in its entry:** AR49's Home panel, AR44's shine, AR40's install (the atlas never alone), AR48's cues, TR50's dusk palette, the Voidkin screen's floor, AR50's seven pieces.
 
 **Turns.** Studio: Faber's, on the main place, the playtest stopped between pieces (2026-11-23, 15:15); the director's listen on TR42's panel is tomorrow, in the same place. Blender: nobody (Modulo's AR41 strips were stopped at 01:33 on 2026-11-19 by Claude Code when the PC ran low on memory; the director said wait at 01:34). Timing tests: nobody.
@@ -145,10 +145,10 @@ For Faber:
 
 ### 2026-11-23, 22:50. AR58, the Support Shade, delivered (Modulo)
 
-- **What changed:** the Support's mask is a low paper band with two thin holes and a veil of four slips, in AR52's make, baked into the Shade's atlas (only its own texels change) with the Hard maps cut again. The Support stands at 0.9 in Orange. One block clip, `ShadeCast`: both sleeves up wide in 0.4 s (`Cast`), held 1.0 s, down in 0.3 s from `Lower`.
+- **What changed:** the Support's mask is a low paper band with two thin holes and a veil, a fringe of eight square-cut strips since research's must-fix (23:17), in AR52's make, baked into the Shade's atlas (only its own texels change) with the Hard maps cut again. The Support stands at 0.9 in Orange. One block clip, `ShadeCast`: both sleeves up wide in 0.4 s (`Cast`), held 1.0 s, down in 0.3 s from `Lower`.
 - **Where:** `build/handoff/Shade/` (`Shade_MaskSupport.json`, the two maps and `hard/`'s three, `clips/Shade_Cast.json`, the sheets `shade_support_look.png` and `shade_support_design.png`); the record is AR58, "Modulo's finish".
 - **Checked:** the clip's audit passes; content check PASS on the baked mask and the clip.
-- **Open:** research's read. At a pack's distance the veil can read as long teeth or a comb (the record, "What I see wrong"). Not in the game, nothing uploaded.
+- **Open:** research's second look at the veil (AR58, "Modulo's fix"). Not in the game, nothing uploaded.
 - **For:** research now; Faber at his build, after AR57: the Support's mesh and the five maps go up again, and `ShadeCast`.
 
 ### 2026-11-23, 22:23. AR57, the Guard's and the Dasher's elites, delivered (Modulo)

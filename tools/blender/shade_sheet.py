@@ -300,26 +300,35 @@ def mask(kind, m):
                 marks.append(pinned(bl.object_from_bmesh("Tucked", bm, m["Ink"]), then))
         return [folded("Mask", y, rise, paper), rim(face, m, 1.07), *(pinned(eye(e, True), eye(e, False)) for e in (-1, 1)),
                 *marks, *ties(m, 5.5, 0.6)]
-    # Support: a half-mask, a wide low band across the eyes that narrows to a point each side, and a veil of four
-    # paper slips hung under it, each cut to a point, two long and two short, the coat showing between them. Two thin
-    # holes are cut through the band, each falling toward its outer end, and nothing else is on it (AR58). AR2's band
-    # swept up at its ends and its slips met edge to edge: at 64 pixels they read as horns over a beard (the content
-    # check's read), so the ends came down and the slips apart. Its round eyes are the thin holes now, and the ink
-    # line on each slip is gone. Packed as shipped, each piece is the old one moved, the lines tucked inside the band.
+    # Support: a half-mask, a wide low band across the eyes that narrows to a point each side, and a veil hung under
+    # it: a fringe of eight narrow strips of paper cut square, side by side in the band's plane and a hair apart, none quite
+    # the length of the next. Two thin holes are cut through the band, each falling toward its outer end, and nothing
+    # else is on it (AR58). AR2's band swept up at its ends and its slips met edge to edge: at 64 pixels they read as
+    # horns over a beard (the content check's read), so the ends came down. Four long pointed slips read as fangs
+    # under a brow (research's read), so the veil is many, narrow and square; and four in front of four shaded ones
+    # still read as four, so all eight are one paper. Its round eyes are the thin holes now. Packed as shipped, each
+    # piece is an old one moved: AR2's four slips are every other strip, their points flattened into the cut, and the
+    # ink line on each is the strip beside it, in paper. No ink is left.
     band = [(-0.8, 4.55), (0.8, 4.55), (1.36, 4.9), (0.7, 5.12), (0, 5.17), (-0.7, 5.12), (-1.36, 4.9)]
     was = [(-0.8, 4.55), (0.8, 4.55), (1.4, 5.22), (0.7, 5.08), (0, 5.14), (-0.7, 5.08), (-1.4, 5.22)]
     edges = (-0.9, -0.45, 0.0, 0.45, 0.9)
+    # The strips hang from the band's lower edge in its own front plane, as if slit from the one sheet: a strip laid
+    # over the band's face left a crack a hundredth deep between them, which the bake lit and Hard painted ember.
+    half, top, cuts = 0.085, 4.55, (3.52, 3.47, 3.55, 3.5, 3.46, 3.54, 3.49, 3.53)
     hung = []  # in the shipped order: a slip, its line, the next slip
     for j in range(4):
-        a, b, low = edges[j], edges[j + 1], 3.5 if j % 2 else 3.3
-        c, paper_j, y_j = (a + b) / 2, m["PaperShade"] if j % 2 else paper, y + (0.19 if j % 2 else 0.15)
-        slip = plate("Slip", [(c - 0.14, 4.62), (c + 0.14, 4.62), (c + 0.155, low + 0.2), (c, low), (c - 0.155, low + 0.2)], y_j, 0.03, paper_j)
+        x0, x1 = -0.7 + 0.4 * j, -0.5 + 0.4 * j  # 0.17 wide, 0.03 apart, under the whole of the band
+        c0, c1 = cuts[2 * j], cuts[2 * j + 1]
+        cut_flat = plate("Strip", [(x0 - half, top), (x0 + half, top), (x0 + half, c0), (x0, c0), (x0 - half, c0)], y + 0.11, 0.03, paper)
+        boxed = rs.slab("Strip", (x1, y + 0.125, (top + c1) / 2), (top - c1, 0.03, 2 * half), paper, rot=(0, 90, 0))
         if not SHIPPED_PACK:
-            hung.append(slip)
+            hung += [cut_flat, boxed]
             continue
-        hung.append(pinned(slip, plate("Slip", [(a * 0.86, 4.62), (b * 0.86, 4.62), (b, low + 0.22), (c, low), (a, low + 0.22)], y_j, 0.03, paper_j)))
-        hung.append(pinned(rs.slab("Tucked", (c, y + 0.07, 4.84), (0.2, 0.02, 0.04), m["Ink"]),
-                           rs.slab("InkLine", (c, y + (0.225 if j % 2 else 0.185), low + 0.42), (0.26, 0.012, 0.045), m["Ink"])))
+        a, b, low = edges[j], edges[j + 1], 3.5 if j % 2 else 3.3
+        c = (a + b) / 2
+        hung.append(pinned(cut_flat, plate("Slip", [(a * 0.86, 4.62), (b * 0.86, 4.62), (b, low + 0.22), (c, low), (a, low + 0.22)],
+                                           y + (0.19 if j % 2 else 0.15), 0.03, paper)))
+        hung.append(pinned(boxed, rs.slab("InkLine", (c, y + (0.225 if j % 2 else 0.185), low + 0.42), (0.26, 0.012, 0.045), paper)))
 
     def eye(e, now):  # today's thin hole, or as shipped: a round one, 12 points either way, round the same way
         if now:

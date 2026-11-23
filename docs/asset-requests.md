@@ -15512,6 +15512,48 @@ Research, 2026-11-23, 14:54, on the director's word of about 14:50: F2 of `docs/
 - **Cap:** the masks and clips in 2 hours; each behaviour in about 90 minutes. An ordinary piece, closed at competent.
 - **Order:** Modulo now. The director put this piece beside the main map, against the order of 00:05, for this piece only.
 
+### The masks, the block clips and the outlines, for research's pick (Modulo, 2026-11-23, 14:58 to 15:18 by the clock)
+
+**The look, for the pick:** `build/handoff/Shade/shade_kinds_look.png` (`tools/blender/shade_kinds.py`). The baked Shade on its rig in the game's Idle, at the game's glow, laid into Faber's day capture of the street through its own camera: the Brawler Red, the Guard Green, the Dasher Orange, Normal over Hard. Each is shown at twice the capture's size, at the smallest phone's pixels (its own size, then four times, near and side), and over dark at full size and at 64 pixels. At the smallest phone the near Guard's mask is about 37 pixels tall.
+
+**The masks** (`tools/blender/shade_sheet.py`, `mask`), in the Brawler's make after AR47: paper, cut through to the light, no ink.
+- **The Guard:** a square of paper, a little wider at its top, with a tab each side for its strings. Two long holes nearly meet, and each one's top edge falls toward the middle, so the paper left above them is the brow. A short shut slot sits under them. AR2's two brow blocks and the ink bars under its eyes are gone.
+- **The Dasher:** the long kite folded once down its middle, with two slanted blades cut through it and nothing else. AR2's four ink marks are gone, and the eyes are a little longer and taller, to read at the phone's pixels.
+- **The atlas keeps its shipped pack,** as AR47's did (`pinned`, `settle`): each new piece is an old one moved. The Guard's brow blocks became its tabs. Its ink bars and the Dasher's ink marks are tucked inside the paper, where nothing sees them: 24 and 8 triangles that draw nothing. The counts stand: the Guard 196 triangles, the Dasher 100.
+
+**Baked, in `build/handoff/Shade/`** (`shade_model.py`, then `hard_cut.py shade`):
+- `Shade_MaskGuard.json` and `Shade_MaskDasher.json`. The other seven meshes and `Shade_Roughness.png` are byte-identical to the shipped ones.
+- `Shade_Color.png` and `Shade_Emissive.png`: only the two masks' islands changed. Past them, 12 texels of the colour map and about 2,700 of the glow map differ by one 8-bit step, the bake's own noise.
+- AR46's Hard pair, re-cut on the new atlas: `hard/Shade_Color_HardRed.png`, `Shade_Color_HardTint.png`, `Shade_Emissive_Hard.png`.
+- `Shade.recipe.json`: the Guard's centre and size (it lost the brow's overhang); its `elite` section is kept as it was. `shade_model_sheet.png`.
+- **Rollback:** the shipped files are in git, at this commit's parent. The scratch model as it was is in `build/scratch/modulo/shade/model-before-ar52-2026-11-23/`.
+
+**The outlines.** Green beside Red reads at every size. **Orange beside Red is close:** `Config.Shades.Tint`'s Orange is `#F23000`, a red-orange by AR2's own choice (any green in a tint at 16 lifts toward white), and here the Dasher's trim reads nearly as the Brawler's. The Dasher is told by its mask's outline, not its colour. This is Blender's stand-in for the engine's glow, so Faber's capture in the game is the measure. If the two are that close there, Orange's tint is a tier 2 number for research and Faber.
+
+**The block clips** (`tools/blender/shade_clips.py`; `build/handoff/Shade/clips/Shade_Guard.json`, `Shade_Lunge.json`, their pose sheets, and the two rows of `Shade.clips.json`). One clip a behaviour, with a marker at each beat, so the game tunes a seed by the track's speed between two markers.
+- **`ShadeGuard`, 2.73 s:** it shuts in 0.3 s (`Raise`, where the shield's look opens), holds 2.0 s hardly breathing, and lets its sleeves fall at `Drop`, back to its stand 0.43 s later. The 2.5 s open is the game's: it plays the Shade's own clips meanwhile.
+- **`ShadeLunge`, 2.3 s:** it folds down behind its mask's point by 0.27 s (`Line`, where the line opens), stays dead still, draws back a hair and goes at 1.0 s (`Lunge`), is in the air 0.25 s (`Land`), then lies folded over its own knees with its back open for 0.8 s (to `Close`) before it's picked up. The clip stays where it stands: the 12 studs are the game's.
+- **The audit:** the Lunge passes. The Guard fails one line, as the shipped clip did (0.36 studs then, 0.32 now, over a limit of 0.05): at the shut pose a sleeve crosses the coat's front. Less lean and the sleeves apart brought it to 0.27 and weakened the pose, so the block keeps the pose. It waits for the clip's finish.
+- The other seven clips export byte-identical to the shipped ones.
+
+**For Faber, at the block:**
+- Re-upload under the group, together: the meshes `Shade_MaskGuard` and `Shade_MaskDasher` (new ids in `tools/studio/Models/Shade.luau`'s MESHES), the maps `Shade_Color` and `Shade_Emissive`, and the Shade's Hard maps as `HardLooks.luau` needs. Everything else stays.
+- The two clips, uploaded under the group as `ShadeGuard` and `ShadeLunge`, with their fades from `Shade.clips.json`.
+- A Green Guard and an Orange Dasher captured beside a Red Brawler from the player's camera, Normal and Hard, on a phone: the engine's answer on Orange.
+
+**For Scintilla:** the shield's look hangs on `Raise` and `Drop`, the line's on `Line`, `Lunge` and `Land`.
+
+**Limits.** The look sheet is Blender's glow and bloom at the game's numbers, not the engine. The clips are read as poses, from the player's camera and the side, not in motion. Nothing was tried in Studio.
+
+**Content checks.** The design: PASS before the bake (15:07), with conditions kept here: the Guard's paper stays pale, with no stitches, teeth, spikes or anything bolt-like at the neck; the Dasher's two holes stay apart across the fold and nothing is added to its face or point.
+
+The baked files: PASS (15:18) for the re-upload of the two meshes, the two maps and the three Hard maps, on the look sheet, the five maps at full size and the two pose sheets; its reader saw the sheet shrunk, so nothing at exactly 64 pixels. Its conditions:
+- only those seven files go up, under the group; the look, design and pose sheets stay internal;
+- Faber's installed capture from the player's camera comes back to the check if any of these fails: on a Hard Guard and a Hard Dasher the coral stays inside the cuts; the Dasher's collar stays a thin hoop, with no red haze in the hollow or down the chest; in the Lunge's tell (frames 16 to 60), where the open collar faces the camera with the mask below it, it still reads as a hollow coat;
+- the two clips' own check before their upload (a bare rig stepped from the side and three-quarter) is owed: the pose sheets were read for rule 4 only.
+
+**Four facts.** Made: two masks, the atlas's two maps and its Hard pair, two block clips, the look sheet. Self-read: the look sheet at the phone's pixels and at 64, the two pose sheets. Delivered: `build/handoff/Shade/`; nothing uploaded, nothing in the game. Accepted: no; research's pick on the masks is asked.
+
 ## Later, by ground
 
 The rest of ground 1 (Kirra in AR10, Watt in AR11; then Sable, Marigold, Crane), then each ground's Voidkin in `docs/roster.md`'s order. **The machines** (Gantry, Bulwark, Ironhymn, Shiomaru, Aegir) share one custom rig, taller than a player, with its own clip family: the first of them is timed like AR1, because a custom rig is a different cost.

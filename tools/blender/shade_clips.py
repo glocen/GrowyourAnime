@@ -299,41 +299,57 @@ def attack(t):
 def guard(t):
     """It shuts. The coat sinks and leans at you, and both sleeves come up level, side by side under the mask, their
     open cuffs square at you: two shutters pulled to, with the mask's slots over the top. It holds, braced and hardly
-    breathing, and then lets them fall as if they weighed nothing."""
-    shut_r, shut_l = ("reach", (0.66, 1.95, 3.3), (68, 0, -28)), ("reach", (-0.66, 1.95, 3.3), (68, 0, 28))
+    breathing, and then lets them fall as if they weighed nothing.
+
+    AR52's seeds: up in 0.3 s (`Raise`), held 2.0 s, let go at `Drop`. The hold hardly moves, so the game may stretch
+    or shorten it by the track's speed between the two markers."""
+    shut_r, shut_l = ("reach", (0.7, 2.2, 3.3), (68, 0, -28)), ("reach", (-0.7, 2.2, 3.3), (68, 0, 28))
     t.key(0)
-    t.key(5, ease="out", T=(3, -8, 0, 0, 0, -0.12), RA=(-16, 0, 12), LA=(-16, 0, -12), H=(-4, 8, 6))
-    t.key(12, "shut", T=(22, 0, 0, 0, 0, 0.34), RA=shut_r, LA=shut_l, H=(-20, 0, 2), crouch=0.4)
-    t.mark(12, "Raise")
-    t.key(16, T=(19, 0, 0, 0, 0, 0.3), H=(-18, 0, 2), crouch=0.34)
-    t.key(44, "braced", ease="sine", T=(20, 0, 0, 0, 0, 0.31), H=(-18, 0, 1), crouch=0.36)
-    t.key(72, ease="in", T=(19, 0, 0, 0, 0, 0.3), H=(-18, 0, 2), crouch=0.34)
-    t.mark(72, "Drop")
-    t.key(82, "let fall", T=(9, -8, 0), RA=("hang", (0.08, -0.1), (0, 0, 6)), LA=("hang", (0.08, 0.05), (0, 0, -6)), H=(-7, 12, 9), crouch=0.04)
-    t.key(96, T=HUB["T"], RA=DOWN_R, LA=DOWN_L, H=HUB["H"], crouch=0.0)
+    t.key(7, ease="out", T=(3, -8, 0, 0, 0, -0.12), RA=(-16, 0, 12), LA=(-16, 0, -12), H=(-4, 8, 6))
+    t.key(18, "shut", T=(22, 0, 0, 0, 0, 0.34), RA=shut_r, LA=shut_l, H=(-20, 0, 2), crouch=0.4)
+    t.mark(18, "Raise")
+    t.key(23, T=(19, 0, 0, 0, 0, 0.3), H=(-18, 0, 2), crouch=0.34)
+    t.key(58, "braced", ease="sine", T=(20, 0, 0, 0, 0, 0.31), H=(-18, 0, 1), crouch=0.36)
+    t.key(98, ease="sine", T=(19, 0, 0, 0, 0, 0.3), H=(-19, 0, 2), crouch=0.34)
+    t.key(138, "still braced", ease="in", T=(20, 0, 0, 0, 0, 0.31), H=(-18, 0, 2), crouch=0.35)
+    t.mark(138, "Drop")
+    t.key(149, "let fall", T=(9, -8, 0), RA=("hang", (0.08, -0.1), (0, 0, 6)), LA=("hang", (0.08, 0.05), (0, 0, -6)), H=(-7, 12, 9), crouch=0.04)
+    t.key(164, T=HUB["T"], RA=DOWN_R, LA=DOWN_L, H=HUB["H"], crouch=0.0)
 
 
 def lunge(t):
     """It folds down behind its mask until the mask's point is a dart aimed at you, and stays there, dead still, long
     enough for you to know. Then the mask goes, and the coat is pulled out flat behind it, the legs trailing like
-    empty trouser legs. The mask arrives first. The legs and the sleeves come in last."""
+    empty trouser legs. The mask arrives first. The legs and the sleeves come in last, and for a moment it's a coat
+    dropped over its own knees, the mask hanging at the floor and its back to the sky, before it's picked up again.
+
+    AR52's seeds: the line shows at `Line` and it goes at `Lunge`, 1.0 s in; 0.25 s in the air to `Land` (the game
+    carries it along the line, about 12 studs: the clip stays where it stands); then 0.8 s with its back open, from
+    `Land` to `Close`."""
     loose = {"Right Leg": None, "Left Leg": None}
     t.key(0)
-    t.key(14, "the line", ease="cubic", T=(40, 0, 0, 0, 0, -0.35), crouch=0.4, RA=(-52, 0, 14), LA=(-56, 0, -12),
+    t.key(16, "the line", ease="cubic", T=(40, 0, 0, 0, 0, -0.35), crouch=0.4, RA=(-52, 0, 14), LA=(-56, 0, -12),
           H=(12, 0, 0), feet={"Right Leg": (0.5, -0.45), "Left Leg": (-0.5, 0.3)})
-    t.mark(14, "Line")
-    t.key(40, "dead still", ease="in", T=(43, 0, 0, 0, 0, -0.42), crouch=0.46, RA=(-58, 0, 14), LA=(-62, 0, -12), H=(14, 0, 0))
-    t.mark(40, "Lunge")
-    t.key(44, "gone", ease="lin", T=(60, 0, 0, 0, 0, 0.5), feet=loose, RL=(24, 0, 5), LL=(-16, 0, -4),
+    t.mark(16, "Line")
+    t.key(50, "dead still", ease="sine", T=(41, 0, 0, 0, 0, -0.36), crouch=0.41, RA=(-54, 0, 14), LA=(-58, 0, -12), H=(12, 0, 0))
+    t.key(60, "drawn back a hair", ease="in", T=(43, 0, 0, 0, 0, -0.42), crouch=0.46, RA=(-58, 0, 14), LA=(-62, 0, -12), H=(14, 0, 0))
+    t.mark(60, "Lunge")
+    t.key(64, "gone", ease="lin", T=(60, 0, 0, 0, 0, 0.5), feet=loose, RL=(24, 0, 5), LL=(-16, 0, -4),
           RA=(-76, 0, 5), LA=(-82, 0, -5), H=(22, 0, 0), crouch=0.0)
-    t.key(49, ease="lin", T=(61, 0, 1, 0, 0, 0.5), RL=(-12, 0, 2), LL=(20, 0, -6), RA=(-80, 0, 8), LA=(-72, 0, -3), H=(21, 0, 2))
-    t.key(54, T=(62, 0, 2, 0, 0, 0.5), RL=(16, 0, 6), LL=(-14, 0, -2), RA=(-84, 0, 6), LA=(-74, 0, -6), H=(20, 0, 3))
-    t.mark(54, "Land")
-    t.key(60, "the mask arrives", T=(30, 0, 0, 0, 0, 0.25), RL=(-34, 0, 4), LL=(-52, 0, -5), crouch=0.0,
+    t.key(69, ease="lin", T=(61, 0, 1, 0, 0, 0.5), RL=(-12, 0, 2), LL=(20, 0, -6), RA=(-80, 0, 8), LA=(-72, 0, -3), H=(21, 0, 2))
+    t.key(75, T=(62, 0, 2, 0, 0, 0.5), RL=(16, 0, 6), LL=(-14, 0, -2), RA=(-84, 0, 6), LA=(-74, 0, -6), H=(20, 0, 3))
+    t.mark(75, "Land")
+    t.key(81, "the mask arrives", T=(30, 0, 0, 0, 0, 0.25), RL=(-34, 0, 4), LL=(-52, 0, -5), crouch=0.0,
           RA=(-30, 0, 10), LA=(-40, 0, -10), H=(-18, 0, 4))
-    t.key(67, "the rest arrives", T=(24, -4, 0, 0, 0, 0.2), feet={"Right Leg": (0.5, 0.45), "Left Leg": (-0.5, -0.3)},
-          RA=(58, 0, 8), LA=(64, 0, -8), H=(-20, 6, 8), crouch=0.3)
-    t.key(96, ease="cubic", T=HUB["T"], RA=DOWN_R, LA=DOWN_L, H=HUB["H"], crouch=0.0, feet=HUB["feet"])
+    t.key(88, "the rest arrives", T=(28, -4, 0, 0, 0, 0.2), feet={"Right Leg": (0.5, 0.45), "Left Leg": (-0.5, -0.3)},
+          RA=(58, 0, 8), LA=(64, 0, -8), H=(-14, 6, 8), crouch=0.3)
+    t.key(97, "its back open", ease="sine", T=(48, -5, 2, 0, 0, 0.24), RA=("hang", (0.1, 0.25), (0, 0, 6)), LA=("hang", (0.1, 0.3), (0, 0, -6)),
+          H=(26, 4, 8), crouch=0.26)
+    t.key(110, ease="in", T=(50, -5, 2, 0, 0, 0.24), H=(29, 4, 9), crouch=0.28)
+    t.mark(123, "Close")
+    t.key(123, "picked up", ease="cubic", T=(16, -8, 0, 0, 0, 0.05), RA=("hang", (0.08, -0.1), (0, 0, 6)), LA=("hang", (0.08, 0.05), (0, 0, -6)),
+          H=(-12, 12, 10), crouch=0.08, feet=HUB["feet"])
+    t.key(138, T=HUB["T"], RA=DOWN_R, LA=DOWN_L, H=HUB["H"], crouch=0.0)
 
 
 def knocked(t, pitch, twist, roll, forward, mask):

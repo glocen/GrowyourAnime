@@ -28,8 +28,9 @@ TYPES = {"Strength": "#EA4B4F", "Endurance": "#F4902A", "Agility": "#3F9DF2", "I
 MASKS = {"Brawler": ("Strength", "round, grinning"), "Guard": ("Endurance", "square, with a brow"),
          "Dasher": ("Agility", "long, pointed"), "Support": ("Intelligence", "a half-mask, veiled")}
 MASK_Y = 0.76  # the mask's back face: it hangs just clear of the collar
-# Set by shade_model.py: the Brawler's cuts and teeth are built in their shapes as first shipped (AR2), each carrying
-# its move to today's shape, so the atlas packs as it shipped and only the mask's own texels change (pinned, settle).
+# Set by shade_model.py: the Brawler's cuts and teeth, and the Guard's and the Dasher's pieces (AR52), are built in their
+# shapes as first shipped (AR2), each carrying its move to today's shape, so the atlas packs as it shipped and only
+# the masks' own texels change (pinned, settle).
 SHIPPED_PACK = False
 PIVOTS = rs.PIVOTS
 B = rs.B
@@ -203,7 +204,7 @@ def turned(points, degrees, about):
 def mask(kind, m):
     """The four masks, each about two studs across: larger than a head, as a festival mask is. Each has its own
     outline, so a behaviour is told by a shape before a colour. All four are pressed or folded paper, with the eyes
-    and the mouth cut through to the light, and ink where a brush went."""
+    and the mouth cut through to the light. Only the Support's slips carry ink."""
     paper, y = m["Paper"], MASK_Y
     if kind == "Brawler":
         # Cut by hand from one sheet: not quite round, a tab each side for the strings. Two level almond holes, one
@@ -244,20 +245,60 @@ def mask(kind, m):
         else:
             cuts = [grin(grin_r, c), eye(-1, True), eye(1, True), *(tooth(*t, grin_r / 0.64) for t in teeth_at)]
         return [raised("Mask", face, y, 0.14, paper, inset=0.84), rim(face, m, 1.07), *cuts, *ties(m, c, 1.22)]
-    if kind == "Guard":  # a square under two heavy brows that meet low in the middle and jut past its sides
-        face = [(-0.95, 4.2), (-0.7, 3.95), (0.7, 3.95), (0.95, 4.2), (0.95, 5.75), (-0.95, 5.75)]
+    if kind == "Guard":
+        # A square of paper, a little wider at its top, a tab each side for the strings. Its brow is cut, not drawn
+        # (AR52): two long holes that nearly meet, each one's top edge falling to the middle, so the paper left above
+        # them is the brow, and a shut slot under them. No ink and no added brow: AR2's two brow blocks and the ink
+        # bars under its eyes are gone. Packed as shipped, each new piece is an old one moved (pinned): the brow
+        # blocks became the tabs, and the ink bars are tucked inside the pressed paper, where nothing sees them.
+        face = [(-0.9, 4.2), (-0.66, 3.95), (0.66, 3.95), (0.9, 4.2), (1.0, 5.75), (-1.0, 5.75)]
+
+        def eye(e):
+            hole = rs.slab("Eye", (e * 0.41, y + 0.148, 5.02), (0.66, 0.016, 0.3), m["Glow"])
+            for v in hole.data.vertices:  # the top edge falls 0.19 from the outer end to the inner
+                if v.co.z > 5.02:
+                    v.co.z -= 0.19 * (0.74 - abs(v.co.x)) / 0.66
+            return hole
+
+        tabs = [rs.slab("Tab", (e * 1.0, y + 0.03, 5.0), (0.24, 0.05, 0.3), m["PaperShade"]) for e in (-1, 1)]
+        eyes = [eye(e) for e in (-1, 1)]
+        mouth = rs.slab("Mouth", (0, y + 0.148, 4.33), (0.62, 0.016, 0.1), m["Glow"])
+        if not SHIPPED_PACK:
+            return [raised("Mask", face, y, 0.14, paper, inset=0.88), rim(face, m, 1.06), *tabs, *eyes, mouth, *ties(m, 5.0, 0.92)]
+        was = [(-0.95, 4.2), (-0.7, 3.95), (0.7, 3.95), (0.95, 4.2), (0.95, 5.75), (-0.95, 5.75)]
         brows = [rs.slab("Brow", (e * 0.6, y + 0.22, 5.3), (1.3, 0.44, 0.34), m["PaperShade"], rot=(0, -13 * e, 0)) for e in (-1, 1)]
         bars = [rs.slab("InkBar", (e * 0.46, y + 0.148, 4.66), (0.4, 0.016, 0.06), m["Ink"]) for e in (-1, 1)]
-        return [raised("Mask", face, y, 0.14, paper, inset=0.88), rim(face, m, 1.06), *brows, *bars,
-                *[rs.slab("Eye", (e * 0.46, y + 0.148, 4.9), (0.5, 0.016, 0.13), m["Glow"]) for e in (-1, 1)],
-                rs.slab("Mouth", (0, y + 0.148, 4.36), (0.95, 0.016, 0.11), m["Glow"]), *ties(m, 5.0, 0.92)]
-    if kind == "Dasher":  # a long kite of paper folded once down its middle: one point over the chest, one above the collar
+        tucked = [rs.slab("Tucked", (e * 0.3, y + 0.07, 4.6), (0.2, 0.02, 0.04), m["Ink"]) for e in (-1, 1)]
+        slots = [rs.slab("Eye", (e * 0.46, y + 0.148, 4.9), (0.5, 0.016, 0.13), m["Glow"]) for e in (-1, 1)]
+        return [pinned(raised("Mask", face, y, 0.14, paper, inset=0.88), raised("Mask", was, y, 0.14, paper, inset=0.88)),
+                pinned(rim(face, m, 1.06), rim(was, m, 1.06)),
+                *(pinned(now, then) for now, then in zip(tabs, brows)), *(pinned(now, then) for now, then in zip(tucked, bars)),
+                *(pinned(now, then) for now, then in zip(eyes, slots)),
+                pinned(mouth, rs.slab("Mouth", (0, y + 0.148, 4.36), (0.95, 0.016, 0.11), m["Glow"])), *ties(m, 5.0, 0.92)]
+    if kind == "Dasher":
+        # A long kite of paper folded once down its middle: one point over the chest, one above the collar. Two
+        # slanted blades are cut through it and nothing else is on it (AR52): AR2's four ink marks are gone. Packed as
+        # shipped, the marks are tucked inside the fold and the eyes are the old eyes moved.
         face = [(-0.64, 5.48), (0, 3.2), (0.64, 5.48), (0, 6.6)]
         rise = 0.24
-        eyes = [laid("Eye", [(e * 0.1, 5.16), (e * 0.48, 5.38), (e * 0.48, 5.52), (e * 0.1, 5.3)], y, rise, m["Glow"]) for e in (-1, 1)]
-        marks = [laid("InkMark", [(e * 0.08, 4.5 - j * 0.34), (e * 0.3 - j * e * 0.05, 4.64 - j * 0.34), (e * 0.3 - j * e * 0.05, 4.72 - j * 0.34),
-                                  (e * 0.08, 4.58 - j * 0.34)], y, rise, m["Ink"]) for e in (-1, 1) for j in range(2)]
-        return [folded("Mask", y, rise, paper), rim(face, m, 1.07), *eyes, *marks, *ties(m, 5.5, 0.6)]
+
+        def eye(e, now):
+            blade = [(e * 0.08, 5.1), (e * 0.5, 5.36), (e * 0.52, 5.6), (e * 0.08, 5.3)]
+            return laid("Eye", blade if now else [(e * 0.1, 5.16), (e * 0.48, 5.38), (e * 0.48, 5.52), (e * 0.1, 5.3)], y, rise, m["Glow"])
+
+        if not SHIPPED_PACK:
+            return [folded("Mask", y, rise, paper), rim(face, m, 1.07), eye(-1, True), eye(1, True), *ties(m, 5.5, 0.6)]
+        marks = []
+        for e in (-1, 1):
+            for j in range(2):
+                then = laid("InkMark", [(e * 0.08, 4.5 - j * 0.34), (e * 0.3 - j * e * 0.05, 4.64 - j * 0.34),
+                                        (e * 0.3 - j * e * 0.05, 4.72 - j * 0.34), (e * 0.08, 4.58 - j * 0.34)], y, rise, m["Ink"])
+                z = 4.5 - j * 0.12
+                bm = bmesh.new()
+                bm.faces.new([bm.verts.new((x, y + 0.025, zz)) for x, zz in ((e * 0.06, z), (e * 0.2, z), (e * 0.2, z + 0.06), (e * 0.06, z + 0.06))])
+                marks.append(pinned(bl.object_from_bmesh("Tucked", bm, m["Ink"]), then))
+        return [folded("Mask", y, rise, paper), rim(face, m, 1.07), *(pinned(eye(e, True), eye(e, False)) for e in (-1, 1)),
+                *marks, *ties(m, 5.5, 0.6)]
     # Support: a wide, low band across the eyes, its ends drawn out sideways like a boat's, and a veil of four paper
     # slips under it, each cut to a point, two long and two short
     band = [(-0.8, 4.55), (0.8, 4.55), (1.4, 5.22), (0.7, 5.08), (0, 5.14), (-0.7, 5.08), (-1.4, 5.22)]

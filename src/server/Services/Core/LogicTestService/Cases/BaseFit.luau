@@ -1,11 +1,13 @@
 --!strict
--- BaseFit cases (pure): part 7's tests for the base's size (docs/research/rework-2026-11-16.md, part 7; Rules.BaseFit),
--- on boxes made for the test and on the grey trial's three layouts (Config.World.Fit), each of which must pass them all.
+-- BaseFit cases (pure): part 7's tests for the base's plan (docs/research/rework-2026-11-16.md, part 7; Rules.BaseFit),
+-- on boxes made for the test and on the plan's own layout (Config.Kits.Base, AR54's lay) at Stage III's footprints
+-- (Config.World.Fit.Prints), which must pass them all.
 -- Runs in Studio (LogicTests) and with Studio closed (tools/checks/logic_offline.luau).
 
 local Shared = game:GetService("ReplicatedStorage").Shared
 local BaseFit = require(Shared.Rules.BaseFit)
 local WorldConfig = require(Shared.Config.World)
+local BasePlan: any = require(Shared.Config.Kits.Base.Plan)
 
 local function box(name: string, x0: number, x1: number, z0: number, z1: number): BaseFit.Box
 	return { Name = name, Kind = name, X0 = x0, X1 = x1, Z0 = z0, Z1 = z1, High = 1 }
@@ -24,9 +26,15 @@ return {
 			t.Check("corner to corner", near(BaseFit.Gap(box("a", 0, 2, 0, 2), box("b", 5, 7, 6, 8)), 5))
 			t.Check("overlapping: negative", BaseFit.Gap(box("a", 0, 4, 0, 4), box("b", 3, 7, 0, 4)) < 0)
 			t.Check("a 16:9 screen at 70° sees about 51° each side", math.abs(BaseFit.HalfView(70, 16 / 9) - 51.2) < 0.1, tostring(BaseFit.HalfView(70, 16 / 9)))
-			t.Equal("bays 3 to 6 are the later bays", BaseFit.Kind("bay3"), "later")
 			t.Equal("bays 1 and 2 are bays", BaseFit.Kind("bay2"), "bay")
-			t.Equal("the sleeping three are stones", BaseFit.Kind("lab"), "stone")
+			t.Equal("bays 3 to 6 are bays too: a sleeping bay wakes into one", BaseFit.Kind("bay6"), "bay")
+			t.Equal("the Forge, the Condenser and the Lab are their own", BaseFit.Kind("lab"), "lab")
+			local offset = { Across = 1, Inward = 2, Wide = 4, Deep = 6, High = 3 }
+			local half = BaseFit.Turned(offset, 180)
+			t.Check("a half turn mirrors the print's offset and keeps its size", half.Across == -1 and half.Inward == -2 and half.Wide == 4 and half.Deep == 6, `{half.Across}, {half.Inward}, {half.Wide} by {half.Deep}`)
+			local quarter = BaseFit.Turned(offset, 90)
+			t.Check("a quarter turn swaps its size across and inward", quarter.Across == 2 and quarter.Inward == -1 and quarter.Wide == 6 and quarter.Deep == 4, `{quarter.Across}, {quarter.Inward}, {quarter.Wide} by {quarter.Deep}`)
+			t.Equal("no turn: as it is", BaseFit.Turned(offset, nil).Across, 1)
 			local unit = { Across = 0, Inward = 0, Wide = 4, Deep = 4, High = 1 }
 			local fit: BaseFit.Fit = {
 				Breaker = 4,
@@ -64,30 +72,33 @@ return {
 		end,
 	},
 	{
-		Name = "BaseFit: the grey trial's three sizes each pass part 7's tests, with every machine laid and the rows shorter",
+		Name = "BaseFit: the plan's layout (AR54) passes part 7's tests at Stage III's footprints, every machine laid, the ring kept",
 		Run = function(t: any)
 			local fit = WorldConfig.Fit :: any
 			local walk = WorldConfig.Walk
-			local kept = WorldConfig.Plots.Kept * walk
-			-- the plan as it was drawn before part 7's trial: 200 studs square, 48 between (AR16 drew it again at 128 after)
-			local before = 200
-			local drawn = 4 * before + 3 * 48
-			t.Equal("three sizes", #fit.Sizes, 3)
-			for _, cells in fit.Sizes do
-				local size = cells * walk
-				local layout = fit.Layouts[tostring(size)]
-				t.Check(`{size}: a layout`, layout ~= nil)
-				if layout then
-					local report = BaseFit.Measure(layout, size, fit, { Walk = walk, Between = fit.Between * walk, Kept = kept })
-					local ok, fails = BaseFit.Passes(report, fit)
-					t.Check(`{size}: passes`, ok, table.concat(fails, "; "))
-					t.Equal(`{size}: every machine has its footprint`, #BaseFit.Boxes(layout, fit.Prints), 14)
-					t.Check(`{size}: the row of four shorter than the plan's`, report.Row < drawn, `{report.Row} of {drawn}`)
-					t.Check(`{size}: smaller than the plan's square before the trial`, size < before)
+			local size = WorldConfig.Plots.Drawn * walk
+			local layout = BasePlan.layout
+			t.Equal("the plan is drawn for the plots' size", WorldConfig.Plots.Across * walk, size)
+			local report = BaseFit.Measure(layout, size, fit, { Walk = walk, Between = WorldConfig.Plots.Between * walk, Kept = WorldConfig.Plots.Kept * walk })
+			local ok, fails = BaseFit.Passes(report, fit)
+			t.Check(BaseFit.Line(report, fit), ok, table.concat(fails, "; "))
+			local boxes = BaseFit.Boxes(layout, fit.Prints)
+			t.Equal("every machine has its footprint: the seven stations, four more bays, three sleeping", #boxes, 14)
+			for _, box in boxes do
+				t.Check(`{box.Name}: a print of its own kind`, fit.Prints[box.Kind] ~= nil, box.Kind)
+			end
+			-- The generator's own clear: the widest ring round its spot that touches no other footprint (AR54, 25.1 at
+			-- Stage III); the landing's ring is held inside it (Config.Landing.Throw.Reach).
+			local gx, gz = layout.stations.generator.across, layout.stations.generator.inward
+			local ring = math.huge
+			for _, box in boxes do
+				if box.Name ~= "generator" then
+					local dx = math.max(box.X0 - gx, gx - box.X1, 0)
+					local dz = math.max(box.Z0 - gz, gz - box.Z1, 0)
+					ring = math.min(ring, math.sqrt(dx * dx + dz * dz))
 				end
 			end
-			t.Check("the sizes are part 7's: 128, 144, 160", fit.Sizes[1] * walk == 128 and fit.Sizes[2] * walk == 144 and fit.Sizes[3] * walk == 160)
-			t.Equal("neighbours 32 apart", fit.Between * walk, 32)
+			t.Check("the generator's clear is 25 studs or more", ring >= 25, string.format("%.2f", ring))
 		end,
 	},
 }

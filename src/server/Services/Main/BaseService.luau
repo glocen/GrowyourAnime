@@ -392,6 +392,10 @@ local function showPlot(number: number, data: Profile.Data?, seen: boolean?, own
 				WorldService.Stand(pad, awake)
 			end
 		end
+		local wake = bay:FindFirstChild("Wake") -- its light on the deck while it's awake (AR54)
+		if wake and wake:IsA("BasePart") then
+			WorldService.Stand(wake, awake)
+		end
 		-- Its stage at its own level while it's awake (TR51; AR33), its rings turning while a worker works there.
 		showStage(bay, stages.Bays[index] or 1, landing, awake, number, clock)
 		local seat = if data and awake then data.Base.Bays[index] else nil
@@ -399,6 +403,23 @@ local function showPlot(number: number, data: Profile.Data?, seen: boolean?, own
 		local owned = if id ~= "" and data then data.Voidkin[id] else nil
 		showWorker(bay, number, index, id, if owned then owned.Def else nil)
 		spin(bay, owned ~= nil)
+	end
+	-- AR50's pieces of each base level past the first (WorldService's "Levels"), beside the level's under them: a
+	-- level-up's stand at its generator's swap, under the landing's cover, so they never show before it.
+	local base = if plant then plant.Parent else nil
+	local levels = if base then base:FindFirstChild("Levels") else nil
+	if levels then
+		local drawn = levels:GetAttribute("Level")
+		if type(drawn) ~= "number" or held[plant :: Instance] == nil then
+			drawn = if data then data.Base.Level else 1
+			levels:SetAttribute("Level", drawn)
+		end
+		for _, part in levels:GetChildren() do
+			local from = part:GetAttribute("BaseLevel")
+			if part:IsA("BasePart") and type(from) == "number" then
+				WorldService.Stand(part, (drawn :: number) >= from)
+			end
+		end
 	end
 	local battery = Markers.Find("Battery", { Plot = number })
 	if battery then

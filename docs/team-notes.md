@@ -10,10 +10,10 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **Modulo's order:** **AR56, the Tower's room**, three directions in grey for research's pick (drawn ahead on the director's word; Faber's install after the main game).
 - **With the director:** answer **item 10 in Faber's session** (the hooks for Scintilla and Sonus); **item 4**, publish both places and Faber's OK to run the player once; open two sessions titled **Scintilla** and **Sonus**; `src/shared/Config/Sounds.luau`'s uncommitted change; the store's design.
 
-**Faber (builder).** 2026-11-23, 19:40, on Opus 5.5.
-- **Done and passed:** AR44's shine, its weights closed (research, 16:18); AR49; AR52's must-fix 1, where Orange on Hard now wears `#FF7000`; and **TR10, closed at competent** (research, 17:06).
-- **TR50, closed at competent** (research, 18:00). **AR48's states are in the game** (AR48, "The states' rules, in the game"): the rules, the hooks by name, a self-test case 29/29, and the even-elements check, 40 runs. Each element is within 10% of the mean; three questions for research there. The cues are Scintilla's once that seat opens. **Now:** AR50 and AR54's install.
-- **Next:** AR51, TR52; AR52's behaviours, TR54, TR53. F7's timing waits on item 4's publish.
+**Faber (builder).** 2026-11-23, 20:24, on Opus 5.5.
+- **AR50's and AR54's install is in the game** (AR54, "Faber's install, with AR50's levels"). That's the sixteen floors, the plan's `layout` with each bay's turn, part 7's measure on that layout (the trial retired), Stage III's prints, the landing's ring held at 25, and AR50's seven pieces at each level's swap. The checks: 29247 logic, 364 "Base:" self-test cases with 0 failed, and an empty world report. **Waits: research's read in the game** (stills in `build/captures/ar54/`).
+- **Done today, passed:** TR50, AR48's states in the game (research's answers of 20:07 taken), TR10, AR44's shine, AR49.
+- **Next:** AR51, TR52; AR52's behaviours, TR54, TR53 (with TR31 folded in). F7's timing waits on item 4's publish.
 - **The hooks for Scintilla and Sonus** wait on the director's own word (item 10). **Open, tests:** as before (item 9's Festival cases; TintMask on a phone; TR44's phone take; the pinned reveal).
 
 **Modulo (assets).** 2026-11-23, 20:20, on Fable 5.2. Voidkin work parked until before launch (the director's word, 11:10).
@@ -139,6 +139,17 @@ For Faber:
 
 ## Entries
 
+### 2026-11-23, 20:24. AR50's and AR54's install, built (Faber)
+
+- **What changed:**
+  - The base's deck is AR54's: sixteen floors, the plan's `layout`, and each later bay at its turn.
+  - Part 7's measure reads that same layout at Stage III's prints. The trial's three layouts are gone.
+  - The landing's ring scales to end at 25 studs.
+  - AR50's levels stand at each level's generator swap: the deck's light, the fins, and the two rings turning opposite ways on one axle. Bays 3 and 4 wear their wake while awake.
+- **Where:** AR54, "Faber's install, with AR50's levels". Code in `WorldService` (`layLevels`), `BaseService` (showPlot), `Rules.BaseFit` (`Turned`), `Rules.Landing` (`Reach`) and `Kit.Floors`. 25 meshes and 30 pictures are uploaded and Approved, with their ids in the asset log.
+- **Run:** type check 0 new; logic 29247 passing; "Base:" self-test 364 passed, 0 failed; world report empty; `base_levels_clear.py` PASS. **Not verified:** a wake on a bay awake from a save. The test save has two bays open.
+- **For:** research's read in the game (stills in `build/captures/ar54/`, the smallest phone's from the gate included). The director's acceptance waits.
+
 ### 2026-11-23, 18:13. TR50, one mission per Arc, closed at competent (Faber)
 
 - **What changed today:** the Arc panel and the run's card in the festival's dusk (Modulo's palette B), and the Voidkin stage's floor B: stone and a Neon ring of the element. Research had two must-fixes:
@@ -232,11 +243,3 @@ For Faber:
 - **Tested:** type check 0 new; 28,782 logic cases offline and in Studio; the self-test 3,163/0 at 59 fps.
 - **Open:** the Stage 1 playtest, NOT VERIFIED until the Festival place opens (item 9). Seven findings for research in TR49.
 - **For:** research's pass on the captures in `build/captures/ar43/`, `ar45/` and `ar44/`.
-
-### 2026-11-19, 21:24. AR40's C installed: the world by day, the Shop's building, the system panel's first two windows (Faber)
-
-- **What changed:** both kits are in C, with the beds, the cream paving and the teal glass, and the base's atlas and the paving are uploaded under the group. The day is C's warm afternoon. The Shop stands as AR38's building: its counter collides, its crown shows on a featured stock, and its five minutes count each stock down. The Breaker's and the Power windows are on the system panel's slab, with C's ink, C's buttons and the chamber's teal band. The Breaker keeps its night (the director, 2026-11-15).
-- **Where:** AR40, "The install of C"; `tools/studio/Kits/`, `src/storage/*Kit.rbxm`, `Config.Lighting`, `Config.UIKit` (System), `Theme.Ink`, `Kit.Button`'s face, `WorldService`'s `dressShop`, `Rules.Shop.Minute`.
-- **Tested:** the type check, 27,232 logic cases, the world report, and the self-test's Shop, Power, Breaker, World, Base, Kit, HUD, UI, Equipment and Settings filters, all passing (three stale cases fixed).
-- **Open:** research's pass on the four captures in `build/scratch/faber/ar40/`. The rest of the system panel follows: the base screen's chips and side panels, the Forge's, the Void Shop's screen, and the shared confirm, toast and reward.
-- **For:** research.

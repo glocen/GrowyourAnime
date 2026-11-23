@@ -10,7 +10,7 @@ export type Config = {
 	Swap: number,
 	Size: { Across: number, Up: number },
 	Hoop: { Least: number, Stretch: number, Pull: { number }, Shrink: number, Narrow: number, Glow: { number } },
-	Throw: { From: number, To: number, Across: { number }, Tall: { number } },
+	Throw: { From: number, To: number, Across: { number }, Tall: { number }, Reach: number? },
 	Shaft: { From: number, To: number, Across: { number }, Tall: { number }, Glow: number },
 	Light: { Least: number, Grow: number, Fill: number },
 	Cover: { In: { number }, Hold: number, Out: number, LineIn: { number }, LineOut: { number } },
@@ -75,8 +75,10 @@ function Landing.At(f: number, r: number, h: number, config: Config): Frame
 	local throw = config.Throw
 	if f >= throw.From and f < throw.To then
 		local k = span(f, throw.From, throw.To)
+		local widest = r * (throw.Across[1] + throw.Across[2])
+		local scale = if throw.Reach and widest > throw.Reach then throw.Reach / widest else 1 -- held inside its Reach
 		frame.Throw = {
-			Across = 2 * r * (throw.Across[1] + throw.Across[2] * ease(k)),
+			Across = 2 * r * scale * (throw.Across[1] + throw.Across[2] * ease(k)),
 			Tall = throw.Tall[1] + throw.Tall[2] * r,
 			Up = h,
 			Transparency = 1 - (1 - k) ^ 2,

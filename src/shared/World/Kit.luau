@@ -21,7 +21,12 @@
 local Kit = {}
 
 Kit.Tag = "GA_Dressing"
-Kit.Floors = { StreetBay = true, SquareFloor = true, Court1 = true, Yard = true } :: { [string]: boolean }
+Kit.Floors = { StreetBay = true, SquareFloor = true } :: { [string]: boolean }
+for _, row in { "A", "B", "C", "D" } do -- the base's sixteen floors, FloorA1 to FloorD4 (AR54), a quarter of the plot each
+	for column = 1, 4 do
+		Kit.Floors[`Floor{row}{column}`] = true
+	end
+end
 
 export type Piece = { centre: { number }, size: { number }?, glowStrength: number?, glowTint: string? }
 -- up: a machine's (AR15); toward: "crossing", a piece that stands on its plot's crossing side (AR16's Tower, Kit.Toward)

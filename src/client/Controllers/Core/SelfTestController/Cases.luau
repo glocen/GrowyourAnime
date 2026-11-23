@@ -1044,10 +1044,10 @@ local cases = {
 		Place = "Festival", -- TR45: its world stands in that place only
 		Stay = true,
 		Run = function(t: any)
-			-- "Street": the plots' grey trial left out while their size isn't the base plan's (128, until it's laid again)
+			-- "Street": the plots left out while their size isn't the base plan's (the base's own cases read them)
 			local problems = t.Server("DressReport", "Street")
 			local first = if type(problems) == "table" then problems[1] else nil
-			t.Check("the dressing report is empty, but for the plots' grey trial", type(problems) == "table" and #problems == 0, if first then `{first} (and {#problems - 1} more)` else nil)
+			t.Check("the dressing report is empty", type(problems) == "table" and #problems == 0, if first then `{first} (and {#problems - 1} more)` else nil)
 			-- The paper as this client shows it (research's TR8 verdict): each box streamed in stands in Config.Lighting.Paper's
 			-- band over the paving, in its tint (its rate is the logic case's).
 			streamed(t, "Elite", { Stage = SQUARE_ELITE.Stage })

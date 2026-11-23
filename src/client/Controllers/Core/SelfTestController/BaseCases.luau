@@ -1116,6 +1116,123 @@ function BaseCases.Cases(given: Given): { any }
 			end,
 		},
 		{
+			Name = "Base: AR50's levels: each base level's pieces stand at it beside the lower levels', after its generator's swap; the rings turn in place on the plan's axle, opposite ways; bays 3 and 4 wear their wake only while awake",
+			Place = "Main", -- TR45: its world stands in that place only
+			Run = function(t: any)
+				local view = ProfileController.Get()
+				local plot = Players.LocalPlayer:GetAttribute("Plot")
+				local plant = if type(plot) == "number" then Markers.Find("Generator", { Plot = plot }) else nil
+				local base = if plant then plant.Parent else nil
+				if base then
+					pcall(function()
+						Players.LocalPlayer:RequestStreamAroundAsync((base :: Model):GetPivot().Position, 2)
+					end)
+				end
+				local levels = if base then base:FindFirstChild("Levels") else nil
+				if view == nil or plant == nil or levels == nil then
+					t.Check("a plot, its levels and a save", false, if levels == nil then "no Levels on the plot" else nil)
+					return
+				end
+				local held, generator, frame = levels :: Instance, plant :: Instance, (base :: Model):GetPivot()
+				local rows = BasePlan.machines.baseLevels.levels
+				local pieces = #rows["2"].pieces + #rows["3"].pieces
+				-- Every piece shown as `level` has it: a level's own and every lower level's, solid only the fins.
+				local function standsAt(level: number): (boolean, string)
+					local wrong, count = {}, 0
+					for _, part in held:GetChildren() do
+						local from = part:GetAttribute("BaseLevel")
+						if part:IsA("BasePart") and type(from) == "number" then
+							count += 1
+							local want = level >= from
+							if (part.Transparency == 0) ~= want or part.CanCollide ~= (want and part:GetAttribute("Solid") == true) then
+								table.insert(wrong, `{part.Name} {part.Transparency}`)
+							end
+						end
+					end
+					return count == pieces and #wrong == 0, `{count} of {pieces}; {table.concat(wrong, ", ")}`
+				end
+				local function newHidden(level: number): boolean
+					for _, part in held:GetChildren() do
+						if part:IsA("BasePart") and part:GetAttribute("BaseLevel") == level and part.Transparency == 0 then
+							return false
+						end
+					end
+					return true
+				end
+				local levelWas = view.Base.Level
+				local said = ""
+				t.Server("BaseLevel", 1)
+				t.Check("base level 1: none of the later levels' pieces", waitFor(t, ANSWER + 2, function(): boolean
+					local ok, words = standsAt(1)
+					said = words
+					return ok
+				end), said)
+				for level = 2, BaseLevels.Top() do
+					t.Server("BaseLevel", level)
+					local swapping = waitFor(t, 1, function(): boolean
+						return generator:GetAttribute("Swapping") == true
+					end)
+					t.Check(`base level {level}: its pieces wait for the generator's swap, under the landing's cover`, swapping and newHidden(level), tostring(swapping))
+					t.Check(`then its pieces stand beside the lower levels'`, waitFor(t, ANSWER + 2, function(): boolean
+						local ok, words = standsAt(level)
+						said = words
+						return ok
+					end), said)
+				end
+				-- The rings at level 3: on the plan's axle in the plot's frame, turning in place at their rates, opposite ways.
+				for _, row in { rows["2"].pieces[4], rows["3"].pieces[4] } do
+					local ring: BasePart? = nil
+					for _, part in held:GetChildren() do
+						if part:IsA("BasePart") and part:GetAttribute("Piece") == row.piece then
+							ring = part
+						end
+					end
+					if ring == nil then
+						t.Check(`{row.piece}: on the plot`, false)
+						continue
+					end
+					local up = frame:VectorToObjectSpace(ring.CFrame.UpVector)
+					local axle = Vector3.new(row.axle[1], row.axle[2], row.axle[3])
+					t.Check(`{row.piece}: on the plan's axle`, (up - axle).Magnitude < 1e-3, string.format("%.4f %.4f %.4f", up.X, up.Y, up.Z))
+					local before, began = ring.CFrame, os.clock()
+					t.Wait(1)
+					local after = ring.CFrame
+					local _, yaw, _ = before:ToObjectSpace(after):ToEulerAnglesYXZ()
+					local rate = math.deg(yaw) / (os.clock() - began)
+					local want = row.rate * 360 * row.sign
+					t.Check(`{row.piece}: turns {want} degrees a second about its axle, in place`, math.abs(rate - want) < 0.5 and (after.Position - before.Position).Magnitude < 1e-3 and after.UpVector:Dot(before.UpVector) > 0.99999,
+						string.format("%.2f", rate))
+				end
+				t.Server("BaseLevel", levelWas)
+				t.Check("the level put back: so are its pieces", waitFor(t, ANSWER + 2, function(): boolean
+					return (standsAt(levelWas))
+				end))
+				-- The wakes: bays 3 and 4 each their own, at its bay's place and turn, shown only while the bay is awake.
+				local open = #(ProfileController.Get() or view).Base.Bays
+				local wakes = BasePlan.machines.baseLevels.bayWake.pieces
+				for _, bay in Markers.All("Bay") do
+					local index = bay:GetAttribute("Bay")
+					if bay:GetAttribute("Plot") ~= plot or type(index) ~= "number" then
+						continue
+					end
+					local wake = bay:FindFirstChild("Wake")
+					local want = wakes[tostring(index)]
+					if want == nil then
+						t.Check(`bay {index}: no wake`, wake == nil)
+						continue
+					end
+					if wake == nil or not wake:IsA("BasePart") then
+						t.Check(`bay {index}: its wake, {want}`, false)
+						continue
+					end
+					local awake = index <= open
+					t.Check(`bay {index}: its wake {if awake then "shown, awake" else "hidden, asleep"}`, wake:GetAttribute("Piece") == want and (wake.Transparency == 0) == awake, tostring(wake.Transparency))
+					local turned = (bay :: Model):GetPivot().LookVector:Dot(wake.CFrame.LookVector)
+					t.Check(`bay {index}: its wake turned with its bay`, turned > 0.9999, string.format("%.4f", turned))
+				end
+			end,
+		},
+		{
 			Name = "Base: TR22's gate and plinth (TR51): the plate says its owner's name over the base's level on both faces, and follows the level; the plinth stands the showcase Voidkin, the strongest until one's picked, at its middle, playing its Idle, turning, its CR over it; a pick stands the one picked, and \"\" gives it back",
 			Place = "Main", -- TR45: its world stands in that place only
 			Run = function(t: any)

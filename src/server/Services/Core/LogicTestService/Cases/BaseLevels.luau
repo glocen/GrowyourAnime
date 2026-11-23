@@ -7,7 +7,9 @@ local Shared = game:GetService("ReplicatedStorage").Shared
 local BaseLevels = require(Shared.Rules.BaseLevels)
 local Breaker = require(Shared.Rules.Breaker)
 local BaseConfig = require(Shared.Config.Base)
-local WorldConfig = require(Shared.Config.World)
+local BasePlan: any = require(Shared.Config.Kits.Base.Plan)
+local BaseManifest: any = require(Shared.Config.Kits.Base.Manifest)
+local Kit = require(Shared.World.Kit)
 
 local function gainOf(offer: BaseLevels.Offer, what: string): BaseLevels.Gain?
 	for _, each in offer.Gains do
@@ -38,9 +40,7 @@ return {
 				t.Equal(`bay {index} opens at base level {want}`, BaseLevels.OpensAt(index), want)
 			end
 			t.Check("bays 5 and 6 open with more Voidkin, at no level at launch", BaseLevels.OpensAt(5) == nil and BaseLevels.OpensAt(6) == nil)
-			for studs, layout in WorldConfig.Fit.Layouts :: { [string]: any } do
-				t.Equal(`the {studs}-stud plot lays every bay`, 2 + #layout.laterBays, BaseLevels.Plot())
-			end
+			t.Equal("the plan lays every bay", 2 + #BasePlan.layout.laterBays, BaseLevels.Plot())
 		end,
 	},
 	{
@@ -163,6 +163,46 @@ return {
 			t.Equal("full: both lit", lit(1, 60), "1 1")
 			t.Equal("past the cap, as a stored charge can be: still both, never more", lit(1, 75), "1 1")
 			t.Equal("level 3, 250 of 400 kWh: five of eight lit", lit(3, 250), "1 1 1 1 1 0 0 0")
+		end,
+	},
+	{
+		Name = "BaseLevels (AR50, AR54): levels 2 and 3 add their pieces beside the level's under them, the rings on one axle; bays 3 and 4 each their own wake; the sixteen floors glow as floors",
+		Run = function(t: any)
+			local levels = BasePlan.machines.baseLevels
+			for _, key in { "2", "3" } do
+				local rows = levels.levels[key].pieces
+				t.Check(`level {key} has its pieces`, #rows == 4, `{#rows}`)
+				for _, row in rows do
+					t.Check(`level {key}: {row.piece} is in the kit`, BaseManifest.pieces[row.piece] ~= nil)
+					t.Check(`level {key}: {row.piece} on the plot`, math.abs(row.across) <= 64 and row.along <= 0 and row.along >= -128, `{row.across}, {row.along}`)
+					if row.moves == "turns" then
+						-- Its axle as it stands: CFrame.Angles(0, 0, lean) * CFrame.Angles(tilt, 0, 0) applied to its own Y.
+						local tilt, lean = math.rad(row.tilt), math.rad(row.lean)
+						local axle = { -math.cos(tilt) * math.sin(lean), math.cos(tilt) * math.cos(lean), math.sin(tilt) }
+						local off = 0
+						for i = 1, 3 do
+							off = math.max(off, math.abs(axle[i] - row.axle[i]))
+						end
+						t.Check(`level {key}: {row.piece}'s axle is the plan's`, off < 1e-3, string.format("%.4f %.4f %.4f", axle[1], axle[2], axle[3]))
+						t.Check(`level {key}: {row.piece} turns slowly, a way of its own`, row.rate > 0 and row.rate < 0.05 and (row.sign == 1 or row.sign == -1))
+						t.Check(`level {key}: {row.piece}'s middle is its origin, so it turns in place`, BaseManifest.pieces[row.piece].centre[1] == 0 and BaseManifest.pieces[row.piece].centre[3] == 0)
+					end
+				end
+			end
+			local inner, outer = levels.levels["2"].pieces[4], levels.levels["3"].pieces[4]
+			t.Check("the two rings share one axle and cross opposite ways", inner.tilt == outer.tilt and inner.lean == outer.lean and inner.sign == -outer.sign)
+			t.Equal("bay 3's wake", levels.bayWake.pieces["3"], "BayWake3")
+			t.Equal("bay 4's wake", levels.bayWake.pieces["4"], "BayWake4")
+			t.Check("no wake for the bays locked at launch", levels.bayWake.pieces["5"] == nil and levels.bayWake.pieces["6"] == nil)
+			local floors = 0
+			for _, placement in BasePlan.levels["1"].placements do
+				if string.match(placement.piece, "^Floor%u%d$") then
+					floors += 1
+					t.Check(`{placement.piece} glows as a floor`, Kit.Floors[placement.piece] == true)
+				end
+			end
+			t.Equal("the deck's sixteen floors", floors, 16)
+			t.Equal("the gate's plate over the truss", BasePlan.levels["1"].levelMark.up, 21.6)
 		end,
 	},
 }

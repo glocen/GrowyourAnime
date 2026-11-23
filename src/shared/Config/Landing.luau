@@ -18,8 +18,10 @@ return {
 	-- ease-in to h, stretching with speed, then pulled in to a third and gone.
 	Hoop = { Least = 0.5, Stretch = 1.3, Pull = { 33, 36 }, Shrink = 0.7, Narrow = 2 / 3, Glow = { 1, 1.6, 1 } },
 	-- Thrown out from the top as the hoop bursts: a short upright band (the kit's depth rule: a flat ring goes edge-on at
-	-- the camera's height), fast then slow, fading.
-	Throw = { From = 34, To = 60, Across = { 0.4, 1.3 }, Tall = { 0.3, 0.02 }, Colour = Color3.fromRGB(181, 140, 255) },
+	-- the camera's height), fast then slow, fading. Reach: its widest, in studs from the machine's middle, the generator's
+	-- own clear at Stage III (25.1, AR54; research, 2026-11-23): a wider machine's throw runs the same curve, scaled to end
+	-- there, so it never slows against a wall.
+	Throw = { From = 34, To = 60, Across = { 0.4, 1.3 }, Tall = { 0.3, 0.02 }, Reach = 25, Colour = Color3.fromRGB(181, 140, 255) },
 	-- A short upright shaft rising from the top and thinning.
 	Shaft = { From = 35, To = 50, Across = { 0.35, 0.25 }, Tall = { 0.6, 0.1 }, Glow = 1.5 },
 	-- Rides the hoop's top to its end, then at half height following the cover. Brightness is the game's first guess

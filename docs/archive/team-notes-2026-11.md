@@ -2,6 +2,14 @@
 
 The oldest entries of `docs/team-notes.md`, moved here as that file passed about 250 lines (`AGENTS.md`, "Team notes"). Newest first.
 
+### 2026-11-19, 21:24. AR40's C installed: the world by day, the Shop's building, the system panel's first two windows (Faber)
+
+- **What changed:** both kits are in C, with the beds, the cream paving and the teal glass, and the base's atlas and the paving are uploaded under the group. The day is C's warm afternoon. The Shop stands as AR38's building: its counter collides, its crown shows on a featured stock, and its five minutes count each stock down. The Breaker's and the Power windows are on the system panel's slab, with C's ink, C's buttons and the chamber's teal band. The Breaker keeps its night (the director, 2026-11-15).
+- **Where:** AR40, "The install of C"; `tools/studio/Kits/`, `src/storage/*Kit.rbxm`, `Config.Lighting`, `Config.UIKit` (System), `Theme.Ink`, `Kit.Button`'s face, `WorldService`'s `dressShop`, `Rules.Shop.Minute`.
+- **Tested:** the type check, 27,232 logic cases, the world report, and the self-test's Shop, Power, Breaker, World, Base, Kit, HUD, UI, Equipment and Settings filters, all passing (three stale cases fixed).
+- **Open:** research's pass on the four captures in `build/scratch/faber/ar40/`. The rest of the system panel follows: the base screen's chips and side panels, the Forge's, the Void Shop's screen, and the shared confirm, toast and reward.
+- **For:** research.
+
 ### 2026-11-19, 20:33. AR43 in B: Equipment's three and Settings, from Home's tray (Faber)
 
 - **What changed:** Home's tray opens Reinforce, Jewels and War Emblems on Equipment's screen in SeamGlass, and Settings on its own: one card of Music, Sound and Effects sliders, saved once on release and heard at once. Every tile in the tray is built.

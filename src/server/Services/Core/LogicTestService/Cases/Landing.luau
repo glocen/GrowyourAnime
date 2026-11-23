@@ -50,6 +50,18 @@ return {
 			-- The throw and the shaft: from the top, fading to clear by their ends.
 			local throw = Landing.At(34, r, h, config).Throw
 			t.Check("frame 34: the throw at the top, 0.8 r across, lit", throw ~= nil and throw.Up == h and math.abs(throw.Across - 0.8 * r) < 1e-9 and throw.Transparency == 0)
+			t.Check("a small machine's throw runs its whole curve: 1.7 r at its end", math.abs((Landing.At(59.999, r, h, config).Throw :: any).Across - 2 * 1.7 * r) < 1e-3)
+			-- The generator at Stage III (r about 21.5): its throw held inside the Reach, on the same curve, scaled.
+			local big = 21.5
+			local widest, smooth, last = 0, true, -1
+			for f = 34, 59.75, 0.25 do
+				local across = (Landing.At(f, big, h, config).Throw :: any).Across
+				widest = math.max(widest, across / 2)
+				smooth = smooth and across > last
+				last = across
+			end
+			t.Check(`the generator's throw never past the Reach ({config.Throw.Reach} studs)`, widest <= (config.Throw.Reach :: number) + 1e-9 and widest > (config.Throw.Reach :: number) - 0.2, string.format("%.2f", widest))
+			t.Check("and still widening to its end, never held at a wall", smooth)
 			t.Check("the throw fades out by 60", Landing.At(59.999, r, h, config).Throw ~= nil and (Landing.At(59.999, r, h, config).Throw :: any).Transparency > 0.999 and Landing.At(60, r, h, config).Throw == nil)
 			local shaft = Landing.At(42, r, h, config).Shaft
 			t.Check("the shaft rises from the top and thins", shaft ~= nil and shaft.Foot == h and shaft.Across < 0.7 and Landing.At(50, r, h, config).Shaft == nil)

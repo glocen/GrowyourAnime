@@ -15549,6 +15549,10 @@ From `base_levels_finish.png`, `_64.png` and `_turn.png`, each level over its ow
 - **What the sheets can't show,** first seen at the install: the glow in the engine, the two rings crossing opposite ways, and Stage III under them on a phone. Research reads all of it in the game from the four stands.
 - **Next:** Faber installs all seven as one, after TR51 (the record's "For Faber").
 
+### Installed with AR54 (Faber, 2026-11-23, 20:24)
+
+All seven, `BayWake` as AR54's `BayWake3` and `BayWake4`: AR54, "Faber's install, with AR50's levels".
+
 ## AR51. The Stone Condenser's two faces: its convert panel and its share on the Power screen (Modulo, for research's pick, then Faber)
 
 Research, 2026-11-23, 14:04, on the director's order of 00:05 (the main map and the systems first). TR37 built the Condenser's rules and its Comb, and left two parts grey (TR37, "Faber's build"):
@@ -16136,6 +16140,35 @@ From `build/handoff/Base/base_fit_look.png`, the game's camera at the gate at le
   - how small the back row is on a real phone, read from the gate on the smallest phone;
   - the deck's light at dusk and night.
 - **Next:** Faber's install of the handoff, with AR50's levels on the new star, then research's read in the game.
+
+### Faber's install, with AR50's levels (Faber, 2026-11-23, 20:24 by the clock)
+
+- **Implemented.** The handoff taken (`tools/world/kit_take.py Base`). 25 meshes and 30 pictures uploaded under the group, all 55 Approved and the group's (read back 20:12). `FloorA4`'s and `FloorD1`'s black glow is `FloorA3`'s, the same bytes, uploaded once. The ids are in `tools/studio/Kits/Base.json` and the asset log's rows. `NoShadow` gains the sixteen floors, `LevelFloor`, `LevelRays`, `BayWake3` and `BayWake4`, and `LevelFin` and `LevelFinOuter` collide as boxes. The template is `src/storage/BaseKit.rbxm`: 108 pieces, no welds.
+  - **The plan's lay.** The plots stand on the new `layout`. Each later bay stands at its own `turn` (bays 3 and 4 at 180), so its frame, its worker and its pieces turn together. The plate is at 21.6.
+  - **Part 7's measure, one home** (my call, tier 1). Research's list said Fit's "128" layout from `layout`. Instead the trial's three layouts are retired, and Fit measures the plan's own `layout` (`Config.Kits.Base`), so no copy of it lives in `Config.World`. The trial's grey volumes and its size switch are gone from `WorldService`.
+    - `Fit.Prints` are Stage III's, from `base_fit.py prints`.
+    - `Rules.BaseFit` turns a print by its spot's quarter turns (`Turned`). Its kinds are `base_fit.py`'s: every bay one kind; the Forge, the Condenser and the Lab their own.
+    - `NL_Debug "BaseSize"` answers the plan's line: "128 studs: Breaker 1.6 s, least gap 12.2 (breaker, generator), widest 51° of 51°: PASS".
+  - **The landing's ring at 25.** `Config.Landing.Throw.Reach` is 25 studs. A machine whose throw would pass it runs the same curve scaled to end at 25, so it never stops against a wall: the generator's at Stage III ended near 36.5. A smaller machine's throw is unchanged.
+  - **AR50's levels.** Each plot lays `machines.baseLevels` in its "Levels".
+    - A level's pieces stand beside the lower levels' at the generator's swap, under the landing's cover, never before it.
+    - The rings stand on the plan's axle and always turn about it: 7.20 and −4.32 degrees a second, as measured on the client, in place, with the axle held.
+    - The fins are solid while shown.
+    - `BayWake3` and `BayWake4` stand at their bay's place and turn, shown while that bay is awake.
+  - **The floors' glow.** `Kit.Floors` names the sixteen, so the whole deck's glow turns with the night. `Court1` and `Yard` had it; the rest of the old floors never did.
+  - **`current`** is in the floor's pictures. The pulse along the live lines waits on research's verdict, unbuilt.
+- **Tested.**
+  - The type check: 0 new.
+  - The logic: 29247 passing offline, and 29247 with 0 failed in Studio. New logic cases: the plan's lay at Stage III (14 footprints, the generator's clear 25 or more), the print's turn, the landing's reach, and the levels' rows (pieces, axles, the wakes, the sixteen floors, the plate).
+  - The world report: empty.
+  - The base's self-test cases ("Base:"): 364 passed, 0 failed, at 50 fps. That includes the new case: each level's pieces at its swap, the rings' axle and rates, and the wakes.
+  - `py tools/blender/base_levels_clear.py`: PASS.
+  - **Not verified:** a wake shown on an awake bay 3 or 4 from a save. The test save opens two bays, so the case reads the wakes hidden, and the captures forced both on. The street's dressing report runs in the Festival place only, so the plots' lines weren't read through it here.
+- **My own review** (`build/captures/ar54/`, gitignored, kept for research's read): from the Strip by day and at dusk, the deck at night, the yard by day, and the smallest phone's frame from the gate (`phone_gate_l3.png`), all at level 3 with both wakes on.
+  - From the gate, the two rings crown the generator, and the fins stand in pairs beside the gate's posts.
+  - On the smallest phone, level 3's upper ring touches the frame's top (research's polish-later note). The back row's bays read small beyond the wheel.
+  - At dusk the rings glow teal. At night the deck's lines hold, and the floor reads pale.
+- **Next:** research's read in the game from the four stands: the glow, the rings crossing opposite ways, Stage III under them on a phone, the back row on the smallest phone, and the deck at dusk and night.
 
 ## AR55. The return card's look: what the base made while you were away (Modulo, for research's pick, then Faber at TR53)
 

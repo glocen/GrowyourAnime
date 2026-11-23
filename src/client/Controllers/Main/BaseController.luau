@@ -1175,8 +1175,8 @@ end
 --   (Rules.Power.Gauge); the axle is its piece's origin, the manifest's centre away from the part;
 -- * the Training machine's crown about its own upright while a Voidkin trains, still when none does (AR15, section 5;
 --   each stage's crown alike, AR35);
--- * a stage's own turning pieces (TR51: the Breaker's hinges, AR32; a bay's rings, AR33) about their own axle ("Axis",
---   Z or X), "Speed" turns a second the way their "Sign" says while the server says they're "Spinning";
+-- * a stage's own turning pieces (TR51: the Breaker's hinges, AR32; a bay's rings, AR33; a base level's rings, AR50)
+--   about their own axle ("Axis", Z, X or Y), "Speed" turns a second the way their "Sign" says while the server says they're "Spinning";
 -- * the Festival Door's rings ("spins") about the tunnel's axis, each its own origin's Z, always and whatever the Door's
 --   state, at their plan's `Spin` in degrees a second, anticlockwise seen from the mouth for a positive one: drawn as
 --   CFrame.Angles(0, 0, -angle), so the angle runs against the spin (AR15, section 7).
@@ -1246,7 +1246,7 @@ local function watchTurning(item: Instance)
 	local moves = item:GetAttribute("Moves")
 	local own = item:GetAttribute("Axis")
 	local axis: ("Z" | "Y" | "X")? = if crowned(kind) then "Y"
-		elseif own == "X" then "X"
+		elseif own == "X" or own == "Y" then own
 		elseif moves == "turns" or moves == "demand" or moves == "spins" then "Z"
 		else nil
 	if axis == nil then

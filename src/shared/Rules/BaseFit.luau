@@ -1,8 +1,8 @@
 --!strict
 -- BaseFit (pure rules): part 7's tests for the base's size (docs/research/rework-2026-11-16.md, part 7, "The tests for
--- picking the size"), on a layout of the plan's shape (Config.Kits.Base's `layout`, or Config.World.Fit.Layouts for the
--- grey trial) with each machine at its real footprint (Config.World.Fit.Prints, measured from the laid kit). Across the
--- plot from its middle line, inward from its front edge, the gate's middle at (0, 0).
+-- picking the size"), on the base plan's layout (Config.Kits.Base's `layout`) with each machine at its widest footprint
+-- (Config.World.Fit.Prints, Stage III's, measured on the handoff's meshes). Across the plot from its middle line, inward
+-- from its front edge, the gate's middle at (0, 0); a spot may turn its machine by quarter turns (`turn`, degrees).
 --   Breaker  seconds at the walk from the gate to the Breaker's nearest side, at most Fit.Breaker
 --   Least    the least gap between any two footprints, edge to edge, and its pair: at least Fit.Clear. Part 7 asks it of a
 --            machine's front; the grey boxes have no front, so every side is held to it
@@ -14,7 +14,7 @@
 
 local BaseFit = {}
 
-export type Spot = { across: number, inward: number }
+export type Spot = { across: number, inward: number, turn: number? }
 export type Layout = {
 	spawn: Spot,
 	stations: { [string]: Spot },
@@ -46,7 +46,8 @@ export type Report = {
 }
 
 -- Each machine's spot by its name, as the plot names its stations: the seven stations, bays 3 to 6 from laterBays, and
--- the three sleeping places. Its kind, for its print: bays 1 and 2 are "bay", 3 to 6 "later", the sleeping three "stone".
+-- the three sleeping places. Its kind, for its print: every bay is "bay" (a sleeping one wakes into one, so it's held to
+-- a bay's), and the Forge, the Condenser and the Lab are their own.
 function BaseFit.Spots(layout: Layout): { [string]: Spot }
 	local out: { [string]: Spot } = {}
 	for name, spot in layout.stations do
@@ -62,14 +63,28 @@ function BaseFit.Spots(layout: Layout): { [string]: Spot }
 end
 
 function BaseFit.Kind(name: string): string
-	if name == "bay1" or name == "bay2" then
+	if string.match(name, "^bay%d+$") then
 		return "bay"
-	elseif string.match(name, "^bay%d+$") then
-		return "later"
-	elseif name == "forge" or name == "condenser" or name == "lab" then
-		return "stone"
 	end
 	return name
+end
+
+-- A print as its spot turns it, by quarter turns about the spot (as tools/blender/base_fit.py turns a mesh: a half
+-- turn mirrors its offset, a quarter swaps its size across and inward).
+function BaseFit.Turned(print: Print, turn: number?): Print
+	local quarters = math.round((turn or 0) / 90) % 4
+	local across, inward = print.Across, print.Inward
+	for _ = 1, quarters do
+		across, inward = inward, -across
+	end
+	local swap = quarters % 2 == 1
+	return {
+		Across = across,
+		Inward = inward,
+		Wide = if swap then print.Deep else print.Wide,
+		Deep = if swap then print.Wide else print.Deep,
+		High = print.High,
+	}
 end
 
 -- Every machine's footprint, sorted by name. A machine whose kind has no print is left out.
@@ -77,7 +92,7 @@ function BaseFit.Boxes(layout: Layout, prints: { [string]: Print }): { Box }
 	local out: { Box } = {}
 	for name, spot in BaseFit.Spots(layout) do
 		local kind = BaseFit.Kind(name)
-		local print = prints[kind]
+		local print = if prints[kind] then BaseFit.Turned(prints[kind], spot.turn) else nil
 		if print then
 			local x, z = spot.across + print.Across, spot.inward + print.Inward
 			table.insert(out, {

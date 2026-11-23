@@ -19,97 +19,46 @@ return {
 	-- Festival Door, not the walk, takes a player to the grounds.
 	Plots = {
 		Count = 8,
-		-- 128 studs square (research's verdict of 2026-11-17, 12:01, on part 7's trial; AR16): until the base plan is laid
-		-- again at 128, the plot stands grey on Fit's layout for its size. 144 is the written fallback (docs/design.md).
+		-- 128 studs square (research's verdict of 2026-11-17, 12:01, on part 7's trial; AR16; the plan laid for Stage III by
+		-- AR54). 144 is the written fallback (docs/design.md).
 		Across = 8, -- 128 studs, open onto the Strip
 		Deep = 8, -- 128 studs. Where each machine stands is the base plan's layout (Config.Kits.Base, AR16)
 		Kept = 1.5, -- 24 studs at the back, kept for the Forge, the Lab and the Condenser (phase 3)
 		Between = 2, -- 32 studs between neighbours
 		Behind = 1, -- 16 studs of path behind a plot, then its Tower
 		Tower = 2, -- the Tower's footprint, 32 studs, left empty (phase 3)
-		-- The size the base plan's layout and its floor pictures are drawn for (AR16). A plot of another size stands grey,
-		-- on Fit's layout for its size: part 7's trial.
+		-- The size the base plan's layout and its floor pictures are drawn for (AR16; AR54 at Stage III).
 		Drawn = 8,
 	},
 
-	-- The base's three sizes in grey (docs/research/rework-2026-11-16.md, part 7): 128, 144 and 160 studs square, 32
-	-- between neighbours, tried from the player's camera before anything is drawn. NL_Debug:Invoke("BaseSize", nil, 144)
-	-- lays the plots at one (Rules.BaseFit's report with it); ("BaseSize") puts today's back.
-	-- The tests (Rules.BaseFit): Breaker, seconds from the gate at most; Clear, studs between any two footprints at least
-	-- (part 7: "no machine within 12 studs of another's front"; the grey boxes have no front, so every side); Avenue, the
-	-- way in clear down the middle (AR16's 20); Apron, studs from the gate to the nearest machine; Margin, from the
-	-- square's edge; Camera, the player's, Back studs behind the gate looking in, its vertical Fov at a 16:9 screen's
-	-- Aspect, the narrower landscape.
+	-- Part 7's tests for the base's plan (docs/research/rework-2026-11-16.md, part 7; Rules.BaseFit), on the plan's own
+	-- layout (Config.Kits.Base, `layout`; AR54's lay for Stage III, 2026-11-23). The trial of three sizes chose 128
+	-- (research, 2026-11-17) and is over. NL_Debug:Invoke("BaseSize") answers the plan's line.
+	-- The tests: Breaker, seconds from the gate at most; Clear, studs between any two footprints at least (part 7: "no
+	-- machine within 12 studs of another's front"; a box has no front, so every side); Avenue, the way in clear down the
+	-- middle (AR16's 20); Apron, studs from the gate to the nearest machine; Margin, from the square's edge; Camera, the
+	-- player's, Back studs behind the gate looking in, its vertical Fov at a 16:9 screen's Aspect, the narrower landscape.
 	Fit = {
-		Sizes = { 8, 9, 10 },
-		Between = 2,
 		Breaker = 4,
 		Clear = 12,
 		Avenue = 20,
 		Apron = 16,
 		Margin = 4,
 		Camera = { Back = 12.5, Fov = 70, Aspect = 16 / 9 },
-		-- Each machine's real footprint (Rules.BaseFit.Kind), measured from the laid kit at 200 studs, 2026-11-16: its
-		-- middle's offset from its spot, its size across and inward, its height. The machines keep their size at every
-		-- size of plot ("recomposed, never scaled").
+		-- Each machine's footprint at Stage III, its widest (Rules.BaseFit.Kind): its middle's offset from its spot, its size
+		-- across and inward, its height, measured on the handoff's meshes as the plan stands and turns them
+		-- (`py tools/blender/base_fit.py prints`, 2026-11-23). The Door's is its only stage, turned as it stands; the Lab's is
+		-- its sleeping stone. A sleeping bay is held to a bay's, since it wakes into one.
 		Prints = {
-			generator = { Across = -0.75, Inward = 3.75, Wide = 24.9, Deep = 28.9, High = 24.2 },
-			breaker = { Across = 4, Inward = 0, Wide = 24.8, Deep = 6.8, High = 12.9 },
-			door = { Across = 0, Inward = 0, Wide = 3, Deep = 12.4, High = 14.7 },
-			bay = { Across = 0, Inward = 0, Wide = 10.3, Deep = 11.4, High = 10.3 },
-			later = { Across = 0, Inward = 0, Wide = 10.3, Deep = 10.2, High = 1.6 },
-			battery = { Across = 0, Inward = 0, Wide = 6.6, Deep = 4.6, High = 3 },
-			training = { Across = 0, Inward = -2.5, Wide = 6.2, Deep = 11.2, High = 9.1 },
-			stone = { Across = 0, Inward = 0, Wide = 9.2, Deep = 9.2, High = 1.6 },
-		},
-		-- AR16's star at each size, the plan's shape: the generator at the heart, the Breaker and the Door on the slants
-		-- toward the gate, level 1's bays at the bus's ends and the later ones past them, the battery and the Training
-		-- machine on the back slants, the Forge, the Condenser and the Lab asleep behind. The builder's grey re-lay: the
-		-- nearest to AR16 scaled to the size that passes every test (a search, 2026-11-16). Modulo re-lays the
-		-- chosen one for real (part 7).
-		Layouts = {
-			["128"] = {
-				spawn = { across = 0, inward = 8 },
-				stations = {
-					generator = { across = 0, inward = 47 },
-					breaker = { across = 19, inward = 20 },
-					door = { across = -25, inward = 23 },
-					battery = { across = 29, inward = 73 },
-					training = { across = -29, inward = 73 },
-					bay1 = { across = -31, inward = 47 },
-					bay2 = { across = 31, inward = 47 },
-				},
-				laterBays = { { across = -54, inward = 47 }, { across = 54, inward = 47 }, { across = -54, inward = 70 }, { across = 54, inward = 70 } },
-				sleeping = { forge = { across = -23, inward = 94 }, condenser = { across = 23, inward = 94 }, lab = { across = 0, inward = 88 } },
-			},
-			["144"] = {
-				spawn = { across = 0, inward = 8 },
-				stations = {
-					generator = { across = 0, inward = 52 },
-					breaker = { across = 19, inward = 25 },
-					door = { across = -25, inward = 27 },
-					battery = { across = 29, inward = 78 },
-					training = { across = -29, inward = 78 },
-					bay1 = { across = -36, inward = 52 },
-					bay2 = { across = 36, inward = 52 },
-				},
-				laterBays = { { across = -59, inward = 52 }, { across = 59, inward = 52 }, { across = -59, inward = 78 }, { across = 59, inward = 78 } },
-				sleeping = { forge = { across = -26, inward = 99 }, condenser = { across = 26, inward = 99 }, lab = { across = 0, inward = 98 } },
-			},
-			["160"] = {
-				spawn = { across = 0, inward = 8 },
-				stations = {
-					generator = { across = 0, inward = 58 },
-					breaker = { across = 21, inward = 31 },
-					door = { across = -25, inward = 34 },
-					battery = { across = 29, inward = 83 },
-					training = { across = -29, inward = 83 },
-					bay1 = { across = -42, inward = 58 },
-					bay2 = { across = 42, inward = 58 },
-				},
-				laterBays = { { across = -66, inward = 58 }, { across = 66, inward = 58 }, { across = -66, inward = 87 }, { across = 66, inward = 87 } },
-				sleeping = { forge = { across = -29, inward = 106 }, condenser = { across = 29, inward = 106 }, lab = { across = 0, inward = 109 } },
-			},
+			generator = { Across = -0.72, Inward = 3.72, Wide = 30.24, Deep = 28.86, High = 27.12 },
+			breaker = { Across = 7.0, Inward = -1.52, Wide = 34.58, Deep = 9.87, High = 20.17 },
+			door = { Across = -1.59, Inward = 0, Wide = 8.61, Deep = 14.22, High = 13.06 },
+			bay = { Across = -0.07, Inward = 0, Wide = 10.36, Deep = 11.74, High = 15.74 },
+			battery = { Across = 0, Inward = 0, Wide = 6.52, Deep = 4.52, High = 13.43 },
+			training = { Across = 0, Inward = -1.62, Wide = 9.75, Deep = 12.98, High = 10.37 },
+			forge = { Across = 0, Inward = 0, Wide = 11.08, Deep = 8.82, High = 14.51 },
+			condenser = { Across = 0, Inward = 0.25, Wide = 11.61, Deep = 9.31, High = 11.79 },
+			lab = { Across = 0, Inward = 0, Wide = 9.22, Deep = 9.22, High = 1.44 },
 		},
 	},
 

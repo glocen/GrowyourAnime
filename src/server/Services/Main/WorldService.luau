@@ -882,6 +882,7 @@ local function plot(parent: Instance, number: number, at: CFrame, across: number
 					continue
 				end
 				local group = stageGroup(battery, stage, batteryAt)
+				group:SetAttribute("Seats", if rows.seats then #rows.seats else 0) -- the cells its rack holds
 				for _, row in rows.pieces do
 					stagePiece(group, "Rack", row.piece, batteryHome, row.at, stage, false, number, at, front)
 				end

@@ -25,6 +25,8 @@ local Markers = require(Shared.World.Markers)
 local BaseManifest: any = require(Shared.Config.Kits.Base.Manifest)
 local BasePlan: any = require(Shared.Config.Kits.Base.Plan)
 local BaseController = require(script.Parent.Parent.Parent.Main.BaseController)
+local LandingController = require(script.Parent.Parent.Parent.Main.LandingController)
+local LandingConfig = require(Shared.Config.Landing)
 local LightingController = require(script.Parent.Parent.Parent.Main.LightingController)
 local SignsController = require(script.Parent.Parent.Parent.Main.SignsController)
 local HudController = require(script.Parent.Parent.Parent.Main.HudController)
@@ -262,7 +264,7 @@ function BaseCases.Cases(given: Given): { any }
 					t.Server("BaseLevel", level)
 					local want = BaseLevels.GeneratorStage(level)
 					t.Check(`base level {level}: the mill stands at stage {want}`, waitFor(t, ANSWER, function(): boolean
-						return plant ~= nil and plant:GetAttribute("Stage") == want
+						return plant ~= nil and plant:GetAttribute("Stage") == want and plant:GetAttribute("Swapping") ~= true -- a rise's swap waits under its landing (AR37)
 					end), tostring(plant and plant:GetAttribute("Stage")))
 					local wrongStage: string? = nil
 					for _, group in (if plant then plant:GetChildren() else {}) do
@@ -354,6 +356,8 @@ function BaseCases.Cases(given: Given): { any }
 						return "not streamed in"
 					elseif holder:GetAttribute("Stage") ~= want then
 						return `at stage {tostring(holder:GetAttribute("Stage"))}, not {want}`
+					elseif holder:GetAttribute("Swapping") == true then
+						return "its swap waits under its landing" -- AR37: the old stage stands until the swap
 					end
 					for _, group in holder:GetChildren() do
 						local at = group:GetAttribute("Stage")
@@ -418,10 +422,12 @@ function BaseCases.Cases(given: Given): { any }
 				t.Check("Breaker 5 to 6: the rise lands once", waitFor(t, ANSWER, function(): boolean
 					return rises(breaker) == before + 1
 				end), `{rises(breaker) - before} landings`)
+				-- Raised again and lowered while the swap waits: no landing of their own, the newest stage at the swap.
 				t.Server("MachineLevel", "Breaker", 7)
 				t.Server("MachineLevel", "Breaker", 5)
-				t.Wait(0.5)
+				stands("Breaker 6 to 7 and 7 to 5 while its swap waits: stage I at the swap", breaker, 1)
 				t.Equal("Breaker 6 to 7 (the same stage) and 7 to 5 (a fall): no landing", rises(breaker) - before, 1)
+				t.Check("the old stage stood until the swap: the landing's stage it rose from", (breaker :: Instance):GetAttribute("RoseFrom") == 1, tostring((breaker :: Instance):GetAttribute("RoseFrom")))
 				t.Server("MachineLevel", "Breaker", 6)
 				waitFor(t, ANSWER, function(): boolean
 					return rises(breaker) == before + 2
@@ -475,6 +481,138 @@ function BaseCases.Cases(given: Given): { any }
 					stands(`base level {level}: the battery at stage {want}`, battery, want)
 					stands(`base level {level}: the Training machine at stage {want}`, trainer, want)
 				end
+				t.Server("BaseLevel", levelWas)
+			end,
+		},
+		{
+			Name = "Base: a stage lands (TR51, AR37): a rise on its owner's plot plays the climbing ring round the machine, its cover the machine's own shape, occluded, full as the old stage gives way to the new, everything gone by its last frame; a base level-up's machines start on one frame, and a plot's next landing waits the flash guard's gap",
+			Place = "Main", -- TR45: its world stands in that place only
+			Run = function(t: any)
+				local view = ProfileController.Get()
+				local plot = Players.LocalPlayer:GetAttribute("Plot")
+				local function find(kind: string): Instance?
+					return if type(plot) == "number" then Markers.Find(kind, { Plot = plot }) else nil
+				end
+				local function staged(): boolean
+					local breaker = find("Breaker")
+					return breaker ~= nil and breaker:FindFirstChild("Stage 1") ~= nil
+				end
+				if type(plot) == "number" and not staged() then
+					t.Server("Respawn")
+					waitFor(t, 8, staged)
+				end
+				local breaker = find("Breaker")
+				if view == nil or breaker == nil or not staged() then
+					t.Check("a plot, a save, and the Breaker in its stages", false, if view == nil then "no save yet" else "no stages: a grey base, or the kit lacks them")
+					return
+				end
+				local base = (view :: any).Base
+				local breakerWas, levelWas = base.Machines.Breaker or 1, base.Level
+				local function settled(holders: { Instance? }): boolean
+					for _, holder in holders do
+						if holder == nil or holder:GetAttribute("Swapping") == true then
+							return false
+						end
+					end
+					return #LandingController.Playing() == 0
+				end
+				local function shows(holder: Instance, stage: number): boolean
+					local group = holder:FindFirstChild(`Stage {stage}`)
+					local body = if group then group:FindFirstChildWhichIsA("BasePart") else nil
+					return body ~= nil and (body :: BasePart).Transparency == 0
+				end
+				local function landingOf(holder: Instance): any
+					for _, each in LandingController.Playing() do
+						if each.Holder == holder then
+							return each
+						end
+					end
+					return nil
+				end
+				-- The Breaker from 5 to 6, stage I to II, each render frame read: the old stage standing before the swap and
+				-- the new after, the swap under the full cover.
+				t.Server("MachineLevel", "Breaker", 5)
+				t.Check("the Breaker settles at stage I", waitFor(t, ANSWER, function(): boolean
+					return settled({ breaker }) and breaker:GetAttribute("Stage") == 1 and shows(breaker, 1)
+				end))
+				t.Wait(LandingConfig.Gap)
+				local played = LandingController.Played()
+				local rows: { { Frame: number, Fill: number, Old: boolean, New: boolean } } = {}
+				local reading = RunService.RenderStepped:Connect(function()
+					local each = landingOf(breaker)
+					if each then
+						table.insert(rows, { Frame = each.Frame, Fill = 1 - each.Cover.FillTransparency, Old = shows(breaker, 1), New = shows(breaker, 2) })
+					end
+				end)
+				t.Server("MachineLevel", "Breaker", 6)
+				local each: any = nil
+				t.Check("a landing plays on the Breaker", waitFor(t, ANSWER, function(): boolean
+					each = landingOf(breaker)
+					return each ~= nil
+				end), `{LandingController.Played() - played} started`)
+				if each then
+					t.Check("its cover is the Breaker's own shape, never seen through a wall", each.Cover.Adornee == breaker and each.Cover.DepthMode == Enum.HighlightDepthMode.Occluded)
+					t.Check("sized round the machine", each.R > 1 and each.H > 1, `r {each.R}, h {each.H}`)
+				end
+				waitFor(t, 3, function(): boolean
+					return landingOf(breaker) == nil
+				end)
+				reading:Disconnect()
+				local swapAt: number? = nil
+				local fillAt, oldLate, newEarly = 0, false, false
+				for _, row in rows do
+					if row.New and swapAt == nil then
+						swapAt, fillAt = row.Frame, row.Fill
+					end
+					oldLate = oldLate or (row.Frame >= LandingConfig.Swap + 5 and row.Old)
+					newEarly = newEarly or (row.Frame < LandingConfig.Swap - 5 and row.New)
+				end
+				t.Check(`{#rows} frames read: the old stage stands until the swap, the new from it`, #rows > 20 and not oldLate and not newEarly and swapAt ~= nil,
+					`swap at frame {tostring(swapAt)}`)
+				t.Check("the swap under the full cover, never seen", swapAt ~= nil and fillAt >= 0.8, string.format("fill %.2f at frame %s", fillAt, tostring(swapAt)))
+				local left = workspace:FindFirstChild("NL_Landings")
+				t.Check("everything gone by its last frame, its cover with it", left == nil or #left:GetChildren() == 0, if left then `{#left:GetChildren()} left` else "")
+				-- A respawn on the plot plays none.
+				played = LandingController.Played()
+				local old = Players.LocalPlayer.Character
+				t.Server("Respawn")
+				waitFor(t, 8, function(): boolean
+					return Players.LocalPlayer.Character ~= old
+				end)
+				t.Wait(1)
+				t.Equal("a respawn: no landing", LandingController.Played() - played, 0)
+				-- A base level-up, 1 to 2: the mill, the battery and the Training machine start on one frame; the Breaker
+				-- raised just after waits the gap for its own swap (the flash guard: at most 3 flashes in any second).
+				local plant, battery, trainer = find("Generator"), find("Battery"), find("Training")
+				t.Server("MachineLevel", "Breaker", 5)
+				t.Server("BaseLevel", 1)
+				waitFor(t, ANSWER, function(): boolean
+					return settled({ breaker, plant, battery, trainer })
+				end)
+				t.Wait(LandingConfig.Gap)
+				local started: { [Instance]: number } = {}
+				local clocks: { [Instance]: number } = {}
+				local noting = RunService.RenderStepped:Connect(function()
+					for _, playing in LandingController.Playing() do
+						if started[playing.Holder] == nil then
+							started[playing.Holder], clocks[playing.Holder] = playing.Started, os.clock()
+						end
+					end
+				end)
+				t.Server("BaseLevel", 2)
+				t.Server("MachineLevel", "Breaker", 6)
+				waitFor(t, ANSWER, function(): boolean
+					return started[breaker] ~= nil and settled({ breaker, plant, battery, trainer })
+				end)
+				noting:Disconnect()
+				local together = plant ~= nil and battery ~= nil and trainer ~= nil and started[plant :: Instance] ~= nil
+					and started[plant :: Instance] == started[battery :: Instance] and started[plant :: Instance] == started[trainer :: Instance]
+				t.Check("the base level-up's three machines start on one frame", together,
+					`{tostring(plant and started[plant])}, {tostring(battery and started[battery])}, {tostring(trainer and started[trainer])}`)
+				local apart = if plant and clocks[plant] and clocks[breaker] then clocks[breaker] - clocks[plant] else nil
+				t.Check(`the Breaker's landing waits the gap, {LandingConfig.Gap} s`, apart ~= nil and apart >= LandingConfig.Gap - 1 / 30,
+					if apart then string.format("%.3f s after", apart) else "not seen")
+				t.Server("MachineLevel", "Breaker", breakerWas)
 				t.Server("BaseLevel", levelWas)
 			end,
 		},

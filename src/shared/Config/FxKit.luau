@@ -70,6 +70,8 @@ return {
 		fx_across_Ember = { Id = "rbxassetid://116333297359044", Use = "MeshPart.TextureID: a coil's strands, the crescent" },
 		fx_rise_Ember = { Id = "rbxassetid://117388118542904", Use = "MeshPart.TextureID: the column, the hoop, a shell, chips" },
 		fx_ribs_Ember = { Id = "rbxassetid://110868798137696", Use = "MeshPart.TextureID: a lantern's ribs on a shell or a column" },
+		-- The Void palette's rise ramp (AR37's colour pass), alone of its set, uploaded under the group on 2026-11-23.
+		fx_rise_Void = { Id = "rbxassetid://84217908322822", Use = "MeshPart.TextureID: the column, the hoop, a shell, chips" },
 		fx_fire_Flame = { Id = "rbxassetid://122793873593321", Use = "MeshPart.TextureID: a coil's strands on fire (B1's bands)" },
 		fx_beam = { Id = "rbxassetid://109017225338468", Use = "Beam or Trail: across it a bright core and a lower edge, clear outside; tiles along; TextureMode Wrap or Stretch; TextureSpeed 0 unless it flows" },
 		fx_tongues = { Id = "rbxassetid://80204991292755", Use = "Beam or Trail: a flame's tongues off Attachment0's side (the image's left), tiles along; TextureSpeed for the lick to travel" },

@@ -16761,3 +16761,28 @@ From `build/handoff/Shade/shade_support_look.png` (the row, the pack, near, 64 p
   - The lever is Modulo's: more, narrower slips with square-cut ends, so they read as a paper fringe.
   - The check: the row and the pack at their own size and four times, and near.
 - **The second look** judges the veil only.
+
+## AR59. Rook, redesigned to the anime bar (Modulo, for research's pick and the director's look, then its finish; Faber's install after)
+
+Research, 2026-11-23, 22:53, on the director's pick by 22:52 (`docs/decisions.md`). Tier 2: a look players see, in Modulo's area and then Faber's. It goes into the game only on the director's acceptance. The first of the launch five's redesigns. The order: Rook, Kirra, Pip, Lyric, then Watt's finish (AR11). Each is its own request, written when the one before closes.
+- **Why Rook first:** he's the lead every new player holds, in every fight of the first session and on the lead's card. He was drawn before the bar of 2026-11-15 (`docs/roster.md`, "The look"; AR1 has his history).
+- **Feel line:** in the first fight, the player looks at their lead and sees a character from an anime's cast. The hair's silhouette reads first, then a sharp face, then a jacket with one asymmetry, then one weapon with style. It's a Common: simple, and never corny.
+- **What holds:**
+  - his row in `docs/roster.md`: Common, Red, Warrior, no element, Haymaker's function, and Second Wind (its look line is a seed);
+  - the roster's look rules: a character, not a job; hair as the identity; a face of his own; the R6 body;
+  - his rig and today's clips;
+  - violet only on what's alive (AR40).
+- **The block contains:** three directions in the game's own light, each shown:
+  - full body from the player's camera in a fight on the deck, at the smallest phone's size;
+  - the bust at the size of the lead card's portrait;
+  - the silhouette at 64 pixels;
+  - beside today's Rook and a Shade.
+- **Checks:**
+  1. The content check before building.
+  2. Research's pick, with fresh eyes. It's a signature piece, judged blind against the bar, never against its own sheet.
+  3. The director's look at the pick.
+  4. The finish.
+  5. The director's acceptance before Faber installs it.
+- **What waits:** the basic attack's clip, effect and sound (AR26, not covered); the portrait's render, after the finish; Faber's install, in his order.
+- **Time:** a signature piece gets the time it needs. The blockout is about 3 hours, as a guide.
+- **Order:** Modulo's next, after AR58's must-fix.

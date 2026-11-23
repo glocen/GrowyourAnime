@@ -29,7 +29,7 @@ Every Voidkin is drawn as a character from a real anime's cast (the director, 20
 - **Rarity sets the detail.**
   - A Common or Uncommon has three or four elements and a plain palette with one accent. Its signature and passive are modest. Like an anime's side character, it's simple, never corny.
   - Each rarity up adds layers, trims, light, and pieces that move.
-- **Already made:** Rook, Kirra, Pip and Lyric keep their looks now, and are redesigned to this bar at the end, in the finish pass before launch [D, 2026-11-17, 02:40: "Redesign them all", then "we wont redesign the old voidkin now right we said at the end"]. The Shade and the Lamplighter stay as they are until an overhaul much later.
+- **Already made:** Rook, Kirra, Pip and Lyric keep their looks now, and are redesigned to this bar at the end, in the finish pass before launch [D, 2026-11-17, 02:40: "Redesign them all", then "we wont redesign the old voidkin now right we said at the end"]. The redesigns start now, with Watt's finish, one at a time, each into the game only on the director's acceptance [D, 2026-11-23, by 22:52; AR59 first]. The Shade and the Lamplighter stay as they are until an overhaul much later.
 - **A basic attack and a signature of its own** [D, 2026-11-17, 02:40]: every Voidkin's basic attack (M1) and signature have their own effect and their own sound, at Anime Vanguards' level of flash. No two share a hit.
 - **The "Look" column below was written before this rule.** A row whose look is a trade's costume is designed again at its sheet. It keeps its rarity, type, class, element and its signature's function.
 

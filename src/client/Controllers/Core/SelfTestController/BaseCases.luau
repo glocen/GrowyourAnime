@@ -22,6 +22,11 @@ local Power = require(Shared.Rules.Power)
 local LightingConfig = require(Shared.Config.Lighting)
 local WorldConfig = require(Shared.Config.World)
 local Markers = require(Shared.World.Markers)
+local Profile = require(Shared.Data.Profile)
+local Collection = require(Shared.Rules.Collection)
+local Stats = require(Shared.Rules.Stats)
+local Sheet = require(Shared.Rules.Sheet)
+local Hud = require(Shared.Rules.Hud)
 local BaseManifest: any = require(Shared.Config.Kits.Base.Manifest)
 local BasePlan: any = require(Shared.Config.Kits.Base.Plan)
 local BaseController = require(script.Parent.Parent.Parent.Main.BaseController)
@@ -1099,6 +1104,133 @@ function BaseCases.Cases(given: Given): { any }
 				end))
 				if before ~= "" then
 					t.Check("the worker goes back", ProfileController.Act("SetWorker", { Bay = 1, Voidkin = before }).Ok == true)
+				end
+			end,
+		},
+		{
+			Name = "Base: TR22's gate and plinth (TR51): the plate says its owner's name over the base's level on both faces, and follows the level; the plinth stands the showcase Voidkin, the strongest until one's picked, at its middle, playing its Idle, turning, its CR over it; a pick stands the one picked, and \"\" gives it back",
+			Place = "Main", -- TR45: its world stands in that place only
+			Run = function(t: any)
+				local view = ProfileController.Get()
+				local plot = Players.LocalPlayer:GetAttribute("Plot")
+				local breaker = if type(plot) == "number" then Markers.Find("Breaker", { Plot = plot }) else nil
+				local dressing = if breaker and breaker.Parent then breaker.Parent:FindFirstChild("Dressing") else nil
+				if view == nil or dressing == nil then
+					t.Check("a plot, its dressing and a save", false)
+					return
+				end
+				local dressed = dressing :: Instance
+				-- The plate, on both faces.
+				local function plateSays(level: number): (boolean, string)
+					local plate = dressed:FindFirstChild("LevelMark")
+					local said = {}
+					for _, face in { "Front", "Back" } do
+						local gui = if plate then plate:FindFirstChild(face) else nil
+						local owner = if gui then gui:FindFirstChild("Owner") else nil
+						local mark = if gui then gui:FindFirstChild("Level") else nil
+						if not (owner and owner:IsA("TextLabel") and mark and mark:IsA("TextLabel")) then
+							return false, `{face}: no plate`
+						end
+						table.insert(said, `{owner.Text} / {mark.Text}`)
+						if owner.Text ~= Players.LocalPlayer.DisplayName or mark.Text ~= `Level {level}` then
+							return false, table.concat(said, "; ")
+						end
+					end
+					return true, table.concat(said, "; ")
+				end
+				local levelWas = view.Base.Level
+				local said = ""
+				t.Check("the plate: the owner's name over the base's level, on both faces", waitFor(t, ANSWER + 3, function(): boolean
+					local ok, words = plateSays(levelWas)
+					said = words
+					return ok
+				end), said)
+				local other = if levelWas < BaseLevels.Top() then levelWas + 1 else levelWas - 1
+				if other >= 1 and other ~= levelWas then
+					t.Server("BaseLevel", other)
+					t.Check(`the base at level {other}: the plate follows`, waitFor(t, ANSWER, function(): boolean
+						local ok, words = plateSays(other)
+						said = words
+						return ok
+					end), said)
+					t.Server("BaseLevel", levelWas)
+					t.Check("the level put back: so does the plate", waitFor(t, ANSWER, function(): boolean
+						return (plateSays(levelWas))
+					end))
+				end
+				-- The plinth's Voidkin.
+				local function figure(): Model?
+					local found = dressed:FindFirstChild("Showcased")
+					return if found and found:IsA("Model") and found.PrimaryPart then found else nil
+				end
+				local function stands(id: string): boolean
+					local made = figure()
+					return made ~= nil and made:GetAttribute("Voidkin") == id
+				end
+				local shown = Collection.Showcase(ProfileController.Get() :: any)
+				if shown == nil then
+					t.Check("a Voidkin to show", false)
+					return
+				end
+				local owned = shown :: Profile.OwnedVoidkin
+				local rig = AnimationsConfig.Rigs[Voidkin.ById[owned.Def].Rig or "R6"]
+				t.Check("the plinth stands the showcase Voidkin (Collection.Showcase), playing its rig's Idle", waitFor(t, ANSWER + 3, function(): boolean
+					local made = figure()
+					return stands(owned.Id) and made ~= nil and made:GetAttribute("Playing") == rig.Idle
+				end), if figure() then `{tostring((figure() :: Model):GetAttribute("Voidkin"))}, playing {tostring((figure() :: Model):GetAttribute("Playing"))}` else "none")
+				local made = figure()
+				local plinth: Instance? = nil
+				for _, part in dressed:GetChildren() do
+					if part:GetAttribute("Piece") == "Showcase" then
+						plinth = part
+					end
+				end
+				local stand = if plinth then plinth:GetAttribute("Stand") else nil
+				if made and typeof(stand) == "CFrame" then
+					local look = WorldConfig.Showcase
+					local at = made:GetPivot().Position
+					local want = (stand * CFrame.new(0, look.Hip, 0)).Position
+					t.Check("at the plinth's middle, Up over its foot and Hip over that", (at - want).Magnitude < 0.05, tostring(at - want))
+					local root = made.PrimaryPart :: BasePart
+					t.Check("held where it stands, through nobody's way", root.Anchored and not root.CanCollide)
+					-- Turning: its facing about the up axis, over half a second, at Turn turns a second.
+					local was, from = made:GetPivot().LookVector, os.clock()
+					task.wait(0.5)
+					local now, took = made:GetPivot().LookVector, os.clock() - from
+					local turned = math.acos(math.clamp(was:Dot(now), -1, 1))
+					local expect = look.Turn * 2 * math.pi * took
+					t.Check(`turning: {string.format("%.3f", turned)} rad in {string.format("%.2f", took)} s, about {string.format("%.3f", expect)}`, turned > expect * 0.6 and turned < expect * 1.4)
+					t.Check("upright as it turns", math.abs(now.Y) < 1e-3)
+					-- Its CR, over it.
+					local board = root:FindFirstChild("Power")
+					local words = if board then board:FindFirstChild("Words") else nil
+					local data = ProfileController.Get() :: any
+					local power = Stats.Power((Stats.Resolve(owned, Stats.PresetOf(data, owned), data)))
+					t.Check("its CR over it, read from the Strip", board ~= nil and board:IsA("BillboardGui") and board.Adornee == root and board.MaxDistance == look.Far
+						and math.abs(board.StudsOffsetWorldSpace.Y - look.Above) < 1e-4) -- a Vector3 holds float32
+					t.Equal("the CR as the sheet writes it", if words and words:IsA("TextLabel") then words.Text else "none", `{Sheet.Said.Power} {Hud.Digits(power)}`)
+				else
+					t.Check("the plinth and its Voidkin", false, if made then "no stand" else "no figure")
+				end
+				-- A pick stands the one picked; "" gives it back to the strongest.
+				local pickedWas = view.Base.Showcase
+				local pick: string? = nil
+				for id in (ProfileController.Get() :: any).Voidkin do
+					if id ~= owned.Id and (pick == nil or id < pick) then
+						pick = id
+					end
+				end
+				if pick then
+					t.Check("picked: accepted", ProfileController.Act("SetShowcase", { Voidkin = pick }).Ok == true)
+					t.Check("the plinth stands the one picked", waitFor(t, ANSWER + 3, function(): boolean
+						return stands(pick :: string)
+					end), tostring(figure() and (figure() :: Model):GetAttribute("Voidkin")))
+					t.Check("picked back", ProfileController.Act("SetShowcase", { Voidkin = pickedWas }).Ok == true)
+					t.Check("and the showcase stands again", waitFor(t, ANSWER + 3, function(): boolean
+						return stands(owned.Id)
+					end), tostring(figure() and (figure() :: Model):GetAttribute("Voidkin")))
+				else
+					t.Check("one Voidkin only: no pick to try", true)
 				end
 			end,
 		},

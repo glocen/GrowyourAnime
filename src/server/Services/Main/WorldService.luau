@@ -73,8 +73,8 @@ local SHOP_MINUTES = { 17, 14, 11, 8, 5 }
 local SHOP_MINUTE_ALONG, SHOP_MINUTE_UP = -5.9, 12.2
 local BASE_LEVEL = "1" -- the plan's level laid on every plot, until the base has its levels (TR21)
 local LEVEL_FACE = Font.new("rbxasset://fonts/families/BuilderSans.json", Enum.FontWeight.ExtraBold) -- the HUD's numbers
-local LEVEL_INK = Color3.fromHex("#FFD23E") -- Power's yellow, as the plan's level mark asks
 local LEVEL_PIXELS = 40 -- the level's number, a SurfaceGui's pixels a stud
+local PLATE_EDGE = 0.04 -- the plate's words clear of its edges, a share of its size
 -- The shard a Breaker's chamber breaks, between its two points (AR15: 5.85 to 8.35 up, the middle 7.1), turned an eighth
 -- so it reads as a crystal; seen only while the chamber breaks one (BaseService).
 local SHARD = { Size = Vector3.new(1.1, 2.2, 1.1), Up = 7.1, Turn = 45 }
@@ -448,6 +448,11 @@ local function dressPlot(m: Model, number: number, at: CFrame, front: number)
 		part.CFrame = at * Kit.Place(placement, manifest.pieces[placement.piece], front, DRESS_LIFT)
 		part:SetAttribute("Piece", placement.piece)
 		part:SetAttribute("Plot", number)
+		if placement.piece == "Showcase" then
+			-- Where its Voidkin stands (TR22; BaseService): the piece's foot at its middle, Up over it, facing the Strip.
+			local c = manifest.pieces[placement.piece].centre
+			part:SetAttribute("Stand", part.CFrame * CFrame.new(-c[1], WorldConfig.Showcase.Up - c[2], -c[3]))
+		end
 		CollectionService:AddTag(part, Kit.Tag)
 		part.Parent = folder
 	end
@@ -462,6 +467,8 @@ local function dressPlot(m: Model, number: number, at: CFrame, front: number)
 		plate.Transparency = 1
 		plate.Anchored, plate.CanCollide, plate.CanQuery, plate.CanTouch, plate.CastShadow = true, false, false, false, false
 		plate.CFrame = at * CFrame.new(mark.across, DRESS_LIFT + mark.up, front - mark.along)
+		-- The owner's name over the base's level (TR22), both lines written by BaseService as the save changes.
+		local words = WorldConfig.Plate
 		for _, face in { Enum.NormalId.Front, Enum.NormalId.Back } do
 			local gui = Instance.new("SurfaceGui")
 			gui.Name = face.Name
@@ -469,17 +476,20 @@ local function dressPlot(m: Model, number: number, at: CFrame, front: number)
 			gui.LightInfluence = 0
 			gui.SizingMode = Enum.SurfaceGuiSizingMode.PixelsPerStud
 			gui.PixelsPerStud = LEVEL_PIXELS
-			local said = Instance.new("TextLabel")
-			said.Name = "Level"
-			said.BackgroundTransparency = 1
-			said.AnchorPoint = Vector2.new(0.5, 0.5)
-			said.Position = UDim2.fromScale(0.5, 0.5)
-			said.Size = UDim2.fromScale(1, 0.84)
-			said.FontFace = LEVEL_FACE
-			said.TextScaled = true
-			said.TextColor3 = LEVEL_INK
-			said.Text = BASE_LEVEL
-			said.Parent = gui
+			for _, name in { "Owner", "Level" } do -- the name from the top edge, the level from the bottom
+				local line = if name == "Owner" then words.Name else words.Level
+				local said = Instance.new("TextLabel")
+				said.Name = name
+				said.BackgroundTransparency = 1
+				said.AnchorPoint = Vector2.new(0.5, if name == "Owner" then 0 else 1)
+				said.Position = UDim2.fromScale(0.5, if name == "Owner" then PLATE_EDGE else 1 - PLATE_EDGE)
+				said.Size = UDim2.fromScale(1 - 2 * PLATE_EDGE, line.Share)
+				said.FontFace = LEVEL_FACE
+				said.TextScaled = true
+				said.TextColor3 = line.Ink
+				said.Text = ""
+				said.Parent = gui
+			end
 			gui.Parent = plate
 		end
 		plate:SetAttribute("Plot", number)
@@ -1423,6 +1433,13 @@ local function lotOf(number: number): Instance?
 	return if plots then plots:FindFirstChild(`Plot {number}`) else nil
 end
 
+-- A plot's dressing (its kit's pieces, the gate's plate, the plinth), or nil while no base stands there.
+function WorldService.DressingOf(number: number): Instance?
+	local lot = lotOf(number)
+	local base = if lot then lot:FindFirstChild("Base") else nil
+	return if base then base:FindFirstChild("Dressing") else nil
+end
+
 -- A plot's base stood for its owner, once; Built tells whatever stands on its markers.
 local function raise(number: number)
 	local lot = lotOf(number)
@@ -1720,6 +1737,11 @@ function WorldService.Init()
 				end
 				if level.levelMark and dressing:FindFirstChild("LevelMark") == nil then
 					table.insert(problems, `Plot {number}: no level mark`)
+				end
+				for _, item in dressing:GetChildren() do
+					if item:GetAttribute("Piece") == "Showcase" and typeof(item:GetAttribute("Stand")) ~= "CFrame" then
+						table.insert(problems, `Plot {number}: the plinth has no stand for its Voidkin (TR22)`)
+					end
 				end
 				-- The machines with their model, each in place of its box (AR15), as level 1 stands them: a sleeping bay's
 				-- pad and light, and the cells past level 1's, are a later level's (AR16).

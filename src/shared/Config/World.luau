@@ -237,4 +237,24 @@ return {
 	-- body's root), facing the bay's front, playing its rig's Idle; the ring's BayHalo stands lit in the worker's rarity colour
 	-- (Config.Reveal's Words) in Neon, with one PointLight of that colour. An empty bay shows its frame and ring, unlit.
 	Bay = { Hip = 3, Light = { Range = 12, Brightness = 1.5 } },
+	-- TR22's showcase (TR51 step 3): the owner's Voidkin (Collection.Showcase: the one picked, else the strongest) stands at
+	-- the plinth's middle, Up over the piece's foot, its root Hip over that, facing the Strip and turning Turn turns a
+	-- second (the client's; the plinth doesn't turn), playing its rig's Idle. Its CR rides Above its root, a BillboardGui
+	-- Size studs across, read to Far studs, in Ink with a Shade stroke. Seeds, judged from the Strip.
+	Showcase = {
+		Up = 1.2,
+		Hip = 3,
+		Turn = 0.08,
+		Above = 4.4,
+		Size = { 6, 1.5 },
+		Far = 160,
+		Ink = Color3.fromHex("#F6FCFF"),
+		Shade = Color3.fromHex("#14101E"),
+	},
+	-- The gate's plate (TR22): the owner's display name over the base's level ("Level n", in Power's yellow, as the plan's
+	-- level mark asks), on both faces, each line Share of the plate's height. Seeds, judged from the Strip.
+	Plate = {
+		Name = { Share = 0.5, Ink = Color3.fromHex("#F6FCFF") },
+		Level = { Share = 0.36, Ink = Color3.fromHex("#FFD23E") },
+	},
 }

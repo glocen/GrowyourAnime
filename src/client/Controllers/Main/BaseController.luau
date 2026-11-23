@@ -1025,6 +1025,27 @@ local function watchWorker(item: Instance)
 	end)
 end
 
+-- The showcase on the gate's plinth (BaseService, TR22): its rig's Idle, as a worker's, and turning slowly where it
+-- stands (Config.World.Showcase.Turn, read each frame so a Tune shows at once), here for this screen alone.
+local showcased: { [Model]: boolean } = {}
+local function watchShowcase(item: Instance)
+	if item:IsA("Model") and showcased[item] == nil then
+		showcased[item] = true
+		watchWorker(item)
+	end
+end
+
+local function turnShowcases(dt: number)
+	local turn = WorldConfig.Showcase.Turn * 2 * math.pi * dt
+	for model in showcased do
+		if model.Parent == nil then
+			showcased[model] = nil
+		elseif model.PrimaryPart then
+			model:PivotTo(model:GetPivot() * CFrame.Angles(0, turn, 0))
+		end
+	end
+end
+
 -- A Training machine's crown, at any stage (AR35: TrainingCrown, TrainingCrown2, TrainingCrown3 turn alike).
 local function crowned(kind: any): boolean
 	return type(kind) == "string" and string.match(kind, "^TrainingCrown%d*$") ~= nil
@@ -1145,6 +1166,13 @@ function BaseController.Start()
 	for _, item in CollectionService:GetTagged("Worker") do
 		watchWorker(item)
 	end
+	CollectionService:GetInstanceAddedSignal("Showcased"):Connect(watchShowcase)
+	CollectionService:GetInstanceRemovedSignal("Showcased"):Connect(function(item: Instance)
+		showcased[item :: Model] = nil
+	end)
+	for _, item in CollectionService:GetTagged("Showcased") do
+		watchShowcase(item)
+	end
 	if RunService:IsStudio() then
 		revealBridge()
 	end
@@ -1183,6 +1211,7 @@ function BaseController.Start()
 			part.CFrame = part.CFrame * CFrame.Angles(0, STARTER_SPIN * dt, 0)
 		end
 		turnPieces(dt)
+		turnShowcases(dt)
 		if os.clock() - last >= TICK then
 			last = os.clock()
 			BaseController.Refresh()

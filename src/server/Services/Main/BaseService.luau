@@ -25,6 +25,10 @@ local Markers = require(Shared.World.Markers)
 local Power = require(Shared.Rules.Power)
 local Landing = require(Shared.Rules.Landing)
 local LandingConfig = require(Shared.Config.Landing)
+local Collection = require(Shared.Rules.Collection)
+local Stats = require(Shared.Rules.Stats)
+local Sheet = require(Shared.Rules.Sheet)
+local Hud = require(Shared.Rules.Hud)
 local Core = script.Parent.Parent.Core
 local DataService = require(Core.DataService)
 local DebugService = require(Core.DebugService)
@@ -100,6 +104,21 @@ end
 -- A bay's worker (TR24's fix 1): its body in the ring (FightService.Body: its own once installed, else the grey stand-in),
 -- tagged "Worker" for the client to play its rig's Idle (BaseController), and the ring's halo lit in its rarity colour
 -- with one light of it (Config.World.Bay; AR16). The same Voidkin kept stays as it stands; nobody there takes both away.
+-- A Voidkin's body made to stand still where it's put: its root anchored, nothing solid, no scripts, no name over it.
+local function still(made: Model)
+	for _, item in made:GetDescendants() do
+		if item:IsA("Script") or item:IsA("LocalScript") then
+			item:Destroy()
+		elseif item:IsA("BasePart") then
+			item.Anchored = item.Name == "HumanoidRootPart"
+			item.CanCollide, item.CanQuery, item.CanTouch = false, false, false
+		elseif item:IsA("Humanoid") then
+			item.DisplayDistanceType = Enum.HumanoidDisplayDistanceType.None
+			item.EvaluateStateMachine = false
+		end
+	end
+end
+
 local function showWorker(bay: Instance, number: number, index: number, id: string, def: string?)
 	local body = bay:FindFirstChild("Worker")
 	if body and (body:GetAttribute("Voidkin") ~= id or body:GetAttribute("Def") ~= def) then
@@ -108,17 +127,7 @@ local function showWorker(bay: Instance, number: number, index: number, id: stri
 	end
 	if body == nil and def then
 		local made, rig = FightService.Body(def, "Worker")
-		for _, item in made:GetDescendants() do
-			if item:IsA("Script") or item:IsA("LocalScript") then
-				item:Destroy()
-			elseif item:IsA("BasePart") then
-				item.Anchored = item.Name == "HumanoidRootPart"
-				item.CanCollide, item.CanQuery, item.CanTouch = false, false, false
-			elseif item:IsA("Humanoid") then
-				item.DisplayDistanceType = Enum.HumanoidDisplayDistanceType.None
-				item.EvaluateStateMachine = false
-			end
-		end
+		still(made)
 		local at = Markers.At(bay)
 		made:PivotTo(CFrame.lookAt(at.Position, at.Position + at.LookVector) + Vector3.new(0, WorldConfig.Bay.Hip, 0))
 		made:SetAttribute("Voidkin", id)
@@ -153,6 +162,92 @@ local function showWorker(bay: Instance, number: number, index: number, id: stri
 		if colour then
 			lamp.Color = colour
 		end
+	end
+end
+
+local SHOWCASE_FACE = Font.new("rbxasset://fonts/families/BuilderSans.json", Enum.FontWeight.ExtraBold) -- the HUD's numbers
+
+-- TR22's world parts (TR51 step 3). The gate's plate: the owner's display name over "Level n", on both faces. The
+-- plinth: the owner's showcase Voidkin (Collection.Showcase: the one picked with "Show at the gate", else the strongest)
+-- at its middle, facing the Strip, tagged "Showcased" for the client to play its Idle and turn it (BaseController), its
+-- CR over it (Config.World.Showcase). Without its owner's save, a blank plate and a bare plinth.
+local function showOwner(number: number, data: Profile.Data?, owner: Player?)
+	local dressing = WorldService.DressingOf(number)
+	if dressing == nil then
+		return
+	end
+	local name = if owner and data then owner.DisplayName else ""
+	local level = if owner and data then `Level {data.Base.Level}` else ""
+	local plate = dressing:FindFirstChild("LevelMark")
+	for _, gui in if plate then plate:GetChildren() else {} do
+		for _, row in { { "Owner", name }, { "Level", level } } do
+			local said = gui:FindFirstChild(row[1])
+			if said and said:IsA("TextLabel") and said.Text ~= row[2] then
+				said.Text = row[2]
+			end
+		end
+	end
+	local stand: CFrame? = nil
+	for _, part in dressing:GetChildren() do
+		local at = part:GetAttribute("Stand")
+		if part:GetAttribute("Piece") == "Showcase" and typeof(at) == "CFrame" then
+			stand = at
+			break
+		end
+	end
+	local owned = if data and owner then Collection.Showcase(data) else nil
+	local figure = dressing:FindFirstChild("Showcased")
+	if figure and (owned == nil or figure:GetAttribute("Voidkin") ~= owned.Id or figure:GetAttribute("Def") ~= owned.Def) then
+		figure:Destroy()
+		figure = nil
+	end
+	if owned == nil or stand == nil or data == nil then
+		return
+	end
+	local look = WorldConfig.Showcase
+	if figure == nil then
+		local made, rig = FightService.Body(owned.Def, "Showcased")
+		still(made)
+		made:PivotTo((stand :: CFrame) * CFrame.new(0, look.Hip, 0))
+		made:SetAttribute("Voidkin", owned.Id)
+		made:SetAttribute("Def", owned.Def)
+		made:SetAttribute("Rig", rig)
+		made:SetAttribute("Plot", number)
+		local root = made:FindFirstChild("HumanoidRootPart") :: BasePart?
+		if root then
+			local board = Instance.new("BillboardGui")
+			board.Name = "Power"
+			board.Adornee = root
+			board.Size = UDim2.fromScale(look.Size[1], look.Size[2]) -- studs: it reads as part of the world, nearer bigger
+			board.StudsOffsetWorldSpace = Vector3.new(0, look.Above, 0)
+			board.MaxDistance = look.Far
+			board.LightInfluence = 0
+			local said = Instance.new("TextLabel")
+			said.Name = "Words"
+			said.BackgroundTransparency = 1
+			said.Size = UDim2.fromScale(1, 1)
+			said.FontFace = SHOWCASE_FACE
+			said.TextScaled = true
+			said.TextColor3 = look.Ink
+			said.Parent = board
+			local stroke = Instance.new("UIStroke")
+			stroke.Color = look.Shade
+			stroke.Thickness = 2
+			stroke.Parent = said
+			board.Parent = root
+		end
+		CollectionService:AddTag(made, "Showcased")
+		made.Parent = dressing
+		figure = made
+	end
+	local power = Stats.Power((Stats.Resolve(owned, Stats.PresetOf(data, owned), data)))
+	local shown = figure :: Instance
+	shown:SetAttribute("Power", power)
+	local root = shown:FindFirstChild("HumanoidRootPart")
+	local board = if root then root:FindFirstChild("Power") else nil
+	local said = if board then board:FindFirstChild("Words") else nil
+	if said and said:IsA("TextLabel") then
+		said.Text = `{Sheet.Said.Power} {Hud.Digits(power)}`
 	end
 end
 
@@ -237,7 +332,7 @@ local function staged(base: Profile.Base): BaseLevels.StagedBase
 	return { Level = base.Level, Machines = base.Machines, Bays = bays }
 end
 
-local function showPlot(number: number, data: Profile.Data?, seen: boolean?)
+local function showPlot(number: number, data: Profile.Data?, seen: boolean?, owner: Player?)
 	local plant = Markers.Find("Generator", { Plot = number })
 	local rates = if data then Breaker.Rates(data) else nil
 	local generation = if rates then rates.Generation else 0
@@ -253,6 +348,7 @@ local function showPlot(number: number, data: Profile.Data?, seen: boolean?)
 			end
 		end
 	end
+	showOwner(number, data, owner)
 	if plant then
 		local stage = stageNow(plant, stages.Generator, landing, true, number, clock)
 		for _, group in plant:GetChildren() do
@@ -380,7 +476,7 @@ local shown: { [Player]: number } = {} -- the plot whose machines show each play
 function redraw(number: number)
 	for player, plot in shown do
 		if plot == number then
-			showPlot(number, DataService.Get(player), true)
+			showPlot(number, DataService.Get(player), true, player)
 			return
 		end
 	end
@@ -395,7 +491,7 @@ local function show(player: Player)
 	end
 	shown[player] = number
 	if number then
-		showPlot(number, DataService.Get(player), was == number) -- a rise lands only on the plot it was seen on
+		showPlot(number, DataService.Get(player), was == number, player) -- a rise lands only on the plot it was seen on
 	end
 end
 

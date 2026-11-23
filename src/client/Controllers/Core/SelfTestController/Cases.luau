@@ -65,6 +65,7 @@ local UI = script.Parent.Parent.Parent.Parent.UI
 local Theme = require(UI.Theme)
 local Layers = require(UI.Layers)
 local Digits = require(UI.Kit.Digits)
+local Fade = require(UI.Kit.Fade)
 local BreakerScreen = require(UI.BreakerScreen)
 local VoidkinScreen = require(UI.VoidkinScreen)
 local World = require(UI.World)
@@ -5463,12 +5464,25 @@ local cases = {
 			pill.Text = said
 			RunService.Heartbeat:Wait()
 			t.Check("and shows again once it has", pill.Parent ~= nil and (pill.Parent :: GuiObject).Visible)
+			-- A panel shows only while it and everything over it shows; its words stand in it or beside it in its plate (the
+			-- down badge's card lies beside its panel, TR10).
+			local world = Layers.Get("World")
+			local function standing(item: Instance): boolean
+				local at: Instance? = item
+				while at and at ~= world do
+					if (at:IsA("GuiObject") and not at.Visible) or (at:IsA("CanvasGroup") and at.GroupTransparency >= 1) then
+						return false
+					end
+					at = at.Parent
+				end
+				return at == world
+			end
 			local blank: { string } = {}
-			for _, panel in Layers.Get("World"):GetDescendants() do
-				if panel.Name == "Panel" and panel:IsA("GuiObject") and panel.Visible then
+			for _, panel in world:GetDescendants() do
+				if panel.Name == "Panel" and panel:IsA("GuiObject") and standing(panel) then
 					local says = false
-					for _, line in panel:GetChildren() do
-						says = says or (line:IsA("TextLabel") and line.Text ~= "")
+					for _, line in (panel.Parent :: Instance):GetDescendants() do
+						says = says or (line:IsA("TextLabel") and line.Text ~= "" and standing(line))
 					end
 					if not says and panel.Parent then
 						table.insert(blank, panel.Parent.Name)
@@ -5701,10 +5715,15 @@ local cases = {
 			t.Check("its tier by the fight's cost (Rules.Hud.FoeTier)", shown() == want, `shown {shown()}, wanted {want}`)
 			local skull = parts.TargetSkull :: ImageLabel
 			local words = parts.TargetLevel :: TextLabel
+			-- Its own transparencies, under the card's see-through (a fighter behind it fades the whole card, Kit.Fade).
 			local function worn(tier: number): boolean
 				local colour = skulls.Colours[tier]
 				local faint = if tier == 1 then skulls.Faint else 0
-				return skull.ImageColor3 == colour and words.TextColor3 == colour and words.TextTransparency == 0 and math.abs(skull.ImageTransparency - faint) < 1e-3
+				local shows = Fade.Of(parts.Target :: GuiObject)
+				return skull.ImageColor3 == colour
+					and words.TextColor3 == colour
+					and math.abs(words.TextTransparency - Hud.Faded(0, shows)) < 1e-3
+					and math.abs(skull.ImageTransparency - Hud.Faded(faint, shows)) < 1e-3
 			end
 			t.Check("the skull and the level in its colour", worn(want))
 			-- Mid-fight, the cuts moved under its cost and then over it: the skull turns red, then white, never grey at the
@@ -5731,7 +5750,7 @@ local cases = {
 					local grey = met and waitFor(t, REPLICATE, function(): boolean
 						return shown() == 1
 					end)
-					t.Check("a Shade a level under, over the cuts: grey and faint, its level whole", grey and worn(1), `shown {shown()}`)
+					t.Check("a Shade a level under, over the cuts: grey and faint, its level whole", grey and worn(1), `shown {shown()}; skull {skull.ImageColor3:ToHex()} at {string.format("%.3f", skull.ImageTransparency)}, level {words.TextColor3:ToHex()} at {string.format("%.3f", words.TextTransparency)}, the card at {string.format("%.2f", Fade.Of(parts.Target :: GuiObject))}`)
 				end
 			end)
 			t.Server("Tune", "Hud.Skulls.Cuts", wasCuts)

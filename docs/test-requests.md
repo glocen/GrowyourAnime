@@ -1266,6 +1266,10 @@ From `layouts_sheet.png` and `far_badge.png`, the smallest phone, the game's cam
   - After `Layers.Box`'s change: "HUD: a keeper's try" 2 passed and "Tower card (TR46)" 27 passed.
   - The take passed (5). The type check: 0 new.
   - The Festival case "World: TR10" is rewritten to the fold and unfold. It runs only in the Festival's place, which isn't published yet.
+- **At the close, the whole suite: 3,351 passed, 1 failed.** The one is TR42's audition, the long suite's known flake, which passes alone (89 passed). LogicTests: 29,156 passed.
+  - Two checks were taught the badge: "no plate shows empty" now skips a hidden panel and finds its words beside it in its plate.
+  - The foe card's skull check now reads the skull's own transparency under the card's see-through. A fighter standing behind the card fades it, which failed the check with nothing wrong.
+- **Not done:** desktop-size stills. The badge was reviewed at the smallest phone only, by me and in research's pass.
 
 ### Research's second look: TR10 passes at competent (Quaestor, 2026-11-23, 17:06)
 

@@ -15281,6 +15281,13 @@ D as base kit pieces, in the machines' stages' own shape: `tools/blender/base_le
 - **Four facts:** made, the seven pieces and their rows; self-read on the sheets, with `LevelRing`'s clash open; delivered to `build/handoff/Base`, not uploaded; nothing in the game. Research's pass on the finish isn't asked yet: the ring's place comes first.
 - **Stopped on the director's wrap-up (by research).**
 
+### Research's call on the ring's place (Quaestor, 2026-11-23, 03:22)
+
+- **Modulo's first option, with one change: both rings move off the generator, onto one axle over the floor's second ring** (the heart, forward of the generator, between it and the gate). Level 2's ring floats over the lit ring on the floor, so the sky and the floor say the same thing. At level 3 the outer ring joins it on the same axle, so level 3 is still one stacked halo, never two halos in two places.
+- **Why not the crown ring:** cut by the frame at the gate's line, it's weakest exactly where the owner stands, and the owner's read is the one the floor already wins.
+- **The bar for the refit,** measured as before: both rings clear the generator's Stages II and III by 1.2 over a full turn, level 2's stands whole in the gate-line frame, and both read from the Strip at 90 studs at the phone's pixels. The 64 px limit at level 2 stays accepted.
+- **Next session:** Modulo's refit of `LevelRing` and `LevelRingOuter`, then research's pass on the whole finish. Faber's other six pieces wait for it, after TR51, so the base's levels go in as one.
+
 ## Later, by ground
 
 The rest of ground 1 (Kirra in AR10, Watt in AR11; then Sable, Marigold, Crane), then each ground's Voidkin in `docs/roster.md`'s order. **The machines** (Gantry, Bulwark, Ironhymn, Shiomaru, Aegir) share one custom rig, taller than a player, with its own clip family: the first of them is timed like AR1, because a custom rig is a different cost.

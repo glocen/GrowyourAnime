@@ -64,10 +64,14 @@ local stages = {
 		CornerGlint = 0.7, -- the light at an open tile's top left
 		Rise = 18, Start = 0.04, Step = 0.05, Seconds = 0.22, -- each tile rises in from Rise points under, Step apart
 	},
+	-- The Arc panel's bed in the festival's dusk (TR50's older line: Modulo's B with Seam's lights, research's pick of
+	-- 2026-11-23, 00:29; build/handoff/UI/stages/arc_dusk.json): dark wine over the keeper, rosewood at its foot, its light
+	-- pooled low in amber (Bloom: its Size is the laid image's, five times where the drawn light falls to a third, times
+	-- Arc.Picture), its hairline in rosewood (Edge, at EdgeAlpha).
 	Bed = {
-		Inset = 6, Tall = 86, Corner = 4, EdgeAlpha = 0.8,
-		Fill = { Color3.fromHex("#0E0B1A"), Color3.fromHex("#08070F") },
-		Bloom = { Middle = Vector2.new(0.5, 0.593), Size = Vector2.new(231.8, 180.6) },
+		Inset = 6, Tall = 86, Corner = 4, EdgeAlpha = 0.8, Edge = Color3.fromHex("#7A5048"),
+		Fill = { Color3.fromHex("#1E0F16"), Color3.fromHex("#4A2324") },
+		Bloom = { Middle = Vector2.new(0.5, 0.88), Size = Vector2.new(305.4, 142.1), Colour = Color3.fromHex("#FF9A50"), Alpha = 0.62 },
 		Picture = Vector2.new(100, 86),
 		Lock = { Side = 26, Down = 53 },
 	},
@@ -78,19 +82,29 @@ local stages = {
 	-- bed (Picture times the cut's size) and its name under it, and beside it Normal and Hard, one press each, Gap apart.
 	-- A choice: its name at In and Top, what it recommends at its top right, the run's marks along Road from In, their
 	-- middle Marks down, and where the next run starts past them.
+	-- In the festival's dusk (arc_dusk.json, B with Seam's lights): the screen behind the glass in the street's rose
+	-- (Backing, top to foot), the light pooled behind the bed (Bloom, at the bed's middle, under the tile; Size as the
+	-- bed's), the light round the panel in lantern light (Glow, at Tile.Next.GlowAlpha) and its rim and Back's underline
+	-- in ivory (Rim). Normal's own lights stay Seam's.
 	Arc = {
 		Title = "Festival of Battles",
 		Bed = Vector2.new(150, 153), Picture = 1.4, Gap = 8,
+		Backing = { Color3.fromHex("#5E2A3A"), Color3.fromHex("#1E0E12") },
+		Bloom = { Colour = Color3.fromHex("#FF8246"), Alpha = 0.38, Size = Vector2.new(750, 600) },
+		Glow = Color3.fromHex("#FFCF98"),
+		Rim = Color3.fromHex("#FFEBD2"),
 		-- Says: where the run starts, its top this far from the marks' middle; Press: the lit plate's height under it.
 		Choice = { In = 12, Top = 6, Head = 24, Marks = 60, Road = 214, Words = 12, Says = -26, Press = 28 },
 	},
-	-- The card at a run's end, over the street dimmed (Dim, the cover's transparency).
+	-- The card at a run's end, over the street dimmed (Dim, the cover's transparency; Cover, its colour: the dusk's dark
+	-- wine, so the street under the card stays the street's, arc_dusk.json).
 	Card = {
 		Left = 124, Wide = 320, Corner = 8, Edge = 1.4, Space = 8, In = 12, Foot = 10, Before = 14,
 		Rows = { Marks = 30, Title = 28, Time = 22, Gave = 28, Opened = 20, Hard = 34 },
 		Presses = { Quiet = 82, One = 124, Retry = 170, Home = 124, Gap = 6 },
 		Shadow = 0.4,
 		Dim = 0.5,
+		Cover = Color3.fromHex("#2A1219"),
 		Margin = 4, -- kept above and below the card when the screen's room is the card's (the cut: 4 at the smallest phone)
 	},
 	-- The run's line under Roblox's top bar, in the Hud layer.
@@ -1228,7 +1242,15 @@ return {
 		Span = 1.2,
 		Figure = { Top = 24, Fov = 30, Turn = 0.6, Back = 0.2, Slide = 48, Draw = 0.8 },
 		Swipe = { Distance = 80, Time = 0.35, Tap = 10, TapTime = 0.3 },
-		Stage = { Glow = 0.35, Light = 0.45 },
+		-- Floor: the stage's stone under the fighter, its element only a ring of light round its edge, Rim of the floor across
+		-- (Modulo's B, research's pick of 2026-11-23, 02:05; TR50's sweep). Stone is the part's colour that shows the sheet's
+		-- #A9A59B on the stage (plastic shows about 0.74 of its colour there). The ring is opaque Neon, which a viewport shows
+		-- at about Gain x colour^Power in linear light (measured with grey probes on this stage, 2026-11-23): the ring takes
+		-- the colour that shows its element's, or Fire's orange shows yellow.
+		Stage = {
+			Light = 0.45,
+			Floor = { Stone = Color3.fromHex("#E4DCC4"), Rim = 0.03, Neon = { Gain = 11.3, Power = 1.84 } },
+		},
 		Power = { Width = 236, Height = 56, Number = 36, Least = 20, Emblem = 170, Roll = 0.6, Gain = 26, Hold = 1.2 },
 		Finish = {
 			Stops = { 0, 0.2, 0.5, 0.56, 1 },

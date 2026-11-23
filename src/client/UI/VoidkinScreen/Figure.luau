@@ -2,8 +2,8 @@
 -- Figure (client): one Voidkin's own model, live, on the Voidkin screen's small stage (TR17; docs/research/
 -- voidkin-screen.md, "DESIGN"). Its body stands in a ViewportFrame's WorldModel playing its Idle, framed so it is
 -- `height` of its stage's height tall with its soles `feet` of the way down (shares, so the framing holds at any size).
--- The stage's light takes its rarity's trim (Config.Hud.Card.Trim) and the floor's glow its element (Config.UIKit's
--- Elements): stand-in colours, the look is Modulo's after the pick. A drag turns it; a tap plays the end of its Reveal,
+-- The stage's light takes its rarity's trim (Config.Hud.Card.Trim). It stands on the stage's stone, its element a ring
+-- of light round the stone's edge (Config.UIKit's Elements; TR50's sweep, Modulo's B). A drag turns it; a tap plays the end of its Reveal,
 -- from the strike on; a flick across goes to the next or the one before (Config.Hud.Voidkin.Swipe). A Voidkin without
 -- its own body stands as the grey stand-in, on the stand-in's clips.
 -- A body never drawn yet isn't ready to draw: its first stage stood empty for 0.25 to 0.53 s, then grey before its
@@ -44,7 +44,6 @@ local Clips = require(UI.Parent.Controllers.Main.FighterController.Clips)
 local Figure = {}
 
 local HIP = 3 -- studs from the soles to the root, the Templates' R6 rig
-local GREY_FLOOR = UIKit.Palettes.Seam.Facet -- no element: a plain floor in the seam's pale violet (TR28)
 
 export type Figure = {
 	Def: string,
@@ -208,6 +207,16 @@ local function frame(view: ViewportFrame, studs: number, height: number, feet: n
 	camera.CFrame = CFrame.lookAt(Vector3.new(0, centre, -distance), Vector3.new(0, centre, 0))
 end
 
+-- The colour a viewport's Neon must wear to show `colour` (Config.Hud.Voidkin.Stage.Floor.Neon, measured).
+local function showing(colour: Color3, neon: { Gain: number, Power: number }): Color3
+	local function channel(value: number): number
+		local light = if value <= 0.04045 then value / 12.92 else ((value + 0.055) / 1.055) ^ 2.4
+		local wear = (light / neon.Gain) ^ (1 / neon.Power)
+		return math.clamp(if wear <= 0.0031308 then wear * 12.92 else 1.055 * wear ^ (1 / 2.4) - 0.055, 0, 1)
+	end
+	return Color3.new(channel(colour.R), channel(colour.G), channel(colour.B))
+end
+
 function Figure.new(def: string, stage: Frame, height: number, feet: number, onSwipe: (step: number) -> ()): Figure?
 	local source, idle, reveal = pick(def)
 	if source == nil then
@@ -239,16 +248,30 @@ function Figure.new(def: string, stage: Frame, height: number, feet: number, onS
 	standing = CFrame.new(0, HIP - soles, 0) -- its soles on the floor, whatever its rig
 	body:PivotTo(standing)
 	body.Parent = world
+	-- The stage's stone under it, its element a ring of light round the edge (none without one).
+	local across = size.X * 1.6 + 2
+	local stone = across * (1 - 2 * look.Floor.Rim)
 	local floor = Instance.new("Part")
 	floor.Name = "Floor"
 	floor.Shape = Enum.PartType.Cylinder
 	floor.Anchored = true
-	floor.Material = Enum.Material.Neon
-	floor.Color = if row and row.Element ~= "" then UIKit.Elements[row.Element] or GREY_FLOOR else GREY_FLOOR
-	floor.Transparency = look.Glow
-	floor.Size = Vector3.new(0.1, size.X * 1.6 + 2, size.X * 1.6 + 2)
+	floor.Material = Enum.Material.SmoothPlastic
+	floor.Color = look.Floor.Stone
+	floor.Size = Vector3.new(0.1, stone, stone)
 	floor.CFrame = CFrame.new(0, -0.05, 0) * CFrame.Angles(0, 0, math.rad(90))
 	floor.Parent = world
+	local element = if row and row.Element ~= "" then UIKit.Elements[row.Element] else nil
+	if element then
+		local rim = Instance.new("Part")
+		rim.Name = "FloorRim"
+		rim.Shape = Enum.PartType.Cylinder
+		rim.Anchored = true
+		rim.Material = Enum.Material.Neon
+		rim.Color = showing(element, look.Floor.Neon)
+		rim.Size = Vector3.new(0.08, across, across)
+		rim.CFrame = CFrame.new(0, -0.06, 0) * CFrame.Angles(0, 0, math.rad(90))
+		rim.Parent = world
+	end
 	local camera = Instance.new("Camera")
 	camera.Parent = view
 	view.CurrentCamera = camera

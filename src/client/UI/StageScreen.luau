@@ -134,6 +134,14 @@ end
 
 -- The cut's room under the band, scaled to the room the screen has, at most Grow, its middle the room's. Its height is
 -- what it fits: a card taller than the cut's room grows it.
+-- Back's underline in the screen's band in `colour` (the Arc panel's dusk), or its face's light again (nil).
+local function underline(band: Frame?, colour: Color3?)
+	local back = if band and band.Parent then band.Parent:FindFirstChild("Back") else nil
+	if back and back:IsA("TextButton") then
+		Button.Set(back, { Underline = colour or false })
+	end
+end
+
 local function block(body: Frame, name: string, tall: number?): Frame
 	local B = LOOK.Block
 	local high = tall or B.Tall
@@ -487,11 +495,16 @@ function StageScreen.Pick(ground: string, view: Profile.View, on: On)
 	end
 	local body = Screen.Full(StageScreen.Name, ARC.Title, "SeamGlass")
 	parts.Body = body
-	Glass.Ground(body, 1)
+	local cover = Screen.Cover(StageScreen.Name)
+	if cover then
+		cover.BackgroundColor3 = SEAM.Backing or cover.BackgroundColor3 -- a card before it left its wine (a reopened screen keeps its cover)
+	end
+	Glass.Ground(body, 1, ARC.Backing) -- the festival's dusk behind the glass (TR50's older line)
 	local room = block(body, "Arc")
 	room.ZIndex = 2
 	parts.Block = room
 	local band = Screen.Band(StageScreen.Name)
+	underline(band, ARC.Rim)
 	if band then
 		local title = Glass.Label(band, "Title", ARC.Title, TITLE, SEAM.Text, Screen.BandLeft + 4, 0, 260, 0, Enum.TextXAlignment.Left, true, 3)
 		title.Size = UDim2.new(0, 260, 1, 0)
@@ -513,15 +526,17 @@ function StageScreen.Pick(ground: string, view: Profile.View, on: On)
 	tile.Size = UDim2.fromOffset(w, h)
 	tile.Parent = group
 	parts.Arc = tile
-	local a = accent(false)
-	Glass.Glow(tile, "Glow", 0, 0, w, h, TILE.Next.Glow, a.Glow, TILE.Next.GlowAlpha, 1)
+	-- The street's light pooled behind the bed, on the ground under the tile.
+	local bedX, bedY = TILE.Pad + BED.Inset + ARC.Bed.X / 2, TILE.Top - T + BED.Inset + ARC.Bed.Y / 2
+	parts.GroundBloom = Glass.Bloom(room, "GroundBloom", bedX, bedY, ARC.Bloom.Size.X, ARC.Bloom.Size.Y, ARC.Bloom.Colour, ARC.Bloom.Alpha, 1)
+	Glass.Glow(tile, "Glow", 0, 0, w, h, TILE.Next.Glow, ARC.Glow, TILE.Next.GlowAlpha, 1)
 	Glass.Fill(tile, "Fill", 0, 0, w, h, TILE.Corner, TILE.Fill, 2)
 	Glass.Wash(tile, "Sheen", 0, 0, w, h, TILE.Corner, SEAM.Glint, function(at: number): number
 		return TILE.Sheen.Alpha * math.exp(-at / TILE.Sheen.Fall)
 	end, 3)
-	Glass.Edge(tile, "Edge", 0, 0, w, h, TILE.Corner, SEAM.Facet, TILE.Edge.Top, TILE.Edge.Foot, 5)
+	Glass.Edge(tile, "Edge", 0, 0, w, h, TILE.Corner, ARC.Rim, TILE.Edge.Top, TILE.Edge.Foot, 5)
 	cornerGlint(tile, "CornerGlint", 0, 0, w, h, TILE.Corner, TILE.CornerGlint, 6)
-	-- The bed: the keeper's picture on its own light, the ground's name under it.
+	-- The bed: the keeper's picture on its own light, pooled low under it, the ground's name under it.
 	local bx, by, bw, bh = BED.Inset, BED.Inset, ARC.Bed.X, ARC.Bed.Y
 	local bed = Instance.new("Frame")
 	bed.Name = "Bed"
@@ -532,7 +547,7 @@ function StageScreen.Pick(ground: string, view: Profile.View, on: On)
 	bed.ZIndex = 7
 	bed.Parent = tile
 	Glass.Fill(bed, "Fill", 0, 0, bw, bh, BED.Corner, BED.Fill, 7)
-	Glass.Bloom(bed, "Bloom", bw * BED.Bloom.Middle.X, bh * BED.Bloom.Middle.Y, BED.Bloom.Size.X * ARC.Picture, BED.Bloom.Size.Y * ARC.Picture, a.Bloom, a.Pictures.Next, 8)
+	Glass.Bloom(bed, "Bloom", bw * BED.Bloom.Middle.X, bh * BED.Bloom.Middle.Y, BED.Bloom.Size.X * ARC.Picture, BED.Bloom.Size.Y * ARC.Picture, BED.Bloom.Colour, BED.Bloom.Alpha, 8)
 	local record = IMAGES[LOOK.Pictures[#LOOK.Pictures]]
 	if record then
 		local pw, ph = BED.Picture.X * ARC.Picture, BED.Picture.Y * ARC.Picture
@@ -545,7 +560,7 @@ function StageScreen.Pick(ground: string, view: Profile.View, on: On)
 		picture.ZIndex = 9
 		picture.Parent = bed
 	end
-	Glass.Edge(tile, "BedEdge", bx, by, bw, bh, BED.Corner, SEAM.Edge, BED.EdgeAlpha, nil, 10)
+	Glass.Edge(tile, "BedEdge", bx, by, bw, bh, BED.Corner, BED.Edge, BED.EdgeAlpha, nil, 10)
 	parts.Ground = Glass.Label(tile, "Ground", named, TITLE, SEAM.Text, bx, by + bh, bw, h - by - bh - BED.Inset, nil, true, 12)
 	-- Normal and Hard beside it, one press each.
 	local cx = bx + bw + ARC.Gap
@@ -647,6 +662,12 @@ function StageScreen.Results(results: { [string]: any }, on: On)
 	end
 	local body = Screen.Full(StageScreen.Name, "Results", "SeamGlass")
 	parts.Body = body
+	-- The street under the card stays the street's dusk: the cover in dark wine (TR50's older line).
+	local cover = Screen.Cover(StageScreen.Name)
+	if cover then
+		cover.BackgroundColor3 = C.Cover
+	end
+	underline(Screen.Band(StageScreen.Name), nil)
 	-- The card stands alone over the street dimmed (the cut): the HUD steps back until the screen closes, as the base's
 	-- view does.
 	local hud = Layers.Get("Hud")

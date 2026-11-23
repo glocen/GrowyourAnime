@@ -4576,6 +4576,34 @@ Research's go at 01:52, as one colour block-in capped at about an hour. A read-o
 - **NOT VERIFIED (the Festival place):** the run case "Stages (TR50)" in its playtest, and the run's log line in a real run.
 - **Found, not fixed:** the client's `look()` gate rule skips the server's ground check and its Ending state. It can't show while there's one ground; at ground 2 it should call `Rules.Stages.Shut`.
 
+### The dusk palette and the Voidkin floor, installed (Faber, 2026-11-23, 17:52 by the clock)
+
+- **The dusk, as `arc_dusk.json` gives it (B with Seam's lights), under Config's names:**
+  - On the Arc panel: the ground behind the glass (`Stages.Arc.Backing`), the street's light pooled behind the bed (`Arc.Bloom`), the light round the panel (`Arc.Glow`), its rim and Back's underline in ivory (`Arc.Rim`).
+  - On the bed: its fill, its amber pool (`Stages.Bed.Bloom`), its rosewood hairline (`Bed.Edge`).
+  - The run's card: its cover in dark wine (`Card.Cover`). It dims the world by half toward the wine (a ground pixel 205,185,165 bare, 123,101,95 under it).
+  - Normal's lights, Hard's ember and the run's line are unchanged.
+  - `Button.Set` takes an `Underline` colour, the screen's own light.
+- **Found and fixed:** a screen opened again under its name keeps its cover and its Back. So the card clears the ivory from Back, and the panel opened over the card (the server's `StagePick`) puts its own cover colour back.
+- **The floor, B:**
+  - The fighter stands on stone (`Voidkin.Stage.Floor.Stone`), its element a ring of opaque Neon round the edge, 0.03 of the floor across. A fighter with no element gets no ring.
+  - Measured on the stage with grey probes: plastic shows about 0.74 of its colour, and Neon shows about 11.3 × colour^1.84 in linear light (`Floor.Neon`). Fire's orange showed yellow before.
+  - So the stone wears `#E4DCC4` to show the sheet's `#A9A59B` (155 to 167 shown), and the ring wears the colour that shows its element's (Fire's shows 229,134,67 against 255,138,61).
+  - The unused `Stage.Glow` is gone.
+- **Tested:** type check 0 new.
+  - "HUD: TR50's dusk" (new) 15/0: the panel's ground, the bloom at the bed's middle, glow, rim, the bed, Back's ivory; the card's wine; and the panel reopened over the card.
+  - "Voidkin screen (TR17)" 271/0: the stone, and the ring checked through the measured curve, within a part's 8-bit colour step.
+  - The base's travel 35/0, the dock 39/0, Home's panel 40/0, Kit AR30 27/0, the button states 15/0.
+  - "Take: TR50" (it gained a Card step) 10/1. The one fail is "Hard shut wears the closed lock": I staged Hard open for the sheet's state.
+  - AR43's take 3/0. The save was put back after staging (Normal 2 cleared, checkpoint 1).
+- **Stills,** at the smallest phone, the main place's light (`build/captures/tr50/`): `arc_panel_hard_open.png`, `arc_back_underline.png`, `run_card_cover.png`, `voidkin_floor_rook.png`, `voidkin_floor_marigold_epic.png`.
+- **Against the sheet's third column, for research's look:**
+  1. The bed's amber pool is broader and browner than the sheet's core under the lantern.
+  2. The ring has no halo: a viewport draws no bloom, and a stepped halo would read as more rings.
+  3. Under an Epic, the stage's light (TR17's rarity trim) tints the stone lavender. The light is outside B: research's call whether it should stop tinting the floor.
+  4. Back's underline wears the ivory in the kit's soft rest state, not the sheet's crisp line.
+- **Status:** implemented and tested in the main place. Waits on research's pass. Not director-accepted.
+
 ## TR51. The base grows: every machine's stages, the landing, the owner's plate and plinth (Faber, after AR49)
 
 Research, 2026-11-23, 01:55 by the clock, on the director's order of 00:05 ("first we work on the main map and systems", `docs/decisions.md`). It's the main map's biggest gap against the north star (pillar 3, "The base is alive"). Today only the generator changes in the world: `WorldService` reads `machines.generatorStages` alone (`src/server/Services/Main/WorldService.luau`, about line 753). Every other stage's art is passed and waits on its install. So this is install work, with no new design.

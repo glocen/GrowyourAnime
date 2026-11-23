@@ -474,6 +474,27 @@ function VoidkinCases.Cases(given: Given): { any }
 			local row = if owned then Voidkin.ById[owned.Def] else nil
 			local body = if row and row.Model then row.Model else "StandIn"
 			t.Check("its own body on the stage", figure ~= nil and figure.Body.Name == body, if figure then figure.Body.Name else "no figure")
+			-- The stage's stone under it, its element only a ring of light round the edge (TR50's sweep, Modulo's B).
+			local floor = if figure then figure.Floor else nil
+			local rim = if floor and floor.Parent then floor.Parent:FindFirstChild("FloorRim") :: BasePart? else nil
+			local element = if row and row.Element ~= "" then UIKit.Elements[row.Element] else nil
+			local stone = HudConfig.Voidkin.Stage.Floor
+			t.Check("it stands on the stage's stone", floor ~= nil and floor.Color:ToHex() == stone.Stone:ToHex() and floor.Material == Enum.Material.SmoothPlastic,
+				if floor then `{floor.Color:ToHex()}, {floor.Material.Name}` else "no floor")
+			-- The ring shows its element: its colour through the viewport's Neon, as measured, is the element's. A part keeps
+			-- its colour in 8 bits, and the curve's slope turns one step into up to about 4 levels shown: 6 is the room.
+			local function throughNeon(value: number): number
+				local light = if value <= 0.04045 then value / 12.92 else ((value + 0.055) / 1.055) ^ 2.4
+				local out = math.min(1, stone.Neon.Gain * light ^ stone.Neon.Power)
+				return if out <= 0.0031308 then out * 12.92 else 1.055 * out ^ (1 / 2.4) - 0.055
+			end
+			local ringShows = if rim then Color3.new(throughNeon(rim.Color.R), throughNeon(rim.Color.G), throughNeon(rim.Color.B)) else nil
+			t.Check("its element a ring of light round the stone's edge, Rim of the floor across, showing the element's colour", if element == nil
+				then rim == nil
+				else rim ~= nil and floor ~= nil and ringShows ~= nil and math.max(math.abs(ringShows.R - element.R), math.abs(ringShows.G - element.G), math.abs(ringShows.B - element.B)) < 6 / 255
+					and rim.Material == Enum.Material.Neon and rim.Transparency == 0
+					and math.abs(rim.Size.Y * (1 - 2 * stone.Rim) - floor.Size.Y) < 1e-3 and rim.Position.Y < floor.Position.Y,
+				if rim and ringShows then `wears {rim.Color:ToHex()}, shows {ringShows:ToHex()} for {if element then element:ToHex() else "none"}, {rim.Size.Y} across` else "no ring")
 			t.Check("on its Idle", figure ~= nil and figure.Idle ~= nil and (figure.Idle :: AnimationTrack).IsPlaying)
 			whole(t, "this window")
 			feet(t, "this window")

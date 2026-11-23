@@ -10,10 +10,10 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **Modulo's order:** AR53 (the goals' look), then its queue as it stands.
 - **With the director:** answer **item 10 in Faber's session** (the hooks for Scintilla and Sonus); **item 4**, publish both places and Faber's OK to run the player once; open two sessions titled **Scintilla** and **Sonus**; `src/shared/Config/Sounds.luau`'s uncommitted change; the store's design.
 
-**Faber (builder).** 2026-11-23, 17:33, on Opus 5.5.
+**Faber (builder).** 2026-11-23, 17:52, on Opus 5.5.
 - **Done and passed:** AR44's shine, its weights closed (research, 16:18); AR49; AR52's must-fix 1, where Orange on Hard now wears `#FF7000`; and **TR10, closed at competent** (research, 17:06).
-- **Now:** TR50's dusk palette on the Arc panel and the run's card, and the Voidkin floor's stone and rim: built, being run in Studio.
-- **Next:** AR48's states (F7's timing waits on item 4's publish); then AR50 and AR54 as one install from AR54's handoff (research, 17:2x), AR51, TR52; AR52's behaviours, TR54, TR53.
+- **TR50's dusk palette and the Voidkin floor B are in,** tested in the main place, waiting on research's look (TR50, "The dusk palette and the Voidkin floor, installed"). **Now:** AR48's states.
+- **Next:** AR50 and AR54 as one install from AR54's handoff (research, 17:18), AR51, TR52; AR52's behaviours, TR54, TR53. F7's timing waits on item 4's publish.
 - **The hooks for Scintilla and Sonus** wait on the director's own word (item 10). **Open, tests:** as before (item 9's Festival cases; TintMask on a phone; TR44's phone take; the pinned reveal).
 
 **Modulo (assets).** 2026-11-23, 17:45, on Fable 5.2. Voidkin work parked until before launch (the director's word, 11:10).

@@ -195,7 +195,7 @@ function Screen.Stage(name: string): CanvasGroup?
 	return (root:FindFirstChild(`{name}Stage`) or root:FindFirstChild(`{name}Leaving`)) :: CanvasGroup?
 end
 
--- A full screen's cover, open or leaving: for tests.
+-- A full screen's cover, open or leaving: for tests, and for a screen that dims in its own colour (the run's card, TR50).
 function Screen.Cover(name: string): Frame?
 	local root = Layers.Get("Cover")
 	return (root:FindFirstChild(`{name}Cover`) or root:FindFirstChild(`{name}CoverLeaving`)) :: Frame?

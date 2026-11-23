@@ -309,7 +309,7 @@ def write_plan(out: Path):
             placements=[dict(piece=n, across=x, along=y, turn=t) for n, x, y, t in places],
             lights=[dict(name=n, across=x, along=y, up=z, colour=c, kind=k, cone=kit.POOL_CONE if k == "spot" else None)
                     for n, x, y, z, c, k in lights],
-            levelMark=dict(piece="Gate1", across=0.0, along=0.0, up=16.0, size=[11.0, 4.4], depth=2.2,
+            levelMark=dict(piece="Gate1", across=0.0, along=0.0, up=base.PLATE_UP, size=[11.0, 4.4], depth=2.2,
                            note="the level's number on the gate's plate, on both faces (+Y and -Y), in Power's yellow "
                                 "(#FFD23E): the builder's text"),
             budget=dict(pieces=len(places), triangles=sum(pieces[n]["triangles"] * k for n, k in counts.items()),

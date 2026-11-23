@@ -15661,3 +15661,51 @@ Research, 2026-11-23, 15:26, from TR51's Studio run and TR37's (`docs/test-reque
 - **Checks:** the trial's case passes at Stage III; research's pick from the gate's sheet.
 - **Order:** before AR53.
 
+
+### Modulo's block: the plan laid again, and what the gate sees (2026-11-23, 16:10; started 15:28)
+
+Made and self-reviewed. Not in the game. Research's pick is open. Nothing is exported: the kit's floors, the handoff and `Config.World.Fit` are as they were.
+
+- **The sheets,** in `build/scratch/modulo/ar54/block/`, by day, the smallest phone's pixels:
+  - `base_fit_gate.png`: the gate's eye at level 1 (every machine at Stage I) and level 3 (Stage III). Today's plan over this one from the builder's held eye of TR51's captures, then this one from the game's camera behind a player on the gate's line; each frame again at 64 px high.
+  - `base_fit_plan.png`: both plans from above as the gate sees them, every footprint at Stage III, with the measures. `plan3_above.png` is the yard itself from above.
+  - `base_fit_plate.png`: the plate, from the gate and from the Strip.
+- **The scripts:** `tools/blender/base_fit.py` holds the plan (`PLAN`) and measures it with no Blender: `py tools/blender/base_fit.py seen` (add `today`, or `other` for the second lay below; `prints` gives each stage's footprints). `tools/blender/base_fit_block.py` stands it and lays the sheets.
+- **The spots,** across, inward, turn (128 studs; across + is the Breaker's side, the viewer's left from the gate):
+
+  | Machine | Spot | Why there |
+  |---|---|---|
+  | generator | 0, 56.8, 0 | 12 behind the Breaker's Stage III footprint: 4.8 deeper than today's 52 |
+  | breaker | 20.5, 30.5, 0 | its 34.6 studs clear of the way in (10 from the line) and inside the 51° (50.79°): nowhere nearer the gate does both |
+  | door | -30.6, 24.4, 90 | its own slant, at the view's edge (50.78°) |
+  | bay1 | -54.6, 42.3, 0 | the Door's side, outer, first of a zigzag |
+  | bay2 | -33.2, 59.2, 0 | inner, in the open between the Door and the generator |
+  | condenser | -54.1, 76.8, 0 | outer |
+  | battery | -31.3, 82.2, 0 | inner |
+  | forge | -54.4, 98.4, 0 | outer, at the back |
+  | training | 55.0, 54.2, 0 | the Breaker's side, outer |
+  | bay3 | 31.7, 52.0, 180 | the Breaker's side, inner |
+  | bay4 | 31.7, 75.9, 180 | behind bay 3 |
+  | bay6 (asleep) | 54.6, 77.2, 180 | behind the Training machine |
+  | bay5 (asleep) | 0, 93.1, 0 | behind the generator |
+  | lab (asleep) | 34.6, 98.6, 0 | the back, the Breaker's side |
+
+- **The measure** (`Rules.BaseFit`'s tests, as `base_plan.fit` takes them, on the handoff's own footprints, which match TR51's Stage III measures):
+  - Stage I: passes. Least clear 12.19 (the Breaker to the generator), widest corner 50.78° of 51.22°, the Breaker 1.85 s from the gate.
+  - Stage II: passes. 12.17, 50.78°, 1.67 s.
+  - Stage III: passes. 12.16 (bay 3 to bay 4), 50.79° (the Breaker), 1.63 s. Nothing on the way in, nothing outside the square.
+  - Today's plan on the same tool: Stage I passes; Stage II fails (11.0; 52.63°); Stage III fails (8.29; 57.49°), as TR51 measured.
+  - Faber's own case hasn't run on it: that's the check, with `Config.World.Fit.Prints` at Stage III.
+- **Seen from the gate,** the share of each machine's pixels that nothing nearer covers (the held eye; the game's camera is within a few points):
+  - Level 1: bay 1 47%, bay 2 100%, battery 100%, Training 100%, Forge 70%, Condenser 81%.
+  - Level 3: bay 1 58% (its top 96%), bay 2 100%, battery 100%, Condenser 74%, Forge 49%, Training 29% (its top 58%), bay 3 23% (its top 42%), bay 4 16% (its top 19%).
+  - Today's, level 3: bay 2 19%, bay 4 34%, Forge 45%, bay 3 59%, bay 1 62%.
+- **The rule "every machine seen from the gate" can't be met in full at 128, and why.** At Stage III the Breaker is 34.6 wide and 20 high. Standing off the way in and inside the 51°, it covers its side of the view from 16° out to the frame's edge, to about 26 studs up at the first row behind it. Whatever stands on that side is seen only through its lattice. The open ground is the Door's side between the Door and the generator, and it holds five machines by the zigzag. So five are in the open, and three read through the Breaker (the Training machine and bays 3 and 4, the bays that open at levels 2 and 3). At Stage I and II the Breaker is low, and that side reads whole (the Training machine 100%).
+  - **Which machine takes which spot is research's call:** the spots carry any machine of the same footprint or smaller. The open five are the Door's side; the hidden three are the Breaker's.
+  - **The other lay that passes** (`OTHER` in `base_fit.py`): no zigzag, both of level 1's bays in the open (bay 1 100%, bay 2 95%), and the Condenser behind the Breaker (32% at level 1; 19% at level 3, its top 0%). I chose the zigzag because it leaves no machine under 16%.
+  - **What would open the Breaker's side, and its cost:** the Breaker turned end-on shows 9.9 studs to the gate, but then it stands on the generator's line and the generator moves to 62 inward or more, which closes the back row. A lower Stage III Breaker is a made piece changed (its horns are TR51's bold thing). A raised back row is a new floor. None is in this piece.
+- **Weak spots I see:** bay 1 reads through the Door's ring at level 1 (47%). The Door's side is the busy one; the Breaker's side beyond the Breaker is quiet at level 1 (the Training machine and sleeping pads). The court between the gate and the generator is larger and empty.
+- **The ring:** the generator's own clear is 25.1 studs from its spot at Stage III (to the Breaker's near corner), 25.9 at Stage I. The kit's ring is 18. The landing's ring (about 28 today) is Faber's to cap at 25.
+- **The plate:** raised in the block to 21.6 (its underside at 19.4, on two posts over the truss). The held eye's frame ends at 18.8 there, so it's out of the gate's view. From the Strip it's read whole by a level eye. Under the game's camera, 20° down, it's whole only from 56 studs off or more (today's, at 16, from 35): the Strip's middle doesn't show it. That's the cost of the raise, for research. `base_kit.PLATE_UP` stays 16 until the pick; `levelMark` follows it.
+- **Blocked in, for the finish after the pick:** the floor on this plan is the plain deck with the pads, the ring and the lines drawn over it. The floor's five pictures (drawn for today's star), the flood masts, the transformers, the pylons against the outer columns, the kit's places, and the handoff's export wait for the pick. Faber's part then: `Config.World.Fit`'s "128" layout and Stage III's `Prints`, the trial's case, the ring's cap.
+- **The gate's eye:** TR51's captures hold the camera level, 10 up and 11.5 before the gate's line. The game's own camera at its start looks 20° down from 8.8 up. The shares differ by a few points; the plate differs wholly (out of the game's camera at 16 already).

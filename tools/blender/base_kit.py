@@ -93,6 +93,7 @@ PYLON = (HALF - 4.5, 16.0)   # the pylons' line inside the side walls, clear of 
                              # place in from the front: they stand between the bays' lots, never on one
 LANE = 12.5            # a lane's middle, between the Breaker's line and the bays
 GATE = 22.0            # a gate tower's place, across
+PLATE_UP = 16.0        # the gate's plate: its middle, up. On the truss at 16; over 19.2 it stands on two posts (AR54)
 WING = 32.0            # where a front wall ends and the gate's shoulder begins: whole panels on to the corner
 SPAN = 48.0            # from pylon to pylon
 ARMS = ((16.5, 5.2), (20.0, 3.8))   # a pylon's arms: how high, and how far each reaches
@@ -652,13 +653,16 @@ def gate():
             m.box((span, 0.36, 0.36), (0, y, z), "steel")
     for y in (-0.8, 0.8):
         m.tube([(-span / 2 + span * i / 10, y, 15.0 if i % 2 == 0 else 17.0) for i in range(11)], 0.13, "steel")
-    m.box((11.0, 2.2, 4.4), (0, 0, 16.0), "rubber", pics={"+y": "plate", "-y": "plate"}, ink=True)
+    m.box((11.0, 2.2, 4.4), (0, 0, PLATE_UP), "rubber", pics={"+y": "plate", "-y": "plate"}, ink=True)
+    if PLATE_UP - 2.2 > 17.0:                                       # raised over the truss: two posts carry it
+        for x in (-4.2, 4.2):
+            m.box((0.5, 0.5, PLATE_UP - 2.2 - 17.0), (x, 0, (PLATE_UP - 2.2 + 17.0) / 2), "girder", ink=True)
     for x in (-13.0, 13.0):
         m.box((2.0, 1.3, 0.7), (x, 0, 14.45), "girder", ink=True)
         m.box((1.6, 0.9, 0.12), (x, 0, 14.05), "lamp")
     return Piece("Gate1", m, solid="a box round each tower's foot, 4.6 square, and the two shoulders as walls",
                  note="clear between the towers' feet: 39.4 studs, 14 under the floods; the plate's faces are +Y and "
-                      "-Y, 11 by 4.4 at 16 up: the base's level is the builder's text on both")
+                      f"-Y, 11 by 4.4 at {PLATE_UP:g} up: the base's level is the builder's text on both")
 
 
 def pylon():

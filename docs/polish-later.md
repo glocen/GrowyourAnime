@@ -31,7 +31,7 @@ On the director's word of 2026-11-13 (`docs/decisions.md`): after the whole game
 
 ## From the pieces
 
-- **The Tower room's entrance over the drop** (AR56's pick, research, 2026-11-23, 20:38): B's walk over the gap, the depth under you as you step in, tried at A's entrance.
+- **The Tower room's height** (AR56, research, 2026-11-23, 21:54; the director kept the room as it is). A raised stand and a landing at the door were each read blind as only "faintly" high, because "nothing measures the fall". Try the cues fresh eyes named: a far, smaller cloud layer in haze, and the tower's shaft running down into it.
 
 - **A pulse along the base's live lines** (AR54's read in the game, research, 2026-11-23, 20:26; `plan.json`'s `current` runs, in the floor's pictures): one slow pulse out from the heart, only along a run whose machine is drawing, so the floor says which machines are working. Judge it in motion from the gate, at the shared finish.
 

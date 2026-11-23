@@ -16586,3 +16586,32 @@ From `build/scratch/modulo/ar56/gate/gate.png`, five frames at the smallest phon
   - `lot` stands on the lot as placed, research's look passed (its section above); the content check's conditions for the gate hold at the install.
 
 Made; self-reviewed as stills at the smallest phone, the take by its frames; the room and the entrance delivered to `build/handoff/TowerRoom/` on research's passes at competent. Not in the game, nothing uploaded.
+
+### The height at the door, read blind, and the director's pick: the room as it stands (Quaestor, 2026-11-23, 21:54)
+
+- **Modulo's test** (`build/scratch/modulo/ar56/landing/crown_landing.png`): a landing 12 up, with cloud 8 to 14° under the horizon from it. It adds 22 studs to the walk in, about 1.4 s.
+- **Fresh eyes, blind:**
+  - the arrival frame reads high only "faintly": cloud lies under you in the foreground only;
+  - the room seen from outside also reads "faintly", as "a floating island at cloud level";
+  - in both, "nothing measures the fall".
+- **The director's pick, by 21:53:** "Keep it as is (Recommended)" (`docs/decisions.md`). The room stands as delivered, at competent, with its entrance and record marker.
+- **The cues of depth,** as fresh eyes named them, go to polish-later: a far, smaller cloud layer in haze, and the tower's shaft running down into it.
+- **AR56 is closed on Modulo's side.** Faber's install comes after the main game.
+
+## AR57. The Guard's and the Dasher's elites (Modulo now, then Faber)
+
+Research, 2026-11-23, 21:54, on the director's pick of 21:53 (`docs/decisions.md`). Tier 2: a new asset players see that nothing covers, in Modulo's area and then Faber's. AR52 left "the masks' elite versions" waiting.
+- **Why:** today's one elite is a bigger Brawler in Red (`Definitions/Enemies.luau`, `brawler_elite`, scale 1.35). So the elite's square asks the packs' question again, and AR52's stretches lose their peak.
+- **Feel line:** from the square's edge, a big Shade wears its mask twice, the second on its shoulder. You know its question before it moves: the Guard's elite lifts a wide shield, and the Dasher's elite crouches low before its line opens.
+- **The block contains:**
+  - **Modulo:** the Guard and the Dasher at the elite's scale on the Shade's rig. The second mask sits where the Brawler elite's does (on the Left Arm), each in AR52's make, a paper mask read as a mask, never a face. Their outlines are Green and Orange, on Normal and on Hard.
+  - **Modulo:** AR52's block clips at the elite's scale, in the same timings, so the rules' seeds hold. The weight reads in the spacing, never in a longer clip.
+  - The sheet: both elites beside their ordinary kin and the Brawler elite, from the square's edge at the player's camera, at the smallest phone's size.
+- **What holds:** AR52's masks and clips (the Guard's sleeve as fixed); the Brawler elite's make for the second mask; violet only on what's alive (AR40); no gore.
+- **What waits:**
+  - the shield's and the line's look (Scintilla), and the sounds (Sonus);
+  - Faber's build: the two elites in `Definitions/Enemies.luau`, after AR52's behaviours in his order;
+  - which elite stands in the square on Normal and on Hard: research's seed with Faber at the build, tuned in play.
+- **Checks:** the content check on each new mask (only the Brawler's second mask has passed); research's read of the sheet at the phone's size; then Faber's build.
+- **Cap:** the look in 2 hours, each block clip in 1 hour. It's an ordinary piece, so it closes at competent.
+- **Order:** Modulo's next, now.

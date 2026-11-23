@@ -121,6 +121,17 @@ function Condenser.Work(base: Base, speed: number, seconds: number): (number, nu
 	return made, finished
 end
 
+-- How many of a comb's `cups` its tray lights (TR37): the tray's fill of its cap over the comb, so a full tray lights it
+-- whole and a single stone lights one; none while it's asleep or empty. The convert's grade is collected beside it.
+function Condenser.Lit(base: Base, cups: number): number
+	local held = Condenser.Held(base)
+	if held <= 0 or cups <= 0 or not Condenser.Awake(base.Level) then
+		return 0
+	end
+	local cap = math.max(1, Condenser.Cap(Condenser.Level(base)))
+	return math.clamp(math.ceil(held / cap * cups - EPSILON), 1, cups)
+end
+
 -- Seconds of work the convert under way has left at full power, or nil with none.
 function Condenser.ConvertLeft(base: Base): number?
 	local convert = base.Condenser.Convert

@@ -237,6 +237,20 @@ return {
 	-- body's root), facing the bay's front, playing its rig's Idle; the ring's BayHalo stands lit in the worker's rarity colour
 	-- (Config.Reveal's Words) in Neon, with one PointLight of that colour. An empty bay shows its frame and ring, unlit.
 	Bay = { Hip = 3, Light = { Range = 12, Brightness = 1.5 } },
+	-- The Forge (TR37; AR28's Press, Stage I, in its sleeping place): a Reinforce try struck on its ram, seconds, every
+	-- client's. Anticipation: the ram lifts from rest to its tell over Lift, easing out; the strike: down to the plate over
+	-- Strike, easing in; hitstop: it holds on the plate for Hold; then it settles back to rest over Back. Its gears turn with
+	-- its travel (the plan's degreesPerStud). Seeds, tuned by playing.
+	Forge = { Lift = 0.16, Strike = 0.06, Hold = 0.07, Back = 0.34 },
+	-- The Stone Condenser (TR37; AR28's Comb, Stage I): its core turns Core turns a second at full power while it works,
+	-- slower with less power and still when it rests. Its tray's cups light by the tray's fill of its cap, so a full tray
+	-- lights the whole comb (37 cups at Stage I over a cap of 12 at level 1: the builder's, TR37). Panel: the convert's small
+	-- grey panel on the kit, a block-in: Size in studs, At (across, toward the gate, up) in the Condenser's own frame, Tilt
+	-- back in degrees, its words drawn at PixelsPerStud.
+	Condenser = {
+		Core = 0.2,
+		Panel = { Size = Vector3.new(2.6, 1.7, 0.2), At = { 3.6, 3.9, 2.2 }, Tilt = 20, PixelsPerStud = 60, Grey = Color3.fromHex("#8A8D96") },
+	},
 	-- TR22's showcase (TR51 step 3): the owner's Voidkin (Collection.Showcase: the one picked, else the strongest) stands at
 	-- the plinth's middle, Up over the piece's foot, its root Hip over that, facing the Strip and turning Turn turns a
 	-- second (the client's; the plinth doesn't turn), playing its rig's Idle. Its CR rides Above its root, a BillboardGui

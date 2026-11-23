@@ -217,7 +217,7 @@ return {
 			Breaker.Advance(data, T0 + convert.Seconds)
 			t.Equal("its work done: its grade in the tray", tray(data, convert.To), convert.Give)
 			t.Equal("none under way", data.Base.Condenser.Convert, nil)
-			t.Equal("short of stones it's refused", act(data, "Convert", {}, T0 + convert.Seconds, "c3").Error, Base.Short)
+			t.Equal("short of stones it's refused", act(data, "Convert", {}, T0 + convert.Seconds, "c3").Error, Base.Stones)
 			-- At the floor it takes the floor's share longer.
 			local slow = fresh()
 			slow.Base.Condenser.Tray[LOW] = Condenser.Cap(1) -- full: only the convert asks
@@ -244,6 +244,29 @@ return {
 			t.Equal("its grade landed beside the cap", tray(data, convert.To), convert.Give)
 			t.Equal("the tray still holds its cap", tray(data, LOW), cap)
 			t.Equal("and it rests: nothing asked", Breaker.Rates(data).Flow.Demand.Condenser, 0)
+		end,
+	},
+	{
+		Name = "Condenser: TR37, its comb lights by the tray's fill: empty dark, one stone one cup, full the whole comb",
+		Run = function(t: any)
+			local cups = 37 -- Stage I's comb (the base plan's machines.condenser)
+			local data = fresh()
+			local cap = Condenser.Cap(1)
+			t.Equal("empty: none", Condenser.Lit(data.Base, cups), 0)
+			data.Base.Condenser.Tray[LOW] = 1
+			t.Equal("one stone: one cup", Condenser.Lit(data.Base, cups), math.ceil(cups / cap))
+			data.Base.Condenser.Tray[LOW] = math.floor(cap / 2)
+			t.Check("half: about half the comb", math.abs(Condenser.Lit(data.Base, cups) - cups / 2) <= cups / cap + 1, `{Condenser.Lit(data.Base, cups)}`)
+			data.Base.Condenser.Tray[LOW] = cap
+			t.Equal("full: the whole comb", Condenser.Lit(data.Base, cups), cups)
+			data.Base.Condenser.Tray[LOW] = cap - 1
+			t.Check("one short of full: not the whole comb", Condenser.Lit(data.Base, cups) < cups)
+			data.Base.Condenser.Tray[LOW] = 0
+			data.Base.Condenser.Tray[MID] = 3
+			t.Equal("only a convert's grade waiting: the comb is dark", Condenser.Lit(data.Base, cups), 0)
+			local asleep = fresh(CondenserConfig.Wakes - 1)
+			asleep.Base.Condenser.Tray[LOW] = 5
+			t.Equal("asleep: dark", Condenser.Lit(asleep.Base, cups), 0)
 		end,
 	},
 	{

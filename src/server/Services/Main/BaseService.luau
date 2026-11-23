@@ -29,6 +29,7 @@ local Collection = require(Shared.Rules.Collection)
 local Stats = require(Shared.Rules.Stats)
 local Sheet = require(Shared.Rules.Sheet)
 local Hud = require(Shared.Rules.Hud)
+local Condenser = require(Shared.Rules.Condenser)
 local Core = script.Parent.Parent.Core
 local DataService = require(Core.DataService)
 local DebugService = require(Core.DebugService)
@@ -425,6 +426,36 @@ local function showPlot(number: number, data: Profile.Data?, seen: boolean?, own
 			end
 		end
 	end
+	local condenser = Markers.Find("Condenser", { Plot = number })
+	if condenser then
+		-- The Stone Condenser (TR37): its sleeping stone until the base wakes it, then its Comb at Stage I, the comb's cups
+		-- lit by the tray's fill of its cap (Rules.Condenser.Lit) and its core turning while it works, at its power's speed
+		-- ("Pace"). "Held" and "Cap" say the tray, for the client and the tests.
+		local awake = data ~= nil and Condenser.Awake(data.Base.Level)
+		local cups = condenser:GetAttribute("Cups")
+		local lit = if data and awake then Condenser.Lit(data.Base, if type(cups) == "number" then cups else 0) else 0
+		for _, part in condenser:GetChildren() do
+			if not part:IsA("BasePart") then
+				continue
+			end
+			local cup = part:GetAttribute("Cup")
+			if part.Name == "Asleep" then
+				WorldService.Stand(part, not awake)
+			elseif type(cup) == "number" then
+				part.Transparency = if awake and cup <= lit then 0 else 1 -- shown or hidden, never solid
+			else
+				WorldService.Stand(part, awake)
+			end
+		end
+		local core = condenser:FindFirstChild("Core")
+		if core then
+			core:SetAttribute("Spinning", data ~= nil and awake and Condenser.Working(data.Base))
+			core:SetAttribute("Pace", if rates then rates.Condenser else 1)
+		end
+		condenser:SetAttribute("Held", if data then Condenser.Held(data.Base) else 0)
+		condenser:SetAttribute("Cap", if data then Condenser.Cap(Condenser.Level(data.Base)) else 0)
+		condenser:SetAttribute("Awake", awake)
+	end
 	local breaker = Markers.Find("Breaker", { Plot = number })
 	if breaker == nil then
 		return
@@ -472,6 +503,18 @@ local function showPlot(number: number, data: Profile.Data?, seen: boolean?, own
 end
 
 local shown: { [Player]: number } = {} -- the plot whose machines show each player's base
+
+-- A Reinforce try made (TR37; design.md, "Upgrading gear needs no walk"): its owner's Forge's ram strikes, on every
+-- client ("Strikes" counts one more; BaseController plays it), wherever the try was made.
+local function strike(player: Player)
+	local number = shown[player]
+	local forge = if number then Markers.Find("Forge", { Plot = number }) else nil
+	local ram = if forge then forge:FindFirstChild("Ram") else nil
+	if ram then
+		local count = ram:GetAttribute("Strikes")
+		ram:SetAttribute("Strikes", (if type(count) == "number" then count else 0) + 1)
+	end
+end
 
 function redraw(number: number)
 	for player, plot in shown do
@@ -649,9 +692,12 @@ end
 
 function BaseService.Start()
 	DataService.Ready:Connect(onReady)
-	DataService.Changed:Connect(function(player: Player)
+	DataService.Changed:Connect(function(player: Player, _data: any, _answer: any, label: string?)
 		schedule(player)
 		show(player)
+		if label == "Reinforce" then
+			strike(player)
+		end
 	end)
 	local function joined(player: Player)
 		player:GetAttributeChangedSignal("Plot"):Connect(function()

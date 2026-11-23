@@ -27,6 +27,12 @@ local Collection = require(Shared.Rules.Collection)
 local Stats = require(Shared.Rules.Stats)
 local Sheet = require(Shared.Rules.Sheet)
 local Hud = require(Shared.Rules.Hud)
+local Condenser = require(Shared.Rules.Condenser)
+local CondenserConfig = require(Shared.Config.Condenser)
+local ReinforceRules = require(Shared.Rules.Reinforce)
+local ReinforceConfig = require(Shared.Config.Reinforce)
+local PowerConfig = require(Shared.Config.Base).Power
+local Forge = require(Shared.Rules.Forge)
 local BaseManifest: any = require(Shared.Config.Kits.Base.Manifest)
 local BasePlan: any = require(Shared.Config.Kits.Base.Plan)
 local BaseController = require(script.Parent.Parent.Parent.Main.BaseController)
@@ -41,6 +47,8 @@ local Grounds = require(Shared.Definitions.Grounds)
 local ProfileController = require(script.Parent.Parent.ProfileController)
 local UI = script.Parent.Parent.Parent.Parent.UI
 local Layers = require(UI.Layers)
+local Screen = require(UI.Kit.Screen)
+local EquipmentScreen = require(UI.EquipmentScreen)
 local World = require(UI.World)
 
 -- The base's machine plates by name, beside "Bay1" to "Bay6" (BaseController.Parts).
@@ -1232,6 +1240,196 @@ function BaseCases.Cases(given: Given): { any }
 				else
 					t.Check("one Voidkin only: no pick to try", true)
 				end
+			end,
+		},
+		{
+			Name = "Base: TR37, the Forge and the Stone Condenser in their sleeping places: the Condenser sleeps on its stone below its base level and wakes at it, its comb lit by its tray, full, part-full and empty, its core turning while it works; a tap collects the tray, the grey panel runs a convert; the Forge's prompt opens Reinforce, and a try strikes its ram",
+			Place = "Main", -- TR45: its world stands in that place only
+			Run = function(t: any)
+				local view = ProfileController.Get()
+				local plot = Players.LocalPlayer:GetAttribute("Plot")
+				local condenser = if type(plot) == "number" then Markers.Find("Condenser", { Plot = plot }) else nil
+				local forge = if type(plot) == "number" then Markers.Find("Forge", { Plot = plot }) else nil
+				if view == nil or condenser == nil or forge == nil then
+					t.Check("a plot, its Forge, its Condenser and a save", false, `{condenser ~= nil}, {forge ~= nil}`)
+					return
+				end
+				local machine = condenser :: Instance
+				local press = forge :: Instance
+				local levelWas = view.Base.Level
+				local low, mid = CondenserConfig.Makes, CondenserConfig.Convert.To
+				local function shownOf(name: string): boolean
+					local part = machine:FindFirstChild(name)
+					return part ~= nil and part:IsA("BasePart") and part.Transparency < 1
+				end
+				local function litCups(): number
+					local lit = 0
+					for _, part in machine:GetChildren() do
+						if part:IsA("BasePart") and type(part:GetAttribute("Cup")) == "number" and part.Transparency < 1 then
+							lit += 1
+						end
+					end
+					return lit
+				end
+				local cups = machine:GetAttribute("Cups")
+				t.Check("its comb's cups, one stone each", type(cups) == "number" and cups > 0, tostring(cups))
+				local comb = if type(cups) == "number" then cups else 0
+				local function plateLine(): string
+					local plate = BaseController.Parts().CondenserPlate
+					local panel = if plate then plate:FindFirstChild("Panel") else nil
+					local line = if panel then panel:FindFirstChild("Line2") else nil
+					return if line and line:IsA("TextLabel") then line.Text else ""
+				end
+				-- Asleep below its level: its stone, nothing of its Comb, the plate says when it wakes, nothing to tap.
+				t.Server("BaseLevel", CondenserConfig.Wakes - 1)
+				t.Check("asleep: its sleeping stone, not its Comb", waitFor(t, ANSWER + 2, function(): boolean
+					return shownOf("Asleep") and not shownOf("Frame") and not shownOf("Core") and litCups() == 0
+				end), `stone {shownOf("Asleep")}, comb {shownOf("Frame")}, {litCups()} cups`)
+				t.Check("its plate says when it wakes", waitFor(t, ANSWER, function(): boolean
+					return plateLine() == `Wakes at base level {CondenserConfig.Wakes}`
+				end), plateLine())
+				t.Check("nothing to collect", BaseController.Parts().CondenserPrompt == nil)
+				-- Awake: its Comb, the stone gone. An empty tray first, so the fills below are its own.
+				t.Server("BaseLevel", math.max(levelWas, CondenserConfig.Wakes))
+				t.Check("awake at its level: its Comb, the stone gone", waitFor(t, ANSWER + 2, function(): boolean
+					return shownOf("Frame") and shownOf("Core") and shownOf("Panel") and not shownOf("Asleep")
+				end), `stone {shownOf("Asleep")}, comb {shownOf("Frame")}`)
+				ProfileController.Act("CollectTray")
+				t.Check("empty: the comb dark", waitFor(t, ANSWER, function(): boolean
+					return litCups() == 0 and machine:GetAttribute("Held") == 0
+				end), `{litCups()} lit, {tostring(machine:GetAttribute("Held"))} held`)
+				local level = Condenser.Level((ProfileController.Get() :: any).Base)
+				local cap = Condenser.Cap(level)
+				local rate = Condenser.Rate(level)
+				local floor = PowerConfig.MinSpeed -- the skips below hold at any power the plot has, the floor's included
+				local bagWas = table.clone((ProfileController.Get() :: any).Bag.Stones)
+				-- Part-full: 4 hours' work at the floor's speed (1 stone a level-1 hour at full, 4 at the floor's quarter)
+				-- is at least a stone and, at full power, a third of the tray.
+				t.Server("BaseBattery", 1e9)
+				t.Server("BaseSkip", 1.05 * 3600 / (rate * floor))
+				local function trayHeld(): number
+					local held = machine:GetAttribute("Held")
+					return if type(held) == "number" then held else -1
+				end
+				t.Check("part-full: some stones in the tray", waitFor(t, ANSWER + 2, function(): boolean
+					return trayHeld() > 0 and trayHeld() < cap
+				end), tostring(trayHeld()))
+				local held = trayHeld()
+				local data = ProfileController.Get() :: any
+				t.Equal("its comb lit by the tray's fill", litCups(), Condenser.Lit(data.Base, comb))
+				t.Check("part of the comb, not all", litCups() > 0 and litCups() < comb, `{litCups()} of {comb}`)
+				t.Equal("its plate reads the tray", plateLine(), `Tray {held} of {cap} {low}`)
+				local core = machine:FindFirstChild("Core") :: BasePart?
+				t.Check("its core turning while it works", core ~= nil and core:GetAttribute("Spinning") == true)
+				if core then
+					local was = BaseController.TurnedOf(core) or 0
+					task.wait(0.5)
+					t.Check("and turned", (BaseController.TurnedOf(core) or 0) ~= was)
+				end
+				t.Check("a tap to collect", waitFor(t, ANSWER, function(): boolean
+					local prompt = BaseController.Parts().CondenserPrompt
+					return prompt ~= nil and prompt:IsA("ProximityPrompt") and (prompt :: ProximityPrompt).ActionText == "Collect"
+				end))
+				-- Full: its whole comb lit, its core still, the plate says so.
+				t.Server("BaseSkip", (cap + 1) * 3600 / (rate * floor))
+				t.Check("full: the whole comb lit", waitFor(t, ANSWER + 2, function(): boolean
+					return trayHeld() == cap and litCups() == comb
+				end), `{trayHeld()} held, {litCups()} of {comb} lit`)
+				t.Check("its core still on a full tray", core ~= nil and core:GetAttribute("Spinning") == false)
+				t.Equal("its plate says full", plateLine(), `Tray full · {cap} {low}`)
+				-- The tap: the whole tray into the bag, once.
+				local lowWas = (ProfileController.Get() :: any).Bag.Stones[low] or 0
+				local answer = BaseController.CollectTray()
+				t.Check("collected: the whole tray", answer.Ok == true and answer.Count == cap, tostring(answer.Error))
+				t.Check("into the bag, and the comb dark", waitFor(t, ANSWER, function(): boolean
+					local bag = (ProfileController.Get() :: any).Bag.Stones[low] or 0
+					return bag == lowWas + cap and litCups() == 0
+				end))
+				t.Check("nothing left to tap", waitFor(t, ANSWER, function(): boolean
+					return BaseController.Parts().CondenserPrompt == nil
+				end))
+				-- The grey panel: a convert begins, says its time, refuses a second, and lands its Mid in the tray.
+				local panel = BaseController.Parts().ConvertPanel
+				local function state(): string
+					local line = if panel then panel:FindFirstChild("State") else nil
+					return if line and line:IsA("TextLabel") then line.Text else ""
+				end
+				t.Check("the convert's panel on the kit", panel ~= nil and panel:IsA("SurfaceGui") and (panel :: SurfaceGui).Adornee == machine:FindFirstChild("Panel"))
+				t.Check("it can start", waitFor(t, ANSWER, function(): boolean
+					local prompt = BaseController.Parts().ConvertPrompt :: ProximityPrompt?
+					return prompt ~= nil and prompt.Enabled and string.sub(state(), 1, 5) == "Ready"
+				end), state())
+				local begun = BaseController.Convert()
+				t.Check("a convert begins", begun.Ok == true, tostring(begun.Error))
+				t.Check("its panel counts its time down", waitFor(t, ANSWER, function(): boolean
+					return string.find(state(), "left", 1, true) ~= nil
+				end), state())
+				t.Equal("one at a time", ProfileController.Act("Convert").Error, "Busy")
+				t.Server("BaseSkip", CondenserConfig.Convert.Seconds / floor + 5)
+				t.Check("its Mid lands in the tray", waitFor(t, ANSWER + 2, function(): boolean
+					local tray = (ProfileController.Get() :: any).Base.Condenser.Tray
+					return (tray[mid] or 0) >= CondenserConfig.Convert.Give
+				end))
+				t.Check("its plate says so", waitFor(t, ANSWER, function(): boolean
+					return string.find(plateLine(), `{CondenserConfig.Convert.Give} {mid}`, 1, true) ~= nil
+				end), plateLine())
+				ProfileController.Act("CollectTray")
+				for _, grade in { low, mid } do -- the bag as it was
+					local change = (bagWas[grade] or 0) - ((ProfileController.Get() :: any).Bag.Stones[grade] or 0)
+					if change ~= 0 then
+						t.Server("StonesGive", grade, change)
+					end
+				end
+				-- The Forge: its prompt opens Reinforce; a try strikes its ram on every client.
+				local forgePrompt = BaseController.Parts().ForgePrompt
+				t.Check("the Forge's prompt", forgePrompt ~= nil and forgePrompt:IsA("ProximityPrompt") and (forgePrompt :: ProximityPrompt).ActionText == "Reinforce")
+				BaseController.PressForge()
+				t.Check("it opens Equipment on Reinforce", waitFor(t, ANSWER, function(): boolean
+					return Screen.Current() == EquipmentScreen.Name and EquipmentScreen.State().Page == "Reinforce"
+				end), `{tostring(Screen.Current())}, {EquipmentScreen.State().Page}`)
+				if Screen.Current() == EquipmentScreen.Name then
+					Screen.Close()
+				end
+				local ram = press:FindFirstChild("Ram") :: BasePart?
+				local item: string? = nil
+				for id, owned in (ProfileController.Get() :: any).Items do
+					if owned.Reinforce < ReinforceConfig.Cap and (item == nil or id < item) then
+						item = id
+					end
+				end
+				if ram and item then
+					local owned = (ProfileController.Get() :: any).Items[item]
+					local cost = ReinforceRules.Cost(owned, owned.Reinforce + 1)
+					local was = owned.Reinforce
+					t.Server("StonesGive", cost.Grade, cost.Stones) -- what the try spends, given first: the bag and purse end as they were
+					t.Server("DataCredits", cost.Credits)
+					local strikes = ram:GetAttribute("Strikes")
+					-- Watched from the try on, every frame, so the hitstop's few frames are never missed.
+					local lowest, moved = 0, false
+					local watching = true
+					task.spawn(function()
+						while watching do
+							local rise, striking = BaseController.StrikeOf(ram)
+							moved = moved or striking
+							lowest = math.min(lowest, rise or 0)
+							task.wait()
+						end
+					end)
+					local tried = ProfileController.Act("Reinforce", { Item = item })
+					t.Check("a Reinforce try made", tried.Ok == true, tostring(tried.Error))
+					t.Check("its ram counted one strike", waitFor(t, ANSWER, function(): boolean
+						return ram:GetAttribute("Strikes") == (if type(strikes) == "number" then strikes else 0) + 1
+					end))
+					task.wait(Forge.Length(WorldConfig.Forge) + 0.3)
+					watching = false
+					local plan = BasePlan.machines.forge.ram
+					t.Check("the ram struck the plate", moved and math.abs(lowest - (plan.contact - plan.rest)) < 0.05, `lowest {lowest}`)
+					t.Check("and settled at rest", (BaseController.StrikeOf(ram)) == 0)
+					t.Server("ReinforceSet", item, was)
+				else
+					t.Check("an item and the ram to strike", false, `ram {ram ~= nil}, item {tostring(item)}`)
+				end
+				t.Server("BaseLevel", levelWas)
 			end,
 		},
 	}

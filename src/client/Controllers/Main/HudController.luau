@@ -1277,6 +1277,11 @@ HudController.OpenView = function() end
 HudController.OpenPlay = function() end
 
 -- Shows `words` as the quiet note under the lead's corner (TR46: the heal cap told once).
+-- Equipment's screen on `page` (Reinforce, Jewels or War Emblems), for a prompt in the world: the Forge's (TR37).
+function HudController.OpenEquipment(page: string)
+	equipmentScreen(page)
+end
+
 function HudController.Note(words: string)
 	local shown = note
 	if shown == nil then

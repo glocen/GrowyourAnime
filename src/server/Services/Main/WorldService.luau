@@ -667,6 +667,94 @@ local function spinner(part: BasePart?, axis: string, sign: number, speed: numbe
 	end
 end
 
+-- The back half's places (AR16; TR37), each in its sleeping place of the plan's layout:
+-- * the Forge, AR28's Press at Stage I, from the first: its frame, its ram at rest over its plate ("Rest", "Tell" and
+--   "Contact" its underside's heights over its floor, "Strikes" counting the Reinforce tries BaseService strikes on it),
+--   and its gears on its head, the right one turned half a tooth so they mesh ("Spin" its way, "PerStud" degrees a stud
+--   of the ram's travel). The client strikes it (BaseController). Stages II and III wait (AR36);
+-- * the Stone Condenser, AR28's Comb at Stage I, over its sleeping stone ("Asleep"): its frame, its core (a turner) and
+--   a stone in each of its comb's cups ("Cup", its filling order), all a later level's and hidden until BaseService shows
+--   them once the base wakes it, the cups lit by its tray; and the convert's small grey panel on the kit, a block-in
+--   (Config.World.Condenser.Panel), which its owner's client writes on;
+-- * the Lab's sleeping stone, look only.
+-- Without the base's kit none of them stands.
+local function layBack(base: Instance, number: number, at: CFrame, front: number)
+	local _, plan = kitFiles(BASE)
+	local machines = plan.machines or {}
+	local function homeAt(home: any): CFrame
+		return at * Kit.Place(home, { centre = { 0, 0, 0 } }, front, DRESS_LIFT)
+	end
+	local forgeHome = placementOf("SleepingStone", 1, at)
+	local forgePlan, forgeStages = machines.forge, machines.forgeStages
+	if forgeHome and forgePlan then
+		local forge = model(base, "Forge", homeAt(forgeHome))
+		if piece(forge, "Frame", "Forge", forgeHome, number, at, front) then
+			local ram = forgePlan.ram
+			local struck = piece(forge, "Ram", "ForgeRam", within(forgeHome, { ram.across, ram.along, ram.rest }), number, at, front)
+			if struck then
+				struck:SetAttribute("Rest", ram.rest)
+				struck:SetAttribute("Tell", ram.tell)
+				struck:SetAttribute("Contact", ram.contact)
+				struck:SetAttribute("Strikes", 0)
+			end
+			local gears = if forgeStages and forgeStages.stages["1"] then forgeStages.stages["1"].gears else forgePlan.gears
+			for index, row in gears do
+				local gear = piece(forge, `Gear {index}`, "ForgeGear", within(forgeHome, { row.across, row.along, row.up }), number, at, front)
+				if gear then
+					if row.turnedHalfTooth then
+						gear.CFrame *= CFrame.Angles(0, 0, math.rad(forgePlan.halfTooth))
+					end
+					gear:SetAttribute("Spin", row.spin or (if row.turnedHalfTooth then -1 else 1))
+					gear:SetAttribute("PerStud", forgePlan.degreesPerStud)
+				end
+			end
+			Markers.Stamp(forge, "Forge", { Plot = number })
+		else
+			forge:Destroy()
+		end
+	end
+	local condenserHome = placementOf("SleepingStone", 2, at)
+	local condenserPlan = machines.condenser
+	if condenserHome and condenserPlan then
+		local origin = homeAt(condenserHome)
+		local condenser = model(base, "Condenser", origin)
+		machine(condenser, "Asleep", "SleepingStone", 2, number, at, front)
+		local function later(part: BasePart?): BasePart?
+			if part then
+				part:SetAttribute("Later", true)
+				stand(part, false)
+			end
+			return part
+		end
+		if later(piece(condenser, "Frame", "Condenser", condenserHome, number, at, front)) then
+			local core = condenserPlan.core
+			spinner(later(piece(condenser, "Core", "CondenserCore", within(condenserHome, { core.across, core.along, core.up }), number, at, front)), "Z", 1, WorldConfig.Condenser.Core)
+			local stages = machines.condenserStages
+			local cups = if stages and stages.stages["1"] then stages.stages["1"].cups else condenserPlan.cups
+			for index, cup in cups do
+				local stone = later(piece(condenser, `Cup {index}`, "CondenserStone", within(condenserHome, { cup.across, cup.along, cup.up }), number, at, front))
+				if stone then
+					stone:SetAttribute("Cup", index)
+				end
+			end
+			condenser:SetAttribute("Cups", #cups)
+			local panel = WorldConfig.Condenser.Panel
+			local p = later(block(condenser, "Panel", panel.Size, origin * CFrame.new(panel.At[1], panel.At[3], -panel.At[2]) * CFrame.Angles(math.rad(panel.Tilt), 0, 0), panel.Grey))
+			if p then
+				p.Material = Enum.Material.SmoothPlastic
+				p:SetAttribute("Solid", false)
+				p.CanCollide, p.CanQuery, p.CanTouch = false, false, false
+			end
+			Markers.Stamp(condenser, "Condenser", { Plot = number })
+		else
+			condenser:Destroy()
+			machine(base, "Condenser", "SleepingStone", 2, number, at, front) -- no kit's Comb: its stone stays
+		end
+	end
+	local sleeping = model(base, "Sleeping", at)
+	machine(sleeping, "Lab", "SleepingStone", 3, number, at, front)
+end
+
 -- Part 7's trial (Config.World.Fit): a square plot of another size than the plan's stands on Fit's layout for its size;
 -- nil at the plan's own, or a size Fit has no layout for (the plan's then stands as it is).
 local function trialLayout(across: number, deep: number): BaseFit.Layout?
@@ -1065,12 +1153,8 @@ local function plot(parent: Instance, number: number, at: CFrame, across: number
 			end
 		end
 		Markers.Stamp(trainer, "Training", { Plot = number })
-		-- What the base will wake in its back half, asleep where each will stand (AR16): the Forge, the Condenser and the
-		-- Lab, in the plan's order. Look only: nothing works there yet.
-		local sleeping = model(base, "Sleeping", at)
-		for index, name in { "Forge", "Condenser", "Lab" } do
-			machine(sleeping, name, "SleepingStone", index, number, at, front)
-		end
+		-- The back half's places (AR16), in the plan's order: the Forge's, the Condenser's and the Lab's.
+		layBack(base, number, at, front)
 		-- The Tower's ring on its lot's crossing end, where the sleeping silhouette stood (TR29, replacing AR16's): bare
 		-- but for it, so the player knows where to start. It stands with its plot's base: a bare lot has none.
 		local ringX, ringZ = Tower.RingSpot(across, deep, behind, tower, crossingSide(at))
@@ -1696,6 +1780,13 @@ function WorldService.Init()
 					standing[placement.piece] = (standing[placement.piece] or 0) + 1
 				end
 			end
+			-- The Forge stands in the first sleeping place, its stone's (TR37): its frame, its ram and Stage I's gears.
+			local forgePlan = if basePlan.machines then basePlan.machines.forge else nil
+			local stones = standing.SleepingStone
+			if forgePlan and stones then
+				standing.SleepingStone = stones - 1
+				standing.Forge, standing.ForgeRam, standing.ForgeGear = 1, 1, #forgePlan.gears
+			end
 			for number = 1, WorldConfig.Plots.Count do
 				local lot = plots:FindFirstChild(`Plot {number}`)
 				local floor = if lot then lot:FindFirstChild("Floor") else nil
@@ -1755,6 +1846,29 @@ function WorldService.Init()
 				for piece, needed in standing do
 					if machines[piece] ~= needed then
 						table.insert(problems, `Plot {number} {piece}: {machines[piece] or 0} stand, the plan's machines have {needed}`)
+					end
+				end
+				-- The Forge's ram knows its heights, and the Condenser has its comb's cups, its core and its panel (TR37).
+				local forge = (m :: Instance):FindFirstChild("Forge")
+				local ram = if forge then forge:FindFirstChild("Ram") else nil
+				if ram == nil or type(ram:GetAttribute("Rest")) ~= "number" or type(ram:GetAttribute("Contact")) ~= "number" then
+					table.insert(problems, `Plot {number}: the Forge has no ram with its heights`)
+				end
+				local condenser = (m :: Instance):FindFirstChild("Condenser")
+				if condenser == nil or condenser:FindFirstChild("Frame") == nil then
+					table.insert(problems, `Plot {number}: no Stone Condenser`)
+				else
+					local cups = 0
+					for _, part in condenser:GetChildren() do
+						cups += if type(part:GetAttribute("Cup")) == "number" then 1 else 0
+					end
+					if cups == 0 or cups ~= condenser:GetAttribute("Cups") then
+						table.insert(problems, `Plot {number}: the Condenser has {cups} cups, its comb {condenser:GetAttribute("Cups")}`)
+					end
+					for _, name in { "Core", "Panel", "Asleep" } do
+						if condenser:FindFirstChild(name) == nil then
+							table.insert(problems, `Plot {number}: the Condenser has no {name}`)
+						end
 					end
 				end
 				-- A piece placed toward the crossing stands on the plot's crossing side (AR16's Tower), and the Tower's ring

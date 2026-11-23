@@ -69,6 +69,7 @@ Base.Cap = BaseLevels.AtCap -- past the last level there is at launch
 Base.Ceiling = BaseLevels.AtCeiling -- a machine at its base's ceiling: the base's level comes first
 Base.Asleep = "Asleep" -- the Stone Condenser hasn't woken yet: the base's level comes first (Config.Condenser.Wakes)
 Base.Busy = "Busy" -- a convert is under way: one at a time
+Base.Stones = "Stones" -- fewer stones in the bag than the convert takes
 
 local function refuse(code: string): Answer
 	return { Ok = false, Error = code }
@@ -381,7 +382,7 @@ function Base.Convert(data: Profile.Data, _args: any, now: number): Answer
 	end
 	local held = data.Bag.Stones[convert.From] or 0
 	if held < convert.Take then
-		return refuse(Base.Short)
+		return refuse(Base.Stones)
 	end
 	data.Bag.Stones[convert.From] = held - convert.Take
 	base.Condenser.Convert = 0

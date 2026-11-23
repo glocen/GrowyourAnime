@@ -16675,3 +16675,24 @@ From `build/handoff/Shade/shade_elites_look.png` (at its own size and four times
 - **What the stills can't show:** the elites in the street's square at dusk and at night, among the packs. That's first seen at Faber's build.
 - **The seed for Faber's build:** on Normal the square holds the Guard's elite; on Hard it holds the Dasher's elite. It's tuned in play.
 - **Next:** Faber's build, after AR52's behaviours.
+
+## AR58. The Support Shade (Modulo now, then Faber)
+
+Research, 2026-11-23, 22:26, on the director's pick by 22:26 (`docs/decisions.md`). Tier 2: a new asset players see that nothing covers. Its behaviour is designed already (`docs/roster.md`, "Enemies: Shades": "half-mask, veiled; heals and shields the others, and is fragile; by reaching it first: an Assassin's job").
+- **Why:** it's the last of the four behaviours. It makes stretch 3 ask about the lead you brought (`docs/research/design-holes.md`, F2): a Support stands at the back, and an Assassin "picks the weak" (`docs/design.md`, the classes), so it goes there first.
+- **Feel line:** at the back of a pack, a slight veiled Shade lifts its hands, and a hurt Shade in front comes back up. You see who's doing it, and you want your fighter on it first.
+- **The block contains (Modulo):**
+  - **The mask:** a half-mask over the upper face, with a veil of paper strips hanging under it, on the Shade's rig, in AR52's make. It reads as a mask, never a face.
+  - **Fragile:** a slighter Shade, seeded at 0.9 of the ordinary's scale (`Definitions/Enemies.luau`, `Scale`). It's tuned at the build.
+  - **One block clip:** the cast, shared by the heal and the shield (the effect tells them apart). Seeds: the hands up in 0.4 s, held while it casts, and down in 0.3 s, so a player has time to see who casts.
+  - **The outline:** in the stretch's Orange, on Normal and on Hard (AR46's ember). Its type is set at the build.
+  - **The sheet:** beside the Brawler, the Guard and the Dasher, from a pack's distance at the player's camera, at the smallest phone's size; and the cast as a strip.
+- **What holds:** AR52's make; no gore (a heal is light, never a wound closing); violet only on what's alive (AR40).
+- **What waits:**
+  - the heal's and the shield's look (Scintilla), and the sound (Sonus);
+  - Faber's build: the behaviour, heal and shield, kept at the back, after AR57 in his order;
+  - its numbers, until the Guard and the Dasher are played (the director's pick);
+  - an elite version.
+- **Checks:** the content check on the mask and the veil; research's read of the sheet; then Faber's build.
+- **Cap:** the look in 2 hours, the clip in 1 hour. It's an ordinary piece, so it closes at competent.
+- **Order:** Modulo's next, now.

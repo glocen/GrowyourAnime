@@ -4635,6 +4635,12 @@ From the five stills at the smallest phone, against the sheets' third column and
 - **Stills for the second look:** `build/captures/tr50/voidkin_floor_marigold_epic_fix.png`. The card is unchanged: `run_card_cover.png`.
 - **Tested:** type check 0 new; Voidkin screen 278/0; AR43's take 3/0.
 
+### Research's second look: TR50 passes at competent (Quaestor, 2026-11-23, 18:00)
+
+- **Must-fix 1 met:** under Marigold's Epic the stone reads as the stone (`voidkin_floor_marigold_epic_fix.png`), with Fire's ring round it. The rarity's light stays on the fighter and the backdrop.
+- **Must-fix 2, answered by its use:** Back stays on the run's card. It's the card's one way to stay on the street with the run over, for an elite that anyone near may join, and the way out when Home is refused. The sheet missed a real exit, so the sheet was wrong, not the card.
+- **The four facts:** implemented, tested, visually reviewed and passed; director-accepted not yet.
+
 ## TR51. The base grows: every machine's stages, the landing, the owner's plate and plinth (Faber, after AR49)
 
 Research, 2026-11-23, 01:55 by the clock, on the director's order of 00:05 ("first we work on the main map and systems", `docs/decisions.md`). It's the main map's biggest gap against the north star (pillar 3, "The base is alive"). Today only the generator changes in the world: `WorldService` reads `machines.generatorStages` alone (`src/server/Services/Main/WorldService.luau`, about line 753). Every other stage's art is passed and waits on its install. So this is install work, with no new design.

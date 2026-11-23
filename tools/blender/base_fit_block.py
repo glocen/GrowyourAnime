@@ -38,9 +38,9 @@ PLANS = {"plan": fit.PLAN, "today": fit.TODAY}
 NAMES = {"plan": "AR54's plan", "today": "Today's plan"}
 PLATE_UP = 21.6                         # the plate's middle: its underside at 19.4, over the held eye's frame (18.8 there)
 # AR54's lines of current: each machine's line comes from the heart, or on from the machine before it
-LINES = dict(breaker="generator", door="generator", bay1="generator", bay2="generator", condenser="generator",
-             battery="generator", forge="battery", bay3="generator", training="bay3", bay4="generator", bay6="bay4",
-             lab="generator", bay5="generator")
+LINES = dict(breaker="generator", door="generator", bay1="generator", bay2="generator", training="bay1", forge="bay2",
+             bay6="bay1", condenser="generator", bay3="generator", bay4="bay3", lab="generator", battery="lab",
+             bay5="generator")
 FLOORS = {"Court1": "Yard", "YardLive": "Yard", "YardBack": "Yard", "WingsLive": "Wings", "WingsBack": "Wings"}
 LIVE, DARK, PAD, ASLEEP = "#BFEFF5", "#2A2F45", "#A2A7BC", "#3A4154"
 KINDS = dict(generator="#FFD23E", breaker="#8CF6FF", door="#FF963C", bay="#788CFF", battery="#78FF8C",
@@ -212,8 +212,9 @@ def lines_of(which):
     made.append(f"The generator's own clear: {m['ring'][0]} from its spot (to the {m['ring'][1]}); the kit's ring is {base.RING:g}")
     for level in (1, 3):
         shares, _ = fit.seen(spots, level)
-        made.append(f"Seen from the gate, level {level}:")
-        row = [f"{n} {round(100 * shares[n][0])}%" for n in fit.TOUCHED[level] if n not in ("breaker", "door")]
+        made.append(f"Seen by the game's camera at the gate, level {level} (and its top):")
+        row = [f"{n} {round(100 * shares[n][0])}% ({round(100 * shares[n][1])}%)" for n in fit.TOUCHED[level]
+               if n not in ("breaker", "door")]
         made += ["   " + ", ".join(row[:4]), "   " + ", ".join(row[4:])]
     return made
 
@@ -222,9 +223,9 @@ def sheet(out: Path):
     rs.OUT = out
     w, h = SIZE
     pad, head, ground = 10, 24, (0.93, 0.93, 0.94)
-    rows = [("today", "held", "Today's plan, the builder's held eye (TR51's captures)"),
-            ("plan", "held", "AR54's plan, the same eye"),
-            ("plan", "player", "AR54's plan, the game's camera behind a player on the gate's line")]
+    rows = [("today", "player", "Today's plan, the game's camera behind a player on the gate's line"),
+            ("plan", "player", "AR54's plan, the same camera"),
+            ("plan", "held", "AR54's plan, the builder's held eye of TR51's captures, to compare with them")]
     board = rs.canvas(2 * (w + pad) + pad, len(rows) * (h + head) + pad + 30 + 80, ground)
     words = [(pad, 8, 17, "AR54, the yard at Stage III: from the gate, by day, the smallest phone's pixels. Left: level 1, "
               "every machine at Stage I. Right: level 3, every machine at Stage III", "#16182A")]

@@ -15764,3 +15764,50 @@ From `base_fit_gate.png`, judged by the game's camera behind a player (call 3: t
 - **Call 2, the plate:** raise it to 21.6. Its cost is accepted: it's read whole from 56 studs, across the Strip, and the owner's view of the yard is clean every time they walk in.
 - **The ring:** the generator's own clear is 25.1, so Faber caps the landing's ring at 25.
 - **Next:** Modulo's lay again, then research's second look on what changed. Then the finish (the floor's pictures, the masts, the handoff), and Faber's `Fit` with the trial's case.
+
+### Modulo's second lay: to research's order, by the game's camera (2026-11-23, 16:34; started 16:13)
+
+Made and self-reviewed. Not in the game. Research's second look is open. Nothing is exported.
+
+- **The sheets,** in `build/scratch/modulo/ar54/block/`, laid again: `base_fit_gate.png` (today's plan over this one from the game's camera behind a player on the gate's line, then the held eye of TR51's captures; level 1 left, level 3 right), `base_fit_plan.png`, `plan3_above.png`, `base_fit_plate.png`.
+- **The tool:** `tools/blender/base_fit.py`'s `PLAN` is this lay, and the game's camera is its measure (the held eye stays, to compare with TR51). `py tools/blender/base_fit.py seen` gives levels 1, 2 and 3. The first lay and its other lay are in 90fa971.
+- **The spots,** across, inward, turn. The generator (0, 56.8), the Breaker (20.5, 30.5) and the Door (-30.6, 24.4, 90) stand as picked.
+
+  | Machine | Spot | Where that is |
+  |---|---|---|
+  | bay1 | -33.2, 59.2, 0 | the Door's side, beside the generator: the nearest open spot |
+  | bay2 | -30.3, 90.9, 0 | the Door's side, behind bay 1 and nearer the middle, seen past the generator's edge |
+  | training | -55.1, 76.4, 0 | the Door's side, outer, between the two bays |
+  | forge | -53.4, 99.3, 0 | the Door's side, outer, at the back |
+  | bay6, asleep | -54.6, 42.3, 0 | the Door's side, behind the Door's ring |
+  | condenser | 25.5, 99.0, 0 | the back, in the gap between the generator and the Breaker |
+  | bay3 | 51.1, 73.6, 180 | the Breaker's side, outer |
+  | bay4 | 49.7, 97.6, 180 | the Breaker's side, outer, at the back |
+  | battery | 56.7, 44.9, 0 | the Breaker's side, at its outer end |
+  | lab, asleep | 32.7, 51.6, 0 | behind the Breaker |
+  | bay5, asleep | -0.7, 95.6, 0 | the back, behind the generator |
+
+- **The measure:** PASS at Stages I, II and III. Least clear 12.19, 12.17 and 12.17 (the Breaker to the generator, as before); the widest corner 50.78°, 50.78° and 50.79° of 51.22°; the Breaker 1.85, 1.67 and 1.63 s; nothing on the way in or outside. The generator's own clear is still 25.1.
+- **Seen by the game's camera at the gate,** the share of each machine and, in brackets, of its top third:
+
+  | Machine | Level 1 | Level 2 | Level 3 | The first lay, levels 1 and 3 |
+  |---|---|---|---|---|
+  | bay1 | 100% (100%) | 100% (100%) | 100% (100%) | 44% (33%), 48% (83%) |
+  | bay2 | 100% (100%) | 100% (100%) | 100% (100%) | 100%, 100% |
+  | forge | 75% (86%) | 62% (60%) | 57% (57%) | 70% (76%), 48% (48%) |
+  | training | 93% (100%) | 90% (91%) | 86% (82%) | 100%, 27% (52%) |
+  | condenser | 100% (100%) | 98% (100%) | 94% (99%) | 81% (99%), 73% (82%) |
+  | bay3 | asleep | 33% (65%) | 41% (83%) | 22% (44%) at level 3 |
+  | bay4 | asleep | asleep | 42% (87%) | 15% (21%) at level 3 |
+  | battery | 100% (100%) | 100% (100%) | 8% (10%) | 99%, 100% |
+
+- **Where the order bent, and why:**
+  - **The Training machine reads better than the Forge.** The Door's side has four open spots for a full machine, and the two outer ones stand one behind the other. The Training machine is 13 deep with its pad, so with the Forge in front of it the two don't fit before the kept back (short by 0.75 at clear 12.16). It's also the lower of the two, so in front it hides less. Turned sideways at the back it fits, but its pad faces the wall (turned the other way it reads 41 to 54%).
+  - **The Condenser isn't on the Door's side.** The fifth spot there was open only to the slim battery. With the four above standing, the Condenser's footprint fits one spot in the whole yard on that side, behind the Door's ring, where it reads 20 to 25% (its top 10%). The gap between the generator and the Breaker shows the yard's back, and there it reads 94 to 100%. Sleeping bay 6 takes the spot behind the Door.
+  - **Bays 3 and 4 stand outside the Breaker, not straight behind it:** their tops show over its arm (83% and 87% at level 3, from 44% and 21%). The battery and the Lab's stone take the ground behind it. The battery reads whole at levels 1 and 2 and 8% at level 3.
+- **How it was laid:** by hand on the Door's side, then a search over each side that moves one machine at a time and keeps a lay only when it passes part 7's tests at every stage, scored by what the camera sees in research's order (weights 5, 5, 3, 2 for the bays, the Forge and the Training machine). The search's first runs counted two fixed machines that sit at the limit and kept nothing; fixed, it found the Breaker's side above.
+- **Weak spots, mine:**
+  - bay 2 is 33 studs behind bay 1, about 100 from the gate (6 s at a walk). Both read whole, but they're no longer a pair.
+  - From the gate every machine past the generator is small on the smallest phone (about 35 to 50 px wide). The shares say it's uncovered, not that it's large.
+  - The Forge at the back is the least seen of what's touched (57% at level 3).
+- **What waits for the finish,** unchanged: the floor's pictures, the masts, the transformers, the pylons against the outer columns (bays 3 and 4 and the battery now stand in that column), the kit's places, `base_kit.PLATE_UP` to 21.6, the handoff. For Faber after the second look: this table for `Config.World.Fit`'s "128" layout with Stage III's `Prints` (`py tools/blender/base_fit.py prints`), the trial's case, the ring capped at 25.

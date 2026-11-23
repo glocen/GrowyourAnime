@@ -4,8 +4,8 @@ The plan at 128 was laid on Stage I's footprints. At Stage III the machines are 
 (TR51's Studio run). PLAN is the plan laid again: every machine's spot, held at its Stage III footprint by part 7's
 tests and by what the gate's eye sees.
 
-    py tools/blender/base_fit.py [today|other]          the measure: Rules.BaseFit's tests on each stage's footprints
-    py tools/blender/base_fit.py seen [today|other]     and what a gate's eye sees of each machine, at levels 1 and 3
+    py tools/blender/base_fit.py [today]                the measure: Rules.BaseFit's tests on each stage's footprints
+    py tools/blender/base_fit.py seen [today]           and what the gate sees of each machine, at each level
     py tools/blender/base_fit.py prints                 and each stage's footprints, as Config.World.Fit.Prints holds one
 
 How it measures:
@@ -38,26 +38,25 @@ HELD = (10.0, 11.5)                                                 # TR51's cap
 PITCH_OF_POINTS = 0.35                                              # a mesh as points this far apart, for the gate's eye
 
 # name: across, inward, turn. Bays 1 and 2 are level 1's, 3 at level 2, 4 at level 3; 5 and 6 stay locked at launch.
+# Laid to research's order (AR54's pick, 2026-11-23): what the player touches stands where the game's camera at the gate
+# sees it. The Door's side has four open spots for a full machine: bays 1 and 2, the Training machine and the Forge.
+# Its fifth, behind the Door's ring, holds sleeping bay 6. The Condenser stands at the back, in the gap between the
+# generator and the Breaker; bays 3 and 4 stand outside and behind the Breaker, their tops over its arm; the battery
+# and the Lab's stone stand behind it.
 PLAN = dict(
     generator=(0.0, 56.8, 0.0), breaker=(20.5, 30.5, 0.0), door=(-30.6, 24.4, 90.0),
-    bay1=(-54.6, 42.3, 0.0), bay2=(-33.2, 59.2, 0.0), condenser=(-54.1, 76.8, 0.0), battery=(-31.3, 82.2, 0.0),
-    forge=(-54.4, 98.4, 0.0),
-    training=(55.0, 54.2, 0.0), bay3=(31.7, 52.0, 180.0), bay4=(31.7, 75.9, 180.0), bay6=(54.6, 77.2, 180.0),
-    lab=(34.6, 98.6, 0.0), bay5=(0.0, 93.1, 0.0))
-# The other lay that passes (AR54's record): no zigzag, both of level 1's bays in the open on the Door's side, and the
-# Condenser behind the Breaker.
-OTHER = dict(
-    generator=(0.0, 56.8, 0.0), breaker=(20.5, 30.5, 0.0), door=(-30.6, 24.4, 90.0),
-    bay1=(-33.15, 49.6, 0.0), bay2=(-33.15, 73.5, 0.0), battery=(-31.35, 93.8, 0.0), forge=(-54.35, 90.1, 0.0),
-    training=(55.0, 54.2, 0.0), bay3=(31.7, 52.0, 180.0), bay4=(31.7, 75.9, 180.0), bay6=(54.6, 77.2, 180.0),
-    condenser=(33.8, 98.3, 0.0), bay5=(-10.6, 93.1, 0.0), lab=(11.2, 93.1, 0.0))
+    bay1=(-33.2, 59.2, 0.0), bay2=(-30.3, 90.9, 0.0), training=(-55.1, 76.4, 0.0), forge=(-53.4, 99.3, 0.0),
+    bay6=(-54.6, 42.3, 0.0),
+    condenser=(25.5, 99.0, 0.0), bay3=(51.1, 73.6, 180.0), bay4=(49.7, 97.6, 180.0), battery=(56.7, 44.9, 0.0),
+    lab=(32.7, 51.6, 0.0), bay5=(-0.7, 95.6, 0.0))
 TODAY = dict(
     generator=(0.0, 52.0, 0.0), breaker=(26.0, 26.0, 0.0), door=(-26.0, 26.0, 90.0),
     bay1=(-31.5, 52.0, 0.0), bay2=(31.5, 52.0, 180.0), bay3=(-54.5, 52.0, 0.0), bay4=(54.5, 52.0, 180.0),
     bay5=(-54.5, 78.0, 0.0), bay6=(54.5, 78.0, 180.0), battery=(29.0, 78.0, 0.0), training=(-29.0, 78.0, 0.0),
     forge=(-26.0, 98.0, 0.0), condenser=(26.0, 98.0, 0.0), lab=(0.0, 94.0, 0.0))
-TOUCHED = {1: ("breaker", "door", "bay1", "bay2", "battery", "training", "forge", "condenser"),
-           3: ("breaker", "door", "bay1", "bay2", "bay3", "bay4", "battery", "training", "forge", "condenser")}
+TOUCHED = {1: ("breaker", "door", "bay1", "bay2", "forge", "training", "condenser", "battery"),
+           2: ("breaker", "door", "bay1", "bay2", "forge", "training", "condenser", "bay3", "battery"),
+           3: ("breaker", "door", "bay1", "bay2", "forge", "training", "condenser", "bay3", "bay4", "battery")}
 
 _plan = json.loads((HAND / "plan.json").read_text(encoding="utf-8"))["machines"]
 _mesh, _cloud = {}, {}
@@ -203,10 +202,10 @@ def cloud(kind, stage, turn):
     return _cloud[key]
 
 
-def gate_eye(eye="held"):
-    """A gate's eye: where it is, and its forward, right and up. "held" is the builder's own for TR51's captures, 10 up
-    and 11.5 before the gate's line, looking level. "player" is the game's camera at its start zoom behind a player on
-    the gate's line, 20 degrees down."""
+def gate_eye(eye="player"):
+    """A gate's eye: where it is, and its forward, right and up. "player" is the game's camera at its start zoom behind
+    a player on the gate's line, 20 degrees down: the measure (research's pick, AR54). "held" is the builder's own for
+    TR51's captures, 10 up and 11.5 before the gate's line, looking level, kept to compare with them."""
     if eye == "held":
         return (np.array([0.0, HELD[0], -HELD[1]]), np.array([0.0, 0.0, 1.0]), np.array([1.0, 0.0, 0.0]),
                 np.array([0.0, 1.0, 0.0]))
@@ -216,7 +215,7 @@ def gate_eye(eye="held"):
             np.array([0.0, math.cos(pitch), math.sin(pitch)]))
 
 
-def seen(plan, level, eye="held"):
+def seen(plan, level, eye="player"):
     """What a gate's eye sees at a base's level: name -> (the share of its pixels seen, of its top third's), and the
     picture's owner at each pixel."""
     eye, fwd, right, up = gate_eye(eye)
@@ -255,8 +254,8 @@ def seen(plan, level, eye="held"):
 
 def main():
     args = sys.argv[1:]
-    name = "today's plan" if "today" in args else "the other lay" if "other" in args else "AR54's plan"
-    plan = TODAY if "today" in args else OTHER if "other" in args else PLAN
+    name = "today's plan" if "today" in args else "AR54's plan"
+    plan = TODAY if "today" in args else PLAN
     for stage in (1, 2, 3):
         m = measure(plan, stage)
         print(f"{name}, Stage {'I' * stage}'s footprints: {'PASS' if m['passes'] else 'FAIL'}. The Breaker {m['breaker']} s "
@@ -268,8 +267,8 @@ def main():
         for stage in (1, 2, 3):
             print(f"Stage {'I' * stage}: " + json.dumps(prints(stage)))
     if "seen" in args:
-        for eye, what in (("held", "the builder's held eye"), ("player", "the game's camera behind a player on the line")):
-            for level in (1, 3):
+        for eye, what in (("player", "the game's camera behind a player on the line"), ("held", "TR51's held eye")):
+            for level in (1, 2, 3):
                 shares, _ = seen(plan, level, eye)
                 print(f"from the gate, {what}, level {level}, every machine at Stage {'I' * level}: " + ", ".join(
                     f"{n} {round(100 * shares[n][0])}% (its top {round(100 * shares[n][1])}%)" for n in TOUCHED[level]))

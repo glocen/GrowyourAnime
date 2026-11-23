@@ -247,7 +247,7 @@ function DockCases.Cases(given: Given): { any }
 					if lead.Visible and f0.X < lead.AbsolutePosition.X + lead.AbsoluteSize.X + (home.Gap - 1) * scale and f1.Y > lead.AbsolutePosition.Y then
 						table.insert(wrong, "over the lead's card")
 					end
-					local room = Layers.Get("Cover")
+					local room = Layers.Get("Hud") -- the phone's safe area: the cover runs under a notch, and past a test's box
 					local r0, r1 = room.AbsolutePosition, room.AbsolutePosition + room.AbsoluteSize
 					if f0.X < r0.X - 1 or f0.Y < r0.Y - 1 or f1.X > r1.X - (home.Edge - 1) * scale or f1.Y > r1.Y + 1 then
 						table.insert(wrong, "past the room's edge")

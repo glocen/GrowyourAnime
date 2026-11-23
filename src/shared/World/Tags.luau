@@ -31,6 +31,12 @@ local specs: { [string]: Spec } = {
 	Training = { Tag = "GA_Training", Place = "Main", Attributes = { Plot = "number" }, Count = 1, Per = "Plot", Ground = true },
 	-- The ring a Tower run starts from, on the plot's Tower lot (TR29; Rules.Tower.RingSpot).
 	TowerRing = { Tag = "GA_TowerRing", Place = "Main", Attributes = { Plot = "number" }, Count = 1, Per = "Plot", Ground = true },
+	-- The Forge (TR37): AR28's Press in its sleeping place; its prompt opens Reinforce, and each try strikes its ram. A model
+	-- whose pivot is its home on the floor. Stands only with the base's kit.
+	Forge = { Tag = "GA_Forge", Place = "Main", Attributes = { Plot = "number" }, Count = 1, Per = "Plot", Ground = true },
+	-- The Stone Condenser (TR37): AR28's Comb over its sleeping stone, awake from its base level; its tray and the convert.
+	-- A model whose pivot is its home on the floor. Stands only with the base's kit.
+	Condenser = { Tag = "GA_Condenser", Place = "Main", Attributes = { Plot = "number" }, Count = 1, Per = "Plot", Ground = true },
 	Shop = { Tag = "GA_Shop", Place = "Main", Attributes = {}, Count = 1, Ground = true },
 	FestivalGate = { Tag = "GA_FestivalGate", Place = "Festival", Attributes = {}, Count = 1, Ground = true },
 	-- A pack's spawn: Count Shades of Def at Level, spread round it. Pack is its number down the street. Type: the outline's

@@ -123,6 +123,7 @@ end
 
 -- The panel and its dim laid in the cover from the HUD's foot, in the cover's points: the pointer's middle on the Home
 -- cell's (the dock's middle), the glass's left clear of the lead's card or centred on the phone, never past its right.
+-- The phone's room is the HUD's (its safe area), not the cover's, which runs under a notch and, in a test's box, past it.
 local function place(panel: Panel)
 	local cover = panel.Dim.Parent :: GuiObject
 	local hud = panel.Hud
@@ -139,8 +140,9 @@ local function place(panel: Panel)
 	local wide, tall = cover.AbsoluteSize.X / scale, cover.AbsoluteSize.Y / scale
 	local foot = (hud.AbsolutePosition.Y + hud.AbsoluteSize.Y - origin.Y) / scale
 	local middle = (hud.AbsolutePosition.X + hud.AbsoluteSize.X / 2 - origin.X) / scale
+	local roomRight = (hud.AbsolutePosition.X + hud.AbsoluteSize.X - origin.X) / scale
 	local top = foot - panel.Foot -- the dock's top
-	local left = math.min(math.max(leadRight + HOME.Gap, wide / 2 - size.X / 2), wide - HOME.Edge - size.X)
+	local left = math.min(math.max(leadRight + HOME.Gap, middle - size.X / 2), roomRight - HOME.Edge - size.X)
 	local glassFoot = top - HOME.Above
 	local at = middle - left -- the pointer's middle, from the glass's left
 	panel.Frame.AnchorPoint = Vector2.new(at / size.X, 1)
@@ -364,9 +366,10 @@ function HomePanel.new(cover: Instance, hud: GuiObject, foot: number, presses: {
 	return panel
 end
 
--- The lead shown live in the Voidkin card, on its rarity's light (Card.Trim lifted Lift toward white).
+-- The lead shown live in the Voidkin card, on its rarity's light (Card.Trim lifted Lift toward white). Rebuilt when the
+-- lead changes, and tried again while its body hasn't come yet (a join's figures arrive after its first copy).
 function HomePanel.Lead(panel: Panel, def: string?)
-	if def == panel.LeadDef then
+	if def == panel.LeadDef and (def == nil or panel.Live ~= nil) then
 		return
 	end
 	panel.LeadDef = def
@@ -387,7 +390,7 @@ function HomePanel.Lead(panel: Panel, def: string?)
 	local live = HOME.Live
 	local bust = Figure.Bust(def, light, live :: any)
 	if bust == nil then
-		return
+		return -- its body isn't here yet: the next call tries again (HudController's, once the bodies are in)
 	end
 	local tap = card.Def.Tap
 	bust.View.Position = whole(live.Box[1] - tap[1], live.Box[2] - tap[2])
@@ -471,7 +474,7 @@ function HomePanel.Paint(panel: Panel)
 			panel.Scale.Scale = motion.From + (motion.To - motion.From) * backOut(grow, open.Back)
 			panel.Shown = motion.Seen + (1 - motion.Seen) * (1 - (1 - fade) ^ 2)
 			dimmed(panel, motion.DimFrom + (motion.DimTo - motion.DimFrom) * (1 - (1 - d) ^ 2))
-			local last = 0
+			local landed = 1 -- the least-landed card's share: the motion ends once every card has landed, the last one too
 			for index, name in open.Order do
 				local card = panel.Cards[name]
 				local u = math.clamp((t - (index - 1) * open.Stagger) / open.Land, 0, 1)
@@ -480,9 +483,9 @@ function HomePanel.Paint(panel: Panel)
 					card.Holder.Position = UDim2.fromOffset(0, math.round(open.Rise * (1 - eased)))
 					Fade.Set(card.Holder, eased)
 				end
-				last = math.max(last, u)
+				landed = math.min(landed, u)
 			end
-			finished = grow >= 1 and fade >= 1 and d >= 1 and last >= 1
+			finished = grow >= 1 and fade >= 1 and d >= 1 and landed >= 1
 		else
 			local share = math.clamp(t / math.max(motion.Seconds, 1e-3), 0, 1)
 			panel.Scale.Scale = motion.From + (motion.To - motion.From) * share * share

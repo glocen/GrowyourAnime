@@ -1450,6 +1450,17 @@ function HudController.Start()
 	if known then
 		showLead(known)
 	end
+	-- The bodies come after a join's first copy (RevealService's Ready): the lead's card is shown again once they're in.
+	task.spawn(function()
+		local reveal = ReplicatedStorage:WaitForChild("NL_Reveal")
+		while reveal:GetAttribute("Ready") ~= true do
+			reveal:GetAttributeChangedSignal("Ready"):Wait()
+		end
+		local now = ProfileController.Get()
+		if now then
+			showLead(now)
+		end
+	end)
 	-- The jump's light (TR19), a stand-in until Modulo's look: one frame on each of the screen's edges, lit at the edge and
 	-- gone Reach in, over everything but the toasts.
 	local overlay = Layers.Get("Overlay")

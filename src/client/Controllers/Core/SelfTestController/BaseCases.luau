@@ -1311,9 +1311,15 @@ function BaseCases.Cases(given: Given): { any }
 					local held = machine:GetAttribute("Held")
 					return if type(held) == "number" then held else -1
 				end
+				-- The attribute's value lands with its packet, the copy's handler a moment later: the plate and the case read
+				-- the copy, so each wait holds until the two agree.
+				local function copyHeld(): number
+					local copy = ProfileController.Get() :: any
+					return if copy then Condenser.Held(copy.Base) else -1
+				end
 				t.Check("part-full: some stones in the tray", waitFor(t, ANSWER + 2, function(): boolean
-					return trayHeld() > 0 and trayHeld() < cap
-				end), tostring(trayHeld()))
+					return trayHeld() > 0 and trayHeld() < cap and copyHeld() == trayHeld()
+				end), `{trayHeld()} held, the copy {copyHeld()}`)
 				local held = trayHeld()
 				local data = ProfileController.Get() :: any
 				t.Equal("its comb lit by the tray's fill", litCups(), Condenser.Lit(data.Base, comb))
@@ -1333,8 +1339,8 @@ function BaseCases.Cases(given: Given): { any }
 				-- Full: its whole comb lit, its core still, the plate says so.
 				t.Server("BaseSkip", (cap + 1) * 3600 / (rate * floor))
 				t.Check("full: the whole comb lit", waitFor(t, ANSWER + 2, function(): boolean
-					return trayHeld() == cap and litCups() == comb
-				end), `{trayHeld()} held, {litCups()} of {comb} lit`)
+					return trayHeld() == cap and litCups() == comb and copyHeld() == cap
+				end), `{trayHeld()} held, the copy {copyHeld()}, {litCups()} of {comb} lit`)
 				t.Check("its core still on a full tray", core ~= nil and core:GetAttribute("Spinning") == false)
 				t.Equal("its plate says full", plateLine(), `Tray full · {cap} {low}`)
 				-- The tap: the whole tray into the bag, once.

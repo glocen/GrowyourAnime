@@ -108,7 +108,8 @@ local function word(rail: Rail, name: string, chosen: boolean): TextLabel
 	local size = if chosen then RAIL.Word.Chosen else RAIL.Word.Rest
 	local said = if spec.Words and spec.Words[name] then spec.Words[name] else name
 	local y = at.Y + r + RAIL.Word.Gap
-	return Glass.Label(rail.Holder, `{name}Word`, said, size, if chosen then LIGHT else SEAM.Soft, at.X - 46, y - 1, 92, size + 2, Enum.TextXAlignment.Center, chosen, 3)
+	local wide = math.min(92, 2 * at.X) -- centred on its disc, never past the holder's left (the Voidkin screen's rail stands at 42)
+	return Glass.Label(rail.Holder, `{name}Word`, said, size, if chosen then LIGHT else SEAM.Soft, at.X - wide / 2, y - 1, wide, size + 2, Enum.TextXAlignment.Center, chosen, 3)
 end
 
 -- The line's pieces with `open` lit: the screen's own, else from the line's top to the first disc, then from under each

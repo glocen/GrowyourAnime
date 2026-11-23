@@ -4,11 +4,11 @@
 
 Each teammate rewrites its own row: two to five lines. Open asks sit under "Waiting on the director".
 
-**Quaestor (research).** 2026-11-23, 00:14, on Opus 5.5. Back at work. **The director's order (decisions.md, 00:05): the main map and the systems first; the Festival places are open to the team, and their work comes after.** Done this session: AR48's second look, where Burn passes at competent and Shock has one must-fix (the arcs over the body's whole height), which Modulo closes on its own read.
-- **Next, mine:** AR49's install pass from Faber's capture; AR44's shine in the game. For Faber after AR49: the Voidkin screen's pink-lavender floor under the model takes a non-violet ground (the too-purple line).
-- **Queued for Modulo:** after AR48, the picker's violet ground and the lantern tile's ground (TR50, the older line).
+**Quaestor (research).** 2026-11-23, 02:41, on Opus 5.5. On the director's wrap-up (02:40: finish fully, then stop). **The director's order (decisions.md, 00:05): the main map and the systems first; the Festival places come after.** Done today: AR48's second look (Burn competent; Shock closed on Modulo's read); TR50's Arc dusk B with Seam's lights, and the Voidkin floor B; TR51 and AR50 written; AR50's pick, D, with two must-fixes (fresh eyes agreed).
+- **Next, mine:** AR50's second look, when Modulo sends it; AR49's install pass from Faber's capture; TR51 in the game, from the gate and the Strip.
+- **Faber's order:** AR49, then TR51 (the base grows), then TR37 (the Forge and the Condenser), then the small ones (AR44's shine, TR10's stills, TR50's Arc palette and Voidkin floor, AR48's states).
 - **Verdicts owed, main map first:** AR37, AR28's Stage I, AR30, AR23, TR10 (each read in the game at its install); then TR43, TR44, TR34, TR29 (Festival and Tower, after).
-- **With the director:** the Voidkin model examples (the rework stays parked); the store's design; the sound pick on TR42's panel.
+- **With the director:** the PC's keep-awake (stopped on low memory; restart it, or set the screen to never turn off on mains); the Voidkin model examples (the rework stays parked); the store's design; the sound pick on TR42's panel.
 
 **Faber (builder).** 2026-11-20, 00:25, on Opus 5.5. Stopped on the director's second wrap-up. Done today:
 - TR50, one mission per Arc, with research's five must-fixes in the game (98c6cdd): the closed lock, the lit Fight or Continue, the line's chevron mark, the last foe by name, the track node to node. Take: TR50 13/0, travel 35/0, the dock 39/0.
@@ -27,7 +27,7 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 
 **Turns.** Studio: Faber's (Grow your Anime), open, not in Play; a second Studio, Festival Lantern, is open, not Faber's; the director's listen on TR42's panel is tomorrow, in the same place. Blender: nobody (Modulo's AR41 strips were stopped at 01:33 on 2026-11-19 by Claude Code when the PC ran low on memory; the director said wait at 01:34). Timing tests: nobody.
 
-**The count.** Pieces closed and playable this week: 13. TR2, the circuit in grey (phase 1); Haymaker, on A; the Shade's burst; Pip's Lantern Burst; Lyric's Held Note; TR3, the HUD in the world; TR4, the reveal; AR7, the Lamplighter installed with his fall; his signature; Lantern Burst's exit in 3D (B1); Haymaker's square in 3D (B5); TR18, power in grey; AR12's HUD part 1. Hours are in each piece's entry.
+**The count.** Week of 2026-11-23: 0 pieces closed and playable so far. Today's closes are art and picks (AR48, TR50's palettes, AR50's pick), all waiting on their install, which is how they become playable.
 
 ### Waiting on the director
 

@@ -4585,7 +4585,7 @@ Research, 2026-11-23, 01:55 by the clock, on the director's order of 00:05 ("fir
   - **Felt:** walking in, a level-3 base is told from a level-1 base at a glance. The Breaker sprouts horns around its shard, and the generator a crown of spikes.
   - **Tier:** competent.
   - **The one bold thing:** the Breaker's Stage III horns around the floating shard, a silhouette that reads across the yard.
-  - **Must-fix 1, class "text cut by the frame's edge":** the plate's name runs off the top of the gate's view at every stage. Raise the plate until it leaves the gate's view, so it's read whole from the Strip, where passers-by are. The owner reads their level on Home. "Level n" (Faber's tier 1) stays.
+  - **Must-fix 1, class "text cut by the frame's edge":** the plate's name runs off the top of the gate's view at every stage. Raise the plate until it leaves the gate's view, so it's read whole from the Strip, where passers-by are. The owner reads their level on Home. "Level n" (Faber's tier 1) stays. The plate is Gate1's mesh, so it moves in AR54, Modulo's.
   - **Must-fix 2, class "the yard at Stage III":** today's plan doesn't hold Stage III's footprints (Faber's measures above), and the Forge and the Condenser stand behind the generator from the gate (TR37). It's one plan, so one piece: AR54, Modulo's, on research's rules. The generator's floor ring belongs in it: the ring ends inside its own clear, never under another machine or across the court.
   - **Not judged here:** the landing in motion. Faber's frames and their timing (0.35 s between the peaks) are accepted on the measures; it's first seen in motion at a live base level-up.
 

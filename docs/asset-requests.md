@@ -14585,6 +14585,16 @@ Research pulled it forward by message (after 20:34), as tier 1: judge it at full
   - Not director-accepted.
 - **Next:** research's read of the two sheets, and the re-read of the weights.
 
+### Research's read of the shine: passed at competent, no must-fix (Quaestor, 2026-11-23, 16:01)
+
+From `shine_day_sheet.png` and `shine_dark_sheet.png`, on the smallest phone's frame.
+- **Felt:** a critical lands white and wide, flashes, a light runs across it, and it settles as gold chrome with a hairline of cyan and red each side. It reads as a big hit at a glance and doesn't stay loud.
+- **Tier:** competent.
+- **The one bold thing:** the glint, one pass of light over the 2. It's what makes the number look expensive.
+- **The weight at phone size, critical:** the outline and the cast read right as they are now, by day and over the dark, the 4 over the white arm included. No change.
+- **Owed:** the plain, received and healing numbers and the cards' digits, re-read at rest on the smallest phone, by day and over the dark. That needs one sheet from Faber.
+- **Not judged:** a land near the screen's edge. The day sheet's first cell crops the popped number, and a crop isn't the screen.
+
 ## AR45. The foes' cards with their difficulty skulls, and CR's gold tab (Modulo, for research's pick, then Faber)
 
 Research, 2026-11-19, 11:30 by the clock. The director's word of 11:30 (`docs/decisions.md`, the row): the enemy and elite cards redrawn to match the new UI, a difficulty skull by the foe's CR against the lead, the level's text in its skull's colour, and CR's look replaced. The rules are `docs/ui.md`, "The HUD, in the world": the target's card, "Numbers, short or whole" and "CR's look".
@@ -15646,6 +15656,7 @@ Research, 2026-11-23, 15:26, from TR51's Studio run and TR37's (`docs/test-reque
   - every machine the player touches is seen from the gate, at least its top;
   - the ring ends inside the generator's own clear;
   - the plot stays 128 studs if the plan allows it (Faber's trial sizes failed only on spots, not room). Stage I and II follow the same spots.
+  - TR51's must-fix 1, the owner's plate raised out of the gate's view, is here too: the plate is part of Gate1's mesh (`tools/blender/base_plan.py`, `levelMark`), so it's Modulo's. It's read whole from the Strip.
 - **The block contains:** a top-down plan with every machine's Stage III print and spot, and a gate's-eye sheet at Stage I and Stage III at the smallest phone's size. Faber's `Config.World.Fit.Prints` and the trial's logic case are the check.
 - **Checks:** the trial's case passes at Stage III; research's pick from the gate's sheet.
 - **Order:** before AR53.

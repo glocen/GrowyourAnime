@@ -524,7 +524,9 @@ return {
 			BodyT = 0.1,
 			GlassT = 0.03,
 			Top = 1.45,
-			L = { Rest = 1, Calling = 1.45, Pressed = 1.3, Open = 0.75, Quiet = 0.45, Dim = 0, Charge = 0 },
+			-- At rest a cell's colour lives in its foot bar, inside its glass: a halo past it means "this one" (AR30, "The
+			-- dock's shine, reopened": the director, 2026-11-23, "a bit to shiny"). Dim < Quiet < Rest < Open < Pressed < Calling.
+			L = { Rest = 0.4, Calling = 1.45, Pressed = 1.3, Open = 0.6, Quiet = 0.2, Dim = 0, Charge = 0 },
 			DimFoot = 0.7,
 			Glass = { Wing = Vector2.new(56.8, 48), Mid = Vector2.new(66.8, 58) },
 			Cells = {

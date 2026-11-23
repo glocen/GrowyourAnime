@@ -10,10 +10,12 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **Verdicts owed, main map first:** AR37, AR28's Stage I, AR30, AR23, TR10 (each read in the game at its install); then TR43, TR44, TR34, TR29 (Festival and Tower, after).
 - **With the director:** open two sessions titled **Scintilla** and **Sonus** (their briefs: `docs/briefs/effects.md`, `docs/briefs/sound.md`; Studio works for them once Faber's step 1 is in); open Studio on the main place with Rojo on 34876; `src/shared/Config/Sounds.luau`'s uncommitted change, nobody's; F5's yes; the store's design. The PC stays awake on mains (set 2026-11-23).
 
-**Faber (builder).** 2026-11-23, 03:25, on Opus 5.5. Stopped at the director's wrap-up (through research). Built today, each implemented and offline-tested, none run in Studio: the Studio MCP attaches to a blank Studio window, never the one with Grow your Anime open.
-- TR37 in two steps: the Condenser's rules (6b97f0b), then the Forge and the Condenser in their sleeping places (ca3dbb1). Record: TR37, "Faber's build". Earlier: AR49 (04b45b5) and TR51's three steps (38d01a8, ad1372b, e086d9e).
-- **Next:** the Studio run of AR49, TR51 and TR37: the self-test, LogicTests and WorldReport; FxKit.rbxm rebuilt with the landing's look; the Fit Prints; captures from the gate at each stage and on the smallest phone, for research. Then the small ones (AR44's shine, TR10's stills, TR50's Arc palette and Voidkin floor, AR48's states), then AR50's install.
-- **Open, tests:** NOT VERIFIED: AR49, TR51 and TR37; and, in the Festival place (item 9), TR50's run cases, the Festival role's suite, TR48's keeper, TR49's Stage 1 playtest and TR10's marker. TintMask on a phone. TR44's phone take waits for the director's go.
+**Faber (builder).** 2026-11-23, 15:15, on Opus 5.5.
+- **Done:** the Studio run of AR49, TR51 and TR37 (ef86dab: 3,288 passed, 1 failed, TR42's flake; LogicTests 29,155; WorldReport empty), with every capture research asked for. AR30's dock seeds are in, with their stills. **Research's reads asked:** TR51, TR37 in grey, AR49, AR30. Each record says where its captures are.
+- **Tier 2, for research and Modulo:** Stage III's footprints don't fit today's plan. The Fit Prints stay at Stage I (TR51, "The Studio run").
+- **The hooks for Scintilla and Sonus** wait on the director's own word: they grant Studio tools and the group key's uploads (item 10 below).
+- **Next:** AR44's shine, TR10's stills, TR50's Arc palette and Voidkin floor, AR48's states; then AR50's install, AR51, TR52, AR52's behaviours, TR53.
+- **Open, tests:** in the Festival place (item 9), TR50's run cases, the Festival role's suite, TR48's keeper, TR49's Stage 1 playtest and TR10's marker. TintMask on a phone. TR44's phone take waits for the director's go. A suite case leaves the reveal pinned open (Watt, its clock at 1.6 s); found while capturing, not yet traced.
 
 **Modulo (assets).** 2026-11-23, 14:41, on Fable 5.2. Voidkin work parked until before launch (the director's word, 11:10).
 - **Now:** AR51's finish delivered, after research's pick (B, and Rose with the six-sided chip): the convert card's spec at the game's sizes (`build/handoff/Base/condenser_card.json`, `condenser_card.png`; 172 by 70 points, since the blockout's word stood under the 14-point floor; asleep, the cost line alone), and the Power screen's share (`build/handoff/UI/hud/colour/condenser_share.json`, `images/PowerChipCondenser.png`, `images/ArrowRight.png`). Content check PASS for both images. **Waits: research's pass on the finish** (AR51, "The finish").
@@ -26,7 +28,7 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **For Faber, AR40's install:** the atlas pair, and the Strip's eight changed meshes with the manifest, on top of the 40 base meshes, the paving and C's keys already listed in AR40. The atlas never goes alone. AR38's Shop meshes go with AR38.
 - **Unchanged:** AR28's Stage I on TR37, AR19's re-uploads, AR24's A on TR34, AR39 stopped, Sable after launch.
 
-**Turns.** Studio: Faber's turn released (2026-11-23, 03:25); the Studio MCP is attached to the blank Studio window, not the one with Grow your Anime open (item 10); the director's listen on TR42's panel is tomorrow, in the same place. Blender: nobody (Modulo's AR41 strips were stopped at 01:33 on 2026-11-19 by Claude Code when the PC ran low on memory; the director said wait at 01:34). Timing tests: nobody.
+**Turns.** Studio: Faber's, on the main place, the playtest stopped between pieces (2026-11-23, 15:15); the director's listen on TR42's panel is tomorrow, in the same place. Blender: nobody (Modulo's AR41 strips were stopped at 01:33 on 2026-11-19 by Claude Code when the PC ran low on memory; the director said wait at 01:34). Timing tests: nobody.
 
 **The count.** Week of 2026-11-23: 0 pieces closed and playable so far. Today's closes are art and picks (AR48, TR50's palettes, AR50's pick), all waiting on their install, which is how they become playable.
 
@@ -48,7 +50,12 @@ For Faber:
 8. **Pick the slam's rule by playing it** (TR44): Off, A or B. In Studio's Play, start a keeper's try. The Server command bar switches the mode mid-fight: `game.ServerStorage.NL_Debug:Invoke("Slam", nil, "A")` (or `"B"`, `"Off"`), and `Invoke("Slam")` reads the counts. In A, walk out of the ring and your fighter follows; in B, press the round Recall button or R. Research reads a phone take of each first: say go and I record it (the PC's memory stopped it tonight).
 9. **The Festival's place, after the main map and the systems** (TR45; your word of 2026-11-23, 00:05: the team has full access to it). When its work opens, the Creator Dashboard's settings stay yours to confirm: its name (Faber's suggestion: Festival of Battles), its server size 8, and its Direct Access set to "Secure within universe only". Then the id goes into `CLAUDE.md`'s "Places".
 
-10. **The Studio MCP on the Grow your Anime window.** Two Studios are open, and the MCP is attached to the blank one ("Place is not open"), so nothing of tonight's three pieces has run. Close the blank Studio window, or turn the MCP server on in the Grow your Anime window (the Assistant's settings), with Rojo connected on 34876. Faber runs the tests as soon as it shows.
+10. **The hooks for the new seats.** Research relays your yes of 14:50 to two teammates. Their hooks are permission settings, and a relayed word can't change those, so Faber waits for yours. The change, in `.claude/hooks/`:
+    - `Effects` (`^Scintilla`) and `Sound` (`^Sonus`) in `config/roles.json`;
+    - their briefs in `hooks.json`'s drift guard;
+    - Studio's playtest tools for both in `tools.json`: start and stop, run code, the input tools, as research has;
+    - Effects among the uploaders in `open_cloud_guard.py`, so Scintilla uploads under the group with its key, inside the guard's own limits (a new asset only, from `build/upload/`, at price 0).
+    - Until then their Studio calls are blocked.
 
 ### Notices
 
@@ -131,6 +138,14 @@ For Faber:
 - Tier 2, research, 2026-11-12, on the director's words: weapons belong to a class, in two hands (Main Hand and Off Hand replace Weapon and Shield), a preset holds a pair per class, a weapon drop is for the lead's class; Combat Power made to be watched, its weights fitted by the simulation; each item kind modelled and rendered to its icon (AR6, phase 3) (`docs/design.md`, "Regalia: gear" and "Combat Power"). Faber: the Stats case's `"Weapon"` source becomes `"Main Hand"` when you next touch it. Faber and Modulo: say in your row what you'd change.
 
 ## Entries
+
+### 2026-11-23, 15:15. The Studio run of AR49, TR51 and TR37; AR30's dock seeds (Faber)
+
+- **Run in Studio** (ef86dab): the self-test 3,288 passed, 1 failed (TR42's flake, which passes alone); LogicTests 29,155; WorldReport empty. Five fixes, FxKit rebuilt with the landing's look. The records: TR51 and TR37, "The Studio run"; AR49, "Faber's build".
+- **TR51:** the stages from the gate and the court, on the smallest phone, the landing mid-swap, and the shards in their chambers, in `build/captures/tr51/`. Stage III's footprints break today's plan (tier 2, research and Modulo), so the Fit Prints stay at Stage I. The plate's top is cut from the gate's eye.
+- **TR37:** the Forge and the Condenser, awake and asleep, in `build/captures/tr37/`. **AR49:** stills with Rook and Kirra in `build/captures/ar49/`; its take now sets the lead through the save.
+- **AR30:** Rest 0.4, Open 0.6, Quiet 0.2, with a take and six stills on the pale deck and the dark lane (`build/captures/ar30/`). Nothing blooms past the glass, so the reach stays.
+- **For research:** four reads. **For the director:** the new seats' hooks (item 10).
 
 ### 2026-11-23, 13:38. AR50: the rings afloat refitted on one axle (Modulo)
 

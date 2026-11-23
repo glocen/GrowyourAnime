@@ -11,6 +11,7 @@ local Shared = ReplicatedStorage.Shared
 local HudConfig = require(Shared.Config.Hud)
 local UIKit = require(Shared.Config.UIKit)
 local HudController = require(script.Parent.Parent.Parent.Main.HudController)
+local ProfileController = require(script.Parent.Parent.ProfileController)
 local UI = script.Parent.Parent.Parent.Parent.UI
 local Button = require(UI.Kit.Button)
 local Dock = require(UI.Dock)
@@ -361,15 +362,17 @@ function DockCases.Cases(given: Given): { any }
 			Run = function(t: any)
 				-- AR49's captures: each state is held until the driver moves ReplicatedStorage.NL_TakeStep on ("Open",
 				-- "Voidkin", "Equipment", "Settings", "Lead:<def>" for any Voidkin, "Phone", "PhoneVoidkin", "End") and
-				-- captures it. A card named is held pressed, the others let go; a lead named is shown live, the save's put back
-				-- at the end.
+				-- captures it. A card named is held pressed, the others let go. A lead named is made the save's lead (SetLead,
+				-- the game's own path: the HUD shows the save's lead again on every profile change, so a lead set on the panel
+				-- alone is gone by the battery's next tick); the save's own lead is put back at the end.
 				local step = Instance.new("StringValue")
 				step.Name = "NL_TakeStep"
 				step.Value = "Ready"
 				step.Parent = ReplicatedStorage
 				local panel = HudController.Home()
 				local cell = HudController.Parts().Home :: TextButton
-				local own = panel.LeadDef
+				local view = ProfileController.Get()
+				local own: string? = if view then view.Roles.Lead else nil
 				local function letGo()
 					for _, card in panel.Cards do
 						Button.Touch(card.Button, false)
@@ -419,7 +422,20 @@ function DockCases.Cases(given: Given): { any }
 						local def = string.match(shown, "^Lead:(.+)$")
 						if def then
 							letGo()
-							HomePanel.Lead(panel, def)
+							local now = ProfileController.Get()
+							local id: string? = nil
+							for owned, voidkin in (if now then now.Voidkin else {}) :: { [string]: any } do
+								if voidkin.Def == def then
+									id = owned
+									break
+								end
+							end
+							local answer = if id then t.Server("Act", "SetLead", { Voidkin = id }) else nil
+							t.Check(`{def}: made the lead`, type(answer) == "table" and answer.Ok == true, if id then tostring(type(answer) == "table" and answer.Error) else "not owned")
+							local waited = os.clock()
+							while not (panel.LeadDef == def and panel.Live ~= nil) and os.clock() - waited < 3 do
+								t.Wait(0.1)
+							end
 						else
 							local apply = states[shown]
 							if apply then
@@ -431,11 +447,87 @@ function DockCases.Cases(given: Given): { any }
 					t.Wait(0.1)
 				end
 				letGo()
-				HomePanel.Lead(panel, own)
+				local after = ProfileController.Get()
+				if own and after and after.Roles.Lead ~= own then
+					t.Server("Act", "SetLead", { Voidkin = own })
+				end
 				Layers.Box(nil)
 				Layers.Force(nil)
 				HomePanel.Close(panel)
 				Screen.Close()
+				step:Destroy()
+				t.Check("the driver ended it", shown == "End" or step.Value == "End", shown)
+			end,
+		},
+		{
+			Name = "Take: AR30's dock shine at the smallest phone, its six looks side by side, each held for a still, for research",
+			Manual = true,
+			Stay = true,
+			Run = function(t: any)
+				-- AR30, "The dock's shine, reopened": a dock of the take's own (Dock.new, the same make) stands in the real
+				-- one's place, since the save can't show every look at will; the real one hides until the end. Each look is
+				-- held until the driver moves ReplicatedStorage.NL_TakeStep on and captures it: "Rest" (all three at rest),
+				-- "Mixed" (Base Quiet, Home open, Play calling), "Held" (Base at rest, Home pressed, Play dim), "End". The
+				-- world behind is the driver's camera.
+				local step = Instance.new("StringValue")
+				step.Name = "NL_TakeStep"
+				step.Value = "Rest"
+				step.Parent = ReplicatedStorage
+				local seam = (HudController.Parts().Home :: GuiObject).Parent :: Instance
+				local real = seam.Parent :: Frame
+				Layers.Force(Theme.Scale.Floor)
+				Layers.Box(Theme.Smallest - Vector2.new(0, GuiService.TopbarInset.Height))
+				t.Wait(0.2)
+				local own = Dock.new(real.Parent :: Instance, {})
+				own.Frame.Name = "NL_TakeDock" -- never mistaken for the HUD's own
+				local follow = game:GetService("RunService").RenderStepped:Connect(function()
+					own.Frame.AnchorPoint, own.Frame.Position, own.Frame.Size = real.AnchorPoint, real.Position, real.Size
+					own.Frame.ZIndex = real.ZIndex
+					Dock.Paint(own)
+				end)
+				real.Visible = false
+				local function button(name: string): TextButton
+					return own.Tiles[name].Button
+				end
+				local function look(base: Dock.Mood?, home: string, play: string)
+					Dock.Mood(own, "Base", base)
+					Button.Touch(button("Home"), home == "Pressed")
+					Button.Set(button("Home"), { Selected = home == "Open" })
+					Dock.Pip(own, "Map", play == "Calling")
+					Dock.Mood(own, "Map", if play == "Dim" then "Dim" else nil)
+				end
+				local looks: { [string]: () -> () } = {
+					Rest = function()
+						look(nil, "Rest", "Rest")
+					end,
+					Mixed = function()
+						look("Quiet", "Open", "Calling")
+					end,
+					Held = function()
+						look(nil, "Pressed", "Dim")
+					end,
+				}
+				local shown = ""
+				local began = os.clock()
+				while step.Value ~= "End" and os.clock() - began < 300 do
+					if step.Value ~= shown then
+						shown = step.Value
+						local apply = looks[shown]
+						if apply then
+							apply()
+						end
+						t.Wait(0.3)
+						step:SetAttribute("Shown", shown)
+						step:SetAttribute("Looks", `{button("Base"):GetAttribute("Look")} {button("Home"):GetAttribute("Look")} {button("Map"):GetAttribute("Look")}`)
+					end
+					t.Wait(0.1)
+				end
+				follow:Disconnect()
+				Button.Touch(button("Home"), false)
+				own.Frame:Destroy()
+				real.Visible = true
+				Layers.Box(nil)
+				Layers.Force(nil)
 				step:Destroy()
 				t.Check("the driver ended it", shown == "End" or step.Value == "End", shown)
 			end,

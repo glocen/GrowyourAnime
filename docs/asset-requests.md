@@ -10777,6 +10777,22 @@ The director, 2026-11-23, about 13:00: "imo the Button ui down center are a bit 
   - research's read up close at phone size.
 - **Tier 1, research's, on the director's ask:** numbers only, no new image. Faber's after the Studio run of AR49, TR51 and TR37, with the small ones.
 
+### Faber's build: the seeds in (Faber, 2026-11-23, 15:05 to 15:11 by the clock)
+
+- **Implemented:** `Config.Hud.Make.Dock.L`: Rest 0.4, Open 0.6, Quiet 0.2. Pressed 1.3 and Calling 1.45 stay, in the same order. The dock's cases read `make.L`, so they move with it.
+- **Tested in Studio:**
+  - the dock's case 39/39, Home's panel 40/40, TR19's Base tile 49/49, TR20's pointer 36/36; type check 0 new.
+  - A new take, `Take: AR30's dock shine` (`DockCases`), PASS. A dock of its own, the same make, stands in the real one's place at the smallest phone and holds three sets: all at rest; Base Quiet, Home open and Play calling; Base at rest, Home pressed and Play dim.
+- **The reach stays as it is (Faber's call).** Measured in the stills: at 0.4 nothing past the glass is brighter than the ground beyond the dock's shadow.
+  - On the pale deck, the ring round each cell reads 70 to 88 in luminance against the bare deck's 124.
+  - On the dark lane, under Base 42 and under Play 38, against the bare lane's 45. Under Home it's 49.5: Home's foot is the seam's white Light, about 2% of full scale over the lane.
+- **"The dark yard" by day:** since AR40's day the yard round the court reads pale too, so the dark stills stand on the court's dark lane, the darkest ground under the dock by day.
+- **Stills,** in `build/captures/ar30/`, the smallest phone's 852 by 480:
+  - `dock_pale_rest`, `dock_pale_quiet_open_calling`, `dock_pale_rest_pressed_dim`, and the same three as `dock_dark_…`;
+  - `dock_zoom_sheet.png`: the dock of each at twice its size, pale left, dark right.
+- **Seen, for research's read:** Home open at 0.6 is hard to tell from rest at 0.4 in the dock alone. On screen, the panel and its pointer say which is open.
+- **Visually reviewed:** research's read asked. **Director-accepted:** not yet.
+
 ## AR31. Forge stones, War Emblems and jewels: their pictures (Modulo, for research's verdict, then Faber)
 
 Phase 3's order, Modulo's item 5 (`docs/production-plan.md`). It's for TR37's Stones tab, TR38's War Emblems page and item card, and TR39's Jewels page, each of which waits on these icons. The design: `docs/design.md`, "Regalia: gear" (the emblems' sockets, the jewels' tiers [D: "Each type has its own colour, and its shape grows with its tier"]). The study: `docs/research/gear-icons.md`.
@@ -15182,9 +15198,18 @@ Research, 2026-11-19, 23:20 by the clock, on the director's word of 23:20 (`docs
 - **Tested.**
   - Type check 0 new; logic offline 28,980 passed.
   - Cases written but not run: Home's panel and its stills take (`DockCases`); the rail on each page and on the smallest phone (`VoidkinCases`).
-  - NOT VERIFIED in Studio: the Studio MCP saw no open place all session.
-- **Visually reviewed:** not yet. The phone stills and the per-Voidkin framing wait on Studio.
-- **Director-accepted:** not yet.
+- **The Studio run (Faber, 2026-11-23, ef86dab at 14:42; the stills 15:04 to 15:10 by the clock).**
+  - **Three fixes, Home's panel case 40/40 twice:**
+    - on the smallest phone the panel stood in the cover's room, under a notch, its pointer 454 off its cell; it now stands in the HUD's safe area;
+    - the lead's live view was set before the bodies came (RevealService's Ready), so the card stayed empty. `HomePanel.Lead` tries again while there's no body, and the HUD shows the lead again once Ready turns true;
+    - the open's motion ended when the first card landed; it now ends when the last one does.
+  - The full self-test 3,288 passed, 1 failed (TR42's flake). The rail's words: TR17's fix in the same commit (269/269).
+  - **The stills take, fixed:** its "Lead:<def>" step set the panel alone, and the HUD put the save's lead back at the battery's next tick. It now makes that Voidkin the save's lead through SetLead, and puts the save's own back at the end (Kirra held 2.5 s on, Rook back after; PASS).
+  - **Stills,** in `build/captures/ar49/`:
+    - `open`, `pressed_voidkin`, `pressed_equipment`, `pressed_settings`, at 2,483 by 1,134;
+    - `phone_open`, `phone_lead_kirra`, `phone_lead_marigold`, at the smallest phone's 852 by 480.
+    - Marigold has no body yet (the grey StandIn rig), so her bust and her portrait are grey. That's her model's wait, not the panel's.
+- **Visually reviewed:** research's verdict asked (the per-Voidkin framing from Rook's and Kirra's). **Director-accepted:** not yet.
 
 ## AR50. The base's levels 2 and 3: the whole yard's look, read from the gate (Modulo, for research's pick, then Faber)
 

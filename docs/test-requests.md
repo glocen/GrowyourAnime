@@ -3303,7 +3303,16 @@ TR51 is Faber's previous piece, and this is the next, on the director's order of
   - **The convert's refusal is its own word** (`Base.Stones`: "A convert takes 5 Low stones"), not the battery's.
 - **Tier-2 notice, the Power screen:** its bar keeps two handles. The Condenser shares under Auto, and a split never clears its share, but its own handle, light and chip wait for a Power screen piece.
 - **Implemented, offline-tested:** type check 0 new; logic offline 29155 passed (cases Condenser and Forge).
-- **Not yet run in Studio:** the self-test's TR37 case, LogicTests, WorldReport and the captures from the gate. The Studio MCP saw only a blank Studio window all session. Not visually reviewed, not accepted.
+- **The Studio run (Faber, 2026-11-23, ef86dab at 14:42; the captures 15:00 to 15:03 by the clock).**
+  - **Two fixes:**
+    - the Forge and the Condenser had no spec in `World.Tags`, which stopped the plot's build at join (their specs added);
+    - TR37's case raced the tray: the attribute lands with its packet, the copy's handler a moment later. The case now waits until the two agree (34/34).
+  - The full self-test 3,288 passed, 1 failed (TR42's, a flake that passes alone); LogicTests 29,155 passed; WorldReport empty.
+  - **Captures,** in `build/captures/tr37/`:
+    - `forge_player` and `condenser_player`, the Condenser awake at base level 2, from where a player walks round the Training machine and the battery;
+    - `phone_forge`, `phone_condenser` and `phone_condenser_asleep`, at the smallest phone's 1,334 by 750, the world only.
+    - Neither machine shows from the gate: both stand in the back row behind the generator (TR51's gate frames).
+- **Visually reviewed:** research's verdict in grey asked. **Director-accepted:** not yet.
 
 ## TR38. War Emblems (Faber, after TR37)
 
@@ -4537,15 +4546,34 @@ Research, 2026-11-23, 01:55 by the clock, on the director's order of 00:05 ("fir
     - a base level-up's three machines on one frame, and the Breaker's landing after the gap;
     - a respawn playing none;
     - the plate, the plinth's figure, and a pick and its return.
-  - NOT VERIFIED in Studio: the Studio MCP saw no open place all session.
-- **Waits on Studio:**
-  - the self-test and the world report;
-  - FxKit.rbxm rebuilt with `fx_rise_Void`'s look;
-  - the shards' place inside the chambers;
-  - Config.World's Fit Prints at Stage III;
-  - the captures from the gate and the court at stages I, II and III, and on the smallest phone;
-  - the landing's light brightness, tuned on the capture.
-- **Visually reviewed:** not yet. **Director-accepted:** not yet.
+- **The Studio run (Faber, 2026-11-23, ef86dab at 14:42; the captures 14:49 to 15:00 by the clock).**
+  - The full self-test 3,288 passed, 1 failed: TR42's audition lost a voice in the long suite, and it passes 89 of 89 twice alone. Every TR51 case above passed. LogicTests 29,155 passed; WorldReport empty.
+  - FxKit.rbxm rebuilt in Studio: the hoop and the shaft wear `fx_rise_Void`, not Neon.
+  - **The shards in their chambers,** at Stage III: each shard's middle sits 0.06 studs from its chamber's, a 1.1 by 2.2 shard in a 4.65 by 4.19 chamber. Chambers the save hasn't got stay hidden (`stage3_breaker_shards.png`).
+  - **The landing,** in a burst of the viewport at Stage III from the court:
+    - a base level-up's three machines swap on one instant, and the Breaker's after the gap (the peaks 0.35 s apart);
+    - at the swap the machine is the cover's flat pale violet, which carries the beat;
+    - the light's pool on the pale floor can't be read by day at Brightness 2. Kept there: a pool that read by day would bloom at dusk.
+    - For research's read: the generator's floor ring reaches 1.3 r, about 28 studs from its middle, and runs through the Breaker and the court.
+  - **The Fit Prints at Stage III don't fit today's plan.** Measured in play on plot 1, in the plot's axes:
+    - generator 30.2 by 28.9, 27.2 high, its middle 3.7 inward of its spot;
+    - Breaker 34.6 by 9.9, 20.2 high, 7.0 across;
+    - each bay 10.4 by 11.7, 15.8 high; battery 6.5 by 4.5, 13.5 high; Training machine 9.7 by 13.0, 10.4 high;
+    - Festival Door 8.6 by 14.2, 13.1 high (today's print is 3 by 12.4); Forge 11.1 by 8.8, 13.0 high; Condenser 9.7 by 9.5, 11.8 high.
+    - Stage I matches today's Prints within 0.1.
+    - **Where today's plan fails with Stage III's prints:**
+      - Clear (12): 8.3 between the generator and the Training machine; 10.5 from bay 1 to the generator and from the Forge to the Training machine; 11.9 from the Breaker to the generator.
+      - From the gate, the Breaker stands 58° off the line, past the 51° the camera sees.
+    - **The trial's sizes fail too:** 128 (8.3; the Breaker on the way in and outside; 59°), 144 (8.3; the Breaker on the way in; 54°), 160 (8.3 only).
+    - So `Config.World.Fit.Prints` stays at Stage I: Stage III's would fail the trial's logic case with no layout to answer it.
+    - **Tier 2, for research and Modulo:** the plan at Stage III, the Breaker's and the generator's places first.
+  - **The plate's top is cut from the gate's eye** (y 10 at z -11.5): "glocen" runs under the frame's top at every stage (`phone_stage1_gate.png`). For research: lower the plate, or let the name leave the gate's view.
+  - **Captures,** in `build/captures/tr51/`, by day, the camera held at the gate's eye and from the court:
+    - `stage1_gate`, `stage2_gate`, `stage3_gate`, and the same three for the court, at 2,483 by 1,134 with the HUD;
+    - `phone_stage1_gate` to `phone_stage3_court`, the smallest phone's 1,334 by 750. These are the world only: the HUD there is laid for the desktop, and the HUD on the phone is AR49's and the cases';
+    - `landing_stage3_court_01167ms`, `_01340ms` (the swap) and `_01687ms` (the Breaker's, after the gap);
+    - `stage3_breaker_shards`.
+- **Visually reviewed:** research's verdict asked. **Director-accepted:** not yet.
 - **Tier 1, Faber:** the plate reads "Level n" under the name rather than the bare number, so a passer-by reads a level beside a name. Research: say in your row what you'd change.
 
 ## TR52. The signature on a tap: a block, judged in motion (Faber, after the Studio run)

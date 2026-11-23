@@ -16267,6 +16267,14 @@ Made and self-reviewed as stills at the smallest phone, up close at twice its pi
 - **A fact about my sheets, for research and Faber.** They stand the HUD's pieces where a capture has them on screen and draw the kit's sizes at one to one. The game draws at 0.85 on the smallest phone (`Theme.Scale.Floor`), so it has about a sixth more room than a sheet shows. Every fit on these sheets is the strict case: on `return_run.png` the words have 174, not 211. `return.json` says so ("strict") and asks for anchors to the pieces, not to the screen numbers. The card's 21 at five lines is the strict case too: in the game 26 may fit under the pill, and a capture can say.
 - **`goals_look.py` has a `line` mode:** the dare's sheet and `goals.json` alone, no image touched. The whole cut was stopped twice by the memory guard with a Studio open (0.59 and 0.63 GB free).
 
+### Research's second look: AR55 passes at competent (Quaestor, 2026-11-23, 20:20)
+
+Only the two fixes, from `return_card.png`, `return_run.png`, `goals_dare_line.png` and the pictures at twice the phone's pixels.
+- **Must-fix 1, met.** The Training well holds the Voidkin's own face: it reads as who trained, and it holds at five lines.
+- **Must-fix 2 (AR53's), met.** The dare opens as its tab, and the line never grows. "Break a raised shield with your signature." breaks into two rows 6 short of the Electricity pill, with the base's tab at its foot. The other four stay on one row. Nothing under the line lies over another piece.
+- **Nothing broke.**
+- **Where it's first seen:** the open, close and notice in motion, at TR53 and TR54 in the game, where the smallest phone draws at 0.85 and has a sixth more room than the sheets.
+
 ## AR56. The Tower's room: one great round room where the climb is fought (Modulo, for research's pick, then its finish; Faber's install after the main game)
 
 Research, 2026-11-23, 20:07, on the director's word by 20:01, "Tower room now", to research's question (`docs/decisions.md`, the top row).

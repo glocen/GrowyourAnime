@@ -15171,6 +15171,70 @@ The rules now live in `docs/design.md`, "States in a fight", below "No lock". Fa
   - No chill builds during the lock after a freeze.
   - The even-elements check in the replay (four leads alike but for their element, within 10%).
 
+### The states' rules, in the game (Faber, 2026-11-23, 19:37 by the clock)
+
+- **Built,** with research's answers of 18:05. The seeds are the builder's, to tune by playing (`Config.Combat.States`):
+  - **Which hit leaves which state:** `By` maps Fire to Burn, Frost to Chill, Storm to Shock and Void to Sap. `Not` names the kinds that leave none: an ordinary Shade's Sap and an elite's. A dodged hit, or one with no elemental part, leaves nothing.
+  - **Burn:** it holds back 0.5 of a Fire hit's elemental part and pays it evenly over 3 s, a tick each 0.5 s. A new Fire hit adds its share to what's left and starts the 3 s again. The hit's number still shows whole.
+  - **Chill:** each Frost hit adds a third. From 1.5 s after the last hit it drains 0.5 a second. It slows the body's actions and walk by up to 0.3, in proportion.
+    - A full chill freezes for 2 s, half that on an elite or a keeper (the stun's share).
+    - The freeze is a stun with the look `StateFreeze`, under the stun's 4 s lock. No chill builds during the lock.
+  - **Shock** lasts 3 s. **Sap** lasts 4 s and cuts every heal by 0.3 while it holds.
+  - **Pure rules** in `Rules.Fight`: `StateOf`, `Burn`, `BurnTick`, `ChillNow`, `Chill`, `ChillRate`, `Sapped`. Five cases in `Cases/States.luau`.
+- **`FightService`:**
+  - **Leaving a state:** a hit leaves its state on what it struck, unless that fell. The burn's held share pays on the burning body's own step, and can fell it.
+  - **The chill's slow** is fixed for an action at its start (`ActionRate`), so server and client stay in step. The action's clock, its beats and its marks are scaled by it, and so is the walk.
+  - **Clearing:** every state clears on Down, Reset and Home.
+  - **On the model:** Burning, Shocked and Sapped (the server time each ends), Chill and ChillAt, and ActionRate.
+- **`FighterController`:**
+  - It runs the action's clock at ActionRate.
+  - Each state wears its look by name: StateBurn, StateChill, StateShock and StateSap, and the freeze StateFreeze through the stun's look.
+  - No rows carry those names yet, so nothing shows until the cues (Scintilla's, from this entry's block-in).
+- **Shock is a timer and a name** until poise exists: "the next hits fill its poise bar faster" waits on poise. **Sap** has nothing to cut on a Shade today, since Shades don't heal.
+- **Studio:**
+  - `NL_Debug LeadElement (who, element, bare)`: the lead hits in that element. With `bare` it wears its Voidkin's own block, no stars and nothing worn. Every block it's given while this holds (a level gained, the save's sync) passes through a test seam in `FightService.SetBlock` (`Reblock`, nil in play).
+  - `tools/studio/ElementsEven.luau` runs the check below. `tools/balance/elements_even.py` summarises it.
+- **Tested:**
+  - Type check: 0 new. Logic: 29,197 passed, offline and in Studio.
+  - **New self-test** "Fight: the element states (AR48)": 29/29 at 60 fps, on the lead pressing its combo at the replay's brawler in each element:
+    - Fire: the brawler burns for 2.97 s, its health falling between hits.
+    - Frost: its swing begun chilled runs at 0.8 of its pace, as its chill gives. A freeze in `StateFreeze` for 1.97 s, no chill until 5.3 s after the freeze (past the lock), then it chills again.
+    - Storm: a shock for 2.97 s. Void: a sap for 3.96 s.
+    - The brawler's own Void never sapped the lead.
+  - The keeper's lantern 27/0, its intermittent check passing this time. Ground Wire 20/0.
+  - **The whole self-test:** 3,395 passed, 2 failed (560 s, 60 fps). Pip's skip ("within 20 s") passes alone, 20/0. TR42's audition ("a hit plays today's cue's own voices") passes alone, 89/0. Neither failed this morning; both are rerun with the next whole run.
+    - The whole run left the save's lead at level 22 with no experience: one case puts the level back but not the experience. Put back by hand to 127, its 115 of this morning plus the 12 its training gave since.
+  - **`ElementsEven` itself,** after a restart: one round of four runs, clean, and the lead put back as the tool found it.
+- **The even-elements check** (research's, 18:05): `build/captures/ar48/elements_runs.txt`, summarised by `tools/balance/elements_even.py`.
+  - **The setup:** Rook at level 1, bare (460 health, power 916), hitting in each element by turns. It fights Lantern Row's first pack, stood on a pad of its own: four brawlers at level 1 in the pack's ring, 24 studs ahead.
+    - The lead is whole at each start, with 11 s between runs; ten rounds, each element once a round.
+    - The Festival place isn't open in this session, so the pack is spawned in the replay. Spawned Shades pay no experience, so the lead stays at level 1.
+    - The save's lead is back at level 22, 115 xp, as the store's last version before the runs held it.
+
+  | Element | Clear time | Damage taken | Freezes a fight |
+  |---|---|---|---|
+  | Fire | 20.6 s (sd 2.0) | 74.3 (sd 8.7) | 0 |
+  | Frost | 20.4 s (sd 2.5) | 64.0 (sd 15.1) | 3.7 |
+  | Storm | 19.5 s (sd 2.6) | 70.7 (sd 13.6) | 0 |
+  | Void | 18.7 s (sd 1.0) | 66.0 (sd 6.0) | 0 |
+
+  - **Against the mean:** clear time within 5.4% for every element, damage taken within 8.1%. No falls.
+  - **Between the extremes:** clear time spreads 9.8% (Fire over Void). Damage taken spreads 16.0% (Fire over Frost).
+  - **The noise:** Storm and Void are both plain fights against Shades today, yet they differ by 4.2% in clear time and 7.1% in damage taken. A 10-run mean's 95% band is about 6.4% and 9.6%. Ten runs can't resolve 10% between two elements on damage taken.
+  - **Fire** reads slightly behind the plain pair: +7.5% clear time and +8.8% damage taken (1.9 and 1.7 standard errors). That's the burn's deferral: half its elemental part lands later, so each Shade falls later.
+  - **Frost's freeze** isn't the strongest here: +6.4% clear time and −6.3% damage taken (1.4 and 0.8 standard errors).
+  - **A first run was thrown out.** `LeadHeal` only raises a fallen lead, so the lead began each run at the health the last one left, and two "falls" came at 25 and 31 damage. The tool sets the lead whole (`FightHealth` 1) and logs its starting health.
+- **For research:**
+  1. Does this pass? Each element is within 10% of the mean on both measures. The pairwise damage spread (16%) sits inside ten runs' noise.
+  2. Fire's burn: leave it at 3 s, or 2 s so its share lands sooner (tier 2, a balance number)?
+  3. A pairwise 10% on damage taken needs about 50 runs an element, about 2 hours of a timing test. Worth it once poise gives Shock its effect?
+- **Four facts:**
+  - Implemented: the rules and the hooks.
+  - Tested: as above.
+  - Visually reviewed: no, no cues exist yet.
+  - Director-accepted: no.
+- **Status:** the rules are in. The cues are Scintilla's once that seat opens, worn by these names.
+
 ## AR49. Home's panel: three cards with their own art (Modulo, for research's pick, then Faber)
 
 Research, 2026-11-19, 23:20 by the clock, on the director's word of 23:20 (`docs/decisions.md`, the row): "MAKE IT LOOOK GOOD".

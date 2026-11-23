@@ -24,6 +24,7 @@ local PlaceRole = require(Shared.Util.PlaceRole)
 local Cases = require(script.Cases)
 local TowerCases = require(script.TowerCases)
 local KitCases = require(script.KitCases)
+local StateCases = require(script.StateCases)
 local ButtonCases = require(script.ButtonCases)
 local SoundCases = require(script.SoundCases)
 local BreakerCases = require(script.BreakerCases)
@@ -204,6 +205,8 @@ local function run(filter: string?): string
 	table.move(tower, 1, #tower, #cases + 1, cases)
 	local kits = KitCases.Cases() -- a Voidkin's kit in play (AR11's install), apart for the same reason
 	table.move(kits, 1, #kits, #cases + 1, cases)
+	local states = StateCases.Cases() -- the element states in play (AR48), apart for the same reason
+	table.move(states, 1, #states, #cases + 1, cases)
 	local sounds = SoundCases.Cases() -- AR13's cues on the audio graph, apart for the same reason
 	table.move(sounds, 1, #sounds, #cases + 1, cases)
 	local breaker = BreakerCases.Cases() -- the galaxy Breaker (TR41), apart for the same reason

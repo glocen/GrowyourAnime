@@ -16,6 +16,9 @@
 --   NL_Debug:Invoke("FightHealth", who, 0.5)                the player's lead at half its health, to see a heal; 0 downs it
 --   NL_Debug:Invoke("FoeHealth", who, id, 0.5)             a spawned Shade at half its health, to see its card (AR45)
 --   NL_Debug:Invoke("FightHealth", who, 0.05, true)         at most that share: lowered to it, never raised (a take's held fall)
+--   NL_Debug:Invoke("LeadElement", who, "Frost", bare)      the player's lead hits in Frost, the rest its own (AR48's checks);
+--                                                       bare: its Voidkin's own block, no stars, nothing worn; "" for
+--                                                       none, nil for its own again; gone with its next spawn
 -- Staged as the game frames a fight (FightService's slot, Rules/Fight.Beyond): the dummy at the pad's middle, the avatar
 -- Replay.Behind behind it and Lead.Side to the left, so its own body hides neither, all facing down the pad; the lead
 -- beyond the dummy at the action's own spacing (Replay.Distance), turned Lead.Frame degrees toward the avatar's right,
@@ -34,6 +37,7 @@ local Parts = require(Shared.Util.Parts)
 local Actions = require(Shared.Definitions.Actions)
 local Enemies = require(Shared.Definitions.Enemies)
 local Combat = require(Shared.Config.Combat)
+local Stats = require(Shared.Rules.Stats)
 local ShadesConfig = require(Shared.Config.Shades)
 local Core = script.Parent.Parent.Core
 local DebugService = require(Core.DebugService)
@@ -218,6 +222,51 @@ local function fightSpawn(who: any, def: any, level: any, ahead: any, comes: any
 	return { Ok = true, Id = f.Id, Health = f.Health }
 end
 
+-- The player's lead hits in `element` (a key of Config.Combat.States.By, or "" for none): its block with that element,
+-- everything else its own, so the element states are checked on one lead alike but for them (AR48). With `bare`, its
+-- block is its Voidkin's own at its level, no stars and nothing worn, as a new player meets the first pack. Every block
+-- the lead is given while it holds (a level gained, the save's sync) passes through it (FightService's Reblock). Nil
+-- gives it its own block back.
+local owns: { [FightService.Fighter]: Stats.Block } = setmetatable({}, { __mode = "k" }) :: any
+local function leadElement(who: any, element: any, bare: any): any
+	local player = DebugService.ResolvePlayer(who)
+	local lead = if player then FightService.LeadOf(player) else nil
+	if lead == nil then
+		return { Ok = false, Error = "NoLead" }
+	end
+	if element ~= nil and (type(element) ~= "string" or (element ~= "" and Combat.States.By[element] == nil)) or (bare ~= nil and type(bare) ~= "boolean") then
+		return { Ok = false, Error = "BadArgs" }
+	end
+	local own = owns[lead] or lead.Block
+	if element == nil then
+		lead.Reblock, owns[lead] = nil, nil
+		FightService.SetBlock(lead, own)
+		return { Ok = true, Element = lead.Block.Element }
+	end
+	lead.Reblock = function(block: Stats.Block): Stats.Block
+		owns[lead] = block
+		local made = if bare
+			then Stats.Resolve({
+				Id = "",
+				Def = block.Def,
+				Level = block.Level,
+				Xp = 0,
+				Stars = 0,
+				Copies = 0,
+				Nickname = "",
+				Preset = 0,
+				Favourite = false,
+				Locked = false,
+				Born = 0,
+			}, nil, nil)
+			else table.clone(block)
+		made.Element = element
+		return made
+	end
+	FightService.SetBlock(lead, own)
+	return { Ok = true, Element = lead.Block.Element }
+end
+
 -- One of FightSpawn's enemies falls at once, as if hit to nothing: its fall seen whole (the keeper's lantern going out).
 local function fightDefeat(_who: any, id: any): any
 	for f in spawned do
@@ -284,6 +333,7 @@ function ReplayService.Start()
 	DebugService.Register("Replay", replay)
 	DebugService.Register("FightSpawn", fightSpawn)
 	DebugService.Register("FightDefeat", fightDefeat)
+	DebugService.Register("LeadElement", leadElement)
 	DebugService.Register("Fighters", fighters)
 	DebugService.Register("FightHealth", fightHealth)
 	DebugService.Register("FoeHealth", foeHealth)

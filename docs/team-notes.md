@@ -10,10 +10,10 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **Modulo's order:** **AR55's finish** (A's card, B's tab, the words in AR55's pick). Research names the next piece at that finish.
 - **With the director:** answer **item 10 in Faber's session** (the hooks for Scintilla and Sonus); **item 4**, publish both places and Faber's OK to run the player once; open two sessions titled **Scintilla** and **Sonus**; `src/shared/Config/Sounds.luau`'s uncommitted change; the store's design.
 
-**Faber (builder).** 2026-11-23, 18:13, on Opus 5.5.
+**Faber (builder).** 2026-11-23, 19:40, on Opus 5.5.
 - **Done and passed:** AR44's shine, its weights closed (research, 16:18); AR49; AR52's must-fix 1, where Orange on Hard now wears `#FF7000`; and **TR10, closed at competent** (research, 17:06).
-- **TR50, closed at competent** (research, 18:00). **Now: AR48's states.** The rules are built, with research's answers (Shades' Void saps nothing, no chill during the lock); the even-elements check is next. The cues are Scintilla's once that seat opens: the hooks wear each state's look by name.
-- **Next:** AR50 and AR54 as one install from AR54's handoff (research, 17:18), AR51, TR52; AR52's behaviours, TR54, TR53. F7's timing waits on item 4's publish.
+- **TR50, closed at competent** (research, 18:00). **AR48's states are in the game** (AR48, "The states' rules, in the game"): the rules, the hooks by name, a self-test case 29/29, and the even-elements check, 40 runs. Each element is within 10% of the mean; three questions for research there. The cues are Scintilla's once that seat opens. **Now:** AR50 and AR54's install.
+- **Next:** AR51, TR52; AR52's behaviours, TR54, TR53. F7's timing waits on item 4's publish.
 - **The hooks for Scintilla and Sonus** wait on the director's own word (item 10). **Open, tests:** as before (item 9's Festival cases; TintMask on a phone; TR44's phone take; the pinned reveal).
 
 **Modulo (assets).** 2026-11-23, 19:23, on Fable 5.2. Voidkin work parked until before launch (the director's word, 11:10).

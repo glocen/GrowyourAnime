@@ -8,6 +8,11 @@
 -- so a client reads the action on its change. Each hit, landed or dodged, goes to every client as the Hit event.
 -- A marked strike's footprint (TR44; Rules.Mark) while it's down: MarkAt (its centre, at the fighter's root height),
 -- MarkRadius, MarkDown and MarkSlam (server times), MarkSlam written last. A lead broken off for its avatar: Away.
+-- The element states (docs/design.md, "States in a fight"; Config.Combat.States; Rules.Fight's states), each worn while
+-- it holds: Burning, Shocked and Sapped (the server time each ends), Chill and ChillAt (its fill after its last Frost hit,
+-- and when: a client drains it by the same rule; ChillAt written first). A freeze is a Stun whose StunLook is
+-- StateFreeze. ActionRate: how fast the action begun at ActionAt runs, set at its start (a chill's slow), written before
+-- ActionAt; its beats fall at their times over it.
 -- Beats are checked every frame against the server's clock; decisions every Config.Combat.Think.
 
 local CollectionService = game:GetService("CollectionService")
@@ -99,6 +104,14 @@ export type Fighter = {
 	Struck: { [string]: boolean }, -- the fighters (by Id) whose hit has landed on it since it last stood home: an Opener's first
 	Shield: { Share: number, Until: number }?, -- the share less damage it takes until then (Actions.Hit.Shield)
 	StunLock: number, -- no stun stops it again before this (Rules.Fight.Stun)
+	-- The element states (Config.Combat.States): a burn still to pay, a chill, and when a shock and a sap end.
+	Burn: Fight.Burn?,
+	Chill: Fight.Chill?,
+	ShockUntil: number,
+	SapUntil: number,
+	ActionRate: number, -- how fast its action runs, set at the action's start (a chill's slow)
+	-- Studio only, a test's: every new block passes through it on its way in (ReplayService's LeadElement); nil in play
+	Reblock: ((Stats.Block) -> Stats.Block)?,
 	Alone: number, -- its most health with one or two leads on it; a crowd adds to it (Fight.CrowdHealth)
 	-- A lead watching a keeper it felled, standing and facing where it fell, until its Down's Gone (AR7, section 5, fix 2).
 	Watch: Vector3?,
@@ -164,9 +177,20 @@ local function standing(f: Fighter?): boolean
 	return f ~= nil and fighters[f.Id] == f and f.State ~= "Down" and f.State ~= "Reset" and f.State ~= "Home"
 end
 
+-- The element states let go (Config.Combat.States): a body down, walking home or at home is out of the fight.
+local function clearStates(f: Fighter)
+	f.Burn, f.Chill, f.ShockUntil, f.SapUntil = nil, nil, 0, 0
+	for _, name in { "Burning", "Chill", "ChillAt", "Shocked", "Sapped" } do
+		f.Model:SetAttribute(name, nil)
+	end
+end
+
 local function setState(f: Fighter, state: State, untilTime: number?)
 	if state == "Reset" and f.State ~= "Reset" then
 		f.ResetClosest, f.ResetSince = math.huge, now()
+	end
+	if state == "Down" or state == "Reset" or state == "Home" then
+		clearStates(f)
 	end
 	f.State = state
 	f.StateUntil = untilTime or 0
@@ -190,9 +214,14 @@ local function setHealth(f: Fighter, health: number)
 end
 
 -- An action's cooldown for this fighter: its passive may shorten its own (Lyric's Tempo).
--- A heal toward `wanted`, inside what the fighter may still heal (HealRoom, the Tower's cap; Rules.Tower.Capped): every
--- heal in a fight passes here, its Regen, an action's mend and Lifesteal (TR49). Returns the health it reached.
+-- A heal toward `wanted`, inside what the fighter may still heal (HealRoom, the Tower's cap; Rules.Tower.Capped), less
+-- while it's sapped: every heal in a fight passes here, its Regen, an action's mend and Lifesteal (TR49). Returns the
+-- health it reached.
 local function heal(f: Fighter, wanted: number): number
+	-- a sap (Config.Combat.States.Sap) cuts what it gains while it holds
+	if wanted > f.Health then
+		wanted = f.Health + Fight.Sapped(Combat.States.Sap, wanted - f.Health, f.SapUntil, now())
+	end
 	local room = f.HealRoom
 	if room == nil then
 		setHealth(f, wanted)
@@ -252,8 +281,14 @@ local function face(f: Fighter, toward: Vector3?)
 	f.Humanoid.AutoRotate = true
 end
 
+-- How fast a chill lets the fighter act and walk now (Rules.Fight.ChillRate): 1 unchilled.
+local function chillRate(f: Fighter, at: number): number
+	local rule = Combat.States.Chill
+	return if f.Chill then Fight.ChillRate(rule, Fight.ChillNow(rule, f.Chill, at)) else 1
+end
+
 local function moveTo(f: Fighter, position: Vector3, speed: number)
-	f.Humanoid.WalkSpeed = speed
+	f.Humanoid.WalkSpeed = speed * chillRate(f, now())
 	f.Humanoid:MoveTo(position)
 end
 
@@ -288,6 +323,12 @@ local function start(f: Fighter, action: Actions.Action, at: number)
 	f.Action = action
 	f.ActionAt = at
 	f.Checked = -1
+	-- a chill slows the whole action, from its start (Config.Combat.States.Chill)
+	local rate = chillRate(f, at)
+	if rate ~= f.ActionRate then
+		f.ActionRate = rate
+		f.Model:SetAttribute("ActionRate", if rate ~= 1 then rate else nil)
+	end
 	local cooldown = cooldownOf(f, action)
 	if cooldown > 0 then
 		f.ReadyAt[action.Id] = at + cooldown
@@ -301,7 +342,7 @@ end
 
 -- Busy: inside an action, before the next may start.
 local function busy(f: Fighter, at: number): boolean
-	return f.Action ~= nil and at - f.ActionAt < (f.Action :: Actions.Action).CancelFrom
+	return f.Action ~= nil and (at - f.ActionAt) * f.ActionRate < (f.Action :: Actions.Action).CancelFrom
 end
 
 local function setCollision(model: Model)
@@ -586,6 +627,11 @@ local function register(model: Model, side: "Lead" | "Shade", kind: string, def:
 		Struck = {},
 		Shield = nil,
 		StunLock = 0,
+		Burn = nil,
+		Chill = nil,
+		ShockUntil = 0,
+		SapUntil = 0,
+		ActionRate = 1,
 		Alone = block.Health,
 		WatchUntil = 0,
 		Forced = nil,
@@ -903,6 +949,37 @@ local function crowd(f: Fighter)
 	end
 end
 
+-- The element state a landed hit leaves on `target` (Config.Combat.States; Rules.Fight's states), after the hit's own
+-- stun: a burn's time shown, a chill built (full, it freezes the body: a stun inside ice, StunLook StateFreeze, the
+-- stun's lock after), a shock's or a sap's time started.
+local function leave(target: Fighter, state: string, at: number)
+	local states = Combat.States
+	local model = target.Model
+	if state == "Burn" then
+		if target.Burn then
+			model:SetAttribute("Burning", target.Burn.Until)
+		end
+	elseif state == "Chill" then
+		local chill, frozen = Fight.Chill(states.Chill, target.Chill, at, states.Freeze.Seconds, Combat.Stun.Share[target.Kind], target.StunLock)
+		target.Chill = chill
+		model:SetAttribute("ChillAt", if chill then chill.At else nil) -- before Chill: a client reads both on its change
+		model:SetAttribute("Chill", if chill then chill.Fill else nil)
+		if frozen > 0 then
+			target.StunLock = at + frozen + Combat.Stun.Lock
+			model:SetAttribute("StunLook", "StateFreeze") -- before State: its look's name
+			setState(target, "Stun", at + frozen)
+			endAction(target, at)
+			stop(target)
+		end
+	elseif state == "Shock" then
+		target.ShockUntil = at + states.Shock.Seconds
+		model:SetAttribute("Shocked", target.ShockUntil)
+	elseif state == "Sap" then
+		target.SapUntil = at + states.Sap.Seconds
+		model:SetAttribute("Sapped", target.SapUntil)
+	end
+end
+
 -- One target's share of a hit: rolled, dealt, pushed along `line` (from the attacker), and shown to every client. The
 -- target's passive may take less (Rook's Second Wind); the attacker's may add to it in its element (Pip's Kindle), shown in
 -- the element's number, or crit its first hit to land on the target (Kirra's First Strike).
@@ -928,7 +1005,15 @@ local function land(f: Fighter, action: Actions.Action, target: Fighter, beat: s
 	end
 	-- Kindle's cue when its Extra reached the hit: landed, and the attacker has an element (Rules.Hit's gate).
 	local kindled = (effects.Extra or 0) > 0 and f.Block.Element ~= "" and not result.Dodged and hit.Coefficient > 0
-	local left, fell = Fight.Damage(target.Health, result.Total)
+	-- The element state it leaves (Rules.Fight.StateOf). A burn holds back part of the Fire part, paid over its time
+	-- (stepBurn): the hit's numbers stay whole, its bar drains the rest.
+	local state = if result.Dodged then nil else Fight.StateOf(Combat.States, f.Block.Element, result.Elemental, f.Kind)
+	local dealt = result.Total
+	if state == "Burn" and not target.Frail then
+		local landsNow, burn = Fight.Burn(Combat.States.Burn, target.Burn, result.Elemental, at)
+		dealt, target.Burn = result.Total - result.Elemental + landsNow, burn
+	end
+	local left, fell = Fight.Damage(target.Health, dealt)
 	local removed = target.Health - left
 	setHealth(target, left)
 	-- Lifesteal (TR49; Rules.Fight.Steal): a share of the health the hit removed, counted up to its cap a second. Through
@@ -973,6 +1058,9 @@ local function land(f: Fighter, action: Actions.Action, target: Fighter, beat: s
 			setState(target, "Stun", at + stunned)
 			endAction(target, at)
 			stop(target)
+		end
+		if state and not fell then
+			leave(target, state, at)
 		end
 		local studs, seconds = Fight.Throw(hit.Push, fell, Combat.Push :: any)
 		push(target, line, studs, hold, seconds)
@@ -1293,7 +1381,7 @@ local function trySkip(f: Fighter, target: Fighter, avatar: BasePart, at: number
 			local swing = other.Action
 			if other.Target == f and swing then
 				for beat in swing.Hits do
-					windingUp = windingUp or at - other.ActionAt < swing.Beats[beat]
+					windingUp = windingUp or (at - other.ActionAt) * other.ActionRate < swing.Beats[beat]
 				end
 			end
 		end
@@ -1594,13 +1682,32 @@ local function putDown(f: Fighter, action: Actions.Action)
 	end
 	local p = f.Root.Position
 	local x, z = MarkRule.Centre(p.X, p.Z, look.X, look.Z, mark.Ahead, mark.Left)
-	local m: Mark = { X = x, Z = z, Y = p.Y, Radius = mark.Radius, Down = f.ActionAt + action.Beats[aim], Slam = f.ActionAt + slam, Target = f.Target }
+	local m: Mark = { X = x, Z = z, Y = p.Y, Radius = mark.Radius, Down = f.ActionAt + action.Beats[aim] / f.ActionRate, Slam = f.ActionAt + slam / f.ActionRate, Target = f.Target }
 	f.Mark = m
 	f.Model:SetAttribute("MarkAt", Vector3.new(x, p.Y, z))
 	f.Model:SetAttribute("MarkRadius", m.Radius)
 	f.Model:SetAttribute("MarkDown", m.Down)
 	f.Model:SetAttribute("MarkSlam", m.Slam) -- last: a client draws it on this one's change
 	FightService.Marked:Fire(f, m)
+end
+
+-- A burn's tick (Rules.Fight.BurnTick): what it pays comes off the body's health, on its bar; one it fells falls as to a
+-- hit, its hitters credited. True when it fell.
+local function stepBurn(f: Fighter, at: number): boolean
+	local paid, after = Fight.BurnTick(Combat.States.Burn, f.Burn :: Fight.Burn, at)
+	f.Burn = after
+	if after == nil then
+		f.Model:SetAttribute("Burning", nil)
+	end
+	if not (paid > 0) then
+		return false
+	end
+	local left, fell = Fight.Damage(f.Health, paid)
+	setHealth(f, left)
+	if fell then
+		fall(f, at)
+	end
+	return fell
 end
 
 local function step()
@@ -1620,6 +1727,9 @@ local function step()
 			end
 			continue
 		end
+		if f.Burn and stepBurn(f, at) then
+			continue
+		end
 		if f.State == "Stun" then
 			if at < f.StateUntil then
 				continue -- stopped: no beat, no step, no thought (Actions.Hit.Stun)
@@ -1631,7 +1741,7 @@ local function step()
 		end
 		local action = f.Action
 		if action then
-			local clock = at - f.ActionAt
+			local clock = (at - f.ActionAt) * f.ActionRate
 			for _, beat in Fight.BeatsBetween(action, f.Checked, clock) do
 				local move = if action.Moves then action.Moves[beat] else nil
 				if move and f.Action == action then
@@ -1686,6 +1796,9 @@ end
 
 -- A new stat block for a fighter, its health kept as a share (a level gained, or later a gear change out of a fight).
 function FightService.SetBlock(f: Fighter, block: Stats.Block)
+	if f.Reblock then
+		block = f.Reblock(block)
+	end
 	local share = Fight.Rescale(f.Health, f.Block.Health, block.Health)
 	f.Block = block
 	f.Model:SetAttribute("Level", block.Level)

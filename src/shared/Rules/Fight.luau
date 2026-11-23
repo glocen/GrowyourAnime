@@ -385,6 +385,91 @@ function Fight.Shield(shield: { Share: number, Until: number }?, at: number): nu
 	return math.min(shield.Share, 1)
 end
 
+-- The element states (docs/design.md, "States in a fight"; Config.Combat.States). Times are the fight's clock, seconds.
+-- A burn: the damage it still has to pay, at Rate a second, last paid At, and all of it by Until.
+export type Burn = { Left: number, Rate: number, At: number, Until: number }
+-- A chill: its Fill (0 to 1) as it stood after its last Frost hit, At.
+export type Chill = { Fill: number, At: number }
+
+-- The state a hit in `element` from a fighter of `kind` leaves (Config.Combat.States: By, and Not for the kinds that leave
+-- it none), when the hit lands with an elemental part: nil for no element, a dodge or a hit with no elemental part.
+function Fight.StateOf(states: { By: { [string]: string }, Not: { [string]: { [string]: boolean } } }, element: string, elemental: number, kind: string): string?
+	if element == "" or not (elemental > 0) then
+		return nil
+	end
+	local state = states.By[element]
+	local none = states.Not[kind]
+	return if state and none and none[state] then nil else state
+end
+
+-- A Fire hit's elemental part `elemental` at `at` on a body burning `burn`: what lands now, and the burn after it. Its
+-- Share is held back and added to what the burn has left, all paid evenly over Seconds from now. Nothing is added: the
+-- part that lands now and the burn's sum to the hit's.
+function Fight.Burn(rule: { Share: number, Seconds: number }, burn: Burn?, elemental: number, at: number): (number, Burn?)
+	local held = math.max(0, elemental) * math.clamp(rule.Share, 0, 1)
+	if not (held > 0) or not (rule.Seconds > 0) then
+		return elemental, burn
+	end
+	local left = held + (if burn then burn.Left else 0)
+	return elemental - held, { Left = left, Rate = left / rule.Seconds, At = at, Until = at + rule.Seconds }
+end
+
+-- What `burn` pays at `at`, and the burn after (nil once it's paid out): nothing before Tick seconds since it last paid,
+-- its Rate for the time since then, and all it has left once its time is up.
+function Fight.BurnTick(rule: { Tick: number }, burn: Burn, at: number): (number, Burn?)
+	if at >= burn.Until then
+		return burn.Left, nil
+	end
+	if at - burn.At < rule.Tick then
+		return 0, burn
+	end
+	local paid = math.min(burn.Left, burn.Rate * (at - burn.At))
+	if burn.Left - paid <= 0 then
+		return burn.Left, nil
+	end
+	return paid, { Left = burn.Left - paid, Rate = burn.Rate, At = at, Until = burn.Until }
+end
+
+-- A chill's fill at `at`: as it stood after its last Frost hit, drained Drain a second from Delay seconds after it.
+function Fight.ChillNow(rule: { Delay: number, Drain: number }, chill: Chill?, at: number): number
+	if chill == nil then
+		return 0
+	end
+	local since = at - chill.At - rule.Delay
+	return if since > 0 then math.max(0, chill.Fill - rule.Drain * since) else chill.Fill
+end
+
+-- A Frost hit at `at` on a body chilled `chill`: the chill after it, and the seconds it freezes. It adds 1 / Hits; a full
+-- chill freezes for `freeze` seconds, `share` of them (an elite's, a keeper's half), and empties. While the body is still
+-- locked from its last stun or freeze (`locked`, the time the lock ends, as Fight.Stun) no chill builds, so freezes never
+-- chain (research, 2026-11-23): the hit leaves the chill as it was.
+function Fight.Chill(rule: { Hits: number, Delay: number, Drain: number }, chill: Chill?, at: number, freeze: number, share: number?, locked: number): (Chill?, number)
+	if at < locked then
+		return chill, 0
+	end
+	local fill = math.min(1, Fight.ChillNow(rule, chill, at) + 1 / math.max(rule.Hits, 1))
+	if fill >= 1 - 1e-9 then
+		local frozen = Fight.Stun(freeze, share, at, locked)
+		if frozen > 0 then
+			return nil, frozen
+		end
+	end
+	return { Fill = fill, At = at }, 0
+end
+
+-- How fast a body chilled `fill` acts and walks: 1, less Slow at a full chill, in proportion.
+function Fight.ChillRate(rule: { Slow: number }, fill: number): number
+	return 1 - math.clamp(rule.Slow, 0, 0.9) * math.clamp(fill, 0, 1)
+end
+
+-- What a heal of `amount` gives a body sapped until `sapped` (nil for never), at `at`: Cut less while it holds.
+function Fight.Sapped(rule: { Cut: number }, amount: number, sapped: number?, at: number): number
+	if sapped == nil or at >= sapped then
+		return amount
+	end
+	return amount * (1 - math.clamp(rule.Cut, 0, 1))
+end
+
 -- Whether a fighter `distance` studs (flat) from a hit's target stands in the hit's Area, the target's own studs round it.
 function Fight.Within(distance: number, area: number): boolean
 	return area > 0 and distance <= area

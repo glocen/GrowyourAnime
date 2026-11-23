@@ -99,6 +99,28 @@ return {
 	-- half as long; after one, no fighter is stunned again for Lock seconds, so two automatic builds can't lock each other.
 	Stun = { Share = { Elite = 0.5, Keeper = 0.5 } :: { [string]: number }, Lock = 4 },
 
+	-- The element states (docs/design.md, "States in a fight"; docs/asset-requests.md, AR48; Rules.Fight's states), worn
+	-- by a body a hit of its attacker's element lands on, not dodged and with an elemental part. The builder's seeds,
+	-- 2026-11-23, to tune by playing; nothing is added on top of a hit's damage.
+	-- By: the state an element's hit leaves. Burn: Share of a Fire hit's elemental part held back and paid evenly over
+	-- Seconds, a Tick at a time; another Fire hit adds its share to what's left and starts the Seconds again. Chill: each
+	-- Frost hit adds 1 / Hits; after Delay seconds without one it drains Drain a second; it slows the body's actions (each
+	-- at its start) and its walk by Slow at full, in proportion. A full chill freezes, a stun inside ice, for Freeze's
+	-- Seconds (Stun's Share of it on an elite or a keeper), and empties; no chill builds during Stun's Lock after, so
+	-- freezes never chain (research, 2026-11-23). Shock: Seconds on a Storm hit; it fills poise faster once poise is in
+	-- (AR48's waits). Sap: every heal Cut less for Seconds after a Void hit.
+	-- Not: the kinds whose hits leave a state none. At launch a Shade's Void saps nothing, an elite's included: a pack
+	-- fight stays as its Shades were solved, against a lead healing its Regen (research's answer, 2026-11-23, AR48).
+	States = {
+		By = { Fire = "Burn", Frost = "Chill", Storm = "Shock", Void = "Sap" } :: { [string]: string },
+		Not = { Ordinary = { Sap = true }, Elite = { Sap = true } } :: { [string]: { [string]: boolean } },
+		Burn = { Share = 0.5, Seconds = 3, Tick = 0.5 },
+		Chill = { Hits = 3, Delay = 1.5, Drain = 0.5, Slow = 0.3 },
+		Freeze = { Seconds = 2 },
+		Shock = { Seconds = 3 },
+		Sap = { Seconds = 4, Cut = 0.3 },
+	},
+
 	-- How far a push moves each body, against its Push (handbook/feel/combat.md: a heavy enemy moves less).
 	Weight = { Lead = 1, Ordinary = 1, Elite = 0.4, Keeper = 0.15, Dummy = 1, Rival = 1 }, -- Rival: a Tower floor's Voidkin, a lead's body
 

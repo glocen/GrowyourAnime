@@ -161,7 +161,7 @@ def rook(key):
 
 # --- Kirra: silver, combed up to a high tail; a fringe swept to her left, a long lock by each cheek --------------------
 
-TIE = (180, 24)
+TIE = (180, 15)
 
 
 def kirra(key):
@@ -186,10 +186,10 @@ def kirra(key):
         h.lay(s * 66, 30, 1.34, 0.32, bend=s * -8, off=0.15, flick=14, hold=0.8, n=12, **TILE)   # a long lock by each cheek
         h.lay(s * 84, 40, 0.7, 0.36, bend=s * 14, off=0.14, flick=44, hold=0.5, **TILE)          # one flicked out over the ear
     # the tail: up from the tie, over, and down close behind the head, in broad blades of three lengths
-    for dx, lift, drop, back, w in ((0.0, 0.46, -1.5, 0.74, 0.62), (0.24, 0.4, -1.22, 0.68, 0.54), (-0.24, 0.4, -1.3, 0.68, 0.54),
-                                    (0.42, 0.3, -0.86, 0.56, 0.44), (-0.42, 0.3, -0.76, 0.56, 0.44), (0.1, 0.52, -0.98, 0.86, 0.46),
-                                    (-0.12, 0.5, -1.1, 0.84, 0.46)):
-        h.blade([tie, tie + Vector((dx * 0.5, -0.3, lift)), tie + Vector((dx, -back, 0.1)),
+    for dx, lift, drop, back, w in ((0.0, 0.9, -1.5, 0.8, 0.62), (0.3, 0.8, -1.22, 0.74, 0.54), (-0.3, 0.8, -1.3, 0.74, 0.54),
+                                    (0.56, 0.62, -0.86, 0.6, 0.46), (-0.56, 0.62, -0.76, 0.6, 0.46), (0.12, 1.0, -0.98, 0.92, 0.46),
+                                    (-0.14, 0.96, -1.1, 0.9, 0.46)):
+        h.blade([tie, tie + Vector((dx * 0.7, -0.12, lift)), tie + Vector((dx, -back, lift * 0.5)),
                  tie + Vector((dx * 1.25, -back * 0.86, drop))], w, out=(0, -0.3, 1), n=12, root=0.5, peak=0.4, sharp=1.3)
     return h, tie
 

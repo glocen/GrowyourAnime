@@ -115,7 +115,7 @@ CONDUITS = ((67.5, 39.5), (22.5, 34.5))           # in a quarter: a blade's angl
 BLADES = ((22.5, "CrownBladeLow"), (67.5, "CrownBladeTall"), (112.5, "CrownBladeTall"), (157.5, "CrownBladeLow"),
           (202.5, "CrownBlade"), (247.5, "CrownBlade"), (292.5, "CrownBlade"), (337.5, "CrownBlade"))
 BLADE_TALL = {"CrownBlade": 46.0, "CrownBladeTall": 54.0, "CrownBladeLow": 40.0}
-SLAB_AT = (0.0, 63.0, 20.0)
+SLAB_AT = (0.0, 63.0, 16.0)                   # whole on screen from the player's camera at 20 to 25 degrees down
 SLAB_SHAPE = ((-9.5, 7.5), (9.5, 7.5), (10.5, 6.0), (10.5, -2.5), (0.0, -9.5), (-10.5, -2.5), (-10.5, 6.0))   # x, z
 SLAB_WELL = ((-8.4, -1.2), (8.4, 6.0))            # the well of the numerals, its corners
 # The foe's steps lie nearly level, each a little under the one before: the fight's camera looks 6 degrees down at the

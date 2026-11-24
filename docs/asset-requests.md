@@ -16716,6 +16716,15 @@ Made; self-reviewed as stills at the smallest phone, the take by its frames; the
 - **Must-fix** (class: a world sign meant to be read that sits in the HUD's top band at the default camera; Faber, with Modulo for the slab): the foe card and "Floor N · best N" cover the slab, zoomed in and zoomed out. Between foes, the slab's number and the HUD's line say the same number one over the other. It serves the floor read once, by the room. The how is yours.
 - **On cases:** the steps' beat, from Faber's logged numbers. They can't show the steps read in motion, first seen when the foe's climb lands. The joins: no line seen.
 
+### Modulo's half of the must-fix: the slab stays between the blades, 4 studs lower (2026-11-24, 17:44)
+
+- **The geometry,** projected from the player's camera (zoom 12.5 and 30, 20° and 25° down, FOV 70); an estimate, not a capture:
+  - The HUD fills the top band across the whole width: the lead card on the left (to about 24% down), the foe card in the middle (4 to 19%), the pills on the right. The tall blades fall inside the foe card's width (38% and 62% across).
+  - The horizon sits 17 to 24% down, so anything above the eye line is in that band, at any distance. Under it, on the axis, is the foe's way in: its steps and its leap.
+  - So no place reads during the fight without crossing the foe's way. That includes twin slabs at the sides, which land under the corner cards.
+- **My call:** the number is read at each rise, when the foe card is gone (it shows only while the lead has a target). `SLAB_AT` goes from 20 to 16 studs, so the whole slab is on screen in all four cameras. Today, at zoom 12.5 and 25° down, its well is cut by the top of the screen. During the fight it stays the backdrop under the card. Its point keeps 6.5 studs over the floor, clear of the leap.
+- **Delivered:** `build/handoff/TowerRoom/plan.json`, taken (kit_take's 66 cases pass). For Faber's capture at a rise and mid-fight. If research wants the number read during the fight, that's a HUD change, not a place.
+
 ## AR57. The Guard's and the Dasher's elites (Modulo now, then Faber)
 
 Research, 2026-11-23, 21:54, on the director's pick of 21:53 (`docs/decisions.md`). Tier 2: a new asset players see that nothing covers, in Modulo's area and then Faber's. AR52 left "the masks' elite versions" waiting.

@@ -2,7 +2,7 @@
 
 ## Now
 
-Each teammate rewrites its own row: two to five lines. Open asks sit under "Waiting on the director".
+Each teammate rewrites its own row: one to three lines. Open asks sit under "Waiting on the director".
 
 **Quaestor (research).** 2026-11-24, 13:51, on Opus 5.5. **The director is off from 13:31 for about 7 hours** (back about 20:30). The PC stays awake: on mains, screen, sleep and hibernate at never, read back at 13:31. Today: the register through 13:51; the four yeses of 10:50 and their seeds; **overhaul what's clearly better** (11:11, `AGENTS.md`); **Kirra passed** at competent (11:47); **AR57's elites passed** as a block; the run card's lines (TR54, 11:31); **AR62, the screens' redo**: the audit of their look, the words sweep (nine lines), and the plan, design first in today's colours and the colours later (the director, 13:35 to 13:51).
 - **Next, mine:** AR62's verdicts as the takes land; then the chest family and its orphans, the Broadcast, the Strip's boards, the welcome week and codes, the capture, firsts; the Rare gap on Normal chests; TR54's second look; the pace seed refit after the sitting.

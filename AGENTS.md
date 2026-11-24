@@ -137,7 +137,6 @@ Change a fact only in its home and link to it from anywhere else. Specs hold the
 
 ## Team notes
 
-- Keep the "Now" board in `docs/team-notes.md` current: each teammate's status row (two to five lines, rewritten, never added to), the turns, what waits on the director, tier 1 and 2 notices.
+- Keep the "Now" board in `docs/team-notes.md` current: each teammate's status row (one to three lines, rewritten, never added to), the turns, what waits on the director, tier 1 and 2 notices.
 - A notice leaves the board at the next release, or after seven days. Its record stays in its piece's entry.
-- After each finished piece, add one entry at the top, at most about 10 lines: what changed, where it lives, what's open, who it's for.
-- When the file passes about 250 lines, move the oldest entries to `docs/archive/`.
+- No entry after a piece (the director, 2026-11-24, 14:00): the board, the piece's request entry and git log say what changed.

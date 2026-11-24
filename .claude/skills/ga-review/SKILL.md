@@ -30,4 +30,4 @@ Every review opens with **Felt:** one sentence, the piece watched once at full s
 - **A second look judges what changed:** the fixes, and anything they broke. An older problem seen then is raised only if it's a must-fix, and said to be older. A finding is never raised twice.
 - **Accepting on cases** names what the cases can't show, and where it will first be seen.
 
-**Where it goes:** once, in the piece's request entry. Nothing is written twice; link instead. Under fifteen lines, and no new document.
+**Where it goes:** once, in the piece's request entry. Nothing is written twice; link instead. Under eight lines, and no new document.

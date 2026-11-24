@@ -38,7 +38,7 @@ AGENTS.md's four come first. They load into your session automatically.
    - [ ] markers sit on every beat the game hangs sound or logic on
    - [ ] the game's own dump of the pose matches the export
 5. **Deliver** to `build/handoff/<Name>/`, once the final sheet passes the content check and research's artistic review. If research is off, deliver, note it in the request, and research reviews on its return. Set the request to "Delivered", with the paths and what the builder should check.
-6. **Record:** a row in `docs/asset-log.md`, a short team-notes entry for a finished piece, and a test request for QA in `docs/test-requests.md`.
+6. **Record:** a row in `docs/asset-log.md` and a test request for QA in `docs/test-requests.md`.
 7. **Commit** only your own paths: `git -c user.name=glocen -c user.email=92930182+glocen@users.noreply.github.com commit -F <message file> -- <your paths>` (run `git add` first for new files; for a shared file, AGENTS.md, "Shared folder and git"). The builder pushes (AGENTS.md, "Shared folder and git"). Never pull or rebase. If `index.lock` blocks, wait and retry.
 
 ## The PC and the tokens

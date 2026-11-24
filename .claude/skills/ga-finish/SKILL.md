@@ -20,9 +20,7 @@ The other teammates close their pieces as their briefs say. Step 7 pushes, and o
    - Update the status line and the milestone table in `docs/production-plan.md`, the only status home.
    - Update a spec only if behaviour changed.
 4. **Team notes.**
-   - Update the "Now" board.
-   - Add one entry at the top, at most about 10 lines: what changed, where it lives, what's open, who it's for.
-   - If the file passes about 250 lines, move the oldest entries to `docs/archive/`.
+   - Update the "Now" board. No entry after a piece: the request entry and the commit say what changed.
 5. **Assets.**
    - Add a row to `docs/asset-log.md` for each new or replaced asset.
    - Before any upload or publish, the content check (`ga-content-check`) must PASS. An ASK DIRECTOR waits for the director.

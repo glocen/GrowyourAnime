@@ -9,7 +9,7 @@ Faber, from a cloud session while the director is busy. It answers the director'
 1. **The engineering is solid and ahead of the game.**
    - Pure rules have tens of thousands of offline checks, and the server owns every valuable.
    - Every flow that moves a valuable now has a seeded, mutation-checked fuzz run: shards, gear, Regalia, stars, the shop, the Tower, the keeper and the Breaker.
-2. **Nobody outside the team has played it.** The director's last phone run was 11-17. A publish has waited about 8 days.
+2. **Nobody outside the team has played it.** The director's last phone run was 11-17. A private save of the build to Roblox, for the director's own phone run, has waited about 8 days.
 3. **The deep game was built before the small loop was proven fun.** It has 14 gear slots, Reinforce, emblems, jewels, the Forge, the Condenser, chests, the Tower and element states. The directive, section 17, forbids exactly that order.
 4. **The two things the vision is about are the weakest parts:**
    - Voidkin worth owning: five at launch, being redesigned;
@@ -24,7 +24,7 @@ Sources: `state-of-the-game.md` and `design-review.md` (Faber checked their key 
 
 | # | What | Who | Tier | Undo? |
 |---|---|---|---|---|
-| 1 | **Publish, and play the first ten minutes on a phone.** Then three people who've never seen it play it silently and say the goal back. The only output is one ranked list of what broke. | the director (about 10 min) and the builder | 3: the publish | yes |
+| 1 | **The director plays the first ten minutes on a phone, privately.** The only output is one ranked list of what broke. **No release:** the director, 11-24: "no publishing the game isnt ready". The phone run needs only the private save the board already asks for (`docs/team-notes.md`, item 4: File → Publish to Roblox, and the experience stays private, so no player can see it). People from outside play only when the director says the game is ready. | the director (about 10 min) and the builder | 3: the director's hand | yes |
 | 2 | **Freeze new scope for one week.** No new system, screen or mechanic, and no art off the first ten minutes' path. | the director | 3 | yes, it's a week |
 | 3 | **Stop selling the currency that buys rolls.** Credits buy rolled shards and Reinforce rolls, so selling Credits makes both paid random items (rule 4, [Roblox's page](https://create.roblox.com/docs/production/monetization/paid-random-items)). Sell passes, cosmetics, bag space and a Founder's Mark instead. Make Reinforce deterministic, or give it a shown pity count. | the director | 3, economy and rule 4 | yes, before launch |
 | 4 | **Give the player one thing to press in a fight:** the lead's signature from its own portrait, the move Taichi Panda's best review praised. It answers "the lead fights beside you" without leaving auto combat. | research designs, the builder blocks | 2 | yes |
@@ -54,13 +54,15 @@ The director invited the challenge, so this is said plainly: the colours chosen 
 
 ## Waiting on the director (one screen)
 
-1. **The publish**, about 10 minutes. It unblocks items 1 and 9, and Roblox's funnel analytics, which only run in a published place.
+1. **The private save for the phone run**, about 10 minutes, whenever the director chooses. It isn't a release: the experience stays private. It unblocks items 1 and 9. The game is not released or shown to anyone until the director says it's ready (11-24).
 2. **Credits unsold at launch, and a deterministic Reinforce:** yes or no.
 3. **"Night glass":** yes, no, or "show me a mock first". A mock is the cheap step: one screen re-coloured in Studio.
 4. **A one-week scope freeze:** yes or no.
 5. **The Kids and Select gate.** Before ages 5 to 15 see the game, 100 engaged, age-checked players must play it within 60 days. The group owner also needs ID verification and 2-Step Verification, plus a refundable fee or two months of Premium. That's spending, so rule 1 applies. Not urgent, but it shapes launch (`retention-and-discovery.md`, finding 1).
 
 ## The studies in this folder
+
+**One correction covers them all.** `state-of-the-game.md`, `design-review.md` and `directing-the-game.md` were written before the director's word of 11-24 ("no publishing the game isnt ready"). Where they say "publish" or "strangers play", read: the director's private phone run now, and outside players only at the director's go.
 
 | File | What it answers |
 |---|---|

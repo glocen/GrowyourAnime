@@ -31,6 +31,15 @@ On the director's word of 2026-11-13 (`docs/decisions.md`): after the whole game
 
 ## From the pieces
 
+- **The Today card's pips and the win card's last dare mark** (TR54, research, 2026-11-24, 01:56): the open and claimed pips are close at 5 px (an outline beside a grey fill); stretch 4's kept mark on the win card's road sits past the road's end, near the card's edge.
+- **Rook's hair and cloth, one step toward the reference** (AR59, research, 2026-11-24, 01:38): lift the crown's points to 0.45 to 0.6 of a head over the crown, so they break the outline at 64 px, and make the kit's fold shade one step deeper. Both are numbers in `tools/blender/anime_make.py` and `rook_make_takes.py`.
+- **The Dasher's elite's second mask, face-out through the tell and the flight** (AR57, research, 2026-11-23, 22:25): it's seen edge-on for about 0.73 s, a pale strip beside the sleeve. Fixing it is a re-pose of the left arm's keys, and it goes back to the content check.
+- **The Tower room's height** (AR56, research, 2026-11-23, 21:54; the director kept the room as it is). A raised stand and a landing at the door were each read blind as only "faintly" high, because "nothing measures the fall". Try the cues fresh eyes named: a far, smaller cloud layer in haze, and the tower's shaft running down into it.
+
+- **A pulse along the base's live lines** (AR54's read in the game, research, 2026-11-23, 20:26; `plan.json`'s `current` runs, in the floor's pictures): one slow pulse out from the heart, only along a run whose machine is drawing, so the floor says which machines are working. Judge it in motion from the gate, at the shared finish.
+
+- **The away rule said on the Power screen** (research, 2026-11-23, 20:07, from TR31's dropped line "Your bays worked 2 h of your 9 h away"): the workers generate for `Config.Base.Battery.AwayHours` away, then the machines run on the battery. Said beside the battery's hours, if players misread a return.
+
 - **The 2D cartoon fire is redone, the director's word (13:59, 2026-11-17):** "i despise those 2d cartoonish fire vfx cant we fix it later on i shared a long batch of real vfx". It covers Pip's Lantern Burst (its coil's burn and the flames left standing at the target, AR4 and AR8) and every fire drawn the same way, flat and outlined. The redo starts from the shared packs' fire (`docs/research/vfx-reference.md`, "From the vault"), adapted to our look and logged, as a new blockout judged in motion. It waits with the Voidkin work for the end (`docs/decisions.md`).
 - **Moved into the effects pass, 2026-11-13** (`docs/asset-requests.md`, AR8, on the director's word of that day): Haymaker's B5 (its block-in and costs in AR1, section 9), Pip's Lantern Burst's planned rework (AR4, section 8), the billboards drawn a picture late (AR2, section 13), and the level-up's flat ring (TR3).
 - **Planned rework, the director's word (2026-11-12): the Voidkin's faces.** "we shouldnt give them all those identical face." Rook, Pip and Lyric keep their faces for now. The rework gives each Voidkin a face of its own, part of its silhouette, and every new Voidkin is designed with its own face from the start (`docs/roster.md`).
@@ -57,6 +66,12 @@ On the director's word of 2026-11-13 (`docs/decisions.md`): after the whole game
 - **The stages' tiles share one picture** (AR42's pick, research, 2026-11-19, 02:06): stages 1 to 3 show the Shade, with 2 and 3 identical. Give each stretch its own mark once the stretches differ.
 - **The stages' band's Back** (AR42's install, research, 2026-11-19, 18:51): a black plate, the darkest thing on the lit-glass screen. It could be the kit's quiet glass press.
 - **The bag's tab row's edge** (AR43's take 2 pass, research, 2026-11-19, 22:59): at the smallest phone, "Chests" is cut to "Ches" at the row's right edge with no fade. A soft fade at the scrolling edge would show the row goes on.
+- **The reveal's room is a violet-black ground** (TR50's class sweep, research, 2026-11-23, 02:05): `reveal_room.png` bakes `#2B2542` to `#07050C` as the whole room, the one ground left on the too-purple line. It's a closed piece, so a new image waits for the finish pass, judged beside the rarity's light it frames.
+- **Level 3's stacked halo from the gate's line** (AR50's pass, research, 2026-11-23, 14:04): the upper ring is half out of the frame, and in a still its far arc crowds the lower ring's near arc, so the stack reads busy, not crowned. Judge it first in motion in the game. If it still crowds, set the upper ring higher or wider on the same axle, kept inside the frame.
+- **The Condenser's cups as its own lit state** (AR51's pick, research, 2026-11-23, 14:29): Modulo's C, five small cups round one, lit by the convert's state, standing under B's card. It's the better object, and the machine would show its state without words. A new blockout, at the finish pass.
+- **The Guard's mask, one more paper detail** (AR52, research's pick, 2026-11-23, 15:25): a fold or one painted mark at the clip's finish; it's the plainest of the three Shades' masks.
+- **The dock's Open, its own mark** (AR30, research's read in the game, 2026-11-23, 15:27): at 0.6 it's hard to tell from rest at 0.4 in the dock alone; for example the foot's bar lit across the cell. The panel and its pointer carry it on screen until then.
+- **The dare's tag unfolds again on a tap** (AR53's pick, research, 2026-11-23, 17:49): a player who missed the 3 s unfold reads the dare again from its tag, a 44 tap box over it.
 
 ## Done
 

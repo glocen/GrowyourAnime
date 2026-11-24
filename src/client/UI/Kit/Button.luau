@@ -15,7 +15,9 @@
 -- a press with no touch (a pad, a key) squeezes as a tap. A touch also ticks under the thumb (Roblox's UIClick haptic;
 -- TR6). No state moves the layout.
 --   Button.new{ Name, Text, Size, OnPress, ... }      a button; OnPress may return true (succeeded) or false (failed)
---   Button.Set(button, { Text = ..., Disabled = "why" | false, Selected = true | false, Note = "Bay 3" | false })
+--   Button.Set(button, { Text = ..., Disabled = "why" | false, Selected = true | false, Note = "Bay 3" | false,
+--     Underline = colour | false })   Underline: its underline in a screen's own light (the Arc panel's dusk, TR50), or
+--     its face's again
 --   Button.Grow(button, scale)   its face and label at `scale` at rest, a card's hover (TR20)
 --   Button.Fit(button)           a chip's or a picker's width from its words, set on it (AR30's make)
 --   Button.Press(button)                             what a tap does, for tests: false when disabled or pending; an icon's
@@ -63,6 +65,7 @@ export type Props = {
 }
 
 type State = {
+	Underline: Color3?, -- its underline's colour, a screen's own; its face's light when nil
 	Label: TextLabel,
 	Reason: TextLabel?, -- why it's off, under its name (Under)
 	Tick: ImageLabel,
@@ -307,7 +310,7 @@ local function paint(button: TextButton, state: State)
 	local span = Whole(2 * half * U.Span)
 	for index, layer in { layers.Under, layers.UnderGlow } do
 		layer.Visible = underlined
-		layer.ImageColor3 = F.Light
+		layer.ImageColor3 = state.Underline or F.Light
 		layer.Size = UDim2.fromOffset(span, U.Tall)
 		layer.ImageTransparency = if index == 1 then lineT else glowT
 	end
@@ -729,7 +732,7 @@ function Button.new(props: Props): TextButton
 end
 
 -- A new label, or disabled with its reason (a string), or enabled again (false); selected while its screen is open.
-function Button.Set(button: TextButton, change: { Text: string?, Disabled: (string | boolean)?, Selected: boolean?, Note: (string | boolean)? })
+function Button.Set(button: TextButton, change: { Text: string?, Disabled: (string | boolean)?, Selected: boolean?, Note: (string | boolean)?, Underline: (Color3 | boolean)? })
 	local state = states[button]
 	if state == nil then
 		return
@@ -745,6 +748,9 @@ function Button.Set(button: TextButton, change: { Text: string?, Disabled: (stri
 	end
 	if change.Note ~= nil then
 		state.Note = if type(change.Note) == "string" then change.Note else nil
+	end
+	if change.Underline ~= nil then
+		state.Underline = if typeof(change.Underline) == "Color3" then change.Underline :: Color3 else nil
 	end
 	paint(button, state)
 end

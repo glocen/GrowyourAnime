@@ -39,27 +39,40 @@ local scales: { UIScale } = {}
 local scale = 1
 local forced: number? = nil -- a test's scale, in place of the screen's
 local boxed: Vector2? = nil -- a test's phone, in rendered pixels: the inset layers laid out in it
+local boxAt = Vector2.zero -- its top left, rendered pixels from the safe area's
+local framed = false -- the box placed by a take (centred): the World layer is then the phone's whole screen too
+
+-- Where the top bar's free room starts, rendered: right of Roblox's buttons, and inside a test's phone box.
+local function bandLeft(): number
+	local free = GuiService.TopbarInset
+	return if boxed then math.max(free.Min.X, boxAt.X) else free.Min.X
+end
 
 -- The top bar's free room, authored: read from the inset itself, so it's right before its layer is laid out.
 function Layers.Band(): Vector2
 	local free = GuiService.TopbarInset
-	local wide = if boxed then math.min(free.Width, boxed.X - free.Min.X) else free.Width
+	local wide = if boxed then math.min(free.Max.X, boxAt.X + boxed.X) - bandLeft() else free.Width
 	return Vector2.new(math.max(wide, 0), free.Height) / scale
 end
 local INSET: { [string]: boolean } = { Hud = true, Menus = true, Toasts = true } -- kept clear of Roblox's top bar and the notch
 
--- An inset layer's root fills its safe area, or a test's phone box from the safe area's top left. The Band's fills the
--- top bar's free room, cut at a test's phone box's right edge: its layer starts at the screen's top, at the safe
--- area's left, where TopbarInset is measured from.
+-- An inset layer's root fills its safe area, or a test's phone box. The Band's fills the top bar's free room, cut to a
+-- test's phone box: its layer starts at the screen's top, at the safe area's left, where TopbarInset is measured from.
 local function size(name: string, root: Frame)
 	if name == "Band" then
 		local free, band = GuiService.TopbarInset, Layers.Band()
-		root.Position = UDim2.fromOffset(free.Min.X / scale, free.Min.Y / scale)
+		root.Position = UDim2.fromOffset(bandLeft() / scale, free.Min.Y / scale)
 		root.Size = UDim2.fromOffset(band.X, band.Y)
 		return
 	end
-	local box = if INSET[name] then boxed else nil
+	-- A centred take's World layer: the phone's whole screen, the top bar's height over its box, so a plate kept to the
+	-- screen's edges keeps to the phone's (UI.World.Beside, AR51), as it does on the phone.
+	local box: Vector2? = if INSET[name] then boxed else nil
+	if name == "World" and framed and boxed then
+		box = boxed + Vector2.new(0, GuiService.TopbarInset.Height)
+	end
 	root.Size = if box then UDim2.fromOffset(box.X / scale, box.Y / scale) else UDim2.fromScale(1, 1)
+	root.Position = if box then UDim2.fromOffset(boxAt.X / scale, boxAt.Y / scale) else UDim2.new()
 end
 
 local function fit(): number
@@ -98,9 +111,15 @@ function Layers.Force(value: number?)
 end
 
 -- For tests: the HUD and the screens laid out in a phone's safe area of `box` rendered pixels, from the window's safe top
--- left, or in the whole window again (nil). With Force(Theme.Scale.Floor) and Theme.Smallest, the smallest phone.
-function Layers.Box(box: Vector2?)
+-- left or `at` from it, or in the whole window again (nil). With Force(Theme.Scale.Floor) and Theme.Smallest, the
+-- smallest phone. A take that shows the world under the HUD centres the box on the window: the world is drawn across the
+-- whole window, so only there does it stand under the HUD as on the phone. Roblox's own buttons stay at the window's top
+-- left, outside such a box. Placed with `at`, the World layer is framed as the phone's whole screen too, its plates kept
+-- to the phone's edges.
+function Layers.Box(box: Vector2?, at: Vector2?)
 	boxed = box
+	boxAt = if box then at or Vector2.zero else Vector2.zero
+	framed = box ~= nil and at ~= nil
 	for name, root in roots do
 		size(name, root)
 	end

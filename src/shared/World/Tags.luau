@@ -31,12 +31,18 @@ local specs: { [string]: Spec } = {
 	Training = { Tag = "GA_Training", Place = "Main", Attributes = { Plot = "number" }, Count = 1, Per = "Plot", Ground = true },
 	-- The ring a Tower run starts from, on the plot's Tower lot (TR29; Rules.Tower.RingSpot).
 	TowerRing = { Tag = "GA_TowerRing", Place = "Main", Attributes = { Plot = "number" }, Count = 1, Per = "Plot", Ground = true },
+	-- The Forge (TR37): AR28's Press in its sleeping place; its prompt opens Reinforce, and each try strikes its ram. A model
+	-- whose pivot is its home on the floor. Stands only with the base's kit.
+	Forge = { Tag = "GA_Forge", Place = "Main", Attributes = { Plot = "number" }, Count = 1, Per = "Plot", Ground = true },
+	-- The Stone Condenser (TR37): AR28's Comb over its sleeping stone, awake from its base level; its tray and the convert.
+	-- A model whose pivot is its home on the floor. Stands only with the base's kit.
+	Condenser = { Tag = "GA_Condenser", Place = "Main", Attributes = { Plot = "number" }, Count = 1, Per = "Plot", Ground = true },
 	Shop = { Tag = "GA_Shop", Place = "Main", Attributes = {}, Count = 1, Ground = true },
 	FestivalGate = { Tag = "GA_FestivalGate", Place = "Festival", Attributes = {}, Count = 1, Ground = true },
 	-- A pack's spawn: Count Shades of Def at Level, spread round it. Pack is its number down the street. Type: the outline's
 	-- colour, else the Def's own. Ground: the ground it stands in (Definitions.Grounds), whose Standard shard it drops.
 	-- Stage: the stage of the street it belongs to (Config.Stages, TR43), its elite's too: one elite to a stage of packs.
-	Pack = { Tag = "GA_Pack", Place = "Festival", Attributes = { Pack = "number", Def = "string", Level = "number", Count = "number", Type = "string?", Ground = "string", Stage = "number" }, Ground = true },
+	Pack = { Tag = "GA_Pack", Place = "Festival", Attributes = { Pack = "number", Def = "string", Level = "number", Count = "number", Type = "string?", With = "string?", WithCount = "number?", Ground = "string", Stage = "number" }, Ground = true },
 	Elite = { Tag = "GA_Elite", Place = "Festival", Attributes = { Def = "string", Level = "number", Type = "string?", Ground = "string", Stage = "number" }, Ground = true },
 	-- A stage's gate (TR43): across the street after stage Stage's last stop, shut to a player until they've cleared that
 	-- stage on Normal. A part whose pivot is its middle; the server sets back whoever crosses it shut, the client shows it.

@@ -296,6 +296,18 @@ function LeadService.Start()
 			FightService.Calm(player)
 			return { Ok = true }
 		end)
+		-- Studio only: the lead's signature ready now, its ring full (AR52's case: a signature into a Guard's raised shield).
+		DebugService.Register("LeadReady", function(who: any): any
+			local player = DebugService.ResolvePlayer(who)
+			local lead = if player then FightService.LeadOf(player) else nil
+			local signature = if lead then lead.Signature else nil
+			if lead == nil or signature == nil then
+				return { Ok = false, Error = "NoLead" }
+			end
+			lead.ReadyAt[signature.Id] = 0
+			lead.Model:SetAttribute("Ready", workspace:GetServerTimeNow())
+			return { Ok = true, Signature = signature.Id }
+		end)
 		-- Studio only: every Voidkin of the player but the lead fallen just now, healing at home, so none is ready to lead
 		-- (TR16: a lead alone after its fall, on an account that owns several). LeadHeal makes them whole again.
 		DebugService.Register("VoidkinFallen", function(who: any): any

@@ -196,6 +196,18 @@ Balanced is the safe build and the others are matchup builds. Two defence builds
 
 Every player has all five types and all five classes within the first week: no counter and no role waits on luck.
 
+### Electricity at launch (research, 2026-11-23, F3)
+
+SIMULATED, from the game's own Config: section 17 of the run, `report_launch_power`. It covers Lantern Row only, the five, base levels 1 to 3, the Breaker, the Training machine and the Stone Condenser. Answers `docs/research/design-holes.md`, H4.
+- **Slack everywhere:** the bays make 1.8 to 7.7 times what every machine draws. It's tightest in the first session with the Training machine on, and loosest once the machines rise.
+- **The Breaker barely draws:** only Standard shards exist at launch, at 30 s and 0.125 kWh each. Even 44 an hour (drops plus the shop) average 5.5 kW.
+- **Voltage is never offered at launch:** it needs 60 s saved (`Config.Shards`, `MinSavedSeconds`), and no launch shard breaks that long.
+- **The battery has no sink:** it fills in 2 to 9 hours, and then overflow sells at 0.5 Credits a kWh.
+- **So at launch,** the Power screen's split has one answer (Auto), and electricity asks nothing of the player. The 1.5 to 1.7 times of 2026-11-11 was fitted to six grounds' shards.
+- **The real trade-off at launch is the roster:** five Voidkin, one leading and one training, leaves three for four bays at base level 3.
+- **The fix is the director's call:** research brings it with F3's other findings.
+- The run's other sections still model six grounds; section 9's reader was fixed for the stages' `Stage` field (2026-11-23).
+
 ## What the simulation doesn't know
 
 - **Kits.** Signatures, passives, taunts, heals for allies and range aren't modelled. Class against class is only as good as the kits make it.

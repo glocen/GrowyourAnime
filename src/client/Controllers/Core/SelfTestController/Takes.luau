@@ -351,6 +351,7 @@ return function(given: Given): { any }
 					moment("zero: at home, the HUD")
 					t.Wait(1.5)
 					moment("the dock's Voidkin tapped")
+					VoidkinScreen.Last("Bag") -- the card opens the page last shown (AR49)
 					t.Check("the dock opens it", Button.Press(hud.Voidkin :: TextButton) and waitFor(t, 1, function(): boolean
 						return Screen.Current() == VoidkinScreen.Name
 					end))
@@ -439,6 +440,7 @@ return function(given: Given): { any }
 					moment("zero: at home, the HUD")
 					t.Wait(1.5)
 					moment("the dock's Voidkin tapped")
+					VoidkinScreen.Last("Bag") -- the card opens the page last shown (AR49)
 					t.Check("the dock opens it", Button.Press(hud.Voidkin :: TextButton) and waitFor(t, 1, function(): boolean
 						return Screen.Current() == VoidkinScreen.Name
 					end))
@@ -798,6 +800,7 @@ return function(given: Given): { any }
 						return player:GetAttribute("Training") == first
 					end), tostring(player:GetAttribute("Training")))
 					moment("Rook trains at home")
+					VoidkinScreen.Last("Bag") -- the card opens the page last shown (AR49)
 					t.Check("the dock opens the Voidkin screen", Button.Press(hud.Voidkin :: TextButton) and waitFor(t, 1, function(): boolean
 						return Screen.Current() == VoidkinScreen.Name
 					end))
@@ -1008,6 +1011,7 @@ return function(given: Given): { any }
 				end
 				Screen.Close()
 				local parts = HudController.Parts()
+				VoidkinScreen.Last("Bag") -- the card opens the page last shown (AR49)
 				t.Check("the dock's Voidkin opens it", Button.Press(parts.Voidkin :: TextButton) and waitFor(t, 1, function(): boolean
 					return Screen.Current() == VoidkinScreen.Name
 				end))
@@ -1061,6 +1065,7 @@ return function(given: Given): { any }
 				end
 				Screen.Close()
 				local parts = HudController.Parts()
+				VoidkinScreen.Last("Bag") -- the card opens the page last shown (AR49)
 				t.Check("the dock's Voidkin opens it", Button.Press(parts.Voidkin :: TextButton) and waitFor(t, 1, function(): boolean
 					return Screen.Current() == VoidkinScreen.Name
 				end))
@@ -1114,6 +1119,7 @@ return function(given: Given): { any }
 				end
 				Screen.Close()
 				local parts = HudController.Parts()
+				VoidkinScreen.Last("Bag") -- the card opens the page last shown (AR49)
 				t.Check("the dock's Voidkin opens it", Button.Press(parts.Voidkin :: TextButton) and waitFor(t, 1, function(): boolean
 					return Screen.Current() == VoidkinScreen.Name
 				end))
@@ -1387,6 +1393,7 @@ return function(given: Given): { any }
 				end
 				local function voidkin(kind: string, choose: string?)
 					if Screen.Current() ~= VoidkinScreen.Name then
+						VoidkinScreen.Last("Bag") -- the card opens the page last shown (AR49)
 						Button.Press(HudController.Parts().Voidkin :: TextButton)
 						waitFor(t, 1, function(): boolean
 							return Screen.Current() == VoidkinScreen.Name
@@ -1597,6 +1604,7 @@ return function(given: Given): { any }
 				end
 				if await("Card") then
 					force(nil)
+					VoidkinScreen.Last("Bag") -- the card opens the page last shown (AR49)
 					Button.Press(inventory)
 					waitFor(t, 1, function(): boolean
 						return Screen.Current() == VoidkinScreen.Name

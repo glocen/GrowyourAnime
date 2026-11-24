@@ -55,6 +55,7 @@ local function show(t: any, room: string, screen: string)
 	t.Wait(HudConfig.Motion.Screen.Exit + 0.1)
 	local page, cell = string.match(screen, "^(%a+):?(.*)$")
 	if page == "Voidkin" or page == "Bag" then
+		VoidkinScreen.Last("Bag") -- the card opens the page last shown (AR49)
 		Button.Press(HudController.Parts().Voidkin :: TextButton)
 		waitFor(t, 1, function(): boolean
 			return Screen.Current() == VoidkinScreen.Name

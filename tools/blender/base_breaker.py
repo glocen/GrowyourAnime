@@ -307,7 +307,7 @@ def review(out, fast):
     yard.person((base.SPAWN[0], -base.SPAWN[1]))
     yard.person(gate_player, "Near")
     for obj in yard.kit.pieces:
-        if obj.name.startswith(("PowerSpan", "Court", "Yard", "Wings")):
+        if obj.name.startswith(("PowerSpan", "Floor")):
             obj.visible_shadow = False
     look.sky(scene, d)
     look.sun(scene, d)

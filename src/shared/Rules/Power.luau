@@ -17,11 +17,13 @@ local Voidkin = require(Shared.Definitions.Voidkin)
 local BaseConfig = require(Shared.Config.Base)
 local ShardConfig = require(Shared.Config.Shards)
 local BaseLevels = require(Shared.Rules.BaseLevels)
+local Condenser = require(Shared.Rules.Condenser)
 
 local Power = {}
 
--- The machines that draw power, in the order the Power screen and its bar show them.
-Power.Machines = { "Breaker", "Training" }
+-- The machines that draw power, in the order the Power screen and its bar show them. The bar splits the first two; the
+-- Stone Condenser (TR37) shares under Auto and takes a share asked of SetPower, its own handle to come.
+Power.Machines = { "Breaker", "Training", "Condenser" }
 
 export type Flow = {
 	Generation: number, -- kW the bays generate
@@ -78,7 +80,7 @@ function Power.Cost(shardId: string): (number?, number?)
 end
 
 -- What each machine asks now, kW: the Breaker its chambers' ratings at its level (TR21), the Training machine its own
--- while someone's on it.
+-- while someone's on it, the Stone Condenser its rating at its level while it works (TR37).
 function Power.Demand(data: Profile.Data, training: boolean): { [string]: number }
 	local breaker = 0
 	for _, chamber in data.Base.Chambers do
@@ -88,7 +90,7 @@ function Power.Demand(data: Profile.Data, training: boolean): { [string]: number
 		end
 	end
 	breaker *= BaseLevels.BreakerSpeed(data.Base.Machines.Breaker or 1)
-	return { Breaker = breaker, Training = if training then BaseConfig.Training.Kw else 0 }
+	return { Breaker = breaker, Training = if training then BaseConfig.Training.Kw else 0, Condenser = Condenser.Demand(data.Base) }
 end
 
 -- How `generation` kW serves `demand` under `setting`, with the battery holding charge (`charged`) or empty.

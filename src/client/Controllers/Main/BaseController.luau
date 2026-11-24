@@ -23,10 +23,16 @@ local Voidkin = require(Shared.Definitions.Voidkin)
 local Power = require(Shared.Rules.Power)
 local Breaker = require(Shared.Rules.Breaker)
 local BaseLevels = require(Shared.Rules.BaseLevels)
+local Condenser = require(Shared.Rules.Condenser)
+local Forge = require(Shared.Rules.Forge)
+local CondenserConfig = require(Shared.Config.Condenser)
+local ReinforceConfig = require(Shared.Config.Reinforce)
 local Markers = require(Shared.World.Markers)
 local Kit = require(Shared.World.Kit)
 local BaseManifest: any = require(Shared.Config.Kits.Base.Manifest) -- each piece's centre, for the pieces that turn about their origin
 local WorldConfig = require(Shared.Config.World)
+local HudConfig = require(Shared.Config.Hud)
+local UIKit = require(Shared.Config.UIKit)
 local Parts = require(Shared.Util.Parts)
 local UI = script.Parent.Parent.Parent.UI
 local Theme = require(UI.Theme)
@@ -34,6 +40,7 @@ local Read = require(UI.Read)
 local World = require(UI.World)
 local Panel = require(UI.Kit.Panel)
 local Text = require(UI.Kit.Text)
+local Skin = require(UI.Kit.Skin)
 local Row = require(UI.Kit.Row)
 local Screen = require(UI.Kit.Screen)
 local Toast = require(UI.Kit.Toast)
@@ -88,6 +95,12 @@ local BATTERY_WIDTH = 80
 local MACHINE_WIDTH = 204 -- "Trains while you're away", as a bay's
 local GENERATOR_UP = 9 -- studs over the generator's marker its plate and prompt stand: over its face
 local GENERATOR_WIDTH = 180 -- "Generation 30 kW", "Demand 34 kW"
+local CONDENSER_UP = 4 -- studs over the Stone Condenser's place its prompt stands, before its comb (TR37)
+local CONDENSER_PLATE = 9 -- and its plate that much higher: over its core (9.5 up)
+local CONDENSER_WIDTH = 204 -- "Tray 12 of 12 Low · 1 Mid"
+local FORGE_UP = 4 -- the Forge's prompt, before its seat (TR37)
+local FORGE_PLATE = 9.5 -- and its plate over its head (12.5 up)
+local FORGE_WIDTH = 160
 -- Wide enough that a row's name and its second line fit beside its button at the smallest scale: 191 authored pixels,
 -- against "Intelligence · Mage · Fire" at 178, the longest line before the types took their colours' names (TR36),
 -- and "Chamber 2 · 1 min 59 s" at 164.
@@ -109,6 +122,9 @@ local REASON: { [string]: string } = {
 	Moved = "That shard has moved on",
 	BadArgs = "That can't be done",
 	Unknown = "That can't be done",
+	Asleep = `The Stone Condenser wakes at base level {CondenserConfig.Wakes}`,
+	Busy = "A convert is already under way",
+	Stones = `A convert takes {CondenserConfig.Convert.Take} {CondenserConfig.Convert.From} stones`,
 }
 
 -- Ground: the marker's spot on the floor. Near: the avatar stands within NEAR of it. News: it's lit with something to do.
@@ -120,6 +136,24 @@ local breaker: Spot? = nil
 local battery: Spot? = nil
 local machine: Spot? = nil -- the Training machine (TR12)
 local generator: Spot? = nil -- the generator (TR18)
+local condenser: Spot? = nil -- the Stone Condenser (TR37): its plate, and its prompt while its tray holds a stone
+local forge: Spot? = nil -- the Forge (TR37): its plate and its prompt, which opens Reinforce
+-- The convert's card beside the Condenser's cradle (AR51's B), and its prompt on the cradle.
+type ConvertCard = {
+	Anchor: Part,
+	Prompt: ProximityPrompt,
+	Card: Frame,
+	Panel: Frame,
+	Take: TextLabel,
+	Give: TextLabel,
+	From: ImageLabel,
+	To: ImageLabel,
+	Arrow: ImageLabel,
+	Bar: Frame,
+	Fill: Frame,
+	Word: TextLabel,
+}
+local convert: ConvertCard? = nil
 local bays: { [number]: Spot } = {}
 local starters: { [string]: Part } = {}
 local pickingBay: number? = nil
@@ -244,10 +278,17 @@ local function clearAll()
 	clearSpot(battery)
 	clearSpot(machine)
 	clearSpot(generator)
+	clearSpot(condenser)
+	clearSpot(forge)
 	for _, spot in bays do
 		clearSpot(spot)
 	end
-	breaker, battery, machine, generator, bays = nil, nil, nil, nil, {}
+	breaker, battery, machine, generator, condenser, forge, bays = nil, nil, nil, nil, nil, nil, {}
+	if convert then
+		World.Remove(convert.Card)
+		convert.Anchor:Destroy()
+		convert = nil
+	end
 	for _, part in starters do
 		part:Destroy()
 	end
@@ -510,6 +551,43 @@ function BaseController.OpenPower()
 	end
 end
 
+-- What a collect brought in, in words: "7 Low stones", "12 Low and 1 Mid stones".
+local function stonesWords(stones: { [string]: number }): string
+	local said, count = {}, 0
+	for _, grade in ReinforceConfig.Grades do
+		local n = stones[grade]
+		if type(n) == "number" and n > 0 then
+			table.insert(said, `{n} {grade}`)
+			count += n
+		end
+	end
+	return `{table.concat(said, " and ")} {if count == 1 then "stone" else "stones"}`
+end
+
+-- The Condenser's prompt, pressed (TR37): its whole tray into the bag, said. For tests too.
+function BaseController.CollectTray(): { [string]: any }
+	local answer = act("CollectTray")
+	if answer.Ok == true and type(answer.Stones) == "table" then
+		Toast.Show(`Collected {stonesWords(answer.Stones :: any)}`)
+	end
+	return answer
+end
+
+-- The convert panel's prompt, pressed (TR37): a convert begins. For tests too.
+function BaseController.Convert(): { [string]: any }
+	local answer = act("Convert")
+	if answer.Ok == true then
+		local c = CondenserConfig.Convert
+		Toast.Show(`Converting {c.Take} {c.From} into {c.Give} {c.To}`)
+	end
+	return answer
+end
+
+-- The Forge's prompt, pressed (TR37): Equipment's Reinforce page, where a try strikes the ram. For tests too.
+function BaseController.PressForge()
+	HudController.OpenEquipment("Reinforce")
+end
+
 -- The Breaker's prompt, pressed: the oldest shard ready opens, else the Breaker's own screen. For tests too.
 function BaseController.PressBreaker()
 	local view = ProfileController.Get()
@@ -629,6 +707,126 @@ local function spotFor(marker: Instance, name: string, up: number, lines: number
 	return spot
 end
 
+-- The convert's card (AR51's B, research's pick and pass of 2026-11-23; Config.Hud.Convert; Modulo's condenser_card.json):
+-- a plate's kin on the system slab beside the Condenser's cradle, shown as the Comb's plate is: the cost in the stones'
+-- own pictures (Config.Condenser.Convert), then how the convert stands, a bar and one word. The convert's prompt stands on
+-- the cradle (Config.World.Condenser.Cradle). This client's own; setConvert fills it.
+local function convertCard(marker: Instance, spot: Spot): ConvertCard
+	local look = HudConfig.Convert
+	local cradle = WorldConfig.Condenser.Cradle
+	local anchor = anchorAt("ConvertCradle", (Markers.At(marker) * CFrame.new(cradle[1], cradle[3], -cradle[2])).Position)
+	local card = World.Plate("ConvertCard", look.Size, function(): Vector3?
+		return if anchor.Parent and speaks(spot) and not BaseView.IsOpen() then anchor.Position else nil
+	end, REACH)
+	World.Below(card)
+	World.Apart(card, "Base") -- the Comb's plate is its neighbour
+	World.Off(card)
+	local panel = Panel.new({ Palette = "System", Name = "Panel", Size = UDim2.fromScale(1, 1), Parent = card })
+	local cost = look.Cost
+	local c = CondenserConfig.Convert
+	local function digit(name: string, number: number): TextLabel
+		local label = Text.new({ Name = name, Size = cost.Digit, Font = Theme.Font.Number, Box = UDim2.fromOffset(cost.Stone, cost.Stone), Parent = panel })
+		label.ZIndex = 8
+		label.Text = tostring(number)
+		return label
+	end
+	local function stone(name: string, grade: string): ImageLabel
+		return Skin.Lay(panel, `Stone{grade}`, { Name = name, Scale = cost.Stone / UIKit.Images[`Stone{grade}`].Points.X, Z = 8 })
+	end
+	local arrow = UIKit.Images.ArrowRight
+	local bar = Instance.new("Frame")
+	bar.Name = "Bar"
+	bar.BorderSizePixel = 0
+	bar.BackgroundColor3 = look.Bar.Bed
+	bar.Position = UDim2.fromOffset(look.Bar.At.X, look.Bar.At.Y)
+	bar.Size = UDim2.fromOffset(look.Bar.Size.X, look.Bar.Size.Y)
+	bar.ZIndex = 8
+	bar.Parent = panel
+	local fill = Instance.new("Frame")
+	fill.Name = "Fill"
+	fill.BorderSizePixel = 0
+	fill.Position = UDim2.fromOffset(look.Bar.Inset, look.Bar.Inset)
+	fill.ZIndex = 9
+	fill.Parent = bar
+	local word = Text.new({
+		Name = "Word",
+		Size = Theme.Text.Caption,
+		Box = UDim2.fromOffset(look.Size.X - look.Word.At - look.Word.End, 20),
+		Position = UDim2.fromOffset(look.Word.At, look.Bar.At.Y + look.Bar.Size.Y / 2),
+		AnchorPoint = Vector2.new(0, 0.5),
+		Parent = panel,
+	})
+	word.ZIndex = 8
+	local p = prompt(anchor, "NL_Convert", "Stone Condenser", "Convert")
+	p.Enabled = false
+	World.Beside(card, p, HudConfig.Plates.Gap) -- clear of the prompt's card, which Roblox draws under the plates
+	p.Triggered:Connect(function()
+		BaseController.Convert()
+	end)
+	return {
+		Anchor = anchor,
+		Prompt = p,
+		Card = card,
+		Panel = panel,
+		Take = digit("Take", c.Take),
+		From = stone("From", c.From),
+		Arrow = Skin.Lay(panel, "ArrowRight", { Name = "Arrow", Scale = cost.Arrow.X / (arrow.Points.X - 2 * arrow.Pad), Z = 8 }),
+		Give = digit("Give", c.Give),
+		To = stone("To", c.To),
+		Bar = bar,
+		Fill = fill,
+		Word = word,
+	}
+end
+
+-- The card in `state` (Ready, Running, Short or Asleep; its "State" attribute, for tests): `share` of its bar lit and
+-- `said` its word; asleep, its cost line alone. Dimmed, edged and inked as condenser_card.json's states say, in the system
+-- palette's words; as wide as its word needs, its left and top kept where Config.Hud.Convert puts them.
+local function setConvert(card: ConvertCard, state: string, share: number, said: string)
+	local look, cost = HudConfig.Convert, HudConfig.Convert.Cost
+	local p = Panel.Palette(card.Panel) :: any
+	local live = state == "Ready" or state == "Running"
+	local ink: Color3 = if live then p.Text else p.Faint
+	local dim = if live then 0 else cost.Dim
+	-- The cost line, laid by its numbers' widths: a number, its stone, the arrow, a number, its stone.
+	local x = cost.Left
+	local middle = cost.Top + cost.Stone / 2
+	for _, pair in { { card.Take, card.From }, { card.Give, card.To } } do
+		local number, picture = pair[1] :: TextLabel, pair[2] :: ImageLabel
+		local wide = math.ceil(Text.Wide(number, number.Text))
+		number.Size = UDim2.fromOffset(wide, cost.Stone)
+		number.Position = UDim2.fromOffset(x, cost.Top)
+		number.TextColor3 = ink
+		number.TextTransparency = dim
+		x += wide + cost.Gap
+		picture.Position = UDim2.fromOffset(x, cost.Top)
+		picture.ImageTransparency = dim
+		x += cost.Stone
+		if number == card.Take then
+			local pad = UIKit.Images.ArrowRight.Pad
+			card.Arrow.Position = UDim2.fromOffset(x + cost.Before - pad, middle - cost.Arrow.Y / 2 - pad)
+			card.Arrow.ImageColor3 = if live then p.Edge else p.Faint
+			card.Arrow.ImageTransparency = dim
+			x += cost.Before + cost.Arrow.X + cost.After
+		end
+	end
+	local awake = state ~= "Asleep"
+	card.Bar.Visible, card.Word.Visible = awake, awake
+	card.Word.Text = said
+	card.Word.TextColor3 = if state == "Short" then p.Soft else p.Text
+	local inner = look.Bar.Size - Vector2.one * 2 * look.Bar.Inset
+	card.Fill.Size = UDim2.fromOffset(math.floor(inner.X * math.clamp(share, 0, 1) + 0.5), inner.Y)
+	card.Fill.BackgroundColor3 = if state == "Ready" then look.Bar.Ready elseif state == "Running" then look.Bar.Running else p.Faint
+	card.Fill.Visible = share > 0
+	local wide = math.max(look.Size.X, math.ceil(look.Word.At + Text.Wide(card.Word, said) + look.Word.End))
+	local high = if awake then look.Size.Y else look.Asleep
+	card.Word.Size = UDim2.fromOffset(wide - look.Word.At - look.Word.End, 20)
+	card.Card.Size = UDim2.fromOffset(wide, high)
+	World.Shift(card.Card, Vector2.new(look.Place.X + wide / 2, look.Place.Y + high))
+	Panel.Trim(card.Panel, if live then p.Edge else p.Faint)
+	card.Card:SetAttribute("State", state)
+end
+
 local function stale(spot: Spot?, marker: Instance?): boolean
 	return spot == nil or marker == nil or spot.Marker ~= marker or spot.Marker.Parent == nil
 end
@@ -647,6 +845,8 @@ local function find()
 	local batteryMarker = Markers.Find("Battery", { Plot = number })
 	local machineMarker = Markers.Find("Training", { Plot = number })
 	local generatorMarker = Markers.Find("Generator", { Plot = number })
+	local condenserMarker = Markers.Find("Condenser", { Plot = number })
+	local forgeMarker = Markers.Find("Forge", { Plot = number })
 	local bayMarkers: { [number]: Instance } = {}
 	for _, marker in Markers.All("Bay") do
 		local index = marker:GetAttribute("Bay")
@@ -657,6 +857,8 @@ local function find()
 	local changed = number ~= plot or stale(breaker, breakerMarker) or stale(battery, batteryMarker)
 		or (machineMarker ~= nil and stale(machine, machineMarker))
 		or (generatorMarker ~= nil and stale(generator, generatorMarker))
+		or (condenserMarker ~= nil and stale(condenser, condenserMarker))
+		or (forgeMarker ~= nil and stale(forge, forgeMarker))
 	for index, marker in bayMarkers do
 		changed = changed or stale(bays[index], marker)
 	end
@@ -683,6 +885,19 @@ local function find()
 	for index, marker in bayMarkers do
 		local spot = spotFor(marker, `Bay{index}`, BAY_UP, 1, BAY_WIDTH)
 		bays[index] = spot
+	end
+	if condenserMarker then
+		local spot = spotFor(condenserMarker, "Condenser", CONDENSER_UP, 2, CONDENSER_WIDTH, CONDENSER_PLATE)
+		condenser = spot
+		convert = convertCard(condenserMarker, spot)
+	end
+	if forgeMarker then
+		local f = spotFor(forgeMarker, "Forge", FORGE_UP, 2, FORGE_WIDTH, FORGE_PLATE)
+		f.Prompt = prompt(f.Anchor, "NL_Forge", "Forge", "Reinforce")
+		;(f.Prompt :: ProximityPrompt).Triggered:Connect(function()
+			BaseController.PressForge()
+		end)
+		forge = f
 	end
 	BaseController.Refresh()
 end
@@ -849,6 +1064,57 @@ function BaseController.Refresh()
 		local trainee = if type(on) == "string" and on ~= "" then view.Voidkin[on] else nil
 		setLines(machine.Plate, { "Training machine", if trainee then `{Read.VoidkinName(trainee)} · Lv {trainee.Level}` else "Trains while you're away" })
 	end
+	local home = now.Data.Base
+	local awake = Condenser.Awake(home.Level)
+	local held = Condenser.Held(home)
+	local mid = home.Condenser.Tray[CondenserConfig.Convert.To] or 0
+	if condenser then
+		-- What its tray holds against its cap, and what a convert left there; asleep, the level that wakes it. Lit while
+		-- the tray is full (it has stopped) or a convert's stone waits. Its prompt while the tray holds a stone.
+		local cap = Condenser.Cap(Condenser.Level(home))
+		local tray = if held >= cap then `Tray full · {held} {CondenserConfig.Makes}` else `Tray {held} of {cap} {CondenserConfig.Makes}`
+		setLines(condenser.Plate, { "Stone Condenser", if not awake then `Wakes at base level {CondenserConfig.Wakes}`
+			elseif mid > 0 then `{tray} · {mid} {CondenserConfig.Convert.To}`
+			else tray })
+		condenser.News = awake and (held >= cap or mid > 0)
+		local panel = condenser.Plate:FindFirstChild("Panel")
+		if panel and panel:IsA("GuiObject") then
+			Panel.Lit(panel, condenser.News)
+		end
+		local any = awake and held + mid > 0
+		if any and condenser.Prompt == nil then
+			local p = prompt(condenser.Anchor, "NL_Condenser", "Stone Condenser", "Collect")
+			p.Triggered:Connect(function()
+				BaseController.CollectTray()
+			end)
+			condenser.Prompt = p
+		elseif not any and condenser.Prompt then
+			condenser.Prompt:Destroy()
+			condenser.Prompt = nil
+		end
+	end
+	if convert then
+		-- The job as it stands: its time left at the Condenser's speed now, or whether the bag holds its stones; asleep,
+		-- the cost alone (the Comb's plate says what wakes it: research's must-fix 1).
+		local c = CondenserConfig.Convert
+		local left = Condenser.ConvertLeft(home)
+		local have = view.Bag.Stones[c.From] or 0
+		if not awake then
+			setConvert(convert, "Asleep", 0, "")
+		elseif left then
+			local seconds = left / math.max(now.Rates.Condenser, 1e-3)
+			local said = if seconds < 60 then Read.Seconds(seconds) else Read.Hours(math.ceil(seconds / 60) / 60)
+			setConvert(convert, "Running", 1 - left / c.Seconds, `{said} left`)
+		elseif have >= c.Take then
+			setConvert(convert, "Ready", 1, "Ready")
+		else
+			setConvert(convert, "Short", have / c.Take, `{have} of {c.Take} {c.From}`)
+		end
+		convert.Prompt.Enabled = awake and left == nil and have >= c.Take
+	end
+	if forge then
+		setLines(forge.Plate, { "Forge", "Reinforce your gear" })
+	end
 	-- Someone neither leading nor working, whom an empty bay could take.
 	local free = false
 	for id in view.Voidkin do
@@ -908,6 +1174,18 @@ function BaseController.Parts(): { [string]: Instance }
 	if generator then
 		parts.GeneratorPlate = generator.Plate
 		parts.GeneratorPrompt = generator.Prompt :: any
+	end
+	if condenser then
+		parts.CondenserPlate = condenser.Plate
+		parts.CondenserPrompt = condenser.Prompt :: any
+	end
+	if convert then
+		parts.ConvertCard = convert.Card
+		parts.ConvertPrompt = convert.Prompt
+	end
+	if forge then
+		parts.ForgePlate = forge.Plate
+		parts.ForgePrompt = forge.Prompt :: any
 	end
 	for index, spot in bays do
 		parts[`Bay{index}Plate`] = spot.Plate
@@ -986,12 +1264,15 @@ end
 -- * the demand's mark ("demand") about the same axle, to the demand's share of the gauge at its stage's degrees
 --   (`Turn`, the row's; `Generator.Gauge.Turn` without one), gliding there over `Gauge.Glide` seconds
 --   (Rules.Power.Gauge); the axle is its piece's origin, the manifest's centre away from the part;
--- * the Training machine's crown about its own upright while a Voidkin trains, still when none does (AR15, section 5);
+-- * the Training machine's crown about its own upright while a Voidkin trains, still when none does (AR15, section 5;
+--   each stage's crown alike, AR35);
+-- * a stage's own turning pieces (TR51: the Breaker's hinges, AR32; a bay's rings, AR33; a base level's rings, AR50)
+--   about their own axle ("Axis", Z, X or Y), "Speed" turns a second the way their "Sign" says while the server says they're "Spinning";
 -- * the Festival Door's rings ("spins") about the tunnel's axis, each its own origin's Z, always and whatever the Door's
 --   state, at their plan's `Spin` in degrees a second, anticlockwise seen from the mouth for a positive one: drawn as
 --   CFrame.Angles(0, 0, -angle), so the angle runs against the spin (AR15, section 7).
 -- A hidden stage's pieces keep their angle, and are moved once they're shown.
-type Turning = { Rest: CFrame, Angle: number, Drawn: number, Axis: "Z" | "Y", Pivot: CFrame, Rate: number, Follows: boolean }
+type Turning = { Rest: CFrame, Angle: number, Drawn: number, Axis: "Z" | "Y" | "X", Way: number, Pivot: CFrame, Rate: number, Follows: boolean }
 local turning: { [BasePart]: Turning } = {}
 local WRAP = 5 * 2 * math.pi
 
@@ -1022,16 +1303,50 @@ local function watchWorker(item: Instance)
 	end)
 end
 
+-- The showcase on the gate's plinth (BaseService, TR22): its rig's Idle, as a worker's, and turning slowly where it
+-- stands (Config.World.Showcase.Turn, read each frame so a Tune shows at once), here for this screen alone.
+local showcased: { [Model]: boolean } = {}
+local function watchShowcase(item: Instance)
+	if item:IsA("Model") and showcased[item] == nil then
+		showcased[item] = true
+		watchWorker(item)
+	end
+end
+
+local function turnShowcases(dt: number)
+	local turn = WorldConfig.Showcase.Turn * 2 * math.pi * dt
+	for model in showcased do
+		if model.Parent == nil then
+			showcased[model] = nil
+		elseif model.PrimaryPart then
+			model:PivotTo(model:GetPivot() * CFrame.Angles(0, turn, 0))
+		end
+	end
+end
+
+-- A Training machine's crown, at any stage (AR35: TrainingCrown, TrainingCrown2, TrainingCrown3 turn alike).
+local function crowned(kind: any): boolean
+	return type(kind) == "string" and string.match(kind, "^TrainingCrown%d*$") ~= nil
+end
+
 local function watchTurning(item: Instance)
 	if not item:IsA("BasePart") then
 		return
 	end
 	local kind = item:GetAttribute("Piece")
 	local moves = item:GetAttribute("Moves")
-	local axis: ("Z" | "Y")? = if kind == "TrainingCrown" then "Y" elseif moves == "turns" or moves == "demand" or moves == "spins" then "Z" else nil
+	local own = item:GetAttribute("Axis")
+	local axis: ("Z" | "Y" | "X")? = if crowned(kind) then "Y"
+		elseif own == "X" or own == "Y" then own
+		elseif moves == "turns" or moves == "demand" or moves == "spins" then "Z"
+		else nil
 	if axis == nil then
 		return
 	end
+	-- Drawn as CFrame.Angles(0, 0, -angle) about Z and (0, angle, 0) about Y, as ever; a stage's own turner as its row
+	-- says, CFrame.Angles(0, 0, angle * sign) or (angle * sign, 0, 0) (AR32, AR33).
+	local sign = item:GetAttribute("Sign")
+	local way = if type(sign) == "number" then sign elseif axis == "Z" then -1 else 1
 	-- The part stands at its piece's origin times the manifest's centre; it turns about the origin.
 	local piece = if type(kind) == "string" then BaseManifest.pieces[kind] else nil
 	local c = if piece then piece.centre else { 0, 0, 0 }
@@ -1042,10 +1357,84 @@ local function watchTurning(item: Instance)
 		Angle = 0,
 		Drawn = 0,
 		Axis = axis,
+		Way = way,
 		Pivot = CFrame.new(c[1], c[2], c[3]),
 		Rate = r,
 		Follows = moves == "turns" and r ~= 1,
 	}
+end
+
+-- The Forge's strike (TR37; Rules.Forge, Config.World.Forge): every Forge's ram ("ForgeRam"), struck when the server
+-- counts one more Reinforce try on it ("Strikes"), moves up its own upright by Rules.Forge.Rise from its rest, and its
+-- gears turn about their axles by its travel at their "PerStud" degrees, each its "Spin" way. Every client plays every
+-- plot's, so a passer-by sees it. A strike that comes mid-strike starts again from the ram's height, never a jump.
+type Gear = { Part: BasePart, Rest: CFrame, Way: number, PerStud: number }
+type Strike = { Ram: BasePart, Rest: CFrame, Heights: Forge.Ram, Began: number?, From: number, Gears: { [BasePart]: Gear }, Rise: number }
+local strikes: { [BasePart]: Strike } = {}
+
+local function gearsOf(strike: Strike)
+	local holder = strike.Ram.Parent
+	for _, item in (if holder then holder:GetChildren() else {}) do
+		if item:IsA("BasePart") and item:GetAttribute("Piece") == "ForgeGear" and strike.Gears[item] == nil then
+			local spin, per = item:GetAttribute("Spin"), item:GetAttribute("PerStud")
+			strike.Gears[item] = { Part = item, Rest = item.CFrame, Way = if type(spin) == "number" then spin else 1, PerStud = if type(per) == "number" then per else 0 }
+		end
+	end
+end
+
+local function watchRam(item: Instance)
+	if not item:IsA("BasePart") or item:GetAttribute("Piece") ~= "ForgeRam" or strikes[item] then
+		return
+	end
+	local rest, tell, contact = item:GetAttribute("Rest"), item:GetAttribute("Tell"), item:GetAttribute("Contact")
+	if type(rest) ~= "number" or type(tell) ~= "number" or type(contact) ~= "number" then
+		return
+	end
+	local strike: Strike = { Ram = item, Rest = item.CFrame, Heights = { Rest = rest, Tell = tell, Contact = contact }, Began = nil, From = 0, Gears = {}, Rise = 0 }
+	gearsOf(strike)
+	strikes[item] = strike
+	item:GetAttributeChangedSignal("Strikes"):Connect(function()
+		gearsOf(strike)
+		strike.From = strike.Rise -- from where it stands now
+		strike.Began = os.clock()
+	end)
+end
+
+local function strikePieces()
+	local timing = WorldConfig.Forge
+	for ram, strike in strikes do
+		if ram.Parent == nil then
+			strikes[ram] = nil
+			continue
+		end
+		local began = strike.Began
+		if began == nil then
+			continue
+		end
+		local t = os.clock() - began
+		local rise = Forge.Rise(t, strike.Heights, timing)
+		if strike.From ~= 0 and Forge.Beat(t, timing) == "Lift" then
+			rise = strike.From + (rise - strike.From) * math.clamp(t / math.max(timing.Lift, 1e-3), 0, 1) -- eased in from mid-strike
+		end
+		if Forge.Beat(t, timing) == "Done" then
+			rise = 0
+			strike.Began = nil
+			strike.From = 0
+		end
+		strike.Rise = rise
+		ram.CFrame = strike.Rest + strike.Rest.UpVector * rise
+		for gear, turn in strike.Gears do
+			if gear.Parent then
+				gear.CFrame = turn.Rest * CFrame.Angles(0, 0, math.rad(rise * turn.PerStud * turn.Way))
+			end
+		end
+	end
+end
+
+-- For the self-test: a Forge ram's height over its rest now, and whether it's mid-strike; nil for one not watched.
+function BaseController.StrikeOf(ram: BasePart): (number?, boolean)
+	local strike = strikes[ram]
+	return if strike then strike.Rise else nil, strike ~= nil and strike.Began ~= nil
 end
 
 -- The angle a turning piece goes to this frame, in radians, growing the way it turns; a pinion's from its wheel's.
@@ -1068,7 +1457,11 @@ local function angleOf(part: BasePart, turn: Turning, dt: number): number
 		return (turn.Angle - math.rad(if type(spin) == "number" then spin else 0) * dt) % WRAP
 	end
 	local speed = 0
-	if part:GetAttribute("Piece") == "TrainingCrown" then
+	local own = part:GetAttribute("Speed")
+	if type(own) == "number" then
+		local pace = part:GetAttribute("Pace") -- its machine's power speed, where it has one (the Condenser's core, TR37)
+		speed = if part:GetAttribute("Spinning") == true then own * (if type(pace) == "number" then pace else 1) else 0
+	elseif crowned(part:GetAttribute("Piece")) then
 		speed = if part:GetAttribute("Training") == true then training.Crown else 0
 	else
 		local kw = part:GetAttribute("Generation")
@@ -1092,18 +1485,20 @@ local function turnPieces(dt: number)
 			turn.Angle = angleOf(part, turn, dt)
 			if turn.Angle ~= turn.Drawn and part.Transparency < 1 then
 				turn.Drawn = turn.Angle
-				local angle = turn.Angle
+				local angle = turn.Angle * turn.Way
 				part.CFrame = if turn.Axis == "Z"
-					then turn.Rest * turn.Pivot:Inverse() * CFrame.Angles(0, 0, -angle) * turn.Pivot
+					then turn.Rest * turn.Pivot:Inverse() * CFrame.Angles(0, 0, angle) * turn.Pivot
+					elseif turn.Axis == "X" then turn.Rest * turn.Pivot:Inverse() * CFrame.Angles(angle, 0, 0) * turn.Pivot
 					else turn.Rest * CFrame.Angles(0, angle, 0)
 			end
 		end
 	end
 end
 
--- The model of the stage a plot's mill stands at (AR19; BaseService's "Stage"), nil before it's shown.
-function BaseController.MillStage(plant: Instance): Instance?
-	return plant:FindFirstChild(`Stage {plant:GetAttribute("Stage")}`)
+-- The model of the stage a plot's machine stands at (BaseService's "Stage": the mill's, AR19; the Breaker's, a bay's,
+-- the battery's and the Training machine's, TR51), nil before it's shown.
+function BaseController.StageOf(holder: Instance): Instance?
+	return holder:FindFirstChild(`Stage {holder:GetAttribute("Stage")}`)
 end
 
 -- For the self-test: a turning piece's angle so far, nil for one not watched.
@@ -1115,13 +1510,24 @@ end
 function BaseController.Start()
 	HudController.OpenBase = BaseController.Open
 	HudController.OpenView = BaseController.OpenView
-	CollectionService:GetInstanceAddedSignal(Kit.Tag):Connect(watchTurning)
+	CollectionService:GetInstanceAddedSignal(Kit.Tag):Connect(function(item: Instance)
+		watchTurning(item)
+		watchRam(item)
+	end)
 	for _, item in CollectionService:GetTagged(Kit.Tag) do
 		watchTurning(item)
+		watchRam(item)
 	end
 	CollectionService:GetInstanceAddedSignal("Worker"):Connect(watchWorker)
 	for _, item in CollectionService:GetTagged("Worker") do
 		watchWorker(item)
+	end
+	CollectionService:GetInstanceAddedSignal("Showcased"):Connect(watchShowcase)
+	CollectionService:GetInstanceRemovedSignal("Showcased"):Connect(function(item: Instance)
+		showcased[item :: Model] = nil
+	end)
+	for _, item in CollectionService:GetTagged("Showcased") do
+		watchShowcase(item)
 	end
 	if RunService:IsStudio() then
 		revealBridge()
@@ -1161,6 +1567,8 @@ function BaseController.Start()
 			part.CFrame = part.CFrame * CFrame.Angles(0, STARTER_SPIN * dt, 0)
 		end
 		turnPieces(dt)
+		turnShowcases(dt)
+		strikePieces()
 		if os.clock() - last >= TICK then
 			last = os.clock()
 			BaseController.Refresh()

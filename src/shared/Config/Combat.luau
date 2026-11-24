@@ -99,6 +99,28 @@ return {
 	-- half as long; after one, no fighter is stunned again for Lock seconds, so two automatic builds can't lock each other.
 	Stun = { Share = { Elite = 0.5, Keeper = 0.5 } :: { [string]: number }, Lock = 4 },
 
+	-- The element states (docs/design.md, "States in a fight"; docs/asset-requests.md, AR48; Rules.Fight's states), worn
+	-- by a body a hit of its attacker's element lands on, not dodged and with an elemental part. The builder's seeds,
+	-- 2026-11-23, to tune by playing; nothing is added on top of a hit's damage.
+	-- By: the state an element's hit leaves. Burn: Share of a Fire hit's elemental part held back and paid evenly over
+	-- Seconds, a Tick at a time; another Fire hit adds its share to what's left and starts the Seconds again. Chill: each
+	-- Frost hit adds 1 / Hits; after Delay seconds without one it drains Drain a second; it slows the body's actions (each
+	-- at its start) and its walk by Slow at full, in proportion. A full chill freezes, a stun inside ice, for Freeze's
+	-- Seconds (Stun's Share of it on an elite or a keeper), and empties; no chill builds during Stun's Lock after, so
+	-- freezes never chain (research, 2026-11-23). Shock: Seconds on a Storm hit; it fills poise faster once poise is in
+	-- (AR48's waits). Sap: every heal Cut less for Seconds after a Void hit.
+	-- Not: the kinds whose hits leave a state none. At launch a Shade's Void saps nothing, an elite's included: a pack
+	-- fight stays as its Shades were solved, against a lead healing its Regen (research's answer, 2026-11-23, AR48).
+	States = {
+		By = { Fire = "Burn", Frost = "Chill", Storm = "Shock", Void = "Sap" } :: { [string]: string },
+		Not = { Ordinary = { Sap = true }, Elite = { Sap = true } } :: { [string]: { [string]: boolean } },
+		Burn = { Share = 0.5, Seconds = 3, Tick = 0.5 },
+		Chill = { Hits = 3, Delay = 1.5, Drain = 0.5, Slow = 0.3 },
+		Freeze = { Seconds = 2 },
+		Shock = { Seconds = 3 },
+		Sap = { Seconds = 4, Cut = 0.3 },
+	},
+
 	-- How far a push moves each body, against its Push (handbook/feel/combat.md: a heavy enemy moves less).
 	Weight = { Lead = 1, Ordinary = 1, Elite = 0.4, Keeper = 0.15, Dummy = 1, Rival = 1 }, -- Rival: a Tower floor's Voidkin, a lead's body
 
@@ -206,6 +228,19 @@ return {
 			Recall = { Speed = 40, Most = 1.2, Hold = 1, Cooldown = 4 },
 		},
 	},
+
+	-- AR52's two Shades (docs/asset-requests.md, AR52; docs/roster.md, "Enemies: Shades"), research's seeds, tuned in play.
+	-- The Guard (Definitions.Actions, GuardRaise): its raised shield lets Keep of each hit through, a cut of its own past the
+	-- Reduction bucket and its ceiling, until it drops on the raise's Drop or a heavy hit or a signature breaks it open,
+	-- Stagger seconds stunned (Rules.Fight.Guarded, Breaks). Its grey stand-in (SlamController): a pane Wide by High studs,
+	-- Ahead of its root, Transparency through, brightening as a hit glances off and easing back over Flash seconds; a
+	-- break flashes white for Flash.
+	Guard = { Keep = 0.2, Stagger = 1.0, Look = { Wide = 3.4, High = 3.8, Ahead = 1.6, Up = 0.4, Transparency = 0.25, Flash = 0.15 } },
+	-- The Dasher (DasherLunge): its line, put down on the lunge's Aim (Line), runs from its feet along its look for its Along
+	-- move's Most and Past more, Half either side; each enemy whose centre is on it at Land is hit (Rules.Mark.OnLine). Its
+	-- grey stand-in, as the keeper's ring: an outline Edge studs wide, a fill of Fill's transparency growing to the line's
+	-- end on Land.
+	Dasher = { Line = { Half = 2, Past = 2, Edge = 0.35, Fill = 0.6 } },
 
 	-- The replay (the ga-action skill): an action on a clean pad, from the player's camera, the numbers live.
 	Replay = {

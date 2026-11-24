@@ -22,15 +22,19 @@ export type Row = {
 	Scale: number?, -- a rig's size against an ordinary Shade's (the elite's is its box's height over the ordinary's)
 	Size: { number }?, -- Box: width, height, depth
 	Enter: string?, -- an action it holds as it's spawned, to its end, before it does anything else (Definitions.Actions)
-	-- its signature, tried before its Action whenever it's ready; the first ready Config.Combat.Keeper.First seconds after
-	-- its Enter ends (TR44: the Lamplighter's slam)
+	-- its signature, tried before its Action whenever it's ready; the first ready First seconds after its Enter ends
 	Signature: string?,
+	First: number?, -- seconds; nil: Config.Combat.Keeper.First (TR44: the Lamplighter's slam)
 	Idle: string?, -- its own stance's clip, over its rig's Idle (Config.Animations.Rigs; Actions.IdleOf)
 	Marker: string?, -- its picture on the down marker's tile (TR10), a Config.UIKit image; nil: the name's letter
 }
 
 local rows: { Row } = {
 	{ Id = "brawler", Name = "Brawler", Kind = "Ordinary", Action = "ShadeSwipe", Type = "Red", Rig = "Shade", Mask = "Brawler" },
+	-- AR52: the Guard raises a paper shield, the Dasher lunges down a line; between, each swings as a Brawler. Each is
+	-- ready First seconds after it's spawned; a stretch's pack stands long before its fight, so each opens with its own.
+	{ Id = "guard", Name = "Guard", Kind = "Ordinary", Action = "ShadeSwipe", Signature = "GuardRaise", First = 0, Type = "Green", Rig = "Shade", Mask = "Guard" },
+	{ Id = "dasher", Name = "Dasher", Kind = "Ordinary", Action = "ShadeSwipe", Signature = "DasherLunge", First = 1.5, Type = "Orange", Rig = "Shade", Mask = "Dasher" },
 	-- An elite wears its mask twice, the second on its Left Arm (AR2, section 5): only the Brawler's is past the content check.
 	{ Id = "brawler_elite", Name = "Brawler", Kind = "Elite", Action = "ShadeSwipe", Type = "Red", Rig = "Shade", Mask = "Brawler", Scale = 1.35, Marker = "MarkerElite" },
 	-- AR7: 1.5 an ordinary Shade's size, the hat's top 10.3 studs up (research's pick: taller than the elite)

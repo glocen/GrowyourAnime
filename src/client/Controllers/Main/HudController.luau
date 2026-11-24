@@ -9,7 +9,7 @@
 -- Electricity stored over its cap with the rate and a thread of charge. Under the lead's card, the signature's readout
 -- (UI.Readout): its well fills over the cooldown, it's white-hot when ready and empties in a flash as the move fires;
 -- beside it the spectate eye. Bottom centre, the dock of three icons (UI.Dock): Base takes the player home in one tap
--- (TR19), Home opens Home's tray (AR43; UI.HomeTray), each tile its own screen, and the Map tile, its word Play, the Festival of Battles'
+-- (TR19), Home opens Home's panel (AR49; UI.HomePanel), three cards each opening its whole screen, and the Map tile, its word Play, the Festival of Battles'
 -- menu (TR45: HudController.OpenPlay, set by StageController); over the dock the
 -- shards' hint while a shard waits and the player is home. The HUD's text wears one face
 -- (Config.Hud.Face), switched at runtime. Everything reads the fighters' attributes (FightService) or the save's copy
@@ -62,7 +62,8 @@ local EquipmentScreen = require(UI.EquipmentScreen)
 local SettingsScreen = require(UI.SettingsScreen)
 local TargetCard = require(UI.TargetCard)
 local Dock = require(UI.Dock)
-local HomeTray = require(UI.HomeTray)
+local HomePanel = require(UI.HomePanel)
+local TodayList = require(UI.TodayList)
 local BossBar = require(UI.BossBar)
 local Screen = require(UI.Kit.Screen)
 local Toast = require(UI.Kit.Toast)
@@ -100,6 +101,9 @@ type Signature = {
 	Full: boolean,
 	FoughtAt: number, -- os.clock() the lead last had a target
 	Seen: number, -- 0 hidden to 1 shown: it fades in as a fight starts, out a moment after it ends
+	ShownAt: number, -- os.clock() it last began to fade in
+	TappedAt: number, -- os.clock() of the last tap on it (TR52)
+	Armed: boolean, -- a full ring tapped: the tap's own word until the server's answer or the fire (TR52)
 }
 
 local lead: LeadCard.Card
@@ -115,13 +119,15 @@ local chip: Frame
 local chipText: TextLabel
 local readout: Signature
 local eye: TextButton -- the spectate toggle (TR11)
+local auto: TextButton -- the signature's Auto, after the eye (TR52's block)
+local autoOn = true -- as its words last said
 local nextButton: TextButton -- under a fallen lead's card: sends out the next (TR12)
 local dock: { [string]: TextButton } = {}
 local dockHolder: Frame
 local dockUi: Dock.Dock -- the dock of three icons (AR12; UI.Dock): dock[screen] is its tile's button
-local homeTray: HomeTray.Tray -- Home's tray (AR43), and the dock's Home cell that opens it
+local homePanel: HomePanel.Panel -- Home's panel (AR49), and the dock's Home cell that opens it
 local homeButton: TextButton
-local trayWas = false -- whether the tray was open at the last frame: the chip follows it
+local panelWas = false -- whether the panel was open at the last frame: the chip follows it
 local keeperBar: BossBar.Bar
 local lastView: Profile.View? = nil
 local healBand: Frame -- a heal of the lead's own: a band in the heal's green along its health light (Config.Hud.Card.Heal)
@@ -346,23 +352,47 @@ local function makeNote(parent: Instance): Note
 end
 local note: Note? = nil
 
--- The lead's corner (AR12; Config.Hud.Readout, Config.Hud.Spectate, tuned live): the readout under the lead's card, the
--- eye beside it, and after the eye a fallen lead's offer of the next.
+-- Roblox's jump button, in GUI space (AbsolutePosition's): the touch controls' own while they show, else where Roblox's
+-- jump would stand in the HUD's box (70 px a side when the box's short side is 500 or less, else 120), so the ring's
+-- "Jump" place reads the same in a desktop playtest.
+function HudController.JumpBox(): (Vector2, Vector2)
+	local gui = player:FindFirstChildOfClass("PlayerGui")
+	local touch = if gui then gui:FindFirstChild("TouchGui") else nil
+	local button = if touch and touch:IsA("ScreenGui") and touch.Enabled then touch:FindFirstChild("JumpButton", true) else nil
+	if button and button:IsA("GuiObject") and button.Visible and button.AbsoluteSize.X > 0 then
+		return button.AbsolutePosition, button.AbsoluteSize
+	end
+	local hud = Layers.Get("Hud")
+	local high = hud.AbsolutePosition + hud.AbsoluteSize
+	local side = if math.min(hud.AbsoluteSize.X, hud.AbsoluteSize.Y) <= 500 then 70 else 120
+	return Vector2.new(high.X - (side * 1.5 - 10), high.Y - (if side == 70 then side + 20 else side * 1.75)), Vector2.new(side, side)
+end
+
+-- The lead's corner (AR12; Config.Hud.Readout, Config.Hud.Spectate, tuned live): the readout under the lead's card, or
+-- over the jump button (Readout.At), the eye beside the card, and after the eye a fallen lead's offer of the next.
 local function placeCorner()
 	local plate, look = HudConfig.Readout, HudConfig.Spectate
 	local card = lead.Frame
+	local hud, scale = Layers.Get("Hud"), math.max(Layers.Scale(), 0.01)
 	local left = card.Position.X.Offset + plate.Right
 	local top = card.Position.Y.Offset + card.Size.Y.Offset + plate.Under
 	local piece = readout.Piece.Frame
 	piece.Size = UDim2.fromOffset(plate.Size, plate.Size)
-	piece.Position = UDim2.fromOffset(left + plate.Size / 2, top + plate.Size / 2)
+	if plate.At == "Jump" then
+		local at, size = HudController.JumpBox()
+		local origin = hud.AbsolutePosition
+		piece.Position = UDim2.fromOffset((at.X + size.X / 2 - origin.X) / scale, (at.Y - origin.Y) / scale - plate.Jump.Above - plate.Size / 2)
+	else
+		piece.Position = UDim2.fromOffset(left + plate.Size / 2, top + plate.Size / 2)
+	end
 	local x, y = left + plate.Size + look.Right + look.Plate / 2, top + look.Lower + look.Plate / 2
 	eye.Size = UDim2.fromOffset(look.Size, look.Size)
 	eye.Position = UDim2.fromOffset(x, y)
 	nextButton.Position = UDim2.fromOffset(x + look.Size / 2 + Theme.Size.Gap, y)
+	auto.Size = UDim2.fromOffset(plate.Auto.Width, Theme.Size.Tap)
+	auto.Position = nextButton.Position -- never both: the readout hides with a fallen lead
 	-- The level-up's notice under the corner's row, at the card's left edge (AR12, take B; TR41 (c)), stopping a gap short
 	-- of the step's chip over the dock, which shares its row on a phone.
-	local hud, scale = Layers.Get("Hud"), math.max(Layers.Scale(), 0.01)
 	local chipLeft = if chip then (chip.AbsolutePosition.X - hud.AbsolutePosition.X) / scale else math.huge
 	LevelNotice.Place(card.Position.X.Offset, top + plate.Size + HudConfig.LevelNotice.Below, chipLeft - Theme.Size.Gap - card.Position.X.Offset)
 	-- The quiet note in the same place: the two never meet, a Tower run's lead being frozen (TR46).
@@ -384,8 +414,19 @@ local function stepReadout(model: Model?, fighting: boolean, dt: number)
 	end
 	local want = can and now - readout.FoughtAt <= config.Linger
 	local by = dt / math.max(if want then config.FadeIn else config.FadeOut, 1e-3)
+	local was = readout.Seen
 	readout.Seen = if can then math.clamp(readout.Seen + (if want then by else -by), 0, 1) else 0
+	if was <= 0 and readout.Seen > 0 then
+		readout.ShownAt = now
+	end
 	piece.Frame.Visible = readout.Seen > 0
+	auto.Visible = readout.Seen > 0 and not nextButton.Visible
+	-- Its state in its words: the kit's set light alone read the same on and off at the phone's size (TR52's capture).
+	local on = player:GetAttribute("SignatureAuto") ~= false
+	if on ~= autoOn then
+		autoOn = on
+		Button.Set(auto, { Selected = on, Text = if on then "Auto on" else "Auto off" }) -- the kit's sentence case
+	end
 	piece.Frame:SetAttribute("Seen", readout.Seen)
 	if not can or model == nil then
 		return
@@ -394,6 +435,7 @@ local function stepReadout(model: Model?, fighting: boolean, dt: number)
 	local ready = if type(readyAt) == "number" then readyAt else 0
 	if ready > readout.Ready + 1e-3 then
 		readout.FiredAt = now -- it fired: the server set when it's ready again
+		readout.Armed = false
 	end
 	readout.Ready = ready
 	local share = Hud.Ready(ready, cooldown :: number, workspace:GetServerTimeNow())
@@ -406,17 +448,45 @@ local function stepReadout(model: Model?, fighting: boolean, dt: number)
 	local flash = if since < config.Flash then 1 - since / config.Flash else 0
 	local swell = now - readout.ReadyAt
 	local back = if swell < config.Ready then math.sin(math.pi * swell / config.Ready) else 0
+	-- TR52: a full ring left untapped pulses once, Pulse.Hold after its swell or its fade in; a tap answers on its frame,
+	-- squeezed in and back; armed, waiting for its target's range, it stays in a little.
+	local pulseConfig = config.Pulse
+	local held = now - math.max(readout.ReadyAt + config.Ready, readout.ShownAt + config.FadeIn) - pulseConfig.Hold
+	local pulse = if full and held >= 0 and held < pulseConfig.Length then math.sin(math.pi * held / pulseConfig.Length) else 0
+	local pressed = now - readout.TappedAt
+	local press = if pressed < config.PressTime then 1 - pressed / config.PressTime else 0
+	local armed = readout.Armed or model:GetAttribute("Armed") == true
+	press = math.max(press, if armed then config.Armed / config.Press else 0)
 	local _, class = kindOf(model)
 	Readout.Step(piece, {
 		Share = share,
 		Full = full,
 		Flash = flash,
 		Swell = back,
+		Pulse = pulse,
+		Press = press,
 		Seen = readout.Seen,
 		Action = signatureOf(tostring(model:GetAttribute("Def") or "")),
 		Class = class,
 	})
 	piece.Frame:SetAttribute("Flash", flash)
+	piece.Frame:SetAttribute("Pulse", pulse)
+	piece.Frame:SetAttribute("Armed", armed)
+end
+
+-- A tap on the signature's readout (TR52's block): it answers on the frame (the squeeze), and a full ring takes the look
+-- of armed at once; the server arms and fires it (FightService.Tap), or says why not, and only a refusal takes that back.
+local function tapSignature()
+	readout.TappedAt = os.clock()
+	if readout.Full and readout.Seen > 0 then
+		readout.Armed = true
+	end
+	task.spawn(function()
+		local ok, answer = pcall(Net.Client.Invoke, "Signature", "Tap")
+		if not ok or type(answer) ~= "table" or (answer.Ok ~= true and answer.Error ~= "Armed") then
+			readout.Armed = false
+		end
+	end)
 end
 
 -- The HUD's face (Config.Hud.Face, FaceSmall; docs/ui.md, rule 3): every kit label on the HUD's layers wears it, and
@@ -684,6 +754,15 @@ local function voidkinScreen(page: string?, said: string?)
 	VoidkinScreen.Open(view, { Act = ProfileController.Act, Healing = healing, Page = page, Said = said })
 end
 
+-- Home's Voidkin card shows the lead live (AR49): the save's lead, so it shows at home as in a fight.
+local function showLead(view: Profile.View)
+	if homePanel == nil then
+		return
+	end
+	local owned = view.Voidkin[view.Roles.Lead]
+	HomePanel.Lead(homePanel, if owned then owned.Def else nil)
+end
+
 -- Equipment's screen (UI/EquipmentScreen; AR43, TR47's part A) on `page`: Reinforce, Jewels or War Emblems.
 local function equipmentScreen(page: string)
 	local view = ProfileController.Get()
@@ -838,8 +917,8 @@ local function showChip(view: Profile.View)
 	-- nothing in a keeper's try: the fight has the screen
 	local step = if player:GetAttribute("Try") ~= nil then nil else Hud.NextStep(stepState(view))
 	shownStep = step
-	-- Home's tray stands where the chip does: it steps out while the tray is open (AR43).
-	chip.Visible = step ~= nil and not (homeTray ~= nil and HomeTray.Shown(homeTray))
+	-- Home's panel stands where the chip does: it steps out while the panel is open (AR43, AR49).
+	chip.Visible = step ~= nil and not (homePanel ~= nil and HomePanel.Shown(homePanel))
 	if step then
 		chipText.Text = step.Line
 	end
@@ -891,6 +970,8 @@ end
 local function showView(view: Profile.View)
 	Count.Show(credits, view.Currency.Credits, Read.Number) -- a count under way heads there
 	showChip(view)
+	showLead(view)
+	TodayList.View(homePanel, view)
 	local owned = 0
 	for _ in view.Voidkin do
 		owned += 1
@@ -931,6 +1012,7 @@ end
 -- card, one span over the readout, the eye and the next's offer when it shows: a plate under the band starts right of it
 -- (research's pass on AR12 at phone size: the eye stood over "Bay 1 · no one works here").
 local banded: { GuiObject } = {}
+local beneath: { GuiObject } = {} -- pieces under the band's, a span each but no say in its edge (HudController.Beneath)
 local function band()
 	local world = Layers.Get("World")
 	local origin, scale, margin = world.AbsolutePosition, Layers.Scale(), HudConfig.Numbers.Band
@@ -950,6 +1032,14 @@ local function band()
 	local toasts = Toast.Stack()
 	if toasts then
 		table.insert(spans, span(toasts))
+	end
+	for index = #beneath, 1, -1 do
+		local frame = beneath[index]
+		if frame.Parent == nil then
+			table.remove(beneath, index)
+		elseif frame.Visible then
+			table.insert(spans, span(frame))
+		end
 	end
 	local corner: World.Span? = nil
 	for _, frame in { readout.Piece.Frame, eye, nextButton } :: { GuiObject } do
@@ -1055,6 +1145,9 @@ local function seeThrough(dt: number)
 			state.Share = want
 		end
 		local opacity = Hud.Through(state.Share, piece.Floor)
+		if root and homePanel then -- a corner piece the glass would cut mid-word fades under Home's panel (AR49)
+			opacity = math.min(opacity, 1 - HomePanel.Covers(homePanel, root))
+		end
 		opacities[piece.Name] = opacity
 		if piece.Keep then
 			opacities[piece.Name .. "Bar"] = Hud.Through(state.Share, config.Bar)
@@ -1197,19 +1290,20 @@ local function step(dt: number)
 		end
 	end
 	stepHome()
-	local home = HomeTray.Shown(homeTray) or HomeTray.Holds(homeTray)
+	local home = HomePanel.Shown(homePanel) or HomePanel.Holds(homePanel)
 	if homeButton:GetAttribute("Selected") ~= home then
 		homeButton:SetAttribute("Selected", home)
 		Button.Set(homeButton, { Selected = home })
 	end
-	if HomeTray.Shown(homeTray) ~= trayWas then -- the chip steps out for the tray, and back
-		trayWas = HomeTray.Shown(homeTray)
+	if HomePanel.Shown(homePanel) ~= panelWas then -- the chip steps out for the panel, and back
+		panelWas = HomePanel.Shown(homePanel)
 		local view = ProfileController.Get()
 		if view then
 			showChip(view)
 		end
 	end
-	HomeTray.Paint(homeTray)
+	HomePanel.Paint(homePanel)
+	TodayList.Paint(homePanel)
 	Dock.Paint(dockUi)
 	local view = ProfileController.Get()
 	if view and os.clock() - baseReadAt >= BASE_EVERY then
@@ -1264,6 +1358,11 @@ HudController.OpenView = function() end
 HudController.OpenPlay = function() end
 
 -- Shows `words` as the quiet note under the lead's corner (TR46: the heal cap told once).
+-- Equipment's screen on `page` (Reinforce, Jewels or War Emblems), for a prompt in the world: the Forge's (TR37).
+function HudController.OpenEquipment(page: string)
+	equipmentScreen(page)
+end
+
 function HudController.Note(words: string)
 	local shown = note
 	if shown == nil then
@@ -1322,7 +1421,24 @@ function HudController.Start()
 		Full = true,
 		FoughtAt = -math.huge,
 		Seen = 0,
+		ShownAt = -math.huge,
+		TappedAt = -math.huge,
+		Armed = false,
 	}
+	-- The readout is the button (TR52's block): the touch going down fires, as a fight's buttons do, not the let go.
+	local tap = Instance.new("TextButton")
+	tap.Name = "Tap"
+	tap.Text = ""
+	tap.AutoButtonColor = false
+	tap.BackgroundTransparency = 1
+	tap.Size = UDim2.fromScale(1, 1)
+	tap.ZIndex = 20
+	tap.Parent = readout.Piece.Frame
+	tap.InputBegan:Connect(function(input: InputObject)
+		if input.UserInputType == Enum.UserInputType.Touch or input.UserInputType == Enum.UserInputType.MouseButton1 then
+			tapSignature()
+		end
+	end)
 	eye = eyeButton()
 	-- A fallen lead's card offers the next (TR12; docs/design.md, "The next lead"): it opens the Voidkin screen, where any
 	-- whole one goes out at once, out of combat. In grey: the kit's button in the lead's corner, after the eye (placeCorner).
@@ -1337,6 +1453,20 @@ function HudController.Start()
 		end,
 	})
 	nextButton.Visible = false
+	-- The signature's Auto (TR52's block): selected while on, its lead's signature going as soon as it's ready, as ever;
+	-- off, only on a tap. For this server only, on the player (FightService.SetAuto).
+	auto = Button.new({
+		Name = "SignatureAuto",
+		Text = "Auto on",
+		Size = UDim2.fromOffset(HudConfig.Readout.Auto.Width, Theme.Size.Tap),
+		AnchorPoint = Vector2.new(0, 0.5),
+		Parent = Layers.Get("Hud"),
+		OnPress = function()
+			local ok, answer = pcall(Net.Client.Invoke, "Signature", "Auto", player:GetAttribute("SignatureAuto") == false)
+			return ok and type(answer) == "table" and answer.Ok == true
+		end,
+	})
+	auto.Visible = false
 	-- Experience's pop: white over the thread's lit share, brightest at its new end (Config.Hud.Pop).
 	glint = Instance.new("Frame")
 	glint.Name = "Glint"
@@ -1389,18 +1519,18 @@ function HudController.Start()
 	chip, chipText = hint.Frame, hint.Value
 	World.Foot(chip) -- the edge's arrow stands over it
 	chip.Visible = false
-	-- The dock of three icons (AR12): Home opens Home's tray and closes it (AR43); Base takes the player home (TR19:
+	-- The dock of three icons (AR12): Home opens Home's panel and closes it (AR49); Base takes the player home (TR19:
 	-- goHome), and the Base screen opens from a bay's prompt; the Map tile opens the Festival's menu (TR45).
 	dockUi = Dock.new(Layers.Get("Hud"), {
 		Home = function()
-			if HomeTray.Shown(homeTray) then
-				HomeTray.Close(homeTray)
+			if HomePanel.Shown(homePanel) then
+				HomePanel.Close(homePanel)
 			else
-				HomeTray.Open(homeTray)
+				HomePanel.Open(homePanel)
 			end
 		end,
 		Base = function()
-			HomeTray.Close(homeTray) -- the way home leaves the tray
+			HomePanel.Close(homePanel) -- the way home leaves the panel
 			goHome()
 		end,
 		Map = function() -- its word is Play: the Festival of Battles' menu, in either place (TR45)
@@ -1412,30 +1542,39 @@ function HudController.Start()
 	dockHolder.AnchorPoint = Vector2.new(0.5, 1)
 	dockHolder.Position = UDim2.new(0.5, 0, 1, -PAD)
 	homeButton = dockUi.Tiles.Home.Button
-	-- Home's tray grows about the Home cell's top middle; each tile opens its page alone: of the Voidkin screen, or of its
-	-- Screen (Equipment's), or its Screen (Settings).
+	-- Home's panel (AR49) stands over the dock, clear of the lead's card; each card opens its whole screen on the page last
+	-- shown there.
 	local make = HudConfig.Make.Dock
-	local presses: { [string]: () -> () } = {}
-	for _, tile in HudConfig.Home.Tiles do
-		local page = (tile :: any).Page :: string?
-		local screen = (tile :: any).Screen :: string?
-		if page and screen == "Equipment" then
-			presses[tile.Name] = function()
-				equipmentScreen(page)
-			end
-		elseif page then
-			presses[tile.Name] = function()
-				voidkinScreen(page, tile.Name)
-			end
-		elseif screen == "Settings" then
-			presses[tile.Name] = function()
-				SettingsScreen.Open({ Act = ProfileController.Act, Say = function(words: string)
-					Toast.Show(words)
-				end })
-			end
-		end
+	homePanel = HomePanel.new(Layers.Get("Cover"), Layers.Get("Hud"), PAD + make.Box.Y - math.min(make.At.Y, 0), {
+		Voidkin = function()
+			voidkinScreen(VoidkinScreen.Last())
+		end,
+		Equipment = function()
+			equipmentScreen(EquipmentScreen.Last())
+		end,
+		Settings = function()
+			SettingsScreen.Open({ Act = ProfileController.Act, Say = function(words: string)
+				Toast.Show(words)
+			end })
+		end,
+	}, lead.Frame)
+	TodayList.Attach(homePanel, ProfileController.Act) -- Settings' column's Today card and its list (TR54)
+	local known = ProfileController.Get()
+	if known then
+		showLead(known)
+		TodayList.View(homePanel, known)
 	end
-	homeTray = HomeTray.new(Layers.Get("Cover"), Layers.Get("Hud"), PAD + make.Box.Y - math.min(make.At.Y, 0), presses, { "Lead", "Credits", "Electricity" })
+	-- The bodies come after a join's first copy (RevealService's Ready): the lead's card is shown again once they're in.
+	task.spawn(function()
+		local reveal = ReplicatedStorage:WaitForChild("NL_Reveal")
+		while reveal:GetAttribute("Ready") ~= true do
+			reveal:GetAttributeChangedSignal("Ready"):Wait()
+		end
+		local now = ProfileController.Get()
+		if now then
+			showLead(now)
+		end
+	end)
 	-- The jump's light (TR19), a stand-in until Modulo's look: one frame on each of the screen's edges, lit at the edge and
 	-- gone Reach in, over everything but the toasts.
 	local overlay = Layers.Get("Overlay")
@@ -1531,15 +1670,28 @@ function HudController.FoeFoot(): number
 	return target.Frame.Position.Y.Offset + target.Frame.Size.Y.Offset
 end
 
--- Home's tray, for tests (UI.HomeTray's own calls).
-function HudController.Home(): HomeTray.Tray
-	return homeTray
+-- Home's panel, for tests (UI.HomePanel's own calls).
+function HudController.Home(): HomePanel.Panel
+	return homePanel
 end
 
 -- Where an event chip stands under the pills, anchored at its top right (docs/ui.md, "Under the pills"): the Void Shop's
 -- countdown (AR38).
+-- A piece on the HUD under the band's (the shop's countdown under the pills): a plate keeps clear of it as of the band's,
+-- and it never lowers the band's edge (research's must-fix 3 on AR51). Dropped once it leaves the HUD.
+function HudController.Beneath(frame: GuiObject)
+	if table.find(beneath, frame) == nil then
+		table.insert(beneath, frame)
+	end
+end
+
 function HudController.UnderPills(): UDim2
 	return UDim2.new(1, -PAD, 0, TOP + 2 * (PILL + Theme.Size.Gap))
+end
+
+-- A tap on the signature's readout, as a finger's (TR52; tests).
+function HudController.TapSignature()
+	tapSignature()
 end
 
 function HudController.Parts(): { [string]: GuiObject }
@@ -1575,12 +1727,15 @@ function HudController.Parts(): { [string]: GuiObject }
 		Signature = readout.Piece.Frame,
 		Spectate = eye,
 		Next = nextButton,
+		SignatureAuto = auto,
 		Chip = chip,
 		ChipText = chipText,
-		Voidkin = homeTray.Tiles.Inventory.Button, -- the way to the Items page: Home's Inventory tile
+		Voidkin = homePanel.Cards.Voidkin.Button, -- the way to the Voidkin screen: Home's Voidkin card, on the page last shown
+		Equipment = homePanel.Cards.Equipment.Button,
+		Settings = homePanel.Cards.Settings.Button,
 		Home = homeButton,
-		HomeTray = homeTray.Frame,
-		HomeDim = homeTray.Dim,
+		HomePanel = homePanel.Frame,
+		HomeDim = homePanel.Dim,
 		Base = dockUi.Tiles.Base.Button,
 		Map = dockUi.Tiles.Map.Button,
 		HomeEdge = edges[1],

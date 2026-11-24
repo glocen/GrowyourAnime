@@ -14,7 +14,6 @@
 
 local Shared = game:GetService("ReplicatedStorage").Shared
 local HudConfig = require(Shared.Config.Hud)
-local Layers = require(script.Parent.Parent.Layers)
 
 export type Shadow = { Colour: Color3, Offset: Vector2, Transparency: number, Spread: number, Soft: number }
 
@@ -31,6 +30,7 @@ export type Look = {
 	Font: Enum.FontWeight?, -- its weight; nil: ExtraBold
 	Digit: number?, -- a digit's width in its text size, the unit of Gap; nil: Config.Hud.Numbers.Digit
 	Shadow: Shadow?,
+	Bare: boolean?, -- no outline: a copy of the digits laid on them (the critical's shine)
 }
 
 local Digits = {}
@@ -101,7 +101,11 @@ local function style(label: TextLabel, size: number, look: Look)
 	end
 	local stroke = label:FindFirstChildOfClass("UIStroke") :: UIStroke
 	stroke.Color = look.Outline
-	stroke.Thickness = look.Weight * Layers.Scale() -- a stroke's width isn't grown by the layer's UIScale
+	-- Authored, as every stroke in the kit: the layer's UIScale grows a stroke's width with the rest (measured, 2026-11-23:
+	-- a 6 under a UIScale of 2 draws 12). Multiplied by the scale as well, it drew the scale twice: 1.5 times too thick in
+	-- Studio, 0.85 times too thin on the smallest phone.
+	stroke.Thickness = look.Weight
+	stroke.Enabled = not look.Bare
 end
 
 -- A shadow's character: the face and size of its row's, in the shadow's colour, its outline the soft edge.
@@ -112,7 +116,7 @@ local function shaded(label: TextLabel, size: number, look: Look, shadow: Shadow
 	label.TextTransparency = 1 - (1 - fade) * (1 - shadow.Transparency)
 	local stroke = label:FindFirstChildOfClass("UIStroke") :: UIStroke
 	stroke.Color = shadow.Colour
-	stroke.Thickness = shadow.Spread * Layers.Scale()
+	stroke.Thickness = shadow.Spread
 	stroke.Transparency = 1 - (1 - fade) * (1 - shadow.Soft)
 end
 

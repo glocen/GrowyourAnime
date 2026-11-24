@@ -49,6 +49,8 @@ local REMOTES: { [string]: Spec } = {
 	-- The fight in the camera's view (FightService, TR24's fixes 2 and 3).
 	Recall = { Kind = "Function", RatePerSecond = 4 }, -- client -> server: () -> { Ok, Error?, Ready? }: the lead dashes to the avatar, or why not (TR44's B)
 	View = { Kind = "Unreliable", RatePerSecond = 8 }, -- client -> server: (bearing) degrees, where the camera looks, flat: atan2(Z, X)
+	-- The signature on a tap (FightService, TR52's block).
+	Signature = { Kind = "Function", RatePerSecond = 8 }, -- client -> server: ("Tap") -> { Ok, Error?, Fired? }: the lead's signature armed, fired now if it can; ("Auto", on) -> { Ok, Auto }
 }
 
 local CLASS_FOR_KIND: { [Kind]: string } = {

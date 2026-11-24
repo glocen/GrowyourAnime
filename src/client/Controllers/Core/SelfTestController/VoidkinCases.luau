@@ -3,8 +3,8 @@
 -- own beside Cases, which joins it as it joins Takes. On the screen as it stands at home (Stay): opened from the dock,
 -- full screen over a cover that hides the world and the HUD, Back, its marks and the currencies in Roblox's band, its
 -- name and rarity on one line over the stage, the figure whole under it at its measured share, no gear slot and Combat
--- Power alone at its feet (the director, 2026-11-17), each built page on its own with its name in the band (AR43: the rail
--- retired, 2026-11-19), on the save's numbers, Lead and Send to work over
+-- Power alone at its feet (the director, 2026-11-17), each built page with its name in the band and lit on the rail of
+-- pages (AR49, the Equipment screen's rail), on the save's numbers, Lead and Send to work over
 -- the panel (the lead's lit, its work off with why under its name), favourite and lock set and cleared, a switch by the
 -- strip and by a flick, a switch to a body still being fetched (the one shown stays with its panel), a tap's flourish,
 -- a turn, one sent to work and brought home, a rename, the UI lint in this window and on the smallest phone, and Back.
@@ -224,6 +224,67 @@ local function button(name: string): TextButton?
 	return if found and found:IsA("TextButton") then found else nil
 end
 
+-- The stage's stone shows the same under every rarity's light (TR50, research's must-fix 1): the floor's colour, lit as
+-- the stage lights a plastic floor (its Ambient + LightColor x Lit, as measured), is the stone's Shows. 3 levels is the
+-- room for a part's 8-bit colour.
+local function stoneShows(t: any, figure: any, who: string)
+	local floor = if figure then figure.Floor :: BasePart? else nil
+	local view = if floor then floor:FindFirstAncestorOfClass("ViewportFrame") else nil
+	if floor == nil or view == nil then
+		t.Check(`{who}: the stone shows the sheet's under its rarity's light`, false, "no floor")
+		return
+	end
+	local look = HudConfig.Voidkin.Stage.Floor
+	local function lit(colour: number, ambient: number, light: number): number
+		return colour * (ambient + light * look.Lit)
+	end
+	local a, l, c = view.Ambient, view.LightColor, floor.Color
+	local shows = Color3.new(lit(c.R, a.R, l.R), lit(c.G, a.G, l.G), lit(c.B, a.B, l.B))
+	local off = math.max(math.abs(shows.R - look.Shows.R), math.abs(shows.G - look.Shows.G), math.abs(shows.B - look.Shows.B))
+	local row = Voidkin.ById[figure.Def]
+	t.Check(`{who}: the stone shows the sheet's under its rarity's light`, off < 3 / 255,
+		`{if row then row.Rarity else "?"}: wears {c:ToHex()}, shows {shows:ToHex()} for {look.Shows:ToHex()}`)
+end
+
+-- The page rail (AR49, research's call of 2026-11-20, 00:12): the Equipment screen's, its four pages down the room's left,
+-- each word whole and in the room, the page shown lit, its column clear of the stage, every button a finger's size.
+local function railWhole(t: any, where: string, shown: string)
+	local holder = VoidkinScreen.Find("Rail")
+	t.Check(`{where}: the rail of pages`, holder ~= nil)
+	if holder == nil then
+		return
+	end
+	local stage = VoidkinScreen.Find("Stage")
+	local stageLeft = if stage and stage:IsA("GuiObject") then stage.AbsolutePosition.X else math.huge
+	local least = math.huge
+	local wrong = {}
+	for _, name in HudConfig.Voidkin.Rail.Pages do
+		local button = holder:FindFirstChild(`Rail{name}`) :: GuiObject?
+		local face = holder:FindFirstChild(`{name}Face`) :: Frame?
+		local word = holder:FindFirstChild(`{name}Word`) :: TextLabel?
+		if button == nil or face == nil or word == nil then
+			table.insert(wrong, `{name} missing`)
+			continue
+		end
+		least = math.min(least, button.AbsoluteSize.X, button.AbsoluteSize.Y)
+		if not word.TextFits or word.Text ~= (VoidkinScreen.Said[name] or name) then
+			table.insert(wrong, `{name}'s word cut`)
+		end
+		if not inView(`{name}Word`) then
+			table.insert(wrong, `{name}'s word out of the room`)
+		end
+		local right = word.AbsolutePosition.X + word.AbsoluteSize.X / 2 + word.TextBounds.X / 2
+		if right > stageLeft + 1 then
+			table.insert(wrong, `{name}'s word over the stage`)
+		end
+		if (face:GetAttribute("Chosen") == true) ~= (name == shown) then
+			table.insert(wrong, `{name} lit wrong`)
+		end
+	end
+	t.Check(`{where}: its four pages whole, {shown} lit, clear of the stage`, #wrong == 0, table.concat(wrong, ", "))
+	t.Check(`{where}: each page a finger's size`, least >= Theme.Size.Touch - 0.5, string.format("%.1f px", least))
+end
+
 function VoidkinCases.Cases(given: Given): { any }
 	local ANSWER = given.ANSWER
 	local waitFor, lintClean = given.waitFor, given.lintClean
@@ -357,6 +418,7 @@ function VoidkinCases.Cases(given: Given): { any }
 			end
 			Screen.Close()
 			local hud = HudController.Parts()
+			VoidkinScreen.Last("Bag") -- the card opens the page last shown (AR49)
 			t.Check("Home's Inventory tile opens it", Button.Press(hud.Voidkin :: TextButton) and waitFor(t, 1, function(): boolean
 				return Screen.Current() == VoidkinScreen.Name
 			end))
@@ -434,6 +496,27 @@ function VoidkinCases.Cases(given: Given): { any }
 			local row = if owned then Voidkin.ById[owned.Def] else nil
 			local body = if row and row.Model then row.Model else "StandIn"
 			t.Check("its own body on the stage", figure ~= nil and figure.Body.Name == body, if figure then figure.Body.Name else "no figure")
+			-- The stage's stone under it, its element only a ring of light round the edge (TR50's sweep, Modulo's B).
+			local floor = if figure then figure.Floor else nil
+			local rim = if floor and floor.Parent then floor.Parent:FindFirstChild("FloorRim") :: BasePart? else nil
+			local element = if row and row.Element ~= "" then UIKit.Elements[row.Element] else nil
+			local stone = HudConfig.Voidkin.Stage.Floor
+			t.Check("it stands on the stage's stone, plastic", floor ~= nil and floor.Material == Enum.Material.SmoothPlastic, if floor then floor.Material.Name else "no floor")
+			stoneShows(t, figure, "the lead")
+			-- The ring shows its element: its colour through the viewport's Neon, as measured, is the element's. A part keeps
+			-- its colour in 8 bits, and the curve's slope turns one step into up to about 4 levels shown: 6 is the room.
+			local function throughNeon(value: number): number
+				local light = if value <= 0.04045 then value / 12.92 else ((value + 0.055) / 1.055) ^ 2.4
+				local out = math.min(1, stone.Neon.Gain * light ^ stone.Neon.Power)
+				return if out <= 0.0031308 then out * 12.92 else 1.055 * out ^ (1 / 2.4) - 0.055
+			end
+			local ringShows = if rim then Color3.new(throughNeon(rim.Color.R), throughNeon(rim.Color.G), throughNeon(rim.Color.B)) else nil
+			t.Check("its element a ring of light round the stone's edge, Rim of the floor across, showing the element's colour", if element == nil
+				then rim == nil
+				else rim ~= nil and floor ~= nil and ringShows ~= nil and math.max(math.abs(ringShows.R - element.R), math.abs(ringShows.G - element.G), math.abs(ringShows.B - element.B)) < 6 / 255
+					and rim.Material == Enum.Material.Neon and rim.Transparency == 0
+					and math.abs(rim.Size.Y * (1 - 2 * stone.Rim) - floor.Size.Y) < 1e-3 and rim.Position.Y < floor.Position.Y,
+				if rim and ringShows then `wears {rim.Color:ToHex()}, shows {ringShows:ToHex()} for {if element then element:ToHex() else "none"}, {rim.Size.Y} across` else "no ring")
 			t.Check("on its Idle", figure ~= nil and figure.Idle ~= nil and (figure.Idle :: AnimationTrack).IsPlaying)
 			whole(t, "this window")
 			feet(t, "this window")
@@ -470,8 +553,8 @@ function VoidkinCases.Cases(given: Given): { any }
 			t.Check("the bag's kinds the bag's five, weapons and armor one Gear", table.concat(VoidkinScreen.Kinds, ", ") == "All, Gear, Jewelry, Chests, Materials", table.concat(VoidkinScreen.Kinds, ", "))
 			-- Its name over the stage: one line inside it, its rarity after it in the rarity's colour.
 			nameLine(t, "this window", owned)
-			-- Its own screen (AR43): no rail of pages, and the page shown named in the band.
-			t.Check("no rail of pages", VoidkinScreen.Find("Rail") == nil)
+			-- The rail of pages (AR49), and the page shown named in the band.
+			railWhole(t, "this window", "Overview")
 			local pageName = VoidkinScreen.Find("PageName")
 			t.Check("Overview shown: its name in the band", pageName ~= nil and pageName:IsA("TextLabel") and pageName.Text == "Overview", if pageName and pageName:IsA("TextLabel") then pageName.Text else "none")
 			local leads, panel = button("Lead"), VoidkinScreen.Find("Panel")
@@ -506,6 +589,7 @@ function VoidkinCases.Cases(given: Given): { any }
 				end
 				VoidkinScreen.Show(name)
 				t.Wait(SETTLE)
+				railWhole(t, name, name)
 				local title = VoidkinScreen.Find("PageName")
 				local want = VoidkinScreen.Said[name] or name
 				t.Check(`{name}: its name in the band`, title ~= nil and title:IsA("TextLabel") and title.Text == want, if title and title:IsA("TextLabel") then title.Text else "none")
@@ -690,6 +774,34 @@ function VoidkinCases.Cases(given: Given): { any }
 				end), tostring(VoidkinScreen.Chosen()))
 				local chosen = button(id)
 				t.Check(`its cell marked`, chosen ~= nil and Button.State(chosen) == "Selected")
+				stoneShows(t, VoidkinScreen.Figure(), `Voidkin {index}`)
+			end
+			-- Under a rarity's own light: the first not Common, when the save has one (Epic's turned the stone lavender).
+			do
+				local mine = (ProfileController.Get() :: Profile.View).Voidkin
+				local other: string? = nil
+				for _, id in ids do
+					local each = Voidkin.ById[mine[id].Def]
+					if each and each.Rarity ~= "Common" then
+						other = id
+						break
+					end
+				end
+				t.Check("the save holds a Voidkin not Common, to light the stone by", other ~= nil)
+				if other then
+					local def = mine[other].Def
+					VoidkinScreen.Choose(other)
+					t.Check("a Voidkin not Common on the stage", waitFor(t, 3, function(): boolean
+						local now = VoidkinScreen.Figure()
+						return VoidkinScreen.Chosen() == other and now ~= nil and now.Def == def
+					end), tostring(VoidkinScreen.Chosen()))
+					stoneShows(t, VoidkinScreen.Figure(), "a Voidkin not Common")
+					VoidkinScreen.Choose(ids[3])
+					t.Check("and the third again", waitFor(t, 3, function(): boolean
+						local now = VoidkinScreen.Figure()
+						return VoidkinScreen.Chosen() == ids[3] and now ~= nil and now.Def == mine[ids[3]].Def
+					end), tostring(VoidkinScreen.Chosen()))
+				end
 			end
 			-- A flick: the left brings the next (round to the first), the right the one before.
 			local swipe = HudConfig.Voidkin.Swipe
@@ -820,6 +932,7 @@ function VoidkinCases.Cases(given: Given): { any }
 					t.Wait(SETTLE)
 					lintClean(t, `the smallest phone, {name}`)
 					bandClear(t, `the smallest phone, {name}`)
+					railWhole(t, `the smallest phone, {name}`, name)
 				end
 			end
 			whole(t, "the smallest phone")
@@ -884,6 +997,7 @@ function VoidkinCases.Cases(given: Given): { any }
 			room:Destroy()
 			Screen.Close()
 			local hud = HudController.Parts()
+			VoidkinScreen.Last("Bag") -- the card opens the page last shown (AR49)
 			t.Check("the dock's Voidkin opens it", Button.Press(hud.Voidkin :: TextButton) and waitFor(t, 1, function(): boolean
 				return Screen.Current() == VoidkinScreen.Name
 			end))
@@ -1093,6 +1207,7 @@ function VoidkinCases.Cases(given: Given): { any }
 			step.Value = "Large Overview off"
 			step.Parent = ReplicatedStorage
 			Screen.Close()
+			VoidkinScreen.Last("Bag") -- the card opens the page last shown (AR49)
 			Button.Press(HudController.Parts().Voidkin :: TextButton)
 			t.Check("the Voidkin screen opens", waitFor(t, 1, function(): boolean
 				return Screen.Current() == VoidkinScreen.Name

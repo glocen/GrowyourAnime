@@ -6,6 +6,9 @@
 -- camera. The server's Hit event brings the number, and the hold and spark too if the screen didn't see it coming.
 -- A late action starts from its first frame and catches up (handbook/feel/combat.md, "Hit confirmation").
 -- A passive's cue (Definitions.Passives, Cue): the shell while the server's PassiveOn holds, the flare on a hit it marks.
+-- The element states (Config.Combat.States): an action runs at the server's ActionRate (a chill's slow), and each state's
+-- look is worn by its name while it holds (StateBurn, StateChill, StateShock, StateSap; a freeze is a stun's StateFreeze),
+-- drawn once its rows are in (Config.Effects.Lasting).
 -- Children: Clips (an Animation per clip name), Effects (the stand-ins).
 
 local CollectionService = game:GetService("CollectionService")
@@ -92,6 +95,7 @@ type View = {
 	Begun: number, -- os.clock() when the action began on screen
 	Late: number, -- how late it began, caught up after OwnPace
 	Rate: number,
+	ActionRate: number, -- the server's rate for this action (FightService: a chill's slow), 1 unslowed
 	FrozenUntil: number,
 	StunHeld: number, -- the hold a stun set (os.clock()), let go when the stun ends; 0 for none
 	Shown: { [string]: boolean }, -- the hits this screen has shown, by beat and press
@@ -369,11 +373,14 @@ local function beginAction(view: View, action: Actions.Action, at: number)
 	view.Cued = {}
 	view.Held = {}
 	view.Begun = os.clock()
+	local rate = view.Model:GetAttribute("ActionRate")
+	view.ActionRate = if type(rate) == "number" and rate > 0 then rate else 1
+	-- how far the server's clock of it has run: its seconds since, at its rate
 	local late = math.max(0, workspace:GetServerTimeNow() - at)
 	if late > CATCH.Limit then
-		view.Clock, view.Late = late, 0 -- too late to catch up without cutting a short clip's end: in step
+		view.Clock, view.Late = late * view.ActionRate, 0 -- too late to catch up without cutting a short clip's end: in step
 	else
-		view.Clock, view.Late = 0, late
+		view.Clock, view.Late = 0, late * view.ActionRate
 	end
 	view.Rate = 1
 	local clip = action.Clip
@@ -699,6 +706,7 @@ local function add(model: Instance)
 		Begun = 0,
 		Late = 0,
 		Rate = 1,
+		ActionRate = 1,
 		FrozenUntil = 0,
 		StunHeld = 0,
 		Shown = {},
@@ -751,6 +759,29 @@ local function add(model: Instance)
 			wear(view, model:GetAttribute("ShieldLook"), shielded)
 		end
 	end))
+	-- The element states' looks (Config.Combat.States), each worn while the server's time for it holds; a chill while any
+	-- fill is left after its drain, by the same rule (Rules.Fight.ChillNow). A freeze is a stun's look (onState).
+	for attribute, look in ({ Burning = "StateBurn", Shocked = "StateShock", Sapped = "StateSap" } :: { [string]: string }) do
+		local function holds(): boolean
+			local untilTime = model:GetAttribute(attribute)
+			return view.State ~= "Down" and type(untilTime) == "number" and workspace:GetServerTimeNow() < untilTime
+		end
+		table.insert(view.Connections, model:GetAttributeChangedSignal(attribute):Connect(function()
+			if holds() then
+				wear(view, look, holds)
+			end
+		end))
+	end
+	local function chilled(): boolean
+		local fill, at = model:GetAttribute("Chill"), model:GetAttribute("ChillAt")
+		return view.State ~= "Down" and type(fill) == "number" and type(at) == "number"
+			and Fight.ChillNow(Combat.States.Chill, { Fill = fill, At = at }, workspace:GetServerTimeNow()) > 0
+	end
+	table.insert(view.Connections, model:GetAttributeChangedSignal("Chill"):Connect(function()
+		if chilled() then
+			wear(view, "StateChill", chilled)
+		end
+	end))
 	-- A Reduction passive's shell (Rook's Second Wind), while the server says it holds; one at a time.
 	local passive = if type(def) == "string" then Passives.ById[def] else nil
 	if passive and passive.Cue == "Shell" then
@@ -801,16 +832,18 @@ local function remove(model: Instance)
 	end
 end
 
--- The rate the action's clock runs at this frame: 0 in a hold, faster while catching up a late start.
+-- The rate the action's clock runs at this frame: 0 in a hold, the server's ActionRate in an action (a chill's slow),
+-- faster while catching up a late start.
 local function rateOf(view: View, now: number): number
 	if now < view.FrozenUntil then
 		return 0
 	end
+	local base = if view.Action then view.ActionRate else 1
 	local since = now - view.Begun
 	if view.Late > 0 and since >= CATCH.OwnPace and since < CATCH.OwnPace + CATCH.Over then
-		return 1 + view.Late / CATCH.Over
+		return base + view.Late / CATCH.Over
 	end
-	return 1
+	return base
 end
 
 -- One frame of a fighter on screen. True while the replay's freeze holds it.
@@ -836,7 +869,7 @@ local function stepView(view: View, dt: number, now: number): boolean
 			local written = if cue then Cues.Ahead(cue) else nil
 			if cue and written and beatAt and not view.Cued[beat] and view.Clock >= beatAt - written and before < beatAt then
 				view.Cued[beat] = true
-				Cues.Play(cue, view.Root.Position, { In = beatAt - view.Clock })
+				Cues.Play(cue, view.Root.Position, { In = (beatAt - view.Clock) / view.ActionRate })
 			end
 		end
 		for _, beat in Fight.BeatsBetween(action, before, view.Clock) do

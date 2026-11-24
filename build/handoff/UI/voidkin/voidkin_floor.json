@@ -1,0 +1,23 @@
+{
+ "Today": {
+  "floor": "the element's colour (UIKit.Elements), or Seam.Facet with none",
+  "as shown": {
+   "Fire": "#AB9F52",
+   "Storm": "#A98AA6",
+   "Void": "#8F84B4"
+  }
+ },
+ "A": {
+  "floor as shown": "#A9A59B",
+  "rim": null
+ },
+ "B": {
+  "floor as shown": "#A9A59B",
+  "rim": {
+   "colour": "the element's (UIKit.Elements)",
+   "wide": 1.1,
+   "glow": 0.4,
+   "glow's reach": 3.0
+  }
+ }
+}

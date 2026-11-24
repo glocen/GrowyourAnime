@@ -7,9 +7,10 @@ Made as Lantern Row's kit is (lantern_row_kit.py: its mesh builder, its swatch a
 pictures of its own, so the builder's Kit.Place and its upload take it unchanged. A piece's front faces +Y, toward the
 Strip; its origin is on the floor; one unit is one stud.
 
-The court's floor is one piece a level, with its own pair of pictures: the plates, the bays' frames, the lanes, and
-the conduits from each bay to the battery, on to the Breaker and along its rail, glowing in the picture so they cost
-no Light. It is drawn for half the court and laid mirrored about the plot's middle line.
+The deck's look is sixteen floor pieces, a grid of four by four over the plot, each with its own pair of pictures: the
+plates, each machine's ground, the well and the ring round it, and the conduits from the ring out to every machine,
+glowing in the picture so they cost no Light. The yard isn't the same on its two sides (AR54), so no picture is
+mirrored: each is drawn for its own ground, from the star's geometry (base_star.py).
 
 Run (no GPU turn), each `blender.exe -b --factory-startup --python tools/blender/base_kit.py -- <out> <mode>`:
   pictures   the maps alone, into <out>
@@ -30,11 +31,13 @@ import base_battery as battery  # noqa: E402
 import base_bay as bays  # noqa: E402
 import base_breaker as breaker  # noqa: E402
 import base_ink as ink  # noqa: E402
+import base_levels as levels  # noqa: E402
 import base_machines as machines  # noqa: E402
 import base_forge as forge  # noqa: E402
 import base_forge_stages as forge_stages  # noqa: E402
 import base_mill as mill  # noqa: E402
 import base_show as show  # noqa: E402
+import base_star as star  # noqa: E402
 import base_training as training  # noqa: E402
 import blcommon as bl  # noqa: E402
 import lantern_row_kit as kit  # noqa: E402
@@ -49,38 +52,24 @@ A, CELL = kit.A, kit.CELL
 PLOT, STRIP = 128.0, 48.0
 # The spread (AR16; the director, 2026-11-15: "just make it less clustered make it accross the base"). Each place is
 # across and in. The placement is a star round the generator (the director, the same night, of one straight row:
-# "i dont like the placement of the building it a bit to simplish"). The generator stands at the plot's heart, 52 in,
-# at the end of the way in, inside a ring of current open toward the gate. The ring's two ends run out on the slant
-# to the Breaker and the Door, nearer the gate; the bus runs out each side to level 1's bays; two more slants run
-# back to the battery and the Training machine; the main line goes on to the back wall, dormant.
-# Laid again at 128 (research's pick of 2026-11-17, 12:01; docs/research/rework-2026-11-16.md, part 7: "recomposed,
-# never scaled"): the machines keep their size and the star its shape, and only the ground between them shrinks. The
-# slants keep the 200's reach, 26 across and 26 in. Each place is held by part 7's tests (Rules.BaseFit, on the
-# footprints in Config.World.Fit.Prints; base_plan.fit() reads them and checks the plan): 12 studs between any two
-# footprints, the way in clear, all inside, all in the gate camera's one view. The tight ones are the Breaker's far
-# corner in that view (the heart no nearer the gate than 52) and the Training machine against the generator's foot
-# (the back slants 29 across).
+# "i dont like the placement of the building it a bit to simplish"). The generator stands at the plot's heart, at the
+# end of the way in, inside a ring of current open toward the gate, and the ring's two ends run out on the slant to the
+# Breaker and the Door, nearer the gate.
+# Laid again for Stage III (AR54, research's pick and second look of 2026-11-23): every spot is base_fit.PLAN's, held 12
+# clear at each stage's footprints by part 7's tests and placed by what the game's camera sees from the gate. The yard
+# is no longer the same on its two sides: the Door's side holds bays 1 and 2, the Training machine and the Forge; the
+# Condenser stands at the back between the generator and the Breaker; bays 3 and 4 stand outside the Breaker, the
+# battery and the Lab's stone behind it. The grounds and the lines to them are base_star.py's.
 AVENUE = 20.0                      # the way in, clear from the gate to the generator
 SPAWN = (0.0, 10.0)                # facing into the plot, the generator ahead
-ROW = 52.0                         # the heart's line: the generator's, and the bus's out to the bays
-GENERATOR = (0.0, ROW)
-RING = 18.0                        # the ring of current round the well, open toward the gate: its radius
-ARM = 26.0                         # a slant's reach from the heart, the same across and in
-BREAKER, DOOR = (ARM, ROW - ARM), (-ARM, ROW - ARM)
-KIN = 29.0                         # the back slants' reach across: the Training machine's pad 12 clear of the generator's foot
-BATTERY, TRAINING = (KIN, ROW + ARM), (-KIN, ROW + ARM)
-OUTER = 31.5                       # the bus's ends: level 1's bays
-FAR, BACK = 54.5, ROW + ARM        # the later bays: the bus's line on outward, then back along the side wall
-BAYS = ([(side * OUTER, ROW) for side in (-1, 1)] + [(side * FAR, ROW) for side in (-1, 1)]
-        + [(side * FAR, BACK) for side in (-1, 1)])   # in the order they open: level 1's, level 2's, level 3's
-# What the base will wake, asleep in the back half (research, 2026-11-16): the Lab on the main line, the Forge and
-# the Condenser on a spoke each from the main line's node, the Condenser on the bays' feeding side
-NODE = ROW + 30.0
-LAB, CONDENSER, FORGE = (0.0, 94.0), (26.0, 98.0), (-26.0, 98.0)
-SLEEPS = 6.2                       # a sleeping place's ground: its frame's half side
-BAYS_AT = {1: 2, 2: 4, 3: 6}       # bays by the base's level (docs/design.md, research's seeds)
-WELL = 9.0                         # the generator's ground: a well of void under the plant's heart, its radius
-PAD = (9.5, 5.2)                   # a machine's ground: half across, half deep
+GENERATOR, ROW = star.GENERATOR, star.ROW   # the heart, and its line in from the front edge
+RING, WELL, SLEEPS, LANE = star.RING, star.WELL, star.SLEEPS, star.LANE
+BREAKER, DOOR, BATTERY, TRAINING = (star.spot(name) for name in ("breaker", "door", "battery", "training"))
+LAB, CONDENSER, FORGE = (star.spot(name) for name in ("lab", "condenser", "forge"))
+BAYS = [star.spot(f"bay{k}") for k in range(1, 7)]             # in the order they open
+BAY_TURNS = [star.PLAN[f"bay{k}"][2] for k in range(1, 7)]     # the ring on the outer side: 0 on the Door's side, 180 on the Breaker's
+DOOR_TURN = star.PLAN["door"][2]   # the Door's turn: its mouth looks down the way in
+BAYS_AT = {1: 2, 2: 3, 3: 4}       # bays by the base's level (docs/design.md, "The base"); bays 5 and 6 stay locked at launch
 
 # --- the yard ------------------------------------------------------------------------------------------------------------
 
@@ -88,25 +77,28 @@ COURT = (44.0, 32.0)   # the lit court at the front: half across, and how far in
 HALF = PLOT / 2        # the wall, across: the base is the whole plot (the director, 2026-11-15)
 YARD = PLOT            # how far in the wall runs
 BLOCK = 32.0           # a floor block behind the court: the yard's three, the heart's, the battery's and the sleeping three's
-PYLON = (HALF - 4.5, 16.0)   # the pylons' line inside the side walls, clear of the later bays' line, and the first one's
-                             # place in from the front: they stand between the bays' lots, never on one
-LANE = 12.5            # a lane's middle, between the Breaker's line and the bays
+PYLON = (HALF - 4.5, 13.0)   # the pylons' line inside the side walls, and the first one's place in from the front: a
+                             # span apart, each stands in a gap between two grounds of the outer column (AR54)
 GATE = 22.0            # a gate tower's place, across
+PLATE_UP = 21.6        # the gate's plate: its middle, up, on two posts over the truss: out of the gate's view from inside,
+                       # read whole from the Strip (AR54, TR51's must-fix 1; research's pick of 2026-11-23). It was 16, on the truss
 WING = 32.0            # where a front wall ends and the gate's shoulder begins: whole panels on to the corner
 SPAN = 48.0            # from pylon to pylon
 ARMS = ((16.5, 5.2), (20.0, 3.8))   # a pylon's arms: how high, and how far each reaches
 HANG = 1.9             # an insulator's drop under its arm
 EXIT = 8.0             # the way out at the back wall's middle, half its width: on to the Tower's path
-FLOOD = (ROW - 17.0, 3.0, 12.0)   # a flood mast, one each side of the way in before the ring: in from the front; its head's reach toward the front, and its height.
-# 9 studs behind the Door's and the Breaker's line (26 in), its middle 2.4 off the slant conduit's line and its foot clear of the
-# way in's edge line. From the game's camera (zoom, pitch, FOV) up the way in, along the Door's line, on the line from the spawn
-# and along the gate, neither mast crosses the Door or the Breaker; only a camera beyond the Door's line looking back sees one
-# (Modulo, 2026-11-17, the re-lay at 128, rays at 192 by 108 at each place; at 200 research's must-fix had put it 7 behind)
+FLOOD = (ROW - 16.6, 3.0, 12.0)   # a flood mast, one each side of the way in before the ring: in from the front; its head's reach toward the front, and its height.
+# Laid again for AR54: each stands between the ring and where level 2's second ring will lie, 3.4 off the slant
+# conduit's line. From the game's camera at the gate each stands before the generator's own flank (12.8 degrees off the
+# middle line; the generator reaches 13.6), inside the Breaker's inner end at every stage (13.6 at Stage III, 16 at
+# Stage I): measured on the handoff's meshes
 COURT_GLOW = 1.0       # the court's glow picture's white, as emission strength (EmissiveStrength)
-MAPS = {"Kit": ("#FFFFFF", kit.GLOW), "Court1": ("#FFFFFF", COURT_GLOW), "Yard": ("#FFFFFF", COURT_GLOW),
-        "YardLive": ("#FFFFFF", COURT_GLOW), "YardBack": ("#FFFFFF", COURT_GLOW), "WingsLive": ("#FFFFFF", COURT_GLOW),
-        "WingsBack": ("#FFFFFF", COURT_GLOW),
-        "Wings": ("#FFFFFF", COURT_GLOW)}   # each pair's tint and strength
+# The deck's sixteen floors, a grid over the plot: A to D across, from the Breaker's side wall to the Door's (left to
+# right, seen from the gate), 1 to 4 from the gate in. Each: across from and to, inward from and to.
+FLOOR_AT = {f"Floor{letter}{row}": (x0, x1, BLOCK * (row - 1), BLOCK * row)
+            for letter, (x0, x1) in zip("ABCD", ((COURT[0], HALF), (0.0, COURT[0]), (-COURT[0], 0.0), (-HALF, -COURT[0])))
+            for row in (1, 2, 3, 4)}
+MAPS = {"Kit": ("#FFFFFF", kit.GLOW), **{name: ("#FFFFFF", COURT_GLOW) for name in FLOOR_AT}}   # each pair's tint and strength
 
 # Swatches: the colour at the head, at the foot, and how much it glows. Pale concrete, the current in Power's yellow
 # (the HUD's own), the Breaker's light in cyan. AR40's C, sandstone and teal (research's pick, 2026-11-18, 22:52, on the
@@ -251,13 +243,32 @@ def _band(px):
     return lambda dist, reach: np.clip((reach - np.abs(dist)) / px + 0.5, 0, 1)
 
 
+def deck(x, y, px):
+    """The plot's own deck plates under a floor's field: one sheet of plates over the whole plot, so a plate that
+    crosses two floors is one plate. `x` is across from the middle line, `y` in from the front edge."""
+    rng = np.random.default_rng(31)
+    a, b = code(DECK_TONES[0]), code(DECK_TONES[1])
+    n = int(PLOT / PLATE) + 1
+    k = rng.uniform(0.0, 1.0, (n, n)).astype(np.float32)[(y // PLATE).astype(int), ((x + HALF) // PLATE).astype(int)][..., None]
+    page = np.ones((*x.shape, 4), np.float32)
+    page[..., :3] = a * (1 - k) + b * k
+    fx, fy = (x + HALF) % PLATE, y % PLATE
+    near = np.minimum(np.minimum(fx, PLATE - fx), np.minimum(fy, PLATE - fy))
+    _mix(page, DECK_TONES[3], ((np.minimum(fx, fy) < 3.2 * px) & (near >= 1.2 * px)).astype(np.float32) * 0.45)
+    _mix(page, DECK_TONES[2], np.clip(1.7 - near / px, 0, 1))
+    bolt = np.hypot(np.minimum(fx, PLATE - fx) - 0.42, np.minimum(fy, PLATE - fy) - 0.42)
+    _mix(page, DECK_TONES[2], np.clip((0.12 - bolt) / px + 0.5, 0, 1) * 0.8)
+    return page
+
+
 def conduits(page, glow, x, y, px, live=(), dead=(), arcs=()):
     """The conduits in a floor's picture: a dark casing with a clamp every plate, and in a live one the current, a
     bright core with its halo. A run is two ends, at any slant. An arc is live: its middle, its radius, and the two
-    turns it runs between, in degrees from the way toward the gate round by the right. A junction sits on each live
-    end."""
+    turns it runs between, in degrees from the way toward the gate round by the Breaker's side (so the Door's side is
+    below zero). A junction sits on each live end. A run or an arc that doesn't reach this field isn't drawn."""
     band = _band(px)
     laid = dict(casing=np.zeros_like(glow), core=np.zeros_like(glow), halo=np.zeros_like(glow))
+    x0, x1, y0, y1 = float(x.min()) - 8.0, float(x.max()) + 8.0, float(y.min()) - 8.0, float(y.max()) + 8.0
 
     def lay(d, along, lit):
         clamp = ((along % PLATE) < 0.4).astype(np.float32)
@@ -271,16 +282,20 @@ def conduits(page, glow, x, y, px, live=(), dead=(), arcs=()):
         laid["casing"] = np.maximum(laid["casing"], band(e, 1.3))
         laid["core"] = np.maximum(laid["core"], band(e - 0.75, 0.16))
 
-    for lit, runs in ((True, live), (False, dead)):
-        for (x0, y0), (x1, y1) in runs:
-            length = math.hypot(x1 - x0, y1 - y0)
-            ux, uy = (x1 - x0) / length, (y1 - y0) / length
-            along, off = (x - x0) * ux + (y - y0) * uy, (y - y0) * ux - (x - x0) * uy
+    for lit, runs_ in ((True, live), (False, dead)):
+        for (ax, ay), (bx, by) in runs_:
+            if max(ax, bx) < x0 or min(ax, bx) > x1 or max(ay, by) < y0 or min(ay, by) > y1:
+                continue
+            length = math.hypot(bx - ax, by - ay)
+            ux, uy = (bx - ax) / length, (by - ay) / length
+            along, off = (x - ax) * ux + (y - ay) * uy, (y - ay) * ux - (x - ax) * uy
             lay(np.hypot(off, along - np.clip(along, 0.0, length)), along, lit)
             if lit:
-                junction(x0, y0)
-                junction(x1, y1)
+                junction(ax, ay)
+                junction(bx, by)
     for (cx, cy), radius, start, end in arcs:
+        if cx + radius < x0 or cx - radius > x1 or cy + radius < y0 or cy - radius > y1:
+            continue
         turn = np.degrees(np.arctan2(x - cx, cy - y))
         held = np.radians(np.clip(turn, start, end))
         lay(np.hypot(x - (cx + radius * np.sin(held)), y - (cy - radius * np.cos(held))), np.radians(turn) * radius, True)
@@ -291,40 +306,24 @@ def conduits(page, glow, x, y, px, live=(), dead=(), arcs=()):
     return np.maximum(glow + 0.3 * laid["halo"] * (1 - laid["casing"]), laid["core"])
 
 
-def ring_arc():
-    """The ring of current round the well, on the plot's right half: from its open end, on the Breaker's slant, round
-    to the main line at its back. The left half is the same, mirrored: the ring stays open toward the gate, the way
-    in running into it."""
-    return (GENERATOR, RING, 45.0, 180.0)
+def ring_arcs():
+    """The ring of current round the well, its two halves: each from its open end, on the slant to the Breaker's
+    ground or the Door's, round to the main line at its back. It stays open toward the gate, the way in running into
+    it."""
+    return [(GENERATOR, RING, 45.0, 180.0), (GENERATOR, RING, -180.0, -45.0)]
 
 
-def live_runs():
-    """The live conduits on the plot's right half and its middle line, each from the heart's end outward, across and
-    in: from the well's rim to the ring and on along the bus to the bay's frame; from the ring's open end out on the
-    slant to the Breaker's ground; from the ring back on the slant to the battery's; and from the well's back to the
-    ring. The left half is the same, mirrored."""
-    s = RING * math.sqrt(0.5)
-    near, far = BREAKER[1] + PAD[1], BATTERY[1] - PAD[1]
-    return [((WELL + 0.6, ROW), (RING, ROW)), ((RING, ROW), (OUTER - 6.2, ROW)),
-            ((s, ROW - s), (ROW - near, near)), ((s, ROW + s), (far - ROW, far)),
-            ((0.0, ROW + WELL + 0.6), (0.0, ROW + RING))]
-
-
-def dead_runs():
-    """The lines with no current in them yet, as their casings alone, on the plot's right half and its middle line:
-    the main line on from the ring's back to the Lab's place and from it to the back wall; a spoke from the main
-    line's node to the Condenser's place (the Forge's, mirrored); and the bus on from the open bay to the next, then
-    back along the wall to the last. Each lights out to its place when the place wakes."""
-    reach = math.hypot(CONDENSER[0], CONDENSER[1] - NODE)
-    held = (reach - SLEEPS - 1.6) / reach
-    return [((0.0, ROW + RING), (0.0, LAB[1] - SLEEPS)), ((0.0, LAB[1] + SLEEPS), (0.0, YARD + 2.0)),
-            ((0.0, NODE), (CONDENSER[0] * held, NODE + (CONDENSER[1] - NODE) * held)),
-            ((OUTER + 6.2, ROW), (FAR - SLEEPS, ROW)), ((FAR, ROW + SLEEPS), (FAR, BACK - SLEEPS))]
-
-
-def sleeping():
-    """The places asleep on the plot's right half and its middle line, at level 1."""
-    return [(FAR, ROW), (FAR, BACK), CONDENSER, LAB]
+def runs():
+    """The conduits' straight runs, each across and in: the live ones and the ones with no current yet. The well's
+    rim is linked to the ring on each side and at its back; every place's line is the star's (base_star.lines); and
+    the main line runs on, dormant, from the last sleeping bay to the way out at the back wall."""
+    gx = GENERATOR[0]
+    live = [((gx + side * (WELL + 0.6), ROW), (gx + side * RING, ROW)) for side in (-1, 1)]
+    live.append(((gx, ROW + WELL + 0.6), (gx, ROW + RING)))
+    dead = [((gx, star.ground("bay5")[3]), (gx, YARD + 2.0))]
+    for line in star.lines().values():
+        (live if line["live"] else dead).append((line["a"], line["b"]))
+    return live, dead
 
 
 def asleep(page, x, y, px, at):
@@ -338,45 +337,49 @@ def asleep(page, x, y, px, at):
 
 
 def pools(x, y):
-    """The court's soft light on the deck, which runs on past the court's back edge into the yard's first block: the
-    well's, the Breaker's ground's, and the floods'. `y` is studs in from the plot's front edge."""
-    return (0.22 * np.exp(-(np.hypot(x, y - ROW) / 14.0) ** 2)
-            + 0.3 * np.exp(-((x - BREAKER[0]) ** 2 + (y - BREAKER[1]) ** 2) / 11.0 ** 2)
-            + 0.3 * np.exp(-((x - flood_across()) ** 2 + (y - (FLOOD[0] - FLOOD[1])) ** 2) / 9.0 ** 2))
+    """The soft light on the deck round the heart: the well's, the Breaker's ground's, and the floods'. `y` is studs in
+    from the plot's front edge."""
+    bx0, bx1, by0, by1 = star.ground("breaker")
+    return (0.22 * np.exp(-(np.hypot(x - GENERATOR[0], y - ROW) / 14.0) ** 2)
+            + 0.3 * np.exp(-((x - (bx0 + bx1) / 2) ** 2 / 16.0 ** 2 + (y - (by0 + by1) / 2) ** 2 / 9.0 ** 2))
+            + 0.3 * np.exp(-((np.abs(x) - flood_across()) ** 2 + (y - (FLOOD[0] - FLOOD[1])) ** 2) / 9.0 ** 2))
 
 
 def well(page, glow, x, y, px):
     """The generator's ground: a well, the void under the plant's heart. Dark, a few far lights in it, a rim of the
-    void's own violet inside Power's yellow: the one place the yard shows what its power is drawn from. `y` is studs in
-    from the plot's front edge, so the yard's first block draws whatever of it passes the court's back edge."""
+    void's own violet inside Power's yellow: the one place the yard shows what its power is drawn from."""
     band = _band(px)
-    r = np.hypot(x, y - ROW)
+    gx = GENERATOR[0]
+    r = np.hypot(x - gx, y - ROW)
     inside = np.clip((WELL - r) / px + 0.5, 0, 1)
+    if not inside.any():
+        return glow, inside
     page[..., :3] = page[..., :3] * (1 - inside[..., None]) + code("#0A0816") * inside[..., None]
     glow = glow * (1 - inside)
     rng = np.random.default_rng(72)
-    for _ in range(int(0.46 * WELL ** 2)):
-        a, q = rng.uniform(0, np.pi), (WELL - 1.2) * np.sqrt(rng.uniform(0.15, 1.0))
-        star = band(np.hypot(x - q * np.sin(a), y - (ROW + q * np.cos(a))), float(rng.choice((0.07, 0.07, 0.11))))
-        _mix(page, "#E8DCFF", star)
-        glow += 0.7 * star
+    for _ in range(int(0.92 * WELL ** 2)):
+        a, q = rng.uniform(0, 2 * np.pi), (WELL - 1.2) * np.sqrt(rng.uniform(0.15, 1.0))
+        far = band(np.hypot(x - (gx + q * np.sin(a)), y - (ROW + q * np.cos(a))), float(rng.choice((0.07, 0.07, 0.11))))
+        _mix(page, "#E8DCFF", far)
+        glow += 0.7 * far
     _mix(page, "#B98CFF", band(r - (WELL - 0.5), 0.16))
     _mix(page, "#FFD23E", band(r - WELL, 0.14))
     return glow + 0.6 * band(r - (WELL - 0.5), 0.16) + 0.5 * band(r - WELL, 0.14), inside
 
 
 def flood_across():
-    """A flood mast's place across: just outside the way in's line, clear of the way and of the ring's slants."""
-    return LANE + 1.1
+    """A flood mast's place across: just outside the way in, its foot clear of the way's 20 studs."""
+    return AVENUE / 2 + 1.8
 
 
-def pad(page, glow, x, y, px, at, line, lit=0.45):
-    """A machine's ground: a darker dais inside a line of its own colour."""
+def pad(page, glow, x, y, px, box, line, lit=0.45):
+    """A machine's ground: a darker dais inside a line of its own colour. `box`: across from and to, in from and to."""
     band = _band(px)
-    box = np.maximum(np.abs(x - at[0]) - PAD[0], np.abs(y - at[1]) - PAD[1])
-    page[..., :3] *= (1.0 - 0.3 * np.clip(-box / px + 0.5, 0, 1))[..., None]
-    _mix(page, line, band(box, 0.12))
-    return glow + lit * band(box, 0.12)
+    x0, x1, y0, y1 = box
+    out = np.maximum(np.abs(x - (x0 + x1) / 2) - (x1 - x0) / 2, np.abs(y - (y0 + y1) / 2) - (y1 - y0) / 2)
+    page[..., :3] *= (1.0 - 0.3 * np.clip(-out / px + 0.5, 0, 1))[..., None]
+    _mix(page, line, band(out, 0.12))
+    return glow + lit * band(out, 0.12)
 
 
 def bay_frame(page, glow, x, y, px, at):
@@ -385,8 +388,8 @@ def bay_frame(page, glow, x, y, px, at):
     dx, dy = np.abs(x - at[0]), np.abs(y - at[1])
     box = np.maximum(dx, dy)
     corner = (np.minimum(dx, dy) > 3.6).astype(np.float32)
-    frame = np.maximum(band(box - 6.2, 0.12), band(box - 6.2, 0.3) * corner)
-    page[..., :3] *= (1.0 - 0.3 * np.clip((6.2 - box) / px + 0.5, 0, 1))[..., None]
+    frame = np.maximum(band(box - SLEEPS, 0.12), band(box - SLEEPS, 0.3) * corner)
+    page[..., :3] *= (1.0 - 0.3 * np.clip((SLEEPS - box) / px + 0.5, 0, 1))[..., None]
     _mix(page, "#FFD23E", frame)
     return glow + 0.4 * frame + 0.16 * np.exp(-((x - at[0]) ** 2 + (y - at[1]) ** 2) / 8.0 ** 2)
 
@@ -394,136 +397,94 @@ def bay_frame(page, glow, x, y, px, at):
 def way_in(page, x, y, px):
     """The way in: a pale dashed line down each of its edges, from the gate to the ring's open ends."""
     reach = ROW - RING * math.sqrt(0.5) - 2.0
-    _mix(page, "#D4DCEE", _band(px)(x - LANE, 0.11) * ((y % 4.0) < 2.0) * (y > 3.0) * (y < reach) * 0.45)
+    _mix(page, "#D4DCEE", _band(px)(np.abs(x) - LANE, 0.11) * ((y % 4.0) < 2.0) * (y > 3.0) * (y < reach) * 0.45)
+
+
+GROUNDS = (("breaker", "#BFEFF5", 0.45), ("door", "#BFEFF5", 0.45), ("battery", "#D4DCEE", 0.3),
+           ("training", "#D4DCEE", 0.3), ("forge", "#D4DCEE", 0.3), ("condenser", "#D4DCEE", 0.3))   # each line's colour, and its glow
+
+
+def box_mark(page, x, y, px, at):
+    """A junction box on a live line: dark, in a rim of Power's yellow, a lamp at its middle. Its glow."""
+    band = _band(px)
+    e = np.maximum(np.abs(x - at[0]), np.abs(y - at[1]))
+    rim, lamp = band(e, 1.5) * (1 - band(e, 1.15)), band(np.hypot(x - at[0], y - at[1]), 0.5)
+    _mix(page, "#141724", band(e, 1.5))
+    _mix(page, "#FFD23E", rim)
+    _mix(page, "#FFF1A8", lamp)
+    return lamp + 0.3 * rim
 
 
 def marks(page, glow, x, y, px):
     """Everything the layout draws on the deck, in the plot's own studs: `x` across from the middle line, `y` in from
     the front edge. A floor's picture shows whatever of it falls on that floor, so a place that moves takes its marks
-    with it: the Breaker's ground (the Door's, mirrored), the battery's (the Training machine's), the open bay's
-    frame, the conduits and the ring, the box where the dormant main line leaves the ring, the well and the pools."""
-    band = _band(px)
-    glow = pad(page, glow, x, y, px, BREAKER, "#BFEFF5")
-    glow = pad(page, glow, x, y, px, BATTERY, "#D4DCEE", 0.3)
-    glow = bay_frame(page, glow, x, y, px, (OUTER, ROW))
-    for at in sleeping():
-        asleep(page, x, y, px, at)
-    glow = conduits(page, glow, x, y, px, live=live_runs(), dead=dead_runs(), arcs=[ring_arc()])
-    node = np.maximum(np.abs(x), np.abs(y - NODE))                 # the main line's node, dark: the spokes leave it
-    _mix(page, "#141724", band(node, 1.3))
-    _mix(page, "#3A4266", band(node, 1.3) * (1 - band(node, 1.0)))
-    e = np.maximum(np.abs(x), np.abs(y - (ROW + RING)))
-    rim = band(e, 1.5) * (1 - band(e, 1.15))
-    lamp = band(np.hypot(x, y - (ROW + RING)), 0.5)
-    _mix(page, "#141724", band(e, 1.5))
-    _mix(page, "#FFD23E", rim)
-    _mix(page, "#FFF1A8", lamp)
-    glow, inside = well(page, glow + lamp + 0.3 * rim, x, y, px)
+    with it: each machine's ground, each open bay's frame, each sleeping place's, the conduits and the ring, the box
+    where the main line leaves the ring's back, the node where the Training machine's line leaves bay 2's, the well and
+    the pools."""
+    for name, line, lit in GROUNDS:
+        glow = pad(page, glow, x, y, px, star.ground(name), line, lit)
+    for name in star.OPEN:
+        glow = bay_frame(page, glow, x, y, px, star.spot(name))
+    for name in star.LATER + ("lab",):
+        asleep(page, x, y, px, star.spot(name))
+    live, dead = runs()
+    glow = conduits(page, glow, x, y, px, live=live, dead=dead, arcs=ring_arcs())
+    glow = glow + box_mark(page, x, y, px, star.node())
+    glow = glow + box_mark(page, x, y, px, (GENERATOR[0], ROW + RING))
+    glow, inside = well(page, glow, x, y, px)
     return glow + pools(x, y) * (1 - inside)
 
 
-def court_pictures(level=1):
-    """A level's court, half of it: across from the plot's middle line out to its edge (the picture's left to its
-    right), in from the front edge (its head to its foot). The way in runs down its middle toward the heart, in the
-    yard's first block; the ring's end comes out on the slant to the Breaker's ground (the Door's, mirrored). The
-    colour, and the glow: the current, the grounds' lines, and the soft pools."""
-    n = 1024
-    half, deep = COURT
-    yy, xx = np.mgrid[0:n, 0:n].astype(np.float32)
-    x, y = (xx + 0.5) / n * half, (yy + 0.5) / n * deep
-    px = (half + deep) / 2 / n
+def grounded(x, y):
+    """Where a ground lies, a machine's or a bay's: the deck's own lines stop at its edge."""
+    inside = np.zeros(x.shape, bool)
+    for name in star.MACHINES + star.FRAMED:
+        x0, x1, y0, y1 = star.ground(name)
+        inside |= (x > x0) & (x < x1) & (y > y0) & (y < y1)
+    return inside.astype(np.float32)
+
+
+def floor_pictures(name):
+    """A floor's pair of pictures, the colour and the glow: its own ground of the plot, across from the picture's left
+    to its right and in from the front edge down it. The deck's plates; the wall's foot along each side wall; a joint
+    across each block's far edge; the threshold under the gate and the ring where a player arrives; the way in; and
+    the layout's marks."""
+    x0, x1, y0, y1 = FLOOR_AT[name]
+    rows, cols = 512, (1024 if x1 - x0 > BLOCK else 512)   # 16 px a stud in, 23 or more across: the sixteen hold
+    # fewer pixels than the seven mirrored floors did (12.6 million against 14.7), and no axis under 16 a stud (it was 11.6)
+    yy, xx = np.mgrid[0:rows, 0:cols].astype(np.float32)
+    x, y = x0 + (xx + 0.5) / cols * (x1 - x0), y0 + (yy + 0.5) / rows * (y1 - y0)
+    px = ((x1 - x0) / cols + (y1 - y0) / rows) / 2
     band = _band(px)
-    page = plates(x, y, 14 + level, px)
-    glow = np.zeros((n, n), np.float32)
-    # the court's own line down its side: the deck runs on past it into the wings, and into the yard at its back
-    _mix(page, "#C9D2E6", band(x - (half - 0.4), 0.09) * 0.6)
+    page = deck(x, y, px)
+    glow = np.zeros((rows, cols), np.float32)
+    # the wall's foot, along each side wall: a darker margin inside a pale line
+    foot = HALF - 3.0
+    page[..., :3] *= (1.0 - 0.38 * np.clip((np.abs(x) - foot) / px + 0.5, 0, 1))[..., None]
+    _mix(page, "#C9D2E6", band(np.abs(x) - foot, 0.09) * 0.6)
+    # the joint across each block's far edge, behind the court: where one block of the yard ends
+    far = BLOCK - (y % BLOCK)
+    free = 1.0 - grounded(x, y)
+    joint = ((np.abs(x) < foot) & ((y > BLOCK) | (np.abs(x) > COURT[0]))).astype(np.float32) * free
+    _mix(page, "#252B44", band(far - 0.2, 0.2) * joint)
+    _mix(page, "#C9D2E6", band(far - 0.55, 0.07) * joint * 0.5)
+    # the court's own line down each of its sides: the deck runs on past it into the outer columns
+    _mix(page, "#C9D2E6", band(np.abs(x) - (COURT[0] - 0.4), 0.09) * (y < COURT[1]) * free * 0.6)
     # the threshold under the gate, between its towers' feet: hazard on the slant
-    sill = (band(y - 0.9, 0.7) * (x < GATE - 2.6)).astype(np.float32)
-    stripe = (((x + y) // 0.9) % 2).astype(np.float32)
+    sill = (band(y - 0.9, 0.7) * (np.abs(x) < GATE - 2.6)).astype(np.float32)
+    stripe = (((np.abs(x) + y) // 0.9) % 2).astype(np.float32)
     _mix(page, "#FFD23E", sill * (1 - stripe))
     _mix(page, "#1F2233", sill * stripe)
     way_in(page, x, y, px)
     # where the player arrives: a ring on the deck
-    r = np.hypot(x, y - SPAWN[1])
+    r = np.hypot(x - SPAWN[0], y - SPAWN[1])
     ring = np.maximum(band(r - 4.2, 0.14), band(r - 3.2, 0.06))
     _mix(page, "#E9E2D2", ring * 0.9)
     glow += 0.25 * ring
     return page, grey(marks(page, glow, x, y, px))
 
 
-def spine(x, along, px):
-    """The yard's main conduit down the plot's middle line, as its casing alone: no current in it yet. `along` is
-    studs from where it starts; it runs on off the picture."""
-    d = np.hypot(x, np.minimum(along, 0.0))
-    clamp = ((along % PLATE) < 0.4).astype(np.float32)
-    band = _band(px)
-    return np.maximum(band(d, 0.8), band(d, 1.05) * clamp)
-
-
-def yard_pictures(kind=None):
-    """A yard block, half of it, behind the court toward the back wall: the deck with its lanes and a joint across its
-    far edge. `live` is the block behind the court, the heart's: the way in's last studs, the well, the ring and the
-    lines leaving it. `back` is the block behind that: the ring's back, the slant arriving at the battery's ground (the
-    Training machine's, mirrored), and the main line going on, dormant, to its node. `end` is the last, against the
-    back wall: the sleeping three's places, the spokes reaching them and the main line on to the way out. At 128 the
-    yard is these three behind the court; a block with no kind, plain on purpose with only the dead main line down
-    its middle (research, 2026-11-16), stood only on the 200."""
-    n = 1024
-    half, deep = COURT[0], BLOCK
-    yy, xx = np.mgrid[0:n, 0:n].astype(np.float32)
-    x, y = (xx + 0.5) / n * half, (yy + 0.5) / n * deep
-    px = (half + deep) / 2 / n
-    band = _band(px)
-    page = plates(x, y, 31, px)
-    if not kind:
-        page[..., :3] *= 0.9                                    # a shade under the court: nothing here is lit
-    glow = np.zeros((n, n), np.float32)
-    front = COURT[1] + deep * ("live", "back", "end").index(kind) if kind else 0.0   # the block's own front edge, in from the plot's
-    if kind != "live":                                          # the lane, clear of the ring and the lines leaving it
-        _mix(page, "#D4DCEE", band(x - LANE, 0.11) * ((y % 4.0) < 2.0) * (y + front > ROW + RING + 4.0) * 0.45)
-    # the joint across the block's far edge: where one block of the yard ends
-    _mix(page, "#252B44", band(y - (deep - 0.2), 0.2))
-    _mix(page, "#C9D2E6", band(y - (deep - 0.55), 0.07) * 0.5)
-    if kind:
-        way_in(page, x, y + front, px)
-        return page, grey(marks(page, glow, x, y + front, px))
-    _mix(page, "#141724", spine(x, y + PLATE, px))              # the main line, as its casing alone
-    return page, grey(glow)
-
-
-def wings_pictures(kind=None):
-    """A wing block, one side's: the deck from the middle strip's edge out to the side wall (the picture's left to
-    its right), laid from the front wall back. Dead, the plainest ground of the base: a service lane, the wall's foot,
-    and the block's joint, with nothing marked on it. `live` is the heart's block, the second from the front: the bus
-    runs on, dead, from the open bay to the next bay's place, asleep. `back` is the block behind it: the line back
-    along the wall to the last bay's place."""
-    n = 1024
-    wide, deep = HALF - COURT[0], BLOCK
-    yy, xx = np.mgrid[0:n, 0:n].astype(np.float32)
-    x, y = (xx + 0.5) / n * wide, (yy + 0.5) / n * deep
-    px = (wide + deep) / 2 / n
-    band = _band(px)
-    page = plates(x, y, 47, px)
-    if not kind:
-        page[..., :3] *= 0.9
-    glow = np.zeros((n, n), np.float32)
-    # the wall's foot: a darker margin inside a pale line
-    margin = np.clip((x - (wide - 3.0)) / px + 0.5, 0, 1)
-    page[..., :3] *= (1.0 - 0.38 * margin)[..., None]
-    _mix(page, "#C9D2E6", band(x - (wide - 3.0), 0.09) * 0.6)
-    for lane in (6.0, 42.0):                                    # where the wing is wide enough, and never under a bay's place
-        if lane < wide - 6.0 and not kind:
-            _mix(page, "#D4DCEE", band(x - lane, 0.11) * ((y % 4.0) < 2.0) * 0.4)
-    _mix(page, "#252B44", band(y - (deep - 0.2), 0.2) * (x < wide - 3.0))
-    _mix(page, "#C9D2E6", band(y - (deep - 0.55), 0.07) * (x < wide - 3.0) * 0.5)
-    if kind:
-        return page, grey(marks(page, glow, x + COURT[0], y + BLOCK * (1 + ("live", "back").index(kind)), px))
-    return page, grey(glow)
-
-
-FLOORS = {"Court1": lambda: court_pictures(1), "Yard": lambda: yard_pictures("end"), "YardLive": lambda: yard_pictures("live"),
-          "YardBack": lambda: yard_pictures("back"), "Wings": wings_pictures, "WingsLive": lambda: wings_pictures("live"),
-          "WingsBack": lambda: wings_pictures("back")}
+FLOORS = {name: (lambda name=name: floor_pictures(name)) for name in FLOOR_AT}
 
 
 def write_pictures(out: Path, save=None, only=None):
@@ -555,47 +516,19 @@ def insulator(m, at, length, r=0.34, ribs=3, sides=5):
     m.lathe(profile, at, sides, "ceramic")
 
 
-def court(level):
+def floor(name):
     def make():
-        """A level's court floor, the middle 88 studs by 32 from the front edge in: one picture, laid mirrored about
-        the middle."""
+        """A floor of the deck's grid: a flat face its ground's size, its front edge at the piece's place and its
+        middle on it, in its own pair of pictures."""
+        x0, x1, y0, y1 = FLOOR_AT[name]
+        half, deep = (x1 - x0) / 2, y1 - y0
         m = Mesh(None)
-        half, deep = COURT
-        m.face([Vector((0, -deep, 0.06)), Vector((half, -deep, 0.06)), Vector((half, 0, 0.06)), Vector((0, 0, 0.06))],
+        m.face([Vector((-half, -deep, 0.06)), Vector((half, -deep, 0.06)), Vector((half, 0, 0.06)), Vector((-half, 0, 0.06))],
                [(0, 0), (1, 0), (1, 1), (0, 1)])
-        m.face([Vector((-half, -deep, 0.06)), Vector((0, -deep, 0.06)), Vector((0, 0, 0.06)), Vector((-half, 0, 0.06))],
-               [(1, 0), (0, 0), (0, 1), (1, 1)])
-        return Piece(f"Court{level}", m, maps=f"Court{level}", solid="floor",
-                     note="lies 0.06 over the deck, its front edge on the plot's; a Part under it carries the walking")
+        return Piece(name, m, maps=name, solid="floor",
+                     note=f"lies 0.06 over the deck, {2 * half:g} studs across by {deep:g} in, its front edge at its "
+                          f"place; a Part under it carries the walking. A floor's look: its glow turns with the night")
     return make
-
-
-def yard(name="Yard"):
-    """A yard block's floor, 88 studs by 32, its front edge at the piece's place: one picture, laid mirrored about the
-    middle. Three stand behind the court, to the back wall: YardLive, YardBack and Yard, each in its own picture."""
-    m = Mesh(None)
-    half, deep = COURT[0], BLOCK
-    m.face([Vector((0, -deep, 0.06)), Vector((half, -deep, 0.06)), Vector((half, 0, 0.06)), Vector((0, 0, 0.06))],
-           [(0, 0), (1, 0), (1, 1), (0, 1)])
-    m.face([Vector((-half, -deep, 0.06)), Vector((0, -deep, 0.06)), Vector((0, 0, 0.06)), Vector((-half, 0, 0.06))],
-           [(1, 0), (0, 0), (0, 1), (1, 1)])
-    return Piece(name, m, maps=name, solid="floor",
-                 note="lies 0.06 over the deck behind the court, block after block; a Part under it carries the walking")
-
-
-def wings(name="Wings"):
-    """A block of the deck each side of the middle strip, out to the side walls: 20 studs by 32 a side, its front
-    edge at the piece's place, one picture mirrored about the middle. Four stand from the front wall back; WingsLive
-    and WingsBack are the same floor in their own pictures."""
-    m = Mesh(None)
-    near, far, deep = COURT[0], HALF, BLOCK
-    m.face([Vector((near, -deep, 0.06)), Vector((far, -deep, 0.06)), Vector((far, 0, 0.06)), Vector((near, 0, 0.06))],
-           [(0, 0), (1, 0), (1, 1), (0, 1)])
-    m.face([Vector((-far, -deep, 0.06)), Vector((-near, -deep, 0.06)), Vector((-near, 0, 0.06)), Vector((-far, 0, 0.06))],
-           [(1, 0), (0, 0), (0, 1), (1, 1)])
-    return Piece(name, m, maps=name, solid="floor",
-                 note="lies 0.06 over the deck each side of the court and of the yard's blocks, the two sides one mesh; "
-                      "a Part under it carries the walking")
 
 
 def wall_line(m, run, at):
@@ -651,13 +584,16 @@ def gate():
             m.box((span, 0.36, 0.36), (0, y, z), "steel")
     for y in (-0.8, 0.8):
         m.tube([(-span / 2 + span * i / 10, y, 15.0 if i % 2 == 0 else 17.0) for i in range(11)], 0.13, "steel")
-    m.box((11.0, 2.2, 4.4), (0, 0, 16.0), "rubber", pics={"+y": "plate", "-y": "plate"}, ink=True)
+    m.box((11.0, 2.2, 4.4), (0, 0, PLATE_UP), "rubber", pics={"+y": "plate", "-y": "plate"}, ink=True)
+    if PLATE_UP - 2.2 > 17.0:                                       # raised over the truss: two posts carry it
+        for x in (-4.2, 4.2):
+            m.box((0.5, 0.5, PLATE_UP - 2.2 - 17.0), (x, 0, (PLATE_UP - 2.2 + 17.0) / 2), "girder", ink=True)
     for x in (-13.0, 13.0):
         m.box((2.0, 1.3, 0.7), (x, 0, 14.45), "girder", ink=True)
         m.box((1.6, 0.9, 0.12), (x, 0, 14.05), "lamp")
     return Piece("Gate1", m, solid="a box round each tower's foot, 4.6 square, and the two shoulders as walls",
                  note="clear between the towers' feet: 39.4 studs, 14 under the floods; the plate's faces are +Y and "
-                      "-Y, 11 by 4.4 at 16 up: the base's level is the builder's text on both")
+                      f"-Y, 11 by 4.4 at {PLATE_UP:g} up: the base's level is the builder's text on both")
 
 
 def pylon():
@@ -732,8 +668,7 @@ def transformer():
     return Piece("Transformer", m, solid="a box, 3.6 by 3 by 3.4")
 
 
-PIECES = {"Court1": court(1), "Yard": yard, "Wings": wings, "YardLive": lambda: yard("YardLive"),
-          "YardBack": lambda: yard("YardBack"), "WingsLive": lambda: wings("WingsLive"), "WingsBack": lambda: wings("WingsBack"), "Wall": wall, "WallHalf": lambda: wall(8.0),
+PIECES = {**{name: floor(name) for name in FLOOR_AT}, "Wall": wall, "WallHalf": lambda: wall(8.0),
           "WallEnd": lambda: wall(0.0), "Gate1": gate, "Pylon": pylon,
           "PowerSpan": power_span, "FloodMast": flood_mast, "Transformer": transformer,
           **machines.PIECES,       # and the machines' own models (AR15, base_machines.py)
@@ -744,7 +679,8 @@ PIECES = {"Court1": court(1), "Yard": yard, "Wings": wings, "YardLive": lambda: 
           **bays.PIECES,           # and the bays' Stages II and III (AR33, base_bay.py)
           **battery.PIECES,        # and the battery's Stages II and III (AR34, base_battery.py)
           **training.PIECES,       # and the Training machine's Stages II and III (AR35, base_training.py)
-          **forge_stages.PIECES}   # and the Forge's and the Condenser's Stages II and III (AR36, base_forge_stages.py)
+          **forge_stages.PIECES,   # and the Forge's and the Condenser's Stages II and III (AR36, base_forge_stages.py)
+          **levels.PIECES}         # and what the yard gains at base levels 2 and 3 (AR50, base_levels.py)
 
 
 def build(name):
@@ -777,7 +713,6 @@ def export(out: Path):
     folders = {name: out / name for name in ("meshes", "maps")}
     for f in folders.values():
         f.mkdir(parents=True, exist_ok=True)
-    write_pictures(folders["maps"])
     listing = {}
     for name in PIECES:
         piece = build(name)
@@ -798,6 +733,7 @@ def export(out: Path):
             glowTint=tint, glowStrength=strength, collision=piece.solid,
             lights=[dict(name=n, at=[round(at[0], 3), round(at[2], 3), round(-at[1], 3)], colour=c) for n, at, c in piece.lights],
             note=piece.note)
+    write_pictures(folders["maps"])   # after the meshes: a machine's ground is drawn from its own footprint (base_star.py)
     manifest = dict(
         what="AR14: the base's own kit, a power yard. Made and laid as Lantern Row's kit is.",
         unit="1 = 1 stud",
@@ -807,7 +743,13 @@ def export(out: Path):
                 "`glowTint`, EmissiveStrength from `glowStrength` (tuned in the engine). Single sided: each piece's ink "
                 "is in its mesh, a hull turned inside out on the atlas's ink texel.",
         ink=f"the drawn edge is a hull {ink.INK:g} studs out (base_ink.py); Lantern Row's is {ink.SHARED:g}",
-        shadows="CastShadow off on PowerSpan and the floors (Court1, Yard, Wings, YardLive, YardBack, WingsLive, WingsBack).",
+        shadows="CastShadow off on PowerSpan and the sixteen floors (every piece named Floor: FloorA1 to FloorD4), "
+                "and on the light laid on the deck (LevelFloor, LevelRays, BayWake3, BayWake4).",
+        floors="the deck's look is a grid of sixteen floors over the plot, each in its own pair of pictures: A to D "
+               "across from the Breaker's side wall to the Door's (left to right, seen from the gate), 1 to 4 from the "
+               "gate in. A and D are 20 studs across, B and C 44, each 32 in. They replace Court1, Yard, YardLive, "
+               "YardBack, Wings, WingsLive and WingsBack (AR54): the yard isn't the same on its two sides, so no "
+               "picture is mirrored.",
         maps={"Base_Deck_Color.png": f"the plain deck, a tile {DECK[1]:g} studs square (four plates), for a Texture on a Part"},
         pieces=listing)
     (out / "manifest.json").write_text(json.dumps(manifest, indent=1), encoding="utf-8")

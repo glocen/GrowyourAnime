@@ -148,6 +148,7 @@ local function makeChip()
 	corner.Parent = made
 	local words = Text.new({ Name = "Words", Size = Theme.Text.Caption, Font = Theme.Font.Strong, Align = Enum.TextXAlignment.Center, Parent = made })
 	made.Parent = Layers.Get("Hud")
+	HudController.Beneath(made) -- the plates in its column keep under it (AR51's must-fix 3)
 	chip, chipWords = made, words
 end
 

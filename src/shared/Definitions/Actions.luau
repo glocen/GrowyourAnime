@@ -39,6 +39,9 @@ export type Hit = {
 	-- It lands on its fighter's footprint (FightService; Rules.Mark; Config.Combat.Keeper.Mark), put down on its action's
 	-- Aim beat: every enemy whose centre is inside it, in place of Reach and the arc (TR44)
 	Mark: boolean?,
+	-- With Mark, its footprint is a line, not the keeper's ring: from its fighter's feet along its look, its action's Along
+	-- move's Most and Config.Combat.Dasher.Line.Past more, Line.Half either side (AR52, the Dasher; Rules.Mark.OnLine)
+	Line: boolean?,
 	-- Seconds each enemy it lands on is stopped, unable to act or move (docs/design.md, "States in a fight": Stun), as a
 	-- share of them on a tough kind and never again inside a lock after one (Config.Combat.Stun; Rules.Fight.Stun)
 	Stun: number?,
@@ -56,6 +59,9 @@ export type Move = {
 	Gap: number, -- studs short of its target's point on the path where it ends; negative, past it
 	Most: number?, -- the farthest it's carried, studs
 	Turn: number?, -- degrees its path turns at its spot toward its avatar's side of the line to its target; 0 or nil: straight at it
+	-- Along its aim, fixed on its action's Aim beat, its Most in full and not at its target: the Dasher's lunge down its
+	-- line (AR52), through whoever stands on it, stopped only by a wall. Its Gap is unused (0).
+	Along: boolean?,
 }
 
 export type Action = {
@@ -71,6 +77,9 @@ export type Action = {
 	Hits: { [string]: Hit }, -- by the beat each lands on
 	Moves: { [string]: Move }?, -- by the beat each starts on: the server carries the body, the clip moves in place
 	Aim: string?, -- the beat from which its aim is fixed: its fighter turns to its target until then, and a Mark hit's footprint is put down on it
+	-- Its fighter's shield (AR52, the Guard): raised on its From beat, let down on its To; meanwhile each hit on it lets
+	-- Config.Combat.Guard.Keep through, until a heavy hit or a signature breaks it (Rules.Fight.Guarded, Breaks)
+	Guard: { From: string, To: string }?,
 	Range: number, -- studs, root to root: its fighter walks this close before it starts it
 	Heavy: boolean, -- it carries a heavy hit
 	State: string?, -- the state it causes, when it names one (Stun, Knockdown): none in TR2
@@ -392,6 +401,52 @@ local rows: { Action } = {
 		Heavy = false,
 		State = nil,
 		Levers = { "anticipation (the coat turns away)", "hitstop (light)", "knockback" },
+		Signed = nil,
+	},
+	{
+		-- AR52, the Guard's (docs/asset-requests.md; docs/roster.md, "Enemies: Shades"): its sleeves come up and shut into a
+		-- paper shield by Raise and hold it to Drop, hardly breathing, while each hit on it glances off
+		-- (Config.Combat.Guard.Keep goes through) until a heavy hit or a signature breaks it open, Guard.Stagger seconds
+		-- stunned. Then it fights as a Brawler, its swing, until the next raise: its cooldown is the hold and the open after
+		-- Drop, research's 2.5 s. Its row's Signature, so it's tried first whenever ready. The shield's look is a grey
+		-- stand-in (SlamController) until the effects teammate's. Seeds, tuned in play.
+		Id = "GuardRaise",
+		Clip = "ShadeGuard",
+		Length = 2.7333,
+		CancelFrom = 2.7333,
+		Cooldown = 2.3 + 2.5,
+		Beats = { Raise = 0.3, Drop = 2.3 },
+		Guard = { From = "Raise", To = "Drop" },
+		Hits = {},
+		Range = 8,
+		Heavy = false,
+		State = nil,
+		Levers = { "anticipation (the sleeves come up and shut)", "the hold (still, behind the paper)", "the break (a stagger)" },
+		Signed = nil,
+	},
+	{
+		-- AR52, the Dasher's: it folds down behind its mask's point and its line opens on the street at Line, from its feet
+		-- toward its target, its aim fixed there; dead still to Lunge, then down the line in 0.25 s to Land, where its hit
+		-- takes whoever stands on the line (Mark, Line: Rules.Mark.OnLine), its back open to Close. Moving the lead works as
+		-- at the keeper's slam (TR44's switch, Config.Combat.Keeper.Out). Its hit is its length's worth of the swing's rate,
+		-- so a Dasher that lands every lunge deals what a Brawler does; one that misses, less. Seeds, tuned in play.
+		Id = "DasherLunge",
+		Clip = "ShadeLunge",
+		Length = 2.3,
+		CancelFrom = 2.3,
+		Cooldown = 6,
+		Beats = { Line = 0.2667, Lunge = 1.0, Land = 1.25, Close = 2.05 },
+		Aim = "Line",
+		Moves = {
+			Lunge = { Seconds = 0.25, Gap = 0, Most = 12, Along = true },
+		},
+		Hits = {
+			Land = { Coefficient = ENEMY_PER_SECOND * 2.3, Heavy = true, Reach = 2.5, Push = 2, Rung = 5, Mark = true, Line = true },
+		},
+		Range = 10,
+		Heavy = true,
+		State = nil,
+		Levers = { "anticipation (folded behind the point, dead still, the line on the street)", "the lunge (12 studs in 0.25 s)", "hitstop (rung 5)", "knockback", "recovery (its back open)" },
 		Signed = nil,
 	},
 	{

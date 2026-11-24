@@ -17,7 +17,7 @@ The base is a power plant (docs/design.md, "The base") and looks like one: every
 ground"). The plot is the builder's (WorldService.plot, Config.World): the machines' places are copies of it, kept in
 base_kit.py, for the floor's picture and for the look.
 
-The frame, as Lantern Row's plan: `across` is the plot's own +X, to the right as the spawn looks; `along` is studs out
+The frame, as Lantern Row's plan: `across` is the plot's own +X, the Breaker's side, to the left as the spawn looks; `along` is studs out
 of the plot's front edge toward the Strip, so everything on the plot is negative; `turn` is degrees anticlockwise from
 above, a piece's front (+Y) toward the Strip at 0. In the plot's own frame, a piece goes where the kit's Kit.Place puts
 it with the front edge as its gate.
@@ -25,16 +25,20 @@ it with the front edge as its gate.
 The levels (launch caps the base at 3):
   1, the yard    the whole plot walled, 128 studs by 128 (research's pick of 2026-11-17, 12:01, from part 7's three
                  sizes; it was 200), and its machines spread across it as a star round the generator (AR16; the
-                 director, 2026-11-15: "just make it less clustered make it accross the base"), recomposed at 128
-                 with the machines at their size. A way in 20 studs wide runs clear from the gate to the generator,
-                 the plant's heart, 52 in, over a well of void in the floor, inside a ring of current open toward the
-                 gate. The Void Breaker and the Festival Door stand on the slants toward the gate, 26 across and 26
-                 nearer; the bus runs out to a bay each side; the battery and the Training machine stand on the
-                 slants toward the back. Part 7's tests hold every footprint 12 studs from the next (`fit`). Two
-                 flood masts flank the way in before the ring, a transformer stands by each bay's line, the pylons
-                 run down the inside of each side wall between the bays' lots, and nothing else is stood: no site,
-                 no stock. What the base will wake lies asleep where it will stand, on lines with no current yet.
-  2 and 3        not made yet: each wakes a further place, so nothing a player has seen goes away.
+                 director, 2026-11-15: "just make it less clustered make it accross the base"), laid again for
+                 Stage III's footprints (AR54, research's pick and second look of 2026-11-23): every spot is
+                 base_fit.PLAN's, and the grounds and the lines to them are base_star.py's. A way in 20 studs wide
+                 runs clear from the gate to the generator, the plant's heart, over a well of void in the floor,
+                 inside a ring of current open toward the gate. The ring's ends run out on the slant to the Void
+                 Breaker and the Festival Door, nearer the gate. The Door's side holds bays 1 and 2, the Training
+                 machine and the Forge; the Condenser stands at the back, between the generator and the Breaker; the
+                 battery stands behind the Breaker. Part 7's tests hold every footprint 12 studs from the next at
+                 every stage (`fit`). Two flood masts flank the way in before the ring, a transformer stands at the
+                 back of each open bay, the pylons run down the inside of each side wall in the gaps between the
+                 outer grounds, and nothing else is stood: no site, no stock. What the base will wake lies asleep
+                 where it will stand, on lines with no current yet.
+  2 and 3        what they add is base_levels.py's (plan.json, machines.baseLevels): nothing a player has seen goes
+                 away.
 """
 
 import json
@@ -46,7 +50,9 @@ import bpy
 from mathutils import Vector
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
+import base_fit  # noqa: E402
 import base_kit as base  # noqa: E402
+import base_star as star  # noqa: E402
 import blcommon as bl  # noqa: E402
 import lantern_row_kit as kit  # noqa: E402
 import lantern_row_look as look  # noqa: E402
@@ -64,15 +70,16 @@ GENERATOR, BREAKER, DOOR, BATTERY, TRAINING = base.GENERATOR, base.BREAKER, base
 SHOWCASE = (14.0, 4.9)     # the showcase's plinth, just inside the gate, beside the way in: across, in (TR22)
 LAMP = ("BreakerLamp", *BREAKER, 10.0, "#8CF6FF")   # the Breaker's own light, over the chambers
 WELL_LIGHT = ("VoidWell", *GENERATOR, 1.6, "#B98CFF")   # the void's light under the generator, out of its well
-DOOR_TURN = 90.0           # the Door's turn: its mouth (-Y) looks down the way in
+DOOR_TURN = base.DOOR_TURN   # the Door's turn: its mouth (-Y) looks down the way in
 # The Door's two lights, in its own frame (across, along its Y, up): one inside the tunnel, one on the floor just past
 # its step, so the walk in is warm (AR15, section 7; take A's light before its face is left out, for a phone's count)
 DOOR_LIGHTS = {"DoorInside": (0.6, 3.0, 6.4), "DoorMouth": (0.0, -3.6, 0.8)}
 DOOR_WARM = "#FFC27A"
 DOOR_SPIN = {f"DoorRing{k}": ring[2] for k, ring in enumerate(base.machines.RINGS, 1)}
-# A transformer by each open bay's line, behind the bus, where the bay's current joins it: midway from the ring to the
-# bay's frame, across, and 5.5 behind the bus
-TRANSFORMER = ((base.RING + base.OUTER - 6.2) / 2, 5.5)
+# A transformer at each open bay's back, at its ground's corner on the heart's side: toward the middle line from the
+# bay's spot, and behind its frame. Outside the generator's own clear, where level 2's ring and the generator's own
+# lie on the deck
+TRANSFORMER = (3.2, base.SLEEPS + 2.6)
 LEVEL_NAMES = {1: "the yard"}
 # What isn't a kit piece: flat colours for the builder's own slabs and boxes, from the kit's swatches.
 GROUND = {"lot": "#7C7C8E", "ground": "#6E7290", "note": "the lot is the plot's own floor under the kit's floors: the deck tile "
@@ -89,7 +96,10 @@ STAND_INS = {"machine": "#7E8AB0", "chamber": "#BFEFF5", "waiting": "#A2A7BC", "
 
 
 BAY_LOTS = base.BAYS       # in the order they open
-SLEEPING = dict(forge=base.FORGE, condenser=base.CONDENSER, lab=base.LAB)   # what the base wakes in later phases
+SLEEPING = dict(forge=base.FORGE, condenser=base.CONDENSER, lab=base.LAB)   # the game takes each one's place from its
+# stone, in this order (WorldService: the first SleepingStone is the Forge's home, the second the Condenser's, the
+# third the Lab's, which alone stays a stone at launch)
+WAKES_AT = {3: "asleep until level 2", 4: "asleep until level 3", 5: "locked at launch", 6: "locked at launch"}
 
 
 def machines(level=1):
@@ -101,13 +111,13 @@ def machines(level=1):
     made = [("Breaker", bx, by, 0.0, 0.0, "the Breaker's body")]
     made += [("BreakerChamber", bx + side * chamber_x, by, top, 0.0, f"chamber {i + 1}") for i, side in enumerate((-1, 1))]
     made += [("BreakerWaiting", bx + 9.0 + 3.0 * k, by, 0.0, 0.0, f"waiting place {k + 1}") for k in range(3)]   # in a row on its outer side
-    for index, (x, inward) in enumerate(BAY_LOTS[:base.BAYS_AT[level]]):
-        turn = 0.0 if x < 0 else 180.0                              # the ring on the outer side
+    for index, (x, inward) in enumerate(BAY_LOTS[:base.BAYS_AT[1]]):   # level 1's: the game wakes the rest itself
+        turn = base.BAY_TURNS[index]                                # the ring on the outer side
         made.append(("Bay", x, inward, 0.0, turn, f"bay {index + 1}"))
         made.append(("BayHalo", x, inward, 0.0, turn, f"bay {index + 1}'s light, while a worker works there"))
     for index, (x, inward) in enumerate(BAY_LOTS):
-        if index >= base.BAYS_AT[level]:
-            made.append(("BaySleeping", x, inward, 0.0, 0.0 if x < 0 else 180.0, f"bay {index + 1}, asleep until level {index // 2 + 1}"))
+        if index >= base.BAYS_AT[1]:
+            made.append(("BaySleeping", x, inward, 0.0, base.BAY_TURNS[index], f"bay {index + 1}, {WAKES_AT[index + 1]}"))
     for name, (x, inward) in SLEEPING.items():
         made.append(("SleepingStone", x, inward, 0.0, 0.0, f"the {name.capitalize()}'s place, asleep"))
     made.append(("TowerSleeping", *TOWER_AT, 0.0, 0.0, "the Tower, asleep until phase 3"))
@@ -144,7 +154,7 @@ def door_part(x, y):
 def stations(level=1):
     """Everything a player walks to, by name: across and in. The measure of the spread is taken on these."""
     named = dict(generator=GENERATOR, breaker=BREAKER, door=DOOR, battery=BATTERY, training=TRAINING)
-    named.update({f"bay{i + 1}": at for i, at in enumerate(BAY_LOTS[:base.BAYS_AT[level]])})
+    named.update({f"bay{i + 1}": at for i, at in enumerate(BAY_LOTS[:base.BAYS_AT[1]])})
     return named
 
 
@@ -163,63 +173,17 @@ def spread(level=1):
     return dict(nearest=[round(near[0], 1), near[1], near[2]], inTheWay=inside)
 
 
-WORLD = REPO / "src" / "shared" / "Config" / "World.luau"
-
-
-def fit_numbers():
-    """Part 7's numbers as the game has them (Config.World: Fit, its Prints, the kept back and the walk), read from the
-    file, so the plan is checked on the footprints the game checks it on."""
-    import re
-    text = WORLD.read_text(encoding="utf-8")
-    block = text[text.index("\tFit = {"):]
-    block = block[:block.index("\n\t\tLayouts")]
-    num = lambda key: float(re.search(rf"\b{key} = ([\d.]+)", block).group(1))   # noqa: E731
-    cam = re.search(r"Camera = \{ Back = ([\d.]+), Fov = ([\d.]+), Aspect = (\d+) / (\d+) \}", block)
-    prints = {m.group(1): {k: float(v) for k, v in re.findall(r"(\w+) = (-?[\d.]+)", m.group(2))}
-              for m in re.finditer(r"(\w+) = \{ (Across[^}]*)\}", block)}
-    walk = float(re.search(r"\bWalk = (\d+)", text).group(1))
-    return dict(Breaker=num("Breaker"), Clear=num("Clear"), Avenue=num("Avenue"), Apron=num("Apron"), Margin=num("Margin"),
-                Back=float(cam.group(1)), Fov=float(cam.group(2)), Aspect=float(cam.group(3)) / float(cam.group(4)),
-                Prints=prints, Kept=float(re.search(r"\bKept = ([\d.]+)", text).group(1)) * walk, Walk=walk)
-
-
 def fit():
-    """Rules.BaseFit's measures of this plan, as the game takes them (BaseFit.Measure, line for line): each machine at
-    its footprint, the Breaker's walk from the gate, the least gap between two footprints, the way in, the square's
-    edge and the kept back, and the widest corner in the gate camera's view."""
-    f = fit_numbers()
-    spots = dict(stations())
-    spots.update({f"bay{i + 3}": at for i, at in enumerate(BAY_LOTS[base.BAYS_AT[1]:])})
-    spots.update(SLEEPING)
-
-    def kind(name):
-        return ("bay" if name in ("bay1", "bay2") else "later" if name.startswith("bay")
-                else "stone" if name in SLEEPING else name)
-
-    boxes = {}
-    for name, (x, z) in spots.items():
-        p = f["Prints"][kind(name)]
-        cx, cz = x + p["Across"], z + p["Inward"]
-        boxes[name] = (cx - p["Wide"] / 2, cx + p["Wide"] / 2, cz - p["Deep"] / 2, cz + p["Deep"] / 2)
-
-    def gap(a, b):
-        dx = max(0.0, max(a[0], b[0]) - min(a[1], b[1]))
-        dz = max(0.0, max(a[2], b[2]) - min(a[3], b[3]))
-        return math.hypot(dx, dz) if dx > 0 or dz > 0 else -min(a[1] - b[0], b[1] - a[0], a[3] - b[2], b[3] - a[2])
-
-    names = sorted(boxes)
-    least = min((gap(boxes[a], boxes[b]), a, b) for i, a in enumerate(names) for b in names[i + 1:])
-    g, half = boxes["generator"], PLOT / 2 - f["Margin"]
-    way = [n for n, b in boxes.items() if n != "generator" and b[2] < g[2] and b[0] < f["Avenue"] / 2 and b[1] > -f["Avenue"] / 2]
-    outside = [n for n, b in boxes.items() if b[0] < -half or b[1] > half or b[2] < f["Apron"] or b[3] > PLOT - f["Kept"]]
-    view = max((math.degrees(math.atan2(abs(x), z + f["Back"])), n) for n, b in boxes.items() for x in b[:2] for z in b[2:])
-    k = boxes["breaker"]
-    seconds = math.hypot(min(max(0.0, k[0]), k[1]), min(max(0.0, k[2]), k[3])) / f["Walk"]
-    half_view = math.degrees(math.atan(math.tan(math.radians(f["Fov"] / 2)) * f["Aspect"]))
-    report = dict(size=PLOT, breaker=round(seconds, 2), least=[round(least[0], 2), least[1], least[2]], way=way,
-                  outside=outside, widest=[round(view[0], 2), view[1]], halfView=round(half_view, 2))
-    report["passes"] = (seconds <= f["Breaker"] and least[0] >= f["Clear"] and not way and not outside and view[0] <= half_view)
-    return report
+    """Rules.BaseFit's measures of this plan, as base_fit.py takes them on the handoff's own meshes: at each stage's
+    footprints, the Breaker's walk from the gate, the least gap between two footprints, the way in, the square's edge
+    and the kept back, and the widest corner in the gate camera's view."""
+    stages = {}
+    for stage in (1, 2, 3):
+        m = base_fit.measure(star.PLAN, stage)
+        gap, a, b = m["least"][0]
+        stages[str(stage)] = dict(breaker=m["breaker"], least=[gap, a, b], way=m["way"], outside=m["outside"],
+                                  widest=list(m["widest"]), halfView=m["halfView"], passes=m["passes"])
+    return dict(size=PLOT, stages=stages, passes=all(s["passes"] for s in stages.values()))
 
 
 def plan(level=1):
@@ -229,14 +193,10 @@ def plan(level=1):
     def put(name, x, inward, turn=0.0):
         places.append((name, round(x, 2), round(-inward, 2), turn))
 
-    deep, half, yard, block = base.COURT[1], base.HALF, base.YARD, int(base.BLOCK)
-    put("Court1", 0, 0)
+    half, yard = base.HALF, base.YARD
     put("Gate1", 0, 0)
-    floors = range(0, int(yard) - block + 1, block)                 # as many whole blocks as the plot takes
-    for inward in floors:
-        if inward >= deep:                                          # the yard behind the court, block after block:
-            put({deep: "YardLive", deep + block: "YardBack"}.get(inward, "Yard"), 0, inward)   # the heart's, the battery's, then dormant
-        put({block: "WingsLive", 2 * block: "WingsBack"}.get(inward, "Wings"), 0, inward)   # and the deck each side: the bus's block, the last bays', the rest plain
+    for name, (x0, x1, y0, _) in base.FLOOR_AT.items():           # the deck's sixteen floors, each on its own ground
+        put(name, (x0 + x1) / 2, y0)
     # the wall, on the plot's own edge, the same on both sides of the middle line: each post carries the panel to the
     # next, and a half panel closes a run that isn't whole panels. The sides run in from the front corners' posts; the
     # back runs in from its corners' posts to the way out at its middle; the front runs out from the gate's shoulders
@@ -266,7 +226,7 @@ def plan(level=1):
         if last is not None:
             put("WallHalf", side * last, 0, turn)
     # the lines: a pylon every span down the inside of each side wall, from the front to the back, and its lines:
-    # the base's length and its width seen from the Strip, over everything
+    # the base's length and its width seen from the Strip, over everything. Each stands in a gap of the outer column
     across, first = base.PYLON
     for side in (-1, 1):
         for inward in range(int(first), int(yard), int(base.SPAN)):
@@ -279,10 +239,10 @@ def plan(level=1):
     for side, name in ((-1, "Left"), (1, "Right")):
         put("FloodMast", side * base.flood_across(), inward, 0)
         lights.append((f"Flood{name}", side * base.flood_across(), -(inward - reach), height, "#EAF6FF", "spot"))
-    # the transformers: one by each open bay's line, behind the bus, where the bay's current joins it
+    # the transformers: one at each open bay's back, at its ground's corner on the heart's side
     # a pair for every two open bays (research, 2026-11-15, AR14)
-    for x, inward in BAY_LOTS[:base.BAYS_AT[level]]:
-        put("Transformer", math.copysign(TRANSFORMER[0], x), inward + TRANSFORMER[1], 0)
+    for x, inward in BAY_LOTS[:base.BAYS_AT[1]]:
+        put("Transformer", x - math.copysign(TRANSFORMER[0], x), inward + TRANSFORMER[1], 0)
     lights.append((*LAMP[:2], -LAMP[2], *LAMP[3:], "point"))
     lights.append((*WELL_LIGHT[:2], -WELL_LIGHT[2], *WELL_LIGHT[3:], "point"))
     for name, (x, y, up) in DOOR_LIGHTS.items():
@@ -309,61 +269,72 @@ def write_plan(out: Path):
             placements=[dict(piece=n, across=x, along=y, turn=t) for n, x, y, t in places],
             lights=[dict(name=n, across=x, along=y, up=z, colour=c, kind=k, cone=kit.POOL_CONE if k == "spot" else None)
                     for n, x, y, z, c, k in lights],
-            levelMark=dict(piece="Gate1", across=0.0, along=0.0, up=16.0, size=[11.0, 4.4], depth=2.2,
+            levelMark=dict(piece="Gate1", across=0.0, along=0.0, up=base.PLATE_UP, size=[11.0, 4.4], depth=2.2,
                            note="the level's number on the gate's plate, on both faces (+Y and -Y), in Power's yellow "
-                                "(#FFD23E): the builder's text"),
+                                "(#FFD23E): the builder's text. The plate stands on two posts over the truss (AR54): out "
+                                "of the gate's view from inside, read whole from the Strip"),
             budget=dict(pieces=len(places), triangles=sum(pieces[n]["triangles"] * k for n, k in counts.items()),
                         lights=len(lights), counts=counts))
     (out / "plan.json").write_text(json.dumps(dict(
-        what="AR14 and AR16, the base dressed and spread: where the base's own kit stands on a plot, by the base's level",
+        what="AR14, AR16 and AR54, the base dressed and spread: where the base's own kit stands on a plot, by the base's "
+             "level, laid for Stage III's footprints",
         kit="manifest.json, beside this file: every piece named here is one of its pieces",
         origin="the middle of the plot's front edge (the edge on the Strip), on the plot's floor",
-        axes="`across` is the plot's own +X, to the right as the spawn looks; `along` is studs out of the front edge "
+        axes="`across` is the plot's own +X, the Breaker's side, to the left as the spawn looks; `along` is studs out of the front edge "
              "toward the Strip, so everything on the plot is negative; `turn` is degrees anticlockwise seen from above",
         toRoblox="in the plot's own frame (WorldService.plot's `at`), Kit.Place(placement, piece, front, floorY) with "
                  "front = -deep / 2: CFrame.new(across, floorY, front - along) * CFrame.Angles(0, math.rad(turn), 0) * "
                  "centre. A light the same way, by Kit.Light.",
         levels=levels, ground=GROUND, standIns=STAND_INS,
         layout=dict(
-            note="AR16, the spread: where each thing a player walks to stands, across and in from the front edge "
-                 "(`along` is minus `in`). Modulo's proposal for the builder's Config.World: the floor's pictures are "
-                 "drawn for these places, so a place that moves takes its picture with it. The placement is a star "
-                 "round the generator, which stands at the plot's heart inside a ring of current open toward the "
-                 "gate: the Breaker and the Door on the two slants toward the gate, level 1's bays at the bus's "
-                 "ends, the battery and the Training machine on the two slants toward the back. The way in is "
-                 "`avenue` studs wide down the middle line, clear from the gate to the generator. The Breaker's "
-                 "chambers and waiting places keep their offsets from its body, and every machine keeps its turn. "
-                 "What the base will wake stands asleep where it will stand, dark, on a dead line that lights "
-                 "out to it when it wakes: bays 3 and 4 on the bus's line outward (level 2), bays 5 and 6 back along "
-                 "the side walls (level 3), and in the back half the Lab on the main line with the Forge and the "
-                 "Condenser on a spoke each (`sleeping`). Nothing new stands between the gate and the generator. "
-                 "Laid at 128 (research's pick of 2026-11-17, 12:01): recomposed, the machines at their size, and held "
-                 "by part 7's tests on the game's own footprints (Rules.BaseFit on Config.World.Fit): `fit` is the "
-                 "plan's measure, taken as BaseFit.Measure takes it.",
-            avenue=base.AVENUE, least=fit_numbers()["Clear"], ring=base.RING, size=PLOT,
+            note="AR16 and AR54, the spread: where each thing a player walks to stands, across and in from the front edge "
+                 "(`along` is minus `in`). The floor's pictures are drawn for these places, so a place that moves "
+                 "takes its picture with it. The placement is a star round the generator, which stands at the plot's "
+                 "heart inside a ring of current open toward the gate, with the Breaker and the Door on the two "
+                 "slants toward the gate. Laid again for Stage III (AR54; research's pick and second look, "
+                 "2026-11-23): the yard is no longer the same on its two sides. The Door's side holds bays 1 and 2, "
+                 "the Training machine and the Forge; the Condenser stands at the back, between the generator and the "
+                 "Breaker; bays 3 and 4 stand outside the Breaker, the battery and the Lab's stone behind it; bays 5 "
+                 "and 6 stay locked at launch, asleep at the back and behind the Door. Each machine was placed by what "
+                 "the game's camera sees of it from the gate. The way in is `avenue` studs wide down the middle line, "
+                 "clear from the gate to the generator. The Breaker's chambers and waiting places keep their offsets "
+                 "from its body, and every machine keeps its turn: a bay's is its placement's (0 on the Door's side, "
+                 "180 on the Breaker's). What the base will wake stands asleep where it will stand, dark, on a line "
+                 "with no current that lights out to it when it wakes (`sleeping`, `laterBays`). Nothing stands "
+                 "between the gate and the generator. `fit` is the plan's measure at each stage's footprints, taken "
+                 "as BaseFit.Measure takes it on the handoff's own meshes (tools/blender/base_fit.py): the game's "
+                 "Config.World.Fit takes its \"128\" layout from this table and its Prints from Stage III's.",
+            avenue=base.AVENUE, least=base_fit.fit_numbers()["Clear"], ring=base.RING, size=PLOT,
             spawn=dict(across=SPAWN[0], inward=SPAWN[1], facing="into the plot"),
             showcase=dict(across=SHOWCASE[0], inward=SHOWCASE[1]),
             stations={name: dict(across=x, inward=i) for name, (x, i) in stations().items()},
-            laterBays=[dict(across=x, inward=i) for x, i in BAY_LOTS[base.BAYS_AT[1]:]],
+            laterBays=[dict(across=x, inward=i, turn=t) for (x, i), t in
+                       zip(BAY_LOTS[base.BAYS_AT[1]:], base.BAY_TURNS[base.BAYS_AT[1]:])],
             sleeping={name: dict(across=x, inward=i) for name, (x, i) in SLEEPING.items()},
-            check=spread(), fit=fit()),
+            check=spread(), fit=fit(),
+            grounds=dict(
+                note="each place's ground as the floor's pictures draw it, for a prompt or a marker: across from and "
+                     "to, inward from and to. A machine's is its Stage III footprint and 0.9 round it; a bay's and "
+                     "the Lab's stone's is a frame 12.4 square about its spot.",
+                **{name: [round(v, 2) for v in star.ground(name)] for name in star.MACHINES + star.FRAMED})),
         current=dict(
-            note="the live conduits drawn in the floor, each from the generator's end outward: where the current "
-                 "runs. For a pulse of light along each, if the builder's effect takes it: a small touch, at "
+            note="the conduits drawn in the floor, each from the heart's end outward, across and along: `runs` where "
+                 "the current runs at level 1, `dormant` the casings with none yet (the Lab's and the sleeping bays'). "
+                 "For a pulse of light along each live one, if the builder's effect takes it: a small touch, at "
                  "research's verdict.",
-            runs=[dict(across=[round(side * x0, 2) + 0.0, round(side * x1, 2) + 0.0], along=[round(-y0, 2), round(-y1, 2)])
-                  for (x0, y0), (x1, y1) in base.live_runs() for side in ((1, -1) if x0 or x1 else (1,))],
+            runs=[dict(across=[round(a[0], 2), round(b[0], 2)], along=[round(-a[1], 2), round(-b[1], 2)]) for a, b in base.runs()[0]],
+            dormant=[dict(across=[round(a[0], 2), round(b[0], 2)], along=[round(-a[1], 2), round(-b[1], 2)]) for a, b in base.runs()[1]],
             ring=dict(across=GENERATOR[0], along=-GENERATOR[1], radius=base.RING, open=90.0,
                       note="the ring round the well: a circle of this radius about the generator, less the quarter "
-                           "that faces the gate. Its current runs from the bus's two joints and the main line's, "
-                           "toward its open ends.")),
+                           "that faces the gate. Its current runs from the two links at its sides and the one at its "
+                           "back, toward its open ends.")),
         machines=dict(
             note="AR15: the machines that have their model, each in place of the builder's stand-in, at every level. "
                  "Laid as a placement is, raised by `up`. A chamber is its own piece so the builder lights each by "
                  "its state (EmissiveStrength: full while it breaks a shard, low when empty). A bay's halo is "
                  "its own piece in one pale swatch: it stands only while a worker works there, in the worker's "
                  "rarity colour (TR22). The list is level 1's: bays 3 to 6 stand the same way on the yard's lots "
-                 "(`layout.laterBays`). The Festival Door is five pieces and a core: a ring's `spin` is its turn about "
+                 "(`layout.laterBays`, each with its turn). The Festival Door is five pieces and a core: a ring's `spin` is its turn about "
                  "its own origin, degrees a second, always: CFrame.Angles(0, 0, math.rad(spin) * t), so a positive "
                  "spin goes anticlockwise seen from the mouth (the part's +Z looks out of it).",
             placements=[dict(piece=n, across=x, along=-i, up=z, turn=t, standsFor=w, **({"toward": "crossing"} if n == "TowerSleeping" else {}),
@@ -388,7 +359,7 @@ def write_plan(out: Path):
                 cellsAt=base.machines.CELLS_AT, up=base.machines.SEAT,
                 seats=[dict(across=round(BATTERY[0] + x, 2), along=round(-(BATTERY[1] - y), 2)) for x, y in base.machines.SEATS]),
             **base.forge.tables(), **base.breaker.tables(), **base.bays.tables(), **base.battery.tables(),
-            **base.training.tables(), **base.forge_stages.tables()),
+            **base.training.tables(), **base.forge_stages.tables(), **base.levels.tables()),
         lighting="the base stands under Lantern Row's dusk: the same sky, ambient, fog and bloom "
                  "(build/handoff/LanternRow/sky/lighting.json). The conduits, the wall's line and the lamps are "
                  "drawn for dusk, and under the place's daylight they don't read.",
@@ -452,7 +423,7 @@ class Yard:
             if name == "TowerSleeping":     # the game stands the Tower's ring on its place, and no slab (TR29; part 8)
                 continue
             self.stock.stand(name, f"{tag}m{i}", self.at(front, face, x, inward, up), turn + (0 if face > 0 else 180))
-        for index, (x, inward) in enumerate(BAY_LOTS[:base.BAYS_AT[level]]):   # a worker's size, on each bay
+        for index, (x, inward) in enumerate(BAY_LOTS[:base.BAYS_AT[1]]):   # a worker's size, on each bay
             wx, wy, _ = self.at(front, face, x, inward)
             self.person((wx, wy), f"Worker{tag}{index}")
         wx, wy, _ = self.at(front, face, *SHOWCASE)                # and the owner's Voidkin on the showcase
@@ -511,9 +482,9 @@ def see(out: Path, level, fast, clear, only=()):
     yard.kit.block("Ground", (5 * PLOT, 4 * PLOT, 0.4), (0, STRIP / 2, -0.3), yard.flat["ground"])
     yard.person((SPAWN[0], -SPAWN[1]))
     yard.person((6.0, -76.0), "Walker")
-    yard.person((base.OUTER - 9.0, -(base.ROW - 7.0)), "Hand")
+    yard.person((BAY_LOTS[0][0] + 9.0, -(BAY_LOTS[0][1] - 7.0)), "Hand")
     for obj in yard.kit.pieces:
-        if obj.name.startswith(("PowerSpan", "Court", "Yard", "Wings")):
+        if obj.name.startswith(("PowerSpan", "Floor")):
             obj.visible_shadow = False
     look.sky(scene, d)
     look.sun(scene, d)
@@ -532,20 +503,20 @@ def see(out: Path, level, fast, clear, only=()):
             setattr(scene.eevee, attr, val)
         except AttributeError:
             pass
-    (gx, gi), (bx, bi), (tx, ti) = GENERATOR, BREAKER, BATTERY
+    (gx, gi), (bx, bi), (tx, ti), (ox, oi), (ax, ai) = GENERATOR, BREAKER, BATTERY, BAY_LOTS[0], BAY_LOTS[2]
     views = {"home": behind((SPAWN[0], -SPAWN[1]), -1), "gate": behind((0, STRIP / 2), -1),
              "yard": behind((0, -(base.COURT[1] + 8.0)), -1), "back": behind((0, -(base.YARD - 14.0)), 1),
              "across": ((-58.0, -4.0, 9.0), (20.0, -84.0, 3.0)),
              "breaker": ((bx - 9.0, -(bi - 17.0), 9.5), (bx, -bi, 6.0)), "strip": ((-8.0, 9.0, 7.5), (gx, -gi, 5.0)),
-             "bay": ((-(base.OUTER - 17.0), -(gi - 11.0), 6.0), (-base.OUTER, -gi, 5.0)),
-             "bays": ((-10.0, -(gi - 26.0), 6.5), (base.OUTER, -gi, 4.0)),
+             "bay": ((ox + 17.0, -(oi - 11.0), 6.0), (ox, -oi, 5.0)),
+             "bays": ((-10.0, -(gi - 26.0), 6.5), (BAY_LOTS[1][0], -BAY_LOTS[1][1], 4.0)),
              "heart": behind((0, -(gi - 34.0)), -1), "star": ((0.0, -8.0, 100.0), (0.0, -(gi + 6.0), 0.0)),
              "generator": ((gx - 15.0, -(gi - 34.0), 8.0), (gx, -gi, 11.5)),
              "battery": ((tx - 5.5, -(ti - 9.5), 4.6), (tx, -ti, 1.4)),
              "show": ((6.0, 22.0, 6.0), (SHOWCASE[0], -SHOWCASE[1], 4.5)), "shown": ((21.5, -13.5, 5.5), (SHOWCASE[0], -SHOWCASE[1], 3.6)),
              "door": ((DOOR[0] + 20.0, -(DOOR[1] - 9.0), 6.0), (DOOR[0], -DOOR[1], 6.6)),
              "training": ((TRAINING[0] + 11.0, -(TRAINING[1] - 17.0), 5.5), (TRAINING[0], -(TRAINING[1] - 2.0), 4.2)),
-             "asleep": ((base.FAR - 10.0, -(base.ROW - 9.0), 6.0), (base.FAR, -base.ROW, 0.6)),
+             "asleep": ((ax - 10.0, -(ai - 9.0), 6.0), (ax, -ai, 0.6)),
              "tower": ((-10.0, -56.0, 6.0), (TOWER_AT[0], -TOWER_AT[1], 56.0)),
              "above": ((0.0, 60.0, 78.0), (0.0, -60.0, 0.0))}
     if only:

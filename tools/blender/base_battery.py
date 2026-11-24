@@ -190,7 +190,7 @@ def review(out, fast):
     yard.kit.block("Ground", (5 * plan.PLOT, 4 * plan.PLOT, 0.4), (0, plan.STRIP / 2, -0.3), yard.flat["ground"])
     yard.person((spot[0] + 5.2, -(spot[1] - 1.0)))                       # a player beside it, for its size
     for obj in yard.kit.pieces:
-        if obj.name.startswith(("PowerSpan", "Court", "Yard", "Wings")):
+        if obj.name.startswith(("PowerSpan", "Floor")):
             obj.visible_shadow = False
     look.sky(scene, d)
     look.sun(scene, d)

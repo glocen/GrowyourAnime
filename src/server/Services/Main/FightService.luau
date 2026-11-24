@@ -7,7 +7,14 @@
 -- Target (a fighter id or ""), Action and ActionAt. ActionAt is written last,
 -- so a client reads the action on its change. Each hit, landed or dodged, goes to every client as the Hit event.
 -- A marked strike's footprint (TR44; Rules.Mark) while it's down: MarkAt (its centre, at the fighter's root height),
--- MarkRadius, MarkDown and MarkSlam (server times), MarkSlam written last. A lead broken off for its avatar: Away.
+-- MarkRadius, MarkDown and MarkSlam (server times), MarkSlam written last; a line's (AR52, the Dasher's) MarkTo, its end,
+-- MarkAt its start and MarkRadius its half width. A lead broken off for its avatar: Away. A Guard's raised shield (AR52):
+-- GuardUntil (server time it drops), and GuardBroke (when a heavy hit or a signature broke it).
+-- The element states (docs/design.md, "States in a fight"; Config.Combat.States; Rules.Fight's states), each worn while
+-- it holds: Burning, Shocked and Sapped (the server time each ends), Chill and ChillAt (its fill after its last Frost hit,
+-- and when: a client drains it by the same rule; ChillAt written first). A freeze is a Stun whose StunLook is
+-- StateFreeze. ActionRate: how fast the action begun at ActionAt runs, set at its start (a chill's slow), written before
+-- ActionAt; its beats fall at their times over it.
 -- Beats are checked every frame against the server's clock; decisions every Config.Combat.Think.
 
 local CollectionService = game:GetService("CollectionService")
@@ -44,8 +51,20 @@ local DataService = require(script.Parent.Parent.Core.DataService)
 export type State = "Idle" | "Flinch" | "Stun" | "Down" | "Reset" | "Home"
 
 -- A marked strike's footprint (TR44): its flat centre and its root's height when put down, its radius, when it went down
--- and when its hit lands (server time), and the fighter it was aimed at.
-export type Mark = { X: number, Z: number, Y: number, Radius: number, Down: number, Slam: number, Target: Fighter? }
+-- and when its hit lands (server time), and the fighter it was aimed at. A line (AR52, the Dasher's) starts at the centre
+-- and runs Length along the unit (DirX, DirZ), Radius either side (Rules.Mark.Covers).
+export type Mark = {
+	X: number,
+	Z: number,
+	Y: number,
+	Radius: number,
+	Down: number,
+	Slam: number,
+	Target: Fighter?,
+	Length: number?,
+	DirX: number?,
+	DirZ: number?,
+}
 -- A lead broken off for its place by its avatar (FightService.Away): at Speed, held until Until, or else Hold seconds
 -- once it arrives (at most Most seconds on the way); Since, when it broke off.
 export type Away = { Speed: number, Until: number?, Hold: number, Most: number, Since: number, Arrived: number? }
@@ -71,6 +90,10 @@ export type Fighter = {
 	ActionAt: number,
 	Checked: number, -- the action's clock at the last beat check
 	ReadyAt: { [string]: number },
+	-- A lead's signature (Rules.Fight.Signature) and whether a tap has armed it (TR52): armed, it's the next action, and
+	-- its start disarms it. Its owner's Auto off (the player's SignatureAuto attribute), the choice holds it until armed.
+	Signature: Actions.Action?,
+	Armed: boolean,
 	ResetClosest: number, -- walking home: the nearest it has come, and when (Rules.Fight.ResetStuck)
 	ResetSince: number,
 	SkippedAt: number, -- a ranged lead's last skip back (Combat.Skip)
@@ -98,7 +121,16 @@ export type Fighter = {
 	Hitters: { [Player]: boolean }, -- players whose lead hit it: a pack belongs to everyone (docs/design.md)
 	Struck: { [string]: boolean }, -- the fighters (by Id) whose hit has landed on it since it last stood home: an Opener's first
 	Shield: { Share: number, Until: number }?, -- the share less damage it takes until then (Actions.Hit.Shield)
+	Guard: { Keep: number, Until: number }?, -- a Guard's raised shield (AR52; Actions.Hit.Guard; Rules.Fight.Guarded)
 	StunLock: number, -- no stun stops it again before this (Rules.Fight.Stun)
+	-- The element states (Config.Combat.States): a burn still to pay, a chill, and when a shock and a sap end.
+	Burn: Fight.Burn?,
+	Chill: Fight.Chill?,
+	ShockUntil: number,
+	SapUntil: number,
+	ActionRate: number, -- how fast its action runs, set at the action's start (a chill's slow)
+	-- Studio only, a test's: every new block passes through it on its way in (ReplayService's LeadElement); nil in play
+	Reblock: ((Stats.Block) -> Stats.Block)?,
 	Alone: number, -- its most health with one or two leads on it; a crowd adds to it (Fight.CrowdHealth)
 	-- A lead watching a keeper it felled, standing and facing where it fell, until its Down's Gone (AR7, section 5, fix 2).
 	Watch: Vector3?,
@@ -124,6 +156,7 @@ FightService.Rose = Signal.new() -- (fighter) a lead up again: home with its pla
 FightService.Marked = Signal.new() -- (fighter, mark) a marked strike's footprint is down (TR44)
 -- (fighter, mark, struck: { Fighter }?) taken up: on its hit, with the leads it took; nil when its action ended first
 FightService.Unmarked = Signal.new()
+FightService.Broke = Signal.new() -- (fighter, target, signature: boolean) a Guard's raised shield broken open (AR52; TR54's dare)
 FightService.Capped = Signal.new() -- (fighter) a heal stopped short by its HealRoom: the Tower's cap bound (TR46)
 
 local GROUP_FIGHTERS = "Fighters"
@@ -164,9 +197,20 @@ local function standing(f: Fighter?): boolean
 	return f ~= nil and fighters[f.Id] == f and f.State ~= "Down" and f.State ~= "Reset" and f.State ~= "Home"
 end
 
+-- The element states let go (Config.Combat.States): a body down, walking home or at home is out of the fight.
+local function clearStates(f: Fighter)
+	f.Burn, f.Chill, f.ShockUntil, f.SapUntil = nil, nil, 0, 0
+	for _, name in { "Burning", "Chill", "ChillAt", "Shocked", "Sapped" } do
+		f.Model:SetAttribute(name, nil)
+	end
+end
+
 local function setState(f: Fighter, state: State, untilTime: number?)
 	if state == "Reset" and f.State ~= "Reset" then
 		f.ResetClosest, f.ResetSince = math.huge, now()
+	end
+	if state == "Down" or state == "Reset" or state == "Home" then
+		clearStates(f)
 	end
 	f.State = state
 	f.StateUntil = untilTime or 0
@@ -190,9 +234,14 @@ local function setHealth(f: Fighter, health: number)
 end
 
 -- An action's cooldown for this fighter: its passive may shorten its own (Lyric's Tempo).
--- A heal toward `wanted`, inside what the fighter may still heal (HealRoom, the Tower's cap; Rules.Tower.Capped): every
--- heal in a fight passes here, its Regen, an action's mend and Lifesteal (TR49). Returns the health it reached.
+-- A heal toward `wanted`, inside what the fighter may still heal (HealRoom, the Tower's cap; Rules.Tower.Capped), less
+-- while it's sapped: every heal in a fight passes here, its Regen, an action's mend and Lifesteal (TR49). Returns the
+-- health it reached.
 local function heal(f: Fighter, wanted: number): number
+	-- a sap (Config.Combat.States.Sap) cuts what it gains while it holds
+	if wanted > f.Health then
+		wanted = f.Health + Fight.Sapped(Combat.States.Sap, wanted - f.Health, f.SapUntil, now())
+	end
 	local room = f.HealRoom
 	if room == nil then
 		setHealth(f, wanted)
@@ -252,8 +301,14 @@ local function face(f: Fighter, toward: Vector3?)
 	f.Humanoid.AutoRotate = true
 end
 
+-- How fast a chill lets the fighter act and walk now (Rules.Fight.ChillRate): 1 unchilled.
+local function chillRate(f: Fighter, at: number): number
+	local rule = Combat.States.Chill
+	return if f.Chill then Fight.ChillRate(rule, Fight.ChillNow(rule, f.Chill, at)) else 1
+end
+
 local function moveTo(f: Fighter, position: Vector3, speed: number)
-	f.Humanoid.WalkSpeed = speed
+	f.Humanoid.WalkSpeed = speed * chillRate(f, now())
 	f.Humanoid:MoveTo(position)
 end
 
@@ -269,14 +324,24 @@ local function takeUp(f: Fighter, struck: { Fighter }?)
 	end
 	f.Mark = nil
 	f.Model:SetAttribute("MarkSlam", nil)
+	f.Model:SetAttribute("MarkTo", nil)
 	f.Model:SetAttribute("MarkAt", nil)
 	f.Model:SetAttribute("MarkRadius", nil)
 	f.Model:SetAttribute("MarkDown", nil)
 	FightService.Unmarked:Fire(f, mark, struck)
 end
 
+-- A Guard's shield let down (AR52): on its action's end, a stun's, or a break.
+local function dropGuard(f: Fighter)
+	if f.Guard then
+		f.Guard = nil
+		f.Model:SetAttribute("GuardUntil", nil)
+	end
+end
+
 local function endAction(f: Fighter, at: number)
 	takeUp(f, nil)
+	dropGuard(f)
 	if f.Action then
 		f.Action = nil
 		f.Model:SetAttribute("Action", "")
@@ -288,6 +353,16 @@ local function start(f: Fighter, action: Actions.Action, at: number)
 	f.Action = action
 	f.ActionAt = at
 	f.Checked = -1
+	-- a chill slows the whole action, from its start (Config.Combat.States.Chill)
+	local rate = chillRate(f, at)
+	if rate ~= f.ActionRate then
+		f.ActionRate = rate
+		f.Model:SetAttribute("ActionRate", if rate ~= 1 then rate else nil)
+	end
+	if f.Armed and f.Signature and action.Id == f.Signature.Id then
+		f.Armed = false
+		f.Model:SetAttribute("Armed", nil)
+	end
 	local cooldown = cooldownOf(f, action)
 	if cooldown > 0 then
 		f.ReadyAt[action.Id] = at + cooldown
@@ -301,7 +376,7 @@ end
 
 -- Busy: inside an action, before the next may start.
 local function busy(f: Fighter, at: number): boolean
-	return f.Action ~= nil and at - f.ActionAt < (f.Action :: Actions.Action).CancelFrom
+	return f.Action ~= nil and (at - f.ActionAt) * f.ActionRate < (f.Action :: Actions.Action).CancelFrom
 end
 
 local function setCollision(model: Model)
@@ -469,6 +544,16 @@ local function light(look: SurfaceAppearance, onMask: boolean, tint: Color3, har
 	end
 end
 
+-- The body's colour: the spawn's type, else the row's (Config.Shades.Tint), on Hard its Hard.Tint where it has one; with
+-- no type, a mask's own.
+local function tintOf(type: string, row: Enemies.Row, hard: boolean): Color3
+	local key = if Shades.Tint[type] then type elseif Shades.Tint[row.Type] then row.Type else nil
+	if key == nil then
+		return Shades.MaskTint
+	end
+	return if hard then Shades.Hard.Tint[key] or Shades.Tint[key] else Shades.Tint[key]
+end
+
 -- A Shade in AR2's rig (ServerStorage.Templates.Shade, tools/studio/Models/Shade.luau): the row's mask kept and the
 -- others dropped, an elite's second mask on its Left Arm too, the body's lit edges in its type's colour and the masks in
 -- their own (Config.Shades), at the row's scale. On Hard, the body and masks wear the Shade's Hard look.
@@ -488,7 +573,7 @@ local function buildShade(row: Enemies.Row, name: string, type: string, hard: bo
 			part:Destroy()
 		end
 	end
-	local tint = Shades.Tint[type] or Shades.Tint[row.Type] or Shades.MaskTint
+	local tint = tintOf(type, row, hard)
 	for _, look in model:GetDescendants() do
 		if look:IsA("SurfaceAppearance") then
 			local on = (look.Parent :: Instance).Name
@@ -511,7 +596,7 @@ local function buildRig(row: Enemies.Row, name: string, type: string, hard: bool
 	local model = (templates:WaitForChild(row.Rig) :: Model):Clone()
 	model.Name = name
 	model.PrimaryPart = model:FindFirstChild("HumanoidRootPart") :: BasePart -- set in code: a synced .rbxm can drop it
-	local tint = Shades.Tint[type] or Shades.Tint[row.Type] or Shades.MaskTint
+	local tint = tintOf(type, row, hard)
 	for _, look in model:GetDescendants() do
 		if look:IsA("SurfaceAppearance") then
 			local glow = look:GetAttribute("Glow")
@@ -564,6 +649,8 @@ local function register(model: Model, side: "Lead" | "Shade", kind: string, def:
 		ActionAt = 0,
 		Checked = -1,
 		ReadyAt = {},
+		Signature = if side == "Lead" then Fight.Signature(kit) else nil,
+		Armed = false,
 		ResetClosest = math.huge,
 		ResetSince = 0,
 		SkippedAt = -math.huge,
@@ -575,7 +662,13 @@ local function register(model: Model, side: "Lead" | "Shade", kind: string, def:
 		Hitters = {},
 		Struck = {},
 		Shield = nil,
+		Guard = nil,
 		StunLock = 0,
+		Burn = nil,
+		Chill = nil,
+		ShockUntil = 0,
+		SapUntil = 0,
+		ActionRate = 1,
 		Alone = block.Health,
 		WatchUntil = 0,
 		Forced = nil,
@@ -838,6 +931,25 @@ end
 -- its Seconds, facing its target (a dash in), or set down at once, facing back along its path (a blink). A blink stops
 -- short of the first wall on its way and never leaves the ground: over an edge, it stays where it stands.
 local function carry(f: Fighter, move: Actions.Move)
+	if move.Along then
+		-- down its line (AR52): Most in full, through whoever stands on it (fighters pass through each other), short of a
+		-- wall only, so it ends with its back to them
+		local mark = f.Mark
+		local look = flat(f.Root.CFrame.LookVector)
+		local shape: MarkRule.Shape = if mark and mark.DirX and mark.DirZ
+			then mark
+			else { X = f.Root.Position.X, Z = f.Root.Position.Z, Radius = Combat.Dasher.Line.Half, DirX = look.Unit.X, DirZ = look.Unit.Z }
+		local unit = Vector3.new(shape.DirX :: number, 0, shape.DirZ :: number)
+		local amount = move.Most or 0
+		local from = f.Root.Position
+		amount -= (from.X - shape.X) * unit.X + (from.Z - shape.Z) * unit.Z -- what it has drifted down the line already
+		if amount < 0.05 or move.Seconds <= 0 then
+			return
+		end
+		f.Humanoid:MoveTo(from + unit * amount) -- so it doesn't walk back to where it started
+		glide(f, unit, amount, move.Seconds, nil)
+		return
+	end
 	local target = f.ForcedTarget or f.Target -- as its strike's (the replay's is forced)
 	if target == nil or not standing(target) then
 		return
@@ -893,6 +1005,37 @@ local function crowd(f: Fighter)
 	end
 end
 
+-- The element state a landed hit leaves on `target` (Config.Combat.States; Rules.Fight's states), after the hit's own
+-- stun: a burn's time shown, a chill built (full, it freezes the body: a stun inside ice, StunLook StateFreeze, the
+-- stun's lock after), a shock's or a sap's time started.
+local function leave(target: Fighter, state: string, at: number)
+	local states = Combat.States
+	local model = target.Model
+	if state == "Burn" then
+		if target.Burn then
+			model:SetAttribute("Burning", target.Burn.Until)
+		end
+	elseif state == "Chill" then
+		local chill, frozen = Fight.Chill(states.Chill, target.Chill, at, states.Freeze.Seconds, Combat.Stun.Share[target.Kind], target.StunLock)
+		target.Chill = chill
+		model:SetAttribute("ChillAt", if chill then chill.At else nil) -- before Chill: a client reads both on its change
+		model:SetAttribute("Chill", if chill then chill.Fill else nil)
+		if frozen > 0 then
+			target.StunLock = at + frozen + Combat.Stun.Lock
+			model:SetAttribute("StunLook", "StateFreeze") -- before State: its look's name
+			setState(target, "Stun", at + frozen)
+			endAction(target, at)
+			stop(target)
+		end
+	elseif state == "Shock" then
+		target.ShockUntil = at + states.Shock.Seconds
+		model:SetAttribute("Shocked", target.ShockUntil)
+	elseif state == "Sap" then
+		target.SapUntil = at + states.Sap.Seconds
+		model:SetAttribute("Sapped", target.SapUntil)
+	end
+end
+
 -- One target's share of a hit: rolled, dealt, pushed along `line` (from the attacker), and shown to every client. The
 -- target's passive may take less (Rook's Second Wind); the attacker's may add to it in its element (Pip's Kindle), shown in
 -- the element's number, or crit its first hit to land on the target (Kirra's First Strike).
@@ -908,6 +1051,22 @@ local function land(f: Fighter, action: Actions.Action, target: Fighter, beat: s
 		Extra = Passive.Extra(own, action.Id, beat, 1),
 	}
 	local result = Hit.Resolve(f.Block, target.Block, hit.Coefficient, rolls, effects)
+	-- A Guard's raised shield (AR52): a heavy hit or its fighter's signature breaks it open, landing whole and staggering
+	-- it; any other glances off, Keep of it going through and its push with it.
+	local keep = Fight.Guarded(target.Guard, at)
+	local broke = false
+	if keep < 1 and not result.Dodged then
+		if Fight.Breaks(hit.Heavy == true, f.Signature ~= nil and action.Id == f.Signature.Id) then
+			broke = true
+			dropGuard(target)
+			target.Model:SetAttribute("GuardBroke", at)
+			FightService.Broke:Fire(f, target, f.Signature ~= nil and action.Id == f.Signature.Id)
+		else
+			result.Physical *= keep
+			result.Elemental *= keep
+			result.Total = result.Physical + result.Elemental
+		end
+	end
 	if target.Frail then
 		-- A fast floor's foe (Rules.Tower.Fast): the first hit that reaches it fells it.
 		result.Dodged = false
@@ -918,7 +1077,15 @@ local function land(f: Fighter, action: Actions.Action, target: Fighter, beat: s
 	end
 	-- Kindle's cue when its Extra reached the hit: landed, and the attacker has an element (Rules.Hit's gate).
 	local kindled = (effects.Extra or 0) > 0 and f.Block.Element ~= "" and not result.Dodged and hit.Coefficient > 0
-	local left, fell = Fight.Damage(target.Health, result.Total)
+	-- The element state it leaves (Rules.Fight.StateOf). A burn holds back part of the Fire part, paid over its time
+	-- (stepBurn): the hit's numbers stay whole, its bar drains the rest.
+	local state = if result.Dodged then nil else Fight.StateOf(Combat.States, f.Block.Element, result.Elemental, f.Kind)
+	local dealt = result.Total
+	if state == "Burn" and not target.Frail then
+		local landsNow, burn = Fight.Burn(Combat.States.Burn, target.Burn, result.Elemental, at)
+		dealt, target.Burn = result.Total - result.Elemental + landsNow, burn
+	end
+	local left, fell = Fight.Damage(target.Health, dealt)
 	local removed = target.Health - left
 	setHealth(target, left)
 	-- Lifesteal (TR49; Rules.Fight.Steal): a share of the health the hit removed, counted up to its cap a second. Through
@@ -956,6 +1123,9 @@ local function land(f: Fighter, action: Actions.Action, target: Fighter, beat: s
 			stop(target)
 		end
 		local stunned = if fell then 0 else Fight.Stun(hit.Stun, Combat.Stun.Share[target.Kind], at, target.StunLock)
+		if broke and not fell then
+			stunned = math.max(stunned, Combat.Guard.Stagger) -- the break's stagger, whatever the lock
+		end
 		if stunned > 0 then
 			-- stopped where it stands: the state first, so a client holds the pose its action was stopped in
 			target.StunLock = at + stunned + Combat.Stun.Lock
@@ -964,8 +1134,11 @@ local function land(f: Fighter, action: Actions.Action, target: Fighter, beat: s
 			endAction(target, at)
 			stop(target)
 		end
+		if state and not fell then
+			leave(target, state, at)
+		end
 		local studs, seconds = Fight.Throw(hit.Push, fell, Combat.Push :: any)
-		push(target, line, studs, hold, seconds)
+		push(target, line, if keep < 1 and not broke then studs * keep else studs, hold, seconds)
 	end
 	Net.Server.FireAll("Hit", {
 		A = f.Model,
@@ -981,6 +1154,7 @@ local function land(f: Fighter, action: Actions.Action, target: Fighter, beat: s
 		Rung = rung,
 		Hold = hold,
 		Steady = hit.Steady == true, -- the attacker doesn't hold on it, only the target
+		Guarded = if keep < 1 and not result.Dodged then (if broke then "Broke" else "Glanced") else nil, -- AR52
 		Health = left,
 		MaxHealth = target.Block.Health,
 		Passive = if kindled and own then own.Id else nil, -- its cue on the attacker (FighterController/Passives)
@@ -1032,7 +1206,7 @@ local function strike(f: Fighter, beat: string, hit: Actions.Hit, at: number)
 		local struck: { Fighter } = {}
 		for _, other in fighters do
 			local p = other.Root.Position
-			if against(f, other) and standing(other) and MarkRule.Inside(mark.X, mark.Z, mark.Radius, p.X, p.Z) then
+			if against(f, other) and standing(other) and MarkRule.Covers(mark, p.X, p.Z) then
 				table.insert(struck, other)
 			end
 		end
@@ -1147,6 +1321,8 @@ local function rise(f: Fighter, at: number)
 	setHealth(f, f.Block.Health)
 	f.ReadyAt = {}
 	f.Model:SetAttribute("Ready", 0)
+	f.Armed = false
+	f.Model:SetAttribute("Armed", nil)
 	setState(f, "Idle")
 	FightService.Rose:Fire(f)
 end
@@ -1185,6 +1361,8 @@ local function goHome(f: Fighter, at: number)
 	end
 	f.ReadyAt = {}
 	f.Model:SetAttribute("Ready", 0)
+	f.Armed = false
+	f.Model:SetAttribute("Armed", nil)
 	setHealth(f, 0)
 	setState(f, "Home", at + FightService.HomeOf(f.Owner).Fallen)
 end
@@ -1208,6 +1386,25 @@ local function thinkHome(f: Fighter, at: number, dt: number)
 	end
 end
 
+-- Whether a fighter's aim is held: while its footprint is down (TR44), and a lunge down its line (AR52) from its Aim beat
+-- to its action's end, so a Dasher lies with its back open to whom it passed.
+local function aimHeld(f: Fighter, at: number): boolean
+	if f.Mark ~= nil then
+		return true
+	end
+	local action = f.Action
+	local aim = if action then action.Aim else nil
+	if action == nil or aim == nil then
+		return false
+	end
+	for _, move in action.Moves or {} do
+		if move.Along then
+			return at >= f.ActionAt + action.Beats[aim] / f.ActionRate
+		end
+	end
+	return false
+end
+
 -- The replay's hold (FightService.Force): true while `f` is held, facing its target and pressing its action on time. A
 -- lead or a Shade alike; an action that isn't one ("") holds it still, facing, pressing nothing.
 local function forced(f: Fighter, at: number): boolean
@@ -1215,7 +1412,7 @@ local function forced(f: Fighter, at: number): boolean
 		return false
 	end
 	local target = f.ForcedTarget
-	if f.Mark == nil then -- a footprint down: its aim is fixed (TR44)
+	if not aimHeld(f, at) then -- a footprint down, or a lunge's: its aim is fixed (TR44, AR52)
 		face(f, if target then target.Root.Position else nil)
 	end
 	if target and at >= f.ForcedNext and not busy(f, at) then
@@ -1283,7 +1480,7 @@ local function trySkip(f: Fighter, target: Fighter, avatar: BasePart, at: number
 			local swing = other.Action
 			if other.Target == f and swing then
 				for beat in swing.Hits do
-					windingUp = windingUp or at - other.ActionAt < swing.Beats[beat]
+					windingUp = windingUp or (at - other.ActionAt) * other.ActionRate < swing.Beats[beat]
 				end
 			end
 		end
@@ -1310,6 +1507,15 @@ local function trySkip(f: Fighter, target: Fighter, avatar: BasePart, at: number
 		end
 	end
 	return false -- cornered or surrounded: it fights where it stands
+end
+
+-- The action a lead's choice passes over (TR52): its signature while its owner's Auto is off and no tap has armed it.
+local function held(f: Fighter): string?
+	local signature = f.Signature
+	if signature == nil or f.Armed or f.Owner == nil or f.Owner:GetAttribute("SignatureAuto") ~= false then
+		return nil
+	end
+	return signature.Id
 end
 
 -- A lead's turn to decide.
@@ -1400,7 +1606,7 @@ local function thinkLead(f: Fighter, at: number, dt: number)
 		if trySkip(f, target, avatar, at) then
 			return
 		end
-		local action = Fight.Choose(f.Kit, f.ReadyAt, at)
+		local action = Fight.Choose(f.Kit, f.ReadyAt, at, held(f))
 		local range = if action then action.Range else 4
 		local gap = distance(f.Root, target.Root)
 		local slot, off = slotFor(f, target, math.max(0, range - Combat.Approach))
@@ -1543,7 +1749,7 @@ local function thinkShade(f: Fighter, at: number)
 		end
 		return
 	end
-	if f.Mark == nil then -- a footprint down: its aim is fixed from its Aim beat (TR44)
+	if not aimHeld(f, at) then -- a footprint down, or a lunge's: its aim is fixed from its Aim beat (TR44, AR52)
 		face(f, target.Root.Position)
 	end
 	if busy(f, at) then
@@ -1562,13 +1768,27 @@ local function thinkShade(f: Fighter, at: number)
 	end
 end
 
+-- A Guard's shield raised on its action's Guard.From beat (AR52), to its To beat at the action's rate.
+local function raise(f: Fighter, action: Actions.Action)
+	local guard = action.Guard
+	local drop = if guard then action.Beats[guard.To] else nil
+	if drop == nil then
+		return
+	end
+	local untilAt = f.ActionAt + drop / f.ActionRate
+	f.Guard = { Keep = Combat.Guard.Keep, Until = untilAt }
+	f.Model:SetAttribute("GuardUntil", untilAt)
+end
+
 -- A marked strike's footprint put down on its action's Aim beat (TR44; Config.Combat.Keeper.Mark): where its Mark hit
 -- will land, from where the fighter faces now. Its aim is held there: the turn it was still making is stopped.
 local function putDown(f: Fighter, action: Actions.Action)
 	local slam: number? = nil
+	local lined = false
 	for beat, hit in action.Hits do
 		if hit.Mark then
 			slam = action.Beats[beat]
+			lined = hit.Line == true
 		end
 	end
 	local aim = action.Aim
@@ -1583,14 +1803,51 @@ local function putDown(f: Fighter, action: Actions.Action)
 		f.Align.Enabled = true
 	end
 	local p = f.Root.Position
-	local x, z = MarkRule.Centre(p.X, p.Z, look.X, look.Z, mark.Ahead, mark.Left)
-	local m: Mark = { X = x, Z = z, Y = p.Y, Radius = mark.Radius, Down = f.ActionAt + action.Beats[aim], Slam = f.ActionAt + slam, Target = f.Target }
+	local down, hits = f.ActionAt + action.Beats[aim] / f.ActionRate, f.ActionAt + slam / f.ActionRate
+	local m: Mark
+	if lined then
+		-- the Dasher's (AR52): from its feet along its look, its lunge's length and Past more
+		local line = Combat.Dasher.Line
+		local most = 0
+		for _, move in action.Moves or {} do
+			if move.Along then
+				most = math.max(most, move.Most or 0)
+			end
+		end
+		local unit = if look.Magnitude > 0.05 then look.Unit else Vector3.new(0, 0, -1)
+		local length = most + line.Past
+		m = { X = p.X, Z = p.Z, Y = p.Y, Radius = line.Half, Down = down, Slam = hits, Target = f.Target, Length = length, DirX = unit.X, DirZ = unit.Z } :: Mark
+		f.Model:SetAttribute("MarkTo", Vector3.new(p.X + unit.X * length, p.Y, p.Z + unit.Z * length))
+	else
+		local x, z = MarkRule.Centre(p.X, p.Z, look.X, look.Z, mark.Ahead, mark.Left)
+		m = { X = x, Z = z, Y = p.Y, Radius = mark.Radius, Down = down, Slam = hits, Target = f.Target } :: Mark
+		f.Model:SetAttribute("MarkTo", nil)
+	end
 	f.Mark = m
-	f.Model:SetAttribute("MarkAt", Vector3.new(x, p.Y, z))
+	f.Model:SetAttribute("MarkAt", Vector3.new(m.X, p.Y, m.Z))
 	f.Model:SetAttribute("MarkRadius", m.Radius)
 	f.Model:SetAttribute("MarkDown", m.Down)
 	f.Model:SetAttribute("MarkSlam", m.Slam) -- last: a client draws it on this one's change
 	FightService.Marked:Fire(f, m)
+end
+
+-- A burn's tick (Rules.Fight.BurnTick): what it pays comes off the body's health, on its bar; one it fells falls as to a
+-- hit, its hitters credited. True when it fell.
+local function stepBurn(f: Fighter, at: number): boolean
+	local paid, after = Fight.BurnTick(Combat.States.Burn, f.Burn :: Fight.Burn, at)
+	f.Burn = after
+	if after == nil then
+		f.Model:SetAttribute("Burning", nil)
+	end
+	if not (paid > 0) then
+		return false
+	end
+	local left, fell = Fight.Damage(f.Health, paid)
+	setHealth(f, left)
+	if fell then
+		fall(f, at)
+	end
+	return fell
 end
 
 local function step()
@@ -1610,6 +1867,9 @@ local function step()
 			end
 			continue
 		end
+		if f.Burn and stepBurn(f, at) then
+			continue
+		end
 		if f.State == "Stun" then
 			if at < f.StateUntil then
 				continue -- stopped: no beat, no step, no thought (Actions.Hit.Stun)
@@ -1621,7 +1881,7 @@ local function step()
 		end
 		local action = f.Action
 		if action then
-			local clock = at - f.ActionAt
+			local clock = (at - f.ActionAt) * f.ActionRate
 			for _, beat in Fight.BeatsBetween(action, f.Checked, clock) do
 				local move = if action.Moves then action.Moves[beat] else nil
 				if move and f.Action == action then
@@ -1633,6 +1893,9 @@ local function step()
 				end
 				if beat == action.Aim and f.Action == action then
 					putDown(f, action)
+				end
+				if action.Guard and beat == action.Guard.From and f.Action == action then
+					raise(f, action)
 				end
 			end
 			if f.Action == action then
@@ -1676,6 +1939,9 @@ end
 
 -- A new stat block for a fighter, its health kept as a share (a level gained, or later a gear change out of a fight).
 function FightService.SetBlock(f: Fighter, block: Stats.Block)
+	if f.Reblock then
+		block = f.Reblock(block)
+	end
 	local share = Fight.Rescale(f.Health, f.Block.Health, block.Health)
 	f.Block = block
 	f.Model:SetAttribute("Level", block.Level)
@@ -1727,7 +1993,7 @@ function FightService.SpawnEnemy(def: string, level: number, at: CFrame, options
 	if row.Signature then
 		-- its first, First seconds after its Enter ends (TR44)
 		local enter = if row.Enter then Actions.ById[row.Enter].Length else 0
-		f.ReadyAt[row.Signature] = now() + enter + Combat.Keeper.First
+		f.ReadyAt[row.Signature] = now() + enter + (row.First or Combat.Keeper.First)
 	end
 	return f
 end
@@ -1876,6 +2142,39 @@ function FightService.SetHealthShare(f: Fighter, share: number)
 	end
 end
 
+-- A tap on the signature's ring (TR52's block): armed only while it's ready (Rules.Fight.Tap), so a tap on a ring not
+-- full changes nothing and a repeated tap never fires twice. Armed, it goes at once when it can: a target in its range,
+-- the lead standing in its fight and not sent off for its place, the combo cut wherever it is. Else it goes first the
+-- moment it can (thinkLead's choice, nothing held).
+function FightService.Tap(player: Player): { Ok: boolean, Error: string?, Fired: boolean? }
+	local f = leads[player]
+	if f == nil or not standing(f) then
+		return { Ok = false, Error = "NoLead" }
+	end
+	local at = now()
+	if not Fight.Tap(f.Signature, f.ReadyAt, at, f.Armed) then
+		return { Ok = false, Error = if f.Armed then "Armed" else "NotReady" }
+	end
+	f.Armed = true
+	f.Model:SetAttribute("Armed", true)
+	local action = f.Signature :: Actions.Action
+	local target = f.Target
+	if target and standing(target) and f.State ~= "Flinch" and f.Away == nil and f.Forced == nil
+		and distance(f.Root, target.Root) <= action.Range then
+		endAction(f, at)
+		face(f, target.Root.Position)
+		start(f, action, at)
+		return { Ok = true, Fired = true }
+	end
+	return { Ok = true, Fired = false }
+end
+
+-- The player's Auto for their lead's signature (TR52's block): on, it goes as soon as it's ready, as ever; off, only on
+-- a tap. For this server only: the block keeps it on the player, not in the save.
+function FightService.SetAuto(player: Player, on: boolean)
+	player:SetAttribute("SignatureAuto", on)
+end
+
 function FightService.LeadOf(player: Player): Fighter?
 	return leads[player]
 end
@@ -1984,6 +2283,15 @@ function FightService.Start()
 		end
 		local r = math.rad(bearing)
 		views[player] = { Look = Vector3.new(math.cos(r), 0, math.sin(r)), At = os.clock() }
+	end)
+	Net.Server.Handle("Signature", function(player: Player, what: any, on: any): { [string]: any }
+		if what == "Tap" then
+			return FightService.Tap(player) :: any
+		elseif what == "Auto" and type(on) == "boolean" then
+			FightService.SetAuto(player, on)
+			return { Ok = true, Auto = on }
+		end
+		return { Ok = false, Error = "BadArgs" }
 	end)
 	Players.PlayerRemoving:Connect(function(player: Player)
 		views[player] = nil

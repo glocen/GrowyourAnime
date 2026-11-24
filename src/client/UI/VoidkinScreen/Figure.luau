@@ -2,8 +2,8 @@
 -- Figure (client): one Voidkin's own model, live, on the Voidkin screen's small stage (TR17; docs/research/
 -- voidkin-screen.md, "DESIGN"). Its body stands in a ViewportFrame's WorldModel playing its Idle, framed so it is
 -- `height` of its stage's height tall with its soles `feet` of the way down (shares, so the framing holds at any size).
--- The stage's light takes its rarity's trim (Config.Hud.Card.Trim) and the floor's glow its element (Config.UIKit's
--- Elements): stand-in colours, the look is Modulo's after the pick. A drag turns it; a tap plays the end of its Reveal,
+-- The stage's light takes its rarity's trim (Config.Hud.Card.Trim). It stands on the stage's stone, its element a ring
+-- of light round the stone's edge (Config.UIKit's Elements; TR50's sweep, Modulo's B). A drag turns it; a tap plays the end of its Reveal,
 -- from the strike on; a flick across goes to the next or the one before (Config.Hud.Voidkin.Swipe). A Voidkin without
 -- its own body stands as the grey stand-in, on the stand-in's clips.
 -- A body never drawn yet isn't ready to draw: its first stage stood empty for 0.25 to 0.53 s, then grey before its
@@ -21,6 +21,7 @@
 --   Figure.Flourish(figure) -> true when its Reveal's end started
 --   Figure.Slide(figure, from)        comes in from `from` authored pixels to its side, fading in
 --   Figure.Gesture(figure, delta, took) -> "Tap" | "Swipe" | "Turn"   what a touch did, by its travel and its time
+--   Figure.Bust(def, light, look) -> bust    Home's live view: head and chest in its idle, no stage, no touch (AR49)
 --   Figure.Destroy(figure)
 
 local ContentProvider = game:GetService("ContentProvider")
@@ -43,7 +44,6 @@ local Clips = require(UI.Parent.Controllers.Main.FighterController.Clips)
 local Figure = {}
 
 local HIP = 3 -- studs from the soles to the root, the Templates' R6 rig
-local GREY_FLOOR = UIKit.Palettes.Seam.Facet -- no element: a plain floor in the seam's pale violet (TR28)
 
 export type Figure = {
 	Def: string,
@@ -207,6 +207,26 @@ local function frame(view: ViewportFrame, studs: number, height: number, feet: n
 	camera.CFrame = CFrame.lookAt(Vector3.new(0, centre, -distance), Vector3.new(0, centre, 0))
 end
 
+-- The colour a viewport's Neon must wear to show `colour` (Config.Hud.Voidkin.Stage.Floor.Neon, measured).
+local function showing(colour: Color3, neon: { Gain: number, Power: number }): Color3
+	local function channel(value: number): number
+		local light = if value <= 0.04045 then value / 12.92 else ((value + 0.055) / 1.055) ^ 2.4
+		local wear = (light / neon.Gain) ^ (1 / neon.Power)
+		return math.clamp(if wear <= 0.0031308 then wear * 12.92 else 1.055 * wear ^ (1 / 2.4) - 0.055, 0, 1)
+	end
+	return Color3.new(channel(colour.R), channel(colour.G), channel(colour.B))
+end
+
+-- The colour the floor wears to show the stone's under this stage's light, whatever the rarity's (Config.Hud.Voidkin.
+-- Stage.Floor: Shows, Lit).
+local function stoneFor(view: ViewportFrame, floor: { Shows: Color3, Lit: number }): Color3
+	local function channel(shows: number, ambient: number, light: number): number
+		return math.clamp(shows / math.max(ambient + light * floor.Lit, 1e-3), 0, 1)
+	end
+	local a, l, want = view.Ambient, view.LightColor, floor.Shows
+	return Color3.new(channel(want.R, a.R, l.R), channel(want.G, a.G, l.G), channel(want.B, a.B, l.B))
+end
+
 function Figure.new(def: string, stage: Frame, height: number, feet: number, onSwipe: (step: number) -> ()): Figure?
 	local source, idle, reveal = pick(def)
 	if source == nil then
@@ -238,16 +258,30 @@ function Figure.new(def: string, stage: Frame, height: number, feet: number, onS
 	standing = CFrame.new(0, HIP - soles, 0) -- its soles on the floor, whatever its rig
 	body:PivotTo(standing)
 	body.Parent = world
+	-- The stage's stone under it, its element a ring of light round the edge (none without one).
+	local across = size.X * 1.6 + 2
+	local stone = across * (1 - 2 * look.Floor.Rim)
 	local floor = Instance.new("Part")
 	floor.Name = "Floor"
 	floor.Shape = Enum.PartType.Cylinder
 	floor.Anchored = true
-	floor.Material = Enum.Material.Neon
-	floor.Color = if row and row.Element ~= "" then UIKit.Elements[row.Element] or GREY_FLOOR else GREY_FLOOR
-	floor.Transparency = look.Glow
-	floor.Size = Vector3.new(0.1, size.X * 1.6 + 2, size.X * 1.6 + 2)
+	floor.Material = Enum.Material.SmoothPlastic
+	floor.Color = stoneFor(view, look.Floor)
+	floor.Size = Vector3.new(0.1, stone, stone)
 	floor.CFrame = CFrame.new(0, -0.05, 0) * CFrame.Angles(0, 0, math.rad(90))
 	floor.Parent = world
+	local element = if row and row.Element ~= "" then UIKit.Elements[row.Element] else nil
+	if element then
+		local rim = Instance.new("Part")
+		rim.Name = "FloorRim"
+		rim.Shape = Enum.PartType.Cylinder
+		rim.Anchored = true
+		rim.Material = Enum.Material.Neon
+		rim.Color = showing(element, look.Floor.Neon)
+		rim.Size = Vector3.new(0.08, across, across)
+		rim.CFrame = CFrame.new(0, -0.06, 0) * CFrame.Angles(0, 0, math.rad(90))
+		rim.Parent = world
+	end
 	local camera = Instance.new("Camera")
 	camera.Parent = view
 	view.CurrentCamera = camera
@@ -358,6 +392,89 @@ function Figure.Slide(figure: Figure, from: number)
 		Position = UDim2.fromOffset(0, 0),
 		ImageTransparency = 0,
 	}):Play()
+end
+
+-- A body's own part (its `<Model>_<name>` mesh), else the rig's.
+local function partOf(body: Model, model: string?, name: string): BasePart?
+	local own = if model then body:FindFirstChild(`{model}_{name}`, true) else nil
+	if own and own:IsA("BasePart") then
+		return own
+	end
+	local plain = body:FindFirstChild(name, true)
+	return if plain and plain:IsA("BasePart") then plain else nil
+end
+
+export type Bust = { Def: string, View: ViewportFrame, Body: Model, Idle: AnimationTrack? }
+export type BustLook = {
+	Box: { number },
+	Crown: number,
+	Foot: number,
+	Chest: number,
+	Across: number,
+	Yaw: number,
+	Head: number,
+	Fov: number,
+	Ambient: Color3,
+	Light: Vector3,
+	Each: { [string]: { Yaw: number?, Head: number?, Chest: number?, X: number?, Y: number? } },
+}
+
+-- Home's live view (AR49): its body in its idle, head and chest, with no stage and no touch, in a ViewportFrame its
+-- owner lays at look.Box. Turned look.Yaw, its head brought back look.Head toward the camera, the camera framing its head's
+-- top at look.Crown and the share look.Chest down its torso at look.Foot, its head's middle across at look.Across, all in
+-- the box's own points; lit by `light` from behind and above, its face by look.Ambient. Its model's own offsets are in
+-- look.Each[model]. Nil when there's no body to show.
+function Figure.Bust(def: string, light: Color3, look: BustLook): Bust?
+	local source, idle = pick(def)
+	if source == nil then
+		return nil
+	end
+	local row = Voidkin.ById[def]
+	local model = if row then row.Model else nil
+	local each: { Yaw: number?, Head: number?, Chest: number?, X: number?, Y: number? } = look.Each[model or def] or {}
+	local view = Instance.new("ViewportFrame")
+	view.Name = "Live"
+	view.BackgroundTransparency = 1
+	view.Ambient = look.Ambient
+	view.LightColor = light
+	view.LightDirection = look.Light.Unit
+	local world = Instance.new("WorldModel")
+	world.Parent = view
+	local body = source:Clone()
+	local root = body:FindFirstChild("HumanoidRootPart") :: BasePart?
+	if root then
+		body.PrimaryPart = root
+		root.Anchored = true
+	end
+	body:PivotTo(CFrame.Angles(0, math.rad(each.Yaw or look.Yaw), 0))
+	local neck = body:FindFirstChild("Neck", true)
+	if neck and neck:IsA("Motor6D") then -- the head turned back about the torso's up, at the joint
+		local at = neck.C0.Position
+		neck.C0 = CFrame.new(at) * CFrame.Angles(0, math.rad(each.Head or look.Head), 0) * CFrame.new(-at) * neck.C0
+	end
+	body.Parent = world
+	local head = partOf(body, model, "Head")
+	local torso = partOf(body, model, "Torso")
+	local box = look.Box
+	if head and torso then
+		local crown = head.Position.Y + head.Size.Y / 2
+		local chest = torso.Position.Y + torso.Size.Y * (0.5 - (each.Chest or look.Chest))
+		local k = (look.Foot - look.Crown) / math.max(crown - chest, 0.1) -- points a stud
+		local middle = Vector2.new(box[1] + box[3] / 2, box[2] + box[4] / 2)
+		local y = crown - (middle.Y - look.Crown - (each.Y or 0)) / k
+		local x = head.Position.X - (middle.X - look.Across - (each.X or 0)) / k -- the camera's right is the world's -X
+		local distance = (box[4] / k) / (2 * math.tan(math.rad(look.Fov) / 2))
+		local camera = Instance.new("Camera")
+		camera.FieldOfView = look.Fov
+		camera.CFrame = CFrame.lookAt(Vector3.new(x, y, head.Position.Z - distance), Vector3.new(x, y, head.Position.Z))
+		camera.Parent = view
+		view.CurrentCamera = camera
+	end
+	local track = load(body, idle, true, Enum.AnimationPriority.Idle)
+	if track then
+		track:Play(0)
+	end
+	return { Def = def, View = view, Body = body, Idle = track }
 end
 
 function Figure.Destroy(figure: Figure)

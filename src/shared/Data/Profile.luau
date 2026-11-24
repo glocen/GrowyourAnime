@@ -72,6 +72,14 @@ export type Bay = {
 	Level: number, -- the bay's own level (TR21): its output rises with it, never past the base's ceiling (Rules.BaseLevels)
 }
 
+-- The Stone Condenser (TR37; Rules.Condenser): its next stone's share made, its tray, and the convert under way. Its
+-- level is in Base.Machines.
+export type Condenser = {
+	Made: number, -- its next stone's share made, 0 to 1
+	Tray: { [string]: number }, -- whole stones waiting in its tray, by grade: what it made, and what it converted
+	Convert: number?, -- seconds of work done on the convert under way, at full power; nil while none is
+}
+
 -- How the generation is split among the machines (Rules.Power; docs/design.md, "Power"). Under Auto, by their demand;
 -- else each machine's share of the whole generation, by name (Rules.Power.Machines), the rest charging the battery.
 export type Power = {
@@ -82,7 +90,7 @@ export type Power = {
 
 export type Base = {
 	Level: number, -- the base's level, 1 to Config.Base.Levels.Cap (TR21): its bays, its battery's cap, its machines' ceiling
-	Machines: { [string]: number }, -- each single machine's level by name, the Breaker's now (TR21); a bay's is on the bay
+	Machines: { [string]: number }, -- each single machine's level by name, the Breaker's and the Condenser's (TR21, TR37); a bay's is on the bay
 	Stamp: number, -- os.time() the base was last advanced to (Rules.Breaker); 0 before the first advance
 	Charge: number, -- the battery's charge, kWh (TR18; Migrations step 4 made it from the old electricity)
 	Spill: number, -- Credits from overflow not yet whole, carried to the next advance (0 to 1)
@@ -91,6 +99,7 @@ export type Base = {
 	Line: { ShardWork }, -- the waiting line, in the order it's fed
 	Ready: { ShardWork }, -- broken and waiting to be opened, oldest first
 	Bays: { Bay }, -- one per bay opened
+	Condenser: Condenser, -- the Stone Condenser's tray and its convert (TR37)
 	Showcase: string, -- the Voidkin the showcase at the gate stands (TR22), whatever its role; "" for the strongest
 }
 
@@ -182,6 +191,12 @@ export type Data = {
 		Trainee: string,
 		Banked: number, -- seconds at full power not yet worth a whole point of experience, kept for the next advance
 	},
+	-- Today's three and the days banked, oldest first, and the day's leads so far (TR54; Rules.Goals; the contract in
+	-- docs/engineering-plan.md, "Goals"): each day its UTC number, the goal ids drawn, how far each has come, and claimed.
+	Goals: {
+		Days: { { Day: number, Picks: { string }, Have: { number }, Claimed: { boolean } } },
+		Led: { Day: number, Ids: { string } },
+	},
 	Progress: {
 		Starter: string, -- the starter shard chosen, or "" before the choice
 		Grounds: { [string]: GroundProgress }, -- by ground id, once opened
@@ -228,7 +243,8 @@ function Profile.Template(): Data
 		Funnel = {},
 		Base = {
 			Level = 1,
-			Machines = { Breaker = 1 },
+			Machines = { Breaker = 1, Condenser = 1 },
+			Condenser = { Made = 0, Tray = {} },
 			Showcase = "",
 			Stamp = 0,
 			Charge = BaseConfig.Start.Charge,
@@ -240,6 +256,7 @@ function Profile.Template(): Data
 			Bays = bays,
 		},
 		Training = { Trainee = "", Banked = 0 },
+		Goals = { Days = {}, Led = { Day = 0, Ids = {} } },
 		Progress = { Starter = "", Grounds = {}, Stages = {}, Kills = 0, Tower = { Best = 0 } },
 	}
 end

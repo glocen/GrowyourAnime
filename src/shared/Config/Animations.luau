@@ -23,8 +23,14 @@ return {
 		Signature = { In = 0.06, Out = 0.15 },
 		Challenge = { In = 0.06, Out = 0.15 }, -- the keeper's, as a try starts: it ends in Ready's pose
 		Skip = { In = 0.04, Out = 0.1 }, -- a ranged lead's skip back (TR7): quick in, and the next action cuts it at Land
+		Guard = { In = 0.08, Out = 0.15 }, -- AR52's raise (Shade.clips.json)
+		Lunge = { In = 0.06, Out = 0.15 }, -- AR52's lunge
 	},
-	Ids = {} :: { [string]: number },
+	Ids = {
+		-- published under the group, 2026-11-23 (docs/asset-log.md): AR52's two, the first clips up
+		ShadeGuard = 110693664240912,
+		ShadeLunge = 102847424758672,
+	} :: { [string]: number },
 	Rigs = {
 		R6 = { Idle = "RookIdle", Hit = "RookHit", Down = "RookDown", Up = "RookUp" },
 		Robe = { Idle = "PipIdle", Hit = "PipHit", Down = "PipDown", Up = "PipUp" },
@@ -89,6 +95,8 @@ return {
 		ShadeHit = "Hit",
 		ShadeHitLeft = "Hit",
 		ShadeBurst = "Burst",
+		ShadeGuard = "Guard",
+		ShadeLunge = "Lunge",
 		LamplighterIdle = "Idle",
 		LamplighterChallenge = "Challenge",
 		LamplighterWalk = "Walk",

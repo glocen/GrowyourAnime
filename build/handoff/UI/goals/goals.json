@@ -1,0 +1,550 @@
+{
+ "what": "AR53, the goals' look, for TR54: research's pick B (2026-11-23, 17:49) with its must-fix 1 and the fall's card, redrawn on the director's cut of the Mask Ledger (2026-11-23, by 18:38): the dare's mark in the kit's make, Next the Today list's head (research's second look, 18:54). Every word is TR54's (docs/test-requests.md, TR54: the dares, today's three, Next, the labels): this file holds where words sit, never the words.",
+ "units": "points at the smallest phone (568 x 320); every box is left, top, width, height; a word's y is its capitals' top; images at 4 pixels a point, edge alpha 0. An image's `origin` is where its lay point sits in it, in points from its top left (times 4 for pixels): a lay's `origin` is where that point goes",
+ "sheets": [
+  "goals_dare_line.png",
+  "goals_dare_card.png",
+  "goals_today.png",
+  "goals_cut.png"
+ ],
+ "dare": {
+  "line": {
+   "note": "the run's line as StageController builds it; boxes from the line's glass's top left",
+   "unfolded": {
+    "make": "the folded tab opened to the right, in the line's own glass, under the line. The line never grows, and the mark stays where it is folded (origin 21, 57, scale 1)",
+    "box": {
+     "left": 8,
+     "top": 30,
+     "foot": {
+      "one_row": 70,
+      "two_rows": 88
+     },
+     "corners": {
+      "one_row": 4,
+      "two_rows": 6
+     },
+     "right": "its widest row's end and 10, and never past the limit"
+    },
+    "limit": "6 short of any HUD piece the open dare would lie over: the Electricity pill, 263 from the line's left at the smallest phone. An open dare lies over no other HUD piece, at any phone (research's must-fix, 2026-11-23, 20:07)",
+    "words": {
+     "x": "the stretch's name's left",
+     "size": 14,
+     "colour": "#F1ECFF",
+     "y": {
+      "one_row": 51,
+      "two_rows": [
+       48,
+       66
+      ]
+     },
+     "rows": "one when the dare ends 8 inside the limit; else two, broken at the word that leaves the rows most alike"
+    },
+    "beside": "the base's tab (AR55, build/handoff/UI/return/return.json) rides the open dare's foot, its top 14 above it as under the line: 26 lower under one row, 44 under two",
+    "held": "about 3 s from the stretch's start (a seed: TR54's Config), then it closes to the tab"
+   },
+   "folded": {
+    "tab": {
+     "box": [
+      8,
+      30,
+      26,
+      40
+     ],
+     "make": "the line's own glass, under it, corners cut 4"
+    },
+    "mark": {
+     "origin": [
+      21,
+      57
+     ],
+     "scale": 1.0,
+     "images": {
+      "holds": "DareMark",
+      "broken": "DareMarkDark",
+      "kept": "DareMarkKept"
+     }
+    },
+    "broken": "the mark's image swaps to DareMarkDark; no words, no sound",
+    "kept": "DareMarkKept once, as the stretch clears"
+   },
+   "hard": "the same row and tab in the Hard line's glass (the ember's edge)"
+  },
+  "card": {
+   "marks": {
+    "image": "DareMarkKept",
+    "scale": 0.9375,
+    "origin": "10 right of stretch k's mark's right edge, on the road's middle, for each k kept"
+   },
+   "chip": {
+    "row": "last on the time's row, the row's gap (8) before it; on the fall's card a row of its own under the line that says where the next run starts, 26 tall, the chip centred, 2 down",
+    "height": 22,
+    "corners": 4,
+    "fill": [
+     "#0E0B1A",
+     "#08070F"
+    ],
+    "edge": {
+     "colour": "#C9BA9C",
+     "width": 1.2
+    },
+    "glow": {
+     "colour": "#FFF6E2",
+     "strength": 0.22,
+     "reach": 5
+    },
+    "mark": {
+     "image": "DareMarkKept",
+     "origin": [
+      10,
+      11
+     ],
+     "scale": 0.8125
+    },
+    "words": {
+     "text": "TR54's chip label",
+     "x": 19,
+     "y": 4,
+     "size": 14,
+     "bold": true,
+     "colour": "#EFE6D2"
+    },
+    "stone": {
+     "left": "the words' right + 6",
+     "top": -2,
+     "size": 26.0,
+     "make": "the kit's Common item cell with the forge stone's picture of the ground's grade (StoneLow on Lantern Row) at 0.94 and a hairline in the edge #E2CFA4 over its rim, as Reinforce draws its stone"
+    },
+    "count": {
+     "left": "the cell's right + 4",
+     "y": 3,
+     "size": 17,
+     "bold": true,
+     "colour": "#F1ECFF",
+     "words": "+N, one stone a kept dare"
+    },
+    "pad": 7,
+    "width": "follows its words",
+    "widest": "with a new best the row is about 297 of the card's 320 by the sheet's letter widths: not measured in the game's face, so the first capture checks it"
+   },
+   "none": "no dare kept: no mark, no chip, on either card"
+  },
+  "note": "the mark's image is 40 points square, its middle the origin: the mark itself is 16 tall and 12.8 wide"
+ },
+ "today": {
+  "note": "boxes from Home's glass's top left (build/handoff/UI/home_cards/home_cards.json). HomeSettings, HomeSettingsPress and the Settings label leave the panel: Settings is the cog tile",
+  "cog": {
+   "images": [
+    "HomeCog",
+    "HomeCogPress"
+   ],
+   "origin": [
+    0,
+    0
+   ],
+   "tap": [
+    278.0,
+    8.0,
+    85.0,
+    44.0
+   ],
+   "mark": {
+    "image": "HomeMarkSettings (AR43's)",
+    "centre": [
+     320.7,
+     30.0
+    ],
+    "size": 24,
+    "colour": "#C9D0D9"
+   }
+  },
+  "card": {
+   "images": [
+    "HomeToday",
+    "HomeTodayWaits",
+    "HomeTodayPress"
+   ],
+   "origin": [
+    0,
+    0
+   ],
+   "tap": [
+    254.0,
+    58.0,
+    99.0,
+    118.0
+   ],
+   "waits": "HomeTodayWaits shows while any goal, today's or banked, waits to be claimed",
+   "shard": {
+    "image": "the Lantern Row shard's small picture (shard_standard_small)",
+    "box": [
+     287.5,
+     72.0,
+     40.0,
+     40.0
+    ]
+   },
+   "pips": {
+    "images": {
+     "open": "GoalPipOpen",
+     "done": "GoalPipDone",
+     "claimed": "GoalPipClaimed"
+    },
+    "centres": [
+     [
+      287.7,
+      130.0
+     ],
+     [
+      300.7,
+      130.0
+     ],
+     [
+      313.7,
+      130.0
+     ]
+    ],
+    "note": "today's three in the lists' order: fight, base, roster"
+   },
+   "word": {
+    "x": 293.3,
+    "y": 156.92,
+    "size": 14,
+    "colour": "#F5EFE2",
+    "align": "CENTER",
+    "make": "Home's words: bold, leaning, a soft dark under"
+   }
+  },
+  "list": {
+   "note": "in the glass alone: the three cards, the cog tile and the Today card hidden, HomeGlass and HomePointer kept",
+   "next": {
+    "note": "the list's head: pinned, never scrolling. TR54's line split at its first full stop: the step, then what it opens (45 letters or fewer: one row each); the last line stands alone",
+    "image": "GoalNext",
+    "left": 10.0,
+    "top": 3.0,
+    "height": 40.0,
+    "origin": "the plate's top, its foot's left corner",
+    "back": {
+     "chevron": [
+      [
+       39.0,
+       17.0
+      ],
+      [
+       33.0,
+       23.0
+      ],
+      [
+       39.0,
+       29.0
+      ]
+     ],
+     "width": 1.8,
+     "colour": "#F5EFE2",
+     "tap": [
+      8.0,
+      1.0,
+      46.0,
+      44.0
+     ],
+     "note": "the plate's one press: it ends at the hairline drawn in the image"
+    },
+    "lines": {
+     "x": "50 + 0.2 x (35 - y) from the plate's left: the plate's lean",
+     "y": [
+      6.0,
+      23.0
+     ],
+     "alone": 15.0,
+     "size": 14,
+     "colours": [
+      "#F5EFE2",
+      "#AEB7C2"
+     ],
+     "holds": "280 points: 45 letters are 272 in the sheet's face"
+    },
+    "label": {
+     "colour": "#AFC6F0",
+     "bold": true,
+     "note": "on the first line, the step 38 to its right"
+    }
+   },
+   "rows": {
+    "left": 10.0,
+    "top": 45.0,
+    "foot": 181.0,
+    "height": 44.0,
+    "gap": 2.0,
+    "images": {
+     "open": "GoalRow",
+     "done": "GoalRowDone",
+     "claimed": "GoalRowClaimed",
+     "press": "GoalRowPress"
+    },
+    "origin": "a row's top, its foot's left corner",
+    "frame": "the scrolling frame runs from Next's foot (43) to the glass's (184), its rows padded 2 at the top and 3 at the foot",
+    "words": {
+     "x": 18.4,
+     "y": 15,
+     "size": 14,
+     "colour": "#F5EFE2",
+     "claimed": "#7E879A"
+    },
+    "shard": {
+     "box": [
+      306.4,
+      6.0,
+      32.0,
+      32.0
+     ],
+     "open": "at 0.5",
+     "done": "at 1"
+    },
+    "right": {
+     "x": 298.4,
+     "y": 15,
+     "size": 14,
+     "align": "RIGHT",
+     "count": "#AEB7C2",
+     "claim": {
+      "colour": "#FFD880",
+      "bold": true
+     }
+    },
+    "check": {
+     "image": "GoalCheck",
+     "origin": [
+      322.4,
+      22.0
+     ]
+    },
+    "done": "the whole row is the claim's press",
+    "claimed": "stays until the day turns"
+   },
+   "day": {
+    "height": 22,
+    "x": 24.0,
+    "y": 4,
+    "size": 14,
+    "colour": "#8F99A6"
+   },
+   "scroll": {
+    "shows": "136 points of rows: today's three whole at rest (3 x 44 + 2 x 2); the list scrolls only with a banked day",
+    "thumb": {
+     "x": 366.0,
+     "width": 2,
+     "colour": "#55607A"
+    }
+   }
+  }
+ },
+ "images": {
+  "DareMark": {
+   "file": "images/DareMark.png",
+   "pixels": [
+    160,
+    160
+   ],
+   "origin": [
+    20.0,
+    20.0
+   ],
+   "use": "the dare's mark, lit while the dare holds"
+  },
+  "DareMarkKept": {
+   "file": "images/DareMarkKept.png",
+   "pixels": [
+    160,
+    160
+   ],
+   "origin": [
+    20.0,
+    20.0
+   ],
+   "use": "the dare's mark, its flare, kept"
+  },
+  "DareMarkDark": {
+   "file": "images/DareMarkDark.png",
+   "pixels": [
+    160,
+    160
+   ],
+   "origin": [
+    20.0,
+    20.0
+   ],
+   "use": "the dare's mark, dark and split once broken"
+  },
+  "HomeCog": {
+   "file": "images/HomeCog.png",
+   "pixels": [
+    420,
+    256
+   ],
+   "origin": [
+    -268.0,
+    2.0
+   ],
+   "use": "Settings, a cog tile at the head of Settings' column"
+  },
+  "HomeCogPress": {
+   "file": "images/HomeCogPress.png",
+   "pixels": [
+    420,
+    256
+   ],
+   "origin": [
+    -268.0,
+    2.0
+   ],
+   "tint": "the kit's lit press",
+   "use": "over the cog tile while it's held"
+  },
+  "HomeToday": {
+   "file": "images/HomeToday.png",
+   "pixels": [
+    492,
+    568
+   ],
+   "origin": [
+    -242.0,
+    -46.0
+   ],
+   "use": "the Today card, under the cog tile"
+  },
+  "HomeTodayWaits": {
+   "file": "images/HomeTodayWaits.png",
+   "pixels": [
+    492,
+    568
+   ],
+   "origin": [
+    -242.0,
+    -46.0
+   ],
+   "use": "over the Today card while a goal waits to be claimed"
+  },
+  "HomeTodayPress": {
+   "file": "images/HomeTodayPress.png",
+   "pixels": [
+    492,
+    568
+   ],
+   "origin": [
+    -242.0,
+    -46.0
+   ],
+   "tint": "the kit's lit press",
+   "use": "over the Today card while it's held"
+  },
+  "GoalPipOpen": {
+   "file": "images/GoalPipOpen.png",
+   "pixels": [
+    112,
+    112
+   ],
+   "origin": [
+    14.0,
+    14.0
+   ],
+   "use": "one of today's three on the card: open"
+  },
+  "GoalPipDone": {
+   "file": "images/GoalPipDone.png",
+   "pixels": [
+    112,
+    112
+   ],
+   "origin": [
+    14.0,
+    14.0
+   ],
+   "use": "one of today's three on the card: done"
+  },
+  "GoalPipClaimed": {
+   "file": "images/GoalPipClaimed.png",
+   "pixels": [
+    112,
+    112
+   ],
+   "origin": [
+    14.0,
+    14.0
+   ],
+   "use": "one of today's three on the card: claimed"
+  },
+  "GoalRow": {
+   "file": "images/GoalRow.png",
+   "pixels": [
+    1500,
+    272
+   ],
+   "origin": [
+    12.0,
+    12.0
+   ],
+   "use": "a goal's row: open"
+  },
+  "GoalRowDone": {
+   "file": "images/GoalRowDone.png",
+   "pixels": [
+    1500,
+    272
+   ],
+   "origin": [
+    12.0,
+    12.0
+   ],
+   "use": "a goal's row: done"
+  },
+  "GoalRowClaimed": {
+   "file": "images/GoalRowClaimed.png",
+   "pixels": [
+    1500,
+    272
+   ],
+   "origin": [
+    12.0,
+    12.0
+   ],
+   "use": "a goal's row: claimed"
+  },
+  "GoalRowPress": {
+   "file": "images/GoalRowPress.png",
+   "pixels": [
+    1500,
+    272
+   ],
+   "origin": [
+    12.0,
+    12.0
+   ],
+   "tint": "the kit's lit press",
+   "use": "over a done row while it's held: the row is the claim's press"
+  },
+  "GoalCheck": {
+   "file": "images/GoalCheck.png",
+   "pixels": [
+    96,
+    96
+   ],
+   "origin": [
+    12.0,
+    12.0
+   ],
+   "use": "a claimed goal's check, where its shard was"
+  },
+  "GoalNext": {
+   "file": "images/GoalNext.png",
+   "pixels": [
+    1496,
+    256
+   ],
+   "origin": [
+    12.0,
+    12.0
+   ],
+   "use": "Next's plate, the Today list's head: pinned; the back press at its left, up to its hairline"
+  }
+ },
+ "motion": "nothing moves here beyond what the kit does (a press, a screen opening). The unfold, the fold into the tab, the flare and the mark's split are TR54's block, and research reads them in motion there"
+}

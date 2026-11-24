@@ -17,6 +17,7 @@ local Net = require(Shared.Net)
 local WorldConfig = require(Shared.Config.World)
 local StagesConfig = require(Shared.Config.Stages)
 local HudConfig = require(Shared.Config.Hud)
+local UIKit = require(Shared.Config.UIKit)
 local Markers = require(Shared.World.Markers)
 local Stages = require(Shared.Rules.Stages)
 local Sheet = require(Shared.Rules.Sheet)
@@ -90,7 +91,7 @@ function StageCases.Cases(): { any }
 				}
 				local count = #(Stages.Of(GROUND) :: { any })
 				local function restore()
-					t.Server("StageBegin", "Normal", 1) -- ends any run (refused when shut, which ends nothing: then the walk off does)
+					Helpers.endRun(t)
 					t.Server("StageLine", "Hard", 0)
 					t.Server("StageLine", "Normal", was.Normal[1], was.Normal[2])
 					t.Server("StageLine", "Hard", was.Hard[1], was.Hard[2])
@@ -347,13 +348,95 @@ function StageCases.Cases(): { any }
 			end,
 		},
 		{
-			Name = "Take: TR50, the dock's Play to the Arc panel at the save's checkpoint and at stretch 3, then a stretch's line, at the smallest phone, each held for a still, for research",
+			Name = "HUD: TR50's dusk, the Arc panel on the festival's dusk street with Seam's glass, and the run's card over the street in dark wine",
+			Place = "Main",
+			Run = function(t: any)
+				if Screen.Current() ~= nil then
+					Screen.Close()
+					t.Wait(0.5)
+				end
+				local ARC, BED, CARD = HudConfig.Stages.Arc, HudConfig.Stages.Bed, HudConfig.Stages.Card
+				local function hex(colour: Color3?): string
+					return if colour then colour:ToHex() else "none"
+				end
+				local tile = HudController.Parts().Map :: TextButton
+				t.Check("the dock's Play opens the Arc panel", Button.Press(tile) and waitFor(t, 2, function(): boolean
+					return Screen.Current() == StageScreen.Name and StageScreen.Parts().Arc ~= nil
+				end), tostring(Screen.Current()))
+				t.Wait(1) -- its rise
+				local pick = StageScreen.Parts()
+				local body = pick.Body :: Frame?
+				local ground = if body then body:FindFirstChild("Ground") else nil
+				local ramp = if ground then ground:FindFirstChildOfClass("UIGradient") else nil
+				local keys = if ramp then ramp.Color.Keypoints else nil
+				t.Check("the ground behind the glass in the street's rose", keys ~= nil and hex(keys[1].Value) == hex(ARC.Backing[1]) and hex(keys[#keys].Value) == hex(ARC.Backing[2]),
+					if keys then `{hex(keys[1].Value)} to {hex(keys[#keys].Value)}` else "no ramp")
+				local panel = pick.Arc :: Frame?
+				local group = if panel then panel.Parent :: GuiObject? else nil
+				local bed = if panel then panel:FindFirstChild("Bed") :: Frame? else nil
+				local bloom = pick.GroundBloom :: ImageLabel?
+				t.Check("the street's light behind the bed, on the ground under the tile", bloom ~= nil and group ~= nil and bloom.Parent == group.Parent and bloom.ZIndex < group.ZIndex
+					and hex(bloom.ImageColor3) == hex(ARC.Bloom.Colour) and math.abs(bloom.ImageTransparency - (1 - ARC.Bloom.Alpha)) < 1e-3)
+				if bloom and bed then
+					local away = (bed.AbsolutePosition + bed.AbsoluteSize / 2) - (bloom.AbsolutePosition + bloom.AbsoluteSize / 2)
+					t.Check("its middle the bed's", away.Magnitude <= 1.5, `{string.format("%.1f", away.Magnitude)} px away`)
+				end
+				local glow = if panel then panel:FindFirstChild("Glow") :: ImageLabel? else nil
+				local edge = if panel then panel:FindFirstChild("Edge") :: ImageLabel? else nil
+				t.Check("the light round the panel in lantern light, its rim in ivory", glow ~= nil and edge ~= nil and hex(glow.ImageColor3) == hex(ARC.Glow) and hex(edge.ImageColor3) == hex(ARC.Rim),
+					`{hex(glow and glow.ImageColor3)}, {hex(edge and edge.ImageColor3)}`)
+				local bedLight = if bed then bed:FindFirstChild("Bloom") :: ImageLabel? else nil
+				local bedEdge = if panel then panel:FindFirstChild("BedEdge") :: ImageLabel? else nil
+				t.Check("the bed's light pooled low in amber, its hairline in rosewood", bedLight ~= nil and bedEdge ~= nil and hex(bedLight.ImageColor3) == hex(BED.Bloom.Colour)
+					and math.abs(bedLight.ImageTransparency - (1 - BED.Bloom.Alpha)) < 1e-3 and hex(bedEdge.ImageColor3) == hex(BED.Edge))
+				local band = Screen.Band(StageScreen.Name)
+				local back = if band and band.Parent then band.Parent:FindFirstChild("Back") else nil
+				local under = if back then back:FindFirstChild("Under", true) :: ImageLabel? else nil
+				t.Check("Back's underline in ivory", under ~= nil and hex(under.ImageColor3) == hex(ARC.Rim), hex(under and under.ImageColor3))
+				-- The run's card: over the street dimmed in dark wine, its Back in the kit's light again.
+				local on = {
+					Begin = function(): { [string]: any }
+						return { Ok = false }
+					end,
+					Home = function(): { [string]: any }
+						return { Ok = false }
+					end,
+					Say = function(_: string) end,
+				}
+				local count = #((Stages.Of(GROUND) or {}) :: { any })
+				local ok, problem = pcall(StageScreen.Results, { Ground = GROUND, Difficulty = "Normal", Stage = 2, Count = count, Won = false, Then = 2, Checkpoint = 2, From = 1, Seconds = 40, Credits = 0 }, on)
+				t.Check("the run's card opens", ok and Screen.Current() == StageScreen.Name, tostring(problem))
+				t.Wait(1)
+				local cover = Screen.Cover(StageScreen.Name)
+				t.Check("its cover in dark wine, at Card.Dim", cover ~= nil and hex(cover.BackgroundColor3) == hex(CARD.Cover) and math.abs(cover.BackgroundTransparency - CARD.Dim) < 0.02,
+					if cover then `{hex(cover.BackgroundColor3)} at {string.format("%.2f", cover.BackgroundTransparency)}` else "none")
+				local cardBand = Screen.Band(StageScreen.Name)
+				local cardBack = if cardBand and cardBand.Parent then cardBand.Parent:FindFirstChild("Back") else nil
+				local cardUnder = if cardBack then cardBack:FindFirstChild("Under", true) :: ImageLabel? else nil
+				t.Check("the card's Back in the kit's light, not the panel's ivory (the card reopens the panel's screen)", cardUnder ~= nil and hex(cardUnder.ImageColor3) ~= hex(ARC.Rim), hex(cardUnder and cardUnder.ImageColor3))
+				-- The panel opened over the card (the server's StagePick) reopens the same screen, which keeps its cover and its
+				-- Back: the panel puts its own back.
+				StageScreen.Pick(GROUND, ProfileController.Get() :: Profile.View, on)
+				t.Wait(1)
+				local again = Screen.Cover(StageScreen.Name)
+				t.Check("the panel over the card: its cover the glass's own again", again ~= nil and hex(again.BackgroundColor3) == hex(UIKit.Palettes.SeamGlass.Backing), hex(again and again.BackgroundColor3))
+				local bandAgain = Screen.Band(StageScreen.Name)
+				local backAgain = if bandAgain and bandAgain.Parent then bandAgain.Parent:FindFirstChild("Back") else nil
+				local underAgain = if backAgain then backAgain:FindFirstChild("Under", true) :: ImageLabel? else nil
+				t.Check("and Back's underline in ivory again", underAgain ~= nil and hex(underAgain.ImageColor3) == hex(ARC.Rim), hex(underAgain and underAgain.ImageColor3))
+				Screen.Close()
+				t.Wait(0.6)
+				t.Check("closed", Screen.Current() == nil)
+			end,
+		},
+		{
+			Name = "Take: TR50, the dock's Play to the Arc panel at the save's checkpoint and at stretch 3, the run's card, then a stretch's line, at the smallest phone, each held for a still, for research",
 			Place = "Main",
 			Manual = true,
 			Stay = true,
 			Run = function(t: any)
-				-- Each state is held until the driver moves ReplicatedStorage.NL_TakeStep on ("Panel", "Stretch3", "Line",
-				-- "End") and captures it. The panel opens from the dock's Play as a player taps it; stretch 3 is the record set
+				-- Each state is held until the driver moves ReplicatedStorage.NL_TakeStep on ("Panel", "Stretch3", "Card",
+				-- "Line", "End") and captures it. The panel opens from the dock's Play as a player taps it; stretch 3 is the record set
 				-- to Normal's stretch 2 cleared, its checkpoint at 3; the line is the run's attributes set on this client alone
 				-- (the line reads them), the same line a run in the Festival shows. The record is put back after.
 				local step = Instance.new("StringValue")
@@ -407,6 +490,18 @@ function StageCases.Cases(): { any }
 						t.Equal("its lit press says Continue", if way then way.Text else nil, "Continue")
 						local face = pick.Normal :: Instance?
 						t.Check("cleared nodes wear their tick, not their number", face ~= nil and face:FindFirstChild("Check1", true) ~= nil and face:FindFirstChild("Mark1Number", true) == nil and face:FindFirstChild("Mark3Number", true) ~= nil)
+					end
+					if await("Card") then
+						-- The run's card over the world, stretch 3 cleared on Normal (its cover in TR50's dusk).
+						Screen.Close()
+						t.Wait(0.5)
+						local stub = function(): { [string]: any }
+							return { Ok = false }
+						end
+						StageScreen.Results({ Ground = GROUND, Difficulty = "Normal", Stage = 3, Count = count, Won = true, Seconds = 185, Best = 185, Checkpoint = 4, Credits = 240, Shards = 2, Chests = 1 },
+							{ Begin = stub, Home = stub, Say = function(_: string) end })
+						t.Check("the run's card", Screen.Current() == StageScreen.Name)
+						t.Wait(1)
 					end
 					if await("Line") then
 						Screen.Close()

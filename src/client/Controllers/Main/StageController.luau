@@ -11,6 +11,7 @@
 -- player's Hard foes (their For) stand faded for this one: not theirs to fight.
 --   StageController.Said() -> (boolean, string)   whether the run's line shows, and its words, for tests
 --   StageController.Gate(stage) -> boolean?       whether stage's gate shows shut, nil before it's streamed in
+--   StageController.Dare() -> { [string]: any }?  the stretch's dare as the line shows it, for tests (DareLine.Said)
 
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
@@ -30,6 +31,8 @@ local Layers = require(UI.Layers)
 local Toast = require(UI.Kit.Toast)
 local Glass = require(UI.Kit.Glass)
 local StageScreen = require(UI.StageScreen)
+local DareLine = require(UI.DareLine)
+local GoalDefs = require(Shared.Definitions.Goals)
 local ProfileController = require(script.Parent.Parent.Core.ProfileController)
 local HudController = require(script.Parent.HudController)
 local WorldConfig = require(Shared.Config.World)
@@ -251,10 +254,33 @@ local function tidy(made: Line)
 	words.Visible = clear()
 end
 
+-- The stretch's dare under the line (TR54): StageDare "<stage> <id>", StageDareLook its mark's state.
+local function dareText(id: string): string?
+	for _, row in GoalDefs.Dares do
+		if row.Id == id then
+			return row.Text
+		end
+	end
+	return if GoalDefs.Fallback.Id == id then GoalDefs.Fallback.Text else nil
+end
+
+local function showDare()
+	local made = line
+	if made == nil or made.Frame.Parent == nil then
+		return
+	end
+	local key = player:GetAttribute("StageDare")
+	local look = player:GetAttribute("StageDareLook")
+	local id = if type(key) == "string" then string.match(key, "^%d+ (%w+)$") else nil
+	local text = if id then dareText(id) else nil
+	DareLine.Show(made.Frame, made.Hard, made.Left, if text then key :: string else nil, text, if type(look) == "string" then look else nil)
+end
+
 local function showLine()
 	local run = player:GetAttribute("StageRun")
 	if type(run) ~= "string" then
 		if line then
+			DareLine.Show(line.Frame, line.Hard, line.Left, nil, nil, nil)
 			line.Frame.Visible = false
 		end
 		return
@@ -307,6 +333,7 @@ local function showLine()
 	end
 	ending(now, if last == true then "Cleared" elseif risen then "Risen" else "Waiting", not fresh)
 	task.defer(tidy, now)
+	showDare()
 end
 
 local function look()
@@ -379,6 +406,10 @@ function StageController.Pick()
 	StageScreen.Pick(WorldConfig.Row.Ground, view, on)
 end
 
+function StageController.Dare(): { [string]: any }?
+	return DareLine.Said(if line then line.Frame else nil)
+end
+
 function StageController.Start()
 	HudController.OpenPlay = StageController.Pick
 	Net.Client.On("StagePick", function(payload: any)
@@ -403,6 +434,9 @@ function StageController.Start()
 		player:GetAttributeChangedSignal(name):Connect(showLine)
 		player:GetAttributeChangedSignal(name):Connect(look)
 	end
+	DareLine.Preload()
+	player:GetAttributeChangedSignal("StageDare"):Connect(showDare)
+	player:GetAttributeChangedSignal("StageDareLook"):Connect(showDare)
 	showLine()
 	-- The screen's room changed: the line stands again clear of the HUD's pieces, built again if its width changes.
 	local function refit()

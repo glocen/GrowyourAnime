@@ -20,14 +20,15 @@ The director asked, 2026-11-11, whether Modulo should make all the HUD design, t
 
 | Work | Who | Note |
 |---|---|---|
-| Voidkin and Shades: models, textures, clips, the look of each signature | Modulo | the game's main content, and always first in Modulo's queue |
+| Voidkin and Shades: models, textures, clips | Modulo | the game's main content, and always first in Modulo's queue |
+| Combat effects: hits, the Shades' and the keeper's, the element states, each Voidkin's M1 and signature, from the look to the game | Scintilla, the builder reviewing before merge (the director, 2026-11-23) | the shared kit first; each Voidkin's own after its redesign |
 | The UI kit: frames, icons, bars, the two themes, the look of interface effects | Modulo, from `docs/ui.md` | one kit, made once |
 | Where things sit on a screen, what shows when, the hierarchy | Quaestor | `docs/ui.md` |
 | Building the screens and making them behave | Faber | from one component library |
 | The world kit: stalls, lanterns, gates, the base's machines | Modulo | after the first three fighters |
 | The map's layout: where grounds, gates and bases sit | Quaestor lays it out in grey, Faber installs it | a level designer isn't opened |
-| Effects in the engine: timing, hit-stop, camera | Faber, to Modulo's look, in the same session | `/ga-action` |
-| Sounds | Faber picks from Roblox's library to research's cue list | `AGENTS.md`, rule 2 |
+| Effects in the engine: timing, hit-stop, camera | Faber, to Scintilla's look, in the same session | `/ga-action` |
+| Sounds | Sonus shortlists and loads them into the listening panel; the director's ear picks each cue (the director, 2026-11-23) | `AGENTS.md`, rule 2; the M1's sound is one per class |
 
 One maker is one queue. If the board's count shows the team waiting on Modulo for more than a piece at a time, research proposes a second art seat (environment art) to the director. Not before.
 
@@ -38,7 +39,9 @@ One maker is one queue. If the board's count shows the team waiting on Modulo fo
 | Design, research, quality | Quaestor | now |
 | Code | Faber | now |
 | Art | Modulo | now |
-| QA | Probator | at phase 4's end, for the whole game before launch (the director, 2026-11-13). Through phase 4 the team stays three; level design and environment art aren't opened, since the grounds are one kit recoloured (`docs/roster.md`). Until then, the builder's checks and player-camera captures are a piece's evidence, and research reads them as QA would: the test output, the angles still missing, what regressed |
+| Effects | Scintilla | 2026-11-23 (the director: "we need agents for the combat visually and sfx to save us time") |
+| Sound | Sonus | 2026-11-23, the same word |
+| QA | Probator | at phase 4's end, for the whole game before launch (the director, 2026-11-13). Level design and environment art aren't opened, since the grounds are one kit recoloured (`docs/roster.md`). Until then, the builder's checks and player-camera captures are a piece's evidence, and research reads them as QA would: the test output, the angles still missing, what regressed |
 
 The PC's limits hold: two Studios at most, one render at a time. A seat opens when work waits for it.
 
@@ -48,6 +51,7 @@ The director's words, 2026-11-11 (`docs/decisions.md`): Modulo on Fable 5.2 high
 
 - **Quaestor: Opus 5.5 high** from the next session. Research asks the director for Fable only for: the store's design, the retune after the first real play data, or a verdict the team disputes.
 - **Faber: Opus 5.5 xhigh.** Good for this work when each piece has a tight request and its tests. What gets a Fable read first when the reset comes: `docs/engineering-plan.md`, "For the Fable pass". A read, not a rewrite, unless the read finds one is needed.
+- **Scintilla and Sonus: Opus 5.5 xhigh** (the director, 2026-11-23). Fable stays Modulo's.
 - **Modulo: Fable 5.2 high.** The look is where the bar is won. From 2026-11-12, Opus 5.5 xhigh until the Fable limit resets, then back on Fable 5.2 high (`docs/decisions.md`, 2026-11-12). Later on 2026-11-12, back on Fable for the last 9% of its usage. From 2026-11-13, Opus 5.5 xhigh again: Fable's usage is at 100% (the director: "he will be back on opus so record we are at 100% for fable"), and Fable returns at its reset, this weekend (the director, 2026-11-13: "he will be back on fable this weekend, his approaches to art as fable so far is incredible"). Each delivery names its model.
 
 **Made on Opus, for Modulo's look on Fable.** Research lists each piece Modulo delivers on Opus, from its request entry. At the reset Modulo reads them and reworks what it judges needs it, as a fix round in each piece's entry. The Fable pieces before it: everything up to the elite's second mask (AR2, commit 95a5089).
@@ -141,11 +145,11 @@ Each ends on something playable. No dates are promised past phase 1: see "The da
 
 **One ground at launch** (the director, 2026-11-13, `docs/decisions.md`): the Festival of Battles opens on Lantern Row alone.
 - **Five Voidkin at launch** (the director, 2026-11-17, 02:40): Rook, Kirra, Pip and Watt (Common) and Lyric (Rare), each perfected and looking its rarity.
-  - Every one's basic attack and signature are its own, each with its own effect and sound, at Anime Vanguards' level of flash.
+  - Every one's basic attack and signature are its own, each with its own effect, at Anime Vanguards' level of flash. Each signature has its own sound; the basic attack's sound is one per class, shared by the class (the director, 2026-11-23).
   - Rook, Kirra, Pip and Lyric are redesigned to the anime bar at the end, in the finish pass.
   - **Every Voidkin piece waits for the end** (the director, 2026-11-17, by 11:10): the basic attacks' effects (AR26), Ground Wire's fix (AR11), the idles (AR27) and the redesigns are built with the finish pass. The game's systems come first.
   - Lantern Row's shards roll Common and Rare only: the guard drops each tier with no Voidkin made and keeps the rest's proportions, so about 87 and 13 in a Standard shard. An Enriched or Prismatic shard always gives Lyric.
-- **One big update after launch** carries everything delayed: Sable, Marigold and Crane, the Rift, the Research Lab, Drum Court and the grounds after it, and the Calamity.
+- **Small named updates after launch, every 2 to 4 weeks** (the director, 2026-11-23, 15:06, replacing "1 massive updates" of 2026-11-17), carry everything delayed: Sable, Marigold and Crane, the Rift, the Research Lab, Drum Court and the grounds after it, and the Calamity. Each update has its name and its own featured stock in the Void Shop. Their order is set nearer launch. Why: Roblox's guidance (updates every 2 to 4 weeks; curation checks for at least monthly) and the five Voidkin's reveals running out early (`docs/research/design-holes.md`, H9).
 - **Translation launches** (the director, 2026-11-18, D8): Roblox's automatic translation, switched on in Creator Hub by the director, with the Voidkin's names kept untranslated. No build hours.
 - **What launches:** phases 0 to 4 and the Tower. The Clash Grounds launch if they're at the bar, and are in the update if they aren't.
 - **The foundation** makes a new ground, Voidkin or effect mostly data and art, so the update is fast (`docs/engineering-plan.md`, its own section, Faber's).

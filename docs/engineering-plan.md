@@ -65,6 +65,14 @@ The shape's home is `src/shared/Data/Profile.luau`, since TR2. This sketch is wh
 
 - **The base's levels** (TR21, the builder's contract, 2026-11-15): `Base.Level`, 1 to `Config.Base.Levels.Cap`; `Base.Machines`, each single machine's level by its name (the Breaker's now; the Condenser's, the Forge's and the Lab's when they come; the Training machine has none); and each bay's `Level` on its bay. What a level gives is computed from these by `Rules.BaseLevels`, never stored: the bays open, the battery's cap, a machine's ceiling, the Breaker's speed, rating and chambers, a bay's output. A base level bought opens its bays in the same change, and a Breaker level that brings a chamber adds it. Migration 5 gives each bay its level and opens the bays level 1 holds.
 - **The showcase at the gate** (TR22, the builder's contract, 2026-11-15): `Base.Showcase`, the Id of the Voidkin picked with "Show at the gate", whatever its role, or "". Which one stands is `Rules.Collection.Showcase`'s: the pick while it's owned, else the strongest by Combat Power, then level, then Id. Reconcile fills the key into older saves.
+- **The Stone Condenser** (TR37, the builder's contract, 2026-11-23): `Base.Condenser` = `{ Made, Tray, Convert? }`. `Made` is the part of the next stone worked so far, 0 to 1; `Tray` is the stones it holds by grade; `Convert` is the seconds of work a convert has had, or nil when none runs. Its level is `Base.Machines.Condenser`. Both are filled by Reconcile, so no migration. What it makes, its cap, its rating and the cups it lights come from `Rules.Condenser`, never stored. It is worked in `Rules.Breaker`'s event steps, online and away, at its share of the plant (`Rules.Power`). CollectTray and Convert each change the save in one step (`Rules.Base`).
+- **Goals** (TR54, the builder's contract, 2026-11-24): `Goals` = `{ Days, Led }`.
+  - `Days` holds up to `Config.Goals.Bank` days, oldest first, each `{ Day, Picks, Have, Claimed }`: its UTC day number (`Rules.Goals.DayOf`), the goal ids drawn for it (`Definitions.Goals`, one a list), how far each has come, and whether each is claimed.
+  - A day's draw is fixed by the player's id and the day (`Rules.Goals.Draw`), so a rejoin or a second server never draws it again.
+  - `Led` is the day's leads so far, `{ Day, Ids }`, for "someone new".
+  - A goal's words, its reward and Next are computed from the rows and the save, never stored.
+  - A dare lives with its run on the server and is never saved. Its stone goes into `Bag` as its stretch clears, so a later fall takes nothing back.
+  - Filled by Reconcile, so no migration. A claim changes the save in one step behind the op ledger.
 - The profile holds ids and numbers only: no model, part or display name.
 - `Version` and one migration per step, from the first save.
 - A nickname is stored raw and filtered for each viewer when shown (`docs/roblox-rules.md`).

@@ -144,9 +144,11 @@ return {
 			end
 			t.Check("one Shade short: not done", not run.Done)
 			t.Check("the quota's last Shade, the elite already down: done", Stages.Kill(run, "brawler"))
+			local again = false
 			for _ = 1, 5 do
-				Stages.Kill(run, "brawler")
+				again = Stages.Kill(run, "brawler") or again
 			end
+			t.Check("a fall after it finishes nothing more, so the clear is asked for once", not again and not Stages.Kill(run, last) and run.Done)
 			t.Equal("the quota stops at its count", run.Kills, row.Quota)
 			local other = Stages.Start(data, GROUND, "Normal", 1, NOW) :: Stages.Run
 			for _ = 1, row.Quota do

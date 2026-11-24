@@ -35,13 +35,31 @@ function Fight.CatchTo(action: Actions.Action, beat: string, clock: number): num
 end
 
 -- The first action of `kit` (in its order) that's off its cooldown at `now`. `readyAt` holds when each may go again.
-function Fight.Choose(kit: { Actions.Action }, readyAt: { [string]: number }, now: number): Actions.Action?
+-- `held`, an action's id the choice passes over: a lead's signature while its Auto is off and no tap has armed it (TR52).
+function Fight.Choose(kit: { Actions.Action }, readyAt: { [string]: number }, now: number, held: string?): Actions.Action?
 	for _, action in kit do
-		if now >= (readyAt[action.Id] or -math.huge) then
+		if action.Id ~= held and now >= (readyAt[action.Id] or -math.huge) then
 			return action
 		end
 	end
 	return nil
+end
+
+-- A lead's signature: the first action in its kit with a cooldown (Actions.Kits puts it first), or nil.
+function Fight.Signature(kit: { Actions.Action }): Actions.Action?
+	for _, action in kit do
+		if action.Cooldown > 0 then
+			return action
+		end
+	end
+	return nil
+end
+
+-- A tap on the signature's ring (TR52): whether it arms the signature now. Only a ready one that isn't armed already, so
+-- a tap on a ring not full does nothing and changes nothing, and a second tap never arms it twice. Armed, the signature
+-- is the lead's next action (Choose, nothing held); its start disarms it and empties the ring, so it fires once.
+function Fight.Tap(signature: Actions.Action?, readyAt: { [string]: number }, now: number, armed: boolean): boolean
+	return signature ~= nil and not armed and now >= (readyAt[signature.Id] or -math.huge)
 end
 
 export type Candidate = {
@@ -352,6 +370,17 @@ function Fight.Toward(current: number, want: number, step: number): number
 	return Fight.Wrap(current + math.clamp(Fight.Wrap(want - current), -step, step))
 end
 
+-- Each Shade of a pack, place by place round its ring (AR52: each stretch asks its own question): `with` of them `other`
+-- and the rest `def`, the others spread evenly through the ring so they never stand together. No other: all `def`.
+function Fight.PackDefs(def: string, count: number, other: string?, with: number?): { string }
+	local defs = table.create(count, def)
+	local n = if other then math.clamp(math.floor(with or 0), 0, count) else 0
+	for k = 1, n do
+		defs[math.floor((k - 0.5) * count / n) + 1] = other :: string
+	end
+	return defs
+end
+
 -- Where a pack's `count` Shades stand round its spawn: on one circle, each `spacing` from its neighbours, the first straight
 -- ahead (-Z, the spawn's look). Offsets { X, Z } in studs, in the spawn's own frame. One Shade stands on the spawn.
 function Fight.PackRing(count: number, spacing: number): { { number } }
@@ -377,12 +406,111 @@ function Fight.Stun(seconds: number?, share: number?, at: number, locked: number
 	return seconds * math.clamp(share or 1, 0, 1)
 end
 
+-- The Guard's paper shield (AR52; Actions.Hit.Guard): the share of a hit it lets through at `at`, its Keep while it's
+-- raised, all of it once it's down or broken. Outside the Reduction bucket and its ceiling: its own cut.
+function Fight.Guarded(guard: { Keep: number, Until: number }?, at: number): number
+	if guard == nil or at >= guard.Until then
+		return 1
+	end
+	return math.clamp(guard.Keep, 0, 1)
+end
+
+-- Whether a hit breaks a raised shield open (AR52): a heavy hit, or any hit of its fighter's signature.
+function Fight.Breaks(heavy: boolean, signature: boolean): boolean
+	return heavy or signature
+end
+
 -- The share less damage a fighter's shield takes off a hit at `at` (Actions.Hit.Shield): its Share until it lapses.
 function Fight.Shield(shield: { Share: number, Until: number }?, at: number): number
 	if shield == nil or at >= shield.Until or not (shield.Share > 0) then
 		return 0
 	end
 	return math.min(shield.Share, 1)
+end
+
+-- The element states (docs/design.md, "States in a fight"; Config.Combat.States). Times are the fight's clock, seconds.
+-- A burn: the damage it still has to pay, at Rate a second, last paid At, and all of it by Until.
+export type Burn = { Left: number, Rate: number, At: number, Until: number }
+-- A chill: its Fill (0 to 1) as it stood after its last Frost hit, At.
+export type Chill = { Fill: number, At: number }
+
+-- The state a hit in `element` from a fighter of `kind` leaves (Config.Combat.States: By, and Not for the kinds that leave
+-- it none), when the hit lands with an elemental part: nil for no element, a dodge or a hit with no elemental part.
+function Fight.StateOf(states: { By: { [string]: string }, Not: { [string]: { [string]: boolean } } }, element: string, elemental: number, kind: string): string?
+	if element == "" or not (elemental > 0) then
+		return nil
+	end
+	local state = states.By[element]
+	local none = states.Not[kind]
+	return if state and none and none[state] then nil else state
+end
+
+-- A Fire hit's elemental part `elemental` at `at` on a body burning `burn`: what lands now, and the burn after it. Its
+-- Share is held back and added to what the burn has left, all paid evenly over Seconds from now. Nothing is added: the
+-- part that lands now and the burn's sum to the hit's.
+function Fight.Burn(rule: { Share: number, Seconds: number }, burn: Burn?, elemental: number, at: number): (number, Burn?)
+	local held = math.max(0, elemental) * math.clamp(rule.Share, 0, 1)
+	if not (held > 0) or not (rule.Seconds > 0) then
+		return elemental, burn
+	end
+	local left = held + (if burn then burn.Left else 0)
+	return elemental - held, { Left = left, Rate = left / rule.Seconds, At = at, Until = at + rule.Seconds }
+end
+
+-- What `burn` pays at `at`, and the burn after (nil once it's paid out): nothing before Tick seconds since it last paid,
+-- its Rate for the time since then, and all it has left once its time is up.
+function Fight.BurnTick(rule: { Tick: number }, burn: Burn, at: number): (number, Burn?)
+	if at >= burn.Until then
+		return burn.Left, nil
+	end
+	if at - burn.At < rule.Tick then
+		return 0, burn
+	end
+	local paid = math.min(burn.Left, burn.Rate * (at - burn.At))
+	if burn.Left - paid <= 0 then
+		return burn.Left, nil
+	end
+	return paid, { Left = burn.Left - paid, Rate = burn.Rate, At = at, Until = burn.Until }
+end
+
+-- A chill's fill at `at`: as it stood after its last Frost hit, drained Drain a second from Delay seconds after it.
+function Fight.ChillNow(rule: { Delay: number, Drain: number }, chill: Chill?, at: number): number
+	if chill == nil then
+		return 0
+	end
+	local since = at - chill.At - rule.Delay
+	return if since > 0 then math.max(0, chill.Fill - rule.Drain * since) else chill.Fill
+end
+
+-- A Frost hit at `at` on a body chilled `chill`: the chill after it, and the seconds it freezes. It adds 1 / Hits; a full
+-- chill freezes for `freeze` seconds, `share` of them (an elite's, a keeper's half), and empties. While the body is still
+-- locked from its last stun or freeze (`locked`, the time the lock ends, as Fight.Stun) no chill builds, so freezes never
+-- chain (research, 2026-11-23): the hit leaves the chill as it was.
+function Fight.Chill(rule: { Hits: number, Delay: number, Drain: number }, chill: Chill?, at: number, freeze: number, share: number?, locked: number): (Chill?, number)
+	if at < locked then
+		return chill, 0
+	end
+	local fill = math.min(1, Fight.ChillNow(rule, chill, at) + 1 / math.max(rule.Hits, 1))
+	if fill >= 1 - 1e-9 then
+		local frozen = Fight.Stun(freeze, share, at, locked)
+		if frozen > 0 then
+			return nil, frozen
+		end
+	end
+	return { Fill = fill, At = at }, 0
+end
+
+-- How fast a body chilled `fill` acts and walks: 1, less Slow at a full chill, in proportion.
+function Fight.ChillRate(rule: { Slow: number }, fill: number): number
+	return 1 - math.clamp(rule.Slow, 0, 0.9) * math.clamp(fill, 0, 1)
+end
+
+-- What a heal of `amount` gives a body sapped until `sapped` (nil for never), at `at`: Cut less while it holds.
+function Fight.Sapped(rule: { Cut: number }, amount: number, sapped: number?, at: number): number
+	if sapped == nil or at >= sapped then
+		return amount
+	end
+	return amount * (1 - math.clamp(rule.Cut, 0, 1))
 end
 
 -- Whether a fighter `distance` studs (flat) from a hit's target stands in the hit's Area, the target's own studs round it.

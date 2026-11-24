@@ -63,8 +63,8 @@ function HardLooksCases.Cases(): { any }
 			end
 			lookAhead(t)
 			local white = Color3.new(1, 1, 1)
-			local function spawn(def: string, difficulty: string?, ahead: number, part: string): (Model?, string?)
-				local spawned = t.Server("FightSpawn", def, level, ahead, nil, difficulty)
+			local function spawn(def: string, difficulty: string?, ahead: number, part: string, kind: string?): (Model?, string?)
+				local spawned = t.Server("FightSpawn", def, level, ahead, nil, difficulty, kind)
 				if type(spawned) ~= "table" or spawned.Ok ~= true then
 					t.Check(`{def} spawns`, false, tostring(type(spawned) == "table" and spawned.Error))
 					return nil, nil
@@ -84,7 +84,7 @@ function HardLooksCases.Cases(): { any }
 			local function bodyHard(body: SurfaceAppearance?, kind: string): boolean
 				return body ~= nil
 					and body.AlphaMode == Enum.AlphaMode.TintMask
-					and body.Color == Shades.Tint[kind]
+					and body.Color == (Shades.Hard.Tint[kind] or Shades.Tint[kind])
 					and body.EmissiveTint == Shades.Hard.BodyTint
 					and body.EmissiveStrength == Shades.Emissive
 			end
@@ -121,6 +121,22 @@ function HardLooksCases.Cases(): { any }
 					"a Normal Shade keeps its look",
 					plain ~= nil and plain.AlphaMode ~= Enum.AlphaMode.TintMask and plain.EmissiveTint == Shades.Tint[normalKind] and normal:GetAttribute("Difficulty") == nil,
 					says(plain)
+				)
+			end
+			-- An Orange Shade on Hard wears Orange's Hard tint, and on Normal its Tint (AR52's must-fix 1).
+			local orangeHard = spawn("brawler", "Hard", SHADE_AHEAD + 2, "Shade_Torso", "Orange")
+			local orangeNormal = spawn("brawler", nil, SHADE_AHEAD + 6, "Shade_Torso", "Orange")
+			if orangeHard and orangeNormal then
+				local hardBody, normalBody = look(orangeHard, "Shade_Torso"), look(orangeNormal, "Shade_Torso")
+				t.Check(
+					"an Orange Shade on Hard wears Orange's Hard tint",
+					orangeHard:GetAttribute("Type") == "Orange" and hardBody ~= nil and Shades.Hard.Tint.Orange ~= nil and hardBody.Color == Shades.Hard.Tint.Orange,
+					says(hardBody)
+				)
+				t.Check(
+					"and on Normal its own Tint",
+					orangeNormal:GetAttribute("Type") == "Orange" and normalBody ~= nil and normalBody.EmissiveTint == Shades.Tint.Orange,
+					says(normalBody)
 				)
 			end
 			-- the Lamplighter: body and head Hard, lantern and pole their own

@@ -972,21 +972,47 @@ local UIKit = {
 		RankShardRight = { Id = "rbxassetid://104711251698920", Pixels = Vector2.new(40, 40), Points = Vector2.new(10, 10), Pad = 0 },
 		Skull = { Id = "rbxassetid://126210701643533", Pixels = Vector2.new(72, 72), Points = Vector2.new(18, 18), Pad = 0 },
 		EdgeArrow = { Id = "rbxassetid://75745566571381", Pixels = Vector2.new(40, 40), Points = Vector2.new(10, 10), Pad = 0 },
+		-- An arrow pointing right, white on alpha, tinted by its user (AR51's finish: the convert card's, between its stones):
+		-- its drawing 8 by 12 points, 2 of pad round it. EdgeArrow stays held to its own two tints.
+		ArrowRight = { Id = "rbxassetid://129196466380666", Pixels = Vector2.new(48, 64), Points = Vector2.new(12, 16), Pad = 2 },
 		CardFoeHealth = { Id = "rbxassetid://83666929491890", Pixels = Vector2.new(261, 52), Points = Vector2.new(65.25, 13), Cut = { 5.7, 6.25, 5.7, 6.25 }, Pad = 0 },
-		-- Home's tray (AR43 in B, the dock's graphite; build/handoff/UI/home/home.json): white masks tinted as Config.Hud.Home
-		-- says, but HomePoint, in its own colours. A row tile is sliced along only, drawn at its own height; Settings' tall
-		-- tile is never sliced.
-		HomeTileFill = { Id = "rbxassetid://82384929902011", Pixels = Vector2.new(208, 208), Points = Vector2.new(52, 52), Cut = { 12.4, 0, 12.4, 0 }, Pad = 0 },
-		HomeTileEdge = { Id = "rbxassetid://129849746975129", Pixels = Vector2.new(216, 216), Points = Vector2.new(54, 54), Cut = { 13.4, 0, 13.4, 0 }, Pad = 1 },
-		HomeTileGlint = { Id = "rbxassetid://125431604794395", Pixels = Vector2.new(216, 216), Points = Vector2.new(54, 54), Cut = { 13.4, 0, 13.4, 0 }, Pad = 1 },
-		HomeTileGlow = { Id = "rbxassetid://113101413894279", Pixels = Vector2.new(272, 272), Points = Vector2.new(68, 68), Cut = { 20.4, 0, 20.4, 0 }, Pad = 8 },
-		HomeTallFill = { Id = "rbxassetid://93790428603496", Pixels = Vector2.new(379, 456), Points = Vector2.new(94.75, 114), Pad = 0 },
-		HomeTallEdge = { Id = "rbxassetid://94436443612722", Pixels = Vector2.new(387, 464), Points = Vector2.new(96.75, 116), Pad = 1 },
-		HomeTallGlint = { Id = "rbxassetid://70804910113617", Pixels = Vector2.new(387, 464), Points = Vector2.new(96.75, 116), Pad = 1 },
-		HomeTallGlow = { Id = "rbxassetid://132228444167207", Pixels = Vector2.new(443, 520), Points = Vector2.new(110.75, 130), Pad = 8 },
-		HomePoint = { Id = "rbxassetid://129367016870679", Pixels = Vector2.new(112, 56), Points = Vector2.new(28, 14), Pad = 0 },
+		-- Home's panel (AR49 in C; build/handoff/UI/home_cards/home_cards.json): each image at 4 pixels a point, its edge
+		-- alpha 0, laid whole in its box (Config.Hud.Home). The Glow, the rims and the presses are white, tinted in the game.
+		HomeGlass = { Id = "rbxassetid://80952120763557", Pixels = Vector2.new(1612, 864), Points = Vector2.new(403, 216), Pad = 0 },
+		HomePointer = { Id = "rbxassetid://97049371296519", Pixels = Vector2.new(96, 52), Points = Vector2.new(24, 13), Pad = 0 },
+		HomeVoidkinBack = { Id = "rbxassetid://119404387338456", Pixels = Vector2.new(750, 752), Points = Vector2.new(187.5, 188), Pad = 0 },
+		HomeVoidkinPress = { Id = "rbxassetid://128369189298637", Pixels = Vector2.new(750, 752), Points = Vector2.new(187.5, 188), Pad = 0 },
+		HomeVoidkinGlow = { Id = "rbxassetid://122177611779852", Pixels = Vector2.new(750, 752), Points = Vector2.new(187.5, 188), Pad = 0 },
+		HomeVoidkinRimTop = { Id = "rbxassetid://113914996797110", Pixels = Vector2.new(750, 752), Points = Vector2.new(187.5, 188), Pad = 0 },
+		HomeVoidkinFrame = { Id = "rbxassetid://139092129308832", Pixels = Vector2.new(750, 752), Points = Vector2.new(187.5, 188), Pad = 0 },
+		HomeVoidkinRim = { Id = "rbxassetid://82833009451448", Pixels = Vector2.new(750, 752), Points = Vector2.new(187.5, 188), Pad = 0 },
+		HomeEquipment = { Id = "rbxassetid://92617759933534", Pixels = Vector2.new(598, 752), Points = Vector2.new(149.5, 188), Pad = 0 },
+		HomeEquipmentPress = { Id = "rbxassetid://78141120977786", Pixels = Vector2.new(598, 752), Points = Vector2.new(149.5, 188), Pad = 0 },
+		-- Settings' cog tile and the Today card in Settings' old column (AR53 in B; build/handoff/UI/goals/goals.json, "today"):
+		-- laid whole by their boxes in Config.Hud.Home, the presses tinted the kit's lit press.
+		HomeCog = { Id = "rbxassetid://117626074080304", Pixels = Vector2.new(420, 256), Points = Vector2.new(105, 64), Pad = 0 },
+		HomeCogPress = { Id = "rbxassetid://132824493643559", Pixels = Vector2.new(420, 256), Points = Vector2.new(105, 64), Pad = 0 },
+		HomeToday = { Id = "rbxassetid://87673019328983", Pixels = Vector2.new(492, 568), Points = Vector2.new(123, 142), Pad = 0 },
+		HomeTodayWaits = { Id = "rbxassetid://106397790566865", Pixels = Vector2.new(492, 568), Points = Vector2.new(123, 142), Pad = 0 },
+		HomeTodayPress = { Id = "rbxassetid://79059834352179", Pixels = Vector2.new(492, 568), Points = Vector2.new(123, 142), Pad = 0 },
+		-- Today's list in the glass (TR54): Next's plate at its head, a row a goal in its three states and its press, the
+		-- check where a claimed goal's shard was, and the card's three pips. Each laid by its box in Config.Hud.Goals.
+		GoalNext = { Id = "rbxassetid://120395874416773", Pixels = Vector2.new(1496, 256), Points = Vector2.new(374, 64), Pad = 0 },
+		GoalRow = { Id = "rbxassetid://96168393446204", Pixels = Vector2.new(1500, 272), Points = Vector2.new(375, 68), Pad = 0 },
+		GoalRowDone = { Id = "rbxassetid://74779919223047", Pixels = Vector2.new(1500, 272), Points = Vector2.new(375, 68), Pad = 0 },
+		GoalRowClaimed = { Id = "rbxassetid://75529105991137", Pixels = Vector2.new(1500, 272), Points = Vector2.new(375, 68), Pad = 0 },
+		GoalRowPress = { Id = "rbxassetid://71118590231555", Pixels = Vector2.new(1500, 272), Points = Vector2.new(375, 68), Pad = 0 },
+		GoalCheck = { Id = "rbxassetid://119138173782274", Pixels = Vector2.new(96, 96), Points = Vector2.new(24, 24), Pad = 0 },
+		GoalPipOpen = { Id = "rbxassetid://80294864490687", Pixels = Vector2.new(112, 112), Points = Vector2.new(28, 28), Pad = 0 },
+		GoalPipDone = { Id = "rbxassetid://71677870908853", Pixels = Vector2.new(112, 112), Points = Vector2.new(28, 28), Pad = 0 },
+		GoalPipClaimed = { Id = "rbxassetid://101561488534118", Pixels = Vector2.new(112, 112), Points = Vector2.new(28, 28), Pad = 0 },
+		-- A stretch's dare's mark (TR54): lit while it holds, its flare once kept, dark and split once broken. 40 points square,
+		-- the mark itself 16 tall at its middle.
+		DareMark = { Id = "rbxassetid://127158946053783", Pixels = Vector2.new(160, 160), Points = Vector2.new(40, 40), Pad = 0 },
+		DareMarkKept = { Id = "rbxassetid://93083487243219", Pixels = Vector2.new(160, 160), Points = Vector2.new(40, 40), Pad = 0 },
+		DareMarkDark = { Id = "rbxassetid://76028013482418", Pixels = Vector2.new(160, 160), Points = Vector2.new(40, 40), Pad = 0 },
+		-- Settings' cog (AR43): a white mask, tinted.
 		HomeMarkSettings = { Id = "rbxassetid://100189975821409", Pixels = Vector2.new(128, 128), Points = Vector2.new(32, 32), Pad = 0 },
-		HomeMarkInventory = { Id = "rbxassetid://137236473927105", Pixels = Vector2.new(128, 128), Points = Vector2.new(32, 32), Pad = 0 },
 	} :: { [string]: Image },
 	-- The lead card's shape, in its own points: images are laid at their At (tools/blender/lead_card_art.py).
 	LeadCard = {

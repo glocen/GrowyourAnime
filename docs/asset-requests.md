@@ -10755,6 +10755,53 @@ From Faber's stills (dc4d341, `build/scratch/faber/ar30/chips/`).
 - **Faber's calls stand:** the words at 16 bold, the 24 gap, Salvage on the same picker, the press as an underline only, and the foot glow cut at the scrolling row's foot.
 - **Must-fix, its class: a row that scrolls shows that it scrolls.** At the smallest phone, the row shows exactly Gear and Jewelry, edge to edge. Nothing says All, Chests and Materials exist. Wherever a row scrolls (this one, and any other row in the kit), its visible end cuts an item partway, or the edge fades, so more always shows.
 
+### The dock's shine, reopened on the director's word (Quaestor, 2026-11-23, 13:07)
+
+The director, 2026-11-23, about 13:00: "imo the Button ui down center are a bit to shiny". It covers the dock (Base, Home, Play), nothing else (`docs/decisions.md`).
+- **Research agrees, and the 17th's pass missed it.** Read from the phone stills (`build/captures/ar45/phone-shade-grey.jpg`, `build/scratch/faber/ar43/dock_zoom.png`):
+  - At rest, every cell wears its halo: `Config.Hud.Make.Dock`'s Light layer at L 1 of Top 1.45, so 69% opaque, 18 points past the glass.
+  - On the pale deck it reads as bloom: a white haze round Home, a red one round Play, a yellow wash under Base.
+  - It's the only piece of the HUD that glows at rest. The pills, the hint and the cards are flat, with a lit edge.
+  - It also breaks the make's own rule (AR30, "The make"): "No bright plate at rest… the seam's Light is the one bright thing, and it means 'this one'." Three halos at rest say "this one" three times, so calling and pressing have less to rise to.
+- **Must-fix, its class: at rest, a cell's colour lives in its foot bar and stays inside its glass.** A halo past the glass means "this one" (calling, pressed, a pointer or a pad over it), never "idle".
+  - **Seeds, tuned live on the phone:** L.Rest 1 → 0.4; Open 0.75 → 0.6; Quiet 0.45 → 0.2. Pressed 1.3 and Calling 1.45 stay. Their order stays as it was: Dim < Quiet < Rest < Open < Pressed < Calling.
+  - If a faint halo still shows past the glass at 0.4, the reach comes in, not the foot. How is Faber's call.
+- **What holds:**
+  - the three foot bars at full, in Power's yellow, the seam's Light and the map's red, so the three still read apart at a glance;
+  - the raised Home cell, the icons in Text, the touch areas, and the calling pip and ring;
+  - the press, which now rises from a quieter rest, so it shows more.
+- **Not covered:** the other buttons in the seam's make, the pills and the hint. The director named the dock.
+- **Checks:**
+  - Faber's phone stills of the dock at rest, calling, pressed, open, Quiet at home and Dim, on the pale deck and on the dark yard;
+  - the dock's self-test case, its light numbers moved with these;
+  - research's read up close at phone size.
+- **Tier 1, research's, on the director's ask:** numbers only, no new image. Faber's after the Studio run of AR49, TR51 and TR37, with the small ones.
+
+### Faber's build: the seeds in (Faber, 2026-11-23, 15:05 to 15:11 by the clock)
+
+- **Implemented:** `Config.Hud.Make.Dock.L`: Rest 0.4, Open 0.6, Quiet 0.2. Pressed 1.3 and Calling 1.45 stay, in the same order. The dock's cases read `make.L`, so they move with it.
+- **Tested in Studio:**
+  - the dock's case 39/39, Home's panel 40/40, TR19's Base tile 49/49, TR20's pointer 36/36; type check 0 new.
+  - A new take, `Take: AR30's dock shine` (`DockCases`), PASS. A dock of its own, the same make, stands in the real one's place at the smallest phone and holds three sets: all at rest; Base Quiet, Home open and Play calling; Base at rest, Home pressed and Play dim.
+- **The reach stays as it is (Faber's call).** Measured in the stills: at 0.4 nothing past the glass is brighter than the ground beyond the dock's shadow.
+  - On the pale deck, the ring round each cell reads 70 to 88 in luminance against the bare deck's 124.
+  - On the dark lane, under Base 42 and under Play 38, against the bare lane's 45. Under Home it's 49.5: Home's foot is the seam's white Light, about 2% of full scale over the lane.
+- **"The dark yard" by day:** since AR40's day the yard round the court reads pale too, so the dark stills stand on the court's dark lane, the darkest ground under the dock by day.
+- **Stills,** in `build/captures/ar30/`, the smallest phone's 852 by 480:
+  - `dock_pale_rest`, `dock_pale_quiet_open_calling`, `dock_pale_rest_pressed_dim`, and the same three as `dock_dark_…`;
+  - `dock_zoom_sheet.png`: the dock of each at twice its size, pale left, dark right.
+- **Seen, for research's read:** Home open at 0.6 is hard to tell from rest at 0.4 in the dock alone. On screen, the panel and its pointer say which is open.
+- **Visually reviewed:** research's read asked. **Director-accepted:** not yet.
+
+### Research's read in the game: passed at competent, no must-fix (Quaestor, 2026-11-23, 15:27)
+
+From `dock_zoom_sheet.png`, pale and dark.
+- **Felt:** the dock sits quiet under the play now. The shine is gone, and only a call glows. This answers the director's "a bit to shiny".
+- **Tier:** competent.
+- **The one bold thing:** Play's calling ring, the one bright thing on the dock, so the eye goes there.
+- **Refinement,** to `docs/polish-later.md`: Open gets its own mark at the finish. The panel and its pointer carry it on screen, so it doesn't hold the pass.
+- **Director-accepted:** the director's own look, next time they play.
+
 ## AR31. Forge stones, War Emblems and jewels: their pictures (Modulo, for research's verdict, then Faber)
 
 Phase 3's order, Modulo's item 5 (`docs/production-plan.md`). It's for TR37's Stones tab, TR38's War Emblems page and item card, and TR39's Jewels page, each of which waits on these icons. The design: `docs/design.md`, "Regalia: gear" (the emblems' sockets, the jewels' tiers [D: "Each type has its own colour, and its shape grows with its tier"]). The study: `docs/research/gear-icons.md`.
@@ -14502,6 +14549,63 @@ Research pulled it forward by message (after 20:34), as tier 1: judge it at full
 - **Next:** Faber's build, after TR50, unless the director picks another take.
 - **Research, 23:40:** the condition is met. At 4.6 the fringe reads as a hairline each side at phone size, by day and over the dark, with no second number. C stands for Faber's build.
 
+### Faber's build of C (2026-11-23, 15:47 by the clock)
+
+- **Built as cut,** riding the number's pop, rise and fade:
+  - **The chrome:** `Config.Hud.Numbers.Critical`'s Ramp, Top and Foot from the cut. **The shine:** `Critical.Shine` holds the split, the flash and the glint, each live in Tune.
+  - **`FighterController/Shine.luau`:** copies of the digits with no outline (`Digits`' new `Bare`), in the number's plate.
+    - **The split:** cyan and red, behind the digits and over their cast. The two are always together and symmetric (the content check's condition). They draw in from 7 to 4.6 points in 0.2 s, quad out, and grow with a heavier hit.
+    - **The flash:** white, clear in 4 frames.
+    - **The glint:** white, in a CanvasGroup under one UIGradient. It runs from 0.08 s for 0.25 s, leaning 20° with its trail.
+    - The flash and the glint are destroyed once played.
+- **Two things measured on the way:**
+  1. **Every stroke in `Digits`, and the cards' digits in `LeadCard`, was scaled twice.** A UIStroke grows with its layer's UIScale (a 6 under a UIScale of 2 draws 12), and the code multiplied it by the scale as well.
+     - So every capture judged in Studio (scale 1.5) showed outlines and casts 1.5 times their Weight, and the smallest phone (0.85) showed them 0.85 times. That hid the split under the outline.
+     - Now authored. Against what was judged, Studio shows them at 2/3, and the smallest phone at 1.18 times.
+     - **Tier 1 notice to research:** the numbers' and cards' weights were picked at 1.5 times. A re-read at phone size is owed, and a Weight raised in Config would be tier 2.
+  2. **A UIGradient turns in screen pixels,** with the top to the right for a positive Rotation. Its 0..1 spans 0.93 to 1.12 of the box's width, by the box's shape, always centred. So the glint is one gradient over the whole number: bands laid character by character broke at each character's edge.
+- **Checks:**
+  - The type check: 0 new.
+  - "a critical lands with its shine": 29 passed. It covers the split at land and at rest, symmetric, with its colours and its z order; the flash cleared; and the glint unlit before its Start, at its Strength, crossing left to right, and gone after.
+  - The flurry 38, "stays clear" 7, the target's card 9, the foe card's skull 11. The take: 3 passed, three times. AR45's foe card take, its outline check made authored: 5 passed.
+  - The full self-test: 3,309 passed, 0 failed (58 fps). LogicTests: 29,155 passed. WorldReport: empty.
+- **Captures** in `build/captures/ar44/`, on the take's phone frame (the smallest phone's layout), at land, flash (0.04 s), glint (0.19 s) and rest (0.4 s):
+  - `shine_day_sheet.png`: by day on the yard;
+  - `shine_dark_sheet.png`: over a dark stand-in backdrop, the 4 over the avatar's white arm;
+  - `shine_dark_glint_zoom.png`: the glint, zoomed.
+- **Seen by me:**
+  - The land is white, with the split wide.
+  - At 0.04 s the chrome comes through the flash.
+  - The glint is one light pass over the 2.
+  - At rest a cyan and a red hairline show each side, by day and over the dark, with no second number.
+- **Four facts:**
+  - Implemented.
+  - Tested, as above.
+  - Reviewed by me. Research's pass is to come.
+  - Not director-accepted.
+- **Next:** research's read of the two sheets, and the re-read of the weights.
+
+### Research's read of the shine: passed at competent, no must-fix (Quaestor, 2026-11-23, 16:01)
+
+From `shine_day_sheet.png` and `shine_dark_sheet.png`, on the smallest phone's frame.
+- **Felt:** a critical lands white and wide, flashes, a light runs across it, and it settles as gold chrome with a hairline of cyan and red each side. It reads as a big hit at a glance and doesn't stay loud.
+- **Tier:** competent.
+- **The one bold thing:** the glint, one pass of light over the 2. It's what makes the number look expensive.
+- **The weight at phone size, critical:** the outline and the cast read right as they are now, by day and over the dark, the 4 over the white arm included. No change.
+- **Owed:** the plain, received and healing numbers and the cards' digits, re-read at rest on the smallest phone, by day and over the dark. That needs one sheet from Faber.
+- **Not judged:** a land near the screen's edge. The day sheet's first cell crops the popped number, and a crop isn't the screen.
+
+### The weights sheet, for research's re-read (Faber, 2026-11-23, 16:17 by the clock)
+
+- **The sheet:** `build/captures/ar44/weights_sheet.png`, from `weights_day.png` and `weights_dark.png`, on the smallest phone's frame at rest (0.4 s), by day on the yard (left) and over a dark stand-in (right).
+  - Its rows: a dealt 486, a received 312, a heal +148, the critical 1,204, and the lead card's digits.
+  - Every outline and cast is at its authored thickness. The heal's frame has the Breaker's prompt behind it.
+- **The take:** its new beat "Weights" (`NumberCases`, "Take: AR44's critical shine") lands the four numbers side by side. The take passed with 3 checks.
+
+### Research's re-read of the weights: no change (Quaestor, 2026-11-23, 16:18)
+
+From `weights_sheet.png`, at rest on the smallest phone, by day and over the dark: the dealt 486, the received 312, the heal +148, the critical 1,204 and the lead card's digits all read at a glance on both grounds at their authored thickness. The pale dealt number holds by day on its cast. No Weight changes, so nothing is tier 2. AR44's weights are closed.
+
 ## AR45. The foes' cards with their difficulty skulls, and CR's gold tab (Modulo, for research's pick, then Faber)
 
 Research, 2026-11-19, 11:30 by the clock. The director's word of 11:30 (`docs/decisions.md`, the row): the enemy and elite cards redrawn to match the new UI, a difficulty skull by the foe's CR against the lead, the level's text in its skull's colour, and CR's look replaced. The rules are `docs/ui.md`, "The HUD, in the world": the target's card, "Numbers, short or whole" and "CR's look".
@@ -15014,6 +15118,129 @@ Research, 2026-11-19, 22:58 by the clock. The states are designed (`docs/design.
   - then the content check;
   - then the second look (research's).
 
+### Shock off the head, seen; the content check (Modulo, 2026-11-23, 00:05 to 00:12 by the clock)
+
+- **The 00:24 tweak, seen at last (00:06):** the ends are soft glows and the stitches are gone, but on the Shade two of the close sheet's three frames still crossed the mask. Its mask hangs over the collar, so an arc between two chest points under 0.8 of the height ran over the face.
+- **The fix** (`Cues.shock`, `surface`):
+  - the body's plates now say which faces the head carries (whatever hangs under the head's joint: the mask, hair, a hat), and no arc ends on one;
+  - an arc whose leap would cross the head's box on the screen, 0.45 studs wider, draws its two ends again. It's tested before the jitter, so a burst's three frames keep the same ends.
+- **Seen** at 00:10, in all ten Shock frames at the phone's pixels and at 64 px: no arc on or across either head; the arcs run over the hips, the sleeves and Rook's arm and wraps, and read as pink lines with a white core at 64 px. Counts on the body: 550 to 1,770 px a burst frame, against the plain hit's 3,740 at its first frame.
+- **Modulo's read, for the second look:** with the Shade's chest behind its mask, most of its arcs now sit from the waist down, so in some bursts they read as a belt. Say if they should reach the shoulders' outer ends.
+- **Burn:** unchanged since 00:22; its row is in the same sheet.
+- **Content check (00:12): PASS on both rows,** with conditions for the build:
+  1. Burn stays white-hot to Fire orange. The palette's rust rim `#7A2410` never shows as a red edge, tint or fade; one capture on Rook's red jacket.
+  2. Burn's sparks never fall, settle, pool or leave a mark or a lasting glow; the hit's glow ends within about half a second.
+  3. Shock's arcs keep the white core and the halo at every distance and quality level: never a bare pink or plum line on a torso.
+  4. Shock's bursts stay short and leave nothing behind; the ends are soft glows, never crosses.
+  5. Shock's arcs stay off the head and neck on every rig, big and small Shades included.
+  6. The installed capture, bodies turned, is read at 64 px before the piece closes.
+  7. Any spark or arc texture comes from our scripts, is logged, and gets its own check in the tint it ships in.
+- **The sheet:** `build/scratch/modulo/ar48/element_states.png`, `_close.png`, `_64.png` (the plates are kept: `sheet keep` draws the cues again in 20 s without the bodies' runs).
+- **Status:** drawn, self-read and content-checked. It waits on research's second look at Burn and Shock, then Faber after TR49's states.
+
+### Research's second look: Burn and Shock (Quaestor, 2026-11-23, 00:13)
+
+- **Felt:** Burn is fire now. Hot needles peel off the shoulders and climb past both heads, and the faces stay clear. Shock crackles and reads at 64 px. But on the Shade it lives in one horizontal band at the hips, so a burst reads as a lit belt, part of the outfit, not light running over the body.
+- **Tier:** Burn passes, competent; fix 1 is closed. Shock holds on one must-fix; fix 2's size and core are closed.
+- **Must-fix 3, Shock (class: where every arc's ends fall, on every rig):** spread a burst over the body's whole height under the head. Use the outer shoulders and arms down to the hands, the hips and the legs, with ends at different heights, so most arcs run on a slant or upright and none of the three frames stacks them in one band. Yes to the shoulders' outer ends: they're outside the mask's column. This serves "crackling over it". The head rule and the content check's seven conditions stay.
+- **For Modulo's own check, not mine:** read the Shock row at the phone's pixels and at 64 px. If no frame reads as a belt, it closes at competent on your read, with no third look from me, and goes to Faber after TR49's states. If it still bands, it comes back to me, and that's the idea's second round.
+- **What the sheet can't show:** arcs on a moving, turning body in the fight. They're first seen in Faber's installed capture, condition 6.
+
+### Must-fix 3 met, and the block-in delivered (Modulo, 2026-11-23, 00:14 to 00:18 by the clock)
+
+- **The fix** (`Cues.shock`):
+  - a burst's arcs start in different quarters of the body's height under the head, feet to shoulders, and each arc's two ends stand at least half its length apart in height, so every arc runs slanted or upright;
+  - in this sheet the ends face the camera, so no burst hides behind its body. In the game they stand all round it;
+  - after 24 tries in its quarter an arc starts anywhere, so no burst leaves a body bare. The head rule is unchanged.
+- **Modulo's read (00:17), the Shock row at the phone's pixels, the close sheet and 64 px:** no frame stacks its arcs in a band. They run up the sleeves, down a side, along Rook's arm and wraps and off his gauntlet, at different heights in every burst. Both heads are clear in every frame. Every burst frame reads as pink lines at 64 px. One burst in eight (1.47 s) is thin on Rook, part hidden by the Shade beside him. **It closes at competent on this read,** as research's second look set it.
+- **Delivered:** `build/handoff/FxKit/states/`: `element_states.png` (every row, grey then colour, at the phone's pixels), `element_states_close.png`, `element_states_64.png`, `element_states_counts.json`. No texture and no mesh: the looks and their seeds are in `tools/blender/element_states_fx.py` (`Cues`, the timelines at its top).
+- **For Faber, after TR49's states:**
+  - **Burn:** needles 0.16 s of their speed long, white-hot head to an orange tail, flickering; born off the shoulders' tops outside the head's column and at the hit; 18 a second for the burn's time, one in seven larger; lifted fast, drifting outward, fading above the head.
+  - **Shock:** bursts of three frames, about three a second; a burst is one big arc (1.6 to 2.6 studs, leaping 0.32 studs off the body) and one or two smaller (0.9 to 1.6); a white core at 0.62 of the width in the pink glow, a soft glow at each end; ends spread over the body's height, never on the head or across it from the player's camera.
+  - **Chill, Freeze and Sap:** as the block-in's entry gives them.
+  - The content check's conditions (the entry above, 1 to 7) and Sap's (the block-in's entry) go with the build. The first capture is read with the bodies turned, at 64 px.
+- **Four facts:** made; self-reviewed, with research's verdicts (Frost and Sap at the block-in, Burn at the second look, Shock on Modulo's read as set); delivered as sheets; not in the game, not director-accepted.
+- **Status:** delivered. Faber's, after TR49's states.
+
+### Research's answers to Faber's two questions on the states (Quaestor, 2026-11-23, 18:05)
+
+The rules now live in `docs/design.md`, "States in a fight", below "No lock". Faber's seeds stand, tuned by playing.
+- **Q1: (a).** At launch, a Shade's Void carries no Sap, elites included (tier 2, research's yes). The keeper's Fire burn stays.
+- **Q2:** Faber's reading is right. Burn defers part of Fire's own number. Chill, Shock and Sap add no damage, and no elemental number shrinks. The dead link now points at `docs/balance.md`, "One hit".
+- **Added:**
+  - No chill builds during the lock after a freeze.
+  - The even-elements check in the replay (four leads alike but for their element, within 10%).
+
+### The states' rules, in the game (Faber, 2026-11-23, 19:37 by the clock)
+
+- **Built,** with research's answers of 18:05. The seeds are the builder's, to tune by playing (`Config.Combat.States`):
+  - **Which hit leaves which state:** `By` maps Fire to Burn, Frost to Chill, Storm to Shock and Void to Sap. `Not` names the kinds that leave none: an ordinary Shade's Sap and an elite's. A dodged hit, or one with no elemental part, leaves nothing.
+  - **Burn:** it holds back 0.5 of a Fire hit's elemental part and pays it evenly over 3 s, a tick each 0.5 s. A new Fire hit adds its share to what's left and starts the 3 s again. The hit's number still shows whole.
+  - **Chill:** each Frost hit adds a third. From 1.5 s after the last hit it drains 0.5 a second. It slows the body's actions and walk by up to 0.3, in proportion.
+    - A full chill freezes for 2 s, half that on an elite or a keeper (the stun's share).
+    - The freeze is a stun with the look `StateFreeze`, under the stun's 4 s lock. No chill builds during the lock.
+  - **Shock** lasts 3 s. **Sap** lasts 4 s and cuts every heal by 0.3 while it holds.
+  - **Pure rules** in `Rules.Fight`: `StateOf`, `Burn`, `BurnTick`, `ChillNow`, `Chill`, `ChillRate`, `Sapped`. Five cases in `Cases/States.luau`.
+- **`FightService`:**
+  - **Leaving a state:** a hit leaves its state on what it struck, unless that fell. The burn's held share pays on the burning body's own step, and can fell it.
+  - **The chill's slow** is fixed for an action at its start (`ActionRate`), so server and client stay in step. The action's clock, its beats and its marks are scaled by it, and so is the walk.
+  - **Clearing:** every state clears on Down, Reset and Home.
+  - **On the model:** Burning, Shocked and Sapped (the server time each ends), Chill and ChillAt, and ActionRate.
+- **`FighterController`:**
+  - It runs the action's clock at ActionRate.
+  - Each state wears its look by name: StateBurn, StateChill, StateShock and StateSap, and the freeze StateFreeze through the stun's look.
+  - No rows carry those names yet, so nothing shows until the cues (Scintilla's, from this entry's block-in).
+- **Shock is a timer and a name** until poise exists: "the next hits fill its poise bar faster" waits on poise. **Sap** has nothing to cut on a Shade today, since Shades don't heal.
+- **Studio:**
+  - `NL_Debug LeadElement (who, element, bare)`: the lead hits in that element. With `bare` it wears its Voidkin's own block, no stars and nothing worn. Every block it's given while this holds (a level gained, the save's sync) passes through a test seam in `FightService.SetBlock` (`Reblock`, nil in play).
+  - `tools/studio/ElementsEven.luau` runs the check below. `tools/balance/elements_even.py` summarises it.
+- **Tested:**
+  - Type check: 0 new. Logic: 29,197 passed, offline and in Studio.
+  - **New self-test** "Fight: the element states (AR48)": 29/29 at 60 fps, on the lead pressing its combo at the replay's brawler in each element:
+    - Fire: the brawler burns for 2.97 s, its health falling between hits.
+    - Frost: its swing begun chilled runs at 0.8 of its pace, as its chill gives. A freeze in `StateFreeze` for 1.97 s, no chill until 5.3 s after the freeze (past the lock), then it chills again.
+    - Storm: a shock for 2.97 s. Void: a sap for 3.96 s.
+    - The brawler's own Void never sapped the lead.
+  - The keeper's lantern 27/0, its intermittent check passing this time. Ground Wire 20/0.
+  - **The whole self-test:** 3,395 passed, 2 failed (560 s, 60 fps). Pip's skip ("within 20 s") passes alone, 20/0. TR42's audition ("a hit plays today's cue's own voices") passes alone, 89/0. Neither failed this morning; both are rerun with the next whole run.
+    - The whole run left the save's lead at level 22 with no experience: one case puts the level back but not the experience. Put back by hand to 127, its 115 of this morning plus the 12 its training gave since.
+  - **`ElementsEven` itself,** after a restart: one round of four runs, clean, and the lead put back as the tool found it.
+- **The even-elements check** (research's, 18:05): `build/captures/ar48/elements_runs.txt`, summarised by `tools/balance/elements_even.py`.
+  - **The setup:** Rook at level 1, bare (460 health, power 916), hitting in each element by turns. It fights Lantern Row's first pack, stood on a pad of its own: four brawlers at level 1 in the pack's ring, 24 studs ahead.
+    - The lead is whole at each start, with 11 s between runs; ten rounds, each element once a round.
+    - The Festival place isn't open in this session, so the pack is spawned in the replay. Spawned Shades pay no experience, so the lead stays at level 1.
+    - The save's lead is back at level 22, 115 xp, as the store's last version before the runs held it.
+
+  | Element | Clear time | Damage taken | Freezes a fight |
+  |---|---|---|---|
+  | Fire | 20.6 s (sd 2.0) | 74.3 (sd 8.7) | 0 |
+  | Frost | 20.4 s (sd 2.5) | 64.0 (sd 15.1) | 3.7 |
+  | Storm | 19.5 s (sd 2.6) | 70.7 (sd 13.6) | 0 |
+  | Void | 18.7 s (sd 1.0) | 66.0 (sd 6.0) | 0 |
+
+  - **Against the mean:** clear time within 5.4% for every element, damage taken within 8.1%. No falls.
+  - **Between the extremes:** clear time spreads 9.8% (Fire over Void). Damage taken spreads 16.0% (Fire over Frost).
+  - **The noise:** Storm and Void are both plain fights against Shades today, yet they differ by 4.2% in clear time and 7.1% in damage taken. A 10-run mean's 95% band is about 6.4% and 9.6%. Ten runs can't resolve 10% between two elements on damage taken.
+  - **Fire** reads slightly behind the plain pair: +7.5% clear time and +8.8% damage taken (1.9 and 1.7 standard errors). That's the burn's deferral: half its elemental part lands later, so each Shade falls later.
+  - **Frost's freeze** isn't the strongest here: +6.4% clear time and −6.3% damage taken (1.4 and 0.8 standard errors).
+  - **A first run was thrown out.** `LeadHeal` only raises a fallen lead, so the lead began each run at the health the last one left, and two "falls" came at 25 and 31 damage. The tool sets the lead whole (`FightHealth` 1) and logs its starting health.
+- **For research:**
+  1. Does this pass? Each element is within 10% of the mean on both measures. The pairwise damage spread (16%) sits inside ten runs' noise.
+  2. Fire's burn: leave it at 3 s, or 2 s so its share lands sooner (tier 2, a balance number)?
+  3. A pairwise 10% on damage taken needs about 50 runs an element, about 2 hours of a timing test. Worth it once poise gives Shock its effect?
+- **Four facts:**
+  - Implemented: the rules and the hooks.
+  - Tested: as above.
+  - Visually reviewed: no, no cues exist yet.
+  - Director-accepted: no.
+- **Status:** the rules are in. The cues are Scintilla's once that seat opens, worn by these names.
+
+### Research's answers on the even-elements check (Quaestor, 2026-11-23, 20:07)
+
+1. **It passes.** Every element is within 10% of the mean on clear time (5.4% at most) and on damage taken (8.1% at most), the measure set at 18:05. Frost isn't ahead.
+2. **Burn stays at 3 s.** Fire's trail is under 2 standard errors, inside the bar, and its cause is known: the deferral. Cutting it on that evidence would tune to noise, and 3 s is the length players read the burn by. The full check looks at it again.
+3. **The full check waits for poise.** Once Shock has its effect, one check of about 50 runs an element covers all four elements as they really play, pairwise at 10% on damage taken. Run now, it would only be run again.
+
 ## AR49. Home's panel: three cards with their own art (Modulo, for research's pick, then Faber)
 
 Research, 2026-11-19, 23:20 by the clock, on the director's word of 23:20 (`docs/decisions.md`, the row): "MAKE IT LOOOK GOOD".
@@ -15106,6 +15333,1722 @@ Research, 2026-11-19, 23:20 by the clock, on the director's word of 23:20 (`docs
 - **The Voidkin screen's pages (Research, 00:12, by message):** Home's tray was the only way to Kit and Stars (the screen has had no rail since AR43). The Voidkin screen gets the Equipment screen's rail as it stands: the same faces, words and comet, with its four pages (Overview, Kit, Inventory, Stars), opening on the last page shown. It's one rail in both screens, so Modulo has nothing new to draw. Tier 1 for the build. Its check: on the smallest phone, the rail's four words are whole, and the attribute grid's fit (AR43's condition) still holds under it.
 - **Not built yet:** the panel (`UI.HomeTray` gives way to it), the live view and its framing rule in Config, the presses under the view, the rail. Stopped on the director's wrap-up (00:14).
 
+### Faber's build (Faber, 2026-11-23, committed 02:08 by the clock, 04b45b5)
+
+- **Implemented.**
+  - The dock's Home cell opens three cards on dark glass over the dimmed world (`UI.HomePanel`; `Config.Hud.Home`): Equipment, Voidkin, Settings.
+  - The Voidkin card shows the lead live under its frame (`Figure.Bust`), with its press under the live view.
+  - A card lights when pressed. The panel makes way as its screen rises, on the page last shown, and Back brings it back. `UI.HomeTray` is gone.
+  - The Voidkin screen takes the Equipment screen's rail (`UI.Kit.Rail`, lifted from `EquipmentScreen`), its four pages down its left (`Config.Hud.Voidkin.Rail`; research's call of 00:12).
+- **Tested.**
+  - Type check 0 new; logic offline 28,980 passed.
+  - Cases written but not run: Home's panel and its stills take (`DockCases`); the rail on each page and on the smallest phone (`VoidkinCases`).
+- **The Studio run (Faber, 2026-11-23, ef86dab at 14:42; the stills 15:04 to 15:10 by the clock).**
+  - **Three fixes, Home's panel case 40/40 twice:**
+    - on the smallest phone the panel stood in the cover's room, under a notch, its pointer 454 off its cell; it now stands in the HUD's safe area;
+    - the lead's live view was set before the bodies came (RevealService's Ready), so the card stayed empty. `HomePanel.Lead` tries again while there's no body, and the HUD shows the lead again once Ready turns true;
+    - the open's motion ended when the first card landed; it now ends when the last one does.
+  - The full self-test 3,288 passed, 1 failed (TR42's flake). The rail's words: TR17's fix in the same commit (269/269).
+  - **The stills take, fixed:** its "Lead:<def>" step set the panel alone, and the HUD put the save's lead back at the battery's next tick. It now makes that Voidkin the save's lead through SetLead, and puts the save's own back at the end (Kirra held 2.5 s on, Rook back after; PASS).
+  - **Stills,** in `build/captures/ar49/`:
+    - `open`, `pressed_voidkin`, `pressed_equipment`, `pressed_settings`, at 2,483 by 1,134;
+    - `phone_open`, `phone_lead_kirra`, `phone_lead_marigold`, at the smallest phone's 852 by 480.
+    - Marigold has no body yet (the grey StandIn rig), so her bust and her portrait are grey. That's her model's wait, not the panel's.
+- **Visually reviewed:** research's verdict asked (the per-Voidkin framing from Rook's and Kirra's). **Director-accepted:** not yet.
+
+### Research's verdict in the game (Quaestor, 2026-11-23, 15:27)
+
+From `build/captures/ar49/phone_lead_kirra.png`, the smallest phone.
+- **Felt:** Home opens three cards above the dock, and the lead's face fills the middle one. It reads as your fighter, not a menu.
+- **Tier:** competent.
+- **The one bold thing:** Kirra's face filling the lead card.
+- **Must-fix 1, class "a stray mark":** a small white mark sits under "Voidkin" at the lead card's foot (about x 405, y 350 in the still). Find what it is. If it's a label meant to be there, it's unreadable at that size; if not, it goes.
+- **Not judged:** Marigold's framing, until her model replaces the grey rig.
+- **Must-fix 1, found and fixed (Faber, 2026-11-23, 16:14 by the clock):**
+  - **What it was:** the top of Kirra's pale glove. In her idle it rises to the live view's foot, where the card's frame leaves only a sliver showing, at the window's bottom-left corner. With the live view hidden, the corner is clean.
+  - **The fix:** `Config.Hud.Home.Live.Each.Kirra = { Chest = 0.45 }`. She's framed about 10% closer, with her crown unmoved, so the goggles still rise out of the frame, and the glove sits about 12 points under the foot. Lowering her 6 points (Y) left it there.
+  - **Checked:** four frames across her idle on the smallest phone, the corner clean in each. The still is `build/captures/ar49/phone_lead_kirra_fixed.png`. Home's cases: 40, 2 and 97 passed.
+  - **For research's eye:** in some idle frames her pale shirt now sits behind "kin". The word's shadow carries it, and it reads in all four frames.
+
+### Research's second look: AR49 passes at competent (Quaestor, 2026-11-23, 16:18)
+
+From `phone_lead_kirra_fixed.png`: the stray mark is gone. Kirra, framed closer, still reads as the card's face. "Voidkin" over her pale scarf holds on its shadow. No must-fix is left. Director-accepted: not yet.
+
+## AR50. The base's levels 2 and 3: the whole yard's look, read from the gate (Modulo, for research's pick, then Faber)
+
+Research, 2026-11-23, 01:56 by the clock, on the director's order of 00:05 (`docs/decisions.md`: the main map first). The design: `docs/design.md`, "The base", "The look": at launch, levels 1, 2 and 3 each have a look of their own for the whole base, readable from the gate [D, 2026-11-12: "the whole base visuals, changed based of the levels of the base itself"]. Levels 2 and 3 were never made (AR14's and AR16's "Waits"). The machines' stages come from their own levels and go in with TR51. This is the yard around them.
+- **Feel line:** a player buys base level 2 at about 20 minutes and steps out to the gate. The yard has stepped up: the void's light runs further through it, its edge stands taller and more finished, and the new bay is lit. A passer-by on the Strip can tell a level 3 base from a level 1 base in a second, without reading the plate.
+- **The class:** kept from AR16 and the director's words. The yard's look stays ("that graphism was perfect", 2026-11-15). It's never a building site, and never real electrical machinery. The open way in from the gate stays, and nothing new clutters it. The colour follows AR40's day: violet only on what's alive, never the ground.
+- **The block contains:** two or three directions for what grows from level 1 to 2 to 3 (the wall and the gate, the floor's lit lines, the pylons and flood masts, the light). Each is shown at levels 1, 2 and 3 from the gate and from the Strip at the player's camera, by day, at the smallest phone's pixels, with stand-ins where a piece isn't drawn.
+- **It waits:** the colour pass and the cut, after the pick; levels past 3 (their items come later); the Tower's lot (after the main game).
+- **Cap:** the blockout in 2 hours. It's a major landmark, so the finish aims at exceptional, named at the pick.
+- **Order:** Modulo's next piece, after the art tiles' block-in (TR50's class line).
+
+### The blockout: four directions, and what the camera lets a level show (Modulo, 2026-11-23, 02:05 to 02:30 by the clock)
+
+Rendered in Blender by `tools/blender/base_levels_block.py`: block-in pieces in the kit's own swatches, on the plan as it stands, in the game's day (AR40's C), at 852 by 480. Nothing is exported and no kit file is changed.
+- **The sheets:** `build/scratch/modulo/ar50/base_levels_in.png`, `_gate.png`, `_strip.png`, `_far.png` (each direction's levels 1, 2 and 3), and `base_levels_64.png` (all 48 at 64 px high). Each frame alone is beside them (`D2_in.png`).
+- **What the camera shows.** The game's camera looks 20° down, so its frame ends 15° above level. A thing H studs tall is whole in it only from (H − 8.8) / 0.268 studs away: a gate 42 tall needs 124 studs.
+  - From near, only what stands under about 20 studs is seen, so a level needs a low sign and a high one.
+  - Facing the gate from the Strip, the truss hides everything over the yard above 8° up: the generator's top just fits under it.
+- **Four stands,** each from the game's camera at its start zoom:
+  - **In:** the owner at the gate's line, looking in at the yard.
+  - **Gate:** a visitor in the Strip's middle, facing the gate, 24 studs away.
+  - **Strip:** a passer-by 90 studs down the Strip, looking along it, this base on the right and a level 1 base across the road on the left.
+  - **Far:** the same from 150 studs.
+- **In every direction:** the level's new bay stands awake with its line lit. The machines keep their level 1 models (their stages are TR51's).
+- **A, the edge rises:** the gate gains an arch a level and its towers climb (27 studs, then about 43 with a crest and a shard); every wall post gets a taller head, the corners become towers, and a fin stands on each of the gate's shoulders, then two.
+- **B, the current climbs:** the edge keeps its shape and the light grows. A blade of light on every post, the gate's towers lit on every face, a second ring round the well and the way in lit down both edges; at level 3, a standing current at each corner and over the gate.
+- **C, the halo:** a broken ring of the yard's stone floats round the generator just over its axle's height, and a shard over each gate tower; at level 3, a second, wider ring above, tilted, and a shard over each corner.
+- **The read, by stand** (Modulo's, from the sheets):
+
+| | In | Gate | Strip, 90 | Far, 150 |
+|---|---|---|---|---|
+| A | level 2 and 3 look like level 1: the posts are at the frame's sides | the fins read, one pair then two; heavy in dark teal at level 3 | level 2 is the near corner's tower; level 3's is cut by the frame | level 2 doesn't read; level 3 is a dark mass at the gate |
+| B | the strongest: the lit way and the second ring; level 3 adds little | the lit towers and the way seen through the gate | thin sticks of light; level 3's beams read | level 2 doesn't read; level 3's beams are hairlines |
+| C | level 2's ring is edge-on at eye height, a few blocks; level 3's is cut by the frame | nothing at level 2 | nothing at level 2; level 3's ring is cut by the frame | level 2 doesn't read; level 3's ring is the clearest sign of all |
+
+- **No one lever is seen from every stand.** The floor's light wins for the owner, the edge at eye level wins at the gate, and a shape afloat wins from the Strip. No direction's level 2 reads from the Strip.
+- **D, one sign a stand, one more of each a level** (drawn from that read, inside the cap):
+  - **For the owner, the floor:** at level 2 the way in is lit down both edges and a second ring runs round the well. Level 3 joins the two rings by rays.
+  - **At the gate, the fins:** A's, on the gate's shoulders, in the machines' pale stone with teal caps: one pair at level 2 (11 studs), two at level 3 (14 and 10).
+  - **From the Strip, the halo:** one ring at level 2, 20 studs in radius at 22 up, its gate side dipped to 18 so it's in the frame from the gate's line. A second at level 3, 28 in radius at 28 up, leaning the other way. They stand wide of the wheel, so they needn't clear its top.
+  - **Its read:** every stand tells level 1 from 2 from 3. From 90 studs a ring over the base against none across the road reads at once, and from 150 it still does. It adds no violet.
+- **Modulo's read: D.** Its weak points, for the finish:
+  - Level 3 from inside is the smallest step: the rays barely show, and the second ring is mostly over the frame. The generator's own Stage III lands at the same moment (TR51) and isn't in these frames.
+  - The first ring's near arc sits just over the wheel's head from the way in. It wants 2 more studs, or its gap turned toward the gate.
+  - The rings are still here. In the game they'd turn, slowly, each its own way.
+- **The class, checked on D:** nothing unfinished stands anywhere; nothing electrical is added (stone, light and fins); the way in is clear, with light on its edges only and no ray across it; the wall, the gate and the pylons are level 1's own.
+- **For the finish, a flag:** `base_kit.BAYS_AT` still holds 2, 4 and 6 bays. The design is 2, 3 and 4 (`docs/design.md`, "The base"), so the floor pictures' frames for a level's new bay follow that.
+- **Not shown:** dusk and night, any motion, the neighbours' plots beside this one, and the HUD over the frame.
+- **Four facts:** made, 36 frames (28 for A, B and C with level 1, and D's 8). Self-read from the sheets at the phone's pixels. Not content-checked (a block-in, never in the game). Not picked.
+
+### Research's verdict and pick: D (Quaestor, 2026-11-23, 02:33; fresh eyes beside it)
+
+- **Felt:** stepping out at level 2, light runs up the floor to a lit ring round the wheel. Down the Strip, a ring afloat over the yard says "not level 1" before the plate is read. Fresh eyes, blind, felt the same and picked D.
+- **Tier: competent at blockout. D is picked; the finish aims at exceptional.** The one bold thing is the ring afloat: at 150 studs and at 64 px it's the only shape that tells level 3 from level 1. A is clutter at the gate, B is invisible from the Strip, and C is invisible at the gate and inside.
+- **Must-fixes, both on the "never a building site" line** (both readers saw them):
+  1. **Every ring afloat reads as a lit ring, never a beam (class: both rings, every stand).** Level 2's ring is seen near edge-on, a straight teal bar with striped ends, so it reads as a crane's jib. Tilt it so its face shows from the gate's line and the Strip, make it slimmer, and light it in the void's teal, never in black and yellow bands (they read as hazard tape). It turns slowly, each ring its own way. Modulo's 2 studs over the wheel's head go in too.
+  2. **Every piece added at the gate is a finished void-made form (class: the fins, both levels).** The tan slotted slabs read as boards propped on the posts. Give them the gate towers' own make, with their teal, their cap, their lit edge and a shaped top, so each new pair belongs to the gate.
+- **Kept as Modulo drew it:** the floor's light (the lit way in, the second ring, the rays), one more of each sign a level, and no violet.
+- **The second look judges** both fixes at the four stands and at 64 px, by day, with the rings shown turning in a short strip. Then the colour pass and the cut for Faber, after TR51.
+- **Left as it is:** the yard's level 1 look, the pylons included, stays on the director's word ("that graphism was perfect", 2026-11-15).
+
+### The two fixes, for the second look (Modulo, 2026-11-23, 02:35 to 02:47 by the clock)
+
+- **The sheets:** `build/scratch/modulo/ar50/base_levels_d.png` (D's levels 1, 2 and 3 at the four stands), `base_levels_d_64.png`, and `base_levels_turn.png` (level 3's rings at five steps of a turn, from the gate's line and from 90 studs down the Strip).
+- **Why level 2's ring read as a beam.** I had dipped its gate side by 11°, and from the gate's line the camera looks up at it by about 11°: exactly edge-on. A ring shows its face to the gate and to the Strip only with its gate side raised.
+- **Fix 1, the rings.** Both are slim, in the gate's teal, with a line of teal light on the inner face, the outer face and underneath. No stone, no yellow, no banded ends. Each is three lengths with a bead of light in each gap, so the turn shows.
+  - **Level 2's:** 14 studs in radius round the generator at 15.5 up, its gate side raised 30°. From the gate's line it's whole in the frame, an open oval round the wheel with its near arc over the wheel's head.
+  - **Level 3's:** 22 in radius at 25 up, raised 26° and leaned 12° across, turning the other way. From the Strip it stands over the skyline (the wheel's head is 22 up, a pylon's 25).
+  - They were placed by projecting each through the game's camera at the four stands before rendering.
+- **Fix 2, the fins.** Each is a small tower of the gate's own make: a concrete foot, a teal shaft with a line of light in its dark bed on its Strip and yard faces, a bone collar, a narrower shaft, a bone cap and a spire. One pair at level 2 (11 studs), two at level 3 (14 and 10).
+- **Modulo's read of the second look:**
+  - **At the gate's line:** level 2 is a ring of light round the wheel, and level 3 adds two arcs passing overhead. Level 3's ring is about half in the frame from there, by its size.
+  - **Facing the gate:** the fins read as the gate's own, stepping down from its towers.
+  - **From 90 studs:** level 2 is an oval round the wheel, level 3 a second one clear against the sky. Both read as rings.
+  - **From 150 studs:** level 3 reads at once. Level 2's oval is there but thin, in among the wheel and a pylon.
+  - **At 64 px:** level 3 tells from level 1 from the Strip; level 2 doesn't. It can't sit higher and stay whole in the frame from the gate's line, so the Strip's sign at level 2 is the weaker one. The feel line asks the Strip's read of level 3.
+- **Four facts:** made, D's 8 frames again and 10 of the turn. Self-read from the sheets and close crops. Not content-checked (a block-in, never in the game). Second look: research's.
+
+### Research's second look: both fixes met, D passes at competent (Quaestor, 2026-11-23, 02:47)
+
+- **Felt:** the rings are halos now, slim teal arcs of light turning over the wheel, and nothing about them reads as a crane. The fins are small towers in the gate's own teal with lit slots, so each new pair belongs to the gate. Both must-fixes are met at every stand, and nothing new broke.
+- **Tier: competent.** The blockout closes, and the finish aims at exceptional, as set.
+- **Accepted on the sheets:** level 2's ring doesn't read at 64 px from the Strip. It reads at the phone's pixels from 90 studs, and the feel line asks the Strip's read of level 3, which holds. Its first test is in the game, at the far stand, once the generator's Stage II stands under it (TR51).
+- **Next, after the wrap-up:** the colour pass and the cut for Faber, who installs it after TR51.
+
+### The colour pass and the cut: six pieces stand, level 2's ring is open (Modulo, 2026-11-23, 02:55 to 03:21 by the clock)
+
+D as base kit pieces, in the machines' stages' own shape: `tools/blender/base_levels.py` (`PIECES` into `base_kit.py`, `tables()` into `plan.json`, `machines.baseLevels`). The export only added: seven new meshes, the manifest's and the plan's new entries, the manifest's `shadows` line naming the three deck pieces. One old line changed, the plan's level 1 triangle total (13544 to 14472): it was stale against the committed manifest. No map, no swatch and no other mesh changed (`git status`).
+
+| Piece | From | Triangles | Stands | Collision |
+|---|---|---|---|---|
+| `LevelFloor` | level 2 | 1280 | the plot's front edge, middle line | none, CastShadow off |
+| `LevelRays` | level 3 | 288 | the same | none, CastShadow off |
+| `BayWake` | bays 3 and 4 awake | 348 | the bay's place and turn | none, CastShadow off |
+| `LevelFin` | level 2 | 212 | 26.6 either side of the middle line, on the front edge | a box, 2.8 square, 12.5 high |
+| `LevelFinOuter` | level 3 | 212 | 30.4 either side | a box, 2.6 square, 9.5 high |
+| `LevelRing` | level 2 | 1184 | over the generator, 15.5 up, gate side raised 30 | none |
+| `LevelRingOuter` | level 3 | 1240 | over the generator, 25 up, raised 26, leaned 12 | none |
+
+- **What the finish changed from the blockout.**
+  - The floor: the way in's light now lies on its own two dashed lines (12.5 either side), from the sill to the second ring (23 in radius, open toward the gate between them), with a node where the ring crosses each line leaving the heart. Level 3's rays are 12, narrowing outward, none across the way in. Every light is a slice 0.2 up in a dark bed, over the floors' pictures: no floor picture changed.
+  - A woken bay (`BayWake`): its ground's frame lit, heavy at the corners as an open bay's is, and the bus's current run on to it.
+  - The fins: a tapered upper shaft, a bone cap, a spire, and a bead of teal light afloat over the tip. One piece serves both sides.
+  - The rings: four lengths each, drawn to a point at both ends, a bead in each gap, teal light in a dark bed on the inner and outer faces and under. Built lying flat with the origin on the axle. They turn at 0.02 and 0.012 turns a second, opposite ways. The plan's note gives the CFrame order, and each row an `axle` to check the turn by.
+- **Open, a must-fix of my own: `LevelRing` passes through the generator's later stages.** The blockout stood every level over the generator's Stage I, and so did the second look's sheets. The finish's review stands each level over its own stage (`base_levels_block.staged`), and I measured the ring against the exported meshes over a full turn (`build/scratch/modulo/ar50/ring_clear.py`): it comes within 0.54 studs of `Generator2`'s body and passes through `Generator3`'s (the left arm, 14.3 across, 16.8 up, 2.9 toward the gate), and within 1 stud of the wheel. `LevelRingOuter` is clear by 5.4.
+  - A search over radius 16 to 18.5, height 11 to 17 and tilt 12 to 34 found no place round the axle that clears both stages by 1.2 and stays whole in the gate-line frame (`ring_fit.py`): Stage III's body reaches 18.5 from the axle and 27.1 up, and the frame's top is at about 23 there.
+  - So level 2's ring needs a new place, not a nudge. What I'd try first, for research's call: the ring stood forward of the generator, between it and the gate, round nothing; or a smaller ring over the wheel's crown, cut by the gate-line frame and whole from the Strip. Neither is drawn.
+  - The plan's note says the same, so nobody stands `LevelRing` before its refit.
+- **Self-read, on the sheets** (`build/handoff/Base/base_levels_finish.png`, `_64.png`, `_turn.png`, `_above.png`; by day, the player's camera):
+  - At the gate's line the floor is the strongest sign: the two lit lines and the ring read at 64 px.
+  - Facing the gate, one pair of fins then two reads at 64 px, in the gate's own make.
+  - From the Strip, level 3's ring stands over the skyline at 90 studs and is faint at 64 px from 150. Level 2's doesn't read at 64 px from the Strip, the limit research accepted.
+  - A fault found and fixed on the way: a turned shape closed to a point of no radius lost its faces, so the spires showed their ink and the beads were missing; points now keep a radius of 0.05.
+- **Content check:** PASS for the handoff, all seven, 03:15. Held for the upload check: each mesh alone on a sheet, full size and 64 px over dark; `LevelFloor` with `LevelRays` from straight above (`base_levels_finish_above.png` is the yard's); a row in the asset log.
+- **For Faber, after TR51:** `py tools/world/kit_take.py Base`, seven meshes to upload under the group (six until the ring's refit), and code for `machines.baseLevels`: a level's pieces beside those of the level under it, the rings' turn, `BayWake` while bays 3 and 4 are awake.
+- **Four facts:** made, the seven pieces and their rows; self-read on the sheets, with `LevelRing`'s clash open; delivered to `build/handoff/Base`, not uploaded; nothing in the game. Research's pass on the finish isn't asked yet: the ring's place comes first.
+- **Stopped on the director's wrap-up (by research).**
+
+### Research's call on the ring's place (Quaestor, 2026-11-23, 03:22)
+
+- **Modulo's first option, with one change: both rings move off the generator, onto one axle over the floor's second ring** (the heart, forward of the generator, between it and the gate). Level 2's ring floats over the lit ring on the floor, so the sky and the floor say the same thing. At level 3 the outer ring joins it on the same axle, so level 3 is still one stacked halo, never two halos in two places.
+- **Why not the crown ring:** cut by the frame at the gate's line, it's weakest exactly where the owner stands, and the owner's read is the one the floor already wins.
+- **The bar for the refit,** measured as before: both rings clear the generator's Stages II and III by 1.2 over a full turn, level 2's stands whole in the gate-line frame, and both read from the Strip at 90 studs at the phone's pixels. The 64 px limit at level 2 stays accepted.
+- **Next session:** Modulo's refit of `LevelRing` and `LevelRingOuter`, then research's pass on the whole finish. Faber's other six pieces wait for it, after TR51, so the base's levels go in as one.
+
+### The rings' refit: one axle through the heart, level 2's ring over the floor's (Modulo, 2026-11-23, 13:03 to 13:37 by the clock)
+
+- **A fact first, for research's pass.** The floor's second ring isn't forward of the generator: it runs round the well, centred on the heart, where the generator stands (`LevelFloor`; both are 52 in from the front edge). So no place is both "over the floor's second ring" and "forward of the generator, between it and the gate".
+  - I kept the call's reason and dropped its parenthesis: the axle stands on the heart's own upright, and the rings are wide of the generator, never forward of it. Level 2's ring is the floor's second ring lifted, the same 23 in radius, so the sky does echo the floor.
+  - Forward of the generator on the middle line is the way in, where the floor's ring is open. A ring there would hang over the way in and echo nothing, and from the gate's line it would lie across the wheel. Not drawn. If research meant that place all the same, it's a new blockout: say so at the pass.
+- **Why a wide ring fits where a close one couldn't.** The night's search stopped at 18.5 in radius, inside Stage III's reach. At 23 the ring passes outside the generator's body at every stage, and the nearest thing to it is a flood mast's head.
+
+| Ring | Radius | Its middle | Section | Triangles | Turns |
+|---|---|---|---|---|---|
+| `LevelRing`, level 2 | 23 | over the heart, 14 up | 1.6 by 1.05 | 1296 | 0.02 a second |
+| `LevelRingOuter`, level 3 | 27 | 10.6 further up the axle: 24.47 up, 1.66 behind the heart's line | 2.1 by 1.35 | 1296 | 0.012, the other way |
+
+- **The one axle:** its top leans into the plot by 9°, so both rings' gate sides are raised 9° and neither leans across (`tilt` 9, `lean` 0, the same `axle` in both rows). At 9° and 14 up, level 2's ring is whole in the gate-line frame with its top 13 px under the frame's; two degrees more and it leaves it.
+- **The make is the one that passed:** four lengths drawn to a point at each end, a bead of teal light in each gap, teal light in a dark bed on the inner and outer faces and under. Only the sizes grew with the radius (the gaps, the tips, the beads). No swatch and no map changed.
+- **Measured against the exported meshes, over a full turn** (`py tools/blender/base_levels_clear.py`, new: it reads the handoff, needs no Blender, and exits 1 under the bar). The generator's stage by its triangles, its wheel and demand mark as their sweep; every other piece on the plot by its box, the machines at Stage III on every bay awake at level 3. Points are 0.6 apart, so a gap can read that much over.
+
+| | The generator's body | Its turning parts | The nearest other piece | From the gate's line | From the Strip, 90 |
+|---|---|---|---|---|---|
+| `LevelRing`, Stage II | 8.28 | 6.78 | 1.88, a flood mast's head | whole: 304 by 101 px | whole: 223 by 42 px |
+| `LevelRing`, Stage III | 6.30 | 4.81 | 1.88, the same | the same | the same |
+| `LevelRingOuter`, Stage III | 13.28 | 11.77 | 6.17, a bay at Stage III | 53% in the frame: its far arc and both sides | 81% in the frame, 286 by 72 px |
+
+- **The bar:** met on the three measured lines (1.2 clear at Stages II and III; level 2's ring whole from the gate's line; both in the Strip's frame at 90). The old place read 0.0 on the same measure, the clash as found.
+- **Self-read, on the sheets** (`build/handoff/Base/base_levels_finish.png`, `_64.png`, `_turn.png`, `_above.png`, all four redrawn; by day, the player's camera, each level over its own generator stage):
+  - **At the gate's line:** level 2 is a wide halo worn by the wheel, its near arc over the wheel's head and its sides coming down behind the flood masts. Level 3 adds an arc behind the crown and two sides rising out of the frame.
+  - **Facing the gate:** new. Level 2's ring is whole under the truss, round the wheel, where the first place showed nothing; level 3's is cut by the truss.
+  - **From 90 studs:** level 2 is a clear oval round the wheel, nearly twice as wide as before (223 px against 119) and flatter (42 high against 65). Level 3 is two ovals stacked, the upper clear against the sky.
+  - **From 150 studs:** level 2's oval reads now, where it was "thin, in among the wheel and a pylon". Level 3 reads at once.
+  - **From above:** the two rings are round the well with the floor's two rings, on one centre.
+- **Limits, as they stand:**
+  - `LevelRingOuter`'s right end leaves the frame from 90 studs (19% of it, behind a pylon). At 25 in radius it would be 11%; I kept 27 so the two rings differ in size and read as a stack, not a coil. From 150 it's whole.
+  - At 64 px, level 2 from the Strip is still faint: the limit research accepted.
+  - The two rings' arcs lie close in the gate-line frame at level 3 (the upper's far arc just over the lower's near one). It reads as one halo with a second band, which is the call; in motion they cross opposite ways.
+  - A flood mast's head is 1.9 under level 2's ring. Clear, and seen from the way in as the ring passing over the masts.
+- **Changed:** `tools/blender/base_levels.py` (`AXLE`, `RINGS`, the rows and the plan's note, whose "stand no LevelRing" line is gone); `build/handoff/Base/meshes/LevelRing.json` and `LevelRingOuter.json`, their two manifest entries, their two rows in `plan.json`, and the four sheets. Nothing else in the export moved (`git status`). The rows' fields are the same, so the note's CFrame order stands; `LevelRingOuter`'s `along` is now -53.66.
+- **Content check:** PASS for the handoff, both rings, 13:36. Held for the upload check, added to the night's: each ring alone, full size and 64 px over dark, from above and three-quarter; and one clean frame from straight above of both rings with `LevelFloor` and `LevelRays` at level 3, to show the rays straight.
+- **The upload check's sheet, drawn at 13:38:** `build/handoff/Base/base_levels_meshes_sheet.png` (`tools/blender/mesh_sheet.py`, read back from the exported JSONs): each of the seven alone, grey and in colour, from the front three-quarter and from above, at full size and at 64 px over dark and bright; and one row that isn't a mesh, level 3's two rings with `LevelFloor` and `LevelRays` as the plan stands them, so the sheet's count reads 8. From above the twelve rays are straight and the rings are round the floor's ring. The glow isn't drawn there, so the rings and fins show their dark teal alone. It covers both holds; the check itself runs at the upload.
+- **For Faber, after TR51:** all seven pieces now, as one install. `py tools/world/kit_take.py Base`; the rings' rows as `machines.baseLevels` gives them; `py tools/blender/base_levels_clear.py` after any later export.
+- **Four facts:** made, both rings refitted and exported. Self-reviewed on the sheets and by the audit, PASS. Delivered to `build/handoff/Base`, not uploaded. Nothing in the game; research's pass on the whole finish is asked now.
+
+### Research's pass on the finish: competent, no must-fix (Quaestor, 2026-11-23, 14:04)
+
+From `base_levels_finish.png`, `_64.png` and `_turn.png`, each level over its own generator stage.
+- **Felt:** step out at level 2 and a wide teal halo hangs round the wheel, over the floor's lit ring. At level 3 a second band rises above it. Down the Strip the oval stands over the wall, against the plain level 1 base across the road. Sky and floor say the same thing.
+- **My call's parenthesis was wrong:** the floor's ring circles the generator. Modulo kept the call's reason, and that's the right reading. No new blockout.
+- **Tier: competent.** **The one bold thing:** one axle, so the floor's ring and the sky's rings share one centre. A level reads as one shape from the gate, from the Strip and from above.
+- **The bar is met as measured.** Level 2 is also better than the night's: whole under the truss when facing the gate, and readable from 150 studs.
+- **Exceptional isn't there on the sheets.** At level 3, from the gate's line, the upper ring is half out of the frame. In a still, its far arc crowds the lower ring's near arc, so the stack reads busy, not crowned. That goes to `docs/polish-later.md`, not the fix list.
+- **What the sheets can't show,** first seen at the install: the glow in the engine, the two rings crossing opposite ways, and Stage III under them on a phone. Research reads all of it in the game from the four stands.
+- **Next:** Faber installs all seven as one, after TR51 (the record's "For Faber").
+
+### Installed with AR54 (Faber, 2026-11-23, 20:24)
+
+All seven, `BayWake` as AR54's `BayWake3` and `BayWake4`: AR54, "Faber's install, with AR50's levels".
+
+## AR51. The Stone Condenser's two faces: its convert panel and its share on the Power screen (Modulo, for research's pick, then Faber)
+
+Research, 2026-11-23, 14:04, on the director's order of 00:05 (the main map and the systems first). TR37 built the Condenser's rules and its Comb, and left two parts grey (TR37, "Faber's build"):
+- the convert panel on the kit, `Config.World.Condenser.Panel`, which is a grey plate;
+- its share on the Power screen: the design splits one bar among the machines (`docs/design.md`, "The base", the Power screen), and today's bar has the Breaker's and the Training machine's handles only, so the Condenser shares under Auto with no handle, light or chip of its own.
+
+Tier 2: a look players see that nothing covers, in Modulo's area, then Faber's.
+- **Feel line:** at the Comb, the owner sees at a glance what a convert costs (5 Low into 1 Mid), whether it can start, and how long the one running has left, then starts it with one press on the machine's own panel. On the Power screen the Condenser is a third share in its own colour, so giving it power is a choice the player sees and makes.
+- **The block contains:**
+  - **The panel:** two or three directions in the Comb's own make (AR28, AR36), shown on the machine at Stage I from the prompt's reach at the player's camera, at the smallest phone's pixels. Each in its four states: ready, running with its time, can't start (with its reason), and asleep below base level 2.
+  - **The Power screen:** the Condenser's colour, its chip's mark and its light, on today's screen beside the Breaker's and the Training machine's, in Auto and in a split, at the smallest phone.
+- **What holds:** Power's yellow and Credits' teal; the stones' grades as AR31 drew them; violet only on what's alive (AR40); AR30's make for anything pressed; the panel stays off the way in.
+- **What waits:** the Comb's Stages II and III under the panel (AR36, at TR51's install); the convert's sound (sound work is stopped); jewels in the tray (TR39). The third handle's code is Faber's, at the build.
+- **Checks:** the content check; research's pick at phone size, every state, read up close; then Faber's build, with captures from the prompt's reach and of the Power screen on the smallest phone.
+- **Cap:** the blockout in 2 hours. It's an ordinary piece, so it closes at competent.
+- **Order:** Modulo's next piece, now. Faber's build comes after AR50's install.
+
+### The blockout: the panel three ways, the share's colour three ways (Modulo, 2026-11-23, 14:25)
+
+Started 14:05, sheets drawn 14:25 by their files' clock; inside the 2-hour cap. Made by `tools/blender/condenser_panel.py` and `tools/blender/condenser_power.py`.
+
+**A measure first, because it decides the panel.** From the prompt's reach the game's camera gives about 18 to 20 pixels a stud on the smallest phone (852 by 480). TR37's grey plate (2.6 by 1.7 studs) is then about 47 by 31 pixels, and its 30-pixel title lands 7 to 9 pixels tall: words on the machine can't be read there at any size the cradle can carry. And a panel low on the cradle is hidden by the player's own avatar from half the ways in: my first frames had it behind the avatar in every state, so the stand moved to the cradle's other side. All three directions answer those two facts in different ways.
+
+**The panel, three directions** (`build/handoff/Base/condenser_panel_A.png`, `_B.png`, `_C.png`; all twelve states side by side in `condenser_panel_glance.png`). Each sheet: the four states from 6.7 studs at the game's camera at 852 by 480, each panel cut and drawn 3 times its size pixel for pixel, and "ready" from the reach's edge (9.9 studs). Base level 2, by day, the Comb at Stage I on the Condenser's place.
+- **A, the Slate.** A six-sided slate of the Comb's stone on the cradle, its face a SurfaceGui: the two stones' pictures with "5" and an arrow, a bar, one word ("READY", "18 MIN", "3 OF 5", "LEVEL 2"). My read: the face is about 50 by 33 pixels and its word about 6 tall. It reads in the 3-times cut and is at the edge of reading at the phone's own size; the stones' pictures are two dark blobs. The slate is 4 studs wide and covers the Comb's lower right cups from this side.
+- **B, the Tag.** The cradle as TR37 has it, the stones lying on it (a shard standing while a convert runs). The words are a screen card at fixed pixels beside it, the machines' plates' kin: "5 [Low] ▸ 1 [Mid]" in AR31's pictures, then a bar and "Ready", "18 min left", "3 of 5 Low", or "Wakes at base level 2" alone. 148 by 58 points on the system slab. My read: the only one whose every state reads plainly at the phone's own size, and it can't be hidden by the avatar. Its costs: the words float beside the machine instead of sitting on it, and the Comb then carries two cards (its tray's plate above, this one at the cradle); nothing new stands on the machine, so "the machine's own panel" is the prompt on the cradle and the card over it.
+- **C, the Sixth Cup.** A slate with five small cups on an arc round one large cup, no GUI on it: a stone stands in a small cup for each of the five the bag holds; while a convert runs the five are empty, the large cup holds the stone being made and six lengths round it light with the time done; asleep, all dark. The words ("Convert: ready", "Convert: 18 min left", "Convert: 3 of 5 Low") are a second line on the Comb's own plate. My read: the strongest as an object and the most the Comb's own; ready, short and asleep part at a glance (five lit, three lit, none). Running reads as "one big stone", but the six lengths are too fine to read the time from at this size, so the time lives on the plate's line alone. It doesn't say Low or Mid by itself. The slate is 4.6 studs wide and covers the Comb's lower right cups as A's does.
+
+**My pick: B**, because the feel line asks for the cost, whether it can start and the time left at a glance, and only B gives all three at the phone's size. C is the better object. B's card and C's cups don't fight (the card could stand over the cups), but that pair wasn't drawn: if research wants it, it's a new blockout, not a patch.
+
+**The Power screen** (`build/handoff/UI/hud/colour/condenser_power.png`). Today's layout (TR18) on the system slab's colours with the battery's plate in the head, at 812 by 375 points over Faber's TR18 stills: under Auto (the Training machine idle, two lights and the battery's) and in a split with all three at work (four lights, three handles). The bar's order is the machines': the Void Breaker, the Training machine, the Stone Condenser, then what charges the battery. Under them each colour on trial: the bar in both states with the Condenser's row as the list shows it once scrolled, and the same as deuteranopia sees it (Machado 2009, the matrix AR12 used).
+- **Rose `#FF8FAE`.** The only one of the three no other light or word on this screen is near. Deuteranopia sees it as a mid grey: it parts from Power's yellow, and from the Breaker's silver by brightness and the handle between. Its cost is off this screen: rose is the Map's colour on the dock (`#FF5C93`) and near Mythical's light (`#FF8794`).
+- **Seam `#FFAE78`**, the forge stones' own seam. It means the machine best, but it sits beside Power's yellow on the bar and beside the caution's orange in the head ("Demand 40 kW"), and deuteranopia sees it as the battery's yellow: in the split the two lights nearly join.
+- **Jade `#74E3A8`.** Parts from yellow, but it is near the Training machine's cyan on the bar, the slab's own teal, Credits' teal and Uncommon's green; deuteranopia sees a pale beige close to a dim yellow.
+- **The chip's mark**, both ways on the sheet: six-sided with a dark middle, a cup of its Comb (left column), or the other two's cut stone in its colour (right column). **The light** is the others' make: the same bar-of-light gradient in its colour.
+- **My pick: Rose, with the six-sided chip.** The colour parts on the screen where the choice is made, and the chip's own shape parts it for an eye that loses the colour.
+- **A fact for the build:** on a phone the list holds two rows over its foot, so the Condenser's row is third and only its chip's top shows until a scroll (drawn so in both screens). With three machines the choice the feel line asks for is half under the fold; whether the rows tighten is Faber's and research's call, not drawn here.
+
+**Limits.** A blockout: Blender's face stands in for the game's text; the plate and B's card are drawn stand-ins laid on rendered frames, and the Power screen is the kit's slices in the slab's colours, not a capture; its numbers are made up for the picture. The avatar is a grey block. One time of day, one side of approach. Nothing was measured in Studio: the 18 to 20 pixels a stud is from this scene's camera, set as the game's (zoom 12.5, FOV 70).
+
+**Four facts.** Made: five sheets. Self-read: at the phone's size and 3 times, every state, as above. Delivered: `build/handoff/Base/` and `build/handoff/UI/hud/colour/`; nothing uploaded, nothing in the game. Accepted: no; research's pick is asked. Content check PASS for the five sheets as review sheets (rules 2, 3 and 4), with two holds for later: each image that ships gets its own sheet at full size and at 64 pixels, its asset-log row and a check on the exact file; and `condenser_power.png` stays internal, since the capture behind it carries Roblox's top-bar mark and the tester's avatar.
+
+### Research's pick: B, and Rose with the six-sided chip (Quaestor, 2026-11-23, 14:29)
+
+Read from the glance sheet, B's and the Power screen's sheets, at the phone's size and cut 3 times, every state.
+- **Felt:** with B the owner reads the cost, whether it can start, and the time left at a glance, beside the machine, and the avatar never covers it.
+- **Tier:** competent as a direction. **The one bold thing:** the line "5 [Low] ▸ 1 [Mid]" in AR31's pictures, which gives the cost without a word.
+- **The panel: B.** A's word is 6 pixels tall at the phone's size and C can't show the time; only B reads in all four states. The measure of 47 by 31 pixels is what decides it, and Modulo's reading stands.
+- **The Power screen: Rose `#FF8FAE`, with the six-sided chip.** It's the only colour that stays apart on the screen where the choice is made. The chip's shape keeps it apart for players who can't see the colour difference.
+- **Must-fix 1, a fact said once.** When the machine is asleep, the Comb's plate and B's card both say "Wakes at base level 2". The plate keeps the machine's state; the card shows its cost line dimmed with no second line, or isn't shown at all. Class: any state the plate already gives.
+- **Must-fix 2, no row cut at the fold.** On the smallest phone the Condenser's row stands half under the list's foot, and a half-cut row reads as broken. Class: the Power list's rows on the smallest phone. Either the three rows fit, or the foot falls between rows. Faber's choice at the build.
+- **What the sheets can't show:** whether the dock's Map rose (`#FF5C93`) is ever seen beside the bar. That's checked in Faber's capture of the Power screen open on the smallest phone.
+- **To polish-later:** C's cups as the machine's own lit state under B's card. That would be a new blockout, not a patch.
+- **Next:** AR51's finish, Modulo's: the six-sided chip as an image ready to upload, and B's card as a spec for Faber (its size, the stone pictures' ids from AR31, the bar's colours per state). Then Faber's build, after AR50's install.
+
+### The finish: the chip and the arrow to upload, the card's spec (Modulo, 2026-11-23, 14:40)
+
+Made 14:36 to 14:40 by the files' clock, by the same two scripts: `tools/blender/condenser_panel.py` with `finish`, `tools/blender/condenser_power.py` with `chip`.
+
+**A correction of my blockout first.** B's card drew its word at 10.5 points and my stand-in for the Comb's plate did too, under the game's floor of 14 (`Theme.Text.Minimum`). The finish draws both at the build's own sizes: the plate as `BaseController` makes it (two lines at 14, 204 wide, "Stone Condenser" over the tray's line), the card's word at 14 (`Theme.Text.Caption`) and its digits at 20 (`Theme.Text.Title`). The card grew from 148 by 58 to **172 by 70 points**. It's the same card, but the pick was read on the smaller one, so the sheet shows every state again.
+
+**The card** (`build/handoff/Base/condenser_card.json`, `condenser_card.png`). The spec is written from the script's own table (`CARD`, `CARD_STATES`), in points at `Theme.Author`:
+- **Its make:** the system slab (`Config.UIKit`, System), cut 7 at the top-left and bottom-right, 2.1 at the other two; a screen card at fixed points, the plates' kin. Its left edge stands 22 right of the cradle's point on the screen and its top 50 above it, clear of the Comb's tray.
+- **The cost line:** `Convert.Take`, the stone `Convert.From` names, an arrow, `Convert.Give`, the stone `Convert.To` names. The stones are AR31's pictures already in the game: `StoneLow` 105458370790435, `StoneMid` 98927105470350, at 36 points. The numbers come from `Config.Condenser`, never from the file's example.
+- **The second line:** a bar 64 by 10, then one word.
+  - Ready: the bar full in `#F6FCFF`, "Ready", the edge lit (`#E2CFA4`).
+  - Running: the bar the share of the time done, in the stones' seam `#FFB878`, "<time> left" in the build's own time words, the edge lit.
+  - Can't start: the cost line at 0.55, the edge and digits in Faint `#A9C0BC`, the bar the bag's count over the take in Faint, "<n> of 5 Low" in Soft `#D9E8E2`.
+- **Asleep, must-fix 1:** the card keeps its cost line dimmed, at 172 by 44, with no second line. The plate alone says "Wakes at base level 2".
+
+**The Power screen's share** (`build/handoff/UI/hud/colour/condenser_share.json`, `condenser_share.png`, `images/`):
+- `PowerChipCondenser.png`: six-sided with a dark ring, in Rose `#FF8FAE`, 88 by 88 pixels on the other chips' 22-point tile with their pad of 5, so it takes their place in a row unchanged.
+- The light: Rose, with its 17-stop gradient by `power_images.light_stops`, the others' make. It reads with `power_images.json`: the same bar and stack, one more light, in the machines' order, three handles.
+- `ArrowRight.png`: the card's arrow, a white triangle on alpha, 48 by 64 pixels (8 by 12 points, 2 of pad), tinted the slab's Edge. A new image because the game's one arrow, `EdgeArrow`, is held to its two tints by its own content check.
+- The sheet is the upload check's: each image over dark and over pale at its own pixels, enlarged and at 64 pixels; the three chips in a row; the bar under Auto and in a split.
+
+**For Faber, at the build:** upload the two images under the group; `Config.Hud`'s Power takes `Colours.Condenser`, the gradient and `ChipCondenser`; `PowerScreen`'s third row and third handle. The card needs no other image. Must-fix 2 (no row half-cut at the fold) is the build's choice and isn't drawn here.
+
+**Limits.** Blender's face stands in for the game's text, so widths will differ a little: the card's 172 leaves room after "18 min left", and a longer time's words may need more. A point is drawn as a pixel at 852 by 480; the layer's scale there wasn't measured. The bars on the share's sheet are drawn whole, not stacked from the images. Nothing was tried in Studio.
+
+**Four facts.** Made: two images, two specs, two sheets. Self-read: the card in its four states at the phone's size and 3 times; the chip and the arrow at 64 pixels over dark and pale. Delivered: `build/handoff/Base/` and `build/handoff/UI/hud/colour/`; nothing uploaded, nothing in the game. Accepted: no; research's pass on the finish is asked. Content check PASS for the upload of `PowerChipCondenser.png` and of `ArrowRight.png`, as these exact files (sha1 5cfb4aff and 96023fc5), and for the card's words; a changed file needs a new check, and the two sheets stay internal.
+
+### Research's pass on the finish: competent, no must-fix (Quaestor, 2026-11-23, 14:54)
+
+Read from `condenser_card.png` and `condenser_share.png`, every state, in the frame and cut 3 times.
+- **Felt:** the card reads at the phone's size in all four states. Dimming the cost line says "can't start" before the words do.
+- **The one bold thing** stays the stones' line. The card grew from 148 by 58 to 172 by 70 points to reach the 14-point floor. That's right: the floor wins over the blockout's size, and the card still clears the avatar and the Comb.
+- **Must-fix 1** is in: asleep, the cost line is dimmed with no second line. **Must-fix 2,** the row at the fold, is Faber's at the build.
+- The chip is six-sided, on the others' 22-point tile, and it parts on the slab. The arrow is a new white image, since EdgeArrow is held to two tints. Both passed the content check.
+- **Next:** Faber's build, after AR50's install, from `condenser_card.json` and `condenser_share.json`.
+
+### Faber's build (Faber, 2026-11-23, 21:18)
+
+- **The card, B,** on the System slab beside the cradle, in four states (`BaseController`, the look in `Config.Hud.Convert`, the numbers from `Config.Condenser.Convert`). Asleep shows the cost line dimmed at 172 by 44, with no second line (must-fix 1). The convert's prompt stands on the cradle, and the grey panel is gone.
+- **The Power screen.** Rose, the 17-stop light and the six-sided chip (`Config.Hud.Power`). There's a third row and a third handle, and the lights run Breaker, Training, Condenser, battery (`PowerScreen`).
+- **Must-fix 2.** The rows hold the 44-point touch floor, so three can't fit on the smallest phone. The list is cut to whole rows instead, so the foot always falls between two rows and the Condenser's row is one scroll down. The Power case checks it at both scales.
+- **A finding, fixed (tier 1, for your read).** Roblox draws its prompt card ("E · Stone Condenser · Convert", 188 by 72, centred on the cradle) under every layer. At the spec's 22 points the card hid half its words: "Stone Conde|nser".
+  - The card now stands 6 points right of the prompt's card, or at the screen's right edge (`UI.World.Beside`, `Config.Hud.Plates.Gap`).
+  - It holds the prompt card's largest size, so it stays put as the prompt comes and goes.
+  - On the smallest phone it rests at the right edge, over the prompt's rounded end by 2 points.
+- **The take, made faithful.** "Take: AR51" sets the smallest phone in the window's middle.
+  - The camera's field is widened so the box sees the phone's own field, and Roblox's card stands as it does on the phone.
+  - The World layer is framed as the phone's screen (`Layers.Box` with a corner).
+  - The guide's arrow is placed in the World layer's frame. In play that frame is the whole window, as before.
+- **Open, not this piece: the guide's arrow.** On the smallest phone there's no height between the top band and the guide's chip. The arrow ("8 ready: open them at the Breaker") stands mid-screen, over the avatar's head and the prompt's key (`phone_ready.png`, and `phone_ready_noarrow.png` without it). On a window it stands at the edge (`desk_ready_small.png`). My proposal: hide it while a prompt shows in reach. That's the guide's piece, for your call.
+- **The dock's Map rose:** never seen beside the bar. On the smallest phone the screen covers the dock (`phone_power.png`). Under Auto, the Condenser, the only machine working, takes the whole bar in Rose (`phone_power_auto.png`).
+- **Not built:** B's stones lying on the cradle, and the shard standing while a convert runs (3D, outside the block).
+- **Uploads:** `PowerChipCondenser` 109967765766548 and `ArrowRight` 129196466380666, under the group, both Approved (the asset log, row 145).
+- **Checks:**
+  - type check 0 new; logic 29247 passing;
+  - TR37's case 41 passed (new: "in reach: the card clear of its prompt's card", and "running: the card still beside where its prompt stood");
+  - the guide's case 11 passed; "Power:" 108 passed; "Base:" 371 passed; 0 failed in each.
+- **Stills:** `build/captures/ar51/`. The card is shown asleep, ready, short and running, in the smallest phone's frame from Modulo's stand. The Power screen is shown with a split and under Auto, plus a window's frame at Ready.
+- **Waits:** research's pass.
+
+### Research's pass on the build: competent, one must-fix (Quaestor, 2026-11-23, 21:20)
+
+From the ten stills in `build/captures/ar51/`, in the smallest phone's frame and zoomed.
+- **Felt:** at the Comb, the card at the right says "5 Low ▸ 1 Mid, Ready" in one glance beside Roblox's prompt, and "30 min left" while it runs. On Power, the Condenser's share is Rose in the bar with its own handle.
+- **Tier:** competent. **The one bold thing** stays the stones' line.
+- **Faber's departure,** accepted (tier 1): the card stands beside the prompt's card, or at the screen's edge. Roblox draws its prompt under every layer, so the spec's 22 points hid its words. The 2 points over the prompt's rounded end don't read at the phone's size.
+- **Must-fix 2, met:** the list is cut to whole rows, and the Condenser's row is one scroll down. **The Map rose** is never beside the bar.
+- **Must-fix 3: a card held at the screen's edge keeps the kit's gap from every HUD piece in that column** (the class). On the smallest phone the card's top meets the Void Shop's restock line flush, with no gap (`phone_ready_noarrow.png`). Clamp the card under whatever the right column shows, by `Config.Hud.Plates.Gap`.
+- **The guide's arrow** (the guide's piece, Faber's; research's call, as asked): the arrow never stands over the avatar or a prompt.
+  - Faber's proposal is the floor: hide it while a prompt is in reach.
+  - But `phone_running.png` has it over the avatar with no prompt. Where the smallest phone gives it no band, research suggests it rides the guide's chip, turning to point. The how is Faber's.
+- **Not built:** B's stones on the cradle, and the shard during a convert. Both are 3D outside the block, and stay as they are.
+- **The second look** judges must-fix 3 only.
+
+### Faber's fixes: must-fix 3 and the guide's arrow (Faber, 2026-11-23, 21:29)
+
+- **Must-fix 3, the class.** A plate kept beside its prompt (`UI.World.Beside`) stands under every HUD piece in its column by `Config.Hud.Plates.Gap`. That's the band's pieces and those under them, each span's margin taken off.
+  - The shop's restock countdown now joins the pieces plates keep clear of (`HudController.Beneath`). It's a span, so it never lowers the band.
+  - In the capture the card's top stands 5 px under the countdown, `Plates.Gap` at the phone's scale (`phone_running_restock.png`, `_zoom`).
+  - TR37's case checks it with a stand-in piece in the card's column: under it by the gap, and back up once it's gone.
+- **The guide's arrow** (`UI.Guide`) never stands over the avatar, a prompt's card or a plate.
+  - Where its spot is taken, it rides the next step's chip, `Edge.Clear` off the chip's end toward the target, else the other end, still turned to the target.
+  - With neither end free, it waits. That's the floor.
+  - It's judged on its box with its nudge both ways, so it never flickers between the two.
+  - On the smallest phone it rides the chip's left end, clear of the avatar, the prompt and the card (`phone_ready.png`, `phone_running.png`).
+  - On a window, straight behind, the bottom middle is the avatar's too, so it rides there as well. Behind and to the side, it stands at the edge as before.
+  - The guide's case adds "never over the avatar" twice, and the chip check reads "over it, or riding beside it".
+- **Checks:**
+  - type check 0 new;
+  - TR37's case 43 passed and the guide's case 13 passed, 0 failed in each.
+
+### Research's second look: AR51 passes at competent (Quaestor, 2026-11-23, 21:33)
+
+- **Must-fix 3, met.** The card stands the kit's gap under the Void Shop's countdown (`phone_running_restock.png`), and the rule holds for any piece in that column.
+- **The guide's arrow, met.** It rides the chip's end, turned to the Breaker, clear of the avatar and the prompt, in both `phone_ready.png` and `phone_running.png`.
+- **Nothing broke.**
+
+## AR52. The Guard and the Dasher: two more Shades, so each stretch of Lantern Row asks its own question (Modulo now, then the effects teammate, then Faber)
+
+Research, 2026-11-23, 14:54, on the director's word of about 14:50: F2 of `docs/research/design-holes.md`, "Now, beside the map". It answers the director's word of 03:25: each phase of the run must play differently and be fun. Tier 2: the behaviours are already designed in `docs/roster.md`, "Enemies: Shades".
+
+- **Why:** every Shade in the game is a Red Brawler, so every stretch asks the same question, and one lead always wins (`design-holes.md`, H2).
+- **Feel lines:**
+  - **The Guard:** a Shade lifts a paper shield and your fighter's hits glance off. You either let your fighter work on the others until it drops, or you break it open with a heavy hit or your signature.
+  - **The Dasher:** a Shade crouches, and a line opens on the street toward your fighter. Move, and your fighter steps off the line and the lunge hits empty stone; stay, and it hits.
+- **The stretches,** research's seeds, tuned in play:
+  1. Brawlers, Red: learn the fight.
+  2. Brawlers with Guards, Green: wait, or break through.
+  3. Brawlers with Dashers, Orange: read the line, move.
+  4. The Lamplighter, Purple: all of it at once.
+
+  On the ring, Blue beats Red, Purple beats Green, Red beats Orange and Orange beats Purple. So Kirra, Pip, Rook and Watt each have a stretch where they're the right lead, and Lyric carries the whole run's health. No one lead is the answer, and choosing one is a plan for the run.
+- **The block contains:**
+  - **Modulo:** the two masks on the Shade's rig, in the Brawler mask's make after AR47: a paper mask read as a mask, never a face. The Guard's is square, with its brow cut into the paper, not drawn as an eyebrow. The Dasher's is long and pointed.
+  - **Modulo:** block clips:
+    - the Guard's raise, hold and drop (seeds: raise 0.3 s, held 2.0 s, open 2.5 s);
+    - the Dasher's crouch, lunge and recovery (seeds: a 1.0 s tell, a 0.25 s lunge of about 12 studs, 0.8 s of recovery with its back open).
+  - **Modulo:** the outlines in Green and Orange beside Red, on Normal and on Hard (AR46's ember), read at the phone's size.
+  - **The effects teammate, when its seat opens:** the shield's look and the line's look. Until then, Faber uses a grey stand-in in the block.
+  - **Faber, after his install backlog:**
+    - the two behaviours in the Shade's rules;
+    - the shield cuts damage (seed: to 20%), and a heavy hit or a signature breaks it (stagger 1.0 s);
+    - the Dasher's line uses TR44's marked-strike rule, whichever of A or B the director picks, so moving the lead works the same here as at the slam;
+    - the stretches' packs from `Config.Shades`.
+- **What waits:** the Support Shade, the third behaviour, after these two are judged; each mask's finish; the sounds; the masks' elite versions.
+- **Checks:**
+  - the content check on the masks before building;
+  - research's pick on the masks at phone size, on Normal and Hard;
+  - the block played: each stretch judged in motion from the player's camera. The Dasher's hits and misses are counted, as TR44 counts them.
+- **Cap:** the masks and clips in 2 hours; each behaviour in about 90 minutes. An ordinary piece, closed at competent.
+- **Order:** Modulo now. The director put this piece beside the main map, against the order of 00:05, for this piece only.
+
+### The masks, the block clips and the outlines, for research's pick (Modulo, 2026-11-23, 14:58 to 15:18 by the clock)
+
+**The look, for the pick:** `build/handoff/Shade/shade_kinds_look.png` (`tools/blender/shade_kinds.py`). The baked Shade on its rig in the game's Idle, at the game's glow, laid into Faber's day capture of the street through its own camera: the Brawler Red, the Guard Green, the Dasher Orange, Normal over Hard. Each is shown at twice the capture's size, at the smallest phone's pixels (its own size, then four times, near and side), and over dark at full size and at 64 pixels. At the smallest phone the near Guard's mask is about 37 pixels tall.
+
+**The masks** (`tools/blender/shade_sheet.py`, `mask`), in the Brawler's make after AR47: paper, cut through to the light, no ink.
+- **The Guard:** a square of paper, a little wider at its top, with a tab each side for its strings. Two long holes nearly meet, and each one's top edge falls toward the middle, so the paper left above them is the brow. A short shut slot sits under them. AR2's two brow blocks and the ink bars under its eyes are gone.
+- **The Dasher:** the long kite folded once down its middle, with two slanted blades cut through it and nothing else. AR2's four ink marks are gone, and the eyes are a little longer and taller, to read at the phone's pixels.
+- **The atlas keeps its shipped pack,** as AR47's did (`pinned`, `settle`): each new piece is an old one moved. The Guard's brow blocks became its tabs. Its ink bars and the Dasher's ink marks are tucked inside the paper, where nothing sees them: 24 and 8 triangles that draw nothing. The counts stand: the Guard 196 triangles, the Dasher 100.
+
+**Baked, in `build/handoff/Shade/`** (`shade_model.py`, then `hard_cut.py shade`):
+- `Shade_MaskGuard.json` and `Shade_MaskDasher.json`. The other seven meshes and `Shade_Roughness.png` are byte-identical to the shipped ones.
+- `Shade_Color.png` and `Shade_Emissive.png`: only the two masks' islands changed. Past them, 12 texels of the colour map and about 2,700 of the glow map differ by one 8-bit step, the bake's own noise.
+- AR46's Hard pair, re-cut on the new atlas: `hard/Shade_Color_HardRed.png`, `Shade_Color_HardTint.png`, `Shade_Emissive_Hard.png`.
+- `Shade.recipe.json`: the Guard's centre and size (it lost the brow's overhang); its `elite` section is kept as it was. `shade_model_sheet.png`.
+- **Rollback:** the shipped files are in git, at this commit's parent. The scratch model as it was is in `build/scratch/modulo/shade/model-before-ar52-2026-11-23/`.
+
+**The outlines.** Green beside Red reads at every size. **Orange beside Red is close:** `Config.Shades.Tint`'s Orange is `#F23000`, a red-orange by AR2's own choice (any green in a tint at 16 lifts toward white), and here the Dasher's trim reads nearly as the Brawler's. The Dasher is told by its mask's outline, not its colour. This is Blender's stand-in for the engine's glow, so Faber's capture in the game is the measure. If the two are that close there, Orange's tint is a tier 2 number for research and Faber.
+
+**The block clips** (`tools/blender/shade_clips.py`; `build/handoff/Shade/clips/Shade_Guard.json`, `Shade_Lunge.json`, their pose sheets, and the two rows of `Shade.clips.json`). One clip a behaviour, with a marker at each beat, so the game tunes a seed by the track's speed between two markers.
+- **`ShadeGuard`, 2.73 s:** it shuts in 0.3 s (`Raise`, where the shield's look opens), holds 2.0 s hardly breathing, and lets its sleeves fall at `Drop`, back to its stand 0.43 s later. The 2.5 s open is the game's: it plays the Shade's own clips meanwhile.
+- **`ShadeLunge`, 2.3 s:** it folds down behind its mask's point by 0.27 s (`Line`, where the line opens), stays dead still, draws back a hair and goes at 1.0 s (`Lunge`), is in the air 0.25 s (`Land`), then lies folded over its own knees with its back open for 0.8 s (to `Close`) before it's picked up. The clip stays where it stands: the 12 studs are the game's.
+- **The audit:** the Lunge passes. The Guard fails one line, as the shipped clip did (0.36 studs then, 0.32 now, over a limit of 0.05): at the shut pose a sleeve crosses the coat's front. Less lean and the sleeves apart brought it to 0.27 and weakened the pose, so the block keeps the pose. It waits for the clip's finish.
+- The other seven clips export byte-identical to the shipped ones.
+
+**For Faber, at the block:**
+- Re-upload under the group, together: the meshes `Shade_MaskGuard` and `Shade_MaskDasher` (new ids in `tools/studio/Models/Shade.luau`'s MESHES), the maps `Shade_Color` and `Shade_Emissive`, and the Shade's Hard maps as `HardLooks.luau` needs. Everything else stays.
+- The two clips, uploaded under the group as `ShadeGuard` and `ShadeLunge`, with their fades from `Shade.clips.json`.
+- A Green Guard and an Orange Dasher captured beside a Red Brawler from the player's camera, Normal and Hard, on a phone: the engine's answer on Orange.
+
+**For Scintilla:** the shield's look hangs on `Raise` and `Drop`, the line's on `Line`, `Lunge` and `Land`.
+
+**Limits.** The look sheet is Blender's glow and bloom at the game's numbers, not the engine. The clips are read as poses, from the player's camera and the side, not in motion. Nothing was tried in Studio.
+
+**Content checks.** The design: PASS before the bake (15:07), with conditions kept here: the Guard's paper stays pale, with no stitches, teeth, spikes or anything bolt-like at the neck; the Dasher's two holes stay apart across the fold and nothing is added to its face or point.
+
+The baked files: PASS (15:18) for the re-upload of the two meshes, the two maps and the three Hard maps, on the look sheet, the five maps at full size and the two pose sheets; its reader saw the sheet shrunk, so nothing at exactly 64 pixels. Its conditions:
+- only those seven files go up, under the group; the look, design and pose sheets stay internal;
+- Faber's installed capture from the player's camera comes back to the check if any of these fails: on a Hard Guard and a Hard Dasher the coral stays inside the cuts; the Dasher's collar stays a thin hoop, with no red haze in the hollow or down the chest; in the Lunge's tell (frames 16 to 60), where the open collar faces the camera with the mask below it, it still reads as a hollow coat;
+- the two clips' own check: PASS (15:22) for the upload of `Shade_Guard.json` and `Shade_Lunge.json` as `ShadeGuard` and `ShadeLunge`, on each clip's pack (its beats, the bare rig stepped through, the audit's numbers) and its low views, from `shade_clips.py`'s `export`. Its conditions: only those two files go up; any change to a clip's script brings that clip back, the fix for the Guard's sleeve included, so that line is settled before the upload and the clip goes up once. Not seen: the Lunge's folded hold (frame 97) from low behind.
+
+**Four facts.** Made: two masks, the atlas's two maps and its Hard pair, two block clips, the look sheet. Self-read: the look sheet at the phone's pixels and at 64, the two pose sheets. Delivered: `build/handoff/Shade/`; nothing uploaded, nothing in the game. Accepted: no; research's pick on the masks is asked.
+
 ## Later, by ground
 
 The rest of ground 1 (Kirra in AR10, Watt in AR11; then Sable, Marigold, Crane), then each ground's Voidkin in `docs/roster.md`'s order. **The machines** (Gantry, Bulwark, Ironhymn, Shiomaru, Aegir) share one custom rig, taller than a player, with its own clip family: the first of them is timed like AR1, because a custom rig is a different cost.
+
+### Research's pick: the masks pass at competent, with one must-fix (Quaestor, 2026-11-23, 15:25)
+
+From `build/handoff/Shade/shade_kinds_look.png`: Blender's stand-in on Faber's day capture, at phone size, Normal and Hard.
+- **Felt:** three Shades told apart by their masks alone at a glance, even at the smallest phone's 37 pixels: a grin, a box with a brow, a blade.
+- **Tier:** competent, as a block's direction.
+- **The one bold thing:** the Dasher's long pointed mask. It's a blade of paper that says "lunge" before the Shade moves.
+- **Must-fix 1, class "a type's colour read as another's":** the Dasher's Orange reads as the Brawler's Red at every size on the sheet, Normal and Hard. Stage 3's question (F2) rests on the player seeing Orange and choosing a lead for it. This is tier 2, and research approves it here: Faber tunes `Config.Shades.Tint.Orange` (or Orange's glow strength) in the engine, under the knee rule of AR2's section 6, until Orange reads orange beside Red at 64 pixels on the street. The game's capture is the measure. The same check covers every type pair the stretches put side by side.
+- **The Guard's audit line** (a sleeve 0.32 studs into the coat): accepted for the block, as Modulo proposes, and fixed at the clip's finish. The pose sheets weren't judged in motion; the first look in motion is Faber's block.
+- **Refinement:** the Guard's mask is the plainest of the three. One more paper detail at the finish goes to `docs/polish-later.md`.
+- **Next:** the shield's and the line's looks (Scintilla, once the seat opens), then Faber's behaviours after his backlog.
+- **Must-fix 1, measured and fixed (Faber, 2026-11-23, 16:31 by the clock):**
+  - **The measure:** in the engine, three Brawlers in Red, Orange and Green side by side on the Strip, about 64 px tall on the smallest phone. They stood under the Row's look: the client's gate z set past the camera for the shot, the Row's day and night by `NL_Debug` "Night". The hue is each Shade's lit pixels' mean.
+  - **What it showed:**
+    - On Normal, `#F23000` already reads orange beside Red: 21° to 24° against Red's 357° to 358°, by day, dusk and night.
+    - On Hard it read as Red: 7° against 2°. The Hard look takes the type's colour as its tint (TintMask), and the look's own warm glow multiplies it, so Orange's little green went to red.
+  - **The fix:** `Config.Shades.Hard.Tint`, a type's colour on Hard where it differs, holding Orange `#FF7000`. On Hard, Orange measures 20° by day and 23° by night; Red and Green are unchanged. Normal keeps `#F23000`. `FightService` reads the tint through one helper (`tintOf`).
+  - **Checked:**
+    - The type check: 0 new.
+    - The logic tests: 29,156 passed, 0 failed, with a new case that a Hard tint is a type's colour.
+    - "a Hard foe wears its rig's Hard look": 20 passed, with two new checks: an Orange Shade on Hard wears `#FF7000`, and on Normal its own `#F23000`.
+    - `FightSpawn` takes a type now (its 7th argument).
+  - **The sheet:** `build/captures/ar52/types_sheet.png`. It shows ground 1's three types at phone size (4x, nearest neighbour): Normal by day and by night on top, Hard below. The stills are `trio_*.png` beside it.
+  - **Not measured:** the Row's lanterns' own light on a Shade (the Festival's place isn't open in Studio), and the Guard's and the Dasher's own rigs (not in the game yet). The tint is the type's, so they take it.
+
+### Research's second look: AR52 passes at competent (Quaestor, 2026-11-23, 16:32)
+
+From `types_sheet.png`, at phone size, by day and by night, on Normal and Hard: the three types now read as three. Orange stands apart from Red on both difficulties and in both lights, and Green never comes close. The fix is the class, not the still: a type's colour on Hard is its own row, so a later type that drifts under the Hard glow is fixed the same way. Nothing the fix touched broke.
+- **What the cases can't show:** the Row's lanterns' light on a Shade, and the Guard's and the Dasher's own rigs. Both are first seen in the Festival's place at AR52's clips, and research reads the types again there.
+- Director-accepted: not yet.
+
+### The Guard's sleeve, fixed at the clip's finish (Modulo, 2026-11-23, 17:54)
+
+- **Made:** `Shade_Guard.json` and `poses_Guard.png` in `build/handoff/Shade/clips/`, from `tools/blender/shade_clips.py`. At the shut pose each sleeve keeps its angles and slides off its shoulder, 0.15 studs out and 0.4 forward (`shifted`: a reach takes a fourth item, the slide). The slide eases in from frame 7 to the shut at 18, and out from `Drop` (138) to 149. An R6 arm turns on its inner corner, so two sleeves brought together in front sink that corner into the coat's front. Nobody is in this coat, so the sleeve slides clear.
+- **The audit,** on the handoff's file (`r6parity`): "Arm through body" was 0.324 studs at 0.3 s, and is 0.044 at 0.167 s (during the rise), under the 0.05 limit. AUDIT PASS. Pop (1.654x) and Limb flip (9.457 degrees) are as they were.
+- **Tried:** re-solving the reach so each cuff stayed on its mark pitched the sleeves up and turned the cuffs inward, and still needed a bigger slide: dropped. With the angles kept: 0.1 out and 0.5 forward gave 0.053, 0.12 and 0.45 gave 0.052 (both over); 0.2 and 0.3 gave 0.037, wider apart, and wasn't rendered.
+- **What the pose kept and lost:** the cuffs stay square at the player and the sleeves level from the side, as in the block. The gap between the cuffs grew from 0.4 to 0.7 studs, and the sleeves sit 0.4 forward of the shoulders.
+- **Unchanged:** the timing, the markers (`Raise` at 0.3 s, `Drop` at 2.3 s), and the other eight clips with `Shade.clips.json`, which export byte for byte as the handoff holds them.
+- **Self-reviewed** as poses: the pose sheet (the player's camera and the side) and the clip's pack (its beats dressed, the bare rig, the low views). Not seen in motion; nothing tried in Studio.
+- **Content check:** PASS (17:53) for the upload of `Shade_Guard.json` as `ShadeGuard` under the group, in place of the 15:22 check for this clip. Its conditions: only that file goes up, as it stands in the handoff now; a further change to `guard`, `shifted` or `Take._arm`, or to the reach or the export that changes this clip, brings it back; if Faber's first look in motion from the player's camera shows a sleeve reading as an arm come off the body, it comes back with that capture. Its limits: poses, not motion; the bare rig at three-quarter only.
+- **For Faber:** nothing new to do but take this file: `ShadeGuard` was never uploaded, so it goes up once, with `ShadeLunge` as it was.
+- Delivered: in the handoff. Accepted in the game: not yet.
+
+### Faber's build: the two behaviours, the packs and the install (Faber, 2026-11-23, 23:58)
+
+- **In the game, as a block:**
+  - **The Guard** (`GuardRaise` in `Definitions.Actions`; clip `ShadeGuard`): its sleeves come up and shut by `Raise` (0.3 s) and hold to `Drop` (2.3 s), then it swings as a Brawler until it's ready again 2.5 s later. While raised, each hit on it lets `Config.Combat.Guard.Keep` (20%) through. A heavy hit or a signature breaks it: the shield drops and the Guard stands stunned for `Guard.Stagger` (1.0 s). The rules are pure Luau: `Rules.Fight.Guarded` and `Breaks`.
+  - **The Dasher** (`DasherLunge`; clip `ShadeLunge`): within 10 studs of its target it folds down, and its line opens on the street at `Line` (0.27 s), its aim fixed there. It holds dead still to `Lunge` (1.0 s), then runs 12 studs down the line in 0.25 s, through whoever stands on it. At `Land` (1.25 s) it hits whoever is on the line (`Rules.Mark.OnLine`), and it lies with its back open to `Close` (2.05 s). Moving the lead works as at the Lamplighter's slam: TR44's switch, rule A in the game.
+  - **My calls, tier 1:**
+    - The Dasher runs on through the lead to the line's end rather than stopping at it, so a hit and a miss end in the same place, and the lunge reads as a commitment.
+    - Its aim stays held from `Line` to its action's end (`aimHeld` in `FightService`), so it lies with its back to whoever it passed and doesn't turn back to face them.
+    - Each is ready `First` seconds after it spawns: the Guard at 0, the Dasher at 1.5. A stretch's pack stands long before its fight, so each opens with its own move.
+  - **The grey stand-ins** (`SlamController`), until Scintilla's looks:
+    - The shield is a pale pane, 3.4 by 3.8 studs, 1.6 ahead, at 0.25 transparency (it was 0.45, too faint under the lanterns). It brightens as a hit glances off and flashes white on a break.
+    - The line is a white strip on the street that fills to its end on the hit.
+  - **The stretches' packs** (`Config.World`, the Row's `Stops`, each with a `With`, spread through its ring by `Rules.Fight.PackDefs`):
+    - stretch 2: four Shades, two Brawlers and two Guards;
+    - stretch 3: two packs of three, each with one Dasher.
+- **Installed under the group** (`docs/asset-log.md`), Modulo's handoff as it stands:
+  - the meshes `Shade_MaskGuard` 127743903192427 and `Shade_MaskDasher` 74976108708708;
+  - the maps `Shade_Color` 139710228211756 and `Shade_Emissive` 122098856371571, with Hard's `HardTint` 88064997894432 and `Emissive_Hard` 117193991278361. These are AR58's bake, the same bytes its content check passed (sha1 in AR58's record);
+  - the clips `ShadeGuard` 110693664240912 and `ShadeLunge` 102847424758672, the first Shade clips up.
+  - The template `src/storage/Shade.rbxm` and `HardLooks.rbxm` were built again from them, with every weld read. In the game both clips load from their ids (2.73 s and 2.30 s long).
+- **Checked:**
+  - The type check: 0 new.
+  - The logic tests: 29,375 passed, 0 failed, with `Cases/Shades.luau` new.
+  - The self-test:
+    - "Shades (AR52)": 40 passed, 0 failed, on the installed assets in the Festival's role.
+    - Before the install, on the same code: "Slam (TR44)" 34/0, "Packs: each stop" 18/0, "Drops: the Shades" 14/0.
+    - "Fight:" 659 passed, 2 failed (185 s, 59 fps). Both failures were mine: I moved the avatar, set the leash to 0 and cleared the debug Shades while the suite ran. Run alone, each passes, 8/0 and 24/0.
+- **Judged in motion on the street** (Festival role, the player's camera):
+  - **Stretch 2, at an even level:** the Guards raise twice each and drop. Glances show small numbers (4, 33, 37) beside full hits (328, 758), and the pack fell in about 9 s.
+  - **Stretch 3:** the line reads clearly on the street, and so do the run through and the back left open.
+  - **The Dasher's hit and miss, as TR44 counts them** (the self-test's case): staying on the line, the lead is hit, and the Dasher runs its 12 studs on through and lies with its back to the lead. Walked off the line, the hit lands on empty stone, and the Dasher still runs 12.
+  - The stills are in `build/captures/ar52/`:
+    - `lineup_*`: a Red Brawler, a Green Guard and an Orange Dasher at the smallest phone, Normal and Hard;
+    - `guard_raise_live_strip.png`;
+    - `dasher_tell_live_*`, and `dasher_tell_hard_day_held_strip.png` with `dasher_tell_hard_day_060.png`: the installed `ShadeLunge` held at 0.55 to 2.0 s on a Hard Dasher by day, facing the camera, nothing in front of it;
+    - `stretch2_guards*`, `stretch3_dasher_line_zoom.png`, `dasher_through_back_open.png`.
+- **Content check on the installed look: PASS** (fresh eyes, from these captures):
+  - 1: on Hard, the coral stays inside the cuts.
+  - 2: the Dasher's collar stays a thin hoop, with no haze in the hollow or down the chest.
+  - 3: in the tell, the open collar faces the camera as a ring around a dark hollow, with the mask hung below it on its string, so it reads as an empty coat bowed forward. The check asked for the held, uncovered take before passing this.
+  - 4: the Guard's sleeves stay against the coat through the raise.
+  - The Hard streaks read as embers. Not seen: the folded hold from low behind.
+- **Known limits:**
+  - B's Recall only works in a keeper's try.
+  - A blow that lands mid-lunge pushes the Dasher off its line.
+  - The hit lands at `Land`, just after the pass.
+  - The elites are still `brawler_elite`: AR57 isn't installed.
+  - The template's Support mask is still the earlier shape, while the atlas carries AR58's veil. No row uses the Support yet.
+- **For research, balance:** at level 5, Rook's Haymaker (842) fells a stretch 2 Guard (829 HP) in one blow, through the raise, so the Guard's question is only asked at an even level.
+- Implemented and tested: as above. Visually reviewed: my stills; research's pass is asked. Director-accepted: not yet.
+
+## AR53. Goals' look, basic at launch: the dare's line, today's three, the Mask Ledger's page (Modulo, after AR52's clips)
+
+Research, 2026-11-23, 15:24 (`docs/design.md`, "Goals"; the build is TR54, Faber's).
+- **Feel line:** the goals read as part of the game's own screens, quiet until something is done. A kept dare and a finished goal land like a small reward, not a pop-up. The Ledger's page is the one place that's allowed to be beautiful and a little sad.
+- **The block contains:**
+  - the dare's line on the stage's start card, and "Dare kept" on the results, in the cards' own make;
+  - today's three on Home's panel (AR49's make): a row each, the reward's picture, done and banked states;
+  - the Ledger's page: each kind's mask drawn from AR47's and AR52's masks, unlit until the first fall and lit after; its count; its three lines appearing as they're reached; "Next" at the top.
+- **What waits:** the masks on the base; sound (Sonus); motion beyond the kit's.
+- **Checks:** the content check; sheets at the smallest phone's size, every state; research's pick.
+- **Order:** after AR52's clips.
+
+### Modulo's blockout (2026-11-23, 17:45)
+
+Four facts: **made** (sheets, below); **self-reviewed** at the phone's size, every state; **not delivered** (a blockout: no cut image, no handoff); **not in the game.** Waits on research's pick.
+
+- **The content check on the words and the plan** passed at 15:31, with nine drawing conditions (`build/scratch/modulo/ar53/content_check_words_plan.md`): an unlit mask is the paper gone dark in a thin rim, its holes at the page's value; almond holes with nothing inside, the teeth paper tabs, no nose, no brows; a hung object (strings, knot, tails, a hook), nobody behind it; lit, the light stays inside the cuts, no streak, drip, crack or stain; no type's colour on a mask; each mask keeps its own shape; the tag blank; no mark on a mask for its count; nothing sold touches the goals.
+- **The sheets,** from `tools/blender/goals_look.py`, in `build/scratch/modulo/ar53/`, each at the smallest phone (568 by 320 points), two pixels a point: `goals_dare_line.png` (6 states), `goals_dare_card.png` (4), `goals_today.png` (8), `goals_ledger.png` (4), `goals_small.png` (every phone at 64 pixels high), `goals_pictures.png` (each mask lit and unlit, large and at 64 pixels; the tag's three states).
+- **The dare.** The game has no start card: a run is four stretches under one line (`StageController`), and one card at its end. So:
+  - a stretch's dare **unfolds under the run's line** as the stretch starts, a second row 24 tall in the line's own glass, then folds after about 3 s to **a blank paper tag** hung in a tab of that glass under the stretch's mark. The tag is the dare's mark everywhere: lit while the dare holds, dark in a thin rim once it's broken (no word, no sound), a flare when the stretch is cleared with it kept. The longest dare fits at 14;
+  - on the card, **a tag hangs from the road after each stretch whose dare was kept,** and **"Dare kept" with its stones** ("+3") sits on the time's row in the paper's warm edge. No new row: the first clear's card already stands 254 of the 262 points under Roblox's bar. With a new best that row is 286 of the card's 320 points by the sheet's letter widths; the finish measures it in the game's face. Missed, nothing is said and the card is today's. On a fall, nothing about dares.
+- **Today's three.** Home's glass is full at the smallest phone (three cards in 371 by 184), so the three sit behind an entry, **two ways for the pick:**
+  - **A, the slip:** a tab on the glass's top edge over Settings, "Today" and three pips, 26 tall with a 44 tap box reaching over it;
+  - **B, the card:** a Today card in Settings' column, the shard its picture, the pips, Settings a cog tile 44 tall over it (AR49's must-fix 3 kept that column whole "for now").
+  - Either turns gold while a goal waits to be claimed and opens the same list in the glass: a leaning row a goal, 44 tall, the shard at its right. **Open:** the shard dim, a count where the goal counts. **Done:** the whole row is the claim's press, lit gold. **Claimed:** the row sinks and takes a check until the day turns. **Banked:** earlier days under their headings, the list scrolling (nine rows at most); the slip says "+2".
+  - Mine: A. It costs Home nothing, and it's quiet until something is done. B reads better as "a place to go", and pays for it with Settings shrunk to a tile.
+- **The Ledger's page,** a Seam page: a rail of the four kinds (each small mask lit once one has fallen); the chosen kind's mask hung from a hook by its own strings, a little off true, the knot's tails falling; its name and count under it; at the right its three lines, each appearing at its count (10, 100, 1,000; the keeper's 1, 10, 100) with the next one's road filling; "Next" in the band. Unlit, the paper is dark in a thin rim and the page shows through its cuts. Lit, the cuts are full of warm white and a lantern's pool lies on the wall behind. Each mask is its model's own cuts, flat (`goals_look.shape`).
+- **Self-review.** What I fixed after the first sheets: the folded tag was lost over the street (now in a tab of the line's glass); the card's time row ran to the card's edges (the chip tightened, 307 to 286); the Dasher's count ran out of its glass and "Next" out of its plate. What's weakest: the low forge stone at 18 points reads as a dark pebble; the tags on the card's road are small (15 points); the Ledger's right half is mostly empty until the second line; the unlit Guard nearly vanishes at 64 pixels.
+- **Questions for research** (tier 2, none decided by me):
+  1. The dare on the run's line instead of a start card, and one "Dare kept" for up to four kept dares with "+N": is that the design's "one forge stone at the results" four times over? And are dares kept before a fall paid (drawn: no)?
+  2. Home's entry, A or B.
+  3. The Ledger's way in: drawn as a quiet "Mask Ledger" link at the Today list's head. Anywhere else?
+  4. The strings TR54 doesn't hold, all stand-ins on the sheets: the count's label ("knocked loose"), the banked days' headings ("Yesterday", "Two days ago"), the claim's press ("Claim"), each "Next" line and what it opens, the kinds' names on the page.
+  5. The Lamplighter's mask is drawn as modelled (two thin crescents, a round mouth), which meets the first check's "no closed eye" head on: the baked check let it stand as the model's own, the keeper's only (below). Research's to overrule.
+- **The baked content check** (17:41): PASS. The nine conditions are met as drawn, with one ruling: the Lamplighter's closed crescents and round mouth stand, the keeper's only (lit it's a lantern first, it's the model's own, and it's in the game); the Guard's and the Dasher's slits are the models' own and hold nothing. Two drawing notes, both done before this record: unlit, the lantern's hoops and ribs stay drawn in the rim's line; unlit, the Brawler's grin takes one outline and its teeth none. Every string on the sheets passes the list and the goals' wording rules. The checker saw the sheets reduced (the 64 pixel row at about 41). Carried to TR54's build: the shard's odds before breaking. Any image that goes up later takes the pre-upload check as its own file.
+- **Not made, the finish's:** the cut images and their handoff for TR54 (the tag's three states, the tab, the chip, the slip or the card, the row's three states, the pips, each mask lit and unlit at two sizes, the hook and strings), measured in the game's face; nothing moves yet beyond what the kit does.
+
+### Research's pick: B, with one must-fix, and the five answers (Quaestor, 2026-11-23, 17:49)
+
+From the six sheets at the smallest phone.
+- **Felt:**
+  - As a stretch starts, its dare opens under the run's line, then folds into a small paper tag. The tag stays lit while you hold the dare and flares when you clear the stretch. On the card, the tags hang from the road.
+  - Today's three wait behind one card with a shard on it.
+  - The Ledger hangs each mask on its hook, with its lines beside it.
+  - All of it is quiet and made of the festival's own paper.
+- **Tier:** competent, as a direction.
+- **The one bold thing:** the paper tag. It's one mark for the dare, on the line and on the card, lit, dark or flaring, with no words.
+- **Home's entry: B, the Today card.**
+  - The goals must be in view (F5), and the shard on the card says what waits there: a reveal.
+  - A's slip is a 26-point tab on the glass's edge, quiet until something is done, so it's missed until it's needed.
+  - Home's line in `docs/ui.md` already gave quests a card. Settings becomes a cog tile, where players look for it. AR49's "for now" on Settings' column ends here.
+- **Must-fix 1, class "a reward drawn unlike itself":** the chip's stone is the forge stone as the Forge draws it, at a size where it reads. Today it's a dark pebble at 18 points.
+- **The answers:**
+  1. Yes: one stone per kept dare, and the chip sums them. A dare kept on a stretch cleared before a fall is paid. The next run starts past that stretch, so holding it back would lose it for good. The fall's card shows the chip and the road's tags when one or more were kept, and nothing when none were.
+  2. B.
+  3. The link at the Today list's head is the Ledger's one way in at launch.
+  4. The strings are written in TR54 ("Next", "The labels"), with the content check passed. Two goals are reworded: "Clear a stretch on Hard." and "Knock the Lamplighter's mask loose."
+  5. The Lamplighter's mask stands as modelled, the keeper's only, as the content check ruled.
+- **What the sheets can't show:** the unfold, the fold into the tab and the flare at full speed. Research reads them in motion at TR54's build.
+- **Refinement:** the tag unfolds again on a tap (`docs/polish-later.md`).
+- **Next:** Modulo's finish with B, must-fix 1 and the fall's card, on TR54's words. Then the handoff for TR54.
+
+### Modulo's finish, for research's pass (2026-11-23, 18:24)
+
+- **Made:** `build/handoff/UI/goals/`: 33 images (`images/`), `goals.json`, `goals_cut.png` and the four state sheets, from `tools/blender/goals_look.py` (`cut`). Each new piece of art is drawn once at 4 pixels a point, and every sheet is laid from those images as the game lays them. Edge alpha 0 on all 33.
+- **The pick, drawn:** B. The Today card stands in Settings' column, with the shard and three pips, its rim and glow gold while a goal waits. Settings is a cog tile over it, 44 tall. `HomeSettings`, its press and its word leave the panel.
+- **Must-fix 1:** the chip's stone is the Forge's `StoneLow` in the kit's Common item cell with the cell's hairline, as Reinforce draws it under its ring: 26 points, standing 2 over the chip's top and foot. It was a bare picture at 18.
+- **The fall's card:** a tag hangs from the road after each stretch kept, and the chip takes a row of its own under the line that says where the next run starts (the card stands 210 of 262; with none kept it's today's 176).
+- **The words** are TR54's on every sheet. The Next lines don't fit the band's plate at 14 (the longest second sentence is 55 letters), so Next is a plate under the band, over both panels: the step, then what it opens, and the last line alone. "Next at the top" holds. The mask hangs smaller for it: 36 points a stud where it was 40, and the Dasher, the tallest, 30.
+- **The unlit masks' cuts are painted,** never see-through. The cut's first check blocked the Brawler's unlit pair: alone on a light ground, its holes showed white in a near-black round face. All eight unlit files now carry their cuts at `#221C40`, the page's value where they hang, with the cuts' outline and the grin's tabs kept. On the page they read as before.
+- **Two labels for TR54:** "Today" (the card's word, the list's head) and "Mask Ledger" (the page's title, the list's link) are on the sheets and not in TR54's "The labels". Research's to add.
+- **Measures,** by the sheet's letter widths: the win's card 212 of 262 tall, the first clear's 254; the time's row with a new best 297 of the card's 320 (it was 286 with the bare stone). Not measured in the game's face: the chip's width follows its words, and Faber's first capture checks that row.
+- **Self-reviewed** at the smallest phone, every state, and each phone at 64 pixels. Weakest: the stone is the Forge's own dark stone, so in its cell it reads as a rock with a lit crack, quieter than the shard and the coin on the row under it; the time's row is tight at 297; the Today card's pips are small (8 points across).
+- **Content check:** PASS for the upload of all 33 (2026-11-23, 18:24), after a BLOCK on the Brawler's unlit pair and the redraw above. Conditions: only the 33 files in `images/` as they stand (a re-run of `cut` that changes a file brings it back); nothing sold finishes, refreshes or adds a goal or a banked day, and the reward shard shows its odds before it's broken (TR54's build).
+- **Limits:** nothing moves (the unfold, the fold and the flare are TR54's block, read in motion there); nothing is in the game; nothing is uploaded.
+- **For Faber, TR54:** `goals.json` says where each image lies and what the kit builds beside it. The images go up under the group at the build, with the pre-upload check above.
+- Made and self-reviewed: yes. Delivered: in the handoff. Research's pass: asked. Accepted in the game: not yet.
+
+### Research's pass on the finish: AR53 passes at competent (Quaestor, 2026-11-23, 18:27)
+
+Read from the four sheets, the cut and the pictures at twice the phone's pixels, every state at the smallest phone, and each at 64 pixels.
+- **Felt:** the goals look like the festival's own things. A paper tag hangs from the road wherever a dare was kept, a gold row is its own claim, and the Ledger's masks hang like things left behind. Nothing reads as a quest log.
+- **Tier:** competent.
+- **The one bold thing:** the Ledger's hung mask, lit from inside on a dark page, with nobody behind it.
+- **Must-fix 1, met:** "Dare kept" carries the Forge's own stone in the kit's Common cell. It's quieter than the shard and the coin on the row under it. That's right for a forge material, and the tag and the words carry the chip.
+- **Modulo's three:**
+  1. Next on a plate under the band, over both panels: accepted. "Next at the top" meant the page's head, not the band itself.
+  2. "Today" and "Mask Ledger" are added to TR54's labels.
+  3. The unlit cuts painted at the page's value: accepted.
+- **What the stills can't show, at TR54's build:** the dare's unfold, fold and flare in motion. Faber's first capture also checks:
+  - the time's row in the game's face (297 of 320 by the sheet's widths);
+  - the Today card's 8-point pips on a phone.
+
+### The director cuts the Mask Ledger: what Modulo redraws (Quaestor, 2026-11-23, 18:39)
+
+The director's words of 18:35, to Modulo, then "Cut it" to research's question (`docs/decisions.md`, the top row): nothing in the goals wears Lantern Row's festival, and no mask goes on the base. "We make an anime game." The pass above stands for everything kept.
+- **Redraw:**
+  1. **The Today list, with Next pinned at its head,** above the goals and the banked days, which scroll under it. "Mask Ledger >" goes. Next shows the step, then what it opens, at 14, at the smallest phone, with all six of TR54's lines.
+  2. **The dare's mark,** in place of the paper tag, in three states (holds, kept, broken). It's a shape from the kit's own make, read at its smallest on the road, with nothing of the festival. It appears on the run's line, on the road of the run's card and the fall's card, and in the "Dare kept" chip.
+- **Dropped from the handoff:** the Ledger's masks (lit and unlit, hung and for the rail), the lantern's pool, and `goals_ledger.png`. `goals.json` and the asset log's row follow.
+- **Kept as passed:** the Today card and Settings' cog, the claim rows, the chip with the Forge's stone, and the cards' layout.
+- **Checks:** the content check on the new images, then research's second look on the two redraws.
+- **Order:** before AR55. AR53 is open again until this lands, and TR54 needs it before TR53 needs AR55.
+
+### Modulo's redraw, for research's second look (2026-11-23, 18:52; started 18:40)
+
+Made, self-reviewed as stills at the smallest phone, delivered to the handoff. Not in the game, nothing uploaded, nothing read in motion.
+
+- **The dare's mark:** a hard four-point shape in the kit's ivory, 16 tall and 12.8 wide, in a dark socket's rim so it reads on the lit road.
+  - Holds: lit. Kept: the same with its flare. Broken: dark in a thin rim, split across, its lower half dropped, so it reads by its shape as well as its value.
+  - `DareMark`, `DareMarkKept`, `DareMarkDark`: 40 points square, the mark's middle the origin (the tag's was its knot, so every lay point moved: `goals.json`, `dare`).
+  - Where it sits: in the line's tab under the stretch's mark; at the unfolded dare's left, at 14; on the card's road 10 right of each kept stretch's mark, on the road's middle, at 15 (the tag hung under the road); in the chip at 13.
+  - Why this shape: today's pips are the kit's diamonds and a stretch's mark is its cut square, and a four-point shape is neither at 13.
+  - Its weakest states: lit and kept differ only by the glow, as the tag's did, so the flare's motion carries "kept" on the line (TR54's block); broken is dark on the tab's dark glass and reads by its rim.
+- **Next at the Today list's head:** a plate pinned under "Today", never a press: deeper than a row, its top hairline lit, a pale bar down its leaning side in the Today card's light, "Next" in that blue, the step in ivory, what it opens in the soft grey. "Mask Ledger >" is gone.
+  - It's as tall as its lines: 29, 46 or 63 points (`GoalNext1`, `GoalNext2`, `GoalNext3`: a leaning plate can't be sliced taller). The rows start 4 under its foot and scroll to 4 over the glass's.
+  - All six of TR54's lines are drawn at 14 (`goals_today.png`, cells 3 to 8).
+- **Two findings, research's to answer:**
+  1. **Today's three never all show at once.** The glass is 184 tall. Under "Today" (32) and a Next of two lines (46), 94 points of rows remain: two rows. Under three lines, 77: one row and most of a second. Three rows need 140, so the thumb always shows. Three ways to show all three, none drawn: the list's glass 42 taller (AR49's glass redrawn for the list); Next in the head's row beside "Today" with the step alone; rows of 30 (under the claim's 44). I drew what was asked.
+  2. **Only Next's fourth line takes a third row,** in the sheet's face: "A fourth bay opens, and machines can climb to level 30." is 55 letters and leaves "30." alone on its row. The game's face is narrower (AR12 measured its capitals at 1/1.2 of the sheet's), so it may stand on one row there: Faber's first capture says. At 50 letters or fewer it fits here too, and the three-row plate is never used.
+- **The handoff,** `build/handoff/UI/goals/`: 19 images. 13 are as passed, byte for byte (git shows none of them changed); 6 are new. Dropped: the Ledger's 16 masks and its pool, the three tags, `goals_ledger.png`.
+  - `goals.json`: `dare` gives `mark` where it gave `tag`; `today.list` gives `next` where it gave `ledger`, and the rows' top and frame; `ledger` is gone.
+  - `goals_dare_line.png`, `goals_dare_card.png`, `goals_today.png`, `goals_cut.png`: laid again from the cut.
+- **The script,** `tools/blender/goals_look.py`: the masks, the pool and the Ledger's page are out; `dare_mark` and `next_plate` are in. Without `cut` it also writes the review sheets (`build/scratch/modulo/ar53/redraw/`: `goals_pictures.png`, the mark large and each piece at twice the phone's pixels; `goals_new.png`, the six files on the page's dark and on white).
+- **Content check:** PASS for the upload of the six new images (2026-11-23, 18:52), on one condition: the six files exactly as they stand (a re-run that changes a byte brings them back). Its notes, not rule matters: the broken mark is very faint at its smallest on dark, and on a white ground the kept mark's flare nearly vanishes (the mark only ever sits on the kit's dark glass).
+- **Limits:** stills only. Widths are the sheet's face, not the game's. The mark's flare, its split and the fold into the tab are TR54's block, read in motion there.
+- **AR55** waits behind this: its three blockout sheets are rendered and not yet read through (`build/scratch/modulo/ar55/`).
+
+### Research's second look at the redraw: the mark passes, one must-fix on the list (Quaestor, 2026-11-23, 18:54)
+
+- **The dare's mark passes.** The four-point mark reads at its smallest on the road, in the tab and in the chip, and nothing of the festival is left. Broken reads by its split. That lit and kept differ only by the flare is accepted: the flare is TR54's motion, read there.
+- **Next's plate passes as a look:** a header, not a press, in the Today card's light.
+- **Must-fix 1, class "a list that hides its own content at rest" (Modulo's finding 1):** today's three show whole at once, with Next in view.
+  - Next becomes the list's head: one plate 46 tall that holds the back press at its left and Next's two lines. "Today" leaves the head; the card that opens the list carries the word.
+  - The rows stay 44, with the gaps 2: 46 + 2 + 3 x 44 + 2 x 2 = 184, the glass as it is. The banked days scroll under it as before.
+  - If the measure says otherwise, the smallest change that shows all three wins, and its number goes here. Rows under 44 and words under 14 stay out.
+- **Finding 2, answered with words:** what Next opens stays at 45 letters or fewer, so with the back press beside it, no line takes a third row. Three lines are shortened in TR54:
+  - "Its first chest holds a Rare or better."
+  - "A fourth bay opens. Machines reach level 30."
+  - "Each new floor pays a first-time bonus."
+  They also clear the content check's note that "its chest" could read as the keeper's body.
+- **For the third look:** `goals_today.png` again, with the longest Next and three open goals, and with a claim waiting. One sheet is enough.
+
+### Modulo's fix of must-fix 1, for research's third look (2026-11-23, 19:02; started 18:56)
+
+Made, self-reviewed as stills at the smallest phone, delivered to the handoff. Not in the game, nothing uploaded, nothing read in motion.
+
+- **Next is the list's head:** one plate that holds the back press at its left, up to a hairline drawn in the plate, then "Next", the step, and what it opens under it, at 14. "Today" has left the head; the card carries the word.
+- **Today's three show whole at once.** The glass is 184: 3 + 40 + 2 + 3 x 44 + 2 x 2 + 3.
+- **The measure's number: the plate is 40, not 46.** At 46 the sum is the glass exactly, so the plate lies on the glass's rim and top hairline and the last row on its foot. At 40 the list keeps 3 clear of both. The plate's two lines still sit at 14 (capitals' tops at 6 and 23), and the back press's tap is 44 each way (1 to 45 in the glass, to the hairline). Rows stay 44, the gaps 2.
+- **One plate, `GoalNext`,** where `GoalNext1` to `3` stood: what Next opens is 45 letters or fewer (TR54, 18:54), so it never takes a second row, and the last line stands alone at the plate's middle. The row holds 280 points; 45 letters are 272 in the sheet's face.
+- **Banked days** scroll under Next: the frame runs from Next's foot (43) to the glass's foot, and the thumb shows only then.
+- **The sheet,** `build/handoff/UI/goals/goals_today.png`: cell 3, the list at rest with a claim waiting at its head; cell 4, the longest Next (what it opens, 44 letters) over three open goals; cell 5, the longest step with a claim at the foot; cell 6, all claimed; cell 7, banked days scrolled; cell 8, Next's last line alone.
+- **The handoff:** 17 images. `GoalNext` is new; the other 16 are byte for byte as they stood (git shows none changed, the three marks included). `goals.json`: `today.list.next` gives the plate, the back press's chevron and tap, and the lines; `today.list.rows` gives the top (45), the foot (181) and the frame. `goals_cut.png` is laid again.
+- **Content check:** PASS for the upload of `GoalNext.png` (2026-11-23, 19:02), the file exactly as it stands; the image alone was judged, the chevron and the words being the game's.
+- **Its weakest point:** a claim's gold glow at the first row lies over the plate's foot, 2 apart, and the scrolling frame cuts it there.
+- **Limits:** stills only; widths in the sheet's face.
+
+### Research's third look: AR53 passes at competent (Quaestor, 2026-11-23, 19:03)
+
+- **Must-fix 1, met:** today's three show whole at rest under Next, in every cell, with a claim at the head and at the foot. Next, the step and what it opens, reads as the list's head, and the back press sits inside it.
+- **The plate at 40, not 46: accepted.** The 3 clear of the glass's rim is right, and both lines still sit at 14.
+- **The four facts:** made and reviewed as stills, passed; not in the game; not director-accepted. In motion and in the game's face, it's read at TR54's build. Next is Modulo's AR55.
+
+## AR54. The yard at Stage III: one plan where every machine fits and reads from the gate (Modulo, before AR53; then Faber)
+
+Research, 2026-11-23, 15:26, from TR51's Studio run and TR37's (`docs/test-requests.md`). It's main map, so it comes first, by the director's order of 00:05. Tier 2, research and Modulo, with Faber's measures.
+- **Feel line:** at every stage, the player at the gate sees every machine they use, each on its own ground, and walks to any of them without threading between two.
+- **What fails today:** Stage III's footprints break the plan (the clear is 8.3 between the generator and the Training machine, 10.5 at two more pairs, and 11.9 at a third). The Breaker stands 58° off the gate's line, past the camera's 51°. The Forge and the Condenser hide behind the generator from the gate. The generator's floor ring runs about 28 studs, under the Breaker and across the court.
+- **Research's rules for the plan:**
+  - Clear 12 at Stage III, at every pair;
+  - the Breaker inside the gate's 51°;
+  - every machine the player touches is seen from the gate, at least its top;
+  - the ring ends inside the generator's own clear;
+  - the plot stays 128 studs if the plan allows it (Faber's trial sizes failed only on spots, not room). Stage I and II follow the same spots.
+  - TR51's must-fix 1, the owner's plate raised out of the gate's view, is here too: the plate is part of Gate1's mesh (`tools/blender/base_plan.py`, `levelMark`), so it's Modulo's. It's read whole from the Strip.
+- **The block contains:** a top-down plan with every machine's Stage III print and spot, and a gate's-eye sheet at Stage I and Stage III at the smallest phone's size. Faber's `Config.World.Fit.Prints` and the trial's logic case are the check.
+- **Checks:** the trial's case passes at Stage III; research's pick from the gate's sheet.
+- **Order:** before AR53.
+
+
+### Modulo's block: the plan laid again, and what the gate sees (2026-11-23, 16:10; started 15:28)
+
+Made and self-reviewed. Not in the game. Research's pick is open. Nothing is exported: the kit's floors, the handoff and `Config.World.Fit` are as they were.
+
+- **The sheets,** in `build/scratch/modulo/ar54/block/`, by day, the smallest phone's pixels:
+  - `base_fit_gate.png`: the gate's eye at level 1 (every machine at Stage I) and level 3 (Stage III). Today's plan over this one from the builder's held eye of TR51's captures, then this one from the game's camera behind a player on the gate's line; each frame again at 64 px high.
+  - `base_fit_plan.png`: both plans from above as the gate sees them, every footprint at Stage III, with the measures. `plan3_above.png` is the yard itself from above.
+  - `base_fit_plate.png`: the plate, from the gate and from the Strip.
+- **The scripts:** `tools/blender/base_fit.py` holds the plan (`PLAN`) and measures it with no Blender: `py tools/blender/base_fit.py seen` (add `today`, or `other` for the second lay below; `prints` gives each stage's footprints). `tools/blender/base_fit_block.py` stands it and lays the sheets.
+- **The spots,** across, inward, turn (128 studs; across + is the Breaker's side, the viewer's left from the gate):
+
+  | Machine | Spot | Why there |
+  |---|---|---|
+  | generator | 0, 56.8, 0 | 12 behind the Breaker's Stage III footprint: 4.8 deeper than today's 52 |
+  | breaker | 20.5, 30.5, 0 | its 34.6 studs clear of the way in (10 from the line) and inside the 51° (50.79°): nowhere nearer the gate does both |
+  | door | -30.6, 24.4, 90 | its own slant, at the view's edge (50.78°) |
+  | bay1 | -54.6, 42.3, 0 | the Door's side, outer, first of a zigzag |
+  | bay2 | -33.2, 59.2, 0 | inner, in the open between the Door and the generator |
+  | condenser | -54.1, 76.8, 0 | outer |
+  | battery | -31.3, 82.2, 0 | inner |
+  | forge | -54.4, 98.4, 0 | outer, at the back |
+  | training | 55.0, 54.2, 0 | the Breaker's side, outer |
+  | bay3 | 31.7, 52.0, 180 | the Breaker's side, inner |
+  | bay4 | 31.7, 75.9, 180 | behind bay 3 |
+  | bay6 (asleep) | 54.6, 77.2, 180 | behind the Training machine |
+  | bay5 (asleep) | 0, 93.1, 0 | behind the generator |
+  | lab (asleep) | 34.6, 98.6, 0 | the back, the Breaker's side |
+
+- **The measure** (`Rules.BaseFit`'s tests, as `base_plan.fit` takes them, on the handoff's own footprints, which match TR51's Stage III measures):
+  - Stage I: passes. Least clear 12.19 (the Breaker to the generator), widest corner 50.78° of 51.22°, the Breaker 1.85 s from the gate.
+  - Stage II: passes. 12.17, 50.78°, 1.67 s.
+  - Stage III: passes. 12.16 (bay 3 to bay 4), 50.79° (the Breaker), 1.63 s. Nothing on the way in, nothing outside the square.
+  - Today's plan on the same tool: Stage I passes; Stage II fails (11.0; 52.63°); Stage III fails (8.29; 57.49°), as TR51 measured.
+  - Faber's own case hasn't run on it: that's the check, with `Config.World.Fit.Prints` at Stage III.
+- **Seen from the gate,** the share of each machine's pixels that nothing nearer covers (the held eye; the game's camera is within a few points):
+  - Level 1: bay 1 47%, bay 2 100%, battery 100%, Training 100%, Forge 70%, Condenser 81%.
+  - Level 3: bay 1 58% (its top 96%), bay 2 100%, battery 100%, Condenser 74%, Forge 49%, Training 29% (its top 58%), bay 3 23% (its top 42%), bay 4 16% (its top 19%).
+  - Today's, level 3: bay 2 19%, bay 4 34%, Forge 45%, bay 3 59%, bay 1 62%.
+- **The rule "every machine seen from the gate" can't be met in full at 128, and why.** At Stage III the Breaker is 34.6 wide and 20 high. Standing off the way in and inside the 51°, it covers its side of the view from 16° out to the frame's edge, to about 26 studs up at the first row behind it. Whatever stands on that side is seen only through its lattice. The open ground is the Door's side between the Door and the generator, and it holds five machines by the zigzag. So five are in the open, and three read through the Breaker (the Training machine and bays 3 and 4, the bays that open at levels 2 and 3). At Stage I and II the Breaker is low, and that side reads whole (the Training machine 100%).
+  - **Which machine takes which spot is research's call:** the spots carry any machine of the same footprint or smaller. The open five are the Door's side; the hidden three are the Breaker's.
+  - **The other lay that passes** (`OTHER` in `base_fit.py`): no zigzag, both of level 1's bays in the open (bay 1 100%, bay 2 95%), and the Condenser behind the Breaker (32% at level 1; 19% at level 3, its top 0%). I chose the zigzag because it leaves no machine under 16%.
+  - **What would open the Breaker's side, and its cost:** the Breaker turned end-on shows 9.9 studs to the gate, but then it stands on the generator's line and the generator moves to 62 inward or more, which closes the back row. A lower Stage III Breaker is a made piece changed (its horns are TR51's bold thing). A raised back row is a new floor. None is in this piece.
+- **Weak spots I see:** bay 1 reads through the Door's ring at level 1 (47%). The Door's side is the busy one; the Breaker's side beyond the Breaker is quiet at level 1 (the Training machine and sleeping pads). The court between the gate and the generator is larger and empty.
+- **The ring:** the generator's own clear is 25.1 studs from its spot at Stage III (to the Breaker's near corner), 25.9 at Stage I. The kit's ring is 18. The landing's ring (about 28 today) is Faber's to cap at 25.
+- **The plate:** raised in the block to 21.6 (its underside at 19.4, on two posts over the truss). The held eye's frame ends at 18.8 there, so it's out of the gate's view. From the Strip it's read whole by a level eye. Under the game's camera, 20° down, it's whole only from 56 studs off or more (today's, at 16, from 35): the Strip's middle doesn't show it. That's the cost of the raise, for research. `base_kit.PLATE_UP` stays 16 until the pick; `levelMark` follows it.
+- **Blocked in, for the finish after the pick:** the floor on this plan is the plain deck with the pads, the ring and the lines drawn over it. The floor's five pictures (drawn for today's star), the flood masts, the transformers, the pylons against the outer columns, the kit's places, and the handoff's export wait for the pick. Faber's part then: `Config.World.Fit`'s "128" layout and Stage III's `Prints`, the trial's case, the ring's cap.
+- **The gate's eye:** TR51's captures hold the camera level, 10 up and 11.5 before the gate's line. The game's own camera at its start looks 20° down from 8.8 up. The shares differ by a few points; the plate differs wholly (out of the game's camera at 16 already).
+
+### Research's pick: the plan, with the machines placed by what the player touches (Quaestor, 2026-11-23, 16:12)
+
+From `base_fit_gate.png`, judged by the game's camera behind a player (call 3: the player's camera is the measure from now on, and the held eye is only for comparing with TR51).
+- **Felt:** from the gate, the Breaker and the generator stand side by side as the yard's two heroes, with the Door at the edge and the court open in front. At level 3 the Breaker's horns fill their whole side.
+- **Tier:** competent, as a direction. It passes the plan's tests at every stage on Modulo's measure; Faber's case is the check.
+- **The one bold thing:** the Breaker and the generator side by side, with the path's line running straight to the generator.
+- **Call 1, must-fix 1, class "what the player touches stands in the open":** the open five spots (the Door's side) go first to what the player uses most, in this order:
+  1. bays 1 and 2 (the first session's "Work");
+  2. the Forge ("Build");
+  3. the Training machine;
+  4. the Condenser.
+  Behind the Breaker go bays 3 and 4 (they open later, and their tops show) and the battery (nothing to touch; its state is on the HUD). Today's zigzag has it the other way round for the battery and the Training machine, and leaves bay 1 at 47% through the Door's ring at level 1. Lay it again with `base_fit.py` to this order. Where a footprint won't fit a spot, the tool decides and the order bends least.
+- **Call 2, the plate:** raise it to 21.6. Its cost is accepted: it's read whole from 56 studs, across the Strip, and the owner's view of the yard is clean every time they walk in.
+- **The ring:** the generator's own clear is 25.1, so Faber caps the landing's ring at 25.
+- **Next:** Modulo's lay again, then research's second look on what changed. Then the finish (the floor's pictures, the masts, the handoff), and Faber's `Fit` with the trial's case.
+
+### Modulo's second lay: to research's order, by the game's camera (2026-11-23, 16:34; started 16:13)
+
+Made and self-reviewed. Not in the game. Research's second look is open. Nothing is exported.
+
+- **The sheets,** in `build/scratch/modulo/ar54/block/`, laid again: `base_fit_gate.png` (today's plan over this one from the game's camera behind a player on the gate's line, then the held eye of TR51's captures; level 1 left, level 3 right), `base_fit_plan.png`, `plan3_above.png`, `base_fit_plate.png`.
+- **The tool:** `tools/blender/base_fit.py`'s `PLAN` is this lay, and the game's camera is its measure (the held eye stays, to compare with TR51). `py tools/blender/base_fit.py seen` gives levels 1, 2 and 3. The first lay and its other lay are in 90fa971.
+- **The spots,** across, inward, turn. The generator (0, 56.8), the Breaker (20.5, 30.5) and the Door (-30.6, 24.4, 90) stand as picked.
+
+  | Machine | Spot | Where that is |
+  |---|---|---|
+  | bay1 | -33.2, 59.2, 0 | the Door's side, beside the generator: the nearest open spot |
+  | bay2 | -30.3, 90.9, 0 | the Door's side, behind bay 1 and nearer the middle, seen past the generator's edge |
+  | training | -55.1, 76.4, 0 | the Door's side, outer, between the two bays |
+  | forge | -53.4, 99.3, 0 | the Door's side, outer, at the back |
+  | bay6, asleep | -54.6, 42.3, 0 | the Door's side, behind the Door's ring |
+  | condenser | 25.5, 99.0, 0 | the back, in the gap between the generator and the Breaker |
+  | bay3 | 51.1, 73.6, 180 | the Breaker's side, outer |
+  | bay4 | 49.7, 97.6, 180 | the Breaker's side, outer, at the back |
+  | battery | 56.7, 44.9, 0 | the Breaker's side, at its outer end |
+  | lab, asleep | 32.7, 51.6, 0 | behind the Breaker |
+  | bay5, asleep | -0.7, 95.6, 0 | the back, behind the generator |
+
+- **The measure:** PASS at Stages I, II and III. Least clear 12.19, 12.17 and 12.17 (the Breaker to the generator, as before); the widest corner 50.78°, 50.78° and 50.79° of 51.22°; the Breaker 1.85, 1.67 and 1.63 s; nothing on the way in or outside. The generator's own clear is still 25.1.
+- **Seen by the game's camera at the gate,** the share of each machine and, in brackets, of its top third:
+
+  | Machine | Level 1 | Level 2 | Level 3 | The first lay, levels 1 and 3 |
+  |---|---|---|---|---|
+  | bay1 | 100% (100%) | 100% (100%) | 100% (100%) | 44% (33%), 48% (83%) |
+  | bay2 | 100% (100%) | 100% (100%) | 100% (100%) | 100%, 100% |
+  | forge | 75% (86%) | 62% (60%) | 57% (57%) | 70% (76%), 48% (48%) |
+  | training | 93% (100%) | 90% (91%) | 86% (82%) | 100%, 27% (52%) |
+  | condenser | 100% (100%) | 98% (100%) | 94% (99%) | 81% (99%), 73% (82%) |
+  | bay3 | asleep | 33% (65%) | 41% (83%) | 22% (44%) at level 3 |
+  | bay4 | asleep | asleep | 42% (87%) | 15% (21%) at level 3 |
+  | battery | 100% (100%) | 100% (100%) | 8% (10%) | 99%, 100% |
+
+- **Where the order bent, and why:**
+  - **The Training machine reads better than the Forge.** The Door's side has four open spots for a full machine, and the two outer ones stand one behind the other. The Training machine is 13 deep with its pad, so with the Forge in front of it the two don't fit before the kept back (short by 0.75 at clear 12.16). It's also the lower of the two, so in front it hides less. Turned sideways at the back it fits, but its pad faces the wall (turned the other way it reads 41 to 54%).
+  - **The Condenser isn't on the Door's side.** The fifth spot there was open only to the slim battery. With the four above standing, the Condenser's footprint fits one spot in the whole yard on that side, behind the Door's ring, where it reads 20 to 25% (its top 10%). The gap between the generator and the Breaker shows the yard's back, and there it reads 94 to 100%. Sleeping bay 6 takes the spot behind the Door.
+  - **Bays 3 and 4 stand outside the Breaker, not straight behind it:** their tops show over its arm (83% and 87% at level 3, from 44% and 21%). The battery and the Lab's stone take the ground behind it. The battery reads whole at levels 1 and 2 and 8% at level 3.
+- **How it was laid:** by hand on the Door's side, then a search over each side that moves one machine at a time and keeps a lay only when it passes part 7's tests at every stage, scored by what the camera sees in research's order (weights 5, 5, 3, 2 for the bays, the Forge and the Training machine). The search's first runs counted two fixed machines that sit at the limit and kept nothing; fixed, it found the Breaker's side above.
+- **Weak spots, mine:**
+  - bay 2 is 33 studs behind bay 1, about 100 from the gate (6 s at a walk). Both read whole, but they're no longer a pair.
+  - From the gate every machine past the generator is small on the smallest phone (about 35 to 50 px wide). The shares say it's uncovered, not that it's large.
+  - The Forge at the back is the least seen of what's touched (57% at level 3).
+- **What waits for the finish,** unchanged: the floor's pictures, the masts, the transformers, the pylons against the outer columns (bays 3 and 4 and the battery now stand in that column), the kit's places, `base_kit.PLATE_UP` to 21.6, the handoff. For Faber after the second look: this table for `Config.World.Fit`'s "128" layout with Stage III's `Prints` (`py tools/blender/base_fit.py prints`), the trial's case, the ring capped at 25.
+
+### Research's second look: the second lay passes, both bends accepted (Quaestor, 2026-11-23, 16:34)
+
+From `base_fit_gate.png`, the game's camera behind a player at the gate, levels 1 and 3, judging what changed.
+- **Must-fix 1 is met.** What the player touches reads from the gate:
+  - bays 1 and 2 are whole at every level;
+  - the Training machine is 86% or more, and the Condenser 94% or more;
+  - the Forge is at least 57%, more than half its top included.
+  Before, bay 1 was 44% through the Door's ring.
+- **Bend 1, accepted: the Training machine reads better than the Forge.** The order cost 0.75 studs of clear, and the Forge at 57% still reads as the Forge. Its prompt and plate carry it from there.
+- **Bend 2, accepted: the Condenser stands at the back, between the generator and the Breaker.** It reads better there (94% to 100%) than any spot on the Door's side would allow (20% to 25%), and it fills the court's one gap.
+- **Accepted as it stands:**
+  - bays 3 and 4 outside the Breaker, their tops over its arm (83% and 87%);
+  - the battery at 8% at level 3: nothing to touch, its charge on the HUD;
+  - bay 2 33 studs behind bay 1. The first session's Work beat needs only bay 1, the nearest, and the two read as a set because they're the same machine.
+- **Tier:** competent; the bold thing is unchanged.
+- **What the sheets can't show:** how small the back row is on a real phone (35 to 50 px wide). It's first seen at Faber's install, from the gate on the smallest phone, and research reads it there.
+- **Next:**
+  - Modulo's finish (the floor's pictures, the masts, `PLATE_UP` 21.6, the handoff);
+  - then Faber's part from the handoff: `Config.World.Fit`'s "128" layout with Stage III's `Prints`, the trial's case, and the ring capped at 25.
+
+### Modulo's finish: the floor drawn for the lay, the masts, the plate, the handoff (2026-11-23, 17:16; started 16:36)
+
+The four facts: **made** (the kit, the plan and the levels' deck light, laid on the second lay); **self-reviewed** (the measures below, and the frames from the game's camera); **delivered** (`build/handoff/Base`, committed); **not in the game** (Faber's install; research's read of the back row on a phone is there).
+
+**The sheets:** `build/handoff/Base/base_fit_look.png` (the game's camera at the gate at levels 1 and 3, from over the gate, a player before the ring turned to each side, behind the generator, the Strip, and the plate from inside and from the road; each at 64 px) and `base_fit_plan.png` (the plan from above with its measures). The handoff's own pictures of the yard (`base_1_*.png`) are rendered again on this lay.
+
+**What the deck shows now.** The yard isn't the same on its two sides, so no floor picture is mirrored any more. `tools/blender/base_star.py` holds the geometry, and the floor, the levels' light and the plan all read it:
+- **A ground for each machine,** its Stage III footprint and 0.9 round it, so the deck is drawn once for what the machine grows into. At Stage I a machine stands on a ground larger than itself: the Breaker's is 36 by 12 under a Stage I footprint 25 by 7 (level 1's frames). I read it as a dais kept for it. Research's eye.
+- **A line to each place, none crossing another's ground** (`py tools/blender/base_star.py` checks it):
+  - the ring round the well, open toward the gate, and its two ends on the slant to the Breaker's ground and the Door's, as before;
+  - a line straight out of the heart to bays 1 and 2 and the Condenser, and a dark casing to the Lab's stone and to sleeping bays 3, 4 and 6;
+  - bay 5's is the main line, straight back from the ring, and on, dark, to the way out;
+  - three places can't be reached straight from the heart. The Training machine's line leaves bay 2's at a junction box and runs across to it; the Forge's runs on from the Training machine's ground along the wall; the battery's runs on from the Breaker's ground on the slant.
+- **The way in's dashed edges** stand at 8.5 from the middle line (they were at 12.5): the Breaker's Stage III ground comes to 9.3, and the way stays 20 wide by part 7's test.
+- **The deck's joints and the court's side lines** stop at a ground's edge.
+
+**What stands, and where it moved** (tier 1, mine; each measured on the handoff's meshes):
+- **The flood masts:** 11.8 each side, 40.2 in (they were at 13.6, 35). From the gate's camera each stands before the generator's own flank (12.8 degrees off the middle line; the generator reaches 13.6), inside the Breaker's inner end at every stage (16.0, 15.3 and 13.6 degrees at Stages I, II and III), and between the ring and level 2's second ring on the deck. Their lights follow (`FloodLeft`, `FloodRight`, 37.2 in).
+- **The pylons:** 3 studs nearer the gate (13, 61 and 109 in; they were at 16, 64, 112), each in a gap between two grounds of the outer column: 3.9 from the Training machine's and bay 3's, 1.9 from the Forge's.
+- **The transformers:** one at each open bay's back corner on the heart's side (-30.0, 68.0 and -27.1, 99.7), outside the generator's own clear.
+- **The gate's plate:** its middle 21.6 up, on two posts over the truss (`PLATE_UP`; `levelMark.up` follows). Out of the gate's view from inside, whole from the Strip and from the road (the sheet's last row).
+
+**The levels' light on the deck** (AR50's pieces, laid on the star):
+- `LevelFloor`: the way in's two lines at 8.5, and a node on the second ring where each line out of the heart crosses it (they stood every 45 degrees).
+- `LevelRays`: 16 rays, laid between the lines out of the heart and none across the way in. Laid every 22.5 degrees as they were, a ray would lie against bay 1's line and bay 3's (4 degrees off each, 1.5 studs).
+- `BayWake3` and `BayWake4` replace `BayWake`: each bay's line runs out to it from the ring now, so each has its own piece, in the bay's own frame with the bay's turn.
+- The rings afloat stand as they did, about the new heart. `py tools/blender/base_levels_clear.py`: PASS. Level 2's ring clears the generator's body by 6.30 and its turning parts by 4.81 at level 3; its nearest other piece is now the Breaker's Stage III, 1.31 (the bar is 1.2). It stands whole in the frame from the gate's line.
+
+**The measures.**
+- `py tools/blender/base_fit.py`, on the exported handoff: PASS at Stages I, II and III (least clear 12.19, 12.17, 12.17; the widest corner 50.79 of 51.22). What the gate sees of each machine is the second lay's: no spot moved.
+- The plan's budget at level 1: 62 pieces (from 54: sixteen floors for eight), 14,520 triangles (from 14,472), 7 lights.
+- The floor pictures: 32 (sixteen pairs), 1024 by 512 for columns B and C, 512 by 512 for A and D. 12.6 million pixels against the seven mirrored floors' 14.7, and no axis under 16 px a stud (it was 11.6 across). Three glow pictures are black, nothing lit on their ground: `FloorA3`, `FloorA4`, `FloorD1`.
+
+**For Faber, the handoff's changes** (`build/handoff/Base`; `tools/world/kit_take.py` takes it):
+1. **Sixteen floors replace seven.** `FloorA1` to `FloorD4` replace `Court1`, `Yard`, `YardLive`, `YardBack`, `Wings`, `WingsLive` and `WingsBack`, whose meshes and 14 pictures are gone from the handoff. Columns A to D run from the Breaker's side wall to the Door's (left to right, seen from the gate), rows 1 to 4 from the gate in. Each is a flat face with its front edge at its place, in its own colour and glow pictures (`manifest.json`, `floors`). `Kit.Floors` (`src/shared/World/Kit.luau`) names the old floors: it wants every piece named Floor, for the glow that turns with the night. CastShadow off on all sixteen.
+2. **`plan.json`, `layout`:** the second lay's spots under the same names and in the same orders (`stations`, `laterBays`, `sleeping`; the machines' placements by piece and index). New in it: each later bay's `turn`; `grounds`, each place's ground as the floor draws it, for a prompt or a marker; and `fit` is now one measure for each stage (it was one flat table).
+3. **`plan.json`, `current`:** `runs` are the live lines as laid (no longer mirrored), `dormant` the dark casings, `ring` the circle less the gate's quarter.
+4. **`plan.json`, `machines.baseLevels.bayWake`:** `pieces` by bay ("3": `BayWake3`, "4": `BayWake4`); it was one `piece`.
+5. **The level's mark** on the gate's plate: `levelMark.up` 21.6.
+6. **Research's list, unchanged:** `Config.World.Fit`'s "128" layout from `layout`, its `Prints` from Stage III's (`py tools/blender/base_fit.py prints`), the trial's case, the ring capped at 25.
+
+**Not shown.** Night and dusk on the new deck beyond the handoff's own dusk pictures; level 2 alone (levels 1 and 3 are); the Breaker's shards and a worker's own model. The frames are Blender's, by day: the game's light is read at the install.
+
+**The tools.** `base_star.py` is new. `base_fit_block.py` became `base_fit_look.py`, the finished yard through the game's camera (`see <level> [view ...]`, `sheet`); the block-in's ground and its compare with the old plan are gone, and `base_fit.py` holds one plan. `base_kit.py`, `base_plan.py` and `base_levels.py` take every place from the star.
+
+**The content check** (fresh eyes, before the upload): PASS, fresh eyes, 2026-11-23, 17:13, on the 32 floor pictures, the lay from above and the sheet: no gore, no text, no symbol from above, every mark drawn in code. It read the pictures as first drawn, 1024 rows; the handoff's were exported again at 17:12 at 512 rows, the same drawing.
+
+### Research's pass on the finish: AR54 passes at competent (Quaestor, 2026-11-23, 17:18)
+
+From `build/handoff/Base/base_fit_look.png`, the game's camera at the gate at levels 1 and 3, the sides, the back, the Strip and the plate.
+- **Felt:** you come through the gate onto a court, and the generator stands ahead with a line running out of it to every machine. At level 3 its rings float over it, with the Breaker's horns beside it. The yard reads as one circuit fed from its heart.
+- **Tier:** competent.
+- **The one bold thing:** the lines out of the heart, one to each place. They make "the base runs because of who I found" something you can see on the floor.
+- **The Breaker's dais at level 1** (its Stage III ground, 36 by 12, under a Stage I body): accepted. It reads as a plinth kept for what the machine grows into, and a level 1 player sees where the growth goes.
+- **The way in's edges at 8.5:** accepted. At level 3 the two lines lead from the gate onto the court and toward the heart, and the way stays 20 wide.
+- **The plate:** out of the gate's view from inside, whole from the road (the cost accepted at the pick).
+- **No must-fix.**
+- **What the sheets can't show,** at Faber's install:
+  - how small the back row is on a real phone, read from the gate on the smallest phone;
+  - the deck's light at dusk and night.
+- **Next:** Faber's install of the handoff, with AR50's levels on the new star, then research's read in the game.
+
+### Faber's install, with AR50's levels (Faber, 2026-11-23, 20:24 by the clock)
+
+- **Implemented.** The handoff taken (`tools/world/kit_take.py Base`). 25 meshes and 30 pictures uploaded under the group, all 55 Approved and the group's (read back 20:12). `FloorA4`'s and `FloorD1`'s black glow is `FloorA3`'s, the same bytes, uploaded once. The ids are in `tools/studio/Kits/Base.json` and the asset log's rows. `NoShadow` gains the sixteen floors, `LevelFloor`, `LevelRays`, `BayWake3` and `BayWake4`, and `LevelFin` and `LevelFinOuter` collide as boxes. The template is `src/storage/BaseKit.rbxm`: 108 pieces, no welds.
+  - **The plan's lay.** The plots stand on the new `layout`. Each later bay stands at its own `turn` (bays 3 and 4 at 180), so its frame, its worker and its pieces turn together. The plate is at 21.6.
+  - **Part 7's measure, one home** (my call, tier 1). Research's list said Fit's "128" layout from `layout`. Instead the trial's three layouts are retired, and Fit measures the plan's own `layout` (`Config.Kits.Base`), so no copy of it lives in `Config.World`. The trial's grey volumes and its size switch are gone from `WorldService`.
+    - `Fit.Prints` are Stage III's, from `base_fit.py prints`.
+    - `Rules.BaseFit` turns a print by its spot's quarter turns (`Turned`). Its kinds are `base_fit.py`'s: every bay one kind; the Forge, the Condenser and the Lab their own.
+    - `NL_Debug "BaseSize"` answers the plan's line: "128 studs: Breaker 1.6 s, least gap 12.2 (breaker, generator), widest 51° of 51°: PASS".
+  - **The landing's ring at 25.** `Config.Landing.Throw.Reach` is 25 studs. A machine whose throw would pass it runs the same curve scaled to end at 25, so it never stops against a wall: the generator's at Stage III ended near 36.5. A smaller machine's throw is unchanged.
+  - **AR50's levels.** Each plot lays `machines.baseLevels` in its "Levels".
+    - A level's pieces stand beside the lower levels' at the generator's swap, under the landing's cover, never before it.
+    - The rings stand on the plan's axle and always turn about it: 7.20 and −4.32 degrees a second, as measured on the client, in place, with the axle held.
+    - The fins are solid while shown.
+    - `BayWake3` and `BayWake4` stand at their bay's place and turn, shown while that bay is awake.
+  - **The floors' glow.** `Kit.Floors` names the sixteen, so the whole deck's glow turns with the night. `Court1` and `Yard` had it; the rest of the old floors never did.
+  - **`current`** is in the floor's pictures. The pulse along the live lines waits on research's verdict, unbuilt.
+- **Tested.**
+  - The type check: 0 new.
+  - The logic: 29247 passing offline, and 29247 with 0 failed in Studio. New logic cases: the plan's lay at Stage III (14 footprints, the generator's clear 25 or more), the print's turn, the landing's reach, and the levels' rows (pieces, axles, the wakes, the sixteen floors, the plate).
+  - The world report: empty.
+  - The base's self-test cases ("Base:"): 364 passed, 0 failed, at 50 fps. That includes the new case: each level's pieces at its swap, the rings' axle and rates, and the wakes.
+  - `py tools/blender/base_levels_clear.py`: PASS.
+  - **Not verified:** a wake shown on an awake bay 3 or 4 from a save. The test save opens two bays, so the case reads the wakes hidden, and the captures forced both on. The street's dressing report runs in the Festival place only, so the plots' lines weren't read through it here.
+- **My own review** (`build/captures/ar54/`, gitignored, kept for research's read): from the Strip by day and at dusk, the deck at night, the yard by day, and the smallest phone's frame from the gate (`phone_gate_l3.png`), all at level 3 with both wakes on.
+  - From the gate, the two rings crown the generator, and the fins stand in pairs beside the gate's posts.
+  - On the smallest phone, level 3's upper ring touches the frame's top (research's polish-later note). The back row's bays read small beyond the wheel.
+  - At dusk the rings glow teal. At night the deck's lines hold, and the floor reads pale.
+- **Next:** research's read in the game from the four stands: the glow, the rings crossing opposite ways, Stage III under them on a phone, the back row on the smallest phone, and the deck at dusk and night.
+
+### Research's read in the game: AR54 and AR50's levels pass at competent (Quaestor, 2026-11-23, 20:26)
+
+From Faber's five captures in `build/captures/ar54/`, all at level 3 with both wakes on.
+- **Felt:** through the gate on the smallest phone, the generator wears its two rings as a crown over the court, and the lines lead in from the gate's posts. The Breaker's horns stand at the left: the yard reads as one machine fed from its heart, as the sheets promised.
+- **Tier:** competent.
+- **The one bold thing:** the lines out of the heart still carry it, now in the game's own light.
+- **The two reads the sheets couldn't give:**
+  - **The back row on the smallest phone:** small beyond the wheel, but each bay reads as a lit machine, and the walk reaches them. That's a 128-stud yard seen from its gate. Accepted.
+  - **Dusk and night:** the deck stays pale, its lines hold, and the rings glow teal at dusk. Nothing goes somber. Accepted.
+- **Faber's tier 1 call,** accepted: Fit measures the plan's own `layout`, one home and no copy.
+- **The upper ring at the frame's top** is polish-later's note of 14:04. It stands, judged first in motion.
+- **The pulse along `current`'s runs:** not in this piece's block, so it goes to `docs/polish-later.md`, not into the build.
+- **No must-fix.**
+- **What the stills can't show,** and where it's first seen:
+  - the rings turning opposite ways, and a level's pieces swapping in under the landing's cover: at the next level bought in a playtest;
+  - a wake on bay 3 or 4 from a save: on the first save with a third bay awake.
+- `phone_gate_l3.png` is cropped from the wide frame, so the lead's card and the Electricity pill are cut by the crop, not by the game.
+
+## AR55. The return card's look: what the base made while you were away (Modulo, for research's pick, then Faber at TR53)
+
+Research, 2026-11-23, 18:27. This is TR53's look, drawn ahead as AR53 was for TR54, so Faber builds the card once, with its art. TR53's block contains everything here, and its tier 2 notice covers it. It's main-game work, the base, and not the Festival's.
+- **Feel line:** you step back into your yard after a run, or join the next day. One card rises over the base and says, in pictures and plain numbers, what it did while you were away. One press takes it all, and the machines behind it look busier for it.
+- **The pieces,** at the smallest phone (568 x 320), on the kit in AR40's C:
+  1. **The return card:** a line for each change, each with its own picture from the machine's plate or its screen:
+     - the battery's gain in kWh;
+     - the Condenser's stones;
+     - the Training machine's levels;
+     - a shard ready to reveal.
+     One press under the right thumb: "Collect", or "Reveal" when a shard is ready. Draw it with one line, with all four, and with a shard ready.
+  2. **The run's line of the base's state,** in the Festival place: the shard breaking and its time left, quiet, beside the run's line without crowding it.
+  3. **The notice when the shard breaks:** "Your shard broke. Its Voidkin waits at home." A toast from ui.md's shared pieces, never a modal over a fight.
+- **Its make:** the system slab's (`Config.UIKit`, System), the base's own screens' kin. It's the base speaking, not a reward screen: no burst, no confetti. The gain reads by its numbers and the machines behind it.
+- **Out of the piece:** a sound (Sonus's), motion beyond the card's rise (TR53's block), and an experience notification (the director's word first).
+- **Checks:** the content check; research's pick from three directions, then the finish; the sheets laid as the game lays them, at 64 pixels too.
+- **Order:** Modulo's next. Faber's TR53 stays after the install backlog and TR52.
+
+### Modulo's blockout: three directions for research's pick (2026-11-23, 19:07; started 18:30, set down from 18:40 to 19:02 for AR53's redraw)
+
+Made and self-reviewed as stills at the smallest phone. A blockout: nothing cut, nothing in the game, nothing uploaded, nothing read in motion.
+
+- **The sheets,** `build/scratch/modulo/ar55/`: `return_card_A.png`, `return_card_B.png`, `return_card_C.png`, and `return_card_small.png` (the fifteen phones at 64 pixels high). Each direction has five cells: one change (the battery alone); all four with a shard, so the press is "Reveal"; a shard alone; during a run, the shard breaking with its time left; the notice.
+- **How they're laid:** the yard is Faber's capture (`build/captures/tr51/phone_stage3_court.png`), the Festival the sheets' street stand-in. The HUD's pieces stand where the game has them on this phone, measured on `build/captures/tr50/fix-line.png`: the lead's card, the run's line (163 to 448), Credits and Electricity, the game's toast under them, the next step's plate, the dock. Every piece is the system slab's make; the pictures are the game's own (the battery, the stone, the Training chip, the shard's small picture).
+- **A, the Slip.** A narrow slab at the right under the pills (380 to 560, its foot at 314), a line a change: picture, the gain large, one faint word. It grows up from its foot with each change; the press runs across its foot under the right thumb. The yard's middle and the dock stay as they are.
+  - During a run: a third pill under Electricity, the shard's picture and its time. The notice: a toast at the toasts' place, in the slab's make.
+  - Its cost: with all four it's about 180 tall (132 to 314) and stands in the toasts' place while it's up. During a run the third pill pushes every toast down by its height.
+- **B, the Sill.** A low slab across the foot, grown from the right as far as its changes reach, its head on a tab over it; a cell a change, the press at its right end. The yard stays whole above it.
+  - During a run: a tab hung from the run's line beside the dare's tab, the shard's picture and its time. The notice: that tab opens out under the line, two lines.
+  - Its cost: with all four it's 553 of the phone's 568 by the sheet's letters, so a longer word or a fifth change has no room. The dock gives way while it's up. With one change it's small and low, under the thumb and far from the eye. The notice has 150 between the dare's tab and the Electricity pill, and the sentence's second line fills it.
+- **C, the Board.** A slab in the middle (160 to 450) in the Power screen's rows: a machine a row, its name, a gauge of what came (the battery's bar with the gain lit, the tray's cups, the levels' steps), the gain at the right; "Away 3 h 12 min" at the foot's left, the press at its right.
+  - During a run: the next step's plate speaks for the base, in the slab's teal, so the HUD gains no piece. The notice: that plate, grown to two lines.
+  - Its cost: it covers the yard's middle, which the feel line wants seen, and with four rows it stands over the Electricity pill, so the HUD recedes under it. It's the nearest to a modal. During a run the next step's plate can't say its own step while it speaks for the base.
+- **My read: A's card, with B's tab for the run.**
+  - A keeps the machines in view behind the card, which is the feel line's last clause, and keeps the dock; its press is under the right thumb at every count.
+  - For the run, the request asks for the state "beside the run's line": B's tab is that, and it's the dare's tab's kin. A's pill reads as a third currency.
+  - C says the most (where each machine stands, not only what came), and it's the one I'd pass over: the gauges repeat the Power screen one tap away.
+  - The three parts are independent: any card goes with any run state and any notice.
+- **A finding on the notice, research's to answer:** "Your shard broke. Its Voidkin waits at home." is 44 letters. The kit's toast holds one line, about 141 wide at 10.5 on this phone (`UI/Kit/Toast.luau`, read from the capture). So the notice is two lines in every direction here: a taller toast, or shorter words.
+- **Stand-ins, research's to write:** the head "While you were away"; "Away 3 h 12 min"; the faint words "stored", "Low stones", "Rook", "ready"; the machines' names as the game has them; "Shard breaking"; "12:40"; "Ready". From the request: "Collect", "Reveal" and the notice.
+- **Content check:** PASS on the plan before drawing (`build/scratch/modulo/ar55/plan.md`), on conditions, all kept on the sheets: no mark of a purchase or a boost; "Reveal" shows only the shard's picture; no burst, rays or confetti; the breaking shard's mark clean and hard-edged; the captures stay internal. Research's final words get their own check, and so does any cut before an upload.
+- **The script,** `tools/blender/return_card.py`: one run writes the four sheets.
+- **Limits:** stills only. The HUD's pieces are grey stand-ins at measured places. Widths are the sheet's face, which is wider than the game's. The card's rise is TR53's block.
+
+### Research's pick: A's card, B's tab for the run, the notice out of the tab (Quaestor, 2026-11-23, 19:09)
+
+From the three sheets and the fifteen phones at 64 pixels.
+- **Felt:** A's Slip says what the base did in one glance at the right: the machine's own picture and the gain set large. The yard and its machines stay in view behind it, and the press sits under the right thumb at every count.
+- **Tier:** competent, as a blockout.
+- **The one bold thing:** the gain set large beside the machine's picture ("+12.4 kWh"), the number doing the talking.
+- **The pick:** Modulo's read.
+  - **The card is A.** C covers the yard the feel line wants seen and repeats the Power screen. B's card spans the screen with four changes, and with one it sits far from the eye.
+  - **During a run, B's tab** hangs from the run's line, right of the dare's tab, with the shard's picture and its time. A's pill reads as a third currency. C costs the next step's plate its own message.
+  - **The notice opens out of that tab,** two lines, under the line and clear of the fight's middle. It's not a toast, so the kit's toast stays one line and the sentence stays whole. After it, the tab reads "Ready" until the player is home.
+- **The words** (the stand-ins become these):
+  - the head: "While you were away"; no time away;
+  - the battery: "+12.4 kWh", "stored";
+  - the Condenser: "+6", "Low stones", the grade as the game words it (`BaseController`). A convert's Mid gets its own line: "+1", "Mid stone";
+  - the Training machine: "+2 levels" (or "+1 level") and the Voidkin's name;
+  - the Breaker: "1 shard" (or "2 shards"), "ready";
+  - the press: "Collect", or "Reveal" with a shard ready;
+  - the run's tab: the time left, then "Ready";
+  - the notice: "Your shard broke." / "Its Voidkin waits at home."
+  - Content check: PASS on these words (19:09).
+- **For the finish:** A's card at one, two and four changes and with a Mid line; B's tab breaking, opened and Ready; each at 64 pixels; the cut and its content check.
+
+### Modulo's finish: A's card, the run's tab, a cut of three (2026-11-23, 19:23; started 19:10)
+
+Made; self-reviewed as stills at the smallest phone, up close at twice its pixels; delivered to `build/handoff/UI/return/`. Not in the game, nothing uploaded, nothing read in motion: the card's rise, a line's count and the tab's opening are TR53's block.
+
+- **The handoff,** `build/handoff/UI/return/`: `return_card.png` (six phones: one change, two, four with a shard, four and a Mid line, a shard alone, stones and one level), `return_run.png` (five: breaking, under an unfolded dare, opened into the notice, Ready, a long time), `return.json` (every box, size and colour, and what the kit builds), `images/` (three), `return_cut.png`. The review sheets, `build/scratch/modulo/ar55/finish/`: `return_small.png` (the eleven phones at 64 pixels high), `return_pictures.png` (the card and the tab's states at twice the phone's pixels), `return_new.png` (the cut on the slab's teal, the page's dark and white). `tools/blender/return_card.py` writes them all, and the cut with `cut`; the blockout's three directions stay in git (ec6c82a).
+- **The card.** The kit's system slab from 372 to 560, its foot at 314, grown up from its foot: 78 and 26 a line. A line: the machine's own picture in a small well lit in the machine's colour (the battery's yellow, the Condenser's rose, the Training machine's cyan, the Breaker's silver), the gain at 17 in bold ivory beside it, one soft word at 14 at the right. The press is 44 tall across the foot: the kit's Primary for "Collect", the slab's Ready gold for "Reveal". Research's bold thing is held by size alone: the gain is the largest and brightest thing on its line, and nothing else on the card is bold but the press.
+- **Two numbers of mine, for research's eye:**
+  - **The slab is 188 wide, 8 more than the blockout's.** `Read.Kwh` writes a hundredth under 100, so the battery's line is ten characters ("+12.40 kWh") beside "stored"; at 180 they met.
+  - **Five lines stand at a pitch of 21, not 26.** All four changes and a convert's Mid stone make five lines; at 26 the card would climb over the Electricity pill. At 21 it is 183 tall, and 186 lie between that pill's foot and the card's foot. The pictures are 12 points high there, the smallest on the card; they still read as battery, stone, stone, cell, shard on the sheet.
+- **The run's tab.** The line's own glass, right of the dare's tab and 40 tall like it: the shard's own picture and the time left, at 14, 72 wide or as wide as its words ("1:42:10"). It rides the line's foot, so it sits 24 lower while a dare is unfolded. The notice opens from it to the right, two lines at 14, 183 wide: its right edge is 6 short of the Electricity pill at this phone, and the second line ends about 12 inside it in the sheet's face. A notice that falls due while a dare is unfolded waits for the fold. After it the tab reads "Ready" in bold ivory with a soft silver glow behind the shard, until the player is home. No shard in the Breaker: no tab.
+- **The cut is three images,** all the kit lacks: `ReturnSeat` (a line's well), `ReturnSeatLight` (its light, white, tinted the machine's colour), `ReturnGlow` (the Ready tab's glow, white, tinted the Breaker's silver). Each at 4 pixels a point, edge alpha 0. The slab, the lines' words, the presses and the tab's glass are the kit's; the pictures are the game's own (`Battery`, `StoneLow`, `StoneMid`, `PowerChipTraining`, the shard's small picture).
+- **Content check: PASS for the three images as they stand** (2026-11-23, 19:21). The plan's conditions hold on the sheets: nothing sold or sped up, "Reveal" beside the shard's picture alone, no burst, rays or confetti, the breaking's mark the shard's own picture. Its conditions on the pass: only the three files go up, as they stand (sha1: `ReturnGlow` 41077616, `ReturnSeat` b5a9101f, `ReturnSeatLight` f380fc31); the sheets are never uploaded; in the game the lights take only the four tints in `return.json`.
+- **Findings for research:**
+  1. **AR53's unfolded dare lies over the Electricity pill's left 56 points** at this phone for its 3 seconds (the line ends at 448 and the pill starts at 392, a point under the line's foot): `return_run.png`, phone 2, draws it as the game would lay it, the line over the pill. It hides what the base makes for those seconds. AR53's sheets showed the line alone, so it wasn't seen there.
+  2. **The notice's second line has no room to grow.** "Its Voidkin waits at home." fills the 183 the pill leaves; a longer line would need a third line or a smaller size.
+  3. The widths are the sheet's face; TR53's first capture checks the battery's line and the notice in the game's own.
+- **For Faber, TR53:** `return.json` holds the layout. Upload the three under the group at the build. The shard's picture on the card and the tab is the shard's that broke.
+
+### Research's pass on the finish: competent, one must-fix, and one of AR53's (Quaestor, 2026-11-23, 20:07)
+
+From the two sheets, the pictures at twice the phone's pixels, and at 64 pixels.
+- **Felt:** home from a run, a slim slab rises at the right with the battery's picture and "+12.40 kWh" large beside it, the yard still whole behind, and one gold Reveal under the thumb. On the street, the shard's tab ticks under the run's line and opens into its two lines when the shard breaks.
+- **Tier:** competent.
+- **The one bold thing:** the gain set large beside the machine's picture in its lit well, and it holds at five lines.
+- **Modulo's two numbers,** accepted: the card 188 wide, for the kWh to the hundredth; 21 a line at five lines, so the card stays under the Electricity pill.
+- **Must-fix 1: every well names its line at the phone's size** (the class). The Training machine's well is a blank cyan tile at twice the phone's pixels: nothing in it says training. Either draw it to read as the machine at the well's size, or put the Voidkin's portrait from the kit in it, as TR31 had the lead's. Modulo's call. The battery, the stones and the shard read.
+- **Must-fix 2, AR53's: an unfolded dare lies over no other HUD piece, at any phone** (the class). At the smallest phone the second dare's line ends at 448, covering the Electricity pill's rate (from 392) for its 3 s. A dare whose line would come within 6 of the pill breaks at a word into two lines, as the notice does, with the base's tab riding the foot as it does now. Measure all five (the four and the fallback) at the smallest phone.
+- **TR31 folded into TR53** (research's miss: TR31 asked for this card on 2026-11-16). Its lines, as words for Faber, with no redraw:
+  - the battery's line is its net gain, shown only when it gained;
+  - when the battery ended full and sold its overflow, the line reads "Full", with "+340 Credits" as its soft word. So an overnight return stays at five lines at most.
+  - Content check: PASS on "Full" and "+340 Credits" (20:08).
+- **What the stills can't show:**
+  - the card's rise and the press sending each amount to its counter (TR53's motion);
+  - whether a card after every run reads as a reward or a chore (TR53's verdict in motion);
+  - the widths in the game's face.
+- **The second look** judges the two fixes only.
+
+### Modulo's fix of the two must-fixes: the Voidkin's face in the Training line; the dare opens as its tab (2026-11-23, 20:20; started 20:08)
+
+Made and self-reviewed as stills at the smallest phone, up close at twice its pixels; delivered to the two handoffs. No image is new or changed: the cut's three are byte for byte the files that passed at 19:21, and the goals' 17 weren't written. Not in the game, nothing uploaded, nothing read in motion.
+
+- **Must-fix 1, the Training line's well: the Voidkin's own face.** My call of the two: the line already says who trained ("+2 levels", "Rook"), so the well shows that Voidkin, and no well on the card is a bare tile.
+  - It is the kit's small portrait (`Portrait<Name>Small`, or `PortraitUnknown<Rarity>Small`), its face's square (148 pixels from 110, 112 of its 368 by 400), with no rarity frame.
+  - It stands in the well inset 2, so its corners meet the well's cuts: 18 points in a 22 well, 13 at five lines. The cyan light stays behind it.
+  - `return_card.png`, phones 3, 4 and 6 (Rook, Rook at five lines, Lyric); `return_pictures.png` up close. No new image: the portraits are in the game.
+- **Must-fix 2, AR53's: the dare opens as its tab, and the line never grows.**
+  - The folded tab opens to the right in the line's own glass, as the base's notice opens from its tab, and closes round its mark after its 3 s. The mark stays where it is folded.
+  - Its right is its widest row's end and 10, and never past 6 short of the Electricity pill. One row stands in the tab's own height (foot 70); two rows in the notice's (foot 88), broken at the word that leaves the rows most alike.
+  - The base's tab rides the open dare's foot: 26 lower under one row, 44 under two.
+  - **The five, measured** in the sheet's face at 14, against the smallest phone's room (263 from the line's left to the pill less 6; 211 for the words, 187 on Hard, whose mark is 24 wider):
+
+    | The dare | Wide | Rows | On Hard |
+    |---|---|---|---|
+    | "Finish with your lead above half." | 180 | 1 | 1, with 7 to spare |
+    | "Break a raised shield with your signature." | 232 | 2: "Break a raised shield" / "with your signature." | 2 |
+    | "Let no Dasher's line touch you." | 176 | 1 | 1 |
+    | "Stand outside every slam." | 143 | 1 | 1 |
+    | "Finish without your lead falling." (the fallback) | 174 | 1 | 1 |
+
+  - So one dare of the five breaks. The rule is the game's to run on the widths it measures: the table is the sheet's face, and Hard's first dare is the one to watch in a capture.
+  - `build/handoff/UI/goals/goals_dare_line.png` (phones 1, 5 and 6) and `goals.json` ("dare", "line", "unfolded") hold it; `return_run.png`, phones 2 and 6, show it beside the pills with the base's tab under it.
+- **A fact about my sheets, for research and Faber.** They stand the HUD's pieces where a capture has them on screen and draw the kit's sizes at one to one. The game draws at 0.85 on the smallest phone (`Theme.Scale.Floor`), so it has about a sixth more room than a sheet shows. Every fit on these sheets is the strict case: on `return_run.png` the words have 174, not 211. `return.json` says so ("strict") and asks for anchors to the pieces, not to the screen numbers. The card's 21 at five lines is the strict case too: in the game 26 may fit under the pill, and a capture can say.
+- **`goals_look.py` has a `line` mode:** the dare's sheet and `goals.json` alone, no image touched. The whole cut was stopped twice by the memory guard with a Studio open (0.59 and 0.63 GB free).
+
+### Research's second look: AR55 passes at competent (Quaestor, 2026-11-23, 20:20)
+
+Only the two fixes, from `return_card.png`, `return_run.png`, `goals_dare_line.png` and the pictures at twice the phone's pixels.
+- **Must-fix 1, met.** The Training well holds the Voidkin's own face: it reads as who trained, and it holds at five lines.
+- **Must-fix 2 (AR53's), met.** The dare opens as its tab, and the line never grows. "Break a raised shield with your signature." breaks into two rows 6 short of the Electricity pill, with the base's tab at its foot. The other four stay on one row. Nothing under the line lies over another piece.
+- **Nothing broke.**
+- **Where it's first seen:** the open, close and notice in motion, at TR53 and TR54 in the game, where the smallest phone draws at 0.85 and has a sixth more room than the sheets.
+
+## AR56. The Tower's room: one great round room where the climb is fought (Modulo, for research's pick, then its finish; Faber's install after the main game)
+
+Research, 2026-11-23, 20:07, on the director's word by 20:01, "Tower room now", to research's question (`docs/decisions.md`, the top row).
+- **The room is the director's** of 2026-11-19 (`docs/design.md`, "The Tower"): one big, detailed circular room, the same for everyone. Whoever steps in gets their own copy, far from the map and out of sight. A win brings the next foe into the same room, and the floor rises.
+- **Drawn ahead,** as AR53 and AR55 were: Faber builds it after the main game's open pieces, and the grey Tower runs until then.
+- **A major landmark:** it aims at exceptional, with fresh eyes beside research's verdict at the blockout and at the finish.
+- **Feel line:** you step through the door behind your base into a great round room high above everything, your lead facing a void-lit Voidkin across its floor. At each win the next one comes in and the floor's number climbs, and the room makes you feel how high you've come.
+- **The question the blockout answers:** how one room that never changes says "high, and climbing" from the player's camera. Three directions in grey, each its own idea, Modulo's to choose. For example: a closed hall lit from an opening overhead; an open floor at a tower's top with the sky all round; a floor in a shaft whose rings rise out of sight.
+- **What each direction shows,** at the smallest phone, from the player's camera (the grey Tower's, or `lantern_row_look` until it has its own):
+  - **a fight's frame:** the lead and the foe as grey stand-ins at the fight's distance, the player beside. They read first; the room frames them and never competes;
+  - **the room whole,** once, as the player enters;
+  - **where the floor's number lives** in the room, if it does, beside the HUD's;
+  - **where the next foe comes from;**
+  - **its size:** the fight's floor at least the elite's square (64 studs), the room far bigger than the grey disc (radius 14);
+  - **its count:** parts and triangles, since a server holds up to eight copies.
+- **Its look:**
+  - anime: the Voidkin's world and the void's, in the base's language where it helps, since the Tower stands behind the base;
+  - none of Lantern Row's festival (lanterns, masks, drums, stalls), and no real machinery;
+  - bright enough to stand beside the deck: violet only on what's alive, so on the foes, never the room's floor, walls or sky.
+- **The block contains:** the three directions as stills and one short take each (the entrance's first look, then a fight's frame), in stand-in grey. Nothing cut, nothing in the game, nothing uploaded. It gets a landmark's time, about 3 hours as a guide.
+- **After the pick:**
+  - the room's finish, as a kit Faber installs;
+  - then, in its language, the entrance on the lot behind the base and the record marker visitors see (the director's "Entrance + record marker").
+- **What waits:**
+  - Faber's install and the room's copies;
+  - the foe's void-light look (the Voidkin's work is parked until before launch);
+  - the next foe's arrival effect (Scintilla), and the sounds (Sonus);
+  - the results screen's look.
+- **Checks:**
+  - the content check before the finish;
+  - Blender by `build/locks/blender.lock`, heavy runs in the foreground with the memory guard;
+  - research's pick, with fresh eyes.
+
+### Modulo's blockout: three rooms in grey, for research's pick (2026-11-23, 20:38; started 20:21)
+
+**Made and self-reviewed as stills; the takes rendered and encoded, read by their frames, not judged in motion by me. Nothing cut, nothing in the game, nothing uploaded, no fresh eyes yet (the pick's).**
+
+- **The sheet:** `build/scratch/modulo/ar56/block/tower_room.png`: each direction as the player steps in, at a fight's frame, with the camera tilted 8 degrees up, and whole. Every frame is the smallest phone's size; the full frames are `<A|B|C>_<enter|fight|up|whole>.png` beside it, at twice that.
+- **The takes:** `tower_room_A.mp4`, `_B.mp4`, `_C.mp4` in the same folder: the walk in from the entrance to the stand at Roblox's walk speed while the foe comes in its own way, then the fight's frame held 1.5 s. Rendered at 15 a second, shown at 30.
+- **The generator:** `tools/blender/tower_room_block.py` (`see` writes the stills, the take's frames and each direction's `.json`; `movie`; `sheet`). Eevee, about 7 s a run, no lock needed. The sky is the game's painted day (`base_light`), the figures are grey boxes.
+- **The content check:** PASS on the plan (`build/scratch/modulo/ar56/plan.md`) before the first render at 20:31, with conditions the block keeps: C's marks short, separate arcs along their ring, never rays, never twelve; the blades mirror-symmetric about their radius; the dome a plain stepped shell, the openings plain slots; no throne, seat or statue; lights pale, never red, never violet. The pictures get their own check before the finish, as the request says.
+
+**One fact that shapes all three.** At the player's camera the frame's top is 15 degrees over the horizon and its foot 55 under it. Nothing overhead is in a fight's frame: "high" has to be said at the horizon and below it, or by the floor. The tilted-up column on the sheet shows what a player gets only by turning the camera.
+
+**The same in all three:** the fight floor, 48 in radius (the elite's 64 square has a half diagonal of 45.3; the old grey disc is 24); the entrance at one end, the foe's way in opposite; the avatar set down 13 behind the middle and the foe 13 in front (`Config.Tower.Stand` on the old radius); the floor shown is 17.
+
+| | A, the Crown | B, the Well | C, the Gate hall |
+|---|---|---|---|
+| The idea | the tower's open top: no wall, no roof, eight blades leaning out of the rim | an island in a wide shaft of rings, a gap all round, two bridges | a closed domed hall, the sun through its top in one pool, one great gate on the sky |
+| How it says high | cloud heads at the horizon and under it, drifts at the floor's height, a lower spire of the same make in the cloud sea | rings over you and under you; from the bridge the island stands on a pillar going down into bright mist | the sky and cloud heads through the gate and the slots; the pool of sun from far overhead |
+| How it says climbing | the foe comes up floating steps over the far rim | every ring is a floor, ticked like a measure | ten marks round the pool, one lit a floor, a pip a full turn |
+| The floor's number | lit numerals on a slab afloat over the foe's steps; in the fight's frame, near its top | a plate on the wall over the foe's doorway; in the fight's frame | no numeral in the room: the marks; the HUD's alone carries the number |
+| The next foe | over the far rim, up the steps | across the far bridge, from a lit doorway | through the gate, dark against the light |
+| Size | step ring to 60, blades to about 73, steps out to 120; 50 high over the floor | shaft 84 in radius (90 outside); drawn 144 up and 162 down | hall 72 in radius (76 outside), 81 high |
+| The block's count, a copy | 30 parts, 5,652 triangles | 89 parts, 53,676 triangles (48 tick blocks a ring on 17 rings; a finish paints them) | 37 parts, 11,300 triangles |
+| Outside the room | cloud sea, 70 cloud heads, 8 drifts, 3 spires: 257 parts, 19,904 triangles | the mist's disc | cloud sea, heads and drifts: 227 parts, 18,464 triangles |
+
+**My read, at the phone's size.**
+
+- **A** says "high" soonest and in every frame, the fight's included: sky, cloud under the horizon, a lower tower. The blades' shadows cross the floor, which is most of the frame. The number and the foe's way in stand in the fight's frame together. Weak: the light lead against pale cloud reads less than the dark foe does; "climbing" rests on the steps and the number alone; the floor between the shadows is plain.
+- **B** has the strongest first look, the walk over the bridge with the depth on both sides, and says "climbing" best. Weak: from the floor's middle the gap is hidden by the floor's own edge, so a fight's frame is two rings, a doorway and the number, and no depth; it is the palest of the three and shows no sky; it is the heaviest.
+- **C** has the cleanest fight's frame when the camera faces the gate: the foe against the sky, the pool under the fight. Weak: it says "high" least, a bright round hall with sky in its openings; the gate's read needs the camera turned to it; the marks ask the player to learn a count.
+- **My lean: A.** It answers the question from the frame players hold longest. The pick is research's.
+
+**For the game, whichever is picked (Faber's calls, noted so the finish is drawn to them).** Each room's sun is its own here (A's low from the side for the shadows, C's at 80 degrees for the pool): a client's own Lighting while it stands in the room. The cloud sea can be the sky's own lower half, no part; only the drifts and the lower spires are pieces. The numerals are a SurfaceGui's text. Every lit line is the pale light of the block, to be given the base's own colour at the finish; no violet anywhere on the room.
+
+**Open:** research's pick, with fresh eyes. Then the finish as a kit, its content check on the pictures first.
+
+### Research's pick: A, the Crown, with fresh eyes (Quaestor, 2026-11-23, 20:38)
+
+From the sheet, the twelve frames, and each take laid out as frames.
+- **Felt:** you step out onto an open floor at a tower's top, the sky all round and a lower spire standing in the cloud. In the fight's frame the foe stands between two lit blades under its floor's number. Fresh eyes, blind: "an open rooftop under a big sky ... the eye goes from number to foe in one line".
+- **Tier:** competent, as a direction. A landmark aims at exceptional, and this isn't there yet: fresh eyes read the cloud at the horizon as beige dunes, so "high above everything" is half felt.
+- **The one bold thing:** the foe under its number between two lit blades, a gate it stands in, with open sky behind. Research and fresh eyes picked the same.
+- **The pick: A.** It's the only one whose fight frame, the one players hold longest, has the number, the foe and the sky together.
+  - **Not B:** from the floor it's an arena of ticks, with no sky and no drop, and the number is lost in the ticks. It's also the heaviest, at 53,676 triangles a copy.
+  - **Not C:** it says high least, and it has no number in the frame. Its gap on the sky behind the foe is the shape fresh eyes would most regret losing, and A keeps the sky behind the foe.
+- **Accepted:**
+  - the fight floor's 48 radius and the stands;
+  - the cloud sea as the sky's own lower half wherever it can be, with only the drifts and the spires as pieces;
+  - each room's own light on the client (Faber's call at the install);
+  - the numerals as text.
+- **The finish must answer** (each a class):
+  1. **Everything under the horizon reads as air, not land.** Cloud white with cool shadows, a different value and hue from the floor, and a haze that deepens with distance, so the lower spire stands far below.
+  2. **The floor is drawn.** It's three quarters of the fight's frame. Draw it in the base's language, leading the eye to the middle, keeping the blades' shadows, with no violet.
+  3. **The fighters read first.** The light lead against pale cloud reads less than the foe. Check it with coloured stand-ins at the phone's size.
+  4. **The climb has its beat.** Draw the slab and the foe's steps so the number's turn and the foe's rise can move, and show both in a take.
+- **To polish-later:** B's walk over the gap, with the drop under you as you step in, tried at A's entrance.
+- **Next:** Modulo's finish of A as a kit (the content check on the pictures first), with fresh eyes again at the finish. Then the entrance on the lot and the record marker, in its language.
+
+### Research's look at the finish, with fresh eyes: competent, two must-fixes (Quaestor, 2026-11-23, 21:18)
+
+From Modulo's sheet `build/scratch/modulo/ar56/finish/crown.png`, the full-size stills, the take's frames, and the read at 64 pixels. Modulo's record follows the verdict, with the export.
+- **Felt:** you step onto a bright, clean round floor under a blue sky. A lane of light runs to the foe's steps, and the number sits over the foe between two lit blades. At a win the slab turns, the steps rise past the far rim, and the next foe hops up them and drops in under its number. Fresh eyes, blind: "a bright, clean, calm stone plaza ... a tidy arena, not 'high above everything'".
+- **Tier:** competent. Not yet the landmark's exceptional.
+- **The one bold thing:** still the two lit blades framing the number over the foe. Fresh eyes picked the same, and named the foe dropping in under the slab (`beat/f032`) as the take's best moment.
+- **Met:** the floor is drawn and leads to the middle; the climb has its beat; no violet but the foe's.
+- **Must-fix 1: the band past the rim reads as looking down on cloud from above** (the class: everything the fight's camera sees between the far rim and the horizon).
+  - Fresh eyes read land, twice: dunes at the blockout, now "a snowfield ... with pale spikes standing in it".
+  - The geometry is why. From the fight's camera the far rim hides everything more than about 7° under the horizon, so the cloud sea lies in a thin flat band. The many small pale towers in it read as spikes in snow.
+  - In that band: break the sea, so the haze's deep blue shows between lit cloud heads, which you look down through. Use fewer, larger lower towers in the room's own make, blued by the haze, or none. Let drifts pass at and just under the rim's height, shown in a take, since motion carries it.
+  - The check: a blind read of the fight's frame says high above the clouds.
+- **Must-fix 2: the ground under the fight is a mid value** (the class: whatever stands behind and under the fighters). The pale lead melts into the pale heart. A mid-value heart lets a pale lead and a dark one both stand off it. Check it again with the three leads.
+- **Not the room's:**
+  - the avatar reads first, as it does on Lantern Row: it's the player's camera;
+  - the dark lead and the foe come out the same navy. That's the foe's void look, which waits with the Voidkin's work;
+  - Eevee's soft shadows (the game's are firm).
+- **The second look** judges the two fixes only, with fresh eyes on the fight's frame. The entrance and the record marker follow the fixes.
+
+### Research's second look, with fresh eyes: the room passes at competent; the height is reconsidered, not patched (Quaestor, 2026-11-23, 21:38)
+
+From `crown_fight.png`, the three leads and `crown_enter.png`, read blind by fresh eyes and by research.
+- **Must-fix 2, met.** On the tan heart the warm lead stands off clearly. The pale one stands off, the weakest of the three, but it doesn't vanish. The dark lead and the foe still read as one navy: that's the foe's look, which waits.
+- **Must-fix 1: land is gone, and the drop isn't there.**
+  - Fresh eyes: "neither land nor air far below ... a cloud bank at eye height ... a well-built arena in the sky", with "the clouds level with you, not under you".
+  - The idea has now missed twice after the blockout: the pick's class "air not land" at the finish, then this must-fix. So by the two-rounds line it's reconsidered, not patched.
+- **The evidence:** from the fight's camera the far rim, about 73 studs off and 9 under the eye, hides everything past about 7° under the horizon. No colour in that band can show a drop that the floor hides.
+- **Tier:** competent. The room passes as it stands, as an arena in the sky. It isn't the landmark's exceptional, and that's the reason why.
+- **The bold thing,** read blind for the third time: the blades framing the number over the foe, with the rings and the lane pulling the eye to it.
+- **The reconsideration: a technique, not a number.** One grey test of the fight's frame only, capped at 1 hour, read by fresh eyes.
+  - The player's stand is raised on a dais at the entrance's end, at about 6 and 12 studs. The camera's eye then clears the rim, and the band past it opens to about 11° and 16°, where cloud heads lie well under you.
+  - Then the director picks between the room as it stands and the raised stand, with research's lean (AGENTS.md, two rounds).
+  - If it's picked, the dais and the camera over it are Faber's, at the install.
+- **The entrance and the record marker:** research's look after the test.
+
+### Research's read of the stand test: the raised stand is dropped, the height goes to the way in (Quaestor, 2026-11-23, 21:45)
+
+From Modulo's sheet `build/scratch/modulo/ar56/stand/crown_stand.png` and four of its frames, read blind by fresh eyes.
+- **The raised stand fails in the fight.** At 12 up the avatar and the dais hide both fighters, whether 13 or 30 from the middle. Nine off the lane, the pale fighter is still a head behind the shoulder. The fighters must read first (the pick's classes), so it's dropped.
+- **What the test teaches:** the eye's height isn't enough.
+  - Fresh eyes still read the clouds as "level with you" at 13_12 and 30_12. Only `crown_stand_30_12_side.png`, where cloud shows under the pillars' feet, reads as "slightly under you".
+  - The cloud heads lie 2.6 to 6.4° under the horizon, so from any stand they read as a horizon, and the deep blue under them reads as sky.
+  - A drop reads when something is seen lying well under the floor's edge.
+- **The two options, for the director, once the second has its test:**
+  1. **The room as it stands:** competent. Fresh eyes call it "a rooftop at cloud level", and the fight reads first. It costs nothing.
+  2. **The height at the door,** Modulo's proposal. A landing about 12 up at the entrance's end, with steps down to the floor, and cloud laid deep enough to be seen under the rim from it. The drop is seen as each run starts, and the fight's frame stays as it passed.
+     - The feel line puts the height there: "you step through the door ... into a great round room high above everything".
+     - Its cost: the test, then about an hour of Modulo's and Faber's install. The steps add a moment to the walk in that each run already has (unmeasured).
+- **Next, Modulo's, tier 1:** one grey test of option 2, capped at 1 hour.
+  - The arrival frame from the landing at the player's camera, with the cloud laid about 8 to 14° under the horizon from there.
+  - The fight's frame again from the floor, to show it hasn't changed.
+  - Fresh eyes must read the arrival frame blind as "under you".
+- **Then the director's pick** between 1 and the tested 2, with research's lean.
+  - If the blind read fails, 1 stands, and the director is told so.
+  - If 2 is picked, polish-later's "B's walk over the gap" leaves the list, since this is its kin.
+
+### Research's look at the entrance and the record marker: competent (Quaestor, 2026-11-23, 21:45)
+
+From `build/scratch/modulo/ar56/gate/gate.png`, five frames at the smallest phone's size.
+- **Felt:** from the base's way out, the record's slab stands between two of the room's blades over the back wall. The owner sees the climb's number and the way to it at once. At the door, a pane of light on the round dais says "step through".
+- **Tier:** competent. **The one bold thing:** the room's own crown carried out onto the lot, holding the owner's record on both faces.
+- **No must-fix.** The content check's conditions hold at the install: two blades only, never a beam across their heads, the door's pane plain.
+- **What the stills can't show:**
+  - the step through the door into the room, at Faber's install;
+  - the gate among the base's real yard, since the lot here is a stand-in.
+- The gate on the lot stands whichever height the director picks.
+
+### Modulo's finish: the Crown as a kit, the grey test of the raised stand, and the entrance (2026-11-23, 21:46; started 20:44)
+
+- **Where:** `build/handoff/TowerRoom/`. `manifest.json` (every piece, its size, its collision, its surface), `plan.json` (the room's 30 places, the drifts' speeds, the number, the climb's beat, and `lot`), `lighting.json`, `meshes/` (12), `maps/` (10 pictures), and the sheets `crown.png`, `gate.png`, four stills and the take `crown_beat.mp4`. The generator is `tools/blender/tower_room_kit.py` (its header lists the modes; a `look` run takes about 20 s in Eevee).
+- **The room,** 10 meshes, 30 parts and 12,256 triangles a copy (98,048 for eight):
+  - the fight floor, 48 in radius, as four quarter parts (two meshes, one mirrored) on one drawn picture: the lane from the entrance to the foe's way in, the rings, the pads, a teal band at the rim;
+  - the body (the step ring 1.5 under, the neck and the shaft), one part; eight blades in three heights leaning out of the rim, the two the foe stands between 15.9 degrees either side of the lane;
+  - the number's slab afloat over the far rim, its numerals text; six steps, the foe's four among them, waiting under the rim; ten cloud drifts at the rim's height.
+- **The sky** is six faces of our own (`skies`): the haze under the room and every far cloud head are painted into them and cost no part. `lighting.json` holds the sun, the ambient and the haze, for the client to set in the room and put back on leaving.
+- **The climb's beat** (`plan.json`, "beat"; seeds for `Config.Tower.Rise` of 2.5): the slab turns its next face, the four steps rise from under the rim, the farthest first, the foe climbs them and leaps in, and the steps sink.
+- **Research's two must-fixes** (the look of 21:18), rendered at 21:35:
+  1. The white sea is gone. Under the room: a deep blue haze paling to the horizon with no line, and cloud heads apart in three layers (small near ones laid by the eye, 2.6 to 6.4 degrees under the horizon; the far deck; a low layer for a player at the rim). The drifts are rounder under and move, 5 to 9 studs a second. No lower tower: at 400, 900, 1,300 and 2,000 studs the fight's camera read only its blades, as pale spikes.
+  2. The heart's stone is a mid tan (`FLOOR_TONES`), the steel deck a tone deeper.
+- **The grey test research asked at the second look** (21:40 to 21:42; `stand` mode; `build/scratch/modulo/ar56/stand/crown_stand.png`), the player's camera unchanged:
+
+  | The stand | Under the horizon seen, past the far rim | What the frame shows |
+  |---|---|---|
+  | on the floor, 13 from the middle (as built) | 6.9 degrees | the fight whole; cloud at eye height |
+  | 6 up, 13 from the middle | 10.9 | cloud tops under the rim; the avatar and the dais cover half of both fighters |
+  | 12 up, 13 from the middle | 14.7 | the drop reads; the fighters are wholly covered |
+  | 6 up, 30 from the middle | 9.1 | the fighters clear the avatar's head, small |
+  | 12 up, 30 from the middle | 12.3 | the drop reads; the fighters are behind the avatar's head |
+  | 12 up, 30 from the middle, 9 off the lane | 12.3 | the drop and the foe both read; the foe about half as tall as today, the lead behind the avatar's shoulder |
+
+  - The numbers are the script's (`band`). The reads are mine, from the frames; research's blind read is its section above, and it dropped the stand.
+  - **My finding:** a camera 20 degrees down looks through the avatar at the floor under it, so a raised stand on the lane buys the drop with the fight's read, and "fighters read first" was one of the pick's four classes.
+  - **What I proposed from it, now research's option 2:** the fight stays on the floor and the drop goes to the way in, on a landing about 12 up at the entrance's end with steps down. Its grey test is next, with cloud laid deeper under the horizon. If it's picked, the sky's faces change and a landing joins the kit, so those come back through the content check and a new export.
+- **The entrance and the record marker** (`plan.json`, "lot"; `gate.png`): two of the room's blades at 0.55 of their size, the room's slab between their heads carrying the owner's record floor on both faces, and under it a door of light on a round dais. 5 parts, 1,276 triangles, two new meshes (`GateDais`, `GateVeil`). Its origin is the middle of the Tower's 32-stud footprint, the base's back wall 32 studs in front. From the base's way out the number stands whole in the frame, and it reads over the back wall from the base's heart.
+- **Content check:** PASS at about 21:19, and again at about 21:40 on the changed pictures and the entrance. Every picture and mesh in the folder is byte for byte the checked one (hashes compared after the export of 21:43; only `plan.json`'s words on the number's well differ, corrected to the slab's own measures). Conditions kept:
+  - one lane only, eight straight blades mirrored across it, nothing but numerals in a well, lit lines white, no violet on floor, kit or sky, cloud as soft volumes;
+  - at the entrance: two blades only, never crossed, never a beam across or over their heads; the door's pane plain light; any icon, map mark or thumbnail drawn from the gate comes back to the check first;
+  - a changed picture or mesh comes back before its upload.
+- **Limits:**
+  - Eevee's sun shadows are soft whatever is set; the engine draws the blades' shadows firm.
+  - The figures are box stand-ins, and the numerals on the stills are Blender's font: neither is delivered.
+  - The take was read by its frames, not at speed. The drifts' speeds and the beat's times are seeds.
+  - The dark lead and the foe's stand-in share a navy: the foe's look waits (research's second look).
+- **For Faber, at the install** (after the main game, research's order):
+  - Upload the ten pictures in `maps/` under the group. The four floor parts take one SurfaceAppearance, the rest the kit's atlas.
+  - Check in the game: the floor's four parts meet with no seam; the blades' shadows lie across the floor; the number's SurfaceGui sits in the well (`plan.json`, "number"); the steps rise in the beat's order; the drifts pass and come round out of sight; from the rim, cloud heads lie under you.
+  - `lot` stands on the lot as placed, research's look passed (its section above); the content check's conditions for the gate hold at the install.
+
+Made; self-reviewed as stills at the smallest phone, the take by its frames; the room and the entrance delivered to `build/handoff/TowerRoom/` on research's passes at competent. Not in the game, nothing uploaded.
+
+### The height at the door, read blind, and the director's pick: the room as it stands (Quaestor, 2026-11-23, 21:54)
+
+- **Modulo's test** (`build/scratch/modulo/ar56/landing/crown_landing.png`): a landing 12 up, with cloud 8 to 14° under the horizon from it. It adds 22 studs to the walk in, about 1.4 s.
+- **Fresh eyes, blind:**
+  - the arrival frame reads high only "faintly": cloud lies under you in the foreground only;
+  - the room seen from outside also reads "faintly", as "a floating island at cloud level";
+  - in both, "nothing measures the fall".
+- **The director's pick, by 21:53:** "Keep it as is (Recommended)" (`docs/decisions.md`). The room stands as delivered, at competent, with its entrance and record marker.
+- **The cues of depth,** as fresh eyes named them, go to polish-later: a far, smaller cloud layer in haze, and the tower's shaft running down into it.
+- **AR56 is closed on Modulo's side.** Faber's install comes after the main game.
+
+## AR57. The Guard's and the Dasher's elites (Modulo now, then Faber)
+
+Research, 2026-11-23, 21:54, on the director's pick of 21:53 (`docs/decisions.md`). Tier 2: a new asset players see that nothing covers, in Modulo's area and then Faber's. AR52 left "the masks' elite versions" waiting.
+- **Why:** today's one elite is a bigger Brawler in Red (`Definitions/Enemies.luau`, `brawler_elite`, scale 1.35). So the elite's square asks the packs' question again, and AR52's stretches lose their peak.
+- **Feel line:** from the square's edge, a big Shade wears its mask twice, the second on its shoulder. You know its question before it moves: the Guard's elite lifts a wide shield, and the Dasher's elite crouches low before its line opens.
+- **The block contains:**
+  - **Modulo:** the Guard and the Dasher at the elite's scale on the Shade's rig. The second mask sits where the Brawler elite's does (on the Left Arm), each in AR52's make, a paper mask read as a mask, never a face. Their outlines are Green and Orange, on Normal and on Hard.
+  - **Modulo:** AR52's block clips at the elite's scale, in the same timings, so the rules' seeds hold. The weight reads in the spacing, never in a longer clip.
+  - The sheet: both elites beside their ordinary kin and the Brawler elite, from the square's edge at the player's camera, at the smallest phone's size.
+- **What holds:** AR52's masks and clips (the Guard's sleeve as fixed); the Brawler elite's make for the second mask; violet only on what's alive (AR40); no gore.
+- **What waits:**
+  - the shield's and the line's look (Scintilla), and the sounds (Sonus);
+  - Faber's build: the two elites in `Definitions/Enemies.luau`, after AR52's behaviours in his order;
+  - which elite stands in the square on Normal and on Hard: research's seed with Faber at the build, tuned in play.
+- **Checks:** the content check on each new mask (only the Brawler's second mask has passed); research's read of the sheet at the phone's size; then Faber's build.
+- **Cap:** the look in 2 hours, each block clip in 1 hour. It's an ordinary piece, so it closes at competent.
+- **Order:** Modulo's next, now.
+
+### Modulo's finish: the two elites' look, their second masks and their own clips (2026-11-23, 22:23; started 21:55)
+
+- **Where:** `build/handoff/Shade/`.
+  - The second masks: `Shade_MaskGuardBare.json` (136 triangles) and `Shade_MaskDasherBare.json` (40), and `Shade.recipe.json`'s `elite`, which now names them with their places.
+  - The clips: `clips/Shade_GuardElite.json`, `clips/Shade_LungeElite.json`, and their facts in `clips/Shade_Elite.clips.json` (`EliteOf`, markers, fades).
+  - The sheets: `shade_elites_look.png`; `shade_elite_contact_Guard.png` and `shade_elite_contact_Dasher.png`; `shade_elite_bare_Guard.png` and `shade_elite_bare_Dasher.png`; in `clips/`, `poses_GuardElite.png`, `poses_LungeElite.png`, `spacing_GuardElite.png`, `spacing_LungeElite.png`.
+  - The scripts, in `tools/blender/`: `shade_elites.py` (new, the look), `shade_elite_bare.py` (the three kinds), `shade_elite_contact.py` (any elite's kind, the legs and the floor measured), `shade_clips.py` (`guard_elite`, `lunge_elite`, the `spacing` sheet), `shade_elite.py` (the recipe's note).
+- **The look.** Each elite is the Shade at 1.35 wearing its own mask a second time at 0.6 on the Left Arm's front corner, the Brawler elite's place and make: the mask's mesh less its five tie pieces, nothing added, the same maps. Green and Orange, on Normal and on Hard (AR46's cut).
+  - The sheet has the row of five from the square's edge (32 studs from the avatar) at the smallest phone (450 pixels high) and four times; each figure near, in Faber's street capture; and the two new elites at 64 pixels a body from three headings, on dark and on day.
+  - The row stands on the paving's flat colour, said on the sheet: in the one street capture the avatar and the lead stand where the row would.
+  - At the edge an elite stands about 68 pixels tall, its mask about 18 and its second mask about 13.
+- **The clips,** the elite's own: `ShadeGuardElite` and `ShadeLungeElite`, in AR52's lengths, markers and fades, so the rules' seeds hold (`Raise` 0.3 s and `Drop` 2.3 s in 2.73 s; `Line` 0.27 s, `Lunge` 1.0 s, `Land` 1.25 s and `Close` 2.05 s in 2.3 s). The weight is in the spacing.
+  - **The Guard's elite** gathers back and wide for 11 frames where the Guard takes 7, swings both sleeves to from wide in the last 7, and the coat drops onto them and sinks (crouch 0.6) before it settles. It holds lower than the Guard (0.46 to 0.49 against 0.34 to 0.36) on feet slid wide. At `Drop` the sleeves fall first and the coat comes up after them.
+  - **The Dasher's elite** lifts a hair, drops in 10 frames to a crouch of 0.66 on wide feet, sinks to 0.78 and comes back up. It waits lower and further back than the Dasher (0.4). The flight is the Dasher's. It lands deeper (0.44 to 0.6 against 0.26 to 0.3), and at `Close` the coat rises first, the mask and the sleeves after.
+  - AR52's `Guard` and `Lunge` are untouched. The nine clips re-export byte for byte as delivered: the elites' two are keyed as a set apart, because on the nine's timeline they moved the nine's numbers in the fifth decimal.
+- **Measured** (`shade_elite_contact.py`: every frame of every clip either elite plays, triangle against triangle, at the ordinary size):
+  - the second mask crosses nothing: the coat, the other sleeve, the first mask, either leg;
+  - nearest: the Guard's elite 0.23 studs from its first mask and 0.41 from the coat (frame 15); the Dasher's elite 0.43 from its left leg (frame 56) and 0.62 from the coat;
+  - never under the floor: lowest 0.85 studs over it, in the flight;
+  - both audits pass (arm through body 0.021 and 0.025, the line being 0.05).
+- **What I see wrong:**
+  - Orange beside Red reads close at the square's edge (AR52's note stands). The Dasher's elite is told by its mask's outline.
+  - In the Dasher's tell and flight the arms are swept back, so its second mask is seen edge-on for about 0.73 s: a pale strip beside the sleeve, not a mask. The content check passes it and leaves the read to research. The lever is the left arm's keys in `lunge_elite`, checked again as a re-pose.
+  - From behind the second mask is hidden, and from the lead's other side it's a sliver, as the Brawler elite's: there the size says elite.
+  - The crouch's depth reads less from the player's camera than from the side; the wide feet carry it. In the elite's crouch a leg slides 0.73 to 0.9 studs up into the coat (the script's warning line is 0.6; the delivered `HitLeft` has 0.81). The coat hides it in the sheets. It's one look in the engine.
+  - I judged the spacing from frames side by side, not in motion.
+- **Content check:** the look, PASS with conditions at about 22:06; the clips, PASS with conditions at about 22:19, and its follow-up PASS at about 22:22: the legs are in the measure, the two landing frames (81 and 88) are drawn with the second mask on, and the PASS carries to the delivered exports, which were keyed again as a set apart after its first read (largest difference 0.00145). What binds:
+  1. The two meshes and the two clips byte for byte. Another export or a re-key comes back. Their sha1:
+     - `Shade_MaskGuardBare.json`: `0c83124a5fc72ac8c7192578f4498f907024b9c4`
+     - `Shade_MaskDasherBare.json`: `453975f9ae61bef270963ef108c76e40b118f443`
+     - `clips/Shade_GuardElite.json`: `0fe3c83ecf685c6ae38d6b1925137d82d1d8a470`. Its audit: PASS; legs cross 0.006, arm through body 0.021 at 0.27 s, leg out of hip 0.029, under the floor 0.000, salute held 0.000 s.
+     - `clips/Shade_LungeElite.json`: `526a6a1427cfe62319a9205b5ee4b9540dc773a8`. Its audit: PASS; legs cross 0.006, arm through body 0.025 at 0.93 s, leg out of hip 0.041, under the floor 0.000, salute held 0.000 s.
+     - A second export from the script as committed gave the same bytes.
+  2. AR2 section 5's conditions carry over to both: the same surface, tint and strength, 0.6, the recipe's seat, nothing else marking an elite, the mask moving only with the Left Arm and going with the coat in the burst.
+  3. After the upload, one look in the engine with the game's bloom: both elites, Normal and Hard, at 64 pixels on dark and bright, from the player's camera, the other side, behind and below, in Idle, the Guard, and the Lunge's tell and folded hold. It comes back if a pale strip stands out of a sleeve, if the Dasher's point shows past the arm's back, or if on Hard a crack or red haze gathers at a second mask.
+  4. The Dasher's small point is never lengthened, sharpened, darkened or made metal, and no effect, line or trail starts from it (for Scintilla's line).
+  5. The sheets cover Green and Orange as drawn. Either elite in Strength's red is a look in the engine.
+  6. The self-test's case that an elite never plays `AttackLeft` names the two new elites.
+  7. The Support's elite still waits on its own sheet and check.
+- **For Faber,** at the build:
+  - two meshes and two animations to upload under the group; the second mask's place is `Shade.recipe.json`, `elite.masks.Guard` and `.Dasher`;
+  - the elite plays `ShadeGuardElite` where the Guard plays `ShadeGuard`, and `ShadeLungeElite` where the Dasher plays `ShadeLunge` (`Shade_Elite.clips.json`, `EliteOf`). The markers and fades are the same, so one behaviour drives both;
+  - if the elite's own clip isn't wanted, the ordinary one is measured clear with the second mask on too.
+- **The four facts.** Made: yes. Self-reviewed: yes (the sheets, the measures, the audits). Delivered: to the handoff. In the game: no, and nothing is uploaded. Research's read is asked. The director has the look sheet (sent 22:15) and hasn't spoken.
+- **Time:** the look, 21:55 to 22:06, of a 2 hour cap; the two clips, 22:06 to 22:23, of an hour each.
+
+### Research's read: competent, no must-fix (Quaestor, 2026-11-23, 22:25)
+
+From `build/handoff/Shade/shade_elites_look.png` (at its own size and four times), and `spacing_GuardElite.png` and `spacing_LungeElite.png` beside their kin.
+- **Felt:** from the square's edge each elite is its kin grown big, with its mask worn again on the shoulder. The square mask and the long spike say the question before it moves.
+- **Tier:** competent. **The one bold thing:** the mask worn twice. At 13 pixels the second mask reads as an echo of the face, so "elite" reads without a word.
+- **The clips:** the weight is in the spacing, as asked. The Guard's elite swings its arms out before the raise, and the Dasher's elite rises before it drops into the crouch, in the same timings.
+- **Modulo's three, ruled:**
+  1. **Orange beside Red:** not this piece's. One elite stands in the square at a time, so the two never stand side by side. The mask tells the kind, and the target card's gem tells the type.
+  2. **The Dasher's elite's second mask, edge-on for about 0.73 s:** accepted. In the tell, the eye is on the crouch and the line. Its turning face-out is a re-pose that goes back to the check, so it goes to polish-later.
+  3. **The row on flat paving:** accepted for the sheet.
+- **What the stills can't show:** the elites in the street's square at dusk and at night, among the packs. That's first seen at Faber's build.
+- **The seed for Faber's build:** on Normal the square holds the Guard's elite; on Hard it holds the Dasher's elite. It's tuned in play.
+- **Next:** Faber's build, after AR52's behaviours.
+
+## AR58. The Support Shade (Modulo now, then Faber)
+
+Research, 2026-11-23, 22:26, on the director's pick by 22:26 (`docs/decisions.md`). Tier 2: a new asset players see that nothing covers. Its behaviour is designed already (`docs/roster.md`, "Enemies: Shades": "half-mask, veiled; heals and shields the others, and is fragile; by reaching it first: an Assassin's job").
+- **Why:** it's the last of the four behaviours. It makes stretch 3 ask about the lead you brought (`docs/research/design-holes.md`, F2): a Support stands at the back, and an Assassin "picks the weak" (`docs/design.md`, the classes), so it goes there first.
+- **Feel line:** at the back of a pack, a slight veiled Shade lifts its hands, and a hurt Shade in front comes back up. You see who's doing it, and you want your fighter on it first.
+- **The block contains (Modulo):**
+  - **The mask:** a half-mask over the upper face, with a veil of paper strips hanging under it, on the Shade's rig, in AR52's make. It reads as a mask, never a face.
+  - **Fragile:** a slighter Shade, seeded at 0.9 of the ordinary's scale (`Definitions/Enemies.luau`, `Scale`). It's tuned at the build.
+  - **One block clip:** the cast, shared by the heal and the shield (the effect tells them apart). Seeds: the hands up in 0.4 s, held while it casts, and down in 0.3 s, so a player has time to see who casts.
+  - **The outline:** in the stretch's Orange, on Normal and on Hard (AR46's ember). Its type is set at the build.
+  - **The sheet:** beside the Brawler, the Guard and the Dasher, from a pack's distance at the player's camera, at the smallest phone's size; and the cast as a strip.
+- **What holds:** AR52's make; no gore (a heal is light, never a wound closing); violet only on what's alive (AR40).
+- **What waits:**
+  - the heal's and the shield's look (Scintilla), and the sound (Sonus);
+  - Faber's build: the behaviour, heal and shield, kept at the back, after AR57 in his order;
+  - its numbers, until the Guard and the Dasher are played (the director's pick);
+  - an elite version.
+- **Checks:** the content check on the mask and the veil; research's read of the sheet; then Faber's build.
+- **Cap:** the look in 2 hours, the clip in 1 hour. It's an ordinary piece, so it closes at competent.
+- **Order:** Modulo's next, now.
+
+### Modulo's finish: the Support's mask, its look and its cast (2026-11-23, 22:50; started 22:27)
+
+- **Where:** `build/handoff/Shade/`.
+  - The mask: `Shade_MaskSupport.json` (308 triangles), in the place of AR2's shape; `Shade.recipe.json` (its centre, its size 2.883 by 1.886 by 1.8, its top at 5.19).
+  - The maps, baked and cut again for it: `Shade_Color.png`, `Shade_Emissive.png`, and in `hard/` `Shade_Color_HardRed.png`, `Shade_Color_HardTint.png`, `Shade_Emissive_Hard.png`. `Shade_Roughness.png` and the other eight meshes are byte for byte as delivered.
+  - The clip: `clips/Shade_Cast.json` as `ShadeCast`, its facts in `clips/Shade_Support.clips.json`, and `clips/poses_Cast.png`.
+  - The sheets: `shade_support_look.png`, `shade_support_design.png`, and `shade_model_sheet.png` drawn again.
+  - The scripts, in `tools/blender/`: `shade_sheet.py` (the Support's mask), `shade_kinds.py` (`support`, the design sheet), `shade_clips.py` (`cast`, a set of its own), `shade_support.py` (new, the look).
+- **The mask,** in AR52's make: paper, cut through to the light, no ink.
+  - A flat band over the upper face, low and wide, narrowing to a point each side. Two thin holes are cut through it, each falling toward its outer end.
+  - Under it hang four narrow pointed slips of paper, set apart so the coat shows between them, two in the paper's shade and a hair forward.
+  - It's the lowest of the four masks and has no peak. AR2's ink lines are gone: packed as shipped, they're tucked inside the band's paper, 0.06 studs from either face and at least 0.23 inside its outline (measured on the delivered mesh, 32 points).
+- **The atlas keeps its pack** (`SHIPPED_PACK`): each new piece is an old one moved, so only the Support's texels change. Measured against the last commit, texel by texel:
+  - `Shade_Color.png`: 18,782 texels differ on the Support's islands; past them 6 (in a gutter, on no mesh's face, 5 steps at most) and 12 by one step.
+  - `Shade_Emissive.png`: 8,133 on its islands; the same 6 past them.
+  - the Hard colour maps: 17,296 on its islands, none past them. `Shade_Emissive_Hard.png`: 3,806, and the same 6.
+- **The look:** the Shade at 0.9 in the stretch's Orange, on Normal and on Hard (AR46's cut: the eyes go red, the slips stay paper).
+  - The sheet has the four kinds in a row at a pack's distance (14 studs past the avatar) at the smallest phone (450 pixels high) and four times; a pack with the Support casting at its back; the Support near in Faber's street capture, hung and casting; and 64 pixels a body from three headings, on dark and on day.
+  - At the back of the pack on that phone it stands about 50 pixels to its mask's top, its mask about 26 wide, and its raised sleeves span about 64.
+  - The row and the pack stand on the paving's flat colour, said on the sheet, as AR57's row does.
+- **The cast,** one block clip, 103 frames, 1.7 s, not looped, fades 0.1 in and 0.15 out:
+  - it gathers for 6 frames (the mask dips, the sleeves in), then both sleeves go up wide at its sides and the coat rises after them: up at 0.4 s, the marker `Cast` (frame 24);
+  - it holds for 1.0 s with a small drift; the marker `Lower` is at 1.4 s (frame 84);
+  - the sleeves fall first and the coat settles after: down in 0.3 s.
+  - A raised sleeve slides 0.62 out and 0.3 up off its shoulder: an R6 arm turns below its top, so raised past level its top would swing into the coat.
+  - Audit PASS: arm through body 0.002 (the line is 0.05), legs cross 0.006, leg out of hip 0.001, under the floor 0.000, salute held 0.000 s, nod 6.0 degrees.
+- **What I see wrong:**
+  - From the player's camera the band foreshortens, so at a pack's distance the mask reads as a pale band with two glints over four prongs: a fringed mask first, and a mask with long teeth or a comb second. "Veiled" is the weaker read at that size. The lever is the slips: more of them and shorter, or wider with less coat between them. That's a new bake of the same islands.
+  - Idle, it's told from the Dasher by its mask and its size only: both are Orange. The raised sleeves are what say who casts.
+  - From behind, the mask is a low brim over the collar and the slips are hidden. There, the size and the cast say it.
+  - The held pose is the same both sides and nearly still, so it's stiff. The slips are part of the mask's one mesh and don't swing.
+  - I judged the clip from frames, not in motion.
+- **Content check:** the design, PASS for the bake at about 22:31, with three conditions; the baked mask and the clip, PASS at about 22:49: the three are met. What binds:
+  1. The slips stay paper: never the glow or a red tint, on any stretch or elite.
+  2. The shape stays low and split: no peak over the crown, the veil never one unbroken sheet.
+  3. The mesh and the clip byte for byte. Their sha1:
+     - `Shade_MaskSupport.json`: `4ac0297ec781cdf304fbc009f89cfa59807646fe`
+     - `clips/Shade_Cast.json`: `4cb54e41e523d2a9b2c48c70b6e4a27a1523b3ad`. A second export gave the same bytes.
+  4. The maps: the check opened four of the five at full size (not `Shade_Color_HardRed.png`) and found an abstract atlas. It didn't judge AR46's streaks again. Their sha1:
+     - `Shade_Color.png`: `5b6593b595cfdce63fecf669039ffb7ea528ceb2`
+     - `Shade_Emissive.png`: `42a5ffe0261f1f6de547cd96dbeeb4020402b604`
+     - `hard/Shade_Color_HardRed.png`: `745c7c3bc499ccfee505f302658c463529c903a5`
+     - `hard/Shade_Color_HardTint.png`: `2fc3ab6e44f556814a427fa873b78aa465af6111`
+     - `hard/Shade_Emissive_Hard.png`: `d3b6a267b31e1fd7a50d080f69b483bc2ebf78dc`
+  5. Its read at a pack's distance (a mask with long teeth, as a second read) is left to research; no rule is touched. It's paper with no dome, nose or jaw.
+- **For Faber,** at the build:
+  - `tools/studio/Models/Shade.luau` holds the earlier shape's id for `Shade_MaskSupport`: the new mesh goes up under the group, and with it the two maps and the Hard three (the other meshes and the roughness map stand);
+  - one animation, `ShadeCast`, under the group. `Cast` is where the effect starts, `Lower` where the sleeves come down. Between them the pose barely moves, so a longer or shorter cast is the track's speed between the two markers;
+  - the scale's seed is 0.9, and the outline is the stretch's Orange;
+  - the Support's elite waits; the recipe's `elite` seat for it moved a hair with the new mask, and nothing uses it yet.
+- **The four facts.** Made: yes. Self-reviewed: yes (the sheets, the measures, the audit). Delivered: to the handoff. In the game: no, and nothing is uploaded. Research's read is asked. The director has the look sheet and hasn't spoken.
+- **Time:** 22:27 to 22:50, of a 2 hour cap for the look and an hour for the clip: the mask baked at 22:34, the Hard maps at 22:36, the clip's audit and the sheet at 22:41, the check at about 22:49.
+
+### Research's read: competent, one must-fix (Quaestor, 2026-11-23, 22:51)
+
+From `build/handoff/Shade/shade_support_look.png` (the row, the pack, near, 64 pixels) and `clips/poses_Cast.png`.
+- **Felt:** at the back of the pack, a small Shade throws its sleeves up and holds them there. At the pack's distance, the raised sleeves say "it's doing something to the others" before anything else does.
+- **Tier:** competent. **The one bold thing:** the sleeves held high, the one upward shape in a pack of standing bodies. It reads at its own size and at 64 pixels from every side.
+- **The clip:** up in 0.4 s, held, down in 0.3 s with the sleeves first, as seeded. The 0.9 scale reads slight beside its kin.
+- **Must-fix 1: whatever hangs from a Support's mask reads as a veil, never as teeth or claws.**
+  - That's the class. Today the four long pointed slips read as fangs under a skull's brow, at the pack's distance and near, and a healer that reads as a fanged mouth reads as the threat, not the one to reach.
+  - The lever is Modulo's: more, narrower slips with square-cut ends, so they read as a paper fringe.
+  - The check: the row and the pack at their own size and four times, and near.
+- **The second look** judges the veil only.
+
+### Modulo's fix: the veil as a fringe (2026-11-23, 23:18; started 22:52)
+
+- **Must-fix 1, done:** what hangs from the mask is a fringe of eight narrow strips of paper, cut square. Each is 0.17 studs wide, 0.03 from the next and about 1.0 to 1.1 long, none quite the length of its neighbour. All are one paper, in the band's own front plane, hanging from its lower edge as if slit from the one sheet. The band and its two holes are as they were.
+- **Where:** the same files in `build/handoff/Shade/`: `Shade_MaskSupport.json` (308 triangles, now 2.883 by 1.726 by 1.736), the two maps and `hard/`'s three, `Shade.recipe.json`, and the sheets drawn again (`shade_support_look.png`, `shade_support_design.png`, `shade_model_sheet.png`, `clips/poses_Cast.png`). `clips/Shade_Cast.json` is byte for byte the one delivered. The sha1 in the finish above are now these files'.
+- **Three bakes to get there:**
+  1. 22:54: four strips in front of four shaded ones. They still read as four, so it went no further.
+  2. 22:57: all eight in one paper and one plane, laid over the band's face. The content check passed it at about 23:06 and found ember in Hard's map, in the crack a hundredth deep between each strip's back and the band's face.
+  3. 23:10: the crack removed at its source, not painted over: the strips hang from the band's edge and overlap nothing.
+- **The pack is kept:** AR2's four slips and the four ink lines on them are the eight strips, each an old piece moved, so the atlas' islands stay where they were. No ink is left in the mesh. Eight is the most this pack holds: a ninth strip is a new pack, and every Shade mesh and map uploaded again.
+- **Measured:**
+  - of the mask's 33,118 texels, 3,201 are lit (Normal's glow over 0.13, Hard's glow, or Hard's paint): 1,423 on the two holes and their footprint, 1,777 on the rim, as on the other masks. The strips hold 17,986 texels and none is lit or painted, on any face. The one lit texel below the band's edge is the rim's;
+  - against the last commit the five maps differ only on the Support's islands (23,120 texels in `Shade_Color.png`) and in 18 gutter texels (x 423 to 459, y 169 to 170) that lie on no mesh's face;
+  - the three second masks without ties come out byte for byte the same.
+- **What I see wrong:** near, it reads as a fringe. At the pack's distance at its own size the gaps close: a pale band over a pale block. Four times enlarged, a comb or a row of long square teeth is still a possible second read; the content check says the same and leaves it to research.
+- **Content check:** PASS at about 23:06 on the second bake, and PASS at about 23:17 on these bytes: the ember bands on the strips' islands and the dashed column on the band's face are gone. Conditions 1 and 2 of the finish stand (the strips stay paper; low and split).
+- **For Faber:** the finish's list holds as written.
+- **The four facts.** Made: yes. Self-reviewed: yes. Delivered: to the handoff. In the game: no, nothing uploaded. Research's second look, on the veil only, is asked.
+- **Time:** 22:52 to 23:18.
+
+### Research's second look: AR58 passes at competent (Quaestor, 2026-11-23, 23:19)
+
+- **Must-fix 1 is met.** The veil is now eight square-cut strips. Near, it reads as a paper fringe. At the pack's distance, at its own size, it reads as a pale panel under the brow. The fangs are gone: nothing is pointed, so nothing bites.
+- **The second read Modulo names,** a comb at four times, isn't a threat's read, and it doesn't hold at the game's size.
+- **Nothing broke.** The sleeves are still the bold thing.
+- **Next:** Faber's build, after AR57 in his order. Its numbers wait until the Guard and the Dasher are played.
+
+## AR59. Rook, redesigned to the anime bar (Modulo, for research's pick and the director's look, then its finish; Faber's install after)
+
+Research, 2026-11-23, 22:53, on the director's pick by 22:52 (`docs/decisions.md`). Tier 2: a look players see, in Modulo's area and then Faber's. It goes into the game only on the director's acceptance. The first of the launch five's redesigns. The order: Rook, Kirra, Pip, Lyric, then Watt's finish (AR11). Each is its own request, written when the one before closes.
+- **Why Rook first:** he's the lead every new player holds, in every fight of the first session and on the lead's card. He was drawn before the bar of 2026-11-15 (`docs/roster.md`, "The look"; AR1 has his history).
+- **Feel line:** in the first fight, the player looks at their lead and sees a character from an anime's cast. The hair's silhouette reads first, then a sharp face, then a jacket with one asymmetry, then one weapon with style. It's a Common: simple, and never corny.
+- **What holds:**
+  - his row in `docs/roster.md`: Common, Red, Warrior, no element, Haymaker's function, and Second Wind (its look line is a seed);
+  - the roster's look rules: a character, not a job; hair as the identity; a face of his own; the R6 body;
+  - his rig and today's clips;
+  - violet only on what's alive (AR40).
+- **The block contains:** three directions in the game's own light, each shown:
+  - full body from the player's camera in a fight on the deck, at the smallest phone's size;
+  - the bust at the size of the lead card's portrait;
+  - the silhouette at 64 pixels;
+  - beside today's Rook and a Shade.
+- **Checks:**
+  1. The content check before building.
+  2. Research's pick, with fresh eyes. It's a signature piece, judged blind against the bar, never against its own sheet.
+  3. The director's look at the pick.
+  4. The finish.
+  5. The director's acceptance before Faber installs it.
+- **What waits:** the basic attack's clip, effect and sound (AR26, not covered); the portrait's render, after the finish; Faber's install, in his order.
+- **Time:** a signature piece gets the time it needs. The blockout is about 3 hours, as a guide.
+- **Order:** Modulo's next, after AR58's must-fix.
+
+### Modulo's blockout: three directions (2026-11-23, 23:48; started 23:19)
+
+Sheet: `build/handoff/Rook/takes/rook_takes.png` (1900 x 2882), and its five parts beside it: `_full`, `_bust`, `_fight`, `_row`, `_small`. Script: `tools/blender/rook_takes.py` (modes `takes`, `rook`, `shade`, `sheet`). Rough meshes on the R6 body, flat colours, never finished.
+- **A, the stray:** wild black hair swept up and over to one side, one clump of it red. A bone cropped jacket lined red over a black top, its right sleeve cut off at the shoulder. A dark iron gauntlet with a red ram, 1.15 of today's. A taped left hand, the tape's end swinging. Amber eyes, a grin.
+- **B, the captain:** a long teal-grey tail tied high with a red cord, two long bangs. A long navy coat worn open, lined red, over a white shirt, its right sleeve rolled. A slim steel gauntlet, 0.84 of today's. A white ribbon on the left cuff. Narrow grey eyes, a flat mouth.
+- **C, the sleeper:** a heavy sand-olive mop over his left eye. A big rolled bone hood-collar over a sleeveless charcoal top, very wide oxblood trousers. A bone-white gauntlet to the elbow with a red ram, 1.4 of today's. Tape on the left forearm. One half-shut gold eye.
+- **What the sheet shows, as the block asked:** each from the three-quarter front and from the game's camera; the bust in the lead card's pose, then at the card's size on the smallest phone; in a fight beside a Brawler from the player's camera at 450 pixels high; a row at the lead's distance with today's Rook; at 64 pixels over night, over the deck, and as an outline.
+- **The rig holds in all three:** the gauntlet is on the right arm with a ram to slide, and something light swings from the left arm. Only the idle pose was drawn: no take has been run through the clips.
+- **Content check:** the written directions first (A PASS; B and C changed before building: B's hair from crimson to teal-grey and its wrist cord to a white ribbon, C's hair from ash to sand-olive and its eye from red to gold). The drawn sheet: PASS for A, B, C and the words, on these bytes (sha1 `d71c20ff` for the whole). Its hold points for the finish:
+  - all three: the ram stays a flat, matte, hard-edged plate in one colour;
+  - A: the red stays hair, never a band; the jacket's back stays plain; the torso covered; one sleeve cut; plain tape on one hand; the collar's lining reads as one band with the front trim;
+  - B: one teal-grey tail, always tied; the collar's red reads as a lining, never a hood; a thin cord; no lone red patch between the legs or at the vent at 64 pixels;
+  - C: a smooth rolled collar joined to the top, no fur and no hanging tail; the hair stays muted and falling forward; the top covers the whole torso; Second Wind never stages him asleep.
+- **What I see, before research's read:**
+  - A follows the feel line's order most plainly: hair, face, the cut sleeve, the gauntlet. Light jacket against dark hair and legs gives three values at 64 pixels. Its outline is also the genre's commonest.
+  - B has the outline most its own from behind, where the player's camera is. The coat's tails are a built layer, more than AR11's comparison gives a Common, and from behind he's one dark mass. His gauntlet is the smallest, so the Warrior reads least.
+  - C's collar hides his mouth and chin, so his face reads least at the card's size. His gauntlet reads most.
+  - My lean is A. Research picks.
+- **Stand-ins:** the deck in the fight pictures is drawn (pale plates, a day sky); the camera, the light and the sizes are the game's. The hair is faceted blades, the faces flat slabs.
+- **Not in the repo:** the director's example batches (2026-11-20, `docs/decisions.md`). The bar used is AR11's comparison.
+- **The four facts:** made (a blockout sheet); self-reviewed at full size and at the phone's sizes; delivered for research's pick; not in the game, nothing uploaded.
+
+### The director's word: the make is rejected, Rook is redone (Quaestor, 2026-11-23, 23:53)
+
+- **The director, about 23:45 to 23:52** (`docs/decisions.md`, the top row): "DONT MAKE THOSE MODEL WITH THOSE STYLE", "LOOK AT ANIME VANGUARD ANIME ADVENTURE THEN REDO". The rejection is of the make, and all three takes share it. Nothing of A, B or C carries over.
+- **Research's miss:** AR11's comparison (2026-11-15, "The comparison") had already found how Anime Vanguards makes a unit. AR59 never named that make, and research picked A at competent within it, with fresh eyes given no benchmark.
+- **OBSERVED,** from `build/reference/anime-vanguards/` (`sheet_low.png`, `compare_bodies.png`, `compare_heads.png`, `kokashi-*.webp` and `todays-strongest-*.webp` at full size; Modulo's own read agrees). Anime Adventures: no pictures found yet, so UNVERIFIED.
+  1. **The body:** plain R6 blocks at their own size. The clothes are drawn on the blocks' faces, in two or three tones with soft shade, ink lines, folds, seams, trims and fastenings.
+  2. **The head:** Roblox's round head, smooth. The face is drawn: almond eyes with a coloured iris and a highlight, a heavy upper lash line, thin brows, a tick for the nose, a short mouth, and the fringe's shadow on the brow.
+  3. **The hair:** the one sculpted piece. Dozens of thin tapering locks, smooth-shaded from root to tip, about 1.3 to 1.6 heads wide, rising above the crown.
+  4. **Built pieces:** few and thin (a blade, a headband, a mask, a hat). Nothing is chunkier than the limb it sits on. Weapons are slim and long.
+  5. **Colour:** two or three large clear areas, light against dark.
+- **AR59's takes against them:** garments built as thick volumes, a cube head, slab eyes, faceted blades for hair, a gauntlet up to 1.4 times today's, flat facets in the render.
+- **The redo, DESIGN** (the make is taken; no unit's design, face, outfit or picture is):
+  1. **The make:** the five points above. It's the make for every redesign, from Rook to Watt's finish.
+  2. **The design:** a side-cast archetype of the genre's famous shows, made our own (the director's "basics or our own"). Rook stays Common, Red, a Warrior, and keeps Haymaker's function and Second Wind.
+  3. **The weapon:** the oversized gauntlet goes. His fists are a glove or wraps drawn on the arm, with at most one thin built piece, no thicker than his forearm. Whether `Rook_Piston` stays in the rig, so the clips keep their keys, or is dropped is Modulo's technical call. Haymaker's weight is carried by the clip and the effect, never by size.
+  4. **The takes:** two or three, each with its face, hair and clothes drawn in the make. A rough mesh is read as the style, so none is rough.
+  5. **The render:** smooth shading, in a light close to the game's. No flat facets.
+- **Checks:**
+  1. Each take beside Anime Vanguards units at the same height, internally (never uploaded or published), and at the card's portrait and from the player's camera at the smallest phone's size.
+  2. Fresh eyes given that same Anime Vanguards sheet as its example.
+  3. The content check, with the Fighters test (`docs/decisions.md`, "Fighters").
+  4. Research's pick, then the director's look, then the finish.
+- **Time:** the make kit gets the time it needs, as the make for the whole cast. Rook's takes follow, as a guide 2 to 3 hours.
+
+### Modulo's redo: the kit, and three takes in the make (2026-11-24, 01:19; started 2026-11-23, 23:53)
+
+- **The kit:** `tools/blender/anime_make.py`, the make for every Voidkin from here. `Block` is one of R6's blocks with a picture drawn on each face (`Paint`: shapes, lines and soft shade laid in studs); `Head` is Roblox's round head with its picture wrapped round it, and `draw_face` draws the anime face from a few measures (the eyes' size, tilt and lid, the iris, the brows, the mouth); `Hair` is one mesh. A plain stand-in with no design shows the make (`stand_in`), and `turnaround` draws a head from six sides, to judge a hair by.
+- **The hair, twice sent back by the director** (to Modulo, 2026-11-24: "the hair need a rework tbh" on the first stand-in, then "do research on how to make good hair" on the second). The first was a cap of flat clumps; the second, 60 to 74 thin spikes standing off the head in even rings, read as spines.
+- **What the research found** (OBSERVED on the reference's units in `build/reference/anime-vanguards/`, and READ in the sources below; none of it measured on players):
+  - **Few clumps, and broad.** A reference head shows 20 to 30 from one side. Each is a third to nearly half a head wide and half to most of a head long. The drawing guides start from "3–6 bigger chunks" and name our fault: stiff hair "usually happens when you draw too many short clumps sticking straight out".
+  - **Three sizes, never even.** Big, middling and small in turn; a big clump parts into one or two points toward its end.
+  - **Laid like roof tiles.** Each clump "should clearly sit over another", and volume comes from "gaps between clumps and how they overlap". A clump is "a curved shape that hugs the skull": it lies on the head and only its tip turns out.
+  - **One origin.** Clumps "start at the crown and fan outward", all turned one way round it.
+  - **A leaf, not a thorn.** Wide near the root, a long convex taper to a sharp point, one ridge, a dark underside. The shadow goes "under overlaps and near roots".
+  - **The fringe:** 3 to 6 clumps, the middle one "a bit longer", over no more than half the face; a lock before each ear.
+  - **The size:** the reference's hair is 1.3 to 1.55 heads wide and stands 0.45 to 0.6 of a head over the crown.
+  - **Sources:** skyryedesign.com, "How to draw anime guy hair"; clipstudio.net, "Easy guide to drawing anime hair"; design.tutsplus.com, "Create big gravity-defying anime-styled hair"; superhivemarket.com, Anime Hair Maker's documentation (a strand is a curve with a profile and a taper); studio.blender.org, the stylized character workflow ("layer the clumps more on top of each other"). Two Roblox DevForum pages and CG Cookie's article could not be read.
+- **The hair now:** `Hair.clump` roots a leaf in the egg over the scalp, walks it over the head the way the hair is combed (`heading`, `bend`, or `comb`), then lets it leave the head and turn out by its point (`hold`, `flick`); `split` fans one or two smaller leaves from the same root. `Hair.row` lays a row of them, big, middling and small in turn. Rows go on from the nape up, each further off the head than the one below. A leaf's three faces are smooth along it and sharp across it, and are wound to face out (the first hair's were wound in: the game would not have drawn them).
+- **The takes:** `tools/blender/rook_make_takes.py` (modes `takes`, `rook`, `shade`, `sheet`); it replaces `rook_takes.py`, deleted with the rejected takes. Nothing is built on the body, so `Rook_Piston` has nothing to hold in any take: whether an empty part stays in the rig so today's clips keep their keys is settled at the finish, with the pick. Each is a side-cast type, not a character:
+  - **A, the school tough:** black hair combed back from the forehead to points behind the crown, one stray lock; narrow grey eyes, a low brow, a flat mouth, a white plaster over the nose; a long black school jacket open over a red T-shirt, its tails over the legs, the right sleeve rolled; white wraps, white trainers.
+  - **B, the dojo trainee:** cropped chestnut hair lying forward; big amber eyes, a wide grin, a nick through one brow; an off-white training top with a crossed collar and short rolled sleeves, a red sash with its ends hanging, navy trousers gathered at the ankle; red wraps, the right arm's to the elbow.
+  - **C, the gym kid:** messy dark brown hair, a heavy fringe to the brows; half-shut green eyes, a smirk, a white plaster on the cheek; a red zip track jacket with one white stripe a sleeve and a flat hood, the right sleeve pushed up, black joggers with a white stripe; white wraps, red and white trainers.
+- **The sheet:** `build/handoff/Rook/takes/rook_takes.png` (1900 x 3429) and its six parts (`_full`, `_heads`, `_bust`, `_fight`, `_row`, `_small`), in place of the rejected sheet. The takes square on between two Anime Vanguards units at the same height are `build/reference/anime-vanguards/compare_rook_takes.png`: it holds the reference's pictures, so it stays there, out of git.
+- **Triangles:** A 3,896, B 4,001, C 3,476, of which the hair is 3,360, 3,465 and 2,940 (68, 87 and 56 leaves). Five drawn pictures a body (512 x 384 a limb, 768 x 384 the torso) and one for the head (1005 x 320).
+- **What I see, at full size and at the phone's:**
+  - Beside the reference the three sit in the same make, hair included. Theirs still carry more painted texture in the cloth.
+  - At the card's size all three read as a face with a hair of its own. A's scowl and plaster and C's smirk survive; B's grin does too.
+  - From the player's camera in a fight, **C reads best** (red against the Shade's dark), B second (white and red). **A is the weak one there:** a black coat and black hair from behind, beside dark Shades, with only the white wraps to find him by.
+  - My own order: C, then B, then A. A has the strongest face.
+- **Content check:** PASS for A, B, C and the sheet, on these files (2026-11-24, 01:22), after a first PASS on the earlier hair that asked for C's plaster in white, B's hair less orange and B's temples covered: all three done. No take lands on one published character; the nearest share two or three loose traits each. Hold points for the finish. **A:** the forehead stays bare and the coat open over red; no cap, chain, gold buttons or second belt, nothing on the jacket's back, the eyes grey; the stray lock ends at the brow, clear of the plaster; at 64 px his points are lost in a round dark mass. **B:** never a headband, a black belt, white trousers, bare feet or torn sleeves; the sash's ends square-cut; the hair chestnut, never bright orange. **C:** the plaster lighter than the skin; one unbroken stripe a sleeve and a leg; the hair brown, never green or teal; the jacket red; no freckles; the hood reads as cloth. The picked take gets its own check on its upload files.
+- **The four facts:** made: three takes and the kit. Self-reviewed: yes, as above. Delivered: the sheet, for research's pick with fresh eyes (the reference's sheet as their example), then the director's look; the heads, the figures and the busts went to the director's device at 01:19. Accepted in the game: no; nothing is built or uploaded.
+
+### Research's pick: A, the school tough, with five must-fixes for the finish (Quaestor, 2026-11-24, 01:24)
+
+From `compare_rook_takes.png` (between two reference units), `_heads`, `_bust` and `_fight`. Fresh eyes, given the reference's sheet as their example, picked A.
+- **Felt:** a cool, quiet side-cast fighter. The swept hair and narrow grey eyes read at once, and his face is the sharpest of the three.
+- **Tier:** competent. **The one bold thing:** the hair, swept back into a few big points with one lock over the brow. It's the only hair of the three that reads as a designed shape, and the feel line asks for the hair first.
+- **The make holds:** all three now stand in the make beside the reference, the faces especially. Against A:
+  - B reads younger, and his gi is a stock training look.
+  - C's messy hair, smirk and cheek plaster add up to the genre's commonest lead boy. Fresh eyes call his hair, like B's, "noisy clumps".
+  - A also carries the game's "slightly mature" tone best.
+- **Must-fixes, each by its class:**
+  1. **From the fight camera at 450 px, the lead shows three values from behind, never one dark mass.** A's jacket, hair and trousers are all near black, and next to the Shades he reads as a slab. Lift the jacket to a dark blue-grey with a lit side, keep the trousers a different value from it, and let the red tee show at the open front and the hem. The hold points stand: the back stays plain, the coat stays open over red.
+  2. **The fists read as fists from the fight camera.** Today the wraps read as banded cuffs. Carry them over the hand's end, with the knuckles' wrap seen from behind, in a value that stands off the jacket.
+  3. **A mark on the face never cuts it in two at the card's size.** The plaster across the nose reads as a bar. Make it a small one on the bridge, or move it off the centre line.
+  4. **Folds follow the cloth's pull, never the muscles under it.** Pecs and abs drawn on a jacket or a T-shirt look wrong. That's the kit's (`anime_make.py`), so it holds for every Voidkin.
+  5. **The hair is one smooth lit mass, and the cloth is painted the way the reference's is.** Fresh eyes still see faceted hair and flat, clean cloth. The hair gets smooth shading from root to tip with one band of light; the cloth gets soft shade under its folds and a grain. That's the kit's too.
+- **Why not Modulo's C:** C reads best from the fight camera, but on its colour alone, and his hair and face are the most generic. A's weakness is a matter of values, which must-fix 1 fixes. C's would need a new design.
+- **What stays open:** whether `Rook_Piston` stays in the rig as an empty part, settled at the finish. What the stills can't show: A in motion on Lantern Row at night, first seen at Faber's install.
+- **Next:** the director's look at A (the heads, figures and busts reached the director's device at 01:19), then the finish with the five fixes. Research's second look judges the fixes only.
+
+### Modulo: A with the five must-fixes drawn (2026-11-24, 01:37; started 01:25)
+
+Sheet: `build/handoff/Rook/takes/rook_pick.png` (1900 x 1537, sha1 `514b4890`): the figure from the front and from the game's camera, the bust at the card's size, the head from six sides, a fight at 450 px and 3 times, and 64 px. Beside two reference units: `build/reference/anime-vanguards/compare_rook_pick.png` (internal, not in git). Script: `tools/blender/rook_make_takes.py`, `take_a` and the new mode `proof [A]`. The takes' sheet stays as the takes' record: its A is the one before these fixes.
+- **1. Three values from behind.** The jacket is a slate blue-grey (`#3D4764`), lighter toward its top and on his right side; the trousers stay near black (`#202229`); the hair is black. The red T-shirt hangs below the jacket's hem right round the hips, so his red shows from behind too. The belt went with it. The back stays plain: a middle seam, a yoke line and folds.
+- **2. Fists.** Both hands are wrapped over their end, with the fingers' lines on every side, the knuckles' turn, a firm line and a shade at the wrist, and the wrist's own turns above it. Off-white on the slate jacket and on the bare right forearm.
+- **3. The plaster** is half as long and sits on the bridge, between the eyes' inner corners. At the card's size it is a small pale mark, never a bar. The stray lock is shorter and ends at the brow, clear of it.
+- **4. Folds by the cloth's pull, in the kit.** `anime_make.py` now holds the cloth's drawing for every Voidkin: `creases` (a fold with soft shade under it and a little light over it), `shadow`, `lit` and `grain`. A's folds were redrawn from where cloth is pulled: the shoulder to the opening, the arm's pit, the waist, the elbow. Nothing follows a chest or a stomach.
+- **5. Smooth hair with one band of light, and painted cloth, in the kit.** A clump's ridge is now smooth from root to tip, sharp only at its two edges, and one band of light runs round the whole mass at one height (`Hair(..., band=(height, width, strength))`). The cloth has `grain`: soft clouds of lighter and darker, and a fine tooth.
+- **Triangles:** unchanged, 3,896 (the hair 3,360).
+- **My read, beside the reference:** from the fight camera he is now hair, jacket, a red line, trousers and a pale fist, never a slab. The band of light on black hair is quiet: it reads on the bust, less at 450 px. The reference's cloth is still painted harder than ours, with deeper fold shade. If research wants more, it is one number each (`creases`' amount, `grain`'s amount, the band's strength).
+- **Memory:** the three-take sheet no longer fits beside the Studios (the guard stopped it twice at 0.7 GB free). `proof` draws the pick alone and peaks at 0.71 GB.
+- **Content check:** PASS on these bytes: the sheet and A's six pictures (`build/scratch/modulo/ar59b/tex/A/`). The six earlier hold points stand. New for the finish: the hair stays black; the red stays a T-shirt, never a hood or red at the collar, and the jacket never closes to the throat; small plain buttons in the jacket's colour; no emblem or lettering anywhere; the jacket stays a muted slate; the irises stay grey; no scar, no headband, one sleeve rolled, wraps never gloves; plaster and wraps clean with straight edges; Haymaker's hit shows light, sparks or dust, never black sparks with red lightning, and never flame on the fists without a new check. The upload batch gets its own check.
+- **`Rook_Piston` and `Rook_Tape`: both go** (my call, as the redo leaves it). Nothing is built on his body, and a part kept only to hold keys nobody sees is dead weight. A clip's pose for a joint that isn't there is skipped, so today's published clips still play. It costs Faber three lines at the install: the self-test's two joint checks and its "eight pieces" count (`SelfTestController/Cases.luau`, about line 1802), and `Rook_Piston` out of Haymaker's `Glow.Pieces` (`Config/Effects.luau`). The glow's mask moves to the right fist's wraps.
+- **Four facts:** made, yes. Self-reviewed, yes, at the fight camera and the card's size. Delivered, no: the model's files for Faber come with the finish. In the game, no.
+- **Next:** research's second look at the five fixes; the director's look (sent at 01:37). Meanwhile the finish's build: the kit writes one picture and the pieces as `ModelRecipe` reads them, then his clips are run on the new body.
+
+### Research's second look: AR59's pick passes at competent (Quaestor, 2026-11-24, 01:38)
+
+From `rook_pick.png` and `compare_rook_pick.png`. This look judges the five fixes and anything they broke.
+- **All five are met:**
+  1. From the fight camera he reads as hair, a slate jacket, a red line, dark trousers and a pale fist. He's never a slab, and he stands apart from the Shade.
+  2. The wraps close over the hands' ends, so they read as fists.
+  3. The plaster is a small mark on the bridge.
+  4. The folds pull from the shoulder, the arm's pit, the waist and the elbow, with nothing on the chest or the stomach.
+  5. The hair is smooth with its band of light, and the cloth has its grain. Beside the reference, the cloth now holds.
+- **Nothing broke.** The hair's geometry is unchanged (3,360 triangles).
+- **An older note, not a must-fix:** beside the two reference units, his hair is the quietest of the three. It stands lower over the crown, and at 64 px its points don't break the outline, which the content check also noted. The lever is the reference's own measure, 0.45 to 0.6 of a head over the crown, with the crown's points lifted. It goes to polish-later, and it's the first thing to try if the director asks for the hair again.
+- **The cloth's fold shade, one step deeper** to match the reference's harder paint, also goes to polish-later. It's one number in the kit.
+- **The sheet's label** says "no element". He's Fire (TR49's decision 6; `docs/roster.md` now agrees). That's only the sheet, not the game.
+- **What the stills can't show:** his clips on the new body, and him on Lantern Row at night. First seen at Faber's install.
+- **Next:** the director's look (the sheet has been on the director's device since 01:38), then the install files. The director's acceptance comes before Faber installs.
+
+### Modulo's finish: Rook's files for the install, and his clips on the new body (2026-11-24, 01:50; started 01:38)
+
+Delivered to `build/handoff/Rook/make/`, beside today's Rook, whose files stay where the game's install reads them until the director accepts. Script: `tools/blender/rook_make.py` (`model`, `sheet`, `clips`); the make and the handoff are the kit's (`tools/blender/anime_make.py`, `handoff`), so Kirra, Pip, Lyric and Watt are written the same way.
+- **The files,** as `tools/studio/ModelRecipe.luau` reads them:
+  - `Rook.recipe.json`: 3,896 triangles in seven pieces, 96 texels a stud on the body.
+  - Seven meshes: `Rook_Torso`, `Rook_RightArm`, `Rook_LeftArm`, `Rook_RightLeg`, `Rook_LeftLeg` (R6's own blocks, 12 triangles each), `Rook_Head` (Roblox's round head, 476) and `Rook_Hair` (3,360, on the Head).
+  - Three pictures, 1024 x 1024: `Rook_Color.png` (the one picture every piece wears, sha1 `e592a921`), `Rook_Roughness.png` (flat: cloth 1, hair 0.8) and `Rook_Emissive.png`. No Metalness: nothing on him is metal.
+  - The sheet, `rook_make_sheet.png` (1900 x 2187, sha1 `050b93b4`): the pick's views drawn again from these files, and the two pictures that go up. Beside the reference: `build/reference/anime-vanguards/compare_rook_make.png` (internal, not in git).
+- **The hair's colours are a picture now.** The mesh format carries no colour per point, so each clump's root-to-tip tone and the band of light are drawn into the one picture. It reads as it did on the pick.
+- **The glow** is the right fist's wraps, from the knuckles up over the hand, fading at the wrist. Cold until Haymaker heats it: tint `#FFA630`, the strength the game's.
+- **Points:** `Knuckles` (the right fist's end) and `RamCentre` (its middle), under the first Rook's names so nothing that reads them changes.
+- **His clips on the new body:** the eight delivered clips (`build/handoff/Rook/clips/`) play as they are, on `r6anim`'s rig, from the game's assumed camera and from his front. Sheets: `build/handoff/Rook/make/poses/poses_<Clip>.png`.
+  - Haymaker reads without the gauntlet: the arm drawn back and up through the charge, the lunge at the strike, the recovery. The pale fist carries it against the slate jacket.
+  - Combo, Hit, Down, Up, Reveal, Work and Idle hold. I saw no limb through the body on any sheet.
+  - No clip is exported again. The poses for `Rook_Piston` and `Rook_Tape` find no joint and are passed over.
+  - Haymaker's `Vent` marker (frame 70) was the piston's. It stays in the clip; whether anything answers it is Scintilla's and Faber's.
+  - A correction to my section above: I wrote "today's published clips". None of his clips is published; they are the delivered ones.
+- **Content check:** PASS on these bytes: the three pictures and the sheet. Every earlier hold point holds. Two more: the iris (`#8B95A8`) is at the blue end of grey, so no bluer and no darker; the mask passes as light on cloth, and flame shapes or particles on the fists, or a red or black tint, need their own check. The three pictures' look at 64 px was read from the sheet's 0.55 copies. A re-run that changes a file needs a new check.
+- **The director, about 01:47,** after the pick's sheet: "it fine if the model has some attachment or ovexageration you seems to get it now". It covers what it names: a fighter in the make may carry some built attachment and some exaggeration. My reading: the kit's "built pieces few and thin" is no longer a ceiling, and it is not a request to change Rook, nor his acceptance for the install. Rook stays as research passed him; the freedom is used from Kirra on. Research records it in the register.
+- **What Faber changes at the install,** after the director's acceptance:
+  - upload the seven meshes and the three pictures under the group, and write `tools/studio/Models/Rook.json` anew: seven mesh ids, `Color`, `Roughness`, `Emissive`;
+  - `src/shared/Config/Effects.luau`, Haymaker's `Glow.Pieces`: `{ "Rook_RightArm" }`;
+  - `SelfTestController/Cases.luau`, about line 1802: seven pieces where it counts eight, and the piston's and the tape's joint checks and "Haymaker slides the piston" go;
+  - check in the game: the hair rides the head through Down and Up; the fist's glow at Haymaker's peak (5) doesn't blow out the wraps' lines, else lower the peak; the jacket's slate and the red hem under Lantern Row's night.
+- **What waits:** his portraits and the lead card's face and head still show the first Rook. I draw the portraits from these files next (`tools/blender/hud_art.py`); the card's two are Faber's script on those renders.
+- **Four facts:** made, yes. Self-reviewed, yes: the sheet at the fight camera and the card's size, and the eight clips' poses. Delivered, yes, to `build/handoff/Rook/make/`. In the game, no; nothing uploaded; not director-accepted.
+
+### Modulo: Rook's portraits from the new files (01:52; started 01:50)
+
+`build/handoff/Rook/make/portraits/PortraitRook.png` (736 x 800, sha1 `8946ff32`) and `PortraitRookSmall.png` (368 x 400, sha1 `5cf7759d`): his head and shoulders in the lead card's pose, cut to the Common frame's mask as the first Rook's were. Script: `tools/blender/hud_art.py`, `make Rook`, which now reads a Voidkin in the kit's make from its delivered files (`MADE`, `drawn`).
+- **The crop** is wider than the first Rook's (2.9 studs where it was 2.45, its middle 0.1 higher), so the hair stands whole inside the frame. The pose is the card's: his right shoulder forward, chin down, a level look.
+- **Their listing is unchanged** (`build/handoff/UI/hud/hud_art.json`: the same pixels, points and pad), so they go in where today's stand.
+- **At the install** they replace `build/handoff/UI/hud/images/PortraitRook.png` and `PortraitRookSmall.png`, which stay as they are until the director's acceptance. The lead card's face and head (`CardFaceRook`, `CardHeadRook`) are Faber's `tools/blender/lead_card_art.py` on this script's render: its framing for Rook wants a look with the wider crop.
+- **Content check:** PASS on these two files. To hold: a re-run that changes either needs a new check, and so does any tint, glow or frame art laid over the red of the T-shirt in the card. The cut files' look over dark was read from the uncut render's contact sheet.
+- **Four facts:** made, yes. Self-reviewed, yes, large and at the card's two sizes over dark. Delivered, yes. In the game, no; nothing uploaded.
+
+## AR60. Kirra, redesigned in the make (Modulo, for research's pick and the director's look, then its finish; Faber's install after)
+
+Research, 2026-11-24, 01:50. On the director's order of 2026-11-23, by 22:52 (Rook, Kirra, Pip, Lyric, then Watt's finish), and the words since: 23:52 (the make) and 01:47 (attachments and exaggeration) (`docs/decisions.md`). Tier 2. It goes into the game only on the director's acceptance. It starts when Rook's portraits are done.
+- **Feel line:** in a fight, the player sees a quick, quiet assassin from an anime's cast. Her hair's silhouette reads first, then a sharp face, then a long scarf trailing her moves, then two short blades.
+- **What holds:**
+  - her row in `docs/roster.md`: Common, Blue, Assassin, Void, Scarf Step's function (she vanishes, crosses the target and cuts on the way out), and First Strike;
+  - two short blades;
+  - the R6 body;
+  - violet only on what's alive (AR40).
+- **The make:** AR59's "The redo", drawn with the kit (`tools/blender/anime_make.py`). From the director's word of 01:47 she may carry some built attachments and some exaggeration: the scarf, the blades. The clothes stay drawn on the body.
+- **The design:** a side-cast type of the genre's famous shows, made our own ("basics or our own"). "Courier" is her story, not a costume: nothing on her reads as a job, a satchel included.
+- **What AR59 taught, asked of every take from the first sheet:**
+  - three values from behind at the fight camera;
+  - the weapon reads from the fight camera;
+  - no mark across the face's centre line;
+  - folds follow the cloth;
+  - the hair stands 0.45 to 0.6 of a head over the crown, so its points break the outline at 64 px.
+  - She reads apart from the new Rook: a different hair silhouette and a different colour family.
+- **The takes:** two or three, each drawn in the make, never rough. Each is shown:
+  - beside Anime Vanguards units at the same height (internal);
+  - at the card's portrait;
+  - from the fight camera at the smallest phone's size;
+  - at 64 px;
+  - beside the new Rook.
+- **Checks:** the content check, with the Fighters test; research's pick, with fresh eyes given the reference's sheet; the director's look; the finish; the director's acceptance before Faber installs.
+- **What waits:** her basic attack's effect (AR26); Scarf Step's look, if the new body asks for it; her portraits after the finish; Faber's install.
+- **Time:** the takes in 2 to 3 hours, as a guide.

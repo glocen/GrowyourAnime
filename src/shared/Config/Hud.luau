@@ -64,10 +64,14 @@ local stages = {
 		CornerGlint = 0.7, -- the light at an open tile's top left
 		Rise = 18, Start = 0.04, Step = 0.05, Seconds = 0.22, -- each tile rises in from Rise points under, Step apart
 	},
+	-- The Arc panel's bed in the festival's dusk (TR50's older line: Modulo's B with Seam's lights, research's pick of
+	-- 2026-11-23, 00:29; build/handoff/UI/stages/arc_dusk.json): dark wine over the keeper, rosewood at its foot, its light
+	-- pooled low in amber (Bloom: its Size is the laid image's, five times where the drawn light falls to a third, times
+	-- Arc.Picture), its hairline in rosewood (Edge, at EdgeAlpha).
 	Bed = {
-		Inset = 6, Tall = 86, Corner = 4, EdgeAlpha = 0.8,
-		Fill = { Color3.fromHex("#0E0B1A"), Color3.fromHex("#08070F") },
-		Bloom = { Middle = Vector2.new(0.5, 0.593), Size = Vector2.new(231.8, 180.6) },
+		Inset = 6, Tall = 86, Corner = 4, EdgeAlpha = 0.8, Edge = Color3.fromHex("#7A5048"),
+		Fill = { Color3.fromHex("#1E0F16"), Color3.fromHex("#4A2324") },
+		Bloom = { Middle = Vector2.new(0.5, 0.88), Size = Vector2.new(305.4, 142.1), Colour = Color3.fromHex("#FF9A50"), Alpha = 0.62 },
 		Picture = Vector2.new(100, 86),
 		Lock = { Side = 26, Down = 53 },
 	},
@@ -78,25 +82,66 @@ local stages = {
 	-- bed (Picture times the cut's size) and its name under it, and beside it Normal and Hard, one press each, Gap apart.
 	-- A choice: its name at In and Top, what it recommends at its top right, the run's marks along Road from In, their
 	-- middle Marks down, and where the next run starts past them.
+	-- In the festival's dusk (arc_dusk.json, B with Seam's lights): the screen behind the glass in the street's rose
+	-- (Backing, top to foot), the light pooled behind the bed (Bloom, at the bed's middle, under the tile; Size as the
+	-- bed's), the light round the panel in lantern light (Glow, at Tile.Next.GlowAlpha) and its rim and Back's underline
+	-- in ivory (Rim). Normal's own lights stay Seam's.
 	Arc = {
 		Title = "Festival of Battles",
 		Bed = Vector2.new(150, 153), Picture = 1.4, Gap = 8,
+		Backing = { Color3.fromHex("#5E2A3A"), Color3.fromHex("#1E0E12") },
+		Bloom = { Colour = Color3.fromHex("#FF8246"), Alpha = 0.38, Size = Vector2.new(750, 600) },
+		Glow = Color3.fromHex("#FFCF98"),
+		Rim = Color3.fromHex("#FFEBD2"),
 		-- Says: where the run starts, its top this far from the marks' middle; Press: the lit plate's height under it.
 		Choice = { In = 12, Top = 6, Head = 24, Marks = 60, Road = 214, Words = 12, Says = -26, Press = 28 },
 	},
-	-- The card at a run's end, over the street dimmed (Dim, the cover's transparency).
+	-- The card at a run's end, over the street dimmed (Dim, the cover's transparency; Cover, its colour: the dusk's dark
+	-- wine, so the street under the card stays the street's, arc_dusk.json).
 	Card = {
 		Left = 124, Wide = 320, Corner = 8, Edge = 1.4, Space = 8, In = 12, Foot = 10, Before = 14,
 		Rows = { Marks = 30, Title = 28, Time = 22, Gave = 28, Opened = 20, Hard = 34 },
 		Presses = { Quiet = 82, One = 124, Retry = 170, Home = 124, Gap = 6 },
 		Shadow = 0.4,
 		Dim = 0.5,
+		Cover = Color3.fromHex("#2A1219"),
 		Margin = 4, -- kept above and below the card when the screen's room is the card's (the cut: 4 at the smallest phone)
 	},
 	-- The run's line under Roblox's top bar, in the Hud layer.
 	-- It stands clear of the HUD's pieces named in Clear, Gap from them; between them it narrows, to Least at most: Hard's
 	-- longest head ("Hard Stage 3  10 / 10 Shades") still clears its words there.
 	Line = { Wide = 368, Least = 330, Down = 4, Tall = 44, Corner = 6, Edge = 1.2, Gap = 8, Clear = { "Lead", "Credits", "Electricity" } },
+	-- A stretch's dare under the line (AR53, build/handoff/UI/goals/goals.json, "dare"; TR54), from the line's glass's top
+	-- left. Open: its box from Left, Top to its foot by its rows (Foot, Corner), its words from the stretch's name's left at
+	-- Words.Y by its rows (capitals' top), the box Pad past the widest row and never past Limit short of the Electricity
+	-- pill; one row when the words end Inside of that limit, else two. Folded: Tab, the mark's middle at Mark, always.
+	-- Motion: the tab opens over Open seconds as the stretch begins, holds Config.Goals.Held, closes over Close; a kept
+	-- dare's mark flares once to Flare.Scale over Flare.Seconds.
+	Dare = {
+		Left = 8, Top = 30, Foot = { 70, 88 }, Corner = { 4, 6 }, Pad = 10, Limit = 6, Inside = 8,
+		Words = { Size = 14, Colour = Color3.fromHex("#F1ECFF"), Y = { { 51 }, { 48, 66 } } },
+		Tab = { 8, 30, 26, 40 },
+		Mark = Vector2.new(21, 57),
+		Motion = { Open = 0.2, Close = 0.18, Flare = { Seconds = 0.4, Scale = 1.4 } },
+	},
+	-- The dares kept on a run's card (AR53, goals.json, "dare.card"): a mark Mark.Gap right of each kept stretch's node at
+	-- Mark.Scale, and the chip last on the time's row (Chip.Gap before it), or on the fall's card a row of its own, Fall
+	-- tall, the chip Down from its top. Chip: its glass (Fill top to foot, Edge, Glow), the mark at Mark (scale Mark.Scale),
+	-- the words, the stone's cell (Stone: Gap right of the words, Top, Side, the picture at Fill, the hairline Edge), the
+	-- count (Count: Gap right of the cell), Pad at its right.
+	DareCard = {
+		Mark = { Gap = 10, Scale = 0.9375 },
+		Chip = {
+			Tall = 22, Corner = 4, Gap = 8, Pad = 7, Fall = 26, Down = 2,
+			Fill = { Color3.fromHex("#0E0B1A"), Color3.fromHex("#08070F") },
+			Edge = { Colour = Color3.fromHex("#C9BA9C"), Width = 1.2 },
+			Glow = { Colour = Color3.fromHex("#FFF6E2"), Alpha = 0.22, Reach = 5 },
+			Mark = { At = Vector2.new(10, 11), Scale = 0.8125 },
+			Words = { X = 19, Y = 4, Size = 14, Colour = Color3.fromHex("#EFE6D2") },
+			Stone = { Gap = 6, Top = -2, Side = 26, Fill = 0.94, Edge = Color3.fromHex("#E2CFA4") },
+			Count = { Gap = 4, Y = 3, Size = 17, Colour = Color3.fromHex("#F1ECFF") },
+		},
+	},
 	-- Its beats (stage_seam.py's strips): the picker's opening, the switch, the card's two beats, the line's.
 	Motion = {
 		Rise = 12, Open = 0.22, -- the screen rises Rise points as it fades in
@@ -169,22 +214,51 @@ return {
 			-- look: the critical only; the plain numbers land whole).
 			Land = true,
 			Gap = 0.25, -- a quarter of a digit between digits: at 0.4, "1 , 2 0 4" read as separate glyphs (AR44's verdict, fix 2)
-			-- Gold drifting to an olive khaki head to foot, with a darker band two thirds down: the reference's critical
-			-- measured row by row (AR44, "The critical's colours, measured", research, 12:48; the director, by 12:47: "make
-			-- it as accurate as possible and allowed"). Top and Foot are its ends.
-			Top = Color3.fromHex("#E7C66A"),
-			Foot = Color3.fromHex("#CFC27A"),
+			-- Polished gold chrome, head to foot: near-white at the top, rich gold down to a hard dark horizon at the middle,
+			-- hot amber below it, then a light lip (AR44, "The critical's shine": take C, research's pick, 2026-11-19, 23:36,
+			-- on the director's "the crit text isnt chromatic shiny right now it look sad and meh"; Modulo's cut,
+			-- build/handoff/UI/hud/critical_shine.json). The stops at 0.49 and 0.5 make the horizon: keep them that close.
+			-- Top and Foot are its ends.
+			Top = Color3.fromHex("#FFFDF0"),
+			Foot = Color3.fromHex("#FFF0B8"),
 			Ramp = ColorSequence.new({
-				ColorSequenceKeypoint.new(0, Color3.fromHex("#E7C66A")),
-				ColorSequenceKeypoint.new(0.12, Color3.fromHex("#EFCA61")),
-				ColorSequenceKeypoint.new(0.3, Color3.fromHex("#ECD072")),
-				ColorSequenceKeypoint.new(0.5, Color3.fromHex("#EBD88C")),
-				ColorSequenceKeypoint.new(0.57, Color3.fromHex("#EAD692")),
-				ColorSequenceKeypoint.new(0.63, Color3.fromHex("#B49E60")),
-				ColorSequenceKeypoint.new(0.7, Color3.fromHex("#C4B06F")),
-				ColorSequenceKeypoint.new(0.82, Color3.fromHex("#CFC27C")),
-				ColorSequenceKeypoint.new(1, Color3.fromHex("#CFC27A")),
+				ColorSequenceKeypoint.new(0, Color3.fromHex("#FFFDF0")),
+				ColorSequenceKeypoint.new(0.15, Color3.fromHex("#FFF2B0")),
+				ColorSequenceKeypoint.new(0.35, Color3.fromHex("#FFD84A")),
+				ColorSequenceKeypoint.new(0.49, Color3.fromHex("#FFB300")),
+				ColorSequenceKeypoint.new(0.5, Color3.fromHex("#7A3A00")),
+				ColorSequenceKeypoint.new(0.58, Color3.fromHex("#B85E00")),
+				ColorSequenceKeypoint.new(0.75, Color3.fromHex("#FF9A1A")),
+				ColorSequenceKeypoint.new(0.92, Color3.fromHex("#FFD36B")),
+				ColorSequenceKeypoint.new(1, Color3.fromHex("#FFF0B8")),
 			}),
+			-- Its shine on the land (take C): three levers, each a copy of the digits with no outline, laid in the plate so
+			-- they pop and rise with it. Read at the number's birth, so a Tune shows on the next critical.
+			Shine = {
+				On = true,
+				-- The chromatic split, an impact's aberration that settles: a cyan copy left and up, a red one right and down,
+				-- behind the digits and over their cast. Each is Points along (authored pixels at the critical's own size,
+				-- grown with a heavier hit's number) and a quarter of that across, from Land to Rest over Seconds, eased
+				-- out; its transparency from LandClear to RestClear with it. At rest a hairline each side by day (4.6:
+				-- 3.4 vanished, 5.8 doubled the 1). The content check's condition: the two always together and symmetric.
+				Split = {
+					Cyan = Color3.fromHex("#3DEBFF"),
+					Red = Color3.fromHex("#FF3D5E"),
+					Land = 7,
+					Rest = 4.6,
+					Across = 0.25,
+					Seconds = 0.2,
+					LandClear = 0.15,
+					RestClear = 0.05,
+				},
+				-- The hit flash: a white copy over the digits, clear from opaque over Seconds, straight.
+				Flash = { Colour = Color3.fromHex("#FFFFFF"), Seconds = 0.0667 },
+				-- The specular glint, once: a white band over the digits, leaning Lean degrees with the italic (its top to
+				-- the right), carried from Reach of the number's width before it to Reach past it, from Start after the land
+				-- over Seconds. Its middle Strength opaque, half that at Half of the width, nothing by twice Half; a thinner
+				-- band Trail behind it, TrailStrength opaque, TrailHalf wide.
+				Glint = { Start = 0.08, Seconds = 0.25, Reach = 0.15, Lean = 20, Strength = 0.95, Half = 0.1, Trail = 0.13, TrailStrength = 0.6, TrailHalf = 0.035 },
+			},
 			Outline = Color3.fromHex("#211306"), -- near-black brown, measured
 			Weight = 2.4, -- the reference's thick dark edge (1.2 read thin and pasted on: the director, 2026-11-19, "that art isnt composited")
 			Italic = true, -- the slant is the face's italic, on or off: about 10 degrees, never another angle
@@ -325,6 +399,20 @@ return {
 		Linger = 1,
 		FadeOut = 0.35,
 		Always = false,
+		-- TR52's block, the signature on a tap: the readout is the button. A tap squeezes it by Press, gone over PressTime,
+		-- on the frame it lands; armed and waiting for its target's range, it stays in by Armed. A full ring left untapped
+		-- pulses once by Pulse.Scale over Pulse.Length, Pulse.Hold seconds after its ready swell or its fade in, so the two
+		-- never merge (the seed's 0.5 s). The Auto toggle after the eye, Auto.Width points wide.
+		Press = 0.12,
+		PressTime = 0.14,
+		Armed = 0.06,
+		Pulse = { Hold = 0.5, Length = 0.4, Scale = 0.16 },
+		Auto = { Width = 100 },
+		-- Where the ring stands (TR52, research's add for the director's run): "Card", under the lead's card, the left
+		-- thumb's, the one that walks; "Jump", over Roblox's jump button, the right thumb's, its centre over the button's
+		-- and Jump.Above points clear of its top. The eye and Auto stay in the corner either way.
+		At = "Card",
+		Jump = { Above = 12 },
 	},
 	-- The spectate toggle (TR11; the director, 2026-11-14, night: the player's camera is never moved in a fight, and a small
 	-- button follows the lead instead). The eye (AR12: one family with the readout): its plate Plate across, open and lit
@@ -336,6 +424,24 @@ return {
 	-- Plates kept apart in a group (UI.World.Apart: the base's machine plates): Gap authored pixels between two, over and
 	-- under, as the command view's chips (Config.BaseView.Chip.Gap). The builder's seed.
 	Plates = { Gap = 6 },
+	-- The Stone Condenser's convert card (AR51's B, research's pick and pass of 2026-11-23; Modulo's condenser_card.json;
+	-- BaseController): a plate's kin on the system slab, beside the cradle, shown as the Comb's plate is. Its left edge
+	-- Place.X right of the cradle's point on the screen and its top Place.Y under it (negative: above), in points, and
+	-- never nearer than Plates.Gap to the right of the convert prompt's card (UI.World.Beside: Roblox draws that card
+	-- under every layer, so the card over it hid its words, the build's finding at AR51's capture). Size
+	-- while awake, Asleep high while the base is under Config.Condenser.Wakes (the cost line alone, dimmed; the Comb's
+	-- plate says what wakes it). Wider when its word needs it: Word.At plus the word plus Word.End.
+	--   Cost: each number at Digit points in the number face, its stone Stone points across, Gap after the number; the
+	--         Arrow box Before and After it; the whole line Top down, Left in. Dim, its transparency when it can't start.
+	--   Bar:  At and Size, its Bed's colour, its fill Inset inside, Ready's and Running's colours (the stones' own seam).
+	Convert = {
+		Size = Vector2.new(172, 70),
+		Asleep = 44,
+		Place = Vector2.new(22, -50),
+		Cost = { Left = 12, Top = 4, Digit = 20, Stone = 36, Gap = 3, Arrow = Vector2.new(8, 12), Before = 7, After = 8, Dim = 0.45 },
+		Bar = { At = Vector2.new(12, 50), Size = Vector2.new(64, 10), Bed = Color3.fromHex("#070A0C"), Inset = 1, Ready = Color3.fromHex("#F6FCFF"), Running = Color3.fromHex("#FFB878") },
+		Word = { At = 84, End = 12 },
+	},
 	-- A quiet note under the lead's corner, where the level-up's notice shows (docs/ui.md, rule 2; TR46: the heal cap told
 	-- once): it fades in over In seconds, sliding Slide points out of the left unless Reduced Motion, holds Hold, fades out
 	-- over Out. Its backing at Back's transparency, Pad points around its words.
@@ -395,7 +501,8 @@ return {
 	Guide = { Lift = 1.5, Bob = 0.35, Rate = 0.9, Size = 36, Margin = 56, Top = 84, Bottom = 120, Near = 12, Reach = 800,
 		-- The edge's arrow (TR24's fix 2: it read as a small lilac stroke on the sky): an arrow, shaft and head, on a round
 		-- dark backing Size points across, the backing in the chevrons' ink at Backing, rimmed in the guide's colour at Rim;
-		-- Clear points between its foot and the next step's chip.
+		-- Clear points between its foot and the next step's chip, or off the chip's end where it rides the chip (its own spot
+		-- over the avatar, a prompt or a plate: research's call on AR51, 2026-11-23).
 		Edge = { Size = 60, Backing = 0.15, Rim = 0.3, Clear = 6 } },
 	-- AR30, every button in the seam's make (Modulo's numbers, 2026-11-17, 15:00; asset-requests, AR30, "The cut, the images
 	-- and the numbers for Faber"): a pressable thing is dark glass lit from its foot at L in its light colour, or the plain
@@ -524,12 +631,14 @@ return {
 			BodyT = 0.1,
 			GlassT = 0.03,
 			Top = 1.45,
-			L = { Rest = 1, Calling = 1.45, Pressed = 1.3, Open = 0.75, Quiet = 0.45, Dim = 0, Charge = 0 },
+			-- At rest a cell's colour lives in its foot bar, inside its glass: a halo past it means "this one" (AR30, "The
+			-- dock's shine, reopened": the director, 2026-11-23, "a bit to shiny"). Dim < Quiet < Rest < Open < Pressed < Calling.
+			L = { Rest = 0.4, Calling = 1.45, Pressed = 1.3, Open = 0.6, Quiet = 0.2, Dim = 0, Charge = 0 },
 			DimFoot = 0.7,
 			Glass = { Wing = Vector2.new(56.8, 48), Mid = Vector2.new(66.8, 58) },
 			Cells = {
 				{ Name = "Base", Kind = "Wing", Glass = Vector2.new(2, 12), Icon = Vector2.new(30.4, 33.5), Side = 39.4, Pip = Vector2.new(57.8, 13), Tap = { 0, 10, 60.8, 52 } },
-				-- Home (AR43): Home's tray.
+				-- Home (AR49): Home's panel (UI.HomePanel).
 				{ Name = "Home", Kind = "Mid", Glass = Vector2.new(62.8, 2), Icon = Vector2.new(96.2, 28.5), Side = 49.2, Pip = Vector2.new(128.6, 3), Tap = { 60.8, 0, 70.8, 62 } },
 				-- Its word (a long press) is Word: the director, 2026-11-19, "the map button that should be renamed to play or
 				-- something else and open FOB" (TR45). Its name stays the cell's, for its images and light.
@@ -538,50 +647,129 @@ return {
 			Pip = { Glow = 54.2, GlowT = 0.2, Rings = { 24.6, 18.7, 10.8 } },
 		},
 	},
-	-- Home's tray (AR43 in B, research's pick of 12:56; the dock's graphite, 13:36; UI.HomeTray): the dock's middle cell
-	-- opens it over all but the dock dimmed, a group a row, each tile its own screen (docs/ui.md). Every place is in
-	-- points from the tray's top left, measured on the smallest phone (568 × 320; build/handoff/UI/home/home.json), and
-	-- the tray keeps its size on every phone, centred, its foot Above over the dock's top. Its plate is the kit's panel in
-	-- the dock body's graphite, opaque; HomePoint stands on its foot at the middle, its Point on it. A heading is its
-	-- mark (Mark across, its middle at At) in the lavender over its group's word (its capitals' middle at Word); a tile
-	-- its images in Box, its icon Side across on Icon, its word on Word, in ink. Rule: a 1 point line between the rows
-	-- and Settings. Open: it grows from From of its size to 1 about the Home cell's top middle in Grow seconds, a Back
-	-- ease of strength Back, and fades in in Fade; it leaves the same way, eased in, over Leave. Step: a tile's screen
-	-- rises from RiseFrom points under over Rise once the tray has begun to leave (RiseAt), and its Back brings the tray
-	-- back BackAt after the screen begins to sink. Seeds from Modulo's cut, tuned live.
+	-- Home's panel (AR49 in C: research's pick of 2026-11-19, 23:54, its second look of 2026-11-20, 00:07; UI.HomePanel;
+	-- build/handoff/UI/home_cards/home_cards.json). The dock's middle cell opens it over the world dimmed, the dock lit: three
+	-- cards, Equipment, Voidkin (the lead, live) and Settings, each opening its whole screen on the page last shown. Every
+	-- place is in points from the glass's top left, at the same size on every phone. Its left is the lead's card's right
+	-- plus Gap, or the phone's middle less half its width if that's further right, never past the phone's right less Edge;
+	-- its foot Above over the dock's top; the pointer's middle on the Home cell's. Each image lies whole in its box
+	-- (Images: kit name, left, top, wide, tall), in its card, bottom to top; a card's press image shows while it's held or
+	-- lit, laid under the live view on Voidkin (research's condition 1). Tap: each card's column, split at the seams'
+	-- middles (measured on the images' alpha). Words: TextLabels in the face's bold italic, their capitals' top left at
+	-- x, y (Settings' its middle), a dark copy Shadow under. Open: the glass grows from From about the pointer with a Back
+	-- ease over Grow and fades in over Fade, the cards landing Stagger apart, each rising Rise points and fading in over
+	-- Land; it leaves quicker, over Leave, all at once. Seeds from Modulo's cut, tuned live.
 	Home = {
-		Size = Vector2.new(536.8, 138),
-		Above = 12,
-		Plate = { Fill = { Color3.fromHex("#323845"), Color3.fromHex("#22262F") }, Edge = Color3.fromHex("#434A57") },
-		Point = Vector2.new(14, 2),
-		Headings = {
-			{ Group = "Inventory", Mark = "HomeMarkInventory", At = Vector2.new(65.4, 29), Side = 19.2, Word = Vector2.new(65.4, 49) },
-			{ Group = "Equipment", Mark = "PageForge", At = Vector2.new(53, 91), Side = 18, Word = Vector2.new(53, 111) },
+		Size = Vector2.new(371, 184),
+		Gap = 8,
+		Edge = 6,
+		Above = 9,
+		Glass = { "HomeGlass", -16, -16, 403, 216 },
+		Pointer = { "HomePointer", -12, 181, 24, 13 }, -- its left and wide about the Home cell's middle
+		Cards = {
+			{
+				Name = "Equipment",
+				Screen = "Equipment",
+				Tap = { 0, 0, 124.7, 184 },
+				Z = 3,
+				Images = { { "HomeEquipment", -2, -2, 149.6, 188 } },
+				Press = { "HomeEquipmentPress", -2, -2, 149.6, 188, Color3.fromHex("#FF8A3D") },
+				Words = { { "Word", "Equipment", 20, 153.1, 17.9, "Left" }, { "Level", "+7", 45.5, 33.8, 16.5, "Left", Color3.fromHex("#FFD36B") } },
+			},
+			{
+				Name = "Voidkin",
+				Screen = "Voidkin",
+				Tap = { 124.7, 0, 141.9, 184 },
+				Z = 2,
+				-- under the live view (Lit: tinted the lead's light), then over it
+				Images = { { "HomeVoidkinBack", 102, -2, 187.6, 188 }, { "HomeVoidkinGlow", 102, -2, 187.6, 188, "Lit" }, { "HomeVoidkinRimTop", 102, -2, 187.6, 188, "Lit" } },
+				Over = { { "HomeVoidkinFrame", 102, -2, 187.6, 188 }, { "HomeVoidkinRim", 102, -2, 187.6, 188, "Lit" } },
+				Press = { "HomeVoidkinPress", 102, -2, 187.6, 188, "Lit" }, -- over the Back, under the Glow and the view
+				Words = { { "Word", "Voidkin", 124, 150.2, 22, "Left" } },
+			},
+			-- Settings' column (AR53 in B, build/handoff/UI/goals/goals.json, "today"; TR54): Settings is a cog tile at its
+			-- top, today's three a card under it.
+			{
+				Name = "Settings",
+				Screen = "Settings",
+				Tap = { 278, 8, 85, 44 },
+				Z = 3,
+				Images = { { "HomeCog", 268, -2, 105, 64 } },
+				Press = { "HomeCogPress", 268, -2, 105, 64, Color3.fromHex("#AEB7C2") },
+				Words = {},
+				Mark = { "HomeMarkSettings", 320.7, 30, 24, Color3.fromHex("#C9D0D9") },
+			},
+			{
+				Name = "Today",
+				Stay = true, -- its press opens the list in the glass, not a screen
+				Tap = { 254, 58, 99, 118 },
+				Z = 3,
+				Images = { { "HomeToday", 242, 46, 123, 142 } },
+				Press = { "HomeTodayPress", 242, 46, 123, 142 },
+				Words = { { "Word", "Today", 293.3, 156.92, 14, "Centre" } },
+			},
 		},
-		-- Each tile's Page is the page it opens alone: the Voidkin screen's, or its Screen's (Equipment's); a tile with a
-		-- Screen and no Page opens that screen (Settings); one with neither isn't built yet (Soon).
-		Tiles = {
-			{ Name = "Overview", Page = "Overview", Icon = "PageOverview", Box = { 108.4, 12, 86.4, 52 }, At = Vector2.new(151.6, 28), Word = Vector2.new(151.6, 48) },
-			{ Name = "Kit", Page = "Kit", Icon = "PageKit", Box = { 190.4, 12, 86.4, 52 }, At = Vector2.new(233.6, 28), Word = Vector2.new(233.6, 48) },
-			{ Name = "Inventory", Page = "Bag", Icon = "PageItems", Box = { 272.4, 12, 86.4, 52 }, At = Vector2.new(315.6, 28), Word = Vector2.new(315.6, 48) },
-			{ Name = "Stars", Page = "Stars", Icon = "PageStars", Box = { 354.4, 12, 86.4, 52 }, At = Vector2.new(397.6, 28), Word = Vector2.new(397.6, 48) },
-			{ Name = "Reinforce", Page = "Reinforce", Screen = "Equipment", Icon = "PageForge", Box = { 96, 74, 113.73, 52 }, At = Vector2.new(152.87, 90), Word = Vector2.new(152.87, 110) },
-			{ Name = "Jewels", Page = "Jewels", Screen = "Equipment", Icon = "PageJewels", Box = { 205.33, 74, 113.73, 52 }, At = Vector2.new(262.2, 90), Word = Vector2.new(262.2, 110) },
-			{ Name = "War Emblems", Page = "War Emblems", Screen = "Equipment", Icon = "PageWarEmblems", Box = { 314.67, 74, 113.73, 52 }, At = Vector2.new(371.53, 90), Word = Vector2.new(371.53, 110) },
-			{ Name = "Settings", Screen = "Settings", Icon = "HomeMarkSettings", Tall = true, Box = { 430, 12, 94.8, 114 }, At = Vector2.new(479.4, 59), Side = 27.73, Word = Vector2.new(475.4, 88) },
+		-- Today's three (TR54; AR53, goals.json "today"), in points from the glass's top left. The card: Waits over its
+		-- art while any goal waits to be claimed, the shard's picture in Shard, today's three as pips at Pips (open, done,
+		-- claimed), in the lists' order. The list, in the glass alone: Next pinned at its head (its plate laid from Left, Top
+		-- by its image's origin; the back press Back.Tap, its chevron Back.Chevron; its lines from the plate's left at
+		-- Lines.X + Lines.Lean x (Lines.Base - y), at Lines.Y or Lines.Alone, "Next" in Label, the step Label.Step right of
+		-- it); under it the rows scroll from Rows.From to the glass's foot, padded Rows.Pad. A row: from Rows.Left, Tall,
+		-- Gap between, its image by its origin, its words, shard, right-hand text and check from the row's left; a banked
+		-- day under its heading (Day). The thumb at Thumb.X when the rows pass the room.
+		Today = {
+			Waits = { "HomeTodayWaits", 242, 46, 123, 142 },
+			Shard = { "ShardStandardSmall", 287.5, 72, 40, 40 },
+			Pips = { Images = { Open = "GoalPipOpen", Done = "GoalPipDone", Claimed = "GoalPipClaimed" }, Y = 130, X = { 287.7, 300.7, 313.7 }, Side = 28 },
+			Next = {
+				Image = "GoalNext", Left = 10, Top = 3, Tall = 40, Origin = Vector2.new(12, 12), Size = Vector2.new(374, 64),
+				Back = { Chevron = { Vector2.new(39, 17), Vector2.new(33, 23), Vector2.new(39, 29) }, Width = 1.8, Tap = { 8, 1, 46, 44 } },
+				Lines = { X = 50, Lean = 0.2, Base = 35, Y = { 6, 23 }, Alone = 15, Size = 14, Colours = { Color3.fromHex("#F5EFE2"), Color3.fromHex("#AEB7C2") } },
+				Label = { Colour = Color3.fromHex("#AFC6F0"), Step = 38 },
+			},
+			Rows = {
+				From = 43, Pad = { 2, 3 }, Left = 10, Tall = 44, Gap = 2, Wide = 351,
+				Images = { Open = "GoalRow", Done = "GoalRowDone", Claimed = "GoalRowClaimed", Press = "GoalRowPress" },
+				Origin = Vector2.new(12, 12), Size = Vector2.new(375, 68),
+				Words = { X = 18.4, Y = 15, Size = 14, Colour = Color3.fromHex("#F5EFE2"), Claimed = Color3.fromHex("#7E879A") },
+				Shard = { 306.4, 6, 32, 32, Open = 0.5 }, -- its box from the row's left; dim while open
+				Right = { X = 298.4, Y = 15, Size = 14, Count = Color3.fromHex("#AEB7C2"), Claim = Color3.fromHex("#FFD880") },
+				Check = { Image = "GoalCheck", At = Vector2.new(322.4, 22), Side = 24 },
+			},
+			Day = { Tall = 22, X = 24, Y = 4, Size = 14, Colour = Color3.fromHex("#8F99A6") },
+			Thumb = { X = 366, Wide = 2, Colour = Color3.fromHex("#55607A") },
+			Switch = 0.14, -- seconds the cards and the list cross
 		},
-		Side = 20, -- a row tile's icon
-		Words = 14,
-		Rule = { Middle = Vector2.new(435.4, 69), Long = 104, Rotation = 11.31, Colour = Color3.fromHex("#8A93A6"), T = 0.4 },
-		Colours = { Heading = Color3.fromHex("#F3EFE6"), Mark = Color3.fromHex("#DCCBFF"), Ink = Color3.fromHex("#14161B") },
-		Soon = 0.55, -- a tile not built yet: its icon and word this see-through (the builder's, for research's read)
-		Rest = { Fill = { Color3.fromHex("#E4D6FF"), Color3.fromHex("#B7A4EB") }, Edge = Color3.fromHex("#7C66CC"), EdgeT = 0.45, Glint = Color3.fromHex("#FAF7FF"), GlintT = 0.65 },
-		Pressed = { Fill = { Color3.fromHex("#A28EE0"), Color3.fromHex("#C3B1F2") }, Edge = Color3.fromHex("#DCCBFF"), Glow = Color3.fromHex("#DCCBFF"), GlowT = 0.6 },
-		-- The dim over the world and the HUD, edge to edge, all but the dock: Side points each side of the middle, from the
-		-- foot up to the dock's top (home.json).
-		Dim = { Colour = Color3.fromHex("#05090B"), Amount = 0.36, Seconds = 0.15, Side = 100 },
-		Open = { Grow = 0.22, From = 0.55, Back = 1.2, Fade = 0.1, Leave = 0.12 },
-		Step = { Lit = 0.06, Leave = 0.12, LeaveTo = 0.55, RiseAt = 0.08, Rise = 0.22, RiseFrom = 24, Cover = 0.08, Sink = 0.14, Uncover = 0.1, BackAt = 0.06 },
+		Word = Color3.fromHex("#F5EFE2"),
+		Shadow = { Offset = Vector2.new(0.8, 1.2), Colour = Color3.fromHex("#000000"), T = 0.45 },
+		CapTop = 0.24, -- the face's capitals' top, a share of its size under the label's top
+		Lift = 0.4, -- the lead's light: its rarity's Card.Trim lifted this share toward white
+		-- The live view (research's condition 2): the lead's own model in its idle, head and chest. Its head's top at Crown and
+		-- the share Chest down its torso at Foot (panel points), its head's middle at the card's middle across (Across), turned
+		-- Yaw degrees, its head brought back Head; Fov the camera's. Each Voidkin's own offsets in Each (any of Yaw, Head,
+		-- Chest, X and Y in points) keep a held weapon whole or out of frame. Lit from behind and above in the lead's light,
+		-- the face by Ambient.
+		Live = {
+			Box = { 112, -16, 167.6, 192 },
+			Crown = -6,
+			Foot = 176,
+			Chest = 0.55,
+			Across = 195.8,
+			Yaw = -34,
+			Head = 22,
+			Fov = 20,
+			Ambient = Color3.fromHex("#B4B8C2"),
+			Light = Vector3.new(0.3, -0.7, -1),
+			Each = {
+				-- Framed a little closer (the chest's line at 0.45, about 10% larger, the crown unmoved): in her idle the top of
+				-- her pale glove rose to the window's foot, a white sliver under "Voidkin" (research's must-fix 1 on AR49,
+				-- 2026-11-23). 6 points lower (Y) still left it there; at 0.45 it sits about 12 points under the foot.
+				Kirra = { Chest = 0.45 },
+			} :: { [string]: { Yaw: number?, Head: number?, Chest: number?, X: number?, Y: number? } },
+		},
+		Dim = { Colour = Color3.fromHex("#05090B"), Amount = 0.6, Seconds = 0.15, Side = 100 },
+		Open = { Grow = 0.22, From = 0.9, Back = 1.2, Fade = 0.12, Stagger = 0.045, Order = { "Voidkin", "Equipment", "Settings", "Today" }, Land = 0.16, Rise = 8, Leave = 0.12, LeaveTo = 0.96 },
+		Step = { Lit = 0.06, Leave = 0.12, LeaveTo = 0.96, RiseAt = 0.08, Rise = 0.22, RiseFrom = 24, Cover = 0.08, Sink = 0.14, Uncover = 0.1, BackAt = 0.06 },
 	},
 	Stages = stages,
 	-- Equipment's three screens from Home (TR47; AR43, "The cut in B, for Faber": build/handoff/UI/equipment/equipment.json
@@ -853,21 +1041,25 @@ return {
 		-- Channel: the bar's empty part, the world through it; Rim: the bar's rim and caps; Rule: the title's rules and crest.
 		Look = { Channel = 0.45, Rim = 0.15, Glow = 0.82, Rule = 0.3 },
 	},
-	-- TR10's marker while the elite, or this player's keeper, is down (DownController; research's entry, 2026-11-14), in
-	-- grey: its icon (a stand-in until Modulo's), the time left, and a small card of its loot with each drop's chance
-	-- (Rules.Drops.Card). Layout: "Stack" (the icon over its name and the time, the card under), "Row" (the icon beside
-	-- its name and the time, the card under) or "Badge" (the icon with the time on it, the card only within Near studs of
-	-- it). Compare shows the three side by side over the elite's square, for one capture. Up: studs over its marker it
-	-- stands. Reach: studs from the camera it shows, the street's length. Icon and Width, authored pixels. The builder's
-	-- numbers, tuned live.
+	-- TR10's marker while the elite, or this player's keeper, is down (DownController; research's entry, 2026-11-14), as
+	-- Badge (research's pick, 2026-11-23, 16:41). Far, its icon with the time on its foot, nothing round them. Within Near
+	-- studs of the avatar, a card of its loot with each drop's chance (Rules.Drops.Card) unfolds from the tile over Unfold
+	-- seconds.
+	-- It takes its size from the world (research's must-fix 1), as a thing there does: today's size within Full studs of
+	-- the camera, Full / distance of it past them. It never shrinks under Least, the icon's side in rendered pixels on the
+	-- smallest phone (Modulo's read: both icons still part at 28, TR10), and its words stay at Theme.Text.Minimum there.
+	-- Full is the camera's distance when the avatar walks within Near, so the card always unfolds at today's size.
+	-- Up: studs over its marker it stands. Reach: studs from the camera it shows, the street's length. Icon (its tile's
+	-- side) and Width (the card's), authored pixels. The builder's numbers, tuned live.
 	Down = {
-		Layout = "Stack",
-		Compare = false,
 		Near = 60,
 		Reach = 320,
 		Up = { Elite = 9, Keeper = 11 },
-		Icon = 40,
+		Icon = 48,
 		Width = 176,
+		Full = 75,
+		Least = 28,
+		Unfold = 0.18,
 	},
 	-- TR9's Breaker screen in grey (UI/BreakerScreen), Machine by the director's pick (2026-11-14, night): the chambers
 	-- side by side over a strip of what's ready, waiting and in the bag, the chosen shard's odds beside them. Cell: a
@@ -970,6 +1162,8 @@ return {
 			Handle = { Id = "rbxassetid://90514113048264", Pixels = Vector2.new(100, 224), Points = Vector2.new(25, 56), Pad = 8 },
 			ChipBreaker = { Id = "rbxassetid://130456525982318", Pixels = Vector2.new(88, 88), Points = Vector2.new(22, 22), Pad = 5 },
 			ChipTraining = { Id = "rbxassetid://114149720582348", Pixels = Vector2.new(88, 88), Points = Vector2.new(22, 22), Pad = 5 },
+			-- The Stone Condenser's, six-sided, in its Rose (AR51's finish; images/PowerChipCondenser.png).
+			ChipCondenser = { Id = "rbxassetid://109967765766548", Pixels = Vector2.new(88, 88), Points = Vector2.new(22, 22), Pad = 5 },
 			Ember = { Id = "rbxassetid://90007328405959", Pixels = Vector2.new(580, 168), Points = Vector2.new(580, 168), Pad = 0 },
 			-- The battery's mark on its plate in the head, one of AR12's V2 images (build/handoff/UI/hud/colour/images/Battery.png;
 			-- TR41 (e)): drawn in its own gold and dark rim, never tinted. Its drawing spans 0.88 of its side across, centred.
@@ -992,6 +1186,7 @@ return {
 		Colours = {
 			Breaker = Color3.fromHex("#E6ECF7"),
 			Training = Color3.fromHex("#4FD1FF"),
+			Condenser = Color3.fromHex("#FF8FAE"), -- Rose (AR51, research's pick of 14:29): no other light or word here is near it
 			Battery = Color3.fromHex("#FFE266"),
 			Ember = Color3.fromHex("#F2A63B"),
 			Caution = Color3.fromHex("#FF9A4D"),
@@ -1005,6 +1200,7 @@ return {
 		Lights = {
 			Breaker = ColorSequence.new({ ColorSequenceKeypoint.new(0, Color3.fromHex("#989CA3")), ColorSequenceKeypoint.new(0.0625, Color3.fromHex("#9FA3AA")), ColorSequenceKeypoint.new(0.125, Color3.fromHex("#A8ACB4")), ColorSequenceKeypoint.new(0.1875, Color3.fromHex("#B6BAC1")), ColorSequenceKeypoint.new(0.25, Color3.fromHex("#C7CBD1")), ColorSequenceKeypoint.new(0.3125, Color3.fromHex("#D3D6DD")), ColorSequenceKeypoint.new(0.375, Color3.fromHex("#D7DCE3")), ColorSequenceKeypoint.new(0.4375, Color3.fromHex("#DFE3EC")), ColorSequenceKeypoint.new(0.5, Color3.fromHex("#EAEFF8")), ColorSequenceKeypoint.new(0.5625, Color3.fromHex("#DDE2EC")), ColorSequenceKeypoint.new(0.625, Color3.fromHex("#D2D6DF")), ColorSequenceKeypoint.new(0.6875, Color3.fromHex("#C6CBD3")), ColorSequenceKeypoint.new(0.75, Color3.fromHex("#BBC0C8")), ColorSequenceKeypoint.new(0.8125, Color3.fromHex("#B1B5BD")), ColorSequenceKeypoint.new(0.875, Color3.fromHex("#A7ABB3")), ColorSequenceKeypoint.new(0.9375, Color3.fromHex("#9FA3AA")), ColorSequenceKeypoint.new(1, Color3.fromHex("#989CA3")) }),
 			Training = ColorSequence.new({ ColorSequenceKeypoint.new(0, Color3.fromHex("#348AA8")), ColorSequenceKeypoint.new(0.0625, Color3.fromHex("#3990B0")), ColorSequenceKeypoint.new(0.125, Color3.fromHex("#409AB9")), ColorSequenceKeypoint.new(0.1875, Color3.fromHex("#50A8C7")), ColorSequenceKeypoint.new(0.25, Color3.fromHex("#69BAD6")), ColorSequenceKeypoint.new(0.3125, Color3.fromHex("#77C6E2")), ColorSequenceKeypoint.new(0.375, Color3.fromHex("#6DC9E9")), ColorSequenceKeypoint.new(0.4375, Color3.fromHex("#65CEF3")), ColorSequenceKeypoint.new(0.5, Color3.fromHex("#68D8FF")), ColorSequenceKeypoint.new(0.5625, Color3.fromHex("#60CCF2")), ColorSequenceKeypoint.new(0.625, Color3.fromHex("#59C1E6")), ColorSequenceKeypoint.new(0.6875, Color3.fromHex("#51B6DA")), ColorSequenceKeypoint.new(0.75, Color3.fromHex("#4BACCE")), ColorSequenceKeypoint.new(0.8125, Color3.fromHex("#44A2C3")), ColorSequenceKeypoint.new(0.875, Color3.fromHex("#3E99B9")), ColorSequenceKeypoint.new(0.9375, Color3.fromHex("#3890AF")), ColorSequenceKeypoint.new(1, Color3.fromHex("#348AA8")) }),
+			Condenser = ColorSequence.new({ ColorSequenceKeypoint.new(0, Color3.fromHex("#A85E73")), ColorSequenceKeypoint.new(0.0625, Color3.fromHex("#B06479")), ColorSequenceKeypoint.new(0.125, Color3.fromHex("#B96C82")), ColorSequenceKeypoint.new(0.1875, Color3.fromHex("#C77B90")), ColorSequenceKeypoint.new(0.25, Color3.fromHex("#D691A4")), ColorSequenceKeypoint.new(0.3125, Color3.fromHex("#E29EB1")), ColorSequenceKeypoint.new(0.375, Color3.fromHex("#E99AB0")), ColorSequenceKeypoint.new(0.4375, Color3.fromHex("#F399B2")), ColorSequenceKeypoint.new(0.5, Color3.fromHex("#FF9FBA")), ColorSequenceKeypoint.new(0.5625, Color3.fromHex("#F295AF")), ColorSequenceKeypoint.new(0.625, Color3.fromHex("#E68CA5")), ColorSequenceKeypoint.new(0.6875, Color3.fromHex("#DA839B")), ColorSequenceKeypoint.new(0.75, Color3.fromHex("#CE7A92")), ColorSequenceKeypoint.new(0.8125, Color3.fromHex("#C37289")), ColorSequenceKeypoint.new(0.875, Color3.fromHex("#B96B80")), ColorSequenceKeypoint.new(0.9375, Color3.fromHex("#AF6479")), ColorSequenceKeypoint.new(1, Color3.fromHex("#A85E73")) }),
 			Battery = ColorSequence.new({ ColorSequenceKeypoint.new(0, Color3.fromHex("#A89543")), ColorSequenceKeypoint.new(0.0625, Color3.fromHex("#B09C48")), ColorSequenceKeypoint.new(0.125, Color3.fromHex("#B9A550")), ColorSequenceKeypoint.new(0.1875, Color3.fromHex("#C7B35F")), ColorSequenceKeypoint.new(0.25, Color3.fromHex("#D6C478")), ColorSequenceKeypoint.new(0.3125, Color3.fromHex("#E2D085")), ColorSequenceKeypoint.new(0.375, Color3.fromHex("#E9D57E")), ColorSequenceKeypoint.new(0.4375, Color3.fromHex("#F3DB78")), ColorSequenceKeypoint.new(0.5, Color3.fromHex("#FFE67C")), ColorSequenceKeypoint.new(0.5625, Color3.fromHex("#F2DA73")), ColorSequenceKeypoint.new(0.625, Color3.fromHex("#E6CE6B")), ColorSequenceKeypoint.new(0.6875, Color3.fromHex("#DAC363")), ColorSequenceKeypoint.new(0.75, Color3.fromHex("#CEB85C")), ColorSequenceKeypoint.new(0.8125, Color3.fromHex("#C3AE55")), ColorSequenceKeypoint.new(0.875, Color3.fromHex("#B9A44E")), ColorSequenceKeypoint.new(0.9375, Color3.fromHex("#AF9C48")), ColorSequenceKeypoint.new(1, Color3.fromHex("#A89543")) }),
 		} :: { [string]: ColorSequence },
 		Bar = {
@@ -1117,7 +1313,7 @@ return {
 				ChannelFill = { Id = "rbxassetid://77652759335656", Pixels = Vector2.new(64, 64), Points = Vector2.new(16, 16), Cut = { 8, 8, 8, 8 }, Pad = 0 },
 				ChannelEdge = { Id = "rbxassetid://110614215738990", Pixels = Vector2.new(64, 64), Points = Vector2.new(16, 16), Cut = { 8, 8, 8, 8 }, Pad = 0 },
 			} :: { [string]: UIKit.Image },
-			-- The page rail's sizes (AR29, B), the rail retired with Home's tray (AR43, 2026-11-19): Icon and Drawn size the
+			-- AR29's page rail sizes, its rail replaced by the Equipment screen's (AR49; Voidkin.Rail): Icon and Drawn size the
 			-- band's icons, and Tab is the kit's tab (Kit.Button).
 			Rail = {
 				Icon = 35, -- an icon's image, square: its drawing is 28 across, 24 points on the smallest phone
@@ -1156,7 +1352,17 @@ return {
 		Span = 1.2,
 		Figure = { Top = 24, Fov = 30, Turn = 0.6, Back = 0.2, Slide = 48, Draw = 0.8 },
 		Swipe = { Distance = 80, Time = 0.35, Tap = 10, TapTime = 0.3 },
-		Stage = { Glow = 0.35, Light = 0.45 },
+		-- Floor: the stage's stone under the fighter, its element only a ring of light round its edge, Rim of the floor across
+		-- (Modulo's B, research's pick of 2026-11-23, 02:05; TR50's sweep). The stone shows the sheet's Shows under every
+		-- rarity's light: the stage shows a plastic floor at its colour x (Ambient + LightColor x Lit), Lit measured on this
+		-- stage (2026-11-23), so the floor wears Shows over that and the rarity's light keeps the fighter alone (research's
+		-- must-fix 1: Epic's light turned the stone lavender). The ring is opaque Neon, which a viewport shows at about Gain x
+		-- colour^Power in linear light (measured with grey probes): the ring takes the colour that shows its element's, or
+		-- Fire's orange shows yellow.
+		Stage = {
+			Light = 0.45,
+			Floor = { Shows = Color3.fromHex("#A9A59B"), Lit = 0.46, Rim = 0.03, Neon = { Gain = 11.3, Power = 1.84 } },
+		},
 		Power = { Width = 236, Height = 56, Number = 36, Least = 20, Emblem = 170, Roll = 0.6, Gain = 26, Hold = 1.2 },
 		Finish = {
 			Stops = { 0, 0.2, 0.5, 0.56, 1 },
@@ -1172,6 +1378,11 @@ return {
 		},
 		Strip = 52,
 		Panel = { Share = 0.44, Least = 300, Most = 420 },
+		-- The page rail (AR49, research's call of 2026-11-20, 00:12): the Equipment screen's (UI.Kit.Rail), its four pages
+		-- down a column Width wide at the room's left, Margin in from its top and foot. Its words are the rail's; its discs
+		-- take a share of the rail's radii, the most that lets four stand whole in the room (the smallest phone's 248 points
+		-- hold them at about 0.65), and its pitch grows with the room up to Pitch.
+		Rail = { Pages = { "Overview", "Kit", "Bag", "Stars" }, Width = 68, Margin = 4, Pitch = 82, Least = 0.5 },
 		-- The Stars page's pips (AR43's take 2, voidkin_b.json, stars.pips): a Side-point square turned 45 degrees, Half
 		-- its height's half, Pitch apart; a won one its trim lit by Lit towards white, its Glint hairline at WonHair, its
 		-- glow Glow points out at GlowAlpha; one to win, the Facet's hairline at EmptyHair.

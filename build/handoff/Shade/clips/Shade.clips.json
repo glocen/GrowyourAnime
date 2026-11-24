@@ -82,16 +82,16 @@
         0.08,
         0.15
       ],
-      "Frames": 97,
-      "Seconds": 1.6,
+      "Frames": 165,
+      "Seconds": 2.733,
       "Loop": false,
       "Markers": [
         [
-          12,
+          18,
           "Raise"
         ],
         [
-          72,
+          138,
           "Drop"
         ]
       ],
@@ -104,21 +104,25 @@
         0.06,
         0.15
       ],
-      "Frames": 97,
-      "Seconds": 1.6,
+      "Frames": 139,
+      "Seconds": 2.3,
       "Loop": false,
       "Markers": [
         [
-          14,
+          16,
           "Line"
         ],
         [
-          40,
+          60,
           "Lunge"
         ],
         [
-          54,
+          75,
           "Land"
+        ],
+        [
+          123,
+          "Close"
         ]
       ],
       "ShownIn": "Dasher"

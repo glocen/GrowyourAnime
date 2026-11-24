@@ -7,12 +7,17 @@
 --   (Net "Recall": the touch button, R, ButtonY, only in a keeper's try) dashes the lead to its place by the avatar.
 -- * Each slam aimed at a lead is counted under the mode it was played in: hit or missed, and a miss on purpose (the
 --   avatar moved Moved studs, or Recall was pressed, in the tell) or by accident (neither).
+-- * A Dasher's line (AR52) is a footprint too: the same switch and the same way out, its outside the line's, and its
+--   lunges counted apart, under "Lunge A" (or B, or Off). B's Recall shows only in a keeper's try, so on the Row a line
+--   under B is left by walking alone until the director's pick says otherwise.
 -- The player's attribute RecallReady (server time) says when their next Recall is ready, for the button's cooldown.
 -- Studio:
 --   NL_Debug:Invoke("Slam")                 the mode, and the counts per mode
 --   NL_Debug:Invoke("Slam", nil, "A")       the switch on "Off", "A" or "B" for every side (a Tune)
 --   NL_Debug:Invoke("Slam", nil, "Reset")   the counts cleared
 --   NL_Debug:Invoke("Slam", nil, "Now")     the player's keeper's slam ready now (a test's)
+--   NL_Debug:Invoke("Slam", nil, "Ready")   every foe on the player's lead with a signature, its signature ready now
+--                                            (AR52's cases: a Guard's raise, a Dasher's lunge)
 
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
@@ -40,6 +45,7 @@ type Watch = {
 	Keeper: FightService.Fighter,
 	Player: Player,
 	Mode: MarkRule.Mode, -- the switch as the footprint went down: the slam is counted under it
+	Key: string, -- what it's counted under: its mode, a lunge's after "Lunge " (AR52)
 	FromX: number, -- where the avatar stood at the Plant
 	FromZ: number,
 	Moved: number, -- the farthest it has stood from there since
@@ -72,6 +78,7 @@ local function marked(keeper: FightService.Fighter, mark: FightService.Mark)
 		Keeper = keeper,
 		Player = player,
 		Mode = mode(),
+		Key = if mark.Length then `Lunge {mode()}` else mode(),
 		FromX = avatar.Position.X,
 		FromZ = avatar.Position.Z,
 		Moved = 0,
@@ -92,8 +99,8 @@ local function unmarked(_keeper: FightService.Fighter, mark: FightService.Mark, 
 		end
 		local hit = table.find(struck, lead) ~= nil
 		local kind = if hit then nil else MarkRule.Purpose(watch.Moved, watch.Recalled, Combat.Keeper.Out.Moved)
-		MarkRule.Count(counts, watch.Mode, hit, kind)
-		Log.Info("Slam", `{watch.Player.Name}'s lead, mode {watch.Mode}: {if hit then "hit" else `missed, {kind}`}`)
+		MarkRule.Count(counts, watch.Key, hit, kind)
+		Log.Info("Slam", `{watch.Player.Name}'s lead, {watch.Key}: {if hit then "hit" else `missed, {kind}`}`)
 	end
 end
 
@@ -111,7 +118,7 @@ local function step()
 		watch.Moved = math.max(watch.Moved, moved)
 		if watch.Mode == "A" and not watch.Broke and mode() == "A" then
 			local mark = watch.Mark
-			local outside = not MarkRule.Inside(mark.X, mark.Z, mark.Radius, p.X, p.Z)
+			local outside = not MarkRule.Covers(mark, p.X, p.Z)
 			if MarkRule.Follows(moved, outside, out.Moved) then
 				watch.Broke = FightService.Away(lead, Combat.Lead.CatchUpSpeed, mark.Slam)
 			end
@@ -183,6 +190,18 @@ local function command(who: any, what: any): any
 		end
 		keeper.ReadyAt[row.Signature] = 0
 		return { Ok = true }
+	elseif what == "Ready" then
+		local player = DebugService.ResolvePlayer(who)
+		local lead = if player then FightService.LeadOf(player) else nil
+		local readied = {}
+		for _, f in FightService.All() do
+			local row = Enemies.ById[f.Def]
+			if lead and f.Target == lead and FightService.Standing(f) and row and row.Signature then
+				f.ReadyAt[row.Signature] = 0
+				table.insert(readied, f.Id)
+			end
+		end
+		return { Ok = #readied > 0, Error = if #readied > 0 then nil else "NoFoe", Ready = readied }
 	elseif what == "Off" or what == "A" or what == "B" then
 		TuneService.Set("Combat.Keeper.Out.Mode", what)
 		return { Mode = mode(), Counts = counts }

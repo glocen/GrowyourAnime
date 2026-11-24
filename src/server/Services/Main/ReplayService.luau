@@ -9,12 +9,16 @@
 -- More Studio tools for fights, for tests and play checks:
 --   NL_Debug:Invoke("FightSpawn", who, "brawler", 3, 12)   a level 3 brawler 12 studs ahead of the avatar, on its ground
 --   NL_Debug:Invoke("FightSpawn", who, "brawler", 3, 12, nil, "Hard")   the same on Hard: its Hard look (AR46)
+--   NL_Debug:Invoke("FightSpawn", who, "brawler", 3, 12, nil, nil, "Orange")   in another type's colour (AR52's tint)
 --   NL_Debug:Invoke("FightSpawn", who)                      removes every Shade it spawned
 --   NL_Debug:Invoke("FightDefeat", who, id)                 one of those falls at once, its fall seen whole
 --   NL_Debug:Invoke("Fighters")                             every fighter: kind, state, health, target, action, place
 --   NL_Debug:Invoke("FightHealth", who, 0.5)                the player's lead at half its health, to see a heal; 0 downs it
 --   NL_Debug:Invoke("FoeHealth", who, id, 0.5)             a spawned Shade at half its health, to see its card (AR45)
 --   NL_Debug:Invoke("FightHealth", who, 0.05, true)         at most that share: lowered to it, never raised (a take's held fall)
+--   NL_Debug:Invoke("LeadElement", who, "Frost", bare)      the player's lead hits in Frost, the rest its own (AR48's checks);
+--                                                       bare: its Voidkin's own block, no stars, nothing worn; "" for
+--                                                       none, nil for its own again; gone with its next spawn
 -- Staged as the game frames a fight (FightService's slot, Rules/Fight.Beyond): the dummy at the pad's middle, the avatar
 -- Replay.Behind behind it and Lead.Side to the left, so its own body hides neither, all facing down the pad; the lead
 -- beyond the dummy at the action's own spacing (Replay.Distance), turned Lead.Frame degrees toward the avatar's right,
@@ -33,6 +37,8 @@ local Parts = require(Shared.Util.Parts)
 local Actions = require(Shared.Definitions.Actions)
 local Enemies = require(Shared.Definitions.Enemies)
 local Combat = require(Shared.Config.Combat)
+local Stats = require(Shared.Rules.Stats)
+local ShadesConfig = require(Shared.Config.Shades)
 local Core = script.Parent.Parent.Core
 local DebugService = require(Core.DebugService)
 local FightService = require(script.Parent.FightService)
@@ -173,7 +179,7 @@ local spawned: { [FightService.Fighter]: boolean } = {}
 
 -- `comes`: it comes for the player's lead at once, as one fought alone does (TR29's `For`), lead fighting or not: since
 -- TR24's fix 6 a Shade passes over an idle lead, and a case that needs one on the lead says so.
-local function fightSpawn(who: any, def: any, level: any, ahead: any, comes: any, difficulty: any): any
+local function fightSpawn(who: any, def: any, level: any, ahead: any, comes: any, difficulty: any, shadeType: any): any
 	if def == nil then
 		local count = 0
 		for f in spawned do
@@ -188,7 +194,8 @@ local function fightSpawn(who: any, def: any, level: any, ahead: any, comes: any
 	local lvl = if level == nil then 1 else level
 	local studs = if ahead == nil then 12 else ahead
 	local badDifficulty = difficulty ~= nil and difficulty ~= "Normal" and difficulty ~= "Hard"
-	if root == nil or type(def) ~= "string" or Enemies.ById[def] == nil or type(lvl) ~= "number" or type(studs) ~= "number" or badDifficulty then
+	local badType = shadeType ~= nil and (type(shadeType) ~= "string" or ShadesConfig.Tint[shadeType] == nil)
+	if root == nil or type(def) ~= "string" or Enemies.ById[def] == nil or type(lvl) ~= "number" or type(studs) ~= "number" or badDifficulty or badType then
 		return { Ok = false, Error = "BadArgs" }
 	end
 	local look = Vector3.new(root.CFrame.LookVector.X, 0, root.CFrame.LookVector.Z).Unit
@@ -198,7 +205,12 @@ local function fightSpawn(who: any, def: any, level: any, ahead: any, comes: any
 	params.FilterDescendantsInstances = { workspace:FindFirstChild("Fighters") or workspace.Terrain, (player :: Player).Character :: Model }
 	local hit = workspace:Raycast(spot, Vector3.new(0, -GROUND_RAY, 0), params)
 	local ground = if hit then hit.Position else spot - Vector3.new(0, STAND, 0)
-	local f = FightService.SpawnEnemy(def, lvl, CFrame.lookAt(ground, ground - look), if difficulty then { Difficulty = difficulty } else nil)
+	local f = FightService.SpawnEnemy(
+		def,
+		lvl,
+		CFrame.lookAt(ground, ground - look),
+		if difficulty or shadeType then { Difficulty = difficulty :: string?, Type = shadeType :: string? } else nil
+	)
 	if comes == true then
 		f.For = player
 		f.Model:SetAttribute("For", (player :: Player).UserId)
@@ -208,6 +220,51 @@ local function fightSpawn(who: any, def: any, level: any, ahead: any, comes: any
 		spawned[f] = nil
 	end)
 	return { Ok = true, Id = f.Id, Health = f.Health }
+end
+
+-- The player's lead hits in `element` (a key of Config.Combat.States.By, or "" for none): its block with that element,
+-- everything else its own, so the element states are checked on one lead alike but for them (AR48). With `bare`, its
+-- block is its Voidkin's own at its level, no stars and nothing worn, as a new player meets the first pack. Every block
+-- the lead is given while it holds (a level gained, the save's sync) passes through it (FightService's Reblock). Nil
+-- gives it its own block back.
+local owns: { [FightService.Fighter]: Stats.Block } = setmetatable({}, { __mode = "k" }) :: any
+local function leadElement(who: any, element: any, bare: any): any
+	local player = DebugService.ResolvePlayer(who)
+	local lead = if player then FightService.LeadOf(player) else nil
+	if lead == nil then
+		return { Ok = false, Error = "NoLead" }
+	end
+	if element ~= nil and (type(element) ~= "string" or (element ~= "" and Combat.States.By[element] == nil)) or (bare ~= nil and type(bare) ~= "boolean") then
+		return { Ok = false, Error = "BadArgs" }
+	end
+	local own = owns[lead] or lead.Block
+	if element == nil then
+		lead.Reblock, owns[lead] = nil, nil
+		FightService.SetBlock(lead, own)
+		return { Ok = true, Element = lead.Block.Element }
+	end
+	lead.Reblock = function(block: Stats.Block): Stats.Block
+		owns[lead] = block
+		local made = if bare
+			then Stats.Resolve({
+				Id = "",
+				Def = block.Def,
+				Level = block.Level,
+				Xp = 0,
+				Stars = 0,
+				Copies = 0,
+				Nickname = "",
+				Preset = 0,
+				Favourite = false,
+				Locked = false,
+				Born = 0,
+			}, nil, nil)
+			else table.clone(block)
+		made.Element = element
+		return made
+	end
+	FightService.SetBlock(lead, own)
+	return { Ok = true, Element = lead.Block.Element }
 end
 
 -- One of FightSpawn's enemies falls at once, as if hit to nothing: its fall seen whole (the keeper's lantern going out).
@@ -276,6 +333,7 @@ function ReplayService.Start()
 	DebugService.Register("Replay", replay)
 	DebugService.Register("FightSpawn", fightSpawn)
 	DebugService.Register("FightDefeat", fightDefeat)
+	DebugService.Register("LeadElement", leadElement)
 	DebugService.Register("Fighters", fighters)
 	DebugService.Register("FightHealth", fightHealth)
 	DebugService.Register("FoeHealth", foeHealth)

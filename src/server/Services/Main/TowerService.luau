@@ -37,6 +37,7 @@ local FightService = require(script.Parent.FightService)
 local HomeService = require(script.Parent.HomeService)
 local KeeperService = require(script.Parent.KeeperService)
 local WorldService = require(script.Parent.WorldService)
+local GoalService = require(script.Parent.GoalService)
 
 local TowerService = {
 	Priority = 50, -- after the world, the fight and the keeper's moves
@@ -224,6 +225,7 @@ function TowerService.Begin(player: Player): { [string]: any }
 	if answer.Ok ~= true then
 		return answer
 	end
+	GoalService.Led(player) -- a climb is a run: "lead a run with someone new" (TR54)
 	local run: Run = {
 		Id = answer.Id,
 		Seed = seed,

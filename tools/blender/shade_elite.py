@@ -159,8 +159,9 @@ def write():
                 "less the strings, the knot and their tails, so the same maps), because a sleeve is too narrow to "
                 "hide the ties (AR2, section 6). `centre` is where that MeshPart's middle goes and `right`, `up` and "
                 "`facing` where its own +X, +Y and -Z point, in this recipe's frame at the ordinary Shade's size: "
-                "all of it scales with the rig. Nothing runs from it to the collar or the first mask. Only the "
-                "Brawler's is past the content check (docs/asset-requests.md, AR2, sections 5 and 6).",
+                "all of it scales with the rig. Nothing runs from it to the collar or the first mask. The "
+                "Brawler's, the Guard's and the Dasher's are past the content check (docs/asset-requests.md, AR2, "
+                "sections 5 and 6; AR57); the Support's waits on its own sheet and check.",
         "on": "Left Arm", "size": SMALL, "way": WAYS[PICK][0],
         "masks": masks}
     RECIPE.write_text(json.dumps(recipe, indent=1))  # as shade_model.py writes it

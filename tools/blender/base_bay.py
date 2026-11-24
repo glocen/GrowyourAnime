@@ -215,7 +215,7 @@ def review(out, fast):
     yard.kit.block("Strip", (3 * plan.PLOT, plan.STRIP, 0.4), (0, plan.STRIP / 2, -0.22), yard.stone)
     yard.kit.block("Ground", (5 * plan.PLOT, 4 * plan.PLOT, 0.4), (0, plan.STRIP / 2, -0.3), yard.flat["ground"])
     for obj in yard.kit.pieces:
-        if obj.name.startswith(("PowerSpan", "Court", "Yard", "Wings")):
+        if obj.name.startswith(("PowerSpan", "Floor")):
             obj.visible_shadow = False
     look.sky(scene, d)
     look.sun(scene, d)
@@ -235,9 +235,9 @@ def review(out, fast):
         except AttributeError:
             pass
 
-    gi = base.ROW
-    views = {"row": toward((-4.0, 36.0), (-46.0, 62.0)),                         # a player in the court, turned to the left side's three
-             "court": ((-(base.OUTER - 19.5), -gi, 8.5), (-base.OUTER, -gi, 7.0))}   # head-on to level 1's left bay
+    bx, bi = base.BAYS[0]
+    views = {"row": toward((-4.0, 36.0), (bx - 8.0, bi + 8.0)),                  # a player in the court, turned to the Door's side's bays
+             "court": ((bx + 19.5, -bi, 8.5), (bx, -bi, 7.0))}                   # head-on to bay 1
     w, h = look.SIZE
     shots, boxes, black, tris = {}, {}, {}, {}
 

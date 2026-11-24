@@ -21,6 +21,8 @@ export type State = {
 	Full: boolean,
 	Flash: number, -- 1 as it fires, to 0
 	Swell: number, -- 0 to 1 and back, once, as it's ready again
+	Pulse: number?, -- 0 to 1 and back, once, a full ring left untapped (TR52)
+	Press: number?, -- how far a tap has it in, of Config's Press: 1 on the tap's frame, back to 0 (TR52)
 	Seen: number, -- 0 hidden to 1 shown
 	Action: string, -- the signature's id
 	Class: string, -- the lead's class, for a signature with no icon yet
@@ -177,7 +179,8 @@ function Readout.Step(piece: Piece, state: State)
 	piece.Ready.ImageTransparency = 1 - seen * hot
 	piece.ReadyIcon.ImageTransparency = 1 - seen * hot
 	piece.Front.Offset = Vector2.new(Hud.FrontShift(Hud.FrontOffset(state.Share, config.Travel), piece.Front.Rotation))
-	piece.Scale.Scale = 1 + config.Swell * state.Flash + config.ReadySwell * state.Swell
+	piece.Scale.Scale = 1 + config.Swell * state.Flash + config.ReadySwell * state.Swell + config.Pulse.Scale * (state.Pulse or 0)
+		- config.Press * (state.Press or 0)
 	piece.Frame:SetAttribute("Share", state.Share)
 	piece.Frame:SetAttribute("Hot", hot)
 end

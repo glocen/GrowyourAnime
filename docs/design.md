@@ -106,7 +106,10 @@ Real time, in the world, automatic [D: one automatic combat lead].
 - **Poise.** Every fighter has a poise bar that fills from hits and drains when it's left alone. Class sets its size: a Tank's is the largest, an Assassin's the smallest. An elite's and a keeper's bar sits on the target's card. Filling it is the fight's payoff: a heavy stagger and a window to hit hard.
 - **Elites and keepers** don't flinch, and a stun or a freeze lasts half as long on them.
 - **No lock.** After a stun or a freeze, a fighter can't be stunned or frozen again for a while. A long fight between two automatic builds stays a fight.
-- **Nothing on top.** A state changes timing, movement or healing. An element's effect is paid out of that element's own damage (`docs/balance.md`, "One damage order"), so nothing is added on top and no stat is multiplied.
+- **Nothing on top.** A state changes timing, movement or healing, and adds no damage: Burn pays part of a Fire hit's own elemental number over time (`docs/balance.md`, "One hit", step 6), and Chill, Shock and Sap leave every number as it is. Nothing is added on top and no stat is multiplied (research, 18:05, answering Faber).
+- **At launch, a Shade's Void carries no Sap** [research, 2026-11-23, 18:05, tier 2, answering Faber]. A pack hits all fight, so Sap would sit on the lead throughout: never read as a state, and a 30% cut to the Regen the Shades' numbers were solved against (`src/shared/Config/Enemies.luau`'s header). The Shades' element stays for type and the number's colour. Sap is a Voidkin's, and a Void keeper's or elite's when one is designed for it.
+- **No chill while locked** [research, 18:05]: during the lock after a freeze, Frost hits add no chill, so freezes never chain back to back.
+- **The elements stay even:** in the replay, four leads alike but for their element, ten runs each against Lantern Row's first pack. Clear time and damage taken stay within 10% between them; a state that wins by more is turned down.
 - **A signature names its state** in its roster row when it has one: Rill's Cold Snap freezes, Ashen's Last Ember burns, Rook's Haymaker is heavy.
 - **The numbers** are the builder's, in Config, starting from `handbook/feel/combat.md` ("Hitstun, stagger and chains") and tuned by playing.
 - **When:** TR2 keeps its block, with a flinch and a down-and-up. The states join with the Lamplighter as a real fight, where poise first matters. Reactions are one shared clip set per rig (R6, the Shade's), not one per Voidkin, and R6 has two: open legs and long robes. A leg inside a robe stays within 25 degrees of the torso, so the open set's falls come out of the hem. The robe set is Pip's Hit, Down and Up, and Cinder, Halcyon, Crane, Umbriel and Lyric (her jacket's tail) wear it too. A Voidkin's definition names its set. A prop on its own joint (Pip's hat and lantern) is keyed in the clip that made it; on another body, the prop's joint has no track and follows by its spring [research, 2026-11-12, tier 2: `docs/asset-requests.md`, AR4, section 3].
@@ -263,7 +266,7 @@ Its entrance stands behind each base [D], and the fight is in a room of its own 
 - **Fast floors:** a floor far below the lead's power falls in one hit and the next foe comes at once, so the climb to where it gets hard takes seconds.
 - **Rewards** by floor won: Credits rising with the floor, a chest chance rising with it, and a first-time bonus past the record. Fast floors pay nothing: they're the free ride to where it gets hard. One exception: floor 5's chest is sure the first time the account wins it, fast or not. Floors 1 to 5 are always Rook, Pip, Kirra, Lyric and Watt; the draw starts at floor 6 (branch `claude/design-review-rules`, a7cbd28, 2026-11-18). The Tower's chest has its own rarity row, so it gives Rare and better while Lantern Row is the only ground (`docs/balance.md`, "The Tower"). Each is written to the run's ledger on the server when its floor is won, and granted once when the run ends; a run's id makes a repeated claim a no-op.
 - **Interruptions:** leaving the ring, going home, a disconnect or a shutdown end the run at its last floor won, and nothing won is lost. The results open once at the next join. A run never resumes.
-- **The order** [D, 2026-11-19]: the room is built after the main game's open pieces. Until then the grey Tower, its platforms included, runs as it is.
+- **The order** [D, 2026-11-19]: the room is built after the main game's open pieces. Until then the grey Tower, its platforms included, runs as it is. Its look is drawn ahead by Modulo [D, 2026-11-23, by 20:01: AR56]; the build keeps this order.
 - **Not at launch** [D]: milestone bosses, cash-outs, branches, extra currencies.
 
 ## The world, in grey
@@ -286,11 +289,42 @@ Research's layout for TR2, 2026-11-12. The builder installs it in grey; how it l
   - **A pack belongs to everyone.** Every player whose lead hit one of its Shades gets that Shade's drop in full, as at the elite. Nobody walks past a fight they can't join, and nobody steals a kill. A pack comes back a set time after its last Shade falls (Config). That wait is also what limits how much faster a group earns than a player alone.
   - **The elite** stands in a square at the street's middle, 4 s across (64 studs), so anyone near can join (design, "The Festival of Battles").
   - **At the far end, the keeper's gate,** and behind it **the Lamplighter's ring** (80 studs across). Every player gets their own fight; how is the builder's call.
-  - **Beyond the ring:** Drum Court's gate, shut, in view. Beside it, the **shortcut home**, opened by the first win: in grey, a pad that sets the player down at their own plot.
+  - **Beyond the ring:** Drum Court's gate, shut, in view, and saying it opens in an update [D, 2026-11-23, 15:06]. The first session's last beat points at what launches, not at this gate (`docs/north-star.md`). Beside it, the **shortcut home**, opened by the first win: in grey, a pad that sets the player down at their own plot.
 - **The Festival Door** [D, 2026-11-12: "a door or something at the base to teleport to zones easily"]: a door on every plot that takes the player to the gate of any ground they've opened, with its twin at each gate to come home. It says where it leads [D, 2026-11-16, 00:43: "the portal need to be known it for festival of battle"]: from across the plot by the festival's light and lanterns, up close by its name on the plate over its ring, "Festival of Battles", and from afar by its sign with the ground's name. Once there are two grounds, its choice names each. So a plot can grow and stand apart without lengthening the trip to a fight, and the walk to the first Shade stops setting the plots' size. The Strip keeps what's worth walking to: the Shop, the Clash Grounds, the Calamity, and the other bases. Built with TR2's verdict and its numbers.
 - **Arrival:** the player's spawn is on their own plot, facing the Breaker and the three shards ("The first session").
 - **What the world marks** for code to read (the names and the contract are the builder's, `docs/engineering-plan.md`): each plot and its spawn, the Breaker, each bay, the battery, the festival gate, each pack's spawn, the elite's, the keeper's gate, the ring, the shortcut and its landing, the shut gate.
 - **Tuned by walking, not on paper:** the walk times, pack spacing and the street's length are first guesses, judged at TR2's verdict from the player's camera.
+
+## Goals
+
+**Two layers and the next step, each something the player does anyway, made sharper** [D, 2026-11-23, 15:23, the director's yes to research's design, `docs/research/design-holes.md`, F5; the third layer, the Mask Ledger, cut by the director by 18:38]. The bar is the director's: cool, never corny, weird or "AI slop". **Basic at launch** [D, 2026-11-23, 15:24: "quest wont be too advanced tho js basic at launch"]: each layer launches in its plainest form, below, and grows with the updates.
+
+- **A dare on each stretch** of the run (research, 17:49: the run has four stretches and no start card, so "stage" read wrong).
+  - One line that unfolds under the run's line as the stretch starts, then folds to a small mark in the kit's own make (AR53). It's about how the stretch is played, never which Voidkin leads it.
+  - Each stretch asks its own question (F2), so its dare does too. At launch, one fixed dare per stretch:
+    - Stretch 1, the Brawlers: finish with your lead above half;
+    - Stretch 2, the Guards: break a raised shield with your signature;
+    - Stretch 3, the Dashers: let no Dasher's line touch you;
+    - Stretch 4, the Lamplighter: stand outside every slam.
+  - Kept, it pays a forge stone when its stretch is cleared, and the run's card shows them all ("Dare kept", "+N"). A later fall takes nothing back. Missed, nothing is said.
+  - Seeds, tuned by playing.
+- **Today's three, on Home's panel.**
+  - One fight, one base and one roster goal, each paying a shard, so each pays a reveal. They're drawn from a short list of simple goals, for example:
+    - "Keep a dare."
+    - "Let every bay run a full hour."
+    - "Lead a run with someone new."
+  - They're done in ordinary play, about five minutes past it.
+  - They reset at 00:00 UTC and bank up to three days: no streak to lose, and no timer on the HUD.
+- **Next,** pinned at the Today list's head: the account's one next step (the Lamplighter on Hard, base level 3, a Tower floor) and what it opens.
+- **Nothing in the goals wears a ground's festival** [D, 2026-11-23, by 18:38: "dont make the whole game about lantern drum festival like those mask item to increase base i want to remind you that we make an anime game!", then "Cut it" to research's restatement]. No masks, lanterns or festival lines outside Lantern Row's own fights, and no mask on the base. A ground's look stays in its ground (the hub's word of 2026-11-16).
+- **The words:**
+  - no exclamation marks, no "Defeat X", and no "Complete" or "Earn" headers;
+  - one concrete detail a line, in a dry voice a little older than the player;
+  - each line passes "would this world say it?";
+  - no filler that sounds generated: the director called the run's line "then its last foe" "corny ai slop" (2026-11-23, 18:35). It already reads "then the elite" (TR50's fix 4).
+  - Research writes them; the content check reads them before they're built.
+- **Rewards** are forge stones and shards only: never Robux, and never anything sold.
+- **Not at launch:** a pool of dares per stretch, weekly goals, a pass, titles.
 
 ## What the player holds
 

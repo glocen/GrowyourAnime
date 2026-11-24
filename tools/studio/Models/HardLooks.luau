@@ -14,9 +14,10 @@
 
 local ServerStorage = game:GetService("ServerStorage")
 
--- Published under the group, 2026-11-19 (docs/asset-log.md), by tools/upload/upload_asset.py.
+-- Published under the group, 2026-11-19 (docs/asset-log.md), by tools/upload/upload_asset.py; the Shade's again on
+-- 2026-11-23, cut on AR52's and AR58's masks.
 local MAPS = {
-	Shade = { Body = "Shade_Torso", Color = "rbxassetid://104259432975622", Emissive = "rbxassetid://90203974417315" },
+	Shade = { Body = "Shade_Torso", Color = "rbxassetid://88064997894432", Emissive = "rbxassetid://117193991278361" },
 	Lamplighter = {
 		Body = "Lamplighter_Torso",
 		Color = "rbxassetid://88822098427583",

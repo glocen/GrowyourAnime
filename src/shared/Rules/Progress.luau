@@ -11,6 +11,7 @@ local Cooldown = require(Shared.Rules.Cooldown)
 local Chests = require(Shared.Rules.Chests)
 local Drops = require(Shared.Rules.Drops)
 local DropsConfig = require(Shared.Config.Drops)
+local Goals = require(Shared.Rules.Goals)
 
 local Progress = {}
 
@@ -62,6 +63,7 @@ function Progress.KeeperWon(data: Profile.Data, id: any, now: number, difficulty
 	local record = opened(data, row.Id, now)
 	local wins = Progress.Wins(record, level) + 1
 	record.KeeperWins[level] = wins
+	Goals.Note(data, "Keeper") -- today's "bring down the Lamplighter", on either difficulty (TR54)
 	record.Back = now + Cooldown.Wait("Keeper")
 	local chest = Chests.KeeperChest(row.Id, wins, level)
 	if chest then

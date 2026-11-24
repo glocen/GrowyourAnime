@@ -1,6 +1,6 @@
 --!strict
 -- EquipmentCases: Equipment's three screens in B (AR43, "The cut in B, for Faber"; TR47's part A; UI.EquipmentScreen).
--- Reinforce from Home's tray: the lead's worn gear, its odds before the press, a try's beat and the level it leaves, the
+-- Reinforce from Home's Equipment card: the lead's worn gear, its odds before the press, a try's beat and the level it leaves, the
 -- press off when the stones are short. War Emblems: put in and taken out through the bag. Jewels: its five slots, marked
 -- as coming. Three cases, so a frame-bound beat (Reinforce's, on RenderStepped) never takes the others down with it.
 -- Everything given is taken back at the end of each.
@@ -13,7 +13,7 @@ local ProfileController = require(script.Parent.Parent.ProfileController)
 local UI = script.Parent.Parent.Parent.Parent.UI
 local Button = require(UI.Kit.Button)
 local Screen = require(UI.Kit.Screen)
-local HomeTray = require(UI.HomeTray)
+local HomePanel = require(UI.HomePanel)
 local EquipmentScreen = require(UI.EquipmentScreen)
 local Helpers = require(script.Parent.Helpers)
 
@@ -88,7 +88,7 @@ local function putBack(t: any, g: Given, emblems: number)
 	t.Check("put back: Credits, stones, emblems, the helmet worn", restored.Currency.Credits == g.Before.Currency.Credits and (restored.Bag.Stones.Low or 0) == (g.Before.Bag.Stones.Low or 0) and (restored.Bag.Emblems["warhorn:Hit"] or 0) == (g.Before.Bag.Emblems["warhorn:Hit"] or 0) and restored.Presets[g.Preset].Slots.Helmet == g.Worn and restored.Items[g.Id] == nil)
 end
 
--- Straight to a page, as the tray's tile does once it has stepped (HudController's equipmentScreen).
+-- Straight to a page, as Home's card does once it has stepped (HudController's equipmentScreen).
 local function open(t: any, page: string, id: string): boolean
 	local profile = ProfileController.Get()
 	if profile == nil then
@@ -102,25 +102,28 @@ end
 function EquipmentCases.Cases(): { any }
 	return {
 		{
-			Name = "Equipment: Reinforce (AR43, B) from Home's tray: the lead's worn gear, its odds before the press, a try's rise and its level, the press off when short",
+			Name = "Equipment: Reinforce (AR43, B) from Home's Equipment card (AR49), on the page last shown: the lead's worn gear, its odds before the press, a try's rise and its level, the press off when short",
 			Run = function(t: any)
 				local g = give(t, 3, 0)
 				if g == nil then
 					return
 				end
 				local id = g.Id
-				-- From its tile: its own screen, the worn gear listed, the helmet among them.
-				local tray = HudController.Home()
+				-- From its card: its own screen on the page last shown, the worn gear listed, the helmet among them.
+				local panel = HudController.Home()
 				local home = HudConfig.Home
-				if not HomeTray.Shown(tray) then
+				if not HomePanel.Shown(panel) then
 					Button.Press(HudController.Parts().Home :: TextButton)
 				end
 				t.Wait(home.Open.Grow + 0.1)
-				t.Check("Reinforce's tile opens Equipment", Button.Press(tray.Tiles.Reinforce.Button) and waitFor(t, home.Step.Lit + home.Step.RiseAt + 1, function(): boolean
+				local last = EquipmentScreen.Last()
+				t.Check("Equipment's card opens Equipment", Button.Press(panel.Cards.Equipment.Button) and waitFor(t, home.Step.Lit + home.Step.RiseAt + 1, function(): boolean
 					return Screen.Current() == EquipmentScreen.Name
 				end), tostring(Screen.Current()))
 				t.Wait(home.Step.Rise + 0.1)
-				t.Equal("on Reinforce", EquipmentScreen.State().Page, "Reinforce")
+				t.Equal("on the page last shown", EquipmentScreen.State().Page, last)
+				t.Check("the rail's Reinforce", EquipmentScreen.Switch("Reinforce") and EquipmentScreen.State().Page == "Reinforce")
+				t.Wait(MOTION.Enter + 0.1)
 				local list = EquipmentScreen.Parts().List :: ScrollingFrame?
 				local rows, held = 0, false
 				local layer = if list then list:FindFirstChild("Rows") else nil
@@ -165,10 +168,10 @@ function EquipmentCases.Cases(): { any }
 				local upcoming = Rules.Cost({ Tier = after.Items[id].Tier }, 2)
 				t.Equal("said short", said(work, "Said2"), `You have 0 {upcoming.Grade} stones: {upcoming.Stones} short`)
 				Screen.Close("Back")
-				t.Check("Back sinks it, and the tray comes back", waitFor(t, home.Step.Sink + home.Step.BackAt + 0.5, function(): boolean
-					return HomeTray.Shown(tray)
+				t.Check("Back sinks it, and the panel comes back", waitFor(t, home.Step.Sink + home.Step.BackAt + 0.5, function(): boolean
+					return HomePanel.Shown(panel)
 				end) and Screen.Current() == nil)
-				HomeTray.Close(tray)
+				HomePanel.Close(panel)
 				putBack(t, g, 0)
 			end,
 		},

@@ -73,8 +73,8 @@ local SHOP_MINUTES = { 17, 14, 11, 8, 5 }
 local SHOP_MINUTE_ALONG, SHOP_MINUTE_UP = -5.9, 12.2
 local BASE_LEVEL = "1" -- the plan's level laid on every plot, until the base has its levels (TR21)
 local LEVEL_FACE = Font.new("rbxasset://fonts/families/BuilderSans.json", Enum.FontWeight.ExtraBold) -- the HUD's numbers
-local LEVEL_INK = Color3.fromHex("#FFD23E") -- Power's yellow, as the plan's level mark asks
 local LEVEL_PIXELS = 40 -- the level's number, a SurfaceGui's pixels a stud
+local PLATE_EDGE = 0.04 -- the plate's words clear of its edges, a share of its size
 -- The shard a Breaker's chamber breaks, between its two points (AR15: 5.85 to 8.35 up, the middle 7.1), turned an eighth
 -- so it reads as a crystal; seen only while the chamber breaks one (BaseService).
 local SHARD = { Size = Vector3.new(1.1, 2.2, 1.1), Up = 7.1, Turn = 45 }
@@ -205,7 +205,7 @@ end
 local function baseProblems(): { string }
 	local plots = WorldConfig.Plots
 	if plots.Across ~= plots.Drawn or plots.Deep ~= plots.Drawn then
-		return { `the plots are {plots.Across * WorldConfig.Walk} studs and the plan is drawn for {plots.Drawn * WorldConfig.Walk}: part 7's grey trial` }
+		return { `the plots are {plots.Across * WorldConfig.Walk} studs and the plan is drawn for {plots.Drawn * WorldConfig.Walk}` }
 	end
 	local template = kitTemplate(BASE)
 	if template == nil then
@@ -448,6 +448,11 @@ local function dressPlot(m: Model, number: number, at: CFrame, front: number)
 		part.CFrame = at * Kit.Place(placement, manifest.pieces[placement.piece], front, DRESS_LIFT)
 		part:SetAttribute("Piece", placement.piece)
 		part:SetAttribute("Plot", number)
+		if placement.piece == "Showcase" then
+			-- Where its Voidkin stands (TR22; BaseService): the piece's foot at its middle, Up over it, facing the Strip.
+			local c = manifest.pieces[placement.piece].centre
+			part:SetAttribute("Stand", part.CFrame * CFrame.new(-c[1], WorldConfig.Showcase.Up - c[2], -c[3]))
+		end
 		CollectionService:AddTag(part, Kit.Tag)
 		part.Parent = folder
 	end
@@ -462,6 +467,8 @@ local function dressPlot(m: Model, number: number, at: CFrame, front: number)
 		plate.Transparency = 1
 		plate.Anchored, plate.CanCollide, plate.CanQuery, plate.CanTouch, plate.CastShadow = true, false, false, false, false
 		plate.CFrame = at * CFrame.new(mark.across, DRESS_LIFT + mark.up, front - mark.along)
+		-- The owner's name over the base's level (TR22), both lines written by BaseService as the save changes.
+		local words = WorldConfig.Plate
 		for _, face in { Enum.NormalId.Front, Enum.NormalId.Back } do
 			local gui = Instance.new("SurfaceGui")
 			gui.Name = face.Name
@@ -469,17 +476,20 @@ local function dressPlot(m: Model, number: number, at: CFrame, front: number)
 			gui.LightInfluence = 0
 			gui.SizingMode = Enum.SurfaceGuiSizingMode.PixelsPerStud
 			gui.PixelsPerStud = LEVEL_PIXELS
-			local said = Instance.new("TextLabel")
-			said.Name = "Level"
-			said.BackgroundTransparency = 1
-			said.AnchorPoint = Vector2.new(0.5, 0.5)
-			said.Position = UDim2.fromScale(0.5, 0.5)
-			said.Size = UDim2.fromScale(1, 0.84)
-			said.FontFace = LEVEL_FACE
-			said.TextScaled = true
-			said.TextColor3 = LEVEL_INK
-			said.Text = BASE_LEVEL
-			said.Parent = gui
+			for _, name in { "Owner", "Level" } do -- the name from the top edge, the level from the bottom
+				local line = if name == "Owner" then words.Name else words.Level
+				local said = Instance.new("TextLabel")
+				said.Name = name
+				said.BackgroundTransparency = 1
+				said.AnchorPoint = Vector2.new(0.5, if name == "Owner" then 0 else 1)
+				said.Position = UDim2.fromScale(0.5, if name == "Owner" then PLATE_EDGE else 1 - PLATE_EDGE)
+				said.Size = UDim2.fromScale(1 - 2 * PLATE_EDGE, line.Share)
+				said.FontFace = LEVEL_FACE
+				said.TextScaled = true
+				said.TextColor3 = line.Ink
+				said.Text = ""
+				said.Parent = gui
+			end
 			gui.Parent = plate
 		end
 		plate:SetAttribute("Plot", number)
@@ -567,7 +577,8 @@ end
 -- laid as a placement is and raised by its `up`, wearing the piece `as` (`placed` itself unless given: a bay a level
 -- wakes stands where its sleeping bay stood), named as the box it replaces. Nil while the base's kit isn't laid or the
 -- plan has no such machine: then the box stands.
-local function machine(parent: Instance, name: string, placed: string, nth: number, number: number, at: CFrame, front: number, as: string?): BasePart?
+-- The plan's `nth` placement of `placed` as it stands on the plot at `at`; nil while the kit isn't laid or it has none.
+local function placementOf(placed: string, nth: number, at: CFrame): any?
 	if baseLook == nil then
 		return nil
 	end
@@ -577,12 +588,18 @@ local function machine(parent: Instance, name: string, placed: string, nth: numb
 		if placement.piece == placed then
 			seen += 1
 			if seen == nth then
-				return piece(parent, name, as or placed, Kit.Toward(placement, crossingSide(at)), number, at, front)
+				return Kit.Toward(placement, crossingSide(at))
 			end
 		end
 	end
 	return nil
 end
+
+local function machine(parent: Instance, name: string, placed: string, nth: number, number: number, at: CFrame, front: number, as: string?): BasePart?
+	local placement = placementOf(placed, nth, at)
+	return if placement then piece(parent, name, as or placed, placement, number, at, front) else nil
+end
+
 
 -- The turn of the plan's first placement of `placed`, in degrees anticlockwise from above; 0 when it has none.
 local function turnOf(placed: string): number
@@ -604,13 +621,166 @@ local function stand(part: BasePart, shown: boolean)
 end
 WorldService.Stand = stand
 
--- Part 7's trial (Config.World.Fit): a square plot of another size than the plan's stands on Fit's layout for its size;
--- nil at the plan's own, or a size Fit has no layout for (the plan's then stands as it is).
-local function trialLayout(across: number, deep: number): BaseFit.Layout?
-	if deep ~= across or across == WorldConfig.Plots.Drawn * WorldConfig.Walk then
-		return nil
+-- A stage piece's placement (TR51): `offset` (across, toward the gate, up) in its machine's own frame, turned with its
+-- machine's placement `home` (a swap's table: AR32 to AR35).
+local function within(home: any, offset: { number }): any
+	local turn = math.rad(home.turn or 0)
+	return {
+		across = home.across + offset[1] * math.cos(turn) - offset[2] * math.sin(turn),
+		along = home.along + offset[1] * math.sin(turn) + offset[2] * math.cos(turn),
+		up = (home.up or 0) + offset[3],
+		turn = home.turn or 0,
+	}
+end
+
+-- A machine's stage group (TR51): its own model "Stage n" in `holder`, which BaseService shows at its machine's stage.
+local function stageGroup(holder: Instance, stage: number, at: CFrame): Model
+	local group = model(holder, `Stage {stage}`, at)
+	group:SetAttribute("Stage", stage)
+	return group
+end
+
+-- A piece of a machine's stage, laid from its swap's row in the machine's frame. One past Stage I, or any while `later`
+-- (a bay asleep), is a later level's: the dressing report counts level 1's, and it stands hidden until BaseService
+-- shows its stage.
+local function stagePiece(group: Instance, name: string, kind: string, home: any, offset: { number }, stage: number, later: boolean, number: number, at: CFrame, front: number): BasePart?
+	local part = piece(group, name, kind, within(home, offset), number, at, front)
+	if part then
+		part:SetAttribute("Stage", stage)
+		if later or stage > 1 then
+			part:SetAttribute("Later", true)
+			stand(part, false)
+		end
 	end
-	return (WorldConfig.Fit.Layouts :: any)[tostring(across)]
+	return part
+end
+
+-- A stage's turning piece (TR51; AR32's hinges, AR33's rings): about its own axle `axis`, its row's `sign` the way,
+-- `speed` turns a second while BaseService says it's "Spinning" (BaseController turns it).
+local function spinner(part: BasePart?, axis: string, sign: number, speed: number)
+	if part then
+		part:SetAttribute("Moves", "turns")
+		part:SetAttribute("Axis", axis)
+		part:SetAttribute("Sign", sign)
+		part:SetAttribute("Speed", speed)
+		part:SetAttribute("Spinning", false)
+	end
+end
+
+-- What the yard gains at base levels 2 and 3 (AR50; the plan's machines.baseLevels), in "Levels": each level's pieces
+-- beside those of the level under it, never in their place, each a later level's ("BaseLevel" the first it stands at),
+-- hidden until BaseService shows it by its owner's base. Rows are laid as placements are; a ring stands tilted on the
+-- plan's axle (CFrame.Angles(0, 0, lean) * CFrame.Angles(tilt, 0, 0) in the plot's frame) and turns about its own Y,
+-- always, its row's `rate` turns a second the way its `sign` says (BaseController). The fins are solid while shown.
+local function layLevels(base: Instance, number: number, at: CFrame, front: number)
+	local manifest, plan = kitFiles(BASE)
+	local levels = if plan.machines then plan.machines.baseLevels else nil
+	if levels == nil or baseLook == nil then
+		return
+	end
+	local holder = model(base, "Levels", at)
+	for key, level in levels.levels do
+		for index, row in level.pieces do
+			local part = piece(holder, `{row.piece} {index}`, row.piece, { across = row.across, along = row.along, up = row.up, turn = 0 }, number, at, front)
+			if part == nil then
+				continue
+			end
+			if row.moves == "turns" then
+				local c = manifest.pieces[row.piece].centre
+				part.CFrame = at
+					* CFrame.new(row.across, DRESS_LIFT + row.up, front - row.along)
+					* CFrame.Angles(0, 0, math.rad(row.lean or 0))
+					* CFrame.Angles(math.rad(row.tilt or 0), 0, 0)
+					* CFrame.new(c[1], c[2], c[3])
+				spinner(part, "Y", row.sign or 1, row.rate)
+				part:SetAttribute("Spinning", true)
+			end
+			part:SetAttribute("BaseLevel", tonumber(key))
+			part:SetAttribute("Later", true)
+			stand(part, false)
+		end
+	end
+end
+
+-- The back half's places (AR16; TR37), each in its sleeping place of the plan's layout:
+-- * the Forge, AR28's Press at Stage I, from the first: its frame, its ram at rest over its plate ("Rest", "Tell" and
+--   "Contact" its underside's heights over its floor, "Strikes" counting the Reinforce tries BaseService strikes on it),
+--   and its gears on its head, the right one turned half a tooth so they mesh ("Spin" its way, "PerStud" degrees a stud
+--   of the ram's travel). The client strikes it (BaseController). Stages II and III wait (AR36);
+-- * the Stone Condenser, AR28's Comb at Stage I, over its sleeping stone ("Asleep"): its frame, its core (a turner) and
+--   a stone in each of its comb's cups ("Cup", its filling order), all a later level's and hidden until BaseService shows
+--   them once the base wakes it, the cups lit by its tray. The convert's prompt and card are its owner's client's, at the
+--   cradle (Config.World.Condenser.Cradle; AR51);
+-- * the Lab's sleeping stone, look only.
+-- Without the base's kit none of them stands.
+local function layBack(base: Instance, number: number, at: CFrame, front: number)
+	local _, plan = kitFiles(BASE)
+	local machines = plan.machines or {}
+	local function homeAt(home: any): CFrame
+		return at * Kit.Place(home, { centre = { 0, 0, 0 } }, front, DRESS_LIFT)
+	end
+	local forgeHome = placementOf("SleepingStone", 1, at)
+	local forgePlan, forgeStages = machines.forge, machines.forgeStages
+	if forgeHome and forgePlan then
+		local forge = model(base, "Forge", homeAt(forgeHome))
+		if piece(forge, "Frame", "Forge", forgeHome, number, at, front) then
+			local ram = forgePlan.ram
+			local struck = piece(forge, "Ram", "ForgeRam", within(forgeHome, { ram.across, ram.along, ram.rest }), number, at, front)
+			if struck then
+				struck:SetAttribute("Rest", ram.rest)
+				struck:SetAttribute("Tell", ram.tell)
+				struck:SetAttribute("Contact", ram.contact)
+				struck:SetAttribute("Strikes", 0)
+			end
+			local gears = if forgeStages and forgeStages.stages["1"] then forgeStages.stages["1"].gears else forgePlan.gears
+			for index, row in gears do
+				local gear = piece(forge, `Gear {index}`, "ForgeGear", within(forgeHome, { row.across, row.along, row.up }), number, at, front)
+				if gear then
+					if row.turnedHalfTooth then
+						gear.CFrame *= CFrame.Angles(0, 0, math.rad(forgePlan.halfTooth))
+					end
+					gear:SetAttribute("Spin", row.spin or (if row.turnedHalfTooth then -1 else 1))
+					gear:SetAttribute("PerStud", forgePlan.degreesPerStud)
+				end
+			end
+			Markers.Stamp(forge, "Forge", { Plot = number })
+		else
+			forge:Destroy()
+		end
+	end
+	local condenserHome = placementOf("SleepingStone", 2, at)
+	local condenserPlan = machines.condenser
+	if condenserHome and condenserPlan then
+		local origin = homeAt(condenserHome)
+		local condenser = model(base, "Condenser", origin)
+		machine(condenser, "Asleep", "SleepingStone", 2, number, at, front)
+		local function later(part: BasePart?): BasePart?
+			if part then
+				part:SetAttribute("Later", true)
+				stand(part, false)
+			end
+			return part
+		end
+		if later(piece(condenser, "Frame", "Condenser", condenserHome, number, at, front)) then
+			local core = condenserPlan.core
+			spinner(later(piece(condenser, "Core", "CondenserCore", within(condenserHome, { core.across, core.along, core.up }), number, at, front)), "Z", 1, WorldConfig.Condenser.Core)
+			local stages = machines.condenserStages
+			local cups = if stages and stages.stages["1"] then stages.stages["1"].cups else condenserPlan.cups
+			for index, cup in cups do
+				local stone = later(piece(condenser, `Cup {index}`, "CondenserStone", within(condenserHome, { cup.across, cup.along, cup.up }), number, at, front))
+				if stone then
+					stone:SetAttribute("Cup", index)
+				end
+			end
+			condenser:SetAttribute("Cups", #cups)
+			Markers.Stamp(condenser, "Condenser", { Plot = number })
+		else
+			condenser:Destroy()
+			machine(base, "Condenser", "SleepingStone", 2, number, at, front) -- no kit's Comb: its stone stays
+		end
+	end
+	local sleeping = model(base, "Sleeping", at)
+	machine(sleeping, "Lab", "SleepingStone", 3, number, at, front)
 end
 
 -- One plot, `at` its centre on its floor, looking out of its front onto the Strip: its lot, laid with the world, and the
@@ -642,55 +812,147 @@ local function plot(parent: Instance, number: number, at: CFrame, across: number
 		base.Name = "Base"
 		base.WorldPivot = at
 		local manifest, plan = kitFiles(BASE)
-		local trial = trialLayout(across, deep)
-		local layout = trial or plan.layout
+		local layout = plan.layout
 		-- A place of the layout in the plot's frame, on its floor: across, then studs in from the front edge.
-		local function place(spot: { across: number, inward: number }, turn: number?): CFrame
+		local function place(spot: BaseFit.Spot, turn: number?): CFrame
 			return at * CFrame.new(spot.across, 0, front + spot.inward) * CFrame.Angles(0, math.rad(turn or 0), 0)
 		end
 		-- The Void Breaker on the slant toward the gate, so a passer-by sees the shards cracking: two chambers, and its
 		-- waiting line beside it.
 		local breakerAt = place(layout.stations.breaker)
 		local breaker = model(base, "Breaker", breakerAt)
-		if machine(breaker, "Body", "Breaker", 1, number, at, front) == nil then
-			block(breaker, "Body", Vector3.new(14, 5, 6), breakerAt * CFrame.new(0, 2.5, 0), tint("machine", GREY.Machine))
-		end
-		for index, x in { -3.5, 3.5 } do
-			local chamber = machine(breaker, `Chamber {index}`, "BreakerChamber", index, number, at, front)
-			if chamber then
-				-- Low until it breaks a shard; its shard stands between the points meanwhile (BaseService).
-				chamber:SetAttribute("Working", false)
-				local shard = block(breaker, `Shard {index}`, SHARD.Size, breakerAt * CFrame.new(x, SHARD.Up, 0) * CFrame.Angles(0, math.rad(SHARD.Turn), 0), tint("chamber", GREY.Chamber))
+		local breakerSwap = if plan.machines then plan.machines.breakerStages else nil
+		local breakerHome = placementOf("Breaker", 1, at)
+		if breakerSwap and breakerHome then
+			-- Its three stages (TR51; AR32, the Great Jaws), each a "Stage n" BaseService shows at the Breaker's own
+			-- level: its body, its jaws' hinges and its waiting line, and where BreakerLamp stands ("Lamp"). Its
+			-- chambers stand at the same places at every stage, so each is laid once at the Breaker's root from the
+			-- first stage that has it ("From"), its shard with it, and its lid where the Breaker hasn't it yet.
+			local chambers: { [number]: { Offset: { number }, From: number, Shut: string? } } = {}
+			for stage = 1, 3 do
+				local rows = breakerSwap.stages[tostring(stage)]
+				if rows == nil then
+					continue
+				end
+				local group = stageGroup(breaker, stage, breakerAt)
+				if rows.lamp then
+					local spot = within(breakerHome, rows.lamp)
+					group:SetAttribute("Lamp", at * Kit.Light({ across = spot.across, along = spot.along, up = spot.up } :: any, front, DRESS_LIFT))
+				end
+				local hinges = 0
+				for _, row in rows.pieces do
+					if row.moves == "still" then
+						stagePiece(group, "Body", row.piece, breakerHome, row.at, stage, false, number, at, front)
+					elseif row.moves == "chamber" then
+						if chambers[row.chamber] == nil then
+							chambers[row.chamber] = { Offset = row.at, From = stage, Shut = row.shut }
+						end
+					elseif row.moves == "turns" then
+						hinges += 1
+						spinner(stagePiece(group, `Hinge {hinges}`, row.piece, breakerHome, row.at, stage, false, number, at, front), "Z", row.sign or 1, WorldConfig.Grey.Hinge)
+					elseif row.moves == "waiting" then
+						stagePiece(group, `Waiting {row.place}`, row.piece, breakerHome, row.at, stage, false, number, at, front)
+					end
+				end
+			end
+			for index, chamber in chambers do
+				local offset = chamber.Offset
+				local later = chamber.From > 1
+				local made = piece(breaker, `Chamber {index}`, "BreakerChamber", within(breakerHome, offset), number, at, front)
+				if made then
+					-- Low until it breaks a shard; its shard stands between the points meanwhile (BaseService).
+					made:SetAttribute("Working", false)
+					made:SetAttribute("From", chamber.From)
+					if later then
+						made:SetAttribute("Later", true)
+						stand(made, false)
+					end
+				end
+				local shard = block(breaker, `Shard {index}`, SHARD.Size, breakerAt * CFrame.new(offset[1], SHARD.Up, -offset[2]) * CFrame.Angles(0, math.rad(SHARD.Turn), 0), tint("chamber", GREY.Chamber))
 				shard.Material = Enum.Material.Neon
 				shard.Transparency = 1
 				shard.CanCollide, shard.CanQuery, shard.CanTouch, shard.CastShadow = false, false, false, false
-			else
-				local box = block(breaker, `Chamber {index}`, Vector3.new(4, 4, 4), breakerAt * CFrame.new(x, 7, 0), tint("chamber", GREY.Chamber))
-				if look then
-					box.Material = Enum.Material.Neon
+				if chamber.Shut then
+					local lid = piece(breaker, `Lid {index}`, chamber.Shut, within(breakerHome, offset), number, at, front)
+					if lid then
+						lid:SetAttribute("From", chamber.From)
+						lid:SetAttribute("Later", true)
+						stand(lid, false)
+					end
 				end
 			end
-		end
-		for index = 1, 3 do
-			if machine(breaker, `Waiting {index}`, "BreakerWaiting", index, number, at, front) == nil then
-				block(breaker, `Waiting {index}`, Vector3.new(2.5, 1, 2.5), breakerAt * CFrame.new(9 + (index - 1) * 3, 0.5, 0), tint("waiting", GREY.Chamber))
+		else
+			if machine(breaker, "Body", "Breaker", 1, number, at, front) == nil then
+				block(breaker, "Body", Vector3.new(14, 5, 6), breakerAt * CFrame.new(0, 2.5, 0), tint("machine", GREY.Machine))
+			end
+			for index, x in { -3.5, 3.5 } do
+				local chamber = machine(breaker, `Chamber {index}`, "BreakerChamber", index, number, at, front)
+				if chamber then
+					-- Low until it breaks a shard; its shard stands between the points meanwhile (BaseService).
+					chamber:SetAttribute("Working", false)
+					local shard = block(breaker, `Shard {index}`, SHARD.Size, breakerAt * CFrame.new(x, SHARD.Up, 0) * CFrame.Angles(0, math.rad(SHARD.Turn), 0), tint("chamber", GREY.Chamber))
+					shard.Material = Enum.Material.Neon
+					shard.Transparency = 1
+					shard.CanCollide, shard.CanQuery, shard.CanTouch, shard.CastShadow = false, false, false, false
+				else
+					local box = block(breaker, `Chamber {index}`, Vector3.new(4, 4, 4), breakerAt * CFrame.new(x, 7, 0), tint("chamber", GREY.Chamber))
+					if look then
+						box.Material = Enum.Material.Neon
+					end
+				end
+			end
+			for index = 1, 3 do
+				if machine(breaker, `Waiting {index}`, "BreakerWaiting", index, number, at, front) == nil then
+					block(breaker, `Waiting {index}`, Vector3.new(2.5, 1, 2.5), breakerAt * CFrame.new(9 + (index - 1) * 3, 0.5, 0), tint("waiting", GREY.Chamber))
+				end
 			end
 		end
 		Markers.Stamp(breaker, "Breaker", { Plot = number })
 		-- Every bay the base can open, on the layout's places: level 1's two at the bus's ends, and the rest asleep where
 		-- each will stand until a base level wakes it. Each past level 1's carries its Pad and its Sleeping piece, and
 		-- BaseService shows one of the two by its owner's open bays.
-		local bayPlaces = { layout.stations.bay1, layout.stations.bay2 }
+		local bayPlaces: { BaseFit.Spot } = { layout.stations.bay1, layout.stations.bay2 }
 		for _, later in layout.laterBays do
 			table.insert(bayPlaces, later)
 		end
 		for index, spot in bayPlaces do
-			local bayAt = place(spot)
+			local bayAt = place(spot, spot.turn)
 			local bay = model(base, `Bay {index}`, bayAt)
 			local asleep = index > 2 -- level 1 opens two (Config.Base.Levels.Bays)
-			local pad = if asleep
-				then machine(bay, "Pad", "BaySleeping", index - 2, number, at, front, "Bay")
-				else machine(bay, "Pad", "Bay", index, number, at, front)
+			local bayHome = if asleep then placementOf("BaySleeping", index - 2, at) else placementOf("Bay", index, at)
+			local baySwap = if plan.machines then plan.machines.bayStages else nil
+			local pad: BasePart? = nil
+			if baySwap and bayHome then
+				-- Its three stages (TR51; AR33, the Horned Crown), each a "Stage n" BaseService shows at the bay's own
+				-- level while it's awake: its body ("Pad") and, from Stage II, its toothed rings, turning while a worker
+				-- works there. A sleeping bay's are all a later level's.
+				for stage = 1, 3 do
+					local rows = baySwap.stages[tostring(stage)]
+					if rows == nil then
+						continue
+					end
+					local group = stageGroup(bay, stage, bayAt)
+					for _, row in rows.pieces do
+						if row.moves == "still" then
+							local body = stagePiece(group, "Pad", row.piece, bayHome, row.at, stage, asleep, number, at, front)
+							if stage == 1 then
+								pad = body
+							end
+						elseif row.moves == "turns" then
+							local name = if row.piece == "BayCogOuter" then "Cog Outer" else "Cog"
+							local speed = if row.piece == "BayCogOuter" then WorldConfig.Grey.CogOuter else WorldConfig.Grey.Cog
+							spinner(stagePiece(group, name, row.piece, bayHome, row.at, stage, asleep, number, at, front), "X", row.sign or 1, speed)
+						end
+					end
+				end
+			else
+				pad = if asleep
+					then machine(bay, "Pad", "BaySleeping", index - 2, number, at, front, "Bay")
+					else machine(bay, "Pad", "Bay", index, number, at, front)
+				if pad and asleep then
+					pad:SetAttribute("Later", true)
+				end
+			end
 			-- Its light, in the worker's rarity colour while one works there (TR22): out of sight until then, one colour.
 			local halo = if asleep
 				then machine(bay, "Halo", "BaySleeping", index - 2, number, at, front, "BayHalo")
@@ -699,11 +961,9 @@ local function plot(parent: Instance, number: number, at: CFrame, across: number
 				halo:ClearAllChildren()
 				halo.Material = Enum.Material.Neon
 				halo.Transparency = 1
-			end
-			-- A sleeping bay's pad and light stand for a later level: the dressing report counts level 1's.
-			for _, part in { pad, halo } do
-				if part and asleep then
-					part:SetAttribute("Later", true)
+				-- A sleeping bay's light stands for a later level: the dressing report counts level 1's.
+				if asleep then
+					halo:SetAttribute("Later", true)
 				end
 			end
 			local sleeping = if asleep then machine(bay, "Sleeping", "BaySleeping", index - 2, number, at, front) else nil
@@ -718,13 +978,52 @@ local function plot(parent: Instance, number: number, at: CFrame, across: number
 			if pad and sleeping then
 				stand(pad, false)
 			end
+			-- Its light on the deck while it's awake, where the plan has one (AR54: bays 3 and 4, each its own line from
+			-- the ring), at the bay's place and turn: a later level's, hidden until BaseService wakes the bay.
+			local wakes = if plan.machines and plan.machines.baseLevels then plan.machines.baseLevels.bayWake else nil
+			local wakePiece = if wakes and asleep then wakes.pieces[tostring(index)] else nil
+			local wake = if wakePiece and bayHome then piece(bay, "Wake", wakePiece, bayHome, number, at, front) else nil
+			if wake then
+				wake:SetAttribute("Later", true)
+				stand(wake, false)
+			end
 			Markers.Stamp(bay, "Bay", { Plot = number, Bay = index })
 		end
 		-- The battery on the slant toward the back: its rack, and its bank of cells on the plan's seats, in the order they
 		-- fill (AR15, section 4). BaseService shows as many as the base's level holds and lights each by the charge.
 		local batteryAt = place(layout.stations.battery)
 		local battery = model(base, "Battery", batteryAt)
-		if machine(battery, "Rack", "BatteryRack", 1, number, at, front) then
+		local batterySwap = if plan.machines then plan.machines.batteryStages else nil
+		local batteryHome = placementOf("BatteryRack", 1, at)
+		if batterySwap and batteryHome then
+			-- Its three stages (TR51; AR34, the Rising Stack), each a "Stage n" with its "Rack", shown at the base's
+			-- level. Its cells sit on the same seats at every stage that has them, so each is laid once at the root, on
+			-- the last stage's seats in the order they fill (they supersede machines.battery's), and BaseService shows
+			-- the level's.
+			local seats = {}
+			for stage = 1, 3 do
+				local rows = batterySwap.stages[tostring(stage)]
+				if rows == nil then
+					continue
+				end
+				local group = stageGroup(battery, stage, batteryAt)
+				group:SetAttribute("Seats", if rows.seats then #rows.seats else 0) -- the cells its rack holds
+				for _, row in rows.pieces do
+					stagePiece(group, "Rack", row.piece, batteryHome, row.at, stage, false, number, at, front)
+				end
+				seats = rows.seats or seats
+			end
+			local first = plan.machines.battery.cellsAt["1"]
+			for seat, offset in seats do
+				local cell = piece(battery, `Cell {seat}`, "BatteryCell", within(batteryHome, offset), number, at, front)
+				if cell then
+					cell:SetAttribute("Cell", seat)
+					cell:SetAttribute("Lit", 0)
+					cell:SetAttribute("Later", seat > first)
+					stand(cell, false)
+				end
+			end
+		elseif machine(battery, "Rack", "BatteryRack", 1, number, at, front) then
 			local bank = plan.machines.battery
 			for seat, spot in bank.seats do
 				local cell = piece(battery, `Cell {seat}`, "BatteryCell", { across = spot.across, along = spot.along, up = bank.up, turn = 0 }, number, at, front)
@@ -854,17 +1153,36 @@ local function plot(parent: Instance, number: number, at: CFrame, across: number
 			block(trainer, "Body", training.Size, machineAt * CFrame.new(0, training.Size.Y / 2, 0), tint("training", GREY.Machine))
 			block(trainer, "Pad", Vector3.new(4, 0.4, 4), machineAt * CFrame.new(0, 0.2, training.Spot), tint("bay", GREY.Bay))
 		end
-		local crown = machine(trainer, "Crown", "TrainingCrown", 1, number, at, front)
-		if crown then
-			crown:SetAttribute("Training", false)
+		local trainingSwap = if plan.machines then plan.machines.trainingStages else nil
+		local trainingHome = placementOf("Training", 1, at)
+		if trainingSwap and trainingHome then
+			-- Its three stages (TR51; AR35, the Weighted Crown), each a "Stage n" with its "Crown", shown at the base's
+			-- level; the stone is the same at every stage, laid once above.
+			for stage = 1, 3 do
+				local rows = trainingSwap.stages[tostring(stage)]
+				if rows == nil then
+					continue
+				end
+				local group = stageGroup(trainer, stage, machineAt)
+				for _, row in rows.pieces do
+					if row.moves == "turns" then
+						local crown = stagePiece(group, "Crown", row.piece, trainingHome, row.at, stage, false, number, at, front)
+						if crown then
+							crown:SetAttribute("Training", false)
+						end
+					end
+				end
+			end
+		else
+			local crown = machine(trainer, "Crown", "TrainingCrown", 1, number, at, front)
+			if crown then
+				crown:SetAttribute("Training", false)
+			end
 		end
 		Markers.Stamp(trainer, "Training", { Plot = number })
-		-- What the base will wake in its back half, asleep where each will stand (AR16): the Forge, the Condenser and the
-		-- Lab, in the plan's order. Look only: nothing works there yet.
-		local sleeping = model(base, "Sleeping", at)
-		for index, name in { "Forge", "Condenser", "Lab" } do
-			machine(sleeping, name, "SleepingStone", index, number, at, front)
-		end
+		-- The back half's places (AR16), in the plan's order: the Forge's, the Condenser's and the Lab's.
+		layBack(base, number, at, front)
+		layLevels(base, number, at, front)
 		-- The Tower's ring on its lot's crossing end, where the sleeping silhouette stood (TR29, replacing AR16's): bare
 		-- but for it, so the player knows where to start. It stands with its plot's base: a bare lot has none.
 		local ringX, ringZ = Tower.RingSpot(across, deep, behind, tower, crossingSide(at))
@@ -895,18 +1213,6 @@ local function plot(parent: Instance, number: number, at: CFrame, across: number
 		spawn.Neutral = true
 		spawn.Parent = base
 		Markers.Stamp(spawn, "Spawn", { Plot = number })
-		-- In part 7's trial, each machine's real footprint stands as a pale volume round its grey box, so the space
-		-- between them reads as it will with the kit: walked through, never solid.
-		if trial then
-			local fit = model(base, "Fit", at)
-			for _, box in BaseFit.Boxes(trial, WorldConfig.Fit.Prints :: any) do
-				local size = Vector3.new(box.X1 - box.X0, box.High, box.Z1 - box.Z0)
-				local middle = CFrame.new((box.X0 + box.X1) / 2, box.High / 2, front + (box.Z0 + box.Z1) / 2)
-				local part = block(fit, box.Name, size, at * middle, GREY.Chamber)
-				part.Transparency = 0.6
-				part.CanCollide, part.CanQuery, part.CanTouch, part.CastShadow = false, false, false, false
-			end
-		end
 		if look then
 			dressPlot(base, number, at, front)
 		end
@@ -1099,7 +1405,17 @@ function layStreet(folder: Folder, gateZ: number, stripEnd: number, groundColour
 		local at = CFrame.lookAt(Vector3.new(0, PAVED_TOP, z), Vector3.new(0, PAVED_TOP, z) + Vector3.new(0, 0, 1)) -- facing the way the player comes
 		if stop.Kind == "Pack" then
 			pack += 1
-			Markers.Stamp(spot(street, `Pack {pack}`, at), "Pack", { Pack = pack, Def = stop.Def, Level = stop.Level, Count = stop.Count or 1, Ground = row.Ground, Stage = stop.Stage })
+			local with = stop.With
+			Markers.Stamp(spot(street, `Pack {pack}`, at), "Pack", {
+				Pack = pack,
+				Def = stop.Def,
+				Level = stop.Level,
+				Count = stop.Count or 1,
+				With = if with then with.Def else nil,
+				WithCount = if with then with.Count else nil,
+				Ground = row.Ground,
+				Stage = stop.Stage,
+			})
 		elseif stop.Kind == "Elite" then
 			if stop.Square then
 				under(slab(street, "Square", -squareHalf, squareHalf, z - squareHalf, z + squareHalf, PAVED_TOP + OVERLAY, GREY.Plot))
@@ -1225,6 +1541,13 @@ local function lotOf(number: number): Instance?
 	local world = workspace:FindFirstChild(WORLD)
 	local plots = if world then world:FindFirstChild("Plots") else nil
 	return if plots then plots:FindFirstChild(`Plot {number}`) else nil
+end
+
+-- A plot's dressing (its kit's pieces, the gate's plate, the plinth), or nil while no base stands there.
+function WorldService.DressingOf(number: number): Instance?
+	local lot = lotOf(number)
+	local base = if lot then lot:FindFirstChild("Base") else nil
+	return if base then base:FindFirstChild("Dressing") else nil
 end
 
 -- A plot's base stood for its owner, once; Built tells whatever stands on its markers.
@@ -1364,35 +1687,20 @@ function WorldService.Init()
 	DebugService.Register("WorldReport", function(): { string }
 		return Markers.Report(WorldConfig.Plots.Count, owned(), PlaceRole.Current)
 	end)
-	-- Part 7's trial (Config.World.Fit): ("BaseSize", nil, 144) lays the plots grey at that size, Fit.Between apart, on
-	-- Fit's layout; ("BaseSize") puts today's back. Either way it answers Rules.BaseFit's line for today's and each size.
-	local today = { Across = WorldConfig.Plots.Across, Deep = WorldConfig.Plots.Deep, Between = WorldConfig.Plots.Between }
-	DebugService.Register("BaseSize", function(_who: any, size: any): { string }
+	-- Part 7's tests on the base plan's layout at Stage III's footprints (Config.World.Fit; Rules.BaseFit): its line.
+	DebugService.Register("BaseSize", function(): { string }
 		local walk = WorldConfig.Walk
 		local fit = WorldConfig.Fit
-		local cells = if type(size) == "number" then size / walk else nil
-		TuneService.Set("World.Plots.Across", cells or today.Across)
-		TuneService.Set("World.Plots.Deep", cells or today.Deep)
-		TuneService.Set("World.Plots.Between", if cells then fit.Between else today.Between)
 		local _, plan = kitFiles(BASE)
-		local kept = WorldConfig.Plots.Kept * walk
-		local lines = {
-			BaseFit.Line(BaseFit.Measure(plan.layout, today.Across * walk, fit :: any, { Walk = walk, Between = today.Between * walk, Kept = kept }), fit :: any) .. " (today's, AR16)",
+		local plots = WorldConfig.Plots
+		return {
+			BaseFit.Line(BaseFit.Measure(plan.layout, plots.Across * walk, fit :: any, { Walk = walk, Between = plots.Between * walk, Kept = plots.Kept * walk }), fit :: any),
 		}
-		for _, each in fit.Sizes do
-			local studs = each * walk
-			local layout = (fit.Layouts :: any)[tostring(studs)]
-			if layout then
-				table.insert(lines, BaseFit.Line(BaseFit.Measure(layout, studs, fit :: any, { Walk = walk, Between = fit.Between * walk, Kept = kept }), fit :: any))
-			end
-		end
-		return lines
 	end)
 	-- The dressing against its plan: every piece laid as often as the plan has it, each with its look, the plan's lights,
 	-- and the grey look under it hidden; then each plot against its base level's plan (AR14), its lights and its level's
 	-- number; a plot no one owns, its bare lot. Empty when it's whole; one line when the street or the plots are grey, and
-	-- why. ("DressReport", nil, "Street") leaves out the plots' grey trial while their size isn't the plan's (research's 128
-	-- of 2026-11-17, until the base plan is laid again at 128), for the street's case.
+	-- why. ("DressReport", nil, "Street") leaves out the plots while their size isn't the plan's, for the street's case.
 	DebugService.Register("DressReport", function(_who: any, only: any): { string }
 		local world = workspace:FindFirstChild(WORLD)
 		if world == nil then
@@ -1483,6 +1791,13 @@ function WorldService.Init()
 					standing[placement.piece] = (standing[placement.piece] or 0) + 1
 				end
 			end
+			-- The Forge stands in the first sleeping place, its stone's (TR37): its frame, its ram and Stage I's gears.
+			local forgePlan = if basePlan.machines then basePlan.machines.forge else nil
+			local stones = standing.SleepingStone
+			if forgePlan and stones then
+				standing.SleepingStone = stones - 1
+				standing.Forge, standing.ForgeRam, standing.ForgeGear = 1, 1, #forgePlan.gears
+			end
 			for number = 1, WorldConfig.Plots.Count do
 				local lot = plots:FindFirstChild(`Plot {number}`)
 				local floor = if lot then lot:FindFirstChild("Floor") else nil
@@ -1525,6 +1840,11 @@ function WorldService.Init()
 				if level.levelMark and dressing:FindFirstChild("LevelMark") == nil then
 					table.insert(problems, `Plot {number}: no level mark`)
 				end
+				for _, item in dressing:GetChildren() do
+					if item:GetAttribute("Piece") == "Showcase" and typeof(item:GetAttribute("Stand")) ~= "CFrame" then
+						table.insert(problems, `Plot {number}: the plinth has no stand for its Voidkin (TR22)`)
+					end
+				end
 				-- The machines with their model, each in place of its box (AR15), as level 1 stands them: a sleeping bay's
 				-- pad and light, and the cells past level 1's, are a later level's (AR16).
 				local machines: { [string]: number } = {}
@@ -1537,6 +1857,29 @@ function WorldService.Init()
 				for piece, needed in standing do
 					if machines[piece] ~= needed then
 						table.insert(problems, `Plot {number} {piece}: {machines[piece] or 0} stand, the plan's machines have {needed}`)
+					end
+				end
+				-- The Forge's ram knows its heights, and the Condenser has its comb's cups, its core and its panel (TR37).
+				local forge = (m :: Instance):FindFirstChild("Forge")
+				local ram = if forge then forge:FindFirstChild("Ram") else nil
+				if ram == nil or type(ram:GetAttribute("Rest")) ~= "number" or type(ram:GetAttribute("Contact")) ~= "number" then
+					table.insert(problems, `Plot {number}: the Forge has no ram with its heights`)
+				end
+				local condenser = (m :: Instance):FindFirstChild("Condenser")
+				if condenser == nil or condenser:FindFirstChild("Frame") == nil then
+					table.insert(problems, `Plot {number}: no Stone Condenser`)
+				else
+					local cups = 0
+					for _, part in condenser:GetChildren() do
+						cups += if type(part:GetAttribute("Cup")) == "number" then 1 else 0
+					end
+					if cups == 0 or cups ~= condenser:GetAttribute("Cups") then
+						table.insert(problems, `Plot {number}: the Condenser has {cups} cups, its comb {condenser:GetAttribute("Cups")}`)
+					end
+					for _, name in { "Core", "Asleep" } do
+						if condenser:FindFirstChild(name) == nil then
+							table.insert(problems, `Plot {number}: the Condenser has no {name}`)
+						end
 					end
 				end
 				-- A piece placed toward the crossing stands on the plot's crossing side (AR16's Tower), and the Tower's ring

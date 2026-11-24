@@ -182,20 +182,108 @@ function HudCases.Cases(given: Given): { any }
 			end,
 		},
 		{
-			Name = "Take: TR10's down marker with its pictures at the smallest phone, each held for a still, for research",
+			-- TR10's must-fixes (research's verdict, 2026-11-23, 16:41). The badge takes its size from the world: today's within
+			-- Full studs of the camera, Full / distance past them, never under Least's floor, its time readable on the smallest
+			-- phone at every size. Far, it draws only its tile and its time, the card's panel hidden. Near, the card unfolds
+			-- under the tile, which stays where it stood.
+			Name = "HUD: TR10, the down badge takes its size from the world; far, only its tile and its time",
+			Run = function(t: any)
+				t.Wait(LEAD_SETTLE)
+				local config = HudConfig.Down
+				local was = config.Near
+				local least = math.min(1, config.Least / (config.Icon * Theme.Scale.Floor))
+				local camera = workspace.CurrentCamera
+				local function stand(away: number): Frame?
+					standDown(t, "Elite", "brawler_elite", away)
+					local plate: Frame? = nil
+					waitFor(t, 2, function(): boolean
+						plate = DownController.Plate("Elite")
+						return plate ~= nil and plate:GetAttribute("Left") == 272 and World.Where(plate) ~= nil
+					end)
+					t.Wait(config.Unfold + 0.3)
+					return plate
+				end
+				local ok, problem = pcall(function()
+					for _, away in { 12, 60, 100, 200 } do
+						local plate = stand(away)
+						local where = if plate then World.Where(plate) else nil
+						if plate == nil or where == nil then
+							t.Check(`{away} studs ahead: it stands`, false)
+							continue
+						end
+						local distance = (where - camera.CFrame.Position).Magnitude
+						local size = plate:GetAttribute("Size") :: number
+						t.Near(`{away} studs ahead, {math.floor(distance)} from the camera: its size`, size, math.clamp(config.Full / distance, least, 1), 0.02)
+						local time = plate:FindFirstChild("Time") :: TextLabel
+						local icon = plate:FindFirstChild("Icon") :: Frame
+						t.Check(`{away}: its time reads on the smallest phone`, time.TextSize * size * Theme.Scale.Floor >= Theme.Text.Minimum - 0.5,
+							string.format("%d at %.2f", time.TextSize, size))
+						t.Check(`{away}: its tile never under {config.Least} px there`, icon.Size.X.Offset * size * Theme.Scale.Floor >= config.Least - 0.5)
+						if away >= 100 then
+							local back = plate:FindFirstChild("Back") :: CanvasGroup
+							t.Check(`{away}: far, only its tile and its time`, plate:GetAttribute("Unfold") == 0 and not back.Visible and plate.Size.X.Offset < config.Width / 2,
+								`{plate.Size.X.Offset} wide, its back {if back.Visible then "shown" else "hidden"}`)
+						end
+					end
+					lintClean(t, "the down badge, far")
+					-- Near, the card unfolds and the tile stays put.
+					local plate = stand(30)
+					if plate == nil then
+						t.Check("30 studs ahead: it stands", false)
+						return
+					end
+					local icon = plate:FindFirstChild("Icon") :: Frame
+					config.Near = 0
+					t.Check("folded", waitFor(t, config.Unfold + 0.5, function(): boolean
+						return plate:GetAttribute("Unfold") == 0
+					end))
+					t.Wait(0.1)
+					local folded = icon.AbsolutePosition
+					config.Near = 1e6
+					t.Check("near: its card unfolds whole", waitFor(t, config.Unfold + 0.5, function(): boolean
+						return plate:GetAttribute("Card") == true
+					end))
+					t.Wait(0.1)
+					t.Near("the tile stays where it stood (pixels)", (icon.AbsolutePosition - folded).Magnitude, 0, 1.5)
+					t.Check("its panel shows under it", (plate:FindFirstChild("Back") :: CanvasGroup).Visible and plate.Size.X.Offset >= config.Width - 0.5)
+					lintClean(t, "the down badge, near")
+				end)
+				config.Near = was
+				DownController.Try("Elite", nil)
+				t.Check("it ran", ok, tostring(problem))
+			end,
+		},
+		{
+			Name = "Take: TR10's badge, walked to from 120 studs at the smallest phone, the elite's then the keeper's, for research",
 			Manual = true,
 			Stay = true,
 			Run = function(t: any)
-				-- Each state is held until the driver moves ReplicatedStorage.NL_TakeStep on ("Near", "Far", "Keeper", "End"):
-				-- the elite's plate in the picked layout 24 studs ahead, then 120, then the keeper's.
+				-- Each marker is stood until the driver moves ReplicatedStorage.NL_TakeStep on ("Elite", "Keeper", "End"): its
+				-- floor 120 studs ahead of the avatar along the camera's look, written on the step as its Floor attribute, so
+				-- the driver walks the avatar to 24 studs from it and captures the walk (research's second look: the badge
+				-- growing, the card arriving at Near). On the smallest phone's frame inside Studio's window, as AR44's take:
+				-- the HUD boxed to the window's left 16:9 at the scale the smallest phone's would be at that height, so a
+				-- capture of that 16:9 is the phone's picture, larger.
 				local step = Instance.new("StringValue")
 				step.Name = "NL_TakeStep"
 				step.Value = "Ready"
 				step.Parent = ReplicatedStorage
 				local function await(name: string): boolean
-					return waitFor(t, 300, function(): boolean
+					return waitFor(t, 600, function(): boolean
 						return step.Value == name or step.Value == "End"
 					end) and step.Value == name
+				end
+				local function stand(kind: string, def: string)
+					local root = Parts.Root(Players.LocalPlayer.Character)
+					local look = workspace.CurrentCamera.CFrame.LookVector
+					if root == nil then
+						return
+					end
+					local floor = root.Position - Vector3.new(0, R6_ROOT_HEIGHT, 0) + Vector3.new(look.X, 0, look.Z).Unit * 120
+					local lead = myLead()
+					local level = if lead and type(lead:GetAttribute("Level")) == "number" then lead:GetAttribute("Level") :: number else 10
+					DownController.Try(kind, { Kind = kind, Def = def, Level = level, Ground = WorldConfig.Row.Ground }, 272, floor)
+					step:SetAttribute("Floor", floor)
 				end
 				t.Wait(LEAD_SETTLE)
 				-- The world as a player stands in it: the World layer hides under any open screen (a spawn at the base's door
@@ -204,21 +292,24 @@ function HudCases.Cases(given: Given): { any }
 					Screen.Close()
 					t.Wait(0.5)
 				end
-				Layers.Force(Theme.Scale.Floor)
-				Layers.Box(Theme.Smallest - Vector2.new(0, GuiService.TopbarInset.Height))
+				-- The phone centred on the window, so the world stands under its HUD as on the phone: the camera draws the
+				-- world across the whole window. Its left, rendered, goes on the step for the capture.
+				local view = workspace.CurrentCamera.ViewportSize
+				local wide = math.floor(view.Y * Theme.Smallest.X / Theme.Smallest.Y)
+				local left = math.floor((view.X - wide) / 2)
+				Layers.Force(Theme.Scale.Floor * view.Y / Theme.Smallest.Y)
+				Layers.Box(Vector2.new(wide, view.Y - GuiService.TopbarInset.Height), Vector2.new(left, 0))
+				step:SetAttribute("Left", left)
+				step:SetAttribute("Wide", wide)
 				local ok, problem = pcall(function()
-					if await("Near") then
-						standDown(t, "Elite", "brawler_elite", 24)
+					if await("Elite") then
+						stand("Elite", "brawler_elite")
 						t.Wait(0.5)
-						t.Check("near: the elite's stands", DownController.Plate("Elite") ~= nil)
-					end
-					if await("Far") then
-						standDown(t, "Elite", "brawler_elite", 120)
-						t.Wait(0.5)
+						t.Check("the elite's stands", DownController.Plate("Elite") ~= nil)
 					end
 					if await("Keeper") then
 						DownController.Try("Elite", nil)
-						standDown(t, "Keeper", "lamplighter", 24)
+						stand("Keeper", "lamplighter")
 						t.Wait(0.5)
 						t.Check("the keeper's stands", DownController.Plate("Keeper") ~= nil)
 					end
@@ -360,7 +451,7 @@ function HudCases.Cases(given: Given): { any }
 					local digits = parts.Target:FindFirstChild("Value", true) :: TextLabel?
 					local stroke = if digits then digits:FindFirstChildOfClass("UIStroke") else nil
 					t.Check("no band behind the digits", parts.Target:FindFirstChild("Band", true) == nil)
-					t.Check("the digits' outline: solid, 2 points", stroke ~= nil and stroke.Transparency == 0 and math.abs(stroke.Thickness - 2 * Layers.Scale()) < 1e-3, if stroke then `{stroke.Thickness} px at {Layers.Scale()}` else "none")
+					t.Check("the digits' outline: solid, 2 points, authored", stroke ~= nil and stroke.Transparency == 0 and math.abs(stroke.Thickness - 2) < 1e-3, if stroke then `{stroke.Thickness} points, grown by the layer's UIScale` else "none")
 					for _, fill in { { Name = "Full", Share = 1 }, { Name = "Half", Share = 0.5 }, { Name = "Low", Share = 0.06 } } do
 						if await(fill.Name) then -- the step lays its fill, then the driver captures it
 							t.Server("FoeHealth", id, fill.Share)
@@ -806,6 +897,7 @@ function HudCases.Cases(given: Given): { any }
 					Hover.Pretend(nil)
 					return
 				end
+				VoidkinScreen.Last("Bag") -- the card opens the page last shown (AR49)
 				t.Check("the Voidkin screen opens", Button.Press(parts.Voidkin :: TextButton) and waitFor(t, 1, function(): boolean
 					return Screen.Current() == "Voidkin"
 				end))

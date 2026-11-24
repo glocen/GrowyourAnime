@@ -387,7 +387,7 @@ def build(view):
     yard.plot(0.0, 1)
     yard.kit.block("Ground", (5 * plan.PLOT, 4 * plan.PLOT, 0.4), (0, plan.STRIP / 2, -0.3), yard.flat["ground"])
     for obj in yard.kit.pieces:
-        if obj.name.startswith(("PowerSpan", "Court", "Yard", "Wings")):
+        if obj.name.startswith(("PowerSpan", "Floor")):
             obj.visible_shadow = False
     look.sky(scene, d)
     look.sun(scene, d)

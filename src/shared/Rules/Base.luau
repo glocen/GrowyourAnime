@@ -24,8 +24,13 @@
 --   UpgradeBase { Level }        the base's next level for its Credits (TR21; Rules.BaseLevels): the bays it opens join,
 --                                empty. Level names the level bought, so a second tap is refused, never charged twice
 --   UpgradeMachine { Machine, Bay?, Level }
---                                a machine's next level ("Breaker", or "Bay" with its Bay) for its Credits, never past the
---                                base's ceiling; the Breaker's chambers join at their levels and take the line's next
+--                                a machine's next level ("Breaker", "Condenser", or "Bay" with its Bay) for its Credits,
+--                                never past the base's ceiling; the Breaker's chambers join at their levels and take the
+--                                line's next; the Condenser only once it's awake
+--   CollectTray {}               the Stone Condenser's tray, every stone in it, into the bag (TR37; Rules.Condenser). A
+--                                second ask finds it empty, so nothing is collected twice
+--   Convert {}                   the Condenser's convert begins: Config.Condenser.Convert's stones leave the bag now, and
+--                                its higher grade lands in the tray once its work is done. One at a time
 
 local Shared = game:GetService("ReplicatedStorage").Shared
 local Profile = require(Shared.Data.Profile)
@@ -35,8 +40,11 @@ local Collection = require(Shared.Rules.Collection)
 local Odds = require(Shared.Rules.Odds)
 local Power = require(Shared.Rules.Power)
 local BaseLevels = require(Shared.Rules.BaseLevels)
+local Condenser = require(Shared.Rules.Condenser)
 local ShardConfig = require(Shared.Config.Shards)
 local BaseConfig = require(Shared.Config.Base)
+local CondenserConfig = require(Shared.Config.Condenser)
+local Goals = require(Shared.Rules.Goals)
 
 local Base = {}
 
@@ -60,6 +68,9 @@ Base.Over = "Over" -- the shares come to more than the whole generation
 Base.Stale = "Stale" -- the level asked isn't the next one: the upgrade was bought already, or the screen was behind
 Base.Cap = BaseLevels.AtCap -- past the last level there is at launch
 Base.Ceiling = BaseLevels.AtCeiling -- a machine at its base's ceiling: the base's level comes first
+Base.Asleep = "Asleep" -- the Stone Condenser hasn't woken yet: the base's level comes first (Config.Condenser.Wakes)
+Base.Busy = "Busy" -- a convert is under way: one at a time
+Base.Stones = "Stones" -- fewer stones in the bag than the convert takes
 
 local function refuse(code: string): Answer
 	return { Ok = false, Error = code }
@@ -299,13 +310,16 @@ function Base.UpgradeMachine(data: Profile.Data, args: any, now: number): Answer
 		if bay == nil then
 			return refuse(Base.BadArgs)
 		end
-	elseif machine ~= "Breaker" or field(args, "Bay") ~= nil then
+	elseif (machine ~= "Breaker" and machine ~= "Condenser") or field(args, "Bay") ~= nil then
 		return refuse(Base.BadArgs)
 	end
 	if level == nil then
 		return refuse(Base.BadArgs)
 	end
-	local current = if bay then base.Bays[bay].Level or 1 else base.Machines.Breaker or 1
+	if machine == "Condenser" and not Condenser.Awake(base.Level) then
+		return refuse(Base.Asleep)
+	end
+	local current = if bay then base.Bays[bay].Level or 1 else base.Machines[machine] or 1
 	if level ~= current + 1 then
 		return refuse(Base.Stale)
 	end
@@ -323,12 +337,58 @@ function Base.UpgradeMachine(data: Profile.Data, args: any, now: number): Answer
 		base.Bays[bay].Level = level
 		return { Ok = true, Machine = machine, Bay = bay, Level = level, Spent = price }
 	end
+	if machine == "Condenser" then
+		base.Machines.Condenser = level -- its tray's cap rises with it, so a full tray makes again
+		return { Ok = true, Machine = machine, Level = level, Spent = price }
+	end
 	base.Machines.Breaker = level
 	for _ = #base.Chambers + 1, math.min(BaseLevels.Chambers(level), BaseConfig.Breaker.MostChambers) do
 		table.insert(base.Chambers, {})
 	end
 	Breaker.Settle(data) -- a new chamber takes the line's next shard
 	return { Ok = true, Machine = machine, Level = level, Spent = price, Chambers = #base.Chambers }
+end
+
+function Base.CollectTray(data: Profile.Data, _args: any, now: number): Answer
+	local base = data.Base
+	if not Condenser.Awake(base.Level) then
+		return refuse(Base.Asleep)
+	end
+	Breaker.Advance(data, now) -- what it made up to now lands first
+	local taken: { [string]: number } = {}
+	local count = 0
+	for grade, held in base.Condenser.Tray do
+		if held > 0 then
+			taken[grade] = held
+			count += held
+			data.Bag.Stones[grade] = (data.Bag.Stones[grade] or 0) + held
+		end
+	end
+	if count == 0 then
+		return refuse(Base.Empty)
+	end
+	base.Condenser.Tray = {}
+	Goals.Note(data, "TrayCollected") -- today's "collect the Condenser's tray" (TR54)
+	return { Ok = true, Stones = taken, Count = count }
+end
+
+function Base.Convert(data: Profile.Data, _args: any, now: number): Answer
+	local base = data.Base
+	local convert = CondenserConfig.Convert
+	if not Condenser.Awake(base.Level) then
+		return refuse(Base.Asleep)
+	end
+	Breaker.Advance(data, now) -- the one before finishes first, if its time has come
+	if base.Condenser.Convert ~= nil then
+		return refuse(Base.Busy)
+	end
+	local held = data.Bag.Stones[convert.From] or 0
+	if held < convert.Take then
+		return refuse(Base.Stones)
+	end
+	data.Bag.Stones[convert.From] = held - convert.Take
+	base.Condenser.Convert = 0
+	return { Ok = true, Spent = convert.Take, Seconds = convert.Seconds }
 end
 
 Base.Actions = {
@@ -341,6 +401,8 @@ Base.Actions = {
 	SetPower = Base.SetPower,
 	UpgradeBase = Base.UpgradeBase,
 	UpgradeMachine = Base.UpgradeMachine,
+	CollectTray = Base.CollectTray,
+	Convert = Base.Convert,
 } :: { [string]: Action }
 
 return Base

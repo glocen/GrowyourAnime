@@ -62,6 +62,7 @@ local FightService = require(script.Parent.FightService)
 local KeeperService = require(script.Parent.KeeperService)
 local DoorService = require(script.Parent.DoorService)
 local TravelService = require(script.Parent.TravelService)
+local GoalService = require(script.Parent.GoalService)
 local TravelConfig = require(Shared.Config.Travel)
 local Travel = require(Shared.Rules.Travel)
 local PlaceRole = require(Shared.Util.PlaceRole)
@@ -145,8 +146,11 @@ local function stand(player: Player, run: Run, name: string)
 		return
 	end
 	local at = Markers.At(marker)
-	for _, offset in Fight.PackRing(if type(count) == "number" then count else 1, WorldConfig.Row.Spread) do
-		local f = FightService.SpawnEnemy(def, Stages.Level(level, run.Rule.Difficulty), at * CFrame.new(offset[1], 0, offset[2]), {
+	local n = if type(count) == "number" then count else 1
+	local with, withCount = marker:GetAttribute("With"), marker:GetAttribute("WithCount")
+	local defs = Fight.PackDefs(def, n, if type(with) == "string" then with else nil, if type(withCount) == "number" then withCount else nil)
+	for index, offset in Fight.PackRing(n, WorldConfig.Row.Spread) do
+		local f = FightService.SpawnEnemy(defs[index], Stages.Level(level, run.Rule.Difficulty), at * CFrame.new(offset[1], 0, offset[2]), {
 			Type = if type(type_) == "string" then type_ else nil,
 			Pack = `{name} for {player.UserId}`,
 			Ground = run.Rule.Ground,
@@ -175,6 +179,7 @@ function StageService.End(player: Player)
 		FightService.Remove(f)
 	end
 	FightService.SetSolo(player, false)
+	GoalService.Stop(player)
 	publish(player, nil)
 end
 
@@ -219,6 +224,8 @@ function StageService.Begin(player: Player, ground: string, difficulty: string, 
 		standStretch(player, run)
 	end
 	publish(player, run)
+	GoalService.Stretch(player, rule) -- the stretch's dare unfolds under the run's line (TR54)
+	GoalService.Led(player)
 	if not stay then
 		KeeperService.SetDown(player, Markers.At(start))
 	end
@@ -231,10 +238,17 @@ end
 local function finish(player: Player, run: Run)
 	local rule = run.Rule
 	local count = #(Stages.Of(rule.Ground) :: { any })
+	local judged = GoalService.Judge(player, rule) -- the stretch's dare, judged as it clears; its stone paid in the same step
 	local answer = DataService.Change(player, "StageClear", function(draft)
-		return Stages.Clear(draft, rule, os.time())
+		local cleared = Stages.Clear(draft, rule, os.time())
+		if cleared.Ok == true then
+			GoalService.Pay(draft, judged)
+		end
+		return cleared
 	end)
-	if answer.Ok ~= true then
+	if answer.Ok == true then
+		GoalService.Paid(player, judged)
+	else
 		Log.Error("StageService", `{player.Name}'s clear of {rule.Ground} {rule.Difficulty} {rule.Stage} wasn't saved: {tostring(answer.Error)}`)
 		rule.Claimed = true -- the run still moves on; only the record missed it
 	end
@@ -261,9 +275,12 @@ local function finish(player: Player, run: Run)
 				standStretch(player, run)
 			end
 			publish(player, run)
+			GoalService.Stretch(player, rule)
 			return
 		end
-		Net.Server.Fire("StageDone", player, Stages.Won(rule, answer, run.Before, Stages.Holdings(DataService.Get(player))))
+		local results = Stages.Won(rule, answer, run.Before, Stages.Holdings(DataService.Get(player)))
+		results.Dares = GoalService.Card(player)
+		Net.Server.Fire("StageDone", player, results)
 		StageService.End(player)
 	end)
 end
@@ -271,8 +288,10 @@ end
 -- The run's end on its lead's fall: its card says so, and where the next run on its difficulty begins.
 local function lose(player: Player, run: Run)
 	logRun(player, run, "Fell")
+	local results = Stages.Lost(run.Rule, DataService.Get(player))
+	results.Dares = GoalService.Card(player) -- a fall takes back no dare kept before it
 	StageService.End(player)
-	Net.Server.Fire("StageDone", player, Stages.Lost(run.Rule, DataService.Get(player)))
+	Net.Server.Fire("StageDone", player, results)
 end
 
 local function fell(f: FightService.Fighter, hitters: { Player })

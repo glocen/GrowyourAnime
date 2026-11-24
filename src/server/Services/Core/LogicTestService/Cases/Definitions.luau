@@ -82,6 +82,9 @@ return {
 				t.Check(`{colour}: its Shade's tint`, ShadesConfig.Tint[colour] ~= nil)
 				t.Check(`{colour}: its gem`, UIKit.Images[`Gem{colour}`] ~= nil and UIKit.Images[`Gem{colour}Seated`] ~= nil)
 			end
+			for colour in ShadesConfig.Hard.Tint do
+				t.Check(`{colour}: a Hard tint for a colour`, TYPES[colour] == true)
+			end
 			for _, row in Voidkin.List do
 				t.Check(`{row.Id}: its type a colour`, TYPES[row.Type] == true, row.Type)
 			end
@@ -110,7 +113,8 @@ return {
 				t.Check(`{name} has an asset id`, string.find(image.Id, "^rbxassetid://%d+$") ~= nil, image.Id)
 			end
 			t.Equal("the kit's 28 meshes", meshes, 28)
-			t.Equal("its 41 images: AR8's 20 and AR9's seven sheets in three passes", images, 41)
+			t.Equal("its 42 images: AR8's 20, AR9's seven sheets in three passes, and AR37's rise in the void's light", images, 42)
+			t.Check("AR37's landing look uploaded (TR51)", FxKit.Images.fx_rise_Void ~= nil)
 			for coil, fronts in ({ FxCoil2 = 5, FxCoil3 = 0 } :: { [string]: number }) do
 				local bands, edges = 0, 0
 				for _, mesh in FxKit.Meshes do

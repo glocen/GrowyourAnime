@@ -33,6 +33,7 @@ local Sheet = require(Shared.Rules.Sheet)
 local HudConfig = require(Shared.Config.Hud)
 local UIKit = require(Shared.Config.UIKit)
 local StagesConfig = require(Shared.Config.Stages)
+local GoalDefs = require(Shared.Definitions.Goals)
 
 local UI = script.Parent
 local Theme = require(UI.Theme)
@@ -42,6 +43,8 @@ local Button = require(UI.Kit.Button)
 local Screen = require(UI.Kit.Screen)
 local Glass = require(UI.Kit.Glass)
 local Skin = require(UI.Kit.Skin)
+local Text = require(UI.Kit.Text)
+local Look = require(UI.EquipmentScreen.Look)
 
 local StageScreen = {}
 StageScreen.Name = "Stages"
@@ -134,6 +137,14 @@ end
 
 -- The cut's room under the band, scaled to the room the screen has, at most Grow, its middle the room's. Its height is
 -- what it fits: a card taller than the cut's room grows it.
+-- Back's underline in the screen's band in `colour` (the Arc panel's dusk), or its face's light again (nil).
+local function underline(band: Frame?, colour: Color3?)
+	local back = if band and band.Parent then band.Parent:FindFirstChild("Back") else nil
+	if back and back:IsA("TextButton") then
+		Button.Set(back, { Underline = colour or false })
+	end
+end
+
 local function block(body: Frame, name: string, tall: number?): Frame
 	local B = LOOK.Block
 	local high = tall or B.Tall
@@ -328,7 +339,7 @@ end
 
 -- The card's marks: the four stages on their road, lit to the one just cleared and on (`run`) to where the player now
 -- stands, the next ringed in light, the one just cleared with its check.
-local function marks(parent: Instance, x0: number, x1: number, y: number, rows: { string }, hard: boolean, z: number): (number) -> ()
+local function marks(parent: Instance, x0: number, x1: number, y: number, rows: { string }, hard: boolean, z: number, kept: { number }?): (number) -> ()
 	local a = accent(hard)
 	local tab = if hard then BADGE.Box + BADGE.Space else 0
 	local step = (x1 - x0 - 12 - BADGE.Side - tab) / 3
@@ -375,6 +386,21 @@ local function marks(parent: Instance, x0: number, x1: number, y: number, rows: 
 			Glass.Bloom(made, "Glow", 0, 0, 34, 34, a.Glow, 0.7, z + 7)
 			parts.Just = made
 		end
+		-- a dare kept on this stretch in this run (TR54): its mark Gap right of the node, on the road's middle
+		if kept and table.find(kept, k) then
+			local D = LOOK.DareCard.Mark
+			local record = UIKit.Images.DareMarkKept
+			local dare = Instance.new("ImageLabel")
+			dare.Name = `Dare{k}`
+			dare.BackgroundTransparency = 1
+			dare.Image = record.Id
+			dare.AnchorPoint = Vector2.new(0.5, 0.5)
+			dare.Position = UDim2.fromOffset(bx + BADGE.Side + tab + D.Gap, y)
+			dare.Size = UDim2.fromOffset(record.Points.X * D.Scale, record.Points.Y * D.Scale)
+			dare.ZIndex = z + 9
+			dare:SetAttribute("Kit", "DareMarkKept")
+			dare.Parent = parent
+		end
 	end
 	local function play(u: number)
 		-- u: 0 at the card's opening, 1 once the light has run on and the next is ringed
@@ -390,6 +416,49 @@ local function marks(parent: Instance, x0: number, x1: number, y: number, rows: 
 	end
 	play(0)
 	return play
+end
+
+-- A word at its capitals' top y (the AR53 sheets' measure): its box centred on the capitals' middle.
+local function capsLabel(parent: Instance, name: string, said: string, size: number, colour: Color3, x: number, y: number, strong: boolean, z: number): TextLabel
+	local label = Glass.Label(parent, name, said, size, colour, x, y + size * 0.36 - 10, 200, 20, Enum.TextXAlignment.Left, strong, z)
+	label.Size = UDim2.fromOffset(math.ceil(Text.Wide(label, said)) + 2, 20)
+	return label
+end
+
+-- The dares a run kept (TR54; AR53's chip, goals.json "dare.card.chip"): the kept mark, "Dare kept", the forge stone's
+-- cell of their grade and "+N", on dark glass with a warm edge. Its width follows its words.
+local function dareChip(parent: Instance, card: { [string]: any }, z: number): Frame
+	local K = LOOK.DareCard.Chip
+	local chip = Instance.new("Frame")
+	chip.Name = "DareKept"
+	chip.BackgroundTransparency = 1
+	chip.ZIndex = z
+	chip.Parent = parent
+	local words = capsLabel(chip, "Words", GoalDefs.Labels.DareKept, K.Words.Size, K.Words.Colour, K.Words.X, K.Words.Y, true, z + 4)
+	local sx = K.Words.X + Text.Wide(words, words.Text) + K.Stone.Gap
+	local grade = if type(card.Grade) == "string" then card.Grade else "Low"
+	Look.Cell(chip, "Stone", sx, K.Stone.Top, K.Stone.Side, "Common", `Stone{grade}`, nil, z + 2)
+	Glass.Edge(chip, "StoneLine", sx, K.Stone.Top, K.Stone.Side, K.Stone.Side, 4, K.Stone.Edge, 1, nil, z + 8)
+	local cx = sx + K.Stone.Side + K.Count.Gap
+	local said = `+{card.Count}`
+	local count = capsLabel(chip, "Count", said, K.Count.Size, K.Count.Colour, cx, K.Count.Y, true, z + 4)
+	local wide = math.ceil(cx + Text.Wide(count, said) + K.Pad)
+	Glass.Glow(chip, "Glow", 0, 0, wide, K.Tall, K.Glow.Reach, K.Glow.Colour, K.Glow.Alpha, z)
+	Glass.Fill(chip, "Fill", 0, 0, wide, K.Tall, K.Corner, K.Fill, z + 1)
+	Glass.Edge(chip, "Edge", 0, 0, wide, K.Tall, K.Corner, K.Edge.Colour, 1, nil, z + 3)
+	local record = UIKit.Images.DareMarkKept
+	local mark = Instance.new("ImageLabel")
+	mark.Name = "DareMarkKept"
+	mark.BackgroundTransparency = 1
+	mark.Image = record.Id
+	mark.AnchorPoint = Vector2.new(0.5, 0.5)
+	mark.Position = UDim2.fromOffset(K.Mark.At.X, K.Mark.At.Y)
+	mark.Size = UDim2.fromOffset(record.Points.X * K.Mark.Scale, record.Points.Y * K.Mark.Scale)
+	mark.ZIndex = z + 5
+	mark:SetAttribute("Kit", "DareMarkKept")
+	mark.Parent = chip
+	chip.Size = UDim2.fromOffset(wide, K.Tall)
+	return chip
 end
 
 -- A face in a bare button's skin, under its press.
@@ -487,11 +556,16 @@ function StageScreen.Pick(ground: string, view: Profile.View, on: On)
 	end
 	local body = Screen.Full(StageScreen.Name, ARC.Title, "SeamGlass")
 	parts.Body = body
-	Glass.Ground(body, 1)
+	local cover = Screen.Cover(StageScreen.Name)
+	if cover then
+		cover.BackgroundColor3 = SEAM.Backing or cover.BackgroundColor3 -- a card before it left its wine (a reopened screen keeps its cover)
+	end
+	Glass.Ground(body, 1, ARC.Backing) -- the festival's dusk behind the glass (TR50's older line)
 	local room = block(body, "Arc")
 	room.ZIndex = 2
 	parts.Block = room
 	local band = Screen.Band(StageScreen.Name)
+	underline(band, ARC.Rim)
 	if band then
 		local title = Glass.Label(band, "Title", ARC.Title, TITLE, SEAM.Text, Screen.BandLeft + 4, 0, 260, 0, Enum.TextXAlignment.Left, true, 3)
 		title.Size = UDim2.new(0, 260, 1, 0)
@@ -513,15 +587,17 @@ function StageScreen.Pick(ground: string, view: Profile.View, on: On)
 	tile.Size = UDim2.fromOffset(w, h)
 	tile.Parent = group
 	parts.Arc = tile
-	local a = accent(false)
-	Glass.Glow(tile, "Glow", 0, 0, w, h, TILE.Next.Glow, a.Glow, TILE.Next.GlowAlpha, 1)
+	-- The street's light pooled behind the bed, on the ground under the tile.
+	local bedX, bedY = TILE.Pad + BED.Inset + ARC.Bed.X / 2, TILE.Top - T + BED.Inset + ARC.Bed.Y / 2
+	parts.GroundBloom = Glass.Bloom(room, "GroundBloom", bedX, bedY, ARC.Bloom.Size.X, ARC.Bloom.Size.Y, ARC.Bloom.Colour, ARC.Bloom.Alpha, 1)
+	Glass.Glow(tile, "Glow", 0, 0, w, h, TILE.Next.Glow, ARC.Glow, TILE.Next.GlowAlpha, 1)
 	Glass.Fill(tile, "Fill", 0, 0, w, h, TILE.Corner, TILE.Fill, 2)
 	Glass.Wash(tile, "Sheen", 0, 0, w, h, TILE.Corner, SEAM.Glint, function(at: number): number
 		return TILE.Sheen.Alpha * math.exp(-at / TILE.Sheen.Fall)
 	end, 3)
-	Glass.Edge(tile, "Edge", 0, 0, w, h, TILE.Corner, SEAM.Facet, TILE.Edge.Top, TILE.Edge.Foot, 5)
+	Glass.Edge(tile, "Edge", 0, 0, w, h, TILE.Corner, ARC.Rim, TILE.Edge.Top, TILE.Edge.Foot, 5)
 	cornerGlint(tile, "CornerGlint", 0, 0, w, h, TILE.Corner, TILE.CornerGlint, 6)
-	-- The bed: the keeper's picture on its own light, the ground's name under it.
+	-- The bed: the keeper's picture on its own light, pooled low under it, the ground's name under it.
 	local bx, by, bw, bh = BED.Inset, BED.Inset, ARC.Bed.X, ARC.Bed.Y
 	local bed = Instance.new("Frame")
 	bed.Name = "Bed"
@@ -532,7 +608,7 @@ function StageScreen.Pick(ground: string, view: Profile.View, on: On)
 	bed.ZIndex = 7
 	bed.Parent = tile
 	Glass.Fill(bed, "Fill", 0, 0, bw, bh, BED.Corner, BED.Fill, 7)
-	Glass.Bloom(bed, "Bloom", bw * BED.Bloom.Middle.X, bh * BED.Bloom.Middle.Y, BED.Bloom.Size.X * ARC.Picture, BED.Bloom.Size.Y * ARC.Picture, a.Bloom, a.Pictures.Next, 8)
+	Glass.Bloom(bed, "Bloom", bw * BED.Bloom.Middle.X, bh * BED.Bloom.Middle.Y, BED.Bloom.Size.X * ARC.Picture, BED.Bloom.Size.Y * ARC.Picture, BED.Bloom.Colour, BED.Bloom.Alpha, 8)
 	local record = IMAGES[LOOK.Pictures[#LOOK.Pictures]]
 	if record then
 		local pw, ph = BED.Picture.X * ARC.Picture, BED.Picture.Y * ARC.Picture
@@ -545,7 +621,7 @@ function StageScreen.Pick(ground: string, view: Profile.View, on: On)
 		picture.ZIndex = 9
 		picture.Parent = bed
 	end
-	Glass.Edge(tile, "BedEdge", bx, by, bw, bh, BED.Corner, SEAM.Edge, BED.EdgeAlpha, nil, 10)
+	Glass.Edge(tile, "BedEdge", bx, by, bw, bh, BED.Corner, BED.Edge, BED.EdgeAlpha, nil, 10)
 	parts.Ground = Glass.Label(tile, "Ground", named, TITLE, SEAM.Text, bx, by + bh, bw, h - by - bh - BED.Inset, nil, true, 12)
 	-- Normal and Hard beside it, one press each.
 	local cx = bx + bw + ARC.Gap
@@ -647,6 +723,12 @@ function StageScreen.Results(results: { [string]: any }, on: On)
 	end
 	local body = Screen.Full(StageScreen.Name, "Results", "SeamGlass")
 	parts.Body = body
+	-- The street under the card stays the street's dusk: the cover in dark wine (TR50's older line).
+	local cover = Screen.Cover(StageScreen.Name)
+	if cover then
+		cover.BackgroundColor3 = C.Cover
+	end
+	underline(Screen.Band(StageScreen.Name), nil)
 	-- The card stands alone over the street dimmed (the cut): the HUD steps back until the screen closes, as the base's
 	-- view does.
 	local hud = Layers.Get("Hud")
@@ -681,6 +763,12 @@ function StageScreen.Results(results: { [string]: any }, on: On)
 	if #gave > 0 then
 		table.insert(spans, { Kind = "Gave", Tall = rows.Gave })
 	end
+	local given: any = results.Dares
+	local dares: { [string]: any }? = if type(given) == "table" and type(given.Count) == "number" and given.Count > 0 then given else nil
+	local keptStretches: { number }? = if dares and type(dares.Kept) == "table" then dares.Kept :: { number } else nil
+	if dares and not won then
+		table.insert(spans, { Kind = "Dare", Tall = LOOK.DareCard.Chip.Fall })
+	end
 	local openedWords: string? = nil
 	if won and opened == "Hard" then
 		openedWords = "Hard is open"
@@ -713,7 +801,7 @@ function StageScreen.Results(results: { [string]: any }, on: On)
 	for _, span in spans do
 		local h = span.Tall
 		if span.Kind == "Marks" then
-			play = marks(room, x0 + 16, x0 + w - 16, y + h / 2, markRows, hard, 6)
+			play = marks(room, x0 + 16, x0 + w - 16, y + h / 2, markRows, hard, 6, keptStretches)
 		elseif span.Kind == "Title" then
 			parts.Title = Glass.Label(room, "Title", if won then `{named} cleared` else "Your lead fell", BIG, if won then SEAM.Text else Theme.Colour.Hurt, x0, y, w, h, nil, true, 6)
 		elseif span.Kind == "Time" then
@@ -728,9 +816,34 @@ function StageScreen.Results(results: { [string]: any }, on: On)
 			row.ZIndex = 6
 			row.Parent = room
 			parts.Time = row
+			local said: string? = nil
 			if not won or seconds == nil then
-				Glass.Label(row, "Said", if won then "Cleared" else `Your next run starts at Stretch {resume} of {count}`, SMALL, SEAM.Soft, 0, 0, w, h, nil, false, 6)
+				said = if won then "Cleared" else `Your next run starts at Stretch {resume} of {count}`
 			elseif best and best >= seconds then
+				said = nil
+			elseif best then
+				said = `{Read.Clock(seconds)}   ·   best {Read.Clock(best)}`
+			else
+				said = `{Read.Clock(seconds)}   ·   from Stretch {from}`
+			end
+			if won and dares and said then
+				-- the chip last on the row, the row's gap before it (AR53)
+				local list = Instance.new("UIListLayout")
+				list.FillDirection = Enum.FillDirection.Horizontal
+				list.HorizontalAlignment = Enum.HorizontalAlignment.Center
+				list.VerticalAlignment = Enum.VerticalAlignment.Center
+				list.Padding = UDim.new(0, LOOK.DareCard.Chip.Gap)
+				list.SortOrder = Enum.SortOrder.LayoutOrder
+				list.Parent = row
+				local label = Glass.Label(row, "Said", said, SMALL, SEAM.Soft, 0, 0, 0, h, nil, false, 6)
+				label.AutomaticSize = Enum.AutomaticSize.X
+				label.LayoutOrder = 1
+				local chip = dareChip(row, dares, 6)
+				chip.LayoutOrder = 9
+				parts.Dare = chip
+			elseif said then
+				Glass.Label(row, "Said", said, SMALL, SEAM.Soft, 0, 0, w, h, nil, false, 6)
+			elseif best and seconds and best >= seconds then
 				local list = Instance.new("UIListLayout")
 				list.FillDirection = Enum.FillDirection.Horizontal
 				list.HorizontalAlignment = Enum.HorizontalAlignment.Center
@@ -751,11 +864,27 @@ function StageScreen.Results(results: { [string]: any }, on: On)
 				Glass.Fill(chip, "Fill", 0, 0, 98, h, 4, LOOK.Socket, 6)
 				Glass.Edge(chip, "Edge", 0, 0, 98, h, 4, LOOK.Ready, 1, nil, 7)
 				Glass.Label(chip, "Words", "a new best", SMALL, LOOK.Ready, 0, 0, 98, h, nil, true, 8)
-			elseif best then
-				Glass.Label(row, "Said", `{Read.Clock(seconds)}   ·   best {Read.Clock(best)}`, SMALL, SEAM.Soft, 0, 0, w, h, nil, false, 6)
-			else
-				Glass.Label(row, "Said", `{Read.Clock(seconds)}   ·   from Stretch {from}`, SMALL, SEAM.Soft, 0, 0, w, h, nil, false, 6)
+				if dares then
+					-- the chip last on the row: the row's own gap is 10, so 2 back
+					local K = LOOK.DareCard.Chip
+					local holder = Instance.new("Frame")
+					holder.Name = "DareRoom"
+					holder.BackgroundTransparency = 1
+					holder.LayoutOrder = 9
+					holder.ZIndex = 6
+					holder.Parent = row
+					local dare = dareChip(holder, dares, 6)
+					local back = K.Gap - list.Padding.Offset
+					dare.Position = UDim2.fromOffset(back, (h - K.Tall) / 2)
+					holder.Size = UDim2.fromOffset(dare.Size.X.Offset + back, h)
+					parts.Dare = dare
+				end
 			end
+		elseif span.Kind == "Dare" and dares then
+			local K = LOOK.DareCard.Chip
+			local chip = dareChip(room, dares, 6)
+			chip.Position = UDim2.fromOffset(x0 + (w - chip.Size.X.Offset) / 2, y + K.Down)
+			parts.Dare = chip
 		elseif span.Kind == "Gave" then
 			local row = Instance.new("Frame")
 			row.Name = "Gave"

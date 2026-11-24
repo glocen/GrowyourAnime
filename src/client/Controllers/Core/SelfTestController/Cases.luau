@@ -65,6 +65,7 @@ local UI = script.Parent.Parent.Parent.Parent.UI
 local Theme = require(UI.Theme)
 local Layers = require(UI.Layers)
 local Digits = require(UI.Kit.Digits)
+local Fade = require(UI.Kit.Fade)
 local BreakerScreen = require(UI.BreakerScreen)
 local VoidkinScreen = require(UI.VoidkinScreen)
 local World = require(UI.World)
@@ -91,7 +92,7 @@ local NumberCases = require(script.Parent.NumberCases)
 local BaseCases = require(script.Parent.BaseCases)
 local Helpers = require(script.Parent.Helpers)
 local TravelCases = require(script.Parent.TravelCases)
-local HomeTray = require(UI.HomeTray)
+local HomePanel = require(UI.HomePanel)
 
 local R6_ROOT_HEIGHT = 3 -- an R6 body's root stands 3 studs above the floor (legs 2, half the torso 1): an engine fact
 local TUNE_PATH = "Game.Version" -- a string any build has; the case puts it back
@@ -1043,10 +1044,10 @@ local cases = {
 		Place = "Festival", -- TR45: its world stands in that place only
 		Stay = true,
 		Run = function(t: any)
-			-- "Street": the plots' grey trial left out while their size isn't the base plan's (128, until it's laid again)
+			-- "Street": the plots left out while their size isn't the base plan's (the base's own cases read them)
 			local problems = t.Server("DressReport", "Street")
 			local first = if type(problems) == "table" then problems[1] else nil
-			t.Check("the dressing report is empty, but for the plots' grey trial", type(problems) == "table" and #problems == 0, if first then `{first} (and {#problems - 1} more)` else nil)
+			t.Check("the dressing report is empty", type(problems) == "table" and #problems == 0, if first then `{first} (and {#problems - 1} more)` else nil)
 			-- The paper as this client shows it (research's TR8 verdict): each box streamed in stands in Config.Lighting.Paper's
 			-- band over the paving, in its tint (its rate is the logic case's).
 			streamed(t, "Elite", { Stage = SQUARE_ELITE.Stage })
@@ -3873,7 +3874,7 @@ local cases = {
 			local function wears(label: TextLabel?, family: string?, weight: string?): boolean
 				return label ~= nil and label.FontFace.Family == (family or HudConfig.Numbers.Face) and label.FontFace.Weight == (Enum.FontWeight :: any)[weight or "ExtraBold"]
 			end
-			t.Near("its outline grows with the layer", if stroke then stroke.Thickness else 0, plain.Weight * Layers.Scale(), 0.01)
+			t.Near("its outline authored, grown by the layer's UIScale alone", if stroke then stroke.Thickness else 0, plain.Weight, 0.01)
 			t.Check("in the plain numbers' face and weight", wears(c1, plain.Face, plain.Font), if c1 then `{c1.FontFace.Family} {c1.FontFace.Weight.Name}` else "no digit")
 			local pad = if c1 then c1:FindFirstChildOfClass("UIPadding") else nil
 			t.Near("spaced by its gap, in its own digit (a whole pixel)", if pad then pad.PaddingRight.Offset else 0, plain.Gap * (plain.Digit or HudConfig.Numbers.Digit) * (one.Row:GetAttribute("Size") :: number), 0.5)
@@ -5463,12 +5464,25 @@ local cases = {
 			pill.Text = said
 			RunService.Heartbeat:Wait()
 			t.Check("and shows again once it has", pill.Parent ~= nil and (pill.Parent :: GuiObject).Visible)
+			-- A panel shows only while it and everything over it shows; its words stand in it or beside it in its plate (the
+			-- down badge's card lies beside its panel, TR10).
+			local world = Layers.Get("World")
+			local function standing(item: Instance): boolean
+				local at: Instance? = item
+				while at and at ~= world do
+					if (at:IsA("GuiObject") and not at.Visible) or (at:IsA("CanvasGroup") and at.GroupTransparency >= 1) then
+						return false
+					end
+					at = at.Parent
+				end
+				return at == world
+			end
 			local blank: { string } = {}
-			for _, panel in Layers.Get("World"):GetDescendants() do
-				if panel.Name == "Panel" and panel:IsA("GuiObject") and panel.Visible then
+			for _, panel in world:GetDescendants() do
+				if panel.Name == "Panel" and panel:IsA("GuiObject") and standing(panel) then
 					local says = false
-					for _, line in panel:GetChildren() do
-						says = says or (line:IsA("TextLabel") and line.Text ~= "")
+					for _, line in (panel.Parent :: Instance):GetDescendants() do
+						says = says or (line:IsA("TextLabel") and line.Text ~= "" and standing(line))
 					end
 					if not says and panel.Parent then
 						table.insert(blank, panel.Parent.Name)
@@ -5701,10 +5715,15 @@ local cases = {
 			t.Check("its tier by the fight's cost (Rules.Hud.FoeTier)", shown() == want, `shown {shown()}, wanted {want}`)
 			local skull = parts.TargetSkull :: ImageLabel
 			local words = parts.TargetLevel :: TextLabel
+			-- Its own transparencies, under the card's see-through (a fighter behind it fades the whole card, Kit.Fade).
 			local function worn(tier: number): boolean
 				local colour = skulls.Colours[tier]
 				local faint = if tier == 1 then skulls.Faint else 0
-				return skull.ImageColor3 == colour and words.TextColor3 == colour and words.TextTransparency == 0 and math.abs(skull.ImageTransparency - faint) < 1e-3
+				local shows = Fade.Of(parts.Target :: GuiObject)
+				return skull.ImageColor3 == colour
+					and words.TextColor3 == colour
+					and math.abs(words.TextTransparency - Hud.Faded(0, shows)) < 1e-3
+					and math.abs(skull.ImageTransparency - Hud.Faded(faint, shows)) < 1e-3
 			end
 			t.Check("the skull and the level in its colour", worn(want))
 			-- Mid-fight, the cuts moved under its cost and then over it: the skull turns red, then white, never grey at the
@@ -5731,7 +5750,7 @@ local cases = {
 					local grey = met and waitFor(t, REPLICATE, function(): boolean
 						return shown() == 1
 					end)
-					t.Check("a Shade a level under, over the cuts: grey and faint, its level whole", grey and worn(1), `shown {shown()}`)
+					t.Check("a Shade a level under, over the cuts: grey and faint, its level whole", grey and worn(1), `shown {shown()}; skull {skull.ImageColor3:ToHex()} at {string.format("%.3f", skull.ImageTransparency)}, level {words.TextColor3:ToHex()} at {string.format("%.3f", words.TextTransparency)}, the card at {string.format("%.2f", Fade.Of(parts.Target :: GuiObject))}`)
 				end
 			end)
 			t.Server("Tune", "Hud.Skulls.Cuts", wasCuts)
@@ -6175,16 +6194,16 @@ local cases = {
 	},
 	{
 		-- TR10 (research's entry, 2026-11-14): the elite down shows its marker over its square, with the server's time left
-		-- and its loot's chances from Rules.Drops, in each layout, and the three side by side; this player's keeper resting
+		-- and its loot's chances from Rules.Drops, its card folded far and unfolding near (Badge); this player's keeper resting
 		-- shows at its gate, its Challenge hidden for them, and a try asked meanwhile is refused.
 		Name = "World: TR10, the elite's and the keeper's markers while they're down, and a resting keeper refuses a try",
 		Place = "Festival", -- TR45: its world stands in that place only
 		Run = function(t: any)
 			t.Wait(LEAD_SETTLE)
 			local config = HudConfig.Down
-			local was = { Layout = config.Layout, Compare = config.Compare, Near = config.Near }
+			local was = { Near = config.Near }
 			local function restore()
-				config.Layout, config.Compare, config.Near = was.Layout, was.Compare, was.Near
+				config.Near = was.Near
 				t.Server("PackBack", SQUARE_ELITE.Name)
 				t.Server("PackBack", ELITE_STAND.Pack)
 				t.Server("KeeperRest", 0)
@@ -6206,11 +6225,11 @@ local cases = {
 			end
 			local felled = t.Server("PackDefeat", SQUARE_ELITE.Name)
 			t.Check("the elite falls", felled.Ok == true, tostring(felled.Error))
-			local function plateOf(kind: string, layout: string?): Frame?
-				return DownController.Plate(kind, layout)
+			local function plateOf(kind: string): Frame?
+				return DownController.Plate(kind)
 			end
-			local function shows(kind: string, layout: string?): boolean
-				local plate = plateOf(kind, layout)
+			local function shows(kind: string): boolean
+				local plate = plateOf(kind)
 				return plate ~= nil and World.Where(plate) ~= nil and ((plate:GetAttribute("Left") or 0) :: number) > 0
 			end
 			t.Check("its marker shows over its square", waitFor(t, REPLICATE, function(): boolean
@@ -6238,31 +6257,17 @@ local cases = {
 			t.Equal("Credits, experience and the shard", plate:GetAttribute("Lines"), 3)
 			t.Wait(1.2)
 			t.Check("it counts down", (plate:GetAttribute("Left") :: number) < left)
-			-- Each layout in the marker's place; the badge's card only near.
-			for _, layout in { "Stack", "Row", "Badge" } do
-				config.Layout = layout
-				t.Check(`{layout}: it shows`, waitFor(t, 0.5, function(): boolean
-					return shows("Elite", layout)
-				end))
-				local each = plateOf("Elite", layout)
-				if each then
-					t.Check(`{layout}: its card`, each:GetAttribute("Card") == (layout ~= "Badge"))
-					t.Check(`{layout}: as tall as it holds`, each.Size.Y.Offset > config.Icon and each.Size.Y.Offset < 260, `{each.Size.Y.Offset}`)
-				end
-			end
+			-- Badge (research's pick, 2026-11-23): past Near its card stays folded, only the tile and its time; near, it unfolds.
+			t.Check("far: its card folded", plate:GetAttribute("Unfold") == 0 and plate:GetAttribute("Card") == false)
 			config.Near = 1e6
-			t.Wait(0.1)
-			local badge = plateOf("Elite", "Badge")
-			t.Check("Badge: its card shows near", badge ~= nil and badge:GetAttribute("Card") == true)
+			t.Check("near: its card unfolds whole", waitFor(t, config.Unfold + 0.5, function(): boolean
+				return plate:GetAttribute("Card") == true
+			end))
+			t.Check("as tall as it holds", plate.Size.Y.Offset > config.Icon and plate.Size.Y.Offset < 260, `{plate.Size.Y.Offset}`)
 			config.Near = was.Near
-			-- The three side by side, for one capture.
-			config.Layout = "Stack"
-			config.Compare = true
-			t.Wait(0.1)
-			t.Check("compared: the three show at once", shows("Elite", "Stack") and shows("Elite", "Row") and shows("Elite", "Badge"))
-			config.Compare = false
-			t.Wait(0.1)
-			t.Check("one again", shows("Elite", "Stack") and not shows("Elite", "Row") and not shows("Elite", "Badge"))
+			t.Check("far again: it folds away", waitFor(t, config.Unfold + 0.5, function(): boolean
+				return plate:GetAttribute("Unfold") == 0
+			end))
 			-- Back: its marker goes.
 			t.Check("the elite is back at once for the test", t.Server("PackBack", SQUARE_ELITE.Name).Ok == true)
 			t.Check("its marker goes", waitFor(t, REPLICATE, function(): boolean
@@ -6722,7 +6727,7 @@ local cases = {
 				return now ~= nil and (now :: any).Base.Chambers[1].Work == nil and wrong() == nil
 			end), wrong())
 			-- The mill's wheel (AR19): its owner's generation, and turning about its axle while there is some.
-			local wheel = if plant then (BaseController.MillStage(plant) or plant):FindFirstChild("Wheel") else nil
+			local wheel = if plant then (BaseController.StageOf(plant) or plant):FindFirstChild("Wheel") else nil
 			local kw = if wheel then wheel:GetAttribute("Generation") else nil
 			t.Check("the generator's wheel carries the plant's generation", type(kw) == "number" and math.abs(kw - Power.Generation(ProfileController.Get() :: any)) < 1e-6, tostring(kw))
 			if wheel and wheel:IsA("BasePart") and type(kw) == "number" then
@@ -7540,15 +7545,15 @@ local cases = {
 			t.Wait(0.1) -- a frame of the plates' step
 			t.Check("the world's layer shows with no screen open", layer.Visible)
 			-- The Base screen opens from a bay's prompt (the dock's Base tile is the way home, TR19); the Voidkin screen from
-			-- Home's Inventory tile (AR43), the dock's Home cell selected while it holds it.
+			-- Home's Voidkin card (AR49), the dock's Home cell selected while it holds it.
 			for _, name in { "Base", "Voidkin" } do
 				local hud = HudController.Parts()
 				if name == "Base" then
 					BaseController.Open()
 				end
-				-- The Voidkin screen as a player opens it: Home's tray first, then its Inventory tile, which steps into it.
+				-- The Voidkin screen as a player opens it: Home's panel first, then its Voidkin card, which steps into it.
 				local home = HudConfig.Home
-				if name == "Voidkin" and not HomeTray.Shown(HudController.Home()) then
+				if name == "Voidkin" and not HomePanel.Shown(HudController.Home()) then
 					Button.Press(hud.Home :: TextButton)
 					t.Wait(home.Open.Grow + 0.1)
 				end
@@ -7559,8 +7564,8 @@ local cases = {
 				t.Check(`the world's layer hides while {name} is open`, waitFor(t, 0.5, function(): boolean
 					return not layer.Visible
 				end))
-				if name == "Voidkin" then -- from Home's Inventory tile since AR43: the dock's Home cell holds its screen
-					t.Check(`the dock's Home is selected while {name} is open from its tray`, waitFor(t, 0.5, function(): boolean
+				if name == "Voidkin" then -- from Home's Voidkin card since AR49: the dock's Home cell holds its screen
+					t.Check(`the dock's Home is selected while {name} is open from its panel`, waitFor(t, 0.5, function(): boolean
 						return Button.State(hud.Home :: TextButton) == "Selected"
 					end), Button.State(hud.Home :: TextButton))
 				end
@@ -7731,6 +7736,7 @@ local cases = {
 			t.Wait(1)
 			t.Server("DataCredits", 40)
 			t.Wait(1.5)
+			VoidkinScreen.Last("Bag") -- the card opens the page last shown (AR49)
 			tap(parts.Voidkin :: TextButton)
 			t.Wait(1.5)
 			tap(closeOf("Voidkin"))
@@ -7804,6 +7810,29 @@ for _, case in HudCases.Cases({
 end
 -- TR24's fixes 1 to 3, given theirs: the next step's marker, the lead's fights in view, its place beside the avatar, its fade.
 for _, case in ViewCases.Cases({ LEAD_SETTLE = LEAD_SETTLE, SHADE_AHEAD = SHADE_AHEAD, waitFor = waitFor, myLead = myLead }) do
+	table.insert(cases, case)
+end
+-- TR52's block, the signature on a tap, given theirs. Its module cast: typed, its require alone tipped this file past what
+-- the type solver checks (32 internal errors, 2026-11-23); the module checks itself.
+for _, case in (require(script.Parent.SignatureCases) :: any).Cases({
+	LEAD_SETTLE = LEAD_SETTLE,
+	SHADE_AHEAD = SHADE_AHEAD,
+	SHADE_TOUGHER = SHADE_TOUGHER,
+	SHADE_TIMEOUT = SHADE_TIMEOUT,
+	waitFor = waitFor,
+	myLead = myLead,
+}) do
+	table.insert(cases, case)
+end
+-- AR52's Guard and Dasher in a fight, given theirs, cast as SignatureCases is.
+for _, case in (require(script.Parent.ShadeCases) :: any).Cases({
+	LEAD_SETTLE = LEAD_SETTLE,
+	SHADE_AHEAD = SHADE_AHEAD,
+	SHADE_TOUGHER = SHADE_TOUGHER,
+	SHADE_TIMEOUT = SHADE_TIMEOUT,
+	waitFor = waitFor,
+	myLead = myLead,
+}) do
 	table.insert(cases, case)
 end
 -- AR44's numbers in a fight, given theirs: clear of each other along their rise, and the clip for research.

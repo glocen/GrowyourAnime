@@ -4,33 +4,27 @@
 
 Each teammate rewrites its own row: two to five lines. Open asks sit under "Waiting on the director".
 
-**Quaestor (research).** 2026-11-20, 00:14, on Opus 5.5. Stopped at the director's wrap-up. Closed tonight: TR49, the combat review built (it closes on the Stage 1 playtest, item 9); TR50, one mission per Arc (the director, 23:19); AR40, AR43's take 2, AR44's digits and AR45's foe card, reopened and closed on the director's catch. Picked: AR44's critical shine C, AR49's Home panel C (cut passed with two build conditions).
-- **Next, mine:** AR48's second look on Burn and Shock; AR49's install pass from Faber's capture; AR44's shine in the game. For Faber after AR49: the Voidkin screen's pink-lavender floor under the model takes a non-violet ground (the too-purple line).
-- **Queued for Modulo:** after AR48, the picker's violet ground and the lantern tile's ground (TR50, the older line).
-- **Verdicts owed:** TR43, TR44, AR30, AR37, TR10, AR28's Stage I, TR34, AR23, TR29.
-- **With the director:** the Voidkin model examples, promised for 2026-11-20; the rework waits on them (decisions.md, 00:21). Opening the Festival place (item 9); the store's design; the sound pick on TR42's panel.
+**Quaestor (research).** 2026-11-24, 01:59, on Opus 5.5 at xhigh. **Leading in the director's stead from about 01:58** (decisions.md, the top row), under the director's vision: each call a dated row there, a daily digest here. Wrapped up at 01:59 on the director's word. Today: AR59's Rook picked and passed at competent (A, the school tough, in the make); AR60 written (Kirra); TR54's verdict (competent, three must-fixes); the plan in `docs/research/making-greatness.md`, section 5.
+- **Next, mine:** AR52's pass in the game (`build/captures/ar52/`); TR54's second look in motion; AR60's pick; the order of Modulo's art-director work; F3's rest; F7's timing when the places are published (item 4).
+- **Faber's order:** TR54's three must-fixes (TR54, "Research's verdict"), then TR53 (TR31 folded in); then AR57's elites, AR58's Support and AR56. Rook's install once the director accepts him. F7's timing whenever item 4's publish lands. Effects and sound data from Scintilla and Sonus come to you for review before your push.
+- **Modulo's order:** AR60, Kirra in the make (`tools/blender/anime_make.py`), now that Rook's portraits are drawn; then Pip, Lyric and Watt's finish, one at a time (the director, by 22:52). The art-director work is ordered with research at the next start.
+- **With the director:** accept Rook (`build/handoff/Rook/make/rook_make_sheet.png`); **TR52's run**, the signature on a tap (TR52, research's read); the hooks for Scintilla and Sonus, by your hand (`.claude/hooks/config/roles.json` and `tools.json`; item 10 in Faber's session); **item 4**, publish both places; `src/shared/Config/Sounds.luau`'s uncommitted change; the store's design.
 
-**Faber (builder).** 2026-11-20, 00:25, on Opus 5.5. Stopped on the director's second wrap-up. Done today:
-- TR50, one mission per Arc, with research's five must-fixes in the game (98c6cdd): the closed lock, the lit Fight or Continue, the line's chevron mark, the last foe by name, the track node to node. Take: TR50 13/0, travel 35/0, the dock 39/0.
-- **AR49, Home's panel, mid-build:** all 12 images uploaded under the group and Approved; research's call on the Voidkin screen's rail (AR49, "Faber's build: begun"). Written but kept out of `src/` so the game stays whole: the panel's Config, `Figure.Bust` (the live view and its framing rule), `UI.HomePanel`, all in `build/scratch/faber/ar49-wip/` (`git apply tracked.patch`, then copy `HomePanel.luau` to `src/client/UI/`). Still to do: wire it into HudController in the tray's place, the cases, the rail, the captures.
-- **Next:** AR49's build (the panel, the live view and its framing, the presses under the view, the rail in the Voidkin screen), then AR44's shine, then TR10's stills, then AR48's states once Modulo's sheet is picked.
-- **Open, tests:** NOT VERIFIED (the Festival place, item 9): TR50's run cases, the Festival role's suite, TR48's keeper in a real run, TR49's Stage 1 playtest, TR10's marker in its world. TintMask on a phone. TR44's phone take waits for the director's go.
+**Faber (builder).** 2026-11-24, 02:01, on Opus 5.5. Stopped at the director's wrap-up: committed, the playtest stopped, nothing running, no lock held.
+- **TR54 is in the game; research holds it at competent on three must-fixes** (TR54, "Research's verdict"): a "Do" dare's mark answers "done yet?" at rest, with its moment seen; the forge stone reads as a stone on the cards; every row of the run's cards fits its longest. Next session: the fixes, then a short capture of the beats for the second look.
+- **Fixed since TR54's commit:** a stretch's clear could be asked for twice (a fall after the quota finished it again, logged "wasn't saved: Claimed"): `Stages.Kill` is true once, with a logic case. The lint now flags any list that draws Roblox's own thumb, which caught the Equipment screen's two, now hidden. The cases end a run by its lead's fall (`Helpers.endRun`). **Open:** "Stages (TR50)" 85/2: `StagesStage` outside the safe area on the Arc panel and the run's card, in a 1655 by 756 viewport; look first at whether TR54's chip made the card taller.
+- **AR52** waits on research's pass in the game; **TR52** on the director's run. **Then:** TR53 with TR31; AR57, AR58 and AR56. F7's timing waits on item 4. The hooks for Scintilla and Sonus wait on the director's own word (item 10).
 
-**Modulo (assets).** 2026-11-20, 00:26, on Opus 5.5. Voidkin work parked until before launch (the director's word, 11:10). AR48's two must-fixes are in the script:
-- Burn's needles: seen, faces clear.
-- Shock's long arcs: seen at 64 px. The last tweak (ends under the head, glows for crosses) is NOT VERIFIED: the guard stopped the sheet on low memory.
+**Modulo (assets).** 2026-11-24, 02:00, on Fable 5.2. Stopped at the director's wrap-up; nothing running, no lock held.
+- **Now: AR60, Kirra in the make, started (01:53), no take drawn yet.** The kit has what she needs (`tools/blender/anime_make.py`): `Built` (a scarf's loop and tail, a blade, a ribbon, as one mesh on one part) and `Hair.lock` (a free lock, for a tail), neither drawn in a take yet; `rook_make_takes.py`'s `proof_run` and `reference` now serve another Voidkin. AR59 is delivered and waits on the director's acceptance: `build/handoff/Rook/make/`, with his two portraits in `portraits/`. Nothing uploaded.
+- **The director's yes, relayed by research (about 01:58; `docs/decisions.md`):** to my restatement of the word of about 23:35 (the base, the HUD, the skill icons and the spectator view reimagined, with me as art director). My next session reads that row first; nothing there has changed yet.
+- **For Faber:** TR53's look is `build/handoff/UI/return/` (the kit builds the slab, the lines and the presses; three images to upload; the Training line takes the kit's small portrait). The dare's open tab is in `goals.json`, "unfolded". My sheets are the strict case: the game has a sixth more room at the smallest phone. TR54's look is the goals' handoff: `DareMark*` where `DareTag*` stood (the origin is now the mark's middle), one `GoalNext` plate that holds the back press, no Ledger; `HomeSettings` gives way to the cog tile and the Today card. The Guard's clip is fixed (AR52, "The Guard's sleeve, fixed at the clip's finish") and goes up once as `ShadeGuard`.
+- **Next: AR60's three takes** (`tools/blender/kirra_make_takes.py`, to write), my plan: A, a silver high tail, an indigo sleeveless top, pale trousers, a teal scarf, bare steel; B, a deep teal bob, a cream jacket, charcoal leggings, a cobalt scarf; C, lavender twin low tails, an off-white wrap top, a navy sash, a sky-blue scarf. The blades cross on her back at today's joints, the scarf's knot at her left shoulder. Beside her: `rukio` (169.5 pixels a stud) and `kinnua` (160). Then Pip, Lyric and Watt.
+- **Still Faber's, each in its entry:** AR49's Home panel, AR44's shine, AR40's install (the atlas never alone), AR48's cues, TR50's dusk palette, the Voidkin screen's floor, AR50's seven pieces.
 
-Stopped on the director's second wrap-up (00:24). Next session:
-- AR48: re-run the three steps, read the Shock row, the content check, then research's second look (AR48, "Burn and Shock reworked");
-- then TR50's warm dusk for the picker's ground and the lantern tile (colours in `Config.Hud` Stages and `UIKit.Palettes.SeamGlass`, so a palette for Faber).
-- **In the game:** AR46's Hard looks with AR47's masks, on TintMask (a856f06), passed at competent (19:18). AR42's tiles in Seam, passed at competent (f9f3636).
-- **For Faber:** AR49, Home's panel in C (`home_cards.json`): 12 images to upload under the group, a ViewportFrame of the lead between `HomeVoidkinRimTop` and `HomeVoidkinFrame`, the words as TextLabels; after research's second look. AR44, the critical's shine (`build/handoff/UI/hud/critical_shine.json`). AR43, upload the five `Jewel<Colour>3.png` and swap their ids, if not done. TR10: take `MarkerElite.png` as it stands at the marker's install.
-- **For Faber, AR40's install:** the atlas pair, and the Strip's eight changed meshes with the manifest, on top of the 40 base meshes, the paving and C's keys already listed in AR40. The atlas never goes alone. AR38's Shop meshes go with AR38.
-- **Unchanged:** AR41's render (the director's go), AR28's Stage I on TR37, AR19's re-uploads, AR24's A on TR34, AR39 stopped, Sable after launch.
+**Turns.** Studio: Faber's, on the main place, the playtest stopped between pieces (2026-11-23, 15:15); the director's listen on TR42's panel is tomorrow, in the same place. Blender: nobody (Modulo's AR41 strips were stopped at 01:33 on 2026-11-19 by Claude Code when the PC ran low on memory; the director said wait at 01:34). Timing tests: nobody.
 
-**Turns.** Studio: Faber's (Grow your Anime), open, not in Play; a second Studio, Festival Lantern, is open, not Faber's; the director's listen on TR42's panel is tomorrow, in the same place. Blender: nobody (Modulo's AR41 strips were stopped at 01:33 on 2026-11-19 by Claude Code when the PC ran low on memory; the director said wait at 01:34). Timing tests: nobody.
-
-**The count.** Pieces closed and playable this week: 13. TR2, the circuit in grey (phase 1); Haymaker, on A; the Shade's burst; Pip's Lantern Burst; Lyric's Held Note; TR3, the HUD in the world; TR4, the reveal; AR7, the Lamplighter installed with his fall; his signature; Lantern Burst's exit in 3D (B1); Haymaker's square in 3D (B5); TR18, power in grey; AR12's HUD part 1. Hours are in each piece's entry.
+**The count.** Week of 2026-11-23: 6 pieces closed and playable: AR49, TR10, AR44's shine, TR50, AR50's and AR54's install, AR51 (each entry below has its hours). In the game and waiting: TR52 (the director's run), AR52 (research's pass), TR54 (three must-fixes).
 
 ### Waiting on the director
 
@@ -43,15 +37,34 @@ Nothing blocks the start. When you want them (`docs/decisions.md`, "Waiting on t
 For Faber:
 
 4. **Publish the build, for your phone run** (TR24's fix 1 is in, and research gives the go). The place is saved with it, and the Studio tool can't publish: in Studio, File → Publish to Roblox (Alt+P). The experience stays private.
+   - **The same publish unblocks F7's timing** (`docs/research/design-holes.md`, F7, "The check"). Faber times the published places: the door, the trip, and Lantern Row's first hit. The starter shard is timed in Studio, on a new Test save. Your Live save is never wiped.
+   - **What Faber needs from you:**
+     - the Festival's place published too, with today's build;
+     - your OK for Faber to start the PC's Roblox player into the private game under your account, for one timed run.
 
 5. **The test rule, in `CLAUDE.md` and `ga-finish`.** Research relays your yes (the register, 2026-11-15, night): at a piece's finish, the cases its change can reach and every offline logic case; the whole suite at a phase's close and after a change to shared code. `CLAUDE.md` changes only on your own word in the builder's session: say "write it" there and it's in.
 6. **Your ear on Haymaker's strike sound**, a library pick (not one of AR13's made takes), heard on its frame. In a playtest, the Server command bar: `game.ServerStorage.NL_Debug:Invoke("Replay", nil, "RookHaymaker")` plays it every 3.5 s, and `Invoke("Replay", nil)` stops it. Two alternates are logged in AR1, section 8.
 7. **Your ear on the audition panel** (TR42), ready for tomorrow: 12 tabs, the nine skills and the Mage's and Healer's hits, and a tab for each of Rook's, Kirra's and Watt's light hits drawn from your 32 keeps. In Studio's Play, the panel is at the left: a tab per hit, "Old" (today's sound) and ten candidates. Tap a row: it plays, and from then on every hit of that kind plays it in the fight. **Keep** the ones you like (more than one is fine), **More** for the next ten, **None of these** when ten hold nothing. **Others off** mutes the fight's other sounds, so you hear the candidate alone. When you're done, leave the Play running and tell Faber: your picks are read from it.
 8. **Pick the slam's rule by playing it** (TR44): Off, A or B. In Studio's Play, start a keeper's try. The Server command bar switches the mode mid-fight: `game.ServerStorage.NL_Debug:Invoke("Slam", nil, "A")` (or `"B"`, `"Off"`), and `Invoke("Slam")` reads the counts. In A, walk out of the ring and your fighter follows; in B, press the round Recall button or R. Research reads a phone take of each first: say go and I record it (the PC's memory stopped it tonight).
-9. **The Festival's place, for a real trip** (TR45). In Studio, open the place 110443456684004 (File → Open from Roblox) and connect Rojo on port 34876; Faber sets its role and saves it. Then, on the Creator Dashboard, under the experience's Places: its name (Faber's suggestion: Festival of Battles), its server size 8, and its Direct Access set to "Secure within universe only". Publish both places (Alt+P in each), and add the id to `CLAUDE.md`'s "Places" when you like.
+9. **The Festival's place, after the main map and the systems** (TR45; your word of 2026-11-23, 00:05: the team has full access to it). When its work opens, the Creator Dashboard's settings stay yours to confirm: its name (Faber's suggestion: Festival of Battles), its server size 8, and its Direct Access set to "Secure within universe only". Then the id goes into `CLAUDE.md`'s "Places".
+
+10. **The hooks for the new seats.** Research relays your yes of 14:50 to two teammates. Their hooks are permission settings, and a relayed word can't change those, so Faber waits for yours. The change, in `.claude/hooks/`:
+    - `Effects` (`^Scintilla`) and `Sound` (`^Sonus`) in `config/roles.json`;
+    - their briefs in `hooks.json`'s drift guard;
+    - Studio's playtest tools for both in `tools.json`: start and stop, run code, the input tools, as research has;
+    - Effects among the uploaders in `open_cloud_guard.py`, so Scintilla uploads under the group with its key, inside the guard's own limits (a new asset only, from `build/upload/`, at price 0).
+    - Until then their Studio calls are blocked.
 
 ### Notices
 
+- Tier 1, Faber, 2026-11-23, AR52: the Dasher runs on through the lead to its line's end, keeps its aim to its action's end (its back to whoever it passed), and is first ready 1.5 s after it spawns, the Guard at once. The shield's grey pane stands at 0.25 transparency. Research: say in your row what you'd change.
+- Tier 2, research, 2026-11-23, 20:07, TR53: TR31 folded in. The battery's line shows only a net gain, and reads "Full" with the overflow's Credits when it sold. Faber: say in your row what you'd change.
+- Tier 2, research, 2026-11-23, 17:49, AR53: Home gains a **Today** card (today's three goals, Next at the list's head) in Settings' column, Settings a cog tile over it. A run's dares sit under the run's line (no start card); a dare kept before a fall is paid.
+- Tier 2, research, 2026-11-23, 14:54, AR52: the Guard and the Dasher join Lantern Row's stretches, with mixed outline types (Green, Orange) so no one lead wins the run; Modulo's masks and clips now, Faber's behaviours after the backlog. Faber and Modulo: say in your row what you'd change.
+- Tier 2, research, 2026-11-23, 14:58, TR53: a return card at the base (what it made while you were away, one tap) and the base's shard shown during a run. Faber: say in your row what you'd change.
+- Tier 1, research, 2026-11-23, 14:54, TR52: the signature on a tap, tried as a block with an Auto toggle; launch is the director's call after the verdict.
+- Tier 2, research, 2026-11-23, 14:04, AR51: the Condenser gets a convert panel in the Comb's make and its own share on the Power screen (colour, chip, light, a third handle), answering Faber's TR37 notice below. Faber: say in your row what you'd change.
+- Tier 2, Faber, 2026-11-23, TR37: the Power screen's bar keeps two handles. The Condenser shares under Auto, and a split never clears its share, but its own handle, light and chip wait for a Power screen piece. Tier 1: the Comb lights by the tray's fill of its cap, from the bottom row up (a full tray lights all 37), and the convert's refusal is its own word ("A convert takes 5 Low stones"). Research: say in your row what you'd change.
 - Tier 1, Faber, 2026-11-19, TR49 and AR43's take 2: the experience line reads "{xp} of {need} to Level {n}", one line on the smallest phone, so all five attributes show; Lifesteal's heal shows on the bar with no number of its own. Research: say in your row what you'd change.
 - Tier 2, research, 2026-11-19, 20:46, TR48 part 2: on Hard, an elite's chest holds Epic 0.9% and a keeper's chest after its first win Epic 2.0% and Legendary 0.45%, so a one-ground launch meets design.md's Epic at 4 to 6 h and Legendary at 15 to 20 (MODEL). Faber: say in your row what you'd change.
 - Tier 1, Faber, 2026-11-19, AR43 in B: Settings' Effects covers the fight's particles and the camera's shake; the words the cut left open are mine ("Shades and keepers drop them", "Not enough Credits", "It's at +N already", the emblem bag's Sort pill, "Jewels are coming", "Not saved: try again"). The list is in AR43, "Faber's install of Equipment's three and Settings in B". Research: say in your row what you'd change.
@@ -127,126 +140,112 @@ For Faber:
 
 ## Entries
 
-### 2026-11-19, 23:58. TR50, one mission per Arc (Faber)
+### 2026-11-24, 01:51. TR54, goals basic at launch, built in the game (Faber)
+
+- **What changed:** as a stretch begins, its dare unfolds under the run's line, then folds to its mark. The mark goes dark below half and flares when the stretch clears with the dare kept, which pays one forge stone. The run's cards show "Dare kept" and the stones. On Home, Settings is a cog tile, with the Today card under it: the shard, three pips, and a gold rim while a claim waits. Its press opens the list in the glass: Next pinned at its head with the back press, then today's three and the banked days. Each done row is claimed once, for a Lantern Row shard.
+- **Where:** `Rules.Goals`, `Rules.GoalFacts`, `Definitions.Goals`, `Config.Goals`, `GoalService`, `UI.DareLine`, `UI.TodayList`, and the run's card. The save's `Goals` is in `docs/engineering-plan.md`, "Goals". The record is TR54, "Faber's build", and the images are in the asset log.
+- **Checked:** the type check gives 0 new; logic 29845/0; self-test Goals (TR54) 55/0, Home's panel 41/0, Settings 27/0. The captures are on the smallest phone. Reviewing them found three faults, each fixed: a later stretch's dare stayed folded; a stray scroll line showed past the list; and the cases' clean-up left a run going.
+- **Open:** research's verdict in motion. The dares' pools and weekly goals wait, as TR54 says.
+- **For:** research (the pass); the director (the look, when you play).
+
+### 2026-11-24, 01:50. AR59, Rook in the anime make, delivered for the install (Modulo)
+
+- **What changed:** Rook is A, the school tough: black swept hair, a slate jacket open over a red T-shirt, near-black trousers, wrapped fists, a small plaster on the bridge. He is R6's own blocks and round head with everything drawn on them, and the hair is one mesh. The piston and the tape are gone; Haymaker's glow is the right fist's wraps.
+- **Where:** `build/handoff/Rook/make/` (`Rook.recipe.json`, seven meshes, `Rook_Color.png`, `Rook_Roughness.png`, `Rook_Emissive.png`, `rook_make_sheet.png`, `poses/`); the record is AR59, "Modulo's finish". The first Rook's files stay in `build/handoff/Rook/` until the install.
+- **Checked:** research's second look passed the pick at competent (01:38); the eight delivered clips read on the new body; content check PASS on the upload files.
+- **Open:** the director's acceptance, then Faber's install (three places in the code, listed in the record); his portraits, which I draw next.
+- **For:** the director's acceptance; Faber, in his order after it.
+
+### 2026-11-23, 23:59. AR52, the Guard and the Dasher, built in the game (Faber)
+
+- **What changed:** the Guard (Green) raises a paper shield from its sleeves for 2 s, and hits glance off it (20% through) until a heavy hit or a signature breaks it, into a 1 s stagger. The Dasher (Orange) folds behind its mask, its line opens on the street, and it lunges 12 studs on through whoever stands there, its back left open. Stretch 2 has two Guards with two Brawlers; stretch 3 a Dasher in each pack. The shield and the line are grey stand-ins until Scintilla's.
+- **Uploaded under the group:** the two masks, the maps with AR58's veil, the Hard maps, `ShadeGuard` and `ShadeLunge`. The ids and the rollback are in `docs/asset-log.md`.
+- **Tested:** type check 0 new; logic 29,375/0; "Shades (AR52)" 40/0 on the installed assets. "Fight:" 659/2, both failures my own interference while it ran; the two pass alone, 8/0 and 24/0. Content check PASS on the installed look.
+- **Where:** AR52, "Faber's build"; `Definitions.Actions` (`GuardRaise`, `DasherLunge`), `Rules.Fight.Guarded`, `Breaks` and `PackDefs`, `Rules.Mark.OnLine`, `SelfTestController/ShadeCases.luau`, `LogicTestService/Cases/Shades.luau`.
+- **Open:** research's pass in the game, and the balance note (Rook at level 5 fells a Guard in one blow).
+- **For:** research, with captures in `build/captures/ar52/`.
+
+### 2026-11-23, 22:50. AR58, the Support Shade, delivered (Modulo)
+
+- **What changed:** the Support's mask is a low paper band with two thin holes and a veil, a fringe of eight square-cut strips since research's must-fix (23:17), in AR52's make, baked into the Shade's atlas (only its own texels change) with the Hard maps cut again. The Support stands at 0.9 in Orange. One block clip, `ShadeCast`: both sleeves up wide in 0.4 s (`Cast`), held 1.0 s, down in 0.3 s from `Lower`.
+- **Where:** `build/handoff/Shade/` (`Shade_MaskSupport.json`, the two maps and `hard/`'s three, `clips/Shade_Cast.json`, the sheets `shade_support_look.png` and `shade_support_design.png`); the record is AR58, "Modulo's finish".
+- **Checked:** the clip's audit passes; content check PASS on the baked mask and the clip.
+- **Open:** research's second look at the veil (AR58, "Modulo's fix"). Not in the game, nothing uploaded.
+- **For:** research now; Faber at his build, after AR57: the Support's mesh and the five maps go up again, and `ShadeCast`.
+
+### 2026-11-23, 22:23. AR57, the Guard's and the Dasher's elites, delivered (Modulo)
+
+- **What changed:** each elite is the Shade at 1.35 with its own mask a second time on the Left Arm (the mask's mesh without ties), in Green and Orange, on Normal and Hard. Each has its own clip in AR52's lengths and markers, heavier in its spacing: `ShadeGuardElite`, `ShadeLungeElite`. AR52's nine clips are untouched.
+- **Where:** `build/handoff/Shade/` (two meshes, the recipe's `elite`, `clips/`, the sheets `shade_elites_look.png` and `shade_elite_contact_Guard.png` / `_Dasher.png`); the record is AR57, "Modulo's finish".
+- **Checked:** the second mask crosses nothing in any clip either elite plays; both audits pass; content check PASS on the look and the clips.
+- **Open:** research's read at the phone's size (Orange beside Red reads close; the Dasher's second mask is seen edge-on in its tell). Not in the game, nothing uploaded.
+- **For:** research (the read), then Faber (two meshes and two animations to upload, at his build).
+
+### 2026-11-23, 22:08. TR52, the signature on a tap, a block in the game (Faber)
+
+- **What changed:** the signature's readout is the button, firing as the touch goes down, and it squeezes in on that frame. An **AUTO ON / AUTO OFF** toggle stands after the eye. With Auto off, a full ring waits for the tap and pulses once. A tap fires the signature once, cutting the combo when its target is in range. A ring not full does nothing.
+- **The measure:** the ring and Roblox's jump button don't meet (582 px apart on the smallest phone). The ring stands at the dynamic stick's top edge, and a touch there is the ring's: the stick never starts.
+- **Where:** TR52, "Faber's block"; `Rules.Fight.Tap`, `FightService.Tap`, the `Signature` remote, `Config.Hud.Readout`, `SelfTestController/SignatureCases.luau`.
+- **Tested:** type check 0 new; 29260 logic; "HUD: TR52" 16/0; "HUD:" 548/0, "Kit:" 85/0, "Camera:" 37/0; "Fight:" 640/8, all eight Ground Wire's known order effect (20/0 alone and after TR52).
+- **Open:** the director's Lantern Row run with Auto on and one off, then research's verdict.
+- **For:** research and the director, with captures in `build/captures/tr52/`.
+
+### 2026-11-23, 21:46. AR56: the Tower's room, the Crown, delivered as a kit (Modulo)
+
+- **What changed:** the Tower's room exists as art: an open floor at a tower's top, eight blades leaning out of the rim, the floor's number on a slab afloat, the foe up four steps over the far rim, cloud under the horizon in the sky's faces. Its entrance and record marker for the lot are drawn in the same make.
+- **Where:** `build/handoff/TowerRoom/`; AR56, "Modulo's finish"; `tools/blender/tower_room_kit.py`.
+- **Checked:** content check PASS twice; research's passes at competent, the room at its second look and the entrance at its first. Stills and a take only.
+- **Open:** the drop doesn't read from the fight's camera (the rim hides all but 7 degrees), and a raised stand hid the fighters. A grey test of a landing at the door is next, then the director's pick; if picked, the sky's faces and one piece change.
+- **For:** research (the test); Faber at the install, after the main game: ten pictures to upload, and the checks in the entry.
+
+### 2026-11-23, 21:18. AR51, the Stone Condenser's two faces, built (Faber)
+
+- **What changed:** B's convert card beside the cradle, asleep, ready, short and running. The Power screen has the Condenser's Rose share, its six-sided chip, and a third row and handle. On the smallest phone the list is cut to whole rows (must-fix 2).
+- **A finding fixed:** Roblox's prompt card is drawn under our layers, and the card hid its words. The card now stands right of it (`UI.World.Beside`). The phone take is faithful now: the camera's field, the World layer and the guide's arrow are all framed as the phone's.
+- **Where:** AR51, "Faber's build"; the asset log's row 145 (two uploads, Approved).
+- **Tested:** type check 0 new; 29247 logic; TR37 41, the guide 11, "Power:" 108, "Base:" 371, 0 failed.
+- **Open:** the guide's arrow over the avatar and the prompt on the smallest phone (for research's call); B's 3D stones on the cradle, not built.
+- **For:** research's pass, with stills in `build/captures/ar51/`.
+
+### 2026-11-23, 20:24. AR50's and AR54's install, built (Faber)
 
 - **What changed:**
-  - The dock's Play opens the Arc panel: Lantern Row's tile with Normal and Hard, each with its recommended CR, its four marks and its checkpoint; Hard shows its lock and why.
-  - A run goes through the four stretches with the line "Stretch 2 of 4" and one card at the end. A fall keeps the checkpoint; the keeper's fall clears it.
-- **Where:** TR50, "Built in the game"; `Rules.Stages`, `StageService`, `UI/StageScreen.luau`, `StageController`.
-- **Tested:** type check 0 new; 28,834 logic cases offline; in the main place, travel 35/0, the dock 39/0, the take 6/0.
-- **Open:** the Festival place's run cases, NOT VERIFIED (item 9). Two looks for research: Hard's lock reads open at phone size, and the line shows its number twice.
-- **For:** research's pass on `build/captures/tr50/play-panel-line.png`.
+  - The base's deck is AR54's: sixteen floors, the plan's `layout`, and each later bay at its turn.
+  - Part 7's measure reads that same layout at Stage III's prints. The trial's three layouts are gone.
+  - The landing's ring scales to end at 25 studs.
+  - AR50's levels stand at each level's generator swap: the deck's light, the fins, and the two rings turning opposite ways on one axle. Bays 3 and 4 wear their wake while awake.
+- **Where:** AR54, "Faber's install, with AR50's levels". Code in `WorldService` (`layLevels`), `BaseService` (showPlot), `Rules.BaseFit` (`Turned`), `Rules.Landing` (`Reach`) and `Kit.Floors`. 25 meshes and 30 pictures are uploaded and Approved, with their ids in the asset log.
+- **Run:** type check 0 new; logic 29247 passing; "Base:" self-test 364 passed, 0 failed; world report empty; `base_levels_clear.py` PASS. **Not verified:** a wake on a bay awake from a save. The test save has two bays open.
+- **For:** research's read in the game (stills in `build/captures/ar54/`, the smallest phone's from the gate included). The director's acceptance waits.
 
-### 2026-11-19, 23:02. TR49, the combat review built, with AR43's take 2 of the Voidkin screen and bag (Faber)
+### 2026-11-23, 18:13. TR50, one mission per Arc, closed at competent (Faber)
 
-- **What changed:**
-  - Five Basic Attributes, Combat Power from EHP × DPS, F1 and F7 in the hit, Lifesteal and Kindle as the review set them, the enemy rows refitted, the ten elements, and the first levels faster.
-  - The foe card's skull now reads the fight's cost, never grey at the lead's level or above.
-  - The Voidkin screen and bag wear take 2, all five attributes on the smallest phone.
-  - Also: AR44's Gap 0.12, and AR43's five level 3 jewels (Approved).
-- **Where:** TR49, "Built in the game"; AR43, "Faber's install of take 2"; AR44, "Gap 0.12 in the game".
-- **Tested:** type check 0 new; 28,782 logic cases offline and in Studio; the self-test 3,163/0 at 59 fps.
-- **Open:** the Stage 1 playtest, NOT VERIFIED until the Festival place opens (item 9). Seven findings for research in TR49.
-- **For:** research's pass on the captures in `build/captures/ar43/`, `ar45/` and `ar44/`.
+- **What changed today:** the Arc panel and the run's card in the festival's dusk (Modulo's palette B), and the Voidkin stage's floor B: stone and a Neon ring of the element. Research had two must-fixes:
+  - the stone now shows `#A9A59B` under every rarity's light, by the stage's measured light model (`Voidkin.Stage.Floor`: Shows, Lit);
+  - Back stays on the run's card, as its one way to stay on the street.
+- **Where:** TR50, from "The dusk palette and the Voidkin floor, installed" to "Closed"; `Config.Hud` (Stages.Arc, Voidkin.Stage), `StageScreen`, `VoidkinScreen/Figure`, `Kit/Button` (Underline), `Kit/Screen`.
+- **Run:** self-test 3,376 passed, 2 failed: the shop's passes alone, and the keeper lantern's is an intermittent frame check (since 2026-11-17), rerun next. Logic offline: 29,197 passed. Stills in `build/captures/tr50/`.
+- **For:** research, who passed it at 18:00. The director's acceptance waits.
 
-### 2026-11-19, 21:24. AR40's C installed: the world by day, the Shop's building, the system panel's first two windows (Faber)
+### 2026-11-23, 17:33. TR10, the down badge, closed at competent (Faber)
 
-- **What changed:** both kits are in C, with the beds, the cream paving and the teal glass, and the base's atlas and the paving are uploaded under the group. The day is C's warm afternoon. The Shop stands as AR38's building: its counter collides, its crown shows on a featured stock, and its five minutes count each stock down. The Breaker's and the Power windows are on the system panel's slab, with C's ink, C's buttons and the chamber's teal band. The Breaker keeps its night (the director, 2026-11-15).
-- **Where:** AR40, "The install of C"; `tools/studio/Kits/`, `src/storage/*Kit.rbxm`, `Config.Lighting`, `Config.UIKit` (System), `Theme.Ink`, `Kit.Button`'s face, `WorldService`'s `dressShop`, `Rules.Shop.Minute`.
-- **Tested:** the type check, 27,232 logic cases, the world report, and the self-test's Shop, Power, Breaker, World, Base, Kit, HUD, UI, Equipment and Settings filters, all passing (three stale cases fixed).
-- **Open:** research's pass on the four captures in `build/scratch/faber/ar40/`. The rest of the system panel follows: the base screen's chips and side panels, the Forge's, the Void Shop's screen, and the shared confirm, toast and reward.
-- **For:** research.
+- **What changed:** the elite's and the keeper's marker is Badge alone: far, its icon's tile and its time, sized by the world (Full / distance, floored at a 28 px tile on the smallest phone). Past Near its loot card opens downward from the tile in 0.18 s. It stands open over its square, no longer on the avatar's head. Stack and Row are gone.
+- **Where:** TR10, "The two fixes, and the walks for the second look"; `DownController`, `Config.Hud.Down`. Takes now centre the phone on the window (`Layers.Box`'s place).
+- **Run:** the self-test 3,351 passed, 1 failed (TR42's flake, which passes alone); LogicTests 29,156. Walk strips in `build/captures/tr10/`.
+- **Open:** the Festival case "World: TR10" runs only in the Festival's place, once published.
+- **For:** research, who passed it at 17:06 (TR10, "Research's second look").
 
-### 2026-11-19, 20:33. AR43 in B: Equipment's three and Settings, from Home's tray (Faber)
+### 2026-11-23, 16:00. AR44's critical shine, built (Faber)
 
-- **What changed:** Home's tray opens Reinforce, Jewels and War Emblems on Equipment's screen in SeamGlass, and Settings on its own: one card of Music, Sound and Effects sliders, saved once on release and heard at once. Every tile in the tray is built.
-- **Where:** AR43, "Faber's install of Equipment's three and Settings in B"; `src/client/UI/EquipmentScreen/`, `src/client/UI/SettingsScreen.luau`, `Rules.Settings`, `SettingsService`, `SettingsController`, `Config.Hud.Equipment` and `Settings`.
-- **Tested:** type check 0 new; logic 27,226 passed offline; Equipment's three cases and Settings' case passed. The frame-bound checks are NOT VERIFIED: the PC is locked.
-- **Open:** the phone captures of every state, then research's pass.
-- **For:** research.
+- **What:** take C on the critical. The chrome ramp; a cyan and red split that lands at 7 points and settles to a 4.6 hairline; a white flash; one glint across the number. Live in `Config.Hud.Numbers.Critical.Shine`; the copies in `FighterController/Shine.luau`.
+- **Found:** the numbers' and cards' outlines were scaled twice (1.5 times in Studio, 0.85 on the smallest phone). Now authored: a tier 1 notice to research for a re-read of the weights.
+- **Run:** the self-test 3,309 passed, 0 failed; LogicTests 29,155; WorldReport empty. Stills in `build/captures/ar44/`.
+- **For research:** AR44's read, and the weights. **For Modulo:** TR51's plate lives in Gate1's mesh.
 
-### 2026-11-19, 17:28. TR47 part A and TR48: gear's own levels, the loot refit part 1 (Faber)
+### 2026-11-23, 15:15. The Studio run of AR49, TR51 and TR37; AR30's dock seeds (Faber)
 
-- **What changed:** TR47 part A (6b640a0): Reinforce, War Emblems, the level gap and the transfer on equip; save v11. TR48: a keeper's wins count by difficulty (save v12), so the first Hard keeper gives a first win's chest, a sure Rare. Hard's stages roll their own chests at the stage's level on Drum Court's rows. The Tower is refit, stones and emblems drop at research's rates, and each stage run's length is logged (`StageRunSeconds` live, `StageLog` in Studio).
-- **Where:** TR47, "Part A, built", and TR48, "Built" (`docs/test-requests.md`); `Rules.Progress`, `Rules.Chests`, `Rules.Drops`, `Definitions.Chests`, `Config.Chests`, `Config.Drops`, `Config.Tower`.
-- **Tested:** type check 0 new; logic 27,212 passed offline and in Studio; the Gear, Tower and HUD self-tests passed. NOT VERIFIED in the Festival place (item 9).
-- **Open:** the Equipment pages and TR47's phone capture come with the install in B. Research's long run reads TR48's notes.
-- **For:** research.
-
-### 2026-11-19, 16:36. TR32: the first session measured (Faber)
-
-- **What changed:** Roblox's onboarding funnel logs the first session's eight steps, from Arrive to Want, once an account, from the server's own acts. Each step is marked on the save before it's logged, so a repeat, a retry or a rejoin never logs it twice. Saves that played before today have all eight marked (migration step 10).
-- **Where:** TR32, "The build". `Rules.Funnel`, `FunnelService`, `Profile.Funnel`, and `DataService.Changed`, which now carries the act's label.
-- **Open:** Want's case runs in the Festival place only (item 9). The dashboard's read waits for live players.
-- **For:** research (the count), and the director at the soft opening.
-
-### 2026-11-19, 16:29. AR38: the Void Shop, installed and closed at competent (Faber)
-
-- **What changed:** the Void Shop works in the game. The server's shelf runs on world time and a stored salt, with one buy per transaction, the counter's prompt, and the restock chip under the pills. On research's pass: each line's picture is its card's hero on its light; the screen stands on the bag's room (`Seam.Case`); the shard says no rarity; and each Buy is the lit press, the kit's new `Lit` button on the numbers of Modulo's cut in B.
-- **Where:** AR38's entry, from "The install" to "The lit press". `Rules.Shop`, `ShopService`, `ShopController`, `UI.ShopScreen`, `Config.Shop`, `Config.Hud.Shop` and `Make.Lit`, `ShopCases.luau`, the Shop's logic cases.
-- **Open:** the lit press's sheen comes with B's idle phase, at Equipment's install.
-- **For:** research, and the director's next look at the Strip.
-
-### 2026-11-19, 13:19. AR44: the numbers' must-fixes, the measured critical, the clip (Faber)
-
-- **What changed:** B is the plain numbers' style. The critical wears research's measured gold, its near-black outline and the #CC661F splash. Each glyph advances by its own share of the gap: a comma, a "1", a digit. Every number and word stays clear of every other along its whole rise, on any body. The self-test now starts with no screen open.
-- **Where:** AR44, "Faber's must-fixes, the measured colours, and the clip". `Config.Hud.Numbers`, `Rules.Hud.PlaceAlong`, `UI.Kit.Digits`, the fighter's `Effects`, `NumberCases.luau`, and two logic cases.
-- **Open:** research's second look, from `build/captures/ar44/`. The critical lands without a pop, research's call. Seven cases fail in the phone simulator and pass in the full window.
-- **For:** research.
-
-### 2026-11-19, 11:25. TR46: the heal cap told once, the week's board; "CR" in every word (Faber)
-
-- **What changed:**
-  - After a Tower run, the card says where you stand this week ("This week: #12 · floor 23"). A tap shows "This Week's Climb": the top 10 and your own row.
-  - The heal cap's first bind says why, once per account.
-  - Every word players see for Combat Power reads "CR" (the director, 10:36).
-- **Where:** `Rules.Tower` (Score, Climb, Board, WeekLine), `TowerBoardService` (the week's OrderedDataStore, by UserId), `UI/TowerScreen`, `Sheet.Said.Power`. Record: TR46, "Where it stands".
-- **Also:**
-  - On a phone, Retry and Home had fallen off the card. It now lays out from its fitted room: the rows close up, and past that they scroll. A new case holds this down to the smallest phone.
-  - A quick Home on the card in the fall's fade came undone when the fade's set-down beside the ring landed after it. Now a faded move gives way to any newer one (`KeeperService`, checked by `MoveRace`).
-- **Open:**
-  - research's pass on the card and the board, in grey;
-  - research's `docs/design.md` line for the board;
-  - the stage tile's "CR", NOT VERIFIED (the Festival place).
-- **For:** research and the director.
-
-### 2026-11-19, 01:58. TR44's slam in the keeper's fight, with its footprint and the switch Off, A, B (Faber)
-
-- **What changed:** the Lamplighter slams in its fight, first 8 s after its Challenge, then every 12 s. From Plant its aim is fixed and a ring opens on the street, filling to its edge on the Slam. The hit takes the leads inside it.
-- **A:** walk 2 studs out of the ring and your fighter follows. **B:** a Recall button by the right thumb (R, ButtonY) dashes it to you, with a 4 s cooldown. One switch, live, and the server counts each slam per mode.
-- **Where:** `Rules/Mark.luau`, `SlamService`, `SlamController`, `FightService` (the footprint, the fixed aim, `Away`), `Config.Combat.Keeper` (First, Mark, Out). Record: TR44, "The block, built".
-- **Open:** research's read waits on the phone take (stopped by the low-memory reaper); the director picks by playing (board, item 8). A fight at the keeper's level lasts about 20 s on Studio's account: one slam, not six (for research).
-- **For:** research and the director.
-
-### 2026-11-19, 01:31. TR43's stages, items 6 and 8, the music and the character sounds; TR42's second round ready (Faber)
-
-- **TR43:** Lantern Row in four stages on Normal and Hard, in grey: the gates, the Door's first-time entry, the picker, the results card, Hard's own foes (TR43, "The block, built"). For research's read from a phone's camera.
-- **Item 6:** Salvage on the item's card, left of Equip: a first tap asks with its Credits, a second salvages, and a worn item says "Take it off first". The full bag's line says how to free a slot (`UI/VoidkinScreen/Bag.luau`).
-- **Item 8, D5:** the bays are 2, 3 and 4 at the base's levels 1 to 3; bays 5 and 6 stand locked, "Opens with more Voidkin" (`Config.Base`). Save step 9 trims a base holding more, freeing those workers. HP Regen's sheet line reads its burst with "every 8 s" under it.
-- **The music:** `Config/Music.luau`, where the director pastes the ids; `MusicController` shuffles them, never one twice running. **The character sounds:** Roblox's walk, jump and fall sounds are gone (`src/overrides`).
-- **TR42:** the picks are the cues, and the second round's 12 tabs wait on the director's listen, tomorrow.
-- **Tests:** offline logic 26,574/0, Studio's the same, world report empty; the touched self-test cases pass (stages 78, bag 121, base 38, audition 89, sound 10).
-
-### 2026-11-17, 23:24. AR39 stopped; the sounds go to the director's ear, TR42 (Quaestor)
-
-- **What changed:** the sound rescue is stopped. Two more attempts passed every measure and failed at the director's first listen: 13 layers made by code ("horrendous sfx.."), then round 2's library recordings, sliced and stacked ("it sounds like everything but not a sfx"). Nobody on the team can hear, and the measures don't predict the ear.
-- **The director's pick:** an audition panel in the dev place. Every cue is one finished library sound, any author, played whole, and the director keeps the one that's right.
-- **Where:** `docs/asset-requests.md`, AR39 (the stop, and research's errors); `docs/test-requests.md`, TR42 (the panel); `docs/decisions.md`, the top rows.
-- **Stands:** Faber's engine and its measures (starts on the mixer's clock, counted misses, the A/B switch, the match). Today's cues play.
-- **Open:** TR42's build and the director's listen. AR40's renders and captures, for research's colour pick.
-- **For:** Faber (TR42 first), Modulo (nothing on sound), the director (about 10 to 15 minutes on the panel).
-
-### 2026-11-17, 18:49. TR41 (e): the HUD's V2 leftovers answered, the Training machine training (Faber)
-
-- **What changed:** of AR12's 30 V2 images, 17 were already in the game. The battery's mark is now installed on the Power screen's plate, in place of its stand-in drawn from frames. 8 were replaced by later pieces (the dock's own images; the halos the director took off). 4 stay unspent until a pill or hint wears them.
-- **Where:** `PowerScreen.luau`, `Config.Hud.Power.Images.Battery`; cases "Power: the generator ..." and "Take: TR41 (e)".
-- **Tested:** the Power case 90/0, the take 6/0, type check 0 new. The Training machine's cyan was seen in the game, with the lead training.
-- **Research's verdict:** works, one must-fix (the mark's cells disagreed with the reading), and yes to the mark in the Power pill. Both are in at 19:08: its cells follow the charge by thirds, on the plate and in the pill (`UI/BatteryMark.luau`, `Rules.Hud.BatteryCells`; TR41, "(e)", "Faber's fix").
-
-### 2026-11-17, 18:38. TR41 (d): where a shard came from, the festival tag, installed (Faber)
-
-- **What changed:** a shard's picture wears its ground's look. In a chamber, the tag hangs from the crystal's shoulder. In a bag cell, the mark sits on a disc at the crystal's left foot, since the count holds the right. On a Breaker chip, a band of the ground's colour runs along its foot. At the smallest phone the Breaker's chambers give way so the strip stays inside the panel; its chips had hung past it, cut.
-- **Where:** `UI/ShardTag.luau`, `Rules.Hud.ShardTag`, `Config/Hud.luau` (`ShardTag`), `BreakerScreen.luau`, `VoidkinScreen/Bag.luau`. Cases: logic "Hud: TR41 (d)", self-test "Breaker: TR41 (d)", "Take: TR41 (d)".
-- **Tested:** the tag 42/0, the galaxy 42/0, the Items page 112/0, the Voidkin screen 249/0, logic 24,051/0; type check 0 new.
-- **Open:** the two-line name and the bag's ground filter wait, as the design's block says. TR18's take fails at the generator's prompt, not from this piece.
-- **For:** research's read (`build/scratch/faber/stills/tr41d-*`).
+- **Run in Studio** (ef86dab): the self-test 3,288 passed, 1 failed (TR42's flake, which passes alone); LogicTests 29,155; WorldReport empty. Five fixes, FxKit rebuilt with the landing's look. The records: TR51 and TR37, "The Studio run"; AR49, "Faber's build".
+- **TR51:** the stages from the gate and the court, on the smallest phone, the landing mid-swap, and the shards in their chambers, in `build/captures/tr51/`. Stage III's footprints break today's plan (tier 2, research and Modulo), so the Fit Prints stay at Stage I. The plate's top is cut from the gate's eye.
+- **TR37:** the Forge and the Condenser, awake and asleep, in `build/captures/tr37/`. **AR49:** stills with Rook and Kirra in `build/captures/ar49/`; its take now sets the lead through the save.
+- **AR30:** Rest 0.4, Open 0.6, Quiet 0.2, with a take and six stills on the pale deck and the dark lane (`build/captures/ar30/`). Nothing blooms past the glass, so the reach stays.
+- **For research:** four reads. **For the director:** the new seats' hooks (item 10).

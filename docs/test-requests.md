@@ -1222,6 +1222,66 @@ Research's word, 2026-11-17, sent with AR31's verdict (AR31, "Research's verdict
 
 - **Felt:** it's the street's Brawler: the tan paper mask with its holes and grin lit, the small mask on its shoulder, the same face as AR47's tile. It reads at 40 px, and at 28 px as a mask with teeth. **Passes at competent;** Faber installs it with the Lamplighter's.
 
+### The stills for research's verdict (Faber, 2026-11-23, 16:40 by the clock)
+
+- **The sheet:** `build/captures/tr10/layouts_sheet.png`, with the nine stills beside it. Its columns are Stack, Row and Badge; its rows are the elite's plate at 24 studs, at 120, and the keeper's.
+  - Every still is on the smallest phone's frame (the take now frames as AR44's does), on the Strip under the Row's look, from the game's camera behind the avatar. Modulo's two pictures are on the tiles.
+  - The home-only step chip is hidden for the stills: on a ground it never shows the Breaker's line.
+- **What I saw:**
+  - At 120 studs the plate stands where it does at 24. It hangs 9 studs over its marker, so from the game's camera both sit near the horizon. Only Badge changes, dropping its card past Near.
+  - **Stack:** its last row ("Lantern Row shard") runs under the nav bar.
+  - **Row:** the keeper's title is cut ("The Lamplighter · …").
+  - **All three:** the plate stands over the avatar's path mid-screen, research's note in TR8.
+- **The take:** it passed (5).
+
+### Research's verdict on the layouts: Badge, with two must-fixes (Quaestor, 2026-11-23, 16:41)
+
+From `layouts_sheet.png` and `far_badge.png`, the smallest phone, the game's camera.
+- **Felt:** a dark card sits mid-screen at any distance. Badge's mask with its countdown says "back in 4:32" at a glance. But at 120 studs it's a panel over the player's own head, not a mark over a square down the street.
+- **The pick: Badge.** Far, it gives the icon and the time; near, it adds the card. That's the feel line's "when to come back" and "why", in that order. Stack and Row are set aside: they carry a title the icon already says, and each breaks on the phone (the nav bar, the cut name).
+- **Tier:** works.
+- **The one bold thing:** the mask with its countdown under it.
+- **Must-fix 1, class "a world marker drawn at screen size":** the marker takes its size from the world. It shrinks with distance, down to a floor where the icon and the time still read on the smallest phone. Near, it's capped at today's size. At 120 studs it's a small badge over its square, not a panel over the avatar. Check the 9-stud hang from the game's camera with the new size.
+- **Must-fix 2, class "an empty frame":** Badge's far state draws only the icon's tile and its time. Today the card's dark panel stays behind with nothing in it (`far_badge.png`, about 520 by 215 px around a 150 px tile).
+- **For the second look,** what stills can't show: a walk from 120 studs to 24 toward the elite, at phone size. It shows the badge growing and the card arriving at `Near`, whether it eases or pops. One strip or a short take, and the keeper's gate the same way.
+- Then the icons are in, and TR10 closes on the second look.
+
+### The two fixes, and the walks for the second look (Faber, 2026-11-23, 17:04 by the clock)
+
+- **Fix 1, the world size.** The badge takes a scale of `Hud.Down.Full / distance` from the camera, capped at 1 near. Full is 75, the camera's distance when the avatar stands at Near. The floor is `Least`: 28 px for the tile on the smallest phone, a scale of 0.69 there. The time and the card's words keep 14 px or more on the smallest phone at every size. Measured: 1.00 at 12 and 60 studs, 0.75 at 100, 0.69 at 200.
+- **The hang.** In the first walk, held under the whole top band, the small badge still stood on the avatar's head from the game's camera. It now stands open, like the band's other open plates: over its square near the horizon, between the lead's card and the wallet, and it moves aside only from a piece it would cross. At 24 studs the card hangs from the top of the frame to just over the avatar's head, clear of the lead's card and the wallet. That holds for both, the elite's at 9 studs and the keeper's at 11.
+- **Fix 2, the empty frame.** Far, the badge draws only the tile and the time: 60 authored px wide, under half the card's 176. The panel shows only from Near. There the card opens downward from the tile in 0.18 s (`Hud.Down.Unfold`, quad out), fading in as it widens. The tile stays where it was (0 px).
+- **Removed:** Stack, Row and the comparison: from Config, the controller and the cases.
+- **The take now centres the phone on the window.** The world is drawn across the whole window, so only a centred phone has the world standing under its HUD as it does on a phone. `Layers.Box` now takes the box's place. The 16:40 stills had it at the window's left, with the avatar right of centre.
+- **The walks.** The game's camera (20° down, 12.5 studs, FOV 70), by day, on the Strip, walking at 16 studs/s from 120 studs to 24:
+  - `build/captures/tr10/walk_elite.png` and `walk_keeper.png`: ten frames each, at the phone's size. They show 120 studs standing, the walk, the four frames of the unfold, and 24 studs.
+  - `unfold_elite.png` and `unfold_keeper.png`: twenty frames in a row at about 30 fps, cropped to the badge.
+  - All the frames: `build/scratch/faber/tr10_walk_elite/` and `tr10_walk_keeper/` (gitignored).
+- **What I saw:**
+  - The badge grows smoothly to full size by Near.
+  - The card arrives in four frames, eased, not popped.
+  - For two of those frames the rows are cut at the panel's sides ("redits 190"), a wipe from the middle. If that reads as a glitch, one change would fix it: the rows fade in once the width lands.
+- **Checked:**
+  - "HUD: TR10": 53 passed. Its new case checks the size at 12, 60, 100 and 200 studs, the time readable, the tile never under 28 px, far showing only the tile and the time, the tile still while the card opens, and the lint clean near and far.
+  - After `Layers.Box`'s change: "HUD: a keeper's try" 2 passed and "Tower card (TR46)" 27 passed.
+  - The take passed (5). The type check: 0 new.
+  - The Festival case "World: TR10" is rewritten to the fold and unfold. It runs only in the Festival's place, which isn't published yet.
+- **At the close, the whole suite: 3,351 passed, 1 failed.** The one is TR42's audition, the long suite's known flake, which passes alone (89 passed). LogicTests: 29,156 passed.
+  - Two checks were taught the badge: "no plate shows empty" now skips a hidden panel and finds its words beside it in its plate.
+  - The foe card's skull check now reads the skull's own transparency under the card's see-through. A fighter standing behind the card fades it, which failed the check with nothing wrong.
+- **Not done:** desktop-size stills. The badge was reviewed at the smallest phone only, by me and in research's pass.
+
+### Research's second look: TR10 passes at competent (Quaestor, 2026-11-23, 17:06)
+
+From `walk_elite.png`, `walk_keeper.png` and `unfold_elite.png`, the smallest phone, the game's camera, judging what changed.
+- **Felt:** walking down the Strip, the mask and its countdown stand small over the square ahead. As you arrive, the badge opens into its card, which hangs over the street above your head. "Back in 4:32, and here's why" reads in that order.
+- **Must-fix 1 met:** the badge takes its size from the world. At 120 studs it's a small mark near the horizon, off the avatar. At 24 studs (the keeper's at 11) the card stands clear of the avatar, the wallet and the lead's card.
+- **Must-fix 2 met:** far, only the icon's tile and its time.
+- **The unfold's wipe from the middle:** accepted as it is. For two frames at 30 fps, the rows are clipped at the sides. At full speed that reads as the card opening, not as cut words.
+- **Tier:** competent; the bold thing is unchanged.
+- **What the strips can't show:** the elite's badge with players at its square, and the badge at dusk and night. Both are first seen on the published place, where QA's pack or the director's phone run will show them.
+- **The four facts:** implemented, tested, visually reviewed and passed; director-accepted not yet.
+
 ## TR11. Spectate, a toggle on the HUD (Faber)
 
 Research's entry, 2026-11-14, night, on the director's words of the same night (`docs/decisions.md`): the player's camera is never moved in a fight, and a small button follows the lead instead. "Change it now."
@@ -3054,6 +3114,8 @@ Part 12's order, item 4.6 (`docs/research/rework-2026-11-16.md`, part 7; `docs/d
 
 ## TR31. Back from away: the card on return (Faber)
 
+**Folded into TR53** (research, 2026-11-23, 20:07): TR53 is this card, rewritten at F4 without reading this entry. TR53 carries over two things: the press only shows what the server credited on arrival, and the overflow's Credits. The cap's line isn't on the card at launch (`docs/polish-later.md`). Nothing here was built.
+
 On the director's "yes!" of 2026-11-16, 21:39 (`docs/decisions.md`), to research's suggestion. Tier 2, research and Faber: a new screen players see. It serves the north star's first measure, "comes back the next day", and it's cheap: the numbers already exist in the rejoin's summary (`Rules.Breaker.Advance` with `away`).
 - **Feel line:** the player comes back and, before anything else, sees what the base did without them: the shards it broke, the Credits its workers made, the levels their lead trained. One tap pours it into their counters, so the first second back is a reward.
 - **The block:**
@@ -3279,6 +3341,46 @@ Research's request, 2026-11-17, 11:17, item 7 of phase 3's order (`docs/producti
 **Checks:** the logic cases (a rank's gain, its cost, never twice on a repeat, the move across, the tray's cap, the away time, the conversion); the self-test of both screens; the UI lint on the smallest phone; research's verdict in grey from a phone capture.
 
 **Order in the queue:** item 7, after TR29's fixes and TR10's captures. Emblems (TR38) and jewels (TR39) follow, written by research before Faber reaches them.
+
+### Research's scope today (Quaestor, 2026-11-23, 02:53): what's left after TR47
+
+TR51 is Faber's previous piece, and this is the next, on the director's order of 00:05 (the main map and the systems). The Forge's ranks above are **already built as Reinforce** (TR47: `Rules.Reinforce`, a chance a try, paid in stones and Credits, cap 30, grades by tens). They replace this entry's "a rank never fails" and its rank prices, and nothing of the Forge's rules is built again. What's left:
+- **The Condenser's rules in pure Luau** (`Rules.Condenser`, `Config.Condenser`) with their cases. It makes Low stones online and away into its tray (1 an hour at level 1, plus 0.05 a level), drawing electricity like the Breaker (`Rules.Power`) and slower with less. The tray holds 12 hours of work, and a full tray stops. Its second job turns 5 Low into 1 Mid, one at a time, in 30 minutes. **This matters at launch:** only Low stones drop on the first ground (`Config.Drops`, `GroundsAGrade` 2), and Reinforce spends Mid from level 11, so the Condenser's convert is the way past 10. The away time is worked out on return, as the Training machine's is, and every collect or convert is the server's, in one step.
+- **The Condenser in the world:** AR28's Comb at Stage I in its sleeping place, the tray readable from the gate (full, part-full, empty), a tap to collect, and the convert job in a small grey panel on the kit.
+- **The Forge in the world:** AR28's Press at Stage I in its sleeping place. Its prompt opens Equipment's Reinforce page, and the ram strikes on a press made there (design.md, "Upgrading gear needs no walk").
+- **Waits:** jewels in the tray (TR39); Stages II and III in the world (AR36, after this); the rank-up's effect and sound; the Research Lab (after launch).
+- **Checks:** the logic cases (the rate by level and by power, the tray's cap, the away time, the convert, a repeat never collecting twice); the self-test; captures from the gate at the smallest phone. Research's verdict is in the game.
+
+### Faber's build (2026-11-23, steps 1 at 03:06 and 2 at 03:23)
+
+- **Research's yes to two seeds** (Quaestor, before 03:06, recorded here at research's word): the Condenser **wakes at base level 2**, its asleep state reading as waiting like the Lab's, and it **asks 10 kW at level 1**, rising with its pace to 24.5 at 30. Also research's: a case where a full tray with a convert running still lands its Mid (added).
+- **Step 1, the rules (6b97f0b):** `Rules.Condenser`, `Config.Condenser`. It's a third machine in `Rules.Power`, worked through `Rules.Breaker`'s event steps online and away. `Rules.Base` gains CollectTray and Convert, each in one step, and UpgradeMachine takes the Condenser. The save gains `Base.Condenser` and `Machines.Condenser` (Reconcile fills them). Ten cases in `Cases/Condenser`.
+- **Step 2, the world (ca3dbb1):**
+  - **The Condenser:** AR28's Comb at Stage I (frame, core, 37 cups) stands over its sleeping stone, which shows below level 2 with its plate saying "Wakes at base level 2".
+    - **The tray from the gate:** the plate says "Tray n of 12 Low", "Tray full", and any Mid. The core turns while it works, at its power's speed, and stops on a full tray.
+    - **Collect and convert:** a Collect prompt shows while the tray holds a stone. A small grey panel on the kit runs the convert, with its own prompt.
+  - **The Forge:** AR28's Press at Stage I. Its prompt opens Equipment on Reinforce, and every try strikes the ram on every client: anticipation to its tell, a fast strike, a hitstop on the plate, an eased settle. The gears turn with its travel. The timing is in `Rules.Forge` and `Config.World.Forge`, tunable live.
+- **The builder's tier-1 calls:**
+  - **The comb lights by the tray's fill of its cap** (`Rules.Condenser.Lit`): 37 cups over a cap of 12 at level 1, so a full tray lights it whole. Mid stones aren't in the cups; the plate and the panel say them.
+  - **The convert's refusal is its own word** (`Base.Stones`: "A convert takes 5 Low stones"), not the battery's.
+- **Tier-2 notice, the Power screen:** its bar keeps two handles. The Condenser shares under Auto, and a split never clears its share, but its own handle, light and chip wait for a Power screen piece.
+- **Implemented, offline-tested:** type check 0 new; logic offline 29155 passed (cases Condenser and Forge).
+- **The Studio run (Faber, 2026-11-23, ef86dab at 14:42; the captures 15:00 to 15:03 by the clock).**
+  - **Two fixes:**
+    - the Forge and the Condenser had no spec in `World.Tags`, which stopped the plot's build at join (their specs added);
+    - TR37's case raced the tray: the attribute lands with its packet, the copy's handler a moment later. The case now waits until the two agree (34/34).
+  - The full self-test 3,288 passed, 1 failed (TR42's, a flake that passes alone); LogicTests 29,155 passed; WorldReport empty.
+  - **Captures,** in `build/captures/tr37/`:
+    - `forge_player` and `condenser_player`, the Condenser awake at base level 2, from where a player walks round the Training machine and the battery;
+    - `phone_forge`, `phone_condenser` and `phone_condenser_asleep`, at the smallest phone's 1,334 by 750, the world only.
+    - Neither machine shows from the gate: both stand in the back row behind the generator (TR51's gate frames).
+- **Visually reviewed:** research's verdict in grey asked. **Director-accepted:** not yet.
+- **Research's verdict in grey (Quaestor, 2026-11-23, 15:27),** from `phone_condenser_asleep`:
+  - **Felt:** the Condenser in grey reads as a pad on the floor, not a machine, and from the gate it isn't there at all.
+  - **Tier:** works, as grey.
+  - **The one bold thing:** none yet. That's the finding, and AR51's card and AR50's machines carry it.
+  - **Must-fix 1, class "the yard at Stage III":** neither machine is seen from the gate. Folded into AR54's plan.
+  - **Not a fix:** the grey disc's words cut at "5 Low into 1…". AR51's card replaces them.
 
 ## TR38. War Emblems (Faber, after TR37)
 
@@ -4395,6 +4497,79 @@ Faber, 2026-11-19, 03:43 by the clock: the follow-up's item 7 (`docs/production-
 - **All five fixes are met.** The lock is shut, "Fight" and "Continue" are the lit way in, the badge carries Normal's chevron or Hard's coral pair, the foe is named, and the track runs node to node with its ticks as fills. **TR50 passes at competent** on what players see. The Festival run cases stay NOT VERIFIED until the place opens (item 9).
 - **The older line widens, Modulo's after AR48 (same class: every art tile's ground):** not only the lantern's tile, but the picker's whole screen stands on a violet ground with a lavender glow. Both take the festival's dusk, warm under the lantern.
 
+### The Arc panel's ground in the festival's dusk: a colour block-in (Modulo, 2026-11-23, 00:12 to 00:20 by the clock)
+
+- **The sheet:** `build/scratch/modulo/arc_dusk/stage_arc_dusk.png`: the Arc panel as it stands today and three steps of dusk, each at the smallest phone's own pixels. Drawn by `tools/blender/stage_arc_dusk.py` from `Config.Hud`'s Stages and Faber's capture, as a stand-in for the layout. Each step's colours are in `stage_arc_dusk.json`, under the names Config keeps them by.
+- **No image changes.** The lantern's picture is clear round the lantern: its violet field is the bed's fill and bloom (`Stages.Bed.Fill`, `Accent.Normal.Bloom`), so every step is a palette for Faber.
+- **The steps,** each over the one before:
+  - **A, the bed only.** The lantern's field is the dusk street: dark wine over the lantern (`#1E0F16`), rosewood at its foot (`#4A2324`), its light pooled low in amber (`#FF9A50` at 0.62, its middle 0.36 of the bed under the lantern's). The lantern's gold needs a dark field behind its paper, so the warmth sits under it, where its light would fall.
+  - **B, and the ground.** The screen behind the glass in the street's rose (`#5E2A3A` to `#1E0E12`, a bloom of `#FF8246` at 0.38 behind the bed), the light round the panel and Normal's lit plates in lantern light (`#FFCF98`; white to `#FFE0B4`). The glass stays Seam's.
+  - **C, and the glass.** The panel, its cards, its wells and its words in rosewood and ivory.
+- **A scope to keep:** the director's word of 2026-11-19, 14:56 put the picker back in Seam ("i liked the old one before"; AR43, "Equipment back in Seam"). A and B keep Seam's glass. C leaves it on this screen, so C is past that scope and would be the director's to say.
+- **Modulo's read:**
+  - A fixes the tile and nothing else: the screen still stands on violet.
+  - B answers the line. The ground and the bed are the ground's own dusk and the violet glass is one colour among others. It also scales: each ground gives its bed and its screen their colours, and the kit stays one kit. Its weak spots: the band's dark plates stay violet-black on the rose, and Normal's cream press sits nearer Hard's coral than lavender did.
+  - C is the most of one piece, but it's all one warm brown-rose, and it drops the kit on one screen.
+  - **Modulo recommends B.** The first take's ground (`#3E1F26` to `#170C0F`) read as a dull maroon, so it was moved to the street's rose.
+- **Not drawn:** Hard open, the results card and the run's line, which keep Seam's ground; say if they follow.
+- **Status:** drawn and self-read. Not content-checked (colours on a checked screen, nothing uploaded), not picked, not in the game. It waits on research's pick, then the palette for Faber.
+
+### Research's pick: B (Quaestor, 2026-11-23, 00:19)
+
+- **Felt:** the screen opens on the festival's dusk street, the lantern glowing in its own warm field. The Seam glass sits over it as the screens' one make, and the violet is a panel's colour now, not the world's.
+- **Tier: competent. B is picked.** The one bold thing is the lantern on dark wine with its light pooled under it: it pops far more than on violet, and it tells you where you're going.
+- **Why not the others:** A leaves the screen standing on violet, so it misses the line. C binds best, but it drops Seam on one screen against the director's 14:56 word, and it reads as one brown. C stays out unless the director asks.
+- **Must-fixes:** none. Modulo's two weak spots aren't fixes. The plates in the top band are Seam's glass, as the panels are, and the cream Fight against Hard's coral reads apart at the smallest phone.
+- **They follow, in the same palette:** the results card and the run's line take B's ground behind their glass, so the festival's screens share one dusk. Hard open and those two are drawn with the palette's delivery and read by Modulo. Only a clash comes back to me: Hard's coral lit on the rose ground is the one to watch.
+- **For Faber:** a palette only (`stage_arc_dusk.json`, B), installed after AR49, in the main place's UI. It isn't Festival-place work, so the director's order of 00:05 doesn't hold it.
+
+### What follows from B, drawn: a clash in Normal's lights (Modulo, 2026-11-23, 00:21 to 00:29 by the clock)
+
+- **The sheet:** `build/scratch/modulo/arc_dusk/stage_arc_dusk_follow.png`, three columns at the smallest phone's pixels: today's, B, and B with Normal's lights left Seam's (`B_KIT` in `stage_arc_dusk.json`). Its rows: the panel later (Normal at its third stretch, Hard open), three results cards, two of the run's lines.
+- **A fact first:** the results card and the run's line have no ground of their own. The card stands over the street, dimmed by a cover (`Screen.Dim`, `Card.Dim` 0.5, in `SeamGlass.Backing`, `#1F1942`); the line stands in the HUD over the street. So what follows from B on them is the cover's colour and Normal's lights, nothing else. They're drawn over a stand-in of Lantern Row's dusk.
+- **The cover follows, and it's the gain:** in dark wine (`#2A1219` at the same 0.5) the street under the card stays the street's dusk. Today's violet cover turns it purple.
+- **The clash, in B as picked:** B put Normal's lit plates, marks and road in lantern cream. With Hard shut that read apart. With Hard open it doesn't hold:
+  - **On the panel,** Continue in cream sits over Fight in coral: two pale warm plates, apart only by a tint and the chevrons.
+  - **On the card,** the cream road, Ready's gold ("a new best", "Stage 4 is open") and Hard's coral band are three warm lights side by side. Today the way on is lavender, what you earned is gold, and Hard is coral.
+  - **On the line,** Normal's cream mark and Hard's pink one differ by the chevrons' box alone, in a HUD that's lavender everywhere else.
+- **The fix, drawn (the third column):** Normal's own lights stay the kit's (the lit plates, the marks, the road, the ring, Normal's card's edge). The dusk keeps the ground behind the glass, the bed with its pooled light, the light and the rim round the panel, and the card's cover. Normal and Hard read apart at a glance again, and gold is alone again.
+  - It's also less to build: the lit press stays the kit's shared fill (`Make.Lit.Fill`), the card changes its cover only, and the line doesn't change.
+- **Modulo's read: B with Seam's lights, competent.** B as picked would ship a weaker Normal and Hard pair than today's.
+- **Status:** drawn and self-read. It waits on research's word on the clash. Then the palette goes to Faber under Config's own names. Not in the game.
+- **Research, 00:29: yes to the third column, competent.** Seen: in B, Continue's cream over Fight's coral are two pale warm plates, and the road's cream sits too near "a new best"'s gold. With Normal's lights left Seam's, Normal reads lavender and Hard reads coral at a glance, on the panel, the card and the line. The dusk keeps the ground, the bed, the panel's light and rim, and the card's cover. That is all the line asked: violet is off the ground and stays on what's lit. The palette goes to Faber, after AR49.
+
+### The dusk palette, delivered (Modulo, 2026-11-23, 00:31 by the clock)
+
+- **For Faber, after AR49:** `build/handoff/UI/stages/arc_dusk.json`, with the two sheets beside it (`stage_arc_dusk.png`, `stage_arc_dusk_follow.png`: the third column is the one to match). No image changes and nothing to upload.
+- **What changes,** each under the home it has in Config today:
+  - **The ground behind the glass:** the Arc screen's own backing (`#5E2A3A` to `#1E0E12`, through `Glass.Ground`'s third argument), and a bloom on it behind the bed (`#FF8246` at 0.38). The bloom is new: the Arc screen has none today.
+  - **The bed:** `Stages.Bed.Fill` (`#1E0F16` to `#4A2324`), its bloom in `#FF9A50` at 0.62, lower and flatter (`Bed.Bloom.Middle` 0.5, 0.88), and its edge in `#7A5048`.
+  - **The panel:** its glow in `#FFCF98` and its rim in `#FFEBD2`, with Back's underline.
+  - **The results card:** its cover in `#2A1219`, at the same `Card.Dim`.
+- **Three colours need a home of their own,** since Normal's lights stay as they are: the bed's bloom (today `Accent.Normal.Bloom`), the panel's glow (today `Accent.Normal.Glow`) and the card's cover (today `SeamGlass.Backing`). Where they live in Config is Faber's call.
+- **The bed's bloom is matched by eye:** the json gives where the drawn light falls to a third (85.5 by 39.8 points on the bed). `Bed.Bloom.Size` is set against the sheet at the phone's pixels, since the kit's bloom has its own falloff.
+- **Stays:** Normal's lights, Hard's ember, Seam's glass and its words, the run's line, every image.
+- **Status:** made, self-read, passed by research at competent (00:29), delivered. Not content-checked (colours on checked screens, nothing uploaded). Not in the game: the first capture of the installed panel is read at the smallest phone, with Hard open.
+
+### The class swept: every art tile's ground (Modulo, 2026-11-23, 01:52 to 02:05 by the clock)
+
+Research's go at 01:52, as one colour block-in capped at about an hour. A read-only survey of `src/client/UI` and Config listed every place a picture stands on a field of its own: eleven.
+- **One is a ground in the element's colour: the floor under the fighter on the Voidkin screen** (`VoidkinScreen/Figure.luau`, the `Floor` part). It's a Neon disc in the fighter's element, so Storm's fighters stand on pink and Void's on violet (Fire's on orange, which the viewport dulls to olive: `#AB9F52` in `build/captures/ar43/take2-lead.png`). This is the floor in research's row.
+- **The block-in:** `build/scratch/modulo/voidkin_floor/voidkin_floor.png`, by `tools/blender/voidkin_floor.py`: Rook (Fire), Watt (Storm) and Kirra (Void), each today and in two takes, at the smallest phone's pixels. The fighter is a grey stand-in. Storm's and Void's floors as shown today are estimates from Fire's.
+  - **A, one floor:** pale stone for every fighter (`#A9A59B` as shown, with the stage's light on it). The element stays in the fighter's words.
+  - **B, the element as a rim:** the same stone, and a thin ring of the element's light round its edge, 0.03 of the floor across.
+  - **Modulo's read: B.** The floor reads as the stage's stone, and the element is an accent again, one small thing. A is calmer, but it drops the only place the element shows as colour on this screen.
+  - **For the build, either take:** the viewport dulls a Neon part, so the stone's and the rim's colours are matched to the sheet in the game. B's rim is one more part in the figure's world.
+- **Left as they are, with the reason:**
+  - **Seam's own glass:** the bag's, Equipment's and Reinforce's cells, the sockets, the results card's chips, the dock's tiles, the Void Shop's hero. A well in the kit's glass isn't a ground, and the director's word of 2026-11-19, 14:56 keeps these screens in Seam.
+  - **Already not violet:** the lead card's and Home's fields behind a fighter (navy), the portraits' wells (graphite), the Breaker's chamber (teal glass).
+  - **The Voidkin screen's stage** behind the fighter (`Seam.Stage`, violet-black, lit from below by the rarity): the screen's own glass, kept.
+- **Two that aren't palettes, for research to weigh, not drawn:**
+  - **The reveal's room** (`reveal_room.png`) is baked violet-black, `#2B2542` to `#07050C`: a whole room as the ground. It's a closed piece, and a change is a new image.
+  - **Equipment's ground** (`Hud.Equipment.Backing` with its violet bloom) is the ground the picker just left. The 14:56 word keeps it.
+- **Status:** drawn and self-read, 13 minutes of the hour. Not picked, not content-checked (colours on a checked screen), not in the game.
+- **Research's pick, 02:05: B, competent.** The floor reads as the stage's own stone, and the fighter stands out on it. The element shrinks to one lit edge, so Storm's pink and Void's violet are an accent on what's alive, never a ground. A loses the one colour that tells the element at a glance. Modulo's survey of the other ten stands, with its reasons. The reveal's room goes to `docs/polish-later.md`, since it's a closed piece and a new image. Equipment's ground stays, on the 14:56 word. For Faber, after TR51: the stone and the rim matched to the sheet in the viewport.
+
 ### Faber's cloud session: the run's rules made pure (2026-11-20, offline, no Studio; 5058a78)
 
 - **Moved from StageService into `Rules.Stages`:** which falls count (`Counts`), when a Hard pack stands again (`Regrows`), whether a gate is shut (`Shut`), the save's holdings and the run's two cards (`Holdings`, `Won`, `Lost`), the run's attributes and their reading back (`Published`, `Parse`, which StageController now shares), and the log's name (`Label`). The service only wires them; nothing players see changed.
@@ -4402,3 +4577,355 @@ Faber, 2026-11-19, 03:43 by the clock: the follow-up's item 7 (`docs/production-
 - **Tested:** offline 28,896/0 at that commit; the type check 0 new, 11 known; the Rojo build.
 - **NOT VERIFIED (the Festival place):** the run case "Stages (TR50)" in its playtest, and the run's log line in a real run.
 - **Found, not fixed:** the client's `look()` gate rule skips the server's ground check and its Ending state. It can't show while there's one ground; at ground 2 it should call `Rules.Stages.Shut`.
+
+### The dusk palette and the Voidkin floor, installed (Faber, 2026-11-23, 17:52 by the clock)
+
+- **The dusk, as `arc_dusk.json` gives it (B with Seam's lights), under Config's names:**
+  - On the Arc panel: the ground behind the glass (`Stages.Arc.Backing`), the street's light pooled behind the bed (`Arc.Bloom`), the light round the panel (`Arc.Glow`), its rim and Back's underline in ivory (`Arc.Rim`).
+  - On the bed: its fill, its amber pool (`Stages.Bed.Bloom`), its rosewood hairline (`Bed.Edge`).
+  - The run's card: its cover in dark wine (`Card.Cover`). It dims the world by half toward the wine (a ground pixel 205,185,165 bare, 123,101,95 under it).
+  - Normal's lights, Hard's ember and the run's line are unchanged.
+  - `Button.Set` takes an `Underline` colour, the screen's own light.
+- **Found and fixed:** a screen opened again under its name keeps its cover and its Back. So the card clears the ivory from Back, and the panel opened over the card (the server's `StagePick`) puts its own cover colour back.
+- **The floor, B:**
+  - The fighter stands on stone (`Voidkin.Stage.Floor.Stone`), its element a ring of opaque Neon round the edge, 0.03 of the floor across. A fighter with no element gets no ring.
+  - Measured on the stage with grey probes: plastic shows about 0.74 of its colour, and Neon shows about 11.3 × colour^1.84 in linear light (`Floor.Neon`). Fire's orange showed yellow before.
+  - So the stone wears `#E4DCC4` to show the sheet's `#A9A59B` (155 to 167 shown), and the ring wears the colour that shows its element's (Fire's shows 229,134,67 against 255,138,61).
+  - The unused `Stage.Glow` is gone.
+- **Tested:** type check 0 new.
+  - "HUD: TR50's dusk" (new) 15/0: the panel's ground, the bloom at the bed's middle, glow, rim, the bed, Back's ivory; the card's wine; and the panel reopened over the card.
+  - "Voidkin screen (TR17)" 271/0: the stone, and the ring checked through the measured curve, within a part's 8-bit colour step.
+  - The base's travel 35/0, the dock 39/0, Home's panel 40/0, Kit AR30 27/0, the button states 15/0.
+  - "Take: TR50" (it gained a Card step) 10/1. The one fail is "Hard shut wears the closed lock": I staged Hard open for the sheet's state.
+  - AR43's take 3/0. The save was put back after staging (Normal 2 cleared, checkpoint 1).
+- **Stills,** at the smallest phone, the main place's light (`build/captures/tr50/`): `arc_panel_hard_open.png`, `arc_back_underline.png`, `run_card_cover.png`, `voidkin_floor_rook.png`, `voidkin_floor_marigold_epic.png`.
+- **Against the sheet's third column, for research's look:**
+  1. The bed's amber pool is broader and browner than the sheet's core under the lantern.
+  2. The ring has no halo: a viewport draws no bloom, and a stepped halo would read as more rings.
+  3. Under an Epic, the stage's light (TR17's rarity trim) tints the stone lavender. The light is outside B: research's call whether it should stop tinting the floor.
+  4. Back's underline wears the ivory in the kit's soft rest state, not the sheet's crisp line.
+- **Status:** implemented and tested in the main place. Waits on research's pass. Not director-accepted.
+
+### Research's look at the install: competent, two must-fixes (Quaestor, 2026-11-23, 17:54)
+
+From the five stills at the smallest phone, against the sheets' third column and the floor's B.
+- **Felt:**
+  - The Arc panel reads as one evening at the festival: the lantern glows amber in its bed, Normal sits in cool ivory, Hard in ember.
+  - On the Voidkin screen, the fighter stands on pale stone, its element a ring of light round the edge.
+- **Tier:** competent.
+- **The one bold thing:** the lantern's warm pool against the cool ivory panel.
+- **The four differences:**
+  1. The bed's pool, broader and browner: accepted. At phone size it reads as the lantern's light, not mud.
+  2. No halo on the ring: accepted. The crisp ring carries the element, and Faber is right that a stepped halo would read as more rings.
+  3. The Epic's light on the stone: **must-fix 1**, below.
+  4. Back's soft underline: accepted. It's the kit's own rest state, the same on every Back.
+- **Must-fix 1, class "violet on a ground":** a rarity's stage light stops tinting the floor. The stone stays the stone under every rarity, and the light keeps the fighter and the backdrop. Under Marigold's Epic the stone reads lavender today, and the floor is the one neutral the element's ring needs. The way is Faber's: the light's angle or range, or the stone's own colour.
+- **Must-fix 2, class "a control the sheet doesn't have":** the run's card shows "Back" at the top left (`run_card_cover.png`), beside Retry and Home. The sheet draws none. The card hides it, unless Back does something Retry and Home don't; if it does, say what in this record, and research reads it again.
+- **For the second look:** Marigold's floor under Epic, and the card without Back. Two stills are enough.
+
+### Research's two must-fixes (Faber, 2026-11-23, 17:59 by the clock)
+
+- **Must-fix 1, met: the rarity's light no longer tints the floor.**
+  - The stage lights a plastic floor at its colour × (Ambient + LightColor × 0.46), per channel. Common's two measurements give the 0.46 within 0.02 on every channel.
+  - The floor now wears what shows the sheet's `#A9A59B` under its own stage's light (`Voidkin.Stage.Floor`: Shows, Lit). The fighter and the backdrop keep the rarity's light.
+  - Marigold (Epic) wears `#AFC28F` and shows 165,158,160 at the front; before, the stone showed lavender.
+  - The Voidkin case checks the stone on Common and on a Rare (it picks the first Voidkin that isn't Common), and fails if the save holds none: 278/0.
+- **Must-fix 2: Back stays on the card, for its one use:**
+  - Back closes the card and leaves the player on the street where the run ended, the run over, with the HUD's Base and Play back. Retry starts another run and Home travels to the base, so Back is the card's only way to stay, by friends or to look round.
+  - It's also the way out if Home is refused (`Home.Refusal`), when the card would otherwise hold.
+  - Your call: if staying isn't wanted after a run, I hide it.
+- **Stills for the second look:** `build/captures/tr50/voidkin_floor_marigold_epic_fix.png`. The card is unchanged: `run_card_cover.png`.
+- **Tested:** type check 0 new; Voidkin screen 278/0; AR43's take 3/0.
+
+### Research's second look: TR50 passes at competent (Quaestor, 2026-11-23, 18:00)
+
+- **Must-fix 1 met:** under Marigold's Epic the stone reads as the stone (`voidkin_floor_marigold_epic_fix.png`), with Fire's ring round it. The rarity's light stays on the fighter and the backdrop.
+- **Must-fix 2, answered by its use:** Back stays on the run's card. It's the card's one way to stay on the street with the run over, for an elite that anyone near may join, and the way out when Home is refused. The sheet missed a real exit, so the sheet was wrong, not the card.
+- **The four facts:** implemented, tested, visually reviewed and passed; director-accepted not yet.
+
+### Closed (Faber, 2026-11-23, 18:13 by the clock)
+
+- **The whole self-test** on TR50's code (f0f7f88), from a fresh playtest: 3,376 passed, 2 failed (526 s, 53 fps).
+  - **"Shop: the Void Shop's counter":** "the piece salvaged again (Worn)" failed in the run and passed alone, 57/0.
+  - **"Keeper: … its lantern goes out last":** "and out on Out" failed in the run and again alone, 26/1. It is the same intermittent frame check that failed once and then passed twice on 2026-11-17; nothing near the keeper's fall has changed since. It is rerun at AR48's next playtest.
+- **Logic, offline:** 29,197 passed.
+- TR50 is closed at competent; the director's acceptance waits.
+
+## TR51. The base grows: every machine's stages, the landing, the owner's plate and plinth (Faber, after AR49)
+
+Research, 2026-11-23, 01:55 by the clock, on the director's order of 00:05 ("first we work on the main map and systems", `docs/decisions.md`). It's the main map's biggest gap against the north star (pillar 3, "The base is alive"). Today only the generator changes in the world: `WorldService` reads `machines.generatorStages` alone (`src/server/Services/Main/WorldService.luau`, about line 753). Every other stage's art is passed and waits on its install. So this is install work, with no new design.
+- **Feel line:** a player raises the Breaker to level 6. A violet hoop climbs it, the old shape glows and swaps, and the Developed Breaker stands there, bigger. Walking back out to the gate, they can see from the Strip what their base has become, with their name on the gate's plate and their best Voidkin turning on its plinth.
+- **The block contains, in this order, each checked before the next:**
+  1. **Stages II and III in the world** for the Void Breaker (AR32), the bays (AR33), the battery (AR34; upload BatteryRack again) and the Training machine (AR35; upload TrainingCrown again). Each takes its stage from its own level (`Rules.BaseLevels`, `Config.Base.Machines.Stages`), the way the generator's swap works.
+  2. **AR37's landing** on every swap: the hoop, the glowing cover, the throw, the light (AR37's table and the content check's five conditions; upload `fx_rise_Void` only). It plays on a level-up, never on a join or a respawn, where the stage simply stands.
+  3. **TR22's world parts**, where AR16's plan already has their places: the gate's plate (the owner's name and the base's level, on both faces) and the plinth inside the gate (the picked Voidkin turning, with its Combat Power).
+- **Waits:** the Forge and the Condenser standing (TR37, the next piece); the stage sounds (the director's samples); the base's levels 2 and 3 look beyond the machines (AR50, Modulo's); the Tower's lot (after the main game, the director's word of 2026-11-19).
+- **Checks:** a logic case for each machine's stage at levels 5, 6, 14 and 15, and one that a join shows the stage with no landing; the flash guard's case (0.34 s); the self-test; captures from the gate and from the court, at stages I, II and III, at the smallest phone.
+- **Research's verdict in the game** reads: the landing at full speed, at the Breaker and from the court; a base level-up's machines starting on one frame; the Highlight's fill at the court's distance; the plate and the plinth from the Strip.
+- **Order:** Faber's next piece after AR49. It goes ahead of AR44's shine, TR10's stills, TR50's Arc palette and AR48's states. TR37 follows it.
+
+### Faber's build (Faber, 2026-11-23, 02:08 to 02:50 by the clock: 38d01a8, ad1372b, e086d9e)
+
+- **Implemented,** the three steps in order.
+  1. **Stages II and III in the world** (38d01a8).
+     - Each machine is laid as its kit's three stages, each a "Stage n" (`WorldService`). `BaseService` stands the one its level takes (`Rules.BaseLevels.Stages`): the Breaker and a bay by their own level, the battery and the Training machine by the base's.
+     - The Breaker's chambers are laid once, with a lid where the save hasn't the chamber yet. BreakerLamp moves to its stage's crystal. The hinges and a bay's rings turn while a chamber breaks or a worker works.
+     - Debug: `MachineLevel`.
+  2. **AR37's landing** (ad1372b): pick A to Modulo's recipe (`Config.Landing`, tunable live; `Rules.Landing`; `LandingController`).
+     - The server holds the old stage until the swap, 35 frames after the landing's start.
+     - It schedules each plot's landings by the flash guard (Gap 0.34 s), so a base level-up's machines swap on one instant.
+     - A join, a respawn or a plot changing hands plays none.
+     - `fx_rise_Void` is uploaded under the group, 84217908322822. Until the kit's rbxm is rebuilt in Studio, the hoop and the shaft are Neon.
+  3. **TR22's gate and plinth** (e086d9e).
+     - The plate: the owner's display name over "Level n", on both faces (`Config.World.Plate`).
+     - The plinth: the showcase Voidkin (`Collection.Showcase`) at its middle, facing the Strip, playing its Idle and turning 0.08 turns a second, with its CR over it (`Config.World.Showcase`).
+- **Tested.**
+  - Type check 0 new; logic offline 29,036 passed. The logic cases cover each machine's stage at levels 5, 6, 14 and 15; a join or respawn showing the stage with no landing; the landing's beats and size; and the flash guard over 400 seeded runs (never early, never closer than the gap, at most 3 swaps a second).
+  - In-game cases written in `BaseCases` but not run:
+    - each machine at its stage;
+    - the swap under the full cover, read frame by frame;
+    - a base level-up's three machines on one frame, and the Breaker's landing after the gap;
+    - a respawn playing none;
+    - the plate, the plinth's figure, and a pick and its return.
+- **The Studio run (Faber, 2026-11-23, ef86dab at 14:42; the captures 14:49 to 15:00 by the clock).**
+  - The full self-test 3,288 passed, 1 failed: TR42's audition lost a voice in the long suite, and it passes 89 of 89 twice alone. Every TR51 case above passed. LogicTests 29,155 passed; WorldReport empty.
+  - FxKit.rbxm rebuilt in Studio: the hoop and the shaft wear `fx_rise_Void`, not Neon.
+  - **The shards in their chambers,** at Stage III: each shard's middle sits 0.06 studs from its chamber's, a 1.1 by 2.2 shard in a 4.65 by 4.19 chamber. Chambers the save hasn't got stay hidden (`stage3_breaker_shards.png`).
+  - **The landing,** in a burst of the viewport at Stage III from the court:
+    - a base level-up's three machines swap on one instant, and the Breaker's after the gap (the peaks 0.35 s apart);
+    - at the swap the machine is the cover's flat pale violet, which carries the beat;
+    - the light's pool on the pale floor can't be read by day at Brightness 2. Kept there: a pool that read by day would bloom at dusk.
+    - For research's read: the generator's floor ring reaches 1.3 r, about 28 studs from its middle, and runs through the Breaker and the court.
+  - **The Fit Prints at Stage III don't fit today's plan.** Measured in play on plot 1, in the plot's axes:
+    - generator 30.2 by 28.9, 27.2 high, its middle 3.7 inward of its spot;
+    - Breaker 34.6 by 9.9, 20.2 high, 7.0 across;
+    - each bay 10.4 by 11.7, 15.8 high; battery 6.5 by 4.5, 13.5 high; Training machine 9.7 by 13.0, 10.4 high;
+    - Festival Door 8.6 by 14.2, 13.1 high (today's print is 3 by 12.4); Forge 11.1 by 8.8, 13.0 high; Condenser 9.7 by 9.5, 11.8 high.
+    - Stage I matches today's Prints within 0.1.
+    - **Where today's plan fails with Stage III's prints:**
+      - Clear (12): 8.3 between the generator and the Training machine; 10.5 from bay 1 to the generator and from the Forge to the Training machine; 11.9 from the Breaker to the generator.
+      - From the gate, the Breaker stands 58° off the line, past the 51° the camera sees.
+    - **The trial's sizes fail too:** 128 (8.3; the Breaker on the way in and outside; 59°), 144 (8.3; the Breaker on the way in; 54°), 160 (8.3 only).
+    - So `Config.World.Fit.Prints` stays at Stage I: Stage III's would fail the trial's logic case with no layout to answer it.
+    - **Tier 2, for research and Modulo:** the plan at Stage III, the Breaker's and the generator's places first.
+  - **The plate's top is cut from the gate's eye** (y 10 at z -11.5): "glocen" runs under the frame's top at every stage (`phone_stage1_gate.png`). For research: lower the plate, or let the name leave the gate's view.
+  - **Captures,** in `build/captures/tr51/`, by day, the camera held at the gate's eye and from the court:
+    - `stage1_gate`, `stage2_gate`, `stage3_gate`, and the same three for the court, at 2,483 by 1,134 with the HUD;
+    - `phone_stage1_gate` to `phone_stage3_court`, the smallest phone's 1,334 by 750. These are the world only: the HUD there is laid for the desktop, and the HUD on the phone is AR49's and the cases';
+    - `landing_stage3_court_01167ms`, `_01340ms` (the swap) and `_01687ms` (the Breaker's, after the gap);
+    - `stage3_breaker_shards`.
+- **Visually reviewed:** research's verdict asked. **Director-accepted:** not yet.
+- **Tier 1, Faber:** the plate reads "Level n" under the name rather than the bare number, so a passer-by reads a level beside a name. Research: say in your row what you'd change.
+- **Research's verdict (Quaestor, 2026-11-23, 15:26),** from `phone_stage1_gate`, `phone_stage3_gate` and `phone_stage3_court`:
+  - **Felt:** walking in, a level-3 base is told from a level-1 base at a glance. The Breaker sprouts horns around its shard, and the generator a crown of spikes.
+  - **Tier:** competent.
+  - **The one bold thing:** the Breaker's Stage III horns around the floating shard, a silhouette that reads across the yard.
+  - **Must-fix 1, class "text cut by the frame's edge":** the plate's name runs off the top of the gate's view at every stage. Raise the plate until it leaves the gate's view, so it's read whole from the Strip, where passers-by are. The owner reads their level on Home. "Level n" (Faber's tier 1) stays. The plate is Gate1's mesh, so it moves in AR54, Modulo's.
+  - **Must-fix 2, class "the yard at Stage III":** today's plan doesn't hold Stage III's footprints (Faber's measures above), and the Forge and the Condenser stand behind the generator from the gate (TR37). It's one plan, so one piece: AR54, Modulo's, on research's rules. The generator's floor ring belongs in it: the ring ends inside its own clear, never under another machine or across the court.
+  - **Not judged here:** the landing in motion. Faber's frames and their timing (0.35 s between the peaks) are accepted on the measures; it's first seen in motion at a live base level-up.
+
+## TR52. The signature on a tap: a block, judged in motion (Faber, after the Studio run)
+
+Research, 2026-11-23, 14:54, on the director's word of about 14:50: F1 of `docs/research/design-holes.md`, "Block it first". It's a try in a block, tier 1. Whether it joins launch is the director's call after the verdict, since manual signatures are under "Out of launch" (`docs/design.md`).
+- **Why:** in a fight the player does almost nothing, and every auto battler studied leaves the ultimate's timing to the player (H1).
+- **Feel line:** the ring at the right edge fills as your fighter fights. When it's full it lights and waits. You tap it at the moment that matters: a Guard's shield up, the pack bunched, the keeper's recovery. Your fighter fires its signature at once, and you know the hit was yours.
+- **The block contains:**
+  - the signature's readout (`docs/ui.md`, the right edge, low) becomes the button. It fills on the signature's cooldown as today, lights when full, and fires on a tap, with no new element on the HUD;
+  - an **Auto** toggle beside it, on by default in the block. On, it fires as today, so parked play stays allowed;
+  - the tap answers on the frame. The signature starts its own clip at once, and a full ring held for 0.5 s pulses once, so a ready signature is never missed (seed).
+  - **Measure first:** the ring's place against Roblox's jump button on a phone. If they meet, the ring moves, and the measure is written here.
+- **What waits:** a keyboard key on desktop (seed Q, after the verdict); the ring's finished look; the Tower's fights; the sound.
+- **Checks:**
+  - the logic case: a tap with the ring not full does nothing and changes nothing; a full ring fires once, and a repeated tap never fires twice;
+  - captures on the smallest phone, the ring empty, full and fired;
+  - research's verdict and the director's, from one Lantern Row run with Auto on and one with it off, judged in motion.
+- **Cap:** 90 minutes.
+- **Order:** after the Studio run of AR49, TR51 and TR37, beside the small ones.
+
+### Faber's block (Faber, 2026-11-23, 22:08)
+
+- **The measure, first.** Studio's Device Simulator, iPhone 16 Pro (750×401), in GUI pixels under its 58 px top inset.
+  - The readout stands top left, under the lead's card (AR12), at 11,124, 62×62. The Auto toggle stands after the eye, at 141,127, 107×56.
+  - Roblox's jump button is at 655,253, 70×70, bottom right. The ring and the jump button don't meet: 582 px apart.
+  - The dynamic thumbstick starts wherever a left thumb lands in x −100 to 300, y 114 to 443. The ring and Auto stand inside that zone's top edge.
+  - The HUD draws over Roblox's touch controls (DisplayOrder 10 against 0), so a touch on the ring is the ring's. A real touch in the simulator fired the signature once, its clip 62 ms after the touch, and the stick never started.
+  - So the ring stays where it stands (research, 721e825 at 21:33, ui.md's row). The cost to weigh in motion: it's the left thumb's, the thumb that walks the avatar; the right thumb only turns the camera.
+- **Built:**
+  - **The rule,** `Rules.Fight`:
+    - `Fight.Tap` arms the signature only while it's ready and not armed already;
+    - `Fight.Signature` names it: the kit's action with a cooldown;
+    - `Fight.Choose` takes a held action, the signature with Auto off and nothing armed.
+    - Armed, the signature is the next action, and its start disarms it.
+  - **The server,** `FightService`:
+    - the `Signature` remote takes "Tap" and "Auto";
+    - armed, the signature fires at once when its target is in range, cutting the combo wherever it is; out of range, it fires the moment it can;
+    - Auto lives on the player (`SignatureAuto`), on this server only and not saved: the block's.
+  - **The readout** (`HudController`, `UI.Readout`):
+    - a touch going down fires it, as a fight's buttons do, not on the let-go;
+    - it squeezes in on the frame (`Press` 0.12 over `PressTime` 0.14 s);
+    - armed and waiting for range, it stays in a little (`Armed` 0.06);
+    - a full ring left untapped pulses once (`Pulse`: `Hold` 0.5, `Length` 0.4, `Scale` 0.16). My reading of the seed: its 0.5 s counts from the end of the ready swell or the fade-in, so the two never merge.
+  - **The Auto toggle:** the kit's button after the eye, in the place of a fallen lead's "Send another" (never both). It reads "AUTO ON" / "AUTO OFF": the kit's set light alone read the same either way at the phone's size.
+  - Every number is in `Config.Hud.Readout`, tuned live.
+- **Checks:**
+  - **Type check:** 0 new.
+  - **Logic offline:** 29260 passed. The new case:
+    - a tap with the ring not full arms nothing and changes nothing;
+    - a full ring arms once, and a repeated tap arms nothing;
+    - after the fire, a tap on the same frame arms nothing;
+    - Auto off holds the signature, and armed it goes first.
+  - **"HUD: TR52"** (`SelfTestController/SignatureCases.luau`), 16 passed at 55 fps:
+    - Auto off holds a full ring: 0 fires in 2.7 s;
+    - it pulses once;
+    - the tap squeezes it in on the HUD's next frame, to 0.893;
+    - the clip starts 147 ms after the tap: Studio's round trip;
+    - three taps on one frame fire once;
+    - with the ring not full, the server answers NotReady and nothing changes.
+  - **The suites:** "HUD:" 548 passed, 0 failed, TR52's case in it. Its first run failed TR52's case 9 times: a case before left the lead idle with the camera turned away, so the Shade spawned ahead was never taken on (fix 6). The case now heals, calms and clears first, and its Shade comes for the lead. "Kit:" 85, "Camera:" 37 and "Fight: each lead's passive" 23, 0 failed. "Fight:" 640 passed, 8 failed, all eight in Watt's Ground Wire. That's the order effect noted on 2026-11-19 (TR49's run): alone in a fresh playtest it's 20/0, and after TR52's case 20/0. TR12's take stops at its first check, "Rook and Ironhymn owned": the test save owns no Ironhymn (kirra, lyric, marigold, pip, rook, sable, watt). That's a precondition of the save, not TR52's.
+- **Captures,** smallest phone, from the simulator: `build/captures/tr52/`.
+  - `phone_full`: white-hot, waiting with Auto off.
+  - `phone_fired`: emptied as it fires.
+  - `phone_filling`: the front partway up.
+  - `phone_auto_on`, `phone_auto_off`: the toggle's two words.
+- **Not built** (waits, as the entry says): the desktop key, the finished look, the Tower's fights, the sound.
+- **For the verdict:** one Lantern Row run with Auto on and one with it off. That's the director's play, and research's verdict from it.
+
+### Research's read of the block, before the director's run (Quaestor, 2026-11-23, 22:11)
+
+From the five stills in `build/captures/tr52/` and Faber's measure. The verdict itself is the run's.
+- **Faber's three readings, accepted (tier 1):**
+  - the pulse counts from the end of the swell;
+  - an armed tap cuts the combo, since "fires its signature at once" is the feel line's own;
+  - the toggle needs its words.
+- **The words,** research's: "Auto on" and "Auto off", in the kit's sentence case, as the Power screen's "Auto" and "Send another" are written.
+- **The run tries the ring under both thumbs.**
+  - The feel line put the ring at the right edge, and the stale ui.md row is why the measure was taken against the jump button.
+  - Where the ring stands, it's the left thumb's, the one that walks. A Dasher's line asks you to move (AR52), so you can't step off a line and fire at once.
+  - In every still the right thumb has only the camera and jump, with a free field above the jump button.
+  - So, for the run: the ring's place tunable live (`Config.Hud.Readout`), where it stands and above the jump button. The run with Auto off is played once at each.
+  - The eye stays where it is in the block. If the ring moves, ui.md's rows move with the verdict.
+- **The stills can't show:**
+  - whether a tap lands in the moment, which is the run's;
+  - "filling" from "fired" at the phone's size: the two read alike (`phone_filling`, `phone_fired`). That's the ring's finished look, which waits.
+- **The run, the director's:** Lantern Row once with Auto on, then with Auto off, at each place. Research's verdict comes from it.
+
+### Faber's add for the run (Faber, 2026-11-23, 22:17)
+
+- **The words:** "Auto on" and "Auto off".
+- **The ring's place, tuned live:** `Config.Hud.Readout.At`.
+  - `"Card"` stands it where it was. `"Jump"` stands it over Roblox's jump button, centred on it, `Jump.Above` (12) points clear of its top.
+  - `NL_Debug:Invoke("Tune", "Hud.Readout.At", "Jump")` moves it mid-run.
+  - It reads the touch controls' own jump button. Without one (a desktop playtest), it uses where Roblox would put it in the HUD's box.
+  - The eye and Auto stay in the corner.
+- **Checks:**
+  - **Type check:** 0 new.
+  - **"HUD: TR52", desktop:** 24 passed, 0 failed. That's both cases: the toggle says "Auto off" and "Auto on" in its words, and the new place case.
+  - **The place case on the phone** (the simulator's iPhone 16 Pro, its own jump button at 655,253, 70×70): 8 passed, 0 failed.
+    - The ring stands at 658,177, 62×62, centred over the button within 0.3 px, and 13.5 px clear of its top.
+    - It stays on screen, the eye doesn't move, and tuned back it stands under the card again, to the pixel.
+- **Still:** `build/captures/tr52/phone_jump_auto_off.jpg`. It shows the ring full over the jump button in a fight with Auto off, the guide's arrow clear to its left, and the toggle reading "Auto off".
+  - The older stills still show the first word, "AUTO".
+
+## TR53. The base between runs: what it made while you were away, and its state during a run (Faber, after the install backlog)
+
+Research, 2026-11-23, 14:58, F4 and F6 of `docs/research/design-holes.md`: the director left these to research ("whatever best in your opinion"). Tier 2 (research, and Faber's area): a new moment players see. The look of the card is Modulo's, in the system slab's make.
+- **Why:** the base and the fights are two islands (H7), and nothing marks a return home. Pillar 3 promises "a shard cracking while you fight".
+- **Feel line:** you come home from Lantern Row, or log in the next day, and one card says what the base did while you were gone: power stored, stones made, a fighter trained, a shard broken. One tap takes it all, and the base looks busier for it. During a run, a quiet line tells you your shard is still breaking at home, and a notice says when it's done.
+- **The block contains:**
+  - **The return card:** shown once on arriving at the base after a run, or on joining, when anything changed: the battery's gain in kWh, the Condenser's stones, the Training machine's levels, a shard ready to reveal. One "Collect" or "Reveal" press takes it. If nothing changed, no card.
+  - **In the Festival place:** the profile is shared across the universe, so the run's HUD shows one line of the base's state (the shard breaking and its time left), and one notice when it breaks: "Your shard broke. Its Voidkin waits at home." The reveal stays at home.
+- **What waits:** the card's finished look; a sound; an opt-in experience notification (Roblox: one a day, ages 13+, never required), which comes after the director's word.
+- **Checks:** the logic case that a return shows each change once, and a repeat shows nothing; captures on the smallest phone; research's verdict in motion.
+- **Cap:** 90 minutes for each half.
+- **Order:** after the install backlog and TR52.
+- **The look** is AR55, Modulo's, drawn ahead (research, 18:27).
+- **From TR31,** folded in (research, 20:07; AR55, research's pass):
+  - the server credits everything on arrival, and the press only shows it, sending each amount to its counter;
+  - the battery's line is its net gain, shown only when it gained;
+  - a battery that ended full and sold its overflow reads "Full", with the Credits as its soft word.
+  - The logic case adds: a net loss shows no battery line.
+
+## TR54. Goals, basic at launch: a dare per stretch, today's three, and Next (Faber, after TR52 and AR52)
+
+Research, 2026-11-23, 15:24, on the director's yes and "js basic at launch" (`docs/design.md`, "Goals"; `docs/decisions.md`, the row of 15:23). **The Mask Ledger is cut** (the director, 2026-11-23, by 18:38; `docs/decisions.md`): nothing in the goals wears Lantern Row's festival, and no mask goes on the base. The look is AR53's, Modulo's, with its redraw.
+- **Feel line:** as a stretch starts, its dare unfolds under the run's line and folds to a small mark that holds while you keep it. On the run's card: "Dare kept" and the stones. Home shows three plain goals that finish themselves while you play, with the account's next step pinned above them.
+- **The block contains:**
+  - **Dares,** one fixed dare per stretch (research, 17:49: the run has four stretches and no start card), checked on the server. Each is paid when its stretch is cleared with it kept, and a later fall takes nothing back. The run's card shows them all, the fall's card too (AR53):
+    1. "Finish with your lead above half."
+    2. "Break a raised shield with your signature." (needs TR52's tap and AR52's Guard)
+    3. "Let no Dasher's line touch you." (needs AR52's Dasher)
+    4. "Stand outside every slam." (needs TR44's lead movement)
+    Until a dare's piece is in, that stretch's dare is "Finish without your lead falling." Kept: one forge stone of the ground's grade (seed).
+  - **Today's three:** one from each list, drawn on the server at 00:00 UTC, banked up to three days (nine at most), each paying one Lantern Row shard.
+    - Fight: "Keep a dare." / "Clear a stretch on Hard." / "Win three Tower floors." / "Bring down the Lamplighter."
+    - Base: "Let every bay run a full hour." / "Break three shards." / "Collect the Condenser's tray." / "Train a Voidkin for an hour."
+    - Roster: "Lead a run with someone new." (a Voidkin not led today) / "Raise a Voidkin a level." / "Forge once."
+  - **Next,** the Today list's head, above the goals, holding its back press (research, 18:54, at AR53's redraw): the account's one next step, with what it opens, the first not done of:
+    1. "Bring down the Lamplighter. Hard opens on Lantern Row."
+    2. "Raise the base to level 2. A third bay opens, and the Condenser wakes."
+    3. "Bring down the Lamplighter on Hard. Its first chest holds a Rare or better."
+    4. "Raise the base to level 3. A fourth bay opens. Machines reach level 30."
+    5. "Climb the Tower to floor 25. Each new floor pays a first-time bonus."
+    6. All done: "Drum Court's gate stays shut, for now."
+    Each says only what launch opens (`Config.Base`, `Config.Condenser.Wakes`, `Config.Chests.Keeper`). An update that changes one changes its line. What it opens stays at 45 letters or fewer, so it never takes a third row (three lines shortened at 18:54; content check PASS at 18:55).
+  - **The labels:** "Today", the card's word; "Next"; the banked days "Yesterday" and "Two days ago"; a done goal's press, "Claim"; the card's chip, "Dare kept" with "+N".
+- **The rules in pure Luau** (`Rules.Goals`): the draw, the banking, the reset, and each goal's check. Logic cases:
+  - a goal pays once;
+  - a repeat or interrupted claim pays nothing more (the op ledger);
+  - the bank holds nine at most;
+  - the reset is on UTC, whatever the server.
+- **What waits:** the dares' pools, weekly goals.
+- **Content check:** PASS on the lines and labels (15:29 and 17:49). "Bring down the Lamplighter", which replaced the masks' wording at 18:38, passed its own check at 18:39.
+- **Checks:** the logic cases; captures of the card, the results and Home on the smallest phone; research's verdict in motion.
+- **Cap:** about 10 hours of build (research's guess; Faber's estimate replaces it).
+- **Order:** after TR52 and AR52's behaviours.
+
+### Faber's build (Faber, 2026-11-24, 01:52 by the clock)
+
+- **Where it lives:** the rules `Rules.Goals` and `Rules.GoalFacts` (the account's facts Next and the draw read, apart so no rule requires itself); the words `Definitions.Goals`; the numbers `Config.Goals` and `Config.Hud` (`Stages.Dare`, `Stages.DareCard`, `Home.Today`); the save's `Goals` (`docs/engineering-plan.md`, "Goals"); `GoalService` on the server; `UI.DareLine`, `UI.TodayList` and the run's card (`UI.StageScreen`) on the client. AR53's 17 images are uploaded under the group, all Approved (`docs/asset-log.md`).
+- **Every path counts:** each event is noted in the rule that makes it (`Goals.Note`): a shard broken and the Breaker's time in `Rules.Breaker`, a level in `Rules.Drops` and the Breaker, the tray in `Rules.Base`, a forge in `Rules.Reinforce`, a Tower floor in `Rules.Tower`, the keeper in `Rules.Progress`, a Hard stretch in `Rules.Stages`. Away time counts too: the days roll on join before the base's away time lands.
+- **Claims:** one action, `GoalClaim { Day, Slot }`, behind the op ledger. A repeated request gets its first answer, a claimed goal is refused, and an answer that fails commits nothing.
+- **A dare:** it opens as each stretch begins, is judged as the stretch clears, and its stone is paid inside the clear's own step, so a clear that isn't saved pays nothing. A later fall takes nothing back. Until its piece is in (`Config.Goals.Ready`), a stretch takes the fallback.
+- **Tier-1 calls** (mine, small and reversible):
+  - a goal's count goes to every open goal of its kind on every banked day;
+  - each draw is fixed by the player's id and the day;
+  - a new account starts today, with nothing banked;
+  - "above half" follows the lead's health both ways and is judged at the clear;
+  - a "Do" dare's mark stays lit once done;
+  - a goal whose piece the account hasn't opened is never drawn (Hard, the Tower, the Condenser, the forge). The Tower opens at a best floor of 1, the forge with any gear owned;
+  - "someone new" counts a stage, keeper or Tower run, and the day's first run always counts;
+  - "every bay" counts only while the base generates with every bay filled; "train" counts while training runs, away too;
+  - a Dasher's line is a mark with a length, a slam one without;
+  - dares run on Normal and Hard;
+  - the day turns at 00:00 UTC, looked for every 5 seconds;
+  - the dim's strip under a phone's inset hides when it has no height, so it's never a tap of nought.
+- **The captures' review found three faults, each fixed:**
+  - stretch 2's dare and later ones stayed folded: at a stretch's advance the dare comes before the run's line is built again, and the line it first came to counted it as shown. It counts once it's laid now, and case 2 checks stretch 2's unfold;
+  - Roblox drew its own scroll thumb past the list's glass, a white line, even at thickness nought: hidden, as the Bag's chips already do;
+  - the cases' clean-up began a new run instead of ending one: a run is ended by its lead's fall now, the game's own way out.
+- **Captures** on the smallest phone (568 by 320 at 0.85, drawn at 852 by 480), in `build/captures/tr54/`:
+  - the dare: open (`dare_open`), folded (`dare_folded`), dark below half (`dare_broken`), kept (`dare_kept`), the three marks magnified (`marks`), and stretch 3's unfolding after the fix (`dare_next`);
+  - the cards: the fall's with the kept chip and the road's mark (`card_fall`), the keeper's with the chip on its time row (`card_win`);
+  - Home: the cog tile and the Today card with one claim waiting (`home`), the list with Next and the rows, a run behind it (`list`).
+  - A Manual take holds each state for a still: "Take: TR54" (the self-test's GoalCases).
+- **My own review, for research's pass:**
+  - The kept mark is told from the held one only by its halo at rest (`marks`); the flare carries the moment in motion. Whether it needs more at rest is research's call.
+  - The chip's forge stone is a dark cell at 22 points and reads as a stone only up close.
+  - On the keeper's card the chip shares the time row, which is then full.
+  - The Today card's pips read as dots: the gold one is clear, the open and the claimed ones are close.
+- **Checks:**
+  - the type check: 0 new;
+  - logic: 29845 passed, 0 failed, offline and in Studio;
+  - self-test: Goals (TR54) 55/0, Home's panel (AR49) 41/0, Settings (AR43) 27/0.
+
+### Research's verdict: competent in its look, holding on three must-fixes (Quaestor, 2026-11-24, 01:56)
+
+From the ten captures (the stone chip, the card's rows and the Today card read at 3 and 4 times) and `Rules.Goals`. The motion read is at the second look, since must-fix 1 changes the mark's beats.
+- **Felt:** as a stretch starts, its dare reads at once under the line in the line's own glass, then folds to a quiet mark. The cards say "Dare kept" plainly. Home's Today card glows gold when a claim waits, and the list puts the account's next step on top.
+- **Tier:** competent. **The one bold thing:** the tab that folds round its mark. The dare costs the fight no room, and a break is a silent split.
+- **Must-fixes, each by its class:**
+  1. **A dare's mark answers its own question at rest, and the moment its fate changes is seen.** A keep dare's mark asks "still holding?", a "Do" dare's asks "done yet?". Today `Goals.DareLook` gives a "Do" dare "Holds" before and after it's done, so stretch 2's mark is lit before the shield breaks and doesn't change when it does: the dare's own moment gets no beat. The means are Faber's (a "Do" mark unlit until done, then the kept flare, say), with a logic case. Not yet done must read apart from broken.
+  2. **Every reward on the run's cards reads as its item at the smallest phone,** as the shards, the shard and the chest do. The forge stone is a dark rock on a dark cell, and "+1" says nothing until it reads. The means are Faber's or Modulo's, whichever is cheaper.
+  3. **Every row of the run's cards fits its longest value inside the card at the smallest phone.** Today's win row is full with "0:06". Show the longest in a self-test and a still: a run past ten minutes, a new best (the clock at the title's size, then "a new best"), with a dare kept. If it doesn't fit, the chip takes a row of its own, as on the fall card.
+- **Faber's four calls:** kept and held at rest stay as they are: after must-fix 1, a keep dare shows kept only at the clear, with its flare. The stone is must-fix 2, the time row must-fix 3. The Today card's open and claimed pips go to polish-later: the gold one, the one that asks the player to act, is clear, and the card's gold frame says it too.
+- **Next:** Faber's fixes, then the second look in motion. Send a short capture of the beats: the unfold and fold, a break, a "Do" dare done, the kept flare at the clear.

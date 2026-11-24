@@ -203,6 +203,8 @@ local function levelLines(data: Profile.View): (string, string)
 			table.insert(gains, `{Read.Number(gain.To)} kWh battery`)
 		elseif gain.What == "Ceiling" then
 			table.insert(gains, `machines to Lv {gain.To}`)
+		elseif gain.What == "Condenser" then
+			table.insert(gains, "the Stone Condenser wakes")
 		end
 	end
 	return `Base · Level {level}`, `Level {offer.Level}: {table.concat(gains, ", ")} · {Read.Number(offer.Price)} Credits`

@@ -16,6 +16,7 @@ local Breaker = require(Shared.Rules.Breaker)
 local Power = require(Shared.Rules.Power)
 local Base = require(Shared.Rules.Base)
 local Collection = require(Shared.Rules.Collection)
+local Condenser = require(Shared.Rules.Condenser)
 local Shards = require(Shared.Definitions.Shards)
 local BaseConfig = require(Shared.Config.Base)
 local ShardConfig = require(Shared.Config.Shards)
@@ -514,6 +515,7 @@ return {
 				local base = fresh()
 				base.Base.Level = 3
 				base.Base.Machines.Breaker = level
+				base.Base.Condenser.Tray.Low = Condenser.Cap(1) -- the Stone Condenser rests on a full tray: the Breaker's kWh alone
 				base.Base.Charge = 300
 				base.Bag.Shards[STANDARD] = 1
 				act(base, "AddShard", { Shard = STANDARD }, T0)

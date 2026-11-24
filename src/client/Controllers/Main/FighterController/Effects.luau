@@ -38,6 +38,7 @@ local Flight = require(ReplicatedStorage.Shared.Rules.Flight)
 local ShadeBurstArt = require(ReplicatedStorage.Shared.Config.ShadeBurstArt)
 local Shades = require(ReplicatedStorage.Shared.Config.Shades)
 local Sounds = require(script.Parent.Sounds)
+local Shine = require(script.Parent.Shine)
 local Rows = require(script.Parent.Rows)
 local SettingsController = require(script.Parent.Parent.Parent.Core.SettingsController)
 local UI = script.Parent.Parent.Parent.Parent.UI
@@ -1801,6 +1802,8 @@ type Counting = {
 	Plate: Frame,
 	Row: Frame,
 	Sweep: ImageLabel?,
+	Shine: Shine.Shine?, -- a critical's, from its land (AR44, take C)
+	ShineAt: number, -- its age at that land
 	Pointer: Frame?,
 	Scale: UIScale,
 	Style: string,
@@ -1915,6 +1918,11 @@ local function restyle(c: Counting, numbers: Numbers)
 	c.Plate.Size = UDim2.fromOffset(c.W + size, c.H)
 	if c.Style == "Critical" then
 		sweep(c)
+		local critical = HudConfig.Numbers.Critical
+		if c.Shine == nil and critical.Shine.On then
+			c.ShineAt = c.Age
+			c.Shine = Shine.new(c.Plate, c.Row, numbers.Size * critical.Size)
+		end
 	end
 end
 
@@ -2021,6 +2029,8 @@ function Effects.Number(root: BasePart, key: string, amount: number?, look: Numb
 		Plate = plate,
 		Row = Digits.new(plate, numbers.Size * share, first),
 		Sweep = nil,
+		Shine = nil,
+		ShineAt = 0,
 		Pointer = nil,
 		Scale = scale,
 		Style = look.Style,
@@ -2086,6 +2096,10 @@ function Effects.Number(root: BasePart, key: string, amount: number?, look: Numb
 			end
 		end
 		Digits.Fade(c.Row, c.Fade)
+		local shine = c.Shine
+		if shine then
+			Shine.Lay(shine, age - c.ShineAt, c.Fade)
+		end
 		local s = c.Sweep
 		if s then
 			local floor = HudConfig.Numbers.Critical.Sweep.Transparency

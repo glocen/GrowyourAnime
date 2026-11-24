@@ -27,8 +27,15 @@ return {
 	-- AlphaMode TintMask), which the glow carries, so the body's glow takes BodyTint at the same strength and every lit
 	-- texel draws as on Normal; the masks keep MaskTint and MaskEmissive. Its burst's pictures take Burst, the scraps
 	-- excepted: they stay white on every difficulty (the content check's condition, 2026-11-19, 18:19).
+	-- Tint: a type's colour on Hard where it isn't its Tint. The look's own warm glow multiplies it, so Orange's little
+	-- green went to red there: F23000 measured 7 degrees of hue on Hard against Red's 2, where on Normal it reads 23 to
+	-- Red's 358. FF7000 measured 21 on Hard, by day and by night, Red's and Green's unchanged (AR52's must-fix 1, the
+	-- builder's measure in the engine on the Row's look at 64 px, 2026-11-23).
 	Hard = {
 		BodyTint = Color3.new(1, 1, 1),
 		Burst = Color3.fromHex("FFB4A0"),
+		Tint = {
+			Orange = Color3.fromHex("FF7000"),
+		} :: { [string]: Color3 },
 	},
 }

@@ -33,6 +33,7 @@ local chevrons: { Frame } = {}
 local edge: Frame? = nil
 local colour = UIKit.Systems.Voidkin.Colour
 local hidden = true -- near the target, or none
+local rides = false -- the edge's arrow on the next step's chip, its own spot taken
 local held: { Instance }? = nil -- a test's targets, over Point's
 local wanted: { Instance } = {} -- Point's last
 
@@ -146,14 +147,14 @@ function Guide.Test(list: { Instance }?)
 	apply(if list then list else wanted)
 end
 
-function Guide.Read(): { Count: number, Shown: number, Edge: boolean, Arrow: Frame? }
+function Guide.Read(): { Count: number, Shown: number, Edge: boolean, Arrow: Frame?, Rides: boolean }
 	local shown = 0
 	for _, frame in chevrons do
 		if frame.Visible then
 			shown += 1
 		end
 	end
-	return { Count = #targets, Shown = shown, Edge = edge ~= nil and edge.Visible, Arrow = edge }
+	return { Count = #targets, Shown = shown, Edge = edge ~= nil and edge.Visible, Arrow = edge, Rides = rides }
 end
 
 -- The edge's arrow drawn pointing down, its turn set each frame: a round dark backing rimmed in the guide's colour, and an
@@ -245,19 +246,27 @@ local function stepEdge()
 		return
 	end
 	local screen = camera:WorldToViewportPoint(middle + Vector3.new(0, CONFIG.Lift, 0))
-	local view = camera.ViewportSize
+	-- The frame is the World layer's, from its top left in the viewport's pixels: the window in play, a take's phone where
+	-- the take frames one (UI.Layers.Box with a corner, AR51), so the arrow stands at that phone's edge as on the phone.
+	local layer = a.Parent :: GuiObject
+	local origin = layer.AbsolutePosition + GuiService:GetGuiInset()
+	local view = layer.AbsoluteSize
+	if view.X <= 0 or view.Y <= 0 then
+		a.Visible = false
+		return
+	end
+	local seen = Vector2.new(screen.X, screen.Y) - origin
 	local scale = Layers.Scale()
 	local margin, top, bottom = CONFIG.Margin * scale, CONFIG.Top * scale, CONFIG.Bottom * scale
 	-- Never under the HUD's top band (the cards and the pills, UI.World.Band): the arrow drawn under the wallet was unseen
 	-- (TR24's fix 1, read on an unlocked screen, 2026-11-16).
 	-- In view is judged on the frame's own inset: a chevron in the sky over the band still shows, and no arrow with it.
-	local inside = screen.Z > 0 and screen.X >= margin and screen.X <= view.X - margin and screen.Y >= top and screen.Y <= view.Y - bottom
+	local inside = screen.Z > 0 and seen.X >= margin and seen.X <= view.X - margin and seen.Y >= top and seen.Y <= view.Y - bottom
 	if inside then
 		a.Visible = false
 		return
 	end
 	local band = World.Edge()
-	local layer = a.Parent :: GuiObject
 	-- The arrow's middle keeps half its size inside the inset, and its nudge along the way (below), so the whole of it
 	-- stays clear of the HUD's edges (the next step's chip under it).
 	local pad = (CONFIG.Edge.Size * 0.5 + NUDGE) * scale
@@ -267,15 +276,14 @@ local function stepEdge()
 	-- and over the next step's chip where it stands higher than the inset (research's must-fix, 2026-11-17)
 	local chipTop = World.FootTop()
 	if chipTop then
-		bottom = math.max(bottom, view.Y - chipTop + pad + CONFIG.Edge.Clear * scale)
+		bottom = math.max(bottom, view.Y - (chipTop - origin.Y) + pad + CONFIG.Edge.Clear * scale)
 	end
 	if band then
-		local under = layer.AbsolutePosition.Y + GuiService:GetGuiInset().Y + band * scale + pad
-		top = math.max(top, under)
+		top = math.max(top, band * scale + pad)
 	end
 	-- The way to it from the frame's middle (behind the camera, the way is turned round), cut at the inset edge.
 	local centre = Vector2.new(view.X / 2, (top + view.Y - bottom) / 2)
-	local way = Vector2.new(screen.X, screen.Y) - centre
+	local way = seen - centre
 	if screen.Z <= 0 then
 		way = -way
 	end
@@ -286,16 +294,50 @@ local function stepEdge()
 	local reach = math.min(if math.abs(way.X) > 1e-6 then halfX / math.abs(way.X) else math.huge, if math.abs(way.Y) > 1e-6 then halfY / math.abs(way.Y) else math.huge)
 	local point = centre + way * reach
 	local unit = way.Unit
-	point += unit * (bob() / CONFIG.Bob) * NUDGE * scale -- it nudges along its way, as the chevrons bob
-	-- A viewport pixel less the top bar's inset is a GUI pixel, less the layer's corner (as UI.World places its plates).
-	-- By scale, so the layer's UIScale sizes the arrow and never moves it.
-	local room = layer.AbsoluteSize
-	if room.X <= 0 or room.Y <= 0 then
-		a.Visible = false
-		return
+	-- Never over the avatar, a prompt's card or a plate (research's call on AR51, 2026-11-23: on the smallest phone the
+	-- band and the chip leave it no height, and it stood mid-screen over the avatar and the convert's prompt). Where its
+	-- spot is taken it rides the next step's chip, Clear points off its end toward the target, else the other end, still
+	-- turned to the target; with neither free, it waits. Judged on its box and its nudge both ways, so it never flickers.
+	local reachOf = CONFIG.Edge.Size * scale / 2 + NUDGE * scale
+	local taken = World.Taken()
+	local function free(spotAt: Vector2): boolean
+		local low, high = spotAt + origin - Vector2.one * reachOf, spotAt + origin + Vector2.one * reachOf
+		if spotAt.X - reachOf < 0 or spotAt.X + reachOf > view.X then
+			return false
+		end
+		for _, box in taken do
+			if low.X < box.High.X and high.X > box.Low.X and low.Y < box.High.Y and high.Y > box.Low.Y then
+				return false
+			end
+		end
+		return true
 	end
-	local on = point - GuiService:GetGuiInset() - layer.AbsolutePosition
-	a.Position = UDim2.fromScale(on.X / room.X, on.Y / room.Y)
+	rides = false
+	if not free(point) then
+		local low, high = World.FootBox()
+		local spot: Vector2? = nil
+		if low and high then
+			local off = CONFIG.Edge.Clear * scale + reachOf
+			local level = (low.Y + high.Y) / 2 - origin.Y
+			for _, side in if unit.X < 0 then { -1, 1 } else { 1, -1 } do
+				local beside = Vector2.new((if side > 0 then high.X + off else low.X - off) - origin.X, level)
+				if free(beside) then
+					spot = beside
+					break
+				end
+			end
+		end
+		if spot == nil then
+			a.Visible = false
+			return
+		end
+		point = spot :: Vector2
+		rides = true
+	end
+	point += unit * (bob() / CONFIG.Bob) * NUDGE * scale -- it nudges along its way, as the chevrons bob
+	-- On the layer already (as UI.World places its plates). By scale, so the layer's UIScale sizes the arrow and never
+	-- moves it.
+	a.Position = UDim2.fromScale(point.X / view.X, point.Y / view.Y)
 	a.Rotation = math.deg(math.atan2(unit.Y, unit.X)) - 90
 	a.Visible = Screen.Current() == nil
 end

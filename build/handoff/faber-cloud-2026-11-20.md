@@ -43,11 +43,13 @@ Breaking Open's chest removal also makes the older "1,000 opened in steps" case 
 ## Test outputs, at the branch's head
 
 ```
-luau check: 0 new, 11 known, 0 gone since the freeze (5.9 s)
-LOGIC OFFLINE PASSED: 28980 passed, 0 failed, 0 need Studio (4.43 s, Lune)
+luau check: 0 new, 11 known, 0 gone since the freeze (5.0 s)
+LOGIC OFFLINE PASSED: 30936 passed, 0 failed, 0 need Studio (3.55 s, Lune)
 Built project to check.rbxl                      (rojo build default.project.json)
 hooks selftest: 126 passed, 0 failed
 ```
+
+Read at ca87da1, 2026-11-24. The first handoff's head read 28,980.
 
 Main at `d51d2ee`, the same runner: 28,834 passed, 0 failed, so the branch adds 146 checks.
 
@@ -87,6 +89,29 @@ Not installed. Here the hooks run under `python3`, and the self-test passes 126/
 7. **Push main.** Delete the cloud branch only with the director's OK.
 
 **For Faber's Now row,** on the board's next rewrite: TR50's run rules, TR48's keeper and TR45's trip checks are now pure and offline, and a keeper's win can't be granted twice, and seeded runs prove the shard's way, gear's way, the shop and the Tower never make, lose or double-spend a valuable. "Open, tests" adds the Festival run of these cases and the gate drift note.
+
+## Game changes of 2026-11-24 (code; all NOT VERIFIED in Studio)
+
+The director's words of 11-24: "i asked for the play button to open a panel of gamemode", then "browse the whole grow your anime repo and edit/add/remove/change whatever you find wrong". Each is one commit, by path, with the type check, the offline suite and the Rojo build green after it.
+
+| Commit | What | Its proof here | Owed in Studio |
+|---|---|---|---|
+| c5aa6d6 | **Play opens a panel of game modes:** the Festival and the Tower, a card each. `Rules/Modes.luau`, `UI/ModeScreen.luau`, `Controllers/Main/ModeController.luau`. `Config.Hud.Modes.On = false` gives Play the Arc panel back | `Cases/Modes.luau` | `ModeCases` (3), the dock's case, the player-camera review, the feel line's review |
+| a66cd2e | **The base view's Upgrade press:** the level's plate carries Upgrade with its price; a chip's tap opens its machine's panel (what it does, what the next level gives, its press). `Rules.BaseLevels.Ask` says what each spot buys. Before this no client sent `UpgradeBase` or `UpgradeMachine` | `Cases/BaseAsk.luau`: every press bought through `Rules.Base` to the cap | `BaseViewCases` (Main), the smallest phone's fit, the review. Grey: no art |
+| d0cbe09 | **A refusal never shows its code:** `BaseController` warned nothing and toasted "Not now: <code>"; `StageScreen`'s begin said nothing on NoAnswer, NoData or NoStart | type check | a refused press in play |
+| 40a48c8 | **A favourite sorts first,** as `Collection.SetMark`'s comment promised. `Collection.Roster`: the lead, the favourites, level, name, id | a case in `Cases/Collection.luau` | the Voidkin grid and the bay picker |
+| f0743c5 | **The restock chip shows only where the Void Shop stands** | type check | the Festival place's HUD in a stock's last minute |
+| 4ac79ee | **A bay's picker leads with the best worker** and shows the base's gain: "Lv 12 · 18 kW · +4 kW". `Rules.Power.Staff` | `Cases/Staff.luau`: each gain shown is the gain `SetWorker` gives | the row's fit on a phone |
+| ca87da1 | **The run's card waits until the keeper's fade is back** (3.3 s on today's numbers; it was sent at 1.2 s and the black fade covered it at 2.4 s). `Rules.Stages.After` | a case in `Cases/Stages.luau` | the Festival's Stages (TR50) case, a real keeper's win |
+
+Tier 1 notices for the Now board, all of them: small, reversible, no balance touched. The Play panel's shape and the Upgrade panel's look are blockouts for their feel lines' reviews.
+
+**Looked at and left alone, on purpose:**
+- **A fallen lead in the Festival** (Retry lit, "Your lead is down", no plot to stand again on): the card's presses follow a rule research hasn't written. Tier 2.
+- **The weak strings** in `docs/research/cloud-2026-11-24/voice-and-naming.md`, section 3: the words are research's. "Inventory" and "the bag" both come from the director's own words, so neither was renamed.
+- **`docs/roblox-rules.md`, line 29:** a study cites a 2026-05-26 forum clarification (every outcome must give some benefit). The fetch to verify it failed from here, so the file is untouched. Research reads it at the source.
+- **`emitter.Rate` written each frame** (`FighterController/Rows.luau`): no measurement says it costs anything.
+- **`tools/blender/r6anim.py:1004`** reads `src/shared/Config/Camera.luau`, which doesn't exist: Modulo's area.
 
 ## Research for the team (2026-11-24, docs only)
 

@@ -17,6 +17,8 @@ Faber, from a cloud session. It answers the director's words of 11-24: "we are l
 
 - **Play opens a panel of game modes** (the director asked twice): the Festival and the Tower, a card each. Commit c5aa6d6; `src/shared/Rules/Modes.luau`, `src/client/UI/ModeScreen.luau`, `src/client/Controllers/Main/ModeController.luau`. `Config.Hud.Modes.On = false` gives Play the Arc panel as before. Owed on the PC: the self-test run and the player-camera review.
 - **One call made here:** both cards always show. `state-of-the-game.md` says hide the Tower in a first session, but a panel with one card is the exact thing the director objected to. Research can hide it by a `Goals` fact at the feel line's review.
+- **The base view's Upgrade press** (a66cd2e): the level's plate and each machine's panel carry Upgrade with its price. `Rules.BaseLevels.Ask`, `src/client/UI/BaseView.luau`. Grey, no art.
+- **Five small fixes from the holes below and `detail-pass.md`:** a refusal never shows its code and Begin always answers (d0cbe09); a favourite sorts first (40a48c8); the restock chip only where the Shop stands (f0743c5); the bay picker leads with the best worker and shows the gain (4ac79ee); the run's card waits until the keeper's fade is back (ca87da1). The table and what's owed in Studio: `build/handoff/faber-cloud-2026-11-20.md`, "Game changes of 2026-11-24".
 - **The splitter for the two request files** (`tools/docs/split_requests.py`, byte-for-byte, with a way back): ready for the builder to run on the PC (`reorganisation-plan.md`).
 
 ## The ranked list
@@ -43,16 +45,16 @@ Re-checked on this branch after its study reported it: the Upgrade press, the li
 
 | Hole | Where | Fix | Status |
 |---|---|---|---|
-| No screen calls `UpgradeBase` or `UpgradeMachine`. The base can't level in play, so bays 3 to 6, the Condenser and machine stages can't be reached. | `src/client/UI/BaseView.luau` is still TR21's blockout | The Upgrade press with before and after (`docs/ui.md`, 7) | the builder's next piece |
+| No screen calls `UpgradeBase` or `UpgradeMachine`. The base can't level in play, so bays 3 to 6, the Condenser and machine stages can't be reached. | `src/client/UI/BaseView.luau` is still TR21's blockout | The Upgrade press with before and after (`docs/ui.md`, 7) | done here, a66cd2e; Studio owed |
 | A fallen lead can only stand again on a plot. The Festival has none. Retry is lit and answers "Your lead is down". | `FightService.luau:1371`, `StageScreen.luau:113` | Research's rule (the Arrival pad counts as home, or a fall carries the player home), then Home lit and Retry dim | tier 2 |
-| On a win the card rises at 1.2 s and the keeper's black fade covers it at 2.4 s. | `StageService.luau:261`, `KeeperService.luau:332` | The card after the fade | the builder |
+| On a win the card rises at 1.2 s and the keeper's black fade covers it at 2.4 s. | `StageService.luau:261`, `KeeperService.luau:332` | The card after the fade | done here, ca87da1; Studio owed |
 | Mid and High forge stones can't realistically be had, so Reinforce stops near +10. | `Config/Drops.luau` | Say the honest cap, or add the source | research |
 | Six machines to level 30 cost about 792,000 Credits; everything else at launch about 37,000. | `Config/Base.luau` | Hold the ceiling at 6 at launch | yes (economy) |
-| A refusal can show a raw code, and the stage menu's Begin can say nothing. | `BaseController.luau:173`, `StageScreen.luau:114` | One table of words | the builder |
+| A refusal can show a raw code, and the stage menu's Begin can say nothing. | `BaseController.luau:173`, `StageScreen.luau:114` | One table of words | done here, d0cbe09; Studio owed |
 | Noct: the name plus "throws the spear and arrives where it lands" is one famous lead's name and move. | `docs/roster.md:63`, `Definitions/Voidkin.luau:71` | A new name and a new signature before he's built | rule 3: the director |
-| `docs/roblox-rules.md` says the paid-random-items page "says nothing on an outcome that gives nothing". | line 29 | Add the 2026-05-26 clarification | research |
+| `docs/roblox-rules.md` says the paid-random-items page "says nothing on an outcome that gives nothing". | line 29 | Add the 2026-05-26 clarification | research; the source couldn't be fetched from the cloud, so it's unverified |
 | The Blender clip tools read `src/shared/Config/Camera.luau`, which doesn't exist. | `tools/blender/r6anim.py:1004` | Read `Config/Hud.luau`'s camera, or pass it in | Modulo |
-| A favourite doesn't sort first, though the rule's comment says it does. | `src/client/UI/Read.luau` | Sort it | the builder |
+| A favourite doesn't sort first, though the rule's comment says it does. | `src/client/UI/Read.luau` | Sort it | done here, 40a48c8 |
 | Research Points, jewels' sockets, the Tower's weekly board: fields with no source, sink or reward. | `systems-map.md`, section 6 | One truth pass over `docs/design.md` | research |
 
 ## Action sheets

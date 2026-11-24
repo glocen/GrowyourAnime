@@ -3,6 +3,7 @@
 -- what each machine asks, and how the generation is split among them: the speed each runs at and what charges or drains
 -- the battery. Rules.Breaker steps it through time. Power is in kW, energy in kWh. No Roblox API: it runs with Studio
 -- closed.
+--   Power.Staff(data, bay) is a bay's picker: every owned Voidkin with what the base gains by stationing it there.
 --   Under Auto each machine's routed demand is its full rating: the generation serves them all, the battery covers what
 --   it can't while it holds charge, and with the battery empty they share the generation by demand.
 --   Under a split each machine has its share of the generation, never more than it, so the battery is never drawn: what
@@ -43,6 +44,64 @@ function Power.Output(worker: Profile.OwnedVoidkin): number
 		return 0
 	end
 	return row.Aptitude * bays.KwPerAptitude * (1 + bays.PerLevel * (worker.Level - 1))
+end
+
+-- Who a bay's picker offers, the best for the base first, so nobody does sums to staff a bay.
+export type Hand = {
+	Id: string,
+	Kw: number, -- what it would make in this bay, at the bay's level
+	Gain: number, -- what the base's generation changes by once it's stationed here: it leaves the bay it works, and the
+	-- worker here steps out. 0 for the one here and for the lead
+	Where: string, -- "Here", "Lead", "Bay" (it works another bay) or ""
+	Bay: number?, -- that other bay
+}
+
+-- Every owned Voidkin for bay `bay`'s picker: the ones that can be stationed by what the base gains, the most first
+-- (then the higher output, then the id, so two reads agree), then the worker here, then the lead, who can't work. Empty
+-- for a bay that isn't open.
+function Power.Staff(data: Profile.Data, bay: number): { Hand }
+	local here = data.Base.Bays[bay]
+	if here == nil then
+		return {}
+	end
+	local share = BaseLevels.BayOutput(here.Level or 1)
+	local current = if here.Worker ~= "" then data.Voidkin[here.Worker] else nil
+	local leaves = if current then Power.Output(current) * share else 0
+	local works: { [string]: number } = {}
+	for index, other in data.Base.Bays do
+		if other.Worker ~= "" then
+			works[other.Worker] = index
+		end
+	end
+	local hands: { Hand } = {}
+	for id, owned in data.Voidkin do
+		local kw = Power.Output(owned) * share
+		local at = works[id]
+		if id == data.Roles.Lead then
+			table.insert(hands, { Id = id, Kw = kw, Gain = 0, Where = "Lead" })
+		elseif at == bay then
+			table.insert(hands, { Id = id, Kw = kw, Gain = 0, Where = "Here" })
+		elseif at ~= nil then
+			local there = Power.Output(owned) * BaseLevels.BayOutput(data.Base.Bays[at].Level or 1)
+			table.insert(hands, { Id = id, Kw = kw, Gain = kw - leaves - there, Where = "Bay", Bay = at })
+		else
+			table.insert(hands, { Id = id, Kw = kw, Gain = kw - leaves, Where = "" })
+		end
+	end
+	local rank: { [string]: number } = { [""] = 1, Bay = 1, Here = 2, Lead = 3 }
+	table.sort(hands, function(a: Hand, b: Hand): boolean
+		if rank[a.Where] ~= rank[b.Where] then
+			return rank[a.Where] < rank[b.Where]
+		end
+		if math.abs(a.Gain - b.Gain) > EPSILON then
+			return a.Gain > b.Gain
+		end
+		if math.abs(a.Kw - b.Kw) > EPSILON then
+			return a.Kw > b.Kw
+		end
+		return a.Id < b.Id
+	end)
+	return hands
 end
 
 -- The kW the bays' workers generate, each times its bay's level's output (TR21).

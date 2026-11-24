@@ -445,16 +445,17 @@ local function bayRows(list: ScrollingFrame, view: Profile.View, now: Read.Base)
 	local picking = pickingBay
 	if picking and view.Base.Bays[picking] then
 		local current = view.Base.Bays[picking].Worker
-		for _, owned in Read.Roster(view) do
-			local role = Read.Role(view, owned.Id)
-			local here = current == owned.Id
+		-- The best for the base first, each with what the generation gains by it (Rules.Power.Staff).
+		for _, hand in Power.Staff(view :: any, picking) do
+			local owned = view.Voidkin[hand.Id]
+			local gain = if hand.Where ~= "Here" and hand.Where ~= "Lead" and math.abs(hand.Gain) >= 0.05 then ` · {Read.Kw(hand.Gain, true)}` else ""
 			add({
 				Name = owned.Id,
 				Text = Read.VoidkinName(owned),
-				Detail = `Lv {owned.Level} · {Read.Kw(Power.Output(owned))}`,
+				Detail = `Lv {owned.Level} · {Read.Kw(hand.Kw)}{gain}`,
 				Action = "Station",
 				Primary = true,
-				Disabled = if here then "Here" elseif role == "Lead" then "Leading" else nil,
+				Disabled = if hand.Where == "Here" then "Here" elseif hand.Where == "Lead" then "Leading" else nil,
 				OnPress = function()
 					if act("SetWorker", { Bay = picking, Voidkin = owned.Id }).Ok == true then
 						pickingBay = nil

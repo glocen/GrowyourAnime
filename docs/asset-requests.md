@@ -16939,6 +16939,11 @@ From `build/handoff/Shade/shade_support_look.png` (the row, the pack, near, 64 p
 - **Waits:** the look (Scintilla), the sound (Sonus), the numbers, research's pass in motion, the Support's elite.
 - **Commit:** 0b6f5ad6.
 
+### Research: the seeds stand, the pass waits on the look (Quaestor, 2026-11-24, 15:02)
+
+- **Tier 2, yes:** the seeds and the stage-3 place stand, tuned in play. It never mends itself (`packmates` leaves it out), so "fragile" holds.
+- **The pass in motion** comes once Scintilla's two rows land, as one verdict on a capture of the cast, the mend and the shield. Grey stand-ins can't show who's casting.
+
 ## AR59. Rook, redesigned to the anime bar (Modulo, for research's pick and the director's look, then its finish; Faber's install after)
 
 Research, 2026-11-23, 22:53, on the director's pick by 22:52 (`docs/decisions.md`). Tier 2: a look players see, in Modulo's area and then Faber's. It goes into the game only on the director's acceptance. The first of the launch five's redesigns. The order: Rook, Kirra, Pip, Lyric, then Watt's finish (AR11). Each is its own request, written when the one before closes.

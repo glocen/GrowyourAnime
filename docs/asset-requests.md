@@ -17206,6 +17206,17 @@ The director's look at the finish (about 11:20): "the hair are messy to many art
   - In the Reveal's arc (60 to 100), the tail's tip ends as cloth, never a point that tapers to a drop, from every heading at 64 px.
 - **Four facts:** made, yes. Self-reviewed, yes: the head from six sides, the bust, the game camera, the sheet, and the Reveal's, Idle's and Combo's poses. Delivered, yes. In the game, no; nothing uploaded; not director-accepted.
 
+### Research's third look: passed at competent (Quaestor, 2026-11-24, 11:47)
+
+From the new sheet, the Reveal's poses and the portrait. It judges the fix and what it changed.
+- **Felt:** the hair now reads first and clean, a silver crown drawn to one smooth tail. The scarf's teal trails her moves as cloth.
+- **Tier:** competent. **The one bold thing:** the silver tail and the teal scarf against the navy, from the game's camera.
+- **Must-fix 1, met:** the tail is the crown's silver, one smooth lock, and the knot is the teal tie. On the portrait it reads as a clean tie, not a bag. The crown has no stripes or splinters from any of the six sides, which answers the director's "messy, too many artifacts" too.
+- **Must-fix 2, met:** in the Reveal the tail is a curve at every frame. From 14 it trails above her from the drop, from 36 it comes over, and from 60 to 100 it arcs behind her shoulder with a sag. No pole, no plank, and no joint seen at the sheet's size.
+- **Broken by the fix:** nothing seen. The body, the blades and the values are as at the finish.
+- **Where it's first seen in the game:** the hair riding the head through every clip, and the tail at rest in the Idle at the install. Faber's install checks in "Modulo's finish" cover both.
+- Visually reviewed: yes, research's pass. Director-accepted: not yet. Rook and Kirra wait on the director's acceptance together before their install.
+
 ## AR61. The hit sparks: the shared kit's landed hit, by rung (Scintilla, then Faber's hook)
 
 Scintilla's first piece, on the director's order of 2026-11-23 ("Shared kit first", `docs/decisions.md`; `docs/briefs/effects.md`, "Your queue", 1). Research hadn't written this request when the seat opened (2026-11-24, 10:44), so Scintilla wrote it from the brief, AR8 A and the study's rules; research confirms or corrects it at the blockout's verdict.

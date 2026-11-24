@@ -4,11 +4,11 @@
 
 Each teammate rewrites its own row: two to five lines. Open asks sit under "Waiting on the director".
 
-**Quaestor (research).** 2026-11-24, 01:59, on Opus 5.5 at xhigh. **Leading in the director's stead from about 01:58** (decisions.md, the top row), under the director's vision: each call a dated row there, a daily digest here. Wrapped up at 01:59 on the director's word. Today: AR59's Rook picked and passed at competent (A, the school tough, in the make); AR60 written (Kirra); TR54's verdict (competent, three must-fixes); the plan in `docs/research/making-greatness.md`, section 5.
-- **Next, mine:** AR52's pass in the game (`build/captures/ar52/`); TR54's second look in motion; AR60's pick; the order of Modulo's art-director work; F3's rest; F7's timing when the places are published (item 4).
-- **Faber's order:** TR54's three must-fixes (TR54, "Research's verdict"), then TR53 (TR31 folded in); then AR57's elites, AR58's Support and AR56. Rook's install once the director accepts him. F7's timing whenever item 4's publish lands. Effects and sound data from Scintilla and Sonus come to you for review before your push.
-- **Modulo's order:** AR60, Kirra in the make (`tools/blender/anime_make.py`), now that Rook's portraits are drawn; then Pip, Lyric and Watt's finish, one at a time (the director, by 22:52). The art-director work is ordered with research at the next start.
-- **With the director:** accept Rook (`build/handoff/Rook/make/rook_make_sheet.png`); **TR52's run**, the signature on a tap (TR52, research's read); the hooks for Scintilla and Sonus, by your hand (`.claude/hooks/config/roles.json` and `tools.json`; item 10 in Faber's session); **item 4**, publish both places; `src/shared/Config/Sounds.luau`'s uncommitted change; the store's design.
+**Quaestor (research).** 2026-11-24, 10:55, on Opus 5.5. The director is here. Today so far: the cloud session's words of 11-24 in the register; **the director's four yeses of 10:50** (a private publish of both places for the phone sitting; both currencies kept, no Credits sold at launch, a worker grows by the kWh it makes, the charge after TR52; forge heat replaces "no pity"; the machines' ceiling 15); **a fall in the Festival**, the rule (`docs/design.md`, under "A fall sends it home"); **AR52's pass**, competent, no must-fix, the shield's look held to one condition for Scintilla.
+- **Next, mine:** the seeds for forge heat (with the refit prices) and the worker's experience a kWh; launch-design's tier-2 additions, accepted in this order, each through its feel line: the chest family and its orphans, the Broadcast, the Strip's boards, the welcome week and codes, the capture, firsts (their rates and words are mine first); the Rare gap on Normal chests (TR48's rows); TR54's second look; AR60's pick; the pace seed refit after the sitting.
+- **Faber's order:** Studio checks of the cloud session's seven changes (its handoff, "Game changes of 2026-11-24") and its last commit a18577e4; the private publish of both places, then the sitting with the director and F7's timing; TR54's three must-fixes; the fall in the Festival; the ceiling to 15; the worker's experience and forge heat once my seeds land; then TR53 (TR31 in), AR57, AR58, AR56; then launch-design's additions as above. The charge after TR52's verdict.
+- **Modulo's order:** AR60, Kirra; then Pip, Lyric and Watt's finish. The clip tools' missing `Config/Camera.luau` read (cloud README, "Holes") when a clip piece next touches it.
+- **With the director:** accept Rook (`build/handoff/Rook/make/rook_make_sheet.png`); TR52's run, the signature on a tap; item 10, the hooks for Scintilla and Sonus; the store's design.
 
 **Faber (builder).** 2026-11-24, 02:01, on Opus 5.5. Stopped at the director's wrap-up: committed, the playtest stopped, nothing running, no lock held.
 - **TR54 is in the game; research holds it at competent on three must-fixes** (TR54, "Research's verdict"): a "Do" dare's mark answers "done yet?" at rest, with its moment seen; the forge stone reads as a stone on the cards; every row of the run's cards fits its longest. Next session: the fixes, then a short capture of the beats for the second look.
@@ -41,11 +41,7 @@ Nothing blocks the start. When you want them (`docs/decisions.md`, "Waiting on t
 
 For Faber:
 
-4. **Publish the build, for your phone run** (TR24's fix 1 is in, and research gives the go). The place is saved with it, and the Studio tool can't publish: in Studio, File → Publish to Roblox (Alt+P). The experience stays private.
-   - **The same publish unblocks F7's timing** (`docs/research/design-holes.md`, F7, "The check"). Faber times the published places: the door, the trip, and Lantern Row's first hit. The starter shard is timed in Studio, on a new Test save. Your Live save is never wiped.
-   - **What Faber needs from you:**
-     - the Festival's place published too, with today's build;
-     - your OK for Faber to start the PC's Roblox player into the private game under your account, for one timed run.
+4. **Your phone sitting, with a stopwatch** (your yes of 2026-11-24, 10:50: a private publish, never public). Faber publishes both places, private, and times F7 (`docs/research/design-holes.md`, F7, "The check"): the door, the trip, Lantern Row's first hit. You play the first ten minutes, one clean Normal run, and the trip there and back. Faber still needs your OK to start the PC's Roblox player into the private game under your account, for one timed run.
 
 5. **The test rule, in `CLAUDE.md` and `ga-finish`.** Research relays your yes (the register, 2026-11-15, night): at a piece's finish, the cases its change can reach and every offline logic case; the whole suite at a phase's close and after a change to shared code. `CLAUDE.md` changes only on your own word in the builder's session: say "write it" there and it's in.
 6. **Your ear on Haymaker's strike sound**, a library pick (not one of AR13's made takes), heard on its frame. In a playtest, the Server command bar: `game.ServerStorage.NL_Debug:Invoke("Replay", nil, "RookHaymaker")` plays it every 3.5 s, and `Invoke("Replay", nil)` stops it. Two alternates are logged in AR1, section 8.
@@ -62,6 +58,7 @@ For Faber:
 
 ### Notices
 
+- Tier 2, research, 2026-11-24, 10:55: a fall in the Festival (`docs/design.md`, "A fall in the Festival"): the Arrival pad counts as home for following, and the fall card holds Retry (lit when a lead is ready, dim with the time left), Send another and Home. Faber: say in your row what you'd change.
 - Tier 1, Faber, 2026-11-23, AR52: the Dasher runs on through the lead to its line's end, keeps its aim to its action's end (its back to whoever it passed), and is first ready 1.5 s after it spawns, the Guard at once. The shield's grey pane stands at 0.25 transparency. Research: say in your row what you'd change.
 - Tier 2, research, 2026-11-23, 20:07, TR53: TR31 folded in. The battery's line shows only a net gain, and reads "Full" with the overflow's Credits when it sold. Faber: say in your row what you'd change.
 - Tier 2, research, 2026-11-23, 17:49, AR53: Home gains a **Today** card (today's three goals, Next at the list's head) in Settings' column, Settings a cog tile over it. A run's dares sit under the run's line (no start card); a dare kept before a fall is paid.

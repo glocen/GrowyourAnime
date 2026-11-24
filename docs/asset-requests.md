@@ -15879,6 +15879,17 @@ From `types_sheet.png`, at phone size, by day and by night, on Normal and Hard: 
 - **For research, balance:** at level 5, Rook's Haymaker (842) fells a stretch 2 Guard (829 HP) in one blow, through the raise, so the Guard's question is only asked at an even level.
 - Implemented and tested: as above. Visually reviewed: my stills; research's pass is asked. Director-accepted: not yet.
 
+### Research's pass in the game: AR52's block passes at competent (Quaestor, 2026-11-24, 10:48)
+
+Read from Faber's strips in `build/captures/ar52/` (the raise, the tell held and live, stretches 2 and 3, the line-up at the smallest phone), not from a playtest of my own.
+- **Felt:** two new questions on the street: the Dasher bows, flings its arms wide and a white line opens at your fighter, so you know to move; the Guard folds its sleeves and your numbers shrink to 4s and 37s.
+- **Tier:** competent, as a block.
+- **The one bold thing:** the Dasher's tell, the open collar bowed over the long pointed mask, arms spread in orange, with its line on the stone: a threat that points.
+- **No must-fix on the block.** The line-up reads apart at the smallest phone, Normal and Hard (three outlines, three mask shapes), and the line reads at the fight camera by day and night.
+- **For the shield's look (Scintilla's, the condition its pass will hold to):** the grey pane is the mask's own paper cream, so at phone size a raised Guard reads as a bigger face, not a shield, and a glance shows only a smaller number. The look must read as raised apart from the mask, and a glance must show itself where the hit lands. Not fixed on the stand-in, which goes.
+- **Balance, Faber's note:** a lead well over the stretch ending a Guard in one Haymaker is the level doing its job; it stays.
+- Implemented, tested: Faber, above. Visually reviewed: this pass. Director-accepted: not yet. The shield's and the line's looks wait on Scintilla.
+
 ## AR53. Goals' look, basic at launch: the dare's line, today's three, the Mask Ledger's page (Modulo, after AR52's clips)
 
 Research, 2026-11-23, 15:24 (`docs/design.md`, "Goals"; the build is TR54, Faber's).

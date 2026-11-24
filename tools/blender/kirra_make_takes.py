@@ -138,17 +138,30 @@ def blades(grip, guard_, scabbard=None, cap=None):
     return b
 
 
-def scarf(colour, ends):
+# Her scarf's long tail, from the knot back past her left shoulder and drifting down behind her: its line, its width
+# at each point and its twist (degrees); the finish cuts it into the chain her clips move (kirra_make.py)
+TAIL_LONG = [(-0.74, 0.04, 4.1), (-0.88, -0.42, 4.1), (-1.04, -0.86, 3.86), (-1.18, -1.3, 3.4), (-1.32, -1.72, 2.86),
+             (-1.5, -2.2, 2.4), (-1.72, -2.72, 2.12), (-1.94, -3.25, 2.04), (-2.1, -3.72, 2.18)]
+TAIL_WIDTH = (0.46, 0.36)
+TAIL_TURN = [0, 10, 30, 55, 70, 62, 48, 58, 72]
+KNOT = (-0.74, 0.05, 3.98)
+
+
+def tail_shade(colour, ends):
+    """The scarf's colour along a tail, `u` from the knot: its own, turning to `ends` over the last fifth."""
+    return lambda u: mix(colour, ends, max(0.0, (u - 0.8) / 0.2))
+
+
+def scarf(colour, ends, long_tail=True):
     """Her scarf: a turn round the neck, low at the front so it never hides the mouth; its knot at her left shoulder;
-    and two tails from the knot back past the shoulder, the longer drifting behind her. `ends`: the tails' tips."""
+    and two tails from the knot back past the shoulder, the longer drifting behind her. `ends`: the tails' tips.
+    Without `long_tail`, the turn, the knot and the short tail alone, as the finish builds them."""
     b = am.Built("Scarf")
     b.loop((0.0, 0.0, 3.86), 0.74, 0.3, colour, thick=0.17, segments=24, lean=lambda d: 0.11 + 0.26 * (abs(d) / 180) ** 0.8)
-    b.loop((-0.74, 0.05, 3.98), 0.16, 0.3, tone(colour, 0.94), thick=0.16, segments=12, squash=0.8)
-    shade_ = lambda u: mix(colour, ends, max(0.0, (u - 0.8) / 0.2))  # noqa: E731
-    long_ = [(-0.74, 0.04, 4.1), (-0.88, -0.42, 4.1), (-1.04, -0.86, 3.86), (-1.18, -1.3, 3.4), (-1.32, -1.72, 2.86), (-1.5, -2.2, 2.4),
-             (-1.72, -2.72, 2.12), (-1.94, -3.25, 2.04), (-2.1, -3.72, 2.18)]
-    b.ribbon(long_, list(np.linspace(0.46, 0.36, len(long_))), shade_, side=(1, 0, 0), thick=0.05,
-             turn=[0, 10, 30, 55, 70, 62, 48, 58, 72])
+    b.loop(KNOT, 0.16, 0.3, tone(colour, 0.94), thick=0.16, segments=12, squash=0.8)
+    shade_ = tail_shade(colour, ends)
+    if long_tail:
+        b.ribbon(TAIL_LONG, list(np.linspace(*TAIL_WIDTH, len(TAIL_LONG))), shade_, side=(1, 0, 0), thick=0.05, turn=TAIL_TURN)
     short = [(-0.7, 0.08, 4.04), (-0.82, -0.32, 3.94), (-0.96, -0.72, 3.6), (-1.1, -1.1, 3.1), (-1.2, -1.48, 2.66), (-1.24, -1.84, 2.38)]
     b.ribbon(short, list(np.linspace(0.38, 0.3, len(short))), shade_, side=(1, 0, 0.3), thick=0.05, turn=[0, 14, 34, 56, 66, 70])
     return b
@@ -158,7 +171,7 @@ def figure(joints, folder, b, head, hair, built):
     made = rt.figure(joints, folder, b, head, hair)
     for piece in built:
         made[piece.name] = piece.build(folder)
-        wt.on(joints, "root", made[piece.name])
+        wt.on(joints, "neck" if piece.name == "Tie" else "root", made[piece.name])   # the hair's tie rides the head
     return made
 
 
@@ -177,8 +190,9 @@ def bare_arm(a, skin, guard_colour, top, trim):
 
 # --- A, the night runner -----------------------------------------------------------------------------------------------
 
-def take_a(joints, folder):
-    skin, top_, guard_, trouser, teal = "#F2CDB2", "#26345F", "#1B1F2B", "#C9CED7", "#1FA39A"
+def take_a(joints, folder, pieces=None):
+    """`pieces(scarf colour, its ends, the guards' colour)`: the built pieces, in place of the takes' (the finish's)."""
+    skin, top_, guard_, trouser, teal = "#F2CDB2", "#26345F", "#1B1F2B", "#8F97AA", "#1FA39A"
     edge, trim = tone(top_, 0.5), mix(top_, "#8E9CC8", 0.4)
     b = blocks_of({"torso": top_, "rs": skin, "ls": skin, "rh": trouser, "lh": trouser})
 
@@ -228,32 +242,39 @@ def take_a(joints, folder):
     head = am.Head(skin)
     face(head, dict(skin=skin, iris="#5BA6D6", eye_w=0.32, eye_h=0.19, eye_x=0.268, eye_y=0.52, tilt=0.03, shut=0.3,
                     brow_y=0.7, brow_tilt=0.03, brow="#7A8092", mouth=[(-0.045, 0.232), (0.0, 0.228), (0.045, 0.232)]))
-    hair = am.Hair("#69718A", "#EEF1F7", seed=31, band=(0.5, 0.1, 0.3))
+    hair = am.Hair("#848CA3", "#EEF1F7", seed=31, band=(0.5, 0.1, 0.3))
     hair.shell(am.hairline(front=4.98, temple=4.62, nape=4.34))
     hair.scalp = hair.colour(0.4) * 0.8   # a light hair's scalp: never a dark patch between clumps
-    up = (0, -0.8, 1.0)   # the back and sides combed up to the tie
-    hair.row(7, 98, (112, 248), 0.46, 0.34, off=0.03, flick=6, hold=0.85, jitter=0.15, comb=up)
-    hair.row(8, 70, (96, 264), 0.6, 0.38, off=0.05, flick=6, hold=0.85, jitter=0.15, comb=up)
-    for s in (-1, 1):
-        hair.row(3, 62, (s * 58, s * 98), 0.62, 0.36, off=0.05, flick=10, hold=0.8, jitter=0.15, comb=(0, -1, 0.4))
-    hair.row(7, 30, (-80, 80), 0.9, 0.46, off=0.06, flick=8, hold=0.92, jitter=0.15, comb=(0, -1, 0.2), thick=0.05)   # thin: a sleek top
-    hair.row(5, 10, (-120, 120), 0.8, 0.46, off=0.07, flick=10, hold=0.9, jitter=0.15, comb=(0, -1, 0.3), thick=0.05)
+    # One smooth lit mass of a few broad locks, all drawn to the tie behind the crown (research's must-fix 1): the
+    # back combed up from the nape, the sides from the temples, the top back from behind the fringe, each laid on
+    # the last.
+    TIE = (180, 22)
+    to_tie = lambda a0, spread=0.16: (TIE[0] + ((a0 - TIE[0] + 180) % 360 - 180) * spread, TIE[1] + 3)  # noqa: E731
+    for a0 in (106, 132, 158, 184, 210, 236, 262):
+        hair.sweep((a0, 100), to_tie(a0), 0.64, off=(0.03, 0.08), lift=0.02, k=0.96 + 0.04 * ((a0 // 26) % 2))
+    for s_ in (-1, 1):
+        for a0, ph0 in ((76, 72), (96, 82)):
+            hair.sweep((s_ * a0, ph0), to_tie(s_ * a0, 0.2), 0.6, off=(0.05, 0.09), lift=0.03, k=1.02)
+    for a0 in (-50, -24, 2, 28, 54):   # rooted under the fringe, so no root's edge shows over it
+        hair.sweep((a0, 42), to_tie(a0, 0.22), 0.66, off=(0.0, 0.1), lift=0.06, k=1.04)
     # the side-swept fringe, from her right parting across to her left, and a long lock before each ear
     for a, length, width, heading, bend in ((-36, 0.66, 0.36, 30, 10), (-16, 0.74, 0.4, 36, 14), (4, 0.7, 0.38, 40, 16), (24, 0.6, 0.32, 36, 10)):
-        hair.clump(a, 36, length, width, heading=heading, bend=bend, off=0.08, flick=12, hold=0.75, split=1)
-    for s in (-1, 1):
-        hair.clump(s * 74, 58, 0.9, 0.3, heading=-s * 4, off=0.05, flick=8, hold=0.9, comb=(0, 0.2, -1))
-    # the high tail: from the tie behind the crown, up, over and down her back
+        hair.clump(a, 30, length + 0.06, width, heading=heading, bend=bend, off=0.09, flick=12, hold=0.75, split=1)
+    for s_ in (-1, 1):
+        hair.clump(s_ * 74, 58, 0.9, 0.3, heading=-s_ * 4, off=0.05, flick=8, hold=0.9, comb=(0, 0.2, -1))
+    # the high tail: from the tie behind the crown, up, over and down her back; the crown's own silver, with a band
+    # of light where it turns over
     tie = Vector((0.0, -0.6, 5.24))
-    for dx, lift, drop, width, k in ((0.0, 0.0, 0.0, 0.62, 1.0), (-0.16, -0.06, 0.22, 0.46, 0.94), (0.17, -0.04, 0.16, 0.46, 1.04),
-                                      (-0.08, 0.06, 0.42, 0.4, 0.9), (0.1, 0.03, 0.5, 0.4, 0.98), (0.0, -0.1, 0.7, 0.36, 1.05),
-                                      (-0.2, -0.12, 0.9, 0.3, 0.92), (0.22, -0.1, 0.95, 0.3, 1.0)):
+    for dx, lift, drop, width, k in ((0.0, 0.0, 0.0, 0.62, 1.06), (-0.16, -0.06, 0.22, 0.46, 1.02), (0.17, -0.04, 0.16, 0.46, 1.08),
+                                      (-0.08, 0.06, 0.42, 0.4, 1.0), (0.1, 0.03, 0.5, 0.4, 1.04), (0.0, -0.1, 0.7, 0.36, 1.08),
+                                      (-0.2, -0.12, 0.9, 0.3, 1.0), (0.22, -0.1, 0.95, 0.3, 1.04)):
         pts = [tie + Vector(q) for q in ((0, 0.02, 0), (dx * 0.5, -0.3, 0.36 + lift), (dx, -0.72, 0.38 + lift), (dx * 1.3, -1.02, 0.02),
                                          (dx * 1.5, -1.08, -0.7 + drop * 0.4), (dx * 1.6, -0.96, -1.45 + drop))]
-        hair.lock(pts, width, n=12, k=k)
+        hair.lock(pts, width, thick=width * 0.24, n=14, k=k, gleam=(0.3, 0.14, 0.25))
     tail_tie = am.Built("Tie")
     tail_tie.loop(tie + Vector((0, -0.04, -0.08)), 0.13, 0.16, teal, thick=0.09, segments=12, squash=0.9)
-    return figure(joints, folder, b, head, hair, [scarf(teal, "#8FD8CF"), blades(guard_, "#6E7686"), tail_tie])
+    built = pieces(teal, "#8FD8CF", guard_) if pieces else [scarf(teal, "#8FD8CF"), blades(guard_, "#6E7686")]
+    return figure(joints, folder, b, head, hair, [*built, tail_tie])
 
 
 # --- B, the transfer student -------------------------------------------------------------------------------------------

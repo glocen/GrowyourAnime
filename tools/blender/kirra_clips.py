@@ -32,6 +32,7 @@ import contextlib
 import io
 import json
 import math
+import os
 import sys
 from pathlib import Path
 
@@ -49,7 +50,8 @@ import rook_sheet as rs  # noqa: E402
 
 FPS = rc.FPS
 ROOT = Path(__file__).resolve().parents[2]
-MODEL = ROOT / "build" / "scratch" / "modulo" / "kirra" / "model"
+# her model: the first make (kirra_model.py), or another the same way jointed, as KIRRA_MODEL names it (kirra_make.py)
+MODEL = Path(os.environ.get("KIRRA_MODEL") or ROOT / "build" / "scratch" / "modulo" / "kirra" / "model")
 OPEN_SET = ROOT / "build" / "handoff" / "Rook" / "clips"  # the open reactions (Rook's), which play on her body as they are
 GAME, SIDE, FRONT, QUARTER = rc.GAME, (90.0, 6.0), rc.FRONT, (48.0, 8.0)  # azimuth from the stage's front, elevation
 W = rc.W

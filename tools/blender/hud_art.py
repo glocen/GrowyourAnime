@@ -38,7 +38,7 @@ HANDOFF = REPO / "build" / "handoff"
 # Whose model is read from its delivery (build/handoff/<Name>: the recipe, its meshes and its maps), not from a .blend.
 # Watt's only .blend is the first design's, which left the game (AR11, delivery 3).
 DELIVERED = ("Watt", "Kirra")
-MADE = {"Rook": HANDOFF / "Rook" / "make"}   # in the kit's make (anime_make.py's handoff): where its files are
+MADE = {"Rook": HANDOFF / "Rook" / "make", "Kirra": HANDOFF / "Kirra" / "make"}   # in the kit's make (anime_make.py's handoff): where its files are
 KIT = REPO / "build" / "handoff" / "UI" / "kit"
 K = 4            # pixels a point in a slice, the kit's
 NECK = Vector((0.0, 0.0, 4.0))  # R6's neck: the head turns about it
@@ -64,9 +64,10 @@ PORTRAITS = {
     # across his chest is the sling, the coat's own; the spear itself hardly enters the crop.
     "Watt": dict(side=1, body=30, turn=20, tilt=0, nod=3, elevation=2, centre=(0.0, 0, 4.45), span=2.85,
                  head=("Watt_Head",), hide=()),
-    # The courier: a quick sideways look back over the shoulder, a touch sly, her scarf's tail over the near shoulder.
-    "Kirra": dict(side=-1, body=38, turn=26, tilt=-5, nod=2, elevation=1, centre=(0.0, 0, 4.35), span=2.7,
-                  head=("Kirra_Head",), hide=()),
+    # The night runner: a quick sideways look back over the shoulder, cool and level, her scarf's turn under the chin.
+    # The crop is wider and higher than the first Kirra's, so her high tail stands inside the frame (AR60).
+    "Kirra": dict(side=-1, body=38, turn=26, tilt=-5, nod=2, elevation=1, centre=(0.0, 0, 4.7), span=3.0,
+                  head=("Kirra_Head", "Kirra_Hair", "Kirra_Tie"), hide=()),
 }
 
 

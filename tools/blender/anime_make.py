@@ -314,13 +314,21 @@ def lit(block, top=0.16, side=0.08):
 
 def creases(p, lines, amount=0.4, wide=0.03):
     """Painted folds: each a line that swells and ends in points, a soft shade spreading under it and a little light
-    on the cloth above it, as a brush leaves them."""
+    on the cloth above it, as a brush leaves them. On dark cloth a shade alone is lost, so the darker the cloth under
+    a fold, the more its lit edge carries it, wider and brighter (AR60, research's must-fix 3); and every fold is
+    `FOLD` deep, a step past AR59's."""
     for pts in lines:
-        under = p.stroke([(x, y - wide * 1.6) for x, y in pts], (0.0, wide * 3.2, wide * 2.4, 0.0), n=20)
+        under = p.soft(p.stroke([(x, y - wide * 1.6) for x, y in pts], (0.0, wide * 3.2, wide * 2.4, 0.0), n=20), wide * 1.4)
         over = p.stroke([(x, y + wide * 1.3) for x, y in pts], (0.0, wide * 1.6, wide * 1.2, 0.0), n=20)
-        dark(p, p.soft(under, wide * 1.4), amount * 0.55)
-        light(p, p.soft(over, wide * 0.9), amount * 0.16)
-        dark(p, p.soft(p.stroke(pts, (0.0, wide, wide * 0.7, 0.0), n=20), 0.008), amount)
+        weight = float(under.sum())
+        value = float((p.px.mean(axis=2) * under).sum() / weight) if weight > 0 else 0.5
+        low = float(np.clip((0.5 - value) / 0.3, 0, 1))   # 0 on middling or light cloth, 1 on dark
+        dark(p, under, amount * 0.55 * FOLD)
+        light(p, p.soft(over, wide * (0.9 + 0.5 * low)), amount * (0.16 + 0.34 * low))
+        dark(p, p.soft(p.stroke(pts, (0.0, wide, wide * 0.7, 0.0), n=20), 0.008), min(0.95, amount * FOLD * (1 + 0.3 * low)))
+
+
+FOLD = 1.2   # the folds' depth over AR59's (polish-later's "one step deeper", pulled forward by AR60)
 
 
 def grain(block, amount=0.06, seed=1):
@@ -541,9 +549,11 @@ class Hair:
                 line.append((q, n0 * math.cos(turn) - t0 * math.sin(turn)))
         return line
 
-    def blade(self, line, width, thick, ridge=0.35, taper=1.6, k=1.0):
+    def blade(self, line, width, thick, ridge=0.35, taper=1.6, k=1.0, gleam=None, root=0.0):
         """A leaf along `line`: `ridge` is how far off its middle its ridge runs, toward its left edge (below zero,
-        toward its right)."""
+        toward its right). `gleam`, (where along it, how wide, how strong): a band of light of its own, for a lock
+        that hangs below the mass's band, so a tail shines as the crown does. `root`: how far along its colour starts,
+        so a lock laid on the head from a hairline has no dark root."""
         n, rings, shades = len(line), [], []
         for i, (q, out) in enumerate(line):
             u = i / (n - 1)
@@ -553,7 +563,9 @@ class Hair:
             side = along.cross(out).normalized()
             v = min(u / 0.25, 1.0)
             s = (1 - u ** taper) * (0.7 + 0.3 * v * v * (3 - 2 * v))
-            c = self.colour(u, k)
+            c = self.colour(root + (1 - root) * u, k)
+            if gleam:
+                c = c + (np.clip(self.pair[1] * 1.5 + 0.08, 0, 1) - c) * gleam[2] * math.exp(-((u - gleam[0]) / gleam[1]) ** 2)
             if i == n - 1:
                 rings.append([self._vert(q)] * 5)
                 shades.append([self.shine(q, c * 1.06)] * 5)
@@ -574,14 +586,29 @@ class Hair:
                 self.charts.append((f, strip, where))
         self.locks += 1
 
-    def lock(self, points, width, thick=None, out=None, n=10, ridge=0.35, taper=1.6, k=1.0):
+    def lock(self, points, width, thick=None, out=None, n=10, ridge=0.35, taper=1.6, k=1.0, gleam=None):
         """A free lock through `points` in space, off the head: a tail, a long lock over a shoulder. Its lit face is
         turned `out` (a direction), or away from the head's middle."""
         line = []
         for q in smooth2([tuple(q) for q in points], n):
             q = Vector(q)
             line.append((q, (Vector(out) if out is not None else q - CENTRE).normalized()))
-        self.blade(line, width, thick or width * 0.3, ridge, taper, k)
+        self.blade(line, width, thick or width * 0.3, ridge, taper, k, gleam)
+
+    def sweep(self, start, end, width, off=(0.04, 0.09), thick=None, n=12, ridge=0.35, taper=1.6, k=1.0, lift=0.0):
+        """A broad lock laid on the head from `start` to `end`, each (degrees round, degrees down), the shortest way
+        over the egg: hair combed back or up to a tie, a few big lit planes instead of a ring of small clumps (AR60,
+        research's must-fix 1). It rides `off` studs over the head from its root to its end, and `lift` more at its
+        middle, so the locks laid later lie on the earlier."""
+        a, b = (self.at(*start)[0] - CENTRE).normalized(), (self.at(*end)[0] - CENTRE).normalized()
+        turn = a.angle(b)
+        line = []
+        for i in range(n):
+            u = i / (n - 1)
+            v = a.slerp(b, u) if turn > 1e-4 else a
+            p, nrm = self.at(*self.where(CENTRE + v))[:2]
+            line.append((p + nrm * (off[0] + (off[1] - off[0]) * u + lift * math.sin(math.pi * u)), nrm))
+        self.blade(line, width, thick or width * 0.22, ridge, taper, k, root=0.45)
 
     def clump(self, a, ph, length, width, heading=0.0, bend=0.0, off=0.06, flick=30.0, hold=0.5, thick=None, comb=None,
               split=0, taper=1.6, k=None, n=None):
@@ -916,27 +943,34 @@ PIECE = {"torso": ("Torso", "Torso"), "rs": ("RightArm", "Right Arm"), "ls": ("L
 ROUGH = {"hair": 0.8}                          # the rest is cloth and skin, 1
 
 
-def handoff(name, made, out, points=(), tint="#FFA630", hot=5.0):
+def handoff(name, made, out, points=(), tint="#FFA630", hot=5.0, extra=None, make=None):
     """What the builder installs (tools/studio/ModelRecipe.luau), from a figure as `figure` builds it: <name>_Color.png,
     every piece's picture laid in one; <name>_Roughness.png; <name>_Emissive.png if a block lights up; a piece's mesh
     each, <name>_<Piece>.json; and <name>.recipe.json. The pieces then wear the one picture, so whatever is drawn of
-    them after this is drawn from the files that go up. `points` are (name, R6's part, where) in the kit's frame."""
+    them after this is drawn from the files that go up. `points` are (name, R6's part, where) in the kit's frame.
+    `extra`: the built pieces, {key: (piece, what it rides)}; their pictures go in whole. `make`: the recipe's word on
+    how it is made, if not the kit's alone."""
     import json
     out.mkdir(parents=True, exist_ok=True)
     colour, rough = rs.canvas(ATLAS, ATLAS, (0.5, 0.5, 0.5)), rs.canvas(ATLAS, ATLAS, (1.0, 1.0, 1.0))
     glow = rs.canvas(ATLAS, ATLAS, (0.0, 0.0, 0.0))
     shelves, lit = [], []
+    tiles = {}
     for key, obj in made.items():
-        px, keep = PICTURES[obj.name], KEEP.get(key, BODY_KEEP)
-        small = lambda a: a if keep == 1.0 else rs.shrink(np.dstack([a, np.ones(a.shape[:2], np.float32)]), keep)[..., :3]  # noqa: E731
-        tile = small(px)
+        px, keep = PICTURES[obj.name], 1.0 if key in (extra or {}) else KEEP.get(key, BODY_KEEP)
+        small = lambda a, keep=keep: a if keep == 1.0 else rs.shrink(np.dstack([a, np.ones(a.shape[:2], np.float32)]), keep)[..., :3]  # noqa: E731
+        tiles[key] = (small, small(px))
+    for key in sorted(made, key=lambda k: -tiles[k][1].shape[0]):   # the tallest first: they pack closest
+        obj = made[key]
+        small, tile = tiles[key]
         th, tw = tile.shape[:2]
         shelf = next((s for s in shelves if s[1] + tw + PAD <= ATLAS and th <= s[2]), None)
         if shelf is None:
             shelf = [shelves[-1][0] + shelves[-1][2] + 2 * PAD if shelves else PAD, PAD, th]
             shelves.append(shelf)
         y, x = shelf[0], shelf[1]
-        assert y + th + PAD <= ATLAS, f"{name}: {key}'s picture, {tw} x {th}, doesn't fit the one picture"
+        assert y + th + PAD <= ATLAS, (f"{name}: {key}'s picture, {tw} x {th}, doesn't fit the one picture: "
+                                       + ", ".join(f"{k} {t.shape[1]}x{t.shape[0]}" for k, (_, t) in tiles.items()))
         shelf[1] = x + tw + 2 * PAD
         colour[y - PAD:y + th + PAD, x - PAD:x + tw + PAD, :3] = np.pad(tile, ((PAD, PAD), (PAD, PAD), (0, 0)), mode="edge")
         rough[y - PAD:y + th + PAD, x - PAD:x + tw + PAD, :3] = ROUGH.get(key, 1.0)
@@ -961,7 +995,7 @@ def handoff(name, made, out, points=(), tint="#FFA630", hot=5.0):
     turn = lambda q: [round(q[0], 4), round(q[2], 4), round(-q[1], 4)]  # noqa: E731  the kit's frame to Roblox's
     pieces, total = [], 0
     for key, obj in made.items():
-        piece, on = PIECE[key]
+        piece, on = (extra or {}).get(key) or PIECE[key]
         obj.name = obj.data.name = f"{name}_{piece}"
         obj.data.materials.clear()
         obj.data.materials.append(m)
@@ -976,8 +1010,8 @@ def handoff(name, made, out, points=(), tint="#FFA630", hot=5.0):
         "name": name,
         "frame": "Roblox studs: Y up, the model on y = 0 facing -Z, HumanoidRootPart at (0, 3, 0)",
         "rig": "R6. Every piece carries the body's own surface: the six rig parts are hidden (Transparency 1).",
-        "make": "tools/blender/anime_make.py: R6's own blocks and round head with the clothes and the face drawn on them, and "
-                "the hair one mesh. Nothing rides a joint of its own.",
+        "make": make or "tools/blender/anime_make.py: R6's own blocks and round head with the clothes and the face drawn on them, "
+                        "and the hair one mesh. Nothing rides a joint of its own.",
         "maps": {kind: f"{name}_{kind}.png" for kind in maps},
         "texels_per_stud": round(BODY_KEEP * PPU),
         "pieces": pieces,
@@ -985,7 +1019,7 @@ def handoff(name, made, out, points=(), tint="#FFA630", hot=5.0):
         "tris": total,
     }
     if lit:
-        recipe["emissive"] = {"tint": tint, "cold": 0, "hot": hot, "pieces": [f"{name}_{PIECE[key][0]}" for key in lit],
+        recipe["emissive"] = {"tint": tint, "cold": 0, "hot": hot, "pieces": [f"{name}_{((extra or {}).get(key) or PIECE[key])[0]}" for key in lit],
                               "note": "the mask is the light's shape, 0 to 1. Roblox draws the glow through the colour map, "
                                       "(mask x strength x tint + light) x colour; the strength is the game's to play."}
     (out / f"{name}.recipe.json").write_text(json.dumps(recipe, indent=1))

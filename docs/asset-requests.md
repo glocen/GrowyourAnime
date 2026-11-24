@@ -17114,6 +17114,43 @@ Fresh eyes, blind, given the sheet's parts and the Anime Vanguards sheet, picked
 - **To polish-later:** the scarf's turn round the neck reads as a smooth tube at the card's size; a fold or a turned edge would make it cloth.
 - The content check's hold points stand. Next: the director's look, which Modulo sent at 10:59; Modulo starts the finish now. Implemented: the three takes. Visually reviewed: this pick. Director-accepted: not yet.
 
+### Modulo's finish: Kirra's files for the install, her clips keyed again, her portraits (2026-11-24, 11:18; started 11:02)
+
+Delivered to `build/handoff/Kirra/make/`, beside today's Kirra, whose files stay where the game's install reads them until the director accepts. Script: `tools/blender/kirra_make.py` (`model`, `sheet`), on `kirra_make_takes.take_a`; the make and the handoff are the kit's (`tools/blender/anime_make.py`).
+- **The three must-fixes:**
+  1. **The hair:** a few broad locks laid on the head and drawn to the tie: seven up from the nape, two from each temple, and five back from under the fringe. The kit's new `Hair.sweep` lays them. The ring of small clumps is gone. The tail is the crown's own silver, lit by a band of its own where it turns over (`Hair.lock`'s `gleam`). The hair's root is lighter (`#848CA3`), and it stands 0.55 of a head over the crown.
+  2. **The trousers** are a step darker, `#8F97AA` where they were `#C9CED7`. The hair is now her brightest value in every frame, with three values still from behind.
+  3. **The folds:** the kit's `creases` measures the cloth under each fold. On dark cloth the fold's lit edge widens and brightens, and every fold is `FOLD` (1.2) deep. This takes polish-later's AR59 line ("one step deeper") for every Voidkin from now on. Rook's delivered files are unchanged.
+- **She keeps the first Kirra's joints, so her clips still work them:**
+  - **The two blades** are a piece each on a Motor6D of their own on the Torso. At rest they lie on the first Kirra's sheath lines (`kirra_sheet.SHEATHS`), with each grip's middle where her fist closed before. They're bare steel under the strap, 2.3 studs long where the first were 2.05.
+  - **The scarf's long tail** is a chain of eight links, `Kirra_Scarf1` to `Kirra_Scarf8`, on the take's line: 4.79 studs. The first Kirra's tail was a 10-stud S.
+  - The turn round her neck, the knot and the short tail are `Kirra_Scarf`, on the Torso. The hair's tie, `Kirra_Tie`, rides the Head.
+- **The files,** as `tools/studio/ModelRecipe.luau` reads them:
+  - `Kirra.recipe.json`: 4,458 triangles in 19 pieces, 96 texels a stud on the body. The hair has 2,562 triangles, the scarf's turn 332, each blade 38, each link 100 to 108, and the tie 96.
+  - The recipe gives each blade's `motor`, `pivot` and `grip`, and each link's `motor`, `pivot`, `along` and `across`, as the first Kirra's did.
+  - Points: `Knot`, `ScarfTip`, `Chest`, `TipR`, `TipL`, under the first Kirra's names.
+  - Two pictures, 1024 x 1024: `Kirra_Color.png` (sha1 `9f5ce00e`) and `Kirra_Roughness.png`. There's no Metalness and no Emissive: nothing of hers glows.
+  - The sheet is `kirra_make_sheet.png` (sha1 `e04fd0a9`). Beside the reference: `build/reference/anime-vanguards/compare_kirra_make.png` (internal, not in git).
+- **Her clips, keyed again on the new body** (`build/handoff/Kirra/make/clips/`: eight clips, `Kirra.clips.json`, and a poses sheet for each):
+  - `tools/blender/kirra_clips.py` now reads its model from `KIRRA_MODEL`. Only the eight scarf tracks differ from the delivered clips. The body, the blades' tracks and the markers are the same bytes, so the arms and the blades are the clips that passed on 2026-11-14. Every clip's audit passes; the worst arm-through-body is 0.049 studs (Scarf Step, as before). The audit's weapon line reads 0.000, but it tests the shared rig's weapons, not her blades, so it says nothing about them.
+  - In the Combo both blades come out of her back into her fists and go home.
+  - **For research:** Scarf Step's line is half the length it was, because the tail is 4.8 studs where it was 10. It still leaves the knot and points through the Shade, but it's a short streak, not a line across the screen. This is AR60's "Scarf Step's look, if the new body asks for it". The levers are a longer tail at rest (the chain takes any length), or the look in effects (Scarf Step's own line, AR26 and Scintilla's). Neither is done.
+- **Portraits:** `portraits/PortraitKirra.png` (736 x 800, sha1 `73e1c70f`) and `PortraitKirraSmall.png` (368 x 400, sha1 `4dc80012`), from `tools/blender/hud_art.py`, `make Kirra`. The script now reads her from the make. Her pose is the card's own, a look back over her left shoulder. The crop is wider and higher (3.0 studs, its middle at 4.7) so the tail stands inside the frame. Their listing in `hud_art.json` is unchanged.
+- **Fixed on the way:** `rook_make_takes.proof_run` saved its sheet under its last layer's name (a loop's variable shadowed `stem`). The kit's handoff now packs the atlas tallest first.
+- **What Faber changes at the install,** after the director's acceptance:
+  - Upload the 19 meshes and two pictures under the group, and write `tools/studio/Models/Kirra.json` anew: 19 mesh ids, `Color` and `Roughness`. Metalness goes, and the eight links keep their names.
+  - Save her eight clips again from `make/clips/` (they are not published yet).
+  - Replace `build/handoff/UI/hud/images/PortraitKirra*.png` with the two here. The lead card's face and head are `lead_card_art.py` on this render.
+  - Check in the game: the hair and its tie ride the head through every clip; the blades reach her fists in the Combo and go home after; the tail hangs from the knot and doesn't sink into the floor in the Idle.
+- **Content check (11:21): PASS**, with hold points for the install and the upload:
+  - Log the map, the meshes, the portraits and each clip in `docs/asset-log.md` before any upload.
+  - Each clip keyed again is a new animation upload: make a fresh bare-rig strip first (side and three-quarter, holds stepped), as on 2026-11-14. Look hardest at Reveal 60 to 100, where an arm rises beside the head.
+  - The blades are 2.3 studs where they were 2.05. Step through Combo 56 to 61 at full size in Studio: no edge crosses her own neck or head.
+  - Read the map and both portraits at 64 px over a dark ground before the upload.
+  - The takes' hold points carry over: the scarf and blades never red or maroon, no drip shapes, Scarf Step's look never crackling electric blue-white, the chest cloth folds only.
+  - Not a content point, for research: in the Reveal's drop (frames 14 to 36) the tail stands straight up in visible links.
+- **Four facts:** made, yes. Self-reviewed, yes: the sheet at the fight camera, the card's size and 64 px; the eight clips' poses and audit. Delivered, yes, to `build/handoff/Kirra/make/`. In the game, no; nothing uploaded; not director-accepted.
+
 ## AR61. The hit sparks: the shared kit's landed hit, by rung (Scintilla, then Faber's hook)
 
 Scintilla's first piece, on the director's order of 2026-11-23 ("Shared kit first", `docs/decisions.md`; `docs/briefs/effects.md`, "Your queue", 1). Research hadn't written this request when the seat opened (2026-11-24, 10:44), so Scintilla wrote it from the brief, AR8 A and the study's rules; research confirms or corrects it at the blockout's verdict.

@@ -862,9 +862,9 @@ def proof_run(out, key, title=None, about="Common / Red / Warrior / Fire.", whos
     rs.paste(low, fight, fx, 46)
     rs.paste(low, bm.zoomed(fight, 3), fx, 46 + fight.shape[0] + 16)
     x = fx + fight.shape[1] * 3 + gap
-    for stem, at in ((f"{key}_row", (ROW_X[WHO.index(key)], ROW_Z)), (f"{key}_fight", LEAD)):
+    for layer, at in ((f"{key}_row", (ROW_X[WHO.index(key)], ROW_Z)), (f"{key}_fight", LEAD)):   # never `stem`: the pictures' name
         for r, (ground, dark_) in enumerate((("#101117", False), ("#CCD2D9", False), ("#E9E4D8", True))):
-            tile = over(stem, at, ground, dark_)
+            tile = over(layer, at, ground, dark_)
             rs.paste(low, tile, x, 46 + r * 106 + (100 - tile.shape[0]))
         x += tile.shape[1] + 8
     rs.paste(low, rs.text_layer(W, low.shape[0], text), 0, 0)

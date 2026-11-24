@@ -1,0 +1,561 @@
+{
+ "name": "Kirra",
+ "frame": "Roblox studs: Y up, the model on y = 0 facing -Z, HumanoidRootPart at (0, 3, 0)",
+ "rig": "R6. Every piece carries the body's own surface: the six rig parts are hidden (Transparency 1).",
+ "make": "tools/blender/anime_make.py and kirra_make.py: R6's own blocks and round head with the clothes and the face drawn on them, the hair one mesh with its tie; built pieces: the scarf's turn and knot, its long tail as a chain, the two blades on joints of their own.",
+ "maps": {
+  "Color": "Kirra_Color.png",
+  "Roughness": "Kirra_Roughness.png"
+ },
+ "texels_per_stud": 96,
+ "pieces": [
+  {
+   "name": "Kirra_Torso",
+   "mesh": "Kirra_Torso.json",
+   "on": "Torso",
+   "centre": [
+    0.0,
+    3.0,
+    0.0
+   ],
+   "size": [
+    2.0,
+    2.0,
+    1.0
+   ],
+   "tris": 12
+  },
+  {
+   "name": "Kirra_RightArm",
+   "mesh": "Kirra_RightArm.json",
+   "on": "Right Arm",
+   "centre": [
+    1.5,
+    3.0,
+    0.0
+   ],
+   "size": [
+    1.0,
+    2.0,
+    1.0
+   ],
+   "tris": 12
+  },
+  {
+   "name": "Kirra_LeftArm",
+   "mesh": "Kirra_LeftArm.json",
+   "on": "Left Arm",
+   "centre": [
+    -1.5,
+    3.0,
+    0.0
+   ],
+   "size": [
+    1.0,
+    2.0,
+    1.0
+   ],
+   "tris": 12
+  },
+  {
+   "name": "Kirra_RightLeg",
+   "mesh": "Kirra_RightLeg.json",
+   "on": "Right Leg",
+   "centre": [
+    0.5,
+    1.0,
+    0.0
+   ],
+   "size": [
+    1.0,
+    2.0,
+    1.0
+   ],
+   "tris": 12
+  },
+  {
+   "name": "Kirra_LeftLeg",
+   "mesh": "Kirra_LeftLeg.json",
+   "on": "Left Leg",
+   "centre": [
+    -0.5,
+    1.0,
+    0.0
+   ],
+   "size": [
+    1.0,
+    2.0,
+    1.0
+   ],
+   "tris": 12
+  },
+  {
+   "name": "Kirra_Head",
+   "mesh": "Kirra_Head.json",
+   "on": "Head",
+   "centre": [
+    0.0,
+    4.5,
+    0.0
+   ],
+   "size": [
+    1.25,
+    1.25,
+    1.25
+   ],
+   "tris": 476
+  },
+  {
+   "name": "Kirra_Hair",
+   "mesh": "Kirra_Hair.json",
+   "on": "Head",
+   "centre": [
+    0.01863,
+    4.79833,
+    0.43018
+   ],
+   "size": [
+    1.846,
+    2.017,
+    2.62
+   ],
+   "tris": 2562
+  },
+  {
+   "name": "Kirra_Scarf",
+   "mesh": "Kirra_Scarf.json",
+   "on": "Torso",
+   "centre": [
+    -0.22433,
+    3.27058,
+    0.55447
+   ],
+   "size": [
+    2.099,
+    2.019,
+    2.759
+   ],
+   "tris": 332
+  },
+  {
+   "name": "Kirra_BladeR",
+   "mesh": "Kirra_BladeR.json",
+   "on": "Torso",
+   "centre": [
+    0.08307,
+    3.5262,
+    0.68
+   ],
+   "size": [
+    1.411,
+    1.808,
+    0.13
+   ],
+   "tris": 38,
+   "motor": "BladeR",
+   "pivot": [
+    0.5914,
+    4.204,
+    0.68
+   ],
+   "grip": {
+    "at": [
+     0.5914,
+     4.204,
+     0.68
+    ],
+    "length": [
+     -0.6083,
+     -0.7937,
+     -0.0
+    ],
+    "back": [
+     -0.7937,
+     0.6083,
+     -0.0
+    ]
+   }
+  },
+  {
+   "name": "Kirra_BladeL",
+   "mesh": "Kirra_BladeL.json",
+   "on": "Torso",
+   "centre": [
+    -0.08307,
+    3.5262,
+    0.84
+   ],
+   "size": [
+    1.411,
+    1.808,
+    0.13
+   ],
+   "tris": 38,
+   "motor": "BladeL",
+   "pivot": [
+    -0.5914,
+    4.204,
+    0.84
+   ],
+   "grip": {
+    "at": [
+     -0.5914,
+     4.204,
+     0.84
+    ],
+    "length": [
+     0.6083,
+     -0.7937,
+     -0.0
+    ],
+    "back": [
+     -0.7937,
+     -0.6083,
+     -0.0
+    ]
+   }
+  },
+  {
+   "name": "Kirra_Scarf1",
+   "mesh": "Kirra_Scarf1.json",
+   "on": "Torso",
+   "centre": [
+    -0.82982,
+    4.07499,
+    0.27902
+   ],
+   "size": [
+    0.62,
+    0.183,
+    0.772
+   ],
+   "tris": 108,
+   "motor": "Scarf1",
+   "pivot": [
+    -0.74,
+    4.1,
+    -0.04
+   ],
+   "along": [
+    -0.2888,
+    0.0233,
+    0.9571
+   ],
+   "across": [
+    0.9574,
+    0.007,
+    0.2887
+   ]
+  },
+  {
+   "name": "Kirra_Scarf2",
+   "mesh": "Kirra_Scarf2.json",
+   "on": "Kirra_Scarf1",
+   "centre": [
+    -0.98299,
+    3.86338,
+    0.79866
+   ],
+   "size": [
+    0.551,
+    0.514,
+    0.742
+   ],
+   "tris": 108,
+   "motor": "Scarf2",
+   "pivot": [
+    -0.9163,
+    4.0651,
+    0.5238
+   ],
+   "along": [
+    -0.3188,
+    -0.3549,
+    0.8789
+   ],
+   "across": [
+    0.9064,
+    0.157,
+    0.3922
+   ]
+  },
+  {
+   "name": "Kirra_Scarf3",
+   "mesh": "Kirra_Scarf3.json",
+   "on": "Kirra_Scarf2",
+   "centre": [
+    -1.10897,
+    3.49015,
+    1.21597
+   ],
+   "size": [
+    0.392,
+    0.694,
+    0.728
+   ],
+   "tris": 108,
+   "motor": "Scarf3",
+   "pivot": [
+    -1.0836,
+    3.7404,
+    0.9929
+   ],
+   "along": [
+    -0.2203,
+    -0.686,
+    0.6935
+   ],
+   "across": [
+    0.7075,
+    0.377,
+    0.5977
+   ]
+  },
+  {
+   "name": "Kirra_Scarf4",
+   "mesh": "Kirra_Scarf4.json",
+   "on": "Kirra_Scarf3",
+   "centre": [
+    -1.24902,
+    3.04175,
+    1.56867
+   ],
+   "size": [
+    0.269,
+    0.754,
+    0.717
+   ],
+   "tris": 108,
+   "motor": "Scarf4",
+   "pivot": [
+    -1.206,
+    3.3014,
+    1.38
+   ],
+   "along": [
+    -0.1947,
+    -0.7754,
+    0.6007
+   ],
+   "across": [
+    0.3346,
+    0.5232,
+    0.7838
+   ]
+  },
+  {
+   "name": "Kirra_Scarf5",
+   "mesh": "Kirra_Scarf5.json",
+   "on": "Kirra_Scarf4",
+   "centre": [
+    -1.4294,
+    2.61848,
+    1.95215
+   ],
+   "size": [
+    0.295,
+    0.72,
+    0.738
+   ],
+   "tris": 108,
+   "motor": "Scarf5",
+   "pivot": [
+    -1.3268,
+    2.8388,
+    1.7392
+   ],
+   "along": [
+    -0.2325,
+    -0.7216,
+    0.6521
+   ],
+   "across": [
+    0.0999,
+    0.6492,
+    0.754
+   ]
+  },
+  {
+   "name": "Kirra_Scarf6",
+   "mesh": "Kirra_Scarf6.json",
+   "on": "Kirra_Scarf5",
+   "centre": [
+    -1.61492,
+    2.28738,
+    2.39879
+   ],
+   "size": [
+    0.418,
+    0.597,
+    0.754
+   ],
+   "tris": 108,
+   "motor": "Scarf6",
+   "pivot": [
+    -1.4813,
+    2.4362,
+    2.1529
+   ],
+   "along": [
+    -0.2951,
+    -0.5937,
+    0.7486
+   ],
+   "across": [
+    0.2697,
+    0.6999,
+    0.6613
+   ]
+  },
+  {
+   "name": "Kirra_Scarf7",
+   "mesh": "Kirra_Scarf7.json",
+   "on": "Kirra_Scarf6",
+   "centre": [
+    -1.80187,
+    2.08356,
+    2.90184
+   ],
+   "size": [
+    0.484,
+    0.428,
+    0.726
+   ],
+   "tris": 108,
+   "motor": "Scarf7",
+   "pivot": [
+    -1.6844,
+    2.1515,
+    2.636
+   ],
+   "along": [
+    -0.3674,
+    -0.3502,
+    0.8616
+   ],
+   "across": [
+    0.5456,
+    0.6691,
+    0.5046
+   ]
+  },
+  {
+   "name": "Kirra_Scarf8",
+   "mesh": "Kirra_Scarf8.json",
+   "on": "Kirra_Scarf7",
+   "centre": [
+    -1.99544,
+    2.10973,
+    3.44292
+   ],
+   "size": [
+    0.401,
+    0.478,
+    0.624
+   ],
+   "tris": 100,
+   "motor": "Scarf8",
+   "pivot": [
+    -1.9107,
+    2.0382,
+    3.1749
+   ],
+   "along": [
+    -0.3695,
+    -0.0078,
+    0.9292
+   ],
+   "across": [
+    0.5211,
+    0.8262,
+    0.2142
+   ]
+  },
+  {
+   "name": "Kirra_Tie",
+   "mesh": "Kirra_Tie.json",
+   "on": "Head",
+   "centre": [
+    0.0,
+    5.24,
+    0.64
+   ],
+   "size": [
+    0.35,
+    0.16,
+    0.315
+   ],
+   "tris": 96
+  }
+ ],
+ "points": [
+  {
+   "name": "Knot",
+   "on": "Torso",
+   "at": [
+    -0.74,
+    3.98,
+    -0.05
+   ],
+   "note": "the scarf's knot: Scarf Step's line leaves from here"
+  },
+  {
+   "name": "ScarfTip",
+   "on": "Kirra_Scarf8",
+   "at": [
+    -2.1,
+    2.18,
+    3.72
+   ],
+   "note": "the long tail's end"
+  },
+  {
+   "name": "Chest",
+   "on": "Torso",
+   "at": [
+    0,
+    3.2,
+    -0.6
+   ],
+   "note": "where a hit lands"
+  },
+  {
+   "name": "TipR",
+   "on": "Kirra_BladeR",
+   "at": [
+    -0.6192,
+    2.6245,
+    0.68
+   ],
+   "note": "the blade's point: a cut's arc"
+  },
+  {
+   "name": "TipL",
+   "on": "Kirra_BladeL",
+   "at": [
+    0.6192,
+    2.6245,
+    0.84
+   ],
+   "note": "the blade's point: a cut's arc"
+  }
+ ],
+ "tris": 4458,
+ "scarf": {
+  "joints": [
+   "Scarf1",
+   "Scarf2",
+   "Scarf3",
+   "Scarf4",
+   "Scarf5",
+   "Scarf6",
+   "Scarf7",
+   "Scarf8"
+  ],
+  "length": 4.786,
+  "note": "The long tail is a chain: each link rides a Motor6D at its root, named as the piece, on the link before it (the first on the Torso, at the knot), so they're made root to tip. A joint's frame is its pivot with the model's axes at rest. With every Transform at rest the tail hangs as drawn, back past her left shoulder and down behind her. 'along' is the band's line at the pivot and 'across' its width. Each link runs a step past its end into the next, so a bend opens no gap. The turn round her neck, the knot and the short tail are the Kirra_Scarf piece on the Torso. It casts a shadow."
+ },
+ "blades": {
+  "note": "Each blade is one piece on a Motor6D of its own on the Torso, named in 'motor', its frame at 'pivot' (the grip's middle) with the model's axes at rest. With its Transform at rest it lies crossed on her back, under the strap, on the first Kirra's line; a clip that draws it keys it into her fist and puts it back. 'grip' is the blade's frame at rest: 'length' from pommel to point, 'back' its spine. No sheaths: the steel is bare."
+ }
+}

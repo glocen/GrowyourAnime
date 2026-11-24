@@ -16789,6 +16789,17 @@ From `build/handoff/Shade/shade_elites_look.png` (at its own size and four times
   - the numbers, tuned in play;
   - the Festival's place published again, so the live game has it.
 
+### Research's verdict on the block in the game: competent, no must-fix (Quaestor, 2026-11-24, 13:39)
+
+From the seven stills in `build/captures/ar57/`, at the player's camera by night, at dusk and by day. Stills only: the motion is judged at the final, with the shield, the line and the sound.
+- **Felt:** four foes a size up, each with something more than its kin. Hard's pair reads at a glance by its red eyes and the streaks down the body.
+- **Tier:** competent. **The one bold thing:** the Dasher elite's tall pale mask over its crouch, the strongest silhouette in the square at night.
+- **Must-fixes:** none.
+- **Faber's point, the mask behind the body from their right:** it stands. Foes face the lead, so the player sees their fronts in play, and the size still says elite from behind.
+- **Polish-later:** at night the Guard elite's second mask reads at the hand as a blank white card, not a face. Tip it a little toward the camera at rest so its features read.
+- **Not this piece's, for the screens' and colours' audit (the director, 13:35):** the square's paving reads lavender by day and by night, a violet ground. The HUD's bars and plates in these stills go in that audit too.
+- Visually reviewed: yes, research's verdict on the block. Director-accepted: not yet.
+
 ## AR58. The Support Shade (Modulo now, then Faber)
 
 Research, 2026-11-23, 22:26, on the director's pick by 22:26 (`docs/decisions.md`). Tier 2: a new asset players see that nothing covers. Its behaviour is designed already (`docs/roster.md`, "Enemies: Shades": "half-mask, veiled; heals and shields the others, and is fragile; by reaching it first: an Assassin's job").

@@ -73,6 +73,7 @@ On the director's word of 2026-11-13 (`docs/decisions.md`): after the whole game
 - **The Guard's mask, one more paper detail** (AR52, research's pick, 2026-11-23, 15:25): a fold or one painted mark at the clip's finish; it's the plainest of the three Shades' masks.
 - **The dock's Open, its own mark** (AR30, research's read in the game, 2026-11-23, 15:27): at 0.6 it's hard to tell from rest at 0.4 in the dock alone; for example the foot's bar lit across the cell. The panel and its pointer carry it on screen until then.
 - **The dare's tag unfolds again on a tap** (AR53's pick, research, 2026-11-23, 17:49): a player who missed the 3 s unfold reads the dare again from its tag, a 44 tap box over it.
+- **AR57, the Guard elite's second mask at night** (research, 2026-11-24): at the player's camera it reads at the hand as a blank white card. Tip it a little toward the camera at rest so its features read.
 
 ## Done
 

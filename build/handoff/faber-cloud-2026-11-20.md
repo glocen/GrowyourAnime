@@ -87,3 +87,7 @@ Not installed. Here the hooks run under `python3`, and the self-test passes 126/
 7. **Push main.** Delete the cloud branch only with the director's OK.
 
 **For Faber's Now row,** on the board's next rewrite: TR50's run rules, TR48's keeper and TR45's trip checks are now pure and offline, and a keeper's win can't be granted twice, and seeded runs prove the shard's way, gear's way, the shop and the Tower never make, lose or double-spend a valuable. "Open, tests" adds the Festival run of these cases and the gate drift note.
+
+## Research for the team (2026-11-24, docs only)
+
+The director asked for research, a review of our work and notes for the team. Start at `docs/research/cloud-2026-11-24/README.md`: the steering brief, ten ranked proposals, and what waits on the director. Twelve studies sit beside it. None of it is accepted. For Quaestor: the 11-24 words "i asked for the play button to open a panel of gamemode" replace part 3 of the 11-19 23:19 row (`play-mode-panel.md`, with a build-ready entry). For the builder on main: `FighterController/Rows.luau:733` writes `emitter.Rate` every frame (`vfx-quality.md`). The branch's code is unchanged since the case commits above.

@@ -17015,3 +17015,31 @@ Delivered to `build/handoff/Rook/make/`, beside today's Rook, whose files stay w
   - check in the game: the hair rides the head through Down and Up; the fist's glow at Haymaker's peak (5) doesn't blow out the wraps' lines, else lower the peak; the jacket's slate and the red hem under Lantern Row's night.
 - **What waits:** his portraits and the lead card's face and head still show the first Rook. I draw the portraits from these files next (`tools/blender/hud_art.py`); the card's two are Faber's script on those renders.
 - **Four facts:** made, yes. Self-reviewed, yes: the sheet at the fight camera and the card's size, and the eight clips' poses. Delivered, yes, to `build/handoff/Rook/make/`. In the game, no; nothing uploaded; not director-accepted.
+
+## AR60. Kirra, redesigned in the make (Modulo, for research's pick and the director's look, then its finish; Faber's install after)
+
+Research, 2026-11-24, 01:50. On the director's order of 2026-11-23, by 22:52 (Rook, Kirra, Pip, Lyric, then Watt's finish), and the words since: 23:52 (the make) and 01:47 (attachments and exaggeration) (`docs/decisions.md`). Tier 2. It goes into the game only on the director's acceptance. It starts when Rook's portraits are done.
+- **Feel line:** in a fight, the player sees a quick, quiet assassin from an anime's cast. Her hair's silhouette reads first, then a sharp face, then a long scarf trailing her moves, then two short blades.
+- **What holds:**
+  - her row in `docs/roster.md`: Common, Blue, Assassin, Void, Scarf Step's function (she vanishes, crosses the target and cuts on the way out), and First Strike;
+  - two short blades;
+  - the R6 body;
+  - violet only on what's alive (AR40).
+- **The make:** AR59's "The redo", drawn with the kit (`tools/blender/anime_make.py`). From the director's word of 01:47 she may carry some built attachments and some exaggeration: the scarf, the blades. The clothes stay drawn on the body.
+- **The design:** a side-cast type of the genre's famous shows, made our own ("basics or our own"). "Courier" is her story, not a costume: nothing on her reads as a job, a satchel included.
+- **What AR59 taught, asked of every take from the first sheet:**
+  - three values from behind at the fight camera;
+  - the weapon reads from the fight camera;
+  - no mark across the face's centre line;
+  - folds follow the cloth;
+  - the hair stands 0.45 to 0.6 of a head over the crown, so its points break the outline at 64 px.
+  - She reads apart from the new Rook: a different hair silhouette and a different colour family.
+- **The takes:** two or three, each drawn in the make, never rough. Each is shown:
+  - beside Anime Vanguards units at the same height (internal);
+  - at the card's portrait;
+  - from the fight camera at the smallest phone's size;
+  - at 64 px;
+  - beside the new Rook.
+- **Checks:** the content check, with the Fighters test; research's pick, with fresh eyes given the reference's sheet; the director's look; the finish; the director's acceptance before Faber installs.
+- **What waits:** her basic attack's effect (AR26); Scarf Step's look, if the new body asks for it; her portraits after the finish; Faber's install.
+- **Time:** the takes in 2 to 3 hours, as a guide.

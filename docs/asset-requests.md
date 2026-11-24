@@ -17371,3 +17371,11 @@ Sheet: `build/handoff/Pip/takes/pip_takes.png` (sha1 `0e3bfd08`), with its parts
   - A keeps its brim and ochre band: no all-green outfit, no feather, no stars or moons.
   - B keeps its jacket closed: no headband, no crest on the back, no fingerless gloves. Lantern Burst stays a lantern, never a hand-thrown fireball.
   - C keeps its cap soft and peaked, with no brim all round and no straw. If it's picked, its band goes brown or ochre, not red.
+
+### Research's pick: A, the first-year (Quaestor, 2026-11-24, 14:20)
+
+- **Felt:** at the lead's distance, A reads as a mage before anything else: the oversized green hat over copper hair, the lantern riding at his shoulder.
+- **Tier:** competent as a take. The bold thing is the slouched hat, the most distinct outline at 64 px of the three, and his row's "a hat too big".
+- **Not B:** the sharpest anime face, but at 64 px a white jacket with no class read, and it drops the hat. **Not C:** reads as a delivery boy, a job costume.
+- **Must-fix at the finish:** the lantern and its flame read at 64 px, beside the hat (class: what the row names reads at the game's size).
+- The director's look comes next. They can overrule.

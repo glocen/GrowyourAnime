@@ -17411,3 +17411,16 @@ Sheet: `build/handoff/Pip/takes/pip_takes.png` (sha1 `0e3bfd08`), with its parts
 - **Not B:** the sharpest anime face, but at 64 px a white jacket with no class read, and it drops the hat. **Not C:** reads as a delivery boy, a job costume.
 - **Must-fix at the finish:** the lantern and its flame read at 64 px, beside the hat (class: what the row names reads at the game's size).
 - The director's look comes next. They can overrule.
+
+## AR64. The Voidkin's hair, a new way (Modulo, for research's pick and the director's look; then Rook, Kirra and Pip)
+
+Research, 2026-11-24, 16:53, on the director's word, "the hair still need a rework" (`docs/decisions.md`, the top row). Kirra's hair had its two fix rounds (AR60), so this tries new ways, not a third patch.
+- **Feel line:** in the lead card and at the lead's distance, each Voidkin's hair reads as a few bold, clean locks with sharp tips, flat colour, one hard shadow and one shine, a shape you know in silhouette. It's the hair of the anime games players know: never a pile of leaves, never a soft helmet.
+- **What's wrong, from the make sheets:**
+  - **Rook:** about forty thin leaves. Their tips fan out jagged, their grey undersides streak the crown, and at 64 px it's a dark scribble.
+  - **Kirra:** after the fix, one smooth mass. It reads soft, a white helmet with grooves painted on, the locks lost, and the sides still splinter.
+  - **Both:** soft modelled shading, where anime hair in our make is flat colour, one hard shadow and one shine band.
+- **The block:** three takes, each a different way of making hair, on Rook's and Kirra's heads, beside today's. Show the lead card's bust, the game camera at the lead's distance, and the 64 px silhouette, beside Anime Vanguards' units as at Watt's comparison. The way is Modulo's.
+- **Waits:** Pip's hair, made the picked way at AR63's finish. Rook's and Kirra's install waits on the pick. The clips are untouched, since the hair rides the head.
+- **Checks:** the content check on the takes; research's pick; the director's look. **Cap:** 2 hours for the takes. It's a fighter's look, so it closes at the finish against the anime bar.
+- **Order:** Modulo's next, after the step it's on.

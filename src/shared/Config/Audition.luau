@@ -48,7 +48,7 @@ return {
 		-- the Warrior's (Rook's jab, hook and ram today): fists, so the light hit's 32 keeps
 		{ Name = "RookHit", Label = "Warrior's hits", Max = 0.7, Beat = false, Keeps = "LightHit", Words = {} },
 		-- the Assassin's (Kirra's three cuts today): a quick cut, never a punch
-		{ Name = "KirraHit", Label = "Assassin's cuts", Max = 0.6, Beat = false, Words = { "anime slash", "anime sword slash", "slash hit", "sword slash", "katana slash", "blade slash" } },
+		{ Name = "KirraHit", Label = "Assassin's cuts", Max = 0.7, Beat = false, Words = { "anime slash", "anime sword slash", "slash hit", "sword slash", "katana slash", "blade slash" } },
 		-- the Tank's (Watt's shaft, butt and driven spear today): heavy and short, a weighted blow, never harsh
 		{ Name = "WattHit", Label = "Tank's blows", Max = 0.8, Beat = false, Words = { "anime heavy hit", "anime impact", "heavy hit", "heavy impact", "heavy strike", "blunt impact" } },
 	} :: { Spec },

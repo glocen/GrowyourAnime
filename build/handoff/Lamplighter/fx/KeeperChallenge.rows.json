@@ -1,0 +1,331 @@
+{
+  "Schema": "rows/1",
+  "Effect": "KeeperChallenge",
+  "Why": "The keeper's challenge, KeeperChallenge's own effect: the grey block-in (Scintilla).",
+  "Area": 1.5,
+  "Grey": true,
+  "Action": "KeeperChallenge",
+  "Rows": {
+    "Gaze": {
+      "Kind": "Glow",
+      "From": "Lift",
+      "Part": [
+        "Lamplighter_Lantern"
+      ],
+      "Tracks": {
+        "Glow": [
+          [
+            -4,
+            1.2,
+            "Quad Out"
+          ],
+          [
+            3,
+            3.0,
+            "Sine InOut"
+          ],
+          [
+            14,
+            2.4000000000000004,
+            "Quad In"
+          ],
+          [
+            30,
+            1.2
+          ]
+        ]
+      },
+      "Why": "the lantern flares as it lifts its face to you: it has heard you"
+    },
+    "Hoop": {
+      "Kind": "Mesh",
+      "From": "Stamp",
+      "Body": "PoleFoot",
+      "Ground": true,
+      "Hold": true,
+      "Part": [
+        "FxHoop"
+      ],
+      "Look": "fx_rise_Warm",
+      "Grey": "fx_rise_Grey",
+      "Tracks": {
+        "At": [
+          [
+            0,
+            {
+              "Vector3": [
+                0,
+                0.03,
+                0
+              ]
+            }
+          ]
+        ],
+        "Scale": [
+          [
+            0,
+            {
+              "Vector3": [
+                0.3,
+                0.6,
+                0.3
+              ]
+            },
+            "Quart Out"
+          ],
+          [
+            18,
+            {
+              "Vector3": [
+                3.2,
+                0.25,
+                3.2
+              ]
+            }
+          ]
+        ],
+        "Transparency": [
+          [
+            0,
+            0.1,
+            "Quad In"
+          ],
+          [
+            18,
+            1
+          ]
+        ],
+        "Glow": [
+          [
+            0,
+            2.5,
+            "Quad Out"
+          ],
+          [
+            18,
+            1
+          ]
+        ]
+      },
+      "Why": "the stamp: a hoop flat on the street opening from the pole's foot, its upright band keeping it read from a low camera"
+    },
+    "DustLine": {
+      "Kind": "Emitter",
+      "Image": "fx_puff_line",
+      "Emitter": {
+        "Lifetime": [
+          0.5,
+          0.5
+        ],
+        "Speed": [
+          0,
+          0
+        ],
+        "Size": [
+          [
+            0,
+            1.6
+          ],
+          [
+            1,
+            2.8
+          ]
+        ],
+        "Rotation": [
+          0,
+          360
+        ],
+        "FlipbookLayout": "Grid4x4",
+        "FlipbookMode": "OneShot",
+        "LightInfluence": 0,
+        "Color": {
+          "Color3": [
+            255,
+            246,
+            230
+          ]
+        },
+        "LightEmission": 1,
+        "ZOffset": 0.55
+      },
+      "Emit": [
+        [
+          2,
+          1
+        ]
+      ],
+      "Tracks": {
+        "At": [
+          [
+            2,
+            {
+              "Vector3": [
+                0,
+                0.6,
+                0
+              ]
+            }
+          ]
+        ]
+      },
+      "Why": "the street's dust off the stamp, a breath after",
+      "From": "Stamp",
+      "Body": "PoleFoot",
+      "Hold": true
+    },
+    "DustFill": {
+      "Kind": "Emitter",
+      "Image": "fx_puff_fill",
+      "Emitter": {
+        "Lifetime": [
+          0.5,
+          0.5
+        ],
+        "Speed": [
+          0,
+          0
+        ],
+        "Size": [
+          [
+            0,
+            1.6
+          ],
+          [
+            1,
+            2.8
+          ]
+        ],
+        "Rotation": [
+          0,
+          360
+        ],
+        "FlipbookLayout": "Grid4x4",
+        "FlipbookMode": "OneShot",
+        "LightInfluence": 0,
+        "Color": [
+          [
+            0,
+            {
+              "Color3": [
+                233,
+                226,
+                214
+              ]
+            }
+          ],
+          [
+            0.45,
+            {
+              "Color3": [
+                233,
+                226,
+                214
+              ]
+            }
+          ],
+          [
+            1,
+            {
+              "Color3": [
+                91,
+                86,
+                112
+              ]
+            }
+          ]
+        ],
+        "LightEmission": 0.6,
+        "ZOffset": 0.5
+      },
+      "Emit": [
+        [
+          2,
+          1
+        ]
+      ],
+      "Tracks": {
+        "At": [
+          [
+            2,
+            {
+              "Vector3": [
+                0,
+                0.6,
+                0
+              ]
+            }
+          ]
+        ]
+      },
+      "Why": "Dust's fill pass",
+      "From": "Stamp",
+      "Body": "PoleFoot",
+      "Hold": true
+    },
+    "DustDark": {
+      "Kind": "Emitter",
+      "Image": "fx_puff_dark",
+      "Emitter": {
+        "Lifetime": [
+          0.5,
+          0.5
+        ],
+        "Speed": [
+          0,
+          0
+        ],
+        "Size": [
+          [
+            0,
+            1.6
+          ],
+          [
+            1,
+            2.8
+          ]
+        ],
+        "Rotation": [
+          0,
+          360
+        ],
+        "FlipbookLayout": "Grid4x4",
+        "FlipbookMode": "OneShot",
+        "LightInfluence": 0,
+        "Color": {
+          "Color3": [
+            28,
+            23,
+            38
+          ]
+        },
+        "LightEmission": 0,
+        "Transparency": 0.15,
+        "ZOffset": 0.45
+      },
+      "Emit": [
+        [
+          2,
+          1
+        ]
+      ],
+      "Tracks": {
+        "At": [
+          [
+            2,
+            {
+              "Vector3": [
+                0,
+                0.6,
+                0
+              ]
+            }
+          ]
+        ]
+      },
+      "Why": "Dust's dark pass",
+      "From": "Stamp",
+      "Body": "PoleFoot",
+      "Hold": true
+    }
+  }
+}

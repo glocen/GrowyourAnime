@@ -1,0 +1,398 @@
+{
+  "Schema": "rows/1",
+  "Effect": "KeeperSwing",
+  "Why": "The keeper's swing, KeeperSwing's own effect: the grey block-in (Scintilla).",
+  "Area": 1.5,
+  "Grey": true,
+  "Action": "KeeperSwing",
+  "Rows": {
+    "Sweep": {
+      "Kind": "Beam",
+      "From": "Strike",
+      "Body": "PoleFoot",
+      "Image": "fx_beam",
+      "Grey": "fx_beam",
+      "Color": {
+        "Color3": [
+          255,
+          246,
+          230
+        ]
+      },
+      "Beam": {
+        "FaceCamera": true,
+        "LightEmission": 1,
+        "LightInfluence": 0,
+        "TextureMode": "Stretch",
+        "TextureSpeed": 0,
+        "Segments": 1
+      },
+      "Trail": {
+        "Back": 0,
+        "Beyond": 0
+      },
+      "Tracks": {
+        "At": [
+          [
+            -8,
+            {
+              "Vector3": [
+                0,
+                0,
+                0
+              ]
+            }
+          ]
+        ],
+        "Width": [
+          [
+            -8,
+            0.2,
+            "Quad In"
+          ],
+          [
+            0,
+            1.4,
+            "Quad Out"
+          ],
+          [
+            4,
+            0
+          ]
+        ],
+        "Lag": [
+          [
+            -8,
+            5
+          ]
+        ],
+        "Transparency": [
+          [
+            -8,
+            0.6,
+            "Quad Out"
+          ],
+          [
+            0,
+            0.05,
+            "Quad In"
+          ],
+          [
+            4,
+            1
+          ]
+        ]
+      },
+      "Why": "the hero: the pole's foot cutting a pale arc round to the blow, widest on Strike"
+    },
+    "Drag": {
+      "Kind": "Beam",
+      "From": "Strike",
+      "Body": "Lantern",
+      "Image": "fx_beam",
+      "Grey": "fx_beam",
+      "Color": {
+        "Color3": [
+          255,
+          246,
+          230
+        ]
+      },
+      "Beam": {
+        "FaceCamera": true,
+        "LightEmission": 1,
+        "LightInfluence": 0,
+        "TextureMode": "Stretch",
+        "TextureSpeed": 0,
+        "Segments": 1
+      },
+      "Trail": {
+        "Back": 0,
+        "Beyond": 0
+      },
+      "Tracks": {
+        "At": [
+          [
+            -4,
+            {
+              "Vector3": [
+                0,
+                0,
+                0
+              ]
+            }
+          ]
+        ],
+        "Width": [
+          [
+            -4,
+            0.2,
+            "Sine InOut"
+          ],
+          [
+            4,
+            0.9,
+            "Quad Out"
+          ],
+          [
+            14,
+            0
+          ]
+        ],
+        "Lag": [
+          [
+            -4,
+            7
+          ]
+        ],
+        "Transparency": [
+          [
+            -4,
+            0.8,
+            "Quad Out"
+          ],
+          [
+            4,
+            0.45,
+            "Quad In"
+          ],
+          [
+            14,
+            1
+          ]
+        ]
+      },
+      "Why": "the lantern's weight dragged round after the blow: lower, softer, later"
+    },
+    "CutLine": {
+      "Kind": "Emitter",
+      "Image": "fx_crescent_line",
+      "Emitter": {
+        "Lifetime": [
+          0.3,
+          0.3
+        ],
+        "Speed": [
+          0,
+          0
+        ],
+        "Size": [
+          [
+            0,
+            3
+          ],
+          [
+            0.15,
+            4.4
+          ],
+          [
+            1,
+            4.8
+          ]
+        ],
+        "Rotation": [
+          -25,
+          25
+        ],
+        "FlipbookLayout": "Grid4x4",
+        "FlipbookMode": "OneShot",
+        "LightInfluence": 0,
+        "Color": {
+          "Color3": [
+            255,
+            246,
+            230
+          ]
+        },
+        "LightEmission": 1,
+        "ZOffset": 0.55
+      },
+      "Emit": [
+        [
+          0,
+          1
+        ]
+      ],
+      "Tracks": {
+        "At": [
+          [
+            0,
+            {
+              "Vector3": [
+                0,
+                0,
+                0
+              ]
+            }
+          ]
+        ]
+      },
+      "Why": "the cut where the pole's foot passes on Strike",
+      "From": "Strike",
+      "Body": "PoleFoot",
+      "Hold": true
+    },
+    "CutFill": {
+      "Kind": "Emitter",
+      "Image": "fx_crescent_fill",
+      "Emitter": {
+        "Lifetime": [
+          0.3,
+          0.3
+        ],
+        "Speed": [
+          0,
+          0
+        ],
+        "Size": [
+          [
+            0,
+            3
+          ],
+          [
+            0.15,
+            4.4
+          ],
+          [
+            1,
+            4.8
+          ]
+        ],
+        "Rotation": [
+          -25,
+          25
+        ],
+        "FlipbookLayout": "Grid4x4",
+        "FlipbookMode": "OneShot",
+        "LightInfluence": 0,
+        "Color": [
+          [
+            0,
+            {
+              "Color3": [
+                233,
+                226,
+                214
+              ]
+            }
+          ],
+          [
+            0.3,
+            {
+              "Color3": [
+                233,
+                226,
+                214
+              ]
+            }
+          ],
+          [
+            1,
+            {
+              "Color3": [
+                91,
+                86,
+                112
+              ]
+            }
+          ]
+        ],
+        "LightEmission": 0.6,
+        "ZOffset": 0.5
+      },
+      "Emit": [
+        [
+          0,
+          1
+        ]
+      ],
+      "Tracks": {
+        "At": [
+          [
+            0,
+            {
+              "Vector3": [
+                0,
+                0,
+                0
+              ]
+            }
+          ]
+        ]
+      },
+      "Why": "Cut's fill pass",
+      "From": "Strike",
+      "Body": "PoleFoot",
+      "Hold": true
+    },
+    "CutDark": {
+      "Kind": "Emitter",
+      "Image": "fx_crescent_dark",
+      "Emitter": {
+        "Lifetime": [
+          0.3,
+          0.3
+        ],
+        "Speed": [
+          0,
+          0
+        ],
+        "Size": [
+          [
+            0,
+            3
+          ],
+          [
+            0.15,
+            4.4
+          ],
+          [
+            1,
+            4.8
+          ]
+        ],
+        "Rotation": [
+          -25,
+          25
+        ],
+        "FlipbookLayout": "Grid4x4",
+        "FlipbookMode": "OneShot",
+        "LightInfluence": 0,
+        "Color": {
+          "Color3": [
+            28,
+            23,
+            38
+          ]
+        },
+        "LightEmission": 0,
+        "Transparency": 0.15,
+        "ZOffset": 0.45
+      },
+      "Emit": [
+        [
+          0,
+          1
+        ]
+      ],
+      "Tracks": {
+        "At": [
+          [
+            0,
+            {
+              "Vector3": [
+                0,
+                0,
+                0
+              ]
+            }
+          ]
+        ]
+      },
+      "Why": "Cut's dark pass",
+      "From": "Strike",
+      "Body": "PoleFoot",
+      "Hold": true
+    }
+  }
+}

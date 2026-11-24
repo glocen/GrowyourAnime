@@ -4103,6 +4103,12 @@ This is delivery 4, the block clip of section 5 polished, on research's open not
 - **Open:** research's look at the rock, in the framing take. From this camera the player's avatar covers the keeper's lower half until Burst.
 - **Hours:** about 0.15.
 
+**The swing's and the challenge's looks, in grey (Scintilla, 2026-11-24).** `tools/fx/keeper_moves.py` writes `build/handoff/Lamplighter/fx/KeeperSwing.rows.json` and `KeeperChallenge.rows.json`, from the kit only.
+- **Swing:** a pale trail behind the pole's foot (`PoleFoot`), widest on `Strike`, a softer, later one behind the lantern (its weight), a crescent cut where the foot passes. **Challenge:** the lantern's own glow flares on `Lift`; on `Stamp` a hoop opens on the street from the pole's foot, the dust a breath after. Levers: anticipation (the trail grows into the blow), weight (the lantern's lag), punctuation (the cut, the stamp).
+- **For Faber:** `Effect = "KeeperSwing"` and `Effect = "KeeperChallenge"` on their actions, and `py tools/fx/rows_take.py` on both files in the same commit (on a scratch copy with all four effects linked, AR52's two included: 2799 passed, 0 failed). Then the review.
+- **Content check, before the build: PASS.** Conditions: nothing red to maroon at the finish, the crescent's dark pass included; the dark passes play only with their bright ones; the puff never lies flat; the light's share is measured if two keepers swing at once or the swing quickens; the finished look gets its own check.
+- **Status:** implemented as data, not shown in the game; tested offline only; not visually reviewed (item 10); not director-accepted.
+
 ## AR8. The effects pass
 
 For Faber and Modulo (research's request, 2026-11-13). It rests on the director's word of the same day (`docs/decisions.md`): "make it great look at some pro vfx examples and compare". It runs before phase 2 closes, and its pieces close at research's pass without the director's yes. **The measure:** `docs/research/vfx-reference.md`, its comparison table and its five rules, starting with the importance ladder.

@@ -1528,5 +1528,25 @@ return {
 			ReturnSeatLight = { Id = "rbxassetid://130816354357927", Pixels = Vector2.new(120, 120), Points = Vector2.new(30, 30), Pad = 4 },
 			ReturnGlow = { Id = "rbxassetid://106910986651502", Pixels = Vector2.new(144, 144), Points = Vector2.new(36, 36), Pad = 18 },
 		} :: { [string]: UIKit.Image },
+		-- The base's shard during a run (AR55, return.json "run"; TR53's Festival half), in the run's line's points from its
+		-- glass's top left: a tab of the line's glass, Tab's box, the dare's tab's twin 6 to its right, as wide as
+		-- Room's pads and its words, never under Least; the shard's small picture at Picture (its middle and height), the
+		-- time left Words.Right in from its right, its capitals' top at Words.Y. It rides the open dare's foot, Line under
+		-- the dare's Foot. Broken: Ready in bold over ReturnGlow, until the player is home. The notice opens right from
+		-- the tab once (Notice's box, its picture and two rows), held Held seconds, after the dare's close.
+		Run = {
+			Tab = { 40, 30, 72, 40 }, Least = 72, Room = 44, Corner = { 4, 6 }, Line = 44,
+			Picture = { X = 54, Y = 57, Tall = 19.2 },
+			Words = { Right = 8, Y = 51.12, Size = 14, Colour = Color3.fromHex("#C6BDE4"), Ready = Color3.fromHex("#F1ECFF") },
+			Glow = Color3.fromHex("#E6ECF7"),
+			Notice = {
+				Box = { 40, 30, 183, 58 },
+				Picture = { X = 51, Y = 64, Tall = 24 },
+				Rows = { { X = 62, Y = 48 }, { X = 62, Y = 66 } },
+				Held = 4, Open = 0.2, Close = 0.18,
+				Words = { "Your shard broke.", "Its Voidkin waits at home." },
+			},
+			Ride = 0.18, Every = 0.25,
+		},
 	},
 }

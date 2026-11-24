@@ -12,6 +12,7 @@
 --   StageController.Said() -> (boolean, string)   whether the run's line shows, and its words, for tests
 --   StageController.Gate(stage) -> boolean?       whether stage's gate shows shut, nil before it's streamed in
 --   StageController.Dare() -> { [string]: any }?  the stretch's dare as the line shows it, for tests (DareLine.Said)
+--   StageController.Shard() -> { [string]: any }?  the base's shard as the line's tab shows it, for tests (ShardTab.Said)
 --   StageController.Pick()                        the Arc panel, opened or closed if it's the one open
 --   StageController.Begin(ground, difficulty) -> boolean   a run begun as the Arc panel's press begins it
 
@@ -34,6 +35,9 @@ local Toast = require(UI.Kit.Toast)
 local Glass = require(UI.Kit.Glass)
 local StageScreen = require(UI.StageScreen)
 local DareLine = require(UI.DareLine)
+local ShardTab = require(UI.ShardTab)
+local Read = require(UI.Read)
+local PlaceRole = require(Shared.Util.PlaceRole)
 local GoalDefs = require(Shared.Definitions.Goals)
 local ProfileController = require(script.Parent.Parent.Core.ProfileController)
 local WorldConfig = require(Shared.Config.World)
@@ -277,11 +281,63 @@ local function showDare()
 	DareLine.Show(made.Frame, made.Hard, made.Left, if text then key :: string else nil, text, if type(look) == "string" then look else nil)
 end
 
+-- The base's shard under the line (TR53's Festival half; UI.ShardTab), away from the base only: the newest broken while
+-- any waits at home, else the one breaking soonest and its time left, read on a copy advanced to now. The notice once a
+-- shard breaks (the save's Ready grows), after the dare's tab has closed.
+local readyHad: number? = nil -- the save's broken shards when last looked at, nil before the first look
+local noticeOwed = false
+local function shardState(view: Profile.View): ShardTab.State?
+	local ready = view.Base.Ready
+	if #ready > 0 then
+		return { Def = ready[#ready].Def, Ready = true }
+	end
+	local base = Read.Base(view, workspace:GetServerTimeNow())
+	local ahead = base.Data.Base.Ready
+	if #ahead > 0 then
+		return { Def = ahead[1].Def, Ready = false, Left = 0 } -- broken on the copy: the server's word is on its way
+	end
+	local soonest, def = math.huge, nil
+	for _, chamber in base.Data.Base.Chambers do
+		if chamber.Work then
+			local left = Read.Left(base, chamber.Work)
+			if left < soonest then
+				soonest, def = left, chamber.Work.Def
+			end
+		end
+	end
+	return if def then { Def = def, Ready = false, Left = soonest } else nil
+end
+
+local function showShard()
+	local view = ProfileController.Get()
+	if view and not PlaceRole.Is("Main") then
+		local count = #view.Base.Ready
+		if readyHad ~= nil and count > readyHad then
+			noticeOwed = true
+		end
+		readyHad = count
+	end
+	local made = line
+	if made == nil or made.Frame.Parent == nil or not made.Frame.Visible then
+		return
+	end
+	local state = if view and not PlaceRole.Is("Main") then shardState(view) else nil
+	ShardTab.Show(made.Frame, made.Hard, state)
+	if noticeOwed and state and state.Ready then
+		local dare = DareLine.Said(made.Frame)
+		if dare == nil or dare.Open ~= true then
+			noticeOwed = false
+			ShardTab.Notice(made.Frame)
+		end
+	end
+end
+
 local function showLine()
 	local run = player:GetAttribute("StageRun")
 	if type(run) ~= "string" then
 		if line then
 			DareLine.Show(line.Frame, line.Hard, line.Left, nil, nil, nil)
+			ShardTab.Show(line.Frame, line.Hard, nil)
 			line.Frame.Visible = false
 		end
 		return
@@ -335,6 +391,7 @@ local function showLine()
 	ending(now, if last == true then "Cleared" elseif risen then "Risen" else "Waiting", not fresh)
 	task.defer(tidy, now)
 	showDare()
+	showShard()
 end
 
 local function look()
@@ -416,6 +473,10 @@ function StageController.Dare(): { [string]: any }?
 	return DareLine.Said(if line then line.Frame else nil)
 end
 
+function StageController.Shard(): { [string]: any }?
+	return ShardTab.Said(if line then line.Frame else nil)
+end
+
 function StageController.Start()
 	Net.Client.On("StagePick", function(payload: any)
 		local view = ProfileController.Get()
@@ -464,9 +525,15 @@ function StageController.Start()
 	end)
 	ProfileController.Changed:Connect(function(_view: Profile.View)
 		look()
+		showShard()
 	end)
-	local since = 0
+	local since, shardSince = 0, 0
 	RunService.Heartbeat:Connect(function(dt: number)
+		shardSince += dt
+		if shardSince >= HudConfig.Return.Run.Every then
+			shardSince = 0
+			showShard()
+		end
 		since += dt
 		if since >= LOOK_EVERY then
 			since = 0

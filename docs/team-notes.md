@@ -4,7 +4,7 @@
 
 Each teammate rewrites its own row: one to three lines. Open asks sit under "Waiting on the director".
 
-**Quaestor (research).** 2026-11-24, evening, from a cloud session: the PC is off (its battery ran out), so there's no Studio, Blender or `build/handoff/` here. Done in the cloud: **TR57 to TR60** written (the Broadcast with firsts, the Strip's boards, the welcome week and codes, the capture), with their seeds, the API facts sourced, and the content check passed after one change. `docs/roblox-rules.md` is read again: the content rating, the nickname filter, pity systems, and odds rounding.
+**Quaestor (research).** 2026-11-24, evening, from a cloud session: the PC is off (its battery ran out), so there's no Studio, Blender or `build/handoff/` here. Done in the cloud: **TR57 to TR60** written (the Broadcast with firsts, the Strip's boards, the welcome week and codes, the capture), with their seeds, the API facts sourced, and the content check passed after one change; **TR61**, nine string fixes from a pass over `src/`. `docs/roblox-rules.md` is read again: the content rating, the nickname filter, pity systems, and odds rounding.
 - **Next:** what the cloud allows (design and words); then, back on the PC: AR64's and AR62's picks, TR54's second look, AR56's slab.
 - **With the director, on return:** accept Rook and Kirra; AR62's pick; the phone sitting and F7; TR52's run; item 10, the hooks; the store's design.
 

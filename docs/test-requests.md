@@ -5109,18 +5109,17 @@ Research, 2026-11-24, from the cloud. Launch-design's item 9, the north star's "
 - **Checks:** a capture taken on a phone in a test place; research's look at the picture it makes.
 - **Order:** after TR57.
 
-## TR61. The words, one voice: ten string fixes (research's request, tier 1 per line, for Faber)
+## TR61. The words, one voice: nine string fixes (research's request, tier 1 per line, for Faber)
 
-Research, 2026-11-24, from the cloud: a pass over every player-visible string in `src/` (about 1,080 read; the bar is `docs/design.md`, Goals, "The words"). The game already holds it: there are no exclamations, no "Complete" and no "Earn". These ten break it, as a slip of vocabulary or a voice split three ways. Strings only, no layout.
+Research, 2026-11-24, from the cloud: a pass over every player-visible string in `src/` (about 1,080 read; the bar is `docs/design.md`, Goals, "The words"). The game already holds it: there are no exclamations, no "Complete" and no "Earn". These nine break it, as a slip of vocabulary or a voice split three ways. Strings only, no layout.
 
 | Where | Now | Make it | Why |
 |---|---|---|---|
 | `Rules/Modes.luau`, festival's `Line` | "Fight through the grounds beside your lead" | "Fight through the Arcs beside your lead" | players read "Arc" (the director, 2026-11-19; design.md, "Words") |
 | same, the fallback `named` | "The grounds" | "The Arcs" | same |
-| `Definitions/Chests.luau`, a Hard chest's `Name` | "{chest} of {ground}, Hard Stage {n}" | "Hard {chest} of {ground}", with "Stretch {n}" on its card's second line | "Stage" left with D2 (the run says "Stretch"); the id keeps the stacks apart |
+| `Definitions/Chests.luau`, a Hard chest's `Name` | "{chest} of {ground}, Hard Stage {n}" | "Hard {chest} of {ground}", with "Stretch {n}" on its card's second line | "Stage" left with the 2026-11-19, 23:19 row (one run of four stretches); the id keeps the stacks apart |
 | `BaseController` 128, `BaseView` 85, `ShopScreen` 75 | "No answer. Try again." / "No answer: try again" | "That didn't go through. Try again." | one failure, one sentence: the other screens already say it |
-| `ShopScreen` 72 | "Your Inventory is full" | "The bag is full" | the bag is what fills, as the bag's own line says |
-| `ShopScreen` 245 | "{item} bought: it's in your Inventory" | "{item} bought: it's in the bag" | same |
+| `BaseController` 112 | "None of that shard in the bag" | "You have none of that shard" | the bag's page reads "Inventory" (the director, 2026-11-19, 03:37); the line needn't name it |
 | `VoidkinScreen` 886 | "Every star: a copy sells for Credits" | "All seven stars: a copy now sells for Credits" | the old line reads as if every star sells |
 | `VoidkinScreen` 102 | "The lead fights, it can't be stationed" | "The lead fights: it can't be stationed" | the comma splice; colons are the game's join |
 | `Bag.luau` 989 | "Shades drop them, and keepers" | "Shades and keepers drop them" | as its four siblings say it |

@@ -1,18 +1,25 @@
 ---
 name: "ga-review"
-description: The verdict research gives on a piece players see, at its blockout and its final. Felt, Tier, the one bold thing, fixes, with what weighs and what the measures are. Load before any artistic review, and to know what a review will judge.
+description: The verdict research gives on a piece players see, at its checkpoints and its final. Felt, the measured gates, the build beside its picked target and the director's examples, must-fixes. Load before any artistic review, and to know what a review will judge.
 effort: high
 ---
 
 # The verdict (research gives it; the makers read it)
 
-Every review opens with **Felt:** one sentence, the piece watched once at full speed from the player's camera. Then **Tier:** works, competent or exceptional, a judgment, not a score. Then **the one bold thing** that carries the read. If nothing does, that's the finding. Then **fixes,** each one line, each naming what it serves. On a signature piece, `ga-fresh-eyes` gives its blind Felt, Tier and bold thing beside research's.
+The director, 2026-11-24, 20:52: a look passes against its picked target and the director's judged examples, never on research's eye alone. AI eyes judge pairs well and single scores badly (`docs/research/quality-and-speed.md`).
 
-**What weighs:** motion at full speed, responsiveness, composition, personality and impact. Stills and numbers support the verdict and never replace it.
+**The form,** in order:
+- **Felt:** one sentence, the piece watched once at full speed from the player's camera.
+- **Gates, measured:** the squint (blurred), greyscale, the black silhouette at 64 px, and the UI lint for a screen. A failed gate is a must-fix.
+- **Beside its target:** the build and its target at phone size, read in both orders. The gaps are listed by where they sit.
+- **Beside the examples:** is it nearer the director's accepted or rejected looks (`docs/research/examples.md`)?
+- **Must-fixes,** each one line, naming what it serves and its class.
 
-**The pass line:** competent, with no obvious issue. Signature abilities, important clips and major landmarks aim at exceptional, and research says when they aren't there. Work that technically passes but feels weak gets a fix. Refinements beyond the pass go to `docs/polish-later.md`.
+**The pass line:** the build carries its target's main read, passes the gates, and sits nearer the accepted examples. A piece without a picked target can't pass: its target comes first. Refinements beyond the pass go to `docs/polish-later.md`.
 
-**The measures:** the vision and the bar (`docs/north-star.md`, "The look" included); the feel line the piece was built to; the chapters under `handbook/visuals/`; for a screen, its written reference study, if `/ga-reference-study` names one. This game has no reference footage, so judge the feel directly, at phone size for anything on screen.
+**What weighs:** composition, personality and impact at phone size. Motion is judged by its poses on a contact sheet and in play, and its timing by numbers, since models read fine motion poorly.
+
+**The measures:** the picked target; the director's examples; the vision and the bar (`docs/north-star.md`, "The look" included); the style frame (AR62) once picked; the chapters under `handbook/visuals/`.
 
 **For an effect, the technique comes first.**
 - A shape with depth drawn on a camera-facing card is a finding before any number is.
@@ -22,7 +29,7 @@ Every review opens with **Felt:** one sentence, the piece watched once at full s
 
 **Precision,** for anyone reviewing: a pose or an effect beside the benchmark is read part by part (head, shoulders, arms, hips, legs and the silhouette at 64 px, or each layer of an effect), with a number for both sides, at full size, from every clear instance in the footage, at least three where they exist, from the same camera where possible. "The rig can't" or "a limit" stands only once a tried lever is shown.
 
-**Two checkpoints per piece:** the blockout, before any polish, and the final, from QA's pack. Two fix rounds on one idea, then the options go to the director with the evidence (AGENTS.md, "The checks, in order").
+**The checkpoints:** the target's pick before the build; the build beside its target at a quarter and at half of its cap (a miss on the main read changes the technique or simplifies, never polishes); the final, from QA's pack. Two techniques missed, then the director picks from images (AGENTS.md, "Every action, world, effect and screen").
 
 **Fix rounds converge** (adopted 2026-11-17, from Anthropic's code review practice: capped rounds and re-reviewing only what changed brought its mean review rounds from 2.08 to 1.32):
 - Each fix is a **must-fix**, which holds the pass. Anything less goes to `docs/polish-later.md` at once, never into the fix list.

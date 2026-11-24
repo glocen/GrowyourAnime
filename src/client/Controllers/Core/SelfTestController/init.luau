@@ -23,6 +23,7 @@ local TestInput = require(Shared.Util.TestInput)
 local PlaceRole = require(Shared.Util.PlaceRole)
 local Cases = require(script.Cases)
 local TowerCases = require(script.TowerCases)
+local ModeCases = require(script.ModeCases)
 local KitCases = require(script.KitCases)
 local StateCases = require(script.StateCases)
 local ButtonCases = require(script.ButtonCases)
@@ -238,6 +239,8 @@ local function run(filter: string?): string
 	table.move(settings, 1, #settings, #cases + 1, cases)
 	local goals = GoalCases.Cases() -- TR54's goals: the Today list, the claim, the dare line and its card, apart for the same reason
 	table.move(goals, 1, #goals, #cases + 1, cases)
+	local modes = ModeCases.Cases() -- the Play panel (the director, 2026-11-24), apart for the same reason
+	table.move(modes, 1, #modes, #cases + 1, cases)
 	local elsewhere = 0
 	pcall(serverCall, "TravelStub", true) -- no case ever leaves the place: each trip asked for is recorded (TR45)
 	for _, case in cases do

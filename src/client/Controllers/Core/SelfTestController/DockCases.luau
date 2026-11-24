@@ -19,6 +19,7 @@ local HomePanel = require(UI.HomePanel)
 local Fade = require(UI.Kit.Fade)
 local Screen = require(UI.Kit.Screen)
 local StageScreen = require(UI.StageScreen)
+local ModeScreen = require(UI.ModeScreen)
 local Layers = require(UI.Layers)
 local Theme = require(UI.Theme)
 local VoidkinScreen = require(UI.VoidkinScreen)
@@ -159,12 +160,14 @@ function DockCases.Cases(given: Given): { any }
 				t.Check("the word goes a moment after", waitFor(t, 1, function(): boolean
 					return not word.Visible
 				end))
-				-- The Map's cell, its word Play (TR45): at rest like the others, and a tap opens the Festival's menu.
+				-- The Map's cell, its word Play (TR45): at rest like the others, and a tap opens the Play panel (the director,
+				-- 2026-11-24; ModeCases holds the panel's own checks), or the Festival's menu with the panel switched off.
 				local map = parts.Map :: TextButton
 				t.Check("the Map's cell at rest", looks(map, "Rest"), tostring(map:GetAttribute("Look")))
 				t.Equal("its word is Play", (dock:FindFirstChild("MapWord", true) :: TextLabel).Text, "Play")
-				t.Check("a tap opens the Festival's menu", Button.Press(map) and waitFor(t, 1, function(): boolean
-					return Screen.Current() == StageScreen.Name
+				local opens = if HudConfig.Modes.On then ModeScreen.Name else StageScreen.Name
+				t.Check("a tap opens the Play panel", Button.Press(map) and waitFor(t, 1, function(): boolean
+					return Screen.Current() == opens
 				end), tostring(Screen.Current()))
 				Screen.Close()
 			end,

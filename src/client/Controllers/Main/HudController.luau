@@ -10,7 +10,7 @@
 -- (UI.Readout): its well fills over the cooldown, it's white-hot when ready and empties in a flash as the move fires;
 -- beside it the spectate eye. Bottom centre, the dock of three icons (UI.Dock): Base takes the player home in one tap
 -- (TR19), Home opens Home's panel (AR49; UI.HomePanel), three cards each opening its whole screen, and the Map tile, its word Play, the Festival of Battles'
--- menu (TR45: HudController.OpenPlay, set by StageController); over the dock the
+-- menu (TR45), reached through the Play panel (HudController.OpenPlay, set by ModeController); over the dock the
 -- shards' hint while a shard waits and the player is home. The HUD's text wears one face
 -- (Config.Hud.Face), switched at runtime. Everything reads the fighters' attributes (FightService) or the save's copy
 -- (ProfileController); nothing here decides anything. The Voidkin screen lists the collection and makes a lead.
@@ -1354,7 +1354,7 @@ end
 HudController.OpenBase = function() end
 -- Opens the base's command view (TR21's blockout): BaseController's, set by it at Start.
 HudController.OpenView = function() end
--- The dock's Play tile: the Festival of Battles' menu (StageController sets it, TR45).
+-- The dock's Play tile: the Play panel, a card a mode (ModeController sets it; the director, 2026-11-24).
 HudController.OpenPlay = function() end
 
 -- Shows `words` as the quiet note under the lead's corner (TR46: the heal cap told once).
@@ -1533,7 +1533,7 @@ function HudController.Start()
 			HomePanel.Close(homePanel) -- the way home leaves the panel
 			goHome()
 		end,
-		Map = function() -- its word is Play: the Festival of Battles' menu, in either place (TR45)
+		Map = function() -- its word is Play: the Play panel, in either place (ModeController; TR45)
 			HudController.OpenPlay()
 		end,
 	})

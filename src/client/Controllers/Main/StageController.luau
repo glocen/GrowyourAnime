@@ -1,7 +1,7 @@
 --!strict
 -- StageController (client): a ground's run of stretches as this player sees it (docs/test-requests.md, TR43, TR50;
--- StageService). The Arc panel opens from the dock's Play or when the server sends it (StagePick, through the Festival
--- Door), the run's card at its end (StageDone; UI.StageScreen). The run reads under Roblox's top bar from the player's
+-- StageService). The Arc panel opens from the Play panel's "Choose Arc" (ModeController) or when the server sends it
+-- (StagePick, through the Festival Door), the run's card at its end (StageDone; UI.StageScreen). The run reads under Roblox's top bar from the player's
 -- attributes (StageRun, StageKills, StageQuota, StageLast), on the panel's glass (AR42; tools/blender/stage_seam.py's
 -- stage_line): the stretch's mark and "Stretch 2 of 4", its Shades on a short road with a notch a Shade, lit as they
 -- fall, to its last foe's ring, and what's left at the right ("then the elite"). A fall steps the count at once and
@@ -12,6 +12,8 @@
 --   StageController.Said() -> (boolean, string)   whether the run's line shows, and its words, for tests
 --   StageController.Gate(stage) -> boolean?       whether stage's gate shows shut, nil before it's streamed in
 --   StageController.Dare() -> { [string]: any }?  the stretch's dare as the line shows it, for tests (DareLine.Said)
+--   StageController.Pick()                        the Arc panel, opened or closed if it's the one open
+--   StageController.Begin(ground, difficulty) -> boolean   a run begun as the Arc panel's press begins it
 
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
@@ -34,7 +36,6 @@ local StageScreen = require(UI.StageScreen)
 local DareLine = require(UI.DareLine)
 local GoalDefs = require(Shared.Definitions.Goals)
 local ProfileController = require(script.Parent.Parent.Core.ProfileController)
-local HudController = require(script.Parent.HudController)
 local WorldConfig = require(Shared.Config.World)
 local Screen = require(UI.Kit.Screen)
 
@@ -406,12 +407,16 @@ function StageController.Pick()
 	StageScreen.Pick(WorldConfig.Row.Ground, view, on)
 end
 
+-- A run on `difficulty` begun from the Play panel (ModeController), through the Arc panel's own begin. True once begun.
+function StageController.Begin(ground: string, difficulty: string): boolean
+	return StageScreen.Begin(on, ground, difficulty)
+end
+
 function StageController.Dare(): { [string]: any }?
 	return DareLine.Said(if line then line.Frame else nil)
 end
 
 function StageController.Start()
-	HudController.OpenPlay = StageController.Pick
 	Net.Client.On("StagePick", function(payload: any)
 		local view = ProfileController.Get()
 		if type(payload) == "table" and type(payload.Ground) == "string" and view then

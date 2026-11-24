@@ -498,6 +498,12 @@ return {
 	-- second, Size authored points wide; off the frame, one arrow at its edge, Margin authored points in from the sides,
 	-- Top from the top and Bottom from the foot (clear of the cards and the dock). Within Near studs of the avatar it steps
 	-- back for the target's own prompt. The keeper's gate is pointed at within Reach studs of it. The builder's seeds.
+	-- The Play panel (the director, 2026-11-24: "i asked for the play button to open a panel of gamemode"; Rules.Modes;
+	-- UI.ModeScreen), in grey until its feel line's review: a card a mode, the Festival's Wide and the Tower's Narrow, Tall
+	-- at the most, Gap apart; the cards rise in Rise points over Seconds, Stagger apart, and at once when the panel opens
+	-- again within Again seconds. On = false gives the dock's Play the Arc panel again, as before (TR50). Errand: seconds
+	-- the world's marker keeps pointing the way to the Tower's ring after "Go to the Tower".
+	Modes = { On = true, Wide = 300, Narrow = 220, Tall = 196, Gap = 10, Rise = 14, Seconds = 0.2, Stagger = 0.04, Again = 60, Errand = 60 },
 	Guide = { Lift = 1.5, Bob = 0.35, Rate = 0.9, Size = 36, Margin = 56, Top = 84, Bottom = 120, Near = 12, Reach = 800,
 		-- The edge's arrow (TR24's fix 2: it read as a small lilac stroke on the sky): an arrow, shaft and head, on a round
 		-- dark backing Size points across, the backing in the chevrons' ink at Backing, rimmed in the guide's colour at Rim;

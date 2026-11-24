@@ -1027,6 +1027,16 @@ StageScreen.Check = check
 StageScreen.Road = roadLight
 StageScreen.Accent = accent
 
+-- A run on `which` begun for this player, as a press on the Arc panel begins it (the Play panel's Continue, UI.ModeScreen):
+-- the open screen closes once it has, and a refusal says why. True once begun.
+function StageScreen.Begin(on: On, ground: string, which: string): boolean
+	local begun = begin(on, ground, which)
+	if begun then
+		difficulty = which
+	end
+	return begun
+end
+
 function StageScreen.Parts(): { [string]: Instance }
 	return parts
 end

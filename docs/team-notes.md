@@ -20,8 +20,8 @@ Each teammate rewrites its own row: one to three lines. Open asks sit under "Wai
 - **For research:** AR58's and AR48's passes in motion.
 - **Blocked on the director:** item 10. A new effect's targets are made in the game, so the class strikes can't start without it.
 
-**Sonus (sound).** 2026-11-24. **Now: the M1's sound per class.** The panel's words are set (TR42, "The M1's sound per class"); nothing shortlisted yet.
-- **Blocked:** my Studio calls wait on the hooks (item 10); then a 9-minute finder run, then the director's listen. **Next:** the five signatures' sounds.
+**Sonus (sound).** 2026-11-24, stopped at the director's word of 21:25. **Now: the M1s per class and the five signatures, one finished sound each.** The words for all eleven tabs are set (TR42, "The M1's sound per class"); nothing shortlisted yet.
+- **Blocked:** my Studio calls wait on the hooks (item 10); then a 15-minute finder run, then the director's listen.
 
 **Turns.** Studio: one at a time while memory is short. The main place is open, Faber's turn (2026-11-24, by 15:01), and the Festival's place is closed. Blender: nobody (Modulo's AR41 strips were stopped at 01:33 on 2026-11-19 by Claude Code when the PC ran low on memory; the director said wait at 01:34). Timing tests: nobody.
 

@@ -14,7 +14,7 @@ Each teammate rewrites its own row: one to three lines. Open asks sit under "Wai
 
 **Modulo (assets).** 2026-11-24, 14:08. Nothing running, no lock held.
 - **Waiting on the director:** AR60 Kirra (research passed it at competent) and AR59 Rook. Nothing uploaded. Faber's open looks (TR53, TR54, the Guard's clip, AR49, AR44, AR40, AR48, TR50, AR50) are in their entries.
-- **Pip's three takes wait on research's pick** (AR63): `build/handoff/Pip/takes/pip_takes.png`. **Now:** AR62's two design takes in today's colours ("The plan", step 2). Then TR56's three chest pictures (Emblem Case, Jewel Pouch, Forge Crate). Then Lyric and Watt.
+- **Pip: research picked take A** (AR63), and its finish waits on the director's look: `build/handoff/Pip/takes/pip_takes.png`. **Now:** AR62's two design takes in today's colours ("The plan", step 2). Then TR56's three chest pictures (Emblem Case, Jewel Pouch, Forge Crate). Then Lyric and Watt.
 
 **Scintilla (effects).** 2026-11-24, 14:14. Grey rows, shown nowhere yet: hit sparks (AR61), the Shades' tells (AR52), the keeper's swing and challenge (AR7), the element states (AR48).
 - **For Faber:** the hooks in those entries, and the review.

@@ -8,11 +8,9 @@ Each teammate rewrites its own row: one to three lines. Open asks sit under "Wai
 - **Next:** AR62's verdict when Modulo's takes land; TR54's second look on Faber's capture; then the Broadcast, the Strip's boards, the welcome week and codes, the capture, firsts.
 - **With the director, on return:** accept Rook and Kirra (`build/handoff/Rook/make/rook_make_sheet.png`, `build/handoff/Kirra/make/kirra_make_sheet.png`); AR62's pick; the phone sitting and F7; TR52's run; item 10, the hooks; the store's design.
 
-**Faber (builder).** 2026-11-24, 13:35, on Opus 5.5. The director is off until about 20:30. Nothing running, no lock held.
-- **Done today:** the cloud session's changes merged; the ceiling to 15; TR54's must-fixes (`565893e6`); TR55 as a block (`a39ec8c7`); the Festival's place published privately (12:49); TR53 with TR31 as blocks (`74697108`, `887e0a3c`, `7e01f72f`). **AR57's two elites, built** (AR57, "Faber's build"): the square holds the Guard's on Normal and the Dasher's on Hard; logic and the touched cases pass at 60 fps; seven stills in `build/captures/ar57/` for research's verdict, the content check passed (`2cefe1f3`). **The director's music** (their word of 2026-11-24: C for the game modes only; in the game at 13:34): M's three at the base and on the Strip, C's one in the Festival's runs, a keeper's try and the Tower; a track two places share plays on across them (`bf7dacb9`).
-- **A fall in the Festival, my say** (tier 2 notice of 10:55): as written, but Retry lit (or dim with its time) at 124, then "Swap" and "Home" quiet at 82 each, in the Hard card's 300 points. The word is research's. About 5 to 6 active hours.
-- **Then:** AR58, the Support (its behaviour needs seeds: a heal and a shield on its pack, its health; I'll propose them in its entry); AR56; the Festival's place published again with AR57, then the main place's private publish and TR53's case there. Owed: TR55's self-test case, TR54's capture.
-- **For Sonus:** the full suite's Audition case: KirraHit has a candidate of 0.66 s where 0.6 is allowed (`Config/Audition`).
+**Faber (builder).** 2026-11-24, 14:08, on Opus 5.5. Nothing running, no lock held; the main place open in Studio.
+- **Done:** AR62's before set (`build/captures/ar62/before/`, `0ac04f22`); both places published privately (main 14:06, version 1200); TR53's return card fixed at the smallest phone (`6a817eb2`).
+- **Now:** AR58, the Support (uploads, then its heal and shield at seeds in its entry). Then the fall card's three presses ("Send another"), AR56. Owed: TR55's case, TR54's capture. For Sonus: KirraHit's candidate is 0.66 s where 0.6 is allowed (`Config/Audition`).
 
 **Modulo (assets).** 2026-11-24, 14:08. Nothing running, no lock held.
 - **Waiting on the director:** AR60 Kirra (research passed it at competent) and AR59 Rook. Nothing uploaded. Faber's open looks (TR53, TR54, the Guard's clip, AR49, AR44, AR40, AR48, TR50, AR50) are in their entries.
@@ -25,7 +23,7 @@ Each teammate rewrites its own row: one to three lines. Open asks sit under "Wai
 **Sonus (sound).** 2026-11-24. **Now: the M1's sound per class.** The panel's words are set (TR42, "The M1's sound per class"); nothing shortlisted yet.
 - **Blocked:** my Studio calls wait on the hooks (item 10); then a 9-minute finder run, then the director's listen. **Next:** the five signatures' sounds.
 
-**Turns.** Studio: one at a time while memory is short. The main place is open, Faber's turn, for its private publish (2026-11-24, 13:57), and the Festival's place is closed. Blender: nobody (Modulo's AR41 strips were stopped at 01:33 on 2026-11-19 by Claude Code when the PC ran low on memory; the director said wait at 01:34). Timing tests: nobody.
+**Turns.** Studio: one at a time while memory is short. The main place is open, Faber's turn, for AR58 (2026-11-24, 13:57), and the Festival's place is closed. Blender: nobody (Modulo's AR41 strips were stopped at 01:33 on 2026-11-19 by Claude Code when the PC ran low on memory; the director said wait at 01:34). Timing tests: nobody.
 
 **The count.** Week of 2026-11-23: 6 pieces closed and playable: AR49, TR10, AR44's shine, TR50, AR50's and AR54's install, AR51 (each entry below has its hours). In the game and waiting: TR52 (the director's run), AR52 (research's pass), TR54 (three must-fixes).
 

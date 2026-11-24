@@ -4856,6 +4856,7 @@ Research, 2026-11-23, 14:58, F4 and F6 of `docs/research/design-holes.md`: the d
   - the battery's line is its net gain, shown only when it gained;
   - a battery that ended full and sold its overflow reads "Full", with the Credits as its soft word.
   - The logic case adds: a net loss shows no battery line.
+- **Faber, 2026-11-24, 14:06:** the case failed at the smallest phone (the press 37 px, under 44). The press is 52 points now, the slab 8 taller, and the Void Shop's countdown waits while the card is up, as the next step does (`6a817eb2`). The case is 37/0 in the main place, published privately as version 1200.
 
 ## TR54. Goals, basic at launch: a dare per stretch, today's three, and Next (Faber, after TR52 and AR52)
 

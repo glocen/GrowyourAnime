@@ -16972,3 +16972,19 @@ Sheet: `build/handoff/Rook/takes/rook_pick.png` (1900 x 1537, sha1 `514b4890`): 
 - **`Rook_Piston` and `Rook_Tape`: both go** (my call, as the redo leaves it). Nothing is built on his body, and a part kept only to hold keys nobody sees is dead weight. A clip's pose for a joint that isn't there is skipped, so today's published clips still play. It costs Faber three lines at the install: the self-test's two joint checks and its "eight pieces" count (`SelfTestController/Cases.luau`, about line 1802), and `Rook_Piston` out of Haymaker's `Glow.Pieces` (`Config/Effects.luau`). The glow's mask moves to the right fist's wraps.
 - **Four facts:** made, yes. Self-reviewed, yes, at the fight camera and the card's size. Delivered, no: the model's files for Faber come with the finish. In the game, no.
 - **Next:** research's second look at the five fixes; the director's look (sent at 01:37). Meanwhile the finish's build: the kit writes one picture and the pieces as `ModelRecipe` reads them, then his clips are run on the new body.
+
+### Research's second look: AR59's pick passes at competent (Quaestor, 2026-11-24, 01:38)
+
+From `rook_pick.png` and `compare_rook_pick.png`. This look judges the five fixes and anything they broke.
+- **All five are met:**
+  1. From the fight camera he reads as hair, a slate jacket, a red line, dark trousers and a pale fist. He's never a slab, and he stands apart from the Shade.
+  2. The wraps close over the hands' ends, so they read as fists.
+  3. The plaster is a small mark on the bridge.
+  4. The folds pull from the shoulder, the arm's pit, the waist and the elbow, with nothing on the chest or the stomach.
+  5. The hair is smooth with its band of light, and the cloth has its grain. Beside the reference, the cloth now holds.
+- **Nothing broke.** The hair's geometry is unchanged (3,360 triangles).
+- **An older note, not a must-fix:** beside the two reference units, his hair is the quietest of the three. It stands lower over the crown, and at 64 px its points don't break the outline, which the content check also noted. The lever is the reference's own measure, 0.45 to 0.6 of a head over the crown, with the crown's points lifted. It goes to polish-later, and it's the first thing to try if the director asks for the hair again.
+- **The cloth's fold shade, one step deeper** to match the reference's harder paint, also goes to polish-later. It's one number in the kit.
+- **The sheet's label** says "no element". He's Fire (TR49's decision 6; `docs/roster.md` now agrees). That's only the sheet, not the game.
+- **What the stills can't show:** his clips on the new body, and him on Lantern Row at night. First seen at Faber's install.
+- **Next:** the director's look (the sheet has been on the director's device since 01:38), then the install files. The director's acceptance comes before Faber installs.

@@ -3,13 +3,19 @@
 -- home the Base tile lifts the camera over the player's own base, from its gate's side, until all of it is in view, and a
 -- plain chip hangs over each machine and bay: its name, its level, and what it's doing now. The base's level stands at
 -- the top with what the next one opens and its price. Close brings the camera back behind the lead. The HUD and the
--- machines' own plates step back meanwhile, and the avatar stands still. Plain on purpose: the panel, Upgrade and the
--- Power tab are the build, after research's verdict on this take. Its numbers are Config.BaseView's.
---   BaseView.Open({ Plot = floor, Spots = { Breaker = Vector3, Bay1 = Vector3, ... }, View = ProfileController.Get })
+-- machines' own plates step back meanwhile, and the avatar stands still. Plain on purpose, in grey.
+-- Upgrade (TR21's block; docs/ui.md, 7): the base's level carries its press, and a tap on a chip opens that machine's
+-- panel at the side, away from the chip: what it does, its level, what the next level gives, its price, and Upgrade.
+-- What a press asks for is Rules.BaseLevels.Ask's, so it sends exactly what the server takes; a press that can't be
+-- pressed says why on its own face. A bay's worker by tap, the Power tab and the camera's hold on the change wait.
+-- Its numbers are Config.BaseView's.
+--   BaseView.Open({ Plot = floor, Spots = { Breaker = Vector3, Bay1 = Vector3, ... }, View = ProfileController.Get,
+--                   Act = ProfileController.Act })
 --   BaseView.Close()
 --   BaseView.IsOpen()
+--   BaseView.Pick(spot)   opens that machine's panel, or closes it when it's the one open (a chip's tap)
 --   BaseView.Framing(ground, points, aspect, edge?) -> the camera's CFrame, for tests
---   BaseView.Parts() -> its chips by spot name and its level plate, for tests
+--   BaseView.Parts() -> its chips by spot name, its level plate and its press, the side panel and its press, for tests
 
 local Players = game:GetService("Players")
 local GuiService = game:GetService("GuiService")
@@ -30,21 +36,54 @@ local World = require(script.Parent.World)
 local Panel = require(script.Parent.Kit.Panel)
 local Text = require(script.Parent.Kit.Text)
 local Button = require(script.Parent.Kit.Button)
+local Toast = require(script.Parent.Kit.Toast)
 
 export type Options = {
 	Plot: BasePart, -- the plot's floor
 	Spots: { [string]: Vector3 }, -- each machine's and bay's spot on the floor, by name (BaseController.Says)
 	View: () -> Profile.View?,
+	Act: ((name: string, args: any?) -> { [string]: any })?, -- asks the server (ProfileController.Act); none: nothing is bought
 }
 type Chip = { Frame: Frame, Title: TextLabel, Doing: TextLabel, Ground: Vector3 }
+type Side = { Frame: Frame, Spot: string, Title: TextLabel, Does: TextLabel, Gain: TextLabel, Press: TextButton }
 type Saved = { Type: Enum.CameraType, CFrame: CFrame, Fov: number }
 type Row = World.Row -- a chip on the screen, authored pixels
-type State = { Options: Options, Holder: Frame, Level: Frame, Chips: { [string]: Chip }, Saved: Saved, Beat: RBXScriptConnection, ReadAt: number }
+type State = {
+	Options: Options,
+	Holder: Frame,
+	Level: Frame,
+	Upgrade: TextButton, -- the base's own press, on its level's plate
+	Side: Side?, -- the machine's panel a chip's tap opened
+	Busy: boolean, -- a press is with the server
+	Chips: { [string]: Chip },
+	Saved: Saved,
+	Beat: RBXScriptConnection,
+	ReadAt: number,
+}
 
 local BaseView = {}
 BaseView.Closed = Signal.new()
 
 local LINE = 20 -- authored pixels a chip's line takes
+local AHEAD = 36 -- what the base's next level opens: two lines of Caption
+
+-- What each machine does, one line, on its panel.
+local DOES: { [string]: string } = {
+	Breaker = "Breaks Void Shards into Voidkin.",
+	Battery = "Stores the power nothing uses.",
+	Generator = "Shows the power made against the power drawn.",
+	Training = "Trains one Voidkin. Its rate is fixed.",
+	Bay = "A Voidkin works here and makes power.",
+}
+-- A refusal the server gave after the press was open: someone else's tap got there first, or the view was behind.
+local REFUSED: { [string]: string } = {
+	Short = "Not enough Credits",
+	Stale = "Already bought",
+	Cap = "That's the top level for now",
+	Ceiling = "Raise the base's level first",
+	Asleep = "It isn't awake yet",
+	NoAnswer = "No answer. Try again.",
+}
 
 local state: State? = nil
 local closing = false
@@ -101,13 +140,27 @@ function BaseView.Framing(ground: CFrame, points: { Vector3 }, aspect: number, e
 	return ground * CFrame.lookAt(eye, aim)
 end
 
+local pick: (name: string) -> ()
+
+-- A chip is a touch high, since a tap on it opens its machine's panel.
 local function chip(name: string, ground: Vector3): Chip
 	local c = BaseViewConfig.Chip
-	local frame = World.Plate(`View{name}`, Vector2.new(c.Width, 2 * LINE + Theme.Size.Pad), function(): Vector3?
+	local tall = math.max(2 * LINE + Theme.Size.Pad, Theme.Size.Tap)
+	local frame = World.Plate(`View{name}`, Vector2.new(c.Width, tall), function(): Vector3?
 		return if state then ground + Vector3.new(0, c.Rise, 0) else nil
 	end)
 	local panel = Panel.new({ Name = "Panel", Size = UDim2.fromScale(1, 1), Parent = frame })
-	Panel.Pad(panel, 4, 10)
+	Panel.Pad(panel, (tall - 2 * LINE) / 2, 10)
+	local tap = Instance.new("TextButton")
+	tap.Name = "Tap"
+	tap.Text = ""
+	tap.BackgroundTransparency = 1
+	tap.Size = UDim2.fromScale(1, 1)
+	tap.ZIndex = 5
+	tap.Activated:Connect(function()
+		pick(name)
+	end)
+	tap.Parent = frame
 	Panel.List(panel, nil, 0)
 	local title = Text.new({ Name = "Title", Size = Theme.Text.Caption, Font = Theme.Font.Strong, Truncate = true, Box = UDim2.new(1, 0, 0, LINE), Parent = panel })
 	title.LayoutOrder = 1
@@ -207,7 +260,59 @@ local function levelLines(data: Profile.View): (string, string)
 			table.insert(gains, "the Stone Condenser wakes")
 		end
 	end
-	return `Base · Level {level}`, `Level {offer.Level}: {table.concat(gains, ", ")} · {Read.Number(offer.Price)} Credits`
+	return `Base · Level {level}`, `Level {offer.Level}: {table.concat(gains, ", ")}` -- its price is on its press
+end
+
+-- Why an offer's press can't be pressed, for its own face; nil when it can.
+local function why(ask: BaseLevels.Ask, view: Profile.View): string?
+	local offer = ask.Offer
+	if offer.Why == nil then
+		return nil
+	elseif offer.Why == BaseLevels.Short and offer.Price then
+		return `Need {Read.Number(offer.Price - view.Currency.Credits)} more`
+	elseif offer.Why == BaseLevels.AtCeiling then
+		return `Base level {(view.Base.Level or 1) + 1} first`
+	elseif offer.Why == BaseLevels.Asleep then
+		return "Not awake yet"
+	end
+	return "Top level"
+end
+
+-- A machine's level against its first, as a percentage: 1.04 reads "104%".
+local function percent(against: number): string
+	return `{math.floor(against * 100 + 0.5)}%`
+end
+
+-- What a machine's next level gives, in plain numbers.
+local function gives(offer: BaseLevels.Offer): string
+	local list: { string } = {}
+	for _, gain in offer.Gains do
+		if gain.What == "Speed" then
+			table.insert(list, `speed {percent(gain.From)} to {percent(gain.To)}`)
+		elseif gain.What == "Output" then
+			table.insert(list, `output {percent(gain.From)} to {percent(gain.To)}`)
+		elseif gain.What == "Chambers" then
+			table.insert(list, `{gain.To} chambers`)
+		elseif gain.What == "Rate" then
+			table.insert(list, `{Read.Number(gain.To)} stones an hour`)
+		elseif gain.What == "Tray" then
+			table.insert(list, `a tray of {Read.Number(gain.To)}`)
+		end
+	end
+	return `Level {offer.Level}: {table.concat(list, ", ")}`
+end
+
+-- A press shown with its price, hidden, or off with its reason on its face; touched only when that changes, since the
+-- view reads often.
+local function set(press: TextButton, price: number?, off: string?)
+	local words = if price then `Upgrade · {Read.Number(price)}` else "Upgrade"
+	local mark = if price then `{words}|{off or ""}` else "hidden"
+	if press:GetAttribute("Shows") == mark then
+		return
+	end
+	press:SetAttribute("Shows", mark)
+	press.Visible = price ~= nil
+	Button.Set(press, { Text = words, Disabled = off or false })
 end
 
 local function read(now: State)
@@ -225,6 +330,108 @@ local function read(now: State)
 	if first and first:IsA("TextLabel") and second and second:IsA("TextLabel") then
 		first.Text, second.Text = top, ahead
 	end
+	local credits = view.Currency.Credits
+	local base = BaseLevels.Ask(view.Base :: any, "Base", credits)
+	local buys = now.Options.Act ~= nil
+	set(now.Upgrade, if base and buys then base.Offer.Price else nil, if base then why(base, view) else nil)
+	local side = now.Side
+	if side == nil then
+		return
+	end
+	local title, doing = said(side.Spot, at)
+	side.Title.Text = title
+	local ask = BaseLevels.Ask(view.Base :: any, side.Spot, credits)
+	local price = if ask then ask.Offer.Price else nil
+	if ask == nil then
+		-- No level of its own, or a bay not open yet: the chip's own line says when it opens.
+		side.Gain.Text = if string.match(side.Spot, "^Bay") then doing else "It grows with the base's level."
+	elseif price == nil then
+		side.Gain.Text = "The top level for now."
+	else
+		side.Gain.Text = gives(ask.Offer)
+	end
+	set(side.Press, if buys then price else nil, if ask then why(ask, view) else nil)
+end
+
+-- A press: what the spot can buy now, asked of the server once. A refusal that slipped past the press's own face is
+-- said in words. True once it's bought.
+local function buy(now: State, spot: string): boolean
+	local view, act = now.Options.View(), now.Options.Act
+	if view == nil or act == nil or now.Busy then
+		return false
+	end
+	local ask = BaseLevels.Ask(view.Base :: any, spot, view.Currency.Credits)
+	if ask == nil or ask.Offer.Why ~= nil then
+		return false
+	end
+	now.Busy = true
+	local answer = act(ask.Act, ask.Args)
+	now.Busy = false
+	if state ~= now then
+		return answer.Ok == true -- the view closed while the server answered
+	end
+	if answer.Ok ~= true then
+		Toast.Show(REFUSED[tostring(answer.Error)] or "That didn't go through. Try again.", Theme.Colour.TextDim)
+	end
+	read(now)
+	return answer.Ok == true
+end
+
+-- A machine's panel at the side, the side its chip isn't on: its name and level, what it does, what the next level
+-- gives, and its press with its price.
+local function side(now: State, spot: string): Side
+	local pad, gap, tap = Theme.Size.Pad, Theme.Size.Gap, Theme.Size.Tap
+	local wide = BaseViewConfig.Side.Width
+	local rows = { Title = 24, Does = 38, Gain = 38 }
+	local tall = pad + rows.Title + rows.Does + rows.Gain + gap + tap + pad
+	local camera = workspace.CurrentCamera
+	local made = now.Chips[spot]
+	local left = false
+	if camera and made then
+		left = camera:WorldToViewportPoint(made.Ground).X > camera.ViewportSize.X / 2
+	end
+	local frame = Panel.new({
+		Name = "Side",
+		Size = UDim2.fromOffset(wide, tall),
+		Position = if left then UDim2.new(0, pad, 0.5, 0) else UDim2.new(1, -pad, 0.5, 0),
+		AnchorPoint = Vector2.new(if left then 0 else 1, 0.5),
+		Parent = now.Holder,
+	})
+	local y = pad
+	local function line(name: string, high: number, size: number, colour: Color3, font: Font, wrap: boolean): TextLabel
+		local label = Text.new({ Name = name, Size = size, Font = font, Colour = colour, Align = Enum.TextXAlignment.Left, Box = UDim2.new(1, -pad * 2, 0, high), Position = UDim2.fromOffset(pad, y), Parent = frame, Wrap = wrap, Truncate = not wrap })
+		y += high
+		return label
+	end
+	local title = line("Title", rows.Title, Theme.Text.Body, Theme.Colour.Text, Theme.Font.Strong, false)
+	local does = line("Does", rows.Does, Theme.Text.Caption, Theme.Colour.TextDim, Theme.Font.Body, true)
+	local gain = line("Gain", rows.Gain, Theme.Text.Caption, Theme.Colour.Text, Theme.Font.Body, true)
+	does.Text = DOES[spot] or DOES.Bay
+	local press = Button.new({ Name = "Upgrade", Text = "Upgrade", Size = UDim2.fromOffset(wide - pad * 2, tap), Position = UDim2.fromOffset(pad, y + gap), Parent = frame, OnPress = function(): boolean
+		return buy(now, spot)
+	end })
+	return { Frame = frame, Spot = spot, Title = title, Does = does, Gain = gain, Press = press }
+end
+
+pick = function(name: string)
+	local now = state
+	if now == nil or now.Chips[name] == nil then
+		return
+	end
+	local open = now.Side
+	if open then
+		open.Frame:Destroy()
+		now.Side = nil
+		if open.Spot == name then
+			return
+		end
+	end
+	now.Side = side(now, name)
+	read(now)
+end
+
+function BaseView.Pick(spot: string)
+	pick(spot)
 end
 
 function BaseView.IsOpen(): boolean
@@ -247,16 +454,21 @@ function BaseView.Open(options: Options)
 		BaseView.Close()
 		return nil
 	end })
-	local level = Panel.new({ Name = "Level", Size = UDim2.fromOffset(BaseViewConfig.Level.Width, 2 * LINE + pad), Position = UDim2.new(0.5, 0, 0, pad), AnchorPoint = Vector2.new(0.5, 0), Parent = holder })
-	Panel.Pad(level, 4, 10)
-	Panel.List(level, nil, 0)
-	local title = Text.new({ Name = "Title", Size = Theme.Text.Body, Font = Theme.Font.Strong, Align = Enum.TextXAlignment.Center, Box = UDim2.new(1, 0, 0, LINE), Parent = level })
-	title.LayoutOrder = 1
-	local ahead = Text.new({ Name = "Next", Size = Theme.Text.Caption, Colour = Theme.Colour.TextDim, Align = Enum.TextXAlignment.Center, Truncate = true, Box = UDim2.new(1, 0, 0, LINE), Parent = level })
-	ahead.LayoutOrder = 2
+	-- The base's level, top middle: its name and what the next level opens at the left, its press with the price at
+	-- the right, a touch high. Narrow enough to stand clear of the X on the smallest phone.
+	local plate = BaseViewConfig.Level
+	local tap = Theme.Size.Tap
+	local tall = math.max(LINE + AHEAD, tap) + pad
+	local level = Panel.new({ Name = "Level", Size = UDim2.fromOffset(plate.Width + plate.Press + pad * 3, tall), Position = UDim2.new(0.5, 0, 0, pad), AnchorPoint = Vector2.new(0.5, 0), Parent = holder })
+	local top = (tall - LINE - AHEAD) / 2
+	Text.new({ Name = "Title", Size = Theme.Text.Body, Font = Theme.Font.Strong, Align = Enum.TextXAlignment.Left, Box = UDim2.fromOffset(plate.Width, LINE), Position = UDim2.fromOffset(pad, top), Parent = level })
+	Text.new({ Name = "Next", Size = Theme.Text.Caption, Colour = Theme.Colour.TextDim, Align = Enum.TextXAlignment.Left, Wrap = true, Box = UDim2.fromOffset(plate.Width, AHEAD), Position = UDim2.fromOffset(pad, top + LINE), Parent = level })
 
 	local saved = { Type = camera.CameraType, CFrame = camera.CFrame, Fov = camera.FieldOfView }
-	local now: State = { Options = options, Holder = holder, Level = level, Chips = {}, Saved = saved, Beat = nil :: any, ReadAt = -math.huge }
+	local now: State = { Options = options, Holder = holder, Level = level, Upgrade = nil :: any, Side = nil, Busy = false, Chips = {}, Saved = saved, Beat = nil :: any, ReadAt = -math.huge }
+	now.Upgrade = Button.new({ Name = "Upgrade", Text = "Upgrade", Size = UDim2.fromOffset(plate.Press, tap), Position = UDim2.new(1, -pad, 0.5, 0), AnchorPoint = Vector2.new(1, 0.5), Parent = level, Primary = true, OnPress = function(): boolean
+		return buy(now, "Base")
+	end })
 	state = now
 	local points = {}
 	for name, ground in options.Spots do
@@ -312,14 +524,22 @@ function BaseView.Close()
 	back:Play()
 end
 
-function BaseView.Parts(): { Chips: { [string]: Frame }, Level: Frame? }
+function BaseView.Parts(): { Chips: { [string]: Frame }, Level: Frame?, Upgrade: TextButton?, Side: Frame?, SideSpot: string?, SidePress: TextButton? }
 	local chips = {}
 	if state then
 		for name, made in state.Chips do
 			chips[name] = made.Frame
 		end
 	end
-	return { Chips = chips, Level = if state then state.Level else nil }
+	local side = if state then state.Side else nil
+	return {
+		Chips = chips,
+		Level = if state then state.Level else nil,
+		Upgrade = if state then state.Upgrade else nil,
+		Side = if side then side.Frame else nil,
+		SideSpot = if side then side.Spot else nil,
+		SidePress = if side then side.Press else nil,
+	}
 end
 
 return BaseView

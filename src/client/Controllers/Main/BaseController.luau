@@ -528,7 +528,7 @@ function BaseController.OpenBreaker()
 end
 
 -- The base screen's command view (TR21's blockout, UI/BaseView), from the Base tile at home: the camera over the
--- player's whole base, a chip on each machine and bay.
+-- player's whole base, a chip on each machine and bay, and Upgrade on the base's level and on a tapped machine's panel.
 function BaseController.OpenView()
 	local number = player:GetAttribute("Plot")
 	local floor = if type(number) == "number" then Markers.Find("Plot", { Plot = number }) else nil
@@ -539,7 +539,7 @@ function BaseController.OpenView()
 	for name, spot in BaseController.Says() do
 		spots[name] = spot.Ground
 	end
-	BaseView.Open({ Plot = floor, Spots = spots, View = ProfileController.Get })
+	BaseView.Open({ Plot = floor, Spots = spots, View = ProfileController.Get, Act = ProfileController.Act }) -- its refusals are its own words
 end
 
 -- The Power screen (TR18, UI/PowerScreen), from the generator's prompt: only once it's open to the player (the server

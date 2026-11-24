@@ -6,6 +6,8 @@
 -- price, the gain, and why it can't be bought when it can't. No Roblox API: it runs with Studio closed.
 --   BaseLevels.Next(baseLevel, credits)                     the base's next level, as an offer
 --   BaseLevels.NextMachine(machine, level, baseLevel, credits)  a machine's next level ("Breaker", "Bay" or "Condenser"), as an offer
+--   BaseLevels.Ask(base, spot, credits)                     what a spot of the base's view can buy: the action, its
+--                                                           arguments and its offer, as Rules.Base takes them
 --   BaseLevels.Stage(level)                                 a machine's stage at its level: 1, 2 or 3
 --   BaseLevels.GeneratorStage(baseLevel)                    the generator's: a machine's at the base's ceiling
 --   BaseLevels.Stages(base)                                 every machine's stage on a base, as the world stands it (TR51)
@@ -35,6 +37,17 @@ export type Offer = {
 BaseLevels.AtCap = "Cap" -- past the last level there is
 BaseLevels.AtCeiling = "Ceiling" -- a machine at its base's ceiling: the base's level comes first
 BaseLevels.Short = "Short" -- fewer Credits than the price
+BaseLevels.Asleep = "Asleep" -- the Stone Condenser before the base's level wakes it
+
+-- What a press on a spot of the base's view asks the server for (docs/ui.md, 7: "its price, and Upgrade").
+export type Ask = {
+	Act: string, -- Rules.Base's action: "UpgradeBase" or "UpgradeMachine"
+	Args: { [string]: any }, -- as that action takes them
+	Machine: Machine?, -- nil for the base itself
+	Bay: number?,
+	Now: number, -- the level it stands at
+	Offer: Offer,
+}
 
 local function at(list: { number }, level: number): number
 	return list[math.clamp(level, 1, #list)]
@@ -185,6 +198,34 @@ function BaseLevels.NextMachine(machine: Machine, level: number, baseLevel: numb
 	end
 	local why = if next > BaseLevels.Ceiling(baseLevel) then BaseLevels.AtCeiling elseif credits < price then BaseLevels.Short else nil
 	return { Level = next, Price = price, Why = why, Gains = gains }
+end
+
+-- What a spot of the base's view can buy: "Base", "Breaker", "Condenser" or a bay ("Bay3"). The action, its arguments
+-- and its offer, so the press sends exactly what Rules.Base accepts, and says why when it can't. Nil for a spot with no
+-- level of its own (the battery, the generator and the Training machine follow the base's) and for a bay not open yet.
+function BaseLevels.Ask(base: StagedBase, spot: string, credits: number): Ask?
+	if spot == "Base" then
+		local offer = BaseLevels.Next(base.Level, credits)
+		return { Act = "UpgradeBase", Args = { Level = offer.Level }, Now = base.Level, Offer = offer }
+	end
+	local bay = tonumber(string.match(spot, "^Bay(%d+)$"))
+	if bay ~= nil then
+		local open = base.Bays[bay]
+		if open == nil then
+			return nil
+		end
+		local level = open.Level or 1
+		local offer = BaseLevels.NextMachine("Bay", level, base.Level, credits)
+		return { Act = "UpgradeMachine", Args = { Machine = "Bay", Bay = bay, Level = offer.Level }, Machine = "Bay", Bay = bay, Now = level, Offer = offer }
+	elseif spot == "Breaker" or spot == "Condenser" then
+		local level = base.Machines[spot] or 1
+		local offer = BaseLevels.NextMachine(spot, level, base.Level, credits)
+		if spot == "Condenser" and not Condenser.Awake(base.Level) then
+			offer.Why = BaseLevels.Asleep
+		end
+		return { Act = "UpgradeMachine", Args = { Machine = spot, Level = offer.Level }, Machine = spot, Now = level, Offer = offer }
+	end
+	return nil
 end
 
 return BaseLevels

@@ -24,6 +24,7 @@ local PlaceRole = require(Shared.Util.PlaceRole)
 local Cases = require(script.Cases)
 local TowerCases = require(script.TowerCases)
 local ModeCases = require(script.ModeCases)
+local BaseViewCases = require(script.BaseViewCases)
 local KitCases = require(script.KitCases)
 local StateCases = require(script.StateCases)
 local ButtonCases = require(script.ButtonCases)
@@ -241,6 +242,8 @@ local function run(filter: string?): string
 	table.move(goals, 1, #goals, #cases + 1, cases)
 	local modes = ModeCases.Cases() -- the Play panel (the director, 2026-11-24), apart for the same reason
 	table.move(modes, 1, #modes, #cases + 1, cases)
+	local views = BaseViewCases.Cases() -- the base view's Upgrade press (TR21's block), apart for the same reason
+	table.move(views, 1, #views, #cases + 1, cases)
 	local elsewhere = 0
 	pcall(serverCall, "TravelStub", true) -- no case ever leaves the place: each trip asked for is recorded (TR45)
 	for _, case in cases do

@@ -1502,7 +1502,7 @@ return {
 	-- The block's motion: Wait after the join's black lifts, Rise points up and in over Seconds, each line's count After
 	-- apart.
 	Return = {
-		Wide = 188, Right = 8, Foot = 6, Base = 78,
+		Wide = 188, Right = 8, Foot = 6, Base = 86,
 		Pitch = 26, Five = 21,
 		Head = { X = 10, Y = 7, Size = 14 },
 		Top = 26,
@@ -1518,7 +1518,7 @@ return {
 		},
 		Gain = { Gap = 7, Size = 17 },
 		Word = { Right = 11, Size = 14 },
-		Press = { Inset = 8, Over = 50, Tall = 44, Size = 17 },
+		Press = { Inset = 8, Over = 58, Tall = 52, Size = 17 }, -- Tall: Theme.Size.Tap, 44 px at the smallest phone's scale
 		Wait = 0.6, Rise = 16, Seconds = 0.3, After = 0.08,
 		-- AR55's cut (build/handoff/UI/return/images/), under the group (2026-11-24): a line's well and its light, white
 		-- for its machine's colour, laid at (Seat.X, Seat.Y), Pad its origin; the Ready tab's glow, centred, its Pad the

@@ -43,6 +43,7 @@ local LandingConfig = require(Shared.Config.Landing)
 local LightingController = require(script.Parent.Parent.Parent.Main.LightingController)
 local SignsController = require(script.Parent.Parent.Parent.Main.SignsController)
 local HudController = require(script.Parent.Parent.Parent.Main.HudController)
+local ShopController = require(script.Parent.Parent.Parent.Main.ShopController)
 local AnimationsConfig = require(Shared.Config.Animations)
 local RevealConfig = require(Shared.Config.Reveal)
 local Grounds = require(Shared.Definitions.Grounds)
@@ -1866,6 +1867,8 @@ function BaseCases.Cases(given: Given): { any }
 					t.Check(`{where}: under the Electricity pill`, top >= pillFoot - 0.5, `top {math.floor(top)}, the pill's foot {math.floor(pillFoot)}`)
 					t.Check(`{where}: {R.Right} in from the HUD's right and {R.Foot} over its foot`, math.abs(edge - right - R.Right * scale) < 1 and math.abs(bottom - foot - R.Foot * scale) < 1, `{math.floor((edge - right) / scale + 0.5)}, {math.floor((bottom - foot) / scale + 0.5)}`)
 					t.Check(`{where}: the next step waits while it's up`, HudController.Parts().Chip.Visible == false)
+					local countdown = ShopController.Chip()
+					t.Check(`{where}: the Void Shop's countdown waits while it's up`, countdown == nil or countdown.Visible == false)
 				end
 				local ok, err = pcall(function()
 					local set = t.Server("ReturnCardSet", {

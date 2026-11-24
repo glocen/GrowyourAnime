@@ -26,6 +26,7 @@ local Text = require(UI.Kit.Text)
 local Toast = require(UI.Kit.Toast)
 local Screen = require(UI.Kit.Screen)
 local ShopScreen = require(UI.ShopScreen)
+local ReturnCard = require(UI.ReturnCard)
 local ProfileController = require(script.Parent.Parent.Core.ProfileController)
 local HudController = require(script.Parent.HudController)
 
@@ -196,7 +197,8 @@ local function tick()
 	local here = minutes(left) -- whether the Shop stands in this place: the chip never points at one a trip away
 	local made, words = chip, chipWords
 	if made and words then
-		local shown = here and left <= ShopConfig.Warn and Screen.Current() ~= ShopScreen.Name
+		-- it waits while the return card is up, as the next step does: both stand under the pills (TR53)
+		local shown = here and left <= ShopConfig.Warn and Screen.Current() ~= ShopScreen.Name and not ReturnCard.Up()
 		made.Visible = shown
 		if shown then
 			local said = `Void Shop restock {Hud.Clock(left)}`

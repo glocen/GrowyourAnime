@@ -16937,3 +16937,22 @@ Sheet: `build/handoff/Rook/takes/rook_takes.png` (1900 x 2882), and its five par
   - My own order: C, then B, then A. A has the strongest face.
 - **Content check:** PASS for A, B, C and the sheet, on these files (2026-11-24, 01:22), after a first PASS on the earlier hair that asked for C's plaster in white, B's hair less orange and B's temples covered: all three done. No take lands on one published character; the nearest share two or three loose traits each. Hold points for the finish. **A:** the forehead stays bare and the coat open over red; no cap, chain, gold buttons or second belt, nothing on the jacket's back, the eyes grey; the stray lock ends at the brow, clear of the plaster; at 64 px his points are lost in a round dark mass. **B:** never a headband, a black belt, white trousers, bare feet or torn sleeves; the sash's ends square-cut; the hair chestnut, never bright orange. **C:** the plaster lighter than the skin; one unbroken stripe a sleeve and a leg; the hair brown, never green or teal; the jacket red; no freckles; the hood reads as cloth. The picked take gets its own check on its upload files.
 - **The four facts:** made: three takes and the kit. Self-reviewed: yes, as above. Delivered: the sheet, for research's pick with fresh eyes (the reference's sheet as their example), then the director's look; the heads, the figures and the busts went to the director's device at 01:19. Accepted in the game: no; nothing is built or uploaded.
+
+### Research's pick: A, the school tough, with five must-fixes for the finish (Quaestor, 2026-11-24, 01:24)
+
+From `compare_rook_takes.png` (between two reference units), `_heads`, `_bust` and `_fight`. Fresh eyes, given the reference's sheet as their example, picked A.
+- **Felt:** a cool, quiet side-cast fighter. The swept hair and narrow grey eyes read at once, and his face is the sharpest of the three.
+- **Tier:** competent. **The one bold thing:** the hair, swept back into a few big points with one lock over the brow. It's the only hair of the three that reads as a designed shape, and the feel line asks for the hair first.
+- **The make holds:** all three now stand in the make beside the reference, the faces especially. Against A:
+  - B reads younger, and his gi is a stock training look.
+  - C's messy hair, smirk and cheek plaster add up to the genre's commonest lead boy. Fresh eyes call his hair, like B's, "noisy clumps".
+  - A also carries the game's "slightly mature" tone best.
+- **Must-fixes, each by its class:**
+  1. **From the fight camera at 450 px, the lead shows three values from behind, never one dark mass.** A's jacket, hair and trousers are all near black, and next to the Shades he reads as a slab. Lift the jacket to a dark blue-grey with a lit side, keep the trousers a different value from it, and let the red tee show at the open front and the hem. The hold points stand: the back stays plain, the coat stays open over red.
+  2. **The fists read as fists from the fight camera.** Today the wraps read as banded cuffs. Carry them over the hand's end, with the knuckles' wrap seen from behind, in a value that stands off the jacket.
+  3. **A mark on the face never cuts it in two at the card's size.** The plaster across the nose reads as a bar. Make it a small one on the bridge, or move it off the centre line.
+  4. **Folds follow the cloth's pull, never the muscles under it.** Pecs and abs drawn on a jacket or a T-shirt look wrong. That's the kit's (`anime_make.py`), so it holds for every Voidkin.
+  5. **The hair is one smooth lit mass, and the cloth is painted the way the reference's is.** Fresh eyes still see faceted hair and flat, clean cloth. The hair gets smooth shading from root to tip with one band of light; the cloth gets soft shade under its folds and a grain. That's the kit's too.
+- **Why not Modulo's C:** C reads best from the fight camera, but on its colour alone, and his hair and face are the most generic. A's weakness is a matter of values, which must-fix 1 fixes. C's would need a new design.
+- **What stays open:** whether `Rook_Piston` stays in the rig as an empty part, settled at the finish. What the stills can't show: A in motion on Lantern Row at night, first seen at Faber's install.
+- **Next:** the director's look at A (the heads, figures and busts reached the director's device at 01:19), then the finish with the five fixes. Research's second look judges the fixes only.

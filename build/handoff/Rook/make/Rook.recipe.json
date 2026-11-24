@@ -1,0 +1,158 @@
+{
+ "name": "Rook",
+ "frame": "Roblox studs: Y up, the model on y = 0 facing -Z, HumanoidRootPart at (0, 3, 0)",
+ "rig": "R6. Every piece carries the body's own surface: the six rig parts are hidden (Transparency 1).",
+ "make": "tools/blender/anime_make.py: R6's own blocks and round head with the clothes and the face drawn on them, and the hair one mesh. Nothing rides a joint of its own.",
+ "maps": {
+  "Color": "Rook_Color.png",
+  "Roughness": "Rook_Roughness.png",
+  "Emissive": "Rook_Emissive.png"
+ },
+ "texels_per_stud": 96,
+ "pieces": [
+  {
+   "name": "Rook_Torso",
+   "mesh": "Rook_Torso.json",
+   "on": "Torso",
+   "centre": [
+    0.0,
+    3.0,
+    0.0
+   ],
+   "size": [
+    2.0,
+    2.0,
+    1.0
+   ],
+   "tris": 12
+  },
+  {
+   "name": "Rook_RightArm",
+   "mesh": "Rook_RightArm.json",
+   "on": "Right Arm",
+   "centre": [
+    1.5,
+    3.0,
+    0.0
+   ],
+   "size": [
+    1.0,
+    2.0,
+    1.0
+   ],
+   "tris": 12
+  },
+  {
+   "name": "Rook_LeftArm",
+   "mesh": "Rook_LeftArm.json",
+   "on": "Left Arm",
+   "centre": [
+    -1.5,
+    3.0,
+    0.0
+   ],
+   "size": [
+    1.0,
+    2.0,
+    1.0
+   ],
+   "tris": 12
+  },
+  {
+   "name": "Rook_RightLeg",
+   "mesh": "Rook_RightLeg.json",
+   "on": "Right Leg",
+   "centre": [
+    0.5,
+    1.0,
+    0.0
+   ],
+   "size": [
+    1.0,
+    2.0,
+    1.0
+   ],
+   "tris": 12
+  },
+  {
+   "name": "Rook_LeftLeg",
+   "mesh": "Rook_LeftLeg.json",
+   "on": "Left Leg",
+   "centre": [
+    -0.5,
+    1.0,
+    0.0
+   ],
+   "size": [
+    1.0,
+    2.0,
+    1.0
+   ],
+   "tris": 12
+  },
+  {
+   "name": "Rook_Head",
+   "mesh": "Rook_Head.json",
+   "on": "Head",
+   "centre": [
+    0.0,
+    4.5,
+    0.0
+   ],
+   "size": [
+    1.25,
+    1.25,
+    1.25
+   ],
+   "tris": 476
+  },
+  {
+   "name": "Rook_Hair",
+   "mesh": "Rook_Hair.json",
+   "on": "Head",
+   "centre": [
+    0.0044,
+    4.82285,
+    0.15535
+   ],
+   "size": [
+    1.805,
+    1.582,
+    1.986
+   ],
+   "tris": 3360
+  }
+ ],
+ "points": [
+  {
+   "name": "Knuckles",
+   "on": "Right Arm",
+   "at": [
+    1.5,
+    2.0,
+    -0.0
+   ],
+   "note": "the right fist's end: Haymaker's striking face"
+  },
+  {
+   "name": "RamCentre",
+   "on": "Right Arm",
+   "at": [
+    1.5,
+    2.2,
+    -0.0
+   ],
+   "note": "the right fist's middle (the first Rook's name for it, kept)"
+  }
+ ],
+ "tris": 3896,
+ "emissive": {
+  "tint": "#FFA630",
+  "cold": 0,
+  "hot": 5.0,
+  "pieces": [
+   "Rook_RightArm"
+  ],
+  "note": "the mask is the light's shape, 0 to 1. Roblox draws the glow through the colour map, (mask x strength x tint + light) x colour; the strength is the game's to play."
+ }
+}

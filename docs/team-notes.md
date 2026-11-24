@@ -19,11 +19,11 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **Next:** TR54, then TR53 (with TR31 folded in); AR57's elites, AR58's Support and AR56 after them. F7's timing waits on item 4's publish.
 - **The hooks for Scintilla and Sonus** wait on the director's own word (item 10).
 
-**Modulo (assets).** 2026-11-24, 01:37, on Fable 5.2.
-- **Now: AR59's finish on A, the school tough.** Research's five must-fixes are drawn (`build/handoff/Rook/takes/rook_pick.png`; AR59, "Modulo: A with the five must-fixes drawn"): a slate jacket over black trousers with the red T-shirt's hem right round, wrapped fists, a small plaster on the bridge, folds by the cloth's pull, smooth black hair with one band of light. The cloth's drawing and the hair's band are the kit's now (`tools/blender/anime_make.py`), for every Voidkin. The content check passed. Building next: his files for the install. Not in the game, nothing uploaded.
+**Modulo (assets).** 2026-11-24, 01:50, on Fable 5.2.
+- **Now: AR59, Rook's files for the install, delivered** to `build/handoff/Rook/make/` (AR59, "Modulo's finish"): seven pieces, three pictures, the recipe and the sheet, written by the kit's `handoff` for every Voidkin after him. His eight clips play on the new body as they are. The content check passed. Not in the game, nothing uploaded, not director-accepted. The director, about 01:47: "it fine if the model has some attachment or ovexageration you seems to get it now" (recorded in AR59; used from Kirra on).
 - **Waiting on the director:** the yes to my restatement of the word of about 23:35 (the base, the HUD, the skill icons and the spectator view reimagined, with me as art director). Nothing there changes before that yes.
 - **For Faber:** TR53's look is `build/handoff/UI/return/` (the kit builds the slab, the lines and the presses; three images to upload; the Training line takes the kit's small portrait). The dare's open tab is in `goals.json`, "unfolded". My sheets are the strict case: the game has a sixth more room at the smallest phone. TR54's look is the goals' handoff: `DareMark*` where `DareTag*` stood (the origin is now the mark's middle), one `GoalNext` plate that holds the back press, no Ledger; `HomeSettings` gives way to the cog tile and the Today card. The Guard's clip is fixed (AR52, "The Guard's sleeve, fixed at the clip's finish") and goes up once as `ShadeGuard`.
-- **Next:** research's second look at the five fixes and the director's look; the model's files and his clips on the new body (`Rook_Piston` and `Rook_Tape` go: three lines of Faber's at the install, in AR59). After Rook: Kirra, Pip, Lyric and Watt in the same make, each its own request.
+- **Next:** Rook's portraits drawn from the new files (`tools/blender/hud_art.py`), so the card and the roster change with him. Then Kirra, Pip, Lyric and Watt in the same make, each its own request, written by research when the one before closes.
 - **Still Faber's, each in its entry:** AR49's Home panel, AR44's shine, AR40's install (the atlas never alone), AR48's cues, TR50's dusk palette, the Voidkin screen's floor, AR50's seven pieces.
 
 **Turns.** Studio: Faber's, on the main place, the playtest stopped between pieces (2026-11-23, 15:15); the director's listen on TR42's panel is tomorrow, in the same place. Blender: nobody (Modulo's AR41 strips were stopped at 01:33 on 2026-11-19 by Claude Code when the PC ran low on memory; the director said wait at 01:34). Timing tests: nobody.
@@ -143,6 +143,14 @@ For Faber:
 - Tier 2, research, 2026-11-12, on the director's words: weapons belong to a class, in two hands (Main Hand and Off Hand replace Weapon and Shield), a preset holds a pair per class, a weapon drop is for the lead's class; Combat Power made to be watched, its weights fitted by the simulation; each item kind modelled and rendered to its icon (AR6, phase 3) (`docs/design.md`, "Regalia: gear" and "Combat Power"). Faber: the Stats case's `"Weapon"` source becomes `"Main Hand"` when you next touch it. Faber and Modulo: say in your row what you'd change.
 
 ## Entries
+
+### 2026-11-24, 01:50. AR59, Rook in the anime make, delivered for the install (Modulo)
+
+- **What changed:** Rook is A, the school tough: black swept hair, a slate jacket open over a red T-shirt, near-black trousers, wrapped fists, a small plaster on the bridge. He is R6's own blocks and round head with everything drawn on them, and the hair is one mesh. The piston and the tape are gone; Haymaker's glow is the right fist's wraps.
+- **Where:** `build/handoff/Rook/make/` (`Rook.recipe.json`, seven meshes, `Rook_Color.png`, `Rook_Roughness.png`, `Rook_Emissive.png`, `rook_make_sheet.png`, `poses/`); the record is AR59, "Modulo's finish". The first Rook's files stay in `build/handoff/Rook/` until the install.
+- **Checked:** research's second look passed the pick at competent (01:38); the eight delivered clips read on the new body; content check PASS on the upload files.
+- **Open:** the director's acceptance, then Faber's install (three places in the code, listed in the record); his portraits, which I draw next.
+- **For:** the director's acceptance; Faber, in his order after it.
 
 ### 2026-11-23, 23:59. AR52, the Guard and the Dasher, built in the game (Faber)
 

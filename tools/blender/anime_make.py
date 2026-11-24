@@ -39,6 +39,8 @@ CHIN = 3.875       # the head's lowest point
 CENTRE = Vector((0.0, 0.0, 4.5))  # the scalp's middle
 SCALP, SCALP_TOP = 0.78, 0.8      # the hair's mass under its clumps, an egg: its radius, and its top above the middle
 FACE = R + 0.07                   # how far from the head's middle a lock hangs past the egg, before the face
+GUT = 12 / PPU                    # studs kept clear round a block's top and bottom pictures, so none bleeds into another
+PICTURES, GLOWS = {}, {}          # each built piece's own picture, and its glow's shape if it has one, by its object's name
 INK = "#1B161A"
 
 
@@ -194,12 +196,13 @@ class Block:
     def __init__(self, name, centre, size, colour):
         self.name, self.centre, self.size = name, centre, size
         w, d, h = size
-        self.px = np.empty((int(round((h + d) * PPU)), int(round(2 * (w + d) * PPU)), 3), np.float32)
+        self.px = np.empty((int(round((h + d + 2 * GUT) * PPU)), int(round(2 * (w + d) * PPU)), 3), np.float32)
         self.px[:] = rgb(colour)
+        self.glow = None  # the light it can put out, 0 to 1 a texel of its picture (light_up)
         k, tall = PPU, int(round(h * PPU))
         # where each face sits in the picture, in studs from its left and from its top
         self.at = {"right": (0, 0, d, h), "front": (d, 0, w, h), "left": (d + w, 0, d, h), "back": (2 * d + w, 0, w, h),
-                   "top": (0, h, w, d), "bottom": (w, h, w, d)}
+                   "top": (GUT, h + GUT, w, d), "bottom": (w + 3 * GUT, h + GUT, w, d)}
         self.faces = {}
         for key, (x, y, fw, fh) in self.at.items():
             view = self.px[int(round(y * k)):int(round((y + fh) * k)), int(round(x * k)):int(round((x + fw) * k))]
@@ -210,7 +213,26 @@ class Block:
     def sides(self):
         return [self.faces[k] for k in ("right", "front", "left", "back")]
 
+    def light_up(self, cover, end=0.0):
+        """What glows when the game lights this block: `cover` over its four sides, and `end` over its bottom face."""
+        self.glow = np.zeros(self.px.shape[:2], np.float32)
+        self.glow[:cover.shape[0]] = np.clip(cover, 0, 1)
+        x, y, fw, fh = self.at["bottom"]
+        self.glow[int(round(y * PPU)):int(round((y + fh) * PPU)), int(round(x * PPU)):int(round((x + fw) * PPU))] = end
+
+    def bleed(self, reach=6):
+        """The sides' feet and the two end pictures drawn a little past their edges, so a far-off texel stays theirs."""
+        tall = int(round(self.size[2] * PPU))
+        for px in (self.px,) if self.glow is None else (self.px, self.glow):
+            px[tall:tall + reach] = px[tall - 1]
+            for key in ("top", "bottom"):
+                x, y, fw, fh = self.at[key]
+                r0, r1, c0, c1 = (int(round(v * PPU)) for v in (y, y + fh, x, x + fw))
+                pad = ((reach, reach), (reach, reach)) + (((0, 0),) if px.ndim == 3 else ())
+                px[r0 - reach:r1 + reach, c0 - reach:c1 + reach] = np.pad(px[r0:r1, c0:c1], pad, mode="edge")
+
     def build(self, folder):
+        self.bleed()
         (cx, cy, cz), (w, d, h) = self.centre, self.size
         world = {
             "front": lambda x, y: (cx - x, cy + d / 2, cz - h / 2 + y),
@@ -237,6 +259,9 @@ class Block:
         obj = bpy.data.objects.new(self.name, mesh)
         bpy.context.scene.collection.objects.link(obj)
         mesh.materials.append(textured(self.name, self.px, folder))
+        PICTURES[obj.name] = self.px  # by the object's own name: Blender numbers a name it already holds
+        if self.glow is not None:
+            GLOWS[obj.name] = self.glow
         return obj
 
 
@@ -346,6 +371,7 @@ class Head:
         obj = bpy.data.objects.new("Head", mesh)
         bpy.context.scene.collection.objects.link(obj)
         mesh.materials.append(textured("Head", self.px, folder))
+        PICTURES[obj.name] = self.px
         return obj
 
 
@@ -409,19 +435,19 @@ class Hair:
     hair is combed, then leaves it and lifts to its point. It is a leaf: narrow at the root, widest a third along,
     drawn to a sharp point, with one ridge off its middle, so it shows a broad lit face, a narrow darker one and a
     dark underside. It is smooth from root to tip and over its ridge, sharp only at its edges, and one band of
-    light runs round the whole mass. What makes it read as hair, and not as spines: few clumps, of three sizes;
+    light runs round the whole mass. Its colours are a picture of its own, a small strip a clump (the game draws a
+    mesh by a picture, never by colours on its points). What makes it read as hair, and not as spines: few clumps, of three sizes;
     each lying on the one below; the tips turned out, never the whole clump; one way round the crown for all."""
 
     def __init__(self, root, tip, seed=1, band=(0.5, 0.11, 0.4)):
         self.bm = bmesh.new()
-        self.col = []
+        self.strips, self.charts = [], []  # each clump's colours, ring by ring; and each of its faces' places in them
         self.pair = (np.array(rs.srgb(root)[:3]), np.array(rs.srgb(tip)[:3]))
         self.band = band  # the one band of light round the mass: its height over the scalp's middle, its width, its strength
         self.rng = np.random.default_rng(seed)
         self.locks = 0
 
-    def _vert(self, at, colour):
-        self.col.append(np.clip(colour, 0, 1))
+    def _vert(self, at):
         return self.bm.verts.new(at)
 
     def colour(self, u, k=1.0):
@@ -465,15 +491,16 @@ class Hair:
 
     def shell(self, hairline, segments=36):
         """The scalp's cover, down to `hairline(degrees round from the face's middle)`: what shows between clumps."""
-        rings, c = [], self.pair[0] * 0.5
+        rings = []
+        self.scalp = self.pair[0] * 0.5
         for i in range(segments):
             deg = (i / segments * 2 - 1) * 180
             a, low = math.radians(deg), hairline(abs(deg))
             end = math.degrees(math.acos(max(-0.1, min(0.95, (low + 0.03 - CENTRE.z) / SCALP_TOP))))
             line = [self.at(deg, end * f)[0] for f in (0.18, 0.36, 0.54, 0.72, 0.88, 1.0)]
             line.append(Vector((-math.sin(a) * R * 0.98, math.cos(a) * R * 0.98, low)))
-            rings.append([self._vert(q, c) for q in line])
-        crown = self._vert(CENTRE + Vector((0, 0, SCALP_TOP)), c)
+            rings.append([self._vert(q) for q in line])
+        crown = self._vert(CENTRE + Vector((0, 0, SCALP_TOP)))
         for i in range(segments):
             n = (i + 1) % segments
             self.bm.faces.new((crown, rings[i][0], rings[n][0])).smooth = True
@@ -515,7 +542,7 @@ class Hair:
     def blade(self, line, width, thick, ridge=0.35, taper=1.6, k=1.0):
         """A leaf along `line`: `ridge` is how far off its middle its ridge runs, toward its left edge (below zero,
         toward its right)."""
-        n, rings = len(line), []
+        n, rings, shades = len(line), [], []
         for i, (q, out) in enumerate(line):
             u = i / (n - 1)
             along = (line[min(i + 1, n - 1)][0] - line[max(i - 1, 0)][0]).normalized()
@@ -526,15 +553,23 @@ class Hair:
             s = (1 - u ** taper) * (0.7 + 0.3 * v * v * (3 - 2 * v))
             c = self.colour(u, k)
             if i == n - 1:
-                rings.append([self._vert(q, self.shine(q, c * 1.06))] * 5)
+                rings.append([self._vert(q)] * 5)
+                shades.append([self.shine(q, c * 1.06)] * 5)
                 continue
             left, right = q + side * (width / 2 * s), q - side * (width / 2 * s)
             top = q + side * (width / 2 * s * ridge) + out * (thick * s)
-            rings.append([self._vert(left, self.shine(left, c * 0.82)), self._vert(top, self.shine(top, c * 1.04)),
-                          self._vert(right, self.shine(right, c * 0.82)), self._vert(right, c * 0.36), self._vert(left, c * 0.36)])
+            rings.append([self._vert(at) for at in (left, top, right, right, left)])
+            shades.append([self.shine(left, c * 0.82), self.shine(top, c * 1.04), self.shine(right, c * 0.82), c * 0.36, c * 0.36])
+        strip = len(self.strips)
+        self.strips.append(np.clip(np.array(shades, np.float32), 0, 1))
         for j, (lo, hi) in enumerate(zip(rings, rings[1:])):
             for q, m in ((0, 1), (1, 2), (3, 4)):  # the ridge's two faces, sharing its points so it is smooth, and the one under
-                self.bm.faces.new((lo[q], hi[q], hi[m], lo[m]) if j < n - 2 else (lo[q], hi[0], lo[m])).smooth = True
+                if j < n - 2:
+                    f, where = self.bm.faces.new((lo[q], hi[q], hi[m], lo[m])), [(j, q), (j + 1, q), (j + 1, m), (j, m)]
+                else:
+                    f, where = self.bm.faces.new((lo[q], hi[0], lo[m])), [(j, q), (j + 1, (q + m) / 2), (j, m)]
+                f.smooth = True
+                self.charts.append((f, strip, where))
         self.locks += 1
 
     def clump(self, a, ph, length, width, heading=0.0, bend=0.0, off=0.06, flick=30.0, hold=0.5, thick=None, comb=None,
@@ -567,23 +602,52 @@ class Hair:
                        bend + j() * 40, off * (1 + j() * 0.5), flick * (1 + j()), min(0.95, hold * (1 + j() * 0.5)), thick, comb,
                        (1 + int(self.rng.uniform(0, 1) < 0.35)) if size > 0.85 and self.rng.uniform(0, 1) < split else 0)
 
-    def build(self, name="Hair"):
+    def build(self, folder, name="Hair"):
+        # the picture: a strip a clump, its lit faces three points across and its underside two, `step` texels from
+        # one of a clump's points to the next, so the game's own smoothing gives the colours between them
+        step, cell, across = 4, 20, 220
+        pitch = (max(len(s) for s in self.strips) - 1) * step + 4
+        per_row = across // cell
+        tall = -(-len(self.strips) // per_row) * pitch + 8
+        px = np.empty((tall, across, 3), np.float32)
+        px[:] = self.colour(0.6)
+        px[tall - 8:, :8] = self.scalp
+
+        def spread(grid):
+            n, k = grid.shape[:2]
+            rows, cols = np.linspace(0, n - 1, (n - 1) * step + 1), np.linspace(0, k - 1, (k - 1) * step + 1)
+            r0, c0 = np.minimum(rows.astype(int), n - 2), np.minimum(cols.astype(int), k - 2)
+            fr, fc = (rows - r0)[:, None, None], (cols - c0)[None, :, None]
+            g = grid[r0] * (1 - fr) + grid[r0 + 1] * fr
+            return np.pad(g[:, c0] * (1 - fc) + g[:, c0 + 1] * fc, ((1, 1), (1, 1), (0, 0)), mode="edge")
+
+        corner = lambda i: ((i % per_row) * cell, (i // per_row) * pitch)  # noqa: E731
+        for i, s in enumerate(self.strips):
+            x0, y0 = corner(i)
+            lit, under = spread(s[:, :3]), spread(s[:, 3:])
+            px[y0:y0 + lit.shape[0], x0:x0 + lit.shape[1]] = lit
+            px[y0:y0 + under.shape[0], x0 + 11:x0 + 11 + under.shape[1]] = under
+        px = np.clip(px, 0, 1)   # the clumps' colours are light's own measure; a picture holds the screen's
+        px = np.where(px <= 0.0031308, px * 12.92, 1.055 * px ** (1 / 2.4) - 0.055).astype(np.float32)
+        uv = self.bm.loops.layers.uv.new("UVMap")
+        for f in self.bm.faces:
+            for loop in f.loops:
+                loop[uv].uv = (4 / across, 4 / tall)  # the scalp's colour
+        for f, i, where in self.charts:
+            x0, y0 = corner(i)
+            for loop, (j, col) in zip(f.loops, where):
+                x = x0 + 1.5 + col * step if col <= 2 else x0 + 12.5 + (col - 3) * step
+                loop[uv].uv = (x / across, 1 - (y0 + 1.5 + j * step) / tall)
         mesh = bpy.data.meshes.new(name)
         self.bm.to_mesh(mesh)
         self.bm.free()
-        attr = mesh.color_attributes.new("Col", "FLOAT_COLOR", "POINT")
-        for d, c in zip(attr.data, self.col):
-            d.color = (c[0], c[1], c[2], 1.0)
-        m = bpy.data.materials.new(name)
-        bsdf, nodes, links = bl._principled(m)
-        paint = nodes.new("ShaderNodeVertexColor")
-        paint.layer_name = "Col"
-        links.new(paint.outputs["Color"], bsdf.inputs["Base Color"])
-        bsdf.inputs["Roughness"].default_value = 0.8
+        m = textured(name, px, folder)
+        m.node_tree.nodes["Principled BSDF"].inputs["Roughness"].default_value = 0.8
         m.use_backface_culling = True  # as the game draws it: a leaf wound the wrong way shows as a hole
         mesh.materials.append(m)
         obj = bpy.data.objects.new(name, mesh)
         bpy.context.scene.collection.objects.link(obj)
+        PICTURES[obj.name] = px
         return obj
 
 
@@ -688,10 +752,96 @@ def stand_in(joints, folder):
     # and a lock before each ear, to the jaw
     for s in (-1, 1):
         hair.clump(s * 72, 52, 0.78, 0.3, heading=s * -6, bend=s * 8, off=0.05, flick=14, hold=0.75, split=1)
-    made["head"], made["hair"] = head.build(folder), hair.build()
+    made["head"], made["hair"] = head.build(folder), hair.build(folder)
     wt.on(joints, "neck", made["head"], made["hair"])
     print(f"hair: {hair.locks} locks")
     return made
+
+
+# --- the handoff: one picture, and the pieces as the builder's recipe reads them ----------------------------------------
+
+ATLAS, PAD = 1024, 4
+KEEP = {"head": 156 / FACE_PPU, "hair": 1.0}   # how much of its own size a picture keeps in the one picture
+BODY_KEEP = 96 / PPU                           # the body's: 96 texels a stud
+PIECE = {"torso": ("Torso", "Torso"), "rs": ("RightArm", "Right Arm"), "ls": ("LeftArm", "Left Arm"), "rh": ("RightLeg", "Right Leg"),
+         "lh": ("LeftLeg", "Left Leg"), "head": ("Head", "Head"), "hair": ("Hair", "Head")}   # a piece's name, and R6's part it rides
+ROUGH = {"hair": 0.8}                          # the rest is cloth and skin, 1
+
+
+def handoff(name, made, out, points=(), tint="#FFA630", hot=5.0):
+    """What the builder installs (tools/studio/ModelRecipe.luau), from a figure as `figure` builds it: <name>_Color.png,
+    every piece's picture laid in one; <name>_Roughness.png; <name>_Emissive.png if a block lights up; a piece's mesh
+    each, <name>_<Piece>.json; and <name>.recipe.json. The pieces then wear the one picture, so whatever is drawn of
+    them after this is drawn from the files that go up. `points` are (name, R6's part, where) in the kit's frame."""
+    import json
+    out.mkdir(parents=True, exist_ok=True)
+    colour, rough = rs.canvas(ATLAS, ATLAS, (0.5, 0.5, 0.5)), rs.canvas(ATLAS, ATLAS, (1.0, 1.0, 1.0))
+    glow = rs.canvas(ATLAS, ATLAS, (0.0, 0.0, 0.0))
+    shelves, lit = [], []
+    for key, obj in made.items():
+        px, keep = PICTURES[obj.name], KEEP.get(key, BODY_KEEP)
+        small = lambda a: a if keep == 1.0 else rs.shrink(np.dstack([a, np.ones(a.shape[:2], np.float32)]), keep)[..., :3]  # noqa: E731
+        tile = small(px)
+        th, tw = tile.shape[:2]
+        shelf = next((s for s in shelves if s[1] + tw + PAD <= ATLAS and th <= s[2]), None)
+        if shelf is None:
+            shelf = [shelves[-1][0] + shelves[-1][2] + 2 * PAD if shelves else PAD, PAD, th]
+            shelves.append(shelf)
+        y, x = shelf[0], shelf[1]
+        assert y + th + PAD <= ATLAS, f"{name}: {key}'s picture, {tw} x {th}, doesn't fit the one picture"
+        shelf[1] = x + tw + 2 * PAD
+        colour[y - PAD:y + th + PAD, x - PAD:x + tw + PAD, :3] = np.pad(tile, ((PAD, PAD), (PAD, PAD), (0, 0)), mode="edge")
+        rough[y - PAD:y + th + PAD, x - PAD:x + tw + PAD, :3] = ROUGH.get(key, 1.0)
+        if obj.name in GLOWS:
+            glow[y:y + th, x:x + tw, :3] = small(np.repeat(GLOWS[obj.name][..., None], 3, axis=2))
+            lit.append(key)
+        for d in obj.data.uv_layers.active.data:
+            u, v = d.uv
+            d.uv = ((x + u * tw) / ATLAS, 1 - (y + (1 - v) * th) / ATLAS)
+    maps = {"Color": colour, "Roughness": rough, **({"Emissive": glow} if lit else {})}
+    for kind, px in maps.items():
+        rs.save(px, out / f"{name}_{kind}.png")
+    m = bpy.data.materials.new(name)
+    bsdf, nodes, links = bl._principled(m)
+    for kind, socket in (("Color", "Base Color"), ("Roughness", "Roughness")):
+        tex = nodes.new("ShaderNodeTexImage")
+        tex.image = bpy.data.images.load(str(out / f"{name}_{kind}.png"))
+        if kind != "Color":
+            tex.image.colorspace_settings.name = "Non-Color"
+        links.new(tex.outputs["Color"], bsdf.inputs[socket])
+    m.use_backface_culling = True
+    turn = lambda q: [round(q[0], 4), round(q[2], 4), round(-q[1], 4)]  # noqa: E731  the kit's frame to Roblox's
+    pieces, total = [], 0
+    for key, obj in made.items():
+        piece, on = PIECE[key]
+        obj.name = obj.data.name = f"{name}_{piece}"
+        obj.data.materials.clear()
+        obj.data.materials.append(m)
+        tris = bl.export_mesh_json(obj, out / f"{obj.name}.json")
+        total += tris
+        box = [v.co for v in obj.data.vertices]
+        size = [round(max(c[i] for c in box) - min(c[i] for c in box), 3) for i in (0, 2, 1)]
+        pieces.append({"name": obj.name, "mesh": f"{obj.name}.json", "on": on,
+                       "centre": json.loads((out / f"{obj.name}.json").read_text())["c"], "size": size, "tris": tris})
+        print(f"{obj.name}: {tris} tris, {size} studs")
+    recipe = {
+        "name": name,
+        "frame": "Roblox studs: Y up, the model on y = 0 facing -Z, HumanoidRootPart at (0, 3, 0)",
+        "rig": "R6. Every piece carries the body's own surface: the six rig parts are hidden (Transparency 1).",
+        "make": "tools/blender/anime_make.py: R6's own blocks and round head with the clothes and the face drawn on them, and "
+                "the hair one mesh. Nothing rides a joint of its own.",
+        "maps": {kind: f"{name}_{kind}.png" for kind in maps},
+        "texels_per_stud": round(BODY_KEEP * PPU),
+        "pieces": pieces,
+        "points": [{"name": n, "on": on, "at": turn(at), **({"note": note} if note else {})} for n, on, at, note in points],
+        "tris": total,
+    }
+    if lit:
+        recipe["emissive"] = {"tint": tint, "cold": 0, "hot": hot, "pieces": [f"{name}_{PIECE[key][0]}" for key in lit],
+                              "note": "the mask is the light's shape, 0 to 1. Roblox draws the glow through the colour map, "
+                                      "(mask x strength x tint + light) x colour; the strength is the game's to play."}
+    (out / f"{name}.recipe.json").write_text(json.dumps(recipe, indent=1))
+    return recipe
 
 
 VIEWS = {"front": (146, 8), "face": (180, 4), "game": rs.GAME}

@@ -16988,3 +16988,30 @@ From `rook_pick.png` and `compare_rook_pick.png`. This look judges the five fixe
 - **The sheet's label** says "no element". He's Fire (TR49's decision 6; `docs/roster.md` now agrees). That's only the sheet, not the game.
 - **What the stills can't show:** his clips on the new body, and him on Lantern Row at night. First seen at Faber's install.
 - **Next:** the director's look (the sheet has been on the director's device since 01:38), then the install files. The director's acceptance comes before Faber installs.
+
+### Modulo's finish: Rook's files for the install, and his clips on the new body (2026-11-24, 01:50; started 01:38)
+
+Delivered to `build/handoff/Rook/make/`, beside today's Rook, whose files stay where the game's install reads them until the director accepts. Script: `tools/blender/rook_make.py` (`model`, `sheet`, `clips`); the make and the handoff are the kit's (`tools/blender/anime_make.py`, `handoff`), so Kirra, Pip, Lyric and Watt are written the same way.
+- **The files,** as `tools/studio/ModelRecipe.luau` reads them:
+  - `Rook.recipe.json`: 3,896 triangles in seven pieces, 96 texels a stud on the body.
+  - Seven meshes: `Rook_Torso`, `Rook_RightArm`, `Rook_LeftArm`, `Rook_RightLeg`, `Rook_LeftLeg` (R6's own blocks, 12 triangles each), `Rook_Head` (Roblox's round head, 476) and `Rook_Hair` (3,360, on the Head).
+  - Three pictures, 1024 x 1024: `Rook_Color.png` (the one picture every piece wears, sha1 `e592a921`), `Rook_Roughness.png` (flat: cloth 1, hair 0.8) and `Rook_Emissive.png`. No Metalness: nothing on him is metal.
+  - The sheet, `rook_make_sheet.png` (1900 x 2187, sha1 `050b93b4`): the pick's views drawn again from these files, and the two pictures that go up. Beside the reference: `build/reference/anime-vanguards/compare_rook_make.png` (internal, not in git).
+- **The hair's colours are a picture now.** The mesh format carries no colour per point, so each clump's root-to-tip tone and the band of light are drawn into the one picture. It reads as it did on the pick.
+- **The glow** is the right fist's wraps, from the knuckles up over the hand, fading at the wrist. Cold until Haymaker heats it: tint `#FFA630`, the strength the game's.
+- **Points:** `Knuckles` (the right fist's end) and `RamCentre` (its middle), under the first Rook's names so nothing that reads them changes.
+- **His clips on the new body:** the eight delivered clips (`build/handoff/Rook/clips/`) play as they are, on `r6anim`'s rig, from the game's assumed camera and from his front. Sheets: `build/handoff/Rook/make/poses/poses_<Clip>.png`.
+  - Haymaker reads without the gauntlet: the arm drawn back and up through the charge, the lunge at the strike, the recovery. The pale fist carries it against the slate jacket.
+  - Combo, Hit, Down, Up, Reveal, Work and Idle hold. I saw no limb through the body on any sheet.
+  - No clip is exported again. The poses for `Rook_Piston` and `Rook_Tape` find no joint and are passed over.
+  - Haymaker's `Vent` marker (frame 70) was the piston's. It stays in the clip; whether anything answers it is Scintilla's and Faber's.
+  - A correction to my section above: I wrote "today's published clips". None of his clips is published; they are the delivered ones.
+- **Content check:** PASS on these bytes: the three pictures and the sheet. Every earlier hold point holds. Two more: the iris (`#8B95A8`) is at the blue end of grey, so no bluer and no darker; the mask passes as light on cloth, and flame shapes or particles on the fists, or a red or black tint, need their own check. The three pictures' look at 64 px was read from the sheet's 0.55 copies. A re-run that changes a file needs a new check.
+- **The director, about 01:47,** after the pick's sheet: "it fine if the model has some attachment or ovexageration you seems to get it now". It covers what it names: a fighter in the make may carry some built attachment and some exaggeration. My reading: the kit's "built pieces few and thin" is no longer a ceiling, and it is not a request to change Rook, nor his acceptance for the install. Rook stays as research passed him; the freedom is used from Kirra on. Research records it in the register.
+- **What Faber changes at the install,** after the director's acceptance:
+  - upload the seven meshes and the three pictures under the group, and write `tools/studio/Models/Rook.json` anew: seven mesh ids, `Color`, `Roughness`, `Emissive`;
+  - `src/shared/Config/Effects.luau`, Haymaker's `Glow.Pieces`: `{ "Rook_RightArm" }`;
+  - `SelfTestController/Cases.luau`, about line 1802: seven pieces where it counts eight, and the piston's and the tape's joint checks and "Haymaker slides the piston" go;
+  - check in the game: the hair rides the head through Down and Up; the fist's glow at Haymaker's peak (5) doesn't blow out the wraps' lines, else lower the peak; the jacket's slate and the red hem under Lantern Row's night.
+- **What waits:** his portraits and the lead card's face and head still show the first Rook. I draw the portraits from these files next (`tools/blender/hud_art.py`); the card's two are Faber's script on those renders.
+- **Four facts:** made, yes. Self-reviewed, yes: the sheet at the fight camera and the card's size, and the eight clips' poses. Delivered, yes, to `build/handoff/Rook/make/`. In the game, no; nothing uploaded; not director-accepted.

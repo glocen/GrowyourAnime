@@ -149,7 +149,7 @@ def figure(joints, folder, blocks, head, hair):
     for key, block in blocks.items():
         made[key] = block.build(folder)
         wt.on(joints, am.JOINT[key], made[key])
-    made["head"], made["hair"] = head.build(folder), hair.build()
+    made["head"], made["hair"] = head.build(folder), hair.build(folder)
     wt.on(joints, "neck", made["head"], made["hair"])
     print(f"hair: {hair.locks} locks")
     return made
@@ -233,6 +233,8 @@ def take_a(joints, folder):
         lit(a)
         grain(a, seed=2 + i)
         a.faces["top"].px[:] = rgb(tone(coat, 1.2))
+        if key == "rs":   # what Haymaker heats: the right fist's wraps, hottest over the knuckles and the fist's end
+            a.light_up(np.clip((0.44 - w.Y) / 0.2, 0, 1) * 0.6, end=0.6)
 
     for i, (key, s) in enumerate((("rh", -1), ("lh", 1))):   # s: the outer side on the leg's front picture
         g = b[key]
@@ -511,7 +513,8 @@ def keep(he, scene, layers, stem, x, z):
     path.unlink()
 
 
-def takes_run(out, keys):
+def takes_run(out, keys, finish=None):
+    """`finish(key, made)`, if given, is run on each figure once it is built and before it is drawn."""
     import hard_ember as he
     import r6anim as r6
     shots, layers = out / "shots", out / "layers"
@@ -523,7 +526,11 @@ def takes_run(out, keys):
         scene = bl.reset_scene()
         scene.world = bpy.data.worlds.new("Takes")
         j = wt.rig(scene)
+        am.PICTURES.clear()
+        am.GLOWS.clear()
         made = TAKES[key](j, folder)
+        if finish:
+            finish(key, made)
         rs.POSES["idle"](j)
         bpy.context.view_layer.update()
         tris = sum(len(f.vertices) - 2 for o in made.values() for f in o.data.polygons)
@@ -802,7 +809,7 @@ def sheet_run(out):
     rs.save(whole, out / "rook_takes.png")
 
 
-def proof_run(out, key):
+def proof_run(out, key, title=None):
     """The picked take alone, as the finish is judged: the figure from the front and from the game's camera, the bust
     at the card's size, the head from six sides, a fight at the smallest phone, and 64 pixels. A second picture, kept
     internal, stands it between the reference's units."""
@@ -810,12 +817,12 @@ def proof_run(out, key):
     shots = out / "shots"
     gap, W = 24, 1900
     ink, soft, paper, plate, pale = "#EDE6D6", "#B4AC9C", "#101117", "#1A1B24", "#DFE1E6"
-    title, lines = SAID[key]
+    heading, (title, lines) = title, SAID[key]
 
     # the figure, and the bust in the lead card's pose
     top = rs.canvas(W, 800, rs.rgb(paper))
-    text = [(gap, 20, 30, f"AR59: ROOK, THE PICK ({title.upper()})", ink)]
-    text += hc.wrapped(gap, 60, 16, "Common / Red / Warrior, no element. " + "; ".join(lines) + ". From the three-quarter front, from the "
+    text = [(gap, 20, 30, heading or f"AR59: ROOK, THE PICK ({title.upper()})", ink)]
+    text += hc.wrapped(gap, 60, 16, "Common / Red / Warrior / Fire. " + "; ".join(lines) + ". From the three-quarter front, from the "
                                    "game's camera behind his right shoulder, and the bust in the lead card's pose with the card's size on "
                                    "the smallest phone (and twice that).", soft, W - 2 * gap)
     rs.stand(top, rs.shrink(rs.trim(rs.load(shots / f"{key}_front.png")), 0.8), gap, 786, 600)

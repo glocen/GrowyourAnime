@@ -33,4 +33,4 @@ The video's flow is Home's featured card → Destinations (list + hero) → go. 
 - The Tower second, with its record.
 - No teaser card for a mode that doesn't exist yet: "never a placeholder" holds. A mode that exists but is shut shows its lock and its real condition, which is the video's "Uncharted" idea applied honestly (`menu-layout-and-motion.md`).
 
-The director asked for exactly this on 11-19 ("when we click on it it show a panels of gamemode"). The register recorded the opposite (`docs/decisions.md`, the 2026-11-19 23:19 row, part 3), and TR50 built Play straight to the Arc panel. The correction and the build-ready entry are in `play-mode-panel.md`.
+The director's 11-19 sentence ("when we click on it it show a panels of gamemode") reads two ways. The register took it as "skip the panel" (`docs/decisions.md`, the 2026-11-19 23:19 row, part 3), and TR50 built Play straight to the Arc panel. The director's words of 11-24 settle it: Play opens a mode panel. The correction and the build-ready entry are in `play-mode-panel.md`.

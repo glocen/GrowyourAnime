@@ -52,6 +52,10 @@ The director's own founding words point the same way. The directive, section 6: 
      - It makes the battery a budget. On day 3, about 55 kW of surplus pays for about half the runs; by the end of launch's content, every run (COMPUTED from the ledger's rates, at 12-minute runs). More workers and higher bays mean more charged runs: that's "the base runs because of who I found", felt in the fight.
      - It needs TR52's tap accepted first (`docs/test-requests.md`, TR52).
      - **Held, 11-24, after the director's yes** (Faber, OBSERVED in code): the lead is made with its signature ready (`FightService.luau:651`, `ReadyAt = {}`), and a rise or a trip home makes it ready again (:1322, :1362). So every run already starts as "Charged" would, and the charge as written changes nothing. It comes back to the director with options before anything is built.
+       - **(a) A run-long lift** (Faber's pick): a charged run's signature refills a quarter faster for the whole run (seed), its ring lit in the battery's yellow. It's felt in every fight, not just the first, and it goes through the cooldown's one path (`FightService.luau:274`). The number is tier 2: research's seed.
+       - **(b) A first strike:** the run's first signature hits harder (seed +50%). Cheaper, but felt once.
+       - **(c) No charge:** electricity's use in the fight is the workers' growth alone.
+       - **Cost:** (a) or (b), Faber about 2 h with cases.
   5. overflow into Credits at 0.5 a kWh (as built), named on the return card ("The grid paid 140").
 - **The loop, end to end:** a fight drops shards and Credits → the Breaker spends kWh on the shards → Voidkin → the bays → kWh → the workers grow, the lead trains, stones condense, the next run starts charged → the fight.
 - **Not at launch:** Research Points anywhere on screen; voltage (never offered, since no launch shard breaks 60 s); the Power screen's split, which Auto always beats (OBSERVED, `Power.luau`): show the screen as a readout until a split can win.

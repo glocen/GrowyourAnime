@@ -115,8 +115,9 @@ return {
 			local won = Transaction.Run(data, "op-win", function(draft: Profile.Data): any
 				return Reinforce.Try(draft, { Item = sword.Id }, 0.79)
 			end, 8)
-			t.Check("0.79 under 80%: +6", won.Success == true and won.Level == 6 and won.Tried == 6 and won.Chance == 0.8)
+			t.Check("0.79 under 80% warmed by one failure: +6", won.Success == true and won.Level == 6 and won.Tried == 6 and math.abs(won.Chance - 0.85) < 1e-9, tostring(won.Chance))
 			t.Equal("the level", data.Items[sword.Id].Reinforce, 6)
+			t.Check("the success cools it", data.Items[sword.Id].Heat == nil and won.Heat == 0 and won.Next == 0.7)
 			local poor = fresh()
 			local axe = item(poor, "great_axe", "Common", 1)
 			poor.Bag.Stones.Low = 5
@@ -141,6 +142,90 @@ return {
 			spent.Currency.Credits, spent.Bag.Stones.Low = one.Credits, one.Stones
 			Reinforce.Try(spent, { Item = last.Id }, 0)
 			t.Check("the last stones spent leave no key", spent.Bag.Stones.Low == nil and spent.Currency.Credits == 0)
+		end,
+	},
+	{
+		Name = "Reinforce heat (the director, 2026-11-24): each failure adds 5 points to the item's next try until it's sure, a success cools it, and a try's two outcomes add to 100%",
+		Run = function(t: any)
+			t.Equal("the seed: 5 points a failure", ReinforceConfig.Heat, 0.05)
+			for level = 1, 30 do
+				local base = TRIES[level] or 0.2
+				for _, heat in { 0, 1, 3, 10, 16, 40 } do
+					local chance = Reinforce.Chance(level, heat)
+					local want = math.min(1, base + 0.05 * heat)
+					t.Check(`+{level} after {heat}: {want}`, math.abs(chance - want) < 1e-9 and chance <= 1, tostring(chance))
+					t.Check(`+{level} after {heat}: success and failure add to 100%`, math.abs(chance + (1 - chance) - 1) < 1e-12 and chance >= 0)
+				end
+			end
+			t.Equal("+15 needs sixteen failures to be sure", Reinforce.Chance(15, 16), 1)
+			t.Check("no heat past the cap or under +1", Reinforce.Chance(31, 50) == 0 and Reinforce.Chance(0, 50) == 0)
+			for _, odd in { -3, 0 / 0, math.huge, -math.huge } do
+				t.Equal(`a broken heat ({odd}) warms nothing`, Reinforce.Chance(10, odd), 0.45)
+			end
+			local data = fresh()
+			local blade = item(data, "sword", "Rare", 1)
+			blade.Reinforce = 14 -- +15 tried: 20%
+			data.Currency.Credits = 10 ^ 9
+			data.Bag.Stones.Mid = 10 ^ 6
+			local fails = 0
+			local answer: any
+			repeat
+				answer = Reinforce.Try(data, { Item = blade.Id }, 0.999999) -- a roll that misses any chance under 100%
+				fails += if answer.Success then 0 else 1
+			until answer.Success or fails > 20
+			t.Equal("the worst luck still lands +15, on the seventeenth try", fails, 16)
+			t.Check("that last try was sure", answer.Chance == 1 and answer.Level == 15 and blade.Heat == nil)
+			local cold = fresh()
+			local axe = item(cold, "great_axe", "Rare", 1)
+			cold.Currency.Credits = 10 ^ 9
+			cold.Bag.Stones.Low = 100
+			local first = Reinforce.Try(cold, { Item = axe.Id }, 0.999999)
+			t.Check("+1 to +5 are sure and never warm", first.Success == true and first.Chance == 1 and axe.Heat == nil)
+			axe.Reinforce = 9
+			local missed = Reinforce.Try(cold, { Item = axe.Id }, 0.999999)
+			t.Check("a failure warms, and says the next chance", missed.Success == false and axe.Heat == 1 and missed.Heat == 1 and math.abs(missed.Next - 0.5) < 1e-9, tostring(missed.Next))
+			t.Check("the heat is saveable", #Saveable.Problems(cold, "profile") == 0)
+		end,
+	},
+	{
+		Name = "Reinforce and the wallet (Roblox's paid random items): where restricted, a try that can fail takes earned Credits only, a sure one any; elsewhere earned first",
+		Run = function(t: any)
+			local data = fresh()
+			local ring = item(data, "ring", "Rare", 1)
+			ring.Reinforce = 7 -- +8 tried: 60%
+			local cost = Reinforce.Cost(ring, 8)
+			data.Bag.Stones.Low = 100
+			data.Currency.Credits = cost.Credits * 2
+			data.Currency.Bought = cost.Credits * 2 -- all bought
+			local before = Profile.DeepCopy(data)
+			t.Equal("restricted, all bought: Restricted", Reinforce.Try(data, { Item = ring.Id }, 0, true).Error, Reinforce.Restricted)
+			t.Check("and nothing changed", data.Currency.Credits == before.Currency.Credits and data.Bag.Stones.Low == 100 and ring.Heat == nil)
+			local free = Reinforce.Try(data, { Item = ring.Id }, 0.999999, false)
+			t.Check("unrestricted: bought Credits pay", free.Ok == true and data.Currency.Credits == cost.Credits and data.Currency.Bought == cost.Credits)
+			local mixed = fresh()
+			local helm = item(mixed, "helmet", "Rare", 1)
+			helm.Reinforce = 7
+			local price = Reinforce.Cost(helm, 8).Credits
+			mixed.Bag.Stones.Low = 100
+			mixed.Currency.Credits = price * 3
+			mixed.Currency.Bought = price * 2 -- one try's earned
+			local ok = Reinforce.Try(mixed, { Item = helm.Id }, 0.999999, true)
+			t.Check("restricted with one try earned: it pays from the earned", ok.Ok == true and mixed.Currency.Credits == price * 2 and mixed.Currency.Bought == price * 2)
+			t.Equal("the next: Restricted", Reinforce.Try(mixed, { Item = helm.Id }, 0, true).Error, Reinforce.Restricted)
+			local sure = fresh()
+			local boots = item(sure, "boots", "Rare", 1)
+			local one = Reinforce.Cost(boots, 1).Credits
+			sure.Bag.Stones.Low = 100
+			sure.Currency.Credits, sure.Currency.Bought = one, one
+			local made = Reinforce.Try(sure, { Item = boots.Id }, 0.999999, true)
+			t.Check("restricted, a sure +1: bought Credits pay", made.Ok == true and made.Success == true and sure.Currency.Credits == 0 and sure.Currency.Bought == nil)
+			local warm = fresh()
+			local gloves = item(warm, "gloves", "Rare", 1)
+			gloves.Reinforce, gloves.Heat = 5, 4 -- +6 at 80% warmed by four failures: sure
+			local six = Reinforce.Cost(gloves, 6).Credits
+			warm.Bag.Stones.Low = 100
+			warm.Currency.Credits, warm.Currency.Bought = six, six
+			t.Check("restricted, a try heat made sure: bought Credits pay", Reinforce.Try(warm, { Item = gloves.Id }, 0.999999, true).Success == true)
 		end,
 	},
 	{
@@ -245,7 +330,7 @@ return {
 		Run = function(t: any)
 			local data = fresh()
 			local old = item(data, "helmet", "Epic", 1)
-			old.Reinforce = 14
+			old.Reinforce, old.Heat = 14, 3
 			old.Sockets = { "talon:Attack", "", "zenith:Hit", "moonward:Lifesteal" }
 			old.Jewels = { Red = 3 }
 			local new = item(data, "helmet", "Uncommon", 2)
@@ -255,6 +340,7 @@ return {
 			t.Check("Yes: equipped and moved", answer.Ok == true and answer.Moved == true and answer.Was == old.Id and answer.Emblems == 2 and answer.Stayed == 1)
 			t.Equal("the level moved", new.Reinforce, 14)
 			t.Equal("the old item: +0", old.Reinforce, 0)
+			t.Check("its forge heat went with it", new.Heat == 3 and old.Heat == nil)
 			t.Equal("the jewels moved", new.Jewels.Red, 3)
 			t.Equal("the new item's two sockets, the first two in order", filled(new.Sockets), "talon:Attack,zenith:Hit")
 			t.Equal("the third stays on the old", filled(old.Sockets), "moonward:Lifesteal,,,")

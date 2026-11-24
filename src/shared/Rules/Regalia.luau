@@ -86,12 +86,14 @@ function Regalia.Holds(item: Profile.OwnedItem): boolean
 end
 
 -- The equip transfer (TR47; docs/design.md, "Reinforce levels, emblems and jewels belong to the item"): what `from` holds
--- moves to `to`, for free, and nothing is ever lost. The two Reinforce levels change places, since an item holds one.
+-- moves to `to`, for free, and nothing is ever lost. The two Reinforce levels change places, since an item holds one, and
+-- each level's forge heat with it.
 -- `from`'s emblems fill `to`'s empty sockets in order, and `to` keeps its own; those with no room stay on `from`, packed
 -- to its first sockets. A jewel moves into its colour's slot when `to`'s is empty, and stays on `from` when it isn't.
 -- Each item keeps its own count of sockets. Answers how many emblems moved and how many stayed.
 function Regalia.Transfer(from: Profile.OwnedItem, to: Profile.OwnedItem): (number, number)
 	from.Reinforce, to.Reinforce = to.Reinforce, from.Reinforce
+	from.Heat, to.Heat = to.Heat, from.Heat -- the forge heat goes with the level it warms (2026-11-24)
 	for colour, level in from.Jewels do
 		if (to.Jewels[colour] or 0) == 0 then
 			to.Jewels[colour] = level

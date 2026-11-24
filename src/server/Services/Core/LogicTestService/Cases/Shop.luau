@@ -238,6 +238,30 @@ return {
 		end,
 	},
 	{
+		Name = "Shop and the wallet (Roblox's paid random items): where restricted, a shard takes earned Credits only and the piece shown any; elsewhere a shard takes earned first",
+		Run = function(t: any)
+			local stock = featuredFrom(Shop.Stock(NOW), SALT)
+			local shelf = Shop.Shelf(stock, SALT)
+			local shard, piece = shelf.Lines.Shard, shelf.Lines.Featured
+			local data = fresh(shard.Price + piece.Price)
+			data.Currency.Bought = shard.Price + piece.Price -- every Credit bought
+			local before = Profile.DeepCopy(data)
+			t.Equal("restricted, all bought: a shard is Restricted", Shop.Buy(data, shelf, { Stock = stock, Line = "Shard", Count = 1 }, true).Error, Shop.Restricted)
+			t.Check("and nothing changed", same(data, before))
+			local shown = Shop.Buy(data, shelf, { Stock = stock, Line = "Featured", Count = 1 }, true)
+			t.Check("restricted: the piece shown is a sure buy, bought Credits pay", shown.Ok == true and data.Currency.Credits == shard.Price and data.Currency.Bought == shard.Price)
+			local free = Shop.Buy(data, shelf, { Stock = stock, Line = "Shard", Count = 1 }, false)
+			t.Check("unrestricted: bought Credits buy a shard", free.Ok == true and data.Currency.Credits == 0 and data.Currency.Bought == nil)
+			local mixed = fresh(shard.Price * 2)
+			mixed.Currency.Bought = shard.Price
+			local first = Shop.Buy(mixed, shelf, { Stock = stock, Line = "Shard", Count = 1 }, true)
+			t.Check("restricted, one shard earned: it buys from the earned", first.Ok == true and mixed.Currency.Credits == shard.Price and mixed.Currency.Bought == shard.Price)
+			t.Equal("the next: Restricted", Shop.Buy(mixed, shelf, { Stock = stock, Line = "Shard", Count = 1 }, true).Error, Shop.Restricted)
+			local poor = fresh(shard.Price - 1)
+			t.Equal("too few Credits at all: Poor, before Restricted", Shop.Buy(poor, shelf, { Stock = stock, Line = "Shard", Count = 1 }, true).Error, Shop.Poor)
+		end,
+	},
+	{
 		Name = "Shop: a refused buy changes nothing: the stock turned, too few Credits, a full bag, no such line, a count that isn't one",
 		Run = function(t: any)
 			local stock = featuredFrom(Shop.Stock(NOW), SALT)

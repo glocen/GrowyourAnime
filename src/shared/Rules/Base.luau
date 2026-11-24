@@ -45,6 +45,7 @@ local ShardConfig = require(Shared.Config.Shards)
 local BaseConfig = require(Shared.Config.Base)
 local CondenserConfig = require(Shared.Config.Condenser)
 local Goals = require(Shared.Rules.Goals)
+local Wallet = require(Shared.Rules.Wallet)
 
 local Base = {}
 
@@ -290,10 +291,9 @@ function Base.UpgradeBase(data: Profile.Data, args: any, now: number): Answer
 		return refuse(offer.Why or Base.Cap)
 	end
 	Breaker.Advance(data, now) -- the old level's battery and bays ran up to now
-	if data.Currency.Credits < price then
+	if not Wallet.Spend(data, price, false, false) then -- a sure spend: bought Credits first (Rules.Wallet)
 		return refuse(Base.Short)
 	end
-	data.Currency.Credits -= price
 	base.Level = level
 	for _ = #base.Bays + 1, BaseLevels.Bays(level) do
 		table.insert(base.Bays, { Worker = "", Level = 1 })
@@ -329,10 +329,9 @@ function Base.UpgradeMachine(data: Profile.Data, args: any, now: number): Answer
 		return refuse(offer.Why or Base.Cap)
 	end
 	Breaker.Advance(data, now) -- the machine's old level worked up to now
-	if data.Currency.Credits < price then
+	if not Wallet.Spend(data, price, false, false) then -- a sure spend: bought Credits first (Rules.Wallet)
 		return refuse(Base.Short)
 	end
-	data.Currency.Credits -= price
 	if bay then
 		base.Bays[bay].Level = level
 		return { Ok = true, Machine = machine, Bay = bay, Level = level, Spent = price }

@@ -21,6 +21,7 @@ local Gear = require(Shared.Definitions.Gear)
 local Grounds = require(Shared.Definitions.Grounds)
 local Growth = require(Shared.Rules.Growth)
 local Chests = require(Shared.Rules.Chests)
+local Wallet = require(Shared.Rules.Wallet)
 
 local Shop = {}
 
@@ -28,6 +29,7 @@ Shop.Unknown = "Unknown" -- no such line on this stock, or a count that isn't on
 Shop.Gone = "Gone" -- the stock turned since the press: nothing bought
 Shop.Limit = "Limit" -- that line's count for this stock is bought
 Shop.Poor = "Poor" -- not enough Credits
+Shop.Restricted = "Restricted" -- where paid random items are restricted: too few earned Credits for a shard (Rules.Wallet)
 Shop.BagFull = "BagFull" -- the piece would pass the bag's cap
 
 export type Line = {
@@ -163,8 +165,10 @@ function Shop.FeaturedOdds(): { [string]: number }
 end
 
 -- Buys `args.Count` of line `args.Line` from `shelf`, pressed on stock `args.Stock`. { Ok, Line, Count, Credits (spent),
--- Shard?, Items? (the piece's new id) }, or a refusal that changed nothing.
-function Shop.Buy(data: Profile.Data, shelf: Shelf, args: any): { [string]: any }
+-- Shard?, Items? (the piece's new id) }, or a refusal that changed nothing. A shard is a random spend, since it breaks
+-- into a Voidkin by its odds, so where paid random items are restricted (`restricted`, the server's word) only earned
+-- Credits buy it; the featured piece is shown before it's bought, a sure spend (Rules.Wallet).
+function Shop.Buy(data: Profile.Data, shelf: Shelf, args: any, restricted: boolean?): { [string]: any }
 	if type(args) ~= "table" then
 		return { Ok = false, Error = Shop.Unknown }
 	end
@@ -182,8 +186,12 @@ function Shop.Buy(data: Profile.Data, shelf: Shelf, args: any): { [string]: any 
 		return { Ok = false, Error = Shop.Limit }
 	end
 	local cost = line.Price * count
+	local random = line.Shard ~= nil
 	if data.Currency.Credits < cost then
 		return { Ok = false, Error = Shop.Poor }
+	end
+	if not Wallet.Can(data, cost, random, restricted == true) then
+		return { Ok = false, Error = Shop.Restricted }
 	end
 	local kept: { string } = {}
 	if line.Item then
@@ -217,7 +225,7 @@ function Shop.Buy(data: Profile.Data, shelf: Shelf, args: any): { [string]: any 
 		data.Shop = { Stock = shelf.Stock, Bought = {} }
 	end
 	data.Shop.Bought[line.Name] = bought + count
-	data.Currency.Credits -= cost
+	Wallet.Spend(data, cost, random, restricted == true)
 	return { Ok = true, Line = line.Name, Count = count, Credits = cost, Shard = line.Shard, Items = if line.Item then kept else nil }
 end
 

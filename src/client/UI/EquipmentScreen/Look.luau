@@ -209,6 +209,7 @@ local SAID: { [string]: string } = {
 	Capped = "It's at the most already",
 	Poor = "Not enough Credits",
 	NoStones = "Not enough stones",
+	Restricted = "Only earned Credits pay for a chance in your region", -- Rules.Wallet: paid random items
 	NoneLeft = "None of that emblem left",
 	Empty = "That socket is empty",
 }

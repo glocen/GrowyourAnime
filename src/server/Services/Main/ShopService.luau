@@ -21,6 +21,7 @@ local Shop = require(Shared.Rules.Shop)
 local Core = script.Parent.Parent.Core
 local DataService = require(Core.DataService)
 local DebugService = require(Core.DebugService)
+local RandomPolicyService = require(Core.RandomPolicyService)
 
 local ShopService = {
 	Priority = 20, -- after DataService
@@ -92,12 +93,13 @@ local function sign()
 end
 
 function ShopService.Init()
-	DataService.Action("ShopBuy", function(draft: Profile.Data, args: any): { [string]: any }
+	DataService.Action("ShopBuy", function(draft: Profile.Data, args: any, player: Player): { [string]: any }
 		local shelf = ShopService.Shelf()
 		if shelf == nil then
 			return { Ok = false, Error = "Closed" }
 		end
-		return Shop.Buy(draft, shelf, args)
+		-- A shard is a random outcome: where paid random items are restricted, earned Credits only (Rules.Wallet).
+		return Shop.Buy(draft, shelf, args, RandomPolicyService.Restricted(player))
 	end)
 end
 

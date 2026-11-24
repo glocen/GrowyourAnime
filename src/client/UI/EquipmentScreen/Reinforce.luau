@@ -302,7 +302,7 @@ function ReinforcePage.Build(context: Look.Context): Look.Page
 			end
 			Look.Cell(frame, "Stone", X(R.Stone.At.X), Y(R.Stone.At.Y), R.Stone.Side, "Common", `Stone{cost.Grade}`, nil, 3)
 			Glass.Edge(frame, "StoneLine", X(R.Stone.At.X), Y(R.Stone.At.Y), R.Stone.Side, R.Stone.Side, 4, SEAM.Edge, 1, nil, 9)
-			local chance = Rules.Chance(level)
+			local chance = Rules.Chance(level, item.Heat) -- warmed by its failures since its last success (forge heat)
 			Look.Text(frame, "Success", `Success {percent(chance)}`, SMALL, LIGHT, X(R.Odds.Success), Y(R.Odds.Y), "Right", true, 3, 110)
 			Look.Text(frame, "Dot", "·", SMALL, SEAM.Faint, X(R.Odds.Dot), Y(R.Odds.Y), "Centre", false, 3, 10)
 			Look.Text(frame, "Fail", `Fail {percent(1 - chance)}`, SMALL, SEAM.Soft, X(R.Odds.Fail), Y(R.Odds.Y), "Left", false, 3, 110)
@@ -507,6 +507,7 @@ function ReinforcePage.Build(context: Look.Context): Look.Page
 		stones[answer.Grade] = math.max(0, (stones[answer.Grade] or 0) - answer.Stones)
 		local after: Facts = { Item = table.clone(before.Item), Level = answer.Level, Credits = before.Credits - answer.Credits, Stones = stones, Block = before.Block }
 		after.Item.Reinforce = answer.Level
+		after.Item.Heat = if type(answer.Heat) == "number" and answer.Heat > 0 then answer.Heat else nil
 		context.Wallet(after.Credits)
 		local colour = if won then GOOD else HURT
 		-- The ring, its bloom and the level by it turn over Turn, the old fading as the new shows.

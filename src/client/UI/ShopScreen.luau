@@ -69,6 +69,7 @@ local REFUSED: { [string]: string } = {
 	[Shop.Gone] = "A new stock just came in",
 	[Shop.Limit] = "None left for you this stock",
 	[Shop.Poor] = "Not enough Credits",
+	[Shop.Restricted] = "Only earned Credits buy shards in your region", -- Rules.Wallet: paid random items
 	[Shop.BagFull] = "Your Inventory is full",
 	[Shop.Unknown] = "That isn't on the shelf now",
 	Closed = "The Shop is closed for a moment",

@@ -23,6 +23,7 @@ local ChestsConfig = require(Shared.Config.Chests)
 local ChestRows = require(Shared.Definitions.Chests)
 local DataService = require(script.Parent.Parent.Core.DataService)
 local DebugService = require(script.Parent.Parent.Core.DebugService)
+local RandomPolicyService = require(script.Parent.Parent.Core.RandomPolicyService)
 local FightService = require(script.Parent.FightService)
 
 local RegaliaService = {
@@ -155,12 +156,12 @@ end
 function RegaliaService.Init()
 	-- Gear never changes in a fight, and stays frozen through a keeper's try and a Tower run (D10): the client's
 	-- "Not during a fight" answers this refusal. Reinforce and the emblems change a fighter's stats, so they freeze too.
-	local function frozen(name: string, action: (Profile.Data, any) -> { [string]: any })
+	local function frozen(name: string, action: (Profile.Data, any, Player) -> { [string]: any })
 		DataService.Action(name, function(draft: Profile.Data, args: any, player: Player): { [string]: any }
 			if FightService.InCombat(player) or FightService.Frozen(player) then
 				return { Ok = false, Error = "InCombat" }
 			end
-			return action(draft, args)
+			return action(draft, args, player)
 		end)
 	end
 	for name, action in Regalia.Actions do
@@ -170,8 +171,9 @@ function RegaliaService.Init()
 		frozen(name, action)
 	end
 	-- One try, its roll the server's own (TR47): the op id returns a repeat's first answer, so a retry never rolls again.
-	frozen("Reinforce", function(draft: Profile.Data, args: any): { [string]: any }
-		return Reinforce.Try(draft, args, seeds:NextNumber())
+	-- A try that can fail is a random outcome: where paid random items are restricted, earned Credits only (Rules.Wallet).
+	frozen("Reinforce", function(draft: Profile.Data, args: any, player: Player): { [string]: any }
+		return Reinforce.Try(draft, args, seeds:NextNumber(), RandomPolicyService.Restricted(player))
 	end)
 	DataService.Action("OpenChests", function(draft: Profile.Data, args: any): { [string]: any }
 		local given = if type(args) == "table" then args else {}

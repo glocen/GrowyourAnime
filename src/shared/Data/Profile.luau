@@ -40,6 +40,7 @@ export type OwnedItem = {
 	Lines: { ItemLine }, -- the rolled lines
 	Sockets: { string }, -- one entry per socket its rarity gives (Config.Chests.Sockets): an emblem key, or "" when empty
 	Reinforce: number, -- its Reinforce level, 0 to Config.Reinforce.Cap (TR47, Rules.Reinforce)
+	Heat: number?, -- its forge heat: Reinforce tries failed since its last success, which raise the next one's chance; nil is 0
 	Jewels: { [string]: number }, -- a jewel colour's level in its slot; a colour with none has no key (TR47 part B)
 }
 
@@ -171,6 +172,9 @@ export type Data = {
 	},
 	Currency: {
 		Credits: number,
+		-- Of those Credits, the ones bought with Robux and not yet spent, never more than Credits (Rules.Wallet: a random
+		-- outcome they pay for is a paid random item). Nil is none.
+		Bought: number?,
 		Research: number, -- Research Points
 	},
 	-- What was bought from the Void Shop on its latest stock bought from (AR38, Rules.Shop): the stock's number and each

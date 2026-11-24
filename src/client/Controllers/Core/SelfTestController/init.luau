@@ -27,6 +27,7 @@ local ModeCases = require(script.ModeCases)
 local BaseViewCases = require(script.BaseViewCases)
 local KitCases = require(script.KitCases)
 local StateCases = require(script.StateCases)
+local LintCases = require(script.LintCases)
 local ButtonCases = require(script.ButtonCases)
 local SoundCases = require(script.SoundCases)
 local BreakerCases = require(script.BreakerCases)
@@ -211,6 +212,8 @@ local function run(filter: string?): string
 	table.move(kits, 1, #kits, #cases + 1, cases)
 	local states = StateCases.Cases() -- the element states in play (AR48), apart for the same reason
 	table.move(states, 1, #states, #cases + 1, cases)
+	local lint = LintCases.Cases() -- the lint's own (TR63), apart for the same reason
+	table.move(lint, 1, #lint, #cases + 1, cases)
 	local sounds = SoundCases.Cases() -- AR13's cues on the audio graph, apart for the same reason
 	table.move(sounds, 1, #sounds, #cases + 1, cases)
 	local breaker = BreakerCases.Cases() -- the galaxy Breaker (TR41), apart for the same reason

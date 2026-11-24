@@ -128,6 +128,7 @@ function Helpers.lintClean(t: any, where: string)
 	t.Check(`{where}: no two pieces of the HUD overlap`, #report.Overlap == 0, UiLint.Detail(report.Overlap, report.Checked))
 	t.Check(`{where}: nothing sits under the thumbs' controls`, #report.Thumbs == 0, UiLint.Detail(report.Thumbs, report.Checked))
 	t.Check(`{where}: no list draws Roblox's own thumb`, #report.Bars == 0, UiLint.Detail(report.Bars, report.Checked))
+	t.Check(`{where}: every label reads against what's behind it (4.5:1, large 3:1)`, #report.Contrast == 0, `{UiLint.Detail(report.Contrast, report.Checked)}; {UiLint.Unread(report)}`)
 end
 
 function Helpers.readyCount(def: string): number

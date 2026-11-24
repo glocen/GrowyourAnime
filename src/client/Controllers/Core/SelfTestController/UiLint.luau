@@ -18,6 +18,13 @@
 --   none sits under the thumbs' controls (Roblox's jump button and fixed thumbstick, on a touch screen);
 --   no scrolling list draws Roblox's own thumb: one that hides it by a thickness of nought hides its image too, since
 --     Roblox draws a thin line there all the same (TR54's list, the Bag's chips).
+-- And contrast (TR63, item 2; WCAG 2's ratio): each shown label's text against the colour behind it, 4.5:1 at least, 3:1
+--   for large text (24 px, or 18.66 px bold: 18 pt and 14 pt). Behind it: its own background and its ancestors', and a
+--   lower sibling frame under its middle, laid down to the first opaque one, a gradient read at that point. Read down the
+--   engine's own stack at that point, across ScreenGuis; a label under the same words is their shadow, skipped. Over a glass
+--   that covers at least half the world, the worse of a black and a white world beneath. Where an image or the bare world
+--   shows through, the colour behind isn't known from here: the label is counted unread (Unread, with why and what is in
+--   the way), never passed or failed. A text stroke counts when it's the better side.
 
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
@@ -34,6 +41,10 @@ local THUMBS: { [string]: boolean } = { JumpButton = true, ThumbstickFrame = tru
 local TOLERANCE = 1 -- pixels
 local FIT_TOLERANCE = 2 -- pixels a line box may overrun its frame
 local PLACEHOLDER = "Label"
+local CONTRAST, CONTRAST_LARGE = 4.5, 3 -- WCAG 2's AA ratios
+local LARGE, LARGE_BOLD = 24, 18.66 -- px: 18 pt, and 14 pt bold
+local OPAQUE = 0.98 -- a background's alpha from which nothing behind it shows
+local GLASS = 0.5 -- the least cover over the world read as glass, its words judged over a black and a white world
 
 local UiLint = {}
 
@@ -49,6 +60,10 @@ export type Report = {
 	Overlap: { string },
 	Thumbs: { string },
 	Bars: { string },
+	Contrast: { string },
+	Unread: number, -- labels whose colour behind isn't known from here (an image, a gradient, the world)
+	UnreadBy: { [string]: number }, -- and why: "art", "viewport", "world", "lettering" (a gradient on the text), "unlisted" (not in the engine's stack at its middle)
+	UnreadAt: { [string]: { string } }, -- and the first few pieces in the way, for each why
 }
 
 -- Whether a piece draws: visible all the way up to its container, and that container enabled.
@@ -125,6 +140,174 @@ local function scaleOf(object: Instance): number
 	return scale
 end
 
+-- WCAG 2's relative luminance and contrast ratio.
+local function luminance(colour: Color3): number
+	local function linear(c: number): number
+		return if c <= 0.03928 then c / 12.92 else ((c + 0.055) / 1.055) ^ 2.4
+	end
+	return 0.2126 * linear(colour.R) + 0.7152 * linear(colour.G) + 0.0722 * linear(colour.B)
+end
+
+local function ratio(a: Color3, b: Color3): number
+	local x, y = luminance(a), luminance(b)
+	return (math.max(x, y) + 0.05) / (math.min(x, y) + 0.05)
+end
+UiLint.Ratio = ratio
+
+-- A sequence's value at t (0 to 1), straight between its keypoints, as Roblox lays a gradient.
+local function colourAt(sequence: ColorSequence, t: number): Color3
+	local points = sequence.Keypoints
+	for index = 1, #points - 1 do
+		local a, b = points[index], points[index + 1]
+		if t <= b.Time then
+			local span = b.Time - a.Time
+			return if span <= 0 then b.Value else a.Value:Lerp(b.Value, math.clamp((t - a.Time) / span, 0, 1))
+		end
+	end
+	return points[#points].Value
+end
+
+local function numberAt(sequence: NumberSequence, t: number): number
+	local points = sequence.Keypoints
+	for index = 1, #points - 1 do
+		local a, b = points[index], points[index + 1]
+		if t <= b.Time then
+			local span = b.Time - a.Time
+			return if span <= 0 then b.Value else a.Value + (b.Value - a.Value) * math.clamp((t - a.Time) / span, 0, 1)
+		end
+	end
+	return points[#points].Value
+end
+
+-- Where `at` falls along `gradient` on `object`: 0 at its sequence's start, 1 at its end. Its Offset moves it in the
+-- object's own scale, its Rotation turns it clockwise about the middle (exact at 0, 90, 180 and 270; near on a long
+-- piece at other angles).
+local function along(gradient: UIGradient, object: GuiObject, at: Vector2): number
+	local size = object.AbsoluteSize
+	if size.X <= 0 or size.Y <= 0 then
+		return 0.5
+	end
+	local d = (at - object.AbsolutePosition) / size - Vector2.new(0.5, 0.5) - gradient.Offset
+	local angle = math.rad(gradient.Rotation)
+	return math.clamp(d.X * math.cos(angle) + d.Y * math.sin(angle) + 0.5, 0, 1)
+end
+
+-- What a piece paints at `at` over what's behind it: nil for nothing (a clear background), or false when it isn't known
+-- from here (an image, a viewport), with why and what in `unknown` and `blocker`. A gradient on a background is read at
+-- the point: its colour times the background's, its transparency over the background's.
+local unknown, blocker = "world", nil :: Instance?
+local function paints(object: GuiObject, at: Vector2): { Colour: Color3, Alpha: number }? | false
+	if (object:IsA("ImageLabel") or object:IsA("ImageButton")) and (object :: any).Image ~= "" and (object :: any).ImageTransparency < 0.95 then
+		unknown, blocker = "art", object
+		return false
+	end
+	if object:IsA("ViewportFrame") then
+		unknown, blocker = "viewport", object
+		return false
+	end
+	local alpha = 1 - object.BackgroundTransparency
+	if alpha <= 0.02 then
+		return nil
+	end
+	local colour = object.BackgroundColor3
+	local gradient = object:FindFirstChildOfClass("UIGradient")
+	if gradient and gradient.Enabled then
+		local t = along(gradient, object, at)
+		local tint = colourAt(gradient.Color, t)
+		colour = Color3.new(colour.R * tint.R, colour.G * tint.G, colour.B * tint.B)
+		alpha *= 1 - numberAt(gradient.Transparency, t)
+		if alpha <= 0.02 then
+			return nil
+		end
+	end
+	return { Colour = colour, Alpha = alpha }
+end
+
+-- The colour behind `label`'s text at `at`, as two: over a black world and over a white one (the same when something
+-- opaque is behind it), or nil when it isn't known from here. Read down the engine's own stack at that point
+-- (GetGuiObjectsAtPosition: every ScreenGui, top first), from the label's own background to the first opaque piece. With
+-- nothing opaque, a glass covering GLASS of the world or more is judged over both worlds. A label with the same words
+-- drawn over it there is their shadow, not words to read: "shadow".
+local function behind(label: TextLabel, at: Vector2): (Color3?, Color3?)
+	local gui = label:FindFirstAncestorWhichIsA("BasePlayerGui")
+	local stack: { GuiObject } = if gui then (gui :: BasePlayerGui):GetGuiObjectsAtPosition(at.X, at.Y) else {}
+	local from = table.find(stack, label :: GuiObject)
+	if from == nil then
+		unknown, blocker = "unlisted", nil
+		return nil, nil
+	end
+	for index = 1, from - 1 do
+		local over: GuiObject = stack[index]
+		if over:IsA("TextLabel") and (over :: TextLabel).Text == label.Text and (over :: TextLabel).TextTransparency < 0.5 then
+			unknown, blocker = "shadow", over
+			return nil, nil
+		end
+	end
+	local layers: { { Colour: Color3, Alpha: number } } = {}
+	local function laid(base: Color3?): Color3 -- the stack, up from its opaque base, or from `base` beneath it all
+		local colour, first = base, #layers
+		if colour == nil then
+			colour, first = layers[#layers].Colour, #layers - 1
+		end
+		for index = first, 1, -1 do
+			colour = (colour :: Color3):Lerp(layers[index].Colour, layers[index].Alpha)
+		end
+		return colour :: Color3
+	end
+	for index = from, #stack do
+		local paint = paints(stack[index], at)
+		if paint == false then
+			return nil, nil
+		elseif paint then
+			table.insert(layers, paint)
+			if paint.Alpha >= OPAQUE then
+				local colour = laid()
+				return colour, colour
+			end
+		end
+	end
+	-- nothing opaque: the world shows through
+	local clear = 1
+	for _, layer in layers do
+		clear *= 1 - layer.Alpha
+	end
+	if #layers > 0 and 1 - clear >= GLASS then
+		return laid(Color3.new(0, 0, 0)), laid(Color3.new(1, 1, 1))
+	end
+	unknown, blocker = "world", nil
+	return nil, nil
+end
+
+-- The label's contrast and the ratio it needs, read at `at` (its middle by default), or nil and why when the colour
+-- behind it isn't known. Over a glass, the worse of a black and a white world.
+local function contrastOf(label: TextLabel, at: Vector2?): (number?, number, string?)
+	local rendered = if label.TextScaled then label.TextBounds.Y else label.TextSize * scaleOf(label)
+	local bold = label.FontFace.Weight.Value >= Enum.FontWeight.Bold.Value
+	local need = if rendered >= LARGE - 0.01 or (bold and rendered >= LARGE_BOLD - 0.01) then CONTRAST_LARGE else CONTRAST
+	if label:FindFirstChildOfClass("UIGradient") then
+		unknown, blocker = "lettering", label
+		return nil, need, "lettering"
+	end
+	local dark, light = behind(label, at or label.AbsolutePosition + label.AbsoluteSize / 2)
+	if dark == nil or light == nil then
+		return nil, need, unknown
+	end
+	local function against(back: Color3): number
+		local text = back:Lerp(label.TextColor3, 1 - label.TextTransparency)
+		local best = ratio(text, back)
+		-- a stroke round the letters reads against them too
+		local stroke = label:FindFirstChildOfClass("UIStroke")
+		if stroke and stroke.Enabled and stroke.ApplyStrokeMode == Enum.ApplyStrokeMode.Contextual and stroke.Transparency < 0.5 and stroke.Thickness >= 1 then
+			best = math.max(best, ratio(text, back:Lerp(stroke.Color, 1 - stroke.Transparency)))
+		elseif label.TextStrokeTransparency < 0.5 then
+			best = math.max(best, ratio(text, back:Lerp(label.TextStrokeColor3, 1 - label.TextStrokeTransparency)))
+		end
+		return best
+	end
+	return math.min(against(dark), against(light)), need, nil
+end
+UiLint.ContrastOf = contrastOf
+
 local function short(object: Instance): string
 	local parts = {}
 	local node: Instance? = object
@@ -139,7 +322,7 @@ local function short(object: Instance): string
 end
 
 function UiLint.Run(): Report
-	local report: Report = { Checked = 0, Fit = {}, Size = {}, Screen = {}, Placeholder = {}, Names = {}, Touch = {}, Safe = {}, Overlap = {}, Thumbs = {}, Bars = {} }
+	local report: Report = { Checked = 0, Fit = {}, Size = {}, Screen = {}, Placeholder = {}, Names = {}, Touch = {}, Safe = {}, Overlap = {}, Thumbs = {}, Bars = {}, Contrast = {}, Unread = 0, UnreadBy = {}, UnreadAt = {} }
 	local gui = Players.LocalPlayer:WaitForChild("PlayerGui")
 	-- The taps: every button the player can press now. The lists: every one shown, its own thumb hidden whole.
 	for _, object in gui:GetDescendants() do
@@ -221,6 +404,22 @@ function UiLint.Run(): Report
 		if label.Text == PLACEHOLDER then
 			table.insert(report.Placeholder, name)
 		end
+		local has, need, why = contrastOf(label, (low + high) / 2) -- the middle of what's drawn, inside its clips
+		if why == "shadow" then
+			-- the same words drawn over it: their shadow, not read
+		elseif has == nil then
+			report.Unread += 1
+			local reason = why :: string
+			report.UnreadBy[reason] = (report.UnreadBy[reason] or 0) + 1
+			local seenAt = report.UnreadAt[reason] or {}
+			report.UnreadAt[reason] = seenAt
+			local what = if blocker then (blocker :: Instance).Name else label.Name
+			if #seenAt < 3 and table.find(seenAt, what) == nil then
+				table.insert(seenAt, what)
+			end
+		elseif has < need - 0.005 then
+			table.insert(report.Contrast, `{name} ({string.format("%.2f", has)}:1 < {need})`)
+		end
 		local bounds, box = label.TextBounds, label.AbsoluteSize
 		local overruns = bounds.X > box.X + FIT_TOLERANCE or bounds.Y > box.Y + FIT_TOLERANCE
 		if not label.TextFits and overruns and not label.TextScaled and label.TextTruncate == Enum.TextTruncate.None then
@@ -257,6 +456,17 @@ function UiLint.Detail(list: { string }, checked: number): string
 		table.insert(shown, list[index])
 	end
 	return table.concat(shown, "; ") .. (if #list > 6 then ` +{#list - 6} more` else "")
+end
+
+-- The labels not read for contrast, why, and the first pieces in the way: "51 unread: art 40 (Plate, Icon), world 11".
+function UiLint.Unread(report: Report): string
+	local why = {}
+	for reason, count in report.UnreadBy do
+		local seenAt = report.UnreadAt[reason]
+		table.insert(why, `{reason} {count}` .. (if seenAt and #seenAt > 0 then ` ({table.concat(seenAt, ", ")})` else ""))
+	end
+	table.sort(why)
+	return `{report.Unread} unread` .. (if #why > 0 then `: {table.concat(why, ", ")}` else "")
 end
 
 return UiLint

@@ -4952,3 +4952,28 @@ The director, on TR54's card stills: "i thought we said we stopped with the corn
 - **They stay:** "Lantern Row cleared" (plain, and it names the ground); "Dare kept" (the dare's own verb: holds, kept, broken); Hard's chevrons on the press into Hard and on a Hard run's Retry, since that's Hard's mark as on the panel's badge, not ornament.
 - **The class, for every screen:** a line is never set as a banner with ornaments on both sides. News is shown by the thing that changed: a press lit, a lock gone, a mark filled.
 - Research's second look sees the lock lift in motion, in TR54's capture.
+
+### Faber's fixes: the three must-fixes and research's lines (Faber, 2026-11-24, 12:05 by the clock)
+
+In `565893e6`. The ceiling of 15 is its own commit, `bccd9eee`.
+- **Must-fix 1, a "Do" dare's mark asks "done yet?":** `Goals.DareLook` gives a Do dare "Waits" until it's done, then "Kept". A keep dare keeps "Holds" and "Broken". The Waits mark is the held mark unlit (`Config.Hud`, `Stages.Dare.Waits`), so not done yet reads apart from broken, which keeps its split. Done, it flares as a kept dare does at the clear. Logic cases are in `Cases/Goals`. The debug command "DareStep" steps a dare's fate for a take.
+- **Must-fix 2, the stone reads as its item:** the stones the dares paid stand in the rewards' row as one reward among the others, on either card, the picture at 28 points on a warm light (`DareCard.Stone`). The chip says "Dare kept" alone.
+- **Must-fix 3, every row fits its longest:** the rewards' row is laid from the middle, each cell as wide as its words, and shrinks to keep inside the card's inset, never below 0.85. The chip rides the time's row when the row's longest fits; otherwise it takes a row of its own, measured first. The case "Goals (TR54): the run's cards at their longest…" lays four cards on the smallest phone and checks every shown piece, the title too, inside the inset: a new best past ten minutes, past an hour, from a later stretch, and a fall named by a 20-letter nickname.
+- **Research's lines of 11:31:**
+  - the "Hard is open" band and its span are gone;
+  - on the card whose clear opened Hard, the press into Hard comes in shut under Hard's lock (the Arc panel's mark). 0.3 s after the card's beats the lock lifts 8 points and fades over 0.3 s as the press lights (`Stages.Card.Unlock`). A tap waits until it's lit. Reduced motion shows it lit;
+  - the fall's title names its lead as a list shows it, "Kirra fell", in Hurt's red. The name rides the fall's results (`Stages.Lost`, `Lead`), so it's the run's own lead. A long nickname shrinks the title, never below 0.6;
+  - "Next run starts at Stretch 3"; "New best".
+- **The suite's own faults, fixed:**
+  - Play opens the Play panel now, so the trip's and the Arc panel's cases go through it (`Helpers.openArc`). Play's second tap closes the Arc panel too.
+  - The Guard's break case raises the shield up to six times, since the signature fires only after its swing.
+  - The Dasher's counts are each lunge's own: its First lunge landed in the same read.
+- **Found on the way:**
+  - the Festival's place had lost its `PlaceRole` attribute and booted as Main, every Festival case skipping. It's set again and saved (version 5).
+  - "a machine's plate… this window" fails in a restored Studio window (1228 by 651, the plate hides over the avatar) and passes maximized. That's the window, not the game.
+- **Checks:**
+  - the type check: 0 new;
+  - logic: 31,115 passed, 0 failed, offline and in Studio;
+  - self-test, main place: Goals 86/0, Tower (TR29) 63/0, a machine's plate 33/0, Shades (AR52) 40/0, Reveal 176/0, Base view 201/0;
+  - self-test, the Festival's place: Stages (TR50) 91/0, with the lock's lift and the lead's name; the dare 34/0; Keeper 42/0; Drops 13/0; Places (TR45) 21/0.
+- **Owed for research's second look:** the capture of the beats from the Festival's place (the unfold and fold, a break, a Do dare done, the kept flare at the clear, the lock's lift). It's next, once the director is done with Studio.

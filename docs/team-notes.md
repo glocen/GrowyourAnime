@@ -4,9 +4,9 @@
 
 Each teammate rewrites its own row: one to three lines. Open asks sit under "Waiting on the director".
 
-**Quaestor (research).** 2026-11-24, 14:06, on Opus 5.5. The director's brief of 14:00 is with the team, with four rule cuts in force (`4508e172`). The director is off until about 20:30, and the PC stays awake. Done today: **TR56,** a chest for everything, seeded (`chestFamily`, `jewels`); AR62's audit, words and plan; Kirra and AR57 passed.
-- **Next:** AR62's verdict when Modulo's takes land; TR54's second look on Faber's capture; then the Broadcast, the Strip's boards, the welcome week and codes, the capture, firsts.
-- **With the director, on return:** accept Rook and Kirra (`build/handoff/Rook/make/rook_make_sheet.png`, `build/handoff/Kirra/make/kirra_make_sheet.png`); AR62's pick; the phone sitting and F7; TR52's run; item 10, the hooks; the store's design.
+**Quaestor (research).** 2026-11-24, evening, from a cloud session: the PC is off (its battery ran out), so there's no Studio, Blender or `build/handoff/` here. Done in the cloud: **TR57 to TR60** written (the Broadcast with firsts, the Strip's boards, the welcome week and codes, the capture), with their seeds, the API facts sourced, and the content check passed after one change. `docs/roblox-rules.md` is read again: the content rating, the nickname filter, pity systems, and odds rounding.
+- **Next:** what the cloud allows (design and words); then, back on the PC: AR64's and AR62's picks, TR54's second look, AR56's slab.
+- **With the director, on return:** accept Rook and Kirra; AR62's pick; the phone sitting and F7; TR52's run; item 10, the hooks; the store's design.
 
 **Faber (builder).** 2026-11-24, 16:00, on Opus 5.5. Nothing running, no lock held; the main place open in Studio.
 - **Done:** AR56, the Crown in the game (its note in AR56): each player's own room, the gate and its record on the lot; the floor's joins clean on Modulo's padded pictures (16:07). Research's pass next. TR55's case passed (18/0).
@@ -54,6 +54,7 @@ For Faber:
 
 ### Notices
 
+- Tier 2, research, 2026-11-24, evening, from the cloud: TR57 to TR60 (`docs/design.md`, "Being seen" and "The welcome week and codes"; seeds "broadcast", "boards", "welcomeWeek", "codes"). Day 7 of the welcome week is Lyric for everyone, since about 13% of Lantern Row's Standard shards hold Lyric and nearly every player owns all five Voidkin by then. Faber and Modulo: say in your row what you'd change.
 - The director, 2026-11-24, 11:11, for everyone: overhaul what's clearly better, above all visually and in design, and fix bugs at once (`AGENTS.md`, "Overhaul what's clearly better"; the register's top row). The old kept for rollback; a redo players see is a blockout beside the old, judged by research in the game; the director's own decisions are redone as an alternative shown to the director.
 - Tier 2, research, 2026-11-24, 10:55: a fall in the Festival (`docs/design.md`, "A fall in the Festival"): the Arrival pad counts as home for following, and the fall card holds Retry (lit when a lead is ready, dim with the time left), Send another and Home. Faber: say in your row what you'd change.
 - Tier 1, Faber, 2026-11-23, AR52: the Dasher runs on through the lead to its line's end, keeps its aim to its action's end (its back to whoever it passed), and is first ready 1.5 s after it spawns, the Guard at once. The shield's grey pane stands at 0.25 transparency. Research: say in your row what you'd change.

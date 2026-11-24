@@ -5045,3 +5045,66 @@ Research, 2026-11-24, 14:00. Launch-design's item 5. The design: `docs/design.md
   - High refused under level 10;
   - presets at their levels.
 - **The content check** reads the new names before the build.
+
+## TR57. The Broadcast, with firsts (research's request, tier 2, for Faber)
+
+Research, 2026-11-24, from the cloud. Launch-design's items 6 and 10. The design: `docs/design.md`, "Being seen" (the Broadcast, its words, firsts). The numbers: `tools/balance/seeds.json`, "broadcast".
+
+- **Feel line.** A player walking home from a run sees "Mara found a Legendary Sword" rise in its gold where the target's card sat, holds it for a breath, and wants to be the next name. It never lands over their own fight or reveal.
+- **The facts it rests on** (SOURCED, Roblox's creator-docs, `MessagingService.yaml` and `TextChannel.yaml`):
+  - a message is at most 1 kB; a server sends 600 + 240 × players a minute; a topic receives 40 + 80 × servers a minute; delivery is best effort, "typically within 1-2 seconds";
+  - `TextChannel:DisplaySystemMessage` runs only on the client, and its text isn't filtered or localized, so it carries only our own words and the display name.
+  - Rich text in a system line: UNVERIFIED. If the chat window doesn't draw a colour tag, the line goes plain.
+- **In the block:**
+  - `Rules.Broadcast`, pure: the reach for each event (seeds' lists); the per-player every-server throttle, where a throttled line falls to this server; the bundle; the client's queue (hold, gap, stale, friends first); the ids-only message and building the line from them.
+  - The service: a RemoteEvent for this server, one MessagingService topic for every server, and its own server's lines taken from the topic only once (ids deduped).
+  - The plate in the target's card's place, a grey block. Its look follows research's verdict.
+  - The chat's system line, and the two settings.
+  - **Firsts:** the account's first item of each rarity from Rare up plays the full reveal inside Open all, with "First {rarity}". The save keeps the rarities seen.
+- **Waits:** the news board (TR58); the plate's art (Modulo, if the verdict calls for it); a sound for the plate (Sonus, one quiet cue, the director's ear).
+- **Cases, one a rule:** each event's reach; a bought, failed or typed thing never told; the throttle falling to this server; a bundle every 5 s at most; the queue holding behind a card, a ring, a reveal and a screen; a stale line chat-only; a repeated id shown once; the message under 1 kB at its fullest; a first shown once per rarity per account.
+- **Checks:** the content check passed the words on 2026-11-24, after one change ("found {voidkin} in a shard", not "broke open"), and a case keeps the line to our words, ids and the display name, since `DisplaySystemMessage` isn't filtered; a take with two Studio test servers, if Studio can run them, else two players in one; research's verdict in motion.
+- **Order:** after TR56 and the open pieces.
+
+## TR58. The boards on the Strip (research's request, tier 2, for Faber; Modulo the boards)
+
+Research, 2026-11-24, from the cloud. Launch-design's item 7, the north star's "two players compare builds". The design: `docs/design.md`, "Being seen" (the boards). The numbers: seeds, "boards".
+
+- **Feel line.** Coming back from a run through the crossing, a player glances at the strongest-lead board, sees their name at ninth, and knows the number to beat.
+- **The facts** (SOURCED, creator-docs, data stores' "Error codes and limits"): `GetSortedAsync` 5 + 2 × players a server a minute, writes 30 + 5 × players, a page at most 100. The plan uses 3 reads and at most 8 posts a minute at 8 players (COMPUTED).
+- **In the block:**
+  - two new ordered stores, the best lead's CR and total stars, posted by the server as `TowerBoardService` posts the Tower's week: only raised, by UserId, the name looked up when shown;
+  - the Tower's week moved onto a board in the world (the screen's board stays until the verdict);
+  - three boards and the news plate in grey on the Shop's side of the crossing, top ten each, the viewer's own rank under them;
+  - the news plate fed by TR57's every-server lines.
+- **Waits:** a tap on a name opening the lead card (TR33, not built); the boards' art (Modulo, an AR after the verdict).
+- **Cases:** a post only raises; the post throttle; the top ten and the own-rank line from a made-up page; a name never stored, only an id.
+- **Checks:** the content check on the boards' titles; a world-report line for their place; research's verdict from the player's camera walking the crossing.
+- **Order:** after TR57.
+
+## TR59. The welcome week and codes (research's request, tier 2, for Faber)
+
+Research, 2026-11-24, from the cloud. Launch-design's item 8. The design: `docs/design.md`, "The welcome week and codes". The numbers: seeds, "welcomeWeek" and "codes".
+
+- **Feel lines.** On day 2 a player opens Home, sees yesterday's crate taken and today's Emblem Case lit, with Lyric's face waiting at the row's end, and taps it before anything else. A player types a code from the game's page and the crate lands in the bag with its line.
+- **In the block:**
+  - `Rules.Welcome`, pure: the day count by UTC days played, a claim, a repeat claim paying once, day 7's Lyric as a new Voidkin or a copy;
+  - the row of seven on Home's Today card from the end of the first run, a grey block;
+  - `Rules.Codes`, pure: a code's match (any case), once per account, the end date, the wrong-try limit; the list in Config;
+  - the code field in Settings with its five lines; the gifts through the chests' grant (TR56), one transaction each.
+- **Waits:** the row's art, after research's verdict; the first code's gift and end date, at the first update; where codes are posted (the director).
+- **Cases:** each day's gift; a missed day waiting; a repeated claim paying once; Lyric owned and not; a code taken twice, ended, wrong, the sixth wrong try in a minute; no gift of Credits or of anything the store sells.
+- **Checks:** the content check passed the lines on 2026-11-24. No code is ever put behind a like, a favourite, a group join or a follow until that has been checked against Roblox's rules (the director's, with where codes are posted). Research's verdict on Home's row.
+- **Order:** after TR56, whose case, pouch and crate it grants.
+
+## TR60. The capture after a reveal (research's request, tier 1 for the capture, tier 2 for its tile; for Faber)
+
+Research, 2026-11-24, from the cloud. Launch-design's item 9, the north star's "a screenshot of a reveal looks like an advert". The design: `docs/design.md`, "Being seen" (the capture).
+
+- **Feel line.** A player's first Lyric lands in the Breaker's light, they tap the small camera at the card's corner, and their phone's share sheet opens on that frame.
+- **The facts** (SOURCED, creator-docs, `CaptureService.yaml`): a client-side service; `TakeScreenshotCaptureAsync(onCaptureReady, captureParams)` leaves the UI out by default (`Enum.UICaptureMode.None`); `PromptShareCapture(content, launchData, …)` opens the device's share sheet with an invite link to the game where supported, and offers a download where not; `PromptSaveCapturesToGallery` saves to the game's Captures gallery. Age or platform limits: none stated (UNVERIFIED).
+- **In the block:** the tile on the reveal's card while it holds; the HUD hidden for the frame while the card stays in, the capture taken with the UI the card needs; the share prompt; `launchData` carrying only the sharer's UserId, counted by `FunnelService` and never rewarded.
+- **Waits:** the tile's icon (Modulo).
+- **Cases:** the tile only while a card holds; the launch data's shape.
+- **Checks:** a capture taken on a phone in a test place; research's look at the picture it makes.
+- **Order:** after TR57.

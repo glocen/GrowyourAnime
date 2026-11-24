@@ -334,6 +334,60 @@ Research's layout for TR2, 2026-11-12. The builder installs it in grey; how it l
 - **Rewards** are forge stones and shards only: never Robux, and never anything sold.
 - **Not at launch:** a pool of dares per stretch, weekly goals, a pass, titles.
 
+## Being seen
+
+[Research, 2026-11-24, tier 2, from `docs/research/cloud-2026-11-24/launch-design.md`, sections 6, 7 and 10; the director's idea of 2026-11-13, "global chat like when someone get a mythical units?"]. A rare find is heard, strength stands on the street, and a reveal is worth sending to a friend. Nothing bought, failed or typed is ever shown. The numbers: `tools/balance/seeds.json`, "broadcast" and "boards". The builds: TR57 to TR60.
+
+- **The Broadcast.** What's rare at launch is told, to this server or to every server:
+
+| Reach | What's told at launch |
+|---|---|
+| Every server | a Legendary or Dawn item; Reinforce to +20 or higher; a Voidkin to seven stars; first place on the Tower's week |
+| This server | an Epic item; the account's first Voidkin of each rarity from Rare up (Lyric, at launch); the Lamplighter's first fall on Hard; Reinforce to +15; this server's best Tower floor today |
+| Nobody | anything bought; any failure; anything a player typed, nicknames included, so a line names the Voidkin's own name |
+
+  - **The line** shows in the target's card's place at the top centre, whenever no fight shows a card there. It holds for 4 s in a plate lit in its rarity's light, inside the plate (`docs/ui.md`, rule 5). Then it stays in the chat as a system line.
+  - **It never covers anything.** It waits out a fight's card, a keeper's ring, a reveal and an open screen. A line still waiting after 60 s skips the plate and goes only to the chat.
+  - **One plate at a time,** at most one every 20 s. This server's lines and friends' lines come first. Past the cap, every-server lines go to the chat and the news board only.
+  - **Settings:** "Show my finds in other servers" and "Show others' finds", both on. Off, the second hides the plate and the chat line alike.
+  - **Every-server lines** are bundled: a server publishes at most one message every 5 s, and a message carries only ids, so each client builds the words itself.
+- **The words,** one line each, dry, with no exclamation (Goals, "The words"). The name is the player's display name, and the rarity and the item, or the Voidkin's name, are in the rarity's colour:
+  - "{name} found a Legendary Sword" ("{name} found {a/an} {rarity} {item}", since an item is named by its kind)
+  - "{name}'s Sword reached +20" ("{name}'s {item} reached +{level}")
+  - "{name}'s {voidkin} reached seven stars"
+  - "{name} found {voidkin} in a shard" (the first of a rarity)
+  - "{name} beat the Lamplighter on Hard"
+  - "{name} leads the Tower this week, floor {floor}"
+  - "{name} reached floor {floor}, this server's best today"
+- **The boards on the Strip.** Three boards stand on the Shop's side of the crossing, read from the path to the Festival Door:
+  - the strongest lead (its Combat Power, all time);
+  - the Tower's week (today's board, moved into the world);
+  - total stars across the collection.
+  - Each board shows its top ten, a name and a number, with the viewer's own rank under it when they're outside the ten.
+  - A fourth plate between them, **the news**, shows the last eight every-server lines.
+  - A tap on the name of a player in this server opens their lead card (TR33).
+  - The server computes every number, and a post only ever raises.
+- **The capture.** After a Voidkin's reveal and an Epic-or-better item's reveal, a camera tile sits at the card's corner while the card holds. A tap takes the world with the reveal's card and without the HUD, then opens Roblox's share sheet, which carries an invite to the game (where a device has none, Roblox offers a download). A share is never rewarded.
+- **Firsts.** The account's first item of each rarity, from Rare up, plays the full reveal once, even inside Open all, with "First {rarity}" under its name. Every other first is told by the Broadcast, never by a banner of its own.
+
+## The welcome week and codes
+
+[Research, 2026-11-24, tier 2, from launch-design, section 8.] A reason to come back on day 2 to day 7, and on each update. The numbers: `tools/balance/seeds.json`, "welcomeWeek" and "codes". The build: TR59.
+
+- **Seven gifts,** one for each day the account plays. A day is a UTC day, as for Today's three.
+  - A missed day waits, so no gift is ever lost and there's no streak. The week ends when the seventh is taken.
+  - The seven show as a row on Home's Today card from the end of the first run, so the first ten minutes stay as written (`docs/north-star.md`). Today's gift is lit and taken with one tap; later gifts are shown, dim.
+  - Day 1 a Forge Crate, day 2 an Emblem Case, day 3 two Standard shards, day 4 a Jewel Pouch, day 5 a Forge Crate, day 6 an Emblem Case.
+  - **Day 7: Lyric's Named shard,** with Lyric's face on the tile from day 1. If the account already has Lyric, it's a copy toward Lyric's next star.
+    - Why Lyric for everyone: at Lantern Row's odds, about 13% of Standard shards hold Lyric, so nearly every player owns all five Voidkin before day 7. A gift of "one you don't own" would almost always fall back to a crate (COMPUTED: 9 in 69 from `Config.Shards`, where `Rules.Odds` drops the rarities Lantern Row lacks).
+  - The cases roll as Lantern Row's elite chest does.
+- **Codes.** One per update, typed in Settings, once per account, each with an end date.
+  - A code pays a crate, a case, a pouch or Standard shards: never Credits, and never anything the store sells for Robux.
+  - The list ships in Config with its update.
+  - Wrong tries: five a minute, then a minute's wait.
+  - The words: "Code taken: {gift}", "That isn't a code", "That code has ended", "Already used on this account", "Try again in a minute".
+  - **In the game,** codes are pointed to only in the wording Roblox allows: "New codes come with each update. See the game's page." The game never shows a link or a site's name. Roblox permits social links only on the game's page, never inside the game, and only collaborators verified at 16 or older can add them (SOURCED: [Social media links](https://create.roblox.com/docs/production/promotion/social-media-links), "Guidelines"). Where codes are posted is the director's call.
+
 ## What the player holds
 
 | Currency | Comes from | Goes to |

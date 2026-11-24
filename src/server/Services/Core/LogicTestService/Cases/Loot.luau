@@ -31,7 +31,7 @@ local function fresh(): Profile.Data
 end
 
 local function loot(emblem: number): Drops.Loot
-	return { Stone = 0, Emblem = emblem, Rarity = 0, Set = 0, Stat = 0 }
+	return { Stone = 0, Emblem = emblem }
 end
 
 -- Whether `weights` read ladder row `n` under part 2's least shares (in percent; Config.Chests.Least when nil): the row's
@@ -180,18 +180,19 @@ return {
 			t.Check("a Hard keeper: 2.5 (2 sure)", Drops.Stones("Keeper", 0.5, "Hard") == 3 and Drops.Stones("Keeper", 0.55, "Hard") == 2)
 			t.Check("emblems: an elite 30%, a keeper 75%", DropsConfig.EmblemChance.Elite == 0.3 and DropsConfig.EmblemChance.Keeper == 0.75)
 			local hardRow = ChestsConfig.Ladder[1 + DropsConfig.EmblemTier.Elite - 1 + ChestsConfig.Hard.Rows]
-			t.Check("a Hard elite's emblem: Drum Court's row", Drops.EmblemWeights("Elite", GROUND, "Hard").Rare == hardRow[3])
+			local hardCase = ChestRows.CaseOf(GROUND, "Elite", "Hard") :: ChestRows.Row
+			t.Check("a Hard elite's case: Drum Court's row", math.abs(Chests.Odds(hardCase).Rare - hardRow[3] / (hardRow[1] + hardRow[2] + hardRow[3] + hardRow[4] + hardRow[5])) < 1e-12)
 			local data = fresh()
 			local first = Progress.KeeperWon(data, GROUND, NOW, "Normal", loot(0.9))
-			t.Check("the first Normal win, roll 0.9: its emblem, sure", first.Emblem ~= "" and data.Bag.Emblems[first.Emblem] == 1, first.Emblem)
+			t.Check("the first Normal win, roll 0.9: its Emblem Case, sure", first.Case == `{GROUND}_case_keeper` and data.Bag.Chests[first.Case] == 1, first.Case)
 			local second = Progress.KeeperWon(data, GROUND, NOW + 400, "Normal", loot(0.9))
-			t.Equal("the second, roll 0.9: none over 75%", second.Emblem, "")
+			t.Equal("the second, roll 0.9: none over 75%", second.Case, "")
 			local hard = Progress.KeeperWon(data, GROUND, NOW + 800, "Hard", loot(0.9))
-			t.Equal("the first Hard win, roll 0.9: 75% only", hard.Emblem, "")
+			t.Equal("the first Hard win, roll 0.9: 75% only", hard.Case, "")
 			local hardAgain = Progress.KeeperWon(data, GROUND, NOW + 1200, "Hard", loot(0.5))
-			t.Check("roll 0.5: under 75%, one", hardAgain.Emblem ~= "")
-			t.Equal("without the rolls: none", Progress.KeeperWon(data, GROUND, NOW + 1600, "Hard").Emblem, "")
-			local hardStones = Drops.Give(fresh(), "Ordinary", 12, GROUND, 0.99, 0.99, { Stone = 0.25, Emblem = 0.99, Rarity = 0, Set = 0, Stat = 0 }, { Difficulty = "Hard", Stage = 1 })
+			t.Check("roll 0.5: under 75%, one, Hard's own", hardAgain.Case == `{GROUND}_case_keeper_hard`)
+			t.Equal("without the rolls: none", Progress.KeeperWon(data, GROUND, NOW + 1600, "Hard").Case, "")
+			local hardStones = Drops.Give(fresh(), "Ordinary", 12, GROUND, 0.99, 0.99, { Stone = 0.25, Emblem = 0.99 }, { Difficulty = "Hard", Stage = 1 })
 			t.Check("a Hard Shade's fall, roll 0.25: one Low stone", hardStones.Stones == 1 and hardStones.Stone == "Low")
 		end,
 	},

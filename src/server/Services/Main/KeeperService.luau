@@ -321,7 +321,7 @@ end
 local function won(player: Player, try: Try)
 	try.Ending = true
 	local ground = (ring :: any).Ground
-	local loot: Drops.Loot = { Stone = 0, Emblem = rng:NextNumber(), Rarity = rng:NextNumber(), Set = rng:NextNumber(), Stat = rng:NextNumber() }
+	local loot: Drops.Loot = { Stone = 0, Emblem = rng:NextNumber() }
 	local answer = DataService.Change(player, "KeeperWon", function(draft)
 		return Progress.KeeperWon(draft, ground, os.time(), try.Difficulty, loot)
 	end)

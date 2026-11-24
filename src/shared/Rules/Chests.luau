@@ -10,6 +10,8 @@
 --              else one of the other classes owned), the row, its main stat and its lines, each priced in Combat Power
 --   Salvage    an opened item of Settings.Salvage's rarity or under turns into Credits, unless it would raise the
 --              Combat Power of its class's best Voidkin, or any class's for a piece every class wears (Keep)
+--   No gear    an Emblem Case, a Jewel Pouch or a Forge Crate (Definitions.Chests' Others; the director's "ok" of
+--              2026-11-24): what it holds into the bag's stacks, so it takes no room in the bag and is never salvaged
 -- No Roblox API: it runs with Studio closed.
 
 local Shared = game:GetService("ReplicatedStorage").Shared
@@ -23,8 +25,12 @@ local Grounds = require(Shared.Definitions.Grounds)
 local Attributes = require(Shared.Definitions.Attributes)
 local Rarity = require(Shared.Definitions.Rarity)
 local Voidkin = require(Shared.Definitions.Voidkin)
+local JewelsConfig = require(Shared.Config.Jewels)
+local ReinforceConfig = require(Shared.Config.Reinforce)
 local Growth = require(Shared.Rules.Growth)
 local Stats = require(Shared.Rules.Stats)
+local Emblems = require(Shared.Rules.Emblems)
+local Jewels = require(Shared.Rules.Jewels)
 
 local Chests = {}
 
@@ -158,16 +164,57 @@ function Chests.Weights(chest: ChestRows.Row): { number }
 	return weights
 end
 
--- Each rarity's chance from a chest, as its roll draws it.
+-- Each rarity's chance from a chest, as its roll draws it: a gear chest's item's, an Emblem Case's emblem's (its ladder
+-- row's, Common counted as Uncommon), none for a chest that holds neither.
 function Chests.Odds(chest: ChestRows.Row): { [string]: number }
+	local out = {}
+	if chest.Kind == "Emblem" then
+		local weights = Emblems.Weights(ChestsConfig.Ladder[Chests.Step(chest)])
+		local total = 0
+		for _, weight in weights do
+			total += weight
+		end
+		for _, name in ChestsConfig.Rarities do
+			out[name] = if total > 0 then (weights[name] or 0) / total else 0
+		end
+		return out
+	elseif chest.Kind ~= "Gear" then
+		return out
+	end
 	local row = Chests.Weights(chest)
 	local total = 0
 	for _, weight in row do
 		total += weight
 	end
-	local out = {}
 	for i, name in ChestsConfig.Rarities do
 		out[name] = if total > 0 then (row[i] or 0) / total else 0
+	end
+	return out
+end
+
+export type Line = { Name: string, Rarity: string, Chance: number }
+
+-- What a chest's card says it gives, a line each with its chance: a rarity's for gear and an Emblem Case (those it can
+-- give), a jewel's level for a Jewel Pouch, the stones for a Forge Crate (each line its own chance).
+function Chests.Lines(chest: ChestRows.Row): { Line }
+	local out: { Line } = {}
+	if chest.Kind == "Jewel" then
+		local up = ChestsConfig.Pouch.Up
+		table.insert(out, { Name = "A level 1 jewel", Rarity = "", Chance = 1 - up })
+		table.insert(out, { Name = "A level 2 jewel", Rarity = "", Chance = up })
+		return out
+	elseif chest.Kind == "Stone" then
+		local crate, grades = ChestsConfig.Crate, ReinforceConfig.Grades
+		table.insert(out, { Name = `{crate.Low[1]} to {crate.Low[2]} {grades[1]} stones`, Rarity = "", Chance = 1 })
+		table.insert(out, { Name = `A {grades[2]} stone`, Rarity = "", Chance = crate.Mid })
+		table.insert(out, { Name = `A {grades[3]} stone`, Rarity = "", Chance = crate.High })
+		return out
+	end
+	local odds = Chests.Odds(chest)
+	for _, name in ChestsConfig.Rarities do
+		if (odds[name] or 0) > 0 then
+			table.insert(out, { Name = name, Rarity = name, Chance = odds[name] })
+		end
 	end
 	return out
 end
@@ -331,9 +378,39 @@ function Chests.KeeperChest(ground: string, wins: number, difficulty: string?): 
 	return if row then row.Id else nil
 end
 
+-- One no-gear chest's contents for `draw`, as bag keys and counts, in a fixed order: an Emblem Case's rarity, set and
+-- stat; a Jewel Pouch's level, then colour; a Forge Crate's Low count, then whether a Mid, then whether a High. Nil
+-- only when a case's ladder row weighs nothing.
+local function holds(chest: ChestRows.Row, draw: Draw): { [string]: number }?
+	if chest.Kind == "Emblem" then
+		local key = Emblems.Roll(Emblems.Weights(ChestsConfig.Ladder[Chests.Step(chest)]), draw(), draw(), draw())
+		return if key then { [key] = 1 } else nil
+	elseif chest.Kind == "Jewel" then
+		local level = if draw() < ChestsConfig.Pouch.Up then 2 else 1
+		local colours = JewelsConfig.Colours
+		return { [Jewels.Key(colours[index(#colours, draw())], level)] = 1 }
+	end
+	local crate, grades = ChestsConfig.Crate, ReinforceConfig.Grades
+	local out = { [grades[1]] = crate.Low[1] + index(crate.Low[2] - crate.Low[1] + 1, draw()) - 1 }
+	if draw() < crate.Mid then
+		out[grades[2]] = 1
+	end
+	if draw() < crate.High then
+		out[grades[3]] = 1
+	end
+	return out
+end
+
+-- The bag's stack a no-gear chest's contents go into.
+local function stackOf(data: Profile.Data, kind: string): { [string]: number }
+	return if kind == "Emblem" then data.Bag.Emblems elseif kind == "Jewel" then data.Bag.Jewels else data.Bag.Stones
+end
+
 -- Opens `count` of chest `id` (at most Config's Step and what's held), every roll from `draw`. The chests leave the bag
 -- and every item is written in this one step; an item of the salvage's rarity or under that wouldn't raise Combat Power
--- turns into Credits. { Ok, Chest, Opened, Items (the ids kept), Salvaged, Credits }, or a refusal that changed nothing.
+-- turns into Credits. { Ok, Chest, Kind, Opened, Items (the ids kept), Salvaged, Credits }, or a refusal that changed
+-- nothing. A chest that holds no gear needs no room and salvages nothing: { Ok, Chest, Kind, Opened, Gave }, Gave its
+-- contents by key (an emblem's, a jewel's or a stone's grade) into the bag's stack of that kind.
 function Chests.Open(data: Profile.Data, id: any, count: any, draw: Draw): { [string]: any }
 	local chest = if type(id) == "string" then ChestRows.ById[id] else nil
 	local valid = type(count) == "number" and count == math.floor(count) and count >= 1 and count <= ChestsConfig.Step
@@ -343,6 +420,24 @@ function Chests.Open(data: Profile.Data, id: any, count: any, draw: Draw): { [st
 	local held = data.Bag.Chests[chest.Id] or 0
 	if held < count then
 		return { Ok = false, Error = Chests.NotEnough }
+	end
+	if chest.Kind ~= "Gear" then
+		local gave: { [string]: number } = {}
+		for _ = 1, count do
+			local got = holds(chest, draw)
+			if got == nil then
+				return { Ok = false, Error = Chests.Unknown }
+			end
+			for key, n in got do
+				gave[key] = (gave[key] or 0) + n
+			end
+		end
+		data.Bag.Chests[chest.Id] = if held > count then held - count else nil
+		local stack = stackOf(data, chest.Kind)
+		for key, n in gave do
+			stack[key] = (stack[key] or 0) + n
+		end
+		return { Ok = true, Chest = chest.Id, Kind = chest.Kind, Opened = count, Gave = gave }
 	end
 	local items = 0
 	for _ in data.Items do
@@ -379,7 +474,7 @@ function Chests.Open(data: Profile.Data, id: any, count: any, draw: Draw): { [st
 		end
 	end
 	data.Currency.Credits += credits
-	return { Ok = true, Chest = chest.Id, Opened = count, Items = kept, Salvaged = salvaged, Credits = credits }
+	return { Ok = true, Chest = chest.Id, Kind = chest.Kind, Opened = count, Items = kept, Salvaged = salvaged, Credits = credits }
 end
 
 -- Sets the salvage: opened items of rarity `below` or under turn into Credits, "" for none.

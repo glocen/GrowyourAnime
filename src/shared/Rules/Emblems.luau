@@ -6,6 +6,9 @@
 --   Emblems.Key(set, stat)             an emblem's key
 --   Emblems.Parse(key)                 its set's row and its stat, or nil when the key names no emblem that can exist
 --   Emblems.Points(key)                the stat it gives and how much (Config.Emblems), or nil
+--   Emblems.Weights(ladder)            the rarities' weights, Uncommon to Legendary, of a chest ladder row (an Emblem
+--                                      Case's, Rules.Chests), Common counted as Uncommon: no emblem is Common
+--   Emblems.Roll(weights, r, s, t)     the emblem three rolls in [0, 1) draw: its rarity, its set, its stat
 --   Emblems.Socket(data, args)         { Item, Socket, Emblem }: one from the bag into the socket; one already there goes
 --                                      back to the bag
 --   Emblems.Unsocket(data, args)       { Item, Socket }: the socket's emblem back to the bag
@@ -57,6 +60,43 @@ function Emblems.Points(key: string): (string?, number)
 		return stat, math.floor(row * (Config.Worth[rarity] or 0) + 0.5)
 	end
 	return stat, (Config.High[rarity] :: { [string]: number })[stat]
+end
+
+local RARITIES = { "Uncommon", "Rare", "Epic", "Legendary" }
+
+function Emblems.Weights(ladder: { number }): { [string]: number }
+	return { Uncommon = (ladder[1] or 0) + (ladder[2] or 0), Rare = ladder[3] or 0, Epic = ladder[4] or 0, Legendary = ladder[5] or 0 }
+end
+
+-- The rarity by `weights` for `rarity`, then one of its sets and one of its stats evenly (an Epic's or a Legendary's
+-- also the high stats), or nil when no rarity weighs anything.
+function Emblems.Roll(weights: { [string]: number }, rarity: number, set: number, stat: number): string?
+	local total = 0
+	for _, name in RARITIES do
+		total += math.max(0, weights[name] or 0)
+	end
+	if total <= 0 then
+		return nil
+	end
+	local at, chosen = rarity * total, RARITIES[1]
+	for _, name in RARITIES do
+		local weight = math.max(0, weights[name] or 0)
+		if weight > 0 then
+			chosen = name
+			if at < weight then
+				break
+			end
+			at -= weight
+		end
+	end
+	local sets = Sets.ByRarity[chosen]
+	local stats = table.clone(Sets.Stats)
+	if Config.High[chosen] then
+		table.move(Sets.HighStats, 1, #Sets.HighStats, #stats + 1, stats)
+	end
+	local row = sets[math.clamp(math.floor(set * #sets) + 1, 1, #sets)]
+	local key = Emblems.Key(row.Id, stats[math.clamp(math.floor(stat * #stats) + 1, 1, #stats)])
+	return if Emblems.Parse(key) then key else nil
 end
 
 local function socketOf(data: Profile.Data, args: any): (Profile.OwnedItem?, number?)

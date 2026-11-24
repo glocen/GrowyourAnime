@@ -108,6 +108,16 @@ return {
 	-- Pavilion, so fighting stays the income.
 	Salvage = { Common = 8, Uncommon = 14, Rare = 24, Epic = 40, Legendary = 64 } :: { [string]: number },
 
+	-- The chests that hold no gear (the director's "ok" of 2026-11-24 to docs/research/cloud-2026-11-24/launch-design.md,
+	-- section 5; Definitions.Chests). An Emblem Case holds one War Emblem, its rarity from its ladder row, Common counted
+	-- as Uncommon. The rest are the builder's seeds, for research's refit:
+	--   Pouch  a Jewel Pouch: one jewel, its colour drawn evenly, level 2 at Up, else level 1
+	--   Crate  a Forge Crate: Low stones from Low[1] to Low[2] evenly, one Mid at Mid, one High at High
+	--   KeeperHard  what a keeper's win on Hard adds besides its chest and its case, by chest id
+	Pouch = { Up = 0.15 },
+	Crate = { Low = { 3, 5 } :: { number }, Mid = 0.2, High = 0.03 },
+	KeeperHard = { jewel_pouch = 1, forge_crate = 1 } :: { [string]: number },
+
 	Bag = 300, -- items held at most; an open that would pass it is refused before it rolls
 	Step = 50, -- chests opened in one request at most
 	Reach = 20, -- studs: a chest that falls within this of the avatar flies to it (its show, later)

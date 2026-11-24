@@ -109,7 +109,7 @@ The builder's, 2026-11-16, written before the systems (research's order, `docs/r
 - **Checks:** a wrong-class equip refused; a preset applying only its class's pair; a hand-edited save not applying a wrong weapon; a repeated equip a no-op.
 
 **Chests** (part 11).
-- **The rows:** `Definitions/Chests.luau` holds `Id`, `Ground`, `Tier` and `Name`. `Config.Chests` holds the tables (rarity, slot and line rolls by ground and tier), the drop chances, the bag's cap, the open step (50) and the pickup reach.
+- **The rows:** `Definitions/Chests.luau` holds `Id`, `Ground`, `Tier`, `Name`, `Kind` and `Word`. `Kind` is what a chest holds: `Gear` for the four gear chests (`List`), and `Emblem`, `Jewel` or `Stone` for the Emblem Cases, the Jewel Pouch and the Forge Crate (`Others`, 2026-11-24). Those open into the bag's stacks (`Bag.Emblems`, `Bag.Jewels`, `Bag.Stones`) in the same transaction, need no room in the bag, and are never salvaged; their answer is `{ Ok, Chest, Kind, Opened, Gave }`. `Config.Chests` holds the tables (rarity, slot and line rolls by ground and tier), the drop chances, the bag's cap, the open step (50) and the pickup reach.
 - **The save:**
   - `Bag.Chests`: count by chest id. A stack is a count, so identical chests stack by shape.
   - `Settings.Salvage`: an opened item of this rarity or under turns into Credits (forge stones once the Forge is in), or `""` for none.

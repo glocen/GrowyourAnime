@@ -46,6 +46,10 @@ return {
 	-- First: the floor whose chest is sure the first time the account wins it (the same review: the roll there was 0.9%).
 	-- TR48's refit: about 15 to 17.5 chests an hour for an expected lead.
 	Chest = { Base = 0.02, PerFloor = 0.0004, Most = 0.5, First = 5 },
+	-- Every Every-th floor won hard past the run's record gives an Emblem Case, so once an account (the director's "ok"
+	-- of 2026-11-24 to docs/research/cloud-2026-11-24/launch-design.md, section 5): the keeper's case of the ground its
+	-- foe's level stands in, on Normal (the builder's seed, for research).
+	Case = { Every = 10 },
 	-- A hard floor won drops a Shade's forge stones on this difficulty (Rules.Drops.Stones), of the grade of the ground its
 	-- foe's level stands in (TR48: "a Shade's of its band").
 	Stones = "Normal",

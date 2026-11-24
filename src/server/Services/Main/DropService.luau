@@ -26,13 +26,7 @@ local rng = Random.new()
 
 local function give(player: Player, f: FightService.Fighter)
 	local roll, chestRoll = rng:NextNumber(), rng:NextNumber()
-	local loot: Drops.Loot = {
-		Stone = rng:NextNumber(),
-		Emblem = rng:NextNumber(),
-		Rarity = rng:NextNumber(),
-		Set = rng:NextNumber(),
-		Stat = rng:NextNumber(),
-	}
+	local loot: Drops.Loot = { Stone = rng:NextNumber(), Emblem = rng:NextNumber() }
 	local answer = DataService.Change(player, "Drop", function(draft: Profile.Data): { [string]: any }
 		return Drops.Give(draft, f.Kind, f.Block.Level, f.Ground, roll, chestRoll, loot, { Difficulty = f.Difficulty or "Normal", Stage = f.Stage or 0 })
 	end)

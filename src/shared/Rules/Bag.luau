@@ -28,6 +28,9 @@ local Stats = require(Shared.Rules.Stats)
 local Chests = require(Shared.Rules.Chests)
 local Regalia = require(Shared.Rules.Regalia)
 local Sheet = require(Shared.Rules.Sheet)
+local Hud = require(Shared.Rules.Hud)
+local Emblems = require(Shared.Rules.Emblems)
+local Jewels = require(Shared.Rules.Jewels)
 
 local Bag = {}
 
@@ -335,7 +338,9 @@ function Bag.Card(data: Profile.Data, owned: Profile.OwnedVoidkin?, id: string):
 	return card
 end
 
--- What the chosen chest's card shows: its name, how many are held, the step one press opens, and each rarity's chance.
+-- What the chosen chest's card shows: its name, how many are held, the step one press opens, and what it gives, each
+-- line with its chance (Rules.Chests.Lines). Fills: whether it holds gear, which takes the bag's room; a chest that holds
+-- none opens as many as are held, as one request takes.
 function Bag.Chest(data: Profile.Data, id: string): { [string]: any }?
 	local row = ChestRows.ById[id]
 	local held = data.Bag.Chests[id] or 0
@@ -343,25 +348,60 @@ function Bag.Chest(data: Profile.Data, id: string): { [string]: any }?
 		return nil
 	end
 	local ground = Grounds.ById[row.Ground]
-	local odds = {}
-	local chances = Chests.Odds(row)
-	for _, name in ChestsConfig.Rarities do
-		if (chances[name] or 0) > 0 then
-			table.insert(odds, { Rarity = name, Chance = chances[name] })
-		end
-	end
+	local fills = row.Kind == "Gear"
+	local room = math.max(0, Bag.Cap - Bag.Held(data))
 	return {
 		Id = id,
 		Name = row.Name,
 		Ground = if ground then ground.Name else row.Ground,
 		Tier = row.Tier,
+		Kind = row.Kind,
+		Word = row.Word,
 		Held = held,
 		-- What Open all opens, the number its button says (research, TR28's call 4): as many as are held, as one request
 		-- takes, and as the bag has room for; 0 when it's full.
-		Step = math.min(held, ChestsConfig.Step, math.max(0, Bag.Cap - Bag.Held(data))),
-		Room = math.max(0, Bag.Cap - Bag.Held(data)),
-		Odds = odds,
+		Step = math.min(held, ChestsConfig.Step, if fills then room else math.huge),
+		Fills = fills,
+		Room = room,
+		Odds = Chests.Lines(row),
 	}
+end
+
+-- What the toast says after an open's `answer` (Rules.Chests.Open): how many were opened, and the gear kept and
+-- salvaged, or each emblem, jewel or stone grade that came out, by name.
+function Bag.Opened(answer: { [string]: any }): string
+	local opened = tonumber(answer.Opened) or 0
+	local words = `Opened {Hud.Digits(opened)}`
+	if type(answer.Gave) == "table" then
+		local keys = {}
+		for key in answer.Gave do
+			table.insert(keys, key)
+		end
+		table.sort(keys)
+		local parts = {}
+		for _, key in keys do
+			local n = tonumber(answer.Gave[key]) or 0
+			local name = key
+			local emblem = Emblems.Parse(key)
+			local jewel = Jewels.Parse(key)
+			if emblem then
+				name = `{emblem.Set.Name} ({emblem.Stat})`
+			elseif jewel then
+				name = `{jewel.Colour} jewel, level {jewel.Level}`
+			elseif answer.Kind == "Stone" then
+				name = `{key} {if n == 1 then "stone" else "stones"}`
+			end
+			table.insert(parts, if n == 1 and answer.Kind ~= "Stone" then name else `{Hud.Digits(n)} {name}`)
+		end
+		return `{words}: {table.concat(parts, ", ")}`
+	end
+	local kept = if type(answer.Items) == "table" then #answer.Items else 0
+	local gone = tonumber(answer.Salvaged) or 0
+	words ..= `: {Hud.Digits(kept)} kept`
+	if gone > 0 then
+		words ..= `, {Hud.Digits(gone)} salvaged for {Hud.Digits(tonumber(answer.Credits) or 0)} Credits`
+	end
+	return words
 end
 
 return Bag

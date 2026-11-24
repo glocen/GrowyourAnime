@@ -2,8 +2,8 @@
 -- Drops (pure rules): what an enemy's fall gives one player whose lead hit it, written into their save in one step
 -- (docs/design.md, "The world, in grey"; docs/decisions.md, D01). Credits, the lead's experience, a chance at the ground's
 -- Standard shard, and on the account's first kill, Watt's Named shard; a chest by Rules.Chests.Dropped (TR27); forge
--- stones of the ground's grade and, from an elite or a keeper, a War Emblem (TR47). The server decides the fall and the
--- rolls; this only writes them. No Roblox API: it runs with Studio closed.
+-- stones of the ground's grade and, from an elite or a keeper, an Emblem Case (TR47; the director's "ok" of 2026-11-24).
+-- The server decides the fall and the rolls; this only writes them. No Roblox API: it runs with Studio closed.
 
 local Shared = script.Parent.Parent
 local Profile = require(Shared.Data.Profile)
@@ -13,10 +13,8 @@ local Grounds = require(Shared.Definitions.Grounds)
 local Shards = require(Shared.Definitions.Shards)
 local Growth = require(Shared.Rules.Growth)
 local Chests = require(Shared.Rules.Chests)
-local Emblems = require(Shared.Rules.Emblems)
-local ChestsConfig = require(Shared.Config.Chests)
+local ChestRows = require(Shared.Definitions.Chests)
 local ReinforceConfig = require(Shared.Config.Reinforce)
-local EmblemSets = require(Shared.Definitions.Emblems)
 local Goals = require(Shared.Rules.Goals)
 
 local Drops = {}
@@ -41,9 +39,9 @@ export type Drop = {
 	Shard: string, -- the shard the roll won, or ""
 }
 
--- The server's rolls for a fall's stones and emblem, each in [0, 1) (TR47): Stone, the stone count's fraction; Emblem,
--- whether one drops; Rarity, Set and Stat, which.
-export type Loot = { Stone: number, Emblem: number, Rarity: number, Set: number, Stat: number }
+-- The server's rolls for a fall's stones and Emblem Case, each in [0, 1) (TR47): Stone, the stone count's fraction;
+-- Emblem, whether a case drops. Its emblem is drawn when the case is opened (Rules.Chests.Open).
+export type Loot = { Stone: number, Emblem: number }
 
 -- Where a fall stood (TR48): a stage on Normal or Hard (Stage 0 for none), which sets its stones' rate and its chest.
 export type Place = { Difficulty: string, Stage: number }
@@ -96,51 +94,14 @@ function Drops.Stones(kind: string, roll: number, difficulty: string?): number
 	return whole + (if roll < mean - whole then 1 else 0)
 end
 
--- The emblem rarities' weights for a kind's fall in a ground on `difficulty`, Uncommon to Legendary: its chest ladder
--- row, Common counted as Uncommon. Empty for a kind that drops none.
-function Drops.EmblemWeights(kind: string, ground: string, difficulty: string?): { [string]: number }
-	local tier = DropsConfig.EmblemTier[kind]
-	if tier == nil then
-		return {}
-	end
-	local row = Grounds.ById[ground]
-	local past = if difficulty == "Hard" then ChestsConfig.Hard.Rows else 0
-	local step = math.clamp((if row then row.Order else 1) + tier - 1 + past, 1, #ChestsConfig.Ladder)
-	local weights = ChestsConfig.Ladder[step]
-	return { Uncommon = weights[1] + weights[2], Rare = weights[3], Epic = weights[4], Legendary = weights[5] }
-end
-
--- The emblem a kind's fall on `difficulty` drops for `loot`'s rolls, or nil; `chance`, when given, stands in for its
--- kind's (a keeper's first win, Rules.Progress).
-function Drops.Emblem(kind: string, ground: string, loot: Loot, difficulty: string?, chance: number?): string?
-	if not (loot.Emblem < (chance or DropsConfig.EmblemChance[kind] or 0)) then
+-- The Emblem Case a kind's fall in `ground` on `difficulty` drops for `roll` in [0, 1), or nil; `chance`, when given,
+-- stands in for its kind's (a keeper's first win, Rules.Progress). Its emblem is rolled when it's opened (Rules.Chests).
+function Drops.Case(kind: string, ground: string, roll: number?, difficulty: string?, chance: number?): string?
+	if not (type(roll) == "number" and roll < (chance or DropsConfig.EmblemChance[kind] or 0)) then
 		return nil
 	end
-	local weights = Drops.EmblemWeights(kind, ground, difficulty)
-	local total = 0
-	for _, rarity in { "Uncommon", "Rare", "Epic", "Legendary" } do
-		total += weights[rarity] or 0
-	end
-	local at, rarity = loot.Rarity * total, "Uncommon"
-	for _, name in { "Uncommon", "Rare", "Epic", "Legendary" } do
-		local weight = weights[name] or 0
-		if weight > 0 then
-			rarity = name
-			if at < weight then
-				break
-			end
-			at -= weight
-		end
-	end
-	local sets = EmblemSets.ByRarity[rarity]
-	local stats = table.clone(EmblemSets.Stats)
-	if rarity == "Epic" or rarity == "Legendary" then
-		table.move(EmblemSets.HighStats, 1, #EmblemSets.HighStats, #stats + 1, stats)
-	end
-	local set = sets[math.clamp(math.floor(loot.Set * #sets) + 1, 1, #sets)]
-	local stat = stats[math.clamp(math.floor(loot.Stat * #stats) + 1, 1, #stats)]
-	local key = Emblems.Key(set.Id, stat)
-	return if Emblems.Parse(key) then key else nil
+	local row = ChestRows.CaseOf(ground, kind, difficulty)
+	return if row then row.Id else nil
 end
 
 -- What a kind of enemy at `level` in ground `ground` drops, each line with its chance, for the card shown while it's down
@@ -160,10 +121,10 @@ end
 
 -- The fall written into one player's save: Credits, the lead's experience (levels as far as it goes), the shard the roll
 -- won, on the account's first kill, Config.Drops.First, and the chest `chestRoll` drops (Rules.Chests.Dropped; the sure one
--- needs no roll), and with `loot`'s rolls, its stones and emblem (TR47), at `place`'s difficulty and from its stage's
--- chests (TR48; Normal when nil). A keeper's emblem comes with its win (Rules.Progress.KeeperWon), never here.
--- { Ok, Credits, Xp, Levels, Shard, First, Chest, Stone, Stones, Emblem, Kills } where Shard, First, Chest, Stone and
--- Emblem are "" when nothing dropped. A player without a lead still gets the rest.
+-- needs no roll), and with `loot`'s rolls, its stones and an elite's Emblem Case (TR47), at `place`'s difficulty and from
+-- its stage's chests (TR48; Normal when nil). A keeper's case comes with its win (Rules.Progress.KeeperWon), never here.
+-- { Ok, Credits, Xp, Levels, Shard, First, Chest, Stone, Stones, Case, Kills } where Shard, First, Chest, Stone and
+-- Case are "" when nothing dropped. A player without a lead still gets the rest.
 function Drops.Give(data: Profile.Data, kind: any, level: any, ground: any, roll: any, chestRoll: number?, loot: Loot?, place: Place?): { [string]: any }
 	local drop, problem = Drops.Roll(kind, level, ground, roll)
 	if drop == nil then
@@ -187,16 +148,16 @@ function Drops.Give(data: Profile.Data, kind: any, level: any, ground: any, roll
 	if chest then
 		Chests.Grant(data, chest, 1)
 	end
-	local stone, stones, emblem = "", 0, ""
+	local stone, stones, case = "", 0, ""
 	if loot then
 		stones = Drops.Stones(kind, loot.Stone, difficulty)
 		if stones > 0 then
 			stone = Drops.StoneGrade(ground)
 			data.Bag.Stones[stone] = (data.Bag.Stones[stone] or 0) + stones
 		end
-		emblem = if kind == "Keeper" then "" else Drops.Emblem(kind, ground, loot, difficulty) or ""
-		if emblem ~= "" then
-			data.Bag.Emblems[emblem] = (data.Bag.Emblems[emblem] or 0) + 1
+		case = if kind == "Keeper" then "" else Drops.Case(kind, ground, loot.Emblem, difficulty) or ""
+		if case ~= "" then
+			Chests.Grant(data, case, 1)
 		end
 	end
 	data.Progress.Kills += 1
@@ -210,7 +171,7 @@ function Drops.Give(data: Profile.Data, kind: any, level: any, ground: any, roll
 		Chest = chest or "",
 		Stone = stone,
 		Stones = stones,
-		Emblem = emblem,
+		Case = case,
 		Kills = data.Progress.Kills,
 	}
 end

@@ -22,7 +22,8 @@ local Goals = require(Shared.Rules.Goals)
 local Tower = {}
 
 export type Foe = { Def: string, Level: number }
-export type Reward = { Credits: number, Chest: string?, Stone: string, Stones: number } -- Stone, the grade ("" for none)
+-- Stone, the grade ("" for none); Case, an Emblem Case on every Config.Tower.Case.Every-th floor past the record.
+export type Reward = { Credits: number, Chest: string?, Stone: string, Stones: number, Case: string? }
 
 -- A draw in [0, 1) from the run's seed, the floor and what it's for: the same three, the same draw.
 local function draw(seed: number, floor: number, salt: number): number
@@ -249,11 +250,14 @@ function Tower.Reward(floor: number, best: number, seed: number, fast: boolean?)
 	local chest = if sure or draw(seed, floor, 2) < Tower.ChestChance(floor) then chestOf(floor) else nil
 	local ground = Grounds.List[Growth.GroundOf(Tower.Level(floor))]
 	local stones = if ground then Drops.Stones("Ordinary", draw(seed, floor, 3), TowerConfig.Stones) else 0
+	-- An Emblem Case on every tenth floor won hard past the record, so once an account (launch-design.md, section 5).
+	local case = if ground and floor > best and floor % TowerConfig.Case.Every == 0 then ChestRows.CaseOf(ground.Id, "Keeper") else nil
 	return {
 		Credits = math.floor(credits + 0.5),
 		Chest = chest,
 		Stone = if stones > 0 and ground then Drops.StoneGrade(ground.Id) else "",
 		Stones = stones,
+		Case = if case then case.Id else nil,
 	}
 end
 
@@ -283,6 +287,9 @@ function Tower.Won(data: Profile.Data, id: string, floor: number, fast: boolean?
 	run.Credits += reward.Credits
 	if reward.Chest then
 		run.Chests[reward.Chest] = (run.Chests[reward.Chest] or 0) + 1
+	end
+	if reward.Case then
+		run.Chests[reward.Case] = (run.Chests[reward.Case] or 0) + 1
 	end
 	if reward.Stones > 0 then
 		local stones = run.Stones or {}

@@ -99,7 +99,6 @@ local P = {
 	Rim = C.Rim,
 }
 local GROUP_KIND = { "Gear", "Gear", "Jewelry" } -- each slot group's kind on the strip
-local TIER_WORD = { "Shade", "Elite", "Keeper's", "Tower" } -- a chest's kind on its cell, never a rarity's word
 local NUMBER_ROW = 22 -- the card's Combat Power line
 -- The full bag's way out (the follow-up's item 6): what frees a slot, said wherever a full bag stops an open.
 local FREE_A_SLOT = "salvage an item from its card to free a slot"
@@ -375,7 +374,7 @@ end
 local function slotWord(entry: Rules.Entry): string
 	if entry.Kind == "Chest" then
 		local row = ChestRows.ById[entry.Def]
-		return `{TIER_WORD[if row then row.Tier else 1] or ""} Chest`
+		return if row then row.Word else "Chest" -- its kind, never a rarity's word
 	end
 	local row = Items.ById[entry.Def]
 	return if row then row.Kind else entry.Def
@@ -832,17 +831,18 @@ local function chestCard(context: Context, at: Layout, id: string)
 	caption(odds, 0, wide, "What it gives")
 	for index, each in info.Odds do
 		local line = Instance.new("Frame")
-		line.Name = each.Rarity
+		line.Name = each.Name
 		line.BackgroundTransparency = 1
 		line.Size = UDim2.fromOffset(wide, C.Row)
 		line.LayoutOrder = index
 		line.Parent = odds
-		label({ Name = "Name", Size = Theme.Text.Caption, Font = Theme.Font.Strong, Colour = P.Rarity[each.Rarity] or P.Text, Parent = line }, each.Rarity)
+		label({ Name = "Name", Size = Theme.Text.Caption, Font = Theme.Font.Strong, Colour = P.Rarity[each.Rarity] or P.Text, Parent = line }, each.Name)
 		label({ Name = "Chance", Size = Theme.Text.Caption, Font = Theme.Font.Number, Colour = P.Text, Align = Enum.TextXAlignment.Right, Parent = line }, Odds.Percent(each.Chance * 10000)) -- to the hundredth, as rolled: 0.05% (TR48 part 2)
 	end
-	if info.Room > 0 then
+	-- an Emblem Case, a Jewel Pouch or a Forge Crate takes no room: no line about it
+	if info.Fills and info.Room > 0 then
 		label({ Name = "Room", Size = Theme.Text.Caption, Colour = P.Faint, Box = UDim2.fromOffset(wide, C.Row), Parent = odds }, `Room for {Hud.Digits(info.Room)} in the bag`).LayoutOrder = #info.Odds + 1
-	else
+	elseif info.Fills then
 		-- a full bag says how to free a slot (the follow-up's item 6), two lines where the room's one stood
 		label({ Name = "Room", Size = Theme.Text.Caption, Colour = P.Down, Box = UDim2.fromOffset(wide, C.Row * 2), Parent = odds, Wrap = true }, `The bag is full: {FREE_A_SLOT}`).LayoutOrder = #info.Odds + 1
 	end
@@ -852,13 +852,7 @@ local function chestCard(context: Context, at: Layout, id: string)
 		if not said(CHEST_SAID, "Can't open it", answer) then
 			return false
 		end
-		local kept = if type(answer.Items) == "table" then #answer.Items else 0
-		local gone = tonumber(answer.Salvaged) or 0
-		local words = `Opened {Hud.Digits(tonumber(answer.Opened) or count)}: {Hud.Digits(kept)} kept`
-		if gone > 0 then
-			words ..= `, {Hud.Digits(gone)} salvaged for {Hud.Digits(tonumber(answer.Credits) or 0)} Credits`
-		end
-		Toast.Show(words, Theme.Colour.Text)
+		Toast.Show(Rules.Opened(answer), Theme.Colour.Text)
 		return true
 	end
 	local many = info.Step > 1

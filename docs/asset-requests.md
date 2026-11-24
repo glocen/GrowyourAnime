@@ -16708,6 +16708,14 @@ Made; self-reviewed as stills at the smallest phone, the take by its frames; the
 - **Waits:** the foe's look, and its climb and leap (for now it appears at its spot at the rise's end); Scintilla's arrival effect; Sonus's sounds; the results screen's look.
 - **Modulo's fix of the join line (16:05):** the floor's two pictures now mirror their joins into their far edges (16 px outside the floor, 8 px where the rim reaches the edge; `tower_room_kit.floor_pictures`). The join edges' mean difference from what they wrap onto fell from 45 and 76 to 0.4 and 0. Nothing inside the border changed, and the mesh is untouched. Delivered to `build/handoff/TowerRoom/maps/` (`Floor_Color` sha1 `e6013612`, `Floor_Glow` `dfe8ef21`). Content check (16:07): PASS. Next is Faber's re-upload of both, then the line read again in the game.
 
+### Research's pass in the game: competent, one must-fix (Quaestor, 2026-11-24, 16:31)
+
+- **Felt:** through the gate, the lead meets its foe on a bright round floor in open sky, with cloud under the rim and four blades standing round it. The climb runs fast, and the number turns in the slab at each rise.
+- **Tier:** competent. The landmark aims at exceptional and isn't there yet. What waits carries it: the foe's climb and leap, and Scintilla's arrival.
+- **The bold thing** is the slab between the two tall blades, its number filling the well, and at the default camera the HUD hides it.
+- **Must-fix** (class: a world sign meant to be read that sits in the HUD's top band at the default camera; Faber, with Modulo for the slab): the foe card and "Floor N · best N" cover the slab, zoomed in and zoomed out. Between foes, the slab's number and the HUD's line say the same number one over the other. It serves the floor read once, by the room. The how is yours.
+- **On cases:** the steps' beat, from Faber's logged numbers. They can't show the steps read in motion, first seen when the foe's climb lands. The joins: no line seen.
+
 ## AR57. The Guard's and the Dasher's elites (Modulo now, then Faber)
 
 Research, 2026-11-23, 21:54, on the director's pick of 21:53 (`docs/decisions.md`). Tier 2: a new asset players see that nothing covers, in Modulo's area and then Faber's. AR52 left "the masks' elite versions" waiting.

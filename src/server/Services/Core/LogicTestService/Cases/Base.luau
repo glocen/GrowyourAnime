@@ -478,22 +478,35 @@ return {
 				t.Equal(label, act(data, "UpgradeMachine", bad, T0 + 14).Error, Base.BadArgs)
 			end
 			data.Base.Level = 3
-			data.Base.Machines.Breaker = 7
-			data.Bag.Shards[STANDARD] = 3
-			for _ = 1, 3 do
-				act(data, "AddShard", { Shard = STANDARD }, T0 + 15)
+			data.Base.Machines.Breaker = 6
+			local held = act(data, "UpgradeMachine", { Machine = "Breaker", Level = 7 }, T0 + 14)
+			t.Equal("at launch the top base's machines stop at 6, read as the cap (the director, 2026-11-24)", held.Error, Base.Cap)
+			t.Equal("and nothing is spent", data.Currency.Credits, 100000 - 170)
+			-- The chamber rule stands for the base's next level, so it's tried under a ceiling of 30 and the launch's put back.
+			local launch = BaseConfig.Levels.Ceiling
+			BaseConfig.Levels.Ceiling = { 2, 6, 30 }
+			local ok, err = pcall(function()
+				data.Base.Machines.Breaker = 7
+				data.Bag.Shards[STANDARD] = 3
+				for _ = 1, 3 do
+					act(data, "AddShard", { Shard = STANDARD }, T0 + 15)
+				end
+				t.Check("two chambers busy, one waiting", #data.Base.Chambers == 2 and #data.Base.Line == 1)
+				local credits = data.Currency.Credits
+				local breaker = act(data, "UpgradeMachine", { Machine = "Breaker", Level = 8 }, T0 + 16)
+				t.Check("the Breaker to 8 for 2,400", breaker.Ok == true and breaker.Spent == 2400 and data.Base.Machines.Breaker == 8, `{breaker.Error}`)
+				t.Equal("its Credits spent", data.Currency.Credits, credits - 2400)
+				t.Equal("a third chamber", #data.Base.Chambers, 3)
+				local third = data.Base.Chambers[3]
+				t.Check("which took the line's shard", third ~= nil and third.Work ~= nil and third.Work.Def == STANDARD and #data.Base.Line == 0)
+				data.Base.Machines.Breaker = 29
+				t.Check("at 30 the chambers stay the Breaker's most", act(data, "UpgradeMachine", { Machine = "Breaker", Level = 30 }, T0 + 17).Ok == true and #data.Base.Chambers == BaseConfig.Breaker.MostChambers)
+				t.Equal("30 is the last", act(data, "UpgradeMachine", { Machine = "Breaker", Level = 31 }, T0 + 18).Error, Base.Cap)
+			end)
+			BaseConfig.Levels.Ceiling = launch
+			if not ok then
+				error(err, 0)
 			end
-			t.Check("two chambers busy, one waiting", #data.Base.Chambers == 2 and #data.Base.Line == 1)
-			local credits = data.Currency.Credits
-			local breaker = act(data, "UpgradeMachine", { Machine = "Breaker", Level = 8 }, T0 + 16)
-			t.Check("the Breaker to 8 for 2,400", breaker.Ok == true and breaker.Spent == 2400 and data.Base.Machines.Breaker == 8, `{breaker.Error}`)
-			t.Equal("its Credits spent", data.Currency.Credits, credits - 2400)
-			t.Equal("a third chamber", #data.Base.Chambers, 3)
-			local third = data.Base.Chambers[3].Work
-			t.Check("which took the line's shard", third ~= nil and third.Def == STANDARD and #data.Base.Line == 0)
-			data.Base.Machines.Breaker = 29
-			t.Check("at 30 the chambers stay the Breaker's most", act(data, "UpgradeMachine", { Machine = "Breaker", Level = 30 }, T0 + 17).Ok == true and #data.Base.Chambers == BaseConfig.Breaker.MostChambers)
-			t.Equal("30 is the last", act(data, "UpgradeMachine", { Machine = "Breaker", Level = 31 }, T0 + 18).Error, Base.Cap)
 			saves(t, data, "after the machines' levels")
 		end,
 	},

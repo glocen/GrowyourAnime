@@ -196,7 +196,12 @@ function BaseLevels.NextMachine(machine: Machine, level: number, baseLevel: numb
 	else
 		gain(gains, "Output", BaseLevels.BayOutput(level), BaseLevels.BayOutput(next))
 	end
-	local why = if next > BaseLevels.Ceiling(baseLevel) then BaseLevels.AtCeiling elseif credits < price then BaseLevels.Short else nil
+	-- At the base's top level, its ceiling is the launch's: nothing raises it yet, so it reads as the cap.
+	local held = next > BaseLevels.Ceiling(baseLevel)
+	local why = if held and baseLevel >= BaseLevels.Top() then BaseLevels.AtCap
+		elseif held then BaseLevels.AtCeiling
+		elseif credits < price then BaseLevels.Short
+		else nil
 	return { Level = next, Price = price, Why = why, Gains = gains }
 end
 

@@ -225,10 +225,23 @@ For research to file in `docs/decisions.md` with their scope:
 |---|---|
 | "who care about one famous rpg lead name and move it not copying stop being so extreme with this be more leniant" | **Noct stays** as written (`docs/roster.md`), name and signature. The general steer: flag a fighter only when it would be recognised as one character, not for one shared name or move. The test in `docs/decisions.md`, "Fighters", stands until they say otherwise. |
 | "sure reinforce but is this good? cant we js fixe paid random rule" | a question, answered in section 3. Nothing changes until they pick. |
-| "ok" (the machines' ceiling at 6) | restated in section 4 with a correction to 15; waiting on 6 or 15. |
+| "ok" (the machines' ceiling at 6) | restated in section 4 with a correction to 15; answered below with "6". |
 | "ok" (the private phone sitting) | the director does it with a stopwatch: the first ten minutes, one clean Normal run, and the trip there and back (`README.md`, item 1). |
 
+Their answers to section 13, later on 11-24:
+
+| The director's words | Covers |
+|---|---|
+| "if it good sure put it in the grow your anime github and i will tell quaestor about it" (1) | **Both currencies stay**, and electricity gains the two uses of section 2: workers grow by working, and the charge. The other spends in section 2's table aren't named, so they stay proposals. The director tells Quaestor. |
+| "we will sell credit so make sure it in accord to roblox rule" (2) | **Credits will be sold**, so section 3's first recommendation (no sale at launch) is set aside and its third is the path: the odds on every press, the PolicyService gate, the questionnaire (theirs), and a failure that isn't a pure loss. Forge heat is the design built for the fourth. It reverses "no pity" (2026-11-19), and AGENTS.md rule 4 wants the director's yes to the compliant design before the sale opens, so heat comes back to them built, with stones-only chance levels as the alternative. Its prices wait for research's refit. |
+| "6" (3) | **The ceiling holds at 6 at launch:** `Config.Base.Levels.Ceiling` is 2, 6 and 6. Section 4's consequences stand: no Stage III and no third chamber at launch, and base level 3 brings a bay and the battery, not a look. |
+| "ok" (4) | **The Emblem Case, the Jewel Pouch and the Forge Crate**, with jewels finished for launch (the Condenser makes them, 2026-11-17). Section 5's other proposals (the emblem combine, High from the Condenser, earned presets) aren't named, so they stay proposals. |
+| "ok" (5) | **The Broadcast** on section 6's ladder. |
+| "ok" (6) | **The welcome week and codes**, as section 8 has them. |
+
 ## 13. For the director, in one list
+
+Answered on 11-24: section 12 has the words and what each covers.
 
 1. **The currencies:** keep both; electricity gains two uses, the workers growing and the charge. Yes?
 2. **Credits:** unsold at launch. Yes? **Forge heat** in place of "no pity". Yes?

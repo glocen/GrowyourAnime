@@ -255,7 +255,7 @@ return {
 			t.Check("level 2 opens a third bay", BaseLevels.Bays(2) == 3 and BaseLevels.OpensAt(3) == 2 and string.find(next[2].Opens, "third bay") ~= nil)
 			t.Equal("and the Condenser wakes at it", CondenserConfig.Wakes, next[2].AtLeast)
 			t.Check("level 3 opens a fourth bay", BaseLevels.Bays(3) == 4 and string.find(next[4].Opens, "fourth bay") ~= nil)
-			t.Check("and machines reach 30 at it", BaseLevels.Ceiling(3) == 30 and string.find(next[4].Opens, "level 30") ~= nil)
+			t.Check("and its line promises no machine level, since the ceiling holds at 6", BaseLevels.Ceiling(3) == BaseLevels.Ceiling(2) and string.find(next[4].Opens, "level") == nil)
 			t.Equal("the first Hard keeper's chest is a Rare or better", ChestsConfig.Keeper.FirstFloor.Hard, "Rare")
 			t.Check("which its line says", string.find(next[3].Opens, "Rare or better") ~= nil)
 		end,

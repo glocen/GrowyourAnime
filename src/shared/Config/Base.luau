@@ -46,7 +46,10 @@ return {
 		Price = { [2] = 840, [3] = 18000 } :: { [number]: number }, -- Credits to reach each level: about 20 minutes, then 5 hours
 		Bays = { 2, 3, 4 }, -- bays open at each base level (D5, the director's yes of 2026-11-18)
 		Plot = 6, -- bays every plot lays: those past the launch's levels stand locked, "Opens with more Voidkin" (D5)
-		Ceiling = { 2, 6, 30 }, -- the highest level any machine reaches at each base level
+		-- The highest level any machine reaches at each base level. Held at 6 at launch (the director, 2026-11-24: "6", to
+		-- docs/research/cloud-2026-11-24/launch-design.md, section 4; it was 2, 6 and 30), so Stage III and the Breaker's
+		-- third chamber wait for the base's next level.
+		Ceiling = { 2, 6, 6 },
 		Battery = { 60, 150, 400 }, -- kWh the battery holds at each base level (seeds "baseLevels.batteryKwh")
 		Cells = { 2, 4, 8 }, -- cells its bank shows at each base level, lit one after another as it charges (Modulo's count, AR15, section 4)
 	},

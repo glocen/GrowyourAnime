@@ -38,7 +38,7 @@ Goals.Next = {
 	{ Text = "Bring down the Lamplighter.", Opens = "Hard opens on Lantern Row.", Fact = "Keeper" },
 	{ Text = "Raise the base to level 2.", Opens = "A third bay opens, and the Condenser wakes.", Fact = "BaseLevel", AtLeast = 2 },
 	{ Text = "Bring down the Lamplighter on Hard.", Opens = "Its first chest holds a Rare or better.", Fact = "KeeperHard" },
-	{ Text = "Raise the base to level 3.", Opens = "A fourth bay opens. Machines reach level 30.", Fact = "BaseLevel", AtLeast = 3 },
+	{ Text = "Raise the base to level 3.", Opens = "A fourth bay opens.", Fact = "BaseLevel", AtLeast = 3 },
 	{ Text = "Climb the Tower to floor 25.", Opens = "Each new floor pays a first-time bonus.", Fact = "TowerBest", AtLeast = 25 },
 	{ Text = "Drum Court's gate stays shut, for now." },
 } :: { any }

@@ -80,7 +80,9 @@ return {
 			t.Equal("every bay the cap opens", #data.Base.Bays, BaseLevels.Bays(BaseConfig.Levels.Cap))
 			local ceiling = BaseLevels.Ceiling(data.Base.Level)
 			t.Check("the Breaker and every bay at the ceiling", (data.Base.Machines.Breaker or 1) == ceiling and (data.Base.Bays[1].Level or 1) == ceiling and (data.Base.Bays[4].Level or 1) == ceiling)
-			t.Check("many presses, each checked", bought > 50, tostring(bought))
+			-- Every level there is, each checked: the base's, and the Breaker's, the Condenser's and each bay's to the ceiling.
+			local machines = 2 + BaseLevels.Bays(BaseConfig.Levels.Cap)
+			t.Equal("every press, each checked", bought, (BaseConfig.Levels.Cap - 1) + machines * (ceiling - 1))
 			local top = BaseLevels.Ask(data.Base :: any, "Base", data.Currency.Credits) :: BaseLevels.Ask
 			t.Check("at the cap the base's offer has no price", top.Offer.Price == nil and top.Offer.Why == BaseLevels.AtCap)
 		end,

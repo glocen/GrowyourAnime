@@ -230,7 +230,7 @@ One number for how strong the lead is with its preset, made to be watched rising
 
 ## The Festival of Battles
 
-Six grounds at launch (`docs/roster.md`), each a recolour and rearrangement of one festival kit. Each ground is a place of its own in the experience, its Normal and Hard played on its one map [D, 2026-11-19]. A ground has ordinary Shades, elites, one keeper, and a gate. Beating the keeper opens the next ground for good, and a shortcut gate back to the base [D].
+Six grounds in all (`docs/roster.md`), and Lantern Row alone at launch (`docs/production-plan.md`, "The cut line"), each a recolour and rearrangement of one festival kit. Each ground is a place of its own in the experience, its Normal and Hard played on its one map [D, 2026-11-19]. A ground has ordinary Shades, elites, one keeper, and a gate. Beating the keeper opens the next ground for good, and a shortcut gate back to the base [D].
 
 - **One mission per Arc, played on Normal or Hard** [D, 2026-11-19, 23:19, replacing D2's four stages]. Lantern Row is one run of four stretches, ending at the Lamplighter, and a Normal clear takes 10 to 15 minutes. A fall ends the run (the lead goes home, "A fall sends it home"), and the next run on that difficulty starts at the last stretch reached, until the keeper falls; after that a run starts at the first. Hard opens for the ground when the Lamplighter falls on Normal, and is much harder. Play opens the Arc panel straight away while the Festival of Battles is the only mode; each difficulty's tile shows its recommended Combat Power and, if locked, its condition. Each stretch and difficulty rolls gear on its own budget: the first stretch's first reward is sure to be an item the chosen fighter can use, and Hard's Keeper shows its Rare chance [D, D7]. The loot's pace is fitted to this length ("Chests", below).
 - **A party plays in a reserved server** [D, 2026-11-18, D1], if parties come at launch ("Out of launch"). Its rules are pure Luau, blind to the transport, and progress travels in the save.
@@ -330,8 +330,8 @@ Research's layout for TR2, 2026-11-12. The builder installs it in grey; how it l
 
 | Currency | Comes from | Goes to |
 |---|---|---|
-| Credits | fights, overflow electricity, copies past seven stars, the Clash | the Void Shop, Reinforce, the Condenser, the base's and machines' upgrades |
-| Electricity | workers | breaking shards, infusion, the Condenser |
+| Credits | fights, overflow electricity, copies past seven stars, the Clash | the Void Shop, Reinforce, the base's and machines' upgrades |
+| Electricity | workers | breaking shards, infusion, the Condenser, the Training machine |
 | Research Points | first clears, Tower floors, the daily track, the Calamity | the Research Lab |
 | Forge stones, three grades | enemies by ground, keepers, the Tower, the Condenser, the shop | Reinforce |
 

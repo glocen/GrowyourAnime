@@ -167,6 +167,13 @@ The builder's, 2026-11-16, written before the systems (research's order, `docs/r
 - **The switches** `Settings.ShareFinds` and `Settings.ShowFinds` are saved booleans. Reconcile fills them on older saves, and `Settings.On` reads a missing one as on.
 - **Checks:** the offline cases (`Cases/Broadcast.luau`). The service, the topic and the banner are engine code, NOT VERIFIED until a Studio playtest. Two servers' exchange needs a published place.
 
+**Gifts** (`Rules.Welcome`, `Config.Welcome`, `WelcomeService`, `WelcomeController`; `docs/design.md`, "Gifts").
+- **The save:** `Gifts` holds `Week` (gifts given, 0 to 7), `Day` (the UTC day of the last) and `Codes` (each code's id, with when it was typed). Reconcile fills it on older saves.
+- **A gift is one change,** `WelcomeGift`, at join, at `ChooseStarter` and at the day's turn. The rule refuses a second on one day, and refuses before the starter's choice, so a repeat gives nothing.
+- **A code is one action,** `Act("RedeemCode", { Code })`, with its op id. It's refused unknown (or not yet open), used or ended. A code whose chests include gear, or a count that isn't whole, is refused and never kept as used.
+- **The seventh gift's Named shards** are rows in `Definitions.Shards`, one for each launch Voidkin.
+- **Checks:** the offline cases (`Cases/Welcome.luau`). The service and the toast are engine code, NOT VERIFIED until a Studio playtest.
+
 **The responsive layout** (part 6).
 - **One module, `UI.Layout`:**
   - `Class()` gives Compact, Regular or Wide, from the viewport less the safe insets (`ScreenGui.ScreenInsets`, `GuiService:GetGuiInset`), on thresholds in `Config.UIKit.Layout`.

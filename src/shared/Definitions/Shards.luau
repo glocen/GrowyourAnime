@@ -16,6 +16,11 @@ export type Row = {
 local rows: { Row } = {
 	{ Id = "lanternrow_standard", Grade = "Standard", Ground = "lanternrow", Holds = "" },
 	{ Id = "named_watt", Grade = "Named", Ground = "lanternrow", Holds = "watt" },
+	-- The rest of the launch five's, for the welcome week's seventh gift (Rules.Welcome; launch-design.md, section 8).
+	{ Id = "named_rook", Grade = "Named", Ground = "lanternrow", Holds = "rook" },
+	{ Id = "named_kirra", Grade = "Named", Ground = "lanternrow", Holds = "kirra" },
+	{ Id = "named_pip", Grade = "Named", Ground = "lanternrow", Holds = "pip" },
+	{ Id = "named_lyric", Grade = "Named", Ground = "lanternrow", Holds = "lyric" },
 	{ Id = "starter_rook", Grade = "Starter", Ground = "lanternrow", Holds = "rook" },
 	{ Id = "starter_kirra", Grade = "Starter", Ground = "lanternrow", Holds = "kirra" },
 	{ Id = "starter_pip", Grade = "Starter", Ground = "lanternrow", Holds = "pip" },

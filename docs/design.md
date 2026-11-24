@@ -340,6 +340,16 @@ What's worth telling is told [D, 2026-11-24: the director's "ok" to `docs/resear
 - **Settings:** "Show my finds in other servers" and "Show others' finds", both on at first. The card waits for the Settings screen's work on the PC.
 - **Later:** the Strip's board of the last eight lines, and research's words in place of the stand-ins.
 
+## Gifts: the welcome week and codes
+
+What's given is never sold [D, 2026-11-24: the director's "ok" to `docs/research/cloud-2026-11-24/launch-design.md`, section 8]. The gifts are seeds in `Config.Welcome`.
+- **The welcome week:** seven gifts, one for each day played, never each calendar day. A missed day only waits, and none is lost.
+  - Day 1 is a Forge Crate, then an Emblem Case and a Jewel Pouch in turn. A case is the elite's of the account's furthest ground.
+  - Day 7 is a Named shard of a launch Voidkin the account doesn't own yet: the first in the roster's order, chosen, never rolled. An account that owns all five gets a Forge Crate.
+  - The week begins once the starter is chosen, out of the first moments' way. Each gift is told in a toast.
+- **Codes:** one per update, each typed once per account, in Home's settings once that card is built. They're matched without case or spaces, inside their time. A code gives chests with no gear only (a crate, a case or a pouch), never anything sold. The director decides where they're posted. None exists yet.
+- **Not:** playtime gifts, streaks, a pass.
+
 ## What the player holds
 
 | Currency | Comes from | Goes to |

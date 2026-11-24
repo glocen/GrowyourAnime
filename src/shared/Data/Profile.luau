@@ -207,6 +207,13 @@ export type Data = {
 		Days: { { Day: number, Picks: { string }, Have: { number }, Claimed: { boolean } } },
 		Led: { Day: number, Ids: { string } },
 	},
+	-- What's given, never sold (launch-design.md, section 8; Rules.Welcome): the welcome week's gifts given, 0 to its
+	-- seven, and the UTC day of the last; and each code typed, by its id, with when.
+	Gifts: {
+		Week: number,
+		Day: number,
+		Codes: { [string]: number },
+	},
 	Progress: {
 		Starter: string, -- the starter shard chosen, or "" before the choice
 		Grounds: { [string]: GroundProgress }, -- by ground id, once opened
@@ -267,6 +274,7 @@ function Profile.Template(): Data
 		},
 		Training = { Trainee = "", Banked = 0 },
 		Goals = { Days = {}, Led = { Day = 0, Ids = {} } },
+		Gifts = { Week = 0, Day = 0, Codes = {} },
 		Progress = { Starter = "", Grounds = {}, Stages = {}, Kills = 0, Tower = { Best = 0 } },
 	}
 end

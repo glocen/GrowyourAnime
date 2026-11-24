@@ -38,6 +38,7 @@ HANDOFF = REPO / "build" / "handoff"
 # Whose model is read from its delivery (build/handoff/<Name>: the recipe, its meshes and its maps), not from a .blend.
 # Watt's only .blend is the first design's, which left the game (AR11, delivery 3).
 DELIVERED = ("Watt", "Kirra")
+MADE = {"Rook": HANDOFF / "Rook" / "make"}   # in the kit's make (anime_make.py's handoff): where its files are
 KIT = REPO / "build" / "handoff" / "UI" / "kit"
 K = 4            # pixels a point in a slice, the kit's
 NECK = Vector((0.0, 0.0, 4.0))  # R6's neck: the head turns about it
@@ -48,9 +49,10 @@ RENDER = (624, 752)  # a portrait's render: twice the full cut's opening, 78 by 
 # `tilt` (ear to shoulder) and `nod` (+ chin down), degrees. `centre` and `span`: the crop's middle and its height, in
 # studs. `head`: the parts that turn with the head. `hide`: what the crop is better without.
 PORTRAITS = {
-    # A street brawler sizing you up: the gauntlet's shoulder forward, chin down, a level look from under the brow.
-    "Rook": dict(side=1, body=34, turn=22, tilt=-3, nod=5, elevation=3, centre=(-0.1, 0, 4.62), span=2.45,
-                 head=("Rook_Head",), hide=()),
+    # The school tough sizing you up: his right shoulder forward, chin down, a level look from under the brow. The
+    # crop is wider than the first Rook's, for the hair (AR59).
+    "Rook": dict(side=1, body=34, turn=22, tilt=-3, nod=5, elevation=3, centre=(-0.1, 0, 4.72), span=2.9,
+                 head=("Rook_Head", "Rook_Hair"), hide=()),
     # An apprentice under a hat too big: head cocked up at you from under the brim, eager, a little unsure.
     "Pip": dict(side=-1, body=30, turn=20, tilt=8, nod=-4, elevation=-2, centre=(0.0, 0, 4.86), span=2.75,
                 head=("Pip_Head", "Pip_Hat"), hide=()),
@@ -100,12 +102,28 @@ def delivered_piece(name, record, material):
     return bpy.data.objects.new(name, data)
 
 
+def drawn(name, paths):
+    """The kit's make as the game draws it: the one picture and its roughness, no metal, its glow cold, and a face
+    seen from behind left out (the hair's leaves)."""
+    m = bpy.data.materials.new(name)
+    bsdf, nodes, links = bl._principled(m)
+    for kind, socket in (("Color", "Base Color"), ("Roughness", "Roughness")):
+        node = nodes.new("ShaderNodeTexImage")
+        node.image = bpy.data.images.load(str(paths[kind]), check_existing=True)
+        if kind != "Color":
+            node.image.colorspace_settings.name = "Non-Color"
+        links.new(node.outputs["Color"], bsdf.inputs[socket])
+    m.use_backface_culling = True
+    return m
+
+
 def delivered(name):
     """A Voidkin as delivered: its recipe's pieces at rest on its maps, its glow cold, as it stands (the recipe's
     `cold`). The Roblox frame turned to the .blend's: facing +Y, the feet on z = 0."""
-    folder = HANDOFF / name
+    folder = MADE.get(name, HANDOFF / name)
     recipe = json.loads((folder / f"{name}.recipe.json").read_text(encoding="utf-8"))
-    material = rm.baked(name, {kind: folder / file for kind, file in recipe["maps"].items()}, 0.0)
+    maps = {kind: folder / file for kind, file in recipe["maps"].items()}
+    material = drawn(name, maps) if name in MADE else rm.baked(name, maps, 0.0)
     return [delivered_piece(piece["name"], json.loads((folder / piece["mesh"]).read_text(encoding="utf-8")), material)
             for piece in recipe["pieces"]]
 
@@ -115,7 +133,7 @@ def shoot_portrait(name, out: Path, size=RENDER):
     p = PORTRAITS[name]
     scene = bl.reset_scene()
     scene.world = bpy.data.worlds.new("Portrait")
-    if name in DELIVERED:
+    if name in DELIVERED or name in MADE:
         objects = delivered(name)
     else:
         with bpy.data.libraries.load(str(MODELS / name.lower() / "model" / f"{name.lower()}_model.blend")) as (src, dst):
@@ -379,7 +397,7 @@ def stroke(out: Path):
 # --- the review sheet -----------------------------------------------------------------------------------------------
 
 LOOK = MODELS / "lanternrow"   # the merge's frames (tools/blender/lantern_row_look.py, `M` and `M far`): the street to read over
-WHO = {"Rook": "sizing you up: the gauntlet's shoulder forward, chin down, a level look from under the brow",
+WHO = {"Rook": "sizing you up: his right shoulder forward, chin down, a level look from under the brow",
        "Pip": "looking up from under a hat too big, head cocked, eager and a little unsure",
        "Lyric": "between songs: composed, chin a touch up, the headset to the camera",
        "Watt": "the quiet wall: the collar up to his nose, a level, steady look over it",

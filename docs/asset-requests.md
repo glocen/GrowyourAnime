@@ -17016,6 +17016,15 @@ Delivered to `build/handoff/Rook/make/`, beside today's Rook, whose files stay w
 - **What waits:** his portraits and the lead card's face and head still show the first Rook. I draw the portraits from these files next (`tools/blender/hud_art.py`); the card's two are Faber's script on those renders.
 - **Four facts:** made, yes. Self-reviewed, yes: the sheet at the fight camera and the card's size, and the eight clips' poses. Delivered, yes, to `build/handoff/Rook/make/`. In the game, no; nothing uploaded; not director-accepted.
 
+### Modulo: Rook's portraits from the new files (01:52; started 01:50)
+
+`build/handoff/Rook/make/portraits/PortraitRook.png` (736 x 800, sha1 `8946ff32`) and `PortraitRookSmall.png` (368 x 400, sha1 `5cf7759d`): his head and shoulders in the lead card's pose, cut to the Common frame's mask as the first Rook's were. Script: `tools/blender/hud_art.py`, `make Rook`, which now reads a Voidkin in the kit's make from its delivered files (`MADE`, `drawn`).
+- **The crop** is wider than the first Rook's (2.9 studs where it was 2.45, its middle 0.1 higher), so the hair stands whole inside the frame. The pose is the card's: his right shoulder forward, chin down, a level look.
+- **Their listing is unchanged** (`build/handoff/UI/hud/hud_art.json`: the same pixels, points and pad), so they go in where today's stand.
+- **At the install** they replace `build/handoff/UI/hud/images/PortraitRook.png` and `PortraitRookSmall.png`, which stay as they are until the director's acceptance. The lead card's face and head (`CardFaceRook`, `CardHeadRook`) are Faber's `tools/blender/lead_card_art.py` on this script's render: its framing for Rook wants a look with the wider crop.
+- **Content check:** PASS on these two files. To hold: a re-run that changes either needs a new check, and so does any tint, glow or frame art laid over the red of the T-shirt in the card. The cut files' look over dark was read from the uncut render's contact sheet.
+- **Four facts:** made, yes. Self-reviewed, yes, large and at the card's two sizes over dark. Delivered, yes. In the game, no; nothing uploaded.
+
 ## AR60. Kirra, redesigned in the make (Modulo, for research's pick and the director's look, then its finish; Faber's install after)
 
 Research, 2026-11-24, 01:50. On the director's order of 2026-11-23, by 22:52 (Rook, Kirra, Pip, Lyric, then Watt's finish), and the words since: 23:52 (the make) and 01:47 (attachments and exaggeration) (`docs/decisions.md`). Tier 2. It goes into the game only on the director's acceptance. It starts when Rook's portraits are done.

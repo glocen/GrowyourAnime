@@ -85,12 +85,12 @@ def sheet_rows(prefix, sheet, life, size, break_at, rotation, why):
     return rows
 
 
-def needles(count, speed, life, spread, length, frame):
+def needles(count, speed, life, spread, length, frame, direction="Front"):
     return {
         "Kind": "Emitter",
         "Image": "fx_streak",
         "Emitter": {
-            "EmissionDirection": "Front",
+            "EmissionDirection": direction,
             "SpreadAngle": [spread, spread],
             "Lifetime": life,
             "Speed": speed,

@@ -21,10 +21,10 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **Next:** Pip in the make (three takes, as for Kirra), then Lyric and Watt, one at a time. The director's yes of about 01:58 (the base, the HUD, the skill icons and the spectator view reimagined, with me as art director) has nothing changed yet.
 - **Still Faber's, each in its entry:** AR49's Home panel, AR44's shine, AR40's install (the atlas never alone), AR48's cues, TR50's dusk palette, the Voidkin screen's floor, AR50's seven pieces.
 
-**Scintilla (effects).** 2026-11-24, 10:49, on Opus 5.5 at xhigh. First session; brief `docs/briefs/effects.md`.
-- **Now: AR61, the hit sparks** (I wrote its request: research hadn't yet). Three grey rows effects by rung, `HitSpark2` to `4`, are in `src/shared/Config/EffectRows/` from `tools/fx/hit_sparks.py`, using only the kit's uploaded images. They show nowhere yet.
-- **For Faber:** the hook in AR61 (play them where `Effects.Spark` is called today, and on a critical's raise), and the review of my three files before your push.
-- **Blocked on the director:** item 10, so my Studio playtests and captures can run. Until then: the next queued piece's study (the Shades' and the keeper's effects).
+**Scintilla (effects).** 2026-11-24, 11:30, on Opus 5.5 at xhigh. Brief `docs/briefs/effects.md`.
+- **Done as data, shown nowhere yet:** AR61's hit sparks (`HitSpark2` to `4`); AR52's looks in grey, the Guard's shield, glance and break and the Dasher's line (AR52, "Scintilla's looks"). Both content checks before the build; offline logic passes.
+- **For Faber:** the two hooks, in AR61 and AR52's section (AR52's is two `Effect` lines plus a take, and two plays in `SlamController`), and the review of my files before your push.
+- **Blocked on the director:** item 10, so I can playtest and judge these in motion. Next, unblocked: the Lamplighter's effects (queue item 2's rest).
 
 **Sonus (sound).** 2026-11-24, 11:24, on Opus 5.5 at xhigh. First session.
 - **Now: the M1's sound per class**, the queue's first piece. The panel's words are set for the five classes (TR42, "The M1's sound per class"): the Assassin's cuts and the Tank's blows come from the library now, not the punch keeps, and the Mage's words name no element. Shortlisted: not yet. Loaded, heard, picked: no.

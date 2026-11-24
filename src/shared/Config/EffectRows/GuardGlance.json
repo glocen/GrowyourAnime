@@ -1,0 +1,327 @@
+{
+  "Schema": "rows/1",
+  "Effect": "GuardGlance",
+  "Why": "A blow glancing off the Guard's shield, at the hook's anchor: the grey block-in (AR52).",
+  "Area": 1,
+  "Grey": true,
+  "Rows": {
+    "GlintLine": {
+      "Kind": "Emitter",
+      "Image": "fx_glint_line",
+      "Emitter": {
+        "Lifetime": [
+          0.22,
+          0.22
+        ],
+        "Speed": [
+          0,
+          0
+        ],
+        "Size": [
+          [
+            0,
+            1.2
+          ],
+          [
+            0.15,
+            1.8
+          ],
+          [
+            1,
+            1.6
+          ]
+        ],
+        "Rotation": [
+          0,
+          90
+        ],
+        "FlipbookLayout": "Grid4x4",
+        "FlipbookMode": "OneShot",
+        "LightInfluence": 0,
+        "Color": {
+          "Color3": [
+            255,
+            246,
+            230
+          ]
+        },
+        "LightEmission": 1,
+        "ZOffset": 0.55
+      },
+      "Emit": [
+        [
+          0,
+          1
+        ]
+      ],
+      "Tracks": {
+        "At": [
+          [
+            0,
+            {
+              "Vector3": [
+                0,
+                0,
+                0
+              ]
+            }
+          ]
+        ]
+      },
+      "Why": "where the blow meets the paper: a glint, small, a glance and not a hit"
+    },
+    "GlintFill": {
+      "Kind": "Emitter",
+      "Image": "fx_glint_fill",
+      "Emitter": {
+        "Lifetime": [
+          0.22,
+          0.22
+        ],
+        "Speed": [
+          0,
+          0
+        ],
+        "Size": [
+          [
+            0,
+            1.2
+          ],
+          [
+            0.15,
+            1.8
+          ],
+          [
+            1,
+            1.6
+          ]
+        ],
+        "Rotation": [
+          0,
+          90
+        ],
+        "FlipbookLayout": "Grid4x4",
+        "FlipbookMode": "OneShot",
+        "LightInfluence": 0,
+        "Color": [
+          [
+            0,
+            {
+              "Color3": [
+                233,
+                226,
+                214
+              ]
+            }
+          ],
+          [
+            0.85,
+            {
+              "Color3": [
+                233,
+                226,
+                214
+              ]
+            }
+          ],
+          [
+            1,
+            {
+              "Color3": [
+                91,
+                86,
+                112
+              ]
+            }
+          ]
+        ],
+        "LightEmission": 0.6,
+        "ZOffset": 0.5
+      },
+      "Emit": [
+        [
+          0,
+          1
+        ]
+      ],
+      "Tracks": {
+        "At": [
+          [
+            0,
+            {
+              "Vector3": [
+                0,
+                0,
+                0
+              ]
+            }
+          ]
+        ]
+      },
+      "Why": "Glint's fill pass"
+    },
+    "GlintDark": {
+      "Kind": "Emitter",
+      "Image": "fx_glint_dark",
+      "Emitter": {
+        "Lifetime": [
+          0.22,
+          0.22
+        ],
+        "Speed": [
+          0,
+          0
+        ],
+        "Size": [
+          [
+            0,
+            1.2
+          ],
+          [
+            0.15,
+            1.8
+          ],
+          [
+            1,
+            1.6
+          ]
+        ],
+        "Rotation": [
+          0,
+          90
+        ],
+        "FlipbookLayout": "Grid4x4",
+        "FlipbookMode": "OneShot",
+        "LightInfluence": 0,
+        "Color": {
+          "Color3": [
+            28,
+            23,
+            38
+          ]
+        },
+        "LightEmission": 0,
+        "Transparency": 0.15,
+        "ZOffset": 0.45
+      },
+      "Emit": [
+        [
+          0,
+          1
+        ]
+      ],
+      "Tracks": {
+        "At": [
+          [
+            0,
+            {
+              "Vector3": [
+                0,
+                0,
+                0
+              ]
+            }
+          ]
+        ]
+      },
+      "Why": "Glint's dark pass"
+    },
+    "Skate": {
+      "Kind": "Emitter",
+      "Image": "fx_streak",
+      "Emitter": {
+        "EmissionDirection": "Back",
+        "SpreadAngle": [
+          75,
+          75
+        ],
+        "Lifetime": [
+          0.1,
+          0.18
+        ],
+        "Speed": [
+          18,
+          28
+        ],
+        "Drag": 9,
+        "Acceleration": {
+          "Vector3": [
+            0,
+            0,
+            0
+          ]
+        },
+        "Orientation": "VelocityParallel",
+        "Size": [
+          [
+            0,
+            0.7
+          ],
+          [
+            0.6,
+            0.48999999999999994
+          ],
+          [
+            1,
+            0
+          ]
+        ],
+        "Squash": [
+          [
+            0,
+            -1.6
+          ],
+          [
+            1,
+            -0.6
+          ]
+        ],
+        "Transparency": [
+          [
+            0,
+            0
+          ],
+          [
+            0.7,
+            0.1
+          ],
+          [
+            1,
+            1
+          ]
+        ],
+        "Color": {
+          "Color3": [
+            255,
+            246,
+            230
+          ]
+        },
+        "LightEmission": 1,
+        "LightInfluence": 0,
+        "ZOffset": 0.6
+      },
+      "Emit": [
+        [
+          0,
+          5
+        ]
+      ],
+      "Tracks": {
+        "At": [
+          [
+            0,
+            {
+              "Vector3": [
+                0,
+                0,
+                0
+              ]
+            }
+          ]
+        ]
+      },
+      "Why": "the needles skating back off the shield toward the attacker: the blow turned aside"
+    }
+  }
+}

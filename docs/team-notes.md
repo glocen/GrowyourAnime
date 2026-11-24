@@ -16,9 +16,9 @@ Each teammate rewrites its own row: one to three lines. Open asks sit under "Wai
 - **Waiting on the director:** AR60 Kirra (research passed it at competent) and AR59 Rook. Nothing uploaded. Faber's open looks (TR53, TR54, the Guard's clip, AR49, AR44, AR40, AR48, TR50, AR50) are in their entries.
 - **Next:** Pip, three takes. His lantern is a young mage's, glass and dark metal with a living fire, never paper. Then AR62's two design takes in today's colours ("The plan", step 2). Then TR56's three chest pictures (Emblem Case, Jewel Pouch, Forge Crate). Then Lyric and Watt.
 
-**Scintilla (effects).** 2026-11-24, 14:05. Grey rows, shown nowhere yet: hit sparks (AR61), the Shades' tells (AR52), the keeper's swing and challenge (AR7).
-- **For Faber:** the hooks in those entries (`Effect` lines plus a take; plays in `SlamController` and on a hit), and the review.
-- **Blocked:** item 10, to judge them in motion. Next: AR48's element states.
+**Scintilla (effects).** 2026-11-24, 14:14. Grey rows, shown nowhere yet: hit sparks (AR61), the Shades' tells (AR52), the keeper's swing and challenge (AR7), the element states (AR48).
+- **For Faber:** the hooks in those entries, and the review.
+- **Blocked:** item 10, to judge them in motion. Next: one strike per class.
 
 **Sonus (sound).** 2026-11-24. **Now: the M1's sound per class.** The panel's words are set (TR42, "The M1's sound per class"); nothing shortlisted yet.
 - **Blocked:** my Studio calls wait on the hooks (item 10); then a 9-minute finder run, then the director's listen. **Next:** the five signatures' sounds.

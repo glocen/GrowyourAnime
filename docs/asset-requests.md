@@ -15247,6 +15247,18 @@ The rules now live in `docs/design.md`, "States in a fight", below "No lock". Fa
 2. **Burn stays at 3 s.** Fire's trail is under 2 standard errors, inside the bar, and its cause is known: the deferral. Cutting it on that evidence would tune to noise, and 3 s is the length players read the burn by. The full check looks at it again.
 3. **The full check waits for poise.** Once Shock has its effect, one check of about 50 runs an element covers all four elements as they really play, pairwise at 10% on damage taken. Run now, it would only be run again.
 
+### The states' looks as rows, in grey (Scintilla, 2026-11-24, 14:14)
+
+`tools/fx/element_states.py` writes Modulo's picked block-in as rows, from the kit only: `StateBurn`, `StateChill` (with `StateChill2` and `StateChill3`, a step a third), `StateFreeze`, `StateShock` and `StateSap` wait in `build/handoff/States/fx/`. `FreezeBreak`, the shatter, is in `src/shared/Config/EffectRows/`.
+- **Kit stand-ins for the finish:** a plain column for the crowned sleeve and a ribbed shell for the faceted one (both meshes from Modulo's `Ice`), and a bowed beam for the jagged arc (an arc image, mine, uploaded after item 10). Sap's violet rim comes at the colour pass.
+- **For Faber:**
+  1. The Track case "a hit's looks are worn on a body" counts the states' looks as named, then the seven go into `Effects.Lasting` and are taken with `rows_take.py`. On a scratch copy with them in `Lasting`, only that case fails (7).
+  2. Wear `StateChill` while the fill is in its first third, `StateChill2` in its second and `StateChill3` above, each only while its third is current.
+  3. Play `FreezeBreak` at the body's foot when its freeze ends by its time.
+  4. The arcs ride the R6 parts by name (`Torso`, `Left Arm` and the rest): confirm every Shade and Voidkin keeps them.
+- **Content check, before the build:** blocked Sap at first (motes speeding up as they sank, read as a fall), fixed: they start slow and ease out. It passes all eight now. Conditions: the 00:12 conditions hold; `BigChest`'s top end checked against the Shade's mask; the light's share measured with several shocked bodies and sparks; both faces clear of embers in the capture; no red or rust at the colour pass, which gets its own check; the capture read at 64 px with the bodies turned. A refresh doesn't restart Shock's pattern, since a look already worn isn't worn again.
+- **Status:** implemented as data, not shown in the game; tested offline only; not visually reviewed (item 10); not director-accepted.
+
 ## AR49. Home's panel: three cards with their own art (Modulo, for research's pick, then Faber)
 
 Research, 2026-11-19, 23:20 by the clock, on the director's word of 23:20 (`docs/decisions.md`, the row): "MAKE IT LOOOK GOOD".

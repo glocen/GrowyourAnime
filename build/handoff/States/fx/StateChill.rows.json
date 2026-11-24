@@ -1,0 +1,92 @@
+{
+ "Schema": "rows/1",
+ "Effect": "StateChill",
+ "Why": "Chill (Frost), its first third, worn while the fill is in it (AR48, Scintilla's grey).",
+ "Area": 1,
+ "Grey": true,
+ "Rows": {
+  "Sleeve": {
+   "Kind": "Mesh",
+   "Body": "HumanoidRootPart",
+   "Ground": true,
+   "Part": [
+    "FxColumn"
+   ],
+   "Look": "fx_rise_Grey",
+   "Grey": "fx_rise_Grey",
+   "Color": {
+    "Color3": [
+     143,
+     227,
+     255
+    ]
+   },
+   "Tracks": {
+    "Scale": [
+     [
+      0,
+      {
+       "Vector3": [
+        1.1,
+        0.025,
+        1.1
+       ]
+      },
+      "Back Out"
+     ],
+     [
+      9,
+      {
+       "Vector3": [
+        1.1,
+        0.375,
+        1.1
+       ]
+      }
+     ],
+     [
+      3600,
+      {
+       "Vector3": [
+        1.1,
+        0.375,
+        1.1
+       ]
+      }
+     ]
+    ],
+    "Transparency": [
+     [
+      0,
+      0.6,
+      "Quad Out"
+     ],
+     [
+      6,
+      0.35
+     ],
+     [
+      3600,
+      0.35
+     ]
+    ],
+    "Glow": [
+     [
+      0,
+      2.2,
+      "Quad Out"
+     ],
+     [
+      9,
+      1.2
+     ],
+     [
+      3600,
+      1.2
+     ]
+    ]
+   },
+   "Why": "the hero: frost climbing the legs from the last step's top to this one's, snapping up (Back Out)"
+  }
+ }
+}

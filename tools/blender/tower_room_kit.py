@@ -242,6 +242,17 @@ def floor_pictures():
     rgb *= (1.04 - 0.1 * (r / FLOOR_R) ** 2)[..., None]                     # a breath lighter toward the middle
     page = np.ones((n, n, 4), np.float32)
     page[..., :3] = np.clip(rgb, 0, 1)
+    # The joins are the left column (x = 0) and the bottom row (y = 0), and the game wraps the picture there: its
+    # filtering and smaller mips read the right columns and the top rows across each join, which held the rim's
+    # light sand and drew a light line along both (Faber, AR56). So the picture's far edges mirror the joins: 16
+    # pixels deep where they lie outside the floor, 8 where the rim reaches them (only its outer sliver).
+    for a in (page, glow):
+        for k in range(16):
+            use = (r[:, n - 1 - k] > FLOOR_R) | (k < 8)
+            a[use, n - 1 - k] = a[use, k]
+        for k in range(16):
+            use = (r[k, :] > FLOOR_R) | (k < 8)
+            a[k, use] = a[n - 1 - k, use]
     return page, glow
 
 

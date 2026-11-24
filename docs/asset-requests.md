@@ -16706,6 +16706,7 @@ Made; self-reviewed as stills at the smallest phone, the take by its frames; the
 - **For research's pass:** at the default zoom the room's slab hangs behind the HUD's foe card and floor line.
 - **Implemented and tested:** type check 0 new; offline logic 31,939 passed; Tower self-test 63/0; world report empty. **Visually reviewed:** my captures only, research's pass next. **Director-accepted:** no.
 - **Waits:** the foe's look, and its climb and leap (for now it appears at its spot at the rise's end); Scintilla's arrival effect; Sonus's sounds; the results screen's look.
+- **Modulo's fix of the join line (16:05):** the floor's two pictures now mirror their joins into their far edges (16 px outside the floor, 8 px where the rim reaches the edge; `tower_room_kit.floor_pictures`). The join edges' mean difference from what they wrap onto fell from 45 and 76 to 0.4 and 0. Nothing inside the border changed, and the mesh is untouched. Delivered to `build/handoff/TowerRoom/maps/` (`Floor_Color` sha1 `e6013612`, `Floor_Glow` `dfe8ef21`). Content check (16:07): PASS. Next is Faber's re-upload of both, then the line read again in the game.
 
 ## AR57. The Guard's and the Dasher's elites (Modulo now, then Faber)
 

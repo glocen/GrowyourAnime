@@ -42,6 +42,7 @@ local GearCases = require(script.GearCases)
 local EquipmentCases = require(script.EquipmentCases)
 local SettingsCases = require(script.SettingsCases)
 local GoalCases = require(script.GoalCases)
+local TakeCases = require(script.TakeCases)
 local BaseController = require(script.Parent.Parent.Main.BaseController)
 local Screen = require(script.Parent.Parent.Parent.UI.Kit.Screen)
 local Button = require(script.Parent.Parent.Parent.UI.Kit.Button)
@@ -244,6 +245,8 @@ local function run(filter: string?): string
 	table.move(modes, 1, #modes, #cases + 1, cases)
 	local views = BaseViewCases.Cases() -- the base view's Upgrade press (TR21's block), apart for the same reason
 	table.move(views, 1, #views, #cases + 1, cases)
+	local takes = TakeCases.Cases() -- stills held for research (AR62's before set), apart for the same reason
+	table.move(takes, 1, #takes, #cases + 1, cases)
 	local elsewhere = 0
 	pcall(serverCall, "TravelStub", true) -- no case ever leaves the place: each trip asked for is recorded (TR45)
 	for _, case in cases do

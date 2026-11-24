@@ -42,10 +42,11 @@ local boxed: Vector2? = nil -- a test's phone, in rendered pixels: the inset lay
 local boxAt = Vector2.zero -- its top left, rendered pixels from the safe area's
 local framed = false -- the box placed by a take (centred): the World layer is then the phone's whole screen too
 
--- Where the top bar's free room starts, rendered: right of Roblox's buttons, and inside a test's phone box.
+-- Where the top bar's free room starts, rendered: right of Roblox's buttons, and inside a test's phone box. A take's
+-- centred box is the phone's whole screen, so its band starts where the phone's would: right of the phone's own buttons.
 local function bandLeft(): number
 	local free = GuiService.TopbarInset
-	return if boxed then math.max(free.Min.X, boxAt.X) else free.Min.X
+	return if framed then boxAt.X + free.Min.X elseif boxed then math.max(free.Min.X, boxAt.X) else free.Min.X
 end
 
 -- The top bar's free room, authored: read from the inset itself, so it's right before its layer is laid out.
@@ -61,7 +62,8 @@ local INSET: { [string]: boolean } = { Hud = true, Menus = true, Toasts = true }
 local function size(name: string, root: Frame)
 	if name == "Band" then
 		local free, band = GuiService.TopbarInset, Layers.Band()
-		root.Position = UDim2.fromOffset(bandLeft() / scale, free.Min.Y / scale)
+		local top = if framed then boxAt.Y else 0 -- a take's centred box: the band at the phone's top, not the window's
+		root.Position = UDim2.fromOffset(bandLeft() / scale, (top + free.Min.Y) / scale)
 		root.Size = UDim2.fromOffset(band.X, band.Y)
 		return
 	end

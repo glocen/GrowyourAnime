@@ -4,10 +4,13 @@
 -- through Rules.Breaker's steps, online and away), its whole stones only; a tray at its cap stops it. Its second job, one
 -- at a time, turns stones taken from the bag into a higher grade over its seconds of work, at the same speed, landing in
 -- the tray beside the cap. It works while awake and making or converting, and asks its rating only then. Rules.Base's
--- CollectTray and Convert are what a player asks of it. No Roblox API: it runs with Studio closed.
+-- CollectTray and Convert are what a player asks of it. Every Config.Condenser.Jewel.Every stones it makes, a jewel lands in
+-- its jewel tray, the colours in turn, its level by the machine's (Condenser.JewelLevel). No Roblox API: it runs with
+-- Studio closed.
 
 local Shared = game:GetService("ReplicatedStorage").Shared
 local CondenserConfig = require(Shared.Config.Condenser)
+local JewelsConfig = require(Shared.Config.Jewels)
 
 local Condenser = {}
 
@@ -15,7 +18,7 @@ local Condenser = {}
 type Base = {
 	Level: number,
 	Machines: { [string]: number },
-	Condenser: { Made: number, Tray: { [string]: number }, Convert: number? },
+	Condenser: { Made: number, Tray: { [string]: number }, Convert: number?, Jewels: { [string]: number }?, Toward: number?, Cut: number? },
 }
 
 local EPSILON = 1e-9
@@ -39,6 +42,50 @@ end
 -- Whole stones of its grade its tray holds at `level`: TrayHours of its making.
 function Condenser.Cap(level: number): number
 	return math.floor(CondenserConfig.TrayHours * Condenser.Rate(level) + EPSILON)
+end
+
+-- The level of the jewels it makes at `level`: the highest whose From it has reached.
+function Condenser.JewelLevel(level: number): number
+	local jewel = 1
+	for at, from in CondenserConfig.Jewel.From do
+		if level >= from then
+			jewel = at
+		end
+	end
+	return math.clamp(jewel, 1, #JewelsConfig.Points)
+end
+
+-- Jewels in its tray.
+function Condenser.JewelsHeld(base: Base): number
+	local held = 0
+	for _, count in base.Condenser.Jewels or {} do
+		held += count
+	end
+	return held
+end
+
+-- `made` stones count toward its jewels: one each Every, the colours in turn. Answers the jewels made.
+local function cut(base: Base, made: number): number
+	local state = base.Condenser
+	local every = math.max(1, CondenserConfig.Jewel.Every)
+	local toward = (state.Toward or 0) + made
+	local jewels = 0
+	if toward >= every then
+		local tray = state.Jewels or {}
+		local level = Condenser.JewelLevel(Condenser.Level(base))
+		local colours = JewelsConfig.Colours
+		while toward >= every do
+			toward -= every
+			local count = state.Cut or 0
+			local key = `{colours[count % #colours + 1]}:{level}`
+			tray[key] = (tray[key] or 0) + 1
+			state.Cut = count + 1
+			jewels += 1
+		end
+		state.Jewels = tray
+	end
+	state.Toward = if toward > 0 then toward else nil
+	return jewels
 end
 
 -- Its rating at `level`, kW.
@@ -105,6 +152,9 @@ function Condenser.Work(base: Base, speed: number, seconds: number): (number, nu
 		made = math.min(whole, cap - held)
 		state.Tray[CondenserConfig.Makes] = held + made
 		state.Made = if held + made >= cap then 0 else math.clamp(share - whole, 0, 1) -- full: it stops
+		if made > 0 then
+			cut(base, made)
+		end
 	end
 	local finished = 0
 	local convert = CondenserConfig.Convert

@@ -27,8 +27,8 @@
 --                                a machine's next level ("Breaker", "Condenser", or "Bay" with its Bay) for its Credits,
 --                                never past the base's ceiling; the Breaker's chambers join at their levels and take the
 --                                line's next; the Condenser only once it's awake
---   CollectTray {}               the Stone Condenser's tray, every stone in it, into the bag (TR37; Rules.Condenser). A
---                                second ask finds it empty, so nothing is collected twice
+--   CollectTray {}               the Stone Condenser's tray, every stone and jewel in it, into the bag (TR37;
+--                                Rules.Condenser). A second ask finds it empty, so nothing is collected twice
 --   Convert {}                   the Condenser's convert begins: Config.Condenser.Convert's stones leave the bag now, and
 --                                its higher grade lands in the tray once its work is done. One at a time
 
@@ -363,12 +363,22 @@ function Base.CollectTray(data: Profile.Data, _args: any, now: number): Answer
 			data.Bag.Stones[grade] = (data.Bag.Stones[grade] or 0) + held
 		end
 	end
-	if count == 0 then
+	local jewels: { [string]: number } = {}
+	local cut = 0
+	for key, held in base.Condenser.Jewels or {} do
+		if held > 0 then
+			jewels[key] = held
+			cut += held
+			data.Bag.Jewels[key] = (data.Bag.Jewels[key] or 0) + held
+		end
+	end
+	if count == 0 and cut == 0 then
 		return refuse(Base.Empty)
 	end
 	base.Condenser.Tray = {}
+	base.Condenser.Jewels = nil
 	Goals.Note(data, "TrayCollected") -- today's "collect the Condenser's tray" (TR54)
-	return { Ok = true, Stones = taken, Count = count }
+	return { Ok = true, Stones = taken, Count = count, Jewels = jewels, Cut = cut }
 end
 
 function Base.Convert(data: Profile.Data, _args: any, now: number): Answer

@@ -280,6 +280,45 @@ return {
 		end,
 	},
 	{
+		Name = "Condenser jewels (launch-design.md, section 5): one each six stones made, the colours in turn, level 1 at launch; collected with the stones, once",
+		Run = function(t: any)
+			local every = CondenserConfig.Jewel.Every
+			t.Equal("TR39's seed: one each six stones", every, 6)
+			t.Check("level 1 to 10 makes level 1; 11, 2; 21, 3", Condenser.JewelLevel(1) == 1 and Condenser.JewelLevel(10) == 1 and Condenser.JewelLevel(11) == 2 and Condenser.JewelLevel(21) == 3 and Condenser.JewelLevel(30) == 3)
+			t.Check("the launch ceiling holds it at level 1", Condenser.JewelLevel(BaseConfig.Levels.Ceiling[#BaseConfig.Levels.Ceiling]) == 1)
+			local data = charged(fresh())
+			Breaker.Advance(data, T0 + 5.5 * HOUR)
+			t.Check("five stones: no jewel yet", tray(data, LOW) == 5 and Condenser.JewelsHeld(data.Base) == 0 and data.Base.Condenser.Toward == 5)
+			Breaker.Advance(data, T0 + 6.5 * HOUR)
+			local jewels: { [string]: number } = data.Base.Condenser.Jewels or {}
+			t.Check("the sixth: a red level 1", tray(data, LOW) == 6 and jewels["Red:1"] == 1 and Condenser.JewelsHeld(data.Base) == 1 and data.Base.Condenser.Toward == nil)
+			local cap = Condenser.Cap(1)
+			Breaker.Advance(data, T0 + 40 * HOUR)
+			t.Check("a full tray: jewels for every six stones it made, no more", tray(data, LOW) == cap and Condenser.JewelsHeld(data.Base) == cap // every, `{Condenser.JewelsHeld(data.Base)}`)
+			local answer = act(data, "CollectTray", {}, T0 + 40 * HOUR, "j1")
+			t.Check("collected with the stones", answer.Ok == true and answer.Cut == cap // every and answer.Count == cap and data.Bag.Jewels["Red:1"] == 1 and data.Bag.Jewels["Green:1"] == 1)
+			t.Check("the jewel tray empty", data.Base.Condenser.Jewels == nil and Condenser.JewelsHeld(data.Base) == 0)
+			local again = act(data, "CollectTray", {}, T0 + 40 * HOUR, "j1")
+			t.Check("a repeat adds nothing", again.Cut == answer.Cut and data.Bag.Jewels["Red:1"] == 1)
+			local turn = charged(fresh())
+			turn.Base.Condenser.Cut = 4 -- four made: the next is purple, then red again
+			Breaker.Advance(turn, T0 + 12 * HOUR)
+			local held: { [string]: number } = turn.Base.Condenser.Jewels or {}
+			t.Check("the colours in turn", held["Purple:1"] == 1 and held["Red:1"] == 1 and turn.Base.Condenser.Cut == 6)
+			local only = charged(fresh())
+			only.Base.Condenser.Jewels = { ["Blue:1"] = 1 }
+			local lone = act(only, "CollectTray", {}, T0, "j2")
+			t.Check("a tray of one jewel and no stone is collected", lone.Ok == true and lone.Count == 0 and lone.Cut == 1 and only.Bag.Jewels["Blue:1"] == 1)
+			local many, one = charged(fresh()), charged(fresh())
+			for step = 1, 200 do
+				Breaker.Advance(many, T0 + step * 0.17 * HOUR)
+			end
+			Breaker.Advance(one, T0 + 200 * 0.17 * HOUR)
+			t.Check("many small advances cut what one large one does", Condenser.JewelsHeld(many.Base) == Condenser.JewelsHeld(one.Base) and many.Base.Condenser.Toward == one.Base.Condenser.Toward and many.Base.Condenser.Cut == one.Base.Condenser.Cut)
+			saves(t, data, "after jewels")
+		end,
+	},
+	{
 		Name = "Condenser (section 9): a collect is one step, and a repeat or a second ask never collects twice",
 		Run = function(t: any)
 			local convert = CondenserConfig.Convert

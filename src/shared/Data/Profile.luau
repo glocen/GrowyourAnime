@@ -80,6 +80,9 @@ export type Condenser = {
 	Made: number, -- its next stone's share made, 0 to 1
 	Tray: { [string]: number }, -- whole stones waiting in its tray, by grade: what it made, and what it converted
 	Convert: number?, -- seconds of work done on the convert under way, at full power; nil while none is
+	Jewels: { [string]: number }?, -- jewels waiting in its tray, by key "Colour:level" (Config.Condenser.Jewel); nil for none
+	Toward: number?, -- stones made since its last jewel; nil is 0
+	Cut: number?, -- jewels it has made, which picks the next one's colour; nil is 0
 }
 
 -- How the generation is split among the machines (Rules.Power; docs/design.md, "Power"). Under Auto, by their demand;

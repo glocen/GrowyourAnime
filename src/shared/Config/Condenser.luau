@@ -15,4 +15,9 @@ return {
 	-- The convert, one at a time: Take stones of From out of the bag, and after Seconds of work at full power, Give of To
 	-- in the tray, beside the cap (a full tray never holds back a finished convert).
 	Convert = { From = "Low", Take = 5, To = "Mid", Give = 1, Seconds = 1800 },
+	-- Jewels, from launch (the director, 2026-11-17, 12:10; "ok" to launch-design.md, section 5, 2026-11-24): one each
+	-- Every stones it makes (TR39's seed, a jewel per 6 hours of work at level 1), the colours in Config.Jewels' order in
+	-- turn, into its jewel tray. Its level is the highest whose From the machine has reached (TR39: 2 from 11, 3 from 21;
+	-- the ceiling of 6 holds it at 1 at launch).
+	Jewel = { Every = 6, From = { 1, 11, 21 } :: { number } },
 }

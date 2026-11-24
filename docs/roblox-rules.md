@@ -48,10 +48,11 @@ On 2026-08-25 Roblox restricted feeds that reward players for watching, for its 
 
 ## Text players write
 
-Nicknames (`docs/ui.md`). Roblox requires any text a player writes to pass its text filter before another player can see it, filtered for the viewer, and a game that shows unfiltered text can be moderated. The builder reads the current page before building it: <https://create.roblox.com/docs/ui/text-filtering>. A nickname that fails the filter is refused with a plain reason, and the Voidkin keeps its own name. (official page, from memory: reread at build)
+Nicknames (`docs/ui.md`). Roblox requires any text a player writes to pass its text filter before another player can see it, filtered for the viewer, and a game that shows unfiltered text can be moderated. The builder reads the current page before building it: <https://create.roblox.com/docs/ui/text-filtering>. A nickname that fails the filter is refused with a plain reason, and the Voidkin keeps its own name. The Broadcast shows a finder's display name to other players and servers, so it passes the filter too, on the finder's server (`GetNonChatStringForBroadcastAsync`). If the filter fails, the line says "A player" instead (the content check, 2026-11-24). (official page, from memory: reread at build)
 
 ## Not verified yet
 
+- Whether the Broadcast may tell a rare outcome that bought Credits paid for: a chest, a shard, a Reinforce try. That includes telling it to a viewer, or about a finder, where paid random items are restricted. No rule found forbids it, but none was sourced either. Before Credits go on sale; the director's call (tier 3). The options are in the content check of 2026-11-24, kept in `docs/research/cloud-2026-11-24/launch-design.md`, section 12, row (5).
 - The maturity label a game of fights without blood gets. Before the game page.
 - Whether a shard that names its fighter, but whose mutation and trait are rolled, counts as a random item when sold for Robux. Before anything is sold.
 - Whether a pass that raises credit income counts as paying for a roll, once every break rolls a mutation and credits buy shards. Before anything is sold.

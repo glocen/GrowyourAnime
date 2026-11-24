@@ -205,7 +205,7 @@ return {
 			t.Check("a level that isn't whole", off("L", 1.5))
 			t.Check("no user", off("U", 0))
 			t.Check("an empty name", off("N", ""))
-			t.Check("a name past its length", off("N", string.rep("a", 33)))
+			t.Check("a name past its length", off("N", string.rep("a", 129)))
 			t.Check("words where a number goes", off("L", "20"))
 			t.Equal("not a table", Broadcast.Unpack("Mika found everything"), nil)
 			local tower = Broadcast.Climb("Board", 40)

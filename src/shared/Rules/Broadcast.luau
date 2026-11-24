@@ -3,7 +3,7 @@
 -- cloud-2026-11-24/launch-design.md, section 6, on the director's "ok" of 2026-11-24; Config.Broadcast). Only a
 -- committed change that succeeded is read, and never a purchase: ShopBuy isn't one of the labels read. Nothing a player
 -- typed is carried: a line names a Voidkin by its own name, never its nickname, and its only word from a player is the
--- finder's display name, which Roblox moderates. Every-server messages carry ids and numbers, so each client builds the
+-- finder's display name, which the finder's server passes through Roblox's text filter (BroadcastService). Every-server messages carry ids and numbers, so each client builds the
 -- words from its own definitions.
 --   Broadcast.Read(label, answer, data)            the news a committed change makes, or nil: one at most, the rarest
 --   Broadcast.Climb(kind, floor)                   the Tower's news, "Record" or "Board", at `floor`
@@ -45,7 +45,7 @@ Broadcast.Kinds = { "Item", "Reinforce", "Stars", "First", "Keeper", "Record", "
 Broadcast.Difficulties = { "Normal", "Hard" }
 
 local VERSION = 1
-local NAME_MOST = 32 -- a display name's characters at most (Roblox's are 20)
+local NAME_MOST = 128 -- a display name's bytes at most: Roblox's 20 characters, each up to 4 bytes, and some room
 local DEF_MOST = 64
 local JOB_MOST = 64
 

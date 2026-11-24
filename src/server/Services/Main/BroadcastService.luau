@@ -4,7 +4,9 @@
 -- players by the "Broadcast" remote, and the rarest to every server too, by one MessagingService topic that every server
 -- hears and passes on, its own messages skipped. Delivery is best effort, as news may be. What this server shows passes
 -- one gate: at most Config.Broadcast.Most lines a Window, the oldest waiting dropped. A player whose ShowFinds is off
--- hears only their own; one whose ShareFinds is off is told on their own server only (Rules.Settings).
+-- hears only their own; one whose ShareFinds is off is told on their own server only (Rules.Settings). The finder's display
+-- name is shown to other players, so it passes Roblox's text filter first, on the finder's server, as anything a player
+-- wrote does (docs/roblox-rules.md, "Text players write"; the content check of 2026-11-24).
 -- Its sources: DataService.Changed's committed answers (Broadcast.Read), a run's end for this server's Tower record, and
 -- TowerBoardService.Led for the week's first place.
 --   BroadcastService.Tell(player, news)   for a source of news with no label of its own
@@ -12,6 +14,7 @@
 local MessagingService = game:GetService("MessagingService")
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
+local TextService = game:GetService("TextService")
 
 local Shared = game:GetService("ReplicatedStorage").Shared
 local Config = require(Shared.Config.Broadcast)
@@ -30,6 +33,7 @@ local BroadcastService = {
 -- A playtest never tells a live server, as DataService's saves and the Tower's board keep apart.
 local TOPIC = (if RunService:IsStudio() then "Test" else "Live") .. Config.Topic
 local RELEASE_EVERY = 1 -- seconds between looks at the gate while lines wait
+local NO_NAME = "A player" -- the name when the filter can't be reached: a plain word, never unfiltered text
 
 local gate = Broadcast.Gate()
 local last: { [number]: number } = {} -- by UserId: when the player's last every-server line went, os.time()
@@ -64,13 +68,26 @@ local function publish(news: Broadcast.News)
 	end)
 end
 
+-- The display name through the filter for every viewer: one yield a line told, and the throttles cap the lines.
+local function filtered(player: Player): string
+	local ok, result = pcall(function(): string
+		local filter = TextService:FilterStringAsync(player.DisplayName, player.UserId, Enum.TextFilterContext.PublicChat)
+		return filter:GetNonChatStringForBroadcastAsync()
+	end)
+	return if ok and type(result) == "string" and result ~= "" then result else NO_NAME
+end
+
 function BroadcastService.Tell(player: Player, news: Broadcast.News)
-	news.User = player.UserId
-	news.Name = player.DisplayName
 	local data = DataService.Get(player)
 	local now = os.time()
-	if Broadcast.Settle(news, data == nil or Settings.On(data, "ShareFinds"), last[player.UserId], now) then
+	-- Settled before the filter yields, so two lines at once never both go to every server.
+	local everywhere = Broadcast.Settle(news, data == nil or Settings.On(data, "ShareFinds"), last[player.UserId], now)
+	if everywhere then
 		last[player.UserId] = now
+	end
+	news.User = player.UserId
+	news.Name = filtered(player)
+	if everywhere then
 		publish(news)
 	end
 	show(news)

@@ -64,3 +64,27 @@ What every good one does (OBSERVED), and ours never did:
 - The broad face light and the narrow one in shade, one hard edge between them, drawn in the picture.
 - 2,100 to 3,800 triangles.
 - Three grains of one layout: A, B fewer and bigger (Anime Vanguards' end), C finer (the catalog's end).
+
+## How the pros make it (2026-11-24, 23:59, on "do study on how hair is made by pro")
+
+After the fifth modelled round was rejected ("your hair still look bad.") and the design was drawn flat first (AR64, "Designs drawn first"), the director: "do study on how hair is made by pro". Read on the web for the pipeline; most pro write-ups are video, and several pages refused the fetch, so sizes and curve rules have almost no sourced numbers. STATED is what a source says.
+
+1. **Big to small** (STATED). The silhouette's masses first, then the clumps inside them, then a few strands that break away. Start from chunks, never from strands. ([80.lv, sculpting stylized hair](https://80.lv/articles/guide-sculpting-stylized-hair-in-zbrush/), [Wacom, drawing anime hair](https://community.wacom.com/en-us/?p=25953654))
+2. **Three stacked layers** (STATED): a base on the scalp that covers the hairline, a middle layer, a top layer that makes the silhouette. The fringe is made apart. ([a character-hair write-up](https://tinakuang.myblog.arts.ac.uk/2024/03/26/3d-character-hair/))
+3. **The fringe is three chunks, the middle one the largest; the sides are longer and sharper; the back is the largest** (STATED, Wacom). Every chunk connects back to the whorl.
+4. **No two alike** (STATED). Beginners make every strand the same width and length. Vary both, and the gaps between them. Split a chunk's end into points. Too many strands is a mess, too few is clay; repetition, wobble and symmetry are the usual faults. (Wacom; 80.lv; [a DevForum first-hair thread](https://devforum.roblox.com/t/my-first-time-making-hair-on-blender-need-opinions/2022740): fewer and wider, puffed off the head, with highlights)
+5. **The section is a triangle or a diamond** (STATED): two numbers a ring. In 37,000 VRoid hairstyles a style has 25 to 130 clumps. ([the VRoid hair paper](https://arxiv.org/html/2509.21114v1))
+6. **Lit as one mass** (STATED). Guilty Gear Xrd takes the hair's normals from simple round shapes, so the light doesn't break on every clump. ([4Gamer](https://www.4gamer.net/games/216/G021678/20140703095/), [the Blender way](https://dskjal.com/blender/toon-shading.html))
+7. **One ring of light** (STATED): a band at one height round the head, with a small zig-zag, drawn, not computed from the light. ([Unity Toon Shader](https://docs.unity3d.com/Packages/com.unity.toonshader@0.9/manual/AngelRing.html), [a procedural one](https://godotshaders.com/shader/procedural-illustration-esque-hair-highlight-shader/))
+8. **Roblox** (STATED): 4,000 triangles at most, one mesh, a cap under the hair made from the head. ([the accessory specifications](https://create.roblox.com/docs/art/accessories/specifications), [DevForum](https://devforum.roblox.com/t/ugc-hair-help/2725562))
+
+**Not found:** root widths, where a clump is widest, how a clump curves, how much clumps overlap.
+
+**Our way now** (DESIGN, `hair_ways.py`, `Locks`, `rook`), replacing the rings of `Blades` for Rook:
+- The design is drawn flat and picked first (`tools/art/hair_designs.py`), then modelled lock for lock.
+- A lock is a closed leaf, round over its top, smooth all the way round, placed by hand from the whorl.
+- Three layers: short points under the hem, the big masses over them (the back's the broadest), the fringe in three chunks on top, the middle one the largest. Two tufts at the whorl.
+- Lengths, widths and turns differ from neighbour to neighbour, and the two sides differ.
+- The normals are turned part of the way to a ball's, and the picture is lit the same way; one ring of light runs round the dome, dipping to a point on each lock.
+- 3,600 triangles.
+

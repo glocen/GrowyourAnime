@@ -17528,4 +17528,14 @@ Research, 2026-11-24, 16:53, on the director's word, "the hair still need a rewo
   - Kirra: `build/handoff/Kirra/hair/hair_kirra_takes.png`.
   - Square on beside Anime Vanguards' units, internal: `build/reference/anime-vanguards/compare_hair_*.png`.
 - **Honest read:** both sit in the genre's family beside the units. Kirra's three grains barely differ. Rook's hair is now down over his forehead, where his sheet has it thrown back.
-- Shown to the director at 23:17; no verdict yet. Nothing uploaded.
+- Shown to the director at 23:17. **Rejected:** "your hair still look bad." Asked what, the director named all of it: the shape (no designed silhouette, too wide, droopy), the locks (stiff flat shards, too many, too alike, faceted), the colour and shading (flat, no shine, no depth). Nothing uploaded.
+
+### Designs drawn first (2026-11-24, 23:38)
+
+- **The route,** the director's pick of two: the design is drawn flat and picked before anything is modelled, so a bad design is told from a bad make.
+- **The sheet:** `build/handoff/Rook/hair/hair_rook_designs.png` (`tools/art/hair_designs.py`), three designs over Rook's bare head, face on and side on: 1 Crest (up and back), 2 Shag (down, full), 3 Sweep (parted, across). Twelve to seventeen big locks each, two tones and one streak of light.
+- **The director, on the first draft** (Crest, Shag and a third, Fang): "you can see there is issue with A and C." Crest and Fang were in pieces; Shag grows whole from one point. Fang is dropped for Sweep and Crest redrawn; Shag is the one built.
+- **Then:** "do study on how hair is made by pro". The study: `docs/research/hair-read.md`, "How the pros make it".
+- **The build** (2026-11-24, 23:59): Shag on Rook, lock for lock, the study's way (`tools/blender/hair_ways.py`, `Locks`, `rook`). Beside its drawing: `build/handoff/Rook/hair/hair_rook_build.png`. 26 locks, 3,616 triangles.
+- **Honest read:** the first build that reads as one head of hair, with a shine. The dome still stands taller than the drawing's, and the locks' tips are straighter than a pro's.
+- Shown to the director at 23:59; no verdict yet. Nothing uploaded. Kirra's is drawn and built the same way after the verdict.

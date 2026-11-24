@@ -9,8 +9,15 @@ dome bigger than the head, and only a lock's last third leaves it; the fringe fa
 it all the head is covered in the hair's shade. So here (`Blades`): a cap, and on it rings of flat wedges from one
 whorl (`ring`, `lay`), the broad face light and the narrow one in shade, at three grains of one layout.
 
+That round was rejected too ("your hair still look bad.": the shape, the locks, the colour). Rook's is now made the
+other way round (`Locks`, `rook`): the design drawn flat and picked first (tools/art/hair_designs.py), then modelled lock
+for lock as the pros do (hair-read.md, "How the pros make it"): smooth closed leaves of three sizes in three layers, lit
+as one mass, with one ring of light. Kirra's is still the rings, until hers is drawn. `match` shoots a take's head in
+the drawn designs' views.
+
     blender.exe -b --factory-startup --python tools/blender/hair_ways.py -- <out_dir> <who> takes|shade|sheet [keys]
 
+`bare` shoots the head with no hair, face on, three-quarter and side on: what the drawn designs are laid over.
 `who` is rook or kirra: each gets its own sheet, today's first (rook_make_takes.py's sheet: square on beside two
 Anime Vanguards units, the three-quarter front, the game camera, the bust, the phone).
 """
@@ -18,6 +25,7 @@ import math
 import sys
 from pathlib import Path
 
+import bpy
 import numpy as np
 from mathutils import Matrix, Vector
 
@@ -118,48 +126,119 @@ class Blades(am.Hair):
 # --- Rook: black, short and spiked, from one whorl; a fringe to his brows, one lock between his eyes --------------------
 
 TILE, LEAF = dict(root=0.78, peak=0.22, sharp=1.1), dict(root=0.3, peak=0.42, sharp=1.2)
-SWIRL = 14   # every lock turns the same way round the whorl
-LONG, TURN = (1.0, 1.12, 0.94, 1.16, 1.02), (1.0, 1.3, 0.9, 1.22, 0.86)   # a ring's rhythm: no two neighbours alike
 # the same hair at three grains: A as the genre's fighters wear it, B fewer and bigger, C finer, the catalog's fluff
 GRAIN = {"A": dict(hem=9, mid=10, crown=6, fringe=5), "B": dict(hem=6, mid=7, crown=4, fringe=4),
          "C": dict(hem=13, mid=14, crown=9, fringe=7)}
 
 
-def ring(h, count, around, ph, length, cover, flick, shape, was, **kw):
-    """`count` locks round the head from `around[0]` to `around[1]` degrees, `ph` down from the whorl: each `cover`
-    times its share of the ring wide, so they overlap, in the ring's rhythm. `was`: the count the numbers were
-    drawn at, so a ring of fewer locks has them longer and turned out further."""
-    a0, a1 = around
-    arc = math.radians(a1 - a0) * am.SCALP * math.sin(math.radians(min(ph + 30, 90))) ** 0.75
-    big = (was / count) ** 0.35
-    for i in range(count):
-        a = a0 + (a1 - a0) * (i + 0.5) / count
-        h.lay(a, ph, length * LONG[i % 5] * big, cover * arc / count, flick=flick * TURN[i % 5] * big ** 0.5, **shape, **kw)
+ROUND = 0.3                 # how far a lock's light is the whole head's, not its own
+RING = (0.78, 0.05, 0.07)   # the ring of light: its height over the head's middle, its half width, its dip on a lock
 
 
-def rook(key):
-    g = GRAIN[key]
-    h = Blades("#08080A", "#33343C", shade=(0.5, 0.5, 0.55), under=(0.3, 0.3, 0.34), seed=5)
-    h.cap(am.hairline(front=5.04, temple=4.56, nape=4.14))
-    # the hem, from under the rest: down the back and the sides, its points turned out at the neck
-    ring(h, g["hem"], (64, 296), 52, 0.8, 1.55, 42, TILE, 9, bend=SWIRL, off=0.1, hold=0.46)
-    # over it, a ring with its points out at the ears' height
-    ring(h, g["mid"], (52, 308), 26, 0.8, 1.6, 40, TILE, 10, bend=SWIRL, off=0.19, hold=0.48)
-    # the crown: leaves from the whorl over the back and the sides, lying on the rest, their points a little lifted
-    ring(h, g["crown"], (58, 302), 6, 0.86, 1.5, 38, LEAF, 6, heading=8, bend=SWIRL + 6, off=0.32, hold=0.56)
-    # the fringe: leaves from the whorl's front, over the forehead to the brows, the middle one between the eyes
-    n = g["fringe"]
-    for i in range(n):
-        a = -54 + 104 * (i + 0.5) / n
-        mid = 1 - abs(a + 2) / 54
-        h.lay(a, 9, 0.94 + 0.26 * mid ** 1.5, 2.9 / n ** 0.9 * 0.46, bend=a * 0.34, off=0.23, flick=6, hold=0.74,
-              n=12, root=0.4, peak=0.42, sharp=1.5)
-    for s in (-1, 1):                                                 # one before each ear, to the cheek
-        h.lay(s * 68, 36, 0.82, 0.34, bend=s * -10, off=0.14, flick=30, hold=0.55, **TILE)
+class Locks(Blades):
+    """Hair as it is drawn in tools/art/hair_designs.py: a few big locks, each placed by hand. A lock is a closed leaf,
+    round over its top and smooth all the way round, with a picture of its own: its two tones turned to the drawn
+    light, a dark line at its edges, and one streak of light on its lit side."""
+
+    def __init__(self, lit, shade, glint, seed=1):
+        super().__init__(shade, lit, seed=seed)
+        self.lit, self.dark, self.glint = (np.array(rs.srgb(c)[:3]) for c in (lit, shade, glint))
+
+    def cap(self, hairline, segments=36):
+        self.shell(hairline, segments)
+        self.scalp = self.dark * 0.8
+
+    def leaf(self, line, width, rise=0.28, belly=0.68, start=0.3, sharp=1.5, roll=0.0, size=(40, 80)):
+        """A lock along `line`, [(point, the way out of the head)]: `width` at its widest, `belly` of the way along,
+        `start` of that at its root; `rise` of its width tall; rolled `roll` degrees so one edge lies on its
+        neighbour."""
+        n, grid, k, lit = len(line), [], math.radians(roll), 0.0
+        for i, (q, out) in enumerate(line):
+            u = i / (n - 1)
+            along = (line[min(i + 1, n - 1)][0] - line[max(i - 1, 0)][0]).normalized()
+            out = out - along * out.dot(along)
+            out = out.normalized() if out.length > 1e-3 else along.orthogonal().normalized()
+            side = along.cross(out).normalized()
+            side, out = side * math.cos(k) + out * math.sin(k), out * math.cos(k) - side * math.sin(k)
+            v = min(u / belly, 1.0)
+            s = start + (1 - start) * v * v * (3 - 2 * v) if u <= belly else max(1 - ((u - belly) / (1 - belly)) ** sharp, 0.04)
+            w, r = width / 2 * s, width * rise * s ** 0.8
+            lit += side.dot(KEY)
+            grid.append([q + side * (w * t) + out * (r * h)
+                         for t, h in ((-1, 0), (-0.55, 0.78), (0, 1), (0.55, 0.78), (1, 0), (0.5, -0.3), (-0.5, -0.3))])
+        t0 = 0.32 if lit >= 0 else -0.32
+        step = lambda x, lo, hi: (lambda y: y * y * (3 - 2 * y))(np.clip((x - lo) / (hi - lo), 0, 1))  # noqa: E731
+
+        def paint(u, v, P, N):
+            top = u <= 4 / 7
+            t = np.where(top, u / (4 / 7) * 2 - 1, 0.0)
+            ball = (P - np.array(am.CENTRE)) * np.array((1.0, 1.0, 0.85))
+            ball /= np.maximum(np.linalg.norm(ball, axis=2, keepdims=True), 1e-9)
+            n = N * (1 - ROUND) + ball * ROUND
+            n /= np.maximum(np.linalg.norm(n, axis=2, keepdims=True), 1e-9)
+            s = step(n @ np.array(KEY), -0.12, 0.28)
+            c = self.dark + (self.lit - self.dark) * s[..., None]
+            c = c * (0.62 + 0.38 * step(v, 0.0, 0.3))[..., None]
+            # the ring of light: one band round the head at one height, dipping to a point on each lock
+            high = (P[..., 2] - am.CENTRE.z - RING[0] + RING[2] * (1 - np.abs(t - t0 * 0.6))) / RING[1]
+            band = step(1 - np.abs(high), 0.0, 0.35) * (0.25 + 0.75 * s) * step(ball[..., 2], 0.05, 0.3)
+            c = c + (self.glint - c) * (0.7 * band)[..., None]
+            c = c * (1 - 0.6 * step(np.abs(t), 0.8, 0.98))[..., None]
+            return np.where(top[..., None], c, self.dark * 0.6)
+
+        mids = [q for q, _ in line]
+        self.sheet(grid, paint, size, lambda mid, r, c: mid - (mids[r] + mids[r + 1]) / 2, closed=True)
+
+    def build(self, folder, name="Hair"):
+        """The mesh, its normals turned most of the way to a ball's round the head: the hair takes the game's light as
+        one mass, not lock by lock (how Guilty Gear Xrd's is lit; docs/research/hair-read.md, "How the pros make it")."""
+        obj = super().build(folder, name)
+        normals = []
+        for v in obj.data.vertices:
+            ball = v.co - am.CENTRE
+            ball.z *= 0.85
+            normals.append((v.normal * (1 - ROUND) + ball.normalized() * ROUND).normalized())
+        obj.data.normals_split_custom_set_from_vertices(normals)
+        return obj
+
+
+def rook():
+    """Rook's hair, the drawn design "Shag": every lock from the whorl, full and loose, over the forehead to the brows,
+    its points turned out. A tier of short locks under the hem, the long ones over it, the fringe on top."""
+    h = Locks("#1E2233", "#07080C", "#8E9BD2", seed=5)
+    h.cap(am.hairline(front=5.0, temple=4.5, nape=4.1), segments=24)
+
+    def put(a, length, width, off, hold, flick, bend=0.0, ph=1.5, roll=14.0, crown=0.6, n=11, **kw):
+        line = h.spine(a, ph, length, 0.0, bend, None, hold, flick, off, n)
+        # the kit's line dips into the head at its root; these stand `crown` of their height at the whorl, so it is the top
+        ease = lambda x: (lambda v: v * v * (3 - 2 * v))(min(max(x, 0.0), 1.0))  # noqa: E731
+        line = [(q + out * (0.07 * (1 - ease(i / (n - 1) / 0.2)) + off * crown * (1 - ease(i / (n - 1) / 0.35))), out)
+                for i, (q, out) in enumerate(line)]
+        h.leaf(line, width, roll=roll, **kw)
+
+    turn = 22   # every lock turns the same way round the whorl
+    # the base: short points under the hem, turned out
+    for a, length, flick in ((98, 0.82, 30), (-98, 0.8, 26), (128, 0.92, 32), (-128, 0.86, 24), (154, 0.95, 30), (180, 0.86, 22),
+                             (206, 0.96, 30)):
+        put(a, length, 0.5, 0.06, 0.45, flick, ph=56, crown=0.0, n=7, belly=0.4, start=0.7, sharp=1.5)
+    # the back, the biggest masses: three broad, two smaller lying over their joins
+    for a, length, width, off, flick, bend in ((150, 1.6, 0.9, 0.2, 14, turn), (180, 1.78, 0.95, 0.2, 10, turn), (212, 1.55, 0.86, 0.2, 16, turn),
+                                               (166, 1.3, 0.5, 0.27, 30, turn + 10), (197, 1.44, 0.46, 0.27, 24, turn - 12)):
+        put(a, length, width, off, 0.7, flick, bend=bend, belly=0.72)
+    # each side: the broad shoulder of the mass, a lock behind the ear, a long sharp one down the cheek
+    for s in (-1, 1):
+        put(s * 101, 1.2 + s * 0.06, 0.78, 0.2, 0.72, 12, bend=turn, belly=0.72)
+        put(s * 124, 1.45 - s * 0.07, 0.5, 0.24, 0.66, 26, bend=turn + s * 8, belly=0.7)
+        put(s * 72, 1.56 + s * 0.05, 0.4, 0.16, 0.8, 10, bend=turn * 0.4 - s * 8, belly=0.7, sharp=1.2)
+    # the fringe: three chunks, the middle one the largest, each ending in two or three points; the forehead shows between
+    for a, length, width in ((-20, 1.4, 0.5), (-6, 1.64, 0.6), (7, 1.46, 0.46),
+                             (31, 1.36, 0.44), (46, 1.52, 0.54), (-41, 1.4, 0.5), (-55, 1.54, 0.48)):
+        put(a, length, width, 0.18, 0.82, 8, bend=turn * 0.4 - a * 0.12, belly=0.64, sharp=1.5)
+    # two small tufts standing at the whorl
+    for a, length, width, flick in ((-25, 0.56, 0.34, 56), (38, 0.48, 0.3, 48)):
+        put(a, length, width, 0.24, 0.25, flick, bend=30, n=8, belly=0.45, sharp=1.2)
     return h
 
-
-# --- Kirra: silver, combed up to a high tail; a fringe swept to her left, a long lock by each cheek --------------------
 
 TIE = (180, 15)
 
@@ -223,7 +302,7 @@ def tie_loop(tie):
 
 
 WHO_ = {
-    "rook": dict(takes={"Rook": rt.take_a, **{k: with_hair(rt, rt.take_a, lambda k=k: rook(k)) for k in "ABC"}},
+    "rook": dict(takes={"Rook": rt.take_a, "A": with_hair(rt, rt.take_a, rook)},
                  today="Today's Rook (AR59's pick)"),
     "kirra": dict(takes={"Kirra": kt.take_a, **{k: with_hair(kt, kt.take_a, lambda k=k: kirra(k)) for k in "ABC"}},
                   today="Today's Kirra (AR60's fix)"),
@@ -263,3 +342,21 @@ if __name__ == "__main__":
         rt.shade_run(OUT)
     elif mode == "sheet":
         rt.sheet_run(OUT, words(who), kt.BESIDE)
+    elif mode in ("bare", "match"):   # the head alone, with no hair or with the take's, in the drawn designs' three views
+        key = "Bare" if mode == "bare" else rest[2]
+        module = rt if who == "rook" else kt
+        scene = bl.reset_scene()
+        scene.world = bpy.data.worlds.new("Takes")
+        j = rt.wt.rig(scene)
+        (OUT / "tex" / key).mkdir(parents=True, exist_ok=True)
+        run = with_hair(module, module.take_a, lambda: am.Hair("#000000", "#000000")) if mode == "bare" else spec["takes"][key]
+        made = run(j, OUT / "tex" / key)
+        if mode == "match":
+            measured(key, made)
+        j["root"].location = rt.wt.PIVOTS["root"]
+        bpy.context.view_layer.update()
+        for view, azimuth, elevation in (("front", 180, 2), ("three", 145, 2), ("side", 90, 2), ("back", 0, 2), ("top", 180, 60)):
+            rt.rm.eevee(scene, 1000, 1000)
+            rt.rm.sun_for(scene, azimuth)
+            am.fill_for(scene, azimuth)
+            rs.shoot(scene, OUT / "shots" / f"{key}_{view}.png", azimuth, elevation, (0.0, 0.0, 4.85), 3.2)

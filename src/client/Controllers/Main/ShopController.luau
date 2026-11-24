@@ -163,10 +163,10 @@ end
 
 -- The building's clock: a spent minute hidden, the running one as tall as its share left, hung from its root under the
 -- slab, so it shrinks upward; the server lays them full and never touches them again.
-local function minutes(left: number)
+local function minutes(left: number): boolean
 	local marker = Markers.Find("Shop")
 	if marker == nil then
-		return
+		return false
 	end
 	local hung: { BasePart } = {}
 	for _, item in marker:GetChildren() do
@@ -187,15 +187,16 @@ local function minutes(left: number)
 			part.CFrame = root * CFrame.new(centre.X, centre.Y * size.Y / full.Y, centre.Z)
 		end
 	end
+	return true
 end
 
 local function tick()
 	local now = workspace:GetServerTimeNow()
 	local left = Shop.Ends(Shop.Stock(now)) - now
-	minutes(left)
+	local here = minutes(left) -- whether the Shop stands in this place: the chip never points at one a trip away
 	local made, words = chip, chipWords
 	if made and words then
-		local shown = left <= ShopConfig.Warn and Screen.Current() ~= ShopScreen.Name
+		local shown = here and left <= ShopConfig.Warn and Screen.Current() ~= ShopScreen.Name
 		made.Visible = shown
 		if shown then
 			local said = `Void Shop restock {Hud.Clock(left)}`

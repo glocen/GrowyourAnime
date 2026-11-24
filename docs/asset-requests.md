@@ -17538,4 +17538,6 @@ Research, 2026-11-24, 16:53, on the director's word, "the hair still need a rewo
 - **Then:** "do study on how hair is made by pro". The study: `docs/research/hair-read.md`, "How the pros make it".
 - **The build** (2026-11-24, 23:59): Shag on Rook, lock for lock, the study's way (`tools/blender/hair_ways.py`, `Locks`, `rook`). Beside its drawing: `build/handoff/Rook/hair/hair_rook_build.png`. 26 locks, 3,616 triangles.
 - **Honest read:** the first build that reads as one head of hair, with a shine. The dome still stands taller than the drawing's, and the locks' tips are straighter than a pro's.
-- Shown to the director at 23:59; no verdict yet. Nothing uploaded. Kirra's is drawn and built the same way after the verdict.
+- **Rejected** (the director, 2026-11-25): "your hair is horrendous it very bad do better", then "what you did was trolling to me be serious". A spiked build after it (smooth cones, take T): "still very very bad js learn do study".
+- **The study** (2026-11-25, 00:49, unfinished): `docs/research/hair-read.md`, "What the full-size pictures show". Our locks were the wrong object: the catalog's are long thin curved ribbons, crossed, in fanned clumps, over a top that is one surface. A first try that way (`Sheets`, take T) isn't a candidate yet.
+- **Paused** by the director at 00:49: "you will finish this trainning later." Nothing uploaded. Kirra's waits on Rook's.

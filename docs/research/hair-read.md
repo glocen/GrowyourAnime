@@ -88,3 +88,18 @@ After the fifth modelled round was rejected ("your hair still look bad.") and th
 - The normals are turned part of the way to a ball's, and the picture is lit the same way; one ring of light runs round the dome, dipping to a point on each lock.
 - 3,600 triangles.
 
+## What the full-size pictures show (2026-11-25, 00:49, on "still very very bad js learn do study"; unfinished, paused at the director's word)
+
+The Shag build and a spiked build after it were both rejected (AR64). The study this time is on eight of the catalog's best-loved boys' hairs at 700 px (`build/reference/hair/catalog720/`, internal). Six are read; `6413085241` and `4875445470` are not yet. Their 3D pictures need a sign-in, so the meshes weren't read: everything below is from pictures.
+
+OBSERVED:
+- **A lock is a long thin ribbon,** five to eight times as long as it is wide, near one width for most of its length, then a long needle point. Ours were leaves and cones, two to one.
+- **Every ribbon curves,** in a C or an S, and its point flicks up or out. None is straight.
+- **Seventy to a hundred of them, in about three layers,** and they cross. They come in clumps that fan from one root, never in rows side by side.
+- **The top is one surface.** Round the whorl the hair is broad smooth sheets with fine lines drawn along them; the ribbons only come apart toward the ends. Two tufts arc left and right out of the whorl, with a few thin strays.
+- **The light is soft and runs across each ribbon** (lighter down its middle, dark at its edges), on a picture that goes from a dark root to a lighter end. A black cap fills the inside.
+- The mass is about 1.5 to 1.7 heads wide and falls over the forehead to the eyes.
+
+DESIGN, tried once (`tools/blender/hair_ways.py`, `Sheets`, take T): pleated sheets from the whorl whose pleats part into points near their ends, broad shells over the crown, a few loose locks. It reads as hair, but its pleats are still wide petals (about three to one), nothing crosses, and the points don't flick. Not shown as a candidate.
+
+Still to do: read the last two pictures, measure a ribbon's width against the head on each, then build ribbons that thin, curved and crossed, and judge the build beside these pictures at one size before anyone sees it.

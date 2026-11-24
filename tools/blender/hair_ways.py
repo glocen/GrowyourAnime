@@ -240,6 +240,167 @@ def rook():
     return h
 
 
+class Sheets(am.Hair):
+    """Hair as the catalog's best-loved boys' hairs are built, read at full size (docs/research/hair-read.md, "What the
+    full-size pictures show"): never a lock apiece from root to tip. The hair is a few SHEETS draped from the whorl
+    over the head, one over another. A sheet is pleated: each pleat a lock, round across, meeting its neighbours in
+    sharp grooves, so the head between the tips is one surface. Only toward its end does a pleat leave its neighbours,
+    narrow to a long point and lift off the head. Where neighbours part late they read as one clump with a notched
+    end; where they part early the gap runs deep."""
+
+    def __init__(self, lit, dark, glint, seed=1):
+        super().__init__(dark, lit, seed=seed)
+        self.lit, self.dark, self.glint = (np.array(rs.srgb(c)[:3]) for c in (lit, dark, glint))
+
+    def cap(self, hairline, segments=28):
+        self.shell(hairline, segments)
+        self.scalp = self.dark * 0.8
+
+    def sheet_of(self, start, pleats, ph0=1.5, off=0.08, swirl=18.0, relief=0.3, high=0.075, step=10.0, gloss=0.28, puff=0.0):
+        """One sheet. Its pleats lie side by side from `start` degrees round, toward his left; each is (how many
+        degrees wide, where it ends, where its left side leaves its neighbour, how far its point lifts off the head,
+        how many degrees its point drifts to his left). The sheet starts `ph0` degrees down from the whorl, rides
+        `off` over the head, and turns `swirl` degrees round the whorl by the head's widest."""
+        edges = [start]
+        for p in pleats:
+            edges.append(edges[-1] + p[0])
+        closed = abs(edges[-1] - edges[0] - 360) < 1e-6
+        lefts = [p[2] for p in pleats]
+        for i, p in enumerate(pleats):
+            right = lefts[i + 1] if i + 1 < len(pleats) else (lefts[0] if closed else p[2])
+            self.pleat(edges[i], edges[i + 1], p[1], lefts[i], right, p[3], p[4], ph0, off, swirl, relief, high, step, gloss, puff)
+
+    def pleat(self, a0, a1, end, part0, part1, lift, drift, ph0, off, swirl, relief, high, step, gloss, puff, sharp=1.6):
+        part0, part1 = min(part0, end - 6), min(part1, end - 6)
+        first = min(part0, part1)
+        phs = [ph0]
+        while phs[-1] + step < end - 2:
+            phs.append(phs[-1] + step)
+        phs.append(end)
+        tip = (a0 + a1) / 2 + drift
+        turn = lambda ph: swirl * (ph - ph0) / 90   # noqa: E731
+
+        def side(a, part, ph):
+            if ph <= part:
+                return a
+            return a + (tip - a) * ((ph - part) / (end - part)) ** sharp
+
+        grid, core = [], []
+        for ph in phs:
+            la, ra = side(a0, part0, ph) + turn(ph), side(a1, part1, ph) + turn(ph)
+            if ra - la < 0.6:
+                la, ra = (la + ra) / 2 - 0.3, (la + ra) / 2 + 0.3
+            up = lift * max(0.0, (ph - first) / (end - first)) ** 1.7 + puff * math.cos(math.pi / 2 * min(ph / 72, 1.0)) ** 1.3
+            pl, pr = self.at(la, ph)[0], self.at(ra, ph)[0]
+            pm, nm, _ = self.at((la + ra) / 2, ph)
+            tall = min(relief * (pr - pl).length, high)
+            row = []
+            for x in (-1.0, -0.42, 0.42, 1.0):
+                q, n, _ = self.at((la + ra) / 2 + (ra - la) / 2 * x, ph)
+                row.append(q + n * (off + up + tall * (1 - x * x) ** 0.75))
+            row.append(pm + nm * (off + up - 0.02))
+            grid.append(row)
+            core.append(pm + nm * (off + up - 0.01))
+        paint = self.painted(3 / 5, gloss)
+        self.sheet(grid, paint, (28, 80), lambda mid, r, c: mid - (core[r] + core[r + 1]) / 2, closed=True)
+        # the grooves are creases; over its top a pleat is smooth
+        self.bm.verts.ensure_lookup_table()
+        made = self.bm.verts[len(self.bm.verts) - len(phs) * 5:]
+        for r in range(len(phs) - 1):
+            for col in (0, 3):
+                edge = self.bm.edges.get((made[r * 5 + col], made[(r + 1) * 5 + col]))
+                if edge is not None:
+                    edge.smooth = False
+
+    def painted(self, rim, gloss):
+        """A lock's picture: `rim` of the way round it is its top. Darker at its root, a few hairs drawn along it, a
+        soft light on its crown, more of it at the height where the head's own shine sits, and dark in its grooves."""
+        ease = lambda x, lo, hi: (lambda y: y * y * (3 - 2 * y))(np.clip((x - lo) / (hi - lo), 0, 1))  # noqa: E731
+        lines = [(self.rng.uniform(-0.6, 0.6), self.rng.uniform(0.02, 0.05), self.rng.uniform(0.0, 0.35)) for _ in range(2)]
+        band = am.CENTRE.z + 0.52
+
+        def paint(u, v, P, N):
+            top = u <= rim
+            t = np.where(top, u / rim * 2 - 1, 0.0)            # across the lock: -1 and 1 in its grooves
+            c = self.dark + (self.lit - self.dark) * (0.62 + 0.38 * ease(v, 0.0, 0.6))[..., None]
+            for at, wide, begin in lines:
+                c = c * (1 - 0.2 * np.exp(-((t - at) / wide) ** 2) * ease(v, begin, begin + 0.15))[..., None]
+            ridge = np.exp(-((t + 0.1) / 0.5) ** 2)
+            shine = np.exp(-((P[..., 2] - band) / 0.2) ** 2) * gloss + 0.1
+            c = c + (self.glint - c) * (shine * ridge)[..., None]
+            c = c * (1 - 0.62 * ease(np.abs(t), 0.5, 1.0))[..., None]
+            return np.where(top[..., None], c, self.dark * 0.8)
+
+        return paint
+
+    def loose(self, root, tip, width, arch=0.3, sway=0.0, full=0.35, sharp=1.4, n=7, gloss=0.28):
+        """A lock of its own, off the sheets: from `root` (degrees round, down) to `tip` (round, down, studs clear of
+        the head), arched `arch` of its length away from the head and `sway` of it to its own left. Thin, round over
+        its top like a pleat, widest `full` of the way along, drawn to a long point."""
+        p0, n0, _ = self.at(*root)
+        p2, n2, _ = self.at(*tip[:2])
+        A, C = p0 + n0 * 0.02, p2 + n2 * tip[2]
+        out = (n0 + n2).normalized() if (n0 + n2).length > 1e-3 else n0
+        run = C - A
+        left = run.cross(out).normalized() if run.cross(out).length > 1e-4 else Vector((1, 0, 0))
+        B = (A + C) / 2 + out * (arch * run.length) + left * (sway * run.length)
+        pts = [A * (1 - t) ** 2 + B * (2 * t * (1 - t)) + C * t * t for t in (i / (n - 1) for i in range(n))]
+        o, grid = n0.copy(), []
+        for i, q in enumerate(pts):
+            u = i / (n - 1)
+            along = (pts[min(i + 1, n - 1)] - pts[max(i - 1, 0)]).normalized()
+            o = o - along * o.dot(along)
+            o = o.normalized() if o.length > 1e-4 else along.orthogonal().normalized()
+            side = along.cross(o).normalized()
+            v = min(u / full, 1.0)
+            w = width / 2 * (0.7 + 0.3 * v * v * (3 - 2 * v) if u <= full else max(1 - ((u - full) / (1 - full)) ** sharp, 0.02))
+            tall = min(0.3 * 2 * w, 0.075)
+            grid.append([q + side * (w * x) + o * (tall * (1 - x * x) ** 0.75) for x in (-1.0, -0.42, 0.42, 1.0)] + [q - o * 0.02])
+        self.sheet(grid, self.painted(3 / 5, gloss), (28, 64), lambda mid, r, c: mid - (pts[r] + pts[r + 1]) / 2, closed=True)
+
+
+def rook_sheets():
+    """Rook's hair: a short, tousled crop, black. One sheet over the whole head from the whorl: before, a fringe in
+    three chunks to the brows, the middle one's point the longest, between his eyes; at the sides to the ears, the
+    points kicked out; behind, thrown out over a shorter sheet that lies down the nape. On top, clumps thrown up and
+    round, their points standing."""
+    h = Sheets("#1C1D24", "#08090C", "#6C7183", seed=7)
+    h.cap(am.hairline(front=5.0, temple=4.62, nape=4.3))
+    # down the nape, under the rest: one surface almost to its hem, the points short
+    h.sheet_of(98, [(15, 100, 84, 0.05, 3), (17, 112, 92, 0.07, -3), (15, 104, 90, 0.10, 4), (18, 120, 96, 0.06, -3),
+                    (16, 110, 94, 0.10, 4), (18, 124, 98, 0.05, 0), (16, 112, 96, 0.10, -4), (18, 118, 94, 0.07, 3),
+                    (15, 104, 92, 0.10, -5), (17, 110, 90, 0.07, 3), (19, 98, 84, 0.05, -3)],
+               ph0=50, off=0.02, swirl=0.0, gloss=0.0)
+    # the sheet over the whole head, from his right temple round by the front
+    h.sheet_of(-55, [
+        # the fringe: his right chunk, the middle one, his left
+        (15, 74, 46, 0.03, 3), (18, 80, 62, 0.03, -2),
+        (14, 76, 48, 0.03, 4), (15, 85, 64, 0.04, 2), (9, 70, 60, 0.03, -3),
+        (16, 79, 48, 0.03, 4), (14, 72, 62, 0.03, -2), (9, 77, 58, 0.03, -4),
+        # his left side: before the ear, over it, behind it
+        (14, 100, 50, 0.03, -2), (22, 84, 68, 0.12, 6), (12, 92, 74, 0.06, -3), (24, 82, 66, 0.16, 6),
+        # the back
+        (14, 96, 64, 0.10, -4), (30, 82, 70, 0.20, 4), (16, 100, 72, 0.08, -3), (28, 86, 66, 0.18, 0),
+        (12, 94, 72, 0.08, 4), (26, 82, 68, 0.20, -5),
+        # his right side
+        (16, 92, 66, 0.07, 4), (24, 82, 70, 0.14, -6), (12, 90, 72, 0.06, 3), (18, 98, 52, 0.03, 2)],
+               off=0.09, puff=0.12)
+    # over the crown, broad shells laid across the sheet's own run, parted deep, their ends notched
+    h.sheet_of(-100, [(52, 50, 12, 0.05, 8), (30, 60, 44, 0.07, -6),
+                      (46, 46, 12, 0.05, 10), (40, 58, 40, 0.08, -4), (24, 50, 46, 0.06, -8),
+                      (50, 54, 12, 0.06, 8), (34, 62, 46, 0.08, -6), (44, 48, 12, 0.05, 8), (40, 56, 42, 0.07, -8)],
+               off=0.15, swirl=34.0, relief=0.2, high=0.085, puff=0.14)
+    # loose, along the hair's run: each leaves the mass and kicks out
+    L = h.loose
+    L((70, 40), (84, 86, 0.22), 0.22, arch=0.14)
+    L((-76, 44), (-90, 84, 0.20), 0.20, arch=0.14)
+    L((128, 46), (140, 90, 0.26), 0.22, arch=0.14)
+    L((-136, 44), (-150, 86, 0.24), 0.22, arch=0.14)
+    L((176, 48), (184, 96, 0.24), 0.24, arch=0.14)
+    L((24, 44), (36, 78, 0.12), 0.18, arch=0.14)
+    return h
+
+
 TIE = (180, 15)
 
 
@@ -302,7 +463,7 @@ def tie_loop(tie):
 
 
 WHO_ = {
-    "rook": dict(takes={"Rook": rt.take_a, "A": with_hair(rt, rt.take_a, rook)},
+    "rook": dict(takes={"Rook": rt.take_a, "A": with_hair(rt, rt.take_a, rook), "T": with_hair(rt, rt.take_a, rook_sheets)},
                  today="Today's Rook (AR59's pick)"),
     "kirra": dict(takes={"Kirra": kt.take_a, **{k: with_hair(kt, kt.take_a, lambda k=k: kirra(k)) for k in "ABC"}},
                   today="Today's Kirra (AR60's fix)"),

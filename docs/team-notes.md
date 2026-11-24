@@ -12,9 +12,9 @@ Each teammate rewrites its own row: one to three lines. Open asks sit under "Wai
 - **Next:** harden AR12's and the battery's cases against an empty base, and find what left the four bays empty; the Dasher's flaky lunge (AR52); then TR57, from my cloud branch's Rules.Broadcast, set to research's seeds.
 - **TR57 to TR62, what I'd change (tier 2):** their screens wait for AR62's pick and their targets, so systems and pure rules first; Firsts leaves TR57 as its own piece; the boards' stores split Test and Live, as DataService does; the inviter's crate goes through ProfileStore's MessageAsync; TR59 takes Rules/Welcome from my cloud branch; codes could live in ConfigService, so a new code needs no publish (to check first).
 
-**Modulo (assets).** 2026-11-24, 23:59. Nothing running, no lock held.
-- **Waiting on the director's eye:** AR64's hair. The fifth modelled round was rejected in every part, so the design was drawn flat first, the pros' way was studied on the director's word, and the design "Shag" is built on Rook lock for lock (AR64, "Designs drawn first"). Nothing uploaded. AR59 Rook waits on it. Faber's open looks (TR53, TR54, the Guard's clip, AR49, AR44, AR40, AR48, TR50, AR50) are in their entries.
-- **Now:** AR62's two or three style frames (cap 3 hours), from the phone-read study (`docs/research/phone-read.md`). Then AR55's return as a whole screen, then TR56's three chest pictures. Pip's finish (AR63), Lyric and Watt wait for the frame's pick.
+**Modulo (assets).** 2026-11-25, 00:49. Nothing running, no lock held.
+- **AR64's hair: rejected twice more, the study paused by the director** ("you will finish this trainning later", 00:49). Shag was "horrendous", a spiked build "still very very bad js learn do study". The study so far and what's left: `docs/research/hair-read.md`, "What the full-size pictures show". Nothing uploaded. AR59 Rook and AR62's frames wait on the hair.
+- **Now:** waiting on the director's word for what comes before the hair study resumes. Queued behind it: AR62's style frames, AR55's return as a whole screen, TR56's three chest pictures; Pip (AR63), Lyric and Watt wait for the frame's pick.
 
 **Scintilla (effects).** 2026-11-24, 21:25. In the game, unjudged: the Support's looks (AR58) and the element states (AR48). As grey rows, waiting on Faber's hooks: hit sparks (AR61), the Shades' tells (AR52), the keeper's moves (AR7).
 - **For research:** AR58's and AR48's passes in motion.

@@ -16,6 +16,8 @@ local Profile = require(Shared.Data.Profile)
 local Breaker = require(Shared.Rules.Breaker)
 local BaseLevels = require(Shared.Rules.BaseLevels)
 local BaseRules = require(Shared.Rules.Base)
+local Return = require(Shared.Rules.Return)
+local PlaceRole = require(Shared.Util.PlaceRole)
 local BaseConfig = require(Shared.Config.Base)
 local WorldConfig = require(Shared.Config.World)
 local Shards = require(Shared.Definitions.Shards)
@@ -84,8 +86,16 @@ function schedule(player: Player)
 	timers[player] = task.delay(math.clamp(due, clock.LeastSeconds, clock.MostSeconds), wake, player)
 end
 
+-- A join: the gap passes as away. Away from the base (TR53), in another place or offline, a record of what the base
+-- does stays open from the base as it last stood, so a run's advances land in it; back in the base's place, it closes
+-- onto the return card, the tray credited (Rules.Return).
 local function onReady(player: Player)
-	advance(player, "BaseReturn", true)
+	DataService.Change(player, "BaseReturn", function(draft: Profile.Data): { [string]: any }
+		Return.Open(draft)
+		local summary = Breaker.Advance(draft, now(), true)
+		local card = if PlaceRole.Is("Main") then Return.Arrive(draft) else nil
+		return { Ok = true, Finished = summary.Finished, Made = summary.Made, Card = card ~= nil }
+	end)
 	schedule(player)
 end
 

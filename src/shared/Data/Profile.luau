@@ -103,6 +103,29 @@ export type Base = {
 	Bays: { Bay }, -- one per bay opened
 	Condenser: Condenser, -- the Stone Condenser's tray and its convert (TR37)
 	Showcase: string, -- the Voidkin the showcase at the gate stands (TR22), whatever its role; "" for the strongest
+	Away: Away?, -- what it does while the player is away from it, open until they're back (TR53; Rules.Return)
+	Card: ReturnCard?, -- what it did, waiting for the return card's press (TR53)
+}
+
+-- What the base does while the player is away from it (TR53, TR31 in; Rules.Return): opened by a place that loads the
+-- save away from the base, from the base as it stands, added to by every advance, closed at the base onto Base.Card.
+export type Away = {
+	Charge: number, -- the battery's kWh when it opened
+	Sold: number, -- kWh its overflow sold since
+	Credits: number, -- whole Credits that overflow paid
+	Stones: { [string]: number }, -- stones the Condenser made, by grade
+	Trained: { [string]: number }, -- levels the Training machine gave, by Voidkin id
+	Shards: { string }, -- the shards that broke, their defs in the order they broke
+}
+
+-- The return card waiting to be seen (TR53): what changed while away, merged over returns until its press.
+export type ReturnCard = {
+	Kwh: number, -- the battery's net change
+	Full: boolean, -- it ended full, having sold its overflow
+	Credits: number, -- whole Credits the overflow paid
+	Stones: { [string]: number },
+	Trained: { [string]: number },
+	Shards: { string },
 }
 
 export type GroundProgress = {

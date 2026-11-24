@@ -25,6 +25,7 @@ local Growth = require(Shared.Rules.Growth)
 local BaseLevels = require(Shared.Rules.BaseLevels)
 local Condenser = require(Shared.Rules.Condenser)
 local Goals = require(Shared.Rules.Goals)
+local CondenserConfig = require(Shared.Config.Condenser)
 
 export type Summary = {
 	Finished: number, -- shards that moved to Ready
@@ -307,6 +308,30 @@ function Breaker.Rates(data: Profile.Data): Rates
 	}
 end
 
+-- An advance's work added to the record of the player's time away, when one is open (TR53; Rules.Return): `from` is
+-- how many shards were ready before it, so the ones after broke in it.
+local function remember(base: Profile.Base, summary: Summary, from: number)
+	local away = base.Away
+	if away == nil then
+		return
+	end
+	away.Sold += summary.Overflow
+	away.Credits += summary.Credits
+	local function add(grade: string, count: number)
+		if count > 0 then
+			away.Stones[grade] = (away.Stones[grade] or 0) + count
+		end
+	end
+	add(CondenserConfig.Makes, summary.Stones)
+	add(CondenserConfig.Convert.To, summary.Converted * CondenserConfig.Convert.Give)
+	if summary.Trained and summary.Levels > 0 then
+		away.Trained[summary.Trained] = (away.Trained[summary.Trained] or 0) + summary.Levels
+	end
+	for index = from + 1, #base.Ready do
+		table.insert(away.Shards, base.Ready[index].Def)
+	end
+end
+
 -- Moves the base from its stamp to `now`. `away` is true when the player was offline for the whole gap (a rejoin): the
 -- workers' generation stops after Config.Base.Battery.AwayHours and the lead trains. A base never advanced takes `now`
 -- as its stamp. A `now` before the stamp (a clock step back) changes nothing.
@@ -324,10 +349,12 @@ function Breaker.Advance(data: Profile.Data, now: number, away: boolean?): Summa
 	end
 	local trainee = Breaker.Trainee(data, away)
 	local making = if away then math.min(gap, BaseConfig.Battery.AwayHours * 3600) else gap
+	local ready = #base.Ready
 	step(data, making, true, trainee, summary)
 	if gap > making then
 		step(data, gap - making, false, trainee, summary)
 	end
+	remember(base, summary, ready)
 	base.Stamp = now
 	return summary
 end

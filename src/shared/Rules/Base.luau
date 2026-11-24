@@ -45,6 +45,7 @@ local ShardConfig = require(Shared.Config.Shards)
 local BaseConfig = require(Shared.Config.Base)
 local CondenserConfig = require(Shared.Config.Condenser)
 local Goals = require(Shared.Rules.Goals)
+local Return = require(Shared.Rules.Return)
 
 local Base = {}
 
@@ -407,6 +408,7 @@ Base.Actions = {
 	UpgradeMachine = Base.UpgradeMachine,
 	CollectTray = Base.CollectTray,
 	Convert = Base.Convert,
+	ReturnSeen = Return.Seen, -- the return card's press (TR53)
 } :: { [string]: Action }
 
 return Base

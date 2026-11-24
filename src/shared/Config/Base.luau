@@ -80,4 +80,7 @@ return {
 		MostSeconds = 60,
 		LeastSeconds = 0.25, -- never sooner than this after the last advance, and this late past an event, so it has landed
 	},
+	-- The return card (TR53; Rules.Return): the battery's line shows a net gain of LeastKwh or more, the least Read.Kwh
+	-- writes; less, or a loss, shows no line (TR31).
+	Return = { LeastKwh = 0.01 },
 }

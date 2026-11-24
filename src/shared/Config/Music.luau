@@ -23,14 +23,14 @@ return {
 	-- adds more to each (docs/asset-log.md has each track's id and uploader).
 	Lists = {
 		-- The Strip: the hub between the plots and the grounds, with the Void Shop. Everywhere none of the others is.
-		Strip = { Ids = { 140197521595964, 131737171257366, 77778172844541 }, Volume = 1 }, -- M
+		Strip = { Ids = { 140197521595964, 131737171257366, 77778172844541, 86916173391296 }, Volume = 1 }, -- M
 		-- The player's own plot: the base.
-		Base = { Ids = { 140197521595964, 131737171257366, 77778172844541 }, Volume = 1 }, -- M
+		Base = { Ids = { 140197521595964, 131737171257366, 77778172844541, 86916173391296 }, Volume = 1 }, -- M
 		-- Lantern Row: the festival street north of the Festival Gate, its stages.
-		LanternRow = { Ids = { 84064277441340 }, Volume = 1 }, -- C
+		LanternRow = { Ids = { 84064277441340, 113684233947678, 70601702105739, 124938855332729 }, Volume = 1 }, -- C
 		-- A fight with the Lamplighter: a keeper's try, from its start to its end.
-		Keeper = { Ids = { 84064277441340 }, Volume = 1 }, -- C
+		Keeper = { Ids = { 84064277441340, 113684233947678, 70601702105739, 124938855332729 }, Volume = 1 }, -- C
 		-- A Tower run, from its first floor to its results.
-		Tower = { Ids = { 84064277441340 }, Volume = 1 }, -- C
+		Tower = { Ids = { 84064277441340, 113684233947678, 70601702105739, 124938855332729 }, Volume = 1 }, -- C
 	} :: { [string]: List },
 }

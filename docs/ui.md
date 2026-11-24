@@ -17,6 +17,7 @@ The director, 2026-11-11: "we need to be even thoughtfull with the HUD".
    - **Screens arrive, they don't appear:** the Menu scales and fades in over the dimmed world, and its parts land in a short stagger. A tab switch slides its content a few pixels as it crossfades, and the tab's marker glides to it. Closing is quicker than opening.
    - **A payoff has three beats:** anticipation (the thing charges while the server answers), the hit (a flash, a burst, the number popping up as it counts), and settle. A failure is quieter but still felt (a crack, a dim, a small shake). Rule 4 holds: the hit waits for the server's yes.
    - **Rarity moves:** Epic and Legendary items carry a slow shine or a living edge. Lower rarities stay still.
+   - **Light stays in its piece** [D, 2026-11-24, 13:37: "let not add those shiny bright effect that goes outside the ui buttons it can stay inside or very close to the border"]. A glow, a bloom or a shine lives inside its button, tile or band, or hugs its border, never spreading out over what's around it. Hover's glow too.
    - **Smooth means 60 fps on the smallest phone:** no layout pops, nothing new built per frame, and Reduced Motion turns moves into fades. The speeds live in `Config.Hud`'s Motion, tuned live. The engine facts: `handbook/visuals/ui.md`, "UI effects".
 
 ## Phone, tablet and desktop

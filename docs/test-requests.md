@@ -5027,11 +5027,11 @@ Research, 2026-11-24, 14:00. Launch-design's item 5. The design: `docs/design.md
   - a Hard keeper's pouch and crate;
   - the combine (pure rule, one server step with an id, a repeat a no-op);
   - Mid into High from the Condenser's level 10;
-  - presets 2 and 3 by base level.
+  - presets 2 and 3 by base level;
+  - jewels' points in the resolver and the Condenser's jewel making (seeds "jewels").
 - **Waits:**
   - Modulo's three pictures (grey stand-ins meanwhile);
   - the combine's effect and sound;
-  - jewels' points and the Condenser's jewel making (research's seeds, next);
   - the welcome week's and codes' contents.
 - **Cases, one a rule:**
   - each chest's Rare at its least and above its Epic;

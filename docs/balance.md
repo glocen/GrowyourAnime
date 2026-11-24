@@ -33,7 +33,7 @@ Shares of a full launch build's stat points, at level 60:
 | Gear | 27 | drops, the shop |
 | Reinforce levels | 13.5 | stones and Credits, by chance past +5 |
 | War Emblems | 11 | drops, the shop |
-| Jewels | 7 | elites, keepers, the Tower |
+| Jewels | 7 | Hard keepers, the Condenser |
 | Research | 3 | Research Points |
 
 - **What each ground makes available** is `tools/balance/seeds.json`, "available". Emblems at Lantern Row are 0.10 of full, down from 0.15 (research, 2026-11-19, 20:55): one Uncommon emblem a socket gives 6 to 12%, so gear carries the early power. The tables below come from before that change, which moves a Lantern Row build by about 1% (0.55 of its about 57 share points, worked by hand).
@@ -156,7 +156,7 @@ Seeds for how long each ground takes a player who keeps a 70% build ("on budget"
 - **The family at launch** (research, 2026-11-24; seeds "chestFamily"; `docs/design.md`, "Chests"):
   - **Rare at 1% or more on every chest** (the Hard keeper's at 3%, over its 1.6% Epic), taken from Common. MODEL by hand: a Normal run gives about seven chests, about 30 an hour, so the floor adds about 0.3 Rares an hour and moves the median first Rare from TR48's 1.9 h to about 1 h, design.md's first hour.
   - **Emblem Cases** come at about 1.65 a Normal run (three elites at 30%, the keeper at 75%), 5 to 7 an hour. With the combine, three of one stat (six stats even), MODEL, research's simulation of 4,000 players: the first Rare at 0.9 to 1.3 h, Epic 4.4 to 6.2 h, Legendary 16.7 to 23.4 h (medians), beside gear's 4 to 6 h and 15 to 20 h. The High stats (Critical Damage, Critical Immunity, Lifesteal) come only from Epic and Legendary drops and the Tower's cases, so they stay the chase.
-  - **Jewels' points** are fitted to their supply (a pouch every Hard keeper's win and the Condenser's making), research's next.
+  - **Jewels' points,** priced like a gear line, are seeded as "jewels": 70 tier-1 jewels give about 5 to 7% of a Lantern Row build (by hand), beside a pouch every Hard keeper's win and the Condenser's one every 4 hours of work.
 
 ## What the simulation showed (2026-11-11)
 

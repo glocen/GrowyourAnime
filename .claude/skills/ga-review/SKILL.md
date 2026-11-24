@@ -10,12 +10,16 @@ The director, 2026-11-24, 20:52: a look passes against its picked target and the
 
 **The form,** in order:
 - **Felt:** one sentence, the piece watched once at full speed from the player's camera.
-- **Gates, measured:** the squint (blurred), greyscale, the black silhouette at 64 px, and the UI lint for a screen. A failed gate is a must-fix.
-- **Beside its target:** the build and its target at phone size, read in both orders. The gaps are listed by where they sit.
+- **Gates, measured** on a phone-size capture. A failed gate is a must-fix, whatever the eye says.
+  - The squint: blurred to thumbnail sharpness, the main shape and the one focal point still read.
+  - Greyscale: the values group into a few masses, and the focal point holds the strongest contrast.
+  - The silhouette at 64 px, for a character or a key pose: one figure doing one thing.
+  - A screen: the UI lint (the style frame's tokens, text at 4.5:1, touch at 44 pt).
+- **Beside its target:** the build and its target at phone size, read in both orders. The gaps are listed by where they sit, and whether each touches the main read (shape, focal point, colour or timing). If the two orders disagree, it's "no clear difference", never a pass.
 - **Beside the examples:** is it nearer the director's accepted or rejected looks (`docs/research/examples.md`)?
 - **Must-fixes,** each one line, naming what it serves and its class.
 
-**The pass line:** the build carries its target's main read, passes the gates, and sits nearer the accepted examples. A piece without a picked target can't pass: its target comes first. Refinements beyond the pass go to `docs/polish-later.md`.
+**The pass line:** the build carries its target's main read, passes the gates, and sits nearer the accepted examples. A piece without a picked target can't pass: its target comes first. Where the pair and research's eye disagree, the pair wins. Refinements beyond the pass go to `docs/polish-later.md`.
 
 **What weighs:** composition, personality and impact at phone size. Motion is judged by its poses on a contact sheet and in play, and its timing by numbers, since models read fine motion poorly.
 
@@ -37,4 +41,4 @@ The director, 2026-11-24, 20:52: a look passes against its picked target and the
 - **A second look judges what changed:** the fixes, and anything they broke. An older problem seen then is raised only if it's a must-fix, and said to be older. A finding is never raised twice.
 - **Accepting on cases** names what the cases can't show, and where it will first be seen.
 
-**Where it goes:** once, in the piece's request entry. Nothing is written twice; link instead. Under eight lines, and no new document.
+**Where it goes:** once, in the piece's request entry, with the pair image's path. Nothing is written twice; link instead. Under eight lines, and no new document. Each word the director gives on a look adds a row to `docs/research/examples.md`, with the image the director saw.

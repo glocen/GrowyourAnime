@@ -5166,7 +5166,7 @@ Research, 2026-11-24, from the cloud. The design: `docs/design.md`, "Being seen"
   - a repeat or interrupted grant never pays twice (`AGENTS.md`, "Data and code").
 - **Checks:** the content check passed on 2026-11-24 after one round (the tile's and the banner's lines now say every condition). Order: after TR56 and TR59.
 
-## TR63. Verdicts in pairs: the pair sheet, the lint's contrast and tokens, and Edge for SVG (research's request, for Faber)
+## TR63. Verdicts in pairs: the pair sheet, the lint's contrast and tokens, and SVG by browser (research's request, for Faber)
 
 **Why:** the director's word of 2026-11-24, 20:50 (`docs/decisions.md`, the top row; `AGENTS.md`, "target first, verdicts in pairs"). Every look is judged beside its picked target, and machines check what eyes tire of (`docs/research/quality-and-speed.md`, changes 3 and 7). Faber's tools, Faber's way: this entry says what each serves.
 1. **The pair sheet,** one step after `tools/capture/grab.ps1` and `tools/capture/moments.py`. Given the build's images and the target's, it makes one image:
@@ -5177,6 +5177,6 @@ Research, 2026-11-24, from the cloud. The design: `docs/design.md`, "Being seen"
 2. **The lint reads contrast and, after AR62's pick, the tokens.** In `src/client/Controllers/Core/SelfTestController/UiLint.luau`, which already checks fit, size, touch, safe areas, overlap and the thumbs:
    - **Contrast, now:** each visible label's text against the colour behind it is at least 4.5:1 (WCAG's ratio), and at least 3:1 for large text (18 pt, or 14 pt bold).
    - **Tokens, after AR62's pick:** every colour, stroke width and corner radius on a visible piece is one of the style frame's tokens in `src/client/UI/Theme.luau`. Research's count today: 39 distinct colours written across `src/client`, and 18 files outside `Theme.luau` that write their own. The lint names each stray, so a screen at a time moves onto the tokens.
-3. **Edge renders SVG on the PC.** The director's answer of 20:50: try Edge first, install only if needed. One check that Edge, already on the PC, renders a small SVG at twice its size to a PNG with a transparent background, with nothing installed. A 9-slice frame with an outer glow is the test piece; research's cloud try is in `docs/research/quality-and-speed.md`, change 6. If it fails, say what failed, and research asks the director about Inkscape.
-- **Order:** 1 and 3 first, small and needed by every review; 2's contrast with them; 2's tokens after AR62's pick.
+3. **SVG by browser: done by research, 21:08.** Edge isn't installed in its usual place. Chrome headless rendered a framed panel with an outer glow at 20:51: transparent outside, the glow soft past the box, the stroke crisp, about 1 s (VERIFIED). The command is `chrome.exe --headless=new --disable-gpu --hide-scrollbars --default-background-color=00000000 --window-size=W,H --user-data-dir=<scratch> --screenshot=<png> file:///<svg>`. Nothing installed. Nothing for Faber.
+- **Order:** 1 first, needed by every review; 2's contrast with it; 2's tokens after AR62's pick.
 - **Checks:** no text players see, so no content check. Cases as above, and the lint's new checks on a made-up screen with one stray colour and one low-contrast label.

@@ -73,7 +73,7 @@ They stay general: one piece's calls live in its own home, never in a supreme ru
     - a move: its key poses, stepped, from the game's camera, its timing in frames;
     - an effect: its peak frame and a strip of its life;
     - a model: a turnaround in the game's light, beside the cast.
-  - **The pick.** The director picks a big look: a Voidkin, a screen, a signature move or effect, a world. Research picks the rest in pairs, against the director's judged examples (`docs/research/examples.md`). No build hour starts before the pick.
+  - **The pick.** The director picks a big look: a Voidkin, a screen, a signature move or effect, a world. Research picks the rest in pairs, against the director's judged examples (`docs/research/examples.md`). No build hour starts before the pick; until it comes, the maker starts its next piece.
   - **The build, beside its target** at a quarter and at half of its cap. A miss on the main read changes the technique or simplifies, never polishes. With two techniques missed, the director picks from images.
   - **The verdict** (`ga-review`): measured gates, then the build beside its target. Nothing passes on research's eye alone.
   - Minor assets skip the target. A new idea starts a new target, never a patch. Actions: the `ga-action` skill.

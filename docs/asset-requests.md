@@ -17517,3 +17517,17 @@ Research, 2026-11-24, 16:53, on the director's word, "the hair still need a rewo
 - **Checks:** the content check on the takes; research's pick; the director's look. **Cap:** 2 hours for the takes. It's a fighter's look, so it closes at the finish against the anime bar.
 - **Order:** Modulo's next, after the step it's on.
 - **Folded into AR62's style frame** (the director, 20:52, item 11b): the frame's Voidkin is Rook with the new hair. Kirra's and Pip's hair follow the picked way.
+
+### Modulo's takes (2026-11-24, 21:49)
+
+- **First try dropped:** solid spikes, 21:35. The director: "those hair are still messy do research".
+- **The study:** `docs/research/hair-read.md`. Anime Vanguards' hair is one mass from one crown, down over the brow and the sides. Its locks touch at the root and part only at their ends: lit on the ridge, dark at the edges. Ours sat on the head as separate pieces over a bare forehead.
+- **The takes:** that way, at three degrees (`tools/blender/hair_ways.py`): A the mass, B spiked, C sleek.
+- **The sheets:**
+  - Rook: `build/handoff/Rook/hair/hair_rook_takes.png`.
+  - Kirra: `build/handoff/Kirra/hair/hair_kirra_takes.png`.
+  - Square on beside Anime Vanguards' units, internal: `build/reference/anime-vanguards/compare_hair_*.png`.
+- **Honest read:**
+  - Rook's three read clean and in the genre's family.
+  - Kirra's three barely differ from each other, because combed-up hair has few ends to lift. They render greyer than today's white, from the lighting: the texture is lighter than today's.
+- Nothing uploaded.

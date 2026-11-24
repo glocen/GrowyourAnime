@@ -17315,3 +17315,19 @@ From the latest phone captures: `build/captures/tr50/arc_panel_hard_open.png`, `
 3. **Research's verdict** picks the direction. The director sees it on their return and can overrule.
 4. **Then each screen,** worst first, as Modulo's kit and Faber's install, each beside the old.
 - **Scope:** colours, light, materials and screen art. Layouts change only where a screen's redo needs it, named in its own step. Words: research's sweep (below).
+
+### Research's sweep: the words (Quaestor, 2026-11-24, 13:49)
+
+Every line players read, about 1,100 collected from `src/` by a read-only search, judged against `docs/design.md`, "The words". Most are plain and dry already: the refusals, the base, the Shop, the bag, the reveal. These change, for Faber to build:
+- `Rules/Modes.luau:73`, the Festival's line: "Four stretches, then its keeper", replacing "Fight through the grounds beside your lead".
+- `Rules/Modes.luau:93`, the Tower's line: "Your best floor this week sets your rank", replacing "One climb, floor by floor, until your lead falls".
+- `Definitions/Goals.luau:43`: "Drum Court opens in an update", replacing "Drum Court's gate stays shut, for now."
+- `UI/EquipmentScreen/Jewels.luau:24`: "Jewels open in an update", replacing "Jewels are coming".
+- `UI/VoidkinScreen/init.luau:837`: "A string of {hits} hits", replacing "{hits} hits in a string, again and again".
+- `UI/VoidkinScreen/init.luau:886`: "All stars: a copy now sells for Credits", replacing "Every star: a copy sells for Credits" (it read as if every star sold a copy).
+- `Controllers/Main/BaseController.luau:121`: "The shares add up to over 100%", replacing "The shares come to more than the whole".
+- `Controllers/Main/BaseController.luau:122`: "That shard isn't there any more", replacing "That shard has moved on".
+- `UI/EquipmentScreen/Reinforce.luau:320` and `Config/Hud.luau:852`: "Next try succeeds", replacing "Next try is sure".
+- **The classes, for every new line:** no tagline in a rhythm under a name; no "for now" or "coming" teasers, but "in an update"; no object given a person's moods ("moved on"). The machines' "wakes" and "awake" stay: that's the game's own state.
+- **Not lines, for the roster:** the Commons' trade names (Brick's Hard Hat, Watt's Ground Wire and Insulated, Patch's Quick Fix, Gantry's Piston Drive, Mallow's Hot Meal) change with each one's redesign to the anime bar (`docs/roster.md`), never as a patch here.
+- **Content check (13:52): PASS** on the nine. "Next try succeeds" is true only while a full heat bar makes the next try certain (`Rules/Reinforce.luau`): it changes with that rule.

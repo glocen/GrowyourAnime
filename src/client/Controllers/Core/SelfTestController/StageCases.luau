@@ -75,6 +75,72 @@ end
 function StageCases.Cases(): { any }
 	return {
 		{
+			Name = "Stages (AR57): the square holds the Guard's elite on the street and the Dasher's elite in a Hard run's stretch, its fall the stretch's last",
+			Place = "Festival", -- TR45: its world stands in that place only
+			Run = function(t: any)
+				if Screen.Current() ~= nil then
+					Screen.Close()
+					t.Wait(0.3)
+				end
+				local square = Helpers.SQUARE
+				local stop: WorldConfig.Stop? = nil
+				for _, each in WorldConfig.Row.Stops do
+					stop = if each.Square then each else stop
+				end
+				t.Check("a square down the street", stop ~= nil and square.Stage > 0)
+				if stop == nil then
+					return
+				end
+				local street: { [string]: any }? = nil
+				for _, group in t.Server("Packs") do
+					street = if group.Name == square.Name then group else street
+				end
+				t.Equal("on the street (Normal): the Guard's elite", if street then street.Def else nil, "guard_elite")
+				local before = t.Server("Stage")
+				local held = before.Checkpoint or { Normal = 1, Hard = 1 }
+				local was = {
+					Normal = { before.Normal and before.Normal.Cleared or 0, held.Normal },
+					Hard = { before.Hard and before.Hard.Cleared or 0, held.Hard },
+				}
+				local count = #(Stages.Of(GROUND) :: { any })
+				local ok, err = pcall(function()
+					Helpers.endRun(t)
+					t.Server("LeadHeal")
+					t.Server("StageLine", "Normal", count)
+					t.Server("StageLine", "Hard", square.Stage - 1, square.Stage)
+					local answer = begin("Hard")
+					t.Check(`a Hard run at stretch {square.Stage}`, answer.Ok == true and waitFor(t, REPLICATE, function(): boolean
+						return player:GetAttribute("StageRun") == `Hard {square.Stage}`
+					end), `{tostring(answer.Error)} {tostring(player:GetAttribute("StageRun"))}`)
+					local elite: Model? = nil
+					waitFor(t, REPLICATE, function(): boolean
+						for _, model in mine(square.Stage) do
+							local def = model:GetAttribute("Def")
+							elite = if def == "dasher_elite" or def == "guard_elite" or def == "brawler_elite" then model else elite
+						end
+						return elite ~= nil
+					end)
+					t.Equal("its square: the Dasher's elite", if elite then elite:GetAttribute("Def") else nil, "dasher_elite")
+					t.Equal("lifted to Hard's level", if elite then elite:GetAttribute("Level") else nil, Stages.Level((stop :: WorldConfig.Stop).Level, "Hard"))
+					local fell = t.Server("StageFell", `{square.Name} mine`)
+					t.Check("its fall is the stretch's last", fell.Ok == true and waitFor(t, REPLICATE, function(): boolean
+						return player:GetAttribute("StageLast") == true
+					end), tostring(fell.Error))
+				end)
+				Helpers.endRun(t)
+				t.Server("StageLine", "Hard", 0)
+				t.Server("StageLine", "Normal", was.Normal[1], was.Normal[2])
+				t.Server("StageLine", "Hard", was.Hard[1], was.Hard[2])
+				t.Server("LeadHeal")
+				if Screen.Current() == StageScreen.Name then
+					Screen.Close()
+				end
+				if not ok then
+					error(err, 0)
+				end
+			end,
+		},
+		{
 			Name = "Stages (TR50): the gates, a Normal run moving on from its first stretch, leaving, the Arc panel at the checkpoint, the keeper's card opening Hard, Hard's own foes moving on, the keeper lifted, a fall at stretch 3",
 			Place = "Festival", -- TR45: its world stands in that place only
 			Run = function(t: any)

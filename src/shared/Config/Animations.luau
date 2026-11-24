@@ -30,6 +30,9 @@ return {
 		-- published under the group, 2026-11-23 (docs/asset-log.md): AR52's two, the first clips up
 		ShadeGuard = 110693664240912,
 		ShadeLunge = 102847424758672,
+		-- 2026-11-24: AR57's, the elites' own
+		ShadeGuardElite = 137199476410376,
+		ShadeLungeElite = 104663452343076,
 	} :: { [string]: number },
 	Rigs = {
 		R6 = { Idle = "RookIdle", Hit = "RookHit", Down = "RookDown", Up = "RookUp" },
@@ -56,6 +59,11 @@ return {
 	Unmirrored = {
 		Elite = { ShadeAttack = true },
 	} :: { [string]: { [string]: boolean } },
+	-- A kind of fighter's own clip in place of an action's (AR57): the elite's raise and lunge, in the same lengths,
+	-- markers and fades (Shade_Elite.clips.json, EliteOf), so one action drives both; the weight is in the spacing.
+	Kinds = {
+		Elite = { ShadeGuard = "ShadeGuardElite", ShadeLunge = "ShadeLungeElite" },
+	} :: { [string]: { [string]: string } },
 	-- A walk's ground speed at rate 1, in studs a second (its stride over its loop: Shade.clips.json). The clip plays at the
 	-- body's own speed over this, so its feet keep to the ground, up to MaxRate (AR2: "walk speed comes from the stride").
 	Strides = {
@@ -97,6 +105,8 @@ return {
 		ShadeBurst = "Burst",
 		ShadeGuard = "Guard",
 		ShadeLunge = "Lunge",
+		ShadeGuardElite = "Guard",
+		ShadeLungeElite = "Lunge",
 		LamplighterIdle = "Idle",
 		LamplighterChallenge = "Challenge",
 		LamplighterWalk = "Walk",

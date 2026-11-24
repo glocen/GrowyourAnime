@@ -26,6 +26,8 @@ local MESHES = {
 	Shade_MaskDasher = 74976108708708,
 	Shade_MaskSupport = 82027470218034,
 	Shade_MaskBrawlerBare = 91378643616488, -- the elite's copy without its ties (AR2, section 7)
+	Shade_MaskGuardBare = 132200785533370, -- AR57's, by ModelAssembly.PublishMesh, 2026-11-24
+	Shade_MaskDasherBare = 108865181497087,
 }
 -- AR2, section 4 (2026-11-12): the colour map grey under the lit edges and near white under the masks' cuts, and the
 -- glow mask written for the recipe's two strengths over it. The two go up together and are never paired with the first
@@ -51,13 +53,27 @@ local BODY_TINT = Color3.fromHex("EA4B4F") -- Strength's, until a spawn gives it
 local MASK_TINT = Color3.fromHex("FFE2B8")
 -- The elite's second mask (AR2, sections 5 and 7; the recipe's `elite`): its Mesh at ELITE_SIZE, on the Left Arm's front
 -- corner, where its middle goes and where its own +X, +Y and -Z point, at an ordinary Shade's size (the rig's ScaleTo
--- carries it). The Brawler's is a copy of its mask without the ties, which a sleeve can't hide: the same triangles and
--- UVs, so the same surface. Only the Brawler's is past the content check; the others wait on their own.
+-- carries it). Each is a copy of its mask without the ties, which a sleeve can't hide: the same triangles and UVs, so
+-- the same surface. The Brawler's, the Guard's and the Dasher's are past the content check (AR57); the Support's waits.
 local ELITE_SIZE = 0.6
 local ELITE = {
 	Brawler = {
 		Mesh = "Shade_MaskBrawlerBare",
 		Centre = Vector3.new(-2.0694, 3.5561, -0.6156),
+		Right = Vector3.new(0.7002, -0.1392, -0.7002),
+		Up = Vector3.new(0.0984, 0.9903, -0.0984),
+		Facing = Vector3.new(-0.7071, 0, -0.7071),
+	},
+	Guard = {
+		Mesh = "Shade_MaskGuardBare",
+		Centre = Vector3.new(-2.0663, 3.5577, -0.6128),
+		Right = Vector3.new(0.7002, -0.1392, -0.7002),
+		Up = Vector3.new(0.0984, 0.9903, -0.0984),
+		Facing = Vector3.new(-0.7071, 0, -0.7071),
+	},
+	Dasher = {
+		Mesh = "Shade_MaskDasherBare",
+		Centre = Vector3.new(-2.0831, 3.5676, -0.6316),
 		Right = Vector3.new(0.7002, -0.1392, -0.7002),
 		Up = Vector3.new(0.0984, 0.9903, -0.0984),
 		Facing = Vector3.new(-0.7071, 0, -0.7071),

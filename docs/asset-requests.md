@@ -16758,6 +16758,37 @@ From `build/handoff/Shade/shade_elites_look.png` (at its own size and four times
 - **The seed for Faber's build:** on Normal the square holds the Guard's elite; on Hard it holds the Dasher's elite. It's tuned in play.
 - **Next:** Faber's build, after AR52's behaviours.
 
+### Faber's build: the two elites in the game, as a block (Faber, 2026-11-24, 13:28 by the clock; started after TR53's commit at 12:50)
+
+- **Installed under the group** (`docs/asset-log.md`), the handoff's four files as checked (their sha1 match the finish above):
+  - the second masks `Shade_MaskGuardBare` 132200785533370 and `Shade_MaskDasherBare` 108865181497087, on the Left Arm at the recipe's places (`tools/studio/Models/Shade.luau`, `ELITE`);
+  - the clips `ShadeGuardElite` 137199476410376 and `ShadeLungeElite` 104663452343076, with the kin's beats and fades;
+  - all four Approved. `src/storage/Shade.rbxm` built again from them. Rojo dropped the two new welds' `Part0` again: set to the Left Arm in Studio and saved, every weld read.
+- **In the game:**
+  - `guard_elite` and `dasher_elite` (`Definitions/Enemies.luau`): their kin's mask, type, swing and signature, at the elite's size and marker.
+  - An elite plays its own clip where its kin plays `ShadeGuard` or `ShadeLunge` (`Config.Animations.Kinds`, read by the client's pick). One behaviour drives both, and it never swings left.
+  - The square holds the Guard's elite on Normal and the Dasher's on Hard, research's seed, as a stop's `Hard` def (`Config.World`; `Rules.Stages.DefOn`; the Elite marker's `Hard`). A stretch ends on its own difficulty's elite, and Hard's recommended power is the Dasher's elite's.
+  - My call, tier 1: the Guard's grey pane and its break flash scale with the body, so the elite's covers it.
+- **Checked:**
+  - The type check: 0 new.
+  - The logic cases: 31,242 pass offline and in Studio. A new case covers the rows, the clips' ids and roles, `DefOn`, the last on each difficulty and Hard's power.
+  - The world report: empty.
+  - The self-test in the Festival's place at 60 fps, all passing:
+    - two new cases: "Shades (AR57)", 19 checks (each elite wears its two masks, every swing is Attack, its own raise or lunge and never its kin's), and "Stages (AR57)", 8 checks (the street's square holds the Guard's elite; a Hard run's stretch 2 holds the Dasher's at Hard's level, and its fall is the stretch's last);
+    - the touched ones: AR52's 40, the elite rig 6, the Hard looks 20, the packs 18, the drops 14, the slam 34 and TR50's 91.
+  - **A test bug, fixed:** TR50's lint read a screen still rising, once on the Arc panel and once on the fall's card. `Helpers.lintClean` now waits for the open screen to settle, as it waits for a toast.
+  - The slam case failed once at 52 fps (a timing check) and passed at 60.
+- **The look in the engine,** seven stills in `build/captures/ar57/`. They show the square at night, at dusk and at midday, the four in a row (the Guard's and the Dasher's, Normal and Hard), from the player's camera, behind and to the side, low and near, and from the other side. They hold Idle, the raise at 1.0 s and the tell folded at 0.8 s. The clips are held on the client, so the grey pane isn't in them.
+  - **What I see:** at the player's camera the second mask reads at the hand as a small second face, and Hard reads by its red eyes and streaks.
+  - **The content check:** PASS on all seven, conditions 3 and 4 met in the dark and the light: the second masks read as paper, Hard's eyes and streaks as light, and the Dasher's point never shows past the arm. The 64-pixel read was judged by eye, not from a sheet.
+  - **What I see wrong:** from their right side the second mask is hidden behind the body. There, only the size says elite. The lead covers a row's right end from the player's camera; in play one elite stands at a time.
+- **What waits:**
+  - research's verdict in the square at dusk and night;
+  - Scintilla's shield and line at the elite's size, with AR52's hooks;
+  - the sound;
+  - the numbers, tuned in play;
+  - the Festival's place published again, so the live game has it.
+
 ## AR58. The Support Shade (Modulo now, then Faber)
 
 Research, 2026-11-23, 22:26, on the director's pick by 22:26 (`docs/decisions.md`). Tier 2: a new asset players see that nothing covers. Its behaviour is designed already (`docs/roster.md`, "Enemies: Shades": "half-mask, veiled; heals and shields the others, and is fragile; by reaching it first: an Assassin's job").

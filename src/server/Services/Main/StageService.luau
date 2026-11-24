@@ -145,6 +145,8 @@ local function stand(player: Player, run: Run, name: string)
 	if type(def) ~= "string" or type(level) ~= "number" then
 		return
 	end
+	local hard = marker:GetAttribute("Hard") -- its own on Hard (AR57: the square's elite)
+	def = Stages.DefOn({ Def = def, Hard = if type(hard) == "string" then hard else nil }, run.Rule.Difficulty)
 	local at = Markers.At(marker)
 	local n = if type(count) == "number" then count else 1
 	local with, withCount = marker:GetAttribute("With"), marker:GetAttribute("WithCount")

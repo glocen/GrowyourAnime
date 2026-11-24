@@ -8,6 +8,8 @@
 -- * the Dasher's line goes down from its feet through the lead, its fill reaching the end on the hit; under A, a lead
 --   that stays is hit and the Dasher runs on through it and lies there, its back to it, and an avatar that walks off takes its lead off the line and
 --   the lunge hits empty stone, each counted under "Lunge A". The switch and Auto are put back at their ends.
+-- * AR57: each elite swings Attack every time (AR2, section 10), wears its own mask twice and no other, and the Guard's
+--   and the Dasher's play their own raise and lunge (Config.Animations.Kinds), never their kin's.
 -- Their rules' own cases are the logic cases' (Cases/Shades).
 
 local Players = game:GetService("Players")
@@ -18,6 +20,7 @@ local Shared = ReplicatedStorage.Shared
 local Net = require(Shared.Net)
 local Combat = require(Shared.Config.Combat)
 local Actions = require(Shared.Definitions.Actions)
+local Enemies = require(Shared.Definitions.Enemies)
 local FightRule = require(Shared.Rules.Fight)
 local MarkRule = require(Shared.Rules.Mark)
 local Parts = require(Shared.Util.Parts)
@@ -32,6 +35,13 @@ local RAISES = 3 -- raises the Guard case waits through for a glance
 local BREAK_RAISES = 6
 local LUNGE_SOON = 6 -- seconds a ready Dasher may take to come into range and put its line down
 local WALK = 7 -- studs the avatar walks off the line
+local WATCH = 14 -- seconds an elite is watched for three swings and its own clip (its signature's cooldown is 4.8 or 6)
+-- each elite: its def, its own clip in place of its kin's and that kin's ("" for none)
+local ELITES = {
+	{ "brawler_elite", "", "" },
+	{ "guard_elite", "ShadeGuardElite", "ShadeGuard" },
+	{ "dasher_elite", "ShadeLungeElite", "ShadeLunge" },
+}
 
 local player = Players.LocalPlayer
 
@@ -95,6 +105,67 @@ function ShadeCases.Cases(given: Given): { any }
 	end
 
 	return {
+		{
+			Name = "Shades (AR57): each elite swings Attack every time, wears its mask twice, and the Guard's and the Dasher's play their own raise and lunge",
+			Run = function(t: any)
+				for _, elite in ELITES do
+					local def, own, kin = elite[1], elite[2], elite[3]
+					local _, foe = begin(t, def)
+					local animator: Animator? = nil
+					waitFor(t, REPLICATE, function(): boolean
+						local humanoid = if foe then foe:FindFirstChildOfClass("Humanoid") else nil
+						animator = if humanoid then humanoid:FindFirstChildOfClass("Animator") else nil
+						return animator ~= nil and foe ~= nil and foe:FindFirstChild("Shade_Torso") ~= nil
+					end)
+					if foe == nil or animator == nil then
+						t.Check(`{def}: its rig reaches the client`, false)
+						t.Server("FightSpawn")
+						continue
+					end
+					-- its masks: its own, twice (the second on its Left Arm), and no other
+					local mask = Enemies.ById[def].Mask
+					local masks = {}
+					for _, part in foe:GetChildren() do
+						if part:IsA("BasePart") and (part.Name:sub(1, 5) == "Mask_" or part.Name:sub(1, 10) == "EliteMask_") then
+							table.insert(masks, part.Name)
+						end
+					end
+					table.sort(masks)
+					t.Check(`{def}: wears its mask twice and no other`, #masks == 2 and masks[1] == `EliteMask_{mask}` and masks[2] == `Mask_{mask}`, table.concat(masks, ", "))
+					-- the clips it starts: a track that wasn't playing a frame ago, or went back
+					local swings: { string } = {}
+					local played: { [string]: boolean } = {}
+					local seen: { [AnimationTrack]: number } = {}
+					local ends = os.clock() + WATCH
+					while os.clock() < ends and foe.Parent ~= nil and (#swings < 3 or (own ~= "" and not played[own])) do
+						local seenNow: { [AnimationTrack]: number } = {}
+						for _, track in (animator :: Animator):GetPlayingAnimationTracks() do
+							local before = seen[track]
+							local name = if track.Animation then track.Animation.Name else ""
+							if before == nil or track.TimePosition < before then
+								played[name] = true
+								if name == "ShadeAttack" or name == "ShadeAttackLeft" then
+									table.insert(swings, name)
+								end
+							end
+							seenNow[track] = track.TimePosition
+						end
+						seen = seenNow
+						task.wait()
+					end
+					t.Server("FightSpawn")
+					local right = #swings >= 2
+					for _, name in swings do
+						right = right and name == "ShadeAttack"
+					end
+					t.Check(`{def}: every swing is Attack`, right, table.concat(swings, ", "))
+					if own ~= "" then
+						t.Check(`{def}: it plays its own {own}`, played[own] == true)
+						t.Check(`{def}: never its kin's {kin}`, played[kin] ~= true)
+					end
+				end
+			end,
+		},
 		{
 			Name = "Shades (AR52): the Guard raises its shield in the fight, its pane standing to Drop; hits glance off; a signature breaks it open, staggered",
 			Run = function(t: any)

@@ -41,7 +41,7 @@ local function play(data: Profile.Data, difficulty: string, stage: number, secon
 	for _ = 1, row.Quota do
 		Stages.Kill(run, pack :: string)
 	end
-	Stages.Kill(run, (Stages.Last(GROUND, stage) :: any).Def)
+	Stages.Kill(run, Stages.DefOn(Stages.Last(GROUND, stage) :: any, difficulty))
 	return Stages.Clear(data, run, NOW + seconds)
 end
 
@@ -55,7 +55,7 @@ local function through(run: Stages.Run)
 	for _ = 1, row.Quota do
 		Stages.Kill(run, pack :: string)
 	end
-	Stages.Kill(run, (Stages.Last(GROUND, run.Stage) :: any).Def)
+	Stages.Kill(run, Stages.DefOn(Stages.Last(GROUND, run.Stage) :: any, run.Difficulty))
 end
 
 return {
@@ -255,7 +255,7 @@ return {
 				local last = Stages.Last(GROUND, stage) :: any
 				-- as it stands in the stage: its stage's factor on Normal, Hard's lift and level there (TR49; Config.Enemies)
 				t.Equal(`Stage {stage}: its last foe's own`, normal, Stats.Power(Stats.Enemy(last.Def, last.Level, nil, "Normal", stage)))
-				t.Equal(`Stage {stage}: on Hard, its lifted own`, hard, Stats.Power(Stats.Enemy(last.Def, Stages.Level(last.Level, "Hard"), nil, "Hard", stage)))
+				t.Equal(`Stage {stage}: on Hard, its lifted own`, hard, Stats.Power(Stats.Enemy(Stages.DefOn(last, "Hard"), Stages.Level(last.Level, "Hard"), nil, "Hard", stage)))
 				t.Check(`Stage {stage}: above the one before`, normal > before, `{normal} over {before}`)
 				t.Check(`Stage {stage}: Hard above Normal`, hard > normal, `{hard} over {normal}`)
 				before = normal

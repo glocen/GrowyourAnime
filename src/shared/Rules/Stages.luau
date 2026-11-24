@@ -51,10 +51,15 @@ function Stages.Of(ground: string): { StagesConfig.Stage }?
 end
 
 -- The stage's last stop: the foe whose fall ends it (an elite, or the keeper).
-function Stages.Last(ground: string, stage: number): { Kind: string, Def: string, Level: number, Count: number? }?
+function Stages.Last(ground: string, stage: number): { Kind: string, Def: string, Level: number, Count: number?, Hard: string? }?
 	local rows = Stages.Of(ground)
 	local row = if rows then rows[stage] else nil
 	return if row then row.Stops[#row.Stops] else nil
+end
+
+-- The def that stands at a stop on `difficulty`: its Hard one there, else its own (AR57: the square's elite).
+function Stages.DefOn(stop: { Def: string, Hard: string? }, difficulty: string?): string
+	return if difficulty == "Hard" and stop.Hard then stop.Hard else stop.Def
 end
 
 -- Seconds from the fall that ends `stage` to what follows it: the next stretch, or the run's card. A keeper's fall is
@@ -164,7 +169,7 @@ function Stages.Kill(run: Run, def: string): boolean
 		return false
 	end
 	local last = row.Stops[#row.Stops]
-	if def == last.Def and last.Kind ~= "Pack" then
+	if def == Stages.DefOn(last, run.Difficulty) and last.Kind ~= "Pack" then
 		run.Last = true
 	else
 		for _, stop in row.Stops do
@@ -451,7 +456,7 @@ function Stages.Recommended(ground: string, difficulty: string, stage: number): 
 	if last == nil or StagesConfig.Offset[difficulty] == nil then
 		return 0
 	end
-	return Stats.Power(Stats.Enemy(last.Def, Stages.Level(last.Level, difficulty), nil, difficulty, stage)) -- lifted (TR49)
+	return Stats.Power(Stats.Enemy(Stages.DefOn(last, difficulty), Stages.Level(last.Level, difficulty), nil, difficulty, stage)) -- lifted (TR49)
 end
 
 return Stages

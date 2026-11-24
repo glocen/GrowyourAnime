@@ -3,8 +3,9 @@
 -- AR52). The Guard's raised shield lets Keep of a hit through until a heavy hit or a signature breaks it (Rules.Fight.
 -- Guarded, Breaks); the Dasher's line takes a centre on it and none off it, and its lunge stops short of one standing on
 -- it (Rules.Mark.OnLine, Covers, Short); a pack mixes its others evenly through its ring (Rules.Fight.PackDefs); the
--- stretches' packs are research's, and a Guard's or a Dasher's fall counts to its stretch's quota. Runs in Studio
--- (LogicTests) and with Studio closed.
+-- stretches' packs are research's, and a Guard's or a Dasher's fall counts to its stretch's quota. AR57: their elites,
+-- and which stands in the square on each difficulty (Rules.Stages.DefOn). Runs in Studio (LogicTests) and with Studio
+-- closed.
 
 local Shared = game:GetService("ReplicatedStorage").Shared
 local Combat = require(Shared.Config.Combat)
@@ -190,6 +191,63 @@ return {
 			Stages.Kill(run, "dasher")
 			Stages.Kill(run, "brawler")
 			t.Equal("a Dasher's and a Brawler's count in stage 3", run.Kills, 2)
+		end,
+	},
+	{
+		Name = "Shades: AR57's elites are their kin at the elite's size, play their own clips of the same beats, and the square holds the Guard's on Normal and the Dasher's on Hard",
+		Run = function(t: any)
+			local brawler = Enemies.ById.brawler_elite
+			local kins: { [string]: string } = { guard_elite = "guard", dasher_elite = "dasher" }
+			for id, kin in kins do
+				local row, of = Enemies.ById[id], Enemies.ById[kin]
+				t.Check(`{id}: a row`, row ~= nil and of ~= nil)
+				if row == nil or of == nil then
+					continue
+				end
+				t.Equal(`{id}: an Elite`, row.Kind, "Elite")
+				t.Equal(`{id}: the elite's size`, row.Scale, brawler.Scale)
+				t.Equal(`{id}: the elite's marker`, row.Marker, brawler.Marker)
+				for _, field in { "Rig", "Mask", "Type", "Action", "Signature", "First", "Name" } do
+					t.Equal(`{id}: its kin's {field}`, (row :: any)[field], (of :: any)[field])
+				end
+			end
+			local own = Animations.Kinds.Elite
+			for clip, elite in own do
+				t.Check(`{elite}: published`, type(Animations.Ids[elite]) == "number")
+				t.Equal(`{elite}: {clip}'s fades`, Animations.Roles[elite], Animations.Roles[clip])
+				t.Check(`{elite}: never traded for a mirror`, Animations.Mirrors[elite] == nil)
+			end
+			t.Equal("the Guard's raise: the elite's own", own[(Actions.ById.GuardRaise :: any).Clip], "ShadeGuardElite")
+			t.Equal("the Dasher's lunge: the elite's own", own[(Actions.ById.DasherLunge :: any).Clip], "ShadeLungeElite")
+			t.Check("an elite never swings left (AR2, section 10)", Animations.Unmirrored.Elite.ShadeAttack == true)
+			-- the square: one stop, the Guard's elite on Normal, the Dasher's on Hard; the others stand on both
+			local square: World.Stop? = nil
+			for _, stop in World.Row.Stops do
+				if stop.Square then
+					square = stop
+				elseif stop.Kind == "Elite" then
+					t.Equal(`stage {stop.Stage}'s elite: the same on Hard`, Stages.DefOn(stop, "Hard"), stop.Def)
+				end
+			end
+			t.Check("a square", square ~= nil)
+			if square == nil then
+				return
+			end
+			local at: World.Stop = square
+			t.Equal("on Normal: the Guard's elite", Stages.DefOn(at, "Normal"), "guard_elite")
+			t.Equal("on Hard: the Dasher's elite", Stages.DefOn(at, "Hard"), "dasher_elite")
+			t.Equal("no difficulty: its own", Stages.DefOn(at, nil), "guard_elite")
+			-- its fall ends the stretch on its own difficulty only
+			local function falls(difficulty: string, def: string): boolean
+				local run = { Ground = World.Row.Ground, Difficulty = difficulty, Stage = at.Stage, Kills = 0, Last = false, Done = false } :: any
+				Stages.Kill(run, def)
+				return run.Last == true
+			end
+			t.Check("Normal: the Guard's elite's fall is the last", falls("Normal", "guard_elite"))
+			t.Check("Normal: a Dasher's elite's isn't", not falls("Normal", "dasher_elite"))
+			t.Check("Hard: the Dasher's elite's fall is the last", falls("Hard", "dasher_elite"))
+			t.Check("Hard: a Guard's elite's isn't", not falls("Hard", "guard_elite"))
+			t.Check("Hard's recommended power: from the Dasher's elite", Stages.Recommended(World.Row.Ground, "Hard", at.Stage) == Stats.Power(Stats.Enemy("dasher_elite", Stages.Level(at.Level, "Hard"), nil, "Hard", at.Stage)))
 		end,
 	},
 }

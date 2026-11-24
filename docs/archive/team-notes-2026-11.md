@@ -2,6 +2,38 @@
 
 The oldest entries of `docs/team-notes.md`, moved here as that file passed about 250 lines (`AGENTS.md`, "Team notes"). Newest first.
 
+### 2026-11-23, 18:13. TR50, one mission per Arc, closed at competent (Faber)
+
+- **What changed today:** the Arc panel and the run's card in the festival's dusk (Modulo's palette B), and the Voidkin stage's floor B: stone and a Neon ring of the element. Research had two must-fixes:
+  - the stone now shows `#A9A59B` under every rarity's light, by the stage's measured light model (`Voidkin.Stage.Floor`: Shows, Lit);
+  - Back stays on the run's card, as its one way to stay on the street.
+- **Where:** TR50, from "The dusk palette and the Voidkin floor, installed" to "Closed"; `Config.Hud` (Stages.Arc, Voidkin.Stage), `StageScreen`, `VoidkinScreen/Figure`, `Kit/Button` (Underline), `Kit/Screen`.
+- **Run:** self-test 3,376 passed, 2 failed: the shop's passes alone, and the keeper lantern's is an intermittent frame check (since 2026-11-17), rerun next. Logic offline: 29,197 passed. Stills in `build/captures/tr50/`.
+- **For:** research, who passed it at 18:00. The director's acceptance waits.
+
+### 2026-11-23, 17:33. TR10, the down badge, closed at competent (Faber)
+
+- **What changed:** the elite's and the keeper's marker is Badge alone: far, its icon's tile and its time, sized by the world (Full / distance, floored at a 28 px tile on the smallest phone). Past Near its loot card opens downward from the tile in 0.18 s. It stands open over its square, no longer on the avatar's head. Stack and Row are gone.
+- **Where:** TR10, "The two fixes, and the walks for the second look"; `DownController`, `Config.Hud.Down`. Takes now centre the phone on the window (`Layers.Box`'s place).
+- **Run:** the self-test 3,351 passed, 1 failed (TR42's flake, which passes alone); LogicTests 29,156. Walk strips in `build/captures/tr10/`.
+- **Open:** the Festival case "World: TR10" runs only in the Festival's place, once published.
+- **For:** research, who passed it at 17:06 (TR10, "Research's second look").
+
+### 2026-11-23, 16:00. AR44's critical shine, built (Faber)
+
+- **What:** take C on the critical. The chrome ramp; a cyan and red split that lands at 7 points and settles to a 4.6 hairline; a white flash; one glint across the number. Live in `Config.Hud.Numbers.Critical.Shine`; the copies in `FighterController/Shine.luau`.
+- **Found:** the numbers' and cards' outlines were scaled twice (1.5 times in Studio, 0.85 on the smallest phone). Now authored: a tier 1 notice to research for a re-read of the weights.
+- **Run:** the self-test 3,309 passed, 0 failed; LogicTests 29,155; WorldReport empty. Stills in `build/captures/ar44/`.
+- **For research:** AR44's read, and the weights. **For Modulo:** TR51's plate lives in Gate1's mesh.
+
+### 2026-11-23, 15:15. The Studio run of AR49, TR51 and TR37; AR30's dock seeds (Faber)
+
+- **Run in Studio** (ef86dab): the self-test 3,288 passed, 1 failed (TR42's flake, which passes alone); LogicTests 29,155; WorldReport empty. Five fixes, FxKit rebuilt with the landing's look. The records: TR51 and TR37, "The Studio run"; AR49, "Faber's build".
+- **TR51:** the stages from the gate and the court, on the smallest phone, the landing mid-swap, and the shards in their chambers, in `build/captures/tr51/`. Stage III's footprints break today's plan (tier 2, research and Modulo), so the Fit Prints stay at Stage I. The plate's top is cut from the gate's eye.
+- **TR37:** the Forge and the Condenser, awake and asleep, in `build/captures/tr37/`. **AR49:** stills with Rook and Kirra in `build/captures/ar49/`; its take now sets the lead through the save.
+- **AR30:** Rest 0.4, Open 0.6, Quiet 0.2, with a take and six stills on the pale deck and the dark lane (`build/captures/ar30/`). Nothing blooms past the glass, so the reach stays.
+- **For research:** four reads. **For the director:** the new seats' hooks (item 10).
+
 ### 2026-11-23, 03:25. TR37 built, not yet run in Studio (Faber)
 
 - **The Stone Condenser:** its rules in pure Luau (`Rules.Condenser`, `Config.Condenser`), a third machine in `Rules.Power`, worked online and away through `Rules.Breaker`'s steps. CollectTray and Convert are each the server's, in one step. Its save is `Base.Condenser`, filled by Reconcile.

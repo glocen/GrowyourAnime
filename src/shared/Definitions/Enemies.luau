@@ -35,8 +35,11 @@ local rows: { Row } = {
 	-- ready First seconds after it's spawned; a stretch's pack stands long before its fight, so each opens with its own.
 	{ Id = "guard", Name = "Guard", Kind = "Ordinary", Action = "ShadeSwipe", Signature = "GuardRaise", First = 0, Type = "Green", Rig = "Shade", Mask = "Guard" },
 	{ Id = "dasher", Name = "Dasher", Kind = "Ordinary", Action = "ShadeSwipe", Signature = "DasherLunge", First = 1.5, Type = "Orange", Rig = "Shade", Mask = "Dasher" },
-	-- An elite wears its mask twice, the second on its Left Arm (AR2, section 5): only the Brawler's is past the content check.
+	-- An elite wears its mask twice, the second on its Left Arm (AR2, section 5). AR57: the Guard's and the Dasher's elites
+	-- ask their kin's question at the elite's size, and play their own clips of the same beats (Config.Animations.Kinds).
 	{ Id = "brawler_elite", Name = "Brawler", Kind = "Elite", Action = "ShadeSwipe", Type = "Red", Rig = "Shade", Mask = "Brawler", Scale = 1.35, Marker = "MarkerElite" },
+	{ Id = "guard_elite", Name = "Guard", Kind = "Elite", Action = "ShadeSwipe", Signature = "GuardRaise", First = 0, Type = "Green", Rig = "Shade", Mask = "Guard", Scale = 1.35, Marker = "MarkerElite" },
+	{ Id = "dasher_elite", Name = "Dasher", Kind = "Elite", Action = "ShadeSwipe", Signature = "DasherLunge", First = 1.5, Type = "Orange", Rig = "Shade", Mask = "Dasher", Scale = 1.35, Marker = "MarkerElite" },
 	-- AR7: 1.5 an ordinary Shade's size, the hat's top 10.3 studs up (research's pick: taller than the elite)
 	{ Id = "lamplighter", Name = "the Lamplighter", Kind = "Keeper", Action = "KeeperSwing", Signature = "KeeperSignature", Type = "Purple", Rig = "Lamplighter", Scale = 1.5, Enter = "KeeperChallenge", Idle = "LamplighterReady", Marker = "MarkerLamplighter" },
 	-- The replay's and the self-test's target: takes every hit, never answers.

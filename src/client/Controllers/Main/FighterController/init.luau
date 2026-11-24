@@ -145,8 +145,12 @@ end
 -- A clip and its mirror in turn (Config.Animations.Mirrors), each body starting on a side of its own, so a pack doesn't
 -- move in step. A kind can keep a clip unmirrored (Config.Animations.Unmirrored).
 local function pick(view: View, clip: string): string
-	local mirror = Animations.Mirrors[clip]
 	local kind = view.Model:GetAttribute("Kind")
+	local own = if type(kind) == "string" then Animations.Kinds[kind] else nil
+	if own and own[clip] then
+		return own[clip] -- its kind's own clip of the same beats (AR57)
+	end
+	local mirror = Animations.Mirrors[clip]
 	local kept = if type(kind) == "string" then Animations.Unmirrored[kind] else nil
 	if mirror == nil or (kept and kept[clip]) then
 		return clip

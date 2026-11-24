@@ -104,9 +104,15 @@ end
 
 -- A toast rides in from off the screen and leaves that way (Kit.Toast), so the lint reads once none is mid-ride: a gain's
 -- toast caught on its way in failed "on screen" under load (2026-11-15).
+-- A screen rises or scales into place as it opens (Kit.Screen) the same way: the run's card caught rising failed "in the
+-- safe area" (2026-11-24), the Arc panel once and the fall's card once.
 function Helpers.lintClean(t: any, where: string)
 	Helpers.waitFor(t, 1, function(): boolean
-		return not Toast.Riding()
+		local name = Screen.Current()
+		local stage = if name then Screen.Stage(name) else nil
+		local scale = if stage then stage:FindFirstChildOfClass("UIScale") else nil
+		local placed = stage == nil or (stage.Position == UDim2.fromScale(0.5, 0.5) and (scale == nil or math.abs(scale.Scale - 1) < 0.001))
+		return placed and not Toast.Riding()
 	end)
 	-- One frame, so the deferred signals have run, as they always have before a frame draws: NameGuardController keeps a
 	-- name from translation on one (D8), and a case can lint in the frame that built its rows.

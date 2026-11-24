@@ -10,10 +10,10 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **Modulo's order:** AR60, Kirra; then Pip, Lyric and Watt's finish. The clip tools' missing `Config/Camera.luau` read (cloud README, "Holes") when a clip piece next touches it.
 - **With the director:** accept Rook and Kirra (`build/handoff/Rook/make/rook_make_sheet.png`, `build/handoff/Kirra/make/kirra_make_sheet.png`; both passed by research); TR52's run, the signature on a tap; item 10, the hooks for Scintilla and Sonus; the store's design.
 
-**Faber (builder).** 2026-11-24, 12:22, on Opus 5.5. The director is here. Nothing running, no lock held.
-- **Done today:** the cloud session's changes checked and merged; the ceiling to 15 (`bccd9eee`); TR54's three must-fixes and research's lines for the card, the lock's lift with them (`565893e6`; TR54, "Faber's fixes"). The Festival's place had lost its role attribute and booted as Main: set again and saved. Forge heat and a worker's experience by its kWh, as a block (`a39ec8c7`; TR55): logic passes offline, and the heat bar is a grey block for research's verdict. Owed at the next Studio turn: TR55's self-test case, and the capture of TR54's beats for research's second look.
-- **A fall in the Festival, my say** (tier 2 notice of 10:55): I'd build it as written, with one change. Three presses as worded don't fit: "Send another" needs a lit press's 124 points, and Retry 124, it 124 and Home 82 with their gaps come to 342 where the Hard card's row of three takes 300 today. I'd keep that row: Retry lit, or dim with the time left on it, at 124, then "Swap" and "Home" quiet at 82 each. The word is research's. About 5 to 6 active hours, my estimate: the pad as home, the card's presses and countdown, the picker of who's ready from the Voidkin screen's, and cases.
-- **Then:** the private publish of both places (Studio's Publish, a save never publishes), once the director is done in Studio; TR53 with TR31 (its card takes TR55's `Worked`); AR57, AR58 and AR56. The director's music goes into the loop on their word, logged.
+**Faber (builder).** 2026-11-24, 13:30, on Opus 5.5. The director is here. Nothing running, no lock held.
+- **Done today:** the cloud session's changes merged; the ceiling to 15; TR54's must-fixes (`565893e6`); TR55 as a block (`a39ec8c7`); the Festival's place published privately (12:49); TR53 with TR31 as blocks (`74697108`, `887e0a3c`, `7e01f72f`). **AR57's two elites, built** (AR57, "Faber's build"): the square holds the Guard's on Normal and the Dasher's on Hard; logic and the touched cases pass at 60 fps; seven stills in `build/captures/ar57/` for research's verdict, the content check passed.
+- **A fall in the Festival, my say** (tier 2 notice of 10:55): as written, but Retry lit (or dim with its time) at 124, then "Swap" and "Home" quiet at 82 each, in the Hard card's 300 points. The word is research's. About 5 to 6 active hours.
+- **Then:** AR58, the Support (its behaviour needs seeds: a heal and a shield on its pack, its health; I'll propose them in its entry); AR56; the Festival's place published again with AR57, then the main place's private publish and TR53's case there. Owed: TR55's self-test case, TR54's capture. The director's music goes into the loop on their word.
 - **For Sonus:** the full suite's Audition case: KirraHit has a candidate of 0.66 s where 0.6 is allowed (`Config/Audition`).
 
 **Modulo (assets).** 2026-11-24, 11:40, on Opus 5.5. Nothing running, no lock held.
@@ -32,7 +32,7 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **Blocked:** the finder runs in Studio, and my Studio calls wait on the hooks (item 10). Once they're set, a Studio turn for about 9 minutes, then the director's listen.
 - **Next:** each launch Voidkin's signature sound, already tabs in the panel (Haymaker, Scarf Step, Lantern Burst, Ground Wire, Held Note).
 
-**Turns.** Studio: one at a time while memory is short. The Festival's place is open, Faber's turn, its playtest stopped (2026-11-24, 12:05), and the main place is closed. The director adds music now. Blender: nobody (Modulo's AR41 strips were stopped at 01:33 on 2026-11-19 by Claude Code when the PC ran low on memory; the director said wait at 01:34). Timing tests: nobody.
+**Turns.** Studio: one at a time while memory is short. The Festival's place is open, Faber's turn, its playtest stopped (2026-11-24, 13:29), and the main place is closed. The director adds music now. Blender: nobody (Modulo's AR41 strips were stopped at 01:33 on 2026-11-19 by Claude Code when the PC ran low on memory; the director said wait at 01:34). Timing tests: nobody.
 
 **The count.** Week of 2026-11-23: 6 pieces closed and playable: AR49, TR10, AR44's shine, TR50, AR50's and AR54's install, AR51 (each entry below has its hours). In the game and waiting: TR52 (the director's run), AR52 (research's pass), TR54 (three must-fixes).
 
@@ -148,6 +148,21 @@ For Faber:
 
 ## Entries
 
+### 2026-11-24, 13:30. AR57, the Guard's and the Dasher's elites, built in the game (Faber)
+
+- **What changed:** two elites, each its kin at the elite's size, wearing its mask twice and playing its own raise or lunge. The square holds the Guard's on Normal and the Dasher's on Hard.
+- **Where:** `Definitions/Enemies.luau`, `Config.Animations.Kinds`, `Config.World` (a stop's `Hard`), `Rules.Stages.DefOn`; the masks in `Shade.rbxm`. The record is AR57, "Faber's build".
+- **Checked:** the type check gives 0 new; logic 31242/0; self-test Shades (AR57) 19/0, Stages (AR57) 8/0, and the touched cases pass at 60 fps. A lint race in TR50's case is fixed.
+- **Open:** research's verdict from `build/captures/ar57/`; the Festival's place published again.
+- **For:** research (the pass); Scintilla (the shield and line at the elite's size).
+
+### 2026-11-24, 12:50. TR53, the base between runs, with TR31, built as blocks (Faber)
+
+- **What changed:** home from a run, or on joining, the return card says what the base did while you were away: power stored, stones, levels, a shard ready. One press takes it. In the Festival, a tab under the run's line shows your shard breaking at home and says once when it breaks.
+- **Where:** `Rules.Return`, the save's `Base.Away` and `Base.Card`, `UI.ReturnCard`, `UI.ShardTab`; the record is TR53.
+- **Open:** phone captures and research's verdict; the main place's publish, to see the card there.
+- **For:** research (the pass); the director (when you play).
+
 ### 2026-11-24, 01:51. TR54, goals basic at launch, built in the game (Faber)
 
 - **What changed:** as a stretch begins, its dare unfolds under the run's line, then folds to its mark. The mark goes dark below half and flares when the stretch clears with the dare kept, which pays one forge stone. The run's cards show "Dare kept" and the stones. On Home, Settings is a cog tile, with the Today card under it: the shard, three pips, and a gold rim while a claim waits. Its press opens the list in the glass: Next pinned at its head with the back press, then today's three and the banked days. Each done row is claimed once, for a Lantern Row shard.
@@ -225,35 +240,3 @@ For Faber:
 - **Where:** AR54, "Faber's install, with AR50's levels". Code in `WorldService` (`layLevels`), `BaseService` (showPlot), `Rules.BaseFit` (`Turned`), `Rules.Landing` (`Reach`) and `Kit.Floors`. 25 meshes and 30 pictures are uploaded and Approved, with their ids in the asset log.
 - **Run:** type check 0 new; logic 29247 passing; "Base:" self-test 364 passed, 0 failed; world report empty; `base_levels_clear.py` PASS. **Not verified:** a wake on a bay awake from a save. The test save has two bays open.
 - **For:** research's read in the game (stills in `build/captures/ar54/`, the smallest phone's from the gate included). The director's acceptance waits.
-
-### 2026-11-23, 18:13. TR50, one mission per Arc, closed at competent (Faber)
-
-- **What changed today:** the Arc panel and the run's card in the festival's dusk (Modulo's palette B), and the Voidkin stage's floor B: stone and a Neon ring of the element. Research had two must-fixes:
-  - the stone now shows `#A9A59B` under every rarity's light, by the stage's measured light model (`Voidkin.Stage.Floor`: Shows, Lit);
-  - Back stays on the run's card, as its one way to stay on the street.
-- **Where:** TR50, from "The dusk palette and the Voidkin floor, installed" to "Closed"; `Config.Hud` (Stages.Arc, Voidkin.Stage), `StageScreen`, `VoidkinScreen/Figure`, `Kit/Button` (Underline), `Kit/Screen`.
-- **Run:** self-test 3,376 passed, 2 failed: the shop's passes alone, and the keeper lantern's is an intermittent frame check (since 2026-11-17), rerun next. Logic offline: 29,197 passed. Stills in `build/captures/tr50/`.
-- **For:** research, who passed it at 18:00. The director's acceptance waits.
-
-### 2026-11-23, 17:33. TR10, the down badge, closed at competent (Faber)
-
-- **What changed:** the elite's and the keeper's marker is Badge alone: far, its icon's tile and its time, sized by the world (Full / distance, floored at a 28 px tile on the smallest phone). Past Near its loot card opens downward from the tile in 0.18 s. It stands open over its square, no longer on the avatar's head. Stack and Row are gone.
-- **Where:** TR10, "The two fixes, and the walks for the second look"; `DownController`, `Config.Hud.Down`. Takes now centre the phone on the window (`Layers.Box`'s place).
-- **Run:** the self-test 3,351 passed, 1 failed (TR42's flake, which passes alone); LogicTests 29,156. Walk strips in `build/captures/tr10/`.
-- **Open:** the Festival case "World: TR10" runs only in the Festival's place, once published.
-- **For:** research, who passed it at 17:06 (TR10, "Research's second look").
-
-### 2026-11-23, 16:00. AR44's critical shine, built (Faber)
-
-- **What:** take C on the critical. The chrome ramp; a cyan and red split that lands at 7 points and settles to a 4.6 hairline; a white flash; one glint across the number. Live in `Config.Hud.Numbers.Critical.Shine`; the copies in `FighterController/Shine.luau`.
-- **Found:** the numbers' and cards' outlines were scaled twice (1.5 times in Studio, 0.85 on the smallest phone). Now authored: a tier 1 notice to research for a re-read of the weights.
-- **Run:** the self-test 3,309 passed, 0 failed; LogicTests 29,155; WorldReport empty. Stills in `build/captures/ar44/`.
-- **For research:** AR44's read, and the weights. **For Modulo:** TR51's plate lives in Gate1's mesh.
-
-### 2026-11-23, 15:15. The Studio run of AR49, TR51 and TR37; AR30's dock seeds (Faber)
-
-- **Run in Studio** (ef86dab): the self-test 3,288 passed, 1 failed (TR42's flake, which passes alone); LogicTests 29,155; WorldReport empty. Five fixes, FxKit rebuilt with the landing's look. The records: TR51 and TR37, "The Studio run"; AR49, "Faber's build".
-- **TR51:** the stages from the gate and the court, on the smallest phone, the landing mid-swap, and the shards in their chambers, in `build/captures/tr51/`. Stage III's footprints break today's plan (tier 2, research and Modulo), so the Fit Prints stay at Stage I. The plate's top is cut from the gate's eye.
-- **TR37:** the Forge and the Condenser, awake and asleep, in `build/captures/tr37/`. **AR49:** stills with Rook and Kirra in `build/captures/ar49/`; its take now sets the lead through the save.
-- **AR30:** Rest 0.4, Open 0.6, Quiet 0.2, with a take and six stills on the pale deck and the dark lane (`build/captures/ar30/`). Nothing blooms past the glass, so the reach stays.
-- **For research:** four reads. **For the director:** the new seats' hooks (item 10).

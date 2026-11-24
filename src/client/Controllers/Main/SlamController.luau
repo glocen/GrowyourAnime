@@ -201,11 +201,12 @@ local function paneOn(model: Model)
 		return
 	end
 	local look = Combat.Guard.Look
+	local k = model:GetScale() -- the elite's pane at its size (AR57)
 	local box = Instance.new("BoxHandleAdornment")
 	box.Name = "NL_GuardPane"
 	box.Adornee = root
-	box.Size = Vector3.new(look.Wide, look.High, PANE_THICK)
-	box.CFrame = CFrame.new(0, look.Up, -look.Ahead)
+	box.Size = Vector3.new(look.Wide * k, look.High * k, PANE_THICK)
+	box.CFrame = CFrame.new(0, look.Up * k, -look.Ahead * k)
 	box.Color3 = PANE_GREY
 	box.Transparency = look.Transparency
 	box.AlwaysOnTop = false
@@ -222,11 +223,12 @@ local function paneBreak(model: Model)
 		return
 	end
 	local look = Combat.Guard.Look
+	local k = model:GetScale()
 	local box = Instance.new("BoxHandleAdornment")
 	box.Name = "NL_GuardBreak"
 	box.Adornee = root
-	box.Size = Vector3.new(look.Wide * 1.15, look.High * 1.15, PANE_THICK)
-	box.CFrame = CFrame.new(0, look.Up, -look.Ahead)
+	box.Size = Vector3.new(look.Wide * 1.15 * k, look.High * 1.15 * k, PANE_THICK)
+	box.CFrame = CFrame.new(0, look.Up * k, -look.Ahead * k)
 	box.Color3 = Color3.new(1, 1, 1)
 	box.Transparency = 0.05
 	box.AlwaysOnTop = false

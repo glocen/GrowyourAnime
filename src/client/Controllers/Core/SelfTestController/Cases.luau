@@ -2873,22 +2873,7 @@ local cases = {
 			t.Row("flinches seen", nil, nil, #flinches, "")
 		end,
 	},
-	{
-		Name = "Fight: the elite swings Attack every time",
-		Run = function(t: any)
-			-- AR2, section 10 (research picked (a)): in AttackLeft the elite's second mask cuts into its first, so the elite
-			-- never plays it (Config.Animations.Unmirrored). Its other clips keep their mirrors.
-			local swings = swingsOf(t, "brawler_elite")
-			if swings == nil then
-				return
-			end
-			local right = #swings >= 2
-			for _, name in swings do
-				right = right and name == "ShadeAttack"
-			end
-			t.Check("every swing is Attack", right, table.concat(swings, ", "))
-		end,
-	},
+	-- "the elite swings Attack every time" is ShadeCases' now, for every elite (AR57)
 	{
 		Name = "Fight: the elite is the Shade rig, larger",
 		Run = function(t: any)

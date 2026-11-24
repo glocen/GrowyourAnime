@@ -33,7 +33,7 @@ local function clear(data: Profile.Data, which: string, count: number)
 		for _ = 1, row.Quota do
 			Stages.Kill(run, pack :: string)
 		end
-		Stages.Kill(run, (Stages.Last(GROUND, stage) :: any).Def)
+		Stages.Kill(run, Stages.DefOn(Stages.Last(GROUND, stage) :: any, which))
 		Stages.Clear(data, run, NOW + 60)
 	end
 end

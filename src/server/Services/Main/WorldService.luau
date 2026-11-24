@@ -1426,7 +1426,7 @@ function layStreet(folder: Folder, gateZ: number, stripEnd: number, groundColour
 					under(wallX(street, z + squareHalf + 1, side * (rowHalf + 1), side * (squareHalf + 2), high))
 				end
 			end
-			Markers.Stamp(spot(street, `Elite {stop.Stage}`, at), "Elite", { Def = stop.Def, Level = stop.Level, Ground = row.Ground, Stage = stop.Stage })
+			Markers.Stamp(spot(street, `Elite {stop.Stage}`, at), "Elite", { Def = stop.Def, Hard = stop.Hard, Level = stop.Level, Ground = row.Ground, Stage = stop.Stage })
 		elseif stop.Kind == "Keeper" then
 			local keeperAt = CFrame.lookAt(Vector3.new(0, PAVED_TOP, z), Vector3.new(0, PAVED_TOP, z) + north)
 			local keeperGate = gate(street, "Keeper's gate", keeperAt, studs(row.Wide), high, true)

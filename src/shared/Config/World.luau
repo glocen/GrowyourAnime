@@ -7,7 +7,8 @@
 -- One stop down Lantern Row. Kind: Pack (Count Shades), Elite or Keeper.
 -- Stage: the stage it belongs to (Config.Stages, TR43). Square: the elite stands in the square (one stop at most).
 -- With: a pack's others (AR52), Count of its Count Shades of that Def, spread through its ring (Rules.Fight.PackDefs).
-export type Stop = { Kind: string, Def: string, Level: number, Count: number?, Stage: number, Square: boolean?, With: { Def: string, Count: number }? }
+-- Hard: the Def that stands there on Hard in its place (AR57; Rules.Stages.DefOn).
+export type Stop = { Kind: string, Def: string, Level: number, Count: number?, Stage: number, Square: boolean?, With: { Def: string, Count: number }?, Hard: string? }
 
 return {
 	Walk = 16, -- studs a second the times are worked at: Roblox's default walk
@@ -108,12 +109,13 @@ return {
 		-- builder's seeds (tier 2, for research), 2026-11-18; the first pack at level 1 keeps research's lever for a new
 		-- account's first fight (its verdict on TR2, 2026-11-12), four to a pack where a stage has one. Each stretch asks
 		-- its own question (AR52, research's seeds; how many of each, the builder's, tuned in play): Brawlers alone, Red; with
-		-- Guards, Green; with Dashers, Orange; then the Lamplighter, Purple.
+		-- Guards, Green; with Dashers, Orange; then the Lamplighter, Purple. The square holds the Guard's elite on Normal and
+		-- the Dasher's on Hard (AR57, research's seed, tuned in play).
 		Stops = {
 			{ Kind = "Pack", Def = "brawler", Count = 4, Level = 1, Stage = 1 },
 			{ Kind = "Elite", Def = "brawler_elite", Level = 2, Stage = 1 },
 			{ Kind = "Pack", Def = "brawler", Count = 4, Level = 3, Stage = 2, With = { Def = "guard", Count = 2 } },
-			{ Kind = "Elite", Def = "brawler_elite", Level = 5, Stage = 2, Square = true },
+			{ Kind = "Elite", Def = "guard_elite", Level = 5, Stage = 2, Square = true, Hard = "dasher_elite" },
 			{ Kind = "Pack", Def = "brawler", Count = 3, Level = 6, Stage = 3, With = { Def = "dasher", Count = 1 } },
 			{ Kind = "Pack", Def = "brawler", Count = 3, Level = 7, Stage = 3, With = { Def = "dasher", Count = 1 } },
 			{ Kind = "Elite", Def = "brawler_elite", Level = 8, Stage = 3 },

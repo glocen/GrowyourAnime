@@ -16,23 +16,19 @@ Each teammate rewrites its own row: one to three lines. Open asks sit under "Wai
 - **Then:** AR58, the Support (its behaviour needs seeds: a heal and a shield on its pack, its health; I'll propose them in its entry); AR56; the Festival's place published again with AR57, then the main place's private publish and TR53's case there. Owed: TR55's self-test case, TR54's capture.
 - **For Sonus:** the full suite's Audition case: KirraHit has a candidate of 0.66 s where 0.6 is allowed (`Config/Audition`).
 
-**Modulo (assets).** 2026-11-24, 11:40, on Opus 5.5. Nothing running, no lock held.
-- **AR60, Kirra, passes research at competent and waits on the director's acceptance, with AR59, Rook** (AR60, "Research's third look"): `build/handoff/Kirra/make/kirra_make_sheet.png`. Her hair is one solid mass combed to a solid tail, and her scarf follows through in every clip. Nothing uploaded.
-- **For Faber:** TR53's look is `build/handoff/UI/return/` (the kit builds the slab, the lines and the presses; three images to upload; the Training line takes the kit's small portrait). The dare's open tab is in `goals.json`, "unfolded". My sheets are the strict case: the game has a sixth more room at the smallest phone. TR54's look is the goals' handoff: `DareMark*` where `DareTag*` stood (the origin is now the mark's middle), one `GoalNext` plate that holds the back press, no Ledger; `HomeSettings` gives way to the cog tile and the Today card. The Guard's clip is fixed (AR52, "The Guard's sleeve, fixed at the clip's finish") and goes up once as `ShadeGuard`.
-- **Next:** Pip in the make (three takes, as for Kirra). Research's steer: his floating lantern is a young mage's, glass and dark metal with a living fire inside, never a paper festival lantern; his Fire reads in the flame, not the shell. Then AR62: the design first in today's colours, two takes on the Arc panel, the run's card and the full screens' top bar, colours later (AR62, "The plan", step 2), then Lyric and Watt, one at a time. The director's yes of about 01:58 (the base, the HUD, the skill icons and the spectator view reimagined, with me as art director) has nothing changed yet.
-- **Still Faber's, each in its entry:** AR49's Home panel, AR44's shine, AR40's install (the atlas never alone), AR48's cues, TR50's dusk palette, the Voidkin screen's floor, AR50's seven pieces.
+**Modulo (assets).** 2026-11-24, 14:08. Nothing running, no lock held.
+- **Waiting on the director:** AR60 Kirra (research passed it at competent) and AR59 Rook. Nothing uploaded. Faber's open looks (TR53, TR54, the Guard's clip, AR49, AR44, AR40, AR48, TR50, AR50) are in their entries.
+- **Next:** Pip, three takes. His lantern is a young mage's, glass and dark metal with a living fire, never paper. Then AR62's two design takes in today's colours ("The plan", step 2). Then Lyric and Watt.
 
 **Scintilla (effects).** 2026-11-24, 11:30, on Opus 5.5 at xhigh. Brief `docs/briefs/effects.md`.
 - **Done as data, shown nowhere yet:** AR61's hit sparks (`HitSpark2` to `4`); AR52's looks in grey, the Guard's shield, glance and break and the Dasher's line (AR52, "Scintilla's looks"). Both content checks before the build; offline logic passes.
 - **For Faber:** the two hooks, in AR61 and AR52's section (AR52's is two `Effect` lines plus a take, and two plays in `SlamController`), and the review of my files before your push.
 - **Blocked on the director:** item 10, so I can playtest and judge these in motion. Next, unblocked: the Lamplighter's effects (queue item 2's rest).
 
-**Sonus (sound).** 2026-11-24, 11:24, on Opus 5.5 at xhigh. First session.
-- **Now: the M1's sound per class**, the queue's first piece. The panel's words are set for the five classes (TR42, "The M1's sound per class"): the Assassin's cuts and the Tank's blows come from the library now, not the punch keeps, and the Mage's words name no element. Shortlisted: not yet. Loaded, heard, picked: no.
-- **Blocked:** the finder runs in Studio, and my Studio calls wait on the hooks (item 10). Once they're set, a Studio turn for about 9 minutes, then the director's listen.
-- **Next:** each launch Voidkin's signature sound, already tabs in the panel (Haymaker, Scarf Step, Lantern Burst, Ground Wire, Held Note).
+**Sonus (sound).** 2026-11-24. **Now: the M1's sound per class.** The panel's words are set (TR42, "The M1's sound per class"); nothing shortlisted yet.
+- **Blocked:** my Studio calls wait on the hooks (item 10); then a 9-minute finder run, then the director's listen. **Next:** the five signatures' sounds.
 
-**Turns.** Studio: one at a time while memory is short. The Festival's place is open, Faber's turn, its playtest stopped (2026-11-24, 13:29), and the main place is closed. Blender: nobody (Modulo's AR41 strips were stopped at 01:33 on 2026-11-19 by Claude Code when the PC ran low on memory; the director said wait at 01:34). Timing tests: nobody.
+**Turns.** Studio: one at a time while memory is short. The main place is open, Faber's turn, for its private publish (2026-11-24, 13:57), and the Festival's place is closed. Blender: nobody (Modulo's AR41 strips were stopped at 01:33 on 2026-11-19 by Claude Code when the PC ran low on memory; the director said wait at 01:34). Timing tests: nobody.
 
 **The count.** Week of 2026-11-23: 6 pieces closed and playable: AR49, TR10, AR44's shine, TR50, AR50's and AR54's install, AR51 (each entry below has its hours). In the game and waiting: TR52 (the director's run), AR52 (research's pass), TR54 (three must-fixes).
 

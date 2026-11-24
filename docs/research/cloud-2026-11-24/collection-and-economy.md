@@ -31,7 +31,7 @@ How long each goal lasts (MEASURED from the configs above, drops only unless sai
 | One Common to seven stars | 127 copies / (0.2174 x 18 = 3.9 an hour) | 32 h (14 h buying every shop shard) |
 | Lyric to seven stars | 127 / (0.1304 x 18 = 2.35 an hour) | 54 h (23 h with the shop) |
 | What all seven stars give | 7 x 1.43% | +10% of one fighter's base. `design-review.md`: stars are 3.5% of a full build |
-| One gear piece to +30 | 5 + 21.3 + 80 = 106 expected tries for 30 levels; Credits 33,895 x G expected against 7,875 x G if every try landed | 4.3 times the sure cost, with wide spread |
+| One gear piece to +30 | 5 + 21.3 + 80 = 106 expected tries for 30 levels; Credits 7,282 x G expected against 1,830 x G if every try landed (corrected 2026-11-24 by hand from `Config/Reinforce.luau`: a try for level L costs 30 x G x (1 + L/15)) | 4.0 times the sure cost, with wide spread |
 | The ground itself | `docs/balance.md` pace seed for ground 1 | 1 h. The 57 h figure is six grounds; launch has one |
 
 ## 2. How collection games keep the chase alive
@@ -117,7 +117,7 @@ What sells without luck (all create.roblox.com pages dated 2026-11-23 unless sai
 - A Common's seventh star takes 32 hours of duplicates and gives 10%. That is a long wait for a small number, with nothing to see on the way.
 - The directive calls the Fighter Index established identity. No doc designs one (`state-of-the-game.md`).
 - Credits touch randomness in two places (shop shards, Reinforce) and one place I couldn't settle (what the Condenser's Credits buy; Faber should check). Selling Credits today would make all of it paid random, in five restricted markets, on the director's own account.
-- Reinforce is on 13.5% of the build (`design-review.md`) and costs 4.3 times its sticker price in expectation. A player at the 20% floor loses four tries in five. The chance is shown, which is honest, but it is still the worst-feeling press in the game.
+- Reinforce is on 13.5% of the build (`design-review.md`) and costs 4.0 times its sticker price in expectation. A player at the 20% floor loses four tries in five. The chance is shown, which is honest, but it is still the worst-feeling press in the game.
 - Nobody knows what a fighter costs at the new bar (`design-review.md`). The asset entries give first-bar clock readings only: sheet 0.5 to 1.8 h, model 0.25 to 1.1 h, clips 0.7 to 6 h, a signature look about 12 h over its rounds for Rook (OBSERVED `docs/asset-requests.md` AR1, AR4, AR10, AR11, AR26). That bar was rejected. OPINION: plan 15 to 25 hours a fighter until AR59 and AR60 close and give a measured figure.
 
 ## 5. Proposals
@@ -168,7 +168,7 @@ Second forms at 1.5%: one given Common's form needs 1 / (0.2174 x 0.015) = 307 s
 Never sold: Credits, shards, stones, luck, drop or Credits-income multipliers, restocks, chambers, a Voidkin, the second form. A 2x Credits pass waits for a staff answer and for (e).
 
 **(e) Reinforce.** OPINION. Needs the director's yes: the failure roll is their word of 2026-11-19.
-- **Recommended: every press succeeds, and the price carries the old odds.** Cost of a level = today's cost / today's chance. +6 costs 1.25 times, +10 costs 2.2 times, +15 and up cost 5 times. The expected sink is unchanged (33,895 x G Credits and the same stones for +30). The variance is gone, and so is the rule problem. Faber: about 2 h in `Config/Reinforce.luau` and `Rules.Reinforce`, with logic cases.
+- **Recommended: every press succeeds, and the price carries the old odds.** Cost of a level = today's cost / today's chance. +6 costs 1.25 times, +10 costs 2.2 times, +15 and up cost 5 times. The expected sink is unchanged (7,282 x G Credits and the same stones for +30). The variance is gone, and so is the rule problem. Faber: about 2 h in `Config/Reinforce.luau` and `Rules.Reinforce`, with logic cases.
 - **If the director wants the gamble kept:** a shown fail-stack. Each failure adds +10 points to the next try's shown chance. At the 20% floor that is 2.96 expected tries where today takes 5, and 9 at worst. Costs must rise about 1.7 times to hold the sink. Keep Credits and stones unsold, since staff haven't said a pity point counts as "some benefit".
 - **If nothing changes:** it stays legal only while neither Credits nor stones can be bought, directly or in any bundle. Write that sentence into `docs/roblox-rules.md` beside the staff quote.
 

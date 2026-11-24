@@ -1,0 +1,380 @@
+{
+  "Schema": "rows/1",
+  "Effect": "HitSpark2",
+  "Why": "A landed hit at rung 2, an ordinary blow: the grey block-in (AR61).",
+  "Area": 1,
+  "Grey": true,
+  "Rows": {
+    "Back": {
+      "Kind": "Card",
+      "Image": "fx_glow",
+      "Color": {
+        "Color3": [
+          255,
+          244,
+          220
+        ]
+      },
+      "Tracks": {
+        "At": [
+          [
+            0,
+            {
+              "Vector3": [
+                0,
+                0,
+                0
+              ]
+            }
+          ]
+        ],
+        "Size": [
+          [
+            0,
+            2.2,
+            "Quad Out"
+          ],
+          [
+            2,
+            2.53,
+            "Quad In"
+          ],
+          [
+            6,
+            0
+          ]
+        ],
+        "Transparency": [
+          [
+            0,
+            0.25,
+            "Quad In"
+          ],
+          [
+            6,
+            0.9
+          ]
+        ]
+      },
+      "Why": "the backlight: a soft flash under the star, at the contact, gone in a tenth of a second"
+    },
+    "StarLine": {
+      "Kind": "Emitter",
+      "Image": "fx_spark_line",
+      "Emitter": {
+        "Lifetime": [
+          0.22,
+          0.22
+        ],
+        "Speed": [
+          0,
+          0
+        ],
+        "Size": [
+          [
+            0,
+            1.4
+          ],
+          [
+            0.12,
+            2.2
+          ],
+          [
+            1,
+            2.6
+          ]
+        ],
+        "Rotation": [
+          0,
+          360
+        ],
+        "FlipbookLayout": "Grid4x4",
+        "FlipbookMode": "OneShot",
+        "LightInfluence": 0,
+        "Color": {
+          "Color3": [
+            255,
+            246,
+            230
+          ]
+        },
+        "LightEmission": 1,
+        "ZOffset": 0.55
+      },
+      "Emit": [
+        [
+          0,
+          1
+        ]
+      ],
+      "Tracks": {
+        "At": [
+          [
+            0,
+            {
+              "Vector3": [
+                0,
+                0,
+                0
+              ]
+            }
+          ]
+        ]
+      },
+      "Why": "the hero: the spark sheet snapping open on the struck side and breaking outward, a quick flick"
+    },
+    "StarFill": {
+      "Kind": "Emitter",
+      "Image": "fx_spark_fill",
+      "Emitter": {
+        "Lifetime": [
+          0.22,
+          0.22
+        ],
+        "Speed": [
+          0,
+          0
+        ],
+        "Size": [
+          [
+            0,
+            1.4
+          ],
+          [
+            0.12,
+            2.2
+          ],
+          [
+            1,
+            2.6
+          ]
+        ],
+        "Rotation": [
+          0,
+          360
+        ],
+        "FlipbookLayout": "Grid4x4",
+        "FlipbookMode": "OneShot",
+        "LightInfluence": 0,
+        "Color": [
+          [
+            0,
+            {
+              "Color3": [
+                233,
+                226,
+                214
+              ]
+            }
+          ],
+          [
+            0.3,
+            {
+              "Color3": [
+                233,
+                226,
+                214
+              ]
+            }
+          ],
+          [
+            1,
+            {
+              "Color3": [
+                91,
+                86,
+                112
+              ]
+            }
+          ]
+        ],
+        "LightEmission": 0.6,
+        "ZOffset": 0.5
+      },
+      "Emit": [
+        [
+          0,
+          1
+        ]
+      ],
+      "Tracks": {
+        "At": [
+          [
+            0,
+            {
+              "Vector3": [
+                0,
+                0,
+                0
+              ]
+            }
+          ]
+        ]
+      },
+      "Why": "Star's fill pass"
+    },
+    "StarDark": {
+      "Kind": "Emitter",
+      "Image": "fx_spark_dark",
+      "Emitter": {
+        "Lifetime": [
+          0.22,
+          0.22
+        ],
+        "Speed": [
+          0,
+          0
+        ],
+        "Size": [
+          [
+            0,
+            1.4
+          ],
+          [
+            0.12,
+            2.2
+          ],
+          [
+            1,
+            2.6
+          ]
+        ],
+        "Rotation": [
+          0,
+          360
+        ],
+        "FlipbookLayout": "Grid4x4",
+        "FlipbookMode": "OneShot",
+        "LightInfluence": 0,
+        "Color": {
+          "Color3": [
+            28,
+            23,
+            38
+          ]
+        },
+        "LightEmission": 0,
+        "Transparency": 0.15,
+        "ZOffset": 0.45
+      },
+      "Emit": [
+        [
+          0,
+          1
+        ]
+      ],
+      "Tracks": {
+        "At": [
+          [
+            0,
+            {
+              "Vector3": [
+                0,
+                0,
+                0
+              ]
+            }
+          ]
+        ]
+      },
+      "Why": "Star's dark pass"
+    },
+    "Needles": {
+      "Kind": "Emitter",
+      "Image": "fx_streak",
+      "Emitter": {
+        "EmissionDirection": "Front",
+        "SpreadAngle": [
+          50,
+          50
+        ],
+        "Lifetime": [
+          0.12,
+          0.2
+        ],
+        "Speed": [
+          26,
+          38
+        ],
+        "Drag": 9,
+        "Acceleration": {
+          "Vector3": [
+            0,
+            0,
+            0
+          ]
+        },
+        "Orientation": "VelocityParallel",
+        "Size": [
+          [
+            0,
+            0.9
+          ],
+          [
+            0.6,
+            0.63
+          ],
+          [
+            1,
+            0
+          ]
+        ],
+        "Squash": [
+          [
+            0,
+            -1.6
+          ],
+          [
+            1,
+            -0.6
+          ]
+        ],
+        "Transparency": [
+          [
+            0,
+            0
+          ],
+          [
+            0.7,
+            0.1
+          ],
+          [
+            1,
+            1
+          ]
+        ],
+        "Color": {
+          "Color3": [
+            255,
+            246,
+            230
+          ]
+        },
+        "LightEmission": 1,
+        "LightInfluence": 0,
+        "ZOffset": 0.6
+      },
+      "Emit": [
+        [
+          1,
+          4
+        ]
+      ],
+      "Tracks": {
+        "At": [
+          [
+            0,
+            {
+              "Vector3": [
+                0,
+                0,
+                0
+              ]
+            }
+          ]
+        ]
+      },
+      "Why": "the needles: thrown along the blow, fast then slow, stretched along their travel; they alone say which way it went"
+    }
+  }
+}

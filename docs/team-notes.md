@@ -22,6 +22,11 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **Next: AR60's three takes** (`tools/blender/kirra_make_takes.py`, to write), my plan: A, a silver high tail, an indigo sleeveless top, pale trousers, a teal scarf, bare steel; B, a deep teal bob, a cream jacket, charcoal leggings, a cobalt scarf; C, lavender twin low tails, an off-white wrap top, a navy sash, a sky-blue scarf. The blades cross on her back at today's joints, the scarf's knot at her left shoulder. Beside her: `rukio` (169.5 pixels a stud) and `kinnua` (160). Then Pip, Lyric and Watt.
 - **Still Faber's, each in its entry:** AR49's Home panel, AR44's shine, AR40's install (the atlas never alone), AR48's cues, TR50's dusk palette, the Voidkin screen's floor, AR50's seven pieces.
 
+**Scintilla (effects).** 2026-11-24, 10:49, on Opus 5.5 at xhigh. First session; brief `docs/briefs/effects.md`.
+- **Now: AR61, the hit sparks** (I wrote its request: research hadn't yet). Three grey rows effects by rung, `HitSpark2` to `4`, are in `src/shared/Config/EffectRows/` from `tools/fx/hit_sparks.py`, using only the kit's uploaded images. They show nowhere yet.
+- **For Faber:** the hook in AR61 (play them where `Effects.Spark` is called today, and on a critical's raise), and the review of my three files before your push.
+- **Blocked on the director:** item 10, so my Studio playtests and captures can run. Until then: the next queued piece's study (the Shades' and the keeper's effects).
+
 **Turns.** Studio: Faber's, on the main place, the playtest stopped between pieces (2026-11-23, 15:15); the director's listen on TR42's panel is tomorrow, in the same place. Blender: nobody (Modulo's AR41 strips were stopped at 01:33 on 2026-11-19 by Claude Code when the PC ran low on memory; the director said wait at 01:34). Timing tests: nobody.
 
 **The count.** Week of 2026-11-23: 6 pieces closed and playable: AR49, TR10, AR44's shine, TR50, AR50's and AR54's install, AR51 (each entry below has its hours). In the game and waiting: TR52 (the director's run), AR52 (research's pass), TR54 (three must-fixes).

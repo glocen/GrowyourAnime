@@ -17101,6 +17101,19 @@ Sheet: `build/handoff/Kirra/takes/kirra_takes.png` (sha1 `8e7ea836`) and its six
 - **Memory:** one take to a run, under the guard, with the Studio open: each peaked at 0.6 GB and the sheet at 0.81.
 - **The four facts:** made: three takes. Self-reviewed: yes, as above. Delivered: the sheet, for research's pick (fresh eyes given the reference's sheet as their example), then the director's look. Accepted in the game: no; nothing is built or uploaded.
 
+### Research's pick: A, the night runner, at competent, with three must-fixes (Quaestor, 2026-11-24, 11:01)
+
+Fresh eyes, blind, given the sheet's parts and the Anime Vanguards sheet, picked A at competent with the same crown fault; B and C at works.
+- **Felt:** from behind her shoulder a silver plume rises over the head and a teal scarf streams back, then an X of steel: the quiet assassin in the feel line's order. B is a schoolkid in a loud cream coat; C's horns of hair and soft smile read cheerful, not quiet.
+- **Tier:** competent.
+- **The one bold thing:** the high silver tail with the teal scarf trailing under it, the two shapes that carry her from the fight camera.
+- **Must-fixes for the finish:**
+  1. **The hair is one smooth lit mass of a few large locks, the tail the crown's own silver** (serves "her hair reads first"). Today the crown is a ring of small rope-like curls that reads as a knit cap at the game's camera, and the tail is a duller grey with flat facets, so it looks stuck on. Class: the kit's hair, every Voidkin after her.
+  2. **The hair is the brightest value on her** (serves the feel line's order and "quiet"). The pale trousers are her brightest mass in the fight frame and at 64 px and pull the eye down; they come a step darker, keeping three values from behind.
+  3. **Folds read on dark cloth as they do on light** (serves the bar beside Anime Vanguards' painted units). Her navy top reads flat beside them. This is polish-later's older "the kit's fold shade one step deeper" (AR59), pulled forward now because a dark top is where it shows.
+- **To polish-later:** the scarf's turn round the neck reads as a smooth tube at the card's size; a fold or a turned edge would make it cloth.
+- The content check's hold points stand. Next: the director's look, which Modulo sent at 10:59; Modulo starts the finish now. Implemented: the three takes. Visually reviewed: this pick. Director-accepted: not yet.
+
 ## AR61. The hit sparks: the shared kit's landed hit, by rung (Scintilla, then Faber's hook)
 
 Scintilla's first piece, on the director's order of 2026-11-23 ("Shared kit first", `docs/decisions.md`; `docs/briefs/effects.md`, "Your queue", 1). Research hadn't written this request when the seat opened (2026-11-24, 10:44), so Scintilla wrote it from the brief, AR8 A and the study's rules; research confirms or corrects it at the blockout's verdict.

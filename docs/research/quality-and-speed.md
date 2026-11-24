@@ -52,7 +52,8 @@ Seven changes, each with what it replaces:
    - a screen: a paint-over on a real phone capture;
    - a move: its 4 to 6 key poses, stepped, from the game's camera;
    - an effect: its peak frame and a strip of its life;
-   - a model: a turnaround in the game's light, beside the cast.
+   - a model: a turnaround in the game's light, beside the cast;
+   - a sound: unchanged, since the director's ear already picks every cue on its frame (TR42's panel), which is this same rule.
    The maker brings two or three, **the director picks one** (about two minutes), and only then does a build hour start. Research's blockout verdict no longer opens a build. It replaces "feel line → blockout → research's verdict".
 2. **Lock the look once.** Before more UI or Voidkin pieces, one Home screen and one Voidkin in the game's light become the style frame, and its tokens are fixed in one page:
    - three hues and neutrals;
@@ -63,7 +64,7 @@ Seven changes, each with what it replaces:
 3. **Verdicts in pairs, in the game, against the target.** Research's verdict becomes:
    - the gates, measured: the squint (blurred) test, greyscale, a black silhouette at 64 px, the UI lint (7);
    - then the build beside its target, at phone size, in both orders, with the gaps listed by where they sit;
-   - then "closer to the director's accepted or rejected examples?", from `docs/reference/examples/`, which research builds from the director's recorded words.
+   - then "closer to the director's accepted or rejected examples?", from `docs/research/examples.md`, which research keeps from the director's recorded words (the folder `ga-fresh-eyes` names, `docs/reference/examples/`, was never made).
    No look passes as "competent" on research's eye alone. It replaces `ga-review`'s Felt and Tier pass line, and `ga-fresh-eyes`' "never compare".
 4. **Checkpoints with a kill point.** At a quarter and at half of a piece's cap, the build sits beside its target. A miss on the main read changes the technique or simplifies; it's never polished. Two techniques missed, and the director picks from images. This adds checkpoints to the caps (`AGENTS.md`, "Blocks first").
 5. **Moves posed first, stepped.** A move's key poses are judged stepped (constant interpolation) in the game before any curve exists, and the anime look may stay stepped where it reads better. Its timing is written in frames first, from the feel line. Added to `ga-action`, step 3.
@@ -76,14 +77,14 @@ Seven changes, each with what it replaces:
      - Script and renders: `build/scratch/quaestor/svg-test/` (gitignored, throwaway).
 7. **Machines check what eyes tire of.**
    - **A UI lint** (Faber, one self-test) fails any colour, stroke, radius, font, size or padding outside the tokens, any text under 4.5:1 contrast ([WCAG](https://www.w3.org/WAI/WCAG21/Understanding/contrast-minimum.html)), and any touch target under 44 pt.
-   - **A capture command** (Faber) saves a phone-size capture of a named screen or move beside its target as one side-by-side image. That's what makes 3 and 4 cheap.
+   - **The pair sheet** (Faber). The capture already exists: `tools/capture/grab.ps1` records the window, and `tools/capture/moments.py` lays a take out as a sheet. What's missing is one step after it: the build and its target at phone size in both orders, with a blurred (squint) row and a greyscale row under them, as one image. That's what makes 3 and 4 cheap.
 
 ## What it costs, and what it saves (OPINION)
 
 - **Costs:**
   - the director's two minutes per target, about one a day;
   - a style frame of about a day, Modulo and research;
-  - the lint and the capture command, about half a day of Faber's time;
+  - the lint and the pair sheet, about half a day of Faber's time;
   - Inkscape, and Krita for paint-overs, installed with the director's OK.
 - **Saves:** the rounds after the build. The Voidkin look has been open since 11-12, the colour since 11-15, and the Lantern Burst took 15 h. Each of those would have stopped at its target.
 - **What it doesn't fix:** taste still has to come from somewhere. The director's picks and accepted examples become the team's bar, so the bar is the director's, never research's guess.

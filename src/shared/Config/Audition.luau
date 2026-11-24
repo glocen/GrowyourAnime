@@ -35,18 +35,20 @@ return {
 		-- of sfx for m1 per class"; it replaced the M1's own sound per Voidkin, and with it research's "a Mage of another
 		-- element gets cues of its own" of 2026-11-19). So a class's words name no element: the element is the effect's.
 		-- At launch each class has one Voidkin, whose combo plays its class's cue (Config.Cues.Own). Sonus, 2026-11-24.
+		-- Simple and pleasant, "very very appealing, like anime vanguard type" (the director, 2026-11-24): one finished sound
+		-- a class, never one a weapon, so an anime game's crisp, bright hit leads each class's words, a real recording after.
 		-- the Mage's (Pip's lantern shots today): the cast on its beat, then the touch on the Shade
-		{ Name = "MageShot", Label = "Mage cast", Max = 0.6, Beat = true, Words = { "magic shot", "spell cast", "magic projectile", "energy blast", "spell shoot", "magic whoosh" } },
-		{ Name = "MageHit", Label = "Mage hit", Max = 0.7, Beat = false, Words = { "magic hit", "spell impact", "magic impact", "spell hit", "energy impact", "magic burst" } },
+		{ Name = "MageShot", Label = "Mage cast", Max = 0.6, Beat = true, Words = { "anime magic shot", "anime energy blast", "magic shot", "spell cast", "energy blast", "magic whoosh" } },
+		{ Name = "MageHit", Label = "Mage hit", Max = 0.7, Beat = false, Words = { "anime magic hit", "anime impact", "magic hit", "magic impact", "spell impact", "energy impact" } },
 		-- the Healer's (Lyric's speaker shots today): the blast on its beat, then the touch
-		{ Name = "HealerShot", Label = "Healer cast", Max = 0.6, Beat = true, Tonal = true, Words = { "sonic blast", "energy shot", "magic shot", "pulse", "sonic pulse", "zap shot" } },
-		{ Name = "HealerHit", Label = "Healer hit", Max = 0.7, Beat = false, Tonal = true, Words = { "magic hit", "energy hit", "magic impact", "zap hit", "spark hit", "energy impact" } },
+		{ Name = "HealerShot", Label = "Healer cast", Max = 0.6, Beat = true, Tonal = true, Words = { "anime energy shot", "anime magic shot", "sonic pulse", "energy shot", "magic shot", "sonic blast" } },
+		{ Name = "HealerHit", Label = "Healer hit", Max = 0.7, Beat = false, Tonal = true, Words = { "anime magic hit", "anime energy hit", "magic hit", "energy hit", "spark hit", "energy impact" } },
 		-- the Warrior's (Rook's jab, hook and ram today): fists, so the light hit's 32 keeps
 		{ Name = "RookHit", Label = "Warrior's hits", Max = 0.7, Beat = false, Keeps = "LightHit", Words = {} },
-		-- the Assassin's (Kirra's three cuts today): two short blades, so a cut, never a punch
-		{ Name = "KirraHit", Label = "Assassin's cuts", Max = 0.6, Beat = false, Words = { "sword slash", "blade slash", "katana slash", "slash hit", "sword hit", "blade cut" } },
-		-- the Tank's (Watt's shaft, butt and driven spear today): heavy and short, a weighted blow
-		{ Name = "WattHit", Label = "Tank's blows", Max = 0.8, Beat = false, Words = { "heavy impact", "blunt impact", "heavy strike", "heavy melee hit", "impact thud", "body impact" } },
+		-- the Assassin's (Kirra's three cuts today): a quick cut, never a punch
+		{ Name = "KirraHit", Label = "Assassin's cuts", Max = 0.6, Beat = false, Words = { "anime slash", "anime sword slash", "slash hit", "sword slash", "katana slash", "blade slash" } },
+		-- the Tank's (Watt's shaft, butt and driven spear today): heavy and short, a weighted blow, never harsh
+		{ Name = "WattHit", Label = "Tank's blows", Max = 0.8, Beat = false, Words = { "anime heavy hit", "anime impact", "heavy hit", "heavy impact", "heavy strike", "blunt impact" } },
 	} :: { Spec },
 	Pages = 2, -- the library's pages of 25 read a word
 	Keep = 50, -- candidates kept a cue, in the library's order (the panel shows ten at a time)

@@ -110,6 +110,11 @@ local stages = {
 		-- then After seconds past the card's beats the lock lifts Rise points and fades over Seconds as the press lights
 		Unlock = { After = 0.3, Seconds = 0.3, Rise = 8, Lock = 18, Gap = 6 },
 		Presses = { Quiet = 82, One = 124, Retry = 170, Home = 124, Gap = 6 },
+		-- A fall's three (docs/design.md, "A fall in the Festival"; research's widths, 2026-11-24): Retry lit at One, or dim
+		-- with the time its lead heals in; Send another and Home quiet at Quiet, or, when "Send another" doesn't fit Quiet
+		-- with Pad either side, Tight's (its width taken from Home's). Lit: how long Retry takes to light, once someone
+		-- leads.
+		Fall = { Pad = 6, Tight = { Another = 100, Home = 64 }, Lit = 0.2 },
 		Shadow = 0.4,
 		Dim = 0.5,
 		Cover = Color3.fromHex("#2A1219"),

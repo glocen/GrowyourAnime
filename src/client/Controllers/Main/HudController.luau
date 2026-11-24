@@ -558,10 +558,11 @@ local function atHome(): boolean
 end
 
 -- What a fallen lead's card offers (TR12; Rules.Hud.AfterFall): the next lead under it while another is ready, else, out
--- in a ground, the Base tile's pip, since home is where the lead waits (TR19).
+-- in a ground, the Base tile's pip, since home is where the lead waits (TR19). Never in the Festival: there the lead
+-- heals by the Arrival pad and comes back on its own (docs/design.md, "A fall in the Festival").
 local function offer(down: boolean, fallen: string)
 	local now = workspace:GetServerTimeNow()
-	local which = Hud.AfterFall(down, if down then others(fallen) else {}, now, down and not atHome())
+	local which = Hud.AfterFall(down, if down then others(fallen) else {}, now, down and not atHome() and not PlaceRole.Is("Festival"))
 	nextButton.Visible = which == "Send"
 	Dock.Pip(dockUi, "Base", which == "Home")
 end
@@ -1442,6 +1443,16 @@ function HudController.Note(words: string)
 			end
 		end)
 	end)
+end
+
+-- The player's lead's model, standing or fallen, or nil (the run's fall card reads it: UI.StageScreen, Retry).
+function HudController.Lead(): Model?
+	return myLead()
+end
+
+-- The picker of who's ready to lead, as a fallen lead's "Send another" opens it (the run's fall card's too).
+function HudController.SendAnother()
+	voidkinScreen("Overview", "Overview") -- where Lead stands: the Items page has none (TR28)
 end
 
 -- The note's words while it shows, else nil: for tests.

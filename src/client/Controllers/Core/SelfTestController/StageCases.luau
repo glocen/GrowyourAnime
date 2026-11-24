@@ -33,6 +33,7 @@ local Screen = require(UI.Kit.Screen)
 local Button = require(UI.Kit.Button)
 local Toast = require(UI.Kit.Toast)
 local StageScreen = require(UI.StageScreen)
+local VoidkinScreen = require(UI.VoidkinScreen)
 local Layers = require(UI.Layers)
 local Theme = require(UI.Theme)
 
@@ -138,6 +139,106 @@ function StageCases.Cases(): { any }
 				if not ok then
 					error(err, 0)
 				end
+			end,
+		},
+		{
+			Name = "Stages (fall card): a fall's card holds Retry, Send another and Home; Retry dim with the healing time while its lead heals beside the Arrival pad, a tap then doing nothing; the picker brings the card back; Retry lights once its lead is up and starts the run",
+			Place = "Festival", -- TR45: its world stands in that place only
+			Run = function(t: any)
+				if Screen.Current() ~= nil then
+					Screen.Close()
+					t.Wait(0.3)
+				end
+				Helpers.endRun(t)
+				t.Server("LeadHeal")
+				local before = t.Server("Stage")
+				local held = before.Checkpoint or { Normal = 1, Hard = 1 }
+				local was = { before.Normal and before.Normal.Cleared or 0, held.Normal }
+				local function restore()
+					Helpers.endRun(t)
+					t.Server("StageLine", "Normal", was[1], was[2])
+					t.Server("LeadHeal")
+					if Screen.Current() ~= nil then
+						Screen.Close()
+					end
+				end
+				local function words(button: Instance?, name: string): TextLabel?
+					return if button then button:FindFirstChild(name, true) :: TextLabel? else nil
+				end
+				local function whole(label: TextLabel?): boolean
+					return label ~= nil and label.TextFits and label.TextBounds.X <= label.AbsoluteSize.X + 0.5
+				end
+				local run = begin("Normal")
+				t.Check("a run starts", run.Ok == true, tostring(run.Error))
+				if run.Ok ~= true then
+					restore()
+					return
+				end
+				t.Server("FightHealth", 0)
+				t.Check("the lead's fall: its card", waitFor(t, StagesConfig.Results.After + REPLICATE, function(): boolean
+					return Screen.Current() == StageScreen.Name and StageScreen.Parts().Another ~= nil
+				end))
+				local parts = StageScreen.Parts()
+				local retry, another = parts.Retry :: TextButton?, parts.Another :: TextButton?
+				t.Check("Retry, Send another and Home, no Hard", retry ~= nil and another ~= nil and parts.Home ~= nil and parts.Next == nil)
+				local said = words(another, "Words")
+				t.Check("\"Send another\" whole on its press", said ~= nil and said.Text == "Send another" and whole(said), if said then `{said.TextBounds.X} in {said.AbsoluteSize.X}` else "none")
+				t.Check("the fallen lead heals at home", waitFor(t, 4, function(): boolean
+					local lead = HudController.Lead()
+					return lead ~= nil and lead:GetAttribute("State") == "Home"
+				end))
+				local landing = t.Server("TestStream", "DoorLanding", { Ground = GROUND })
+				local lead = HudController.Lead()
+				local aside = if typeof(landing) == "Vector3" and lead then ((lead:GetPivot().Position - landing) * Vector3.new(1, 0, 1)).Magnitude else nil
+				t.Near("beside the Arrival pad, by LeadAside (studs from the landing)", aside or -1, WorldConfig.Row.LeadAside, 1)
+				local dim = words(retry, "DimWords")
+				t.Check("Retry dim with the time its lead heals in", retry ~= nil and retry:GetAttribute("Led") == false and dim ~= nil and string.match(dim.Text, "^Retry  %d+:%d%d$") ~= nil, if dim then dim.Text else "none")
+				local toasts = #Toast.Shown()
+				t.Check("a tap on it is taken", retry ~= nil and Button.Press(retry))
+				t.Wait(REPLICATE)
+				t.Check("and does nothing: no run, no refusal, the card stays", player:GetAttribute("StageRun") == nil and #Toast.Shown() == toasts and Screen.Current() == StageScreen.Name, table.concat(Toast.Shown(), " | "))
+				t.Check("Send another opens the picker", another ~= nil and Button.Press(another) and waitFor(t, 2, function(): boolean
+					return Screen.Current() == VoidkinScreen.Name
+				end), tostring(Screen.Current()))
+				Screen.Close("Back")
+				t.Check("closing it brings the card back", waitFor(t, 2, function(): boolean
+					return Screen.Current() == StageScreen.Name and StageScreen.Parts().Another ~= nil
+				end), tostring(Screen.Current()))
+				t.Wait(1)
+				retry = StageScreen.Parts().Retry :: TextButton?
+				t.Check("Retry still dim", retry ~= nil and retry:GetAttribute("Led") == false)
+				-- whole at home in the Festival, it's up on its own (FightService's playerHome)
+				t.Server("FightHealth", 1)
+				t.Check("its lead up, Retry lights by itself", waitFor(t, REPLICATE + HudConfig.Stages.Card.Fall.Lit + 1, function(): boolean
+					return retry ~= nil and retry:GetAttribute("Led") == true
+				end))
+				local up = HudController.Lead()
+				t.Check("the lead rose on its own", up ~= nil and up:GetAttribute("State") ~= "Home" and up:GetAttribute("State") ~= "Down", tostring(up and up:GetAttribute("State")))
+				t.Wait(HudConfig.Stages.Card.Fall.Lit + 0.1)
+				local lit = if retry then retry:FindFirstChild("Lit", true) :: CanvasGroup? else nil
+				t.Check("its lit face shows", lit ~= nil and lit.GroupTransparency < 0.01)
+				t.Check("Retry lit starts the run", retry ~= nil and Button.Press(retry) and waitFor(t, REPLICATE, function(): boolean
+					return type(player:GetAttribute("StageRun")) == "string"
+				end))
+				-- the smallest phone: "Send another" still whole
+				Helpers.endRun(t)
+				local stub = function(): { [string]: any }
+					return { Ok = false }
+				end
+				Layers.Force(Theme.Scale.Floor)
+				Layers.Box(Theme.Smallest - Vector2.new(0, GuiService.TopbarInset.Height))
+				local ok, problem = pcall(StageScreen.Results, { Ground = GROUND, Difficulty = "Normal", Stage = 2, Count = #(Stages.Of(GROUND) :: { any }), Won = false, Checkpoint = 2, Lead = "Kirra" },
+					{ Begin = stub, Home = stub, Say = function(_: string) end, Lead = function(): (boolean, number?)
+						return false, workspace:GetServerTimeNow() + 75
+					end, Another = function() end })
+				t.Wait(1.2)
+				local small = words(StageScreen.Parts().Another, "Words")
+				t.Check("at the smallest phone, \"Send another\" whole", ok and whole(small), if small then `{small.TextBounds.X} in {small.AbsoluteSize.X}` else tostring(problem))
+				local clock = words(StageScreen.Parts().Retry, "DimWords")
+				t.Check("and Retry's time whole", clock ~= nil and whole(clock), if clock then clock.Text else "none")
+				Layers.Box(nil)
+				Layers.Force(nil)
+				restore()
 			end,
 		},
 		{
@@ -486,6 +587,10 @@ function StageCases.Cases(): { any }
 						return { Ok = false }
 					end,
 					Say = function(_: string) end,
+					Lead = function(): (boolean, number?)
+						return true, nil
+					end,
+					Another = function() end,
 				}
 				local count = #((Stages.Of(GROUND) or {}) :: { any })
 				local ok, problem = pcall(StageScreen.Results, { Ground = GROUND, Difficulty = "Normal", Stage = 2, Count = count, Won = false, Then = 2, Checkpoint = 2, From = 1, Seconds = 40, Credits = 0 }, on)
@@ -583,7 +688,9 @@ function StageCases.Cases(): { any }
 							return { Ok = false }
 						end
 						StageScreen.Results({ Ground = GROUND, Difficulty = "Normal", Stage = 3, Count = count, Won = true, Seconds = 185, Best = 185, Checkpoint = 4, Credits = 240, Shards = 2, Chests = 1 },
-							{ Begin = stub, Home = stub, Say = function(_: string) end })
+							{ Begin = stub, Home = stub, Say = function(_: string) end, Lead = function(): (boolean, number?)
+								return true, nil
+							end, Another = function() end })
 						t.Check("the run's card", Screen.Current() == StageScreen.Name)
 						t.Wait(1)
 					end

@@ -42,6 +42,7 @@ local GoalDefs = require(Shared.Definitions.Goals)
 local ProfileController = require(script.Parent.Parent.Core.ProfileController)
 local WorldConfig = require(Shared.Config.World)
 local Screen = require(UI.Kit.Screen)
+local HudController = require(script.Parent.HudController)
 
 local StageController = {}
 
@@ -81,6 +82,11 @@ type Line = {
 }
 local line: Line? = nil
 
+-- A lost run's results while its card may come back: Send another's picker closing over it brings it back, Retry lit if
+-- someone leads now (docs/design.md, "A fall in the Festival").
+local fell: { [string]: any }? = nil
+local sendAnother: () -> ()
+
 local on: StageScreen.On = {
 	Begin = function(ground: string, difficulty: string): { [string]: any }
 		local ok, answer = pcall(Net.Client.Invoke, "Stage", ground, difficulty)
@@ -93,7 +99,42 @@ local on: StageScreen.On = {
 	Say = function(words: string)
 		Toast.Show(words)
 	end,
+	Lead = function(): (boolean, number?)
+		local lead = HudController.Lead()
+		local state = if lead then lead:GetAttribute("State") else nil
+		if lead and state ~= "Down" and state ~= "Home" and state ~= "Reset" then
+			return true, nil
+		end
+		local untilAt = if lead and state == "Home" then lead:GetAttribute("StateUntil") else nil
+		return false, if type(untilAt) == "number" and untilAt > 0 then untilAt else nil
+	end,
+	Another = function()
+		sendAnother()
+	end,
 }
+
+sendAnother = function()
+	local results = fell
+	HudController.SendAnother()
+	local picker = Screen.Current()
+	if results == nil or picker == nil or picker == StageScreen.Name then
+		return
+	end
+	local connection: any = nil
+	connection = Screen.Closed:Connect(function(name: string)
+		if name ~= picker then
+			return
+		end
+		connection:Disconnect()
+		-- back on the card, unless a run began or another screen opened meanwhile (deferred: a screen opening closes the one
+		-- before it first, so Closed fires before the new one is open)
+		task.defer(function()
+			if fell == results and Screen.Current() == nil and player:GetAttribute("StageRun") == nil then
+				StageScreen.Results(results :: { [string]: any }, on)
+			end
+		end)
+	end)
+end
 
 -- Where the line stands, in the HUD's points: the screen's middle, moved clear of the HUD's pieces beside it (L.Clear:
 -- the lead's card at the left, the Credits at the right) when the middle would meet them, and narrower only when the room
@@ -486,6 +527,7 @@ function StageController.Start()
 	end)
 	Net.Client.On("StageDone", function(results: any)
 		if type(results) == "table" and type(results.Ground) == "string" and type(results.Stage) == "number" then
+			fell = if results.Won ~= true then results else nil
 			StageScreen.Results(results, on)
 		end
 	end)

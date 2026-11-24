@@ -344,7 +344,9 @@ function GoalCases.Cases(): { any }
 				local stub = function(): { [string]: any }
 					return { Ok = false }
 				end
-				local on = { Begin = stub, Home = stub, Say = function(_: string) end }
+				local on = { Begin = stub, Home = stub, Say = function(_: string) end, Lead = function(): (boolean, number?)
+					return true, nil
+				end, Another = function() end }
 				local dares = { Kept = { 1, 2, 3, 4 }, Grade = "Low", Count = 4 }
 				local cards: { { any } } = {
 					{ "a new best past ten minutes", { Ground = GROUND, Difficulty = "Normal", Stage = count, Count = count, Won = true, Seconds = 754, Best = 754, From = 1, Credits = 12345, Shards = 2, Chests = 1, Opened = "Hard", Then = "Hard", Dares = dares }, true },

@@ -46,6 +46,7 @@ local Carry = require(Shared.Rules.Carry)
 local Markers = require(Shared.World.Markers)
 local Passive = require(Shared.Rules.Passive)
 local MarkRule = require(Shared.Rules.Mark)
+local PlaceRole = require(Shared.Util.PlaceRole)
 local SupportRule = require(Shared.Rules.Support)
 local DataService = require(script.Parent.Parent.Core.DataService)
 
@@ -1330,11 +1331,18 @@ local function rise(f: Fighter, at: number)
 end
 
 -- Where a fallen lead waits on its plot (TR12): on the Training machine's pad (Config.World.Grey.Training), facing it;
--- else on the plot's spawn; nil when its player has no plot (it then waits where it fell).
+-- else on the plot's spawn. In the Festival, which has no plot, beside its Arrival pad, facing it (docs/design.md, "A
+-- fall in the Festival"). Nil with neither: it then waits where it fell.
 local function homeSpot(f: Fighter): CFrame?
 	local plot = if f.Owner then f.Owner:GetAttribute("Plot") else nil
 	if type(plot) ~= "number" then
-		return nil
+		local landing = if PlaceRole.Is("Festival") then Markers.Find("DoorLanding") else nil
+		if landing == nil then
+			return nil
+		end
+		local at = Markers.At(landing)
+		local spot = (at * CFrame.new(WorldConfig.Row.LeadAside, 0, 0)).Position + Vector3.new(0, LEAD_ROOT_HEIGHT, 0)
+		return CFrame.lookAt(spot, Vector3.new(at.Position.X, spot.Y, at.Position.Z))
 	end
 	local machine = Markers.Find("Training", { Plot = plot })
 	if machine then
@@ -1369,15 +1377,19 @@ local function goHome(f: Fighter, at: number)
 	setState(f, "Home", at + FightService.HomeOf(f.Owner).Fallen)
 end
 
--- Whether a player stands on their own plot (Markers.OnPlot).
+-- Whether a player stands on their own plot (Markers.OnPlot). In the Festival, wherever they are in it: its Arrival pad
+-- is home for following, and a lead healed there comes back to them (docs/design.md, "A fall in the Festival").
 local function playerHome(player: Player?): boolean
+	if player and PlaceRole.Is("Festival") then
+		return true
+	end
 	local plot = if player then player:GetAttribute("Plot") else nil
 	local root = if player then Parts.Root(player.Character) else nil
 	return Markers.OnPlot(if type(plot) == "number" then plot else nil, if root then root.Position else nil)
 end
 
--- A lead at home: it heals to full at the fallen rate, then waits; once it's whole and its player is on their plot, it's
--- up and follows them.
+-- A lead at home: it heals to full at the fallen rate, then waits; once it's whole and its player is on their plot (in
+-- the Festival, at once), it's up and follows them.
 local function thinkHome(f: Fighter, at: number, dt: number)
 	local most = f.Block.Health
 	local share = Carry.Mend(if most > 0 then f.Health / most else 0, dt, FightService.HomeOf(f.Owner).Fallen)

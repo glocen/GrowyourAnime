@@ -13,8 +13,10 @@
 --   Ready's gold, a best only for a run from the first stretch), what the run gave, and Retry, Hard and Home, the one
 --   press lit. After the keeper on Normal, the lit press is Hard; on the card whose clear opened Hard, the press comes in
 --   shut under Hard's lock, which lifts off as the press lights (research's lines of 2026-11-24, TR54: news shown by the
---   thing that changed, never a banner). A lost run names its lead ("Kirra fell") and where the next run starts; Retry
---   is the press.
+--   thing that changed, never a banner). A lost run names its lead ("Kirra fell") and where the next run starts, over
+--   three presses (docs/design.md, "A fall in the Festival"): Retry, lit while someone leads, else dim with the time the
+--   fallen lead heals in and lighting by itself once someone leads (a tap while dim answers nothing, never a refusal);
+--   Send another, the picker of who's ready (the card comes back when it closes: StageController); and Home.
 --   StageScreen.Pick(ground, view, on)    the Arc panel
 --   StageScreen.Results(results, on)     the run's card
 --   StageScreen.Parts()                  its pieces by name, for tests
@@ -54,6 +56,9 @@ export type On = {
 	Begin: (ground: string, difficulty: string) -> { [string]: any }, -- Net Stage: the run, at its checkpoint
 	Home: () -> { [string]: any }, -- Net Home
 	Say: (words: string) -> (), -- a toast
+	-- whether someone leads now, standing; else the server time the fallen lead is whole, when it's healing at home
+	Lead: () -> (boolean, number?),
+	Another: () -> (), -- the picker of who's ready to lead
 }
 
 local LOOK = HudConfig.Stages
@@ -677,7 +682,7 @@ function StageScreen.Pick(ground: string, view: Profile.View, on: On)
 end
 
 -- One press on the card: the lit press (an ember into a Hard stage, with Hard's chevrons) or a quiet one.
-local function press(parent: Instance, name: string, words: string, x0: number, y0: number, w: number, one: boolean, intoHard: boolean, act: () -> boolean): TextButton
+local function press(parent: Instance, name: string, words: string, x0: number, y0: number, w: number, one: boolean, intoHard: boolean, act: () -> boolean?): TextButton
 	local button = Button.new({
 		Name = name,
 		Text = "",
@@ -702,6 +707,60 @@ local function press(parent: Instance, name: string, words: string, x0: number, 
 		Glass.Label(face, "Words", words, TITLE, colour, 0, 0, w, h, nil, true, 7)
 	end
 	return button
+end
+
+-- A fall's Retry (docs/design.md, "A fall in the Festival"): lit while someone leads (on.Lead), else dim, quiet glass with
+-- the time the fallen lead heals in after its word, lighting by itself over Fall.Lit once someone leads (healed, or
+-- another sent). Its attribute Led says which.
+local function standBy(button: TextButton, w: number, on: On)
+	local face = button:FindFirstChild("Face", true) :: Frame?
+	if face == nil then
+		return
+	end
+	local h = Theme.Size.Tap
+	local lit = Instance.new("CanvasGroup")
+	lit.Name = "Lit"
+	lit.BackgroundTransparency = 1
+	lit.Size = UDim2.fromScale(1, 1)
+	lit.ZIndex = 1
+	for _, child in face:GetChildren() do
+		child.Parent = lit
+	end
+	lit.Parent = face
+	local dim = Instance.new("CanvasGroup")
+	dim.Name = "Dim"
+	dim.BackgroundTransparency = 1
+	dim.Size = UDim2.fromScale(1, 1)
+	dim.ZIndex = 2
+	dim.Parent = face
+	Glass.Quiet(dim, "DimPlate", 0, 0, w, h, SEAM.Facet, 1)
+	local words = Glass.Label(dim, "DimWords", "Retry", TITLE, SEAM.Soft, 0, 0, w, h, nil, true, 7)
+	local was: boolean? = nil
+	local function refresh()
+		local led, untilAt = on.Lead()
+		if led ~= was then
+			local first = was == nil
+			was = led
+			button:SetAttribute("Led", led)
+			local seconds = if first or GuiService.ReducedMotionEnabled then 0 else LOOK.Card.Fall.Lit
+			local info = TweenInfo.new(seconds, Enum.EasingStyle.Sine, Enum.EasingDirection.Out)
+			TweenService:Create(lit, info, { GroupTransparency = if led then 0 else 1 }):Play()
+			TweenService:Create(dim, info, { GroupTransparency = if led then 1 else 0 }):Play()
+		end
+		if not led then
+			local left = if untilAt then math.max(0, untilAt - workspace:GetServerTimeNow()) else nil
+			words.Text = if left and left > 0 then `Retry  {Hud.Clock(left)}` else "Retry"
+		end
+	end
+	refresh()
+	task.spawn(function()
+		while button:IsDescendantOf(game) do
+			task.wait(0.2)
+			if button:IsDescendantOf(game) then
+				refresh()
+			end
+		end
+	end)
 end
 
 -- The press into Hard on the card whose clear opened it (research's lines for the card, TR54): it comes in shut, quiet
@@ -1018,7 +1077,7 @@ function StageScreen.Results(results: { [string]: any }, on: On)
 	-- Retry, Hard and Home, the one press lit: Hard after the keeper on Normal (Clear's Then), else Retry on a lost run,
 	-- else Home. Retry begins the run again at its checkpoint.
 	local P = C.Presses
-	local presses: { { Name: string, Words: string, Wide: number, One: boolean, Hard: boolean, Act: () -> boolean } } = {}
+	local presses: { { Name: string, Words: string, Wide: number, One: boolean, Hard: boolean, Act: () -> boolean? } } = {}
 	local retry = function(): boolean
 		return begin(on, ground, which)
 	end
@@ -1046,8 +1105,25 @@ function StageScreen.Results(results: { [string]: any }, on: On)
 		table.insert(presses, { Name = "Retry", Words = "Retry", Wide = P.Home, One = false, Hard = false, Act = retry })
 		table.insert(presses, { Name = "Home", Words = "Home", Wide = P.Home, One = true, Hard = false, Act = home })
 	else
-		table.insert(presses, { Name = "Retry", Words = "Retry", Wide = P.Retry, One = true, Hard = hard, Act = retry })
-		table.insert(presses, { Name = "Home", Words = "Home", Wide = P.Home, One = false, Hard = false, Act = home })
+		-- A fall: Retry with whoever leads, dim while nobody does (a tap then answers nothing); Send another; Home. "Send
+		-- another" kept whole: Tight's widths when it doesn't fit Quiet.
+		local F = C.Fall
+		local gauge = Glass.Label(room, "Gauge", "", TITLE, SEAM.Text, 0, 0, P.Quiet, Theme.Size.Tap, nil, true, 1) -- the press's own face
+		local fits = Text.Wide(gauge, "Send another") + 2 * F.Pad <= P.Quiet
+		gauge:Destroy()
+		local led = function(): boolean?
+			local button = parts.Retry
+			if button and button:GetAttribute("Led") ~= true then
+				return nil
+			end
+			return begin(on, ground, which)
+		end
+		table.insert(presses, { Name = "Retry", Words = "Retry", Wide = P.One, One = true, Hard = hard, Act = led })
+		table.insert(presses, { Name = "Another", Words = "Send another", Wide = if fits then P.Quiet else F.Tight.Another, One = false, Hard = false, Act = function(): boolean?
+			on.Another()
+			return nil
+		end })
+		table.insert(presses, { Name = "Home", Words = "Home", Wide = if fits then P.Quiet else F.Tight.Home, One = false, Hard = false, Act = home })
 	end
 	local span = -P.Gap
 	for _, p in presses do
@@ -1061,6 +1137,9 @@ function StageScreen.Results(results: { [string]: any }, on: On)
 	end
 	if won and opened == "Hard" and parts.Next then
 		shutUntilLit(parts.Next :: TextButton, P.One)
+	end
+	if not won and parts.Retry then
+		standBy(parts.Retry :: TextButton, P.One, on)
 	end
 	-- The card's beats: the check pops in a little over, then the light runs on and the next rings in.
 	local just = parts.Just :: Frame?

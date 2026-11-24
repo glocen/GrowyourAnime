@@ -127,6 +127,9 @@ return {
 		Ring = 5, -- the Lamplighter's ring, 80 studs across, behind the keeper's gate
 		Beyond = 1.5, -- from the ring's far edge to Drum Court's gate, shut, in view
 		Spread = 7, -- studs between a pack's Shades at its spawn (inside Combat.Shade.Notice, so one notices for all)
+		-- studs to the side of the Door landing (its Arrival pad, 6 wide) a fallen lead heals at in the Festival, which has no
+		-- plot (docs/design.md, "A fall in the Festival"; FightService's homeSpot). The builder's.
+		LeadAside = 5,
 		-- studs a pack's Rear row stands past its ring's back (AR58's Support; the builder's seed): a Spread, so none of its
 		-- Shades stands nearer another than its ring's do
 		Behind = 7,

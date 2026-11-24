@@ -16930,6 +16930,15 @@ From `build/handoff/Shade/shade_support_look.png` (the row, the pack, near, 64 p
 - **Nothing broke.** The sleeves are still the bold thing.
 - **Next:** Faber's build, after AR57 in his order. Its numbers wait until the Guard and the Dasher are played.
 
+### Faber's build: the behaviour at seeds (2026-11-24, started 14:15)
+
+- **In:** the `support` row (Orange, 0.9, health 0.6 of its kin's) and its cast `SupportCast` on `ShadeCast` (Cast 0.4 s, Lower 1.4 s, cooldown 5 s). On Cast, `Rules/Support.luau` picks: the most hurt of its pack within 18 studs, at or under 0.7, gets 0.25 of its most back; else the nearest unshielded one with a lead takes a shield of 0.4 for 4 s; else it doesn't cast. Between casts it keeps 8 studs past its pack's middle, away from the lead; alone, it swings as a Brawler. It spawns a row behind its pack's ring (`Fight.PackSpots`, `Row.Behind` 7), and stands behind stage 3's second pack (`Config/World.luau`). Grey stand-ins in `SlamController`: a ball round the shielded one, a pop on the mended one.
+- **Seeds,** to tune once the Guard and the Dasher are played: `Config.Combat.Support`, `Config.World.Row.Behind`, the row's `Scale` and `Health`, the cast's `Range` and `Cooldown`, and the stage-3 placement (tier 2, for research).
+- **For Scintilla:** a `SupportShield` Lasting row (worn while `ShieldUntil` holds, `ShieldLook` "SupportShield") and a `SupportHeal` row (on the Heal event, healer `A` casting `SupportCast`). Each grey stand-in steps aside when its row lands.
+- **Checks:** type check 0 new; logic 31,897 passed, 0 failed, in Studio and offline; the Shades self-test 74/0 at 60 fps, its AR58 case 17/0 (the shield held 4.42 s against 4.40, the Support 12.4 studs from the lead to the Brawler's 4.2, the heal exactly 25%). In the Festival: the world report sound, every pack whole at a 7.00 gap, the Support at z 9 behind stage 3's Pack 4 (the pair at 2, the Brawler at -4).
+- **Waits:** the look (Scintilla), the sound (Sonus), the numbers, research's pass in motion, the Support's elite.
+- **Commit:** 0b6f5ad6.
+
 ## AR59. Rook, redesigned to the anime bar (Modulo, for research's pick and the director's look, then its finish; Faber's install after)
 
 Research, 2026-11-23, 22:53, on the director's pick by 22:52 (`docs/decisions.md`). Tier 2: a look players see, in Modulo's area and then Faber's. It goes into the game only on the director's acceptance. The first of the launch five's redesigns. The order: Rook, Kirra, Pip, Lyric, then Watt's finish (AR11). Each is its own request, written when the one before closes.

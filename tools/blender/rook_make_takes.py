@@ -58,6 +58,7 @@ LEAD, FOE = (-2.5, -7.0), (2.2, -11.5)            # a fight: the lead a few stud
 ROW_Z, ROW_X = -6.0, (-9.0, -4.5, 0.0, 4.5, 9.0)  # a line-up at the lead's distance, turned to the player
 WHO = ("Rook", "A", "B", "C")
 TALL = 7.2
+WIDE = 1.25                          # a figure's layer: how far to each side of it is drawn (hard_ember.border's measure)
 SAID = {
     "Rook": ("Today's Rook", ("the model in the game now: built clothes,", "a cube head, the oversized gauntlet")),
     "A": ("A, the school tough", ("black hair combed back to points, one stray lock", "narrow grey eyes, a low brow, a small plaster on the nose",
@@ -503,7 +504,7 @@ def spots(key):
 
 def keep(he, scene, layers, stem, x, z):
     """One figure's layer, cut to its own pixels."""
-    he.border(scene, x, z, 1.25, TALL / 1.25)
+    he.border(scene, x, z, WIDE, TALL / WIDE)
     path = layers / f"{stem}.npy"
     he.render(scene, path)
     full = np.load(path)
@@ -624,13 +625,14 @@ def deck(he):
     return out, gx, gz
 
 
-def reference(name, to):
-    """One of the reference's pictures at `to` pixels a stud. Internal: it is laid on the sheet, never kept apart."""
+def reference(name, to, own=None):
+    """One of the reference's pictures at `to` pixels a stud (`own`: its own pixels a stud, if not BESIDE_PX).
+    Internal: it is laid on the sheet, never kept apart."""
     image = bpy.data.images.load(str(REPO / "build" / "reference" / "anime-vanguards" / name))
     w, h = image.size
     px = np.empty(w * h * 4, np.float32)
     image.pixels.foreach_get(px)
-    return rs.shrink(px.reshape(h, w, 4)[::-1].copy(), to / BESIDE_PX)
+    return rs.shrink(px.reshape(h, w, 4)[::-1].copy(), to / (own or BESIDE_PX))
 
 
 def stage(out):
@@ -809,10 +811,13 @@ def sheet_run(out):
     rs.save(whole, out / "rook_takes.png")
 
 
-def proof_run(out, key, title=None):
+def proof_run(out, key, title=None, about="Common / Red / Warrior / Fire.", whose="his", stem="rook_pick", beside=None,
+              tag="AR59: the pick"):
     """The picked take alone, as the finish is judged: the figure from the front and from the game's camera, the bust
     at the card's size, the head from six sides, a fight at the smallest phone, and 64 pixels. A second picture, kept
-    internal, stands it between the reference's units."""
+    internal, stands it between the reference's units. The words after `title` serve another Voidkin's take:
+    `about` its row, `whose` its pronoun, `stem` the pictures' name, `beside` the two units as (file, its pixels a
+    stud), `tag` the second picture's first words."""
     bm, hc, he, el, phone, laid, box, over = stage(out)
     shots = out / "shots"
     gap, W = 24, 1900
@@ -822,8 +827,8 @@ def proof_run(out, key, title=None):
     # the figure, and the bust in the lead card's pose
     top = rs.canvas(W, 800, rs.rgb(paper))
     text = [(gap, 20, 30, heading or f"AR59: ROOK, THE PICK ({title.upper()})", ink)]
-    text += hc.wrapped(gap, 60, 16, "Common / Red / Warrior / Fire. " + "; ".join(lines) + ". From the three-quarter front, from the "
-                                   "game's camera behind his right shoulder, and the bust in the lead card's pose with the card's size on "
+    text += hc.wrapped(gap, 60, 16, about + " " + "; ".join(lines) + ". From the three-quarter front, from the "
+                                   f"game's camera behind {whose} right shoulder, and the bust in the lead card's pose with the card's size on "
                                    "the smallest phone (and twice that).", soft, W - 2 * gap)
     rs.stand(top, rs.shrink(rs.trim(rs.load(shots / f"{key}_front.png")), 0.8), gap, 786, 600)
     rs.stand(top, rs.shrink(rs.trim(rs.load(shots / f"{key}_game.png")), 0.8), gap + 600, 786, 600)
@@ -854,7 +859,7 @@ def proof_run(out, key, title=None):
     rs.paste(low, rs.text_layer(W, low.shape[0], text), 0, 0)
     whole = rs.canvas(W, top.shape[0] + low.shape[0], rs.rgb(paper))
     whole[:top.shape[0]], whole[top.shape[0]:] = top, low
-    rs.save(whole, out / "rook_pick.png")
+    rs.save(whole, out / f"{stem}.png")
 
     # square on, between the reference's units at the same height: internal
     sw, sh, span, mid = SQUARE
@@ -862,15 +867,16 @@ def proof_run(out, key, title=None):
     feet = int(round(sh / 2 + mid * per))
     page = rs.canvas(1200, 56 + sh + 20, rs.rgb(paper))
     rs.fill(page, 0, 56, 1200, sh + 10, rs.rgb(pale))
-    for i, who in enumerate((BESIDE[0], key, BESIDE[1])):
+    units = beside or [(name, BESIDE_PX) for name in BESIDE]
+    for i, who in enumerate((units[0], key, units[1])):
         if who == key:
             rs.paste(page, rs.load(shots / f"{key}_square.png"), i * 400 + (400 - sw) // 2, 56)
         else:
-            shot = reference(who, per)
+            shot = reference(who[0], per, who[1])
             rs.paste(page, shot, i * 400 + (400 - shot.shape[1]) // 2, 56 + feet - int(shot.shape[0] * 0.994))
-    rs.paste(page, rs.text_layer(1200, page.shape[0], [(gap, 16, 18, "AR59: the pick square on, between two Anime Vanguards units at the "
+    rs.paste(page, rs.text_layer(1200, page.shape[0], [(gap, 16, 18, f"{tag} square on, between two Anime Vanguards units at the "
                                                                     "same height. Internal: the two are reference.", ink)]), 0, 0)
-    rs.save(page, out / "rook_pick_beside.png")
+    rs.save(page, out / f"{stem}_beside.png")
 
 
 if __name__ == "__main__":

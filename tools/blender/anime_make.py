@@ -7,7 +7,9 @@ unit, which is what reads as anime at that size.
                lash line, thin brows, a tick for the nose, a short mouth;
     the hair   one mesh: a few dozen broad leaf-shaped clumps laid like roof tiles on a shell, from the nape up to
                the crown, each lying on the head with only its point turned out, dark under each;
-    built      few pieces and thin ones, none thicker than the limb it sits on.
+    built      few pieces and thin ones, none thicker than the limb it sits on. Since the director's word of
+               2026-11-24 ("it fine if the model has some attachment or ovexageration") a Voidkin may carry some:
+               a scarf, a blade, a ribbon (`Built`). The clothes stay drawn on the body.
 
 This file is the kit, and a plain stand-in with no design in it to judge the make by:
 
@@ -572,6 +574,15 @@ class Hair:
                 self.charts.append((f, strip, where))
         self.locks += 1
 
+    def lock(self, points, width, thick=None, out=None, n=10, ridge=0.35, taper=1.6, k=1.0):
+        """A free lock through `points` in space, off the head: a tail, a long lock over a shoulder. Its lit face is
+        turned `out` (a direction), or away from the head's middle."""
+        line = []
+        for q in smooth2([tuple(q) for q in points], n):
+            q = Vector(q)
+            line.append((q, (Vector(out) if out is not None else q - CENTRE).normalized()))
+        self.blade(line, width, thick or width * 0.3, ridge, taper, k)
+
     def clump(self, a, ph, length, width, heading=0.0, bend=0.0, off=0.06, flick=30.0, hold=0.5, thick=None, comb=None,
               split=0, taper=1.6, k=None, n=None):
         """One clump, rooted `a` degrees round and `ph` down from the crown, `length` studs long and `width` across.
@@ -646,6 +657,143 @@ class Hair:
         m.use_backface_culling = True  # as the game draws it: a leaf wound the wrong way shows as a hole
         mesh.materials.append(m)
         obj = bpy.data.objects.new(name, mesh)
+        bpy.context.scene.collection.objects.link(obj)
+        PICTURES[obj.name] = px
+        return obj
+
+
+# --- built pieces ------------------------------------------------------------------------------------------------------
+
+class Built:
+    """A built attachment: a scarf's loop and its tail, a blade, a ribbon. One mesh that rides one part, closed on
+    every side, since the game draws a face from its front only. Its colours are flat, one to a face, kept as a
+    small picture of swatches: the light's fall along a piece is its faces' own colours, one stretch after another."""
+
+    CELL, ACROSS = 8, 16
+
+    def __init__(self, name):
+        self.name, self.bm, self.cells, self.faces = name, bmesh.new(), [], []
+
+    def _cell(self, colour):
+        c = tuple(round(float(v), 3) for v in np.clip(rgb(colour), 0, 1))
+        if c not in self.cells:
+            self.cells.append(c)
+        return self.cells.index(c)
+
+    def face(self, points, colour, smooth=True):
+        """One face through `points` (places, or points already made), wound so it faces the viewer who sees them
+        turn anticlockwise."""
+        verts = [v if isinstance(v, bmesh.types.BMVert) else self.bm.verts.new(v) for v in points]
+        f = self.bm.faces.new(verts)
+        f.smooth = smooth
+        self.faces.append((f, self._cell(colour)))
+        return verts
+
+    def tube(self, rings, colours, caps=None, smooth=True):
+        """A skin over `rings` (each the same count of places, going the same way round): `colours` gives a colour
+        for the stretch `i` between two rings and the side `k` round it. `caps`: a colour for each end, or None to
+        leave it open."""
+        made = [[self.bm.verts.new(v) for v in ring] for ring in rings]
+        n = len(made[0])
+        for i in range(len(made) - 1):
+            for k in range(n):
+                a, b = made[i], made[i + 1]
+                self.face((a[k], a[(k + 1) % n], b[(k + 1) % n], b[k]), colours(i, k), smooth)
+        if caps:
+            if caps[0] is not None:
+                self.face(list(reversed(made[0])), caps[0], False)
+            if caps[1] is not None:
+                self.face(made[-1], caps[1], False)
+        return made
+
+    def ribbon(self, spine, widths, colour, side=(1, 0, 0), thick=0.04, under=0.6, edge=0.45, turn=None):
+        """Cloth along `spine`: `widths` across at each point, `thick` through. `side` is the way its width lies at
+        the first point, carried along from there; `turn` adds a twist, degrees at each point. `colour`: one, or a
+        function of how far along (0 to 1). Its underside is `under` as bright, its two edges `edge`."""
+        pts = [Vector(q) for q in spine]
+        n = len(pts)
+        widths = [widths] * n if np.isscalar(widths) else list(widths)
+        s = Vector(side).normalized()
+        rings = []
+        for i, q in enumerate(pts):
+            d = (pts[min(i + 1, n - 1)] - pts[max(i - 1, 0)]).normalized()
+            s = (s - d * s.dot(d)).normalized()
+            w = Matrix.Rotation(math.radians(turn[i]), 3, d) @ s if turn else s
+            up = d.cross(w).normalized()
+            half, t2 = w * widths[i] / 2, up * thick / 2
+            rings.append([q - half + t2, q + half + t2, q + half - t2, q - half - t2])
+        shade = colour if callable(colour) else (lambda u: colour)
+
+        def colours(i, k):
+            c = shade((i + 0.5) / (n - 1))
+            return c if k == 0 else tone(c, under) if k == 2 else tone(c, edge)
+
+        self.tube(rings, colours, caps=(tone(shade(0.0), edge), tone(shade(1.0), edge)), smooth=False)
+
+    def loop(self, centre, radius, tall, colour, thick=0.16, segments=20, lean=None, squash=1.0, shades=(1.12, 1.0, 0.72, 0.5)):
+        """A scarf's turn round the neck: a soft ring about `centre` (its foot), `radius` out and `squash` as deep
+        front to back, `tall` high and `thick` through. `lean`: its height the way round, a function of degrees
+        from the front, in place of `tall`. `shades`: its top, its outside, its underside and its inside."""
+        c = Vector(centre)
+        rings = []
+        for i in range(segments):
+            a = i / segments * 2 * math.pi
+            h = lean(math.degrees(a) if a <= math.pi else math.degrees(a) - 360) if lean else tall
+            out = Vector((math.sin(a), math.cos(a) * squash, 0.0))
+            mid = c + out * radius
+            rings.append([mid + out * thick * 0.5 + Vector((0, 0, h * 0.82)), mid + out * thick * 0.5 + Vector((0, 0, h * 0.12)),
+                          mid - out * thick * 0.5, mid - out * thick * 0.5 + Vector((0, 0, h)), ])
+        made = [[self.bm.verts.new(v) for v in ring] for ring in rings]
+        for i in range(segments):
+            a, b = made[i], made[(i + 1) % segments]
+            for k, s in enumerate((shades[1], shades[2], shades[3], shades[0])):   # outside, under, inside, top
+                self.face((a[k], b[k], b[(k + 1) % 4], a[(k + 1) % 4]), tone(colour, s))
+
+    def blade(self, base, tip, width, colours, grip=0.42, thick=0.05, guard=0.07, flat=(0, 1, 0), point=0.3):
+        """A short blade from the grip's end at `base` to its `tip`: a wrapped grip, a small guard, then a flat
+        blade with one ridge, drawn to a point over its last `point` studs. `flat`: the way its flat faces.
+        `colours`: the grip, the guard, the blade's lit bevel and its dark one."""
+        a, b = Vector(base), Vector(tip)
+        d = (b - a).normalized()
+        n = Vector(flat)
+        n = (n - d * n.dot(d)).normalized()
+        s = d.cross(n).normalized()
+        wrap, metal, lit_, dim = colours
+        long_ = (b - a).length
+
+        def ring(at, w, th):
+            q = a + d * at
+            return [q + n * th, q + s * w, q - n * th, q - s * w]
+
+        g = width * 0.3
+        self.tube([ring(0.0, g, g * 0.8), ring(grip, g, g * 0.8)], lambda i, k: tone(wrap, 1.0 if k in (0, 3) else 0.7),
+                  caps=(tone(wrap, 0.6), None), smooth=False)
+        self.tube([ring(grip, width * 0.75, thick * 1.3), ring(grip + guard, width * 0.75, thick * 1.3)],
+                  lambda i, k: tone(metal, 1.0 if k in (0, 3) else 0.7), caps=(tone(metal, 0.7), tone(metal, 0.7)), smooth=False)
+        self.tube([ring(grip + guard, width / 2, thick / 2), ring(long_ - point, width / 2, thick / 2), ring(long_, 0.004, 0.004)],
+                  lambda i, k: lit_ if k in (0, 2) else dim, smooth=False)
+
+    def build(self, folder):
+        cell, across = self.CELL, self.ACROSS
+        rows = -(-len(self.cells) // across)
+        px = np.zeros((rows * cell, across * cell, 3), np.float32)
+        for i, c in enumerate(self.cells):
+            px[(i // across) * cell:(i // across + 1) * cell, (i % across) * cell:(i % across + 1) * cell] = c
+        for i in range(len(self.cells), rows * across):   # the spare cells take the last colour, so no black bleeds in
+            px[(i // across) * cell:(i // across + 1) * cell, (i % across) * cell:(i % across + 1) * cell] = self.cells[-1]
+        bmesh.ops.recalc_face_normals(self.bm, faces=self.bm.faces[:])   # every face outward, whatever way it was wound
+        uv = self.bm.loops.layers.uv.new("UVMap")
+        for f, i in self.faces:
+            at = (((i % across) + 0.5) * cell / px.shape[1], 1 - ((i // across) + 0.5) * cell / px.shape[0])
+            for loop in f.loops:
+                loop[uv].uv = at
+        mesh = bpy.data.meshes.new(self.name)
+        self.bm.to_mesh(mesh)
+        self.bm.free()
+        m = textured(self.name, px, folder)
+        m.use_backface_culling = True
+        mesh.materials.append(m)
+        obj = bpy.data.objects.new(self.name, mesh)
         bpy.context.scene.collection.objects.link(obj)
         PICTURES[obj.name] = px
         return obj

@@ -4941,3 +4941,14 @@ From the ten captures (the stone chip, the card's rows and the Today card read a
   3. **Every row of the run's cards fits its longest value inside the card at the smallest phone.** Today's win row is full with "0:06". Show the longest in a self-test and a still: a run past ten minutes, a new best (the clock at the title's size, then "a new best"), with a dare kept. If it doesn't fit, the chip takes a row of its own, as on the fall card.
 - **Faber's four calls:** kept and held at rest stay as they are: after must-fix 1, a keep dare shows kept only at the clear, with its flare. The stone is must-fix 2, the time row must-fix 3. The Today card's open and claimed pips go to polish-later: the gold one, the one that asks the player to act, is clear, and the card's gold frame says it too.
 - **Next:** Faber's fixes, then the second look in motion. Send a short capture of the beats: the unfold and fold, a break, a "Do" dare done, the kept flare at the clear.
+
+### Research's lines for the run's card (Quaestor, 2026-11-24, 11:31)
+
+The director, on TR54's card stills: "i thought we said we stopped with the corny, ai slop lines", about "Hard is open" (the register, by 11:29). The card's lines, read in one pass against `docs/design.md`, "The words". These replace TR50's lines for the card.
+- **"Hard is open" and its band go.** The Hard press says it instead: on this card only, the press comes in shut under Hard's lock (the Arc panel's own mark), and about 0.3 s after the card settles the lock lifts off and fades as the press lights. It reads "Hard" with Hard's chevrons, as now. No line replaces the band.
+- **The fall's title:** the lead's own name, "Kirra fell", where it read "Your lead fell", in Hurt's red as now.
+- **The fall's row:** "Next run starts at Stretch 3", where it read "Your next run starts at Stretch 3 of 4". The marks above it already show the four.
+- **The best's tag:** "New best", where it read "a new best".
+- **They stay:** "Lantern Row cleared" (plain, and it names the ground); "Dare kept" (the dare's own verb: holds, kept, broken); Hard's chevrons on the press into Hard and on a Hard run's Retry, since that's Hard's mark as on the panel's badge, not ornament.
+- **The class, for every screen:** a line is never set as a banner with ornaments on both sides. News is shown by the thing that changed: a press lit, a lock gone, a mark filled.
+- Research's second look sees the lock lift in motion, in TR54's capture.

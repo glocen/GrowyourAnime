@@ -323,6 +323,7 @@ Research's layout for TR2, 2026-11-12. The builder installs it in grey; how it l
   - one concrete detail a line, in a dry voice a little older than the player;
   - each line passes "would this world say it?";
   - no filler that sounds generated: the director called the run's line "then its last foe" "corny ai slop" (2026-11-23, 18:35). It already reads "then the elite" (TR50's fix 4).
+  - These hold for every line players read, not only the goals' [research, 2026-11-24, after the director called the run card's "Hard is open" band corny AI slop]. No line framed as a banner with ornaments on both sides: news is shown by the thing that changed.
   - Research writes them; the content check reads them before they're built.
 - **Rewards** are forge stones and shards only: never Robux, and never anything sold.
 - **Not at launch:** a pool of dares per stretch, weekly goals, a pass, titles.

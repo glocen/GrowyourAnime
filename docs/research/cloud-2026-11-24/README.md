@@ -33,8 +33,8 @@ Ranked by what it unblocks. "Yes?" marks what needs the director's word.
 | 4 | **A conductor.** One door for notices, two lanes, a pure ordering rule, a hold during fights and ceremonies, and the results card as the run's ledger. Then the eight silent big moments get a sound, and every refusal gets words. | The importance ladder exists for hits and nothing else. A keeper's fall borrows a Shade's sound. | the builder, Sonus, research | 3 days | no; the director's ear picks cues |
 | 5 | **Close the loop at every ending.** The run card, the fall card, the Tower's results and the reveal each end on the same Next line plus one fact from another system. The return card says what the base made. The session's last card names tomorrow's three. | The away summary is computed and thrown away (`BaseService.luau:88`). | the builder; research the lines | 2 days | no |
 | 6 | **Make electricity matter to the fight.** Overflow pays the workers in experience before Credits; a work knack per Voidkin gives the bays a real choice. | The design says a worker levels by working. No rule pays it. | research, then the builder | 1.5 days | yes (economy) |
-| 7 | **Stop selling the currency that buys rolls, and make Reinforce sure.** | Rule 4. Roblox's clarification of 2026-05-26 (DevForum, Announcements, topic 4654622) says every outcome must give some benefit. A failed Reinforce gives none. | the director | a decision, then 2 h | yes |
-| 8 | **Stage the gear.** Six slots first, then Reinforce, then the Condenser and more slots, emblems at the first Hard keeper win. Hold jewels and take down the "Jewels are coming" page. | Combat Power pays the balanced build 21 to 48% more, so the number steers everyone to one build. | research, the builder | 2 days | yes |
+| 7 | **Stop selling the currency that buys rolls, and give Reinforce forge heat** (replaced "make Reinforce sure", 11-24: `launch-design.md`, section 3). | Rule 4. Roblox's clarification of 2026-05-26 (DevForum, Announcements, topic 4654622) says every outcome must give some benefit. A failed Reinforce gives none. | the director | a decision, then 2 h | yes |
+| 8 | **Stage the gear.** Six slots first, then Reinforce, then the Condenser and more slots, emblems at the first Hard keeper win. ~~Hold jewels~~: withdrawn, since the director's word of 11-17 puts jewels at launch (`launch-design.md`, section 5). | Combat Power pays the balanced build 21 to 48% more, so the number steers everyone to one build. | research, the builder | 2 days | yes |
 | 9 | **One look.** "Night glass" for the UI; cel paint and the hair recipe for the Voidkin; one clip in three timings to pick the house timing; a reference beside every take. | The director rejects what the team passes. The reference is the missing instrument. | Modulo, Scintilla, research | per study | Night glass: yes |
 | 10 | **One voice.** The voice page and its ten questions into `docs/ui.md`; fifteen weak strings rewritten; one meaning for "Void". | A first session asks for about 40 game words. | research words, the builder edits | 3 h | the Shop's name and the dock's Home: yes |
 | 11 | **The paper diet and one ranked list.** Split the request files, a status line per piece, closed pieces to the archive. | 83% of the docs' words are in two files. | research and the builder | 2 h | the rule's wording: yes |
@@ -48,11 +48,11 @@ Re-checked on this branch after its study reported it: the Upgrade press, the li
 | No screen calls `UpgradeBase` or `UpgradeMachine`. The base can't level in play, so bays 3 to 6, the Condenser and machine stages can't be reached. | `src/client/UI/BaseView.luau` is still TR21's blockout | The Upgrade press with before and after (`docs/ui.md`, 7) | done here, a66cd2e; Studio owed |
 | A fallen lead can only stand again on a plot. The Festival has none. Retry is lit and answers "Your lead is down". | `FightService.luau:1371`, `StageScreen.luau:113` | Research's rule (the Arrival pad counts as home, or a fall carries the player home), then Home lit and Retry dim | tier 2 |
 | On a win the card rises at 1.2 s and the keeper's black fade covers it at 2.4 s. | `StageService.luau:261`, `KeeperService.luau:332` | The card after the fade | done here, ca87da1; Studio owed |
-| Mid and High forge stones can't realistically be had, so Reinforce stops near +10. | `Config/Drops.luau` | Say the honest cap, or add the source | research |
-| Six machines to level 30 cost about 792,000 Credits; everything else at launch about 37,000. | `Config/Base.luau` | Hold the ceiling at 6 at launch | yes (economy) |
+| Mid and High forge stones can't realistically be had, so Reinforce stops near +10. | `Config/Drops.luau` | Say the honest cap, or add the source | research; proposed: High from the Condenser (`launch-design.md`, section 5) |
+| Six machines to level 30 cost about 792,000 Credits; everything else at launch about 37,000. | `Config/Base.luau` | Hold the ceiling at 6 at launch | the director's "ok" (11-24), restated with a correction to 15 (`launch-design.md`, section 4); waiting on 6 or 15 |
 | A refusal can show a raw code, and the stage menu's Begin can say nothing. | `BaseController.luau:173`, `StageScreen.luau:114` | One table of words | done here, d0cbe09; Studio owed |
-| Noct: the name plus "throws the spear and arrives where it lands" is one famous lead's name and move. | `docs/roster.md:63`, `Definitions/Voidkin.luau:71` | A new name and a new signature before he's built | rule 3: the director |
-| `docs/roblox-rules.md` says the paid-random-items page "says nothing on an outcome that gives nothing". | line 29 | Add the 2026-05-26 clarification | research; the source couldn't be fetched from the cloud, so it's unverified |
+| Noct: the name plus "throws the spear and arrives where it lands" is one famous lead's name and move. | `docs/roster.md:63`, `Definitions/Voidkin.luau:71` | ~~A new name and a new signature~~ | **closed:** Noct stays, the director, 11-24 (`launch-design.md`, section 12) |
+| `docs/roblox-rules.md` says the paid-random-items page "says nothing on an outcome that gives nothing". | line 29 | Add the 2026-05-26 clarification | research; now SOURCED from the Community Standards (`launch-design.md`, section 3) |
 | The Blender clip tools read `src/shared/Config/Camera.luau`, which doesn't exist. | `tools/blender/r6anim.py:1004` | Read `Config/Hud.luau`'s camera, or pass it in | Modulo |
 | A favourite doesn't sort first, though the rule's comment says it does. | `src/client/UI/Read.luau` | Sort it | done here, 40a48c8 |
 | Research Points, jewels' sockets, the Tower's weekly board: fields with no source, sink or reward. | `systems-map.md`, section 6 | One truth pass over `docs/design.md` | research |
@@ -61,11 +61,10 @@ Re-checked on this branch after its study reported it: the Upgrade press, the li
 
 **The director (about an hour in all, in this order)**
 1. The private phone sitting (item 1). Nothing else is as cheap for what it settles.
-2. Yes or no: Credits unsold at launch, and a sure Reinforce (item 7).
-3. Noct's new name and move, from research's shortlist.
-4. "Night glass": yes, no, or "show me a mock first".
-5. The ten questions in `directors-taste.md`, section 8, sent as one card with pictures.
-6. Later, when asked with numbers: the gear's staging, jewels held, the machines' ceiling, overflow as experience, a one-week scope freeze, which names stay English in translation.
+2. The six questions of `launch-design.md`, section 13: the currencies, Credits and forge heat, the ceiling, the chests, the Broadcast, the welcome week. (The phone sitting: "ok"; Noct stays: both 11-24.)
+3. "Night glass": yes, no, or "show me a mock first".
+4. The ten questions in `directors-taste.md`, section 8, sent as one card with pictures.
+5. Later, when asked with numbers: the gear's staging, jewels held, the machines' ceiling, overflow as experience, a one-week scope freeze, which names stay English in translation.
 
 **The builder (Faber, on the PC)**
 1. Run the Play panel's self-test and review it from the player's camera. Then the base's Upgrade press.
@@ -113,6 +112,7 @@ Every finding is labelled SOURCED, COMMUNITY, MEASURED, OBSERVED or OPINION. Thr
 
 | Subject | Files |
 |---|---|
+| **The launch game, from the ground up** (11-24, the director's ask: currencies, Reinforce, chests, the Broadcast) | `launch-design.md` |
 | Where we stand, and how to steer | `state-of-the-game.md`, `design-review.md`, `directing-the-game.md`, `directors-taste.md`, `reorganisation-plan.md` |
 | The whole: how systems join | `systems-that-marry.md` (the method), `systems-map.md` (ours, measured), `seams-and-states.md`, `orchestration.md`, `detail-pass.md` |
 | The first session and the long game | `first-session-script.md`, `long-game.md`, `retention-and-discovery.md` |

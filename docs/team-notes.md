@@ -16,7 +16,7 @@ Each teammate rewrites its own row: one to three lines. Open asks sit under "Wai
 - **Waiting on the director:** AR59 Rook. The director wants the hair reworked (16:53), so it's AR64: Rook's and Kirra's hair, and the way Pip's is made. Nothing uploaded. Faber's open looks (TR53, TR54, the Guard's clip, AR49, AR44, AR40, AR48, TR50, AR50) are in their entries.
 - **Pip: research picked take A** (AR63), and its finish waits on AR64's pick, so his hair is made once. **Now:** AR62's two design takes in today's colours ("The plan", step 2). Then AR64's three ways of making hair (cap 2 hours). Then TR56's three chest pictures (Emblem Case, Jewel Pouch, Forge Crate). Then Lyric and Watt.
 
-**Scintilla (effects).** 2026-11-24, 14:14. Grey rows, shown nowhere yet: hit sparks (AR61), the Shades' tells (AR52), the keeper's swing and challenge (AR7), the element states (AR48).
+**Scintilla (effects).** 2026-11-24, 20:53. Grey rows, shown nowhere yet: hit sparks (AR61), the Shades' tells (AR52), the keeper's moves (AR7), the element states (AR48), the Support's cast, heal and shield (AR58).
 - **For Faber:** the hooks in those entries, and the review.
 - **Blocked:** item 10, to judge them in motion. Next: one strike per class.
 

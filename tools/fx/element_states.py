@@ -48,6 +48,7 @@ VOID_DARK = (23, 18, 31)  # Sap is dark first; its violet only a rim, at the col
 LEVELS = (0.0, 0.75, 1.5, 2.25)  # studs: the frost's top at each third, feet to hips (Modulo's)
 SHELL_W, SHELL_D, SHELL_H = 2.35, 1.3, 5.35  # the shell's half width, half depth, height
 SHUT = 6  # frames: the shell snaps shut (0.1 s)
+ROOT_HEIGHT = 3  # studs: the root over the foot, at scale 1
 
 
 def effect(name, why, rows):
@@ -127,17 +128,16 @@ def chill():
 
 def freeze():
     start_h = LEVELS[3]
-    shell = {
+    shell = {  # rides the root (3 over the foot), not grounded: a grounded row's height is the foot's
         "Kind": "Mesh",
         "Body": "HumanoidRootPart",
-        "Ground": True,
         "Part": ["FxShell"],
         "Look": "fx_ribs_Grey",
         "Grey": "fx_ribs_Grey",
         "Color": c3(FROST[0]),
         "Tracks": {
             # out of the sleeve's top and shut: its foot held on the street as it grows
-            "At": [[0, v3(0, start_h / 2, 0), "Quart Out"], [SHUT, v3(0, SHELL_H / 2, 0)], [FAR, v3(0, SHELL_H / 2, 0)]],
+            "At": [[0, v3(0, start_h / 2 - ROOT_HEIGHT, 0), "Quart Out"], [SHUT, v3(0, SHELL_H / 2 - ROOT_HEIGHT, 0)], [FAR, v3(0, SHELL_H / 2 - ROOT_HEIGHT, 0)]],
             "Scale": [[0, v3(SHELL_W * 0.85, start_h / 2, SHELL_D * 0.85), "Quart Out"], [SHUT, v3(SHELL_W, SHELL_H / 2, SHELL_D)],
                       [FAR, v3(SHELL_W, SHELL_H / 2, SHELL_D)]],
             "Transparency": [[0, 0.3, "Quad Out"], [SHUT + 2, 0.55], [FAR, 0.55]],  # held clear: the body shows through

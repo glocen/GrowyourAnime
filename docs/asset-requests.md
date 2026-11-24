@@ -16971,6 +16971,17 @@ From `build/handoff/Shade/shade_support_look.png` (the row, the pack, near, 64 p
 - **Tier 2, yes:** the seeds and the stage-3 place stand, tuned in play. It never mends itself (`packmates` leaves it out), so "fragile" holds.
 - **The pass in motion** comes once Scintilla's two rows land, as one verdict on a capture of the cast, the mend and the shield. Grey stand-ins can't show who's casting.
 
+### The Support's looks as rows, in grey (Scintilla, 2026-11-24, 20:53)
+
+`tools/fx/support_looks.py` writes three, from the kit only, waiting in `build/handoff/Support/fx/`. **SupportCast:** light gathers in each sleeve's end as they rise and holds while they're up, with a ring at the chest on `Cast`: who casts. **SupportHeal:** a ring of light climbs the mended one from its feet to its chest, with light lifting off it. **SupportShield:** a veil of light rises round the shielded one and holds, a ring turning at its top. It's round the body, not the Guard's lens in front.
+- **For Faber, in one commit, then `rows_take.py` on the three:**
+  1. `Effect = "SupportCast"` on `SupportCast`.
+  2. `HEALS.SupportCast` plays `SupportHeal` at the mended one's foot, upright, on the free clock. It isn't taken before this hook, since the grey pop steps aside as soon as the row exists.
+  3. The Track case "a hit's looks are worn on a body" counts `ShieldLook` names, as AR48's state looks need. Then `SupportShield = true` in `Effects.Lasting`. On a scratch copy with 1 and 3's `Lasting`, only that case fails.
+- **Content check, before the build: PASS.** Conditions: no red, maroon, pink or dark main colour, the chest glow and the needles above all; the heal's needles keep rising and slowing, and its chest glow stays soft (0.2 or more) and gone in about 0.3 s; performance mode drops only the ring's dark twin; with several Supports, at most 3 bright onsets a second; the veil stays a column at 0.62 or more, never a lens in front. For research at the colour pass: the ring's fill cools to the kit's grey-violet.
+- **Also fixed:** AR48's freeze shell was grounded, so it sat at the foot whatever its height said. It rides the root now.
+- **Status:** implemented as data, not shown in the game; tested offline only; not visually reviewed (item 10); not director-accepted.
+
 ## AR59. Rook, redesigned to the anime bar (Modulo, for research's pick and the director's look, then its finish; Faber's install after)
 
 Research, 2026-11-23, 22:53, on the director's pick by 22:52 (`docs/decisions.md`). Tier 2: a look players see, in Modulo's area and then Faber's. It goes into the game only on the director's acceptance. The first of the launch five's redesigns. The order: Rook, Kirra, Pip, Lyric, then Watt's finish (AR11). Each is its own request, written when the one before closes.
@@ -17376,6 +17387,11 @@ From the latest phone captures: `build/captures/tr50/arc_panel_hard_open.png`, `
 3. **Research's verdict** picks the take. The director sees it on return and can overrule.
 4. **Then each screen,** worst first, as Modulo's kit and Faber's install, each beside the old.
 5. **The colour change comes later,** on the picked design, as its own blockout of two or three palettes, at least one lighter than dark glass.
+- **The style frame** (the director, 20:52, item 11b; `docs/decisions.md`): steps 2 to 5 become one piece.
+  - Modulo brings two or three style frames. Each is the Home screen at phone size over the street by day, and Rook in the game's light with AR64's hair, and its tokens on one page: hues and neutrals, two fonts and one type scale, two or three strokes and radii, one material family.
+  - The palettes differ between frames, at least one lighter than dark glass.
+  - The director picks. Then each screen is redone from the frame, worst first.
+  - UI art is drawn as SVG and rendered by headless Chrome (item 11c).
 - **Scope:** the whole HUD's and screens' design: materials, shapes, marks, light and screen art; the colours after. Layouts change where a screen's redo needs it, named in its own step. Words: research's sweep (below).
 
 ### Research's sweep: the words (Quaestor, 2026-11-24, 13:49)
@@ -17433,3 +17449,4 @@ Research, 2026-11-24, 16:53, on the director's word, "the hair still need a rewo
 - **Waits:** Pip's hair, made the picked way at AR63's finish. Rook's and Kirra's install waits on the pick. The clips are untouched, since the hair rides the head.
 - **Checks:** the content check on the takes; research's pick; the director's look. **Cap:** 2 hours for the takes. It's a fighter's look, so it closes at the finish against the anime bar.
 - **Order:** Modulo's next, after the step it's on.
+- **Folded into AR62's style frame** (the director, 20:52, item 11b): the frame's Voidkin is Rook with the new hair. Kirra's and Pip's hair follow the picked way.

@@ -14,7 +14,7 @@ local Players = game:GetService("Players")
 -- Published under the group, 2026-11-12 (docs/asset-log.md): meshes by ModelAssembly.PublishMesh, maps by
 -- tools/upload/upload_asset.py. The Brawler's two masks and the colour and glow maps again on 2026-11-19, with the
 -- stage tile's face (AR47). The Guard's and the Dasher's masks and the two maps again on 2026-11-23 (AR52), the maps
--- with AR58's Support veil baked in (its own mask is still the earlier shape's).
+-- with AR58's fringe baked in; the Support's own mask on 2026-11-24.
 local MESHES = {
 	Shade_Torso = 128634049240309,
 	Shade_RightArm = 76942653408881,
@@ -24,7 +24,7 @@ local MESHES = {
 	Shade_MaskBrawler = 92815305659174,
 	Shade_MaskGuard = 127743903192427,
 	Shade_MaskDasher = 74976108708708,
-	Shade_MaskSupport = 82027470218034,
+	Shade_MaskSupport = 115032036320966, -- AR58's, the fringe, by ModelAssembly.PublishMesh, 2026-11-24
 	Shade_MaskBrawlerBare = 91378643616488, -- the elite's copy without its ties (AR2, section 7)
 	Shade_MaskGuardBare = 132200785533370, -- AR57's, by ModelAssembly.PublishMesh, 2026-11-24
 	Shade_MaskDasherBare = 108865181497087,

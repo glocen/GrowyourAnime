@@ -25,6 +25,7 @@ return {
 		Skip = { In = 0.04, Out = 0.1 }, -- a ranged lead's skip back (TR7): quick in, and the next action cuts it at Land
 		Guard = { In = 0.08, Out = 0.15 }, -- AR52's raise (Shade.clips.json)
 		Lunge = { In = 0.06, Out = 0.15 }, -- AR52's lunge
+		Cast = { In = 0.1, Out = 0.15 }, -- AR58's cast, the Support's (Shade_Support.clips.json)
 	},
 	Ids = {
 		-- published under the group, 2026-11-23 (docs/asset-log.md): AR52's two, the first clips up
@@ -33,6 +34,8 @@ return {
 		-- 2026-11-24: AR57's, the elites' own
 		ShadeGuardElite = 137199476410376,
 		ShadeLungeElite = 104663452343076,
+		-- 2026-11-24: AR58's, the Support's
+		ShadeCast = 134130801801922,
 	} :: { [string]: number },
 	Rigs = {
 		R6 = { Idle = "RookIdle", Hit = "RookHit", Down = "RookDown", Up = "RookUp" },
@@ -107,6 +110,7 @@ return {
 		ShadeLunge = "Lunge",
 		ShadeGuardElite = "Guard",
 		ShadeLungeElite = "Lunge",
+		ShadeCast = "Cast",
 		LamplighterIdle = "Idle",
 		LamplighterChallenge = "Challenge",
 		LamplighterWalk = "Walk",

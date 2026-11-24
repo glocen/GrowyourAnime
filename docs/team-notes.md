@@ -16,9 +16,9 @@ Each teammate rewrites its own row: one to three lines. Open asks sit under "Wai
 - **Waiting on the director:** AR59 Rook. The director wants the hair reworked (16:53), so it's AR64: Rook's and Kirra's hair, and the way Pip's is made. Nothing uploaded. Faber's open looks (TR53, TR54, the Guard's clip, AR49, AR44, AR40, AR48, TR50, AR50) are in their entries.
 - **Now:** AR64's three ways of making hair (cap 2 hours), for research's pick (the director, 21:13). Then AR62's two or three style frames (cap 3 hours). Then AR55's return as a whole screen, two or three targets at the smallest phone, from the frame. Then TR56's three chest pictures. Pip's finish (take A, AR63), Lyric and Watt wait for the frame's pick.
 
-**Scintilla (effects).** 2026-11-24, 20:55. Grey rows, shown nowhere yet, as blocks: hit sparks (AR61), the Shades' tells (AR52), the keeper's moves (AR7), the element states (AR48), the Support (AR58).
-- **For Faber:** the hooks in those entries, and the review.
-- **Blocked on the director:** item 10. A new effect's targets are made in the game (20:52), so the class strikes can't start without it.
+**Scintilla (effects).** 2026-11-24, 21:25. In the game, unjudged: the Support's looks (AR58) and the element states (AR48). As grey rows, waiting on Faber's hooks: hit sparks (AR61), the Shades' tells (AR52), the keeper's moves (AR7).
+- **For research:** AR58's and AR48's passes in motion.
+- **Blocked on the director:** item 10. A new effect's targets are made in the game, so the class strikes can't start without it.
 
 **Sonus (sound).** 2026-11-24. **Now: the M1's sound per class.** The panel's words are set (TR42, "The M1's sound per class"); nothing shortlisted yet.
 - **Blocked:** my Studio calls wait on the hooks (item 10); then a 9-minute finder run, then the director's listen. **Next:** the five signatures' sounds.

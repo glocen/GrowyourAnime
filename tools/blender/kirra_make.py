@@ -39,7 +39,7 @@ import rook_sheet as rs  # noqa: E402
 
 NAME, TAKE = "Kirra", "A"
 LINKS, PER = 8, 12            # the tail's links, and its points to a link
-THICK = (0.05, 0.046)         # by turns, so two links' overlap never shares a plane
+THICK = (0.05,)                # the band's thickness; a link's overlap into the next is 0.7 of it, tucked inside
 BLADES = {"BladeR": "Right", "BladeL": "Left"}
 TIP = 2.3                     # the blade's length from the pommel's end (the first Kirra's was 2.05)
 STEEL = ("#E8ECF2", "#7B8395")
@@ -82,8 +82,11 @@ def tail_chain(colour, ends):
     for j in range(LINKS):
         idx = list(range(j * PER, min((j + 1) * PER + 2, len(pts))))
         b = am.Built(f"Scarf{j + 1}")
-        b.ribbon([pts[i] for i in idx], [widths[i] for i in idx], lambda v, idx=idx: shade_(u[idx[0]] + v * (u[idx[-1]] - u[idx[0]])),
-                 side=across[idx[0]], thick=THICK[j % 2], turn=[twist[i] - twist[idx[0]] for i in idx])
+        tuck = [i >= (j + 1) * PER for i in idx]   # the steps past its end, inside the next link: a little smaller
+        b.ribbon([pts[i] for i in idx], [widths[i] * (0.94 if t else 1.0) for i, t in zip(idx, tuck)],
+                 lambda v, idx=idx: shade_(u[idx[0]] + v * (u[idx[-1]] - u[idx[0]])), side=across[idx[0]],
+                 thick=[THICK[0] * (0.7 if t else 1.0) for t in tuck], turn=[twist[i] - twist[idx[0]] for i in idx],
+                 caps=(j == 0, j == LINKS - 1))
         links.append(b)
     return links
 

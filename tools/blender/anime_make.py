@@ -456,6 +456,7 @@ class Hair:
         self.band = band  # the one band of light round the mass: its height over the scalp's middle, its width, its strength
         self.rng = np.random.default_rng(seed)
         self.locks = 0
+        self.patches = []   # whole pieces with pictures of their own (`sheet`): (the picture, its faces and their uv)
 
     def _vert(self, at):
         return self.bm.verts.new(at)
@@ -573,7 +574,7 @@ class Hair:
             left, right = q + side * (width / 2 * s), q - side * (width / 2 * s)
             top = q + side * (width / 2 * s * ridge) + out * (thick * s)
             rings.append([self._vert(at) for at in (left, top, right, right, left)])
-            shades.append([self.shine(left, c * 0.82), self.shine(top, c * 1.04), self.shine(right, c * 0.82), c * 0.36, c * 0.36])
+            shades.append([self.shine(left, c * 0.82), self.shine(top, c * 1.04), self.shine(right, c * 0.82), c * 0.56, c * 0.56])
         strip = len(self.strips)
         self.strips.append(np.clip(np.array(shades, np.float32), 0, 1))
         for j, (lo, hi) in enumerate(zip(rings, rings[1:])):
@@ -609,6 +610,152 @@ class Hair:
             p, nrm = self.at(*self.where(CENTRE + v))[:2]
             line.append((p + nrm * (off[0] + (off[1] - off[0]) * u + lift * math.sin(math.pi * u)), nrm))
         self.blade(line, width, thick or width * 0.22, ridge, taper, k, root=0.45)
+
+    def sheet(self, grid, paint, size, outward, closed=False):
+        """A smooth surface through `grid` (rows of points), wearing a picture of its own, `size` (texels across, down),
+        that `paint(u, v, P, N)` lays: `u` across the rows, `v` down them, P and N each texel's point and the way out
+        there. `outward(point, row, col)` says which way the surface faces. `closed`: each row's last point joins its
+        first. One piece of hair as a whole: no edges or undersides between leaves to catch the light (AR60)."""
+        rows, cols = len(grid), len(grid[0])
+        span = cols if closed else cols - 1
+        verts = [[self._vert(q) for q in row] for row in grid]
+        faces = []
+        for r in range(rows - 1):
+            for c in range(span):
+                c1 = (c + 1) % cols
+                quad = (verts[r][c], verts[r][c1], verts[r + 1][c1], verts[r + 1][c])
+                uv = {quad[0]: (c / span, r / (rows - 1)), quad[1]: ((c + 1) / span, r / (rows - 1)),
+                      quad[2]: ((c + 1) / span, (r + 1) / (rows - 1)), quad[3]: (c / span, (r + 1) / (rows - 1))}
+                f = self.bm.faces.new(quad)
+                f.normal_update()
+                mid = sum((v.co for v in quad), Vector()) / 4
+                if f.normal.dot(outward(mid, r, c)) < 0:
+                    f.normal_flip()
+                f.smooth = True
+                faces.append((f, uv))
+        # each texel's point and way out, from the grid's own, between its rows and columns
+        P = np.array([[tuple(q) for q in row] + ([tuple(row[0])] if closed else []) for row in grid], np.float64)
+        du = np.gradient(P, axis=1)
+        dv = np.gradient(P, axis=0)
+        N = np.cross(du, dv)
+        N /= np.maximum(np.linalg.norm(N, axis=2, keepdims=True), 1e-9)
+        mids = P.mean(axis=(0, 1))
+        if np.sum(N * (P - mids)) < 0:
+            N = -N
+        w, h = size
+        u, v = np.meshgrid(np.linspace(0, 1, w), np.linspace(0, 1, h))
+        cu, rv = u * (P.shape[1] - 1), v * (P.shape[0] - 1)
+        c0, r0 = np.minimum(cu.astype(int), P.shape[1] - 2), np.minimum(rv.astype(int), P.shape[0] - 2)
+        fc, fr = (cu - c0)[..., None], (rv - r0)[..., None]
+
+        def at(A):
+            top = A[r0, c0] * (1 - fc) + A[r0, c0 + 1] * fc
+            low = A[r0 + 1, c0] * (1 - fc) + A[r0 + 1, c0 + 1] * fc
+            return top * (1 - fr) + low * fr
+
+        n = at(N)
+        n /= np.maximum(np.linalg.norm(n, axis=2, keepdims=True), 1e-9)
+        self.patches.append((np.clip(paint(u, v, at(P), n), 0, 1).astype(np.float32), faces))
+        self.locks += 1
+
+    def grooves(self, u, v, count, seed, start=(0.0, 0.35), end=(0.85, 1.0), dark=0.24, wide=0.006):
+        """Lines of parted hair along `v`, `count` of them round `u`, each from a start to an end of its own and of a
+        strength of its own, with a soft lit side: what makes a smooth mass read as a few big locks. A factor to
+        multiply a colour by."""
+        rng = np.random.default_rng(seed)
+        k = np.ones_like(u)
+        for i in range(count):
+            at = (i + 0.5 + rng.uniform(-0.3, 0.3)) / count
+            v0, v1, s = rng.uniform(*start), rng.uniform(*end), rng.uniform(0.6, 1.0)
+            d = (u - at + 0.5) % 1.0 - 0.5
+            fade = np.clip((v - v0) / 0.12, 0, 1) * np.clip((v1 - v) / 0.12, 0, 1)
+            k -= dark * s * fade * np.exp(-(d / wide) ** 2)
+            k += 0.07 * s * fade * np.exp(-((d - wide * 3.5) / (wide * 3)) ** 2)
+        return k
+
+    def mass(self, hairline, tie, opening=0.12, tips=(), rows=14, cols=72, off=(0.03, 0.1), lift=0.06, grooves=24, seed=1,
+             size=(200, 64), k=1.0, inside=6):
+        """The hair's whole mass in one piece, combed from its edge to a tie at `tie` (degrees round, down), where it
+        leaves an `opening` (studs) under the tie: rows from the edge up, each line the shortest way over the egg.
+        `hairline(degrees round)` is the edge's height; `tips`, each (degrees round, half its width, degrees down),
+        are the points it hangs past it. It stands `off` over the head from the edge to the tie and `lift` more at
+        its middle; a rim turned under at its edge gives it a thickness."""
+        T = (self.at(*tie)[0] - CENTRE).normalized()
+        grid = []
+        for c in range(cols):
+            a = 360.0 * c / cols
+            wrapped = (a + 180) % 360 - 180
+            z = hairline(abs(wrapped))
+            ph = (math.degrees(math.acos(max(-1.0, min(1.0, (z - CENTRE.z) / SCALP_TOP)))) if z >= CENTRE.z
+                  else 90 - (z - CENTRE.z) / (SCALP_TOP * math.pi / 180))
+            for at_, half, deep in tips:
+                d = abs((wrapped - at_ + 180) % 360 - 180)
+                ph += deep * max(0.0, 1 - d / half) ** 1.4
+            A = (self.at(a, ph)[0] - CENTRE).normalized()
+            turn = A.angle(T)
+            E = T.slerp(A, min(0.9, opening / SCALP / max(turn, 1e-4)))
+            line = []
+            for r in range(rows):
+                s = (r / (rows - 1)) ** 0.85
+                p, nrm = self.at(*self.where(CENTRE + A.slerp(E, s)))[:2]
+                line.append(p + nrm * (off[0] + (off[1] - off[0]) * s + lift * math.sin(math.pi * s)))
+            p0, n0 = self.at(a, ph)[:2]
+            rim = line[0] - n0 * 0.07 + (line[1] - line[0]).normalized() * 0.04
+            grid.append([rim] + line)
+        grid = [list(row) for row in zip(*grid)]   # rows round the head, from the rim up to the tie
+        top, band = self.pair[1], self.band
+        base = self.colour(0.6, k)
+
+        def paint(u, v, P, N):
+            c = np.broadcast_to(base, P.shape).copy()
+            g = band[2] * np.exp(-((P[..., 2] - CENTRE.z - band[0]) / band[1]) ** 2)
+            c += (np.clip(top * 1.5 + 0.08, 0, 1) - c) * g[..., None]
+            c *= (0.78 + 0.22 * np.clip((P[..., 2] - 4.3) / 0.7, 0, 1))[..., None]   # the lower sides in the mass's shade
+            c *= (1 - 0.14 * np.clip((v - 0.86) / 0.14, 0, 1))[..., None]           # and under the tie
+            c *= self.grooves(u, v, grooves, seed, start=(0.05, 0.4), end=(0.8, 0.96), dark=0.34, wide=0.007)[..., None]
+            first = 1 / (rows)                                                       # the rim, turned under
+            return np.where((v < first * 0.9)[..., None], c * 0.66, c)
+
+        self.sheet(grid, paint, size, lambda q, r, c: q - CENTRE, closed=True)
+        # its inner face along the edge, where it hangs clear of the head: a single face seen from inside is a hole,
+        # and the points before the ears would break into splinters
+        inner = [[q - (q - CENTRE).normalized() * 0.035 for q in row] for row in grid[1:inside + 1]]
+
+        def under(u, v, P, N):
+            c = np.broadcast_to(base * 0.62, P.shape).copy()
+            return c * self.grooves(u, v, grooves // 2, seed + 1, start=(0.0, 0.2), end=(0.8, 1.0), dark=0.2, wide=0.01)[..., None]
+
+        self.sheet(inner, under, (size[0] // 2, 16), lambda q, r, c: CENTRE - q, closed=True)
+
+    def tail(self, points, radii, n=18, around=10, flat=0.75, gleam=(0.3, 0.14, 0.25), grooves=9, seed=2, size=(48, 120), k=1.0):
+        """A tail as one solid lock: a tube through `points`, its radius along it from `radii` ((how far along, studs)
+        each), flattened to `flat` of it toward the head; a band of light of its own where it turns over."""
+        spine = [Vector(q) for q in smooth2([tuple(q) for q in points], n)]
+        along_v = [i / (n - 1) for i in range(n)]
+        rv = np.interp(along_v, [q[0] for q in radii], [q[1] for q in radii])
+        grid, mids = [], []
+        for i, q in enumerate(spine):
+            t = (spine[min(i + 1, n - 1)] - spine[max(i - 1, 0)]).normalized()
+            o = q - CENTRE
+            o = (o - t * o.dot(t)).normalized()
+            s = t.cross(o).normalized()
+            r = max(float(rv[i]), 0.012)
+            grid.append([q + s * math.cos(2 * math.pi * j / around) * r + o * math.sin(2 * math.pi * j / around) * r * flat
+                         for j in range(around)])
+            mids.append(q)
+        base = self.colour(0.64, k)
+        light = np.clip(self.pair[1] * 1.5 + 0.08, 0, 1)
+
+        def paint(u, v, P, N):
+            c = np.broadcast_to(base, P.shape).copy()
+            c *= (0.72 + 0.34 * np.clip(N[..., 2] * 0.6 + 0.4, 0, 1))[..., None]
+            g = gleam[2] * np.exp(-((v - gleam[0]) / gleam[1]) ** 2)
+            c += (light - c) * g[..., None]
+            c *= (1 - 0.16 * np.clip((0.06 - v) / 0.06, 0, 1))[..., None]          # in the tie's shade
+            return c * self.grooves(u, v, grooves, seed, start=(0.02, 0.2), end=(0.75, 1.0), dark=0.3, wide=0.025)[..., None]
+
+        self.sheet(grid, paint, size, lambda q, r, c: q - mids[r], closed=True)
+        return spine
 
     def clump(self, a, ph, length, width, heading=0.0, bend=0.0, off=0.06, flick=30.0, hold=0.5, thick=None, comb=None,
               split=0, taper=1.6, k=None, n=None):
@@ -646,10 +793,22 @@ class Hair:
         step, cell, across = 4, 20, 220
         pitch = (max(len(s) for s in self.strips) - 1) * step + 4
         per_row = across // cell
-        tall = -(-len(self.strips) // per_row) * pitch + 8
+        strips_tall = -(-len(self.strips) // per_row) * pitch + 8
+        # the whole pieces' pictures below the strips, side by side where they fit
+        places, x, y, row_h = [], 0, strips_tall, 0
+        for pic, _ in self.patches:
+            h, w = pic.shape[:2]
+            if x + w + 2 > across:
+                x, y, row_h = 0, y + row_h + 2, 0
+            places.append((x + 1, y + 1))
+            x, row_h = x + w + 2, max(row_h, h + 2)
+        tall = y + row_h
         px = np.empty((tall, across, 3), np.float32)
         px[:] = self.colour(0.6)
-        px[tall - 8:, :8] = self.scalp
+        px[strips_tall - 8:strips_tall, :8] = getattr(self, "scalp", self.colour(0.4))
+        for (pic, _), (x0, y0) in zip(self.patches, places):
+            h, w = pic.shape[:2]
+            px[y0 - 1:y0 + h + 1, x0 - 1:x0 + w + 1] = np.pad(pic, ((1, 1), (1, 1), (0, 0)), mode="edge")
 
         def spread(grid):
             n, k = grid.shape[:2]
@@ -670,12 +829,18 @@ class Hair:
         uv = self.bm.loops.layers.uv.new("UVMap")
         for f in self.bm.faces:
             for loop in f.loops:
-                loop[uv].uv = (4 / across, 4 / tall)  # the scalp's colour
+                loop[uv].uv = (4 / across, 1 - (strips_tall - 4) / tall)  # the scalp's colour
         for f, i, where in self.charts:
             x0, y0 = corner(i)
             for loop, (j, col) in zip(f.loops, where):
                 x = x0 + 1.5 + col * step if col <= 2 else x0 + 12.5 + (col - 3) * step
                 loop[uv].uv = (x / across, 1 - (y0 + 1.5 + j * step) / tall)
+        for (pic, faces), (x0, y0) in zip(self.patches, places):
+            h, w = pic.shape[:2]
+            for f, where in faces:
+                for loop in f.loops:
+                    pu, pv = where[loop.vert]
+                    loop[uv].uv = ((x0 + 0.5 + pu * (w - 1)) / across, 1 - (y0 + 0.5 + pv * (h - 1)) / tall)
         mesh = bpy.data.meshes.new(name)
         self.bm.to_mesh(mesh)
         self.bm.free()
@@ -733,13 +898,15 @@ class Built:
                 self.face(made[-1], caps[1], False)
         return made
 
-    def ribbon(self, spine, widths, colour, side=(1, 0, 0), thick=0.04, under=0.6, edge=0.45, turn=None):
+    def ribbon(self, spine, widths, colour, side=(1, 0, 0), thick=0.04, under=0.6, edge=0.45, turn=None, caps=(True, True)):
         """Cloth along `spine`: `widths` across at each point, `thick` through. `side` is the way its width lies at
         the first point, carried along from there; `turn` adds a twist, degrees at each point. `colour`: one, or a
-        function of how far along (0 to 1). Its underside is `under` as bright, its two edges `edge`."""
+        function of how far along (0 to 1). Its underside is `under` as bright, its two edges `edge`. `thick` may be
+        one or one a point; `caps`, whether each end is closed (a link tucked into the next is left open)."""
         pts = [Vector(q) for q in spine]
         n = len(pts)
         widths = [widths] * n if np.isscalar(widths) else list(widths)
+        thicks = [thick] * n if np.isscalar(thick) else list(thick)
         s = Vector(side).normalized()
         rings = []
         for i, q in enumerate(pts):
@@ -747,7 +914,7 @@ class Built:
             s = (s - d * s.dot(d)).normalized()
             w = Matrix.Rotation(math.radians(turn[i]), 3, d) @ s if turn else s
             up = d.cross(w).normalized()
-            half, t2 = w * widths[i] / 2, up * thick / 2
+            half, t2 = w * widths[i] / 2, up * thicks[i] / 2
             rings.append([q - half + t2, q + half + t2, q + half - t2, q - half - t2])
         shade = colour if callable(colour) else (lambda u: colour)
 
@@ -755,7 +922,8 @@ class Built:
             c = shade((i + 0.5) / (n - 1))
             return c if k == 0 else tone(c, under) if k == 2 else tone(c, edge)
 
-        self.tube(rings, colours, caps=(tone(shade(0.0), edge), tone(shade(1.0), edge)), smooth=False)
+        self.tube(rings, colours, caps=(tone(shade(0.0), edge) if caps[0] else None, tone(shade(1.0), edge) if caps[1] else None),
+                  smooth=False)
 
     def loop(self, centre, radius, tall, colour, thick=0.16, segments=20, lean=None, squash=1.0, shades=(1.12, 1.0, 0.72, 0.5)):
         """A scarf's turn round the neck: a soft ring about `centre` (its foot), `radius` out and `squash` as deep

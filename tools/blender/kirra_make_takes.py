@@ -243,36 +243,25 @@ def take_a(joints, folder, pieces=None):
     face(head, dict(skin=skin, iris="#5BA6D6", eye_w=0.32, eye_h=0.19, eye_x=0.268, eye_y=0.52, tilt=0.03, shut=0.3,
                     brow_y=0.7, brow_tilt=0.03, brow="#7A8092", mouth=[(-0.045, 0.232), (0.0, 0.228), (0.045, 0.232)]))
     hair = am.Hair("#848CA3", "#EEF1F7", seed=31, band=(0.5, 0.1, 0.3))
-    hair.shell(am.hairline(front=4.98, temple=4.62, nape=4.34))
-    hair.scalp = hair.colour(0.4) * 0.8   # a light hair's scalp: never a dark patch between clumps
-    # One smooth lit mass of a few broad locks, all drawn to the tie behind the crown (research's must-fix 1): the
-    # back combed up from the nape, the sides from the temples, the top back from behind the fringe, each laid on
-    # the last.
-    TIE = (180, 22)
-    to_tie = lambda a0, spread=0.16: (TIE[0] + ((a0 - TIE[0] + 180) % 360 - 180) * spread, TIE[1] + 3)  # noqa: E731
-    for a0 in (106, 132, 158, 184, 210, 236, 262):
-        hair.sweep((a0, 100), to_tie(a0), 0.64, off=(0.03, 0.08), lift=0.02, k=0.96 + 0.04 * ((a0 // 26) % 2))
+    # One solid lit mass combed up to the tie behind the crown, its locks drawn as parted lines on it, never as
+    # leaves whose edges and undersides catch the light (research's must-fix 1, then the director's "messy", 11:2x)
+    TIE = (180, 24)
+    hair.mass(am.hairline(front=4.98, temple=4.62, nape=4.34), TIE, opening=0.12, seed=31,
+              tips=((180, 16, 6), (154, 12, 8), (206, 12, 8), (128, 14, 10), (232, 14, 10), (78, 20, 20), (-78, 20, 20)), lift=0.07, off=(0.04, 0.12))
+    # the side-swept fringe, from her right parting across to her left, four broad locks; the mass hangs to a point before each ear
+    for a, length, width, heading, bend in ((-34, 0.7, 0.46, 30, 10), (-12, 0.78, 0.5, 36, 14), (10, 0.72, 0.46, 40, 14), (30, 0.6, 0.4, 38, 8)):
+        hair.clump(a, 30, length, width, heading=heading, bend=bend, off=0.1, flick=12, hold=0.75, k=1.02, thick=width * 0.26)
+    # the high tail, one solid lock: from the tie, up, over and down her back, with two locks parting from its end;
+    # the crown's own silver, a band of light where it turns over
+    tie = hair.at(*TIE)[0] + hair.at(*TIE)[1] * 0.12
+    spine = [tie + Vector(q) for q in ((0, 0.0, -0.02), (0.02, -0.3, 0.24), (0.04, -0.7, 0.26), (0.06, -1.0, -0.06), (0.1, -1.08, -0.72), (0.2, -0.98, -1.4))]
+    hair.tail(spine, ((0, 0.13), (0.1, 0.2), (0.32, 0.27), (0.6, 0.24), (0.85, 0.13), (1.0, 0.0)), seed=33)
     for s_ in (-1, 1):
-        for a0, ph0 in ((76, 72), (96, 82)):
-            hair.sweep((s_ * a0, ph0), to_tie(s_ * a0, 0.2), 0.6, off=(0.05, 0.09), lift=0.03, k=1.02)
-    for a0 in (-50, -24, 2, 28, 54):   # rooted under the fringe, so no root's edge shows over it
-        hair.sweep((a0, 42), to_tie(a0, 0.22), 0.66, off=(0.0, 0.1), lift=0.06, k=1.04)
-    # the side-swept fringe, from her right parting across to her left, and a long lock before each ear
-    for a, length, width, heading, bend in ((-36, 0.66, 0.36, 30, 10), (-16, 0.74, 0.4, 36, 14), (4, 0.7, 0.38, 40, 16), (24, 0.6, 0.32, 36, 10)):
-        hair.clump(a, 30, length + 0.06, width, heading=heading, bend=bend, off=0.09, flick=12, hold=0.75, split=1)
-    for s_ in (-1, 1):
-        hair.clump(s_ * 74, 58, 0.9, 0.3, heading=-s_ * 4, off=0.05, flick=8, hold=0.9, comb=(0, 0.2, -1))
-    # the high tail: from the tie behind the crown, up, over and down her back; the crown's own silver, with a band
-    # of light where it turns over
-    tie = Vector((0.0, -0.6, 5.24))
-    for dx, lift, drop, width, k in ((0.0, 0.0, 0.0, 0.62, 1.06), (-0.16, -0.06, 0.22, 0.46, 1.02), (0.17, -0.04, 0.16, 0.46, 1.08),
-                                      (-0.08, 0.06, 0.42, 0.4, 1.0), (0.1, 0.03, 0.5, 0.4, 1.04), (0.0, -0.1, 0.7, 0.36, 1.08),
-                                      (-0.2, -0.12, 0.9, 0.3, 1.0), (0.22, -0.1, 0.95, 0.3, 1.04)):
-        pts = [tie + Vector(q) for q in ((0, 0.02, 0), (dx * 0.5, -0.3, 0.36 + lift), (dx, -0.72, 0.38 + lift), (dx * 1.3, -1.02, 0.02),
-                                         (dx * 1.5, -1.08, -0.7 + drop * 0.4), (dx * 1.6, -0.96, -1.45 + drop))]
-        hair.lock(pts, width, thick=width * 0.24, n=14, k=k, gleam=(0.3, 0.14, 0.25))
+        hair.lock([tie + Vector(q) for q in ((0.08 + s_ * 0.06, -1.06, -0.46), (0.1 + s_ * 0.2, -1.04, -0.84), (0.12 + s_ * 0.3, -0.94, -1.2))],
+                  0.3, thick=0.08, n=8, k=1.0)
     tail_tie = am.Built("Tie")
-    tail_tie.loop(tie + Vector((0, -0.04, -0.08)), 0.13, 0.16, teal, thick=0.09, segments=12, squash=0.9)
+    tail_tie.loop(tie + Vector((0, -0.02, -0.02)), 0.15, 0.16, teal, thick=0.09, segments=12, squash=0.9,
+                  lean=None)
     built = pieces(teal, "#8FD8CF", guard_) if pieces else [scarf(teal, "#8FD8CF"), blades(guard_, "#6E7686")]
     return figure(joints, folder, b, head, hair, [*built, tail_tie])
 

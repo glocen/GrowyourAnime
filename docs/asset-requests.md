@@ -17181,6 +17181,31 @@ From the sheet, the eight clips' poses and the portrait. It judges what changed.
 - **Scarf Step's line, research's call:** the tail stays 4.8 studs, since a 10-stud tail would trail on the floor at rest. The step's line across the screen is the effect's job: a trail from the scarf's tip through the step, at Scarf Step's look (Scintilla's, AR26). The tier 2 of 2026-11-14 (9.8 of 10 studs on screen) is now held by that effect, not by the cloth.
 - Visually reviewed: this second look. Director-accepted: not yet. The install waits on the director's acceptance.
 
+### Modulo's fix: the hair rebuilt whole, the scarf's follow-through (2026-11-24, 11:40; started 11:20)
+
+The director's look at the finish (about 11:20): "the hair are messy to many artifact and lack". Research's second look asked for the two must-fixes above. This is the hair's second fix round. If the director still finds it wanting, the next step is research's options, not a third patch.
+- **What made the mess:** about forty thin leaves laid over each other. Their tips fanned out jagged, their edges and dark undersides showed between them as grey stripes on the crown, and each strand before an ear flared out as a grey sliver. The tail was eight leaves crossing, which crumpled into a grey bag at the knot.
+- **The hair now:**
+  - **The mass is one piece,** combed from its edge up to the tie (the kit's new `Hair.mass`). Its locks are parted lines painted on it, with a lit side, and they converge at the tie (`Hair.grooves`). The band of light runs round it.
+  - **The edge** has a rim turned under, and an inner face where it hangs clear of the head, so a point seen from inside never breaks into splinters. Its points are part of the mass: short ones at the nape, and a broad lobe before each ear.
+  - **The fringe** is four broad locks, no longer split.
+  - **The tail** is one solid tapered lock (`Hair.tail`), the crown's own silver, with a band of light where it turns over and two locks parting at its end. The knot is the teal tie round its root.
+  - The leaves' undersides are lighter (0.56 of their colour, where they were 0.36), so a turned leaf never shows black.
+  - All of this is the kit's, for every Voidkin after her. The hair has 3,346 triangles, and she has 5,214 in all.
+- **The scarf's tail in every clip** (`tools/blender/kirra_clips.py`):
+  - **A follow-through:** each frame's posed tail is now only where the cloth is pulled to. The cloth chases it under the game's gravity and a drag, held to its links' lengths: its root follows closely and its tip late, so it lags the body and settles after it (`follow`, `PULL_ROOT` 0.2 and `PULL_TIP` 0.006 a step, four steps a frame).
+  - **No flips:** only the first link's roll comes from the keys. Each later link carries on from the one before with the least twist, so no link turns its underside up between two that show their top.
+  - **The Reveal:** its weight takes it over once she has landed (frame 30). From 60 it rises behind her left shoulder and arcs over and down, with a ripple running along it, where it stood as a plank.
+  - **The links' joints:** the part of each link that runs on into the next is now a little narrower and thinner, and tucked inside it. The inner ends are open, where each had a dark cap that drew a line across the band.
+  - The body, the blades and the markers are the same as at the finish. Every clip's audit passes with the same numbers.
+- **Delivered over the finish** in `build/handoff/Kirra/make/`; the finish's files are commit 3b328a9c.
+  - The changed files: the recipe, the hair, the scarf links, both maps (`Kirra_Color.png` sha1 `fe504f82`), the eight clips and their poses, the sheet (`22bb9bdc`), and the portraits (`aa110936`, `3e60417e`).
+  - What Faber changes at the install is as in "Modulo's finish".
+- **Content check (11:42): PASS.** The hold points of 11:21 stand, and it added two for the bare-rig strip of each clip, stepped with the scarf shown:
+  - The tail never wraps across her lower face (it would read as a mask). Look hardest at Combo 9 to 21 and 56 to 61.
+  - In the Reveal's arc (60 to 100), the tail's tip ends as cloth, never a point that tapers to a drop, from every heading at 64 px.
+- **Four facts:** made, yes. Self-reviewed, yes: the head from six sides, the bust, the game camera, the sheet, and the Reveal's, Idle's and Combo's poses. Delivered, yes. In the game, no; nothing uploaded; not director-accepted.
+
 ## AR61. The hit sparks: the shared kit's landed hit, by rung (Scintilla, then Faber's hook)
 
 Scintilla's first piece, on the director's order of 2026-11-23 ("Shared kit first", `docs/decisions.md`; `docs/briefs/effects.md`, "Your queue", 1). Research hadn't written this request when the seat opened (2026-11-24, 10:44), so Scintilla wrote it from the brief, AR8 A and the study's rules; research confirms or corrects it at the blockout's verdict.

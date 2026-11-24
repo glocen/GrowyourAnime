@@ -390,8 +390,9 @@ def path_at(path, t, loop):
     return path[i].lerp(path[i + 1], t - i)
 
 
-def solve_tail(rest, base, knot, v, q_root, trail_dir=None):
-    """The chain's turns (each joint's own, root to tip) and its points, from the tail's numbers at a frame."""
+def solve_tail(rest, base, knot, v, q_root, trail_dir=None, dirs=None):
+    """The chain's turns (each joint's own, root to tip) and its points, from the tail's numbers at a frame. `dirs`:
+    each link's way (Roblox world), as the follow-through gives them, in place of the numbers' aim and wave."""
     tail = rest["tail"]
     aim, curl, flat = v["tailaim"]
     ripple, swing, wave = v["tailwave"]
@@ -406,20 +407,27 @@ def solve_tail(rest, base, knot, v, q_root, trail_dir=None):
     for k in range(LINKS):
         c = tail["chords"][k]
         dk = (d + falls * fall * k / (LINKS - 1)).normalized() if fall > 1e-3 else d
-        if trail > 1e-3 and trail_dir is not None:
+        if trail > 1e-3 and trail_dir is not None and dirs is None:
             td = trail_dir(k, P)
             if td is not None:
                 dk = (d * (1 - trail) + td * trail).normalized()
+        if dirs is not None:
+            dk = dirs[k]
         e = held_down(dk * tail["lengths"][k], P, back)  # the aim keeps over the floor too
         dk = e.normalized()
         q_min = (parent @ c).rotation_difference(dk)
-        th = roll_to(q_min @ (parent @ tail["across"][k]), dk, reference(dk, flat, right))
+        # the first link lies as the keys say; under the follow-through each later one carries on from the last with
+        # the least twist, as cloth does, so no link turns its underside up between two that show their top
+        th = 0.0 if dirs is not None and k else roll_to(q_min @ (parent @ tail["across"][k]), dk, reference(dk, flat, right))
         aimed = parent.inverted() @ (Quaternion(dk, th) @ q_min @ parent)
-        w = math.copysign(abs(aim) ** (1 + curl * k / (LINKS - 1)), aim)
-        g = 0.45 + 0.55 * k / (LINKS - 1)
-        s = 2 * math.pi * (phase - k / max(wave, 0.5))
-        R = (share(aimed, w) @ Quaternion(tail["across"][k], math.radians(ripple * g * math.sin(s)))
-             @ Quaternion(tail["normal"][k], math.radians(swing * g * math.cos(s))))
+        if dirs is not None:
+            R = aimed
+        else:
+            w = math.copysign(abs(aim) ** (1 + curl * k / (LINKS - 1)), aim)
+            g = 0.45 + 0.55 * k / (LINKS - 1)
+            s = 2 * math.pi * (phase - k / max(wave, 0.5))
+            R = (share(aimed, w) @ Quaternion(tail["across"][k], math.radians(ripple * g * math.sin(s)))
+                 @ Quaternion(tail["normal"][k], math.radians(swing * g * math.cos(s))))
         turned = 2 * math.acos(min(1.0, abs(R.w)))
         if k and turned > BEND:  # held to the seams' bend: a tighter curve is spread, not kinked
             R = share(R, BEND / turned)
@@ -435,6 +443,44 @@ def solve_tail(rest, base, knot, v, q_root, trail_dir=None):
         points.append(P.copy())
         parent = q
     return turns, points
+
+
+SUB = 4                 # the follow-through's steps a frame
+GRAVITY = 196.2         # studs a second squared, the game's own
+DRAG = 0.08             # of its speed the cloth loses each step
+PULL_ROOT, PULL_TIP = 0.2, 0.006   # how much of the way to its pose a link's end moves each step, root and tip
+
+
+def follow(targets, loop, lengths):
+    """The cloth's points through a clip: `targets`, each frame's posed points (Roblox world, the knot first), chased
+    under gravity and drag and held to the links' lengths. A loop is run twice, so its start carries its end's motion."""
+    n, links = len(targets), len(lengths)
+    pulls = [PULL_ROOT + (PULL_TIP - PULL_ROOT) * (k / (links - 1)) ** 0.7 for k in range(links)]
+    h = 1.0 / (FPS * SUB)
+    fall = Vector((0, -GRAVITY * h * h, 0))
+    now = [q.copy() for q in targets[0]]
+    last = [q.copy() for q in now]
+    out = [None] * n
+    for lap in range(2 if loop else 1):
+        for f in range(n):
+            a, b = targets[f - 1 if f else (n - 1 if loop and lap else 0)], targets[f]
+            for s in range(1, SUB + 1):
+                u = s / SUB
+                goal = [p.lerp(q, u) for p, q in zip(a, b)]
+                now[0] = goal[0]
+                for k in range(1, links + 1):
+                    speed = (now[k] - last[k]) * (1 - DRAG)
+                    last[k] = now[k].copy()
+                    now[k] = now[k] + speed + fall
+                    now[k] = now[k] + (goal[k] - now[k]) * pulls[k - 1]
+                for _ in range(3):
+                    for k in range(1, links + 1):
+                        d = now[k] - now[k - 1]
+                        now[k] = now[k - 1] + d.normalized() * lengths[k - 1] if d.length > 1e-6 else goal[k].copy()
+                        if now[k].y < FLOOR:
+                            now[k].y = FLOOR
+            out[f] = [q.copy() for q in now]
+    return out
 
 
 def clear(point, part, frame) -> float:
@@ -507,7 +553,17 @@ def props(rig, ctl, motors, rest, takes) -> dict:
                         return (q - P).normalized()
                 return None
 
-            turns, points = solve_tail(rest, base, path[f], v, q_root, trail_dir)
+            S["tail"] = (base, q_root, solve_tail(rest, base, path[f], v, q_root, trail_dir)[1])
+            S["keys"] = keys
+        # the follow-through: the tail as posed is where the cloth is pulled to, and the cloth chases it, its root
+        # closely, its tip late, under its own weight, so it lags the body and settles after it (research, AR60)
+        chased = follow([S["tail"][2] for S in samples], take.loop, rest["tail"]["lengths"])
+        for f, S in enumerate(samples):
+            frame, v, keys = take.start + f, S["v"], S["keys"]
+            base, q_root, _ = S["tail"]
+            pts = chased[f]
+            dirs = [(b - a).normalized() for a, b in zip(pts, pts[1:])]
+            turns, points = solve_tail(rest, base, path[f], v, q_root, dirs=dirs)
             c0 = S["c0"][SCARF[0]].to_quaternion()
             for k, R in enumerate(turns):
                 local = (c0.inverted() @ base @ R) if k == 0 else R
@@ -731,11 +787,11 @@ def reveal(t):
     t.key(150, T=(11, -10, 0), crouch=0.12)
     t.tail(0, aim=0.9, curl=0.8, dir=(0.1, -0.4, 1.0), ripple=12.0, swing=6.0, wave=4.0, phase=0.0)  # up and back, off her head
     t.tail(14, ease="sine", phase=1.6)
+    t.tail(30, ease="sine", aim=0.7, curl=0.4, dir=(-0.4, -1.0, 0.35), fall=1.2)   # landed: its weight takes it over
     # it settles lifted behind her left shoulder, up into your view of her (hanging as it rests, it'd be hidden behind
     # her), and clear of the right shoulder her hand draws from: cloth in a wind, rising and arcing over, its tip
     # falling back (research's fix: a straight one read as a pennant or a blade)
-    t.tail(62, aim=0.85, curl=0.3, dir=(-0.85, -0.35, 0.75), fall=0.9, ripple=TAIL["ripple"], swing=TAIL["swing"],
-           wave=TAIL["wave"])
+    t.tail(62, aim=0.85, curl=0.3, dir=(-0.85, -0.35, 0.75), fall=1.8, ripple=16.0, swing=8.0, wave=3.5)
     t.tail(150, phase=4.0)
 
 

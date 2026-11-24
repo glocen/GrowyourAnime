@@ -20,6 +20,7 @@ local Condenser = require(Shared.Rules.Condenser)
 local Shards = require(Shared.Definitions.Shards)
 local BaseConfig = require(Shared.Config.Base)
 local ShardConfig = require(Shared.Config.Shards)
+local GrowthConfig = require(Shared.Config.Growth)
 local DataConfig = require(Shared.Config.Data)
 
 local T0 = 1_800_000_000
@@ -286,15 +287,17 @@ return {
 	{
 		Name = "Base: a change of workers never reaches back in time",
 		Run = function(t: any)
-			local data = withRook()
-			data.Base.Charge = 0
-			local watt = Collection.Uncover(data, "watt", T0).Id
-			act(data, "SetWorker", { Bay = 1, Voidkin = watt }, T0 + 100)
-			local rate = Power.Generation(data) / 3600
-			act(data, "SetWorker", { Bay = 1, Voidkin = "" }, T0 + 400)
-			t.Check("Watt's 300 seconds kept", math.abs(data.Base.Charge - rate * 300) < 1e-9, `{data.Base.Charge}`)
-			act(data, "SetWorker", { Bay = 1, Voidkin = watt }, T0 + 1000)
-			t.Check("the empty bay made nothing", math.abs(data.Base.Charge - rate * 300) < 1e-9, `{data.Base.Charge}`)
+			withConfig(GrowthConfig.Work :: any, "XpPerKwh", 0, function() -- Watt's kW held: this case is the timing's
+				local data = withRook()
+				data.Base.Charge = 0
+				local watt = Collection.Uncover(data, "watt", T0).Id
+				act(data, "SetWorker", { Bay = 1, Voidkin = watt }, T0 + 100)
+				local rate = Power.Generation(data) / 3600
+				act(data, "SetWorker", { Bay = 1, Voidkin = "" }, T0 + 400)
+				t.Check("Watt's 300 seconds kept", math.abs(data.Base.Charge - rate * 300) < 1e-9, `{data.Base.Charge}`)
+				act(data, "SetWorker", { Bay = 1, Voidkin = watt }, T0 + 1000)
+				t.Check("the empty bay made nothing", math.abs(data.Base.Charge - rate * 300) < 1e-9, `{data.Base.Charge}`)
+			end)
 		end,
 	},
 	{
@@ -483,9 +486,7 @@ return {
 			t.Equal("at launch the top base's machines stop at 6, read as the cap (the director, 2026-11-24)", held.Error, Base.Cap)
 			t.Equal("and nothing is spent", data.Currency.Credits, 100000 - 170)
 			-- The chamber rule stands for the base's next level, so it's tried under a ceiling of 30 and the launch's put back.
-			local launch = BaseConfig.Levels.Ceiling
-			BaseConfig.Levels.Ceiling = { 2, 6, 30 }
-			local ok, err = pcall(function()
+			withConfig(BaseConfig.Levels :: any, "Ceiling", { 2, 6, 30 }, function()
 				data.Base.Machines.Breaker = 7
 				data.Bag.Shards[STANDARD] = 3
 				for _ = 1, 3 do
@@ -503,10 +504,6 @@ return {
 				t.Check("at 30 the chambers stay the Breaker's most", act(data, "UpgradeMachine", { Machine = "Breaker", Level = 30 }, T0 + 17).Ok == true and #data.Base.Chambers == BaseConfig.Breaker.MostChambers)
 				t.Equal("30 is the last", act(data, "UpgradeMachine", { Machine = "Breaker", Level = 31 }, T0 + 18).Error, Base.Cap)
 			end)
-			BaseConfig.Levels.Ceiling = launch
-			if not ok then
-				error(err, 0)
-			end
 			saves(t, data, "after the machines' levels")
 		end,
 	},

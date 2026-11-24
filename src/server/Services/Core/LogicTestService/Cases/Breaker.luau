@@ -13,10 +13,13 @@ local Migrations = require(Shared.Data.Migrations)
 local Saveable = require(Shared.Data.Saveable)
 local Breaker = require(Shared.Rules.Breaker)
 local Power = require(Shared.Rules.Power)
+local Growth = require(Shared.Rules.Growth)
+local BaseLevels = require(Shared.Rules.BaseLevels)
 local Training = require(Shared.Rules.Training)
 local Collection = require(Shared.Rules.Collection)
 local BaseConfig = require(Shared.Config.Base)
 local ShardConfig = require(Shared.Config.Shards)
+local GrowthConfig = require(Shared.Config.Growth)
 
 local T0 = 1_800_000_000
 local STANDARD = "lanternrow_standard"
@@ -119,31 +122,36 @@ return {
 	{
 		Name = "Breaker: the battery fills to its cap, then overflow pays Credits",
 		Run = function(t: any)
-			local data = fresh(0)
-			local capacity = Breaker.Capacity(data.Base)
-			withWatt(data)
-			local rate = perSecond(Power.Generation(data))
-			local toFull = capacity / rate
-			local extra = 1000
-			local summary = Breaker.Advance(data, T0 + toFull + extra)
-			t.Check("full", near(data.Base.Charge, capacity))
-			t.Check("the overflow", near(summary.Overflow, rate * extra, 1e-3), `{summary.Overflow}`)
-			local paid = rate * extra * BaseConfig.Battery.CreditsPerKwh
-			t.Equal("whole Credits paid", data.Currency.Credits, math.floor(paid))
-			t.Check("the rest carried", near(data.Base.Spill, paid - math.floor(paid), 1e-3), `{data.Base.Spill}`)
+			-- The worker's growth held, so its kW stays its own: this case is the battery's.
+			withConfig(GrowthConfig.Work :: any, "XpPerKwh", 0, function()
+				local data = fresh(0)
+				local capacity = Breaker.Capacity(data.Base)
+				withWatt(data)
+				local rate = perSecond(Power.Generation(data))
+				local toFull = capacity / rate
+				local extra = 1000
+				local summary = Breaker.Advance(data, T0 + toFull + extra)
+				t.Check("full", near(data.Base.Charge, capacity))
+				t.Check("the overflow", near(summary.Overflow, rate * extra, 1e-3), `{summary.Overflow}`)
+				local paid = rate * extra * BaseConfig.Battery.CreditsPerKwh
+				t.Equal("whole Credits paid", data.Currency.Credits, math.floor(paid))
+				t.Check("the rest carried", near(data.Base.Spill, paid - math.floor(paid), 1e-3), `{data.Base.Spill}`)
+			end)
 		end,
 	},
 	{
 		Name = "Breaker: away, workers stop after the away hours",
 		Run = function(t: any)
-			local data = fresh(0)
-			withWatt(data)
-			local rate = perSecond(Power.Generation(data))
-			local hours = BaseConfig.Battery.AwayHours
-			local summary = Breaker.Advance(data, T0 + (hours + 8) * 3600, true)
-			local made = math.min(rate * hours * 3600, Breaker.Capacity(data.Base))
-			t.Check("made only the away hours", near(summary.Made, rate * hours * 3600, 1e-3), `{summary.Made}`)
-			t.Check("stored", near(data.Base.Charge, made, 1e-3))
+			withConfig(GrowthConfig.Work :: any, "XpPerKwh", 0, function() -- the worker's kW held: this case is the away hours'
+				local data = fresh(0)
+				withWatt(data)
+				local rate = perSecond(Power.Generation(data))
+				local hours = BaseConfig.Battery.AwayHours
+				local summary = Breaker.Advance(data, T0 + (hours + 8) * 3600, true)
+				local made = math.min(rate * hours * 3600, Breaker.Capacity(data.Base))
+				t.Check("made only the away hours", near(summary.Made, rate * hours * 3600, 1e-3), `{summary.Made}`)
+				t.Check("stored", near(data.Base.Charge, made, 1e-3))
+			end)
 		end,
 	},
 	{
@@ -377,9 +385,8 @@ return {
 			t.Check("it banked what wasn't a whole point", data.Training.Banked >= 0 and data.Training.Banked * Training.Rate() < 1 + 1e-6)
 			t.Check("the Power screen opened", data.Base.Power.Open)
 			data.Base.Bays[1].Worker = id
-			local before = now.Xp
 			local again = Breaker.Advance(data, T0 + 2 * span)
-			t.Check("a worker never trains", again.Trained == nil and now.Xp == before)
+			t.Check("a worker never trains: it grows by working instead", again.Trained == nil and again.Levels == 0, `{again.Trained}, {again.Levels}`)
 		end,
 	},
 	{
@@ -511,6 +518,71 @@ return {
 			t.Check("Credits and their carried rest add up as in one advance", near(whole, part, 1e-3), `{whole} against {part}`)
 			t.Check("whole Credits at most one apart, from rounding", math.abs(steps.Currency.Credits - credits) <= 1, `{steps.Currency.Credits} against {credits}`)
 			t.Check("the rest carried stays under a Credit", steps.Base.Spill >= 0 and steps.Base.Spill < 1, `{steps.Base.Spill}`)
+		end,
+	},
+	{
+		Name = "Breaker: the workers grow by working (the director, 2026-11-24): Work.XpPerKwh a kWh at the bay's level, the rest banked on the bay, never the lead",
+		Run = function(t: any)
+			local data = fresh(0)
+			local id = withWatt(data)
+			local watt, bay = data.Voidkin[id], data.Base.Bays[1]
+			watt.Level, watt.Xp = 40, 0 -- far from its next level, so these spans grow its experience only
+			local span = 600
+			local want = Power.Output(watt) * span / 3600 * GrowthConfig.Work.XpPerKwh
+			t.Check("the span stays under its next level", want * (1 + BaseLevels.BayOutput(26)) < (Growth.XpToNext(40) :: number))
+			local summary = Breaker.Advance(data, T0 + span)
+			t.Check("its kWh's experience", watt.Level == 40 and watt.Xp == math.floor(want), `{watt.Level}/{watt.Xp} against {want}`)
+			t.Check("what isn't whole banked on its bay", near(bay.Banked or 0, want - math.floor(want)), `{bay.Banked}`)
+			t.Equal("no level yet", summary.Worked, 0)
+			local had = watt.Xp + (bay.Banked or 0)
+			bay.Level = 26
+			Breaker.Advance(data, T0 + 2 * span)
+			local grew = watt.Xp + (bay.Banked or 0) - had
+			t.Check("a bay's level grows its worker as it raises its output", near(grew, want * BaseLevels.BayOutput(26), 1e-6), `{grew} against {want * BaseLevels.BayOutput(26)}`)
+			local problems = Saveable.Problems(data, "profile")
+			t.Check("the bank saves", #problems == 0, table.concat(problems, "; "))
+			data.Roles.Lead = id -- a lead somehow still in a bay
+			local before, banked = watt.Xp, bay.Banked
+			local lead = Breaker.Advance(data, T0 + 3 * span)
+			t.Check("the lead never grows by working", watt.Xp == before and bay.Banked == banked and lead.Worked == 0)
+		end,
+	},
+	{
+		Name = "Breaker: a worker's level is an event of the clock: from level 1, many short advances grow it and fill the battery as one long one does",
+		Run = function(t: any)
+			local function build(): Profile.Data
+				local data = fresh(0)
+				withWatt(data)
+				return data
+			end
+			local once, steps = build(), build()
+			local first = Power.Generation(once)
+			local span = 2 * 3600
+			local summary = Breaker.Advance(once, T0 + span)
+			for second = 10, span, 10 do
+				Breaker.Advance(steps, T0 + second)
+			end
+			local a, b = steps.Voidkin[steps.Base.Bays[1].Worker], once.Voidkin[once.Base.Bays[1].Worker]
+			t.Check("it gained levels by working", summary.Worked > 0 and b.Level == 1 + summary.Worked, `{summary.Worked}, level {b.Level}`)
+			t.Check("and its kW rose with them", Power.Generation(once) > first, `{Power.Generation(once)} against {first}`)
+			t.Check("the same level and experience", a.Level == b.Level and math.abs(a.Xp - b.Xp) <= 1, `{a.Level}/{a.Xp} against {b.Level}/{b.Xp}`)
+			t.Check("the same battery", near(steps.Base.Charge, once.Base.Charge, 1e-3), `{steps.Base.Charge} against {once.Base.Charge}`)
+		end,
+	},
+	{
+		Name = "Breaker: away, a worker grows only while it generates, the away hours; at the top level it keeps nothing",
+		Run = function(t: any)
+			local away, online = fresh(0), fresh(0)
+			local a, b = away.Voidkin[withWatt(away)], online.Voidkin[withWatt(online)]
+			local hours = BaseConfig.Battery.AwayHours
+			Breaker.Advance(away, T0 + (hours + 8) * 3600, true)
+			Breaker.Advance(online, T0 + hours * 3600)
+			t.Check("hours past the away hours grow nothing", a.Level > 1 and a.Level == b.Level and a.Xp == b.Xp, `{a.Level}/{a.Xp} against {b.Level}/{b.Xp}`)
+			local data = fresh(0)
+			local top = data.Voidkin[withWatt(data)]
+			top.Level = GrowthConfig.MaxLevel
+			local summary = Breaker.Advance(data, T0 + 3600)
+			t.Check("at the top level: no experience kept, none banked", top.Level == GrowthConfig.MaxLevel and top.Xp == 0 and (data.Base.Bays[1].Banked or 0) == 0 and summary.Worked == 0)
 		end,
 	},
 }

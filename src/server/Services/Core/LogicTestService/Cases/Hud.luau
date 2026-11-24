@@ -6,6 +6,7 @@
 -- Runs in Studio (LogicTests) and with Studio closed (tools/checks/logic_offline.luau).
 
 local Shared = game:GetService("ReplicatedStorage").Shared
+local Profile = require(Shared.Data.Profile)
 local Hud = require(Shared.Rules.Hud)
 local Hit = require(Shared.Rules.Hit)
 local StatsConfig = require(Shared.Config.Stats)
@@ -630,7 +631,7 @@ return {
 		Name = "Hud: a Voidkin is stationed in the first empty bay, never the lead, never a worker twice, and says why not",
 		Run = function(t: any)
 			-- TR17: Station on one Voidkin's screen (research's word, 2026-11-17).
-			local bays = { { Worker = "k1", Level = 1 }, { Worker = "", Level = 1 }, { Worker = "", Level = 1 } }
+			local bays: { Profile.Bay } = { { Worker = "k1", Level = 1 }, { Worker = "", Level = 1 }, { Worker = "", Level = 1 } }
 			local why, bay = Hud.WorkReason("", bays)
 			t.Check("the first empty bay", why == nil and bay == 2, `{why} {bay}`)
 			t.Equal("the lead fights", (Hud.WorkReason("Lead", bays)), "Leading")

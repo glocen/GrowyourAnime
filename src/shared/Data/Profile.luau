@@ -70,6 +70,7 @@ export type Chamber = {
 export type Bay = {
 	Worker: string, -- the Voidkin's Id, or "" when the bay is empty
 	Level: number, -- the bay's own level (TR21): its output rises with it, never past the base's ceiling (Rules.BaseLevels)
+	Banked: number?, -- its worker's experience not yet whole (0 to 1), kept for the next advance (Rules.Breaker); nil is 0
 }
 
 -- The Stone Condenser (TR37; Rules.Condenser): its next stone's share made, its tray, and the convert under way. Its

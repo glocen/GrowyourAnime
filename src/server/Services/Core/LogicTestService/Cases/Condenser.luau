@@ -19,6 +19,7 @@ local Collection = require(Shared.Rules.Collection)
 local Condenser = require(Shared.Rules.Condenser)
 local BaseConfig = require(Shared.Config.Base)
 local CondenserConfig = require(Shared.Config.Condenser)
+local GrowthConfig = require(Shared.Config.Growth)
 local DataConfig = require(Shared.Config.Data)
 
 local T0 = 1_800_000_000
@@ -144,7 +145,16 @@ return {
 			data.Base.Power.Auto = false
 			data.Base.Power.Shares = { Condenser = Condenser.Rating(1) / 2 / generation }
 			t.Check("half its rating offered: half speed", near(Breaker.Rates(data).Condenser, 0.5), `{Breaker.Rates(data).Condenser}`)
-			Breaker.Advance(data, T0 + 7 * HOUR)
+			-- The worker's growth held for these hours, so the split's kW stays the one set (Config.Growth.Work).
+			local rate = GrowthConfig.Work.XpPerKwh
+			GrowthConfig.Work.XpPerKwh = 0
+			local ok, err = pcall(function()
+				Breaker.Advance(data, T0 + 7 * HOUR)
+			end)
+			GrowthConfig.Work.XpPerKwh = rate
+			if not ok then
+				error(err, 0)
+			end
 			t.Equal("seven hours at half speed: three stones", tray(data, LOW), 3)
 			t.Check("and half of the next", near(data.Base.Condenser.Made, 0.5), `{data.Base.Condenser.Made}`)
 			-- Under Auto, short of generation with the battery empty: the generation's share of what's asked.

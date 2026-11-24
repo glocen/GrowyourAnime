@@ -9,8 +9,9 @@
 -- its speed and the one on the Training machine trains at its own; a finished shard moves to Ready, and an empty chamber
 -- takes the line's first shard.
 -- Who trains: while the player is in the game, Training.Trainee (the server's, LeadService); away, the lead. A worker
--- never trains. Away, the workers generate for Config.Base.Battery.AwayHours at most; then the machines run on the
--- battery, then at the floor. No Roblox API: it runs with Studio closed.
+-- never trains: it grows by working instead, Config.Growth.Work.XpPerKwh for every kWh it makes (the director,
+-- 2026-11-24). Away, the workers generate, and so grow, for Config.Base.Battery.AwayHours at most; then the machines run
+-- on the battery, then at the floor. No Roblox API: it runs with Studio closed.
 -- One query for the client: SelfOpening(ready, onPlot), the first broken shard that opens itself (a grade with Opens in
 -- Config.Shards.Grades: the first session's starter and Watt's, TR24's fix 5) once its player stands on their plot.
 
@@ -19,6 +20,8 @@ local BaseConfig = require(Shared.Config.Base)
 local ShardConfig = require(Shared.Config.Shards)
 local Shards = require(Shared.Definitions.Shards)
 local Profile = require(Shared.Data.Profile)
+local GrowthConfig = require(Shared.Config.Growth)
+local Growth = require(Shared.Rules.Growth)
 local Power = require(Shared.Rules.Power)
 local Training = require(Shared.Rules.Training)
 local BaseLevels = require(Shared.Rules.BaseLevels)
@@ -34,6 +37,7 @@ export type Summary = {
 	Levels: number, -- the levels it gained them
 	Stones: number, -- stones the Stone Condenser made into its tray (TR37)
 	Converted: number, -- converts it finished
+	Worked: number, -- the levels the workers gained by working
 	Steps: number, -- events stepped through, for tests
 }
 
@@ -177,14 +181,65 @@ local function nextEvent(base: Profile.Base, flow: Power.Flow): number
 	return soonest
 end
 
-local function step(data: Profile.Data, seconds: number, generation: number, trainee: Profile.OwnedVoidkin?, summary: Summary)
+-- The bays' workers, each with its bay: the lead never works (Rules.Base, Leading), so a lead somehow still in a bay is
+-- skipped.
+local function workers(data: Profile.Data): { { Bay: Profile.Bay, Worker: Profile.OwnedVoidkin } }
+	local list = {}
+	for _, bay in data.Base.Bays do
+		local worker = if bay.Worker ~= "" then data.Voidkin[bay.Worker] else nil
+		if worker and data.Roles.Lead ~= worker.Id then
+			table.insert(list, { Bay = bay, Worker = worker })
+		end
+	end
+	return list
+end
+
+-- Experience a second a worker earns in its bay: its kW times Config.Growth.Work.XpPerKwh.
+local function workRate(bay: Profile.Bay, worker: Profile.OwnedVoidkin): number
+	return Power.Output(worker) * BaseLevels.BayOutput(bay.Level or 1) / 3600 * GrowthConfig.Work.XpPerKwh
+end
+
+-- Seconds until the first worker reaches its next level, which raises its kW: a worker's level is an event of the clock,
+-- like a shard finishing, so one long advance lands where many short ones do. A thousandth of a point past it, so the
+-- step lands on the level and not a rounding short of it.
+local function nextLevel(data: Profile.Data): number
+	local soonest = math.huge
+	for _, at in workers(data) do
+		local need = Growth.XpToNext(at.Worker.Level)
+		local perSecond = workRate(at.Bay, at.Worker)
+		if need ~= nil and perSecond > 0 then
+			soonest = math.min(soonest, (math.max(0, need - at.Worker.Xp - (at.Bay.Banked or 0)) + 1e-3) / perSecond)
+		end
+	end
+	return soonest
+end
+
+-- The workers grow by working for `seconds` of generation (the director, 2026-11-24): each earns its own kWh times
+-- Config.Growth.Work.XpPerKwh. What isn't yet a whole point waits on its bay, so many short advances pay what one long
+-- one does.
+local function work(data: Profile.Data, seconds: number, summary: Summary)
+	for _, at in workers(data) do
+		local bay, worker = at.Bay, at.Worker
+		local xp = workRate(bay, worker) * seconds + (bay.Banked or 0)
+		local whole = math.floor(xp)
+		local gained = Growth.AddXp(worker, whole)
+		bay.Banked = if Growth.XpToNext(worker.Level) == nil then 0 else xp - whole
+		summary.Worked += gained
+		Goals.Note(data, "LevelUp", gained)
+	end
+end
+
+-- Steps the base through `seconds`, event by event. `generating` is false once the workers stop while away: then the
+-- bays make nothing and nobody grows by working.
+local function step(data: Profile.Data, seconds: number, generating: boolean, trainee: Profile.OwnedVoidkin?, summary: Summary)
 	local base = data.Base
 	local left = seconds
 	feed(base)
 	while left > EPSILON and summary.Steps < MAX_STEPS do
 		summary.Steps += 1
+		local generation = if generating then Power.Generation(data) else 0
 		local flow = flowNow(data, generation, trainee ~= nil)
-		local dt = math.min(left, nextEvent(base, flow))
+		local dt = math.min(left, nextEvent(base, flow), if generating then nextLevel(data) else math.huge)
 		local speed = (flow.Speed.Breaker or 1) * pace(base)
 		for _, chamber in base.Chambers do
 			local work = chamber.Work
@@ -214,6 +269,9 @@ local function step(data: Profile.Data, seconds: number, generation: number, tra
 			base.Power.Open = true
 		end
 		summary.Made += generation * dt / 3600
+		if generating then
+			work(data, dt, summary)
+		end
 		local capacity = Breaker.Capacity(base)
 		local charge = base.Charge + flow.Net * dt / 3600
 		if charge > capacity then
@@ -265,7 +323,7 @@ end
 -- workers' generation stops after Config.Base.Battery.AwayHours and the lead trains. A base never advanced takes `now`
 -- as its stamp. A `now` before the stamp (a clock step back) changes nothing.
 function Breaker.Advance(data: Profile.Data, now: number, away: boolean?): Summary
-	local summary: Summary = { Finished = 0, Made = 0, Overflow = 0, Credits = 0, Levels = 0, Stones = 0, Converted = 0, Steps = 0 }
+	local summary: Summary = { Finished = 0, Made = 0, Overflow = 0, Credits = 0, Levels = 0, Stones = 0, Converted = 0, Worked = 0, Steps = 0 }
 	local base = data.Base
 	if base.Stamp == 0 then
 		base.Stamp = now
@@ -276,12 +334,11 @@ function Breaker.Advance(data: Profile.Data, now: number, away: boolean?): Summa
 	if gap <= 0 then
 		return summary
 	end
-	local generation = Power.Generation(data)
 	local trainee = Breaker.Trainee(data, away)
 	local making = if away then math.min(gap, BaseConfig.Battery.AwayHours * 3600) else gap
-	step(data, making, generation, trainee, summary)
+	step(data, making, true, trainee, summary)
 	if gap > making then
-		step(data, gap - making, 0, trainee, summary)
+		step(data, gap - making, false, trainee, summary)
 	end
 	base.Stamp = now
 	return summary

@@ -25,4 +25,9 @@ return {
 	-- in Lantern Row (Rules.Training.Rate, from Config.World.Row's packs and elite), research's third. Each level costs
 	-- more, so it slows as levels rise. Every: the most seconds between two credits while the player is in the game.
 	Training = { Share = 0.33, Every = 30 },
+	-- The workers grow by working (the director's yes, 2026-11-24, to docs/research/cloud-2026-11-24/launch-design.md,
+	-- section 2; docs/design.md, "Roles": "Each role earns its own experience"). A worker earns XpPerKwh for every kWh it
+	-- makes, at its bay's level, so a 12 kW worker earns about half what the Training machine gives. Away, it earns only
+	-- while it generates (Config.Base.Battery.AwayHours). The builder's seed from that file; research fits it.
+	Work = { XpPerKwh = 100 },
 }

@@ -673,18 +673,18 @@ local function registerDebug()
 			return { Ok = true, Was = was, Level = level }
 		end)
 	end)
-	-- Studio only. A machine's level set as it is (the Breaker's, or bay `bay`'s), nothing else touched, not even its
-	-- chambers, so a case shows each stage, a lid where the Breaker hasn't its chamber yet, and puts the level back
-	-- (TR51). Bought levels go through Act("UpgradeMachine").
+	-- Studio only. A machine's level set as it is (the Breaker's, the Condenser's, or bay `bay`'s), nothing else touched,
+	-- not even its chambers, so a case shows each stage, a lid where the Breaker hasn't its chamber yet, and puts the
+	-- level back (TR51; the Condenser's for TR56's Mid into High). Bought levels go through Act("UpgradeMachine").
 	DebugService.Register("MachineLevel", function(who: any, machine: any, level: any, bay: any): any
 		local player = DebugService.ResolvePlayer(who)
-		if not player or (machine ~= "Breaker" and machine ~= "Bay") or type(level) ~= "number" or level ~= math.floor(level) or level < 1 then
+		if not player or (machine ~= "Breaker" and machine ~= "Condenser" and machine ~= "Bay") or type(level) ~= "number" or level ~= math.floor(level) or level < 1 then
 			return { Ok = false, Error = "BadArgs" }
 		end
 		return DataService.Change(player, "MachineLevel", function(draft: Profile.Data): { [string]: any }
-			if machine == "Breaker" then
-				local was = draft.Base.Machines.Breaker or 1
-				draft.Base.Machines.Breaker = level
+			if machine == "Breaker" or machine == "Condenser" then
+				local was = draft.Base.Machines[machine] or 1
+				draft.Base.Machines[machine] = level
 				return { Ok = true, Was = was, Level = level }
 			end
 			local seat = if type(bay) == "number" then draft.Base.Bays[bay] else nil

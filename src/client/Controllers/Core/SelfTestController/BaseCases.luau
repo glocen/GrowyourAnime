@@ -1382,10 +1382,15 @@ function BaseCases.Cases(given: Given): { any }
 				local machine = condenser :: Instance
 				local press = forge :: Instance
 				local levelWas = view.Base.Level
-				local low, mid = CondenserConfig.Makes, CondenserConfig.Convert.To
+				local low, mid = CondenserConfig.Makes, CondenserConfig.Converts.Low.To
 				local function shownOf(name: string): boolean
 					local part = machine:FindFirstChild(name)
 					return part ~= nil and part:IsA("BasePart") and part.Transparency < 1
+				end
+				-- The jewels its tray holds, as its plate says them after the stones (TR56); "" for none.
+				local function jewelWords(data: any): string
+					local n = Condenser.JewelsHeld(data.Base)
+					return if n == 0 then "" else ` · {n} {if n == 1 then "jewel" else "jewels"}`
 				end
 				local function litCups(): number
 					local lit = 0
@@ -1441,11 +1446,13 @@ function BaseCases.Cases(given: Given): { any }
 				end), cardState())
 				local stones = { cardPart("From"), cardPart("To") }
 				t.Check("its cost in the stones' own pictures, the take and the give", (stones[1] :: ImageLabel?) ~= nil and (stones[2] :: ImageLabel?) ~= nil
-					and (stones[1] :: ImageLabel).Image == UIKit.Images[`Stone{CondenserConfig.Convert.From}`].Id and (stones[2] :: ImageLabel).Image == UIKit.Images[`Stone{CondenserConfig.Convert.To}`].Id
-					and (cardPart("Take") :: TextLabel?) ~= nil and (cardPart("Take") :: TextLabel).Text == tostring(CondenserConfig.Convert.Take)
-					and (cardPart("Give") :: TextLabel?) ~= nil and (cardPart("Give") :: TextLabel).Text == tostring(CondenserConfig.Convert.Give))
+					and (stones[1] :: ImageLabel).Image == UIKit.Images[`Stone{CondenserConfig.Converts.Low.From}`].Id and (stones[2] :: ImageLabel).Image == UIKit.Images[`Stone{CondenserConfig.Converts.Low.To}`].Id
+					and (cardPart("Take") :: TextLabel?) ~= nil and (cardPart("Take") :: TextLabel).Text == tostring(CondenserConfig.Converts.Low.Take)
+					and (cardPart("Give") :: TextLabel?) ~= nil and (cardPart("Give") :: TextLabel).Text == tostring(CondenserConfig.Converts.Low.Give))
 				local asleepPrompt = BaseController.Parts().ConvertPrompt :: ProximityPrompt?
 				t.Check("nothing to start", asleepPrompt ~= nil and not asleepPrompt.Enabled)
+				local switch = BaseController.Parts().ConvertSwitch :: ProximityPrompt?
+				t.Check("TR56: its Switch off while the Condenser runs one convert (Mid into High from its level 10)", switch ~= nil and not switch.Enabled)
 				-- Awake: its Comb, the stone gone. An empty tray first, so the fills below are its own.
 				t.Server("BaseLevel", math.max(levelWas, CondenserConfig.Wakes))
 				t.Check("awake at its level: its Comb, the stone gone", waitFor(t, ANSWER + 2, function(): boolean
@@ -1481,7 +1488,7 @@ function BaseCases.Cases(given: Given): { any }
 				local data = ProfileController.Get() :: any
 				t.Equal("its comb lit by the tray's fill", litCups(), Condenser.Lit(data.Base, comb))
 				t.Check("part of the comb, not all", litCups() > 0 and litCups() < comb, `{litCups()} of {comb}`)
-				t.Equal("its plate reads the tray", plateLine(), `Tray {held} of {cap} {low}`)
+				t.Equal("its plate reads the tray, and the jewels its work made (TR56)", plateLine(), `Tray {held} of {cap} {low}{jewelWords(data)}`)
 				local core = machine:FindFirstChild("Core") :: BasePart?
 				t.Check("its core turning while it works", core ~= nil and core:GetAttribute("Spinning") == true)
 				if core then
@@ -1499,7 +1506,7 @@ function BaseCases.Cases(given: Given): { any }
 					return trayHeld() == cap and litCups() == comb and copyHeld() == cap
 				end), `{trayHeld()} held, the copy {copyHeld()}, {litCups()} of {comb} lit`)
 				t.Check("its core still on a full tray", core ~= nil and core:GetAttribute("Spinning") == false)
-				t.Equal("its plate says full", plateLine(), `Tray full · {cap} {low}`)
+				t.Equal("its plate says full", plateLine(), `Tray full · {cap} {low}{jewelWords(ProfileController.Get() :: any)}`)
 				-- The tap: the whole tray into the bag, once.
 				local lowWas = (ProfileController.Get() :: any).Bag.Stones[low] or 0
 				local answer = BaseController.CollectTray()
@@ -1513,7 +1520,7 @@ function BaseCases.Cases(given: Given): { any }
 				end))
 				-- The card: ready, short and running; its prompt on the cradle begins a convert, which says its time, refuses a
 				-- second, and lands its Mid in the tray.
-				local c = CondenserConfig.Convert
+				local c = CondenserConfig.Converts.Low
 				local cradle = WorldConfig.Condenser.Cradle
 				local at = (Markers.At(machine) * CFrame.new(cradle[1], cradle[3], -cradle[2])).Position
 				local onCradle = BaseController.Parts().ConvertPrompt :: ProximityPrompt?
@@ -1539,6 +1546,29 @@ function BaseCases.Cases(given: Given): { any }
 					return found ~= nil and cardState() == "Ready" and word() == "Ready" and math.abs(fill() - 1) < 1e-6
 						and found.Size.Y.Offset == look.Size.Y and onCradle ~= nil and onCradle.Enabled
 				end), `{cardState()}, {word()}, {fill()}`)
+				-- TR56: from the Condenser's level 10, with Mid in the bag, its Switch on, and a press turns the card to Mid into
+				-- High; back at its level, off again, the card on Low into Mid.
+				do
+					local was = ProfileController.Get() :: any
+					local condenserWas, midWas = was.Base.Machines.Condenser or 1, was.Bag.Stones.Mid or 0
+					local high = CondenserConfig.Converts.Mid
+					t.Server("MachineLevel", "Condenser", high.FromLevel)
+					t.Server("StonesGive", "Mid", math.max(0, high.Take - midWas))
+					local switchPrompt = BaseController.Parts().ConvertSwitch :: ProximityPrompt?
+					local panel = BaseController.Parts().ConvertCard :: Instance?
+					t.Check("TR56: at the Condenser's level 10, Mid in the bag: its Switch on, the card still on Low", waitFor(t, ANSWER, function(): boolean
+						return switchPrompt ~= nil and switchPrompt.Enabled and panel ~= nil and panel:GetAttribute("From") == "Low"
+					end), if panel then tostring(panel:GetAttribute("From")) else "no card")
+					t.Equal("a switch: Mid into High", BaseController.SwitchConvert(), "Mid")
+					t.Check("the card's cost line on Mid", waitFor(t, ANSWER, function(): boolean
+						return panel ~= nil and panel:GetAttribute("From") == "Mid"
+					end), if panel then tostring(panel:GetAttribute("From")) else "no card")
+					t.Server("MachineLevel", "Condenser", condenserWas)
+					t.Server("StonesGive", "Mid", midWas - ((ProfileController.Get() :: any).Bag.Stones.Mid or 0))
+					t.Check("back under level 10: its Switch off, the card on Low", waitFor(t, ANSWER, function(): boolean
+						return switchPrompt ~= nil and not switchPrompt.Enabled and panel ~= nil and panel:GetAttribute("From") == "Low"
+					end), if panel then tostring(panel:GetAttribute("From")) else "no card")
+				end
 				-- In reach, beside its prompt (UI.World.Beside): Roblox's card draws under every layer, so the card stands right
 				-- of it, or at the screen's right edge.
 				local stand = (Markers.At(machine) * CFrame.new(1.0, 3, -8.6)).Position
@@ -1629,13 +1659,13 @@ function BaseCases.Cases(given: Given): { any }
 				t.Check("running: the card still beside where its prompt stood", stayed,
 					if found and promptRight then string.format("its left %.1f, the prompt's right %.1f", found.AbsolutePosition.X, promptRight :: number) else "no card")
 				t.Equal("one at a time", ProfileController.Act("Convert").Error, "Busy")
-				t.Server("BaseSkip", CondenserConfig.Convert.Seconds / floor + 5)
+				t.Server("BaseSkip", CondenserConfig.Converts.Low.Seconds / floor + 5)
 				t.Check("its Mid lands in the tray", waitFor(t, ANSWER + 2, function(): boolean
 					local tray = (ProfileController.Get() :: any).Base.Condenser.Tray
-					return (tray[mid] or 0) >= CondenserConfig.Convert.Give
+					return (tray[mid] or 0) >= CondenserConfig.Converts.Low.Give
 				end))
 				t.Check("its plate says so", waitFor(t, ANSWER, function(): boolean
-					return string.find(plateLine(), `{CondenserConfig.Convert.Give} {mid}`, 1, true) ~= nil
+					return string.find(plateLine(), `{CondenserConfig.Converts.Low.Give} {mid}`, 1, true) ~= nil
 				end), plateLine())
 				ProfileController.Act("CollectTray")
 				for _, grade in { low, mid } do -- the bag as it was
@@ -1716,7 +1746,7 @@ function BaseCases.Cases(given: Given): { any }
 				if view == nil or machine == nil then
 					return
 				end
-				local c = CondenserConfig.Convert
+				local c = CondenserConfig.Converts.Low
 				local levelWas = view.Base.Level
 				local power = { Open = view.Base.Power.Open, Auto = view.Base.Power.Auto, Shares = table.clone(view.Base.Power.Shares) }
 				local bagWas = table.clone(view.Bag.Stones)

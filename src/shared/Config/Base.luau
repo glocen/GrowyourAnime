@@ -56,6 +56,7 @@ return {
 		Ceiling = { 2, 6, 15 },
 		Battery = { 60, 150, 400 }, -- kWh the battery holds at each base level (seeds "baseLevels.batteryKwh")
 		Cells = { 2, 4, 8 }, -- cells its bank shows at each base level, lit one after another as it charges (Modulo's count, AR15, section 4)
+		Presets = { 1, 2, 3 }, -- gear presets held at each base level (TR56; research, 2026-11-24, tier 2; seeds "presetsAtBaseLevel")
 	},
 	Machines = {
 		-- The first machine level of each stage: I, Primitive; II, Developed; III, Advanced (research's thresholds,

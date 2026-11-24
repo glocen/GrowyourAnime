@@ -6,6 +6,10 @@
 -- Config.Stats's weights. When the combat review is accepted, the rows are re-priced with its weights; only numbers move.
 
 return {
+	Order = { "Uncommon", "Rare", "Epic", "Legendary" }, -- the rarities emblems come in, lowest first (D, 2026-11-19, 03:13)
+	-- Take of one stat and rarity make one of the next, that stat and a set drawn, free and sure; Legendary the top (TR56;
+	-- research, 2026-11-24, tier 2; seeds.json, "chestFamily", combine).
+	Combine = { Take = 3 },
 	Worth = { Uncommon = 0.25, Rare = 0.45, Epic = 0.7, Legendary = 1.0 } :: { [string]: number },
 	Points = { Attack = 32, Health = 149, Defence = 73, Critical = 814, Hit = 530, Dodge = 294 } :: { [string]: number },
 	-- Epic and Legendary only, set by the stats' caps rather than by price: a price measured at small values doesn't hold

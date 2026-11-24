@@ -197,6 +197,11 @@ function RegaliaService.Init()
 			return rng:NextNumber()
 		end)
 	end)
+	-- Three emblems of one stat and rarity into one of the next (TR56): the bag only, so no fight check; the set's draw
+	-- the server's, and the op id returns a repeat's first answer, so a retry never pays twice.
+	DataService.Action("Combine", function(draft: Profile.Data, args: any): { [string]: any }
+		return Emblems.Combine(draft, args, seeds:NextNumber())
+	end)
 	DataService.Action("SetSalvage", function(draft: Profile.Data, args: any): { [string]: any }
 		return Chests.SetSalvage(draft, if type(args) == "table" then args.Below else nil)
 	end)

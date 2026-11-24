@@ -13,7 +13,8 @@
 --   3. Main:<id>  the class's Main converts once more by its class's row (Attributes.Main)
 --      Reinforce  the item's Reinforce level: its main line's stat, the level's share of that line (Rules.Reinforce)
 --      Emblem     each War Emblem in the item's sockets: its stat's points (Rules.Emblems)
--- Jewels and research join here as sources when they're built, each a flat line.
+--      Jewel      each jewel in the item: its colour's attribute's points, a point before step 2 (Rules.Jewels; TR56)
+-- Research joins here as a source when it's built, a flat line.
 -- An enemy's block is its Kind's numbers times G (Stats.Enemy): no sources, nothing worn.
 -- Both the server (for truth) and the client (for previews) call it; nothing else adds stats.
 -- No Roblox API: it runs with Studio closed.
@@ -32,6 +33,8 @@ local Items = require(Shared.Definitions.Items)
 local Growth = require(Shared.Rules.Growth)
 local Reinforce = require(Shared.Rules.Reinforce)
 local Emblems = require(Shared.Rules.Emblems)
+local Jewels = require(Shared.Rules.Jewels)
+local JewelsConfig = require(Shared.Config.Jewels)
 local Regalia = require(Shared.Rules.Regalia)
 local Passive = require(Shared.Rules.Passive)
 local Actions = require(Shared.Definitions.Actions)
@@ -217,6 +220,16 @@ function Stats.Resolve(owned: Profile.OwnedVoidkin, preset: Profile.Preset?, dat
 				local emblemStat, points = Emblems.Points(key)
 				if emblemStat then
 					add(`Emblem:{slot}`, emblemStat, points)
+				end
+			end
+			-- Its jewels: flat points of each colour's attribute (TR56), in the colours' order.
+			for _, colour in JewelsConfig.Colours do
+				local tier = item.Jewels[colour]
+				if tier then
+					local attribute, points = Jewels.Points(colour, tier)
+					if attribute then
+						point(`Jewel:{slot}`, attribute, points)
+					end
 				end
 			end
 		end

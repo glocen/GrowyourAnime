@@ -150,7 +150,8 @@ return {
 			end
 			t.Equal("the rarities stop at Legendary", ChestsConfig.Rarities[#ChestsConfig.Rarities], "Legendary")
 			t.Equal("one ladder row a rarity each", #ChestsConfig.Ladder[1], #ChestsConfig.Rarities)
-			t.Equal("Lantern Row's Shade chest never gives a Rare", Chests.Odds(ChestRows.Of("lanternrow", 1) :: any).Rare, 0)
+			local shade = Chests.Odds(ChestRows.Of("lanternrow", 1) :: any)
+			t.Check("TR56: Lantern Row's Shade chest gives a Rare at its least, 1%, above its Epic", math.abs(shade.Rare - ChestsConfig.Least.Rare / 100) < 1e-9 and shade.Rare > shade.Epic, `{shade.Rare} {shade.Epic}`)
 		end,
 	},
 	{
@@ -199,8 +200,14 @@ return {
 			lead(data, "Mage")
 			local classes = Chests.Classes(data)
 			local draw = sequence(7)
+			local gear = {} -- the chests that hold gear (TR56: a case, a pouch and a crate hold none)
+			for _, row in ChestRows.List do
+				if Chests.IsGear(row) then
+					table.insert(gear, row)
+				end
+			end
 			for i = 1, 400 do
-				local row = ChestRows.List[(i - 1) % #ChestRows.List + 1]
+				local row = gear[(i - 1) % #gear + 1]
 				local seed = 1000 + i
 				local rolled = Chests.Roll(row, classes, sequence(seed))
 				t.Check(`{i}: the same draws, the same item`, same(rolled, Chests.Roll(row, classes, sequence(seed))))

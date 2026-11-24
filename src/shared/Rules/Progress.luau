@@ -11,6 +11,8 @@ local Cooldown = require(Shared.Rules.Cooldown)
 local Chests = require(Shared.Rules.Chests)
 local Drops = require(Shared.Rules.Drops)
 local DropsConfig = require(Shared.Config.Drops)
+local ChestsConfig = require(Shared.Config.Chests)
+local ChestRows = require(Shared.Definitions.Chests)
 local Goals = require(Shared.Rules.Goals)
 
 local Progress = {}
@@ -45,10 +47,11 @@ end
 -- The keeper of ground `id` fell to this player's lead at `now` (os.time), in a run on `difficulty` (Normal when nil or
 -- unknown): one more win there on that difficulty, the next ground opened if it wasn't, this player's keeper resting
 -- Cooldown.Wait("Keeper") from now, and its chest, the better on that difficulty's first win (Rules.Chests.KeeperChest,
--- TR27; TR48). With `loot`'s rolls, its War Emblem too (Config.Drops.EmblemChance.Keeper, EmblemFirst on that first
--- win): a keeper's comes with its win, never its fall's drop. { Ok, Ground, Difficulty, Wins, Opened, Back, Chest,
--- Emblem } where Wins counts that difficulty's, Opened is the ground the win opened or "", Back when the keeper is back
--- (os.time), Chest the chest's id or "", and Emblem its key or "".
+-- TR27; TR48). With `loot`'s rolls, its Emblem Case too (Config.Drops.EmblemChance.Keeper, EmblemFirst on that first
+-- win), standing for the win's chest (TR56): a keeper's comes with its win, never its fall's drop. A Hard win also gives
+-- a Jewel Pouch and, at its chance, a Forge Crate (Config.Chests.Pouch and Crate, HardKeeper). { Ok, Ground, Difficulty,
+-- Wins, Opened, Back, Chest, Case, Pouch, Crate } where Wins counts that difficulty's, Opened is the ground the win
+-- opened or "", Back when the keeper is back (os.time), and Chest, Case, Pouch and Crate each a chest's id or "".
 function Progress.KeeperWon(data: Profile.Data, id: any, now: number, difficulty: string?, loot: Drops.Loot?): { [string]: any }
 	local row = if type(id) == "string" then Grounds.ById[id] else nil
 	if row == nil then
@@ -69,12 +72,22 @@ function Progress.KeeperWon(data: Profile.Data, id: any, now: number, difficulty
 	if chest then
 		Chests.Grant(data, chest, 1)
 	end
-	local emblem = ""
+	local case, pouch, crate = "", "", ""
 	if loot then
 		local first = if wins == 1 then DropsConfig.EmblemFirst[level] else nil
-		emblem = Drops.Emblem("Keeper", row.Id, loot, level, first) or ""
-		if emblem ~= "" then
-			data.Bag.Emblems[emblem] = (data.Bag.Emblems[emblem] or 0) + 1
+		case = Chests.Case(chest, loot.Emblem, first or DropsConfig.EmblemChance.Keeper or 0) or ""
+		if case ~= "" then
+			Chests.Grant(data, case, 1)
+		end
+		if level == "Hard" then
+			if (loot.Pouch or 0) < ChestsConfig.Pouch.HardKeeper then
+				pouch = ChestRows.PouchId
+				Chests.Grant(data, pouch, 1)
+			end
+			if (loot.Crate or 0) < ChestsConfig.Crate.HardKeeper then
+				crate = ChestRows.CrateId
+				Chests.Grant(data, crate, 1)
+			end
 		end
 	end
 	local nextRow = Grounds.List[row.Order + 1]
@@ -83,7 +96,7 @@ function Progress.KeeperWon(data: Profile.Data, id: any, now: number, difficulty
 		opened(data, nextRow.Id, now)
 		newly = nextRow.Id
 	end
-	return { Ok = true, Ground = row.Id, Difficulty = level, Wins = wins, Opened = newly, Back = record.Back, Chest = chest or "", Emblem = emblem }
+	return { Ok = true, Ground = row.Id, Difficulty = level, Wins = wins, Opened = newly, Back = record.Back, Chest = chest or "", Case = case, Pouch = pouch, Crate = crate }
 end
 
 -- Seconds before this player's keeper of ground `id` is back at `now` (os.time, or the server's time on a client), 0 when

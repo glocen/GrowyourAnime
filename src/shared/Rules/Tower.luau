@@ -12,6 +12,7 @@ local Profile = require(Shared.Data.Profile)
 local TowerConfig = require(Shared.Config.Tower)
 local RoomPlan = require(Shared.Config.Kits.TowerRoom.Plan) :: any
 local DropsConfig = require(Shared.Config.Drops)
+local ChestsConfig = require(Shared.Config.Chests)
 local GrowthConfig = require(Shared.Config.Growth)
 local Voidkin = require(Shared.Definitions.Voidkin)
 local Grounds = require(Shared.Definitions.Grounds)
@@ -25,7 +26,8 @@ local Goals = require(Shared.Rules.Goals)
 local Tower = {}
 
 export type Foe = { Def: string, Level: number }
-export type Reward = { Credits: number, Chest: string?, Stone: string, Stones: number } -- Stone, the grade ("" for none)
+-- Stone, the grade ("" for none); Case, the Emblem Case of a tenth floor's first clear (TR56)
+export type Reward = { Credits: number, Chest: string?, Stone: string, Stones: number, Case: string? }
 
 -- A draw in [0, 1) from the run's seed, the floor and what it's for: the same three, the same draw.
 local function draw(seed: number, floor: number, salt: number): number
@@ -324,14 +326,29 @@ function Tower.ChestChance(floor: number): number
 	return math.clamp(chest.Base + chest.PerFloor * floor, 0, chest.Most)
 end
 
+-- The Emblem Case the account's first clear of floor `floor` gives, its record before it `best`, or nil: one sure at each
+-- Every-th floor, its rarity rising with the floor (Config.Chests.Case.Tower; TR56). Floors are won in order, so a
+-- floor over the record is its first clear, fast or hard.
+function Tower.Case(floor: number, best: number): string?
+	local tower = ChestsConfig.Case.Tower
+	if floor <= best or floor % tower.Every ~= 0 then
+		return nil
+	end
+	local step = floor // tower.Every
+	local rarity = tower.By[step] or (if floor % tower.TopEvery == 0 then tower.Top else tower.Past)
+	local row = ChestRows.TowerCase(rarity)
+	return if row then row.Id else nil
+end
+
 -- What winning floor `floor` adds to the ledger of a run whose record before it was `best`: nothing when it fell `fast`
 -- (Tower.Fast, as it was fought), since only hard floors pay. The one exception: floor Config.Tower.Chest.First's
 -- chest is sure the first time the account wins it (`best` under it), fast or hard, so a lead that outgrew the opening
 -- before its first climb still gets it. Once: the record never falls back under that floor.
 function Tower.Reward(floor: number, best: number, seed: number, fast: boolean?): Reward
 	local sure = floor == TowerConfig.Chest.First and best < floor
+	local case = Tower.Case(floor, best)
 	if fast then
-		return { Credits = 0, Chest = if sure then chestOf(floor) else nil, Stone = "", Stones = 0 }
+		return { Credits = 0, Chest = if sure then chestOf(floor) else nil, Stone = "", Stones = 0, Case = case }
 	end
 	local credits = DropsConfig.CreditsPerKillPerG * Growth.G(Tower.Level(floor)) * TowerConfig.Credits.Share
 	if floor > best then
@@ -345,6 +362,7 @@ function Tower.Reward(floor: number, best: number, seed: number, fast: boolean?)
 		Chest = chest,
 		Stone = if stones > 0 and ground then Drops.StoneGrade(ground.Id) else "",
 		Stones = stones,
+		Case = case,
 	}
 end
 
@@ -374,6 +392,9 @@ function Tower.Won(data: Profile.Data, id: string, floor: number, fast: boolean?
 	run.Credits += reward.Credits
 	if reward.Chest then
 		run.Chests[reward.Chest] = (run.Chests[reward.Chest] or 0) + 1
+	end
+	if reward.Case then
+		run.Chests[reward.Case] = (run.Chests[reward.Case] or 0) + 1
 	end
 	if reward.Stones > 0 then
 		local stones = run.Stones or {}

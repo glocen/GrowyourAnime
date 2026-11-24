@@ -24,7 +24,7 @@ local DataConfig = require(Shared.Config.Data)
 
 local T0 = 1_800_000_000
 local HOUR = 3600
-local LOW, MID = CondenserConfig.Makes, CondenserConfig.Convert.To
+local LOW, MID = CondenserConfig.Makes, CondenserConfig.Converts.Low.To
 
 -- A new account at base level `level` (the Condenser's waking one unless said), its battery at `charge` kWh.
 local function fresh(level: number?, charge: number?): Profile.Data
@@ -205,7 +205,7 @@ return {
 	{
 		Name = "Condenser: TR37, the convert takes its stones at once and lands its higher grade after its work, one at a time",
 		Run = function(t: any)
-			local convert = CondenserConfig.Convert
+			local convert = CondenserConfig.Converts.Low
 			local data = charged(fresh())
 			data.Bag.Stones[convert.From] = convert.Take + 2
 			local answer = act(data, "Convert", {}, T0, "c1")
@@ -237,7 +237,7 @@ return {
 	{
 		Name = "Condenser: TR37, with the tray full and a convert running, the convert still finishes and its grade lands",
 		Run = function(t: any)
-			local convert = CondenserConfig.Convert
+			local convert = CondenserConfig.Converts.Low
 			local data = charged(fresh())
 			local cap = Condenser.Cap(1)
 			data.Base.Condenser.Tray[LOW] = cap
@@ -275,7 +275,7 @@ return {
 	{
 		Name = "Condenser (section 9): a collect is one step, and a repeat or a second ask never collects twice",
 		Run = function(t: any)
-			local convert = CondenserConfig.Convert
+			local convert = CondenserConfig.Converts.Low
 			local data = charged(fresh())
 			data.Base.Condenser.Tray[MID] = 1
 			local now = T0 + 3 * HOUR
@@ -296,7 +296,7 @@ return {
 	{
 		Name = "Condenser: TR37, many small advances land where one large one does, making and converting",
 		Run = function(t: any)
-			local convert = CondenserConfig.Convert
+			local convert = CondenserConfig.Converts.Low
 			local function begun(): Profile.Data
 				local data = charged(fresh())
 				data.Bag.Stones[convert.From] = convert.Take

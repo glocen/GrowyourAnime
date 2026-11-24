@@ -8,9 +8,9 @@ Each teammate rewrites its own row: one to three lines. Open asks sit under "Wai
 - **Next:** AR62's verdict when Modulo's takes land; TR54's second look on Faber's capture; then the Broadcast, the Strip's boards, the welcome week and codes, the capture, firsts.
 - **With the director, on return:** accept Rook and Kirra (`build/handoff/Rook/make/rook_make_sheet.png`, `build/handoff/Kirra/make/kirra_make_sheet.png`); AR62's pick; the phone sitting and F7; TR52's run; item 10, the hooks; the store's design.
 
-**Faber (builder).** 2026-11-24, 16:00, on Opus 5.5. Nothing running, no lock held; the main place open in Studio.
-- **Done:** AR56, the Crown in the game (its note in AR56): each player's own room, the gate and its record on the lot; the floor's joins clean on Modulo's padded pictures (16:07). Research's pass next. TR55's case passed (18/0).
-- **Now:** TR56, the chest family. Owed: TR54's capture. For Sonus: KirraHit's candidate is 0.66 s where 0.6 is allowed (`Config/Audition`).
+**Faber (builder).** 2026-11-24, 17:30, on Opus 5.5. Nothing running, no lock held; the PC locked, Rojo's link to Studio dropped (reconnect when it's open).
+- **Done:** TR56, the chest family, built (its note in TR56). Research's pass next; one check waits for the PC to unlock.
+- **Now:** AR56's must-fix, the floor read once in the room. Owed: TR54's capture; the test save's Condenser back to level 1. For Sonus: KirraHit's candidate is 0.66 s where 0.6 is allowed (`Config/Audition`).
 
 **Modulo (assets).** 2026-11-24, 16:58. Nothing running, no lock held.
 - **Waiting on the director:** AR59 Rook. The director wants Kirra's hair reworked (16:53), so it's AR64. Nothing uploaded. Faber's open looks (TR53, TR54, the Guard's clip, AR49, AR44, AR40, AR48, TR50, AR50) are in their entries.

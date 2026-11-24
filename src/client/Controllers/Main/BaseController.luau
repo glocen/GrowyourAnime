@@ -128,7 +128,8 @@ local REASON: { [string]: string } = {
 	NoAnswer = "No answer. Try again.",
 	Asleep = `The Stone Condenser wakes at base level {CondenserConfig.Wakes}`,
 	Busy = "A convert is already under way",
-	Stones = `A convert takes {CondenserConfig.Convert.Take} {CondenserConfig.Convert.From} stones`,
+	Stones = "Not enough stones in the bag for that convert",
+	Low = `The Stone Condenser turns Mid into High from its level {CondenserConfig.Converts.Mid.FromLevel}`,
 }
 
 -- Ground: the marker's spot on the floor. Near: the avatar stands within NEAR of it. News: it's lit with something to do.
@@ -148,6 +149,8 @@ type ConvertCard = {
 	Prompt: ProximityPrompt,
 	Card: Frame,
 	Panel: Frame,
+	Switch: ProximityPrompt, -- the other convert, once its level runs more than one (TR56)
+	Shown: string, -- the grade its cost line takes
 	Take: TextLabel,
 	Give: TextLabel,
 	From: ImageLabel,
@@ -158,6 +161,7 @@ type ConvertCard = {
 	Word: TextLabel,
 }
 local convert: ConvertCard? = nil
+local convertFrom = CondenserConfig.Order[1] -- the convert the card offers while none runs: the player's choice (TR56)
 local bays: { [number]: Spot } = {}
 local starters: { [string]: Part } = {}
 local pickingBay: number? = nil
@@ -577,19 +581,45 @@ end
 function BaseController.CollectTray(): { [string]: any }
 	local answer = act("CollectTray")
 	if answer.Ok == true and type(answer.Stones) == "table" then
-		Toast.Show(`Collected {stonesWords(answer.Stones :: any)}`)
+		local said = {}
+		if next(answer.Stones) ~= nil then
+			table.insert(said, stonesWords(answer.Stones :: any))
+		end
+		local jewels = 0
+		for _, n in (if type(answer.Jewels) == "table" then answer.Jewels else {}) :: { [string]: number } do
+			jewels += n
+		end
+		if jewels > 0 then
+			table.insert(said, `{jewels} {if jewels == 1 then "jewel" else "jewels"}`)
+		end
+		Toast.Show(`Collected {table.concat(said, " and ")}`)
 	end
 	return answer
 end
 
--- The convert panel's prompt, pressed (TR37): a convert begins. For tests too.
-function BaseController.Convert(): { [string]: any }
-	local answer = act("Convert")
-	if answer.Ok == true then
-		local c = CondenserConfig.Convert
+-- The convert panel's prompt, pressed (TR37): the convert the card offers begins, or `from`'s. For tests too.
+function BaseController.Convert(from: string?): { [string]: any }
+	local answer = act("Convert", { From = from or convertFrom })
+	local c = CondenserConfig.Converts[tostring(answer.From)]
+	if answer.Ok == true and c then
 		Toast.Show(`Converting {c.Take} {c.From} into {c.Give} {c.To}`)
 	end
 	return answer
+end
+
+-- The convert panel's second prompt (TR56): the card offers the next convert the Condenser's level runs. For tests too.
+function BaseController.SwitchConvert(): string
+	local home = ProfileController.Get()
+	local order = CondenserConfig.Order
+	local at = table.find(order, convertFrom) or 1
+	for step = 1, #order do
+		local from = order[(at + step - 1) % #order + 1]
+		if home == nil or Condenser.Runs((home :: any).Base, from) then
+			convertFrom = from
+			break
+		end
+	end
+	return convertFrom
 end
 
 -- The Forge's prompt, pressed (TR37): Equipment's Reinforce page, where a try strikes the ram. For tests too.
@@ -732,7 +762,7 @@ local function convertCard(marker: Instance, spot: Spot): ConvertCard
 	World.Off(card)
 	local panel = Panel.new({ Palette = "System", Name = "Panel", Size = UDim2.fromScale(1, 1), Parent = card })
 	local cost = look.Cost
-	local c = CondenserConfig.Convert
+	local c = CondenserConfig.Converts[convertFrom]
 	local function digit(name: string, number: number): TextLabel
 		local label = Text.new({ Name = name, Size = cost.Digit, Font = Theme.Font.Number, Box = UDim2.fromOffset(cost.Stone, cost.Stone), Parent = panel })
 		label.ZIndex = 8
@@ -772,11 +802,20 @@ local function convertCard(marker: Instance, spot: Spot): ConvertCard
 	p.Triggered:Connect(function()
 		BaseController.Convert()
 	end)
+	local switch = prompt(anchor, "NL_ConvertSwitch", "Stone Condenser", "Switch")
+	switch.KeyboardKeyCode = Enum.KeyCode.F
+	switch.GamepadKeyCode = Enum.KeyCode.ButtonY
+	switch.Enabled = false
+	switch.Triggered:Connect(function()
+		BaseController.SwitchConvert()
+	end)
 	return {
 		Anchor = anchor,
 		Prompt = p,
+		Switch = switch,
 		Card = card,
 		Panel = panel,
+		Shown = c.From,
 		Take = digit("Take", c.Take),
 		From = stone("From", c.From),
 		Arrow = Skin.Lay(panel, "ArrowRight", { Name = "Arrow", Scale = cost.Arrow.X / (arrow.Points.X - 2 * arrow.Pad), Z = 8 }),
@@ -1076,14 +1115,28 @@ function BaseController.Refresh()
 	local home = now.Data.Base
 	local awake = Condenser.Awake(home.Level)
 	local held = Condenser.Held(home)
-	local mid = home.Condenser.Tray[CondenserConfig.Convert.To] or 0
+	-- What converts and its jewels left in the tray beside its own grade (TR56: Mid, High, jewels).
+	local mid, besides = 0, {}
+	for _, grade in ReinforceConfig.Grades do
+		local n = if grade ~= CondenserConfig.Makes then home.Condenser.Tray[grade] or 0 else 0
+		if n > 0 then
+			mid += n
+			table.insert(besides, `{n} {grade}`)
+		end
+	end
+	local jewels = Condenser.JewelsHeld(home)
+	if jewels > 0 then
+		mid += jewels
+		table.insert(besides, `{jewels} {if jewels == 1 then "jewel" else "jewels"}`)
+	end
 	if condenser then
-		-- What its tray holds against its cap, and what a convert left there; asleep, the level that wakes it. Lit while
-		-- the tray is full (it has stopped) or a convert's stone waits. Its prompt while the tray holds a stone.
+		-- What its tray holds against its cap, and what a convert and its jewels left there; asleep, the level that wakes
+		-- it. Lit while the tray is full (it has stopped) or a convert's stone or a jewel waits. Its prompt while the tray
+		-- holds anything.
 		local cap = Condenser.Cap(Condenser.Level(home))
 		local tray = if held >= cap then `Tray full · {held} {CondenserConfig.Makes}` else `Tray {held} of {cap} {CondenserConfig.Makes}`
 		setLines(condenser.Plate, { "Stone Condenser", if not awake then `Wakes at base level {CondenserConfig.Wakes}`
-			elseif mid > 0 then `{tray} · {mid} {CondenserConfig.Convert.To}`
+			elseif mid > 0 then `{tray} · {table.concat(besides, " · ")}`
 			else tray })
 		condenser.News = awake and (held >= cap or mid > 0)
 		local panel = condenser.Plate:FindFirstChild("Panel")
@@ -1105,8 +1158,29 @@ function BaseController.Refresh()
 	if convert then
 		-- The job as it stands: its time left at the Condenser's speed now, or whether the bag holds its stones; asleep,
 		-- the cost alone (the Comb's plate says what wakes it: research's must-fix 1).
-		local c = CondenserConfig.Convert
 		local left = Condenser.ConvertLeft(home)
+		if not Condenser.Runs(home, convertFrom) then
+			convertFrom = CondenserConfig.Order[1]
+		end
+		local c = if left then Condenser.Recipe(home) else CondenserConfig.Converts[convertFrom]
+		local runs = 0
+		for _, from in CondenserConfig.Order do
+			runs += if Condenser.Runs(home, from) then 1 else 0
+		end
+		if convert.Shown ~= c.From then
+			-- Its cost line's numbers and pictures, for the convert it offers now.
+			convert.Shown = c.From
+			convert.Card:SetAttribute("From", c.From) -- the grade it offers, for tests
+			convert.Take.Text, convert.Give.Text = tostring(c.Take), tostring(c.Give)
+			for _, pair in { { "From", c.From }, { "To", c.To } } do
+				local old = (convert :: any)[pair[1]] :: ImageLabel
+				local cost = HudConfig.Convert.Cost
+				local made = Skin.Lay(convert.Panel, `Stone{pair[2]}`, { Name = pair[1], Scale = cost.Stone / UIKit.Images[`Stone{pair[2]}`].Points.X, Z = 8 })
+				made.Position = old.Position
+				old:Destroy();
+				(convert :: any)[pair[1]] = made
+			end
+		end
 		local have = view.Bag.Stones[c.From] or 0
 		if not awake then
 			setConvert(convert, "Asleep", 0, "")
@@ -1120,6 +1194,7 @@ function BaseController.Refresh()
 			setConvert(convert, "Short", have / c.Take, `{have} of {c.Take} {c.From}`)
 		end
 		convert.Prompt.Enabled = awake and left == nil and have >= c.Take
+		convert.Switch.Enabled = awake and left == nil and runs > 1
 	end
 	if forge then
 		setLines(forge.Plate, { "Forge", "Reinforce your gear" })
@@ -1191,6 +1266,7 @@ function BaseController.Parts(): { [string]: Instance }
 	if convert then
 		parts.ConvertCard = convert.Card
 		parts.ConvertPrompt = convert.Prompt
+		parts.ConvertSwitch = convert.Switch
 	end
 	if forge then
 		parts.ForgePlate = forge.Plate

@@ -211,6 +211,8 @@ local SAID: { [string]: string } = {
 	NoStones = "Not enough stones",
 	NoneLeft = "None of that emblem left",
 	Empty = "That socket is empty",
+	NotEnough = "Combining takes 3 of one stat and rarity",
+	Top = "Legendary is the top",
 }
 function Look.Refused(answer: { [string]: any }): string
 	local error = answer.Error

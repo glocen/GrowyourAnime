@@ -5,7 +5,9 @@
 -- bag's emblems in a row, highest rarity first (or by stat), each stack with its count. Choose a socket, then an
 -- emblem: the one lit press puts it in or replaces the one there (which goes back to the bag); a socket chosen alone
 -- with one in it takes it out. Both free, the server's (Socket, Unsocket), frozen in a fight. A press with nothing to do
--- stands off and says why on a tap. An emblem put in pops in its socket and shines.
+-- stands off and says why on a tap. An emblem put in pops in its socket and shines. The heading row's Combine pill
+-- (TR56) folds three of the chosen emblem's stat and rarity into one of the next rarity, the server's (Combine; the
+-- made one's set its roll), and the made one's stack is chosen and pops; off, it says why.
 --   EmblemsPage.Build(context) -> { Paint, Stop }
 
 local Shared = game:GetService("ReplicatedStorage").Shared
@@ -13,6 +15,7 @@ local Profile = require(Shared.Data.Profile)
 local Emblems = require(Shared.Rules.Emblems)
 local Sets = require(Shared.Definitions.Emblems)
 local Chests = require(Shared.Config.Chests)
+local EmblemsConfig = require(Shared.Config.Emblems)
 local Stats = require(Shared.Rules.Stats)
 local HudConfig = require(Shared.Config.Hud)
 
@@ -20,6 +23,7 @@ local UI = script.Parent.Parent
 local Read = require(UI.Read)
 local Glass = require(UI.Kit.Glass)
 local Skin = require(UI.Kit.Skin)
+local Button = require(UI.Kit.Button)
 local Pop = require(UI.Kit.Pop)
 local Shine = require(UI.Kit.Shine)
 local Look = require(script.Parent.Look)
@@ -135,6 +139,33 @@ function EmblemsPage.Build(context: Look.Context): Look.Page
 		return true
 	end
 
+	-- Three of the chosen emblem's stat and rarity into one of the next: its stack is chosen after, and pops.
+	local poppedKey: string? = nil
+	local function combine(rarity: string, stat: string): boolean
+		if busy or stopped then
+			return false
+		end
+		busy = true
+		context.Busy(true)
+		local answer = context.On.Act("Combine", { Rarity = rarity, Stat = stat })
+		busy = false
+		context.Busy(false)
+		if stopped then
+			return answer.Ok == true
+		end
+		if answer.Ok ~= true then
+			context.On.Say(Look.Refused(answer))
+			paint(context.Latest())
+			return false
+		end
+		chosenKey = if type(answer.Emblem) == "string" then answer.Emblem else nil
+		poppedKey = chosenKey
+		context.On.Say(`{EmblemsConfig.Combine.Take} {Look.Named(stat)} emblems → 1 {answer.Rarity}`)
+		paint(context.Latest())
+		poppedKey = nil
+		return true
+	end
+
 	paint = function(view: Profile.View, popped: number?)
 		local data = view :: any
 		local item = data.Items[itemId] :: Profile.OwnedItem?
@@ -225,6 +256,35 @@ function EmblemsPage.Build(context: Look.Context): Look.Page
 		Glass.Edge(face, "Edge", 0, 22 - ph / 2, pw, ph, 4, SEAM.Edge, 1, nil, 2)
 		Glass.Label(face, "Words", sort, 12, SEAM.Text, 0, 0, pw, 44, nil, true, 3)
 		pill:SetAttribute("Sort", sort)
+		-- The combine's pill: lit while the chosen emblem's stat and rarity are held three times and a rarity sits above.
+		local chosenParsed = if chosenKey then Emblems.Parse(chosenKey) else nil
+		local held = if chosenParsed then Emblems.Held(data, chosenParsed.Set.Rarity, chosenParsed.Stat) else 0
+		local above = if chosenParsed then Emblems.Above(chosenParsed.Set.Rarity) else nil
+		local cKind, cWhy = "Off", "Choose an emblem below"
+		if chosenParsed and above == nil then
+			cWhy = "Legendary is the top"
+		elseif chosenParsed and held < EmblemsConfig.Combine.Take then
+			cWhy = `Combining takes {EmblemsConfig.Combine.Take}: {held} held`
+		elseif chosenParsed then
+			cKind, cWhy = "Lit", nil
+		end
+		local CP = M.Combine
+		local cw, ch = CP[3] - CP[1], CP[4] - CP[2]
+		local combinePill = Look.Press(frame, "Combine", X(CP[1]), Y(CP[2] + ch / 2 - 22), cw, 44, function(): boolean
+			local parsed = chosenParsed
+			if cKind ~= "Lit" or parsed == nil then
+				return false
+			end
+			return combine(parsed.Set.Rarity, parsed.Stat)
+		end, 4)
+		local cFace = Skin.Of(combinePill)
+		Glass.Fill(cFace, "Fill", 0, 22 - ch / 2, cw, ch, 4, if cKind == "Lit" then SEAM.Button[1] else SEAM.Channel, 1)
+		Glass.Edge(cFace, "Edge", 0, 22 - ch / 2, cw, ch, 4, if cKind == "Lit" then SEAM.Edge else SEAM.Faint, 1, nil, 2)
+		Glass.Label(cFace, "Words", "Combine", 12, if cKind == "Lit" then SEAM.Text else SEAM.Faint, 0, 0, cw, 44, nil, true, 3)
+		combinePill:SetAttribute("Ready", cKind == "Lit") -- its own name: the kit keeps Kind for its button's make
+		combinePill:SetAttribute("Why", cWhy or "")
+		Button.Set(combinePill, { Disabled = if cKind == "Off" then cWhy or "Not now" else false }) -- the kit says why on a tap
+		context.Parts.EmblemsCombine = combinePill
 		-- The bag's row, scrolling sideways inside the panel's edge.
 		local B = M.Bag
 		local scroll = Instance.new("ScrollingFrame")
@@ -276,6 +336,11 @@ function EmblemsPage.Build(context: Look.Context): Look.Page
 			end
 			button:SetAttribute("Emblem", entry.Key)
 			button:SetAttribute("Chosen", chosen)
+			if poppedKey == entry.Key then
+				Pop.Centre(button)
+				Pop.Play(button, HudConfig.Pop.Rungs.Credits)
+				Shine.Play(Shine.Lay(cell, SEAM.Glint))
+			end
 		end
 		if #bag == 0 then
 			Look.Text(frame, "BagNone", "No emblems yet: Shades and keepers drop them", SMALL, SEAM.Faint, X(B.First), Y(B.Top + 12), "Left", false, 3, 230)

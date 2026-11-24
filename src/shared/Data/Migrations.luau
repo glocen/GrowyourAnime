@@ -5,6 +5,7 @@
 -- logic case, and list every table whose keys it touches. No Roblox API: it runs with Studio closed.
 
 local Items = require(game:GetService("ReplicatedStorage").Shared.Definitions.Items)
+local BaseLevels = require(game:GetService("ReplicatedStorage").Shared.Rules.BaseLevels)
 
 local Migrations = {}
 
@@ -200,6 +201,14 @@ local STEPS: { (data: any) -> () } = {
 				record.KeeperWins = { Normal = if type(record.KeeperWins) == "number" then record.KeeperWins else 0, Hard = 0 }
 			end
 		end
+	end,
+	-- 13: a preset at each base level (TR56; Config.Base.Levels.Presets). Touches Presets. A base already past level 1
+	-- gains the empty presets its level holds; none is ever taken away.
+	function(data: any)
+		if type(data.Presets) ~= "table" or type(data.Base) ~= "table" or type(data.Base.Level) ~= "number" then
+			return
+		end
+		BaseLevels.GrowPresets(data.Presets, data.Base.Level)
 	end,
 }
 

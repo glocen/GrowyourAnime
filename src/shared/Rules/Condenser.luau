@@ -3,11 +3,14 @@
 -- base's level Wakes, it makes stones of its grade into its tray at its level's rate and its power's speed (Rules.Power,
 -- through Rules.Breaker's steps, online and away), its whole stones only; a tray at its cap stops it. Its second job, one
 -- at a time, turns stones taken from the bag into a higher grade over its seconds of work, at the same speed, landing in
--- the tray beside the cap. It works while awake and making or converting, and asks its rating only then. Rules.Base's
--- CollectTray and Convert are what a player asks of it. No Roblox API: it runs with Studio closed.
+-- the tray beside the cap: Low into Mid, and from its level 10 Mid into High (TR56). It works while awake and making or
+-- converting, and asks its rating only then. While it works it makes a jewel each Config.Jewels.Condenser.EveryHours of
+-- work into its jewel tray, the colours in turn, its tier by its level (TR56). Rules.Base's CollectTray and Convert are
+-- what a player asks of it. No Roblox API: it runs with Studio closed.
 
 local Shared = game:GetService("ReplicatedStorage").Shared
 local CondenserConfig = require(Shared.Config.Condenser)
+local JewelsConfig = require(Shared.Config.Jewels)
 
 local Condenser = {}
 
@@ -15,14 +18,43 @@ local Condenser = {}
 type Base = {
 	Level: number,
 	Machines: { [string]: number },
-	Condenser: { Made: number, Tray: { [string]: number }, Convert: number? },
+	Condenser: { Made: number, Tray: { [string]: number }, Convert: number?, Converting: string?, Jewel: number?, Jewels: { [string]: number }?, Cut: number? },
 }
+
+export type Recipe = { From: string, Take: number, To: string, Give: number, Seconds: number, FromLevel: number }
 
 local EPSILON = 1e-9
 
 -- Its level (Base.Machines; 1 in a save from before it).
 function Condenser.Level(base: Base): number
 	return base.Machines.Condenser or 1
+end
+
+-- The convert under way, or the one a save from before TR56 ran (Low into Mid).
+function Condenser.Recipe(base: Base): Recipe
+	return CondenserConfig.Converts[base.Condenser.Converting or "Low"] or CondenserConfig.Converts.Low
+end
+
+-- Whether its level runs the convert that takes `from` (Config.Condenser.Converts' FromLevel).
+function Condenser.Runs(base: Base, from: string): boolean
+	local recipe = CondenserConfig.Converts[from]
+	return recipe ~= nil and Condenser.Level(base) >= recipe.FromLevel
+end
+
+-- The tier of the jewels it makes at `level`: the highest whose level it has reached (Config.Jewels.Condenser.From).
+function Condenser.JewelTier(level: number): number
+	local tier = 1
+	for each, from in JewelsConfig.Condenser.From do
+		if level >= from then
+			tier = each
+		end
+	end
+	return tier
+end
+
+-- Seconds of work, at full power, between two of its jewels.
+function Condenser.JewelSeconds(): number
+	return JewelsConfig.Condenser.EveryHours * 3600
 end
 
 -- Stones an hour at full power at `level`.
@@ -84,18 +116,19 @@ function Condenser.Next(base: Base, speed: number): number
 	end
 	local convert = base.Condenser.Convert
 	if convert then
-		soonest = math.min(soonest, math.max(0, CondenserConfig.Convert.Seconds - convert) / speed)
+		soonest = math.min(soonest, math.max(0, Condenser.Recipe(base).Seconds - convert) / speed)
 	end
 	return soonest
 end
 
--- Works `seconds` at `speed`: its making into the tray to its cap, and the convert under way. Returns the stones made
--- and the converts finished. Asleep, nothing.
-function Condenser.Work(base: Base, speed: number, seconds: number): (number, number)
+-- Works `seconds` at `speed`: its making into the tray to its cap, the convert under way, and its jewels. Returns the
+-- stones made, the converts finished and the jewels made. Asleep, nothing.
+function Condenser.Work(base: Base, speed: number, seconds: number): (number, number, number)
 	if seconds <= 0 or not Condenser.Awake(base.Level) then
-		return 0, 0
+		return 0, 0, 0
 	end
 	local state = base.Condenser
+	local working = Condenser.Working(base) -- as the step began: a tray it fills mid-step stops it at the step's end
 	local made = 0
 	if Condenser.Making(base) then
 		local level = Condenser.Level(base)
@@ -107,18 +140,46 @@ function Condenser.Work(base: Base, speed: number, seconds: number): (number, nu
 		state.Made = if held + made >= cap then 0 else math.clamp(share - whole, 0, 1) -- full: it stops
 	end
 	local finished = 0
-	local convert = CondenserConfig.Convert
+	local convert = Condenser.Recipe(base)
 	if state.Convert then
 		local done = (state.Convert :: number) + speed * seconds
 		if done >= convert.Seconds - EPSILON then
 			state.Tray[convert.To] = (state.Tray[convert.To] or 0) + convert.Give
 			state.Convert = nil
+			state.Converting = nil
 			finished = 1
 		else
 			state.Convert = done
 		end
 	end
-	return made, finished
+	local jewels = 0
+	if working then
+		local every = Condenser.JewelSeconds()
+		local done = (state.Jewel or 0) + speed * seconds
+		local tier = Condenser.JewelTier(Condenser.Level(base))
+		local colours = JewelsConfig.Colours
+		while done >= every - EPSILON do
+			done -= every
+			local cut = state.Cut or 0
+			local key = `{colours[cut % #colours + 1]}:{tier}`
+			local tray = state.Jewels or {}
+			tray[key] = (tray[key] or 0) + 1
+			state.Jewels = tray
+			state.Cut = cut + 1
+			jewels += 1
+		end
+		state.Jewel = math.max(0, done)
+	end
+	return made, finished, jewels
+end
+
+-- Jewels waiting in its tray.
+function Condenser.JewelsHeld(base: Base): number
+	local count = 0
+	for _, n in base.Condenser.Jewels or {} do
+		count += n
+	end
+	return count
 end
 
 -- How many of a comb's `cups` its tray lights (TR37): the tray's fill of its cap over the comb, so a full tray lights it
@@ -135,7 +196,7 @@ end
 -- Seconds of work the convert under way has left at full power, or nil with none.
 function Condenser.ConvertLeft(base: Base): number?
 	local convert = base.Condenser.Convert
-	return if convert then math.max(0, CondenserConfig.Convert.Seconds - convert) else nil
+	return if convert then math.max(0, Condenser.Recipe(base).Seconds - convert) else nil
 end
 
 return Condenser

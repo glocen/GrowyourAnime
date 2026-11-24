@@ -40,6 +40,10 @@ local ChestRows = require(Shared.Definitions.Chests)
 local Voidkin = require(Shared.Definitions.Voidkin)
 local Rules = require(Shared.Rules.Bag)
 local Chests = require(Shared.Rules.Chests)
+local Emblems = require(Shared.Rules.Emblems)
+local Jewels = require(Shared.Rules.Jewels)
+local Rarity = require(Shared.Definitions.Rarity)
+local ReinforceConfig = require(Shared.Config.Reinforce)
 local Sheet = require(Shared.Rules.Sheet)
 local Odds = require(Shared.Rules.Odds)
 local Hud = require(Shared.Rules.Hud)
@@ -99,7 +103,10 @@ local P = {
 	Rim = C.Rim,
 }
 local GROUP_KIND = { "Gear", "Gear", "Jewelry" } -- each slot group's kind on the strip
-local TIER_WORD = { "Shade", "Elite", "Keeper's", "Tower" } -- a chest's kind on its cell, never a rarity's word
+-- A chest's picture, or nil while its kind has none yet: its kind's words stand in its plain cell (TR56's grey).
+local function chestPicture(name: string?): string?
+	return if name and UIKit.Images[name] then name else nil
+end
 local NUMBER_ROW = 22 -- the card's Combat Power line
 -- The full bag's way out (the follow-up's item 6): what frees a slot, said wherever a full bag stops an open.
 local FREE_A_SLOT = "salvage an item from its card to free a slot"
@@ -375,7 +382,7 @@ end
 local function slotWord(entry: Rules.Entry): string
 	if entry.Kind == "Chest" then
 		local row = ChestRows.ById[entry.Def]
-		return `{TIER_WORD[if row then row.Tier else 1] or ""} Chest`
+		return ChestRows.Kinds[if row then row.Tier else 1] or ""
 	end
 	local row = Items.ById[entry.Def]
 	return if row then row.Kind else entry.Def
@@ -412,7 +419,7 @@ local function cellFor(entry: Rules.Entry, side: number, order: number, parent: 
 		picture.Name = "Picture"
 		ShardTag.Lay(picture, entry.Def, side * shardArt.Cell, true) -- where it came from, left of the count (TR41 (d))
 	elseif entry.Kind == "Chest" then
-		art(made, side, "", entry.Image, slotWord(entry), nil, false) -- AR21's picture in the plain cell
+		art(made, side, "", chestPicture(entry.Image), slotWord(entry), nil, false) -- AR21's picture in the plain cell
 	else
 		art(made, side, entry.Rarity, entry.Image, slotWord(entry), entry.Class, not entry.Fits)
 	end
@@ -799,6 +806,49 @@ local function itemCard(context: Context, at: Layout, id: string)
 	carded = id
 end
 
+-- What a case, a pouch or a crate opened to, in words (TR56): emblems by rarity, jewels by colour and tier, stones by
+-- grade.
+local function familyWords(answer: { [string]: any }): string
+	local said: { string } = {}
+	local count = 0
+	local byRarity: { [string]: number } = {}
+	for key, n in (if type(answer.Emblems) == "table" then answer.Emblems else {}) :: { [string]: number } do
+		local parsed = Emblems.Parse(key)
+		if parsed then
+			byRarity[parsed.Set.Rarity] = (byRarity[parsed.Set.Rarity] or 0) + n
+			count += n
+		end
+	end
+	for _, rarity in Rarity.Order do
+		if byRarity[rarity] then
+			table.insert(said, `{byRarity[rarity]} {rarity}`)
+		end
+	end
+	if count > 0 then
+		return `{table.concat(said, " and ")} {if count == 1 then "emblem" else "emblems"}`
+	end
+	for key, n in (if type(answer.Jewels) == "table" then answer.Jewels else {}) :: { [string]: number } do
+		local colour, tier = Jewels.Parse(key)
+		if colour then
+			table.insert(said, `{n} {colour} tier {tier}`)
+			count += n
+		end
+	end
+	if count > 0 then
+		table.sort(said)
+		return `{table.concat(said, " and ")} {if count == 1 then "jewel" else "jewels"}`
+	end
+	local stones = (if type(answer.Stones) == "table" then answer.Stones else {}) :: { [string]: number }
+	for _, grade in ReinforceConfig.Grades do
+		local n = stones[grade]
+		if type(n) == "number" and n > 0 then
+			table.insert(said, `{n} {grade}`)
+			count += n
+		end
+	end
+	return `{table.concat(said, " and ")} {if count == 1 then "stone" else "stones"}`
+end
+
 -- The chosen chest's card: its odds, how many are held, and Open and Open all.
 local function chestCard(context: Context, at: Layout, id: string)
 	local data = context.View :: any
@@ -815,7 +865,7 @@ local function chestCard(context: Context, at: Layout, id: string)
 		entry = if each.Id == id then each else entry
 	end
 	local shown = entry :: Rules.Entry
-	local y = head(made, at, side, "", shown.Image, slotWord(shown), nil, false, `×{Hud.Digits(info.Held)} held`, info.Name)
+	local y = head(made, at, side, "", chestPicture(shown.Image), slotWord(shown), nil, false, `×{Hud.Digits(info.Held)} held`, info.Name)
 	rule(made, pad, y, wide)
 	local bottom = foot(at)
 	local list = lines(made, id, pad, y + 2, wide, bottom - 6)
@@ -831,16 +881,23 @@ local function chestCard(context: Context, at: Layout, id: string)
 	stack.Parent = odds
 	caption(odds, 0, wide, "What it gives")
 	for index, each in info.Odds do
+		-- A rarity's line in its colour; a pouch's tier, a crate's stones in the text's (TR56).
+		local said = if each.Rarity ~= "" then each.Rarity
+			elseif each.Tier then `Tier {each.Tier} jewel`
+			elseif each.Grade then (if each.From == each.To then `{each.From} {each.Grade}` else `{each.From} to {each.To} {each.Grade}`)
+			else ""
 		local line = Instance.new("Frame")
-		line.Name = each.Rarity
+		line.Name = said
 		line.BackgroundTransparency = 1
 		line.Size = UDim2.fromOffset(wide, C.Row)
 		line.LayoutOrder = index
 		line.Parent = odds
-		label({ Name = "Name", Size = Theme.Text.Caption, Font = Theme.Font.Strong, Colour = P.Rarity[each.Rarity] or P.Text, Parent = line }, each.Rarity)
+		label({ Name = "Name", Size = Theme.Text.Caption, Font = Theme.Font.Strong, Colour = P.Rarity[each.Rarity] or P.Text, Parent = line }, said)
 		label({ Name = "Chance", Size = Theme.Text.Caption, Font = Theme.Font.Number, Colour = P.Text, Align = Enum.TextXAlignment.Right, Parent = line }, Odds.Percent(each.Chance * 10000)) -- to the hundredth, as rolled: 0.05% (TR48 part 2)
 	end
-	if info.Room > 0 then
+	if info.Gear ~= true then
+		-- no item, so no room to say (TR56)
+	elseif info.Room > 0 then
 		label({ Name = "Room", Size = Theme.Text.Caption, Colour = P.Faint, Box = UDim2.fromOffset(wide, C.Row), Parent = odds }, `Room for {Hud.Digits(info.Room)} in the bag`).LayoutOrder = #info.Odds + 1
 	else
 		-- a full bag says how to free a slot (the follow-up's item 6), two lines where the room's one stood
@@ -857,6 +914,9 @@ local function chestCard(context: Context, at: Layout, id: string)
 		local words = `Opened {Hud.Digits(tonumber(answer.Opened) or count)}: {Hud.Digits(kept)} kept`
 		if gone > 0 then
 			words ..= `, {Hud.Digits(gone)} salvaged for {Hud.Digits(tonumber(answer.Credits) or 0)} Credits`
+		end
+		if info.Gear ~= true then
+			words = `Opened {Hud.Digits(tonumber(answer.Opened) or count)}: {familyWords(answer)}`
 		end
 		Toast.Show(words, Theme.Colour.Text)
 		return true

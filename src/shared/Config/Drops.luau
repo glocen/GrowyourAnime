@@ -21,11 +21,9 @@ return {
 	-- Low in the first GroundsAGrade grounds, Mid in the next, High after, as Reinforce spends them by tens.
 	StoneChance = { Normal = 0.22, Hard = 0.28 } :: { [string]: number },
 	GroundsAGrade = 2,
-	-- An elite's fall drops an emblem this often, and a keeper's win (Rules.Progress.KeeperWon); on a keeper's first win on
-	-- a difficulty, EmblemFirst's chance instead. Its rarity is its chest ladder row's (Config.Chests.Ladder, the ground's
-	-- order plus EmblemTier minus 1, plus Config.Chests.Hard.Rows on Hard), Common counting as Uncommon, since no emblem is
-	-- Common; its set and its stat, one of the rarity's, evenly.
+	-- An elite's fall drops an Emblem Case this often, and a keeper's win (Rules.Progress.KeeperWon); on a keeper's first
+	-- win on a difficulty, EmblemFirst's chance instead. The case rolls as the chest that fall or win gives (TR56; the
+	-- loose emblem's drop, one for one; Config.Chests.Case).
 	EmblemChance = { Elite = 0.3, Keeper = 0.75 } :: { [string]: number },
 	EmblemFirst = { Normal = 1 } :: { [string]: number },
-	EmblemTier = { Elite = 2, Keeper = 3 } :: { [string]: number },
 }

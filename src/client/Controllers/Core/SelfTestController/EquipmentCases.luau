@@ -8,6 +8,7 @@
 local Shared = game:GetService("ReplicatedStorage").Shared
 local HudConfig = require(Shared.Config.Hud)
 local Rules = require(Shared.Rules.Reinforce)
+local Emblems = require(Shared.Rules.Emblems)
 local HudController = require(script.Parent.Parent.Parent.Main.HudController)
 local ProfileController = require(script.Parent.Parent.ProfileController)
 local UI = script.Parent.Parent.Parent.Parent.UI
@@ -261,6 +262,51 @@ function EquipmentCases.Cases(): { any }
 					return (now.Items[id].Sockets[1] or "") == "" and now.Bag.Emblems["warhorn:Hit"] == (g.Before.Bag.Emblems["warhorn:Hit"] or 0) + 2
 				end))
 				putBack(t, g, 2)
+			end,
+		},
+		{
+			Name = "Equipment: War Emblems, Combine (TR56): the pill off and saying why with nothing chosen, lit on an emblem held three times, three folded into one of the next rarity at a press",
+			Run = function(t: any)
+				local g = give(t, 0, 3)
+				if g == nil then
+					return
+				end
+				local before = table.clone(view(t).Bag.Emblems)
+				t.Check("its page opens on the helmet", open(t, "War Emblems", g.Id))
+				t.Wait(MOTION.Enter + 0.1)
+				local pill = EquipmentScreen.Parts().EmblemsCombine :: TextButton?
+				t.Check("nothing chosen: off, saying to choose one", pill ~= nil and pill:GetAttribute("Ready") == false and pill:GetAttribute("Why") == "Choose an emblem below", if pill then tostring(pill:GetAttribute("Why")) else "no pill")
+				t.Check("a tap on it then changes nothing", pill ~= nil and not Button.Press(pill :: TextButton))
+				local bag = EquipmentScreen.Parts().EmblemsBag :: ScrollingFrame?
+				local cell: TextButton? = nil
+				for _, each in if bag then bag:GetDescendants() else {} do
+					if each:IsA("TextButton") and each:GetAttribute("Emblem") == "warhorn:Hit" then
+						cell = each
+					end
+				end
+				t.Check("a Rare Hit emblem held three times, chosen", cell ~= nil and Button.Press(cell :: TextButton))
+				t.Wait(0.2)
+				pill = EquipmentScreen.Parts().EmblemsCombine :: TextButton?
+				t.Check("Combine lit", pill ~= nil and pill:GetAttribute("Ready") == true, if pill then tostring(pill:GetAttribute("Why")) else "no pill")
+				local rare, epic = Emblems.Held(view(t), "Rare", "Hit"), Emblems.Held(view(t), "Epic", "Hit")
+				t.Check("its press takes", pill ~= nil and Button.Press(pill :: TextButton))
+				t.Check("three Rare Hit emblems folded into one Epic Hit", waitFor(t, 2, function(): boolean
+					local now = view(t)
+					return Emblems.Held(now, "Rare", "Hit") == rare - 3 and Emblems.Held(now, "Epic", "Hit") == epic + 1
+				end), `{Emblems.Held(view(t), "Rare", "Hit")} Rare, {Emblems.Held(view(t), "Epic", "Hit")} Epic`)
+				-- The bag as it was before the press: each emblem the combine took given back, the one it made taken.
+				local now = view(t).Bag.Emblems
+				local keys = table.clone(before)
+				for key in now do
+					keys[key] = keys[key] or 0
+				end
+				for key in keys do
+					local delta = (before[key] or 0) - (now[key] or 0)
+					if delta ~= 0 then
+						t.Server("EmblemGive", key, delta)
+					end
+				end
+				putBack(t, g, 3)
 			end,
 		},
 		{

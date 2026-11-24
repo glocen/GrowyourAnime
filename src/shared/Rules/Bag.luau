@@ -335,7 +335,9 @@ function Bag.Card(data: Profile.Data, owned: Profile.OwnedVoidkin?, id: string):
 	return card
 end
 
--- What the chosen chest's card shows: its name, how many are held, the step one press opens, and each rarity's chance.
+-- What the chosen chest's card shows: its name, how many are held, the step one press opens, and what it gives with
+-- each line's chance (Rules.Chests.Gives): a gear chest's and a case's rarities, a pouch's tiers, a crate's stones. Gear,
+-- whether it holds gear: only gear needs the bag's room (TR56).
 function Bag.Chest(data: Profile.Data, id: string): { [string]: any }?
 	local row = ChestRows.ById[id]
 	local held = data.Bag.Chests[id] or 0
@@ -343,13 +345,7 @@ function Bag.Chest(data: Profile.Data, id: string): { [string]: any }?
 		return nil
 	end
 	local ground = Grounds.ById[row.Ground]
-	local odds = {}
-	local chances = Chests.Odds(row)
-	for _, name in ChestsConfig.Rarities do
-		if (chances[name] or 0) > 0 then
-			table.insert(odds, { Rarity = name, Chance = chances[name] })
-		end
-	end
+	local gear = Chests.IsGear(row)
 	return {
 		Id = id,
 		Name = row.Name,
@@ -357,10 +353,11 @@ function Bag.Chest(data: Profile.Data, id: string): { [string]: any }?
 		Tier = row.Tier,
 		Held = held,
 		-- What Open all opens, the number its button says (research, TR28's call 4): as many as are held, as one request
-		-- takes, and as the bag has room for; 0 when it's full.
-		Step = math.min(held, ChestsConfig.Step, math.max(0, Bag.Cap - Bag.Held(data))),
+		-- takes, and for gear as the bag has room for; 0 when it's full.
+		Step = math.min(held, ChestsConfig.Step, if gear then math.max(0, Bag.Cap - Bag.Held(data)) else math.huge),
 		Room = math.max(0, Bag.Cap - Bag.Held(data)),
-		Odds = odds,
+		Gear = gear,
+		Odds = Chests.Gives(row),
 	}
 end
 

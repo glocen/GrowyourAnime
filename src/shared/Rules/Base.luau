@@ -72,6 +72,7 @@ Base.Ceiling = BaseLevels.AtCeiling -- a machine at its base's ceiling: the base
 Base.Asleep = "Asleep" -- the Stone Condenser hasn't woken yet: the base's level comes first (Config.Condenser.Wakes)
 Base.Busy = "Busy" -- a convert is under way: one at a time
 Base.Stones = "Stones" -- fewer stones in the bag than the convert takes
+Base.Low = "Low" -- the Stone Condenser's level is under the convert's (Config.Condenser.Converts' FromLevel; TR56)
 
 local function refuse(code: string): Answer
 	return { Ok = false, Error = code }
@@ -303,7 +304,8 @@ function Base.UpgradeBase(data: Profile.Data, args: any, now: number): Answer
 	for _ = #base.Bays + 1, BaseLevels.Bays(level) do
 		table.insert(base.Bays, { Worker = "", Level = 1 })
 	end
-	return { Ok = true, Level = level, Spent = price, Bays = #base.Bays }
+	BaseLevels.GrowPresets(data.Presets, level) -- a preset more at levels 2 and 3 (TR56)
+	return { Ok = true, Level = level, Spent = price, Bays = #base.Bays, Presets = #data.Presets }
 end
 
 function Base.UpgradeMachine(data: Profile.Data, args: any, now: number): Answer
@@ -369,19 +371,37 @@ function Base.CollectTray(data: Profile.Data, _args: any, now: number): Answer
 			data.Bag.Stones[grade] = (data.Bag.Stones[grade] or 0) + held
 		end
 	end
-	if count == 0 then
+	local jewels: { [string]: number } = {}
+	local cut = 0
+	for key, held in base.Condenser.Jewels or {} do
+		if held > 0 then
+			jewels[key] = held
+			cut += held
+			data.Bag.Jewels[key] = (data.Bag.Jewels[key] or 0) + held
+		end
+	end
+	if count + cut == 0 then
 		return refuse(Base.Empty)
 	end
 	base.Condenser.Tray = {}
+	base.Condenser.Jewels = nil
 	Goals.Note(data, "TrayCollected") -- today's "collect the Condenser's tray" (TR54)
-	return { Ok = true, Stones = taken, Count = count }
+	return { Ok = true, Stones = taken, Jewels = jewels, Count = count }
 end
 
-function Base.Convert(data: Profile.Data, _args: any, now: number): Answer
+function Base.Convert(data: Profile.Data, args: any, now: number): Answer
 	local base = data.Base
-	local convert = CondenserConfig.Convert
+	local from = field(args, "From")
+	from = if from == nil then CondenserConfig.Order[1] else from
+	local convert = if type(from) == "string" then CondenserConfig.Converts[from] else nil
+	if convert == nil then
+		return refuse(Base.BadArgs)
+	end
 	if not Condenser.Awake(base.Level) then
 		return refuse(Base.Asleep)
+	end
+	if not Condenser.Runs(base, convert.From) then
+		return refuse(Base.Low)
 	end
 	Breaker.Advance(data, now) -- the one before finishes first, if its time has come
 	if base.Condenser.Convert ~= nil then
@@ -393,7 +413,8 @@ function Base.Convert(data: Profile.Data, _args: any, now: number): Answer
 	end
 	data.Bag.Stones[convert.From] = held - convert.Take
 	base.Condenser.Convert = 0
-	return { Ok = true, Spent = convert.Take, Seconds = convert.Seconds }
+	base.Condenser.Converting = convert.From
+	return { Ok = true, From = convert.From, Spent = convert.Take, Seconds = convert.Seconds }
 end
 
 Base.Actions = {

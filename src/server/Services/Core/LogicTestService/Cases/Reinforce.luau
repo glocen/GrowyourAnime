@@ -22,6 +22,8 @@ local Voidkin = require(Shared.Definitions.Voidkin)
 local ChestsConfig = require(Shared.Config.Chests)
 local DropsConfig = require(Shared.Config.Drops)
 local Drops = require(Shared.Rules.Drops)
+local Chests = require(Shared.Rules.Chests)
+local ChestRows = require(Shared.Definitions.Chests)
 local Tower = require(Shared.Rules.Tower)
 local TowerConfig = require(Shared.Config.Tower)
 local StatsConfig = require(Shared.Config.Stats)
@@ -400,25 +402,34 @@ return {
 			local elite = chance * DropsConfig.Share.Elite
 			t.Equal("an elite's mean, its whole part sure", Drops.Stones("Elite", 0.999), math.floor(elite))
 			t.Equal("an unknown kind: none", Drops.Stones("Nowhere", 0), 0)
-			t.Equal("an ordinary Shade drops no emblem", Drops.Emblem("Ordinary", "lanternrow", { Stone = 0, Emblem = 0, Rarity = 0, Set = 0, Stat = 0 }), nil)
-			local weights = Drops.EmblemWeights("Elite", "lanternrow")
-			local row = ChestsConfig.Ladder[1 + DropsConfig.EmblemTier.Elite - 1]
-			t.Check("an elite in the first ground: its ladder row, Common as Uncommon", weights.Uncommon == row[1] + row[2] and weights.Rare == row[3])
-			local key = Drops.Emblem("Keeper", "lanternrow", { Stone = 0, Emblem = 0.5, Rarity = 0, Set = 0, Stat = 0 })
-			t.Check("a keeper's sure emblem: Uncommon, the first set, the first stat", key == "talon:Attack", tostring(key))
-			t.Equal("over the elite's chance: none", Drops.Emblem("Elite", "lanternrow", { Stone = 0, Emblem = DropsConfig.EmblemChance.Elite, Rarity = 0, Set = 0, Stat = 0 }), nil)
+			-- TR56: an elite's emblem comes in an Emblem Case of its own chest, rolled when it's opened.
+			local loot: Drops.Loot = { Stone = 0, Emblem = 0, Rarity = 0, Set = 0, Stat = 0 }
+			t.Equal("an ordinary Shade drops no case", Drops.Give(fresh(), "Ordinary", 1, "lanternrow", 0.99, 0.99, loot).Case, "")
+			local eliteChest = ChestRows.Of("lanternrow", 2) :: ChestRows.Row
+			local case = ChestRows.CaseOf(eliteChest.Id) :: ChestRows.Row
+			local weights, row = Chests.Weights(case), Chests.Weights(eliteChest)
+			t.Check("an elite's case in the first ground: its chest's odds, Common as Uncommon", weights[1] == 0 and weights[2] == row[1] + row[2] and weights[3] == row[3], `{weights[2]} {row[1] + row[2]}`)
+			local function zeros(): number
+				return 0
+			end
+			local key = Chests.RollCase(case, zeros)
+			t.Check("its lowest roll: Uncommon, the first set, the first stat", key == "talon:Attack", tostring(key))
+			t.Equal("over the elite's chance: none", Drops.Give(fresh(), "Elite", 9, "lanternrow", 0.99, 0.99, { Stone = 0, Emblem = DropsConfig.EmblemChance.Elite, Rarity = 0, Set = 0, Stat = 0 }).Case, "")
 			local last = Grounds.List[#Grounds.List].Id
-			local top = Drops.Emblem("Keeper", last, { Stone = 0, Emblem = 0, Rarity = 0.99999, Set = 0.99, Stat = 0.99 })
+			local keeperCase = ChestRows.CaseOf((ChestRows.Of(last, 3) :: ChestRows.Row).Id) :: ChestRows.Row
+			local function highs(): number
+				return 0.99999
+			end
+			local top = Chests.RollCase(keeperCase, highs)
 			local parsed = Emblems.Parse(top)
-			t.Check("the last ground's keeper, its rarest roll: an emblem that exists, at a rarity its row holds", parsed ~= nil and (Drops.EmblemWeights("Keeper", last) :: any)[parsed.Set.Rarity] > 0, tostring(top))
+			t.Check("the last ground's keeper's case, its rarest roll: an emblem that exists, at a rarity its odds hold", parsed ~= nil and (Chests.Odds(keeperCase) :: any)[parsed.Set.Rarity] > 0, tostring(top))
 			local data = fresh()
-			local loot = { Stone = 0, Emblem = 0, Rarity = 0, Set = 0, Stat = 0 }
 			local answer = Drops.Give(data, "Elite", 9, "lanternrow", 0.99, 0.99, loot)
-			t.Check("an elite's fall writes its stones and emblem", answer.Ok == true and answer.Stone == "Low" and answer.Stones >= 1 and data.Bag.Stones.Low == answer.Stones and answer.Emblem == "talon:Attack" and data.Bag.Emblems["talon:Attack"] == 1)
+			t.Check("an elite's fall writes its stones and its case", answer.Ok == true and answer.Stone == "Low" and answer.Stones >= 1 and data.Bag.Stones.Low == answer.Stones and answer.Case == case.Id and data.Bag.Chests[case.Id] == 1)
 			local keeper = Drops.Give(data, "Keeper", 9, "lanternrow", 0.99, 0.99, loot)
-			t.Check("a keeper's fall: its stones, its emblem left to its win (Rules.Progress)", keeper.Stones >= 2 and keeper.Emblem == "" and data.Bag.Emblems["talon:Attack"] == 1)
+			t.Check("a keeper's fall: its stones, its case left to its win (Rules.Progress)", keeper.Stones >= 2 and keeper.Case == "" and data.Bag.Chests[case.Id] == 1)
 			local plain = Drops.Give(data, "Ordinary", 1, "lanternrow", 0.99, 0.99)
-			t.Check("without the loot's rolls: none", plain.Stone == "" and plain.Stones == 0 and plain.Emblem == "")
+			t.Check("without the loot's rolls: none", plain.Stone == "" and plain.Stones == 0 and plain.Case == "")
 			local climb = fresh()
 			Tower.Start(climb, "run", 7, NOW)
 			local hard = Tower.Won(climb, "run", 1, false)

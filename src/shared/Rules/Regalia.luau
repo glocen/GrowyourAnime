@@ -180,8 +180,24 @@ function Regalia.Equip(data: Profile.Data, index: any, slot: any, class: any, id
 	}
 end
 
--- What a client may ask, by name, through the Act remote. Args: { Preset, Slot, Class?, Item?, Move? }.
+-- Links Voidkin `id` to preset `index`, one the base's level holds (TR56): it fights in that preset's slots and its own
+-- class's pair from it. Answers { Ok, Voidkin, Preset }, or a refusal that changed nothing.
+function Regalia.UsePreset(data: Profile.Data, id: any, index: any): { [string]: any }
+	local owned = if type(id) == "string" then data.Voidkin[id] else nil
+	if owned == nil or type(index) ~= "number" or data.Presets[index] == nil then
+		return { Ok = false, Error = Regalia.Unknown }
+	end
+	owned.Preset = index
+	return { Ok = true, Voidkin = owned.Id, Preset = index }
+end
+
+-- What a client may ask, by name, through the Act remote. Equip's args: { Preset, Slot, Class?, Item?, Move? };
+-- UsePreset's: { Voidkin, Preset }.
 Regalia.Actions = {
+	UsePreset = function(data: Profile.Data, args: any): { [string]: any }
+		local given = if type(args) == "table" then args else {}
+		return Regalia.UsePreset(data, given.Voidkin, given.Preset)
+	end,
 	Equip = function(data: Profile.Data, args: any): { [string]: any }
 		local given = if type(args) == "table" then args else {}
 		return Regalia.Equip(data, given.Preset, given.Slot, given.Class, given.Item, given.Move)

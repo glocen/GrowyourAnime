@@ -37,6 +37,8 @@ export type Summary = {
 	Worked: number, -- the levels the bays' workers gained by the kWh they made (TR55)
 	Stones: number, -- stones the Stone Condenser made into its tray (TR37)
 	Converted: number, -- converts it finished
+	Into: { [string]: number }, -- the stones those converts gave, by grade (TR56: Mid or High)
+	Jewels: number, -- jewels it made into its tray (TR56)
 	Steps: number, -- events stepped through, for tests
 }
 
@@ -255,9 +257,14 @@ local function step(data: Profile.Data, seconds: number, making: boolean, traine
 			end
 		end
 		if (flow.Demand.Condenser or 0) > 0 then
-			local stones, converted = Condenser.Work(base, flow.Speed.Condenser or 1, dt)
+			local recipe = Condenser.Recipe(base) -- the convert under way, before the work can finish it
+			local stones, converted, jewels = Condenser.Work(base, flow.Speed.Condenser or 1, dt)
 			summary.Stones += stones
 			summary.Converted += converted
+			summary.Jewels += jewels
+			if converted > 0 then
+				summary.Into[recipe.To] = (summary.Into[recipe.To] or 0) + converted * recipe.Give
+			end
 			base.Power.Open = true
 		end
 		summary.Made += generation * dt / 3600
@@ -323,7 +330,9 @@ local function remember(base: Profile.Base, summary: Summary, from: number)
 		end
 	end
 	add(CondenserConfig.Makes, summary.Stones)
-	add(CondenserConfig.Convert.To, summary.Converted * CondenserConfig.Convert.Give)
+	for grade, count in summary.Into do
+		add(grade, count)
+	end
 	if summary.Trained and summary.Levels > 0 then
 		away.Trained[summary.Trained] = (away.Trained[summary.Trained] or 0) + summary.Levels
 	end
@@ -336,7 +345,7 @@ end
 -- workers' generation stops after Config.Base.Battery.AwayHours and the lead trains. A base never advanced takes `now`
 -- as its stamp. A `now` before the stamp (a clock step back) changes nothing.
 function Breaker.Advance(data: Profile.Data, now: number, away: boolean?): Summary
-	local summary: Summary = { Finished = 0, Made = 0, Overflow = 0, Credits = 0, Levels = 0, Worked = 0, Stones = 0, Converted = 0, Steps = 0 }
+	local summary: Summary = { Finished = 0, Made = 0, Overflow = 0, Credits = 0, Levels = 0, Worked = 0, Stones = 0, Converted = 0, Into = {}, Jewels = 0, Steps = 0 }
 	local base = data.Base
 	if base.Stamp == 0 then
 		base.Stamp = now

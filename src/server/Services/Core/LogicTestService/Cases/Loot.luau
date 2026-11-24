@@ -31,11 +31,11 @@ local function fresh(): Profile.Data
 end
 
 local function loot(emblem: number): Drops.Loot
-	return { Stone = 0, Emblem = emblem, Rarity = 0, Set = 0, Stat = 0 }
+	return { Stone = 0, Emblem = emblem, Rarity = 0, Set = 0, Stat = 0, Pouch = 0.99, Crate = 0.99 }
 end
 
 -- Whether `weights` read ladder row `n` under part 2's least shares (in percent; Config.Chests.Least when nil): the row's
--- Uncommon and Rare, its Epic and Legendary raised to their least, the difference taken from Common, the total kept.
+-- Uncommon, its Rare (TR56), Epic and Legendary raised to their least, the difference taken from Common, the total kept.
 local function reads(weights: { number }, n: number, least: { [string]: number }?): boolean
 	local row = ChestsConfig.Ladder[n]
 	local floor = least or ChestsConfig.Least
@@ -44,8 +44,8 @@ local function reads(weights: { number }, n: number, least: { [string]: number }
 		total += row[i]
 		sum += weights[i]
 	end
-	local ok = weights[2] == row[2] and weights[3] == row[3]
-	for i, name in { [4] = "Epic", [5] = "Legendary" } do
+	local ok = weights[2] == row[2]
+	for i, name in { [3] = "Rare", [4] = "Epic", [5] = "Legendary" } do
 		local want = math.max(row[i], total * (floor[name] or 0) / 100)
 		raised += want - row[i]
 		ok = ok and math.abs(weights[i] - want) < 1e-9
@@ -148,7 +148,7 @@ return {
 			local normalFirst = ChestRows.Of(GROUND, 3) :: ChestRows.Row
 			t.Check("Normal's first win: its ladder row, under the least shares alone", reads(Chests.Weights(normalFirst), 3))
 			local after = ChestRows.Of(GROUND, 2, "Hard", ChestRows.KeeperStage[GROUND]) :: ChestRows.Row
-			t.Check("a Hard repeat's chest: no floor, its row under the keeper's least shares", reads(Chests.Weights(after), 3, { Epic = 1.6, Legendary = 0.35 }))
+			t.Check("a Hard repeat's chest: no floor, its row under the keeper's least shares", reads(Chests.Weights(after), 3, ChestsConfig.Hard.Least.Keeper))
 			local data = fresh()
 			local answer, changed = Transaction.Run(data, "keeper-1", function(draft: Profile.Data): any
 				return Progress.KeeperWon(draft, GROUND, NOW, "Hard")
@@ -170,7 +170,7 @@ return {
 		end,
 	},
 	{
-		Name = "Loot: TR48, the materials at research's rates: stones by difficulty, an elite's emblem at 30%, a keeper's with its win at 75%, the first Normal win sure",
+		Name = "Loot: TR48, the materials at research's rates: stones by difficulty, an elite's Emblem Case at 30%, a keeper's with its win at 75%, the first Normal win sure (TR56: the case for the loose emblem)",
 		Run = function(t: any)
 			t.Check("stones: Normal 22%, Hard 28%", DropsConfig.StoneChance.Normal == 0.22 and DropsConfig.StoneChance.Hard == 0.28)
 			t.Check("a Shade, roll 0.25: none on Normal, one on Hard", Drops.Stones("Ordinary", 0.25, "Normal") == 0 and Drops.Stones("Ordinary", 0.25, "Hard") == 1)
@@ -178,20 +178,22 @@ return {
 			t.Check("a Hard elite: 1 sure", Drops.Stones("Elite", 0.99, "Hard") == 1)
 			t.Check("a Normal keeper: 2 (1 sure)", Drops.Stones("Keeper", 0.97, "Normal") == 2 and Drops.Stones("Keeper", 0.99, "Normal") == 1)
 			t.Check("a Hard keeper: 2.5 (2 sure)", Drops.Stones("Keeper", 0.5, "Hard") == 3 and Drops.Stones("Keeper", 0.55, "Hard") == 2)
-			t.Check("emblems: an elite 30%, a keeper 75%", DropsConfig.EmblemChance.Elite == 0.3 and DropsConfig.EmblemChance.Keeper == 0.75)
-			local hardRow = ChestsConfig.Ladder[1 + DropsConfig.EmblemTier.Elite - 1 + ChestsConfig.Hard.Rows]
-			t.Check("a Hard elite's emblem: Drum Court's row", Drops.EmblemWeights("Elite", GROUND, "Hard").Rare == hardRow[3])
+			t.Check("cases: an elite 30%, a keeper 75%", DropsConfig.EmblemChance.Elite == 0.3 and DropsConfig.EmblemChance.Keeper == 0.75)
+			local hardChest = ChestRows.Of(GROUND, 2, "Hard", 1)
+			local hardElite = Drops.Give(fresh(), "Elite", 12, GROUND, 0.99, 0.99, loot(0), { Difficulty = "Hard", Stage = 1 })
+			t.Check("a Hard elite's case: its stage's own chest's", hardChest ~= nil and hardElite.Case == `{(hardChest :: any).Id}_case`, tostring(hardElite.Case))
 			local data = fresh()
 			local first = Progress.KeeperWon(data, GROUND, NOW, "Normal", loot(0.9))
-			t.Check("the first Normal win, roll 0.9: its emblem, sure", first.Emblem ~= "" and data.Bag.Emblems[first.Emblem] == 1, first.Emblem)
+			t.Check("the first Normal win, roll 0.9: its case, sure, in the bag's chests", first.Case ~= "" and data.Bag.Chests[first.Case] == 1, first.Case)
+			t.Check("its case is the keeper's chest's", first.Case == `{first.Chest}_case`, `{first.Chest} {first.Case}`)
 			local second = Progress.KeeperWon(data, GROUND, NOW + 400, "Normal", loot(0.9))
-			t.Equal("the second, roll 0.9: none over 75%", second.Emblem, "")
+			t.Equal("the second, roll 0.9: none over 75%", second.Case, "")
 			local hard = Progress.KeeperWon(data, GROUND, NOW + 800, "Hard", loot(0.9))
-			t.Equal("the first Hard win, roll 0.9: 75% only", hard.Emblem, "")
+			t.Equal("the first Hard win, roll 0.9: 75% only", hard.Case, "")
 			local hardAgain = Progress.KeeperWon(data, GROUND, NOW + 1200, "Hard", loot(0.5))
-			t.Check("roll 0.5: under 75%, one", hardAgain.Emblem ~= "")
-			t.Equal("without the rolls: none", Progress.KeeperWon(data, GROUND, NOW + 1600, "Hard").Emblem, "")
-			local hardStones = Drops.Give(fresh(), "Ordinary", 12, GROUND, 0.99, 0.99, { Stone = 0.25, Emblem = 0.99, Rarity = 0, Set = 0, Stat = 0 }, { Difficulty = "Hard", Stage = 1 })
+			t.Check("roll 0.5: under 75%, one", hardAgain.Case ~= "")
+			t.Equal("without the rolls: none", Progress.KeeperWon(data, GROUND, NOW + 1600, "Hard").Case, "")
+			local hardStones = Drops.Give(fresh(), "Ordinary", 12, GROUND, 0.99, 0.99, { Stone = 0.25, Emblem = 0.99, Rarity = 0, Set = 0, Stat = 0 } :: Drops.Loot, { Difficulty = "Hard", Stage = 1 })
 			t.Check("a Hard Shade's fall, roll 0.25: one Low stone", hardStones.Stones == 1 and hardStones.Stone == "Low")
 		end,
 	},
@@ -228,7 +230,7 @@ return {
 				return math.abs((odds[name] or 0) - share / 100) < 1e-9
 			end
 			local shadeOdds = Chests.Odds(shade)
-			t.Check("a Normal Shade's chest: Epic 0.3%, Legendary 0.05%, Common 93.65%", near(shadeOdds, "Epic", 0.3) and near(shadeOdds, "Legendary", 0.05) and near(shadeOdds, "Common", 93.65), `{shadeOdds.Epic}, {shadeOdds.Legendary}, {shadeOdds.Common}`)
+			t.Check("a Normal Shade's chest: Rare 1% (TR56), Epic 0.3%, Legendary 0.05%, Common 92.65%", near(shadeOdds, "Rare", 1) and near(shadeOdds, "Epic", 0.3) and near(shadeOdds, "Legendary", 0.05) and near(shadeOdds, "Common", 92.65), `{shadeOdds.Rare}, {shadeOdds.Epic}, {shadeOdds.Legendary}, {shadeOdds.Common}`)
 			t.Check("its Uncommon as its row gives", near(shadeOdds, "Uncommon", ChestsConfig.Ladder[1][2]))
 			local eliteOdds = Chests.Odds(elite)
 			t.Check("a Hard elite's chest: Epic 0.6%, Legendary 0.05%", near(eliteOdds, "Epic", 0.6) and near(eliteOdds, "Legendary", 0.05), `{eliteOdds.Epic}, {eliteOdds.Legendary}`)

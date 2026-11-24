@@ -258,6 +258,8 @@ local function levelLines(data: Profile.View): (string, string)
 			table.insert(gains, `machines to Lv {gain.To}`)
 		elseif gain.What == "Condenser" then
 			table.insert(gains, "the Stone Condenser wakes")
+		elseif gain.What == "Presets" then
+			table.insert(gains, `{gain.To} gear presets`)
 		end
 	end
 	return `Base · Level {level}`, `Level {offer.Level}: {table.concat(gains, ", ")}` -- its price is on its press

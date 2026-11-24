@@ -5045,3 +5045,16 @@ Research, 2026-11-24, 14:00. Launch-design's item 5. The design: `docs/design.md
   - High refused under level 10;
   - presets at their levels.
 - **The content check** reads the new names before the build.
+
+**Faber, 2026-11-24, 17:30: built, research's pass next.**
+- **Implemented.** The block, as listed. Pouches and crates are chest rows (tiers 6 and 7) that open into the bag's jewels and stones. A case rolls its emblem when opened. The Combine pill sits on War Emblems, the Condenser card has a Switch prompt (F), and the preset row is on the Voidkin sheet. The pictures are the kinds' words on grey until Modulo's land.
+- **Tested.**
+  - Type check: 0 new. Logic offline: 33,813 passed, 0 failed, with ChestFamily's nine new cases.
+  - Self-test: Base: TR37 44/0, War Emblems 35/0 (the new Combine case included), Gear: TR47 10/0, Items 123/0, Tower card 27/0.
+  - NOT VERIFIED: the Switch on at level 10 and the card turning to Mid. The check is written, but the PC locked before it ran (read once by hand: both prompts on).
+  - Content check: PASS.
+- **Seen in play.** The bag's Chests tab; the pouch's card (Tier 1 80%, Tier 2 20%) and its toast; the crate's card (Low 100%, Mid 25%, High 2%) and "8 Low stones"; the case's card (Rare 1% above Epic 0.3%) and "3 Uncommon emblems"; the Combine pill. Research's pass hasn't run; the director hasn't accepted.
+- **For research:**
+  - An elite's case and a keeper's first-win case share the name "Emblem Case of <ground>" with different odds.
+  - The card's kind line says "Chest" for a pouch and a crate too.
+  - Socketing jewels isn't in the block: a pouch only fills the bag.

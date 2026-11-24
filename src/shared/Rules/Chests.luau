@@ -23,8 +23,13 @@ local Grounds = require(Shared.Definitions.Grounds)
 local Attributes = require(Shared.Definitions.Attributes)
 local Rarity = require(Shared.Definitions.Rarity)
 local Voidkin = require(Shared.Definitions.Voidkin)
+local EmblemSets = require(Shared.Definitions.Emblems)
+local JewelsConfig = require(Shared.Config.Jewels)
 local Growth = require(Shared.Rules.Growth)
 local Stats = require(Shared.Rules.Stats)
+local Price = require(Shared.Rules.Price)
+local Emblems = require(Shared.Rules.Emblems)
+local Jewels = require(Shared.Rules.Jewels)
 
 local Chests = {}
 
@@ -90,23 +95,26 @@ local function index(count: number, u: number): number
 	return math.clamp(math.floor(u * count) + 1, 1, count)
 end
 
--- What one point of `stat` is worth in Combat Power before its scale, at the generic row (no Main): a Battle
--- Attribute's weight, an attribute's conversion row weighed (the rework's part 2, "A line's price").
-function Chests.Price(stat: string): number
-	local weights = StatsConfig.Power.Weights
-	local row = StatsConfig.Attributes.Convert[stat]
-	if row then
-		local price = 0
-		for into, rate in row do
-			price += rate * (weights[into] or 0)
-		end
-		return price
-	end
-	return weights[stat] or 0
+-- What one point of `stat` is worth in Combat Power before its scale (Rules.Price).
+Chests.Price = Price.Of
+
+-- Whether a chest holds gear (tiers 1 to 4), not one of the family's other kinds (TR56).
+function Chests.IsGear(chest: ChestRows.Row): boolean
+	return chest.Tier <= ChestRows.Tiers
 end
 
 -- The rarity ladder's row a chest reads. A Tower chest reads its own row (Chests.Weights); its step only orders the bag.
+-- A case reads its gear chest's; the Tower's cases, the pouch and the crate order after every ladder row.
 function Chests.Step(chest: ChestRows.Row): number
+	if chest.Of then
+		local of = ChestRows.ById[chest.Of]
+		if of then
+			return Chests.Step(of)
+		end
+	end
+	if not Chests.IsGear(chest) then
+		return #ChestsConfig.Ladder
+	end
 	local ground = Grounds.ById[chest.Ground]
 	local past = if chest.Difficulty == "Hard" then ChestsConfig.Hard.Rows else 0
 	return math.clamp((if ground then ground.Order else 1) + chest.Tier - 1 + past, 1, #ChestsConfig.Ladder)
@@ -129,7 +137,27 @@ end
 -- The rarity weights a chest rolls by, Common to Legendary: the Tower's own row for a Tower chest; a keeper's first
 -- win's chest none under its difficulty's floor (Config.Chests.Keeper.FirstFloor, TR48); else its ladder row, each
 -- rarity raised to its least share (Chests.Least), the difference taken from Common.
+-- An Emblem Case rolls its gear chest's weights, every least included, Common read as Uncommon (TR56); a Tower case
+-- only its one rarity. The pouch and the crate roll no rarity: none.
 function Chests.Weights(chest: ChestRows.Row): { number }
+	if chest.Tier == ChestRows.Case then
+		local weights = { 0, 0, 0, 0, 0 }
+		local of = if chest.Of then ChestRows.ById[chest.Of] else nil
+		if of then
+			weights = table.clone(Chests.Weights(of))
+			weights[2] = (weights[2] or 0) + (weights[1] or 0)
+			weights[1] = 0
+		elseif chest.Rarity then
+			local i = table.find(ChestsConfig.Rarities, chest.Rarity)
+			if i then
+				weights[i] = 100
+			end
+		end
+		return weights
+	end
+	if not Chests.IsGear(chest) then
+		return { 0, 0, 0, 0, 0 }
+	end
 	if chest.Tier == ChestRows.Tower then
 		return ChestsConfig.Tower
 	end
@@ -308,6 +336,93 @@ function Chests.Grant(data: Profile.Data, id: string, count: number)
 	data.Bag.Chests[id] = (data.Bag.Chests[id] or 0) + count
 end
 
+-- The Emblem Case that stands for gear chest `id` (an elite's fall, a keeper's win) when `u` in [0, 1) falls under
+-- `chance` (TR56: the loose emblem's drop, one for one), or nil.
+function Chests.Case(id: string?, u: number?, chance: number): string?
+	local case = ChestRows.CaseOf(id)
+	return if case and type(u) == "number" and u < chance then case.Id else nil
+end
+
+-- What one case opens to, every roll from `draw`, in a fixed order: rarity, set, stat. Its emblem's key.
+function Chests.RollCase(chest: ChestRows.Row, draw: Draw): string
+	local weights: { [string]: number } = {}
+	local ladder = Chests.Weights(chest)
+	for i, name in ChestsConfig.Rarities do
+		weights[name] = ladder[i] or 0
+	end
+	local rarity = pick(weights, ChestsConfig.Rarities, draw()) or "Uncommon"
+	local sets = EmblemSets.ByRarity[rarity] or EmblemSets.ByRarity.Uncommon
+	local stats = table.clone(EmblemSets.Stats)
+	if rarity == "Epic" or rarity == "Legendary" then
+		table.move(EmblemSets.HighStats, 1, #EmblemSets.HighStats, #stats + 1, stats)
+	end
+	local set = sets[index(#sets, draw())]
+	local stat = stats[index(#stats, draw())]
+	return Emblems.Key(set.Id, stat)
+end
+
+-- One pouch's jewel, its key: its tier by Config.Chests.Pouch.Tiers, then its colour, even.
+function Chests.RollPouch(draw: Draw): string
+	local tiers = ChestsConfig.Pouch.Tiers
+	local total = 0
+	for _, chance in tiers do
+		total += chance
+	end
+	local at, tier = draw() * total, #tiers
+	for i, chance in tiers do
+		if at < chance then
+			tier = i
+			break
+		end
+		at -= chance
+	end
+	local colours = JewelsConfig.Colours
+	return Jewels.Key(colours[index(#colours, draw())], tier)
+end
+
+-- One crate's stones, by grade: Low always, Mid and High at their chances (Config.Chests.Crate).
+function Chests.RollCrate(draw: Draw): { [string]: number }
+	local crate = ChestsConfig.Crate
+	local function between(range: { number }, u: number): number
+		return range[1] + math.min(math.floor(u * (range[2] - range[1] + 1)), range[2] - range[1])
+	end
+	local out: { [string]: number } = { Low = between(crate.Low, draw()) }
+	if draw() < crate.MidChance then
+		out.Mid = between(crate.Mid, draw())
+	end
+	if draw() < crate.HighChance then
+		out.High = crate.High
+	end
+	return out
+end
+
+-- What a chest's card lists as what it gives: a gear chest's and a case's rarities with their chances; a pouch's tiers;
+-- a crate's stones. Each { Rarity (a gear or case line's, else ""), Tier (a pouch's), Grade, From, To (a crate's), Chance }.
+export type Give = { Rarity: string, Chance: number, Tier: number?, Grade: string?, From: number?, To: number? }
+function Chests.Gives(chest: ChestRows.Row): { Give }
+	local out: { Give } = {}
+	if chest.Tier == ChestRows.Pouch then
+		for tier, chance in ChestsConfig.Pouch.Tiers do
+			table.insert(out, { Rarity = "", Tier = tier, Chance = chance })
+		end
+		return out
+	end
+	if chest.Tier == ChestRows.Crate then
+		local crate = ChestsConfig.Crate
+		table.insert(out, { Rarity = "", Grade = "Low", From = crate.Low[1], To = crate.Low[2], Chance = 1 })
+		table.insert(out, { Rarity = "", Grade = "Mid", From = crate.Mid[1], To = crate.Mid[2], Chance = crate.MidChance })
+		table.insert(out, { Rarity = "", Grade = "High", From = crate.High, To = crate.High, Chance = crate.HighChance })
+		return out
+	end
+	local chances = Chests.Odds(chest)
+	for _, name in ChestsConfig.Rarities do
+		if (chances[name] or 0) > 0 then
+			table.insert(out, { Rarity = name, Chance = chances[name] })
+		end
+	end
+	return out
+end
+
 -- The chest a fall of `kind` in ground `ground` drops for `u` in [0, 1), or nil: on Hard, its `stage`'s own (TR48).
 -- `kills` is the account's kills before this one. A keeper's comes from its win, never here.
 function Chests.Dropped(kind: string, ground: string, kills: number, u: number?, difficulty: string?, stage: number?): string?
@@ -343,6 +458,28 @@ function Chests.Open(data: Profile.Data, id: any, count: any, draw: Draw): { [st
 	local held = data.Bag.Chests[chest.Id] or 0
 	if held < count then
 		return { Ok = false, Error = Chests.NotEnough }
+	end
+	if not Chests.IsGear(chest) then
+		-- The family's other kinds (TR56): no item, so no bag's cap and no salvage. Each opened in this one step.
+		data.Bag.Chests[chest.Id] = if held > count then held - count else nil
+		local emblems: { [string]: number }, jewels: { [string]: number }, stones: { [string]: number } = {}, {}, {}
+		for _ = 1, count do
+			if chest.Tier == ChestRows.Case then
+				local key = Chests.RollCase(chest, draw)
+				emblems[key] = (emblems[key] or 0) + 1
+				data.Bag.Emblems[key] = (data.Bag.Emblems[key] or 0) + 1
+			elseif chest.Tier == ChestRows.Pouch then
+				local key = Chests.RollPouch(draw)
+				jewels[key] = (jewels[key] or 0) + 1
+				data.Bag.Jewels[key] = (data.Bag.Jewels[key] or 0) + 1
+			else
+				for grade, n in Chests.RollCrate(draw) do
+					stones[grade] = (stones[grade] or 0) + n
+					data.Bag.Stones[grade] = (data.Bag.Stones[grade] or 0) + n
+				end
+			end
+		end
+		return { Ok = true, Chest = chest.Id, Opened = count, Items = {}, Salvaged = 0, Credits = 0, Emblems = emblems, Jewels = jewels, Stones = stones }
 	end
 	local items = 0
 	for _ in data.Items do

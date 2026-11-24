@@ -812,9 +812,38 @@ local function overview(scroll: ScrollingFrame, view: Profile.View, owned: Profi
 		end
 		local wears = if worn == 0 then "nothing worn yet" elseif worn == 1 then "1 piece worn" else `{worn} pieces worn`
 		line(scroll, 31, `Gear · preset {owned.Preset}`, nil, `{Gear.Kind("Main Hand", own.Class)} and {Gear.Kind("Off Hand", own.Class)} in hand · {wears}`)
+		-- The presets its base's level holds (TR56), one press each: the one it wears lit, a tap on another links it there.
+		local count = #(view :: any).Presets
+		if count > 1 then
+			local row = Instance.new("Frame")
+			row.Name = "Presets"
+			row.BackgroundTransparency = 1
+			row.LayoutOrder = 32
+			row.Size = UDim2.fromOffset(sheetWide, ROW)
+			row.Parent = scroll
+			local gap = 6
+			local each = math.floor((sheetWide - gap * (count - 1)) / count)
+			for index = 1, count do
+				local press = Button.new({
+					Name = `Preset{index}`,
+					Text = "",
+					Bare = true,
+					Size = UDim2.fromOffset(each, ROW),
+					Position = UDim2.fromOffset((index - 1) * (each + gap), 0),
+					Parent = row,
+					OnPress = function(): boolean
+						if owned.Preset == index then
+							return false
+						end
+						return refused("Can't switch", on.Act("UsePreset", { Voidkin = owned.Id, Preset = index }))
+					end,
+				})
+				Glass.Dress(press, if owned.Preset == index then "Lit" else "Quiet", `Preset {index}`, nil, { Palette = Seam.Kit })
+			end
+		end
 	end
 	if owned.Nickname ~= "" then
-		line(scroll, 32, "Its own name", nil, if own then own.Name else owned.Def)
+		line(scroll, 33, "Its own name", nil, if own then own.Name else owned.Def)
 	end
 end
 

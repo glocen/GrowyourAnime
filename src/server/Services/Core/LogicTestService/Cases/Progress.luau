@@ -68,9 +68,9 @@ return {
 		Run = function(t: any)
 			local first = Grounds.List[1]
 			local data = fresh()
-			local roll = { Stone = 0, Emblem = 0, Rarity = 0, Set = 0, Stat = 0 } -- every emblem roll lands
+			local roll: any = { Stone = 0, Emblem = 0, Rarity = 0, Set = 0, Stat = 0, Pouch = 0, Crate = 0 } -- every roll lands
 			local won = Progress.KeeperWon(data, first.Id, NOW, "Normal", roll)
-			t.Check("the win: a chest and an emblem", won.Ok == true and won.Chest ~= "" and won.Emblem ~= "", `{won.Chest} {won.Emblem}`)
+			t.Check("the win: a chest and an Emblem Case", won.Ok == true and won.Chest ~= "" and won.Case ~= "", `{won.Chest} {won.Case}`)
 			local function held(): string
 				local chests, emblems = 0, 0
 				for _, n in data.Bag.Chests do

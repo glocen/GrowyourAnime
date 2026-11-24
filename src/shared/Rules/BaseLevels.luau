@@ -66,6 +66,18 @@ function BaseLevels.Bays(level: number): number
 	return at(BaseConfig.Levels.Bays, level)
 end
 
+-- The gear presets a base of `level` holds (TR56).
+function BaseLevels.Presets(level: number): number
+	return at(BaseConfig.Levels.Presets, level)
+end
+
+-- Adds empty presets to a save's `presets` up to its base `level`'s count: never takes one away.
+function BaseLevels.GrowPresets(presets: any, level: number)
+	for _ = #presets + 1, BaseLevels.Presets(level) do
+		table.insert(presets, { Slots = {}, Hands = {} })
+	end
+end
+
 -- The bays every plot lays (Config.Base.Levels.Plot), the ones no level at launch opens among them (D5).
 function BaseLevels.Plot(): number
 	return BaseConfig.Levels.Plot
@@ -174,6 +186,7 @@ function BaseLevels.Next(baseLevel: number, credits: number): Offer
 		return { Level = level, Price = nil, Why = BaseLevels.AtCap, Gains = gains }
 	end
 	gain(gains, "Bays", BaseLevels.Bays(baseLevel), BaseLevels.Bays(level))
+	gain(gains, "Presets", BaseLevels.Presets(baseLevel), BaseLevels.Presets(level))
 	gain(gains, "Battery", BaseLevels.Battery(baseLevel), BaseLevels.Battery(level))
 	gain(gains, "Ceiling", BaseLevels.Ceiling(baseLevel), BaseLevels.Ceiling(level))
 	gain(gains, "Condenser", if Condenser.Awake(baseLevel) then 1 else 0, if Condenser.Awake(level) then 1 else 0) -- it wakes (TR37)

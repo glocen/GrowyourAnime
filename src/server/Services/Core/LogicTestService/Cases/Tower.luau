@@ -420,15 +420,19 @@ return {
 			for _, each in if ran then ran.Chests else {} do
 				carried += each
 			end
-			t.Check("and its ledger empty but the first chest, once", ran ~= nil and ran.Credits == 0 and carried == 1 and ran.Chests[firstChest] == 1)
+			local cases = 0 -- TR56: each tenth floor's Emblem Case on its first clear, fast or hard
+			for floor = 1, 40 do
+				cases += if Tower.Case(floor, 0) then 1 else 0
+			end
+			t.Check("and its ledger empty but the first chest and the tenth floors' cases, once", ran ~= nil and ran.Credits == 0 and cases == 4 and carried == 1 + cases and ran.Chests[firstChest] == 1, `{carried} carried`)
 			local later = fresh()
-			later.Progress.Tower.Best = TowerConfig.Chest.First
+			later.Progress.Tower.Best = 40
 			Tower.Start(later, "k905", SEED, NOW)
 			for floor = 1, 40 do
 				Tower.Won(later, "k905", floor, true)
 			end
 			local again = later.Progress.Tower.Run :: any
-			t.Check("a later climb through fast floors: nothing", again ~= nil and again.Credits == 0 and next(again.Chests) == nil)
+			t.Check("a later climb through fast floors under its record: nothing", again ~= nil and again.Credits == 0 and next(again.Chests) == nil)
 			t.Equal("floor 40 again, hard: a no-op", Tower.Won(quick, "k904", 40, false), nil)
 			local hard = Tower.Won(quick, "k904", 41, false)
 			t.Check("then a hard floor pays", hard ~= nil and hard.Credits > 0 and ran.Credits == hard.Credits)
@@ -720,7 +724,7 @@ return {
 							local reward = answer.Reward
 							was.Floor = ask.Floor
 							was.Credits += reward.Credits
-							was.Chests += if reward.Chest then 1 else 0
+							was.Chests += (if reward.Chest then 1 else 0) + (if reward.Case then 1 else 0)
 							was.Stones += reward.Stones
 						end
 					elseif ask.Name == "End" then

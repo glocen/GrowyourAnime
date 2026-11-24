@@ -22,14 +22,15 @@ return {
 		Rows = 1,
 		Least = {
 			Elite = { Epic = 0.6 },
-			Keeper = { Epic = 1.6, Legendary = 0.35 },
+			Keeper = { Rare = 3.0, Epic = 1.6, Legendary = 0.35 }, -- its Rare over its Epic (TR56, hardKeeperLeastRare)
 		} :: { [string]: { [string]: number } },
 	},
-	-- The share, in percent of a roll, under which a ladder chest's Epic or Legendary never falls, Normal and Hard, from
-	-- the first chest: the difference comes from Common. Never on the Tower's row, which is above it, nor on a keeper's
-	-- first win's chest with a floor, where it would be a jackpot (TR48 part 2, research's pace of 2026-11-19, 21:00, on
-	-- the director's word: "the epic and legendary should come at any point imo but for the beginning it luck").
-	Least = { Epic = 0.3, Legendary = 0.05 } :: { [string]: number },
+	-- The share, in percent of a roll, under which a ladder chest's Rare, Epic or Legendary never falls, Normal and Hard,
+	-- from the first chest: the difference comes from Common. Never on the Tower's row, which is above it, nor on a
+	-- keeper's first win's chest with a floor, where it would be a jackpot (TR48 part 2, research's pace of 2026-11-19,
+	-- 21:00, on the director's word: "the epic and legendary should come at any point imo but for the beginning it luck").
+	-- The Rare's least keeps a Rare likelier than an Epic in every chest (TR56; seeds.json, "chestFamily", leastRare).
+	Least = { Rare = 1.0, Epic = 0.3, Legendary = 0.05 } :: { [string]: number },
 	Sure = 3, -- the account's third kill always drops a Shade's chest (the north star's "Build" beat)
 
 	-- Rarity weights, Common to Legendary, one row a step. A chest of the ground in order g at tier t reads row g + t - 1,
@@ -107,6 +108,22 @@ return {
 	-- Research's fit (TR27): salvaging everything pays at most 10% of a kill's Credits on Lantern Row, 16% on Mirror
 	-- Pavilion, so fighting stays the income.
 	Salvage = { Common = 8, Uncommon = 14, Rare = 24, Epic = 40, Legendary = 64 } :: { [string]: number },
+
+	-- The family's three other kinds (TR56; docs/design.md, "The family at launch"; seeds.json, "chestFamily"). Each holds
+	-- one sort of thing and adds no item, so the bag's cap never refuses one.
+	-- An Emblem Case holds one War Emblem: its rarity as the gear chest it stands for rolls (Rules.Chests.Weights), Common
+	-- read as Uncommon, its set and its stat even. An elite's and a keeper's emblem chances are Config.Drops'. The Tower
+	-- gives one sure the first time the account clears each Every-th floor: By's rarity at floors Every to 5 x Every, then
+	-- Past, and Top at each TopEvery-th.
+	Case = {
+		Tower = { Every = 10, By = { "Rare", "Rare", "Epic", "Epic", "Legendary" }, Past = "Epic", TopEvery = 50, Top = "Legendary" },
+	},
+	-- A Jewel Pouch holds one jewel: its tier by Tiers' chances, its colour even (Config.Jewels). A Hard keeper's win gives
+	-- one this often.
+	Pouch = { Tiers = { 0.8, 0.2 }, HardKeeper = 1 },
+	-- A Forge Crate holds Low stones, Low[1] to Low[2] of them, then Mid ones (Mid[1] to Mid[2]) at MidChance, and High at
+	-- HighChance. A Hard keeper's win gives one this often.
+	Crate = { Low = { 4, 8 }, MidChance = 0.25, Mid = { 1, 2 }, HighChance = 0.02, High = 1, HardKeeper = 0.5 },
 
 	Bag = 300, -- items held at most; an open that would pass it is refused before it rolls
 	Step = 50, -- chests opened in one request at most

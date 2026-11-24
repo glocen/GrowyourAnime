@@ -12,6 +12,7 @@ local Saveable = require(Shared.Data.Saveable)
 local StagesConfig = require(Shared.Config.Stages)
 local CombatConfig = require(Shared.Config.Combat)
 local Stages = require(Shared.Rules.Stages)
+local Collection = require(Shared.Rules.Collection)
 local Progress = require(Shared.Rules.Progress)
 local Stats = require(Shared.Rules.Stats)
 local Grounds = require(Shared.Definitions.Grounds)
@@ -394,6 +395,11 @@ return {
 			t.Check("the fall's card: lost at 3, begun at 1", lost.Won == false and lost.Stage == 3 and lost.From == 1 and lost.Count == count)
 			t.Equal("the next run begins at the save's checkpoint", lost.Checkpoint, 3)
 			t.Equal("no save loaded: at the run's stretch", Stages.Lost(again, nil).Checkpoint, 3)
+			local lead = data.Voidkin[Collection.Uncover(data, "rook", NOW).Id]
+			data.Roles.Lead = lead.Id
+			lost = Stages.Lost(again, data)
+			t.Check("it names its lead, as a list shows it (research's lines, TR54)", lead ~= nil and lost.Lead == Collection.Name(lead) and lost.Lead ~= "", tostring(lost.Lead))
+			t.Equal("no save loaded: no name", Stages.Lost(again, nil).Lead, nil)
 			t.Equal("a fall carries no gain", lost.Credits, nil)
 			-- the attributes the client reads (StageController), and back
 			local none = Stages.Published(nil)

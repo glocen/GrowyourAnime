@@ -15,6 +15,7 @@ local CombatConfig = require(Shared.Config.Combat)
 local Progress = require(Shared.Rules.Progress)
 local Stats = require(Shared.Rules.Stats)
 local Goals = require(Shared.Rules.Goals)
+local Collection = require(Shared.Rules.Collection)
 
 local Stages = {}
 
@@ -380,8 +381,14 @@ function Stages.Won(run: Run, answer: { [string]: any }, before: Gave, after: Ga
 	}
 end
 
--- The run's card on its lead's fall (Net StageDone, lost): where it fell, and the checkpoint the next run on its
--- difficulty begins at, the save's (the run's stretch when no save is loaded).
+-- The lead's name as a list shows it (its nickname, else its own), or nil with no save or no lead.
+local function leadName(data: Profile.Data?): string?
+	local owned = if data then data.Voidkin[data.Roles.Lead] else nil
+	return if owned then Collection.Name(owned) else nil
+end
+
+-- The run's card on its lead's fall (Net StageDone, lost): where it fell, its lead's name, and the checkpoint the next
+-- run on its difficulty begins at, the save's (the run's stretch when no save is loaded).
 function Stages.Lost(run: Run, data: Profile.Data?): { [string]: any }
 	return {
 		Won = false,
@@ -391,6 +398,7 @@ function Stages.Lost(run: Run, data: Profile.Data?): { [string]: any }
 		From = run.From,
 		Count = #((Stages.Of(run.Ground) or {}) :: { StagesConfig.Stage }),
 		Checkpoint = if data then Stages.Checkpoint(data, run.Ground, run.Difficulty) else run.Stage,
+		Lead = leadName(data), -- the card names it: "Kirra fell" (research's lines, TR54)
 	}
 end
 

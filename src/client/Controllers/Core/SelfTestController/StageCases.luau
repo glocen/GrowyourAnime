@@ -21,6 +21,7 @@ local UIKit = require(Shared.Config.UIKit)
 local Markers = require(Shared.World.Markers)
 local Stages = require(Shared.Rules.Stages)
 local Sheet = require(Shared.Rules.Sheet)
+local Collection = require(Shared.Rules.Collection)
 local Parts = require(Shared.Util.Parts)
 local Profile = require(Shared.Data.Profile)
 local ProfileController = require(script.Parent.Parent.ProfileController)
@@ -109,6 +110,12 @@ function StageCases.Cases(): { any }
 					return if Screen.Current() == StageScreen.Name and title then title.Text else nil
 				end
 				local named = (require(Shared.Definitions.Grounds) :: any).ById[GROUND].Name
+				-- the fall's title names the lead, as a list shows it (research's lines, TR54)
+				local function leadFell(): string
+					local view = ProfileController.Get() :: any
+					local owned = if view then view.Voidkin[view.Roles.Lead] else nil
+					return if owned then `{Collection.Name(owned)} fell` else "Your lead fell"
+				end
 				t.Server("LeadHeal")
 				t.Server("StageLine", "Hard", 0)
 				t.Server("StageLine", "Normal", 0)
@@ -237,8 +244,19 @@ function StageCases.Cases(): { any }
 					return cardTitle() == `{named} cleared`
 				end), tostring(cardTitle()))
 				local done = StageScreen.Parts()
-				local opened = done.Opened :: TextLabel?
-				t.Equal("it says Hard is open", if opened then opened.Text else nil, "Hard is open")
+				-- Hard's opening said by its press (research's lines, TR54): shut under Hard's lock, then lit as it lifts
+				t.Check("no banner: the card's words don't say Hard opened", done.Opened == nil)
+				local hardPress = done.Next :: TextButton?
+				t.Equal("its Hard press comes in shut", if hardPress then hardPress:GetAttribute("Shut") else nil, true)
+				t.Check("under Hard's lock", hardPress ~= nil and (hardPress:FindFirstChild("Lock", true) :: ImageLabel?) ~= nil)
+				local U = HudConfig.Stages.Card.Unlock
+				local beats = HudConfig.Stages.Motion.RunAt + HudConfig.Stages.Motion.RunSeconds
+				t.Check("and the lock lifts as it lights, past the card's beats", hardPress ~= nil and waitFor(t, beats + U.After + U.Seconds + 1, function(): boolean
+					return hardPress:GetAttribute("Shut") == false
+				end), if hardPress then tostring(hardPress:GetAttribute("Shut")) else "no press")
+				t.Wait(U.Seconds + 0.1)
+				local lock = if hardPress then hardPress:FindFirstChild("Lock", true) :: ImageLabel? else nil
+				t.Check("the lock gone, the press lit", lock ~= nil and lock.ImageTransparency > 0.95 and ((hardPress :: TextButton):FindFirstChild("Lit", true) :: CanvasGroup).GroupTransparency < 0.05, if lock then string.format("%.2f", lock.ImageTransparency) else "no lock")
 				t.Check("Retry, Hard and Home", done.Retry ~= nil and done.Next ~= nil and done.Home ~= nil)
 				t.Check("the keeper's stretch written, the checkpoint cleared", waitFor(t, REPLICATE, function(): boolean
 					return line("Normal").Cleared == count and line("Normal").Reached == nil
@@ -320,12 +338,12 @@ function StageCases.Cases(): { any }
 				t.Check("a run from the checkpoint at stretch 3", third.Ok == true and third.Stage == 3, `{third.Error} {third.Stage}`)
 				t.Server("FightHealth", 0)
 				t.Check("the lead's fall: its card says so", waitFor(t, REPLICATE, function(): boolean
-					return cardTitle() == "Your lead fell"
+					return cardTitle() == leadFell()
 				end), tostring(cardTitle()))
 				local fell = StageScreen.Parts()
 				local time = fell.Time
 				local where = if time then time:FindFirstChild("Said") :: TextLabel? else nil
-				t.Equal("and where the next run starts", if where then where.Text else nil, `Your next run starts at Stretch 3 of {count}`)
+				t.Equal("and where the next run starts", if where then where.Text else nil, "Next run starts at Stretch 3")
 				t.Check("Retry and Home, no Hard", fell.Retry ~= nil and fell.Home ~= nil and fell.Next == nil)
 				t.Equal("the checkpoint stays at stretch 3", line("Normal").Reached, 3)
 				Helpers.lintClean(t, "the fall's card")
@@ -360,7 +378,7 @@ function StageCases.Cases(): { any }
 					return if colour then colour:ToHex() else "none"
 				end
 				local tile = HudController.Parts().Map :: TextButton
-				t.Check("the dock's Play opens the Arc panel", Button.Press(tile) and waitFor(t, 2, function(): boolean
+				t.Check("the dock's Play opens the Arc panel (by the Play panel's Choose Arc)", Helpers.openArc(t, tile, 2, function(): boolean
 					return Screen.Current() == StageScreen.Name and StageScreen.Parts().Arc ~= nil
 				end), tostring(Screen.Current()))
 				t.Wait(1) -- its rise
@@ -458,7 +476,7 @@ function StageCases.Cases(): { any }
 						Screen.Close()
 						t.Wait(0.5)
 					end
-					t.Check("the dock's Play opens the Arc panel", Button.Press(tile) and waitFor(t, 2, function(): boolean
+					t.Check("the dock's Play opens the Arc panel (by the Play panel's Choose Arc)", Helpers.openArc(t, tile, 2, function(): boolean
 						return Screen.Current() == StageScreen.Name and StageScreen.Parts().Normal ~= nil
 					end), tostring(Screen.Current()))
 					t.Wait(1) -- its rise and the plays' ease

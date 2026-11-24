@@ -17,6 +17,7 @@ local Net = require(Shared.Net)
 local WorldConfig = require(Shared.Config.World)
 local StagesConfig = require(Shared.Config.Stages)
 local HudConfig = require(Shared.Config.Hud)
+local VoidkinConfig = require(Shared.Config.Voidkin)
 local GoalsConfig = require(Shared.Config.Goals)
 local DropsConfig = require(Shared.Config.Drops)
 local Goals = require(Shared.Rules.Goals)
@@ -173,7 +174,7 @@ function GoalCases.Cases(): { any }
 			end,
 		},
 		{
-			Name = "Goals (TR54): a stretch's dare on the run's line: unfolds clear of the pill, folds, dark below half, a kept dare's stone and flare, the fall card's chip",
+			Name = "Goals (TR54): a stretch's dare on the run's line: unfolds clear of the pill, folds, dark below half, a kept dare's stone and flare, a Do dare unlit until done, the fall card's chip",
 			Place = "Festival", -- TR45: its world stands in that place only
 			Run = function(t: any)
 				if Screen.Current() ~= nil then
@@ -266,6 +267,38 @@ function GoalCases.Cases(): { any }
 					local said = StageController.Dare()
 					return said ~= nil and said.Open == true and said.Words == dare2.Text
 				end), `{(StageController.Dare() or {} :: any).Open} {(StageController.Dare() or {} :: any).Words}`)
+				if dare2.Kind == "Do" then
+					-- must-fix 1: a "Do" dare's mark asks "done yet?": unlit and whole until done, never the broken mark,
+					-- then kept with its flare the moment it's done
+					local function mark(): ImageLabel?
+						local line = StageController.Dare()
+						return if line then line.Mark :: ImageLabel else nil
+					end
+					t.Check("a Do dare waits unlit, not broken", waitFor(t, REPLICATE, function(): boolean
+						local now = StageController.Dare()
+						return now ~= nil and now.Look == "Waits" and now.Kit == "DareMark"
+					end), `{(StageController.Dare() or {} :: any).Look} {(StageController.Dare() or {} :: any).Kit}`)
+					local unlit = mark()
+					t.Check("its mark is the held one, dimmed", unlit ~= nil and unlit.ImageColor3 == look.Waits.Colour and math.abs(unlit.ImageTransparency - look.Waits.Transparency) < 1e-3, if unlit then `{unlit.ImageColor3} {unlit.ImageTransparency}` else "no mark")
+					local stepped = t.Server("DareStep", dare2.Event) :: any
+					t.Equal("done: the server says kept", stepped.Look, "Kept")
+					local scale: UIScale? = if unlit then unlit:FindFirstChildOfClass("UIScale") else nil
+					local peak = 1
+					local started = os.clock()
+					while os.clock() - started < look.Motion.Flare.Seconds + REPLICATE do
+						if scale then
+							peak = math.max(peak, scale.Scale)
+						end
+						local now = StageController.Dare()
+						if now and now.Look == "Kept" and peak > 1.05 and scale and scale.Scale <= 1.001 then
+							break
+						end
+						task.wait()
+					end
+					local now = StageController.Dare()
+					t.Check("its mark turns kept at once, lit", now ~= nil and now.Look == "Kept" and now.Kit == "DareMarkKept" and unlit ~= nil and unlit.ImageColor3 == Color3.new(1, 1, 1) and unlit.ImageTransparency == 0, `{now and now.Kit}`)
+					t.Check("and flares on the moment", peak > 1.05, string.format("peak %.2f", peak))
+				end
 				-- a fall takes nothing back; its card shows the kept dare
 				t.Server("FightHealth", 0)
 				t.Check("the fall's card", waitFor(t, REPLICATE + 1, function(): boolean
@@ -274,8 +307,10 @@ function GoalCases.Cases(): { any }
 				local parts = StageScreen.Parts()
 				local chip = parts.Dare :: Frame?
 				local words = if chip then chip:FindFirstChild("Words") :: TextLabel? else nil
-				local count = if chip then chip:FindFirstChild("Count") :: TextLabel? else nil
-				t.Check("its chip: Dare kept, +1", words ~= nil and words.Text == Defs.Labels.DareKept and count ~= nil and count.Text == `+{GoalsConfig.Dare.Count}`, if words then words.Text else "no chip")
+				t.Check("its chip on a row of its own: Dare kept", words ~= nil and words.Text == Defs.Labels.DareKept and chip ~= nil and chip.Parent ~= parts.Time, if words then words.Text else "no chip")
+				local stone = parts.Stone :: Frame?
+				local count = if stone then stone:FindFirstChild("Words") :: TextLabel? else nil
+				t.Check("the stone with the rewards: +1", stone ~= nil and stone.Parent == parts.Gave and count ~= nil and count.Text == `+{GoalsConfig.Dare.Count}`, if count then count.Text else "no stone")
 				local card = Screen.Current() and chip and chip:FindFirstAncestorWhichIsA("ScreenGui")
 				local mark = if card then card:FindFirstChild("Dare1", true) else nil
 				t.Check("the road's mark on stretch 1", mark ~= nil and mark:GetAttribute("Kit") == "DareMarkKept")
@@ -291,6 +326,105 @@ function GoalCases.Cases(): { any }
 				local gained = stones() - stonesBefore
 				if gained ~= 0 then
 					t.Server("StonesGive", GoalsConfig.Dare.Grade[GROUND] or "Low", -gained)
+				end
+			end,
+		},
+		{
+			-- Research's must-fixes 2 and 3 (TR54): each row of the run's cards holds its longest value inside the card at the
+			-- smallest phone, and the forge stone stands with the rewards, its picture larger over its own light.
+			Name = "Goals (TR54): the run's cards at their longest on the smallest phone, every row inside the card, the forge stone with the rewards",
+			Run = function(t: any)
+				if Screen.Current() ~= nil then
+					Screen.Close()
+					t.Wait(0.4)
+				end
+				local C = HudConfig.Stages.Card
+				local S = HudConfig.Stages.DareCard.Stone
+				local count = #((Stages.Of(GROUND) or {}) :: { any })
+				local stub = function(): { [string]: any }
+					return { Ok = false }
+				end
+				local on = { Begin = stub, Home = stub, Say = function(_: string) end }
+				local dares = { Kept = { 1, 2, 3, 4 }, Grade = "Low", Count = 4 }
+				local cards: { { any } } = {
+					{ "a new best past ten minutes", { Ground = GROUND, Difficulty = "Normal", Stage = count, Count = count, Won = true, Seconds = 754, Best = 754, From = 1, Credits = 12345, Shards = 2, Chests = 1, Opened = "Hard", Then = "Hard", Dares = dares }, true },
+					{ "past an hour, from its best", { Ground = GROUND, Difficulty = "Hard", Stage = count, Count = count, Won = true, Seconds = 3754, Best = 3600, From = 1, Credits = 12345, Shards = 2, Chests = 1, Dares = dares }, true },
+					{ "from a later stretch", { Ground = GROUND, Difficulty = "Normal", Stage = count, Count = count, Won = true, Seconds = 754, From = 3, Credits = 240, Shards = 1, Chests = 1, Dares = dares }, true },
+					{ "a fall at stretch 3", { Ground = GROUND, Difficulty = "Hard", Stage = 3, Count = count, Won = false, Checkpoint = 3, Lead = string.rep("W", VoidkinConfig.Nickname.Max), Dares = dares }, false },
+				}
+				Layers.Force(Theme.Scale.Floor)
+				Layers.Box(Theme.Smallest - Vector2.new(0, GuiService.TopbarInset.Height))
+				local ok, problem = pcall(function()
+					for _, entry in cards do
+						local what, results, won = entry[1] :: string, entry[2] :: { [string]: any }, entry[3] :: boolean
+						StageScreen.Results(results, on)
+						t.Wait(1.2) -- its rise and the road's fill
+						local parts = StageScreen.Parts()
+						local time = parts.Time :: Frame?
+						if time == nil then
+							t.Check(`{what}: its card`, false, "no time row")
+							continue
+						end
+						-- the card's own drawn scale, read off its time row (the card's width): the screen sizes the card
+						-- past the layers' scale on a small phone, so Layers.Scale() isn't the card's
+						local scale = time.AbsoluteSize.X / C.Wide
+						local left = time.AbsolutePosition.X + C.Inset * scale - 1
+						local right = time.AbsolutePosition.X + C.Wide * scale - C.Inset * scale + 1
+						-- every shown piece of every row, inside the card's inset
+						local worst = ""
+						local title = parts.Title :: TextLabel?
+						if title then
+							local inkLeft = title.AbsolutePosition.X + (title.AbsoluteSize.X - title.TextBounds.X) / 2
+							if inkLeft < left or inkLeft + title.TextBounds.X > right then
+								worst ..= string.format("Title '%s' %.0f..%.0f outside %.0f..%.0f; ", title.Text, inkLeft, inkLeft + title.TextBounds.X, left, right)
+							end
+						end
+						for _, row in { parts.Time, parts.Gave, parts.Dare } do
+							for _, piece in (row :: Instance):GetDescendants() do
+								if piece:IsA("TextLabel") and piece.Visible and piece.Text ~= "" then
+									local x = piece.AbsolutePosition.X
+									local inkLeft = x + (piece.AbsoluteSize.X - piece.TextBounds.X) * (if piece.TextXAlignment == Enum.TextXAlignment.Left then 0 elseif piece.TextXAlignment == Enum.TextXAlignment.Right then 1 else 0.5)
+									local inkRight = inkLeft + piece.TextBounds.X
+									if inkLeft < left or inkRight > right then
+										worst ..= string.format("%s '%s' %.0f..%.0f outside %.0f..%.0f; ", piece.Parent and piece.Parent.Name or "?", piece.Text, inkLeft, inkRight, left, right)
+									end
+								end
+							end
+							if row then
+								local list = (row :: Instance):FindFirstChildOfClass("UIListLayout")
+								if list then
+									local wide = list.AbsoluteContentSize.X
+									if wide > (C.Wide - 2 * C.Inset) * scale + 1 then
+										worst ..= string.format("%s %.0f wide in %.0f; ", (row :: Instance).Name, wide, (C.Wide - 2 * C.Inset) * scale)
+									end
+								end
+							end
+						end
+						t.Check(`{what}: every row inside the card`, worst == "", worst)
+						local chip = parts.Dare :: Frame?
+						t.Check(`{what}: the chip shows Dare kept`, chip ~= nil and chip.Visible and (chip:FindFirstChild("Words") :: TextLabel?) ~= nil)
+						if won and results.Seconds < 3600 then
+							t.Check(`{what}: the chip rides the time's row`, chip ~= nil and chip:IsDescendantOf(time), if chip then (chip.Parent :: Instance).Name else "none")
+						elseif not won then
+							t.Check(`{what}: the chip on a row of its own`, chip ~= nil and not chip:IsDescendantOf(time))
+						end
+						local stone = parts.Stone :: Frame?
+						local icon = if stone then stone:FindFirstChild("Icon") :: ImageLabel? else nil
+						local light = if stone then stone:FindFirstChild("Light") :: ImageLabel? else nil
+						local words = if stone then stone:FindFirstChild("Words") :: TextLabel? else nil
+						t.Check(`{what}: the forge stone stands with the rewards, larger, over its light`, stone ~= nil and stone.Parent == parts.Gave and icon ~= nil and math.abs(icon.AbsoluteSize.X - S.Side * scale) < 1.5 and light ~= nil and words ~= nil and words.Text == `+{dares.Count}`, if icon then string.format("%.1f", icon.AbsoluteSize.X / scale) else "no stone")
+						Helpers.lintClean(t, `the run's card, {what}`)
+						Screen.Close()
+						t.Wait(0.4)
+					end
+				end)
+				if Screen.Current() ~= nil then
+					Screen.Close()
+				end
+				Layers.Box(nil)
+				Layers.Force(nil)
+				if not ok then
+					error(problem, 0)
 				end
 			end,
 		},

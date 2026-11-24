@@ -26,7 +26,10 @@ local SlamController = require(script.Parent.Parent.Parent.Main.SlamController)
 local ShadeCases = {}
 
 local REPLICATE = 2 -- seconds for an attribute or a remote to reach the client
-local RAISES = 3 -- raises the Guard case waits through for a glance and for a break
+local RAISES = 3 -- raises the Guard case waits through for a glance
+-- and for a break: the lead fires its signature only once its swing ends, so a Haymaker can start too late to land
+-- inside a raise (one began 0.75 s after the raise dropped, 2026-11-24); each raise is another try
+local BREAK_RAISES = 6
 local LUNGE_SOON = 6 -- seconds a ready Dasher may take to come into range and put its line down
 local WALK = 7 -- studs the avatar walks off the line
 
@@ -158,7 +161,7 @@ function ShadeCases.Cases(given: Given): { any }
 					local broken = false
 					local signature = FightRule.Signature(Actions.KitOf(tostring(lead:GetAttribute("Def"))))
 					Net.Client.Invoke("Signature", "Auto", true)
-					for _ = 1, RAISES do
+					for _ = 1, BREAK_RAISES do
 						if not waitFor(t, raise.Cooldown + 2, raised) then
 							break
 						end
@@ -237,6 +240,14 @@ function ShadeCases.Cases(given: Given): { any }
 						local acting = lead:GetAttribute("Action")
 						return type(acting) == "string" and acting ~= ""
 					end))
+					-- a lunge of its own already going down (its First, as the lead takes its place) lands and is counted
+					-- first, so Ready never cuts one short and each read counts its own lunge only (two counted in one read,
+					-- 2026-11-24)
+					waitFor(t, LUNGE_SOON, function(): boolean
+						return dasher:GetAttribute("MarkSlam") == nil
+					end)
+					t.Wait(0.4) -- the server's count
+					local prior = (t.Server("Slam").Counts or {})["Lunge A"] or {}
 					t.Server("Slam", "Ready")
 					local down = waitFor(t, LUNGE_SOON, function(): boolean
 						return dasher:GetAttribute("MarkSlam") ~= nil
@@ -254,6 +265,7 @@ function ShadeCases.Cases(given: Given): { any }
 						From = dasher:GetPivot().Position,
 						Half = -1,
 						Before = struck,
+						Prior = prior,
 					}
 					if typeof(at) ~= "Vector3" or typeof(to) ~= "Vector3" then
 						return read
@@ -297,7 +309,14 @@ function ShadeCases.Cases(given: Given): { any }
 					local look = flat(dasher:GetPivot().LookVector)
 					read.LookAfter = if look.Magnitude > 0.01 then look.Unit:Dot(way.Unit) else 0 -- inside its 0.8 s back open
 					read.Hits = struck - read.Before
-					read.Counts = t.Server("Slam").Counts
+					-- this lunge's own counts: the server's since the reset, less what stood before its Ready
+					local after = (t.Server("Slam").Counts or {})["Lunge A"]
+					read.Counts = if after then {
+						Slams = (after.Slams or 0) - (prior.Slams or 0),
+						Hit = (after.Hit or 0) - (prior.Hit or 0),
+						Missed = (after.Missed or 0) - (prior.Missed or 0),
+						OnPurpose = (after.OnPurpose or 0) - (prior.OnPurpose or 0),
+					} else nil
 					return read
 				end
 				local ok, err = pcall(function()
@@ -320,7 +339,7 @@ function ShadeCases.Cases(given: Given): { any }
 						t.Check("and runs on through it, its back to the lead", stay.Went > stay.LeadAlong, string.format("went %.1f studs, the lead %.1f down the line", stay.Went, stay.LeadAlong))
 						t.Check("its back open: still facing down its line, its back to the lead", stay.LookAfter > 0.9, string.format("its look along the line %.2f", stay.LookAfter))
 						t.Row("the lunge's travel through the lead (studs; its Most unless a blow pushed it)", nil, move.Most, stay.Went, "")
-						local tally = stay.Counts["Lunge A"]
+						local tally = stay.Counts
 						t.Check("counted under Lunge A: hit", tally ~= nil and tally.Slams == 1 and tally.Hit == 1, if tally then `{tally.Slams} lunges, {tally.Hit} hit` else "none")
 					end
 					-- Walking off: the avatar leaves the line, its lead with it.
@@ -348,8 +367,8 @@ function ShadeCases.Cases(given: Given): { any }
 						t.Check("walking off, the lunge misses", off.Hits == 0, `{off.Hits} hits`)
 						t.Check("and hits empty stone, its lunge's length down the line", off.Went >= (move.Most or 0) * 0.5, string.format("went %.1f studs", off.Went))
 						t.Row("the missed lunge's travel (studs)", nil, nil, off.Went, "")
-						local tally = off.Counts["Lunge A"]
-						t.Check("counted under Lunge A: missed, on purpose", tally ~= nil and tally.Slams == 2 and tally.Missed == 1 and tally.OnPurpose == 1, if tally then `{tally.Slams} lunges, {tally.Hit} hit, {tally.OnPurpose} on purpose` else "none")
+						local tally = off.Counts
+						t.Check("counted under Lunge A: missed, on purpose", tally ~= nil and tally.Slams == 1 and tally.Missed == 1 and tally.OnPurpose == 1, if tally then `{tally.Slams} lunges, {tally.Hit} hit, {tally.OnPurpose} on purpose` else "none")
 					end
 				end)
 				onHit:Disconnect()

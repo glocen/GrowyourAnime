@@ -22,7 +22,8 @@
 --   Goals.Dare(dares, fallback, stage, ready) -> Dare    a stretch's dare: its own once its piece is in, else the fallback
 --   Goals.DareStep(dare, state, event, value?) -> boolean  an event on a running dare; true when its look changed
 --   Goals.DareKept(dare, state) -> boolean               kept, judged as its stretch clears
---   Goals.DareLook(dare, state) -> "Holds" | "Broken"    its mark while the stretch runs
+--   Goals.DareLook(dare, state) -> string                its mark while the stretch runs: a keep dare "Holds" or "Broken",
+--                                                       a "Do" dare "Waits" until done, then "Kept"
 
 local Shared = game:GetService("ReplicatedStorage").Shared
 local Defs = require(Shared.Definitions.Goals)
@@ -245,7 +246,12 @@ function Goals.DareKept(dare: Dare, state: DareState): boolean
 	return not state.Broken
 end
 
-function Goals.DareLook(_dare: Dare, state: DareState): string
+-- Each mark answers its own dare's question at rest (research's must-fix 1, TR54): a keep dare's "still holding?" (Holds,
+-- else Broken), a "Do" dare's "done yet?" (Waits, unlit and whole, never read as broken; Kept the moment it's done).
+function Goals.DareLook(dare: Dare, state: DareState): string
+	if dare.Kind == "Do" then
+		return if state.Done then "Kept" else "Waits"
+	end
 	return if state.Broken then "Broken" else "Holds"
 end
 

@@ -109,15 +109,14 @@ function TravelCases.Cases(given: { [string]: any }): { any }
 				local tile = parts.Map :: TextButton
 				local word = (parts.Dock :: Frame):FindFirstChild("MapWord", true)
 				t.Equal("the dock's tile says Play", if word and word:IsA("TextLabel") then word.Text else nil, "Play")
-				t.Check("its tap opens the menu", Button.Press(tile) and waitFor(t, 1, function(): boolean
+				t.Check("its tap opens the menu (by the Play panel's Choose Arc)", Helpers.openArc(t, tile, 1, function(): boolean
 					return Screen.Current() == StageScreen.Name
 				end), tostring(Screen.Current()))
 				t.Check("a second tap closes it", Button.Press(tile) and waitFor(t, 1, function(): boolean
 					return Screen.Current() == nil
 				end), tostring(Screen.Current()))
 				-- A pick: the trip there, the run's checkpoint on its ticket, the card up.
-				Button.Press(tile)
-				waitFor(t, 1, function(): boolean
+				Helpers.openArc(t, tile, 1, function(): boolean
 					return StageScreen.Parts().Normal ~= nil
 				end)
 				local difficulty = "Normal"

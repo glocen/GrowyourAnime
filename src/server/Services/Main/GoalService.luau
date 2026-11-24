@@ -6,7 +6,8 @@
 -- - One action, "GoalClaim" { Day, Slot }: a finished goal's shard paid once, behind the op ledger.
 -- - A stretch's dare: StageService opens it as each stretch begins (Stretch), judges it as the stretch clears (Judge, then
 --   its stone paid inside the clear's own step), and closes it with the run (Stop). FightService's signals move it on.
---   The client reads it from two attributes: StageDare "<stage> <id>" and StageDareLook "Holds", "Broken" or "Kept".
+--   The client reads it from two attributes: StageDare "<stage> <id>" and StageDareLook (Rules.Goals.DareLook while it
+--   runs: "Holds", "Broken", "Waits" or "Kept"; at the clear "Kept" or "Broken").
 
 local RunService = game:GetService("RunService")
 
@@ -186,7 +187,16 @@ end
 --   ("Goals", who)                    the save's days and the live dare
 --   ("GoalsSet", who, days)           the save's days replaced (each { Day, Picks, Have, Claimed })
 --   ("GoalNote", who, event, amount)  an event counted to every open goal, as Rules.Goals.Note does
+--   ("DareStep", who, event, value)   an event on the running dare, as FightService's signals send it; its look after
 local function registerDebug()
+	DebugService.Register("DareStep", function(who: any, event: any, value: any): any
+		local player = DebugService.ResolvePlayer(who)
+		if not player or type(event) ~= "string" or (value ~= nil and type(value) ~= "number") then
+			return { Ok = false, Error = "BadArgs" }
+		end
+		step(player, event, value)
+		return { Ok = true, Look = player:GetAttribute("StageDareLook") }
+	end)
 	DebugService.Register("Goals", function(who: any): any
 		local player = DebugService.ResolvePlayer(who)
 		local data = if player then DataService.Get(player) else nil

@@ -10,9 +10,11 @@
 --   power stands at the foot. Hard's one accent is an ember; it keeps Normal's value.
 -- * The card, at a run's end (StageDone): a glass card over the street dimmed. The run's marks, all checked and the
 --   keeper's just, or lit to where the next run starts after a fall; the ground cleared and the run's time (a new best in
---   Ready's gold, a best only for a run from the first stretch), what the run gave, "Hard is open" its own band, and
---   Retry, Hard and Home, the one press lit. After the keeper on Normal, the lit press is Hard. A lost run says the lead
---   fell and where the next run starts; Retry is the press.
+--   Ready's gold, a best only for a run from the first stretch), what the run gave, and Retry, Hard and Home, the one
+--   press lit. After the keeper on Normal, the lit press is Hard; on the card whose clear opened Hard, the press comes in
+--   shut under Hard's lock, which lifts off as the press lights (research's lines of 2026-11-24, TR54: news shown by the
+--   thing that changed, never a banner). A lost run names its lead ("Kirra fell") and where the next run starts; Retry
+--   is the press.
 --   StageScreen.Pick(ground, view, on)    the Arc panel
 --   StageScreen.Results(results, on)     the run's card
 --   StageScreen.Parts()                  its pieces by name, for tests
@@ -44,7 +46,6 @@ local Screen = require(UI.Kit.Screen)
 local Glass = require(UI.Kit.Glass)
 local Skin = require(UI.Kit.Skin)
 local Text = require(UI.Kit.Text)
-local Look = require(UI.EquipmentScreen.Look)
 
 local StageScreen = {}
 StageScreen.Name = "Stages"
@@ -424,9 +425,10 @@ local function capsLabel(parent: Instance, name: string, said: string, size: num
 	return label
 end
 
--- The dares a run kept (TR54; AR53's chip, goals.json "dare.card.chip"): the kept mark, "Dare kept", the forge stone's
--- cell of their grade and "+N", on dark glass with a warm edge. Its width follows its words.
-local function dareChip(parent: Instance, card: { [string]: any }, z: number): Frame
+-- The dares a run kept (TR54; AR53's chip, goals.json "dare.card.chip"): the kept mark and "Dare kept", on dark glass
+-- with a warm edge. Its width follows its words. The stones they paid stand with the run's other rewards (stoneOf), so
+-- each reads as its item (research's must-fix 2).
+local function dareChip(parent: Instance, z: number): Frame
 	local K = LOOK.DareCard.Chip
 	local chip = Instance.new("Frame")
 	chip.Name = "DareKept"
@@ -434,14 +436,7 @@ local function dareChip(parent: Instance, card: { [string]: any }, z: number): F
 	chip.ZIndex = z
 	chip.Parent = parent
 	local words = capsLabel(chip, "Words", GoalDefs.Labels.DareKept, K.Words.Size, K.Words.Colour, K.Words.X, K.Words.Y, true, z + 4)
-	local sx = K.Words.X + Text.Wide(words, words.Text) + K.Stone.Gap
-	local grade = if type(card.Grade) == "string" then card.Grade else "Low"
-	Look.Cell(chip, "Stone", sx, K.Stone.Top, K.Stone.Side, "Common", `Stone{grade}`, nil, z + 2)
-	Glass.Edge(chip, "StoneLine", sx, K.Stone.Top, K.Stone.Side, K.Stone.Side, 4, K.Stone.Edge, 1, nil, z + 8)
-	local cx = sx + K.Stone.Side + K.Count.Gap
-	local said = `+{card.Count}`
-	local count = capsLabel(chip, "Count", said, K.Count.Size, K.Count.Colour, cx, K.Count.Y, true, z + 4)
-	local wide = math.ceil(cx + Text.Wide(count, said) + K.Pad)
+	local wide = math.ceil(K.Words.X + Text.Wide(words, words.Text) + K.Pad)
 	Glass.Glow(chip, "Glow", 0, 0, wide, K.Tall, K.Glow.Reach, K.Glow.Colour, K.Glow.Alpha, z)
 	Glass.Fill(chip, "Fill", 0, 0, wide, K.Tall, K.Corner, K.Fill, z + 1)
 	Glass.Edge(chip, "Edge", 0, 0, wide, K.Tall, K.Corner, K.Edge.Colour, 1, nil, z + 3)
@@ -709,6 +704,56 @@ local function press(parent: Instance, name: string, words: string, x0: number, 
 	return button
 end
 
+-- The press into Hard on the card whose clear opened it (research's lines for the card, TR54): it comes in shut, quiet
+-- glass under Hard's lock (the Arc panel's own mark) beside its word in Soft, and Unlock.After seconds after the card's
+-- beats end the lock lifts Unlock.Rise points and fades over Unlock.Seconds as the press lights. Its attribute Shut says
+-- which, and its tap waits until it's lit.
+local function shutUntilLit(button: TextButton, w: number)
+	local U = LOOK.Card.Unlock
+	local h = Theme.Size.Tap
+	local face = button:FindFirstChild("Face", true) :: Frame?
+	if face == nil or GuiService.ReducedMotionEnabled then
+		return
+	end
+	local lit = Instance.new("CanvasGroup")
+	lit.Name = "Lit"
+	lit.BackgroundTransparency = 1
+	lit.Size = UDim2.fromScale(1, 1)
+	lit.GroupTransparency = 1
+	lit.ZIndex = 1
+	for _, child in face:GetChildren() do
+		child.Parent = lit
+	end
+	lit.Parent = face
+	local shut = Instance.new("CanvasGroup")
+	shut.Name = "Shut"
+	shut.BackgroundTransparency = 1
+	shut.Size = UDim2.fromScale(1, 1)
+	shut.ZIndex = 2
+	shut.Parent = face
+	Glass.Quiet(shut, "ShutPlate", 0, 0, w, h, SEAM.Facet, 1)
+	local word = Glass.Label(shut, "ShutWords", "Hard", TITLE, SEAM.Soft, 0, 0, w, h, Enum.TextXAlignment.Left, true, 7)
+	local wide = math.ceil(Text.Wide(word, "Hard")) + 2
+	local unit = U.Lock + U.Gap + wide
+	word.Position = UDim2.fromOffset((w - unit) / 2 + U.Lock + U.Gap, 0)
+	word.Size = UDim2.fromOffset(wide, h)
+	local lock = Glass.Mark(face, "Lock", LOCK, (w - unit) / 2 + U.Lock / 2, h / 2, U.Lock, SEAM.Soft, 12)
+	local x0, y0 = lock.Position.X.Offset, lock.Position.Y.Offset
+	button:SetAttribute("Shut", true)
+	task.delay(MOTION.RunAt + MOTION.RunSeconds + U.After, function()
+		if button.Parent == nil then
+			return
+		end
+		button:SetAttribute("Shut", false)
+		Glass.Ease(face, U.Seconds, function(u: number)
+			lit.GroupTransparency = 1 - u
+			shut.GroupTransparency = u
+			lock.Position = UDim2.fromOffset(x0, y0 - U.Rise * u)
+			lock.ImageTransparency = u
+		end, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
+	end)
+end
+
 function StageScreen.Results(results: { [string]: any }, on: On)
 	table.clear(parts)
 	local ground, which, stage = results.Ground :: string, results.Difficulty :: string, results.Stage :: number
@@ -745,7 +790,7 @@ function StageScreen.Results(results: { [string]: any }, on: On)
 	local named = Grounds.ById[ground] and Grounds.ById[ground].Name or "The run"
 	local opened = results.Opened :: string?
 	local resume = if type(results.Checkpoint) == "number" then results.Checkpoint else stage
-	local gave: { { Icon: string, Words: string, Colour: Color3 } } = {}
+	local gave: { { Icon: string, Words: string, Colour: Color3, Stone: boolean? } } = {}
 	if won then
 		if (results.Credits or 0) > 0 then
 			table.insert(gave, { Icon = "CoinMint", Words = `+{Hud.Digits(results.Credits)}`, Colour = UIKit.Systems.Credits.Colour })
@@ -758,20 +803,47 @@ function StageScreen.Results(results: { [string]: any }, on: On)
 			table.insert(gave, { Icon = if keeper then "ChestKeeper" else "ChestShade", Words = `+{Hud.Digits(results.Chests)}`, Colour = SEAM.Text })
 		end
 	end
-	local spans: { { Kind: string, Tall: number } } = { { Kind = "Marks", Tall = rows.Marks }, { Kind = "Title", Tall = rows.Title }, { Kind = "Time", Tall = rows.Time } }
-	if #gave > 0 then
-		table.insert(spans, { Kind = "Gave", Tall = rows.Gave })
-	end
 	local given: any = results.Dares
 	local dares: { [string]: any }? = if type(given) == "table" and type(given.Count) == "number" and given.Count > 0 then given else nil
 	local keptStretches: { number }? = if dares and type(dares.Kept) == "table" then dares.Kept :: { number } else nil
-	if dares and not won then
+	if dares then
+		-- the stones the kept dares paid, a reward among the others, on either card
+		local grade = if type(dares.Grade) == "string" then dares.Grade else "Low"
+		table.insert(gave, { Icon = `Stone{grade}`, Words = `+{Hud.Digits(dares.Count)}`, Colour = SEAM.Text, Stone = true })
+	end
+	-- The time's row: what it says, worked out first, so the chip can be measured beside it.
+	local seconds, best = results.Seconds :: number?, results.Best :: number?
+	local from = if type(results.From) == "number" then results.From else 1
+	local said: string? = nil
+	if not won or seconds == nil then
+		said = if won then "Cleared" else `Next run starts at Stretch {resume}`
+	elseif best and best >= seconds then
+		said = nil -- a new best: the clock at the title's size, then "New best"
+	elseif best then
+		said = `{Read.Clock(seconds)}   ·   best {Read.Clock(best)}`
+	else
+		said = `{Read.Clock(seconds)}   ·   from Stretch {from}`
+	end
+	-- The chip rides the time's row on a win when the row's longest still fits inside the card's inner width (research's
+	-- must-fix 3), else it takes a row of its own, as it always does on the fall's card.
+	local chip: Frame? = if dares then dareChip(room, 6) else nil
+	local chipAlone = false
+	if chip then
+		chip.Visible = false
+		local C2 = LOOK.Card
+		local probe = Glass.Label(room, "Probe", "", SMALL, SEAM.Soft, 0, 0, 0, 0, nil, false, 0)
+		local strong = Glass.Label(room, "ProbeStrong", "", TITLE, SEAM.Text, 0, 0, 0, 0, nil, true, 0)
+		local row = if said then Text.Wide(probe, said) elseif seconds then Text.Wide(strong, Read.Clock(seconds)) + 10 + C2.NewBest else 0
+		probe:Destroy()
+		strong:Destroy()
+		chipAlone = not won or row + LOOK.DareCard.Chip.Gap + chip.Size.X.Offset > C2.Wide - 2 * C2.Inset
+	end
+	local spans: { { Kind: string, Tall: number } } = { { Kind = "Marks", Tall = rows.Marks }, { Kind = "Title", Tall = rows.Title }, { Kind = "Time", Tall = rows.Time } }
+	if chipAlone then
 		table.insert(spans, { Kind = "Dare", Tall = LOOK.DareCard.Chip.Fall })
 	end
-	local openedWords: string? = nil
-	if won and opened == "Hard" then
-		openedWords = "Hard is open"
-		table.insert(spans, { Kind = "Opened", Tall = rows.Hard })
+	if #gave > 0 then
+		table.insert(spans, { Kind = "Gave", Tall = rows.Gave })
 	end
 	local inner = 0
 	for _, span in spans do
@@ -802,11 +874,15 @@ function StageScreen.Results(results: { [string]: any }, on: On)
 		if span.Kind == "Marks" then
 			play = marks(room, x0 + 16, x0 + w - 16, y + h / 2, markRows, hard, 6, keptStretches)
 		elseif span.Kind == "Title" then
-			parts.Title = Glass.Label(room, "Title", if won then `{named} cleared` else "Your lead fell", BIG, if won then SEAM.Text else Theme.Colour.Hurt, x0, y, w, h, nil, true, 6)
+			local title = Glass.Label(room, "Title", if won then `{named} cleared` elseif type(results.Lead) == "string" then `{results.Lead} fell` else "Your lead fell", BIG, if won then SEAM.Text else Theme.Colour.Hurt, x0, y, w, h, nil, true, 6)
+			-- a nickname runs to 20 letters: the title shrinks to keep inside the card's inset, never below TitleFit
+			local wide = Text.Wide(title, title.Text)
+			if wide > w - 2 * C.Inset then
+				title.TextSize = math.floor(BIG * math.max((w - 2 * C.Inset) / wide, C.TitleFit))
+			end
+			parts.Title = title
 		elseif span.Kind == "Time" then
 			-- The whole run's time; its best only for a run from the first stretch (Rules.Stages.Clear's RunBest).
-			local seconds, best = results.Seconds :: number?, results.Best :: number?
-			local from = if type(results.From) == "number" then results.From else 1
 			local row = Instance.new("Frame")
 			row.Name = "Time"
 			row.BackgroundTransparency = 1
@@ -815,17 +891,8 @@ function StageScreen.Results(results: { [string]: any }, on: On)
 			row.ZIndex = 6
 			row.Parent = room
 			parts.Time = row
-			local said: string? = nil
-			if not won or seconds == nil then
-				said = if won then "Cleared" else `Your next run starts at Stretch {resume} of {count}`
-			elseif best and best >= seconds then
-				said = nil
-			elseif best then
-				said = `{Read.Clock(seconds)}   ·   best {Read.Clock(best)}`
-			else
-				said = `{Read.Clock(seconds)}   ·   from Stretch {from}`
-			end
-			if won and dares and said then
+			local beside = if chip and not chipAlone then chip else nil
+			if beside and said then
 				-- the chip last on the row, the row's gap before it (AR53)
 				local list = Instance.new("UIListLayout")
 				list.FillDirection = Enum.FillDirection.Horizontal
@@ -837,9 +904,10 @@ function StageScreen.Results(results: { [string]: any }, on: On)
 				local label = Glass.Label(row, "Said", said, SMALL, SEAM.Soft, 0, 0, 0, h, nil, false, 6)
 				label.AutomaticSize = Enum.AutomaticSize.X
 				label.LayoutOrder = 1
-				local chip = dareChip(row, dares, 6)
-				chip.LayoutOrder = 9
-				parts.Dare = chip
+				beside.Parent = row
+				beside.LayoutOrder = 9
+				beside.Visible = true
+				parts.Dare = beside
 			elseif said then
 				Glass.Label(row, "Said", said, SMALL, SEAM.Soft, 0, 0, w, h, nil, false, 6)
 			elseif best and seconds and best >= seconds then
@@ -853,17 +921,18 @@ function StageScreen.Results(results: { [string]: any }, on: On)
 				local clock = Glass.Label(row, "Clock", Read.Clock(seconds), TITLE, SEAM.Text, 0, 0, 0, h, nil, true, 6)
 				clock.AutomaticSize = Enum.AutomaticSize.X
 				clock.LayoutOrder = 1
-				local chip = Instance.new("Frame")
-				chip.Name = "NewBest"
-				chip.BackgroundTransparency = 1
-				chip.Size = UDim2.fromOffset(98, h)
-				chip.LayoutOrder = 2
-				chip.ZIndex = 6
-				chip.Parent = row
-				Glass.Fill(chip, "Fill", 0, 0, 98, h, 4, LOOK.Socket, 6)
-				Glass.Edge(chip, "Edge", 0, 0, 98, h, 4, LOOK.Ready, 1, nil, 7)
-				Glass.Label(chip, "Words", "a new best", SMALL, LOOK.Ready, 0, 0, 98, h, nil, true, 8)
-				if dares then
+				local newBest = C.NewBest
+				local tag = Instance.new("Frame")
+				tag.Name = "NewBest"
+				tag.BackgroundTransparency = 1
+				tag.Size = UDim2.fromOffset(newBest, h)
+				tag.LayoutOrder = 2
+				tag.ZIndex = 6
+				tag.Parent = row
+				Glass.Fill(tag, "Fill", 0, 0, newBest, h, 4, LOOK.Socket, 6)
+				Glass.Edge(tag, "Edge", 0, 0, newBest, h, 4, LOOK.Ready, 1, nil, 7)
+				Glass.Label(tag, "Words", "New best", SMALL, LOOK.Ready, 0, 0, newBest, h, nil, true, 8)
+				if beside then
 					-- the chip last on the row: the row's own gap is 10, so 2 back
 					local K = LOOK.DareCard.Chip
 					local holder = Instance.new("Frame")
@@ -872,23 +941,26 @@ function StageScreen.Results(results: { [string]: any }, on: On)
 					holder.LayoutOrder = 9
 					holder.ZIndex = 6
 					holder.Parent = row
-					local dare = dareChip(holder, dares, 6)
+					beside.Parent = holder
+					beside.Visible = true
 					local back = K.Gap - list.Padding.Offset
-					dare.Position = UDim2.fromOffset(back, (h - K.Tall) / 2)
-					holder.Size = UDim2.fromOffset(dare.Size.X.Offset + back, h)
-					parts.Dare = dare
+					beside.Position = UDim2.fromOffset(back, (h - K.Tall) / 2)
+					holder.Size = UDim2.fromOffset(beside.Size.X.Offset + back, h)
+					parts.Dare = beside
 				end
 			end
-		elseif span.Kind == "Dare" and dares then
+		elseif span.Kind == "Dare" and chip then
 			local K = LOOK.DareCard.Chip
-			local chip = dareChip(room, dares, 6)
 			chip.Position = UDim2.fromOffset(x0 + (w - chip.Size.X.Offset) / 2, y + K.Down)
+			chip.Visible = true
 			parts.Dare = chip
 		elseif span.Kind == "Gave" then
+			-- centred on its own middle, so a row shrunk to fit stays centred on the card
 			local row = Instance.new("Frame")
 			row.Name = "Gave"
 			row.BackgroundTransparency = 1
-			row.Position = UDim2.fromOffset(x0, y)
+			row.AnchorPoint = Vector2.new(0.5, 0.5)
+			row.Position = UDim2.fromOffset(cx, y + h / 2)
 			row.Size = UDim2.fromOffset(w, h)
 			row.ZIndex = 6
 			row.Parent = room
@@ -896,56 +968,49 @@ function StageScreen.Results(results: { [string]: any }, on: On)
 			local list = Instance.new("UIListLayout")
 			list.FillDirection = Enum.FillDirection.Horizontal
 			list.HorizontalAlignment = Enum.HorizontalAlignment.Center
-			list.Padding = UDim.new(0, 6)
+			list.Padding = UDim.new(0, C.GaveGap)
 			list.SortOrder = Enum.SortOrder.LayoutOrder
 			list.Parent = row
+			local across = 0
 			for index, item in gave do
-				local cw = 38 + 9 * #item.Words + 8
-				local chip = Instance.new("Frame")
-				chip.Name = item.Icon
-				chip.BackgroundTransparency = 1
-				chip.Size = UDim2.fromOffset(cw, h)
-				chip.LayoutOrder = index
-				chip.ZIndex = 6
-				chip.Parent = row
-				Glass.Fill(chip, "Fill", 0, 0, cw, h, 4, SEAM.Well, 6)
-				Glass.Edge(chip, "Edge", 0, 0, cw, h, 4, SEAM.Edge, 1, nil, 7)
+				-- a forge stone is a dark rock: drawn larger, its own light behind it, so it reads as a stone beside the
+				-- bright shard and chest (research's must-fix 2; Config.Hud.Stages.DareCard.Stone)
+				local S = LOOK.DareCard.Stone
+				local side = if item.Stone then S.Side else 22
+				local cell = Instance.new("Frame")
+				cell.Name = item.Icon
+				cell.BackgroundTransparency = 1
+				cell.LayoutOrder = index
+				cell.ZIndex = 6
+				cell.Parent = row
+				-- each cell as wide as its own words: the picture, the gap, the words, the pad
+				local words = Glass.Label(cell, "Words", item.Words, TITLE, item.Colour, 5 + side + 6, 0, 200, h, Enum.TextXAlignment.Left, true, 8)
+				local wordsWide = math.ceil(Text.Wide(words, item.Words)) + 2
+				words.Size = UDim2.fromOffset(wordsWide, h)
+				local cw = 5 + side + 6 + wordsWide + 8
+				cell.Size = UDim2.fromOffset(cw, h)
+				across += cw + (if index > 1 then C.GaveGap else 0)
+				Glass.Fill(cell, "Fill", 0, 0, cw, h, 4, SEAM.Well, 6)
+				Glass.Edge(cell, "Edge", 0, 0, cw, h, 4, SEAM.Edge, 1, nil, 7)
 				local record = UIKit.Images[item.Icon]
 				if record then
-					Glass.Mark(chip, "Icon", record, 5 + 11, h / 2, 22, WHITE, 8)
+					if item.Stone then
+						-- wider and taller than the stone, since the stone fills the row: its light shows round it, a little past the cell
+						Glass.Bloom(cell, "Light", 5 + side / 2, h / 2, side * S.Light.Spread, side * S.Light.Tall, S.Light.Colour, S.Light.Alpha, 7)
+					end
+					Glass.Mark(cell, "Icon", record, 5 + side / 2, h / 2, side, WHITE, 8)
 				end
-				Glass.Label(chip, "Words", item.Words, TITLE, item.Colour, 33, 0, cw - 37, h, Enum.TextXAlignment.Left, true, 8)
+				if item.Stone then
+					parts.Stone = cell
+				end
 			end
-		elseif span.Kind == "Opened" and openedWords then
-			if opened == "Hard" then
-				local E = LOOK.Accent.Hard
-				Glass.Glow(room, "HardGlow", x0 + 16, y, w - 32, h, 6, E.Glow, 0.3, 6)
-				Glass.Fill(room, "HardBand", x0 + 16, y, w - 32, h, 5, LOOK.Socket, 7)
-				Glass.Bloom(room, "HardBloom", cx, y + h / 2, 300, h * 2.2, E.Bloom, 0.35, 8)
-				Glass.Edge(room, "HardEdge", x0 + 16, y, w - 32, h, 5, E.Edge, 1, nil, 9)
-				local row = Instance.new("Frame")
-				row.Name = "OpenedRow"
-				row.BackgroundTransparency = 1
-				row.Position = UDim2.fromOffset(x0 + 16, y)
-				row.Size = UDim2.fromOffset(w - 32, h)
-				row.ZIndex = 10
-				row.Parent = room
-				local list = Instance.new("UIListLayout")
-				list.FillDirection = Enum.FillDirection.Horizontal
-				list.HorizontalAlignment = Enum.HorizontalAlignment.Center
-				list.VerticalAlignment = Enum.VerticalAlignment.Center
-				list.Padding = UDim.new(0, 18 - 0.6 * 13) -- the cut: each pair's middle 18 out from the words
-				list.SortOrder = Enum.SortOrder.LayoutOrder
-				list.Parent = row
-				local said = Glass.Label(row, "Opened", openedWords, BIG, LOOK.Ready, 0, 0, 0, h, nil, true, 10)
-				said.AutomaticSize = Enum.AutomaticSize.X
-				said.LayoutOrder = 2
-				parts.Opened = said
-				for order = 1, 3, 2 do
-					chevrons(row, `Chevrons{order}`, 0, 0, 13, E.Edge, 10).LayoutOrder = order
-				end
-			else
-				parts.Opened = Glass.Label(room, "Opened", openedWords, TITLE, LOOK.Ready, x0, y, w, h, nil, true, 6)
+			-- the row's longest past the card's inset (a run's Credits grow with the level): it shrinks to fit, no
+			-- further than Fit (research's must-fix 3)
+			local room0 = w - 2 * C.Inset
+			if across > room0 then
+				local fit = Instance.new("UIScale")
+				fit.Scale = math.max(room0 / across, C.Fit)
+				fit.Parent = row
 			end
 		end
 		y += h + C.Space
@@ -971,6 +1036,9 @@ function StageScreen.Results(results: { [string]: any }, on: On)
 	if won and results.Then == "Hard" then
 		table.insert(presses, { Name = "Retry", Words = "Retry", Wide = P.Quiet, One = false, Hard = false, Act = retry })
 		table.insert(presses, { Name = "Next", Words = "Hard", Wide = P.One, One = true, Hard = true, Act = function(): boolean
+			if parts.Next and (parts.Next :: Instance):GetAttribute("Shut") == true then
+				return false -- shut until its lock lifts
+			end
 			return begin(on, ground, "Hard")
 		end })
 		table.insert(presses, { Name = "Home", Words = "Home", Wide = P.Quiet, One = false, Hard = false, Act = home })
@@ -990,6 +1058,9 @@ function StageScreen.Results(results: { [string]: any }, on: On)
 	for _, p in presses do
 		parts[p.Name] = press(room, p.Name, p.Words, left, py, p.Wide, p.One, p.Hard, p.Act)
 		left += p.Wide + P.Gap
+	end
+	if won and opened == "Hard" and parts.Next then
+		shutUntilLit(parts.Next :: TextButton, P.One)
 	end
 	-- The card's beats: the check pops in a little over, then the light runs on and the next rings in.
 	local just = parts.Just :: Frame?

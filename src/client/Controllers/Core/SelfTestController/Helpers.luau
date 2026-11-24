@@ -4,6 +4,7 @@
 --   Helpers.ANSWER                          seconds a request through a screen may take to come back in the save's copy
 --   Helpers.SKIP_ALL                        seconds of base time a case skips, past any shard's work at the floor's speed
 --   Helpers.waitFor(t, seconds, ok)         true as soon as `ok` holds, polled every 0.1 s, or its last word at the end
+--   Helpers.openArc(t, play, seconds, up)   the dock's Play, then the Play panel's Choose Arc, until `up` holds
 --   Helpers.lintClean(t, where)             the UI lint's checks on whatever shows now, once no toast is mid-ride
 --   Helpers.readyCount(def)                 shards of `def` broken and waiting to be opened
 --   Helpers.openReadyDown(t, def, keep)     opens them, the oldest first, down to `keep`
@@ -26,6 +27,8 @@ local Toast = require(UI.Kit.Toast)
 local Screen = require(UI.Kit.Screen)
 local BreakerScreen = require(UI.BreakerScreen)
 local StageScreen = require(UI.StageScreen)
+local ModeScreen = require(UI.ModeScreen)
+local Button = require(UI.Kit.Button)
 local UiLint = require(script.Parent.UiLint)
 
 local Helpers = {}
@@ -61,6 +64,24 @@ function Helpers.waitFor(t: any, seconds: number, ok: () -> boolean): boolean
 		t.Wait(0.1)
 	end
 	return ok()
+end
+
+-- The dock's Play to the Arc panel, as a player goes: Play opens the Play panel (ModeController), whose Festival card's
+-- "Choose Arc" opens the Arc panel; with Config.Hud.Modes.On off, Play opens it directly. True once `up` holds.
+function Helpers.openArc(t: any, play: TextButton, seconds: number, up: () -> boolean): boolean
+	if not Button.Press(play) then
+		return false
+	end
+	if HudConfig.Modes.On then
+		local opened = Helpers.waitFor(t, seconds, function(): boolean
+			return Screen.Current() == ModeScreen.Name and ModeScreen.Parts().FestivalSecond ~= nil
+		end)
+		local choose = ModeScreen.Parts().FestivalSecond
+		if not opened or choose == nil or not choose:IsA("TextButton") or not Button.Press(choose) then
+			return false
+		end
+	end
+	return Helpers.waitFor(t, seconds, up)
 end
 
 -- Ends a run a case left going, by the game's own way out: its lead's fall (StageBegin would begin another). Its card

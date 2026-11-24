@@ -4,7 +4,7 @@
 -- mode as Rules.Modes says for this player's save: the Festival's press begins the run the player would go to next,
 -- through the Arc panel's own begin (StageController), and "Choose Arc" opens the Arc panel; the Tower's press closes
 -- the panel and points the world's marker at the player's own ring (UI.Guide's errand), where a climb begins as it
--- always has. Pressed again while open, Play closes it. The panel is built again when the save changes under it.
+-- always has. Pressed again while the panel or the Arc panel is open, Play closes it. The panel is built again when the save changes under it.
 -- Config.Hud.Modes.On = false gives Play the Arc panel directly, as before.
 --   ModeController.Open()                  what the dock's Play does
 --   ModeController.Cards() -> { Card }?    the cards as they'd show now, for tests; nil before the save arrives
@@ -25,6 +25,7 @@ local Guide = require(UI.Guide)
 local Screen = require(UI.Kit.Screen)
 local Toast = require(UI.Kit.Toast)
 local ModeScreen = require(UI.ModeScreen)
+local StageScreen = require(UI.StageScreen)
 local ProfileController = require(script.Parent.Parent.Core.ProfileController)
 local HudController = require(script.Parent.HudController)
 local StageController = require(script.Parent.StageController)
@@ -66,7 +67,8 @@ function ModeController.Open()
 	if view == nil then
 		return
 	end
-	if Screen.Current() == ModeScreen.Name then
+	-- Play's own screens close on its second tap, as every dock tile's do: the panel, and the Arc panel its Choose Arc opens
+	if Screen.Current() == ModeScreen.Name or Screen.Current() == StageScreen.Name then
 		Screen.Close()
 		return
 	end

@@ -255,7 +255,7 @@ return {
 			t.Check("level 2 opens a third bay", BaseLevels.Bays(2) == 3 and BaseLevels.OpensAt(3) == 2 and string.find(next[2].Opens, "third bay") ~= nil)
 			t.Equal("and the Condenser wakes at it", CondenserConfig.Wakes, next[2].AtLeast)
 			t.Check("level 3 opens a fourth bay", BaseLevels.Bays(3) == 4 and string.find(next[4].Opens, "fourth bay") ~= nil)
-			t.Check("and machines reach 30 at it", BaseLevels.Ceiling(3) == 30 and string.find(next[4].Opens, "level 30") ~= nil)
+			t.Check("and machines reach its ceiling at it", string.find(next[4].Opens, `level {BaseLevels.Ceiling(3)}.`, 1, true) ~= nil, next[4].Opens)
 			t.Equal("the first Hard keeper's chest is a Rare or better", ChestsConfig.Keeper.FirstFloor.Hard, "Rare")
 			t.Check("which its line says", string.find(next[3].Opens, "Rare or better") ~= nil)
 		end,
@@ -311,13 +311,18 @@ return {
 			t.Equal("its look", Goals.DareLook(above, s), "Broken")
 			t.Check("healed over half it holds again", Goals.DareStep(above, s, "Health", 0.6))
 			t.Check("kept at the clear", Goals.DareKept(above, s))
-			-- Do: kept only once done; its mark never goes dark on the way
+			-- Do: kept only once done; its mark waits unlit, never dark, and turns kept the moment it's done (must-fix 1)
 			s = { Broken = false, Done = false }
 			t.Check("not yet done: not kept", not Goals.DareKept(shield, s))
+			t.Equal("not yet done: its mark waits", Goals.DareLook(shield, s), "Waits")
 			t.Check("another event: nothing", not Goals.DareStep(shield, s, "LineHit"))
-			Goals.DareStep(shield, s, "SignatureBreak")
+			t.Check("a shield broken changes its look", Goals.DareStep(shield, s, "SignatureBreak"))
 			t.Check("one shield broken: kept", Goals.DareKept(shield, s))
-			t.Equal("its look holds", Goals.DareLook(shield, s), "Holds")
+			t.Equal("its look is kept at once", Goals.DareLook(shield, s), "Kept")
+			t.Check("a second break changes nothing", not Goals.DareStep(shield, s, "SignatureBreak"))
+			-- a keep dare never waits, and a Do dare never shows broken while its stretch runs
+			t.Equal("a keep dare holds from the start", Goals.DareLook(line, { Broken = false, Done = false }), "Holds")
+			t.Equal("a Do dare isn't broken by a stray flag", Goals.DareLook(shield, { Broken = true, Done = false }), "Waits")
 			-- Avoid: one touch breaks it for good
 			s = { Broken = false, Done = false }
 			t.Check("untouched: kept", Goals.DareKept(line, s))

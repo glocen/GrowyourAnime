@@ -49,8 +49,8 @@ local stages = {
 		Hard = { Edge = Color3.fromHex("#FF9A80"), Lit = { Color3.fromHex("#FFF4EE"), Color3.fromHex("#FFB4A0") }, Road = { Color3.fromHex("#C2503F"), Color3.fromHex("#FFC2B2") }, Bloom = Color3.fromHex("#E85A44"), Glow = Color3.fromHex("#FF9A80"), BloomAlpha = 0.24, Pictures = { Next = 0.55, Open = 0.32 } },
 	},
 	HardBox = { Color3.fromHex("#2A1626"), Color3.fromHex("#170C16") }, -- the box Hard's chevrons sit in, by a mark
-	Ready = Color3.fromHex("#FFD880"), -- what a run opened, a new best (Theme.Colour.Ready)
-	Socket = { Color3.fromHex("#1B1728"), Color3.fromHex("#0E0B18") }, -- a dark socket: a new best's chip, Hard's band
+	Ready = Color3.fromHex("#FFD880"), -- a new best (Theme.Colour.Ready)
+	Socket = { Color3.fromHex("#1B1728"), Color3.fromHex("#0E0B18") }, -- a dark socket: a new best's chip
 	Text = { Small = 14, Title = 17, Big = 22 },
 	-- The picker: four tiles side by side over one road (A's One road, research's pick).
 	Tile = {
@@ -100,7 +100,15 @@ local stages = {
 	-- wine, so the street under the card stays the street's, arc_dusk.json).
 	Card = {
 		Left = 124, Wide = 320, Corner = 8, Edge = 1.4, Space = 8, In = 12, Foot = 10, Before = 14,
-		Rows = { Marks = 30, Title = 28, Time = 22, Gave = 28, Opened = 20, Hard = 34 },
+		Inset = 16, -- a row's content stays this far inside the card's sides (the marks' road runs from it)
+		GaveGap = 6, -- between the rewards' cells, each as wide as its words
+		Fit = 0.85, -- the least the rewards' row shrinks to keep its longest inside the inset (a run's Credits grow)
+		TitleFit = 0.6, -- the least the title shrinks to: a fall names its lead, whose nickname runs to 20 letters
+		NewBest = 98, -- the "New best" tag's width, beside the clock at the title's size
+		Rows = { Marks = 30, Title = 28, Time = 22, Gave = 28 },
+		-- the press into Hard on the card whose clear opened it: shut under Hard's lock (Lock points, Gap before its word),
+		-- then After seconds past the card's beats the lock lifts Rise points and fades over Seconds as the press lights
+		Unlock = { After = 0.3, Seconds = 0.3, Rise = 8, Lock = 18, Gap = 6 },
 		Presses = { Quiet = 82, One = 124, Retry = 170, Home = 124, Gap = 6 },
 		Shadow = 0.4,
 		Dim = 0.5,
@@ -122,13 +130,18 @@ local stages = {
 		Words = { Size = 14, Colour = Color3.fromHex("#F1ECFF"), Y = { { 51 }, { 48, 66 } } },
 		Tab = { 8, 30, 26, 40 },
 		Mark = Vector2.new(21, 57),
+		-- a "Do" dare's mark until it's done (TR54's must-fix 1): the held mark multiplied by Colour at Transparency, whole
+		-- and unlit, apart from the broken mark's dark split
+		Waits = { Colour = Color3.fromRGB(150, 144, 168), Transparency = 0.35 },
 		Motion = { Open = 0.2, Close = 0.18, Flare = { Seconds = 0.4, Scale = 1.4 } },
 	},
 	-- The dares kept on a run's card (AR53, goals.json, "dare.card"): a mark Mark.Gap right of each kept stretch's node at
-	-- Mark.Scale, and the chip last on the time's row (Chip.Gap before it), or on the fall's card a row of its own, Fall
-	-- tall, the chip Down from its top. Chip: its glass (Fill top to foot, Edge, Glow), the mark at Mark (scale Mark.Scale),
-	-- the words, the stone's cell (Stone: Gap right of the words, Top, Side, the picture at Fill, the hairline Edge), the
-	-- count (Count: Gap right of the cell), Pad at its right.
+	-- Mark.Scale, and the chip last on the time's row (Chip.Gap before it) when the row's longest fits inside the card's
+	-- Card.Inset, else a row of its own, Fall tall, the chip Down from its top, as always on the fall's card (TR54's
+	-- must-fix 3). Chip: its glass (Fill top to foot, Edge, Glow), the mark at Mark (scale Mark.Scale), the words, Pad at
+	-- its right. The stones the dares paid stand in the rewards' row (must-fix 2): the stone's picture Stone.Side across,
+	-- over its Light (a bloom Spread times the picture across, Tall times it high, Colour at Alpha), so the dark rock reads
+	-- on the well: the picture fills the row, so the light is larger than it, a little past the cell.
 	DareCard = {
 		Mark = { Gap = 10, Scale = 0.9375 },
 		Chip = {
@@ -138,9 +151,8 @@ local stages = {
 			Glow = { Colour = Color3.fromHex("#FFF6E2"), Alpha = 0.22, Reach = 5 },
 			Mark = { At = Vector2.new(10, 11), Scale = 0.8125 },
 			Words = { X = 19, Y = 4, Size = 14, Colour = Color3.fromHex("#EFE6D2") },
-			Stone = { Gap = 6, Top = -2, Side = 26, Fill = 0.94, Edge = Color3.fromHex("#E2CFA4") },
-			Count = { Gap = 4, Y = 3, Size = 17, Colour = Color3.fromHex("#F1ECFF") },
 		},
+		Stone = { Side = 28, Light = { Colour = Color3.fromHex("#FFB869"), Alpha = 0.9, Spread = 2.4, Tall = 1.8 } },
 	},
 	-- Its beats (stage_seam.py's strips): the picker's opening, the switch, the card's two beats, the line's.
 	Motion = {

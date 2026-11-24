@@ -2,11 +2,12 @@
 -- DareLine (client UI): a stretch's dare under the run's line (TR54; AR53's look, build/handoff/UI/goals/goals.json,
 -- "dare.line"; its numbers Config.Hud.Stages.Dare). A tab of the line's own glass hangs under the stretch's mark. As the
 -- stretch begins it is open to the right with the dare's words for Config.Goals.Held seconds, then closes round its mark,
--- which never moves: lit while the dare holds, dark and split once it breaks (no words, no sound), a flare once as the
--- stretch clears with it kept. The line never grows, and the open tab stops Limit short of the Electricity pill, so it
+-- which never moves. A keep dare's mark is lit while it holds and dark and split once it breaks (no words, no sound); a
+-- "Do" dare's waits unlit and whole until it's done (Config's Dare.Waits). A flare once as a dare turns kept: a "Do" dare
+-- the moment it's done, a keep dare as its stretch clears. The line never grows, and the open tab stops Limit short of the Electricity pill, so it
 -- lies over no other piece of the HUD. StageController draws the line and calls Show each time it or the dare changes.
 --   DareLine.Show(frame, hard, textLeft, key, text, look)  the dare `key` ("<stage> <id>") on the line's frame
---   DareLine.Said(frame) -> { Open, Rows, Look, Words, Kit, Wide, Right, Clip }?   for tests
+--   DareLine.Said(frame) -> { Open, Rows, Look, Words, Kit, Wide, Right, Clip, Mark }?   for tests
 
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local GuiService = game:GetService("GuiService")
@@ -25,7 +26,7 @@ local StageScreen = require(UI.StageScreen)
 local DareLine = {}
 
 local LOOK = HudConfig.Stages.Dare
-local IMAGES = { Holds = "DareMark", Broken = "DareMarkDark", Kept = "DareMarkKept" }
+local IMAGES = { Holds = "DareMark", Waits = "DareMark", Broken = "DareMarkDark", Kept = "DareMarkKept" }
 local Z = -5 -- the tab's glass under the line's own (its plate is laid at 1 to 5)
 local MARK_Z = 9
 
@@ -91,6 +92,11 @@ local function lay(made: Drawn, look: string)
 	local record = UIKit.Images[IMAGES[look] or "DareMark"]
 	made.Mark.Image = record.Id
 	made.Mark:SetAttribute("Kit", IMAGES[look] or "DareMark")
+	-- a "Do" dare not yet done: the held mark unlit, whole, so it never reads as broken
+	local waits = look == "Waits"
+	made.Mark.ImageColor3 = if waits then LOOK.Waits.Colour else Color3.new(1, 1, 1)
+	made.Mark.ImageTransparency = if waits then LOOK.Waits.Transparency else 0
+	made.Mark:SetAttribute("Look", look)
 end
 
 local function flare(made: Drawn)
@@ -276,7 +282,7 @@ function DareLine.Said(frame: Frame?): { [string]: any }?
 	end
 	-- Right: the open box's right edge, in screen pixels (the clip's, which ends where its plate does)
 	local right = made.Frame.AbsolutePosition.X + (LOOK.Tab[1] + made.Wide) * Layers.Scale()
-	return { Open = made.Open, Rows = made.Rows, Look = made.Look, Words = table.concat(words, " "), Kit = made.Mark:GetAttribute("Kit"), Wide = made.Wide, Right = right, Clip = made.Clip.Visible }
+	return { Open = made.Open, Rows = made.Rows, Look = made.Look, Words = table.concat(words, " "), Kit = made.Mark:GetAttribute("Kit"), Wide = made.Wide, Right = right, Clip = made.Clip.Visible, Mark = made.Mark }
 end
 
 function DareLine.Preload()

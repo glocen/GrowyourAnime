@@ -29,7 +29,7 @@ return {
 			t.Equal("level 2: 840 Credits", BaseLevels.Price(2), 840)
 			t.Equal("level 3: 18,000 Credits", BaseLevels.Price(3), 18000)
 			t.Equal("nothing past the cap", BaseLevels.Price(4), nil)
-			for level, want in { { 2, 60, 2 }, { 3, 150, 6 }, { 4, 400, 30 } } do
+			for level, want in { { 2, 60, 2 }, { 3, 150, 6 }, { 4, 400, 15 } } do
 				t.Equal(`level {level}: {want[1]} bays`, BaseLevels.Bays(level), want[1])
 				t.Equal(`level {level}: the battery holds {want[2]} kWh`, BaseLevels.Battery(level), want[2])
 				t.Equal(`level {level}: a machine's ceiling {want[3]}`, BaseLevels.Ceiling(level), want[3])
@@ -75,7 +75,7 @@ return {
 				rising = rising and price ~= nil and before ~= nil and price > before
 			end
 			t.Check("each level dearer than the one before", rising)
-			t.Equal("the launch's top ceiling is the table's end", BaseLevels.Ceiling(BaseLevels.Top()), 30)
+			t.Equal("the launch's top ceiling: 15, stage III (the director, 2026-11-24, 10:50)", BaseLevels.Ceiling(BaseLevels.Top()), 15)
 			t.Equal("at base level 1, level 2 can be bought", BaseLevels.NextMachine("Bay", 1, 1, 170).Why, nil)
 			t.Equal("level 3 waits for the base's level 2", BaseLevels.NextMachine("Bay", 2, 1, 1e9).Why, BaseLevels.AtCeiling)
 			t.Equal("which lets it rise to 6", BaseLevels.NextMachine("Breaker", 5, 2, 1e9).Why, nil)
@@ -83,6 +83,9 @@ return {
 			t.Equal("short of Credits says so", BaseLevels.NextMachine("Bay", 1, 1, 169).Why, BaseLevels.Short)
 			t.Equal("the ceiling before the purse", BaseLevels.NextMachine("Bay", 2, 1, 0).Why, BaseLevels.AtCeiling)
 			t.Equal("30 is the last", BaseLevels.NextMachine("Bay", 30, 3, 1e9).Why, BaseLevels.AtCap)
+			t.Equal("at the top base level, 14 rises to 15", BaseLevels.NextMachine("Bay", 14, 3, 1e9).Why, nil)
+			local top = BaseLevels.NextMachine("Breaker", 15, 3, 1e9)
+			t.Check("and 15 is its top: no base level 4 to wait for, no price", top.Why == BaseLevels.AtCap and top.Price == nil, tostring(top.Why))
 		end,
 	},
 	{

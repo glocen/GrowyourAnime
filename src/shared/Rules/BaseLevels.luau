@@ -196,6 +196,11 @@ function BaseLevels.NextMachine(machine: Machine, level: number, baseLevel: numb
 	else
 		gain(gains, "Output", BaseLevels.BayOutput(level), BaseLevels.BayOutput(next))
 	end
+	if next > BaseLevels.Ceiling(baseLevel) and baseLevel >= BaseLevels.Top() then
+		-- the top base level's ceiling is the machine's top: no base level to wait for (the ceiling 15 sits below the
+		-- price table's end)
+		return { Level = next, Price = nil, Why = BaseLevels.AtCap, Gains = {} }
+	end
 	local why = if next > BaseLevels.Ceiling(baseLevel) then BaseLevels.AtCeiling elseif credits < price then BaseLevels.Short else nil
 	return { Level = next, Price = price, Why = why, Gains = gains }
 end

@@ -491,9 +491,9 @@ return {
 			t.Equal("a third chamber", #data.Base.Chambers, 3)
 			local third = data.Base.Chambers[3].Work
 			t.Check("which took the line's shard", third ~= nil and third.Def == STANDARD and #data.Base.Line == 0)
-			data.Base.Machines.Breaker = 29
-			t.Check("at 30 the chambers stay the Breaker's most", act(data, "UpgradeMachine", { Machine = "Breaker", Level = 30 }, T0 + 17).Ok == true and #data.Base.Chambers == BaseConfig.Breaker.MostChambers)
-			t.Equal("30 is the last", act(data, "UpgradeMachine", { Machine = "Breaker", Level = 31 }, T0 + 18).Error, Base.Cap)
+			data.Base.Machines.Breaker = 14
+			t.Check("at 15, the top base level's ceiling, still three chambers: the fourth (20) waits for a base level past launch", act(data, "UpgradeMachine", { Machine = "Breaker", Level = 15 }, T0 + 17).Ok == true and #data.Base.Chambers == 3)
+			t.Equal("15 is the last at launch", act(data, "UpgradeMachine", { Machine = "Breaker", Level = 16 }, T0 + 18).Error, Base.Cap)
 			saves(t, data, "after the machines' levels")
 		end,
 	},

@@ -4178,6 +4178,12 @@ Faber, 2026-11-19, 03:43 by the clock: the follow-up's item 7 (`docs/production-
 - **Tested:** type check 0 new; offline logic 27,104 passed; the full self-test 2,994 passed. Try, Socket and the transfer each pass a retry test. The Gear case's fix (a debug item gets its rarity's sockets) passes alone: 10 of 10 (17:20).
 - **Not yet:** the Reinforce and War Emblems pages and their phone capture (Equipment's install in B); part B.
 
+### Part B, the jewels' rules, built (cloud builder, 2026-11-24, on the director's "ok" to launch-design.md, section 5)
+
+- **Built:** `Config.Jewels` (the colours, their attributes, points 1, 2, 4, 8 and 16, three to merge), `Rules.Jewels` (Set, Unset and Merge, free and frozen in a fight: the `JewelSet`, `JewelUnset` and `JewelMerge` actions), the resolver's `Jewel:<slot>` lines, Studio's `JewelGive`.
+- **Tested:** type check 0 new; offline logic passed, with `Cases/Jewels.luau` (keys, points, set and swap, unset, merge to level 5, every refusal, repeats through the transaction, the resolver).
+- **Not yet:** the Jewels page (its five slots stand marked as coming: blind work in the cloud, for the PC); the sources (the Condenser, the drops, the Jewel Pouch: launch-design.md, section 5). Research: the seeds' size against a level-60 body (Strength 64 x G(60), about 1,400 on a Warrior) isn't checked here.
+
 ### Faber's cloud session: the transfer under repeats (2026-11-20, offline; ab3f963)
 
 - **A seeded case in `Cases/Regalia`:** 400 equips with Move over six rings and two presets, with a ledger of 8 so ids leave and come back, and a sixth of the equips cut short after they ran. No Reinforce level, emblem or jewel is made or lost, a repeat changes nothing, and a cut equip changes nothing.

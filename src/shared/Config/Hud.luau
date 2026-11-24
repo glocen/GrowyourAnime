@@ -5,6 +5,7 @@
 -- pixels at the phone's size (UI.Theme.Author); a number's style Size is a share of Combat.Numbers.Size.
 
 local UIKit = require(script.Parent.UIKit)
+local JewelsConfig = require(script.Parent.Jewels)
 
 export type Style = {
 	Colour: Color3?, -- nil: the element's (UIKit.Elements), or the critical's gradient
@@ -869,7 +870,7 @@ return {
 			Press = { Right = 550, Top = 262, Foot = 306, Put = 84, Out = 92 },
 		},
 		Jewels = {
-			Order = { "Red", "Green", "Blue", "Yellow", "Purple" },
+			Order = JewelsConfig.Colours, -- Config.Jewels is their home
 			-- Each colour's words and ring (build/handoff/UI/jewels/jewels.json), and the attribute it gives (part B).
 			Colours = {
 				Red = Color3.fromHex("#FF6B7A"),
@@ -878,7 +879,7 @@ return {
 				Yellow = Color3.fromHex("#FFCF4D"),
 				Purple = Color3.fromHex("#B98AFF"),
 			} :: { [string]: Color3 },
-			Attributes = { Red = "Strength", Green = "Agility", Blue = "Intelligence", Yellow = "Endurance", Purple = "Spirit" } :: { [string]: string },
+			Attributes = JewelsConfig.Attribute,
 			Sockets = { First = Vector2.new(313, 84), Pitch = 49, Side = 44, Value = Vector2.new(22, 48) },
 			Rule = { Y = 156, Ends = { 316, 550 }, Alpha = 0.55 },
 			Said = { At = Vector2.new(318, 166), Pitch = 18 },

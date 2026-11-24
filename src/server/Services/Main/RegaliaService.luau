@@ -18,6 +18,7 @@ local Regalia = require(Shared.Rules.Regalia)
 local Chests = require(Shared.Rules.Chests)
 local Reinforce = require(Shared.Rules.Reinforce)
 local Emblems = require(Shared.Rules.Emblems)
+local Jewels = require(Shared.Rules.Jewels)
 local ReinforceConfig = require(Shared.Config.Reinforce)
 local ChestsConfig = require(Shared.Config.Chests)
 local ChestRows = require(Shared.Definitions.Chests)
@@ -54,6 +55,18 @@ local function registerDebug()
 		return DataService.Change(player, "EmblemGive", function(draft: Profile.Data): { [string]: any }
 			local held = math.max(0, (draft.Bag.Emblems[key] or 0) + count)
 			draft.Bag.Emblems[key] = if held > 0 then held else nil
+			return { Ok = true, Held = held }
+		end)
+	end)
+	-- Jewels of one key, "Colour:level", into (or out of) the bag (TR47 part B).
+	DebugService.Register("JewelGive", function(who: any, key: any, count: any): any
+		local player = DebugService.ResolvePlayer(who)
+		if not player or Jewels.Parse(key) == nil or type(count) ~= "number" or count ~= math.floor(count) then
+			return { Ok = false, Error = "BadArgs" }
+		end
+		return DataService.Change(player, "JewelGive", function(draft: Profile.Data): { [string]: any }
+			local held = math.max(0, (draft.Bag.Jewels[key] or 0) + count)
+			draft.Bag.Jewels[key] = if held > 0 then held else nil
 			return { Ok = true, Held = held }
 		end)
 	end)
@@ -168,6 +181,9 @@ function RegaliaService.Init()
 		frozen(name, action)
 	end
 	for name, action in Emblems.Actions do
+		frozen(name, action)
+	end
+	for name, action in Jewels.Actions do
 		frozen(name, action)
 	end
 	-- One try, its roll the server's own (TR47): the op id returns a repeat's first answer, so a retry never rolls again.

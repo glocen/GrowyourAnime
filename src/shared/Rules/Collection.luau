@@ -147,6 +147,41 @@ function Collection.SetMark(data: Profile.Data, id: any, mark: any, on: any): { 
 	return { Ok = true, Id = owned.Id, Favourite = owned.Favourite, Locked = owned.Locked }
 end
 
+-- A Voidkin's name as a list shows it: its nickname, else its definition's name.
+function Collection.Name(owned: Profile.OwnedVoidkin): string
+	if owned.Nickname ~= "" then
+		return owned.Nickname
+	end
+	local row = Voidkin.ById[owned.Def]
+	return if row then row.Name else owned.Def
+end
+
+-- The owned Voidkin in the order every list shows them: the lead, then the favourites, then by level, then by name. The
+-- id settles a tie, so two reads of one save never swap two cards.
+function Collection.Roster(voidkin: { [string]: Profile.OwnedVoidkin }, lead: string): { Profile.OwnedVoidkin }
+	local list: { Profile.OwnedVoidkin } = {}
+	for _, owned in voidkin do
+		table.insert(list, owned)
+	end
+	table.sort(list, function(a: Profile.OwnedVoidkin, b: Profile.OwnedVoidkin): boolean
+		if (a.Id == lead) ~= (b.Id == lead) then
+			return a.Id == lead
+		end
+		if a.Favourite ~= b.Favourite then
+			return a.Favourite
+		end
+		if a.Level ~= b.Level then
+			return a.Level > b.Level
+		end
+		local named, other = Collection.Name(a), Collection.Name(b)
+		if named ~= other then
+			return named < other
+		end
+		return a.Id < b.Id
+	end)
+	return list
+end
+
 -- The Voidkin the base's showcase stands (TR22; docs/design.md, "The base"): the one picked with "Show at the gate" while
 -- it's owned, else the strongest, by Combat Power, then level, then Id, so the plinth never flickers between two. Nil
 -- with none owned.

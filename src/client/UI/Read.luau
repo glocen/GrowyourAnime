@@ -12,6 +12,7 @@ local Shards = require(Shared.Definitions.Shards)
 local Grounds = require(Shared.Definitions.Grounds)
 local Voidkin = require(Shared.Definitions.Voidkin)
 local Breaker = require(Shared.Rules.Breaker)
+local Collection = require(Shared.Rules.Collection)
 local Hud = require(Shared.Rules.Hud)
 
 local Read = {}
@@ -90,11 +91,7 @@ end
 
 -- An owned Voidkin's name: its nickname, else its own.
 function Read.VoidkinName(owned: Profile.OwnedVoidkin): string
-	if owned.Nickname ~= "" then
-		return owned.Nickname
-	end
-	local row = Voidkin.ById[owned.Def]
-	return if row then row.Name else owned.Def
+	return Collection.Name(owned)
 end
 
 -- "Common · Red · Warrior · Fire"; "Red · Warrior · Fire" when `rarity` is false.
@@ -129,23 +126,9 @@ function Read.Left(base: Base, work: Profile.ShardWork): number
 	return Breaker.Left(work) / math.max(base.Rates.Speed, 1e-3)
 end
 
--- Owned Voidkin, the lead first, then by level, then by name.
+-- Owned Voidkin as every list shows them: the lead, the favourites, then by level, then by name (Rules.Collection).
 function Read.Roster(view: Profile.View): { Profile.OwnedVoidkin }
-	local list: { Profile.OwnedVoidkin } = {}
-	for _, owned in view.Voidkin do
-		table.insert(list, owned)
-	end
-	local lead = view.Roles.Lead
-	table.sort(list, function(a: Profile.OwnedVoidkin, b: Profile.OwnedVoidkin): boolean
-		if (a.Id == lead) ~= (b.Id == lead) then
-			return a.Id == lead
-		end
-		if a.Level ~= b.Level then
-			return a.Level > b.Level
-		end
-		return Read.VoidkinName(a) < Read.VoidkinName(b)
-	end)
-	return list
+	return Collection.Roster(view.Voidkin, view.Roles.Lead)
 end
 
 -- What a Voidkin is doing, with its bay's number: "Lead", "Bay 1", or "" (Profile.RoleOf without the number).

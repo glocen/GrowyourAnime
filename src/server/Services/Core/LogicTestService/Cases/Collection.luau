@@ -257,4 +257,52 @@ return {
 			t.Check("the save stays whole", #problems == 0, table.concat(problems, "; "))
 		end,
 	},
+	{
+		Name = "Collection: a list shows the lead, then the favourites, then by level and name, the same way twice",
+		Run = function(t: any)
+			local data = fresh()
+			local defs: { string } = {}
+			for _, row in Voidkin.List do
+				table.insert(defs, row.Id)
+			end
+			table.sort(defs)
+			local ids: { string } = {}
+			for index = 1, 5 do
+				local answer = Collection.Uncover(data, defs[index], NOW + index)
+				ids[index] = answer.Id
+				data.Voidkin[answer.Id].Level = index -- the fifth the highest
+			end
+			local function order(): { string }
+				local out = {}
+				for at, owned in Collection.Roster(data.Voidkin, data.Roles.Lead) do
+					out[at] = owned.Id
+				end
+				return out
+			end
+			data.Roles.Lead = ""
+			t.Equal("no lead, no favourite: the highest level first", order()[1], ids[5])
+			data.Roles.Lead = ids[2]
+			t.Check("the lead first, whatever its level", order()[1] == ids[2] and order()[2] == ids[5])
+			t.Check("marking one a favourite", Collection.SetMark(data, ids[1], "Favourite", true).Ok == true)
+			local marked = order()
+			t.Check("a favourite comes before every other but the lead", marked[1] == ids[2] and marked[2] == ids[1] and marked[3] == ids[5], table.concat(marked, " "))
+			Collection.SetMark(data, ids[4], "Favourite", true)
+			local two = order()
+			t.Check("two favourites: the higher level first among them", two[2] == ids[4] and two[3] == ids[1] and two[4] == ids[5])
+			Collection.SetMark(data, ids[2], "Favourite", true)
+			t.Equal("a favourite lead stays first", order()[1], ids[2])
+			Collection.SetMark(data, ids[1], "Favourite", false)
+			Collection.SetMark(data, ids[4], "Favourite", false)
+			t.Check("unmarked, they fall back by level", order()[2] == ids[5] and order()[5] == ids[1])
+			-- the same level and the same name: the id settles it, so a re-read never swaps two cards
+			data.Voidkin[ids[3]].Level, data.Voidkin[ids[5]].Level = 9, 9
+			data.Voidkin[ids[3]].Nickname, data.Voidkin[ids[5]].Nickname = "Twin", "Twin"
+			local first = order()
+			for _ = 1, 20 do
+				t.Check("the same order on every read", table.concat(order(), " ") == table.concat(first, " "))
+			end
+			t.Equal("every owned Voidkin once", #first, count(data.Voidkin))
+			t.Equal("a nickname is the name a list sorts by", Collection.Name(data.Voidkin[ids[3]]), "Twin")
+		end,
+	},
 }

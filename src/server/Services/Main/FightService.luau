@@ -156,6 +156,7 @@ FightService.Rose = Signal.new() -- (fighter) a lead up again: home with its pla
 FightService.Marked = Signal.new() -- (fighter, mark) a marked strike's footprint is down (TR44)
 -- (fighter, mark, struck: { Fighter }?) taken up: on its hit, with the leads it took; nil when its action ended first
 FightService.Unmarked = Signal.new()
+FightService.Broke = Signal.new() -- (fighter, target, signature: boolean) a Guard's raised shield broken open (AR52; TR54's dare)
 FightService.Capped = Signal.new() -- (fighter) a heal stopped short by its HealRoom: the Tower's cap bound (TR46)
 
 local GROUP_FIGHTERS = "Fighters"
@@ -1059,6 +1060,7 @@ local function land(f: Fighter, action: Actions.Action, target: Fighter, beat: s
 			broke = true
 			dropGuard(target)
 			target.Model:SetAttribute("GuardBroke", at)
+			FightService.Broke:Fire(f, target, f.Signature ~= nil and action.Id == f.Signature.Id)
 		else
 			result.Physical *= keep
 			result.Elemental *= keep

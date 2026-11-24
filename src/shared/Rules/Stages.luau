@@ -13,6 +13,7 @@ local Profile = require(Shared.Data.Profile)
 local StagesConfig = require(Shared.Config.Stages)
 local Progress = require(Shared.Rules.Progress)
 local Stats = require(Shared.Rules.Stats)
+local Goals = require(Shared.Rules.Goals)
 
 local Stages = {}
 
@@ -226,6 +227,9 @@ function Stages.Clear(data: Profile.Data, run: Run, now: number): { [string]: an
 		return { Ok = false, Error = Stages.Unfinished }
 	end
 	run.Claimed = true
+	if run.Difficulty == "Hard" then
+		Goals.Note(data, "HardStretch") -- today's "clear a stretch on Hard" (TR54)
+	end
 	local line = (written(data, run.Ground) :: any)[run.Difficulty] :: Profile.StageLine
 	local seconds = math.max(0, now - run.Since)
 	local first = line.Cleared < run.Stage

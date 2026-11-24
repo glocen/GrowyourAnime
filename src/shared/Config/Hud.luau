@@ -111,6 +111,37 @@ local stages = {
 	-- It stands clear of the HUD's pieces named in Clear, Gap from them; between them it narrows, to Least at most: Hard's
 	-- longest head ("Hard Stage 3  10 / 10 Shades") still clears its words there.
 	Line = { Wide = 368, Least = 330, Down = 4, Tall = 44, Corner = 6, Edge = 1.2, Gap = 8, Clear = { "Lead", "Credits", "Electricity" } },
+	-- A stretch's dare under the line (AR53, build/handoff/UI/goals/goals.json, "dare"; TR54), from the line's glass's top
+	-- left. Open: its box from Left, Top to its foot by its rows (Foot, Corner), its words from the stretch's name's left at
+	-- Words.Y by its rows (capitals' top), the box Pad past the widest row and never past Limit short of the Electricity
+	-- pill; one row when the words end Inside of that limit, else two. Folded: Tab, the mark's middle at Mark, always.
+	-- Motion: the tab opens over Open seconds as the stretch begins, holds Config.Goals.Held, closes over Close; a kept
+	-- dare's mark flares once to Flare.Scale over Flare.Seconds.
+	Dare = {
+		Left = 8, Top = 30, Foot = { 70, 88 }, Corner = { 4, 6 }, Pad = 10, Limit = 6, Inside = 8,
+		Words = { Size = 14, Colour = Color3.fromHex("#F1ECFF"), Y = { { 51 }, { 48, 66 } } },
+		Tab = { 8, 30, 26, 40 },
+		Mark = Vector2.new(21, 57),
+		Motion = { Open = 0.2, Close = 0.18, Flare = { Seconds = 0.4, Scale = 1.4 } },
+	},
+	-- The dares kept on a run's card (AR53, goals.json, "dare.card"): a mark Mark.Gap right of each kept stretch's node at
+	-- Mark.Scale, and the chip last on the time's row (Chip.Gap before it), or on the fall's card a row of its own, Fall
+	-- tall, the chip Down from its top. Chip: its glass (Fill top to foot, Edge, Glow), the mark at Mark (scale Mark.Scale),
+	-- the words, the stone's cell (Stone: Gap right of the words, Top, Side, the picture at Fill, the hairline Edge), the
+	-- count (Count: Gap right of the cell), Pad at its right.
+	DareCard = {
+		Mark = { Gap = 10, Scale = 0.9375 },
+		Chip = {
+			Tall = 22, Corner = 4, Gap = 8, Pad = 7, Fall = 26, Down = 2,
+			Fill = { Color3.fromHex("#0E0B1A"), Color3.fromHex("#08070F") },
+			Edge = { Colour = Color3.fromHex("#C9BA9C"), Width = 1.2 },
+			Glow = { Colour = Color3.fromHex("#FFF6E2"), Alpha = 0.22, Reach = 5 },
+			Mark = { At = Vector2.new(10, 11), Scale = 0.8125 },
+			Words = { X = 19, Y = 4, Size = 14, Colour = Color3.fromHex("#EFE6D2") },
+			Stone = { Gap = 6, Top = -2, Side = 26, Fill = 0.94, Edge = Color3.fromHex("#E2CFA4") },
+			Count = { Gap = 4, Y = 3, Size = 17, Colour = Color3.fromHex("#F1ECFF") },
+		},
+	},
 	-- Its beats (stage_seam.py's strips): the picker's opening, the switch, the card's two beats, the line's.
 	Motion = {
 		Rise = 12, Open = 0.22, -- the screen rises Rise points as it fades in
@@ -656,16 +687,58 @@ return {
 				Press = { "HomeVoidkinPress", 102, -2, 187.6, 188, "Lit" }, -- over the Back, under the Glow and the view
 				Words = { { "Word", "Voidkin", 124, 150.2, 22, "Left" } },
 			},
+			-- Settings' column (AR53 in B, build/handoff/UI/goals/goals.json, "today"; TR54): Settings is a cog tile at its
+			-- top, today's three a card under it.
 			{
 				Name = "Settings",
 				Screen = "Settings",
-				Tap = { 266.6, 0, 104.4, 184 },
+				Tap = { 278, 8, 85, 44 },
 				Z = 3,
-				Images = { { "HomeSettings", 244, -2, 128.6, 188 } },
-				Press = { "HomeSettingsPress", 244, -2, 128.6, 188, Color3.fromHex("#AEB7C2") },
-				Words = { { "Word", "Settings", 293.3, 156.9, 14, "Centre" } },
-				Mark = { "HomeMarkSettings", 310.99, 78.56, 30, Color3.fromHex("#C9D0D9") },
+				Images = { { "HomeCog", 268, -2, 105, 64 } },
+				Press = { "HomeCogPress", 268, -2, 105, 64, Color3.fromHex("#AEB7C2") },
+				Words = {},
+				Mark = { "HomeMarkSettings", 320.7, 30, 24, Color3.fromHex("#C9D0D9") },
 			},
+			{
+				Name = "Today",
+				Stay = true, -- its press opens the list in the glass, not a screen
+				Tap = { 254, 58, 99, 118 },
+				Z = 3,
+				Images = { { "HomeToday", 242, 46, 123, 142 } },
+				Press = { "HomeTodayPress", 242, 46, 123, 142 },
+				Words = { { "Word", "Today", 293.3, 156.92, 14, "Centre" } },
+			},
+		},
+		-- Today's three (TR54; AR53, goals.json "today"), in points from the glass's top left. The card: Waits over its
+		-- art while any goal waits to be claimed, the shard's picture in Shard, today's three as pips at Pips (open, done,
+		-- claimed), in the lists' order. The list, in the glass alone: Next pinned at its head (its plate laid from Left, Top
+		-- by its image's origin; the back press Back.Tap, its chevron Back.Chevron; its lines from the plate's left at
+		-- Lines.X + Lines.Lean x (Lines.Base - y), at Lines.Y or Lines.Alone, "Next" in Label, the step Label.Step right of
+		-- it); under it the rows scroll from Rows.From to the glass's foot, padded Rows.Pad. A row: from Rows.Left, Tall,
+		-- Gap between, its image by its origin, its words, shard, right-hand text and check from the row's left; a banked
+		-- day under its heading (Day). The thumb at Thumb.X when the rows pass the room.
+		Today = {
+			Waits = { "HomeTodayWaits", 242, 46, 123, 142 },
+			Shard = { "ShardStandardSmall", 287.5, 72, 40, 40 },
+			Pips = { Images = { Open = "GoalPipOpen", Done = "GoalPipDone", Claimed = "GoalPipClaimed" }, Y = 130, X = { 287.7, 300.7, 313.7 }, Side = 28 },
+			Next = {
+				Image = "GoalNext", Left = 10, Top = 3, Tall = 40, Origin = Vector2.new(12, 12), Size = Vector2.new(374, 64),
+				Back = { Chevron = { Vector2.new(39, 17), Vector2.new(33, 23), Vector2.new(39, 29) }, Width = 1.8, Tap = { 8, 1, 46, 44 } },
+				Lines = { X = 50, Lean = 0.2, Base = 35, Y = { 6, 23 }, Alone = 15, Size = 14, Colours = { Color3.fromHex("#F5EFE2"), Color3.fromHex("#AEB7C2") } },
+				Label = { Colour = Color3.fromHex("#AFC6F0"), Step = 38 },
+			},
+			Rows = {
+				From = 43, Pad = { 2, 3 }, Left = 10, Tall = 44, Gap = 2, Wide = 351,
+				Images = { Open = "GoalRow", Done = "GoalRowDone", Claimed = "GoalRowClaimed", Press = "GoalRowPress" },
+				Origin = Vector2.new(12, 12), Size = Vector2.new(375, 68),
+				Words = { X = 18.4, Y = 15, Size = 14, Colour = Color3.fromHex("#F5EFE2"), Claimed = Color3.fromHex("#7E879A") },
+				Shard = { 306.4, 6, 32, 32, Open = 0.5 }, -- its box from the row's left; dim while open
+				Right = { X = 298.4, Y = 15, Size = 14, Count = Color3.fromHex("#AEB7C2"), Claim = Color3.fromHex("#FFD880") },
+				Check = { Image = "GoalCheck", At = Vector2.new(322.4, 22), Side = 24 },
+			},
+			Day = { Tall = 22, X = 24, Y = 4, Size = 14, Colour = Color3.fromHex("#8F99A6") },
+			Thumb = { X = 366, Wide = 2, Colour = Color3.fromHex("#55607A") },
+			Switch = 0.14, -- seconds the cards and the list cross
 		},
 		Word = Color3.fromHex("#F5EFE2"),
 		Shadow = { Offset = Vector2.new(0.8, 1.2), Colour = Color3.fromHex("#000000"), T = 0.45 },
@@ -695,7 +768,7 @@ return {
 			} :: { [string]: { Yaw: number?, Head: number?, Chest: number?, X: number?, Y: number? } },
 		},
 		Dim = { Colour = Color3.fromHex("#05090B"), Amount = 0.6, Seconds = 0.15, Side = 100 },
-		Open = { Grow = 0.22, From = 0.9, Back = 1.2, Fade = 0.12, Stagger = 0.045, Order = { "Voidkin", "Equipment", "Settings" }, Land = 0.16, Rise = 8, Leave = 0.12, LeaveTo = 0.96 },
+		Open = { Grow = 0.22, From = 0.9, Back = 1.2, Fade = 0.12, Stagger = 0.045, Order = { "Voidkin", "Equipment", "Settings", "Today" }, Land = 0.16, Rise = 8, Leave = 0.12, LeaveTo = 0.96 },
 		Step = { Lit = 0.06, Leave = 0.12, LeaveTo = 0.96, RiseAt = 0.08, Rise = 0.22, RiseFrom = 24, Cover = 0.08, Sink = 0.14, Uncover = 0.1, BackAt = 0.06 },
 	},
 	Stages = stages,

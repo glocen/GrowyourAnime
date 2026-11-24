@@ -191,6 +191,12 @@ export type Data = {
 		Trainee: string,
 		Banked: number, -- seconds at full power not yet worth a whole point of experience, kept for the next advance
 	},
+	-- Today's three and the days banked, oldest first, and the day's leads so far (TR54; Rules.Goals; the contract in
+	-- docs/engineering-plan.md, "Goals"): each day its UTC number, the goal ids drawn, how far each has come, and claimed.
+	Goals: {
+		Days: { { Day: number, Picks: { string }, Have: { number }, Claimed: { boolean } } },
+		Led: { Day: number, Ids: { string } },
+	},
 	Progress: {
 		Starter: string, -- the starter shard chosen, or "" before the choice
 		Grounds: { [string]: GroundProgress }, -- by ground id, once opened
@@ -250,6 +256,7 @@ function Profile.Template(): Data
 			Bays = bays,
 		},
 		Training = { Trainee = "", Banked = 0 },
+		Goals = { Days = {}, Led = { Day = 0, Ids = {} } },
 		Progress = { Starter = "", Grounds = {}, Stages = {}, Kills = 0, Tower = { Best = 0 } },
 	}
 end

@@ -63,6 +63,7 @@ local SettingsScreen = require(UI.SettingsScreen)
 local TargetCard = require(UI.TargetCard)
 local Dock = require(UI.Dock)
 local HomePanel = require(UI.HomePanel)
+local TodayList = require(UI.TodayList)
 local BossBar = require(UI.BossBar)
 local Screen = require(UI.Kit.Screen)
 local Toast = require(UI.Kit.Toast)
@@ -970,6 +971,7 @@ local function showView(view: Profile.View)
 	Count.Show(credits, view.Currency.Credits, Read.Number) -- a count under way heads there
 	showChip(view)
 	showLead(view)
+	TodayList.View(homePanel, view)
 	local owned = 0
 	for _ in view.Voidkin do
 		owned += 1
@@ -1301,6 +1303,7 @@ local function step(dt: number)
 		end
 	end
 	HomePanel.Paint(homePanel)
+	TodayList.Paint(homePanel)
 	Dock.Paint(dockUi)
 	local view = ProfileController.Get()
 	if view and os.clock() - baseReadAt >= BASE_EVERY then
@@ -1555,9 +1558,11 @@ function HudController.Start()
 			end })
 		end,
 	}, lead.Frame)
+	TodayList.Attach(homePanel, ProfileController.Act) -- Settings' column's Today card and its list (TR54)
 	local known = ProfileController.Get()
 	if known then
 		showLead(known)
+		TodayList.View(homePanel, known)
 	end
 	-- The bodies come after a join's first copy (RevealService's Ready): the lead's card is shown again once they're in.
 	task.spawn(function()

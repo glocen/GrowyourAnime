@@ -283,7 +283,8 @@ function DockCases.Cases(given: Given): { any }
 						laid += if image:IsA("ImageLabel") and image:GetAttribute("Kit") ~= nil then 1 else 0
 					end
 					local label = card.Holder:FindFirstChild("Word") :: TextLabel?
-					local whole = label ~= nil and label.Text == def.Name and label.TextFits
+					-- a tile with no word (Settings' cog, TR54) has its mark instead
+					local whole = if #def.Words == 0 then card.Holder:FindFirstChild("Mark") ~= nil else label ~= nil and label.Text == def.Name and label.TextFits
 					t.Check(`{def.Name}: its art laid, its word whole, at rest`, laid >= #def.Images + 1 and whole and card.Button:GetAttribute("Look") == "Rest", `{laid} images, {if label then label.Text else "no word"}`)
 				end
 				local level = panel.Cards.Equipment.Holder:FindFirstChild("Level") :: TextLabel?

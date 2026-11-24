@@ -41,7 +41,7 @@ local function whole(x: number, y: number): UDim2
 end
 
 type Laid = { any } -- kit name, left, top, wide, tall, then its tint: a colour, or "Lit" for the lead's light
-type Def = { Name: string, Screen: string, Tap: { number }, Z: number, Images: { Laid }, Over: { Laid }?, Press: Laid, Words: { { any } }, Mark: { any }? }
+type Def = { Name: string, Screen: string?, Stay: boolean?, Tap: { number }, Z: number, Images: { Laid }, Over: { Laid }?, Press: Laid, Words: { { any } }, Mark: { any }? }
 export type Card = { Def: Def, Button: TextButton, Holder: Frame, Press: ImageLabel, Lit: { ImageLabel }, Shown: string }
 type Motion = { At: number, Opening: boolean, From: number, To: number, Seconds: number, Seen: number, DimFrom: number, DimTo: number, Done: (() -> ())? }
 export type Panel = {
@@ -157,6 +157,7 @@ local function place(panel: Panel)
 		local box = boxes[index]
 		each.Position = whole(box[1], box[2])
 		each.Size = whole(math.max(box[3], 0), math.max(box[4], 0))
+		each.Visible = box[3] >= 0.5 and box[4] >= 0.5 -- none under a phone with no inset: no tap of nought
 	end
 end
 
@@ -195,6 +196,11 @@ local function step(panel: Panel, name: string)
 	end
 	local s = HOME.Step
 	panel.Lit, panel.LitUntil = name, os.clock() + s.Lit
+	local card = panel.Cards[name]
+	if card and card.Def.Stay then -- a card that changes the glass itself (Today's list): lit, then its press, the panel kept
+		task.delay(s.Lit, press)
+		return
+	end
 	task.delay(s.Lit, function()
 		HomePanel.Close(panel, s.LeaveTo, s.Leave)
 		task.delay(s.RiseAt, function()

@@ -44,6 +44,7 @@ local Condenser = require(Shared.Rules.Condenser)
 local ShardConfig = require(Shared.Config.Shards)
 local BaseConfig = require(Shared.Config.Base)
 local CondenserConfig = require(Shared.Config.Condenser)
+local Goals = require(Shared.Rules.Goals)
 
 local Base = {}
 
@@ -367,6 +368,7 @@ function Base.CollectTray(data: Profile.Data, _args: any, now: number): Answer
 		return refuse(Base.Empty)
 	end
 	base.Condenser.Tray = {}
+	Goals.Note(data, "TrayCollected") -- today's "collect the Condenser's tray" (TR54)
 	return { Ok = true, Stones = taken, Count = count }
 end
 

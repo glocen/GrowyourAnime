@@ -16,6 +16,7 @@ local Config = require(Shared.Config.Reinforce)
 local Grounds = require(Shared.Definitions.Grounds)
 local Growth = require(Shared.Rules.Growth)
 local Profile = require(Shared.Data.Profile)
+local Goals = require(Shared.Rules.Goals)
 
 local Reinforce = {}
 
@@ -79,6 +80,7 @@ function Reinforce.Try(data: Profile.Data, args: any, roll: number): { [string]:
 	if success then
 		item.Reinforce = level
 	end
+	Goals.Note(data, "Forge") -- today's "forge once": a try made, kept or not (TR54)
 	return {
 		Ok = true, -- a failure is a try made: it spends, so it commits
 		Item = id,

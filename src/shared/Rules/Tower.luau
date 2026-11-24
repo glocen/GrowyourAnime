@@ -17,6 +17,7 @@ local Growth = require(Shared.Rules.Growth)
 local Stats = require(Shared.Rules.Stats)
 local Chests = require(Shared.Rules.Chests)
 local Drops = require(Shared.Rules.Drops)
+local Goals = require(Shared.Rules.Goals)
 
 local Tower = {}
 
@@ -278,6 +279,7 @@ function Tower.Won(data: Profile.Data, id: string, floor: number, fast: boolean?
 	end
 	local reward = Tower.Reward(floor, run.Best, run.Seed, fast)
 	run.Floor = floor
+	Goals.Note(data, "TowerFloor") -- today's "win three Tower floors" (TR54)
 	run.Credits += reward.Credits
 	if reward.Chest then
 		run.Chests[reward.Chest] = (run.Chests[reward.Chest] or 0) + 1

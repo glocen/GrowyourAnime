@@ -4879,3 +4879,41 @@ Research, 2026-11-23, 15:24, on the director's yes and "js basic at launch" (`do
 - **Checks:** the logic cases; captures of the card, the results and Home on the smallest phone; research's verdict in motion.
 - **Cap:** about 10 hours of build (research's guess; Faber's estimate replaces it).
 - **Order:** after TR52 and AR52's behaviours.
+
+### Faber's build (Faber, 2026-11-24, 01:52 by the clock)
+
+- **Where it lives:** the rules `Rules.Goals` and `Rules.GoalFacts` (the account's facts Next and the draw read, apart so no rule requires itself); the words `Definitions.Goals`; the numbers `Config.Goals` and `Config.Hud` (`Stages.Dare`, `Stages.DareCard`, `Home.Today`); the save's `Goals` (`docs/engineering-plan.md`, "Goals"); `GoalService` on the server; `UI.DareLine`, `UI.TodayList` and the run's card (`UI.StageScreen`) on the client. AR53's 17 images are uploaded under the group, all Approved (`docs/asset-log.md`).
+- **Every path counts:** each event is noted in the rule that makes it (`Goals.Note`): a shard broken and the Breaker's time in `Rules.Breaker`, a level in `Rules.Drops` and the Breaker, the tray in `Rules.Base`, a forge in `Rules.Reinforce`, a Tower floor in `Rules.Tower`, the keeper in `Rules.Progress`, a Hard stretch in `Rules.Stages`. Away time counts too: the days roll on join before the base's away time lands.
+- **Claims:** one action, `GoalClaim { Day, Slot }`, behind the op ledger. A repeated request gets its first answer, a claimed goal is refused, and an answer that fails commits nothing.
+- **A dare:** it opens as each stretch begins, is judged as the stretch clears, and its stone is paid inside the clear's own step, so a clear that isn't saved pays nothing. A later fall takes nothing back. Until its piece is in (`Config.Goals.Ready`), a stretch takes the fallback.
+- **Tier-1 calls** (mine, small and reversible):
+  - a goal's count goes to every open goal of its kind on every banked day;
+  - each draw is fixed by the player's id and the day;
+  - a new account starts today, with nothing banked;
+  - "above half" follows the lead's health both ways and is judged at the clear;
+  - a "Do" dare's mark stays lit once done;
+  - a goal whose piece the account hasn't opened is never drawn (Hard, the Tower, the Condenser, the forge). The Tower opens at a best floor of 1, the forge with any gear owned;
+  - "someone new" counts a stage, keeper or Tower run, and the day's first run always counts;
+  - "every bay" counts only while the base generates with every bay filled; "train" counts while training runs, away too;
+  - a Dasher's line is a mark with a length, a slam one without;
+  - dares run on Normal and Hard;
+  - the day turns at 00:00 UTC, looked for every 5 seconds;
+  - the dim's strip under a phone's inset hides when it has no height, so it's never a tap of nought.
+- **The captures' review found three faults, each fixed:**
+  - stretch 2's dare and later ones stayed folded: at a stretch's advance the dare comes before the run's line is built again, and the line it first came to counted it as shown. It counts once it's laid now, and case 2 checks stretch 2's unfold;
+  - Roblox drew its own scroll thumb past the list's glass, a white line, even at thickness nought: hidden, as the Bag's chips already do;
+  - the cases' clean-up began a new run instead of ending one: a run is ended by its lead's fall now, the game's own way out.
+- **Captures** on the smallest phone (568 by 320 at 0.85, drawn at 852 by 480), in `build/captures/tr54/`:
+  - the dare: open (`dare_open`), folded (`dare_folded`), dark below half (`dare_broken`), kept (`dare_kept`), the three marks magnified (`marks`), and stretch 3's unfolding after the fix (`dare_next`);
+  - the cards: the fall's with the kept chip and the road's mark (`card_fall`), the keeper's with the chip on its time row (`card_win`);
+  - Home: the cog tile and the Today card with one claim waiting (`home`), the list with Next and the rows, a run behind it (`list`).
+  - A Manual take holds each state for a still: "Take: TR54" (the self-test's GoalCases).
+- **My own review, for research's pass:**
+  - The kept mark is told from the held one only by its halo at rest (`marks`); the flare carries the moment in motion. Whether it needs more at rest is research's call.
+  - The chip's forge stone is a dark cell at 22 points and reads as a stone only up close.
+  - On the keeper's card the chip shares the time row, which is then full.
+  - The Today card's pips read as dots: the gold one is clear, the open and the claimed ones are close.
+- **Checks:**
+  - the type check: 0 new;
+  - logic: 29845 passed, 0 failed, offline and in Studio;
+  - self-test: Goals (TR54) 55/0, Home's panel (AR49) 41/0, Settings (AR43) 27/0.

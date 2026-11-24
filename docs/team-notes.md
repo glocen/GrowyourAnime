@@ -11,13 +11,10 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **Modulo's order:** **AR59's finish on A, the school tough** (picked 01:24; its five must-fixes passed at competent, 01:38): his portraits, then the director's acceptance before Faber installs. Then **AR60, Kirra in the make** (written 01:50). The make is the kit's, `tools/blender/anime_make.py` (AR59, "The redo") (the director, by 22:52: the redesigns now, one at a time: Rook, Kirra, Pip, Lyric, then Watt's finish). AR57 passed at competent and AR56 is closed; both are Faber's to build, in his order.
 - **With the director:** **TR52's run**, the signature on a tap: Lantern Row once with Auto on, then with Auto off with the ring at each thumb (TR52, research's read); answer **item 10 in Faber's session** (the hooks for Scintilla and Sonus); **item 4**, publish both places and Faber's OK to run the player once; open two sessions titled **Scintilla** and **Sonus**; `src/shared/Config/Sounds.luau`'s uncommitted change; the store's design.
 
-**Faber (builder).** 2026-11-23, 23:59, on Opus 5.5.
-- **AR52's behaviours are in the game** (AR52, "Faber's build"). The Guard raises its paper shield, and hits glance off until a heavy hit or a signature breaks it. The Dasher draws its line, lunges 12 studs on through and lies open. Stretch 2's pack has two Guards; stretch 3's packs one Dasher each. The masks, the maps, the Hard maps and both clips are uploaded under the group. **Content check PASS** on the installed look, all four conditions. "Shades (AR52)" 40/0.
-  - **Waits:** research's pass in the game (captures in `build/captures/ar52/`).
-  - **For research, balance:** at level 5, Rook's Haymaker fells a stretch 2 Guard in one blow, through the raise.
-- **TR52** waits on the director's run, then research's verdict.
-- **Next:** TR54, then TR53 (with TR31 folded in); AR57's elites, AR58's Support and AR56 after them. F7's timing waits on item 4's publish.
-- **The hooks for Scintilla and Sonus** wait on the director's own word (item 10).
+**Faber (builder).** 2026-11-24, 01:51, on Opus 5.5.
+- **TR54's goals are in the game** (TR54, "Faber's build"): a dare per stretch on the run's line, paid at the clear, and "Dare kept" on the run's cards; Home's Settings column is the cog tile and the Today card, and its list holds Next, today's three and the banked days. AR53's 17 images are under the group, all Approved. Goals (TR54) 55/0. **Waits:** research's verdict in motion (captures in `build/captures/tr54/`).
+- **AR52** waits on research's pass in the game (`build/captures/ar52/`); for research, balance: at level 5, Rook's Haymaker fells a stretch 2 Guard in one blow. **TR52** waits on the director's run.
+- **Next:** two small fixes (the Equipment screen's scrolls draw Roblox's own thumb; StageCases' clean-up leaves a run going), then TR53 with TR31; AR57's elites, AR58's Support and AR56 after. F7's timing waits on item 4's publish. The hooks for Scintilla and Sonus wait on the director's own word (item 10).
 
 **Modulo (assets).** 2026-11-24, 01:50, on Fable 5.2.
 - **Now: AR59, Rook's files for the install, delivered** to `build/handoff/Rook/make/` (AR59, "Modulo's finish"): seven pieces, three pictures, the recipe and the sheet, written by the kit's `handoff` for every Voidkin after him. His eight clips play on the new body as they are. The content check passed. Not in the game, nothing uploaded, not director-accepted. The director, about 01:47: "it fine if the model has some attachment or ovexageration you seems to get it now" (recorded in AR59; used from Kirra on).
@@ -143,6 +140,14 @@ For Faber:
 - Tier 2, research, 2026-11-12, on the director's words: weapons belong to a class, in two hands (Main Hand and Off Hand replace Weapon and Shield), a preset holds a pair per class, a weapon drop is for the lead's class; Combat Power made to be watched, its weights fitted by the simulation; each item kind modelled and rendered to its icon (AR6, phase 3) (`docs/design.md`, "Regalia: gear" and "Combat Power"). Faber: the Stats case's `"Weapon"` source becomes `"Main Hand"` when you next touch it. Faber and Modulo: say in your row what you'd change.
 
 ## Entries
+
+### 2026-11-24, 01:51. TR54, goals basic at launch, built in the game (Faber)
+
+- **What changed:** as a stretch begins, its dare unfolds under the run's line, then folds to its mark. The mark goes dark below half and flares when the stretch clears with the dare kept, which pays one forge stone. The run's cards show "Dare kept" and the stones. On Home, Settings is a cog tile, with the Today card under it: the shard, three pips, and a gold rim while a claim waits. Its press opens the list in the glass: Next pinned at its head with the back press, then today's three and the banked days. Each done row is claimed once, for a Lantern Row shard.
+- **Where:** `Rules.Goals`, `Rules.GoalFacts`, `Definitions.Goals`, `Config.Goals`, `GoalService`, `UI.DareLine`, `UI.TodayList`, and the run's card. The save's `Goals` is in `docs/engineering-plan.md`, "Goals". The record is TR54, "Faber's build", and the images are in the asset log.
+- **Checked:** the type check gives 0 new; logic 29845/0; self-test Goals (TR54) 55/0, Home's panel 41/0, Settings 27/0. The captures are on the smallest phone. Reviewing them found three faults, each fixed: a later stretch's dare stayed folded; a stray scroll line showed past the list; and the cases' clean-up left a run going.
+- **Open:** research's verdict in motion. The dares' pools and weekly goals wait, as TR54 says.
+- **For:** research (the pass); the director (the look, when you play).
 
 ### 2026-11-24, 01:50. AR59, Rook in the anime make, delivered for the install (Modulo)
 

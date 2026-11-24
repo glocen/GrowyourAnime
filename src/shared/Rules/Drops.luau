@@ -17,6 +17,7 @@ local Emblems = require(Shared.Rules.Emblems)
 local ChestsConfig = require(Shared.Config.Chests)
 local ReinforceConfig = require(Shared.Config.Reinforce)
 local EmblemSets = require(Shared.Definitions.Emblems)
+local Goals = require(Shared.Rules.Goals)
 
 local Drops = {}
 
@@ -171,6 +172,7 @@ function Drops.Give(data: Profile.Data, kind: any, level: any, ground: any, roll
 	data.Currency.Credits += drop.Credits
 	local lead = data.Voidkin[data.Roles.Lead]
 	local levels = if lead then Growth.AddXp(lead, drop.Xp) else 0
+	Goals.Note(data, "LevelUp", levels) -- today's "raise a Voidkin a level" (TR54)
 	local bag = data.Bag.Shards
 	if drop.Shard ~= "" then
 		bag[drop.Shard] = (bag[drop.Shard] or 0) + 1

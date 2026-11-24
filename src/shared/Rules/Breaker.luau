@@ -23,6 +23,7 @@ local Power = require(Shared.Rules.Power)
 local Training = require(Shared.Rules.Training)
 local BaseLevels = require(Shared.Rules.BaseLevels)
 local Condenser = require(Shared.Rules.Condenser)
+local Goals = require(Shared.Rules.Goals)
 
 export type Summary = {
 	Finished: number, -- shards that moved to Ready
@@ -134,7 +135,19 @@ end
 
 -- A shard broken at once (High voltage) moves to Ready now, and the chamber it frees takes the line's next.
 function Breaker.Settle(data: Profile.Data): number
-	return settle(data.Base)
+	local moved = settle(data.Base)
+	Goals.Note(data, "ShardBroken", moved) -- today's goals count each shard the Breaker finishes (TR54)
+	return moved
+end
+
+-- Every bay the base holds has a worker in it (today's "every bay a full hour", TR54).
+local function allBays(base: Profile.Base): boolean
+	for _, bay in base.Bays do
+		if bay.Worker == "" then
+			return false
+		end
+	end
+	return #base.Bays > 0
 end
 
 local function flowNow(data: Profile.Data, generation: number, training: boolean): Power.Flow
@@ -186,6 +199,13 @@ local function step(data: Profile.Data, seconds: number, generation: number, tra
 			summary.Trained = trainee.Id
 			summary.Levels += gained
 			base.Power.Open = true -- a machine beside the Breaker has drawn power: the Power screen opens
+			if (flow.Speed.Training or 1) > 0 then
+				Goals.Note(data, "TrainSeconds", dt)
+			end
+			Goals.Note(data, "LevelUp", gained)
+		end
+		if generation > 0 and allBays(base) then
+			Goals.Note(data, "BaysSeconds", dt)
 		end
 		if (flow.Demand.Condenser or 0) > 0 then
 			local stones, converted = Condenser.Work(base, flow.Speed.Condenser or 1, dt)
@@ -202,7 +222,9 @@ local function step(data: Profile.Data, seconds: number, generation: number, tra
 			charge = capacity
 		end
 		base.Charge = if charge < EPSILON then 0 else charge
-		summary.Finished += settle(base)
+		local moved = settle(base)
+		summary.Finished += moved
+		Goals.Note(data, "ShardBroken", moved)
 		left -= dt
 	end
 	local whole = math.floor(base.Spill)

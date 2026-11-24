@@ -988,8 +988,29 @@ local UIKit = {
 		HomeVoidkinRim = { Id = "rbxassetid://82833009451448", Pixels = Vector2.new(750, 752), Points = Vector2.new(187.5, 188), Pad = 0 },
 		HomeEquipment = { Id = "rbxassetid://92617759933534", Pixels = Vector2.new(598, 752), Points = Vector2.new(149.5, 188), Pad = 0 },
 		HomeEquipmentPress = { Id = "rbxassetid://78141120977786", Pixels = Vector2.new(598, 752), Points = Vector2.new(149.5, 188), Pad = 0 },
-		HomeSettings = { Id = "rbxassetid://124403177816172", Pixels = Vector2.new(514, 752), Points = Vector2.new(128.5, 188), Pad = 0 },
-		HomeSettingsPress = { Id = "rbxassetid://96385222884368", Pixels = Vector2.new(514, 752), Points = Vector2.new(128.5, 188), Pad = 0 },
+		-- Settings' cog tile and the Today card in Settings' old column (AR53 in B; build/handoff/UI/goals/goals.json, "today"):
+		-- laid whole by their boxes in Config.Hud.Home, the presses tinted the kit's lit press.
+		HomeCog = { Id = "rbxassetid://117626074080304", Pixels = Vector2.new(420, 256), Points = Vector2.new(105, 64), Pad = 0 },
+		HomeCogPress = { Id = "rbxassetid://132824493643559", Pixels = Vector2.new(420, 256), Points = Vector2.new(105, 64), Pad = 0 },
+		HomeToday = { Id = "rbxassetid://87673019328983", Pixels = Vector2.new(492, 568), Points = Vector2.new(123, 142), Pad = 0 },
+		HomeTodayWaits = { Id = "rbxassetid://106397790566865", Pixels = Vector2.new(492, 568), Points = Vector2.new(123, 142), Pad = 0 },
+		HomeTodayPress = { Id = "rbxassetid://79059834352179", Pixels = Vector2.new(492, 568), Points = Vector2.new(123, 142), Pad = 0 },
+		-- Today's list in the glass (TR54): Next's plate at its head, a row a goal in its three states and its press, the
+		-- check where a claimed goal's shard was, and the card's three pips. Each laid by its box in Config.Hud.Goals.
+		GoalNext = { Id = "rbxassetid://120395874416773", Pixels = Vector2.new(1496, 256), Points = Vector2.new(374, 64), Pad = 0 },
+		GoalRow = { Id = "rbxassetid://96168393446204", Pixels = Vector2.new(1500, 272), Points = Vector2.new(375, 68), Pad = 0 },
+		GoalRowDone = { Id = "rbxassetid://74779919223047", Pixels = Vector2.new(1500, 272), Points = Vector2.new(375, 68), Pad = 0 },
+		GoalRowClaimed = { Id = "rbxassetid://75529105991137", Pixels = Vector2.new(1500, 272), Points = Vector2.new(375, 68), Pad = 0 },
+		GoalRowPress = { Id = "rbxassetid://71118590231555", Pixels = Vector2.new(1500, 272), Points = Vector2.new(375, 68), Pad = 0 },
+		GoalCheck = { Id = "rbxassetid://119138173782274", Pixels = Vector2.new(96, 96), Points = Vector2.new(24, 24), Pad = 0 },
+		GoalPipOpen = { Id = "rbxassetid://80294864490687", Pixels = Vector2.new(112, 112), Points = Vector2.new(28, 28), Pad = 0 },
+		GoalPipDone = { Id = "rbxassetid://71677870908853", Pixels = Vector2.new(112, 112), Points = Vector2.new(28, 28), Pad = 0 },
+		GoalPipClaimed = { Id = "rbxassetid://101561488534118", Pixels = Vector2.new(112, 112), Points = Vector2.new(28, 28), Pad = 0 },
+		-- A stretch's dare's mark (TR54): lit while it holds, its flare once kept, dark and split once broken. 40 points square,
+		-- the mark itself 16 tall at its middle.
+		DareMark = { Id = "rbxassetid://127158946053783", Pixels = Vector2.new(160, 160), Points = Vector2.new(40, 40), Pad = 0 },
+		DareMarkKept = { Id = "rbxassetid://93083487243219", Pixels = Vector2.new(160, 160), Points = Vector2.new(40, 40), Pad = 0 },
+		DareMarkDark = { Id = "rbxassetid://76028013482418", Pixels = Vector2.new(160, 160), Points = Vector2.new(40, 40), Pad = 0 },
 		-- Settings' cog (AR43): a white mask, tinted.
 		HomeMarkSettings = { Id = "rbxassetid://100189975821409", Pixels = Vector2.new(128, 128), Points = Vector2.new(32, 32), Pad = 0 },
 	} :: { [string]: Image },

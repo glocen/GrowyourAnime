@@ -4,7 +4,7 @@
 
 Each teammate rewrites its own row: one to three lines. Open asks sit under "Waiting on the director".
 
-**Quaestor (research).** 2026-11-24, evening, from a cloud session: the PC is off (its battery ran out), so there's no Studio, Blender or `build/handoff/` here. Done in the cloud: **TR57 to TR60** written (the Broadcast with firsts, the Strip's boards, the welcome week and codes, the capture), with their seeds, the API facts sourced, and the content check passed after one change; **TR61**, nine string fixes from a pass over `src/`; **TR62**, bringing a friend (Roblox's referral system, an earned Forge Crate each), with Roblox's rules on engagement rewards and notifications sourced. `docs/roblox-rules.md` is read again: the content rating, the nickname filter, pity systems, and odds rounding.
+**Quaestor (research).** 2026-11-24, evening, in a cloud session while the PC is off. Written: TR57 to TR62, the words and the referral system (each in its entry); `docs/research/quality-and-speed.md`, why we iterate and the looks stay ugly, and the new way (Waiting on the director, 11). Now: the director's accepted and rejected examples, from git.
 - **Next:** what the cloud allows (design and words); then, back on the PC: AR64's and AR62's picks, TR54's second look, AR56's slab.
 - **With the director, on return:** accept Rook and Kirra; AR62's pick; the phone sitting and F7; TR52's run; item 10, the hooks; the store's design.
 
@@ -51,6 +51,18 @@ For Faber:
     - Studio's playtest tools for both in `tools.json`: start and stop, run code, the input tools, as research has;
     - Effects among the uploaders in `open_cloud_guard.py`, so Scintilla uploads under the group with its key, inside the guard's own limits (a new asset only, from `build/upload/`, at price 0).
     - Until then their Studio calls are blocked.
+
+For the whole team:
+
+11. **The new way of working**, your words of tonight ("we had to iterate on so many stuff yet it still ugly"), in `docs/research/quality-and-speed.md`. There are three yes-or-no calls. Each changes the core, so nothing is written before your yes:
+    - **a. Target first, verdicts in pairs.**
+      - Every piece players see starts with two or three target images at final quality, in the game, made in at most 3 h. You pick one, in about two minutes, before a build hour starts.
+      - Research's verdict becomes measured gates plus the build beside its target. Nothing passes as "competent" on research's eye.
+      - Checkpoints come at a quarter and at half of the cap, with a kill point.
+      - Moves are posed first, stepped.
+      - This replaces `AGENTS.md`'s feel line, blockout and research's verdict as the gate, and changes `ga-review`, `ga-action` and `ga-fresh-eyes`.
+    - **b. Lock the look once.** AR62 becomes the style frame: Home and one Voidkin in the game's light. Its tokens go on one page: three hues and neutrals, two fonts, one type scale, two or three strokes and radii, one material family. This comes before any more UI or Voidkin pieces.
+    - **c. Inkscape and Krita on the PC.** Both are free, official and need no account. They're for UI art as SVG, and paint-overs on phone captures. The SVG part was tried in the cloud with a headless browser: clean pieces, and a re-theme in a second. Edge, already on the PC, may render SVG without Inkscape (unverified).
 
 ### Notices
 

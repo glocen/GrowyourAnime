@@ -68,6 +68,12 @@ Seven changes, each with what it replaces:
 4. **Checkpoints with a kill point.** At a quarter and at half of a piece's cap, the build sits beside its target. A miss on the main read changes the technique or simplifies; it's never polished. Two techniques missed, and the director picks from images. This adds checkpoints to the caps (`AGENTS.md`, "Blocks first").
 5. **Moves posed first, stepped.** A move's key poses are judged stepped (constant interpolation) in the game before any curve exists, and the anime look may stay stepped where it reads better. Its timing is written in frames first, from the feel line. Added to `ga-action`, step 3.
 6. **UI art as drawings, not paint.** UI images are written as SVG and rendered by Inkscape at twice the display size (within 1024 px), instead of being painted with numpy in Blender. Text stays live in Studio, and frames use 9-slice. SVG is something an AI writes well. Needs Inkscape on the PC: free, official, no account, the director's OK to install.
+   - **Tried in the cloud, 2026-11-24 (OBSERVED):**
+     - Six pieces (a 9-slice panel, two buttons, a bar, a close mark, a gem) were written as SVG from one token set and rendered at 2× with transparency.
+     - Two token sets rendered in 1.1 s, and a re-theme was a token edit only. Edges are clean, and the 9-slice held with its glow outside the box, as an ImageLabel larger than its button would hold it.
+     - The renderer was a headless browser, with no install. On the PC, Edge ships with Windows and could do the same, but this is UNVERIFIED there, so Inkscape may not be needed.
+     - What it didn't do (OPINION): the pieces look tidy but generic. The technique buys speed and consistency, not taste: the look still comes from 1 and 2.
+     - Script and renders: `build/scratch/quaestor/svg-test/` (gitignored, throwaway).
 7. **Machines check what eyes tire of.**
    - **A UI lint** (Faber, one self-test) fails any colour, stroke, radius, font, size or padding outside the tokens, any text under 4.5:1 contrast ([WCAG](https://www.w3.org/WAI/WCAG21/Understanding/contrast-minimum.html)), and any touch target under 44 pt.
    - **A capture command** (Faber) saves a phone-size capture of a named screen or move beside its target as one side-by-side image. That's what makes 3 and 4 cheap.

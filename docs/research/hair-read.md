@@ -28,3 +28,19 @@ The images stay internal (`build/reference/anime-vanguards/`, `build/scratch/mod
   - **B, spiked:** the ends lifted clear, and the crown standing.
   - **C, sleek:** fewer, broader locks lying close.
 - The first spike takes (21:35) are dropped. They kept points 2 to 4 of what was wrong.
+
+## How hair is made for Roblox (2026-11-24, 22:26, on "ur hair is still horrible" and "js study how to make hair on roblox")
+
+From the DevForum's hair tutorials and feedback threads, and the UGC guides (sources below). These are community sources, not Roblox's own; no official hair guide was found.
+- **The locks are curves with a profile.** Each lock is a Bezier path with a bevel profile: a circle at resolution 2 or 3, its points moved to a custom shape. Each end is scaled to 0 (Alt+S) for a point. The locks are converted to mesh, joined (Ctrl+J) and decimated. ([DevForum, part 1](https://devforum.roblox.com/t/how-to-make-hair-in-blender/480098), [part 2](https://devforum.roblox.com/t/how-to-make-ugc-hair-in-blender-28-pt-2/612848))
+- **The budget:** about 4,000 triangles for UGC hair, and a texture of at most 1024 px. 512 is enough for a stylized look. ([UGC guide](https://generalistprogrammer.com/tutorials/how-to-make-and-sell-ugc-on-roblox), [Roblox docs](https://create.roblox.com/docs/art/characters/creating/texturing-setup))
+- **The texture:** a gradient or streaks, with each lock's UV laid the same way, dark at the root and light at the tip, plus a lighter highlight bar. That's what our kit's strips already do.
+- **What made hair read badly** ([feedback thread](https://devforum.roblox.com/t/i-made-anime-hair/881090)): "very flat, the colors are drained and it's not nearly fluffy enough". The fixes offered were curved convex forms and lighter, livelier shading.
+- **The genre's best:** Anime Vanguards' hair, up close, is neither strips nor curves left apart. It's one sculpted surface: a few big forms flowing into one another, creased where they meet, smooth everywhere else. The pro pipeline is sculpt, then retopology, then bake ([80.lv](https://80.lv/articles/how-to-create-a-refined-and-vivid-fantasy-character-with-natural-curly-hair)).
+
+**Our way, headless** (DESIGN, `hair_ways.py`, `Sculpted`):
+- About twenty big forms with a flat lens profile, each drawn to a point (the tutorials' shape).
+- Made one surface by a voxel remesh, after a solidify closes them.
+- Smoothed twice, then cut to 5,000 triangles. That's our cap, not UGC's 4,000: it's a game mesh.
+- The picture: each point's openness to the sky over it, measured by 40 rays. Dark in the creases, light in the open, a band of light on top. The picture is bled past each island's edge so no seam shows.
+- The first test is take S on Rook (`build/scratch/modulo/study/vs3.png`, internal).

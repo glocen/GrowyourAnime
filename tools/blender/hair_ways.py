@@ -16,8 +16,11 @@ import math
 import sys
 from pathlib import Path
 
+import bmesh
+import bpy
 import numpy as np
 from mathutils import Vector
+from mathutils.bvhtree import BVHTree
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import anime_make as am  # noqa: E402
@@ -180,6 +183,139 @@ def kirra(key):
     return h, kirra_tail(h, f)
 
 
+# --- sculpted: a few big forms made one surface ------------------------------------------------------------------------
+
+class Sculpted(Solid):
+    """The director, 2026-11-24, by 22:20, on the study's takes: "ur hair is still horrible". Anime Vanguards' hair is one
+    sculpted surface of a few big forms, smooth, creased where two forms meet, lit broadly. So: a dozen or so big round
+    forms (Solid's), merged into one surface by a voxel remesh, smoothed, cut down to the game's count; its picture
+    painted from its own shape: dark where the surface is shut in (the creases), light where it's open, a band of light."""
+
+    def __init__(self, dark, light, sheen, voxel=0.022, tris=5000, seed=1, band=(0.5, 0.14, 0.5)):
+        super().__init__(dark, light, seed=seed, band=band)
+        self.tones = [np.array(rs.srgb(c)[:3]) for c in (dark, light, sheen)]
+        self.voxel, self.tris = voxel, tris
+
+    def _surface(self, obj):
+        """The forms made one surface: remeshed, smoothed, cut down to about `tris` triangles."""
+        for o in bpy.context.selected_objects:
+            o.select_set(False)
+        bpy.context.view_layer.objects.active = obj
+        obj.select_set(True)
+        for kind, opts in (("SOLIDIFY", dict(thickness=0.06, offset=0.0)),   # the open forms closed, so the voxels fill
+                           ("REMESH", dict(mode="VOXEL", voxel_size=self.voxel, adaptivity=0.0)),
+                           ("SMOOTH", dict(factor=0.5, iterations=2)),
+                           ("DECIMATE", dict(ratio=1.0))):
+            m = obj.modifiers.new(kind, kind)
+            for k, v in opts.items():
+                setattr(m, k, v)
+            if kind == "DECIMATE":
+                m.ratio = min(1.0, self.tris / max(len(obj.data.polygons) * 2, 1))
+            bpy.ops.object.modifier_apply(modifier=m.name)
+
+    def _colours(self, mesh):
+        """Each point's colour: how open it is to the sky over it (40 rays), dark in the creases, light in the open,
+        with the band of light on what faces up."""
+        bm = bmesh.new()
+        bm.from_mesh(mesh)
+        bm.normal_update()
+        tree = BVHTree.FromBMesh(bm)
+        dirs = np.random.default_rng(7).normal(size=(40, 3))
+        dirs = [Vector(d / np.linalg.norm(d)) for d in dirs]
+        dark, light, sheen = self.tones
+        z, wide, strength = self.band
+        out = np.zeros((len(bm.verts), 3), np.float32)
+        for v in bm.verts:
+            nrm, hits, seen = v.normal, 0, 0
+            for d in dirs:
+                if d.dot(nrm) <= 0.05:
+                    continue
+                seen += 1
+                hits += tree.ray_cast(v.co + nrm * 0.004, d, 0.45)[0] is not None
+            t = float(np.clip((1 - hits / max(seen, 1) - 0.35) / 0.6, 0, 1)) ** 1.4
+            c = dark + (light - dark) * t
+            g = strength * math.exp(-((v.co.z - am.CENTRE.z - z) / wide) ** 2) * max(0.0, nrm.z * 0.5 + 0.5) * t
+            out[v.index] = c + (sheen - c) * g
+        bm.free()
+        return out
+
+    def build(self, folder, name="Hair"):
+        mesh = bpy.data.meshes.new(name)
+        self.bm.to_mesh(mesh)
+        self.bm.free()
+        obj = bpy.data.objects.new(name, mesh)
+        bpy.context.scene.collection.objects.link(obj)
+        self._surface(obj)
+        cols = self._colours(obj.data)
+        bpy.ops.object.mode_set(mode="EDIT")
+        bpy.ops.mesh.select_all(action="SELECT")
+        bpy.ops.mesh.quads_convert_to_tris()
+        bpy.ops.uv.smart_project(angle_limit=math.radians(60), island_margin=0.01)
+        bpy.ops.object.mode_set(mode="OBJECT")
+        size = 512
+        px = np.zeros((size, size, 3), np.float32)
+        done = np.zeros((size, size), bool)
+        uvl = obj.data.uv_layers.active.data
+        for poly in obj.data.polygons:   # each triangle painted by its corners' colours, a little past its edges
+            poly.use_smooth = True
+            loops = list(poly.loop_indices)[:3]
+            uv = np.array([uvl[li].uv[:] for li in loops]) * (size - 1)
+            cc = cols[[obj.data.loops[li].vertex_index for li in loops]]
+            x0, y0 = np.floor(uv.min(0)).astype(int) - 1
+            x1, y1 = np.ceil(uv.max(0)).astype(int) + 2
+            xs, ys = np.meshgrid(np.arange(max(x0, 0), min(x1, size)), np.arange(max(y0, 0), min(y1, size)))
+            (ax, ay), (bx, by), (cx, cy) = uv
+            den = (by - cy) * (ax - cx) + (cx - bx) * (ay - cy)
+            if abs(den) < 1e-9 or xs.size == 0:
+                continue
+            w0 = ((by - cy) * (xs - cx) + (cx - bx) * (ys - cy)) / den
+            w1 = ((cy - ay) * (xs - cx) + (ax - cx) * (ys - cy)) / den
+            w = np.stack([w0, w1, 1 - w0 - w1], -1)
+            inside = (w > -0.08).all(-1)
+            if not inside.any():
+                continue
+            w = np.clip(w[inside], 0, 1)
+            px[size - 1 - ys[inside], xs[inside]] = (w / w.sum(-1, keepdims=True)) @ cc
+            done[size - 1 - ys[inside], xs[inside]] = True
+        for _ in range(6):   # each island's colour bled past its edge, so no seam shows where the game filters
+            grow = np.zeros_like(px)
+            count = np.zeros((size, size), np.float32)
+            for dy, dx in ((0, 1), (0, -1), (1, 0), (-1, 0)):
+                m = np.roll(done, (dy, dx), (0, 1))
+                grow += np.roll(px, (dy, dx), (0, 1)) * m[..., None]
+                count += m
+            new = ~done & (count > 0)
+            px[new] = grow[new] / count[new][:, None]
+            done |= new
+        px[~done] = cols.mean(0)
+        px = np.clip(px, 0, 1)
+        px = np.where(px <= 0.0031308, px * 12.92, 1.055 * px ** (1 / 2.4) - 0.055).astype(np.float32)
+        mat = am.textured(name, px, folder)
+        mat.node_tree.nodes["Principled BSDF"].inputs["Roughness"].default_value = 0.8
+        mat.use_backface_culling = True
+        obj.data.materials.append(mat)
+        am.PICTURES[obj.name] = px
+        print(f"sculpted hair: {len(obj.data.polygons)} triangles")
+        return obj
+
+
+def rook_sculpt():
+    h = Sculpted("#030304", "#11131C", "#525C80", seed=8, band=(0.6, 0.16, 0.65))
+    h.shell(am.hairline(front=4.9, temple=4.6, nape=4.2))
+    big = dict(taper=0.95, depth=0.22, rise=0.3)   # a flat lens in section, drawn to a point: the tutorials' profile
+    for a, ph, length, width, heading in ((-38, 18, 1.0, 0.62, -10), (-8, 14, 1.12, 0.7, 6), (24, 16, 1.06, 0.66, 18),
+                                          (52, 26, 0.86, 0.56, 22)):                                 # the fringe, four
+        h.lay(a, ph, length, width, heading=heading, bend=6, off=0.14, flick=14, hold=0.8, **big)
+    for s in (-1, 1):                                                                               # each side, two
+        h.lay(s * 78, 36, 1.0, 0.6, heading=-s * 6, off=0.08, flick=16, hold=0.75, **big)
+        h.lay(s * 112, 44, 0.95, 0.62, off=0.08, flick=26, hold=0.6, **big)
+    for a in (140, 180, 220):                                                                       # the back, three
+        h.lay(a, 50, 0.95, 0.72, off=0.08, flick=34, hold=0.5, **big)
+    for a, length in ((-60, 0.95), (-20, 1.05), (20, 1.0), (60, 0.95)):                         # the top, lifted, out to the back
+        h.lay(a, 30, length, 0.62, off=0.2, flick=40, hold=0.35, comb=BACK, **big)
+    return h
+
+
 # --- the takes: today's bodies, the hair swapped -------------------------------------------------------------------------
 
 def with_hair(module, take, make):
@@ -209,7 +345,8 @@ def tie_loop(tie):
 
 
 WHO_ = {
-    "rook": dict(takes={"Rook": rt.take_a, **{k: with_hair(rt, rt.take_a, lambda k=k: rook(k)) for k in "ABC"}},
+    "rook": dict(takes={"Rook": rt.take_a, **{k: with_hair(rt, rt.take_a, lambda k=k: rook(k)) for k in "ABC"},
+                        "S": with_hair(rt, rt.take_a, rook_sculpt)},
                  today="Today's Rook (AR59's pick)"),
     "kirra": dict(takes={"Kirra": kt.take_a, **{k: with_hair(kt, kt.take_a, lambda k=k: kirra(k)) for k in "ABC"}},
                   today="Today's Kirra (AR60's fix)"),

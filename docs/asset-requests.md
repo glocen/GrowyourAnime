@@ -17456,6 +17456,9 @@ From the latest phone captures: `build/captures/tr50/arc_panel_hard_open.png`, `
   - The palettes differ between frames, at least one lighter than dark glass.
   - The director picks. Then each screen is redone from the frame, worst first.
   - UI art is drawn as SVG and rendered by headless Chrome (item 11c).
+- **The director, 21:26:** "only modulo will keep working and redesign the voidkin + ui it unreadable for players and ugly we need to study" (`docs/decisions.md`). The frame becomes the Voidkin's and the UI's redesign, Modulo's alone tonight.
+  1. **The study first** (`/ga-reference-study`): why shipped anime games' fighters and screens read on a phone and ours don't, measured on our captures beside theirs.
+  2. **Then the targets,** beside the old, at the smallest phone's size, for research's pick in pairs.
 - **Scope:** the whole HUD's and screens' design: materials, shapes, marks, light and screen art; the colours after. Layouts change where a screen's redo needs it, named in its own step. Words: research's sweep (below).
 
 ### Research's sweep: the words (Quaestor, 2026-11-24, 13:49)

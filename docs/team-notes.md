@@ -54,6 +54,7 @@ For Faber:
 
 ### Notices
 
+- **The director, 2026-11-24, 21:26, for everyone:** "only modulo will keep working and redesign the voidkin + ui it unreadable for players and ugly we need to study". Tonight only Modulo works: the study, then the redesign's targets (AR62). Everyone else commits and stops.
 - **The director, 2026-11-24, 20:50 and 20:52, for everyone: target first, verdicts in pairs** (`AGENTS.md`, "Every action, world, effect and screen" and "One style frame"; `docs/decisions.md`, the top rows):
   - Every piece players see starts with two or three targets at final quality, in the game, in at most 3 h. **Research picks every target** in pairs against the director's examples (the director, 21:13: "it js need to be good"); the director judges results in the game. Until the pick, start your next piece.
   - Checkpoints come at a quarter and at half of a cap, beside the target. A miss changes the technique and is never polished. Moves are posed first, stepped.

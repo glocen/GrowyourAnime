@@ -17295,7 +17295,8 @@ From the latest phone captures: `build/captures/tr50/arc_panel_hard_open.png`, `
    - Everything is lit, so nothing reads as the one lit thing.
 2. **The run's card:** the same lavender glass and glowing badges, a gloss streak across the Hard press, and the dare chip in a third material (dark with a gold edge). Three materials on one card. The band is already gone (TR54, 11:31).
 3. **The HUD over the world:** three plate colours across the top (the lead card's violet, Credits' teal, the kW bar's yellow), each with an edge glow that spills. The dock's dark plates with a coloured underline read cleanly.
-4. **The Menu** (Equipment, Voidkin, Today) is the best of what's seen: graphite cards with our own art and one gold edge. It still has one fault: the Today card's gold glow spreads past the card.
+4. **The full screens' top bar** (Voidkin and Equipment), from the director by 13:50: "this left ui is so ugly", then "ugly heart lock". It holds Back, a framed group of a heart, an open padlock and a pencil, the title and two pills. The heart and the padlock are the favourite and lock marks, drawn as stock outline glyphs in a box. They're redrawn in the kit's own make, and the bar is laid out again with the screens.
+5. **The Menu** (Equipment, Voidkin, Today) is the best of what's seen: graphite cards with our own art and one gold edge. It still has one fault: the Today card's gold glow spreads past the card.
 - **The classes, for every screen:**
   1. One material family across all screens. Today there are at least three: Seam's lavender glass, Graphite Dark, and the HUD's coloured plates.
   2. Light stays in its piece (13:37), and only the one thing to press is lit.

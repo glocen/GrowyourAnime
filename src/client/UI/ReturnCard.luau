@@ -1,0 +1,265 @@
+--!strict
+-- ReturnCard (client): the return card (TR53; AR55's look, build/handoff/UI/return/return.json): what the base did while
+-- the player was away, from the save's Base.Card (Rules.Return), a line a change and one press. The server has already
+-- credited it all; the press only shows it and lets the card go ("ReturnSeen"). The kit's System slab and pictures, a
+-- line's well in AR55's cut (Config.Hud.Return.Images).
+--   ReturnCard.Show(card, view, on)   lays it at the HUD's right and rises; one already up is laid again in place
+--   ReturnCard.Hide()                 sinks it
+--   ReturnCard.Up()                   whether it stands
+--   ReturnCard.Parts()                for tests: the card, its lines' words and its press
+
+local Shared = game:GetService("ReplicatedStorage").Shared
+local HudConfig = require(Shared.Config.Hud)
+local UIKit = require(Shared.Config.UIKit)
+local Profile = require(Shared.Data.Profile)
+local Shards = require(Shared.Definitions.Shards)
+local Return = require(Shared.Rules.Return)
+local Collection = require(Shared.Rules.Collection)
+local Hud = require(Shared.Rules.Hud)
+
+local UI = script.Parent
+local Layers = require(UI.Layers)
+local Read = require(UI.Read)
+local Panel = require(UI.Kit.Panel)
+local Button = require(UI.Kit.Button)
+local Glass = require(UI.Kit.Glass)
+local Skin = require(UI.Kit.Skin)
+local Count = require(UI.Kit.Count)
+local Portrait = require(UI.Kit.Portrait)
+
+local ReturnCard = {}
+
+export type On = {
+	Act: (name: string, args: any?) -> { [string]: any },
+	Reveal: () -> (), -- a shard's among the lines: the reveal of the oldest ready
+}
+
+local R = HudConfig.Return
+local SYSTEM = UIKit.Palettes.System
+local FACE_OFFSET, FACE_SIZE = Vector2.new(110, 112), Vector2.new(148, 148) -- a small portrait's face, in its pixels
+local COLOURS = R.Colours :: { [string]: Color3 }
+local GROW = R.Picture.Grow :: { [string]: number }
+
+local holder: CanvasGroup? = nil
+local up = false
+local shown = "" -- the lines it stands with: the same card again is left as it is
+
+local function keyOf(lines: { Return.Line }): string
+	local parts = {}
+	for _, line in lines do
+		table.insert(parts, `{line.Kind}:{line.Count}:{line.Grade or ""}:{line.Id or ""}:{line.Def or ""}`)
+	end
+	return table.concat(parts, "|")
+end
+
+local function plural(n: number, one: string, many: string): string
+	return if n == 1 then one else many
+end
+
+-- A line's gain, counted to `n`, and its word.
+local function format(line: Return.Line): (number) -> string
+	if line.Kind == "Battery" then
+		return function(n: number): string
+			return `+{Read.Kwh(n)} kWh`
+		end
+	elseif line.Kind == "Stones" then
+		return function(n: number): string
+			return `+{math.floor(n + 0.5)}`
+		end
+	elseif line.Kind == "Training" then
+		return function(n: number): string
+			local whole = math.floor(n + 0.5)
+			return `+{whole} {plural(line.Count, "level", "levels")}`
+		end
+	elseif line.Kind == "Full" then
+		return function(_: number): string
+			return "Full"
+		end
+	end
+	return function(_: number): string
+		return `{line.Count} {plural(line.Count, "shard", "shards")}`
+	end
+end
+
+local function word(line: Return.Line, view: Profile.View): string
+	if line.Kind == "Battery" then
+		return "stored"
+	elseif line.Kind == "Full" then
+		return `+{Read.Number(line.Count)} Credits`
+	elseif line.Kind == "Stones" then
+		return `{line.Grade} {plural(line.Count, "stone", "stones")}`
+	elseif line.Kind == "Training" then
+		local owned = if line.Id then view.Voidkin[line.Id] else nil
+		return if owned then Collection.Name(owned) else ""
+	end
+	return "ready"
+end
+
+-- The line's picture in its well, centred at (cx, cy), `side` high.
+local function picture(parent: GuiObject, line: Return.Line, view: Profile.View, cx: number, cy: number, side: number, z: number)
+	if line.Kind == "Battery" or line.Kind == "Full" then
+		Glass.Mark(parent, "Picture", HudConfig.Power.Images.Battery, cx, cy, side, Color3.new(1, 1, 1), z)
+	elseif line.Kind == "Stones" then
+		Skin.Icon(parent, `Stone{line.Grade}`, cx, cy, side, nil, z).Name = "Picture"
+	elseif line.Kind == "Shards" then
+		local def = if line.Def then Shards.ById[line.Def] else nil
+		Skin.Icon(parent, Hud.ShardPicture(if def then def.Grade else "Standard", side, math.huge), cx, cy, side, nil, z).Name = "Picture"
+	elseif line.Kind == "Training" then
+		local owned = if line.Id then view.Voidkin[line.Id] else nil
+		local image = UIKit.Images[(Portrait.Image(if owned then owned.Def else nil, true))]
+		local face = Instance.new("ImageLabel")
+		face.Name = "Picture"
+		face.BackgroundTransparency = 1
+		face.Image = if image then image.Id else ""
+		face.ImageRectOffset, face.ImageRectSize = FACE_OFFSET, FACE_SIZE
+		face.AnchorPoint = Vector2.new(0.5, 0.5)
+		face.Position = UDim2.fromOffset(cx, cy)
+		face.Size = UDim2.fromOffset(side, side)
+		face.ZIndex = z
+		face.Parent = parent
+	end
+end
+
+function ReturnCard.Up(): boolean
+	return up
+end
+
+function ReturnCard.Hide()
+	local was = holder
+	holder, up, shown = nil, false, ""
+	if was then
+		Glass.Ease(was, R.Seconds, function(u: number)
+			was.GroupTransparency = u
+			was.Position = UDim2.new(1, -R.Right, 1, -R.Foot + R.Rise * u)
+		end)
+		task.delay(R.Seconds + 0.05, function()
+			was:Destroy()
+		end)
+	end
+end
+
+function ReturnCard.Show(card: Profile.ReturnCard, view: Profile.View, on: On)
+	local lines = Return.Lines(card)
+	if #lines == 0 then
+		ReturnCard.Hide()
+		return
+	end
+	local key = keyOf(lines)
+	if holder and key == shown then
+		return
+	end
+	local again = holder ~= nil
+	if holder then
+		holder:Destroy()
+	end
+	shown = key
+	local pitch = if #lines >= 5 then R.Five else R.Pitch
+	local w, h = R.Wide, R.Base + #lines * pitch
+	local group = Instance.new("CanvasGroup")
+	group.Name = "ReturnCard"
+	group.BackgroundTransparency = 1
+	group.AnchorPoint = Vector2.new(1, 1)
+	group.Size = UDim2.fromOffset(w, h)
+	group.Position = UDim2.new(1, -R.Right, 1, -R.Foot + (if again then 0 else R.Rise))
+	group.GroupTransparency = if again then 0 else 1
+	group.Parent = Layers.Get("Hud")
+	holder, up = group, true
+	local slab = Panel.new({ Name = "Slab", Palette = "System", Size = UDim2.fromScale(1, 1), Parent = group })
+	Glass.Label(slab, "Head", "While you were away", R.Head.Size, SYSTEM.Soft, R.Head.X, R.Head.Y, w - 2 * R.Head.X, R.Head.Size + 2, Enum.TextXAlignment.Left, false, 6)
+	local seat = pitch - R.Seat.In
+	for index, line in lines do
+		local top = R.Top + (index - 1) * pitch
+		local colour = COLOURS[line.Kind] or SYSTEM.Soft
+		local row = Instance.new("Frame")
+		row.Name = `Line{index}`
+		row.BackgroundTransparency = 1
+		row.Position = UDim2.fromOffset(0, top)
+		row.Size = UDim2.fromOffset(w, pitch)
+		row:SetAttribute("Kind", line.Kind)
+		row.Parent = slab
+		local rule = Instance.new("Frame")
+		rule.Name = "Rule"
+		rule.BorderSizePixel = 0
+		rule.BackgroundColor3 = SYSTEM.Facet
+		rule.BackgroundTransparency = R.Rule.Alpha
+		rule.Position = UDim2.fromOffset(R.Rule.Inset, 0)
+		rule.Size = UDim2.fromOffset(w - 2 * R.Rule.Inset, 1)
+		rule.ZIndex = 6
+		rule.Parent = row
+		local wells = { X = R.Seat.X, Y = R.Seat.Y, Scale = seat / R.Seat.Of }
+		Skin.LayOwn(row, R.Images.ReturnSeat, "Seat", { X = wells.X, Y = wells.Y, Scale = wells.Scale, Z = 6 })
+		Skin.LayOwn(row, R.Images.ReturnSeatLight, "SeatLight", { X = wells.X, Y = wells.Y, Scale = wells.Scale, Tint = colour, Z = 7 })
+		local side = if line.Kind == "Training" then pitch - R.Picture.Face else (pitch - R.Picture.In) * (GROW[line.Kind] or 1)
+		picture(row, line, view, R.Seat.X + seat / 2, R.Seat.Y + seat / 2, side, 9)
+		local gainX = R.Seat.X + seat + R.Gain.Gap
+		local wordWide = w - R.Word.Right - gainX
+		local show = format(line)
+		local gain = Glass.Label(row, "Gain", show(line.Count), R.Gain.Size, SYSTEM.Text, gainX, (pitch - R.Gain.Size) / 2 - 1, wordWide, R.Gain.Size + 2, Enum.TextXAlignment.Left, true, 9)
+		Glass.Label(row, "Word", word(line, view), R.Word.Size, SYSTEM.Soft, gainX, (pitch - R.Word.Size) / 2 - 1, wordWide, R.Word.Size + 2, Enum.TextXAlignment.Right, false, 9)
+		local counts = line.Kind == "Battery" or line.Kind == "Stones" or line.Kind == "Training"
+		if counts and not again then
+			gain.Text = show(0)
+			task.delay(R.Seconds + (index - 1) * R.After, function()
+				if gain.Parent then
+					Count.Run(gain, 0, line.Count, show)
+				end
+			end)
+		end
+	end
+	local reveal = lines[#lines].Kind == "Shards"
+	local P = R.Press
+	local pressed = false
+	Button.new({
+		Name = "Press",
+		Text = if reveal then "Reveal" else "Collect",
+		Size = UDim2.fromOffset(w - 2 * P.Inset, P.Tall),
+		Position = UDim2.fromOffset(P.Inset, h - P.Over),
+		Palette = "System",
+		Primary = not reveal,
+		Lit = reveal or nil,
+		Light = if reveal then HudConfig.Make.Light.Ready else nil,
+		TextSize = P.Size,
+		Parent = slab,
+		OnPress = function()
+			if pressed then
+				return
+			end
+			pressed = true
+			local answer = on.Act("ReturnSeen")
+			pressed = false
+			-- Already seen (another press, another device): it goes all the same.
+			if answer.Ok == true or answer.Error == Return.NoCard then
+				if holder == group then
+					ReturnCard.Hide()
+				end
+				if reveal then
+					on.Reveal()
+				end
+			end
+		end,
+	})
+	if not again then
+		Glass.Ease(group, R.Seconds, function(u: number)
+			group.GroupTransparency = 1 - u
+			group.Position = UDim2.new(1, -R.Right, 1, -R.Foot + R.Rise * (1 - u))
+		end)
+	end
+end
+
+function ReturnCard.Parts(): { Card: CanvasGroup?, Lines: { { Kind: string, Gain: string, Word: string } }, Press: TextButton? }
+	local lines = {}
+	local slab = if holder then holder:FindFirstChild("Slab") else nil
+	if slab then
+		for index = 1, 5 do
+			local row = slab:FindFirstChild(`Line{index}`)
+			if row == nil then
+				break
+			end
+			local gain, said = row:FindFirstChild("Gain") :: TextLabel?, row:FindFirstChild("Word") :: TextLabel?
+			table.insert(lines, { Kind = row:GetAttribute("Kind") :: string, Gain = if gain then gain.Text else "", Word = if said then said.Text else "" })
+		end
+	end
+	return { Card = holder, Lines = lines, Press = if slab then slab:FindFirstChild("Press") :: TextButton? else nil }
+end
+
+return ReturnCard

@@ -40,7 +40,9 @@ local Growth = require(Shared.Rules.Growth)
 local Hud = require(Shared.Rules.Hud)
 local Stats = require(Shared.Rules.Stats)
 local Home = require(Shared.Rules.Home)
+local Return = require(Shared.Rules.Return)
 local Markers = require(Shared.World.Markers)
+local PlaceRole = require(Shared.Util.PlaceRole)
 local Net = require(Shared.Net)
 local UI = script.Parent.Parent.Parent.UI
 local Theme = require(UI.Theme)
@@ -65,6 +67,7 @@ local Dock = require(UI.Dock)
 local HomePanel = require(UI.HomePanel)
 local TodayList = require(UI.TodayList)
 local BossBar = require(UI.BossBar)
+local ReturnCard = require(UI.ReturnCard)
 local Screen = require(UI.Kit.Screen)
 local Toast = require(UI.Kit.Toast)
 local Pop = require(UI.Kit.Pop)
@@ -917,8 +920,9 @@ local function showChip(view: Profile.View)
 	-- nothing in a keeper's try: the fight has the screen
 	local step = if player:GetAttribute("Try") ~= nil then nil else Hud.NextStep(stepState(view))
 	shownStep = step
-	-- Home's panel stands where the chip does: it steps out while the panel is open (AR43, AR49).
-	chip.Visible = step ~= nil and not (homePanel ~= nil and HomePanel.Shown(homePanel))
+	-- Home's panel stands where the chip does: it steps out while the panel is open (AR43, AR49), and waits while the
+	-- return card is up (TR53).
+	chip.Visible = step ~= nil and not (homePanel ~= nil and HomePanel.Shown(homePanel)) and not ReturnCard.Up()
 	if step then
 		chipText.Text = step.Line
 	end
@@ -967,8 +971,51 @@ local function notice(old: Profile.View?, new: Profile.View)
 	end
 end
 
+-- The return card (TR53; UI.ReturnCard): what the base did while the player was away, at the base only, out of a
+-- keeper's try, risen once the join's black has lifted (Config.Hud.Return.Wait after it), so it's seen arriving.
+local returnOn: ReturnCard.On = {
+	Act = function(name: string, args: any?): { [string]: any }
+		local answer = ProfileController.Act(name, args)
+		if answer.Ok ~= true and answer.Error ~= Return.NoCard then
+			Toast.Show("That didn't go through. Try again.", Theme.Colour.TextDim)
+		end
+		return answer
+	end,
+	Reveal = function()
+		HudController.OpenShard()
+	end,
+}
+local returnWaits = false
+local function showReturn(view: Profile.View)
+	local card = if PlaceRole.Is("Main") and player:GetAttribute("Try") == nil then view.Base.Card else nil
+	if card == nil then
+		ReturnCard.Hide()
+		return
+	end
+	if FadeController.Opened() == nil then
+		if not returnWaits then
+			returnWaits = true
+			task.spawn(function()
+				while FadeController.Opened() == nil do
+					RunService.RenderStepped:Wait()
+				end
+				task.wait(HudConfig.Return.Wait)
+				returnWaits = false
+				local now = ProfileController.Get()
+				if now then
+					showReturn(now)
+					showChip(now)
+				end
+			end)
+		end
+		return
+	end
+	ReturnCard.Show(card, view, returnOn)
+end
+
 local function showView(view: Profile.View)
 	Count.Show(credits, view.Currency.Credits, Read.Number) -- a count under way heads there
+	showReturn(view)
 	showChip(view)
 	showLead(view)
 	TodayList.View(homePanel, view)
@@ -1354,6 +1401,9 @@ end
 HudController.OpenBase = function() end
 -- Opens the base's command view (TR21's blockout): BaseController's, set by it at Start.
 HudController.OpenView = function() end
+-- Opens the oldest ready shard, its reveal on the server's yes: BaseController's, set by it at Start (the return
+-- card's Reveal, TR53).
+HudController.OpenShard = function() end
 -- The dock's Play tile: the Play panel, a card a mode (ModeController sets it; the director, 2026-11-24).
 HudController.OpenPlay = function() end
 

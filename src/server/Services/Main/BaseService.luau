@@ -708,6 +708,45 @@ local function registerDebug()
 			return { Ok = true, Held = held }
 		end)
 	end)
+	-- Studio only. The return card set as `card` says (TR53's cases lay each line and put the card back), nil for none.
+	-- What it shows is never credited: the arrival credits, and this stands in for one. `card`'s parts left out are none.
+	DebugService.Register("ReturnCardSet", function(who: any, card: any): any
+		local player = DebugService.ResolvePlayer(who)
+		if not player or (card ~= nil and type(card) ~= "table") then
+			return { Ok = false, Error = "BadArgs" }
+		end
+		local function counts(from: any): { [string]: number }
+			local out = {}
+			for key, n in (if type(from) == "table" then from else {}) do
+				if type(key) == "string" and type(n) == "number" and n > 0 then
+					out[key] = n
+				end
+			end
+			return out
+		end
+		return DataService.Change(player, "ReturnCardSet", function(draft: Profile.Data): { [string]: any }
+			local was = draft.Base.Card
+			if card == nil then
+				draft.Base.Card = nil
+			else
+				local shards = {}
+				for _, def in (if type(card.Shards) == "table" then card.Shards else {}) do
+					if type(def) == "string" and Shards.ById[def] then
+						table.insert(shards, def)
+					end
+				end
+				draft.Base.Card = {
+					Kwh = if type(card.Kwh) == "number" then card.Kwh else 0,
+					Full = card.Full == true,
+					Credits = if type(card.Credits) == "number" then card.Credits else 0,
+					Stones = counts(card.Stones),
+					Trained = counts(card.Trained),
+					Shards = shards,
+				}
+			end
+			return { Ok = true, Was = was, Lines = #Return.Lines(draft.Base.Card) }
+		end)
+	end)
 end
 
 function BaseService.Init()

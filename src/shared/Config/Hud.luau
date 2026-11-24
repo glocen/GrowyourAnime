@@ -1493,4 +1493,40 @@ return {
 		CoinOff = 0.5, -- an off Buy's coin, dimmed with its price
 		Chip = { Wide = 196, Tall = 30 }, -- as wide as its words once shown
 	},
+	-- The return card (TR53; AR55's look, build/handoff/UI/return/return.json, in its points): what the base did while
+	-- the player was away, on the System slab at the HUD's right, Right in from its side and Foot over its bottom, grown
+	-- up from its foot: Head, then a line a change at Pitch (Five's with five lines), then the press. A line: its rule,
+	-- its well Seat from the line's top at (Seat.X, Seat.Y) and pitch - Seat.In across, lit in its machine's Colours, its
+	-- picture inside at (pitch - Picture.In) x its Grow (a Voidkin's face pitch - Face, the well inset 2), the gain at
+	-- Gain, the word Word in from the slab's right.
+	-- The block's motion: Wait after the join's black lifts, Rise points up and in over Seconds, each line's count After
+	-- apart.
+	Return = {
+		Wide = 188, Right = 8, Foot = 6, Base = 78,
+		Pitch = 26, Five = 21,
+		Head = { X = 10, Y = 7, Size = 14 },
+		Top = 26,
+		Rule = { Inset = 8, Alpha = 0.78 },
+		Seat = { X = 9, Y = 2, In = 4, Of = 22 }, -- the well's images drawn at (pitch - In) / Of
+		Picture = { In = 9, Face = 8, Grow = { Battery = 1, Full = 1, Stones = 1.15, Training = 1, Shards = 1.2 } },
+		Colours = {
+			Battery = Color3.fromHex("#FFE266"),
+			Full = Color3.fromHex("#FFE266"),
+			Stones = Color3.fromHex("#FF8FAE"),
+			Training = Color3.fromHex("#4FD1FF"),
+			Shards = Color3.fromHex("#E6ECF7"),
+		},
+		Gain = { Gap = 7, Size = 17 },
+		Word = { Right = 11, Size = 14 },
+		Press = { Inset = 8, Over = 50, Tall = 44, Size = 17 },
+		Wait = 0.6, Rise = 16, Seconds = 0.3, After = 0.08,
+		-- AR55's cut (build/handoff/UI/return/images/), under the group (2026-11-24): a line's well and its light, white
+		-- for its machine's colour, laid at (Seat.X, Seat.Y), Pad its origin; the Ready tab's glow, centred, its Pad the
+		-- middle. The lights take only Colours' tints (the content check's condition).
+		Images = {
+			ReturnSeat = { Id = "rbxassetid://131404796096136", Pixels = Vector2.new(120, 120), Points = Vector2.new(30, 30), Pad = 4 },
+			ReturnSeatLight = { Id = "rbxassetid://130816354357927", Pixels = Vector2.new(120, 120), Points = Vector2.new(30, 30), Pad = 4 },
+			ReturnGlow = { Id = "rbxassetid://106910986651502", Pixels = Vector2.new(144, 144), Points = Vector2.new(36, 36), Pad = 18 },
+		} :: { [string]: UIKit.Image },
+	},
 }

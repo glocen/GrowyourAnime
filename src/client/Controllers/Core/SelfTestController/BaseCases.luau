@@ -52,7 +52,11 @@ local Layers = require(UI.Layers)
 local Theme = require(UI.Theme)
 local Screen = require(UI.Kit.Screen)
 local EquipmentScreen = require(UI.EquipmentScreen)
+local ReturnCard = require(UI.ReturnCard)
+local Read = require(UI.Read)
+local Button = require(UI.Kit.Button)
 local World = require(UI.World)
+local Helpers = require(script.Parent.Helpers)
 
 -- The base's machine plates by name, beside "Bay1" to "Bay6" (BaseController.Parts).
 local PLATES = { Breaker = true, Battery = true, Training = true, Generator = true }
@@ -1825,6 +1829,115 @@ function BaseCases.Cases(given: Given): { any }
 				end
 				t.Server("BaseLevel", levelWas)
 				step:Destroy()
+			end,
+		},
+		{
+			Name = "Base: the return card (TR53, AR55): the save's card in its lines, in research's words and order, at the HUD's right under the Electricity pill, the next step waiting while it's up, on the smallest phone too; Reveal with a shard, else Collect, which lets it go",
+			Place = "Main", -- the card is the base's
+			Run = function(t: any)
+				local view = ProfileController.Get()
+				t.Check("a save", view ~= nil)
+				if view == nil then
+					return
+				end
+				local lead = view.Roles.Lead
+				local owned = view.Voidkin[lead]
+				local kept = view.Base.Card -- put back at the end
+				local R = HudConfig.Return
+				local function press(): (TextButton?, string)
+					local button = ReturnCard.Parts().Press
+					local label = if button then button:FindFirstChild("Label") :: TextLabel? else nil
+					return button, if label then label.Text else ""
+				end
+				local function fits(where: string)
+					local card = ReturnCard.Parts().Card
+					local root = Layers.Get("Hud")
+					local pill = HudController.Parts().Electricity
+					local pillFoot = if pill and pill.Parent and pill.Parent:IsA("GuiObject") then pill.Parent.AbsolutePosition.Y + pill.Parent.AbsoluteSize.Y else math.huge
+					if card == nil then
+						t.Check(`{where}: the card stands`, false)
+						return
+					end
+					local top, foot = card.AbsolutePosition.Y, card.AbsolutePosition.Y + card.AbsoluteSize.Y
+					local right = card.AbsolutePosition.X + card.AbsoluteSize.X
+					local edge = root.AbsolutePosition.X + root.AbsoluteSize.X
+					local bottom = root.AbsolutePosition.Y + root.AbsoluteSize.Y
+					local scale = Layers.Scale()
+					t.Check(`{where}: under the Electricity pill`, top >= pillFoot - 0.5, `top {math.floor(top)}, the pill's foot {math.floor(pillFoot)}`)
+					t.Check(`{where}: {R.Right} in from the HUD's right and {R.Foot} over its foot`, math.abs(edge - right - R.Right * scale) < 1 and math.abs(bottom - foot - R.Foot * scale) < 1, `{math.floor((edge - right) / scale + 0.5)}, {math.floor((bottom - foot) / scale + 0.5)}`)
+					t.Check(`{where}: the next step waits while it's up`, HudController.Parts().Chip.Visible == false)
+				end
+				local ok, err = pcall(function()
+					local set = t.Server("ReturnCardSet", {
+						Kwh = 12.4,
+						Stones = { Low = 6, Mid = 1 },
+						Trained = if owned then { [lead] = 2 } else {},
+						Shards = { "lanternrow_standard" },
+					})
+					local count = if owned then 5 else 4
+					t.Check("the server sets a card of every line", type(set) == "table" and set.Ok == true and set.Lines == count, if type(set) == "table" then `{set.Lines} lines` else "no answer")
+					local want = {
+						{ Kind = "Battery", Gain = `+{Read.Kwh(12.4)} kWh`, Word = "stored" },
+						{ Kind = "Stones", Gain = "+6", Word = "Low stones" },
+						{ Kind = "Stones", Gain = "+1", Word = "Mid stone" },
+					}
+					if owned then
+						table.insert(want, { Kind = "Training", Gain = "+2 levels", Word = Collection.Name(owned) })
+					end
+					table.insert(want, { Kind = "Shards", Gain = "1 shard", Word = "ready" })
+					local function shown(): string
+						local out = {}
+						for _, line in ReturnCard.Parts().Lines do
+							table.insert(out, `{line.Kind} {line.Gain} / {line.Word}`)
+						end
+						return table.concat(out, "; ")
+					end
+					local function matches(): boolean
+						local lines = ReturnCard.Parts().Lines
+						if #lines ~= #want then
+							return false
+						end
+						for index, line in want do
+							local got = lines[index]
+							if got.Kind ~= line.Kind or got.Gain ~= line.Gain or got.Word ~= line.Word then
+								return false
+							end
+						end
+						return true
+					end
+					t.Check("it rises, and its counts land on the save's card, in order", Helpers.waitFor(t, ANSWER + R.Seconds + #want * R.After + HudConfig.Motion.Count.Latest, matches), shown())
+					local card = ReturnCard.Parts().Card
+					local head = if card then card:FindFirstChild("Head", true) :: TextLabel? else nil
+					t.Check("its head says where the player was", head ~= nil and head.Text == "While you were away")
+					local _, word = press()
+					t.Check("with a shard among them its press reveals", word == "Reveal", word)
+					fits("this window")
+					Helpers.lintClean(t, "this window, the return card up")
+					Layers.Force(Theme.Scale.Floor)
+					Layers.Box(Theme.Smallest - Vector2.new(0, GuiService.TopbarInset.Height))
+					t.Wait(0.2)
+					fits("the smallest phone")
+					Helpers.lintClean(t, "the smallest phone, the return card up")
+					Layers.Box(nil)
+					Layers.Force(nil)
+					-- Without a shard: Collect, and the press lets it go, on the server's word.
+					t.Server("ReturnCardSet", { Kwh = 3 })
+					t.Check("a card without a shard collects", Helpers.waitFor(t, ANSWER, function(): boolean
+						local _, now = press()
+						return now == "Collect" and #ReturnCard.Parts().Lines == 1
+					end), select(2, press()))
+					local button = press()
+					t.Check("Collect lets it go, on the server's word", button ~= nil and Button.Press(button) and Helpers.waitFor(t, ANSWER, function(): boolean
+						local now = ProfileController.Get()
+						return not ReturnCard.Up() and now ~= nil and now.Base.Card == nil
+					end))
+				end)
+				Layers.Box(nil)
+				Layers.Force(nil)
+				t.Server("ReturnCardSet", kept)
+				if not ok then
+					error(err, 0)
+				end
 			end,
 		},
 	}

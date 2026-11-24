@@ -1519,6 +1519,7 @@ end
 function BaseController.Start()
 	HudController.OpenBase = BaseController.Open
 	HudController.OpenView = BaseController.OpenView
+	HudController.OpenShard = BaseController.OpenShard
 	CollectionService:GetInstanceAddedSignal(Kit.Tag):Connect(function(item: Instance)
 		watchTurning(item)
 		watchRam(item)

@@ -31,6 +31,6 @@ A full-screen menu that replaces the HUD while it's open. The 3D world stays vis
 The video's flow is Home's featured card → Destinations (list + hero) → go. Our Play should work the same way: a **mode panel** with one large image card per mode, its title on a gradient, one line of what it is, and one primary button.
 - Festival of Battles first; pressing it opens today's Arc panel.
 - The Tower second, with its record.
-- Locked future modes as teasers.
+- No teaser card for a mode that doesn't exist yet: "never a placeholder" holds. A mode that exists but is shut shows its lock and its real condition, which is the video's "Uncharted" idea applied honestly (`menu-layout-and-motion.md`).
 
 The director asked for exactly this on 11-19 ("when we click on it it show a panels of gamemode"). The register recorded the opposite (`docs/decisions.md`, the 2026-11-19 23:19 row, part 3), and TR50 built Play straight to the Arc panel. The correction and the build-ready entry are in `play-mode-panel.md`.

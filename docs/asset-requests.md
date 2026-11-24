@@ -17278,3 +17278,40 @@ Scintilla's first piece, on the director's order of 2026-11-23 ("Shared kit firs
 - **The content check, 2026-11-24, on the spec: PASS**, with four conditions. (1) The needles stay thin, straight, tapered light lines, never a round or drop head, never dark or red-to-maroon, never longer-lived or less dragged so they arc or land; their fall is now 0. (2) At the capture, each rung read at 64 px from the player's camera, side and three-quarter headings: the needles read as light leaving the flash, not something out of the target's back; if not, shorten their throw or fan them round the contact. (3) The flash guard measured on the capture (the near-white share, bright floor, closest camera, each rung, rung 4's light above all); over about 3% with hits faster than 3 a second, the backlight and light hold rather than re-flash. (4) The finish colours inside the kit's conditions. The capture gets its own content check before the piece closes.
 - **Blocked:** Scintilla's Studio playtests wait on the director's item 10 (the hooks); the rows show in the game only once Faber's hook is in.
 - **Status, 2026-11-24, 10:48:** implemented as data, not shown in the game. Tested: offline logic only. Visually reviewed: no. Director-accepted: no. **For Faber's review:** the three rows files and `tools/fx/hit_sparks.py`.
+
+## AR62. The screens' redo: their colours, their light and their art (research's audit, then Modulo's directions, then Faber, a screen at a time)
+
+**Why:** the director, 2026-11-24, 13:35, on a still of the Arc panel: "that lantern drawing is so bad and the rest is just a pain in the eye many hud design will need a big polish and change of colors"; and 13:37: "let not add those shiny bright effect that goes outside the ui buttons" (the register; `docs/ui.md`, rule 5, "Light stays in its piece"). The sixth time the colour has been called too much. It's a redo under the 11:11 word: blockouts beside the old, research's verdict in the game, the old kept.
+
+### Research's audit: the look, worst first (Quaestor, 2026-11-24, 13:38)
+
+From the latest phone captures: `build/captures/tr50/arc_panel_hard_open.png`, `tr54/card_win.png`, `tr54/home.png`, `ar49/phone_open.png`, `ar57/` (the HUD over the street). The screens with no capture since 11-19 are read from Faber's capture pass (below).
+1. **The Arc panel**, the worst.
+   - The drawn lantern stands for a place and is rejected.
+   - Its body is lavender glass, and its badges glow lavender past their edges.
+   - Hard's tile repeats its chevron on each of its four badges and its title, five in one row.
+   - The Fight press's coral glow and an orange haze spill below the panel.
+   - "Recommended" is grey on lavender and hard to read.
+   - Everything is lit, so nothing reads as the one lit thing.
+2. **The run's card:** the same lavender glass and glowing badges, a gloss streak across the Hard press, and the dare chip in a third material (dark with a gold edge). Three materials on one card. The band is already gone (TR54, 11:31).
+3. **The HUD over the world:** three plate colours across the top (the lead card's violet, Credits' teal, the kW bar's yellow), each with an edge glow that spills. The dock's dark plates with a coloured underline read cleanly.
+4. **The Menu** (Equipment, Voidkin, Today) is the best of what's seen: graphite cards with our own art and one gold edge. It still has one fault: the Today card's gold glow spreads past the card.
+- **The classes, for every screen:**
+  1. One material family across all screens. Today there are at least three: Seam's lavender glass, Graphite Dark, and the HUD's coloured plates.
+  2. Light stays in its piece (13:37), and only the one thing to press is lit.
+  3. Violet only on what's alive or for sale, never a panel's body.
+  4. A screen's picture of a place, a foe or a Voidkin is our own render of our own world or model, never a flat drawn icon standing for it.
+- **Out of this piece, for the world's own colour:** the Festival square's paving reads lavender by day and night (AR57's stills). The screens are judged over it as it is.
+
+### The plan
+
+1. **Faber, at his next Studio turn:** one capture of every screen in its main state at phone size (852 x 480), by day, saved to `build/captures/ar62/before/`. That covers the HUD, the dock, the Menu and its three cards, the Voidkin screen, Equipment, the Breaker, the Void Shop, the reveal, the Arc panel, the run's card (win and fall), Today, Settings, and any toast.
+2. **Modulo, after Pip:** a blockout of two or three colour directions, each on the same two screens (the Arc panel and the run's card), beside today's, at phone size over the street by day and by night. Rough, no polish.
+   - Each direction names its body, edge, ink and its one accent, and where light lives.
+   - At least one is lighter than dark glass.
+   - The Menu's graphite and gold is the best we have today and may be one of them.
+   - The Lantern Row tile's picture is our own render of the street with its keeper, in the same sheet.
+   - The kit's look is Modulo's to draw (D, 2026-11-16).
+3. **Research's verdict** picks the direction. The director sees it on their return and can overrule.
+4. **Then each screen,** worst first, as Modulo's kit and Faber's install, each beside the old.
+- **Scope:** colours, light, materials and screen art. Layouts change only where a screen's redo needs it, named in its own step. Words: research's sweep (below).

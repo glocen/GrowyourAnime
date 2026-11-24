@@ -17333,6 +17333,25 @@ Scintilla's first piece, on the director's order of 2026-11-23 ("Shared kit firs
 
 **Why:** the director, 2026-11-24, 13:35, on a still of the Arc panel: "that lantern drawing is so bad and the rest is just a pain in the eye many hud design will need a big polish and change of colors"; and 13:37: "let not add those shiny bright effect that goes outside the ui buttons" (the register; `docs/ui.md`, rule 5, "Light stays in its piece"). The sixth time the colour has been called too much. It's a redo under the 11:11 word: blockouts beside the old, research's verdict in the game, the old kept.
 
+### The style frame first (the director, 2026-11-24, 20:50)
+
+The director said yes to research's restatement. AR62 becomes one style frame before any more UI or Voidkin work, and every later screen and Voidkin derives from it (`docs/decisions.md`, the top row; `AGENTS.md`, "target first, verdicts in pairs"). The audit below is its input.
+- **Feel line** (research's reading of the accepted examples; the director's pick decides): on a phone, Home with one Voidkin on it reads as one game, mature and composed. It's dark and quiet with one strong accent, and the Voidkin is the brightest, most finished thing on the screen.
+- **What the frame shows:**
+  - Home at a phone's size, from a real capture (`build/captures/tr54/home.png` is the latest);
+  - one Voidkin in the game's light on Home's stand: Rook, the director's accepted direction (`docs/decisions.md`, 2026-11-24, about 01:47), with his hair made AR64's new way;
+  - the tokens beside it: three hues and neutrals, two fonts, one type scale, two or three stroke widths and corner radii, and one material family for the Voidkin and the world;
+  - the same frame in greyscale.
+- **The takes:** two or three frames at final quality, made in about a day (Modulo, with research's audit below and `docs/research/examples.md`). **The director picks one.**
+- **Checkpoints:** at a quarter and at half of the day, the takes sit beside the accepted examples (the graphite UI, the seam's rail, the galaxy Breaker; Watt's take A beside the genre's hits) and the rejected ones (the lantern drawing, the Mask Ledger, the slot marks).
+- **What waits** (research's reading, on the Now board for the director to correct):
+  - AR63 (Pip) and AR64 beyond Rook wait for the pick.
+  - Each screen's redo below follows the picked frame, a screen at a time, as before.
+- **After the pick:**
+  - Faber writes the tokens into `src/client/UI/Theme.luau`, and the lint checks them (TR63).
+  - `docs/ui.md` gets the tokens' page.
+  - Research adds the frame to `docs/research/examples.md` as the accepted example for screens and Voidkin.
+
 ### Research's audit: the look, worst first (Quaestor, 2026-11-24, 13:38)
 
 From the latest phone captures: `build/captures/tr50/arc_panel_hard_open.png`, `tr54/card_win.png`, `tr54/home.png`, `ar49/phone_open.png`, `ar57/` (the HUD over the street). The screens with no capture since 11-19 are read from Faber's capture pass (below).

@@ -44,7 +44,9 @@ They stay general: one piece's calls live in its own home, never in a supreme ru
 - **Disagree out loud** (the directive, sections 2 and 23). Any teammate challenges an idea it thinks is weak, the director's and research's included, and these rules too. Say what's wrong, why it matters, the evidence, the better alternative, and what that alternative costs. When it's unsure, propose a small experiment. Proposing a change isn't permission to make it: an established decision changes only by the director's word.
 - **A small excellent game first** (sections 1 and 17). The loop is proven with little content before any system grows. A candidate in the directive isn't a commitment.
 - **Explore fast, finish slow.** Before anything players see is built for real, find its best direction cheaply: a sketch, a blockout with stand-ins, judged in motion from the player's camera, in hours. Throwaway work is never polished. Once a direction is chosen, finish it at the bar. Save tokens by reading less and exploring before polishing, never by thinking or doing less.
-- **Blocks first, the finish once.** An ordinary action goes into the game as a playable block within about 90 minutes, and may stand in the dev build until one shared finish. Caps: a block clip 1 hour, an effect 2 hours. A block that misses its cap is simplified or replaced. Signature pieces and hard problems get the time they need, named at the feel line. "Never a placeholder" holds for every public build.
+- **Blocks first, the finish once.** An ordinary action goes into the game as a playable block within about 90 minutes, and may stand in the dev build until one shared finish. Caps: a block clip 1 hour, an effect 2 hours. A block that misses its cap is simplified or replaced.
+  - **Checkpoints:** at a quarter and at half of a cap, the build sits beside its target. A miss on the main read changes the technique or simplifies, and is never polished. After two techniques miss, the director picks from images.
+  - Signature pieces and hard problems get the time they need, named at the feel line. "Never a placeholder" holds for every public build.
 - **One piece at a time.** Finish and verify each before the next. No half-built pieces. Blocked, a maker starts its next queued piece at once.
 - **Directions hold, unless a redo is clearly better.** Once picked, by the director or at a blockout's verdict, a direction stays, and a new idea during a piece goes to `docs/polish-later.md`. The ways back: the director's word, the two-rounds line, or a clearly better redo (next line).
 - **Overhaul what's clearly better** (the director, 2026-11-24, 11:11). Any teammate may redo an existing system, design, look or code, even one that took work or a picked direction, when the redo is clearly better, above all visually and in design. Bugs are fixed at once.
@@ -66,7 +68,20 @@ They stay general: one piece's calls live in its own home, never in a supreme ru
   - **Tier 2, research and each area touched,** dated in the piece's home: a new mechanic or ability, a number that changes balance, a new asset players see that nothing covers, anything another teammate must build.
   - **Tier 3, the director:** the core, reversing a director's decision, the game's identity, economy or scope, spending, accounts, rule 4's doubts, monetization, the go for a new phase.
   - Technical calls in a teammate's own area stay its own.
-- **Every action, world, effect and screen:** a **feel line** (one sentence: who does what, how it feels, from the player's camera) → a cheap **blockout** judged in motion (research's verdict; the director's pick when present) → the build → review from the player's camera. Minor assets skip the blockout. A new idea starts a new blockout, never a patch. Actions: the `ga-action` skill. Verdicts: the `ga-review` skill.
+- **Every action, world, effect, screen and model: target first, verdicts in pairs** (the director, 2026-11-24, 20:50):
+  - **A feel line:** one sentence: who does what, how it feels, from the player's camera.
+  - **A target, picked by the director.** The maker brings two or three images at final quality, in the game, made in at most 3 hours. **The director picks one** before a build hour starts. Until the pick, the maker starts its next piece.
+    - A screen: a paint-over on a phone capture.
+    - A move: its key poses, stepped, from the game's camera.
+    - An effect: its peak frame and a strip of its life.
+    - A model: a turnaround in the game's light, beside the cast.
+  - **The build,** with checkpoints beside the target ("Blocks first").
+  - **The review, in pairs:**
+    - the measured gates;
+    - then the build beside its target, from the player's camera;
+    - then beside the director's accepted and rejected examples (`docs/research/examples.md`).
+    - Nothing passes as "competent" on research's eye alone, and only the director's word accepts a look.
+  - Minor assets skip the target, and a sound keeps the director's ear on its frame. A new idea starts a new target, never a patch. Actions: the `ga-action` skill. Verdicts: the `ga-review` skill.
 - **Scope at the feel line.** A piece's entry names what the block contains and what waits. Nothing joins a piece after it.
 - **When unsure how something should work,** research first, and label findings by evidence. Never present a guess as a measurement, or a simulation as a prediction of what players will do.
 - **Report four facts separately:** implemented, tested, visually reviewed (research's pass included), director-accepted. Silence is not acceptance.

@@ -2,6 +2,8 @@
 
 Research (Quaestor), 2026-11-24, evening, from the cloud, on the director's words: "i want you to discover shortcut, learn stuff that make us be more productive while making the quality higher cause we had to iterate on so many stuff yet it still ugly", then "not only ui everything … not waste time thinking we are doing something premium for it to turn into a big pile of shit like that 20 hours making a horrendous looking dodge on umbra vesper".
 
+**Adopted:** the director said yes on 2026-11-24, 20:50 to changes 1 to 5, and to 6 with Edge tried before any install (`docs/decisions.md`, the top row). They're written into `AGENTS.md`, `ga-review`, `ga-action` and `ga-fresh-eyes`, into AR62 (the style frame) and TR63 (Faber's tools).
+
 Labels: OBSERVED (in our records), SOURCED (link), OPINION (research's). A = `docs/asset-requests.md`, D = `docs/decisions.md`.
 
 ## What went wrong (OBSERVED)
@@ -76,7 +78,7 @@ Seven changes, each with what it replaces:
      - What it didn't do (OPINION): the pieces look tidy but generic. The technique buys speed and consistency, not taste: the look still comes from 1 and 2.
      - Script and renders: `build/scratch/quaestor/svg-test/` (gitignored, throwaway).
 7. **Machines check what eyes tire of.**
-   - **A UI lint** (Faber, one self-test) fails any colour, stroke, radius, font, size or padding outside the tokens, any text under 4.5:1 contrast ([WCAG](https://www.w3.org/WAI/WCAG21/Understanding/contrast-minimum.html)), and any touch target under 44 pt.
+   - **The UI lint grows** (Faber). `SelfTestController/UiLint.luau` already checks fit, text size, touch size, safe areas and overlap. It gains text under 4.5:1 contrast ([WCAG](https://www.w3.org/WAI/WCAG21/Understanding/contrast-minimum.html)), and any colour, stroke or radius outside the style frame's tokens.
    - **The pair sheet** (Faber). The capture already exists: `tools/capture/grab.ps1` records the window, and `tools/capture/moments.py` lays a take out as a sheet. What's missing is one step after it: the build and its target at phone size in both orders, with a blurred (squint) row and a greyscale row under them, as one image. That's what makes 3 and 4 cheap.
 
 ## What it costs, and what it saves (OPINION)

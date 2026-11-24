@@ -10,7 +10,7 @@ What's next, in order. The game is in `docs/north-star.md`, its systems in `docs
 
 - The rules: `AGENTS.md`. A piece is a request entry: `docs/test-requests.md` for the builder and QA, `docs/asset-requests.md` for the asset maker.
 - **Lighter:** one write per piece, one home per fact, no document that isn't a rule, a design, a request or the board.
-- **Quality:** every piece players see goes feel line, blockout, build, review from the player's camera. Research's verdict closes it.
+- **Quality:** every piece players see goes feel line, then a target the director picks, then the build with checkpoints beside the target, then review in pairs from the player's camera (`AGENTS.md`, "target first, verdicts in pairs", 2026-11-24). The director's word accepts a look.
 - **Numbers** live in the seeds, then in the game's Definitions, and are tuned by playing with them exposed at runtime.
 - LYNX runs one experiment at a time, between pieces: `handbook/studio/lynx.md`.
 

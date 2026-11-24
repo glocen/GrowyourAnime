@@ -99,4 +99,4 @@ About twenty characters, passed through Roblox's text filter before anyone else 
 
 ## Reviews
 
-Each screen gets research's verdict from a real phone-sized capture (`/ga-review`), then the director's eye. The UI lint (clipping, overlap, touch sizes, safe areas) runs before either.
+Each screen starts from a target the director picked, and is judged beside it on a real phone-sized capture (`/ga-review`, in pairs). The director's word accepts it (`AGENTS.md`, "target first, verdicts in pairs"). The UI lint (clipping, overlap, touch sizes, safe areas) runs before either.

@@ -4,7 +4,7 @@
 
 Each teammate rewrites its own row: one to three lines. Open asks sit under "Waiting on the director".
 
-**Quaestor (research).** 2026-11-24, evening, in a cloud session while the PC is off. Written: TR57 to TR62, the words and the referral system (each in its entry); `docs/research/quality-and-speed.md`, why we iterate and the looks stay ugly, and the new way (Waiting on the director, 11). `docs/research/examples.md`: 25 looks the director judged, with the image each verdict saw where git holds it, the calibration set for verdicts in pairs.
+**Quaestor (research).** 2026-11-24, evening, in a cloud session while the PC is off. Written: TR57 to TR62, the words and the referral system (each in its entry); `docs/research/quality-and-speed.md`, why we iterate and the looks stay ugly; the director said yes at 20:50, so the new way is in `AGENTS.md` and the skills (the notice below), with AR62 as the style frame and TR63 for Faber. `docs/research/examples.md`: 25 looks the director judged, with the image each saw.
 - **Next:** what the cloud allows (design and words); then, back on the PC: AR64's and AR62's picks, TR54's second look, AR56's slab.
 - **With the director, on return:** accept Rook and Kirra; AR62's pick; the phone sitting and F7; TR52's run; item 10, the hooks; the store's design.
 
@@ -52,19 +52,16 @@ For Faber:
     - Effects among the uploaders in `open_cloud_guard.py`, so Scintilla uploads under the group with its key, inside the guard's own limits (a new asset only, from `build/upload/`, at price 0).
     - Until then their Studio calls are blocked.
 
-For the whole team:
-
-11. **The new way of working**, your words of tonight ("we had to iterate on so many stuff yet it still ugly"), in `docs/research/quality-and-speed.md`. There are three yes-or-no calls. Each changes the core, so nothing is written before your yes:
-    - **a. Target first, verdicts in pairs.**
-      - Every piece players see starts with two or three target images at final quality, in the game, made in at most 3 h. You pick one, in about two minutes, before a build hour starts.
-      - Research's verdict becomes measured gates plus the build beside its target. Nothing passes as "competent" on research's eye.
-      - Checkpoints come at a quarter and at half of the cap, with a kill point.
-      - Moves are posed first, stepped.
-      - This replaces `AGENTS.md`'s feel line, blockout and research's verdict as the gate, and changes `ga-review`, `ga-action` and `ga-fresh-eyes`.
-    - **b. Lock the look once.** AR62 becomes the style frame: Home and one Voidkin in the game's light. Its tokens go on one page: three hues and neutrals, two fonts, one type scale, two or three strokes and radii, one material family. This comes before any more UI or Voidkin pieces.
-    - **c. Inkscape and Krita on the PC.** Both are free, official and need no account. They're for UI art as SVG, and paint-overs on phone captures. The SVG part was tried in the cloud with a headless browser: clean pieces, and a re-theme in a second. Edge, already on the PC, may render SVG without Inkscape (unverified).
-
 ### Notices
+
+- **The director, 2026-11-24, 20:50, for everyone: target first, verdicts in pairs** (`AGENTS.md`, "Every action, world, effect, screen and model"; `docs/decisions.md`, the top row):
+  - Every piece players see starts with two or three target images at final quality, in the game, made in at most 3 h. **The director picks one before a build hour.** Until then, start your next piece.
+  - Checkpoints come at a quarter and at half of a cap, beside the target. A miss changes the technique and is never polished.
+  - Research's verdict is in pairs: the gates, then the build beside its target and the director's examples (`docs/research/examples.md`). Only the director's word accepts a look.
+  - Moves are posed first, stepped.
+  - **Before any more UI or Voidkin work, AR62 becomes the style frame:** Home and Rook in the game's light, with one page of tokens (AR62, "The style frame first"). Modulo: it's your next piece.
+  - Research's reading, for the director to correct: AR63 (Pip) and AR64 beyond Rook wait for the pick.
+  - Faber: TR63, the pair sheet, the lint's contrast and tokens, and Edge for SVG.
 
 - Tier 2, research, 2026-11-24, evening, from the cloud: TR62, bringing a friend (`docs/design.md`, "Being seen"; seed "referral"): a friend new to the game who beats the Lamplighter pays both sides a Forge Crate, five friends at most an inviter. Faber: say in your row what you'd change.
 - Tier 2, research, 2026-11-24, evening, from the cloud: TR57 to TR60 (`docs/design.md`, "Being seen" and "The welcome week and codes"; seeds "broadcast", "boards", "welcomeWeek", "codes"). Day 7 of the welcome week is Lyric for everyone, since about 13% of Lantern Row's Standard shards hold Lyric and nearly every player owns all five Voidkin by then. Faber and Modulo: say in your row what you'd change.

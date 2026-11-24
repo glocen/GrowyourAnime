@@ -5013,3 +5013,32 @@ Research's seeds, `tools/balance/seeds.json`: "forgeHeat" and "power.workXp"; `d
   - the type check: 0 new;
   - logic offline: 31,157 passed, 0 failed;
   - the self-test case: owed, at the next Studio turn.
+
+## TR56. A chest for everything: the Emblem Case, the Jewel Pouch and the Forge Crate, with the orphans closed (research's request, tier 2, for Faber; Modulo the three pictures)
+
+Research, 2026-11-24, 14:00. Launch-design's item 5. The design: `docs/design.md`, "Chests" ("The family at launch") and "Regalia: gear" (War Emblems, the Stone Condenser, Presets). The numbers: `tools/balance/seeds.json`, "chestFamily". It closes TR48's Rare gap too.
+
+- **Feel lines.** After a Hard clear, Open all turns over a Jewel Pouch and a Forge Crate beside the keeper's chest. Three spare Attack emblems fold into one Rare at a press of Combine.
+- **In the block:**
+  - the three kinds as chests;
+  - the Rare least;
+  - the emblem drop as a case;
+  - the Tower's tenth-floor cases;
+  - a Hard keeper's pouch and crate;
+  - the combine (pure rule, one server step with an id, a repeat a no-op);
+  - Mid into High from the Condenser's level 10;
+  - presets 2 and 3 by base level.
+- **Waits:**
+  - Modulo's three pictures (grey stand-ins meanwhile);
+  - the combine's effect and sound;
+  - jewels' points and the Condenser's jewel making (research's seeds, next);
+  - the welcome week's and codes' contents.
+- **Cases, one a rule:**
+  - each chest's Rare at its least and above its Epic;
+  - a case's rarity matching its gear chest's;
+  - the Tower's case once a floor;
+  - the pouch's and crate's rolls;
+  - the combine's refusals and a repeated request paying once;
+  - High refused under level 10;
+  - presets at their levels.
+- **The content check** reads the new names before the build.

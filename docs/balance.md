@@ -153,6 +153,10 @@ Seeds for how long each ground takes a player who keeps a 70% build ("on budget"
 - **About 43 chests an hour,** 18 of them from elites, about 2,450 over the climb to level 60: bulk opening and auto-salvage are what make that many pleasant.
 - **Salvage** pays at most 10% of a kill's Credits on Lantern Row and 16% on Mirror Pavilion, so fighting stays the income and the base's prices hold.
 - **At launch,** with Lantern Row alone, Hard's chests read Drum Court's rows (TR48), and its elites and keepers carry their own Epic and Legendary weights (TR48, part 2). MODEL: Rare about 2 h, Epic about 4.3 h, Legendary about 18 h. The Tower's row is TR48's.
+- **The family at launch** (research, 2026-11-24; seeds "chestFamily"; `docs/design.md`, "Chests"):
+  - **Rare at 1% or more on every chest** (the Hard keeper's at 3%, over its 1.6% Epic), taken from Common. MODEL by hand: a Normal run gives about seven chests, about 30 an hour, so the floor adds about 0.3 Rares an hour and moves the median first Rare from TR48's 1.9 h to about 1 h, design.md's first hour.
+  - **Emblem Cases** come at about 1.65 a Normal run (three elites at 30%, the keeper at 75%), 5 to 7 an hour. With the combine, three of one stat (six stats even), MODEL, research's simulation of 4,000 players: the first Rare at 0.9 to 1.3 h, Epic 4.4 to 6.2 h, Legendary 16.7 to 23.4 h (medians), beside gear's 4 to 6 h and 15 to 20 h. The High stats (Critical Damage, Critical Immunity, Lifesteal) come only from Epic and Legendary drops and the Tower's cases, so they stay the chase.
+  - **Jewels' points** are fitted to their supply (a pouch every Hard keeper's win and the Condenser's making), research's next.
 
 ## What the simulation showed (2026-11-11)
 

@@ -17011,6 +17011,14 @@ From `build/handoff/Shade/shade_support_look.png` (the row, the pack, near, 64 p
     - the Held Note: 50 passed, 0 failed;
     - all at 58 to 60 fps; type check 0 new.
   - **Next:** research's pass in motion. Not director-accepted.
+### Research's pass in motion: the behaviour and the shield hold; who casts doesn't read (Quaestor, 2026-11-24, 21:21)
+
+In the main place, a level-40 Brawler and Support against Rook: the shield caught live, and the cast with its mend frozen 0.53 s in (the effects' clock stopped).
+- **Felt:** the Brawler's shield reads at once. That a Support is mending it doesn't: the health bar says it, the effects don't.
+- **The shield** passes as a block: a pale column worn round the Brawler, with a rim at the top, held its 4 s.
+- **The cast** misses its main read. The sleeves do go up wide (measured: each arm about 60 degrees out). The light at their ends is a few pixels at phone size, pale on the base's pale floor, and from behind the caster it's lost.
+- **The mend** misses too: a ring at the foot and thin rising lines, pale on pale. Nothing joins the caster to the one it mends, so the feel line's "you see who's doing it" fails.
+- **Next:** the look's finish starts with Scintilla's targets, under the new way: the cast and the mend as one peak frame and strip, and the shield. The main read is a link from the Support to the one it mends, plus a caster's light that holds at a pack's distance. Research picks in pairs. Until then the grey rows stay in the dev build.
 
 ## AR59. Rook, redesigned to the anime bar (Modulo, for research's pick and the director's look, then its finish; Faber's install after)
 

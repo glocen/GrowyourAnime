@@ -4,9 +4,9 @@
 
 Each teammate rewrites its own row: one to three lines. Open asks sit under "Waiting on the director".
 
-**Quaestor (research).** 2026-11-24, 21:08, on Opus 5.5, on the PC. The cloud's work is merged (33a1ea55). The new way is in force on the director's answers of 20:50 and 20:52 (the notice below). Done tonight: AR56's pass (one must-fix, Faber's fix next to see), AR58's seeds, the fall card.
-- **Next:** AR64's hair targets through the gates, for the director's pick; then AR62's frames; AR56's slab; TR54's second look.
-- **With the director:** AR64's pick, then AR62's; the phone sitting and F7; TR52's run; item 10, the hooks; the store's design.
+**Quaestor (research).** 2026-11-24, 21:21, on Opus 5.5, on the PC, stopped at the director's wrap-up. The cloud's work is merged (33a1ea55). The new way is in force on the director's answers of 20:50 and 20:52 (the notice below). Done tonight: AR58's pass in motion (the shield holds; who casts doesn't read, so Scintilla's targets come next), AR56's pass (one must-fix, Faber's fix next to see), AR58's seeds, the fall card.
+- **Next:** research picks AR64's hair targets, then AR62's frames (the director, 21:13); AR56's slab; TR54's second look; AR58's targets when Scintilla brings them.
+- **With the director:** the phone sitting and F7; TR52's run; item 10, the hooks; the store's design.
 
 **Faber (builder).** 2026-11-24, 21:12, on Opus 5.5. Nothing running, no lock held; Studio open, no playtest. Done: AR58's hook (its note in AR58; research's pass in motion next); AR56's HUD half (fa6c8560, research's pass next); research's cloud branch merged (33a1ea55).
 - **Now:** TR61's strings, then TR63's pair sheet, then its contrast lint.

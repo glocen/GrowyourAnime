@@ -55,7 +55,7 @@ For Faber:
 ### Notices
 
 - **The director, 2026-11-24, 20:50 and 20:52, for everyone: target first, verdicts in pairs** (`AGENTS.md`, "Every action, world, effect and screen" and "One style frame"; `docs/decisions.md`, the top rows):
-  - Every piece players see starts with two or three targets at final quality, in the game, in at most 3 h. **The director picks a big look's** (a Voidkin, a screen, a signature move or effect, a world); research picks the rest in pairs. Until the pick, start your next piece.
+  - Every piece players see starts with two or three targets at final quality, in the game, in at most 3 h. **Research picks every target** in pairs against the director's examples (the director, 21:13: "it js need to be good"); the director judges results in the game. Until the pick, start your next piece.
   - Checkpoints come at a quarter and at half of a cap, beside the target. A miss changes the technique and is never polished. Moves are posed first, stepped.
   - Research's verdict: the gates, then the build beside its target and the director's examples (`docs/research/examples.md`).
   - **The style frame first** (AR62): Home and Rook in the game's light, with one page of tokens. Modulo makes AR64's hair targets first, then the frames. No other UI or Voidkin piece starts before the frame's pick.

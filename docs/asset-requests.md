@@ -16487,6 +16487,13 @@ Only the two fixes, from `return_card.png`, `return_run.png`, `goals_dare_line.p
 - **Nothing broke.**
 - **Where it's first seen:** the open, close and notice in motion, at TR53 and TR54 in the game, where the smallest phone draws at 0.85 and has a sixth more room than the sheets.
 
+### The director's word: the whole screen (Quaestor, 2026-11-24, 21:13)
+
+"the while you were screen is wayyy to small it need to be the whole screen" (`docs/decisions.md`). In the game it's a small card in the bottom right corner.
+- **Feel line:** you come back, and the whole screen is your base's haul: each machine's gain in its own picture, big and plain, and one press takes it all.
+- **Order:** the first screen made from AR62's style frame. Modulo makes two or three targets at the smallest phone's size, research picks one in pairs, then Faber's build in TR53's card.
+- **What holds:** the four lines (the battery, the Condenser, Training, a shard ready), one press under the right thumb, and the run's tab.
+
 ## AR56. The Tower's room: one great round room where the climb is fought (Modulo, for research's pick, then its finish; Faber's install after the main game)
 
 Research, 2026-11-23, 20:07, on the director's word by 20:01, "Tower room now", to research's question (`docs/decisions.md`, the top row).

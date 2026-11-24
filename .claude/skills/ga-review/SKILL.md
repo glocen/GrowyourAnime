@@ -33,7 +33,7 @@ The director, 2026-11-24, 20:52: a look passes against its picked target and the
 
 **Precision,** for anyone reviewing: a pose or an effect beside the benchmark is read part by part (head, shoulders, arms, hips, legs and the silhouette at 64 px, or each layer of an effect), with a number for both sides, at full size, from every clear instance in the footage, at least three where they exist, from the same camera where possible. "The rig can't" or "a limit" stands only once a tried lever is shown.
 
-**The checkpoints:** the target's pick before the build; the build beside its target at a quarter and at half of its cap (a miss on the main read changes the technique or simplifies, never polishes); the final, from QA's pack. Two techniques missed, then the director picks from images (AGENTS.md, "Every action, world, effect and screen").
+**The checkpoints:** the target's pick before the build; the build beside its target at a quarter and at half of its cap (a miss on the main read changes the technique or simplifies, never polishes); the final, from QA's pack. Two techniques missed, then the options go to the director with the images (AGENTS.md, "Every action, world, effect and screen").
 
 **Fix rounds converge** (adopted 2026-11-17, from Anthropic's code review practice: capped rounds and re-reviewing only what changed brought its mean review rounds from 2.08 to 1.32):
 - Each fix is a **must-fix**, which holds the pass. Anything less goes to `docs/polish-later.md` at once, never into the fix list.

@@ -51,6 +51,8 @@ local REMOTES: { [string]: Spec } = {
 	View = { Kind = "Unreliable", RatePerSecond = 8 }, -- client -> server: (bearing) degrees, where the camera looks, flat: atan2(Z, X)
 	-- The signature on a tap (FightService, TR52's block).
 	Signature = { Kind = "Function", RatePerSecond = 8 }, -- client -> server: ("Tap") -> { Ok, Error?, Fired? }: the lead's signature armed, fired now if it can; ("Auto", on) -> { Ok, Auto }
+	-- The Broadcast (BroadcastService; launch-design.md, section 6).
+	Broadcast = { Kind = "Event", RatePerSecond = 0 }, -- server -> clients: (news) a line worth telling, Rules.Broadcast.News: the client writes its words
 }
 
 local CLASS_FOR_KIND: { [Kind]: string } = {

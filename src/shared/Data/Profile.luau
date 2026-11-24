@@ -172,6 +172,8 @@ export type Data = {
 		Music: number, -- the player's levels, 0 to 1 in hundredths (Rules.Settings; AR43's Settings): the music's volume,
 		Sound: number, -- every other sound's,
 		Effects: number, -- and how much of the fight's particles and camera shake plays
+		ShareFinds: boolean, -- the Broadcast's switches (Rules.Settings): this player's finds told in other servers,
+		ShowFinds: boolean, -- and other players' finds shown to them
 	},
 	Currency: {
 		Credits: number,
@@ -244,7 +246,7 @@ function Profile.Template(): Data
 		Items = {},
 		Presets = { { Slots = {}, Hands = {} } },
 		Bag = { Shards = {}, Chests = {}, Stones = {}, Emblems = {}, Jewels = {} },
-		Settings = { Salvage = "", Music = 1, Sound = 1, Effects = 1 },
+		Settings = { Salvage = "", Music = 1, Sound = 1, Effects = 1, ShareFinds = true, ShowFinds = true },
 		Currency = { Credits = 0, Research = 0 },
 		Shop = { Stock = 0, Bought = {} },
 		Roles = { Lead = "" },

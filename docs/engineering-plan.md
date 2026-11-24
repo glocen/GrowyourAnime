@@ -158,6 +158,15 @@ The builder's, 2026-11-16, written before the systems (research's order, `docs/r
 - **The world:** `StageGate` and `StageStart` markers, and each `Pack` and `Elite` marker's `Stage`, in `Shared.World.Tags`.
 - **Checks:** the offline cases (`Cases/Stages.luau`); the self-test's TR43 case (the gates, a Normal run to its card, Hard's own foes, the keeper lifted, the picker's locks, a lost run); a fresh account through the Door, Manual, since it wipes the save.
 
+**The Broadcast** (`Rules.Broadcast`, `Config.Broadcast`, `BroadcastService`, `BroadcastController`; `docs/design.md`, "The Broadcast").
+- **The news is read from committed answers only:** `DataService.Changed`'s `(label, answer, data)`, through `Broadcast.Read`. It reads `OpenChests`, `Reinforce`, `SpendCopies`, `Open` and `KeeperWon`, and never `ShopBuy` or a refusal. The Tower adds two:
+  - its server record, from `TowerEnd`'s floor against the service's own best;
+  - the week's first place, from `TowerBoardService.Led`, fired when a posted climb beats the page as this server last read it (`Broadcast.Leads`). That page can be up to `Fresh` seconds old, so it's news, not a ruling.
+- **Every server:** one MessagingService topic, prefixed Test or Live as the saves are. The message is `Broadcast.Pack`: ids, numbers and the display name, well under 1 kB. Each server checks it whole with `Broadcast.Unpack` before showing it, and skips its own job's messages.
+- **One gate a server** (`Broadcast.Release`) holds every line it shows to `Most` a `Window`. The remote `Broadcast` carries the news, never words, and each client builds the line from its own definitions.
+- **The switches** `Settings.ShareFinds` and `Settings.ShowFinds` are saved booleans. Reconcile fills them on older saves, and `Settings.On` reads a missing one as on.
+- **Checks:** the offline cases (`Cases/Broadcast.luau`). The service, the topic and the banner are engine code, NOT VERIFIED until a Studio playtest. Two servers' exchange needs a published place.
+
 **The responsive layout** (part 6).
 - **One module, `UI.Layout`:**
   - `Class()` gives Compact, Regular or Wide, from the viewport less the safe insets (`ScreenGui.ScreenInsets`, `GuiService:GetGuiInset`), on thresholds in `Config.UIKit.Layout`.

@@ -327,6 +327,19 @@ Research's layout for TR2, 2026-11-12. The builder installs it in grey; how it l
 - **Rewards** are forge stones and shards only: never Robux, and never anything sold.
 - **Not at launch:** a pool of dares per stretch, weekly goals, a pass, titles.
 
+## The Broadcast
+
+What's worth telling is told [D, 2026-11-24: the director's "ok" to `docs/research/cloud-2026-11-24/launch-design.md`, section 6, which holds the design]. The ladder and its limits are seeds in `Config.Broadcast`.
+- **Every server:** a Legendary item, a Reinforce success at +20 or higher, a Voidkin raised to seven stars, and a new first place on the Tower's weekly board. **This server:** an Epic item, an account's first Rare Voidkin, a keeper's first win on Hard, a new server record in the Tower, and a Reinforce success at +15.
+  - A Dawn piece reaches every server as the Legendary it is, once Dawn is built.
+- **Never told:** anything bought, any failure, anything a player typed. A line names a Voidkin by its own name, never a nickname, and its only word from a player is the finder's display name.
+- **The line** is written in the chat in its rarity's light, and runs once at the top centre for 4 s. While a keeper's try, a reveal or a menu is up, it waits until after.
+- **Limits:**
+  - one every-server line per player per 10 minutes; another inside that is told on its own server only;
+  - each server shows at most 12 lines a minute, and drops the oldest waiting.
+- **Settings:** "Show my finds in other servers" and "Show others' finds", both on at first. The card waits for the Settings screen's work on the PC.
+- **Later:** the Strip's board of the last eight lines, and research's words in place of the stand-ins.
+
 ## What the player holds
 
 | Currency | Comes from | Goes to |

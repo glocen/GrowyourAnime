@@ -20,6 +20,8 @@ local Log = require(Shared.Util.Log)
 local TowerConfig = require(Shared.Config.Tower)
 local Profile = require(Shared.Data.Profile)
 local Tower = require(Shared.Rules.Tower)
+local Broadcast = require(Shared.Rules.Broadcast)
+local Signal = require(Shared.Util.Signal)
 local Net = require(Shared.Net)
 local Core = script.Parent.Parent.Core
 local DataService = require(Core.DataService)
@@ -29,12 +31,16 @@ local TowerBoardService = {
 	Priority = 51, -- after the Tower's runs
 }
 
+-- (player, floor) a climb posted from here took the week's first place (BroadcastService tells it).
+TowerBoardService.Led = Signal.new()
+
 local PREFIX = if RunService:IsStudio() then "Test" else "Live" -- as DataService's saves: a playtest never touches the live board
 local NAMES_KEPT = 600 -- seconds a looked-up name is kept
 local RETRY = 10 -- seconds before a failed page read is tried again
 local TRIES = 3 -- a post's tries before it waits for the account's next change
 
-type Page = { Week: number, At: number, Entries: { Tower.Entry }, Reading: boolean }
+-- Known: the page was read at least once, so its entries are the board's and not an empty start.
+type Page = { Week: number, At: number, Entries: { Tower.Entry }, Reading: boolean, Known: boolean }
 
 local page: Page? = nil
 local names: { [number]: { Name: string, At: number } } = {}
@@ -58,7 +64,7 @@ local function read(week: number): { Tower.Entry }
 			return held.Entries
 		end
 	end
-	local current: Page = if held and held.Week == week then held else { Week = week, At = 0, Entries = {}, Reading = false }
+	local current: Page = if held and held.Week == week then held else { Week = week, At = 0, Entries = {}, Reading = false, Known = false }
 	page = current
 	current.Reading = true
 	local ok, result = pcall(function(): { Tower.Entry }
@@ -79,6 +85,7 @@ local function read(week: number): { Tower.Entry }
 	if ok then
 		current.Entries = result
 		current.At = os.clock()
+		current.Known = true
 	else
 		current.At = os.clock() - TowerConfig.Board.Fresh + RETRY -- the old page kept, tried again soon
 		Log.Warn("TowerBoardService", `week {week}'s board wasn't read: {tostring(result)}`)
@@ -155,6 +162,11 @@ local function post(player: Player)
 		if done then
 			posted[player] = score
 			local held = page
+			-- A new first place, against the page as this server last read it (Rules.Broadcast.Leads), before the
+			-- climb joins it. A page up to Fresh seconds old may miss another server's newer climb: news, not a ruling.
+			if held and held.Week == climb.Week and held.Known and Broadcast.Leads(held.Entries, player.UserId, score, climb.Floor) then
+				TowerBoardService.Led:Fire(player, climb.Floor)
+			end
 			if held and held.Week == climb.Week then
 				-- This server's readers see it at once, before the page is read again.
 				local found = false

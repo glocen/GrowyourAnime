@@ -19,6 +19,7 @@ local Collection = require(Shared.Rules.Collection)
 local Condenser = require(Shared.Rules.Condenser)
 local Shards = require(Shared.Definitions.Shards)
 local BaseConfig = require(Shared.Config.Base)
+local GrowthConfig = require(Shared.Config.Growth)
 local ShardConfig = require(Shared.Config.Shards)
 local DataConfig = require(Shared.Config.Data)
 
@@ -289,6 +290,7 @@ return {
 			local data = withRook()
 			data.Base.Charge = 0
 			local watt = Collection.Uncover(data, "watt", T0).Id
+			data.Voidkin[watt].Level = GrowthConfig.MaxLevel -- its kW stay: work's experience (TR55) raises them otherwise
 			act(data, "SetWorker", { Bay = 1, Voidkin = watt }, T0 + 100)
 			local rate = Power.Generation(data) / 3600
 			act(data, "SetWorker", { Bay = 1, Voidkin = "" }, T0 + 400)

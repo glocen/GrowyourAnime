@@ -14,8 +14,10 @@ local Saveable = require(Shared.Data.Saveable)
 local Breaker = require(Shared.Rules.Breaker)
 local Power = require(Shared.Rules.Power)
 local Training = require(Shared.Rules.Training)
+local Base = require(Shared.Rules.Base)
 local Collection = require(Shared.Rules.Collection)
 local BaseConfig = require(Shared.Config.Base)
+local GrowthConfig = require(Shared.Config.Growth)
 local ShardConfig = require(Shared.Config.Shards)
 
 local T0 = 1_800_000_000
@@ -121,7 +123,7 @@ return {
 		Run = function(t: any)
 			local data = fresh(0)
 			local capacity = Breaker.Capacity(data.Base)
-			withWatt(data)
+			data.Voidkin[withWatt(data)].Level = GrowthConfig.MaxLevel -- its kW stay: work's experience (TR55) raises them otherwise
 			local rate = perSecond(Power.Generation(data))
 			local toFull = capacity / rate
 			local extra = 1000
@@ -137,7 +139,7 @@ return {
 		Name = "Breaker: away, workers stop after the away hours",
 		Run = function(t: any)
 			local data = fresh(0)
-			withWatt(data)
+			data.Voidkin[withWatt(data)].Level = GrowthConfig.MaxLevel -- its kW stay: work's experience (TR55) raises them otherwise
 			local rate = perSecond(Power.Generation(data))
 			local hours = BaseConfig.Battery.AwayHours
 			local summary = Breaker.Advance(data, T0 + (hours + 8) * 3600, true)
@@ -377,9 +379,78 @@ return {
 			t.Check("it banked what wasn't a whole point", data.Training.Banked >= 0 and data.Training.Banked * Training.Rate() < 1 + 1e-6)
 			t.Check("the Power screen opened", data.Base.Power.Open)
 			data.Base.Bays[1].Worker = id
-			local before = now.Xp
+			local worked = Profile.DeepCopy(now)
+			Training.Work(worked, span, function(level: number): number
+				return Power.Output(worked, level)
+			end)
 			local again = Breaker.Advance(data, T0 + 2 * span)
-			t.Check("a worker never trains", again.Trained == nil and now.Xp == before)
+			t.Check("a worker never trains: it earns by its kWh alone (TR55)", again.Trained == nil and now.Level == worked.Level and math.abs(now.Xp - worked.Xp) <= 1, `{now.Level}/{now.Xp} against {worked.Level}/{worked.Xp}`)
+		end,
+	},
+	{
+		Name = "Breaker: TR55, a worker earns by the kWh it makes: 18 kW half the Training rate, 12 a third, 6 a sixth, never more than it; a higher bay faster; its rest kept on the bay",
+		Run = function(t: any)
+			local rate = Training.Rate()
+			t.Check("the seeds: 100 s of the Training rate a kWh, capped at the rate", BaseConfig.Bays.Xp.PerKwh == 100 and BaseConfig.Bays.Xp.Cap == 1)
+			for _, row in { { 18, 1 / 2 }, { 12, 1 / 3 }, { 6, 1 / 6 }, { 36, 1 }, { 60, 1 }, { 0, 0 } } do
+				t.Check(`{row[1]} kW: {row[2]} of the rate`, near(Training.WorkRate(row[1]), row[2] * rate, 1e-9), `{Training.WorkRate(row[1]) / rate}`)
+			end
+			local data = fresh(0)
+			local watt = Collection.Uncover(data, "watt", T0).Id
+			local kirra = Collection.Uncover(data, "kirra", T0).Id
+			t.Check("Watt makes 18 kW at level 1, Kirra 6", near(Power.Output(data.Voidkin[watt]), 18) and near(Power.Output(data.Voidkin[kirra]), 6))
+			data.Base.Bays[1].Worker = watt
+			local span = 3600
+			local copy = Profile.DeepCopy(data.Voidkin[watt])
+			local levels = Training.Work(copy, span, function(level: number): number
+				return Power.Output(copy, level)
+			end)
+			local summary = Breaker.Advance(data, T0 + span)
+			local now = data.Voidkin[watt]
+			t.Check("an hour's work: its levels and experience as its rate pays", now.Level == copy.Level and math.abs(now.Xp - copy.Xp) <= 1 and summary.Worked == levels, `{now.Level}/{now.Xp} against {copy.Level}/{copy.Xp}, {summary.Worked}`)
+			t.Check("it rose", now.Level > 1)
+			local banked = data.Base.Bays[1].Banked or 0
+			t.Check("its rest kept on the bay, under a point", banked >= 0 and banked * Training.WorkRate(Power.Output(now)) < 1 + 1e-6, `{banked}`)
+			-- many small advances land where one large one does, experience and battery both
+			local small = fresh(0)
+			local one = fresh(0)
+			for _, base in { small, one } do
+				base.Base.Bays[1].Worker = Collection.Uncover(base, "watt", T0).Id
+			end
+			for i = 1, 60 do
+				Breaker.Advance(small, T0 + i * 60)
+			end
+			Breaker.Advance(one, T0 + 3600)
+			local a, b = small.Voidkin[small.Base.Bays[1].Worker], one.Voidkin[one.Base.Bays[1].Worker]
+			t.Check("sixty minutes or one hour: the same worker", a.Level == b.Level and math.abs(a.Xp - b.Xp) <= 1, `{a.Level}/{a.Xp} against {b.Level}/{b.Xp}`)
+			t.Check("and the same battery", near(small.Base.Charge, one.Base.Charge, 1e-6), `{small.Base.Charge} against {one.Base.Charge}`)
+			-- a higher bay grows its worker faster
+			local high = fresh(0)
+			high.Base.Bays[1].Worker = Collection.Uncover(high, "kirra", T0).Id
+			high.Base.Bays[1].Level = 5
+			local low = fresh(0)
+			low.Base.Bays[1].Worker = Collection.Uncover(low, "kirra", T0).Id
+			Breaker.Advance(high, T0 + span)
+			Breaker.Advance(low, T0 + span)
+			local h, l = high.Voidkin[high.Base.Bays[1].Worker], low.Voidkin[low.Base.Bays[1].Worker]
+			t.Check("a level 5 bay grows its worker faster", h.Level > l.Level or (h.Level == l.Level and h.Xp > l.Xp), `{h.Level}/{h.Xp} against {l.Level}/{l.Xp}`)
+			-- away, the experience stops with the generation
+			local away = fresh(0)
+			local far = Collection.Uncover(away, "watt", T0).Id
+			away.Base.Bays[1].Worker = far
+			local hours = BaseConfig.Battery.AwayHours
+			local paid = Profile.DeepCopy(away.Voidkin[far])
+			Training.Work(paid, hours * 3600, function(level: number): number
+				return Power.Output(paid, level)
+			end)
+			Breaker.Advance(away, T0 + (hours + 8) * 3600, true)
+			local back = away.Voidkin[far]
+			t.Check("away: only the away hours' work", back.Level == paid.Level and math.abs(back.Xp - paid.Xp) <= 1, `{back.Level}/{back.Xp} against {paid.Level}/{paid.Xp}`)
+			-- a new worker in the bay starts with no rest
+			data.Base.Bays[1].Banked = 5
+			Base.SetWorker(data, { Bay = 1, Voidkin = kirra }, T0 + span)
+			t.Check("a new worker: the bay's rest cleared", data.Base.Bays[1].Banked == nil and data.Base.Bays[1].Worker == kirra)
+			t.Equal("the save holds nothing it would lose", #Saveable.Problems(data, "profile"), 0)
 		end,
 	},
 	{

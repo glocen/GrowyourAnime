@@ -92,6 +92,7 @@ end
 -- Each item keeps its own count of sockets. Answers how many emblems moved and how many stayed.
 function Regalia.Transfer(from: Profile.OwnedItem, to: Profile.OwnedItem): (number, number)
 	from.Reinforce, to.Reinforce = to.Reinforce, from.Reinforce
+	from.Heat, to.Heat = to.Heat, from.Heat -- the heat moves with its level (TR55)
 	for colour, level in from.Jewels do
 		if (to.Jewels[colour] or 0) == 0 then
 			to.Jewels[colour] = level

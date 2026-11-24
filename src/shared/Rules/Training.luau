@@ -10,10 +10,15 @@
 --   Training.Gain(owned, seconds)        trains `owned` for `seconds` at full power: the levels gained, and the seconds
 --                                        left over
 --   Training.Who(playerHome, lead, leadWaiting, healed)   who trains while the player is in the game, or nil
+--   Training.WorkRate(kw)                a worker's experience a second at `kw` (TR55): Config.Base.Bays.Xp.PerKwh seconds
+--                                        of the Training rate a kWh, never more a second than Xp.Cap times it
+--   Training.Work(owned, seconds, kwAt)  a worker at work for `seconds`, `kwAt(level)` its kW at each level: the levels
+--                                        gained, and the seconds left over
 
 local Shared = game:GetService("ReplicatedStorage").Shared
 local Profile = require(Shared.Data.Profile)
 local GrowthConfig = require(Shared.Config.Growth)
+local BaseConfig = require(Shared.Config.Base)
 local WorldConfig = require(Shared.Config.World)
 local StagesConfig = require(Shared.Config.Stages)
 local DropsConfig = require(Shared.Config.Drops)
@@ -47,16 +52,22 @@ function Training.Rate(): number
 	return GrowthConfig.Training.Share * GrowthConfig.KillsPerHour / 3600 * rowXpPerKill()
 end
 
--- Trains `owned` for `seconds`, level by level, each at its own level's rate. Returns the levels gained and the seconds
--- not yet worth a whole point of experience, so the stamp keeps them. At the last level the time is spent on nothing.
-function Training.Gain(owned: Profile.OwnedVoidkin, seconds: number): (number, number)
+function Training.WorkRate(kw: number): number
+	local xp = BaseConfig.Bays.Xp
+	return math.min(math.max(kw, 0) * xp.PerKwh / 3600, xp.Cap) * Training.Rate()
+end
+
+-- Raises `owned` by `seconds` at `rateAt(level)` experience a second, level by level, each at its own level's rate.
+-- Returns the levels gained and the seconds not yet worth a whole point, so the caller keeps them. At the last level the
+-- time is spent on nothing.
+local function earn(owned: Profile.OwnedVoidkin, seconds: number, rateAt: (number) -> number): (number, number)
 	if not (seconds > 0) or seconds == math.huge then
 		return 0, 0
 	end
 	local gained, left = 0, seconds
 	for _ = 1, GrowthConfig.MaxLevel do
 		local need = Growth.XpToNext(owned.Level)
-		local rate = Training.Rate()
+		local rate = rateAt(owned.Level)
 		if need == nil or not (rate > 0) then
 			owned.Xp = if need == nil then 0 else owned.Xp
 			return gained, 0
@@ -73,6 +84,21 @@ function Training.Gain(owned: Profile.OwnedVoidkin, seconds: number): (number, n
 		gained += 1
 	end
 	return gained, 0
+end
+
+-- Trains `owned` for `seconds` at full power at the Training rate, which is the same at every level.
+function Training.Gain(owned: Profile.OwnedVoidkin, seconds: number): (number, number)
+	local rate = Training.Rate()
+	return earn(owned, seconds, function(): number
+		return rate
+	end)
+end
+
+-- A worker at work for `seconds`: each level at the rate its kW there pays (TR55).
+function Training.Work(owned: Profile.OwnedVoidkin, seconds: number, kwAt: (number) -> number): (number, number)
+	return earn(owned, seconds, function(level: number): number
+		return Training.WorkRate(kwAt(level))
+	end)
 end
 
 export type Healed = { Id: string, Fell: number }

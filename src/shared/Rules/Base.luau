@@ -186,8 +186,12 @@ function Base.SetWorker(data: Profile.Data, args: any, now: number): Answer
 		for _, other in data.Base.Bays do
 			if other.Worker == id then
 				other.Worker = ""
+				other.Banked = nil
 			end
 		end
+	end
+	if data.Base.Bays[bay].Worker ~= id then
+		data.Base.Bays[bay].Banked = nil -- a worker's leftover seconds are its own (TR55)
 	end
 	data.Base.Bays[bay].Worker = id
 	return { Ok = true, Bay = bay, Voidkin = id }

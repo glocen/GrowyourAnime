@@ -18,6 +18,7 @@ local BaseLevels = require(Shared.Rules.BaseLevels)
 local Collection = require(Shared.Rules.Collection)
 local Condenser = require(Shared.Rules.Condenser)
 local BaseConfig = require(Shared.Config.Base)
+local GrowthConfig = require(Shared.Config.Growth)
 local CondenserConfig = require(Shared.Config.Condenser)
 local DataConfig = require(Shared.Config.Data)
 
@@ -138,7 +139,9 @@ return {
 			t.Check("and the floor's share of the minute past it", near(none.Base.Condenser.Made, 60 * floor / HOUR), `{none.Base.Condenser.Made}`)
 			-- A worker in bay 1 and a split giving the Condenser half its rating.
 			local data = fresh()
-			data.Base.Bays[1].Worker = Collection.Uncover(data, "watt", T0).Id
+			local watt = Collection.Uncover(data, "watt", T0)
+			data.Voidkin[watt.Id].Level = GrowthConfig.MaxLevel -- its kW stay: work's experience (TR55) raises them otherwise
+			data.Base.Bays[1].Worker = watt.Id
 			local generation = Power.Generation(data)
 			t.Check("the worker makes enough to split", generation >= Condenser.Rating(1) / 2, `{generation}`)
 			data.Base.Power.Auto = false

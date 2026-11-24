@@ -2,7 +2,7 @@
 -- EquipmentCases: Equipment's three screens in B (AR43, "The cut in B, for Faber"; TR47's part A; UI.EquipmentScreen).
 -- Reinforce from Home's Equipment card: the lead's worn gear, its odds before the press, a try's beat and the level it leaves, the
 -- press off when the stones are short. War Emblems: put in and taken out through the bag. Jewels: its five slots, marked
--- as coming. Three cases, so a frame-bound beat (Reinforce's, on RenderStepped) never takes the others down with it.
+-- as coming. Forge heat on Reinforce (TR55). Four cases, so a frame-bound beat (Reinforce's, on RenderStepped) never takes the others down with it.
 -- Everything given is taken back at the end of each.
 
 local Shared = game:GetService("ReplicatedStorage").Shared
@@ -172,6 +172,51 @@ function EquipmentCases.Cases(): { any }
 					return HomePanel.Shown(panel)
 				end) and Screen.Current() == nil)
 				HomePanel.Close(panel)
+				putBack(t, g, 0)
+			end,
+		},
+		{
+			Name = "Equipment: forge heat on Reinforce (TR55): no bar while a try is sure; its fill is the item's heat; full, the odds read 100% and the try rises, then it's empty",
+			Run = function(t: any)
+				local g = give(t, 6, 0)
+				if g == nil then
+					return
+				end
+				local id = g.Id
+				t.Check("the Reinforce page, the helmet chosen", open(t, "Reinforce", id))
+				local function work(): CanvasGroup?
+					return EquipmentScreen.Parts().Work :: CanvasGroup?
+				end
+				local function share(): number?
+					local track, fill = find(work(), "HeatTrack") :: GuiObject?, find(work(), "HeatFill") :: GuiObject?
+					if track == nil or fill == nil or track.AbsoluteSize.X <= 0 then
+						return nil
+					end
+					return fill.AbsoluteSize.X / track.AbsoluteSize.X
+				end
+				t.Check("at +0, a sure try: no heat shown", find(work(), "HeatTrack") == nil)
+				t.Check("+5 with 60 heat", (t.Server("ItemForge", id, 5, 60) or {}).Ok == true)
+				t.Wait(0.5)
+				t.Equal("the odds for +6", said(work(), "Success") .. " / " .. said(work(), "Fail"), "Success 80% / Fail 20%")
+				local part = share()
+				t.Check("its bar 60% full", part ~= nil and math.abs(part - 0.6) < 0.03, tostring(part))
+				t.Check("not yet sure", said(work(), "HeatFull") == "")
+				t.Check("full", (t.Server("ItemForge", id, 5, 100) or {}).Ok == true)
+				t.Wait(0.5)
+				t.Equal("full: the odds read sure", said(work(), "Success") .. " / " .. said(work(), "Fail"), "Success 100% / Fail 0%")
+				t.Equal("and say so", said(work(), "HeatFull"), HudConfig.Equipment.Reinforce.Heat.Full)
+				part = share()
+				t.Check("its bar whole", part ~= nil and math.abs(part - 1) < 0.03, tostring(part))
+				local press = EquipmentScreen.Parts().ReinforcePress :: TextButton?
+				t.Check("the press takes", press ~= nil and Button.Press(press :: TextButton))
+				local M = HudConfig.Equipment.Reinforce.Motion
+				t.Check("the beat ends", waitFor(t, M.Least + M.Settle + 1.5, function(): boolean
+					return not EquipmentScreen.State().Busy
+				end))
+				local after = view(t).Items[id]
+				t.Check("a sure try rose to +6, its heat gone", after.Reinforce == 6 and after.Heat == nil, `+{after.Reinforce}, {after.Heat}`)
+				t.Wait(0.3)
+				t.Check("the bar empty", find(work(), "HeatTrack") ~= nil and find(work(), "HeatFill") == nil)
 				putBack(t, g, 0)
 			end,
 		},

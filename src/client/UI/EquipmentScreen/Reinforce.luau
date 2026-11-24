@@ -302,10 +302,24 @@ function ReinforcePage.Build(context: Look.Context): Look.Page
 			end
 			Look.Cell(frame, "Stone", X(R.Stone.At.X), Y(R.Stone.At.Y), R.Stone.Side, "Common", `Stone{cost.Grade}`, nil, 3)
 			Glass.Edge(frame, "StoneLine", X(R.Stone.At.X), Y(R.Stone.At.Y), R.Stone.Side, R.Stone.Side, 4, SEAM.Edge, 1, nil, 9)
-			local chance = Rules.Chance(level)
+			local chance = Rules.Odds(item)
 			Look.Text(frame, "Success", `Success {percent(chance)}`, SMALL, LIGHT, X(R.Odds.Success), Y(R.Odds.Y), "Right", true, 3, 110)
 			Look.Text(frame, "Dot", "·", SMALL, SEAM.Faint, X(R.Odds.Dot), Y(R.Odds.Y), "Centre", false, 3, 10)
 			Look.Text(frame, "Fail", `Fail {percent(1 - chance)}`, SMALL, SEAM.Soft, X(R.Odds.Fail), Y(R.Odds.Y), "Left", false, 3, 110)
+			-- Forge heat (TR55): a failure fills it, a full bar makes the next try sure, a success empties it.
+			local heat, full = Rules.Heat(item), Config.Heat.Full
+			if Rules.Chance(level) < 1 then
+				local Hh = R.Heat
+				local wide = Hh.To - Hh.From
+				Look.Text(frame, "HeatWord", "Heat", SMALL, SEAM.Soft, X(Hh.Word), Y(Hh.Y) - 7, "Left", false, 3, 34)
+				Glass.Fill(frame, "HeatTrack", X(Hh.From), Y(Hh.Y) - Hh.Tall / 2, wide, Hh.Tall, 2, SEAM.Channel, 3)
+				if heat > 0 then
+					Glass.Fill(frame, "HeatFill", X(Hh.From), Y(Hh.Y) - Hh.Tall / 2, math.max(Hh.Tall, wide * heat / full), Hh.Tall, 2, if heat >= full then GOOD else Hh.Colour, 4)
+				end
+				if heat >= full then
+					Look.Text(frame, "HeatFull", Hh.Full, SMALL, GOOD, X(Hh.To), Y(Hh.Y) + 7, "Right", true, 3, 160)
+				end
+			end
 			-- The cost: the stones, short in the hurt, and the Credits, short in the hurt.
 			local S, C = R.Stones, R.Credits
 			Glass.Fill(frame, "StonesPill", X(S[1]), Y(S[2]), S[3] - S[1], S[4] - S[2], 4, SEAM.Channel, 3)

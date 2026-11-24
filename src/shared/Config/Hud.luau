@@ -847,6 +847,9 @@ return {
 			Stone = { At = Vector2.new(420, 142), Side = 26 },
 			Odds = { Y = 173, Success = 427, Dot = 433, Fail = 439 },
 			Said = { At = Vector2.new(316, 192), Pitch = 17 },
+			-- Forge heat (TR55's grey block, under the said lines): its word at Word, the track from From to To at Y, Tall
+			-- high, filled in Colour by the item's heat; full, the track lit whole in the good and Full's words under its end.
+			Heat = { Word = 316, From = 352, To = 550, Y = 240, Tall = 6, Colour = Color3.fromHex("#FF9A57"), Full = "Next try is sure" },
 			Stones = { 318, 272, 382, 304, Picture = Vector2.new(322, 277), Side = 22, Count = 376 },
 			Credits = { 388, 272, 462, 304, Picture = Vector2.new(392, 279), Side = 18, Count = 456 },
 			Press = { 468, 266, 548, 310 },

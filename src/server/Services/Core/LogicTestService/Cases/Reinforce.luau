@@ -77,13 +77,13 @@ return {
 		end,
 	},
 	{
-		Name = "Reinforce: a try's price, round(30 x G(the ground's last level) x (1 + L/15)) Credits and Low, Mid or High stones 1,1,1,2,2,2,3,3,3,4",
+		Name = "Reinforce: a try's price, round(32.5 x G(the ground's last level) x (1 + L/15)) Credits (30 before forge heat, TR55) and Low, Mid or High stones 1,1,1,2,2,2,3,3,3,4",
 		Run = function(t: any)
 			local counts = { 1, 1, 1, 2, 2, 2, 3, 3, 3, 4 }
 			for tier, ground in Grounds.List do
 				for _, level in { 1, 6, 10, 11, 15, 20, 21, 30 } do
 					local cost = Reinforce.Cost({ Tier = tier }, level)
-					local want = math.floor(30 * Growth.G(ground.LevelTo) * (1 + level / 15) + 0.5)
+					local want = math.floor(32.5 * Growth.G(ground.LevelTo) * (1 + level / 15) + 0.5)
 					t.Equal(`{ground.Id} +{level}: Credits`, cost.Credits, want)
 					t.Equal(`{ground.Id} +{level}: the grade`, cost.Grade, if level <= 10 then "Low" elseif level <= 20 then "Mid" else "High")
 					t.Equal(`{ground.Id} +{level}: the count`, cost.Stones, counts[(level - 1) % 10 + 1])
@@ -141,6 +141,66 @@ return {
 			spent.Currency.Credits, spent.Bag.Stones.Low = one.Credits, one.Stones
 			Reinforce.Try(spent, { Item = last.Id }, 0)
 			t.Check("the last stones spent leave no key", spent.Bag.Stones.Low == nil and spent.Currency.Credits == 0)
+		end,
+	},
+	{
+		Name = "Reinforce: forge heat (TR55): a failure adds round(50 x its chance) up to 100, full makes the next try sure, a success empties it, it moves with the level",
+		Run = function(t: any)
+			t.Check("the seeds: 50 a chance, full at 100", ReinforceConfig.Heat.PerChance == 50 and ReinforceConfig.Heat.Full == 100)
+			t.Equal("a failure at 80% adds 40", Reinforce.Fill(0.8), 40)
+			t.Equal("at 45%, 23 (22.5 rounds up)", Reinforce.Fill(0.45), 23)
+			t.Equal("at the 20% floor, 10", Reinforce.Fill(0.2), 10)
+			local data = fresh()
+			local sword = item(data, "sword", "Rare", 1)
+			data.Currency.Credits, data.Bag.Stones.Low, data.Bag.Stones.Mid, data.Bag.Stones.High = 10 ^ 9, 10 ^ 4, 10 ^ 4, 10 ^ 4
+			t.Equal("a new item: no heat", Reinforce.Heat(sword), 0)
+			-- +1 to +5 are sure: a roll at the top still rises, and no heat is kept
+			for level = 1, 5 do
+				local answer = Reinforce.Try(data, { Item = sword.Id }, 0.999)
+				t.Check(`+{level}: sure, no heat`, answer.Success == true and answer.Heat == 0 and sword.Heat == nil)
+			end
+			-- at 80% for +6: at most three failures in a row
+			local fills = {}
+			for _ = 1, 3 do
+				local answer = Reinforce.Try(data, { Item = sword.Id }, 0.999)
+				t.Check("a failure keeps +5", answer.Success == false and sword.Reinforce == 5)
+				table.insert(fills, answer.Heat)
+			end
+			t.Equal("its heat 40, 80, then 100 (capped)", table.concat(fills, ","), "40,80,100")
+			t.Equal("full: the odds say 100%", Reinforce.Odds(sword), 1)
+			local sure = Reinforce.Try(data, { Item = sword.Id }, 0.999)
+			t.Check("full: the next try rises whatever the roll, its chance shown 1", sure.Success == true and sure.Level == 6 and sure.Chance == 1)
+			t.Check("and the success empties it", sure.Heat == 0 and sword.Heat == nil)
+			t.Equal("the save holds nothing it would lose", #Saveable.Problems(data), 0)
+			-- the floor: ten failures at 20% fill it
+			local floor = item(data, "sword", "Rare", 1)
+			floor.Reinforce = 20
+			local count = 0
+			while Reinforce.Odds(floor) < 1 and count < 20 do
+				Reinforce.Try(data, { Item = floor.Id }, 0.999)
+				count += 1
+			end
+			t.Equal("at the 20% floor, ten failures fill the bar", count, 10)
+			t.Equal("it stays at +20", floor.Reinforce, 20)
+			-- a success before full empties it too
+			local early = item(data, "sword", "Rare", 1)
+			early.Reinforce = 8
+			Reinforce.Try(data, { Item = early.Id }, 0.999)
+			t.Equal("a failure at 50% for +9: 25", early.Heat, 25)
+			Reinforce.Try(data, { Item = early.Id }, 0)
+			t.Check("a success: +9, its heat gone", early.Reinforce == 9 and early.Heat == nil)
+			-- the heat moves with the level (docs/design.md, "Reinforce")
+			local hot = item(data, "sword", "Rare", 1)
+			hot.Reinforce, hot.Heat = 12, 60
+			local cold = item(data, "sword", "Rare", 2)
+			Regalia.Transfer(hot, cold)
+			t.Check("the transfer moves the heat with its level", cold.Reinforce == 12 and cold.Heat == 60 and hot.Reinforce == 0 and hot.Heat == nil)
+			-- a refused try changes nothing, the heat included
+			local poor = fresh()
+			local axe = item(poor, "great_axe", "Common", 1)
+			axe.Reinforce, axe.Heat = 7, 70
+			t.Check("a refusal keeps the heat", Reinforce.Try(poor, { Item = axe.Id }, 0.999).Error == Reinforce.Poor and axe.Heat == 70)
+			t.Check("a heat past the bar reads full", Reinforce.Heat({ Heat = 250 }) == 100 and Reinforce.Heat({ Heat = -4 }) == 0)
 		end,
 	},
 	{

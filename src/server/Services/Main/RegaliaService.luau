@@ -150,6 +150,23 @@ local function registerDebug()
 			return { Ok = true, Id = id }
 		end)
 	end)
+	-- An owned item's Reinforce level and forge heat set by hand, for a take or a case (TR55): nil heat empties it.
+	DebugService.Register("ItemForge", function(who: any, id: any, level: any, heat: any): any
+		local player = DebugService.ResolvePlayer(who)
+		local whole = type(level) == "number" and level == math.floor(level) and level >= 0 and level <= ReinforceConfig.Cap
+		if not player or type(id) ~= "string" or not whole or (heat ~= nil and type(heat) ~= "number") then
+			return { Ok = false, Error = "BadArgs" }
+		end
+		return DataService.Change(player, "ItemForge", function(draft: Profile.Data): { [string]: any }
+			local item = draft.Items[id]
+			if item == nil then
+				return { Ok = false, Error = "Unknown" }
+			end
+			item.Reinforce = level
+			item.Heat = if type(heat) == "number" and heat > 0 then math.floor(heat) else nil
+			return { Ok = true, Level = level, Heat = item.Heat or 0 }
+		end)
+	end)
 end
 
 function RegaliaService.Init()

@@ -40,6 +40,7 @@ export type OwnedItem = {
 	Lines: { ItemLine }, -- the rolled lines
 	Sockets: { string }, -- one entry per socket its rarity gives (Config.Chests.Sockets): an emblem key, or "" when empty
 	Reinforce: number, -- its Reinforce level, 0 to Config.Reinforce.Cap (TR47, Rules.Reinforce)
+	Heat: number?, -- its forge heat, 1 to Config.Reinforce.Heat.Full, none at 0: the next try is sure when full (TR55)
 	Jewels: { [string]: number }, -- a jewel colour's level in its slot; a colour with none has no key (TR47 part B)
 }
 
@@ -70,6 +71,7 @@ export type Chamber = {
 export type Bay = {
 	Worker: string, -- the Voidkin's Id, or "" when the bay is empty
 	Level: number, -- the bay's own level (TR21): its output rises with it, never past the base's ceiling (Rules.BaseLevels)
+	Banked: number?, -- its worker's seconds of work not yet worth a whole point of experience (TR55); none when a new worker comes
 }
 
 -- The Stone Condenser (TR37; Rules.Condenser): its next stone's share made, its tray, and the convert under way. Its

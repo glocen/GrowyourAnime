@@ -36,14 +36,14 @@ export type Flow = {
 
 local EPSILON = 1e-9
 
--- The kW one Voidkin generates at work: 0 for a definition that's gone.
-function Power.Output(worker: Profile.OwnedVoidkin): number
+-- The kW one Voidkin generates at work, at its level or at `level`: 0 for a definition that's gone.
+function Power.Output(worker: Profile.OwnedVoidkin, level: number?): number
 	local bays = BaseConfig.Bays
 	local row = Voidkin.ById[worker.Def]
 	if row == nil then
 		return 0
 	end
-	return row.Aptitude * bays.KwPerAptitude * (1 + bays.PerLevel * (worker.Level - 1))
+	return row.Aptitude * bays.KwPerAptitude * (1 + bays.PerLevel * ((level or worker.Level) - 1))
 end
 
 -- Who a bay's picker offers, the best for the base first, so nobody does sums to staff a bay.

@@ -34,9 +34,14 @@ return {
 		CreditsPerKwh = 0.5, -- what overflow past the cap sells for: "a poor rate" (seeds "power.creditsPerKwh")
 	},
 	Bays = {
-		-- A worker generates Aptitude x KwPerAptitude x (1 + PerLevel x (Level - 1)) kW: Watt and Rook at level 1, 30 kW.
+		-- A worker generates Aptitude x KwPerAptitude x (1 + PerLevel x (Level - 1)) kW: Watt at level 1 (aptitude 3), 18 kW,
+		-- Rook (2), 12 kW.
 		KwPerAptitude = 6,
 		PerLevel = 0.02,
+		-- A worker's experience by the kWh it makes (the director, 2026-11-24, 10:50; seeds "power.workXp", TR55): each kWh
+		-- pays PerKwh seconds of the Training machine's rate, never more a second than Cap times it. An 18 kW worker earns
+		-- half the Training rate, a 6 kW one a sixth, and the Training machine stays the fastest place for one Voidkin.
+		Xp = { PerKwh = 100, Cap = 1 },
 	},
 	-- The base's levels at launch, and its machines' under them (TR21; docs/design.md, "The base"; docs/balance.md,
 	-- "Earning"). Research's seeds ("baseLevels"), priced by tools/balance/sim.py, section 15: a price is two significant

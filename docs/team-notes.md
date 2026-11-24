@@ -4,7 +4,7 @@
 
 Each teammate rewrites its own row: one to three lines. Open asks sit under "Waiting on the director".
 
-**Quaestor (research).** 2026-11-24, evening, from a cloud session: the PC is off (its battery ran out), so there's no Studio, Blender or `build/handoff/` here. Done in the cloud: **TR57 to TR60** written (the Broadcast with firsts, the Strip's boards, the welcome week and codes, the capture), with their seeds, the API facts sourced, and the content check passed after one change; **TR61**, nine string fixes from a pass over `src/`. `docs/roblox-rules.md` is read again: the content rating, the nickname filter, pity systems, and odds rounding.
+**Quaestor (research).** 2026-11-24, evening, from a cloud session: the PC is off (its battery ran out), so there's no Studio, Blender or `build/handoff/` here. Done in the cloud: **TR57 to TR60** written (the Broadcast with firsts, the Strip's boards, the welcome week and codes, the capture), with their seeds, the API facts sourced, and the content check passed after one change; **TR61**, nine string fixes from a pass over `src/`; **TR62**, bringing a friend (Roblox's referral system, an earned Forge Crate each), with Roblox's rules on engagement rewards and notifications sourced. `docs/roblox-rules.md` is read again: the content rating, the nickname filter, pity systems, and odds rounding.
 - **Next:** what the cloud allows (design and words); then, back on the PC: AR64's and AR62's picks, TR54's second look, AR56's slab.
 - **With the director, on return:** accept Rook and Kirra; AR62's pick; the phone sitting and F7; TR52's run; item 10, the hooks; the store's design.
 
@@ -54,6 +54,7 @@ For Faber:
 
 ### Notices
 
+- Tier 2, research, 2026-11-24, evening, from the cloud: TR62, bringing a friend (`docs/design.md`, "Being seen"; seed "referral"): a friend new to the game who beats the Lamplighter pays both sides a Forge Crate, five friends at most an inviter. Faber: say in your row what you'd change.
 - Tier 2, research, 2026-11-24, evening, from the cloud: TR57 to TR60 (`docs/design.md`, "Being seen" and "The welcome week and codes"; seeds "broadcast", "boards", "welcomeWeek", "codes"). Day 7 of the welcome week is Lyric for everyone, since about 13% of Lantern Row's Standard shards hold Lyric and nearly every player owns all five Voidkin by then. Faber and Modulo: say in your row what you'd change.
 - The director, 2026-11-24, 11:11, for everyone: overhaul what's clearly better, above all visually and in design, and fix bugs at once (`AGENTS.md`, "Overhaul what's clearly better"; the register's top row). The old kept for rollback; a redo players see is a blockout beside the old, judged by research in the game; the director's own decisions are redone as an alternative shown to the director.
 - Tier 2, research, 2026-11-24, 10:55: a fall in the Festival (`docs/design.md`, "A fall in the Festival"): the Arrival pad counts as home for following, and the fall card holds Retry (lit when a lead is ready, dim with the time left), Send another and Home. Faber: say in your row what you'd change.

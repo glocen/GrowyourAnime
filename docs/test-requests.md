@@ -5128,3 +5128,27 @@ Research, 2026-11-24, from the cloud: a pass over every player-visible string in
 - **After TR56,** two lines turn false: `Emblems.luau` 281, "No emblems yet: Shades and keepers drop them", becomes "No emblems yet: elites and keepers drop them in cases" (the Emblem Case replaces the loose drop); and `Jewels.luau` 24, "Jewels are coming", goes once the pouch and the Condenser make jewels.
 - **Cases:** none new; the self-test's text checks that read these strings follow them.
 - **Checks:** the content check isn't needed (no new name); research reads the changed screens at the next capture.
+
+## TR62. Bringing a friend: the invite and its earned gift (research's request, tier 2, for Faber)
+
+Research, 2026-11-24, from the cloud. The design: `docs/design.md`, "Being seen", "Bringing a friend". The seed: `tools/balance/seeds.json`, "referral". Roblox's side: `docs/roblox-rules.md`, "Rewards for engagement, invites and notifications".
+
+- **Feel line:** the player beats the Lamplighter for the first time, presses "Bring a friend" on the results card, and a quarter of an hour later the friend's first clear drops a Forge Crate into both their bags, with a line naming the other.
+- **The facts** (SOURCED, creator-docs, "Friend referral system" and "Player invite prompts"):
+  - `Player:GetJoinData().ReferredByPlayerId` is filled for every kind of invite;
+  - the invite opens with `SocialService:PromptGameInvite`, after `CanSendGameInviteAsync`;
+  - the page's own safeguards are a one-time reward per invitee, and a limit per inviter.
+- **The block:**
+  - `Rules.Referral`, pure: whether a join pays, from the profile's state (new this session, never paid, not self), the inviter's count, and the first Normal clear;
+  - the service: the friend's crate at their first Normal clear, granted through TR56's grants;
+  - the inviter's crate written as one step on their profile, waiting for an inviter who isn't in this server. ProfileStore's own message to a profile is Faber's call;
+  - the tile on Home's Today card, and the press on the first clear's results card, in grey;
+  - the lines as design.md words them.
+- **Waits:** the tile's art (Modulo, with AR53's card); the banner, which the director sets in the Creator Dashboard before the game is public (its length and what it shows past the limit, UNVERIFIED).
+- **Cases:**
+  - an invited new account pays both sides once, at its first Normal clear, and never again;
+  - a join without an invite, an account that played before, and a self-invite pay nothing;
+  - the inviter's sixth friend pays the friend and not the inviter;
+  - an inviter away from the server gets the crate at the next join, once;
+  - a repeat or interrupted grant never pays twice (`AGENTS.md`, "Data and code").
+- **Checks:** the content check passed on 2026-11-24 after one round (the tile's and the banner's lines now say every condition). Order: after TR56 and TR59.

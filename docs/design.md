@@ -369,6 +369,17 @@ Research's layout for TR2, 2026-11-12. The builder installs it in grey; how it l
   - The server computes every number, and a post only ever raises.
 - **The capture.** After a Voidkin's reveal and an Epic-or-better item's reveal, a camera tile sits at the card's corner while the card holds. A tap takes the world with the reveal's card and without the HUD, then opens Roblox's share sheet, which carries an invite to the game (where a device has none, Roblox offers a download). A share is never rewarded.
 - **Firsts.** The account's first item of each rarity, from Rare up, plays the full reveal once, even inside Open all, with "First {rarity}" under its name. Every other first is told by the Broadcast, never by a banner of its own.
+- **Bringing a friend** [research, 2026-11-24, tier 2; Roblox's own referral system, `docs/roblox-rules.md`, "Rewards for engagement, invites and notifications"]. Roblox's invite prompt opens from a "Bring a friend" tile on Home's Today card, and once from the results card of the account's first Normal clear, the moment a player most wants to show the game. It never opens by itself.
+  - **The gift is earned:** when a friend who has never played joins through the player's invite and beats the Lamplighter on Normal, both get a Forge Crate. The friend's first run is the proof, so an alt account has to play about fifteen minutes for a crate.
+  - **At most five friends** pay their inviter, for good. The friend's own crate never depends on that count: a sixth friend still gets theirs. A friend pays only once, a join without an invite or an account that has played before pays nothing, and so does inviting yourself. Never Credits, a Voidkin, or anything the store sells.
+  - **An inviter who's away** finds the crate waiting at their next join, with its line.
+  - **The words,** each saying its conditions, so nothing promises more than it pays:
+    - the tile, "Bring a friend" over "When a new player you bring beats the Lamplighter, a Forge Crate for you both", and "{n} of 5 friends brought" once one has;
+    - past five, the tile's second line is "A new player you bring gets a Forge Crate when they beat the Lamplighter";
+    - the inviter's line, "{friend} beat the Lamplighter: a Forge Crate for bringing them";
+    - the friend's, at their first clear, "A Forge Crate for coming with {inviter}";
+    - names are display names, never a nickname or anything a player typed.
+  - **Roblox's banner** at the top of the invite menu, set in the director's Creator Dashboard (Engagement, Referral Rewards), says only what's true for every inviter: the reward's name "A Forge Crate after their first clear", and its description "A friend new to the game who beats the Lamplighter gets a Forge Crate, and so do you, for your first five." Whether the field takes that length, and what the banner shows past its limit, are checked when the director enters it (UNVERIFIED).
 
 ## The welcome week and codes
 

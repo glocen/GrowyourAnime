@@ -161,4 +161,27 @@ return {
 	-- pitched 10 degrees down, as the takes do, and 10.75 at 30. Floor and Top over the paving; the rate follows the
 	-- band's height, so the density holds (Kit.PaperBand). Colour: a warm paper's tint over the picture's white.
 	Paper = { Floor = 12, Top = 18.5, Colour = hex("F2E3C6") },
+	-- The Tower's room (AR56, the Crown): its own look, worn at once while the camera is within Reach of a room's middle
+	-- (its way in and out is a fade), as a phase is (Night.Ground). Modulo's lighting.json (build/handoff/TowerRoom), taken
+	-- as the base's frames were: the sun where the frames have it (Toward, solved to a day clock like the ground's), its
+	-- colour, its Brightness the frames' 1.35 times 3; Ambient and OutdoorAmbient alike the frames' "asOne"; Exposure,
+	-- log2 of the frames' 1.057; the bloom the frames' (Size their 20 px). The haze is the builder's seeds against the
+	-- frames' "hazeAt" (5% at 150 studs, 15% at 400, 34% at 1000), tuned by playing. No glow or lights to dress: the
+	-- room's pieces keep the kit's own (glow 1.3, the floor's 1.1).
+	Room = {
+		Reach = 600,
+		Toward = Vector3.new(-0.821, 0.559, -0.115),
+		-- The six faces, uploaded under the group (docs/asset-log.md, 2026-11-24); Ft toward the foe's way in.
+		Sky = faces({ 134487859749660, 74431207345196, 111979866191066, 111163049260662, 83024702347687, 122714777710819 }),
+		Sun = hex("FFF6E8"),
+		Brightness = 4.05,
+		Ambient = hex("B0BACF"),
+		Diffuse = 0.5,
+		Exposure = 0.08,
+		Atmosphere = { Density = 0.2, Offset = 0, Haze = 0.3, Glare = 0, Color = hex("D2E2F8"), Decay = hex("D2E2F8") },
+		Bloom = { Intensity = 0.4, Size = 20, Threshold = 1.4 },
+		Floor = 1,
+		Glow = 1,
+		Lights = 0,
+	},
 }

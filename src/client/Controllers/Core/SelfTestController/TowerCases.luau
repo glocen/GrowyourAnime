@@ -1,14 +1,17 @@
 --!strict
--- The Tower's case (TR29): a run from the ring's step; each floor's foe a Voidkin of the pool at its floor's level, in its
--- enemy look, for this player alone; floors won through the fight itself or Studio's TowerWin, each written to the run's
--- ledger once with Rules.Tower's own reward; no heal between floors and at most the cap in one; the lead, its stars and
--- its Regalia frozen; at most three platforms and the column; the lead's fall ending the run at its last floor won, the ledger
--- granted once, the record and the results, which open once and clear when closed. Then the avatar stepping off its
--- platform, and a crash's run ended at the next join. The results' Home and Retry (TR46): Home sets the avatar down at
--- its plot's spawn, Retry in its ring, where the next run begins once rested. The heal cap told once, under the lead's
+-- The Tower's case (TR29, AR56): a run from the gate's door, in the player's own room far from the map; each floor's foe
+-- a Voidkin of the pool at its floor's level, in its enemy look, for this player alone; floors won through the fight
+-- itself or Studio's TowerWin, each written to the run's ledger once with Rules.Tower's own reward; no heal between floors
+-- and at most the cap in one; the lead, its stars and its Regalia frozen; the room's slab showing the floor and the next,
+-- its foe's steps risen at a rise and down in the fight; the lead's fall ending the run at its last floor won, the ledger
+-- granted once, the record on the gate's slab and the results, which open once and clear when closed, the avatar set down
+-- before its gate and the room gone. Then the avatar leaving its room, and a crash's run ended at the next join. The
+-- results' Home and Retry (TR46): Home sets the avatar down at its plot's spawn, Retry in its gate's door, where the next
+-- run begins once rested. The heal cap told once, under the lead's
 -- corner, and never again; the week's line on the results, its board a tap away and back (TR46). The case's record,
 -- Credits and chests are put back at its end.
 
+local CollectionService = game:GetService("CollectionService")
 local GuiService = game:GetService("GuiService")
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
@@ -19,7 +22,7 @@ local Profile = require(Shared.Data.Profile)
 local Markers = require(Shared.World.Markers)
 local Tower = require(Shared.Rules.Tower)
 local ProfileController = require(script.Parent.Parent.ProfileController)
-local TowerController = require(script.Parent.Parent.Parent.Main.TowerController)
+local TowerRoomController = require(script.Parent.Parent.Parent.Main.TowerRoomController)
 local HudController = require(script.Parent.Parent.Parent.Main.HudController)
 local UI = script.Parent.Parent.Parent.Parent.UI
 local Screen = require(UI.Kit.Screen)
@@ -84,7 +87,7 @@ end
 function TowerCases.Cases(): { any }
 	return {
 		{
-			Name = "Tower (TR29): a run from the ring, floors won into the ledger, the heal cap, the freeze, three platforms, the fall, the results once, stepping off, a crash's run ended at the join; the results' Home and Retry, the heal cap told once (TR46)",
+			Name = "Tower (TR29, AR56): a run from the gate's door into its own room, floors won into the ledger, the heal cap, the freeze, the room's slab and steps, the fall, the record on the gate, the results once, leaving the room, a crash's run ended at the join; the results' Home and Retry, the heal cap told once (TR46)",
 			Place = "Main", -- TR45: its world stands in that place only
 			Run = function(t: any)
 				-- The bays step out for the run and back after it: a full battery spills a working bay's power into Credits,
@@ -121,16 +124,31 @@ function TowerCases.Cases(): { any }
 						end
 						return out
 					end
-					-- The ring's step: the avatar set down inside it starts a run.
+					-- The gate's door: the avatar set down in it starts a run, into the player's own room.
+					-- The gate, its pieces streamed in round the avatar set down before it (a case before may have taken the
+					-- avatar far enough away to stream them out).
 					local plot = me:GetAttribute("Plot")
 					local ring = if type(plot) == "number" then Markers.Find("TowerRing", { Plot = plot }) else nil
-					t.Check("the plot's ring", ring ~= nil)
 					if ring == nil then
+						t.Check("the plot's gate", false, "no TowerRing")
 						return
 					end
-					local middle = Markers.At(ring).Position
-					t.Server("TestStandAt", middle + Vector3.new(0, 3, 0))
-					t.Check("stepping into the ring starts a run", waitFor(t, 3, function()
+					local lot = Tower.Lot(Markers.At(ring))
+					local bx, bz = Tower.Before()
+					t.Server("TestStandAt", (lot * CFrame.new(bx, 3, bz)).Position)
+					t.Check("the plot's gate", waitFor(t, 10, function()
+						return ring:FindFirstChild("GateVeil") ~= nil and ring:FindFirstChild("Record") ~= nil
+					end))
+					local doorX, doorZ = Tower.Door()
+					local veil = ring:FindFirstChild("GateVeil") :: BasePart?
+					local door = lot * CFrame.new(doorX, if veil then lot:PointToObjectSpace(veil.Position - Vector3.new(0, veil.Size.Y / 2, 0)).Y else 1.09, doorZ)
+					local function inDoor(): boolean
+						local root = me.Character and me.Character:FindFirstChild("HumanoidRootPart") :: BasePart?
+						local at = if root then lot:PointToObjectSpace(root.Position) else nil
+						return at ~= nil and Tower.InGate(at.X, at.Y - 3, at.Z, 1)
+					end
+					t.Server("TestStandAt", door.Position + Vector3.new(0, 3, 0))
+					t.Check("stepping into the door starts a run", waitFor(t, 3, function()
 						return me:GetAttribute("Tower") == 1
 					end))
 					if me:GetAttribute("Tower") ~= 1 then
@@ -147,6 +165,24 @@ function TowerCases.Cases(): { any }
 					local run = view().Progress.Tower.Run
 					t.Check("the run in the save, its floor none won", run ~= nil and run.Floor == 0, if run then `{run.Floor}` else "none")
 					local seed = if run then run.Seed else 0
+					-- The room: the player's own, far from the map, the avatar set down on its floor in the fade.
+					local room: Model? = nil
+					t.Check("the player's own room", waitFor(t, 3, function()
+						room = TowerRoomController.Room()
+						return room ~= nil
+					end))
+					local mine = 0
+					for _, item in CollectionService:GetTagged("GA_TowerRoom") do
+						if item:GetAttribute("For") == me.UserId then
+							mine += 1
+						end
+					end
+					t.Equal("one room for the player", mine, 1)
+					local roomAt = state().Room
+					t.Check("far from the map, out of its streaming", typeof(roomAt) == "Vector3" and (roomAt - Markers.At(ring).Position).Magnitude > 1024 + 200)
+					local slab = if room then room:FindFirstChild("CrownSlab") :: BasePart? else nil
+					local full = Tower.Beat(TowerConfig.Rise)
+					local stepsUp = false
 					while os.clock() < deadline do
 						local s = state()
 						local saved = view().Progress.Tower.Run
@@ -160,7 +196,22 @@ function TowerCases.Cases(): { any }
 							t.Check(`floor {s.Floor}: in its enemy look, for this player`, foe ~= nil and foe:FindFirstChild("RivalLook") ~= nil)
 							t.Check(`floor {s.Floor}: healing within the cap`, type(s.HealRoom) == "number" and s.HealRoom <= TowerConfig.HealCap * s.LeadMax + 1e-6)
 							local root = me.Character and me.Character:FindFirstChild("HumanoidRootPart") :: BasePart?
-							t.Check(`floor {s.Floor}: the avatar on its platform`, root ~= nil and math.abs(root.Position.Y - 3 - s.Top) < 2, if root then `{root.Position.Y - 3} against {s.Top}` else "no root")
+							local off = if root and typeof(s.Room) == "Vector3" then root.Position - s.Room else nil
+							t.Check(`floor {s.Floor}: the avatar on its room's floor`, off ~= nil and math.abs(off.Y - 3) < 2 and (off * Vector3.new(1, 0, 1)).Magnitude <= 48, if off then `{off}` else "no root")
+							-- The slab: one face shows the floor fought, the other the next.
+							local faces = if slab then TowerRoomController.Numbers(slab) else nil
+							local floorSaid, nextSaid = tostring(s.Floor), tostring(s.Floor + 1)
+							t.Check(`floor {s.Floor}: the slab shows it and the next`, faces ~= nil and ((faces.Front == floorSaid and faces.Back == nextSaid) or (faces.Back == floorSaid and faces.Front == nextSaid)), if faces then `{faces.Front} / {faces.Back}` else "no slab")
+							-- Once the beat's sink is over, the foe's steps wait under their places again.
+							local beatStart = me:GetAttribute("TowerBeat")
+							if type(beatStart) == "number" and workspace:GetServerTimeNow() - beatStart > full.Sink[2] + 0.2 then
+								local steps = TowerRoomController.Steps() or {}
+								local down = next(steps) ~= nil
+								for _, step in full.Steps do
+									down = down and math.abs((steps[step.Tag] or 0) - step.Rest) < 0.05
+								end
+								t.Check(`floor {s.Floor}: the foe's steps down in the fight`, down)
+							end
 							if caught == 1 then
 								-- The floor's title under the foe's card, never over its health (TR46; AR44's verdict).
 								local title = Layers.Get("Hud"):FindFirstChild("TowerFloor") :: GuiObject?
@@ -226,6 +277,12 @@ function TowerCases.Cases(): { any }
 							if s.HealRoom ~= nil and s.HealRoom ~= 0 then
 								t.Check(`floor {s.Floor}: no heal between floors`, false, tostring(s.HealRoom))
 							end
+							for _, step in full.Steps do
+								local under = (TowerRoomController.Steps() or {})[step.Tag]
+								if under and under > step.Rest + 1 then
+									stepsUp = true
+								end
+							end
 							rising += 1
 							task.wait(0.1)
 						else
@@ -236,6 +293,7 @@ function TowerCases.Cases(): { any }
 					t.Check("three floors won", saved ~= nil and saved.Floor >= 3, if saved then `{saved.Floor}` else "no run")
 					t.Check("a floor caught in its fight", caught >= 1, `{caught}`)
 					t.Check("a rise caught between floors", rising >= 1)
+					t.Check("the foe's steps rose in a rise", stepsUp)
 					if saved == nil then
 						return
 					end
@@ -250,19 +308,9 @@ function TowerCases.Cases(): { any }
 					end
 					t.Equal("the ledger holds each floor's reward once", saved.Credits, ledger)
 					t.Equal("nothing granted mid-run", view().Currency.Credits, credits0)
-					-- Floor 4's stack: three platforms and the column under them.
 					waitFor(t, TowerConfig.Rise + 1, function()
 						return me:GetAttribute("Tower") == saved.Floor + 1
 					end)
-					local discs, column = TowerController.Platforms(me)
-					local floors = {}
-					for floor in discs do
-						table.insert(floors, floor)
-					end
-					table.sort(floors)
-					local top = me:GetAttribute("Tower") :: number
-					t.Check("at most three platforms, the floor's and two below", #floors == math.min(3, top) and floors[#floors] == top, table.concat(floors, ", "))
-					t.Check("older floors in one column", (column ~= nil) == (top > 3))
 					-- The fall: the run ends at its last floor won, granted once.
 					local won = (view().Progress.Tower.Run :: Profile.TowerRun).Floor
 					t.Server("TowerFell")
@@ -284,9 +332,21 @@ function TowerCases.Cases(): { any }
 						t.Equal(`{id} granted`, granted()[id], count)
 					end
 					t.Check("the record", view().Progress.Tower.Best == math.max(best0, results.Floor) and results.Record == (results.Floor > best0))
-					t.Check("the platforms fall away", waitFor(t, 2, function()
-						return next((TowerController.Platforms(me))) == nil
+					t.Check("the room's gone once the avatar's out", waitFor(t, 3, function()
+						return TowerRoomController.Room() == nil
 					end))
+					local outside = (lot * CFrame.new(bx, 0, bz)).Position
+					local root = me.Character and me.Character:FindFirstChild("HumanoidRootPart") :: BasePart?
+					local fromBefore = if root then ((root.Position - outside) * Vector3.new(1, 0, 1)).Magnitude else nil
+					t.Check("the fall sets the avatar down before its gate", fromBefore ~= nil and fromBefore < 6, `{fromBefore} studs`)
+					-- The gate's slab shows the record, on both faces.
+					-- Found again each look: streamed back in round the avatar, it's a new part.
+					local best = tostring(view().Progress.Tower.Best)
+					t.Check("the gate's slab shows the record, both faces", waitFor(t, 5, function()
+						local record = ring:FindFirstChild("Record") :: BasePart?
+						local said = if record then TowerRoomController.Numbers(record) else nil
+						return said ~= nil and said.Front == best and said.Back == best
+					end), best)
 					-- The results open once, and clear when closed.
 					t.Check("the results open", waitFor(t, 3, function()
 						return Screen.Current() == TowerScreen.Name
@@ -345,15 +405,15 @@ function TowerCases.Cases(): { any }
 					t.Check("a move made while a faded one waits wins over it", type(race) == "table" and race.Ok == true and race.Off < 1, if type(race) == "table" then tostring(race.Off or race.Error) else "no answer")
 					task.wait(0.5)
 					t.Check("and don't open again", Screen.Current() ~= TowerScreen.Name)
-					-- Stepping off the platform ends a run where it stands.
+					-- Leaving the room (past its steps' ring) ends a run where it stands.
 					t.Server("LeadHeal")
 					local again = t.Server("TowerStart")
 					t.Check("another run", type(again) == "table" and again.Ok == true, tostring(again and again.Error))
-					waitFor(t, TowerConfig.Rise + 1, function()
+					waitFor(t, TowerConfig.Rise + 2, function()
 						return state().Phase == "Fighting"
 					end)
 					t.Server("TowerOff")
-					t.Check("stepping off ends it", waitFor(t, 3, function()
+					t.Check("leaving the room ends it", waitFor(t, 3, function()
 						return me:GetAttribute("Tower") == nil and view().Progress.Tower.Run == nil and view().Progress.Tower.Results ~= nil
 					end))
 					t.Check("its results open", waitFor(t, 3, function()
@@ -367,7 +427,7 @@ function TowerCases.Cases(): { any }
 					t.Check("a run started over results still open closes them", waitFor(t, 3, function()
 						return Screen.Current() ~= TowerScreen.Name and view().Progress.Tower.Results == nil
 					end))
-					waitFor(t, TowerConfig.Rise + 1, function()
+					waitFor(t, TowerConfig.Rise + 2, function()
 						return state().Phase == "Fighting"
 					end)
 					t.Server("TowerWin")
@@ -383,7 +443,7 @@ function TowerCases.Cases(): { any }
 					t.Check("the join ends it, its ledger granted", waitFor(t, 3, function()
 						return view().Progress.Tower.Run == nil and left ~= nil and view().Currency.Credits == before + left.Credits
 					end))
-					-- Retry (TR46), on the crash's results: set in the ring, and the next run begins once the rest is up.
+					-- Retry (TR46), on the crash's results: set in the gate's door, and the next run begins once the rest is up.
 					t.Check("the crash's results open", waitFor(t, 3, function()
 						return Screen.Current() == TowerScreen.Name
 					end))
@@ -392,11 +452,11 @@ function TowerCases.Cases(): { any }
 					if retry and retry:IsA("TextButton") then
 						Button.Press(retry)
 					end
-					local inRing = waitFor(t, 2, function()
-						local at = me.Character and me.Character:FindFirstChild("HumanoidRootPart") :: BasePart?
-						return at ~= nil and ((at.Position - middle) * Vector3.new(1, 0, 1)).Magnitude <= TowerConfig.Ring
+					-- Rested already, the door takes it in at once: only the door starts a run, so a run begun counts.
+					local inGate = waitFor(t, 3, function(): boolean
+						return inDoor() or me:GetAttribute("Tower") == 1
 					end)
-					t.Check("Retry sets the avatar in its ring, the results closed", inRing and Screen.Current() ~= TowerScreen.Name)
+					t.Check("Retry sets the avatar in its gate's door, the results closed", inGate and Screen.Current() ~= TowerScreen.Name)
 					t.Check("and the next run begins once rested", waitFor(t, TowerConfig.Rest + 3, function()
 						return me:GetAttribute("Tower") == 1
 					end))

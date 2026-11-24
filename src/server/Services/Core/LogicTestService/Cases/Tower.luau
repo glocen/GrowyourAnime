@@ -19,6 +19,9 @@ local Voidkin = require(Shared.Definitions.Voidkin)
 local Growth = require(Shared.Rules.Growth)
 local Stats = require(Shared.Rules.Stats)
 local Tower = require(Shared.Rules.Tower)
+local Kit = require(Shared.World.Kit)
+local RoomPlan = require(Shared.Config.Kits.TowerRoom.Plan) :: any
+local RoomManifest = require(Shared.Config.Kits.TowerRoom.Manifest) :: any
 
 local WorldConfig = require(Shared.Config.World)
 
@@ -138,13 +141,115 @@ return {
 			t.Check("on the drawn plot, at the silhouette's place", x == 48 and z == 96, `{x}, {z}`)
 			local mx = Tower.RingSpot(across, deep, behind, tower, -1)
 			t.Equal("mirrored with its crossing", mx, -48)
-			-- Its platforms (out to where a run is left) clear the plot's own yard and the neighbour's half of the gap
-			-- between them (AR41: 48 across overhangs the lot's 32, in the air).
-			local reach = Tower.Reach(across, deep, behind, tower)
-			t.Check("its platforms stay off its own yard", reach.Near >= deep / 2, `{reach.Near} < {deep / 2}`)
+			-- Its gate (AR56: the plan's lot pieces, in the lot's frame) stands on its lot: off its own yard and its path,
+			-- and inside its half of the gap to the neighbour. Each piece's footprint, corner by corner, in the plot's frame.
+			local lot = Tower.Lot(CFrame.new(x, 0, z))
 			local between = plots.Between * unit
-			t.Check("and off its neighbour's half of the gap", reach.Side <= across / 2 + between / 2, `{reach.Side} > {across / 2 + between / 2}`)
-			t.Check("and over its own floor, never the one below", TowerConfig.Platform.Height > TowerConfig.Out.Below + TowerConfig.Platform.Thick)
+			local near: number, far: number, side: number = math.huge, -math.huge, 0
+			for _, placement in RoomPlan.lot.placements do
+				local piece = RoomManifest.pieces[placement.piece]
+				local frame = Kit.Room(lot, placement, piece)
+				local half = Vector3.new(piece.size[1], piece.size[2], piece.size[3]) * placement.scale / 2
+				for _, sx in { -1, 1 } do
+					for _, sz in { -1, 1 } do
+						local corner: Vector3 = frame * Vector3.new(sx * half.X, 0, sz * half.Z)
+						near = math.min(near, corner.Z)
+						far = math.max(far, corner.Z)
+						side = math.max(side, math.abs(corner.X))
+					end
+				end
+			end
+			t.Check("its gate stays off its own yard and path", near >= deep / 2 + behind, `{near} < {deep / 2 + behind}`)
+			t.Check("and on its lot", far <= deep / 2 + behind + tower, `{far} > {deep / 2 + behind + tower}`)
+			local edge: number = across / 2 + (between :: number) / 2
+			t.Check("and off its neighbour's half of the gap", side <= edge, `{side} > {edge}`)
+			-- Its door faces the base: the lot's +Z runs back toward the plot's middle.
+			t.Check("its door faces the base", lot.LookVector.Z > 0.99, `{lot.LookVector}`)
+		end,
+	},
+	{
+		Name = "Tower: each run's room has its own place, far from the others, and a free one for each",
+		Run = function(t: any)
+			local rooms = TowerConfig.Room
+			local most = rooms.Across * 3
+			local apart = math.huge
+			for a = 1, most do
+				for b = a + 1, most do
+					apart = math.min(apart, (Tower.RoomAt(a) - Tower.RoomAt(b)).Magnitude)
+				end
+			end
+			-- Out of each other's streaming: 1024 is the place's target radius (StreamingTargetRadius).
+			t.Check("two rooms stream apart", apart >= 2 * 1024, `{apart}`)
+			t.Check("every room stands over the fallen parts' depth", Tower.RoomAt(most).Y > -500 + 100)
+			t.Equal("a first room takes the first place", Tower.FreeSlot({}), 1)
+			t.Equal("the lowest free place next", Tower.FreeSlot({ [1] = true, [3] = true }), 2)
+			t.Equal("past every taken one", Tower.FreeSlot({ [1] = true, [2] = true }), 3)
+		end,
+	},
+	{
+		Name = "Tower: the gate's door starts a run, the lot round it doesn't, and its end is set down before it",
+		Run = function(t: any)
+			local x, z = Tower.Door()
+			local gate = TowerConfig.Gate
+			t.Check("in the door, on its dais", Tower.InGate(x, 1.09, z))
+			t.Check("not beside it", not Tower.InGate(x + gate.Half + 0.5, 1.09, z))
+			t.Check("beside it, within the step out's margin", Tower.InGate(x + gate.Half + 0.5, 1.09, z, 1))
+			t.Check("not over it", not Tower.InGate(x, gate.Up + 0.5, z))
+			local bx, bz = Tower.Before()
+			t.Check("set down out of the door", not Tower.InGate(bx, 0, bz, 1), `{bx}, {bz}`)
+			t.Check("toward the base", bz > z)
+		end,
+	},
+	{
+		Name = "Tower: a fighter on the room's floor is in, out past its steps or down off it has left",
+		Run = function(t: any)
+			local floor = RoomPlan.floor
+			local out = TowerConfig.Out
+			t.Check("the middle", not Tower.Left(0, 0, 0))
+			t.Check("the floor's edge", not Tower.Left(floor.radius, 0, 0))
+			t.Check("the foe's steps' ring", not Tower.Left(0, -2, -floor.stepRing[2]))
+			t.Check("past them", Tower.Left(floor.stepRing[2] + out.Side + 1, 0, 0))
+			t.Check("down off the floor", Tower.Left(10, -out.Below - 1, 0))
+			-- The way out: the entrance's steps lie past the ring, so walking down them leaves.
+			for _, placement in RoomPlan.placements do
+				if string.sub(placement.tag, 1, 2) == "In" then
+					t.Check(`{placement.tag}: off it, out`, Tower.Left(placement.at[1], placement.at[2], placement.at[3]))
+				end
+			end
+			-- The fighters' spots stand inside the floor.
+			t.Check("the spots on the floor", floor.stand < floor.radius - 4)
+		end,
+	},
+	{
+		Name = "Tower: a floor's beat raises the foe's steps farthest first, all inside the rise, scaled to a fast one",
+		Run = function(t: any)
+			local rise = TowerConfig.Rise
+			local beat = Tower.Beat(rise)
+			t.Equal("its four steps", #beat.Steps, 4)
+			local last = -math.huge
+			for index, step in beat.Steps do
+				local at = 0
+				for _, placement in RoomPlan.placements do
+					if placement.tag == step.Tag then
+						at = math.abs(placement.at[3])
+					end
+				end
+				t.Check(`{step.Tag}: after the one farther out`, at < last or index == 1, `{at} >= {last}`)
+				last = at
+				t.Check(`{step.Tag}: up before the sink`, step.From >= 0 and step.To <= beat.Sink[1])
+				t.Check(`{step.Tag}: waits under its place`, step.Rest < 0)
+				if index > 1 then
+					t.Check(`{step.Tag}: after the one before`, step.From > beat.Steps[index - 1].From)
+				end
+			end
+			t.Check("the slab's turn inside the rise", beat.Turn[1] >= 0 and beat.Turn[2] <= rise)
+			t.Check("the foe in before the steps sink", beat.Leap[2] <= beat.Sink[1])
+			local fast = Tower.Beat(TowerConfig.Fast.Rise)
+			local scale = TowerConfig.Fast.Rise / rise
+			t.Check("a fast floor's steps, scaled", math.abs(fast.Steps[1].From - beat.Steps[1].From * scale) < 1e-9)
+			t.Check("a fast floor's turn, kept inside its rise", fast.Turn[2] <= TowerConfig.Fast.Rise)
+			t.Check("a fast floor keeps its leap", math.abs((fast.Leap[2] - fast.Leap[1]) - (beat.Leap[2] - beat.Leap[1])) < 1e-9)
+			t.Check("its leap ends where the scaled one would", math.abs(fast.Leap[2] - beat.Leap[2] * scale) < 1e-9)
 		end,
 	},
 	{

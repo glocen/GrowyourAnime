@@ -158,6 +158,12 @@ function KeeperService.SetDown(player: Player, at: CFrame): boolean
 	return true
 end
 
+-- Seconds from a faded set-down's ask to its move: the middle of the black (Config.Combat.Keeper.Fade).
+function KeeperService.Landing(): number
+	local f = Combat.Keeper.Fade
+	return f.Out + f.Hold / 2
+end
+
 -- Sets the player and their lead down at `at` at once, with no fade: home in one tap (HomeService, TR19), whose jump
 -- is its own light. Not during a try. False when nothing moves.
 function KeeperService.Place(player: Player, at: CFrame): boolean

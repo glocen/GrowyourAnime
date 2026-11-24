@@ -6,6 +6,7 @@
 -- which stay where TR2 put them (docs/engineering-plan.md, "The world contract"). No Roblox API beyond its data types: it
 -- runs with Studio closed.
 --   Kit.Place(placement, piece, gateZ, floorY)  a piece's MeshPart CFrame: its place times its centre
+--   Kit.Room(frame, placed, piece)              a piece's MeshPart CFrame in a frame's plan (AR56's room and lot)
 --   Kit.Light(light, gateZ, floorY)             a static light's CFrame, a SpotLight's shining straight down
 --   Kit.Paper(box, gateZ, floorY, band?)        a box of the drifting paper's air: its centre, unturned (the plan's paper)
 --   Kit.PaperBand(box, band?)                   the box in a band over the paving (Config.Lighting.Paper): its centre's
@@ -50,6 +51,18 @@ function Kit.Place(placement: Placement, piece: Piece, gateZ: number, floorY: nu
 	return CFrame.new(placement.across, floorY + (placement.up or 0), gateZ - placement.along)
 		* CFrame.Angles(0, math.rad(placement.turn), 0)
 		* CFrame.new(c[1], c[2], c[3])
+end
+
+-- A placement in a frame's own plan (AR56's room and its lot: `at` in the frame's studs on Roblox's axes, `turn`
+-- degrees anticlockwise seen from above, `scale` the same on every axis): the frame, then its place, then the piece's
+-- centre at its scale. The MeshPart's size is the piece's times `scale`.
+export type Placed = { piece: string, tag: string, at: { number }, turn: number, scale: number }
+function Kit.Room(frame: CFrame, placed: Placed, piece: Piece): CFrame
+	local c, s = piece.centre, placed.scale
+	return frame
+		* CFrame.new(placed.at[1], placed.at[2], placed.at[3])
+		* CFrame.Angles(0, math.rad(placed.turn), 0)
+		* CFrame.new(c[1] * s, c[2] * s, c[3] * s)
 end
 
 -- A placement as it stands on a plot whose crossing is on its `side` of across (1 or -1): one marked "toward":

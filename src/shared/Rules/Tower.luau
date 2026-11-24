@@ -3,11 +3,14 @@
 -- floor's foe and reward from the run's seed, the heal cap, and the run's ledger in the save (Progress.Tower). Every
 -- write is one transaction the server runs inside DataService.Change: a floor won adds its reward to the run's ledger,
 -- and the end grants the ledger once, raises the record, keeps the results and clears the run. A repeated or stale
--- request (another run's id, a floor not next) changes nothing. No Roblox API: it runs with Studio closed.
+-- request (another run's id, a floor not next) changes nothing. And the room's (AR56): where each copy stands, the
+-- gate's door on the lot, the line a run is left at, the beat of its steps. No Roblox API beyond its data types: it
+-- runs with Studio closed.
 
 local Shared = game:GetService("ReplicatedStorage").Shared
 local Profile = require(Shared.Data.Profile)
 local TowerConfig = require(Shared.Config.Tower)
+local RoomPlan = require(Shared.Config.Kits.TowerRoom.Plan) :: any
 local DropsConfig = require(Shared.Config.Drops)
 local GrowthConfig = require(Shared.Config.Growth)
 local Voidkin = require(Shared.Definitions.Voidkin)
@@ -180,18 +183,106 @@ end
 
 -- The ring's middle in its plot's frame, (across, inward from the plot's middle), on a plot `across` x `deep` with
 -- `behind` of path and a lot `tower` deep, its crossing on `side` (1 or -1): the lot's crossing end, a square of it.
+-- The gate stands there (AR56).
 function Tower.RingSpot(across: number, deep: number, behind: number, tower: number, side: number): (number, number)
 	return side * (across / 2 - tower / 2), deep / 2 + behind + tower / 2
 end
 
--- Where a platform over that ring reaches, out to the line a run is left at (its edge, then Out.Side), in the same
--- frame and the same studs: Side, across from the plot's middle on the ring's side; Near, the least inward (toward the
--- plot); Far, the most. A platform wider than its lot overhangs it in the air, never the plot's own yard or a
--- neighbour's half of the gap between them (the logic cases), and the base's ground is laid on past Far.
-function Tower.Reach(across: number, deep: number, behind: number, tower: number): { Side: number, Near: number, Far: number }
-	local x, z = Tower.RingSpot(across, deep, behind, tower, 1)
-	local out = TowerConfig.Platform.Radius + TowerConfig.Out.Side
-	return { Side = x + out, Near = z - out, Far = z + out }
+-- The lot's frame from its ring marker's (whose look is toward its plot): the plan's lot frame, its +Z toward the base,
+-- its look out from it.
+function Tower.Lot(marker: CFrame): CFrame
+	local look = marker.LookVector
+	local out = Vector3.new(-look.X, 0, -look.Z)
+	out = if out.Magnitude > 1e-3 then out.Unit else Vector3.zAxis
+	return CFrame.lookAt(marker.Position, marker.Position + out)
+end
+
+-- The room (AR56): copy `slot`'s floor middle in the world, in rows of Config.Tower.Room's Across.
+function Tower.RoomAt(slot: number): Vector3
+	local room = TowerConfig.Room
+	local index = math.max(1, math.floor(slot)) - 1
+	local column, row = index % room.Across, index // room.Across
+	return room.Origin + Vector3.new((column - (room.Across - 1) / 2) * room.Spacing, 0, -row * room.Spacing)
+end
+
+-- The lowest slot no copy holds.
+function Tower.FreeSlot(taken: { [number]: any }): number
+	local slot = 1
+	while taken[slot] ~= nil do
+		slot += 1
+	end
+	return slot
+end
+
+-- The door of light's place on the lot, from the plan: (across, along toward the base).
+local function door(): (number, number)
+	for _, placement in RoomPlan.lot.placements do
+		if placement.piece == "GateVeil" then
+			return placement.at[1], placement.at[3]
+		end
+	end
+	return 0, 0
+end
+local DOOR_X, DOOR_Z = door()
+
+-- Whether a point in the lot's frame (x across, y over its ground, z toward the base) stands in the gate's door: its box
+-- (Config.Tower.Gate), grown by `grow` studs every way.
+function Tower.InGate(x: number, y: number, z: number, grow: number?): boolean
+	local gate, more = TowerConfig.Gate, grow or 0
+	return math.abs(x - DOOR_X) <= gate.Half + more and math.abs(z - DOOR_Z) <= gate.Deep + more and y >= -1 - more and y <= gate.Up + more
+end
+
+-- The door's middle in the lot's frame: (across, along toward the base), on its ground.
+function Tower.Door(): (number, number)
+	return DOOR_X, DOOR_Z
+end
+
+-- Where a run sets the avatar down at its end, in the lot's frame: Back studs in front of the door, toward the base.
+function Tower.Before(): (number, number)
+	return DOOR_X, DOOR_Z + TowerConfig.Back
+end
+
+-- Whether an avatar's feet at (dx, dy, dz) from its room's floor middle have left the room: past its step ring's edge by
+-- Out.Side, or Out.Below under the floor.
+function Tower.Left(dx: number, dy: number, dz: number): boolean
+	local edge = RoomPlan.floor.stepRing[2] + TowerConfig.Out.Side
+	return dx * dx + dz * dz > edge * edge or dy < -TowerConfig.Out.Below
+end
+
+export type Step = { Tag: string, From: number, To: number, Rest: number }
+export type Beat = { Steps: { Step }, Turn: { number }, Climb: { number }, Leap: { number }, Sink: { number } }
+
+-- A floor's beat (the plan's, seconds from its start) for a rise of `rise` seconds: the foe's steps wait Rest studs under
+-- their places and rise over [From, To], the farthest first, each Stagger after the last; the slab's turn keeps its own
+-- seconds, the rest is scaled to the rise.
+function Tower.Beat(rise: number): Beat
+	local beat = RoomPlan.beat
+	local scale = rise / TowerConfig.Rise
+	local far: { { Tag: string, Off: number } } = {}
+	for _, placement in RoomPlan.placements do
+		if beat.stepRest[placement.tag] ~= nil then
+			table.insert(far, { Tag = placement.tag, Off = math.abs(placement.at[3]) })
+		end
+	end
+	table.sort(far, function(a: { Tag: string, Off: number }, b: { Tag: string, Off: number }): boolean
+		return a.Off > b.Off
+	end)
+	local steps: { Step } = {}
+	for index, step in far do
+		local from = (beat.firstStep + (index - 1) * beat.stepStagger) * scale
+		table.insert(steps, { Tag = step.Tag, From = from, To = from + beat.stepRise * scale, Rest = beat.stepRest[step.Tag] })
+	end
+	local function scaled(span: { number }): { number }
+		return { span[1] * scale, span[2] * scale }
+	end
+	return {
+		Steps = steps,
+		Turn = { beat.slabTurn[1], math.min(beat.slabTurn[2], rise) },
+		Climb = scaled(beat.climb),
+		-- A fast floor keeps the leap's length (the plan's note), ending where the scaled one would.
+		Leap = if scale < 1 then { math.max(0, beat.leap[2] * scale - (beat.leap[2] - beat.leap[1])), beat.leap[2] * scale } else scaled(beat.leap),
+		Sink = scaled(beat.sink),
+	}
 end
 
 -- Whether a foe of `foeLevel` falls to the lead's first hit (Config.Tower.Fast).

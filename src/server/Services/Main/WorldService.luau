@@ -34,7 +34,6 @@ local Kit = require(Shared.World.Kit)
 local Night = require(Shared.Rules.Night)
 local BaseFit = require(Shared.Rules.BaseFit)
 local Tower = require(Shared.Rules.Tower)
-local TowerConfig = require(Shared.Config.Tower)
 local Net = require(Shared.Net)
 local Markers = require(Shared.World.Markers)
 local Log = require(Shared.Util.Log)
@@ -54,7 +53,7 @@ local WORLD = "World"
 local GROUND_TOP = 0.5 -- the ground's top, over a template Baseplate's (0), so the two never fight for a pixel
 local PAVED_TOP = 0.6 -- the Strip, the streets and the plots stand a tenth higher, for the same reason
 local OVERLAY = 0.1 -- a mark on a paved floor: the kept back of a plot, a Tower's footprint
-local GROUND_PAST = 16 -- the base's ground past where a Tower's platform reaches: room to come down from a high floor
+local GROUND_PAST = 43 -- studs of the base's ground past a Tower lot's middle: as far as AR41's platforms reached, plus 16
 local SPAWN_UP = 3 -- an R6 root stands 3 studs over its floor
 local DRESS = "LanternRow" -- the kit Lantern Row wears: Config.Kits.LanternRow, ServerStorage.Templates.LanternRowKit
 local DRESS_LIFT = 0.05 -- the kit's floors stand a hair over the paving they cover, so the two never fight at a distance
@@ -65,6 +64,8 @@ local FESTIVAL = PlaceRole.Is("Festival")
 local FORECOURT = 24 -- the Festival's paving reaches this far before its gate, where a trip sets the player down
 local BASE = "Base" -- the kit every plot wears: Config.Kits.Base, ServerStorage.Templates.BaseKit (AR14)
 local STRIP = "Strip" -- the kit the Strip and the side street wear: Config.Kits.Strip, ServerStorage.Templates.StripKit (AR17)
+local TOWER = "TowerRoom" -- the Tower's kit, its room and its gate: Config.Kits.TowerRoom, ServerStorage.Templates.TowerRoomKit (AR56)
+local VEIL = 0.55 -- the gate's door of light, seen through (AR56's lot plan)
 -- The Shop's building from the Strip's kit (AR38, installed with AR40's C), in its place's frame (the manifest's notes):
 -- the marker stands before the counter, whose face is 9 behind the place; the five minutes hang at these across, the
 -- first to run at 17, along -5.9 and up 12.2.
@@ -199,6 +200,33 @@ end
 local function kitFiles(kit: string?): (any, any)
 	local home = (Shared.Config :: any).Kits[kit or DRESS]
 	return require(home.Manifest) :: any, require(home.Plan) :: any
+end
+
+-- The Tower's gate on a lot (AR56; the plan's lot placements, in the lot's frame: Rules.Tower.Lot): the dais, its door of
+-- light, its two blades and the record's slab, from the kit's template. Their glow is the kit's own, not the base's
+-- dressing (no Kit.Tag). The slab is the client's to write (TowerRoomController; its Record kept by TowerService).
+local function layGate(ring: Model, lot: CFrame, number: number)
+	local template = kitTemplate(TOWER)
+	if template == nil then
+		Log.Warn("WorldService", `the Tower's template isn't built (ServerStorage.Templates.{TOWER}Kit): no gate on plot {number}`)
+		return
+	end
+	local manifest, plan = kitFiles(TOWER)
+	for _, placement in plan.lot.placements do
+		local part = (template:FindFirstChild(placement.piece) :: BasePart):Clone()
+		part.Anchored = true
+		part.Size *= placement.scale
+		part.CFrame = Kit.Room(lot, placement, manifest.pieces[placement.piece])
+		part.Name = if placement.tag ~= "" then placement.tag else placement.piece
+		part:SetAttribute("Piece", placement.piece)
+		part:SetAttribute("Plot", number)
+		if placement.piece == "GateVeil" then
+			part.Transparency = VEIL
+		elseif placement.piece == "CrownSlab" then
+			CollectionService:AddTag(part, "GA_TowerSlab")
+		end
+		part.Parent = ring
+	end
 end
 
 -- Why the base's kit can't be laid on the plots: none when it can.
@@ -1183,20 +1211,16 @@ local function plot(parent: Instance, number: number, at: CFrame, across: number
 		-- The back half's places (AR16), in the plan's order: the Forge's, the Condenser's and the Lab's.
 		layBack(base, number, at, front)
 		layLevels(base, number, at, front)
-		-- The Tower's ring on its lot's crossing end, where the sleeping silhouette stood (TR29, replacing AR16's): bare
-		-- but for it, so the player knows where to start. It stands with its plot's base: a bare lot has none.
+		-- The Tower's gate on its lot's crossing end, where the ring stood (AR56, replacing TR29's ring): its door of light
+		-- starts a run, its slab shows the owner's record. It stands with its plot's base: a bare lot has none.
 		local ringX, ringZ = Tower.RingSpot(across, deep, behind, tower, crossingSide(at))
 		local ringAt = at * CFrame.new(ringX, 0, ringZ)
 		local ring = model(base, "TowerRing", ringAt)
-		local diameter = TowerConfig.Ring * 2
-		local outer = block(ring, "Ring", Vector3.new(0.12, diameter, diameter), ringAt * CFrame.new(0, 0.06, 0) * CFrame.Angles(0, 0, math.rad(90)), GREY.Ring)
-		outer.Shape = Enum.PartType.Cylinder
-		local inner = block(ring, "Inside", Vector3.new(0.14, diameter - 1.6, diameter - 1.6), ringAt * CFrame.new(0, 0.07, 0) * CFrame.Angles(0, 0, math.rad(90)), tint("lot", GREY.Tower))
-		inner.Shape = Enum.PartType.Cylinder
-		for _, part in { outer, inner } do
-			part.CanCollide, part.CanQuery, part.CanTouch = false, false, false
-		end
-		ring.PrimaryPart = outer
+		local middle = block(ring, "Middle", Vector3.new(1, 0.1, 1), ringAt, GREY.Ring) -- the marker's own part, unseen
+		middle.Transparency = 1
+		middle.CanCollide, middle.CanQuery, middle.CanTouch = false, false, false
+		ring.PrimaryPart = middle
+		layGate(ring, Tower.Lot(ringAt), number)
 		Markers.Stamp(ring, "TowerRing", { Plot = number })
 		-- The owner arrives at the gate, facing into the plot down the way in to the generator.
 		local spawn = Instance.new("SpawnLocation")
@@ -1270,7 +1294,7 @@ local function lay(folder: Folder)
 	-- The base's ground, out past the Towers' far edges by as far as a platform reaches over them (Rules.Tower.Reach,
 	-- AR41's 48 across), so an avatar that leaves its run off the far side comes down on ground. The Festival of
 	-- Battles is its own place (TR45): the base's Festival Door opens its menu, and the crossing north of the Strip is ground.
-	local ground = math.max(towers, stripHalf + deep / 2 + Tower.Reach(across, deep, behind, tower).Far + GROUND_PAST)
+	local ground = math.max(towers, stripHalf + deep + behind + tower / 2 + GROUND_PAST)
 	slab(folder, "Ground", -stripEnd, stripEnd, ground, -ground, GROUND_TOP, groundColour)
 	-- The Strip, wearing Lantern Row's paving with the base laid, as its street does: off the stones onto the plates is
 	-- coming home (AR14). With the Strip's own kit, its own tile (Lantern Row's lifted) and its dressing (AR17).

@@ -16698,6 +16698,15 @@ Made; self-reviewed as stills at the smallest phone, the take by its frames; the
 - **The cues of depth,** as fresh eyes named them, go to polish-later: a far, smaller cloud layer in haze, and the tower's shaft running down into it.
 - **AR56 is closed on Modulo's side.** Faber's install comes after the main game.
 
+### Faber's install: the Crown in the game (Faber, 2026-11-24, 16:00 by the clock; started 15:01)
+
+- **In:** each player's own room, made 6,000 studs out (slots 2,400 apart) when the gate's door takes them and removed in the fade at the run's end; the gate and record slab on every plot's lot; the floor's number turning on the slab at each rise; the steps' beat; the drifts; the room's own light and sky on the client. Uploads: AR56's row in `docs/asset-log.md`.
+- **Checked in the game, from the player's camera:** the steps rise farthest first, 0.15 s apart with about a stud of overshoot, and sink together after the leap (logged as numbers); the number fills its well on both faces, in the room and on the gate; the blades' shadows lie across the floor; the drifts pass at their speeds, fade from 240 studs out and come round at 320 unseen; from the rim, cloud heads lie under the eye (tops −17 to +9 studs from the floor, as the plan has them); the lot as placed; the gate's conditions hold.
+- **One fails, Modulo's to fix:** a thin light line runs along the floor's two joins. The parts meet exactly, and with the floor's picture off the line goes. The join edges of `TowerRoom_Floor_Color.png` (its left column and bottom row) wrap onto a much lighter fill on the opposite edges, and filtering bleeds it in. The fix is padding the wrap, then a re-upload.
+- **For research's pass:** at the default zoom the room's slab hangs behind the HUD's foe card and floor line.
+- **Implemented and tested:** type check 0 new; offline logic 31,939 passed; Tower self-test 63/0; world report empty. **Visually reviewed:** my captures only, research's pass next. **Director-accepted:** no.
+- **Waits:** the foe's look, and its climb and leap (for now it appears at its spot at the rise's end); Scintilla's arrival effect; Sonus's sounds; the results screen's look.
+
 ## AR57. The Guard's and the Dasher's elites (Modulo now, then Faber)
 
 Research, 2026-11-23, 21:54, on the director's pick of 21:53 (`docs/decisions.md`). Tier 2: a new asset players see that nothing covers, in Modulo's area and then Faber's. AR52 left "the masks' elite versions" waiting.

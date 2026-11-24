@@ -1,25 +1,30 @@
 --!strict
 -- TowerService (server): the Tower's runs (TR29; docs/design.md, "The Tower"; docs/engineering-plan.md, "The Tower").
--- A player steps into their plot's ring with a standing lead: a run starts, and floor 1's platform carries them up.
--- Each floor, one foe: a Voidkin of Rules.Tower.Foe in an enemy look, fought by this lead alone (FightService's For). A
--- floor won is one transaction (Rules.Tower.Won); the next platform stands Config.Tower's Height above, the avatar and
--- the lead are set on it at the rise's Leap, and the next foe comes at its end. Health carries: no heal between floors,
--- and in a floor at most its cap (FightService's HealRoom). The lead and its Regalia stay frozen through the run (D10,
--- the player's "Tower" attribute, FightService.Frozen). The lead falling, the avatar leaving its platform, a respawn, a
+-- A player steps through the gate's door on their plot's lot with a standing lead: a run starts in their own copy of
+-- the Tower's room (AR56, the Crown; the kit's TowerRoomKit laid by Config.Kits.TowerRoom.Plan at Rules.Tower.RoomAt),
+-- made then, far from the map, and they and their lead are set down on its floor in a fade. Each floor, one foe: a
+-- Voidkin of Rules.Tower.Foe in an enemy look, fought by this lead alone (FightService's For). A floor won is one
+-- transaction (Rules.Tower.Won); the next foe comes at the rise's end, while the client plays the room's beat (its
+-- steps, its number: TowerRoomController). Health carries: no heal between floors, and in a floor at most its cap
+-- (FightService's HealRoom). The lead and its Regalia stay frozen through the run (D10,
+-- the player's "Tower" attribute, FightService.Frozen). The lead falling, the avatar leaving the room, a respawn, a
 -- leave or a shutdown end the run at its last floor won (Rules.Tower.End): its ledger granted once, the results kept in
 -- the save until the client's screen has shown them (Act "TowerSeen"). A run the save still holds at a join (a crash)
--- is ended there. The server holds one floor's collision; the client draws the platforms (TowerController).
--- Player attributes: Tower, the floor being fought or risen to (nil out of a run); TowerFoe, its foe's name.
---   TowerService.Begin(player) -> { Ok, Error? }     a run from the ring (the ring's own step, and the debug bridge)
+-- is ended there. At the end the avatar is set down before its gate in a fade, and the room is removed in the black.
+-- Player attributes: Tower, the floor being fought or risen to (nil out of a run); TowerFoe, its foe's name; TowerRise,
+-- the seconds of the rise under way, and TowerBeat, when it started (the server's clock). The gate's slab shows its owner's record (the attribute Record, kept here).
+--   TowerService.Begin(player) -> { Ok, Error? }     a run from the gate (the gate's own step, and the debug bridge)
 --   TowerService.Stop(player, why)                   the run ended where it stands
--- The results' two presses (TR46): Net "TowerRetry" sets the avatar in its ring, where the ring's own step begins the
--- next run once Rest is up; Net "TowerHome" sets it down at its plot's spawn, free (HomeService.SetDown).
+-- The results' two presses (TR46): Net "TowerRetry" sets the avatar in its gate's door, where the gate's own step
+-- begins the next run once Rest is up; Net "TowerHome" sets it down at its plot's spawn, free (HomeService.SetDown).
 -- The heal cap told once (TR46): the first time it binds on a run's lead, the save keeps Progress.Tower.HealTold and the
 -- client is told (Net "TowerHealCap", the share), once per account.
 
+local CollectionService = game:GetService("CollectionService")
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
+local ServerStorage = game:GetService("ServerStorage")
 
 local Shared = ReplicatedStorage.Shared
 local Parts = require(Shared.Util.Parts)
@@ -27,6 +32,9 @@ local Log = require(Shared.Util.Log)
 local TowerConfig = require(Shared.Config.Tower)
 local Voidkin = require(Shared.Definitions.Voidkin)
 local Markers = require(Shared.World.Markers)
+local Kit = require(Shared.World.Kit)
+local RoomPlan = require(Shared.Config.Kits.TowerRoom.Plan) :: any
+local RoomManifest = require(Shared.Config.Kits.TowerRoom.Manifest) :: any
 local Profile = require(Shared.Data.Profile)
 local Tower = require(Shared.Rules.Tower)
 local Net = require(Shared.Net)
@@ -44,26 +52,38 @@ local TowerService = {
 }
 
 local STAND = 3 -- an R6 root stands 3 studs over its floor
-local STEP = 0.1 -- seconds between the ring's and the platforms' checks
+local STEP = 0.1 -- seconds between the gate's and the rooms' checks
+local RECORDS = 1 -- seconds between the gates' records kept
+local ROOM_TAG = "GA_TowerRoom" -- a room's model, its owner's UserId in For (the client's look and beat)
+local SLAB_TAG = "GA_TowerSlab" -- a slab whose numbers the client writes: a room's, or a gate's with its Record
+local LINGER = 0.5 -- seconds a room stands past its owner's set-down, so the black hides it going
+local RESPAWN_HOLD = 3 -- seconds a room stands past a respawn in it
+local DAIS_TOP = (function(): number -- the gate's dais's top over its lot's ground
+	local dais = (require(ReplicatedStorage.Shared.Config.Kits.TowerRoom.Manifest) :: any).pieces.GateDais
+	return dais.centre[2] + dais.size[2] / 2
+end)()
 local FALL_PAUSE = 1.2 -- seconds the fallen lead's fall plays before the fade takes the player down
 
 type Run = {
 	Id: string,
 	Seed: number,
 	Foes: number, -- the foes' seed: the week the run started in (Rules.Tower.WeekSeed); its chests are its Seed's
-	Ring: CFrame, -- the ring's middle on the ground, looking out from the plot: the fight's axis
+	Ring: CFrame, -- the gate's lot frame (Rules.Tower.Lot): where the run ends
+	Room: CFrame, -- its room's floor middle, looking toward the foe's way in: the fight's axis
+	Slot: number,
+	Model: Model?,
 	Floor: number, -- the floor being fought, or risen to
-	On: number, -- the floor whose platform holds the avatar: 0 on the ground before floor 1's, Floor - 1 until a rise's Leap
+	On: number, -- 1 once the avatar stands in its room, 0 before
 	Phase: "Rising" | "Fighting" | "Won" | "Ending",
 	Foe: FightService.Fighter?,
 	Fast: boolean, -- the floor just fought fell fast, so this rise is the quick one
-	Collision: BasePart?,
 	Grace: number, -- os.clock until which the leave check waits (a set-down settling)
 }
 
 local runs: { [Player]: Run } = {}
 local endedAt: { [Player]: number } = {} -- os.clock a run ended: the ring waits Config's Rest
-local stepped: { [Player]: boolean } = {} -- the avatar has been outside the ring since its last run
+local stepped: { [Player]: boolean } = {} -- the avatar has been outside the gate's door since its last run
+local slots: { [number]: Model } = {} -- each room standing, by its slot
 local folder: Folder? = nil
 local seeds = Random.new()
 
@@ -71,22 +91,11 @@ local function flat(v: Vector3): Vector3
 	return Vector3.new(v.X, 0, v.Z)
 end
 
+-- The player's gate's lot frame: its +Z toward the base (Rules.Tower.Lot).
 local function ringOf(player: Player): CFrame?
 	local plot = WorldService.PlotOf(player)
 	local ring = if plot then Markers.Find("TowerRing", { Plot = plot }) else nil
-	if ring == nil then
-		return nil
-	end
-	local at = Markers.At(ring)
-	-- Out from the plot: the ring's lot lies past its plot's back, its frame the plot's, so out is its -LookVector.
-	local out = -flat(at.LookVector)
-	out = if out.Magnitude > 1e-3 then out.Unit else Vector3.zAxis
-	return CFrame.lookAt(at.Position, at.Position + out)
-end
-
--- Floor `floor`'s platform top, over the ring.
-local function topOf(run: Run, floor: number): Vector3
-	return run.Ring.Position + Vector3.new(0, floor * TowerConfig.Platform.Height, 0)
+	return if ring then Tower.Lot(Markers.At(ring)) else nil
 end
 
 local function holder(): Folder
@@ -99,45 +108,94 @@ local function holder(): Folder
 	return folder :: Folder
 end
 
--- The one floor's collision the server holds: unseen, the client draws the platform (TowerController).
-local function collision(player: Player, top: Vector3): BasePart
-	local p = TowerConfig.Platform
-	local part = Instance.new("Part")
-	part.Name = `Floor_{player.UserId}`
-	part.Shape = Enum.PartType.Cylinder
-	part.Anchored = true
-	part.Size = Vector3.new(p.Thick, p.Radius * 2, p.Radius * 2)
-	part.CFrame = CFrame.new(top - Vector3.new(0, p.Thick / 2, 0)) * CFrame.Angles(0, 0, math.rad(90))
-	part.Transparency = 1
-	part.CanTouch = false
-	part:SetAttribute("For", player.UserId)
-	part.Parent = holder()
-	return part
+-- A room's name for a placed piece: its tag alone when it says what it is (Foe0, In1, Drift3), else the piece and tag.
+local function pieceName(placement: any): string
+	return if #placement.tag > 1 then placement.tag else `{placement.piece}{placement.tag}`
 end
 
-local function dropCollision(run: Run, after: number?)
-	local part = run.Collision
-	run.Collision = nil
-	if part then
-		if after and after > 0 then
-			task.delay(after, function()
-				part:Destroy()
-			end)
-		else
-			part:Destroy()
+-- The player's copy of the room, its floor's middle at `at`: every piece of the plan, from the kit's template
+-- (src/storage/TowerRoomKit.rbxm), anchored, each as the kit built it (its look, collision and shadow). Nil until the
+-- template is built.
+local function roomKit(): Instance?
+	local templates = ServerStorage:FindFirstChild("Templates")
+	return if templates then templates:FindFirstChild("TowerRoomKit") else nil
+end
+
+local function makeRoom(player: Player, at: Vector3): Model?
+	local kit = roomKit()
+	if kit == nil then
+		return nil
+	end
+	local frame = CFrame.new(at)
+	local room = Instance.new("Model")
+	room.Name = `Room_{player.UserId}`
+	room.ModelStreamingMode = Enum.ModelStreamingMode.Atomic
+	room.WorldPivot = frame
+	for _, placement in RoomPlan.placements do
+		local source = kit:FindFirstChild(placement.piece)
+		if source == nil or not source:IsA("BasePart") then
+			Log.Warn("TowerService", `the room's template has no {placement.piece}`)
+			continue
 		end
+		local part = source:Clone()
+		part.Anchored = true
+		part.Size *= placement.scale
+		part.CFrame = Kit.Room(frame, placement, RoomManifest.pieces[placement.piece])
+		part.Name = pieceName(placement)
+		part:SetAttribute("Piece", placement.piece)
+		if placement.piece == "CrownSlab" then
+			CollectionService:AddTag(part, SLAB_TAG)
+		end
+		part.Parent = room
+	end
+	room:SetAttribute("For", player.UserId)
+	CollectionService:AddTag(room, ROOM_TAG)
+	room.Parent = holder()
+	return room
+end
+
+-- The run's room removed, now or `after` seconds from now, and its slot freed with it.
+-- Asks the player's client to have the world round `at` before a faded move lands there (the far room, or the base again).
+local function streamAround(player: Player, at: Vector3)
+	task.spawn(function()
+		pcall(player.RequestStreamAroundAsync, player, at, KeeperService.Landing())
+	end)
+end
+
+local function dropRoom(run: Run, after: number?)
+	local room, slot = run.Model, run.Slot
+	run.Model = nil
+	local function drop()
+		if slots[slot] == room then
+			slots[slot] = nil
+		end
+		if room then
+			room:Destroy()
+		end
+	end
+	if after and after > 0 then
+		task.delay(after, drop)
+	else
+		drop()
 	end
 end
 
--- Where the avatar is set down on floor `floor` (behind the middle, looking out) and where its foe stands (in front,
--- looking back at it).
-local function spots(run: Run, floor: number): (CFrame, CFrame)
-	local top = topOf(run, floor)
-	local out = run.Ring.LookVector
-	local away = TowerConfig.Platform.Radius * TowerConfig.Stand
-	local me = top - out * away
-	local foe = top + out * away
+-- Where the avatar stands in its room (on the entrance's side of the middle, looking toward the foe's way in) and where
+-- its foe stands (the plan's stand on the other side, looking back at it).
+local function spots(run: Run): (CFrame, CFrame)
+	local middle = run.Room.Position
+	local out = run.Room.LookVector
+	local away = RoomPlan.floor.stand
+	local me = middle - out * away
+	local foe = middle + out * away
 	return CFrame.lookAt(me, me + out), CFrame.lookAt(foe + Vector3.new(0, STAND, 0), me + Vector3.new(0, STAND, 0))
+end
+
+-- Where a run sets the avatar down on its lot: before the gate, facing it (Rules.Tower.Before).
+local function before(lot: CFrame): CFrame
+	local x, z = Tower.Before()
+	local at = lot * CFrame.new(x, 0, z)
+	return CFrame.lookAt(at.Position, at.Position + lot.LookVector)
 end
 
 local function leadOf(player: Player): FightService.Fighter?
@@ -145,33 +203,21 @@ local function leadOf(player: Player): FightService.Fighter?
 	return if lead and FightService.Standing(lead) then lead else nil
 end
 
--- Floor `floor`: its platform stands over the last, the avatar and the lead are set on it at the rise's Leap, and its foe
--- comes at the rise's end. Floor 1 rises from the ring.
+-- Floor `floor`: the room's beat plays on the client (its steps, its number: TowerRise says how long), and the foe comes
+-- at its end.
 local function rise(player: Player, run: Run, floor: number)
 	run.Phase = "Rising"
 	run.Floor = floor
 	run.Foe = nil
+	local seconds = Tower.Rise(run.Fast)
+	player:SetAttribute("TowerRise", seconds)
+	player:SetAttribute("TowerBeat", workspace:GetServerTimeNow()) -- the beat's start, on the server's clock
 	player:SetAttribute("Tower", floor)
 	player:SetAttribute("TowerFoe", nil)
 	local lead = leadOf(player)
 	if lead then
 		FightService.SetHealRoom(lead, 0) -- nothing heals between floors
 	end
-	local seconds = Tower.Rise(run.Fast)
-	task.delay(seconds * TowerConfig.Leap, function()
-		if runs[player] ~= run or run.Floor ~= floor then
-			return
-		end
-		local old = run.Collision
-		run.Collision = collision(player, topOf(run, floor))
-		local me = spots(run, floor)
-		run.Grace = os.clock() + 1
-		run.On = floor
-		KeeperService.Place(player, me)
-		if old then
-			old:Destroy()
-		end
-	end)
 	task.delay(seconds, function()
 		if runs[player] ~= run or run.Floor ~= floor then
 			return
@@ -184,7 +230,7 @@ local function rise(player: Player, run: Run, floor: number)
 		end
 		local foe = Tower.Foe(floor, run.Foes)
 		local block = Tower.Block(foe)
-		local _, at = spots(run, floor)
+		local _, at = spots(run)
 		local row = Voidkin.ById[foe.Def]
 		local f = FightService.SpawnRival(player, block, at, if row then row.Name else foe.Def)
 		local fighter = leadOf(player)
@@ -210,6 +256,8 @@ function TowerService.Begin(player: Player): { [string]: any }
 		return { Ok = false, Error = "InCombat" }
 	elseif leadOf(player) == nil then
 		return { Ok = false, Error = "NoLead" }
+	elseif roomKit() == nil then
+		return { Ok = false, Error = "NoRoom" }
 	end
 	local seed = seeds:NextInteger(1, 2 ^ 31 - 1)
 	local started = os.time()
@@ -226,22 +274,45 @@ function TowerService.Begin(player: Player): { [string]: any }
 		return answer
 	end
 	GoalService.Led(player) -- a climb is a run: "lead a run with someone new" (TR54)
+	local slot = Tower.FreeSlot(slots)
+	local middle = Tower.RoomAt(slot)
+	local room = makeRoom(player, middle)
 	local run: Run = {
 		Id = answer.Id,
 		Seed = seed,
 		Foes = Tower.WeekSeed(Tower.Week(started)),
 		Ring = ring,
+		Room = CFrame.new(middle),
+		Slot = slot,
+		Model = room,
 		Floor = 0,
 		On = 0,
 		Phase = "Rising",
 		Foe = nil,
 		Fast = false,
-		Collision = nil,
 		Grace = os.clock() + 1,
 	}
+	if room then
+		slots[slot] = room
+	end
 	runs[player] = run
 	stepped[player] = false
-	rise(player, run, 1)
+	player:SetAttribute("Tower", 1) -- the lead is frozen from here (D10), through the way in
+	-- Into the room in a fade, streamed in round its floor while the screen goes black; floor 1's beat once there.
+	streamAround(player, middle)
+	local me = spots(run)
+	if room == nil or not KeeperService.SetDown(player, me) then
+		TowerService.Stop(player, "Lost")
+		return { Ok = false, Error = if room == nil then "NoRoom" else "Nowhere" }
+	end
+	task.delay(KeeperService.Landing(), function()
+		if runs[player] ~= run then
+			return
+		end
+		run.On = 1
+		run.Grace = os.clock() + 1
+		rise(player, run, 1)
+	end)
 	return { Ok = true, Id = run.Id }
 end
 
@@ -298,18 +369,27 @@ function TowerService.Stop(player: Player, why: string)
 	stepped[player] = false
 	player:SetAttribute("Tower", nil)
 	player:SetAttribute("TowerFoe", nil)
-	if why == "Fell" then
-		-- Still on the platform: set down beside the ring in the fade's black, the platform held till then.
-		local beside = run.Ring.Position - run.Ring.LookVector * (TowerConfig.Ring + 6)
-		KeeperService.SetDown(player, CFrame.lookAt(beside, run.Ring.Position))
-		dropCollision(run, 2)
+	player:SetAttribute("TowerRise", nil)
+	player:SetAttribute("TowerBeat", nil)
+	if why == "Gone" or why == "Shutdown" then
+		dropRoom(run)
+	elseif why == "Respawn" then
+		dropRoom(run, RESPAWN_HOLD) -- the new avatar is home; its lead's leash brings it back off the floor first
 	else
-		dropCollision(run)
+		-- Out of the room in a fade, set down before its gate (the world may have been laid again since it started), the
+		-- base streamed in round it while the screen is black, and the room removed in the black.
+		local out = before(ringOf(player) or run.Ring)
+		if KeeperService.SetDown(player, out) then
+			streamAround(player, out.Position)
+			dropRoom(run, KeeperService.Landing() + LINGER)
+		else
+			dropRoom(run)
+		end
 	end
 end
 
--- The ring and every run, each STEP: a run starts from its ring; a run's avatar off its platform has left; its lead and
--- its foe are kept on it.
+-- The gate and every run, each STEP: a run starts from its gate's door; a run's avatar out of its room has left; its
+-- lead and its foe are kept on its floor.
 local function check()
 	local now = os.clock()
 	for _, player in Players:GetPlayers() do
@@ -319,32 +399,32 @@ local function check()
 		end
 		local run = runs[player]
 		if run == nil then
-			local ring = ringOf(player)
-			if ring == nil then
+			local lot = ringOf(player)
+			if lot == nil then
 				continue
 			end
-			local off = flat(root.Position - ring.Position).Magnitude
-			local inside = off <= TowerConfig.Ring and math.abs(root.Position.Y - STAND - ring.Position.Y) < 4
-			if not inside and off > TowerConfig.Ring + 1 then
+			local at = lot:PointToObjectSpace(root.Position)
+			local feet = at.Y - STAND
+			if not Tower.InGate(at.X, feet, at.Z, 1) then
 				stepped[player] = true
 			end
 			local rested = endedAt[player] == nil or now - endedAt[player] >= TowerConfig.Rest
-			if inside and rested and stepped[player] ~= false then
+			if rested and stepped[player] ~= false and Tower.InGate(at.X, feet, at.Z) then
 				TowerService.Begin(player)
 			end
 			continue
 		end
-		if run.On == 0 or run.Collision == nil then
-			continue -- floor 1's platform not under them yet
+		if run.On == 0 then
+			continue -- the fade's still taking them in
 		end
-		local top = topOf(run, run.On)
-		local radius = TowerConfig.Platform.Radius
-		local off = flat(root.Position - top).Magnitude
-		if now > run.Grace and (off > radius + TowerConfig.Out.Side or root.Position.Y - STAND < top.Y - TowerConfig.Out.Below) then
+		local top = run.Room.Position
+		local radius = RoomPlan.floor.radius
+		local off = root.Position - top
+		if now > run.Grace and Tower.Left(off.X, off.Y - STAND, off.Z) then
 			TowerService.Stop(player, "Left")
 			continue
 		end
-		-- A skip back or a shove never takes a fighter off its platform: set back on it, toward the middle.
+		-- A skip back or a shove never takes a fighter off the floor: set back on it, toward the middle.
 		for _, f in { leadOf(player), run.Foe } do
 			if f and FightService.Standing(f) then
 				local at = f.Root.Position
@@ -355,6 +435,19 @@ local function check()
 					f.Model:PivotTo(CFrame.lookAt(top + back + Vector3.new(0, STAND, 0), top + Vector3.new(0, STAND, 0)))
 				end
 			end
+		end
+	end
+end
+
+-- Each gate's slab shows its owner's record (Progress.Tower.Best; the client writes it: TowerRoomController).
+local function records()
+	for _, player in Players:GetPlayers() do
+		local plot = WorldService.PlotOf(player)
+		local ring = if plot then Markers.Find("TowerRing", { Plot = plot }) else nil
+		local slab = if ring then ring:FindFirstChild("Record") else nil
+		local data = DataService.Get(player)
+		if slab and data and slab:GetAttribute("Record") ~= data.Progress.Tower.Best then
+			slab:SetAttribute("Record", data.Progress.Tower.Best)
 		end
 	end
 end
@@ -384,7 +477,9 @@ local function state(who: any): any
 		FoeLevel = if run and run.Foe then run.Foe.Block.Level else nil,
 		FoeHealth = if run and run.Foe then run.Foe.Health else nil,
 		Fast = if run then run.Fast else nil,
-		Top = if run then topOf(run, run.Floor).Y else nil,
+		Room = if run then run.Room.Position else nil,
+		Slot = if run then run.Slot else nil,
+		In = if run then run.On == 1 else nil,
 		HealRoom = if lead then lead.HealRoom else nil,
 		LeadHealth = if lead then lead.Health else nil,
 		LeadMax = if lead then lead.Block.Health else nil,
@@ -440,8 +535,7 @@ function TowerService.Init()
 		if run == nil or character == nil then
 			return { Ok = false, Error = "NoRun" }
 		end
-		local top = topOf(run, run.On)
-		local off = top + run.Ring.LookVector * (TowerConfig.Platform.Radius + TowerConfig.Out.Side + 4)
+		local off = run.Room.Position + run.Room.LookVector * (RoomPlan.floor.stepRing[2] + TowerConfig.Out.Side + 4)
 		character:PivotTo(CFrame.new(off + Vector3.new(0, STAND, 0)))
 		return { Ok = true }
 	end)
@@ -464,7 +558,9 @@ function TowerService.Init()
 		end
 		player:SetAttribute("Tower", nil)
 		player:SetAttribute("TowerFoe", nil)
-		dropCollision(run)
+		player:SetAttribute("TowerRise", nil)
+		player:SetAttribute("TowerBeat", nil)
+		dropRoom(run)
 		endedAt[player] = os.clock()
 		stepped[player] = false
 		return { Ok = true }
@@ -517,7 +613,8 @@ function TowerService.Init()
 	end)
 end
 
--- After a run's results (TR46): "Retry", set in its ring to climb again once rested, or "Home", to the plot's spawn.
+-- After a run's results (TR46): "Retry", set in its gate's door to climb again once rested, or "Home", to the plot's
+-- spawn.
 -- Refused in a run, a try or a fight.
 local function after(player: Player, what: string): { [string]: any }
 	if runs[player] then
@@ -532,7 +629,10 @@ local function after(player: Player, what: string): { [string]: any }
 		return { Ok = false, Error = "NoRing" }
 	elseif leadOf(player) == nil then
 		return { Ok = false, Error = "NoLead" }
-	elseif not KeeperService.Place(player, ring) then
+	end
+	local x, z = Tower.Door()
+	local door = (ring * CFrame.new(x, DAIS_TOP, z)).Position
+	if not KeeperService.Place(player, CFrame.lookAt(door, door + ring.LookVector)) then
 		return { Ok = false, Error = "Nowhere" }
 	end
 	stepped[player] = true -- a press counts as stepping in afresh
@@ -620,12 +720,17 @@ function TowerService.Start()
 			TowerService.Stop(player, "Shutdown")
 		end
 	end)
-	local since = 0
+	local since, kept = 0, 0
 	RunService.Heartbeat:Connect(function(dt: number)
 		since += dt
+		kept += dt
 		if since >= STEP then
 			since = 0
 			check()
+		end
+		if kept >= RECORDS then
+			kept = 0
+			records()
 		end
 	end)
 end

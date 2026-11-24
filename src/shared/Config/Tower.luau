@@ -32,8 +32,7 @@ return {
 	-- card shows the first Shown and the player's own row; a player under a full page reads "#Page+".
 	Board = { Page = 100, Shown = 10, Fresh = 60 },
 	HealCap = 0.15, -- healing in one floor tops out at this share of the lead's most health (seeds "healCap")
-	Rise = 2.5, -- seconds from a floor won to the next foe: the rise to its platform (seeds "risePerFloorSec")
-	Leap = 0.5, -- the share of Rise at which the lead and the avatar are set down on the new platform
+	Rise = 2.5, -- seconds from a floor won to the next foe (seeds "risePerFloorSec"): the room's beat, its steps and its number (AR56)
 	-- A fast floor (design: "a floor far below the lead's power falls in one hit and the rise quickens"): a foe this many
 	-- levels under the lead falls to the first hit that lands, and the next rise takes Rise seconds instead. Builder's.
 	Fast = { Gap = 10, Rise = 0.8 },
@@ -49,16 +48,21 @@ return {
 	-- A hard floor won drops a Shade's forge stones on this difficulty (Rules.Drops.Stones), of the grade of the ground its
 	-- foe's level stands in (TR48: "a Shade's of its band").
 	Stones = "Normal",
-	-- The world, in studs (builder's, tuned by playing). The ring lies on its lot's crossing end, where the sleeping
-	-- Tower stood; stepping within Ring of its middle starts a run. Floor f's platform stands f x Height over it.
-	Ring = 5,
-	-- 48 across and 18 between floors (AR41, "The director: the Tower is too small", research's seeds of 2026-11-19 after
-	-- the director's "the tower is way to small"): the avatar and the foe stand 26 apart, three discs 54 tall. Thick in
-	-- proportion to the 28 across it was, until AR41's model. It reaches past its lot's 32 deep, in the air, by
-	-- Rules.Tower.Reach: clear of its yard and its neighbour, and the base's ground runs on under its far side.
-	Platform = { Radius = 24, Height = 18, Thick = 1.7 },
-	-- The avatar off its platform by Side past its edge, or Below under its top, has left: the run ends there.
+	-- The world, in studs (builder's, tuned by playing). The room (AR56, the Crown): each run is fought in its owner's own
+	-- copy of one great round room, made as the run starts and removed at its end (TowerService), a move within the place.
+	-- Its shape is the kit's plan (Config.Kits.TowerRoom.Plan: the floor, where the two stand, the step ring past it, the
+	-- beat); here, where the copies stand: copy n at Origin, in rows of Across, Spacing apart, far past the map and each
+	-- other by more than the streaming radius (1024), so the map streams out of a room's view and no other room in.
+	Room = { Origin = Vector3.new(0, 400, -6000), Spacing = 2400, Across = 6 },
+	-- The room's drifting clouds (the plan's drift): each passes along +X and comes round within Wrap studs of the room's
+	-- middle, fading over Fade studs at each end, so it's never seen to jump.
+	Drift = { Wrap = 320, Fade = 80 },
+	-- The avatar past the room's step ring by Side, or Below under its floor, has left: the run ends there.
 	Out = { Side = 3, Below = 8 },
-	Stand = 0.55, -- the avatar is set down this share of the radius behind the middle, the foe as far in front
-	Rest = 4, -- seconds after a run ends before the ring starts another, and only once the avatar has stepped out of it
+	-- The gate on the lot, where the ring was (AR56; Rules.Tower.InGate): stepping through its door of light starts a
+	-- run. Its box round the door, in studs of the lot's frame: Half across, Deep either side of the door, Up over the
+	-- lot's ground. Out of a run, the avatar is set down Back studs in front of the gate, toward its base, facing it.
+	Gate = { Half = 3.4, Deep = 1.5, Up = 9 },
+	Back = 16,
+	Rest = 4, -- seconds after a run ends before the gate starts another, and only once the avatar has stepped out of it
 }

@@ -21,6 +21,8 @@
 --   phase, all by the phase's Glow share (by day a share, full from dusk); the street's lights shine by
 --   Config.Lighting.Pools and Lamp, by the phase's Lights share; the paper's boxes stand in Config.Lighting.Paper's
 --   band with its rate and tint (Kit.PaperBand). Each piece streamed in takes its value at once.
+-- * In a Tower room (AR56: a Model tagged GA_TowerRoom, within Config.Lighting.Room's Reach of the focus), the room's
+--   own look, at once, its own sky and sun: no ground, no dressing, the lead's light off.
 -- * The player's lead carries the plan's tenth light at its head (Config.Lighting.Lead), turned up with the ground's look
 --   and the phase's Lights share, and off out of it.
 -- Every number is read from Config each frame, so a Tune shows at once (a new Toward is solved again).
@@ -49,6 +51,7 @@ local PlaceRole = require(Shared.Util.PlaceRole)
 local LightingController = {}
 
 local WORLD = "World"
+local ROOM_TAG = "GA_TowerRoom" -- a Tower room (TowerService)
 local JUMP = 40 -- studs the focus moves in one frame that make a jump, not a walk: the look lands at once
 local LIGHTING_KEYS = { "Ambient", "OutdoorAmbient", "Brightness", "ColorShift_Top", "EnvironmentDiffuseScale", "ExposureCompensation", "ClockTime", "GeographicLatitude" }
 local ATMOSPHERE_KEYS = { "Density", "Offset", "Haze", "Glare", "Color", "Decay" }
@@ -61,6 +64,8 @@ local skies: { [string]: Sky? } = {} -- "Base" (the place's, if it has one), and
 local shownSky = "Base"
 local sun = { Clock = 14, Latitude = 0, Off = 180 }
 local solvedFor: Vector3? = nil
+local roomSun = { Clock = 14, Latitude = 0, Off = 180 } -- the Tower room's (Config.Lighting.Room.Toward)
+local roomSolvedFor: Vector3? = nil
 local area = 0 -- 0 out of the ground, 1 in it, eased by the walk
 local row = 0 -- 0 south of the Row's line (the base, the Strip, the crossing: no mist), 1 in the Row, eased by the walk
 local lastFocus: Vector3? = nil
@@ -102,7 +107,7 @@ local function own(class: string, idle: { [string]: any }): (Instance, { [string
 end
 
 -- Finds the clock and the latitude that stand this engine's sun nearest `toward`, coarse to fine; puts Lighting back.
-local function solve(toward: Vector3)
+local function solve(toward: Vector3): { Clock: number, Latitude: number, Off: number }
 	local before = { ClockTime = Lighting.ClockTime, GeographicLatitude = Lighting.GeographicLatitude }
 	local want = toward.Unit
 	local best = { Clock = 12, Latitude = 0, Dot = -2 }
@@ -130,8 +135,7 @@ local function solve(toward: Vector3)
 	end
 	Lighting.ClockTime = before.ClockTime
 	Lighting.GeographicLatitude = before.GeographicLatitude
-	sun = { Clock = best.Clock, Latitude = best.Latitude, Off = math.deg(math.acos(math.clamp(best.Dot, -1, 1))) }
-	solvedFor = toward
+	return { Clock = best.Clock, Latitude = best.Latitude, Off = math.deg(math.acos(math.clamp(best.Dot, -1, 1))) }
 end
 
 local function setSkyFaces(sky: Sky, phase: any)
@@ -152,7 +156,7 @@ end
 
 local function groundSky(name: string, phase: any): Sky
 	local sky = Instance.new("Sky")
-	sky.Name = if string.sub(name, 1, 5) == "Clear" then `Base{string.sub(name, 6)}` else `LanternRow{name}`
+	sky.Name = if name == "Room" then "TowerRoom" elseif string.sub(name, 1, 5) == "Clear" then `Base{string.sub(name, 6)}` else `LanternRow{name}`
 	setSkyFaces(sky, phase)
 	return sky
 end
@@ -168,6 +172,7 @@ local function skyLooks(): { [string]: any }
 			out[`Clear{name}`] = look
 		end
 	end
+	out.Room = LightingConfig.Room
 	return out
 end
 
@@ -345,13 +350,49 @@ local function setKeys(instance: Instance, values: { [string]: any }, last: { [s
 	end
 end
 
+-- Whether the focus stands in a Tower room (AR56).
+local function inRoom(focus: Vector3?): boolean
+	if focus == nil then
+		return false
+	end
+	for _, item in CollectionService:GetTagged(ROOM_TAG) do
+		if item:IsA("Model") and (item:GetPivot().Position - focus).Magnitude <= LightingConfig.Room.Reach then
+			return true
+		end
+	end
+	return false
+end
+
+-- The Tower room's own look, at once: its light, haze, bloom and sky, the lead's light off.
+local function roomLook()
+	local own = LightingConfig.Room
+	if roomSolvedFor ~= own.Toward then
+		roomSun = solve(own.Toward)
+		roomSolvedFor = own.Toward
+	end
+	local look = Night.Ground(own, "Room", roomSun)
+	setKeys(Lighting, look.Lighting, applied and applied.Lighting)
+	setKeys(atmosphere, look.Atmosphere, applied and applied.Atmosphere)
+	setKeys(bloom, look.Bloom, applied and applied.Bloom)
+	showSky("Room")
+	lightLead(0)
+	applied = look
+	current = { Area = 0, Row = 0, From = "Room", To = "Room", Turn = 0, Warm = 0, Phase = "Room", Glow = 1, Steady = 1, Lights = 0, CoreMost = coreMost, Veil = 0 }
+end
+
 local function step(dt: number)
 	if solvedFor ~= LightingConfig.Toward then
-		solve(LightingConfig.Toward)
+		sun = solve(LightingConfig.Toward)
+		solvedFor = LightingConfig.Toward
 	end
 	-- Where the player stands, and how far into the ground.
 	local camera = workspace.CurrentCamera
 	local focus = if camera then camera.Focus.Position else nil
+	if inRoom(focus) then
+		roomLook()
+		lastFocus = focus
+		return
+	end
 	local z = gateZ()
 	-- The Festival's place is the ground's from its forecourt on (TR45); beside the base, north of its gate.
 	local inRow = PlaceRole.Is("Festival") or (focus ~= nil and z ~= nil and Night.Inside(focus.Z, z, LightingConfig.From))
@@ -459,6 +500,11 @@ end
 
 function LightingController.Sun(): { Clock: number, Latitude: number, Off: number }
 	return table.clone(sun)
+end
+
+-- The Tower room's solved sun, for tests.
+function LightingController.RoomSun(): { Clock: number, Latitude: number, Off: number }
+	return table.clone(roomSun)
 end
 
 return LightingController

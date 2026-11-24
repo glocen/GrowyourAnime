@@ -20,10 +20,13 @@ capture of a fight there has a solved camera, so the camera, the sun and the fil
 
     blender.exe -b --factory-startup --python tools/blender/rook_make_takes.py -- <out_dir> takes [A B C]
     blender.exe -b --factory-startup --python tools/blender/rook_make_takes.py -- <out_dir> rook|shade|sheet
+    blender.exe -b --factory-startup --python tools/blender/rook_make_takes.py -- <out_dir> proof [A]
 
 `takes`, `rook` and `shade` each draw their own pictures into <out_dir>/tex, <out_dir>/shots and <out_dir>/layers
 (Eevee, no GPU turn); `sheet` lays them into rook_takes.png and its parts, and the takes beside the reference's units
 into rook_beside.png, which holds the reference's pictures and so is kept with them in build/reference, never in git.
+`proof` lays the picked take alone into rook_pick.png, as its finish is judged, and rook_pick_beside.png the same way:
+the three-take sheet no longer fits in memory beside the Studios.
 """
 import math
 import sys
@@ -57,8 +60,8 @@ WHO = ("Rook", "A", "B", "C")
 TALL = 7.2
 SAID = {
     "Rook": ("Today's Rook", ("the model in the game now: built clothes,", "a cube head, the oversized gauntlet")),
-    "A": ("A, the school tough", ("black hair combed back to points, one stray lock", "narrow grey eyes, a low brow, a plaster on the nose",
-                                  "a long black school jacket open over a red T-shirt", "white wraps, the right sleeve rolled to the elbow")),
+    "A": ("A, the school tough", ("black hair combed back to points, one stray lock", "narrow grey eyes, a low brow, a small plaster on the nose",
+                                  "a blue-grey school jacket open over a red T-shirt", "wrapped fists, the right sleeve rolled to the elbow")),
     "B": ("B, the dojo trainee", ("cropped chestnut hair, big amber eyes, a wide grin", "an off-white training top, short sleeves rolled",
                                   "a red sash with its ends hanging, navy trousers", "red wraps, the right arm's to the elbow")),
     "C": ("C, the gym kid", ("messy brown hair, a heavy fringe to the brows", "half-shut green eyes, a smirk, a plaster on the cheek",
@@ -80,29 +83,7 @@ def band(w, y0, y1, colour, edge=None, wide=0.011):
             w.lay(w.rect(-9, y - wide, 9, y + wide), edge)
 
 
-def dark(p, cover, amount=0.3):
-    """A painted shade: what is under `cover` darker and a little cooler."""
-    p.px[...] = p.px * (1 - np.clip(cover, 0, 1)[..., None] * amount * np.array((1.0, 1.04, 0.9), np.float32))
-
-
-def light(p, cover, amount=0.2):
-    p.px[...] = p.px + (1 - p.px) * np.clip(cover, 0, 1)[..., None] * amount
-
-
-def shadow(block, amount=0.34, low=0.5, edge=0.26):
-    """Every side of a block darker toward its two edges and its foot, whatever is drawn there."""
-    for p in block.sides:
-        side = np.clip((np.abs(p.X - p.mid) - (p.w / 2 - edge)) / edge, 0, 1) ** 1.5
-        foot = np.clip((low - p.Y) / low, 0, 1) * 0.6 if low > 0 else 0.0
-        dark(p, np.maximum(side, foot), amount)
-
-
-def creases(p, lines, amount=0.4, wide=0.03):
-    """Drawn folds: each a line that swells and ends in points, with a soft shade under it."""
-    for pts in lines:
-        cover = p.stroke(pts, (0.0, wide, wide * 0.7, 0.0), n=20)
-        dark(p, p.soft(cover, 0.05) * 2.2, amount * 0.5)
-        dark(p, cover, amount)
+dark, light, shadow, creases, lit, grain = am.dark, am.light, am.shadow, am.creases, am.lit, am.grain   # the kit's cloth
 
 
 def wraps(block, y0, y1, colour, gap=0.15):
@@ -127,6 +108,21 @@ def fist(block, colour):
         for x in (-0.25, 0.0, 0.25):
             line(p, [(x, 0.2), (x, 0.03)], 0.014, tone(colour, 0.45), 0.7)
     block.faces["bottom"].px[:] = tone(colour, 0.9)
+
+
+def wrapped_fist(block, colour, wrist=0.62, hand=0.4):
+    """A fist that reads as one from behind: the hand wrapped over its end, the knuckles' turn and the fingers'
+    lines on every side, a firm line and a shade at the wrist, and the wrist's own turns above it."""
+    w = block.wrap
+    wraps(block, hand, wrist, colour, gap=0.11)
+    w.lay(w.rect(-9, 0.0, 9, hand), colour)
+    for p in block.sides:
+        for x in (-0.25, 0.0, 0.25):
+            line(p, [(x, 0.21), (x, 0.02)], 0.018, tone(colour, 0.4), 0.85)
+        dark(p, p.soft(p.rect(-9, hand - 0.1, 9, hand), 0.03), 0.3)
+    w.lay(w.rect(-9, 0.215, 9, 0.24), tone(colour, 0.5), 0.8)
+    w.lay(w.rect(-9, hand - 0.016, 9, hand + 0.016), tone(colour, 0.3))
+    block.faces["bottom"].px[:] = tone(colour, 0.86)
 
 
 def shoe(block, upper, sole, cap, tall=0.3):
@@ -175,31 +171,27 @@ def strip(p, x, y, long_, tall, turn, colour, pad=None):
 # --- A, the school tough -----------------------------------------------------------------------------------------------
 
 def take_a(joints, folder):
-    skin, coat, tee, trouser = "#EFC3A2", "#25262F", RED, "#30323E"
-    edge, trim = tone(coat, 0.45), mix(coat, "#8E93AB", 0.5)
+    skin, coat, tee, trouser = "#EFC3A2", "#3D4764", RED, "#202229"
+    edge, trim = tone(coat, 0.45), mix(coat, "#A9B1CC", 0.45)
+    hem, tail = 1.74, 1.5   # on the legs: where the jacket ends, and where the T-shirt under it does
     b = blocks_of({"torso": coat, "rs": coat, "ls": coat, "rh": trouser, "lh": trouser})
 
     t = b["torso"]
     w, f, back = t.wrap, t.faces["front"], t.faces["back"]
-    # the T-shirt in the coat's opening, the belt and the trousers under it
+    # the T-shirt in the jacket's opening, hanging loose: its folds fall from the collar and gather at the waist
     f.lay(f.poly([(-0.3, 2.0), (0.3, 2.0), (0.46, 0.0), (-0.46, 0.0)]), tee)
-    f.lay(f.poly([(-0.45, 0.24), (0.45, 0.24), (0.46, 0.0), (-0.46, 0.0)]), trouser)
-    f.lay(f.poly([(-0.44, 0.3), (0.44, 0.3), (0.45, 0.2), (-0.45, 0.2)]), "#17171C")
-    f.lay(f.rect(-0.09, 0.205, 0.09, 0.295), "#B9BCC8")
-    f.lay(f.rect(-0.05, 0.228, 0.05, 0.272), "#17171C")
     f.lay(f.ellipse(0.0, 2.02, 0.21, 0.17), skin)
     line(f, [(-0.21, 2.0), (-0.13, 1.89), (0.0, 1.85), (0.13, 1.89), (0.21, 2.0)], 0.03, tone(tee, 0.62))
-    creases(f, [[(-0.2, 1.5), (-0.05, 1.38), (0.12, 1.42)], [(0.22, 1.1), (0.08, 0.95), (-0.1, 0.98)],
-                [(-0.26, 0.74), (-0.1, 0.6), (0.1, 0.62)]], 0.36)
-    light(f, f.soft(f.poly([(-0.2, 1.78), (0.2, 1.78), (0.16, 1.5), (-0.16, 1.5)]), 0.08), 0.14)
-    # the coat's two front edges, their facing a tone lighter, and its buttons
+    creases(f, [[(-0.1, 1.72), (-0.17, 1.46), (-0.13, 1.18)], [(0.15, 1.62), (0.22, 1.3), (0.17, 1.02)],
+                [(-0.3, 0.64), (-0.06, 0.52), (0.2, 0.6)], [(0.34, 0.4), (0.1, 0.3), (-0.16, 0.36)]], 0.34)
+    # the jacket's two front edges, their facing a tone lighter, and its buttons
     for s in (-1, 1):
         f.lay(f.poly([(s * 0.3, 2.0), (s * 0.4, 2.0), (s * 0.56, 0.0), (s * 0.46, 0.0)]), trim)
         line(f, [(s * 0.3, 2.0), (s * 0.46, 0.0)], 0.022, edge)
         line(f, [(s * 0.4, 2.0), (s * 0.56, 0.0)], 0.016, edge, 0.8)
-        creases(f, [[(s * 0.98, 1.56), (s * 0.78, 1.42), (s * 0.6, 1.44)], [(s * 0.96, 0.94), (s * 0.8, 0.74), (s * 0.66, 0.6)],
-                    [(s * 0.62, 1.2), (s * 0.7, 0.9), (s * 0.66, 0.66)]], 0.5)
-        light(f, f.soft(f.poly([(s * 0.52, 1.9), (s * 0.9, 1.9), (s * 0.84, 1.62), (s * 0.5, 1.66)]), 0.07), 0.12)
+        # pulled from the shoulder to the opening, from the arm's pit, and hanging at the waist
+        creases(f, [[(s * 0.98, 1.84), (s * 0.82, 1.66), (s * 0.62, 1.56)], [(s * 1.0, 1.26), (s * 0.84, 1.16), (s * 0.7, 1.2)],
+                    [(s * 0.98, 0.72), (s * 0.84, 0.52), (s * 0.74, 0.28)], [(s * 0.66, 0.34), (s * 0.64, 0.16), (s * 0.66, 0.0)]], 0.46)
     for y in (1.58, 1.2, 0.82, 0.44):
         x = 0.35 + (2.0 - y) * 0.08 + 0.1
         f.lay(f.ellipse(x, y, 0.045, 0.045), tone(coat, 0.5))
@@ -209,60 +201,68 @@ def take_a(joints, folder):
     w.lay(w.rect(-9, 1.86, -0.3, 2.0), trim)
     w.lay(w.rect(0.3, 1.85, 9, 1.872), edge)
     w.lay(w.rect(-9, 1.85, -0.3, 1.872), edge)
-    creases(back, [[(0.0, 1.8), (0.012, 1.1), (0.0, 0.0)], [(-0.9, 1.56), (-0.5, 1.42), (-0.2, 1.48)],
-                   [(0.9, 1.56), (0.5, 1.42), (0.2, 1.48)], [(-0.8, 0.86), (-0.5, 0.66), (-0.3, 0.4)],
-                   [(0.8, 0.86), (0.5, 0.66), (0.3, 0.4)]], 0.5)
-    light(back, back.soft(back.poly([(-0.7, 1.78), (0.7, 1.78), (0.6, 1.5), (-0.6, 1.5)]), 0.1), 0.1)
-    shadow(t, 0.36)
+    # the back, plain: its middle seam, its yoke, and the cloth pulled from each arm's pit down to the waist
+    line(back, [(0.0, 1.62), (0.008, 0.9), (0.0, 0.0)], 0.016, edge, 0.7)
+    line(back, [(-1.0, 1.6), (0.0, 1.64), (1.0, 1.6)], 0.014, edge, 0.6)
+    creases(back, [[(-0.98, 1.24), (-0.74, 0.98), (-0.58, 0.6)], [(0.98, 1.24), (0.74, 0.98), (0.58, 0.6)],
+                   [(-0.9, 0.5), (-0.7, 0.32), (-0.62, 0.08)], [(0.9, 0.5), (0.7, 0.32), (0.62, 0.08)],
+                   [(-0.3, 0.44), (-0.05, 0.36), (0.24, 0.42)]], 0.46)
+    shadow(t, 0.3)
+    lit(t)
+    grain(t, seed=1)
     neck(t, skin)
 
-    for key in ("rs", "ls"):
+    for i, key in enumerate(("rs", "ls")):
         a = b[key]
         w = a.wrap
-        if key == "rs":   # the sleeve rolled to the elbow, the wraps up the forearm
+        if key == "rs":   # the sleeve rolled to the elbow, the forearm bare, the wrist and the fist wrapped
             w.lay(w.rect(-9, 0.0, 9, 1.0), skin)
-            wraps(a, 0.0, 0.92, CLOTH)
-            band(w, 1.0, 1.2, trim, edge)
-            w.lay(w.rect(-9, 1.09, 9, 1.106), edge, 0.7)
+            wrapped_fist(a, CLOTH)
+            band(w, 1.0, 1.22, trim, edge)
+            w.lay(w.rect(-9, 1.1, 9, 1.116), edge, 0.7)
             folds = [[(-0.42, 1.62), (-0.05, 1.5), (0.34, 1.58)], [(-0.3, 1.4), (0.08, 1.32), (0.42, 1.4)]]
         else:
             w.lay(w.rect(-9, 0.0, 9, 0.46), skin)
-            wraps(a, 0.0, 0.4, CLOTH)
+            wrapped_fist(a, CLOTH, wrist=0.46)
             band(w, 0.46, 0.6, trim, edge)
             folds = [[(-0.42, 1.5), (-0.05, 1.38), (0.34, 1.46)], [(-0.3, 1.1), (0.08, 1.0), (0.42, 1.08)],
                      [(-0.4, 0.84), (0.0, 0.76), (0.3, 0.8)]]
         for p in a.sides:
-            creases(p, folds, 0.5)
-            light(p, p.soft(p.rect(-0.3, 1.7, 0.3, 1.94), 0.07), 0.1)
-        fist(a, CLOTH)
-        shadow(a, 0.36, low=0.0)
-        a.faces["top"].px[:] = rgb(coat)
+            creases(p, folds, 0.46)
+        shadow(a, 0.3, low=0.0)
+        lit(a)
+        grain(a, seed=2 + i)
+        a.faces["top"].px[:] = rgb(tone(coat, 1.2))
 
-    for key, s in (("rh", -1), ("lh", 1)):   # s: the outer side on the leg's front picture
+    for i, (key, s) in enumerate((("rh", -1), ("lh", 1))):   # s: the outer side on the leg's front picture
         g = b[key]
         w, f = g.wrap, g.faces["front"]
         for p in g.sides:
             creases(p, [[(-0.4, 1.2), (-0.05, 1.08), (0.36, 1.16)], [(-0.3, 0.66), (0.0, 0.52), (0.34, 0.56)]], 0.45)
-        line(f, [(0.0, 1.9), (0.012, 1.0), (0.0, 0.34)], 0.014, tone(trouser, 0.5), 0.5)
-        # the coat's tail: over the outer half of the front, the outer side and the back
-        hem = 1.34
-        outer = (-1.5, -0.5) if key == "rh" else (0.5, 1.5)
-        for x0, x1 in (outer, (1.5, 2.5)):
-            w.lay(w.rect(x0, hem, x1, 2.0), coat)
-            w.lay(w.rect(x0, hem - 0.012, x1, hem + 0.012), edge)
-        f.lay(f.poly([(s * 0.06, 2.0), (s * 0.5, 2.0), (s * 0.5, hem), (s * 0.16, hem)]), coat)
-        f.lay(f.poly([(s * 0.06, 2.0), (s * 0.16, 2.0), (s * 0.26, hem), (s * 0.16, hem)]), trim)
-        line(f, [(s * 0.06, 2.0), (s * 0.16, hem), (s * 0.5, hem)], 0.02, edge)
+        line(f, [(0.0, tail), (0.012, 1.0), (0.0, 0.34)], 0.014, tone(trouser, 0.5), 0.5)
+        # the T-shirt's hem below the jacket's, right round: his red from every side
+        w.lay(w.rect(-9, tail, 9, 2.0), tee)
+        w.lay(w.rect(-9, tail - 0.012, 9, tail + 0.012), tone(tee, 0.5))
+        for p in g.sides:
+            creases(p, [[(-0.4, 1.66), (-0.1, 1.59), (0.3, 1.63)]], 0.3, 0.022)
+        # the jacket over it to its own hem, open at the front
+        w.lay(w.rect(-9, hem, 9, 2.0), coat)
+        w.lay(w.rect(-9, hem - 0.012, 9, hem + 0.012), edge)
+        f.lay(f.poly([(s * 0.04, 2.0), (-s * 0.5, 2.0), (-s * 0.5, hem - 0.014), (s * 0.07, hem - 0.014)]), tee)
+        f.lay(f.poly([(s * 0.04, 2.0), (s * 0.14, 2.0), (s * 0.17, hem), (s * 0.07, hem)]), trim)
+        line(f, [(s * 0.04, 2.0), (s * 0.07, hem)], 0.02, edge)
+        line(f, [(s * 0.14, 2.0), (s * 0.17, hem)], 0.016, edge, 0.8)
         shoe(g, "#E9E6DF", "#C9C5BC", "#F7F5F0")
         band(w, 0.3, 0.36, tone(trouser, 0.8), tone(trouser, 0.45))
-        shadow(g, 0.34, low=0.0)
+        shadow(g, 0.3, low=0.0)
+        grain(g, seed=4 + i)
 
     head = am.Head(skin)
     am.draw_face(head.paint, dict(skin=skin, iris="#8B95A8", eye_w=0.3, eye_h=0.13, eye_x=0.265, eye_y=0.53, tilt=0.034,
                                   shut=0.3, brow_y=0.645, brow_tilt=0.045, brow="#15151B",
                                   mouth=[(-0.07, 0.222), (0.0, 0.232), (0.075, 0.22)]))
-    strip(head.paint, 0.0, 0.468, 0.3, 0.07, 6, "#F4F1EA", "#DDD8CC")
-    hair = am.Hair("#0C0C12", "#3E4260", seed=3)
+    strip(head.paint, 0.0, 0.478, 0.15, 0.056, 8, "#F4F1EA", "#DDD8CC")   # small, on the bridge: it never bars the face
+    hair = am.Hair("#07070B", "#23263A", seed=3, band=(0.5, 0.14, 0.6))
     hair.shell(am.hairline(front=5.0, temple=4.6, nape=4.2))
     # the back first, down to a short nape; then the sides, swept back past the ears; then the top, combed back from
     # the forehead over the crown, its points standing clear behind it
@@ -273,10 +273,10 @@ def take_a(joints, folder):
     for s in (-1, 1):
         hair.row(3, 72, (s * 56, s * 100), 0.62, 0.36, off=0.05, flick=18, hold=0.6, jitter=0.16, comb=(0, -1, -0.2), split=0.3)
     back_ = (0, -1, 0.3)
-    hair.row(6, 54, (-64, 64), 0.98, 0.46, off=0.1, flick=30, hold=0.62, jitter=0.2, comb=back_)
-    hair.row(5, 28, (-82, 82), 0.92, 0.48, off=0.15, flick=38, hold=0.55, jitter=0.2, comb=back_)
-    # one lock that won't stay back
-    hair.clump(10, 50, 0.6, 0.15, heading=4, bend=12, off=0.05, flick=18, hold=0.6)
+    hair.row(6, 54, (-64, 64), 0.98, 0.46, off=0.1, flick=30, hold=0.62, jitter=0.2, comb=back_, thick=0.1)
+    hair.row(5, 28, (-82, 82), 0.92, 0.48, off=0.15, flick=38, hold=0.55, jitter=0.2, comb=back_, thick=0.1)
+    # one lock that won't stay back, to the brow
+    hair.clump(10, 50, 0.46, 0.15, heading=4, bend=12, off=0.05, flick=18, hold=0.6)
     return figure(joints, folder, b, head, hair)
 
 
@@ -626,12 +626,13 @@ def reference(name, to):
     return rs.shrink(px.reshape(h, w, 4)[::-1].copy(), to / BESIDE_PX)
 
 
-def sheet_run(out):
+def stage(out):
+    """The capture's frame on the deck, and what lays the figures' layers in it: shared by the sheet and the proof."""
     import brawler_mask_look as bm
     import hard_cut as hc
     import hard_ember as he
     import shade_elites as el
-    shots, layers = out / "shots", out / "layers"
+    layers = out / "layers"
     backdrop, gx, gz = deck(he)
     phone = el.PHONE_H / he.H
 
@@ -662,6 +663,12 @@ def sheet_run(out):
         comp[..., 3] = 1.0
         return rs.shrink(comp, 64 / 5.0 / (he.F / he.project((at[0], 0, at[1]))[2]))
 
+    return bm, hc, he, el, phone, laid, box, over
+
+
+def sheet_run(out):
+    bm, hc, he, el, phone, laid, box, over = stage(out)
+    shots = out / "shots"
     gap, W = 24, 1900
     ink, soft, paper, plate, pale = "#EDE6D6", "#B4AC9C", "#101117", "#1A1B24", "#DFE1E6"
     parts, text_of = [], []
@@ -795,11 +802,77 @@ def sheet_run(out):
     rs.save(whole, out / "rook_takes.png")
 
 
+def proof_run(out, key):
+    """The picked take alone, as the finish is judged: the figure from the front and from the game's camera, the bust
+    at the card's size, the head from six sides, a fight at the smallest phone, and 64 pixels. A second picture, kept
+    internal, stands it between the reference's units."""
+    bm, hc, he, el, phone, laid, box, over = stage(out)
+    shots = out / "shots"
+    gap, W = 24, 1900
+    ink, soft, paper, plate, pale = "#EDE6D6", "#B4AC9C", "#101117", "#1A1B24", "#DFE1E6"
+    title, lines = SAID[key]
+
+    # the figure, and the bust in the lead card's pose
+    top = rs.canvas(W, 800, rs.rgb(paper))
+    text = [(gap, 20, 30, f"AR59: ROOK, THE PICK ({title.upper()})", ink)]
+    text += hc.wrapped(gap, 60, 16, "Common / Red / Warrior, no element. " + "; ".join(lines) + ". From the three-quarter front, from the "
+                                   "game's camera behind his right shoulder, and the bust in the lead card's pose with the card's size on "
+                                   "the smallest phone (and twice that).", soft, W - 2 * gap)
+    rs.stand(top, rs.shrink(rs.trim(rs.load(shots / f"{key}_front.png")), 0.8), gap, 786, 600)
+    rs.stand(top, rs.shrink(rs.trim(rs.load(shots / f"{key}_game.png")), 0.8), gap + 600, 786, 600)
+    shot = rs.load(shots / f"{key}_bust.png")
+    big, small, twice = rs.shrink(shot, 0.8), rs.shrink(shot, CARD), rs.shrink(shot, CARD * 2)
+    x0 = W - gap - big.shape[1] - 12 - twice.shape[1]
+    for tile, x, y in ((big, x0, 130), (small, x0 + big.shape[1] + 12, 130), (twice, x0 + big.shape[1] + 12, 144 + small.shape[0])):
+        rs.fill(top, x, y, tile.shape[1], tile.shape[0], rs.rgb(plate))
+        rs.paste(top, tile, x, y)
+    rs.paste(top, rs.text_layer(W, top.shape[0], text), 0, 0)
+
+    # the head from six sides, a fight, and 64 pixels
+    turn = rs.shrink(rs.load(shots / f"{key}_turn.png"), 1000 / 1260)
+    low = rs.canvas(W, 46 + turn.shape[0] + 24, rs.rgb(paper))
+    text = [(gap, 14, 18, "The head from six sides. A fight on the deck from the player's camera at the smallest phone "
+                          f"({el.PHONE_H} pixels high), at its own size and 3 times. At 64 pixels to a 5-stud body.", ink)]
+    rs.paste(low, turn, gap, 46)
+    fight = rs.shrink(he.crop(laid([(f"{key}_fight", *LEAD), ("Shade_foe", *FOE)]), *box([LEAD, FOE], 3.2, 10)), phone)
+    fx = gap + turn.shape[1] + gap
+    rs.paste(low, fight, fx, 46)
+    rs.paste(low, bm.zoomed(fight, 3), fx, 46 + fight.shape[0] + 16)
+    x = fx + fight.shape[1] * 3 + gap
+    for stem, at in ((f"{key}_row", (ROW_X[WHO.index(key)], ROW_Z)), (f"{key}_fight", LEAD)):
+        for r, (ground, dark_) in enumerate((("#101117", False), ("#CCD2D9", False), ("#E9E4D8", True))):
+            tile = over(stem, at, ground, dark_)
+            rs.paste(low, tile, x, 46 + r * 106 + (100 - tile.shape[0]))
+        x += tile.shape[1] + 8
+    rs.paste(low, rs.text_layer(W, low.shape[0], text), 0, 0)
+    whole = rs.canvas(W, top.shape[0] + low.shape[0], rs.rgb(paper))
+    whole[:top.shape[0]], whole[top.shape[0]:] = top, low
+    rs.save(whole, out / "rook_pick.png")
+
+    # square on, between the reference's units at the same height: internal
+    sw, sh, span, mid = SQUARE
+    per = sh / span
+    feet = int(round(sh / 2 + mid * per))
+    page = rs.canvas(1200, 56 + sh + 20, rs.rgb(paper))
+    rs.fill(page, 0, 56, 1200, sh + 10, rs.rgb(pale))
+    for i, who in enumerate((BESIDE[0], key, BESIDE[1])):
+        if who == key:
+            rs.paste(page, rs.load(shots / f"{key}_square.png"), i * 400 + (400 - sw) // 2, 56)
+        else:
+            shot = reference(who, per)
+            rs.paste(page, shot, i * 400 + (400 - shot.shape[1]) // 2, 56 + feet - int(shot.shape[0] * 0.994))
+    rs.paste(page, rs.text_layer(1200, page.shape[0], [(gap, 16, 18, "AR59: the pick square on, between two Anime Vanguards units at the "
+                                                                    "same height. Internal: the two are reference.", ink)]), 0, 0)
+    rs.save(page, out / "rook_pick_beside.png")
+
+
 if __name__ == "__main__":
     OUT = rs.OUT = bl.out_dir()
     rest = sys.argv[sys.argv.index("--") + 2:]
     mode = rest[0] if rest else "sheet"
     if mode == "takes":
         takes_run(OUT, rest[1:] or list(TAKES))
+    elif mode == "proof":
+        proof_run(OUT, rest[1] if rest[1:] else "A")
     else:
         {"rook": rook_run, "shade": shade_run, "sheet": sheet_run}[mode](OUT)

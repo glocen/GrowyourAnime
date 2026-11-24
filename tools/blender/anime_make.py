@@ -254,6 +254,61 @@ def folds(p, lines, colour, alpha=0.8):
         p.lay(p.stroke(pts, (0.0, wide, wide * 0.7, 0.0), n=20), colour, alpha)
 
 
+# The cloth, painted the way the genre paints it (AR59, research's pick, must-fixes 4 and 5): soft shade and a grain,
+# never flat colour; and folds that follow the cloth's pull (from a shoulder, an elbow, a button, a waist), never the
+# muscles under it.
+
+def dark(p, cover, amount=0.3):
+    """A painted shade: what is under `cover` darker and a little cooler."""
+    p.px[...] = p.px * (1 - np.clip(cover, 0, 1)[..., None] * amount * np.array((1.0, 1.04, 0.9), np.float32))
+
+
+def light(p, cover, amount=0.2):
+    p.px[...] = p.px + (1 - p.px) * np.clip(cover, 0, 1)[..., None] * amount
+
+
+def shadow(block, amount=0.34, low=0.5, edge=0.26):
+    """Every side of a block darker toward its two edges and its foot, whatever is drawn there."""
+    for p in block.sides:
+        side = np.clip((np.abs(p.X - p.mid) - (p.w / 2 - edge)) / edge, 0, 1) ** 1.5
+        foot = np.clip((low - p.Y) / low, 0, 1) * 0.6 if low > 0 else 0.0
+        dark(p, np.maximum(side, foot), amount)
+
+
+def lit(block, top=0.16, side=0.08):
+    """The light a painter gives a figure: every side lighter toward its top, his right side a little lighter and
+    his left a little darker."""
+    h = block.size[2]
+    for q in block.sides:
+        light(q, np.clip((q.Y - h * 0.45) / (h * 0.55), 0, 1) ** 1.3, top)
+    light(block.faces["right"], np.ones_like(block.faces["right"].X), side)
+    dark(block.faces["left"], np.ones_like(block.faces["left"].X), side)
+
+
+def creases(p, lines, amount=0.4, wide=0.03):
+    """Painted folds: each a line that swells and ends in points, a soft shade spreading under it and a little light
+    on the cloth above it, as a brush leaves them."""
+    for pts in lines:
+        under = p.stroke([(x, y - wide * 1.6) for x, y in pts], (0.0, wide * 3.2, wide * 2.4, 0.0), n=20)
+        over = p.stroke([(x, y + wide * 1.3) for x, y in pts], (0.0, wide * 1.6, wide * 1.2, 0.0), n=20)
+        dark(p, p.soft(under, wide * 1.4), amount * 0.55)
+        light(p, p.soft(over, wide * 0.9), amount * 0.16)
+        dark(p, p.soft(p.stroke(pts, (0.0, wide, wide * 0.7, 0.0), n=20), 0.008), amount)
+
+
+def grain(block, amount=0.06, seed=1):
+    """The cloth's grain over a block's sides: soft clouds of lighter and darker, and a fine tooth."""
+    rng = np.random.default_rng(seed)
+    px = block.wrap.px
+    noise = lambda: rng.standard_normal(px.shape[:2]).astype(np.float32)  # noqa: E731
+
+    def cloud(studs):
+        c = blur(noise(), PPU * studs)
+        return np.clip(c / max(float(c.std()) * 2.5, 1e-6), -1, 1)
+
+    px[...] = np.clip(px * (1 + ((cloud(0.1) * 0.65 + cloud(0.035) * 0.35) * amount + noise() * amount * 0.12)[..., None]), 0, 1)
+
+
 # --- the head and its face ---------------------------------------------------------------------------------------------
 
 class Head:
@@ -353,13 +408,15 @@ class Hair:
     laid like roof tiles, from the nape up to the crown. A clump roots in the egg, lies along the head the way the
     hair is combed, then leaves it and lifts to its point. It is a leaf: narrow at the root, widest a third along,
     drawn to a sharp point, with one ridge off its middle, so it shows a broad lit face, a narrow darker one and a
-    dark underside. Its faces are flat. What makes it read as hair, and not as spines: few clumps, of three sizes;
+    dark underside. It is smooth from root to tip and over its ridge, sharp only at its edges, and one band of
+    light runs round the whole mass. What makes it read as hair, and not as spines: few clumps, of three sizes;
     each lying on the one below; the tips turned out, never the whole clump; one way round the crown for all."""
 
-    def __init__(self, root, tip, seed=1):
+    def __init__(self, root, tip, seed=1, band=(0.5, 0.11, 0.4)):
         self.bm = bmesh.new()
         self.col = []
         self.pair = (np.array(rs.srgb(root)[:3]), np.array(rs.srgb(tip)[:3]))
+        self.band = band  # the one band of light round the mass: its height over the scalp's middle, its width, its strength
         self.rng = np.random.default_rng(seed)
         self.locks = 0
 
@@ -371,6 +428,12 @@ class Hair:
         """The hair's colour `u` of the way along a clump: in the shade of the clumps above at its root."""
         v = 0.3 + 0.7 * u ** 1.3
         return np.clip((self.pair[0] * (1 - v) + self.pair[1] * v) * k * (0.5 + 0.5 * min(1.0, u / 0.42) ** 0.8), 0, 1)
+
+    def shine(self, at, c):
+        """`c` with the band of light where `at` stands in it."""
+        z, wide, strength = self.band
+        g = strength * math.exp(-((at.z - CENTRE.z - z) / wide) ** 2)
+        return c + (np.clip(self.pair[1] * 1.5 + 0.08, 0, 1) - c) * g
 
     def frame(self, a, ph):
         """A point on the head's hair surface, the way out of it there, the way down it and the way round it toward
@@ -463,16 +526,14 @@ class Hair:
             s = (1 - u ** taper) * (0.7 + 0.3 * v * v * (3 - 2 * v))
             c = self.colour(u, k)
             if i == n - 1:
-                rings.append([self._vert(q, c * 1.06)] * 6)
+                rings.append([self._vert(q, self.shine(q, c * 1.06))] * 5)
                 continue
             left, right = q + side * (width / 2 * s), q - side * (width / 2 * s)
             top = q + side * (width / 2 * s * ridge) + out * (thick * s)
-            wide, thin = (1.0, 0.64) if ridge > 0 else (0.64, 1.0)  # the narrow face is the one in the shade
-            rings.append([self._vert(left, c * thin), self._vert(top, c * thin), self._vert(top, c * wide), self._vert(right, c * wide),
-                          self._vert(right, c * 0.36), self._vert(left, c * 0.36)])
+            rings.append([self._vert(left, self.shine(left, c * 0.82)), self._vert(top, self.shine(top, c * 1.04)),
+                          self._vert(right, self.shine(right, c * 0.82)), self._vert(right, c * 0.36), self._vert(left, c * 0.36)])
         for j, (lo, hi) in enumerate(zip(rings, rings[1:])):
-            for q, m in ((0, 1), (2, 3), (4, 5)):  # the ridge's two faces, and the one under the leaf
-                # smooth along the leaf, and sharp across it: each of its three faces has its own points
+            for q, m in ((0, 1), (1, 2), (3, 4)):  # the ridge's two faces, sharing its points so it is smooth, and the one under
                 self.bm.faces.new((lo[q], hi[q], hi[m], lo[m]) if j < n - 2 else (lo[q], hi[0], lo[m])).smooth = True
         self.locks += 1
 

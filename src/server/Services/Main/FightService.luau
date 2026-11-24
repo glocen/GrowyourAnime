@@ -1733,7 +1733,7 @@ local function cast(f: Fighter, action: Actions.Action, at: number)
 	else
 		local shield = seeds.Shield
 		ally.Shield = { Share = shield.Share, Until = at + shield.Seconds }
-		ally.Model:SetAttribute("ShieldLook", "SupportShield") -- before its time: its look's name
+		ally.Model:SetAttribute("ShieldLook", shield.Look) -- before its time: its look's name
 		ally.Model:SetAttribute("ShieldUntil", at + shield.Seconds)
 	end
 end

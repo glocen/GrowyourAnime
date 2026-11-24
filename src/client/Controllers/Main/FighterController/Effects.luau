@@ -1469,6 +1469,20 @@ function Effects.Lasting(name: string, body: Model, holds: () -> boolean, done: 
 	return rows
 end
 
+-- A look played once on a body, on the effects' clock (no action's beats count it): its rows from the foot where the body
+-- stands now, upright, riding the body to their end, or until it's gone. AR58's mend (HEALS). Nil when no rows are written.
+function Effects.Once(name: string, body: Model): Rows.Player?
+	local written = (EffectsConfig.Rows :: any)[name] :: EffectsConfig.Rows?
+	if written == nil then
+		return nil
+	end
+	local rows = Rows.Play(name, footOf(body), body:GetScale() / written.Area, { Body = body, Run = run })
+	run(function(age: number): boolean
+		return body.Parent ~= nil and rows.Step(age / FRAME)
+	end, rows.Destroy)
+	return rows
+end
+
 -- The three older signatures, by the name an action's Effect gives (Config.Effects.Older), until the finish pass.
 Effects.Older = {
 	Haymaker = Effects.Haymaker,

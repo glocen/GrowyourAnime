@@ -1,0 +1,266 @@
+{
+ "Schema": "rows/1",
+ "Effect": "SupportHeal",
+ "Why": "A Support's mend, at the mended one's foot: the grey block-in (AR58, Scintilla).",
+ "Area": 1,
+ "Grey": true,
+ "Rows": {
+  "Climb": {
+   "Kind": "Mesh",
+   "Part": [
+    "FxHoop"
+   ],
+   "Look": "fx_rise_Grey",
+   "Grey": "fx_rise_Grey",
+   "Color": {
+    "Color3": [
+     255,
+     244,
+     220
+    ]
+   },
+   "Tracks": {
+    "At": [
+     [
+      0,
+      {
+       "Vector3": [
+        0,
+        0.1,
+        0
+       ]
+      },
+      "Quad Out"
+     ],
+     [
+      22,
+      {
+       "Vector3": [
+        0,
+        3.6,
+        0
+       ]
+      }
+     ]
+    ],
+    "Scale": [
+     [
+      0,
+      {
+       "Vector3": [
+        1.5,
+        1.2,
+        1.5
+       ]
+      },
+      "Quad Out"
+     ],
+     [
+      22,
+      {
+       "Vector3": [
+        1.05,
+        0.7,
+        1.05
+       ]
+      }
+     ]
+    ],
+    "Transparency": [
+     [
+      0,
+      0.6,
+      "Quad Out"
+     ],
+     [
+      4,
+      0.1,
+      "Linear"
+     ],
+     [
+      16,
+      0.2,
+      "Quad In"
+     ],
+     [
+      22,
+      1
+     ]
+    ],
+    "Glow": [
+     [
+      0,
+      1.5,
+      "Quad Out"
+     ],
+     [
+      22,
+      2.5
+     ]
+    ]
+   },
+   "Why": "the hero: a ring of light climbing the mended one from its feet to its chest"
+  },
+  "Lift": {
+   "Kind": "Emitter",
+   "Image": "fx_streak",
+   "Emitter": {
+    "EmissionDirection": "Top",
+    "SpreadAngle": [
+     25,
+     25
+    ],
+    "Lifetime": [
+     0.35,
+     0.5
+    ],
+    "Speed": [
+     5,
+     8
+    ],
+    "Drag": 3,
+    "Acceleration": {
+     "Vector3": [
+      0,
+      0,
+      0
+     ]
+    },
+    "Orientation": "VelocityParallel",
+    "Size": [
+     [
+      0,
+      0.7
+     ],
+     [
+      0.6,
+      0.48999999999999994
+     ],
+     [
+      1,
+      0
+     ]
+    ],
+    "Squash": [
+     [
+      0,
+      -1.6
+     ],
+     [
+      1,
+      -0.6
+     ]
+    ],
+    "Transparency": [
+     [
+      0,
+      0
+     ],
+     [
+      0.7,
+      0.1
+     ],
+     [
+      1,
+      1
+     ]
+    ],
+    "Color": {
+     "Color3": [
+      255,
+      246,
+      230
+     ]
+    },
+    "LightEmission": 1,
+    "LightInfluence": 0,
+    "ZOffset": 0.2
+   },
+   "Emit": [
+    [
+     2,
+     8
+    ]
+   ],
+   "Tracks": {
+    "At": [
+     [
+      0,
+      {
+       "Vector3": [
+        0,
+        0.4,
+        0
+       ]
+      }
+     ]
+    ],
+    "Radius": [
+     [
+      0,
+      0.9
+     ]
+    ]
+   },
+   "Why": "light lifting off it as the ring climbs, slowing"
+  },
+  "Chest": {
+   "Kind": "Card",
+   "Image": "fx_glow",
+   "Color": {
+    "Color3": [
+     255,
+     244,
+     220
+    ]
+   },
+   "Tracks": {
+    "At": [
+     [
+      18,
+      {
+       "Vector3": [
+        0,
+        3.6,
+        0.3
+       ]
+      }
+     ]
+    ],
+    "Size": [
+     [
+      18,
+      1.2,
+      "Quad Out"
+     ],
+     [
+      24,
+      2.6,
+      "Quad In"
+     ],
+     [
+      40,
+      0
+     ]
+    ],
+    "Transparency": [
+     [
+      18,
+      0.6,
+      "Quad Out"
+     ],
+     [
+      24,
+      0.2,
+      "Quad In"
+     ],
+     [
+      40,
+      1
+     ]
+    ]
+   },
+   "Why": "the ring arriving at its chest: a soft glow, gone in a quarter second"
+  }
+ }
+}

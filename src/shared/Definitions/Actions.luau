@@ -456,10 +456,12 @@ local rows: { Action } = {
 		-- AR58, the Support's (docs/asset-requests.md, AR58): its sleeves go up wide by Cast and hold, and on Cast the one of
 		-- its pack Rules.Support.Pick names is mended or shielded; they come down from Lower. Its row's Signature, tried
 		-- first whenever it's ready and one of its pack stands to take it; between casts it keeps to its pack's back
-		-- (FightService). Range is its reach to that one, not to the lead. The look is a grey
-		-- stand-in (SlamController) until the effects teammate's. The builder's seeds, tuned in play.
+		-- (FightService). Range is its reach to that one, not to the lead. Its looks, Scintilla's rows: SupportCast on the
+		-- caster, SupportHeal on the mended (FighterController's HEALS), and SupportShield worn while the shield holds
+		-- (Config.Combat.Support.Shield.Look). The builder's seeds, tuned in play.
 		Id = "SupportCast",
 		Clip = "ShadeCast",
+		Effect = "SupportCast",
 		Length = 1.7,
 		CancelFrom = 1.7,
 		Cooldown = 5,

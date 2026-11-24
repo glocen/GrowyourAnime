@@ -22,12 +22,14 @@ local RunService = game:GetService("RunService")
 local Shared = ReplicatedStorage.Shared
 local Net = require(Shared.Net)
 local Combat = require(Shared.Config.Combat)
+local EffectsConfig = require(Shared.Config.Effects)
 local Actions = require(Shared.Definitions.Actions)
 local Enemies = require(Shared.Definitions.Enemies)
 local FightRule = require(Shared.Rules.Fight)
 local MarkRule = require(Shared.Rules.Mark)
 local Parts = require(Shared.Util.Parts)
 local SlamController = require(script.Parent.Parent.Parent.Main.SlamController)
+local FighterController = require(script.Parent.Parent.Parent.Main.FighterController)
 
 local ShadeCases = {}
 
@@ -491,21 +493,37 @@ function ShadeCases.Cases(given: Given): { any }
 				local function casting(): boolean
 					return healer:GetAttribute("Action") == "SupportCast"
 				end
+				-- Its looks: Scintilla's rows once written and switched on (AR58), else SlamController's grey stand-ins.
+				local lookName = seeds.Shield.Look
+				local function veiled(): boolean
+					local view = FighterController.Views[brawler]
+					return if EffectsConfig.Lasting[lookName] == true and (EffectsConfig.Rows :: any)[lookName] ~= nil
+						then view ~= nil and view.Looks[lookName] ~= nil
+						else SlamController.Veil(brawler) ~= nil
+				end
+				local rowsMend = (EffectsConfig.Rows :: any).SupportHeal ~= nil
+				local mendWas = if FighterController.Views[brawler] then FighterController.Views[brawler].Mend else nil
+				local function mendShown(): boolean
+					if rowsMend then
+						local view = FighterController.Views[brawler]
+						return view ~= nil and view.Mend ~= nil and view.Mend ~= mendWas
+					end
+					local root = brawler:FindFirstChild("HumanoidRootPart")
+					return root ~= nil and root:FindFirstChild("NL_SupportMend") ~= nil
+				end
 				local ok, err = pcall(function()
 					-- Whole and engaged: its first cast shields it.
 					t.Check("it casts in the fight", waitFor(t, SHADE_TIMEOUT, casting))
 					local castAt = healer:GetAttribute("ActionAt")
 					local shielded = waitFor(t, cast.Beats.Cast + REPLICATE, function(): boolean
 						local up = brawler:GetAttribute("ShieldUntil")
-						return brawler:GetAttribute("ShieldLook") == "SupportShield" and type(up) == "number" and now() < up
+						return brawler:GetAttribute("ShieldLook") == lookName and type(up) == "number" and now() < up
 					end)
 					t.Check("the whole Brawler takes its shield", shielded, `{#heals} heals`)
 					if shielded and type(castAt) == "number" then
 						local up = brawler:GetAttribute("ShieldUntil") :: number
 						t.Near("for Shield.Seconds from its Cast beat (s)", up - castAt, cast.Beats.Cast + seeds.Shield.Seconds, 0.1)
-						t.Check("the grey ball stands round it", waitFor(t, 0.5, function(): boolean
-							return SlamController.Veil(brawler) ~= nil
-						end))
+						t.Check("its shield's look stands round it", waitFor(t, 0.5, veiled))
 					end
 					-- Between casts: further from the lead than the Brawler.
 					waitFor(t, cast.Length + 1, function(): boolean
@@ -529,24 +547,20 @@ function ShadeCases.Cases(given: Given): { any }
 						waitFor(t, seeds.Shield.Seconds + 1, function(): boolean
 							return now() >= up + 0.2
 						end)
-						t.Check("the ball goes when the shield ends", SlamController.Veil(brawler) == nil)
+						t.Check("its look goes when the shield ends", not veiled())
 					end
 					-- Hurt: its next cast mends it, by Heal of its most.
 					t.Server("FoeHealth", brawler:GetAttribute("Fighter"), HURT)
 					local popped = false
 					local mended = waitFor(t, cast.Cooldown + REPLICATE, function(): boolean
-						local root = brawler:FindFirstChild("HumanoidRootPart")
-						popped = popped or (root ~= nil and root:FindFirstChild("NL_SupportMend") ~= nil)
+						popped = popped or mendShown()
 						return #heals > 0
 					end)
 					t.Check("the hurt Brawler is mended", mended)
 					if mended then
 						local heal = heals[1]
 						t.Near("by Heal of its most", heal.Amount, seeds.Heal * heal.MaxHealth, heal.MaxHealth * 0.01)
-						t.Check("a grey pop on it", popped or waitFor(t, 0.3, function(): boolean
-							local root = brawler:FindFirstChild("HumanoidRootPart")
-							return root ~= nil and root:FindFirstChild("NL_SupportMend") ~= nil
-						end))
+						t.Check("its mend's look plays on it", popped or waitFor(t, 0.3, mendShown))
 					end
 					-- Alone: it swings at the lead.
 					t.Server("FightDefeat", brawler:GetAttribute("Fighter"))

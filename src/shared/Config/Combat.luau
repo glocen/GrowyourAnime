@@ -252,7 +252,7 @@ return {
 	Support = {
 		Below = 0.7,
 		Heal = 0.25,
-		Shield = { Share = 0.4, Seconds = 4 },
+		Shield = { Share = 0.4, Seconds = 4, Look = "SupportShield" }, -- Look: its look's name, the ally's ShieldLook (Config.Effects.Lasting)
 		Back = 8,
 		Slack = 1.5,
 		Look = { Radius = 2.8, Transparency = 0.78, Pop = { Grow = 1.6, Seconds = 0.4, Transparency = 0.45 } },

@@ -10,6 +10,7 @@ local SoundsConfig = require(Shared.Config.Sounds)
 local EffectRows = require(Shared.Config.EffectRows)
 local FxKit = require(Shared.Config.FxKit)
 local Actions = require(Shared.Definitions.Actions)
+local Combat = require(Shared.Config.Combat)
 
 local KINDS = { Mesh = true, Card = true, Emitter = true, Light = true, Glow = true, Point = true, Beam = true, Streak = true, Sound = true, Relight = true }
 
@@ -175,6 +176,37 @@ return {
 		Name = "Track: a hit's looks are worn on a body, rows held to the end of what they show or an outline, and none goes unnamed",
 		Run = function(t: any)
 			local named: { [string]: boolean } = {}
+			-- One look worn on a body for `lasts` seconds at most: its switch, its rows or its outline, held past it.
+			local function worn(label: string, name: string, lasts: number)
+				named[name] = true
+				t.Check(`{label}: played on a body`, EffectsConfig.Lasting[name] ~= nil)
+				local rows = (EffectsConfig.Rows :: any)[name] :: EffectsConfig.Rows?
+				local outline = (EffectsConfig.Outlines :: any)[name] :: { Color: Color3, Transparency: number }?
+				t.Check(`{label}: its rows or its outline, one of them`, (rows ~= nil) ~= (outline ~= nil))
+				if outline then
+					t.Check(`{label}: an outline in a colour`, typeof(outline.Color) == "Color3")
+					t.Check(`{label}: an outline that shows`, type(outline.Transparency) == "number" and outline.Transparency >= 0 and outline.Transparency < 0.9, tostring(outline.Transparency))
+				end
+				if rows == nil then
+					return
+				end
+				t.Check(`{label}: of no action, so nothing counts from a beat`, rows.Action == nil and rows.Free == nil)
+				-- the longest it can show; its rows hold past it, so code ends it
+				local last = 0
+				for _, row in rows.Rows do
+					t.Check(`{label}: every row rides the body`, row.Body ~= nil or row.On ~= nil)
+					for _, keys in row.Tracks or {} do
+						if type(keys) == "table" and type(keys[1]) == "table" then
+							local _, b = Track.Span(keys)
+							last = math.max(last, b)
+						end
+					end
+				end
+				t.Check(`{label}: held past what it shows`, last / 60 >= lasts, string.format("%.2f s against %.2f", last / 60, lasts))
+			end
+			-- A shield a cast gives, worn as the ally's ShieldLook (AR58's Support): a look as a hit's is.
+			local support = Combat.Support.Shield
+			worn(`SupportCast's shield look, {support.Look}`, support.Look, support.Seconds)
 			for _, action in Actions.List do
 				for beat, hit in action.Hits do
 					local looks = hit.Looks
@@ -183,33 +215,10 @@ return {
 					end
 					for what, name in looks :: { [string]: string } do
 						local label = `{action.Id}.{beat}'s {what} look, {name}`
-						named[name] = true
 						t.Check(`{label}: shows what the hit does`, (what == "Stun" and hit.Stun ~= nil) or (what == "Shield" and hit.Shield ~= nil))
-						t.Check(`{label}: played on a body`, EffectsConfig.Lasting[name] ~= nil)
-						local rows = (EffectsConfig.Rows :: any)[name] :: EffectsConfig.Rows?
-						local outline = (EffectsConfig.Outlines :: any)[name] :: { Color: Color3, Transparency: number }?
-						t.Check(`{label}: its rows or its outline, one of them`, (rows ~= nil) ~= (outline ~= nil))
-						if outline then
-							t.Check(`{label}: an outline in a colour`, typeof(outline.Color) == "Color3")
-							t.Check(`{label}: an outline that shows`, type(outline.Transparency) == "number" and outline.Transparency >= 0 and outline.Transparency < 0.9, tostring(outline.Transparency))
-						end
-						if rows == nil then
-							continue
-						end
-						t.Check(`{label}: of no action, so nothing counts from a beat`, rows.Action == nil and rows.Free == nil)
-						-- the longest it can show: the stun whole, the shield's seconds; its rows hold past it, so code ends it
+						-- the longest it can show: the stun whole, the shield's seconds
 						local lasts = if what == "Stun" then hit.Stun :: number else (hit.Shield :: { Seconds: number }).Seconds
-						local last = 0
-						for _, row in rows.Rows do
-							t.Check(`{label}: every row rides the body`, row.Body ~= nil or row.On ~= nil)
-							for _, keys in row.Tracks or {} do
-								if type(keys) == "table" and type(keys[1]) == "table" then
-									local _, b = Track.Span(keys)
-									last = math.max(last, b)
-								end
-							end
-						end
-						t.Check(`{label}: held past what it shows`, last / 60 >= lasts, string.format("%.2f s against %.2f", last / 60, lasts))
+						worn(label, name, lasts)
 					end
 				end
 			end

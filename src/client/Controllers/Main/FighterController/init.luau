@@ -42,8 +42,14 @@ local CATCH = { OwnPace = 0.08, Over = 0.12, Limit = 0.25 }
 local WALK_SMOOTHING = 10 -- a second's share the walk's speed follows the body by: about a tenth of a second
 
 -- The look of a heal (Actions.Hit.Heal) on the body it mends, by the healer's action.
-local HEALS: { [string]: (root: BasePart) -> () } = {
-	LyricHeldNote = Effects.HealRing,
+local HEALS: { [string]: (healed: View) -> () } = {
+	LyricHeldNote = function(healed: View)
+		Effects.HealRing(healed.Root)
+	end,
+	-- AR58's mend: a ring of light climbs the mended one from its feet (Scintilla's rows; SlamController's grey pop without)
+	SupportCast = function(healed: View)
+		healed.Mend = Effects.Once("SupportHeal", healed.Model)
+	end,
 }
 
 -- Clock is the action's, which a hold pauses; Free runs through a hold (an effect that lives past the hit, unheld). At is
@@ -113,6 +119,7 @@ type View = {
 	Prop: Prop?,
 	Looks: { [string]: Rows.Player }, -- a hit's rows looks riding it now, by name (Effects.Lasting): Ground Wire's stop
 	Outline: { Name: string, Holds: () -> boolean }?, -- a hit's outline look worn now (Config.Effects.Outlines): his shield
+	Mend: Rows.Player?, -- the last mend's look played on it (HEALS), for the self-test
 }
 
 local views: { [Model]: View } = {}
@@ -1194,7 +1201,7 @@ local function onHeal(heal: any)
 	local press = `heal:{pressOf(heal.A)}`
 	local function land()
 		if look then
-			look(healed.Root)
+			look(healed)
 		end
 		if (isMine(healer) or isMine(healed)) and heal.Amount >= 0.5 then
 			Effects.Number(healed.Root, press, heal.Amount, { Style = "Heal" }, Combat.Numbers)

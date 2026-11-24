@@ -11,8 +11,8 @@
 -- * a Guard's raised shield (GuardUntil): a grey pane before it, that brightens as a hit glances off and flashes white
 --   and goes when one breaks it (GuardBroke).
 -- AR58's Support, in grey until the effects teammate's (Config.Combat.Support.Look):
--- * a shield it gave (ShieldLook "SupportShield"): a grey ball round the one it shields while ShieldUntil holds, until a
---   Lasting row of that name is switched on (Config.Effects);
+-- * a shield it gave (ShieldLook, Shield.Look): a grey ball round the one it shields while ShieldUntil holds, while its
+--   Lasting row is switched off (Config.Effects);
 -- * a heal it gave (a Heal whose healer is casting SupportCast): a light ball on the one it mends, growing and fading,
 --   until a SupportHeal row is written.
 --   SlamController.Veil(fighter) -> SphereHandleAdornment?   a Support's shield's ball, for tests
@@ -250,7 +250,8 @@ end
 -- AR58: a shield from a Support holds on `model`, and no look of the effects teammate's draws it yet.
 local function veiled(model: Model): boolean
 	local untilTime = model:GetAttribute("ShieldUntil")
-	return model.Parent ~= nil and model:GetAttribute("ShieldLook") == "SupportShield" and EffectsConfig.Lasting.SupportShield ~= true
+	local name = Combat.Support.Shield.Look
+	return model.Parent ~= nil and model:GetAttribute("ShieldLook") == name and EffectsConfig.Lasting[name] ~= true
 		and type(untilTime) == "number" and now() < untilTime and model:GetAttribute("State") ~= "Down"
 end
 

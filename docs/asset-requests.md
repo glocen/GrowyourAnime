@@ -16994,6 +16994,16 @@ From `build/handoff/Shade/shade_support_look.png` (the row, the pack, near, 64 p
 - **Content check, before the build: PASS.** Conditions: no red, maroon, pink or dark main colour, the chest glow and the needles above all; the heal's needles keep rising and slowing, and its chest glow stays soft (0.2 or more) and gone in about 0.3 s; performance mode drops only the ring's dark twin; with several Supports, at most 3 bright onsets a second; the veil stays a column at 0.62 or more, never a lens in front. For research at the colour pass: the ring's fill cools to the kit's grey-violet.
 - **Also fixed:** AR48's freeze shell was grounded, so it sat at the foot whatever its height said. It rides the root now.
 - **Status:** implemented as data, not shown in the game; tested offline only; not visually reviewed (item 10); not director-accepted.
+- **Faber's hook, 2026-11-24, 21:12 by the clock:** in, with the three rows taken.
+  - The shield's look name is data now (`Combat.Support.Shield.Look`). The mend plays once on the mended body (`Effects.Once`, from `HEALS.SupportCast`).
+  - The grey stand-ins step aside. The ball comes back only if `Effects.Lasting.SupportShield` is tuned off.
+  - **Tested:**
+    - logic offline: 34,055 passed, 0 failed;
+    - Shades (AR58): 17 passed, 0 failed, with its checks now on the rows;
+    - every effect's rows: 164 passed, 0 failed;
+    - the Held Note: 50 passed, 0 failed;
+    - all at 58 to 60 fps; type check 0 new.
+  - **Next:** research's pass in motion. Not director-accepted.
 
 ## AR59. Rook, redesigned to the anime bar (Modulo, for research's pick and the director's look, then its finish; Faber's install after)
 

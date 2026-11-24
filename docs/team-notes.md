@@ -8,9 +8,9 @@ Each teammate rewrites its own row: one to three lines. Open asks sit under "Wai
 - **Next:** AR64's hair targets through the gates, for the director's pick; then AR62's frames; AR56's slab; TR54's second look.
 - **With the director:** AR64's pick, then AR62's; the phone sitting and F7; TR52's run; item 10, the hooks; the store's design.
 
-**Faber (builder).** 2026-11-24, 21:05, on Opus 5.5. Nothing running, no lock held; Studio open, no playtest.
-- **Done:** TR56 seen whole (Base: TR37 48/0). AR56's HUD half: the floor line gone, the slab captured at both heights (its note in AR56). Research's pass next.
-- **Now:** the pull with research's cloud branch, then what I'd change in TR57 to TR62. Queued, in order: Scintilla's AR58 hooks, research's pair sheet and UI lint, my cloud branch's call. Owed: TR54's capture.
+**Faber (builder).** 2026-11-24, 21:12, on Opus 5.5. Nothing running, no lock held; Studio open, no playtest. Done: AR58's hook (its note in AR58; research's pass in motion next); AR56's HUD half (fa6c8560, research's pass next); research's cloud branch merged (33a1ea55).
+- **Now:** TR61's strings, then TR63's pair sheet, then its contrast lint.
+- **TR57 to TR62, what I'd change (tier 2):** their screens wait for AR62's pick and their targets, so systems and pure rules first; Firsts leaves TR57 as its own piece; the boards' stores split Test and Live, as DataService does; the inviter's crate goes through ProfileStore's MessageAsync; TR59 takes Rules/Welcome from my cloud branch; codes could live in ConfigService, so a new code needs no publish (to check first).
 
 **Modulo (assets).** 2026-11-24, 20:55. Nothing running, no lock held.
 - **Waiting on the director:** AR59 Rook. The director wants the hair reworked (16:53), so it's AR64: Rook's and Kirra's hair, and the way Pip's is made. Nothing uploaded. Faber's open looks (TR53, TR54, the Guard's clip, AR49, AR44, AR40, AR48, TR50, AR50) are in their entries.

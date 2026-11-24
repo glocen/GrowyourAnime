@@ -117,11 +117,10 @@ local function begin(on: On, ground: string, which: string): boolean
 		Screen.Close()
 		return true
 	end
+	-- Every refusal says something: a press that answers nothing reads as a broken one (the Play panel's too).
 	local says = why(ground, answer.Needs, answer.Waits)
 		or (if answer.Error == "NoLead" then "Your lead is down" elseif answer.Error == "InTry" then "Not during a challenge" else nil)
-	if says then
-		on.Say(says)
-	end
+	on.Say(says or "That didn't go through. Try again.")
 	return false
 end
 

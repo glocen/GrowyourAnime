@@ -122,6 +122,10 @@ local REASON: { [string]: string } = {
 	Moved = "That shard has moved on",
 	BadArgs = "That can't be done",
 	Unknown = "That can't be done",
+	Stale = "Already done",
+	Cap = "That's the top level for now",
+	Ceiling = "Raise the base's level first",
+	NoAnswer = "No answer. Try again.",
 	Asleep = `The Stone Condenser wakes at base level {CondenserConfig.Wakes}`,
 	Busy = "A convert is already under way",
 	Stones = `A convert takes {CondenserConfig.Convert.Take} {CondenserConfig.Convert.From} stones`,
@@ -170,7 +174,11 @@ end
 local function act(name: string, args: any?): { [string]: any }
 	local answer = ProfileController.Act(name, args)
 	if answer.Ok ~= true then
-		Toast.Show(REASON[tostring(answer.Error)] or `Not now: {tostring(answer.Error)}`, Theme.Colour.TextDim)
+		local said = REASON[tostring(answer.Error)]
+		if said == nil then
+			warn(`[BaseController] {name}: an unnamed refusal, {tostring(answer.Error)}`) -- the output names it; a player never reads a code
+		end
+		Toast.Show(said or "That didn't go through. Try again.", Theme.Colour.TextDim)
 	end
 	return answer
 end

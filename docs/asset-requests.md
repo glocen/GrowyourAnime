@@ -17307,15 +17307,17 @@ From the latest phone captures: `build/captures/tr50/arc_panel_hard_open.png`, `
 ### The plan
 
 1. **Faber, at his next Studio turn:** one capture of every screen in its main state at phone size (852 x 480), by day, saved to `build/captures/ar62/before/`. That covers the HUD, the dock, the Menu and its three cards, the Voidkin screen, Equipment, the Breaker, the Void Shop, the reveal, the Arc panel, the run's card (win and fall), Today, Settings, and any toast.
-2. **Modulo, after Pip:** a blockout of two or three colour directions, each on the same two screens (the Arc panel and the run's card), beside today's, at phone size over the street by day and by night. Rough, no polish.
-   - Each direction names its body, edge, ink and its one accent, and where light lives.
-   - At least one is lighter than dark glass.
-   - The Menu's graphite and gold is the best we have today and may be one of them.
-   - The Lantern Row tile's picture is our own render of the street with its keeper, in the same sheet.
+2. **Modulo, after Pip: the design first, in today's colours** (the director, by 13:51: "the whole hud design will need a polished or change, color change later"). A rough blockout of two takes on the same three pieces, beside today's, at phone size over the street by day:
+   - the Arc panel, with the Lantern Row tile's picture as our own render of the street and its keeper;
+   - the run's card;
+   - the full screens' top bar, with the favourite and lock marks redrawn in the kit's own make.
+   - Each take names its material, its shapes and where light lives (13:37: inside the piece). One material family across the three.
+   - The Menu's graphite cards with our own art are the best we have today, and a take may grow from them.
    - The kit's look is Modulo's to draw (D, 2026-11-16).
-3. **Research's verdict** picks the direction. The director sees it on their return and can overrule.
+3. **Research's verdict** picks the take. The director sees it on return and can overrule.
 4. **Then each screen,** worst first, as Modulo's kit and Faber's install, each beside the old.
-- **Scope:** colours, light, materials and screen art. Layouts change only where a screen's redo needs it, named in its own step. Words: research's sweep (below).
+5. **The colour change comes later,** on the picked design, as its own blockout of two or three palettes, at least one lighter than dark glass.
+- **Scope:** the whole HUD's and screens' design: materials, shapes, marks, light and screen art; the colours after. Layouts change where a screen's redo needs it, named in its own step. Words: research's sweep (below).
 
 ### Research's sweep: the words (Quaestor, 2026-11-24, 13:49)
 

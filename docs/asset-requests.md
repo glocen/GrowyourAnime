@@ -17064,6 +17064,43 @@ Research, 2026-11-24, 01:50. On the director's order of 2026-11-23, by 22:52 (Ro
 - **What waits:** her basic attack's effect (AR26); Scarf Step's look, if the new body asks for it; her portraits after the finish; Faber's install.
 - **Time:** the takes in 2 to 3 hours, as a guide.
 
+### Modulo: three takes in the make (2026-11-24, 10:58; started 10:43)
+
+Sheet: `build/handoff/Kirra/takes/kirra_takes.png` (sha1 `8e7ea836`) and its six parts (`_full`, `_heads`, `_bust`, `_fight`, `_row`, `_small`). The new Rook stands first, AR59's pick as research passed it. Square on between two Anime Vanguards units at the same height: `build/reference/anime-vanguards/compare_kirra_takes.png`, internal, not in git. Script: `tools/blender/kirra_make_takes.py` (modes `takes`, `shade`, `sheet`, `proof`). It draws with the kit and with `rook_make_takes.py`'s pictures, whose `sheet_run` now takes a Voidkin's own words and reference units.
+- **Built pieces** (the director's word of 01:47), the same in every take:
+  - the scarf: its turn round the neck, low at the front so the mouth shows; its knot at her left shoulder; two tails back past the shoulder, the longer drifting about 4 studs behind her;
+  - the two short blades crossed on her back, their grips over the shoulders, on the first Kirra's sheath lines, a little longer and higher.
+  - The clothes stay drawn on the blocks. No satchel and nothing else that reads as a job.
+- **The takes:**
+  - **A, the night runner:** silver hair drawn up into one high tail, a side-swept fringe; cool, half-shut blue eyes; a deep navy short-sleeved top with a mock neck, a strap across it holding the blades, dark fingerless guards to the elbow; pale grey trousers bound at the shin; a teal scarf; the blades bare steel.
+  - **B, the transfer student:** a deep teal bob with a blunt fringe and one standing lock; gold eyes; a cream cropped jacket with a standing collar over a charcoal top; charcoal leggings, tall boots; a cobalt scarf; the blades in charcoal scabbards.
+  - **C, the drifter:** straw-blonde hair in two tails tied high; wide sky-blue eyes, a small smile; an off-white wrap top with elbow sleeves, navy forearm guards, a wide navy sash with a sky-blue cord; navy trousers gathered into wraps at the ankle; a sky-blue scarf; the blades in navy scabbards.
+  - Her face in all three is the kit's, with a heavier lash line that sweeps out past each eye's corner (`face`).
+- **My plan's C changed in the drawing** (tier 1, my craft): straw-blonde in place of lavender, after the "too purple" notes, and the tails tied high rather than low, so they break her outline at 64 px.
+- **AR59's lessons, measured:**
+  - The hair's height over the crown, in heads: A 0.56 (the tail's arc), B 0.56 (the standing lock; the bob itself sits lower), C 0.47 (the tails' arc).
+  - From behind at the fight camera, three values each: A, silver, navy and pale grey; B, teal, cream and charcoal; C, blonde, off-white and navy. Each has her scarf's colour as a fourth.
+  - The crossed blades read from the fight camera in all three; A's bare steel reads most.
+  - Nothing crosses the face's centre line.
+  - Each takes a hair silhouette and a colour family apart from the new Rook's black hair, slate and red.
+- **Triangles:** A 4,486, B 4,341, C 4,719. The hair is 3,378, 3,273 and 3,459 of those (the tails are free locks in the hair's mesh); the scarf 400 and the blades 76, or 132 with scabbards. Pictures as Rook's.
+- **What I see:**
+  - At 64 px each breaks the outline its own way (A's tail, C's two tails, B's one lock), and the scarf's trail reads at every size.
+  - At the card's size all three faces read.
+  - From the fight camera A is the clearest: a pale head, a dark top, pale legs, a teal line, and an X of steel.
+  - B reads younger and more boyish; its cream sleeves ripple a little under their grain.
+  - C's crown and the back of her head are the lumpiest of the three hairs.
+  - The scarf's tails are posed stills. They hang a little stiffly, and the finish moves them by its chain.
+  - My order: A, then C, then B. Research picks.
+- **Content check: PASS for A, B and C** (2026-11-24, on the sheet's parts and the script).
+  - The nearest each comes to a published character: for A, a white-haired assassin of a famous show; for B, a teal-haired, gold-eyed game character; for C, a blonde twin-tailed lead. Each shares two or three loose traits, and none reads as its match.
+  - **Hold points for every take:** the scarf and the blades are never red or maroon; no drip shapes; in every clip the edges stay off her own neck and head; the chest is cloth folds only; no added bare skin; no flirtatious pose; Scarf Step's look is never crackling electric blue-white; every name is checked against the IP list.
+  - **A:** one high tail and a side fringe, never a spiky mop; no mask over the lower face; no claws, yo-yos or lightning; no gem headband or red eye paint.
+  - **B:** one standing lock; no forehead mark, mask or polearm; no crest on the jacket.
+  - **C:** the tails short and curled up, never to the knees and never with buns; no sailor collar, red bow or pleated skirt; no fangs. If the finish drifts, loosen the blonde, white and navy trio first.
+- **Memory:** one take to a run, under the guard, with the Studio open: each peaked at 0.6 GB and the sheet at 0.81.
+- **The four facts:** made: three takes. Self-reviewed: yes, as above. Delivered: the sheet, for research's pick (fresh eyes given the reference's sheet as their example), then the director's look. Accepted in the game: no; nothing is built or uploaded.
+
 ## AR61. The hit sparks: the shared kit's landed hit, by rung (Scintilla, then Faber's hook)
 
 Scintilla's first piece, on the director's order of 2026-11-23 ("Shared kit first", `docs/decisions.md`; `docs/briefs/effects.md`, "Your queue", 1). Research hadn't written this request when the seat opened (2026-11-24, 10:44), so Scintilla wrote it from the brief, AR8 A and the study's rules; research confirms or corrects it at the blockout's verdict.

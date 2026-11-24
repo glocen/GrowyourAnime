@@ -675,8 +675,24 @@ def stage(out):
     return bm, hc, he, el, phone, laid, box, over
 
 
-def sheet_run(out):
+ROOK_WORDS = dict(
+    stem="rook",
+    beside="AR59's redo: Rook's three takes square on, between two Anime Vanguards units at the same height. Internal: the two are reference.",
+    title="AR59'S REDO: ROOK IN THE MAKE, THREE TAKES",
+    about="Common / Red / Warrior, no element: the lead every new player holds. The make is the genre's: R6's plain "
+          "blocks with the clothes drawn on them, a drawn anime face on the round head, hair as one mass of broad sharp "
+          "clumps, nothing built on the body. His fists are cloth wraps drawn on the arms; the gauntlet is gone. "
+          "Each stands as in the game: from the three-quarter front, then from the game's camera behind his right "
+          "shoulder, today's Rook first. Research picks one.",
+    row="today's Rook, A, B, C and a Brawler",
+)
+
+
+def sheet_run(out, words=ROOK_WORDS, beside=None):
+    """The takes' sheet. `words` are its own (ROOK_WORDS's keys); `beside`, the two reference units as (file, its
+    pixels a stud), BESIDE at BESIDE_PX if not given."""
     bm, hc, he, el, phone, laid, box, over = stage(out)
+    units = beside or [(name, BESIDE_PX) for name in BESIDE]
     shots = out / "shots"
     gap, W = 24, 1900
     ink, soft, paper, plate, pale = "#EDE6D6", "#B4AC9C", "#101117", "#1A1B24", "#DFE1E6"
@@ -694,30 +710,25 @@ def sheet_run(out):
     per = sh / span
     feet = int(round(sh / 2 + mid * per))
     page, text = part(56 + sh + 44, "beside")
-    text.append((gap, 16, 20, "AR59's redo: Rook's three takes square on, between two Anime Vanguards units at the same height. "
-                              "Internal: the two are reference.", ink))
+    text.append((gap, 16, 20, words["beside"], ink))
     rs.fill(page, 0, 56, W, sh + 10, rs.rgb(pale))
     col5 = W // 5
-    for i, who in enumerate((BESIDE[0], "A", "B", "C", BESIDE[1])):
+    for i, who in enumerate((units[0], "A", "B", "C", units[1])):
         x0 = i * col5
         if who in TAKES:
             shot = rs.load(shots / f"{who}_square.png")
             rs.paste(page, shot, x0 + (col5 - sw) // 2, 56)
             text.append((x0 + 16, 56 + sh + 18, 16, SAID[who][0], ink))
         else:
-            shot = reference(who, per)
+            shot = reference(who[0], per, who[1])
             rs.paste(page, shot, x0 + (col5 - shot.shape[1]) // 2, 56 + feet - int(shot.shape[0] * 0.994))
             text.append((x0 + 16, 56 + sh + 18, 14, "an Anime Vanguards unit (reference)", soft))
 
     # 1. each from the front and from the game's camera, beside today's
     col = (W - 2 * gap) // 4
     page, text = part(1150, "full")
-    text.append((gap, 20, 30, "AR59'S REDO: ROOK IN THE MAKE, THREE TAKES", ink))
-    text += hc.wrapped(gap, 60, 16, "Common / Red / Warrior, no element: the lead every new player holds. The make is the genre's: R6's plain "
-                                   "blocks with the clothes drawn on them, a drawn anime face on the round head, hair as one mass of broad sharp "
-                                   "clumps, nothing built on the body. His fists are cloth wraps drawn on the arms; the gauntlet is gone. "
-                                   "Each stands as in the game: from the three-quarter front, then from the game's camera behind his right "
-                                   "shoulder, today's Rook first. Research picks one.", soft, W - 2 * gap)
+    text.append((gap, 20, 30, words["title"], ink))
+    text += hc.wrapped(gap, 60, 16, words["about"], soft, W - 2 * gap)
     for i, key in enumerate(WHO):
         x0 = gap + i * col
         title, lines = SAID[key]
@@ -775,7 +786,7 @@ def sheet_run(out):
     rw, rh = row.shape[1], row.shape[0]
     kr = max(1, min(4, (W - 3 * gap - rw) // rw))
     page, text = part(60 + rh * kr + 20, "row")
-    text.append((gap, 14, 18, f"At the lead's distance, turned to the player: today's Rook, A, B, C and a Brawler. At the smallest phone, "
+    text.append((gap, 14, 18, f"At the lead's distance, turned to the player: {words['row']}. At the smallest phone, "
                               f"then {kr} times.", ink))
     rs.paste(page, row, gap, 46)
     rs.paste(page, bm.zoomed(row, kr), gap + rw + gap, 46)
@@ -803,12 +814,12 @@ def sheet_run(out):
     for (name, page), text in zip(parts, text_of):
         rs.paste(page, rs.text_layer(W, page.shape[0], text), 0, 0)
         if name == "beside":
-            rs.save(page, out / "rook_beside.png")
+            rs.save(page, out / f"{words['stem']}_beside.png")
             continue
-        rs.save(page, out / f"rook_takes_{name}.png")
+        rs.save(page, out / f"{words['stem']}_takes_{name}.png")
         whole[y:y + page.shape[0]] = page
         y += page.shape[0]
-    rs.save(whole, out / "rook_takes.png")
+    rs.save(whole, out / f"{words['stem']}_takes.png")
 
 
 def proof_run(out, key, title=None, about="Common / Red / Warrior / Fire.", whose="his", stem="rook_pick", beside=None,

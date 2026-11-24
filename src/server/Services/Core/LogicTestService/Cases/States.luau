@@ -101,6 +101,28 @@ return {
 		end,
 	},
 	{
+		Name = "States: a chill's look steps with its fill, a third each (AR48)",
+		Run = function(t: any)
+			t.Equal("none: no step", Fight.ChillStep(0, 3), 0)
+			t.Equal("a sliver: the first", Fight.ChillStep(0.01, 3), 1)
+			t.Equal("one hit's third: the first", Fight.ChillStep(1 / 3, 3), 1)
+			t.Equal("just over it: the second", Fight.ChillStep(1 / 3 + 0.01, 3), 2)
+			t.Equal("two hits' two thirds: the second", Fight.ChillStep(1 / 3 + 1 / 3, 3), 2)
+			t.Equal("above two thirds: the third", Fight.ChillStep(0.8, 3), 3)
+			t.Equal("full: the third", Fight.ChillStep(1, 3), 3)
+			t.Equal("no steps: none", Fight.ChillStep(0.5, 0), 0)
+			-- the game's own: each hit lands on its step's top, and a drain walks it back down
+			local rule = Combat.States.Chill
+			local steps = #rule.Looks
+			local c1 = Fight.Chill(rule, nil, 0, 2, nil, 0)
+			local c2 = Fight.Chill(rule, c1, 0.5, 2, nil, 0)
+			t.Equal("the game's: a hit, its first look", Fight.ChillStep(Fight.ChillNow(rule, c1, 0), steps), 1)
+			t.Equal("two, its second", Fight.ChillStep(Fight.ChillNow(rule, c2, 0.5), steps), 2)
+			local back = 0.5 + rule.Delay + (1 / steps) / rule.Drain + 0.05
+			t.Equal("drained a share, its first again", Fight.ChillStep(Fight.ChillNow(rule, c2, back), steps), 1)
+		end,
+	},
+	{
 		Name = "States: a sap cuts a heal while it holds",
 		Run = function(t: any)
 			local rule = { Cut = 0.3 }

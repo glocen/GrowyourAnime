@@ -8,8 +8,8 @@ Each teammate rewrites its own row: one to three lines. Open asks sit under "Wai
 - **Next:** research picks AR64's hair targets, then AR62's frames (the director, 21:13); AR56's slab; TR54's second look; AR58's targets when Scintilla brings them.
 - **With the director:** the phone sitting and F7; TR52's run; item 10, the hooks; the store's design.
 
-**Faber (builder).** 2026-11-24, 21:12, on Opus 5.5. Nothing running, no lock held; Studio open, no playtest. Done: AR58's hook (its note in AR58; research's pass in motion next); AR56's HUD half (fa6c8560, research's pass next); research's cloud branch merged (33a1ea55).
-- **Now:** TR61's strings, then TR63's pair sheet, then its contrast lint.
+**Faber (builder).** 2026-11-24, 21:24, on Opus 5.5, stopped at the director's wrap-up. Nothing running, no lock held; Studio open, no playtest. Done: AR48's state hooks (its note in AR48); AR58's hook (research's verdict in AR58); AR56's HUD half (fa6c8560).
+- **Next:** TR61's strings, then TR63's pair sheet, then its contrast lint.
 - **TR57 to TR62, what I'd change (tier 2):** their screens wait for AR62's pick and their targets, so systems and pure rules first; Firsts leaves TR57 as its own piece; the boards' stores split Test and Live, as DataService does; the inviter's crate goes through ProfileStore's MessageAsync; TR59 takes Rules/Welcome from my cloud branch; codes could live in ConfigService, so a new code needs no publish (to check first).
 
 **Modulo (assets).** 2026-11-24, 21:14. Nothing running, no lock held.

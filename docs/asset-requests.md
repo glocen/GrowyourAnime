@@ -15258,6 +15258,13 @@ The rules now live in `docs/design.md`, "States in a fight", below "No lock". Fa
   4. The arcs ride the R6 parts by name (`Torso`, `Left Arm` and the rest): confirm every Shade and Voidkin keeps them.
 - **Content check, before the build:** blocked Sap at first (motes speeding up as they sank, read as a fall), fixed: they start slow and ease out. It passes all eight now. Conditions: the 00:12 conditions hold; `BigChest`'s top end checked against the Shade's mask; the light's share measured with several shocked bodies and sparks; both faces clear of embers in the capture; no red or rust at the colour pass, which gets its own check; the capture read at 64 px with the bodies turned. A refresh doesn't restart Shock's pattern, since a look already worn isn't worn again.
 - **Status:** implemented as data, not shown in the game; tested offline only; not visually reviewed (item 10); not director-accepted.
+- **Faber's hook, 2026-11-24, 21:24 by the clock:** in, with the seven rows taken.
+  - The looks' names are data (`Combat.States`: each state's `Look`, the chill's three `Looks`, the freeze's `Break`), read by the server, the client and the Track case.
+  - The chill's look steps with the third its fill is in (`Rules.Fight.ChillStep`, with a logic case). A hit that raises it wears the next look at once, and a drain walks it back down. At 3 hits, the third look shows only when a hit lands on a partly drained two thirds: the third hit from a full two thirds freezes.
+  - A freeze that ran its time breaks once at the foot (`Effects.Once`). One ended by a fall doesn't.
+  - **The arcs' parts:** all seven templates keep the five, read from their `.rbxm`. Spawning drops only masks. The Box dummy has none, and a Body row whose part is missing isn't placed, so on the dummy the arcs don't show.
+  - **Tested:** logic offline 37,291 passed, 0 failed; Track with the seven 6,436/0; Studio: the element states 39/0 at 60 fps, every look and the break among them, and every effect's rows 234/0; type check 0 new.
+  - **Next:** research's pass in motion. Not director-accepted.
 
 ## AR49. Home's panel: three cards with their own art (Modulo, for research's pick, then Faber)
 

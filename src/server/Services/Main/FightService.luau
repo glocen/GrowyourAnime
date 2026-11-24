@@ -13,8 +13,8 @@
 -- ShieldUntil (server time it ends), and ShieldLook (its look's name: AR58's Support gives "SupportShield").
 -- The element states (docs/design.md, "States in a fight"; Config.Combat.States; Rules.Fight's states), each worn while
 -- it holds: Burning, Shocked and Sapped (the server time each ends), Chill and ChillAt (its fill after its last Frost hit,
--- and when: a client drains it by the same rule; ChillAt written first). A freeze is a Stun whose StunLook is
--- StateFreeze. ActionRate: how fast the action begun at ActionAt runs, set at its start (a chill's slow), written before
+-- and when: a client drains it by the same rule; ChillAt written first). A freeze is a Stun whose StunLook is the
+-- freeze's look (Combat.States.Freeze.Look). ActionRate: how fast the action begun at ActionAt runs, set at its start (a chill's slow), written before
 -- ActionAt; its beats fall at their times over it.
 -- Beats are checked every frame against the server's clock; decisions every Config.Combat.Think.
 
@@ -1025,7 +1025,7 @@ local function leave(target: Fighter, state: string, at: number)
 		model:SetAttribute("Chill", if chill then chill.Fill else nil)
 		if frozen > 0 then
 			target.StunLock = at + frozen + Combat.Stun.Lock
-			model:SetAttribute("StunLook", "StateFreeze") -- before State: its look's name
+			model:SetAttribute("StunLook", states.Freeze.Look) -- before State: its look's name
 			setState(target, "Stun", at + frozen)
 			endAction(target, at)
 			stop(target)

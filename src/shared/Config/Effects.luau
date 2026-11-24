@@ -379,10 +379,11 @@ local Effects = {
 	-- move to rows at the finish pass (docs/engineering-plan.md, "Content at scale", item 1). Every other effect is rows.
 	Older = { Haymaker = true, LanternBurst = true, HeldNote = true } :: { [string]: boolean },
 
-	-- The looks a hit's Looks name (Definitions.Actions), worn by FighterController on a body for as long as what they show
-	-- holds, and ended with it at once: rows (their rows hold to a far frame), or an outline (Outlines, below). False takes
+	-- The looks a hit's Looks name (Definitions.Actions), a shield's and the element states' (Config.Combat: Support's
+	-- Shield, States), worn by FighterController on a body for as long as what they show holds, and ended with it at once: rows (their rows hold to a far frame), or an outline (Outlines, below). False takes
 	-- one off at once and leaves it out, to judge a block without it: "Effects.Lasting.WattGroundWireShield", false.
-	Lasting = { WattGroundWireStop = true, WattGroundWireShield = true, SupportShield = true } :: { [string]: boolean },
+	Lasting = { WattGroundWireStop = true, WattGroundWireShield = true, SupportShield = true,
+		StateBurn = true, StateChill = true, StateChill2 = true, StateChill3 = true, StateFreeze = true, StateShock = true, StateSap = true } :: { [string]: boolean },
 	-- The looks worn as an outline on the body, not rows: its one Highlight's outline, the fill left clear for the hit
 	-- flash, Occluded so it never shows through a wall. Read each frame, so a Tune shows at once. Ground Wire's shield, for
 	-- his 5 s: a thin outline that sharpens his silhouette, in place of the shell's haze that blurred it (research's

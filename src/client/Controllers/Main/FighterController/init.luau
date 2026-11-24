@@ -7,8 +7,8 @@
 -- A late action starts from its first frame and catches up (handbook/feel/combat.md, "Hit confirmation").
 -- A passive's cue (Definitions.Passives, Cue): the shell while the server's PassiveOn holds, the flare on a hit it marks.
 -- The element states (Config.Combat.States): an action runs at the server's ActionRate (a chill's slow), and each state's
--- look is worn by its name while it holds (StateBurn, StateChill, StateShock, StateSap; a freeze is a stun's StateFreeze),
--- drawn once its rows are in (Config.Effects.Lasting).
+-- look (its Look) is worn while it holds: a chill's by the third its fill is in (Rules.Fight.ChillStep), a freeze as a
+-- stun's look, and a freeze that ran its time breaks (its Break, once at the foot).
 -- Children: Clips (an Animation per clip name), Effects (the stand-ins).
 
 local CollectionService = game:GetService("CollectionService")
@@ -120,6 +120,9 @@ type View = {
 	Looks: { [string]: Rows.Player }, -- a hit's rows looks riding it now, by name (Effects.Lasting): Ground Wire's stop
 	Outline: { Name: string, Holds: () -> boolean }?, -- a hit's outline look worn now (Config.Effects.Outlines): his shield
 	Mend: Rows.Player?, -- the last mend's look played on it (HEALS), for the self-test
+	StunLook: string?, -- the stun's look and the server time it ends, kept from its start (a freeze's break)
+	StunEnds: number?,
+	Broke: Rows.Player?, -- the last freeze's break played on it, for the self-test
 }
 
 local views: { [Model]: View } = {}
@@ -504,6 +507,13 @@ local function onState(view: View)
 	local was = view.State
 	view.State = state
 	if was == "Stun" then
+		-- a freeze that ran its time breaks, at the foot; one ended by a fall doesn't
+		local freeze = Combat.States.Freeze
+		local ends = view.StunEnds
+		if view.StunLook == freeze.Look and state ~= "Down" and ends and workspace:GetServerTimeNow() >= ends - 0.25 then
+			view.Broke = Effects.Once(freeze.Break, view.Model)
+		end
+		view.StunLook, view.StunEnds = nil, nil
 		-- the stop over: the pose let go, and the action the server ended under it ended here too
 		if view.StunHeld > 0 and view.FrozenUntil == view.StunHeld then
 			view.FrozenUntil = os.clock()
@@ -523,8 +533,11 @@ local function onState(view: View)
 			view.StunHeld = math.max(view.FrozenUntil, os.clock() + left)
 			view.FrozenUntil = view.StunHeld
 		end
-		-- its look (Ground Wire's stop), on it until the stun ends: the lock lets go
-		wear(view, view.Model:GetAttribute("StunLook"), function(): boolean
+		-- its look (Ground Wire's stop, a freeze's ice), on it until the stun ends: the lock lets go
+		local stunLook = view.Model:GetAttribute("StunLook")
+		view.StunLook = if type(stunLook) == "string" then stunLook else nil
+		view.StunEnds = if type(untilTime) == "number" then untilTime else nil
+		wear(view, stunLook, function(): boolean
 			return view.State == "Stun"
 		end)
 	elseif state == "Flinch" then
@@ -770,9 +783,11 @@ local function add(model: Instance)
 			wear(view, model:GetAttribute("ShieldLook"), shielded)
 		end
 	end))
-	-- The element states' looks (Config.Combat.States), each worn while the server's time for it holds; a chill while any
-	-- fill is left after its drain, by the same rule (Rules.Fight.ChillNow). A freeze is a stun's look (onState).
-	for attribute, look in ({ Burning = "StateBurn", Shocked = "StateShock", Sapped = "StateSap" } :: { [string]: string }) do
+	-- The element states' looks (Config.Combat.States), each worn while the server's time for it holds; a chill's while its
+	-- fill, after its drain by the same rule (Rules.Fight.ChillNow), is in that look's third. A freeze is a stun's look
+	-- (onState).
+	local states = Combat.States
+	for attribute, look in ({ Burning = states.Burn.Look, Shocked = states.Shock.Look, Sapped = states.Sap.Look } :: { [string]: string }) do
 		local function holds(): boolean
 			local untilTime = model:GetAttribute(attribute)
 			return view.State ~= "Down" and type(untilTime) == "number" and workspace:GetServerTimeNow() < untilTime
@@ -783,16 +798,30 @@ local function add(model: Instance)
 			end
 		end))
 	end
-	local function chilled(): boolean
+	local chillLooks = states.Chill.Looks
+	local function chillStep(): number
 		local fill, at = model:GetAttribute("Chill"), model:GetAttribute("ChillAt")
-		return view.State ~= "Down" and type(fill) == "number" and type(at) == "number"
-			and Fight.ChillNow(Combat.States.Chill, { Fill = fill, At = at }, workspace:GetServerTimeNow()) > 0
-	end
-	table.insert(view.Connections, model:GetAttributeChangedSignal("Chill"):Connect(function()
-		if chilled() then
-			wear(view, "StateChill", chilled)
+		if view.State == "Down" or type(fill) ~= "number" or type(at) ~= "number" then
+			return 0
 		end
-	end))
+		return Fight.ChillStep(Fight.ChillNow(states.Chill, { Fill = fill, At = at }, workspace:GetServerTimeNow()), #chillLooks)
+	end
+	-- The look of the third it's in, held while it stays there: a hit raising it wears the next at once, and a drain
+	-- walking it down wears the one below as this one goes.
+	local function wearChill()
+		local step = chillStep()
+		if step == 0 then
+			return
+		end
+		wear(view, chillLooks[step], function(): boolean
+			local now = chillStep()
+			if now ~= step and now > 0 and now < step then
+				task.defer(wearChill)
+			end
+			return now == step
+		end)
+	end
+	table.insert(view.Connections, model:GetAttributeChangedSignal("Chill"):Connect(wearChill))
 	-- A Reduction passive's shell (Rook's Second Wind), while the server says it holds; one at a time.
 	local passive = if type(def) == "string" then Passives.ById[def] else nil
 	if passive and passive.Cue == "Shell" then

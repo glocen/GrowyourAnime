@@ -109,16 +109,19 @@ return {
 	-- Seconds (Stun's Share of it on an elite or a keeper), and empties; no chill builds during Stun's Lock after, so
 	-- freezes never chain (research, 2026-11-23). Shock: Seconds on a Storm hit; it fills poise faster once poise is in
 	-- (AR48's waits). Sap: every heal Cut less for Seconds after a Void hit.
+	-- Look: the name of the look a body wears while its state holds (Config.Effects.Lasting; AR48's rows). A chill's
+	-- Looks step with its fill, one a share (Rules.Fight.ChillStep): the first while the fill is in its first third, and so
+	-- on. A freeze's Break plays once at the body's foot when the freeze ends by its time.
 	-- Not: the kinds whose hits leave a state none. At launch a Shade's Void saps nothing, an elite's included: a pack
 	-- fight stays as its Shades were solved, against a lead healing its Regen (research's answer, 2026-11-23, AR48).
 	States = {
 		By = { Fire = "Burn", Frost = "Chill", Storm = "Shock", Void = "Sap" } :: { [string]: string },
 		Not = { Ordinary = { Sap = true }, Elite = { Sap = true } } :: { [string]: { [string]: boolean } },
-		Burn = { Share = 0.5, Seconds = 3, Tick = 0.5 },
-		Chill = { Hits = 3, Delay = 1.5, Drain = 0.5, Slow = 0.3 },
-		Freeze = { Seconds = 2 },
-		Shock = { Seconds = 3 },
-		Sap = { Seconds = 4, Cut = 0.3 },
+		Burn = { Share = 0.5, Seconds = 3, Tick = 0.5, Look = "StateBurn" },
+		Chill = { Hits = 3, Delay = 1.5, Drain = 0.5, Slow = 0.3, Looks = { "StateChill", "StateChill2", "StateChill3" } :: { string } },
+		Freeze = { Seconds = 2, Look = "StateFreeze", Break = "FreezeBreak" },
+		Shock = { Seconds = 3, Look = "StateShock" },
+		Sap = { Seconds = 4, Cut = 0.3, Look = "StateSap" },
 	},
 
 	-- How far a push moves each body, against its Push (handbook/feel/combat.md: a heavy enemy moves less).

@@ -207,6 +207,22 @@ return {
 			-- A shield a cast gives, worn as the ally's ShieldLook (AR58's Support): a look as a hit's is.
 			local support = Combat.Support.Shield
 			worn(`SupportCast's shield look, {support.Look}`, support.Look, support.Seconds)
+			-- The element states' looks (AR48), each for its state's seconds; a chill's for the longest its fill stays in a
+			-- third with no hit (its delay, then a share's drain), a freeze's for the whole freeze.
+			local states = Combat.States
+			worn(`the burn's look, {states.Burn.Look}`, states.Burn.Look, states.Burn.Seconds)
+			worn(`the shock's look, {states.Shock.Look}`, states.Shock.Look, states.Shock.Seconds)
+			worn(`the sap's look, {states.Sap.Look}`, states.Sap.Look, states.Sap.Seconds)
+			worn(`the freeze's look, {states.Freeze.Look}`, states.Freeze.Look, states.Freeze.Seconds)
+			local chill = states.Chill
+			for step, name in chill.Looks do
+				worn(`the chill's look in its share {step}, {name}`, name, chill.Delay + (1 / #chill.Looks) / chill.Drain)
+			end
+			-- a freeze's break plays once at the foot, on the effects' clock: rows of no action, held to no far frame
+			local broke = (EffectsConfig.Rows :: any)[states.Freeze.Break] :: EffectsConfig.Rows?
+			t.Check(`the freeze's break, {states.Freeze.Break}: its rows are in`, broke ~= nil)
+			t.Check(`the freeze's break: of no action, so nothing counts from a beat`, broke ~= nil and broke.Action == nil and broke.Free == nil)
+			t.Check(`the freeze's break: played once, not worn`, EffectsConfig.Lasting[states.Freeze.Break] == nil)
 			for _, action in Actions.List do
 				for beat, hit in action.Hits do
 					local looks = hit.Looks

@@ -503,6 +503,15 @@ function Fight.ChillNow(rule: { Delay: number, Drain: number }, chill: Chill?, a
 	return if since > 0 then math.max(0, chill.Fill - rule.Drain * since) else chill.Fill
 end
 
+-- Which of `steps` equal shares a chill's fill is in: 0 for none, 1 from just above none to the first share's top, and so
+-- on to `steps` at full; a fill on a share's top is in that share (AR48's looks: a third each).
+function Fight.ChillStep(fill: number, steps: number): number
+	if fill <= 1e-9 or steps < 1 then
+		return 0
+	end
+	return math.clamp(math.ceil(fill * steps - 1e-6), 1, steps)
+end
+
 -- A Frost hit at `at` on a body chilled `chill`: the chill after it, and the seconds it freezes. It adds 1 / Hits; a full
 -- chill freezes for `freeze` seconds, `share` of them (an elite's, a keeper's half), and empties. While the body is still
 -- locked from its last stun or freeze (`locked`, the time the lock ends, as Fight.Stun) no chill builds, so freezes never

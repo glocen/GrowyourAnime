@@ -31,17 +31,22 @@ return {
 		{ Name = "GroundWire", Label = "Ground Wire", Max = 1.5, Beat = true, Words = { "electric shock", "electric zap", "lightning strike", "electricity burst", "thunder impact", "shock wave" } },
 		-- Lyric's Held Note: the note sweeping out, once as it begins
 		{ Name = "HeldNote", Label = "Held Note", Max = 1.6, Beat = true, Tonal = true, Words = { "sonic wave", "sound wave", "magic chime", "energy wave", "sonic blast", "resonance" } },
-		-- a Fire Mage's M1 (Pip's lantern shots): the cast on its beat, then the touch on the Shade. A Mage of another
-		-- element gets cues of its own (research, 2026-11-19).
-		{ Name = "MageShot", Label = "Fire mage cast", Max = 0.6, Beat = true, Words = { "fireball cast", "fireball shoot", "fire whoosh", "magic shot", "spell cast", "fire shot" } },
-		{ Name = "MageHit", Label = "Fire mage hit", Max = 0.7, Beat = false, Words = { "fireball hit", "fire impact", "fire hit", "magic hit", "spell impact", "fireball impact" } },
-		-- a Healer's M1 (Lyric's speaker shots): the blast on its beat, then the touch
+		-- The basic attack's sound, one per class, shared by every Voidkin of the class (the director, 2026-11-23: "1 type
+		-- of sfx for m1 per class"; it replaced the M1's own sound per Voidkin, and with it research's "a Mage of another
+		-- element gets cues of its own" of 2026-11-19). So a class's words name no element: the element is the effect's.
+		-- At launch each class has one Voidkin, whose combo plays its class's cue (Config.Cues.Own). Sonus, 2026-11-24.
+		-- the Mage's (Pip's lantern shots today): the cast on its beat, then the touch on the Shade
+		{ Name = "MageShot", Label = "Mage cast", Max = 0.6, Beat = true, Words = { "magic shot", "spell cast", "magic projectile", "energy blast", "spell shoot", "magic whoosh" } },
+		{ Name = "MageHit", Label = "Mage hit", Max = 0.7, Beat = false, Words = { "magic hit", "spell impact", "magic impact", "spell hit", "energy impact", "magic burst" } },
+		-- the Healer's (Lyric's speaker shots today): the blast on its beat, then the touch
 		{ Name = "HealerShot", Label = "Healer cast", Max = 0.6, Beat = true, Tonal = true, Words = { "sonic blast", "energy shot", "magic shot", "pulse", "sonic pulse", "zap shot" } },
 		{ Name = "HealerHit", Label = "Healer hit", Max = 0.7, Beat = false, Tonal = true, Words = { "magic hit", "energy hit", "magic impact", "zap hit", "spark hit", "energy impact" } },
-		-- each melee fighter's combo hits, from the light hit's 32 keeps
-		{ Name = "RookHit", Label = "Rook's hits", Max = 0.7, Beat = false, Keeps = "LightHit", Words = {} },
-		{ Name = "KirraHit", Label = "Kirra's hits", Max = 0.7, Beat = false, Keeps = "LightHit", Words = {} },
-		{ Name = "WattHit", Label = "Watt's hits", Max = 0.7, Beat = false, Keeps = "LightHit", Words = {} },
+		-- the Warrior's (Rook's jab, hook and ram today): fists, so the light hit's 32 keeps
+		{ Name = "RookHit", Label = "Warrior's hits", Max = 0.7, Beat = false, Keeps = "LightHit", Words = {} },
+		-- the Assassin's (Kirra's three cuts today): two short blades, so a cut, never a punch
+		{ Name = "KirraHit", Label = "Assassin's cuts", Max = 0.6, Beat = false, Words = { "sword slash", "blade slash", "katana slash", "slash hit", "sword hit", "blade cut" } },
+		-- the Tank's (Watt's shaft, butt and driven spear today): heavy and short, a weighted blow
+		{ Name = "WattHit", Label = "Tank's blows", Max = 0.8, Beat = false, Words = { "heavy impact", "blunt impact", "heavy strike", "heavy melee hit", "impact thud", "body impact" } },
 	} :: { Spec },
 	Pages = 2, -- the library's pages of 25 read a word
 	Keep = 50, -- candidates kept a cue, in the library's order (the panel shows ten at a time)
@@ -65,8 +70,8 @@ return {
 		HealerShot = -4,
 		HealerHit = -2,
 		RookHit = 0, -- the light hit's own level, as the keeps were heard
-		KirraHit = 0,
-		WattHit = 0,
+		KirraHit = -1, -- a cut a little under a punch; the Tank's blow between the light hit and the heavy (Sonus's seeds)
+		WattHit = 2,
 	},
 	Ceiling = -1, -- dBTP: a candidate's top at its matched level stays under it, so the bus's limiter takes 0 dB
 

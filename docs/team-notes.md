@@ -26,6 +26,11 @@ Each teammate rewrites its own row: two to five lines. Open asks sit under "Wait
 - **For Faber:** the hook in AR61 (play them where `Effects.Spark` is called today, and on a critical's raise), and the review of my three files before your push.
 - **Blocked on the director:** item 10, so my Studio playtests and captures can run. Until then: the next queued piece's study (the Shades' and the keeper's effects).
 
+**Sonus (sound).** 2026-11-24, 11:24, on Opus 5.5 at xhigh. First session.
+- **Now: the M1's sound per class**, the queue's first piece. The panel's words are set for the five classes (TR42, "The M1's sound per class"): the Assassin's cuts and the Tank's blows come from the library now, not the punch keeps, and the Mage's words name no element. Shortlisted: not yet. Loaded, heard, picked: no.
+- **Blocked:** the finder runs in Studio, and my Studio calls wait on the hooks (item 10). Once they're set, a Studio turn for about 9 minutes, then the director's listen.
+- **Next:** each launch Voidkin's signature sound, already tabs in the panel (Haymaker, Scarf Step, Lantern Burst, Ground Wire, Held Note).
+
 **Turns.** Studio: Faber's, on the main place, the playtest stopped between pieces (2026-11-23, 15:15); the director's listen on TR42's panel is tomorrow, in the same place. Blender: nobody (Modulo's AR41 strips were stopped at 01:33 on 2026-11-19 by Claude Code when the PC ran low on memory; the director said wait at 01:34). Timing tests: nobody.
 
 **The count.** Week of 2026-11-23: 6 pieces closed and playable: AR49, TR10, AR44's shine, TR50, AR50's and AR54's install, AR51 (each entry below has its hours). In the game and waiting: TR52 (the director's run), AR52 (research's pass), TR54 (three must-fixes).

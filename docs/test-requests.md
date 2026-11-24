@@ -3912,6 +3912,18 @@ The director's "Done", then "we need more audition sfx for the skills of our cur
 - **Tests:** type check 0 new; logic offline 26,574/0, the same in Studio, world report empty. The audition cases 89/0, and the sound cases on the beat cues 10/0, both in one playtest.
 - **Open:** the director's listen, put off to tomorrow by the director ("i will do that sound audition tomorrow"); the panel and its candidates stay in the place. `Audition.Clear()` before a public build. Queued after it: the UI sounds' audition.
 
+### The M1's sound per class, the panel's words (Sonus, 2026-11-24, 11:24 by the clock)
+
+On the director's word of 2026-11-23: one basic attack's sound per class, shared by every Voidkin of the class (`docs/decisions.md`). At launch each class has one Voidkin, so the second round's tabs serve as the class's. Only the data moved (`Config/Audition.luau`):
+- **Warrior** (`RookHit`, "Warrior's hits"): unchanged, the light hit's 32 keeps, since Rook's jab, hook and ram are fists.
+- **Assassin** (`KirraHit`, "Assassin's cuts"): from the library now, not the punch keeps, since Kirra cuts with two blades. Words: "sword slash", "blade slash", "katana slash", "slash hit", "sword hit", "blade cut". 0.6 s at most, its level a seed 1 dB under the light hit's.
+- **Tank** (`WattHit`, "Tank's blows"): from the library, a weighted blow for Watt's shaft, butt and driven spear. Words: "heavy impact", "blunt impact", "heavy strike", "heavy melee hit", "impact thud", "body impact". 0.8 s at most, its level a seed 2 dB over the light hit's.
+- **Mage** (`MageShot`, `MageHit`, "Mage cast" and "Mage hit"): the fire words are gone, since the word of 2026-11-23 replaced research's "a Mage of another element gets cues of its own". The element is left to the effect. Cast: "magic shot", "spell cast", "magic projectile", "energy blast", "spell shoot", "magic whoosh". Hit: "magic hit", "spell impact", "magic impact", "spell hit", "energy impact", "magic burst".
+- **Healer** (`HealerShot`, `HealerHit`): unchanged.
+- **Shortlisted:** not yet. **Loaded, heard, picked:** no. The four tabs need the finder again, in Edit: `Audition.Start({ "KirraHit", "WattHit", "MageShot", "MageHit" })`, about 9 minutes. Until then, the place holds the old candidates, and the self-test's length check may fail on `KirraHit` (0.7 s keeps against 0.6).
+- **For Faber's review:** the data only. At the merge, the cue names could become the class's own (`AssassinHit` and so on, and `Config.Cues.Own` by class) so a second Voidkin of a class reaches the same cue. That's code, and your call.
+- **Blocked:** my Studio calls, until the hooks for Sonus are set (the board, "Waiting on the director", item 10).
+
 ## TR43. Lantern Row's stages on Normal and Hard, in grey (Faber, the follow-up's item 2)
 
 Research, 2026-11-18, 22:44, on D2 and D7 (`docs/decisions.md`; `docs/design.md`, "The Festival of Battles"). Answers Faber's four questions of this evening.

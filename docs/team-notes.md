@@ -12,9 +12,9 @@ Each teammate rewrites its own row: one to three lines. Open asks sit under "Wai
 - **Done:** TR56 seen whole (Base: TR37 48/0). AR56's HUD half: the floor line gone, the slab captured at both heights (its note in AR56). Research's pass next.
 - **Now:** the pull with research's cloud branch, then what I'd change in TR57 to TR62. Queued, in order: Scintilla's AR58 hooks, research's pair sheet and UI lint, my cloud branch's call. Owed: TR54's capture.
 
-**Modulo (assets).** 2026-11-24, 20:50. Nothing running, no lock held.
+**Modulo (assets).** 2026-11-24, 20:55. Nothing running, no lock held.
 - **Waiting on the director:** AR59 Rook. The director wants the hair reworked (16:53), so it's AR64: Rook's and Kirra's hair, and the way Pip's is made. Nothing uploaded. Faber's open looks (TR53, TR54, the Guard's clip, AR49, AR44, AR40, AR48, TR50, AR50) are in their entries.
-- **Pip: research picked take A** (AR63), and its finish waits on AR64's pick, so his hair is made once. **Now:** AR62's two design takes in today's colours ("The plan", step 2). Then AR64's three ways of making hair (cap 2 hours). Then TR56's three chest pictures (Emblem Case, Jewel Pouch, Forge Crate). Then Lyric and Watt.
+- **Now:** AR64's three ways of making hair (cap 2 hours), since the style frame shows Rook with its pick. Then AR62's two or three style frames (cap 3 hours; the director's item 11, 20:52). Then TR56's three chest pictures. Pip's finish (take A, AR63), Lyric and Watt wait for the frame's pick.
 
 **Scintilla (effects).** 2026-11-24, 20:55. Grey rows, shown nowhere yet, as blocks: hit sparks (AR61), the Shades' tells (AR52), the keeper's moves (AR7), the element states (AR48), the Support (AR58).
 - **For Faber:** the hooks in those entries, and the review.

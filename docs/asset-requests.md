@@ -17352,3 +17352,22 @@ Every line players read, about 1,100 collected from `src/` by a read-only search
 - **The classes, for every new line:** no tagline in a rhythm under a name; no "for now" or "coming" teasers, but "in an update"; no object given a person's moods ("moved on"). The machines' "wakes" and "awake" stay: that's the game's own state.
 - **Not lines, for the roster:** the Commons' trade names (Brick's Hard Hat, Watt's Ground Wire and Insulated, Patch's Quick Fix, Gantry's Piston Drive, Mallow's Hot Meal) change with each one's redesign to the anime bar (`docs/roster.md`), never as a patch here.
 - **Content check (13:52): PASS** on the nine. "Next try succeeds" is true only while a full heat bar makes the next try certain (`Rules/Reinforce.luau`): it changes with that rule.
+
+## AR63. Pip, redesigned in the make (Modulo, for research's pick and the director's look, then its finish; Faber's install after)
+
+On the director's order of 2026-11-23, by 22:52 (Rook, Kirra, Pip, Lyric). The frame is AR60's: what holds, the checks, and the pictures. What holds is his row in `docs/roster.md` (Common, Purple, Mage, Fire, Lantern Burst, Kindle). Research's steer: his lantern is a young mage's, dark metal and glass with a living flame inside, never a paper festival lantern.
+- **Feel line:** in a fight, the player sees a small apprentice mage from an anime's cast. His outline reads first (a hat too big, or hair swept up), then the lantern floating at his right shoulder with its flame, then sleeves past his hands.
+
+### Modulo: three takes in the make (2026-11-24, 14:18; started 14:05)
+
+Sheet: `build/handoff/Pip/takes/pip_takes.png` (sha1 `0e3bfd08`), with its parts and the new Kirra in the first place. Script: `tools/blender/pip_make_takes.py`.
+- **A, the first-year:** an oversized slouched pointed hat, copper hair, and a cream tunic under a green mantle.
+- **B, the prodigy:** no hat, black hair in solid spikes, and an ivory jacket with a charcoal cape.
+- **C, the hearth kid:** a huge soft ochre cap, sandy hair, and a brick-brown coat.
+- **The lantern is the same in each:** an iron cage, glass you can see through, and a flame that lights itself. The kit's hats are turned right way out by their volume.
+- **Kit fix:** a hair of whole pieces alone (no leaves) now builds (`anime_make.py`).
+- **Waits:** the lantern's size at 64 px (it reads small), research's pick, the finish, the clips, the portraits.
+- **Content check (14:21): PASS.** Its hold points for the finish:
+  - A keeps its brim and ochre band: no all-green outfit, no feather, no stars or moons.
+  - B keeps its jacket closed: no headband, no crest on the back, no fingerless gloves. Lantern Burst stays a lantern, never a hand-thrown fireball.
+  - C keeps its cap soft and peaked, with no brim all round and no straw. If it's picked, its band goes brown or ochre, not red.

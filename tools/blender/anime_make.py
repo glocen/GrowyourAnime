@@ -791,7 +791,7 @@ class Hair:
         # the picture: a strip a clump, its lit faces three points across and its underside two, `step` texels from
         # one of a clump's points to the next, so the game's own smoothing gives the colours between them
         step, cell, across = 4, 20, 220
-        pitch = (max(len(s) for s in self.strips) - 1) * step + 4
+        pitch = (max((len(s) for s in self.strips), default=1) - 1) * step + 4   # a hair of whole pieces alone has no strips
         per_row = across // cell
         strips_tall = -(-len(self.strips) // per_row) * pitch + 8
         # the whole pieces' pictures below the strips, side by side where they fit

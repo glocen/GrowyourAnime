@@ -17,6 +17,7 @@
 local Shared = game:GetService("ReplicatedStorage").Shared
 local HudConfig = require(Shared.Config.Hud)
 local WorldConfig = require(Shared.Config.World)
+local StagesConfig = require(Shared.Config.Stages)
 local Hud = require(Shared.Rules.Hud)
 local ProfileController = require(script.Parent.Parent.ProfileController)
 local UI = script.Parent.Parent.Parent.Parent.UI
@@ -24,6 +25,7 @@ local Theme = require(UI.Theme)
 local Toast = require(UI.Kit.Toast)
 local Screen = require(UI.Kit.Screen)
 local BreakerScreen = require(UI.BreakerScreen)
+local StageScreen = require(UI.StageScreen)
 local UiLint = require(script.Parent.UiLint)
 
 local Helpers = {}
@@ -61,6 +63,24 @@ function Helpers.waitFor(t: any, seconds: number, ok: () -> boolean): boolean
 	return ok()
 end
 
+-- Ends a run a case left going, by the game's own way out: its lead's fall (StageBegin would begin another). Its card
+-- comes Results.After later and is closed; the lead is healed. The record's stretches are the case's to put back after.
+function Helpers.endRun(t: any)
+	local player = game:GetService("Players").LocalPlayer
+	if type(player:GetAttribute("StageRun")) ~= "string" then
+		return
+	end
+	t.Server("FightHealth", 0)
+	Helpers.waitFor(t, 2, function(): boolean
+		return player:GetAttribute("StageRun") == nil
+	end)
+	Helpers.waitFor(t, StagesConfig.Results.After + 1, function(): boolean
+		return Screen.Current() == StageScreen.Name
+	end)
+	Screen.Close()
+	t.Server("LeadHeal")
+end
+
 -- A toast rides in from off the screen and leaves that way (Kit.Toast), so the lint reads once none is mid-ride: a gain's
 -- toast caught on its way in failed "on screen" under load (2026-11-15).
 function Helpers.lintClean(t: any, where: string)
@@ -80,6 +100,7 @@ function Helpers.lintClean(t: any, where: string)
 	t.Check(`{where}: every piece sits in the safe area`, #report.Safe == 0, UiLint.Detail(report.Safe, report.Checked))
 	t.Check(`{where}: no two pieces of the HUD overlap`, #report.Overlap == 0, UiLint.Detail(report.Overlap, report.Checked))
 	t.Check(`{where}: nothing sits under the thumbs' controls`, #report.Thumbs == 0, UiLint.Detail(report.Thumbs, report.Checked))
+	t.Check(`{where}: no list draws Roblox's own thumb`, #report.Bars == 0, UiLint.Detail(report.Bars, report.Checked))
 end
 
 function Helpers.readyCount(def: string): number

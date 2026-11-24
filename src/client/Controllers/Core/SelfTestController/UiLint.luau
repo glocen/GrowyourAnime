@@ -15,7 +15,9 @@
 --   each piece of the HUD and of an open screen lies inside its layer's safe area (Layers: clear of Roblox's top bar and
 --     the notch; a test's phone box when one is set);
 --   no two pieces of the HUD overlap;
---   none sits under the thumbs' controls (Roblox's jump button and fixed thumbstick, on a touch screen).
+--   none sits under the thumbs' controls (Roblox's jump button and fixed thumbstick, on a touch screen);
+--   no scrolling list draws Roblox's own thumb: one that hides it by a thickness of nought hides its image too, since
+--     Roblox draws a thin line there all the same (TR54's list, the Bag's chips).
 
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
@@ -46,6 +48,7 @@ export type Report = {
 	Safe: { string },
 	Overlap: { string },
 	Thumbs: { string },
+	Bars: { string },
 }
 
 -- Whether a piece draws: visible all the way up to its container, and that container enabled.
@@ -136,10 +139,16 @@ local function short(object: Instance): string
 end
 
 function UiLint.Run(): Report
-	local report: Report = { Checked = 0, Fit = {}, Size = {}, Screen = {}, Placeholder = {}, Names = {}, Touch = {}, Safe = {}, Overlap = {}, Thumbs = {} }
+	local report: Report = { Checked = 0, Fit = {}, Size = {}, Screen = {}, Placeholder = {}, Names = {}, Touch = {}, Safe = {}, Overlap = {}, Thumbs = {}, Bars = {} }
 	local gui = Players.LocalPlayer:WaitForChild("PlayerGui")
-	-- The taps: every button the player can press now.
+	-- The taps: every button the player can press now. The lists: every one shown, its own thumb hidden whole.
 	for _, object in gui:GetDescendants() do
+		if object:IsA("ScrollingFrame") and object.ScrollBarThickness == 0 and object.ScrollBarImageTransparency < 1 and up(object) then
+			local screen = object:FindFirstAncestorOfClass("ScreenGui")
+			if screen and string.sub(screen.Name, 1, #OURS) == OURS then
+				table.insert(report.Bars, short(object))
+			end
+		end
 		if object:IsA("GuiButton") and object.Active and up(object) then
 			local screen = object:FindFirstAncestorOfClass("ScreenGui")
 			if screen and screen.Name ~= WORLD and string.sub(screen.Name, 1, #OURS) == OURS then

@@ -140,12 +140,13 @@ end
 -- A foe of the run's stage fell with the player among its hitters: an ordinary Shade of one of its packs counts to the
 -- quota, and its last stop's foe counts once. The run is done when both are in, in either order: on Normal the elite is
 -- the street's, back only Config.World.Row.Back.Elite after its fall, so one felled before the quota still counts.
--- Whether the run is done.
+-- Whether this fall finished the stretch: true once, so its clear is written once. A fall after it (a pack felled whole
+-- past the quota, a Hard pack standing again before the run moves on) finishes nothing (run.Done says it's done).
 function Stages.Kill(run: Run, def: string): boolean
 	local rows = Stages.Of(run.Ground)
 	local row = if rows then rows[run.Stage] else nil
 	if row == nil or run.Done then
-		return run.Done
+		return false
 	end
 	local last = row.Stops[#row.Stops]
 	if def == last.Def and last.Kind ~= "Pack" then

@@ -232,6 +232,7 @@ function EmblemsPage.Build(context: Look.Context): Look.Page
 		scroll.BackgroundTransparency = 1
 		scroll.BorderSizePixel = 0
 		scroll.ScrollBarThickness = 0
+		scroll.ScrollBarImageTransparency = 1 -- Roblox draws its own thumb even at nought
 		scroll.ScrollingDirection = Enum.ScrollingDirection.X
 		scroll.ElasticBehavior = Enum.ElasticBehavior.WhenScrollable
 		scroll.Position = UDim2.fromOffset(X(B.Clip[1]), Y(B.Top - 4))

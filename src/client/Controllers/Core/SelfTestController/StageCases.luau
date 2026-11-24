@@ -91,7 +91,7 @@ function StageCases.Cases(): { any }
 				}
 				local count = #(Stages.Of(GROUND) :: { any })
 				local function restore()
-					t.Server("StageBegin", "Normal", 1) -- ends any run (refused when shut, which ends nothing: then the walk off does)
+					Helpers.endRun(t)
 					t.Server("StageLine", "Hard", 0)
 					t.Server("StageLine", "Normal", was.Normal[1], was.Normal[2])
 					t.Server("StageLine", "Hard", was.Hard[1], was.Hard[2])

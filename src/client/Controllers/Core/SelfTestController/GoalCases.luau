@@ -61,23 +61,6 @@ local function begin(difficulty: string): { [string]: any }
 	return if ok and type(answer) == "table" then answer else { Ok = false, Error = tostring(answer) }
 end
 
--- Ends a run the case left going, by the game's own way out: its lead's fall (StageBegin would begin another). Its card
--- comes Results.After later and is closed; the lead is healed.
-local function endRun(t: any)
-	if type(player:GetAttribute("StageRun")) ~= "string" then
-		return
-	end
-	t.Server("FightHealth", 0)
-	waitFor(t, REPLICATE, function(): boolean
-		return player:GetAttribute("StageRun") == nil
-	end)
-	waitFor(t, StagesConfig.Results.After + 1, function(): boolean
-		return Screen.Current() == StageScreen.Name
-	end)
-	Screen.Close()
-	t.Server("LeadHeal")
-end
-
 -- The day's rows as the list shows them, in order: "<id> <state> <right>".
 local function rows(said: { [string]: any }): { string }
 	local out = {}
@@ -209,7 +192,7 @@ function GoalCases.Cases(): { any }
 				end
 				local stonesBefore = stones()
 				local function restore()
-					endRun(t)
+					Helpers.endRun(t)
 					t.Server("StageLine", "Hard", 0)
 					t.Server("StageLine", "Normal", was.Normal[1], was.Normal[2])
 					t.Server("StageLine", "Hard", was.Hard[1], was.Hard[2])
@@ -469,7 +452,7 @@ function GoalCases.Cases(): { any }
 				Layers.Force(nil)
 				t.Server("Tune", "Goals.Held", heldWas)
 				t.Server("Tune", "Stages.Results.After", afterWas)
-				endRun(t)
+				Helpers.endRun(t)
 				t.Server("StageLine", "Hard", 0)
 				t.Server("StageLine", "Normal", was.Normal[1], was.Normal[2])
 				t.Server("StageLine", "Hard", was.Hard[1], was.Hard[2])

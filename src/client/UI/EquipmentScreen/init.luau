@@ -292,6 +292,7 @@ local function list(parent: Frame, view: Profile.View)
 	scroll.BackgroundTransparency = 1
 	scroll.BorderSizePixel = 0
 	scroll.ScrollBarThickness = 0
+	scroll.ScrollBarImageTransparency = 1 -- Roblox draws its own thumb even at nought
 	scroll.ScrollingDirection = Enum.ScrollingDirection.Y
 	scroll.ElasticBehavior = Enum.ElasticBehavior.WhenScrollable
 	scroll.Position = UDim2.fromOffset(X(L.Panel[1]), Y(L.Panel[2]))

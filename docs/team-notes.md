@@ -12,8 +12,8 @@ Each teammate rewrites its own row: one to three lines. Open asks sit under "Wai
 - **Next:** TR61's strings, then TR63's pair sheet, then its contrast lint.
 - **TR57 to TR62, what I'd change (tier 2):** their screens wait for AR62's pick and their targets, so systems and pure rules first; Firsts leaves TR57 as its own piece; the boards' stores split Test and Live, as DataService does; the inviter's crate goes through ProfileStore's MessageAsync; TR59 takes Rules/Welcome from my cloud branch; codes could live in ConfigService, so a new code needs no publish (to check first).
 
-**Modulo (assets).** 2026-11-24, 21:49. Nothing running, no lock held.
-- **Waiting on research's pick:** AR64's hair, three takes on Rook and Kirra from the study `docs/research/hair-read.md` (AR64, "Modulo's takes"). Nothing uploaded. AR59 Rook waits on it. Faber's open looks (TR53, TR54, the Guard's clip, AR49, AR44, AR40, AR48, TR50, AR50) are in their entries.
+**Modulo (assets).** 2026-11-24, 23:17. Nothing running, no lock held.
+- **Waiting on the director's eye:** AR64's hair, rebuilt after four rejections from a wider study (`docs/research/hair-read.md`, "A wider look"): three grains on Rook and Kirra (AR64, "Modulo's takes"). Nothing uploaded. AR59 Rook waits on it. Faber's open looks (TR53, TR54, the Guard's clip, AR49, AR44, AR40, AR48, TR50, AR50) are in their entries.
 - **Now:** AR62's two or three style frames (cap 3 hours), from the phone-read study (`docs/research/phone-read.md`). Then AR55's return as a whole screen, then TR56's three chest pictures. Pip's finish (AR63), Lyric and Watt wait for the frame's pick.
 
 **Scintilla (effects).** 2026-11-24, 21:25. In the game, unjudged: the Support's looks (AR58) and the element states (AR48). As grey rows, waiting on Faber's hooks: hit sparks (AR61), the Shades' tells (AR52), the keeper's moves (AR7).

@@ -38,9 +38,29 @@ From the DevForum's hair tutorials and feedback threads, and the UGC guides (sou
 - **What made hair read badly** ([feedback thread](https://devforum.roblox.com/t/i-made-anime-hair/881090)): "very flat, the colors are drained and it's not nearly fluffy enough". The fixes offered were curved convex forms and lighter, livelier shading.
 - **The genre's best:** Anime Vanguards' hair, up close, is neither strips nor curves left apart. It's one sculpted surface: a few big forms flowing into one another, creased where they meet, smooth everywhere else. The pro pipeline is sculpt, then retopology, then bake ([80.lv](https://80.lv/articles/how-to-create-a-refined-and-vivid-fantasy-character-with-natural-curly-hair)).
 
-**Our way, headless** (DESIGN, `hair_ways.py`, `Sculpted`):
-- About twenty big forms with a flat lens profile, each drawn to a point (the tutorials' shape).
-- Made one surface by a voxel remesh, after a solidify closes them.
-- Smoothed twice, then cut to 5,000 triangles. That's our cap, not UGC's 4,000: it's a game mesh.
-- The picture: each point's openness to the sky over it, measured by 40 rays. Dark in the creases, light in the open, a band of light on top. The picture is bled past each island's edge so no seam shows.
-- The first test is take S on Rook (`build/scratch/modulo/study/vs3.png`, internal).
+**Dropped:** the remeshed single surface built from this (take S, 22:26). The director, by 23:00: "it still horrible ur hair is horrendous". It read as fat clay fingers.
+
+## A wider look, and what was measured (2026-11-24, 23:17, on "browse more example")
+
+The director: "u dont have to take inspiration only from those hair browse more example". Looked at, all internal (`build/reference/hair/`, `build/reference/anime-vanguards/`):
+- **Roblox's catalog:** the 32 most-favourited hair accessories under six anime searches, their catalog pictures (`catalog/index.tsv`). The boys' "messy" and "fluffy" hairs, 200,000 to 940,000 favourites each, are the ones players pick.
+- **Anime Vanguards:** four heads at the renders' own size, doubled (`study/n1.png`, `n2.png`).
+- **Sketchfab:** the 48 most-liked models under four hair searches; twelve were worth a look, the rest whole characters or printed figures (`sketchfab/index.tsv`).
+- **Four modelling guides,** read for numbers: none gave any. One refused the fetch.
+
+What every good one does (OBSERVED), and ours never did:
+1. **One whorl.** Every lock is born at one point on the crown and runs away from it: forward over the forehead, down the sides, down the back. Each turns the same way round it.
+2. **Layers, like roof tiles.** A ring at the hem, a ring over it, the crown's over that. Each ring hides the roots of the one below, so only points and overlaps show.
+3. **Long locks.** A lock runs most of the head: half a head to a whole head long. Ours were a quarter.
+4. **A dome bigger than the head.** 1.4 to 2 heads wide, a third to half a head over it (MEASURED on the pictures). The locks lie on it, and only their last third leaves it, turned out.
+5. **The fringe is hair.** It falls from the whorl to the brows or the eyes, broad at the top, parting into points.
+6. **A lock is flat.** In Anime Vanguards a blade with a ridge: a broad face, a narrow one, hard edges, twenty to forty-five of them. In the catalog a thin ribbon, sixty to a hundred.
+7. **Dark inside.** Under the locks a cap in the hair's shade, so a gap shows shade, never skin.
+8. **No two neighbours alike.** Lengths and points vary along a ring, so the edge has a rhythm.
+
+**Our way** (DESIGN, `hair_ways.py`, `Blades`):
+- A cap in the hair's shaded colour.
+- Three rings of flat wedge blades from one whorl (`ring`, `lay`), each lock lying on the head and turned out over its last half. A fringe of leaves from the whorl's front.
+- The broad face light and the narrow one in shade, one hard edge between them, drawn in the picture.
+- 2,100 to 3,800 triangles.
+- Three grains of one layout: A, B fewer and bigger (Anime Vanguards' end), C finer (the catalog's end).

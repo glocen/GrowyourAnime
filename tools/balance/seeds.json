@@ -67,6 +67,7 @@
   "earnBucketCaps": { "credits": 1.50, "xp": 1.50, "electricity": 1.00 },
 
   "pace": { "killsPerHour": 450, "creditsPerKillPerG": 10, "forgeShareOfIncome": 0.45 },
+  "forgeHeat": { "_": "Forge heat replaces no pity (the director, 2026-11-24, 10:50). Heat is whole points, 0 to 100, on the item. A failed try adds round(perChance x the try's chance) points; at 100 or more the next try succeeds; a success sets it to 0; it moves with the level. With 50: at most 3 failures in a row at 80%, 10 at the 20% floor. Expected Credits to +30 fall from 7,282 to 6,722 x G, so the try's Credits base rises from 30 to 32.5 to hold the sink; the stones stay, about 8% fewer to +30. Research, 2026-11-24.", "perChance": 50, "full": 100, "creditsBase": 32.5 },
 
   "profiles": {
     "casual": { "hoursPerDay": 0.5, "sessions": 1, "prismaticPerDay": 0.5 },
@@ -112,6 +113,7 @@
     "batteryKwh": 60,
     "startKwh": 2,
     "creditsPerKwh": 0.5,
+    "workXp": { "_": "A worker earns experience by the kWh it makes (the director, 2026-11-24, 10:50). Per kWh it earns what the Training machine gives in perKwhTrainingSeconds; an 18 kW worker (aptitude 3 at level 1) earns half the Training rate, a 12 kW worker a third, a 6 kW worker a sixth. Never more a second than the Training rate. Research, 2026-11-24.", "perKwhTrainingSeconds": 100, "capShareOfTraining": 1.0 },
     "voltage": { "_": "Infusion is voltage (the director, 2026-11-15, 'Faster break'): Low halves a shard's time left, High breaks it at once; once per shard; odds untouched. Research's price: the energy its chamber would still draw over the time saved, times the premium, times the ground's factor; rounded up to a whole kWh; not offered when it saves under minSavedSeconds.", "lowTimeLeft": 0.5, "highTimeLeft": 0, "premium": 1.3333, "minSavedSeconds": 60 }
   },
 

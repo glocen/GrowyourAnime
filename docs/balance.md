@@ -107,6 +107,10 @@ Upgrades to the base and its machines are the largest Credit sink (`docs/design.
 
 The Stone Condenser is how time away becomes strength (`docs/design.md`, "The base"). Its stones count inside forge ranks' share, not on top of it, and its tray's cap bounds how far a player who checks in often pulls ahead of one who doesn't. Its rate and cap are seeds, set by the simulation before phase 3.
 
+**Forge heat** [D, 2026-11-24, 10:50] keeps Reinforce's chances and caps a losing streak. A failure adds heat in proportion to the chance it missed, so a likely level fills the bar in a few tries and the 20% floor in ten; a full bar makes the next try sure. Heat lowers the expected tries, so the try's Credits rise by the same share to keep the forge's 45% of income; the stones stay, so the scarce Mid and High grades go a little further (COMPUTED by research, 2026-11-24; seeds "forgeHeat").
+
+**A worker's experience** [D, 2026-11-24, 10:50] is paid by the kWh it makes, as a share of the Training machine's rate: the best launch worker at level 1 earns half of it, and no worker ever earns more than it. So the Training machine stays the fastest place for one Voidkin, and the whole bench grows behind it; a higher bay grows its worker faster too (seeds "power.workXp"). A MODEL until the phone sitting times the pace.
+
 The Void Rift is Breaker speed for a minute, on a schedule. Online all day it averages x1.63. It's the one large multiplier in the game, it's on a clock, and it touches time only.
 
 ## Pace

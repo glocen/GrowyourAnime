@@ -213,12 +213,8 @@ function TowerCases.Cases(): { any }
 								t.Check(`floor {s.Floor}: the foe's steps down in the fight`, down)
 							end
 							if caught == 1 then
-								-- The floor's title under the foe's card, never over its health (TR46; AR44's verdict).
-								local title = Layers.Get("Hud"):FindFirstChild("TowerFloor") :: GuiObject?
-								local card = HudController.Parts().Target
-								t.Check("the floor's title stands under the foe's card", title ~= nil and title.Visible
-									and title.AbsolutePosition.Y >= card.AbsolutePosition.Y + card.AbsoluteSize.Y - 0.5,
-									if title then `title from {title.AbsolutePosition.Y}, the card's foot {card.AbsolutePosition.Y + card.AbsoluteSize.Y}` else "no title")
+								-- The floor reads once, by the room's slab: no line on the HUD says it over the slab (research's must-fix on AR56).
+								t.Check("the floor read by the slab alone, no HUD line", Layers.Get("Hud"):FindFirstChild("TowerFloor") == nil)
 								-- The freeze (D10): gear and the lead stay as they are through the run.
 								local equip = t.Server("Act", "Equip", { Preset = 1, Slot = "Helmet", Item = "none" })
 								t.Check("gear frozen", type(equip) == "table" and equip.Error == "InCombat", tostring(equip and equip.Error))

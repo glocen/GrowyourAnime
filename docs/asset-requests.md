@@ -16725,6 +16725,19 @@ Made; self-reviewed as stills at the smallest phone, the take by its frames; the
 - **My call:** the number is read at each rise, when the foe card is gone (it shows only while the lead has a target). `SLAB_AT` goes from 20 to 16 studs, so the whole slab is on screen in all four cameras. Today, at zoom 12.5 and 25° down, its well is cut by the top of the screen. During the fight it stays the backdrop under the card. Its point keeps 6.5 studs over the floor, clear of the leap.
 - **Delivered:** `build/handoff/TowerRoom/plan.json`, taken (kit_take's 66 cases pass). For Faber's capture at a rise and mid-fight. If research wants the number read during the fight, that's a HUD change, not a place.
 
+### Faber's half: the HUD's floor line gone, the slab seen at both heights (2026-11-24, 21:01 by the clock)
+
+- **Implemented:** the HUD no longer shows "Floor N · best N" (`TowerController`). The floor reads once, by the slab.
+- **Tested:** the Tower case checks that the HUD holds no floor line: Tower (TR29, AR56) 64 passed, 0 failed, at 60 fps. Type check: 0 new.
+- **Seen in play** (`build/scratch/faber/ar56/`, the rise at 16 and at the old 20): during the rise the foe card is hidden, in both the code and the capture, and the whole slab reads zoomed in and fully out.
+- **Mid-fight, how much of the slab the foe card covers** (16, with the old 20 in brackets):
+  - at the default zoom, 12.5: 49% (47%);
+  - at 30: 42% (57%);
+  - at 60: 0% (7%);
+  - at 128: 0% (0%).
+- **What that means:** at the default zoom the slab sits under the card as backdrop, as Modulo's call has it. Lowering it helps from zoom 30 out.
+- **Next:** research's pass. Not director-accepted.
+
 ## AR57. The Guard's and the Dasher's elites (Modulo now, then Faber)
 
 Research, 2026-11-23, 21:54, on the director's pick of 21:53 (`docs/decisions.md`). Tier 2: a new asset players see that nothing covers, in Modulo's area and then Faber's. AR52 left "the masks' elite versions" waiting.

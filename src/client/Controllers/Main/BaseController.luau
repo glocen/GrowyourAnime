@@ -809,6 +809,7 @@ local function convertCard(marker: Instance, spot: Spot): ConvertCard
 	switch.Triggered:Connect(function()
 		BaseController.SwitchConvert()
 	end)
+	card:SetAttribute("From", c.From) -- the grade it offers, for tests (rewritten when the Switch changes it)
 	return {
 		Anchor = anchor,
 		Prompt = p,

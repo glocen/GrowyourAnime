@@ -21,7 +21,8 @@ local J = E.Jewels
 local SEAM = Look.Seam
 local X, Y = Look.X, Look.Y
 local SMALL = Look.Small
-local COMING = "Jewels are coming"
+-- Jewels drop now (TR56), but setting them waits on TR47's part B: the presses stay off, and say so (TR61).
+local COMING = "Jewels are set here in a later update"
 
 -- The rule under the sockets: a hairline in the facet.
 local function rule(parent: Instance, y: number, ends: { number }, alpha: number)

@@ -82,7 +82,7 @@ local REFUSED: { [string]: string } = {
 	Cap = "That's the top level for now",
 	Ceiling = "Raise the base's level first",
 	Asleep = "It isn't awake yet",
-	NoAnswer = "No answer. Try again.",
+	NoAnswer = "That didn't go through. Try again.",
 }
 
 local state: State? = nil

@@ -63,14 +63,14 @@ end
 
 local function festival(data: Profile.Data, ground: string): Card
 	local row = Grounds.ById[ground]
-	local named = if row then row.Name else "The grounds"
+	local named = if row then row.Name else "The Arcs"
 	local count = #((Stages.Of(ground) or {}) :: { any })
 	local which, at = Modes.Frontier(data, ground)
 	local way = Stages.Way(data, ground, which)
 	return {
 		Id = "Festival",
 		Title = "Festival of Battles",
-		Line = "Fight through the grounds beside your lead",
+		Line = "Fight through the Arcs beside your lead",
 		Says = if count > 0 then `{named} · {which} · Stretch {at} of {count}` else named,
 		Press = if at > 1 then "Continue" else "Fight",
 		Does = Modes.Begin,

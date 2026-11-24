@@ -109,7 +109,7 @@ local SCREEN = Vector2.new(660, 320)
 -- What a refusal says to the player, by its code (Rules.Base, Rules.Collection).
 local REASON: { [string]: string } = {
 	Chosen = "The first shard is already chosen",
-	NoShard = "None of that shard in the bag",
+	NoShard = "You have none of that shard",
 	Empty = "Nothing there",
 	Leading = "The lead can't work too",
 	Working = "A worker can't lead too",
@@ -125,7 +125,7 @@ local REASON: { [string]: string } = {
 	Stale = "Already done",
 	Cap = "That's the top level for now",
 	Ceiling = "Raise the base's level first",
-	NoAnswer = "No answer. Try again.",
+	NoAnswer = "That didn't go through. Try again.",
 	Asleep = `The Stone Condenser wakes at base level {CondenserConfig.Wakes}`,
 	Busy = "A convert is already under way",
 	Stones = "Not enough stones in the bag for that convert",

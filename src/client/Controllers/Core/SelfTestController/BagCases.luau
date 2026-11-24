@@ -17,6 +17,7 @@ local Voidkin = require(Shared.Definitions.Voidkin)
 local Rules = require(Shared.Rules.Bag)
 local Sheet = require(Shared.Rules.Sheet)
 local Chests = require(Shared.Rules.Chests)
+local ChestRows = require(Shared.Definitions.Chests)
 local HudController = require(script.Parent.Parent.Parent.Main.HudController)
 local ProfileController = require(script.Parent.Parent.ProfileController)
 local UI = script.Parent.Parent.Parent.Parent.UI
@@ -504,6 +505,62 @@ function BagCases.Cases(given: Given): { any }
 					end
 					return (view().Bag.Chests[CHEST] or 0) == heldBefore
 				end), `{gone} of {#mine} items`)
+			end,
+		},
+		{
+			-- TR61: a Hard stretch's chest says only Hard in its name, and its card's second line says which stretch, whole
+			-- at the smallest phone. Its chests are its own, taken back at its end.
+			Name = "Items page: a Hard stretch's chest names its stretch on its card's second line, whole at the smallest phone (TR61)",
+			Run = function(t: any)
+				local id: string? = nil
+				for _, row in ChestRows.List do
+					if id == nil and row.Difficulty == "Hard" and row.Stage >= 2 and row.Of ~= nil then
+						id = row.Id
+					end
+				end
+				t.Check("a Hard stretch's Emblem Case to give", id ~= nil)
+				if id == nil then
+					return
+				end
+				local chest = id :: string
+				local row = ChestRows.ById[chest]
+				t.Check("its name says Hard, and no stretch or stage", string.sub(row.Name, 1, 5) == "Hard " and string.find(row.Name, "Stage", 1, true) == nil and string.find(row.Name, "Stretch", 1, true) == nil, row.Name)
+				local before = view().Bag.Chests[chest] or 0
+				t.Server("ChestGive", chest, 3)
+				waitFor(t, ANSWER, function(): boolean
+					return (view().Bag.Chests[chest] or 0) == before + 3
+				end)
+				Screen.Close()
+				VoidkinScreen.Last("Bag")
+				t.Check("the Voidkin screen opens on the Items page", Button.Press(HudController.Parts().Voidkin :: TextButton) and waitFor(t, 1, function(): boolean
+					local page = find("Page")
+					return Screen.Current() == VoidkinScreen.Name and page ~= nil and page:GetAttribute("Page") == "Bag"
+				end))
+				Layers.Force(Theme.Scale.Floor)
+				Layers.Box(Theme.Smallest - Vector2.new(0, GuiService.TopbarInset.Height))
+				VoidkinScreen.Show("Bag")
+				t.Wait(HudConfig.Motion.Screen.Enter + 0.1)
+				VoidkinScreen.Tap(find("Chests"))
+				t.Wait(0.2)
+				Bag.Choose(chest)
+				t.Wait(HudConfig.Bag.Slide + 0.2)
+				local card = find("Card")
+				local kind = if card then card:FindFirstChild("Kind") else nil
+				local said = if kind and kind:IsA("TextLabel") then kind.Text else "none"
+				t.Check("its second line: its stretch, then how many are held", said == `Stretch {row.Stage} · ×{before + 3} held`, said)
+				t.Check("whole at the smallest phone, not cut", kind ~= nil and kind:IsA("TextLabel") and kind.TextFits,
+					if kind and kind:IsA("TextLabel") then `{math.ceil(kind.TextBounds.X)} px in {math.floor(kind.AbsoluteSize.X)}` else "none")
+				local title = if card then card:FindFirstChild("ItemName") else nil
+				t.Check("its title, the name", title ~= nil and title:IsA("TextLabel") and title.Text == row.Name, if title and title:IsA("TextLabel") then title.Text else "none")
+				lintClean(t, "a Hard chest's card at the smallest phone")
+				Layers.Box(nil)
+				Layers.Force(nil)
+				Bag.Choose(nil)
+				Screen.Close()
+				t.Server("ChestGive", chest, before - (view().Bag.Chests[chest] or 0))
+				t.Check("its chests taken back", waitFor(t, ANSWER, function(): boolean
+					return (view().Bag.Chests[chest] or 0) == before
+				end))
 			end,
 		},
 		{

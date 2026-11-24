@@ -40,6 +40,8 @@ local Collection = require(Shared.Rules.Collection)
 local HudConfig = require(Shared.Config.Hud)
 local Breaker = require(Shared.Rules.Breaker)
 local VoidkinConfig = require(Shared.Config.Voidkin)
+-- The stars at the top, as a word ("All seven stars"), for the line a copy sells on (TR61).
+local ALL_STARS = ({ "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten" })[VoidkinConfig.MaxStars] or tostring(VoidkinConfig.MaxStars)
 local Voidkin = require(Shared.Definitions.Voidkin)
 local Gear = require(Shared.Definitions.Gear)
 local Actions = require(Shared.Definitions.Actions)
@@ -99,7 +101,7 @@ local player = Players.LocalPlayer
 local REFUSED: { [string]: string } = {
 	InCombat = "Not during a fight",
 	Healing = "Still healing at home",
-	Leading = "The lead fights, it can't be stationed",
+	Leading = "The lead fights: it can't be stationed",
 	Working = "Stationed: recall it first",
 	NotEnough = "Not enough copies",
 	MaxStars = "All seven stars",
@@ -912,7 +914,7 @@ local function starsTab(scroll: ScrollingFrame, view: Profile.View, owned: Profi
 		pip.Parent = pips
 	end
 	local cost = Collection.NextStarCost(owned)
-	line(scroll, 2, `{owned.Stars} of {VoidkinConfig.MaxStars} stars`, nil, if cost then Hud.Copies(owned.Copies, cost) else "Every star: a copy sells for Credits")
+	line(scroll, 2, `{owned.Stars} of {VoidkinConfig.MaxStars} stars`, nil, if cost then Hud.Copies(owned.Copies, cost) else `All {ALL_STARS} stars: a copy now sells for Credits`)
 	if cost then
 		local before = Stats.Power((resolved(view, owned)))
 		local next = table.clone(owned)

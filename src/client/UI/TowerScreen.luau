@@ -1,6 +1,6 @@
 --!strict
 -- TowerScreen (client): a Tower run's results, in grey (TR29; docs/design.md, "The Tower", "Death ends the run"). The
--- highest floor this run and the record if it's beaten, the opponents defeated, the Credits and the chests won, from
+-- highest floor this run and the record if it's beaten, the floors won, the Credits and the chests won, from
 -- the save's Progress.Tower.Results (the server's, written once by the run's end). In the base, Retry sets the avatar in
 -- its ring to climb again once rested, and Home sets it down at its plot's spawn (TR46); elsewhere a crash's results
 -- close. Closing it, by a press or its exit, tells the server they've been seen (Act "TowerSeen"), so they open once.
@@ -208,7 +208,7 @@ function TowerScreen.Open(results: Profile.TowerResults, on: On)
 		line("Record", `Your record: floor {results.Best}`, Theme.Text.Body, Theme.Colour.TextDim)
 	end
 	y += 4
-	line("Defeated", `{results.Floor} {if results.Floor == 1 then "opponent" else "opponents"} defeated`, Theme.Text.Body)
+	line("Defeated", `{results.Floor} {if results.Floor == 1 then "floor" else "floors"} won`, Theme.Text.Body)
 	line("Credits", `+{Hud.Digits(results.Credits)} Credits`, Theme.Text.Body, Theme.Colour.Credits, Theme.Font.Number)
 	local function chest(id: string): string
 		local each = ChestRows.ById[id]

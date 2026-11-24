@@ -72,7 +72,7 @@ local REFUSED: { [string]: string } = {
 	[Shop.BagFull] = "Your Inventory is full",
 	[Shop.Unknown] = "That isn't on the shelf now",
 	Closed = "The Shop is closed for a moment",
-	NoAnswer = "No answer: try again",
+	NoAnswer = "That didn't go through. Try again.",
 }
 
 local lastView: Profile.View? = nil

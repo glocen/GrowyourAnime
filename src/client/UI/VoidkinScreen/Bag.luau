@@ -865,7 +865,13 @@ local function chestCard(context: Context, at: Layout, id: string)
 		entry = if each.Id == id then each else entry
 	end
 	local shown = entry :: Rules.Entry
-	local y = head(made, at, side, "", chestPicture(shown.Image), slotWord(shown), nil, false, `×{Hud.Digits(info.Held)} held`, info.Name)
+	-- a Hard stretch's chest says its stretch before the count: its name says only Hard (TR61)
+	local row = ChestRows.ById[id]
+	local held = `×{Hud.Digits(info.Held)} held`
+	if row and row.Difficulty == "Hard" and row.Stage > 0 then
+		held = `Stretch {row.Stage} · {held}`
+	end
+	local y = head(made, at, side, "", chestPicture(shown.Image), slotWord(shown), nil, false, held, info.Name)
 	rule(made, pad, y, wide)
 	local bottom = foot(at)
 	local list = lines(made, id, pad, y + 2, wide, bottom - 6)
@@ -1046,7 +1052,7 @@ local EMPTY: { [string]: { string } } = {
 	All = { "Nothing in the bag yet", "Shades and keepers drop gear" },
 	Gear = { "No gear yet", "Shades and keepers drop it" },
 	Jewelry = { "No jewelry yet", "Shades and keepers drop it" },
-	Chests = { "No chests yet", "Shades drop them, and keepers" },
+	Chests = { "No chests yet", "Shades and keepers drop them" },
 	Materials = { "No shards yet", "The Arcs drop them" },
 }
 

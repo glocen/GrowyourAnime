@@ -326,7 +326,7 @@ function EquipmentCases.Cases(): { any }
 				end
 				t.Equal("five slots", slots, 5)
 				t.Equal("marked as coming", if work then work:GetAttribute("State") else nil, "Coming")
-				t.Equal("said so", said(work, "Said1"), "Jewels are coming")
+				t.Equal("said so", said(work, "Said1"), "Jewels are set here in a later update")
 				local jewel = EquipmentScreen.Parts().JewelsPutIn :: TextButton?
 				t.Check("its press off, refusing", jewel ~= nil and dressOf(jewel) == "Off" and not Button.Press(jewel :: TextButton))
 				putBack(t, g, 0)

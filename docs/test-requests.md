@@ -5141,6 +5141,11 @@ Research, 2026-11-24, from the cloud: a pass over every player-visible string in
 - **After TR56,** two lines turn false: `Emblems.luau` 281, "No emblems yet: Shades and keepers drop them", becomes "No emblems yet: elites and keepers drop them in cases" (the Emblem Case replaces the loose drop); and `Jewels.luau` 24, "Jewels are coming", goes once the pouch and the Condenser make jewels.
 - **Cases:** none new; the self-test's text checks that read these strings follow them.
 - **Checks:** the content check isn't needed (no new name); research reads the changed screens at the next capture.
+- **Faber, 2026-11-24, 23:30 by the clock: done.** All nine, and both lines after TR56. Two calls of mine:
+  - The Jewels line stays, and tells the truth: "Jewels are set here in a later update". Jewels drop (TR56) but setting them waits on TR47's part B, and the off presses need a reason.
+  - "Stretch {n}" sits before the count on a Hard chest card's second line: "Stretch 2 · ×3 held", 97 px in 105 at the smallest phone. Hard chests of different stretches share a name and stack apart by id.
+  - New case: "Items page: a Hard stretch's chest names its stretch on its card's second line, whole at the smallest phone (TR61)", 20 passed. EquipmentCases follows the Jewels line.
+  - `docs/design.md` 272 still lists "opponents defeated" in the Tower's results (research's file).
 
 ## TR62. Bringing a friend: the invite and its earned gift (research's request, tier 2, for Faber)
 

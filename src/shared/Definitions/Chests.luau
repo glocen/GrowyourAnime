@@ -51,15 +51,16 @@ local function add(row: Row)
 	table.insert(List, row)
 	ById[row.Id] = row
 end
--- A gear chest, and for an elite's or a keeper's its Emblem Case, named as it is.
-local function gear(row: Row, where: string)
+-- A gear chest, and for an elite's or a keeper's its Emblem Case, named as it is: "Hard " before a Hard stretch's (TR61;
+-- its card says which stretch, so the id alone keeps the stacks apart).
+local function gear(row: Row, hard: string, where: string)
 	add(row)
 	if row.Tier == 2 or row.Tier == 3 then
 		add({
 			Id = `{row.Id}_case`,
 			Ground = row.Ground,
 			Tier = CASE,
-			Name = `{KINDS[CASE]} of {where}`,
+			Name = `{hard}{KINDS[CASE]} of {where}`,
 			Image = PICTURES[CASE],
 			Difficulty = row.Difficulty,
 			Stage = row.Stage,
@@ -71,25 +72,24 @@ end
 for _, ground in Grounds.List do
 	for tier = 1, 4 do
 		local said = KINDS[tier]
-		gear({ Id = `{ground.Id}_{tier}`, Ground = ground.Id, Tier = tier, Name = `{said} of {ground.Name}`, Image = PICTURES[tier], Difficulty = "Normal", Stage = 0 }, ground.Name)
+		gear({ Id = `{ground.Id}_{tier}`, Ground = ground.Id, Tier = tier, Name = `{said} of {ground.Name}`, Image = PICTURES[tier], Difficulty = "Normal", Stage = 0 }, "", ground.Name)
 	end
 	for stage, row in StagesConfig.Grounds[ground.Id] or {} do
 		local last = row.Stops[#row.Stops]
 		if last.Kind == "Keeper" then
 			KeeperStage[ground.Id] = stage
 		end
-		local where = `{ground.Name}, Hard Stage {stage}`
 		for tier = 1, if last.Kind == "Keeper" then 3 else 2 do
 			gear({
 				Id = `{ground.Id}_{tier}_hard{stage}`,
 				Ground = ground.Id,
 				Tier = tier,
-				Name = `{KINDS[tier]} of {where}`,
+				Name = `Hard {KINDS[tier]} of {ground.Name}`,
 				Image = PICTURES[tier],
 				Difficulty = "Hard",
 				Stage = stage,
 				Level = last.Level + (StagesConfig.Offset.Hard or 0),
-			}, where)
+			}, "Hard ", ground.Name)
 		end
 	end
 end

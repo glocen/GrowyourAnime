@@ -343,7 +343,7 @@ function EmblemsPage.Build(context: Look.Context): Look.Page
 			end
 		end
 		if #bag == 0 then
-			Look.Text(frame, "BagNone", "No emblems yet: Shades and keepers drop them", SMALL, SEAM.Faint, X(B.First), Y(B.Top + 12), "Left", false, 3, 230)
+			Look.Text(frame, "BagNone", "No emblems yet: elites and keepers drop them in cases", SMALL, SEAM.Faint, X(B.First), Y(B.Top + 12), "Left", false, 3, 230)
 		end
 		scroll.CanvasPosition = Vector2.new(math.min(scrollAt, math.max(0, scroll.CanvasSize.X.Offset - scroll.Size.X.Offset)), 0)
 		-- What's chosen, in two lines, and the one press.

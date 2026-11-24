@@ -397,6 +397,27 @@ function Fight.PackRing(count: number, spacing: number): { { number } }
 	return out
 end
 
+-- A pack's Shades and where each stands, in its spawn's frame, { X, Z } studs (-Z its look, toward the player who comes;
+-- +Z its back): its ring of `count` (PackDefs, PackRing, `spacing` apart), then `rearCount` of `rear` in a row across its
+-- back, `behind` studs past the ring's deepest, `spacing` apart (AR58: the Support at its pack's back). Both spawns use
+-- it, the street's (PackService) and a run's (StageService).
+export type Spot = { Def: string, X: number, Z: number }
+function Fight.PackSpots(def: string, count: number, with: string?, withCount: number?, rear: string?, rearCount: number?, spacing: number, behind: number): { Spot }
+	local n = math.max(1, math.floor(count))
+	local defs = Fight.PackDefs(def, n, with, withCount)
+	local spots: { Spot } = {}
+	local deepest = 0
+	for index, offset in Fight.PackRing(n, spacing) do
+		table.insert(spots, { Def = defs[index], X = offset[1], Z = offset[2] })
+		deepest = math.max(deepest, offset[2])
+	end
+	local m = if rear then math.max(0, math.floor(rearCount or 0)) else 0
+	for k = 1, m do
+		table.insert(spots, { Def = rear :: string, X = (k - (m + 1) / 2) * spacing, Z = deepest + behind })
+	end
+	return spots
+end
+
 -- How long a hit's Stun (`seconds`) stops a fighter of a kind stopped `share` of it, at `at`: none while it's still locked
 -- from its last (`locked`, the time its lock ends), else the share of it. The lock starts where this one ends.
 function Fight.Stun(seconds: number?, share: number?, at: number, locked: number): number

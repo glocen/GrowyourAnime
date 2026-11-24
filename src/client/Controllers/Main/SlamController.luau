@@ -10,6 +10,12 @@
 --   the Dasher and reaching the end on the hit;
 -- * a Guard's raised shield (GuardUntil): a grey pane before it, that brightens as a hit glances off and flashes white
 --   and goes when one breaks it (GuardBroke).
+-- AR58's Support, in grey until the effects teammate's (Config.Combat.Support.Look):
+-- * a shield it gave (ShieldLook "SupportShield"): a grey ball round the one it shields while ShieldUntil holds, until a
+--   Lasting row of that name is switched on (Config.Effects);
+-- * a heal it gave (a Heal whose healer is casting SupportCast): a light ball on the one it mends, growing and fading,
+--   until a SupportHeal row is written.
+--   SlamController.Veil(fighter) -> SphereHandleAdornment?   a Support's shield's ball, for tests
 --   SlamController.Ring(fighter) -> (ring, disc)?   a fighter's footprint's two adornments, for tests
 --   SlamController.Line(fighter) -> (edges, fill)?  a Dasher's line's outline and fill, for tests
 --   SlamController.Pane(fighter) -> BoxHandleAdornment?   a Guard's raised pane, for tests
@@ -24,6 +30,7 @@ local RunService = game:GetService("RunService")
 local Shared = ReplicatedStorage.Shared
 local Net = require(Shared.Net)
 local Combat = require(Shared.Config.Combat)
+local EffectsConfig = require(Shared.Config.Effects)
 local MarkRule = require(Shared.Rules.Mark)
 
 local UI = script.Parent.Parent.Parent.UI
@@ -60,6 +67,7 @@ type Pane = { Box: BoxHandleAdornment, Glanced: number }
 
 local drawn: { [Model]: Drawn } = {}
 local panes: { [Model]: Pane } = {}
+local veils: { [Model]: SphereHandleAdornment } = {}
 local PANE_GREY = Color3.fromRGB(196, 199, 206)
 local PANE_THICK = 0.12
 local recall: TextButton? = nil
@@ -239,6 +247,75 @@ local function paneBreak(model: Model)
 	end)
 end
 
+-- AR58: a shield from a Support holds on `model`, and no look of the effects teammate's draws it yet.
+local function veiled(model: Model): boolean
+	local untilTime = model:GetAttribute("ShieldUntil")
+	return model.Parent ~= nil and model:GetAttribute("ShieldLook") == "SupportShield" and EffectsConfig.Lasting.SupportShield ~= true
+		and type(untilTime) == "number" and now() < untilTime and model:GetAttribute("State") ~= "Down"
+end
+
+local function veilOff(model: Model)
+	local ball = veils[model]
+	if ball then
+		veils[model] = nil
+		ball:Destroy()
+	end
+end
+
+local function veilOn(model: Model)
+	local root = model:FindFirstChild("HumanoidRootPart")
+	if not veiled(model) or root == nil or not root:IsA("BasePart") then
+		veilOff(model)
+		return
+	end
+	if veils[model] then
+		return
+	end
+	local look = Combat.Support.Look
+	local ball = Instance.new("SphereHandleAdornment")
+	ball.Name = "NL_SupportVeil"
+	ball.Adornee = root
+	ball.Radius = look.Radius * model:GetScale()
+	ball.Color3 = PANE_GREY
+	ball.Transparency = look.Transparency
+	ball.AlwaysOnTop = false
+	ball.ZIndex = 1
+	ball.Parent = root
+	veils[model] = ball
+end
+
+-- AR58: one a Support mends, a light ball growing from its body's size and fading out over Pop.Seconds.
+local function mendPop(model: Model)
+	local root = model:FindFirstChild("HumanoidRootPart")
+	if root == nil or not root:IsA("BasePart") or (EffectsConfig.Rows :: any).SupportHeal ~= nil then
+		return
+	end
+	local look = Combat.Support.Look
+	local pop = look.Pop
+	local size = look.Radius * model:GetScale()
+	local ball = Instance.new("SphereHandleAdornment")
+	ball.Name = "NL_SupportMend"
+	ball.Adornee = root
+	ball.Radius = size
+	ball.Color3 = Color3.new(1, 1, 1)
+	ball.Transparency = pop.Transparency
+	ball.AlwaysOnTop = false
+	ball.ZIndex = 1
+	ball.Parent = root
+	local began = os.clock()
+	local connection: RBXScriptConnection? = nil
+	connection = RunService.RenderStepped:Connect(function()
+		local share = (os.clock() - began) / math.max(pop.Seconds, 0.01)
+		if share >= 1 or ball.Parent == nil then
+			(connection :: RBXScriptConnection):Disconnect()
+			ball:Destroy()
+			return
+		end
+		ball.Radius = size * (1 + (pop.Grow - 1) * share)
+		ball.Transparency = pop.Transparency + (1 - pop.Transparency) * share
+	end)
+end
+
 local function watch(model: Instance)
 	if not model:IsA("Model") then
 		return
@@ -260,9 +337,14 @@ local function watch(model: Instance)
 	model:GetAttributeChangedSignal("GuardBroke"):Connect(function()
 		paneBreak(model)
 	end)
+	veilOn(model)
+	model:GetAttributeChangedSignal("ShieldUntil"):Connect(function()
+		veilOn(model)
+	end)
 	model.Destroying:Connect(function()
 		erase(model)
 		paneOff(model)
+		veilOff(model)
 	end)
 end
 
@@ -295,6 +377,11 @@ local function stepMarks()
 		local since = os.clock() - pane.Glanced
 		local lift = math.clamp(1 - since / math.max(look.Flash, 0.01), 0, 1)
 		pane.Box.Transparency = look.Transparency * (1 - 0.7 * lift)
+	end
+	for model in veils do
+		if not veiled(model) then
+			veilOff(model)
+		end
 	end
 end
 
@@ -406,6 +493,10 @@ function SlamController.Pane(model: Model): BoxHandleAdornment?
 	return if pane then pane.Box else nil
 end
 
+function SlamController.Veil(model: Model): SphereHandleAdornment?
+	return veils[model]
+end
+
 function SlamController.Recall(): TextButton?
 	return if recall and recall.Visible then recall else nil
 end
@@ -431,6 +522,12 @@ function SlamController.Start()
 		local pane = if type(hit) == "table" and hit.Guarded == "Glanced" then panes[hit.T] else nil
 		if pane then
 			pane.Glanced = os.clock()
+		end
+	end)
+	Net.Client.On("Heal", function(heal: any)
+		local healer, healed = if type(heal) == "table" then heal.A else nil, if type(heal) == "table" then heal.T else nil
+		if typeof(healer) == "Instance" and healer:GetAttribute("Action") == "SupportCast" and typeof(healed) == "Instance" and healed:IsA("Model") then
+			mendPop(healed)
 		end
 	end)
 end

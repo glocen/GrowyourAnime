@@ -20,6 +20,7 @@ export type Row = {
 	Rig: string,
 	Mask: string?, -- Shade: the mask's role (Brawler, Guard, Dasher, Support); Box: its shape (docs/roster.md)
 	Scale: number?, -- a rig's size against an ordinary Shade's (the elite's is its box's height over the ordinary's)
+	Health: number?, -- its health against its Kind's (Rules.Stats.Enemy): AR58's Support is fragile; nil is 1
 	Size: { number }?, -- Box: width, height, depth
 	Enter: string?, -- an action it holds as it's spawned, to its end, before it does anything else (Definitions.Actions)
 	-- its signature, tried before its Action whenever it's ready; the first ready First seconds after its Enter ends
@@ -35,6 +36,10 @@ local rows: { Row } = {
 	-- ready First seconds after it's spawned; a stretch's pack stands long before its fight, so each opens with its own.
 	{ Id = "guard", Name = "Guard", Kind = "Ordinary", Action = "ShadeSwipe", Signature = "GuardRaise", First = 0, Type = "Green", Rig = "Shade", Mask = "Guard" },
 	{ Id = "dasher", Name = "Dasher", Kind = "Ordinary", Action = "ShadeSwipe", Signature = "DasherLunge", First = 1.5, Type = "Orange", Rig = "Shade", Mask = "Dasher" },
+	-- AR58: the Support keeps to its pack's back and lifts its sleeves, and a hurt one of its pack comes back up, or a whole
+	-- one takes a shield (SupportCast; Rules.Support). Fragile: slighter, and less health than its kin. Alone, it swings
+	-- as a Brawler. Seeds, tuned once the Guard and the Dasher are played (the director's pick, 2026-11-23).
+	{ Id = "support", Name = "Support", Kind = "Ordinary", Action = "ShadeSwipe", Signature = "SupportCast", First = 1, Type = "Orange", Rig = "Shade", Mask = "Support", Scale = 0.9, Health = 0.6 },
 	-- An elite wears its mask twice, the second on its Left Arm (AR2, section 5). AR57: the Guard's and the Dasher's elites
 	-- ask their kin's question at the elite's size, and play their own clips of the same beats (Config.Animations.Kinds).
 	{ Id = "brawler_elite", Name = "Brawler", Kind = "Elite", Action = "ShadeSwipe", Type = "Red", Rig = "Shade", Mask = "Brawler", Scale = 1.35, Marker = "MarkerElite" },

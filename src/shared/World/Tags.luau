@@ -42,7 +42,8 @@ local specs: { [string]: Spec } = {
 	-- A pack's spawn: Count Shades of Def at Level, spread round it. Pack is its number down the street. Type: the outline's
 	-- colour, else the Def's own. Ground: the ground it stands in (Definitions.Grounds), whose Standard shard it drops.
 	-- Stage: the stage of the street it belongs to (Config.Stages, TR43), its elite's too: one elite to a stage of packs.
-	Pack = { Tag = "GA_Pack", Place = "Festival", Attributes = { Pack = "number", Def = "string", Level = "number", Count = "number", Type = "string?", With = "string?", WithCount = "number?", Ground = "string", Stage = "number" }, Ground = true },
+	-- With, WithCount: its others through its ring (AR52); Rear, RearCount: the ones in a row at its back (AR58).
+	Pack = { Tag = "GA_Pack", Place = "Festival", Attributes = { Pack = "number", Def = "string", Level = "number", Count = "number", Type = "string?", With = "string?", WithCount = "number?", Rear = "string?", RearCount = "number?", Ground = "string", Stage = "number" }, Ground = true },
 	-- An elite's spawn, as a pack's of one; Hard: the Def standing there on a Hard run in its place (AR57).
 	Elite = { Tag = "GA_Elite", Place = "Festival", Attributes = { Def = "string", Hard = "string?", Level = "number", Type = "string?", Ground = "string", Stage = "number" }, Ground = true },
 	-- A stage's gate (TR43): across the street after stage Stage's last stop, shut to a player until they've cleared that

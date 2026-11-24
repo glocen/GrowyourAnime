@@ -241,6 +241,22 @@ return {
 	-- grey stand-in, as the keeper's ring: an outline Edge studs wide, a fill of Fill's transparency growing to the line's
 	-- end on Land.
 	Dasher = { Line = { Half = 2, Past = 2, Edge = 0.35, Fill = 0.6 } },
+	-- AR58's Support (Definitions.Actions, SupportCast; Rules.Support): the builder's seeds, tuned once the Guard and the
+	-- Dasher are played (the director's pick, 2026-11-23). On its cast's beat, the most hurt of its pack within its cast's
+	-- Range (Definitions.Actions), at or under Below of its health, gets Heal of its most back; with none hurt, the nearest
+	-- unshielded one with a lead for its target takes Shield.Share less damage for Shield.Seconds. Between casts it keeps
+	-- Back studs past its pack's middle, away from the lead, within Slack (it spawns at its pack's back: Config.World's
+	-- Row.Behind). Its grey stand-ins (SlamController), until the effects teammate's row: a ball Radius times the body's
+	-- scale round the shielded one, Transparency through; a heal's pop growing to Pop.Grow times it and fading over
+	-- Pop.Seconds.
+	Support = {
+		Below = 0.7,
+		Heal = 0.25,
+		Shield = { Share = 0.4, Seconds = 4 },
+		Back = 8,
+		Slack = 1.5,
+		Look = { Radius = 2.8, Transparency = 0.78, Pop = { Grow = 1.6, Seconds = 0.4, Transparency = 0.45 } },
+	},
 
 	-- The replay (the ga-action skill): an action on a clean pad, from the player's camera, the numbers live.
 	Replay = {

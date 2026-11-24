@@ -10,7 +10,10 @@
 --   the lunge hits empty stone, each counted under "Lunge A". The switch and Auto are put back at their ends.
 -- * AR57: each elite swings Attack every time (AR2, section 10), wears its own mask twice and no other, and the Guard's
 --   and the Dasher's play their own raise and lunge (Config.Animations.Kinds), never their kin's.
--- Their rules' own cases are the logic cases' (Cases/Shades).
+-- * AR58: a Support behind a Brawler of its pack: whole, the Brawler takes its shield for Shield.Seconds, the grey ball
+--   round it to then; hurt, the Brawler is mended by Heal of its most, a grey pop on it; between casts it stands further
+--   from the lead than the Brawler; with the Brawler down, it swings at the lead.
+-- Their rules' own cases are the logic cases' (Cases/Shades, Cases/Support).
 
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
@@ -36,6 +39,8 @@ local BREAK_RAISES = 6
 local LUNGE_SOON = 6 -- seconds a ready Dasher may take to come into range and put its line down
 local WALK = 7 -- studs the avatar walks off the line
 local WATCH = 14 -- seconds an elite is watched for three swings and its own clip (its signature's cooldown is 4.8 or 6)
+local PACK = "SelfTest" -- the pack a Support case's two Shades share (FightSpawn's pack)
+local HURT = 0.6 -- the Brawler's share of its health for the Support's mend: under Combat.Support.Below
 -- each elite: its def, its own clip in place of its kin's and that kin's ("" for none)
 local ELITES = {
 	{ "brawler_elite", "", "" },
@@ -77,8 +82,9 @@ function ShadeCases.Cases(given: Given): { any }
 	local LEAD_SETTLE, SHADE_AHEAD, SHADE_TOUGHER, SHADE_TIMEOUT = given.LEAD_SETTLE, given.SHADE_AHEAD, given.SHADE_TOUGHER, given.SHADE_TIMEOUT
 	local waitFor, myLead = given.waitFor, given.myLead
 
-	-- The player's lead whole and out of any fight, and a Shade of `def` coming for it, tough enough to last.
-	local function begin(t: any, def: string): (Model?, Model?)
+	-- The player's lead whole and out of any fight, and a Shade of `def` coming for it, tough enough to last; in `pack`, when
+	-- given.
+	local function begin(t: any, def: string, pack: string?): (Model?, Model?)
 		t.Server("LeadHeal")
 		t.Server("LeadCalm")
 		t.Server("FightSpawn")
@@ -89,7 +95,7 @@ function ShadeCases.Cases(given: Given): { any }
 			return nil, nil
 		end
 		local level = lead:GetAttribute("Level")
-		local spawned = t.Server("FightSpawn", def, (if type(level) == "number" then level else 1) + SHADE_TOUGHER, SHADE_AHEAD, true)
+		local spawned = t.Server("FightSpawn", def, (if type(level) == "number" then level else 1) + SHADE_TOUGHER, SHADE_AHEAD, true, nil, nil, pack)
 		t.Check(`a {def} spawns`, type(spawned) == "table" and spawned.Ok == true)
 		local foe: Model? = nil
 		waitFor(t, REPLICATE, function(): boolean
@@ -445,6 +451,111 @@ function ShadeCases.Cases(given: Given): { any }
 				onHit:Disconnect()
 				t.Server("FightSpawn")
 				t.Server("Slam", was)
+				if not ok then
+					error(err, 0)
+				end
+			end,
+		},
+		{
+			Name = "Shades (AR58): the Support behind a Brawler of its pack shields it whole, mends it hurt, keeps behind it, and swings alone",
+			Run = function(t: any)
+				local lead, foe = begin(t, "brawler", PACK)
+				if lead == nil or foe == nil then
+					t.Server("FightSpawn")
+					return
+				end
+				local brawler = foe :: Model
+				local cast = Actions.ById.SupportCast
+				local seeds = Combat.Support
+				local level = lead:GetAttribute("Level")
+				local spawned = t.Server("FightSpawn", "support", (if type(level) == "number" then level else 1) + SHADE_TOUGHER, SHADE_AHEAD + seeds.Back, true, nil, nil, PACK)
+				t.Check("a Support spawns in its pack", type(spawned) == "table" and spawned.Ok == true)
+				local support: Model? = nil
+				waitFor(t, REPLICATE, function(): boolean
+					support = fighterModel(if type(spawned) == "table" then spawned.Id else nil)
+					return support ~= nil
+				end)
+				t.Check("its model reaches the client", support ~= nil)
+				if support == nil then
+					t.Server("FightSpawn")
+					return
+				end
+				local healer = support :: Model
+				t.Server("FoeHealth", brawler:GetAttribute("Fighter"), 1) -- whole for the first cast
+				local heals: { any } = {}
+				local onHeal = Net.Client.On("Heal", function(heal: any)
+					if type(heal) == "table" and heal.A == healer and heal.T == brawler then
+						table.insert(heals, heal)
+					end
+				end)
+				local function casting(): boolean
+					return healer:GetAttribute("Action") == "SupportCast"
+				end
+				local ok, err = pcall(function()
+					-- Whole and engaged: its first cast shields it.
+					t.Check("it casts in the fight", waitFor(t, SHADE_TIMEOUT, casting))
+					local castAt = healer:GetAttribute("ActionAt")
+					local shielded = waitFor(t, cast.Beats.Cast + REPLICATE, function(): boolean
+						local up = brawler:GetAttribute("ShieldUntil")
+						return brawler:GetAttribute("ShieldLook") == "SupportShield" and type(up) == "number" and now() < up
+					end)
+					t.Check("the whole Brawler takes its shield", shielded, `{#heals} heals`)
+					if shielded and type(castAt) == "number" then
+						local up = brawler:GetAttribute("ShieldUntil") :: number
+						t.Near("for Shield.Seconds from its Cast beat (s)", up - castAt, cast.Beats.Cast + seeds.Shield.Seconds, 0.1)
+						t.Check("the grey ball stands round it", waitFor(t, 0.5, function(): boolean
+							return SlamController.Veil(brawler) ~= nil
+						end))
+					end
+					-- Between casts: further from the lead than the Brawler.
+					waitFor(t, cast.Length + 1, function(): boolean
+						return not casting()
+					end)
+					local behind = false
+					local detail = ""
+					waitFor(t, 2.5, function(): boolean
+						local a, b, l = Parts.Root(healer), Parts.Root(brawler), Parts.Root(lead)
+						if a == nil or b == nil or l == nil then
+							return false
+						end
+						local mine, its = flat(a.Position - l.Position).Magnitude, flat(b.Position - l.Position).Magnitude
+						detail = string.format("%.1f studs from the lead, the Brawler %.1f", mine, its)
+						behind = mine > its + seeds.Back / 2
+						return behind
+					end)
+					t.Check("between casts it keeps behind the Brawler, from the lead", behind, detail)
+					if shielded then
+						local up = brawler:GetAttribute("ShieldUntil") :: number
+						waitFor(t, seeds.Shield.Seconds + 1, function(): boolean
+							return now() >= up + 0.2
+						end)
+						t.Check("the ball goes when the shield ends", SlamController.Veil(brawler) == nil)
+					end
+					-- Hurt: its next cast mends it, by Heal of its most.
+					t.Server("FoeHealth", brawler:GetAttribute("Fighter"), HURT)
+					local popped = false
+					local mended = waitFor(t, cast.Cooldown + REPLICATE, function(): boolean
+						local root = brawler:FindFirstChild("HumanoidRootPart")
+						popped = popped or (root ~= nil and root:FindFirstChild("NL_SupportMend") ~= nil)
+						return #heals > 0
+					end)
+					t.Check("the hurt Brawler is mended", mended)
+					if mended then
+						local heal = heals[1]
+						t.Near("by Heal of its most", heal.Amount, seeds.Heal * heal.MaxHealth, heal.MaxHealth * 0.01)
+						t.Check("a grey pop on it", popped or waitFor(t, 0.3, function(): boolean
+							local root = brawler:FindFirstChild("HumanoidRootPart")
+							return root ~= nil and root:FindFirstChild("NL_SupportMend") ~= nil
+						end))
+					end
+					-- Alone: it swings at the lead.
+					t.Server("FightDefeat", brawler:GetAttribute("Fighter"))
+					t.Check("alone, it swings at the lead", waitFor(t, SHADE_TIMEOUT, function(): boolean
+						return healer:GetAttribute("Action") == Enemies.ById.support.Action
+					end))
+				end)
+				onHeal:Disconnect()
+				t.Server("FightSpawn")
 				if not ok then
 					error(err, 0)
 				end

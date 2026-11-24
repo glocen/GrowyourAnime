@@ -1405,7 +1405,7 @@ function layStreet(folder: Folder, gateZ: number, stripEnd: number, groundColour
 		local at = CFrame.lookAt(Vector3.new(0, PAVED_TOP, z), Vector3.new(0, PAVED_TOP, z) + Vector3.new(0, 0, 1)) -- facing the way the player comes
 		if stop.Kind == "Pack" then
 			pack += 1
-			local with = stop.With
+			local with, rear = stop.With, stop.Rear
 			Markers.Stamp(spot(street, `Pack {pack}`, at), "Pack", {
 				Pack = pack,
 				Def = stop.Def,
@@ -1413,6 +1413,8 @@ function layStreet(folder: Folder, gateZ: number, stripEnd: number, groundColour
 				Count = stop.Count or 1,
 				With = if with then with.Def else nil,
 				WithCount = if with then with.Count else nil,
+				Rear = if rear then rear.Def else nil,
+				RearCount = if rear then rear.Count else nil,
 				Ground = row.Ground,
 				Stage = stop.Stage,
 			})

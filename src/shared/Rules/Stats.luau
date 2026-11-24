@@ -373,7 +373,7 @@ function Stats.Enemy(def: string, level: number, type: string?, difficulty: stri
 	local lift = if lifts then lifts[row.Kind] else nil
 	local stages = EnemiesConfig.Stage[difficulty or "Normal"]
 	local factor = if stages and stage then stages[stage] else nil
-	local health = (if lift then lift.Health else 1) * (if factor then factor.Health or 1 else 1)
+	local health = (if lift then lift.Health else 1) * (if factor then factor.Health or 1 else 1) * (row.Health or 1)
 	local attack = (if lift then lift.Attack else 1) * (if factor then factor.Attack or 1 else 1)
 	for stat, value in (EnemiesConfig :: any)[row.Kind] :: { [string]: any } do
 		if stat == "Element" then

@@ -57,9 +57,10 @@ local function stand(group: Group)
 	local at = Markers.At(marker)
 	local n = if type(count) == "number" then count else 1
 	local with, withCount = marker:GetAttribute("With"), marker:GetAttribute("WithCount")
-	local defs = Fight.PackDefs(def, n, if type(with) == "string" then with else nil, if type(withCount) == "number" then withCount else nil)
-	for index, offset in Fight.PackRing(n, WorldConfig.Row.Spread) do
-		local f = FightService.SpawnEnemy(defs[index], level, at * CFrame.new(offset[1], 0, offset[2]), {
+	local rear, rearCount = marker:GetAttribute("Rear"), marker:GetAttribute("RearCount")
+	local spots = Fight.PackSpots(def, n, if type(with) == "string" then with else nil, if type(withCount) == "number" then withCount else nil, if type(rear) == "string" then rear else nil, if type(rearCount) == "number" then rearCount else nil, WorldConfig.Row.Spread, WorldConfig.Row.Behind)
+	for _, place in spots do
+		local f = FightService.SpawnEnemy(place.Def, level, at * CFrame.new(place.X, 0, place.Z), {
 			Type = if type(type_) == "string" then type_ else nil,
 			Pack = group.Name,
 			Ground = if type(ground) == "string" then ground else nil,
@@ -134,11 +135,14 @@ local function packs(who: any): any
 				gap = math.min(gap, Vector3.new(d.X, 0, d.Z).Magnitude)
 			end
 		end
+		local ring, rear = group.Marker:GetAttribute("Count"), group.Marker:GetAttribute("RearCount")
+		local whole = (if type(ring) == "number" then ring else 1) + (if type(rear) == "number" and type(group.Marker:GetAttribute("Rear")) == "string" then rear else 0)
 		table.insert(list, {
 			Name = name,
 			Def = group.Marker:GetAttribute("Def"),
 			Level = group.Marker:GetAttribute("Level"),
-			Count = group.Marker:GetAttribute("Count") or 1,
+			-- every Shade it stands whole: its ring's and its rear row's (AR58)
+			Count = whole,
 			Standing = #spots,
 			Gap = if gap == math.huge then 0 else gap,
 			BackIn = if group.BackAt then math.max(0, group.BackAt - now) else 0,

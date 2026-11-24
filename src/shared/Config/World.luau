@@ -8,7 +8,7 @@
 -- Stage: the stage it belongs to (Config.Stages, TR43). Square: the elite stands in the square (one stop at most).
 -- With: a pack's others (AR52), Count of its Count Shades of that Def, spread through its ring (Rules.Fight.PackDefs).
 -- Hard: the Def that stands there on Hard in its place (AR57; Rules.Stages.DefOn).
-export type Stop = { Kind: string, Def: string, Level: number, Count: number?, Stage: number, Square: boolean?, With: { Def: string, Count: number }?, Hard: string? }
+export type Stop = { Kind: string, Def: string, Level: number, Count: number?, Stage: number, Square: boolean?, With: { Def: string, Count: number }?, Rear: { Def: string, Count: number }?, Hard: string? }
 
 return {
 	Walk = 16, -- studs a second the times are worked at: Roblox's default walk
@@ -110,14 +110,15 @@ return {
 		-- account's first fight (its verdict on TR2, 2026-11-12), four to a pack where a stage has one. Each stretch asks
 		-- its own question (AR52, research's seeds; how many of each, the builder's, tuned in play): Brawlers alone, Red; with
 		-- Guards, Green; with Dashers, Orange; then the Lamplighter, Purple. The square holds the Guard's elite on Normal and
-		-- the Dasher's on Hard (AR57, research's seed, tuned in play).
+		-- the Dasher's on Hard (AR57, research's seed, tuned in play). A pack's Rear stand in a row at its back, past its ring
+		-- (Rules.Fight.PackSpots): AR58's Support behind stage 3's second pack, the builder's seed (tier 2, for research).
 		Stops = {
 			{ Kind = "Pack", Def = "brawler", Count = 4, Level = 1, Stage = 1 },
 			{ Kind = "Elite", Def = "brawler_elite", Level = 2, Stage = 1 },
 			{ Kind = "Pack", Def = "brawler", Count = 4, Level = 3, Stage = 2, With = { Def = "guard", Count = 2 } },
 			{ Kind = "Elite", Def = "guard_elite", Level = 5, Stage = 2, Square = true, Hard = "dasher_elite" },
 			{ Kind = "Pack", Def = "brawler", Count = 3, Level = 6, Stage = 3, With = { Def = "dasher", Count = 1 } },
-			{ Kind = "Pack", Def = "brawler", Count = 3, Level = 7, Stage = 3, With = { Def = "dasher", Count = 1 } },
+			{ Kind = "Pack", Def = "brawler", Count = 3, Level = 7, Stage = 3, With = { Def = "dasher", Count = 1 }, Rear = { Def = "support", Count = 1 } },
 			{ Kind = "Elite", Def = "brawler_elite", Level = 8, Stage = 3 },
 			{ Kind = "Keeper", Def = "lamplighter", Level = 9, Stage = 4 },
 		} :: { Stop },
@@ -126,6 +127,9 @@ return {
 		Ring = 5, -- the Lamplighter's ring, 80 studs across, behind the keeper's gate
 		Beyond = 1.5, -- from the ring's far edge to Drum Court's gate, shut, in view
 		Spread = 7, -- studs between a pack's Shades at its spawn (inside Combat.Shade.Notice, so one notices for all)
+		-- studs a pack's Rear row stands past its ring's back (AR58's Support; the builder's seed): a Spread, so none of its
+		-- Shades stands nearer another than its ring's do
+		Behind = 7,
 		Respawn = 15, -- seconds after a pack's last Shade falls until it's back (the builder's seed, 2026-11-12)
 		-- TR10 (the director, 2026-11-14: "mini boss/boss need a server cooldown", the keeper's "Per player"): seconds before
 		-- the elite and the keeper are back (Rules.Cooldown). The elite's is the server's, from its fall, since its fight is

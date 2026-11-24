@@ -9,7 +9,8 @@
 -- A marked strike's footprint (TR44; Rules.Mark) while it's down: MarkAt (its centre, at the fighter's root height),
 -- MarkRadius, MarkDown and MarkSlam (server times), MarkSlam written last; a line's (AR52, the Dasher's) MarkTo, its end,
 -- MarkAt its start and MarkRadius its half width. A lead broken off for its avatar: Away. A Guard's raised shield (AR52):
--- GuardUntil (server time it drops), and GuardBroke (when a heavy hit or a signature broke it).
+-- GuardUntil (server time it drops), and GuardBroke (when a heavy hit or a signature broke it). A shield on a fighter:
+-- ShieldUntil (server time it ends), and ShieldLook (its look's name: AR58's Support gives "SupportShield").
 -- The element states (docs/design.md, "States in a fight"; Config.Combat.States; Rules.Fight's states), each worn while
 -- it holds: Burning, Shocked and Sapped (the server time each ends), Chill and ChillAt (its fill after its last Frost hit,
 -- and when: a client drains it by the same rule; ChillAt written first). A freeze is a Stun whose StunLook is
@@ -45,6 +46,7 @@ local Carry = require(Shared.Rules.Carry)
 local Markers = require(Shared.World.Markers)
 local Passive = require(Shared.Rules.Passive)
 local MarkRule = require(Shared.Rules.Mark)
+local SupportRule = require(Shared.Rules.Support)
 local DataService = require(script.Parent.Parent.Core.DataService)
 
 -- "Home": a fallen lead on its plot, healing and waiting for its player (TR12), never in a fight.
@@ -1672,6 +1674,58 @@ local function thinkLead(f: Fighter, at: number, dt: number)
 end
 
 -- A Shade's turn to decide.
+-- AR58, the Support: the others of its pack standing, not walking home after giving up.
+local function packmates(f: Fighter): { Fighter }
+	local mates: { Fighter } = {}
+	if f.Pack == nil then
+		return mates
+	end
+	for _, other in fighters do
+		if other ~= f and other.Pack == f.Pack and other.State ~= "Reset" and standing(other) then
+			table.insert(mates, other)
+		end
+	end
+	return mates
+end
+
+-- Who of `mates` its cast is for now, and what it does (Rules.Support.Pick), within its cast's Range.
+local function supportPick(f: Fighter, cast: Actions.Action, mates: { Fighter }, at: number): (Fighter?, SupportRule.Does?)
+	local allies: { SupportRule.Ally } = {}
+	for _, other in mates do
+		table.insert(allies, {
+			Id = other.Id,
+			Share = other.Health / math.max(other.Block.Health, 1),
+			Distance = distance(f.Root, other.Root),
+			Shielded = Fight.Shield(other.Shield, at) > 0,
+			Engaged = standing(other.Target),
+		})
+	end
+	local id, does = SupportRule.Pick(allies, cast.Range, Combat.Support.Below)
+	return if id then fighters[id] else nil, does
+end
+
+-- Its cast's beat (Actions' Support): the one Rules.Support.Pick names as things stand now gets Heal of its most back, or a
+-- shield. The heal goes to every client as a Heal, the healer `f`; the shield is the ally's ShieldUntil and ShieldLook.
+local function cast(f: Fighter, action: Actions.Action, at: number)
+	local ally, does = supportPick(f, action, packmates(f), at)
+	if ally == nil then
+		return -- nobody to take it now: the sleeves were up for nothing
+	end
+	local seeds = Combat.Support
+	if does == "Heal" then
+		local before = ally.Health
+		local after = heal(ally, Fight.Mend(before, ally.Block.Health, seeds.Heal))
+		if after > before then
+			Net.Server.FireAll("Heal", { A = f.Model, T = ally.Model, Beat = action.Support, Amount = after - before, Health = after, MaxHealth = ally.Block.Health })
+		end
+	else
+		local shield = seeds.Shield
+		ally.Shield = { Share = shield.Share, Until = at + shield.Seconds }
+		ally.Model:SetAttribute("ShieldLook", "SupportShield") -- before its time: its look's name
+		ally.Model:SetAttribute("ShieldUntil", at + shield.Seconds)
+	end
+end
+
 local function thinkShade(f: Fighter, at: number)
 	local home = f.Home
 	if f.Kit[1] == nil or home == nil then
@@ -1755,7 +1809,36 @@ local function thinkShade(f: Fighter, at: number)
 	if busy(f, at) then
 		return
 	end
-	local action = Fight.Choose(f.Kit, f.ReadyAt, at)
+	-- AR58, the Support: while any of its pack stands, it keeps Back studs past their middle, away from the lead, and casts
+	-- whenever it's ready and Rules.Support.Pick names one; alone, it swings as a Brawler, its cast held.
+	local held: string? = nil
+	local support = f.Kit[1]
+	if support and support.Support then
+		local mates = packmates(f)
+		if mates[1] ~= nil then
+			if at >= (f.ReadyAt[support.Id] or -math.huge) and supportPick(f, support, mates, at) ~= nil then
+				start(f, support, at)
+				return
+			end
+			local x, z = 0, 0
+			for _, other in mates do
+				x += other.Root.Position.X / #mates
+				z += other.Root.Position.Z / #mates
+			end
+			local lead = target.Root.Position
+			local backX, backZ = SupportRule.Back(x, z, lead.X, lead.Z, Combat.Support.Back)
+			local spot = Vector3.new(backX, f.Root.Position.Y, backZ)
+			endAction(f, at)
+			if flat(spot - f.Root.Position).Magnitude > Combat.Support.Slack then
+				moveTo(f, spot, Combat.Shade.WalkSpeed)
+			else
+				stop(f)
+			end
+			return
+		end
+		held = support.Id
+	end
+	local action = Fight.Choose(f.Kit, f.ReadyAt, at, held)
 	local range = if action then action.Range else 4
 	local gap = distance(f.Root, target.Root)
 	local slot, off = slotFor(f, target, math.max(0, range - Combat.Approach))
@@ -1896,6 +1979,9 @@ local function step()
 				end
 				if action.Guard and beat == action.Guard.From and f.Action == action then
 					raise(f, action)
+				end
+				if beat == action.Support and f.Action == action then
+					cast(f, action, at)
 				end
 			end
 			if f.Action == action then

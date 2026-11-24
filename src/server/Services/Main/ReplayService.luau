@@ -10,6 +10,8 @@
 --   NL_Debug:Invoke("FightSpawn", who, "brawler", 3, 12)   a level 3 brawler 12 studs ahead of the avatar, on its ground
 --   NL_Debug:Invoke("FightSpawn", who, "brawler", 3, 12, nil, "Hard")   the same on Hard: its Hard look (AR46)
 --   NL_Debug:Invoke("FightSpawn", who, "brawler", 3, 12, nil, nil, "Orange")   in another type's colour (AR52's tint)
+--   NL_Debug:Invoke("FightSpawn", who, "support", 3, 18, nil, nil, nil, "Test")   in pack "Test", with the others spawned
+--                                                                                  in it (AR58: a Support's pack)
 --   NL_Debug:Invoke("FightSpawn", who)                      removes every Shade it spawned
 --   NL_Debug:Invoke("FightDefeat", who, id)                 one of those falls at once, its fall seen whole
 --   NL_Debug:Invoke("Fighters")                             every fighter: kind, state, health, target, action, place
@@ -179,7 +181,7 @@ local spawned: { [FightService.Fighter]: boolean } = {}
 
 -- `comes`: it comes for the player's lead at once, as one fought alone does (TR29's `For`), lead fighting or not: since
 -- TR24's fix 6 a Shade passes over an idle lead, and a case that needs one on the lead says so.
-local function fightSpawn(who: any, def: any, level: any, ahead: any, comes: any, difficulty: any, shadeType: any): any
+local function fightSpawn(who: any, def: any, level: any, ahead: any, comes: any, difficulty: any, shadeType: any, pack: any): any
 	if def == nil then
 		local count = 0
 		for f in spawned do
@@ -195,7 +197,8 @@ local function fightSpawn(who: any, def: any, level: any, ahead: any, comes: any
 	local studs = if ahead == nil then 12 else ahead
 	local badDifficulty = difficulty ~= nil and difficulty ~= "Normal" and difficulty ~= "Hard"
 	local badType = shadeType ~= nil and (type(shadeType) ~= "string" or ShadesConfig.Tint[shadeType] == nil)
-	if root == nil or type(def) ~= "string" or Enemies.ById[def] == nil or type(lvl) ~= "number" or type(studs) ~= "number" or badDifficulty or badType then
+	local badPack = pack ~= nil and type(pack) ~= "string"
+	if root == nil or type(def) ~= "string" or Enemies.ById[def] == nil or type(lvl) ~= "number" or type(studs) ~= "number" or badDifficulty or badType or badPack then
 		return { Ok = false, Error = "BadArgs" }
 	end
 	local look = Vector3.new(root.CFrame.LookVector.X, 0, root.CFrame.LookVector.Z).Unit
@@ -209,7 +212,7 @@ local function fightSpawn(who: any, def: any, level: any, ahead: any, comes: any
 		def,
 		lvl,
 		CFrame.lookAt(ground, ground - look),
-		if difficulty or shadeType then { Difficulty = difficulty :: string?, Type = shadeType :: string? } else nil
+		if difficulty or shadeType or pack then { Difficulty = difficulty :: string?, Type = shadeType :: string?, Pack = pack :: string? } else nil
 	)
 	if comes == true then
 		f.For = player

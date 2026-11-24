@@ -80,6 +80,9 @@ export type Action = {
 	-- Its fighter's shield (AR52, the Guard): raised on its From beat, let down on its To; meanwhile each hit on it lets
 	-- Config.Combat.Guard.Keep through, until a heavy hit or a signature breaks it (Rules.Fight.Guarded, Breaks)
 	Guard: { From: string, To: string }?,
+	-- The beat its cast lands on (AR58, the Support): one of its pack mended or shielded, as Rules.Support.Pick says
+	-- (Config.Combat.Support; FightService). Its fighter casts it only while one of its pack stands to take it.
+	Support: string?,
 	Range: number, -- studs, root to root: its fighter walks this close before it starts it
 	Heavy: boolean, -- it carries a heavy hit
 	State: string?, -- the state it causes, when it names one (Stun, Knockdown): none in TR2
@@ -447,6 +450,26 @@ local rows: { Action } = {
 		Heavy = true,
 		State = nil,
 		Levers = { "anticipation (folded behind the point, dead still, the line on the street)", "the lunge (12 studs in 0.25 s)", "hitstop (rung 5)", "knockback", "recovery (its back open)" },
+		Signed = nil,
+	},
+	{
+		-- AR58, the Support's (docs/asset-requests.md, AR58): its sleeves go up wide by Cast and hold, and on Cast the one of
+		-- its pack Rules.Support.Pick names is mended or shielded; they come down from Lower. Its row's Signature, tried
+		-- first whenever it's ready and one of its pack stands to take it; between casts it keeps to its pack's back
+		-- (FightService). Range is its reach to that one, not to the lead. The look is a grey
+		-- stand-in (SlamController) until the effects teammate's. The builder's seeds, tuned in play.
+		Id = "SupportCast",
+		Clip = "ShadeCast",
+		Length = 1.7,
+		CancelFrom = 1.7,
+		Cooldown = 5,
+		Beats = { Cast = 0.4, Lower = 1.4 },
+		Support = "Cast",
+		Hits = {},
+		Range = 18,
+		Heavy = false,
+		State = nil,
+		Levers = { "anticipation (the mask dips, the sleeves gather)", "the hold (sleeves up wide, who casts)", "the payoff on the ally (health back, or a shield)" },
 		Signed = nil,
 	},
 	{

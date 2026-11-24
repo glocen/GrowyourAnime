@@ -4,9 +4,9 @@
 
 Each teammate rewrites its own row: one to three lines. Open asks sit under "Waiting on the director".
 
-**Quaestor (research).** 2026-11-24, 14:06, on Opus 5.5. The director's brief of 14:00 is with the team, with four rule cuts in force (`4508e172`). The director is off until about 20:30, and the PC stays awake. Done today: **TR56,** a chest for everything, seeded (`chestFamily`, `jewels`); AR62's audit, words and plan; Kirra and AR57 passed.
-- **Next:** AR62's verdict when Modulo's takes land; TR54's second look on Faber's capture; then the Broadcast, the Strip's boards, the welcome week and codes, the capture, firsts.
-- **With the director, on return:** accept Rook and Kirra (`build/handoff/Rook/make/rook_make_sheet.png`, `build/handoff/Kirra/make/kirra_make_sheet.png`); AR62's pick; the phone sitting and F7; TR52's run; item 10, the hooks; the store's design.
+**Quaestor (research).** 2026-11-24, evening, in a cloud session while the PC is off. Written: TR57 to TR62, the words and the referral system (each in its entry); `docs/research/quality-and-speed.md`, why we iterate and the looks stay ugly; the director said yes at 20:50, so the new way is in `AGENTS.md` and the skills (the notice below), with AR62 as the style frame and TR63 for Faber. `docs/research/examples.md`: 25 looks the director judged, with the image each saw.
+- **Next:** what the cloud allows (design and words); then, back on the PC: AR64's and AR62's picks, TR54's second look, AR56's slab.
+- **With the director, on return:** accept Rook and Kirra; AR62's pick; the phone sitting and F7; TR52's run; item 10, the hooks; the store's design.
 
 **Faber (builder).** 2026-11-24, 21:05, on Opus 5.5. Nothing running, no lock held; Studio open, no playtest.
 - **Done:** TR56 seen whole (Base: TR37 48/0). AR56's HUD half: the floor line gone, the slab captured at both heights (its note in AR56). Research's pass next.
@@ -54,6 +54,17 @@ For Faber:
 
 ### Notices
 
+- **The director, 2026-11-24, 20:50, for everyone: target first, verdicts in pairs** (`AGENTS.md`, "Every action, world, effect, screen and model"; `docs/decisions.md`, the top row):
+  - Every piece players see starts with two or three target images at final quality, in the game, made in at most 3 h. **The director picks one before a build hour.** Until then, start your next piece.
+  - Checkpoints come at a quarter and at half of a cap, beside the target. A miss changes the technique and is never polished.
+  - Research's verdict is in pairs: the gates, then the build beside its target and the director's examples (`docs/research/examples.md`). Only the director's word accepts a look.
+  - Moves are posed first, stepped.
+  - **Before any more UI or Voidkin work, AR62 becomes the style frame:** Home and Rook in the game's light, with one page of tokens (AR62, "The style frame first"). Modulo: it's your next piece.
+  - Research's reading, for the director to correct: AR63 (Pip) and AR64 beyond Rook wait for the pick.
+  - Faber: TR63, the pair sheet, the lint's contrast and tokens, and Edge for SVG.
+
+- Tier 2, research, 2026-11-24, evening, from the cloud: TR62, bringing a friend (`docs/design.md`, "Being seen"; seed "referral"): a friend new to the game who beats the Lamplighter pays both sides a Forge Crate, five friends at most an inviter. Faber: say in your row what you'd change.
+- Tier 2, research, 2026-11-24, evening, from the cloud: TR57 to TR60 (`docs/design.md`, "Being seen" and "The welcome week and codes"; seeds "broadcast", "boards", "welcomeWeek", "codes"). Day 7 of the welcome week is Lyric for everyone, since about 13% of Lantern Row's Standard shards hold Lyric and nearly every player owns all five Voidkin by then. Faber and Modulo: say in your row what you'd change.
 - The director, 2026-11-24, 11:11, for everyone: overhaul what's clearly better, above all visually and in design, and fix bugs at once (`AGENTS.md`, "Overhaul what's clearly better"; the register's top row). The old kept for rollback; a redo players see is a blockout beside the old, judged by research in the game; the director's own decisions are redone as an alternative shown to the director.
 - Tier 2, research, 2026-11-24, 10:55: a fall in the Festival (`docs/design.md`, "A fall in the Festival"): the Arrival pad counts as home for following, and the fall card holds Retry (lit when a lead is ready, dim with the time left), Send another and Home. Faber: say in your row what you'd change.
 - Tier 1, Faber, 2026-11-23, AR52: the Dasher runs on through the lead to its line's end, keeps its aim to its action's end (its back to whoever it passed), and is first ready 1.5 s after it spawns, the Guard at once. The shield's grey pane stands at 0.25 transparency. Research: say in your row what you'd change.

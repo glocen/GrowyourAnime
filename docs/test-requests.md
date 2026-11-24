@@ -5058,3 +5058,125 @@ Research, 2026-11-24, 14:00. Launch-design's item 5. The design: `docs/design.md
   - An elite's case and a keeper's first-win case share the name "Emblem Case of <ground>" with different odds.
   - The card's kind line says "Chest" for a pouch and a crate too.
   - Socketing jewels isn't in the block: a pouch only fills the bag.
+
+## TR57. The Broadcast, with firsts (research's request, tier 2, for Faber)
+
+Research, 2026-11-24, from the cloud. Launch-design's items 6 and 10. The design: `docs/design.md`, "Being seen" (the Broadcast, its words, firsts). The numbers: `tools/balance/seeds.json`, "broadcast".
+
+- **Feel line.** A player walking home from a run sees "Mara found a Legendary Sword" rise in its gold where the target's card sat, holds it for a breath, and wants to be the next name. It never lands over their own fight or reveal.
+- **The facts it rests on** (SOURCED, Roblox's creator-docs, `MessagingService.yaml` and `TextChannel.yaml`):
+  - a message is at most 1 kB; a server sends 600 + 240 × players a minute; a topic receives 40 + 80 × servers a minute; delivery is best effort, "typically within 1-2 seconds";
+  - `TextChannel:DisplaySystemMessage` runs only on the client, and its text isn't filtered or localized, so it carries only our own words and the display name.
+  - Rich text in a system line: UNVERIFIED. If the chat window doesn't draw a colour tag, the line goes plain.
+- **In the block:**
+  - `Rules.Broadcast`, pure: the reach for each event (seeds' lists); the per-player every-server throttle, where a throttled line falls to this server; the bundle; the client's queue (hold, gap, stale, friends first); the ids-only message and building the line from them.
+  - The service: a RemoteEvent for this server, one MessagingService topic for every server, and its own server's lines taken from the topic only once (ids deduped).
+  - The plate in the target's card's place, a grey block. Its look follows research's verdict.
+  - The chat's system line, and the two settings.
+  - **Firsts:** the account's first item of each rarity from Rare up plays the full reveal inside Open all, with "First {rarity}". The save keeps the rarities seen.
+- **Waits:** the news board (TR58); the plate's art (Modulo, if the verdict calls for it); a sound for the plate (Sonus, one quiet cue, the director's ear).
+- **Cases, one a rule:** each event's reach; a bought, failed or typed thing never told; the throttle falling to this server; a bundle every 5 s at most; the queue holding behind a card, a ring, a reveal and a screen; a stale line chat-only; a repeated id shown once; the message under 1 kB at its fullest; a first shown once per rarity per account.
+- **Checks:** the content check passed the words on 2026-11-24, after one change ("found {voidkin} in a shard", not "broke open"), and a case keeps the line to our words, ids and the display name, since `DisplaySystemMessage` isn't filtered; a take with two Studio test servers, if Studio can run them, else two players in one; research's verdict in motion.
+- **Order:** after TR56 and the open pieces.
+
+## TR58. The boards on the Strip (research's request, tier 2, for Faber; Modulo the boards)
+
+Research, 2026-11-24, from the cloud. Launch-design's item 7, the north star's "two players compare builds". The design: `docs/design.md`, "Being seen" (the boards). The numbers: seeds, "boards".
+
+- **Feel line.** Coming back from a run through the crossing, a player glances at the strongest-lead board, sees their name at ninth, and knows the number to beat.
+- **The facts** (SOURCED, creator-docs, data stores' "Error codes and limits"): `GetSortedAsync` 5 + 2 × players a server a minute, writes 30 + 5 × players, a page at most 100. The plan uses 3 reads and at most 8 posts a minute at 8 players (COMPUTED).
+- **In the block:**
+  - two new ordered stores, the best lead's CR and total stars, posted by the server as `TowerBoardService` posts the Tower's week: only raised, by UserId, the name looked up when shown;
+  - the Tower's week moved onto a board in the world (the screen's board stays until the verdict);
+  - three boards and the news plate in grey on the Shop's side of the crossing, top ten each, the viewer's own rank under them;
+  - the news plate fed by TR57's every-server lines.
+- **Waits:** a tap on a name opening the lead card (TR33, not built); the boards' art (Modulo, an AR after the verdict).
+- **Cases:** a post only raises; the post throttle; the top ten and the own-rank line from a made-up page; a name never stored, only an id.
+- **Checks:** the content check on the boards' titles; a world-report line for their place; research's verdict from the player's camera walking the crossing.
+- **Order:** after TR57.
+
+## TR59. The welcome week and codes (research's request, tier 2, for Faber)
+
+Research, 2026-11-24, from the cloud. Launch-design's item 8. The design: `docs/design.md`, "The welcome week and codes". The numbers: seeds, "welcomeWeek" and "codes".
+
+- **Feel lines.** On day 2 a player opens Home, sees yesterday's crate taken and today's Emblem Case lit, with Lyric's face waiting at the row's end, and taps it before anything else. A player types a code from the game's page and the crate lands in the bag with its line.
+- **In the block:**
+  - `Rules.Welcome`, pure: the day count by UTC days played, a claim, a repeat claim paying once, day 7's Lyric as a new Voidkin or a copy;
+  - the row of seven on Home's Today card from the end of the first run, a grey block;
+  - `Rules.Codes`, pure: a code's match (any case), once per account, the end date, the wrong-try limit; the list in Config;
+  - the code field in Settings with its five lines; the gifts through the chests' grant (TR56), one transaction each.
+- **Waits:** the row's art, after research's verdict; the first code's gift and end date, at the first update; where codes are posted (the director).
+- **Cases:** each day's gift; a missed day waiting; a repeated claim paying once; Lyric owned and not; a code taken twice, ended, wrong, the sixth wrong try in a minute; no gift of Credits or of anything the store sells.
+- **Checks:** the content check passed the lines on 2026-11-24. No code is ever put behind a like, a favourite, a group join or a follow until that has been checked against Roblox's rules (the director's, with where codes are posted). Research's verdict on Home's row.
+- **Order:** after TR56, whose case, pouch and crate it grants.
+
+## TR60. The capture after a reveal (research's request, tier 1 for the capture, tier 2 for its tile; for Faber)
+
+Research, 2026-11-24, from the cloud. Launch-design's item 9, the north star's "a screenshot of a reveal looks like an advert". The design: `docs/design.md`, "Being seen" (the capture).
+
+- **Feel line.** A player's first Lyric lands in the Breaker's light, they tap the small camera at the card's corner, and their phone's share sheet opens on that frame.
+- **The facts** (SOURCED, creator-docs, `CaptureService.yaml`): a client-side service; `TakeScreenshotCaptureAsync(onCaptureReady, captureParams)` leaves the UI out by default (`Enum.UICaptureMode.None`); `PromptShareCapture(content, launchData, …)` opens the device's share sheet with an invite link to the game where supported, and offers a download where not; `PromptSaveCapturesToGallery` saves to the game's Captures gallery. Age or platform limits: none stated (UNVERIFIED).
+- **In the block:** the tile on the reveal's card while it holds; the HUD hidden for the frame while the card stays in, the capture taken with the UI the card needs; the share prompt; `launchData` carrying only the sharer's UserId, counted by `FunnelService` and never rewarded.
+- **Waits:** the tile's icon (Modulo).
+- **Cases:** the tile only while a card holds; the launch data's shape.
+- **Checks:** a capture taken on a phone in a test place; research's look at the picture it makes.
+- **Order:** after TR57.
+
+## TR61. The words, one voice: nine string fixes (research's request, tier 1 per line, for Faber)
+
+Research, 2026-11-24, from the cloud: a pass over every player-visible string in `src/` (about 1,080 read; the bar is `docs/design.md`, Goals, "The words"). The game already holds it: there are no exclamations, no "Complete" and no "Earn". These nine break it, as a slip of vocabulary or a voice split three ways. Strings only, no layout.
+
+| Where | Now | Make it | Why |
+|---|---|---|---|
+| `Rules/Modes.luau`, festival's `Line` | "Fight through the grounds beside your lead" | "Fight through the Arcs beside your lead" | players read "Arc" (the director, 2026-11-19; design.md, "Words") |
+| same, the fallback `named` | "The grounds" | "The Arcs" | same |
+| `Definitions/Chests.luau`, a Hard chest's `Name` | "{chest} of {ground}, Hard Stage {n}" | "Hard {chest} of {ground}", with "Stretch {n}" on its card's second line | "Stage" left with the 2026-11-19, 23:19 row (one run of four stretches); the id keeps the stacks apart |
+| `BaseController` 128, `BaseView` 85, `ShopScreen` 75 | "No answer. Try again." / "No answer: try again" | "That didn't go through. Try again." | one failure, one sentence: the other screens already say it |
+| `BaseController` 112 | "None of that shard in the bag" | "You have none of that shard" | the bag's page reads "Inventory" (the director, 2026-11-19, 03:37); the line needn't name it |
+| `VoidkinScreen` 886 | "Every star: a copy sells for Credits" | "All seven stars: a copy now sells for Credits" | the old line reads as if every star sells |
+| `VoidkinScreen` 102 | "The lead fights, it can't be stationed" | "The lead fights: it can't be stationed" | the comma splice; colons are the game's join |
+| `Bag.luau` 989 | "Shades drop them, and keepers" | "Shades and keepers drop them" | as its four siblings say it |
+| `TowerScreen` 211 | "{n} opponents defeated" | "{n} floors won" | the bar's "no Defeat X"; the Tower counts floors everywhere else |
+
+- **After TR56,** two lines turn false: `Emblems.luau` 281, "No emblems yet: Shades and keepers drop them", becomes "No emblems yet: elites and keepers drop them in cases" (the Emblem Case replaces the loose drop); and `Jewels.luau` 24, "Jewels are coming", goes once the pouch and the Condenser make jewels.
+- **Cases:** none new; the self-test's text checks that read these strings follow them.
+- **Checks:** the content check isn't needed (no new name); research reads the changed screens at the next capture.
+
+## TR62. Bringing a friend: the invite and its earned gift (research's request, tier 2, for Faber)
+
+Research, 2026-11-24, from the cloud. The design: `docs/design.md`, "Being seen", "Bringing a friend". The seed: `tools/balance/seeds.json`, "referral". Roblox's side: `docs/roblox-rules.md`, "Rewards for engagement, invites and notifications".
+
+- **Feel line:** the player beats the Lamplighter for the first time, presses "Bring a friend" on the results card, and a quarter of an hour later the friend's first clear drops a Forge Crate into both their bags, with a line naming the other.
+- **The facts** (SOURCED, creator-docs, "Friend referral system" and "Player invite prompts"):
+  - `Player:GetJoinData().ReferredByPlayerId` is filled for every kind of invite;
+  - the invite opens with `SocialService:PromptGameInvite`, after `CanSendGameInviteAsync`;
+  - the page's own safeguards are a one-time reward per invitee, and a limit per inviter.
+- **The block:**
+  - `Rules.Referral`, pure: whether a join pays, from the profile's state (new this session, never paid, not self), the inviter's count, and the first Normal clear;
+  - the service: the friend's crate at their first Normal clear, granted through TR56's grants;
+  - the inviter's crate written as one step on their profile, waiting for an inviter who isn't in this server. ProfileStore's own message to a profile is Faber's call;
+  - the tile on Home's Today card, and the press on the first clear's results card, in grey;
+  - the lines as design.md words them.
+- **Waits:** the tile's art (Modulo, with AR53's card); the banner, which the director sets in the Creator Dashboard before the game is public (its length and what it shows past the limit, UNVERIFIED).
+- **Cases:**
+  - an invited new account pays both sides once, at its first Normal clear, and never again;
+  - a join without an invite, an account that played before, and a self-invite pay nothing;
+  - the inviter's sixth friend pays the friend and not the inviter;
+  - an inviter away from the server gets the crate at the next join, once;
+  - a repeat or interrupted grant never pays twice (`AGENTS.md`, "Data and code").
+- **Checks:** the content check passed on 2026-11-24 after one round (the tile's and the banner's lines now say every condition). Order: after TR56 and TR59.
+
+## TR63. Verdicts in pairs: the pair sheet, the lint's contrast and tokens, and Edge for SVG (research's request, for Faber)
+
+**Why:** the director's word of 2026-11-24, 20:50 (`docs/decisions.md`, the top row; `AGENTS.md`, "target first, verdicts in pairs"). Every look is judged beside its picked target, and machines check what eyes tire of (`docs/research/quality-and-speed.md`, changes 3 and 7). Faber's tools, Faber's way: this entry says what each serves.
+1. **The pair sheet,** one step after `tools/capture/grab.ps1` and `tools/capture/moments.py`. Given the build's images and the target's, it makes one image:
+   - both at the same phone size, side by side, in both orders (build then target, target then build), so neither is always seen first;
+   - under them, the same pair blurred to thumbnail sharpness (the squint), and the same pair in greyscale;
+   - for a character or a key pose, each as a black silhouette at 64 px.
+   Free tools already on the PC, nothing new installed. Cases: two sizes scaled to one height; a missing file named; the order swapped.
+2. **The lint reads contrast and, after AR62's pick, the tokens.** In `src/client/Controllers/Core/SelfTestController/UiLint.luau`, which already checks fit, size, touch, safe areas, overlap and the thumbs:
+   - **Contrast, now:** each visible label's text against the colour behind it is at least 4.5:1 (WCAG's ratio), and at least 3:1 for large text (18 pt, or 14 pt bold).
+   - **Tokens, after AR62's pick:** every colour, stroke width and corner radius on a visible piece is one of the style frame's tokens in `src/client/UI/Theme.luau`. Research's count today: 39 distinct colours written across `src/client`, and 18 files outside `Theme.luau` that write their own. The lint names each stray, so a screen at a time moves onto the tokens.
+3. **Edge renders SVG on the PC.** The director's answer of 20:50: try Edge first, install only if needed. One check that Edge, already on the PC, renders a small SVG at twice its size to a PNG with a transparent background, with nothing installed. A 9-slice frame with an outer glow is the test piece; research's cloud try is in `docs/research/quality-and-speed.md`, change 6. If it fails, say what failed, and research asks the director about Inkscape.
+- **Order:** 1 and 3 first, small and needed by every review; 2's contrast with them; 2's tokens after AR62's pick.
+- **Checks:** no text players see, so no content check. Cases as above, and the lint's new checks on a made-up screen with one stray colour and one low-contrast label.

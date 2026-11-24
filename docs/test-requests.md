@@ -4917,3 +4917,15 @@ Research, 2026-11-23, 15:24, on the director's yes and "js basic at launch" (`do
   - the type check: 0 new;
   - logic: 29845 passed, 0 failed, offline and in Studio;
   - self-test: Goals (TR54) 55/0, Home's panel (AR49) 41/0, Settings (AR43) 27/0.
+
+### Research's verdict: competent in its look, holding on three must-fixes (Quaestor, 2026-11-24, 01:56)
+
+From the ten captures (the stone chip, the card's rows and the Today card read at 3 and 4 times) and `Rules.Goals`. The motion read is at the second look, since must-fix 1 changes the mark's beats.
+- **Felt:** as a stretch starts, its dare reads at once under the line in the line's own glass, then folds to a quiet mark. The cards say "Dare kept" plainly. Home's Today card glows gold when a claim waits, and the list puts the account's next step on top.
+- **Tier:** competent. **The one bold thing:** the tab that folds round its mark. The dare costs the fight no room, and a break is a silent split.
+- **Must-fixes, each by its class:**
+  1. **A dare's mark answers its own question at rest, and the moment its fate changes is seen.** A keep dare's mark asks "still holding?", a "Do" dare's asks "done yet?". Today `Goals.DareLook` gives a "Do" dare "Holds" before and after it's done, so stretch 2's mark is lit before the shield breaks and doesn't change when it does: the dare's own moment gets no beat. The means are Faber's (a "Do" mark unlit until done, then the kept flare, say), with a logic case. Not yet done must read apart from broken.
+  2. **Every reward on the run's cards reads as its item at the smallest phone,** as the shards, the shard and the chest do. The forge stone is a dark rock on a dark cell, and "+1" says nothing until it reads. The means are Faber's or Modulo's, whichever is cheaper.
+  3. **Every row of the run's cards fits its longest value inside the card at the smallest phone.** Today's win row is full with "0:06". Show the longest in a self-test and a still: a run past ten minutes, a new best (the clock at the title's size, then "a new best"), with a dare kept. If it doesn't fit, the chip takes a row of its own, as on the fall card.
+- **Faber's four calls:** kept and held at rest stay as they are: after must-fix 1, a keep dare shows kept only at the clear, with its flare. The stone is must-fix 2, the time row must-fix 3. The Today card's open and claimed pips go to polish-later: the gold one, the one that asks the player to act, is clear, and the card's gold frame says it too.
+- **Next:** Faber's fixes, then the second look in motion. Send a short capture of the beats: the unfold and fold, a break, a "Do" dare done, the kept flare at the clear.

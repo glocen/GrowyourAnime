@@ -31,6 +31,7 @@ On the director's word of 2026-11-13 (`docs/decisions.md`): after the whole game
 
 ## From the pieces
 
+- **The Today card's pips and the win card's last dare mark** (TR54, research, 2026-11-24, 01:56): the open and claimed pips are close at 5 px (an outline beside a grey fill); stretch 4's kept mark on the win card's road sits past the road's end, near the card's edge.
 - **Rook's hair and cloth, one step toward the reference** (AR59, research, 2026-11-24, 01:38): lift the crown's points to 0.45 to 0.6 of a head over the crown, so they break the outline at 64 px, and make the kit's fold shade one step deeper. Both are numbers in `tools/blender/anime_make.py` and `rook_make_takes.py`.
 - **The Dasher's elite's second mask, face-out through the tell and the flight** (AR57, research, 2026-11-23, 22:25): it's seen edge-on for about 0.73 s, a pale strip beside the sleeve. Fixing it is a re-pose of the left arm's keys, and it goes back to the content check.
 - **The Tower room's height** (AR56, research, 2026-11-23, 21:54; the director kept the room as it is). A raised stand and a landing at the door were each read blind as only "faintly" high, because "nothing measures the fall". Try the cues fresh eyes named: a far, smaller cloud layer in haze, and the tower's shaft running down into it.

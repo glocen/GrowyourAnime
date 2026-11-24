@@ -5,6 +5,7 @@
 --                                            Lantern Row (north of the Festival Gate), the player's own plot, the Strip
 --   Music.Id(pasted) -> number?           a pasted id as a number: 123, "123" and "rbxassetid://123" all read 123
 --   Music.Next(ids, last, roll) -> index? the next track: any of the others than `last`, by `roll(n)` (1 to n)
+--   Music.Holds(ids, id) -> index?        where a list holds a playing track, so a change of place that shares it plays on
 
 local Music = {}
 
@@ -47,6 +48,20 @@ function Music.Next(ids: { any }, last: number, roll: (count: number) -> number)
 		return last
 	end
 	return others[math.clamp(roll(#others), 1, #others)]
+end
+
+-- The index at which a list holds the track `id` (any way it was pasted), or nil: a change of place whose list holds
+-- the track already playing keeps it, so a walk between two places that share their music never starts it over.
+function Music.Holds(ids: { any }, id: number?): number?
+	if id == nil then
+		return nil
+	end
+	for index, pasted in ids do
+		if Music.Id(pasted) == id then
+			return index
+		end
+	end
+	return nil
 end
 
 return Music

@@ -4,7 +4,8 @@
 -- Lantern Row (north of the Festival Gate's line, the world folder's GateZ, as LightingController reads it), the
 -- player's own plot (its floor, a few studs past its edge), or the Strip. That place's list plays, a track at a time in a
 -- shuffle that never plays one twice running, with Config.Music.Gap of quiet between two. A change of place crosses
--- over Config.Music.Fade: the old track fades out as the new one fades in. A place with no track is silence; a track that
+-- over Config.Music.Fade: the old track fades out as the new one fades in, unless the new place's list holds the track
+-- playing, which plays on (Music.Holds: the base and the Strip share theirs). A place with no track is silence; a track that
 -- hasn't loaded within Config.Music.Load is skipped. Every number is read each frame, so a Tune is heard at once.
 --   MusicController.Now() -> { Place, Id, Playing }   what's playing, for tests
 
@@ -106,10 +107,19 @@ local function step(dt: number)
 		local now = placeNow()
 		if now ~= place then
 			place = now
-			fadeOut(current)
-			current = nil
-			quietUntil = 0
-			start(place, 0)
+			local list = listOf(now)
+			local playing = current
+			local kept = if playing and list then Music.Holds(list.Ids, playing.Id) else nil
+			if playing and kept then
+				-- its music plays on, at the new place's level; that place's next is another than it
+				playing.Place = now
+				lastOf[now] = kept
+			else
+				fadeOut(current)
+				current = nil
+				quietUntil = 0
+				start(place, 0)
+			end
 		end
 	end
 	local clock = os.clock()

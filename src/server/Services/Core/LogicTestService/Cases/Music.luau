@@ -60,4 +60,31 @@ return {
 			end), 2)
 		end,
 	},
+	{
+		Name = "Music: the director's folders (2026-11-24), M at the base and on the Strip, C in the game modes only; a change of place that shares the playing track plays on",
+		Run = function(t: any)
+			local function same(a: { any }, b: { any }): boolean
+				if #a ~= #b then
+					return false
+				end
+				for index, pasted in a do
+					if Music.Id(pasted) ~= Music.Id(b[index]) then
+						return false
+					end
+				end
+				return true
+			end
+			local lists = MusicConfig.Lists
+			t.Check("the base and the Strip play the same list (M)", #lists.Base.Ids > 0 and same(lists.Base.Ids, lists.Strip.Ids))
+			t.Check("the Festival's runs, a keeper's try and the Tower play the same list (C)", #lists.LanternRow.Ids > 0 and same(lists.LanternRow.Ids, lists.Keeper.Ids) and same(lists.LanternRow.Ids, lists.Tower.Ids))
+			local shared = false
+			for _, pasted in lists.Base.Ids do
+				shared = shared or Music.Holds(lists.LanternRow.Ids, Music.Id(pasted)) ~= nil
+			end
+			t.Check("no M track in C's places", not shared)
+			t.Equal("a list holds a track however it was pasted", Music.Holds({ 111, "rbxassetid://222" }, 222), 2)
+			t.Equal("not one it lacks", Music.Holds({ 111, 222 }, 333), nil)
+			t.Equal("nor nothing", Music.Holds({ 111 }, nil), nil)
+		end,
+	},
 }

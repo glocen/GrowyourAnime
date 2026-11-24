@@ -18,16 +18,19 @@ return {
 	Fade = 2, -- seconds a change of place crosses from one track to the other over
 	Gap = 1.5, -- seconds of quiet between two tracks of the same place
 	Load = 8, -- seconds a track has to load in; one that doesn't is skipped, and the place's next one plays
+	-- The director's two folders (2026-11-24): M, the basic loop, plays at the base and on the Strip; C, for the game
+	-- modes only and never a fight's own music, plays in the Festival's runs, a keeper's try and the Tower. The director
+	-- adds more to each (docs/asset-log.md has each track's id and uploader).
 	Lists = {
 		-- The Strip: the hub between the plots and the grounds, with the Void Shop. Everywhere none of the others is.
-		Strip = { Ids = {}, Volume = 1 },
+		Strip = { Ids = { 140197521595964, 131737171257366, 77778172844541 }, Volume = 1 }, -- M
 		-- The player's own plot: the base.
-		Base = { Ids = {}, Volume = 1 },
+		Base = { Ids = { 140197521595964, 131737171257366, 77778172844541 }, Volume = 1 }, -- M
 		-- Lantern Row: the festival street north of the Festival Gate, its stages.
-		LanternRow = { Ids = {}, Volume = 1 },
+		LanternRow = { Ids = { 84064277441340 }, Volume = 1 }, -- C
 		-- A fight with the Lamplighter: a keeper's try, from its start to its end.
-		Keeper = { Ids = {}, Volume = 1 },
+		Keeper = { Ids = { 84064277441340 }, Volume = 1 }, -- C
 		-- A Tower run, from its first floor to its results.
-		Tower = { Ids = {}, Volume = 1 },
+		Tower = { Ids = { 84064277441340 }, Volume = 1 }, -- C
 	} :: { [string]: List },
 }

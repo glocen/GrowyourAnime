@@ -58,6 +58,7 @@ For Faber:
 
 ### Notices
 
+- The director, 2026-11-24, 11:11, for everyone: overhaul what's clearly better, above all visually and in design, and fix bugs at once (`AGENTS.md`, "Overhaul what's clearly better"; the register's top row). The old kept for rollback; a redo players see is a blockout beside the old, judged by research in the game; the director's own decisions are redone as an alternative shown to the director.
 - Tier 2, research, 2026-11-24, 10:55: a fall in the Festival (`docs/design.md`, "A fall in the Festival"): the Arrival pad counts as home for following, and the fall card holds Retry (lit when a lead is ready, dim with the time left), Send another and Home. Faber: say in your row what you'd change.
 - Tier 1, Faber, 2026-11-23, AR52: the Dasher runs on through the lead to its line's end, keeps its aim to its action's end (its back to whoever it passed), and is first ready 1.5 s after it spawns, the Guard at once. The shield's grey pane stands at 0.25 transparency. Research: say in your row what you'd change.
 - Tier 2, research, 2026-11-23, 20:07, TR53: TR31 folded in. The battery's line shows only a net gain, and reads "Full" with the overflow's Credits when it sold. Faber: say in your row what you'd change.

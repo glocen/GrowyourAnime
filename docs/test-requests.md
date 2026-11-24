@@ -5108,3 +5108,24 @@ Research, 2026-11-24, from the cloud. Launch-design's item 9, the north star's "
 - **Cases:** the tile only while a card holds; the launch data's shape.
 - **Checks:** a capture taken on a phone in a test place; research's look at the picture it makes.
 - **Order:** after TR57.
+
+## TR61. The words, one voice: ten string fixes (research's request, tier 1 per line, for Faber)
+
+Research, 2026-11-24, from the cloud: a pass over every player-visible string in `src/` (about 1,080 read; the bar is `docs/design.md`, Goals, "The words"). The game already holds it: there are no exclamations, no "Complete" and no "Earn". These ten break it, as a slip of vocabulary or a voice split three ways. Strings only, no layout.
+
+| Where | Now | Make it | Why |
+|---|---|---|---|
+| `Rules/Modes.luau`, festival's `Line` | "Fight through the grounds beside your lead" | "Fight through the Arcs beside your lead" | players read "Arc" (the director, 2026-11-19; design.md, "Words") |
+| same, the fallback `named` | "The grounds" | "The Arcs" | same |
+| `Definitions/Chests.luau`, a Hard chest's `Name` | "{chest} of {ground}, Hard Stage {n}" | "Hard {chest} of {ground}", with "Stretch {n}" on its card's second line | "Stage" left with D2 (the run says "Stretch"); the id keeps the stacks apart |
+| `BaseController` 128, `BaseView` 85, `ShopScreen` 75 | "No answer. Try again." / "No answer: try again" | "That didn't go through. Try again." | one failure, one sentence: the other screens already say it |
+| `ShopScreen` 72 | "Your Inventory is full" | "The bag is full" | the bag is what fills, as the bag's own line says |
+| `ShopScreen` 245 | "{item} bought: it's in your Inventory" | "{item} bought: it's in the bag" | same |
+| `VoidkinScreen` 886 | "Every star: a copy sells for Credits" | "All seven stars: a copy now sells for Credits" | the old line reads as if every star sells |
+| `VoidkinScreen` 102 | "The lead fights, it can't be stationed" | "The lead fights: it can't be stationed" | the comma splice; colons are the game's join |
+| `Bag.luau` 989 | "Shades drop them, and keepers" | "Shades and keepers drop them" | as its four siblings say it |
+| `TowerScreen` 211 | "{n} opponents defeated" | "{n} floors won" | the bar's "no Defeat X"; the Tower counts floors everywhere else |
+
+- **After TR56,** two lines turn false: `Emblems.luau` 281, "No emblems yet: Shades and keepers drop them", becomes "No emblems yet: elites and keepers drop them in cases" (the Emblem Case replaces the loose drop); and `Jewels.luau` 24, "Jewels are coming", goes once the pouch and the Condenser make jewels.
+- **Cases:** none new; the self-test's text checks that read these strings follow them.
+- **Checks:** the content check isn't needed (no new name); research reads the changed screens at the next capture.

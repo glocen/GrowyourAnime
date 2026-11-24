@@ -10,6 +10,7 @@ local Profile = require(Shared.Data.Profile)
 local Migrations = require(Shared.Data.Migrations)
 local Saveable = require(Shared.Data.Saveable)
 local StagesConfig = require(Shared.Config.Stages)
+local CombatConfig = require(Shared.Config.Combat)
 local Stages = require(Shared.Rules.Stages)
 local Progress = require(Shared.Rules.Progress)
 local Stats = require(Shared.Rules.Stats)
@@ -451,6 +452,27 @@ return {
 			local hardWin = Progress.KeeperWon(data, GROUND, NOW + 600, hard.Difficulty)
 			t.Check("the win counts on Hard, apart from Normal's", hardWin.Ok == true and data.Progress.Grounds[GROUND].KeeperWins.Hard == 1 and data.Progress.Grounds[GROUND].KeeperWins.Normal == 1)
 			t.Equal("both checkpoints back at the first", Stages.Checkpoint(data, GROUND, "Hard") + Stages.Checkpoint(data, GROUND, "Normal"), 2)
+		end,
+	},
+	{
+		Name = "Stages: a stretch moves on after its check, and the run's card waits until the keeper's fade is back",
+		Run = function(t: any)
+			local rows = Stages.Of(GROUND) :: { any }
+			local keeper = CombatConfig.Keeper
+			local back = keeper.WinPause + keeper.Fade.Out + keeper.Fade.Hold + keeper.Fade.Back
+			for stage = 1, #rows do
+				local last = Stages.Last(GROUND, stage) :: any
+				local after = Stages.After(GROUND, stage)
+				if stage == #rows and last.Kind == "Keeper" then
+					t.Check(`stretch {stage}: the card after the fade is back`, after > back, `{after} s against {back}`)
+					t.Check(`stretch {stage}: and no longer than a breath after it`, after <= back + 0.5, `{after} s`)
+				else
+					t.Equal(`stretch {stage}: its check's time`, after, StagesConfig.Results.After)
+				end
+				t.Check(`stretch {stage}: never before the fall has played`, after >= StagesConfig.Results.After)
+			end
+			t.Equal("the last stretch ends on the keeper", (Stages.Last(GROUND, #rows) :: any).Kind, "Keeper")
+			t.Equal("a ground with no stages: the plain wait", Stages.After("nowhere", 1), StagesConfig.Results.After)
 		end,
 	},
 }

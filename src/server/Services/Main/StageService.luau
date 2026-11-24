@@ -19,7 +19,7 @@
 --   difficulty's checkpoint, set down where that stretch starts.
 -- * A keeper's try is its stretch's: a run on Normal begins at it when no run is on there and the stretch is open, and
 --   the try's win (KeeperService.Won) is its stretch's last stop.
--- * A run ends when the keeper's stretch is done (its card: Net StageDone, Config.Stages.Results.After later), when
+-- * A run ends when the keeper's stretch is done (its card: Net StageDone, Rules.Stages.After later, past the fade), when
 --   another begins, when the player leaves the street (Config.Stages.Off: once they've stood on it in the run, so a
 --   set-down still fading in from afar isn't a leave) or the game, or when their lead falls (its card says so, and where
 --   the next run begins). The checkpoint stays through all but the keeper's fall.
@@ -258,7 +258,7 @@ local function finish(player: Player, run: Run)
 		logRun(player, run, "Cleared")
 	end
 	publish(player, run)
-	task.delay(StagesConfig.Results.After, function()
+	task.delay(Stages.After(rule.Ground, rule.Stage), function()
 		if runs[player] ~= run then
 			return
 		end

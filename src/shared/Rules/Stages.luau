@@ -11,6 +11,7 @@
 local Shared = script.Parent.Parent
 local Profile = require(Shared.Data.Profile)
 local StagesConfig = require(Shared.Config.Stages)
+local CombatConfig = require(Shared.Config.Combat)
 local Progress = require(Shared.Rules.Progress)
 local Stats = require(Shared.Rules.Stats)
 local Goals = require(Shared.Rules.Goals)
@@ -53,6 +54,19 @@ function Stages.Last(ground: string, stage: number): { Kind: string, Def: string
 	local rows = Stages.Of(ground)
 	local row = if rows then rows[stage] else nil
 	return if row then row.Stops[#row.Stops] else nil
+end
+
+-- Seconds from the fall that ends `stage` to what follows it: the next stretch, or the run's card. A keeper's fall is
+-- followed by its try's fade out and back (Config.Combat.Keeper), which covers every screen, so the card of a run that
+-- ends on a keeper waits until the fade is back: the fall is seen whole, and the card is never drawn under the black.
+function Stages.After(ground: string, stage: number): number
+	local rows = Stages.Of(ground)
+	local last = Stages.Last(ground, stage)
+	if rows and last and last.Kind == "Keeper" and stage >= #rows then
+		local keeper = CombatConfig.Keeper
+		return math.max(StagesConfig.Results.After, keeper.WinPause + keeper.Fade.Out + keeper.Fade.Hold + keeper.Fade.Back + StagesConfig.Results.Clear)
+	end
+	return StagesConfig.Results.After
 end
 
 local function valid(ground: string, difficulty: string, stage: number): boolean

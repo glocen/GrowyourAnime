@@ -233,7 +233,7 @@ function StageCases.Cases(): { any }
 				t.Check("a try", try.Ok == true, tostring(try.Error))
 				t.Wait(MOVE)
 				t.Server("KeeperEnd", "Win")
-				t.Check("the keeper's fall: the run's card", waitFor(t, StagesConfig.Results.After + REPLICATE + 2, function(): boolean
+				t.Check("the keeper's fall: the run's card, once the try's fade is back", waitFor(t, Stages.After(GROUND, count) + REPLICATE + 2, function(): boolean
 					return cardTitle() == `{named} cleared`
 				end), tostring(cardTitle()))
 				local done = StageScreen.Parts()
@@ -305,7 +305,7 @@ function StageCases.Cases(): { any }
 				t.Check("its fall clears Hard's keeper stretch, the checkpoint cleared", waitFor(t, StagesConfig.Results.After + REPLICATE + 2, function(): boolean
 					return line("Hard").Cleared == count and line("Hard").Reached == nil
 				end), `{line("Hard").Cleared} {line("Hard").Reached}`)
-				t.Check("its card: Retry and Home, nothing after", waitFor(t, REPLICATE, function(): boolean
+				t.Check("its card, once the fade is back: Retry and Home, nothing after", waitFor(t, Stages.After(GROUND, count) + REPLICATE, function(): boolean
 					return cardTitle() == `{named} cleared`
 				end) and StageScreen.Parts().Next == nil and StageScreen.Parts().Home ~= nil)
 				t.Wait(MOVE + 2)

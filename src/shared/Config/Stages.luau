@@ -33,7 +33,8 @@ return {
 	-- Levels added to every foe of a stage on Hard: Lantern Row's 1 to 9 read 11 to 19.
 	Offset = { Normal = 0, Hard = 10 } :: { [string]: number },
 	-- A stage's results card: seconds from the fall that ends it to the card, so the fall plays and its drops are in.
-	Results = { After = 1.2 },
+	-- Clear: seconds the run's card waits past the keeper's fade back, so it never rises under the black (Stages.After).
+	Results = { After = 1.2, Clear = 0.1 },
 	-- A shut stage gate (StageService): a move under Walk studs in one look (a tenth of a second) is a walk across it, set
 	-- back; a longer one is a set-down past it (the Door's, the keeper's exit, a test's) and stands.
 	Gate = { Walk = 12, Every = 0.1 },

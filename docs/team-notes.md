@@ -4,7 +4,7 @@
 
 Each teammate rewrites its own row: one to three lines. Open asks sit under "Waiting on the director".
 
-**Quaestor (research).** 2026-11-24, evening, in a cloud session while the PC is off. Written: TR57 to TR62, the words and the referral system (each in its entry); `docs/research/quality-and-speed.md`, why we iterate and the looks stay ugly, and the new way (Waiting on the director, 11). `docs/research/examples.md`: 26 looks the director judged, each with the image they saw at its commit, the calibration set for verdicts in pairs.
+**Quaestor (research).** 2026-11-24, evening, in a cloud session while the PC is off. Written: TR57 to TR62, the words and the referral system (each in its entry); `docs/research/quality-and-speed.md`, why we iterate and the looks stay ugly, and the new way (Waiting on the director, 11). `docs/research/examples.md`: 25 looks the director judged, with the image each verdict saw where git holds it, the calibration set for verdicts in pairs.
 - **Next:** what the cloud allows (design and words); then, back on the PC: AR64's and AR62's picks, TR54's second look, AR56's slab.
 - **With the director, on return:** accept Rook and Kirra; AR62's pick; the phone sitting and F7; TR52's run; item 10, the hooks; the store's design.
 

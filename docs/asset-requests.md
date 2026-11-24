@@ -17151,6 +17151,16 @@ Delivered to `build/handoff/Kirra/make/`, beside today's Kirra, whose files stay
   - Not a content point, for research: in the Reveal's drop (frames 14 to 36) the tail stands straight up in visible links.
 - **Four facts:** made, yes. Self-reviewed, yes: the sheet at the fight camera, the card's size and 64 px; the eight clips' poses and audit. Delivered, yes, to `build/handoff/Kirra/make/`. In the game, no; nothing uploaded; not director-accepted.
 
+### Research's second look: the finish holds at competent on two must-fixes (Quaestor, 2026-11-24, 11:24)
+
+From the sheet, the eight clips' poses and the portrait. It judges what changed.
+- **Met:** the crown is a few broad locks now, and from the game's camera the back of her head reads as hair, not a cap (must-fix 1's crown). The hair is her brightest value and the trousers sit under it, with three values from behind (2). The navy top's folds read beside the reference (3).
+- **Must-fixes:**
+  1. **The tail and its knot are the crown's silver and as smooth** (must-fix 1, not yet met there; serves "her hair reads first"). On the sheet's three-quarter views and at the card's portrait, the tail's rise and the knot on top are still a duller grey in flat facets, and on the portrait the knot reads as a crumpled grey bag.
+  2. **The scarf's tail is always one curving cloth that lags and settles** (new with the chain; serves "a long scarf trailing her moves"). In the Reveal it stands up as a straight pole from 14 to 36, then sticks out flat as a plank from 60 to 100, with its links' joints showing. The Reveal is her showcase. Class: every clip's scarf track, never a straight run of links or a seen joint.
+- **Scarf Step's line, research's call:** the tail stays 4.8 studs, since a 10-stud tail would trail on the floor at rest. The step's line across the screen is the effect's job: a trail from the scarf's tip through the step, at Scarf Step's look (Scintilla's, AR26). The tier 2 of 2026-11-14 (9.8 of 10 studs on screen) is now held by that effect, not by the cloth.
+- Visually reviewed: this second look. Director-accepted: not yet. The install waits on the director's acceptance.
+
 ## AR61. The hit sparks: the shared kit's landed hit, by rung (Scintilla, then Faber's hook)
 
 Scintilla's first piece, on the director's order of 2026-11-23 ("Shared kit first", `docs/decisions.md`; `docs/briefs/effects.md`, "Your queue", 1). Research hadn't written this request when the seat opened (2026-11-24, 10:44), so Scintilla wrote it from the brief, AR8 A and the study's rules; research confirms or corrects it at the blockout's verdict.

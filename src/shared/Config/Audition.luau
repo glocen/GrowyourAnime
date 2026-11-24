@@ -21,16 +21,18 @@ return {
 		{ Name = "LightHit", Label = "Light hit", Max = 0.7, Beat = false, Done = true, Words = { "punch", "punch hit", "melee hit", "hit impact", "kick hit", "combat hit" } },
 		{ Name = "HeavyHit", Label = "Heavy hit", Max = 1.5, Beat = false, Done = true, Words = { "heavy punch", "heavy hit", "strong impact", "power hit", "smash impact", "slam" } },
 		{ Name = "ShadeSwipe", Label = "Shade swipe", Max = 1.0, Beat = true, Done = true, Words = { "sword swing", "slash", "swoosh", "claw swipe", "swing whoosh" } },
+		-- Each signature: one finished sound of its own, never a stack, simple and very appealing, an anime game's first in
+		-- its words (the director, 2026-11-24, "One each", through research).
 		-- Rook's Haymaker: the wound-up punch, its top on the strike
-		{ Name = "Haymaker", Label = "Haymaker", Max = 1.5, Beat = true, Words = { "power punch", "punch whoosh", "shockwave", "impact boom", "ground pound", "punch swing" } },
+		{ Name = "Haymaker", Label = "Haymaker", Max = 1.5, Beat = true, Words = { "anime punch", "anime power punch", "anime shockwave", "power punch", "shockwave", "impact boom" } },
 		-- Kirra's Scarf Step: the blink in and the cut, its top on the cut
-		{ Name = "ScarfStep", Label = "Scarf Step", Max = 0.8, Beat = true, Words = { "dash whoosh", "teleport whoosh", "quick slash", "blade swoosh", "vanish", "swift slash" } },
+		{ Name = "ScarfStep", Label = "Scarf Step", Max = 0.8, Beat = true, Words = { "anime teleport", "anime dash slash", "anime quick slash", "teleport whoosh", "dash whoosh", "swift slash" } },
 		-- Pip's Lantern Burst: the flame bursting at the Shades' feet, its top on the burst
-		{ Name = "LanternBurst", Label = "Lantern Burst", Max = 1.6, Beat = true, Words = { "fire explosion", "fire burst", "fireball explosion", "flame burst", "flame whoosh", "magic explosion" } },
+		{ Name = "LanternBurst", Label = "Lantern Burst", Max = 1.6, Beat = true, Words = { "anime fire explosion", "anime explosion", "fire burst", "fire explosion", "flame burst", "magic explosion" } },
 		-- Watt's Ground Wire: the wire planted, the shock round him, its top on the plant
-		{ Name = "GroundWire", Label = "Ground Wire", Max = 1.5, Beat = true, Words = { "electric shock", "electric zap", "lightning strike", "electricity burst", "thunder impact", "shock wave" } },
+		{ Name = "GroundWire", Label = "Ground Wire", Max = 1.5, Beat = true, Words = { "anime lightning", "anime electric", "lightning strike", "electric shock", "electricity burst", "thunder impact" } },
 		-- Lyric's Held Note: the note sweeping out, once as it begins
-		{ Name = "HeldNote", Label = "Held Note", Max = 1.6, Beat = true, Tonal = true, Words = { "sonic wave", "sound wave", "magic chime", "energy wave", "sonic blast", "resonance" } },
+		{ Name = "HeldNote", Label = "Held Note", Max = 1.6, Beat = true, Tonal = true, Words = { "anime magic wave", "anime energy wave", "sonic wave", "magic chime", "energy wave", "sound wave" } },
 		-- The basic attack's sound, one per class, shared by every Voidkin of the class (the director, 2026-11-23: "1 type
 		-- of sfx for m1 per class"; it replaced the M1's own sound per Voidkin, and with it research's "a Mage of another
 		-- element gets cues of its own" of 2026-11-19). So a class's words name no element: the element is the effect's.

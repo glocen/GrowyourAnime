@@ -1,0 +1,2 @@
+The peaks at a small landscape phone (667x370), left to right, 3 a row: A_tether, B_lob, C_halo_pillar, S1_bubble, S2_veil.
+peaks_squint.png: the same, brought to 96 px high and back up (does the shape still read at a glance?).

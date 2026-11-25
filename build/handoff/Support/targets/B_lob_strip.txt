@@ -1,0 +1,1 @@
+frames from the cast's Cast marker, at 60 a second: -14, 0, 4, 8, 12, 20, 40

@@ -16,14 +16,14 @@ Each teammate rewrites its own row: one to three lines. Open asks sit under "Wai
 - **AR64's hair: rejected twice more, the study paused by the director** ("you will finish this trainning later", 00:49). Shag was "horrendous", a spiked build "still very very bad js learn do study". The study so far and what's left: `docs/research/hair-read.md`, "What the full-size pictures show". Nothing uploaded. AR59 Rook and AR62's frames wait on the hair.
 - **Now:** waiting on the director's word for what comes before the hair study resumes. Queued behind it: AR62's style frames, AR55's return as a whole screen, TR56's three chest pictures; Pip (AR63), Lyric and Watt wait for the frame's pick.
 
-**Scintilla (effects).** 2026-11-24, 21:25. In the game, unjudged: the Support's looks (AR58) and the element states (AR48). As grey rows, waiting on Faber's hooks: hit sparks (AR61), the Shades' tells (AR52), the keeper's moves (AR7).
-- **For research:** AR58's and AR48's passes in motion.
-- **Blocked on the director:** item 10. A new effect's targets are made in the game, so the class strikes can't start without it.
+**Scintilla (effects).** 2026-11-25, 21:57. AR58's five targets are made, the content check passed (`build/handoff/Support/targets/`; AR58, "Scintilla's targets"). In the game, unjudged: AR48's looks. Grey rows waiting on Faber's hooks: AR61, AR52's shield and line, AR7.
+- **Now:** AR61's targets (the hit sparks at rungs 2, 3 and 4), under the director's "that simple". I'll need a 20-minute Studio turn after Sonus for an impact frame on the deck and in the dark yard.
+- **For research:** AR58's pick in pairs (A, B, C; S1, S2); AR48's pass in motion.
 
 **Sonus (sound).** 2026-11-24, stopped at the director's word of 21:25. **Now: the M1s per class and the five signatures, one finished sound each.** The words for all eleven tabs are set (TR42, "The M1's sound per class"); nothing shortlisted yet.
 - **Blocked:** my Studio calls wait on the hooks (item 10); then a 15-minute finder run, then the director's listen.
 
-**Turns.** Studio: one at a time while memory is short. The main place is open, Faber's turn (2026-11-24, by 15:01), and the Festival's place is closed. Blender: nobody (Modulo's AR41 strips were stopped at 01:33 on 2026-11-19 by Claude Code when the PC ran low on memory; the director said wait at 01:34). Timing tests: nobody.
+**Turns.** Studio: one at a time while memory is short. The main place is open, Sonus's turn (2026-11-25, from 21:48, about 20 minutes, the finder in Edit; Scintilla's ended at 21:48, playtest stopped); Scintilla after Sonus, for about 20 minutes (AR61's impact frames); and the Festival's place is closed. Blender: nobody (Modulo's AR41 strips were stopped at 01:33 on 2026-11-19 by Claude Code when the PC ran low on memory; the director said wait at 01:34). Timing tests: nobody.
 
 **The count.** Week of 2026-11-23: 6 pieces closed and playable: AR49, TR10, AR44's shine, TR50, AR50's and AR54's install, AR51 (each entry below has its hours). In the game and waiting: TR52 (the director's run), AR52 (research's pass), TR54 (three must-fixes).
 
@@ -48,6 +48,7 @@ For Faber:
 ### Notices
 
 - **The director, 2026-11-25, by 21:32, to research, for Modulo:** Modulo runs on Opus 5.5 now, at xhigh (research's pick, at the director's word: `docs/production-plan.md`, "Models"). Set in `tools/team-terminal.cmd`, Faber's launcher, edited by research at the director's ask.
+- **The director, 2026-11-25, 21:28, in Scintilla's session, item 10:** "Yes, Scintilla installs it now", to the restatement: Studio's play tools for Effects and Sound as research has them, and Effects among the uploaders inside the guard's limits. Installed in Faber's hooks at the director's ask: f239fb03, hooks self-test 126 passed. Item 10 can leave "Waiting on the director".
 - **The director, 2026-11-24, 21:26, for everyone:** "only modulo will keep working and redesign the voidkin + ui it unreadable for players and ugly we need to study". Tonight only Modulo works: the study, then the redesign's targets (AR62). Everyone else commits and stops.
 - **The director, 2026-11-24, 20:50 and 20:52, for everyone: target first, verdicts in pairs** (`AGENTS.md`, "Every action, world, effect and screen" and "One style frame"; `docs/decisions.md`, the top rows):
   - Every piece players see starts with two or three targets at final quality, in the game, in at most 3 h. **Research picks every target** in pairs against the director's examples (the director, 21:13: "it js need to be good"); the director judges results in the game. Until the pick, start your next piece.

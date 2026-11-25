@@ -17027,6 +17027,16 @@ In the main place, a level-40 Brawler and Support against Rook: the shield caugh
 - **The mend** misses too: a ring at the foot and thin rising lines, pale on pale. Nothing joins the caster to the one it mends, so the feel line's "you see who's doing it" fails.
 - **Next:** the look's finish starts with Scintilla's targets, under the new way: the cast and the mend as one peak frame and strip, and the shield. The main read is a link from the Support to the one it mends, plus a caster's light that holds at a pack's distance. Research picks in pairs. Until then the grey rows stay in the dev build.
 
+### Scintilla's targets: three for the cast and the mend, two for the shield (2026-11-25, 21:56)
+
+Paint-overs on one frame of the game, in `build/handoff/Support/targets/`, each a peak and a strip of its life (its frames in `_strip.txt`), with `peaks_phone.png` and `peaks_squint.png`. The frame: the main place's pale deck, a level-40 Brawler squared up to Rook, the Support behind frozen 0.8 s into `SupportCast` with its sleeves up, a player's three-quarter view, the HUD over the light as the game draws it. One hue, the heal number's mint (`UIKit.Numbers.Heal`), with a white core.
+- **The cast and the mend.** **A, the tether:** light gathers between the raised sleeves and holds; on `Cast` a beam snaps to the hurt one, which bursts (a white core, needles leaning up, a dome). **B, the lob:** the light thrown in an arc over the pack, its trail hanging as the link, landing as a fountain. **C, the halo and the pillar:** a ring crowns the caster while it casts; on `Cast` a pillar drops on the hurt one and the same ring crowns it a moment, the link by likeness.
+- **The shield.** **S1, the bubble:** the tether's beam, then a lit shell snapping up round the shielded one with a small overshoot. **S2, the veil:** the beam, then a column of light ribbons rimmed at top and foot.
+- **My read at phone size:** the caster's light holds in all five. A's beam is the plainest link, but short from here, since the Support stands behind the one it mends. C's pillar reads farthest, but its link is only likeness. B reads more as a swoosh than a throw.
+- **Made with** `tools/fx/paintover.py` (light added to a capture: a soft knee to white, bloom, a projection from the capture's camera) and `tools/fx/support_targets.py`, from `stage_deck.json`. **For Faber's review:** both tools.
+- **Checked:** the projection against the engine's `WorldToViewportPoint` on seven points, within 0.2 px. **Content check: PASS** on all five, with two conditions for the build: C's ring stays plain (no ornament, runes or second element), and the motes stay round and rising, never falling or sticking.
+- **Status:** targets made; not built; not visually reviewed (research's pick in pairs: A, B, C, then S1, S2); not director-accepted.
+
 ## AR59. Rook, redesigned to the anime bar (Modulo, for research's pick and the director's look, then its finish; Faber's install after)
 
 Research, 2026-11-23, 22:53, on the director's pick by 22:52 (`docs/decisions.md`). Tier 2: a look players see, in Modulo's area and then Faber's. It goes into the game only on the director's acceptance. The first of the launch five's redesigns. The order: Rook, Kirra, Pip, Lyric, then Watt's finish (AR11). Each is its own request, written when the one before closes.

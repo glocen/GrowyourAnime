@@ -1,0 +1,83 @@
+{
+ "Picture": "backdrop_deck.png",
+ "Why": "Main place, the base's pale deck, 2026-11-25, 23:09: Rook (the lead) frozen client-side in RookCombo at Hit3 (1.4333 s, the ram, Rung 3) on a level-40 Brawler at the fight's own spacing (roots 4.7 apart, as its AI holds it); the Support hidden. AR58's three-quarter camera, FOV 70, 1361x756 at 150%. Surface as the game's show() takes it: the struck chest (its Chest attachment) moved 0.6 toward the attacker. The HUD mask: the same frame with every ScreenGui off, differenced inside the HUD's boxes.",
+ "Camera": {
+  "CFrame": [
+   -274.5,
+   9,
+   31,
+   0.5320770740509033,
+   -0.23693926632404327,
+   0.8128676414489746,
+   0,
+   0.960046648979187,
+   0.2798398733139038,
+   -0.8466958999633789,
+   -0.14889638125896454,
+   0.5108188390731812
+  ],
+  "Fov": 70,
+  "Viewport": [
+   1361.3333740234375,
+   756
+  ]
+ },
+ "Points": {
+  "Surface": [
+   -291.8077697753906,
+   3.5209615230560303,
+   22.172725677490234
+  ],
+  "StruckRoot": [
+   -292,
+   3.5999999046325684,
+   21
+  ],
+  "AttackerChest": [
+   -290.9044189453125,
+   4.199999809265137,
+   25.57052993774414
+  ],
+  "AttackerRoot": [
+   -290.9044189453125,
+   3.5999999046325684,
+   25.57052993774414
+  ],
+  "StruckChest": [
+   -291.9619445800781,
+   3.5209615230560303,
+   21.59286880493164
+  ]
+ },
+ "Check": {
+  "Surface": [
+   633.93,
+   373.84
+  ],
+  "StruckRoot": [
+   658.63,
+   366.32
+  ],
+  "AttackerChest": [
+   552.7,
+   375.31
+  ],
+  "AttackerRoot": [
+   553.92,
+   392.98
+  ],
+  "StruckChest": [
+   645.63,
+   370.69
+  ]
+ },
+ "Scale": 1.0,
+ "Hud": "hud_mask_deck.png",
+ "Name": "deck",
+ "Crop": [
+  560,
+  240,
+  1120,
+  630
+ ]
+}

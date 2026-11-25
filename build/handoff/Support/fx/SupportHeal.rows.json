@@ -23,7 +23,7 @@
        "Vector3": [
         0,
         3.6,
-        0
+        -0.9
        ]
       }
      ]
@@ -31,12 +31,12 @@
     "Size": [
      [
       2,
-      0.6,
+      0.5,
       "Quad Out"
      ],
      [
       4,
-      3.2,
+      1.7,
       "Quad In"
      ],
      [
@@ -76,7 +76,7 @@
        "Vector3": [
         0,
         3.6,
-        0
+        -0.9
        ]
       }
      ]
@@ -84,27 +84,27 @@
     "Size": [
      [
       2,
-      2.6,
+      3.0,
       "Quad Out"
      ],
      [
       6,
-      5.4,
+      6.0,
       "Quad In"
      ],
      [
-      20,
+      22,
       0
      ]
     ],
     "Transparency": [
      [
       2,
-      0.35,
+      0.05,
       "Quad In"
      ],
      [
-      20,
+      22,
       1
      ]
     ]
@@ -200,7 +200,7 @@
        "Vector3": [
         0,
         3.6,
-        0
+        -0.9
        ]
       }
      ]
@@ -213,8 +213,8 @@
    "Image": "fx_ring_line",
    "Emitter": {
     "Lifetime": [
-     0.45,
-     0.45
+     0.4,
+     0.4
     ],
     "Speed": [
      0,
@@ -223,20 +223,34 @@
     "Size": [
      [
       0,
-      3.0
+      2.4
      ],
      [
       0.4,
-      5.4
+      4.0
      ],
      [
       1,
-      6.4
+      4.8
      ]
     ],
     "Rotation": [
      0,
      0
+    ],
+    "Transparency": [
+     [
+      0,
+      0
+     ],
+     [
+      0.4,
+      0.25
+     ],
+     [
+      1,
+      1
+     ]
     ],
     "FlipbookLayout": "Grid4x4",
     "FlipbookMode": "OneShot",
@@ -265,7 +279,7 @@
        "Vector3": [
         0,
         3.6,
-        0
+        -0.9
        ]
       }
      ]
@@ -278,8 +292,8 @@
    "Image": "fx_ring_fill",
    "Emitter": {
     "Lifetime": [
-     0.45,
-     0.45
+     0.4,
+     0.4
     ],
     "Speed": [
      0,
@@ -288,20 +302,34 @@
     "Size": [
      [
       0,
-      3.0
+      2.4
      ],
      [
       0.4,
-      5.4
+      4.0
      ],
      [
       1,
-      6.4
+      4.8
      ]
     ],
     "Rotation": [
      0,
      0
+    ],
+    "Transparency": [
+     [
+      0,
+      0
+     ],
+     [
+      0.4,
+      0.25
+     ],
+     [
+      1,
+      1
+     ]
     ],
     "FlipbookLayout": "Grid4x4",
     "FlipbookMode": "OneShot",
@@ -313,7 +341,7 @@
       149
      ]
     },
-    "LightEmission": 0.6,
+    "LightEmission": 1,
     "ZOffset": 0.5
    },
    "Emit": [
@@ -330,7 +358,7 @@
        "Vector3": [
         0,
         3.6,
-        0
+        -0.9
        ]
       }
      ]
@@ -338,79 +366,11 @@
    },
    "Why": "the rim's fill pass"
   },
-  "RimDark": {
-   "Kind": "Emitter",
-   "Image": "fx_ring_dark",
-   "Emitter": {
-    "Lifetime": [
-     0.45,
-     0.45
-    ],
-    "Speed": [
-     0,
-     0
-    ],
-    "Size": [
-     [
-      0,
-      3.0
-     ],
-     [
-      0.4,
-      5.4
-     ],
-     [
-      1,
-      6.4
-     ]
-    ],
-    "Rotation": [
-     0,
-     0
-    ],
-    "FlipbookLayout": "Grid4x4",
-    "FlipbookMode": "OneShot",
-    "LightInfluence": 0,
-    "Color": {
-     "Color3": [
-      28,
-      23,
-      38
-     ]
-    },
-    "LightEmission": 0,
-    "Transparency": 0.15,
-    "ZOffset": 0.45
-   },
-   "Emit": [
-    [
-     3,
-     1
-    ]
-   ],
-   "Tracks": {
-    "At": [
-     [
-      3,
-      {
-       "Vector3": [
-        0,
-        3.6,
-        0
-       ]
-      }
-     ]
-    ]
-   },
-   "Why": "the rim's dark pass"
-  },
   "Hoop": {
    "Kind": "Mesh",
    "Part": [
     "FxHoop"
    ],
-   "Look": "fx_rise_Grey",
-   "Grey": "fx_rise_Grey",
    "Color": {
     "Color3": [
      111,

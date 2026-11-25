@@ -21,10 +21,10 @@ director's "that simple", 2026-11-25). Light only: no wound, nothing falling or 
 - SupportHeal, played once at the mended one's foot on the Heal (FighterController's HEALS, SupportCast), its rows 2
   frames after the link starts, as the beam arrives: a white core at its chest, soft and gone in a sixth of a second; a
   mint glow round it; 14 needles thrown out leaning up, fast then slow; a ring swelling round it (the dome's rim); a hoop
-  opening at its feet; round motes rising and slowing.
+  opening at its feet; round motes rising and slowing. The ring fades as it swells: no dark pass, never a held hoop.
 - SupportShield, worn on the shielded one while ShieldUntil holds (ShieldLook "SupportShield"), ended at once: 14 tapered
   ribbons of light rising round it from its feet in 8 frames and turning slowly, a hoop at their foot and one riding up
-  to their top, a faint column between. Round the body, so it never reads as the Guard's lens held in front.
+  to their top at the head's. Round the body, so it never reads as the Guard's lens held in front.
 
 Written at a body of scale 1 (Area 1).
 """
@@ -33,7 +33,7 @@ import math
 import sys
 from pathlib import Path
 
-from hit_sparks import DARK, DARK_TRANSPARENCY, FRONT, LAYER, c3, needles, v3
+from hit_sparks import FRONT, LAYER, c3, needles, v3
 
 ROOT = Path(__file__).resolve().parents[2]
 OUT = ROOT / "build" / "handoff" / "Support" / "fx"
@@ -42,12 +42,15 @@ HOLD = 60  # frames from Cast to Lower (Definitions.Actions, SupportCast: 0.4 to
 MINT = (111, 230, 149)  # UIKit.Numbers.Heal, #6FE695
 PALE = (214, 255, 228)  # the mint's light near white: a line's core over its mint
 WHITE = (255, 255, 255)
-ORB = v3(0, 2.4, -0.35)  # the caster's light from its root: between the raised sleeves, a little ahead of its head
+ORB = v3(0, 2.5, -1.2)  # the caster's light from its root: between the raised sleeves, ahead of its mask (a card isn't
+# drawn over the body: behind the mask it was hidden, 2026-11-25 take)
 # Effects.Once's rows ride the body from its foot (no Body rows there: the Track case), so these count from the foot
-ORB_FOOT = v3(0, 5.4, -0.35)  # the caster's light: its root stands 3 over its foot
-CHEST_FOOT = v3(0, 3.6, 0)
+ORB_FOOT = v3(0, 5.5, -1.2)  # the caster's light: its root stands 3 over its foot
+CHEST_FOOT = v3(0, 3.6, -0.9)  # a stud before its chest, toward the lead and so the usual camera: inside the torso the body hid it
 LAND = 2  # the beam's frames to reach the one it's for: the mend's rows wait for it
 BEAM = {"FaceCamera": True, "LightEmission": 1, "LightInfluence": 0, "TextureMode": "Stretch", "TextureSpeed": 0, "Segments": 1}
+# the veil's ribbons lay their mint as colour: added light goes white on the pale deck and the hue is lost
+RIBBON = {**BEAM, "LightEmission": 0.35}
 
 
 def effect(name, why, rows, action=None):
@@ -69,12 +72,12 @@ def card(colour, at, size, transparency, why, body="HumanoidRootPart", **extra):
 def cast():
     rows = {
         "Orb": card(MINT, ORB,
-                    [[-24, 0.3, "Quad Out"], [-4, 2.4, "Sine InOut"], [HOLD // 2, 2.0, "Sine InOut"], [HOLD, 2.3, "Quad In"], [HOLD + 8, 0]],
-                    [[-24, 0.9, "Quad Out"], [-4, 0.1, "Linear"], [HOLD, 0.15, "Quad In"], [HOLD + 8, 1]],
+                    [[-24, 0.4, "Quad Out"], [-4, 3.0, "Sine InOut"], [HOLD // 2, 2.6, "Sine InOut"], [HOLD, 2.9, "Quad In"], [HOLD + 8, 0]],
+                    [[-24, 0.9, "Quad Out"], [-4, 0, "Linear"], [HOLD, 0.05, "Quad In"], [HOLD + 8, 1]],
                     "the hero: the light gathering between the sleeves as they rise, held while it casts: who casts",
                     From="Cast"),
         "OrbCore": card(WHITE, ORB,
-                        [[-20, 0.2, "Quad Out"], [-4, 0.95, "Sine InOut"], [HOLD // 2, 0.8, "Sine InOut"], [HOLD, 0.9, "Quad In"], [HOLD + 6, 0]],
+                        [[-20, 0.15, "Quad Out"], [-4, 0.7, "Sine InOut"], [HOLD // 2, 0.6, "Sine InOut"], [HOLD, 0.65, "Quad In"], [HOLD + 6, 0]],
                         [[-20, 0.8, "Quad Out"], [-4, 0.05, "Linear"], [HOLD, 0.1, "Quad In"], [HOLD + 6, 1]],
                         "its white core", From="Cast"),
     }
@@ -103,6 +106,7 @@ def link():
             "High": "Target",
             "Tracks": {
                 "At": [[0, ORB_FOOT]],
+                "Foot": [[0, 0]],  # its low end at its place: the caster's light
                 "Reach": [[0, 0, "Quad Out"], [LAND, 1]],
                 "Width": [[0, 1.2, "Quad Out"], [8, 1.0, "Quad In"], [22, 0.35]],
                 "Transparency": [[0, 0, "Linear"], [12, 0.1, "Quad In"], [22, 1]],
@@ -114,6 +118,7 @@ def link():
             "High": "Target", "Like": "Link",
             "Tracks": {
                 "At": [[0, ORB_FOOT]],
+                "Foot": [[0, 0]],  # its low end at its place: the caster's light
                 "Reach": [[0, 0, "Quad Out"], [LAND, 1]],
                 "Width": [[0, 0.45, "Quad Out"], [8, 0.38, "Quad In"], [22, 0.1]],
             },
@@ -128,11 +133,11 @@ def link():
 def heal():
     chest = CHEST_FOOT
     rows = {
-        "Core": card(WHITE, chest, [[LAND, 0.6, "Quad Out"], [LAND + 2, 3.2, "Quad In"], [LAND + 10, 0]],
+        "Core": card(WHITE, chest, [[LAND, 0.5, "Quad Out"], [LAND + 2, 1.7, "Quad In"], [LAND + 10, 0]],
                      [[LAND, 0.2, "Quad In"], [LAND + 10, 1]],
                      "the hero's heart: a white core at its chest as the beam arrives, soft (0.2) and gone in a sixth of a second", body=None),
-        "Glow": card(MINT, chest, [[LAND, 2.6, "Quad Out"], [LAND + 4, 5.4, "Quad In"], [LAND + 18, 0]],
-                     [[LAND, 0.35, "Quad In"], [LAND + 18, 1]], "the mint round it", body=None),
+        "Glow": card(MINT, chest, [[LAND, 3.0, "Quad Out"], [LAND + 4, 6.0, "Quad In"], [LAND + 20, 0]],
+                     [[LAND, 0.05, "Quad In"], [LAND + 20, 1]], "the mint round it", body=None),
     }
     burst = needles(14, [10, 15], [0.26, 0.4], 70, 1.0, LAND, direction="Top")
     burst["Emitter"]["Color"] = c3(MINT)
@@ -140,18 +145,18 @@ def heal():
     burst["Why"] = "14 needles thrown out of its chest leaning up, fast then slow: light leaving it, never falling"
     rows["Needles"] = burst
     # the dome's rim: the kit's ring, swelling round it as it fades. Plain: no ornament, nothing beside it (the content check)
-    ring = {"Lifetime": [0.45, 0.45], "Speed": [0, 0], "Size": [[0, 3.0], [0.4, 5.4], [1, 6.4]], "Rotation": [0, 0],
+    ring = {"Lifetime": [0.4, 0.4], "Speed": [0, 0], "Size": [[0, 2.4], [0.4, 4.0], [1, 4.8]], "Rotation": [0, 0],
+            "Transparency": [[0, 0], [0.4, 0.25], [1, 1]],  # its rim fades as it swells (A's dome), never a held hoop
             "FlipbookLayout": "Grid4x4", "FlipbookMode": "OneShot", "LightInfluence": 0}
     for name, own, image in (
         ("RimLine", {"Color": c3(PALE), "LightEmission": 1, "ZOffset": FRONT + LAYER}, "fx_ring_line"),
-        ("RimFill", {"Color": c3(MINT), "LightEmission": 0.6, "ZOffset": FRONT}, "fx_ring_fill"),
-        ("RimDark", {"Color": c3(DARK), "LightEmission": 0, "Transparency": DARK_TRANSPARENCY, "ZOffset": FRONT - LAYER}, "fx_ring_dark"),
+        ("RimFill", {"Color": c3(MINT), "LightEmission": 1, "ZOffset": FRONT}, "fx_ring_fill"),
     ):
         rows[name] = {"Kind": "Emitter", "Image": image, "Emitter": {**ring, **own},
                       "Emit": [[LAND + 1, 1]], "Tracks": {"At": [[LAND + 1, chest]]},
                       "Why": "the dome's rim: a ring swelling round it as it fades" if name == "RimLine" else f"the rim's {name[3:].lower()} pass"}
     rows["Hoop"] = {
-        "Kind": "Mesh", "Part": ["FxHoop"], "Look": "fx_rise_Grey", "Grey": "fx_rise_Grey", "Color": c3(MINT), "Ground": True,
+        "Kind": "Mesh", "Part": ["FxHoop"], "Color": c3(MINT), "Ground": True,
         "Tracks": {
             "At": [[LAND, v3(0, 0.05, 0)]],
             "Scale": [[LAND, v3(1.0, 0.3, 1.0), "Quad Out"], [LAND + 14, v3(2.8, 0.2, 2.8)]],
@@ -175,7 +180,7 @@ def heal():
 
 
 def shield():
-    rise, radius, height = 8, 1.7, 5.0
+    rise, radius, height = 8, 1.7, 5.6  # to the head's top and past it (S2)
     rows = {
         "Veil": {
             "Kind": "Point", "Body": "HumanoidRootPart", "Ground": True,
@@ -187,46 +192,36 @@ def shield():
         a = i / 14 * 2 * math.pi
         top = round(height * (0.78 + 0.22 * ((i * 37) % 5) / 4), 3)
         rows[f"Ribbon{i + 1:02d}"] = {
-            "Kind": "Beam", "On": "Veil", "Image": "fx_beam", "Color": c3(MINT), "Beam": BEAM, "Taper": 0.1, "FootFade": 0.3,
+            "Kind": "Beam", "On": "Veil", "Image": "fx_beam", "Color": c3(MINT), "Beam": RIBBON, "Taper": 0.1, "FootFade": 0.3,
             "Tracks": {
                 "At": [[0, v3(round(math.cos(a) * radius, 3), 0, round(math.sin(a) * radius, 3))]],
                 "Top": [[0, 0, "Quad Out"], [rise, top], [FAR, top]],
-                "Width": [[0, 0.34, "Quad Out"], [rise, 0.18], [FAR, 0.18]],
-                "Transparency": [[0, 0, "Quad Out"], [rise + 4, 0.25], [FAR, 0.25]],
+                "Width": [[0, 0.5, "Quad Out"], [rise, 0.34], [FAR, 0.34]],
+                "Transparency": [[0, 0], [FAR, 0]],
             },
             "Why": "the hero: ribbons of light rising round it from its feet and holding" if i == 0 else "a ribbon",
         }
     rows["Foot"] = {
-        "Kind": "Mesh", "Body": "HumanoidRootPart", "Ground": True, "Part": ["FxHoop"], "Look": "fx_rise_Grey", "Grey": "fx_rise_Grey",
+        "Kind": "Mesh", "Body": "HumanoidRootPart", "Ground": True, "Part": ["FxHoop"],
         "Color": c3(MINT),
         "Tracks": {
             "Scale": [[0, v3(1.3, 0.3, 1.3), "Back Out"], [rise, v3(radius, 0.35, radius)], [FAR, v3(radius, 0.35, radius)]],
-            "Transparency": [[0, 0.1, "Quad Out"], [rise + 4, 0.3], [FAR, 0.3]],
-            "Glow": [[0, 3, "Quad Out"], [rise + 4, 1.6], [FAR, 1.6]],
+            "Transparency": [[0, 0, "Quad Out"], [rise + 4, 0.1], [FAR, 0.1]],
+            "Glow": [[0, 4, "Quad Out"], [rise + 4, 3], [FAR, 3]],
         },
         "Why": "the ribbons' foot: a hoop round the shielded one",
     }
     rows["Crown"] = {  # rides the root (3 over the foot), not grounded, so it climbs with the ribbons and turns
-        "Kind": "Mesh", "Body": "HumanoidRootPart", "Part": ["FxHoop"], "Look": "fx_rise_Grey", "Grey": "fx_rise_Grey",
+        "Kind": "Mesh", "Body": "HumanoidRootPart", "Part": ["FxHoop"],
         "Color": c3(MINT),
         "Tracks": {
-            "At": [[0, v3(0, -2.9, 0), "Quad Out"], [rise, v3(0, 1.0, 0)], [FAR, v3(0, 1.0, 0)]],
+            "At": [[0, v3(0, -2.9, 0), "Quad Out"], [rise, v3(0, 2.0, 0)], [FAR, v3(0, 2.0, 0)]],  # the head's top
             "Scale": [[0, v3(radius, 0.4, radius)], [FAR, v3(radius * 0.92, 0.4, radius * 0.92)]],
             "Spin": [[0, 0, "Linear"], [FAR, 20 * FAR // 60]],
-            "Transparency": [[0, 0.1, "Quad Out"], [rise + 4, 0.3], [FAR, 0.3]],
-            "Glow": [[0, 3, "Quad Out"], [rise + 4, 1.6], [FAR, 1.6]],
+            "Transparency": [[0, 0, "Quad Out"], [rise + 4, 0.1], [FAR, 0.1]],
+            "Glow": [[0, 4, "Quad Out"], [rise + 4, 3], [FAR, 3]],
         },
         "Why": "the ribbons' top: a hoop riding up with them, the shield's edge",
-    }
-    rows["Fill"] = {
-        "Kind": "Mesh", "Body": "HumanoidRootPart", "Ground": True, "Part": ["FxColumn"], "Look": "fx_rise_Grey", "Grey": "fx_rise_Grey",
-        "Color": c3(MINT),
-        "Tracks": {
-            "Scale": [[0, v3(radius, 0.1, radius), "Quad Out"], [rise, v3(radius, 2.0, radius)], [FAR, v3(radius, 2.0, radius)]],
-            "Transparency": [[0, 0.7, "Quad Out"], [rise + 4, 0.86], [FAR, 0.86]],
-            "Glow": [[0, 1.5, "Quad Out"], [rise + 4, 0.8], [FAR, 0.8]],
-        },
-        "Why": "a faint column between the ribbons: the veil's body, never a wall",
     }
     return effect("SupportShield", "A Support's shield, worn while it holds: the veil (AR58, target S2, Scintilla).", rows)
 

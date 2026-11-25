@@ -16,14 +16,14 @@ Each teammate rewrites its own row: one to three lines. Open asks sit under "Wai
 - **AR64's hair: rejected twice more, the study paused by the director** ("you will finish this trainning later", 00:49). Shag was "horrendous", a spiked build "still very very bad js learn do study". The study so far and what's left: `docs/research/hair-read.md`, "What the full-size pictures show". Nothing uploaded. AR59 Rook and AR62's frames wait on the hair.
 - **Now:** waiting on the director's word for what comes before the hair study resumes. Queued behind it: AR62's style frames, AR55's return as a whole screen, TR56's three chest pictures; Pip (AR63), Lyric and Watt wait for the frame's pick.
 
-**Scintilla (effects).** 2026-11-25, 21:57. AR58's five targets are made, the content check passed (`build/handoff/Support/targets/`; AR58, "Scintilla's targets"). In the game, unjudged: AR48's looks. Grey rows waiting on Faber's hooks: AR61, AR52's shield and line, AR7.
-- **Now:** AR61's targets (the hit sparks at rungs 2, 3 and 4), under the director's "that simple". I'll need a 20-minute Studio turn after Sonus for an impact frame on the deck and in the dark yard.
-- **For research:** AR58's pick in pairs (A, B, C; S1, S2); AR48's pass in motion.
+**Scintilla (effects).** 2026-11-25, 23:16. **AR58's quarter checkpoint is ready for research:** the four Support effects in the game beside A and S2, front and side (`build/handoff/Support/checkpoint/`; AR58, "Scintilla's build"); the Support case 20/20. AR61's targets on the deck: the star, the crescent and the pop (`build/handoff/Hits/targets/`; AR61, "Scintilla's targets").
+- **Next:** AR52's shield and line targets; AR61's frame in the dark yard in my next Studio turn. In the game, unjudged: AR48's looks. Grey rows waiting on Faber's hooks: AR61, AR52's shield and line, AR7.
+- **For research:** AR58's quarter checkpoint; AR61's pick in pairs; AR48's pass in motion.
 
 **Sonus (sound).** 2026-11-24, stopped at the director's word of 21:25. **Now: the M1s per class and the five signatures, one finished sound each.** The words for all eleven tabs are set (TR42, "The M1's sound per class"); nothing shortlisted yet.
 - **Blocked:** my Studio calls wait on the hooks (item 10); then a 15-minute finder run, then the director's listen.
 
-**Turns.** Studio: one at a time while memory is short. The main place is open, Scintilla's turn (2026-11-25, from 22:46, about 30 minutes: AR58's build in play, then AR61's impact frames; Faber's ended at 22:46, Edit, nothing running, saved as version 1259); Sonus after Scintilla (the finder's re-run in Edit); and the Festival's place is closed. Blender: nobody (Modulo's AR41 strips were stopped at 01:33 on 2026-11-19 by Claude Code when the PC ran low on memory; the director said wait at 01:34). Timing tests: nobody.
+**Turns.** Studio: one at a time while memory is short. The main place is open, Sonus's turn (2026-11-25, from 23:16: the finder's re-run in Edit; Scintilla's ended at 23:16, Edit, nothing running, not saved); Scintilla after Sonus (about 15 minutes: AR61's frame in the dark yard); and the Festival's place is closed. Blender: nobody (Modulo's AR41 strips were stopped at 01:33 on 2026-11-19 by Claude Code when the PC ran low on memory; the director said wait at 01:34). Timing tests: nobody.
 
 **The count.** Week of 2026-11-23: 6 pieces closed and playable: AR49, TR10, AR44's shine, TR50, AR50's and AR54's install, AR51 (each entry below has its hours). In the game and waiting: TR52 (the director's run), AR52 (research's pass), TR54 (three must-fixes).
 

@@ -17048,15 +17048,24 @@ Paint-overs on one frame of the game, in `build/handoff/Support/targets/`, each 
 - **SupportCast:** the held light between the sleeves: a mint card, a white core, short needles turning off it, and each sleeve's end lit a little. The grey chest ring is gone.
 - **SupportHeal:** A's burst at the chest, 2 frames after the cast lands (the beam's reach). A white core (0.2, gone in 10 frames), a mint glow, 14 needles leaning up, the kit's ring swelling round it as the dome's rim, a hoop opening at the feet, round motes rising.
 - **SupportShield:** S2's veil. 14 tapered beam ribbons rise round the body in 8 frames and turn slowly, with a hoop at their foot, one riding up to their top, and a faint column between.
-- **SupportLink** (in `build/handoff/Support/fx/`, not taken): the beam from the caster's light to the one its cast lands on. It's drawn out in 2 frames, held to 8 and thinned by 22, with a white core down it.
-- **The hooks asked of Faber, for the link:**
-  1. Rows: a Beam row's `High = "Target"`, its end at the options' Target as it stands each frame, and a `Reach` track (the share of the way from Low to it, 1 when none), in the decoder and the Track case.
-  2. `Effects.Once(name, body, target?)` passing the Target.
-  3. `HEALS.SupportCast` also plays `SupportLink` on the healer, with the healed's root as Target, in the same `land()`.
-  4. The shield names who cast it (a `Shield` event beside `Heal`, or `ShieldBy`), and the client plays `SupportLink` from that caster to the shielded.
-  Then `rows_take.py` takes `SupportLink`.
-- **Checked:** the take's Track case 7,007 passed; logic offline 37,934 passed, 0 failed. Not yet seen in the game: my Studio turn is after Faber's.
-- **Status:** implemented as data (three of four); tested offline only; not visually reviewed; not director-accepted. **For Faber's review:** the three rows files and `tools/fx/support_looks.py`.
+- **SupportLink:** the beam from the caster's light to the one its cast lands on, drawn out in 2 frames, held to 8 and thinned by 22, with a white core down it. Faber's four hooks are in (6fd3b131): a Beam's `High = "Target"` and its `Reach` track, `Effects.Once`'s target, the mend's link in `HEALS`, and the `Shield` event naming the caster. Taken on 2026-11-25, in my Studio turn.
+- **The quarter checkpoint (2026-11-25, 23:05), in play beside the targets:** `build/handoff/Support/checkpoint/` (`quarter.txt` says how it was staged): front strips under each target's strip at its frames, the side view research asked for, and close frames.
+  - **Fixed from the first take (22:50):**
+    - The mend's ring had no fade and a dark pass. It now fades and is smaller.
+    - The shield's faint column read as a barrel. It's gone.
+    - The cast's light and the mend's burst sat inside the bodies, which hid them. Each now stands a stud before its body.
+    - The veil's ribbons went white on the pale deck as added light. They now lay their mint and are wider.
+    - The veil's hoops are plain Neon mint.
+  - **The builder's read:**
+    - The tether is clean and long from the side, and short from the front camera (as research expected).
+    - The mend reads as a mint star at the chest, the dome's rim and a ground ring. It's smaller than A's dome at its peak.
+    - The veil reads as a cage of light, its two rims carrying it, its ribbons thinner than S2's.
+  - Research judges.
+- **Checked:**
+  - The take's Track case: 7,174 passed.
+  - The Support case in Studio: 20/20 before the fixes (the link on the shield and on the mend), and 20/20 again after them (11.7 s, 60 fps).
+  - Logic offline: 38,093 passed (Faber's run, 6fd3b131).
+- **Status:** implemented; tested (Track case, the Support case); visually reviewed by me only, research's checkpoint next; not director-accepted. **For Faber's review:** the four rows files and `tools/fx/support_looks.py`.
 
 ## AR59. Rook, redesigned to the anime bar (Modulo, for research's pick and the director's look, then its finish; Faber's install after)
 
@@ -17423,6 +17432,20 @@ Scintilla's first piece, on the director's order of 2026-11-23 ("Shared kit firs
 - **Checks:** the content check on the spec (before the build); offline logic after the take (2106 passed, 0 failed, 2026-11-24, 10:47); the blockout in motion from the player's camera at the smallest phone, on the pale deck and the dark yard, beside the old spark; research's verdict.
 - **The content check, 2026-11-24, on the spec: PASS**, with four conditions. (1) The needles stay thin, straight, tapered light lines, never a round or drop head, never dark or red-to-maroon, never longer-lived or less dragged so they arc or land; their fall is now 0. (2) At the capture, each rung read at 64 px from the player's camera, side and three-quarter headings: the needles read as light leaving the flash, not something out of the target's back; if not, shorten their throw or fan them round the contact. (3) The flash guard measured on the capture (the near-white share, bright floor, closest camera, each rung, rung 4's light above all); over about 3% with hits faster than 3 a second, the backlight and light hold rather than re-flash. (4) The finish colours inside the kit's conditions. The capture gets its own content check before the piece closes.
 - **Blocked:** Scintilla's Studio playtests wait on the director's item 10 (the hooks); the rows show in the game only once Faber's hook is in.
+### Scintilla's targets: the star, the crescent and the pop on Rook's ram (2026-11-25, 23:14)
+
+- **Made by `tools/fx/spark_targets.py`** over a frozen frame of the game, `build/handoff/Hits/stage/stage_deck.json`:
+  - Rook's Hit3 (the ram, rung 3) on a level-40 Brawler, on the pale deck, at the fight's own spacing.
+  - AR58's three-quarter camera.
+  - The spark's point as `show()` takes it.
+  - The stage's projection matches the game's to 0.3 px.
+- **The three techniques keep the same levers** (punctuation, backlight, needles, ring, rung 4's gold and light), so only the hero shape differs. In `build/handoff/Hits/targets/`: each technique's rungs 2 to 4 at its peak, its strip, and the phone sheets.
+- **My read, for research's pick:**
+  - The star reads as a blow at every rung.
+  - The crescent reads as a slash: a blade's, weaker on a ram.
+  - The pop's ring reads partly as a reticle.
+- **Next:** the dark yard's frame in my next Studio turn, for the flash guard's read in the dark (the content check's condition 3).
+
 - **Status, 2026-11-24, 10:48:** implemented as data, not shown in the game. Tested: offline logic only. Visually reviewed: no. Director-accepted: no. **For Faber's review:** the three rows files and `tools/fx/hit_sparks.py`.
 
 ## AR62. The screens' redo: their colours, their light and their art (research's audit, then Modulo's directions, then Faber, a screen at a time)

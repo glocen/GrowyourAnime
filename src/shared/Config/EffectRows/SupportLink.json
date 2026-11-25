@@ -1,0 +1,215 @@
+{
+ "Schema": "rows/1",
+ "Effect": "SupportLink",
+ "Why": "A Support's cast landing: the beam to the one it's for (AR58, target A, Scintilla).",
+ "Area": 1,
+ "Grey": false,
+ "Rows": {
+  "Link": {
+   "Kind": "Beam",
+   "Image": "fx_beam",
+   "Color": {
+    "Color3": [
+     111,
+     230,
+     149
+    ]
+   },
+   "Beam": {
+    "FaceCamera": true,
+    "LightEmission": 1,
+    "LightInfluence": 0,
+    "TextureMode": "Stretch",
+    "TextureSpeed": 0,
+    "Segments": 1
+   },
+   "High": "Target",
+   "Tracks": {
+    "At": [
+     [
+      0,
+      {
+       "Vector3": [
+        0,
+        5.5,
+        -1.2
+       ]
+      }
+     ]
+    ],
+    "Foot": [
+     [
+      0,
+      0
+     ]
+    ],
+    "Reach": [
+     [
+      0,
+      0,
+      "Quad Out"
+     ],
+     [
+      2,
+      1
+     ]
+    ],
+    "Width": [
+     [
+      0,
+      1.2,
+      "Quad Out"
+     ],
+     [
+      8,
+      1.0,
+      "Quad In"
+     ],
+     [
+      22,
+      0.35
+     ]
+    ],
+    "Transparency": [
+     [
+      0,
+      0,
+      "Linear"
+     ],
+     [
+      12,
+      0.1,
+      "Quad In"
+     ],
+     [
+      22,
+      1
+     ]
+    ]
+   },
+   "Why": "the link: a beam from the caster's light to the one it's for, drawn out in 2 frames, held, thinned"
+  },
+  "LinkCore": {
+   "Kind": "Beam",
+   "Image": "fx_beam",
+   "Color": {
+    "Color3": [
+     255,
+     255,
+     255
+    ]
+   },
+   "Beam": {
+    "FaceCamera": true,
+    "LightEmission": 1,
+    "LightInfluence": 0,
+    "TextureMode": "Stretch",
+    "TextureSpeed": 0,
+    "Segments": 1
+   },
+   "High": "Target",
+   "Like": "Link",
+   "Tracks": {
+    "At": [
+     [
+      0,
+      {
+       "Vector3": [
+        0,
+        5.5,
+        -1.2
+       ]
+      }
+     ]
+    ],
+    "Foot": [
+     [
+      0,
+      0
+     ]
+    ],
+    "Reach": [
+     [
+      0,
+      0,
+      "Quad Out"
+     ],
+     [
+      2,
+      1
+     ]
+    ],
+    "Width": [
+     [
+      0,
+      0.45,
+      "Quad Out"
+     ],
+     [
+      8,
+      0.38,
+      "Quad In"
+     ],
+     [
+      22,
+      0.1
+     ]
+    ]
+   },
+   "Why": "its white core"
+  },
+  "Flash": {
+   "Kind": "Card",
+   "Image": "fx_glow",
+   "Color": {
+    "Color3": [
+     255,
+     255,
+     255
+    ]
+   },
+   "Tracks": {
+    "At": [
+     [
+      0,
+      {
+       "Vector3": [
+        0,
+        5.5,
+        -1.2
+       ]
+      }
+     ]
+    ],
+    "Size": [
+     [
+      0,
+      2.6,
+      "Quad Out"
+     ],
+     [
+      3,
+      3.0,
+      "Quad In"
+     ],
+     [
+      10,
+      0
+     ]
+    ],
+    "Transparency": [
+     [
+      0,
+      0.2,
+      "Quad In"
+     ],
+     [
+      10,
+      1
+     ]
+    ]
+   },
+   "Why": "the held light going: a flash at the caster as the beam leaves"
+  }
+ }
+}

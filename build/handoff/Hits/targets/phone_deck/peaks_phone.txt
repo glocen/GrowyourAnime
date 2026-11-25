@@ -1,0 +1,2 @@
+The peaks at a small landscape phone (667x370), left to right, 3 a row: star (deck, rung 3), crescent (deck, rung 3), pop (deck, rung 3).
+peaks_squint.png: the same, brought to 96 px high and back up (does the shape still read at a glance?).

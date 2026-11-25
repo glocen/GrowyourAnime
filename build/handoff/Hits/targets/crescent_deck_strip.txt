@@ -1,0 +1,2 @@
+rung 3, frames from the hit's frame, at 60 a second: -2, 0, 1, 2, 4, 7, 11, 16
+crescent_deck_rungs.png: the peak (frame 2) at rungs 2, 3 and 4, left to right.

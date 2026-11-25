@@ -1,0 +1,10 @@
+AR58, the quarter checkpoint (Scintilla, 2026-11-25): the build in play, staged on the deck.
+Staging: the main place, a playtest; the brawler and the support anchored at the targets' spots (lead -290.8,3.6,26;
+brawler -292,3.6,21; support -294.5,3.3,13); the Support held in ShadeCast at 0.8 s; the server's own casts stopped
+(Tune Actions.SupportCast.Cooldown 600); the client plays SupportCast's beats, then at Cast SupportLink and SupportHeal
+(the mend), and 2.6 s later the same with SupportShield held 4.4 s (the veil). Recorded at 30 fps, lossless.
+
+*_front_vs_target.png  the target's strip on top, the build's below, at the target's camera and frames (60 fps frames
+                       from the landing): A -14,0,3,8,16,30,58; S2 -14,0,3,8,14,60,200.
+*_side.png             the build from the side, square to the support-brawler line: A -14,0,3,8,16; S2 0,3,8,14,60.
+*_close.png            the front camera at full size: A -14,3,8; S2 3,14,60.

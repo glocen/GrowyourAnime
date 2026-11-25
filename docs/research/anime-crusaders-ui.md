@@ -120,6 +120,13 @@ Times are bounded by the capture files' clocks.
   - It covers the look of skill effects: simple, one bright shape. It goes to Scintilla and research. If it meant the sound, it goes to Sonus.
 - Between 01:00:44 and 01:01:07: "ok this is enough for today take note then we are done".
 
+## Is one game enough? (the builder's verdict)
+
+The director, 2026-11-25, before 21:41 (bounded by the clock read then): "after the anime crusader check was it enough or we need more sample?", then "it should be enough tho you will be the judge".
+- **Judged:** one game gives one studio's habits, not the genre's. Before AR62's Home frame, one more: Anime Vanguards, live with the director, about 20 minutes, on the screens this study didn't open (above) and the HUD. Its make is the one our Voidkin are judged beside.
+- **Later:** a base or idle game when the base and Power screens are redone, not before.
+- Nothing else waits on more samples.
+
 ## Images looked at
 
 `build/reference/anime-crusaders-x/`: s001 to s004, u01 to u06 (with `u06_crop`), i02 (`hud_left`, `hud_bottom`), m02 to m08, r01 and r06, v02, v05, v10, v11, p01 to p05, g01 to g07, `vid/skill1.mkv` (`sheet1`, `hit1`, `hit2`). Not opened: the Store, Events, Areas, Quests, Battlepass, Guilds, Profile, the end-of-match screen and the upgrade's own effect. A later session starts there.

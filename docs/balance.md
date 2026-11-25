@@ -216,6 +216,21 @@ SIMULATED, from the game's own Config: section 17 of the run, `report_launch_pow
 - **The fix is the director's call:** research brings it with F3's other findings.
 - The run's other sections still model six grounds; section 9's reader was fixed for the stages' `Stage` field (2026-11-23).
 
+### The attack cap (research, 2026-11-25)
+
+SIMULATED: `py tools/balance/sim.py --cap` (`report_attack_cap`). Each of Lantern Row's four packs is fought alone from full health by a bare lead of its level, 300 fights each, with the Support at the back never swinging. Damage is a share of the lead's most health, all four packs summed:
+
+| Shades swinging at once | The street's damage | Shade Attack to give it back |
+|---|---|---|
+| all (today) | 44% | x1.00 |
+| 4 | 42% | x1.05 |
+| 3 (the seed) | 37% | x1.17 |
+| 2 | 29% | x1.50 |
+
+- **Where it bites:** the six-Shade pack at level 3, 18% down to 13% at a cap of 3. The four-Shade packs barely move (9% to 8%), and no fight's length changes.
+- **The seed is 3, with Attack x1.17.** A cap of 2 needs hits half again as heavy, which is a bigger change to how the health bar reads. It's the try to play against.
+- **The street was read wrong until today:** the run's old reader dropped every stop with a With, a Rear or a Hard, so it saw one pack of four. It now reads all of them through `tools/balance/config_json.luau`. The chest pace holds on the full street: a first Rare at 3.6 h alone, Epic 12.5 h, Legendary 40 h.
+
 ## What the simulation doesn't know
 
 - **Kits.** Signatures, passives, taunts, heals for allies and range aren't modelled. Class against class is only as good as the kits make it.

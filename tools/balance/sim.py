@@ -485,38 +485,31 @@ def config(name):
 
 
 def game():
-    """The game's own numbers, read from src/shared/Config (their home), so the run follows every tune."""
-    en = lua("src/shared/Config/Enemies.luau")
-    kinds = {}
-    for kind in ("Ordinary", "Elite"):
-        m = re.search(kind + r" = \{ Health = ([\d.]+), Attack = ([\d.]+), Defence = ([\d.]+)", en)
-        kinds[kind] = dict(hp=float(m[1]), atk=float(m[2]), df=float(m[3]))
-    world = lua("src/shared/Config/World.luau")
-    stops = [dict(kind=m[1], count=int(m[2] or 1), level=int(m[3])) for m in
-             re.finditer(r'\{ Kind = "(\w+)", Def = "\w+"(?:, Count = (\d+))?, Level = (\d+)(?:, \w+ = \w+)* \}', world)]
-    row = re.search(r"Row = \{.*?FirstPack = ([\d.]+).*?Spacing = ([\d.]+)", world, re.S)
-    combat = lua("src/shared/Config/Combat.luau")
-    notice = float(re.search(r"Shade = \{\s*Notice = ([\d.]+)", combat)[1])
-    stats = lua("src/shared/Config/Stats.luau")
-    regen = re.search(r"Regen = \{ Base = ([\d.]+), Class = \{([^}]*)\}", stats)
-    burst = re.search(r"Regen = \{[^\n]*?Every = ([\d.]+), Share = ([\d.]+)", stats)
-    growth = lua("src/shared/Config/Growth.luau")
-    early = [int(x) for x in re.search(r"Early = \{([\d, ]*)\}", growth)[1].replace(" ", "").split(",") if x]
-    training = re.search(r"Training = \{ Share = ([\d.]+)", growth)
-    back = re.search(r"Back = \{ Elite = ([\d.]+), Keeper = ([\d.]+) \}", world)
-    respawn = re.search(r"Respawn = ([\d.]+)", world)
-    drops_lua = lua("src/shared/Config/Drops.luau")
-    drops = re.search(r"Share = \{ Ordinary = ([\d.]+), Elite = ([\d.]+), Keeper = ([\d.]+)", drops_lua)
-    return dict(kinds=kinds, stops=stops, spacing=float(row[2]) * 16, notice=notice, early=early,
-                regen=float(regen[1]) if regen else None,
-                regen_class={k: float(v) for k, v in re.findall(r"(\w+) = ([\d.]+)", regen[2])} if regen else {},
-                regen_every=float(burst[1]) if burst else None, regen_share=float(burst[2]) if burst else 1.0,
-                training=float(training[1]) if training else None,
-                drops={"Pack": float(drops[1]), "Elite": float(drops[2])},
-                keeper_share=float(drops[3]), shard_chance=float(re.search(r"ShardChance = ([\d.]+)", drops_lua)[1]),
-                back={"Elite": float(back[1]), "Keeper": float(back[2])} if back else None,
-                respawn=float(respawn[1]),
-                xp_per_g=float(re.search(r"XpPerKillPerG = ([\d.]+)", growth)[1]))
+    """The game's own numbers, read from src/shared/Config (their home) through config(), so the run follows every tune.
+    A pack's count is all its Shades: its Count, its With and its Rear (AR52, AR58). `rear` of them stand at its back:
+    AR58's Support, at its Def's Health share, which mends and shields rather than swings (Definitions.Enemies).
+    Before 2026-11-25 a regex read the stops and dropped every one with a With, a Rear or a Hard: four of the eight."""
+    en, world, row = config("Enemies"), config("World"), config("World")["Row"]
+    kinds = {k: dict(hp=float(en[k]["Health"]), atk=float(en[k]["Attack"]), df=float(en[k]["Defence"]))
+             for k in ("Ordinary", "Elite")}
+    stops = []
+    for s in row["Stops"]:
+        rear = (s.get("Rear") or {}).get("Count", 0)
+        count = s.get("Count", 1) + (s.get("With") or {}).get("Count", 0) + rear
+        stops.append(dict(kind=s["Kind"], count=int(count), level=int(s["Level"]), rear=int(rear), rear_hp=0.6))
+    regen = config("Stats").get("Regen")
+    growth, drops = config("Growth"), config("Drops")
+    return dict(kinds=kinds, stops=stops, spacing=float(row["Spacing"]) * 16,
+                notice=float(config("Combat")["Shade"]["Notice"]), early=[int(x) for x in growth["Early"]],
+                regen=float(regen["Base"]) if regen else None,
+                regen_class={k: float(v) for k, v in (regen or {}).get("Class", {}).items()},
+                regen_every=float(regen["Every"]) if regen and "Every" in regen else None,
+                regen_share=float(regen.get("Share", 1.0)) if regen else 1.0,
+                training=float(growth["Training"]["Share"]) if "Training" in growth else None,
+                drops={"Pack": float(drops["Share"]["Ordinary"]), "Elite": float(drops["Share"]["Elite"])},
+                keeper_share=float(drops["Share"]["Keeper"]), shard_chance=float(drops["ShardChance"]),
+                back={"Elite": float(row["Back"]["Elite"]), "Keeper": float(row["Back"]["Keeper"])} if "Back" in row else None,
+                respawn=float(row["Respawn"]), xp_per_g=float(growth["XpPerKillPerG"]))
 
 
 def kills_per_level(level, early):
@@ -543,6 +536,19 @@ def shade(kind, level, gm):
     e = enemy(level, hp=k["hp"] * G(level), atk=k["atk"] * G(level))
     e["def"] = k["df"] * G(level)
     return e
+
+
+def pack(stop, gm, rng, atk_mult=1.0):
+    """A pack's Shades as the fights below use them: each noticed 0.3 to 2 s in (`late`), its rear ones last, fragile
+    and never swinging. `atk_mult` scales every Shade's Attack (the attack cap's fit, report_attack_cap)."""
+    foes = []
+    for i in range(stop["count"]):
+        rear = i >= stop["count"] - stop.get("rear", 0)
+        e = shade("Ordinary", stop["level"], gm)
+        e["atk"] *= atk_mult
+        foes.append(dict(e=e, hp=e["hp"] * (stop.get("rear_hp", 1.0) if rear else 1.0), rear=rear,
+                         late=rng.uniform(0.3, 2.0) + (3.0 if rear else 0.0), next=0.0))
+    return foes
 
 
 def circuit(cls, start, regen_base, gm, rng, swing=1.1, beat=0.6, dt=0.05, board=None):
@@ -581,13 +587,11 @@ def circuit(cls, start, regen_base, gm, rng, swing=1.1, beat=0.6, dt=0.05, board
     shares, fell = [], None
     for index, stop in enumerate(gm["stops"]):
         if stop["kind"] != "Pack":
-            break
+            continue  # the elites and the keeper aren't fought here: the packs between them are
         # The walk in: from the gate, or from the last stop, until the pack notices; the player's own pace added.
         walk = (gm["spacing"] * (0.4 if index == 0 else 1) - gm["notice"]) / 16 + rng.uniform(0.5, 4)
         hp = heal(hp, walk)
-        foes = [dict(e=shade("Ordinary", stop["level"], gm), late=rng.uniform(0.3, 2.0), next=0.0) for _ in range(stop["count"])]
-        for f in foes:
-            f["hp"] = f["e"]["hp"]
+        foes = pack(stop, gm, rng)
         pace = min(1.25, max(0.75, rng.gauss(1, 0.12)))  # time lost to walking, slots, skips and flinches
         t, lead_next = 0.0, 0.0
         while any(f["hp"] > 0 for f in foes) and hp > 0:
@@ -610,7 +614,7 @@ def circuit(cls, start, regen_base, gm, rng, swing=1.1, beat=0.6, dt=0.05, board
                         hp = share * me["hp"]
                         need = xp_to_next(level, gm["early"])
             for f in live:
-                if t >= f["late"] and t >= f["next"]:
+                if not f["rear"] and t >= f["late"] and t >= f["next"]:
                     theirs = dps(f["e"], me) * swing
                     crit = rng.random() < S["ratings"]["caps"]["critFloor"]
                     hp -= theirs / (1 + S["ratings"]["caps"]["critFloor"] * 0.5) * (1.5 if crit else 1)
@@ -632,7 +636,8 @@ def report_carry(runs=400, sweep=None, starts=(1, 3)):
     print("between stops at 16 studs a second plus 0.5 to 4 s of the player's own pace. Regen in bursts on one clock.")
     print(f"Regen in the game now: Base {gm['regen']} a second at level 1, times G; class {gm['regen_class']}; a burst every "
           f"{gm.get('regen_every')} s of {gm.get('regen_share')} of what that time healed at the rate (TR40).")
-    print("Each cell: health share at Pack 2's end, median [10th to 90th]; falls before the elite, in 100 runs.")
+    print("Each cell: health share at the last pack's end (all four; the elites aren't fought here), median [10th to 90th];")
+    print("then how many in 100 runs fall on the way.")
     import random
     sweep = sorted(set(sweep or (0, 4, 8, 12, 16, 20, 24)) | ({gm["regen"]} if gm["regen"] else set()))
     leads = (("Rook", "Warrior"), ("Kirra", "Assassin"), ("Pip", "Mage"), ("Lyric", "Healer"))
@@ -647,12 +652,77 @@ def report_carry(runs=400, sweep=None, starts=(1, 3)):
                 for _ in range(runs):
                     shares, fell = circuit(cls, start, base, gm, rng)
                     falls += fell is not None
-                    ends.append(shares[1] if len(shares) > 1 else 0.0)
+                    ends.append(shares[-1] if fell is None and shares else 0.0)
                 ends.sort()
                 q = lambda p: ends[min(len(ends) - 1, int(p * len(ends)))]
                 cells.append(f"{q(0.5):.0%} [{q(0.1):.0%}-{q(0.9):.0%}] {100 * falls / runs:.0f}")
             mark_now = " <" if base == gm["regen"] else ""
             line(f"{base}{mark_now}", f"{base / S['base']['hp']:.2%}", f"{S['base']['hp'] / base:.0f}s" if base else "never", *cells, w=21)
+
+
+# ---------------------------------------------------------------- the attack cap (the outside review's item 8, 2026-11-25)
+
+def pack_fight(stop, gm, rng, cap=None, atk_mult=1.0, cls="Warrior", swing=1.1, beat=0.6, dt=0.05):
+    """One pack fought from full health by a bare lead of the pack's level, as circuit() fights it (the lead strikes the
+    first-noticed Shade; each Shade swings every `swing` once noticed), but with at most `cap` Shades swinging at once:
+    the first noticed hold the turns, and a turn passes on when its holder falls. No regen, no levelling, and the fight
+    runs to the end even past zero health, so the damage counts in full. Returns (damage / most health, seconds)."""
+    me = build(stop["level"], 1, 0.0, cls=cls)
+    foes = pack(stop, gm, rng, atk_mult)
+    floor = S["ratings"]["caps"]["critFloor"]
+    pace = min(1.25, max(0.75, rng.gauss(1, 0.12)))
+    t, lead_next, taken = 0.0, 0.0, 0.0
+    while any(f["hp"] > 0 for f in foes) and t < 300:
+        t += dt
+        live = [f for f in foes if f["hp"] > 0]
+        target = min(live, key=lambda f: f["late"])
+        if t >= lead_next and t >= target["late"]:
+            crit = rng.random() < floor
+            target["hp"] -= dps(me, target["e"]) * beat * pace / (1 + floor * 0.5) * (1.5 if crit else 1)
+            lead_next = t + beat
+        engaged = sorted((f for f in live if not f["rear"] and t >= f["late"]), key=lambda f: f["late"])
+        for f in engaged[:cap] if cap else engaged:
+            if t >= f["next"]:
+                crit = rng.random() < floor
+                taken += dps(f["e"], me) * swing / (1 + floor * 0.5) * (1.5 if crit else 1)
+                f["next"] = t + swing
+    return taken / me["hp"], t
+
+
+def report_attack_cap(runs=300, caps=(2, 3, 4)):
+    """How much a cap on Shades swinging at once takes off what each Lantern Row pack deals, and the Attack factor on
+    every Shade that gives the street's packs back the same damage in all (common random numbers, so the fit is steady)."""
+    gm = game()
+    packs = [s for s in gm["stops"] if s["kind"] == "Pack"]
+
+    def street(cap, mult):
+        out = []
+        for i, stop in enumerate(packs):
+            rng = random.Random(1000 + i)
+            runs_ = [pack_fight(stop, gm, rng, cap, mult) for _ in range(runs)]
+            out.append((sum(r[0] for r in runs_) / runs, sum(r[1] for r in runs_) / runs))
+        return out
+
+    base = street(None, 1.0)
+    total = sum(d for d, _ in base)
+    print("\n== The attack cap: Shades swinging at once (the outside review, item 8) ==")
+    print("A model, not a measurement: each Lantern Row pack fought alone from full health by a bare lead of its level,")
+    print("every Shade's swing as in section 9, the first noticed holding the turns; the Support at the back never swings.")
+    print("Each cell: the pack's damage as a share of the lead's most health, mean of", runs, "fights.")
+    line("cap", *[f"L{s['level']} x{s['count'] - s['rear']}" for s in packs], "street", "Attack x", "fight s", w=11)
+    line("none", *[f"{d:.0%}" for d, _ in base], f"{total:.0%}", "1.00", f"{sum(s for _, s in base):.0f}", w=11)
+    for cap in caps:
+        capped = street(cap, 1.0)
+        lo, hi = 1.0, 3.0
+        for _ in range(18):
+            mid = (lo + hi) / 2
+            if sum(d for d, _ in street(cap, mid)) < total:
+                lo = mid
+            else:
+                hi = mid
+        line(str(cap), *[f"{d:.0%}" for d, _ in capped], f"{sum(d for d, _ in capped):.0%}", f"{(lo + hi) / 2:.2f}",
+             f"{sum(s for _, s in capped):.0f}", w=11)
+    print("Attack x: the factor on every Shade's Attack (Config.Enemies) that gives the capped street the uncapped damage.")
 
 
 def row_xp_per_kill(gm):
@@ -1176,8 +1246,12 @@ def report_launch_power():
 
 
 if __name__ == "__main__":
+    import sys
     ROSTER.extend(roster())
     assert len(ROSTER) >= 30, f"roster rows read: {len(ROSTER)}"
+    if "--cap" in sys.argv:  # py tools/balance/sim.py --cap: the attack cap's section alone
+        report_attack_cap()
+        raise SystemExit(0)
     print(f"Balance run. Roster rows: {len(ROSTER)}. Seeds: tools/balance/seeds.json.")
     report_growth()
     report_extremes()

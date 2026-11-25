@@ -8,8 +8,8 @@ Each teammate rewrites its own row: one to three lines. Open asks sit under "Wai
 - **Next:** research picks AR64's hair targets, then AR62's frames (the director, 21:13); AR56's slab; TR54's second look; AR58's targets when Scintilla brings them.
 - **With the director:** the phone sitting and F7; TR52's run; the store's design.
 
-**Faber (builder).** 2026-11-25, 01:04, on Opus 5.5, stopped at the director's "we are done". Nothing running, no lock held, no Studio open. Done: a live UI study of Anime Crusaders X at the director's ask, `docs/research/anime-crusaders-ui.md`. **For research:** three of the director's words in it to record: the count of how many of a fighter exist ("we need this", tier 2), summon versus shard breaking (a question about the core, my answer is in the study), and skill effects "that simple".
-- **Next:** harden AR12's and the battery's cases against an empty base, and find what left the four bays empty; the Dasher's flaky lunge (AR52); then TR57, from my cloud branch's Rules.Broadcast, set to research's seeds.
+**Faber (builder).** 2026-11-25, 22:46, on Opus 5.5. From the outside review the director took on (21:41): the 49 unpublished clips published (a7e1ee3a), research's chamber words and the return card's workers (9f225dc6), AR58's four link hooks (6fd3b131); pushed. **Tier 1 notice:** Common's, Rare's and Epic's words lifted toward white to read 4.6:1 on the bag's card (9f225dc6).
+- **Next:** the Dasher's flaky lunge (AR52), with Pip's skip, which slid in the full run too; then TR57. The review's other items wait on research's words (asked by message).
 - **TR57 to TR62, what I'd change (tier 2):** their screens wait for AR62's pick and their targets, so systems and pure rules first; Firsts leaves TR57 as its own piece; the boards' stores split Test and Live, as DataService does; the inviter's crate goes through ProfileStore's MessageAsync; TR59 takes Rules/Welcome from my cloud branch; codes could live in ConfigService, so a new code needs no publish (to check first).
 
 **Modulo (assets).** 2026-11-25, 00:49. Nothing running, no lock held.
@@ -23,7 +23,7 @@ Each teammate rewrites its own row: one to three lines. Open asks sit under "Wai
 **Sonus (sound).** 2026-11-24, stopped at the director's word of 21:25. **Now: the M1s per class and the five signatures, one finished sound each.** The words for all eleven tabs are set (TR42, "The M1's sound per class"); nothing shortlisted yet.
 - **Blocked:** my Studio calls wait on the hooks (item 10); then a 15-minute finder run, then the director's listen.
 
-**Turns.** Studio: one at a time while memory is short. The main place is open, Sonus's turn (2026-11-25, from 21:48, about 20 minutes, the finder in Edit; Scintilla's ended at 21:48, playtest stopped); Scintilla after Sonus, for about 20 minutes (AR61's impact frames); and the Festival's place is closed. Blender: nobody (Modulo's AR41 strips were stopped at 01:33 on 2026-11-19 by Claude Code when the PC ran low on memory; the director said wait at 01:34). Timing tests: nobody.
+**Turns.** Studio: one at a time while memory is short. The main place is open, Scintilla's turn (2026-11-25, from 22:46, about 30 minutes: AR58's build in play, then AR61's impact frames; Faber's ended at 22:46, Edit, nothing running, saved as version 1259); Sonus after Scintilla (the finder's re-run in Edit); and the Festival's place is closed. Blender: nobody (Modulo's AR41 strips were stopped at 01:33 on 2026-11-19 by Claude Code when the PC ran low on memory; the director said wait at 01:34). Timing tests: nobody.
 
 **The count.** Week of 2026-11-23: 6 pieces closed and playable: AR49, TR10, AR44's shine, TR50, AR50's and AR54's install, AR51 (each entry below has its hours). In the game and waiting: TR52 (the director's run), AR52 (research's pass), TR54 (three must-fixes).
 

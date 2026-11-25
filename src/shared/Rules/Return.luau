@@ -17,6 +17,7 @@ local BaseConfig = require(Shared.Config.Base)
 local ReinforceConfig = require(Shared.Config.Reinforce)
 local Breaker = require(Shared.Rules.Breaker)
 local Condenser = require(Shared.Rules.Condenser)
+local Goals = require(Shared.Rules.Goals)
 
 local Return = {}
 
@@ -79,12 +80,19 @@ function Return.Arrive(data: Profile.Data): Profile.ReturnCard?
 	local away = base.Away
 	base.Away = nil
 	if Condenser.Awake(base.Level) then -- TR31: credited on arrival, the press only shows it
+		local banked = 0
 		for grade, held in base.Condenser.Tray do
 			if held > 0 then
 				data.Bag.Stones[grade] = (data.Bag.Stones[grade] or 0) + held
+				banked += held
 			end
 		end
 		base.Condenser.Tray = {}
+		-- The arrival is the tray's collect, so today's "Collect the Condenser's tray" counts it as the press does
+		-- (Base.CollectTray); an empty tray collects nothing, so a second arrival counts nothing.
+		if banked > 0 then
+			Goals.Note(data, "TrayCollected")
+		end
 	end
 	if away == nil then
 		return base.Card

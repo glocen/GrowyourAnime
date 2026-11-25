@@ -78,9 +78,12 @@ return {
 			t.Check("the Condenser's stones counted", made > 0, tostring(made))
 			local tray = data.Base.Condenser.Tray[LOW] or 0
 			local bag = data.Bag.Stones[LOW] or 0
+			data.Goals.Days = { { Day = 20780, Picks = { "CondenserTray" }, Have = { 0 }, Claimed = { false } } }
 			local card = Return.Arrive(data)
 			t.Check("back at the base: the record closed onto the card", data.Base.Away == nil and card ~= nil and data.Base.Card == card)
 			t.Check("the tray credited into the bag", (data.Bag.Stones[LOW] or 0) == bag + tray and next(data.Base.Condenser.Tray) == nil)
+			t.Check("today's \"Collect the Condenser's tray\" counts the arrival's collect", tray > 0 and data.Goals.Days[1].Have[1] == 1,
+				`{tray} in the tray, the goal at {data.Goals.Days[1].Have[1]}`)
 			local lines = Return.Lines(card)
 			t.Equal("the battery's gain, then the stones", kinds(lines), "Battery,Stones:Low")
 			t.Check("the battery's line is its net gain", near(lines[1].Count, data.Base.Charge - charge), `{lines[1].Count}`)

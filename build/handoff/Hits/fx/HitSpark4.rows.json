@@ -1,20 +1,67 @@
 {
   "Schema": "rows/1",
   "Effect": "HitSpark4",
-  "Why": "A landed hit at rung 4, a critical: the grey block-in (AR61).",
+  "Why": "A landed hit at rung 4, a critical: the gold star (AR61).",
   "Area": 1,
-  "Grey": true,
+  "Grey": false,
   "Rows": {
     "Back": {
-      "Kind": "Card",
+      "Kind": "Emitter",
       "Image": "fx_glow",
-      "Color": {
-        "Color3": [
-          255,
-          244,
-          220
-        ]
+      "Emitter": {
+        "Lifetime": [
+          0.15,
+          0.15
+        ],
+        "Speed": [
+          0,
+          0
+        ],
+        "Rotation": [
+          0,
+          0
+        ],
+        "Size": [
+          [
+            0,
+            4.0
+          ],
+          [
+            0.222,
+            4.6
+          ],
+          [
+            1,
+            0
+          ]
+        ],
+        "Transparency": [
+          [
+            0,
+            0.2
+          ],
+          [
+            1,
+            0.9
+          ]
+        ],
+        "Color": {
+          "Color3": [
+            255,
+            207,
+            77
+          ]
+        },
+        "LightEmission": 1,
+        "LightInfluence": 0,
+        "ZOffset": 0.25
       },
+      "Emit": [
+        [
+          0,
+          1
+        ]
+      ],
       "Tracks": {
         "At": [
           [
@@ -27,75 +74,48 @@
               ]
             }
           ]
-        ],
-        "Size": [
-          [
-            0,
-            3.4,
-            "Quad Out"
-          ],
-          [
-            2,
-            3.9099999999999997,
-            "Quad In"
-          ],
-          [
-            8,
-            0
-          ]
-        ],
-        "Transparency": [
-          [
-            0,
-            0.25,
-            "Quad In"
-          ],
-          [
-            8,
-            0.9
-          ]
         ]
       },
       "Why": "the backlight: a soft flash under the star, at the contact, gone in a tenth of a second"
     },
-    "BurstLine": {
+    "StarLine": {
       "Kind": "Emitter",
-      "Image": "fx_starburst_line",
+      "Image": "fx_spark_line",
       "Emitter": {
         "Lifetime": [
-          0.36,
-          0.36
+          0.28,
+          0.28
         ],
         "Speed": [
           0,
           0
         ],
-        "Size": [
-          [
-            0,
-            2.2
-          ],
-          [
-            0.1,
-            3.4
-          ],
-          [
-            1,
-            3.8
-          ]
-        ],
         "Rotation": [
           0,
-          360
+          0
         ],
         "FlipbookLayout": "Grid4x4",
         "FlipbookMode": "OneShot",
         "LightInfluence": 0,
+        "Size": [
+          [
+            0,
+            2.38
+          ],
+          [
+            0.12,
+            3.74
+          ],
+          [
+            1,
+            4.42
+          ]
+        ],
         "Color": {
           "Color3": [
             255,
-            246,
-            230
+            255,
+            255
           ]
         },
         "LightEmission": 1,
@@ -121,280 +141,59 @@
           ]
         ]
       },
-      "Why": "the hero: the starburst's nine uneven arms, the critical's own shape"
-    },
-    "BurstFill": {
-      "Kind": "Emitter",
-      "Image": "fx_starburst_fill",
-      "Emitter": {
-        "Lifetime": [
-          0.36,
-          0.36
-        ],
-        "Speed": [
-          0,
-          0
-        ],
-        "Size": [
-          [
-            0,
-            2.2
-          ],
-          [
-            0.1,
-            3.4
-          ],
-          [
-            1,
-            3.8
-          ]
-        ],
-        "Rotation": [
-          0,
-          360
-        ],
-        "FlipbookLayout": "Grid4x4",
-        "FlipbookMode": "OneShot",
-        "LightInfluence": 0,
-        "Color": [
-          [
-            0,
-            {
-              "Color3": [
-                233,
-                226,
-                214
-              ]
-            }
-          ],
-          [
-            0.36,
-            {
-              "Color3": [
-                233,
-                226,
-                214
-              ]
-            }
-          ],
-          [
-            1,
-            {
-              "Color3": [
-                91,
-                86,
-                112
-              ]
-            }
-          ]
-        ],
-        "LightEmission": 0.6,
-        "ZOffset": 0.5
-      },
-      "Emit": [
-        [
-          0,
-          1
-        ]
-      ],
-      "Tracks": {
-        "At": [
-          [
-            0,
-            {
-              "Vector3": [
-                0,
-                0,
-                0
-              ]
-            }
-          ]
-        ]
-      },
-      "Why": "Burst's fill pass"
-    },
-    "BurstDark": {
-      "Kind": "Emitter",
-      "Image": "fx_starburst_dark",
-      "Emitter": {
-        "Lifetime": [
-          0.36,
-          0.36
-        ],
-        "Speed": [
-          0,
-          0
-        ],
-        "Size": [
-          [
-            0,
-            2.2
-          ],
-          [
-            0.1,
-            3.4
-          ],
-          [
-            1,
-            3.8
-          ]
-        ],
-        "Rotation": [
-          0,
-          360
-        ],
-        "FlipbookLayout": "Grid4x4",
-        "FlipbookMode": "OneShot",
-        "LightInfluence": 0,
-        "Color": {
-          "Color3": [
-            28,
-            23,
-            38
-          ]
-        },
-        "LightEmission": 0,
-        "Transparency": 0.15,
-        "ZOffset": 0.45
-      },
-      "Emit": [
-        [
-          0,
-          1
-        ]
-      ],
-      "Tracks": {
-        "At": [
-          [
-            0,
-            {
-              "Vector3": [
-                0,
-                0,
-                0
-              ]
-            }
-          ]
-        ]
-      },
-      "Why": "Burst's dark pass"
-    },
-    "StarLine": {
-      "Kind": "Emitter",
-      "Image": "fx_spark_line",
-      "Emitter": {
-        "Lifetime": [
-          0.2,
-          0.2
-        ],
-        "Speed": [
-          0,
-          0
-        ],
-        "Size": [
-          [
-            0,
-            1.2
-          ],
-          [
-            0.12,
-            1.8
-          ],
-          [
-            1,
-            2
-          ]
-        ],
-        "Rotation": [
-          0,
-          360
-        ],
-        "FlipbookLayout": "Grid4x4",
-        "FlipbookMode": "OneShot",
-        "LightInfluence": 0,
-        "Color": {
-          "Color3": [
-            255,
-            246,
-            230
-          ]
-        },
-        "LightEmission": 1,
-        "ZOffset": 0.7000000000000001
-      },
-      "Emit": [
-        [
-          0,
-          1
-        ]
-      ],
-      "Tracks": {
-        "At": [
-          [
-            0,
-            {
-              "Vector3": [
-                0,
-                0,
-                0
-              ]
-            }
-          ]
-        ]
-      },
-      "Why": "a small spark over the burst's middle, its crisp core"
+      "Why": "the hero: the spark sheet in the critical's gold, the widest"
     },
     "StarFill": {
       "Kind": "Emitter",
       "Image": "fx_spark_fill",
       "Emitter": {
         "Lifetime": [
-          0.2,
-          0.2
+          0.28,
+          0.28
         ],
         "Speed": [
           0,
           0
         ],
-        "Size": [
-          [
-            0,
-            1.2
-          ],
-          [
-            0.12,
-            1.8
-          ],
-          [
-            1,
-            2
-          ]
-        ],
         "Rotation": [
           0,
-          360
+          0
         ],
         "FlipbookLayout": "Grid4x4",
         "FlipbookMode": "OneShot",
         "LightInfluence": 0,
+        "Size": [
+          [
+            0,
+            2.38
+          ],
+          [
+            0.12,
+            3.74
+          ],
+          [
+            1,
+            4.42
+          ]
+        ],
         "Color": [
           [
             0,
             {
               "Color3": [
-                233,
-                226,
-                214
+                255,
+                207,
+                77
               ]
             }
           ],
           [
-            0.3,
+            0.4,
             {
               "Color3": [
-                233,
-                226,
-                214
+                255,
+                207,
+                77
               ]
             }
           ],
@@ -402,15 +201,15 @@
             1,
             {
               "Color3": [
-                91,
-                86,
-                112
+                153,
+                124,
+                46
               ]
             }
           ]
         ],
-        "LightEmission": 0.6,
-        "ZOffset": 0.65
+        "LightEmission": 0.8,
+        "ZOffset": 0.5
       },
       "Emit": [
         [
@@ -439,34 +238,34 @@
       "Image": "fx_spark_dark",
       "Emitter": {
         "Lifetime": [
-          0.2,
-          0.2
+          0.28,
+          0.28
         ],
         "Speed": [
           0,
           0
         ],
-        "Size": [
-          [
-            0,
-            1.2
-          ],
-          [
-            0.12,
-            1.8
-          ],
-          [
-            1,
-            2
-          ]
-        ],
         "Rotation": [
           0,
-          360
+          0
         ],
         "FlipbookLayout": "Grid4x4",
         "FlipbookMode": "OneShot",
         "LightInfluence": 0,
+        "Size": [
+          [
+            0,
+            2.666
+          ],
+          [
+            0.12,
+            4.189
+          ],
+          [
+            1,
+            4.95
+          ]
+        ],
         "Color": {
           "Color3": [
             28,
@@ -475,8 +274,21 @@
           ]
         },
         "LightEmission": 0,
-        "Transparency": 0.15,
-        "ZOffset": 0.6000000000000001
+        "Transparency": [
+          [
+            0,
+            0.2
+          ],
+          [
+            0.6,
+            0.3
+          ],
+          [
+            1,
+            1
+          ]
+        ],
+        "ZOffset": 0.45
       },
       "Emit": [
         [
@@ -498,7 +310,468 @@
           ]
         ]
       },
-      "Why": "Star's dark pass"
+      "Why": "Star's dark pass, its ink twin: its read on the pale deck"
+    },
+    "Star2Line": {
+      "Kind": "Emitter",
+      "Image": "fx_spark_line",
+      "Emitter": {
+        "Lifetime": [
+          0.24,
+          0.24
+        ],
+        "Speed": [
+          0,
+          0
+        ],
+        "Rotation": [
+          22.5,
+          22.5
+        ],
+        "FlipbookLayout": "Grid4x4",
+        "FlipbookMode": "OneShot",
+        "LightInfluence": 0,
+        "Size": [
+          [
+            0,
+            1.714
+          ],
+          [
+            0.12,
+            2.693
+          ],
+          [
+            1,
+            3.182
+          ]
+        ],
+        "Color": {
+          "Color3": [
+            255,
+            255,
+            255
+          ]
+        },
+        "LightEmission": 1,
+        "ZOffset": 0.65
+      },
+      "Emit": [
+        [
+          0,
+          1
+        ]
+      ],
+      "Tracks": {
+        "At": [
+          [
+            0,
+            {
+              "Vector3": [
+                0,
+                0,
+                0
+              ]
+            }
+          ]
+        ]
+      },
+      "Why": "a second star over it, turned a sixteenth: the critical's denser burst of straight arms"
+    },
+    "Star2Fill": {
+      "Kind": "Emitter",
+      "Image": "fx_spark_fill",
+      "Emitter": {
+        "Lifetime": [
+          0.24,
+          0.24
+        ],
+        "Speed": [
+          0,
+          0
+        ],
+        "Rotation": [
+          22.5,
+          22.5
+        ],
+        "FlipbookLayout": "Grid4x4",
+        "FlipbookMode": "OneShot",
+        "LightInfluence": 0,
+        "Size": [
+          [
+            0,
+            1.714
+          ],
+          [
+            0.12,
+            2.693
+          ],
+          [
+            1,
+            3.182
+          ]
+        ],
+        "Color": [
+          [
+            0,
+            {
+              "Color3": [
+                255,
+                207,
+                77
+              ]
+            }
+          ],
+          [
+            0.4,
+            {
+              "Color3": [
+                255,
+                207,
+                77
+              ]
+            }
+          ],
+          [
+            1,
+            {
+              "Color3": [
+                153,
+                124,
+                46
+              ]
+            }
+          ]
+        ],
+        "LightEmission": 0.8,
+        "ZOffset": 0.6
+      },
+      "Emit": [
+        [
+          0,
+          1
+        ]
+      ],
+      "Tracks": {
+        "At": [
+          [
+            0,
+            {
+              "Vector3": [
+                0,
+                0,
+                0
+              ]
+            }
+          ]
+        ]
+      },
+      "Why": "Star2's fill pass"
+    },
+    "Star2Dark": {
+      "Kind": "Emitter",
+      "Image": "fx_spark_dark",
+      "Emitter": {
+        "Lifetime": [
+          0.24,
+          0.24
+        ],
+        "Speed": [
+          0,
+          0
+        ],
+        "Rotation": [
+          22.5,
+          22.5
+        ],
+        "FlipbookLayout": "Grid4x4",
+        "FlipbookMode": "OneShot",
+        "LightInfluence": 0,
+        "Size": [
+          [
+            0,
+            1.92
+          ],
+          [
+            0.12,
+            3.016
+          ],
+          [
+            1,
+            3.564
+          ]
+        ],
+        "Color": {
+          "Color3": [
+            28,
+            23,
+            38
+          ]
+        },
+        "LightEmission": 0,
+        "Transparency": [
+          [
+            0,
+            0.2
+          ],
+          [
+            0.6,
+            0.3
+          ],
+          [
+            1,
+            1
+          ]
+        ],
+        "ZOffset": 0.5499999999999999
+      },
+      "Emit": [
+        [
+          0,
+          1
+        ]
+      ],
+      "Tracks": {
+        "At": [
+          [
+            0,
+            {
+              "Vector3": [
+                0,
+                0,
+                0
+              ]
+            }
+          ]
+        ]
+      },
+      "Why": "Star2's dark pass, its ink twin: its read on the pale deck"
+    },
+    "Lance": {
+      "Kind": "Emitter",
+      "Image": "fx_streak",
+      "Emitter": {
+        "EmissionDirection": "Front",
+        "SpreadAngle": [
+          0,
+          0
+        ],
+        "Lifetime": [
+          0.26,
+          0.26
+        ],
+        "Speed": [
+          17.0,
+          17.0
+        ],
+        "Drag": 9,
+        "Acceleration": {
+          "Vector3": [
+            0,
+            0,
+            0
+          ]
+        },
+        "Orientation": "VelocityParallel",
+        "Rotation": [
+          0,
+          0
+        ],
+        "LightInfluence": 0,
+        "Size": [
+          [
+            0,
+            1.309
+          ],
+          [
+            0.15,
+            1.87
+          ],
+          [
+            1,
+            0.748
+          ]
+        ],
+        "Squash": [
+          [
+            0,
+            -0.8
+          ],
+          [
+            1,
+            -1.2
+          ]
+        ],
+        "Transparency": [
+          [
+            0,
+            0
+          ],
+          [
+            0.5,
+            0.05
+          ],
+          [
+            1,
+            1
+          ]
+        ],
+        "Color": [
+          [
+            0,
+            {
+              "Color3": [
+                255,
+                255,
+                255
+              ]
+            }
+          ],
+          [
+            0.3,
+            {
+              "Color3": [
+                255,
+                207,
+                77
+              ]
+            }
+          ],
+          [
+            1,
+            {
+              "Color3": [
+                255,
+                207,
+                77
+              ]
+            }
+          ]
+        ],
+        "LightEmission": 1,
+        "ZOffset": 0.8
+      },
+      "Emit": [
+        [
+          0,
+          1
+        ]
+      ],
+      "Tracks": {
+        "At": [
+          [
+            0,
+            {
+              "Vector3": [
+                0,
+                0,
+                -1.7
+              ]
+            }
+          ]
+        ]
+      },
+      "Why": "the star's long arm, along the blow: snapped out on the hit and running on, fast then slow"
+    },
+    "LanceInk": {
+      "Kind": "Emitter",
+      "Image": "fx_streak",
+      "Emitter": {
+        "EmissionDirection": "Front",
+        "SpreadAngle": [
+          0,
+          0
+        ],
+        "Lifetime": [
+          0.26,
+          0.26
+        ],
+        "Speed": [
+          17.0,
+          17.0
+        ],
+        "Drag": 9,
+        "Acceleration": {
+          "Vector3": [
+            0,
+            0,
+            0
+          ]
+        },
+        "Orientation": "VelocityParallel",
+        "Rotation": [
+          0,
+          0
+        ],
+        "LightInfluence": 0,
+        "Size": [
+          [
+            0,
+            1.505
+          ],
+          [
+            0.15,
+            2.151
+          ],
+          [
+            1,
+            0.86
+          ]
+        ],
+        "Squash": [
+          [
+            0,
+            -0.4
+          ],
+          [
+            1,
+            -0.8
+          ]
+        ],
+        "Transparency": [
+          [
+            0,
+            0.25
+          ],
+          [
+            0.5,
+            0.3
+          ],
+          [
+            1,
+            1
+          ]
+        ],
+        "Color": {
+          "Color3": [
+            28,
+            23,
+            38
+          ]
+        },
+        "LightEmission": 0,
+        "ZOffset": 0.4
+      },
+      "Emit": [
+        [
+          0,
+          1
+        ]
+      ],
+      "Tracks": {
+        "At": [
+          [
+            0,
+            {
+              "Vector3": [
+                0,
+                0,
+                -1.7
+              ]
+            }
+          ]
+        ]
+      },
+      "Why": "the long arm's ink twin, on its path"
     },
     "Needles": {
       "Kind": "Emitter",
@@ -514,8 +787,8 @@
           0.26
         ],
         "Speed": [
-          34,
-          50
+          36,
+          52
         ],
         "Drag": 9,
         "Acceleration": {
@@ -567,18 +840,18 @@
         "Color": {
           "Color3": [
             255,
-            246,
-            230
+            207,
+            77
           ]
         },
         "LightEmission": 1,
         "LightInfluence": 0,
-        "ZOffset": 0.6
+        "ZOffset": 0.7
       },
       "Emit": [
         [
           1,
-          8
+          12
         ]
       ],
       "Tracks": {
@@ -602,22 +875,12 @@
       "Image": "fx_ring_line",
       "Emitter": {
         "Lifetime": [
-          0.3,
-          0.3
+          0.32,
+          0.32
         ],
         "Speed": [
           0,
           0
-        ],
-        "Size": [
-          [
-            0,
-            2
-          ],
-          [
-            1,
-            4.2
-          ]
         ],
         "Rotation": [
           0,
@@ -626,15 +889,25 @@
         "FlipbookLayout": "Grid4x4",
         "FlipbookMode": "OneShot",
         "LightInfluence": 0,
+        "Size": [
+          [
+            0,
+            2.0
+          ],
+          [
+            1,
+            6.0
+          ]
+        ],
         "Color": {
           "Color3": [
             255,
-            246,
-            230
+            255,
+            255
           ]
         },
         "LightEmission": 1,
-        "ZOffset": 0.55
+        "ZOffset": 0.39999999999999997
       },
       "Emit": [
         [
@@ -656,29 +929,19 @@
           ]
         ]
       },
-      "Why": "the secondary: the ring sheet a breath after, lower and softer"
+      "Why": "the ring sheet a breath after, swelling past the star"
     },
     "RingFill": {
       "Kind": "Emitter",
       "Image": "fx_ring_fill",
       "Emitter": {
         "Lifetime": [
-          0.3,
-          0.3
+          0.32,
+          0.32
         ],
         "Speed": [
           0,
           0
-        ],
-        "Size": [
-          [
-            0,
-            2
-          ],
-          [
-            1,
-            4.2
-          ]
         ],
         "Rotation": [
           0,
@@ -687,24 +950,34 @@
         "FlipbookLayout": "Grid4x4",
         "FlipbookMode": "OneShot",
         "LightInfluence": 0,
+        "Size": [
+          [
+            0,
+            2.0
+          ],
+          [
+            1,
+            6.0
+          ]
+        ],
         "Color": [
           [
             0,
             {
               "Color3": [
-                233,
-                226,
-                214
+                255,
+                207,
+                77
               ]
             }
           ],
           [
-            0.34,
+            0.4,
             {
               "Color3": [
-                233,
-                226,
-                214
+                255,
+                207,
+                77
               ]
             }
           ],
@@ -712,15 +985,15 @@
             1,
             {
               "Color3": [
-                91,
-                86,
-                112
+                153,
+                124,
+                46
               ]
             }
           ]
         ],
-        "LightEmission": 0.6,
-        "ZOffset": 0.5
+        "LightEmission": 0.8,
+        "ZOffset": 0.35
       },
       "Emit": [
         [
@@ -749,22 +1022,12 @@
       "Image": "fx_ring_dark",
       "Emitter": {
         "Lifetime": [
-          0.3,
-          0.3
+          0.32,
+          0.32
         ],
         "Speed": [
           0,
           0
-        ],
-        "Size": [
-          [
-            0,
-            2
-          ],
-          [
-            1,
-            4.2
-          ]
         ],
         "Rotation": [
           0,
@@ -773,6 +1036,16 @@
         "FlipbookLayout": "Grid4x4",
         "FlipbookMode": "OneShot",
         "LightInfluence": 0,
+        "Size": [
+          [
+            0,
+            2.24
+          ],
+          [
+            1,
+            6.72
+          ]
+        ],
         "Color": {
           "Color3": [
             28,
@@ -781,8 +1054,21 @@
           ]
         },
         "LightEmission": 0,
-        "Transparency": 0.15,
-        "ZOffset": 0.45
+        "Transparency": [
+          [
+            0,
+            0.2
+          ],
+          [
+            0.6,
+            0.3
+          ],
+          [
+            1,
+            1
+          ]
+        ],
+        "ZOffset": 0.3
       },
       "Emit": [
         [
@@ -804,7 +1090,7 @@
           ]
         ]
       },
-      "Why": "Ring's dark pass"
+      "Why": "Ring's dark pass, its ink twin: its read on the pale deck"
     },
     "Light": {
       "Kind": "Light",
@@ -812,8 +1098,8 @@
       "Color": {
         "Color3": [
           255,
-          244,
-          220
+          207,
+          77
         ]
       },
       "Tracks": {
@@ -836,12 +1122,12 @@
             "Quad Out"
           ],
           [
-            8,
+            12,
             0
           ]
         ]
       },
-      "Why": "the critical's light on the two bodies, no wider than they stand"
+      "Why": "the critical's gold light on the two bodies, no wider than they stand"
     }
   }
 }

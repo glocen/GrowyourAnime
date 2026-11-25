@@ -1,20 +1,67 @@
 {
   "Schema": "rows/1",
   "Effect": "HitSpark2",
-  "Why": "A landed hit at rung 2, an ordinary blow: the grey block-in (AR61).",
+  "Why": "A landed hit at rung 2, an ordinary blow: the star (AR61).",
   "Area": 1,
-  "Grey": true,
+  "Grey": false,
   "Rows": {
     "Back": {
-      "Kind": "Card",
+      "Kind": "Emitter",
       "Image": "fx_glow",
-      "Color": {
-        "Color3": [
-          255,
-          244,
-          220
-        ]
+      "Emitter": {
+        "Lifetime": [
+          0.1,
+          0.1
+        ],
+        "Speed": [
+          0,
+          0
+        ],
+        "Rotation": [
+          0,
+          0
+        ],
+        "Size": [
+          [
+            0,
+            2.2
+          ],
+          [
+            0.333,
+            2.53
+          ],
+          [
+            1,
+            0
+          ]
+        ],
+        "Transparency": [
+          [
+            0,
+            0.2
+          ],
+          [
+            1,
+            0.9
+          ]
+        ],
+        "Color": {
+          "Color3": [
+            248,
+            241,
+            223
+          ]
+        },
+        "LightEmission": 1,
+        "LightInfluence": 0,
+        "ZOffset": 0.25
       },
+      "Emit": [
+        [
+          0,
+          1
+        ]
+      ],
       "Tracks": {
         "At": [
           [
@@ -27,33 +74,6 @@
               ]
             }
           ]
-        ],
-        "Size": [
-          [
-            0,
-            2.2,
-            "Quad Out"
-          ],
-          [
-            2,
-            2.53,
-            "Quad In"
-          ],
-          [
-            6,
-            0
-          ]
-        ],
-        "Transparency": [
-          [
-            0,
-            0.25,
-            "Quad In"
-          ],
-          [
-            6,
-            0.9
-          ]
         ]
       },
       "Why": "the backlight: a soft flash under the star, at the contact, gone in a tenth of a second"
@@ -63,13 +83,20 @@
       "Image": "fx_spark_line",
       "Emitter": {
         "Lifetime": [
-          0.22,
-          0.22
+          0.2,
+          0.2
         ],
         "Speed": [
           0,
           0
         ],
+        "Rotation": [
+          0,
+          0
+        ],
+        "FlipbookLayout": "Grid4x4",
+        "FlipbookMode": "OneShot",
+        "LightInfluence": 0,
         "Size": [
           [
             0,
@@ -84,18 +111,11 @@
             2.6
           ]
         ],
-        "Rotation": [
-          0,
-          360
-        ],
-        "FlipbookLayout": "Grid4x4",
-        "FlipbookMode": "OneShot",
-        "LightInfluence": 0,
         "Color": {
           "Color3": [
             255,
-            246,
-            230
+            255,
+            255
           ]
         },
         "LightEmission": 1,
@@ -128,13 +148,20 @@
       "Image": "fx_spark_fill",
       "Emitter": {
         "Lifetime": [
-          0.22,
-          0.22
+          0.2,
+          0.2
         ],
         "Speed": [
           0,
           0
         ],
+        "Rotation": [
+          0,
+          0
+        ],
+        "FlipbookLayout": "Grid4x4",
+        "FlipbookMode": "OneShot",
+        "LightInfluence": 0,
         "Size": [
           [
             0,
@@ -149,31 +176,24 @@
             2.6
           ]
         ],
-        "Rotation": [
-          0,
-          360
-        ],
-        "FlipbookLayout": "Grid4x4",
-        "FlipbookMode": "OneShot",
-        "LightInfluence": 0,
         "Color": [
           [
             0,
             {
               "Color3": [
-                233,
-                226,
-                214
+                248,
+                241,
+                223
               ]
             }
           ],
           [
-            0.3,
+            0.4,
             {
               "Color3": [
-                233,
-                226,
-                214
+                248,
+                241,
+                223
               ]
             }
           ],
@@ -181,14 +201,14 @@
             1,
             {
               "Color3": [
-                91,
-                86,
-                112
+                149,
+                145,
+                134
               ]
             }
           ]
         ],
-        "LightEmission": 0.6,
+        "LightEmission": 0.8,
         "ZOffset": 0.5
       },
       "Emit": [
@@ -218,34 +238,34 @@
       "Image": "fx_spark_dark",
       "Emitter": {
         "Lifetime": [
-          0.22,
-          0.22
+          0.2,
+          0.2
         ],
         "Speed": [
           0,
           0
         ],
-        "Size": [
-          [
-            0,
-            1.4
-          ],
-          [
-            0.12,
-            2.2
-          ],
-          [
-            1,
-            2.6
-          ]
-        ],
         "Rotation": [
           0,
-          360
+          0
         ],
         "FlipbookLayout": "Grid4x4",
         "FlipbookMode": "OneShot",
         "LightInfluence": 0,
+        "Size": [
+          [
+            0,
+            1.568
+          ],
+          [
+            0.12,
+            2.464
+          ],
+          [
+            1,
+            2.912
+          ]
+        ],
         "Color": {
           "Color3": [
             28,
@@ -254,7 +274,20 @@
           ]
         },
         "LightEmission": 0,
-        "Transparency": 0.15,
+        "Transparency": [
+          [
+            0,
+            0.2
+          ],
+          [
+            0.6,
+            0.3
+          ],
+          [
+            1,
+            1
+          ]
+        ],
         "ZOffset": 0.45
       },
       "Emit": [
@@ -277,7 +310,234 @@
           ]
         ]
       },
-      "Why": "Star's dark pass"
+      "Why": "Star's dark pass, its ink twin: its read on the pale deck"
+    },
+    "Lance": {
+      "Kind": "Emitter",
+      "Image": "fx_streak",
+      "Emitter": {
+        "EmissionDirection": "Front",
+        "SpreadAngle": [
+          0,
+          0
+        ],
+        "Lifetime": [
+          0.2,
+          0.2
+        ],
+        "Speed": [
+          10.0,
+          10.0
+        ],
+        "Drag": 9,
+        "Acceleration": {
+          "Vector3": [
+            0,
+            0,
+            0
+          ]
+        },
+        "Orientation": "VelocityParallel",
+        "Rotation": [
+          0,
+          0
+        ],
+        "LightInfluence": 0,
+        "Size": [
+          [
+            0,
+            0.77
+          ],
+          [
+            0.15,
+            1.1
+          ],
+          [
+            1,
+            0.44
+          ]
+        ],
+        "Squash": [
+          [
+            0,
+            -0.8
+          ],
+          [
+            1,
+            -1.2
+          ]
+        ],
+        "Transparency": [
+          [
+            0,
+            0
+          ],
+          [
+            0.5,
+            0.05
+          ],
+          [
+            1,
+            1
+          ]
+        ],
+        "Color": [
+          [
+            0,
+            {
+              "Color3": [
+                255,
+                255,
+                255
+              ]
+            }
+          ],
+          [
+            0.3,
+            {
+              "Color3": [
+                248,
+                241,
+                223
+              ]
+            }
+          ],
+          [
+            1,
+            {
+              "Color3": [
+                248,
+                241,
+                223
+              ]
+            }
+          ]
+        ],
+        "LightEmission": 1,
+        "ZOffset": 0.8
+      },
+      "Emit": [
+        [
+          0,
+          1
+        ]
+      ],
+      "Tracks": {
+        "At": [
+          [
+            0,
+            {
+              "Vector3": [
+                0,
+                0,
+                -1.0
+              ]
+            }
+          ]
+        ]
+      },
+      "Why": "the star's long arm, along the blow: snapped out on the hit and running on, fast then slow"
+    },
+    "LanceInk": {
+      "Kind": "Emitter",
+      "Image": "fx_streak",
+      "Emitter": {
+        "EmissionDirection": "Front",
+        "SpreadAngle": [
+          0,
+          0
+        ],
+        "Lifetime": [
+          0.2,
+          0.2
+        ],
+        "Speed": [
+          10.0,
+          10.0
+        ],
+        "Drag": 9,
+        "Acceleration": {
+          "Vector3": [
+            0,
+            0,
+            0
+          ]
+        },
+        "Orientation": "VelocityParallel",
+        "Rotation": [
+          0,
+          0
+        ],
+        "LightInfluence": 0,
+        "Size": [
+          [
+            0,
+            0.885
+          ],
+          [
+            0.15,
+            1.265
+          ],
+          [
+            1,
+            0.506
+          ]
+        ],
+        "Squash": [
+          [
+            0,
+            -0.4
+          ],
+          [
+            1,
+            -0.8
+          ]
+        ],
+        "Transparency": [
+          [
+            0,
+            0.25
+          ],
+          [
+            0.5,
+            0.3
+          ],
+          [
+            1,
+            1
+          ]
+        ],
+        "Color": {
+          "Color3": [
+            28,
+            23,
+            38
+          ]
+        },
+        "LightEmission": 0,
+        "ZOffset": 0.4
+      },
+      "Emit": [
+        [
+          0,
+          1
+        ]
+      ],
+      "Tracks": {
+        "At": [
+          [
+            0,
+            {
+              "Vector3": [
+                0,
+                0,
+                -1.0
+              ]
+            }
+          ]
+        ]
+      },
+      "Why": "the long arm's ink twin, on its path"
     },
     "Needles": {
       "Kind": "Emitter",
@@ -345,19 +605,19 @@
         ],
         "Color": {
           "Color3": [
-            255,
-            246,
-            230
+            248,
+            241,
+            223
           ]
         },
         "LightEmission": 1,
         "LightInfluence": 0,
-        "ZOffset": 0.6
+        "ZOffset": 0.7
       },
       "Emit": [
         [
           1,
-          4
+          5
         ]
       ],
       "Tracks": {

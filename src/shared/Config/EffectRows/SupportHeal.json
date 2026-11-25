@@ -6,15 +6,66 @@
  "Grey": false,
  "Rows": {
   "Core": {
-   "Kind": "Card",
+   "Kind": "Emitter",
    "Image": "fx_glow",
-   "Color": {
-    "Color3": [
-     255,
-     255,
-     255
-    ]
+   "Emitter": {
+    "Lifetime": [
+     0.16666666666666666,
+     0.16666666666666666
+    ],
+    "Speed": [
+     0,
+     0
+    ],
+    "Rotation": [
+     0,
+     0
+    ],
+    "Size": [
+     [
+      0,
+      0.8
+     ],
+     [
+      0.2,
+      2.0
+     ],
+     [
+      1,
+      0
+     ]
+    ],
+    "Transparency": [
+     [
+      0,
+      0
+     ],
+     [
+      0.3,
+      0.1
+     ],
+     [
+      1,
+      1
+     ]
+    ],
+    "Color": {
+     "Color3": [
+      255,
+      255,
+      255
+     ]
+    },
+    "LightEmission": 1,
+    "LightInfluence": 0,
+    "ZOffset": 2.2
    },
+   "Emit": [
+    [
+     2,
+     1
+    ]
+   ],
    "Tracks": {
     "At": [
      [
@@ -22,45 +73,175 @@
       {
        "Vector3": [
         0,
-        3.6,
-        -0.9
+        3.4,
+        0
        ]
       }
      ]
+    ]
+   },
+   "Why": "the hero's heart: a white core at its chest as the beam arrives, gone in a sixth of a second"
+  },
+  "Star": {
+   "Kind": "Emitter",
+   "Image": "fx_spark",
+   "Emitter": {
+    "Lifetime": [
+     0.2,
+     0.2
+    ],
+    "Speed": [
+     0,
+     0
+    ],
+    "Rotation": [
+     0,
+     0
     ],
     "Size": [
      [
-      2,
-      0.5,
-      "Quad Out"
+      0,
+      1.6
      ],
      [
-      4,
-      1.7,
-      "Quad In"
+      0.25,
+      3.4
      ],
      [
-      12,
-      0
+      1,
+      0.6
      ]
     ],
     "Transparency": [
      [
-      2,
-      0.2,
-      "Quad In"
+      0,
+      0
      ],
      [
-      12,
+      0.4,
+      0.1
+     ],
+     [
+      1,
       1
+     ]
+    ],
+    "Color": {
+     "Color3": [
+      255,
+      255,
+      255
+     ]
+    },
+    "LightEmission": 1,
+    "LightInfluence": 0,
+    "ZOffset": 2.3
+   },
+   "Emit": [
+    [
+     2,
+     1
+    ]
+   ],
+   "Tracks": {
+    "At": [
+     [
+      2,
+      {
+       "Vector3": [
+        0,
+        3.4,
+        0
+       ]
+      }
      ]
     ]
    },
-   "Why": "the hero's heart: a white core at its chest as the beam arrives, soft (0.2) and gone in a sixth of a second"
+   "Why": "the white star over it"
   },
   "Glow": {
-   "Kind": "Card",
+   "Kind": "Emitter",
    "Image": "fx_glow",
+   "Emitter": {
+    "Lifetime": [
+     0.36666666666666664,
+     0.36666666666666664
+    ],
+    "Speed": [
+     0,
+     0
+    ],
+    "Rotation": [
+     0,
+     0
+    ],
+    "Size": [
+     [
+      0,
+      3.6
+     ],
+     [
+      0.2,
+      5.4
+     ],
+     [
+      1,
+      2.0
+     ]
+    ],
+    "Transparency": [
+     [
+      0,
+      0
+     ],
+     [
+      0.3,
+      0.05
+     ],
+     [
+      1,
+      1
+     ]
+    ],
+    "Color": {
+     "Color3": [
+      38,
+      204,
+      98
+     ]
+    },
+    "LightEmission": 0.35,
+    "LightInfluence": 0,
+    "ZOffset": 2.0,
+    "Brightness": 2
+   },
+   "Emit": [
+    [
+     2,
+     1
+    ]
+   ],
+   "Tracks": {
+    "At": [
+     [
+      2,
+      {
+       "Vector3": [
+        0,
+        3.4,
+        0
+       ]
+      }
+     ]
+    ]
+   },
+   "Why": "the mint glow filling the chest behind the star"
+  },
+  "Dome": {
+   "Kind": "Mesh",
+   "Part": [
+    "FxShell"
+   ],
    "Color": {
     "Color3": [
      111,
@@ -75,41 +256,46 @@
       {
        "Vector3": [
         0,
-        3.6,
-        -0.9
+        3.0,
+        0
        ]
       }
      ]
     ],
-    "Size": [
+    "Scale": [
      [
       2,
-      3.0,
+      0.6,
       "Quad Out"
      ],
      [
-      6,
-      6.0,
-      "Quad In"
+      8,
+      2.4,
+      "Sine Out"
      ],
      [
-      22,
-      0
+      24,
+      2.7
      ]
     ],
     "Transparency": [
      [
       2,
-      0.05,
+      0.5,
+      "Quad Out"
+     ],
+     [
+      8,
+      0.75,
       "Quad In"
      ],
      [
-      22,
+      24,
       1
      ]
     ]
    },
-   "Why": "the mint round it"
+   "Why": "the dome: the kit's sphere as a mint shell of light, swelling round it and fading"
   },
   "Needles": {
    "Kind": "Emitter",
@@ -177,12 +363,12 @@
     ],
     "Color": {
      "Color3": [
-      111,
-      230,
-      149
+      38,
+      204,
+      98
      ]
     },
-    "LightEmission": 1,
+    "LightEmission": 0.35,
     "LightInfluence": 0,
     "ZOffset": 0.6
    },
@@ -207,164 +393,6 @@
     ]
    },
    "Why": "14 needles thrown out of its chest leaning up, fast then slow: light leaving it, never falling"
-  },
-  "RimLine": {
-   "Kind": "Emitter",
-   "Image": "fx_ring_line",
-   "Emitter": {
-    "Lifetime": [
-     0.4,
-     0.4
-    ],
-    "Speed": [
-     0,
-     0
-    ],
-    "Size": [
-     [
-      0,
-      2.4
-     ],
-     [
-      0.4,
-      4.0
-     ],
-     [
-      1,
-      4.8
-     ]
-    ],
-    "Rotation": [
-     0,
-     0
-    ],
-    "Transparency": [
-     [
-      0,
-      0
-     ],
-     [
-      0.4,
-      0.25
-     ],
-     [
-      1,
-      1
-     ]
-    ],
-    "FlipbookLayout": "Grid4x4",
-    "FlipbookMode": "OneShot",
-    "LightInfluence": 0,
-    "Color": {
-     "Color3": [
-      214,
-      255,
-      228
-     ]
-    },
-    "LightEmission": 1,
-    "ZOffset": 0.55
-   },
-   "Emit": [
-    [
-     3,
-     1
-    ]
-   ],
-   "Tracks": {
-    "At": [
-     [
-      3,
-      {
-       "Vector3": [
-        0,
-        3.6,
-        -0.9
-       ]
-      }
-     ]
-    ]
-   },
-   "Why": "the dome's rim: a ring swelling round it as it fades"
-  },
-  "RimFill": {
-   "Kind": "Emitter",
-   "Image": "fx_ring_fill",
-   "Emitter": {
-    "Lifetime": [
-     0.4,
-     0.4
-    ],
-    "Speed": [
-     0,
-     0
-    ],
-    "Size": [
-     [
-      0,
-      2.4
-     ],
-     [
-      0.4,
-      4.0
-     ],
-     [
-      1,
-      4.8
-     ]
-    ],
-    "Rotation": [
-     0,
-     0
-    ],
-    "Transparency": [
-     [
-      0,
-      0
-     ],
-     [
-      0.4,
-      0.25
-     ],
-     [
-      1,
-      1
-     ]
-    ],
-    "FlipbookLayout": "Grid4x4",
-    "FlipbookMode": "OneShot",
-    "LightInfluence": 0,
-    "Color": {
-     "Color3": [
-      111,
-      230,
-      149
-     ]
-    },
-    "LightEmission": 1,
-    "ZOffset": 0.5
-   },
-   "Emit": [
-    [
-     3,
-     1
-    ]
-   ],
-   "Tracks": {
-    "At": [
-     [
-      3,
-      {
-       "Vector3": [
-        0,
-        3.6,
-        -0.9
-       ]
-      }
-     ]
-    ]
-   },
-   "Why": "the rim's fill pass"
   },
   "Hoop": {
    "Kind": "Mesh",
@@ -495,12 +523,12 @@
     ],
     "Color": {
      "Color3": [
-      111,
-      230,
-      149
+      38,
+      204,
+      98
      ]
     },
-    "LightEmission": 1,
+    "LightEmission": 0.35,
     "LightInfluence": 0,
     "ZOffset": 0.5
    },

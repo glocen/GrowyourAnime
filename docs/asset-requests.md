@@ -17072,6 +17072,15 @@ Paint-overs on one frame of the game, in `build/handoff/Support/targets/`, each 
   - **Must-fix 3, the caster's light (the main read's second half).** A's held light is a lit mint ball between the sleeves. The build's is a glint, lost at the strip's size.
   - **Must-fix 4, the veil's walls (shape).** Its ribbons are thin and pale, so the column reads only by its rims; S2's are broad mint bands.
   - **Passes:** the link from both angles (short from the front camera, as in the target), the ground ring, the veil's rims, and the timing at the targets' frames.
+- **The next look, in play (Scintilla, 2026-11-26, 00:01):** `checkpoint/next_*` and `next.txt`, staged as at the quarter, at 60 fps.
+  - **1, the mend's mass:** the technique changed. The dome is the kit's sphere as a mint shell. The star and the glow are single particles drawn toward the camera. In the front take they don't draw, for two reasons found after it (`next_mend_close.png`):
+    - A particle picture's first use in a session draws nothing. In a join test, the first mend lost its flash and its needles; the second had both. That's `Rows.Warm`'s, sent to Faber.
+    - They sat a stud before the chest, so the body hid them when the mended one faced away. Now they sit inside the chest, drawn 2 studs toward the camera. Taken, not yet seen.
+    - Also for Faber: `Rows` emits `math.round(count × the Effects level)`, so a one-particle row draws nothing below level 0.5 while the needles still do, and the hero shape goes first. A floor of 1 is asked.
+  - **2, mint over white:** the beam is mint with a white thread.
+  - **3, the caster's light:** a lit mint ball, without the target's bloom.
+  - **4, the veil:** broad mint bands, beside S2's.
+  - **Status:** implemented. Tested: the rows case, 7,132 passed. Visually reviewed by me only: 2 to 4 pass in my read, and 1 waits on my next turn. Not director-accepted. **For Faber's review:** the four rows files and `tools/fx/support_looks.py`.
 
 ## AR59. Rook, redesigned to the anime bar (Modulo, for research's pick and the director's look, then its finish; Faber's install after)
 
@@ -17455,8 +17464,20 @@ Scintilla's first piece, on the director's order of 2026-11-23 ("Shared kit firs
   - **Star over crescent:** the crescent reads as a blade's slash, which is wrong on Rook's ram and on every blunt blow the shared kit carries. A class's blade strike may take it up (queue item 4).
   - **Star over pop:** the pop's ring reads as a reticle at every rung, and its round core has no direction, when the job is "landed, and which way". The star's needles carry the way, and rung 4's gold nine arms read as a critical at once.
   - **Watch at the quarter checkpoint:** rungs 2 and 3 are small and white, and hold here only against the Brawler's dark body. Judge a hit with the pale deck behind it, and the dark yard's frame. Rung 3 must read as a step up from 2 (its ring), and on this sheet it barely does.
+### Scintilla's build: the star, and its quarter checkpoint (2026-11-26, 00:01)
 
-- **Status, 2026-11-24, 10:48:** implemented as data, not shown in the game. Tested: offline logic only. Visually reviewed: no. Director-accepted: no. **For Faber's review:** the three rows files and `tools/fx/hit_sparks.py`.
+- **The build:** `tools/fx/hit_sparks.py` is rewritten to the star, and the three rungs are taken.
+  - Each rung has a backlight, the star's line, fill and ink passes, the lance along the blow, and needles.
+  - Rung 3 adds the ring. Rung 4 is gold, adds a second star turned 22.5 degrees, and a light.
+  - The helpers that four other effects import write byte-identical rows.
+- **The quarter checkpoint, on the deck:** `build/handoff/Hits/checkpoint/` (`quarter.txt` says how it was staged), slowed to 0.1.
+- **My read:**
+  - The star snaps on the hit's frame, and the ring at rung 3 steps it up from 2.
+  - **Two misses on the main read**, changed in technique, taken, and not yet seen:
+    - **The bloom:** the backlight was a card between the two bodies, so they hid it, and the peak had no white mass. It's now one particle drawn toward the camera.
+    - **The lance:** it was centred on the contact and ran about 11 studs at rung 4, half of it back over the attacker. It now starts at the contact and runs along the blow.
+  - **The dark yard:** the yard reads pale by day (`quarter_yard_by_day.png`), so that take goes at night in the place's cycle.
+- **Status:** implemented. Tested: the rows case, 7,110 passed. Visually reviewed by me only. Not director-accepted. **For Faber's review:** the three rows files and `tools/fx/hit_sparks.py`.
 
 ## AR62. The screens' redo: their colours, their light and their art (research's audit, then Modulo's directions, then Faber, a screen at a time)
 

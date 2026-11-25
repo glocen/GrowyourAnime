@@ -1,0 +1,17 @@
+AR61, the quarter checkpoint (Scintilla, 2026-11-25): the star built, in play, staged on the deck.
+Staging: the main place, a playtest; the brawler and Rook anchored at the targets' spots (lead -290.8,3.6,26; brawler
+-292,3.6,21), Rook held at Hit3's contact (RookCombo at 1.4333 s); the client plays HitSpark2, 3 and 4 at the hook's
+anchor (the struck's chest, 0.6 toward the attacker, its front along the blow), every emitter slowed to 0.1 alike.
+Recorded at 30 fps, lossless; a frame of the effect is 5 of the capture's.
+
+quarter_star_deck_strip_vs_target.png  rung 3, the target's strip on top, the build's below: frames -2,0,1,2,4,7,11,16.
+quarter_star_deck_rungs_vs_target.png  the peak (frame 2) at rungs 2, 3 and 4, the target on top.
+quarter_star_r3_close.png              rung 3 round the contact, frames 0,1,2,4,7, the target on top.
+quarter_yard_by_day.png                the base yard by day: pale grey, not dark. No dark take yet (below).
+
+These show the rows before two changes, taken after the capture and not yet seen in play:
+- the backlight was a card at the contact, between the two bodies, and they hid it: the build had no bloom where the
+  target's peak has its white mass. Now one soft particle drawn toward the camera, just behind the star's passes.
+- the lance, one particle centred on the contact, drew about 11 studs at rung 4, half of it back over the attacker.
+  Now it starts at the contact and runs along the blow, about 2 studs a size, stretched less so it keeps its weight.
+The dark backdrop: the yard reads pale by day, and the place's light runs a day and night; the next take goes at night.

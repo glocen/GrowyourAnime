@@ -1,0 +1,18 @@
+AR58, the next look (Scintilla, 2026-11-25): the four must-fixes in play, staged as at the quarter (quarter.txt), at
+60 fps, lossless.
+
+next_*_front_vs_target.png  the target's strip on top, the build's below, at the quarter's frames.
+next_*_side.png             the build from the side: A -14,0,3,8,16; S2 0,3,8,14,60.
+next_mend_close.png         the mend round the brawler, 6 frames from the landing, three rows: the front take (the
+                            session's first mend), a later mend at the same camera, and the side take (the second).
+
+1, the mend's mass: the dome is a mint shell round the body (the kit's sphere), and the star and glow are single
+   particles drawn toward the camera. In the front take they don't show, for two reasons found after it:
+   - a particle picture's first use in a session draws nothing (the join test: the first mend lost its flash and its
+     needles, the second had both; the front take's needles showed only because the cast's had used their picture);
+   - they sat a stud before the chest, so the body hid them when the mended one faced away (the side take).
+   The second is changed in the rows (inside the chest, drawn 2 studs toward the camera) and not yet seen. The first
+   is Rows.Warm's, Faber's.
+2, mint over white: the beam is mint with a white thread; the lights laid as colour are #26CC62.
+3, the caster's light: a lit mint ball, bigger than at the quarter, without the target's bloom round it.
+4, the veil: broad mint bands with a crown and a hoop, beside S2's.

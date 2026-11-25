@@ -6,8 +6,10 @@
  "Grey": false,
  "Rows": {
   "Orb": {
-   "Kind": "Card",
-   "Image": "fx_glow",
+   "Kind": "Mesh",
+   "Part": [
+    "FxShell"
+   ],
    "Color": {
     "Color3": [
      111,
@@ -28,25 +30,25 @@
       }
      ]
     ],
-    "Size": [
+    "Scale": [
      [
       -24,
-      0.4,
+      0.12,
       "Quad Out"
      ],
      [
       -4,
-      3.0,
-      "Sine InOut"
+      0.62,
+      "Back Out"
      ],
      [
       30,
-      2.6,
+      0.55,
       "Sine InOut"
      ],
      [
       60,
-      2.9,
+      0.62,
       "Quad In"
      ],
      [
@@ -57,7 +59,82 @@
     "Transparency": [
      [
       -24,
-      0.9,
+      0.3,
+      "Quad Out"
+     ],
+     [
+      -4,
+      0,
+      "Linear"
+     ],
+     [
+      60,
+      0,
+      "Quad In"
+     ],
+     [
+      68,
+      1
+     ]
+    ]
+   },
+   "Why": "the hero: a lit mint ball gathering between the sleeves as they rise, held while it casts: who casts",
+   "Body": "HumanoidRootPart",
+   "From": "Cast"
+  },
+  "Halo": {
+   "Kind": "Card",
+   "Image": "fx_glow",
+   "Color": {
+    "Color3": [
+     38,
+     204,
+     98
+    ]
+   },
+   "Tracks": {
+    "At": [
+     [
+      -24,
+      {
+       "Vector3": [
+        0,
+        2.5,
+        -1.2
+       ]
+      }
+     ]
+    ],
+    "Size": [
+     [
+      -24,
+      0.8,
+      "Quad Out"
+     ],
+     [
+      -4,
+      4.2,
+      "Sine InOut"
+     ],
+     [
+      30,
+      3.8,
+      "Sine InOut"
+     ],
+     [
+      60,
+      4.1,
+      "Quad In"
+     ],
+     [
+      68,
+      0
+     ]
+    ],
+    "Transparency": [
+     [
+      -24,
+      0.8,
       "Quad Out"
      ],
      [
@@ -74,84 +151,19 @@
       68,
       1
      ]
-    ]
-   },
-   "Why": "the hero: the light gathering between the sleeves as they rise, held while it casts: who casts",
-   "Body": "HumanoidRootPart",
-   "From": "Cast"
-  },
-  "OrbCore": {
-   "Kind": "Card",
-   "Image": "fx_glow",
-   "Color": {
-    "Color3": [
-     255,
-     255,
-     255
-    ]
-   },
-   "Tracks": {
-    "At": [
-     [
-      -20,
-      {
-       "Vector3": [
-        0,
-        2.5,
-        -1.2
-       ]
-      }
-     ]
     ],
-    "Size": [
+    "Brightness": [
      [
-      -20,
-      0.15,
-      "Quad Out"
+      -24,
+      1.5
      ],
      [
-      -4,
-      0.7,
-      "Sine InOut"
-     ],
-     [
-      30,
-      0.6,
-      "Sine InOut"
-     ],
-     [
-      60,
-      0.65,
-      "Quad In"
-     ],
-     [
-      66,
-      0
-     ]
-    ],
-    "Transparency": [
-     [
-      -20,
-      0.8,
-      "Quad Out"
-     ],
-     [
-      -4,
-      0.05,
-      "Linear"
-     ],
-     [
-      60,
-      0.1,
-      "Quad In"
-     ],
-     [
-      66,
-      1
+      3600,
+      1.5
      ]
     ]
    },
-   "Why": "its white core",
+   "Why": "its mint light on the air round it",
    "Body": "HumanoidRootPart",
    "From": "Cast"
   },
@@ -160,9 +172,9 @@
    "Image": "fx_glow",
    "Color": {
     "Color3": [
-     111,
-     230,
-     149
+     38,
+     204,
+     98
     ]
    },
    "Tracks": {
@@ -230,9 +242,9 @@
    "Image": "fx_glow",
    "Color": {
     "Color3": [
-     111,
-     230,
-     149
+     38,
+     204,
+     98
     ]
    },
    "Tracks": {
@@ -361,12 +373,12 @@
     ],
     "Color": {
      "Color3": [
-      111,
-      230,
-      149
+      38,
+      204,
+      98
      ]
     },
-    "LightEmission": 1,
+    "LightEmission": 0.35,
     "LightInfluence": 0,
     "ZOffset": 0.6
    },

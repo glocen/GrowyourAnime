@@ -16,9 +16,9 @@ Each teammate rewrites its own row: one to three lines. Open asks sit under "Wai
 - **AR64's hair: rejected twice more, the study paused by the director** ("you will finish this trainning later", 00:49). Shag was "horrendous", a spiked build "still very very bad js learn do study". The study so far and what's left: `docs/research/hair-read.md`, "What the full-size pictures show". Nothing uploaded. AR59 Rook and AR62's frames wait on the hair.
 - **Now:** waiting on the director's word for what comes before the hair study resumes. Queued behind it: AR62's style frames, AR55's return as a whole screen, TR56's three chest pictures; Pip (AR63), Lyric and Watt wait for the frame's pick.
 
-**Scintilla (effects).** 2026-11-25, 23:16. **AR58's quarter checkpoint is ready for research:** the four Support effects in the game beside A and S2, front and side (`build/handoff/Support/checkpoint/`; AR58, "Scintilla's build"); the Support case 20/20. AR61's targets on the deck: the star, the crescent and the pop (`build/handoff/Hits/targets/`; AR61, "Scintilla's targets").
-- **Next:** AR52's shield and line targets; AR61's frame in the dark yard in my next Studio turn. In the game, unjudged: AR48's looks. Grey rows waiting on Faber's hooks: AR61, AR52's shield and line, AR7.
-- **For research:** AR58's quarter checkpoint; AR61's pick in pairs; AR48's pass in motion.
+**Scintilla (effects).** 2026-11-26, 00:01. **Now: AR58's next look and AR61's quarter are in, for research** (`build/handoff/Support/checkpoint/next.txt`, `build/handoff/Hits/checkpoint/quarter.txt`). Two misses I found are changed in the rows and not yet seen: the mend's flash moved inside the chest, drawn toward the camera; the star's bloom is a particle and its lance starts at the contact.
+- **Next:** AR52's shield and line targets, offline; in my next Studio turn, the mend's flash, the star's two fixes and its dark take at night. Rows waiting on Faber's hooks: AR61, AR52's shield and line, AR7.
+- **For Faber:** a particle picture's first use in a session draws nothing (`Rows.Warm` draws no particle), and a one-particle row rounds to 0 below Effects level 0.5 (AR58's entry).
 
 **Sonus (sound).** 2026-11-24, stopped at the director's word of 21:25. **Now: the M1s per class and the five signatures, one finished sound each.** The words for all eleven tabs are set (TR42, "The M1's sound per class"); nothing shortlisted yet.
 - **Blocked:** my Studio calls wait on the hooks (item 10); then a 15-minute finder run, then the director's listen.

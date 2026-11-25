@@ -10,14 +10,14 @@
    "Image": "fx_beam",
    "Color": {
     "Color3": [
-     111,
-     230,
-     149
+     38,
+     204,
+     98
     ]
    },
    "Beam": {
     "FaceCamera": true,
-    "LightEmission": 1,
+    "LightEmission": 0.25,
     "LightInfluence": 0,
     "TextureMode": "Stretch",
     "TextureSpeed": 0,
@@ -142,30 +142,30 @@
     "Width": [
      [
       0,
-      0.45,
+      0.22,
       "Quad Out"
      ],
      [
       8,
-      0.38,
+      0.18,
       "Quad In"
      ],
      [
       22,
-      0.1
+      0.05
      ]
     ]
    },
-   "Why": "its white core"
+   "Why": "its white core: a thread down the mint, the only white in it"
   },
   "Flash": {
    "Kind": "Card",
    "Image": "fx_glow",
    "Color": {
     "Color3": [
-     255,
-     255,
-     255
+     38,
+     204,
+     98
     ]
    },
    "Tracks": {
@@ -200,16 +200,79 @@
     "Transparency": [
      [
       0,
-      0.2,
+      0.1,
       "Quad In"
      ],
      [
       10,
       1
      ]
+    ],
+    "Brightness": [
+     [
+      0,
+      1.6
+     ],
+     [
+      10,
+      1.6
+     ]
     ]
    },
-   "Why": "the held light going: a flash at the caster as the beam leaves"
+   "Why": "the held light going: a mint flash at the caster as the beam leaves"
+  },
+  "FlashCore": {
+   "Kind": "Card",
+   "Image": "fx_glow",
+   "Color": {
+    "Color3": [
+     255,
+     255,
+     255
+    ]
+   },
+   "Tracks": {
+    "At": [
+     [
+      0,
+      {
+       "Vector3": [
+        0,
+        5.5,
+        -1.2
+       ]
+      }
+     ]
+    ],
+    "Size": [
+     [
+      0,
+      0.7,
+      "Quad Out"
+     ],
+     [
+      3,
+      0.9,
+      "Quad In"
+     ],
+     [
+      8,
+      0
+     ]
+    ],
+    "Transparency": [
+     [
+      0,
+      0.1,
+      "Quad In"
+     ],
+     [
+      8,
+      1
+     ]
+    ]
+   },
+   "Why": "its white core"
   }
  }
 }

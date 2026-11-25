@@ -26,7 +26,8 @@ return {
 		-- Rook's Haymaker: the wound-up punch, its top on the strike
 		{ Name = "Haymaker", Label = "Haymaker", Max = 1.5, Beat = true, Words = { "anime punch", "anime power punch", "anime shockwave", "power punch", "shockwave", "impact boom" } },
 		-- Kirra's Scarf Step: the blink in and the cut, its top on the cut
-		{ Name = "ScarfStep", Label = "Scarf Step", Max = 0.8, Beat = true, Words = { "anime teleport", "anime dash slash", "anime quick slash", "teleport whoosh", "dash whoosh", "swift slash" } },
+		-- "anime dash slash" and "anime quick slash" found UI sounds and ripped game files on 2026-11-25: 4 of 20 usable
+		{ Name = "ScarfStep", Label = "Scarf Step", Max = 0.8, Beat = true, Words = { "anime dash", "anime teleport", "dash slash", "dash whoosh", "quick dash", "blink whoosh" } },
 		-- Pip's Lantern Burst: the flame bursting at the Shades' feet, its top on the burst
 		{ Name = "LanternBurst", Label = "Lantern Burst", Max = 1.6, Beat = true, Words = { "anime fire explosion", "anime explosion", "fire burst", "fire explosion", "flame burst", "magic explosion" } },
 		-- Watt's Ground Wire: the wire planted, the shock round him, its top on the plant
@@ -40,11 +41,15 @@ return {
 		-- Simple and pleasant, "very very appealing, like anime vanguard type" (the director, 2026-11-24): one finished sound
 		-- a class, never one a weapon, so an anime game's crisp, bright hit leads each class's words, a real recording after.
 		-- the Mage's (Pip's lantern shots today): the cast on its beat, then the touch on the Shade
-		{ Name = "MageShot", Label = "Mage cast", Max = 0.6, Beat = true, Words = { "anime magic shot", "anime energy blast", "magic shot", "spell cast", "energy blast", "magic whoosh" } },
+		-- a cast may run 0.8 s: at 0.6 the run of 2026-11-25 left 271 of 275 out as too long, 4 kept
+		{ Name = "MageShot", Label = "Mage cast", Max = 0.8, Beat = true, Words = { "anime magic shot", "anime energy blast", "magic shot", "spell cast", "energy blast", "magic whoosh" } },
 		{ Name = "MageHit", Label = "Mage hit", Max = 0.7, Beat = false, Words = { "anime magic hit", "anime impact", "magic hit", "magic impact", "spell impact", "energy impact" } },
 		-- the Healer's (Lyric's speaker shots today): the blast on its beat, then the touch
-		{ Name = "HealerShot", Label = "Healer cast", Max = 0.6, Beat = true, Tonal = true, Words = { "anime energy shot", "anime magic shot", "sonic pulse", "energy shot", "magic shot", "sonic blast" } },
-		{ Name = "HealerHit", Label = "Healer hit", Max = 0.7, Beat = false, Tonal = true, Words = { "anime magic hit", "anime energy hit", "magic hit", "energy hit", "spark hit", "energy impact" } },
+		-- 2026-11-25: "sonic" found 14 music clips under made-up titles; "pulse shot" and "chime shot" found guns and a
+		-- jet's radar beeps. So a bright sparkle or chime that flies, and "magic shot" stays the Mage's own
+		{ Name = "HealerShot", Label = "Healer cast", Max = 0.8, Beat = true, Tonal = true, Words = { "anime sparkle", "magic sparkle", "sparkle whoosh", "chime whoosh", "fairy magic", "light magic" } },
+		-- no "magic hit" or "energy impact": they're the Mage's words, and on 2026-11-25 they gave the two tabs the same sounds
+		{ Name = "HealerHit", Label = "Healer hit", Max = 0.7, Beat = false, Tonal = true, Words = { "anime energy hit", "anime spark hit", "chime hit", "sparkle hit", "energy hit", "spark hit" } },
 		-- the Warrior's (Rook's jab, hook and ram today): fists, so the light hit's 32 keeps
 		{ Name = "RookHit", Label = "Warrior's hits", Max = 0.7, Beat = false, Keeps = "LightHit", Words = {} },
 		-- the Assassin's (Kirra's three cuts today): a quick cut, never a punch

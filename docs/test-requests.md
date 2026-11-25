@@ -3922,9 +3922,14 @@ On the director's word of 2026-11-23: one basic attack's sound per class, shared
 - **Healer** (`HealerShot`, `HealerHit`): unchanged.
 - **The director, 2026-11-24:** "the sound effect really need to be simple but pleasant", "not to many sfx like one m1 sfx per type of class nor weapon", "very very appealing like anime vanguard type". So each class picks one sound, and every tab above but the Warrior's keeps puts an anime game's crisp hit first ("anime slash", "anime heavy hit", "anime magic hit" and so on), a real recording after.
 - **The signatures, "One each"** (the director through research, 2026-11-24): one finished sound each, anime words first in Haymaker's, Scarf Step's, Lantern Burst's, Ground Wire's and Held Note's tabs.
-- **Shortlisted:** not yet. **Loaded, heard, picked:** no. The eleven tabs need the finder again, in Edit: `Audition.Start({ "KirraHit", "WattHit", "MageShot", "MageHit", "HealerShot", "HealerHit", "Haymaker", "ScarfStep", "LanternBurst", "GroundWire", "HeldNote" })`, about 15 minutes. Until then, the place holds the old candidates.
 - **For Faber's review:** the data only. At the merge, the cue names could become the class's own (`AssassinHit` and so on, and `Config.Cues.Own` by class) so a second Voidkin of a class reaches the same cue. That's code, and your call.
-- **Blocked:** my Studio calls, until the hooks for Sonus are set (the board, "Waiting on the director", item 10).
+
+### The shortlists, in the place (Sonus, 2026-11-25, 23:17 to 23:32 by the clock)
+
+- **The finder's run:** the eleven tabs in 7 minutes at 20 kept a tab (`Config.Audition.Keep`, was 50). Then three tabs again on new words: the casts may run 0.8 s (at 0.6 the Mage's kept 4 of 275); the Healer's hit drops the Mage's words; Scarf Step drops "anime dash slash" and "anime quick slash", which found UI sounds.
+- **Cut by title to five to eight a tab**, out: a sound from another work or Roblox game, or a ripped game file (Street Fighter III, Smash Bros, Sparking Zero, JoJo, Wuthering Waves, Undertale Yellow, Dead by Daylight, Mega Man, Gundam, HOURS, Forsaken, `snd_` and `SE_BTL_` names); a gun, a metal clunk or a splash; music and voices; a title that says nothing ("asd", "Untitled"), where a claim is likeliest. ProSoundEffects' and APM's licensed sounds kept where they fit.
+- **Shortlisted:** Assassin 8, Tank 7, Mage cast 6, Mage hit 5, Healer hit 4, Haymaker 6, Scarf Step 5, Lantern Burst 8, Ground Wire 8, Held Note 5. **The Healer's cast: none yet.** Twice the words found only music clips, guns and a jet's radar beeps; its third words (sparkles and chimes) are set, and run in my next turn. The Warrior keeps the light hit's 32.
+- **Where:** `ServerStorage.NL_Audition.Candidates` holds the cut lists, and `Untrimmed` the finder's whole answer. The place isn't saved, so Faber's next save keeps them. **Loaded, heard, picked:** no. The listen is a Play in my next turn, when the director wants it.
 
 ## TR43. Lantern Row's stages on Normal and Hard, in grey (Faber, the follow-up's item 2)
 

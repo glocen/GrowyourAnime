@@ -39,6 +39,8 @@ local Growth = require(Shared.Rules.Growth)
 local Collection = require(Shared.Rules.Collection)
 local HudConfig = require(Shared.Config.Hud)
 local Breaker = require(Shared.Rules.Breaker)
+local Power = require(Shared.Rules.Power)
+local UIKit = require(Shared.Config.UIKit)
 local VoidkinConfig = require(Shared.Config.Voidkin)
 -- The stars at the top, as a word ("All seven stars"), for the line a copy sells on (TR61).
 local ALL_STARS = ({ "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten" })[VoidkinConfig.MaxStars] or tostring(VoidkinConfig.MaxStars)
@@ -428,6 +430,22 @@ local function nameLine(over: Frame, x: number, wide: number, owned: Profile.Own
 	return nil
 end
 
+-- The line under a press that moves a Voidkin into or out of a bay, with what it costs (docs/ui.md, item 5, "Lead and
+-- Station say what they cost"; the outside review's item 6, research's words): `words`, then its kW change in the gains'
+-- green or the losses' red. The base after the press is the HUD's power pill's to show.
+local function cost(words: string, kw: number): string
+	local light = if kw < 0 then UIKit.Bad else UIKit.Good
+	return `{words} · <font color="#{light:ToHex()}">{Hud.KwChange(kw)}</font>`
+end
+
+-- The line under a press, Glass.Dress's, read as rich text so its cost wears its colour.
+local function richUnder(button: TextButton)
+	local why = button:FindFirstChild("Why", true)
+	if why and why:IsA("TextLabel") then
+		why.RichText = true
+	end
+end
+
 -- Lead and Station (or Recall), side by side in `parent`, the line over the panel, in the Glass kit's faces (AR43's take
 -- 2, voidkin_b.json, actions). On the lead, "Leading" with its mark stands alone across the line, lit, the diamond and the
 -- word in the Ink centred together: an action the page's own state rules out isn't shown (research's ruling on the
@@ -456,11 +474,15 @@ local function actions(parent: Frame, view: Profile.View, owned: Profile.OwnedVo
 		local why = if leading then nil else Hud.LeadReason(at, on.Healing()[owned.Id], now, player:GetAttribute("InCombat") == true)
 		local blocked: string? = if type(why) == "string" then why else nil
 		local kind = if blocked then "Off" else "Lit"
-		local under = blocked or Hud.LeadNote(at)
+		local note = Hud.LeadNote(at)
+		local from = tonumber(string.match(at, "^Bay (%d+)$"))
+		-- on a worker: what its bay stops making ("Leaves Bay 2 · −18 kW")
+		local under = blocked or (if note and from then cost(note, -Power.BayKw(view :: any, from, owned :: any)) else note)
 		local key = `{kind}|{tostring(under)}`
 		if key ~= worn then
 			worn = key
 			Glass.Dress(lead, kind, if leading then "Leading" else "Lead", under, dress)
+			richUnder(lead)
 			Button.Set(lead, { Selected = leading })
 		end
 	end
@@ -479,12 +501,15 @@ local function actions(parent: Frame, view: Profile.View, owned: Profile.OwnedVo
 	end)
 	local words = if working then "Recall" else "Station"
 	if working then
-		Glass.Dress(work, "Quiet", words, `Bay {working}`, dress)
+		-- Recall: what its bay stops making ("Bay 2 · −18 kW")
+		Glass.Dress(work, "Quiet", words, cost(`Bay {working}`, -Power.BayKw(view :: any, tonumber(working) :: number, owned :: any)), dress)
 	elseif why then
 		Glass.Dress(work, "Off", words, why, dress)
 	else
-		Glass.Dress(work, "Quiet", words, if bay then `Bay {bay}` else nil, dress)
+		-- Station: what it would make there ("Bay 3 · +12 kW")
+		Glass.Dress(work, "Quiet", words, if bay then cost(`Bay {bay}`, Power.BayKw(view :: any, bay, owned :: any)) else nil, dress)
 	end
+	richUnder(work)
 end
 
 -- Combat Power at its feet, the screen's showpiece (the director, 2026-11-14, night): on a plate of its rarity's light

@@ -104,6 +104,13 @@ function Power.Staff(data: Profile.Data, bay: number): { Hand }
 	return hands
 end
 
+-- The kW `worker` makes in bay `bay`, at the bay's level (TR21): what Lead, Station and Recall say they cost (docs/ui.md,
+-- item 5). 0 for a bay that isn't open.
+function Power.BayKw(data: Profile.Data, bay: number, worker: Profile.OwnedVoidkin): number
+	local here = data.Base.Bays[bay]
+	return if here then Power.Output(worker) * BaseLevels.BayOutput(here.Level or 1) else 0
+end
+
 -- The kW the bays' workers generate, each times its bay's level's output (TR21).
 function Power.Generation(data: Profile.Data): number
 	local kw = 0

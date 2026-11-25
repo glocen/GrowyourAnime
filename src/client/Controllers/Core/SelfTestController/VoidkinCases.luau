@@ -20,6 +20,7 @@ local Stats = require(Shared.Rules.Stats)
 local Sheet = require(Shared.Rules.Sheet)
 local Growth = require(Shared.Rules.Growth)
 local Hud = require(Shared.Rules.Hud)
+local Power = require(Shared.Rules.Power)
 local Voidkin = require(Shared.Definitions.Voidkin)
 local Gear = require(Shared.Definitions.Gear)
 local HudController = require(script.Parent.Parent.Parent.Main.HudController)
@@ -839,6 +840,11 @@ function VoidkinCases.Cases(given: Given): { any }
 				end
 			end
 			local _, empty = Hud.WorkReason("", current.Base.Bays)
+			-- what a press costs, as the line under it says it (docs/ui.md, item 5): "Bay 3 · +12 kW", "Leaves Bay 2 · −18 kW"
+			local function costs(words: string, id: string, bay: number, sign: number): string
+				local view = ProfileController.Get() :: Profile.View
+				return `{words} · {Hud.KwChange(sign * Power.BayKw(view :: any, bay, view.Voidkin[id] :: any))}`
+			end
 			local function role(id: string, want: string): boolean
 				return waitFor(t, ANSWER, function(): boolean
 					local after = ProfileController.Get()
@@ -853,7 +859,7 @@ function VoidkinCases.Cases(given: Given): { any }
 			local function says(want: string, called: string?): (boolean, string)
 				local work = button(called or "Work")
 				local reason = work and work:FindFirstChild("Why", true) :: TextLabel? -- the line under its name (Glass.Dress)
-				local said = if reason and reason.Visible then reason.Text else "none"
+				local said = if reason and reason.Visible then reason.ContentText else "none"
 				return said == want and reason ~= nil and reason.TextFits, said
 			end
 			local function pair(where: string)
@@ -864,21 +870,21 @@ function VoidkinCases.Cases(given: Given): { any }
 			if free and empty then
 				VoidkinScreen.Choose(free)
 				pair("an idle one")
-				t.Check(`Station says its bay under its name, Bay {empty}`, says(`Bay {empty}`))
+				t.Check(`Station says its bay under its name and what it would make there, Bay {empty}`, says(costs(`Bay {empty}`, free, empty, 1)))
 				t.Check("Station", Button.Press(button("Work") :: TextButton) and role(free, `Bay {empty}`))
 				t.Check("and its button recalls it", shows("Recall"), labelOf(button("Work")))
-				t.Check(`Recall says its bay, Bay {empty}`, says(`Bay {empty}`))
+				t.Check(`Recall says its bay and what it stops making, Bay {empty}`, says(costs(`Bay {empty}`, free, empty, -1)))
 				local itsLead = button("Lead")
-				t.Check(`stationed, its Lead still pressable, saying "Leaves Bay {empty}"`, itsLead ~= nil and Button.State(itsLead) ~= "Disabled" and (says(`Leaves Bay {empty}`, "Lead")),
+				t.Check(`stationed, its Lead still pressable, saying "Leaves Bay {empty}" and its cost`, itsLead ~= nil and Button.State(itsLead) ~= "Disabled" and (says(costs(`Leaves Bay {empty}`, free, empty, -1), "Lead")),
 					if itsLead then Button.State(itsLead) else "none")
 				t.Check("Recall", Button.Press(button("Work") :: TextButton) and role(free, ""))
 			elseif worker then
 				VoidkinScreen.Choose(worker)
 				pair("a stationed one")
 				t.Check("every bay busy: a stationed one reads Recall", labelOf(button("Work")) == "Recall", labelOf(button("Work")))
-				t.Check(`and says its bay, Bay {working}`, says(`Bay {working}`))
+				t.Check(`and says its bay and what it stops making, Bay {working}`, says(costs(`Bay {working}`, worker, working, -1)))
 				local itsLead = button("Lead")
-				t.Check(`its Lead still pressable, saying "Leaves Bay {working}"`, itsLead ~= nil and Button.State(itsLead) ~= "Disabled" and (says(`Leaves Bay {working}`, "Lead")),
+				t.Check(`its Lead still pressable, saying "Leaves Bay {working}" and its cost`, itsLead ~= nil and Button.State(itsLead) ~= "Disabled" and (says(costs(`Leaves Bay {working}`, worker, working, -1), "Lead")),
 					if itsLead then Button.State(itsLead) else "none")
 				t.Check("Recall", Button.Press(button("Work") :: TextButton) and role(worker, ""))
 				t.Check("and its button stations it", shows("Station"), labelOf(button("Work")))

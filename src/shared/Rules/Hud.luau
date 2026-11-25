@@ -258,6 +258,15 @@ function Hud.LeadNote(role: string): string?
 	return if bay then `Leaves Bay {bay}` else nil
 end
 
+-- A kW change as the line under Lead, Station and Recall writes it (docs/ui.md, item 5, "Lead and Station say what they
+-- cost"): "+12 kW", "−18 kW", a tenth below 10 as the HUD's pill writes kW ("+7.5 kW"), with the sheet's minus.
+function Hud.KwChange(kw: number): string
+	local size = math.abs(kw)
+	local shown = if size < 10 then string.format("%.1f", math.floor(size * 10 + 0.5) / 10) else Hud.Digits(size)
+	shown = string.gsub(shown, "%.0$", "")
+	return (if kw < 0 then "−" else "+") .. shown .. " kW"
+end
+
 -- Seconds as minutes and seconds, rounded up: "1:05", "0:09".
 function Hud.Clock(seconds: number): string
 	local s = if seconds == seconds then math.max(0, math.ceil(seconds - 1e-9)) else 0

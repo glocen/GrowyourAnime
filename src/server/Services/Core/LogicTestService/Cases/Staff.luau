@@ -15,6 +15,7 @@ local BaseLevels = require(Shared.Rules.BaseLevels)
 local Breaker = require(Shared.Rules.Breaker)
 local Collection = require(Shared.Rules.Collection)
 local Power = require(Shared.Rules.Power)
+local Hud = require(Shared.Rules.Hud)
 
 local NOW = 1_800_000_000
 
@@ -111,6 +112,27 @@ return {
 				end
 				return true
 			end)())
+		end,
+	},
+	{
+		Name = "Staff: what Lead, Station and Recall cost, the kW a bay makes with that worker, as the generation changes, and its words",
+		Run = function(t: any)
+			local data, ids = staffed()
+			data.Base.Bays[2].Level = 6
+			local before = Power.Generation(data)
+			local station2 = Power.BayKw(data, 2, data.Voidkin[ids[3]])
+			t.Check("Station's +kW: what the generation gains once it's stationed", station(data, 2, ids[3]).Ok == true and math.abs(Power.Generation(data) - before - station2) < 1e-6,
+				`{station2} kW said, {Power.Generation(data) - before} gained`)
+			local stationed = Power.Generation(data)
+			local recall = Power.BayKw(data, 2, data.Voidkin[ids[3]])
+			t.Check("Recall's and Lead's −kW: what the generation loses once it leaves", station(data, 2, "").Ok == true and math.abs(stationed - Power.Generation(data) - recall) < 1e-6)
+			t.Check("a bay's level pays more", Power.BayKw(data, 2, data.Voidkin[ids[3]]) > Power.BayKw(data, 1, data.Voidkin[ids[3]]))
+			t.Equal("a bay that isn't open makes nothing", Power.BayKw(data, #data.Base.Bays + 1, data.Voidkin[ids[3]]), 0)
+			t.Equal("a gain", Hud.KwChange(12), "+12 kW")
+			t.Equal("a loss, the sheet's minus", Hud.KwChange(-18), "−18 kW")
+			t.Equal("a tenth below 10", Hud.KwChange(7.46), "+7.5 kW")
+			t.Equal("a whole tenth drops its .0", Hud.KwChange(-6.04), "−6 kW")
+			t.Equal("thousands", Hud.KwChange(1234.4), "+1,234 kW")
 		end,
 	},
 }

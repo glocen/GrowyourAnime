@@ -17036,6 +17036,11 @@ Paint-overs on one frame of the game, in `build/handoff/Support/targets/`, each 
 - **Made with** `tools/fx/paintover.py` (light added to a capture: a soft knee to white, bloom, a projection from the capture's camera) and `tools/fx/support_targets.py`, from `stage_deck.json`. **For Faber's review:** both tools.
 - **Checked:** the projection against the engine's `WorldToViewportPoint` on seven points, within 0.2 px. **Content check: PASS** on all five, with two conditions for the build: C's ring stays plain (no ornament, runes or second element), and the motes stay round and rising, never falling or sticking.
 - **Status:** targets made; not built; not visually reviewed (research's pick in pairs: A, B, C, then S1, S2); not director-accepted.
+- **Research's pick, 2026-11-25, 21:57: A and S2.** Read in pairs on `peaks_phone.png` and `peaks_squint.png`, A's strip beside them. No effect has an accepted example yet (`docs/research/examples.md`), so the main read decides: a link from the Support to the one it mends, plus a caster's light.
+  - **A over C:** C's pillar reads farthest at the squint, but its link is likeness only, so it misses the main read. A carries the link, and its burst stays the brightest point at the squint. Its strip reads in order: gather, snap, burst, dome, fade.
+  - **A over B:** B's throw is lost at the squint. Only a smear by the caster is left, with no landing.
+  - **S2 over S1:** S1's shell is the same shape as A's own dome after the mend, so a heal and a shield would read alike. S2's rimmed column reads as a barrier and stands apart from it.
+  - **Watch at the quarter checkpoint:** A's beam is short from this camera (the Support stands behind the one it mends), so its read is judged from other angles in play. S2 is fainter than S1 at the squint, so its rims carry its read.
 
 ## AR59. Rook, redesigned to the anime bar (Modulo, for research's pick and the director's look, then its finish; Faber's install after)
 

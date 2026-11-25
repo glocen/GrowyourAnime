@@ -469,6 +469,21 @@ def lua(path):
     return (ROOT / path).read_text(encoding="utf-8")
 
 
+_CONFIGS = {}
+
+
+def config(name):
+    """src/shared/Config/<name>.luau as the game reads it, through Lune (tools/balance/config_json.luau), never a regex."""
+    if name not in _CONFIGS:
+        import subprocess
+        run = subprocess.run(["lune", "run", "tools/balance/config_json.luau", name], cwd=ROOT,
+                             capture_output=True, text=True, encoding="utf-8")
+        if run.returncode != 0:
+            raise SystemExit(f"Config.{name} didn't export: {run.stderr.strip() or run.stdout.strip()}")
+        _CONFIGS[name] = json.loads(run.stdout)
+    return _CONFIGS[name]
+
+
 def game():
     """The game's own numbers, read from src/shared/Config (their home), so the run follows every tune."""
     en = lua("src/shared/Config/Enemies.luau")

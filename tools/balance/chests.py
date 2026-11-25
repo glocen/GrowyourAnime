@@ -10,7 +10,7 @@ A model, not a measurement of play:
 - The first chest of a rarity "or better" is what a player meets. Each kind of fall is a Poisson stream, so the chance
   of none by T is exp(-H(T)), H the expected count by T: the median first is where H = ln 2.
 """
-import math, random, re, sys
+import math, random, sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
@@ -23,14 +23,11 @@ KEEPER_FIRST_AT = 0.25   # of the way through a ground (a guess)
 
 
 def config():
-    src = sim.lua("src/shared/Config/Chests.luau")
-    drop = {m[1]: (float(m[2]), int(m[3])) for m in re.finditer(r"(\w+) = \{ Chance = ([\d.]+), Tier = (\d+) \}", src)}
-    keeper = re.search(r"Keeper = \{ First = (\d+), After = (\d+) \}", src)
-    body = src[src.index("Ladder = {"):src.index("ClassLean")]
-    ladder = [[float(x) for x in m[1].split(",")] for m in re.finditer(r"\{ ([\d., ]+) \}", body)]
-    salvage = {m[1]: float(m[2]) for m in re.finditer(r"(\w+) = ([\d.]+)", src[src.index("Salvage = {"):src.index("Bag =")])}
-    return {"drop": drop, "keeper": (int(keeper[1]), int(keeper[2])), "ladder": ladder, "salvage": salvage,
-            "sure": int(re.search(r"Sure = (\d+)", src)[1])}
+    c = sim.config("Chests")
+    drop = {kind: (float(d["Chance"]), int(d["Tier"])) for kind, d in c["Drop"].items()}
+    return {"drop": drop, "keeper": (int(c["Keeper"]["First"]), int(c["Keeper"]["After"])),
+            "ladder": [[float(x) for x in row] for row in c["Ladder"]],
+            "salvage": {r: float(v) for r, v in c["Salvage"].items()}, "sure": int(c["Sure"])}
 
 
 def rates(players=1, runs=40):

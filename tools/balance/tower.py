@@ -10,7 +10,7 @@ floors. In a fight, Regen (and Lifesteal) heal, but never more than HealCap of t
 A foe Fast.Gap levels or more under the lead falls to the first hit and costs nothing. The run ends at the first
 floor lost. Built on attributes.py's fighters, so the Basic Attributes are in it. Nothing here is a measurement of play.
 """
-import math, random, re, sys
+import math, random, sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
@@ -33,21 +33,17 @@ LAUNCH_LEVEL = 10         # the launch lead after Lantern Row's hour (its ladder
 
 
 def config():
-    src = sim.lua("src/shared/Config/Tower.luau")
-
-    def num(pat):
-        return float(re.search(pat, src)[1])
-    chest = re.search(r"Chest = \{([^}]*)\}", src)[1]
+    c = sim.config("Tower")
     return {
-        "levelPerFloor": num(r"LevelPerFloor = ([\d.]+)"),
-        "hpShare": num(r"\n\tHealth = ([\d.]+)"),
-        "healCap": num(r"HealCap = ([\d.]+)"),
-        "rise": num(r"\n\tRise = ([\d.]+)"),
-        "fastGap": num(r"Fast = \{ Gap = ([\d.]+)"),
-        "fastRise": num(r"Fast = \{ Gap = [\d.]+, Rise = ([\d.]+)"),
-        "share": num(r"Credits = \{ Share = ([\d.]+)"),
-        "record": num(r"Credits = \{ Share = [\d.]+, Record = ([\d.]+)"),
-        "chest": {k: float(re.search(rf"{k} = ([\d.]+)", chest)[1]) for k in ("Base", "PerFloor", "Most")},
+        "levelPerFloor": float(c["LevelPerFloor"]),
+        "hpShare": float(c["Health"]),
+        "healCap": float(c["HealCap"]),
+        "rise": float(c["Rise"]),
+        "fastGap": float(c["Fast"]["Gap"]),
+        "fastRise": float(c["Fast"]["Rise"]),
+        "share": float(c["Credits"]["Share"]),
+        "record": float(c["Credits"]["Record"]),
+        "chest": {k: float(c["Chest"][k]) for k in ("Base", "PerFloor", "Most")},
     }
 
 

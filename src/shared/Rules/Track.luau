@@ -88,4 +88,14 @@ function Track.Span(keys: { Key }?): (number, number)
 	return keys[1][1], keys[#keys][1]
 end
 
+-- A burst's particle count at the player's Effects level, a share 0 to 1: the count in that share, rounded, and never
+-- below one above 0, so a one-particle hero shape (the mend's Core and Star) is never the first thing a low level loses
+-- (Scintilla, AR58, 2026-11-25). At 0 nothing draws.
+function Track.Burst(count: number, share: number): number
+	if share <= 0 or count < 1 then
+		return 0
+	end
+	return math.max(1, math.round(count * share))
+end
+
 return Track

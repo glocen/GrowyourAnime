@@ -744,13 +744,13 @@ function Rows.Play(name: string, anchor: CFrame, scale: number, options: Options
 					if radius then
 						holder.Size = Vector3.new(2 * radius * piece.Scale.X, CARRIER, 2 * radius * piece.Scale.Z)
 					end
-					-- At the player's Effects level (AR43's Settings): its rate and each burst's count in that share.
+					-- At the player's Effects level (AR43's Settings): its rate in that share, each burst's count by Track.Burst.
 					local share = SettingsController.Level("Effects")
 					emitter.Rate = if shown then (Track.Value(tracks.Rate, t) or 0) * share else 0
 					for index, emit in row.Emit or {} do
 						if not piece.Emitted[index] and t >= emit[1] then
 							piece.Emitted[index] = true
-							local count = math.round(emit[2] * share)
+							local count = Track.Burst(emit[2], share)
 							if count > 0 then
 								emitter:Emit(count)
 							end

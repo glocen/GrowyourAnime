@@ -453,4 +453,17 @@ return {
 			t.Check("never capped over the keeper (the content check's block, (d))", s.Uncapped.Keeper == true)
 		end,
 	},
+	{
+		Name = "Track: a burst at the Effects level keeps one particle above 0, so a one-particle hero shape never drops first",
+		Run = function(t: any)
+			t.Equal("one at a tenth: kept", Track.Burst(1, 0.1), 1)
+			t.Equal("one at half: kept", Track.Burst(1, 0.49), 1)
+			t.Equal("one at full", Track.Burst(1, 1), 1)
+			t.Equal("forty at a quarter: the share", Track.Burst(40, 0.25), 10)
+			t.Equal("two at a tenth: one", Track.Burst(2, 0.1), 1)
+			t.Equal("at 0: none", Track.Burst(1, 0), 0)
+			t.Equal("a count of 0: none", Track.Burst(0, 1), 0)
+			t.Equal("full: unchanged", Track.Burst(24, 1), 24)
+		end,
+	},
 }

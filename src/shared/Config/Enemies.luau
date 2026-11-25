@@ -14,8 +14,10 @@
 
 -- The integration pass of the combat-math review (research, 2026-11-19): solved against the median Rook build on
 -- each stage's first play, one action at a time. Element is a string; Critical Damage a percent, never times G.
+-- The attack cap (research, 2026-11-25; docs/balance.md, "The attack cap"): with three Shades swinging at once
+-- (Config.Combat.Turns), an Ordinary Shade's Attack x1.17, 0.9 to 1.05, gives the street back its damage (37% to 44%).
 return {
-	Ordinary = { Health = 660, Attack = 0.9, Defence = 70, Hit = 57, Dodge = 31, Critical = 47, Block = 31, ElementalAttack = 0.225, CriticalDamage = 0.5, Element = "Void" },
+	Ordinary = { Health = 660, Attack = 1.05, Defence = 70, Hit = 57, Dodge = 31, Critical = 47, Block = 31, ElementalAttack = 0.225, CriticalDamage = 0.5, Element = "Void" },
 	Elite = { Health = 1800, Attack = 3.4, Defence = 70, Hit = 76, Dodge = 41, Critical = 63, Block = 41, ElementalAttack = 0.85, CriticalDamage = 0.75, Element = "Void" },
 	Keeper = { Health = 6050, Attack = 3.15, Defence = 70, Hit = 76, Dodge = 41, Critical = 63, CriticalResist = 120, Block = 41, Penetration = 83, ElementalAttack = 1.1025, ElementalResist = 97, CriticalDamage = 1, Element = "Fire" },
 	Dummy = { Health = 1e6, Attack = 0, Defence = 40 },

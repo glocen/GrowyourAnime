@@ -1110,4 +1110,48 @@ return {
 			t.Check("a hit on him shielded, 30% less", near(shielded.Total, open.Total * 0.7, 1e-6), `{shielded.Total} against {open.Total}`)
 		end,
 	},
+	{
+		Name = "Fight: the attack cap, three turns on a lead, the first noticed holding them, a turn passing when its holder goes; the waiting sway along their ring",
+		Run = function(t: any)
+			local function pack(ids: { string }): { { Id: string, Noticed: number } }
+				local out = {}
+				for index, id in ids do
+					table.insert(out, { Id = id, Noticed = 10 + index })
+				end
+				return out
+			end
+			local cap = Combat.Turns.Cap
+			t.Equal("the seed's cap", cap, 3)
+			local six = pack({ "a", "b", "c", "d", "e", "f" })
+			local held = Fight.Turns({}, six, cap)
+			t.Equal("six on a lead: three hold a turn, the first noticed", table.concat(held, ","), "a,b,c")
+			-- b falls: its turn passes to the earliest noticed of the rest
+			local five = pack({ "a", "c", "d", "e", "f" })
+			five[2].Noticed, five[3].Noticed = 13, 14
+			held = Fight.Turns(held, five, cap)
+			t.Equal("b falls: d takes its turn, a and c keep theirs", table.concat(held, ","), "a,c,d")
+			-- a later-noticed one never takes a held turn
+			local late = table.clone(five)
+			table.insert(late, 1, { Id = "z", Noticed = 1 })
+			t.Equal("one noticed earlier but joining late waits for a turn to pass", table.concat(Fight.Turns(held, late, cap), ","), "a,c,d")
+			t.Equal("two on a lead: both swing", table.concat(Fight.Turns({}, pack({ "a", "b" }), cap), ","), "a,b")
+			t.Equal("a tie in noticing, by Id", table.concat(Fight.Turns({}, { { Id = "y", Noticed = 5 }, { Id = "x", Noticed = 5 } }, 1), ","), "x")
+			t.Equal("a cap of 2, research's other try", #Fight.Turns({}, six, 2), 2)
+			t.Equal("a cap lowered mid-fight: the first held keep theirs", table.concat(Fight.Turns({ "c", "a", "b" }, six, 2), ","), "c,a")
+			-- the waiting sway: along the ring (its distance from the lead held to first order), Sway at its most, never still
+			local seeds = Combat.Turns
+			local most, moved = 0, 0
+			local lastX, lastZ = Fight.Waiting(7, 0, 0, 0, 0, seeds.Sway, seeds.Period, 0)
+			for step = 1, 48 do
+				local x, z = Fight.Waiting(7, 0, 0, 0, step * seeds.Period / 48, seeds.Sway, seeds.Period, 0)
+				most = math.max(most, math.abs(z))
+				t.Check(`along the ring, not toward the lead ({step})`, math.abs(x - 7) < 1e-9)
+				moved += math.abs(z - lastZ) + math.abs(x - lastX)
+				lastX, lastZ = x, z
+			end
+			t.Check("Sway at its most", math.abs(most - seeds.Sway) < 0.05, string.format("%.2f", most))
+			t.Check("never still", moved > seeds.Sway * 3)
+			t.Check("the Ordinary Shade's Attack lifted x1.17 for it (0.9 to 1.05)", EnemiesConfig.Ordinary.Attack == 1.05)
+		end,
+	},
 }

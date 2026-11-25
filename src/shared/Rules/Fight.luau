@@ -153,6 +153,54 @@ function Fight.ShadeTarget(candidates: { Candidate }, current: string?, notice: 
 	end)
 end
 
+-- The attack cap's turns on one lead (docs/design.md, "Combat", "Three Shades swing at once"; Config.Combat.Turns): of
+-- `wanting`, the Shades on it that may take a turn, each with when it noticed the lead, who holds one, at most `cap`.
+-- Those holding (`held`, in order) keep theirs while they still want one; a turn left by one that fell, or let the lead
+-- go, passes to the earliest noticed of the rest (an Id breaks a tie, so every think agrees).
+function Fight.Turns(held: { string }, wanting: { { Id: string, Noticed: number } }, cap: number): { string }
+	local want: { [string]: boolean } = {}
+	for _, each in wanting do
+		want[each.Id] = true
+	end
+	local out: { string } = {}
+	for _, id in held do
+		if #out < cap and want[id] then
+			table.insert(out, id)
+		end
+	end
+	local rest: { { Id: string, Noticed: number } } = {}
+	for _, each in wanting do
+		if table.find(out, each.Id) == nil then
+			table.insert(rest, each)
+		end
+	end
+	table.sort(rest, function(a: { Id: string, Noticed: number }, b: { Id: string, Noticed: number }): boolean
+		if a.Noticed ~= b.Noticed then
+			return a.Noticed < b.Noticed
+		end
+		return a.Id < b.Id
+	end)
+	for _, each in rest do
+		if #out >= cap then
+			break
+		end
+		table.insert(out, each.Id)
+	end
+	return out
+end
+
+-- Where a Shade waiting for a turn stands: `slotX`, `slotZ` on its ring round the lead at `cx`, `cz`, shifted along the
+-- ring by `sway` × sin of its own phase, `period` seconds a sway, so it's never still. `phase` 0 to 1.
+function Fight.Waiting(slotX: number, slotZ: number, cx: number, cz: number, at: number, sway: number, period: number, phase: number): (number, number)
+	local ox, oz = slotX - cx, slotZ - cz
+	local length = math.sqrt(ox * ox + oz * oz)
+	if length < 1e-3 or period <= 0 then
+		return slotX, slotZ
+	end
+	local shift = sway * math.sin(2 * math.pi * (at / period + phase))
+	return slotX - oz / length * shift, slotZ + ox / length * shift
+end
+
 -- A Shade gives up once it's further than `giveUp` from its spawn, and walks home untouchable.
 function Fight.GivesUp(fromHome: number, giveUp: number): boolean
 	return fromHome > giveUp

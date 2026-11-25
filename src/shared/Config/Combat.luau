@@ -88,6 +88,15 @@ return {
 		FadeSeconds = 1.2, -- a fallen Shade bursts into light and paper, then is gone
 	},
 
+	-- The attack cap (docs/design.md, "Combat", "Three Shades swing at once"; the outside review's item 8, research's
+	-- seed of 2026-11-25; docs/balance.md, "The attack cap"): at most Cap of the ordinary Shades on one lead hold a turn,
+	-- the only ones that start an action. The first noticed hold them, and a turn passes when its holder falls or lets
+	-- the lead go (Rules.Fight.Turns). The rest wait Ring studs from the lead, facing it, shifting Sway studs along their
+	-- ring each Period seconds, at Pace of a Shade's walk (Rules.Fight.Waiting): never still. A Support never takes a
+	-- turn; elites, keepers and the Tower's foes are never capped. Tuned in play: Tune("Combat.Turns.Cap", 2), research's
+	-- other try (which would need Attack x1.50, not x1.17). Ring, Sway, Period and Pace are the builder's seeds.
+	Turns = { Cap = 3, Ring = 7, Sway = 1.5, Period = 2.4, Pace = 0.5 },
+
 	-- A crowd on one Shade (research's verdict on TR2, 2026-11-12): from the From-th lead that hits it, each further lead adds
 	-- Share of its health, to its most and to what it has left. A seed.
 	Crowd = { From = 3, Share = 0.5 },

@@ -89,6 +89,7 @@ export type Fighter = {
 	State: State,
 	StateUntil: number,
 	Target: Fighter?,
+	Noticed: number?, -- when it took its target (server time): the attack cap's turns go to the first noticed
 	Action: Actions.Action?,
 	ActionAt: number,
 	Checked: number, -- the action's clock at the last beat check
@@ -181,6 +182,8 @@ local views: { [Player]: { Look: Vector3, At: number } } = {}
 -- A lead waiting in view for an enemy coming to it from out of view (TR24's fix 2): which, and since when.
 local waits: { [Fighter]: { Target: Fighter, Since: number } } = setmetatable({}, { __mode = "k" }) :: any
 local overs: { [Fighter]: number } = setmetatable({}, { __mode = "k" }) :: any -- halfOver's, once each
+-- The attack cap's turns (Config.Combat.Turns): on each lead, the Ids of the Shades holding one, in order.
+local turns: { [Fighter]: { string } } = setmetatable({}, { __mode = "k" }) :: any
 local nextId = 0
 local folder: Folder
 
@@ -286,6 +289,7 @@ end
 local function setTarget(f: Fighter, target: Fighter?)
 	if f.Target ~= target then
 		f.Target = target
+		f.Noticed = if target then now() else nil
 		showTarget(f)
 	end
 end
@@ -1740,6 +1744,35 @@ local function cast(f: Fighter, action: Actions.Action, at: number)
 	end
 end
 
+-- Whether `f` waits on the attack cap's turns (Config.Combat.Turns): an ordinary Shade fighting in the open, never a
+-- Support, an elite, a keeper or a Tower floor's foe.
+local function capped(f: Fighter): boolean
+	local first = f.Kit[1]
+	return f.Kind == "Ordinary" and f.For == nil and not (first and first.Support)
+end
+
+-- Whether `f` holds one of the turns on `target` (Rules.Fight.Turns), made over from every Shade on it now.
+local function hasTurn(f: Fighter, target: Fighter): boolean
+	local wanting = {}
+	for _, other in fighters do
+		if other.Target == target and other.State ~= "Reset" and standing(other) and capped(other) then
+			table.insert(wanting, { Id = other.Id, Noticed = other.Noticed or 0 })
+		end
+	end
+	local held = Fight.Turns(turns[target] or {}, wanting, Combat.Turns.Cap)
+	turns[target] = held
+	return table.find(held, f.Id) ~= nil
+end
+
+-- A Shade's own phase in its sway, 0 to 1, from its Id, so a waiting pack never sways in step.
+local function phaseOf(f: Fighter): number
+	local sum = 0
+	for index = 1, #f.Id do
+		sum += string.byte(f.Id, index) * index
+	end
+	return (sum % 97) / 97
+end
+
 local function thinkShade(f: Fighter, at: number)
 	local home = f.Home
 	if f.Kit[1] == nil or home == nil then
@@ -1851,6 +1884,17 @@ local function thinkShade(f: Fighter, at: number)
 			return
 		end
 		held = support.Id
+	end
+	-- The attack cap: without a turn it starts nothing (a Dasher's lunge takes one too), and waits on its ring facing the
+	-- lead, never still.
+	if capped(f) and not hasTurn(f, target) then
+		endAction(f, at)
+		local seeds = Combat.Turns
+		local slot = slotFor(f, target, seeds.Ring)
+		local c = target.Root.Position
+		local x, z = Fight.Waiting(slot.X, slot.Z, c.X, c.Z, at, seeds.Sway, seeds.Period, phaseOf(f))
+		moveTo(f, Vector3.new(x, f.Root.Position.Y, z), Combat.Shade.WalkSpeed * seeds.Pace)
+		return
 	end
 	local action = Fight.Choose(f.Kit, f.ReadyAt, at, held)
 	local range = if action then action.Range else 4

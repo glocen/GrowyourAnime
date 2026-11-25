@@ -1,11 +1,14 @@
 --!strict
 -- TodayList (client UI): today's three on Home's panel (TR54; AR53 in B, build/handoff/UI/goals/goals.json, "today";
 -- its numbers Config.Hud.Home.Today, its words Definitions.Goals). The Today card under Settings' cog shows the shard a
--- goal pays, three pips for today's three (open, done, claimed) and, while any goal waits to be claimed, its rim in gold.
+-- goal pays, three pips for today's three (open, done, claimed) and, while any goal or the welcome week's gift waits to be
+-- claimed, its rim in gold.
 -- Its press opens the list in the glass alone, the cards hidden: Next pinned at its head with the back press (the
 -- account's one next step and what it opens), then today's three, then any banked day under its heading, scrolling
 -- under Next. A row leans: open, its shard dim and a count where the goal counts; done, the whole row is the claim's
--- press, lit gold; claimed, it sinks and takes a check until the day turns. A claim is the "GoalClaim" action.
+-- press, lit gold; claimed, it sinks and takes a check until the day turns. A claim is the "GoalClaim" action. From the
+-- first session's script's end, the welcome week's seven head the list under their heading (TR59, Rules.Welcome): today's
+-- lit and taken with one tap ("WelcomeClaim"), later ones dim, taken ones checked, until the day the seventh is taken.
 --   TodayList.Attach(panel, act)   the card's pieces and the list on Home's panel; act runs an action
 --   TodayList.View(panel, view)    the save's copy shown: the card, and the list when it shows
 --   TodayList.Show(panel), TodayList.Hide(panel)   the list in the glass, or the cards again
@@ -19,11 +22,15 @@ local Profile = require(Shared.Data.Profile)
 local Goals = require(Shared.Rules.Goals)
 local GoalFacts = require(Shared.Rules.GoalFacts)
 local Defs = require(Shared.Definitions.Goals)
+local ChestRows = require(Shared.Definitions.Chests)
+local WelcomeConfig = require(Shared.Config.Welcome)
+local Welcome = require(Shared.Rules.Welcome)
 
 local UI = script.Parent
 local Button = require(UI.Kit.Button)
 local Fade = require(UI.Kit.Fade)
 local Glass = require(UI.Kit.Glass)
+local Toast = require(UI.Kit.Toast)
 local HomePanel = require(UI.HomePanel)
 
 local TodayList = {}
@@ -31,6 +38,7 @@ local TodayList = {}
 local HOME = HudConfig.Home
 local T = HOME.Today
 local R = T.Rows
+local WK = T.Week
 local FACE = Font.new("rbxasset://fonts/families/BuilderSans.json", Enum.FontWeight.Medium, Enum.FontStyle.Italic)
 local STRONG = Font.new("rbxasset://fonts/families/BuilderSans.json", Enum.FontWeight.Bold, Enum.FontStyle.Italic)
 local LEFT = 16 -- the scrolling frame starts at the glass image's left, so a row's leaning image isn't cut
@@ -46,6 +54,7 @@ type List = {
 	Next: Frame,
 	Back: TextButton,
 	Rows: { Row },
+	Week: { { Index: number, State: string, Button: TextButton? } }, -- the welcome week's tiles, while shown
 	Lines: { string },
 	Waits: ImageLabel,
 	Pips: { ImageLabel },
@@ -165,6 +174,115 @@ local function claim(list: List, row: Row): boolean
 	return answer.Ok == true
 end
 
+-- The server's UTC day (Goals.DayOf), as the claim reads it.
+local function today(): number
+	return Goals.DayOf(workspace:GetServerTimeNow())
+end
+
+-- The welcome week's row shows from the first session's script's end until the day its seventh is taken.
+local function weekShown(view: Profile.View, day: number): boolean
+	local held = view.Welcome
+	return Welcome.Shown(view) and (held == nil or held.Taken < #WelcomeConfig.Week or held.Last == day)
+end
+
+local function weekClaim(list: List): boolean
+	local answer = list.Act("WelcomeClaim", {})
+	if answer.Ok == true and answer.Gift then
+		Toast.Show(`{WK.Day} {answer.Day}: {Welcome.Said(answer.Gift :: any)}`, WK.Lit)
+	end
+	return answer.Ok == true
+end
+
+-- The welcome week's heading and seven tiles from y; the y under them.
+local function layWeek(list: List, view: Profile.View, y: number): number
+	local day = today()
+	if not weekShown(view, day) then
+		return y
+	end
+	local D = T.Day
+	local heading = Instance.new("Frame")
+	heading.Name = "WeekHeading"
+	heading.BackgroundTransparency = 1
+	heading.Position = UDim2.fromOffset(0, y)
+	heading.Size = UDim2.fromOffset(LEFT + HOME.Size.X, D.Tall)
+	heading.ZIndex = 6
+	heading.Parent = list.Scroll
+	word(heading, "Words", WK.Heading, LEFT + D.X, D.Y, D.Size, D.Colour, false, nil, 7)
+	y += D.Tall
+	local states = Welcome.Row(view, day)
+	local wide = (R.Wide - (#states - 1) * WK.Gap) / #states
+	for index, state in states do
+		local gift = WelcomeConfig.Week[index]
+		local lit = state == "Today"
+		local tile = Instance.new("Frame")
+		tile.Name = `Week{index}`
+		tile.BackgroundColor3 = (WK.Fill :: any)[state]
+		tile.BorderSizePixel = 0
+		tile.Position = UDim2.fromOffset(LEFT + R.Left + (index - 1) * (wide + WK.Gap), y)
+		tile.Size = UDim2.fromOffset(wide, WK.Tall)
+		tile.ZIndex = 6
+		tile:SetAttribute("State", state)
+		tile.Parent = list.Scroll
+		local corner = Instance.new("UICorner")
+		corner.CornerRadius = UDim.new(0, WK.Corner)
+		corner.Parent = tile
+		if lit then
+			local rim = Instance.new("UIStroke")
+			rim.Color = WK.Lit
+			rim.Thickness = WK.Stroke
+			rim.Parent = tile
+		end
+		local said = word(tile, "Day", `{WK.Day} {index}`, wide / 2, WK.Words.Y, WK.Words.Size, if lit then WK.Lit else WK.Words.Colour, lit, nil, 8)
+		said.AnchorPoint = Vector2.new(0.5, 0)
+		said.Size = UDim2.fromOffset(wide, said.Size.Y.Offset)
+		said.TextXAlignment = Enum.TextXAlignment.Center
+		local P = WK.Picture
+		local name = if gift.Chest then (ChestRows.ById[gift.Chest] or {} :: any).Image elseif gift.Shard == "named_lyric" then P.Face else P.Shard
+		if name and UIKit.Images[name] then
+			local picture = image(tile, name, (wide - P.Side) / 2, P.Y, P.Side, P.Side, 8)
+			picture.ScaleType = Enum.ScaleType.Fit
+			picture.ImageTransparency = (WK.Dim :: any)[state]
+		else -- a picture not made yet (TR56's three): its kind's words in its place, "Emblem Case" for "... of Lantern Row"
+			local row = if gift.Chest then ChestRows.ById[gift.Chest] else nil
+			local kind = if row then (string.split(row.Name, " of "))[1] else ""
+			local stand = Instance.new("TextLabel")
+			stand.Name = "Gift"
+			stand.BackgroundTransparency = 1
+			stand.FontFace = FACE
+			stand.TextSize = WK.Words.Size - 1
+			stand.TextWrapped = true
+			stand.Text = kind
+			stand.TextColor3 = HOME.Word
+			stand.TextTransparency = (WK.Words.Fade :: any)[state]
+			stand.Position = UDim2.fromOffset(2, P.Y)
+			stand.Size = UDim2.fromOffset(wide - 4, P.Side)
+			stand.ZIndex = 8
+			stand.Parent = tile
+		end
+		if state == "Taken" then
+			local C = R.Check
+			image(tile, C.Image, (wide - WK.Check) / 2, P.Y + (P.Side - WK.Check) / 2, WK.Check, WK.Check, 9)
+		end
+		local made: { Index: number, State: string, Button: TextButton? } = { Index = index, State = state, Button = nil }
+		if lit then
+			local button = Button.new({
+				Name = "Take",
+				Text = "",
+				Bare = true,
+				Size = UDim2.fromScale(1, 1),
+				Parent = tile,
+				OnPress = function(): boolean
+					return weekClaim(list)
+				end,
+			})
+			button.ZIndex = 10
+			made.Button = button
+		end
+		table.insert(list.Week, made)
+	end
+	return y + WK.Tall + R.Gap + R.Pad[1]
+end
+
 local function layRows(list: List, view: Profile.View)
 	for _, child in list.Scroll:GetChildren() do
 		if child:IsA("GuiObject") then
@@ -172,9 +290,10 @@ local function layRows(list: List, view: Profile.View)
 		end
 	end
 	table.clear(list.Rows)
+	table.clear(list.Week)
 	local days: { any } = view.Goals and view.Goals.Days or {}
 	local newest = if #days > 0 then days[#days].Day else 0
-	local y = R.Pad[1]
+	local y = layWeek(list, view, R.Pad[1])
 	-- today's first, then each banked day newest first under its heading, while any of it is left to claim
 	for i = #days, 1, -1 do
 		local day = days[i]
@@ -279,7 +398,9 @@ end
 
 local function build(list: List, view: Profile.View)
 	local lines = nextLines(view)
-	local key = `{table.concat(lines, "|")}#`
+	local now = today()
+	local held = view.Welcome
+	local key = `{table.concat(lines, "|")}#{now}:{weekShown(view, now)}:{if held then `{held.Taken}:{held.Last}` else ""}#`
 	for _, day in (view.Goals and view.Goals.Days or {}) do
 		key ..= `{day.Day}:{table.concat(day.Picks, ",")}:{table.concat(day.Have :: any, ",")}:{tostring(day.Claimed[1])}{tostring(day.Claimed[2])}{tostring(day.Claimed[3])};`
 	end
@@ -295,7 +416,9 @@ end
 
 local function card(list: List, view: Profile.View)
 	local days: { any } = view.Goals and view.Goals.Days or {}
-	list.Waits.Visible = Goals.Waits(view.Goals :: any, Defs.ById) > 0
+	local day = today()
+	local gift = weekShown(view, day) and table.find(Welcome.Row(view, day), "Today") ~= nil
+	list.Waits.Visible = gift or Goals.Waits(view.Goals :: any, Defs.ById) > 0
 	local today = days[#days]
 	for i, pip in list.Pips do
 		local id = if today then today.Picks[i] else nil
@@ -399,6 +522,7 @@ function TodayList.Attach(panel: HomePanel.Panel, act: Act)
 		Next = nextFrame,
 		Back = back,
 		Rows = {},
+		Week = {},
 		Lines = {},
 		Waits = waits,
 		Pips = pips,
@@ -523,7 +647,11 @@ function TodayList.Said(panel: HomePanel.Panel?): { [string]: any }?
 	for _, pip in list.Pips do
 		table.insert(pips, if pip.Visible then pip:GetAttribute("Kit") else "")
 	end
-	return { Shown = list.Shown, Next = table.clone(list.Lines), Rows = rows, Waits = list.Waits.Visible, Pips = pips, Back = list.Back, Thumb = list.Thumb.Visible }
+	local week = {}
+	for _, tile in list.Week do
+		table.insert(week, { Index = tile.Index, State = tile.State, Button = tile.Button })
+	end
+	return { Shown = list.Shown, Next = table.clone(list.Lines), Rows = rows, Week = week, Waits = list.Waits.Visible, Pips = pips, Back = list.Back, Thumb = list.Thumb.Visible }
 end
 
 return TodayList

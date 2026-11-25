@@ -763,6 +763,22 @@ return {
 			Day = { Tall = 22, X = 24, Y = 4, Size = 14, Colour = Color3.fromHex("#8F99A6") },
 			Thumb = { X = 366, Wide = 2, Colour = Color3.fromHex("#55607A") },
 			Switch = 0.14, -- seconds the cards and the list cross
+			-- The welcome week's row (TR59; docs/design.md, "The welcome week and codes"), a grey block for research's
+			-- verdict: under its heading at the list's head, seven tiles across the rows' width, each its day, its gift's
+			-- picture (day 7 Lyric's face from day 1) and, once taken, the check. Today's lit and taken with one tap; later
+			-- ones dim. While today's waits the card's gold rim shows, as for a goal to claim.
+			Week = {
+				Heading = "Welcome week",
+				Day = "Day",
+				Tall = 62, Gap = 4, Corner = 6,
+				-- Fade: a picture's stand-in words (Home's Word), clear by state and still 4.5:1 on its fill
+				Words = { Y = 5, Size = 12, Colour = Color3.fromHex("#AEB7C2"), Fade = { Today = 0, Later = 0.25, Taken = 0.45 } },
+				Picture = { Y = 20, Side = 34, Face = "CardFaceLyric", Shard = "ShardStandardSmall" },
+				Fill = { Later = Color3.fromHex("#2B313C"), Today = Color3.fromHex("#3A4150"), Taken = Color3.fromHex("#20252D") },
+				Dim = { Later = 0.55, Today = 0, Taken = 0.7 }, -- the picture's transparency
+				Lit = Color3.fromHex("#FFD880"), Stroke = 1.5,
+				Check = 22,
+			},
 		},
 		Word = Color3.fromHex("#F5EFE2"),
 		Shadow = { Offset = Vector2.new(0.8, 1.2), Colour = Color3.fromHex("#000000"), T = 0.45 },
@@ -942,6 +958,15 @@ return {
 		Knob = { Rest = 10, Held = 12.5, Grow = 0.08, Sheen = 0.4, Edge = 0.1, Glow = { 0.65, 0.35 }, GlowPad = 18, Ring = 36, RingAlpha = 0.15, Foot = Color3.fromHex("#D4C6FF") },
 		Divider = { Left = 106, Right = 462, Alpha = 0.4 }, -- between the rows, in the palette's Edge
 		Glow = Color3.fromHex("#D4C6FF"), -- the knob's glow, lavender
+		-- The codes (TR59; docs/design.md, "The welcome week and codes"), a grey block for research's verdict: the band's
+		-- Codes press, at its right Right points in, turns the card to the codes and back. On it, the field and its Take
+		-- press on the first row, the answer's line on the second, the note on Note's middle, in the card's points.
+		Codes = {
+			Press = { Wide = 84, Tall = 30, Right = 12 },
+			Field = { Right = 380, Tall = 34, Size = 15 },
+			Line = { Y = 150, Size = 15 },
+			Note = { Y = 268, Size = 13 },
+		},
 	},
 	-- The dock of three icons (AR12, in AR30's make: its look is Make.Dock): a touch held LongPress seconds shows the
 	-- cell's word Rise points over its glass, and lifting it then doesn't press.

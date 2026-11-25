@@ -2,7 +2,9 @@
 -- SettingsScreen (client): Settings in B (AR43, "The cut in B, for Faber"; build/handoff/UI/seam/seam.json,
 -- "settings"; docs/ui.md: Settings, music, sound, effects). Home's tall tile opens it as its own screen: Back and its
 -- title in the band, no rail, one card of three sliders on Equipment's block (Config.Hud.Settings, in the cut's points),
--- then the Broadcast's two switches (TR57), each On or Off, the whole row a press.
+-- then the Broadcast's two switches (TR57), each On or Off, the whole row a press. The band's Codes press turns the card
+-- to the codes and back (TR59, Rules.Codes): a field, its Take press ("CodeTake"), the answer's line and the note that
+-- points to the game's page, the only words Roblox allows inside a game.
 -- A slider is the kit's conduit filling with light, its knob the lit press's white, and the whole row drags it: the knob
 -- moves with the finger from where it was. Held, the knob grows from 10 to 12.5 and its ring lights, the fill's light
 -- and glow rise, and the name and the value turn to the light, over 0.08 s; each change is heard and seen at once
@@ -11,6 +13,8 @@
 --   SettingsScreen.Refresh(view)       the rows not held follow the save's copy
 --   SettingsScreen.Set(name, value)    a slider dragged to `value` and let go, as a finger would: for the tests
 --   SettingsScreen.Parts()             for the tests
+--   SettingsScreen.Codes(shown?)       the codes shown or the card again, as the band's press would: for the tests
+--   SettingsScreen.Take(typed)         a code typed and taken, as a finger would; the answer's line: for the tests
 
 local GuiService = game:GetService("GuiService")
 local UserInputService = game:GetService("UserInputService")
@@ -19,6 +23,8 @@ local Shared = game:GetService("ReplicatedStorage").Shared
 local Profile = require(Shared.Data.Profile)
 local HudConfig = require(Shared.Config.Hud)
 local Settings = require(Shared.Rules.Settings)
+local Codes = require(Shared.Rules.Codes)
+local WelcomeConfig = require(Shared.Config.Welcome)
 
 local UI = script.Parent
 local Screen = require(UI.Kit.Screen)
@@ -73,6 +79,7 @@ local parts: { [string]: Instance } = {}
 local hold: Hold? = nil
 local on: On? = nil
 local room: Frame? = nil
+local codes: { Frame: Frame?, Box: TextBox?, Line: TextLabel?, Press: TextButton?, Shown: boolean } = { Shown = false }
 
 local function lerp(a: number, b: number, u: number): number
 	return a + (b - a) * u
@@ -363,6 +370,104 @@ local function switchMade(parent: Frame, k: number, name: string): Frame
 	return frame
 end
 
+-- The codes' words (docs/design.md, "The welcome week and codes"; the answers' are Rules.Codes.Words).
+local CODE_SAID = {
+	Press = "Codes",
+	Field = "Type a code",
+	Take = "Take",
+	Note = "New codes come with each update. See the game's page.",
+}
+
+-- A typed code taken: the answer's line, lit when it's taken.
+local function take(): boolean
+	local handle, box, line = on, codes.Box, codes.Line
+	if handle == nil or box == nil or line == nil then
+		return false
+	end
+	local answer = handle.Act("CodeTake", { Code = box.Text })
+	line.Text = Codes.Said(answer)
+	line.TextColor3 = if answer.Ok == true then LIGHT else SEAM.Soft
+	if answer.Ok == true then
+		box.Text = ""
+	end
+	return answer.Ok == true
+end
+
+-- The codes, in the card's place: the field and its Take press, the answer's line, the note. Hidden until the band's
+-- press shows them.
+local function codesMade(parent: Frame): Frame
+	local C, N, V = S.Codes, S.Name, S.Value
+	local frame = Instance.new("Frame")
+	frame.Name = "Codes"
+	frame.BackgroundTransparency = 1
+	frame.Size = UDim2.fromScale(1, 1)
+	frame.ZIndex = 3
+	frame.Visible = false
+	frame.Parent = parent
+	local middle = Y(S.Rows[1])
+	local box = Instance.new("TextBox")
+	box.Name = "Field"
+	box.Text = ""
+	box.PlaceholderText = CODE_SAID.Field
+	box.ClearTextOnFocus = false
+	box.TextXAlignment = Enum.TextXAlignment.Left
+	box.FontFace = Font.new("rbxasset://fonts/families/BuilderSans.json", Enum.FontWeight.Bold)
+	box.TextSize = C.Field.Size
+	box.TextColor3 = SEAM.Text
+	box.PlaceholderColor3 = SEAM.Soft
+	box.BackgroundColor3 = SEAM.Facet
+	box.BorderSizePixel = 0
+	box.Position = UDim2.fromOffset(X(N.X), middle - C.Field.Tall / 2)
+	box.Size = UDim2.fromOffset(C.Field.Right - N.X, C.Field.Tall)
+	box.ZIndex = 4
+	local corner = Instance.new("UICorner")
+	corner.CornerRadius = UDim.new(0, 6)
+	corner.Parent = box
+	local inset = Instance.new("UIPadding")
+	inset.PaddingLeft = UDim.new(0, 10)
+	inset.Parent = box
+	box.Parent = frame
+	box:GetPropertyChangedSignal("Text"):Connect(function() -- never past the most, as it's typed
+		if #box.Text > WelcomeConfig.Codes.Most then
+			box.Text = string.sub(box.Text, 1, WelcomeConfig.Codes.Most)
+		end
+	end)
+	box.FocusLost:Connect(function(entered: boolean)
+		if entered then
+			take()
+		end
+	end)
+	local W = S.Switch
+	local press = Look.Press(frame, "Take", X(V.Right) - W.Wide, middle - W.Tall / 2, W.Wide, W.Tall, take, 14)
+	Look.Dress(press, "Lit", CODE_SAID.Take)
+	local line = Look.Text(frame, "Line", "", C.Line.Size, SEAM.Soft, X(N.X), Y(C.Line.Y) - C.Line.Size / 2, "Left", true, 4, V.Right - N.X)
+	local note = Look.Text(frame, "Note", CODE_SAID.Note, C.Note.Size, SEAM.Soft, X(N.X), Y(C.Note.Y) - C.Note.Size / 2, "Left", false, 4, V.Right - N.X)
+	note.TextWrapped = true
+	codes.Frame, codes.Box, codes.Line, codes.Press = frame, box, line, press
+	return frame
+end
+
+-- The codes in the card's place, or the card again.
+local function showCodes(shown: boolean)
+	local block = room
+	if block == nil then
+		return
+	end
+	codes.Shown = shown
+	for _, child in block:GetChildren() do
+		if child.Name == "Divider" or string.sub(child.Name, 1, 3) == "Row" then
+			(child :: GuiObject).Visible = not shown
+		end
+	end
+	if codes.Frame then
+		codes.Frame.Visible = shown
+	end
+	local press = parts.CodesPress
+	if press and press:IsA("TextButton") then
+		Look.Dress(press, if shown then "Lit" else "Quiet", CODE_SAID.Press)
+	end
+end
+
 local function divider(parent: Instance, y: number)
 	local D = S.Divider
 	local line = Instance.new("Frame")
@@ -382,6 +487,7 @@ function SettingsScreen.Open(given: On)
 	table.clear(rows)
 	table.clear(switches)
 	table.clear(parts)
+	codes = { Shown = false }
 	local body = Screen.Full(SettingsScreen.Name, "Settings", "SeamGlass")
 	parts.Body = body
 	Glass.Ground(body, 1)
@@ -409,6 +515,18 @@ function SettingsScreen.Open(given: On)
 	end
 	for j, name in Settings.Switches do
 		parts[`Row{name}`] = switchMade(made, #Settings.Levels + j, name)
+	end
+	parts.Codes = codesMade(made)
+	if band then
+		local P = S.Codes.Press
+		local press = Look.Press(band, "CodesPress", 0, 0, P.Wide, P.Tall, function(): boolean
+			showCodes(not codes.Shown)
+			return true
+		end, 4)
+		press.AnchorPoint = Vector2.new(1, 0.5)
+		press.Position = UDim2.new(1, -P.Right, 0.5, 0)
+		Look.Dress(press, "Quiet", CODE_SAID.Press)
+		parts.CodesPress = press
 	end
 	rowsIn()
 	local moved = UserInputService.InputChanged:Connect(function(input: InputObject)
@@ -473,6 +591,19 @@ end
 
 function SettingsScreen.Parts(): { [string]: Instance }
 	return parts
+end
+
+function SettingsScreen.Codes(shown: boolean?)
+	showCodes(if shown == nil then not codes.Shown else shown)
+end
+
+function SettingsScreen.Take(typed: string): string
+	if codes.Box == nil or codes.Line == nil then
+		return ""
+	end
+	(codes.Box :: TextBox).Text = typed
+	take()
+	return (codes.Line :: TextLabel).Text
 end
 
 return SettingsScreen

@@ -269,7 +269,17 @@ return {
 					t.Check(`{label}: rides one thing`, row.On == nil or row.Body == nil)
 					t.Check(`{label}: counts from a beat of its action`, row.From == nil or (action ~= nil and action.Beats[row.From] ~= nil), tostring(row.From))
 					t.Check(`{label}: rides a body only in an action's effect, or one played on a body`, row.Body == nil or action ~= nil or EffectsConfig.Lasting[effectName] ~= nil)
-					for _, ref in { row.Low, row.High } do
+					-- a beam's High may be its effect's target as it stands (AR58's link: Effects.Once's target), no row's end
+					t.Check(`{label}: only a beam ends at its target`, row.High ~= "Target" or row.Kind == "Beam")
+					local reach = row.Tracks.Reach
+					if reach then
+						for _, key in reach do
+							t.Check(`{label}: its Reach a share of the way, 0 to 1`, row.Kind == "Beam" and type(key[2]) == "number" and key[2] >= 0 and key[2] <= 1, tostring(key[2]))
+						end
+					end
+					local refs: { string? } = { row.Low, if row.High ~= "Target" then row.High else nil }
+					for _, named in refs do
+						local ref = named :: string
 						local parts = string.split(ref, ".")
 						local other = effect.Rows[parts[1]]
 						t.Check(`{label}: hangs on a beam's end, {ref}`, other ~= nil and other.Kind == "Beam" and (parts[2] == "Low" or parts[2] == "High"))

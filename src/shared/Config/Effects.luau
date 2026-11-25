@@ -26,9 +26,10 @@
 --   Tracks   At (Vector3: on a row, in its unit space; else studs), Scale (Vector3, the mesh's unit size times it; a
 --            number for all three), Spin (degrees round up, negative clockwise from above), Tilt (Vector3, degrees),
 --            Transparency, Glow (a look's emissive strength), Color, Size (a card's studs), Brightness, Rate, Radius (an
---            emitter's disc, in its row's unit space); a Beam's Width, Foot, Top, Spike and Lag.
+--            emitter's disc, in its row's unit space); a Beam's Width, Foot, Top, Spike, Lag and Reach.
 --   Beam ends: Low is Foot studs up its place, or another Beam's end ("Shaft.High"); High is Top studs up its place, or
---            Spike studs over Low, or another's end. Trail { Back, Beyond }: from its point Back studs behind it along its
+--            Spike studs over Low, or another's end, or "Target": where the effect's target stands each frame (no target, no
+--            beam). Reach: the share of the way from Low to High it's drawn out to (none: all of it). Trail { Back, Beyond }: from its point Back studs behind it along its
 --            motion, to where it was Lag frames before and Beyond studs further. Like: another Beam whose Width and
 --            Transparency it takes when it has none (footed on its top, the width there). FootFade: studs from Low over
 --            which it fades in. Taper: the width at High as a share of the width at Low.

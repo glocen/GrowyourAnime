@@ -490,8 +490,25 @@ function ShadeCases.Cases(given: Given): { any }
 						table.insert(heals, heal)
 					end
 				end)
+				local shields: { any } = {}
+				local onShield = Net.Client.On("Shield", function(shield: any)
+					if type(shield) == "table" and shield.A == healer and shield.T == brawler then
+						table.insert(shields, shield)
+					end
+				end)
 				local function casting(): boolean
 					return healer:GetAttribute("Action") == "SupportCast"
+				end
+				-- AR58's link, once its rows are taken: the beam from the healer's light to the one its cast lands on
+				local rowsLink = (EffectsConfig.Rows :: any).SupportLink ~= nil
+				local linkWas: any = nil
+				local function linkMark()
+					local view = FighterController.Views[healer]
+					linkWas = if view then view.Link else nil
+				end
+				local function linked(): boolean
+					local view = FighterController.Views[healer]
+					return view ~= nil and view.Link ~= nil and view.Link ~= linkWas
 				end
 				-- Its looks: Scintilla's rows once written and switched on (AR58), else SlamController's grey stand-ins.
 				local lookName = seeds.Shield.Look
@@ -513,6 +530,7 @@ function ShadeCases.Cases(given: Given): { any }
 				end
 				local ok, err = pcall(function()
 					-- Whole and engaged: its first cast shields it.
+					linkMark()
 					t.Check("it casts in the fight", waitFor(t, SHADE_TIMEOUT, casting))
 					local castAt = healer:GetAttribute("ActionAt")
 					local shielded = waitFor(t, cast.Beats.Cast + REPLICATE, function(): boolean
@@ -524,6 +542,12 @@ function ShadeCases.Cases(given: Given): { any }
 						local up = brawler:GetAttribute("ShieldUntil") :: number
 						t.Near("for Shield.Seconds from its Cast beat (s)", up - castAt, cast.Beats.Cast + seeds.Shield.Seconds, 0.1)
 						t.Check("its shield's look stands round it", waitFor(t, 0.5, veiled))
+						t.Check("every client is told who shielded it, on its Cast beat", waitFor(t, 0.5, function(): boolean
+							return #shields > 0
+						end) and shields[1].Beat == cast.Support, `{#shields} shields`)
+						if rowsLink then
+							t.Check("the link plays from the healer to it", waitFor(t, 0.5, linked))
+						end
 					end
 					-- Between casts: further from the lead than the Brawler.
 					waitFor(t, cast.Length + 1, function(): boolean
@@ -551,9 +575,12 @@ function ShadeCases.Cases(given: Given): { any }
 					end
 					-- Hurt: its next cast mends it, by Heal of its most.
 					t.Server("FoeHealth", brawler:GetAttribute("Fighter"), HURT)
+					linkMark()
 					local popped = false
+					local linking = false
 					local mended = waitFor(t, cast.Cooldown + REPLICATE, function(): boolean
 						popped = popped or mendShown()
+						linking = linking or (rowsLink and linked())
 						return #heals > 0
 					end)
 					t.Check("the hurt Brawler is mended", mended)
@@ -561,6 +588,9 @@ function ShadeCases.Cases(given: Given): { any }
 						local heal = heals[1]
 						t.Near("by Heal of its most", heal.Amount, seeds.Heal * heal.MaxHealth, heal.MaxHealth * 0.01)
 						t.Check("its mend's look plays on it", popped or waitFor(t, 0.3, mendShown))
+						if rowsLink then
+							t.Check("and the link from the healer to it", linking or waitFor(t, 0.3, linked))
+						end
 					end
 					-- Alone: it swings at the lead.
 					t.Server("FightDefeat", brawler:GetAttribute("Fighter"))
@@ -569,6 +599,7 @@ function ShadeCases.Cases(given: Given): { any }
 					end))
 				end)
 				onHeal:Disconnect()
+				onShield:Disconnect()
 				t.Server("FightSpawn")
 				if not ok then
 					error(err, 0)

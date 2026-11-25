@@ -46,7 +46,7 @@ export type Player = {
 export type Options = {
 	Body: Model?, -- what Body rows ride and Glow rows light
 	Marks: { [string]: number }?, -- the frames of its action's beats from the action's start, for each row's From
-	Target: (() -> BasePart?)?, -- where its action's target stands, for a Streak row
+	Target: (() -> BasePart?)?, -- where its action's target stands, for a Streak row, and a Beam row's High = "Target"
 	Hits: { [string]: Actions.Hit }?, -- its action's hits by beat: a Streak row's on its From beat sets its width
 	Cooldown: number?, -- seconds from its action's start until it may start again, for a Relight row
 	-- Runs a step each frame with the seconds since it began, until it says false, then `done`: what a streak or a
@@ -213,8 +213,12 @@ type Piece = {
 	Lit: SurfaceAppearance?, -- a Relight row's look on the body
 }
 
--- The row a ref names: "Shaft.High" is the Shaft's.
-local function refRow(ref: string): string
+-- The row a ref names: "Shaft.High" is the Shaft's. "Target" is no row's: the options' target (AR58's link).
+local TARGET = "Target"
+local function refRow(ref: string): string?
+	if ref == TARGET then
+		return nil
+	end
 	return (string.split(ref, ".")[1])
 end
 
@@ -227,9 +231,11 @@ local function ordered(rows: { [string]: EffectsConfig.Row }): { string }
 		end
 		assert(depth < 16, `rows ride in a loop at "{name}"`)
 		local row = rows[name]
-		for _, other in { row.On, row.Like, if row.Low then refRow(row.Low) else nil, if row.High then refRow(row.High) else nil } do
-			assert(rows[other], `row "{name}" hangs on "{other}", which isn't a row`)
-			place(other, depth + 1)
+		local hangs: { string? } = { row.On, row.Like, if row.Low then refRow(row.Low) else nil, if row.High then refRow(row.High) else nil }
+		for _, other in hangs do
+			local on = other :: string
+			assert(rows[on], `row "{name}" hangs on "{on}", which isn't a row`)
+			place(on, depth + 1)
 		end
 		placed[name] = true
 		table.insert(order, name)
@@ -666,9 +672,19 @@ function Rows.Play(name: string, anchor: CFrame, scale: number, options: Options
 					local foot = if row.Low then refPoint(row.Low) else piece.Frame.Position + up * (Track.Value(tracks.Foot, t) or 0) * studs
 					local spike = Track.Value(tracks.Spike, t)
 					low = foot
-					high = if row.High then refPoint(row.High)
-						elseif spike then foot + up * spike * studs
-						else piece.Frame.Position + up * (Track.Value(tracks.Top, t) or 0) * studs
+					if row.High == TARGET then -- at the target as it stands this frame; none (or gone): no beam
+						local find = given.Target
+						local target = if find then find() else nil
+						high = if target and target.Parent then target.Position else nil
+					else
+						high = if row.High then refPoint(row.High)
+							elseif spike then foot + up * spike * studs
+							else piece.Frame.Position + up * (Track.Value(tracks.Top, t) or 0) * studs
+					end
+					local reach = Track.Value(tracks.Reach, t) -- the share of the way from Low to High it's drawn out to
+					if reach and high then
+						high = foot + (high - foot) * reach
+					end
 				end
 				local on = shown and not piece.Blank and width > 0 and fade < 1 and low ~= nil and high ~= nil
 				if low and high then

@@ -41,14 +41,25 @@ local player = Players.LocalPlayer
 local CATCH = { OwnPace = 0.08, Over = 0.12, Limit = 0.25 }
 local WALK_SMOOTHING = 10 -- a second's share the walk's speed follows the body by: about a tenth of a second
 
+-- AR58's link: the beam from a Support's light to the one its cast lands on, a heal or a shield (Scintilla's rows).
+local function link(caster: View?, given: View)
+	if caster and caster ~= given and caster.Model.Parent then
+		caster.Link = Effects.Once("SupportLink", caster.Model, function(): BasePart?
+			return given.Root
+		end)
+	end
+end
+
 -- The look of a heal (Actions.Hit.Heal) on the body it mends, by the healer's action.
-local HEALS: { [string]: (healed: View) -> () } = {
+local HEALS: { [string]: (healed: View, healer: View?) -> () } = {
 	LyricHeldNote = function(healed: View)
 		Effects.HealRing(healed.Root)
 	end,
-	-- AR58's mend: a ring of light climbs the mended one from its feet (Scintilla's rows; SlamController's grey pop without)
-	SupportCast = function(healed: View)
+	-- AR58's mend: a ring of light climbs the mended one from its feet (Scintilla's rows; SlamController's grey pop
+	-- without), and the link to it from the healer's light
+	SupportCast = function(healed: View, healer: View?)
 		healed.Mend = Effects.Once("SupportHeal", healed.Model)
+		link(healer, healed)
 	end,
 }
 
@@ -120,6 +131,7 @@ type View = {
 	Looks: { [string]: Rows.Player }, -- a hit's rows looks riding it now, by name (Effects.Lasting): Ground Wire's stop
 	Outline: { Name: string, Holds: () -> boolean }?, -- a hit's outline look worn now (Config.Effects.Outlines): his shield
 	Mend: Rows.Player?, -- the last mend's look played on it (HEALS), for the self-test
+	Link: Rows.Player?, -- the last link it cast (AR58: a heal's or a shield's), for the self-test
 	StunLook: string?, -- the stun's look and the server time it ends, kept from its start (a freeze's break)
 	StunEnds: number?,
 	Broke: Rows.Player?, -- the last freeze's break played on it, for the self-test
@@ -1230,7 +1242,7 @@ local function onHeal(heal: any)
 	local press = `heal:{pressOf(heal.A)}`
 	local function land()
 		if look then
-			look(healed)
+			look(healed, healer)
 		end
 		if (isMine(healer) or isMine(healed)) and heal.Amount >= 0.5 then
 			Effects.Number(healed.Root, press, heal.Amount, { Style = "Heal" }, Combat.Numbers)
@@ -1239,6 +1251,27 @@ local function onHeal(heal: any)
 	-- An ally's heal shows when the beat's crest reaches it, as a hit does (TR3; AR4 section 10). The healer's own, at once.
 	if healer and healer ~= healed and type(heal.Beat) == "string" then
 		if drawnBy(healer, heal.Beat, healer.Model:GetAttribute("ActionAt"), healed, land, false) then
+			return
+		end
+	end
+	land()
+end
+
+-- A Support's cast shielded an ally (AR58): the link from its light to the shielded, when the beat's crest reaches it, as
+-- a heal's. The shield's own look is the ally's ShieldLook, worn from its ShieldUntil.
+local function onShield(shield: any)
+	if type(shield) ~= "table" then
+		return
+	end
+	local caster, shielded = views[shield.A], views[shield.T]
+	if caster == nil or shielded == nil then
+		return
+	end
+	local function land()
+		link(caster, shielded)
+	end
+	if caster ~= shielded and type(shield.Beat) == "string" then
+		if drawnBy(caster, shield.Beat, caster.Model:GetAttribute("ActionAt"), shielded, land, false) then
 			return
 		end
 	end
@@ -1276,6 +1309,7 @@ function FighterController.Start()
 	end
 	Net.Client.On("Hit", onHit)
 	Net.Client.On("Heal", onHeal)
+	Net.Client.On("Shield", onShield)
 	player:GetAttributeChangedSignal("Replay"):Connect(function()
 		task.delay(0.15, onReplay) -- once the avatar's move has reached this client and the camera has followed it
 	end)

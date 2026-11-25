@@ -1470,13 +1470,14 @@ function Effects.Lasting(name: string, body: Model, holds: () -> boolean, done: 
 end
 
 -- A look played once on a body, on the effects' clock (no action's beats count it): its rows from the foot where the body
--- stands now, upright, riding the body to their end, or until it's gone. AR58's mend (HEALS). Nil when no rows are written.
-function Effects.Once(name: string, body: Model): Rows.Player?
+-- stands now, upright, riding the body to their end, or until it's gone. AR58's mend (HEALS). `target`: where a Beam row's
+-- High = "Target" ends, as it stands each frame (AR58's link). Nil when no rows are written.
+function Effects.Once(name: string, body: Model, target: (() -> BasePart?)?): Rows.Player?
 	local written = (EffectsConfig.Rows :: any)[name] :: EffectsConfig.Rows?
 	if written == nil then
 		return nil
 	end
-	local rows = Rows.Play(name, footOf(body), body:GetScale() / written.Area, { Body = body, Run = run })
+	local rows = Rows.Play(name, footOf(body), body:GetScale() / written.Area, { Body = body, Run = run, Target = target })
 	run(function(age: number): boolean
 		return body.Parent ~= nil and rows.Step(age / FRAME)
 	end, rows.Destroy)

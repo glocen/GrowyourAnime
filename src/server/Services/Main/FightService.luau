@@ -1717,7 +1717,8 @@ local function supportPick(f: Fighter, cast: Actions.Action, mates: { Fighter },
 end
 
 -- Its cast's beat (Actions' Support): the one Rules.Support.Pick names as things stand now gets Heal of its most back, or a
--- shield. The heal goes to every client as a Heal, the healer `f`; the shield is the ally's ShieldUntil and ShieldLook.
+-- shield. The heal goes to every client as a Heal, the healer `f`; the shield is the ally's ShieldUntil and ShieldLook,
+-- and a Shield to every client names its caster, for the link (AR58).
 local function cast(f: Fighter, action: Actions.Action, at: number)
 	local ally, does = supportPick(f, action, packmates(f), at)
 	if ally == nil then
@@ -1735,6 +1736,7 @@ local function cast(f: Fighter, action: Actions.Action, at: number)
 		ally.Shield = { Share = shield.Share, Until = at + shield.Seconds }
 		ally.Model:SetAttribute("ShieldLook", shield.Look) -- before its time: its look's name
 		ally.Model:SetAttribute("ShieldUntil", at + shield.Seconds)
+		Net.Server.FireAll("Shield", { A = f.Model, T = ally.Model, Beat = action.Support })
 	end
 end
 

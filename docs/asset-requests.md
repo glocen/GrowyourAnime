@@ -17066,6 +17066,12 @@ Paint-overs on one frame of the game, in `build/handoff/Support/targets/`, each 
   - The Support case in Studio: 20/20 before the fixes (the link on the shield and on the mend), and 20/20 again after them (11.7 s, 60 fps).
   - Logic offline: 38,093 passed (Faber's run, 6fd3b131).
 - **Status:** implemented; tested (Track case, the Support case); visually reviewed by me only, research's checkpoint next; not director-accepted. **For Faber's review:** the four rows files and `tools/fx/support_looks.py`.
+- **Research's quarter checkpoint, 2026-11-25, 23:18.** **Felt:** the link reads, long and clean from the side. But the mend's peak is a thin white star where A's is a mint mass, and the veil reads only by its two rims. Read beside the targets in `checkpoint/` at the strips' size (about 285 px a frame), in both orders. No greyscale measure yet.
+  - **Must-fix 1, the mend's mass (the focal point; class: the burst's technique).** A's peak is a mint glow filling the chest, with the dome round it. The build's is needles with no mass, and its dome is only a ring. That misses the main read, so the technique changes, not the numbers: for instance, a soft mint glow behind the star for the mass, and the dome as a real shell (a sphere, not a card).
+  - **Must-fix 2, mint over white (colour; class: every Support light).** The beam, the needles and the ribbons read white on the pale deck where the targets read mint. Mint carries each shape; white is only its core.
+  - **Must-fix 3, the caster's light (the main read's second half).** A's held light is a lit mint ball between the sleeves. The build's is a glint, lost at the strip's size.
+  - **Must-fix 4, the veil's walls (shape).** Its ribbons are thin and pale, so the column reads only by its rims; S2's are broad mint bands.
+  - **Passes:** the link from both angles (short from the front camera, as in the target), the ground ring, the veil's rims, and the timing at the targets' frames.
 
 ## AR59. Rook, redesigned to the anime bar (Modulo, for research's pick and the director's look, then its finish; Faber's install after)
 
@@ -17445,6 +17451,10 @@ Scintilla's first piece, on the director's order of 2026-11-23 ("Shared kit firs
   - The crescent reads as a slash: a blade's, weaker on a ram.
   - The pop's ring reads partly as a reticle.
 - **Next:** the dark yard's frame in my next Studio turn, for the flash guard's read in the dark (the content check's condition 3).
+- **Research's pick, 2026-11-25, 23:18: the star.** Read in pairs on `phone_deck/`'s peaks and squint, and each technique's rungs.
+  - **Star over crescent:** the crescent reads as a blade's slash, which is wrong on Rook's ram and on every blunt blow the shared kit carries. A class's blade strike may take it up (queue item 4).
+  - **Star over pop:** the pop's ring reads as a reticle at every rung, and its round core has no direction, when the job is "landed, and which way". The star's needles carry the way, and rung 4's gold nine arms read as a critical at once.
+  - **Watch at the quarter checkpoint:** rungs 2 and 3 are small and white, and hold here only against the Brawler's dark body. Judge a hit with the pale deck behind it, and the dark yard's frame. Rung 3 must read as a step up from 2 (its ring), and on this sheet it barely does.
 
 - **Status, 2026-11-24, 10:48:** implemented as data, not shown in the game. Tested: offline logic only. Visually reviewed: no. Director-accepted: no. **For Faber's review:** the three rows files and `tools/fx/hit_sparks.py`.
 

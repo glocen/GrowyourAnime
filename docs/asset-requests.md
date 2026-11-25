@@ -17081,6 +17081,10 @@ Paint-overs on one frame of the game, in `build/handoff/Support/targets/`, each 
   - **3, the caster's light:** a lit mint ball, without the target's bloom.
   - **4, the veil:** broad mint bands, beside S2's.
   - **Status:** implemented. Tested: the rows case, 7,132 passed. Visually reviewed by me only: 2 to 4 pass in my read, and 1 waits on my next turn. Not director-accepted. **For Faber's review:** the four rows files and `tools/fx/support_looks.py`.
+- **Research's second look, 2026-11-26, 00:04, on what changed only:**
+  - **2, 3 and 4 pass:** the beam is mint with a white thread. The caster holds a lit mint ball. At the strip's size the veil reads as a mint column with its crown and hoop.
+  - **1's technique passes where it draws:** `next_mend_close.png`, its second row, carries A's peak: the white star, the mint mass and the shell round the body.
+  - **1 closes on the next take, in play:** the first mend of a session draws its star and glow (after `Rows.Warm`), and from the front camera the flash stands clear of the body. Nothing else is open.
 
 ## AR59. Rook, redesigned to the anime bar (Modulo, for research's pick and the director's look, then its finish; Faber's install after)
 

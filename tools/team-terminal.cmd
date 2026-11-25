@@ -18,7 +18,7 @@ rem Research gets no first message: the director talks to it. To add a teammate,
 rem and add its role to roles.json.
 set "TEAM=wt -w 0 new-tab --title Quaestor -d "%CD%" "%CLAUDE%" -n Quaestor --model opus --effort xhigh %BASE%"
 set "TEAM=%TEAM% ; new-tab --title Faber -d "%CD%" "%CLAUDE%" -n Faber --model opus --effort xhigh %BASE% /ga-start"
-set "TEAM=%TEAM% ; new-tab --title Modulo -d "%CD%" "%CLAUDE%" -n Modulo --model fable --effort high %BASE% go"
+set "TEAM=%TEAM% ; new-tab --title Modulo -d "%CD%" "%CLAUDE%" -n Modulo --model opus --effort xhigh %BASE% go"
 rem Effects and sound joined on 2026-11-23 (AGENTS.md, "The team"). Each starts from its brief.
 set "TEAM=%TEAM% ; new-tab --title Scintilla -d "%CD%" "%CLAUDE%" -n Scintilla --model opus --effort xhigh %BASE% "go: your brief is docs/briefs/effects.md""
 set "TEAM=%TEAM% ; new-tab --title Sonus -d "%CD%" "%CLAUDE%" -n Sonus --model opus --effort xhigh %BASE% "go: your brief is docs/briefs/sound.md""

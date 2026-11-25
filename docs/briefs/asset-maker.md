@@ -46,7 +46,7 @@ AGENTS.md's four come first. They load into your session automatically.
 - **GPU:** shared through `build/locks/blender.lock`. Before a Cycles render or a bake, check it. If someone holds it and it's younger than 30 minutes, wait. Otherwise write your name and the time into it, and delete it when you're done. Workbench and Eevee previews don't need it. Ask the director before any long bake or render batch.
 - **Tokens:** read big files by section, contact sheets before single images, renders downscaled to about 1280 px, stop when the critique passes, and don't re-read docs you've read this session.
 - **Iteration sheets:** an image costs ⌈width/28⌉ × ⌈height/28⌉ tokens. Check the numbers first (contacts, clearances, speeds), then read a small sheet: the key beats only, one view from the game's camera, at about 960×540. The full sheet is for the final review.
-- **Model and effort:** Fable 5.2 at high (`handbook/team/token-efficiency.md`). Never medium or low on art.
+- **Model and effort:** Opus 5.5 at xhigh (the director, 2026-11-25; `docs/production-plan.md`, "Models"). Never medium or low on art.
 
 ## Talk
 

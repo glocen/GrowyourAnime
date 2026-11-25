@@ -6,7 +6,7 @@ Each teammate rewrites its own row: one to three lines. Open asks sit under "Wai
 
 **Quaestor (research).** 2026-11-24, 21:21, on Opus 5.5, on the PC, stopped at the director's wrap-up. The cloud's work is merged (33a1ea55). The new way is in force on the director's answers of 20:50 and 20:52 (the notice below). Done tonight: AR58's pass in motion (the shield holds; who casts doesn't read, so Scintilla's targets come next), AR56's pass (one must-fix, Faber's fix next to see), AR58's seeds, the fall card.
 - **Next:** research picks AR64's hair targets, then AR62's frames (the director, 21:13); AR56's slab; TR54's second look; AR58's targets when Scintilla brings them.
-- **With the director:** the phone sitting and F7; TR52's run; item 10, the hooks; the store's design.
+- **With the director:** the phone sitting and F7; TR52's run; the store's design.
 
 **Faber (builder).** 2026-11-25, 01:04, on Opus 5.5, stopped at the director's "we are done". Nothing running, no lock held, no Studio open. Done: a live UI study of Anime Crusaders X at the director's ask, `docs/research/anime-crusaders-ui.md`. **For research:** three of the director's words in it to record: the count of how many of a fighter exist ("we need this", tier 2), summon versus shard breaking (a question about the core, my answer is in the study), and skill effects "that simple".
 - **Next:** harden AR12's and the battery's cases against an empty base, and find what left the four bays empty; the Dasher's flaky lunge (AR52); then TR57, from my cloud branch's Rules.Broadcast, set to research's seeds.
@@ -45,15 +45,9 @@ For Faber:
 8. **Pick the slam's rule by playing it** (TR44): Off, A or B. In Studio's Play, start a keeper's try. The Server command bar switches the mode mid-fight: `game.ServerStorage.NL_Debug:Invoke("Slam", nil, "A")` (or `"B"`, `"Off"`), and `Invoke("Slam")` reads the counts. In A, walk out of the ring and your fighter follows; in B, press the round Recall button or R. Research reads a phone take of each first: say go and I record it (the PC's memory stopped it tonight).
 9. **The Festival's place, after the main map and the systems** (TR45; your word of 2026-11-23, 00:05: the team has full access to it). When its work opens, the Creator Dashboard's settings stay yours to confirm: its name (Faber's suggestion: Festival of Battles), its server size 8, and its Direct Access set to "Secure within universe only". Then the id goes into `CLAUDE.md`'s "Places".
 
-10. **The hooks for the new seats.** Research relays your yes of 14:50 to two teammates. Their hooks are permission settings, and a relayed word can't change those, so Faber waits for yours. The change, in `.claude/hooks/`:
-    - `Effects` (`^Scintilla`) and `Sound` (`^Sonus`) in `config/roles.json`;
-    - their briefs in `hooks.json`'s drift guard;
-    - Studio's playtest tools for both in `tools.json`: start and stop, run code, the input tools, as research has;
-    - Effects among the uploaders in `open_cloud_guard.py`, so Scintilla uploads under the group with its key, inside the guard's own limits (a new asset only, from `build/upload/`, at price 0).
-    - Until then their Studio calls are blocked.
-
 ### Notices
 
+- **The director, 2026-11-25, by 21:32, to research, for Modulo:** Modulo runs on Opus 5.5 now, at xhigh (research's pick, at the director's word: `docs/production-plan.md`, "Models"). Set in `tools/team-terminal.cmd`, Faber's launcher, edited by research at the director's ask.
 - **The director, 2026-11-24, 21:26, for everyone:** "only modulo will keep working and redesign the voidkin + ui it unreadable for players and ugly we need to study". Tonight only Modulo works: the study, then the redesign's targets (AR62). Everyone else commits and stops.
 - **The director, 2026-11-24, 20:50 and 20:52, for everyone: target first, verdicts in pairs** (`AGENTS.md`, "Every action, world, effect and screen" and "One style frame"; `docs/decisions.md`, the top rows):
   - Every piece players see starts with two or three targets at final quality, in the game, in at most 3 h. **Research picks every target** in pairs against the director's examples (the director, 21:13: "it js need to be good"); the director judges results in the game. Until the pick, start your next piece.

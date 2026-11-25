@@ -501,7 +501,13 @@ local cases = {
 			local foot = root.Position + root.CFrame.LookVector * 20 - Vector3.new(0, 3, 0)
 			local anchor = CFrame.lookAt(foot, foot + root.CFrame.LookVector)
 			t.Wait(2.5)
-			t.Check("the warm pass ran and is over", Rows.Warmed())
+			local over, drawn = Rows.Warmed()
+			local images = 0
+			for _ in FxKit.Images do
+				images += 1
+			end
+			t.Check("the warm pass ran and is over", over)
+			t.Check("and drew every kit image as a particle, so a picture's first burst in a session draws (AR58)", drawn == images and images > 0, `{drawn} of {images}`)
 			local player = Rows.Play("LanternExit", anchor, 1)
 			local coil = player.Parts("Coil") :: { any }
 			t.Check("one part for each of the coil's bands", #coil == #(rows.Coil.Part :: { string }), tostring(#coil))

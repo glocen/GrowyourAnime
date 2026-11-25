@@ -791,8 +791,13 @@ end
 
 -- Every kit image the rows use, and every kit mesh and look drawn once, unseen, so the first effect draws whole (AR8, "On
 -- a phone"). The parts sit under a pixel in front of the camera, nearly clear, for WARM_SECONDS. Once per session.
+-- Each kit image is drawn as a particle and as a beam too: fetched alone, a picture's first particle in a session drew
+-- nothing, the session's first mend losing its flash and needles while the second had both (Scintilla's join test,
+-- AR58, 2026-11-25). One nearly clear particle of each, re-emitted every WARM_EMIT seconds through the warm.
+local WARM_EMIT = 0.25
 local warmed = false
 local warming: Folder? = nil
+local warmedImages = 0 -- the kit images drawn as particles in the warm, for the self-test
 function Rows.Warm()
 	if warmed then
 		return
@@ -832,7 +837,7 @@ function Rows.Warm()
 		holder.Name = "NL_RowsWarm"
 		holder.Parent = camera
 		warming = holder
-		local parts: { MeshPart } = {}
+		local parts: { BasePart } = {}
 		for index = 1, math.max(#meshes, #looks) do
 			local part = meshes[(index - 1) % #meshes + 1]:Clone() :: MeshPart
 			part.Size = Vector3.one * WARM_SIZE
@@ -842,11 +847,50 @@ function Rows.Warm()
 			part.Parent = holder
 			table.insert(parts, part)
 		end
+		local emitters: { ParticleEmitter } = {}
+		for _, image in FxKit.Images do
+			local part = Instance.new("Part")
+			part.Name = "NL_WarmImage"
+			part.Anchored = true
+			part.CanCollide, part.CanQuery, part.CanTouch, part.CastShadow = false, false, false, false
+			part.Transparency = 1
+			part.Size = Vector3.one * WARM_SIZE
+			local low, high = Instance.new("Attachment"), Instance.new("Attachment")
+			high.Position = Vector3.new(WARM_SIZE, 0, 0)
+			low.Parent, high.Parent = part, part
+			local emitter = Instance.new("ParticleEmitter")
+			emitter.Texture = image.Id
+			emitter.Rate = 0
+			emitter.Lifetime = NumberRange.new(WARM_EMIT)
+			emitter.Speed = NumberRange.new(0)
+			emitter.Size = NumberSequence.new(WARM_SIZE)
+			emitter.Transparency = NumberSequence.new(0.98)
+			emitter.LightEmission = 0
+			emitter.LockedToPart = true
+			emitter.Parent = low
+			local beam = Instance.new("Beam")
+			beam.Texture = image.Id
+			beam.Attachment0, beam.Attachment1 = low, high
+			beam.Width0, beam.Width1 = WARM_SIZE, WARM_SIZE
+			beam.Transparency = NumberSequence.new(0.98)
+			beam.Parent = part
+			part.Parent = holder
+			table.insert(parts, part)
+			table.insert(emitters, emitter)
+		end
 		local began = os.clock()
+		local emitted = -math.huge
 		while os.clock() - began < WARM_SECONDS and holder.Parent do
 			local view = (workspace.CurrentCamera :: Camera).CFrame
 			for index, part in parts do
 				part.CFrame = view * CFrame.new((index - #parts / 2) * WARM_SIZE * 1.5, 0, -WARM_AHEAD)
+			end
+			if os.clock() - emitted >= WARM_EMIT then
+				emitted = os.clock()
+				for _, emitter in emitters do
+					emitter:Emit(1)
+				end
+				warmedImages = #emitters
 			end
 			RunService.RenderStepped:Wait()
 		end
@@ -855,9 +899,9 @@ function Rows.Warm()
 	end)
 end
 
--- For the self-test: whether the warm pass ran and is over.
-function Rows.Warmed(): boolean
-	return warmed and warming == nil
+-- For the self-test: whether the warm pass ran and is over, and how many kit images it drew as particles.
+function Rows.Warmed(): (boolean, number)
+	return warmed and warming == nil, warmedImages
 end
 
 return Rows

@@ -53,7 +53,8 @@ return {
 		{ Name = "WattHit", Label = "Tank's blows", Max = 0.8, Beat = false, Words = { "anime heavy hit", "anime impact", "heavy hit", "heavy impact", "heavy strike", "blunt impact" } },
 	} :: { Spec },
 	Pages = 2, -- the library's pages of 25 read a word
-	Keep = 50, -- candidates kept a cue, in the library's order (the panel shows ten at a time)
+	Keep = 20, -- candidates kept a cue, in the library's order (the panel shows ten at a time); 20 since 2026-11-25, Sonus
+	-- cuts each to five to eight by title before the listen (docs/briefs/sound.md), and a run of eleven tabs stays short
 	Page = 10, -- rows a page
 
 	-- The match (TR42, "A fair listen"): every candidate of a cue plays at one short-term loudness, set against today's

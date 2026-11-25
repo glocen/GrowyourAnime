@@ -71,7 +71,7 @@ export type Test = {
 	Wait: (seconds: number) -> (),
 	Server: (command: string, ...any) -> ...any,
 	Reset: () -> (),
-	Check: (label: string, ok: boolean, detail: string?) -> (),
+	Check: (label: string, ok: boolean, detail: string?) -> boolean, -- its own `ok`, so a case can stop on a miss
 	Near: (label: string, actual: number, expected: number, tolerance: number) -> (),
 	Equal: (label: string, actual: any, expected: any) -> (),
 	Row: (label: string, low: number?, high: number?, ours: number?, unit: string) -> (), -- the Scorecard's: target, ours, pass or miss
@@ -151,8 +151,9 @@ local function run(filter: string?): string
 			until settled or os.clock() > deadline
 			task.wait(0.2)
 		end,
-		Check = function(label: string, ok: boolean, detail: string?)
+		Check = function(label: string, ok: boolean, detail: string?): boolean
 			record(ok, label, detail)
+			return ok
 		end,
 		Near = function(label: string, actual: number, expected: number, tolerance: number)
 			record(math.abs(actual - expected) <= tolerance, label, `got {string.format("%.2f", actual)}, want {string.format("%.2f", expected)} ±{tolerance}`)
@@ -252,6 +253,33 @@ local function run(filter: string?): string
 	table.move(takes, 1, #takes, #cases + 1, cases)
 	local elsewhere = 0
 	pcall(serverCall, "TravelStub", true) -- no case ever leaves the place: each trip asked for is recorded (TR45)
+	-- The bays as the run found them, put back after any case that changed them, which a NOTE names: a lead swapped in
+	-- and back takes its worker out of its bay (Collection.SetLead), and a dozen cases cycle the roster, so the save's
+	-- bays drained over runs and the cases that read generation read an empty base.
+	local function bays(): { string }?
+		local ok, workers = pcall(serverCall, "Bays")
+		return if ok and type(workers) == "table" then workers else nil
+	end
+	local found = bays()
+	local putBack: { string } = {}
+	local function keepBays()
+		local now = if found then bays() else nil
+		if not found or not now then
+			return
+		end
+		local changed: { string } = {}
+		for index, worker in found do
+			if now[index] ~= worker then
+				local ok, answer = pcall(serverCall, "Act", "SetWorker", { Bay = index, Voidkin = worker })
+				local back = ok and type(answer) == "table" and answer.Ok == true
+				local why = if back then "put back" else `NOT put back: {if type(answer) == "table" then tostring(answer.Error) else tostring(answer)}`
+				table.insert(changed, `bay {index} {if now[index] == "" then "empty" else now[index]}, {why}`)
+			end
+		end
+		if #changed > 0 then
+			table.insert(putBack, `NOTE  {current} · left the bays changed ({table.concat(changed, "; ")})`)
+		end
+	end
 	for _, case in cases do
 		local chosen = if filter then string.find(case.Name, filter, 1, true) ~= nil else not case.Manual
 		if chosen and case.Place ~= nil and not PlaceRole.Is(case.Place) then
@@ -269,6 +297,7 @@ local function run(filter: string?): string
 			if not ok then
 				record(false, "crashed", tostring(err))
 			end
+			keepBays()
 		end
 	end
 	releaseStick() -- a case that crashed mid-walk never leaves the stick held
@@ -294,6 +323,9 @@ local function run(filter: string?): string
 	end
 	if elsewhere > 0 then
 		table.insert(lines, 2, `NOTE  {elsewhere} chosen case(s) belong to the other place: run them in its playtest ({PlaceRole.Current} here)`)
+	end
+	for index, line in putBack do
+		table.insert(lines, 1 + index, line)
 	end
 	return table.concat(lines, "\n")
 end

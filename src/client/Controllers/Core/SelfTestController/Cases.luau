@@ -5429,10 +5429,13 @@ local cases = {
 			local over = now.Rates.Flow.Net < -1e-9
 			t.Check("its warning only while the battery covers a shortfall", ((parts.Electricity :: TextLabel).Parent :: GuiObject):GetAttribute("Over") == over, `{now.Rates.Flow.Net} kW into the battery`)
 			local after = (parts.PowerStored :: TextLabel).Text
-			local kwh = tonumber(after:match("^([%d%.]+) kWh$") or "")
+			local kwh = tonumber(((after:match("^([%d%.,]+) kWh$") or ""):gsub(",", "")))
 			t.Check("the battery's kWh after it", after == "full" or kwh ~= nil, after)
 			if kwh then
-				t.Near("the battery as it stands now", kwh, now.Data.Base.Charge, 0.05)
+				-- To the readout's own step (Read.Kwh): a hundredth under 100, whole from 100, so a battery of any save
+				-- reads, beside the tick's drift.
+				local step = if math.abs(now.Data.Base.Charge) < 100 then 0 else 0.5
+				t.Near("the battery as it stands now", kwh, now.Data.Base.Charge, step + 0.05)
 			end
 			HudCases.PillBattery(t, parts, now.Data.Base.Charge, now.Rates.Capacity)
 			t.Check("a battery under 100 shows its hundredth, so it visibly counts up", Read.Kwh(0.354) == "0.35" and Read.Kwh(47.8) == "47.80" and Read.Kwh(2357) == "2,357", `{Read.Kwh(0.354)}, {Read.Kwh(47.8)}, {Read.Kwh(2357)}`)
@@ -6140,7 +6143,11 @@ local cases = {
 				local block = pill:FindFirstChild("Block", true)
 				t.Check(`{name}: {system}'s pill`, pill:GetAttribute("System") == system, tostring(pill:GetAttribute("System")))
 				t.Check(`{name}: its mark in ink on its block of colour`, mark ~= nil and mark:GetAttribute("Kit") == row.Mark and block ~= nil and block:GetAttribute("Kit") == "BlockPill", if mark then tostring(mark:GetAttribute("Kit")) else "no mark")
-				t.Check(`{name}: its words in its pale ink`, value.TextColor3 == row.Text)
+				-- Power's words turn its warning while the battery covers a shortfall (HudController; the battery's own
+				-- case checks when), so a save with its bays empty reads too.
+				local warned = system == "Power" and pill:GetAttribute("Over") == true
+				t.Check(`{name}: its words in its pale ink{if warned then ", here Power's warning: the battery covers a shortfall" else ""}`,
+					value.TextColor3 == (if warned then Theme.Colour.Over else row.Text), value.TextColor3:ToHex())
 			end
 			local wasFace, wasSmall = HudConfig.Face, HudConfig.FaceSmall
 			local value, name = parts.Credits :: TextLabel, parts.LeadName :: TextLabel

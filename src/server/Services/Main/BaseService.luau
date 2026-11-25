@@ -570,6 +570,20 @@ local function show(player: Player)
 end
 
 local function registerDebug()
+	-- Studio only. Each bay's worker as the save holds it, "" for none, so the self-test puts back what a case left
+	-- (a lead swapped in and back takes its worker out of its bay: Collection.SetLead).
+	DebugService.Register("Bays", function(who: any): any
+		local player = DebugService.ResolvePlayer(who)
+		local data = player and DataService.Get(player)
+		if not data then
+			return nil
+		end
+		local workers: { string } = {}
+		for index, bay in data.Base.Bays do
+			workers[index] = bay.Worker
+		end
+		return workers
+	end)
 	-- Studio only. A readout of the base, time passing without waiting for it, and shards in the bag.
 	DebugService.Register("Base", function(who: any): any
 		local player = DebugService.ResolvePlayer(who)

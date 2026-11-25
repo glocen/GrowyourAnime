@@ -86,6 +86,7 @@ export type Given = {
 
 function BaseCases.Cases(given: Given): { any }
 	local ANSWER, waitFor = given.ANSWER, given.waitFor
+	local baysBefore: { string }? = nil -- the runner's own case, below: the bays as its first half found them
 	return {
 		{
 			Name = "Base: AR16's base as its save has it: the bays it opened awake and the rest asleep, the battery's cells by its level and lit by its charge, the mill's wheel, gauge and demand mark (AR19), the crown while a Voidkin trains",
@@ -1971,6 +1972,62 @@ function BaseCases.Cases(given: Given): { any }
 				if not ok then
 					error(err, 0)
 				end
+			end,
+		},
+		-- The runner puts back the bays a case changed (SelfTestController, keepBays), in two cases that run in turn: the
+		-- first swaps a worker in as the lead and back, which takes it out of its bay (Collection.SetLead), and leaves
+		-- the bay so; the second finds the bay as it was.
+		{
+			Name = "Self-test: the bays a case changes are put back after it, 1: a worker made the lead and back leaves its bay",
+			Place = "Main",
+			Run = function(t: any)
+				local workers = t.Server("Bays")
+				local found: { string } = if type(workers) == "table" then table.clone(workers) else {}
+				baysBefore = found
+				local view = ProfileController.Get()
+				local was = if view then view.Roles.Lead else ""
+				local bay: number? = nil
+				for index, worker in found do
+					if worker ~= "" then
+						bay = index
+						break
+					end
+				end
+				-- A save with every bay empty gets a free Voidkin into bay 1 first, so there's a worker to swap, and the
+				-- runner empties it again.
+				local worker = if bay then found[bay] else nil
+				if bay == nil and #found > 0 then
+					for id in (if view then view.Voidkin else {}) :: { [string]: any } do
+						if id ~= was and not table.find(found, id) then
+							local put = t.Server("Act", "SetWorker", { Bay = 1, Voidkin = id })
+							if type(put) == "table" and put.Ok == true then
+								bay, worker = 1, id
+								break
+							end
+						end
+					end
+				end
+				if not t.Check("a bay with a worker to swap", bay ~= nil and worker ~= nil, table.concat(found, ", ")) or bay == nil then
+					return
+				end
+				local made = t.Server("Act", "SetLead", { Voidkin = worker })
+				local now = t.Server("Bays")
+				t.Check(`made the lead, it leaves bay {bay}`, type(made) == "table" and made.Ok == true and type(now) == "table" and now[bay] == "",
+					if type(made) == "table" then tostring(made.Error) else tostring(made))
+				local back = t.Server("Act", "SetLead", { Voidkin = was })
+				local after = t.Server("Bays")
+				t.Check("the old lead back, the bay still empty", type(back) == "table" and back.Ok == true and type(after) == "table" and after[bay] == "")
+			end,
+		},
+		{
+			Name = "Self-test: the bays a case changes are put back after it, 2: the bay worked again",
+			Place = "Main",
+			Run = function(t: any)
+				local now = t.Server("Bays")
+				local said = if type(now) == "table" then table.concat(now, ", ") else "no bays"
+				t.Check("each bay as the case before found it", baysBefore ~= nil and type(now) == "table" and table.concat(baysBefore, ",") == table.concat(now, ","),
+					`{said}, against {if baysBefore then table.concat(baysBefore, ", ") else "nothing read"}`)
+				baysBefore = nil
 			end,
 		},
 	}

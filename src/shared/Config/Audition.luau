@@ -46,8 +46,10 @@ return {
 		{ Name = "MageHit", Label = "Mage hit", Max = 0.7, Beat = false, Words = { "anime magic hit", "anime impact", "magic hit", "magic impact", "spell impact", "energy impact" } },
 		-- the Healer's (Lyric's speaker shots today): the blast on its beat, then the touch
 		-- 2026-11-25: "sonic" found 14 music clips under made-up titles; "pulse shot" and "chime shot" found guns and a
-		-- jet's radar beeps. So a bright sparkle or chime that flies, and "magic shot" stays the Mage's own
-		{ Name = "HealerShot", Label = "Healer cast", Max = 0.8, Beat = true, Tonal = true, Words = { "anime sparkle", "magic sparkle", "sparkle whoosh", "chime whoosh", "fairy magic", "light magic" } },
+		-- jet's radar beeps. So a bright sparkle or chime that flies, and "magic shot" stays the Mage's own. 2026-11-26:
+		-- these words kept 5 of 257 at 0.8 s, the rest ringing on; "short sparkle" and "short chime" found car chimes, a
+		-- train whistle and menu clicks. So 1.2 s: a sparkle rings far under its top, and the shots overlap at 0.25 s anyway
+		{ Name = "HealerShot", Label = "Healer cast", Max = 1.2, Beat = true, Tonal = true, Words = { "anime sparkle", "magic sparkle", "sparkle whoosh", "chime whoosh", "fairy magic", "light magic" } },
 		-- no "magic hit" or "energy impact": they're the Mage's words, and on 2026-11-25 they gave the two tabs the same sounds
 		{ Name = "HealerHit", Label = "Healer hit", Max = 0.7, Beat = false, Tonal = true, Words = { "anime energy hit", "anime spark hit", "chime hit", "sparkle hit", "energy hit", "spark hit" } },
 		-- the Warrior's (Rook's jab, hook and ram today): fists, so the light hit's 32 keeps

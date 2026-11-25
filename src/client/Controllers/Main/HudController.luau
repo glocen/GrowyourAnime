@@ -1742,6 +1742,12 @@ function HudController.FoeFoot(): number
 	return target.Frame.Position.Y.Offset + target.Frame.Size.Y.Offset
 end
 
+-- The target card's place at the top centre, and whether a fight shows it: where the Broadcast's plate stands when it
+-- doesn't (TR57, BroadcastController).
+function HudController.TargetSpot(): (UDim2, boolean)
+	return target.Frame.Position, target.Frame.Visible
+end
+
 -- Home's panel, for tests (UI.HomePanel's own calls).
 function HudController.Home(): HomePanel.Panel
 	return homePanel

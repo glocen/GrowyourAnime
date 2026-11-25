@@ -28,6 +28,8 @@ local REMOTES: { [string]: Spec } = {
 	Hit = { Kind = "Event", RatePerSecond = 0 }, -- server -> clients: (hit) one landed or dodged hit, for its hold, spark and number
 	Heal = { Kind = "Event", RatePerSecond = 0 }, -- server -> clients: (heal) the health a hit's heal or a Regen burst (Regen = true, TR40) gave a lead, for its number
 	Shield = { Kind = "Event", RatePerSecond = 0 }, -- server -> clients: (shield) { A, T, Beat }: a Support's cast shielded T (AR58), for its link from A
+	-- The Broadcast (BroadcastService, TR57).
+	Broadcast = { Kind = "Event", RatePerSecond = 0 }, -- server -> clients: (news) a line worth telling (Rules.Broadcast.News), its words built on the client
 	-- The keeper's try (KeeperService).
 	Fade = { Kind = "Event", RatePerSecond = 0 }, -- server -> client: (out, hold, back) seconds of a fade to black and back, around a move
 	-- Home in one tap (HomeService, TR19).

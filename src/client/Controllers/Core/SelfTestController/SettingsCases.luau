@@ -1,7 +1,8 @@
 --!strict
 -- SettingsCases: Settings in B (AR43, "The cut in B, for Faber"; UI.SettingsScreen; Rules.Settings). From Home's tall
 -- tile: one card of Music, Sound and Effects; a slider let go saves its level once and the game takes it at once (the
--- music's group, the cues' buses); Off at nought. The levels are put back at the end.
+-- music's group, the cues' buses); Off at nought. Then the Broadcast's two switches (TR57), a tap saved. The levels and
+-- the switches are put back at the end.
 
 local SoundService = game:GetService("SoundService")
 
@@ -74,9 +75,26 @@ function SettingsCases.Cases(): { any }
 					local now = (t.Server("Data") :: any).Settings
 					return now.Sound == 0 and now.Effects == 0.5
 				end))
+				-- The Broadcast's two switches (TR57): each reads the save, a tap flips it and it's saved.
+				for _, name in Settings.Switches do
+					local row = parts[`Row{name}`]
+					local press = if row then row:FindFirstChild("Switch") else nil
+					local want = if before[name] == false then "Off" else "On"
+					t.Check(`{name}: its row reads {want}`, press ~= nil and press:GetAttribute("Words") == want, if press then tostring(press:GetAttribute("Words")) else "no switch")
+				end
+				local showRow = parts.RowShowFinds :: Instance?
+				local show = if showRow then showRow:FindFirstChild("Switch") else nil
+				local was = before.ShowFinds ~= false
+				t.Check("a tap on Show others' finds flips it, saved", show ~= nil and show:IsA("TextButton") and Button.Press(show) and waitFor(t, 2, function(): boolean
+					return ((t.Server("Data") :: any).Settings.ShowFinds ~= false) == not was
+				end))
+				t.Equal("and it reads so", if show then show:GetAttribute("Words") else nil, if was then "Off" else "On")
 				-- Back as they were.
 				for _, name in Settings.Levels do
 					t.Server("Act", "Settings", { Name = name, Value = before[name] })
+				end
+				for _, name in Settings.Switches do
+					t.Server("Act", "Settings", { Name = name, Value = before[name] ~= false })
 				end
 				Screen.Close("Back")
 				t.Check("Back sinks it, and the panel comes back", waitFor(t, home.Step.Sink + home.Step.BackAt + 0.5, function(): boolean

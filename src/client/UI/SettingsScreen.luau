@@ -1,7 +1,8 @@
 --!strict
 -- SettingsScreen (client): Settings in B (AR43, "The cut in B, for Faber"; build/handoff/UI/seam/seam.json,
 -- "settings"; docs/ui.md: Settings, music, sound, effects). Home's tall tile opens it as its own screen: Back and its
--- title in the band, no rail, one card of three sliders on Equipment's block (Config.Hud.Settings, in the cut's points).
+-- title in the band, no rail, one card of three sliders on Equipment's block (Config.Hud.Settings, in the cut's points),
+-- then the Broadcast's two switches (TR57), each On or Off, the whole row a press.
 -- A slider is the kit's conduit filling with light, its knob the lit press's white, and the whole row drags it: the knob
 -- moves with the finger from where it was. Held, the knob grows from 10 to 12.5 and its ring lights, the fill's light
 -- and glow rise, and the name and the value turn to the light, over 0.08 s; each change is heard and seen at once
@@ -26,6 +27,7 @@ local Skin = require(UI.Kit.Skin)
 local Fade = require(UI.Kit.Fade)
 local Look = require(UI.EquipmentScreen.Look)
 local SettingsController = require(script.Parent.Parent.Controllers.Core.SettingsController)
+local ProfileController = require(script.Parent.Parent.Controllers.Core.ProfileController)
 
 local SettingsScreen = {}
 SettingsScreen.Name = "Settings"
@@ -66,6 +68,7 @@ type Row = {
 type Hold = { Row: Row, Input: InputObject?, From: number, StartX: number }
 
 local rows: { Row } = {}
+local switches: { { Name: string, Frame: Frame, Press: TextButton } } = {}
 local parts: { [string]: Instance } = {}
 local hold: Hold? = nil
 local on: On? = nil
@@ -273,8 +276,14 @@ end
 
 -- The rows come in as Equipment's list does: each from RowFrom points left, RowGap after the last, over RowTime.
 local function rowsIn()
-	for k, row in rows do
-		local frame = row.Frame
+	local frames: { Frame } = {}
+	for _, row in rows do
+		table.insert(frames, row.Frame)
+	end
+	for _, switch in switches do
+		table.insert(frames, switch.Frame)
+	end
+	for k, frame in frames do
 		local function at(e: number)
 			frame.Position = UDim2.fromOffset(-MOTION.RowFrom * (1 - e), 0)
 			Fade.Set(frame, e)
@@ -290,6 +299,68 @@ local function rowsIn()
 			end, Enum.EasingStyle.Linear)
 		end)
 	end
+end
+
+-- The Broadcast's two switches, as the card says them (docs/design.md, "Being seen", "Settings").
+local SAID: { [string]: string } = {
+	ShareFinds = "Show my finds in other servers",
+	ShowFinds = "Show others' finds",
+}
+
+local function latest(): Profile.View?
+	return ProfileController.Get()
+end
+
+local function dressSwitch(press: TextButton, on: boolean)
+	Look.Dress(press, if on then "Lit" else "Quiet", if on then "On" else "Off")
+end
+
+-- A switch's row: its words on the left, On or Off at the right; the whole row flips it, saved at once ("Settings").
+local function switchMade(parent: Frame, k: number, name: string): Frame
+	local middle = Y(S.Rows[k])
+	local frame = Instance.new("Frame")
+	frame.Name = `Row{name}`
+	frame.BackgroundTransparency = 1
+	frame.Size = UDim2.fromScale(1, 1)
+	frame.ZIndex = 3
+	frame.Parent = parent
+	local N, V, W = S.Name, S.Value, S.Switch
+	Look.Text(frame, "Name", SAID[name] or name, N.Size, SEAM.Text, X(N.X), middle - N.Size / 2, "Left", true, 4, X(V.Right) - W.Wide - X(N.X) - 8)
+	local function flip(): boolean
+		local view = latest()
+		local now = view == nil or Settings.On(view, name)
+		local handle = on
+		if handle == nil then
+			return false
+		end
+		local answer = handle.Act("Settings", { Name = name, Value = not now })
+		local after = latest()
+		local press = frame:FindFirstChild("Switch")
+		if press and press:IsA("TextButton") then
+			dressSwitch(press, if answer.Ok == true then not now elseif after then Settings.On(after, name) else now)
+		end
+		if answer.Ok ~= true then
+			handle.Say("Can't change it now")
+		end
+		return answer.Ok == true
+	end
+	local press = Look.Press(frame, "Switch", X(V.Right) - W.Wide, middle - W.Tall / 2, W.Wide, W.Tall, flip, 14)
+	local view = latest()
+	dressSwitch(press, view == nil or Settings.On(view, name))
+	local touch = Instance.new("TextButton")
+	touch.Name = "Touch"
+	touch.Text = ""
+	touch.AutoButtonColor = false
+	touch.BackgroundTransparency = 1
+	touch.Position = UDim2.fromOffset(X(S.Card[1]), middle - S.Pitch / 2)
+	touch.Size = UDim2.fromOffset(S.Card[3] - S.Card[1], S.Pitch)
+	touch.ZIndex = 13
+	touch.Parent = frame
+	touch.Activated:Connect(function()
+		flip()
+	end)
+	table.insert(switches, { Name = name, Frame = frame, Press = press })
+	return frame
 end
 
 local function divider(parent: Instance, y: number)
@@ -309,6 +380,7 @@ function SettingsScreen.Open(given: On)
 	on = given
 	hold = nil
 	table.clear(rows)
+	table.clear(switches)
 	table.clear(parts)
 	local body = Screen.Full(SettingsScreen.Name, "Settings", "SeamGlass")
 	parts.Body = body
@@ -334,6 +406,9 @@ function SettingsScreen.Open(given: On)
 		local row = rowMade(made, k, name)
 		rows[k] = row
 		parts[`Row{name}`] = row.Frame
+	end
+	for j, name in Settings.Switches do
+		parts[`Row{name}`] = switchMade(made, #Settings.Levels + j, name)
 	end
 	rowsIn()
 	local moved = UserInputService.InputChanged:Connect(function(input: InputObject)
@@ -364,9 +439,12 @@ function SettingsScreen.Open(given: On)
 	end)
 end
 
-function SettingsScreen.Refresh(_view: Profile.View)
+function SettingsScreen.Refresh(view: Profile.View)
 	if room == nil or Screen.Current() ~= SettingsScreen.Name then
 		return
+	end
+	for _, switch in switches do
+		dressSwitch(switch.Press, Settings.On(view, switch.Name))
 	end
 	local held = if hold then hold.Row else nil
 	for _, row in rows do

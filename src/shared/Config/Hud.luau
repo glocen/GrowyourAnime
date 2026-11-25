@@ -928,8 +928,12 @@ return {
 	-- Transparencies are ImageTransparency, at rest and held.
 	Settings = {
 		Card = { 88, 68, 480, 304 },
-		Rows = { 122, 186, 250 }, -- each row's middle; the whole row, the card wide and Pitch tall, drags its slider
-		Pitch = 64,
+		-- each row's middle: the three sliders, then the Broadcast's two switches (TR57; the builder's re-pitch from the
+		-- cut's 122, 186, 250 at 64, so five fit the card; research's pass to judge). A slider's whole row, the card wide and
+		-- Pitch tall, drags it; a switch's whole row flips it.
+		Rows = { 91, 137, 183, 229, 275 },
+		Pitch = 46,
+		Switch = { Wide = 64, Tall = 30 }, -- the On or Off press at the row's right, its right edge at Value.Right
 		Name = { X = 110, Size = 15 }, -- bold, in the palette's Text, the light held
 		Value = { Right = 458, Size = 14 }, -- "Off" or "N%", in Soft, the light and bold held
 		Slider = { Start = 208, End = 402 },

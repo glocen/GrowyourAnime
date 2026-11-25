@@ -516,7 +516,45 @@ function Chests.Open(data: Profile.Data, id: any, count: any, draw: Draw): { [st
 		end
 	end
 	data.Currency.Credits += credits
-	return { Ok = true, Chest = chest.Id, Opened = count, Items = kept, Salvaged = salvaged, Credits = credits }
+	-- each first as the reveal needs it, so the client never waits for its copy of the save
+	local firsts = {}
+	for _, itemId in Chests.Firsts(data, kept) do
+		local item = data.Items[itemId]
+		table.insert(firsts, { Id = itemId, Def = item.Def, Rarity = item.Rarity, Design = item.Design })
+	end
+	return { Ok = true, Chest = chest.Id, Opened = count, Items = kept, Salvaged = salvaged, Credits = credits, Firsts = firsts }
+end
+
+-- The account's first item of each rarity from Rare up among `kept` (TR57; docs/design.md, "Being seen", "Firsts"):
+-- their ids, in the order opened, one a rarity; each rarity marked seen so its first plays once. A save from before the
+-- mark reads it first from every item it held before this open, so a rarity it owned already is no first.
+function Chests.Firsts(data: Profile.Data, kept: { string }): { string }
+	local floor = Rarity.Rank.Rare
+	local seen = data.Bag.Seen
+	if seen == nil then
+		local held: { [string]: boolean } = {}
+		local fresh: { [string]: boolean } = {}
+		for _, id in kept do
+			fresh[id] = true
+		end
+		for id, item in data.Items do
+			if not fresh[id] and (Rarity.Rank[item.Rarity] or 0) >= floor then
+				held[item.Rarity] = true
+			end
+		end
+		seen = held
+		data.Bag.Seen = held
+	end
+	local firsts: { string } = {}
+	for _, id in kept do
+		local item = data.Items[id]
+		local rarity = if item then item.Rarity else ""
+		if item and (Rarity.Rank[rarity] or 0) >= floor and not (seen :: { [string]: boolean })[rarity] then
+			(seen :: { [string]: boolean })[rarity] = true
+			table.insert(firsts, id)
+		end
+	end
+	return firsts
 end
 
 -- Sets the salvage: opened items of rarity `below` or under turn into Credits, "" for none.

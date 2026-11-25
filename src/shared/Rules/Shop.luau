@@ -210,6 +210,7 @@ function Shop.Buy(data: Profile.Data, shelf: Shelf, args: any): { [string]: any 
 			}
 			table.insert(kept, id)
 		end
+		Chests.Firsts(data, kept) -- a bought item's rarity is seen too, so a chest's later one is no first (TR57)
 	elseif line.Shard then
 		data.Bag.Shards[line.Shard] = (data.Bag.Shards[line.Shard] or 0) + count
 	end

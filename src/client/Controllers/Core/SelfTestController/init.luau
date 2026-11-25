@@ -42,6 +42,7 @@ local FunnelCases = require(script.FunnelCases)
 local GearCases = require(script.GearCases)
 local EquipmentCases = require(script.EquipmentCases)
 local SettingsCases = require(script.SettingsCases)
+local BroadcastCases = require(script.BroadcastCases)
 local GoalCases = require(script.GoalCases)
 local TakeCases = require(script.TakeCases)
 local BaseController = require(script.Parent.Parent.Main.BaseController)
@@ -243,6 +244,8 @@ local function run(filter: string?): string
 	table.move(equipment, 1, #equipment, #cases + 1, cases)
 	local settings = SettingsCases.Cases() -- Settings in B (AR43), apart for the same reason
 	table.move(settings, 1, #settings, #cases + 1, cases)
+	local broadcast = BroadcastCases.Cases() -- the Broadcast's plate and chat line (TR57), apart for the same reason
+	table.move(broadcast, 1, #broadcast, #cases + 1, cases)
 	local goals = GoalCases.Cases() -- TR54's goals: the Today list, the claim, the dare line and its card, apart for the same reason
 	table.move(goals, 1, #goals, #cases + 1, cases)
 	local modes = ModeCases.Cases() -- the Play panel (the director, 2026-11-24), apart for the same reason

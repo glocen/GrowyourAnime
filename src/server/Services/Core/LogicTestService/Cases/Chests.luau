@@ -971,4 +971,47 @@ return {
 			t.Check("the save stays whole", #problems == 0, table.concat(problems, "; "))
 		end,
 	},
+	{
+		Name = "Chests: the account's first item of each rarity from Rare up, once (TR57's firsts); a save from before reads what it held; a bought one is seen too",
+		Run = function(t: any)
+			local data = fresh()
+			local function give(rarity: string): string
+				local id = Profile.NewId(data)
+				data.Items[id] = { Id = id, Def = Items.List[1].Id, Tier = 1, Rarity = rarity, Design = 1, Lines = {}, Sockets = {}, Reinforce = 0, Jewels = {} }
+				return id
+			end
+			-- a save from before the mark: an Epic held already, so only Rare and Legendary are firsts
+			give("Epic")
+			t.Check("no mark yet", data.Bag.Seen == nil)
+			local common, rare, rare2, epic, legendary = give("Common"), give("Rare"), give("Rare"), give("Epic"), give("Legendary")
+			local firsts = Chests.Firsts(data, { common, rare, rare2, epic, legendary })
+			t.Check("the first Rare and the first Legendary, in the order opened; a Common never, a second Rare never, an Epic held before never",
+				#firsts == 2 and firsts[1] == rare and firsts[2] == legendary, table.concat(firsts, ","))
+			t.Check("the rarities marked seen", data.Bag.Seen ~= nil and (data.Bag.Seen :: any).Rare and (data.Bag.Seen :: any).Epic and (data.Bag.Seen :: any).Legendary and not (data.Bag.Seen :: any).Common)
+			t.Equal("once: the next Rare is no first", #Chests.Firsts(data, { give("Rare") }), 0)
+			-- a new account: its first Rare from a chest's open is a first, and the answer says what it is
+			local new = fresh()
+			local top: ChestRows.Row? = nil -- the highest gear chest, so Rares and better come
+			for _, row in ChestRows.List do
+				if Chests.IsGear(row) and (top == nil or row.Tier > (top :: ChestRows.Row).Tier) then
+					top = row
+				end
+			end
+			local chest = (top :: ChestRows.Row).Id
+			new.Bag.Chests[chest] = 40
+			local seenFirst: { [string]: number } = {}
+			for round = 1, 8 do
+				local answer = Chests.Open(new, chest, 5, sequence(7 + round))
+				for _, first in (answer.Firsts or {}) :: { any } do
+					seenFirst[first.Rarity] = (seenFirst[first.Rarity] or 0) + 1
+					t.Check(`a first's answer names it: {first.Rarity}`, type(first.Id) == "string" and new.Items[first.Id] ~= nil and first.Def == new.Items[first.Id].Def and first.Design == new.Items[first.Id].Design)
+				end
+			end
+			local twice = false
+			for _, n in seenFirst do
+				twice = twice or n > 1
+			end
+			t.Check("over many opens, each rarity's first comes once at most, and some came", not twice and next(seenFirst) ~= nil, `{seenFirst.Rare or 0} Rare, {seenFirst.Epic or 0} Epic`)
+		end,
+	},
 }

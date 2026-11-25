@@ -1,0 +1,77 @@
+--!strict
+-- BroadcastCases: the Broadcast's plate and chat line (TR57; BroadcastController; BroadcastService). A line told on the
+-- server shows once in the target card's place at the top centre, in our words with the finder's display name, and
+-- stays in the chat; an open screen holds the next until it closes. The plate's gap is
+-- tuned short for the run and put back.
+
+local Players = game:GetService("Players")
+
+local Shared = game:GetService("ReplicatedStorage").Shared
+local Config = require(Shared.Config.Broadcast)
+local Items = require(Shared.Definitions.Items)
+local HudController = require(script.Parent.Parent.Parent.Main.HudController)
+local BroadcastController = require(script.Parent.Parent.Parent.Main.BroadcastController)
+local UI = script.Parent.Parent.Parent.Parent.UI
+local Layers = require(UI.Layers)
+local Screen = require(UI.Kit.Screen)
+local SettingsScreen = require(UI.SettingsScreen)
+local Helpers = require(script.Parent.Helpers)
+
+local BroadcastCases = {}
+
+local waitFor = Helpers.waitFor
+local GAP = 0.5 -- the plate's gap for the run, in place of Config.Broadcast.Plate.Gap
+
+function BroadcastCases.Cases(): { any }
+	return {
+		{
+			Name = "Broadcast (TR57): a told line shows once in the target card's place, in our words, and stays in the chat; an open screen holds the next",
+			Run = function(t: any)
+				Screen.Close()
+				local gap = Config.Plate.Gap
+				t.Server("Tune", "Broadcast.Plate.Gap", GAP)
+				t.Wait(0.3)
+				local _, fighting = HudController.TargetSpot()
+				t.Check("no fight's card at the top", not fighting)
+				local row = Items.List[1]
+				local told = t.Server("BroadcastTell", "Item", row.Id, "Epic", 0) :: any
+				t.Check("told on the server", type(told) == "table" and told.Ok == true, if type(told) == "table" then tostring(told.Error) else "no answer")
+				local an = if string.sub(row.Name, -1) == "s" then "" else "an " -- Gloves, Boots: no article (Rules.Broadcast)
+				local want = `{Players.LocalPlayer.DisplayName} found {an}Epic {row.Name}`
+				t.Check("the plate shows it, in our words with the finder's display name", waitFor(t, GAP + 2, function(): boolean
+					return BroadcastController.Shown() == want
+				end), tostring(BroadcastController.Shown()))
+				local plate = Layers.Get("Hud"):FindFirstChild("NL_Broadcast") :: GuiObject?
+				local spot = HudController.TargetSpot()
+				t.Check("in the target card's place, at the top centre", plate ~= nil and plate.Position == spot and plate.AnchorPoint == Vector2.new(0.5, 0), if plate then tostring(plate.Position) else "no plate")
+				local words = if plate then plate:FindFirstChild("Words", true) :: TextLabel? else nil
+				t.Check("its words fit, the rarity lit", words ~= nil and words.TextFits and string.find(words.Text, "<font", 1, true) ~= nil and words.ContentText == want, if words then words.ContentText else "no words")
+				t.Equal("and it stays in the chat", BroadcastController.Chatted(), want)
+				t.Check("gone after its seconds", waitFor(t, Config.Plate.Seconds + 1, function(): boolean
+					return BroadcastController.Shown() == nil
+				end))
+				-- An open screen: the next line waits, then shows once it closes.
+				SettingsScreen.Open({ Act = function(): { [string]: any }
+					return { Ok = false }
+				end, Say = function() end })
+				t.Check("a screen open", waitFor(t, 2, function(): boolean
+					return Screen.Current() ~= nil
+				end))
+				t.Server("BroadcastTell", "Stars", "rook", "Common", 7)
+				t.Wait(GAP + 1)
+				t.Check("held while the screen is open", BroadcastController.Shown() == nil, tostring(BroadcastController.Shown()))
+				Screen.Close()
+				t.Check("shown once it closes", waitFor(t, 3, function(): boolean
+					local now = BroadcastController.Shown()
+					return now ~= nil and string.find(now, "reached seven stars", 1, true) ~= nil
+				end), tostring(BroadcastController.Shown()))
+				waitFor(t, Config.Plate.Seconds + 1, function(): boolean
+					return BroadcastController.Shown() == nil
+				end)
+				t.Server("Tune", "Broadcast.Plate.Gap", gap)
+			end,
+		},
+	}
+end
+
+return BroadcastCases

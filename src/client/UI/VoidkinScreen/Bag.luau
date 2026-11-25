@@ -937,6 +937,15 @@ local function chestCard(context: Context, at: Layout, id: string)
 			words = `Opened {Hud.Digits(tonumber(answer.Opened) or count)}: {familyWords(answer)}`
 		end
 		Toast.Show(words, Theme.Colour.Text)
+		-- The account's first of a rarity from Rare up (TR57's firsts; Rules.Chests.Firsts): its own line in its light,
+		-- a stand-in until TR34's band plays its full reveal with "First {rarity}" under its name.
+		for _, first in (if type(answer.Firsts) == "table" then answer.Firsts else {}) :: { any } do
+			local row = if type(first) == "table" then Items.ById[first.Def] else nil
+			if row and type(first.Rarity) == "string" then
+				local design = Items.Design(first :: any)
+				Toast.Show(`First {first.Rarity}: {if design then design.Name else row.Name}`, P.Rarity[first.Rarity] or Theme.Colour.Text)
+			end
+		end
 		return true
 	end
 	local many = info.Step > 1

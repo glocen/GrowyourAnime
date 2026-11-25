@@ -194,6 +194,9 @@ export type Data = {
 		Stones: { [string]: number }, -- forge stones, count by grade (Config.Reinforce.Grades; TR47)
 		Emblems: { [string]: number }, -- War Emblems, count by key, "set:stat" (Rules.Emblems), so identical ones stack
 		Jewels: { [string]: number }, -- jewels, count by "Colour:level" (TR47 part B)
+		-- The item rarities from Rare up this account has kept, so each one's first plays once (TR57's firsts;
+		-- Rules.Chests.Firsts); nil on a save from before, read once from the items it holds.
+		Seen: { [string]: boolean }?,
 	},
 	Settings: {
 		Salvage: string, -- an opened item of this rarity or under turns into Credits; "" for none (Rules.Chests)

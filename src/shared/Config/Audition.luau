@@ -58,6 +58,22 @@ return {
 		{ Name = "KirraHit", Label = "Assassin's cuts", Max = 0.7, Beat = false, Words = { "anime slash", "anime sword slash", "slash hit", "sword slash", "katana slash", "blade slash" } },
 		-- the Tank's (Watt's shaft, butt and driven spear today): heavy and short, a weighted blow, never harsh
 		{ Name = "WattHit", Label = "Tank's blows", Max = 0.8, Beat = false, Words = { "anime heavy hit", "anime impact", "heavy hit", "heavy impact", "heavy strike", "blunt impact" } },
+		-- The silent big moments (docs/test-requests.md, TR64: each cue's moment, longest and never in its tables; research's
+		-- words, 2026-11-26). Each plays on its moment, not on a fighter's beat, so Beat here only says how it's measured:
+		-- whole, its rise kept (a chime, a charge), or cut to its top (KeeperFall and LeadHurt, impacts on their frame). The
+		-- moment's hook (Faber's) says when it starts. Round 1, the first session's:
+		{ Name = "LevelUp", Label = "Level up", Max = 1.0, Beat = true, Tonal = true, Words = { "level up", "power up chime", "achievement chime", "magic chime", "rising chime" } },
+		-- one note, pitched by grade in the game (A C D E), so it's found and heard at its own pitch
+		{ Name = "ShardDrop", Label = "Shard drop", Max = 0.6, Beat = true, Tonal = true, Words = { "crystal ding", "glass chime", "bell ding", "chime single", "sparkle ding" } },
+		{ Name = "KeeperFall", Label = "Keeper's fall", Max = 2.0, Beat = false, Words = { "boss defeated", "victory impact", "gong hit", "big impact", "shatter" } },
+		{ Name = "LeadDown", Label = "Lead down", Max = 1.5, Beat = true, Words = { "defeat", "power down", "fail", "lose", "shutdown" } },
+		-- Round 2 (Record heard right after GoalDone; LeadHurt last, an impact that repeats):
+		{ Name = "GoalDone", Label = "Goal done", Max = 0.8, Beat = true, Tonal = true, Words = { "quest complete", "achievement", "success chime", "task complete", "bell chime" } },
+		{ Name = "Record", Label = "New record", Max = 1.0, Beat = true, Tonal = true, Words = { "new record", "achievement unlocked", "victory chime", "success" } },
+		{ Name = "Reinforced", Label = "Reinforced", Max = 0.8, Beat = true, Tonal = true, Words = { "upgrade", "enchant", "forge success", "power up chime" } },
+		{ Name = "ReinforceFailed", Label = "Reinforce failed", Max = 0.6, Beat = true, Words = { "fail", "error low", "crack", "negative" } },
+		{ Name = "MachineStage", Label = "Machine stage", Max = 1.5, Beat = true, Words = { "power up", "charge up", "energy rise", "magic charge" } },
+		{ Name = "LeadHurt", Label = "Lead hurt", Max = 0.4, Beat = false, Words = { "body hit", "low impact", "damage hit", "thud" } },
 	} :: { Spec },
 	Pages = 2, -- the library's pages of 25 read a word
 	Keep = 20, -- candidates kept a cue, in the library's order (the panel shows ten at a time); 20 since 2026-11-25, Sonus
@@ -84,6 +100,18 @@ return {
 		RookHit = 0, -- the light hit's own level, as the keeps were heard
 		KirraHit = -1, -- a cut a little under a punch; the Tank's blow between the light hit and the heavy (Sonus's seeds)
 		WattHit = 2,
+		-- TR64's, from the study's mix chart (docs/research/cloud-2026-11-24/audio-direction.md, "The mix chart"): a reward
+		-- -6, the UI -12, the Shades' hurt -4; the keeper's fall over a Shade's burst, at a light hit's
+		LevelUp = -6,
+		ShardDrop = -6,
+		KeeperFall = 0,
+		LeadDown = -6,
+		GoalDone = -6,
+		Record = -6,
+		Reinforced = -6,
+		ReinforceFailed = -12,
+		MachineStage = -6,
+		LeadHurt = -4,
 	},
 	Ceiling = -1, -- dBTP: a candidate's top at its matched level stays under it, so the bus's limiter takes 0 dB
 

@@ -686,6 +686,18 @@ local function itemCard(context: Context, at: Layout, id: string)
 			end
 		end
 		y += C.Row + 4
+		-- Its trade in one line, over the columns (docs/ui.md, the item card; Rules.Bag.Trade): "More Health · Less
+		-- Attack", More in the gains' green and Less in the losses' red, each name as the sheet writes it.
+		if #info.Trade > 0 then
+			local parts = {}
+			for _, each in info.Trade do
+				local light = if each.More then P.Up else P.Down
+				table.insert(parts, `<font color="#{light:ToHex()}">{if each.More then "More" else "Less"}</font> {Sheet.Said[each.Stat] or each.Stat}`)
+			end
+			local trade = label({ Name = "Trade", Size = Theme.Text.Caption, Font = Theme.Font.Strong, Colour = P.Text, Box = UDim2.fromOffset(wide, C.Row), Position = UDim2.fromOffset(pad, y), Parent = made, Truncate = true }, table.concat(parts, " · "))
+			trade.RichText = true
+			y += C.Row + 4
+		end
 	else
 		-- Whose it is: its class's mark and its name, and Equip off for the same reason.
 		why = `{info.Class or "Another class"} only`

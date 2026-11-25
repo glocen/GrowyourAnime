@@ -420,4 +420,43 @@ return {
 			t.Check("another design: another name, the same comparison", again.Name == ItemDesigns.ByKind.Helmet.Epic[3].Name and again.Power == before)
 		end,
 	},
+	{
+		Name = "Bag: an item's trade in one line, the biggest gain and the biggest loss by what each alone moves Combat Power; only gains or only losses, the two biggest; nothing, no line",
+		Run = function(t: any)
+			local data = fresh()
+			local owned = uncover(data, "Warrior")
+			local before = Stats.Resolve(owned, Stats.PresetOf(data, owned), data)
+			local function with(changes: { [string]: number }): Stats.Block
+				local after = table.clone(before)
+				for stat, by in changes do
+					(after :: any)[stat] = (before :: any)[stat] + by
+				end
+				return after
+			end
+			local function said(trade: { Bag.Trade }): string
+				local out = {}
+				for _, each in trade do
+					table.insert(out, `{if each.More then "More" else "Less"} {Sheet.Said[each.Stat] or each.Stat}`)
+				end
+				return table.concat(out, " · ")
+			end
+			t.Equal("a gain and a loss", said(Bag.Trade(before, with({ Health = 200, Attack = -20 }))), "More Health · Less Attack")
+			-- weighed by Combat Power, never the raw number: +1 Health beside +40 Attack, Attack first
+			local function alone(stat: string, by: number): number
+				return math.abs(Stats.Sum(with({ [stat] = by })) - Stats.Sum(before))
+			end
+			local gains = Bag.Trade(before, with({ Health = 1, Attack = 40 }))
+			t.Check("only gains: the two biggest, by what each moves Combat Power", #gains == 2 and gains[1].More and gains[2].More and gains[1].Stat == (if alone("Attack", 40) >= alone("Health", 1) then "Attack" else "Health"), said(gains))
+			local losses = Bag.Trade(before, with({ Attack = -20, Defence = -5, Health = -1 }))
+			t.Check("only losses: the two biggest", #losses == 2 and not losses[1].More and not losses[2].More, said(losses))
+			local three = Bag.Trade(before, with({ Health = 300, Attack = 30, Defence = -2, Hit = -40 }))
+			t.Check("two gains and two losses: one of each, the gain first", #three == 2 and three[1].More and not three[2].More, said(three))
+			t.Equal("nothing changing: no line", #Bag.Trade(before, table.clone(before)), 0)
+			t.Equal("a name as the sheet writes it", said(Bag.Trade(before, with({ CriticalGuard = 0.05 }))), "More Critical Immunity")
+			-- on the card: a real item against an empty slot
+			local id = give(data, "helmet", "Epic", { { Stat = "Health", Value = 120 } })
+			local card = Bag.Card(data, owned, id)
+			t.Check("the card carries its trade", card ~= nil and #card.Trade >= 1 and card.Trade[1].Stat == "Health" and card.Trade[1].More, if card then said(card.Trade) else "no card")
+		end,
+	},
 }

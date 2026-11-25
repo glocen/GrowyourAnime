@@ -8,6 +8,7 @@
 --            whether it's worn, and what wearing it would change in Combat Power (the up arrow when it's a gain)
 --   Groups   the belt's three: the hands, the body, the jewellery; a narrow screen shows the chosen item's group
 --   Card     a chosen item against what it replaces: each Basic Attribute and each Battle Attribute it changes
+--   Trade    its trade in one line: the Battle Attribute that gains the most, and the one that loses the most
 -- Every comparison is Stats.Compare, the resolver run twice, so it never drifts from the fight. A rating (Sheet.Rated)
 -- is carried as its share against an even foe, never its points, as the sheet shows it: a comparison's, the two blocks'
 -- odds (Sheet.Odds); an item's own line, what its points would add to the Voidkin shown (Sheet.Adds). No Roblox API: it
@@ -77,7 +78,10 @@ export type Card = {
 	Battle: { Line }, -- the Battle Attributes it changes, at most Bag.Battle; a rating as its share
 	Replaces: string?, -- the item in that slot now, when there's one and it isn't this
 	Lines: { Profile.ItemLine }, -- its own rolled lines, the main stat first; a rating as the share it would add
+	Trade: { Trade }, -- its trade in one line (Bag.Trade): none, one or two Battle Attributes
 }
+
+export type Trade = { Stat: string, More: boolean }
 
 -- An item's design's picture: its name in Config.UIKit.Images, or nil when its kind has no design at its rarity.
 local function picture(item: Profile.OwnedItem): string?
@@ -291,6 +295,7 @@ function Bag.Card(data: Profile.Data, owned: Profile.OwnedVoidkin?, id: string):
 		Battle = {},
 		Replaces = nil,
 		Lines = {},
+		Trade = {},
 	}
 	local preset = if owned then Stats.PresetOf(data, owned) else nil
 	local before = if owned then Stats.Resolve(owned, preset, data) else Stats.Empty(1)
@@ -332,7 +337,47 @@ function Bag.Card(data: Profile.Data, owned: Profile.OwnedVoidkin?, id: string):
 			table.insert(card.Battle, { Stat = stat, Value = was, Change = now - was })
 		end
 	end
+	card.Trade = Bag.Trade(before, after)
 	return card
+end
+
+-- An item's trade in one line (docs/ui.md, the item card, "Its trade in one line"; the outside review's item 7, research,
+-- 2026-11-25): of the Battle Attributes going from `before` to `after`, the one that gains the most and the one that
+-- loses the most, each weighed by what it alone moves Combat Power (Stats.Sum with only that stat changed, the resolver's
+-- own numbers); with only gains, or only losses, the two biggest; nothing changing, none. A gain first, ties in the
+-- sheet's order.
+function Bag.Trade(before: Stats.Block, after: Stats.Block): { Trade }
+	local base = Stats.Sum(before)
+	type Weighed = { Stat: string, Weight: number, Order: number }
+	local gains: { Weighed }, losses: { Weighed } = {}, {}
+	for order, stat in Stats.Names do
+		local was, now = (before :: any)[stat] :: number, (after :: any)[stat] :: number
+		if math.abs(now - was) > 1e-9 then
+			local trial = table.clone(before)
+			;(trial :: any)[stat] = now
+			local entry: Weighed = { Stat = stat, Weight = math.abs(Stats.Sum(trial) - base), Order = order }
+			table.insert(if now > was then gains else losses, entry)
+		end
+	end
+	local function heaviest(a: Weighed, b: Weighed): boolean
+		if a.Weight ~= b.Weight then
+			return a.Weight > b.Weight
+		end
+		return a.Order < b.Order
+	end
+	table.sort(gains, heaviest)
+	table.sort(losses, heaviest)
+	local out: { Trade } = {}
+	if #gains > 0 and #losses > 0 then
+		table.insert(out, { Stat = gains[1].Stat, More = true })
+		table.insert(out, { Stat = losses[1].Stat, More = false })
+	else
+		local only = if #gains > 0 then gains else losses
+		for index = 1, math.min(2, #only) do
+			table.insert(out, { Stat = only[index].Stat, More = #gains > 0 })
+		end
+	end
+	return out
 end
 
 -- What the chosen chest's card shows: its name, how many are held, the step one press opens, and what it gives with

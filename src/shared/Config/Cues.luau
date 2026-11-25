@@ -315,6 +315,9 @@ local Config = {
 	-- cue's short-term loudness. Db is CueCheck's Match, measured on the mix with this off, and is measured again after
 	-- every round. For the listen only: the level that ships is gate 4's. NL_Debug:Invoke("Tune", "Cues.Match.On", false).
 	Match = { On = true, Db = {} :: { [string]: { [string]: number } } },
+	-- TR64's big moments: cues the game plays by name at their moment, never by a hit's rules, each silent until the
+	-- director's ear picks its sound, and none hooked yet. Written below with the others.
+	Moments = { "LevelUp", "ShardDrop", "KeeperFall", "LeadDown", "GoalDone", "Record", "Reinforced", "ReinforceFailed", "MachineStage", "LeadHurt" },
 }
 
 -- TR42's second round: each own cue (Own) as what played in its place before, a copy of its layers, so a change to one
@@ -349,6 +352,18 @@ do
 	cues.RookHit = before(cues.LightHit, 4)
 	cues.KirraHit = before(cues.LightHit, 4)
 	cues.WattHit = before(cues.LightHit, 4)
+	-- TR64's big moments (Moments; docs/test-requests.md, TR64), silent, so the listening panel has their tabs. On the
+	-- lead's bus: each is the player's own.
+	cues.LevelUp = before(nil, 1)
+	cues.ShardDrop = before(nil, 3)
+	cues.KeeperFall = before(nil, 1)
+	cues.LeadDown = before(nil, 1)
+	cues.GoalDone = before(nil, 1)
+	cues.Record = before(nil, 1)
+	cues.Reinforced = before(nil, 1)
+	cues.ReinforceFailed = before(nil, 1)
+	cues.MachineStage = before(nil, 2)
+	cues.LeadHurt = before(nil, 2)
 end
 
 -- An arrangement of a pilot: its own layers, and its pilot's bus, spreads, voices and reach.

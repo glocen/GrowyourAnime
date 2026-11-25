@@ -24,8 +24,9 @@ return {
 				end
 			end
 			for name, cue in Cues.Cues do
-				-- an action's own cue may stand silent until its pick: a ranged cast, the held note (TR42's second round)
-				t.Check(`{name}: has layers`, #cue.Layers > 0 or own[name] == true)
+				-- an action's own cue may stand silent until its pick: a ranged cast, the held note (TR42's second round), and
+				-- TR64's moments
+				t.Check(`{name}: has layers`, #cue.Layers > 0 or own[name] == true or table.find(Cues.Moments, name) ~= nil)
 				t.Check(`{name}: plays on a bus`, cue.Bus == "Lead" or cue.Bus == "Shade", cue.Bus)
 				t.Check(`{name}: its speed spread about ±8%, never past ±25%`, within(cue.Pitch, 0.8, 1.25))
 				t.Check(`{name}: its volume spread inside 0 to 1.5`, within(cue.Volume, 0.01, 1.5))
@@ -108,6 +109,9 @@ return {
 			-- every cue the rules can name is written, and every one written is named (the burst's is played by name)
 			-- the wind-up stays every heavy hit's that has no cue of its own
 			local named: { [string]: boolean } = { ShadeBurst = true, [Sound.Beat("AnyHeavy", true, "Lead") :: string] = true }
+			for _, moment in Cues.Moments do -- TR64's, played by name at their moment
+				named[moment] = true
+			end
 			for _, action in Actions.List do
 				for name, hit in action.Hits do
 					for _, side in { "Lead", "Shade" } do

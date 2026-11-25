@@ -1,39 +1,24 @@
 {
  "Schema": "rows/1",
  "Effect": "SupportHeal",
- "Why": "A Support's mend, at the mended one's foot: the grey block-in (AR58, Scintilla).",
+ "Why": "A Support's mend, at the mended one's foot: the burst (AR58, target A, Scintilla).",
  "Area": 1,
- "Grey": true,
+ "Grey": false,
  "Rows": {
-  "Climb": {
-   "Kind": "Mesh",
-   "Part": [
-    "FxHoop"
-   ],
-   "Look": "fx_rise_Grey",
-   "Grey": "fx_rise_Grey",
+  "Core": {
+   "Kind": "Card",
+   "Image": "fx_glow",
    "Color": {
     "Color3": [
      255,
-     244,
-     220
+     255,
+     255
     ]
    },
    "Tracks": {
     "At": [
      [
-      0,
-      {
-       "Vector3": [
-        0,
-        0.1,
-        0
-       ]
-      },
-      "Quad Out"
-     ],
-     [
-      22,
+      2,
       {
        "Vector3": [
         0,
@@ -43,82 +28,107 @@
       }
      ]
     ],
-    "Scale": [
+    "Size": [
      [
-      0,
-      {
-       "Vector3": [
-        1.5,
-        1.2,
-        1.5
-       ]
-      },
-      "Quad Out"
-     ],
-     [
-      22,
-      {
-       "Vector3": [
-        1.05,
-        0.7,
-        1.05
-       ]
-      }
-     ]
-    ],
-    "Transparency": [
-     [
-      0,
+      2,
       0.6,
       "Quad Out"
      ],
      [
       4,
-      0.1,
-      "Linear"
+      3.2,
+      "Quad In"
      ],
      [
-      16,
+      12,
+      0
+     ]
+    ],
+    "Transparency": [
+     [
+      2,
       0.2,
       "Quad In"
      ],
      [
-      22,
+      12,
       1
-     ]
-    ],
-    "Glow": [
-     [
-      0,
-      1.5,
-      "Quad Out"
-     ],
-     [
-      22,
-      2.5
      ]
     ]
    },
-   "Why": "the hero: a ring of light climbing the mended one from its feet to its chest"
+   "Why": "the hero's heart: a white core at its chest as the beam arrives, soft (0.2) and gone in a sixth of a second"
   },
-  "Lift": {
+  "Glow": {
+   "Kind": "Card",
+   "Image": "fx_glow",
+   "Color": {
+    "Color3": [
+     111,
+     230,
+     149
+    ]
+   },
+   "Tracks": {
+    "At": [
+     [
+      2,
+      {
+       "Vector3": [
+        0,
+        3.6,
+        0
+       ]
+      }
+     ]
+    ],
+    "Size": [
+     [
+      2,
+      2.6,
+      "Quad Out"
+     ],
+     [
+      6,
+      5.4,
+      "Quad In"
+     ],
+     [
+      20,
+      0
+     ]
+    ],
+    "Transparency": [
+     [
+      2,
+      0.35,
+      "Quad In"
+     ],
+     [
+      20,
+      1
+     ]
+    ]
+   },
+   "Why": "the mint round it"
+  },
+  "Needles": {
    "Kind": "Emitter",
    "Image": "fx_streak",
    "Emitter": {
     "EmissionDirection": "Top",
     "SpreadAngle": [
-     25,
-     25
+     70,
+     70
     ],
     "Lifetime": [
-     0.35,
-     0.5
+     0.26,
+     0.4
     ],
     "Speed": [
-     5,
-     8
+     10,
+     15
     ],
-    "Drag": 3,
+    "Drag": 9,
     "Acceleration": {
      "Vector3": [
       0,
@@ -130,11 +140,11 @@
     "Size": [
      [
       0,
-      0.7
+      1.0
      ],
      [
       0.6,
-      0.48999999999999994
+      0.7
      ],
      [
       1,
@@ -167,29 +177,391 @@
     ],
     "Color": {
      "Color3": [
-      255,
-      246,
-      230
+      111,
+      230,
+      149
      ]
     },
     "LightEmission": 1,
     "LightInfluence": 0,
-    "ZOffset": 0.2
+    "ZOffset": 0.6
    },
    "Emit": [
     [
      2,
-     8
+     14
     ]
    ],
    "Tracks": {
     "At": [
      [
-      0,
+      2,
       {
        "Vector3": [
         0,
-        0.4,
+        3.6,
+        0
+       ]
+      }
+     ]
+    ]
+   },
+   "Why": "14 needles thrown out of its chest leaning up, fast then slow: light leaving it, never falling"
+  },
+  "RimLine": {
+   "Kind": "Emitter",
+   "Image": "fx_ring_line",
+   "Emitter": {
+    "Lifetime": [
+     0.45,
+     0.45
+    ],
+    "Speed": [
+     0,
+     0
+    ],
+    "Size": [
+     [
+      0,
+      3.0
+     ],
+     [
+      0.4,
+      5.4
+     ],
+     [
+      1,
+      6.4
+     ]
+    ],
+    "Rotation": [
+     0,
+     0
+    ],
+    "FlipbookLayout": "Grid4x4",
+    "FlipbookMode": "OneShot",
+    "LightInfluence": 0,
+    "Color": {
+     "Color3": [
+      214,
+      255,
+      228
+     ]
+    },
+    "LightEmission": 1,
+    "ZOffset": 0.55
+   },
+   "Emit": [
+    [
+     3,
+     1
+    ]
+   ],
+   "Tracks": {
+    "At": [
+     [
+      3,
+      {
+       "Vector3": [
+        0,
+        3.6,
+        0
+       ]
+      }
+     ]
+    ]
+   },
+   "Why": "the dome's rim: a ring swelling round it as it fades"
+  },
+  "RimFill": {
+   "Kind": "Emitter",
+   "Image": "fx_ring_fill",
+   "Emitter": {
+    "Lifetime": [
+     0.45,
+     0.45
+    ],
+    "Speed": [
+     0,
+     0
+    ],
+    "Size": [
+     [
+      0,
+      3.0
+     ],
+     [
+      0.4,
+      5.4
+     ],
+     [
+      1,
+      6.4
+     ]
+    ],
+    "Rotation": [
+     0,
+     0
+    ],
+    "FlipbookLayout": "Grid4x4",
+    "FlipbookMode": "OneShot",
+    "LightInfluence": 0,
+    "Color": {
+     "Color3": [
+      111,
+      230,
+      149
+     ]
+    },
+    "LightEmission": 0.6,
+    "ZOffset": 0.5
+   },
+   "Emit": [
+    [
+     3,
+     1
+    ]
+   ],
+   "Tracks": {
+    "At": [
+     [
+      3,
+      {
+       "Vector3": [
+        0,
+        3.6,
+        0
+       ]
+      }
+     ]
+    ]
+   },
+   "Why": "the rim's fill pass"
+  },
+  "RimDark": {
+   "Kind": "Emitter",
+   "Image": "fx_ring_dark",
+   "Emitter": {
+    "Lifetime": [
+     0.45,
+     0.45
+    ],
+    "Speed": [
+     0,
+     0
+    ],
+    "Size": [
+     [
+      0,
+      3.0
+     ],
+     [
+      0.4,
+      5.4
+     ],
+     [
+      1,
+      6.4
+     ]
+    ],
+    "Rotation": [
+     0,
+     0
+    ],
+    "FlipbookLayout": "Grid4x4",
+    "FlipbookMode": "OneShot",
+    "LightInfluence": 0,
+    "Color": {
+     "Color3": [
+      28,
+      23,
+      38
+     ]
+    },
+    "LightEmission": 0,
+    "Transparency": 0.15,
+    "ZOffset": 0.45
+   },
+   "Emit": [
+    [
+     3,
+     1
+    ]
+   ],
+   "Tracks": {
+    "At": [
+     [
+      3,
+      {
+       "Vector3": [
+        0,
+        3.6,
+        0
+       ]
+      }
+     ]
+    ]
+   },
+   "Why": "the rim's dark pass"
+  },
+  "Hoop": {
+   "Kind": "Mesh",
+   "Part": [
+    "FxHoop"
+   ],
+   "Look": "fx_rise_Grey",
+   "Grey": "fx_rise_Grey",
+   "Color": {
+    "Color3": [
+     111,
+     230,
+     149
+    ]
+   },
+   "Ground": true,
+   "Tracks": {
+    "At": [
+     [
+      2,
+      {
+       "Vector3": [
+        0,
+        0.05,
+        0
+       ]
+      }
+     ]
+    ],
+    "Scale": [
+     [
+      2,
+      {
+       "Vector3": [
+        1.0,
+        0.3,
+        1.0
+       ]
+      },
+      "Quad Out"
+     ],
+     [
+      16,
+      {
+       "Vector3": [
+        2.8,
+        0.2,
+        2.8
+       ]
+      }
+     ]
+    ],
+    "Transparency": [
+     [
+      2,
+      0.15,
+      "Quad In"
+     ],
+     [
+      20,
+      1
+     ]
+    ],
+    "Glow": [
+     [
+      2,
+      3,
+      "Quad Out"
+     ],
+     [
+      20,
+      1
+     ]
+    ]
+   },
+   "Why": "a hoop opening at its feet: where the light lands"
+  },
+  "Motes": {
+   "Kind": "Emitter",
+   "Image": "fx_glow",
+   "Emitter": {
+    "EmissionDirection": "Top",
+    "SpreadAngle": [
+     25,
+     25
+    ],
+    "Lifetime": [
+     0.6,
+     0.9
+    ],
+    "Speed": [
+     3,
+     5
+    ],
+    "Drag": 3,
+    "Acceleration": {
+     "Vector3": [
+      0,
+      0,
+      0
+     ]
+    },
+    "Size": [
+     [
+      0,
+      0.32
+     ],
+     [
+      0.5,
+      0.26
+     ],
+     [
+      1,
+      0
+     ]
+    ],
+    "Transparency": [
+     [
+      0,
+      0.1
+     ],
+     [
+      0.7,
+      0.3
+     ],
+     [
+      1,
+      1
+     ]
+    ],
+    "Color": {
+     "Color3": [
+      111,
+      230,
+      149
+     ]
+    },
+    "LightEmission": 1,
+    "LightInfluence": 0,
+    "ZOffset": 0.5
+   },
+   "Emit": [
+    [
+     5,
+     6
+    ],
+    [
+     11,
+     4
+    ]
+   ],
+   "Tracks": {
+    "At": [
+     [
+      2,
+      {
+       "Vector3": [
+        0,
+        1.4,
         0
        ]
       }
@@ -197,70 +569,12 @@
     ],
     "Radius": [
      [
-      0,
+      2,
       0.9
      ]
     ]
    },
-   "Why": "light lifting off it as the ring climbs, slowing"
-  },
-  "Chest": {
-   "Kind": "Card",
-   "Image": "fx_glow",
-   "Color": {
-    "Color3": [
-     255,
-     244,
-     220
-    ]
-   },
-   "Tracks": {
-    "At": [
-     [
-      18,
-      {
-       "Vector3": [
-        0,
-        3.6,
-        0.3
-       ]
-      }
-     ]
-    ],
-    "Size": [
-     [
-      18,
-      1.2,
-      "Quad Out"
-     ],
-     [
-      24,
-      2.6,
-      "Quad In"
-     ],
-     [
-      40,
-      0
-     ]
-    ],
-    "Transparency": [
-     [
-      18,
-      0.6,
-      "Quad Out"
-     ],
-     [
-      24,
-      0.2,
-      "Quad In"
-     ],
-     [
-      40,
-      1
-     ]
-    ]
-   },
-   "Why": "the ring arriving at its chest: a soft glow, gone in a quarter second"
+   "Why": "round motes rising off it and slowing, after the burst: never falling, never sticking"
   }
  }
 }

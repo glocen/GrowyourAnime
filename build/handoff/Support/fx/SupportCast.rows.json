@@ -1,20 +1,168 @@
 {
  "Schema": "rows/1",
  "Effect": "SupportCast",
- "Why": "The Support's cast, SupportCast's own effect: the grey block-in (AR58, Scintilla).",
+ "Why": "The Support's cast, SupportCast's own effect: the held light (AR58, target A, Scintilla).",
  "Area": 1,
- "Grey": true,
+ "Grey": false,
  "Rows": {
-  "SleeveLeft": {
+  "Orb": {
    "Kind": "Card",
-   "From": "Cast",
-   "Body": "Left Arm",
+   "Image": "fx_glow",
+   "Color": {
+    "Color3": [
+     111,
+     230,
+     149
+    ]
+   },
+   "Tracks": {
+    "At": [
+     [
+      -24,
+      {
+       "Vector3": [
+        0,
+        2.4,
+        -0.35
+       ]
+      }
+     ]
+    ],
+    "Size": [
+     [
+      -24,
+      0.3,
+      "Quad Out"
+     ],
+     [
+      -4,
+      2.4,
+      "Sine InOut"
+     ],
+     [
+      30,
+      2.0,
+      "Sine InOut"
+     ],
+     [
+      60,
+      2.3,
+      "Quad In"
+     ],
+     [
+      68,
+      0
+     ]
+    ],
+    "Transparency": [
+     [
+      -24,
+      0.9,
+      "Quad Out"
+     ],
+     [
+      -4,
+      0.1,
+      "Linear"
+     ],
+     [
+      60,
+      0.15,
+      "Quad In"
+     ],
+     [
+      68,
+      1
+     ]
+    ]
+   },
+   "Why": "the hero: the light gathering between the sleeves as they rise, held while it casts: who casts",
+   "Body": "HumanoidRootPart",
+   "From": "Cast"
+  },
+  "OrbCore": {
+   "Kind": "Card",
    "Image": "fx_glow",
    "Color": {
     "Color3": [
      255,
-     244,
-     220
+     255,
+     255
+    ]
+   },
+   "Tracks": {
+    "At": [
+     [
+      -20,
+      {
+       "Vector3": [
+        0,
+        2.4,
+        -0.35
+       ]
+      }
+     ]
+    ],
+    "Size": [
+     [
+      -20,
+      0.2,
+      "Quad Out"
+     ],
+     [
+      -4,
+      0.95,
+      "Sine InOut"
+     ],
+     [
+      30,
+      0.8,
+      "Sine InOut"
+     ],
+     [
+      60,
+      0.9,
+      "Quad In"
+     ],
+     [
+      66,
+      0
+     ]
+    ],
+    "Transparency": [
+     [
+      -20,
+      0.8,
+      "Quad Out"
+     ],
+     [
+      -4,
+      0.05,
+      "Linear"
+     ],
+     [
+      60,
+      0.1,
+      "Quad In"
+     ],
+     [
+      66,
+      1
+     ]
+    ]
+   },
+   "Why": "its white core",
+   "Body": "HumanoidRootPart",
+   "From": "Cast"
+  },
+  "SleeveLeft": {
+   "Kind": "Card",
+   "Image": "fx_glow",
+   "Color": {
+    "Color3": [
+     111,
+     230,
+     149
     ]
    },
    "Tracks": {
@@ -33,26 +181,21 @@
     "Size": [
      [
       -12,
-      0.4,
+      0.3,
       "Quad Out"
      ],
      [
       0,
-      1.7,
-      "Sine InOut"
-     ],
-     [
-      30,
-      1.45,
+      1.0,
       "Sine InOut"
      ],
      [
       60,
-      1.6,
+      0.9,
       "Quad In"
      ],
      [
-      70,
+      68,
       0
      ]
     ],
@@ -64,32 +207,32 @@
      ],
      [
       0,
-      0.15,
+      0.35,
       "Linear"
      ],
      [
       60,
-      0.25,
+      0.4,
       "Quad In"
      ],
      [
-      70,
+      68,
       1
      ]
     ]
    },
-   "Why": "the hero: light gathering in the sleeve's end as it rises, held while it casts: who casts"
+   "Why": "each sleeve's end lit a little, feeding the light between them",
+   "Body": "Left Arm",
+   "From": "Cast"
   },
   "SleeveRight": {
    "Kind": "Card",
-   "From": "Cast",
-   "Body": "Right Arm",
    "Image": "fx_glow",
    "Color": {
     "Color3": [
-     255,
-     244,
-     220
+     111,
+     230,
+     149
     ]
    },
    "Tracks": {
@@ -108,26 +251,21 @@
     "Size": [
      [
       -12,
-      0.4,
+      0.3,
       "Quad Out"
      ],
      [
       0,
-      1.7,
-      "Sine InOut"
-     ],
-     [
-      30,
-      1.45,
+      1.0,
       "Sine InOut"
      ],
      [
       60,
-      1.6,
+      0.9,
       "Quad In"
      ],
      [
-      70,
+      68,
       0
      ]
     ],
@@ -139,239 +277,131 @@
      ],
      [
       0,
-      0.15,
+      0.35,
       "Linear"
      ],
      [
       60,
-      0.25,
+      0.4,
       "Quad In"
      ],
      [
-      70,
+      68,
       1
      ]
     ]
    },
-   "Why": "the hero: light gathering in the sleeve's end as it rises, held while it casts: who casts"
+   "Why": "each sleeve's end lit a little, feeding the light between them",
+   "Body": "Right Arm",
+   "From": "Cast"
   },
-  "RingLine": {
+  "OrbNeedles": {
    "Kind": "Emitter",
-   "Image": "fx_ring_line",
+   "Image": "fx_streak",
    "Emitter": {
+    "EmissionDirection": "Top",
+    "SpreadAngle": [
+     180,
+     180
+    ],
     "Lifetime": [
-     0.32,
-     0.32
+     0.18,
+     0.26
     ],
     "Speed": [
-     0,
-     0
+     2.5,
+     3.5
     ],
+    "Drag": 6,
+    "Acceleration": {
+     "Vector3": [
+      0,
+      0,
+      0
+     ]
+    },
+    "Orientation": "VelocityParallel",
     "Size": [
      [
       0,
-      1.4
+      0.55
+     ],
+     [
+      0.6,
+      0.385
      ],
      [
       1,
-      3.6
+      0
      ]
     ],
-    "Rotation": [
-     0,
-     0
+    "Squash": [
+     [
+      0,
+      -1.6
+     ],
+     [
+      1,
+      -0.6
+     ]
     ],
-    "FlipbookLayout": "Grid4x4",
-    "FlipbookMode": "OneShot",
-    "LightInfluence": 0,
+    "Transparency": [
+     [
+      0,
+      0
+     ],
+     [
+      0.7,
+      0.1
+     ],
+     [
+      1,
+      1
+     ]
+    ],
     "Color": {
      "Color3": [
-      255,
-      246,
-      230
+      111,
+      230,
+      149
      ]
     },
     "LightEmission": 1,
-    "ZOffset": 0.55
-   },
-   "Emit": [
-    [
-     0,
-     1
-    ]
-   ],
-   "Tracks": {
-    "At": [
-     [
-      0,
-      {
-       "Vector3": [
-        0,
-        0.6,
-        0
-       ]
-      }
-     ]
-    ]
-   },
-   "Why": "the cast going out: a ring opening at its chest on Cast",
-   "From": "Cast",
-   "Body": "HumanoidRootPart",
-   "Hold": true
-  },
-  "RingFill": {
-   "Kind": "Emitter",
-   "Image": "fx_ring_fill",
-   "Emitter": {
-    "Lifetime": [
-     0.32,
-     0.32
-    ],
-    "Speed": [
-     0,
-     0
-    ],
-    "Size": [
-     [
-      0,
-      1.4
-     ],
-     [
-      1,
-      3.6
-     ]
-    ],
-    "Rotation": [
-     0,
-     0
-    ],
-    "FlipbookLayout": "Grid4x4",
-    "FlipbookMode": "OneShot",
     "LightInfluence": 0,
-    "Color": [
-     [
-      0,
-      {
-       "Color3": [
-        233,
-        226,
-        214
-       ]
-      }
-     ],
-     [
-      0.34,
-      {
-       "Color3": [
-        233,
-        226,
-        214
-       ]
-      }
-     ],
-     [
-      1,
-      {
-       "Color3": [
-        91,
-        86,
-        112
-       ]
-      }
-     ]
-    ],
-    "LightEmission": 0.6,
-    "ZOffset": 0.5
+    "ZOffset": 0.6
    },
-   "Emit": [
-    [
-     0,
-     1
-    ]
-   ],
+   "Emit": [],
    "Tracks": {
     "At": [
      [
-      0,
+      -4,
       {
        "Vector3": [
         0,
-        0.6,
-        0
+        2.4,
+        -0.35
        ]
       }
      ]
-    ]
-   },
-   "Why": "Ring's fill pass",
-   "From": "Cast",
-   "Body": "HumanoidRootPart",
-   "Hold": true
-  },
-  "RingDark": {
-   "Kind": "Emitter",
-   "Image": "fx_ring_dark",
-   "Emitter": {
-    "Lifetime": [
-     0.32,
-     0.32
     ],
-    "Speed": [
-     0,
-     0
-    ],
-    "Size": [
+    "Rate": [
      [
-      0,
-      1.4
+      -4,
+      14
      ],
      [
-      1,
-      3.6
-     ]
-    ],
-    "Rotation": [
-     0,
-     0
-    ],
-    "FlipbookLayout": "Grid4x4",
-    "FlipbookMode": "OneShot",
-    "LightInfluence": 0,
-    "Color": {
-     "Color3": [
-      28,
-      23,
-      38
-     ]
-    },
-    "LightEmission": 0,
-    "Transparency": 0.15,
-    "ZOffset": 0.45
-   },
-   "Emit": [
-    [
-     0,
-     1
-    ]
-   ],
-   "Tracks": {
-    "At": [
+      60,
+      14
+     ],
      [
-      0,
-      {
-       "Vector3": [
-        0,
-        0.6,
-        0
-       ]
-      }
+      61,
+      0
      ]
     ]
    },
-   "Why": "Ring's dark pass",
+   "Why": "a few short needles turning off the held light, so it lives while it holds",
    "From": "Cast",
-   "Body": "HumanoidRootPart",
-   "Hold": true
+   "Body": "HumanoidRootPart"
   }
  },
  "Action": "SupportCast"

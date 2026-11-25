@@ -1,130 +1,14 @@
 {
  "Schema": "rows/1",
  "Effect": "SupportShield",
- "Why": "A Support's shield, worn while it holds: the grey block-in (AR58, Scintilla).",
+ "Why": "A Support's shield, worn while it holds: the veil (AR58, target S2, Scintilla).",
  "Area": 1,
- "Grey": true,
+ "Grey": false,
  "Rows": {
   "Veil": {
-   "Kind": "Mesh",
+   "Kind": "Point",
    "Body": "HumanoidRootPart",
    "Ground": true,
-   "Part": [
-    "FxColumn"
-   ],
-   "Look": "fx_rise_Grey",
-   "Grey": "fx_rise_Grey",
-   "Color": {
-    "Color3": [
-     255,
-     246,
-     230
-    ]
-   },
-   "Tracks": {
-    "Scale": [
-     [
-      0,
-      {
-       "Vector3": [
-        1.5,
-        0.1,
-        1.5
-       ]
-      },
-      "Back Out"
-     ],
-     [
-      8,
-      {
-       "Vector3": [
-        1.45,
-        2.2,
-        1.45
-       ]
-      },
-      "Sine InOut"
-     ],
-     [
-      60,
-      {
-       "Vector3": [
-        1.5,
-        2.25,
-        1.5
-       ]
-      },
-      "Sine InOut"
-     ],
-     [
-      120,
-      {
-       "Vector3": [
-        1.45,
-        2.2,
-        1.45
-       ]
-      }
-     ],
-     [
-      3600,
-      {
-       "Vector3": [
-        1.45,
-        2.2,
-        1.45
-       ]
-      }
-     ]
-    ],
-    "Transparency": [
-     [
-      0,
-      0.3,
-      "Quad Out"
-     ],
-     [
-      12,
-      0.62
-     ],
-     [
-      3600,
-      0.62
-     ]
-    ],
-    "Glow": [
-     [
-      0,
-      2.5,
-      "Quad Out"
-     ],
-     [
-      12,
-      1.2
-     ],
-     [
-      3600,
-      1.2
-     ]
-    ]
-   },
-   "Why": "the hero: a veil of light rising round the shielded one from its feet to its shoulders, and holding"
-  },
-  "Crown": {
-   "Kind": "Mesh",
-   "Body": "HumanoidRootPart",
-   "Part": [
-    "FxHoop"
-   ],
-   "Look": "fx_rise_Grey",
-   "Grey": "fx_rise_Grey",
-   "Color": {
-    "Color3": [
-     255,
-     246,
-     230
-    ]
-   },
    "Tracks": {
     "At": [
      [
@@ -132,51 +16,8 @@
       {
        "Vector3": [
         0,
-        -2.8,
-        0
-       ]
-      },
-      "Back Out"
-     ],
-     [
-      8,
-      {
-       "Vector3": [
         0,
-        1.3,
         0
-       ]
-      }
-     ],
-     [
-      3600,
-      {
-       "Vector3": [
-        0,
-        1.3,
-        0
-       ]
-      }
-     ]
-    ],
-    "Scale": [
-     [
-      0,
-      {
-       "Vector3": [
-        1.6,
-        0.6,
-        1.6
-       ]
-      }
-     ],
-     [
-      3600,
-      {
-       "Vector3": [
-        1.6,
-        0.6,
-        1.6
        ]
       }
      ]
@@ -189,28 +30,1229 @@
      ],
      [
       3600,
-      1800
+      1200
+     ]
+    ]
+   },
+   "Why": "the veil's place, turning slowly: its ribbons ride it"
+  },
+  "Ribbon01": {
+   "Kind": "Beam",
+   "On": "Veil",
+   "Image": "fx_beam",
+   "Color": {
+    "Color3": [
+     111,
+     230,
+     149
+    ]
+   },
+   "Beam": {
+    "FaceCamera": true,
+    "LightEmission": 1,
+    "LightInfluence": 0,
+    "TextureMode": "Stretch",
+    "TextureSpeed": 0,
+    "Segments": 1
+   },
+   "Taper": 0.1,
+   "FootFade": 0.3,
+   "Tracks": {
+    "At": [
+     [
+      0,
+      {
+       "Vector3": [
+        1.7,
+        0,
+        0.0
+       ]
+      }
+     ]
+    ],
+    "Top": [
+     [
+      0,
+      0,
+      "Quad Out"
+     ],
+     [
+      8,
+      3.9
+     ],
+     [
+      3600,
+      3.9
+     ]
+    ],
+    "Width": [
+     [
+      0,
+      0.34,
+      "Quad Out"
+     ],
+     [
+      8,
+      0.18
+     ],
+     [
+      3600,
+      0.18
      ]
     ],
     "Transparency": [
      [
       0,
-      0.2,
+      0,
       "Quad Out"
      ],
      [
       12,
-      0.35
+      0.25
      ],
      [
       3600,
-      0.35
+      0.25
+     ]
+    ]
+   },
+   "Why": "the hero: ribbons of light rising round it from its feet and holding"
+  },
+  "Ribbon02": {
+   "Kind": "Beam",
+   "On": "Veil",
+   "Image": "fx_beam",
+   "Color": {
+    "Color3": [
+     111,
+     230,
+     149
+    ]
+   },
+   "Beam": {
+    "FaceCamera": true,
+    "LightEmission": 1,
+    "LightInfluence": 0,
+    "TextureMode": "Stretch",
+    "TextureSpeed": 0,
+    "Segments": 1
+   },
+   "Taper": 0.1,
+   "FootFade": 0.3,
+   "Tracks": {
+    "At": [
+     [
+      0,
+      {
+       "Vector3": [
+        1.532,
+        0,
+        0.738
+       ]
+      }
+     ]
+    ],
+    "Top": [
+     [
+      0,
+      0,
+      "Quad Out"
+     ],
+     [
+      8,
+      4.45
+     ],
+     [
+      3600,
+      4.45
+     ]
+    ],
+    "Width": [
+     [
+      0,
+      0.34,
+      "Quad Out"
+     ],
+     [
+      8,
+      0.18
+     ],
+     [
+      3600,
+      0.18
+     ]
+    ],
+    "Transparency": [
+     [
+      0,
+      0,
+      "Quad Out"
+     ],
+     [
+      12,
+      0.25
+     ],
+     [
+      3600,
+      0.25
+     ]
+    ]
+   },
+   "Why": "a ribbon"
+  },
+  "Ribbon03": {
+   "Kind": "Beam",
+   "On": "Veil",
+   "Image": "fx_beam",
+   "Color": {
+    "Color3": [
+     111,
+     230,
+     149
+    ]
+   },
+   "Beam": {
+    "FaceCamera": true,
+    "LightEmission": 1,
+    "LightInfluence": 0,
+    "TextureMode": "Stretch",
+    "TextureSpeed": 0,
+    "Segments": 1
+   },
+   "Taper": 0.1,
+   "FootFade": 0.3,
+   "Tracks": {
+    "At": [
+     [
+      0,
+      {
+       "Vector3": [
+        1.06,
+        0,
+        1.329
+       ]
+      }
+     ]
+    ],
+    "Top": [
+     [
+      0,
+      0,
+      "Quad Out"
+     ],
+     [
+      8,
+      5.0
+     ],
+     [
+      3600,
+      5.0
+     ]
+    ],
+    "Width": [
+     [
+      0,
+      0.34,
+      "Quad Out"
+     ],
+     [
+      8,
+      0.18
+     ],
+     [
+      3600,
+      0.18
+     ]
+    ],
+    "Transparency": [
+     [
+      0,
+      0,
+      "Quad Out"
+     ],
+     [
+      12,
+      0.25
+     ],
+     [
+      3600,
+      0.25
+     ]
+    ]
+   },
+   "Why": "a ribbon"
+  },
+  "Ribbon04": {
+   "Kind": "Beam",
+   "On": "Veil",
+   "Image": "fx_beam",
+   "Color": {
+    "Color3": [
+     111,
+     230,
+     149
+    ]
+   },
+   "Beam": {
+    "FaceCamera": true,
+    "LightEmission": 1,
+    "LightInfluence": 0,
+    "TextureMode": "Stretch",
+    "TextureSpeed": 0,
+    "Segments": 1
+   },
+   "Taper": 0.1,
+   "FootFade": 0.3,
+   "Tracks": {
+    "At": [
+     [
+      0,
+      {
+       "Vector3": [
+        0.378,
+        0,
+        1.657
+       ]
+      }
+     ]
+    ],
+    "Top": [
+     [
+      0,
+      0,
+      "Quad Out"
+     ],
+     [
+      8,
+      4.175
+     ],
+     [
+      3600,
+      4.175
+     ]
+    ],
+    "Width": [
+     [
+      0,
+      0.34,
+      "Quad Out"
+     ],
+     [
+      8,
+      0.18
+     ],
+     [
+      3600,
+      0.18
+     ]
+    ],
+    "Transparency": [
+     [
+      0,
+      0,
+      "Quad Out"
+     ],
+     [
+      12,
+      0.25
+     ],
+     [
+      3600,
+      0.25
+     ]
+    ]
+   },
+   "Why": "a ribbon"
+  },
+  "Ribbon05": {
+   "Kind": "Beam",
+   "On": "Veil",
+   "Image": "fx_beam",
+   "Color": {
+    "Color3": [
+     111,
+     230,
+     149
+    ]
+   },
+   "Beam": {
+    "FaceCamera": true,
+    "LightEmission": 1,
+    "LightInfluence": 0,
+    "TextureMode": "Stretch",
+    "TextureSpeed": 0,
+    "Segments": 1
+   },
+   "Taper": 0.1,
+   "FootFade": 0.3,
+   "Tracks": {
+    "At": [
+     [
+      0,
+      {
+       "Vector3": [
+        -0.378,
+        0,
+        1.657
+       ]
+      }
+     ]
+    ],
+    "Top": [
+     [
+      0,
+      0,
+      "Quad Out"
+     ],
+     [
+      8,
+      4.725
+     ],
+     [
+      3600,
+      4.725
+     ]
+    ],
+    "Width": [
+     [
+      0,
+      0.34,
+      "Quad Out"
+     ],
+     [
+      8,
+      0.18
+     ],
+     [
+      3600,
+      0.18
+     ]
+    ],
+    "Transparency": [
+     [
+      0,
+      0,
+      "Quad Out"
+     ],
+     [
+      12,
+      0.25
+     ],
+     [
+      3600,
+      0.25
+     ]
+    ]
+   },
+   "Why": "a ribbon"
+  },
+  "Ribbon06": {
+   "Kind": "Beam",
+   "On": "Veil",
+   "Image": "fx_beam",
+   "Color": {
+    "Color3": [
+     111,
+     230,
+     149
+    ]
+   },
+   "Beam": {
+    "FaceCamera": true,
+    "LightEmission": 1,
+    "LightInfluence": 0,
+    "TextureMode": "Stretch",
+    "TextureSpeed": 0,
+    "Segments": 1
+   },
+   "Taper": 0.1,
+   "FootFade": 0.3,
+   "Tracks": {
+    "At": [
+     [
+      0,
+      {
+       "Vector3": [
+        -1.06,
+        0,
+        1.329
+       ]
+      }
+     ]
+    ],
+    "Top": [
+     [
+      0,
+      0,
+      "Quad Out"
+     ],
+     [
+      8,
+      3.9
+     ],
+     [
+      3600,
+      3.9
+     ]
+    ],
+    "Width": [
+     [
+      0,
+      0.34,
+      "Quad Out"
+     ],
+     [
+      8,
+      0.18
+     ],
+     [
+      3600,
+      0.18
+     ]
+    ],
+    "Transparency": [
+     [
+      0,
+      0,
+      "Quad Out"
+     ],
+     [
+      12,
+      0.25
+     ],
+     [
+      3600,
+      0.25
+     ]
+    ]
+   },
+   "Why": "a ribbon"
+  },
+  "Ribbon07": {
+   "Kind": "Beam",
+   "On": "Veil",
+   "Image": "fx_beam",
+   "Color": {
+    "Color3": [
+     111,
+     230,
+     149
+    ]
+   },
+   "Beam": {
+    "FaceCamera": true,
+    "LightEmission": 1,
+    "LightInfluence": 0,
+    "TextureMode": "Stretch",
+    "TextureSpeed": 0,
+    "Segments": 1
+   },
+   "Taper": 0.1,
+   "FootFade": 0.3,
+   "Tracks": {
+    "At": [
+     [
+      0,
+      {
+       "Vector3": [
+        -1.532,
+        0,
+        0.738
+       ]
+      }
+     ]
+    ],
+    "Top": [
+     [
+      0,
+      0,
+      "Quad Out"
+     ],
+     [
+      8,
+      4.45
+     ],
+     [
+      3600,
+      4.45
+     ]
+    ],
+    "Width": [
+     [
+      0,
+      0.34,
+      "Quad Out"
+     ],
+     [
+      8,
+      0.18
+     ],
+     [
+      3600,
+      0.18
+     ]
+    ],
+    "Transparency": [
+     [
+      0,
+      0,
+      "Quad Out"
+     ],
+     [
+      12,
+      0.25
+     ],
+     [
+      3600,
+      0.25
+     ]
+    ]
+   },
+   "Why": "a ribbon"
+  },
+  "Ribbon08": {
+   "Kind": "Beam",
+   "On": "Veil",
+   "Image": "fx_beam",
+   "Color": {
+    "Color3": [
+     111,
+     230,
+     149
+    ]
+   },
+   "Beam": {
+    "FaceCamera": true,
+    "LightEmission": 1,
+    "LightInfluence": 0,
+    "TextureMode": "Stretch",
+    "TextureSpeed": 0,
+    "Segments": 1
+   },
+   "Taper": 0.1,
+   "FootFade": 0.3,
+   "Tracks": {
+    "At": [
+     [
+      0,
+      {
+       "Vector3": [
+        -1.7,
+        0,
+        0.0
+       ]
+      }
+     ]
+    ],
+    "Top": [
+     [
+      0,
+      0,
+      "Quad Out"
+     ],
+     [
+      8,
+      5.0
+     ],
+     [
+      3600,
+      5.0
+     ]
+    ],
+    "Width": [
+     [
+      0,
+      0.34,
+      "Quad Out"
+     ],
+     [
+      8,
+      0.18
+     ],
+     [
+      3600,
+      0.18
+     ]
+    ],
+    "Transparency": [
+     [
+      0,
+      0,
+      "Quad Out"
+     ],
+     [
+      12,
+      0.25
+     ],
+     [
+      3600,
+      0.25
+     ]
+    ]
+   },
+   "Why": "a ribbon"
+  },
+  "Ribbon09": {
+   "Kind": "Beam",
+   "On": "Veil",
+   "Image": "fx_beam",
+   "Color": {
+    "Color3": [
+     111,
+     230,
+     149
+    ]
+   },
+   "Beam": {
+    "FaceCamera": true,
+    "LightEmission": 1,
+    "LightInfluence": 0,
+    "TextureMode": "Stretch",
+    "TextureSpeed": 0,
+    "Segments": 1
+   },
+   "Taper": 0.1,
+   "FootFade": 0.3,
+   "Tracks": {
+    "At": [
+     [
+      0,
+      {
+       "Vector3": [
+        -1.532,
+        0,
+        -0.738
+       ]
+      }
+     ]
+    ],
+    "Top": [
+     [
+      0,
+      0,
+      "Quad Out"
+     ],
+     [
+      8,
+      4.175
+     ],
+     [
+      3600,
+      4.175
+     ]
+    ],
+    "Width": [
+     [
+      0,
+      0.34,
+      "Quad Out"
+     ],
+     [
+      8,
+      0.18
+     ],
+     [
+      3600,
+      0.18
+     ]
+    ],
+    "Transparency": [
+     [
+      0,
+      0,
+      "Quad Out"
+     ],
+     [
+      12,
+      0.25
+     ],
+     [
+      3600,
+      0.25
+     ]
+    ]
+   },
+   "Why": "a ribbon"
+  },
+  "Ribbon10": {
+   "Kind": "Beam",
+   "On": "Veil",
+   "Image": "fx_beam",
+   "Color": {
+    "Color3": [
+     111,
+     230,
+     149
+    ]
+   },
+   "Beam": {
+    "FaceCamera": true,
+    "LightEmission": 1,
+    "LightInfluence": 0,
+    "TextureMode": "Stretch",
+    "TextureSpeed": 0,
+    "Segments": 1
+   },
+   "Taper": 0.1,
+   "FootFade": 0.3,
+   "Tracks": {
+    "At": [
+     [
+      0,
+      {
+       "Vector3": [
+        -1.06,
+        0,
+        -1.329
+       ]
+      }
+     ]
+    ],
+    "Top": [
+     [
+      0,
+      0,
+      "Quad Out"
+     ],
+     [
+      8,
+      4.725
+     ],
+     [
+      3600,
+      4.725
+     ]
+    ],
+    "Width": [
+     [
+      0,
+      0.34,
+      "Quad Out"
+     ],
+     [
+      8,
+      0.18
+     ],
+     [
+      3600,
+      0.18
+     ]
+    ],
+    "Transparency": [
+     [
+      0,
+      0,
+      "Quad Out"
+     ],
+     [
+      12,
+      0.25
+     ],
+     [
+      3600,
+      0.25
+     ]
+    ]
+   },
+   "Why": "a ribbon"
+  },
+  "Ribbon11": {
+   "Kind": "Beam",
+   "On": "Veil",
+   "Image": "fx_beam",
+   "Color": {
+    "Color3": [
+     111,
+     230,
+     149
+    ]
+   },
+   "Beam": {
+    "FaceCamera": true,
+    "LightEmission": 1,
+    "LightInfluence": 0,
+    "TextureMode": "Stretch",
+    "TextureSpeed": 0,
+    "Segments": 1
+   },
+   "Taper": 0.1,
+   "FootFade": 0.3,
+   "Tracks": {
+    "At": [
+     [
+      0,
+      {
+       "Vector3": [
+        -0.378,
+        0,
+        -1.657
+       ]
+      }
+     ]
+    ],
+    "Top": [
+     [
+      0,
+      0,
+      "Quad Out"
+     ],
+     [
+      8,
+      3.9
+     ],
+     [
+      3600,
+      3.9
+     ]
+    ],
+    "Width": [
+     [
+      0,
+      0.34,
+      "Quad Out"
+     ],
+     [
+      8,
+      0.18
+     ],
+     [
+      3600,
+      0.18
+     ]
+    ],
+    "Transparency": [
+     [
+      0,
+      0,
+      "Quad Out"
+     ],
+     [
+      12,
+      0.25
+     ],
+     [
+      3600,
+      0.25
+     ]
+    ]
+   },
+   "Why": "a ribbon"
+  },
+  "Ribbon12": {
+   "Kind": "Beam",
+   "On": "Veil",
+   "Image": "fx_beam",
+   "Color": {
+    "Color3": [
+     111,
+     230,
+     149
+    ]
+   },
+   "Beam": {
+    "FaceCamera": true,
+    "LightEmission": 1,
+    "LightInfluence": 0,
+    "TextureMode": "Stretch",
+    "TextureSpeed": 0,
+    "Segments": 1
+   },
+   "Taper": 0.1,
+   "FootFade": 0.3,
+   "Tracks": {
+    "At": [
+     [
+      0,
+      {
+       "Vector3": [
+        0.378,
+        0,
+        -1.657
+       ]
+      }
+     ]
+    ],
+    "Top": [
+     [
+      0,
+      0,
+      "Quad Out"
+     ],
+     [
+      8,
+      4.45
+     ],
+     [
+      3600,
+      4.45
+     ]
+    ],
+    "Width": [
+     [
+      0,
+      0.34,
+      "Quad Out"
+     ],
+     [
+      8,
+      0.18
+     ],
+     [
+      3600,
+      0.18
+     ]
+    ],
+    "Transparency": [
+     [
+      0,
+      0,
+      "Quad Out"
+     ],
+     [
+      12,
+      0.25
+     ],
+     [
+      3600,
+      0.25
+     ]
+    ]
+   },
+   "Why": "a ribbon"
+  },
+  "Ribbon13": {
+   "Kind": "Beam",
+   "On": "Veil",
+   "Image": "fx_beam",
+   "Color": {
+    "Color3": [
+     111,
+     230,
+     149
+    ]
+   },
+   "Beam": {
+    "FaceCamera": true,
+    "LightEmission": 1,
+    "LightInfluence": 0,
+    "TextureMode": "Stretch",
+    "TextureSpeed": 0,
+    "Segments": 1
+   },
+   "Taper": 0.1,
+   "FootFade": 0.3,
+   "Tracks": {
+    "At": [
+     [
+      0,
+      {
+       "Vector3": [
+        1.06,
+        0,
+        -1.329
+       ]
+      }
+     ]
+    ],
+    "Top": [
+     [
+      0,
+      0,
+      "Quad Out"
+     ],
+     [
+      8,
+      5.0
+     ],
+     [
+      3600,
+      5.0
+     ]
+    ],
+    "Width": [
+     [
+      0,
+      0.34,
+      "Quad Out"
+     ],
+     [
+      8,
+      0.18
+     ],
+     [
+      3600,
+      0.18
+     ]
+    ],
+    "Transparency": [
+     [
+      0,
+      0,
+      "Quad Out"
+     ],
+     [
+      12,
+      0.25
+     ],
+     [
+      3600,
+      0.25
+     ]
+    ]
+   },
+   "Why": "a ribbon"
+  },
+  "Ribbon14": {
+   "Kind": "Beam",
+   "On": "Veil",
+   "Image": "fx_beam",
+   "Color": {
+    "Color3": [
+     111,
+     230,
+     149
+    ]
+   },
+   "Beam": {
+    "FaceCamera": true,
+    "LightEmission": 1,
+    "LightInfluence": 0,
+    "TextureMode": "Stretch",
+    "TextureSpeed": 0,
+    "Segments": 1
+   },
+   "Taper": 0.1,
+   "FootFade": 0.3,
+   "Tracks": {
+    "At": [
+     [
+      0,
+      {
+       "Vector3": [
+        1.532,
+        0,
+        -0.738
+       ]
+      }
+     ]
+    ],
+    "Top": [
+     [
+      0,
+      0,
+      "Quad Out"
+     ],
+     [
+      8,
+      4.175
+     ],
+     [
+      3600,
+      4.175
+     ]
+    ],
+    "Width": [
+     [
+      0,
+      0.34,
+      "Quad Out"
+     ],
+     [
+      8,
+      0.18
+     ],
+     [
+      3600,
+      0.18
+     ]
+    ],
+    "Transparency": [
+     [
+      0,
+      0,
+      "Quad Out"
+     ],
+     [
+      12,
+      0.25
+     ],
+     [
+      3600,
+      0.25
+     ]
+    ]
+   },
+   "Why": "a ribbon"
+  },
+  "Foot": {
+   "Kind": "Mesh",
+   "Body": "HumanoidRootPart",
+   "Ground": true,
+   "Part": [
+    "FxHoop"
+   ],
+   "Look": "fx_rise_Grey",
+   "Grey": "fx_rise_Grey",
+   "Color": {
+    "Color3": [
+     111,
+     230,
+     149
+    ]
+   },
+   "Tracks": {
+    "Scale": [
+     [
+      0,
+      {
+       "Vector3": [
+        1.3,
+        0.3,
+        1.3
+       ]
+      },
+      "Back Out"
+     ],
+     [
+      8,
+      {
+       "Vector3": [
+        1.7,
+        0.35,
+        1.7
+       ]
+      }
+     ],
+     [
+      3600,
+      {
+       "Vector3": [
+        1.7,
+        0.35,
+        1.7
+       ]
+      }
+     ]
+    ],
+    "Transparency": [
+     [
+      0,
+      0.1,
+      "Quad Out"
+     ],
+     [
+      12,
+      0.3
+     ],
+     [
+      3600,
+      0.3
      ]
     ],
     "Glow": [
      [
       0,
-      2.5,
+      3,
       "Quad Out"
      ],
      [
@@ -223,7 +1265,205 @@
      ]
     ]
    },
-   "Why": "the veil's top: a ring turning slowly at its shoulders, the shield's edge"
+   "Why": "the ribbons' foot: a hoop round the shielded one"
+  },
+  "Crown": {
+   "Kind": "Mesh",
+   "Body": "HumanoidRootPart",
+   "Part": [
+    "FxHoop"
+   ],
+   "Look": "fx_rise_Grey",
+   "Grey": "fx_rise_Grey",
+   "Color": {
+    "Color3": [
+     111,
+     230,
+     149
+    ]
+   },
+   "Tracks": {
+    "At": [
+     [
+      0,
+      {
+       "Vector3": [
+        0,
+        -2.9,
+        0
+       ]
+      },
+      "Quad Out"
+     ],
+     [
+      8,
+      {
+       "Vector3": [
+        0,
+        1.0,
+        0
+       ]
+      }
+     ],
+     [
+      3600,
+      {
+       "Vector3": [
+        0,
+        1.0,
+        0
+       ]
+      }
+     ]
+    ],
+    "Scale": [
+     [
+      0,
+      {
+       "Vector3": [
+        1.7,
+        0.4,
+        1.7
+       ]
+      }
+     ],
+     [
+      3600,
+      {
+       "Vector3": [
+        1.564,
+        0.4,
+        1.564
+       ]
+      }
+     ]
+    ],
+    "Spin": [
+     [
+      0,
+      0,
+      "Linear"
+     ],
+     [
+      3600,
+      1200
+     ]
+    ],
+    "Transparency": [
+     [
+      0,
+      0.1,
+      "Quad Out"
+     ],
+     [
+      12,
+      0.3
+     ],
+     [
+      3600,
+      0.3
+     ]
+    ],
+    "Glow": [
+     [
+      0,
+      3,
+      "Quad Out"
+     ],
+     [
+      12,
+      1.6
+     ],
+     [
+      3600,
+      1.6
+     ]
+    ]
+   },
+   "Why": "the ribbons' top: a hoop riding up with them, the shield's edge"
+  },
+  "Fill": {
+   "Kind": "Mesh",
+   "Body": "HumanoidRootPart",
+   "Ground": true,
+   "Part": [
+    "FxColumn"
+   ],
+   "Look": "fx_rise_Grey",
+   "Grey": "fx_rise_Grey",
+   "Color": {
+    "Color3": [
+     111,
+     230,
+     149
+    ]
+   },
+   "Tracks": {
+    "Scale": [
+     [
+      0,
+      {
+       "Vector3": [
+        1.7,
+        0.1,
+        1.7
+       ]
+      },
+      "Quad Out"
+     ],
+     [
+      8,
+      {
+       "Vector3": [
+        1.7,
+        2.0,
+        1.7
+       ]
+      }
+     ],
+     [
+      3600,
+      {
+       "Vector3": [
+        1.7,
+        2.0,
+        1.7
+       ]
+      }
+     ]
+    ],
+    "Transparency": [
+     [
+      0,
+      0.7,
+      "Quad Out"
+     ],
+     [
+      12,
+      0.86
+     ],
+     [
+      3600,
+      0.86
+     ]
+    ],
+    "Glow": [
+     [
+      0,
+      1.5,
+      "Quad Out"
+     ],
+     [
+      12,
+      0.8
+     ],
+     [
+      3600,
+      0.8
+     ]
+    ]
+   },
+   "Why": "a faint column between the ribbons: the veil's body, never a wall"
   }
  }
 }

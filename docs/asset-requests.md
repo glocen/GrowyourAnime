@@ -17042,6 +17042,22 @@ Paint-overs on one frame of the game, in `build/handoff/Support/targets/`, each 
   - **S2 over S1:** S1's shell is the same shape as A's own dome after the mend, so a heal and a shield would read alike. S2's rimmed column reads as a barrier and stands apart from it.
   - **Watch at the quarter checkpoint:** A's beam is short from this camera (the Support stands behind the one it mends), so its read is judged from other angles in play. S2 is fainter than S1 at the squint, so its rims carry its read.
 
+### Scintilla's build: A and S2 as rows (2026-11-25, 22:05)
+
+`tools/fx/support_looks.py` is rewritten to the picked targets. Three effects are taken into the game (`src/shared/Config/EffectRows/`) and one waits on a hook.
+- **SupportCast:** the held light between the sleeves: a mint card, a white core, short needles turning off it, and each sleeve's end lit a little. The grey chest ring is gone.
+- **SupportHeal:** A's burst at the chest, 2 frames after the cast lands (the beam's reach). A white core (0.2, gone in 10 frames), a mint glow, 14 needles leaning up, the kit's ring swelling round it as the dome's rim, a hoop opening at the feet, round motes rising.
+- **SupportShield:** S2's veil. 14 tapered beam ribbons rise round the body in 8 frames and turn slowly, with a hoop at their foot, one riding up to their top, and a faint column between.
+- **SupportLink** (in `build/handoff/Support/fx/`, not taken): the beam from the caster's light to the one its cast lands on. It's drawn out in 2 frames, held to 8 and thinned by 22, with a white core down it.
+- **The hooks asked of Faber, for the link:**
+  1. Rows: a Beam row's `High = "Target"`, its end at the options' Target as it stands each frame, and a `Reach` track (the share of the way from Low to it, 1 when none), in the decoder and the Track case.
+  2. `Effects.Once(name, body, target?)` passing the Target.
+  3. `HEALS.SupportCast` also plays `SupportLink` on the healer, with the healed's root as Target, in the same `land()`.
+  4. The shield names who cast it (a `Shield` event beside `Heal`, or `ShieldBy`), and the client plays `SupportLink` from that caster to the shielded.
+  Then `rows_take.py` takes `SupportLink`.
+- **Checked:** the take's Track case 7,007 passed; logic offline 37,934 passed, 0 failed. Not yet seen in the game: my Studio turn is after Faber's.
+- **Status:** implemented as data (three of four); tested offline only; not visually reviewed; not director-accepted. **For Faber's review:** the three rows files and `tools/fx/support_looks.py`.
+
 ## AR59. Rook, redesigned to the anime bar (Modulo, for research's pick and the director's look, then its finish; Faber's install after)
 
 Research, 2026-11-23, 22:53, on the director's pick by 22:52 (`docs/decisions.md`). Tier 2: a look players see, in Modulo's area and then Faber's. It goes into the game only on the director's acceptance. The first of the launch five's redesigns. The order: Rook, Kirra, Pip, Lyric, then Watt's finish (AR11). Each is its own request, written when the one before closes.

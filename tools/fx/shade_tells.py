@@ -25,8 +25,9 @@ The Dasher. Feel line: a Dasher folds behind its mask and a blade of light cuts 
 filling toward you like a fuse; then the Dasher is down it in a streak, and a slash bursts where it lands.
 - DasherLine, DasherLunge's own effect, on its beats. Every row rides the Dasher's root and is held where it first shows
   (Hold), so the line stays on the stone, laid along the aim fixed at Line, while the Dasher runs down it.
-  - Lane (Line): the hero, the kit's shell flattened to a long thin blade on the street, 12 studs from the Dasher's feet,
-    widest in its middle and pointed at both ends like the Dasher's mask. It cuts open across in four frames.
+  - Lane (Line): the hero, the kit's shell flattened on the street to the hit's own lane, 14 studs from the Dasher's feet
+    and 4 across (Most and Past; Half either side), pointed at both ends like the Dasher's mask. It cuts open across in
+    four frames.
   - Fuse (Line to Land): a brighter, narrower blade inside it, growing from the Dasher's feet to the line's end at Land,
     the time left to move. Both close over six frames after Land.
   - Streak (Lunge to Land): a trail behind the Dasher's root as it runs.
@@ -45,7 +46,8 @@ ROOT = Path(__file__).resolve().parents[2]
 OUT = ROOT / "build" / "handoff" / "Shade" / "fx"
 
 ROOT_HEIGHT = 3  # an R6 root over the floor, studs
-LINE_LENGTH = 12  # Actions.DasherLunge's Moves.Lunge.Most
+LINE_LENGTH = 12 + 2  # what the hit takes: Actions.DasherLunge's Moves.Lunge.Most, and Config.Combat.Dasher.Line.Past
+LINE_HALF = 2  # Config.Combat.Dasher.Line.Half: the hit takes a centre within 2 studs of the line
 LINE_TO_LAND = round((1.25 - 0.2667) * 60)  # frames from the Line beat to Land: 59
 RAISE_TO_DROP = round((2.3 - 0.3) * 60)  # frames from Raise to Drop: 120
 FLOOR = -ROOT_HEIGHT + 0.04  # a hair over the street, from the root
@@ -171,8 +173,8 @@ def dasher_line():
             "At": [[0, v3(0, FLOOR, -half)]],
             "Scale": [
                 [0, v3(0.02, 0.02, half), "Back Out"],
-                [4, v3(0.55, 0.02, half), "Linear"],
-                [n, v3(0.55, 0.02, half), "Quad In"],
+                [4, v3(LINE_HALF, 0.02, half), "Linear"],
+                [n, v3(LINE_HALF, 0.02, half), "Quad In"],
                 [n + 6, v3(0.02, 0.02, half * 1.05)],
             ],
             "Transparency": [[0, 0.1, "Linear"], [n, 0.25, "Quad In"], [n + 6, 1]],
@@ -180,14 +182,14 @@ def dasher_line():
         },
         "Why": "the hero: a blade of light cut open along the street, pointed at both ends like the Dasher's mask",
     }
-    # the fuse: from the Dasher's feet to the line's end at Land, its length L(t) = 12 t / n, its middle at L / 2
+    # the fuse: from the Dasher's feet to the line's end at Land, its length L(t) = 14 t / n, its middle at L / 2
     steps = 6
     at_keys, scale_keys = [], []
     for k in range(steps + 1):
         frame = round(n * k / steps)
         length = max(0.05, LINE_LENGTH * k / steps)
         at_keys.append([frame, v3(0, FLOOR + 0.02, -length / 2), "Linear"])
-        scale_keys.append([frame, v3(0.22, 0.02, length / 2), "Linear"])
+        scale_keys.append([frame, v3(LINE_HALF * 0.4, 0.02, length / 2), "Linear"])
     at_keys[-1] = at_keys[-1][:2]
     scale_keys[-1] = [n, scale_keys[-1][1], "Quad In"]
     scale_keys.append([n + 6, v3(0.02, 0.02, half)])

@@ -24,6 +24,18 @@
       "titles": [
         "^Probator\\b"
       ]
+    },
+    "Effects": {
+      "who": "the effects maker",
+      "titles": [
+        "^Scintilla\\b"
+      ]
+    },
+    "Sound": {
+      "who": "sound",
+      "titles": [
+        "^Sonus\\b"
+      ]
     }
   }
 }

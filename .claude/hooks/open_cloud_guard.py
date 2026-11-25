@@ -20,7 +20,7 @@ import os
 import sys
 from pathlib import Path
 
-UPLOADERS = {"Builder", "LevelDesign"}  # role names from config/roles.json
+UPLOADERS = {"Builder", "Effects", "LevelDesign"}  # role names from config/roles.json
 CREATE_ENDPOINT = "/assets/v1/assets"
 STORE_WRITERS = {"Builder"}
 STORE_METHODS = {"POST", "PATCH"}

@@ -23,12 +23,16 @@
         "start_stop_play": [
           "Builder",
           "QA",
-          "Research"
+          "Research",
+          "Effects",
+          "Sound"
         ],
         "execute_luau": [
           "Builder",
           "QA",
-          "Research"
+          "Research",
+          "Effects",
+          "Sound"
         ],
         "multi_edit": [
           "Builder"
@@ -36,23 +40,30 @@
         "user_keyboard_input": [
           "Builder",
           "QA",
-          "Research"
+          "Research",
+          "Effects",
+          "Sound"
         ],
         "user_mouse_input": [
           "Builder",
           "QA",
-          "Research"
+          "Research",
+          "Effects",
+          "Sound"
         ],
         "character_navigation": [
           "Builder",
           "QA",
-          "Research"
+          "Research",
+          "Effects",
+          "Sound"
         ],
         "open_cloud_invoke": [
           "Builder",
           "QA",
           "Assets",
-          "Research"
+          "Research",
+          "Effects"
         ],
         "upload_image": [
           "Builder"

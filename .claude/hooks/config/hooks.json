@@ -17,13 +17,21 @@
       ],
       "Research": [
         "docs/briefs/research.md"
+      ],
+      "Effects": [
+        "docs/briefs/effects.md"
+      ],
+      "Sound": [
+        "docs/briefs/sound.md"
       ]
     },
     "start": {
       "Builder": "CLAUDE.md",
       "Assets": "docs/briefs/asset-maker.md",
       "QA": "docs/briefs/qa.md",
-      "Research": "docs/briefs/research.md"
+      "Research": "docs/briefs/research.md",
+      "Effects": "docs/briefs/effects.md",
+      "Sound": "docs/briefs/sound.md"
     },
     "max_sections_named": 6,
     "board": {

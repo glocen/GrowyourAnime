@@ -1445,11 +1445,13 @@ return {
 		Card = { Corner = 4, Pad = 10, Cell = 56, Close = 14, Title = 16 }, -- the close's X drawn this size in a touch
 		Salvage = { "", "Common", "Uncommon", "Rare", "Epic" }, -- the salvage control's steps, in order: "" is off
 		-- The page's colours are the seam's, as the Overview's (UI.VoidkinScreen.Seam); a rarity keeps its own.
-		Rarity = { -- a rarity's word
-			Common = Color3.fromHex("#9AA0AC"),
+		-- A rarity's word. 2026-11-25, the builder: Common, Rare and Epic lifted toward white (from #9AA0AC, #6FB6FF and
+		-- #D29CFF), so each reads 4.6:1 on the card's top (UIKit's SeamDeep, #4C3E92), where the Epic weapon's read 4.35.
+		Rarity = {
+			Common = Color3.fromHex("#B9BDC6"),
 			Uncommon = Color3.fromHex("#7CF0A0"),
-			Rare = Color3.fromHex("#6FB6FF"),
-			Epic = Color3.fromHex("#D29CFF"),
+			Rare = Color3.fromHex("#86C2FF"),
+			Epic = Color3.fromHex("#D8AAFF"),
 			Legendary = Color3.fromHex("#FFD777"),
 		} :: { [string]: Color3 },
 		Rim = { -- a rarity's rim, tint and light on a cell (AR6's `rim`)
@@ -1515,12 +1517,15 @@ return {
 		Top = 26,
 		Rule = { Inset = 8, Alpha = 0.78 },
 		Seat = { X = 9, Y = 2, In = 4, Of = 22 }, -- the well's images drawn at (pitch - In) / Of
-		Picture = { In = 9, Face = 8, Grow = { Battery = 1, Full = 1, Stones = 1.15, Training = 1, Shards = 1.2 } },
+		Picture = { In = 9, Face = 8, Grow = { Battery = 1, Full = 1, Stones = 1.15, Training = 1, Worker = 1, Workers = 1, Shards = 1.2 } },
 		Colours = {
 			Battery = Color3.fromHex("#FFE266"),
 			Full = Color3.fromHex("#FFE266"),
 			Stones = Color3.fromHex("#FF8FAE"),
 			Training = Color3.fromHex("#4FD1FF"),
+			-- a bay's worker: the electricity's yellow it makes, the battery's (the builder's call, 2026-11-25)
+			Worker = Color3.fromHex("#FFE266"),
+			Workers = Color3.fromHex("#FFE266"),
 			Shards = Color3.fromHex("#E6ECF7"),
 		},
 		Gain = { Gap = 7, Size = 17 },

@@ -35,6 +35,7 @@ export type Summary = {
 	Trained: string?, -- who the Training machine trained, if anyone
 	Levels: number, -- the levels it gained them
 	Worked: number, -- the levels the bays' workers gained by the kWh they made (TR55)
+	WorkedBy: { [string]: number }, -- those levels, by worker id (the return card's worker lines)
 	Stones: number, -- stones the Stone Condenser made into its tray (TR37)
 	Converted: number, -- converts it finished
 	Into: { [string]: number }, -- the stones those converts gave, by grade (TR56: Mid or High)
@@ -185,7 +186,7 @@ end
 
 -- The bays' workers at work for `dt`: each earns by the kWh it makes in its bay (TR55), its leftover seconds kept on the
 -- bay. Returns the levels they gained.
-local function work(data: Profile.Data, dt: number): number
+local function work(data: Profile.Data, dt: number, by: { [string]: number }): number
 	local levels = 0
 	for _, bay in data.Base.Bays do
 		local worker = if bay.Worker ~= "" then data.Voidkin[bay.Worker] else nil
@@ -196,6 +197,9 @@ local function work(data: Profile.Data, dt: number): number
 			end)
 			bay.Banked = if banked > 0 then banked else nil
 			levels += gained
+			if gained > 0 then
+				by[worker.Id] = (by[worker.Id] or 0) + gained
+			end
 		end
 	end
 	if levels > 0 then
@@ -251,7 +255,7 @@ local function step(data: Profile.Data, seconds: number, making: boolean, traine
 			Goals.Note(data, "LevelUp", gained)
 		end
 		if generation > 0 then
-			summary.Worked += work(data, dt)
+			summary.Worked += work(data, dt, summary.WorkedBy)
 			if allBays(base) then
 				Goals.Note(data, "BaysSeconds", dt)
 			end
@@ -336,6 +340,13 @@ local function remember(base: Profile.Base, summary: Summary, from: number)
 	if summary.Trained and summary.Levels > 0 then
 		away.Trained[summary.Trained] = (away.Trained[summary.Trained] or 0) + summary.Levels
 	end
+	if next(summary.WorkedBy) then
+		local worked = away.Worked or {}
+		for id, levels in summary.WorkedBy do
+			worked[id] = (worked[id] or 0) + levels
+		end
+		away.Worked = worked
+	end
 	for index = from + 1, #base.Ready do
 		table.insert(away.Shards, base.Ready[index].Def)
 	end
@@ -345,7 +356,7 @@ end
 -- workers' generation stops after Config.Base.Battery.AwayHours and the lead trains. A base never advanced takes `now`
 -- as its stamp. A `now` before the stamp (a clock step back) changes nothing.
 function Breaker.Advance(data: Profile.Data, now: number, away: boolean?): Summary
-	local summary: Summary = { Finished = 0, Made = 0, Overflow = 0, Credits = 0, Levels = 0, Worked = 0, Stones = 0, Converted = 0, Into = {}, Jewels = 0, Steps = 0 }
+	local summary: Summary = { Finished = 0, Made = 0, Overflow = 0, Credits = 0, Levels = 0, Worked = 0, WorkedBy = {}, Stones = 0, Converted = 0, Into = {}, Jewels = 0, Steps = 0 }
 	local base = data.Base
 	if base.Stamp == 0 then
 		base.Stamp = now

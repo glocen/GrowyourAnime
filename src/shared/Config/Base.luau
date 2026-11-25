@@ -16,7 +16,8 @@ return {
 	-- The machines, each drawing its rating while it works (seeds "power").
 	Breaker = {
 		Kw = 15, -- a chamber breaking, times its shard's ground factor (Config.Shards.RegionFactor)
-		MostChambers = 4, -- docs/design.md: two chambers at the start and up to four; the screen shows the rest locked
+		MostChambers = 4, -- docs/design.md: two chambers at the start and up to four; the world lids the rest, the screen
+		-- shows those a ceiling reaches (Rules.BaseLevels.ChambersShown)
 	},
 	Training = {
 		Kw = 10, -- the Training machine with a Voidkin on it
@@ -83,5 +84,5 @@ return {
 	},
 	-- The return card (TR53; Rules.Return): the battery's line shows a net gain of LeastKwh or more, the least Read.Kwh
 	-- writes; less, or a loss, shows no line (TR31).
-	Return = { LeastKwh = 0.01 },
+	Return = { LeastKwh = 0.01, Workers = 3 }, -- Workers: the most worker lines; the rest fold into one (research, 2026-11-25)
 }

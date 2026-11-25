@@ -99,6 +99,22 @@ return {
 			t.Equal("still three at 19", BaseLevels.Chambers(19), 3)
 			t.Equal("the fourth at 20", BaseLevels.Chambers(20), 4)
 			t.Equal("never more than the Breaker holds", BaseLevels.Chambers(30), BaseConfig.Breaker.MostChambers)
+			-- The screen's (research, 2026-11-25): a chamber shows only when a ceiling reaches its level, so at launch's 15
+			-- the fourth (20) waits unseen, and the third says its level.
+			local top = BaseLevels.Ceiling(BaseConfig.Levels.Cap)
+			t.Check("launch's top ceiling under the fourth chamber's level", top < 20, tostring(top))
+			t.Equal("two open: three shown", BaseLevels.ChambersShown(2), 3)
+			t.Equal("the third opens at Breaker level 8", BaseLevels.ChamberOpens(2), 8)
+			t.Equal("three open: three shown", BaseLevels.ChambersShown(3), 3)
+			t.Equal("three open: nothing waits", BaseLevels.ChamberOpens(3), nil)
+			local ceilings = BaseConfig.Levels.Ceiling
+			local raised = table.clone(ceilings)
+			raised[BaseConfig.Levels.Cap] = 20
+			BaseConfig.Levels.Ceiling = raised
+			local shownRaised, opensRaised = BaseLevels.ChambersShown(3), BaseLevels.ChamberOpens(3)
+			BaseConfig.Levels.Ceiling = ceilings
+			t.Equal("a ceiling at 20: the fourth shown", shownRaised, 4)
+			t.Equal("a ceiling at 20: it opens at 20", opensRaised, 20)
 			local bay = BaseLevels.NextMachine("Bay", 1, 1, 1e9)
 			local output = gainOf(bay, "Output")
 			t.Check("a bay's offer shows its output, 1 to 1.04", output ~= nil and math.abs(output.From - 1) < 1e-9 and math.abs(output.To - 1.04) < 1e-9)

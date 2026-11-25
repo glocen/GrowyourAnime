@@ -8,6 +8,8 @@
 --   BaseLevels.NextMachine(machine, level, baseLevel, credits)  a machine's next level ("Breaker", "Bay" or "Condenser"), as an offer
 --   BaseLevels.Ask(base, spot, credits)                     what a spot of the base's view can buy: the action, its
 --                                                           arguments and its offer, as Rules.Base takes them
+--   BaseLevels.ChambersShown(open), ChamberOpens(open)      the Breaker screen's chambers over those open, and the
+--                                                           Breaker level that opens the next one shown (nil: none waits)
 --   BaseLevels.Stage(level)                                 a machine's stage at its level: 1, 2 or 3
 --   BaseLevels.GeneratorStage(baseLevel)                    the generator's: a machine's at the base's ceiling
 --   BaseLevels.Stages(base)                                 every machine's stage on a base, as the world stands it (TR51)
@@ -160,6 +162,32 @@ function BaseLevels.Chambers(level: number): number
 		end
 	end
 	return chambers
+end
+
+-- The chambers the Breaker's screen shows over `open` (research, 2026-11-25, tier 1): those open, and each locked one a
+-- machine can reach under the launch's top ceiling (Ceiling at Levels.Cap). A chamber no ceiling reaches isn't shown, so
+-- the screen never promises what an upgrade can't give; it appears when a ceiling reaches its level. The world's lidded
+-- seats stay to MostChambers (a prop, no words).
+function BaseLevels.ChambersShown(open: number): number
+	local top = BaseLevels.Ceiling(BaseConfig.Levels.Cap)
+	local shown = math.max(open, BaseConfig.Start.Chambers)
+	for _, step in BaseConfig.Machines.BreakerChambers do
+		if step.From <= top then
+			shown = math.max(shown, math.min(step.Chambers, BaseConfig.Breaker.MostChambers))
+		end
+	end
+	return shown
+end
+
+-- The Breaker level that opens the next chamber the screen shows over `open`, or nil when every shown one is open.
+function BaseLevels.ChamberOpens(open: number): number?
+	local shown = BaseLevels.ChambersShown(open)
+	for _, step in BaseConfig.Machines.BreakerChambers do
+		if step.Chambers > open and step.Chambers <= shown then
+			return step.From
+		end
+	end
+	return nil
 end
 
 -- The Breaker's speed and its rating, against level 1's.

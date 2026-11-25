@@ -10,7 +10,7 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Shared = ReplicatedStorage.Shared
 local Profile = require(Shared.Data.Profile)
 local HudConfig = require(Shared.Config.Hud)
-local BaseConfig = require(Shared.Config.Base)
+local BaseLevels = require(Shared.Rules.BaseLevels)
 local BaseController = require(script.Parent.Parent.Parent.Main.BaseController)
 local ProfileController = require(script.Parent.Parent.ProfileController)
 local UI = script.Parent.Parent.Parent.Parent.UI
@@ -198,7 +198,7 @@ function BreakerCases.Cases(): { any }
 					return keys[#keys].Value
 				end
 				local wrong: { string } = {}
-				local most = math.max(BaseConfig.Breaker.MostChambers, #now.Base.Chambers)
+				local most = BaseLevels.ChambersShown(#now.Base.Chambers)
 				for index = 1, most do
 					local each = breakerPart(`Chamber{index}`) :: Frame?
 					local folder = if each then each:FindFirstChild("NL_Skin") else nil

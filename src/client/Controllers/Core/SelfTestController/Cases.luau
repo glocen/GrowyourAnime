@@ -26,7 +26,7 @@ local Shades = require(Shared.Config.Shades)
 local EffectsConfig = require(Shared.Config.Effects)
 local ShadeBurstArt = require(Shared.Config.ShadeBurstArt)
 local WorldConfig = require(Shared.Config.World)
-local BaseConfig = require(Shared.Config.Base)
+local BaseLevels = require(Shared.Rules.BaseLevels)
 local Markers = require(Shared.World.Markers)
 local Kit = require(Shared.World.Kit)
 local LightingConfig = require(Shared.Config.Lighting)
@@ -7177,11 +7177,11 @@ local cases = {
 					return breakerPart("Chances") == nil and voltageBack()
 				end))
 			end
-			-- The chambers as they stand, up to the most a Breaker has, and the bag's shard on the strip.
+			-- The chambers as they stand, those open and the locked ones a ceiling reaches, and the bag's shard on the strip.
 			local function machineShown(where: string)
 				local now = ProfileController.Get() :: Profile.View
 				local row = breakerPart("Chambers")
-				local most = math.max(BaseConfig.Breaker.MostChambers, #now.Base.Chambers)
+				local most = BaseLevels.ChambersShown(#now.Base.Chambers)
 				local wrong: { string } = {}
 				for index = 1, most do
 					local cell = row and row:FindFirstChild(`Chamber{index}`)
@@ -7194,7 +7194,7 @@ local cases = {
 						table.insert(wrong, `chamber {index} missing`)
 					elseif want and label.Text ~= want then
 						table.insert(wrong, `chamber {index} says {label.Text}, not {want}`)
-					elseif chamber == nil and (opens == nil or opens.Text ~= BreakerScreen.Locked) then
+					elseif chamber == nil and (opens == nil or opens.Text ~= BreakerScreen.Opens(#now.Base.Chambers)) then
 						table.insert(wrong, `the row doesn't say what opens locked chamber {index}: {if opens then opens.Text else "nothing"}`)
 					elseif want == nil and (cell:FindFirstChild("Crack") == nil or left == nil or string.find(left.Text, " left$") == nil) then
 						table.insert(wrong, `chamber {index} lacks its crack or its time`)

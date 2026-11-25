@@ -156,4 +156,63 @@ return {
 			t.Equal("the lines in AR55's order", kinds(Return.Lines(merged)), "Battery,Stones:Low,Training,Shards")
 		end,
 	},
+	{
+		Name = "Return (research, 2026-11-25): a worker's levels away on the card, after the Training machine's; the most first, three lines, the rest folded into one",
+		Run = function(t: any)
+			local data = fresh(0)
+			local watt = data.Base.Bays[1].Worker
+			data.Voidkin[watt].Level = 1
+			data.Voidkin[watt].Xp = 0
+			local rook = Collection.Uncover(data, "rook", T0).Id
+			data.Roles.Lead = rook
+			Return.Open(data)
+			Breaker.Advance(data, T0 + 2 * HOUR, true) -- offline: Watt works, Rook trains
+			Breaker.AddToLine(data, { Def = STANDARD, Luck = 0, Done = 0 })
+			Breaker.Advance(data, T0 + 4 * HOUR, true)
+			local gained = data.Voidkin[watt].Level - 1
+			local card = Return.Arrive(data) :: Profile.ReturnCard
+			t.Check("Watt gained levels at work", gained >= 1, tostring(gained))
+			t.Equal("the card holds them", card and card.Worked and card.Worked[watt], gained)
+			local lines = Return.Lines(card)
+			local worker = find(lines, "Worker")
+			t.Check("his line: his levels, his face", worker ~= nil and worker.Id == watt and worker.Count == gained, kinds(lines))
+			t.Equal("after the Training machine's, before the shards", kinds(lines), "Battery,Stones:Low,Training,Worker,Shards")
+			-- five workers: three lines, the most first (a tie by id), then the other two folded, their levels summed
+			local five: Profile.ReturnCard = { Kwh = 0, Full = false, Credits = 0, Stones = {}, Trained = {}, Shards = {},
+				Worked = { a = 1, b = 5, c = 3, d = 3, e = 2, f = 0 } }
+			local shown = Return.Lines(five)
+			local words = {}
+			for _, line in shown do
+				table.insert(words, `{line.Kind}:{line.Id}:{line.Count}:{line.More or ""}`)
+			end
+			t.Equal("three lines, then the rest in one; none for a worker without a level", table.concat(words, ","),
+				"Worker:b:5:,Worker:c:3:,Worker:d:3:,Workers:e:3:2")
+			five.Worked = { a = 2, b = 1, c = 4, d = 1 }
+			local four = Return.Lines(five)
+			t.Check("four: the fourth folds alone", #four == 4 and four[4].Kind == "Workers" and four[4].More == 1 and four[4].Count == 1, kinds(four))
+			-- held to the room the HUD gives (a short phone): the workers fold sooner, their levels' total kept
+			local full: Profile.ReturnCard = { Kwh = 12, Full = false, Credits = 0, Stones = { Low = 6, Mid = 1 }, Trained = { r = 2 },
+				Shards = { STANDARD }, Worked = { a = 5, b = 3, c = 3, d = 1 } }
+			local function block(room: number?): string
+				local out = {}
+				for _, line in Return.Lines(full, room) do
+					if line.Kind == "Worker" or line.Kind == "Workers" then
+						table.insert(out, `{line.Kind}:{line.Count}{if line.More then `x{line.More}` else ""}{if line.First then "!" else ""}`)
+					end
+				end
+				return table.concat(out, ",")
+			end
+			t.Equal("room to spare: three lines and the fourth folded", block(nil), "Worker:5,Worker:3,Worker:3,Workers:1x1")
+			t.Equal("room for ten: the same", block(10), "Worker:5,Worker:3,Worker:3,Workers:1x1")
+			t.Equal("room for seven: one line, the other three folded", block(7), "Worker:5,Workers:7x3")
+			t.Equal("room for six: all four in one line", block(6), "Workers:12x4!")
+			t.Equal("room for six: six lines in all", #Return.Lines(full, 6), 6)
+			t.Equal("no room at all: still one line, never none", block(2), "Workers:12x4!")
+			full.Worked = { a = 5 }
+			t.Equal("one worker in a room for six: his own line", block(6), "Worker:5")
+			five.Worked = nil
+			t.Equal("a card from before the workers' lines: none, and no error", #Return.Lines(five), 0)
+			t.Equal("the save holds nothing it would lose", #Saveable.Problems(data, "profile"), 0)
+		end,
+	},
 }

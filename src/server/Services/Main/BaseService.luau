@@ -755,6 +755,7 @@ local function registerDebug()
 					Credits = if type(card.Credits) == "number" then card.Credits else 0,
 					Stones = counts(card.Stones),
 					Trained = counts(card.Trained),
+					Worked = counts(card.Worked),
 					Shards = shards,
 				}
 			end

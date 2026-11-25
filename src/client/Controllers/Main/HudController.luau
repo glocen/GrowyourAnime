@@ -987,6 +987,17 @@ local returnOn: ReturnCard.On = {
 	end,
 }
 local returnWaits = false
+-- The return card's room: from the Power pill's foot to the HUD's, in points, less the card's foot, so it never climbs
+-- the pills (its workers fold to fit: ReturnCard).
+local function returnRoom(): number?
+	local pill = electricity.Parent
+	if pill == nil or not pill:IsA("GuiObject") then
+		return nil
+	end
+	local root = Layers.Get("Hud")
+	local foot = pill.AbsolutePosition.Y + pill.AbsoluteSize.Y
+	return (root.AbsolutePosition.Y + root.AbsoluteSize.Y - foot) / Layers.Scale() - HudConfig.Return.Foot
+end
 local function showReturn(view: Profile.View)
 	local card = if PlaceRole.Is("Main") and player:GetAttribute("Try") == nil then view.Base.Card else nil
 	if card == nil then
@@ -1011,7 +1022,7 @@ local function showReturn(view: Profile.View)
 		end
 		return
 	end
-	ReturnCard.Show(card, view, returnOn)
+	ReturnCard.Show(card, view, returnOn, returnRoom)
 end
 
 local function showView(view: Profile.View)

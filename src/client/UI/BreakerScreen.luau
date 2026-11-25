@@ -27,11 +27,11 @@ local RunService = game:GetService("RunService")
 local Shared = ReplicatedStorage.Shared
 local Profile = require(Shared.Data.Profile)
 local HudConfig = require(Shared.Config.Hud)
-local BaseConfig = require(Shared.Config.Base)
 local ShardConfig = require(Shared.Config.Shards)
 local Shards = require(Shared.Definitions.Shards)
 local Voidkin = require(Shared.Definitions.Voidkin)
 local Breaker = require(Shared.Rules.Breaker)
+local BaseLevels = require(Shared.Rules.BaseLevels)
 local Power = require(Shared.Rules.Power)
 local Odds = require(Shared.Rules.Odds)
 local Hud = require(Shared.Rules.Hud)
@@ -74,9 +74,13 @@ local function plateFor(working: boolean, infused: boolean): number
 	end
 	return 2 + LINE + 2 + Theme.Size.Bar + 2 + LINE + (if infused then LINE else 0) + 2
 end
--- What opens a locked chamber (research, TR9, 2026-11-14, night), said once over the row: at the kit's smallest text it
--- won't fit a plate beside "Locked" (research's fix 1 on the galaxy, AR12, 2026-11-15: "say it once").
-local LOCKED = "Upgrade the Breaker"
+-- What opens the next locked chamber, said once over the row: at the kit's smallest text it won't fit a plate beside
+-- "Locked" (research's fix 1 on the galaxy, AR12, 2026-11-15: "say it once"). Its level, research's words of 2026-11-25
+-- (tier 1); nothing once every chamber shown is open.
+local function opens(open: number): string?
+	local level = BaseLevels.ChamberOpens(open)
+	return if level then `Opens at Breaker level {level}` else nil
+end
 
 local selected: Selection? = nil
 local pending: Selection? = nil -- a shard just put in, chosen where the server says it stands once the save shows it
@@ -786,12 +790,13 @@ local function chip(parent: Instance, item: Selection, view: Profile.View, order
 	end)
 end
 
--- The chambers side by side, `height` tall: those open, and the rest locked up to the most a Breaker has.
+-- The chambers side by side, `height` tall: those open, and the locked ones a ceiling reaches (BaseLevels.ChambersShown).
 local function machine(parent: Instance, view: Profile.View, height: number)
 	label(parent, "ChambersTitle", "Chambers", Theme.Text.Caption, UDim2.new(1, 0, 0, HEADING), UDim2.new(), { Font = Theme.Font.Strong, Colour = ink.TextDim })
-	local most = math.max(BaseConfig.Breaker.MostChambers, #view.Base.Chambers)
-	if most > #view.Base.Chambers then
-		label(parent, "Opens", LOCKED, Theme.Text.Caption, UDim2.new(1, 0, 0, HEADING), UDim2.new(), { Colour = ink.TextDim, Align = Enum.TextXAlignment.Right })
+	local most = BaseLevels.ChambersShown(#view.Base.Chambers)
+	local words = opens(#view.Base.Chambers)
+	if words then
+		label(parent, "Opens", words, Theme.Text.Caption, UDim2.new(1, 0, 0, HEADING), UDim2.new(), { Colour = ink.TextDim, Align = Enum.TextXAlignment.Right })
 	end
 	local top = HEADING + 2
 	mist(parent, top, height)
@@ -1223,6 +1228,6 @@ end
 BreakerScreen.Name = NAME
 BreakerScreen.Palette = PALETTE
 BreakerScreen.Reasons = REASONS
-BreakerScreen.Locked = LOCKED
+BreakerScreen.Opens = opens -- the words over the row for `open` chambers, nil for none (for tests)
 
 return BreakerScreen

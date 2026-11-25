@@ -7,8 +7,9 @@
 --   Return.Open(data)               opens the record from the base as it stands; one already open stays
 --   Return.Arrive(data)             back at the base: the tray into the bag, the record closed onto the card (merged with
 --                                   one not yet seen); the card, or nil when nothing changed
---   Return.Lines(card)              the card's lines in AR55's order: the battery, each grade of stone, the Training
---                                   machine, the shards; empty for no card
+--   Return.Lines(card, room?)       the card's lines in AR55's order: the battery, each grade of stone, the Training
+--                                   machine, the workers who gained a level, the shards; empty for no card. `room`: the
+--                                   lines the card has room for, the workers folding sooner to fit
 --   Return.Seen(data, args, now)    the card's press: the card gone; with no card, a refusal that changes nothing
 
 local Shared = game:GetService("ReplicatedStorage").Shared
@@ -26,25 +27,28 @@ Return.NoCard = "NoCard"
 local EPSILON = 1e-6
 
 export type Line = {
-	Kind: string, -- "Battery" (a net gain), "Full" (it ended full and sold), "Stones", "Training" or "Shards"
+	Kind: string, -- "Battery" (a net gain), "Full" (it ended full and sold), "Stones", "Training", "Worker", "Workers"
+	-- (the workers past the most lines, folded) or "Shards"
 	Count: number, -- the kWh, the Credits sold, the stones, the levels or the shards
 	Grade: string?, -- a stone's grade
-	Id: string?, -- the Voidkin the Training machine trained most
+	Id: string?, -- the Voidkin the Training machine trained most, the worker, or the first worker folded
 	Def: string?, -- the first shard that broke, for its picture
+	More: number?, -- the workers a "Workers" line folds
+	First: boolean?, -- a "Workers" line with no worker's line before it: it folds them all
 }
 
 function Return.Open(data: Profile.Data)
 	local base = data.Base
 	if base.Away == nil then
-		base.Away = { Charge = base.Charge, Sold = 0, Credits = 0, Stones = {}, Trained = {}, Shards = {} }
+		base.Away = { Charge = base.Charge, Sold = 0, Credits = 0, Stones = {}, Trained = {}, Worked = {}, Shards = {} }
 	end
 end
 
 local function blank(): Profile.ReturnCard
-	return { Kwh = 0, Full = false, Credits = 0, Stones = {}, Trained = {}, Shards = {} }
+	return { Kwh = 0, Full = false, Credits = 0, Stones = {}, Trained = {}, Worked = {}, Shards = {} }
 end
 
-function Return.Lines(card: Profile.ReturnCard?): { Line }
+function Return.Lines(card: Profile.ReturnCard?, room: number?): { Line }
 	local lines: { Line } = {}
 	if card == nil then
 		return lines
@@ -68,6 +72,37 @@ function Return.Lines(card: Profile.ReturnCard?): { Line }
 	end
 	if most then
 		table.insert(lines, { Kind = "Training", Count = levels, Id = most })
+	end
+	-- The workers who gained a level, the most first (research, 2026-11-25): up to Workers lines, the rest folded into
+	-- one, their levels summed, the first of them its face. On a card held to `room` lines (a short phone: the HUD's
+	-- room), they fold sooner, so the card fits; at the least, all of them in one line (its First set).
+	type Gain = { Id: string, Count: number }
+	local workers: { Gain } = {}
+	for id, gained in card.Worked or {} do
+		if gained >= 1 then
+			table.insert(workers, { Id = id, Count = gained })
+		end
+	end
+	table.sort(workers, function(a: Gain, b: Gain): boolean
+		if a.Count ~= b.Count then
+			return a.Count > b.Count
+		end
+		return a.Id < b.Id
+	end)
+	local after = if #card.Shards > 0 then 1 else 0
+	local free = math.max(1, (room or math.huge) - #lines - after) -- lines the workers may take, one at the least
+	local cap = BaseConfig.Return.Workers
+	local single = if #workers <= cap and #workers <= free then #workers else math.max(0, math.min(cap, free - 1))
+	for index, worker in workers do
+		if index <= single then
+			table.insert(lines, { Kind = "Worker", Count = worker.Count, Id = worker.Id })
+		elseif index == single + 1 then
+			table.insert(lines, { Kind = "Workers", Count = worker.Count, Id = worker.Id, More = 1, First = single == 0 })
+		else
+			local folded = lines[#lines]
+			folded.Count += worker.Count
+			folded.More = (folded.More or 0) + 1
+		end
 	end
 	if #card.Shards > 0 then
 		table.insert(lines, { Kind = "Shards", Count = #card.Shards, Def = card.Shards[1] })
@@ -106,6 +141,13 @@ function Return.Arrive(data: Profile.Data): Profile.ReturnCard?
 	end
 	for id, levels in away.Trained do
 		card.Trained[id] = (card.Trained[id] or 0) + levels
+	end
+	if away.Worked and next(away.Worked) then
+		local worked = card.Worked or {}
+		for id, levels in away.Worked do
+			worked[id] = (worked[id] or 0) + levels
+		end
+		card.Worked = worked
 	end
 	for _, def in away.Shards do
 		table.insert(card.Shards, def)

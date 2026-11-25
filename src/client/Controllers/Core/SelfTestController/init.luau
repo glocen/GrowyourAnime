@@ -280,6 +280,11 @@ local function run(filter: string?): string
 			table.insert(putBack, `NOTE  {current} · left the bays changed ({table.concat(changed, "; ")})`)
 		end
 	end
+	-- The return card a real visit left (Rules.Return.Arrive, between two playtests), set aside for the run and put back
+	-- at its end: while it stands the next step's chip and the shop's countdown wait (HudController), which the HUD's
+	-- cases read. The return card's own case sets its cards and puts back what it found.
+	local asideOk, aside = pcall(serverCall, "ReturnCardSet", nil)
+	local card = if asideOk and type(aside) == "table" and aside.Ok == true then aside.Was else nil
 	for _, case in cases do
 		local chosen = if filter then string.find(case.Name, filter, 1, true) ~= nil else not case.Manual
 		if chosen and case.Place ~= nil and not PlaceRole.Is(case.Place) then
@@ -299,6 +304,11 @@ local function run(filter: string?): string
 			end
 			keepBays()
 		end
+	end
+	if card ~= nil then
+		local backOk, back = pcall(serverCall, "ReturnCardSet", card)
+		local put = backOk and type(back) == "table" and back.Ok == true
+		table.insert(putBack, `NOTE  the save's return card set aside for the run, {if put then "put back" else "NOT put back"}`)
 	end
 	releaseStick() -- a case that crashed mid-walk never leaves the stick held
 	BaseController.SelfOpen(selfOpening)

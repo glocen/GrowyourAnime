@@ -12,6 +12,7 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
 
 local Shared = ReplicatedStorage.Shared
+local BaseConfig = require(Shared.Config.Base)
 local PlaceRole = require(Shared.Util.PlaceRole)
 local BaseLevels = require(Shared.Rules.BaseLevels)
 local Breaker = require(Shared.Rules.Breaker)
@@ -1901,14 +1902,31 @@ function BaseCases.Cases(given: Given): { any }
 					local countdown = ShopController.Chip()
 					t.Check(`{where}: the Void Shop's countdown waits while it's up`, countdown == nil or countdown.Visible == false)
 				end
+				-- Four workers who gained levels (research, 2026-11-25): three lines, the most first, then the fourth folded,
+				-- so the tallest card a full base gives is the one laid on the smallest phone.
+				local others: { string } = {}
+				for id in view.Voidkin do
+					if id ~= lead then
+						table.insert(others, id)
+					end
+				end
+				table.sort(others)
+				local gains = { 5, 3, 3, 1 } -- as many as the room and one more, so the last folds
+				assert(#gains == BaseConfig.Return.Workers + 1, "the case's gains: the room and one more")
+				local worked: { [string]: number } = {}
+				for index = 1, math.min(#others, #gains) do
+					worked[others[index]] = gains[index]
+				end
 				local ok, err = pcall(function()
 					local set = t.Server("ReturnCardSet", {
 						Kwh = 12.4,
 						Stones = { Low = 6, Mid = 1 },
 						Trained = if owned then { [lead] = 2 } else {},
+						Worked = worked,
 						Shards = { "lanternrow_standard" },
 					})
-					local count = if owned then 5 else 4
+					-- each worker a line up to the room, and the fourth the fold's one line: one line a worker here
+					local count = (if owned then 5 else 4) + math.min(#others, #gains)
 					t.Check("the server sets a card of every line", type(set) == "table" and set.Ok == true and set.Lines == count, if type(set) == "table" then `{set.Lines} lines` else "no answer")
 					local want = {
 						{ Kind = "Battery", Gain = `+{Read.Kwh(12.4)} kWh`, Word = "stored" },
@@ -1917,6 +1935,15 @@ function BaseCases.Cases(given: Given): { any }
 					}
 					if owned then
 						table.insert(want, { Kind = "Training", Gain = "+2 levels", Word = Collection.Name(owned) })
+					end
+					for index = 1, math.min(#others, #gains) do
+						local worker = view.Voidkin[others[index]]
+						local level = `+{gains[index]} {if gains[index] == 1 then "level" else "levels"}`
+						if index <= BaseConfig.Return.Workers then
+							table.insert(want, { Kind = "Worker", Gain = level, Word = Collection.Name(worker) })
+						else
+							table.insert(want, { Kind = "Workers", Gain = level, Word = "1 more worker" })
+						end
 					end
 					table.insert(want, { Kind = "Shards", Gain = "1 shard", Word = "ready" })
 					local function shown(): string
@@ -1952,8 +1979,30 @@ function BaseCases.Cases(given: Given): { any }
 					t.Wait(0.2)
 					fits("the smallest phone")
 					Helpers.lintClean(t, "the smallest phone, the return card up")
+					-- Short of room, the workers fold sooner (Rules.Return.Lines): every other line as it was, their
+					-- levels all kept in fewer lines, the shard's line still last.
+					local kept2, levels = {}, 0
+					for _, line in ReturnCard.Parts().Lines do
+						if line.Kind == "Worker" or line.Kind == "Workers" then
+							levels += tonumber(line.Gain:match("%d+")) or 0
+						else
+							table.insert(kept2, `{line.Kind} {line.Gain} / {line.Word}`)
+						end
+					end
+					local rest, total = {}, 0
+					for _, line in want do
+						if line.Kind ~= "Worker" and line.Kind ~= "Workers" then
+							table.insert(rest, `{line.Kind} {line.Gain} / {line.Word}`)
+						end
+					end
+					for index = 1, math.min(#others, #gains) do
+						total += gains[index]
+					end
+					t.Check("the smallest phone: every other line as it stood, the shard's last", table.concat(kept2, "; ") == table.concat(rest, "; "), shown())
+					t.Check("the smallest phone: the workers' levels all kept", levels == total, `{levels} of {total}: {shown()}`)
 					Layers.Box(nil)
 					Layers.Force(nil)
+					t.Check("back on this window, the whole card again", Helpers.waitFor(t, 1, matches), shown())
 					-- Without a shard: Collect, and the press lets it go, on the server's word.
 					t.Server("ReturnCardSet", { Kwh = 3 })
 					t.Check("a card without a shard collects", Helpers.waitFor(t, ANSWER, function(): boolean

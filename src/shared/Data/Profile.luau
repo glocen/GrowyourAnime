@@ -119,6 +119,7 @@ export type Away = {
 	Credits: number, -- whole Credits that overflow paid
 	Stones: { [string]: number }, -- stones the Condenser made, by grade
 	Trained: { [string]: number }, -- levels the Training machine gave, by Voidkin id
+	Worked: { [string]: number }?, -- levels the bays' workers gained by the kWh they made, by Voidkin id; nil: none
 	Shards: { string }, -- the shards that broke, their defs in the order they broke
 }
 
@@ -129,6 +130,7 @@ export type ReturnCard = {
 	Credits: number, -- whole Credits the overflow paid
 	Stones: { [string]: number },
 	Trained: { [string]: number },
+	Worked: { [string]: number }?, -- the workers' levels (research, 2026-11-25); nil on a card from before it
 	Shards: { string },
 }
 

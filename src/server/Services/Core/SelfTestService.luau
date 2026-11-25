@@ -9,6 +9,7 @@ local RunService = game:GetService("RunService")
 local ScriptContext = game:GetService("ScriptContext")
 
 local Shared = ReplicatedStorage.Shared
+local Animations = require(Shared.Config.Animations)
 local Parts = require(Shared.Util.Parts)
 local Markers = require(Shared.World.Markers)
 local DebugService = require(script.Parent.DebugService)
@@ -108,10 +109,74 @@ local function testPadClear(who: any): boolean
 	return true
 end
 
+-- A clip's shape, to compare a published clip with the one saved: its keyframes, its length, its markers, its poses.
+local function clipShape(sequence: KeyframeSequence): (number, number, string, number)
+	local last, marks, sum = 0, {}, 0
+	local frames = sequence:GetKeyframes()
+	for _, frame in frames do
+		local keyframe = frame :: Keyframe
+		last = math.max(last, keyframe.Time)
+		for _, marker in keyframe:GetMarkers() do
+			table.insert(marks, `{marker.Name}@{string.format("%.3f", keyframe.Time)}`)
+		end
+		for _, pose in keyframe:GetDescendants() do
+			if pose:IsA("Pose") then
+				local cf = pose.CFrame
+				sum += cf.Position.X + cf.Position.Y + cf.Position.Z + cf.XVector.X + cf.YVector.Y + cf.ZVector.Z + pose.Weight
+			end
+		end
+	end
+	table.sort(marks)
+	return #frames, last, table.concat(marks, ","), sum
+end
+
+-- A clip plays from its id in Studio too (FighterController/Clips), so one baked again after its publish shows nowhere
+-- until it's published again. Each published clip (Config.Animations.Ids), read back, against the one saved in the place
+-- (RBX_ANIMSAVES.R6, tools/studio/Animations/Author.luau). About 0.4 s a read, so all at once, up to CLIPS_WAIT.
+local CLIPS_WAIT = 30
+local function testClips(): { Count: number, Read: number, Stale: { string } }
+	local saves = game:GetService("ServerStorage"):FindFirstChild("RBX_ANIMSAVES")
+	local saved = if saves then saves:FindFirstChild("R6") else nil
+	local provider = game:GetService("KeyframeSequenceProvider")
+	local stale: { string } = {}
+	local count, read = 0, 0
+	local function compare(clip: string, id: number)
+		local own = if saved then saved:FindFirstChild("NL_" .. clip) else nil
+		local ok, published = pcall(function(): KeyframeSequence
+			return provider:GetKeyframeSequenceAsync(`rbxassetid://{id}`) :: KeyframeSequence
+		end)
+		if own == nil or not own:IsA("KeyframeSequence") then
+			table.insert(stale, `{clip}: not saved in the place`)
+		elseif not ok then
+			table.insert(stale, `{clip}: its id {id} didn't read back ({tostring(published)})`)
+		else
+			local frames, last, marks, sum = clipShape(own)
+			local frames2, last2, marks2, sum2 = clipShape(published)
+			if frames ~= frames2 or math.abs(last - last2) > 1e-3 or marks ~= marks2 or math.abs(sum - sum2) > 1e-2 then
+				local markers = if marks ~= marks2 then ", its markers differ" else ""
+				local poses = if math.abs(sum - sum2) > 1e-2 then ", its poses differ" else ""
+				table.insert(stale, `{clip}: saved {frames} keys, {last} s; published {frames2} keys, {last2} s{markers}{poses}`)
+			end
+		end
+		read += 1
+	end
+	for clip, id in Animations.Ids do
+		count += 1
+		task.spawn(compare, clip, id)
+	end
+	local started = os.clock()
+	while read < count and os.clock() - started < CLIPS_WAIT do
+		task.wait(0.1)
+	end
+	table.sort(stale)
+	return { Count = count, Read = read, Stale = stale }
+end
+
 function SelfTestService.Init()
 	if not RunService:IsStudio() then
 		return
 	end
+	DebugService.Register("TestClips", testClips)
 	DebugService.Register("TestPad", testPad)
 	DebugService.Register("TestPadClear", testPadClear)
 	DebugService.Register("TestDummyAt", function(_who: any, distance: any, turn: any)

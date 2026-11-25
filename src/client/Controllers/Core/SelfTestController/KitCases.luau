@@ -1,7 +1,7 @@
 --!strict
 -- KitCases (client, Studio only): a Voidkin's kit in play, a list of its own that joins Cases in the runner, as the
 -- Tower's does (Cases is at the type checker's limit). AR11's install: Watt's Ground Wire, its stop, its held pose and its
--- shield, through the replay.
+-- shield, through the replay. And the clips: each plays from its published id, and each is the one saved (2026-11-25).
 
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
@@ -10,7 +10,9 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Shared = ReplicatedStorage.Shared
 local Net = require(Shared.Net)
 local Actions = require(Shared.Definitions.Actions)
+local Animations = require(Shared.Config.Animations)
 local FighterController = require(script.Parent.Parent.Parent.Main.FighterController)
+local Clips = require(script.Parent.Parent.Parent.Main.FighterController.Clips)
 local ProfileController = require(script.Parent.Parent.ProfileController)
 local UI = script.Parent.Parent.Parent.Parent.UI
 local Read = require(UI.Read)
@@ -278,6 +280,30 @@ function KitCases.Cases(): { any }
 				t.Check("still on him as the stop ends", shieldStays)
 				t.Check("and gone at the shield's end, never before", shieldGone == true and not shieldEarly, `gone {shieldGone}, early {shieldEarly}`)
 				restore()
+			end,
+		},
+		{
+			-- 2026-11-25: every clip a shipped fighter plays has its id (the logic cases' Cases/Clips), so a client plays
+			-- each from it, Studio too; and each published clip is the one saved in the place, so one baked again after its
+			-- publish is caught (the server's TestClips) before a live server plays the old one.
+			Name = "Clips: each plays from its published id, and each published clip is the one saved in the place",
+			Run = function(t: any)
+				local wrong: { string } = {}
+				local count = 0
+				for clip, id in Animations.Ids do
+					count += 1
+					local animation = Clips.Animation(clip)
+					if animation == nil or animation.AnimationId ~= `rbxassetid://{id}` then
+						table.insert(wrong, `{clip}: {if animation then animation.AnimationId else "no Animation"}`)
+					end
+				end
+				t.Check(`each of the {count} plays from its id`, #wrong == 0, table.concat(wrong, ", "))
+				local report = t.Server("TestClips")
+				local ok = type(report) == "table"
+				t.Check("the server read every published clip back", ok and report.Read == report.Count and report.Count == count,
+					if ok then `{report.Read} of {report.Count}` else "no answer")
+				t.Check("each is the one saved (else Author.Publish it again and swap its id)", ok and #report.Stale == 0,
+					if ok then table.concat(report.Stale, "; ") else "no answer")
 			end,
 		},
 	}

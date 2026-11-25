@@ -39,6 +39,7 @@ local REMOTES: { [string]: Spec } = {
 	TowerHome = { Kind = "Function", RatePerSecond = 2 }, -- client -> server: () -> { Ok, Error? }: set down at the plot's spawn, free
 	TowerHealCap = { Kind = "Event", RatePerSecond = 0 }, -- server -> client: (share) the heal cap bound for the first time on this account
 	TowerBoard = { Kind = "Function", RatePerSecond = 1 }, -- client -> server: () -> { Ok, Rows, Mine? }: the week's board (TowerBoardService)
+	Boards = { Kind = "Function", RatePerSecond = 1 }, -- client -> server: () -> { Ok, Boards, News }: the Strip's boards (BoardsService, TR58)
 	HomeJump = { Kind = "Event", RatePerSecond = 0 }, -- server -> client: (landed, says?) the jump home, or the charge broken and why
 	-- A ground's one run of stretches (StageService, TR43, TR50).
 	Stage = { Kind = "Function", RatePerSecond = 2 }, -- client -> server: (ground, difficulty) -> { Ok, Error?, Needs?, Waits? }: a run begins at that difficulty's checkpoint, or why not

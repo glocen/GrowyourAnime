@@ -22,6 +22,7 @@ local Stats = require(Shared.Rules.Stats)
 local Chests = require(Shared.Rules.Chests)
 local Drops = require(Shared.Rules.Drops)
 local Goals = require(Shared.Rules.Goals)
+local Boards = require(Shared.Rules.Boards)
 
 local Tower = {}
 
@@ -97,41 +98,12 @@ export type Row = { Rank: number?, Id: number, Floor: number } -- as shown; a ra
 -- their own `mine` score (their save's, which may be newer than the page) set in its place. Its first `shown` rows, and
 -- their own row: nil without a climb, its rank nil when it falls under a full page. Equal scores go by UserId.
 function Tower.Board(top: { Entry }, me: number, mine: number?, shown: number): ({ Row }, Row?)
-	local page = TowerConfig.Board.Page
-	local list: { Entry } = {}
-	for _, entry in top do
-		if entry.Id ~= me then
-			table.insert(list, entry)
-		end
-	end
-	if mine then
-		table.insert(list, { Id = me, Score = mine })
-	end
-	table.sort(list, function(a: Entry, b: Entry): boolean
-		if a.Score ~= b.Score then
-			return a.Score > b.Score
-		end
-		return a.Id < b.Id
-	end)
+	local ranked, mineRanked = Boards.Rank(top, me, mine, shown, TowerConfig.Board.Page) -- the boards' one ranking (TR58)
 	local rows: { Row } = {}
-	local own: Row? = nil
-	for index, entry in list do
-		if index > page then
-			break
-		end
-		local row: Row = { Rank = index, Id = entry.Id, Floor = Tower.ScoreFloor(entry.Score) }
-		if index <= shown then
-			table.insert(rows, row)
-		end
-		if entry.Id == me then
-			own = row
-		end
+	for _, row in ranked do
+		table.insert(rows, { Rank = row.Rank, Id = row.Id, Floor = Tower.ScoreFloor(row.Score) })
 	end
-	if mine and own == nil then
-		-- Only under a full page: where it stands past the page isn't read.
-		local under: Row = { Rank = nil, Id = me, Floor = Tower.ScoreFloor(mine) }
-		own = under
-	end
+	local own: Row? = if mineRanked then { Rank = mineRanked.Rank, Id = me, Floor = Tower.ScoreFloor(mineRanked.Score) } else nil
 	return rows, own
 end
 

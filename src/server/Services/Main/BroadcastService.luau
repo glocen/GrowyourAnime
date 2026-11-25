@@ -10,6 +10,8 @@
 -- typed is ever carried (docs/roblox-rules.md, "Text players write").
 -- Its sources: DataService.Changed's committed answers, a Tower run's end (this server's best floor today, Goals.DayOf's
 -- day) and TowerBoardService.Led (the week's first place).
+--   BroadcastService.News()   the last Config.Boards.News every-server lines, this server's and others', newest first: the
+--                             news plate on the Strip (TR58, BoardsService)
 
 local HttpService = game:GetService("HttpService")
 local MessagingService = game:GetService("MessagingService")
@@ -18,6 +20,7 @@ local RunService = game:GetService("RunService")
 
 local Shared = game:GetService("ReplicatedStorage").Shared
 local Config = require(Shared.Config.Broadcast)
+local BoardsConfig = require(Shared.Config.Boards)
 local Log = require(Shared.Util.Log)
 local Net = require(Shared.Net)
 local Profile = require(Shared.Data.Profile)
@@ -45,6 +48,14 @@ local count = 0 -- this server's lines so far: each line's id is "{JOB}:{count}"
 local last: { [number]: number } = {} -- by UserId: when the player's last every-server line went, os.time()
 local best = { Day = 0, Floor = 0 } -- this server's best Tower floor today (Broadcast.Record)
 local told: { Broadcast.News } = {} -- the last lines this server sent its players, newest last: for tests
+local news: { Broadcast.News } = {} -- the last every-server lines, newest first (BroadcastService.News)
+
+local function hold(item: Broadcast.News)
+	table.insert(news, 1, item)
+	while #news > BoardsConfig.News do
+		table.remove(news)
+	end
+end
 
 -- A line to this server's players: those who show others' finds, and the finder always.
 local function show(item: Broadcast.News)
@@ -75,6 +86,7 @@ function BroadcastService.Tell(player: Player, item: Broadcast.News)
 	if Broadcast.Settle(item, data ~= nil and Settings.On(data, "ShareFinds"), last[player.UserId], now) then
 		last[player.UserId] = now
 		table.insert(outbox.Lines, item)
+		hold(item)
 	end
 	show(item)
 end
@@ -85,6 +97,7 @@ local function heard(message: any)
 		return
 	end
 	for _, item in lines do
+		hold(item)
 		show(item)
 	end
 end
@@ -100,6 +113,10 @@ local function send()
 	if not ok then
 		Log.Warn("BroadcastService", `a message wasn't sent to every server: {tostring(problem)}`)
 	end
+end
+
+function BroadcastService.News(): { Broadcast.News }
+	return table.clone(news)
 end
 
 function BroadcastService.Start()

@@ -30,6 +30,7 @@ local ServerStorage = game:GetService("ServerStorage")
 local Shared = ReplicatedStorage.Shared
 local WorldConfig = require(Shared.Config.World)
 local LightingConfig = require(Shared.Config.Lighting)
+local BoardsConfig = require(Shared.Config.Boards)
 local Kit = require(Shared.World.Kit)
 local Night = require(Shared.Rules.Night)
 local BaseFit = require(Shared.Rules.BaseFit)
@@ -1347,6 +1348,22 @@ local function lay(folder: Folder)
 	if stone then
 		stone:Clone().Parent = shopFloor
 	end
+
+	-- The boards on the Strip (TR58), at the Shop's flanks, facing the Strip: grey plates on stands, their words drawn by
+	-- each client (BoardsController). One model, streamed whole.
+	local b = c.Boards
+	local z = stripHalf + b.Out
+	local boards = model(folder, "Boards", CFrame.lookAt(Vector3.new(b.At[1], PAVED_TOP, z), Vector3.new(b.At[1], PAVED_TOP, z - 1)))
+	boards.ModelStreamingMode = Enum.ModelStreamingMode.Atomic
+	for index, name in BoardsConfig.Order do
+		local x = b.At[index]
+		if x then
+			local foot = CFrame.lookAt(Vector3.new(x, PAVED_TOP, z), Vector3.new(x, PAVED_TOP, z - 1))
+			block(boards, `{name} stand`, Vector3.new(b.Wide * 0.6, b.Lift, b.Deep), foot * CFrame.new(0, b.Lift / 2, 0), GREY.Gate)
+			block(boards, name, Vector3.new(b.Wide, b.High, b.Deep), foot * CFrame.new(0, b.Lift + b.High / 2, 0), GREY.Wall)
+		end
+	end
+	Markers.Stamp(boards, "Boards")
 end
 
 -- The Festival's place (TR45): Lantern Row from its forecourt, where a trip sets the player down before the gate, to
@@ -1970,6 +1987,24 @@ function WorldService.Init()
 				local paving = if street then street:FindFirstChild("Paving") :: Texture? else nil
 				if baseLook and tile and (paving == nil or paving.Texture ~= tile.Texture) then
 					table.insert(problems, `the {name} wears another tile than the Strip's`)
+				end
+			end
+		end
+		-- The boards on the Strip (TR58): no plate or stand cuts into the Shop or the Strip's dressing, the paving under
+		-- them aside.
+		local boards = world:FindFirstChild("Boards", true)
+		if boards then
+			local params = OverlapParams.new()
+			params.FilterType = Enum.RaycastFilterType.Exclude
+			params.FilterDescendantsInstances = { boards }
+			for _, plate in boards:GetChildren() do
+				if plate:IsA("BasePart") then
+					for _, hit in workspace:GetPartsInPart(plate, params) do
+						if hit:IsDescendantOf(world) and hit.Name ~= "Shop's floor" and hit.Name ~= "Strip" then
+							table.insert(problems, `the {plate.Name} board cuts into {hit:GetFullName()}`)
+							break
+						end
+					end
 				end
 			end
 		end

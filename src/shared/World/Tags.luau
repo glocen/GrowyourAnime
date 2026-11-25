@@ -38,6 +38,9 @@ local specs: { [string]: Spec } = {
 	-- A model whose pivot is its home on the floor. Stands only with the base's kit.
 	Condenser = { Tag = "GA_Condenser", Place = "Main", Attributes = { Plot = "number" }, Count = 1, Per = "Plot", Ground = true },
 	Shop = { Tag = "GA_Shop", Place = "Main", Attributes = {}, Count = 1, Ground = true },
+	-- The boards on the Strip (TR58): a model of four plates, each named by its board (Config.Boards.Order), its pivot at
+	-- the first plate's foot.
+	Boards = { Tag = "GA_Boards", Place = "Main", Attributes = {}, Count = 1, Ground = true },
 	FestivalGate = { Tag = "GA_FestivalGate", Place = "Festival", Attributes = {}, Count = 1, Ground = true },
 	-- A pack's spawn: Count Shades of Def at Level, spread round it. Pack is its number down the street. Type: the outline's
 	-- colour, else the Def's own. Ground: the ground it stands in (Definitions.Grounds), whose Standard shard it drops.

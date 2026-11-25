@@ -69,6 +69,12 @@ return {
 		Wide = 3, -- 48 studs
 		Ends = 5, -- past the last plots, kept for the Calamity and the Clash Grounds (phase 5)
 	},
+	-- The boards on the Strip (TR58; Config.Boards): four plates on the Shop's side of the crossing, at the Shop's flanks,
+	-- facing the Strip, read by a player coming back from the side street. At: each plate's middle across the crossing,
+	-- in Config.Boards.Order, from the viewer's left (+x) to right; Out: studs from the Strip's edge onto the Shop's floor;
+	-- each Wide by High studs, its foot Lift over the paving on a stand. A grey block, the builder's seeds, set from the
+	-- player's camera; the boards' art waits for research's verdict (Modulo, an AR).
+	Boards = { At = { 52, 36, -36, -52 }, Out = 8, Wide = 14, High = 9, Lift = 2.5, Deep = 0.8 },
 
 	-- The side street runs from the crossing between the Towers to the festival gate: a plot's depth, its path behind and
 	-- its Tower: 15.5 s at a 200-stud plot, so the Festival Door is the way in. Then Lantern Row.

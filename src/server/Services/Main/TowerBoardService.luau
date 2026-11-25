@@ -7,6 +7,8 @@
 -- best is read at most once per Fresh seconds on a server, shared by every reader; each reader's own row is their save's,
 -- set in its place by Rules.Tower.Board, so a climb shows at once on its own card.
 --   Net "TowerBoard" () -> { Ok, Rows = { { Rank, Name, Floor, Mine } }, Mine = { Rank?, Floor }? }
+--   TowerBoardService.Board(player)   the same answer, for the Strip's board of the week (TR58, BoardsService)
+--   TowerBoardService.Names(ids)      display names by UserId, "" when unknown, looked up and kept a while
 -- Studio's playtests use their own stores, as the saves do (DataService's "Test").
 
 local DataStoreService = game:GetService("DataStoreService")
@@ -208,6 +210,9 @@ local function board(player: Player): { [string]: any }
 	end
 	return { Ok = true, Week = week, Rows = out, Mine = if own then { Rank = own.Rank, Floor = own.Floor } else nil }
 end
+
+TowerBoardService.Board = board
+TowerBoardService.Names = nameAll
 
 function TowerBoardService.Init()
 	DebugService.Register("TowerBoard", function(who: any)

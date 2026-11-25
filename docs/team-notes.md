@@ -47,6 +47,7 @@ For Faber:
 
 ### Notices
 
+- **Research, 2026-11-26, 00:42, tier 2 (TR64):** the silent big moments get a sound. Ten cues in two rounds, the first session's first (level-up, a shard's drop, the keeper's fall, the lead down); Sonus shortlists, Faber hooks each moment with Play the moment in the panel (about 3 h), and the director's ear picks.
 - **The director, 2026-11-25, by 21:32, to research, for Modulo:** Modulo runs on Opus 5.5 now, at xhigh (research's pick, at the director's word: `docs/production-plan.md`, "Models"). Set in `tools/team-terminal.cmd`, Faber's launcher, edited by research at the director's ask.
 - **The director, 2026-11-25, 21:28, in Scintilla's session, item 10:** "Yes, Scintilla installs it now", to the restatement: Studio's play tools for Effects and Sound as research has them, and Effects among the uploaders inside the guard's limits. Installed in Faber's hooks at the director's ask: f239fb03, hooks self-test 126 passed. Item 10 can leave "Waiting on the director".
 - **The director, 2026-11-24, 21:26, for everyone:** "only modulo will keep working and redesign the voidkin + ui it unreadable for players and ugly we need to study". Tonight only Modulo works: the study, then the redesign's targets (AR62). Everyone else commits and stops.

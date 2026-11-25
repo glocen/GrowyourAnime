@@ -5205,3 +5205,37 @@ Research, 2026-11-24, from the cloud. The design: `docs/design.md`, "Being seen"
     - the machine plate's "this window" (the window's size, as before);
     - the Dasher's lunge (AR52), a different check each run: flaky, mine to fix;
     - AR12's Electricity ink and the HUD's battery: the save's four bays are empty, so generation is 0. The pill wears its warning, and past 100 kWh its readout drops the decimals the case compares to ±0.05. Both cases lean on the save's state: mine to harden next, and to find which case left the bays empty.
+
+## TR64. The silent big moments get a sound (research's request, tier 2: Sonus's shortlists, then Faber's hooks; the director's ear picks)
+
+Research, 2026-11-26, 00:42, from the outside study (`docs/research/cloud-2026-11-24/orchestration.md`, "Sound inverts importance" and its next steps' item 2; `audio-direction.md`, section 4). A Shade's hit has a cue, but the run's biggest moments have none, and the keeper's fall borrows a Shade's `ShadeBurst`. Checked in code at 00:40: no cue on any of them (`Config.Cues`, `Config.Sounds`, `LandingController`'s "No sound yet").
+
+- **First in Sonus's queue item 3,** because these moments play in every session today. The named requests' sounds (AR53, AR55 to AR58, TR57) wait on looks still in build, and a cue is picked on its finished moment.
+- **Feel line:** the player levels up, lands a shard, fells the keeper, and each sounds bigger than a hit, in one glass-and-bell family, so the run's big moments are heard before they're read.
+- **The cues,** in order. Each is one finished library sound, whole (TR42's rules). "Tonal" is the panel's flag: a single tone or chime is what it wants.
+
+Round 1, the first session's:
+
+| Cue | Plays on | Longest | Words | Never |
+|---|---|---|---|---|
+| LevelUp, tonal | the lead's level-up: the plate and the column (`UI/LevelNotice.luau`) | 1.0 s | "level up", "power up chime", "achievement chime", "magic chime", "rising chime" | a chiptune jingle, a brass fanfare, coins, a voice |
+| ShardDrop, tonal | a shard's plate at its drop. Pitched by grade on the note set: Standard 1, Enriched 1.189, Prismatic 1.335, Named 1.498 (A C D E). G and the octave stay the reveal's, so a drop never sounds like a Legendary | 0.6 s | "crystal ding", "glass chime", "bell ding", "chime single", "sparkle ding" | coins, a slot machine, more than one note |
+| KeeperFall | the keeper's fall, on the frame that plays `ShadeBurst` today (keepers only), before the 2.4 s pause | 2.0 s, its tail under 1.5 | "boss defeated", "victory impact", "gong hit", "big impact", "shatter" | a fanfare or any tune, a crowd, a trailer braam or choir, a boom that lives under 120 Hz |
+| LeadDown | the lead falls: the grey column and the fallen card | 1.5 s | "defeat", "power down", "fail", "lose", "shutdown" | a comic fail horn, a buzzer, a voice, chiptune |
+
+Round 2:
+
+| Cue | Plays on | Longest | Words | Never |
+|---|---|---|---|---|
+| GoalDone, tonal | a goal completes; in a fight, when the fight ends (`Theme.Time.Fight` after the last hit) | 0.8 s | "quest complete", "achievement", "success chime", "task complete", "bell chime" | a fanfare, coins |
+| Record, tonal | "a new best" (`StageScreen`) and "A new record" (`TowerScreen`). Heard right after GoalDone, so the two sound like one family | 1.0 s | "new record", "achievement unlocked", "victory chime", "success" | a tune, a crowd |
+| Reinforced, tonal | "Reinforced to +N" (`EquipmentScreen/Reinforce.luau`) | 0.8 s | "upgrade", "enchant", "forge success", "power up chime" | a jackpot, coins |
+| ReinforceFailed | "Failed: it stays at +N". Quiet: a let-down, never a punishment | 0.6 s | "fail", "error low", "crack", "negative" | a buzzer, a loud shatter, a comic sound |
+| MachineStage | a machine's stage climbs: the Climbing Ring (`LandingController`) | 1.5 s | "power up", "charge up", "energy rise", "magic charge" | a real machine: a breaker's clack, a motor, an alarm (the base's machines are void machines) |
+| LeadHurt | a hit that jolts the lead (`Config.Combat.Shake.Hurt`, 10% of its health in one hit), never every hit | 0.4 s | "body hit", "low impact", "damage hit", "thud" | wet or tearing (rule 4), a voice or grunt, a refusal's sound |
+
+- **LeadHurt is last:** it's an impact, the family the team failed twice (AR39), and it repeats in a fight.
+- **Levels** start at the study's mix chart (Reward −6 dB, UI −12, against the lead's light hit at 0) and are tuned live.
+- **Faber's part,** about 3 h (the study's estimate): each moment calls its cue by name, silent until one is picked. The panel gets a tab per cue with **Play the moment**, which fires that moment without a fight (the plate, the column, the fall), so the director hears each sound on its own picture.
+- **Cases:** a cue with no pick stays silent and never errors; the keeper's fall plays KeeperFall and not `ShadeBurst`; LeadHurt plays only on a jolting hit; a drop's note follows its grade.
+- **Waits:** the conductor (the study's item 4: one door for notices, the hold in a fight); the reveal's ladder retuned to the note set; the UI family (tap, tab, confirm, refused); each named request's own sounds.

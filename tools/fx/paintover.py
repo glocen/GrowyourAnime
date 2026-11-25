@@ -133,6 +133,14 @@ class Frame:
         if field.size:
             self.light[sl] += field[..., None] * (np.asarray(colour, np.float32) * k)
 
+    def lay(self, sl, field, colour, a):
+        """Colour laid over the frame, under all the light (the kit's dark twin: an ink edge that keeps a pale light
+        readable on a pale floor)."""
+        if field.size:
+            f = np.clip(field * a, 0, 1)
+            self.over[sl] += (f[..., None] * np.asarray(colour, np.float32)) * (1 - self.alpha[sl][..., None])
+            self.alpha[sl] += f * (1 - self.alpha[sl])
+
     # --- shapes, sized in studs ---------------------------------------------------------------------------------------
     def glow(self, p, radius, colour, k=1.0, falloff=2.0):
         """A soft round light facing the camera: exp(-(d/r)^falloff)."""
@@ -147,8 +155,9 @@ class Frame:
         self.glow(p, radius, colour, k, falloff=4.0)
         self.glow(p, radius * 2.4, colour, k * 0.35, falloff=1.6)
 
-    def streak(self, a, b, width_a, width_b, colour, k=1.0, soft=0.6, screen=False):
-        """A tapered line of light from a to b (world points, or pixels with screen=True), widths in studs (or pixels)."""
+    def streak(self, a, b, width_a, width_b, colour, k=1.0, soft=0.6, screen=False, ink=0.0):
+        """A tapered line of light from a to b (world points, or pixels with screen=True), widths in studs (or pixels).
+        ink > 0 lays the line as ink of that opacity instead of light."""
         pa, pb = (np.asarray(a, float), np.asarray(b, float)) if screen else (self.at(a), self.at(b))
         wa, wb = (width_a, width_b) if screen else (self.cam.px(a, width_a), self.cam.px(b, width_b))
         r = max(wa, wb) * 3 + 2
@@ -162,7 +171,10 @@ class Frame:
         dist = np.hypot(X - (pa[0] + t * d[0]), Y - (pa[1] + t * d[1]))
         wid = (wa + (wb - wa) * t) / 2
         f = np.clip(1 - (dist - wid * (1 - soft)) / np.maximum(wid * soft * 2, 0.6), 0, 1) ** 2
-        self.add(sl, f, colour, k)
+        if ink > 0:
+            self.lay(sl, f, colour, ink)
+        else:
+            self.add(sl, f, colour, k)
 
     def spikes(self, p, n, length, width, colour, k=1.6, seed=1, up=0.0, spread=(0.45, 1.0), inner=0.15, flat=1.0):
         """Radial needles thrown out of p: n of them, lengths a share of `length` (studs), thick at the root, a point at

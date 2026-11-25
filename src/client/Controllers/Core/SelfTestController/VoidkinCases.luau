@@ -1151,6 +1151,26 @@ function VoidkinCases.Cases(given: Given): { any }
 				t.Check("the smallest phone: all five Basic Attributes show with nothing scrolled", #basic == 5 and #hidden == 0, if #hidden > 0 then `{hidden[1]}: {stand}` else stand)
 				t.Check("the smallest phone: three a row where every word fits a third whole, else two", (rows[3] or 0) + (rows[2] or 0) == #basic, `{rows[3] or 0} three a row, {rows[2] or 0} two`)
 				t.Check("the smallest phone: no attribute's name or number cut or shrunk", #whole == 0, whole[1])
+				-- How many exist, at the right of the level's row (the outside review's item 4): the level and the count whole
+				-- and apart on one row, at the save's count and at six figures, the list's height unchanged.
+				local counted = small:FindFirstChild("Exist", true) :: TextLabel?
+				if counted then
+					local words = counted.Parent :: TextLabel
+					local row = words.Parent :: GuiObject
+					local function fitted(): (boolean, string)
+						local apart = words.AbsolutePosition.X + words.TextBounds.X + 4 <= counted.AbsolutePosition.X + counted.AbsoluteSize.X - counted.TextBounds.X
+						local inside = counted.AbsolutePosition.X + counted.AbsoluteSize.X <= row.AbsolutePosition.X + row.AbsoluteSize.X + 1
+						local level = words.Name == "Left" and string.find(words.Text, "^Level ") ~= nil
+						return level and words.TextFits and counted.TextFits and apart and inside and counted.AbsoluteSize.Y <= words.AbsoluteSize.Y + 1,
+							`{words.Text} | {counted.Text}: apart {apart}, inside {inside}, {math.round(row.AbsoluteSize.X / scale)} wide`
+					end
+					t.Check("the smallest phone: the level and how many exist on one row, both whole", fitted())
+					local shown, level = counted.Text, words.Text
+					counted.Text, words.Text = "No. 999,999 · 999,999 exist", "Level 125" -- the last level, at counts past what a launch's counts will reach
+					t.Wait(0.1)
+					t.Check("the smallest phone: and at six figures", fitted())
+					counted.Text, words.Text = shown, level
+				end
 				-- Its experience on one line, its bar under the words, the line ending at the bar's foot (AR43's take 2).
 				local levelLine = small:FindFirstChild(`Level {owned.Level}`) :: GuiObject?
 				local words = if levelLine then levelLine:FindFirstChild("Under") :: TextLabel? else nil

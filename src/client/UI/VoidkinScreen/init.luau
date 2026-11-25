@@ -807,12 +807,12 @@ local function statSheet(scroll: ScrollingFrame, view: Profile.View, owned: Prof
 end
 
 local function overview(scroll: ScrollingFrame, view: Profile.View, owned: Profile.OwnedVoidkin, on: On)
-	-- How many exist, under the header once the server holds its number: "No. 1,284 · 3,912 exist" (docs/design.md,
+	-- How many exist, in the header once the server holds its number: "No. 1,284 · 3,912 exist" (docs/design.md,
 	-- "How many exist"; Rules.Exist; the count is ReplicatedStorage's Exist folder, ExistService's)
 	local counts = ReplicatedStorage:FindFirstChild(ExistConfig.Folder)
 	local held = if counts then counts:GetAttribute(owned.Def) else nil
 	local exists = Exist.Words(owned.No, if type(held) == "number" then held else nil)
-	line(scroll, 1, Read.VoidkinLine(owned.Def, true), nil, if exists ~= "" then exists else nil)
+	line(scroll, 1, Read.VoidkinLine(owned.Def, true))
 	local need = Growth.XpToNext(owned.Level)
 	-- Its experience on one line, its bar right under the words and the line ending at the bar's foot (AR43's take 2,
 	-- voidkin_b.json, overview.heading: the Basic Attributes' heading pulled up, so all five show on the smallest phone).
@@ -830,6 +830,13 @@ local function overview(scroll: ScrollingFrame, view: Profile.View, owned: Profi
 		local bar = Bar.new({ Name = "Xp", Size = UDim2.new(1, 0, 0, Theme.Size.Bar), Parent = xp, Colour = HudConfig.Card.Xp, Palette = Seam.Palette })
 		bar.LayoutOrder = 3
 		Bar.Set(bar, math.clamp(owned.Xp / need, 0, 1))
+	end
+	if exists ~= "" then -- at the right of the level's row, so it costs the list no height (all five Basic Attributes
+		-- stay on the smallest phone, AR43's take 2), with room for six figures where the header's line has none
+		local count = text({ Name = "Exist", Size = Theme.Text.Caption, Colour = Look.TextDim, Align = Enum.TextXAlignment.Right, Box = UDim2.new(0, 0, 1, 0), Parent = xp:FindFirstChild("Left") :: Instance }, exists)
+		count.AutomaticSize = Enum.AutomaticSize.X
+		count.AnchorPoint = Vector2.new(1, 0)
+		count.Position = UDim2.fromScale(1, 0)
 	end
 	statSheet(scroll, view, owned, 2) -- straight under its level: the page's reason
 	local now = line(scroll, 30, "Now", nil, role(view, owned, on, workspace:GetServerTimeNow()))

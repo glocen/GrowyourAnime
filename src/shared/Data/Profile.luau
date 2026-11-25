@@ -249,6 +249,10 @@ export type Data = {
 		},
 	},
 	ExistEpoch: string?, -- the era its Voidkin's numbers belong to (Config.Exist.Epoch); another era's are cleared
+	-- The welcome week (TR59, Rules.Welcome): how many of its seven gifts are taken, and the UTC day (Goals.DayOf) the
+	-- last was; nil before the first.
+	Welcome: { Taken: number, Last: number }?,
+	Codes: { [string]: boolean }?, -- the codes this account has taken, by Config.Welcome's code Id (TR59, Rules.Codes)
 }
 
 export type View = Data -- a client's copy: the same shape with Ops emptied

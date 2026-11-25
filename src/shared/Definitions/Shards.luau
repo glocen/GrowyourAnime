@@ -16,6 +16,7 @@ export type Row = {
 local rows: { Row } = {
 	{ Id = "lanternrow_standard", Grade = "Standard", Ground = "lanternrow", Holds = "" },
 	{ Id = "named_watt", Grade = "Named", Ground = "lanternrow", Holds = "watt" },
+	{ Id = "named_lyric", Grade = "Named", Ground = "lanternrow", Holds = "lyric" }, -- the welcome week's seventh (TR59), never dropped
 	{ Id = "starter_rook", Grade = "Starter", Ground = "lanternrow", Holds = "rook" },
 	{ Id = "starter_kirra", Grade = "Starter", Ground = "lanternrow", Holds = "kirra" },
 	{ Id = "starter_pip", Grade = "Starter", Ground = "lanternrow", Holds = "pip" },

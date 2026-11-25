@@ -671,6 +671,26 @@ local function card(shown: Shown, answer: { [string]: any })
 			RevealPlate.Continue(plate)
 		end
 	end)
+	-- A new one's number, once the server holds it (ExistService): now if it's in, else on the copy that brings it.
+	local id = answer.Id
+	if shown.Outcome == "New" and type(id) == "string" then
+		local function numbered(view: Profile.View?): boolean
+			local owned = if view then view.Voidkin[id] else nil
+			if owned and owned.No and reveal == shown then
+				RevealPlate.Number(plate, owned.No)
+				return true
+			end
+			return reveal ~= shown
+		end
+		if not numbered(ProfileController.Get()) then
+			local wait: any
+			wait = ProfileController.Changed:Connect(function(view: Profile.View)
+				if numbered(view) then
+					wait:Disconnect()
+				end
+			end)
+		end
+	end
 end
 
 -- What Open uncovered (Rules.Base.Open's answer): the ceremony at its rarity (UI/Reveal), then its card.

@@ -40,6 +40,8 @@ local Collection = require(Shared.Rules.Collection)
 local HudConfig = require(Shared.Config.Hud)
 local Breaker = require(Shared.Rules.Breaker)
 local Power = require(Shared.Rules.Power)
+local Exist = require(Shared.Rules.Exist)
+local ExistConfig = require(Shared.Config.Exist)
 local UIKit = require(Shared.Config.UIKit)
 local VoidkinConfig = require(Shared.Config.Voidkin)
 -- The stars at the top, as a word ("All seven stars"), for the line a copy sells on (TR61).
@@ -805,7 +807,12 @@ local function statSheet(scroll: ScrollingFrame, view: Profile.View, owned: Prof
 end
 
 local function overview(scroll: ScrollingFrame, view: Profile.View, owned: Profile.OwnedVoidkin, on: On)
-	line(scroll, 1, Read.VoidkinLine(owned.Def, true))
+	-- How many exist, under the header once the server holds its number: "No. 1,284 · 3,912 exist" (docs/design.md,
+	-- "How many exist"; Rules.Exist; the count is ReplicatedStorage's Exist folder, ExistService's)
+	local counts = ReplicatedStorage:FindFirstChild(ExistConfig.Folder)
+	local held = if counts then counts:GetAttribute(owned.Def) else nil
+	local exists = Exist.Words(owned.No, if type(held) == "number" then held else nil)
+	line(scroll, 1, Read.VoidkinLine(owned.Def, true), nil, if exists ~= "" then exists else nil)
 	local need = Growth.XpToNext(owned.Level)
 	-- Its experience on one line, its bar right under the words and the line ending at the bar's foot (AR43's take 2,
 	-- voidkin_b.json, overview.heading: the Basic Attributes' heading pulled up, so all five show on the smallest phone).

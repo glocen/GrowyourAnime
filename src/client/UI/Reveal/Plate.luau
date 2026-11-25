@@ -7,6 +7,7 @@
 -- Config.Reveal.Plate's; the stage keeps it at its size where it shrinks to fit a small phone (stage.Hold).
 --   local plate = Plate.new(stage, { Def = "rook", Rarity = "Common", Outcome = "New", Lead = false, Credits = 0 })
 --   Plate.Continue(plate)    "Tap to continue" shows
+--   Plate.Number(plate, 1284) a new Voidkin's number once the server holds it: "A new Voidkin · No. 1,284"
 
 local TextService = game:GetService("TextService")
 
@@ -14,6 +15,7 @@ local Shared = game:GetService("ReplicatedStorage").Shared
 local RevealConfig = require(Shared.Config.Reveal)
 local UIKit = require(Shared.Config.UIKit)
 local Voidkin = require(Shared.Definitions.Voidkin)
+local Exist = require(Shared.Rules.Exist)
 local Theme = require(script.Parent.Parent.Theme)
 local Read = require(script.Parent.Parent.Read)
 local Panel = require(script.Parent.Parent.Kit.Panel)
@@ -118,6 +120,15 @@ function Plate.new(stage: Stage, answer: Answer): Frame
 
 	plate.Parent = stage.Stage
 	return plate
+end
+
+-- A new Voidkin's number on its first line, once the server holds it (docs/design.md, "How many exist": "On the reveal
+-- of a new Voidkin, its number once the server holds it"). A copy's or a sale's plate keeps its line.
+function Plate.Number(plate: Frame, no: number)
+	local kind = plate:FindFirstChild("Kind")
+	if kind and kind:IsA("TextLabel") and kind.Text == "A new Voidkin" then
+		kind.Text = `A new Voidkin · {Exist.Words(no)}`
+	end
 end
 
 -- "Tap to continue" shows: the card has stood long enough for a tap to close it.

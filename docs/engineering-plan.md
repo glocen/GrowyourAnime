@@ -181,6 +181,7 @@ The builder's, 2026-11-16, written before the systems (research's order, `docs/r
 | The Calamity's health | each server its own | shows it |
 | The Clash Grounds | server: champions are server-run from their owner's saved stats | watches |
 | Bases: who has which plot | server, at join | walks around |
+| How many exist: each Voidkin's number, each kind's count (`docs/design.md`, "How many exist") | server, `ExistService` with `Rules.Exist`: numbers in blocks of `Config.Exist.Block` per kind from one store key each (`{Test or Live}Exist`, `{Epoch}:{kind}`), written on the Voidkin after its grant commits, never waited on; the count is the grants the saves took, written each `Flush`, so it lags and never leads. **At the first public build, `Config.Exist.Epoch` changes once** ("Before" today): every save is numbered again in the new era | shows `No.` and the count from ReplicatedStorage's Exist folder |
 
 ## The world contract
 

@@ -27,6 +27,8 @@ export type OwnedVoidkin = {
 	Favourite: boolean,
 	Locked: boolean,
 	Born: number, -- os.time() when it was uncovered
+	No: number?, -- its kind's number, the server's once it holds one (Rules.Exist; docs/design.md, "How many exist"); a
+	-- number is never reused, and nil until it comes, never waited on
 }
 
 export type ItemLine = { Stat: string, Value: number }
@@ -243,6 +245,7 @@ export type Data = {
 			Week: TowerWeek?, -- the best climb of the latest week a run was ended in, for the week's board (TR46)
 		},
 	},
+	ExistEpoch: string?, -- the era its Voidkin's numbers belong to (Config.Exist.Epoch); another era's are cleared
 }
 
 export type View = Data -- a client's copy: the same shape with Ops emptied

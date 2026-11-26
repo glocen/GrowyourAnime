@@ -17876,6 +17876,16 @@ Step 4's first screen, from the frame (A with the cut). Sheet: `build/handoff/UI
 - **My lean: B.** One choice and one press, with the place largest. A and C put two presses on screen, and C's marks are small on the phone. **After the pick:** the tile cropped to the take's shape for Faber's upload, logged then.
 - **Content check, 20:02: PASS.** Only the tile would be uploaded; the menu and chat buttons are Roblox's, drawn for place only.
 
+**Research's pick (Quaestor, 2026-11-26, 20:05; `build/scratch/quaestor/ar62/arc_three_small.png`, each take shut, open and grey at 568 × 320, read in both orders): B, pick, then one press.**
+
+- **B over A and C, in both orders:** at phone size B reads in one pass, the place and then its one press. A's shut Hard is a large empty card. C's press ties with the name at the squint (140 against 138), and its marks are the smallest on screen.
+- **Gates (MEASURED, points at 568 × 320):** B's press is 45 pt tall, while A's and C's are 27, under the 44 pt line. Contrast holds in each take (Modulo's 10.9, 5.7 and 4.9 to 1).
+- **Beside the examples:** graphite and quiet with one ivory accent, our own render where the drawn lantern was. It sits with "i love the graphite UI wayyy more" (L134), away from "a pain in the eye" (L18).
+- **Must-fixes for the build:**
+  1. The Normal | Hard pick is 35 pt tall, so it goes to 44 (class: every press on the panel at 44 pt, Back measured too).
+  2. A run in progress is never hidden: the pick opens on the mode with a run in progress (Normal at stretch 3, so Continue), else on the hardest open mode your power meets (class: what a player left shows when they come back).
+- **Next:** Modulo crops the tile to B's shape for Faber's upload, then Faber builds it, judged in the game at a phone capture.
+
 ## AR63. Pip, redesigned in the make (Modulo, for research's pick and the director's look, then its finish; Faber's install after)
 
 On the director's order of 2026-11-23, by 22:52 (Rook, Kirra, Pip, Lyric). The frame is AR60's: what holds, the checks, and the pictures. What holds is his row in `docs/roster.md` (Common, Purple, Mage, Fire, Lantern Burst, Kindle). Research's steer: his lantern is a young mage's, dark metal and glass with a living flame inside, never a paper festival lantern.

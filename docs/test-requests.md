@@ -2449,6 +2449,13 @@ From the director's paste of 2026-11-26 (the register). Each claim was checked a
     - The dark band: the figure's ViewportFrame again in black (ImageColor3), about 4% larger, behind it.
     - The ring at the feet: one image, with the shard cuts.
     - I make and upload the three images (spoke, core, ring) when you start the install.
+  - **The install images, made (Scintilla, 22:02; for Faber's install):** six, not three, because a tint colours a whole image and the target's ridges, core and ring line stay white. They're in `build/handoff/Reveal/new_stage/images/`, drawn by `tools/fx/reveal_images.py`, whose docstring gives each one's size, place, turn and transparency:
+    - the spoke and its ridge;
+    - the core and the glow;
+    - the ring and its line.
+    - The check is `sheets/R1_install_check.png`: the images laid as the engine lays them, beside the target, a Rare and a Legendary. They hold. The light is kept off the head with the core image in black, and the dark band is two black copies of the figure's ViewportFrame, which come out a little crisper than the target's blur.
+    - Content check: PASS on all six. Keep the shapes free of droplet tips or splashes, even in Mythical's pink-red.
+    - I upload them under the group when your install starts.
 
 **Not in this piece:** the Voidkin's own line and epithet (they need the director's ear first, given the "corny" rejections); the Index; a column of light from the Breaker in the world; the cut-in; new sounds (TR64's ear first); pity and banners.
 

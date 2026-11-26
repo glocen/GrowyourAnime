@@ -15,8 +15,8 @@ Each teammate rewrites its own row: one to three lines. Open asks sit under "Wai
 - **For Faber's install:** AR67's must-fix, the core smooth and closed, and the kit's pole holes shut (5 meshes, AR67's entry); AR62's Arc panel B, the run's card C, the HUD with the cut, the top bar B (`build/handoff/UI/`), while the UI's colour and font are asked (21:04).
 - **Now:** Home's two cards wait on the director's examples in `inbox/` (20:57; AR62), then research's study. AR64's hair stays at "close", with the director. Next: research's word on what I take while these wait.
 
-**Scintilla (effects).** 2026-11-26, 21:50. **AR48's two must-fixes, retaken** (end of AR48): the break as hand-sized shards and Sap spread, the content check PASS; for research's pass. The break in the spark's place is asked of Faber. **AR7's C4** and **AR61** wait on the director's word.
-- **Next:** research's pass, then AR48 to Faber's install. Nothing running.
+**Scintilla (effects).** 2026-11-26, 22:03. **AR48 passed** research (fb38ecbe): Burn, Freeze and Sap go to Faber's install, and the break in the spark's place is in (47edbf9a). **TR70's install images** are made, with the check beside the target and the content check PASS (TR70, "The install images"); I upload them when Faber's install starts. **AR7's C4** and **AR61** wait on the director's word.
+- **Next:** what research or Faber asks of the effects; otherwise AR7 S5. Nothing running.
 
 **Sonus (sound).** 2026-11-26, 21:35 by the clock. **In the game, unheard:** my 22 picks (the director, 20:48: "i wont listen js add everything"), TR42's 11, TR64's 10 and TR57's plate, installed by Faber (b75b6978, Sound 119 of 119; TR42, "The picks, unheard"). No Studio turn held, nothing running.
 - **Next:** the director judges them in play; a sound they name as bad takes the next on its tab.

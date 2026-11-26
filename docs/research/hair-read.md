@@ -138,7 +138,7 @@ Rounds 42 and 43 (2026-11-26, about 13:00 to 13:07), take RP, on the director's 
 
 Take T before it (`Sheets`): pleated sheets whose pleats part into points near their ends. Wide petals, nothing crossing, points that don't flick. Dropped.
 
-## Against Anime Vanguards: why ours reads bad, measured (2026-11-26, 13:10 to 14:16)
+## Against Anime Vanguards: why ours reads bad, measured (2026-11-26, 13:10 to 14:30)
 
 The director, on round 43: "round 43 is still bad.. study how to make it good instead of iterating", then "now compare with anime vanguard or anime crusader and if u believe yours is bad compared to it keep studying and improve". No round was built for this study; four throwaway tests isolated causes (`build/scratch/modulo/hair/study/`, with `measure.py`). Pictures looked at, all internal: the catalog's eight (`catalog720/`); Anime Vanguards' units `roku`, `gaari`, `ichiga`, `jon`, `sosuke` and `savior-moonless`, heads enlarged (`study/av_heads.png`, `spikes.png`); ours, rounds 41 and 43.
 
@@ -190,13 +190,29 @@ The web study (sources below) says the catalog's look is in its texture: strands
   - Thin up-locks or short tufts on the crown read as "antennae" or "horns", three times.
 - **The silhouette is the gap left:** "a rounded cap". Flaring the sides read "mushroom"; holding them close reads "cap". Status was "close" in every read, never "very close" yet.
 
+**The outline, measured as masks** (TESTED, 2026-11-26, 14:19 to 14:30). Each sheet's pictures were cut to their dark pixels by a CSS threshold in the sheet (`study/mask.png`).
+- **Ours:**
+  - The dome draws the top: a few blunt bumps, about 15 px proud on a 150 px base at 420 px a tile.
+  - The sides fall as two solid walls.
+  - The points are at the hem only.
+- **The bar:** the locks' points draw the outline. Each stands 1.5 to 2.5 times its base, and the background cuts deep between them.
+- **Three make-side tests, none of which moved it:**
+  - Upper-side locks flicked out swell into lobes, and the outline grows to 1.90 heads wide (mask).
+  - A hollow taper with 1.5x tails sharpens the tips, but they hide inside the union of the bodies, and the outline is unchanged (mask).
+  - A shag's tiers, each flicked off the one under, read as "thin ragged slivers ... like shredded paper". The broad locks stayed slightly nearer, in both orders (blind18).
+- **So the outline is set by the cut, not the make.**
+  - A shag laid down from one whorl is a dome by its nature.
+  - Every bar hair has a signature outline (blind18: "the tufts sticking out, the tall spikes, the long side sweep").
+  - The make holds at "close". What's left is the design's silhouette, drawn flat and picked before it is modelled (AR64's route).
+- **Read twice (blind17, blind18):** in the game's warm light the charcoal goes muddy brown, and the locks merge into one blob.
+
 **The way, for Rook** (DESIGN, from the reads): `rook_wedges()` in `hair_ways.py`, class `Spikes`.
-- **The locks:** about 19 rounded wedges over a smooth crown dome, from a whorl at the back of the crown, swept one way.
+- **The locks:** 24 rounded wedges over a smooth crown dome, from a whorl at the back of the crown, swept one way, a few big and many small.
 - **The layout:**
   - four small hem locks;
-  - five long leaders of uneven length, leaving the outline;
+  - five big leaders of uneven length, leaving the outline, with four small points tucked between their tips;
   - one lock over each ear;
   - three lying forward over the crown, close to it;
-  - five in the fringe, the lead to his right.
+  - the fringe: three big locks to the brows, the lead to his right, with three small points between.
 - **The colour:** cool matte charcoal, darker at the roots and under each lock, with the occlusion baked in.
 - **The gates:** the outline 1.4 to 1.8 heads wide; a fresh blind reader at "very close" or better before the director sees it.

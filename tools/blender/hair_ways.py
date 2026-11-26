@@ -954,12 +954,12 @@ def rook_spikes():
 
 
 def rook_wedges(planes=False):
-    """Rook's cut as the bar's heads (hair-read.md, "Against Anime Vanguards"; the blind reads of 2026-11-26): 19
-    rounded wedges from a whorl at the back of the crown, swept one way, of uneven sizes, over a smooth crown mass.
-    Four small ones lie under round the back and sides, and one over each ear; over them five long leaders of uneven
-    length leave the head's outline, out over each ear and down and out at the back, the background between their
-    points; three lie forward over the crown, close to it; five fall from the fringe's own point to the brows, the
-    lead one to his right the biggest. Matte charcoal leaning cool, rounded across, no hotspot, darker at the roots,
+    """Rook's cut as the bar's heads (hair-read.md, "Against Anime Vanguards"; the blind reads of 2026-11-26): 24
+    rounded wedges from a whorl at the back of the crown, swept one way, over a smooth crown mass, in a plain order of
+    size: heroes and small points. Four mid ones lie under round the back and sides, and one over each ear; over them
+    five big leaders of uneven length leave the head's outline, out over each ear and down and out at the back, with
+    four small points tucked between their tips; three lie forward over the crown, close to it; the fringe is three
+    big locks to the brows, the lead to his right the biggest, with three small points between. Matte charcoal leaning cool, rounded across, no hotspot, darker at the roots,
     under each lock and deep in the crack where one tucks under the next. (Two flat planes with a hard ridge read as
     folded paper: the blind read of 2026-11-26, 14:08.)"""
     h = Spikes("#29292C", "#070709", "#626266", seed=5)   # near neutral: a cool lean, never grey-blue
@@ -991,16 +991,19 @@ def rook_wedges(planes=False):
         side = 1 if a < 180 else -1
         wedge((a, 44), (a + side * 6, 90), 0.62, 0.16, 8, curl=-side * 4, off=(0.02, 0.06))
     # the five leaders leave the outline: flaring out over each ear, down and out at the back, gaps between their points
-    for a, ph, w, t, fl in ((80, 84, 0.86, 0.52, 44), (130, 96, 0.9, 0.4, 26), (180, 106, 0.86, 0.42, 18),
-                            (230, 94, 0.9, 0.34, 26), (280, 80, 0.86, 0.38, 44)):   # uneven: his left the longest
+    for a, ph, w, t, fl in ((80, 84, 1.0, 0.52, 44), (130, 96, 1.04, 0.42, 26), (180, 106, 1.0, 0.44, 18),
+                            (230, 94, 1.04, 0.36, 26), (280, 80, 1.0, 0.4, 44)):   # the heroes, uneven: his left the longest
         side = 1 if a < 180 else -1 if a > 180 else 0
         wedge((W[0] - side * 18 + r.uniform(-3, 3), W[1] + 8), (a, ph), w, t, fl, curl=-side * 8, off=(0.0, 0.13), n=7)
+    for a in (106, 156, 204, 254):   # small points tucked between the heroes, poking out under their tips
+        side = 1 if a < 180 else -1
+        wedge((a - side * 4, 50), (a + side * 8, 96), 0.36, 0.24, 30, curl=-side * 6, off=(0.02, 0.1), n=6)
     for a, ph, w in ((-52, 60, 0.68), (0, 54, 0.66), (52, 62, 0.68)):   # forward over the crown, close to it
         side = 1 if a > 0 else -1 if a < 0 else 0
         wedge((W[0] - side * 12 + r.uniform(-3, 3), W[1] + r.uniform(-2, 2)), (a, ph), w, 0.2, 14, curl=side * 8,
               off=(0.04, 0.22), bow=side * 0.06, n=8, lift=0.05)
     F = (0.0, 14.0)
-    for a, ph, w in ((-68, 74, 0.42), (-38, 82, 0.62), (-8, 86, 0.74), (22, 80, 0.5), (50, 74, 0.4)):
+    for a, ph, w in ((-62, 76, 0.32), (-36, 82, 0.66), (-6, 86, 0.84), (14, 84, 0.3), (34, 80, 0.62), (56, 74, 0.32)):
         side = 1 if a > 0 else -1   # the fringe, to the brows, uneven, the lead to his right
         wedge((F[0] + a * 0.3 + r.uniform(-3, 3), F[1] + r.uniform(-2, 2)), (a, ph), w, 0.18, 26 + abs(a) * 0.2, curl=side * 14,
               off=(0.12, 0.2), bow=side * 0.04, n=7, lift=0.02)

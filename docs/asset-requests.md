@@ -4167,6 +4167,13 @@ This is delivery 4, the block clip of section 5 polished, on research's open not
     My lean is option 1, then one take at the real entrance before the director sees them.
   - **Status:** implemented (dc7106c1, reviewed clean by Faber) and taken in the game at the player's camera. Visually reviewed: my read, a miss; research's verdict waits. Not director-accepted.
 
+### Research's verdict on C4's street take (Quaestor, 2026-11-26, 18:07; `c4_street_pairs.png` and `c4_street_life.png`, read in both orders)
+
+- **Missed, agreed.** At the player's camera, C4's band is a warm smudge at the squint and gone in grey. The target was framed close behind the lead, with the ring filling the lower half. Two techniques have missed, so the options go to the director on their return, with these images and the target.
+- **Option 1, narrowed:** the camera stays the player's (the director, 2026-11-14: "simply do not touch player camera"; `docs/design.md`, "The camera is the player's"). So "the camera at the entrance" is out, and only the keeper's stand-off is left, which is Faber's.
+- **First, one take at the keeper's real entrance,** at the ground's end and at the player's camera, with no change to the build. That's evidence, not a third technique, so the director sees the real case.
+- **Research's lean:** if the real entrance shows the ring all round, option 1. If it shows the same thin ellipse, option 2, an upright warm flare at the lantern on Stamp, from a new target. What sank C3, "says nothing about where to stand", no longer weighs, since the Challenge is an entrance and not a hit area (C4's pick). The flare is warm, not C3's white. Option 3 is the cheapest, but it leaves the keeper's entrance without its light beat.
+
 ## AR8. The effects pass
 
 For Faber and Modulo (research's request, 2026-11-13). It rests on the director's word of the same day (`docs/decisions.md`): "make it great look at some pro vfx examples and compare". It runs before phase 2 closes, and its pieces close at research's pass without the director's yes. **The measure:** `docs/research/vfx-reference.md`, its comparison table and its five rules, starting with the importance ladder.
@@ -16081,6 +16088,13 @@ Written by `tools/fx/shade_tells.py`, from the kit's uploaded meshes and images 
   - **Not in this take:** a break. Each of the Guard's two raises ran its 2 s hold and dropped, and Rook's Haymaker landed between them. The break is unchanged since research's final read.
   - **Status:** implemented and taken in a real fight on Lantern Row, at the player's camera; logic offline 8,668 passed. Visually reviewed: my read only, research's retake verdict waits. Not director-accepted. **For Faber's review:** done (667294ad, clean).
 
+### Research's final, the retake (Quaestor, 2026-11-26, 18:07; `w2_street_pairs.png` and `w2_street_pairs_close.png`, each read in both orders)
+
+- **Felt:** in a real fight on the dusk street, the Guard's frame clicks up azure-white in front of the Shade, and you know it's guarding before Rook's next blow.
+- **Gates:** at the squint the Guard keeps a pale azure oval. In grey, the frame is the brightest part of the fight group. The frame's strongest contrast is elsewhere: the lanterns overhead and the stand-in avatar's white shirt, neither of them this piece.
+- **Beside W2, both orders:** the main read holds, the oval of ribs and hoops before the Shade, azure on dark. The gaps sit in size, since the Guard is smaller at this camera, and in Rook standing across part of the frame, which is staging (TR69 F), not the ward's. Nearer the accepted examples, as at the half checkpoint (14:38).
+- **Passes:** AR52's research pass is done. What the take can't show is a break in a real fight. That's first seen at TR69's hit pass (`docs/polish-later.md`, "A guard broken by the Haymaker").
+
 ## AR53. Goals' look, basic at launch: the dare's line, today's three, the Mask Ledger's page (Modulo, after AR52's clips)
 
 Research, 2026-11-23, 15:24 (`docs/design.md`, "Goals"; the build is TR54, Faber's).
@@ -18048,6 +18062,16 @@ The rule: `docs/design.md`, "Clips follow the model, rules follow the class" (th
   - `r6parity`'s audit passes on the bare rig. The spear clears his head, torso, legs and the street.
   - Left: the shaft is 0.09 into the right forearm at 59, beside the holding hand. That's the fist's grip on R6's block forearm, as in the shipped Idle at rest (0.07).
 - **Status:** made and self-reviewed: the audit, and the player's view beside B. The content check before upload: PASS, both conditions held (the point at the Shade's surface; the clip written by `combo()`). Delivered to the handoff for research's verdict, then Faber's install. Not accepted.
+
+### Research's verdict on Watt's Combo build (Quaestor, 2026-11-26, 18:07; `build/scratch/quaestor/ar66/watt_sweep_B_over_build.png` and `watt_raise_B_over_build.png`, B over the build at twice the strips' size, read in both orders)
+
+- **Felt:** a step-in thrust, a wide sweep that comes round onto the shoulder, then the drive over the head into a planted wall. B's combo, with a stronger sweep.
+- **The sweep's change is taken** (tier 1, it serves must-fix 1): from 24 to 32 the shaft lies across the view, wider than B's, and at 36 the point shows on the Shade's near shoulder, where B's arm covered it.
+- **Beside B:** the thrust (16 to 21), the drive (60 to 64) and the set (68 to 78) match. The graze at 59 is the grip, as in the Idle.
+- **One gap on the main read, in timing:** from about 38 to 54 the spear points at the lens and only its point shows, so the raise reads only from about 55 to 59, five frames (0.08 s at 60 fps). B's reads from about 50, near ten frames.
+- **Must-fix (class: every named key, the raise first):** each key reads from the player's camera with the shaft across the view, not end-on. The raise holds for at least 8 frames before the drive at 60, and the beats stay where they are.
+- **Gates:** read by eye at the player's view, and not measured, because the grey Shade outshines everything in these renders. The squint and greyscale come with the in-game capture. Beside the examples: as at B's pick (17:10).
+- **Next:** Modulo's fix, then a second look at 36 to 60 only, then Faber's install.
 
 ## AR67. The Generator's new model, and any machine that needs one (Modulo's targets, research's pick, then Faber's install)
 

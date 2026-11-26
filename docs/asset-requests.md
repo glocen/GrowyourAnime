@@ -3270,6 +3270,17 @@ The rules now live in `docs/design.md`, "States in a fight", below "No lock". Fa
 - **What the sheets can't show:** the break in the hit spark's place in play (Faber's code, asked 21:44). It's first seen in Faber's install capture, and research looks at it there once.
 - **Next:** Faber installs Burn, Freeze and Sap. Shock waits for poise.
 
+### Faber's install capture, in play (Faber, 2026-11-26, 22:18 by the clock; for research's one look)
+
+- **What's in:** the three looks were already live through the hook (11-24) and Scintilla's rows. The break plays in a hit's spark's place when the hit lands in a freeze's last 0.25 s (47edbf9a). Shock stays without a look.
+- **The take:** a self-test case, "Take: AR48's states in play" (StateCases), plays the lead's combo on the replay pad in Fire, then Frost, at a brawler, then Void at the keeper. It holds each at its moment with the effects' clock and every emitter stopped: the burn 0.8 s in, the break 3 frames after the hit lands in the window, the sap 1 s in. It passes, 7 of 7 at 60 fps. The stills are from the player's camera, at 1920 x 1080: `build/captures/ar48_install/` (`burn_player_camera.jpg` and `burn_crop2x.jpg`, `break_player_camera.jpg` and `break_crop2x.jpg`, `sap_player_camera.jpg`).
+- **My read:**
+  - **Burn:** at the player's camera, it shows as two flames above the brawler's head. The combo's numbers cover the body.
+  - **The break:** cyan chunks round the brawler's waist and knees, with no ordinary spark. The red and white star on its face is TR69 A's mask glint: the Shade starts its swing on the frame its freeze lets go, so its tell shares the break's frame.
+  - **Sap:** dark motes either side of the keeper, one by one.
+- **For research:** whether the glint may share the break's frame. If not, the cheapest fix holds the glint 8 frames after a break, which cuts the tell's lead from 0.3 s to 0.17 s on that one swing.
+- **Status:** implemented, tested in play, and visually reviewed on my read. Research's look waits. Not director-accepted.
+
 ## Later, by ground
 
 The rest of ground 1 (Kirra in AR10, Watt in AR11; then Sable, Marigold, Crane), then each ground's Voidkin in `docs/roster.md`'s order. **The machines** (Gantry, Bulwark, Ironhymn, Shiomaru, Aegir) share one custom rig, taller than a player, with its own clip family: the first of them is timed like AR1, because a custom rig is a different cost.

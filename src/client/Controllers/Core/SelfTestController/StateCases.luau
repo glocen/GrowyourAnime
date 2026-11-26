@@ -20,6 +20,7 @@ local Combat = require(Shared.Config.Combat)
 local EffectsConfig = require(Shared.Config.Effects)
 local Fight = require(Shared.Rules.Fight)
 local FighterController = require(script.Parent.Parent.Parent.Main.FighterController)
+local Effects = require(script.Parent.Parent.Parent.Main.FighterController.Effects)
 
 local StateCases = {}
 
@@ -306,6 +307,109 @@ function StateCases.Cases(): { any }
 				local sappedLead = (fire and fire.LeadSapped) or (frost and frost.LeadSapped) or (storm and storm.LeadSapped) or (void and void.LeadSapped)
 				t.Check("a Shade's Void saps nothing: the lead never wore a sap", not sappedLead)
 				t.Server("LeadElement", nil)
+			end,
+		},
+		{
+			-- AR48's install (research, 21:53): Burn, Freeze's break in a hit's spark's place, and Sap, in play from the
+			-- player's camera, each held still at its moment for a capture: the effects' clock and every emitter stopped,
+			-- NL_TakeStep's value naming what's held until the driver sets it to "Next". The break is held 3 of its frames
+			-- after a hit lands in a freeze's last Window, so the still shows the break where the hit's spark would be.
+			Name = "Take: AR48's states in play, a burn, a freeze's break in a hit's spark's place and a sap, each held for a still, for research",
+			Manual = true,
+			Stay = true,
+			Run = function(t: any)
+				local lead = myLead()
+				local def = if lead then lead:GetAttribute("Def") else nil
+				local combo: Actions.Action? = nil
+				for _, action in Actions.KitOf(if type(def) == "string" then def else "") do
+					if action.Cooldown == 0 and next(action.Hits) ~= nil then
+						combo = action
+					end
+				end
+				t.Check("a lead and its combo", lead ~= nil and combo ~= nil)
+				if lead == nil or combo == nil then
+					return
+				end
+				local step = Instance.new("StringValue")
+				step.Name = "NL_TakeStep"
+				step.Value = "Ready"
+				step.Parent = ReplicatedStorage
+				local function hold(name: string)
+					local stopped: { [ParticleEmitter]: number } = {}
+					Effects.TimeScale = 0
+					for _, emitter in workspace:WaitForChild("Fighters"):GetDescendants() do
+						if emitter:IsA("ParticleEmitter") then
+							stopped[emitter] = emitter.TimeScale
+							emitter.TimeScale = 0
+						end
+					end
+					step.Value = name
+					local began = os.clock()
+					while step.Value ~= "Next" and os.clock() - began < 300 do
+						RunService.Heartbeat:Wait()
+					end
+					Effects.TimeScale = 1
+					for emitter, was in stopped do
+						emitter.TimeScale = was
+					end
+				end
+				-- One element at `foe` till `moment` says so (held by `name`), or 30 s: whether it was held.
+				local freeze = Combat.States.Freeze
+				local function play(element: string, foe: string, name: string, moment: (body: Model, now: number, inWindow: boolean) -> boolean): boolean
+					t.Server("LeadElement", element)
+					local body: Model? = nil
+					local inWindow = false
+					local onHit = Net.Client.On("Hit", function(hit: any)
+						if type(hit) == "table" and hit.A == lead and not hit.Dodged and typeof(hit.T) == "Instance" and (hit.T :: Instance):GetAttribute("Def") == foe then
+							local target = hit.T :: Model
+							local ends = target:GetAttribute("StateUntil")
+							body = target
+							inWindow = inWindow or (target:GetAttribute("StunLook") == freeze.Look and type(ends) == "number" and workspace:GetServerTimeNow() >= ends - freeze.Window)
+						end
+					end)
+					t.Server("Replay", (combo :: Actions.Action).Id, 1.2, foe)
+					local began, held = os.clock(), false
+					while os.clock() - began < 30 do
+						RunService.Heartbeat:Wait()
+						if body and moment(body :: Model, workspace:GetServerTimeNow(), inWindow) then
+							held = true
+							break
+						end
+					end
+					onHit:Disconnect()
+					if held and name == "Break" then
+						Effects.TimeScale = 0.05 -- its third frame: 3/60 s of its clock at a twentieth
+						task.wait(3 / 60 / 0.05)
+					end
+					if held then
+						hold(name)
+					end
+					t.Server("Replay")
+					t.Check(`{name}: held at its moment`, held)
+					return held
+				end
+				local ok, problem = pcall(function()
+					local burnFrom: number? = nil
+					play("Fire", "brawler", "Burn", function(body: Model, now: number): boolean
+						local burning = body:GetAttribute("Burning")
+						burnFrom = if type(burning) == "number" and burning > now then burnFrom or now else nil
+						return burnFrom ~= nil and now - burnFrom >= 0.8
+					end)
+					play("Frost", "brawler", "Break", function(_body: Model, _now: number, inWindow: boolean): boolean
+						return inWindow
+					end)
+					local sapFrom: number? = nil
+					play("Void", "lamplighter", "Sap", function(body: Model, now: number): boolean
+						local sapped = body:GetAttribute("Sapped")
+						sapFrom = if type(sapped) == "number" and sapped > now then sapFrom or now else nil
+						return sapFrom ~= nil and now - sapFrom >= 1
+					end)
+				end)
+				Effects.TimeScale = 1
+				t.Server("Replay")
+				t.Server("LeadElement")
+				step:Destroy()
+				t.Check("it ran", ok, tostring(problem))
 			end,
 		},
 	}

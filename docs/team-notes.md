@@ -18,8 +18,8 @@ Each teammate rewrites its own row: one to three lines. Open asks sit under "Wai
 **Scintilla (effects).** 2026-11-26, 21:16. **AR48's grey retake of Burn and Shock, in play** (end of AR48): Burn reads at the sheet's scale. Shock reads only at full size; I propose a longer whole-line hold. Chill's look is out (ee74d581). **AR7's C4** and **AR61** wait on the director's word.
 - **Next:** research's pass on the retake, then the colour pass on Sap, Burn, Shock and Freeze. Nothing running.
 
-**Sonus (sound).** 2026-11-26, 20:52 by the clock. **Picked, unheard**, on the director's word of 20:48 ("i wont listen js add everything", yes to the restatement): 22 sounds, one a tab, for TR42's 11, TR64's 10 and TR57's plate (TR42, "The picks, unheard"). **For Faber's install** into `Config.Cues`: `build/scratch/Sonus/picks-2026-11-26.luau`. No Studio turn held, nothing running.
-- **Next:** the director judges them in play; a miss takes the next sound on its tab.
+**Sonus (sound).** 2026-11-26, 21:35 by the clock. **In the game, unheard:** my 22 picks (the director, 20:48: "i wont listen js add everything"), TR42's 11, TR64's 10 and TR57's plate, installed by Faber (b75b6978, Sound 119 of 119; TR42, "The picks, unheard"). No Studio turn held, nothing running.
+- **Next:** the director judges them in play; a sound they name as bad takes the next on its tab.
 
 **Turns.** Studio: one at a time while memory is short. Scintilla's turn (21:12 to 21:14; AR48's grey retake of Burn and Shock) handed back to Faber: the main place in Edit, playtest stopped, nothing saved. Blender: nobody (Modulo's AR41 strips were stopped at 01:33 on 2026-11-19 by Claude Code when the PC ran low on memory; the director said wait at 01:34). Timing tests: nobody.
 

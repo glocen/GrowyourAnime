@@ -67,6 +67,27 @@ local function wavesOf(marker: Instance): { Waves.Wave }?
 	return nil
 end
 
+-- The players within Near studs of the group's stop who still owe its stretch's quota on Normal (a Hard run stands
+-- its own Shades: StageService).
+local function owing(group: Group): { Player }
+	local stage = group.Marker:GetAttribute("Stage")
+	local at = Markers.At(group.Marker).Position
+	local list = {}
+	for _, player in Players:GetPlayers() do
+		local run, kills, quota = player:GetAttribute("StageRun"), player:GetAttribute("StageKills"), player:GetAttribute("StageQuota")
+		local root = if player.Character then player.Character:FindFirstChild("HumanoidRootPart") :: BasePart? else nil
+		if type(run) == "string" and run == `Normal {stage}` and type(kills) == "number" and type(quota) == "number" and kills < quota
+			and root and (root.Position - at).Magnitude <= WorldConfig.Row.Waves.Near then
+			table.insert(list, player)
+		end
+	end
+	return list
+end
+
+local function owed(group: Group): boolean
+	return #owing(group) > 0
+end
+
 -- Its Shades, standing round the marker and looking where it looks.
 local function stand(group: Group)
 	local marker = group.Marker
@@ -104,22 +125,16 @@ local function stand(group: Group)
 			end
 		end)
 	end
-end
-
--- Whether a player within Near studs of the group's stop still owes its stretch's quota on Normal (a Hard run stands
--- its own Shades: StageService).
-local function owed(group: Group): boolean
-	local stage = group.Marker:GetAttribute("Stage")
-	local at = Markers.At(group.Marker).Position
-	for _, player in Players:GetPlayers() do
-		local run, kills, quota = player:GetAttribute("StageRun"), player:GetAttribute("StageKills"), player:GetAttribute("StageQuota")
-		local root = if player.Character then player.Character:FindFirstChild("HumanoidRootPart") :: BasePart? else nil
-		if type(run) == "string" and run == `Normal {stage}` and type(kills) == "number" and type(quota) == "number" and kills < quota
-			and root and (root.Position - at).Magnitude <= WorldConfig.Row.Waves.Near then
-			return true
+	-- A wave steps out of the stall fronts (TR69 B): stood while someone near owes the quota, it goes for their leads as
+	-- a pack that was hit does, so one called behind a player who walked on still comes (FightService.Rouse).
+	if waves then
+		for _, player in owing(group) do
+			local lead = FightService.LeadOf(player)
+			if lead then
+				FightService.Rouse(group.Name, lead)
+			end
 		end
 	end
-	return false
 end
 
 -- The Tell: each spot of the wave about to stand marked in grey on the floor for `seconds`.

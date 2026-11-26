@@ -2457,6 +2457,16 @@ function FightService.Open(attacker: Fighter, lead: Fighter)
 	end
 end
 
+-- A wave stepping out (TR69 B; PackService): `pack`'s Shades go for `lead` as if it had hit them, until the pack resets.
+function FightService.Rouse(pack: string, lead: Fighter)
+	if fighters[lead.Id] ~= lead then
+		return
+	end
+	local hitBy = packHit[pack] or {}
+	hitBy[lead] = true
+	packHit[pack] = hitBy
+end
+
 -- The fights' read-out (TR69 C): a count added for `player` (Rules.Hands.Note's names), and their fights read: the one
 -- going on, and the last Combat.Hands.Kept.
 function FightService.Note(player: Player, what: string, amount: number)

@@ -174,9 +174,11 @@ return {
 		-- out Gap seconds after its stop's last Shade falls, its stall fronts marked in grey for the Tell before it; a list
 		-- run out starts again from its second wave while a player within Near studs of the stop still owes the stretch's
 		-- quota, and nobody near waits past the Gap. With nobody near owing, the stop rests and stands its first wave again
-		-- after Respawn, or at once, after a Tell, when someone who owes comes near. On Off, a pack stands its ring as before:
-		-- Off until the pace is measured before and after in the Festival place (PaceCases), the measure's own Tune.
-		Waves = { On = false, Gap = 2.5, Tell = 1, Near = 90, Far = 26, Side = 20 },
+		-- after Respawn, or at once, after a Tell, when someone who owes comes near. A wave stood while someone near owes
+		-- steps out at their leads (PackService; FightService.Rouse). Off, a pack stands its ring as before. On since the
+		-- pace was measured in the Festival place (PaceCases, 2026-11-26): standing 66.1 s in the run Off, 14.5 s On,
+		-- under the gate's 20.
+		Waves = { On = true, Gap = 2.5, Tell = 1, Near = 90, Far = 26, Side = 20 },
 		-- TR10 (the director, 2026-11-14: "mini boss/boss need a server cooldown", the keeper's "Per player"): seconds before
 		-- the elite and the keeper are back (Rules.Cooldown). The elite's is the server's, from its fall, since its fight is
 		-- shared; the keeper's is each player's own, from their win, kept with their save (a lost try may try again at

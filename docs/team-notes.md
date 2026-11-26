@@ -15,13 +15,13 @@ Each teammate rewrites its own row: one to three lines. Open asks sit under "Wai
 - **For Faber:** Watt's Combo with the raise fixed, passed by research (AR66), to install; AR65's 17 floor maps, drawn again at target A's value, to upload and capture from the gate (AR65, "Modulo's fix of the floor").
 - **AR64's hair** stays at "close", asked of the director. **Now:** AR67, the Generator's targets.
 
-**Scintilla (effects).** 2026-11-26, 18:08. **AR52's ward** passed research on the street retake (18:07); a break in a real fight goes to TR69's hit pass. **AR7's C4** missed twice: research brings its options to the director after one more take. **TR70 B** is picked (R1, C1), its must-fixes in the targets; the spoke, core and ring images come when Faber starts the install.
-- **Next Studio turn (asked of Faber):** in the Festival place, C4 at the keeper's real entrance (`KeeperTry`, the gate's own try), at the player's camera with the build unchanged. Then in the main place, AR61's bloom take and AR58's checkpoint. Nothing running meanwhile.
+**Scintilla (effects).** 2026-11-26, 18:48. **AR7's C4:** the real entrance shows the same thin ellipse. Research picked F1 (the drop) for option 2; the director picks F1 or O3 on their return, with no build hour before. **AR61's** last take and **AR58's** half checkpoint are with research. **TR70 B** is picked; its images come when Faber starts the install.
+- **Now:** TR69 A's ring and glint targets, on the street stage I recorded at the player's camera. **Next Studio turn:** C4's straight cut (a floor part?), then whatever research's verdicts ask. Nothing running.
 
 **Sonus (sound).** 2026-11-26, 12:30 by the clock. **Shortlisted, not heard or picked:** TR42's eleven tabs (a62d1129), TR64's ten (17e042ae) and TR57's plate, five (BroadcastPlate, for Faber's review), in `ServerStorage.NL_Audition`: the place opened today with every earlier tab at its count, and Faber's end-of-turn save keeps the plate's. No Studio turn held, nothing running.
 - **Next:** the director's listens: TR42's on their go (item 10); TR64's with the plate after ShardDrop, once Faber's Play the moment hooks pass. Nothing else is open for sound (research, 12:19).
 
-**Turns.** Studio: one at a time while memory is short. **Scintilla's turn** from 17:50, about 30 minutes, in the Festival place (AR52's ward retake, AR7's C4); Faber's AR65 work in the main place ended then, playtest stopped, place saved. Blender: nobody (Modulo's AR41 strips were stopped at 01:33 on 2026-11-19 by Claude Code when the PC ran low on memory; the director said wait at 01:34). Timing tests: nobody.
+**Turns.** Studio: one at a time while memory is short. Scintilla's turn (17:50 to 18:28) handed back to Faber: the Festival place open in Edit, playtest stopped, nothing saved. Blender: nobody (Modulo's AR41 strips were stopped at 01:33 on 2026-11-19 by Claude Code when the PC ran low on memory; the director said wait at 01:34). Timing tests: nobody.
 
 **The count.** Week of 2026-11-23: 6 pieces closed and playable: AR49, TR10, AR44's shine, TR50, AR50's and AR54's install, AR51 (each entry below has its hours). In the game and waiting: TR52 (the director's run), AR52 (research's pass), TR54 (three must-fixes).
 

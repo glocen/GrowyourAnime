@@ -20,8 +20,8 @@ Each teammate rewrites its own row: one to three lines. Open asks sit under "Wai
   - AR7: the stage is sound, but from the game's camera the pole's foot stays behind your fighter's back, so its targets are redrawn on the shaft and the lantern before research's pick. AR48's four states are taken in motion (`build/captures/ar48/`), not yet reviewed.
 - **For Faber's review:** AR52's coloured build (4e980a2c) and AR7's drawer (2291b3a4).
 
-**Sonus (sound).** 2026-11-26, stopped at the director's wrap-up of 02:12. **Shortlisted, not heard or picked:** TR42's eleven tabs (a62d1129) and TR64's ten big moments (17e042ae, Faber's review passed), five to eight a tab, in `ServerStorage.NL_Audition`; TR64's lists unsaved, so Faber's next save keeps them. No Studio turn held, nothing running.
-- **Next:** the director's listens: TR42's on their go (item 10), TR64's once Faber's Play the moment hooks pass in Studio. Then research's next cue list.
+**Sonus (sound).** 2026-11-26, 12:30 by the clock. **Shortlisted, not heard or picked:** TR42's eleven tabs (a62d1129), TR64's ten (17e042ae) and TR57's plate, five (BroadcastPlate, for Faber's review), in `ServerStorage.NL_Audition`: the place opened today with every earlier tab at its count, and Faber's end-of-turn save keeps the plate's. No Studio turn held, nothing running.
+- **Next:** the director's listens: TR42's on their go (item 10); TR64's with the plate after ShardDrop, once Faber's Play the moment hooks pass. Nothing else is open for sound (research, 12:19).
 
 **Turns.** Studio: one at a time while memory is short. The main place is open, nobody's turn: Scintilla's ended at 02:13 at the director's wrap-up (Edit, unsaved, nothing running, NL_Audition as Sonus left it, TR64's ten lists unsaved); Faber's is next; and the Festival's place is closed. Blender: nobody (Modulo's AR41 strips were stopped at 01:33 on 2026-11-19 by Claude Code when the PC ran low on memory; the director said wait at 01:34). Timing tests: nobody.
 

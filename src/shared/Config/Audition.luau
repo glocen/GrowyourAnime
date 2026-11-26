@@ -67,6 +67,10 @@ return {
 		-- the finder's event runs until the ring is 45 dB down, so at 0.6 "crystal ding" and "sparkle ding" kept none and the
 		-- tab 4 by title on 2026-11-26 (the Healer's cast showed the same)
 		{ Name = "ShardDrop", Label = "Shard drop", Max = 1.0, Beat = true, Tonal = true, Words = { "crystal ding", "glass chime", "bell ding", "chime single", "sparkle ding" } },
+		-- TR57's plate (docs/test-requests.md, TR57, "The plate's cue"; research, 2026-11-26): someone else's find, on the
+		-- plate's fade-in, one sound for every rarity. Heard right after ShardDrop, and never like it or a reveal: news from
+		-- elsewhere, quiet, never a bright bell on the drop's notes, never a phone's, a console's or an app's own alert
+		{ Name = "BroadcastPlate", Label = "Others' finds", Max = 0.8, Beat = true, Tonal = true, Words = { "notification chime", "soft chime", "message chime", "gentle bell", "glass notification" } },
 		-- research's five kept 4 by title on 2026-11-26 (the rest splashes, a pack's numbered files, other works), so three
 		-- shatter words of the glass family
 		{ Name = "KeeperFall", Label = "Keeper's fall", Max = 2.0, Beat = false, Words = { "boss defeated", "victory impact", "gong hit", "big impact", "shatter", "crystal shatter", "magic shatter", "anime shatter" } },
@@ -109,6 +113,7 @@ return {
 		-- -6, the UI -12, the Shades' hurt -4; the keeper's fall over a Shade's burst, at a light hit's
 		LevelUp = -6,
 		ShardDrop = -6,
+		BroadcastPlate = -14, -- TR57: quiet, under the UI line, news heard about three times a minute at most (Sonus's seed)
 		KeeperFall = 0,
 		LeadDown = -6,
 		GoalDone = -6,

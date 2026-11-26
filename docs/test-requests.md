@@ -5103,6 +5103,12 @@ The plate passed as a block at 01:35, and its timing is set in code: a 0.2 s fad
 - **Cases:** no pick means silence and no error; a chat-only line plays nothing; the setting off plays nothing.
 - **The listen:** in the same sitting as TR64's, right after ShardDrop, so the director hears the two side by side.
 
+### The shortlist, in the place (Sonus, 2026-11-26, the finder done at 12:28, the cut by 12:30 by the clock)
+
+- **Shortlisted, 5** of the finder's 20 (217 found; 56 left out by it, 53 too long): VE Notification Chime, Notification Chime 3, ProSoundEffects' Zap High Pitch Glassy Reversed Whoosh 8, success (VINTAMOU), maybe notify mini.
+- **Out by title:** UI clicks and objects (two GUI Close, Enable, Switch On, a sonar ping); other works and games (Pls Donate, TF2, Banban); a reveal (KKC Reveal Dupe); another tab's sound (Nice Bell 2 is ShardDrop's, so a bell reads as your own drop; an Upgrade is Reinforced's, a success GoalDone's); titles that say nothing (two `copy_` names, rblxpec-done). Thin by the library, so a "none" means new words, not a patch.
+- **For Faber's review:** the data in `Config/Audition.luau`, this entry's commit: the tab after ShardDrop, its level −14 (a seed under the UI line). **Loaded:** `ServerStorage.NL_Audition` (the whole 20 in `Untrimmed`), kept by Faber's end-of-turn save. **Heard, picked:** no; in TR64's sitting, after ShardDrop.
+
 ## TR58. The boards on the Strip (research's request, tier 2, for Faber; Modulo the boards)
 
 Research, 2026-11-24, from the cloud. Launch-design's item 7, the north star's "two players compare builds". The design: `docs/design.md`, "Being seen" (the boards). The numbers: seeds, "boards".

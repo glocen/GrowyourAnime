@@ -17,8 +17,9 @@ The two tells read apart by one rule: the shield is cool (azure: "it's blocking"
 you"). Each is one hue with a white core. Neither is a hue effects already carry: the heal's mint, the critical's gold,
 Frost's pale cyan, Storm's pink, the plain hit's white, and no violet (alive or for sale only) and nothing red (the
 content check's condition on AR52). The shield's cool azure is the mask's warm cream's opposite, so a raised shield reads
-apart from the mask (research's condition, AR52, 2026-11-24). Nothing here is Lantern Row's: a Shade fights on every
-ground, so no lantern ribs or paper (the grey block's spec drops them).
+apart from the mask (research's condition, AR52, 2026-11-24). The targets draw the shapes and their light only. The
+Shades fight only on the festival grounds, whose shared kit carries lanterns (docs/roster.md), so the build lays the
+lantern's ribs on the picked shape (G2; tools/fx/shade_tells.py).
 
 The Guard (Definitions.Actions, GuardRaise: Raise 0.3 s, Drop 2.3 s; Config.Combat.Guard.Look: 3.4 wide, 3.8 high, 1.6
 ahead, 0.4 up). Feel line: a Guard shuts its sleeves and a pane of blue light snaps up before it; your fighter's blows

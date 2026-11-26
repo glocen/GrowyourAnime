@@ -135,6 +135,9 @@ function BoardsCases.Cases(): { any }
 				else
 					t.Equal("none yet: its empty line", text(plate, "Empty"), "Nothing yet")
 				end
+				-- The store's page back, or the made-up one stands on the Lead board for the rest of the playtest.
+				t.Check("the store's page back", (t.Server("BoardsPage", "Lead", nil) :: any).Ok == true)
+				BoardsController.Refresh()
 				-- Home again.
 				local old = Players.LocalPlayer.Character
 				t.Check("the avatar goes home", t.Server("Respawn") == true and waitFor(t, ARRIVE, function(): boolean

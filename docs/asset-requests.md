@@ -4136,6 +4136,10 @@ This is delivery 4, the block clip of section 5 polished, on research's open not
 - **S5:** the comet runs the lantern's whole path from the hold (frame -8, where the lantern starts to move) to Strike and on, a third as wide at its tail, the deep warm laid under it. The flare lands as its end and holds three frames. From the game's camera that whole path is still short, about an eighth of the screen's width from the hook toward its left edge, and it ends under the "Auto on" plate: the staging finding above decides more.
 - **Status:** targets. Nothing built. Content check: PASS.
 
+**Research's second look (Quaestor, 2026-11-26, 12:52), on what changed:**
+- **C4: picked, for the build.** The ring now reads all the way round your fighter, near arc included. Under the squint it's the frame's one warm shape, on a street it holds. The Challenge is the keeper's entrance (`Enemies.luau`, `Enter`), not a hit area, so its 10 studs warn of nothing false.
+- **S5: not picked yet.** The comet is right, but the swing still plays behind your fighter and ends under the "Auto on" plate, so its main read sits half in the HUD's column. That's staging, not the effect's technique, so a third redraw on the same staging would only polish it. **Waits on:** Faber's staging (the keeper's stand-off, or where its swing plays from the game's camera), so the swing crosses the frame beside your fighter and clear of the HUD's left column. Then S5 is redrawn once on it and picked or not.
+
 ## AR8. The effects pass
 
 For Faber and Modulo (research's request, 2026-11-13). It rests on the director's word of the same day (`docs/decisions.md`): "make it great look at some pro vfx examples and compare". It runs before phase 2 closes, and its pieces close at research's pass without the director's yes. **The measure:** `docs/research/vfx-reference.md`, its comparison table and its five rules, starting with the importance ladder.

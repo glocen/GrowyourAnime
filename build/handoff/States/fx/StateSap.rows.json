@@ -3,7 +3,7 @@
  "Effect": "StateSap",
  "Why": "Sap (Void), worn while it holds: rimmed motes drawn out of the body, outside its outline (AR48, Scintilla's grey, research's rule).",
  "Area": 1,
- "Grey": true,
+ "Grey": false,
  "Rows": {
   "MotesLeft1": {
    "Kind": "Emitter",
@@ -19,7 +19,7 @@
     "Acceleration": {"Vector3": [0, 0.25, 0]},
     "Size": [[0, 0], [0.1, 0.34], [0.75, 0.34], [1, 0]],
     "Transparency": [[0, 0], [1, 0]],
-    "Color": {"Color3": [226, 218, 236]},
+    "Color": {"Color3": [211, 186, 255]},
     "LightEmission": 0,
     "LightInfluence": 0,
     "ZOffset": 0.2
@@ -46,7 +46,7 @@
     "Acceleration": {"Vector3": [0, 0.25, 0]},
     "Size": [[0, 0], [0.1, 0.34], [0.75, 0.34], [1, 0]],
     "Transparency": [[0, 0], [1, 0]],
-    "Color": {"Color3": [226, 218, 236]},
+    "Color": {"Color3": [211, 186, 255]},
     "LightEmission": 0,
     "LightInfluence": 0,
     "ZOffset": 0.2
@@ -73,7 +73,7 @@
     "Acceleration": {"Vector3": [0, 0.25, 0]},
     "Size": [[0, 0], [0.1, 0.34], [0.75, 0.34], [1, 0]],
     "Transparency": [[0, 0], [1, 0]],
-    "Color": {"Color3": [226, 218, 236]},
+    "Color": {"Color3": [211, 186, 255]},
     "LightEmission": 0,
     "LightInfluence": 0,
     "ZOffset": 0.2
@@ -100,7 +100,7 @@
     "Acceleration": {"Vector3": [0, 0.25, 0]},
     "Size": [[0, 0], [0.1, 0.34], [0.75, 0.34], [1, 0]],
     "Transparency": [[0, 0], [1, 0]],
-    "Color": {"Color3": [226, 218, 236]},
+    "Color": {"Color3": [211, 186, 255]},
     "LightEmission": 0,
     "LightInfluence": 0,
     "ZOffset": 0.2
@@ -127,7 +127,7 @@
     "Acceleration": {"Vector3": [0, 0.25, 0]},
     "Size": [[0, 0], [0.1, 0.34], [0.75, 0.34], [1, 0]],
     "Transparency": [[0, 0], [1, 0]],
-    "Color": {"Color3": [226, 218, 236]},
+    "Color": {"Color3": [211, 186, 255]},
     "LightEmission": 0,
     "LightInfluence": 0,
     "ZOffset": 0.2
@@ -154,7 +154,7 @@
     "Acceleration": {"Vector3": [0, 0.25, 0]},
     "Size": [[0, 0], [0.1, 0.34], [0.75, 0.34], [1, 0]],
     "Transparency": [[0, 0], [1, 0]],
-    "Color": {"Color3": [226, 218, 236]},
+    "Color": {"Color3": [211, 186, 255]},
     "LightEmission": 0,
     "LightInfluence": 0,
     "ZOffset": 0.2

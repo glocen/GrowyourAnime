@@ -51,7 +51,8 @@ SHORT = 600  # the shock's pattern: 10 s (a shock is 3 s a hit), its look ending
 FIRE = ((255, 233, 176), (255, 138, 61))  # core, body (Config.UIKit's Fire)
 FROST = ((244, 253, 255), (143, 227, 255))
 STORM = ((255, 242, 251), (255, 111, 216))
-SAP_RIM = (226, 218, 236)  # Sap's rim (its disc dark in the picture); its violet only this rim, at the colour pass
+SAP_RIM = (211, 186, 255)  # Sap's rim, its disc dark in the picture: Void's violet (#B58CFF) lifted toward white to the
+# grey pass's value (about 200 of 255), so the rim reads on the dark robe as it did in grey; the violet only this rim
 
 START_H = 2.25  # studs: the shell's height as it starts, at the hips
 SHELL_W, SHELL_D, SHELL_H = 2.35, 1.3, 5.35  # the shell's half width, half depth, height
@@ -59,8 +60,11 @@ SHUT = 6  # frames: the shell snaps shut (0.1 s)
 ROOT_HEIGHT = 3  # studs: the root over the foot, at scale 1
 
 
+COLOURED = {"StateBurn", "StateFreeze", "FreezeBreak", "StateSap"}  # past research's grey pass, in their colour (2026-11-26)
+
+
 def effect(name, why, rows):
-    return {"Schema": "rows/1", "Effect": name, "Why": why, "Area": 1, "Grey": True, "Rows": rows}
+    return {"Schema": "rows/1", "Effect": name, "Why": why, "Area": 1, "Grey": name not in COLOURED, "Rows": rows}
 
 
 def held(value):
@@ -123,7 +127,7 @@ def freeze():
         "Part": ["FxShell"],
         "Look": "fx_ribs_Grey",
         "Grey": "fx_ribs_Grey",
-        "Color": c3(FROST[0]),
+        "Color": c3(FROST[1]),  # Frost's blue, the ribs' white edge flashing over it: Modulo's picked colour
         "Tracks": {
             # up from the hips and shut: its foot held on the street as it grows
             "At": [[0, v3(0, start_h / 2 - ROOT_HEIGHT, 0), "Quart Out"], [SHUT, v3(0, SHELL_H / 2 - ROOT_HEIGHT, 0)], [FAR, v3(0, SHELL_H / 2 - ROOT_HEIGHT, 0)]],
@@ -157,7 +161,7 @@ def freeze_break():
         rows[f"Chip{k + 1}"] = {
             "Kind": "Mesh",
             "Part": [f"FxChip{k % 3 + 1}"],
-            "Color": c3(FROST[0]),
+            "Color": c3(FROST[1]),
             "Tracks": {
                 "At": at,
                 "Tilt": tilt,

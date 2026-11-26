@@ -3,7 +3,7 @@
  "Effect": "StateBurn",
  "Why": "Burn (Fire), worn while it holds: a steady stream of embers off the head's and shoulders' outline (AR48, Scintilla's grey, research's rule).",
  "Area": 1,
- "Grey": true,
+ "Grey": false,
  "Rows": {
   "Crown": {
    "Kind": "Emitter",

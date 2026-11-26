@@ -3,7 +3,7 @@
  "Effect": "StateFreeze",
  "Why": "Freeze (Frost), the stun's look: the shell shut round the body (AR48, Scintilla's grey).",
  "Area": 1,
- "Grey": true,
+ "Grey": false,
  "Rows": {
   "Shell": {
    "Kind": "Mesh",
@@ -11,7 +11,7 @@
    "Part": ["FxShell"],
    "Look": "fx_ribs_Grey",
    "Grey": "fx_ribs_Grey",
-   "Color": {"Color3": [244, 253, 255]},
+   "Color": {"Color3": [143, 227, 255]},
    "Tracks": {
     "At": [
      [0, {"Vector3": [0, -1.875, 0]}, "Quart Out"], [6, {"Vector3": [0, -0.3250000000000002, 0]}],

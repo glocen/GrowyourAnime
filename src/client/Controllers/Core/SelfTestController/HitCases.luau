@@ -152,27 +152,43 @@ function HitCases.Cases(): { any }
 					local box = TargetMark.Box()
 					local view = workspace.CurrentCamera
 					if root and box and view then
-						Effects.Number(root, "SelfTest@Mark1", 37, { Style = "Dealt" }, Combat.Numbers)
-						t.Wait(0.2) -- risen a little, as in play: the slots above it are taken along its rise
-						Effects.Number(root, "SelfTest@Mark2", 2307, { Style = "Critical" }, Combat.Numbers)
+						-- a flurry's numbers up first, as in play, so the slots over the mark are taken and the critical goes aside
+						for index, value in { 37, 42, 51, 64 } do
+							Effects.Number(root, `SelfTest@Mark{index}`, value, { Style = "Dealt" }, Combat.Numbers)
+							t.Wait(0.1)
+						end
+						Effects.Number(root, "SelfTest@Mark5", 115, { Style = "Critical" }, Combat.Numbers) -- short, as in play: its splash its widest past its digits
 						for _ = 1, 3 do
 							RunService.RenderStepped:Wait()
 						end
 						local onBody = Effects.Counting[root]
-						local crit = if onBody then onBody["SelfTest@Mark2"] else nil
+						local crit = if onBody then onBody["SelfTest@Mark5"] else nil
+						-- any Shade's number is born over where its mark would stand, marked or not (Scintilla's take of
+						-- 20:26: a number born at the head of the body the lead turned to next, the mark dropping onto it)
+						local over, now = TargetMark.Over(body), TargetMark.Top(body) -- read together: the mask moves as it stands
+						t.Check("a mark's reach is the same marked or not", over ~= nil and now ~= nil and math.abs(over - now) < 0.1, `{over}, {now}`)
+						local first = if onBody then onBody["SelfTest@Mark1"] else nil
+						local foot = if first then first.Where() else nil
+						t.Check("a number's foot over it", foot ~= nil and over ~= nil and foot.Y >= over, if foot and over then string.format("%.2f over", foot.Y - over) else "none")
 						local up = view:WorldToViewportPoint(box.Centre + Vector3.new(0, box.Half, 0))
 						local down = view:WorldToViewportPoint(box.Centre - Vector3.new(0, box.Half, 0))
 						local inset = GuiService:GetGuiInset()
-						local across, tall = 0, 0
-						if crit then
-							local at = crit.Plate.AbsolutePosition + inset
-							local size = crit.Plate.AbsoluteSize
+						-- its digits and its splash, each where it's drawn (the splash reaches past the first digit: Scintilla's
+						-- take of 20:26 had it on the mark's right wing)
+						local function on(piece: GuiObject?): (number, number)
+							if piece == nil then
+								return 0, 0
+							end
+							local at = piece.AbsolutePosition + inset
+							local size = piece.AbsoluteSize
 							local side = down.Y - up.Y
-							across = math.min(at.X + size.X, up.X + side / 2) - math.max(at.X, up.X - side / 2)
-							tall = math.min(at.Y + size.Y, down.Y) - math.max(at.Y, up.Y)
+							return math.min(at.X + size.X, up.X + side / 2) - math.max(at.X, up.X - side / 2), math.min(at.Y + size.Y, down.Y) - math.max(at.Y, up.Y)
 						end
-						t.Check("a critical after an ordinary number is placed clear of the mark", crit ~= nil and (across <= 6 or tall <= 6),
-							string.format("%.0f by %.0f px on it", across, tall))
+						local digitsAcross, digitsTall = on(if crit then crit.Row else nil)
+						local splashAcross, splashTall = on(if crit then crit.Sweep else nil)
+						t.Check("a critical after an ordinary number is placed clear of the mark, its digits and its splash",
+							crit ~= nil and crit.Sweep ~= nil and (digitsAcross <= 6 or digitsTall <= 6) and (splashAcross <= 6 or splashTall <= 6),
+							string.format("digits %.0f by %.0f px on it, splash %.0f by %.0f, shifted %s", digitsAcross, digitsTall, splashAcross, splashTall, tostring(crit and crit.Shift)))
 					end
 					-- the star, as its swing starts
 					local glinted = Helpers.waitFor(t, WATCH, function(): boolean

@@ -11,6 +11,8 @@
 --   TargetMark.Top(model)     the mark's highest reach over `model`, at rest and at the top of its bob, while it marks
 --                             it, else nil: a damage number on it is born over it (Effects.Number; research's
 --                             condition, clear of any plate)
+--   TargetMark.Over(model)    the same reach over any Shade, marked or not: a number on a Shade is born over it, so a
+--                             mark that comes to it later, or stands over its neighbour, finds no number on its spot
 --   TargetMark.Read()         for the self-test: { Shown, Target, Colour, Side, At, Apex }
 
 local Shared = game:GetService("ReplicatedStorage").Shared
@@ -149,6 +151,17 @@ function TargetMark.Top(model: Model): number?
 	local look = EffectsConfig.Mark
 	local scale = model:GetScale()
 	return (apexAt :: Vector3).Y + (look.Centre + look.Side / 2 + look.Bob.Studs) * scale
+end
+
+-- Where the mark's top would reach over `model`, marked or not: on a Shade, its highest mask's top, Lift, the picture's
+-- middle and half its side and its bob over it, at its scale (Step's own placing); nil on a lead. Scintilla's take of
+-- 20:26 had a critical born at the head of a Shade the lead turned to next, the mark then dropping onto it.
+function TargetMark.Over(model: Model): number?
+	if model:GetAttribute("Side") ~= "Shade" then
+		return nil
+	end
+	local look = EffectsConfig.Mark
+	return topOf(model) + (look.Lift + look.Centre + look.Side / 2 + look.Bob.Studs) * model:GetScale()
 end
 
 -- Where the mark stands settled (its drop done), in the world: its middle, and half its side with its bob's travel, so

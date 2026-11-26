@@ -1963,6 +1963,26 @@ local function sweep(c: Counting)
 	laySweep(c)
 end
 
+-- A critical's reach, its digits' and its splash's together, from the plate's middle: its left and right edges and its
+-- half height, in the plate's own pixels before any swell (laySweep's geometry, the digits' real width once laid out).
+-- The splash reaches past the first digit, so a box of the digits alone let it onto the target's mark (TR69 A's R4,
+-- Scintilla's take of 20:26).
+local function reach(c: Counting): (number, number, number)
+	local w = c.W
+	local across, authored = c.Plate.AbsoluteSize.X, c.Plate.Size.X.Offset
+	if across > 0 and authored > 0 and c.Row.AbsoluteSize.X > 0 then
+		w = math.max(w, c.Row.AbsoluteSize.X * authored / across)
+	end
+	local left, right, half = -w / 2, w / 2, c.H / 2
+	local s = c.Sweep
+	if s then
+		left = math.min(left, s.Position.X.Offset)
+		right = math.max(right, s.Position.X.Offset + s.Size.X.Offset)
+		half = math.max(half, s.Size.Y.Offset / 2)
+	end
+	return left, right, half
+end
+
 -- How swollen it is at `age`: a joining hit's swell, and a critical's landing (Config.Hud.Numbers.Critical.Land).
 local function swellOf(c: Counting, age: number, numbers: Numbers): number
 	local swell = Hud.Swell(c.Count, age, numbers.Count)
@@ -2003,16 +2023,16 @@ local function place(c: Counting, numbers: Numbers)
 	local function lift(age: number): number
 		return numbers.Rise * easeOut(age / numbers.Seconds)
 	end
-	-- Its box with its point `ahead` seconds on: the critical's wide enough for its splash, which reaches past its digits,
-	-- and swollen as a joining hit swells it then, up from its foot (the plate's anchor).
+	-- Its box with its point `ahead` seconds on: the critical's its digits' and its splash's together (reach), and
+	-- swollen as a joining hit swells it then, up from its foot (the plate's anchor).
 	local function box(other: Counting, point: Vector3, ahead: number): Hud.Box?
 		local v = camera:WorldToViewportPoint(point + Vector3.new(0, lift(other.Age + ahead) - lift(other.Age), 0))
 		if v.Z <= 0 then
 			return nil
 		end
-		local w = other.W
+		local left, right, half = -other.W / 2, other.W / 2, other.H / 2
 		if other.Big then
-			w += 2 * config.Critical.Sweep.Left * config.Digit * (other.Row:GetAttribute("Size") :: number)
+			left, right, half = reach(other)
 		end
 		local grow = swellOf(other, other.Age + ahead, numbers)
 		local tall = other.H * grow
@@ -2021,7 +2041,7 @@ local function place(c: Counting, numbers: Numbers)
 		if edge and other ~= c and y - tall / 2 < edge then
 			y = edge + tall / 2
 		end
-		return { X = v.X / scale + other.Shift.X, Y = y, W = w * grow, H = tall }
+		return { X = v.X / scale + other.Shift.X + (left + right) / 2 * grow, Y = y, W = (right - left) * grow, H = 2 * half * grow }
 	end
 	-- The target's mark (TR69 A's R4) is taken too, at every moment: no number is placed on it, a critical under the
 	-- one before it included. Its box is shrunk by the clear, so a number touches it and never stands on it.
@@ -2092,9 +2112,11 @@ function Effects.Number(root: BasePart, key: string, amount: number?, look: Numb
 	end
 	local rise = 0
 	-- born 3 studs over the root, or, on the body the target's mark stands over, over the mark (TR69 A's R4: never on
-	-- it), its foot MARK_GAP over the mark's top; held there for its life, so the mark leaving never drops it
+	-- it), its foot MARK_GAP over the mark's top; held there for its life, so the mark leaving never drops it. On any
+	-- Shade, marked or not, over where its mark would stand: a body the lead turns to next, or the one beside the target,
+	-- had its numbers at its head, under the mark when it came (Scintilla's take of 20:26)
 	local model = root.Parent
-	local top = if model and model:IsA("Model") then TargetMark.Top(model) else nil
+	local top = if model and model:IsA("Model") then (TargetMark.Top(model) or TargetMark.Over(model)) else nil
 	local born = if top then math.max(3, top + MARK_GAP - root.Position.Y) else 3
 	local where = function(): Vector3?
 		return if root.Parent then root.Position + Vector3.new(0, born + rise, 0) else nil

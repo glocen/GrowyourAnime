@@ -8,6 +8,9 @@
 -- A new target's mark drops in on a Back Out and fades in, then bobs. Hidden with no target, or once the target is down
 -- or walking home.
 --   TargetMark.Step(target)   each frame: the player's own lead's target's model, or nil
+--   TargetMark.Top(model)     the mark's highest reach over `model`, at rest and at the top of its bob, while it marks
+--                             it, else nil: a damage number on it is born over it (Effects.Number; research's
+--                             condition, clear of any plate)
 --   TargetMark.Read()         for the self-test: { Shown, Target, Colour, Side, At, Apex }
 
 local Shared = game:GetService("ReplicatedStorage").Shared
@@ -137,6 +140,15 @@ function TargetMark.Step(target: Model?)
 	board.Enabled = true
 	shownFor = target
 	apexAt = apex
+end
+
+function TargetMark.Top(model: Model): number?
+	if gui == nil or not gui.Enabled or shownFor ~= model or apexAt == nil then
+		return nil
+	end
+	local look = EffectsConfig.Mark
+	local scale = model:GetScale()
+	return (apexAt :: Vector3).Y + (look.Centre + look.Side / 2 + look.Bob.Studs) * scale
 end
 
 function TargetMark.Read(): { [string]: any }

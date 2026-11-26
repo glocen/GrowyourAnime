@@ -140,6 +140,10 @@ function HitCases.Cases(): { any }
 					t.Check("over its head: its apex Lift over its mask, above it", root ~= nil and apex ~= nil and masked ~= nil
 						and ((apex - root.Position) * Vector3.new(1, 0, 1)).Magnitude < 0.05 and apex.Y > (masked :: BasePart).Position.Y,
 						if root and apex then string.format("%.2f studs over its root", apex.Y - root.Position.Y) else "")
+					-- a damage number on it is born over the mark's top, never on it (research's condition)
+					local top = TargetMark.Top(body)
+					t.Check("its numbers are born over the mark", top ~= nil and apex ~= nil and top > (apex :: Vector3).Y + mark.Centre * body:GetScale(),
+						if top and root then string.format("the mark's top %.2f over the root", top - root.Position.Y) else "")
 					-- the star, as its swing starts
 					local glinted = Helpers.waitFor(t, WATCH, function(): boolean
 						local last = MaskGlint.Last()
@@ -150,9 +154,13 @@ function HitCases.Cases(): { any }
 					if not glinted or last == nil then
 						return
 					end
-					local into = last.MaskAt:PointToObjectSpace(last.Anchor.Position)
-					t.Check("at its mask's eye line, in front of its face", math.abs(into.X) < 1e-3 and into.Y > 0 and into.Z < -last.Mask.Size.Z / 2,
-						string.format("(%.2f, %.2f, %.2f) in the mask's frame", into.X, into.Y, into.Z))
+					local camera = workspace.CurrentCamera
+					local from = last.Anchor.Position - last.Eye
+					local seen = if camera then ((camera.CFrame.Position - last.Eye) * Vector3.new(1, 0, 1)).Unit else Vector3.zero
+					t.Check("at its mask's eye line, toward the camera past the mask, facing it",
+						math.abs(from.Y) < 1e-3 and math.abs(from.Magnitude - last.Out) < 1e-3 and last.Out > math.max(last.Mask.Size.X, last.Mask.Size.Z) / 2
+							and from.Unit:Dot(seen) > 0.98 and last.Anchor.LookVector:Dot(seen) > 0.98,
+						string.format("%.2f studs out, %.2f up, toward %.2f, facing %.2f", from.Magnitude, from.Y, from.Unit:Dot(seen), last.Anchor.LookVector:Dot(seen)))
 					t.Check("its light in its type's colour", last.Tint == want, tostring(last.Tint))
 					t.Check("done within the glint's length", last.Rows.End / 60 <= Combat.Glint.Seconds + 1e-6, `{last.Rows.End} frames`)
 					local made = last.Rows.Parts("Star")

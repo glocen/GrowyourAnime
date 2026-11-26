@@ -40,6 +40,7 @@ local Shades = require(ReplicatedStorage.Shared.Config.Shades)
 local Sounds = require(script.Parent.Sounds)
 local Shine = require(script.Parent.Shine)
 local Rows = require(script.Parent.Rows)
+local TargetMark = require(script.Parent.TargetMark)
 local SettingsController = require(script.Parent.Parent.Parent.Core.SettingsController)
 local UI = script.Parent.Parent.Parent.Parent.UI
 local Theme = require(UI.Theme)
@@ -1844,6 +1845,8 @@ end
 -- A number over a body (docs/ui.md, "The HUD, in the world"; TR3): one for each `key` on it, so a flurry (one press's
 -- hits) is one counting number and never a wall (Rules.Hud's Count; AR4 section 10, fix 1). Its look is a style of
 -- Config.Hud.Numbers: Dealt, Element (in `colour`), Received, Heal, Critical, or Word (`word`, grey, on a pointer).
+local MARK_GAP = 0.2 -- studs between the target's mark's top and the foot of a number born on its body
+
 -- Each amount after the first, while it shows, joins it: it counts up to the new total over Combat.Numbers.Count,
 -- swells Pop times and settles, and its fade starts over. A critical after makes it a critical from there. It rises
 -- from the body and is placed clear of the numbers already up (Rules.Hud.Place). Drawn on the World layer (UI.World),
@@ -2072,8 +2075,13 @@ function Effects.Number(root: BasePart, key: string, amount: number?, look: Numb
 		return
 	end
 	local rise = 0
+	-- born 3 studs over the root, or, on the body the target's mark stands over, over the mark (TR69 A's R4: never on
+	-- it), its foot MARK_GAP over the mark's top; held there for its life, so the mark leaving never drops it
+	local model = root.Parent
+	local top = if model and model:IsA("Model") then TargetMark.Top(model) else nil
+	local born = if top then math.max(3, top + MARK_GAP - root.Position.Y) else 3
 	local where = function(): Vector3?
-		return if root.Parent then root.Position + Vector3.new(0, 3 + rise, 0) else nil
+		return if root.Parent then root.Position + Vector3.new(0, born + rise, 0) else nil
 	end
 	local plate = World.Plate("Number", Vector2.new(numbers.Size * 4, numbers.Size * 1.2), where)
 	local scale = Instance.new("UIScale")

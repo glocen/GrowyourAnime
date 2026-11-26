@@ -59,7 +59,7 @@ function JewelsPage.Build(context: Look.Context): Look.Page
 	rule(group, J.Rule.Y, J.Rule.Ends, J.Rule.Alpha)
 	local said = J.Said
 	Look.Text(group, "Said1", COMING, SMALL, SEAM.Text, X(said.At.X), Y(said.At.Y), "Left", true, 3, 232)
-	Look.Text(group, "Said2", "Each slot will hold a jewel of its colour", SMALL, SEAM.Soft, X(said.At.X), Y(said.At.Y + said.Pitch), "Left", false, 3, 232)
+	Look.Text(group, "Said2", "Each slot will hold a jewel of its color", SMALL, SEAM.Soft, X(said.At.X), Y(said.At.Y + said.Pitch), "Left", false, 3, 232)
 	-- The presses, as the cut stands them, off until jewels come.
 	local P = E.Emblems.Press
 	local combine = Look.Press(group, "Combine", X(P.Right - P.Put - 8 - P.Out), Y(P.Top), P.Out, P.Foot - P.Top, function(): boolean

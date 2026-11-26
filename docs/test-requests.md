@@ -5320,3 +5320,7 @@ From the director's paste of 2026-11-26 (the register). Each claim was checked a
 - There are 3 ProximityPrompts, not 21.
 - Sound plays in 2 of the 62 UI files.
 - MessagingService: a server sends 600 + 240 × players a minute, and a topic receives 40 + 80 × servers a minute (TR57).
+
+- **Faber, 2026-11-26, 13:03 by the clock:**
+  - **#1, done.** The 28 case modules are required inside `run()`, which only the Studio bridge reaches, so nothing loads them on a phone. On a live server, `SelfTestService.Init` also takes the controller's 42 children out of StarterPlayerScripts as it boots, before anyone joins, so none is sent. That's 1.4 MB of StarterPlayerScripts' 2.9, measured in the place. Tried on a copy of the place's scripts: 138 scripts to 96, the controller kept. Type check 0 new, logic 39,910. The self-test runs in my next Studio turn, since Scintilla holds it.
+  - **#3, done for now.** "a jewel of its color". The page's "later update" line stays in the dev build only: jewels are in phase 3, before launch (`docs/production-plan.md`), so the page is built before any public build.

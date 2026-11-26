@@ -7,6 +7,7 @@
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
 local ScriptContext = game:GetService("ScriptContext")
+local StarterPlayer = game:GetService("StarterPlayer")
 
 local Shared = ReplicatedStorage.Shared
 local Animations = require(Shared.Config.Animations)
@@ -172,8 +173,24 @@ local function testClips(): { Count: number, Read: number, Stale: { string } }
 	return { Count = count, Read = read, Stale = stale }
 end
 
+-- On a live server the client's self-test never reaches a phone: its case modules, 1.4 MB of StarterPlayerScripts' 2.9
+-- (measured 2026-11-26), leave as the server boots, before anyone joins, so none is sent (TR66 #1). The controller stays,
+-- and its Start answers only in Studio, so nothing requires them. Returns how many went.
+function SelfTestService.StripClientCases(starter: Instance): number
+	local controller = starter:FindFirstChild("SelfTestController", true)
+	if controller == nil or not controller:IsA("ModuleScript") then
+		return 0
+	end
+	local children = controller:GetChildren()
+	for _, child in children do
+		child:Destroy()
+	end
+	return #children
+end
+
 function SelfTestService.Init()
 	if not RunService:IsStudio() then
+		SelfTestService.StripClientCases(StarterPlayer:WaitForChild("StarterPlayerScripts"))
 		return
 	end
 	DebugService.Register("TestClips", testClips)

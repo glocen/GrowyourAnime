@@ -238,7 +238,11 @@ local function layWeek(list: List, view: Profile.View, y: number): number
 		said.TextXAlignment = Enum.TextXAlignment.Center
 		local P = WK.Picture
 		local name = if gift.Chest then (ChestRows.ById[gift.Chest] or {} :: any).Image elseif gift.Shard == "named_lyric" then P.Face else P.Shard
-		if name and UIKit.Images[name] then
+		if state == "Taken" then
+			-- taken: the check alone on its dimmed tile, the gift's picture and words gone (research's must-fix, 2026-11-26)
+			local C = R.Check
+			image(tile, C.Image, (wide - WK.Check) / 2, P.Y + (P.Side - WK.Check) / 2, WK.Check, WK.Check, 9)
+		elseif name and UIKit.Images[name] then
 			local picture = image(tile, name, (wide - P.Side) / 2, P.Y, P.Side, P.Side, 8)
 			picture.ScaleType = Enum.ScaleType.Fit
 			picture.ImageTransparency = (WK.Dim :: any)[state]
@@ -258,10 +262,6 @@ local function layWeek(list: List, view: Profile.View, y: number): number
 			stand.Size = UDim2.fromOffset(wide - 4, P.Side)
 			stand.ZIndex = 8
 			stand.Parent = tile
-		end
-		if state == "Taken" then
-			local C = R.Check
-			image(tile, C.Image, (wide - WK.Check) / 2, P.Y + (P.Side - WK.Check) / 2, WK.Check, WK.Check, 9)
 		end
 		local made: { Index: number, State: string, Button: TextButton? } = { Index = index, State = state, Button = nil }
 		if lit then

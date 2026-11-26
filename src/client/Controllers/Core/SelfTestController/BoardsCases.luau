@@ -1,8 +1,9 @@
 --!strict
 -- BoardsCases: the boards on the Strip (TR58; BoardsController; BoardsService). At the crossing, facing the Shop: the four
--- plates stream in on the Shop's side, facing the Strip, in Config.Boards' order; a made-up page draws its first ten with
--- their names, and the viewer's own rank under them when they're outside; the news plate holds the last every-server
--- lines in our words. The made-up pages are put back, and the avatar goes home.
+-- plates stream in on the Shop's side, facing the Strip, in Config.Boards' order; a made-up page's face draws its top
+-- three with their names, then the viewer's own row, lit, rank first, when they're outside, and lit in place with the
+-- fourth under when they're among them (TR58's must-fix); the news plate holds the last every-server lines in our words.
+-- The made-up pages are put back, and the avatar goes home.
 
 local Players = game:GetService("Players")
 
@@ -26,7 +27,7 @@ local TOP = 10_000_000 -- the made-up page's best, past any lead a test account 
 local function rowsOf(gui: SurfaceGui?): { Frame }
 	local out: { Frame } = {}
 	local body = if gui then gui:FindFirstChild("Body") else nil
-	for index = 1, Config.Shown + 1 do
+	for index = 1, Config.Top + 2 do
 		local row = if body then body:FindFirstChild(`Row{index}`) else nil
 		if row and row:IsA("Frame") then
 			table.insert(out, row)
@@ -43,7 +44,7 @@ end
 function BoardsCases.Cases(): { any }
 	return {
 		{
-			Name = "Boards on the Strip (TR58): four plates on the Shop's side facing the Strip; a made-up page's top ten with names, the own rank under, the news",
+			Name = "Boards on the Strip (TR58): four plates on the Shop's side facing the Strip; a made-up page's top three with names, the own row lit, the news",
 			Run = function(t: any)
 				t.Server("TestStandAt", Vector3.new(0, STAND, 14), Vector3.new(0, STAND, 40))
 				local model: Instance? = nil
@@ -64,7 +65,7 @@ function BoardsCases.Cases(): { any }
 						lastX = (plate :: BasePart).Position.X
 					end
 				end
-				-- A made-up page past the account's own: ten rows with their names, the account's rank under.
+				-- A made-up page past the account's own: the top three with their names, then the account's own row, lit.
 				local entries = {}
 				for i = 1, 30 do
 					table.insert(entries, { Id = 900_000 + i, Score = TOP - 1000 * i, Name = `Tester {i}` })
@@ -76,17 +77,42 @@ function BoardsCases.Cases(): { any }
 				local gui = BoardsController.Gui("Lead")
 				local rows = rowsOf(gui)
 				t.Check("its title", text(gui, "Title") == Config.Titles.Lead, text(gui, "Title"))
-				t.Equal("ten rows", #rows, Config.Shown)
+				t.Equal("four rows: the top three and the account's own", #rows, Config.Top + 1)
 				t.Check("best first, a name and a number", rows[1] ~= nil and text(rows[1], "Rank") == "1" and text(rows[1], "Name") == "Tester 1"
 					and text(rows[1], "Value") == Hud.Digits(TOP - 1000), if rows[1] then `{text(rows[1], "Name")} {text(rows[1], "Value")}` else "no row")
-				local nameFits = true
+				local clear, sized = true, true
 				for _, row in rows do
-					local name = row:FindFirstChild("Name") :: TextLabel?
-					nameFits = nameFits and name ~= nil and name.TextFits
+					local name, value = row:FindFirstChild("Name") :: TextLabel?, row:FindFirstChild("Value") :: TextLabel?
+					clear = clear and name ~= nil and value ~= nil and value.TextFits
+						and name.AbsolutePosition.X + name.AbsoluteSize.X <= value.AbsolutePosition.X + 1
+					sized = sized and name ~= nil and name.TextSize == Config.Face.Row.Size
 				end
-				t.Check("every name fits its column", nameFits)
-				local wantOwn = if type(mine) == "table" and mine.Rank then `You · #{Hud.Digits(mine.Rank)} · {Hud.Digits(mine.Value)}` else nil
-				t.Check("the account's own rank under the ten", wantOwn ~= nil and text(gui, "Own") == wantOwn, `{text(gui, "Own")}, want {tostring(wantOwn)}`)
+				t.Check("a name never runs into its number, every number whole", clear)
+				t.Check("rows at the face's size, about three times the first's 20", sized and Config.Face.Row.Size >= 2.5 * 20)
+				local lit = function(row: Frame?): boolean
+					return row ~= nil and row.BackgroundTransparency < 1
+				end
+				local own = rows[Config.Top + 1]
+				t.Check("the account's own row, lit, rank first", type(mine) == "table" and lit(own) and not lit(rows[1])
+					and text(own, "Rank") == (if mine.Rank then Hud.Digits(mine.Rank) else `{Config.Page}+`)
+					and text(own, "Name") == Players.LocalPlayer.DisplayName and text(own, "Value") == Hud.Digits(mine.Value),
+					if own then `{text(own, "Rank")} {text(own, "Name")} {text(own, "Value")}` else "no row")
+				-- Among the top three: lit where they stand, the fourth row the fourth.
+				local value = if type(mine) == "table" then tonumber(mine.Value) or 0 else 0
+				if value >= 8 then
+					local near = { { Id = 900_001, Score = value + 1000, Name = "Tester 1" } }
+					for i = 2, 6 do
+						table.insert(near, { Id = 900_000 + i, Score = value - i, Name = `Tester {i}` })
+					end
+					t.Server("BoardsPage", "Lead", near)
+					BoardsController.Refresh()
+					rows = rowsOf(BoardsController.Gui("Lead"))
+					t.Check("among the top three: lit where they stand, the fourth row the fourth", #rows == Config.Top + 1 and lit(rows[2])
+						and not lit(rows[4]) and text(rows[4], "Rank") == "4" and text(rows[4], "Name") == "Tester 3",
+						`{#rows} rows; the fourth {if rows[4] then text(rows[4], "Rank") .. " " .. text(rows[4], "Name") else "none"}`)
+				else
+					t.Check("the account has a lead to stand among the top with", false, `its number {value}`)
+				end
 				t.Server("BoardsPage", "Lead", nil)
 				-- The news: every-server lines, newest first, in our words.
 				t.Server("BroadcastTell", "Stars", "rook", "Common", 7)

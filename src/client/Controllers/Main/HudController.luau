@@ -34,6 +34,9 @@ local Voidkin = require(Shared.Definitions.Voidkin)
 local Enemies = require(Shared.Definitions.Enemies)
 local Grounds = require(Shared.Definitions.Grounds)
 local Shards = require(Shared.Definitions.Shards)
+local GoalDefs = require(Shared.Definitions.Goals)
+local Goals = require(Shared.Rules.Goals)
+local SoundRule = require(Shared.Rules.Sound)
 local Actions = require(Shared.Definitions.Actions)
 local HomeConfig = require(Shared.Config.Home)
 local Growth = require(Shared.Rules.Growth)
@@ -78,6 +81,7 @@ local Fade = require(UI.Kit.Fade)
 local ProfileController = require(script.Parent.Parent.Core.ProfileController)
 local SpectateController = require(script.Parent.SpectateController)
 local Effects = require(script.Parent.FighterController.Effects)
+local Cues = require(script.Parent.FighterController.Cues)
 local FadeController = require(script.Parent.FadeController)
 
 local HudController = {}
@@ -930,8 +934,27 @@ local function showChip(view: Profile.View)
 	Guide.Point(stepTargets(step))
 end
 
+-- A level gained, said once, in one place: the notice under the lead's corner (AR12, take B; research's ruling,
+-- 2026-11-15: the old toast and the word over the lead go, the column of light stays), the badge lit, and its sound
+-- (TR64). Its name is the filtered one.
+local function levelled(now: Profile.OwnedVoidkin)
+	LevelNotice.Show(Read.VoidkinName(now), now.Level)
+	Cues.Moment("LevelUp")
+	Pop.Play(lead.Level, HudConfig.Pop.Rungs.Level, { Paint = function(p: number)
+		LeadCard.Glow(lead, HudConfig.Pop.Glow * p) -- the badge lit under the ink number
+	end })
+	Burst.Play(Fly.Middle(lead.Level), HudConfig.Card.Level) -- rung 5: sparks off the level's mark (TR6)
+end
+
+-- A shard's note as it touches the floor and its plate shows (TR64), by its grade.
+local function chime(grade: string?): () -> ()
+	return function()
+		Cues.Moment("ShardDrop", { Speed = SoundRule.Note(grade) })
+	end
+end
+
 -- What changed since the last copy, said once: a shard gained (it drops in the world and flies to the avatar, and the toast
--- says it as it lands: TR24's fix 8), a level gained.
+-- says it as it lands: TR24's fix 8), a level gained, a goal done (its sound once the fight is quiet, TR64).
 local function notice(old: Profile.View?, new: Profile.View)
 	if old == nil then
 		return
@@ -940,10 +963,14 @@ local function notice(old: Profile.View?, new: Profile.View)
 		local gained = count - (old.Bag.Shards[shard] or 0)
 		if gained > 0 then
 			local words = `+{gained} {Read.ShardName(shard)}`
+			local row = Shards.ById[shard]
 			Effects.Drop(fallenNear(), avatarAt, Read.ShardName(shard), function()
 				Toast.Show(words, Theme.Colour.Ready)
-			end)
+			end, chime(if row then row.Grade else nil))
 		end
+	end
+	if old.Goals and new.Goals and Goals.Waits(new.Goals :: any, GoalDefs.ById) > Goals.Waits(old.Goals :: any, GoalDefs.ById) then
+		Cues.Moment("GoalDone", { Hold = true })
 	end
 	local pops = HudConfig.Pop.Rungs
 	if new.Currency.Credits > old.Currency.Credits then
@@ -962,14 +989,43 @@ local function notice(old: Profile.View?, new: Profile.View)
 		end })
 	end
 	if was and now and now.Level > was.Level then
-		-- Said once, in one place: the notice under the lead's corner (AR12, take B; research's ruling, 2026-11-15: the
-		-- old toast and the word over the lead go, the column of light stays). Its name is the filtered one.
-		LevelNotice.Show(Read.VoidkinName(now), now.Level)
-		Pop.Play(lead.Level, pops.Level, { Paint = function(p: number)
-			LeadCard.Glow(lead, HudConfig.Pop.Glow * p) -- the badge lit under the ink number
-		end })
-		Burst.Play(Fly.Middle(lead.Level), HudConfig.Card.Level) -- rung 5: sparks off the level's mark (TR6)
+		levelled(now)
 	end
+end
+
+-- The HUD's moments as the listening panel shows them without their cause (TR64, Play the moment): the lead's level-up
+-- with its column, a shard dropped before the avatar (each press the next grade's note), a goal done (its sound alone:
+-- the Today card's rim is Home's).
+local GRADES = { "Standard", "Enriched", "Prismatic", "Named" }
+local staged = 0
+local function stage()
+	Cues.Stage("LevelUp", function()
+		local view = ProfileController.Get()
+		local now = if view then view.Voidkin[view.Roles.Lead] else nil
+		if now == nil then
+			return
+		end
+		levelled(now)
+		local model = myLead()
+		local root = if model then model:FindFirstChild("HumanoidRootPart") :: BasePart? else nil
+		if root then
+			Effects.LevelUp(root)
+		end
+	end)
+	Cues.Stage("ShardDrop", function()
+		local at, camera = avatarAt(), workspace.CurrentCamera
+		if at == nil or camera == nil then
+			return
+		end
+		staged = staged % #GRADES + 1
+		local grade = GRADES[staged]
+		local ahead = camera.CFrame.LookVector * Vector3.new(1, 0, 1)
+		local from = at + (if ahead.Magnitude > 0 then ahead.Unit else Vector3.zAxis) * 8
+		Effects.Drop(from, avatarAt, grade, nil, chime(grade))
+	end)
+	Cues.Stage("GoalDone", function()
+		Cues.Moment("GoalDone", { Hold = true })
+	end)
 end
 
 -- The return card (TR53; UI.ReturnCard): what the base did while the player was away, at the base only, out of a
@@ -1363,6 +1419,7 @@ local function step(dt: number)
 	end
 	HomePanel.Paint(homePanel)
 	TodayList.Paint(homePanel)
+	ReturnCard.Held(TodayList.Shown(homePanel)) -- the list covers the card's corner (research's must-fix on TR59)
 	Dock.Paint(dockUi)
 	local view = ProfileController.Get()
 	if view and os.clock() - baseReadAt >= BASE_EVERY then
@@ -1472,6 +1529,7 @@ function HudController.Noted(): string?
 end
 
 function HudController.Start()
+	stage()
 	lead = LeadCard.new(Layers.Get("Hud"), UDim2.fromOffset(PAD, TOP))
 	LevelNotice.Mount(Layers.Get("Hud"))
 	note = makeNote(Layers.Get("Hud"))

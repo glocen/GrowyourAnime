@@ -315,9 +315,13 @@ local Config = {
 	-- cue's short-term loudness. Db is CueCheck's Match, measured on the mix with this off, and is measured again after
 	-- every round. For the listen only: the level that ships is gate 4's. NL_Debug:Invoke("Tune", "Cues.Match.On", false).
 	Match = { On = true, Db = {} :: { [string]: { [string]: number } } },
-	-- TR64's big moments: cues the game plays by name at their moment, never by a hit's rules, each silent until the
-	-- director's ear picks its sound, and none hooked yet. Written below with the others.
+	-- TR64's big moments: cues the game plays by name at their moment (Cues.Moment), never by a hit's rules, each silent
+	-- until the director's ear picks its sound. Written below with the others.
 	Moments = { "LevelUp", "ShardDrop", "KeeperFall", "LeadDown", "GoalDone", "Record", "Reinforced", "ReinforceFailed", "MachineStage", "LeadHurt" },
+	Front = 12, -- studs in front of the camera a moment's cue (and the panel's tap) plays from: inside every cue's Near, never on the listener (8.5 dB down there, AR39)
+	-- A shard's drop note by its grade, as playback speeds (TR64's note set, A C D E): G and the octave stay the reveal's,
+	-- so a drop never sounds like a Legendary. A grade not here (a starter's) plays the Standard's.
+	Notes = { Standard = 1, Enriched = 1.189, Prismatic = 1.335, Named = 1.498 } :: { [string]: number },
 }
 
 -- TR42's second round: each own cue (Own) as what played in its place before, a copy of its layers, so a change to one

@@ -771,11 +771,12 @@ return {
 				Heading = "Welcome week",
 				Day = "Day",
 				Tall = 62, Gap = 4, Corner = 6,
-				-- Fade: a picture's stand-in words (Home's Word), clear by state and still 4.5:1 on its fill
-				Words = { Y = 5, Size = 12, Colour = Color3.fromHex("#AEB7C2"), Fade = { Today = 0, Later = 0.25, Taken = 0.45 } },
+				-- Fade: a picture's stand-in words (Home's Word), clear by state and still 4.5:1 on its fill. A taken day shows
+				-- its check alone (research's must-fix, 2026-11-26), so no picture or words of its gift.
+				Words = { Y = 5, Size = 12, Colour = Color3.fromHex("#AEB7C2"), Fade = { Today = 0, Later = 0.25 } },
 				Picture = { Y = 20, Side = 34, Face = "CardFaceLyric", Shard = "ShardStandardSmall" },
 				Fill = { Later = Color3.fromHex("#2B313C"), Today = Color3.fromHex("#3A4150"), Taken = Color3.fromHex("#20252D") },
-				Dim = { Later = 0.55, Today = 0, Taken = 0.7 }, -- the picture's transparency
+				Dim = { Later = 0.55, Today = 0 }, -- the picture's transparency
 				Lit = Color3.fromHex("#FFD880"), Stroke = 1.5,
 				Check = 22,
 			},
@@ -960,12 +961,15 @@ return {
 		Glow = Color3.fromHex("#D4C6FF"), -- the knob's glow, lavender
 		-- The codes (TR59; docs/design.md, "The welcome week and codes"), a grey block for research's verdict: the band's
 		-- Codes press, at its right Right points in, turns the card to the codes and back. On it, the field and its Take
-		-- press on the first row, the answer's line on the second, the note on Note's middle, in the card's points.
+		-- press on the first row, the answer's line and the note on their middles, in the card's points; the card shrinks
+		-- to Foot while they show, no empty middle, and the field wears the kit's neutral glass (Palette's Panel, its Edge
+		-- round it, its Text and Soft), not violet (research's must-fixes, 2026-11-26). AR62's style frame restyles it.
 		Codes = {
 			Press = { Wide = 84, Tall = 30, Right = 12 },
-			Field = { Right = 380, Tall = 34, Size = 15 },
-			Line = { Y = 150, Size = 15 },
-			Note = { Y = 268, Size = 13 },
+			Field = { Right = 380, Tall = 34, Size = 15, Palette = "Graphite", Stroke = 1 },
+			Line = { Y = 128, Size = 15 },
+			Note = { Y = 153, Size = 13 },
+			Foot = 176,
 		},
 	},
 	-- The dock of three icons (AR12, in AR30's make: its look is Make.Dock): a touch held LongPress seconds shows the

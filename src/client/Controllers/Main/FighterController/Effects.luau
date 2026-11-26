@@ -2312,8 +2312,9 @@ end
 -- a step toward the avatar, bounces once on the floor, rests there with `name` over it, then is pulled into the avatar,
 -- eased in, and lands in a small flash, when `landed` runs (the toast says it then). The hero shape is the shard alone,
 -- spinning; its plate shows from the landing to the pull. `to` is read every frame, so it follows a walking avatar. No
--- `from`: it only lands, at once.
-function Effects.Drop(from: Vector3?, to: () -> Vector3?, name: string, landed: (() -> ())?)
+-- `from`: it only lands, at once. `touched` runs as it first touches the floor and its plate shows (its sound, TR64),
+-- or with no `from`, as it lands.
+function Effects.Drop(from: Vector3?, to: () -> Vector3?, name: string, landed: (() -> ())?, touched: (() -> ())?)
 	local look = EffectsConfig.Drop
 	local function arrive(at: Vector3?)
 		if landed then
@@ -2339,6 +2340,9 @@ function Effects.Drop(from: Vector3?, to: () -> Vector3?, name: string, landed: 
 	end
 	local start = to()
 	if from == nil or start == nil then
+		if touched then
+			task.spawn(touched)
+		end
 		arrive(start)
 		return
 	end
@@ -2362,6 +2366,10 @@ function Effects.Drop(from: Vector3?, to: () -> Vector3?, name: string, landed: 
 	run(function(age: number): boolean
 		last = to() or last
 		local at, now = Flight.At(age, fell, floor, last, look)
+		if touched and now ~= "Pop" then
+			task.spawn(touched)
+			touched = nil
+		end
 		where, beat = at, now
 		shard.CFrame = CFrame.new(at) * CFrame.Angles(0, age * look.Spin, math.rad(20))
 		return now ~= "Done"

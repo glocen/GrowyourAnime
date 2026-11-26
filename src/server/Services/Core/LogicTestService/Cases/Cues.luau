@@ -137,6 +137,20 @@ return {
 			for name in Cues.Cues do
 				t.Check(`{name}: written, and the rules play it`, named[name] == true)
 			end
+			-- TR64: the keeper's fall plays its own cue, never the burst's; the hurt only on a jolting hit; a drop's note by grade
+			t.Check("a keeper's fall plays KeeperFall, not the burst's", Sound.Fall("Keeper") == "KeeperFall")
+			t.Check("any other Shade's fall plays the burst's", Sound.Fall("Ordinary") == "ShadeBurst" and Sound.Fall(nil) == "ShadeBurst")
+			local share = Combat.Shake.HurtShare
+			t.Check("a hit of the jolt's share jolts", Sound.Jolts(100 * share, 100, share))
+			t.Check("a hit under it doesn't", not Sound.Jolts(100 * share - 0.01, 100, share))
+			t.Check("with no most health, nothing jolts", not Sound.Jolts(1e9, nil, share))
+			local notes = { Sound.Note("Standard"), Sound.Note("Enriched"), Sound.Note("Prismatic"), Sound.Note("Named") }
+			t.Check("a drop's note climbs with its grade, from the Standard's 1", notes[1] == 1 and notes[1] < notes[2] and notes[2] < notes[3] and notes[3] < notes[4], table.concat(notes, ", "))
+			t.Check("under the reveal's G (2^(10/12), 1.782), so a drop never sounds like a Legendary", notes[4] < 2 ^ (10 / 12))
+			t.Check("a starter's, or none, plays the Standard's", Sound.Note("Starter") == 1 and Sound.Note(nil) == 1)
+			for grade in Cues.Notes do
+				t.Check(`the note's grade {grade} is a shard's`, grade == "Standard" or grade == "Enriched" or grade == "Prismatic" or grade == "Named")
+			end
 			t.Check("the strength's rungs are the hitstop's", Cues.Strength[1] == Combat.Hitstop.Rungs[1].From and Cues.Strength[2] == Combat.Hitstop.Rungs[#Combat.Hitstop.Rungs].From)
 		end,
 	},

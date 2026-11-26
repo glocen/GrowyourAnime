@@ -8,6 +8,8 @@
 --                                     (Rules.Return.Lines), and it's laid again when the HUD rescales
 --   ReturnCard.Hide()                 sinks it
 --   ReturnCard.Up()                   whether it stands
+--   ReturnCard.Held(on)               hidden while a panel stands over its corner (the Today list: research's must-fix on
+--                                     TR59), and back as it was when that closes; it still stands (Up)
 --   ReturnCard.Parts()                for tests: the card, its lines' words and its press
 
 local Shared = game:GetService("ReplicatedStorage").Shared
@@ -45,6 +47,7 @@ local GROW = R.Picture.Grow :: { [string]: number }
 local FACES: { [string]: boolean } = { Training = true, Worker = true, Workers = true } -- the lines a Voidkin's face pictures
 
 local holder: CanvasGroup? = nil
+local held = false
 local up = false
 local shown = "" -- the lines it stands with: the same card again is left as it is
 local last: { Card: Profile.ReturnCard, View: Profile.View, On: On, Room: (() -> number?)? }? = nil -- laid again on a rescale
@@ -143,6 +146,13 @@ function ReturnCard.Up(): boolean
 	return up
 end
 
+function ReturnCard.Held(on: boolean)
+	held = on
+	if holder then
+		holder.Visible = not on
+	end
+end
+
 function ReturnCard.Hide()
 	local was = holder
 	holder, up, shown, last = nil, false, "", nil
@@ -184,6 +194,7 @@ function ReturnCard.Show(card: Profile.ReturnCard, view: Profile.View, on: On, r
 	group.Size = UDim2.fromOffset(w, h)
 	group.Position = UDim2.new(1, -R.Right, 1, -R.Foot + (if again then 0 else R.Rise))
 	group.GroupTransparency = if again then 0 else 1
+	group.Visible = not held
 	group.Parent = Layers.Get("Hud")
 	holder, up = group, true
 	local slab = Panel.new({ Name = "Slab", Palette = "System", Size = UDim2.fromScale(1, 1), Parent = group })

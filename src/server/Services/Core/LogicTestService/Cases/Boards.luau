@@ -56,20 +56,20 @@ return {
 		end,
 	},
 	{
-		Name = "Boards: the top ten and the own-rank line from a made-up page; ties by id; a newer own number in its place",
+		Name = "Boards: the first rows and the own row from a made-up page; ties by id; a newer own number in its place",
 		Run = function(t: any)
-			local shown, full = Config.Shown, Config.Page
+			local shown, full = Config.Top + 1, Config.Page
 			-- inside the ten: their row among the rows, no line under
 			local rows, own = Boards.Rank(page(30), 1004, 9960, shown, full)
-			t.Check("ten rows, best first", #rows == shown and rows[1].Id == 1001 and rows[1].Rank == 1 and rows[shown].Rank == shown)
+			t.Check("the rows sent, best first", #rows == shown and rows[1].Id == 1001 and rows[1].Rank == 1 and rows[shown].Rank == shown)
 			t.Check("their own at 4th", own ~= nil and own.Rank == 4 and rows[4].Id == 1004)
-			-- outside the ten: rows without them, their rank under
+			-- outside them: rows without them, their rank under
 			rows, own = Boards.Rank(page(30), 1014, 9860, shown, full)
 			local among = false
 			for _, row in rows do
 				among = among or row.Id == 1014
 			end
-			t.Check("14th: not among the ten, their rank under", not among and own ~= nil and own.Rank == 14 and own.Score == 9860)
+			t.Check("14th: not among the rows, their rank under", not among and own ~= nil and own.Rank == 14 and own.Score == 9860)
 			-- a newer number than the page holds: their save's, in its place
 			rows, own = Boards.Rank(page(30), 1020, 9995, shown, full)
 			t.Check("raised past the first: first, the old row gone", own ~= nil and own.Rank == 1 and rows[1].Id == 1020 and #rows == shown and rows[2].Id == 1001)
@@ -84,6 +84,39 @@ return {
 			t.Check("no number of their own: no own row, the page as it is", own == nil and #rows == 3)
 			rows = Boards.Rank({}, 77, nil, shown, full)
 			t.Equal("an empty board: no rows", #rows, 0)
+		end,
+	},
+	{
+		Name = "Boards: a face holds the top three, then the reader's own row, lit, when they stand outside, else the fourth (TR58's must-fix)",
+		Run = function(t: any)
+			local top = Config.Top
+			local function rows(mine: number?): { any }
+				local out = {}
+				for rank = 1, top + 1 do
+					table.insert(out, { Rank = rank, Name = `P{rank}`, Value = 100 - rank, Mine = rank == mine })
+				end
+				return out
+			end
+			local function lit(face: { any }): string
+				local out = {}
+				for _, row in face do
+					table.insert(out, `{row.Rank or "-"}{if row.Mine then "*" else ""}`)
+				end
+				return table.concat(out, " ")
+			end
+			local outside = Boards.Face(rows(nil), { Rank = 9, Value = 40 }, top, "me")
+			t.Equal("outside: the top three, then their own, lit, rank first", lit(outside), "1 2 3 9*")
+			t.Check("their own row named and numbered", outside[4].Name == "me" and outside[4].Value == 40)
+			t.Equal("among the top: lit where they stand, the fourth the fourth", lit(Boards.Face(rows(2), { Rank = 2, Value = 98 }, top, "me")), "1 2* 3 4")
+			local fourth = Boards.Face(rows(4), { Rank = 4, Value = 96 }, top, "me")
+			t.Check("fourth: their row as the board names it", lit(fourth) == "1 2 3 4*" and fourth[4].Name == "P4", lit(fourth))
+			t.Equal("past the page: their own, its rank none", lit(Boards.Face(rows(nil), { Rank = nil, Value = 1 }, top, "me")), "1 2 3 -*")
+			t.Equal("no number of their own: the fourth", lit(Boards.Face(rows(nil), nil, top, "me")), "1 2 3 4")
+			t.Equal("a short board: its rows, then their own", lit(Boards.Face({ { Rank = 1, Name = "A", Value = 5 } }, { Rank = nil, Value = 1 }, top, "me")), "1 -*")
+			t.Equal("an empty board, no number: nothing", #Boards.Face({}, nil, top, "me"), 0)
+			local given = rows(nil)
+			Boards.Face(given, { Rank = 9, Value = 40 }, top, "me")
+			t.Check("the rows given are never changed", given[1].Mine == false and given[4].Name == "P4")
 		end,
 	},
 	{

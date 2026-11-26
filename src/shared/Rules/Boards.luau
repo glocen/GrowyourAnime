@@ -8,6 +8,8 @@
 --   Boards.Due(last, value, now, leaving)         a post is due: higher than the last posted, and Post seconds on or leaving
 --   Boards.Entries(items)                         a page as the store gives it, as entries; keys that aren't a UserId dropped
 --   Boards.Rank(top, me, mine, shown, page)       the first `shown` rows, and the reader's own row
+--   Boards.Face(rows, own, top, name)             what a face shows: the first `top` rows, then the reader's own, lit,
+--                                                 when they stand outside them, else the next row
 --   Boards.Key(userId)                            a store's key: the UserId alone
 
 local Shared = script.Parent.Parent
@@ -108,6 +110,27 @@ function Boards.Rank(top: { Entry }, me: number, mine: number?, shown: number, p
 		own = under
 	end
 	return rows, own
+end
+
+-- A face as its reader sees it (research's must-fix on TR58, 2026-11-26): the first `top` of `rows` (each with Rank and
+-- Mine, best first), then a fourth: the reader's own row when they stand outside the top, marked Mine and named `name`
+-- unless the rows already hold it with their own name, else the next row. Rows are copied, never changed.
+function Boards.Face(rows: { any }, own: any, top: number, name: string): { any }
+	local face: { any } = {}
+	local among = false
+	for index = 1, math.min(top, #rows) do
+		table.insert(face, table.clone(rows[index]))
+		among = among or rows[index].Mine == true
+	end
+	local fourth: any = rows[top + 1]
+	if not among and type(own) == "table" and not (fourth and fourth.Mine == true) then
+		fourth = table.clone(own)
+		fourth.Name, fourth.Mine = name, true
+	end
+	if fourth then
+		table.insert(face, table.clone(fourth))
+	end
+	return face
 end
 
 function Boards.Key(userId: number): string

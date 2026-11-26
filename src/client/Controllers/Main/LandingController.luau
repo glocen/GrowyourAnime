@@ -8,10 +8,12 @@
 -- band pulls in at the top and bursts, a short band thrown out fast then slow and a shaft rising and thinning (the
 -- settle). About a second; every landing asked for on one frame starts on the next together, so a base level-up's
 -- machines flash as one. Sized from the larger of its two stages' boxes. A Tune of Config.Landing shows on the next frame.
--- No sound yet (AR37, "Waits"). Until the kit holds the landing's look (src/shared/Assets/FxKit.rbxm, rebuilt with
+-- Its sound, MachineStage, plays once as the landings asked on one frame start, when one is on the player's own plot
+-- (TR64): a base level-up's machines are one moment, and a neighbour's never sound here. Until the kit holds the landing's look (src/shared/Assets/FxKit.rbxm, rebuilt with
 -- fx_rise_Void), the hoop and the shaft are Neon in the throw's colour.
 
 local CollectionService = game:GetService("CollectionService")
+local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
 
@@ -19,6 +21,8 @@ local Shared = ReplicatedStorage.Shared
 local LandingConfig = require(Shared.Config.Landing)
 local Landing = require(Shared.Rules.Landing)
 local Tags = require(Shared.World.Tags)
+local Markers = require(Shared.World.Markers)
+local Cues = require(script.Parent.FighterController.Cues)
 
 local LandingController = {}
 
@@ -211,13 +215,24 @@ local function draw(each: Playing)
 	each.Cover.OutlineTransparency = 1 - frame.Line
 end
 
+-- Whether a machine stands on the player's own plot.
+local function ours(holder: Instance): boolean
+	local plot = Players.LocalPlayer:GetAttribute("Plot")
+	return holder:IsA("PVInstance") and Markers.OnPlot(if type(plot) == "number" then plot else nil, (holder :: PVInstance):GetPivot().Position)
+end
+
 local function step(dt: number)
 	frames += 1
 	if #asked > 0 then
 		local now = asked
 		asked = {}
+		local mine = false
 		for _, holder in now do
 			start(holder)
+			mine = mine or ours(holder)
+		end
+		if mine then
+			Cues.Moment("MachineStage")
 		end
 	end
 	for index = #playing, 1, -1 do
@@ -262,6 +277,17 @@ function LandingController.Played(): number
 end
 
 function LandingController.Start()
+	-- The listening panel's Play the moment (TR64): a landing on the player's own first machine with a stage, as if it rose.
+	Cues.Stage("MachineStage", function()
+		for _, kind in KINDS do
+			for _, holder in CollectionService:GetTagged(Tags[kind].Tag) do
+				if ours(holder) and type(holder:GetAttribute("Stage")) == "number" and not table.find(asked, holder) then
+					table.insert(asked, holder)
+					return
+				end
+			end
+		end
+	end)
 	for _, kind in KINDS do
 		local tag = Tags[kind].Tag
 		for _, holder in CollectionService:GetTagged(tag) do

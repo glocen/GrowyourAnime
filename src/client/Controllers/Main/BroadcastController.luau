@@ -8,7 +8,8 @@
 -- research's verdict. The words are built here from our definitions, ids and the finder's display name, since
 -- TextChannel:DisplaySystemMessage isn't filtered.
 --   BroadcastController.Shown()     the plate's words now, plain, or nil: for tests
---   BroadcastController.Chatted()   the last line written in the chat, plain, or nil: for tests
+--   BroadcastController.Chatted()   the last line written in the chat, plain, and its rarity's colour (hex), or nil:
+--                                   for tests
 
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
@@ -44,9 +45,16 @@ local friends: { [number]: boolean } = {}
 local plate: CanvasGroup? = nil
 local shown: string? = nil
 local chatted: string? = nil
+local chattedLight: string? = nil
 
 local function lightOf(rarity: string): Color3
 	return HudConfig.Card.Trim[rarity] or Theme.Colour.Text
+end
+
+-- On the chat's dark panel a rarity takes the bag's word colours, lifted toward white so Common's grey reads (research's
+-- must-fix on TR57, 2026-11-26).
+local function chatLightOf(rarity: string): Color3
+	return HudConfig.Bag.Rarity[rarity] or lightOf(rarity)
 end
 
 -- This server's line, the player's own, or a friend's (asked once a user, the answer kept).
@@ -80,11 +88,12 @@ local function chat(item: Broadcast.News)
 	end
 	local parts, rarity = Broadcast.Line(item)
 	chatted = Broadcast.Plain(parts)
+	chattedLight = chatLightOf(rarity):ToHex()
 	task.spawn(function()
 		local channels = TextChatService:WaitForChild("TextChannels", CHANNEL_WAIT)
 		local general = if channels then channels:WaitForChild("RBXGeneral", CHANNEL_WAIT) else nil
 		if general and general:IsA("TextChannel") then
-			general:DisplaySystemMessage(Broadcast.Rich(parts, lightOf(rarity):ToHex()))
+			general:DisplaySystemMessage(Broadcast.Rich(parts, chatLightOf(rarity):ToHex()))
 		end
 	end)
 end
@@ -200,8 +209,8 @@ function BroadcastController.Shown(): string?
 	return shown
 end
 
-function BroadcastController.Chatted(): string?
-	return chatted
+function BroadcastController.Chatted(): (string?, string?)
+	return chatted, chattedLight
 end
 
 function BroadcastController.Start()

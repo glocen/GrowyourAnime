@@ -113,6 +113,23 @@ function Sound.Run(take: Cues.Take, offset: number, speed: number, frame: number
 	}
 end
 
+-- TR64's big moments (Config.Cues.Moments). The cue a Shade's burst plays as it goes down: a keeper's fall has its own,
+-- in the burst's place.
+function Sound.Fall(kind: string?): string
+	return if kind == "Keeper" then "KeeperFall" else "ShadeBurst"
+end
+
+-- Whether a hit on the player's own lead jolts it, `share` of its most health in one hit (Config.Combat.Shake): the
+-- shake and LeadHurt, never every hit.
+function Sound.Jolts(total: number, most: number?, share: number): boolean
+	return type(most) == "number" and total >= most * share
+end
+
+-- A shard's drop note, as a playback speed, by its grade (Config.Cues.Notes); a grade without one plays the Standard's.
+function Sound.Note(grade: string?): number
+	return if grade then Cues.Notes[grade] or Cues.Notes.Standard else Cues.Notes.Standard
+end
+
 -- How long before its moment a cue's earliest layer can start, at its slowest pick: a beat's cue begins when its
 -- attacker's clock is that far from the beat.
 function Sound.Ahead(cue: Cues.Cue): number

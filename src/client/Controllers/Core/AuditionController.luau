@@ -5,7 +5,7 @@
 -- run in Edit), handed over by AuditionService: each a finished library sound, its first event whole, cut only at its
 -- head, at one loudness for its cue (Config.Audition.Levels, set against today's LightHit), with no pitch or volume
 -- spread. "Old" brings today's cue back exactly.
---   - A tap plays the sound once through the hit's own path (FighterController/Cues), Config.Audition.Preview studs in
+--   - A tap plays the sound once through the hit's own path (FighterController/Cues), Config.Cues.Front studs in
 --     front of the camera, inside every cue's Near and never on the listener (an emitter there reads 8.5 dB down, AR39).
 --   - The live sound changes only once every voice of the tapped one has loaded, so no hit goes silent between two, and
 --     a hit plays one cue's voices, never two. A sound already playing finishes. One that doesn't load is marked and
@@ -16,6 +16,9 @@
 --     can be heard alone on its hit; on by default, the fight as it is.
 --   - A pilot marked Done (Config.Audition) is picked: it has no tab, and the panel opens on the first that's left.
 --   - A level changed live (Tune "Audition.Levels.<cue>") reaches every candidate within a quarter second.
+--   - A big moment's tab (TR64, Config.Cues.Moments) has Play the moment: the moment shown without its cause, its plate,
+--     its column, its fall (Cues.Show, staged by each moment's owner), so a candidate is heard on its own picture. A
+--     moment whose screen isn't open (Reinforce's) says so on the button.
 
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
@@ -180,7 +183,7 @@ function AuditionController.Hear(pilot: string)
 	if camera == nil then
 		return
 	end
-	local at = camera.CFrame.Position + camera.CFrame.LookVector * Config.Preview
+	local at = camera.CFrame.Position + camera.CFrame.LookVector * CuesConfig.Front
 	local ahead = Cues.Ahead(pilot) or 0
 	Cues.Play(pilot, at, if ahead > 0 then { In = ahead } else nil)
 end
@@ -468,6 +471,17 @@ function AuditionController.Mount(): ScreenGui?
 	end
 	local info = label(body, "", 13, Enum.Font.BuilderSans, COLOURS.Dim, UDim2.new(1, 0, 0, 18), UDim2.fromOffset(2, 36 + shift))
 	info.Name = "Info"
+	local moment = button(body, "Play the moment", UDim2.fromOffset(124, 24), UDim2.new(1, -124, 0, 33 + shift))
+	moment.Name = "Moment"
+	moment.TextSize = 13
+	local refused = 0 -- os.clock() until which the button says its screen isn't open
+	moment.MouseButton1Click:Connect(function()
+		if not Cues.Show(shown) then
+			refused = os.clock() + 2.5
+			refresh()
+			task.delay(2.5, refresh)
+		end
+	end)
 
 	type Row = { Frame: TextButton, Number: TextLabel, Title: TextLabel, By: TextLabel, Length: TextLabel, Keep: TextButton, Item: (Candidate | string)? }
 	local rows: { Row } = {}
@@ -560,7 +574,12 @@ function AuditionController.Mount(): ScreenGui?
 			b.Text = `{t.Spec.Label} · {live}`
 		end
 		local level = (Config.Levels :: any)[shown] or 0
-		info.Text = `Tap a row: it plays, and every {string.lower(tab.Spec.Label)} plays it. Level {if level >= 0 then "+" else ""}{level} dB.`
+		local isMoment = table.find(CuesConfig.Moments, shown) ~= nil
+		local db = `Level {if level >= 0 then "+" else ""}{level} dB.`
+		info.Text = if isMoment then `Tap a row, then show its moment. {db}` else `Tap a row: it plays, and every {string.lower(tab.Spec.Label)} plays it. {db}`
+		info.Size = UDim2.new(1, if isMoment then -130 else 0, 0, 18)
+		moment.Visible = isMoment
+		moment.Text = if os.clock() < refused then "Open its screen" else "Play the moment"
 		local first = (tab.Page - 1) * Config.Page
 		for r, row in rows do
 			local item: (Candidate | string)? = nil

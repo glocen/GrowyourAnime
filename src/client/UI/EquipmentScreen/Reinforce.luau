@@ -31,6 +31,7 @@ local Shine = require(UI.Kit.Shine)
 local Burst = require(UI.Kit.Burst)
 local Text = require(UI.Kit.Text)
 local Look = require(script.Parent.Look)
+local Cues = require(UI.Parent.Controllers.Main.FighterController.Cues)
 
 local ReinforcePage = {}
 
@@ -514,6 +515,7 @@ function ReinforcePage.Build(context: Look.Context): Look.Page
 	-- The answer, shown: the cost leaves, the ring and the levels turn, the hit plays, the next lines cross in.
 	local function answered(b: Beat, answer: { [string]: any }, before: Facts)
 		local won = answer.Success == true
+		Cues.Moment(if won then "Reinforced" else "ReinforceFailed") -- as the ring turns (TR64)
 		result = { Won = won, Level = answer.Level, Stones = answer.Stones, Grade = answer.Grade, Credits = answer.Credits }
 		b.Answer = os.clock() - b.Start
 		b.Won = won
@@ -586,10 +588,11 @@ function ReinforcePage.Build(context: Look.Context): Look.Page
 		group:SetAttribute("Level", answer.Level)
 	end
 
-	-- A press: one try, the server's.
-	local function try(): boolean
+	-- A press: one try, the server's. `staged` is the listening panel's (TR64, Play the moment): the beat played to a won
+	-- (true) or failed (false) answer of its own, whatever the bag holds, nothing asked of the server or spent.
+	local function try(staged: boolean?): boolean
 		local facts = factsOf(context.Latest())
-		if beat or stopped or facts == nil or stateOf(facts) ~= "Ready" then
+		if beat or stopped or facts == nil or (staged == nil and stateOf(facts) ~= "Ready") then
 			return false
 		end
 		result = nil
@@ -612,7 +615,16 @@ function ReinforcePage.Build(context: Look.Context): Look.Page
 		beat = b
 		rest()
 		stepping = RunService.RenderStepped:Connect(step)
-		local answer = context.On.Act("Reinforce", { Item = itemId })
+		local answer = if staged == nil
+			then context.On.Act("Reinforce", { Item = itemId })
+			else {
+				Ok = true,
+				Success = staged,
+				Level = if staged then math.min(facts.Level + 1, Config.Cap) else facts.Level,
+				Stones = if cost then cost.Stones else 1,
+				Grade = grade,
+				Credits = if cost then cost.Credits else 0,
+			}
 		local waited = os.clock() - b.Start
 		if waited < M.Least then
 			task.wait(M.Least - waited)
@@ -640,7 +652,9 @@ function ReinforcePage.Build(context: Look.Context): Look.Page
 		return true
 	end
 
-	press = Look.Press(shaker, "Press", X(R.Press[1]), Y(R.Press[2]), R.Press[3] - R.Press[1], R.Press[4] - R.Press[2], try, 8)
+	press = Look.Press(shaker, "Press", X(R.Press[1]), Y(R.Press[2]), R.Press[3] - R.Press[1], R.Press[4] - R.Press[2], function(): boolean
+		return try() -- a real press: never the panel's staged answer
+	end, 8)
 	context.Parts.ReinforcePress = press
 	paint(first)
 	rest()
@@ -712,6 +726,13 @@ function ReinforcePage.Build(context: Look.Context): Look.Page
 		comet.Rotation = 360 * phase
 	end)
 
+	Cues.Stage("Reinforced", function()
+		try(true)
+	end)
+	Cues.Stage("ReinforceFailed", function()
+		try(false)
+	end)
+
 	return {
 		Paint = function(view: Profile.View)
 			local facts = factsOf(view)
@@ -721,6 +742,8 @@ function ReinforcePage.Build(context: Look.Context): Look.Page
 		end,
 		Stop = function()
 			stopped = true
+			Cues.Stage("Reinforced", nil)
+			Cues.Stage("ReinforceFailed", nil)
 			stop()
 			if beat then
 				beat = nil

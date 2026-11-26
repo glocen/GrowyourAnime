@@ -26,6 +26,13 @@
 --     voice of its take held is counted as missed.
 --   Cues.Play("HeavyHit", where, { Strength = 0.8 })   now, or { In = 0.3 } with its moment that far ahead
 --   Cues.Duck()                                        the player's own lead's hit: the Shades' bus goes down a moment
+--   Cues.Moment("LevelUp", { Speed = 1.189 })          TR64's big moments (Config.Cues.Moments), by name as they happen:
+--                                                      Config.Cues.Front studs before the camera, its rise kept; Hold
+--                                                      waits for the fight to go quiet (Theme.Time.Fight past the last
+--                                                      hit). A cue nobody has picked has no layers: silent, never an error
+--   Cues.Fought()                                      a hit on or by the player's own: the fight goes on
+--   Cues.Stage(name, show) / Cues.Show(name)           the listening panel's Play the moment: each moment's owner stages
+--                                                      it, so it's shown and heard without its cause
 -- AR39's A/B: a pilot's cue plays as it was or as one of its arrangements, as Config.Cues.Use says, read at each play.
 
 local SoundService = game:GetService("SoundService")
@@ -35,12 +42,14 @@ local TweenService = game:GetService("TweenService")
 local Config = require(ReplicatedStorage.Shared.Config.Cues)
 local SoundRule = require(ReplicatedStorage.Shared.Rules.Sound)
 local SettingsController = require(script.Parent.Parent.Parent.Core.SettingsController)
+local Theme = require(script.Parent.Parent.Parent.Parent.UI.Theme)
 
 local Cues = {}
 
 export type Options = {
 	In: number?, -- seconds until the cue's moment (a beat's cue starts before it); 0 when left out
 	Strength: number?, -- 0 to 1, for a layer that follows the hit's strength; 1 when left out
+	Speed: number?, -- times the play's pitch pick (a shard's note, TR64); 1 when left out
 }
 
 type Voice = {
@@ -348,7 +357,7 @@ function Cues.Play(name: string, at: Vector3, options: Options?): boolean
 			stop(voice)
 		end
 	end
-	local speed, volume = pick(cue.Pitch), pick(cue.Volume)
+	local speed, volume = pick(cue.Pitch) * (o.Speed or 1), pick(cue.Volume)
 	local match = if key ~= name then SoundRule.Match(name, (Config.Use :: { [string]: string })[name]) else 1
 	local mixer = mixerTime()
 	local play: Play = { Voices = {}, Ends = now }
@@ -425,6 +434,71 @@ function Cues.Under(db: number)
 	for _, bus in BUSES do
 		level(bus, 1)
 	end
+end
+
+-- TR64's big moments. The last hit on or by the player's own, for a held moment; how many times each was called; and
+-- how each is shown without its cause.
+local fought = -math.huge
+local heard: { [string]: number } = {}
+local holding: { [string]: boolean } = {}
+local staged: { [string]: (() -> ())? } = {}
+
+export type MomentOptions = { Speed: number?, Hold: boolean? }
+
+local function front(name: string, speed: number?): boolean
+	local camera = workspace.CurrentCamera
+	if camera == nil then
+		return false
+	end
+	local at = camera.CFrame.Position + camera.CFrame.LookVector * Config.Front
+	local ahead = Cues.Ahead(name) or 0
+	return Cues.Play(name, at, { In = if ahead > 0 then ahead else nil, Speed = speed })
+end
+
+-- Moment `name` as it happens: counted, and played at once, or once the fight is quiet when Hold (a goal done mid-fight
+-- waits, and two in one fight play once).
+function Cues.Moment(name: string, options: MomentOptions?)
+	heard[name] = (heard[name] or 0) + 1
+	local o: MomentOptions = options or {}
+	if not o.Hold then
+		front(name, o.Speed)
+		return
+	end
+	if holding[name] then
+		return
+	end
+	holding[name] = true
+	task.spawn(function()
+		while os.clock() < fought + Theme.Time.Fight do
+			task.wait(fought + Theme.Time.Fight - os.clock())
+		end
+		holding[name] = nil
+		front(name, o.Speed)
+	end)
+end
+
+function Cues.Fought()
+	fought = os.clock()
+end
+
+-- How many times moment `name` was called since the client began, for the self-test.
+function Cues.Heard(name: string): number
+	return heard[name] or 0
+end
+
+-- `show` stages moment `name` (nil takes it away: its screen closed).
+function Cues.Stage(name: string, show: (() -> ())?)
+	staged[name] = show
+end
+
+-- The panel's Play the moment: false when nothing has staged it (its screen isn't open, or it isn't a moment).
+function Cues.Show(name: string): boolean
+	local show = staged[name]
+	if show == nil then
+		return false
+	end
+	task.spawn(show)
+	return true
 end
 
 -- For the self-test: a bus's fader, the plays of a cue still sounding, how many of every voice are loaded, and the

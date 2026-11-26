@@ -16,6 +16,7 @@ local Screen = require(UI.Kit.Screen)
 local TowerScreen = require(UI.TowerScreen)
 local ProfileController = require(script.Parent.Parent.Core.ProfileController)
 local HudController = require(script.Parent.HudController)
+local Cues = require(script.Parent.FighterController.Cues)
 
 local TowerController = {}
 
@@ -30,6 +31,9 @@ local function results(view: Profile.View?)
 	end
 	if held == nil or Players.LocalPlayer:GetAttribute("Tower") ~= nil or TowerScreen.Told(held.Id) or open then
 		return
+	end
+	if held.Record then
+		Cues.Moment("Record") -- a new record (TR64), as its card opens
 	end
 	TowerScreen.Open(held, {
 		Act = ProfileController.Act,

@@ -10,6 +10,7 @@ local GuiService = game:GetService("GuiService")
 
 local Shared = game:GetService("ReplicatedStorage").Shared
 local Config = require(Shared.Config.Broadcast)
+local HudConfig = require(Shared.Config.Hud)
 local Items = require(Shared.Definitions.Items)
 local HudController = require(script.Parent.Parent.Parent.Main.HudController)
 local BroadcastController = require(script.Parent.Parent.Parent.Main.BroadcastController)
@@ -64,7 +65,9 @@ function BroadcastCases.Cases(): { any }
 						`{math.floor(left)} to {math.floor(right)}; the lead's card ends {math.floor(lead.AbsolutePosition.X + lead.AbsoluteSize.X)}, the pill starts {math.floor(pill.AbsolutePosition.X)}`)
 				end
 				t.Check("its words fit, the rarity lit", words ~= nil and words.TextFits and string.find(words.Text, "<font", 1, true) ~= nil and string.gsub(words.ContentText, "\n", " ") == want, if words then words.ContentText else "no words")
-				t.Equal("and it stays in the chat", BroadcastController.Chatted(), want)
+				local chatted, light = BroadcastController.Chatted()
+				t.Equal("and it stays in the chat", chatted, want)
+				t.Equal("its rarity in the bag's lifted colour, readable on the chat's dark panel", light, HudConfig.Bag.Rarity.Epic:ToHex())
 				Layers.Box(nil)
 				Layers.Force(nil)
 				t.Check("gone after its seconds", waitFor(t, Config.Plate.Seconds + 1, function(): boolean

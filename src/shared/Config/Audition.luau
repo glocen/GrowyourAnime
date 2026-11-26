@@ -127,5 +127,4 @@ return {
 	Gap = 0.08, -- s of quiet that end the first event (tools/studio/Audio/Waveform's split)
 	Floor = -45, -- dB under the read's loudest that count as quiet
 	Event = -20, -- dB: the first event is the first whose top comes within this of the loudest; quieter noise before it is cut
-	Preview = 12, -- studs in front of the camera a tap's play is heard from: inside every cue's Near, never on the listener
 }

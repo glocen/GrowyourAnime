@@ -1,9 +1,10 @@
 --!strict
 -- BoardsController (client): the boards on the Strip, drawn on their plates (TR58; docs/design.md, "Being seen";
--- BoardsService; Config.Boards). Each plate of the Boards marker gets a SurfaceGui of its own: its title, its first
--- Config.Boards.Shown rows, a name and a number, and the viewer's own rank under them when they're outside; the news
--- plate shows the last every-server lines, its words built here from our definitions (Rules.Broadcast), only the
--- player's own when they show no others' finds. The boards are asked for once the plates stream in, then every
+-- BoardsService; Config.Boards). Each plate of the Boards marker gets a SurfaceGui of its own: its title and four rows
+-- (Rules.Boards.Face): the top three, a rank, a name and a number, then the viewer's own row, lit, rank first, when
+-- they stand outside them, or the fourth (research's must-fix, 2026-11-26), at Config.Boards.Face's size; the news
+-- plate shows the last every-server lines in the same type, its words built here from our definitions
+-- (Rules.Broadcast), only the player's own when they show no others' finds. The boards are asked for once the plates stream in, then every
 -- Config.Boards.Read seconds; a new every-server line joins the news as it's heard. A grey block: the look follows
 -- research's verdict, the art Modulo's.
 --   BoardsController.Refresh()     asks for the boards now and draws them (yields): for tests
@@ -11,12 +12,14 @@
 
 local CollectionService = game:GetService("CollectionService")
 local Players = game:GetService("Players")
+local TextService = game:GetService("TextService")
 
 local Shared = game:GetService("ReplicatedStorage").Shared
 local Config = require(Shared.Config.Boards)
 local HudConfig = require(Shared.Config.Hud)
 local Net = require(Shared.Net)
 local Broadcast = require(Shared.Rules.Broadcast)
+local Boards = require(Shared.Rules.Boards)
 local Hud = require(Shared.Rules.Hud)
 local Settings = require(Shared.Rules.Settings)
 local Markers = require(Shared.World.Markers)
@@ -27,11 +30,7 @@ local ProfileController = require(script.Parent.Parent.Core.ProfileController)
 
 local BoardsController = {}
 
-local PIXELS = 40 -- a plate's pixels a stud: a 14-stud plate draws 560 across
-local REACH = 120 -- studs the words draw from
-local PAD = 18 -- authored pixels round a plate's words
-local TITLE, ROW, NEWS = 30, 26, 30 -- line heights, authored pixels
-local RANK = 44 -- the rank's column
+local F = Config.Face
 
 local player = Players.LocalPlayer
 local guis: { [string]: SurfaceGui } = {}
@@ -54,6 +53,17 @@ local function label(parent: Instance, name: string, text: string, size: number,
 	return l
 end
 
+-- Words' width at `size` in `font`, in the face's pixels, so a name takes what its rank and number leave.
+local function measure(text: string, font: Font, size: number): number
+	local params = Instance.new("GetTextBoundsParams")
+	params.Text = text
+	params.Font = font
+	params.Size = size
+	params.Width = 100_000
+	local ok, bounds = pcall(TextService.GetTextBoundsAsync, TextService, params)
+	return if ok then math.ceil((bounds :: Vector2).X) + 2 else math.ceil(#text * size * 0.6)
+end
+
 -- The plate's SurfaceGui, emptied for a new drawing.
 local function surface(board: string, plate: BasePart): Frame
 	local gui = guis[board]
@@ -65,9 +75,9 @@ local function surface(board: string, plate: BasePart): Frame
 		made.Name = `NL_Board_{board}`
 		made.Face = Enum.NormalId.Front
 		made.SizingMode = Enum.SurfaceGuiSizingMode.PixelsPerStud
-		made.PixelsPerStud = PIXELS
+		made.PixelsPerStud = F.Pixels
 		made.LightInfluence = 0
-		made.MaxDistance = REACH
+		made.MaxDistance = F.Reach
 		made.ResetOnSpawn = false
 		made.Adornee = plate
 		made.Parent = player:WaitForChild("PlayerGui")
@@ -79,58 +89,66 @@ local function surface(board: string, plate: BasePart): Frame
 	local body = Instance.new("Frame")
 	body.Name = "Body"
 	body.BackgroundTransparency = 1
-	body.Position = UDim2.fromOffset(PAD, PAD)
-	body.Size = UDim2.new(1, -2 * PAD, 1, -2 * PAD)
+	body.Position = UDim2.fromOffset(F.Pad, F.Pad)
+	body.Size = UDim2.new(1, -2 * F.Pad, 1, -2 * F.Pad)
 	body.Parent = surfaceGui
-	label(body, "Title", Config.Titles[board] or board, Theme.Text.Big, Theme.Font.Strong, Theme.Colour.Text, UDim2.new(1, 0, 0, TITLE), UDim2.new(), Enum.TextXAlignment.Center)
+	label(body, "Title", Config.Titles[board] or board, F.Title.Size, Theme.Font.Strong, Theme.Colour.Text, UDim2.new(1, 0, 0, F.Title.Tall), UDim2.new(), Enum.TextXAlignment.Center)
 	return body
 end
 
--- A ranked board: its rows, then the viewer's own line when they're outside the first Shown.
+-- A ranked board's face: the top three, then the viewer's own row, lit, rank first, when they stand outside them, or
+-- the fourth (Rules.Boards.Face). A name takes what its rank and number leave.
 local function drawBoard(board: string, plate: BasePart, got: any)
 	local body = surface(board, plate)
 	local rows = if type(got) == "table" and type(got.Rows) == "table" then got.Rows else {}
+	local face = Boards.Face(rows, if type(got) == "table" then got.Mine else nil, Config.Top, player.DisplayName)
 	local function said(row: any): string
 		if board == "Week" then
 			return `Floor {tonumber(row.Floor) or 0}`
 		end
 		return Hud.Digits(tonumber(row.Value) or 0)
 	end
-	local y = TITLE + 8
-	for index, row in rows :: { any } do
-		if index > Config.Shown then
-			break
-		end
+	local function ranked(row: any): string
+		return if row.Rank then Hud.Digits(row.Rank) else `{Config.Page}+`
+	end
+	local R = F.Row
+	local wide = plate.Size.X * F.Pixels - 2 * F.Pad
+	local rankWide = F.Rank
+	for _, row in face do
+		rankWide = math.max(rankWide, measure(ranked(row), Theme.Font.Number, R.Size))
+	end
+	local y = F.Title.Tall + F.Gap
+	for index, row in face do
 		local line = Instance.new("Frame")
 		line.Name = `Row{index}`
-		line.BackgroundTransparency = if row.Mine then 0.4 else 1
+		line.BackgroundTransparency = if row.Mine then F.Lit else 1
 		line.BackgroundColor3 = Theme.Colour.PlateHigh
 		line.BorderSizePixel = 0
 		line.Position = UDim2.fromOffset(0, y)
-		line.Size = UDim2.new(1, 0, 0, ROW)
+		line.Size = UDim2.new(1, 0, 0, R.Tall)
 		line.Parent = body
 		local colour = if row.Mine then Theme.Colour.Ready else Theme.Colour.Text
-		label(line, "Rank", tostring(row.Rank or ""), Theme.Text.Title, Theme.Font.Number, Theme.Colour.TextDim, UDim2.fromOffset(RANK - 10, ROW), UDim2.new(), Enum.TextXAlignment.Right)
-		label(line, "Name", if row.Name ~= "" then row.Name else "A player", Theme.Text.Title, Theme.Font.Body, colour, UDim2.new(0.62, -RANK, 0, ROW), UDim2.fromOffset(RANK, 0), Enum.TextXAlignment.Left)
-		label(line, "Value", said(row), Theme.Text.Title, Theme.Font.Number, colour, UDim2.new(0.38, 0, 0, ROW), UDim2.fromScale(0.62, 0), Enum.TextXAlignment.Right)
-		y += ROW
+		local value = said(row)
+		local valueWide = measure(value, Theme.Font.Number, R.Size)
+		label(line, "Rank", ranked(row), R.Size, Theme.Font.Number, if row.Mine then colour else Theme.Colour.TextDim, UDim2.fromOffset(rankWide, R.Tall), UDim2.new(), Enum.TextXAlignment.Right)
+		local name = if type(row.Name) == "string" and row.Name ~= "" then row.Name else "A player"
+		label(line, "Name", name, R.Size, Theme.Font.Body, colour, UDim2.fromOffset(math.max(0, wide - rankWide - valueWide - 2 * F.Space), R.Tall), UDim2.fromOffset(rankWide + F.Space, 0), Enum.TextXAlignment.Left)
+		local number = label(line, "Value", value, R.Size, Theme.Font.Number, colour, UDim2.fromOffset(valueWide, R.Tall), UDim2.fromScale(1, 0), Enum.TextXAlignment.Right)
+		number.AnchorPoint = Vector2.new(1, 0)
+		y += R.Tall
 	end
-	if #rows == 0 then
-		label(body, "Empty", "No one yet", Theme.Text.Title, Theme.Font.Body, Theme.Colour.TextDim, UDim2.new(1, 0, 0, ROW), UDim2.fromOffset(0, y), Enum.TextXAlignment.Center)
-	end
-	local own = if type(got) == "table" then got.Mine else nil
-	if type(own) == "table" and (own.Rank == nil or own.Rank > Config.Shown) then
-		local where = if own.Rank then `#{Hud.Digits(own.Rank)}` else `Past the top {Config.Page}`
-		label(body, "Own", `You · {where} · {said(own)}`, Theme.Text.Title, Theme.Font.Strong, Theme.Colour.Ready, UDim2.new(1, 0, 0, ROW), UDim2.new(0, 0, 1, -ROW), Enum.TextXAlignment.Center)
+	if #face == 0 then
+		label(body, "Empty", "No one yet", R.Size, Theme.Font.Body, Theme.Colour.TextDim, UDim2.new(1, 0, 0, R.Tall), UDim2.fromOffset(0, y), Enum.TextXAlignment.Center)
 	end
 end
 
--- The news: the last every-server lines, newest first, each in its rarity's light.
+-- The news: the last every-server lines, newest first, each in its rarity's light, wrapped to two lines at most.
 local function drawNews(plate: BasePart)
 	local body = surface("News", plate)
 	local view = ProfileController.Get()
 	local others = view == nil or Settings.On(view :: any, "ShowFinds")
-	local y = TITLE + 8
+	local N = F.News
+	local y = F.Title.Tall + F.Gap
 	local shown = 0
 	for _, item in news do
 		if shown >= Config.News then
@@ -139,14 +157,16 @@ local function drawNews(plate: BasePart)
 		if others or item.User == player.UserId then
 			local parts, rarity = Broadcast.Line(item)
 			local light = HudConfig.Card.Trim[rarity] or Theme.Colour.Text
-			local line = label(body, `Line{shown + 1}`, Broadcast.Rich(parts, light:ToHex()), Theme.Text.Body + 2, Theme.Font.Body, Theme.Colour.Text, UDim2.new(1, 0, 0, NEWS), UDim2.fromOffset(0, y), Enum.TextXAlignment.Left)
+			local line = label(body, `Line{shown + 1}`, Broadcast.Rich(parts, light:ToHex()), N.Size, Theme.Font.Body, Theme.Colour.Text, UDim2.new(1, 0, 0, N.Tall), UDim2.fromOffset(0, y), Enum.TextXAlignment.Left)
 			line.RichText = true
-			y += NEWS
+			line.TextWrapped = true
+			line.TextYAlignment = Enum.TextYAlignment.Top
+			y += N.Tall
 			shown += 1
 		end
 	end
 	if shown == 0 then
-		label(body, "Empty", "Nothing yet", Theme.Text.Title, Theme.Font.Body, Theme.Colour.TextDim, UDim2.new(1, 0, 0, ROW), UDim2.fromOffset(0, y), Enum.TextXAlignment.Center)
+		label(body, "Empty", "Nothing yet", F.Row.Size, Theme.Font.Body, Theme.Colour.TextDim, UDim2.new(1, 0, 0, F.Row.Tall), UDim2.fromOffset(0, y), Enum.TextXAlignment.Center)
 	end
 end
 

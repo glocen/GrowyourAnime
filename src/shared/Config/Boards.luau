@@ -14,10 +14,29 @@ return {
 	Stores = { Lead = "BoardLead", Stars = "BoardStars" } :: { [string]: string },
 	-- The words over each plate (the content check before they ship).
 	Titles = { Lead = "Strongest lead", Week = "The Tower this week", News = "News", Stars = "Most stars" } :: { [string]: string },
-	Shown = 10, -- rows a board shows; the viewer's own rank under them when they're outside
-	Page = 100, -- the page read, best first; an own rank past it reads "Past the top 100"
+	-- A face shows the Top rows, then a fourth: the viewer's own, lit, when they stand outside them, else the next row, so
+	-- a viewer among the top is lit where they stand (research's must-fix on TR58, 2026-11-26, in place of the top ten;
+	-- the full list waits for a tap, with TR33). The server sends Top + 1 rows.
+	Top = 3,
+	Page = 100, -- the page read, best first; an own rank past it reads "100+"
+	-- A face in authored pixels, Pixels a stud (a 14 by 9 stud plate draws 560 by 360), drawn from Reach studs: the title,
+	-- then four rows of 54-point words, 2.7 times TR58's first 20 (research: about three times, read from the path's
+	-- nearest point on the smallest phone). A rank's column is Rank wide, or its widest rank's; a name takes what its
+	-- rank and number leave, Space round it, cut with an ellipsis past it. The viewer's row in the light at Lit.
+	Face = {
+		Pixels = 40,
+		Reach = 120,
+		Pad = 10,
+		Title = { Size = 36, Tall = 42 },
+		Gap = 4,
+		Row = { Tall = 73, Size = 54 },
+		Rank = 96,
+		Space = 14,
+		Lit = 0.4,
+		News = { Size = 40, Tall = 98 }, -- a news line in the same type, wrapped to two lines at most
+	},
 	Read = 60, -- seconds a page read is kept on a server
 	Post = 120, -- seconds between one player's posts to one board
-	News = 8, -- every-server lines the news plate holds
+	News = 3, -- every-server lines the news plate holds, newest first
 	Look = 5, -- seconds between the server's looks at what waits to be posted (the builder's)
 }

@@ -507,8 +507,15 @@ end
 -- its own (Config.Effects.Falls): the same burst on its clip's marker, and its lantern left to go out (AR7, section 5).
 local function burst(view: View, down: AnimationTrack?)
 	local fall = EffectsConfig.Falls[view.Rig]
+	local kind = view.Model:GetAttribute("Kind")
+	local cue = SoundRule.Fall(if type(kind) == "string" then kind else nil)
 	Effects.ShadeBurst(view.Model, down, view.Collar, fall, function(at: Vector3)
-		Cues.Play("ShadeBurst", at) -- AR13, on the burst's frame
+		-- on the burst's frame: a Shade's in the world (AR13), a keeper's fall the run's big moment (TR64)
+		if cue == "ShadeBurst" then
+			Cues.Play(cue, at)
+		else
+			Cues.Moment(cue)
+		end
 	end)
 	if fall then
 		Effects.LanternOut(view.Model, down, fall)
@@ -598,6 +605,8 @@ local function onState(view: View)
 		local down = playReaction(view, "Down")
 		if view.Model:GetAttribute("Side") == "Shade" then
 			burst(view, down)
+		elseif was ~= nil and isMine(view) then
+			Cues.Moment("LeadDown") -- the player's own lead falls (TR64), never one already down as it streams in
 		end
 		local prop = view.Prop
 		if prop then
@@ -1210,6 +1219,7 @@ local function onHit(hit: any)
 		if not (mine or onMine) then
 			return
 		end
+		Cues.Fought() -- a held moment waits for the fight to go quiet (TR64)
 		-- The five styles and the grey word (docs/ui.md; Config.Hud.Numbers): a dodge or a block says so on a pointer;
 		-- damage on the player's own lead is received; the player's own hit is dealt, or a critical, and its element's share
 		-- is its own number in the element's colour, a beat behind.
@@ -1242,8 +1252,9 @@ local function onHit(hit: any)
 				end)
 			end
 		end
-		if onMine and type(hit.MaxHealth) == "number" and hit.Total >= hit.MaxHealth * Combat.Shake.HurtShare then
+		if onMine and SoundRule.Jolts(hit.Total, hit.MaxHealth, Combat.Shake.HurtShare) then
 			Effects.Jolt(Combat.Shake.Hurt)
+			Cues.Moment("LeadHurt") -- the jolt's sound, never every hit (TR64)
 		end
 	end
 	if not drawn(land, false) then
@@ -1324,9 +1335,61 @@ local function onReplay()
 	CameraTurn.To(CFrame.lookAt(focus - look * zoom, focus))
 end
 
+-- The fight's moments as the listening panel shows them without a fight (TR64, Play the moment): a keeper's burst on a
+-- grey stand-in before the camera, the player's own lead down for a while on this screen only, the hurt's jolt.
+local function stage()
+	Cues.Stage("KeeperFall", function()
+		local camera = workspace.CurrentCamera
+		local character = player.Character
+		local root = if character then character:FindFirstChild("HumanoidRootPart") :: BasePart? else nil
+		if camera == nil or root == nil then
+			return
+		end
+		local ahead = camera.CFrame.LookVector * Vector3.new(1, 0, 1)
+		local at = root.Position + (if ahead.Magnitude > 0 then ahead.Unit else Vector3.zAxis) * 10
+		local stand = Instance.new("Model")
+		stand.Name = "NL_KeeperStandIn"
+		local body = Instance.new("Part")
+		body.Name = "HumanoidRootPart"
+		body.Anchored, body.CanCollide, body.CanQuery, body.CanTouch = true, false, false, false
+		body.Size = Vector3.new(3, 7, 2)
+		body.Color = Color3.fromRGB(110, 110, 118)
+		body.CFrame = CFrame.lookAt(at + Vector3.new(0, 1.5, 0), root.Position * Vector3.new(1, 0, 1) + Vector3.new(0, at.Y + 1.5, 0))
+		body.Parent = stand
+		stand.PrimaryPart = body
+		stand.Parent = workspace
+		task.wait(0.6)
+		Effects.ShadeBurst(stand, nil, nil, nil, function()
+			Cues.Moment(SoundRule.Fall("Keeper"))
+		end)
+		task.delay(3, function()
+			stand:Destroy()
+		end)
+	end)
+	Cues.Stage("LeadDown", function()
+		for model, view in views do
+			if isMine(view) and model:GetAttribute("Side") ~= "Shade" and view.State ~= "Down" and view.State ~= "Home" then
+				local before = model:GetAttribute("State")
+				model:SetAttribute("State", "Down") -- here only: the server's word comes back at its next change, or below
+				task.delay(3, function()
+					if model:GetAttribute("State") == "Down" then
+						model:SetAttribute("State", before)
+					end
+				end)
+				return
+			end
+		end
+	end)
+	Cues.Stage("LeadHurt", function()
+		Effects.Jolt(Combat.Shake.Hurt)
+		Cues.Moment("LeadHurt")
+	end)
+end
+
 function FighterController.Start()
 	Sounds.Preload()
 	Cues.Preload()
+	stage()
 	Rows.Warm() -- the effect kit drawn once, unseen, so the first effect never pops in late (AR8)
 	CollectionService:GetInstanceAddedSignal("Fighter"):Connect(function(model: Instance)
 		task.spawn(add, model)

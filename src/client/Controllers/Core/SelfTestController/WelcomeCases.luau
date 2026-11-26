@@ -6,6 +6,7 @@
 
 local Shared = game:GetService("ReplicatedStorage").Shared
 local HudConfig = require(Shared.Config.Hud)
+local UIKit = require(Shared.Config.UIKit)
 local WelcomeConfig = require(Shared.Config.Welcome)
 local Codes = require(Shared.Rules.Codes)
 local HudController = require(script.Parent.Parent.Parent.Main.HudController)
@@ -15,6 +16,7 @@ local Button = require(UI.Kit.Button)
 local Screen = require(UI.Kit.Screen)
 local HomePanel = require(UI.HomePanel)
 local TodayList = require(UI.TodayList)
+local ReturnCard = require(UI.ReturnCard)
 local SettingsScreen = require(UI.SettingsScreen)
 local Helpers = require(script.Parent.Helpers)
 
@@ -74,7 +76,19 @@ function WelcomeCases.Cases(): { any }
 				end))
 				t.Wait(home.Today.Switch + 0.1)
 				t.Equal("no row before the script's end", #(TodayList.Said(panel) :: any).Week, 0)
+				-- the return card hides under the open list, and comes back as it closes (research's must-fix on TR59)
+				local keptCard = (ProfileController.Get() :: any).Base.Card
+				t.Server("ReturnCardSet", { Kwh = 3 })
+				t.Check("a return card meanwhile, hidden while the list is open", waitFor(t, REPLICATE, function(): boolean
+					local card = ReturnCard.Parts().Card
+					return ReturnCard.Up() and card ~= nil and not card.Visible
+				end))
 				TodayList.Hide(panel, true)
+				t.Check("and back as the list closes", waitFor(t, 0.5, function(): boolean
+					local card = ReturnCard.Parts().Card
+					return card ~= nil and card.Visible
+				end))
+				t.Server("ReturnCardSet", keptCard)
 				-- the script over: the row, today's lit
 				t.Check("the week set shown", (t.Server("WelcomeSet", nil, nil, true) :: any).Ok == true)
 				t.Check("its copy reached the client", waitFor(t, REPLICATE, function(): boolean
@@ -112,6 +126,14 @@ function WelcomeCases.Cases(): { any }
 					return states(TodayList.Said(panel)) == "Taken Later Later Later Later Later Later"
 				end), states(TodayList.Said(panel)))
 				t.Check("the rim dark again", (TodayList.Said(panel) :: any).Waits == false)
+				local first = if scroll then scroll:FindFirstChild("Week1") else nil -- the row laid again in the same scroll
+				local shows: { string } = {}
+				for _, child in (if first then first:GetChildren() else {}) do
+					if child:IsA("GuiObject") and child.Name ~= "Day" then
+						table.insert(shows, child.Name)
+					end
+				end
+				t.Check("the taken day shows its check alone, its gift's picture and words gone", first ~= nil and #shows == 1, table.concat(shows, ", "))
 				local again = t.Server("Act", "WelcomeClaim", {}) :: any
 				t.Check("a second claim the same day pays nothing", again.Ok == false and again.Error == "Today" and held(t, "crate") == crates + 1, tostring(again.Error))
 				Helpers.lintClean(t, "Welcome week")
@@ -151,6 +173,13 @@ function WelcomeCases.Cases(): { any }
 				end))
 				local note = (parts.Codes :: Frame):FindFirstChild("Note") :: TextLabel?
 				t.Check("the note, whole", note ~= nil and note.Text == "New codes come with each update. See the game's page." and note.TextFits)
+				local card = parts.Card :: Frame
+				local field = (parts.Codes :: Frame):FindFirstChild("Field") :: TextBox?
+				local S = HudConfig.Settings
+				t.Equal("the card shrinks to the codes", card.Size.Y.Offset, S.Codes.Foot - S.Card[2])
+				t.Check("the note inside it, no empty middle", note ~= nil and note.AbsolutePosition.Y + note.AbsoluteSize.Y <= card.AbsolutePosition.Y + card.AbsoluteSize.Y
+					and card.AbsolutePosition.Y + card.AbsoluteSize.Y - (note.AbsolutePosition.Y + note.AbsoluteSize.Y) < 0.25 * card.AbsoluteSize.Y)
+				t.Check("the field in the kit's neutral glass, not violet", field ~= nil and field.BackgroundColor3 == UIKit.Palettes[S.Codes.Field.Palette].Panel[1])
 				t.Equal("wrong", SettingsScreen.Take("not a code"), Codes.Words.Unknown)
 				t.Equal("taken, in any case and spacing", SettingsScreen.Take("  lantern test"), "Code taken: Forge Crate")
 				t.Check("a Forge Crate into the bag", waitFor(t, REPLICATE, function(): boolean
@@ -162,6 +191,7 @@ function WelcomeCases.Cases(): { any }
 				t.Check("the press turns it back", press ~= nil and Button.Press(press) and waitFor(t, 1, function(): boolean
 					return not (parts.Codes :: Frame).Visible and (parts.RowMusic :: Frame).Visible
 				end))
+				t.Equal("the card whole again", (parts.Card :: Frame).Size.Y.Offset, HudConfig.Settings.Card[4] - HudConfig.Settings.Card[2])
 				restore()
 			end,
 		},

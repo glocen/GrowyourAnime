@@ -43,6 +43,8 @@ local ProfileController = require(script.Parent.Parent.Core.ProfileController)
 local WorldConfig = require(Shared.Config.World)
 local Screen = require(UI.Kit.Screen)
 local HudController = require(script.Parent.HudController)
+local Cues = require(script.Parent.FighterController.Cues)
+local Grounds = require(Shared.Definitions.Grounds)
 
 local StageController = {}
 
@@ -519,6 +521,13 @@ function StageController.Shard(): { [string]: any }?
 end
 
 function StageController.Start()
+	-- A new best's card for the listening panel (TR64, Play the moment): the first ground's first stretch, won in its best.
+	Cues.Stage("Record", function()
+		local ground = Grounds.List[1].Id
+		local count = #((Stages.Of(ground) or {}) :: { any })
+		StageScreen.Results({ Ground = ground, Difficulty = "Normal", Stage = count, Count = count, Won = true, Seconds = 185, Best = 185, From = 1, Credits = 240, Shards = 2, Chests = 1 }, on)
+		Cues.Moment("Record")
+	end)
 	Net.Client.On("StagePick", function(payload: any)
 		local view = ProfileController.Get()
 		if type(payload) == "table" and type(payload.Ground) == "string" and view then
@@ -529,6 +538,9 @@ function StageController.Start()
 		if type(results) == "table" and type(results.Ground) == "string" and type(results.Stage) == "number" then
 			fell = if results.Won ~= true then results else nil
 			StageScreen.Results(results, on)
+			if StageScreen.NewBest(results) then
+				Cues.Moment("Record") -- a new best (TR64), as its card rises
+			end
 		end
 	end)
 	Net.Client.On("StageGate", function(payload: any)

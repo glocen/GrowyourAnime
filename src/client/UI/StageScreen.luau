@@ -19,6 +19,7 @@
 --   Send another, the picker of who's ready (the card comes back when it closes: StageController); and Home.
 --   StageScreen.Pick(ground, view, on)    the Arc panel
 --   StageScreen.Results(results, on)     the run's card
+--   StageScreen.NewBest(results)         whether the card says "New best": won, timed, and its best its own time
 --   StageScreen.Parts()                  its pieces by name, for tests
 --   StageScreen.Difficulty()             the difficulty last begun from the panel
 
@@ -813,6 +814,11 @@ local function shutUntilLit(button: TextButton, w: number)
 	end)
 end
 
+function StageScreen.NewBest(results: { [string]: any }): boolean
+	local seconds, best = results.Seconds, results.Best
+	return results.Won == true and type(seconds) == "number" and type(best) == "number" and best >= seconds
+end
+
 function StageScreen.Results(results: { [string]: any }, on: On)
 	table.clear(parts)
 	local ground, which, stage = results.Ground :: string, results.Difficulty :: string, results.Stage :: number
@@ -876,7 +882,7 @@ function StageScreen.Results(results: { [string]: any }, on: On)
 	local said: string? = nil
 	if not won or seconds == nil then
 		said = if won then "Cleared" else `Next run starts at Stretch {resume}`
-	elseif best and best >= seconds then
+	elseif StageScreen.NewBest(results) then
 		said = nil -- a new best: the clock at the title's size, then "New best"
 	elseif best then
 		said = `{Read.Clock(seconds)}   ·   best {Read.Clock(best)}`

@@ -22,6 +22,7 @@ local UserInputService = game:GetService("UserInputService")
 local Shared = game:GetService("ReplicatedStorage").Shared
 local Profile = require(Shared.Data.Profile)
 local HudConfig = require(Shared.Config.Hud)
+local UIKit = require(Shared.Config.UIKit)
 local Settings = require(Shared.Rules.Settings)
 local Codes = require(Shared.Rules.Codes)
 local WelcomeConfig = require(Shared.Config.Welcome)
@@ -413,10 +414,16 @@ local function codesMade(parent: Frame): Frame
 	box.TextXAlignment = Enum.TextXAlignment.Left
 	box.FontFace = Font.new("rbxasset://fonts/families/BuilderSans.json", Enum.FontWeight.Bold)
 	box.TextSize = C.Field.Size
-	box.TextColor3 = SEAM.Text
-	box.PlaceholderColor3 = SEAM.Soft
-	box.BackgroundColor3 = SEAM.Facet
+	local glass = UIKit.Palettes[C.Field.Palette]
+	box.TextColor3 = glass.Text
+	box.PlaceholderColor3 = glass.Soft
+	box.BackgroundColor3 = glass.Panel[1]
 	box.BorderSizePixel = 0
+	local rim = Instance.new("UIStroke")
+	rim.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+	rim.Color = glass.Edge
+	rim.Thickness = C.Field.Stroke
+	rim.Parent = box
 	box.Position = UDim2.fromOffset(X(N.X), middle - C.Field.Tall / 2)
 	box.Size = UDim2.fromOffset(C.Field.Right - N.X, C.Field.Tall)
 	box.ZIndex = 4
@@ -461,6 +468,10 @@ local function showCodes(shown: boolean)
 	end
 	if codes.Frame then
 		codes.Frame.Visible = shown
+	end
+	local card = parts.Card
+	if card and card:IsA("GuiObject") then -- shrunk to the codes, no empty middle
+		card.Size = UDim2.fromOffset(S.Card[3] - S.Card[1], (if shown then S.Codes.Foot else S.Card[4]) - S.Card[2])
 	end
 	local press = parts.CodesPress
 	if press and press:IsA("TextButton") then

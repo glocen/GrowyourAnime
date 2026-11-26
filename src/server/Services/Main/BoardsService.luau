@@ -173,7 +173,7 @@ local function look()
 	end
 end
 
--- The boards as `player` reads them: each one's first Shown rows with their names, their own row, and the news.
+-- The boards as `player` reads them: each one's first Top + 1 rows with their names, their own row, and the news.
 local function answer(player: Player): { [string]: any }
 	local data = DataService.WaitFor(player)
 	if data == nil then
@@ -193,7 +193,7 @@ local function answer(player: Player): { [string]: any }
 				best = math.max(best, entry.Score)
 			end
 		end
-		local rows, own = Boards.Rank(top, player.UserId, best, Config.Shown, Config.Page)
+		local rows, own = Boards.Rank(top, player.UserId, best, Config.Top + 1, Config.Page)
 		ranked[board] = { Rows = rows, Own = own }
 		for _, row in rows do
 			table.insert(ids, row.Id)

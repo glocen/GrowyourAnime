@@ -4,6 +4,8 @@
 -- built outside Studio; a candidate that fails to load is marked and skipped; changing the live sound never drops or
 -- doubles a voice; "Old" brings today's cue back exactly. And the fair listen: every candidate of a cue at one loudness,
 -- under the ceiling, with no spread. The candidates here are known library slices, so the cases don't need the finder's.
+-- TR64's: each big moment calls its cue by name, a silent one plays nothing and never errors, and Play the moment shows
+-- each staged moment and calls its own cue.
 
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Players = game:GetService("Players")
@@ -15,6 +17,9 @@ local SoundRule = require(Shared.Rules.Sound)
 local Cues = require(script.Parent.Parent.Parent.Main.FighterController.Cues)
 local Audition = require(script.Parent.Parent.AuditionController)
 local Helpers = require(script.Parent.Helpers)
+local UI = script.Parent.Parent.Parent.Parent.UI
+local Screen = require(UI.Kit.Screen)
+local StageScreen = require(UI.StageScreen)
 
 local AuditionCases = {}
 
@@ -53,7 +58,7 @@ end
 
 local function here(): Vector3
 	local camera = workspace.CurrentCamera
-	return camera.CFrame.Position + camera.CFrame.LookVector * Config.Preview
+	return camera.CFrame.Position + camera.CFrame.LookVector * CuesConfig.Front
 end
 
 function AuditionCases.Cases(): { any }
@@ -243,6 +248,49 @@ function AuditionCases.Cases(): { any }
 					t.Check(`{spec.Name}: none longer than {spec.Max} s`, long <= spec.Max + 1e-6, string.format("%.2f s", long))
 					t.Check(`{spec.Name}: none past a player's volume`, quiet == 0, `{quiet}`)
 				end
+			end,
+		},
+		{
+			Name = "Audition: TR64, each big moment calls its cue by name, a silent one plays nothing and never errors, and Play the moment shows it",
+			Run = function(t: any)
+				for _, name in CuesConfig.Moments do
+					local cue = CuesConfig.Cues[name]
+					t.Check(`{name}: written, on a bus`, cue ~= nil and (cue.Bus == "Lead" or cue.Bus == "Shade"))
+					if cue and #cue.Layers == 0 and (USE[name] == nil or USE[name] == "Old") then
+						local before = Cues.Heard(name)
+						local ok, err = pcall(Cues.Moment, name, nil)
+						t.Check(`{name}: silent until picked, called without an error`, ok and Cues.Heard(name) == before + 1, tostring(err))
+						t.Equal(`{name}: and nothing sounds`, Cues.Playing(name), 0)
+					end
+				end
+				-- Play the moment: each staged moment, shown, calls its own cue (the drop on its bounce, the keeper's on its burst)
+				local player = Players.LocalPlayer
+				local plot = player:GetAttribute("Plot")
+				for _, name in { "LevelUp", "ShardDrop", "KeeperFall", "LeadDown", "GoalDone", "Record", "MachineStage", "LeadHurt" } do
+					if name == "MachineStage" and type(plot) ~= "number" then
+						t.Check("MachineStage: a plot to show it on (none here: not checked)", false)
+						continue
+					end
+					local before = Cues.Heard(name)
+					t.Check(`{name}: staged`, Cues.Show(name))
+					t.Check(`{name}: shown, it calls its cue`, waitFor(t, 4, function(): boolean
+						return Cues.Heard(name) > before
+					end), `heard {Cues.Heard(name) - before}`)
+					if name == "Record" then
+						t.Check("Record: the run's card stands with its new best", Screen.Current() == StageScreen.Name)
+						Screen.Close()
+						t.Wait(0.6)
+					end
+				end
+				t.Check("Reinforce's moments wait for its page", Screen.Current() ~= "Equipment" and not Cues.Show("Reinforced") and not Cues.Show("ReinforceFailed"))
+				t.Check("the lead stood again after its staged fall", waitFor(t, 5, function(): boolean
+					for _, model in workspace:GetDescendants() do
+						if model:IsA("Model") and model:GetAttribute("Owner") == player.UserId and model:GetAttribute("Side") ~= "Shade" and model:GetAttribute("State") == "Down" then
+							return false
+						end
+					end
+					return true
+				end))
 			end,
 		},
 	}

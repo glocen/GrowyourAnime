@@ -5086,6 +5086,28 @@ The audit's fourth screen (the director, 2026-11-24: "this left ui is so ugly", 
 
 **Modulo, 20:58: Home's cards wait on the director's examples.** The lead and the item as key art (Rook at the Strike, Akari in EEVEE) were rejected at 20:46. Three sky drafts then missed: procedural blobs, a ball pit of lit spheres, and EEVEE volumes as a flat wall (Cycles' were stopped twice by the memory guard). Nothing was delivered, and those scripts are deleted. Asked what the art should show, the director answered at 20:57: "Show me your examples" (2 or 3 menu screenshots in `inbox/`; research's study, then my targets).
 
+
+### The HUD overhaul (the director, 2026-11-26, between 22:37 and 22:57; `docs/decisions.md`)
+
+- **Covers:** every HUD piece, as one system:
+  - the lead's card, the skill and Auto presses, and spectate;
+  - the top right's pills, the enemy's card with its poise, and the dock;
+  - the damage numbers and the notices;
+  - their palette, type, strokes and radii, motion, UI effects where they're earned, and sounds.
+  - It replaces the frame's graphite and Oswald (21:04).
+- **The study comes first** (the director, 21:04): `docs/research/anime-crusaders-ui.md` and `hud-reference.md`. A live session on a shipped action game's fight HUD follows, if the director sits for it.
+- **Targets (Modulo):** three palette directions, each painted at final quality over the same two phone captures: a fight at the player's camera with the enemy's card, and the base at the gate.
+  - The plates are bright or mid-value, never near-black or washed in violet ("too purple, black, somber", `docs/research/examples.md`).
+  - Gemini's three daylight sketches are a start, not a brief (`build/scratch/quaestor/gemini/transcripts/2026-11-26_redteam-structure-tap-hud.md`, part 3).
+  - Research picks in pairs.
+- **To solve in the targets** (cold reads of `build/captures/lighting/base_light_a_installed_c8b49e.jpg` and the fight pad, research's and Gemini's):
+  - "91 / 10 kW" reads as an overload.
+  - The dock sits over the avatar's legs and stays up in a fight. A fight shows only what the fight needs.
+  - The damage numbers pile over both fighters (AR48's finding, TR66).
+  - The "While you were away" card is a cream box from another game.
+- **With the pick:** one page of motion and sound.
+  - Effects and sounds only on a ready signature, a poise break, a level up, a reward banked and the lead's low health. The rest stays silent.
+  - Faber builds, Sonus shortlists the sounds, and the director judges in play.
 ## AR63. Pip, redesigned in the make (Modulo, for research's pick and the director's look, then its finish; Faber's install after)
 
 On the director's order of 2026-11-23, by 22:52 (Rook, Kirra, Pip, Lyric). The frame is AR60's: what holds, the checks, and the pictures. What holds is his row in `docs/roster.md` (Common, Purple, Mage, Fire, Lantern Burst, Kindle). Research's steer: his lantern is a young mage's, dark metal and glass with a living flame inside, never a paper festival lantern.

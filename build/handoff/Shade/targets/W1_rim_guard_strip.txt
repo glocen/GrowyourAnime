@@ -1,0 +1,2 @@
+frames from Raise, at 60 a second: -6, -3, 0, 3, 20, 40, 42, 46, 124 (a glance at 40, Drop at 120)
+W1_rim_guard_break.png: a heavy hit breaks it at frame 70: 70, 71, 73, 78, 86

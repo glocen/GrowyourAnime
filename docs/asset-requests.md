@@ -15989,6 +15989,21 @@ Written by `tools/fx/shade_tells.py`, from the kit's uploaded meshes and images 
   - **The click** is the halo's flash on Raise, as the target draws it. The kit's grey ring is gone.
   - **Status:** taken. Tested: logic offline, 8,526 passed and 0 failed. Content check: PASS. Not yet seen in Studio: the take is in my next turn. For Faber's review: `shade_tells.py` and `GuardShield.json`.
 - **The director's verdict (2026-11-26, 12:57, to Faber; the register):** "the shield vfx is to thicc and looks more like glass". The ward as built is rejected. It's reworked from new targets beside today's build, after a study of the vault, and research picks them in pairs. The deep disc and the paper seen through are what read as glass, so the targets drop them. Thinner and lighter is the main read.
+- **The ward redrawn after the verdict: targets W1 to W3 (Scintilla, 2026-11-26, 13:09).**
+  - **The vault, read for this** (headless, its scripts never run): 2yroldmiseorb, DemonAuraVFX and the flipbook sheets.
+    - Neither model holds its shape on a surface. Each draws it in thin flat rings, a gapped circle among them, in two to four overlapping copies (life 1 s, rate 2 to 4, Transparency 1 > 0 > 1), turning 5 to 45° a second.
+    - DemonAuraVFX's curved beams are tapered strokes, faded to nothing over their first and last quarter, their texture running along them.
+    - The sheets draw a ring as uneven, broken arcs, the outline apart from the fill, and the ring dies by breaking.
+    - The build was a smooth surface with a deep fill, a Fresnel, a sheen and a bright closed rim: glass's cues.
+  - **The targets,** from `tools/fx/ward_targets.py`, in `build/handoff/Shade/targets/` (W1 to W3: peak, strip, break; `phone_ward_guard/`):
+    - all three are lines only: azure strokes with a white core and a hair of deep azure at their edge, tapered at their ends, wobbling as a hand draws them, with no fill;
+    - each is drawn on before Raise, flashes on Raise, turns in the hold and is drawn off on Drop;
+    - W1, the rim: three broken arcs and four ribs;
+    - W2, the frame: a paper lantern's frame face on, light running up its five ribs;
+    - W3, the ripple: a faint gapped ring at rest; a glance shows ripples and the ribs round the contact.
+  - **Beside the build:** `ward_vs_build.png`, left to right: the build (f0959aa0's take), the old G2, then W1, W2 and W3, at one crop. The rim is 0.1 studs at its thickest. The build had a 0.3-stud halo band and a disc.
+  - **My read:** at a phone, all three read as thin blue lines at the Guard. At the squint, W2's frame and W3's glance keep a blue mark, and W1 fades. W2 reads most as a lantern. W3 is the lightest and shows itself only where it's struck.
+  - **Status:** targets, for research's pick in pairs. Nothing built. Content check: PASS (the textures made for the build get their own).
 
 ## AR53. Goals' look, basic at launch: the dare's line, today's three, the Mask Ledger's page (Modulo, after AR52's clips)
 

@@ -1,0 +1,2 @@
+The peaks at a small landscape phone (667x370), left to right, 3 a row: W1_rim (guard, frame 20), W2_frame (guard, frame 20), W3_ripple (guard, frame 43).
+peaks_squint.png: the same, brought to 96 px high and back up (does the shape still read at a glance?).

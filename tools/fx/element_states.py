@@ -18,16 +18,17 @@ hits, and takes a shape no hit uses (a hit is a white star, a ring and radial sp
 player's camera the body hides the floor.
 
 Hero shapes (one each, with a direction and an acceleration):
-- Burn: a steady stream of few, large tapered embers rising off the head's top and the shoulders' tops beside the mask,
-  lifted and drifting outward, so they live against the sky over and beside the silhouette; a few larger still.
-- Chill: a crust of ice teeth along the legs' outer edges, front and back corner, pointing out and up, climbing a band a
-  third of the fill (StateChill, StateChill2, StateChill3): the shin, then the knee, then the thigh to the hip; the new
-  band's teeth snap out from the bottom up.
+- Burn: a steady stream of few tapered embers, each about the size of the foe's hand, rising off the head's top and
+  the shoulders' tops beside the mask, lifted and drifting outward, so they live against the sky over and beside the
+  silhouette; a few larger still.
+- Chill: a crust of ice teeth along the legs' outer edges, a band a third of the fill (StateChill, StateChill2,
+  StateChill3). Research's pass of 2026-11-26 drops it (the lead hides the legs at the player's camera): Freeze carries
+  Frost alone, and these go once Combat.States.Chill names no looks.
 - Freeze: a shell snapping up out of the crust and shut in 6 frames, its edge flashing once, held clear. Stand-in: the
   kit's shell in its ribs (the faceted shell waits on its mesh). FreezeBreak: chips flung out and falling.
-- Shock: a jagged line of three strokes, inked dark under, crawling along a limb's outer edge, three steps up or down it, each lit 4
-  frames with a dark frame between, then a gap; the four limbs out of step, so one or two crawl at any moment. Never on
-  the head or the chest.
+- Shock: a jagged line of five strokes, inked dark under, down an arm's outer edge from the shoulder to the hand (the
+  arms only: research's pass, 2026-11-26), lit stroke by stroke as a crawl runs down or up it, then the whole line at
+  once, then a gap; the two arms out of step. Never on the head, the chest or the legs.
 - Sap: motes drawn out of the body, each a dark disc with a thin light rim (the rim carries the read), born just
   outside the arms' outline at the chest and drifting slowly outward and a little up, slowing, fading where they are:
   never sinking, speeding up or stretching (a dark drop running down a body reads as a drip, in a still frame too; the
@@ -68,7 +69,7 @@ def held(value):
 
 
 # Burn ------------------------------------------------------------------------------------------------------------
-CROWN = 2.7  # studs over the root: just under the Brawler's mask top (2.95), so an ember is out over it at once
+CROWN = 2.9  # studs over the root: at the Brawler's mask top (2.95), so an ember is out over it at once
 SHOULDER = (1.55, 1.0)  # the arm's top, beside the mask (its half width 1.35), the body's outline from behind
 
 
@@ -105,11 +106,11 @@ def ember(at, radius, rate, size, drift, why):
 
 def burn():
     rows = {
-        "Crown": ember(v3(0, CROWN, 0), 0.7, 2.2, 0.3, 0, "the hero: embers rising off the head's top, over the silhouette"),
-        "CrownBig": ember(v3(0, CROWN, 0), 0.5, 0.5, 0.48, 0, "a few larger"),
+        "Crown": ember(v3(0, CROWN, 0), 0.7, 1.4, 0.9, 0, "the hero: embers about the size of the foe's hand, rising off the head's top, over the silhouette"),
+        "CrownBig": ember(v3(0, CROWN, 0), 0.5, 0.35, 1.2, 0, "a few larger"),
     }
     for name, side in (("Left", -1), ("Right", 1)):
-        rows[f"Shoulder{name}"] = ember(v3(SHOULDER[0] * side, SHOULDER[1], 0), 0.4, 1.8, 0.3, 0.6 * side,
+        rows[f"Shoulder{name}"] = ember(v3(SHOULDER[0] * side, SHOULDER[1], 0), 0.4, 1.0, 0.9, 0.6 * side,
                                         "embers off the arm's top, beside the mask, drifting outward")
     return effect("StateBurn", "Burn (Fire), worn while it holds: a steady stream of embers off the head's and shoulders' outline (AR48, Scintilla's grey, research's rule).", rows)
 
@@ -237,13 +238,16 @@ def freeze_break():
 
 
 # Shock -----------------------------------------------------------------------------------------------------------
-LIMBS = (("Left Arm", -1, -0.98), ("Right Arm", 1, -0.98), ("Left Leg", -1, -0.6), ("Right Leg", 1, -0.6))  # outer side, lowest foot
-STEPS = 3  # a crawl's steps along the limb
-LIT = 4  # frames a step is lit, then one dark: the flicker
-SPAN = 1.3  # studs of the limb one step's line covers: two thirds of an arm (in play, 0.95 didn't read)
-EDGE = 0.75  # studs out from the limb's middle: off its outer face (0.5), the line's inward jags still outside it
-WIDTH = 0.5  # fx_beam's bright middle is about half its width: 0.3 read as a thin white in a dark scribble
-INK = (0.75, (28, 22, 36))  # the dark line under each stroke, its width and colour: the line reads on the pale floor too
+ARMS = (("Left Arm", -1), ("Right Arm", 1))  # the arms' outline only, upper arm to hand (research, 2026-11-26)
+STROKES = 5  # a crawl's line, shoulder to hand
+TOP, HAND = 0.95, -0.98  # studs up the arm (2 long): its line's ends
+LIT = 4  # frames a stroke is lit as the crawl passes it
+STAGGER = 2  # frames from one stroke's light to the next: the crawl's speed
+SNAP = 3  # frames the whole line is lit once after the crawl
+EDGE = 0.85  # studs out from the arm's middle: off its outer face (0.5), the line's inward jags still outside it
+JAG = (0.25, 0.38)  # studs a point stands off the edge, out then in
+WIDTH = 0.6  # fx_beam's bright middle is about half its width: it reads at the sheet's scale, a phone's
+INK = (0.95, (28, 22, 36))  # the dark line under each stroke, its width and colour: the line reads on the pale floor too
 
 
 def up_to(d):
@@ -256,25 +260,24 @@ def up_to(d):
 
 
 def zig(rng, side):
-    """Four points of a jagged line along a limb's outer edge, from a step's foot: the middle two off the edge by a jag,
-    out then in, toward the front or the back, so it's jagged from behind and from the side."""
+    """The points of a jagged line down an arm's outer edge, shoulder to hand: each inner point off the edge by a jag,
+    out and in by turns, leaning toward the front or the back, so it's jagged from behind and from the side."""
     lean = rng.choice((-1, 1))
     points = []
-    for i in range(4):
-        y = SPAN * i / 3 + (rng.uniform(-0.07, 0.07) if 0 < i < 3 else 0)
-        jag = (rng.uniform(0.2, 0.3) if i == 1 else -rng.uniform(0.2, 0.3)) if 0 < i < 3 else 0
-        points.append((side * (EDGE + 0.75 * jag), y, 0.65 * jag * lean))
+    for i in range(STROKES + 1):
+        y = TOP + (HAND - TOP) * i / STROKES + (rng.uniform(-0.06, 0.06) if 0 < i < STROKES else 0)
+        jag = 0 if i in (0, STROKES) else rng.uniform(*JAG) * (1 if i % 2 else -1)
+        points.append((side * (EDGE + 0.8 * jag), y, 0.5 * jag * lean))
     return points
 
 
-def strokes(points, foot):
+def strokes(points):
     """Each stroke's centre, tilt and half length, point to point."""
     out = []
     for a, b in zip(points, points[1:]):
         d = tuple(q - p for p, q in zip(a, b))
-        centre = tuple((p + q) / 2 for p, q in zip(a, b))
-        half = math.sqrt(sum(c * c for c in d)) / 2
-        out.append((v3(round(centre[0], 3), round(centre[1] + foot, 3), round(centre[2], 3)), up_to(d), round(half, 3)))
+        centre = tuple(round((p + q) / 2, 3) for p, q in zip(a, b))
+        out.append((v3(*centre), up_to(d), round(math.sqrt(sum(c * c for c in d)) / 2, 3)))
     return out
 
 
@@ -287,29 +290,25 @@ def one_a_frame(keys):
     return clean
 
 
-def crawler(side, lowest, rng):
-    """A limb's crawls, four steps up or down it in turn, each lit LIT frames with a dark frame between, then a gap:
-    the tracks of its three strokes."""
-    top = 0.98 - SPAN
-    rows = [{"At": [], "Tilt": [], "Foot": [], "Top": [], "Transparency": [[0, 1]]} for _ in range(3)]
-    f, up = rng.randint(2, 30), rng.random() < 0.5
-    while f < SHORT - STEPS * (LIT + 1) - 2:
-        points = zig(rng, side)
-        feet = [lowest + (top - lowest) * s / (STEPS - 1) for s in range(STEPS)]
-        if not up:
-            feet.reverse()
-        first, last = f, f + (STEPS - 1) * (LIT + 1)
-        for s, foot in enumerate(feet):
-            b = f + s * (LIT + 1)
-            for row, (at, tilt, half) in zip(rows, strokes(points, foot)):
-                row["At"] += [[b, at], [b + LIT, at]]  # held while lit, moved on in the dark frame
-                if s == 0:
-                    row["Tilt"] += [[first, tilt], [last + LIT, tilt]]
-                    row["Foot"] += [[first, -half], [last + LIT, -half]]
-                    row["Top"] += [[first, half], [last + LIT, half]]
-                row["Transparency"] += [[b - 1, 1], [b, 0], [b + LIT - 1, 0.3], [b + LIT, 1]]
-        f = last + LIT + 1 + rng.randint(14, 26)  # the gap
-        up = not up
+def crawler(side, rng):
+    """An arm's crawls: its line's strokes lit in turn, shoulder to hand or back, then the whole line at once, then a
+    gap: the tracks of its strokes."""
+    rows = [{"At": [], "Tilt": [], "Foot": [], "Top": [], "Transparency": [[0, 1]]} for _ in range(STROKES)]
+    f, down = rng.randint(2, 30), rng.random() < 0.5
+    length = (STROKES - 1) * STAGGER + LIT + 1 + SNAP
+    while f < SHORT - length - 2:
+        order = list(range(STROKES)) if down else list(range(STROKES - 1, -1, -1))
+        snap = f + (STROKES - 1) * STAGGER + LIT + 1
+        for row, (at, tilt, half) in zip(rows, strokes(zig(rng, side))):
+            for key, value in (("At", at), ("Tilt", tilt), ("Foot", -half), ("Top", half)):
+                row[key] += [[f, value], [snap + SNAP, value]]
+        for turn, s in enumerate(order):
+            b = f + turn * STAGGER
+            rows[s]["Transparency"] += [[b - 1, 1], [b, 0], [b + LIT - 1, 0.4], [b + LIT, 1]]
+        for row in rows:
+            row["Transparency"] += [[snap - 1, 1], [snap, 0], [snap + SNAP - 1, 0.2], [snap + SNAP, 1]]
+        f = snap + SNAP + 1 + rng.randint(18, 30)  # the gap
+        down = not down
     for row in rows:
         row["Transparency"].append([SHORT, 1])
         for key in row:
@@ -320,8 +319,8 @@ def crawler(side, lowest, rng):
 def shock():
     rng = random.Random(77)
     rows = {}
-    for part, side, lowest in LIMBS:
-        for k, tracks in enumerate(crawler(side, lowest, rng)):
+    for part, side in ARMS:
+        for k, tracks in enumerate(crawler(side, rng)):
             tracks["Width"] = [[0, WIDTH]]
             name = f"{part.replace(' ', '')}{k + 1}"
             rows[f"{name}Ink"] = {
@@ -345,11 +344,11 @@ def shock():
                 "Grey": "fx_beam",
                 "Color": c3(STORM[0]),
                 "Beam": {"FaceCamera": True, "LightEmission": 1, "LightInfluence": 0, "TextureMode": "Stretch", "TextureSpeed": 0,
-                         "Segments": 1, "ZOffset": 0.1, "Brightness": 2},
+                         "Segments": 1, "ZOffset": 0.1, "Brightness": 3},
                 "Tracks": tracks,
-                "Why": f"{'the hero: ' if k == 1 else ''}a stroke of a jagged line crawling along the limb's outer edge, lit {LIT} frames a step",
+                "Why": f"{'the hero: ' if k == 2 else ''}a stroke of a jagged line down the arm's outer edge, lit as the crawl passes, then with the whole line",
             }
-    return effect("StateShock", "Shock (Storm), worn while it holds: jagged lines crawling along the limbs' outline, flickering through the gaps (AR48, Scintilla's grey, research's rule).", rows)
+    return effect("StateShock", "Shock (Storm), worn while it holds: jagged lines crawling along the arms' outline, flickering through the gaps (AR48, Scintilla's grey, research's rule and pass).", rows)
 
 
 # Sap -------------------------------------------------------------------------------------------------------------

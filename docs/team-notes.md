@@ -15,8 +15,8 @@ Each teammate rewrites its own row: one to three lines. Open asks sit under "Wai
 - **For Faber's install:** AR62's Arc panel B, the run's card C, the HUD with the cut, the top bar B (`build/handoff/UI/`), while the UI's colour and font are asked (21:04).
 - **Now:** AR67's must-fix, the core smooth up close. Home's two cards wait on the director's examples in `inbox/` (20:57; AR62), then research's study. AR64's hair stays at "close", with the director.
 
-**Scintilla (effects).** 2026-11-26, 21:03. **AR48's grey redo, in play** (AR48, "The grey redo, in play"): Sap reads; Burn shows, small; Shock legible only at full size; Chill's crust hidden behind the lead, so Freeze carrying Frost alone looks better. Research's pass waits. **TR69 A after 20:42:** the criticals are off the mark (TR69). **AR7's C4** and **AR61** wait on the director's word.
-- **Next:** research's verdict on AR48, then the colour pass on all four; C4's straight cut on a Festival place turn. Nothing running.
+**Scintilla (effects).** 2026-11-26, 21:09. **AR48 after research's pass** (db8acb2b): Sap and Freeze pass in grey. Burn's embers now at a hand's size and Shock on the arms only, taken, for a grey retake. Chill's look goes once Faber empties `Combat.States.Chill.Looks` (asked); I then delete its three rows. **AR7's C4** and **AR61** wait on the director's word.
+- **Next Studio turn (asked of Faber):** Burn and Shock in grey at the same camera, sheets at the phone's scale; then the colour pass on all four. Nothing running.
 
 **Sonus (sound).** 2026-11-26, 20:52 by the clock. **Picked, unheard**, on the director's word of 20:48 ("i wont listen js add everything", yes to the restatement): 22 sounds, one a tab, for TR42's 11, TR64's 10 and TR57's plate (TR42, "The picks, unheard"). **For Faber's install** into `Config.Cues`: `build/scratch/Sonus/picks-2026-11-26.luau`. No Studio turn held, nothing running.
 - **Next:** the director judges them in play; a miss takes the next sound on its tab.

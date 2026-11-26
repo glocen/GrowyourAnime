@@ -979,8 +979,8 @@
   },
   "GeneratorCore": {
    "mesh": "meshes/GeneratorCore.json",
-   "triangles": 112,
-   "vertices": 72,
+   "triangles": 816,
+   "vertices": 410,
    "centre": [
     0.0,
     0.0,
@@ -989,7 +989,7 @@
    "size": [
     4.8,
     5.6,
-    4.68
+    4.8
    ],
    "colour": "maps/Base_Mill_Color.png",
    "glow": "maps/Base_Mill_Glow.png",
@@ -1243,8 +1243,8 @@
   },
   "Generator3": {
    "mesh": "meshes/Generator3.json",
-   "triangles": 1408,
-   "vertices": 802,
+   "triangles": 1360,
+   "vertices": 754,
    "centre": [
     9e-05,
     14.44741,
@@ -1265,8 +1265,8 @@
   },
   "Generator2Core": {
    "mesh": "meshes/Generator2Core.json",
-   "triangles": 112,
-   "vertices": 72,
+   "triangles": 816,
+   "vertices": 410,
    "centre": [
     0.0,
     0.0,
@@ -1275,7 +1275,7 @@
    "size": [
     6.0,
     7.0,
-    5.85
+    6.0
    ],
    "colour": "maps/Base_Mill_Color.png",
    "glow": "maps/Base_Mill_Glow.png",

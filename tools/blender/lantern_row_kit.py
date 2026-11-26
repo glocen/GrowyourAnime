@@ -325,10 +325,12 @@ BOX = {"+x": ((1, -1, -1), (1, 1, -1), (1, 1, 1), (1, -1, 1)), "-x": ((-1, 1, -1
 
 
 class Mesh:
-    """Faces with their own corners (flat shading, as the look wants), each corner a point in the atlas."""
+    """Faces with their own corners (flat shading, as the look wants), each corner a point in the atlas. `smooth`
+    shades it smooth instead: a round of light, where facets would read as geometry."""
 
     def __init__(self, ink_t=0.14):
         self.v, self.f, self.uv = [], [], []
+        self.smooth = False
         self.ink = None if ink_t is None else Mesh(None)
         self.ink_t = ink_t
 
@@ -466,7 +468,7 @@ class Mesh:
     def whole(self):
         """The piece and its ink as one mesh: the hull's faces point at the atlas's ink texel, so a piece is one part."""
         both = Mesh(None)
-        both.v, both.f, both.uv = list(self.v), list(self.f), list(self.uv)
+        both.v, both.f, both.uv, both.smooth = list(self.v), list(self.f), list(self.uv), self.smooth
         if self.ink is not None:
             for face in self.ink.f:
                 both.face([self.ink.v[i] for i in face], [sw_uv("ink", 0.2, 0.5)] * len(face))
@@ -474,7 +476,9 @@ class Mesh:
 
     def to_object(self, name, material):
         # Corners that meet share a vertex. Every face stays: a cloth is two faces on the same corners, one each way,
-        # which a merge by distance would take for a double and drop.
+        # which a merge by distance would take for a double and drop. A face with two neighbouring corners at one point
+        # (a lathe's quad at a pole, where its radius is 0) keeps its other corners as a smaller face; it was dropped,
+        # which left a hole at the pole (AR67, the core and the clasp; 2026-11-26).
         seen, verts, faces, uvs = {}, [], [], []
         for face, face_uv in zip(self.f, self.uv):
             ids = [seen.setdefault(tuple(round(c, 4) for c in self.v[i]), len(seen)) for i in face]
@@ -482,7 +486,9 @@ class Mesh:
                 verts.append(None)
             for i, j in zip(face, ids):
                 verts[j] = self.v[i] if verts[j] is None else verts[j]
-            if len(set(ids)) == len(ids):
+            kept = [k for k in range(len(ids)) if ids[k] != ids[k - 1]]
+            ids, face_uv = [ids[k] for k in kept], [face_uv[k] for k in kept]
+            if len(ids) >= 3 and len(set(ids)) == len(ids):
                 faces.append(ids)
                 uvs.append(face_uv)
         mesh = bpy.data.meshes.new(name)
@@ -493,6 +499,8 @@ class Mesh:
             for uv in face:
                 layer.data[k].uv = uv
                 k += 1
+        if self.smooth:
+            mesh.polygons.foreach_set("use_smooth", [True] * len(mesh.polygons))
         mesh.update()
         if material is not None:
             mesh.materials.append(material)

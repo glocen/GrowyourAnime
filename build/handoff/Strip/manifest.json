@@ -43,7 +43,7 @@
   },
   "VeinWide": {
    "mesh": "meshes/VeinWide.json",
-   "triangles": 68,
+   "triangles": 70,
    "vertices": 88,
    "centre": [
     0.54151,
@@ -65,7 +65,7 @@
   },
   "VeinThin": {
    "mesh": "meshes/VeinThin.json",
-   "triangles": 40,
+   "triangles": 41,
    "vertices": 53,
    "centre": [
     0.74945,

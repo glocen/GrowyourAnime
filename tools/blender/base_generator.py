@@ -59,6 +59,7 @@ CLASP = [(0.0, 28.9), (0.5, 28.6), (1.05, 27.9), (1.1, 27.4), (0.7, 26.9), (0.0,
 BLADE = [(4.2, 2.6), (5.9, 5.0), (7.1, 8.8), (7.5, 12.8), (7.1, 16.8), (5.9, 20.0), (4.3, 22.5), (3.2, 23.6)]
 BLADE_R = [0.72, 0.84, 0.86, 0.82, 0.74, 0.58, 0.36, 0.1]
 CORE_PROFILE = [(0.0, 17.9), (1.55, 17.3), (2.6, 16.1), (3.0, 14.4), (2.65, 12.7), (1.6, 11.5), (0.0, 10.9)]
+CORE_SIDES, CORE_SUB = 24, 3   # the core's turn: its sides, and its profile's points between two of CORE_PROFILE's
 MOTES = [(4.4, 60, 16.8), (4.9, 200, 12.4), (3.9, 320, 19.0), (5.2, 110, 9.6), (4.2, 250, 18.4)]
 
 
@@ -134,9 +135,37 @@ def blades(m, angles, grown=False):
 
 
 def core(scale):
-    """The core about its own middle: a round of the void's light, widest a little under its middle."""
-    m = Mesh()
-    mill.put(m, lathe([(r * scale, (z - CORE) * scale) for r, z in CORE_PROFILE], 14, "cyan", ink=False), Matrix())
+    """The core about its own middle: a round of the void's light, widest a little under its middle. Smooth, and
+    closed at both poles: research's must-fix of 2026-11-26, 20:57 (its flats lit one by one read as geometry, not as
+    light). The profile is run through a Catmull-Rom curve, mirrored over the axis at each pole so the poles stay
+    round, and turned with its own pole fans (the kit's lathe drops a quad whose two corners meet on the axis)."""
+    pts = [(r * scale, (z - CORE) * scale) for r, z in CORE_PROFILE]
+    ext = [(-pts[1][0], pts[1][1])] + pts + [(-pts[-2][0], pts[-2][1])]
+    prof = [pts[0]]
+    for k in range(1, len(ext) - 2):
+        p0, p1, p2, p3 = ext[k - 1:k + 3]
+        for j in range(1, CORE_SUB + 1):
+            t = j / CORE_SUB
+            prof.append(tuple(0.5 * (2 * p1[i] + (p2[i] - p0[i]) * t + (2 * p0[i] - 5 * p1[i] + 4 * p2[i] - p3[i]) * t * t
+                                     + (3 * p1[i] - p0[i] - 3 * p2[i] + p3[i]) * t ** 3) for i in (0, 1)))
+    top, low = prof[0][1], prof[-1][1]
+    rings = [(r, z, [Vector((r * math.cos(math.tau * i / CORE_SIDES), r * math.sin(math.tau * i / CORE_SIDES), z))
+                     for i in range(CORE_SIDES)]) for r, z in prof[1:-1]]
+
+    def uv(z):
+        return kit.sw_uv("cyan", 0.0, (z - low) / (top - low))
+
+    m = Mesh(None)
+    m.smooth = True
+    head, foot_ = Vector((0, 0, top)), Vector((0, 0, low))
+    for i in range(CORE_SIDES):
+        j = (i + 1) % CORE_SIDES
+        _, z, ring = rings[0]
+        m.face([head, ring[i], ring[j]], [uv(top), uv(z), uv(z)])
+        for (_, za, up), (_, zb, down) in zip(rings, rings[1:]):
+            m.face([down[i], down[j], up[j], up[i]], [uv(zb), uv(zb), uv(za), uv(za)])
+        _, z, ring = rings[-1]
+        m.face([foot_, ring[j], ring[i]], [uv(low), uv(z), uv(z)])
     return m
 
 

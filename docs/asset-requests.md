@@ -15426,6 +15426,13 @@ The rules now live in `docs/design.md`, "States in a fight", below "No lock". Fa
   - **The change I'd make,** a technique and not a polish: hold the whole line lit longer than the crawl (about 10 frames, not 3), with shorter gaps. The colour pass then gives it the Storm hue, apart from the sparks.
 - **Status:** implemented, taken in play, logic offline passes. Visually reviewed: my read; research's pass waits. Not director-accepted.
 
+**Research's pass on the retake (Quaestor, 2026-11-26, 21:17; `retake_burn.png`, `retake_shock.png`): Burn passes in grey. Shock's look leaves AR48 until poise.**
+
+- **Burn passes in grey:** one to three hand-sized wisps rise over the head in most tiles, a shape no hit uses, read at the sheet's scale.
+- **Shock, the rule applied:** the line technique has missed twice at a phone's scale, and its retake doesn't separate from the hit sparks. Shock also does nothing yet: it's "a timer and a name until poise exists" (above). A look would promise an effect the player can't feel.
+- **So no third round and no patch:** Shock wears no look for now, as Chill. When poise gives Shock its effect, its look starts from a new target. The two missed rounds here are its evidence: thin lines vanish at a phone's scale, and white shares the hit sparks' value.
+- **Next:** colour on Sap, Burn and Freeze.
+
 ## AR49. Home's panel: three cards with their own art (Modulo, for research's pick, then Faber)
 
 Research, 2026-11-19, 23:20 by the clock, on the director's word of 23:20 (`docs/decisions.md`, the row): "MAKE IT LOOOK GOOD".
@@ -18468,3 +18475,13 @@ Research, 2026-11-26, 17:47, on the director's word of about 17:46 (the register
 - **Must-fix: the core reads as smooth light up close** (class: a lit mass the player can walk up to). Today its faceted flats light one by one, which reads as low-poly geometry rather than light. Either a smooth-shaded mesh (Modulo's) or an unshaded glow material (Faber's) does it.
 - **What the stills can't show:** the breath (0.04 over 2.4 s) and the turn (up to 0.18 turns a second) at full speed. Their first sight is the director's in play.
 - **Status:** implemented and installed (Faber); visually reviewed, research's pass included; not director-accepted.
+
+### Modulo's fix: the core smooth up close (2026-11-26, 21:16; started 21:08)
+
+- **Research's must-fix (20:57), met in the mesh:** the core is rebuilt as a smooth round (`tools/blender/base_generator.py`, `core`). Its profile runs through a curve, turned on 24 sides, with smooth normals, so the game shades it as one round of light rather than flats lit one by one. It's 816 triangles where it was 112, at the same size and middle, with the same contract (it turns and breathes).
+- **A fault found on the way:** the kit dropped a lathe's quad wherever two of its corners met on the axis (`tools/blender/lantern_row_kit.py`, `Mesh.to_object`), which left a hole at each pole. Today's core was open at both poles (1.55 studs across at its head, 1.6 at its foot), and so was Stage III's clasp (48 open edges). The kit now keeps such a face as a triangle.
+  - **The audit, every kit's pieces:** only GeneratorCore, Generator2Core, Generator3 and the Strip's VeinWide and VeinThin lost faces. Every other mesh comes out unchanged.
+  - **Generator3 is now closed** (0 open edges, as Generator2's). Its triangles fall from 1,408 to 1,360: the hull pass had wrapped the open clasp a second time.
+- **Sheet:** `build/handoff/Base/generator_core_smooth.png`, today's core left and the smooth one right, from a player's distance (top) and near (bottom), in the base's day. Its render draws the core unlit, so it shows the outline (14 sides to round). The shading's change is first seen in the game.
+- **For Faber's install:** upload `GeneratorCore`, `Generator2Core` and `Generator3` again (`build/handoff/Base/meshes/`), and the Strip's `VeinWide` and `VeinThin` (`build/handoff/Strip/meshes/`), with both manifests, and log the new ids. No code change. An unshaded glow on the core stays Faber's option on top, if the smooth core still reads as geometry in play.
+- **Status:** made and self-reviewed (0 open edges, the audit, the sheet). Content check before upload: PASS by 21:18, on the sheet, the core's code and the manifest. Delivered to the handoff for Faber's install, then research's look at the capture. Not accepted.

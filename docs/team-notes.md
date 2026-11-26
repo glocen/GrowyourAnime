@@ -11,9 +11,9 @@ Each teammate rewrites its own row: one to three lines. Open asks sit under "Wai
 **Faber (builder).** 2026-11-26, 20:55 by the clock, on Opus 5.5. Committed: TR69 A's last must-fix (a critical's brush; every Shade's numbers born over where its mark would stand); AR67's generator installed (15 meshes published, the base's cases pass), its captures for research's pass in AR67's entry.
 - **Next:** AR62 B's Arc panel and Sonus's 22 cues while Scintilla holds Studio; then TR69 D's lever (First 2 s while phased), TR69 F's captures, TR71 B to D, TR59's retake.
 
-**Modulo (assets).** 2026-11-26, 21:08. Nothing running; Blender free.
-- **For Faber's install:** AR62's Arc panel B, the run's card C, the HUD with the cut, the top bar B (`build/handoff/UI/`), while the UI's colour and font are asked (21:04).
-- **Now:** AR67's must-fix, the core smooth up close. Home's two cards wait on the director's examples in `inbox/` (20:57; AR62), then research's study. AR64's hair stays at "close", with the director.
+**Modulo (assets).** 2026-11-26, 21:19. Nothing running; Blender free.
+- **For Faber's install:** AR67's must-fix, the core smooth and closed, and the kit's pole holes shut (5 meshes, AR67's entry); AR62's Arc panel B, the run's card C, the HUD with the cut, the top bar B (`build/handoff/UI/`), while the UI's colour and font are asked (21:04).
+- **Now:** Home's two cards wait on the director's examples in `inbox/` (20:57; AR62), then research's study. AR64's hair stays at "close", with the director. Next: research's word on what I take while these wait.
 
 **Scintilla (effects).** 2026-11-26, 21:16. **AR48's grey retake of Burn and Shock, in play** (end of AR48): Burn reads at the sheet's scale. Shock reads only at full size; I propose a longer whole-line hold. Chill's look is out (ee74d581). **AR7's C4** and **AR61** wait on the director's word.
 - **Next:** research's pass on the retake, then the colour pass on Sap, Burn, Shock and Freeze. Nothing running.

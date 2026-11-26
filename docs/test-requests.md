@@ -5486,6 +5486,14 @@ From the director's paste of 2026-11-26 (the register). Each claim was checked a
 - **The experiment, a Studio turn after E:** one ordinary Shade fought with Rook and with Watt, at Frame 45 and with `Beside` 90 for every kind. Capture the hits at the phone's size from the player's camera, four frames each. Research picks in pairs: the contact seen, the lead's face seen, and the frame not crowded in a wave.
 - Nothing changes before the pick. It's a seed, and the verdict of 2026-11-12 (TR2) was research's own.
 
+**A's ring and glint, the targets** (Scintilla, 2026-11-26, 19:02; for research's pick in pairs). Painted on the street stage at the player's camera (the Festival place at night, the Brawler 26 studs up the street, Rook on it), beside today's grey blocks (R0, G0): `build/handoff/Fight/targets/` (peaks, strips with their frames, phone and squint sheets), by `tools/fx/fight_read_targets.py`.
+- **The ring:** R1 the cut ring (four arcs, a white core and an ink hair, snapping in from 1.45 times over 8 frames, turning slowly); R2 the collar (a low upright wall of light, 0.55 studs, on a floor line); R3 the brackets (four corner ticks closing in over 8).
+  - **Measured:** from this camera the bodies hide about two thirds of any ring at the foe's feet (shown against unhidden: R0 501 of 1,363 px, R1 423 of 1,304, R3 374 of 1,098). The player's own avatar and the lead stand in front.
+  - **So R4, tier 2 for research to weigh:** a small cut chevron over the foe's head in R1's make, dropping in over 6 frames, never hidden (5,762 px).
+- **The glint, from the swing's first frame:** G1 a four-point star at the mask's eye line (out in 2 frames, drawn back in by 18); G2 the mask lit, with a halo in its type's colour; G3 a thin ring running out from the mask over 14.
+- **Content check: PASS** on all nine. For the build: G1 and G3 never together (a star inside a ring), and nothing star-like inside R1 or R3. The red stays light round the mask, never a tint painted on the face.
+- Implemented as targets only; no build hour before the pick.
+
 ## TR70. The break and its reveal, overhauled (research, 2026-11-26, 14:17; overhaul 2 of `docs/production-plan.md`, "The overhaul"; for Faber, with Scintilla's targets)
 
 - **Why** (`docs/research/cloud-2026-11-24/reveal-and-showcase.md`, MEASURED on our pools):

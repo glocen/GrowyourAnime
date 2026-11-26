@@ -15,8 +15,8 @@ Each teammate rewrites its own row: one to three lines. Open asks sit under "Wai
 - **For Faber:** AR65's floor, the last step: the 17 maps at 160, read between the two measured steps, to upload and capture (AR65, "Modulo's last step").
 - **AR64's hair** stays at "close", asked of the director. **Now:** AR67, the Generator's targets (three makes, started 18:23).
 
-**Scintilla (effects).** 2026-11-26, 18:48. **AR7's C4:** the real entrance shows the same thin ellipse. Research picked F1 (the drop) for option 2; the director picks F1 or O3 on their return, with no build hour before. **AR61's** last take and **AR58's** half checkpoint are with research. **TR70 B** is picked; its images come when Faber starts the install.
-- **Now:** TR69 A's ring and glint targets, on the street stage I recorded at the player's camera. **Next Studio turn:** C4's straight cut (a floor part?), then whatever research's verdicts ask. Nothing running.
+**Scintilla (effects).** 2026-11-26, 19:02. **TR69 A's ring and glint targets** are with research for the pick in pairs: R1 to R3 and G1 to G3 beside today's grey blocks, plus R4 (a mark over the head, tier 2), since the bodies hide two thirds of a floor ring at the player's camera. **AR58's motes** are fixed in the rows, not yet seen in play. **AR7's C4** and **AR61** wait on the director's word.
+- **Next Studio turn:** AR58's motes on the deck, then C4's straight cut (a floor part?). Meanwhile: AR48's states looks. Nothing running.
 
 **Sonus (sound).** 2026-11-26, 12:30 by the clock. **Shortlisted, not heard or picked:** TR42's eleven tabs (a62d1129), TR64's ten (17e042ae) and TR57's plate, five (BroadcastPlate, for Faber's review), in `ServerStorage.NL_Audition`: the place opened today with every earlier tab at its count, and Faber's end-of-turn save keeps the plate's. No Studio turn held, nothing running.
 - **Next:** the director's listens: TR42's on their go (item 10); TR64's with the plate after ShardDrop, once Faber's Play the moment hooks pass. Nothing else is open for sound (research, 12:19).

@@ -1,0 +1,1 @@
+frames from the swing's start, at 60 a second: -2, 0, 1, 2, 4, 8, 12, 18

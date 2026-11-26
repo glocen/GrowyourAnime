@@ -1,0 +1,2 @@
+The peaks at a small landscape phone (667x370), left to right, 2 a row: R0_today (frame 10), R1_cut (frame 10), R2_collar (frame 10), R3_brackets (frame 10), R4_mark (frame 10).
+peaks_squint.png: the same, brought to 96 px high and back up (does the shape still read at a glance?).

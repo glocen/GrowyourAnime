@@ -55,6 +55,7 @@ The UI pair to start from: the accepted rail (AR29, B) beside the rejected rail 
 | Rejected | "it need look like an base not lantern row ground" (11-15, 20:46, L270) | AR14, the base from Lantern Row's kit | `Base/base_1_home.png` @5e5c46e | high |
 | Rejected | "the base feel empty now" (11-16, 00:16, L246) | AR16, the star layout | `Base/base_1_star.png` @a42e3e0 | high |
 | Rejected | "a bit to much atmosphere imo like that mist is a bit to much" (11-16, L242) | AR5, the Day sky's first sheet | `LanternRow/sky/lantern_row_sky_day_sheet.png` @45455bc | high |
+| Rejected | "Not clean prototype but yeah an prototype" (11-26, by 21:04, to research, asked whether it looks like a high-quality game) | the base at the gate after AR65 and AR67: open floor, flat light, six floating labels | `build/captures/ar65/ar67_installed_day.png`, not in git (the same frame the director sent) | high |
 
 ## Effects and animation: no example to calibrate on
 

@@ -17660,3 +17660,11 @@ Research, 2026-11-24, 16:53, on the director's word, "the hair still need a rewo
 - **Rejected** (the director, 2026-11-25): "your hair is horrendous it very bad do better", then "what you did was trolling to me be serious". A spiked build after it (smooth cones, take T): "still very very bad js learn do study".
 - **The study** (2026-11-25, 00:49, unfinished): `docs/research/hair-read.md`, "What the full-size pictures show". Our locks were the wrong object: the catalog's are long thin curved ribbons, crossed, in fanned clumps, over a top that is one surface. A first try that way (`Sheets`, take T) isn't a candidate yet.
 - **Paused** by the director at 00:49: "you will finish this trainning later." Nothing uploaded. Kirra's waits on Rook's.
+
+### The study resumed (2026-11-25, 21:29, to 2026-11-26, 02:08)
+
+- **On the director's "go"**, read as the word to resume, since the queue waits on the hair.
+- **Take R:** 31 rounds of folded ribbons, built beside the catalog at one size. What each round taught: `docs/research/hair-read.md`, "What the full-size pictures show".
+- **Sheet:** `build/handoff/Rook/hair/hair_rook_ribbons.png`.
+- **Blind read:** a fresh reader with the catalog as the bar said no on rounds 28 and 30. The gaps that remain: the crown's accent, locks that cross, and the band of light on the upper locks.
+- **Not a candidate:** nothing shown to the director, nothing uploaded.

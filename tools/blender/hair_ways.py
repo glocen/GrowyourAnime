@@ -401,6 +401,266 @@ def rook_sheets():
     return h
 
 
+class Ribbons(Sheets):
+    """Hair as the catalog's best-loved are, lock by lock (hair-read.md, "What the full-size pictures show"): a lock is
+    a long thin ribbon, five to eight times as long as wide, born at the whorl or under the layer above. It lies on
+    the head for most of its length, turning as it goes, then leaves it, narrows to a needle and flicks out. Round
+    across its top, tilted so one edge tucks under its neighbour, as roof tiles round the whorl. Neighbours differ in
+    length, turn and flick, so they cross near their ends."""
+
+    def run(self, a, ph, length, heading=0.0, bend=0.0, hold=0.65, flick=40.0, curl=0.0, off=(0.03, 0.12), n=10, rate=2.0):
+        """A ribbon's middle line, as (point, the way out of the head there). From (`a` round, `ph` down) it walks
+        the head `heading` degrees off straight down (toward his left), turning `bend` degrees by the time it leaves
+        the head, `hold` of the way along. It rides from `off[0]` to `off[1]` over the head. Free, it turns `flick`
+        degrees out of the head and `curl` degrees to its own left by its point, most of it near the point."""
+        ease = lambda x: (lambda v: v * v * (3 - 2 * v))(min(max(x, 0.0), 1.0))  # noqa: E731
+        step, line, free = length / (n - 1), [], None
+        p, nrm, down, east = self.frame(a, ph)
+        h = math.radians(heading)
+        d = down * math.cos(h) + east * math.sin(h)
+        for i in range(n):
+            u = i / (n - 1)
+            if free is None:
+                line.append((p + nrm * (off[0] + (off[1] - off[0]) * ease(u / max(hold, 1e-3))), nrm.copy()))
+                if u >= hold:
+                    t0 = (line[-1][0] - line[-2][0]).normalized() if len(line) > 1 else d.copy()
+                    n0 = (nrm - t0 * nrm.dot(t0)).normalized()
+                    free = (t0, n0, t0.cross(n0).normalized())
+                    continue
+                p, nrm, down, east = self.frame(*self.where(p + d * step))
+                d = d - nrm * d.dot(nrm)
+                d = Matrix.Rotation(math.radians(bend * step / max(hold * length, 1e-3)), 3, nrm) @ d.normalized()
+            else:
+                t0, n0, s0 = free
+                t = ((u - hold) / max(1 - hold, 1e-3)) ** rate
+                up, yaw = math.radians(flick) * t, math.radians(curl) * t
+                way = (t0 * math.cos(yaw) - s0 * math.sin(yaw)) * math.cos(up) + n0 * math.sin(up)
+                line.append((line[-1][0] + way * step, n0 * math.cos(up) - t0 * math.sin(up)))
+        return line
+
+    def ribbon(self, line, width, full=0.62, sharp=1.5, root=0.5, tall=0.16, tilt=0.0, gloss=None, k=1.0, size=(20, 56)):
+        """A ribbon along `line`: `root` of its width where it starts, its whole width from a quarter of the way to
+        `full`, then drawn to a point. `tilt` degrees: turned about its own length, its first edge raised."""
+        n, pts, grid = len(line), [q for q, _ in line], []
+        for i, (q, out) in enumerate(line):
+            u = i / (n - 1)
+            along = (pts[min(i + 1, n - 1)] - pts[max(i - 1, 0)]).normalized()
+            out = out - along * out.dot(along)
+            out = out.normalized() if out.length > 1e-4 else along.orthogonal().normalized()
+            if tilt:
+                out = Matrix.Rotation(math.radians(tilt * (1 - 0.6 * u)), 3, along) @ out
+            side = along.cross(out).normalized()
+            v = min(u / 0.25, 1.0)
+            grow = root + (1 - root) * v * v * (3 - 2 * v)
+            w = width / 2 * (grow if u <= full else max(1 - ((u - full) / (1 - full)) ** sharp, 0.03))
+            high = min(tall * 2 * w, 0.03)
+            grid.append([q + side * (w * x) + out * (high * (x == -0.2)) for x in (-1.0, -0.2, 1.0)] + [q - out * 0.012])
+        paint = self.painted(2 / 4, self.gloss if gloss is None else gloss)
+        self.sheet(grid, lambda u, v, P, N: paint(u, v, P, N) * k, size, lambda mid, r, c: mid - (pts[r] + pts[r + 1]) / 2, closed=True)
+        # the ridge and the two edges are creases: two flat faces, as a folded ribbon
+        self.bm.verts.ensure_lookup_table()
+        made = self.bm.verts[len(self.bm.verts) - n * 4:]
+        for row in range(n - 1):
+            for col in (0, 1, 2):
+                edge = self.bm.edges.get((made[row * 4 + col], made[(row + 1) * 4 + col]))
+                if edge is not None:
+                    edge.smooth = False
+
+    def painted(self, rim, gloss):
+        """A ribbon's picture: flat, lit toward its raised edge and in shade where it tucks under its neighbour,
+        darker at its root, a few hairs drawn along it, and the head's own ring of light where it crosses it."""
+        ease = lambda x, lo, hi: (lambda y: y * y * (3 - 2 * y))(np.clip((x - lo) / (hi - lo), 0, 1))  # noqa: E731
+        lines = [(self.rng.uniform(-0.75, 0.75), self.rng.uniform(0.03, 0.07), self.rng.uniform(0.0, 0.3)) for _ in range(3)]
+        band = am.CENTRE.z + self.ring[0]
+
+        def paint(u, v, P, N):
+            top = u <= rim
+            t = np.where(top, u / rim * 2 - 1, 0.0)            # across the ribbon: -1 its raised edge, 1 its tucked one
+            c = self.dark + (self.lit - self.dark) * ((0.22 + 0.78 * ease(v, 0.0, 0.7)) * (0.82 - 0.18 * t))[..., None]
+            for at, wide, begin in lines:
+                c = c * (1 - 0.3 * np.exp(-((t - at) / wide) ** 2) * ease(v, begin, begin + 0.15))[..., None]
+            shine = np.exp(-((P[..., 2] - band) / self.ring[1]) ** 2) * gloss + 0.05
+            c = c + (self.glint - c) * (shine * np.exp(-((t + 0.3) / 0.45) ** 2))[..., None]
+            c = c + (self.glint - c) * (self.sheen * np.exp(-((t + 0.35) / 0.3) ** 2) * ease(v, 0.15, 0.6) * (1 - ease(v, 0.8, 1.0)))[..., None]
+            c = c * (1 - 0.86 * ease(t, 0.4, 1.0))[..., None] * (1 - 0.35 * ease(-t, 0.84, 1.0))[..., None]
+            return np.where(top[..., None], c, self.dark * 0.7)
+
+        return paint
+
+    ring = (0.5, 0.2)   # the ring of light: its height over the head's middle, how tall it is
+    gloss = 0.25        # how bright the ring is on a ribbon
+    round = 0.0         # how far a ribbon's light is the whole mass's (a ball round the head), not its own
+
+    def build(self, folder, name="Hair"):
+        obj = super().build(folder, name)
+        if self.round:
+            me = obj.data
+            own = [Vector(c.vector) for c in me.corner_normals] if hasattr(me, "corner_normals") else None
+            if own is None:
+                me.calc_normals_split()
+                own = [Vector(l.normal) for l in me.loops]
+            normals = []
+            for loop, n in zip(me.loops, own):
+                ball = me.vertices[loop.vertex_index].co - am.CENTRE
+                ball.z *= 0.85
+                normals.append(tuple((n * (1 - self.round) + ball.normalized() * self.round).normalized()))
+            me.normals_split_custom_set(normals)
+        return obj
+    sheen = 0.4         # the soft light down each ribbon's raised face
+    under = 0.55        # the crown surface's tone between the ribbons, from dark (0) to lit (1)
+
+    def crown(self, low=52.0, off=0.07, swirl=40.0, lines=46, gloss=0.25, segments=28):
+        """The top as one surface, from the whorl `low` degrees down: fine hairs drawn along it, turning round the
+        whorl. The ribbons lie on it, so between them there is hair."""
+        phs = [3.0, 12.0, 24.0, 38.0, low]
+        grid = [[(lambda f: f[0] + f[1] * off)(self.at(-180 + 360 * i / segments, ph)) for i in range(segments)] for ph in phs]
+        marks = [(self.rng.uniform(0, 1), self.rng.uniform(0.004, 0.012), self.rng.uniform(0.15, 0.4)) for _ in range(lines)]
+        band = am.CENTRE.z + self.ring[0]
+
+        def paint(u, v, P, N):
+            c = np.broadcast_to(self.dark + (self.lit - self.dark) * self.under, u.shape + (3,)).copy()
+            w = (u - swirl / 360 * v) % 1.0
+            for at, wide, deep in marks:
+                d = np.abs(w - at)
+                c = c * (1 - deep * np.exp(-(np.minimum(d, 1 - d) / wide) ** 2))[..., None]
+            shine = np.exp(-((P[..., 2] - band) / self.ring[1]) ** 2) * gloss
+            return c + (self.glint - c) * shine[..., None] * 0.6
+
+        self.sheet(grid, paint, (200, 36), lambda mid, r, c: mid - am.CENTRE, closed=True)
+
+    def onto(self, v):
+        """The (degrees round, degrees down) of the hair surface's point in the direction `v` from the head's middle."""
+        if not hasattr(self, "_table"):
+            phs = np.linspace(0.0, 150.0, 601)
+            el = []
+            for ph in phs:
+                q = self.frame(0.0, ph)[0] - am.CENTRE
+                el.append(math.atan2(q.z, q.y))
+            self._table = (np.array(el)[::-1], phs[::-1])
+        v = v.normalized()
+        e = math.atan2(v.z, math.hypot(v.x, v.y))
+        return math.degrees(math.atan2(-v.x, v.y)), float(np.interp(e, *self._table))
+
+    def lock(self, root, end, width, bow=0.0, ess=0.0, lift=0.0, tail=0.3, off=(0.03, 0.1), flick=40.0, curl=0.0, n=6, nt=5, tilt=12.0,
+             k=1.0, rate=1.4, **make):
+        """A ribbon laid over the head from `root` to `end` (each degrees round, degrees down), the shortest way,
+        bowed `bow` of its length to one side and `ess` into an S; it rides from `off[0]` to `off[1]` over the head, and `lift` more at its middle. Then it leaves the
+        head for `tail` studs, turning `flick` degrees out of it and `curl` degrees to its own left by its point."""
+        p0, p1 = self.at(*root)[0] - am.CENTRE, self.at(*end)[0] - am.CENTRE
+        v0, v1 = p0.normalized(), p1.normalized()
+        side = v0.cross(v1)
+        side = side.normalized() if side.length > 1e-4 else v0.orthogonal().normalized()
+        line = []
+        for i in range(n):
+            u = i / (n - 1)
+            v = v0.slerp(v1, u) if v0.angle(v1) > 1e-4 else v0
+            v = (v + side * (bow * math.sin(math.pi * u) + ess * math.sin(2 * math.pi * u))).normalized()
+            q, nrm, _ = self.at(*self.onto(v))
+            e = u * u * (3 - 2 * u)
+            line.append((q + nrm * (off[0] + (off[1] - off[0]) * e + lift * math.sin(math.pi * u) ** 1.5), nrm.copy()))
+        t0 = (line[-1][0] - line[-2][0]).normalized()
+        n0 = line[-1][1] - t0 * line[-1][1].dot(t0)
+        n0 = n0.normalized()
+        s0 = t0.cross(n0).normalized()
+        step = tail / max(nt, 1)
+        for i in range(1, nt + 1):
+            t = (i / nt) ** rate
+            up, yaw = math.radians(flick) * t, math.radians(curl) * t
+            way = (t0 * math.cos(yaw) - s0 * math.sin(yaw)) * math.cos(up) + n0 * math.sin(up)
+            line.append((line[-1][0] + way * step, n0 * math.cos(up) - t0 * math.sin(up)))
+        made = dict(full=0.62, sharp=1.0, root=0.75)
+        made.update(make)
+        if "base" in made:
+            made["root"] = made.pop("base")
+        self.ribbon(line, width, tilt=tilt, k=k, **made)
+
+    def strand(self, a, ph, length, width, tilt=14.0, full=0.62, sharp=1.5, root=0.5, gloss=0.25, k=1.0, **walk):
+        self.ribbon(self.run(a, ph, length, **walk), width, full, sharp, root, tilt=tilt, gloss=gloss, k=k)
+
+    def free(self, points, width, n=10, **make):
+        """A ribbon through `points` in space, off the head: a tuft thrown up out of the whorl."""
+        line = [(Vector(q), (Vector(q) - am.CENTRE).normalized()) for q in am.smooth2([tuple(q) for q in points], n)]
+        self.ribbon(line, width, **make)
+
+    def layer(self, around, ph, length, width, count, off, hold, flick, heading=0.0, bend=0.0, curl=22.0, jitter=1.0, n=9, tilt=14.0):
+        """`count` ribbons round the head from `around[0]` to `around[1]` degrees, rooted `ph` down: no two alike in
+        length, width, turn or flick, and alternate ones curling toward each other, so their points cross."""
+        r = self.rng
+        for i in range(count):
+            a = around[0] + (around[1] - around[0]) * (i + 0.5 + r.uniform(-0.25, 0.25) * jitter) / count
+            big = 1.0 + (0.16 if i % 3 == 0 else -0.12 if i % 3 == 1 else 0.0) * jitter
+            self.strand(a, ph + r.uniform(-3, 3) * jitter, length * big * r.uniform(0.94, 1.06), width * r.uniform(0.85, 1.12) * (2 - big),
+                        heading=heading + r.uniform(-10, 10) * jitter, bend=bend + r.uniform(-12, 12) * jitter,
+                        hold=hold * r.uniform(0.92, 1.06), flick=flick * r.uniform(0.6, 1.3), curl=curl * (1 if i % 2 else -1) * r.uniform(0.5, 1.5),
+                        off=(off[0], off[1] * r.uniform(0.85, 1.2)), n=n, tilt=tilt, k=r.uniform(0.9, 1.08))
+
+
+def rook_ribbons():
+    """Rook's hair: a short, tousled crop, black, as the catalog's best-loved boys' hairs are laid. The whorl sits at
+    the back of the crown; from it thin ribbons sweep forward over the top to the brows and down round the sides and
+    the back, each bowed, each leaving the head over its last part and hooking out. Three layers and a hem of short
+    points; a few hooks stand out of the silhouette; two arcs rise out of the whorl."""
+    h = Ribbons("#101116", "#030304", "#80879A", seed=11)
+    h.ring, h.gloss, h.sheen, h.round = (0.6, 0.12), 0.55, 0.0, 0.6
+    h.cap(am.hairline(front=4.94, temple=4.58, nape=4.3))
+    h.under = 0.18   # dark between the clumps, so they part as the catalog's do
+    h.crown(low=62.0, off=0.13)
+    r, W = h.rng, (180.0, 30.0)   # the whorl: round, down
+
+    def fan(ends, ph_end, width, tail, off, bow=0.22, flick=(30, 60), curl=(25, 60), spread=8.0, n=6, nt=5, sweep=0.0, ess=0.0, split=0.0, **make):
+        """A lock from near the whorl to each of `ends` (degrees round), `ph_end` down; bowed alternately, so
+        neighbours cross; their tails hook alternately left and right. `sweep` (from -1 to 1): a chunk whose locks
+        all bow one way, as a combed fringe, with `ess` of an S in each."""
+        for k, a in enumerate(ends):
+            sgn = (1 if k % 2 else -1) if not sweep else (1 if sweep > 0 else -1)
+            root = (W[0] + r.uniform(-spread, spread) * 2.5, W[1] + r.uniform(-spread, spread) * 0.6)
+            h.lock(root, (a + r.uniform(-4, 4), ph_end + r.uniform(-6, 6)), width * r.uniform(0.8, 1.2), bow=sgn * bow * r.uniform(0.5, 1.3),
+                   ess=sgn * ess * r.uniform(0.6, 1.3),
+                   tail=tail * r.uniform(0.8, 1.25), off=(off[0], off[1] * r.uniform(0.85, 1.15)), flick=r.uniform(*flick),
+                   curl=sgn * r.uniform(*curl), n=n, nt=nt, k=r.uniform(0.88, 1.08), **make)
+            if split:
+                way = r.choice((-1, 1))
+                h.lock(root, (a + way * split * r.uniform(0.8, 1.2), ph_end - r.uniform(2, 8)), width * r.uniform(0.4, 0.55),
+                       bow=sgn * bow * r.uniform(0.5, 1.0), tail=tail * r.uniform(0.7, 1.0), off=(off[0], off[1] * r.uniform(1.0, 1.15)),
+                       flick=r.uniform(*flick) + 10, curl=way * r.uniform(*curl), n=n, nt=nt, k=r.uniform(0.95, 1.1), **make)
+
+    def ring(around, count, ph_root, ph_end, width, tail, off, flick=(20, 50), curl=(20, 50), turn=0.0, n=5, nt=4, **make):
+        """A layer of locks rooted round the head at `ph_root`, each running down to `ph_end`, swung `turn`
+        degrees round as it goes; no two alike."""
+        for k in range(count):
+            a = around[0] + (around[1] - around[0]) * (k + 0.5 + r.uniform(-0.3, 0.3)) / count
+            sgn = 1 if k % 2 else -1
+            h.lock((a, ph_root + r.uniform(-4, 4)), (a + turn + r.uniform(-10, 10), ph_end + r.uniform(-8, 8)), width * r.uniform(0.8, 1.2),
+                   bow=sgn * r.uniform(0.05, 0.2), tail=tail * r.uniform(0.75, 1.3), off=(off[0], off[1] * r.uniform(0.85, 1.15)),
+                   flick=r.uniform(*flick), curl=sgn * r.uniform(*curl), n=n, nt=nt, k=r.uniform(0.62, 0.78), **make)
+
+    # the hem: short points under everything, round the back and the sides
+    ring((70, 290), 9, 64, 86, 0.22, 0.1, (0.02, 0.03), flick=(-4, 8), curl=(10, 25), nt=5)
+    # the middle layer round the sides and the back, swung back from the face
+    ring((48, 150), 7, 36, 74, 0.22, 0.18, (0.05, 0.05), turn=14, flick=(-4, 8), curl=(10, 25), nt=6)
+    ring((210, 312), 7, 36, 74, 0.22, 0.18, (0.05, 0.05), turn=-14, flick=(-4, 8), curl=(10, 25), nt=6)
+    ring((150, 210), 4, 36, 92, 0.22, 0.16, (0.05, 0.05), flick=(0, 10), curl=(10, 25), nt=6)
+    # the top layer from the whorl, down round the sides and the back
+    fan([58, 90, 122, 154], 70, 0.46, 0.18, (0.17, 0.09), split=12, bow=0.16, ess=0.03, sweep=1, flick=(-4, 10), curl=(15, 35), nt=6, base=0.95, full=0.3, sharp=0.8)
+    fan([-58, -90, -122, -154, 180], 70, 0.46, 0.18, (0.17, 0.09), split=12, bow=0.16, ess=0.03, sweep=1, flick=(-4, 10), curl=(15, 35), nt=6, base=0.95, full=0.3, sharp=0.8)
+    # the top layer forward over the head to the brows: the fringe, broad at the root, overlapping, drawn to needles; the middle longest
+    # it fans from its own point at the top of the front, so from the front its locks part outward, never run parallel
+    F = (0.0, 16.0)
+    # under it, a shorter layer between its locks, so no band of the cap shows across the brow
+    for a in (-76, -56, -36, -17, 1, 19, 38, 58, 78):
+        h.lock((F[0] + a * 0.3 + r.uniform(-5, 5), F[1] + 10 + r.uniform(-4, 4)), (a + r.uniform(-4, 4), r.uniform(72, 79)), r.uniform(0.2, 0.25),
+               bow=r.uniform(-0.08, 0.08), tail=0.1, off=(0.04, 0.12), flick=r.uniform(6, 16), curl=(1 if a > 0 else -1) * r.uniform(10, 25),
+               n=7, nt=3, base=0.5, full=0.32, sharp=1.0, k=r.uniform(0.8, 0.92))
+    for k, (a, ph, w) in enumerate(((-60, 76, 0.32), (-30, 85, 0.42), (0, 80, 0.3), (28, 86, 0.42), (58, 74, 0.32))):
+        h.lock((F[0] + a * 0.25 + r.uniform(-6, 6), F[1] + r.uniform(-4, 4)), (a, ph), w, bow=(1 if k % 2 else -1) * r.uniform(0.04, 0.12),
+               ess=0.03, lift=0.03, tail=0.16, off=(0.1, 0.25 + r.uniform(-0.02, 0.02)), flick=r.uniform(8, 22),
+               curl=(1 if a > 0 else -1) * r.uniform(15, 35), n=8, nt=4,
+               base=0.9, full=0.32, sharp=1.0, k=r.uniform(0.9, 1.06))
+    # over the top, the outer locks: they lie broad over the crown and sweep forward and out
+    fan([-62, -16, 30, 82], 64, 0.44, 0.22, (0.19, 0.27), split=10, bow=0.2, ess=0.04, sweep=1, flick=(6, 16), curl=(15, 35), spread=6, n=9, base=0.95, full=0.3, sharp=1.0)
+    return h
+
+
 TIE = (180, 15)
 
 
@@ -463,7 +723,8 @@ def tie_loop(tie):
 
 
 WHO_ = {
-    "rook": dict(takes={"Rook": rt.take_a, "A": with_hair(rt, rt.take_a, rook), "T": with_hair(rt, rt.take_a, rook_sheets)},
+    "rook": dict(takes={"Rook": rt.take_a, "A": with_hair(rt, rt.take_a, rook), "T": with_hair(rt, rt.take_a, rook_sheets),
+                        "R": with_hair(rt, rt.take_a, rook_ribbons)},
                  today="Today's Rook (AR59's pick)"),
     "kirra": dict(takes={"Kirra": kt.take_a, **{k: with_hair(kt, kt.take_a, lambda k=k: kirra(k)) for k in "ABC"}},
                   today="Today's Kirra (AR60's fix)"),
@@ -503,7 +764,8 @@ if __name__ == "__main__":
         rt.shade_run(OUT)
     elif mode == "sheet":
         rt.sheet_run(OUT, words(who), kt.BESIDE)
-    elif mode in ("bare", "match"):   # the head alone, with no hair or with the take's, in the drawn designs' three views
+    elif mode in ("bare", "match", "alone"):   # the head with no hair or with the take's, in the drawn designs' views;
+        # `alone`: the hair by itself from over the face, as the catalog pictures its own
         key = "Bare" if mode == "bare" else rest[2]
         module = rt if who == "rook" else kt
         scene = bl.reset_scene()
@@ -512,11 +774,16 @@ if __name__ == "__main__":
         (OUT / "tex" / key).mkdir(parents=True, exist_ok=True)
         run = with_hair(module, module.take_a, lambda: am.Hair("#000000", "#000000")) if mode == "bare" else spec["takes"][key]
         made = run(j, OUT / "tex" / key)
-        if mode == "match":
+        if mode != "bare":
             measured(key, made)
         j["root"].location = rt.wt.PIVOTS["root"]
         bpy.context.view_layer.update()
-        for view, azimuth, elevation in (("front", 180, 2), ("three", 145, 2), ("side", 90, 2), ("back", 0, 2), ("top", 180, 60)):
+        views = (("front", 180, 2), ("three", 145, 2), ("side", 90, 2), ("back", 0, 2), ("top", 180, 60))
+        if mode == "alone":
+            for name, piece in made.items():
+                piece.hide_render = name != "hair"
+            views = (("over", 180, 24), ("over3", 150, 24), ("overback", 30, 24))
+        for view, azimuth, elevation in views:
             rt.rm.eevee(scene, 1000, 1000)
             rt.rm.sun_for(scene, azimuth)
             am.fill_for(scene, azimuth)

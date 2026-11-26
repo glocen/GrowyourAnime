@@ -88,9 +88,9 @@ After the fifth modelled round was rejected ("your hair still look bad.") and th
 - The normals are turned part of the way to a ball's, and the picture is lit the same way; one ring of light runs round the dome, dipping to a point on each lock.
 - 3,600 triangles.
 
-## What the full-size pictures show (2026-11-25, 00:49, on "still very very bad js learn do study"; unfinished, paused at the director's word)
+## What the full-size pictures show (2026-11-25, 00:49, on "still very very bad js learn do study"; paused at the director's word, resumed on "go", 21:2x)
 
-The Shag build and a spiked build after it were both rejected (AR64). The study this time is on eight of the catalog's best-loved boys' hairs at 700 px (`build/reference/hair/catalog720/`, internal). Six are read; `6413085241` and `4875445470` are not yet. Their 3D pictures need a sign-in, so the meshes weren't read: everything below is from pictures.
+The Shag build and a spiked build after it were both rejected (AR64). The study this time is on eight of the catalog's best-loved boys' hairs at 700 px (`build/reference/hair/catalog720/`, internal), all eight read. Their 3D pictures need a sign-in, so the meshes weren't read: everything below is from pictures.
 
 OBSERVED:
 - **A lock is a long thin ribbon,** five to eight times as long as it is wide, near one width for most of its length, then a long needle point. Ours were leaves and cones, two to one.
@@ -100,6 +100,25 @@ OBSERVED:
 - **The light is soft and runs across each ribbon** (lighter down its middle, dark at its edges), on a picture that goes from a dark root to a lighter end. A black cap fills the inside.
 - The mass is about 1.5 to 1.7 heads wide and falls over the forehead to the eyes.
 
-DESIGN, tried once (`tools/blender/hair_ways.py`, `Sheets`, take T): pleated sheets from the whorl whose pleats part into points near their ends, broad shells over the crown, a few loose locks. It reads as hair, but its pleats are still wide petals (about three to one), nothing crosses, and the points don't flick. Not shown as a candidate.
+OBSERVED on the resumed study, building beside the pictures at one size (each line found by a round that lacked it):
+- **A ribbon is folded, not round:** a shallow V across it with a hard crease down the ridge, so one half takes the light and the other falls into shade. A tube or a flat card reads as clay or paper.
+- **Broad and overlapping at the root,** so no scalp or cap shows between locks near the head; they only come apart toward the points. A ribbon that starts thin reads as a wet string.
+- **Clumps, not combs:** a broad lock with a thinner twin from the same root that parts from it toward the point, and big chunks beside small ones. Locks of one width in a row read as a mop.
+- **Every lock from the whorl turns the same way round it,** a swirl. Alternating bows read as tangle.
+- **The whorl sits at the back of the crown, and the fringe has its own point at the top of the front:** from the front its locks part outward. Fringe locks laid from the back whorl run parallel down the face, a curtain.
+- **The points kick out past shorter under layers;** when every layer ends at one height, the bottom is a hanging fringe of needles all round.
+- **A dark cap and dark roots, a soft sheen down each lock's lit half:** the depth is in that range, dark between the locks, light along their ridges.
+- **6413085241** is a short side-swept crop of broad flat locks over a black cap; **4875445470**, side on, long ribbons hanging to needle points.
 
-Still to do: read the last two pictures, measure a ribbon's width against the head on each, then build ribbons that thin, curved and crossed, and judge the build beside these pictures at one size before anyone sees it.
+DESIGN, take R (`tools/blender/hair_ways.py`, `Ribbons`, `rook_ribbons`; 31 rounds, 2026-11-25, 21:29, to 2026-11-26, 02:08): folded ribbons laid over the head from the back whorl in a swirl, about ten broad top locks with thinner twins, a fringe of five fanning from its own point at the top front, a darker inner mass held close to the head, dark roots, lit as one mass (each normal 0.6 of the way to a ball round the head) with one ring of light. 1.66 heads wide, 0.35 of a head over the head, 6,180 triangles (over the 4,000 a catalog hair is held to: thinned at the finish). Sheets: `build/handoff/Rook/hair/hair_rook_ribbons.png` (ours only); beside two Anime Vanguards heads and three catalog hairs, `build/reference/hair/compare_rook_ribbons.png` (internal).
+
+A blind reader (`ga-fresh-eyes`, the catalog as the bar) read rounds 28 and 30: **no, both times.** Its gaps, worst first, and where round 31 stands:
+- **The silhouette flares** at the sides and hem like an umbrella; the catalog's is a compact dome held close, a few tips breaking it. Round 31 holds the sides close; not read blind.
+- **Too many locks of one width** (round 28: about thirty, "a frayed broom"); the catalog's eight to ten broad ones each read. Round 29's five big ones read as shards; rounds 30 and 31 carry about ten.
+- **One layer, nothing crossing:** the catalog lays front locks over a dark inner mass. Round 31 darkens the inner mass; nothing crosses yet.
+- **No accent at the crown:** 6823338112's parting with two upturned tips, 14892162637's cowlick and curl, are what make them known in silhouette, at 64 px too. Not done: earlier tries (a V, a tuft) read as horns, so it's drawn first next.
+- **Many shines, grey-blue:** a streak per lock reads metallic; the bar is near-black, one soft band. Round 31 lights the mass as one; the lit side still reads grey-blue in our stage's light, where the catalog's band sits on the upper locks.
+
+Next, in this order: the crown's accent drawn flat over the bare head (`tools/art/hair_designs.py`) and picked before it's modelled; front locks crossing over the inner mass; the band of light on the upper locks; then a blind read, and the director sees it only on a yes.
+
+Take T before it (`Sheets`): pleated sheets whose pleats part into points near their ends. Wide petals, nothing crossing, points that don't flick. Dropped.

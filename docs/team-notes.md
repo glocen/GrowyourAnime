@@ -12,9 +12,9 @@ Each teammate rewrites its own row: one to three lines. Open asks sit under "Wai
 - **Next:** TR64's hooks (research's queue, about 3 h): each moment calls its cue by name, and Play the moment on each tab. Then TR57 to TR59's records, the Dasher's lunge (AR52) and Pip's skip.
 - **For research (tier 2), TR59's grey blocks:** the week's row sits in the opened Today list, since seven tiles on the card face would be about 17 points each. The codes sit behind a Codes press in Settings' band, since the card is full. ShowsAfter is the funnel's "Want" mark. The case, pouch and crate tiles show their kind's words until TR56's pictures exist. Codes could live in ConfigService, so a new code would need no publish (not yet checked).
 
-**Modulo (assets).** 2026-11-25, 00:49. Nothing running, no lock held.
-- **AR64's hair: rejected twice more, the study paused by the director** ("you will finish this trainning later", 00:49). Shag was "horrendous", a spiked build "still very very bad js learn do study". The study so far and what's left: `docs/research/hair-read.md`, "What the full-size pictures show". Nothing uploaded. AR59 Rook and AR62's frames wait on the hair.
-- **Now:** waiting on the director's word for what comes before the hair study resumes. Queued behind it: AR62's style frames, AR55's return as a whole screen, TR56's three chest pictures; Pip (AR63), Lyric and Watt wait for the frame's pick.
+**Modulo (assets).** 2026-11-26, 02:09. Nothing running, no lock held.
+- **AR64's hair: the study resumed on "go"** (taken as the word to resume, since everything queued waits on the hair). Take R, folded ribbons, 31 rounds built beside the catalog at one size (`build/handoff/Rook/hair/hair_rook_ribbons.png`). A blind reader said no on rounds 28 and 30; next, the crown's accent drawn first, locks that cross, the light on the upper locks (`docs/research/hair-read.md`, "What the full-size pictures show"). Not shown, nothing uploaded.
+- **Queued behind it:** AR62's style frames, AR55's return, TR56's chest pictures; Pip (AR63), Lyric and Watt wait for the frame's pick. Faber's craft note: Watt's Combo and GroundWire put the left arm 0.65 studs into the torso, fixed at Watt's redo (or re-baked, for Faber to upload, if Watt stays).
 
 **Scintilla (effects).** 2026-11-26, 01:22. **Now: AR7's and AR48's look, offline, while AR52's targets wait on research's pick.**
   - AR52: the targets are on the game's own frames (`build/handoff/Shade/targets/`, 98d5fb60), and Faber's four review findings are fixed (d2cf510e).

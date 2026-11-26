@@ -3263,6 +3263,13 @@ The rules now live in `docs/design.md`, "States in a fight", below "No lock". Fa
 - **Content check (21:50): PASS on both.** The shards are faceted ice with no drop or stain shape. The rim makes each mote a disc in front of the body, never a hole in it.
 - **Status:** implemented, taken in play, logic offline passes, content check PASS. Visually reviewed: my read; research's pass waits. Not director-accepted.
 
+**Research's second look on the two must-fixes (Quaestor, 2026-11-26, 21:53; `fix_break_slow.png`, `fix_break_64.png`, `fix_sap.png`, `fix_sap_64.png`): both pass. AR48's look closes for Burn, Freeze and Sap.**
+
+- **The break passes:** six cyan chunks the size of a hand tumble out from the waist and knees over 8 frames. They read as ice breaking off, and at 64 px they still read as bright specks.
+- **Sap passes:** single motes drift off the arms and the hat, never two touching. Against the sky they read as dark motes, not holes.
+- **What the sheets can't show:** the break in the hit spark's place in play (Faber's code, asked 21:44). It's first seen in Faber's install capture, and research looks at it there once.
+- **Next:** Faber installs Burn, Freeze and Sap. Shock waits for poise.
+
 ## Later, by ground
 
 The rest of ground 1 (Kirra in AR10, Watt in AR11; then Sable, Marigold, Crane), then each ground's Voidkin in `docs/roster.md`'s order. **The machines** (Gantry, Bulwark, Ironhymn, Shiomaru, Aegir) share one custom rig, taller than a player, with its own clip family: the first of them is timed like AR1, because a custom rig is a different cost.

@@ -77,12 +77,13 @@ The Battle Attributes, which every fight reads:
 Done by the server, once per attack, by one function (`docs/engineering-plan.md`, "The resolver").
 
 1. **Hit or dodged.**
-2. **Physical:** `Attack x the move's coefficient x (1 - mitigation)`. Mitigation comes from Defence, after Penetration, with a ceiling.
+2. **Physical:** `Attack x the move's coefficient x (1 - mitigation)`. Mitigation is `d / (d + K x G(the attacker's level))`, where d is the Defence left after Penetration, with a ceiling (`Config.Stats.Defence`). Every rating's chance reads its owner's level through G (TR49, F1).
 3. **The attacker's bonus bucket,** a sum: Damage Bonus from effects and the type advantage. One ceiling.
    - **A critical** multiplies on its own, outside the bucket: `x (1 + Critical Damage - the target's Critical Immunity)`, never under x1, with no ceiling [D, 2026-11-15, night]. Each update that raises Critical Damage raises the foes' health and Critical Immunity on the same curve ("The one rule").
-4. **The defender's reduction bucket,** a sum: Damage Reduction from effects, the type disadvantage, and on a block, the block's share. One ceiling.
-5. `final = physical x (1 + bonus) x critical x (1 - reduction)`, the critical x1 on a hit that isn't one.
-6. **Elemental,** if the attacker has it: `Elemental Attack x coefficient x (1 - resist)`, through the same two buckets but never critical. Shown as the second, coloured number.
+4. **The defender's reduction bucket,** a sum: Damage Reduction from effects and the type disadvantage. One ceiling.
+   - **A block** multiplies on its own, outside the bucket and its ceiling: `x (1 - the block's share)`, x0.5 today (TR49, F7; `Rules.Hit`).
+5. `final = physical x (1 + bonus) x critical x (1 - reduction) x block x gap`. The critical is x1 on a hit that isn't one, the block x1 on a hit that isn't blocked, and the gap is step 8's.
+6. **Elemental,** if the attacker has it: `Elemental Attack x coefficient x (1 - resist)`, through the same two buckets, the block and the gap, but never critical. It passes Defence. It's shown as the second, coloured number.
 7. **Lifesteal** heals from the health actually removed, with a ceiling per second.
 8. **The level gap** [D, 2026-11-19, 03:10]: when the attacker's level is below the defender's by more than 2, the hit (physical and elemental) is multiplied by `max(0.05, 0.85 ^ (gap - 2))`: 61% at 5 levels, 27% at 10, 10% at 16. A higher attacker gets nothing. Seeds, through the simulation before the build; Hard's recommended power is refit with it.
 
@@ -165,7 +166,7 @@ Run it with `py tools/balance/sim.py`. It reads the seeds and `docs/roster.md`.
 **Nothing compounds.**
 - A full build against a bare Voidkin of the same level: x2.86 in each stat. The same sources multiplied together would give x4.62.
 - Damage a second, bare Common as 1: on budget x2.6, full and balanced x3.4, full and built for damage x5.6, a Mythical Assassin built for damage x6.9. With the type advantage and the largest effect bonus on top: x11.9, rerun on 2026-11-15, night, with the critical outside the bucket (x10.5 before). That's the ceiling of the whole game at one level.
-- One hit can't exceed x3 of its plain value before a critical, which has no ceiling, or fall under x0.30, by the buckets' ceilings.
+- One hit can't exceed x3 of its plain value before a critical, which has no ceiling, or fall under x0.30, by the buckets' ceilings. (Since TR49 a block halves outside the ceiling, so a blocked hit can reach x0.15, and the level gap, step 8 of "One hit", goes lower still.)
 
 **Builds matter more than rarity.**
 - A Common at a full build beats a Mythical at half a build (16 s against 28 s in the arena).

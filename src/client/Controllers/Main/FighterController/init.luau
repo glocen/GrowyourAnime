@@ -84,7 +84,7 @@ type Prop = {
 
 -- A hit shown on a body (Held), and the body's flash and tremble from it (Struck): Rules.Fight.Flash and .Tremble, by the
 -- hit's rung (Config.Combat.Hitstop; AR8 A).
-type Held = { Target: View, At: number?, Rung: number, Hold: number }
+type Held = { Target: View, At: number?, Rung: number, Hold: number, Surface: Vector3?, Blow: Vector3? } -- Surface, Blow: where its spark stood
 type Struck = { At: number, Flash: number, Glow: number, Hold: number, Tremble: number, Seed: number, Shown: Vector3?, Offset: Vector3 }
 
 type View = {
@@ -287,8 +287,18 @@ end
 -- cone's every target gets its own hold, flash and spark, the attacker one hold and one jolt for them all, and none on a
 -- steady hit (Actions.Hit.Steady: a run of beats that keeps its count). `draw`: asks the action's effect to draw the hit
 -- on the target itself (drawnBy); when it does, the spark stays off and the target's hold waits for the effect to reach
--- it. A beat shown from the clock is its own rung; the server's hit raises it for a critical or a kill (raise).
-local function show(attacker: View, target: View?, rung: number, heavy: boolean, steady: boolean, key: string, draw: ((landed: () -> ()) -> boolean)?)
+-- it. A beat shown from the clock is its own rung; the server's hit raises it for a critical or a kill (raise). The
+-- spark is AR61's star of the rung (Effects.HitSpark), its gold only when `critical`; the old one where no star stands;
+-- none on a blow that meets a raised shield (shieldUp), or that the server says met one (`guarded`).
+-- AR52: `target`'s shield is raised now (FightService's GuardUntil), so a blow on it glances or breaks it open, and
+-- that look is its own, GuardGlance's or GuardBreak's (SlamController), never a star beside it: one hero shape at a time
+-- (Scintilla, 2026-11-26). Read at the blow, so a beat shown from the clock, before the server's word, keeps it too.
+local function shieldUp(target: View): boolean
+	local up = target.Model:GetAttribute("GuardUntil")
+	return type(up) == "number" and workspace:GetServerTimeNow() < up and (EffectsConfig.Rows :: any).GuardGlance ~= nil
+end
+
+local function show(attacker: View, target: View?, rung: number, heavy: boolean, steady: boolean, key: string, draw: ((landed: () -> ()) -> boolean)?, critical: boolean?, guarded: boolean?)
 	local actionId = if attacker.Action then attacker.Action.Id else nil -- read now: a drawn hit lands after its action may end
 	local each = if target then `{key}#{target.Id}` else key
 	if attacker.Shown[each] then
@@ -330,7 +340,12 @@ local function show(attacker: View, target: View?, rung: number, heavy: boolean,
 			local from = attacker.Root.Position
 			local toward = Vector3.new(from.X - at.X, 0, from.Z - at.Z)
 			local surface = if toward.Magnitude > 0.01 then at + toward.Unit * (if target.Rig == "Box" then target.Root.Size.Z / 2 else 0.6) else at
-			Effects.Spark(surface, from, heavy)
+			held.Surface, held.Blow = surface, at - from
+			if guarded or shieldUp(target) then
+				held.Surface = nil -- nor a critical's gold later (raise)
+			elseif not Effects.HitSpark(surface, at - from, rung, critical == true) or EffectsConfig.HitSparks.Old then
+				Effects.Spark(surface, from, heavy)
+			end
 		end
 	end
 	if first and isMine(attacker) then
@@ -342,8 +357,9 @@ FighterController.Show = show
 -- The server's word on a hit this screen showed from the clock (onHit): a critical's higher rung and a killing hit's
 -- longer hold are known only there, a replication's delay after the beat. A hold still running is held to the server's
 -- length; a hold already over isn't started again, which would stutter. A higher rung flashes the body again at its own
--- strength, and the player's own lead's camera takes the rung's further trauma, with the critical's number.
-local function raise(attacker: View, each: string, rung: number, hold: number)
+-- strength, and the player's own lead's camera takes the rung's further trauma, with the critical's number; a critical
+-- opens its gold star over the spark first shown (AR61), once.
+local function raise(attacker: View, each: string, rung: number, hold: number, critical: boolean)
 	local held = attacker.Held[each]
 	if held == nil or held.At == nil then
 		return
@@ -365,6 +381,9 @@ local function raise(attacker: View, each: string, rung: number, hold: number)
 		strike(target, lever, math.max(0, at + held.Hold - now), now < target.FrozenUntil)
 		if isMine(attacker) then
 			Effects.Jolt(lever.Trauma - before.Trauma)
+		end
+		if critical and held.Surface and held.Blow then
+			Effects.HitSpark(held.Surface, held.Blow, rung, true)
 		end
 		held.Rung = rung
 	end
@@ -436,6 +455,15 @@ end
 local function endAction(view: View)
 	stopCurrent(view)
 	view.Action = nil
+end
+
+-- Every effect a body plays, gone at once: its fall, and a Guard's shield broken open (AR52), where GuardBreak takes its
+-- place (SlamController) rather than the shield holding through the stagger and playing on.
+local function endEffects(view: View)
+	for _, running in view.Running do
+		running.Effect.Destroy()
+	end
+	table.clear(view.Running)
 end
 
 local function playReaction(view: View, role: string): AnimationTrack?
@@ -566,10 +594,7 @@ local function onState(view: View)
 	elseif state == "Down" then
 		view.FellAt = view.Root.Position
 		endAction(view)
-		for _, running in view.Running do
-			running.Effect.Destroy()
-		end
-		table.clear(view.Running)
+		endEffects(view)
 		local down = playReaction(view, "Down")
 		if view.Model:GetAttribute("Side") == "Shade" then
 			burst(view, down)
@@ -1150,15 +1175,18 @@ local function onHit(hit: any)
 		local key = `{hit.Beat}@{at}`
 		show(attacker, target, rung, hit.Heavy == true, hit.Steady == true, key, function(landed: () -> ()): boolean
 			return drawn(landed, true)
-		end)
+		end, hit.Critical == true, hit.Guarded ~= nil)
 		if target and type(hit.Hold) == "number" then
-			raise(attacker, `{key}#{target.Id}`, rung, hit.Hold)
+			raise(attacker, `{key}#{target.Id}`, rung, hit.Hold, hit.Critical == true and hit.Guarded == nil)
 		end
 	end
 	if target == nil then
 		return
 	end
 	local struck: View = target
+	if hit.Guarded == "Broke" then
+		endEffects(struck)
+	end
 	local press = pressOf(hit.A)
 	local shing = if hit.Critical and not hit.Dodged and attacker then SoundRule.Critical(sideOf(attacker)) else nil
 	if shing then

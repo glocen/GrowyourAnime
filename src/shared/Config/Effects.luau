@@ -70,7 +70,9 @@ export type Row = {
 	Cue: string?,
 	Relight: { Glow: number, Power: number }?,
 }
-export type Rows = { Area: number, Grey: boolean, Action: string?, Free: string?, Rows: { [string]: Row } }
+-- World: drawn at its authored size whatever its body's scale (an elite's), as a tell on the ground that must match its
+-- hit's own size (DasherLine; the hit's line never scales); left out, an action's rows grow with its body (Effects.Play).
+export type Rows = { Area: number, Grey: boolean, Action: string?, Free: string?, World: boolean?, Rows: { [string]: Row } }
 
 -- A coil band's burn (B1's exit): it holds whole, flaring from 1.5 to 4 from `from`, and is cut two frames in, its front
 -- covering the cut (build/handoff/Pip/fx/pip_burst_rows.json). Never a fade: half-gone fire over a dark Shade or a dusk sky
@@ -379,6 +381,26 @@ local Effects = {
 	-- The three older signatures, still functions in FighterController/Effects, by the name an action's Effect gives: they
 	-- move to rows at the finish pass (docs/engineering-plan.md, "Content at scale", item 1). Every other effect is rows.
 	Older = { Haymaker = true, LanternBurst = true, HeldNote = true } :: { [string]: boolean },
+
+	-- A landed hit's spark (AR61, the star: research's pick of 2026-11-25, 23:18): the rows of the highest From at or under
+	-- the hit's rung, at the struck side, its Front the way the blow travels, on the effects' free clock. A critical's gold
+	-- star only on a critical: a killing hit lifted to rung 4 keeps its beat's own spark. Below: from this rung a hit is a
+	-- signature's, with its own look to come, and keeps the old spark until then. Old: the old spark beside the new, for
+	-- the before and after ("Effects.HitSparks.Old", true). On false: the old spark alone.
+	HitSparks = {
+		On = true,
+		Old = false,
+		Below = 7,
+		Rungs = { { From = 2, Name = "HitSpark2" }, { From = 3, Name = "HitSpark3" }, { From = 4, Name = "HitSpark4" } },
+	} :: { On: boolean, Old: boolean, Below: number, Rungs: { { From: number, Name: string } } },
+
+	-- AR52's grey stand-ins (SlamController: the Guard's pane and its flash, the Dasher's line), by the action they stand
+	-- in for: drawn whenever its own rows aren't written, and beside them only when true here, for the verdict's before
+	-- and after ("Effects.Grey.GuardRaise", true).
+	Grey = { GuardRaise = false, DasherLunge = false } :: { [string]: boolean },
+	-- Where a blow meets the Guard's raised shield, in studs from its root at its scale (GuardShield's Shield row stands
+	-- there): GuardGlance and GuardBreak play at it, their Front along the blow (SlamController).
+	Shield = { Up = 0.4, Ahead = 1.5 },
 
 	-- The looks a hit's Looks name (Definitions.Actions), a shield's and the element states' (Config.Combat: Support's
 	-- Shield, States), worn by FighterController on a body for as long as what they show holds, and ended with it at once: rows (their rows hold to a far frame), or an outline (Outlines, below). False takes

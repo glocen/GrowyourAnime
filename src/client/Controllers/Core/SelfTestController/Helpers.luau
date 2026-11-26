@@ -14,6 +14,10 @@
 --                                           its marker's Stage, and the pack before it (Before, "Pack 2")
 --   Helpers.TRIP_ASKED                      seconds a step on a door or a pad, or a pick, may take to ask for a trip
 --   Helpers.lastTrip(t, role)               the newest trip TravelService's stub recorded, if it goes to place `role`
+--   Helpers.rowsOn(model, name)             the rows named `name` an action plays on `model` now (Effects.Play), or nil
+--   Helpers.drew(rows, names)               whether `rows` made each named row
+--   Helpers.rowsHang(t, what, model, target, action, at, names)  `action`'s own rows played here on `model` at
+--                                           `target`, stepped to `at` s: each named row made, every point found; then gone
 
 local Shared = game:GetService("ReplicatedStorage").Shared
 local HudConfig = require(Shared.Config.Hud)
@@ -30,6 +34,10 @@ local StageScreen = require(UI.StageScreen)
 local ModeScreen = require(UI.ModeScreen)
 local Button = require(UI.Kit.Button)
 local UiLint = require(script.Parent.UiLint)
+local Actions = require(Shared.Definitions.Actions)
+local Main = script.Parent.Parent.Parent.Main
+local FighterController = require(Main.FighterController)
+local Effects = require(Main.FighterController.Effects)
 
 local Helpers = {}
 
@@ -183,6 +191,46 @@ function Helpers.batteryCells(t: any, mark: Instance?, kwh: number, capacity: nu
 	end
 	local said = if mark then tostring(mark:GetAttribute("Cells")) else "no mark"
 	t.Check(`{where}: the mark's cells follow the charge, {want} of 3 lit at {string.format("%.2f", kwh)} of {capacity} kWh`, mark ~= nil and mark:GetAttribute("Cells") == want and drawn == 3, `{said} lit, {drawn} of 3 drawn so`)
+end
+
+function Helpers.rowsOn(model: Model, name: string): any
+	local view: any = FighterController.Views[model]
+	for _, each in (if view then view.Running else {}) do
+		local rows = each.Effect.Rows
+		if rows and rows.Name == name then
+			return rows
+		end
+	end
+	return nil
+end
+
+function Helpers.drew(rows: any, names: { string }): boolean
+	if rows == nil then
+		return false
+	end
+	for _, name in names do
+		if #rows.Parts(name) == 0 then
+			return false
+		end
+	end
+	return true
+end
+
+-- An action's rows played on a body outside the fight, as Effects.Play plays them in it, so a case reads that every point
+-- they ride is on that body (a missing one stops the play with an error) and their rows are made.
+function Helpers.rowsHang(t: any, what: string, model: Model, target: BasePart?, action: Actions.Action, at: number, names: { string })
+	local ok, played = pcall(Effects.Play, action.Beats, model, function(): BasePart?
+		return target
+	end, action)
+	if not ok then
+		t.Check(`{what}: its rows play on its body`, false, tostring(played))
+		return
+	end
+	local running = played :: Effects.Running
+	local stepped, err = pcall(running.Step, at, at)
+	t.Check(`{what}: its rows play on its body`, stepped, if stepped then nil else tostring(err))
+	t.Check(`{what}: each row made ({table.concat(names, ", ")})`, Helpers.drew(running.Rows, names))
+	running.Destroy()
 end
 
 return Helpers

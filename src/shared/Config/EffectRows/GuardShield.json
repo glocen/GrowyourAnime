@@ -1,0 +1,365 @@
+{
+  "Schema": "rows/1",
+  "Effect": "GuardShield",
+  "Why": "The Guard's raised shield, GuardRaise's own effect: the grey block-in (AR52).",
+  "Area": 1,
+  "Grey": true,
+  "Action": "GuardRaise",
+  "Rows": {
+    "Shield": {
+      "Kind": "Mesh",
+      "From": "Raise",
+      "Body": "HumanoidRootPart",
+      "Part": [
+        "FxShell"
+      ],
+      "Look": "fx_ribs_Warm",
+      "Grey": "fx_ribs_Grey",
+      "Tracks": {
+        "At": [
+          [
+            -8,
+            {
+              "Vector3": [
+                0,
+                0.4,
+                -1.5
+              ]
+            },
+            "Linear"
+          ],
+          [
+            120,
+            {
+              "Vector3": [
+                0,
+                0.4,
+                -1.5
+              ]
+            },
+            "Quad In"
+          ],
+          [
+            128,
+            {
+              "Vector3": [
+                0,
+                -1.2,
+                -1.5
+              ]
+            }
+          ]
+        ],
+        "Scale": [
+          [
+            -8,
+            {
+              "Vector3": [
+                0.4,
+                0.3,
+                0.08
+              ]
+            },
+            "Back Out"
+          ],
+          [
+            0,
+            {
+              "Vector3": [
+                1.8,
+                2.0,
+                0.42
+              ]
+            },
+            "Sine InOut"
+          ],
+          [
+            60,
+            {
+              "Vector3": [
+                1.854,
+                2.06,
+                0.42
+              ]
+            },
+            "Sine InOut"
+          ],
+          [
+            120,
+            {
+              "Vector3": [
+                1.8,
+                2.0,
+                0.42
+              ]
+            },
+            "Quad In"
+          ],
+          [
+            128,
+            {
+              "Vector3": [
+                1.9800000000000002,
+                0.15,
+                0.1
+              ]
+            }
+          ]
+        ],
+        "Transparency": [
+          [
+            -8,
+            0.8,
+            "Quad Out"
+          ],
+          [
+            0,
+            0.25,
+            "Sine InOut"
+          ],
+          [
+            120,
+            0.3,
+            "Quad In"
+          ],
+          [
+            128,
+            1
+          ]
+        ],
+        "Glow": [
+          [
+            -8,
+            3,
+            "Quad Out"
+          ],
+          [
+            4,
+            1.4,
+            "Sine InOut"
+          ],
+          [
+            120,
+            1.4
+          ]
+        ]
+      },
+      "Why": "the hero: a lens of ribbed paper before the Guard, snapped up by Raise, held, folded down at Drop"
+    },
+    "ClickLine": {
+      "Kind": "Emitter",
+      "Image": "fx_ring_line",
+      "Emitter": {
+        "Lifetime": [
+          0.3,
+          0.3
+        ],
+        "Speed": [
+          0,
+          0
+        ],
+        "Size": [
+          [
+            0,
+            3
+          ],
+          [
+            1,
+            5
+          ]
+        ],
+        "Rotation": [
+          0,
+          0
+        ],
+        "FlipbookLayout": "Grid4x4",
+        "FlipbookMode": "OneShot",
+        "LightInfluence": 0,
+        "Color": {
+          "Color3": [
+            255,
+            246,
+            230
+          ]
+        },
+        "LightEmission": 1,
+        "ZOffset": 0.55
+      },
+      "Emit": [
+        [
+          0,
+          1
+        ]
+      ],
+      "Tracks": {
+        "At": [
+          [
+            0,
+            {
+              "Vector3": [
+                0,
+                0.4,
+                -1.5
+              ]
+            }
+          ]
+        ]
+      },
+      "Why": "the click of the shield shutting: a ring snapped open on Raise, round the shield",
+      "From": "Raise",
+      "Body": "HumanoidRootPart"
+    },
+    "ClickFill": {
+      "Kind": "Emitter",
+      "Image": "fx_ring_fill",
+      "Emitter": {
+        "Lifetime": [
+          0.3,
+          0.3
+        ],
+        "Speed": [
+          0,
+          0
+        ],
+        "Size": [
+          [
+            0,
+            3
+          ],
+          [
+            1,
+            5
+          ]
+        ],
+        "Rotation": [
+          0,
+          0
+        ],
+        "FlipbookLayout": "Grid4x4",
+        "FlipbookMode": "OneShot",
+        "LightInfluence": 0,
+        "Color": [
+          [
+            0,
+            {
+              "Color3": [
+                233,
+                226,
+                214
+              ]
+            }
+          ],
+          [
+            0.34,
+            {
+              "Color3": [
+                233,
+                226,
+                214
+              ]
+            }
+          ],
+          [
+            1,
+            {
+              "Color3": [
+                91,
+                86,
+                112
+              ]
+            }
+          ]
+        ],
+        "LightEmission": 0.6,
+        "ZOffset": 0.5
+      },
+      "Emit": [
+        [
+          0,
+          1
+        ]
+      ],
+      "Tracks": {
+        "At": [
+          [
+            0,
+            {
+              "Vector3": [
+                0,
+                0.4,
+                -1.5
+              ]
+            }
+          ]
+        ]
+      },
+      "Why": "Click's fill pass",
+      "From": "Raise",
+      "Body": "HumanoidRootPart"
+    },
+    "ClickDark": {
+      "Kind": "Emitter",
+      "Image": "fx_ring_dark",
+      "Emitter": {
+        "Lifetime": [
+          0.3,
+          0.3
+        ],
+        "Speed": [
+          0,
+          0
+        ],
+        "Size": [
+          [
+            0,
+            3
+          ],
+          [
+            1,
+            5
+          ]
+        ],
+        "Rotation": [
+          0,
+          0
+        ],
+        "FlipbookLayout": "Grid4x4",
+        "FlipbookMode": "OneShot",
+        "LightInfluence": 0,
+        "Color": {
+          "Color3": [
+            28,
+            23,
+            38
+          ]
+        },
+        "LightEmission": 0,
+        "Transparency": 0.15,
+        "ZOffset": 0.45
+      },
+      "Emit": [
+        [
+          0,
+          1
+        ]
+      ],
+      "Tracks": {
+        "At": [
+          [
+            0,
+            {
+              "Vector3": [
+                0,
+                0.4,
+                -1.5
+              ]
+            }
+          ]
+        ]
+      },
+      "Why": "Click's dark pass",
+      "From": "Raise",
+      "Body": "HumanoidRootPart"
+    }
+  }
+}

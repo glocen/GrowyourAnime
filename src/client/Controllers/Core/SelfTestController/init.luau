@@ -45,6 +45,7 @@ local SettingsCases = require(script.SettingsCases)
 local BroadcastCases = require(script.BroadcastCases)
 local BoardsCases = require(script.BoardsCases)
 local WelcomeCases = require(script.WelcomeCases)
+local SparkCases = require(script.SparkCases)
 local GoalCases = require(script.GoalCases)
 local TakeCases = require(script.TakeCases)
 local BaseController = require(script.Parent.Parent.Main.BaseController)
@@ -252,6 +253,8 @@ local function run(filter: string?): string
 	table.move(boards, 1, #boards, #cases + 1, cases)
 	local welcome = WelcomeCases.Cases() -- the welcome week's row and the codes (TR59), apart for the same reason
 	table.move(welcome, 1, #welcome, #cases + 1, cases)
+	local sparks = SparkCases.Cases() -- a landed hit's star (AR61), apart for the same reason
+	table.move(sparks, 1, #sparks, #cases + 1, cases)
 	local goals = GoalCases.Cases() -- TR54's goals: the Today list, the claim, the dare line and its card, apart for the same reason
 	table.move(goals, 1, #goals, #cases + 1, cases)
 	local modes = ModeCases.Cases() -- the Play panel (the director, 2026-11-24), apart for the same reason

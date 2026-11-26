@@ -1,0 +1,725 @@
+{
+  "Schema": "rows/1",
+  "Effect": "DasherLine",
+  "Why": "The Dasher's line, DasherLunge's own effect: the grey block-in (AR52).",
+  "Area": 1,
+  "Grey": true,
+  "Action": "DasherLunge",
+  "Rows": {
+    "Lane": {
+      "Kind": "Mesh",
+      "From": "Line",
+      "Part": [
+        "FxShell"
+      ],
+      "Look": "fx_rise_Warm",
+      "Grey": "fx_rise_Grey",
+      "Tracks": {
+        "At": [
+          [
+            0,
+            {
+              "Vector3": [
+                0,
+                -2.96,
+                -7.0
+              ]
+            }
+          ]
+        ],
+        "Scale": [
+          [
+            0,
+            {
+              "Vector3": [
+                0.02,
+                0.02,
+                7.0
+              ]
+            },
+            "Back Out"
+          ],
+          [
+            4,
+            {
+              "Vector3": [
+                2,
+                0.02,
+                7.0
+              ]
+            },
+            "Linear"
+          ],
+          [
+            59,
+            {
+              "Vector3": [
+                2,
+                0.02,
+                7.0
+              ]
+            },
+            "Quad In"
+          ],
+          [
+            65,
+            {
+              "Vector3": [
+                0.02,
+                0.02,
+                7.3500000000000005
+              ]
+            }
+          ]
+        ],
+        "Transparency": [
+          [
+            0,
+            0.1,
+            "Linear"
+          ],
+          [
+            59,
+            0.25,
+            "Quad In"
+          ],
+          [
+            65,
+            1
+          ]
+        ],
+        "Glow": [
+          [
+            0,
+            3,
+            "Quad Out"
+          ],
+          [
+            4,
+            1.2,
+            "Sine InOut"
+          ],
+          [
+            59,
+            1.6
+          ]
+        ]
+      },
+      "Why": "the hero: a blade of light cut open along the street, pointed at both ends like the Dasher's mask",
+      "Body": "HumanoidRootPart",
+      "Hold": true
+    },
+    "Fuse": {
+      "Kind": "Mesh",
+      "From": "Line",
+      "Part": [
+        "FxShell"
+      ],
+      "Look": "fx_rise_Warm",
+      "Grey": "fx_rise_Grey",
+      "Tracks": {
+        "At": [
+          [
+            0,
+            {
+              "Vector3": [
+                0,
+                -2.94,
+                -0.025
+              ]
+            },
+            "Linear"
+          ],
+          [
+            10,
+            {
+              "Vector3": [
+                0,
+                -2.94,
+                -1.1666666666666667
+              ]
+            },
+            "Linear"
+          ],
+          [
+            20,
+            {
+              "Vector3": [
+                0,
+                -2.94,
+                -2.3333333333333335
+              ]
+            },
+            "Linear"
+          ],
+          [
+            30,
+            {
+              "Vector3": [
+                0,
+                -2.94,
+                -3.5
+              ]
+            },
+            "Linear"
+          ],
+          [
+            39,
+            {
+              "Vector3": [
+                0,
+                -2.94,
+                -4.666666666666667
+              ]
+            },
+            "Linear"
+          ],
+          [
+            49,
+            {
+              "Vector3": [
+                0,
+                -2.94,
+                -5.833333333333333
+              ]
+            },
+            "Linear"
+          ],
+          [
+            59,
+            {
+              "Vector3": [
+                0,
+                -2.94,
+                -7.0
+              ]
+            }
+          ]
+        ],
+        "Scale": [
+          [
+            0,
+            {
+              "Vector3": [
+                0.8,
+                0.02,
+                0.025
+              ]
+            },
+            "Linear"
+          ],
+          [
+            10,
+            {
+              "Vector3": [
+                0.8,
+                0.02,
+                1.1666666666666667
+              ]
+            },
+            "Linear"
+          ],
+          [
+            20,
+            {
+              "Vector3": [
+                0.8,
+                0.02,
+                2.3333333333333335
+              ]
+            },
+            "Linear"
+          ],
+          [
+            30,
+            {
+              "Vector3": [
+                0.8,
+                0.02,
+                3.5
+              ]
+            },
+            "Linear"
+          ],
+          [
+            39,
+            {
+              "Vector3": [
+                0.8,
+                0.02,
+                4.666666666666667
+              ]
+            },
+            "Linear"
+          ],
+          [
+            49,
+            {
+              "Vector3": [
+                0.8,
+                0.02,
+                5.833333333333333
+              ]
+            },
+            "Linear"
+          ],
+          [
+            59,
+            {
+              "Vector3": [
+                0.8,
+                0.02,
+                7.0
+              ]
+            },
+            "Quad In"
+          ],
+          [
+            65,
+            {
+              "Vector3": [
+                0.02,
+                0.02,
+                7.0
+              ]
+            }
+          ]
+        ],
+        "Transparency": [
+          [
+            0,
+            0,
+            "Linear"
+          ],
+          [
+            59,
+            0,
+            "Quad In"
+          ],
+          [
+            65,
+            1
+          ]
+        ],
+        "Glow": [
+          [
+            0,
+            2,
+            "Linear"
+          ],
+          [
+            59,
+            4
+          ]
+        ]
+      },
+      "Why": "the fuse: a brighter blade inside the lane, reaching the line's end on Land, the time left to move",
+      "Body": "HumanoidRootPart",
+      "Hold": true
+    },
+    "Streak": {
+      "Kind": "Beam",
+      "From": "Lunge",
+      "Body": "HumanoidRootPart",
+      "Image": "fx_beam",
+      "Grey": "fx_beam",
+      "Color": {
+        "Color3": [
+          255,
+          246,
+          230
+        ]
+      },
+      "Beam": {
+        "FaceCamera": true,
+        "LightEmission": 1,
+        "LightInfluence": 0,
+        "TextureMode": "Stretch",
+        "TextureSpeed": 0,
+        "Segments": 1
+      },
+      "Trail": {
+        "Back": 0.3,
+        "Beyond": 0
+      },
+      "Tracks": {
+        "At": [
+          [
+            0,
+            {
+              "Vector3": [
+                0,
+                -0.6,
+                0
+              ]
+            }
+          ]
+        ],
+        "Width": [
+          [
+            0,
+            1.2,
+            "Linear"
+          ],
+          [
+            15,
+            1.2,
+            "Quad In"
+          ],
+          [
+            24,
+            0
+          ]
+        ],
+        "Lag": [
+          [
+            0,
+            6
+          ]
+        ],
+        "Transparency": [
+          [
+            0,
+            0.1,
+            "Quad In"
+          ],
+          [
+            24,
+            1
+          ]
+        ]
+      },
+      "Why": "the run: a streak behind the Dasher down its line, gone soon after it lands"
+    },
+    "SlashLine": {
+      "Kind": "Emitter",
+      "Image": "fx_crescent_line",
+      "Emitter": {
+        "Lifetime": [
+          0.3,
+          0.3
+        ],
+        "Speed": [
+          0,
+          0
+        ],
+        "Size": [
+          [
+            0,
+            3
+          ],
+          [
+            0.15,
+            4.2
+          ],
+          [
+            1,
+            4.6
+          ]
+        ],
+        "Rotation": [
+          -20,
+          20
+        ],
+        "FlipbookLayout": "Grid4x4",
+        "FlipbookMode": "OneShot",
+        "LightInfluence": 0,
+        "Color": {
+          "Color3": [
+            255,
+            246,
+            230
+          ]
+        },
+        "LightEmission": 1,
+        "ZOffset": 0.55
+      },
+      "Emit": [
+        [
+          0,
+          1
+        ]
+      ],
+      "Tracks": {
+        "At": [
+          [
+            0,
+            {
+              "Vector3": [
+                0,
+                0,
+                -0.8
+              ]
+            }
+          ]
+        ]
+      },
+      "Why": "where it lands: the crescent sheet across the run",
+      "From": "Land",
+      "Body": "HumanoidRootPart",
+      "Hold": true
+    },
+    "SlashFill": {
+      "Kind": "Emitter",
+      "Image": "fx_crescent_fill",
+      "Emitter": {
+        "Lifetime": [
+          0.3,
+          0.3
+        ],
+        "Speed": [
+          0,
+          0
+        ],
+        "Size": [
+          [
+            0,
+            3
+          ],
+          [
+            0.15,
+            4.2
+          ],
+          [
+            1,
+            4.6
+          ]
+        ],
+        "Rotation": [
+          -20,
+          20
+        ],
+        "FlipbookLayout": "Grid4x4",
+        "FlipbookMode": "OneShot",
+        "LightInfluence": 0,
+        "Color": [
+          [
+            0,
+            {
+              "Color3": [
+                233,
+                226,
+                214
+              ]
+            }
+          ],
+          [
+            0.3,
+            {
+              "Color3": [
+                233,
+                226,
+                214
+              ]
+            }
+          ],
+          [
+            1,
+            {
+              "Color3": [
+                91,
+                86,
+                112
+              ]
+            }
+          ]
+        ],
+        "LightEmission": 0.6,
+        "ZOffset": 0.5
+      },
+      "Emit": [
+        [
+          0,
+          1
+        ]
+      ],
+      "Tracks": {
+        "At": [
+          [
+            0,
+            {
+              "Vector3": [
+                0,
+                0,
+                -0.8
+              ]
+            }
+          ]
+        ]
+      },
+      "Why": "Slash's fill pass",
+      "From": "Land",
+      "Body": "HumanoidRootPart",
+      "Hold": true
+    },
+    "SlashDark": {
+      "Kind": "Emitter",
+      "Image": "fx_crescent_dark",
+      "Emitter": {
+        "Lifetime": [
+          0.3,
+          0.3
+        ],
+        "Speed": [
+          0,
+          0
+        ],
+        "Size": [
+          [
+            0,
+            3
+          ],
+          [
+            0.15,
+            4.2
+          ],
+          [
+            1,
+            4.6
+          ]
+        ],
+        "Rotation": [
+          -20,
+          20
+        ],
+        "FlipbookLayout": "Grid4x4",
+        "FlipbookMode": "OneShot",
+        "LightInfluence": 0,
+        "Color": {
+          "Color3": [
+            28,
+            23,
+            38
+          ]
+        },
+        "LightEmission": 0,
+        "Transparency": 0.15,
+        "ZOffset": 0.45
+      },
+      "Emit": [
+        [
+          0,
+          1
+        ]
+      ],
+      "Tracks": {
+        "At": [
+          [
+            0,
+            {
+              "Vector3": [
+                0,
+                0,
+                -0.8
+              ]
+            }
+          ]
+        ]
+      },
+      "Why": "Slash's dark pass",
+      "From": "Land",
+      "Body": "HumanoidRootPart",
+      "Hold": true
+    },
+    "On": {
+      "Kind": "Emitter",
+      "Image": "fx_streak",
+      "Emitter": {
+        "EmissionDirection": "Front",
+        "SpreadAngle": [
+          35,
+          35
+        ],
+        "Lifetime": [
+          0.12,
+          0.2
+        ],
+        "Speed": [
+          26,
+          40
+        ],
+        "Drag": 9,
+        "Acceleration": {
+          "Vector3": [
+            0,
+            0,
+            0
+          ]
+        },
+        "Orientation": "VelocityParallel",
+        "Size": [
+          [
+            0,
+            1.0
+          ],
+          [
+            0.6,
+            0.7
+          ],
+          [
+            1,
+            0
+          ]
+        ],
+        "Squash": [
+          [
+            0,
+            -1.6
+          ],
+          [
+            1,
+            -0.6
+          ]
+        ],
+        "Transparency": [
+          [
+            0,
+            0
+          ],
+          [
+            0.7,
+            0.1
+          ],
+          [
+            1,
+            1
+          ]
+        ],
+        "Color": {
+          "Color3": [
+            255,
+            246,
+            230
+          ]
+        },
+        "LightEmission": 1,
+        "LightInfluence": 0,
+        "ZOffset": 0.6
+      },
+      "Emit": [
+        [
+          0,
+          6
+        ]
+      ],
+      "Tracks": {
+        "At": [
+          [
+            0,
+            {
+              "Vector3": [
+                0,
+                0,
+                -0.8
+              ]
+            }
+          ]
+        ]
+      },
+      "Why": "needles on along the run as it lands",
+      "From": "Land",
+      "Body": "HumanoidRootPart",
+      "Hold": true
+    }
+  }
+}

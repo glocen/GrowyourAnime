@@ -5,7 +5,10 @@
 -- middle and meets the ring on the Slam, so the fill tells the time; both go on the Slam, and the column takes over.
 -- Nothing else is marked: no screen text, no icon. In mode B (Config.Combat.Keeper.Out.Mode, read live), and only in a
 -- keeper's try, the Recall: a round button by the right thumb, R and the gamepad's ButtonY, its cooldown on its face.
--- AR52's two tells, in grey until the effects teammate's looks (Config.Combat.Guard.Look, Dasher.Line):
+-- AR52's two tells, their looks the effects teammate's rows: the Dasher's line and the Guard's shield are their actions'
+-- own (DasherLine, GuardShield), and a blow on a raised shield plays GuardGlance or GuardBreak here, where it meets the
+-- paper, along the blow. Their grey stand-ins (Config.Combat.Guard.Look, Dasher.Line) draw only while an action's rows
+-- aren't written, or beside them for the before and after (Config.Effects.Grey):
 -- * a Dasher's line (MarkTo set): a lane outlined on the ground from its feet to the line's end, its fill growing from
 --   the Dasher and reaching the end on the hit;
 -- * a Guard's raised shield (GuardUntil): a grey pane before it, that brightens as a hit glances off and flashes white
@@ -19,6 +22,7 @@
 --   SlamController.Ring(fighter) -> (ring, disc)?   a fighter's footprint's two adornments, for tests
 --   SlamController.Line(fighter) -> (edges, fill)?  a Dasher's line's outline and fill, for tests
 --   SlamController.Pane(fighter) -> BoxHandleAdornment?   a Guard's raised pane, for tests
+--   SlamController.Struck() -> { Name, Anchor, Rows }?     the last glance or break played on a shield, for tests
 --   SlamController.Recall() -> TextButton?          the Recall button while it shows, for tests
 --   SlamController.Press() -> { [string]: any }     a Recall as a press asks it, the server's answer
 
@@ -32,6 +36,9 @@ local Net = require(Shared.Net)
 local Combat = require(Shared.Config.Combat)
 local EffectsConfig = require(Shared.Config.Effects)
 local MarkRule = require(Shared.Rules.Mark)
+local Actions = require(Shared.Definitions.Actions)
+local Effects = require(script.Parent.FighterController.Effects)
+local Rows = require(script.Parent.FighterController.Rows)
 
 local UI = script.Parent.Parent.Parent.UI
 local Theme = require(UI.Theme)
@@ -67,6 +74,15 @@ type Pane = { Box: BoxHandleAdornment, Glanced: number }
 
 local drawn: { [Model]: Drawn } = {}
 local panes: { [Model]: Pane } = {}
+local struckLook: { Name: string, Anchor: CFrame, Rows: Rows.Player }? = nil -- the last glance or break, for tests
+
+-- AR52: the grey stand-in for `action` draws while its own rows aren't written, or beside them when Config.Effects.Grey
+-- says, read each time so a Tune shows at the next tell.
+local function standsIn(action: string): boolean
+	local def = Actions.ById[action]
+	local effect = if def then def.Effect else nil
+	return effect == nil or (EffectsConfig.Rows :: any)[effect] == nil or EffectsConfig.Grey[action] == true
+end
 local veils: { [Model]: SphereHandleAdornment } = {}
 local PANE_GREY = Color3.fromRGB(196, 199, 206)
 local PANE_THICK = 0.12
@@ -161,7 +177,9 @@ local function draw(model: Model)
 	end
 	local to = model:GetAttribute("MarkTo")
 	if typeof(to) == "Vector3" then
-		drawLine(model, at :: Vector3, to :: Vector3, radius :: number, down :: number, slam :: number)
+		if standsIn("DasherLunge") then
+			drawLine(model, at :: Vector3, to :: Vector3, radius :: number, down :: number, slam :: number)
+		end
 		return
 	end
 	local look = Combat.Keeper.Mark
@@ -205,7 +223,7 @@ local function paneOn(model: Model)
 		paneOff(model)
 		return
 	end
-	if panes[model] then
+	if panes[model] or not standsIn("GuardRaise") then
 		return
 	end
 	local look = Combat.Guard.Look
@@ -227,7 +245,7 @@ end
 local function paneBreak(model: Model)
 	paneOff(model)
 	local root = model:FindFirstChild("HumanoidRootPart")
-	if root == nil or not root:IsA("BasePart") then
+	if root == nil or not root:IsA("BasePart") or not standsIn("GuardRaise") then
 		return
 	end
 	local look = Combat.Guard.Look
@@ -245,6 +263,35 @@ local function paneBreak(model: Model)
 	task.delay(look.Flash, function()
 		box:Destroy()
 	end)
+end
+
+-- AR52: a blow on a Guard's raised shield, where it meets the paper (Config.Effects.Shield, at its scale), its Front
+-- along the blow on the ground: GuardGlance on a glance, GuardBreak on the break, on the effects' clock. A break also
+-- ends GuardRaise's action (its stagger), and FighterController ends the shield's rows at once.
+local function shieldStruck(target: any, attacker: any, name: string)
+	if typeof(target) ~= "Instance" or typeof(attacker) ~= "Instance" then
+		return
+	end
+	local guard, by = target :: Instance, attacker :: Instance
+	if not guard:IsA("Model") or not by:IsA("Model") then
+		return
+	end
+	local root = guard:FindFirstChild("HumanoidRootPart")
+	local from = by:FindFirstChild("HumanoidRootPart")
+	if root == nil or not root:IsA("BasePart") or from == nil or not from:IsA("BasePart") then
+		return
+	end
+	local meets = EffectsConfig.Shield
+	local k = guard:GetScale()
+	local point = (root.CFrame * CFrame.new(0, meets.Up * k, -meets.Ahead * k)).Position
+	local blow = Vector3.new(root.Position.X - from.Position.X, 0, root.Position.Z - from.Position.Z)
+	local facing = Vector3.new(root.CFrame.LookVector.X, 0, root.CFrame.LookVector.Z)
+	local way = if blow.Magnitude > 0.01 then blow.Unit elseif facing.Magnitude > 0.01 then -facing.Unit else Vector3.new(0, 0, -1)
+	local anchor = CFrame.lookAt(point, point + way)
+	local rows = Effects.At(name, anchor, k)
+	if rows then
+		struckLook = { Name = name, Anchor = anchor, Rows = rows }
+	end
 end
 
 -- AR58: a shield from a Support holds on `model`, and no look of the effects teammate's draws it yet.
@@ -494,6 +541,10 @@ function SlamController.Pane(model: Model): BoxHandleAdornment?
 	return if pane then pane.Box else nil
 end
 
+function SlamController.Struck(): { Name: string, Anchor: CFrame, Rows: Rows.Player }?
+	return struckLook
+end
+
 function SlamController.Veil(model: Model): SphereHandleAdornment?
 	return veils[model]
 end
@@ -523,6 +574,9 @@ function SlamController.Start()
 		local pane = if type(hit) == "table" and hit.Guarded == "Glanced" then panes[hit.T] else nil
 		if pane then
 			pane.Glanced = os.clock()
+		end
+		if type(hit) == "table" and (hit.Guarded == "Glanced" or hit.Guarded == "Broke") then
+			shieldStruck(hit.T, hit.A, if hit.Guarded == "Glanced" then "GuardGlance" else "GuardBreak")
 		end
 	end)
 	Net.Client.On("Heal", function(heal: any)

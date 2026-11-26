@@ -58,8 +58,8 @@ return {
 				local back = EffectRows.Decode(file, name)
 				local ok, at = same(back.Rows, effect.Rows, name)
 				t.Check(`{name}: back from its file the same`, ok, at)
-				t.Check(`{name}: its area, grey, action and free the same`, back.Area == effect.Area and back.Grey == effect.Grey
-					and back.Action == effect.Action and back.Free == effect.Free)
+				t.Check(`{name}: its area, grey, action, free and world the same`, back.Area == effect.Area and back.Grey == effect.Grey
+					and back.Action == effect.Action and back.Free == effect.Free and back.World == effect.World)
 			end
 			t.Check("every effect went round", count >= 4, `{count}`)
 			for name in EffectRows.Effects do
@@ -81,6 +81,8 @@ return {
 				Schema = EffectRows.Schema, Effect = "X", Why = "a note", Area = 1, Rows = { A = { Kind = "Point", Why = "a note" } },
 			}, "X")
 			t.Check("a Why is a note, dropped; Tracks given when none", why.Rows.A.Why == nil and type(why.Rows.A.Tracks) == "table")
+			local world = EffectRows.Decode({ Schema = EffectRows.Schema, Effect = "X", Area = 1, World = true, Rows = {} }, "X")
+			t.Check("World is kept, and left out it's none (drawn with its body)", world.World == true and why.World == nil)
 		end,
 	},
 	{
@@ -464,6 +466,26 @@ return {
 			t.Equal("at 0: none", Track.Burst(1, 0), 0)
 			t.Equal("a count of 0: none", Track.Burst(0, 1), 0)
 			t.Equal("full: unchanged", Track.Burst(24, 1), 24)
+		end,
+	},
+	{
+		Name = "Track: a landed hit's spark by its rung, the gold star only on a critical, none from a signature's rung (AR61)",
+		Run = function(t: any)
+			local sparks = EffectsConfig.HitSparks
+			local critical = Combat.Hitstop.Critical
+			for _, step in sparks.Rungs do
+				t.Check(`{step.Name}'s rows are written`, EffectsConfig.Rows[step.Name] ~= nil, step.Name)
+			end
+			t.Equal("an ordinary hit", Track.Spark(2, false, sparks, critical), "HitSpark2")
+			t.Equal("a combo's last", Track.Spark(3, false, sparks, critical), "HitSpark3")
+			t.Equal("a critical", Track.Spark(4, true, sparks, critical), "HitSpark4")
+			t.Equal("a killing hit lifted to the critical's rung keeps the rung under it", Track.Spark(4, false, sparks, critical), "HitSpark3")
+			t.Equal("a rung between: the highest under it", Track.Spark(6, true, sparks, critical), "HitSpark4")
+			t.Equal("a signature's rung: none, the old spark", Track.Spark(sparks.Below, true, sparks, critical), nil)
+			t.Equal("under the lowest: none", Track.Spark(1, false, sparks, critical), nil)
+			local off = table.clone(sparks)
+			off.On = false
+			t.Equal("switched off: none", Track.Spark(2, false, off, critical), nil)
 		end,
 	},
 }

@@ -411,10 +411,11 @@ local rows: { Action } = {
 		-- paper shield by Raise and hold it to Drop, hardly breathing, while each hit on it glances off
 		-- (Config.Combat.Guard.Keep goes through) until a heavy hit or a signature breaks it open, Guard.Stagger seconds
 		-- stunned. Then it fights as a Brawler, its swing, until the next raise: its cooldown is the hold and the open after
-		-- Drop, research's 2.5 s. Its row's Signature, so it's tried first whenever ready. The shield's look is a grey
-		-- stand-in (SlamController) until the effects teammate's. Seeds, tuned in play.
+		-- Drop, research's 2.5 s. Its row's Signature, so it's tried first whenever ready. Its shield is its Effect's rows,
+		-- the stand-in's grey pane only beside them (Config.Effects.Grey). Seeds, tuned in play.
 		Id = "GuardRaise",
 		Clip = "ShadeGuard",
+		Effect = "GuardShield", -- the grey block's rows (AR52, "The Guard"); its glance and break, SlamController's
 		Length = 2.7333,
 		CancelFrom = 2.7333,
 		Cooldown = 2.3 + 2.5,
@@ -435,6 +436,7 @@ local rows: { Action } = {
 		-- so a Dasher that lands every lunge deals what a Brawler does; one that misses, less. Seeds, tuned in play.
 		Id = "DasherLunge",
 		Clip = "ShadeLunge",
+		Effect = "DasherLine", -- the grey block's rows (AR52, "The Dasher"): the lane, its fuse, the streak and the slash
 		Length = 2.3,
 		CancelFrom = 2.3,
 		Cooldown = 6,
@@ -480,6 +482,7 @@ local rows: { Action } = {
 		-- wide behind its shoulder and back by Recover (docs/asset-requests.md, AR7, section 4).
 		Id = "KeeperSwing",
 		Clip = "LamplighterSwing",
+		Effect = "KeeperSwing", -- the grey block's rows (AR7, Scintilla's of 2026-11-24): the pole's foot's trail, the lantern's, the cut
 		Length = 1.6,
 		CancelFrom = 1.6,
 		Cooldown = 0,
@@ -499,6 +502,7 @@ local rows: { Action } = {
 		-- It never hits, and it's no one's to choose: the keeper's row starts it as it's spawned (Definitions.Enemies' Enter).
 		Id = "KeeperChallenge",
 		Clip = "LamplighterChallenge",
+		Effect = "KeeperChallenge", -- the grey block's rows (AR7): the lantern's flare on Lift, the hoop and dust on Stamp
 		Length = 1.5333,
 		CancelFrom = 1.5333,
 		Cooldown = 0,

@@ -145,6 +145,47 @@ local function bars(count: number, color: Color3): { Part }
 	return list
 end
 
+local lastSpark: { Name: string, Anchor: CFrame, Rows: Rows.Player }? = nil -- the last star played, for the self-test
+
+-- A look played once where it stands, `anchor` its foot and its Front (-Z), on the effects' clock, so a capture's
+-- TimeScale holds it and the hitstop never stills it; `scale` the size it's drawn at against its rows' Area. Nil when no
+-- rows are written by that name. AR61's star, AR52's glance and break.
+function Effects.At(name: string, anchor: CFrame, scale: number): Rows.Player?
+	local written = (EffectsConfig.Rows :: any)[name] :: EffectsConfig.Rows?
+	if written == nil then
+		return nil
+	end
+	local rows = Rows.Play(name, anchor, scale / written.Area, { Run = run })
+	run(function(age: number): boolean
+		return rows.Step(age / FRAME)
+	end, rows.Destroy)
+	return rows
+end
+
+-- A landed hit's star (AR61; Config.Effects.HitSparks; Rules.Track.Spark): its rung's rows at `surface`, their Front
+-- (-Z) the way the blow travels on the ground, `blow`, played once on the effects' clock, so a capture's TimeScale holds
+-- it and the hitstop never stills it. False when no rows stand for the hit: the old spark plays instead.
+function Effects.HitSpark(surface: Vector3, blow: Vector3, rung: number, critical: boolean): boolean
+	local name = Track.Spark(rung, critical, EffectsConfig.HitSparks, Combat.Hitstop.Critical)
+	if name == nil then
+		return false
+	end
+	local flat = Vector3.new(blow.X, 0, blow.Z)
+	local way = if flat.Magnitude > 0.01 then flat.Unit else Vector3.new(0, 0, -1)
+	local anchor = CFrame.lookAt(surface, surface + way)
+	local rows = Effects.At(name, anchor, 1)
+	if rows == nil then
+		return false
+	end
+	lastSpark = { Name = name, Anchor = anchor, Rows = rows }
+	return true
+end
+
+-- The last star a hit played, for the self-test: its rows' name, where it stood and its player.
+function Effects.LastSpark(): { Name: string, Anchor: CFrame, Rows: Rows.Player }?
+	return lastSpark
+end
+
 -- A landed hit's spark at `at`, seen along the line from `from`. Heavy: larger and a frame longer.
 function Effects.Spark(at: Vector3, from: Vector3, heavy: boolean)
 	local ball = part(SPARK, Enum.Material.Neon)
@@ -282,6 +323,7 @@ export type Running = {
 	Step: (clock: number, free: number?) -> boolean,
 	Destroy: () -> (),
 	Struck: ((beat: string, body: Model, landed: () -> (), look: boolean) -> boolean)?,
+	Rows: Rows.Player?, -- an action's own rows (Effects.Play), for the self-test
 }
 
 function Effects.Haymaker(beats: { [string]: number }, attacker: Model, target: () -> BasePart?): Running
@@ -1393,7 +1435,8 @@ function Effects.Play(beats: { [string]: number }, attacker: Model, target: () -
 	for beat, at in beats do
 		marks[beat] = math.floor(at / FRAME + 0.5) -- the clip's markers stand on whole frames; the beats are written to 4 places
 	end
-	local rows = Rows.Play(name, footOf(attacker), bodyScale / written.Area, {
+	-- at its body's scale, an elite's bigger, unless its rows are World: a tell drawn to its hit's own size
+	local rows = Rows.Play(name, footOf(attacker), (if written.World then 1 else bodyScale) / written.Area, {
 		Body = attacker,
 		Marks = marks,
 		Target = target,
@@ -1441,6 +1484,7 @@ function Effects.Play(beats: { [string]: number }, attacker: Model, target: () -
 				rows.Destroy()
 			end
 		end,
+		Rows = rows,
 	} :: Running
 	return running
 end

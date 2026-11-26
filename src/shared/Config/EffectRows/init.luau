@@ -16,7 +16,7 @@ local EffectRows = {}
 EffectRows.Schema = "rows/1"
 
 -- A file's fields, and a row's, as Config.Effects names them.
-EffectRows.Top = { Schema = true, Effect = true, Why = true, Area = true, Grey = true, Action = true, Free = true, Rows = true } :: { [string]: boolean }
+EffectRows.Top = { Schema = true, Effect = true, Why = true, Area = true, Grey = true, Action = true, Free = true, World = true, Rows = true } :: { [string]: boolean }
 EffectRows.Fields = {
 	Kind = true, On = true, Part = true, Look = true, Grey = true, Image = true, Color = true, Range = true, Emitter = true,
 	Emit = true, Tracks = true, Bands = true, From = true, Body = true, Ground = true, Hold = true, Turn = true, Beam = true,
@@ -86,7 +86,7 @@ function EffectRows.Decode(raw: any, name: string): any
 		out.Tracks = out.Tracks or {}
 		rows[rowName] = out
 	end
-	return { Area = raw.Area, Grey = raw.Grey == true, Action = raw.Action, Free = raw.Free, Rows = rows }
+	return { Area = raw.Area, Grey = raw.Grey == true, Action = raw.Action, Free = raw.Free, World = if raw.World == true then true else nil, Rows = rows }
 end
 
 function EffectRows.Encode(effect: any, name: string): any
@@ -101,6 +101,7 @@ function EffectRows.Encode(effect: any, name: string): any
 		Grey = effect.Grey,
 		Action = effect.Action,
 		Free = effect.Free,
+		World = effect.World,
 		Rows = rows,
 	}
 end

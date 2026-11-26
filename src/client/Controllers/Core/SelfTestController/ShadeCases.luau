@@ -2,10 +2,10 @@
 -- ShadeCases (client, Studio only): AR52's Guard and Dasher in a fight, a list of their own beside Cases, which joins it
 -- as it joins SignatureCases (Cases is at what the type solver checks in one piece). Each spawns its Shade on the lead
 -- through FightSpawn and plays it on the server's own paths (FightService, SlamService):
--- * the Guard raises its shield in the fight, its grey pane standing to Drop; the lead's hits glance off it (its
---   signature held, Auto off, so it can't break the raise first); the lead's signature into a raise breaks it open, the
---   pane gone and the Guard staggered;
--- * the Dasher's line goes down from its feet through the lead, its fill reaching the end on the hit; under A, a lead
+-- * the Guard raises its shield in the fight, standing to Drop; the lead's hits glance off it (its signature held, Auto
+--   off, so it can't break the raise first), each a GuardGlance where the blow meets it; the lead's signature into a
+--   raise breaks it open, the shield gone at once, a GuardBreak there, and the Guard staggered;
+-- * the Dasher's line goes down from its feet through the lead, reaching the end on the hit; under A, a lead
 --   that stays is hit and the Dasher runs on through it and lies there, its back to it, and an avatar that walks off takes its lead off the line and
 --   the lunge hits empty stone, each counted under "Lunge A". The switch and Auto are put back at their ends.
 -- * AR57: each elite swings Attack every time (AR2, section 10), wears its own mask twice and no other, and the Guard's
@@ -13,6 +13,8 @@
 -- * AR58: a Support behind a Brawler of its pack: whole, the Brawler takes its shield for Shield.Seconds, the grey ball
 --   round it to then; hurt, the Brawler is mended by Heal of its most, a grey pop on it; between casts it stands further
 --   from the lead than the Brawler; with the Brawler down, it swings at the lead.
+-- The shield and the line are their actions' rows (GuardShield, DasherLine), each checked drawn; while an action's rows
+-- aren't written, or Config.Effects.Grey says, its grey stand-in is checked instead (SlamController).
 -- Their rules' own cases are the logic cases' (Cases/Shades, Cases/Support).
 
 local Players = game:GetService("Players")
@@ -30,8 +32,34 @@ local MarkRule = require(Shared.Rules.Mark)
 local Parts = require(Shared.Util.Parts)
 local SlamController = require(script.Parent.Parent.Parent.Main.SlamController)
 local FighterController = require(script.Parent.Parent.Parent.Main.FighterController)
+local Helpers = require(script.Parent.Helpers)
 
 local ShadeCases = {}
+
+-- AR52: whether `action`'s grey stand-in draws (SlamController's own reading of it), so a case checks what is drawn.
+local function grey(action: string): boolean
+	local def = Actions.ById[action]
+	local effect = if def then def.Effect else nil
+	return effect == nil or (EffectsConfig.Rows :: any)[effect] == nil or EffectsConfig.Grey[action] == true
+end
+
+local playing, drew = Helpers.rowsOn, Helpers.drew
+
+-- AR52: the last look a blow on `guard`'s shield played (SlamController.Struck) is `name`, its rows drawn, where the blow
+-- meets the shield (Config.Effects.Shield from its root, at its scale), its Front level along the ground.
+local function met(t: any, guard: Model, what: string, name: string, rows: { string })
+	local look: any = SlamController.Struck()
+	t.Equal(`{what} plays its look`, if look then look.Name else "none", name)
+	if look == nil or look.Name ~= name then
+		return
+	end
+	t.Check(`{what}: its rows drawn`, drew(look.Rows, rows))
+	local root = guard:FindFirstChild("HumanoidRootPart") :: BasePart?
+	local meets, k = EffectsConfig.Shield, guard:GetScale()
+	local off = if root then (look.Anchor.Position - root.Position).Magnitude else -1
+	t.Near(`{what}: where the blow meets the shield (studs from its root)`, off, math.sqrt(meets.Up ^ 2 + meets.Ahead ^ 2) * k, 0.75)
+	t.Check(`{what}: its front level, along the blow`, math.abs(look.Anchor.LookVector.Y) < 0.01, string.format("%.3f up", look.Anchor.LookVector.Y))
+end
 
 local REPLICATE = 2 -- seconds for an attribute or a remote to reach the client
 local RAISES = 3 -- raises the Guard case waits through for a glance
@@ -216,10 +244,17 @@ function ShadeCases.Cases(given: Given): { any }
 						end
 						local untilAt = guard:GetAttribute("GuardUntil") :: number
 						local startedAt = guard:GetAttribute("ActionAt")
-						if first then
+						if first and grey("GuardRaise") then
 							t.Check("its grey pane stands before it", waitFor(t, 0.5, function(): boolean
 								return SlamController.Pane(guard) ~= nil
 							end))
+						elseif first then
+							t.Check("its shield's rows play from the raise (GuardShield)", waitFor(t, 0.5, function(): boolean
+								return drew(playing(guard, "GuardShield"), { "Shield" })
+							end))
+							t.Check("and no grey pane beside them", SlamController.Pane(guard) == nil)
+						end
+						if first then
 							if type(startedAt) == "number" then
 								t.Near("held to its Drop (s from the raise's start)", untilAt - startedAt, raise.Beats.Drop, 0.05)
 							end
@@ -227,8 +262,12 @@ function ShadeCases.Cases(given: Given): { any }
 						waitFor(t, raise.Beats.Drop + 1, function(): boolean
 							return now() >= untilAt + 0.15
 						end)
-						if first then
+						if first and grey("GuardRaise") then
 							t.Check("its pane goes at Drop", SlamController.Pane(guard) == nil)
+						elseif first then
+							t.Check("its shield's rows end with the raise", waitFor(t, raise.Length - raise.Beats.Drop + 0.5, function(): boolean
+								return playing(guard, "GuardShield") == nil
+							end))
 						end
 						first = false
 						if glanced > 0 then
@@ -236,6 +275,9 @@ function ShadeCases.Cases(given: Given): { any }
 						end
 					end
 					t.Check("the lead's hits glance off it while it's raised", glanced > 0, `{glanced} glanced, {whole} whole`)
+					if glanced > 0 and not grey("GuardRaise") then
+						met(t, guard, "a glance", "GuardGlance", { "GlintLine", "Skate" })
+					end
 					-- The break: the lead's signature into a raise, Auto on and its ring made full as the raise goes up.
 					local broken = false
 					local signature = FightRule.Signature(Actions.KitOf(tostring(lead:GetAttribute("Def"))))
@@ -255,10 +297,17 @@ function ShadeCases.Cases(given: Given): { any }
 						end
 					end
 					t.Check("the lead's signature breaks it open", broken, if signature then signature.Id else "no signature")
-					if broken then
+					if broken and grey("GuardRaise") then
 						t.Check("its pane goes at once", waitFor(t, 0.3, function(): boolean
 							return SlamController.Pane(guard) == nil
 						end))
+					elseif broken then
+						t.Check("its shield's rows go at once", waitFor(t, 0.3, function(): boolean
+							return playing(guard, "GuardShield") == nil
+						end))
+						met(t, guard, "the break", "GuardBreak", { "TearLine", "Chip1" })
+					end
+					if broken then
 						t.Check("the breaking hit lands whole", waitFor(t, 0.5, function(): boolean
 							return broke >= 1
 						end))
@@ -355,6 +404,7 @@ function ShadeCases.Cases(given: Given): { any }
 					local leadAt = lead:GetPivot().Position
 					read.LeadOn = MarkRule.Covers(read.Shape, leadAt.X, leadAt.Z)
 					read.Edges, read.Fill = SlamController.Line(dasher)
+					read.Rows = false
 					local avatarFrom = Parts.Root(player.Character)
 					local avatarAt = if avatarFrom then avatarFrom.Position else Vector3.zero
 					while now() < read.Slam - 0.05 and dasher:GetAttribute("MarkSlam") ~= nil do
@@ -369,6 +419,7 @@ function ShadeCases.Cases(given: Given): { any }
 							tostring(lead:GetAttribute("Away")),
 							if avatarFrom then flat(avatarFrom.Position - avatarAt).Magnitude else -1
 						)
+						read.Rows = read.Rows or drew(playing(dasher, "DasherLine"), { "Lane", "Fuse" })
 						if read.Half < 0 and now() >= (read.Down + read.Slam) / 2 then
 							local _, fill = SlamController.Line(dasher)
 							read.Half = if fill then fill.Size.Z else 0
@@ -409,9 +460,14 @@ function ShadeCases.Cases(given: Given): { any }
 						local gap = flat(stay.From - stay.At).Magnitude
 						t.Check("from the Dasher's feet", gap < 0.75, string.format("%.2f studs off", gap))
 						t.Check("through the lead", stay.LeadOn == true)
-						t.Check("an outline of three edges, an edge wide", stay.Edges ~= nil and #stay.Edges == 3 and math.abs(stay.Edges[1].Size.X - math.min(line.Edge, line.Half)) < 0.01)
-						t.Check("a fill, see-through", stay.Fill ~= nil and math.abs(stay.Fill.Transparency - line.Fill) < 0.01)
-						t.Near("halfway through the tell, the fill half the line (studs)", stay.Half, (stay.Length :: number) / 2, 1.2)
+						if grey("DasherLunge") then
+							t.Check("an outline of three edges, an edge wide", stay.Edges ~= nil and #stay.Edges == 3 and math.abs(stay.Edges[1].Size.X - math.min(line.Edge, line.Half)) < 0.01)
+							t.Check("a fill, see-through", stay.Fill ~= nil and math.abs(stay.Fill.Transparency - line.Fill) < 0.01)
+							t.Near("halfway through the tell, the fill half the line (studs)", stay.Half, (stay.Length :: number) / 2, 1.2)
+						else
+							t.Check("its lane and fuse play through the tell (DasherLine)", stay.Rows == true)
+							t.Check("and no grey line beside them", stay.Edges == nil)
+						end
 						t.Check("all gone with the hit", stay.Gone == true)
 						t.Check("staying, the lunge hits the lead", stay.Hits >= 1, `{stay.Hits} hits; at its hit, {stay.Last}`)
 						-- on through it, never short of it; a blow of the lead's landing mid-lunge pushes it as any glide is pushed

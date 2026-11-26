@@ -98,4 +98,23 @@ function Track.Burst(count: number, share: number): number
 	return math.max(1, math.round(count * share))
 end
 
+export type Sparks = { On: boolean, Below: number, Rungs: { { From: number, Name: string } } }
+
+-- A landed hit's spark (AR61; Config.Effects.HitSparks): the rows of the highest From at or under its rung. A rung at or
+-- over `critical` shows that rung's spark only on a critical: a killing hit lifted there keeps the spark under it. Nil
+-- when switched off, from Below (a signature's, its own look to come), or under the lowest From: the old spark stands in.
+function Track.Spark(rung: number, isCritical: boolean, sparks: Sparks, critical: number): string?
+	if not sparks.On or rung >= sparks.Below then
+		return nil
+	end
+	local shown = if isCritical or rung < critical then rung else critical - 1
+	local name: string? = nil
+	for _, step in sparks.Rungs do
+		if shown >= step.From then
+			name = step.Name
+		end
+	end
+	return name
+end
+
 return Track

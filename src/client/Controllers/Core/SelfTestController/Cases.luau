@@ -2970,6 +2970,7 @@ local cases = {
 			t.Check("it holds its Challenge as it's spawned", keeper:GetAttribute("Action") == challenge.Id and waitFor(t, 1, function(): boolean
 				return playing(keeper)[challenge.Clip :: string] == true
 			end), tostring(keeper:GetAttribute("Action")))
+			t.Check("its Challenge plays its own rows (AR7)", Helpers.rowsOn(keeper, challenge.Effect or "") ~= nil, tostring(challenge.Effect))
 			local from = root.Position
 			local drift = 0
 			while os.clock() - spawnedAt < challenge.Length - 0.15 do
@@ -2998,6 +2999,7 @@ local cases = {
 			table.sort(speeds)
 			local median = if #speeds > 0 then speeds[math.floor(#speeds / 2) + 1] else -1
 			t.Near("at its own pace (studs a second)", median, Combat.Keeper.WalkSpeed, 0.8)
+			Helpers.rowsHang(t, "its swing (AR7)", keeper, (lead :: Model):FindFirstChild("HumanoidRootPart") :: BasePart?, Actions.ById[row.Action :: string], Actions.ById[row.Action :: string].Beats.Strike + 0.05, { "Sweep", "Drag", "CutLine" })
 			-- the fall, on the Down clip's clock (the killing hit's hold pauses it, so not the wall's)
 			t.Check("it falls", t.Server("FightDefeat", spawned.Id).Ok == true)
 			-- the clip's clock, run on past its held last frame (Gone may come after the clip's end)

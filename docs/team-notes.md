@@ -11,17 +11,17 @@ Each teammate rewrites its own row: one to three lines. Open asks sit under "Wai
 **Faber (builder).** 2026-11-26, 17:45 by the clock, on Opus 5.5. Committed: AR65's install, the kit, the plates (must-fix 2, the Festival Door counted as a machine) and the Door under the Generator at dusk (must-fix 3); the Mill's plate now says GENERATOR. The record is in AR65's entry. Earlier today: TR65 to TR68, TR69 A to C built Off, TR71 A.
 - **Next:** Studio goes to Scintilla (AR52's ward retake, AR7's C4). Meanwhile, AR56's drifts staged and uploaded; then AR56's Haze test, TR66 row 13's ComboSnap, TR69 D and E, TR69 F's captures, TR71 B to D, TR59's retake.
 
-**Modulo (assets).** 2026-11-26, 19:04. Nothing running, no lock held.
-- **For Faber:** AR65's floor, the last step (ce6d445d): the 17 maps at 160, to upload and capture. **For research:** AR67's three Generator makes, to pick in pairs (`build/handoff/Base/ar67_targets/ar67_sheet.png`; my read: A).
-- **AR64's hair** stays at "close", asked of the director. **Now:** AR66, Kirra's Hit A, Down A and Up A.
+**Modulo (assets).** 2026-11-26, 19:18. Nothing running, no lock held.
+- **For research and Faber:** AR66, Kirra's own Hit A, Down A and Up A, for the verdict (the build beside A: `build/scratch/modulo/ar66/kstrips/beside_*.png`), then the install: her own rig in place of the tail layers (AR66's entry).
+- **AR64's hair** stays at "close", asked of the director. **Now:** AR66, Lyric's Hit A, Down B and Up B. Then AR67 A's build.
 
-**Scintilla (effects).** 2026-11-26, 19:02. **TR69 A's ring and glint targets** are with research for the pick in pairs: R1 to R3 and G1 to G3 beside today's grey blocks, plus R4 (a mark over the head, tier 2), since the bodies hide two thirds of a floor ring at the player's camera. **AR58's motes** are fixed in the rows, not yet seen in play. **AR7's C4** and **AR61** wait on the director's word.
-- **Next Studio turn:** AR58's motes on the deck, then C4's straight cut (a floor part?). Meanwhile: AR48's states looks. Nothing running.
+**Scintilla (effects).** 2026-11-26, 19:17. **TR69 A:** research picked R4 (the mark over the head) and G1 (the star at the eye line); building both as rows now, for Faber to hook into block A. **AR58's motes** are tested in play: drawn now, softer than the target's (for research at the final). **AR7's C4** and **AR61** wait on the director's word.
+- **Next Studio turn:** R4 and G1 in play, AR48's states in motion (the camera set on the replay pad), C4's straight cut. Nothing running.
 
 **Sonus (sound).** 2026-11-26, 12:30 by the clock. **Shortlisted, not heard or picked:** TR42's eleven tabs (a62d1129), TR64's ten (17e042ae) and TR57's plate, five (BroadcastPlate, for Faber's review), in `ServerStorage.NL_Audition`: the place opened today with every earlier tab at its count, and Faber's end-of-turn save keeps the plate's. No Studio turn held, nothing running.
 - **Next:** the director's listens: TR42's on their go (item 10); TR64's with the plate after ShardDrop, once Faber's Play the moment hooks pass. Nothing else is open for sound (research, 12:19).
 
-**Turns.** Studio: one at a time while memory is short. Scintilla's turn (17:50 to 18:28) handed back to Faber: the Festival place open in Edit, playtest stopped, nothing saved. Blender: nobody (Modulo's AR41 strips were stopped at 01:33 on 2026-11-19 by Claude Code when the PC ran low on memory; the director said wait at 01:34). Timing tests: nobody.
+**Turns.** Studio: one at a time while memory is short. Scintilla's turn (19:05 to 19:17) handed back to Faber: the main place open in Edit, playtest stopped, nothing saved. Blender: nobody (Modulo's AR41 strips were stopped at 01:33 on 2026-11-19 by Claude Code when the PC ran low on memory; the director said wait at 01:34). Timing tests: nobody.
 
 **The count.** Week of 2026-11-23: 6 pieces closed and playable: AR49, TR10, AR44's shine, TR50, AR50's and AR54's install, AR51 (each entry below has its hours). In the game and waiting: TR52 (the director's run), AR52 (research's pass), TR54 (three must-fixes).
 

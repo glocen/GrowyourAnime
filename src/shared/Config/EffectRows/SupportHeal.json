@@ -478,12 +478,12 @@
      20
     ],
     "Lifetime": [
-     0.6,
-     0.8
+     0.65,
+     0.85
     ],
     "Speed": [
-     9,
-     15
+     11,
+     17
     ],
     "Drag": 3.5,
     "Acceleration": {
@@ -496,15 +496,15 @@
     "Size": [
      [
       0,
-      0.42
+      1.0
      ],
      [
       0.6,
-      0.34
+      0.85
      ],
      [
       1,
-      0.08
+      0.2
      ]
     ],
     "Transparency": [
@@ -523,31 +523,31 @@
     ],
     "Color": {
      "Color3": [
-      111,
-      230,
-      149
+      150,
+      245,
+      180
      ]
     },
-    "LightEmission": 1,
+    "LightEmission": 0.15,
     "LightInfluence": 0,
     "ZOffset": 0.5
    },
    "Emit": [
     [
      4,
-     3
+     4
     ],
     [
      7,
-     3
+     4
     ],
     [
      10,
-     2
+     3
     ],
     [
      13,
-     2
+     3
     ]
    ],
    "Tracks": {
@@ -570,7 +570,7 @@
      ]
     ]
    },
-   "Why": "round motes rising off it and slowing, after the burst: bright mint, rising 2.5 to 4.5 studs, from its chest to its head by frame 30 as the target has them; never falling, never sticking"
+   "Why": "round motes rising off it and slowing, after the burst, from its chest to its mask by frame 30 as the target has them; a light mint laid over the scene (LightEmission 0.15), since added light washes out to white on a bright floor; never falling, never sticking"
   }
  }
 }

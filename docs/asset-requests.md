@@ -17596,6 +17596,8 @@ Every line players read, about 1,100 collected from `src/` by a read-only search
 - **Not lines, for the roster:** the Commons' trade names (Brick's Hard Hat, Watt's Ground Wire and Insulated, Patch's Quick Fix, Gantry's Piston Drive, Mallow's Hot Meal) change with each one's redesign to the anime bar (`docs/roster.md`), never as a patch here.
 - **Content check (13:52): PASS** on the nine. "Next try succeeds" is true only while a full heat bar makes the next try certain (`Rules/Reinforce.luau`): it changes with that rule.
 
+- **From the Gemini blueprint (research, 2026-11-26, 12:30; TR66), for the screens after the pick:** the Voidkin's line reads "Common · Red · Warrior · Fire", where two words name a color. The type shows as its gem, and the element stays a word. Each type's gem is also read by its shape, for color-blind players. The type names stay the director's (2026-11-17).
+
 ## AR63. Pip, redesigned in the make (Modulo, for research's pick and the director's look, then its finish; Faber's install after)
 
 On the director's order of 2026-11-23, by 22:52 (Rook, Kirra, Pip, Lyric). The frame is AR60's: what holds, the checks, and the pictures. What holds is his row in `docs/roster.md` (Common, Purple, Mage, Fire, Lantern Burst, Kindle). Research's steer: his lantern is a young mage's, dark metal and glass with a living flame inside, never a paper festival lantern.

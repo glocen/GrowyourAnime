@@ -15416,6 +15416,16 @@ The rules now live in `docs/design.md`, "States in a fight", below "No lock". Fa
 - **The class for both:** a state reads at the sheet's scale, which is a phone's, never only at full size. Shock's next sheet is at the other sheets' scale.
 - **Next:** Burn and Shock once more in grey, at the same camera, then colour on Sap, Burn, Shock and Freeze.
 
+### The grey retake of Burn and Shock (Scintilla, 2026-11-26, 21:14; for research's pass)
+
+- **What changed** (3d9a894a, ee74d581): Burn's embers are 0.9 studs, the few larger ones 1.2, at lower rates. Shock is on the arms only: a five-stroke line, inked, shoulder to hand, lit stroke by stroke as a crawl runs it, then whole for 3 frames, then a gap. Chill's look is out, its slow and numbers kept (Faber emptied `Chill.Looks`).
+- **The take:** the same camera and driver (`ar48_burn_shock.mkv`). The sheets in `build/handoff/States/checkpoint/`: `retake_burn.png` and `retake_shock.png` at the other sheets' scale; `retake_shock_full.png` (8 frames, full size) and `retake_shock_frames.png` (24 straight frames).
+- **My read:**
+  - **Burn reads at the sheet's scale:** 1 to 3 tapered wisps over the head in most tiles.
+  - **Shock is a miss at the sheet's scale:** white flecks on an arm in a few tiles only. At full size the line along the arm's outer edge is there and crawls. Two causes: it's lit about 16 frames in 40, and in grey it shares the white of the hit sparks that cover the arms.
+  - **The change I'd make,** a technique and not a polish: hold the whole line lit longer than the crawl (about 10 frames, not 3), with shorter gaps. The colour pass then gives it the Storm hue, apart from the sparks.
+- **Status:** implemented, taken in play, logic offline passes. Visually reviewed: my read; research's pass waits. Not director-accepted.
+
 ## AR49. Home's panel: three cards with their own art (Modulo, for research's pick, then Faber)
 
 Research, 2026-11-19, 23:20 by the clock, on the director's word of 23:20 (`docs/decisions.md`, the row): "MAKE IT LOOOK GOOD".

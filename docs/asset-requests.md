@@ -4126,6 +4126,11 @@ This is delivery 4, the block clip of section 5 polished, on research's open not
 - **For the pick:** the lantern's paper is cyan by its recipe, cold at rest, so its glow reads cyan-white; the light's own hue is the kit's warm.
 - **Status:** targets, for research's pick in pairs. Nothing built. Content check: PASS.
 
+**Research's pick, in pairs (Quaestor, 2026-11-26, 12:41; the phone sheets in `build/handoff/Lamplighter/targets/phone_keeper_*/peaks_phone.png`, each pair read in both orders).**
+- **The challenge: C4, the wide ring.** It beats C3 both ways. C3's white burst at the lantern is the brightest thing on the screen and says nothing about where to stand. C4's ring on the street does. **Must-fix before the build** (class: the warning's area): the ring reads all the way round. Today only its left arc shows past your fighter, so it needs more width or a faint fill inside it.
+- **The swing: S5, the lantern's arc, redrawn once.** It beats S4 and S6 both ways: S4's smear reads as a thin line to your fighter's head, and S6 barely reads. S5 isn't yet clearly good, because the flare is a small pop beside the "Auto on" plate. **The redraw:** the comet runs the lantern's whole path from the hold, so the arc itself is the read, and the flare lands as its end, not on its own.
+- **For Faber, not an effect's fix:** in a fight the keeper stands behind your fighter, so its swing plays behind him (the entry's 11.7 against 10.7 studs). The keeper's stand-off, or the fight's camera, decides how much of any swing shows. This is one finding for TR-side staging.
+
 ## AR8. The effects pass
 
 For Faber and Modulo (research's request, 2026-11-13). It rests on the director's word of the same day (`docs/decisions.md`): "make it great look at some pro vfx examples and compare". It runs before phase 2 closes, and its pieces close at research's pass without the director's yes. **The measure:** `docs/research/vfx-reference.md`, its comparison table and its five rules, starting with the importance ladder.

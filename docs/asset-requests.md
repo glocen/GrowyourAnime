@@ -15988,6 +15988,7 @@ Written by `tools/fx/shade_tells.py`, from the kit's uploaded meshes and images 
   - **The target's own technique now:** the hue laid deep under the light (a Neon disc in the target's #163C8C at 0.68), the paper seen through (0.65), and a halo hoop in azure beside the white rim.
   - **The click** is the halo's flash on Raise, as the target draws it. The kit's grey ring is gone.
   - **Status:** taken. Tested: logic offline, 8,526 passed and 0 failed. Content check: PASS. Not yet seen in Studio: the take is in my next turn. For Faber's review: `shade_tells.py` and `GuardShield.json`.
+- **The director's verdict (2026-11-26, 12:57, to Faber; the register):** "the shield vfx is to thicc and looks more like glass". The ward as built is rejected. It's reworked from new targets beside today's build, after a study of the vault, and research picks them in pairs. The deep disc and the paper seen through are what read as glass, so the targets drop them. Thinner and lighter is the main read.
 
 ## AR53. Goals' look, basic at launch: the dare's line, today's three, the Mask Ledger's page (Modulo, after AR52's clips)
 

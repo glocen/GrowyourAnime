@@ -1,7 +1,7 @@
 {
   "Schema": "rows/1",
   "Effect": "KeeperChallenge",
-  "Why": "The keeper's challenge, KeeperChallenge's own effect: research's pick C4 (Scintilla).",
+  "Why": "The keeper's challenge, KeeperChallenge's own effect: research's lean F1, the drop (Scintilla).",
   "Area": 1.5,
   "Grey": false,
   "Action": "KeeperChallenge",
@@ -47,74 +47,21 @@
       },
       "Why": "the lantern flares as it lifts its face to you, it has heard you, and jolts brighter with the stamp"
     },
-    "RingInk": {
-      "Kind": "Emitter",
+    "Foot": {
+      "Kind": "Beam",
       "From": "Stamp",
       "Body": "PoleFoot",
-      "Ground": true,
       "Hold": true,
-      "Image": "keeper_ring_field",
+      "Image": "fx_beam",
       "Grey": "",
-      "Emitter": {
-        "Lifetime": [
-          0.3,
-          0.3
-        ],
-        "Speed": [
-          0.01,
-          0.01
-        ],
-        "EmissionDirection": "Top",
-        "Orientation": "VelocityPerpendicular",
-        "LockedToPart": false,
-        "Rotation": [
-          0,
-          0
-        ],
-        "RotSpeed": [
-          0,
-          0
-        ],
-        "Size": [
-          [
-            0,
-            10.758999999999999
-          ],
-          [
-            1,
-            10.758999999999999
-          ]
-        ],
-        "Transparency": [
-          [
-            0,
-            0.4
-          ],
-          [
-            1,
-            0.4
-          ]
-        ],
-        "Color": {
-          "Color3": [
-            92,
-            48,
-            6
-          ]
-        },
-        "LightEmission": 0,
+      "Beam": {
+        "FaceCamera": true,
+        "LightEmission": 1,
         "LightInfluence": 0,
-        "Brightness": 1,
-        "ZOffset": 0.29,
-        "FlipbookLayout": "Grid4x4",
-        "FlipbookMode": "OneShot"
+        "TextureMode": "Stretch",
+        "TextureSpeed": 0,
+        "Segments": 1
       },
-      "Emit": [
-        [
-          0,
-          1
-        ]
-      ],
       "Tracks": {
         "At": [
           [
@@ -127,78 +74,43 @@
               ]
             }
           ]
+        ],
+        "Width": [
+          [
+            0,
+            0
+          ]
+        ],
+        "Foot": [
+          [
+            0,
+            0
+          ]
+        ],
+        "Top": [
+          [
+            0,
+            0.01
+          ]
         ]
       },
-      "Why": "the band's ink, a hair outside it, so its edge holds on the pale street"
+      "Why": "where the pole struck the street, held: the lance's foot (no width, never drawn)"
     },
-    "RingBand": {
-      "Kind": "Emitter",
+    "Wick": {
+      "Kind": "Beam",
       "From": "Stamp",
-      "Body": "PoleFoot",
-      "Ground": true,
-      "Hold": true,
-      "Image": "keeper_ring_field",
+      "Body": "Lantern",
+      "Low": "Foot.Low",
+      "Image": "fx_beam",
       "Grey": "",
-      "Emitter": {
-        "Lifetime": [
-          0.3,
-          0.3
-        ],
-        "Speed": [
-          0.01,
-          0.01
-        ],
-        "EmissionDirection": "Top",
-        "Orientation": "VelocityPerpendicular",
-        "LockedToPart": false,
-        "Rotation": [
-          0,
-          0
-        ],
-        "RotSpeed": [
-          0,
-          0
-        ],
-        "Size": [
-          [
-            0,
-            10.6
-          ],
-          [
-            1,
-            10.6
-          ]
-        ],
-        "Transparency": [
-          [
-            0,
-            0.050000000000000044
-          ],
-          [
-            1,
-            0.050000000000000044
-          ]
-        ],
-        "Color": {
-          "Color3": [
-            224,
-            122,
-            22
-          ]
-        },
-        "LightEmission": 0,
+      "Beam": {
+        "FaceCamera": true,
+        "LightEmission": 1,
         "LightInfluence": 0,
-        "Brightness": 1,
-        "ZOffset": 0.3,
-        "FlipbookLayout": "Grid4x4",
-        "FlipbookMode": "OneShot"
+        "TextureMode": "Stretch",
+        "TextureSpeed": 0,
+        "Segments": 1
       },
-      "Emit": [
-        [
-          0,
-          1
-        ]
-      ],
       "Tracks": {
         "At": [
           [
@@ -211,22 +123,458 @@
               ]
             }
           ]
+        ],
+        "Width": [
+          [
+            0,
+            0
+          ]
+        ],
+        "Top": [
+          [
+            0,
+            1.1
+          ]
+        ],
+        "Reach": [
+          [
+            0,
+            1,
+            "Linear"
+          ],
+          [
+            6,
+            1,
+            "Quad In"
+          ],
+          [
+            20,
+            0
+          ]
         ]
       },
-      "Why": "the hero: the band running out from the pole's foot to ten studs, painted warm amber, its twin behind"
+      "Why": "the lance's top: out of the lantern, then burning down the lance to the foot (no width, never drawn)"
     },
-    "RingLine": {
-      "Kind": "Emitter",
+    "Glow": {
+      "Kind": "Beam",
       "From": "Stamp",
-      "Body": "PoleFoot",
-      "Ground": true,
-      "Hold": true,
-      "Image": "keeper_ring_line",
+      "Body": "Lantern",
+      "Low": "Wick.High",
+      "High": "Foot.Low",
+      "Taper": 0.7,
+      "Image": "fx_beam",
+      "Grey": "",
+      "Color": {
+        "Color3": [
+          224,
+          122,
+          22
+        ]
+      },
+      "Beam": {
+        "FaceCamera": true,
+        "LightEmission": 1,
+        "LightInfluence": 0,
+        "TextureMode": "Stretch",
+        "TextureSpeed": 0,
+        "Segments": 1,
+        "Brightness": 1
+      },
+      "Tracks": {
+        "At": [
+          [
+            0,
+            {
+              "Vector3": [
+                0,
+                0,
+                0
+              ]
+            }
+          ]
+        ],
+        "Width": [
+          [
+            0,
+            1.0,
+            "Linear"
+          ],
+          [
+            4,
+            1.0,
+            "Sine InOut"
+          ],
+          [
+            16,
+            0.5
+          ]
+        ],
+        "Transparency": [
+          [
+            0,
+            0.895,
+            "Linear"
+          ],
+          [
+            2,
+            0.7,
+            "Linear"
+          ],
+          [
+            6,
+            0.7,
+            "Quad Out"
+          ],
+          [
+            12,
+            0.889,
+            "Linear"
+          ],
+          [
+            20,
+            1
+          ]
+        ],
+        "Reach": [
+          [
+            0,
+            0.12,
+            "Quad In"
+          ],
+          [
+            3,
+            1
+          ]
+        ]
+      },
+      "Why": "its glow in the air round it: drawn down from the lantern to the foot, speeding up, then burnt out from the top down"
+    },
+    "Lance": {
+      "Kind": "Beam",
+      "From": "Stamp",
+      "Body": "Lantern",
+      "Low": "Wick.High",
+      "High": "Foot.Low",
+      "Taper": 0.625,
+      "Image": "fx_beam",
+      "Grey": "",
+      "Color": {
+        "Color3": [
+          255,
+          117,
+          23
+        ]
+      },
+      "Beam": {
+        "FaceCamera": true,
+        "LightEmission": 1,
+        "LightInfluence": 0,
+        "TextureMode": "Stretch",
+        "TextureSpeed": 0,
+        "Segments": 1,
+        "Brightness": 1.2
+      },
+      "Tracks": {
+        "At": [
+          [
+            0,
+            {
+              "Vector3": [
+                0,
+                0,
+                0
+              ]
+            }
+          ]
+        ],
+        "Width": [
+          [
+            0,
+            0.32,
+            "Linear"
+          ],
+          [
+            4,
+            0.32,
+            "Sine InOut"
+          ],
+          [
+            16,
+            0.16
+          ]
+        ],
+        "Transparency": [
+          [
+            0,
+            0.685,
+            "Linear"
+          ],
+          [
+            2,
+            0.1,
+            "Linear"
+          ],
+          [
+            6,
+            0.1,
+            "Quad Out"
+          ],
+          [
+            12,
+            0.667,
+            "Linear"
+          ],
+          [
+            20,
+            1
+          ]
+        ],
+        "Reach": [
+          [
+            0,
+            0.12,
+            "Quad In"
+          ],
+          [
+            3,
+            1
+          ]
+        ]
+      },
+      "Why": "the hero: a lance of warm light dropping out of the lantern down the pole: drawn down from the lantern to the foot, speeding up, then burnt out from the top down"
+    },
+    "Core": {
+      "Kind": "Beam",
+      "From": "Stamp",
+      "Body": "Lantern",
+      "Low": "Wick.High",
+      "High": "Foot.Low",
+      "Taper": 0.417,
+      "Image": "fx_beam",
+      "Grey": "",
+      "Color": {
+        "Color3": [
+          255,
+          199,
+          107
+        ]
+      },
+      "Beam": {
+        "FaceCamera": true,
+        "LightEmission": 1,
+        "LightInfluence": 0,
+        "TextureMode": "Stretch",
+        "TextureSpeed": 0,
+        "Segments": 1,
+        "Brightness": 2.5
+      },
+      "Tracks": {
+        "At": [
+          [
+            0,
+            {
+              "Vector3": [
+                0,
+                0,
+                0
+              ]
+            }
+          ]
+        ],
+        "Width": [
+          [
+            0,
+            0.12,
+            "Linear"
+          ],
+          [
+            4,
+            0.12,
+            "Sine InOut"
+          ],
+          [
+            16,
+            0.06
+          ]
+        ],
+        "Transparency": [
+          [
+            0,
+            0.65,
+            "Linear"
+          ],
+          [
+            2,
+            0,
+            "Linear"
+          ],
+          [
+            6,
+            0,
+            "Quad Out"
+          ],
+          [
+            12,
+            0.63,
+            "Linear"
+          ],
+          [
+            20,
+            1
+          ]
+        ],
+        "Reach": [
+          [
+            0,
+            0.12,
+            "Quad In"
+          ],
+          [
+            3,
+            1
+          ]
+        ]
+      },
+      "Why": "its gold core, hot at the lantern: drawn down from the lantern to the foot, speeding up, then burnt out from the top down"
+    },
+    "Halo": {
+      "Kind": "Card",
+      "From": "Stamp",
+      "Body": "Lantern",
+      "Image": "fx_glow",
+      "Color": {
+        "Color3": [
+          224,
+          122,
+          22
+        ]
+      },
+      "Tracks": {
+        "At": [
+          [
+            0,
+            {
+              "Vector3": [
+                0,
+                0,
+                0
+              ]
+            }
+          ]
+        ],
+        "Size": [
+          [
+            0,
+            2.2,
+            "Quad Out"
+          ],
+          [
+            6,
+            2.6,
+            "Linear"
+          ],
+          [
+            20,
+            2.0
+          ]
+        ],
+        "Transparency": [
+          [
+            0,
+            0.75,
+            "Linear"
+          ],
+          [
+            2,
+            0.45,
+            "Linear"
+          ],
+          [
+            6,
+            0.45,
+            "Quad In"
+          ],
+          [
+            20,
+            1
+          ]
+        ]
+      },
+      "Why": "the lantern answers: a warm halo round it as the lance leaves, dying as it burns down"
+    },
+    "Flare": {
+      "Kind": "Card",
+      "From": "Stamp",
+      "Body": "Lantern",
+      "Image": "fx_glow",
+      "Color": {
+        "Color3": [
+          255,
+          117,
+          23
+        ]
+      },
+      "Tracks": {
+        "At": [
+          [
+            0,
+            {
+              "Vector3": [
+                0,
+                0,
+                0
+              ]
+            }
+          ]
+        ],
+        "Size": [
+          [
+            0,
+            0.8,
+            "Quad Out"
+          ],
+          [
+            2,
+            1.1,
+            "Linear"
+          ],
+          [
+            20,
+            0.8
+          ]
+        ],
+        "Transparency": [
+          [
+            0,
+            0.5,
+            "Linear"
+          ],
+          [
+            2,
+            0,
+            "Linear"
+          ],
+          [
+            6,
+            0,
+            "Quad In"
+          ],
+          [
+            20,
+            1
+          ]
+        ]
+      },
+      "Why": "the lantern's own flare, hot at its heart"
+    },
+    "Pool": {
+      "Kind": "Emitter",
+      "Image": "fx_glow",
       "Grey": "",
       "Emitter": {
         "Lifetime": [
-          0.3,
-          0.3
+          0.2833,
+          0.2833
         ],
         "Speed": [
           0.01,
@@ -246,11 +594,15 @@
         "Size": [
           [
             0,
-            10.6
+            0.8
+          ],
+          [
+            0.3,
+            2.2
           ],
           [
             1,
-            10.6
+            2.4
           ]
         ],
         "Transparency": [
@@ -259,27 +611,29 @@
             0
           ],
           [
+            0.35,
+            0.55
+          ],
+          [
             1,
-            0
+            1
           ]
         ],
         "Color": {
           "Color3": [
             255,
-            240,
-            208
+            117,
+            23
           ]
         },
         "LightEmission": 1,
         "LightInfluence": 0,
         "Brightness": 1.6,
-        "ZOffset": 0.34,
-        "FlipbookLayout": "Grid4x4",
-        "FlipbookMode": "OneShot"
+        "ZOffset": 0.3
       },
       "Emit": [
         [
-          0,
+          3,
           1
         ]
       ],
@@ -297,7 +651,247 @@
           ]
         ]
       },
-      "Why": "the band's outer edge, a warm white line, the only light in the ring"
+      "Why": "where the lance strikes: a flat pool of light on the street at the pole's foot, spreading and dying",
+      "From": "Stamp",
+      "Body": "PoleFoot",
+      "Ground": true,
+      "Hold": true
+    },
+    "Point": {
+      "Kind": "Emitter",
+      "Image": "fx_glow",
+      "Grey": "",
+      "Emitter": {
+        "Lifetime": [
+          0.2333,
+          0.2333
+        ],
+        "Speed": [
+          0.01,
+          0.01
+        ],
+        "EmissionDirection": "Top",
+        "LockedToPart": false,
+        "Rotation": [
+          0,
+          0
+        ],
+        "RotSpeed": [
+          0,
+          0
+        ],
+        "Size": [
+          [
+            0,
+            0.5
+          ],
+          [
+            0.3,
+            0.8
+          ],
+          [
+            1,
+            0.7
+          ]
+        ],
+        "Transparency": [
+          [
+            0,
+            0
+          ],
+          [
+            0.4,
+            0.3
+          ],
+          [
+            1,
+            1
+          ]
+        ],
+        "Color": {
+          "Color3": [
+            255,
+            199,
+            107
+          ]
+        },
+        "LightEmission": 1,
+        "LightInfluence": 0,
+        "Brightness": 2,
+        "ZOffset": 0.6
+      },
+      "Emit": [
+        [
+          3,
+          1
+        ]
+      ],
+      "Tracks": {
+        "At": [
+          [
+            0,
+            {
+              "Vector3": [
+                0,
+                0.25,
+                0
+              ]
+            }
+          ]
+        ]
+      },
+      "Why": "the strike's gold point at the foot, facing the camera",
+      "From": "Stamp",
+      "Body": "PoleFoot",
+      "Ground": true,
+      "Hold": true
+    },
+    "Sparks": {
+      "Kind": "Emitter",
+      "Image": "fx_streak",
+      "Emitter": {
+        "EmissionDirection": "Top",
+        "SpreadAngle": [
+          65,
+          65
+        ],
+        "Lifetime": [
+          0.12,
+          0.2
+        ],
+        "Speed": [
+          9,
+          15
+        ],
+        "Drag": 9,
+        "Acceleration": {
+          "Vector3": [
+            0,
+            0,
+            0
+          ]
+        },
+        "Orientation": "VelocityParallel",
+        "Size": [
+          [
+            0,
+            0.55
+          ],
+          [
+            0.6,
+            0.385
+          ],
+          [
+            1,
+            0
+          ]
+        ],
+        "Squash": [
+          [
+            0,
+            -1.6
+          ],
+          [
+            1,
+            -0.6
+          ]
+        ],
+        "Transparency": [
+          [
+            0,
+            0
+          ],
+          [
+            0.7,
+            0.1
+          ],
+          [
+            1,
+            1
+          ]
+        ],
+        "Color": {
+          "Color3": [
+            255,
+            199,
+            107
+          ]
+        },
+        "LightEmission": 1,
+        "LightInfluence": 0,
+        "ZOffset": 0.6
+      },
+      "Emit": [
+        [
+          3,
+          6
+        ]
+      ],
+      "Tracks": {
+        "At": [
+          [
+            0,
+            {
+              "Vector3": [
+                0,
+                0.1,
+                0
+              ]
+            }
+          ]
+        ]
+      },
+      "Why": "a fan of short sparks off the strike, up and out, fast then slow, never falling: light, not fire",
+      "From": "Stamp",
+      "Body": "PoleFoot",
+      "Ground": true,
+      "Hold": true
+    },
+    "Shine": {
+      "Kind": "Light",
+      "Color": {
+        "Color3": [
+          255,
+          117,
+          23
+        ]
+      },
+      "Range": 9,
+      "Tracks": {
+        "At": [
+          [
+            2,
+            {
+              "Vector3": [
+                0,
+                0.8,
+                0
+              ]
+            }
+          ]
+        ],
+        "Brightness": [
+          [
+            2,
+            0,
+            "Linear"
+          ],
+          [
+            3,
+            3,
+            "Quad Out"
+          ],
+          [
+            20,
+            0
+          ]
+        ]
+      },
+      "Why": "the strike lights the street and the keeper's legs",
+      "From": "Stamp",
+      "Body": "PoleFoot",
+      "Ground": true,
+      "Hold": true
     }
   }
 }

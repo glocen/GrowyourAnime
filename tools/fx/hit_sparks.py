@@ -20,7 +20,8 @@ critical. Rung 7 and up is the signature's own effect, not these. Sizes by rung 
 
 Layers, each offset toward the camera (HIT_FRONT, 2.5 studs) so neither body cuts them, the attacker's fist included
 (handbook/visuals/vfx.md, "Layers"):
-- Back: a soft glow in the hit's colour, frame 0, gone by 6 to 9: the white mass under the hero.
+- Back: a soft glow in the hit's colour, frame 0, gone by 5 to 7: a small white mass under the hero, the size of the
+  star's arms and half seen, so the arms read over it (research's lean, option 2, 2026-11-26).
 - Star: the hero, the kit's spark sheet as one particle in its three passes (a white line over its colour's fill over
   its ink twin, a little smaller and half seen), facing the camera, so it reads from any camera. It snaps open in its first frames and
   breaks outward. The three passes take one fixed rotation, since each emitter would roll its own. Rung 4 lays a second
@@ -62,6 +63,7 @@ GOLD = (255, 207, 77)  # UIKit.Numbers.Critical, #FFCF4D: a critical
 WHITE = (255, 255, 255)
 INK = DARK  # the ink twin
 SIZE = {2: 1.0, 3: 1.35, 4: 1.7}  # the target's sizes by rung
+BACK = 1.1  # the backlight's Size by a rung's size: the target's 0.9 studs of radius, as the soft picture draws it
 
 
 def c3(rgb):
@@ -207,9 +209,14 @@ def needles(count, speed, life, spread, length, frame, direction="Front", colour
     }
 
 
-def back(size, frames, hue):
+def back(rung, frames, hue):
     """One soft light under the star, drawn toward the camera just behind its passes. A card here sat between the two
-    bodies and they hid it: the build had no bloom where the target's peak has one (AR61's quarter, 2026-11-25)."""
+    bodies and they hid it: the build had no bloom where the target's peak has one (AR61's quarter, 2026-11-25). At
+    twice the target's size and near whole it then swallowed the arms, a soft white mass with no star (research's
+    verdict on the last take, 2026-11-26, 18:53: 7,217 px of white at rung 3 against the target's 1,910). So it's the
+    target's: about its size (0.9 of a rung's size in radius, the star's arm), half seen, gone in 5 to 7 frames (AR61's
+    option 2, research's lean, built on its go of 2026-11-26, 23:20)."""
+    size = round(BACK * SIZE[rung], 3)
     return {
         "Kind": "Emitter",
         "Image": "fx_glow",
@@ -218,7 +225,7 @@ def back(size, frames, hue):
             "Speed": [0, 0],
             "Rotation": [0, 0],
             "Size": [[0, size], [round(min(2 / frames, 0.5), 3), round(size * 1.15, 3)], [1, 0]],
-            "Transparency": [[0, 0.2], [1, 0.9]],
+            "Transparency": [[0, 0.5], [1, 1]],
             "Color": c3(hue),
             "LightEmission": 1,
             "LightInfluence": 0,
@@ -255,14 +262,14 @@ def effect(name, why, rows):
 
 def build():
     rung2 = {
-        "Back": back(2.2, 6, PLAIN),
+        "Back": back(2, 5, PLAIN),
         **star_passes("Star", "spark", 0.2, star_size(2), PLAIN, 0,
                      "the hero: the spark sheet snapping open on the struck side and breaking outward, a quick flick"),
         **lance(2, PLAIN),
         "Needles": needles(5, [26, 38], [0.12, 0.2], 50, 0.9, 1, colour=PLAIN, z=HIT_FRONT - FRONT + 4 * LAYER),
     }
     rung3 = {
-        "Back": back(3.2, 8, PLAIN),
+        "Back": back(3, 6, PLAIN),
         **star_passes("Star", "spark", 0.24, star_size(3), PLAIN, 0,
                      "the hero: the spark sheet, a third wider and a few frames longer than an ordinary hit's"),
         **lance(3, PLAIN),
@@ -271,7 +278,7 @@ def build():
                      "the step from rung 2: the ring sheet a breath after the star, swelling past it", z=-3 * LAYER, frame=2, ink=False),
     }
     rung4 = {
-        "Back": back(4.0, 9, GOLD),
+        "Back": back(4, 7, GOLD),
         **star_passes("Star", "spark", 0.28, star_size(4), GOLD, 0,
                      "the hero: the spark sheet in the critical's gold, the widest"),
         **star_passes("Star2", "spark", 0.24, scaled(star_size(4), 0.72), GOLD, 22.5,

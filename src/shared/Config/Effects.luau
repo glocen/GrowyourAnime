@@ -469,11 +469,6 @@ local Effects = {
 		guard_ward_light = "rbxassetid://70439356326114",
 		guard_ward_core = "rbxassetid://88139294901119",
 		guard_ward_run = "rbxassetid://106871276509214",
-		-- AR7's C4, the keeper's challenge ring, two Grid4x4 flipbooks played once flat on the street
-		-- (tools/fx/keeper_targets.py --pictures; the content check of 2026-11-26): the field laid deep warm #7A4A12 under
-		-- and added warm over, never the deep alone or past its light, and the line added warm white.
-		keeper_ring_field = "rbxassetid://72314583030396",
-		keeper_ring_line = "rbxassetid://129310421154504",
 		-- TR69 A's mark (Mark, above) and the glint's star (ShadeGlint), white, tinted in the game: the mark's ink #1A1020,
 		-- its light and the star's in the foe's type's colour, the cores white (tools/fx/fight_read_targets.py --pictures;
 		-- the content check of 2026-11-26).

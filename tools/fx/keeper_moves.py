@@ -10,29 +10,41 @@ off where it passes, the great lantern dragging a fainter one behind. Hero: the 
 from eight frames before Strike to four after, widest on Strike; a crescent cut on Strike where the foot is. The lantern's
 trail is lower, softer and later: the weight swinging round after the blow.
 
-KeeperChallenge. Feel line: the keeper hears you, lifts its face and its lantern flares, then it stamps its pole and a
-ring runs out along the street from its foot. Built to research's pick, C4 (AR7, "C4: picked, for the build"): the
-lantern's flare on Lift (its own glow, cold 1.2 to hot 3) and a jolt brighter on Stamp; on Stamp the hero, a band of
-warm light running out over the street from the pole's foot to ten studs, a fainter one a breath behind, the deep warm
-laid under it and a faint fill inside. The ring is two flipbooks drawn from C4's own numbers (tools/fx/keeper_targets.py
---pictures), played once by flat particles lying on the street: the field twice, laid deep warm under and added warm
-over, always together on one life (the content check's condition), and the line.
+KeeperChallenge. Feel line: the keeper stamps its pole and its lantern answers. Warm light drops down the pole and
+strikes the street at its foot, so from the player's camera the challenge lands where the keeper stands. Built to
+research's lean, F1, the drop (AR7, "Research's pick, F1 against F2"; built ahead of the director's word, research,
+2026-11-26, 23:20), from its target (tools/fx/keeper_flare_targets.py, f1_drop), in frames from Stamp:
+- the lantern flares on Lift (its own glow, cold 1.2 to hot 3) and jolts brighter on Stamp, with a halo round it;
+- the hero, a lance of warm light out of the lantern down the pole, speeding up over 3 frames (the lever: acceleration
+  into the stamp), a glow, an amber body and a gold core, wider at the lantern; it holds to 6, then burns out from the
+  lantern down by 20, thinning;
+- on 3, where it strikes the pole's foot: a flat pool of light on the street, a gold point, a fan of short sparks, and
+  a light on the street and the legs.
+Every layer is light and sparks, never a flame's shape (research's must-fix). Each layer of the lance is one beam from
+its top to its foot, drawn out by Reach. Its foot is a beam with no width, held where the pole struck; its top is the
+end of another, the wick, from the foot up to the lantern and cut back down it after the hold, since a beam is cut
+back from its High end only.
 
-Written at the keeper's scale (Area 1.5, as KeeperSignature), so studs are as seen; a particle's size isn't scaled by
-the play, so the ring stays ten studs whatever the keeper's scale. KeeperSwing is grey: every colour its grey.
+Written at the keeper's scale (Area 1.5, as KeeperSignature), so studs are as seen. KeeperSwing is grey: every colour
+its grey.
 """
 import json
 import sys
 from pathlib import Path
 
-from hit_sparks import LINE, c3, sheet_rows, v3
+from hit_sparks import LINE, c3, needles, sheet_rows, v3
 from shade_tells import at_beat
-from keeper_targets import RING_EXT, RING_LIFE
 
 ROOT = Path(__file__).resolve().parents[2]
 OUT = ROOT / "build" / "handoff" / "Lamplighter" / "fx"
 AREA = 1.5  # the keeper's scale (Definitions.Enemies), as KeeperSignature is written
 LANTERN_COLD, LANTERN_HOT = 1.2, 3.0  # the lantern's glow (Lamplighter.recipe.json, emissive)
+GOLD = (255, 199, 107)  # F1's hot core, warm, never white (keeper_flare_targets.py)
+AMBER = (255, 117, 23)  # F1's lance and pool
+WARM = (224, 122, 22)  # C4's band #E07A16: the glow round the lance and the lantern (the target's deep ember, kept
+# off red)
+OVER = 1.1  # studs over the lantern's middle the lance starts, out of its top (the target)
+HOLD, GONE = 6, 20  # frames from Stamp: the lance whole to HOLD, burnt down to the foot by GONE
 
 
 def trail(body, beat, keys_width, lag, why):
@@ -84,52 +96,78 @@ def challenge():
                             [stamp + 1, LANTERN_HOT * 1.3, "Quad Out"], [stamp + 5, LANTERN_HOT * 0.8, "Quad In"], [30, LANTERN_COLD]]},
         "Why": "the lantern flares as it lifts its face to you, it has heard you, and jolts brighter with the stamp",
     }
-    life = round(RING_LIFE / 60, 4)
+    beam = {"FaceCamera": True, "LightEmission": 1, "LightInfluence": 0, "TextureMode": "Stretch", "TextureSpeed": 0,
+            "Segments": 1}
 
-    def ring(picture, colour, emission, seen, brightness, z, why, grow=1.0):
-        return {
-            "Kind": "Emitter",
-            "From": "Stamp",
-            "Body": "PoleFoot",
-            "Ground": True,
-            "Hold": True,
-            "Image": picture,
-            "Grey": "",
-            "Emitter": {
-                "Lifetime": [life, life],
-                "Speed": [0.01, 0.01],
-                "EmissionDirection": "Top",
-                "Orientation": "VelocityPerpendicular",  # flat on the street, facing up
-                "LockedToPart": False,
-                "Rotation": [0, 0],
-                "RotSpeed": [0, 0],
-                "Size": [[0, RING_EXT * grow], [1, RING_EXT * grow]],  # half the quad: the picture's edge RING_EXT from the foot
-                "Transparency": [[0, 1 - seen], [1, 1 - seen]],
-                "Color": c3(colour),
-                "LightEmission": emission,
-                "LightInfluence": 0,
-                "Brightness": brightness,
-                "ZOffset": z,  # toward the camera, off the street it lies on
-                "FlipbookLayout": "Grid4x4",
-                "FlipbookMode": "OneShot",  # its 16 cells once over the ring's life
-            },
-            "Emit": [[0, 1]],
-            "Tracks": {"At": [[0, v3(0, 0, 0)]]},
-            "Why": why,
-        }
+    def strength(base):
+        """A layer's transparency over its life, from the target's strength: in over 2 frames, whole to HOLD, then
+        falling away by GONE; base its strength at the peak."""
+        return [[0, round(1 - 0.35 * base, 3), "Linear"], [2, round(1 - base, 3), "Linear"],
+                [HOLD, round(1 - base, 3), "Quad Out"], [12, round(1 - 0.37 * base, 3), "Linear"], [GONE, 1]]
+
+    def thin(width):  # the lance thins to half from 4 to 16
+        return [[0, width, "Linear"], [4, width, "Sine InOut"], [16, round(width / 2, 3)]]
 
     rows = {
         "Gaze": gaze,
-        # C4 in the game (2026-11-26): added warm light on the pale street read as a faint swirl, so the band is painted
-        # (light emission 0, near opaque) with its ink just outside, and the light only on the line's core (AR52's fix)
-        "RingInk": ring("keeper_ring_field", (0x5C, 0x30, 0x06), 0, 0.6, 1, 0.29,
-                        "the band's ink, a hair outside it, so its edge holds on the pale street", grow=1.015),
-        "RingBand": ring("keeper_ring_field", (0xE0, 0x7A, 0x16), 0, 0.95, 1, 0.3,
-                         "the hero: the band running out from the pole's foot to ten studs, painted warm amber, its twin behind"),
-        "RingLine": ring("keeper_ring_line", (0xFF, 0xF0, 0xD0), 1, 1, 1.6, 0.34,
-                         "the band's outer edge, a warm white line, the only light in the ring"),
+        "Foot": {"Kind": "Beam", "From": "Stamp", "Body": "PoleFoot", "Hold": True, "Image": "fx_beam", "Grey": "",
+                 "Beam": beam, "Tracks": {"At": [[0, v3(0, 0, 0)]], "Width": [[0, 0]], "Foot": [[0, 0]], "Top": [[0, 0.01]]},
+                 "Why": "where the pole struck the street, held: the lance's foot (no width, never drawn)"},
+        "Wick": {"Kind": "Beam", "From": "Stamp", "Body": "Lantern", "Low": "Foot.Low", "Image": "fx_beam", "Grey": "",
+                 "Beam": beam, "Tracks": {"At": [[0, v3(0, 0, 0)]], "Width": [[0, 0]], "Top": [[0, OVER]],
+                                          "Reach": [[0, 1, "Linear"], [HOLD, 1, "Quad In"], [GONE, 0]]},
+                 "Why": "the lance's top: out of the lantern, then burning down the lance to the foot (no width, never drawn)"},
     }
-    return effect("KeeperChallenge", "The keeper's challenge, KeeperChallenge's own effect: research's pick C4 (Scintilla).",
+    # (name, colour, width at the lantern, at the foot, peak strength, Brightness, why)
+    layers = (("Glow", WARM, 1.0, 0.7, 0.3, 1, "its glow in the air round it"),
+              ("Lance", AMBER, 0.32, 0.2, 0.9, 1.2, "the hero: a lance of warm light dropping out of the lantern down the pole"),
+              ("Core", GOLD, 0.12, 0.05, 1, 2.5, "its gold core, hot at the lantern"))
+    for name, colour, top, foot, base, bright, why in layers:
+        fade = strength(base)
+        rows[name] = {
+            "Kind": "Beam", "From": "Stamp", "Body": "Lantern", "Low": "Wick.High", "High": "Foot.Low",
+            "Taper": round(foot / top, 3), "Image": "fx_beam", "Grey": "", "Color": c3(colour),
+            "Beam": {**beam, "Brightness": bright},
+            "Tracks": {"At": [[0, v3(0, 0, 0)]], "Width": thin(top), "Transparency": strength(base),
+                       "Reach": [[0, 0.12, "Quad In"], [3, 1]]},  # down the pole, speeding up: on the foot on 3
+            "Why": why + ": drawn down from the lantern to the foot, speeding up, then burnt out from the top down"}
+    rows["Halo"] = {"Kind": "Card", "From": "Stamp", "Body": "Lantern", "Image": "fx_glow", "Color": c3(WARM), "Tracks": {
+        "At": [[0, v3(0, 0, 0)]], "Size": [[0, 2.2, "Quad Out"], [HOLD, 2.6, "Linear"], [GONE, 2.0]],
+        "Transparency": [[0, 0.75, "Linear"], [2, 0.45, "Linear"], [HOLD, 0.45, "Quad In"], [GONE, 1]]},
+        "Why": "the lantern answers: a warm halo round it as the lance leaves, dying as it burns down"}
+    rows["Flare"] = {"Kind": "Card", "From": "Stamp", "Body": "Lantern", "Image": "fx_glow", "Color": c3(AMBER), "Tracks": {
+        "At": [[0, v3(0, 0, 0)]], "Size": [[0, 0.8, "Quad Out"], [2, 1.1, "Linear"], [GONE, 0.8]],
+        "Transparency": [[0, 0.5, "Linear"], [2, 0, "Linear"], [HOLD, 0, "Quad In"], [GONE, 1]]},
+        "Why": "the lantern's own flare, hot at its heart"}
+
+    def on_street(row):
+        row.update({"From": "Stamp", "Body": "PoleFoot", "Ground": True, "Hold": True})
+        return row
+    rows["Pool"] = on_street({"Kind": "Emitter", "Image": "fx_glow", "Grey": "", "Emitter": {
+        "Lifetime": [round(17 / 60, 4), round(17 / 60, 4)], "Speed": [0.01, 0.01], "EmissionDirection": "Top",
+        "Orientation": "VelocityPerpendicular",  # flat on the street, facing up
+        "LockedToPart": False, "Rotation": [0, 0], "RotSpeed": [0, 0],
+        "Size": [[0, 0.8], [0.3, 2.2], [1, 2.4]],  # out over 5 frames, easing (the target: 0.6 to 1.8 studs across)
+        "Transparency": [[0, 0], [0.35, 0.55], [1, 1]], "Color": c3(AMBER), "LightEmission": 1, "LightInfluence": 0,
+        "Brightness": 1.6, "ZOffset": 0.3},
+        "Emit": [[3, 1]], "Tracks": {"At": [[0, v3(0, 0, 0)]]},
+        "Why": "where the lance strikes: a flat pool of light on the street at the pole's foot, spreading and dying"})
+    rows["Point"] = on_street({"Kind": "Emitter", "Image": "fx_glow", "Grey": "", "Emitter": {
+        "Lifetime": [round(14 / 60, 4), round(14 / 60, 4)], "Speed": [0.01, 0.01], "EmissionDirection": "Top",
+        "LockedToPart": False, "Rotation": [0, 0], "RotSpeed": [0, 0], "Size": [[0, 0.5], [0.3, 0.8], [1, 0.7]],
+        "Transparency": [[0, 0], [0.4, 0.3], [1, 1]], "Color": c3(GOLD), "LightEmission": 1, "LightInfluence": 0,
+        "Brightness": 2, "ZOffset": 0.6},
+        "Emit": [[3, 1]], "Tracks": {"At": [[0, v3(0, 0.25, 0)]]},
+        "Why": "the strike's gold point at the foot, facing the camera"})
+    sparks = needles(6, [9, 15], [0.12, 0.2], 65, 0.55, 3, direction="Top", colour=GOLD)
+    sparks["Tracks"]["At"] = [[0, v3(0, 0.1, 0)]]
+    sparks["Why"] = "a fan of short sparks off the strike, up and out, fast then slow, never falling: light, not fire"
+    rows["Sparks"] = on_street(sparks)
+    rows["Shine"] = on_street({"Kind": "Light", "Color": c3(AMBER), "Range": 9, "Tracks": {
+        "At": [[2, v3(0, 0.8, 0)]], "Brightness": [[2, 0, "Linear"], [3, 3, "Quad Out"], [GONE, 0]]},
+        "Why": "the strike lights the street and the keeper's legs"})
+    return effect("KeeperChallenge", "The keeper's challenge, KeeperChallenge's own effect: research's lean F1, the drop "
+                  "(Scintilla).",
                   rows, "KeeperChallenge", grey=False)
 
 

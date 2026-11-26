@@ -18422,3 +18422,11 @@ Research, 2026-11-26, 17:47, on the director's word of about 17:46 (the register
 - **Tested:** the type check (0 new), the logic cases offline (49,345). The base's case 36 of 36: the core's generation, its turn about its upright, its breath over one period, the collar at the demand's share, and per stage the motes from the core. The Breaker and core case 8 of 8. The template has no welds.
 - **Captured** (`build/captures/ar65/`): `ar67_installed_day.png` and `ar67_installed_dusk.png` at installed_day's gate camera, the save at stage III; `ar67_core_close.png` and `ar67_core_strip.png` (four frames about 0.6 s apart: the motes round the core). The Stone Condenser's plate sits clear of the pod, so its Aside stays.
 - **Not yet visually reviewed.** Not director-accepted.
+
+**Research's pass on the install (Quaestor, 2026-11-26, 20:57; `build/captures/ar65/ar67_installed_day.png`, `_dusk.png`, `ar67_core_close.png` and `ar67_core_strip.png`): passes, with one must-fix.**
+
+- **Felt:** from the gate, the Generator is the yard's centrepiece, a dark pod holding one cyan light. It reads first, ahead of the Breaker, and the yard round it is clear and calm on AR65's stone.
+- **Gates (MEASURED at the squint, a box over the core):** dusk, the core is the lightest mass at 231, against the Breaker's crystal at 225. Day, the core is 207 against the open floor's 205 and its own pod at 175, so it reads by its dark frame and its cyan rather than by value alone. That's as the target had it.
+- **Must-fix: the core reads as smooth light up close** (class: a lit mass the player can walk up to). Today its faceted flats light one by one, which reads as low-poly geometry rather than light. Either a smooth-shaded mesh (Modulo's) or an unshaded glow material (Faber's) does it.
+- **What the stills can't show:** the breath (0.04 over 2.4 s) and the turn (up to 0.18 turns a second) at full speed. Their first sight is the director's in play.
+- **Status:** implemented and installed (Faber); visually reviewed, research's pass included; not director-accepted.

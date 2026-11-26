@@ -163,12 +163,12 @@ return {
 		Last = 0.2,
 		Tremble = { Rate = 45 }, -- the struck body's shake: direction changes a second
 	},
-	-- The hit's read, grey blocks (TR69 A); Scintilla gives them their look later. Ring: a thin ring at the feet of the
-	-- player's own lead's target, in its type's colour (Config.Hud.Card.Types): Radius studs at the body's scale, its band
-	-- Width studs, Lift over the floor. Glint: a Shade's mask flares as its ordinary swing (its row's Action) starts, at
-	-- Peak emissive at once, eased back to the mask's own over Seconds, before the swing's Hit beat. Research's seeds.
-	Ring = { On = true, Radius = 2.4, Width = 0.2, Transparency = 0.25, Lift = 0.06 },
-	Glint = { On = true, Seconds = 0.3, Peak = 24 },
+	-- The hit's read (TR69 A, research's picks R4 and G1; their looks Scintilla's, in Config.Effects). TargetMark: the
+	-- mark over the player's own lead's target (Config.Effects.Mark; FighterController/TargetMark). Glint: a Shade's star
+	-- at its mask's eye line as its ordinary swing (its row's Action) starts (EffectRows' ShadeGlint; MaskGlint), Seconds
+	-- long, before the swing's Hit beat.
+	TargetMark = { On = true },
+	Glint = { On = true, Seconds = 0.3 },
 	-- The press, slip then strike (TR69 C; Rules.Hands; combat-agency.md, section 4), behind its switch for the director's
 	-- pick by playing: Off is today's. On, Call (Keeper.Out.Recall's dash and cooldown) shows in every fight but the Tower's,
 	-- while the lead has a target or a blow landed within Linger seconds. A Call in a marked strike's tell that the strike

@@ -5515,6 +5515,7 @@ From the director's paste of 2026-11-26 (the register). Each claim was checked a
   - the star stays light, never a tint on the face, and never runs down;
   - the ink stays a hairline, never shown alone.
 - **Tested:** the offline logic cases pass (40,335), and the type check finds 0 new. Not yet seen in play.
+- **Faber's hook (2026-11-26, 19:46):** R4 is `FighterController/TargetMark`, in the ring's place: one BillboardGui of three layers, unlit and always on top, its apex Lift over the target's highest mask (else its head), dropping in on the Back Out, fading in, then bobbing. Its switch is `Combat.TargetMark.On`, and the ring's numbers are gone. G1 is `MaskGlint`: ShadeGlint played on the effects' clock at the mask's eye line, with the Shade's scale, in place of the emissive flare. Rows honour `Options.Tint` on a Tint row, the loader takes the key, and the Star row has it. Tested: "The hit (TR69 A)" passes 24 of 24, twice (the mark's colour, scale and place; the star at the eye line, in its colour, drawn and gone within 0.3 s). Not yet seen in play by eye: Scintilla's turn.
 
 ## TR70. The break and its reveal, overhauled (research, 2026-11-26, 14:17; overhaul 2 of `docs/production-plan.md`, "The overhaul"; for Faber, with Scintilla's targets)
 

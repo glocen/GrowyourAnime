@@ -34,7 +34,7 @@ local Effects = require(script.Effects)
 local Rows = require(script.Rows)
 local Sounds = require(script.Sounds)
 local Cues = require(script.Cues)
-local TargetRing = require(script.TargetRing)
+local TargetMark = require(script.TargetMark)
 local MaskGlint = require(script.MaskGlint)
 local SoundRule = require(Shared.Rules.Sound)
 
@@ -445,7 +445,7 @@ local function beginAction(view: View, action: Actions.Action, at: number)
 			view.Current = t
 		end
 	end
-	-- A Shade's ordinary swing starts with its mask's glint, the swing's read (TR69 A), unless it's joined too late to show.
+	-- A Shade's ordinary swing starts with its mask's star, the swing's read (TR69 A, G1), unless it's joined too late to show.
 	if Combat.Glint.On and sideOf(view) == "Shade" and late < Combat.Glint.Seconds then
 		local def = view.Model:GetAttribute("Def")
 		local row = if type(def) == "string" then Enemies.ById[def] else nil
@@ -1450,7 +1450,7 @@ function FighterController.Start()
 				end
 			end
 		end
-		-- The ring under the player's own lead's target (TR69 A)
+		-- The mark over the player's own lead's target (TR69 A, R4)
 		local aimed: Model? = nil
 		for _, view in views do
 			if isMine(view) and sideOf(view) == "Lead" then
@@ -1458,9 +1458,9 @@ function FighterController.Start()
 				aimed = if target then target.Model else nil
 			end
 		end
-		local ringOk, ringProblem = pcall(TargetRing.Step, aimed)
-		if not ringOk then
-			warn(`FighterController: the target's ring: {ringProblem}`)
+		local markOk, markProblem = pcall(TargetMark.Step, aimed)
+		if not markOk then
+			warn(`FighterController: the target's mark: {markProblem}`)
 		end
 		-- The replay's freeze holds the sparks and numbers with the lead. Written only as it starts and ends, so a capture's
 		-- own 0 holds too (Effects.TimeScale's contract; a write every frame undid it after one).

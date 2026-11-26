@@ -20,7 +20,8 @@ EffectRows.Top = { Schema = true, Effect = true, Why = true, Area = true, Grey =
 EffectRows.Fields = {
 	Kind = true, On = true, Part = true, Look = true, Grey = true, Image = true, Color = true, Range = true, Emitter = true,
 	Emit = true, Tell = true, Tracks = true, Bands = true, From = true, Body = true, Ground = true, Hold = true, Turn = true, Beam = true,
-	Trail = true, Low = true, High = true, Like = true, FootFade = true, Taper = true, Cue = true, Relight = true, Why = true,
+	Trail = true, Low = true, High = true, Like = true, FootFade = true, Taper = true, Cue = true, Relight = true, Tint = true,
+	Why = true,
 } :: { [string]: boolean }
 
 local COLOUR_PLACES = 1e4 -- a colour's 0 to 255 kept to four places: a round trip within a millionth

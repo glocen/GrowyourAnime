@@ -7,6 +7,7 @@
   "Rows": {
     "Star": {
       "Kind": "Card",
+      "Tint": true,
       "Image": "fight_glint_light",
       "Color": {
         "Color3": [

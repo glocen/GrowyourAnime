@@ -52,6 +52,7 @@ export type Options = {
 	-- Runs a step each frame with the seconds since it began, until it says false, then `done`: what a streak or a
 	-- relight lives on (Effects' own, which a capture's TimeScale holds); none: on Heartbeat
 	Run: ((step: (age: number) -> boolean, done: () -> ()) -> ())?,
+	Tint: Color3?, -- a Tint row's colour in place of its Color (TR69 A's G1: the Shade's type's)
 }
 
 local kit: Folder? = nil
@@ -504,6 +505,16 @@ local function pointBefore(history: { { number } }, t: number): Vector3?
 	return Vector3.new(first[2], first[3], first[4])
 end
 
+-- A row as it plays: a Tint row given a tint takes it for its Color.
+local function tinted(row: EffectsConfig.Row, given: Options): EffectsConfig.Row
+	if row.Tint and given.Tint then
+		local copy = table.clone(row)
+		copy.Color = given.Tint
+		return copy
+	end
+	return row
+end
+
 -- Plays the rows named `name` from `anchor` (the effect's foot; its look vector the way it faces), at `scale` times the
 -- size they're written at (the hit's area over the rows' Area). `options`: the body and beats of an action's effect.
 function Rows.Play(name: string, anchor: CFrame, scale: number, options: Options?): Player
@@ -515,7 +526,7 @@ function Rows.Play(name: string, anchor: CFrame, scale: number, options: Options
 	local pieces: { [string]: Piece } = {}
 	local finish = 0
 	for _, rowName in order do
-		local row = effect.Rows[rowName]
+		local row = tinted(effect.Rows[rowName], given)
 		local piece = make(rowName, row, greyed, given)
 		pieces[rowName] = piece
 		local _, last = span(row)
@@ -562,7 +573,7 @@ function Rows.Play(name: string, anchor: CFrame, scale: number, options: Options
 		local rows = ((EffectsConfig.Rows :: any)[name] :: EffectsConfig.Rows).Rows -- a Tune shows at once
 		for _, rowName in order do
 			local piece = pieces[rowName]
-			local row = rows[rowName] or piece.Row
+			local row = if rows[rowName] then tinted(rows[rowName], given) else piece.Row
 			local tracks = row.Tracks
 			local t = frames - piece.Offset -- its own frames, from its From beat
 			local shown = t >= piece.First

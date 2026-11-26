@@ -148,14 +148,14 @@ end
 local lastSpark: { Name: string, Anchor: CFrame, Rows: Rows.Player }? = nil -- the last star played, for the self-test
 
 -- A look played once where it stands, `anchor` its foot and its Front (-Z), on the effects' clock, so a capture's
--- TimeScale holds it and the hitstop never stills it; `scale` the size it's drawn at against its rows' Area. Nil when no
--- rows are written by that name. AR61's star, AR52's glance and break.
-function Effects.At(name: string, anchor: CFrame, scale: number): Rows.Player?
+-- TimeScale holds it and the hitstop never stills it; `scale` the size it's drawn at against its rows' Area; `tint` its
+-- Tint rows' colour. Nil when no rows are written by that name. AR61's star, AR52's glance and break, TR69 A's glint.
+function Effects.At(name: string, anchor: CFrame, scale: number, tint: Color3?): Rows.Player?
 	local written = (EffectsConfig.Rows :: any)[name] :: EffectsConfig.Rows?
 	if written == nil then
 		return nil
 	end
-	local rows = Rows.Play(name, anchor, scale / written.Area, { Run = run })
+	local rows = Rows.Play(name, anchor, scale / written.Area, { Run = run, Tint = tint })
 	run(function(age: number): boolean
 		return rows.Step(age / FRAME)
 	end, rows.Destroy)

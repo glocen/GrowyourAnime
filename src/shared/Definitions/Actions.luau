@@ -42,6 +42,12 @@ export type Hit = {
 	-- With Mark, its footprint is a line, not the keeper's ring: from its fighter's feet along its look, its action's Along
 	-- move's Most and Config.Combat.Dasher.Line.Past more, Line.Half either side (AR52, the Dasher; Rules.Mark.OnLine)
 	Line: boolean?,
+	-- With Mark and Line, the line is a fan (TR69 B, the Dasher elite): two more lanes, Fan degrees either side of it, each
+	-- the line's own length and width, taken together (Rules.Mark.Fanned)
+	Fan: number?,
+	-- With Mark and no Line, its own disc in place of the keeper's (Config.Combat.Keeper.Mark): Radius studs round a middle
+	-- Ahead along its fighter's look and Left to its left (TR69 B, the Brawler elite's overhead)
+	Disc: { Radius: number, Ahead: number, Left: number? }?,
 	-- Seconds each enemy it lands on is stopped, unable to act or move (docs/design.md, "States in a fight": Stun), as a
 	-- share of them on a tough kind and never again inside a lock after one (Config.Combat.Stun; Rules.Fight.Stun)
 	Stun: number?,
@@ -79,7 +85,9 @@ export type Action = {
 	Aim: string?, -- the beat from which its aim is fixed: its fighter turns to its target until then, and a Mark hit's footprint is put down on it
 	-- Its fighter's shield (AR52, the Guard): raised on its From beat, let down on its To; meanwhile each hit on it lets
 	-- Config.Combat.Guard.Keep through, until a heavy hit or a signature breaks it (Rules.Fight.Guarded, Breaks)
-	Guard: { From: string, To: string }?,
+	-- With Screen (TR69 B, the Guard elite's): a wall Wide studs across, its middle Ahead along its fighter's look, and a
+	-- blow on any of its side that crosses it is taken the same way (Rules.Mark.Screens), the wall broken as the shield is
+	Guard: { From: string, To: string, Screen: { Wide: number, Ahead: number }? }?,
 	-- The beat its cast lands on (AR58, the Support): one of its pack mended or shielded, as Rules.Support.Pick says
 	-- (Config.Combat.Support; FightService). Its fighter casts it only while one of its pack stands to take it.
 	Support: string?,
@@ -455,6 +463,74 @@ local rows: { Action } = {
 		Signed = nil,
 	},
 	{
+		-- TR69 B, the Brawler elite's one move (research's feel line, 2026-11-26, 22:05): every third swing is an overhead
+		-- (Definitions.Enemies' Every). Its blow gathers over its mask through a 1.2 s wind-up, its footprint laid on the
+		-- street on the first frame and held there (Aim at Wind), and lands on Strike on whoever stands inside the disc; then
+		-- 1.5 s spent. Its hit is its length's worth of the swing's rate, so an elite that lands it deals what its swings
+		-- would. Its look is its Effect's rows (Scintilla's O2, research's pick): the ring closing round the mask, the
+		-- footprint heating. A block: no clip of its own yet, so it stands through the wind-up (Modulo's, retimed). Seeds.
+		Id = "ShadeOverhead",
+		Clip = nil,
+		Effect = "ShadeOverhead",
+		Length = 2.7,
+		CancelFrom = 2.7,
+		Cooldown = 0, -- its turn is its row's Every, never a clock
+		Beats = { Wind = 0, Strike = 1.2 },
+		Aim = "Wind",
+		Hits = {
+			-- the disc OVERHEAD_PRINT names (tools/fx/shade_tells.py), in studs on the street
+			Strike = { Coefficient = ENEMY_PER_SECOND * 2.7, Heavy = true, Reach = 4.5, Push = 2, Rung = 5, Mark = true, Disc = { Radius = 3, Ahead = 3.4 } },
+		},
+		Range = 4, -- the swing's: it comes in the swing's place
+		Heavy = true,
+		State = nil,
+		Levers = { "anticipation (1.2 s, the ring closing round the mask)", "the footprint (laid on the first frame, held)", "hitstop (rung 5)", "knockback", "recovery (1.5 s spent)" },
+		Signed = nil,
+	},
+	{
+		-- TR69 B, the Dasher elite's: DasherLunge's beats, its line a fan of three (research, 22:15): the middle lane at its
+		-- target and the others 25 degrees either side, drawn at once on Line and run in one lunge to Land, whoever stands
+		-- on any lane taken; then 1.5 s out of breath. Its look is its Effect's rows (Scintilla's F1). Seeds.
+		Id = "DasherFan",
+		Clip = "ShadeLunge",
+		Effect = "DasherFan",
+		Length = 2.75,
+		CancelFrom = 2.75,
+		Cooldown = 6,
+		Beats = { Line = 0.2667, Lunge = 1.0, Land = 1.25, Close = 2.05 },
+		Aim = "Line",
+		Moves = {
+			Lunge = { Seconds = 0.25, Gap = 0, Most = 12, Along = true },
+		},
+		Hits = {
+			Land = { Coefficient = ENEMY_PER_SECOND * 2.75, Heavy = true, Reach = 2.5, Push = 2, Rung = 5, Mark = true, Line = true, Fan = 25 },
+		},
+		Range = 10,
+		Heavy = true,
+		State = nil,
+		Levers = { "anticipation (three lanes on the street, dead still)", "the lunge (12 studs in 0.25 s)", "hitstop (rung 5)", "knockback", "recovery (1.5 s out of breath)" },
+		Signed = nil,
+	},
+	{
+		-- TR69 B, the Guard elite's: GuardRaise's beats, its shield a wall you can see through, 8 studs across and 2.6
+		-- ahead (Scintilla's S1, research's pick), that takes every blow crossing it on the way to its side as the shield
+		-- takes one on itself: Keep through, broken open by a heavy hit or a signature, the Guard staggered. Seeds.
+		Id = "GuardScreen",
+		Clip = "ShadeGuard",
+		Effect = "GuardScreen",
+		Length = 2.7333,
+		CancelFrom = 2.7333,
+		Cooldown = 2.3 + 2.5,
+		Beats = { Raise = 0.3, Drop = 2.3 },
+		Guard = { From = "Raise", To = "Drop", Screen = { Wide = 8, Ahead = 2.6 } },
+		Hits = {},
+		Range = 8,
+		Heavy = false,
+		State = nil,
+		Levers = { "anticipation (the sleeves come up and shut)", "the wall (still, see-through, before its side)", "the break (a stagger)" },
+		Signed = nil,
+	},
+	{
 		-- AR58, the Support's (docs/asset-requests.md, AR58): its sleeves go up wide by Cast and hold, and on Cast the one of
 		-- its pack Rules.Support.Pick names is mended or shielded; they come down from Lower. Its row's Signature, tried
 		-- first whenever it's ready and one of its pack stands to take it; between casts it keeps to its pack's back
@@ -502,7 +578,7 @@ local rows: { Action } = {
 		-- It never hits, and it's no one's to choose: the keeper's row starts it as it's spawned (Definitions.Enemies' Enter).
 		Id = "KeeperChallenge",
 		Clip = "LamplighterChallenge",
-		Effect = "KeeperChallenge", -- the grey block's rows (AR7): the lantern's flare on Lift, the hoop and dust on Stamp
+		Effect = "KeeperChallenge", -- its rows (AR7, C4's F1): the lantern's flare on Lift, on Stamp a lance down the pole to its pool
 		Length = 1.5333,
 		CancelFrom = 1.5333,
 		Cooldown = 0,

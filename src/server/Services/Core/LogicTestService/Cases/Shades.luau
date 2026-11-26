@@ -194,7 +194,7 @@ return {
 		end,
 	},
 	{
-		Name = "Shades: AR57's elites are their kin at the elite's size, play their own clips of the same beats, and the square holds the Guard's on Normal and the Dasher's on Hard",
+		Name = "Shades: AR57's elites are their kin at the elite's size, play their own clips of the same beats, their moves (TR69 B) on their kin's, and the square holds the Guard's on Normal and the Dasher's on Hard",
 		Run = function(t: any)
 			local brawler = Enemies.ById.brawler_elite
 			local kins: { [string]: string } = { guard_elite = "guard", dasher_elite = "dasher" }
@@ -207,10 +207,39 @@ return {
 				t.Equal(`{id}: an Elite`, row.Kind, "Elite")
 				t.Equal(`{id}: the elite's size`, row.Scale, brawler.Scale)
 				t.Equal(`{id}: the elite's marker`, row.Marker, brawler.Marker)
-				for _, field in { "Rig", "Mask", "Type", "Action", "Signature", "First", "Name" } do
+				for _, field in { "Rig", "Mask", "Type", "Action", "First", "Name" } do
 					t.Equal(`{id}: its kin's {field}`, (row :: any)[field], (of :: any)[field])
 				end
+				-- its own move (TR69 B), on its kin's signature's clip and beats
+				local mine, theirs = Actions.ById[row.Signature or ""], Actions.ById[of.Signature or ""]
+				t.Check(`{id}: a move of its own`, mine ~= nil and theirs ~= nil and mine ~= theirs)
+				if mine and theirs then
+					t.Equal(`{id}: its move's clip is its kin's`, mine.Clip, theirs.Clip)
+					for beat, second in theirs.Beats do
+						t.Equal(`{id}: its move's {beat}`, mine.Beats[beat], second)
+					end
+					t.Equal(`{id}: aimed as its kin's`, mine.Aim, theirs.Aim)
+					t.Check(`{id}: guarded as its kin's`, (mine.Guard ~= nil) == (theirs.Guard ~= nil))
+				end
 			end
+			-- the Brawler elite's overhead: every third swing, in the swing's place
+			local overhead = Actions.ById[brawler.Signature or ""]
+			t.Equal("the Brawler elite: its overhead", brawler.Signature, "ShadeOverhead")
+			t.Equal("every third swing", brawler.Every, 3)
+			local swing = Actions.ById[brawler.Action or ""]
+			t.Check("in the swing's reach", overhead ~= nil and swing ~= nil and overhead.Range <= swing.Range)
+			t.Check("its blow lands on the footprint laid on its first frame", overhead ~= nil and overhead.Aim ~= nil and overhead.Beats[overhead.Aim :: string] == 0)
+			local swings, next = 0, false
+			local turns = {}
+			for _ = 1, 6 do
+				swings, next = Fight.Swung(swings, 3)
+				table.insert(turns, if next then "S" else "s")
+				if next then
+					swings = 0 -- the overhead ran: FightService's start() sets it back
+				end
+			end
+			-- each swing's start: s, or S when the overhead comes after it
+			t.Equal("swing, swing then the overhead, three times", table.concat(turns), "sSsSsS")
 			local own = Animations.Kinds.Elite
 			for clip, elite in own do
 				t.Check(`{elite}: published`, type(Animations.Ids[elite]) == "number")

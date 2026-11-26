@@ -1179,8 +1179,10 @@ return {
 			-- the rows: one rule per role, on its kin and its elite, and nowhere else
 			for _, row in Enemies.List do
 				local hard = row.Hard
-				local raises = row.Signature == "GuardRaise"
-				local lunges = row.Signature == "DasherLunge"
+				-- a Guard's raise is its signature's Guard, a Dasher's lunge its Lunge move (the elites' own, TR69 B, too)
+				local signature = if row.Signature then Actions.ById[row.Signature] else nil
+				local raises = signature ~= nil and signature.Guard ~= nil
+				local lunges = signature ~= nil and signature.Moves ~= nil and signature.Moves.Lunge ~= nil
 				t.Check(`{row.Id}: its Hard row is its role's`, (raises and hard ~= nil and hard.InTurn == true and hard.Lunges == nil)
 					or (lunges and hard ~= nil and hard.Lunges == 2 and hard.InTurn == nil)
 					or (not raises and not lunges and hard == nil))

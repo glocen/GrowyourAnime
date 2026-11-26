@@ -120,4 +120,45 @@ return {
 			t.Check("the disc can be seen through", look.Fill > 0 and look.Fill < 1)
 		end,
 	},
+	{
+		Name = "Mark: the Dasher elite's fan takes a centre on any of its three lanes, and nothing in its notches (TR69 B)",
+		Run = function(t: any)
+			local spread = math.rad(25)
+			local length, half = 14, 2
+			-- along +x from the origin: the middle lane, and the two turned 25 degrees either way
+			t.Check("on the middle lane", Mark.Fanned(0, 0, 1, 0, length, half, spread, 10, 0))
+			for _, sign in { 1, -1 } do
+				local a = sign * spread
+				t.Check(`on the lane at {sign * 25} degrees`, Mark.Fanned(0, 0, 1, 0, length, half, spread, 12 * math.cos(a), 12 * math.sin(a)))
+			end
+			-- in a notch: 12.5 degrees off, 12 out, 2.6 from either lane's line
+			local n = math.rad(12.5)
+			t.Check("in a notch, far out: nothing", not Mark.Fanned(0, 0, 1, 0, length, half, spread, 12 * math.cos(n), 12 * math.sin(n)))
+			t.Check("past the lanes' end: nothing", not Mark.Fanned(0, 0, 1, 0, length, half, spread, length + half + 0.5, 0))
+			t.Check("behind the feet: nothing", not Mark.Fanned(0, 0, 1, 0, length, half, spread, -half - 0.5, 0))
+			-- Covers reads a fan's shape, and a line without one stays one lane
+			local fan: Mark.Shape = { X = 0, Z = 0, Radius = half, Length = length, DirX = 1, DirZ = 0, Fan = spread }
+			local side = { 12 * math.cos(spread), 12 * math.sin(spread) }
+			t.Check("Covers: the fan takes a side lane", Mark.Covers(fan, side[1], side[2]))
+			fan.Fan = nil
+			t.Check("Covers: a line alone doesn't", not Mark.Covers(fan, side[1], side[2]))
+		end,
+	},
+	{
+		Name = "Mark: a blow crosses the Guard elite's screen only through the wall (TR69 B)",
+		Run = function(t: any)
+			-- a guard at the origin facing +z, its wall 8 across, 2.6 ahead: from x = -4 to 4 at z = 2.6
+			local function screens(ax: number, az: number, tx: number, tz: number): boolean
+				return Mark.Screens(0, 0, 0, 1, 8, 2.6, ax, az, tx, tz)
+			end
+			t.Check("a blow from the street at one behind the wall", screens(0, 8, 0, 0))
+			t.Check("and slanting through its end", screens(5, 8, 0, 0))
+			t.Check("from beside it, round the end: not", not screens(8, 3, 6, 1))
+			t.Check("from behind it to behind it: not", not screens(-2, 0, 2, 0))
+			t.Check("two in front of it: not", not screens(-2, 6, 2, 5))
+			t.Check("along the wall's own line: not", not screens(-10, 2.6, 10, 2.6))
+			t.Check("the wall turns with the guard's look", Mark.Screens(0, 0, 1, 0, 8, 2.6, 8, 0, 0, 0) and not Mark.Screens(0, 0, 1, 0, 8, 2.6, 0, 8, 0, 0))
+			t.Check("no look: no wall", not Mark.Screens(0, 0, 0, 0, 8, 2.6, 0, 8, 0, 0))
+		end,
+	},
 }

@@ -64,6 +64,13 @@ function Fight.Again(done: number, lunges: number?): boolean
 	return done < (lunges or 1)
 end
 
+-- A row with Every (TR69 B, the Brawler elite's overhead every third swing): its Action starting counts one more swing
+-- since its signature, and once Every - 1 have, the signature is next. The count after, and whether it's next.
+function Fight.Swung(swings: number?, every: number): (number, boolean)
+	local now = (swings or 0) + 1
+	return now, now >= every - 1
+end
+
 -- A lead's signature: the first action in its kit with a cooldown (Actions.Kits puts it first), or nil.
 function Fight.Signature(kit: { Actions.Action }): Actions.Action?
 	for _, action in kit do

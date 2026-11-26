@@ -1,0 +1,4376 @@
+{
+  "Schema": "rows/1",
+  "Effect": "ShadeOverhead",
+  "Why": "The Brawler elite's overhead, its action's own effect: research's pick, O2, the ring round the mask, with the footprint in D1's make (TR69 B).",
+  "Area": 1.35,
+  "Grey": false,
+  "Action": "ShadeOverhead",
+  "Rows": {
+    "RingInk": {
+      "Kind": "Card",
+      "From": "Strike",
+      "Body": "Mask_Brawler",
+      "Image": "overhead_ring_ink",
+      "Tracks": {
+        "At": [
+          [
+            -72,
+            {
+              "Vector3": [
+                0,
+                0,
+                -1.282
+              ]
+            }
+          ]
+        ],
+        "Size": [
+          [
+            -72,
+            8.308,
+            "Linear"
+          ],
+          [
+            0,
+            4.5,
+            "Quad Out"
+          ],
+          [
+            5,
+            5.4
+          ]
+        ],
+        "Transparency": [
+          [
+            -72,
+            1,
+            "Quad Out"
+          ],
+          [
+            -68,
+            0.35,
+            "Linear"
+          ],
+          [
+            0,
+            0.35,
+            "Linear"
+          ],
+          [
+            2,
+            1
+          ]
+        ]
+      },
+      "Why": "the ring's hair of warm ink, under it, so it holds on a lit stall front",
+      "Color": {
+        "Color3": [
+          42,
+          20,
+          0
+        ]
+      }
+    },
+    "Ring": {
+      "Kind": "Card",
+      "From": "Strike",
+      "Body": "Mask_Brawler",
+      "Image": "overhead_ring_light",
+      "Tracks": {
+        "At": [
+          [
+            -72,
+            {
+              "Vector3": [
+                0,
+                0,
+                -1.302
+              ]
+            }
+          ]
+        ],
+        "Size": [
+          [
+            -72,
+            8.308,
+            "Linear"
+          ],
+          [
+            0,
+            4.5,
+            "Quad Out"
+          ],
+          [
+            5,
+            5.4
+          ]
+        ],
+        "Transparency": [
+          [
+            -72,
+            1,
+            "Quad Out"
+          ],
+          [
+            -68,
+            0,
+            "Linear"
+          ],
+          [
+            2,
+            0,
+            "Quad In"
+          ],
+          [
+            5,
+            1
+          ]
+        ],
+        "Color": [
+          [
+            -72,
+            {
+              "Color3": [
+                255,
+                154,
+                31
+              ]
+            },
+            "Linear"
+          ],
+          [
+            -24,
+            {
+              "Color3": [
+                255,
+                154,
+                31
+              ]
+            },
+            "Quad In"
+          ],
+          [
+            -4,
+            {
+              "Color3": [
+                255,
+                206,
+                140
+              ]
+            },
+            "Linear"
+          ],
+          [
+            0,
+            {
+              "Color3": [
+                255,
+                246,
+                232
+              ]
+            }
+          ]
+        ],
+        "Brightness": [
+          [
+            -72,
+            1,
+            "Linear"
+          ],
+          [
+            -24,
+            1,
+            "Quad In"
+          ],
+          [
+            0,
+            2.5
+          ]
+        ]
+      },
+      "Why": "the countdown: a ring round the mask closing at a steady rate, amber, heating to white as the strike nears, flashing white on it and gone",
+      "Color": {
+        "Color3": [
+          255,
+          154,
+          31
+        ]
+      }
+    },
+    "RingCore": {
+      "Kind": "Card",
+      "From": "Strike",
+      "Body": "Mask_Brawler",
+      "Image": "overhead_ring_core",
+      "Tracks": {
+        "At": [
+          [
+            -72,
+            {
+              "Vector3": [
+                0,
+                0,
+                -1.323
+              ]
+            }
+          ]
+        ],
+        "Size": [
+          [
+            -72,
+            8.308,
+            "Linear"
+          ],
+          [
+            0,
+            4.5,
+            "Quad Out"
+          ],
+          [
+            5,
+            5.4
+          ]
+        ],
+        "Transparency": [
+          [
+            -72,
+            1,
+            "Quad Out"
+          ],
+          [
+            -68,
+            0.7,
+            "Linear"
+          ],
+          [
+            -24,
+            0.6,
+            "Quad In"
+          ],
+          [
+            0,
+            0
+          ],
+          [
+            2,
+            0,
+            "Quad In"
+          ],
+          [
+            5,
+            1
+          ]
+        ]
+      },
+      "Why": "its white core, faint at first and full on the strike",
+      "Color": {
+        "Color3": [
+          255,
+          255,
+          255
+        ]
+      }
+    },
+    "RingLight": {
+      "Kind": "Light",
+      "From": "Strike",
+      "Body": "Mask_Brawler",
+      "Color": {
+        "Color3": [
+          255,
+          154,
+          31
+        ]
+      },
+      "Range": 8.1,
+      "Tracks": {
+        "At": [
+          [
+            -72,
+            {
+              "Vector3": [
+                0,
+                0,
+                -1.683
+              ]
+            }
+          ]
+        ],
+        "Brightness": [
+          [
+            -72,
+            0,
+            "Linear"
+          ],
+          [
+            -24,
+            0.4,
+            "Quad In"
+          ],
+          [
+            0,
+            3
+          ],
+          [
+            2,
+            3,
+            "Quad In"
+          ],
+          [
+            8,
+            0
+          ]
+        ]
+      },
+      "Why": "light round the mask, rising to the strike: never a tint on the face"
+    },
+    "Field": {
+      "Kind": "Mesh",
+      "From": "Strike",
+      "Part": [
+        "FxShell"
+      ],
+      "Look": "fx_rise_Grey",
+      "Grey": "fx_rise_Grey",
+      "Color": {
+        "Color3": [
+          122,
+          58,
+          0
+        ]
+      },
+      "Tracks": {
+        "At": [
+          [
+            -72,
+            {
+              "Vector3": [
+                0,
+                -4.02,
+                -3.4
+              ]
+            }
+          ]
+        ],
+        "Scale": [
+          [
+            -72,
+            {
+              "Vector3": [
+                0.1,
+                0.02,
+                0.1
+              ]
+            },
+            "Back Out"
+          ],
+          [
+            -67,
+            {
+              "Vector3": [
+                3.0,
+                0.02,
+                3.0
+              ]
+            }
+          ]
+        ],
+        "Transparency": [
+          [
+            -72,
+            0.8,
+            "Linear"
+          ],
+          [
+            2,
+            0.8,
+            "Quad In"
+          ],
+          [
+            8,
+            1
+          ]
+        ],
+        "Glow": [
+          [
+            -72,
+            2.5,
+            "Quad Out"
+          ],
+          [
+            -67,
+            1.5
+          ]
+        ]
+      },
+      "Why": "the footprint laid: a faint amber disc on the street, as wide as what the blow takes",
+      "Body": "HumanoidRootPart",
+      "Hold": true
+    },
+    "Fill": {
+      "Kind": "Mesh",
+      "From": "Strike",
+      "Part": [
+        "FxShell"
+      ],
+      "Color": {
+        "Color3": [
+          255,
+          154,
+          31
+        ]
+      },
+      "Tracks": {
+        "At": [
+          [
+            -72,
+            {
+              "Vector3": [
+                0,
+                -4.01,
+                -3.4
+              ]
+            }
+          ]
+        ],
+        "Scale": [
+          [
+            -72,
+            {
+              "Vector3": [
+                0.05,
+                0.02,
+                0.05
+              ]
+            },
+            "Linear"
+          ],
+          [
+            0,
+            {
+              "Vector3": [
+                3.0,
+                0.02,
+                3.0
+              ]
+            }
+          ]
+        ],
+        "Color": [
+          [
+            -72,
+            {
+              "Color3": [
+                255,
+                154,
+                31
+              ]
+            },
+            "Linear"
+          ],
+          [
+            -8,
+            {
+              "Color3": [
+                255,
+                154,
+                31
+              ]
+            },
+            "Linear"
+          ],
+          [
+            0,
+            {
+              "Color3": [
+                255,
+                246,
+                232
+              ]
+            }
+          ],
+          [
+            2,
+            {
+              "Color3": [
+                255,
+                246,
+                232
+              ]
+            },
+            "Linear"
+          ],
+          [
+            8,
+            {
+              "Color3": [
+                255,
+                206,
+                140
+              ]
+            }
+          ]
+        ],
+        "Transparency": [
+          [
+            -72,
+            0.62,
+            "Linear"
+          ],
+          [
+            -1,
+            0.5,
+            "Linear"
+          ],
+          [
+            0,
+            0.1
+          ],
+          [
+            2,
+            0,
+            "Quad In"
+          ],
+          [
+            8,
+            1
+          ]
+        ]
+      },
+      "Why": "the fill, growing from the middle to the rim on the strike: the time left to move; white on the strike",
+      "Body": "HumanoidRootPart",
+      "Hold": true
+    },
+    "Rim01": {
+      "Kind": "Mesh",
+      "From": "Strike",
+      "Part": [
+        "FxPlate"
+      ],
+      "Color": {
+        "Color3": [
+          255,
+          154,
+          31
+        ]
+      },
+      "Tracks": {
+        "At": [
+          [
+            -72,
+            {
+              "Vector3": [
+                2.8858,
+                -3.97,
+                -2.826
+              ]
+            }
+          ]
+        ],
+        "Spin": [
+          [
+            -72,
+            -11.25
+          ]
+        ],
+        "Scale": [
+          [
+            -72,
+            {
+              "Vector3": [
+                0.02,
+                0.02,
+                1.2505
+              ]
+            },
+            "Back Out"
+          ],
+          [
+            -67,
+            {
+              "Vector3": [
+                0.16,
+                0.02,
+                1.2505
+              ]
+            },
+            "Linear"
+          ],
+          [
+            2,
+            {
+              "Vector3": [
+                0.16,
+                0.02,
+                1.2505
+              ]
+            },
+            "Quad In"
+          ],
+          [
+            8,
+            {
+              "Vector3": [
+                0.02,
+                0.02,
+                1.2505
+              ]
+            }
+          ]
+        ],
+        "Color": [
+          [
+            -72,
+            {
+              "Color3": [
+                255,
+                154,
+                31
+              ]
+            },
+            "Linear"
+          ],
+          [
+            -24,
+            {
+              "Color3": [
+                255,
+                154,
+                31
+              ]
+            },
+            "Quad In"
+          ],
+          [
+            0,
+            {
+              "Color3": [
+                255,
+                246,
+                232
+              ]
+            }
+          ]
+        ],
+        "Transparency": [
+          [
+            -72,
+            0,
+            "Linear"
+          ],
+          [
+            2,
+            0.1,
+            "Quad In"
+          ],
+          [
+            8,
+            1
+          ]
+        ]
+      },
+      "Why": "the footprint's rim, stroke 1 of 16: where the blow's reach ends, heating to the strike",
+      "Body": "HumanoidRootPart",
+      "Hold": true
+    },
+    "Rim01Core": {
+      "Kind": "Mesh",
+      "From": "Strike",
+      "Part": [
+        "FxPlate"
+      ],
+      "Color": {
+        "Color3": [
+          255,
+          232,
+          196
+        ]
+      },
+      "Tracks": {
+        "At": [
+          [
+            -72,
+            {
+              "Vector3": [
+                2.8858,
+                -3.96,
+                -2.826
+              ]
+            }
+          ]
+        ],
+        "Spin": [
+          [
+            -72,
+            -11.25
+          ]
+        ],
+        "Scale": [
+          [
+            -72,
+            {
+              "Vector3": [
+                0.02,
+                0.02,
+                1.2505
+              ]
+            },
+            "Back Out"
+          ],
+          [
+            -67,
+            {
+              "Vector3": [
+                0.05,
+                0.02,
+                1.2505
+              ]
+            },
+            "Linear"
+          ],
+          [
+            2,
+            {
+              "Vector3": [
+                0.05,
+                0.02,
+                1.2505
+              ]
+            },
+            "Quad In"
+          ],
+          [
+            8,
+            {
+              "Vector3": [
+                0.02,
+                0.02,
+                1.2505
+              ]
+            }
+          ]
+        ],
+        "Transparency": [
+          [
+            -72,
+            0,
+            "Linear"
+          ],
+          [
+            2,
+            0.1,
+            "Quad In"
+          ],
+          [
+            8,
+            1
+          ]
+        ]
+      },
+      "Why": "the footprint's rim, stroke 1 of 16: where the blow's reach ends, heating to the strike: its white core",
+      "Body": "HumanoidRootPart",
+      "Hold": true
+    },
+    "Rim02": {
+      "Kind": "Mesh",
+      "From": "Strike",
+      "Part": [
+        "FxPlate"
+      ],
+      "Color": {
+        "Color3": [
+          255,
+          154,
+          31
+        ]
+      },
+      "Tracks": {
+        "At": [
+          [
+            -72,
+            {
+              "Vector3": [
+                2.4465,
+                -3.97,
+                -1.7653
+              ]
+            }
+          ]
+        ],
+        "Spin": [
+          [
+            -72,
+            -33.75
+          ]
+        ],
+        "Scale": [
+          [
+            -72,
+            {
+              "Vector3": [
+                0.02,
+                0.02,
+                1.2505
+              ]
+            },
+            "Back Out"
+          ],
+          [
+            -67,
+            {
+              "Vector3": [
+                0.16,
+                0.02,
+                1.2505
+              ]
+            },
+            "Linear"
+          ],
+          [
+            2,
+            {
+              "Vector3": [
+                0.16,
+                0.02,
+                1.2505
+              ]
+            },
+            "Quad In"
+          ],
+          [
+            8,
+            {
+              "Vector3": [
+                0.02,
+                0.02,
+                1.2505
+              ]
+            }
+          ]
+        ],
+        "Color": [
+          [
+            -72,
+            {
+              "Color3": [
+                255,
+                154,
+                31
+              ]
+            },
+            "Linear"
+          ],
+          [
+            -24,
+            {
+              "Color3": [
+                255,
+                154,
+                31
+              ]
+            },
+            "Quad In"
+          ],
+          [
+            0,
+            {
+              "Color3": [
+                255,
+                246,
+                232
+              ]
+            }
+          ]
+        ],
+        "Transparency": [
+          [
+            -72,
+            0,
+            "Linear"
+          ],
+          [
+            2,
+            0.1,
+            "Quad In"
+          ],
+          [
+            8,
+            1
+          ]
+        ]
+      },
+      "Why": "the footprint's rim, stroke 2 of 16: where the blow's reach ends, heating to the strike",
+      "Body": "HumanoidRootPart",
+      "Hold": true
+    },
+    "Rim02Core": {
+      "Kind": "Mesh",
+      "From": "Strike",
+      "Part": [
+        "FxPlate"
+      ],
+      "Color": {
+        "Color3": [
+          255,
+          232,
+          196
+        ]
+      },
+      "Tracks": {
+        "At": [
+          [
+            -72,
+            {
+              "Vector3": [
+                2.4465,
+                -3.96,
+                -1.7653
+              ]
+            }
+          ]
+        ],
+        "Spin": [
+          [
+            -72,
+            -33.75
+          ]
+        ],
+        "Scale": [
+          [
+            -72,
+            {
+              "Vector3": [
+                0.02,
+                0.02,
+                1.2505
+              ]
+            },
+            "Back Out"
+          ],
+          [
+            -67,
+            {
+              "Vector3": [
+                0.05,
+                0.02,
+                1.2505
+              ]
+            },
+            "Linear"
+          ],
+          [
+            2,
+            {
+              "Vector3": [
+                0.05,
+                0.02,
+                1.2505
+              ]
+            },
+            "Quad In"
+          ],
+          [
+            8,
+            {
+              "Vector3": [
+                0.02,
+                0.02,
+                1.2505
+              ]
+            }
+          ]
+        ],
+        "Transparency": [
+          [
+            -72,
+            0,
+            "Linear"
+          ],
+          [
+            2,
+            0.1,
+            "Quad In"
+          ],
+          [
+            8,
+            1
+          ]
+        ]
+      },
+      "Why": "the footprint's rim, stroke 2 of 16: where the blow's reach ends, heating to the strike: its white core",
+      "Body": "HumanoidRootPart",
+      "Hold": true
+    },
+    "Rim03": {
+      "Kind": "Mesh",
+      "From": "Strike",
+      "Part": [
+        "FxPlate"
+      ],
+      "Color": {
+        "Color3": [
+          255,
+          154,
+          31
+        ]
+      },
+      "Tracks": {
+        "At": [
+          [
+            -72,
+            {
+              "Vector3": [
+                1.6347,
+                -3.97,
+                -0.9535
+              ]
+            }
+          ]
+        ],
+        "Spin": [
+          [
+            -72,
+            -56.25
+          ]
+        ],
+        "Scale": [
+          [
+            -72,
+            {
+              "Vector3": [
+                0.02,
+                0.02,
+                1.2505
+              ]
+            },
+            "Back Out"
+          ],
+          [
+            -67,
+            {
+              "Vector3": [
+                0.16,
+                0.02,
+                1.2505
+              ]
+            },
+            "Linear"
+          ],
+          [
+            2,
+            {
+              "Vector3": [
+                0.16,
+                0.02,
+                1.2505
+              ]
+            },
+            "Quad In"
+          ],
+          [
+            8,
+            {
+              "Vector3": [
+                0.02,
+                0.02,
+                1.2505
+              ]
+            }
+          ]
+        ],
+        "Color": [
+          [
+            -72,
+            {
+              "Color3": [
+                255,
+                154,
+                31
+              ]
+            },
+            "Linear"
+          ],
+          [
+            -24,
+            {
+              "Color3": [
+                255,
+                154,
+                31
+              ]
+            },
+            "Quad In"
+          ],
+          [
+            0,
+            {
+              "Color3": [
+                255,
+                246,
+                232
+              ]
+            }
+          ]
+        ],
+        "Transparency": [
+          [
+            -72,
+            0,
+            "Linear"
+          ],
+          [
+            2,
+            0.1,
+            "Quad In"
+          ],
+          [
+            8,
+            1
+          ]
+        ]
+      },
+      "Why": "the footprint's rim, stroke 3 of 16: where the blow's reach ends, heating to the strike",
+      "Body": "HumanoidRootPart",
+      "Hold": true
+    },
+    "Rim03Core": {
+      "Kind": "Mesh",
+      "From": "Strike",
+      "Part": [
+        "FxPlate"
+      ],
+      "Color": {
+        "Color3": [
+          255,
+          232,
+          196
+        ]
+      },
+      "Tracks": {
+        "At": [
+          [
+            -72,
+            {
+              "Vector3": [
+                1.6347,
+                -3.96,
+                -0.9535
+              ]
+            }
+          ]
+        ],
+        "Spin": [
+          [
+            -72,
+            -56.25
+          ]
+        ],
+        "Scale": [
+          [
+            -72,
+            {
+              "Vector3": [
+                0.02,
+                0.02,
+                1.2505
+              ]
+            },
+            "Back Out"
+          ],
+          [
+            -67,
+            {
+              "Vector3": [
+                0.05,
+                0.02,
+                1.2505
+              ]
+            },
+            "Linear"
+          ],
+          [
+            2,
+            {
+              "Vector3": [
+                0.05,
+                0.02,
+                1.2505
+              ]
+            },
+            "Quad In"
+          ],
+          [
+            8,
+            {
+              "Vector3": [
+                0.02,
+                0.02,
+                1.2505
+              ]
+            }
+          ]
+        ],
+        "Transparency": [
+          [
+            -72,
+            0,
+            "Linear"
+          ],
+          [
+            2,
+            0.1,
+            "Quad In"
+          ],
+          [
+            8,
+            1
+          ]
+        ]
+      },
+      "Why": "the footprint's rim, stroke 3 of 16: where the blow's reach ends, heating to the strike: its white core",
+      "Body": "HumanoidRootPart",
+      "Hold": true
+    },
+    "Rim04": {
+      "Kind": "Mesh",
+      "From": "Strike",
+      "Part": [
+        "FxPlate"
+      ],
+      "Color": {
+        "Color3": [
+          255,
+          154,
+          31
+        ]
+      },
+      "Tracks": {
+        "At": [
+          [
+            -72,
+            {
+              "Vector3": [
+                0.574,
+                -3.97,
+                -0.5142
+              ]
+            }
+          ]
+        ],
+        "Spin": [
+          [
+            -72,
+            -78.75
+          ]
+        ],
+        "Scale": [
+          [
+            -72,
+            {
+              "Vector3": [
+                0.02,
+                0.02,
+                1.2505
+              ]
+            },
+            "Back Out"
+          ],
+          [
+            -67,
+            {
+              "Vector3": [
+                0.16,
+                0.02,
+                1.2505
+              ]
+            },
+            "Linear"
+          ],
+          [
+            2,
+            {
+              "Vector3": [
+                0.16,
+                0.02,
+                1.2505
+              ]
+            },
+            "Quad In"
+          ],
+          [
+            8,
+            {
+              "Vector3": [
+                0.02,
+                0.02,
+                1.2505
+              ]
+            }
+          ]
+        ],
+        "Color": [
+          [
+            -72,
+            {
+              "Color3": [
+                255,
+                154,
+                31
+              ]
+            },
+            "Linear"
+          ],
+          [
+            -24,
+            {
+              "Color3": [
+                255,
+                154,
+                31
+              ]
+            },
+            "Quad In"
+          ],
+          [
+            0,
+            {
+              "Color3": [
+                255,
+                246,
+                232
+              ]
+            }
+          ]
+        ],
+        "Transparency": [
+          [
+            -72,
+            0,
+            "Linear"
+          ],
+          [
+            2,
+            0.1,
+            "Quad In"
+          ],
+          [
+            8,
+            1
+          ]
+        ]
+      },
+      "Why": "the footprint's rim, stroke 4 of 16: where the blow's reach ends, heating to the strike",
+      "Body": "HumanoidRootPart",
+      "Hold": true
+    },
+    "Rim04Core": {
+      "Kind": "Mesh",
+      "From": "Strike",
+      "Part": [
+        "FxPlate"
+      ],
+      "Color": {
+        "Color3": [
+          255,
+          232,
+          196
+        ]
+      },
+      "Tracks": {
+        "At": [
+          [
+            -72,
+            {
+              "Vector3": [
+                0.574,
+                -3.96,
+                -0.5142
+              ]
+            }
+          ]
+        ],
+        "Spin": [
+          [
+            -72,
+            -78.75
+          ]
+        ],
+        "Scale": [
+          [
+            -72,
+            {
+              "Vector3": [
+                0.02,
+                0.02,
+                1.2505
+              ]
+            },
+            "Back Out"
+          ],
+          [
+            -67,
+            {
+              "Vector3": [
+                0.05,
+                0.02,
+                1.2505
+              ]
+            },
+            "Linear"
+          ],
+          [
+            2,
+            {
+              "Vector3": [
+                0.05,
+                0.02,
+                1.2505
+              ]
+            },
+            "Quad In"
+          ],
+          [
+            8,
+            {
+              "Vector3": [
+                0.02,
+                0.02,
+                1.2505
+              ]
+            }
+          ]
+        ],
+        "Transparency": [
+          [
+            -72,
+            0,
+            "Linear"
+          ],
+          [
+            2,
+            0.1,
+            "Quad In"
+          ],
+          [
+            8,
+            1
+          ]
+        ]
+      },
+      "Why": "the footprint's rim, stroke 4 of 16: where the blow's reach ends, heating to the strike: its white core",
+      "Body": "HumanoidRootPart",
+      "Hold": true
+    },
+    "Rim05": {
+      "Kind": "Mesh",
+      "From": "Strike",
+      "Part": [
+        "FxPlate"
+      ],
+      "Color": {
+        "Color3": [
+          255,
+          154,
+          31
+        ]
+      },
+      "Tracks": {
+        "At": [
+          [
+            -72,
+            {
+              "Vector3": [
+                -0.574,
+                -3.97,
+                -0.5142
+              ]
+            }
+          ]
+        ],
+        "Spin": [
+          [
+            -72,
+            -101.25
+          ]
+        ],
+        "Scale": [
+          [
+            -72,
+            {
+              "Vector3": [
+                0.02,
+                0.02,
+                1.2505
+              ]
+            },
+            "Back Out"
+          ],
+          [
+            -67,
+            {
+              "Vector3": [
+                0.16,
+                0.02,
+                1.2505
+              ]
+            },
+            "Linear"
+          ],
+          [
+            2,
+            {
+              "Vector3": [
+                0.16,
+                0.02,
+                1.2505
+              ]
+            },
+            "Quad In"
+          ],
+          [
+            8,
+            {
+              "Vector3": [
+                0.02,
+                0.02,
+                1.2505
+              ]
+            }
+          ]
+        ],
+        "Color": [
+          [
+            -72,
+            {
+              "Color3": [
+                255,
+                154,
+                31
+              ]
+            },
+            "Linear"
+          ],
+          [
+            -24,
+            {
+              "Color3": [
+                255,
+                154,
+                31
+              ]
+            },
+            "Quad In"
+          ],
+          [
+            0,
+            {
+              "Color3": [
+                255,
+                246,
+                232
+              ]
+            }
+          ]
+        ],
+        "Transparency": [
+          [
+            -72,
+            0,
+            "Linear"
+          ],
+          [
+            2,
+            0.1,
+            "Quad In"
+          ],
+          [
+            8,
+            1
+          ]
+        ]
+      },
+      "Why": "the footprint's rim, stroke 5 of 16: where the blow's reach ends, heating to the strike",
+      "Body": "HumanoidRootPart",
+      "Hold": true
+    },
+    "Rim05Core": {
+      "Kind": "Mesh",
+      "From": "Strike",
+      "Part": [
+        "FxPlate"
+      ],
+      "Color": {
+        "Color3": [
+          255,
+          232,
+          196
+        ]
+      },
+      "Tracks": {
+        "At": [
+          [
+            -72,
+            {
+              "Vector3": [
+                -0.574,
+                -3.96,
+                -0.5142
+              ]
+            }
+          ]
+        ],
+        "Spin": [
+          [
+            -72,
+            -101.25
+          ]
+        ],
+        "Scale": [
+          [
+            -72,
+            {
+              "Vector3": [
+                0.02,
+                0.02,
+                1.2505
+              ]
+            },
+            "Back Out"
+          ],
+          [
+            -67,
+            {
+              "Vector3": [
+                0.05,
+                0.02,
+                1.2505
+              ]
+            },
+            "Linear"
+          ],
+          [
+            2,
+            {
+              "Vector3": [
+                0.05,
+                0.02,
+                1.2505
+              ]
+            },
+            "Quad In"
+          ],
+          [
+            8,
+            {
+              "Vector3": [
+                0.02,
+                0.02,
+                1.2505
+              ]
+            }
+          ]
+        ],
+        "Transparency": [
+          [
+            -72,
+            0,
+            "Linear"
+          ],
+          [
+            2,
+            0.1,
+            "Quad In"
+          ],
+          [
+            8,
+            1
+          ]
+        ]
+      },
+      "Why": "the footprint's rim, stroke 5 of 16: where the blow's reach ends, heating to the strike: its white core",
+      "Body": "HumanoidRootPart",
+      "Hold": true
+    },
+    "Rim06": {
+      "Kind": "Mesh",
+      "From": "Strike",
+      "Part": [
+        "FxPlate"
+      ],
+      "Color": {
+        "Color3": [
+          255,
+          154,
+          31
+        ]
+      },
+      "Tracks": {
+        "At": [
+          [
+            -72,
+            {
+              "Vector3": [
+                -1.6347,
+                -3.97,
+                -0.9535
+              ]
+            }
+          ]
+        ],
+        "Spin": [
+          [
+            -72,
+            -123.75
+          ]
+        ],
+        "Scale": [
+          [
+            -72,
+            {
+              "Vector3": [
+                0.02,
+                0.02,
+                1.2505
+              ]
+            },
+            "Back Out"
+          ],
+          [
+            -67,
+            {
+              "Vector3": [
+                0.16,
+                0.02,
+                1.2505
+              ]
+            },
+            "Linear"
+          ],
+          [
+            2,
+            {
+              "Vector3": [
+                0.16,
+                0.02,
+                1.2505
+              ]
+            },
+            "Quad In"
+          ],
+          [
+            8,
+            {
+              "Vector3": [
+                0.02,
+                0.02,
+                1.2505
+              ]
+            }
+          ]
+        ],
+        "Color": [
+          [
+            -72,
+            {
+              "Color3": [
+                255,
+                154,
+                31
+              ]
+            },
+            "Linear"
+          ],
+          [
+            -24,
+            {
+              "Color3": [
+                255,
+                154,
+                31
+              ]
+            },
+            "Quad In"
+          ],
+          [
+            0,
+            {
+              "Color3": [
+                255,
+                246,
+                232
+              ]
+            }
+          ]
+        ],
+        "Transparency": [
+          [
+            -72,
+            0,
+            "Linear"
+          ],
+          [
+            2,
+            0.1,
+            "Quad In"
+          ],
+          [
+            8,
+            1
+          ]
+        ]
+      },
+      "Why": "the footprint's rim, stroke 6 of 16: where the blow's reach ends, heating to the strike",
+      "Body": "HumanoidRootPart",
+      "Hold": true
+    },
+    "Rim06Core": {
+      "Kind": "Mesh",
+      "From": "Strike",
+      "Part": [
+        "FxPlate"
+      ],
+      "Color": {
+        "Color3": [
+          255,
+          232,
+          196
+        ]
+      },
+      "Tracks": {
+        "At": [
+          [
+            -72,
+            {
+              "Vector3": [
+                -1.6347,
+                -3.96,
+                -0.9535
+              ]
+            }
+          ]
+        ],
+        "Spin": [
+          [
+            -72,
+            -123.75
+          ]
+        ],
+        "Scale": [
+          [
+            -72,
+            {
+              "Vector3": [
+                0.02,
+                0.02,
+                1.2505
+              ]
+            },
+            "Back Out"
+          ],
+          [
+            -67,
+            {
+              "Vector3": [
+                0.05,
+                0.02,
+                1.2505
+              ]
+            },
+            "Linear"
+          ],
+          [
+            2,
+            {
+              "Vector3": [
+                0.05,
+                0.02,
+                1.2505
+              ]
+            },
+            "Quad In"
+          ],
+          [
+            8,
+            {
+              "Vector3": [
+                0.02,
+                0.02,
+                1.2505
+              ]
+            }
+          ]
+        ],
+        "Transparency": [
+          [
+            -72,
+            0,
+            "Linear"
+          ],
+          [
+            2,
+            0.1,
+            "Quad In"
+          ],
+          [
+            8,
+            1
+          ]
+        ]
+      },
+      "Why": "the footprint's rim, stroke 6 of 16: where the blow's reach ends, heating to the strike: its white core",
+      "Body": "HumanoidRootPart",
+      "Hold": true
+    },
+    "Rim07": {
+      "Kind": "Mesh",
+      "From": "Strike",
+      "Part": [
+        "FxPlate"
+      ],
+      "Color": {
+        "Color3": [
+          255,
+          154,
+          31
+        ]
+      },
+      "Tracks": {
+        "At": [
+          [
+            -72,
+            {
+              "Vector3": [
+                -2.4465,
+                -3.97,
+                -1.7653
+              ]
+            }
+          ]
+        ],
+        "Spin": [
+          [
+            -72,
+            -146.25
+          ]
+        ],
+        "Scale": [
+          [
+            -72,
+            {
+              "Vector3": [
+                0.02,
+                0.02,
+                1.2505
+              ]
+            },
+            "Back Out"
+          ],
+          [
+            -67,
+            {
+              "Vector3": [
+                0.16,
+                0.02,
+                1.2505
+              ]
+            },
+            "Linear"
+          ],
+          [
+            2,
+            {
+              "Vector3": [
+                0.16,
+                0.02,
+                1.2505
+              ]
+            },
+            "Quad In"
+          ],
+          [
+            8,
+            {
+              "Vector3": [
+                0.02,
+                0.02,
+                1.2505
+              ]
+            }
+          ]
+        ],
+        "Color": [
+          [
+            -72,
+            {
+              "Color3": [
+                255,
+                154,
+                31
+              ]
+            },
+            "Linear"
+          ],
+          [
+            -24,
+            {
+              "Color3": [
+                255,
+                154,
+                31
+              ]
+            },
+            "Quad In"
+          ],
+          [
+            0,
+            {
+              "Color3": [
+                255,
+                246,
+                232
+              ]
+            }
+          ]
+        ],
+        "Transparency": [
+          [
+            -72,
+            0,
+            "Linear"
+          ],
+          [
+            2,
+            0.1,
+            "Quad In"
+          ],
+          [
+            8,
+            1
+          ]
+        ]
+      },
+      "Why": "the footprint's rim, stroke 7 of 16: where the blow's reach ends, heating to the strike",
+      "Body": "HumanoidRootPart",
+      "Hold": true
+    },
+    "Rim07Core": {
+      "Kind": "Mesh",
+      "From": "Strike",
+      "Part": [
+        "FxPlate"
+      ],
+      "Color": {
+        "Color3": [
+          255,
+          232,
+          196
+        ]
+      },
+      "Tracks": {
+        "At": [
+          [
+            -72,
+            {
+              "Vector3": [
+                -2.4465,
+                -3.96,
+                -1.7653
+              ]
+            }
+          ]
+        ],
+        "Spin": [
+          [
+            -72,
+            -146.25
+          ]
+        ],
+        "Scale": [
+          [
+            -72,
+            {
+              "Vector3": [
+                0.02,
+                0.02,
+                1.2505
+              ]
+            },
+            "Back Out"
+          ],
+          [
+            -67,
+            {
+              "Vector3": [
+                0.05,
+                0.02,
+                1.2505
+              ]
+            },
+            "Linear"
+          ],
+          [
+            2,
+            {
+              "Vector3": [
+                0.05,
+                0.02,
+                1.2505
+              ]
+            },
+            "Quad In"
+          ],
+          [
+            8,
+            {
+              "Vector3": [
+                0.02,
+                0.02,
+                1.2505
+              ]
+            }
+          ]
+        ],
+        "Transparency": [
+          [
+            -72,
+            0,
+            "Linear"
+          ],
+          [
+            2,
+            0.1,
+            "Quad In"
+          ],
+          [
+            8,
+            1
+          ]
+        ]
+      },
+      "Why": "the footprint's rim, stroke 7 of 16: where the blow's reach ends, heating to the strike: its white core",
+      "Body": "HumanoidRootPart",
+      "Hold": true
+    },
+    "Rim08": {
+      "Kind": "Mesh",
+      "From": "Strike",
+      "Part": [
+        "FxPlate"
+      ],
+      "Color": {
+        "Color3": [
+          255,
+          154,
+          31
+        ]
+      },
+      "Tracks": {
+        "At": [
+          [
+            -72,
+            {
+              "Vector3": [
+                -2.8858,
+                -3.97,
+                -2.826
+              ]
+            }
+          ]
+        ],
+        "Spin": [
+          [
+            -72,
+            -168.75
+          ]
+        ],
+        "Scale": [
+          [
+            -72,
+            {
+              "Vector3": [
+                0.02,
+                0.02,
+                1.2505
+              ]
+            },
+            "Back Out"
+          ],
+          [
+            -67,
+            {
+              "Vector3": [
+                0.16,
+                0.02,
+                1.2505
+              ]
+            },
+            "Linear"
+          ],
+          [
+            2,
+            {
+              "Vector3": [
+                0.16,
+                0.02,
+                1.2505
+              ]
+            },
+            "Quad In"
+          ],
+          [
+            8,
+            {
+              "Vector3": [
+                0.02,
+                0.02,
+                1.2505
+              ]
+            }
+          ]
+        ],
+        "Color": [
+          [
+            -72,
+            {
+              "Color3": [
+                255,
+                154,
+                31
+              ]
+            },
+            "Linear"
+          ],
+          [
+            -24,
+            {
+              "Color3": [
+                255,
+                154,
+                31
+              ]
+            },
+            "Quad In"
+          ],
+          [
+            0,
+            {
+              "Color3": [
+                255,
+                246,
+                232
+              ]
+            }
+          ]
+        ],
+        "Transparency": [
+          [
+            -72,
+            0,
+            "Linear"
+          ],
+          [
+            2,
+            0.1,
+            "Quad In"
+          ],
+          [
+            8,
+            1
+          ]
+        ]
+      },
+      "Why": "the footprint's rim, stroke 8 of 16: where the blow's reach ends, heating to the strike",
+      "Body": "HumanoidRootPart",
+      "Hold": true
+    },
+    "Rim08Core": {
+      "Kind": "Mesh",
+      "From": "Strike",
+      "Part": [
+        "FxPlate"
+      ],
+      "Color": {
+        "Color3": [
+          255,
+          232,
+          196
+        ]
+      },
+      "Tracks": {
+        "At": [
+          [
+            -72,
+            {
+              "Vector3": [
+                -2.8858,
+                -3.96,
+                -2.826
+              ]
+            }
+          ]
+        ],
+        "Spin": [
+          [
+            -72,
+            -168.75
+          ]
+        ],
+        "Scale": [
+          [
+            -72,
+            {
+              "Vector3": [
+                0.02,
+                0.02,
+                1.2505
+              ]
+            },
+            "Back Out"
+          ],
+          [
+            -67,
+            {
+              "Vector3": [
+                0.05,
+                0.02,
+                1.2505
+              ]
+            },
+            "Linear"
+          ],
+          [
+            2,
+            {
+              "Vector3": [
+                0.05,
+                0.02,
+                1.2505
+              ]
+            },
+            "Quad In"
+          ],
+          [
+            8,
+            {
+              "Vector3": [
+                0.02,
+                0.02,
+                1.2505
+              ]
+            }
+          ]
+        ],
+        "Transparency": [
+          [
+            -72,
+            0,
+            "Linear"
+          ],
+          [
+            2,
+            0.1,
+            "Quad In"
+          ],
+          [
+            8,
+            1
+          ]
+        ]
+      },
+      "Why": "the footprint's rim, stroke 8 of 16: where the blow's reach ends, heating to the strike: its white core",
+      "Body": "HumanoidRootPart",
+      "Hold": true
+    },
+    "Rim09": {
+      "Kind": "Mesh",
+      "From": "Strike",
+      "Part": [
+        "FxPlate"
+      ],
+      "Color": {
+        "Color3": [
+          255,
+          154,
+          31
+        ]
+      },
+      "Tracks": {
+        "At": [
+          [
+            -72,
+            {
+              "Vector3": [
+                -2.8858,
+                -3.97,
+                -3.974
+              ]
+            }
+          ]
+        ],
+        "Spin": [
+          [
+            -72,
+            -191.25
+          ]
+        ],
+        "Scale": [
+          [
+            -72,
+            {
+              "Vector3": [
+                0.02,
+                0.02,
+                1.2505
+              ]
+            },
+            "Back Out"
+          ],
+          [
+            -67,
+            {
+              "Vector3": [
+                0.16,
+                0.02,
+                1.2505
+              ]
+            },
+            "Linear"
+          ],
+          [
+            2,
+            {
+              "Vector3": [
+                0.16,
+                0.02,
+                1.2505
+              ]
+            },
+            "Quad In"
+          ],
+          [
+            8,
+            {
+              "Vector3": [
+                0.02,
+                0.02,
+                1.2505
+              ]
+            }
+          ]
+        ],
+        "Color": [
+          [
+            -72,
+            {
+              "Color3": [
+                255,
+                154,
+                31
+              ]
+            },
+            "Linear"
+          ],
+          [
+            -24,
+            {
+              "Color3": [
+                255,
+                154,
+                31
+              ]
+            },
+            "Quad In"
+          ],
+          [
+            0,
+            {
+              "Color3": [
+                255,
+                246,
+                232
+              ]
+            }
+          ]
+        ],
+        "Transparency": [
+          [
+            -72,
+            0,
+            "Linear"
+          ],
+          [
+            2,
+            0.1,
+            "Quad In"
+          ],
+          [
+            8,
+            1
+          ]
+        ]
+      },
+      "Why": "the footprint's rim, stroke 9 of 16: where the blow's reach ends, heating to the strike",
+      "Body": "HumanoidRootPart",
+      "Hold": true
+    },
+    "Rim09Core": {
+      "Kind": "Mesh",
+      "From": "Strike",
+      "Part": [
+        "FxPlate"
+      ],
+      "Color": {
+        "Color3": [
+          255,
+          232,
+          196
+        ]
+      },
+      "Tracks": {
+        "At": [
+          [
+            -72,
+            {
+              "Vector3": [
+                -2.8858,
+                -3.96,
+                -3.974
+              ]
+            }
+          ]
+        ],
+        "Spin": [
+          [
+            -72,
+            -191.25
+          ]
+        ],
+        "Scale": [
+          [
+            -72,
+            {
+              "Vector3": [
+                0.02,
+                0.02,
+                1.2505
+              ]
+            },
+            "Back Out"
+          ],
+          [
+            -67,
+            {
+              "Vector3": [
+                0.05,
+                0.02,
+                1.2505
+              ]
+            },
+            "Linear"
+          ],
+          [
+            2,
+            {
+              "Vector3": [
+                0.05,
+                0.02,
+                1.2505
+              ]
+            },
+            "Quad In"
+          ],
+          [
+            8,
+            {
+              "Vector3": [
+                0.02,
+                0.02,
+                1.2505
+              ]
+            }
+          ]
+        ],
+        "Transparency": [
+          [
+            -72,
+            0,
+            "Linear"
+          ],
+          [
+            2,
+            0.1,
+            "Quad In"
+          ],
+          [
+            8,
+            1
+          ]
+        ]
+      },
+      "Why": "the footprint's rim, stroke 9 of 16: where the blow's reach ends, heating to the strike: its white core",
+      "Body": "HumanoidRootPart",
+      "Hold": true
+    },
+    "Rim10": {
+      "Kind": "Mesh",
+      "From": "Strike",
+      "Part": [
+        "FxPlate"
+      ],
+      "Color": {
+        "Color3": [
+          255,
+          154,
+          31
+        ]
+      },
+      "Tracks": {
+        "At": [
+          [
+            -72,
+            {
+              "Vector3": [
+                -2.4465,
+                -3.97,
+                -5.0347
+              ]
+            }
+          ]
+        ],
+        "Spin": [
+          [
+            -72,
+            -213.75
+          ]
+        ],
+        "Scale": [
+          [
+            -72,
+            {
+              "Vector3": [
+                0.02,
+                0.02,
+                1.2505
+              ]
+            },
+            "Back Out"
+          ],
+          [
+            -67,
+            {
+              "Vector3": [
+                0.16,
+                0.02,
+                1.2505
+              ]
+            },
+            "Linear"
+          ],
+          [
+            2,
+            {
+              "Vector3": [
+                0.16,
+                0.02,
+                1.2505
+              ]
+            },
+            "Quad In"
+          ],
+          [
+            8,
+            {
+              "Vector3": [
+                0.02,
+                0.02,
+                1.2505
+              ]
+            }
+          ]
+        ],
+        "Color": [
+          [
+            -72,
+            {
+              "Color3": [
+                255,
+                154,
+                31
+              ]
+            },
+            "Linear"
+          ],
+          [
+            -24,
+            {
+              "Color3": [
+                255,
+                154,
+                31
+              ]
+            },
+            "Quad In"
+          ],
+          [
+            0,
+            {
+              "Color3": [
+                255,
+                246,
+                232
+              ]
+            }
+          ]
+        ],
+        "Transparency": [
+          [
+            -72,
+            0,
+            "Linear"
+          ],
+          [
+            2,
+            0.1,
+            "Quad In"
+          ],
+          [
+            8,
+            1
+          ]
+        ]
+      },
+      "Why": "the footprint's rim, stroke 10 of 16: where the blow's reach ends, heating to the strike",
+      "Body": "HumanoidRootPart",
+      "Hold": true
+    },
+    "Rim10Core": {
+      "Kind": "Mesh",
+      "From": "Strike",
+      "Part": [
+        "FxPlate"
+      ],
+      "Color": {
+        "Color3": [
+          255,
+          232,
+          196
+        ]
+      },
+      "Tracks": {
+        "At": [
+          [
+            -72,
+            {
+              "Vector3": [
+                -2.4465,
+                -3.96,
+                -5.0347
+              ]
+            }
+          ]
+        ],
+        "Spin": [
+          [
+            -72,
+            -213.75
+          ]
+        ],
+        "Scale": [
+          [
+            -72,
+            {
+              "Vector3": [
+                0.02,
+                0.02,
+                1.2505
+              ]
+            },
+            "Back Out"
+          ],
+          [
+            -67,
+            {
+              "Vector3": [
+                0.05,
+                0.02,
+                1.2505
+              ]
+            },
+            "Linear"
+          ],
+          [
+            2,
+            {
+              "Vector3": [
+                0.05,
+                0.02,
+                1.2505
+              ]
+            },
+            "Quad In"
+          ],
+          [
+            8,
+            {
+              "Vector3": [
+                0.02,
+                0.02,
+                1.2505
+              ]
+            }
+          ]
+        ],
+        "Transparency": [
+          [
+            -72,
+            0,
+            "Linear"
+          ],
+          [
+            2,
+            0.1,
+            "Quad In"
+          ],
+          [
+            8,
+            1
+          ]
+        ]
+      },
+      "Why": "the footprint's rim, stroke 10 of 16: where the blow's reach ends, heating to the strike: its white core",
+      "Body": "HumanoidRootPart",
+      "Hold": true
+    },
+    "Rim11": {
+      "Kind": "Mesh",
+      "From": "Strike",
+      "Part": [
+        "FxPlate"
+      ],
+      "Color": {
+        "Color3": [
+          255,
+          154,
+          31
+        ]
+      },
+      "Tracks": {
+        "At": [
+          [
+            -72,
+            {
+              "Vector3": [
+                -1.6347,
+                -3.97,
+                -5.8465
+              ]
+            }
+          ]
+        ],
+        "Spin": [
+          [
+            -72,
+            -236.25
+          ]
+        ],
+        "Scale": [
+          [
+            -72,
+            {
+              "Vector3": [
+                0.02,
+                0.02,
+                1.2505
+              ]
+            },
+            "Back Out"
+          ],
+          [
+            -67,
+            {
+              "Vector3": [
+                0.16,
+                0.02,
+                1.2505
+              ]
+            },
+            "Linear"
+          ],
+          [
+            2,
+            {
+              "Vector3": [
+                0.16,
+                0.02,
+                1.2505
+              ]
+            },
+            "Quad In"
+          ],
+          [
+            8,
+            {
+              "Vector3": [
+                0.02,
+                0.02,
+                1.2505
+              ]
+            }
+          ]
+        ],
+        "Color": [
+          [
+            -72,
+            {
+              "Color3": [
+                255,
+                154,
+                31
+              ]
+            },
+            "Linear"
+          ],
+          [
+            -24,
+            {
+              "Color3": [
+                255,
+                154,
+                31
+              ]
+            },
+            "Quad In"
+          ],
+          [
+            0,
+            {
+              "Color3": [
+                255,
+                246,
+                232
+              ]
+            }
+          ]
+        ],
+        "Transparency": [
+          [
+            -72,
+            0,
+            "Linear"
+          ],
+          [
+            2,
+            0.1,
+            "Quad In"
+          ],
+          [
+            8,
+            1
+          ]
+        ]
+      },
+      "Why": "the footprint's rim, stroke 11 of 16: where the blow's reach ends, heating to the strike",
+      "Body": "HumanoidRootPart",
+      "Hold": true
+    },
+    "Rim11Core": {
+      "Kind": "Mesh",
+      "From": "Strike",
+      "Part": [
+        "FxPlate"
+      ],
+      "Color": {
+        "Color3": [
+          255,
+          232,
+          196
+        ]
+      },
+      "Tracks": {
+        "At": [
+          [
+            -72,
+            {
+              "Vector3": [
+                -1.6347,
+                -3.96,
+                -5.8465
+              ]
+            }
+          ]
+        ],
+        "Spin": [
+          [
+            -72,
+            -236.25
+          ]
+        ],
+        "Scale": [
+          [
+            -72,
+            {
+              "Vector3": [
+                0.02,
+                0.02,
+                1.2505
+              ]
+            },
+            "Back Out"
+          ],
+          [
+            -67,
+            {
+              "Vector3": [
+                0.05,
+                0.02,
+                1.2505
+              ]
+            },
+            "Linear"
+          ],
+          [
+            2,
+            {
+              "Vector3": [
+                0.05,
+                0.02,
+                1.2505
+              ]
+            },
+            "Quad In"
+          ],
+          [
+            8,
+            {
+              "Vector3": [
+                0.02,
+                0.02,
+                1.2505
+              ]
+            }
+          ]
+        ],
+        "Transparency": [
+          [
+            -72,
+            0,
+            "Linear"
+          ],
+          [
+            2,
+            0.1,
+            "Quad In"
+          ],
+          [
+            8,
+            1
+          ]
+        ]
+      },
+      "Why": "the footprint's rim, stroke 11 of 16: where the blow's reach ends, heating to the strike: its white core",
+      "Body": "HumanoidRootPart",
+      "Hold": true
+    },
+    "Rim12": {
+      "Kind": "Mesh",
+      "From": "Strike",
+      "Part": [
+        "FxPlate"
+      ],
+      "Color": {
+        "Color3": [
+          255,
+          154,
+          31
+        ]
+      },
+      "Tracks": {
+        "At": [
+          [
+            -72,
+            {
+              "Vector3": [
+                -0.574,
+                -3.97,
+                -6.2858
+              ]
+            }
+          ]
+        ],
+        "Spin": [
+          [
+            -72,
+            -258.75
+          ]
+        ],
+        "Scale": [
+          [
+            -72,
+            {
+              "Vector3": [
+                0.02,
+                0.02,
+                1.2505
+              ]
+            },
+            "Back Out"
+          ],
+          [
+            -67,
+            {
+              "Vector3": [
+                0.16,
+                0.02,
+                1.2505
+              ]
+            },
+            "Linear"
+          ],
+          [
+            2,
+            {
+              "Vector3": [
+                0.16,
+                0.02,
+                1.2505
+              ]
+            },
+            "Quad In"
+          ],
+          [
+            8,
+            {
+              "Vector3": [
+                0.02,
+                0.02,
+                1.2505
+              ]
+            }
+          ]
+        ],
+        "Color": [
+          [
+            -72,
+            {
+              "Color3": [
+                255,
+                154,
+                31
+              ]
+            },
+            "Linear"
+          ],
+          [
+            -24,
+            {
+              "Color3": [
+                255,
+                154,
+                31
+              ]
+            },
+            "Quad In"
+          ],
+          [
+            0,
+            {
+              "Color3": [
+                255,
+                246,
+                232
+              ]
+            }
+          ]
+        ],
+        "Transparency": [
+          [
+            -72,
+            0,
+            "Linear"
+          ],
+          [
+            2,
+            0.1,
+            "Quad In"
+          ],
+          [
+            8,
+            1
+          ]
+        ]
+      },
+      "Why": "the footprint's rim, stroke 12 of 16: where the blow's reach ends, heating to the strike",
+      "Body": "HumanoidRootPart",
+      "Hold": true
+    },
+    "Rim12Core": {
+      "Kind": "Mesh",
+      "From": "Strike",
+      "Part": [
+        "FxPlate"
+      ],
+      "Color": {
+        "Color3": [
+          255,
+          232,
+          196
+        ]
+      },
+      "Tracks": {
+        "At": [
+          [
+            -72,
+            {
+              "Vector3": [
+                -0.574,
+                -3.96,
+                -6.2858
+              ]
+            }
+          ]
+        ],
+        "Spin": [
+          [
+            -72,
+            -258.75
+          ]
+        ],
+        "Scale": [
+          [
+            -72,
+            {
+              "Vector3": [
+                0.02,
+                0.02,
+                1.2505
+              ]
+            },
+            "Back Out"
+          ],
+          [
+            -67,
+            {
+              "Vector3": [
+                0.05,
+                0.02,
+                1.2505
+              ]
+            },
+            "Linear"
+          ],
+          [
+            2,
+            {
+              "Vector3": [
+                0.05,
+                0.02,
+                1.2505
+              ]
+            },
+            "Quad In"
+          ],
+          [
+            8,
+            {
+              "Vector3": [
+                0.02,
+                0.02,
+                1.2505
+              ]
+            }
+          ]
+        ],
+        "Transparency": [
+          [
+            -72,
+            0,
+            "Linear"
+          ],
+          [
+            2,
+            0.1,
+            "Quad In"
+          ],
+          [
+            8,
+            1
+          ]
+        ]
+      },
+      "Why": "the footprint's rim, stroke 12 of 16: where the blow's reach ends, heating to the strike: its white core",
+      "Body": "HumanoidRootPart",
+      "Hold": true
+    },
+    "Rim13": {
+      "Kind": "Mesh",
+      "From": "Strike",
+      "Part": [
+        "FxPlate"
+      ],
+      "Color": {
+        "Color3": [
+          255,
+          154,
+          31
+        ]
+      },
+      "Tracks": {
+        "At": [
+          [
+            -72,
+            {
+              "Vector3": [
+                0.574,
+                -3.97,
+                -6.2858
+              ]
+            }
+          ]
+        ],
+        "Spin": [
+          [
+            -72,
+            -281.25
+          ]
+        ],
+        "Scale": [
+          [
+            -72,
+            {
+              "Vector3": [
+                0.02,
+                0.02,
+                1.2505
+              ]
+            },
+            "Back Out"
+          ],
+          [
+            -67,
+            {
+              "Vector3": [
+                0.16,
+                0.02,
+                1.2505
+              ]
+            },
+            "Linear"
+          ],
+          [
+            2,
+            {
+              "Vector3": [
+                0.16,
+                0.02,
+                1.2505
+              ]
+            },
+            "Quad In"
+          ],
+          [
+            8,
+            {
+              "Vector3": [
+                0.02,
+                0.02,
+                1.2505
+              ]
+            }
+          ]
+        ],
+        "Color": [
+          [
+            -72,
+            {
+              "Color3": [
+                255,
+                154,
+                31
+              ]
+            },
+            "Linear"
+          ],
+          [
+            -24,
+            {
+              "Color3": [
+                255,
+                154,
+                31
+              ]
+            },
+            "Quad In"
+          ],
+          [
+            0,
+            {
+              "Color3": [
+                255,
+                246,
+                232
+              ]
+            }
+          ]
+        ],
+        "Transparency": [
+          [
+            -72,
+            0,
+            "Linear"
+          ],
+          [
+            2,
+            0.1,
+            "Quad In"
+          ],
+          [
+            8,
+            1
+          ]
+        ]
+      },
+      "Why": "the footprint's rim, stroke 13 of 16: where the blow's reach ends, heating to the strike",
+      "Body": "HumanoidRootPart",
+      "Hold": true
+    },
+    "Rim13Core": {
+      "Kind": "Mesh",
+      "From": "Strike",
+      "Part": [
+        "FxPlate"
+      ],
+      "Color": {
+        "Color3": [
+          255,
+          232,
+          196
+        ]
+      },
+      "Tracks": {
+        "At": [
+          [
+            -72,
+            {
+              "Vector3": [
+                0.574,
+                -3.96,
+                -6.2858
+              ]
+            }
+          ]
+        ],
+        "Spin": [
+          [
+            -72,
+            -281.25
+          ]
+        ],
+        "Scale": [
+          [
+            -72,
+            {
+              "Vector3": [
+                0.02,
+                0.02,
+                1.2505
+              ]
+            },
+            "Back Out"
+          ],
+          [
+            -67,
+            {
+              "Vector3": [
+                0.05,
+                0.02,
+                1.2505
+              ]
+            },
+            "Linear"
+          ],
+          [
+            2,
+            {
+              "Vector3": [
+                0.05,
+                0.02,
+                1.2505
+              ]
+            },
+            "Quad In"
+          ],
+          [
+            8,
+            {
+              "Vector3": [
+                0.02,
+                0.02,
+                1.2505
+              ]
+            }
+          ]
+        ],
+        "Transparency": [
+          [
+            -72,
+            0,
+            "Linear"
+          ],
+          [
+            2,
+            0.1,
+            "Quad In"
+          ],
+          [
+            8,
+            1
+          ]
+        ]
+      },
+      "Why": "the footprint's rim, stroke 13 of 16: where the blow's reach ends, heating to the strike: its white core",
+      "Body": "HumanoidRootPart",
+      "Hold": true
+    },
+    "Rim14": {
+      "Kind": "Mesh",
+      "From": "Strike",
+      "Part": [
+        "FxPlate"
+      ],
+      "Color": {
+        "Color3": [
+          255,
+          154,
+          31
+        ]
+      },
+      "Tracks": {
+        "At": [
+          [
+            -72,
+            {
+              "Vector3": [
+                1.6347,
+                -3.97,
+                -5.8465
+              ]
+            }
+          ]
+        ],
+        "Spin": [
+          [
+            -72,
+            -303.75
+          ]
+        ],
+        "Scale": [
+          [
+            -72,
+            {
+              "Vector3": [
+                0.02,
+                0.02,
+                1.2505
+              ]
+            },
+            "Back Out"
+          ],
+          [
+            -67,
+            {
+              "Vector3": [
+                0.16,
+                0.02,
+                1.2505
+              ]
+            },
+            "Linear"
+          ],
+          [
+            2,
+            {
+              "Vector3": [
+                0.16,
+                0.02,
+                1.2505
+              ]
+            },
+            "Quad In"
+          ],
+          [
+            8,
+            {
+              "Vector3": [
+                0.02,
+                0.02,
+                1.2505
+              ]
+            }
+          ]
+        ],
+        "Color": [
+          [
+            -72,
+            {
+              "Color3": [
+                255,
+                154,
+                31
+              ]
+            },
+            "Linear"
+          ],
+          [
+            -24,
+            {
+              "Color3": [
+                255,
+                154,
+                31
+              ]
+            },
+            "Quad In"
+          ],
+          [
+            0,
+            {
+              "Color3": [
+                255,
+                246,
+                232
+              ]
+            }
+          ]
+        ],
+        "Transparency": [
+          [
+            -72,
+            0,
+            "Linear"
+          ],
+          [
+            2,
+            0.1,
+            "Quad In"
+          ],
+          [
+            8,
+            1
+          ]
+        ]
+      },
+      "Why": "the footprint's rim, stroke 14 of 16: where the blow's reach ends, heating to the strike",
+      "Body": "HumanoidRootPart",
+      "Hold": true
+    },
+    "Rim14Core": {
+      "Kind": "Mesh",
+      "From": "Strike",
+      "Part": [
+        "FxPlate"
+      ],
+      "Color": {
+        "Color3": [
+          255,
+          232,
+          196
+        ]
+      },
+      "Tracks": {
+        "At": [
+          [
+            -72,
+            {
+              "Vector3": [
+                1.6347,
+                -3.96,
+                -5.8465
+              ]
+            }
+          ]
+        ],
+        "Spin": [
+          [
+            -72,
+            -303.75
+          ]
+        ],
+        "Scale": [
+          [
+            -72,
+            {
+              "Vector3": [
+                0.02,
+                0.02,
+                1.2505
+              ]
+            },
+            "Back Out"
+          ],
+          [
+            -67,
+            {
+              "Vector3": [
+                0.05,
+                0.02,
+                1.2505
+              ]
+            },
+            "Linear"
+          ],
+          [
+            2,
+            {
+              "Vector3": [
+                0.05,
+                0.02,
+                1.2505
+              ]
+            },
+            "Quad In"
+          ],
+          [
+            8,
+            {
+              "Vector3": [
+                0.02,
+                0.02,
+                1.2505
+              ]
+            }
+          ]
+        ],
+        "Transparency": [
+          [
+            -72,
+            0,
+            "Linear"
+          ],
+          [
+            2,
+            0.1,
+            "Quad In"
+          ],
+          [
+            8,
+            1
+          ]
+        ]
+      },
+      "Why": "the footprint's rim, stroke 14 of 16: where the blow's reach ends, heating to the strike: its white core",
+      "Body": "HumanoidRootPart",
+      "Hold": true
+    },
+    "Rim15": {
+      "Kind": "Mesh",
+      "From": "Strike",
+      "Part": [
+        "FxPlate"
+      ],
+      "Color": {
+        "Color3": [
+          255,
+          154,
+          31
+        ]
+      },
+      "Tracks": {
+        "At": [
+          [
+            -72,
+            {
+              "Vector3": [
+                2.4465,
+                -3.97,
+                -5.0347
+              ]
+            }
+          ]
+        ],
+        "Spin": [
+          [
+            -72,
+            -326.25
+          ]
+        ],
+        "Scale": [
+          [
+            -72,
+            {
+              "Vector3": [
+                0.02,
+                0.02,
+                1.2505
+              ]
+            },
+            "Back Out"
+          ],
+          [
+            -67,
+            {
+              "Vector3": [
+                0.16,
+                0.02,
+                1.2505
+              ]
+            },
+            "Linear"
+          ],
+          [
+            2,
+            {
+              "Vector3": [
+                0.16,
+                0.02,
+                1.2505
+              ]
+            },
+            "Quad In"
+          ],
+          [
+            8,
+            {
+              "Vector3": [
+                0.02,
+                0.02,
+                1.2505
+              ]
+            }
+          ]
+        ],
+        "Color": [
+          [
+            -72,
+            {
+              "Color3": [
+                255,
+                154,
+                31
+              ]
+            },
+            "Linear"
+          ],
+          [
+            -24,
+            {
+              "Color3": [
+                255,
+                154,
+                31
+              ]
+            },
+            "Quad In"
+          ],
+          [
+            0,
+            {
+              "Color3": [
+                255,
+                246,
+                232
+              ]
+            }
+          ]
+        ],
+        "Transparency": [
+          [
+            -72,
+            0,
+            "Linear"
+          ],
+          [
+            2,
+            0.1,
+            "Quad In"
+          ],
+          [
+            8,
+            1
+          ]
+        ]
+      },
+      "Why": "the footprint's rim, stroke 15 of 16: where the blow's reach ends, heating to the strike",
+      "Body": "HumanoidRootPart",
+      "Hold": true
+    },
+    "Rim15Core": {
+      "Kind": "Mesh",
+      "From": "Strike",
+      "Part": [
+        "FxPlate"
+      ],
+      "Color": {
+        "Color3": [
+          255,
+          232,
+          196
+        ]
+      },
+      "Tracks": {
+        "At": [
+          [
+            -72,
+            {
+              "Vector3": [
+                2.4465,
+                -3.96,
+                -5.0347
+              ]
+            }
+          ]
+        ],
+        "Spin": [
+          [
+            -72,
+            -326.25
+          ]
+        ],
+        "Scale": [
+          [
+            -72,
+            {
+              "Vector3": [
+                0.02,
+                0.02,
+                1.2505
+              ]
+            },
+            "Back Out"
+          ],
+          [
+            -67,
+            {
+              "Vector3": [
+                0.05,
+                0.02,
+                1.2505
+              ]
+            },
+            "Linear"
+          ],
+          [
+            2,
+            {
+              "Vector3": [
+                0.05,
+                0.02,
+                1.2505
+              ]
+            },
+            "Quad In"
+          ],
+          [
+            8,
+            {
+              "Vector3": [
+                0.02,
+                0.02,
+                1.2505
+              ]
+            }
+          ]
+        ],
+        "Transparency": [
+          [
+            -72,
+            0,
+            "Linear"
+          ],
+          [
+            2,
+            0.1,
+            "Quad In"
+          ],
+          [
+            8,
+            1
+          ]
+        ]
+      },
+      "Why": "the footprint's rim, stroke 15 of 16: where the blow's reach ends, heating to the strike: its white core",
+      "Body": "HumanoidRootPart",
+      "Hold": true
+    },
+    "Rim16": {
+      "Kind": "Mesh",
+      "From": "Strike",
+      "Part": [
+        "FxPlate"
+      ],
+      "Color": {
+        "Color3": [
+          255,
+          154,
+          31
+        ]
+      },
+      "Tracks": {
+        "At": [
+          [
+            -72,
+            {
+              "Vector3": [
+                2.8858,
+                -3.97,
+                -3.974
+              ]
+            }
+          ]
+        ],
+        "Spin": [
+          [
+            -72,
+            -348.75
+          ]
+        ],
+        "Scale": [
+          [
+            -72,
+            {
+              "Vector3": [
+                0.02,
+                0.02,
+                1.2505
+              ]
+            },
+            "Back Out"
+          ],
+          [
+            -67,
+            {
+              "Vector3": [
+                0.16,
+                0.02,
+                1.2505
+              ]
+            },
+            "Linear"
+          ],
+          [
+            2,
+            {
+              "Vector3": [
+                0.16,
+                0.02,
+                1.2505
+              ]
+            },
+            "Quad In"
+          ],
+          [
+            8,
+            {
+              "Vector3": [
+                0.02,
+                0.02,
+                1.2505
+              ]
+            }
+          ]
+        ],
+        "Color": [
+          [
+            -72,
+            {
+              "Color3": [
+                255,
+                154,
+                31
+              ]
+            },
+            "Linear"
+          ],
+          [
+            -24,
+            {
+              "Color3": [
+                255,
+                154,
+                31
+              ]
+            },
+            "Quad In"
+          ],
+          [
+            0,
+            {
+              "Color3": [
+                255,
+                246,
+                232
+              ]
+            }
+          ]
+        ],
+        "Transparency": [
+          [
+            -72,
+            0,
+            "Linear"
+          ],
+          [
+            2,
+            0.1,
+            "Quad In"
+          ],
+          [
+            8,
+            1
+          ]
+        ]
+      },
+      "Why": "the footprint's rim, stroke 16 of 16: where the blow's reach ends, heating to the strike",
+      "Body": "HumanoidRootPart",
+      "Hold": true
+    },
+    "Rim16Core": {
+      "Kind": "Mesh",
+      "From": "Strike",
+      "Part": [
+        "FxPlate"
+      ],
+      "Color": {
+        "Color3": [
+          255,
+          232,
+          196
+        ]
+      },
+      "Tracks": {
+        "At": [
+          [
+            -72,
+            {
+              "Vector3": [
+                2.8858,
+                -3.96,
+                -3.974
+              ]
+            }
+          ]
+        ],
+        "Spin": [
+          [
+            -72,
+            -348.75
+          ]
+        ],
+        "Scale": [
+          [
+            -72,
+            {
+              "Vector3": [
+                0.02,
+                0.02,
+                1.2505
+              ]
+            },
+            "Back Out"
+          ],
+          [
+            -67,
+            {
+              "Vector3": [
+                0.05,
+                0.02,
+                1.2505
+              ]
+            },
+            "Linear"
+          ],
+          [
+            2,
+            {
+              "Vector3": [
+                0.05,
+                0.02,
+                1.2505
+              ]
+            },
+            "Quad In"
+          ],
+          [
+            8,
+            {
+              "Vector3": [
+                0.02,
+                0.02,
+                1.2505
+              ]
+            }
+          ]
+        ],
+        "Transparency": [
+          [
+            -72,
+            0,
+            "Linear"
+          ],
+          [
+            2,
+            0.1,
+            "Quad In"
+          ],
+          [
+            8,
+            1
+          ]
+        ]
+      },
+      "Why": "the footprint's rim, stroke 16 of 16: where the blow's reach ends, heating to the strike: its white core",
+      "Body": "HumanoidRootPart",
+      "Hold": true
+    },
+    "Spray": {
+      "Kind": "Emitter",
+      "Image": "fx_streak",
+      "Emitter": {
+        "EmissionDirection": "Top",
+        "SpreadAngle": [
+          70,
+          70
+        ],
+        "Lifetime": [
+          0.14,
+          0.22
+        ],
+        "Speed": [
+          30,
+          46
+        ],
+        "Drag": 9,
+        "Acceleration": {
+          "Vector3": [
+            0,
+            0,
+            0
+          ]
+        },
+        "Orientation": "VelocityParallel",
+        "Size": [
+          [
+            0,
+            1.3
+          ],
+          [
+            0.6,
+            0.9099999999999999
+          ],
+          [
+            1,
+            0
+          ]
+        ],
+        "Squash": [
+          [
+            0,
+            -1.6
+          ],
+          [
+            1,
+            -0.6
+          ]
+        ],
+        "Transparency": [
+          [
+            0,
+            0
+          ],
+          [
+            0.7,
+            0.1
+          ],
+          [
+            1,
+            1
+          ]
+        ],
+        "Color": {
+          "Color3": [
+            255,
+            206,
+            140
+          ]
+        },
+        "LightEmission": 1,
+        "LightInfluence": 0,
+        "ZOffset": 0.6
+      },
+      "Emit": [
+        [
+          0,
+          10
+        ]
+      ],
+      "Tracks": {
+        "At": [
+          [
+            -72,
+            {
+              "Vector3": [
+                0,
+                -3.81,
+                -3.4
+              ]
+            }
+          ]
+        ]
+      },
+      "Why": "needles of light leaping off the footprint on the strike: never falling, never liquid",
+      "From": "Strike",
+      "Tell": true,
+      "Body": "HumanoidRootPart",
+      "Hold": true
+    },
+    "Flash": {
+      "Kind": "Light",
+      "From": "Strike",
+      "Color": {
+        "Color3": [
+          255,
+          206,
+          140
+        ]
+      },
+      "Range": 10,
+      "Tracks": {
+        "At": [
+          [
+            -72,
+            {
+              "Vector3": [
+                0,
+                -2.81,
+                -3.4
+              ]
+            }
+          ]
+        ],
+        "Brightness": [
+          [
+            -72,
+            0,
+            "Linear"
+          ],
+          [
+            -1,
+            0,
+            "Linear"
+          ],
+          [
+            0,
+            4,
+            "Quad In"
+          ],
+          [
+            8,
+            0
+          ]
+        ]
+      },
+      "Why": "the strike's light on the street and the bodies",
+      "Body": "HumanoidRootPart",
+      "Hold": true
+    }
+  }
+}

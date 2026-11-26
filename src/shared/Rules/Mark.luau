@@ -9,8 +9,14 @@
 --   Mark.Swept(cx, cz, a0, a1, length, half, x, z) -> boolean  TR69 D, the keeper's sweep: a centre the line passed
 --                                                            over, turned about (cx, cz) from a0 to a1 (radians, as
 --                                                            atan2(z, x)), `length` long and `half` either side
---   Mark.Covers(shape, x, z) -> boolean                      a ring's Inside, a line's OnLine when it has a Length, or
---                                                            a sweep's Swept over its whole Arc when it has one
+--   Mark.Fanned(x0, z0, dx, dz, length, half, spread, x, z) -> boolean  TR69 B, the Dasher elite's fan: OnLine on any of
+--                                                            three lanes, the line and the line turned `spread` (radians)
+--                                                            either way about (x0, z0)
+--   Mark.Covers(shape, x, z) -> boolean                      a ring's Inside, a line's OnLine when it has a Length (its
+--                                                            Fanned with a Fan), or a sweep's Swept over its whole Arc
+--   Mark.Screens(gx, gz, lookX, lookZ, wide, ahead, ax, az, tx, tz) -> boolean  TR69 B, the Guard elite's screen: the
+--                                                            blow from (ax, az) to (tx, tz) crosses the wall `wide`
+--                                                            across, its middle `ahead` along the guard's look
 --   Mark.Fill(now, down, slam) -> number                     the disc's share of the ring: 0 when it's put down, 1 on the Slam
 --   Mark.Follows(moved, outside, least) -> boolean           A: the avatar stands `least` or more from where it stood at
 --                                                            the Plant, outside the ring: its lead breaks off
@@ -27,8 +33,9 @@ export type Kind = "OnPurpose" | "Accident"
 export type Tally = { Slams: number, Hit: number, Missed: number, OnPurpose: number, Accident: number }
 export type Counts = { [string]: Tally }
 -- A footprint's shape: a ring of Radius round (X, Z); with Length, a line from (X, Z) along the unit (DirX, DirZ), Radius
--- either side of it; with Length and Arc, a sweep (TR69 D): that line turned about (X, Z) from From over Arc (radians).
-export type Shape = { X: number, Z: number, Radius: number, Length: number?, DirX: number?, DirZ: number?, From: number?, Arc: number? }
+-- either side of it; with Length and Arc, a sweep (TR69 D): that line turned about (X, Z) from From over Arc (radians);
+-- with Length and Fan, three such lines, the line and it turned Fan (radians) either way (TR69 B, the Dasher elite).
+export type Shape = { X: number, Z: number, Radius: number, Length: number?, DirX: number?, DirZ: number?, From: number?, Arc: number?, Fan: number? }
 
 function Mark.Centre(x: number, z: number, lookX: number, lookZ: number, ahead: number, left: number): (number, number)
 	local length = math.sqrt(lookX * lookX + lookZ * lookZ)
@@ -52,6 +59,16 @@ function Mark.OnLine(x0: number, z0: number, dx: number, dz: number, length: num
 	return ex * ex + ez * ez <= half * half
 end
 
+function Mark.Fanned(x0: number, z0: number, dx: number, dz: number, length: number, half: number, spread: number, x: number, z: number): boolean
+	if Mark.OnLine(x0, z0, dx, dz, length, half, x, z) then
+		return true
+	end
+	local c, s = math.cos(spread), math.sin(spread)
+	-- the line turned either way: (dx, dz) by +spread and by -spread
+	return Mark.OnLine(x0, z0, dx * c - dz * s, dx * s + dz * c, length, half, x, z)
+		or Mark.OnLine(x0, z0, dx * c + dz * s, -dx * s + dz * c, length, half, x, z)
+end
+
 function Mark.Swept(cx: number, cz: number, a0: number, a1: number, length: number, half: number, x: number, z: number): boolean
 	local dx, dz = x - cx, z - cz
 	local d = math.sqrt(dx * dx + dz * dz)
@@ -73,9 +90,38 @@ function Mark.Covers(shape: Shape, x: number, z: number): boolean
 		return Mark.Swept(shape.X, shape.Z, shape.From, shape.From + shape.Arc, length, shape.Radius, x, z)
 	end
 	if length and shape.DirX and shape.DirZ then
+		if shape.Fan then
+			return Mark.Fanned(shape.X, shape.Z, shape.DirX, shape.DirZ, length, shape.Radius, shape.Fan, x, z)
+		end
 		return Mark.OnLine(shape.X, shape.Z, shape.DirX, shape.DirZ, length, shape.Radius, x, z)
 	end
 	return Mark.Inside(shape.X, shape.Z, shape.Radius, x, z)
+end
+
+local function cross(ax: number, az: number, bx: number, bz: number): number
+	return ax * bz - az * bx
+end
+
+function Mark.Screens(gx: number, gz: number, lookX: number, lookZ: number, wide: number, ahead: number, ax: number, az: number, tx: number, tz: number): boolean
+	local size = math.sqrt(lookX * lookX + lookZ * lookZ)
+	if size < 1e-6 then
+		return false
+	end
+	local lx, lz = lookX / size, lookZ / size
+	local cx, cz = gx + lx * ahead, gz + lz * ahead
+	-- the wall runs across the look, along its left (lz, -lx), half its width each way
+	local sx, sz = lz * wide / 2, -lx * wide / 2
+	local px, pz = cx - sx, cz - sz
+	local qx, qz = 2 * sx, 2 * sz
+	local rx, rz = tx - ax, tz - az
+	local denom = cross(rx, rz, qx, qz)
+	if math.abs(denom) < 1e-9 then
+		return false -- the blow runs along the wall: it never crosses it
+	end
+	local wx, wz = px - ax, pz - az
+	local t = cross(wx, wz, qx, qz) / denom -- how far along the blow it meets the wall's line
+	local u = cross(wx, wz, rx, rz) / denom -- and how far along the wall
+	return t >= 0 and t <= 1 and u >= 0 and u <= 1
 end
 
 function Mark.Fill(now: number, down: number, slam: number): number

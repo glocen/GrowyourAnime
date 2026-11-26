@@ -1,0 +1,576 @@
+{
+  "Schema": "rows/1",
+  "Effect": "GuardScreen",
+  "Why": "The Guard elite's screen, its action's own effect: research's pick, S1, the lantern wall (TR69 B).",
+  "Area": 1.35,
+  "Grey": false,
+  "Action": "GuardScreen",
+  "Rows": {
+    "Ink": {
+      "Kind": "Emitter",
+      "From": "Raise",
+      "Image": "guard_screen_ink",
+      "Emitter": {
+        "Lifetime": [
+          2.2666666666666666,
+          2.2666666666666666
+        ],
+        "Speed": [
+          0.01,
+          0.01
+        ],
+        "EmissionDirection": "Front",
+        "Orientation": "VelocityPerpendicular",
+        "LockedToPart": true,
+        "Rotation": [
+          0,
+          0
+        ],
+        "RotSpeed": [
+          0,
+          0
+        ],
+        "Size": [
+          [
+            0,
+            0.645
+          ],
+          [
+            0.0147,
+            2.666
+          ],
+          [
+            0.0294,
+            3.784
+          ],
+          [
+            0.0515,
+            4.3
+          ],
+          [
+            0.9412,
+            4.3
+          ],
+          [
+            0.9706,
+            3.44
+          ],
+          [
+            1,
+            0.43
+          ]
+        ],
+        "Transparency": [
+          [
+            0,
+            1
+          ],
+          [
+            0.0515,
+            0.3
+          ],
+          [
+            0.9412,
+            0.3
+          ],
+          [
+            1,
+            1
+          ]
+        ],
+        "Color": {
+          "Color3": [
+            22,
+            60,
+            140
+          ]
+        },
+        "LightEmission": 0,
+        "LightInfluence": 0,
+        "Brightness": 1,
+        "ZOffset": 0.4
+      },
+      "Emit": [
+        [
+          -8,
+          1
+        ]
+      ],
+      "Tell": true,
+      "Tracks": {
+        "At": [
+          [
+            -8,
+            {
+              "Vector3": [
+                0,
+                -2.175,
+                -2.6
+              ]
+            }
+          ]
+        ]
+      },
+      "Why": "W2's ink: a hair of deep azure along every stroke, under the rest",
+      "Body": "HumanoidRootPart"
+    },
+    "Body": {
+      "Kind": "Emitter",
+      "From": "Raise",
+      "Image": "guard_screen_light",
+      "Emitter": {
+        "Lifetime": [
+          2.2666666666666666,
+          2.2666666666666666
+        ],
+        "Speed": [
+          0.01,
+          0.01
+        ],
+        "EmissionDirection": "Front",
+        "Orientation": "VelocityPerpendicular",
+        "LockedToPart": true,
+        "Rotation": [
+          0,
+          0
+        ],
+        "RotSpeed": [
+          0,
+          0
+        ],
+        "Size": [
+          [
+            0,
+            0.645
+          ],
+          [
+            0.0147,
+            2.666
+          ],
+          [
+            0.0294,
+            3.784
+          ],
+          [
+            0.0515,
+            4.3
+          ],
+          [
+            0.9412,
+            4.3
+          ],
+          [
+            0.9706,
+            3.44
+          ],
+          [
+            1,
+            0.43
+          ]
+        ],
+        "Transparency": [
+          [
+            0,
+            0.6
+          ],
+          [
+            0.0515,
+            0.05
+          ],
+          [
+            0.9412,
+            0.05
+          ],
+          [
+            1,
+            1
+          ]
+        ],
+        "Color": {
+          "Color3": [
+            63,
+            140,
+            255
+          ]
+        },
+        "LightEmission": 0,
+        "LightInfluence": 0,
+        "Brightness": 1,
+        "ZOffset": 0.42
+      },
+      "Emit": [
+        [
+          -8,
+          1
+        ]
+      ],
+      "Tell": true,
+      "Tracks": {
+        "At": [
+          [
+            -8,
+            {
+              "Vector3": [
+                0,
+                -2.175,
+                -2.6
+              ]
+            }
+          ]
+        ]
+      },
+      "Why": "the lantern wall, nine ribs and two rails, painted azure so it reads blue by day",
+      "Body": "HumanoidRootPart"
+    },
+    "Flash": {
+      "Kind": "Emitter",
+      "From": "Raise",
+      "Image": "guard_screen_light",
+      "Emitter": {
+        "Lifetime": [
+          2.2666666666666666,
+          2.2666666666666666
+        ],
+        "Speed": [
+          0.01,
+          0.01
+        ],
+        "EmissionDirection": "Front",
+        "Orientation": "VelocityPerpendicular",
+        "LockedToPart": true,
+        "Rotation": [
+          0,
+          0
+        ],
+        "RotSpeed": [
+          0,
+          0
+        ],
+        "Size": [
+          [
+            0,
+            0.645
+          ],
+          [
+            0.0147,
+            2.666
+          ],
+          [
+            0.0294,
+            3.784
+          ],
+          [
+            0.0515,
+            4.3
+          ],
+          [
+            0.9412,
+            4.3
+          ],
+          [
+            0.9706,
+            3.44
+          ],
+          [
+            1,
+            0.43
+          ]
+        ],
+        "Transparency": [
+          [
+            0,
+            1
+          ],
+          [
+            0.0515,
+            0.55
+          ],
+          [
+            0.0588,
+            0
+          ],
+          [
+            0.0956,
+            0.55
+          ],
+          [
+            0.9412,
+            0.55
+          ],
+          [
+            1,
+            1
+          ]
+        ],
+        "Color": {
+          "Color3": [
+            200,
+            226,
+            255
+          ]
+        },
+        "LightEmission": 1,
+        "LightInfluence": 0,
+        "Brightness": 1.5,
+        "ZOffset": 0.43
+      },
+      "Emit": [
+        [
+          -8,
+          1
+        ]
+      ],
+      "Tell": true,
+      "Tracks": {
+        "At": [
+          [
+            -8,
+            {
+              "Vector3": [
+                0,
+                -2.175,
+                -2.6
+              ]
+            }
+          ]
+        ]
+      },
+      "Why": "the body's light added, white-azure: full on Raise, its click, then the strokes' glow (W2's white ribs)",
+      "Body": "HumanoidRootPart"
+    },
+    "Run": {
+      "Kind": "Emitter",
+      "From": "Raise",
+      "Image": "guard_screen_run",
+      "Emitter": {
+        "Lifetime": [
+          2.2666666666666666,
+          2.2666666666666666
+        ],
+        "Speed": [
+          0.01,
+          0.01
+        ],
+        "EmissionDirection": "Front",
+        "Orientation": "VelocityPerpendicular",
+        "LockedToPart": true,
+        "Rotation": [
+          0,
+          0
+        ],
+        "RotSpeed": [
+          0,
+          0
+        ],
+        "Size": [
+          [
+            0,
+            0.645
+          ],
+          [
+            0.0147,
+            2.666
+          ],
+          [
+            0.0294,
+            3.784
+          ],
+          [
+            0.0515,
+            4.3
+          ],
+          [
+            0.9412,
+            4.3
+          ],
+          [
+            0.9706,
+            3.44
+          ],
+          [
+            1,
+            0.43
+          ]
+        ],
+        "Transparency": [
+          [
+            0,
+            1
+          ],
+          [
+            0.0956,
+            1
+          ],
+          [
+            0.1618,
+            0.2
+          ],
+          [
+            0.9412,
+            0.2
+          ],
+          [
+            1,
+            1
+          ]
+        ],
+        "Color": {
+          "Color3": [
+            200,
+            226,
+            255
+          ]
+        },
+        "LightEmission": 1,
+        "LightInfluence": 0,
+        "Brightness": 1.5,
+        "ZOffset": 0.435,
+        "FlipbookLayout": "Grid4x4",
+        "FlipbookMode": "Loop",
+        "FlipbookFramerate": [
+          13.71,
+          13.71
+        ]
+      },
+      "Emit": [
+        [
+          -8,
+          1
+        ]
+      ],
+      "Tell": true,
+      "Tracks": {
+        "At": [
+          [
+            -8,
+            {
+              "Vector3": [
+                0,
+                -2.175,
+                -2.6
+              ]
+            }
+          ]
+        ]
+      },
+      "Why": "the hold: light running up the ribs, each a little behind its neighbour (W2's run), from after the click",
+      "Body": "HumanoidRootPart"
+    },
+    "Core": {
+      "Kind": "Emitter",
+      "From": "Raise",
+      "Image": "guard_screen_core",
+      "Emitter": {
+        "Lifetime": [
+          2.2666666666666666,
+          2.2666666666666666
+        ],
+        "Speed": [
+          0.01,
+          0.01
+        ],
+        "EmissionDirection": "Front",
+        "Orientation": "VelocityPerpendicular",
+        "LockedToPart": true,
+        "Rotation": [
+          0,
+          0
+        ],
+        "RotSpeed": [
+          0,
+          0
+        ],
+        "Size": [
+          [
+            0,
+            0.645
+          ],
+          [
+            0.0147,
+            2.666
+          ],
+          [
+            0.0294,
+            3.784
+          ],
+          [
+            0.0515,
+            4.3
+          ],
+          [
+            0.9412,
+            4.3
+          ],
+          [
+            0.9706,
+            3.44
+          ],
+          [
+            1,
+            0.43
+          ]
+        ],
+        "Transparency": [
+          [
+            0,
+            1
+          ],
+          [
+            0.0515,
+            0.15
+          ],
+          [
+            0.0588,
+            0
+          ],
+          [
+            0.0956,
+            0.15
+          ],
+          [
+            0.9412,
+            0.15
+          ],
+          [
+            1,
+            1
+          ]
+        ],
+        "Color": {
+          "Color3": [
+            255,
+            255,
+            255
+          ]
+        },
+        "LightEmission": 1,
+        "LightInfluence": 0,
+        "Brightness": 1,
+        "ZOffset": 0.44
+      },
+      "Emit": [
+        [
+          -8,
+          1
+        ]
+      ],
+      "Tell": true,
+      "Tracks": {
+        "At": [
+          [
+            -8,
+            {
+              "Vector3": [
+                0,
+                -2.175,
+                -2.6
+              ]
+            }
+          ]
+        ]
+      },
+      "Why": "the strokes' white core where they're thickest",
+      "Body": "HumanoidRootPart"
+    }
+  }
+}

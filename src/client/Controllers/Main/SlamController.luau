@@ -97,6 +97,24 @@ local function standsIn(action: string): boolean
 	local effect = if def then def.Effect else nil
 	return effect == nil or (EffectsConfig.Rows :: any)[effect] == nil or EffectsConfig.Grey[action] == true
 end
+
+-- The action `model` runs (FightService's "Action"), whose mark or shield this is (TR69 B: an elite's own move), or
+-- `default`.
+local function runs(model: Model, default: string): string
+	local id = model:GetAttribute("Action")
+	return if type(id) == "string" and Actions.ById[id] ~= nil then id else default
+end
+
+-- Whether `action` lays a disc of its own (TR69 B, the overhead's footprint): its rows draw it, the grey ring only stands in.
+local function ownDisc(action: string): boolean
+	local def = Actions.ById[action]
+	for _, hit in (if def then def.Hits else {}) :: { [string]: Actions.Hit } do
+		if hit.Mark and hit.Disc then
+			return true
+		end
+	end
+	return false
+end
 local veils: { [Model]: SphereHandleAdornment } = {}
 local PANE_GREY = Color3.fromRGB(196, 199, 206)
 local PANE_THICK = 0.12
@@ -245,9 +263,13 @@ local function draw(model: Model)
 	end
 	local to = model:GetAttribute("MarkTo")
 	if typeof(to) == "Vector3" then
-		if standsIn("DasherLunge") then
+		if standsIn(runs(model, "DasherLunge")) then
 			drawLine(model, at :: Vector3, to :: Vector3, radius :: number, down :: number, slam :: number)
 		end
+		return
+	end
+	local own = runs(model, "")
+	if ownDisc(own) and not standsIn(own) then
 		return
 	end
 	local holder, ring, disc = ringAt(at :: Vector3, radius :: number)
@@ -378,7 +400,7 @@ local function paneOn(model: Model)
 		paneOff(model)
 		return
 	end
-	if panes[model] or not standsIn("GuardRaise") then
+	if panes[model] or not standsIn(runs(model, "GuardRaise")) then
 		return
 	end
 	local look = Combat.Guard.Look
@@ -423,7 +445,8 @@ end
 -- AR52: a blow on a Guard's raised shield, where it meets the paper (Config.Effects.Shield, at its scale), its Front
 -- along the blow on the ground: GuardGlance on a glance, GuardBreak on the break, on the effects' clock. A break also
 -- ends GuardRaise's action (its stagger), and FighterController ends the shield's rows at once.
-local function shieldStruck(target: any, attacker: any, name: string)
+-- With `behind` (TR69 B, a Guard elite's screen taking a blow meant for `behind`): where the blow crosses its wall.
+local function shieldStruck(target: any, attacker: any, name: string, behind: any?)
 	if typeof(target) ~= "Instance" or typeof(attacker) ~= "Instance" then
 		return
 	end
@@ -442,6 +465,20 @@ local function shieldStruck(target: any, attacker: any, name: string)
 	local blow = Vector3.new(root.Position.X - from.Position.X, 0, root.Position.Z - from.Position.Z)
 	local facing = Vector3.new(root.CFrame.LookVector.X, 0, root.CFrame.LookVector.Z)
 	local way = if blow.Magnitude > 0.01 then blow.Unit elseif facing.Magnitude > 0.01 then -facing.Unit else Vector3.new(0, 0, -1)
+	local behindModel = if typeof(behind) == "Instance" then behind :: Instance else nil
+	local back = if behindModel and behindModel:IsA("Model") then behindModel:FindFirstChild("HumanoidRootPart") else nil
+	local wall = (Actions.ById.GuardScreen :: any).Guard.Screen
+	if back and back:IsA("BasePart") and facing.Magnitude > 0.01 then
+		local look = facing.Unit
+		local line = Vector3.new(back.Position.X - from.Position.X, 0, back.Position.Z - from.Position.Z)
+		local closing = line:Dot(look)
+		if math.abs(closing) > 1e-3 then
+			local start = Vector3.new(from.Position.X, root.Position.Y, from.Position.Z)
+			local t = (wall.Ahead - (start - root.Position):Dot(look)) / closing
+			point = start + line * math.clamp(t, 0, 1) + Vector3.new(0, meets.Up * k, 0)
+			way = line.Unit
+		end
+	end
 	local anchor = CFrame.lookAt(point, point + way)
 	local rows = Effects.At(name, anchor, k)
 	if rows then
@@ -911,12 +948,16 @@ function SlamController.Start()
 	RunService.RenderStepped:Connect(stepMarks)
 	RunService.Heartbeat:Connect(stepRecall)
 	Net.Client.On("Hit", function(hit: any)
-		local pane = if type(hit) == "table" and hit.Guarded == "Glanced" then panes[hit.T] else nil
+		-- a Guard elite's screen took it (TR69 B): the wall's Guard, not the one behind
+		local screen = if type(hit) == "table" and typeof(hit.Screen) == "Instance" then hit.Screen else nil
+		local guard = if screen then screen elseif type(hit) == "table" then hit.T else nil
+		local pane = if type(hit) == "table" and hit.Guarded == "Glanced" and typeof(guard) == "Instance" then panes[guard :: any] else nil
 		if pane then
 			pane.Glanced = os.clock()
 		end
 		if type(hit) == "table" and (hit.Guarded == "Glanced" or hit.Guarded == "Broke") then
-			shieldStruck(hit.T, hit.A, if hit.Guarded == "Glanced" then "GuardGlance" else "GuardBreak")
+			local broke = if screen and (EffectsConfig.Rows :: any).GuardScreenBreak then "GuardScreenBreak" else "GuardBreak"
+			shieldStruck(guard, hit.A, if hit.Guarded == "Glanced" then "GuardGlance" else broke, if screen then hit.T else nil)
 		end
 		if type(hit) == "table" and hit.Finisher == true and hit.A == myLead() then
 			edgeFlash()

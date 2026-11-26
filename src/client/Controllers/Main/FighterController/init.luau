@@ -1256,7 +1256,9 @@ local function onHit(hit: any)
 	end
 	local struck: View = target
 	if hit.Guarded == "Broke" then
-		endEffects(struck)
+		-- the broken shield's own: a Guard elite's screen breaks on its Guard, not on the one behind it (TR69 B)
+		local wall = if typeof(hit.Screen) == "Instance" then views[hit.Screen :: Model] else nil
+		endEffects(wall or struck)
 	end
 	local press = pressOf(hit.A)
 	local shing = if hit.Critical and not hit.Dodged and attacker then SoundRule.Critical(sideOf(attacker)) else nil

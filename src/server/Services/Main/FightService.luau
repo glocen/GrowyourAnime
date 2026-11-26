@@ -74,6 +74,7 @@ export type Mark = {
 	Kind: string?,
 	From: number?,
 	Arc: number?,
+	Fan: number?, -- a line's two more lanes, this many radians either side (TR69 B, the Dasher elite; Rules.Mark.Fanned)
 	Turn: number?,
 	Back: boolean?, -- a sweep's line turns back over its Turn again (Hard)
 	Every: number?, -- a burning footprint strikes whoever stands in it each Every seconds, Turn long (Hard)
@@ -136,7 +137,7 @@ export type Fighter = {
 	Hitters: { [Player]: boolean }, -- players whose lead hit it: a pack belongs to everyone (docs/design.md)
 	Struck: { [string]: boolean }, -- the fighters (by Id) whose hit has landed on it since it last stood home: an Opener's first
 	Shield: { Share: number, Until: number }?, -- the share less damage it takes until then (Actions.Hit.Shield)
-	Guard: { Keep: number, Until: number }?, -- a Guard's raised shield (AR52; Actions.Hit.Guard; Rules.Fight.Guarded)
+	Guard: { Keep: number, Until: number, Screen: { Wide: number, Ahead: number }? }?, -- a Guard's raised shield (AR52; Actions.Hit.Guard; Rules.Fight.Guarded), a wall with Screen (TR69 B)
 	OpenUntil: number?, -- Open after a slip until then: a lead's signature on it is a Finisher (TR69 C; Rules.Hands)
 	-- The keeper's phases (TR69 D; KeeperPhaseService, Rules.Keeper): the least health a hit or a burn takes it to; until
 	-- HeldUntil it neither thinks nor acts, and nothing lands on it; until HarderUntil each hit on it lands Harder times;
@@ -147,6 +148,7 @@ export type Fighter = {
 	-- clock waits and goes on after, so the follow-through holds where the window found it and plays out after.
 	PinUntil: number?,
 	Lunged: number?, -- a Hard Dasher's lunges so far in its run (TR69 E; Rules.Fight.Again)
+	Swings: number?, -- its Action's starts since its signature, for a row with Every (TR69 B, the Brawler elite's overhead)
 	HarderUntil: number?,
 	Harder: number?,
 	Rates: { [string]: number }?,
@@ -466,6 +468,21 @@ local function start(f: Fighter, action: Actions.Action, at: number)
 		f.ReadyAt[action.Id] = at + cooldown
 		-- The signature's ring on the HUD fills from here (docs/ui.md; TR3): when it's ready again, in server time.
 		f.Model:SetAttribute("Ready", at + cooldown)
+	end
+	-- A row with Every (TR69 B): its signature comes once Every - 1 of its Action have started since the last, never by a clock.
+	local row = if f.Side ~= "Lead" then Enemies.ById[f.Def] else nil
+	local every = if row then row.Every else nil
+	if every and f.Signature then
+		if action.Id == f.Signature.Id then
+			f.Swings = 0
+			f.ReadyAt[action.Id] = math.huge
+		elseif row and action.Id == row.Action then
+			local swings, next = Fight.Swung(f.Swings, every)
+			f.Swings = swings
+			if next then
+				f.ReadyAt[f.Signature.Id] = at -- next, once this one ends
+			end
+		end
 	end
 	stop(f)
 	f.Model:SetAttribute("Action", action.Id)
@@ -1155,13 +1172,38 @@ local function land(f: Fighter, action: Actions.Action, target: Fighter, beat: s
 	-- A Guard's raised shield (AR52): a heavy hit or its fighter's signature breaks it open, landing whole and staggering
 	-- it; any other glances off, Keep of it going through and its push with it.
 	local keep = Fight.Guarded(target.Guard, at)
+	-- A Guard elite's screen (TR69 B; Rules.Mark.Screens): a blow on one of its side that crosses its raised wall is taken
+	-- by the wall as its own shield would take it, and breaking it opens and staggers the Guard, not the one behind.
+	local guardian = target
+	if keep >= 1 then
+		local from, to = f.Root.Position, target.Root.Position
+		for _, other in fighters do
+			local g = other.Guard
+			if other ~= target and g and g.Screen and Fight.Guarded(g, at) < 1 and standing(other) and against(f, other) and not against(target, other) then
+				local look = flat(other.Root.CFrame.LookVector)
+				local o = other.Root.Position
+				if MarkRule.Screens(o.X, o.Z, look.X, look.Z, g.Screen.Wide, g.Screen.Ahead, from.X, from.Z, to.X, to.Z) then
+					keep, guardian = Fight.Guarded(g, at), other
+					break
+				end
+			end
+		end
+	end
 	local broke = false
 	if keep < 1 and not result.Dodged then
 		if Fight.Breaks(hit.Heavy == true, f.Signature ~= nil and action.Id == f.Signature.Id) then
 			broke = true
-			dropGuard(target)
-			target.Model:SetAttribute("GuardBroke", at)
-			FightService.Broke:Fire(f, target, f.Signature ~= nil and action.Id == f.Signature.Id)
+			dropGuard(guardian)
+			guardian.Model:SetAttribute("GuardBroke", at)
+			FightService.Broke:Fire(f, guardian, f.Signature ~= nil and action.Id == f.Signature.Id)
+			if guardian ~= target then
+				-- the wall's Guard staggers where it stands, as a broken shield's does (Combat.Guard.Stagger)
+				guardian.StunLock = at + Combat.Guard.Stagger + Combat.Stun.Lock
+				guardian.Model:SetAttribute("StunLook", nil)
+				setState(guardian, "Stun", at + Combat.Guard.Stagger)
+				endAction(guardian, at)
+				stop(guardian)
+			end
 		else
 			result.Physical *= keep
 			result.Elemental *= keep
@@ -1252,7 +1294,7 @@ local function land(f: Fighter, action: Actions.Action, target: Fighter, beat: s
 			stop(target)
 		end
 		local stunned = if fell then 0 else Fight.Stun(hit.Stun, Combat.Stun.Share[target.Kind], at, target.StunLock)
-		if broke and not fell then
+		if broke and not fell and guardian == target then
 			stunned = math.max(stunned, Combat.Guard.Stagger) -- the break's stagger, whatever the lock
 		end
 		if stunned > 0 then
@@ -1288,6 +1330,7 @@ local function land(f: Fighter, action: Actions.Action, target: Fighter, beat: s
 		Last = if last then true else nil, -- the pack's last fall: its drops wait out the hold and leave together (TR69 A)
 		Steady = hit.Steady == true, -- the attacker doesn't hold on it, only the target
 		Guarded = if keep < 1 and not result.Dodged then (if broke then "Broke" else "Glanced") else nil, -- AR52
+		Screen = if guardian ~= target and keep < 1 and not result.Dodged then guardian.Model else nil, -- TR69 B: the wall it met
 		Finisher = if finisher then true else nil, -- TR69 C: its own row, by Rung; the screen's edges flash
 		Health = left,
 		MaxHealth = target.Block.Health,
@@ -2118,7 +2161,7 @@ local function raise(f: Fighter, action: Actions.Action)
 		return
 	end
 	local untilAt = f.ActionAt + drop / f.ActionRate
-	f.Guard = { Keep = Combat.Guard.Keep, Until = untilAt }
+	f.Guard = { Keep = Combat.Guard.Keep, Until = untilAt, Screen = if guard then guard.Screen else nil }
 	f.Model:SetAttribute("GuardUntil", untilAt)
 end
 
@@ -2127,10 +2170,12 @@ end
 local function putDown(f: Fighter, action: Actions.Action)
 	local slam: number? = nil
 	local lined = false
+	local markHit: Actions.Hit? = nil
 	for beat, hit in action.Hits do
 		if hit.Mark then
 			slam = action.Beats[beat]
 			lined = hit.Line == true
+			markHit = hit
 		end
 	end
 	local aim = action.Aim
@@ -2158,11 +2203,15 @@ local function putDown(f: Fighter, action: Actions.Action)
 		end
 		local unit = if look.Magnitude > 0.05 then look.Unit else Vector3.new(0, 0, -1)
 		local length = most + line.Past
-		m = { X = p.X, Z = p.Z, Y = p.Y, Radius = line.Half, Down = down, Slam = hits, Target = f.Target, Length = length, DirX = unit.X, DirZ = unit.Z } :: Mark
+		local fan = if markHit and markHit.Fan then math.rad(markHit.Fan) else nil -- the Dasher elite's three lanes (TR69 B)
+		m = { X = p.X, Z = p.Z, Y = p.Y, Radius = line.Half, Down = down, Slam = hits, Target = f.Target, Length = length, DirX = unit.X, DirZ = unit.Z, Fan = fan } :: Mark
 		f.Model:SetAttribute("MarkTo", Vector3.new(p.X + unit.X * length, p.Y, p.Z + unit.Z * length))
 	else
-		local x, z = MarkRule.Centre(p.X, p.Z, look.X, look.Z, mark.Ahead, mark.Left)
-		m = { X = x, Z = z, Y = p.Y, Radius = mark.Radius, Down = down, Slam = hits, Target = f.Target } :: Mark
+		-- its own disc (TR69 B, the Brawler elite's overhead), or the keeper's
+		local disc = if markHit and markHit.Disc then markHit.Disc else nil
+		local ahead, left, radius = if disc then disc.Ahead else mark.Ahead, if disc then disc.Left or 0 else mark.Left, if disc then disc.Radius else mark.Radius
+		local x, z = MarkRule.Centre(p.X, p.Z, look.X, look.Z, ahead, left)
+		m = { X = x, Z = z, Y = p.Y, Radius = radius, Down = down, Slam = hits, Target = f.Target } :: Mark
 		f.Model:SetAttribute("MarkTo", nil)
 	end
 	f.Mark = m
@@ -2447,9 +2496,9 @@ function FightService.SpawnEnemy(def: string, level: number, at: CFrame, options
 		start(f, Actions.ById[row.Enter], now())
 	end
 	if row.Signature then
-		-- its first, First seconds after its Enter ends (TR44)
+		-- its first, First seconds after its Enter ends (TR44); with Every, after its first Every - 1 swings (TR69 B)
 		local enter = if row.Enter then Actions.ById[row.Enter].Length else 0
-		f.ReadyAt[row.Signature] = now() + enter + (row.First or Combat.Keeper.First)
+		f.ReadyAt[row.Signature] = if row.Every then math.huge else now() + enter + (row.First or Combat.Keeper.First)
 	end
 	return f
 end

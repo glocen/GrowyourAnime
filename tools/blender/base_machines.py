@@ -21,7 +21,7 @@ side a crescent of two horns holding an eye, a ring round a floating shard, over
 power out. The bay's own light is a piece by itself, in one pale swatch, so the builder gives it the worker's rarity
 colour (TR22): a ring round the worker's feet, a ring in the eye, and motes rising from the worker to it.
 
-The generator is the Void Mill (AR19): its own module, base_mill.py, whose pieces base_kit.py takes beside these.
+The Generator is the held core (AR67): its own module, base_generator.py, whose pieces base_kit.py takes beside these.
 
 The battery (`BatteryRack`, `BatteryCell`): a bank, the yard's own. A low rack with eight seats and a bus bar down its
 middle, and a cell a seat as the battery's cap grows with the base's level (research, 2026-11-15: 60, 150 and 400

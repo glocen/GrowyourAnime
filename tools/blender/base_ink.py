@@ -16,10 +16,9 @@ SWATCHES = ("steel", "girder", "bone", "concrete", "yellow", "rubber", "ceramic"
             "beacon", "dark", "ink", "void", "abyss")   # base_kit.SWATCHES, in the atlas's order
 WELL = 27             # base_kit.SWATCHES' "well" (AR40), the second row's twelfth: a light's dark bed
 SOLID = {"steel", "girder", "bone", "concrete", "yellow", "ceramic", "copper", "abyss", "print", "well"}   # what a hull is drawn round
-HULLED = ("Generator", "GeneratorWheel", "GeneratorDemand", "Breaker", "BreakerChamber", "BreakerWaiting", "Bay", "BatteryRack",
+HULLED = ("Generator", "GeneratorDemand", "Breaker", "BreakerChamber", "BreakerWaiting", "Bay", "BatteryRack",
           "BatteryCell", "Showcase", "Door", "Training", "TrainingCrown", "BaySleeping", "SleepingStone",
-          "Generator2", "Generator3", "Generator2Wheel", "Generator2Pinion", "Generator3Pinion", "Generator2Demand",
-          "Generator3Demand", "Forge", "ForgeRam", "ForgeGear", "Condenser", "CondenserCore",
+          "Generator2", "Generator3", "Forge", "ForgeRam", "ForgeGear", "Condenser", "CondenserCore",
           "Breaker2", "Breaker3", "BreakerHinge", "BreakerLid", "Bay2", "Bay3", "BayCog", "BayCogOuter",
           "BatteryRack2", "BatteryRack3", "TrainingCrown2", "TrainingCrown3",
           "Forge2", "Forge3", "Condenser2", "Condenser3")   # the machines, and the plinth

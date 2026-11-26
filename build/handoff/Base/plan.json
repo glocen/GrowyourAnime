@@ -499,9 +499,9 @@
     "1": {
      "breaker": 1.85,
      "least": [
-      12.19,
-      "breaker",
-      "generator"
+      12.31,
+      "bay1",
+      "bay6"
      ],
      "way": [],
      "outside": [],
@@ -515,9 +515,9 @@
     "2": {
      "breaker": 1.67,
      "least": [
-      12.17,
-      "breaker",
-      "generator"
+      12.3,
+      "bay1",
+      "bay6"
      ],
      "way": [],
      "outside": [],
@@ -531,9 +531,9 @@
     "3": {
      "breaker": 1.63,
      "least": [
-      12.17,
-      "breaker",
-      "generator"
+      12.19,
+      "bay1",
+      "bay6"
      ],
      "way": [],
      "outside": [],
@@ -970,12 +970,20 @@
     "standsFor": "the Generator: all of it that stands still"
    },
    {
-    "piece": "GeneratorWheel",
+    "piece": "GeneratorCore",
     "across": 0.0,
     "along": -56.8,
-    "up": 10.0,
+    "up": 14.4,
     "turn": 0.0,
-    "standsFor": "the generator's wheel, turning about the line to the gate, faster as the plant generates more"
+    "standsFor": "the Generator's core, turning about its upright and breathing, faster as the plant generates more"
+   },
+   {
+    "piece": "GeneratorMotes",
+    "across": 0.0,
+    "along": -56.8,
+    "up": 14.4,
+    "turn": 0.0,
+    "standsFor": "the motes round the core, turning the other way at half its pace"
    },
    {
     "piece": "GeneratorArc1",
@@ -983,7 +991,7 @@
     "along": -56.8,
     "up": 0.0,
     "turn": 0.0,
-    "standsFor": "the gauge's step 1 of 8, shown while the generation lights it"
+    "standsFor": "the column's step 1 of 8, shown while the generation lights it"
    },
    {
     "piece": "GeneratorArc2",
@@ -991,7 +999,7 @@
     "along": -56.8,
     "up": 0.0,
     "turn": 0.0,
-    "standsFor": "the gauge's step 2 of 8, shown while the generation lights it"
+    "standsFor": "the column's step 2 of 8, shown while the generation lights it"
    },
    {
     "piece": "GeneratorArc3",
@@ -999,7 +1007,7 @@
     "along": -56.8,
     "up": 0.0,
     "turn": 0.0,
-    "standsFor": "the gauge's step 3 of 8, shown while the generation lights it"
+    "standsFor": "the column's step 3 of 8, shown while the generation lights it"
    },
    {
     "piece": "GeneratorArc4",
@@ -1007,7 +1015,7 @@
     "along": -56.8,
     "up": 0.0,
     "turn": 0.0,
-    "standsFor": "the gauge's step 4 of 8, shown while the generation lights it"
+    "standsFor": "the column's step 4 of 8, shown while the generation lights it"
    },
    {
     "piece": "GeneratorArc5",
@@ -1015,7 +1023,7 @@
     "along": -56.8,
     "up": 0.0,
     "turn": 0.0,
-    "standsFor": "the gauge's step 5 of 8, shown while the generation lights it"
+    "standsFor": "the column's step 5 of 8, shown while the generation lights it"
    },
    {
     "piece": "GeneratorArc6",
@@ -1023,7 +1031,7 @@
     "along": -56.8,
     "up": 0.0,
     "turn": 0.0,
-    "standsFor": "the gauge's step 6 of 8, shown while the generation lights it"
+    "standsFor": "the column's step 6 of 8, shown while the generation lights it"
    },
    {
     "piece": "GeneratorArc7",
@@ -1031,7 +1039,7 @@
     "along": -56.8,
     "up": 0.0,
     "turn": 0.0,
-    "standsFor": "the gauge's step 7 of 8, shown while the generation lights it"
+    "standsFor": "the column's step 7 of 8, shown while the generation lights it"
    },
    {
     "piece": "GeneratorArc8",
@@ -1039,15 +1047,15 @@
     "along": -56.8,
     "up": 0.0,
     "turn": 0.0,
-    "standsFor": "the gauge's step 8 of 8, shown while the generation lights it"
+    "standsFor": "the column's step 8 of 8, shown while the generation lights it"
    },
    {
     "piece": "GeneratorDemand",
     "across": 0.0,
     "along": -56.8,
-    "up": 10.0,
+    "up": 3.0,
     "turn": 0.0,
-    "standsFor": "the demand's mark, turned about the axle by the demand's share"
+    "standsFor": "the demand's collar, risen up the column by the demand's share"
    },
    {
     "piece": "Door",
@@ -1119,7 +1127,7 @@
    }
   ],
   "generatorStages": {
-   "note": "AR19: the generator's three stages, the swap's table (base_mill.py, `stages`). The generator takes the stage of the base's ceiling: Stage I at base level 1, II at 2, III at 3 (research, 2026-11-16). A stage's pieces replace the one before's at the same place, laid as a placement is, raised by `up`, turn 0. `moves`: still; turns, about the piece's own origin along the line to the gate, CFrame.Angles(0, 0, -angle * rate) with the wheel's angle, so the pinions turn the other way 2.4 times as fast; gauge, the step lit while the generation's share reaches it; demand, turned about the axle by the share times `degrees`. A later stage names what it keeps from the one before once: Stage III stands Generator2Wheel and Generator2Pinion.",
+   "note": "AR67: the Generator's three stages, the swap's table (base_generator.py, `stages`). The Generator takes the stage of the base's ceiling: Stage I at base level 1, II at 2, III at 3 (research, 2026-11-16). A stage's pieces replace the one before's at the same place, laid as a placement is, raised by `up`, turn 0. `moves`: still; turns, about the piece's own upright (`axis` up: Roblox's Y), CFrame.Angles(0, angle * rate, 0) with the core's angle: rate 1 is the core itself, at the plant's speed, and it `breathes` (its size swells that share and back over `period` seconds); the motes follow its angle at their rate, the other way, half as fast; gauge, the step lit while the generation's share reaches it; rises, the collar raised up the column by the demand's share times `studs`. Each stage lists every piece it stands: the motes, the steps and the collar in all three, and Generator2Core in II and III.",
    "stages": {
     "1": [
      {
@@ -1130,12 +1138,24 @@
       "moves": "still"
      },
      {
-      "piece": "GeneratorWheel",
+      "piece": "GeneratorCore",
       "across": 0.0,
       "along": -56.8,
-      "up": 10.0,
+      "up": 14.4,
       "moves": "turns",
-      "rate": 1.0
+      "axis": "up",
+      "rate": 1.0,
+      "breathes": 0.04,
+      "period": 2.4
+     },
+     {
+      "piece": "GeneratorMotes",
+      "across": 0.0,
+      "along": -56.8,
+      "up": 14.4,
+      "moves": "turns",
+      "axis": "up",
+      "rate": -0.5
      },
      {
       "piece": "GeneratorArc1",
@@ -1205,9 +1225,9 @@
       "piece": "GeneratorDemand",
       "across": 0.0,
       "along": -56.8,
-      "up": 10.0,
-      "moves": "demand",
-      "degrees": 117.88
+      "up": 3.0,
+      "moves": "rises",
+      "studs": 8.0
      }
     ],
     "2": [
@@ -1219,23 +1239,27 @@
       "moves": "still"
      },
      {
-      "piece": "Generator2Wheel",
+      "piece": "Generator2Core",
       "across": 0.0,
       "along": -56.8,
-      "up": 10.0,
+      "up": 14.4,
       "moves": "turns",
-      "rate": 1.0
+      "axis": "up",
+      "rate": 1.0,
+      "breathes": 0.04,
+      "period": 2.4
      },
      {
-      "piece": "Generator2Pinion",
-      "across": 5.196,
-      "along": -53.4,
-      "up": 7.0,
+      "piece": "GeneratorMotes",
+      "across": 0.0,
+      "along": -56.8,
+      "up": 14.4,
       "moves": "turns",
-      "rate": -2.4
+      "axis": "up",
+      "rate": -0.5
      },
      {
-      "piece": "Generator2Arc1",
+      "piece": "GeneratorArc1",
       "across": 0.0,
       "along": -56.8,
       "up": 0.0,
@@ -1243,7 +1267,7 @@
       "step": 1
      },
      {
-      "piece": "Generator2Arc2",
+      "piece": "GeneratorArc2",
       "across": 0.0,
       "along": -56.8,
       "up": 0.0,
@@ -1251,7 +1275,7 @@
       "step": 2
      },
      {
-      "piece": "Generator2Arc3",
+      "piece": "GeneratorArc3",
       "across": 0.0,
       "along": -56.8,
       "up": 0.0,
@@ -1259,7 +1283,7 @@
       "step": 3
      },
      {
-      "piece": "Generator2Arc4",
+      "piece": "GeneratorArc4",
       "across": 0.0,
       "along": -56.8,
       "up": 0.0,
@@ -1267,7 +1291,7 @@
       "step": 4
      },
      {
-      "piece": "Generator2Arc5",
+      "piece": "GeneratorArc5",
       "across": 0.0,
       "along": -56.8,
       "up": 0.0,
@@ -1275,7 +1299,7 @@
       "step": 5
      },
      {
-      "piece": "Generator2Arc6",
+      "piece": "GeneratorArc6",
       "across": 0.0,
       "along": -56.8,
       "up": 0.0,
@@ -1283,7 +1307,7 @@
       "step": 6
      },
      {
-      "piece": "Generator2Arc7",
+      "piece": "GeneratorArc7",
       "across": 0.0,
       "along": -56.8,
       "up": 0.0,
@@ -1291,7 +1315,7 @@
       "step": 7
      },
      {
-      "piece": "Generator2Arc8",
+      "piece": "GeneratorArc8",
       "across": 0.0,
       "along": -56.8,
       "up": 0.0,
@@ -1299,12 +1323,12 @@
       "step": 8
      },
      {
-      "piece": "Generator2Demand",
+      "piece": "GeneratorDemand",
       "across": 0.0,
       "along": -56.8,
-      "up": 10.0,
-      "moves": "demand",
-      "degrees": 114.54
+      "up": 3.0,
+      "moves": "rises",
+      "studs": 8.0
      }
     ],
     "3": [
@@ -1316,31 +1340,27 @@
       "moves": "still"
      },
      {
-      "piece": "Generator2Wheel",
+      "piece": "Generator2Core",
       "across": 0.0,
       "along": -56.8,
-      "up": 10.0,
+      "up": 14.4,
       "moves": "turns",
-      "rate": 1.0
+      "axis": "up",
+      "rate": 1.0,
+      "breathes": 0.04,
+      "period": 2.4
      },
      {
-      "piece": "Generator2Pinion",
-      "across": 5.196,
-      "along": -53.4,
-      "up": 7.0,
+      "piece": "GeneratorMotes",
+      "across": 0.0,
+      "along": -56.8,
+      "up": 14.4,
       "moves": "turns",
-      "rate": -2.4
+      "axis": "up",
+      "rate": -0.5
      },
      {
-      "piece": "Generator3Pinion",
-      "across": -5.196,
-      "along": -53.4,
-      "up": 7.0,
-      "moves": "turns",
-      "rate": -2.4
-     },
-     {
-      "piece": "Generator3Arc1",
+      "piece": "GeneratorArc1",
       "across": 0.0,
       "along": -56.8,
       "up": 0.0,
@@ -1348,7 +1368,7 @@
       "step": 1
      },
      {
-      "piece": "Generator3Arc2",
+      "piece": "GeneratorArc2",
       "across": 0.0,
       "along": -56.8,
       "up": 0.0,
@@ -1356,7 +1376,7 @@
       "step": 2
      },
      {
-      "piece": "Generator3Arc3",
+      "piece": "GeneratorArc3",
       "across": 0.0,
       "along": -56.8,
       "up": 0.0,
@@ -1364,7 +1384,7 @@
       "step": 3
      },
      {
-      "piece": "Generator3Arc4",
+      "piece": "GeneratorArc4",
       "across": 0.0,
       "along": -56.8,
       "up": 0.0,
@@ -1372,7 +1392,7 @@
       "step": 4
      },
      {
-      "piece": "Generator3Arc5",
+      "piece": "GeneratorArc5",
       "across": 0.0,
       "along": -56.8,
       "up": 0.0,
@@ -1380,7 +1400,7 @@
       "step": 5
      },
      {
-      "piece": "Generator3Arc6",
+      "piece": "GeneratorArc6",
       "across": 0.0,
       "along": -56.8,
       "up": 0.0,
@@ -1388,7 +1408,7 @@
       "step": 6
      },
      {
-      "piece": "Generator3Arc7",
+      "piece": "GeneratorArc7",
       "across": 0.0,
       "along": -56.8,
       "up": 0.0,
@@ -1396,7 +1416,7 @@
       "step": 7
      },
      {
-      "piece": "Generator3Arc8",
+      "piece": "GeneratorArc8",
       "across": 0.0,
       "along": -56.8,
       "up": 0.0,
@@ -1404,12 +1424,12 @@
       "step": 8
      },
      {
-      "piece": "Generator3Demand",
+      "piece": "GeneratorDemand",
       "across": 0.0,
       "along": -56.8,
-      "up": 10.0,
-      "moves": "demand",
-      "degrees": 114.54
+      "up": 3.0,
+      "moves": "rises",
+      "studs": 8.0
      }
     ]
    }

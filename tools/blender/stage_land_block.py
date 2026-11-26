@@ -416,7 +416,7 @@ def build(view):
 
     def generator(stage):
         m = mill.Mesh()
-        for row in mill.stages()[str(stage)]:
+        for row in base.generator.stages()[str(stage)]:
             mill.put(m, base.PIECES[row["piece"]]().mesh, mill.at(*row["at"]))
         return m
 

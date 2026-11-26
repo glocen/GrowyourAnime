@@ -387,14 +387,14 @@ def grown(key, level):
 
 
 def staged(level):
-    """The plan's machines with the generator at the stage its base's level gives it (base_mill.stages)."""
+    """The plan's machines with the generator at the stage its base's level gives it (base_generator.stages)."""
     whole = plan.machines
 
     def machines(at_level=1):
         made = whole(at_level)
         if at_level != level or level == 1:
             return made
-        table = base.mill.stages()
+        table = base.generator.stages()
         rows = table.get(level) or table[str(level)]
         rows = rows["pieces"] if isinstance(rows, dict) else rows
         gx, gy = base.GENERATOR

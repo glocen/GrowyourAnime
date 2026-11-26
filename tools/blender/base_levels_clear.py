@@ -94,7 +94,8 @@ class Handoff:
             if row["piece"].startswith(("Door", "BayHalo")):
                 boxes.append(self.box(row["piece"], row["across"], row["along"], row["up"], row["turn"]))
         for table, body in STAGED.items():
-            places = homes[body] + (homes["BaySleeping"][:2] if body == "Bay" else [])   # bays 3 and 4 wake by level 3
+            places = homes.get(body, []) + (homes["BaySleeping"][:2] if body == "Bay" else [])   # bays 3 and 4 wake by
+            # level 3; the battery has no place of its own since AR65 folded it into the generator's foot
             for home in places:
                 for row in self.stage(table, 3):
                     boxes.append(self.box(row["piece"], home["across"], home["along"], 0.0, home["turn"], row["at"]))

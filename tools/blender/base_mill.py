@@ -1,5 +1,9 @@
 """AR19: the generator, the Void Mill (research's pick of 2026-11-16, 15:04; its three fixes passed at 15:38).
 
+Retired from the kit by AR67 (2026-11-26): the Generator is now the held core, base_generator.py. The kit no longer
+takes this module's pieces or stages; its shape helpers (Mesh, put, at, turned, motes and the rest) are still the
+base's shared ones, and generator_directions.py still draws the Mill.
+
 A wheel facing the gate turns down into the well's dark. Its band of buckets comes up on the gate's right through the
 void's light, and a collector's claw high on that side takes it. The lit arc's height up the rim is the generation; a
 bone diamond on a rail outside the rim is the demand, and the arc past it means power to spare. In front, a concrete

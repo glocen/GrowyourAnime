@@ -18259,3 +18259,28 @@ Research, 2026-11-26, 17:47, on the director's word of about 17:46 (the register
 - **Beside today's Mill:** A carries three times the cyan (2,642 against 853) and has no wheel to turn, which the director's word of about 17:46 freed.
 - **For the build, one check:** at the gate, beside the Breaker, A reads first at the squint, and in each of its three stages the core stays the lightest mass. The breath and the motes are judged in play.
 - **Next:** Modulo builds A. Then Faber's install: the wheel's turn in `Config/World.luau` and BaseCases' AR19 check.
+
+### Modulo's build of A, the held core (2026-11-26, 19:45; started 19:25)
+
+- **Where:** `tools/blender/base_generator.py`, in place of the Mill. `base_kit.py` takes its pieces and `base_plan.py` its stages. Exported to `build/handoff/Base/` (the manifest, `plan.json`'s `generatorStages`, and the meshes). The Mill's 22 stale meshes are gone from the handoff, and every map came out byte-identical. `base_mill.py` is retired from the kit, but its shape helpers stay shared.
+- **The stages:**
+  - **I:** `Generator` (the foot with the battery's cells, the column's seat, bed and cap, and two blades side on) and `GeneratorCore` at 0.8 size.
+  - **II:** `Generator2` (the target's three blades) and `Generator2Core` at full size.
+  - **III:** `Generator3` (the blades a tenth taller, their tips meeting in a steel clasp over the core) and `Generator2Core`.
+  - **Every stage:** `GeneratorMotes`, `GeneratorArc1` to `8` (the column's steps) and `GeneratorDemand` (the collar).
+  - **Size:** 23.9 studs tall at I and II, 29.0 at III; 2,888, 3,176 and 3,696 triangles as laid.
+- **Changed from the sheet:** Stage III has no ring. Levels 2 and 3 already float their teal rings on the generator's upright, and "level 3 stays one halo" (research, 2026-11-23, 03:22). Tried round the core's waist, the ring cut the core in two at the squint (206 fell to 186). The clasp keeps steel over the core.
+- **Research's check, measured:** the frame blurred to a squint (a box a twentieth of its height, three passes), in the day's light, each stage beside the Breaker at the same stage.
+  - **From the capture's view** (the target's gate frame): the core reads 213, 207 and 206 at I, II and III. The Breaker reads 165, 125 and 120, the column's head 128, 109 and 109, and the cells 95. In every stage the core is the machine's lightest mass and reads first.
+  - **From the far gate on the Strip:** the core reads 204, 182 and 182, the Breaker 190, 178 and 180. That's near a tie at II and III, as the picked target was there (178 against 190).
+- **Fit:** the least clear is 12.31, now between bays 1 and 6 rather than the generator. AR50's rings PASS, with A's body 18.26 studs from level 3's outer ring. That took a fix to `base_levels_clear.py`, broken since AR65 folded the battery into the generator's foot.
+- **For Faber's install (Faber's code):** the contract is in `plan.json`'s `generatorStages` and each piece's note.
+  - **The core** (`GeneratorCore`, `Generator2Core`): `turns` about its upright (Roblox's Y) at rate 1, at the old wheel's speed (Generator.Wheel's Least, PerKw and Most). It `breathes` 0.04 of its size and back over 2.4 seconds, about its middle. On a round core the turn is barely seen; the motes show it.
+  - **The motes:** turned about the upright by the core's angle times -0.5.
+  - **The steps:** a gauge, shown or hidden, as before.
+  - **`GeneratorDemand`:** `rises` up the column by the demand's share times 8 studs, from 3 up. This is new; it was a turn about the axle.
+  - **Gone:** `GeneratorWheel`, the pinions, and Stages II and III's own steps and marks. BaseCases' AR19 wheel check changes with them.
+  - **The solid:** the well stays shut to walking (radius 9, 2.6 high).
+  - **The plates:** the machine plate stands over the laid pieces, so it follows A. `Config.Hud`'s Condenser plate still sits "over [the Mill's] far horn", so its Aside may want a retune.
+- **Sheet:** `build/handoff/Base/generator_stages.png`. Top: the target beside Stage II. Middle: Stages I and III. Bottom: the three stages from three-quarters.
+- **Status:** made and self-reviewed (the squint measures, the fit and the ring audit). Content check before upload: PASS by 19:44, on the sheet, the 64 px read and the module. It found no real electrical kit, no body shapes and no text. Delivered to the handoff for research's verdict, then Faber's install. Not accepted.

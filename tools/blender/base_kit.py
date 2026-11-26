@@ -37,7 +37,7 @@ import base_levels as levels  # noqa: E402
 import base_machines as machines  # noqa: E402
 import base_forge as forge  # noqa: E402
 import base_forge_stages as forge_stages  # noqa: E402
-import base_mill as mill  # noqa: E402
+import base_generator as generator  # noqa: E402
 import base_show as show  # noqa: E402
 import base_star as star  # noqa: E402
 import base_training as training  # noqa: E402
@@ -598,7 +598,7 @@ PIECES = {**{name: floor(name) for name in FLOOR_AT}, "Wall": wall, "WallHalf": 
           "WallEnd": lambda: wall(0.0), "Gate1": gate, "Pylon": pylon,
           "PowerSpan": power_span, "FloodMast": flood_mast, "Transformer": transformer,
           **machines.PIECES,       # and the machines' own models (AR15, base_machines.py)
-          **mill.PIECES,           # and the generator, the Void Mill (AR19, base_mill.py)
+          **generator.PIECES,      # and the Generator, the held core (AR67, base_generator.py)
           **show.PIECES,           # and the showcase's plinth (TR22, base_show.py)
           **forge.PIECES,          # and the Forge and the Stone Condenser, Stage I (AR28, base_forge.py)
           **breaker.PIECES,        # and the Void Breaker's Stages II and III (AR32, base_breaker.py)

@@ -117,12 +117,13 @@ def machines(level=1):
     for name, (x, inward) in SLEEPING.items():
         made.append(("SleepingStone", x, inward, 0.0, 0.0, f"the {name.capitalize()}'s place, asleep"))
     made.append(("TowerSleeping", *TOWER_AT, 0.0, 0.0, "the Tower, asleep until phase 3"))
-    mill = base.mill
+    gen = base.generator
     made.append(("Generator", *GENERATOR, 0.0, 0.0, "the Generator: all of it that stands still"))
-    made.append(("GeneratorWheel", *GENERATOR, mill.AXLE, 0.0, "the generator's wheel, turning about the line to the gate, faster as the plant generates more"))
-    for i in range(mill.STEPS):
-        made.append((f"GeneratorArc{i + 1}", *GENERATOR, 0.0, 0.0, f"the gauge's step {i + 1} of {mill.STEPS}, shown while the generation lights it"))
-    made.append(("GeneratorDemand", *GENERATOR, mill.AXLE, 0.0, "the demand's mark, turned about the axle by the demand's share"))
+    made.append(("GeneratorCore", *GENERATOR, gen.CORE, 0.0, "the Generator's core, turning about its upright and breathing, faster as the plant generates more"))
+    made.append(("GeneratorMotes", *GENERATOR, gen.CORE, 0.0, "the motes round the core, turning the other way at half its pace"))
+    for i in range(gen.STEPS):
+        made.append((f"GeneratorArc{i + 1}", *GENERATOR, 0.0, 0.0, f"the column's step {i + 1} of {gen.STEPS}, shown while the generation lights it"))
+    made.append(("GeneratorDemand", *GENERATOR, gen.COLLAR, 0.0, "the demand's collar, risen up the column by the demand's share"))
     made.append(("Door", *DOOR, 0.0, DOOR_TURN, "the Festival Door: its step, its front ring and the name's plate, its "
                  "mouth looking down the way in"))
     rings = len(base.machines.RINGS)
@@ -318,18 +319,20 @@ def write_plan(out: Path):
                              **({"spin": DOOR_SPIN[n]} if n in DOOR_SPIN else {}))
                         for n, x, i, z, t, w in machines()],
             generatorStages=dict(
-                note="AR19: the generator's three stages, the swap's table (base_mill.py, `stages`). The generator "
-                     "takes the stage of the base's ceiling: Stage I at base level 1, II at 2, III at 3 (research, "
-                     "2026-11-16). A stage's pieces replace the one before's at the same place, laid as a placement is, "
-                     "raised by `up`, turn 0. `moves`: still; turns, about the piece's own origin along the line to the "
-                     "gate, CFrame.Angles(0, 0, -angle * rate) with the wheel's angle, so the pinions turn the other "
-                     "way 2.4 times as fast; gauge, the step lit while the generation's share reaches it; demand, "
-                     "turned about the axle by the share times `degrees`. A later stage names what it keeps from the "
-                     "one before once: Stage III stands Generator2Wheel and Generator2Pinion.",
+                note="AR67: the Generator's three stages, the swap's table (base_generator.py, `stages`). The "
+                     "Generator takes the stage of the base's ceiling: Stage I at base level 1, II at 2, III at 3 "
+                     "(research, 2026-11-16). A stage's pieces replace the one before's at the same place, laid as a "
+                     "placement is, raised by `up`, turn 0. `moves`: still; turns, about the piece's own upright "
+                     "(`axis` up: Roblox's Y), CFrame.Angles(0, angle * rate, 0) with the core's angle: rate 1 is the "
+                     "core itself, at the plant's speed, and it `breathes` (its size swells that share and back over "
+                     "`period` seconds); the motes follow its angle at their rate, the other way, half as fast; "
+                     "gauge, the step lit while the generation's share reaches it; rises, the collar raised up "
+                     "the column by the demand's share times `studs`. Each stage lists every piece it stands: the "
+                     "motes, the steps and the collar in all three, and Generator2Core in II and III.",
                 stages={stage: [dict(piece=row["piece"], across=round(GENERATOR[0] + row["at"][0], 3) + 0.0,
                                      along=round(-GENERATOR[1] + row["at"][1], 3) + 0.0, up=row["at"][2],
                                      **{k: v for k, v in row.items() if k not in ("piece", "at")})
-                                for row in rows] for stage, rows in base.mill.stages().items()}),
+                                for row in rows] for stage, rows in base.generator.stages().items()}),
             battery=dict(
                 note="the battery is a bank: a cell a seat, in this order, as its cap grows with the base's level. "
                      "The builder lights the cells one after another as the charge rises.",

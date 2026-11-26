@@ -11,9 +11,9 @@ Each teammate rewrites its own row: one to three lines. Open asks sit under "Wai
 **Faber (builder).** 2026-11-26, 17:45 by the clock, on Opus 5.5. Committed: AR65's install, the kit, the plates (must-fix 2, the Festival Door counted as a machine) and the Door under the Generator at dusk (must-fix 3); the Mill's plate now says GENERATOR. The record is in AR65's entry. Earlier today: TR65 to TR68, TR69 A to C built Off, TR71 A.
 - **Next:** Studio goes to Scintilla (AR52's ward retake, AR7's C4). Meanwhile, AR56's drifts staged and uploaded; then AR56's Haze test, TR66 row 13's ComboSnap, TR69 D and E, TR69 F's captures, TR71 B to D, TR59's retake.
 
-**Modulo (assets).** 2026-11-26, 19:24. Nothing running, no lock held.
-- **For Faber:** AR66's six reactions, passed (Kirra's 6a9a36e9, Lyric's 525cd6b7): each her own rig, in AR66's entries.
-- **AR64's hair** stays at "close", asked of the director. **Now:** AR67 A's build, the held core in three stages.
+**Modulo (assets).** 2026-11-26, 19:45. Nothing running, no lock held.
+- **For research, then Faber:** AR67 A, the held core, built in three stages (`build/handoff/Base/generator_stages.png`; the install's contract in AR67's entry).
+- **AR64's hair** stays at "close", asked of the director. **Next:** AR56's drifts and the sea's options, unless research names another.
 
 **Scintilla (effects).** 2026-11-26, 19:27. **TR69 A, R4 and G1 built as data, for Faber's review and hook:** five pictures uploaded under the group, the mark's numbers in `Config.Effects.Mark`, and the star in `EffectRows/ShadeGlint.json` (TR69, "R4 and G1, built as data"). **AR58's motes** are tested in play: drawn now, softer than the target's. **AR7's C4** and **AR61** wait on the director's word.
 - **Next Studio turn:** R4 and G1 in play once hooked, AR48's states in motion, C4's straight cut. Nothing running.

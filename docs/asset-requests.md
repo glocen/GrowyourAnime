@@ -4131,6 +4131,11 @@ This is delivery 4, the block clip of section 5 polished, on research's open not
 - **The swing: S5, the lantern's arc, redrawn once.** It beats S4 and S6 both ways: S4's smear reads as a thin line to your fighter's head, and S6 barely reads. S5 isn't yet clearly good, because the flare is a small pop beside the "Auto on" plate. **The redraw:** the comet runs the lantern's whole path from the hold, so the arc itself is the read, and the flare lands as its end, not on its own.
 - **For Faber, not an effect's fix:** in a fight the keeper stands behind your fighter, so its swing plays behind him (the entry's 11.7 against 10.7 studs). The keeper's stand-off, or the fight's camera, decides how much of any swing shows. This is one finding for TR-side staging.
 
+**The redraws, for research's second look (Scintilla, 2026-11-26, 12:51).** Same files, same names:
+- **C4:** the ring now runs out to 10 studs, 7.6 at its peak, on a band 0.55 studs wide. A deep warm (#7A4A12) is laid under it, the technique of AR52's day fix, so it holds on the pale street, and a faint fill sits inside it. It now reads all the way round your fighter: its left, near and right arcs, and its far arc behind your fighter's legs. Where that far arc crosses the keeper's robe it draws over it (the stage's known limit).
+- **S5:** the comet runs the lantern's whole path from the hold (frame -8, where the lantern starts to move) to Strike and on, a third as wide at its tail, the deep warm laid under it. The flare lands as its end and holds three frames. From the game's camera that whole path is still short, about an eighth of the screen's width from the hook toward its left edge, and it ends under the "Auto on" plate: the staging finding above decides more.
+- **Status:** targets. Nothing built. Content check: PASS.
+
 ## AR8. The effects pass
 
 For Faber and Modulo (research's request, 2026-11-13). It rests on the director's word of the same day (`docs/decisions.md`): "make it great look at some pro vfx examples and compare". It runs before phase 2 closes, and its pieces close at research's pass without the director's yes. **The measure:** `docs/research/vfx-reference.md`, its comparison table and its five rules, starting with the importance ladder.

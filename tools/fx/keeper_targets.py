@@ -35,15 +35,18 @@ biggest motion on the screen.
   the shaft, the sheet brightest at the hook end where it moves fastest and fading back to its tail. At Strike the
   shaft points nearly into the camera, so the sheet trails it through the follow-through, where it sweeps widest on
   the screen, to frame 8, and is gone by 12. Through the hold before it the upper shaft gathers a glint.
-- S5, the lantern's arc: the lantern's own swing drawn as a comet, a ribbon along its last ten frames widest at the
-  lantern, a white core down it; the lantern flares on Strike, and the shaft glints along its length for three frames.
+- S5, the lantern's arc (research's pick, redrawn once): the lantern's own swing drawn as a comet over its whole path
+  from the hold (frame -8), widest at the lantern and a third as wide at its tail, the deep warm laid under it and a
+  white core down it, so the arc itself is the read; the flare lands as its end on Strike and holds three frames, the
+  shaft glints along its length, and the tail catches up from frame 4, gone by 12.
 
 The challenge (KeeperChallenge: Lift 0.7333 s, Stamp 0.9667 s). Feel line: it hears you, lifts its face to you, and
 stamps its pole once. Both flare the lantern on Lift (it notices you), so only the stamp's read differs:
 - C3, the pulse: on Stamp a bead of light runs up the shaft from where it shows over your fighter's shoulder into the
   lantern in four frames, and the lantern bursts: a flash and a ring of light round it, facing the camera.
-- C4, the wide ring: on Stamp a thin ring of light runs out over the street from the pole's foot to six and a half
-  studs, wide enough to clear your fighter on both sides, a fainter one a breath behind it; the lantern jolts brighter.
+- C4, the wide ring (research's pick, with its must-fix): on Stamp a band of light runs out over the street from the
+  pole's foot to ten studs, the deep warm laid under it and a faint fill inside it, so it reads all the way round past
+  your fighter (7.6 studs at its peak), a fainter one a breath behind it; the lantern jolts brighter.
 
 The stage's lead is laid back over the light from its own picture (sRGB), and the HUD from the backdrop, so a tile
 taken while the HUD faded shows it whole. The keeper's own body isn't laid back: where light lies behind it, it draws
@@ -77,6 +80,12 @@ TARGETS = {  # name: (move, peak frame, strip frames)
     "C4_wide_ring": ("challenge", 8, [-16, -14, -10, -4, 0, 2, 4, 8, 12]),
 }
 LIFT = -14  # the challenge's Lift, in frames from Stamp
+HOLD = -8  # the swing's hold ends here, in frames from Strike: the lantern starts to move (0.03 studs a frame before)
+WARM_DEEP = hexc("#7A4A12")  # the warm laid under the light, so it holds on the pale street and sky
+DEEP_INK = 0.4  # its opacity at full strength
+RING_BAND = 0.55  # C4's band, in studs inside its radius
+RING_FILL = 0.22  # C4's fill at the band's inner edge, from nothing at its centre
+RING_REACH = 10.0  # C4's last radius, in studs: at its peak (frame 8) 7.6, its right arc clear of your fighter
 SHOWN = 0.45  # the share of the shaft from its foot above which it shows over your fighter's shoulder
 SMEAR_FROM = 0.25  # S4's sheet is drawn from here up: below SHOWN, your fighter's own picture covers it where it should
 CLIPS = ROOT / "build" / "handoff" / "Lamplighter" / "clips"
@@ -174,15 +183,33 @@ class KeeperStage(Stage):
         return Frame(tile, self.camera, base=read_png(tile))
 
 
-def ribbon(fr: Frame, pts, head_width, colour, k, core=True):
-    """A ribbon of light along pts (oldest first): widest at its head, to nothing at its tail, a white core down it."""
+def arc(fr: Frame, pts, head_width, colour, k):
+    """The comet along pts (oldest first), its whole length kept readable: widest at its head and a third as wide at its
+    tail, the deep warm laid under it so it holds over the pale sky and street, a white core down it."""
     n = len(pts)
+    widths = [head_width * (0.3 + 0.7 * (i / (n - 1)) ** 0.8) for i in range(n)]
     for i in range(n - 1):
-        t0, t1 = i / (n - 1), (i + 1) / (n - 1)
-        w0, w1 = head_width * t0 ** 1.4, head_width * t1 ** 1.4
-        fr.streak(pts[i], pts[i + 1], w0, w1, colour, k * (0.35 + 0.65 * t1), soft=0.7)
-        if core:
-            fr.streak(pts[i], pts[i + 1], w0 * 0.3, w1 * 0.3, WHITE, k * 1.2 * t1, soft=0.5)
+        t = (i + 1) / (n - 1)
+        fr.streak(pts[i], pts[i + 1], widths[i] * 0.8, widths[i + 1] * 0.8, WARM_DEEP, soft=0.7,
+                  ink=DEEP_INK * (0.5 + 0.5 * t))
+    for i in range(n - 1):
+        t = (i + 1) / (n - 1)
+        fr.streak(pts[i], pts[i + 1], widths[i], widths[i + 1], colour, k * (0.45 + 0.55 * t), soft=0.7)
+        fr.streak(pts[i], pts[i + 1], widths[i] * 0.3, widths[i + 1] * 0.3, WHITE, k * 1.1 * (0.3 + 0.7 * t), soft=0.5)
+
+
+def ground_ring(fr: Frame, centre, radius, band, k, steps=72, fills=5):
+    """A ring on the street round centre, as a field of the whole frame: `band` studs wide inside its radius at k, and a
+    faint fill inside it rising toward the band (RING_FILL at its edge)."""
+    field = np.zeros((fr.h, fr.w), np.float32)
+    edges = list(np.linspace(0, radius - band, fills + 1)) + [radius]
+    values = [RING_FILL * k * ((a + b) / 2 / radius) ** 2 for a, b in zip(edges[:-2], edges[1:-1])] + [k]
+    turn = np.linspace(0, 2 * math.pi, steps + 1)
+    for (a, b), v in zip(zip(edges[:-1], edges[1:]), values):
+        for t0, t1 in zip(turn[:-1], turn[1:]):
+            d0, d1 = np.array([math.cos(t0), 0, math.sin(t0)]), np.array([math.cos(t1), 0, math.sin(t1)])
+            quad(fr, [centre + a * d0, centre + b * d0, centre + b * d1, centre + a * d1], v, field)
+    return field
 
 
 def path_pts(st: KeeperStage, name, a, b, step=0.5):
@@ -237,13 +264,18 @@ def draw_swing(fr: Frame, st: KeeperStage, f, shape):
             edge = 1 - life(f, 3, 10)  # the leading edge, white on the blow, gone before the sheet
             fr.streak(st.shaft(head, SMEAR_FROM), st.shaft(head, 1.0), 0.05, 0.14, WHITE, 2.4 * edge, soft=0.5)
     if shape == "S5_lantern_arc":
-        lag = ease_out(life(f, -6, 0)) * (1 - life(f, 4, 12))
-        pts = path_pts(st, "Lantern", max(f - 10, -6), f, 0.5)
-        if len(pts) > 1 and lag > 0:
-            ribbon(fr, pts, 1.0, WARM, 1.5 * lag)
+        # research's redraw (2026-11-26): the comet runs the lantern's whole path from the hold, so the arc is the read
+        # and the flare lands as its end. Its tail stays at the hold until the blow is past, then catches up.
+        live = ease_out(life(f, HOLD, HOLD + 3)) * (1 - life(f, 5, 12))
+        head = min(f, 8.0)
+        tail = HOLD + life(f, 4, 12) * (head - HOLD)
+        pts = path_pts(st, "Lantern", tail, head, 0.25)
+        if len(pts) > 1 and live > 0:
+            arc(fr, pts, 0.8, WARM, 1.3 * live)
         p = st.point("Lantern", f)
-        fr.glow(p, 0.9, WARM, 0.6 + 0.9 * lag)
-        fr.core(p, 0.22, WHITE, 2.6 * (1 - life(f, 0, 6)) * float(f >= 0) + 0.6 * lag)
+        flare = float(f >= 0) * (1 - life(f, 3, 9))  # the arc's end: it lands on Strike and holds three frames
+        fr.glow(p, 0.9 + 0.5 * flare, WARM, 0.5 + 0.7 * live + 0.8 * flare)
+        fr.core(p, 0.24, WHITE, 0.5 * live + 2.4 * flare)
         if 0 <= f <= 3:  # the shaft glints along its length on the blow
             fr.streak(st.shaft(f, SHOWN), st.shaft(f, 1.0), 0.04, 0.07, WHITE, 2.2 * (1 - life(f, 0, 3)), soft=0.5)
     if shape == "S6_echoes":
@@ -292,16 +324,28 @@ def draw_challenge(fr: Frame, st: KeeperStage, f, shape):
             fr.ring(lamp, radius, 0.09 * (1 - 0.5 * life(b, 0, 8)), WARM, 1.6 * fade, normal=toward)
             fr.ring(lamp, radius, 0.035, WHITE, 1.6 * fade, normal=toward)
     if shape == "C4_wide_ring" and g <= 20:
+        # research's must-fix (2026-11-26): the ring reads all the way round, not only its arc left of your fighter: a
+        # wide band with the deep warm laid under it, so it holds on the pale street, and a faint fill inside it.
         foot = st.point("PoleFoot", 0).copy()
         foot[1] = st.ground + 0.05
+        field = np.zeros((fr.h, fr.w), np.float32)
+        rims = []
         for behind, strength in ((0, 1.0), (3, 0.45)):  # the ring and a fainter one a breath behind it
             h = g - behind
             if h < 0:
                 continue
-            r = 0.4 + 6.1 * ease_out(h / 16)
+            r = 0.4 + (RING_REACH - 0.4) * ease_out(h / 16)
             k = (1 - life(h, 4, 18)) * strength
-            fr.ring(foot, r, 0.12 * (1 - 0.5 * life(h, 0, 16)), WARM, 1.5 * k)
-            fr.ring(foot, r, 0.045, WHITE, 1.5 * k)
+            band = RING_BAND * (1 - 0.4 * life(h, 0, 16))
+            field = np.maximum(field, ground_ring(fr, foot, r, min(band, r), k))
+            rims.append((r, k))
+        if rims:
+            whole = (slice(0, fr.h), slice(0, fr.w))
+            soft = blur(field, 1.5)
+            fr.lay(whole, soft, WARM_DEEP, DEEP_INK)
+            fr.add(whole, soft, WARM, 1.6)
+            for r, k in rims:
+                fr.ring(foot, r, 0.05, WHITE, 1.6 * k)
         if g <= 4:  # the lantern jolts brighter with the stamp
             fr.core(lamp, 0.26, WHITE, 1.8 * (1 - life(g, 0, 4)))
 

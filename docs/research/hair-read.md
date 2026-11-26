@@ -205,6 +205,13 @@ The web study (sources below) says the catalog's look is in its texture: strands
   - Every bar hair has a signature outline (blind18: "the tufts sticking out, the tall spikes, the long side sweep").
   - The make holds at "close". What's left is the design's silhouette, drawn flat and picked before it is modelled (AR64's route).
 - **Read twice (blind17, blind18):** in the game's warm light the charcoal goes muddy brown, and the locks merge into one blob.
+- **Two signatures on the Shag** (blind19, 14:33; `rook_wedges(signature=...)`, takes SS and SL). The reader ranked them all "close":
+  - the wolf (long nape points, a piece before each ear) first, slightly;
+  - the plain take next;
+  - the sweep (the fringe swept to his right, its lead lock past the cheekbone) last, read as "busier, more thin spikes".
+  - The order check failed: the sweep sat in the middle row in both orders.
+  - The gap named first again: "nothing pushes past the head's outline enough to be recognised".
+- **Where this leaves it** (19 fresh reads): the make no longer holds it back. The bar's hairs are bold outlines standing far off the head. A Shag lying on the head reads "a soft helmet" beside them, whichever way it is made. Going bolder changes the director's pick (AR64, the Shag over the Crest and the Sweep), so it's the director's call.
 
 **The way, for Rook** (DESIGN, from the reads): `rook_wedges()` in `hair_ways.py`, class `Spikes`.
 - **The locks:** 24 rounded wedges over a smooth crown dome, from a whorl at the back of the crown, swept one way, a few big and many small.

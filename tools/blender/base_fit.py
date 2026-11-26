@@ -131,7 +131,7 @@ def fit_numbers():
     """Part 7's numbers as the game has them (Config.World.Fit, the kept back and the walk)."""
     text = WORLD.read_text(encoding="utf-8")
     block = text[text.index("\tFit = {"):]
-    block = block[:block.index("\n\t\tLayouts")]
+    block = block[:block.index("\n\t},")]   # to the block's own close
     num = lambda key: float(re.search(rf"\b{key} = ([\d.]+)", block).group(1))   # noqa: E731
     cam = re.search(r"Camera = \{ Back = ([\d.]+), Fov = ([\d.]+), Aspect = (\d+) / (\d+) \}", block)
     walk = float(re.search(r"\bWalk = (\d+)", text).group(1))

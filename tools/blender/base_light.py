@@ -9,7 +9,7 @@ paving and empty lots. This script holds the light, in the look's units, and wri
         each phase in Roblox's terms, as Config.Lighting.Clear takes them (Faber's seeds, tuned by playing)
   see   a check from the player's camera: the start camera in the base, or the crossing and the far gate on the Strip
 
-Run under the guard:  base_light.py -- <out> sky | see <base|strip> [day] [dusk] [night] [fast]
+Run under the guard:  base_light.py -- <out> sky | see <base|strip> [day] [dusk] [night] [fast] [base_plan's views]
 """
 
 import json
@@ -71,6 +71,9 @@ C = {
                   clouds=("#7A8CCC", "#26386E", 0.02, 0.18, 0.62)),
 }
 GLOW, LIGHTS = 1.5, 1.3   # in every phase: the kit's and the floors' glow, and the pools', times the game's own
+# AR65: a plot's own pieces glow at Config.Lighting.Glow.Base (1.2) in place of the kit's 2.4, and its floors at
+# BaseFloor (0): the base's own share of the kit's, as the look renders it
+PLOT_GLOW, PLOT_FLOOR = 1.2 / 2.4, 0.0
 SHARD = strip.BRIGHT["CrossingShard"]   # the crossing's shard keeps its own glow: none of the lift (research's pick, fix 3)
 MAPS = dict(base.MAPS)
 FACES_NAME = {"dusk": "Dusk", "night": "Night"}
@@ -95,7 +98,8 @@ def light(phase):
     """The look and the kit's glows set for a phase: what a render sees."""
     d, s = direction(phase), SHARES[phase]
     for name, (tint, strength) in MAPS.items():
-        base.MAPS[name] = (tint, strength * GLOW * (s["glow"] if name == "Kit" else s["floor"]))
+        base.MAPS[name] = (tint, strength * GLOW * (s["floor"] * PLOT_FLOOR if name in base.FLOOR_AT
+                                                    else s["glow"] * PLOT_GLOW))   # a machine's wear as the kit's
     strip.BRIGHT["CrossingShard"] = SHARD / GLOW
     look.DIRECTIONS["M"] = d
     return d
@@ -141,13 +145,13 @@ def skies(out: Path):
     print(json.dumps(numbers["phases"]))
 
 
-def see(out: Path, where, phases, fast):
+def see(out: Path, where, phases, fast, views=()):
     for phase in phases:
         folder = out / where / phase
         folder.mkdir(parents=True, exist_ok=True)
         light(phase)
         if where == "base":
-            plan.see(folder, 1, fast, False, ["home"])
+            plan.see(folder, 1, fast, False, list(views) or ["home"])   # or base_plan's named views
         else:
             base.write_pictures(folder / "maps")
             block.BASE_MAPS = folder / "maps"
@@ -161,7 +165,8 @@ def main():
     if args[0] == "sky":
         skies(out)
     else:
-        see(out, args[1], [a for a in args[2:] if a in C] or list(C), "fast" in args)
+        see(out, args[1], [a for a in args[2:] if a in C] or list(C), "fast" in args,
+            [a for a in args[2:] if a not in C and a != "fast"])
 
 
 if __name__ == "__main__":

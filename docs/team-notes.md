@@ -12,9 +12,9 @@ Each teammate rewrites its own row: one to three lines. Open asks sit under "Wai
 **Faber (builder).** 2026-11-26, 15:25 by the clock, on Opus 5.5. Committed: TR69 C built Off (`Combat.Hands`: Call, the slip, Open, the Finisher, Auto's wait, the read-out, in grey), its case 21 of 21 in Studio; the two stale cases Scintilla found (B1's warm counts the uploaded pictures; the ward's rows) fixed, 29 and 24 passing. Earlier today: TR65 to TR68, TR69 A, B built Off, TR71 A, AR62's tokens, AR65 step B. Sonus's LightHit (A1 through the Lead bus, peak 0) stays open.
 - **Next:** TR69 B's pace in the Festival place, before (Off) and after (On), now. Then TR69 D and E, TR71 B to D, and TR59's retake for research.
 
-**Modulo (assets).** 2026-11-26, 14:59. Nothing running, no lock held.
-- **AR65's targets, for research's pick** (`build/handoff/Base/ar65_targets/`, the entry's step 2): A has graphite machines on a pale stone floor, B ivory machines on slate, each beside today's frame at phone size and in grey. Made and self-reviewed; my read is A. Nothing uploaded.
-- **AR64's hair** stays at "close" after 19 blind reads. A bolder cut changes the director's pick, so that's asked of the director (`docs/research/hair-read.md`). **Next:** AR56's cloud sea, then "Clips follow the model".
+**Modulo (assets).** 2026-11-26, 15:26. Nothing running, no lock held.
+- **AR65's kit, for Faber's install** (the entry's step 3; `build/handoff/Base/`): target A in the maps and the plan, meshes unchanged. One accent per machine, the pale stone floor, the yard unlit, and the Door's rim under the Mill; the cut is dropped from the plan. The plates' spec is in the entry, for Faber. Made and self-reviewed; content check PASS; nothing uploaded.
+- **AR64's hair** stays at "close", asked of the director (`docs/research/hair-read.md`). **Next:** AR56's cloud sea, then "Clips follow the model".
 
 **Scintilla (effects).** 2026-11-26, 15:27. AR52's ward was taken in a real fight for its final. It reads; the glance's cream glints clash, and I proposed recolouring them (AR52's entry). Waiting on research's verdict. AR7's C4 missed its main read in the game (a faint swirl on pale stone): the technique changes to a painted band. TR70 B: today's reveal, the figure mattes and the world frame are captured.
 - **Next:** TR70 B's targets on the real mattes, for research's pick in pairs; then C4's painted band, offline, with its take on my next Studio turn.

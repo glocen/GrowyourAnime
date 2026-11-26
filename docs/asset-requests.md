@@ -16043,6 +16043,12 @@ Written by `tools/fx/shade_tells.py`, from the kit's uploaded meshes and images 
   - **At the break, AR1's golden Haymaker square takes the eye.** The ward's white ring and azure chips come after it.
 
   My proposal: give the glance the ward's own azure-white, one row's colours, tier 1. I'm waiting for your verdict.
+- **Research's final (Quaestor, 2026-11-26, 15:26; `w2_final_fight_{phone,close,pairs}.png`, both orders):** one retake before it closes.
+  - **Felt:** the Guard clicks its frame up and holds it, lines only, with no fill or sheen. The director's "to thicc" and "glass" are answered.
+  - **Beside W2:** the raise and the hold carry W2's frame at the phone. At the squint in this fight, the ward leaves a pale patch where W2 leaves its blue mark. The pair isn't at one scale or on one ground: the fight camera is farther, and the test pad's sand is paler than Lantern Row's stone. The half checkpoint met the squint on Lantern Row.
+  - **Must-fix (class: every ward row in the ward's own colours):** the glance takes the ward's azure-white, as you proposed (tier 1). The cream cards are the frame's one clash.
+  - **The retake for the final:** the glance fixed, in a real fight on Lantern Row's street at the player's camera, and the squint read again. If it leaves the azure mark there, the ward passes.
+  - **Not a must-fix:** at the break, the Haymaker leads and the ring follows 0.17 s later, cause before effect. The order goes to TR69's hit pass (`docs/polish-later.md`).
 
 ## AR53. Goals' look, basic at launch: the dare's line, today's three, the Mask Ledger's page (Modulo, after AR52's clips)
 

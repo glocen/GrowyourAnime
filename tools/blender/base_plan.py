@@ -33,10 +33,9 @@ The levels (launch caps the base at 3):
                  Breaker and the Festival Door, nearer the gate. The Door's side holds bays 1 and 2, the Training
                  machine and the Forge; the Condenser stands at the back, between the generator and the Breaker; the
                  battery stands behind the Breaker. Part 7's tests hold every footprint 12 studs from the next at
-                 every stage (`fit`). Two flood masts flank the way in before the ring, a transformer stands at the
-                 back of each open bay, the pylons run down the inside of each side wall in the gaps between the
-                 outer grounds, and nothing else is stood: no site, no stock. What the base will wake lies asleep
-                 where it will stand, on lines with no current yet.
+                 every stage (`fit`). Nothing else is stood: no site, no stock, and since AR65 (research's cut,
+                 2026-11-26) no grid: the pylons and their lines, the flood masts and the transformers are gone, and
+                 the battery is folded into the Mill. What the base will wake lies asleep where it will stand.
   2 and 3        what they add is base_levels.py's (plan.json, machines.baseLevels): nothing a player has seen goes
                  away.
 """
@@ -68,18 +67,15 @@ TOWER_AT = (PLOT / 2 - TOWER_LOT[1] / 2, PLOT + TOWER_LOT[0] + TOWER_LOT[1] / 2)
 # the generator (research, 2026-11-16). The builder sets its across's sign toward the crossing, plot by plot.
 GENERATOR, BREAKER, DOOR, BATTERY, TRAINING = base.GENERATOR, base.BREAKER, base.DOOR, base.BATTERY, base.TRAINING
 SHOWCASE = (14.0, 4.9)     # the showcase's plinth, just inside the gate, beside the way in: across, in (TR22)
-LAMP = ("BreakerLamp", *BREAKER, 10.0, "#8CF6FF")   # the Breaker's own light, over the chambers
-WELL_LIGHT = ("VoidWell", *GENERATOR, 1.6, "#B98CFF")   # the void's light under the generator, out of its well
+# Each in its machine's own accent, lit as its lights are (AR65, base_kit.WEARS): it was the break's cyan and the void's violet
+LAMP = ("BreakerLamp", *BREAKER, 10.0, base.mix_hex(base.WEARS["Breaker"], "#FFFFFF", 0.55))   # the Breaker's own light, over the chambers
+WELL_LIGHT = ("VoidWell", *GENERATOR, 1.6, base.mix_hex(base.WEARS["Mill"], "#FFFFFF", 0.55))   # the light under the Mill, out of its well
 DOOR_TURN = base.DOOR_TURN   # the Door's turn: its mouth (-Y) looks down the way in
 # The Door's two lights, in its own frame (across, along its Y, up): one inside the tunnel, one on the floor just past
 # its step, so the walk in is warm (AR15, section 7; take A's light before its face is left out, for a phone's count)
 DOOR_LIGHTS = {"DoorInside": (0.6, 3.0, 6.4), "DoorMouth": (0.0, -3.6, 0.8)}
 DOOR_WARM = "#FFC27A"
 DOOR_SPIN = {f"DoorRing{k}": ring[2] for k, ring in enumerate(base.machines.RINGS, 1)}
-# A transformer at each open bay's back, at its ground's corner on the heart's side: toward the middle line from the
-# bay's spot, and behind its frame. Outside the generator's own clear, where level 2's ring and the generator's own
-# lie on the deck
-TRANSFORMER = (3.2, base.SLEEPS + 2.6)
 LEVEL_NAMES = {1: "the yard"}
 # What isn't a kit piece: flat colours for the builder's own slabs and boxes, from the kit's swatches.
 GROUND = {"lot": "#7C7C8E", "ground": "#6E7290", "note": "the lot is the plot's own floor under the kit's floors: the deck tile "
@@ -127,9 +123,6 @@ def machines(level=1):
     for i in range(mill.STEPS):
         made.append((f"GeneratorArc{i + 1}", *GENERATOR, 0.0, 0.0, f"the gauge's step {i + 1} of {mill.STEPS}, shown while the generation lights it"))
     made.append(("GeneratorDemand", *GENERATOR, mill.AXLE, 0.0, "the demand's mark, turned about the axle by the demand's share"))
-    made.append(("BatteryRack", *BATTERY, 0.0, 0.0, "the battery"))
-    for index, (x, y) in enumerate(base.machines.SEATS[:base.machines.CELLS_AT[level]]):
-        made.append(("BatteryCell", BATTERY[0] + x, BATTERY[1] - y, base.machines.SEAT, 0.0, f"the battery's cell {index + 1}"))
     made.append(("Door", *DOOR, 0.0, DOOR_TURN, "the Festival Door: its step, its front ring and the name's plate, its "
                  "mouth looking down the way in"))
     rings = len(base.machines.RINGS)
@@ -166,7 +159,7 @@ def spread(level=1):
     named.update(SLEEPING)
     names = sorted(named)
     near = min((math.dist(named[a], named[b]), a, b) for i, a in enumerate(names) for b in names[i + 1:])
-    reach = {"Showcase": 3.05, "FloodMast": 1.7, "Transformer": 1.95}   # half a piece's width, of what stands near the way
+    reach = {"Showcase": 3.05}   # half a piece's width, of what stands near the way
     inside = [name for name, x, along, _ in plan(level)[0]
               if name in reach and abs(x) - reach[name] < base.AVENUE / 2 and -along < GENERATOR[1]]
     inside += [name for name, at in named.items() if abs(at[0]) < base.AVENUE / 2 + 5.0 and at[1] < GENERATOR[1]]
@@ -225,24 +218,8 @@ def plan(level=1):
             put("Wall", side * k, 0, turn)
         if last is not None:
             put("WallHalf", side * last, 0, turn)
-    # the lines: a pylon every span down the inside of each side wall, from the front to the back, and its lines:
-    # the base's length and its width seen from the Strip, over everything. Each stands in a gap of the outer column
-    across, first = base.PYLON
-    for side in (-1, 1):
-        for inward in range(int(first), int(yard), int(base.SPAN)):
-            put("Pylon", side * across, inward, 90)
-            if inward > first:
-                put("PowerSpan", side * across, inward, 90)
-    # the floods: a mast each side of the way in, before the ring's open ends, looking toward the gate: the generator
-    # stands between them from the gate
-    inward, reach, height = base.FLOOD
-    for side, name in ((-1, "Left"), (1, "Right")):
-        put("FloodMast", side * base.flood_across(), inward, 0)
-        lights.append((f"Flood{name}", side * base.flood_across(), -(inward - reach), height, "#EAF6FF", "spot"))
-    # the transformers: one at each open bay's back, at its ground's corner on the heart's side
-    # a pair for every two open bays (research, 2026-11-15, AR14)
-    for x, inward in BAY_LOTS[:base.BAYS_AT[1]]:
-        put("Transformer", x - math.copysign(TRANSFORMER[0], x), inward + TRANSFORMER[1], 0)
+    # AR65 (research's cut, 2026-11-26): no pylons and lines, no flood masts and no transformers. A real power grid
+    # against the void machines (the director, 2026-11-15 and 16); the masts broke the Mill's outline from the gate
     lights.append((*LAMP[:2], -LAMP[2], *LAMP[3:], "point"))
     lights.append((*WELL_LIGHT[:2], -WELL_LIGHT[2], *WELL_LIGHT[3:], "point"))
     for name, (x, y, up) in DOOR_LIGHTS.items():
@@ -363,9 +340,9 @@ def write_plan(out: Path):
         lighting="the base stands under Lantern Row's dusk: the same sky, ambient, fog and bloom "
                  "(build/handoff/LanternRow/sky/lighting.json). The conduits, the wall's line and the lamps are "
                  "drawn for dusk, and under the place's daylight they don't read.",
-        lightsNote="a SpotLight straight down from each flood mast's head, a PointLight over the Breaker's "
-                   "chambers and one low in the generator's well, in the void's violet, Shadows off; everything "
-                   "else that glows is in a glow picture",
+        lightsNote="a PointLight over the Breaker's chambers in its violet and one low in the generator's well in the "
+                   "Mill's cyan, the Door's two and the showcase's, Shadows off; everything else that glows is in a glow "
+                   "picture",
         collision="each piece's `collision` in the manifest; the court's floor and the lines are look only"),
         indent=1), encoding="utf-8")
     for level, entry in levels.items():

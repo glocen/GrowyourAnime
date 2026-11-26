@@ -138,7 +138,7 @@ Real time, in the world, automatic [D: one automatic combat lead].
 - **Breaking draws power** ("The base", "Power"). With less than its rated power, the Breaker slows in proportion; it never stops dead and never loses a shard.
 - **Infusion is voltage** [D, 2026-11-15: names, "let use real electrician words"; effect, "Faster break"]. Stored energy from the battery, put into one shard, breaks it faster: Low voltage halves its time left, and High voltage breaks it at once. A shard takes it once, and its odds never change. The price follows the time saved: the energy its chamber would still draw over that time, plus a premium, so it belongs on the slow shards. A shard it would save less than a minute isn't offered it (`tools/balance/seeds.json`, "voltage"). Not offered on Named shards. Luck from every source adds into one number with one ceiling [D: luck never comes from the Rift].
 - **The Breaker works while the player is away,** as far as the battery lasts.
-- **The reveal** is the game's signature moment: the shard cracks along its own lines, the silhouette shows before the colours, then the name. Rarer is longer and louder, never slower to skip.
+- **The reveal** is the game's signature moment: the shard cracks along its own lines, the silhouette shows before the colours, then the name. **News sets its length, rarity its loudness** [research, 2026-11-26, tier 2, on the director's word of 14:06; `docs/test-requests.md`, TR70]. A copy of Common to Rare plays a 0.7 s flash that ticks its star bar, a new Voidkin plays in full, and a new Rare or better plays as an event. One tap ends any reveal, and rarer is never slower to skip. Two or more ready shards open together ("Open all"), the best last.
 
 ## The base
 

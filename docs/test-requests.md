@@ -5466,3 +5466,42 @@ From the director's paste of 2026-11-26 (the register). Each claim was checked a
 - The keeper's Hard rules are those in section C.
 
 - **Not in this piece:** heal marks, and full health at a run's start (the director's health words); props on the Shade (the director's "stay as they are"); run modifiers; the cut-in; every finished look and sound.
+
+## TR70. The break and its reveal, overhauled (research, 2026-11-26, 14:17; overhaul 2 of `docs/production-plan.md`, "The overhaul"; for Faber, with Scintilla's targets)
+
+- **Why** (`docs/research/cloud-2026-11-24/reveal-and-showcase.md`, MEASURED on our pools):
+  - by the tenth rolled break, 9 reveals in 10 are copies;
+  - a copy plays the first one's whole ceremony, and takes 1.3 s and two taps at best;
+  - the copy shows no progress;
+  - ready shards open one at a time.
+- **The look:** the director's word after Anime Crusaders' pull ("this is what we need", 11-24) asks for a banner's moment: a full-screen void, then the Voidkin standing large on a burst in its rarity's hue (`docs/research/anime-crusaders-ui.md`, "Lessons for us").
+- **Feel line:** your shard splits and the screen drops into the void; a new Voidkin lands huge on a burst of its rarity's colour, a frame worth a screenshot, while a copy is a one-second tick on its star bar.
+
+**A. The rules,** on today's stage, as a block:
+- **Three forms by news,** chosen from the server's answer (`reveal-and-showcase.md`, "Proposal": its two tables are the seeds):
+  - **Flash** for a copy of Common to Rare: 0.7 s, rungs at twice the speed, portrait in colour, the star bar ticks up by one, and it closes by itself;
+  - **Full,** as built, for a new Common or Uncommon and a copy of Epic and up;
+  - **Event** for a new Rare and up and the account's first reveal: the built time plus the tier's extra beat, then a longer hold.
+- **One tap ends a reveal.** The skip opens at 0.4 s once the account has seen three reveals (1.0 s before that). Rarer is never slower to skip. On a copy, the plate closes itself after 0.8 s. On a new Voidkin, it waits for the tap.
+- **The plate says how far:**
+  - "{rarity} · {class} · {element}";
+  - what it's good at, in one line (`docs/ui.md`, screen 2);
+  - the copies, with numbers: "★1 · 3 of 4 copies", or "Star ready" when a star's cost is met, spent by hand as today;
+  - "No. {n} · {count} exist" on a new one (`docs/design.md`, "How many exist").
+  - On a new Voidkin, Lead and Work beside Continue.
+- **Open all,** when two or more shards are ready:
+  - one server step opens them all;
+  - a repeated or interrupted request never opens one twice or loses one (logic and fuzz cases, as chests' Open all has);
+  - up to four split in a row, the lowest first, 0.25 s apart; copies play as Flash and the best plays last in its own form;
+  - a "2 of 4" strip along the top, then one summary sorted by rarity, copies stacked;
+  - the button reads "Open all", the chests' own word.
+- **The gates, timed in Studio:** the tenth reveal, a copy, is done 1.0 s from the tap or less. Four ready shards holding one new Voidkin are done in 4 s or less.
+
+**B. The stage's look, targets first** (`AGENTS.md`, "Every action, world, effect and screen"):
+- Scintilla brings two or three targets: the peak frame and a strip of the life of the void moment, the split and the burst, for a new Rare and a copy of a Common, in the game at phone size, beside today's.
+- **The technique to try first:** a full-screen ViewportFrame with its own camera, so the player's camera is never touched. The figure stands at 60 to 70% of the screen's height on a radial burst in its rarity's hue, with a ring of light at its feet.
+- **The hue:** the rarity's, held to the burst. Violet only where the void itself shows (`docs/research/examples.md`, "too purple").
+- Research picks in pairs. The build starts only after the pick.
+- Today's stage stays beside it until the pick.
+
+**Not in this piece:** the Voidkin's own line and epithet (they need the director's ear first, given the "corny" rejections); the Index; a column of light from the Breaker in the world; the cut-in; new sounds (TR64's ear first); pity and banners.

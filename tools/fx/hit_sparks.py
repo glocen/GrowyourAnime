@@ -80,10 +80,12 @@ def scaled(seq, k):
     return [[t, round(v * k, 3)] for t, v in seq]
 
 
-def sheet_rows(prefix, sheet, life, size, break_at, rotation, why):
+def sheet_rows(prefix, sheet, life, size, break_at, rotation, why, colours=None):
     """A kit sheet as one particle in its three passes, facing the camera, from frame 0, all three at one angle
     (`rotation`, degrees): a range would roll each pass its own, so line, fill and dark would part.
-    size: its studs over life as [[t, studs], ...]; break_at: where its fill starts toward the cool tone."""
+    size: its studs over life as [[t, studs], ...]; break_at: where its fill starts toward the cool tone.
+    colours: (line, fill, cool, dark) in place of the sparks' own, for an effect in its own hue (the Guard's ward)."""
+    line, fill, cool, dark = colours or (LINE, FILL, COOL, DARK)
     common = {
         "Lifetime": [life, life],
         "Speed": [0, 0],
@@ -94,9 +96,9 @@ def sheet_rows(prefix, sheet, life, size, break_at, rotation, why):
         "LightInfluence": 0,
     }
     passes = {
-        "Line": ({"Color": c3(LINE), "LightEmission": 1, "ZOffset": FRONT + LAYER}, f"fx_{sheet}_line"),
-        "Fill": ({"Color": [[0, c3(FILL)], [break_at, c3(FILL)], [1, c3(COOL)]], "LightEmission": 0.6, "ZOffset": FRONT}, f"fx_{sheet}_fill"),
-        "Dark": ({"Color": c3(DARK), "LightEmission": 0, "Transparency": DARK_TRANSPARENCY, "ZOffset": FRONT - LAYER}, f"fx_{sheet}_dark"),
+        "Line": ({"Color": c3(line), "LightEmission": 1, "ZOffset": FRONT + LAYER}, f"fx_{sheet}_line"),
+        "Fill": ({"Color": [[0, c3(fill)], [break_at, c3(fill)], [1, c3(cool)]], "LightEmission": 0.6, "ZOffset": FRONT}, f"fx_{sheet}_fill"),
+        "Dark": ({"Color": c3(dark), "LightEmission": 0, "Transparency": DARK_TRANSPARENCY, "ZOffset": FRONT - LAYER}, f"fx_{sheet}_dark"),
     }
     rows = {}
     for name, (own, image) in passes.items():

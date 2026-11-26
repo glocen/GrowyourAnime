@@ -65,6 +65,8 @@ FLOOR = -ROOT_HEIGHT + 0.04  # a hair over the street, from the root
 AZURE = (63, 140, 255)  # the ward's light
 AZURE_DEEP = (22, 60, 140)  # W2's ink, #163C8C: the hair of deep azure laid under the light, so it holds on the pale deck
 AZURE_RIM = (200, 226, 255)  # a white core with the hue in it: the glance's needles
+WARD = (AZURE_RIM, AZURE, AZURE_DEEP, AZURE_DEEP)  # every ward row in the ward's own colours, the glance's and the
+# break's sheets too: the sparks' cream read as beige cards beside the azure frame (research's final, 2026-11-26)
 WARD_EXT = 2.2  # studs from the ward's middle to its pictures' edges (tools/fx/ward_targets.py, EXT)
 WARD_DRAW = 8  # frames it's drawn on before Raise, and drawn off after Drop (W2's beats)
 INK_SEEN = 0.3  # the ink's Transparency through the hold
@@ -191,7 +193,7 @@ def guard_shield():
 def guard_glance():
     rows = {
         **sheet_rows("Glint", "glint", 0.22, [[0, 1.2], [0.15, 1.8], [1, 1.6]], 0.85, 30,
-                     "where the blow meets the paper: a glint, small, a glance and not a hit"),
+                     "where the blow meets the paper: a glint, small, a glance and not a hit", colours=WARD),
         "Skate": needles(5, [18, 28], [0.1, 0.18], 75, 0.7, 0, direction="Back", colour=AZURE_RIM),
     }
     rows["Skate"]["Why"] = "the needles skating back off the shield toward the attacker: the blow turned aside"
@@ -201,9 +203,9 @@ def guard_glance():
 def guard_break():
     rows = {
         **sheet_rows("Tear", "ring", 0.32, [[0, 2.4], [1, 5]], 0.34, 0,
-                     "the shield torn open: a ring out from its middle"),
+                     "the shield torn open: a ring out from its middle", colours=WARD),
         **sheet_rows("Puff", "puff", 0.45, [[0, 2], [1, 3.4]], 0.45, 40,
-                     "the paper's dust where it was, a breath after"),
+                     "the paper's dust where it was, a breath after", colours=WARD),
         "Light": {
             "Kind": "Light",
             "Range": 7,

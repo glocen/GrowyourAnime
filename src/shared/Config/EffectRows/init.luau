@@ -19,7 +19,7 @@ EffectRows.Schema = "rows/1"
 EffectRows.Top = { Schema = true, Effect = true, Why = true, Area = true, Grey = true, Action = true, Free = true, World = true, Rows = true } :: { [string]: boolean }
 EffectRows.Fields = {
 	Kind = true, On = true, Part = true, Look = true, Grey = true, Image = true, Color = true, Range = true, Emitter = true,
-	Emit = true, Tracks = true, Bands = true, From = true, Body = true, Ground = true, Hold = true, Turn = true, Beam = true,
+	Emit = true, Tell = true, Tracks = true, Bands = true, From = true, Body = true, Ground = true, Hold = true, Turn = true, Beam = true,
 	Trail = true, Low = true, High = true, Like = true, FootFade = true, Taper = true, Cue = true, Relight = true, Why = true,
 } :: { [string]: boolean }
 

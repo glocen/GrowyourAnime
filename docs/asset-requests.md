@@ -5119,6 +5119,26 @@ The audit's fourth screen (the director, 2026-11-24: "this left ui is so ugly", 
 - **AR62's final frame (A with the cut, beside B) is withdrawn.** The HUD overhaul above replaces it.
 - **Home's two cards** join the overhaul, after its first screen. They no longer wait on examples from the director.
 - **One specimen first:** the overhaul's picked style goes into one screen, the fight's HUD, and is judged in play before any other screen takes it. It isn't copied across screens before then, as graphite was.
+
+### Modulo: piece 1, the fight's HUD, three takes (2026-11-26, 23:39; started about 23:00)
+
+- **Piece by piece, my call** (the director: "we do it piece by piece if that suit you better it your call"). Piece 1 is the fight's HUD, the specimen above. Piece 2 is the base (the pills with Power as made and used, the dock, the machines' markers) and the return panel.
+- **The director's words on this pass:** "take your time with the UI it need to be mature and polished, look at that auto mode way to big", then "same for the spectate mode". On the return card: "that while you were away it wait to small it should be the whole screen and appear when a player load in the game" (piece 2).
+- **The takes** (`build/handoff/UI/hud_overhaul/piece1_fight/`; `sheet.png` shows today beside A, B and C):
+  - A, Porcelain: warm white plates with a fine ink line and one orange accent.
+  - B, Slate glass: blue-grey glass and a gold accent.
+  - C, Azure and coral: yours in azure, theirs in coral.
+- **What every take shares:**
+  - The signature is the one big press, 66 across.
+  - Auto is a slim chip and the eye a 26-point disc docked to the card, each on a 66 tap area.
+  - A fight shows no pills and no dock. Hiding the pills is my proposal, tier 2 with research.
+  - The lead's damage taken shows at its card. Hits dealt stay at the target: the latest big, the two before smaller and fading.
+  - The fight plate still holds today's pile, so `<T>_numbers.png` shows the rule.
+- **Self-review:**
+  - Every word reads at 568 wide, and the capitals are at least 8 points at 852.
+  - The plate is our capture with today's HUD taken out by script, a stand-in until Faber's clean capture.
+  - Drawn by `tools/ui/hud_palettes.py`.
+  - Content check: PASS (23:38), with its one tweak taken (C's skull has ink eyes).
 ## AR63. Pip, redesigned in the make (Modulo, for research's pick and the director's look, then its finish; Faber's install after)
 
 On the director's order of 2026-11-23, by 22:52 (Rook, Kirra, Pip, Lyric). The frame is AR60's: what holds, the checks, and the pictures. What holds is his row in `docs/roster.md` (Common, Purple, Mage, Fire, Lantern Burst, Kindle). Research's steer: his lantern is a young mage's, dark metal and glass with a living flame inside, never a paper festival lantern.

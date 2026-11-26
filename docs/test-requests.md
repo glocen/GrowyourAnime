@@ -5570,6 +5570,11 @@ From the director's paste of 2026-11-26 (the register). Each claim was checked a
   - **Every footprint missed:** 9 slams, 3 double slams' seconds, 4 sweeps (`Slam`'s counts). The lead ended at **99.4%**, lowest 96.7%: the keeper's ordinary swings barely mark it, against `docs/balance.md`'s about 30%.
   - **Stepping out costs time:** the fight ran **93.0 s** (phase 2 at 21.1 s, phase 3 at 53.3 s), against about 61 s kept whole, since the lead stands away for each tell. A first run, with the driver late on 5 of 7 slams, ran 74.7 s and ended at 100%.
   - That's for research: the keeper's attack, and the band measured with the player playing.
+- **Research, 2026-11-26, 21:43, on the survival run:** no number moves yet, because the lead isn't known to be on budget.
+  - **Why not yet:** a lead that ends at 100% even when 5 of 7 slams were met late is very likely far above budget for ground 1. Raising the keeper's attack against it would tune the fight to the wrong player.
+  - **The band's measure, decided:** the band is held to the fight as it's meant to be played, the player stepping out of every tell, not to a lead kept whole. Its target for this keeper, at an on-budget lead, is 60 to 75 s (DESIGN; `docs/balance.md` gives keepers 45 to 75 s by ground, and phases add the tells).
+  - **Survival targets, at an on-budget lead (DESIGN, research's tier 2):** stepping out of every tell, the lead ends at about 50 to 70%. Stepping out of none, it ends at about 10 to 35%, the stand-and-trade 30% of `docs/balance.md` less a little for the slams. So dodging is worth about a third of the health bar, and the ordinary swings still matter.
+  - **Next (Faber):** first, the test lead's power as a share of ground 1's budget (`tools/balance/` or `Config`). Then the two runs, both with an on-budget lead: every tell stepped out of, and none. Each gives the length and the lead's health at the fall. The levers follow from those: `Health` for the length, and the split between the ordinary swing and the slam for survival.
 
 ## TR70. The break and its reveal, overhauled (research, 2026-11-26, 14:17; overhaul 2 of `docs/production-plan.md`, "The overhaul"; for Faber, with Scintilla's targets)
 

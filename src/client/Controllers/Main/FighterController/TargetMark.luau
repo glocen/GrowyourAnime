@@ -151,6 +151,19 @@ function TargetMark.Top(model: Model): number?
 	return (apexAt :: Vector3).Y + (look.Centre + look.Side / 2 + look.Bob.Studs) * scale
 end
 
+-- Where the mark stands settled (its drop done), in the world: its middle, and half its side with its bob's travel, so
+-- a number placed clear of it (Effects' numbers, Scintilla's must-fix of 20:21: a critical placed under the one before
+-- it stood on the mark) stays clear while it bobs. Nil while no mark shows.
+function TargetMark.Box(): { Centre: Vector3, Half: number }?
+	local model = shownFor
+	if gui == nil or not gui.Enabled or model == nil or apexAt == nil then
+		return nil
+	end
+	local look = EffectsConfig.Mark
+	local scale = model:GetScale()
+	return { Centre = (apexAt :: Vector3) + Vector3.new(0, look.Centre * scale, 0), Half = (look.Side / 2 + look.Bob.Studs) * scale }
+end
+
 function TargetMark.Read(): { [string]: any }
 	return {
 		Shown = gui ~= nil and gui.Enabled,

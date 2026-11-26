@@ -2023,6 +2023,19 @@ local function place(c: Counting, numbers: Numbers)
 		end
 		return { X = v.X / scale + other.Shift.X, Y = y, W = w * grow, H = tall }
 	end
+	-- The target's mark (TR69 A's R4) is taken too, at every moment: no number is placed on it, a critical under the
+	-- one before it included. Its box is shrunk by the clear, so a number touches it and never stands on it.
+	local markBox: Hud.Box? = nil
+	local mark = TargetMark.Box()
+	if mark then
+		local up = camera:WorldToViewportPoint(mark.Centre + Vector3.new(0, mark.Half, 0))
+		local down = camera:WorldToViewportPoint(mark.Centre - Vector3.new(0, mark.Half, 0))
+		if up.Z > 0 and down.Z > 0 then
+			local tall = math.abs(down.Y - up.Y) / scale
+			local side = math.max(0, tall - config.Clear)
+			markBox = { X = (up.X + down.X) / 2 / scale, Y = (up.Y + down.Y) / 2 / scale, W = side, H = side }
+		end
+	end
 	-- Each moment ahead (Config.Hud.Numbers.Ahead, from its birth): where it and every other number will be then.
 	local moments: { Hud.Moment } = {}
 	for _, ahead in config.Ahead do
@@ -2037,6 +2050,9 @@ local function place(c: Counting, numbers: Numbers)
 						table.insert(taken, b)
 					end
 				end
+			end
+			if markBox then
+				table.insert(taken, markBox)
 			end
 			table.insert(moments, { Want = want, Taken = taken })
 		end

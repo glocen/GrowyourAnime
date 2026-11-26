@@ -6,6 +6,8 @@
 -- Rules.Fight's (its logic case). Apart from Cases, whose size the type check can't take more of.
 
 local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local GuiService = game:GetService("GuiService")
 
 local Shared = game:GetService("ReplicatedStorage").Shared
 local Animations = require(Shared.Config.Animations)
@@ -19,6 +21,7 @@ local Clips = require(Main.FighterController.Clips)
 local TargetMark = require(Main.FighterController.TargetMark)
 local MaskGlint = require(Main.FighterController.MaskGlint)
 local Helpers = require(script.Parent.Helpers)
+local Effects = require(Main.FighterController.Effects)
 
 local HitCases = {}
 
@@ -144,6 +147,33 @@ function HitCases.Cases(): { any }
 					local top = TargetMark.Top(body)
 					t.Check("its numbers are born over the mark", top ~= nil and apex ~= nil and top > (apex :: Vector3).Y + mark.Centre * body:GetScale(),
 						if top and root then string.format("the mark's top %.2f over the root", top - root.Position.Y) else "")
+					-- a critical born while an ordinary number stands over the mark is placed clear of it too (Scintilla's
+					-- must-fix of 20:21: it took a slot below the first, onto the mark), touching it at most
+					local box = TargetMark.Box()
+					local view = workspace.CurrentCamera
+					if root and box and view then
+						Effects.Number(root, "SelfTest@Mark1", 37, { Style = "Dealt" }, Combat.Numbers)
+						t.Wait(0.2) -- risen a little, as in play: the slots above it are taken along its rise
+						Effects.Number(root, "SelfTest@Mark2", 2307, { Style = "Critical" }, Combat.Numbers)
+						for _ = 1, 3 do
+							RunService.RenderStepped:Wait()
+						end
+						local onBody = Effects.Counting[root]
+						local crit = if onBody then onBody["SelfTest@Mark2"] else nil
+						local up = view:WorldToViewportPoint(box.Centre + Vector3.new(0, box.Half, 0))
+						local down = view:WorldToViewportPoint(box.Centre - Vector3.new(0, box.Half, 0))
+						local inset = GuiService:GetGuiInset()
+						local across, tall = 0, 0
+						if crit then
+							local at = crit.Plate.AbsolutePosition + inset
+							local size = crit.Plate.AbsoluteSize
+							local side = down.Y - up.Y
+							across = math.min(at.X + size.X, up.X + side / 2) - math.max(at.X, up.X - side / 2)
+							tall = math.min(at.Y + size.Y, down.Y) - math.max(at.Y, up.Y)
+						end
+						t.Check("a critical after an ordinary number is placed clear of the mark", crit ~= nil and (across <= 6 or tall <= 6),
+							string.format("%.0f by %.0f px on it", across, tall))
+					end
 					-- the star, as its swing starts
 					local glinted = Helpers.waitFor(t, WATCH, function(): boolean
 						local last = MaskGlint.Last()

@@ -5200,6 +5200,19 @@ The audit's fourth screen (the director, 2026-11-24: "this left ui is so ugly", 
 - **Content check:** PASS (00:02). Its one note: the default avatar's stock shirt text stays out of anything for the game page or the store.
 - **For the build, later:** Roblox's player list sits where the pills are (Gemini's note). Faber hides it, or the pills move.
 
+### Research's pick: Rail for the base, Tally for the return (Quaestor, 2026-11-27, 00:07; alone, with Gemini busy on the audits)
+
+- **The base:** Rail over Tags, in both orders.
+  - Rail's one strip reads as one unit at phone size. Its names, with no plates, let the base come first. That answers the "six floating labels" the director read as a prototype (`docs/research/examples.md`).
+  - Tags' two stacked boxes compete with the lead's card.
+  - In play, check the plateless names over the brightest sky and the clouds. If one blurs, its dark edge thickens. It never gets a plate back.
+- **The return:** Tally over Grid, in both orders. Tally has one big number to lead, and its list scans easily. Grid's eight equal tiles give nothing the lead.
+- **The press:** a tap anywhere closes. When shards are ready, "Reveal" stays as the panel's one press, and a tap anywhere else still closes. Modulo's three lines of text are taken.
+- **The finish has its own bar** (the director, by 00:04; `docs/decisions.md`):
+  - These takes settle layout and content only. Their surface is under that bar.
+  - First, research studies how Anime Crusaders X's and Sailor Piece's UI reach their polish. Then the finish gets its own targets at that bar, picked in pairs, before Faber skins anything.
+  - Meanwhile, Faber builds piece 1's layout and behaviour as a block, with the surface held in tokens.
+
 ## AR63. Pip, redesigned in the make (Modulo, for research's pick and the director's look, then its finish; Faber's install after)
 
 On the director's order of 2026-11-23, by 22:52 (Rook, Kirra, Pip, Lyric). The frame is AR60's: what holds, the checks, and the pictures. What holds is his row in `docs/roster.md` (Common, Purple, Mage, Fire, Lantern Burst, Kindle). Research's steer: his lantern is a young mage's, dark metal and glass with a living flame inside, never a paper festival lantern.

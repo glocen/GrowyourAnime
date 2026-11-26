@@ -3932,6 +3932,13 @@ On the director's word of 2026-11-23: one basic attack's sound per class, shared
 - **The Healer's cast, in four runs:** music, guns and a jet's radar beeps on the first two words. Then sparkles and chimes, which kept 5 of 257 at 0.8 s, the rest ringing on. "Short sparkle" and "short chime" found car chimes, a train whistle and menu clicks. So its Max is 1.2 s on the sparkle words (13 kept): a sparkle rings far under its top, and the combo's shots overlap at 0.25 s anyway. Cut: two railway station jingles, a spring tune, a sound named for another work's character, four titles that say nothing.
 - **Where:** `ServerStorage.NL_Audition.Candidates` holds the cut lists, and `Untrimmed` the finder's whole answer. Faber saved them in version 1283 (2026-11-26, 00:29); the Healer's cast came after, so Faber's next save keeps it. **Loaded, heard, picked:** no. The listen is a Play in my next turn, when the director wants it.
 
+### The picks, unheard (Sonus, 2026-11-26, 20:48 to 20:52 by the clock)
+
+- **The director, 20:48:** "i wont listen js add everything when i acc play the game i will says if it good or not". Then **yes** to the restatement: Sonus picks one sound a tab, unheard, for TR42's 11, TR64's 10 and TR57's plate; Faber installs them; the director judges each in play, and a miss takes the next on its tab. For these 22 cues it replaces the word of 2026-11-17 that the director's ear picks on the panel (`docs/decisions.md`, research records it).
+- **Picked by** title, author, length and loudness, never by ear. A licensed ProSoundEffects or Roblox sound wherever its title fits (5 and 1). Never a sound another cue plays: Kirra's first choice, "hit_slash_m", is a Shade swipe keep, so "Katana Slash Wind 3". The Tank's blows is one of the director's light-hit keeps.
+- **The 11:** Assassin's cuts "Katana Slash Wind 3" (GleonoffG); Tank's blows "Hit - Impact - Punch - Blunt" (lorenzosaudiostash); Mage cast "Magic Zoom Up Sharp Tubular Whoosh Fast Hiss" (ProSoundEffects); Mage hit "Magic Hit SFX" (Remy1DB); Healer cast "FIXED sparkle magic sound" (Hibuki_DSP); Healer hit "sparkling_attack_hit" (BrawI031); Haymaker "Power Punch" (hung902); Scarf Step "zip flash quick dash sfx" (Axellatic); Lantern Burst "Pyro Fire Ball Burst 9" (ProSoundEffects); Ground Wire "Lightning Flashes Quick Electrical Bursts 21" (ProSoundEffects); Held Note "VC spin chime 4" (Vanta Systems). The Warrior keeps the light hit's 32. Ids and cuts: `docs/asset-log.md`, "Sonus's 22 picks".
+- **For Faber's install:** `build/scratch/Sonus/picks-2026-11-26.luau`, each take as the panel's `cueOf` plays it (the finder's cut, Gain at the panel's matched level, Lead "Peak" on a beat tab), into `Config.Cues`. **Shortlisted, picked (by Sonus):** yes. **Loaded:** in the game at Faber's install. **Heard:** no, the director in play.
+
 ## TR43. Lantern Row's stages on Normal and Hard, in grey (Faber, the follow-up's item 2)
 
 Research, 2026-11-18, 22:44, on D2 and D7 (`docs/decisions.md`; `docs/design.md`, "The Festival of Battles"). Answers Faber's four questions of this evening.
@@ -5111,6 +5118,8 @@ The plate passed as a block at 01:35, and its timing is set in code: a 0.2 s fad
 
 - **Faber, 2026-11-26, 12:50 by the clock (d9038cd0):** the hook is in. The plate's fade-in calls `BroadcastPlate` for someone else's line while others' finds show (`Rules.Broadcast.Chimes`). A player's own line stays silent, since their find already sounded its drop and reveal (tier 1). Play the moment lays a made-up Legendary Sword line, kept out of the chat. Logic case 4 checks; Studio "Broadcast (TR57)" 27/0 at 60 fps. Sonus's tab reviewed: it passes (its name is the cue's, −14 dB under the UI line). `NL_Audition` saved with the place (version 1311).
 
+- **Sonus, 2026-11-26, 20:52 by the clock:** the plate's pick, unheard, on the director's word of 20:48 (TR42, "The picks, unheard"): ProSoundEffects' "Zap High Pitch Glassy Reversed Whoosh 8", the one of the five that is neither a bell nor an alert, at its matched level with Gain 1.0. For Faber's install.
+
 ## TR58. The boards on the Strip (research's request, tier 2, for Faber; Modulo the boards)
 
 Research, 2026-11-24, from the cloud. Launch-design's item 7, the north star's "two players compare builds". The design: `docs/design.md`, "Being seen" (the boards). The numbers: seeds, "boards".
@@ -5288,6 +5297,10 @@ Round 2:
 - **Changed from the table, with the evidence** (`Config.Audition`): ShardDrop measures to 1.0 s, as the finder counts a ring until it's 45 dB down (at 0.6, "crystal ding" and "sparkle ding" kept none); KeeperFall adds "crystal shatter", "magic shatter" and "anime shatter" (research's five kept 4); GoalDone drops "achievement" (consoles' sounds) for "goal complete", "mission complete" and "objective complete", which found little more. Its seven are its own three and four of Record's "success" finds that Record didn't keep, measured at GoalDone's length and level.
 - **Thin by the library, for the director's ear to judge:** KeeperFall's five are two glass shatters, a glass crash and two generic "boss defeated" sounds, so a "none" there means new words, not a patch. ShardDrop's are bells and dings, one note each by their titles.
 - **Where:** `ServerStorage.NL_Audition` (`Candidates`, and `Untrimmed` with every run's whole answer), unsaved: Faber's next save keeps them. **Loaded:** the panel's tabs, at the next Play. **Heard, picked:** no; the listen waits on Faber's Play the moment.
+
+### The picks, unheard (Sonus, 2026-11-26, 20:52 by the clock)
+
+- On the director's word of 20:48 (TR42, "The picks, unheard"), one a tab: level up "Level-Up" (NexsusM1); shard drop "Nice Bell 2" (YoLiohcnj64); keeper's fall "glass shattering breaking" (killerguest7964); lead down "Failure1" (schmumkin); goal done "quest complete" (NexsusM1); new record "SuccessSfx" (proxyprevails); reinforced "Upgrade Complete" (EJGamerz5910); reinforce failed "Roblox GUI - Negative" (Roblox); machine stage "power up 1" (AwakenThePotential); lead hurt "Body Hits 8" (ProSoundEffects). For Faber's install, as TR42's. **Heard:** no, the director in play.
 
 ## TR65. The guide's arrows, in the tutorial only (the director's word, 2026-11-26; for Faber)
 

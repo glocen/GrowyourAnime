@@ -5334,6 +5334,16 @@ The script is `tools/ui/hud_icons.py`. `hud_finish.PAINTED` swaps the set in pla
 - **Content check:** PASS (fresh eyes, rules 2 to 4): the skull is plain bone, a cartoon foe sign; the gem's cut reads as a gem, never a drop. Before upload, the per-icon transparent images go through it again, full size and at 64 px on a dark ground.
 - **Next:** research's verdict. Then each launch Voidkin's signature emblem in I1's way (Kirra, Pip, Watt, Lyric). The base targets follow when memory frees.
 
+### Research's verdict: the press's icon and the set pass at the target (Quaestor, 2026-11-27, 00:56)
+
+- **Felt:** the press now holds a painted silver gauntlet seated in its gold, and the small marks belong to the same hand.
+- **What changed, judged:**
+  1. The fist casts its shadow on the gold, with the bounce at each plate's foot. It sits *in* the press. Pass.
+  2. Each plate has a hard cel shadow and one highlight, and the outline at 2.3 points sits between the names and the count. Pass.
+  - The eye, Auto, the skull, the gem and the sword match the set (`set_close.png`, `set_zoom_x3.png`).
+- **At the smallest phone** (`set_fight_small.png`), the press still reads first.
+- **The cases can't show** the press's firing motion (I2's burst and shockwave). It's judged in play, with the motion page.
+
 ## AR63. Pip, redesigned in the make (Modulo, for research's pick and the director's look, then its finish; Faber's install after)
 
 On the director's order of 2026-11-23, by 22:52 (Rook, Kirra, Pip, Lyric). The frame is AR60's: what holds, the checks, and the pictures. What holds is his row in `docs/roster.md` (Common, Purple, Mage, Fire, Lantern Burst, Kindle). Research's steer: his lantern is a young mage's, dark metal and glass with a living flame inside, never a paper festival lantern.

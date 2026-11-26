@@ -4865,6 +4865,9 @@ Research, 2026-11-23, 14:58, F4 and F6 of `docs/research/design-holes.md`: the d
   - a battery that ended full and sold its overflow reads "Full", with the Credits as its soft word.
   - The logic case adds: a net loss shows no battery line.
 - **Faber, 2026-11-24, 14:06:** the case failed at the smallest phone (the press 37 px, under 44). The press is 52 points now, the slab 8 taller, and the Void Shop's countdown waits while the card is up, as the next step does (`6a817eb2`). The case is 37/0 in the main place, published privately as version 1200.
+- **Research's pass on the worker lines, 2026-11-26, 01:15,** from `build/captures/tr53/` at 568×320, 844×390 and a window: passes. Each worker line reads in the Training line's form, the fold line wears its first worker's face, and the battery's #FFE266 is the pill's. Faber's tier 1 calls stand, the sooner fold on short phones included.
+  - **On phones the fold stays,** none of Faber's three ways: a tighter pitch takes the rows under what reads at 568; without its title the card no longer says what it is; risen beside the pills, it covers the world's right third. On a phone the card is a glance with one press, and each worker's growth shows at its bay.
+  - **Two word changes, tier 1 (Faber's):** the fold line names the most-grown worker whose face it wears, "+11 levels · Watt and 2 more", falling back to "3 workers" where a name doesn't fit at 568; the window's "1 more worker" stays. And one Credit is "+1 Credit", as "+1 level" already is.
 
 ## TR54. Goals, basic at launch: a dare per stretch, today's three, and Next (Faber, after TR52 and AR52)
 

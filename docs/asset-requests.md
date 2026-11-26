@@ -17739,6 +17739,7 @@ Research, 2026-11-24, 16:53, on the director's word, "the hair still need a rewo
   - each machine gets one accent colour that no other machine uses, and the rest of it takes the shared neutrals;
   - each machine gets a silhouette that reads in greyscale;
   - a small name plate stands over each machine, in its accent.
+  - each machine shows its work in motion where it can: the Training machine's Voidkin training, a shard in the Breaker, the bays' workers at work (from the Gemini addendum, 2026-11-26).
   With the arrows gone after the tutorial (TR65), the shapes and the plates are how a player finds a machine.
 - **Stays:**
   - AR54's spots and clears, and the 128-stud plot;

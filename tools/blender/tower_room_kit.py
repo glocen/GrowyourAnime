@@ -17,7 +17,8 @@ The pieces:
     CrownBlade, -Tall, -Low   a blade: sand stone on a teal socket, a line of light in a well up its inner face
     CrownSlab                 the number's slab, a part of its own: it turns half round at a win; the numerals are text
     CrownStep                 a floating step, a part of its own: the foe's four rise into place before it climbs
-    CloudDrift, CloudDriftB   a drift of cloud near the room, passing slowly
+    CloudDrift0 to 9          the drifts near the room, passing slowly: each its own cumulus, its turn in its mesh, so
+                              the sun's paint (`DRIFT_PAINT`, on the atlas's cloud cell) stays on its sunny side
     GateDais, GateVeil        the entrance on the lot behind the base: its dais and its door of light; with two blades
                               and the slab, which there carries the owner's record floor (`LOT`)
 The sky's lower half is the sky's own: `skies` renders the six faces from the room's middle, with the cloud in three
@@ -78,7 +79,7 @@ SWATCHES = {
     "sand": ("#F4E6C8", "#B2946C", 0.0),          # the void machines' stone (base_kit's abyss, a breath paler at the head)
     "girder": ("#46A39C", "#1F5E64", 0.0), "bone": ("#FFF4DC", "#C2AE8C", 0.0),
     "well": ("#1A353C", "#1A353C", 0.0), "trail": ("#FFF8EA", "#F6DCA6", 1.0),
-    "cloud": ("#FFFFFF", "#9DBBEE", 0.3),         # a drift: white at its head, a cool shadow at its foot, never grey
+    "cloud": ("#FFFFFF", "#9DBBEE", 0.3),         # the drifts' cell, drawn over by `drift_cell`: these are unused
     "ink": ("#0C0A16", "#0C0A16", 0.0),
 }
 SWATCH_AT = {name: ((i % 16) * CELL[0], (i // 16) * CELL[1]) for i, name in enumerate(SWATCHES)}
@@ -123,12 +124,26 @@ SLAB_WELL = ((-8.4, -1.2), (8.4, 6.0))            # the well of the numerals, it
 # the one before; at rest each waits out of sight under the rim.
 FOE_STEPS = ((0.0, 66.0, -1.0), (0.0, 80.0, -1.3), (0.0, 95.0, -1.6), (0.0, 111.0, -2.0))
 IN_STEPS = ((0.0, -67.0, -3.0), (0.0, -82.0, -9.0))
-# The drifts pass at the rim's height and just under it: (piece, x, y, z, turn, scale, studs a second along +X).
-DRIFTS = (("CloudDriftB", -171.0, 171.0, -5.0, 30.0, 1.3, 7.0), ("CloudDrift", 150.0, 142.0, -10.0, 0.0, 1.1, 6.0),
-          ("CloudDrift", 14.0, 255.0, -16.0, 200.0, 1.6, 5.0), ("CloudDriftB", 172.0, 62.0, -3.0, 110.0, 1.0, 8.0),
-          ("CloudDrift", -178.0, 40.0, -9.0, 250.0, 1.2, 8.0), ("CloudDrift", -150.0, -80.0, -12.0, 300.0, 1.3, 6.0),
-          ("CloudDriftB", 140.0, -90.0, 1.0, 70.0, 1.0, 7.0), ("CloudDrift", -40.0, -180.0, -10.0, 150.0, 1.2, 6.0),
-          ("CloudDriftB", 60.0, -170.0, -16.0, 20.0, 1.0, 6.0), ("CloudDriftB", -40.0, 88.0, -30.0, 0.0, 1.6, 9.0))
+# The drifts pass at the rim's height and just under it: (shape, x, y, z, turn, scale, studs a second along +X). Each is
+# its own piece, CloudDrift<k>, its turn built into it, so it's laid unturned (AR56's cloud targets, research's pick of
+# the drifts: drift 2 from behind the foe's way in to its left, and every drift 4 studs lower than the block's). No
+# drift passes through the tower: drifts 3 and 4 went out past the step ring, behind the foe's way in, never over it.
+# The lane's side keeps its drifts behind the far camera (y -138), so none crosses the shaft in the frames the game
+# opens on.
+DRIFTS = (("B", -171.0, 171.0, -9.0, 30.0, 1.3, 7.0), ("A", 150.0, 142.0, -14.0, 0.0, 1.1, 6.0),
+          ("A", -110.0, 235.0, -20.0, 200.0, 1.6, 5.0), ("B", 172.0, 108.0, -7.0, 180.0, 1.0, 8.0),
+          ("A", -178.0, 300.0, -13.0, 250.0, 1.5, 8.0), ("A", -150.0, -215.0, -16.0, 300.0, 1.3, 6.0),
+          ("B", 140.0, -240.0, -3.0, 70.0, 1.0, 7.0), ("A", -40.0, -180.0, -14.0, 150.0, 1.2, 6.0),
+          ("B", 60.0, -170.0, -20.0, 20.0, 1.0, 6.0), ("B", -40.0, 88.0, -34.0, 0.0, 1.6, 9.0))
+DRIFT_SHAPE = {"A": (58.0, 30.0, 17.0), "B": (68.0, 26.0, 15.0)}   # length, width, height, studs
+DRIFT_MASS = (26.0, 14.0, 11.0, 4.0)              # the drift's whole mass as an ellipsoid: its half axes and its middle's height
+DRIFT_TRIS = 2400                                 # each drift's triangles, after the metaball's mesh is thinned
+# The anime paint, in the screen's colours: white past the sun's edge, sky blue under it, and a deeper band at the foot,
+# each edge crisp. `wrap` is (normal . sun + 1) / 2, the normal turned `mass` of the way toward the whole mass's, so
+# the shade falls on the drift's whole side and not on each billow; `foot` is a share of its height.
+DRIFT_PAINT = dict(lit="#F6F9FF", shade="#BCD4F2", deep="#97B6E4", edge=(0.5, 0.535), foot=(0.25, 0.3), mass=0.7)
+# The cell's own colours and glow: the paint's colours as the engine's light and glow must be given them to show them.
+DRIFT_CELL = dict(lit="#FFFFFF", shade="#7D98E8", deep="#6075B1", glow=1.0)
 # The climb's beat, seconds from a win (seeds; Config.Tower.Rise is 2.5): the slab's half turn, each step's rise from
 # its rest under its place (the farthest first, the next foe standing on it), the foe's hops up them, its leap to the
 # stand, the steps' sinking.
@@ -154,7 +169,23 @@ def atlas():
         cell = kit.code(top) * (1 - t) + kit.code(bottom) * t
         page[y:y + CELL[1], x:x + CELL[0], :3] = cell * (shade if lit < 0.1 else 1.0)
         glow[y:y + CELL[1], x:x + CELL[0]] = lit
+    drift_cell(page, glow)
     return page, glow
+
+
+def drift_cell(page, glow):
+    """The drifts' cell as a two-way ramp: across it the sun's wrap (shade, then lit past the edge), down it the drift's
+    height (`kit.sw_uv`'s t: head at the top, the deep foot at the bottom). A drift's corners point into it."""
+    x0, y0 = SWATCH_AT["cloud"]
+    wrap = np.clip((np.arange(CELL[0], dtype=np.float32) + 0.5 - 8) / 48, 0, 1)[None, :, None]
+    t = np.clip(1 - (np.arange(CELL[1], dtype=np.float32) + 0.5 - 8) / 112, 0, 1)[:, None, None]
+    e0, e1 = DRIFT_PAINT["edge"]
+    f0, f1 = DRIFT_PAINT["foot"]
+    lit = np.clip((wrap - e0) / (e1 - e0), 0, 1)
+    tone = kit.code(DRIFT_CELL["shade"]) * (1 - lit) + kit.code(DRIFT_CELL["lit"]) * lit
+    up = np.clip((t - f0) / (f1 - f0), 0, 1)
+    page[y0:y0 + CELL[1], x0:x0 + CELL[0], :3] = kit.code(DRIFT_CELL["deep"]) * (1 - up) + tone * up
+    glow[y0:y0 + CELL[1], x0:x0 + CELL[0]] = DRIFT_CELL["glow"]
 
 
 def floor_pictures():
@@ -419,25 +450,86 @@ def crown_step():
                      "the lit edge faces the room (-Y)")
 
 
-def cloud_drift(name, seed):
-    """A drift: soft lumps heaped along its length, round under as over, white at the head and cool at the foot."""
+def cumulus(seed, length, width, tall):
+    """One drift's shape as a metaball: a row of big billows on a flat foot, then billows heaped on its top, smaller
+    toward its ends and its edge, so its outline is a run of round heads and never one smooth blob. Its mesh, thinned to
+    DRIFT_TRIS: the points (n, 3), the triangles (m, 3) and the smooth normals (n, 3)."""
     rng = random.Random(seed)
-    lumps = [((0.0, 0.0, 0.0), (22.0, 13.0, 7.0))]
-    for _ in range(9):
-        lumps.append(((rng.uniform(-25, 25), rng.uniform(-9, 9), rng.uniform(-1.5, 3.0)),
-                      (rng.uniform(6, 14), rng.uniform(5, 11), rng.uniform(4.0, 8.0))))
-    low = min(c[2] - 0.6 * s[2] for c, s in lumps)
-    high = max(c[2] + s[2] for c, s in lumps)
+    mb = bpy.data.metaballs.new(f"Cumulus{seed}")
+    mb.resolution = mb.render_resolution = 1.0
+    mb.threshold = 0.5
+
+    def ball(x, y, z, r):
+        el = mb.elements.new()
+        el.co, el.radius = (x, y, z), r
+
+    for k in range(7):                                   # the body's row
+        t = k / 6 - 0.5
+        r = width * 0.3 * (1.0 - 0.35 * abs(t) * 2) * rng.uniform(0.9, 1.1)
+        ball(t * length * 0.8, rng.uniform(-0.1, 0.1) * width, r * 0.5, r)
+    for _ in range(16):                                  # heads on top, each sunk into the body
+        t = max(-0.38, min(0.38, rng.gauss(0.0, 0.2)))
+        crown = math.cos(t * math.pi)                    # the body's height there, 1 at the middle
+        r = width * rng.uniform(0.13, 0.22) * (0.6 + 0.5 * crown)
+        y = rng.uniform(-0.25, 0.25) * width
+        ball(t * length * 0.85, y, tall * (0.3 + 0.45 * crown) * (1 - abs(y) / width) - r * 0.25, r)
+    cut = mb.elements.new(type="ELLIPSOID")              # the flat foot: a wide negative under it
+    cut.co, cut.radius, cut.use_negative = (0.0, 0.0, -width * 0.62), width * 0.7, True
+    cut.size_x, cut.size_y, cut.size_z = length * 1.6 / (width * 0.7), 2.4, 1.0
+    scene = bpy.context.scene
+    held = bpy.data.objects.new(f"Cumulus{seed}", mb)  # a family of its own name, so no two drifts melt together
+    scene.collection.objects.link(held)
+    bpy.context.view_layer.update()
+    raw = bpy.data.meshes.new_from_object(held.evaluated_get(bpy.context.evaluated_depsgraph_get()))
+    bpy.data.objects.remove(held)
+    bpy.data.metaballs.remove(mb)
+    thin = bpy.data.objects.new(f"CumulusThin{seed}", raw)
+    scene.collection.objects.link(thin)
+    raw.calc_loop_triangles()
+    mod = thin.modifiers.new("Thin", "DECIMATE")
+    mod.ratio = min(1.0, DRIFT_TRIS / max(len(raw.loop_triangles), 1))
+    bpy.context.view_layer.update()
+    mesh = bpy.data.meshes.new_from_object(thin.evaluated_get(bpy.context.evaluated_depsgraph_get()))
+    bpy.data.objects.remove(thin)
+    bpy.data.meshes.remove(raw)
+    for poly in mesh.polygons:
+        poly.use_smooth = True
+    mesh.calc_loop_triangles()
+    pts = np.array([v.co[:] for v in mesh.vertices], np.float64)
+    normals = np.array([v.normal[:] for v in mesh.vertices], np.float64)
+    tris = np.array([t.vertices[:] for t in mesh.loop_triangles], np.int64)
+    bpy.data.meshes.remove(mesh)
+    return pts, tris, normals
+
+
+def sun_toward():
+    """The room's sun, the way toward it, in the kit's frame (as lantern_row_look.sun turns it)."""
+    az, el = (math.radians(a) for a in SKY["sun"][:2])
+    return np.array((math.sin(az) * math.cos(el), math.cos(az) * math.cos(el), math.sin(el)))
+
+
+def cloud_drift(k):
+    """Drift k: its own cumulus, turned as the plan has it, each corner pointing into the cloud cell at its own wrap (how
+    far it faces the sun) and its height, so the paint's edges are the cell's, crisp, on its sunny side as it passes."""
+    shape, _, _, _, turn, _, _ = DRIFTS[k]
+    length, width, tall = DRIFT_SHAPE[shape]
+    pts, tris, normals = cumulus(31 + k * 7, length, width, tall)
+    lx, ly, lz, cz = DRIFT_MASS
+    whole = (pts - (0.0, 0.0, cz)) / (lx * lx, ly * ly, lz * lz)
+    whole /= np.linalg.norm(whole, axis=1, keepdims=True)
+    mass = DRIFT_PAINT["mass"]
+    bent = (1 - mass) * normals + mass * whole
+    bent /= np.linalg.norm(bent, axis=1, keepdims=True)
+    c, s = math.cos(math.radians(turn)), math.sin(math.radians(turn))
+    spin = np.array(((c, -s, 0.0), (s, c, 0.0), (0.0, 0.0, 1.0)))
+    pts, bent = pts @ spin.T, bent @ spin.T
+    wrap = (bent @ sun_toward() + 1.0) / 2.0
+    height = (pts[:, 2] - pts[:, 2].min()) / (pts[:, 2].max() - pts[:, 2].min())
     m = kit.Mesh(None)
-    bm = bmesh.new()
-    bmesh.ops.create_icosphere(bm, subdivisions=2, radius=1.0)
-    ball = [[Vector(v.co) for v in f.verts] for f in bm.faces]
-    bm.free()
-    for (cx, cy, cz), (sx, sy, sz) in lumps:
-        for tri in ball:
-            pts = [Vector((cx + p.x * sx, cy + p.y * sy, cz + p.z * sz * (0.6 if p.z < 0 else 1.0))) for p in tri]
-            m.face(pts, [kit.sw_uv("cloud", 0.0, tb.clamp((p.z - low) / (high - low)) ** 0.7) for p in pts])
-    piece = kit.Piece(name, m, note="smooth; CastShadow off, no collision; its place carries a scale and a drift")
+    for tri in tris:
+        m.face([Vector(pts[i]) for i in tri], [kit.sw_uv("cloud", float(wrap[i]), float(height[i])) for i in tri])
+    piece = kit.Piece(f"CloudDrift{k}", m, note="smooth; CastShadow off, no collision; laid unturned (its turn is in it), "
+                                                "with its place's scale and a drift along +X")
     piece.smooth = True
     return piece
 
@@ -446,7 +538,7 @@ PIECES = {
     "CrownFloor": crown_floor, "CrownFloorM": lambda: crown_floor(True), "CrownBody": crown_body,
     "CrownBlade": lambda: crown_blade("CrownBlade"), "CrownBladeTall": lambda: crown_blade("CrownBladeTall"),
     "CrownBladeLow": lambda: crown_blade("CrownBladeLow"), "CrownSlab": crown_slab, "CrownStep": crown_step,
-    "CloudDrift": lambda: cloud_drift("CloudDrift", 3), "CloudDriftB": lambda: cloud_drift("CloudDriftB", 8),
+    **{f"CloudDrift{k}": (lambda k=k: cloud_drift(k)) for k in range(len(DRIFTS))},
 }
 
 
@@ -460,7 +552,7 @@ def plan():
     rows.append(("CrownSlab", "", *SLAB_AT, 0, 1))
     rows += [("CrownStep", f"Foe{k}", *at, 0, 1) for k, at in enumerate(FOE_STEPS)]
     rows += [("CrownStep", f"In{k}", *at, 180, 1) for k, at in enumerate(IN_STEPS)]
-    rows += [(name, f"Drift{k}", x, y, z, turn, scale) for k, (name, x, y, z, turn, scale, _) in enumerate(DRIFTS)]
+    rows += [(f"CloudDrift{k}", f"Drift{k}", x, y, z, 0, scale) for k, (_, x, y, z, _, scale, _) in enumerate(DRIFTS)]
     return rows
 
 

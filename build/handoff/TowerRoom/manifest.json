@@ -173,47 +173,215 @@
    "collision": "box",
    "note": "a part of its own: the foe's four rise into place before it climbs; the lit edge faces the room (-Y)"
   },
-  "CloudDrift": {
-   "mesh": "meshes/CloudDrift.json",
-   "triangles": 800,
-   "vertices": 420,
+  "CloudDrift0": {
+   "mesh": "meshes/CloudDrift0.json",
+   "triangles": 2400,
+   "vertices": 1208,
    "centre": [
-    -2.76511,
-    2.77103,
-    0.31233
+    0.7299,
+    5.32761,
+    0.61633
    ],
    "size": [
-    58.131,
-    14.278,
-    35.453
+    52.098,
+    12.082,
+    35.064
    ],
    "colour": "maps/TowerRoom_Kit_Color.png",
    "glow": "maps/TowerRoom_Kit_Glow.png",
    "glowTint": "#FFFFFF",
    "glowStrength": 1.3,
    "collision": "none",
-   "note": "smooth; CastShadow off, no collision; its place carries a scale and a drift"
+   "note": "smooth; CastShadow off, no collision; laid unturned (its turn is in it), with its place's scale and a drift along +X"
   },
-  "CloudDriftB": {
-   "mesh": "meshes/CloudDriftB.json",
-   "triangles": 800,
-   "vertices": 420,
+  "CloudDrift1": {
+   "mesh": "meshes/CloudDrift1.json",
+   "triangles": 2400,
+   "vertices": 1202,
    "centre": [
-    1.07665,
-    1.69757,
-    -0.41621
+    -0.07438,
+    6.97247,
+    1.10853
    ],
    "size": [
-    68.26,
-    12.949,
-    26.832
+    53.664,
+    15.654,
+    20.239
    ],
    "colour": "maps/TowerRoom_Kit_Color.png",
    "glow": "maps/TowerRoom_Kit_Glow.png",
    "glowTint": "#FFFFFF",
    "glowStrength": 1.3,
    "collision": "none",
-   "note": "smooth; CastShadow off, no collision; its place carries a scale and a drift"
+   "note": "smooth; CastShadow off, no collision; laid unturned (its turn is in it), with its place's scale and a drift along +X"
+  },
+  "CloudDrift2": {
+   "mesh": "meshes/CloudDrift2.json",
+   "triangles": 2400,
+   "vertices": 1202,
+   "centre": [
+    0.34674,
+    6.87404,
+    0.77569
+   ],
+   "size": [
+    49.662,
+    15.356,
+    24.259
+   ],
+   "colour": "maps/TowerRoom_Kit_Color.png",
+   "glow": "maps/TowerRoom_Kit_Glow.png",
+   "glowTint": "#FFFFFF",
+   "glowStrength": 1.3,
+   "collision": "none",
+   "note": "smooth; CastShadow off, no collision; laid unturned (its turn is in it), with its place's scale and a drift along +X"
+  },
+  "CloudDrift3": {
+   "mesh": "meshes/CloudDrift3.json",
+   "triangles": 2400,
+   "vertices": 1204,
+   "centre": [
+    0.07057,
+    5.78062,
+    0.24883
+   ],
+   "size": [
+    60.872,
+    13.127,
+    17.799
+   ],
+   "colour": "maps/TowerRoom_Kit_Color.png",
+   "glow": "maps/TowerRoom_Kit_Glow.png",
+   "glowTint": "#FFFFFF",
+   "glowStrength": 1.3,
+   "collision": "none",
+   "note": "smooth; CastShadow off, no collision; laid unturned (its turn is in it), with its place's scale and a drift along +X"
+  },
+  "CloudDrift4": {
+   "mesh": "meshes/CloudDrift4.json",
+   "triangles": 2400,
+   "vertices": 1202,
+   "centre": [
+    0.09812,
+    6.84468,
+    0.84956
+   ],
+   "size": [
+    27.254,
+    15.428,
+    50.242
+   ],
+   "colour": "maps/TowerRoom_Kit_Color.png",
+   "glow": "maps/TowerRoom_Kit_Glow.png",
+   "glowTint": "#FFFFFF",
+   "glowStrength": 1.3,
+   "collision": "none",
+   "note": "smooth; CastShadow off, no collision; laid unturned (its turn is in it), with its place's scale and a drift along +X"
+  },
+  "CloudDrift5": {
+   "mesh": "meshes/CloudDrift5.json",
+   "triangles": 2400,
+   "vertices": 1204,
+   "centre": [
+    0.00218,
+    6.871,
+    1.00584
+   ],
+   "size": [
+    30.35,
+    15.375,
+    48.245
+   ],
+   "colour": "maps/TowerRoom_Kit_Color.png",
+   "glow": "maps/TowerRoom_Kit_Glow.png",
+   "glowTint": "#FFFFFF",
+   "glowStrength": 1.3,
+   "collision": "none",
+   "note": "smooth; CastShadow off, no collision; laid unturned (its turn is in it), with its place's scale and a drift along +X"
+  },
+  "CloudDrift6": {
+   "mesh": "meshes/CloudDrift6.json",
+   "triangles": 2398,
+   "vertices": 1203,
+   "centre": [
+    -0.21765,
+    5.8852,
+    0.01799
+   ],
+   "size": [
+    27.573,
+    13.271,
+    56.849
+   ],
+   "colour": "maps/TowerRoom_Kit_Color.png",
+   "glow": "maps/TowerRoom_Kit_Glow.png",
+   "glowTint": "#FFFFFF",
+   "glowStrength": 1.3,
+   "collision": "none",
+   "note": "smooth; CastShadow off, no collision; laid unturned (its turn is in it), with its place's scale and a drift along +X"
+  },
+  "CloudDrift7": {
+   "mesh": "meshes/CloudDrift7.json",
+   "triangles": 2400,
+   "vertices": 1204,
+   "centre": [
+    0.45342,
+    6.70704,
+    -0.5
+   ],
+   "size": [
+    45.895,
+    15.012,
+    31.232
+   ],
+   "colour": "maps/TowerRoom_Kit_Color.png",
+   "glow": "maps/TowerRoom_Kit_Glow.png",
+   "glowTint": "#FFFFFF",
+   "glowStrength": 1.3,
+   "collision": "none",
+   "note": "smooth; CastShadow off, no collision; laid unturned (its turn is in it), with its place's scale and a drift along +X"
+  },
+  "CloudDrift8": {
+   "mesh": "meshes/CloudDrift8.json",
+   "triangles": 2400,
+   "vertices": 1204,
+   "centre": [
+    0.15596,
+    6.15948,
+    -0.25696
+   ],
+   "size": [
+    56.047,
+    13.809,
+    27.843
+   ],
+   "colour": "maps/TowerRoom_Kit_Color.png",
+   "glow": "maps/TowerRoom_Kit_Glow.png",
+   "glowTint": "#FFFFFF",
+   "glowStrength": 1.3,
+   "collision": "none",
+   "note": "smooth; CastShadow off, no collision; laid unturned (its turn is in it), with its place's scale and a drift along +X"
+  },
+  "CloudDrift9": {
+   "mesh": "meshes/CloudDrift9.json",
+   "triangles": 2400,
+   "vertices": 1210,
+   "centre": [
+    -0.06889,
+    6.00851,
+    0.15362
+   ],
+   "size": [
+    60.542,
+    13.591,
+    17.796
+   ],
+   "colour": "maps/TowerRoom_Kit_Color.png",
+   "glow": "maps/TowerRoom_Kit_Glow.png",
+   "glowTint": "#FFFFFF",
+   "glowStrength": 1.3,
+   "collision": "none",
+   "note": "smooth; CastShadow off, no collision; laid unturned (its turn is in it), with its place's scale and a drift along +X"
   },
   "GateDais": {
    "mesh": "meshes/GateDais.json",

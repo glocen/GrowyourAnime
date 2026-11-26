@@ -233,113 +233,113 @@
    "scale": 1
   },
   {
-   "piece": "CloudDriftB",
+   "piece": "CloudDrift0",
    "tag": "Drift0",
    "at": [
     -171.0,
-    -5.0,
+    -9.0,
     -171.0
    ],
-   "turn": 30.0,
+   "turn": 0,
    "scale": 1.3
   },
   {
-   "piece": "CloudDrift",
+   "piece": "CloudDrift1",
    "tag": "Drift1",
    "at": [
     150.0,
-    -10.0,
+    -14.0,
     -142.0
    ],
-   "turn": 0.0,
+   "turn": 0,
    "scale": 1.1
   },
   {
-   "piece": "CloudDrift",
+   "piece": "CloudDrift2",
    "tag": "Drift2",
    "at": [
-    14.0,
-    -16.0,
-    -255.0
+    -110.0,
+    -20.0,
+    -235.0
    ],
-   "turn": 200.0,
+   "turn": 0,
    "scale": 1.6
   },
   {
-   "piece": "CloudDriftB",
+   "piece": "CloudDrift3",
    "tag": "Drift3",
    "at": [
     172.0,
-    -3.0,
-    -62.0
+    -7.0,
+    -108.0
    ],
-   "turn": 110.0,
+   "turn": 0,
    "scale": 1.0
   },
   {
-   "piece": "CloudDrift",
+   "piece": "CloudDrift4",
    "tag": "Drift4",
    "at": [
     -178.0,
-    -9.0,
-    -40.0
+    -13.0,
+    -300.0
    ],
-   "turn": 250.0,
-   "scale": 1.2
+   "turn": 0,
+   "scale": 1.5
   },
   {
-   "piece": "CloudDrift",
+   "piece": "CloudDrift5",
    "tag": "Drift5",
    "at": [
     -150.0,
-    -12.0,
-    80.0
+    -16.0,
+    215.0
    ],
-   "turn": 300.0,
+   "turn": 0,
    "scale": 1.3
   },
   {
-   "piece": "CloudDriftB",
+   "piece": "CloudDrift6",
    "tag": "Drift6",
    "at": [
     140.0,
-    1.0,
-    90.0
+    -3.0,
+    240.0
    ],
-   "turn": 70.0,
+   "turn": 0,
    "scale": 1.0
   },
   {
-   "piece": "CloudDrift",
+   "piece": "CloudDrift7",
    "tag": "Drift7",
    "at": [
     -40.0,
-    -10.0,
+    -14.0,
     180.0
    ],
-   "turn": 150.0,
+   "turn": 0,
    "scale": 1.2
   },
   {
-   "piece": "CloudDriftB",
+   "piece": "CloudDrift8",
    "tag": "Drift8",
    "at": [
     60.0,
-    -16.0,
+    -20.0,
     170.0
    ],
-   "turn": 20.0,
+   "turn": 0,
    "scale": 1.0
   },
   {
-   "piece": "CloudDriftB",
+   "piece": "CloudDrift9",
    "tag": "Drift9",
    "at": [
     -40.0,
-    -30.0,
+    -34.0,
     -88.0
    ],
-   "turn": 0.0,
+   "turn": 0,
    "scale": 1.6
   }
  ],

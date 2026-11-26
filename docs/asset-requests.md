@@ -16893,6 +16893,20 @@ Made; self-reviewed as stills at the smallest phone, the take by its frames; the
 - **First, Faber's test** (a Studio turn after TR69's block B): the room with Haze 0, then with no Atmosphere, captured in the fight's frame and the far frame. It shows what the faces give in the game, it's the director's evidence for the sea, and it comes before any build.
 - **Next:** Modulo builds the drifts as meshes now. Today's faces stay until the director picks the sea.
 
+### Modulo's drifts as meshes, for Faber's install (2026-11-26, 16:38; started 16:17)
+
+- **Made:** the ten drifts as the targets draw them, each its own mesh, `CloudDrift0` to `CloudDrift9`: 2,400 triangles, closed, its turn built in (`tools/blender/tower_room_kit.py`: `cumulus`, `cloud_drift`). The paint is the atlas's cloud cell, now a ramp: the sun's wrap across it, the drift's height down it. Each corner's UV carries its own light, so no texture is added. The cell's colours were fitted twice against the target's in the room's light: lit, shade and deep land within 2 levels of the target's.
+- **The must-fix, no drift white on white:**
+  - The white cloud on the tower's base, lower right of the far frame, is a sea head from the target's sky pass, not a drift: the drifts' own pass is empty there. It goes with the sea.
+  - Over a pass, drifts did cross pale stone: 5 and 6 across the shaft in the far frame, and 3 and 4 through the rim behind the foe's way in, in the fight's frame. Now 5 and 6 pass behind the far camera (y -215, -240), 3 passes beyond the step ring along its path (y 108), and 4 far out (y 300, scale 1.5). The far frame at 0 s loses drift 4 at its left. Measured: as each drift slides, it clears the tower by 22 studs or more.
+  - Each drift sits on its own shaded foot: the deep band rises from 12–17% of its height to 25–30%.
+  - Checked at six moments of a pass, 0 to 100 s, in both frames: no drift lies on the tower.
+- **Images** (`build/scratch/modulo/ar56/clouds/out/`): `ar56_drifts_beside_target.png` (the target's drifts left, the built ones right, both frames); `build/strip_fight.png` and `build/strip_far.png` (the six moments).
+- **Delivered** to `build/handoff/TowerRoom/`: meshes `CloudDrift0` to `9`, the Kit's two maps (only the cloud cell changed), `manifest.json`, `plan.json`. `CloudDrift` and `CloudDriftB` are retired. The sky faces, `lighting.json` and every other piece are byte for byte as before.
+- **Faber's install:** upload the ten meshes and the Kit's two maps again, and take the manifest and plan into `Config/Kits/TowerRoom`. Each tag `DriftK` takes `CloudDriftK` at turn 0 (its turn is in the mesh); the speeds are unchanged. The cell glows at full (the old cloud cell at 0.3), so the paint is mostly its own: if the drifts read hot or flat in the room, the drifts' own EmissiveStrength is the lever, not the Kit's.
+- **Content check:** PASS at about 16:35, on the atlas, its glow and the renders at full size, and on the script.
+- **Not done:** the sea's options without the pale band, after Faber's Haze test. Not director-accepted.
+
 ## AR57. The Guard's and the Dasher's elites (Modulo now, then Faber)
 
 Research, 2026-11-23, 21:54, on the director's pick of 21:53 (`docs/decisions.md`). Tier 2: a new asset players see that nothing covers, in Modulo's area and then Faber's. AR52 left "the masks' elite versions" waiting.

@@ -51,7 +51,10 @@ They stay general: one piece's calls live in its own home, never in a supreme ru
   - A redo players see starts as targets beside the old one, picked as any target is ("Every action, world, effect and screen"), before the finish.
   - One redo at a time, logged in its piece's entry with a notice on the Now board.
   - A decision the director made: the team builds the better alternative and shows it beside the old, and the director picks.
-  - Still the director's: the supreme rules, the vision and identity, spending, accounts, publishing, the store, and doubts about Roblox's rules.
+  - Still the director's: the supreme rules, spending, accounts, publishing, the store, and doubts about Roblox's rules.
+- **Beyond the vision** (the director, 2026-11-26, by 21:34: "designing the game is actually fine and it even fine to do something out of my original vision just make sure it geniuelly worth it and notify me until i checked and reviewed it (if it something very light just a small notice and note)"; "yes go ahead" to research's restatement).
+  - A teammate may build what lies outside the original vision, Gemini's ideas included, only when it's genuinely worth it.
+  - Its notice stays on the Now board until the director has checked and reviewed it. A very light one gets a small notice and a note.
 - **Never break what exists.** Before replacing anything that took work, keep a rollback: a git commit for files, a dated backup copy for Studio content. Change one thing at a time, then prove nothing regressed.
 - **Stay organized.** Every file in its home folder, names that say what a thing is, no leftovers. Delete the temp files and dead code you created.
 - **Stay inside the project folder.** Reading or writing outside it waits for the director's OK, each time. Temporary files go in `build/scratch/<teammate>/` (gitignored). Each session's memory folder stays allowed.
@@ -64,7 +67,7 @@ They stay general: one piece's calls live in its own home, never in a supreme ru
 - **Design changes,** in three tiers. Tiers 1 and 2 notify the director on the Now board; a notice isn't acceptance. Until approvals are in, the design stays as it is.
   - **Tier 1, the teammate's own call:** small, reversible, inside its own area, breaks no rule, changes no balance, no other area's work. Trying an idea in a blockout is always tier 1.
   - **Tier 2, research and each area touched,** dated in the piece's home: a new mechanic or ability, a number that changes balance, a new asset players see that nothing covers, anything another teammate must build.
-  - **Tier 3, the director:** the core, reversing a director's decision, the game's identity, economy or scope, spending, accounts, rule 4's doubts, monetization, the go for a new phase.
+  - **Tier 3, the director:** the core, reversing a director's decision, the game's identity (work beyond the vision follows its own line above), economy or scope, spending, accounts, rule 4's doubts, monetization, the go for a new phase.
   - Technical calls in a teammate's own area stay its own.
 - **Every action, world, effect and screen** (the director, 2026-11-24, 20:52):
   - **A feel line:** one sentence, who does what and how it feels, from the player's camera.
@@ -94,6 +97,10 @@ They stay general: one piece's calls live in its own home, never in a supreme ru
 - **The asset maker** ("Modulo"): the fighters and the Shades, their clips, the UI art and the world art, in headless Blender. Brief: `docs/briefs/asset-maker.md`.
 - **Effects** ("Scintilla"), from 2026-11-23: the combat effects, from the look to the game. It writes effect data and images, and the builder reviews them before they merge. It takes the one Studio by turns on the Now board. Brief: `docs/briefs/effects.md`.
 - **Sound** ("Sonus"), from 2026-11-23: shortlists library sounds or makes our own under rule 2, loads them into the listening panel, and logs them. The director's ear picks every cue. Brief: `docs/briefs/sound.md`.
+- **Gemini** (Gemini 4 Neon, through Google's Antigravity CLI `agy`), from 2026-11-26: an outside voice research consults on design, look and tech, as cold reads of our own captures and as ideas.
+  - It runs on the director's subscription's included quota only, with AI credits off, and stops at the 5-hour or weekly limit.
+  - It sees only its own workspace, `build/scratch/quaestor/gemini/`: text and our own captures, never another game's images (rule 3) and never the project's files.
+  - It makes no asset (rule 2). Its ideas reach the game as proposals through the usual tiers, and its claims are UNVERIFIED until checked.
 - **QA** ("Probator"), when review load calls for it: tests, playtests, one evidence pack per piece. Never game code, and never weakens a test. Brief: `docs/briefs/qa.md`.
 - **Level design** ("Locus"), not open yet: maps from layout to install, in its own workshop place. Its brief is written when it joins, from `handbook/templates/briefs/level-design.md`.
 - **Environment art** ("Tessera"), not open yet: the world kit in headless Blender, handed to level design. Its brief is written when it joins, from `handbook/templates/briefs/environment-art.md`.

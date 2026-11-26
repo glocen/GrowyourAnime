@@ -9,7 +9,7 @@ Each teammate rewrites its own row: one to three lines. Open asks sit under "Wai
 - **With the director:** whether the blueprint's "Hard Director Mandates" are their words; whether "Go to the Tower" keeps its arrow; TR42's and TR64's listens; the phone sitting and F7; TR52's run; the store's design.
 
 **Faber (builder).** 2026-11-26, 12:51 by the clock, on Opus 5.5. My Studio turn is done and the place saved (version 1311, NL_Audition with the plate's five). Pushed d9038cd0: TR57's plate hook, TR60's case. Touched cases at 60 fps: TR57 27/0, TR58 18/0, TR59 34/0 and 28/0, TR60 24/0, TR64 56/0, AR52 48/0, AR57 21/0. The tile's real press opens the share sheet, the plate's continues. Pip's skip failed 2 of 7 runs, not reproduced. TR58's pole is Modulo's post (asked). Records in TR57 to TR60. Nothing running, no Studio turn held.
-- **Next:** research's asks of 2026-11-26 (TR66 #1 and #3, TR65, AR65 step 1's captures in my next Studio turn); TR58's walking retake once the post moves; TR59's retake for research.
+- **Next:** research's asks of 2026-11-26 (TR66 #1 and #3, TR65, AR65 step 1's captures in my next Studio turn, AR7's staging: the keeper's swing beside the fighter, clear of the HUD's left column, captured for Scintilla's S5); TR58's walking retake once the post moves; TR59's retake for research.
 
 **Modulo (assets).** 2026-11-26, 12:38. Nothing running, no lock held.
 - **AR64's hair: round 41 is with the director,** on research's order (the two-techniques rule): `build/reference/hair/compare_rook_r41.png`, beside the catalog (internal). Blind reads said no on rounds 37 and 40; 41 wasn't read. Nothing uploaded.

@@ -17325,6 +17325,10 @@ Paint-overs on one frame of the game, in `build/handoff/Support/targets/`, each 
   - The first mend draws its star and its glow in front of the body, as the second does.
   - Rook stands partly over it on screen, since the client draws the lead off its server spot. The mend's read holds.
   - **Status:** implemented. Tested in play. Visually reviewed by me only: 1 passes in my read, for research's look. Not director-accepted.
+- **The half checkpoint (Scintilla, 2026-11-26, 18:20 take):** `checkpoint/half_A_tether_front_vs_target.png`, A's target strip on top and the build below, at its frames from Cast (-14, 0, 3, 8, 16, 30, 58). The main place in play, 60 fps, real time. The second mend of the take; the camera and the place's light differ a little from the target's.
+  - Every beat lands on its frame: the caster's ball at -14, the beam at 0, the mint star at the brawler at 3, the dome at 8, its fade by 16, gone by 58.
+  - Short of the target: the star at 3 is smaller, with less white mass round it, and the motes on the brawler at 30 don't show.
+  - **Status:** implemented and taken in play. Visually reviewed by me only. Research's look waits. Not director-accepted.
 
 ## AR59. Rook, redesigned to the anime bar (Modulo, for research's pick and the director's look, then its finish; Faber's install after)
 
@@ -17728,6 +17732,11 @@ Scintilla's first piece, on the director's order of 2026-11-23 ("Shared kit firs
     - **The ink showed past the light** as dark spikes at rung 4 and a dark hoop at the ring. The star's ink now sits inside its arms; the lance's, the second star's and the ring's are gone.
   - **Faber's hook in the fight** (26530cb0), seen live at night: the star on each landed hit, gold on criticals (`build/captures/ar61/star_live_night.mkv`).
   - **Status, 9de83fa9:** implemented, the rows taken. Tested: the logic cases (7,701). The changed rows aren't seen in Studio yet: the take waits on my next turn, and it's the bloom's last try before the options go to the director. Visually reviewed by me only. Not director-accepted. **For Faber's review:** the three rows files and `tools/fx/hit_sparks.py`.
+- **The last take (Scintilla, 2026-11-26, 18:2x):** the deck stage by day (`checkpoint/last_star_day_{strip,rungs}_vs_target.png`, the stage's camera, slowed 0.1). Also the Festival street at night at the player's camera (`last_star_street_night_*`: a Brawler 26 studs up the street with Rook held at Hit3, the same crop size).
+  - **The white mass now shows** by day: the bloom draws over Rook's fist at rungs 3 and 4 (`HIT_FRONT` works).
+  - **Still short of the target:** rung 4's star reads as a soft gold bloom with a thin arc, without the target's spikes. Rung 3 carries a thin white hoop the target doesn't have. Rung 2 isn't in the day take: it fired before the grab.
+  - **At the player's camera at night** the spark is a few pixels across, a quick white flick that's gone in about 0.2 s. That's the real size most players see it at.
+  - **Status:** implemented and taken in Studio. Visually reviewed by me only: the mass fixed, the star's shape still off. Research's verdict decides the options for the director. Not director-accepted.
 
 ## AR62. The screens' redo: their colours, their light and their art (research's audit, then Modulo's directions, then Faber, a screen at a time)
 

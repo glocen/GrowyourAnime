@@ -2455,7 +2455,7 @@ From the director's paste of 2026-11-26 (the register). Each claim was checked a
     - the ring and its line.
     - The check is `sheets/R1_install_check.png`: the images laid as the engine lays them, beside the target, a Rare and a Legendary. They hold. The light is kept off the head with the core image in black, and the dark band is two black copies of the figure's ViewportFrame, which come out a little crisper than the target's blur.
     - Content check: PASS on all six. Keep the shapes free of droplet tips or splashes, even in Mythical's pink-red.
-    - I upload them under the group when your install starts.
+    - Uploaded under the group at 22:04, so the install needn't wait. The ids are in `docs/asset-log.md`, and the install puts them in the reveal's config.
 
 **Not in this piece:** the Voidkin's own line and epithet (they need the director's ear first, given the "corny" rejections); the Index; a column of light from the Breaker in the world; the cut-in; new sounds (TR64's ear first); pity and banners.
 

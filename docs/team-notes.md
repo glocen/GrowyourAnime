@@ -39,12 +39,13 @@ Nothing blocks the start. When you want them (`docs/decisions.md`, "Waiting on t
 
 For Faber:
 
-4. **Your phone sitting, with a stopwatch** (your yes of 2026-11-24, 10:50: a private publish, never public). Faber publishes both places, private, and times F7 (`docs/research/design-holes.md`, F7, "The check"): the door, the trip, Lantern Row's first hit. You play the first ten minutes, one clean Normal run, and the trip there and back. Faber still needs your OK to start the PC's Roblox player into the private game under your account, for one timed run.
+4. ~~Your phone sitting~~: answered, no phone sessions (2026-11-26). F7's times are taken on the PC.
 
 5. **The test rule, in `CLAUDE.md` and `ga-finish`.** Research relays your yes (the register, 2026-11-15, night): at a piece's finish, the cases its change can reach and every offline logic case; the whole suite at a phase's close and after a change to shared code. `CLAUDE.md` changes only on your own word in the builder's session: say "write it" there and it's in.
-6. **Your ear on Haymaker's strike sound**, a library pick (not one of AR13's made takes), heard on its frame. In a playtest, the Server command bar: `game.ServerStorage.NL_Debug:Invoke("Replay", nil, "RookHaymaker")` plays it every 3.5 s, and `Invoke("Replay", nil)` stops it. Two alternates are logged in AR1, section 8.
-8. **Pick the slam's rule by playing it** (TR44): Off, A or B. In Studio's Play, start a keeper's try. The Server command bar switches the mode mid-fight: `game.ServerStorage.NL_Debug:Invoke("Slam", nil, "A")` (or `"B"`, `"Off"`), and `Invoke("Slam")` reads the counts. In A, walk out of the ring and your fighter follows; in B, press the round Recall button or R. Research reads a phone take of each first: say go and I record it (the PC's memory stopped it tonight).
+6. ~~Your ear on Haymaker's strike~~: answered, sounds are picked blind and judged in play (2026-11-26, 20:48).
+8. **The slam's rule (TR44) and tap to move** are played together: tap to move is on the pad (Faber, 728b88e0), and A's walk-out no longer pulls the lead off while it's on. Judge both in one sitting.
 9. **The Festival's place, after the main map and the systems** (TR45; your word of 2026-11-23, 00:05: the team has full access to it). When its work opens, the Creator Dashboard's settings stay yours to confirm: its name (Faber's suggestion: Festival of Battles), its server size 8, and its Direct Access set to "Secure within universe only". Then the id goes into `CLAUDE.md`'s "Places".
+10. **Sailor Piece's UI, for AR62's finish:** 10 to 20 screenshots in `build/reference/inbox/` (its fight HUD, menus, an inventory, a reward screen, a few buttons up close), or 15 minutes live with Faber on your account. Anime Crusaders X's study is in (`docs/research/anime-crusaders-ui-surface.md`).
 
 ### Notices
 

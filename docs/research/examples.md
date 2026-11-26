@@ -18,8 +18,8 @@ Research (Quaestor), 2026-11-24, evening, from the cloud. This is the calibratio
 
 | Verdict | The director's words | What | Image @ commit | Fit |
 |---|---|---|---|---|
-| **Accepted** | "def A, but looks at vanguard units then compare"; "yess see the difference" (11-15, 19:31, L277) | AR11, Watt's take A, the quiet wall | `Watt/watt_takes.png` @40d8841 | high |
-| **Accepted, with limits** | "it fine if the model has some attachment or ovexageration you seems to get it now" (11-24, about 01:47, L29) | AR59, Rook's pick (take A, five fixes): a direction, not yet the install | `Rook/takes/rook_pick.png` @7be72f2 | high |
+| **Superseded** (was Accepted; 11-20, 00:21: "the model we have for the voidkin are horrible it got much better with watt ... much bigger improvement") | "def A, but looks at vanguard units then compare"; "yess see the difference" (11-15, 19:31, L277) | AR11, Watt's take A, the quiet wall | `Watt/watt_takes.png` @40d8841 | high |
+| **Accepted, with limits; hair reopened** (11-24, 16:53: "the hair still need a rework") | "it fine if the model has some attachment or ovexageration you seems to get it now" (11-24, about 01:47, L29) | AR59, Rook's pick (take A, five fixes): a direction, not yet the install | `Rook/takes/rook_pick.png` @7be72f2 | high |
 | Rejected | "DONT MAKE THOSE MODEL WITH THOSE STYLE", "LOOK AT ANIME VANGUARD ANIME ADVENTURE THEN REDO" (11-23, 23:45 to 23:52, L30) | AR59, Rook's three takes in the first make | `Rook/takes/rook_takes.png` @4487a49 | high |
 | Rejected | "the hair are messy to many artifact and lack" (11-24, about 11:20, L20) | AR60, Kirra's finish in the new make | `Kirra/make/kirra_make_sheet.png` @3b328a9 | high |
 | Rejected | "that watt model is sooooo corny it doesnt look like anime" (11-15, about 18:45, L281) | AR11, Watt's first model, the mechanic | `Watt/watt_model_sheet.png` @1c9dda6 | medium-high |
@@ -29,11 +29,11 @@ Research (Quaestor), 2026-11-24, evening, from the cloud. This is the calibratio
 | Verdict | The director's words | What | Image @ commit | Fit |
 |---|---|---|---|---|
 | **Accepted** | "ok we keep it good job" (11-15, 02:07 to 02:26, L191) | AR12, the galaxy Breaker screen, its third mock | `UI/hud/colour/vivid3_breaker.png` @0540456 | high |
-| **Accepted, crown cut** | "the crown for legendary gears is uselless ... the rest is very good good job" (11-15, 00:54 to 01:38, L189) | TR17 and AR12, the redrawn Voidkin screen | `UI/hud/colour/vivid_voidkin.png` @a094111 | high |
-| **Accepted** | "let try F i dont want segments tho just a bar" (11-15, after 03:32, L294) | AR12, the lead's card, round two | `UI/hud/lead_card_takes/lead_card_round2.png` @0159956 | high |
+| **Accepted, crown cut; rail superseded** (11-17, 13:16: "childish", the rail redone as AR29) | "the crown for legendary gears is uselless ... the rest is very good good job" (11-15, 00:54 to 01:38, L189) | TR17 and AR12, the redrawn Voidkin screen | `UI/hud/colour/vivid_voidkin.png` @a094111 | high |
+| **Superseded** (was Accepted; 11-26, 22:37 to 22:57: "overhaul the whole hud like voidkin top left hud ...") | "let try F i dont want segments tho just a bar" (11-15, after 03:32, L294) | AR12, the lead's card, round two | `UI/hud/lead_card_takes/lead_card_round2.png` @0159956 | high |
 | **Accepted** | "the B) UI on the left are very good" (11-17, 14:03, L214) | AR29, the Voidkin screen's rail, the seam | `UI/voidkin/chrome/voidkin_chrome_close.png` @32b5980 | high |
-| **Picked** | "B, Conduit" (11-14 to 11-15, L183) | AR12, the HUD's colour, B of three | `UI/hud/colour/hud_colour_B.png` @77c591e | high |
-| **Accepted** | "i love the graphite UI wayyy more" (11-12, L134) | AR3, the UI direction sheet | `UI/ui_sheet.png` @82d5d69 | medium-high |
+| **Superseded** (was Picked; 11-26, 21:04: "this Ui color and text font is a prototype cause this looks horrible"; the HUD overhaul, 22:37 to 22:57) | "B, Conduit" (11-14 to 11-15, L183) | AR12, the HUD's colour, B of three | `UI/hud/colour/hud_colour_B.png` @77c591e | high |
+| **Superseded** (was Accepted; 11-26, 21:04: "this Ui color and text font is a prototype cause this looks horrible") | "i love the graphite UI wayyy more" (11-12, L134) | AR3, the UI direction sheet | `UI/ui_sheet.png` @82d5d69 | medium-high |
 | Rejected, all three | "it js need a different type of color different width (smaller imo) and much better composition" (11-15, 03:21 to 03:32, L200) | AR12, the lead's card, takes A to C | `UI/hud/lead_card_takes/lead_card_takes.png` @63a25ab | high |
 | Rejected | "im not happy with the shoulder and helmet and boots and chest need to looks more detailed "epic"" (11-16, 21:57, L230) | AR22, the empty slots' marks | `UI/slots/slot_marks_grey.png` @94e92dc | high |
 | Rejected | "dont make the whole game about lantern drum festival like those mask item" (11-23, 18:35, L36) | AR53, the Mask Ledger page | `UI/goals/goals_ledger.png` @f46f34d | high |
@@ -51,7 +51,7 @@ The UI pair to start from: the accepted rail (AR29, B) beside the rejected rail 
 
 | Verdict | The director's words | What | Image @ commit | Fit |
 |---|---|---|---|---|
-| **Accepted** | "you did a good job we still need to keep the anime yet mature theme this is great" (11-15, about 21:46, L266) | AR14, the base on its whole plot | `Base/base_1_across.png` @918d62a | medium |
+| **Superseded** (was Accepted; 11-26, by 21:04, the base at the gate: "Not clean prototype but yeah an prototype") | "you did a good job we still need to keep the anime yet mature theme this is great" (11-15, about 21:46, L266) | AR14, the base on its whole plot | `Base/base_1_across.png` @918d62a | medium |
 | **Accepted** | "the night looks absolutely gorgeous" (L153), "The merge" (L154), 11-12 | AR5, Lantern Row's look | `LanternRow/lantern_row_look_round2.png` @d270d74 | medium-high |
 | Rejected | "it need look like an base not lantern row ground" (11-15, 20:46, L270) | AR14, the base from Lantern Row's kit | `Base/base_1_home.png` @5e5c46e | high |
 | Rejected | "the base feel empty now" (11-16, 00:16, L246) | AR16, the star layout | `Base/base_1_star.png` @a42e3e0 | high |
@@ -71,9 +71,9 @@ The UI pair to start from: the accepted rail (AR29, B) beside the rejected rail 
 
 ## Keeping the set honest
 
-- **Add every new verdict** on a look, with the image the director saw, committed at the time of the verdict. An in-game capture beats a sheet. Rows leave only on the director's word.
+- **Add every new verdict** on a look, with the image the director saw, committed at the time of the verdict. An in-game capture beats a sheet. Rows leave only on the director's word. A row that a later word overturns is marked Superseded, with that word, and no pick leans on it (Gemini's audit, G4-001, 2026-11-27).
 - **Read the words with their scope.** "Accepted, with limits" covers what the row names, nothing wider (`AGENTS.md`, "The director's words keep their scope").
 - **The patterns the examples share** (OPINION, research's reading, to be tested in pairs and not used as a rule):
-  - The accepted UI is dark, quiet and composed, with one strong accent: graphite, the seam, the galaxy palette rather than a drawn galaxy.
-  - The rejected UI is busy or hand-drawn: the lantern drawing, the masks, the slot marks.
+  - The rejected looks share low craft at the game's size: flat or vector surfaces, plain shapes, and loose composition ("prototype", "childish", "horrendous", "corny"). Dark, purple or somber masses are rejected too ("too purple, black, somber", six times by 11-24).
+  - The bar the director names is shipped anime games' craft: Anime Vanguards for the Voidkin, and Anime Crusaders and Sailor Piece for the UI (11-27, 00:04). Drawn key art is wanted, "typesoul like or rellseas like" (11-26). Illustration isn't the fault. Craft short of that bar is. What still stands as accepted UI: the galaxy Breaker screen and AR29's seam rail, each quiet, composed, with one accent. (Rewritten 2026-11-27 on Gemini's audit, G4-003; the old line pointed picks back to graphite.)
   - Characters: Watt's take A was confirmed beside Anime Vanguards' units ("yess see the difference"), and Rook's takes were rejected with "LOOK AT ANIME VANGUARD ANIME ADVENTURE THEN REDO". The genre's hits are the yardstick the director names.

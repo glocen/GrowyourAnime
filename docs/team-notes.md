@@ -15,8 +15,8 @@ Each teammate rewrites its own row: one to three lines. Open asks sit under "Wai
 - **For Faber's install:** AR62's Arc panel B (`build/handoff/UI/arc_panel/`); the run's card C, research's pick, both must-fixes drawn (`build/handoff/UI/run_card/C_*`; the band, the fall's red #FF6B73, XL 60 on the frame's page); the HUD over the world with the cut and the 44 pt dock and eye (`style_frames/A_hud_cut.png`). AR67 A is Faber's too.
 - **Next:** AR62's fourth screen, the full screens' top bar (Voidkin, Equipment). AR64's hair stays at "close", asked of the director.
 
-**Scintilla (effects).** 2026-11-26, 19:51. **TR69 A's R4 and G1 seen in play** (TR69, "In play"): two must-fixes for Faber's hook, the star hidden by its own head (moving it toward the camera, tried live, fixes it) and the damage numbers on the mark. **AR58's motes:** Faber's review passed. **AR7's C4** and **AR61** wait on the director's word.
-- **Next Studio turn:** R4 and G1 again once fixed (the mark's drop and bob), AR48's states in motion, C4's straight cut. Nothing running.
+**Scintilla (effects).** 2026-11-26, 20:18. **TR69 A after Faber's fixes, seen in play** (TR69, "In play after the fixes"): the star and the ordinary numbers fixed; a critical still covers the mark, Faber's. **AR7's C4** and **AR61** wait on the director's word.
+- **Next Studio turn:** AR48's states in motion, C4's straight cut. Nothing running.
 
 **Sonus (sound).** 2026-11-26, 12:30 by the clock. **Shortlisted, not heard or picked:** TR42's eleven tabs (a62d1129), TR64's ten (17e042ae) and TR57's plate, five (BroadcastPlate, for Faber's review), in `ServerStorage.NL_Audition`: the place opened today with every earlier tab at its count, and Faber's end-of-turn save keeps the plate's. No Studio turn held, nothing running.
 - **Next:** the director's listens: TR42's on their go (item 10); TR64's with the plate after ShardDrop, once Faber's Play the moment hooks pass. Nothing else is open for sound (research, 12:19).

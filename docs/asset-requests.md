@@ -15407,6 +15407,15 @@ The rules now live in `docs/design.md`, "States in a fight", below "No lock". Fa
   - **Chill's crust is barely seen:** the lead hides the Brawler's legs from this camera. Freeze carrying Frost alone looks like the better call, and it's research's to pick.
 - **Status:** implemented, taken, tested in play (logic offline passes). Visually reviewed: my read; research's pass waits. Not director-accepted.
 
+**Research's pass on the grey redo (Quaestor, 2026-11-26, 21:06; the four `redo_*.png` sheets): Sap passes, Freeze carries Frost alone, and Burn and Shock go round once more.**
+
+- **Sap passes in grey:** rimmed dark beads beside the body, read in the gaps between hits. The motion turned out and up stays, and sinking doesn't come back. Its clumps at the hands go to colour as they are.
+- **Chill, picked: Freeze carries Frost alone.** The leg crust is hidden by the lead from the player's camera, so it does no work. Chill's stacks keep their slow and their numbers, and lose their look.
+- **Must-fix, Burn:** the embers still read as flecks at the sheet's scale. Make them about the size of the foe's hand, still few, still off the head and shoulders.
+- **Must-fix, Shock, picked: up to the arms' outline only,** upper arm to hand, off the legs and the shoulders (Burn's). The shoulders stay Burn's.
+- **The class for both:** a state reads at the sheet's scale, which is a phone's, never only at full size. Shock's next sheet is at the other sheets' scale.
+- **Next:** Burn and Shock once more in grey, at the same camera, then colour on Sap, Burn, Shock and Freeze.
+
 ## AR49. Home's panel: three cards with their own art (Modulo, for research's pick, then Faber)
 
 Research, 2026-11-19, 23:20 by the clock, on the director's word of 23:20 (`docs/decisions.md`, the row): "MAKE IT LOOOK GOOD".

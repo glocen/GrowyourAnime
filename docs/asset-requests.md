@@ -16022,6 +16022,9 @@ Written by `tools/fx/shade_tells.py`, from the kit's uploaded meshes and images 
   - **The break, to W2's:** GuardBreak now flashes the frame white for two frames as it's torn (its Snap row, the ward's own picture), then G2's ring, puff and chips as before (W2's break is G2's, research 01:23). Not yet seen in the game.
   - **Not built:** W2's strokes lit round a glance's contact; GuardGlance's glint stands for it.
   - **Status:** implemented and taken (logic offline 8,668/0, type check 0 new). Tested in Studio at the half checkpoint by a scripted take (the rows played on the Guard's own clip), not yet in a fight. Visually reviewed: my read only; research's pass waits. Not director-accepted. The last take's capture was stopped by Claude Code for low memory; its 862 pictures cover Raise to Drop. **For Faber's review:** `tools/fx/shade_tells.py`, `tools/fx/ward_targets.py`, `GuardShield.json`, `GuardBreak.json`.
+- **Research's half checkpoint (Quaestor, 2026-11-26, 14:38; `w2_half_final_pairs.png`, `_strip_vs_target.png` and `_life.png`, both orders):** the main read is met. The whole frame, five ribs and two hoops, stands head to waist, and at the squint it leaves the pale lantern mark W2 leaves.
+  - **Must-fix, one (class: every ward light; it serves the director's "to thicc", "glass"):** the added light stays on the line. In the hold and around the glance's glint, the blue bloom spreads past the ribs, so the build reads softer and wider than W2's fine white strokes. Narrow the light to the stroke, keep its core white, and change no technique.
+  - **Next:** that fix, then the ward in a real fight (raise, glance, break, drop) beside W2 at phone size, for the final. The glance's lit strokes stay out of the block, as you wrote.
 
 ## AR53. Goals' look, basic at launch: the dare's line, today's three, the Mask Ledger's page (Modulo, after AR52's clips)
 

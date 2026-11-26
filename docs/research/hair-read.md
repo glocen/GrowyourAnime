@@ -211,7 +211,11 @@ The web study (sources below) says the catalog's look is in its texture: strands
   - the sweep (the fringe swept to his right, its lead lock past the cheekbone) last, read as "busier, more thin spikes".
   - The order check failed: the sweep sat in the middle row in both orders.
   - The gap named first again: "nothing pushes past the head's outline enough to be recognised".
-- **Where this leaves it** (19 fresh reads): the make no longer holds it back. The bar's hairs are bold outlines standing far off the head. A Shag lying on the head reads "a soft helmet" beside them, whichever way it is made. Going bolder changes the director's pick (AR64, the Shag over the Crest and the Sweep), so it's the director's call.
+- **Two bolder tries, read by me on masks at a wide framing** (14:40 to 14:50; the sheet's usual crop shows 60% of a shot and cut their points off):
+  - the leaders grown to 1.2 times their width, and the crown's locks lifted to end in points at the temples: the dome grew puffier, and the side points read as a wide mop;
+  - five narrow tufts leaving the crown as triangles: they left sideways as needles at the temples ("antennae"), and the top contour stayed the same dome.
+  - The code of the sweep and the wolf is in 824454e8; all four switches are removed, and the plain take (SW) stands.
+- **Where this leaves it** (19 fresh reads, then the two tries above): the make no longer holds it back. The bar's hairs are bold outlines standing far off the head. A Shag lying on the head reads "a soft helmet" beside them, whichever way it is made. Going bolder changes the director's pick (AR64, the Shag over the Crest and the Sweep), so it's the director's call.
 
 **The way, for Rook** (DESIGN, from the reads): `rook_wedges()` in `hair_ways.py`, class `Spikes`.
 - **The locks:** 24 rounded wedges over a smooth crown dome, from a whorl at the back of the crown, swept one way, a few big and many small.

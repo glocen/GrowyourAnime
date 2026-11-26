@@ -953,7 +953,7 @@ def rook_spikes():
     return h
 
 
-def rook_wedges(planes=False, signature=None):
+def rook_wedges(planes=False):
     """Rook's cut as the bar's heads (hair-read.md, "Against Anime Vanguards"; the blind reads of 2026-11-26): 24
     rounded wedges from a whorl at the back of the crown, swept one way, over a smooth crown mass, in a plain order of
     size: heroes and small points. Four mid ones lie under round the back and sides, and one over each ear; over them
@@ -1003,25 +1003,10 @@ def rook_wedges(planes=False, signature=None):
         wedge((W[0] - side * 12 + r.uniform(-3, 3), W[1] + r.uniform(-2, 2)), (a, ph), w, 0.2, 14, curl=side * 8,
               off=(0.04, 0.22), bow=side * 0.06, n=8, lift=0.05)
     F = (0.0, 14.0)
-    # signature (the outline study, 2026-11-26, 14:30: the make holds at "close", and what's left is the cut's own outline;
-    # every bar hair has one). "sweep": the fringe swept from a part over his left to his right, its lead past the
-    # cheekbone outside the eye, so the face-on outline is uneven. "wolf": the nape runs down in long points and a piece
-    # falls before each ear to the jaw, so the back, the fight camera's view, has a shape of its own.
-    sweep = signature == "sweep"
-    fringe = (((-80, 94, 0.42), (-58, 100, 0.9), (-32, 90, 0.6), (-6, 86, 0.34), (18, 80, 0.56), (44, 72, 0.3)) if sweep else
-              ((-62, 76, 0.32), (-36, 82, 0.66), (-6, 86, 0.84), (14, 84, 0.3), (34, 80, 0.62), (56, 74, 0.32)))
-    for a, ph, w in fringe:
-        side = -1 if sweep else 1 if a > 0 else -1   # the fringe, to the brows, uneven, the lead to his right
-        root = (30 + a * 0.2, F[1]) if sweep else (F[0] + a * 0.3, F[1])
-        wedge((root[0] + r.uniform(-3, 3), root[1] + r.uniform(-2, 2)), (a, ph), w, 0.18, 26 + abs(a) * 0.2, curl=side * 14,
+    for a, ph, w in ((-62, 76, 0.32), (-36, 82, 0.66), (-6, 86, 0.84), (14, 84, 0.3), (34, 80, 0.62), (56, 74, 0.32)):
+        side = 1 if a > 0 else -1   # the fringe, to the brows, uneven, the lead to his right
+        wedge((F[0] + a * 0.3 + r.uniform(-3, 3), F[1] + r.uniform(-2, 2)), (a, ph), w, 0.18, 26 + abs(a) * 0.2, curl=side * 14,
               off=(0.12, 0.2), bow=side * 0.04, n=7, lift=0.02)
-    if signature == "wolf":
-        for a, ph in ((150, 102), (180, 106), (210, 102)):   # the nape's long points, hanging clear of the back
-            side = 1 if a < 180 else -1 if a > 180 else 0
-            wedge((a - side * 6, 70), (a + side * 4, ph), 0.66, 0.5, 18, curl=-side * 6, off=(0.03, 0.07), n=7)
-        for a in (64, 296):   # a piece before each ear, to the jaw
-            side = 1 if a < 180 else -1
-            wedge((a, 50), (a + side * 4, 108), 0.46, 0.22, 16, curl=-side * 6, off=(0.02, 0.06), n=7)
     return h
 
 TIE = (180, 15)
@@ -1093,8 +1078,6 @@ WHO_ = {
                        "SK": with_hair(rt, rt.take_a, rook_spikes),
                        "SW": with_hair(rt, rt.take_a, rook_wedges),
                        "SP": with_hair(rt, rt.take_a, lambda: rook_wedges(planes=True)),
-                       "SS": with_hair(rt, rt.take_a, lambda: rook_wedges(signature="sweep")),
-                       "SL": with_hair(rt, rt.take_a, lambda: rook_wedges(signature="wolf")),
                        "RF": with_hair(rt, rt.take_a, lambda: rook_ribbons("split", flat_paint=True))},
                  today="Today's Rook (AR59's pick)"),
     "kirra": dict(takes={"Kirra": kt.take_a, **{k: with_hair(kt, kt.take_a, lambda k=k: kirra(k)) for k in "ABC"}},

@@ -4184,6 +4184,15 @@ This is delivery 4, the block clip of section 5 polished, on research's open not
 - **The straight cut** isn't the particle's square: that would cut both sides. It's most likely a floor part a hair above the keeper's spot. I check it on my next Studio turn. If it is the floor, fixing it adds the ellipse's right half and doesn't change the read.
 - **Status:** evidence for the options, with no change to the build. Visually reviewed: my read, the thin ellipse. Research's verdict waits.
 
+### Research's read of the real entrance, and the options for the director (Quaestor, 2026-11-26, 18:35; `c4_entrance_life.png`, `c4_entrance_pairs.png`)
+
+- **Agreed: the same thin ellipse.** It's a warm haze under the lead and the avatar for about 0.3 s, gone in grey. Option 1 fails at the real entrance, and the straight cut doesn't change that.
+- **For the director, on their return:**
+  - option 2, an upright warm flare at the lantern on Stamp (research's lean);
+  - option 3, no ring, where the Challenge reads by the clip and the lantern's glow;
+  - with option 1's three takes shown as tried.
+- **So the director picks between images, not words:** Scintilla makes option 2's target at the real entrance, at the player's camera (its peak frame and a strip of its life, within an hour). Option 3's frame is the same take with the ring off. No build hour before the director's pick.
+
 ## AR8. The effects pass
 
 For Faber and Modulo (research's request, 2026-11-13). It rests on the director's word of the same day (`docs/decisions.md`): "make it great look at some pro vfx examples and compare". It runs before phase 2 closes, and its pieces close at research's pass without the director's yes. **The measure:** `docs/research/vfx-reference.md`, its comparison table and its five rules, starting with the importance ladder.

@@ -1,0 +1,25 @@
+Down: 67 frames, 1.10 s
+  the stand's nearest to her, in studs (the pole and the mic's head): Torso 0.47 at 0; Head 0.73 at 6; Left Arm 2.44 at 0; Right Leg 0.46 at 39; Left Leg 1.42 at 41; Right Arm -0.07 at 4
+  its base at its lowest over the floor: -0.00 at 20; her fist on the pole from 2.26 to 3.12 studs up it (it holds from 1.3 to 5.2)
+  the mic's head from her mouth at each named pose: 6: 2.29, 14: 3.48, 29: 5.98, 41: 5.61, 60: 5.75
+  the speakers' nearest, past their cabinets: Head 0.90 at 5; Torso 1.03 at 5; Right Arm 0.15 at 16; Left Arm 0.06 at 15; Pole 0.49 at 7
+  a leg's widest swing: right 15 at 14, left 16 at 14 (the tail allows 30)
+  the longest an arm is nearly still at 20 to 70 degrees up, of 6 frames: right 25 (to 66), left 0 (to 66); each arm at its highest: right 73 at 29, left 57 at 22
+[audit] Lyric_Down.json (export, 67 poses)
+  Legs cross            0.000 studs at 0.3333 (the legs)
+  Arm through body      0.040 studs at 0.4167 (Left Arm into Torso)
+  Leg out of hip        0.002 studs at 0.0167 (Right Leg)
+  Weapon through body   0.000 studs
+  Under the floor       0.000 studs at 0.0833 (Right Leg)
+  Pop                   1.326x at 0.1167 (Left Arm turns 8.0 deg in one frame)
+  Seam                  0.000 deg
+  Limb flip             7.233 deg at 0.0167 (Left Arm turns about its own length in one frame)
+  Wrist flip            0.000 deg
+  Salute held           0.050 s at 0.2167 (Left Arm 21 up, 10 off its facing, in the zone to 0.25)
+  Neck offset           0.000 studs at 0.25 (the head off its neck)
+  Nod                  18.000 deg at 0.2333 (the head against the torso)
+  Beat                  0.998x at 0.4667 (Right Arm turns 2.9 deg in one frame, on the marker Land; the clip's own beat, for information)
+  Shoulder cap          0.391 studs at 0.5333 (Left Arm; inherent to R6, for information)
+  Salute tilted         0.067 s at 0.2667 (Left Arm 35 up, 16 off its facing, in the zone to 0.3167; the body tilted past 30 deg, so no salute: for information)
+  Eyes                 -2.6 to +59.6 deg (at 0.1 and 1.1; the face's pitch, + up, for information: level on a target unless a beat says otherwise)
+AUDIT PASS

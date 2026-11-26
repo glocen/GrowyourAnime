@@ -797,10 +797,102 @@ def skip(t):
     t.kick(21, "RL", 0.05, 10)  # the landing's thump, on her cue
 
 
-CLIPS = {"Idle": idle, "Combo": combo, "HeldNote": held_note, "Reveal": reveal, "Work": work, "Skip": skip}
+# Her own reactions (AR66, research's pick of 2026-11-26, 17:32: Hit A, and the B pair), in place of Pip's robe set,
+# which never holds the stand or keys the speakers. Each keeps the robe set's length and marker: Hit 21 frames, Down 67
+# with Land at 29, Up 59, and the Up starts where the Down lies. Her legs keep inside the jacket's tail.
+LOOSE = {"Right Leg": None, "Left Leg": None}  # off the floor: the feet go where the legs put them
+AT_HOME = dict(R=HOME[SR], L=HOME[SL], RT=(INWARD[SR], 0.0), LT=(INWARD[SL], 0.0), F=1.0)
+
+
+def fall(pitch, share=0.56, turn=9):
+    """Her chest when she's tipped `pitch` degrees all of a piece (under 0: back over her heels), as Pip's robe set
+    does it: her feet give as she goes, so she comes down across where she stood."""
+    a = math.radians(pitch)
+    return (pitch, turn, 0, 0, 0, share * (math.copysign(0.6 * (1 - math.cos(a)), pitch) + 3.0 * math.sin(a)))
+
+
+def hit(t):
+    """It rocks her back on her heels and she hangs on to the stand, which leans in after her; the speakers are
+    knocked off their line and come back to her on the nod."""
+    t.key(0, "stance", ease="out")
+    t.stand(0)
+    t.key(3, "struck", ease="out", T=(-22, 18, -6, 0, 0, -0.22), H=(-26, -12, -8), LA=(42, 0, -72), crouch=0.0)
+    t.key(8, ease="sine", T=(-14, 15, -3, 0, 0, -0.14), H=(-10, -8, -3), LA=(22, 0, -40))
+    t.key(13, "on the nod", ease="sine", T=(3, 9, 0, 0, 0, 0.02), look=NOD, H=(0, 0, 0), LA=(4, 0, -10), crouch=0.06)
+    t.key(20, "settled", T=HUB["T"], look=EYES, LA=HUB["LA"], RA=HUB["RA"], crouch=HUB["crouch"])
+    t.speak(2, "out")
+    t.speak(6, "sine", R=(3.4, -1.4, 5.75), L=(-3.35, -1.55, 5.45), RT=(-10, -26), LT=(10, -26), F=0.2)
+    t.speak(13, "back", R=HOME[SR], L=HOME[SL], RT=(INWARD[SR], 0.0), LT=(INWARD[SL], 0.0))
+    t.speak(20, F=1.0)
+    t.kick(13, "RL", 0.08, 7)
+
+
+# The Down ends here and the Up starts here: on her back, her right hand up after the stand, which stands on its own
+# where she let go of it; the speakers sag to her, low.
+LAID = dict(T=fall(-86), feet=LOOSE, RL=(-10, 0, 0), LL=(-8, 0, 0), crouch=0.0, lift=0.0, H=(16, 14, 0),
+            RA=(40, 0, 12), LA=(0, 0, -50))
+SAG = dict(R=(3.6, -1.2, 2.6), L=(-3.75, -1.5, 2.4), RT=(10, 30), LT=(-10, 30), F=0.2)  # clear of her arms as she comes up
+
+
+def down(t):
+    """It takes her over and the stand stays standing where she let go of it, rocking, the mic still up; her hand goes
+    after it all the way down, and the speakers sag to her, low."""
+    t.key(0, ease="out")
+    t.stand(0)
+    t.free(0)
+    t.key(6, "the blow", T=(-12, 14, 0, 0, 0, -0.4), H=(14, 6, 0), RA=(40, 0, 10), LA=(58, 0, -8), crouch=0.0)
+    t.free(6, "out", F=1.0, line=(6, 200))
+    t.key(14, "and over", ease="lin", T=fall(-26), H=(18, 4, 0), RA=(84, 0, 20), LA=(90, 0, -10))
+    t.free(14, "sine", line=(9, 30))
+    t.key(22, ease="lin", T=fall(-52), feet=LOOSE, RL=(-6, 0, 0), LL=(-4, 0, 0), H=(16, 4, 0), RA=(110, 0, 24),
+          LA=(110, 0, -20), lift=0.3)
+    t.free(22, "sine", line=(7, 210))
+    t.key(29, "down", **{**LAID, "RL": (-8, 0, 0), "LL": (-6, 0, 0), "RA": (90, 0, 26), "LA": (30, 0, -46), "lift": 0.2})
+    t.mark(29, "Land")
+    t.free(30, "sine", line=(4, 40))
+    t.key(34, T=fall(-85), RL=(8, 0, 0), LL=(14, 0, 0), LA=(12, 0, -50), lift=0.5)  # her left arm along the street
+    t.key(41, "lying", **LAID)
+    t.free(40, "sine", line=(2, 200))
+    t.free(52, line=(0, 0))
+    t.key(60, "held", ease="hold")
+    t.key(66)
+    t.speak(5, "out")
+    t.speak(10, "in", R=(2.9, -0.2, 5.2), L=(-2.9, -0.4, 4.9), RT=(0, -10), LT=(0, -10), F=0.0)
+    t.speak(36, "sine", **SAG)
+    t.speak(66)
+
+
+def up(t):
+    """She comes up off her heels all of a piece and her fist closes on the stand as it tips to her, and she turns it
+    once round its line on the beat; the speakers snap back to her shoulders on the same beat."""
+    t.key(0, **LAID)
+    t.free(0, F=1.0, line=(0, 0))
+    t.key(12, "comes up", ease="cubic", T=fall(-52), RL=(-6, 0, 0), LL=(-4, 0, 0), lift=0.3, H=(12, 0, 0),
+          RA=(110, 0, 20), LA=(62, 0, -12))
+    t.free(12, "in", line=(10, 250))  # it tips toward her as she comes
+    t.key(24, "caught", ease="cubic", T=fall(-8), feet=HUB["feet"], lift=0.0, RA=(40, 0, 14), LA=(30, 0, -10),
+          look=EYES, H=(0, 0, 0))
+    t.free(24, "out", F=0.0)
+    t.stand(24, "out", at=B0)
+    t.key(30, "on the beat", ease="out", T=(4, 9, 0, 0, 0, 0.06), crouch=0.08, look=NOD, RA=(14, 0, 8), LA=(10, 0, -10))
+    t.stand(30, "out", spin=0.0)
+    t.stand(38, "sine", spin=360.0)
+    t.key(40, ease="sine", T=(0, 9, 0), crouch=0.04, look=EYES)
+    t.key(58, T=HUB["T"], crouch=HUB["crouch"], RA=HUB["RA"], LA=HUB["LA"])
+    t.stand(58, spin=360.0)
+    t.speak(0, **SAG)
+    t.speak(22, "in", R=(2.95, -1.1, 3.4), L=(-2.95, -1.3, 3.2), F=0.2)
+    t.speak(30, "out", **AT_HOME)
+    t.speak(58)
+    t.kick(30, "RL", 0.2, 12)
+
+
+CLIPS = {"Idle": idle, "Combo": combo, "HeldNote": held_note, "Reveal": reveal, "Work": work, "Skip": skip,
+         "Hit": hit, "Down": down, "Up": up}
 # The rows a clip's pose sheet shows, and the first is its pack's view. The note is as wide as its cone, so it's read
 # with a wider lens, and from the target's side too; the Reveal is met from the front.
-VIEWS = {"HeldNote": ("wide", "met", "wide side"), "Reveal": ("front", "side", "game"), "Work": ("front", "side", "game")}
+VIEWS = {"HeldNote": ("wide", "met", "wide side"), "Reveal": ("front", "side", "game"), "Work": ("front", "side", "game"),
+         "Hit": ("game", "side"), "Down": ("game", "side"), "Up": ("game", "side")}
 
 
 # --- outputs --------------------------------------------------------------------------------------------------------

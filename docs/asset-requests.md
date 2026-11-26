@@ -18209,6 +18209,22 @@ The rule: `docs/design.md`, "Clips follow the model, rules follow the class" (th
   - **The must-fix is met:** no part goes through the body or the street (the closest is 0.04 into the torso and 0.017 under the street), and the audit passes on all eight clips. The set's lengths and its Land hold.
   - **What the sheets can't show:** her reactions in a real fight at the player's camera, first seen at TR69 F's captures.
 
+### Modulo's build of Lyric's Hit A, Down B and Up B (2026-11-26, 19:24; started 19:18)
+
+- **Where:** `tools/blender/lyric_clips.py`, `hit()`, `down()` and `up()`, ported from the targets.
+  - Exported to `build/handoff/Lyric/clips/` as `Lyric_Hit.json`, `Lyric_Down.json` and `Lyric_Up.json`, each with its `pack_`, `arcs_` and `bare_` sheets.
+  - `Lyric.clips.json` gains Hit, Down and Up. Her other six clips are untouched, and the tool still writes them as shipped (within 0.0013).
+- **The robe set's lengths and marker:** Hit 21 frames, Down 67 with Land at 29, Up 59, starting where the Down lies. Her legs stay inside the jacket's tail (widest swing 27 of 30 degrees). The stand and the speakers are keyed in all three.
+- **Research's must-fix, no part through the body or the street:**
+  - **Up B, the speakers in her arms at 8 and 25:** they sag about 0.3 wider while she lies, and come in 0.35 wider before the beat. They now clear her arms by at least 0.27.
+  - **Down B, her left arm 0.15 under the street at the landing:** it comes down along the street, swung 30 degrees at the landing and 12 at the bounce, where it was 52. It now stays above the street throughout.
+  - **Closest now:** an arm 0.047 into the torso. The pole is 0.07 into her right hand where it leaves her fist (Down 4) and returns to it (Up 21), the grip as in every clip. The audit passes on all nine of her clips.
+- **Beside the targets, from the game's camera:** `build/scratch/modulo/ar66/lstrips/beside_{Hit,Down,Up}.png`, each target above the build. The poses fall on the same frames.
+- **For Faber's install (Faber's code):**
+  - Lyric gets her own rig, in place of the robe set: `Rig = "Lyric"` in her definition, and `Rigs.Lyric = { Idle = "LyricIdle", Hit = "LyricHit", Down = "LyricDown", Up = "LyricUp" }`.
+  - Upload `LyricHit`, `LyricDown` and `LyricUp`.
+- **Status:** made and self-reviewed (the audit, the probe, and the build beside the targets). Content check before upload: PASS. The reach after the stand while she lies flat isn't a held salute, and nothing else comes near the rules. Delivered to the handoff for research's verdict, then Faber's install. Not accepted.
+
 ## AR67. The Generator's new model, and any machine that needs one (Modulo's targets, research's pick, then Faber's install)
 
 Research, 2026-11-26, 17:47, on the director's word of about 17:46 (the register): "we can change the whole model of any machine that need it and dont need to stick with what i said abt the generator turning ... just make it the best it can be".

@@ -99,6 +99,32 @@
           "Land"
         ]
       ]
+    },
+    "Hit": {
+      "File": "Lyric_Hit.json",
+      "Frames": 21,
+      "Seconds": 0.333,
+      "Loop": false,
+      "Markers": []
+    },
+    "Down": {
+      "File": "Lyric_Down.json",
+      "Frames": 67,
+      "Seconds": 1.1,
+      "Loop": false,
+      "Markers": [
+        [
+          29,
+          "Land"
+        ]
+      ]
+    },
+    "Up": {
+      "File": "Lyric_Up.json",
+      "Frames": 59,
+      "Seconds": 0.967,
+      "Loop": false,
+      "Markers": []
     }
   }
 }

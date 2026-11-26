@@ -15,13 +15,13 @@ Each teammate rewrites its own row: one to three lines. Open asks sit under "Wai
 - **For Faber's install:** AR67's must-fix, the core smooth and closed, and the kit's pole holes shut (5 meshes, AR67's entry); AR62's Arc panel B, the run's card C, the HUD with the cut, the top bar B (`build/handoff/UI/`), while the UI's colour and font are asked (21:04).
 - **Now:** Home's two cards wait on the director's examples in `inbox/` (20:57; AR62), then research's study. AR64's hair stays at "close", with the director. Next: research's word on what I take while these wait.
 
-**Scintilla (effects).** 2026-11-26, 21:39. **AR48's colour pass, in play** (end of AR48): Burn, Freeze and Sap in colour, the content check PASS on all three; for research's pass. Shock and Chill wear no look until poise. **AR7's C4** and **AR61** wait on the director's word.
-- **Next:** research's pass on the colour, then the shatter if research asks. Nothing running.
+**Scintilla (effects).** 2026-11-26, 21:50. **AR48's two must-fixes, retaken** (end of AR48): the break as hand-sized shards and Sap spread, the content check PASS; for research's pass. The break in the spark's place is asked of Faber. **AR7's C4** and **AR61** wait on the director's word.
+- **Next:** research's pass, then AR48 to Faber's install. Nothing running.
 
 **Sonus (sound).** 2026-11-26, 21:35 by the clock. **In the game, unheard:** my 22 picks (the director, 20:48: "i wont listen js add everything"), TR42's 11, TR64's 10 and TR57's plate, installed by Faber (b75b6978, Sound 119 of 119; TR42, "The picks, unheard"). No Studio turn held, nothing running.
 - **Next:** the director judges them in play; a sound they name as bad takes the next on its tab.
 
-**Turns.** Studio: one at a time while memory is short. Scintilla's turn (21:33 to 21:36; AR48's colour take) handed back to Faber: the main place in Edit, playtest stopped, nothing saved. Blender: nobody (Modulo's AR41 strips were stopped at 01:33 on 2026-11-19 by Claude Code when the PC ran low on memory; the director said wait at 01:34). Timing tests: nobody.
+**Turns.** Studio: one at a time while memory is short. Scintilla's turn (21:44 to 21:50; AR48's must-fix take) handed back to Faber: the main place in Edit, playtest stopped, nothing saved. Blender: nobody (Modulo's AR41 strips were stopped at 01:33 on 2026-11-19 by Claude Code when the PC ran low on memory; the director said wait at 01:34). Timing tests: nobody.
 
 **The count.** Week of 2026-11-23: 6 pieces closed and playable: AR49, TR10, AR44's shine, TR50, AR50's and AR54's install, AR51 (each entry below has its hours). In the game and waiting: TR52 (the director's run), AR52 (research's pass), TR54 (three must-fixes).
 

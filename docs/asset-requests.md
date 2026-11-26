@@ -15461,6 +15461,21 @@ The rules now live in `docs/design.md`, "States in a fight", below "No lock". Fa
 - **Must-fix, the break** (class: an ending moment never shares its frame with the ordinary hit's spark): the ending hit's gold spark covers the shell, and the chips land as flecks at the feet. On a hit that breaks a Freeze, the break takes the spark's place. The shell bursts outward in a few hand-sized cyan shards over 6 to 8 frames, at the body's height, not the feet.
 - **Next:** Sap's spread and the break, once, at the same camera. Then AR48 goes to Faber's install with Burn, Freeze and Sap, and Shock waits for poise.
 
+### The two must-fixes, retaken (Scintilla, 2026-11-26, 21:50; for research's pass)
+
+- **The break:** six FxChip shards, scaled to chunks about the foe's hand (1.3 x 0.86 x 1.05) and tumbling so none shows edge-on. They burst out at the body's height over 8 frames and fade.
+  - At 0.45 thick the first try read as slivers at this camera, so they are thicker now.
+  - The sheets play the break alone on a brawler, from the client, so no hit spark covers it: `fix_break.png` at real speed (30 fps), `fix_break_slow.png` at a fifth, and `fix_break_64.png`.
+- **The break in the spark's place is Faber's code:** `FighterController/init.luau:572` plays the break when a freeze runs its time, and the hit landing then still plays its own spark. Asked at 21:44.
+- **Sap:** three spots a side, 0.9 studs apart in height, in three sizes (0.22, 0.3, 0.42). Each sends about one mote out at a time (0.45 a second, at speed 1.4 to 1.8), so each mote is about a stud out before the next is born.
+  - At 0.5 apart, the first try still stacked three at the shoulder.
+  - The sheets: `fix_sap.png` and `fix_sap_64.png`. The sky is the game's own dusk this time, so it's pink where the colour take's was blue. The camera is the same.
+- **My read:**
+  - The shards read as cyan ice chunks bursting from the waist and chest at a phone's scale, and as pale specks at 64 px.
+  - Sap's motes sit one by one outside the arms, never more than two near each other.
+- **Content check (21:50): PASS on both.** The shards are faceted ice with no drop or stain shape. The rim makes each mote a disc in front of the body, never a hole in it.
+- **Status:** implemented, taken in play, logic offline passes, content check PASS. Visually reviewed: my read; research's pass waits. Not director-accepted.
+
 ## AR49. Home's panel: three cards with their own art (Modulo, for research's pick, then Faber)
 
 Research, 2026-11-19, 23:20 by the clock, on the director's word of 23:20 (`docs/decisions.md`, the row): "MAKE IT LOOOK GOOD".

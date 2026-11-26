@@ -22,8 +22,8 @@ Each teammate rewrites its own row: one to three lines. Open asks sit under "Wai
   - AR61: by day and at night, two misses: the bloom hidden by the fist, and the ink past the light. Both are changed (9de83fa9), and their take waits on my turn after Sonus.
 - **For research:** AR52's pick in pairs, AR58's close, AR61's take (one message, 01:22).
 
-**Sonus (sound).** 2026-11-24, stopped at the director's word of 21:25. **Now: the M1s per class and the five signatures, one finished sound each.** The words for all eleven tabs are set (TR42, "The M1's sound per class"); nothing shortlisted yet.
-- **Blocked:** my Studio calls wait on the hooks (item 10); then a 15-minute finder run, then the director's listen.
+**Sonus (sound).** 2026-11-26, stopped at the director's wrap-up of 02:12. **Shortlisted, not heard or picked:** TR42's eleven tabs (a62d1129) and TR64's ten big moments (17e042ae, Faber's review passed), five to eight a tab, in `ServerStorage.NL_Audition`; TR64's lists unsaved, so Faber's next save keeps them. No Studio turn held, nothing running.
+- **Next:** the director's listens: TR42's on their go (item 10), TR64's once Faber's Play the moment hooks pass in Studio. Then research's next cue list.
 
 **Turns.** Studio: one at a time while memory is short. The main place is open, Sonus's turn (2026-11-26, from 01:34, about 35 minutes, Edit only: TR64's ten shortlists. Faber's ended at 01:34: playtest stopped, Edit, saved as version 1297, which keeps the Healer cast's list in NL_Audition); Scintilla after Sonus (about 20 minutes: AR61's star taken again, by day and at night); and the Festival's place is closed. Blender: nobody (Modulo's AR41 strips were stopped at 01:33 on 2026-11-19 by Claude Code when the PC ran low on memory; the director said wait at 01:34). Timing tests: nobody.
 
@@ -46,6 +46,10 @@ For Faber:
 7. **Your ear on the audition panel** (TR42), ready for tomorrow: 12 tabs, the nine skills and the Mage's and Healer's hits, and a tab for each of Rook's, Kirra's and Watt's light hits drawn from your 32 keeps. In Studio's Play, the panel is at the left: a tab per hit, "Old" (today's sound) and ten candidates. Tap a row: it plays, and from then on every hit of that kind plays it in the fight. **Keep** the ones you like (more than one is fine), **More** for the next ten, **None of these** when ten hold nothing. **Others off** mutes the fight's other sounds, so you hear the candidate alone. When you're done, leave the Play running and tell Faber: your picks are read from it.
 8. **Pick the slam's rule by playing it** (TR44): Off, A or B. In Studio's Play, start a keeper's try. The Server command bar switches the mode mid-fight: `game.ServerStorage.NL_Debug:Invoke("Slam", nil, "A")` (or `"B"`, `"Off"`), and `Invoke("Slam")` reads the counts. In A, walk out of the ring and your fighter follows; in B, press the round Recall button or R. Research reads a phone take of each first: say go and I record it (the PC's memory stopped it tonight).
 9. **The Festival's place, after the main map and the systems** (TR45; your word of 2026-11-23, 00:05: the team has full access to it). When its work opens, the Creator Dashboard's settings stay yours to confirm: its name (Faber's suggestion: Festival of Battles), its server size 8, and its Direct Access set to "Secure within universe only". Then the id goes into `CLAUDE.md`'s "Places".
+
+For Sonus:
+
+10. **Your ear on the eleven tabs of TR42's listen** (about 20 minutes): each class's basic attack (the Assassin's cuts, the Tank's blows, the Mage's and the Healer's casts and hits) and the five signatures (Haymaker, Scarf Step, Lantern Burst, Ground Wire, Held Note), four to eight finished sounds a tab. Say go in Sonus's session: Sonus takes a Studio turn and starts the Play. The panel is at the left, a tab per cue: tap a row and every hit of that kind plays it in the fight; **Keep** the one that's right, **None of these** when none is, **Others off** to hear it alone. Sonus reads your picks.
 
 ### Notices
 

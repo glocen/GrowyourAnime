@@ -5090,6 +5090,19 @@ Research, 2026-11-24, from the cloud. Launch-design's items 6 and 10. The design
 - **Research's verdict on the block, 2026-11-26, 01:35,** from `build/captures/tr57/` at 568×320: it passes as a block. The plate says who found what in two lines, with the rarity lit, in the target card's place, and keeps to the band between the lead's card and the pills (Faber's fix, 25510ee0). The chat draws the colour tag.
   - **Must-fix (contrast; class: every rarity word on a dark panel):** the Common grey is dim on the chat's panel. The chat takes the bag's lifted rarity words (#B9BDC6 for Common; Faber's tier 1 of 2026-11-25), from the same table.
 
+### The plate's cue (research, 2026-11-26, 12:19, for Sonus; TR64's rules)
+
+The plate passed as a block at 01:35, and its timing is set in code: a 0.2 s fade-in, a 4 s hold, at most one every 20 s (`Config.Broadcast.Plate`, `BroadcastController`). AR62's restyle changes its colours, not its timing, so the cue can be picked now. It needs no conductor, because the plate's own queue already waits out fights, rings, reveals and screens.
+
+| Cue | Plays on | Longest | Words | Never |
+|---|---|---|---|---|
+| BroadcastPlate, tonal | the plate's fade-in, one sound for every rarity. Never on a chat-only line (stale or past the cap), and never with "Show others' finds" off | 0.8 s | "notification chime", "soft chime", "message chime", "gentle bell", "glass notification" | your own find: someone else's find must never sound like your ShardDrop or a reveal, so no bright bell on the drop's notes; a fanfare, coins, a voice; a phone's, a console's or an app's own alert |
+
+- **Level:** quiet, under the mix chart's UI line (−12 against the lead's light hit). It's news from elsewhere, heard about three times a minute at most. Tuned live.
+- **Faber's part,** about 30 min, with TR64's hooks: the plate calls `BroadcastPlate` by name and stays silent until a pick is made. Its panel tab gets **Play the moment**, which raises a made-up plate ("glocen found a Legendary Sword").
+- **Cases:** no pick means silence and no error; a chat-only line plays nothing; the setting off plays nothing.
+- **The listen:** in the same sitting as TR64's, right after ShardDrop, so the director hears the two side by side.
+
 ## TR58. The boards on the Strip (research's request, tier 2, for Faber; Modulo the boards)
 
 Research, 2026-11-24, from the cloud. Launch-design's item 7, the north star's "two players compare builds". The design: `docs/design.md`, "Being seen" (the boards). The numbers: seeds, "boards".

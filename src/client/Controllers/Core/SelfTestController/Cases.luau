@@ -4505,12 +4505,15 @@ local cases = {
 			local leadRoot = if lead then lead:FindFirstChild("HumanoidRootPart") :: BasePart? else nil
 			t.Check("the eye is on the HUD", eye ~= nil and eye.Visible and eye.Parent ~= nil)
 			t.Check("a whole tap target", eye.Size.X.Offset >= Theme.Size.Tap and eye.Size.Y.Offset >= Theme.Size.Tap, tostring(eye.Size))
-			-- AR12: one family with the readout, its plate Right of it and Lower than its top (authored points).
+			-- AR12: one family with the readout, its plate Right of it and Lower than its top (authored points), while the
+			-- readout shows; hidden (out of a fight), in the readout's own place, never beside an empty slot (21:44)
 			local plate = HudConfig.Readout
 			local signature = HudController.Parts().Signature :: GuiObject
+			local shown = signature:GetAttribute("Seen") == 1
 			local dx = (eye.Position.X.Offset - look.Plate / 2) - (signature.Position.X.Offset + plate.Size / 2)
 			local dy = (eye.Position.Y.Offset - look.Plate / 2) - (signature.Position.Y.Offset - plate.Size / 2)
-			t.Check("beside the signature's readout", math.abs(dx - look.Right) < 0.01 and math.abs(dy - look.Lower) < 0.01, string.format("%.1f right, %.1f lower", dx, dy))
+			local place = if shown then Vector2.new(look.Right, look.Lower) else Vector2.new(-(plate.Size + look.Plate) / 2, (plate.Size - look.Plate) / 2)
+			t.Check(if shown then "beside the signature's readout" else "in its place while it's hidden", math.abs(dx - place.X) < 0.01 and math.abs(dy - place.Y) < 0.01, string.format("%.1f right, %.1f lower", dx, dy))
 			local shut, open = eye:FindFirstChild("Off", true), eye:FindFirstChild("On", true)
 			t.Check("shut on its own plate while off", shut ~= nil and shut:IsA("ImageLabel") and shut.Visible and shut:GetAttribute("Kit") == "EyeOff"
 				and open ~= nil and open:IsA("ImageLabel") and not open.Visible and open:GetAttribute("Kit") == "EyeOn")

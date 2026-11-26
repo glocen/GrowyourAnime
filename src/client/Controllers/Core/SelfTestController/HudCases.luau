@@ -141,6 +141,16 @@ function HudCases.Cases(given: Given): { any }
 
 	return {
 		{
+			-- The top right is ours (research, 21:44): Roblox's player list, whose height grows with the server, is hidden
+			-- so it never stands over the pills.
+			Name = "HUD: Roblox's player list hidden, so it never stands over the pills",
+			Run = function(t: any)
+				t.Check("the player list is off", Helpers.waitFor(t, 6, function(): boolean
+					return not game:GetService("StarterGui"):GetCoreGuiEnabled(Enum.CoreGuiType.PlayerList)
+				end))
+			end,
+		},
+		{
 			-- TR10's pictures (Modulo's, research's pass 2026-11-17 and 2026-11-19, 21:03): a down elite's and a resting keeper's
 			-- marker wear their row's Marker on the tile, filling it over its colour, untinted; a row without one keeps its
 			-- letter. Stood by DownController.Try, so it runs where the world has no square or gate.

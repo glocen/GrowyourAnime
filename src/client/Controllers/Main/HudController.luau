@@ -23,6 +23,7 @@ local TweenService = game:GetService("TweenService")
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
+local StarterGui = game:GetService("StarterGui")
 
 local Shared = ReplicatedStorage.Shared
 local EffectsConfig = require(Shared.Config.Effects)
@@ -376,8 +377,26 @@ function HudController.JumpBox(): (Vector2, Vector2)
 	return Vector2.new(high.X - (side * 1.5 - 10), high.Y - (if side == 70 then side + 20 else side * 1.75)), Vector2.new(side, side)
 end
 
+-- The eye's two places in the lead's corner (placeCorner): Beside the readout while it shows, Docked in the readout's own
+-- place under the card while it's hidden (out of a fight), so it never floats beside an empty slot (research, 21:44,
+-- from a second reader's cold read of the base). It slides between them with the readout's fade (placeEye).
+local corner: { Docked: Vector2, Beside: Vector2 }? = nil
+
+-- The eye where the readout's fade puts it, and after it the fallen lead's offer and the signature's Auto.
+local function placeEye()
+	if corner == nil then
+		return
+	end
+	local look = HudConfig.Spectate
+	local at = corner.Docked:Lerp(corner.Beside, readout.Seen)
+	eye.Position = UDim2.fromOffset(at.X, at.Y)
+	nextButton.Position = UDim2.fromOffset(at.X + look.Size / 2 + Theme.Size.Gap, at.Y)
+	auto.Position = nextButton.Position -- never both: the readout hides with a fallen lead
+end
+
 -- The lead's corner (AR12; Config.Hud.Readout, Config.Hud.Spectate, tuned live): the readout under the lead's card, or
--- over the jump button (Readout.At), the eye beside the card, and after the eye a fallen lead's offer of the next.
+-- over the jump button (Readout.At), the eye beside it (in its place while it's hidden), and after the eye a fallen
+-- lead's offer of the next.
 local function placeCorner()
 	local plate, look = HudConfig.Readout, HudConfig.Spectate
 	local card = lead.Frame
@@ -393,12 +412,12 @@ local function placeCorner()
 	else
 		piece.Position = UDim2.fromOffset(left + plate.Size / 2, top + plate.Size / 2)
 	end
-	local x, y = left + plate.Size + look.Right + look.Plate / 2, top + look.Lower + look.Plate / 2
+	local docked = Vector2.new(left + plate.Size / 2, top + plate.Size / 2)
+	local beside = if plate.At == "Jump" then docked else Vector2.new(left + plate.Size + look.Right + look.Plate / 2, top + look.Lower + look.Plate / 2)
+	corner = { Docked = docked, Beside = beside }
 	eye.Size = UDim2.fromOffset(look.Size, look.Size)
-	eye.Position = UDim2.fromOffset(x, y)
-	nextButton.Position = UDim2.fromOffset(x + look.Size / 2 + Theme.Size.Gap, y)
 	auto.Size = UDim2.fromOffset(plate.Auto.Width, Theme.Size.Tap)
-	auto.Position = nextButton.Position -- never both: the readout hides with a fallen lead
+	placeEye()
 	-- The level-up's notice under the corner's row, at the card's left edge (AR12, take B; TR41 (c)), stopping a gap short
 	-- of the step's chip over the dock, which shares its row on a phone.
 	local chipLeft = if chip then (chip.AbsolutePosition.X - hud.AbsolutePosition.X) / scale else math.huge
@@ -429,6 +448,9 @@ local function stepReadout(model: Model?, fighting: boolean, dt: number)
 	end
 	piece.Frame.Visible = readout.Seen > 0
 	auto.Visible = readout.Seen > 0 and not nextButton.Visible
+	if readout.Seen ~= was then
+		placeEye()
+	end
 	-- Its state in its words: the kit's set light alone read the same on and off at the phone's size (TR52's capture).
 	local on = player:GetAttribute("SignatureAuto") ~= false
 	if on ~= autoOn then
@@ -1554,6 +1576,17 @@ end
 
 function HudController.Start()
 	stage()
+	-- Roblox's player list stood over the pills of the top right on a computer (research, 21:44, a second reader's cold
+	-- read of the base); its height grows with the server, so the pills can't sit clear of it. Hidden: the people on the
+	-- server stay a tap away in Roblox's own menu. Its call can fail while the core UI loads, so it's tried a few times.
+	task.spawn(function()
+		for _ = 1, 10 do
+			if pcall(StarterGui.SetCoreGuiEnabled, StarterGui, Enum.CoreGuiType.PlayerList, false) then
+				return
+			end
+			task.wait(0.5)
+		end
+	end)
 	lead = LeadCard.new(Layers.Get("Hud"), UDim2.fromOffset(PAD, TOP))
 	LevelNotice.Mount(Layers.Get("Hud"))
 	note = makeNote(Layers.Get("Hud"))

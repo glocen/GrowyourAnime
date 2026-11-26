@@ -17917,6 +17917,29 @@ The audit's second screen, from the frame and the Arc panel's B (its road, press
 
 The audit's third screen (three plate colours, each glowing past its edge) is already redrawn in the picked frame: the lead card, the two pills and the dock on graphite. New: `build/handoff/UI/style_frames/A_hud_cut.png` and `A_hud_small_cut.png`, the HUD over the street with the cut. Research's 44 pt class is carried to the frame's own presses: the dock 72 × 66 (the open one 80 × 72) and the eye 66 round (`style_frames.py`, `TAP`). `A_home_cut` and `A_small_cut` are redrawn the same. No new pick: it is the picked frame, for Faber's install from `Theme.Frame`.
 
+### Modulo: the full screens' top bar, two targets (2026-11-26, 20:23; started 20:19, after 6d03ecc8)
+
+The audit's fourth screen (the director, 2026-11-24: "this left ui is so ugly", "ugly heart lock"; `docs/decisions.md`: the bar and its favourite and lock marks, not the functions nor the pills' content). Painted over today's phone captures, `build/handoff/UI/top_bar/bar_sheet.png` (today's beside each take), drawn by `tools/ui/top_bar.py`.
+
+- **Shared by both takes:** the same bar on every full screen, beside Roblox's buttons and level with them.
+  - Back is the Arc panel's: a raised plate, 44 pt.
+  - Then the page's name in Oswald M, then Credits and the battery as read-only pills, 40 tall.
+- **The marks, redrawn in the kit's make** (`marks.png`, off and on at 66 and at 64 px):
+  - a cut heart;
+  - the Arc panel's padlock, shut or with its shackle lifted;
+  - a cut pencil.
+  - Off, the glyph is in the second ink on raised (5.7:1). On, it's in ink with an ivory hairline round its cell (10.9:1), the dock's open state. Each cell is 66 px, 44 pt on the small phone.
+- **A, the marks in the bar** (as today), after Back, then the name, then the battery alone. The bar is too narrow for Credits beside the marks: today's step-down.
+- **B, the marks by the Voidkin:** a column of three cells down the stage's right edge, clear of the figure. The bar keeps Credits and is the same on every full screen.
+- **Equipment** (`equipment.png`) is the same in both takes: it has no marks.
+- **Gates:** every press is 66 px (Back and the cells). The lightest point at the squint is the lit heart in A, and the name in B.
+- **My lean: B.**
+  - The marks belong to the Voidkin shown, and sit by it.
+  - The bar is one bar across every full screen.
+  - Credits stay in view.
+- **Open, not drawn:** the bar's name repeats the rail's lit page ("Overview"). The screen's own name ("Voidkin") would say where you are without repeating it. That's research's call at the pick.
+- **Content check, 20:23: PASS.** Nothing is uploaded from it. If one is ever uploaded, Roblox's buttons are cropped out first.
+
 ## AR63. Pip, redesigned in the make (Modulo, for research's pick and the director's look, then its finish; Faber's install after)
 
 On the director's order of 2026-11-23, by 22:52 (Rook, Kirra, Pip, Lyric). The frame is AR60's: what holds, the checks, and the pictures. What holds is his row in `docs/roster.md` (Common, Purple, Mage, Fire, Lantern Burst, Kindle). Research's steer: his lantern is a young mage's, dark metal and glass with a living flame inside, never a paper festival lantern.

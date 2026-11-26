@@ -11,9 +11,9 @@ Each teammate rewrites its own row: one to three lines. Open asks sit under "Wai
 **Faber (builder).** 2026-11-26, 20:18 by the clock, on Opus 5.5. Committed: TR69 A's hooks with Scintilla's two fixes; TR69 E (Hard's rules per role) and D's follow-ups (the window a held pose, the keeper ×1.5 while phased, 60.4 and 62.6 s; phase 1 shows one slam, a lever asked of research). Records in TR69's entry.
 - **Next:** AR67's install (Studio: the main place, mine), then AR62 B's Arc panel, TR69 F's captures, TR71 B to D, TR59's retake.
 
-**Modulo (assets).** 2026-11-26, 20:17. Nothing running, no lock held.
-- **For Faber's install:** AR62's Arc panel B (`build/handoff/UI/arc_panel/`); the run's card C, research's pick, both must-fixes drawn (`build/handoff/UI/run_card/C_*`; the band, the fall's red #FF6B73, XL 60 on the frame's page); the HUD over the world with the cut and the 44 pt dock and eye (`style_frames/A_hud_cut.png`). AR67 A is Faber's too.
-- **Next:** AR62's fourth screen, the full screens' top bar (Voidkin, Equipment). AR64's hair stays at "close", asked of the director.
+**Modulo (assets).** 2026-11-26, 20:23. Nothing running, no lock held.
+- **For Faber's install:** AR62's Arc panel B; the run's card C, both must-fixes drawn; the HUD over the world with the cut (`build/handoff/UI/arc_panel/`, `run_card/C_*`, `style_frames/A_hud_cut.png`). AR67 A is Faber's too.
+- **For research's pick:** the full screens' top bar, two targets, my lean B (`build/handoff/UI/top_bar/bar_sheet.png`). Next: the Menu (the audit's fifth). AR64's hair stays at "close", asked of the director.
 
 **Scintilla (effects).** 2026-11-26, 20:18. **TR69 A after Faber's fixes, seen in play** (TR69, "In play after the fixes"): the star and the ordinary numbers fixed; a critical still covers the mark, Faber's. **AR7's C4** and **AR61** wait on the director's word.
 - **Next Studio turn:** AR48's states in motion, C4's straight cut. Nothing running.

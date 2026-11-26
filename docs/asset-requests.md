@@ -5317,6 +5317,16 @@ Research, 2026-11-24, 16:53, on the director's word, "the hair still need a rewo
   - Density 0.1 doesn't read as mist at this camera. If the director reads mist, it goes to 0.
   - The painted sun's mismatch goes to polish-later, unless one of the base's usual cameras faces it.
 - **Next:** Faber's gate capture after the fix, then research's verdict here.
+- **Faber's install (2026-11-26, 22:35 by the clock):** A is in the game through Config, not staged.
+  - **The base's own sun:** `Lighting.Clear.Toward`, solved like the Row's and eased across the walk out of the Row. It stands at Clear.Toward to 0.03°, at 15.81 o'clock. The Row keeps `Toward`.
+  - **A's day under Clear:** Sun FFC68A, Brightness 3.1, Exposure 0.12, Density 0.1, Bloom 0.4 over 1.8, and a grade (saturation 0.08, contrast 0.08, tint FFF6EC) as a ColorCorrection the controller sets. The grade is neutral in the Row and at dusk and night.
+  - **The must-fix, measured** (`build/scratch/faber/shade_measure.py`: bare-floor pixels at the gate camera, shaded = the darker third):
+    - Shaded floor R−B: today +15.2, A with ABB2C2 −4.1, installed with B4AFA6 −5.4, installed with **C8B49E +7.7** (shaded RGB 156, 149, 149).
+    - The sky's blue fill (Diffuse 0.5) cools the shade more than a neutral ambient warms it, hence the warmer fill.
+    - Shaded/lit luma: 153/192, against today's flat 199/216.
+  - **The capture:** `build/captures/lighting/base_light_a_installed_c8b49e.jpg`.
+  - **A case:** "Lighting: AR65, the base's own sun…" (BaseCases) checks the sun, the grade, the fill and the depth. It passes, with every AR65 base case, at 92 of 92.
+  - **The painted sun:** the base's fixed cameras never show it. It's painted 62° up; the fight camera's frame tops out at +15°, the base view's at −23°, and the gate camera's at +27.6°, facing away. Only the free camera, tilted up past about 27° toward it, does: a line in `docs/polish-later.md`.
 ## AR66. Clips follow the model (Modulo's audit and targets, research's feel line and pick, then Faber's install)
 
 The rule: `docs/design.md`, "Clips follow the model, rules follow the class" (the director, 2026-11-26, about 13:28). Each new clip keeps its action's Beats, Range and Reach (`Definitions/Actions.luau`), and a reaction keeps its set's length and Land.

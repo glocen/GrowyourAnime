@@ -17,6 +17,8 @@
 --   Clear.Phases', and the kit's glow Clear.Glow times its own, eased over Enter seconds on the walk up the side street.
 -- * The sun stands where the kit's frames have it (Config.Lighting.Toward) at a day clock, solved once for this engine's
 --   sun (Lighting:GetSunDirection()), so the painted moon and the shadows agree.
+--   South of the Row it eases to the base's own (Config.Lighting.Clear.Toward) where one is given, with the phase's
+--   Grade under Clear as a ColorCorrection, neutral in the Row (AR65).
 -- * The kit's pieces (tagged Kit.Tag by WorldService) glow by Config.Lighting.Glow, the houses less, the floors by the
 --   phase, all by the phase's Glow share (by day a share, full from dusk); the street's lights shine by
 --   Config.Lighting.Pools and Lamp, by the phase's Lights share; the paper's boxes stand in Config.Lighting.Paper's
@@ -60,10 +62,15 @@ local BLOOM_KEYS = { "Intensity", "Size", "Threshold" }
 local base: any = nil -- the place's own look, captured at the start
 local atmosphere: Atmosphere
 local bloom: BloomEffect
+local grade: ColorCorrectionEffect -- the base's grade (Config.Lighting.Clear's phases' Grade), neutral elsewhere
+-- A grade that changes nothing: what a phase without its own Grade wears.
+local NEUTRAL_GRADE = { Saturation = 0, Contrast = 0, Brightness = 0, Tint = Color3.new(1, 1, 1) }
 local skies: { [string]: Sky? } = {} -- "Base" (the place's, if it has one), and one per phase of the cycle
 local shownSky = "Base"
 local sun = { Clock = 14, Latitude = 0, Off = 180 }
 local solvedFor: Vector3? = nil
+local clearSun: { Clock: number, Latitude: number, Off: number }? = nil -- the base's own (Config.Lighting.Clear.Toward), if any
+local clearSolvedFor: Vector3? = nil
 local roomSun = { Clock = 14, Latitude = 0, Off = 180 } -- the Tower room's (Config.Lighting.Room.Toward)
 local roomSolvedFor: Vector3? = nil
 local area = 0 -- 0 out of the ground, 1 in it, eased by the walk
@@ -378,6 +385,17 @@ local function inRoom(focus: Vector3?): boolean
 	return false
 end
 
+-- The grade's four, set only when they change.
+local gradeWas: any = nil
+local function setGrade(want: any)
+	if gradeWas and gradeWas.Saturation == want.Saturation and gradeWas.Contrast == want.Contrast and gradeWas.Brightness == want.Brightness and gradeWas.Tint == want.Tint then
+		return
+	end
+	grade.Saturation, grade.Contrast, grade.Brightness, grade.TintColor = want.Saturation, want.Contrast, want.Brightness, want.Tint
+	grade.Enabled = want.Saturation ~= 0 or want.Contrast ~= 0 or want.Brightness ~= 0 or want.Tint ~= NEUTRAL_GRADE.Tint
+	gradeWas = want
+end
+
 -- The Tower room's own look, at once: its light, haze, bloom and sky, the lead's light off.
 local function roomLook()
 	local own = LightingConfig.Room
@@ -389,6 +407,7 @@ local function roomLook()
 	setKeys(Lighting, look.Lighting, applied and applied.Lighting)
 	setKeys(atmosphere, look.Atmosphere, applied and applied.Atmosphere)
 	setKeys(bloom, look.Bloom, applied and applied.Bloom)
+	setGrade(NEUTRAL_GRADE)
 	showSky("Room")
 	lightLead(0)
 	applied = look
@@ -399,6 +418,11 @@ local function step(dt: number)
 	if solvedFor ~= LightingConfig.Toward then
 		sun = solve(LightingConfig.Toward)
 		solvedFor = LightingConfig.Toward
+	end
+	local clearToward = (LightingConfig.Clear :: any).Toward :: Vector3?
+	if clearSolvedFor ~= clearToward then
+		clearSun = if clearToward then solve(clearToward) else nil
+		clearSolvedFor = clearToward
 	end
 	-- Where the player stands, and how far into the ground.
 	local camera = workspace.CurrentCamera
@@ -429,7 +453,6 @@ local function step(dt: number)
 	local seconds = workspace:GetServerTimeNow() - (if type(from) == "number" then from else 0)
 	local fromName, toName, turn, phase, into = Night.Turn(seconds, LightingConfig.Cycle :: any)
 	local phases = LightingConfig.Phases :: any
-	local at = { Clock = sun.Clock, Latitude = sun.Latitude }
 	-- The light, the haze and the glow warm from the crossing's first second (TR24's fix 9); the sky still swaps at its
 	-- middle, under the veil's peak.
 	local warm = if fromName == toName then 0 else Night.Warm(into, LightingConfig.Warm)
@@ -437,6 +460,9 @@ local function step(dt: number)
 	-- as the walk has come out of the Row.
 	local clear = LightingConfig.Clear
 	local out = 1 - mist
+	-- The sun: the Row's, or south of it the base's own where Clear gives one (AR65), as far as the walk has come out.
+	local own = clearSun or sun
+	local at = { Clock = sun.Clock + (own.Clock - sun.Clock) * out, Latitude = sun.Latitude + (own.Latitude - sun.Latitude) * out }
 	local function phaseOf(name: string): any
 		local over = (clear.Phases :: any)[name]
 		return if over then Night.Clear(phases[name], over, out) else phases[name]
@@ -444,7 +470,18 @@ local function step(dt: number)
 	local ground = Night.Mix(Night.Ground(phaseOf(fromName), fromName, at), Night.Ground(phaseOf(toName), toName, at), warm)
 	local shownPhase = if turn < 0.5 then fromName else toName
 	ground.Sky = Night.SkyOf(shownPhase, clear.Phases :: any, out)
-	ground.Atmosphere = Night.Clear(ground.Atmosphere, clear.Atmosphere :: any, out)
+	-- Clear's haze, with a phase's own Air under Clear over it (AR65's day)
+	local function airOf(name: string): any
+		local over = (clear.Phases :: any)[name]
+		return if over and over.Air then Night.Mix(clear.Atmosphere, over.Air, 1) else clear.Atmosphere
+	end
+	ground.Atmosphere = Night.Clear(ground.Atmosphere, Night.Mix(airOf(fromName), airOf(toName), warm), out)
+	-- The grade: a phase's Grade under Clear, south of the Row (AR65's day), neutral in it
+	local function gradeOf(name: string): any
+		local over = (clear.Phases :: any)[name]
+		return Night.Mix(NEUTRAL_GRADE, if over and over.Grade then over.Grade else NEUTRAL_GRADE, out)
+	end
+	local graded = Night.Mix(gradeOf(fromName), gradeOf(toName), warm)
 	local look = Night.Mix(base, ground, a)
 	glowShare = math.floor(ground.Glow * (1 + (clear.Glow - 1) * out) / SHARE_STEP + 0.5) * SHARE_STEP
 	steadyShare = math.floor(ground.Glow / SHARE_STEP + 0.5) * SHARE_STEP
@@ -462,6 +499,7 @@ local function step(dt: number)
 	setKeys(Lighting, look.Lighting, applied and applied.Lighting)
 	setKeys(atmosphere, look.Atmosphere, applied and applied.Atmosphere)
 	setKeys(bloom, look.Bloom, applied and applied.Bloom)
+	setGrade(Night.Mix(NEUTRAL_GRADE, graded, a))
 	showSky(look.Sky)
 	dressAll(ground.Floor)
 	lightLead(a * lightShare)
@@ -485,6 +523,10 @@ function LightingController.Start()
 	})
 	local b, bloomBase = own("BloomEffect", { Intensity = 0, Size = dusk.Bloom.Size, Threshold = dusk.Bloom.Threshold })
 	atmosphere, bloom = a :: Atmosphere, b :: BloomEffect
+	grade = Instance.new("ColorCorrectionEffect")
+	grade.Name = "NL_Grade"
+	grade.Enabled = false
+	grade.Parent = Lighting
 	base.Atmosphere, base.Bloom = atmosphereBase, bloomBase
 	skies.Base = Lighting:FindFirstChildOfClass("Sky")
 	local load: { Instance } = {}
@@ -515,6 +557,16 @@ end
 
 function LightingController.Sun(): { Clock: number, Latitude: number, Off: number }
 	return table.clone(sun)
+end
+
+-- The base's own solved sun (Config.Lighting.Clear.Toward), or nil with none, for tests.
+function LightingController.ClearSun(): { Clock: number, Latitude: number, Off: number }?
+	return if clearSun then table.clone(clearSun) else nil
+end
+
+-- The grade as it stands, for tests.
+function LightingController.Grade(): ColorCorrectionEffect?
+	return grade
 end
 
 -- The Tower room's solved sun, for tests.

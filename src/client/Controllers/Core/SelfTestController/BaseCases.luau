@@ -10,6 +10,7 @@ local GuiService = game:GetService("GuiService")
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
+local Lighting = game:GetService("Lighting")
 
 local Shared = ReplicatedStorage.Shared
 local BaseConfig = require(Shared.Config.Base)
@@ -2420,6 +2421,37 @@ function BaseCases.Cases(given: Given): { any }
 				t.Check("each bay as the case before found it", baysBefore ~= nil and type(now) == "table" and table.concat(baysBefore, ",") == table.concat(now, ","),
 					`{said}, against {if baysBefore then table.concat(baysBefore, ", ") else "nothing read"}`)
 				baysBefore = nil
+			end,
+		},
+		{
+			-- AR65, research's pick of A (2026-11-26, 22:16): the base's own late-afternoon sun, so the Row keeps its own,
+			-- and by day its grade, its faint depth and its warm fill (the shaded floor's R >= B, measured at the gate camera).
+			Name = "Lighting: AR65, the base's own sun at Clear.Toward at a day clock, and by day its grade, depth and fill",
+			Place = "Main", -- the Festival's place is the Row throughout (TR45)
+			Run = function(t: any)
+				local clear = LightingConfig.Clear :: any
+				local sun = LightingController.ClearSun()
+				t.Check("the base has its own sun", clear.Toward ~= nil and sun ~= nil)
+				if sun == nil then
+					return
+				end
+				t.Check("within 2 degrees of Clear.Toward", sun.Off <= 2, string.format("%.2f degrees off", sun.Off))
+				t.Check("at a day clock (the handbook's pseudo-night)", sun.Clock >= 6 and sun.Clock <= 18, tostring(sun.Clock))
+				t.Server("Night", "Day")
+				t.Wait(0.5)
+				local look = LightingController.Look()
+				t.Check("the base's look, south of the Row", look.Row < 0.01 and look.Area > 0.99, `{look.Row}, {look.Area}`)
+				local toward = Lighting:GetSunDirection()
+				local off = math.deg(math.acos(math.clamp(toward:Dot((clear.Toward :: Vector3).Unit), -1, 1)))
+				t.Check("the sun stands there", off <= 2, string.format("%.2f degrees off", off))
+				local day = clear.Phases.Day
+				local grade = LightingController.Grade()
+				t.Check("by day the grade is on", grade ~= nil and grade.Enabled)
+				t.Near("its saturation", if grade then grade.Saturation else -1, day.Grade.Saturation, 1e-3)
+				t.Near("its contrast", if grade then grade.Contrast else -1, day.Grade.Contrast, 1e-3)
+				t.Equal("the fill, Clear's day", Lighting.Ambient:ToHex(), (day.Ambient :: Color3):ToHex())
+				local air = Lighting:FindFirstChildOfClass("Atmosphere")
+				t.Near("its faint depth", if air then air.Density else -1, day.Air.Density, 1e-3)
 			end,
 		},
 	}

@@ -49,12 +49,25 @@ return {
 	-- here is the base's own, worn south of the Row past its middle (the day keeps the game's day sky), its swap under the
 	-- walk's veil. The Row keeps its own. Modulo's C (build/handoff/Base/lighting.json; AR20, "Modulo's paint and skies
 	-- for C"; the faces uploaded under the group, docs/asset-log.md, 2026-11-16), tuned by playing.
+	-- The base's own sun (AR65, research's pick of A, 2026-11-26, 22:16): a late afternoon's, low from the yard's left
+	-- behind the gate camera, so every machine casts a long shadow and the floor has values. The Row keeps Toward.
 	Clear = {
+		Toward = Vector3.new(-0.62, 0.40, 0.67).Unit,
 		Atmosphere = { Density = 0, Haze = 0, Glare = 0 },
 		Veil = { Density = 0, Haze = 2.5 },
 		Phases = {
-			-- AR40's C by day (build/handoff/Colour/ar40/directions.json, C's Lighting): a warm afternoon, a step less exposed.
-			Day = { Ambient = hex("BAAE9C"), Brightness = 2.7, Exposure = 0.08 },
+			-- AR65's A by day, the late afternoon: a warmer, brighter sun, a warm neutral fill so no shade reads cooler than
+			-- the stone (research's must-fix), a faint depth that reads as no mist at the gate camera, a lower bloom
+			-- threshold and a light grade. Today's AR40 C was Ambient BAAE9C, Brightness 2.7, Exposure 0.08, no grade.
+			Day = {
+				Ambient = hex("C8B49E"), -- measured: the shaded floor at the gate camera R-B +7.7 (A with ABB2C2: -4.1)
+				Sun = hex("FFC68A"),
+				Brightness = 3.1,
+				Exposure = 0.12,
+				Air = { Density = 0.1 }, -- over Clear.Atmosphere by day (Clear's own key, as Grade: no phase holds it)
+				Bloom = { Intensity = 0.4, Threshold = 1.8 },
+				Grade = { Saturation = 0.08, Contrast = 0.08, Brightness = 0, Tint = hex("FFF6EC") },
+			},
 			Dusk = {
 				Sky = faces({ 75877956278554, 103984710637104, 74714220433765, 138164631575167, 125396877000879, 111017006396801 }),
 				Ambient = hex("70618C"),

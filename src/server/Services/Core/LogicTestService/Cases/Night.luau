@@ -230,8 +230,14 @@ return {
 				end
 				t.Check(`{name}: its fill lighter than the Row's`, lum(over.Ambient) > lum(phase.Ambient), string.format("%.3f over %.3f", lum(over.Ambient), lum(phase.Ambient)))
 				t.Check(`{name}: its exposure lifted`, over.Exposure > (phase.Exposure or 0), tostring(over.Exposure))
+				-- Clear's own keys (AR65): the base's grade and its day's air, which no phase holds; the rest over the phase's own
+				local CLEAR_OWN = { Grade = true, Air = true }
 				for key, value in over do
-					t.Check(`{name} {key}: a key the phase holds, of its kind`, phase[key] ~= nil and typeof(phase[key]) == typeof(value))
+					if CLEAR_OWN[key] then
+						t.Check(`{name} {key}: Clear's own, a table`, type(value) == "table")
+					else
+						t.Check(`{name} {key}: a key the phase holds, of its kind`, phase[key] ~= nil and typeof(phase[key]) == typeof(value))
+					end
 				end
 				local bright = Night.Ground(Night.Clear(phase, over, 1), name, sun)
 				local function same(x: Color3, y: Color3): boolean -- the engine's Lerp at 1 is float32's, not exact

@@ -16004,7 +16004,7 @@ Written by `tools/fx/shade_tells.py`, from the kit's uploaded meshes and images 
   - **Beside the build:** `ward_vs_build.png`, left to right: the build (f0959aa0's take), the old G2, then W1, W2 and W3, at one crop. The rim is 0.1 studs at its thickest. The build had a 0.3-stud halo band and a disc.
   - **My read:** at a phone, all three read as thin blue lines at the Guard. At the squint, W2's frame and W3's glance keep a blue mark, and W1 fades. W2 reads most as a lantern. W3 is the lightest and shows itself only where it's struck.
   - **Status:** targets, for research's pick in pairs. Nothing built. Content check: PASS (the textures made for the build get their own).
-- **Research's pick, in pairs (Quaestor, 2026-11-26, 13:20; `ward_vs_build.png` and `phone_ward_guard/`, each pair read in both orders): W2, the lantern's frame.**
+- **Research's pick, in pairs (Quaestor, 2026-11-26, 13:10; `ward_vs_build.png` and `phone_ward_guard/`, each pair read in both orders): W2, the lantern's frame.**
   - It answers the director's verdict ("to thicc", "glass"): lines only, no fill or sheen, the rim at 0.1 studs. All three do that, so the pick turns on the read.
   - **W2 against W1:** W2 both ways. W1's broken arcs fade at the squint, but W2's five ribs keep a blue mark there and give the ward a shape of its own, a lantern's frame on Lantern Row's own Shade.
   - **W2 against W3:** W2 both ways. W3 shows itself only where it's struck, and the ward's job is to say "this one is guarding" for the whole hold, which W2's frame does.

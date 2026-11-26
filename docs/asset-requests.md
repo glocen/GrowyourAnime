@@ -16868,6 +16868,22 @@ Made; self-reviewed as stills at the smallest phone, the take by its frames; the
 - **Next:** research's pass. Not director-accepted.
 - **The director, 2026-11-26, about 13:25, from a phone in the game:** "the tower seems good but it need a leave button with confirm, the cloud need a polish". The cloud sea gets its finish, the room's next step after the leave button (TR67, Faber's). The cloud sea is Modulo's, after the hair, AR62 and AR65's targets. Its target is drawn beside today's clouds at the fight's frame.
 
+### Modulo's cloud targets, for research's pick (2026-11-26, 16:13; started 15:26, after AR65's delivery)
+
+- **The sheet:** `build/scratch/modulo/ar56/clouds/out/ar56_clouds_sheet.png`. It shows today beside A and B, in the fight's frame and the far frame, in colour and in grey, at a phone's width. The room and the HUD are Faber's captures. Only the sky, the sea and the drifts are the targets', rendered at the game's two cameras and composited.
+  - **A, separate heads over the deep sky:** groups of anime cumulus heads, apart, with the haze deepening toward the tower's foot between and under them.
+  - **B, bigger masses over a deep layer:** A's sea in fewer, bigger masses, with a second layer of smaller heads far under it, half lost in the haze and seen through the gaps.
+  - **Both:** the drifts are rebuilt as smooth cumulus, with a flat foot and a run of round heads. They're painted unlit: white past the sun's edge, sky blue under it, deeper at the foot. No violet. The drift behind the foe's way in moves to the side. The sea is rendered from the sky faces' own eye, as a skybox shows it, so each target holds only what the faces can give.
+- **Round 2:** fresh eyes on round 1 read the flat blue as ocean and the heads as slabs and beads. Now the haze deepens toward the foot and the heads are grouped, with a crown of billows.
+- **Why today's sea shows flat blue in the game:** the room's Atmosphere (`Lighting.luau`, Room: Haze 0.3, Density 0.2) veils the sky under the horizon, so the faces' cloud heads never show. Faber's test before either target can be built: Haze 0, or no Atmosphere in the room. The evidence is a forum thread and the handbook's note in that file, not a measurement.
+- **Fresh eyes, blind, on round 2:**
+  - **The fight's frame**, where players stay: A and B can't be told apart at a phone's size. Both show a strip of cloud level with the floor's rim, and nothing below shows the drop.
+  - **The far frame:** both feel higher than today. A is a field of small heads out to the horizon: crisper on the deep blue, but all one size, "flat white stickers". B's masses are bigger and shaded and look more designed, but the lower half is left as open blue, so there's no cloud floor under the room.
+  - **Both** keep a pale band at the horizon, the trait of the rejected day sky. A is nearer the accepted example. Pick: B, with low confidence.
+  - **Faults it named** (far frame): a near drift white against the tower's white base, lower right; a chain of tiny far heads like beads left of the left inner spire; and white dashes right of the right one.
+- **Content check:** PASS, on the sheet and the four composites at full size, and on the two scripts that make them.
+- **My lean: neither is clearly good yet, and this is the idea's second round, so it's reconsidered, not patched.** My reading, not a measurement: the fight's camera sees the sea only as the band at the horizon, so no sea can carry the height there. In that frame the height has to come from something nearer, such as drifts passing below the rim, or a thinner pale band. On the far frame alone, I'd pick A. The pick and the options are research's. Then the build: the drifts as meshes, and the faces re-rendered with the picked sea.
+
 ## AR57. The Guard's and the Dasher's elites (Modulo now, then Faber)
 
 Research, 2026-11-23, 21:54, on the director's pick of 21:53 (`docs/decisions.md`). Tier 2: a new asset players see that nothing covers, in Modulo's area and then Faber's. AR52 left "the masks' elite versions" waiting.

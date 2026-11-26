@@ -39,8 +39,8 @@ SEALS = strip.HEART + strip.TILE * REACH + 2.5          # a sealed gate's place:
 # The Strip's posts, each side of the crossing: the first two flank the side street's mouth and the Shop's, then a pair
 # flanks each gate (its wings at 100 to 156 and 260 to 316), one between. Past the far gate the outcrops take over.
 POSTS = (40.0, 98.0, 158.0, 208.0, 258.0, 318.0)
+SOUTH_FIRST = 70.0                                      # but the first south pair stands out here, clear of the Tower's boards before the Shop (x 29 to 59 each side, faces at z 32; TR58): at 40 it swept across their titles
 SIDE_POSTS = (-62.0, -114.0, -166.0)                    # up the side street, each side
-LIT_POSTS = 40.0                                        # a post this far from the crossing carries a real light; the rest only glow
 FAR_RING = (END + 272.0, -GATE + 368.0)                 # the far shards' ring, across and along: as far past the ends and the gate as at 200
 
 
@@ -62,11 +62,10 @@ def placements():
     # side up the side street.
     for k, at in enumerate(POSTS):
         for sx in (-1, 1):
-            x = sx * at
             for sz in (-1, 1):
-                z = sz * (STRIP / 2 - 2.4)
+                x, z = sx * (SOUTH_FIRST if k == 0 and sz > 0 else at), sz * (STRIP / 2 - 2.4)
                 put("StripPost", x, z, sz * 90)
-                if abs(x) <= LIT_POSTS:
+                if k == 0:   # the first pair each side carries a real light; the rest only glow
                     lights.append((f"Post{'W' if sx < 0 else 'E'}{'N' if sz < 0 else 'S'}", x, z - sz * strip.LAMP[0], strip.LAMP[1],
                                    "#C9B0FF", "point"))
     for z in SIDE_POSTS:

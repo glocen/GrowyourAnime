@@ -35,7 +35,7 @@
   },
   {
    "piece": "StripPost",
-   "across": -40.0,
+   "across": -70.0,
    "along": -221.6,
    "turn": 90.0
   },
@@ -47,7 +47,7 @@
   },
   {
    "piece": "StripPost",
-   "across": 40.0,
+   "across": 70.0,
    "along": -221.6,
    "turn": 90.0
   },
@@ -795,7 +795,7 @@
   },
   {
    "name": "PostWS",
-   "across": -40.0,
+   "across": -70.0,
    "along": -219.6,
    "up": 7.7,
    "colour": "#C9B0FF",
@@ -811,7 +811,7 @@
   },
   {
    "name": "PostES",
-   "across": 40.0,
+   "across": 70.0,
    "along": -219.6,
    "up": 7.7,
    "colour": "#C9B0FF",
@@ -839,19 +839,19 @@
   "placements": 126,
   "triangles": {
    "CrossingMark": 198,
-   "CrossingShard": 248,
-   "SealCalamity": 576,
-   "SealClash": 576,
-   "StripPost": 5280,
-   "VeinWide": 572,
-   "VeinThin": 494,
-   "VeinBranch": 144,
+   "CrossingShard": 296,
+   "SealCalamity": 608,
+   "SealClash": 608,
+   "StripPost": 7440,
+   "VeinWide": 884,
+   "VeinThin": 760,
+   "VeinBranch": 216,
    "ShardOutcrop": 4160,
    "FarShardLow": 180,
    "FarShardTall": 220,
    "FarShardMid": 220
   },
-  "trianglesInAll": 12868,
+  "trianglesInAll": 15790,
   "lights": 7,
   "note": "counted from the plan, not measured on a device"
  }

@@ -5232,7 +5232,7 @@ Round 1, the first session's:
 | Cue | Plays on | Longest | Words | Never |
 |---|---|---|---|---|
 | LevelUp, tonal | the lead's level-up: the plate and the column (`UI/LevelNotice.luau`) | 1.0 s | "level up", "power up chime", "achievement chime", "magic chime", "rising chime" | a chiptune jingle, a brass fanfare, coins, a voice |
-| ShardDrop, tonal | a shard's plate at its drop. Pitched by grade on the note set: Standard 1, Enriched 1.189, Prismatic 1.335, Named 1.498 (A C D E). G and the octave stay the reveal's, so a drop never sounds like a Legendary | 0.6 s | "crystal ding", "glass chime", "bell ding", "chime single", "sparkle ding" | coins, a slot machine, more than one note |
+| ShardDrop, tonal | a shard's plate at its drop. Pitched by grade on the note set: Standard 1, Enriched 1.189, Prismatic 1.335, Named 1.498 (A C D E). G and the octave stay the reveal's, so a drop never sounds like a Legendary | 1.0 s, to its ring 45 dB down (the finder's measure; Sonus, 01:51) | "crystal ding", "glass chime", "bell ding", "chime single", "sparkle ding" | coins, a slot machine, more than one note |
 | KeeperFall | the keeper's fall, on the frame that plays `ShadeBurst` today (keepers only), before the 2.4 s pause | 2.0 s, its tail under 1.5 | "boss defeated", "victory impact", "gong hit", "big impact", "shatter" | a fanfare or any tune, a crowd, a trailer braam or choir, a boom that lives under 120 Hz |
 | LeadDown | the lead falls: the grey column and the fallen card | 1.5 s | "defeat", "power down", "fail", "lose", "shutdown" | a comic fail horn, a buzzer, a voice, chiptune |
 

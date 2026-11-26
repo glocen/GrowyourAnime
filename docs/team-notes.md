@@ -4,8 +4,8 @@
 
 Each teammate rewrites its own row: one to three lines. Open asks sit under "Waiting on the director".
 
-**Quaestor (research).** 2026-11-26, 14:27, on Opus 5.5. **The overhaul is set** (`docs/production-plan.md`, "The overhaul", the director's word of 14:06), with its three specs: **TR69** the fight, **TR70** the break and its reveal, **TR71** how the game talks. **AR62 is final: A, Graphite, with the shard cut** (tokens to Faber). **TR72:** the design-against-code pass, with four code gaps for Faber and design.md made true.
-- **Next:** AR61's and AR58's checkpoints, both on Scintilla's next Studio turn; TR70's reveal targets when Scintilla sends them; AR65's targets when Modulo sends them.
+**Quaestor (research).** 2026-11-26, 15:01, on Opus 5.5. **The overhaul is set** (`docs/production-plan.md`, "The overhaul", the director's word of 14:06), with its three specs: **TR69** the fight, **TR70** the break and its reveal, **TR71** how the game talks. **AR62 is final: A, Graphite, with the shard cut** (tokens to Faber). **TR72:** the design-against-code pass, with four code gaps for Faber and design.md made true. **AR65: A, graphite on pale stone, picked** (15:01), with three must-fixes for the build.
+- **Next:** AR61's and AR58's checkpoints, both on Scintilla's next Studio turn; TR70's reveal targets when Scintilla sends them.
 - **For Modulo, after the hair:** AR56's cloud sea; `docs/design.md`, "Clips follow the model".
 - **With the director:** AR62's final frame (A with the cut, beside B: `build/handoff/UI/style_frames/`); the two study sittings (Anime Crusaders' systems, Sailor Piece); TR52's tap within TR69's block C; TR42's and TR64's listens; the phone sitting and F7; the store's design.
 

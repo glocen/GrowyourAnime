@@ -498,6 +498,40 @@ return {
 		end,
 	},
 	{
+		Name = "Hud: AR62, the hits dealt on a body stack: the latest big, the two before smaller and fading, older gone",
+		Run = function(t: any)
+			local by = { Scale = { 1, 0.78, 0.62 }, Fade = { 0, 0.3, 0.55 }, Seconds = 0.12 }
+			local s0, f0, g0 = Hud.Stack(0, 5, by)
+			t.Equal("the latest whole", s0, 1)
+			t.Equal("and clear", f0, 0)
+			t.Check("and staying", not g0)
+			local s1, f1 = Hud.Stack(1, 1, by)
+			t.Equal("the one before at its rank's size", s1, 0.78)
+			t.Equal("and its fade", f1, 0.3)
+			local sm, fm = Hud.Stack(1, 0, by)
+			t.Equal("the moment it moves down, still its old size: eased, never a jump", sm, 1)
+			t.Equal("and its old fade", fm, 0)
+			local sh = Hud.Stack(1, 0.06, by)
+			t.Check("half way down, between", sh < 1 and sh > 0.78)
+			local s2, f2, g2 = Hud.Stack(2, 1, by)
+			t.Check("two before, smaller again", s2 < s1)
+			t.Check("and fainter", f2 > f1)
+			t.Check("and still shown", not g2)
+			local _, f3, g3 = Hud.Stack(3, 1, by)
+			t.Check("three before: it leaves", g3)
+			t.Equal("faded out by the stack's seconds", f3, 1)
+			local _, f3m = Hud.Stack(3, 0, by)
+			t.Equal("leaving from the third's fade", f3m, 0.55)
+			local _, _, g9 = Hud.Stack(9, 1, by)
+			t.Check("any older, gone", g9)
+			local live = HudConfig.Numbers.Stack
+			t.Equal("the game's stack holds the latest and two before", #live.Scale, 3)
+			t.Check("each rank smaller than the one above", live.Scale[2] < live.Scale[1] and live.Scale[3] < live.Scale[2])
+			t.Check("each rank fainter", live.Fade[2] > live.Fade[1] and live.Fade[3] > live.Fade[2])
+			t.Check("the oldest shown still reads (no fainter than half again)", live.Fade[3] <= 0.6)
+		end,
+	},
+	{
 		Name = "Hud: TR6, a count is Expo out, a reward's flock grows with its size, and each icon's arc bows off the line",
 		Run = function(t: any)
 			t.Equal("a count starts at its old value", Hud.ExpoOut(0), 0)

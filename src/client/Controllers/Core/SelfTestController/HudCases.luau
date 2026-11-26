@@ -83,38 +83,56 @@ end
 -- 2026-11-17): the Voidkin's Block under the chevrons and the number in ink, the plate's edge its lavender, the words its
 -- pale; the number on the block; its foot above the eye under the card. `scale` is the card's points to pixels.
 function HudCases.LevelBadge(t: any, parts: { [string]: any }, scale: number)
+	-- AR62, B: a gold badge over the portrait's foot, at its left, the number in the accent's ink on it; the name white.
 	local lead = parts.Lead :: Frame
-	local badge = lead:FindFirstChild("LevelBadge") :: ImageLabel?
-	if not t.Check("its level on a badge", badge ~= nil and lead:FindFirstChild("LevelPlate") == nil, "no LevelBadge") or not badge then
+	local badge = lead:FindFirstChild("LevelBadge") :: Frame?
+	local portrait = parts.LeadPortrait :: GuiObject
+	if not t.Check("its level on a badge", badge ~= nil and badge:IsA("Frame") and lead:FindFirstChild("LevelPlate") == nil, "no LevelBadge") or not badge then
 		return
 	end
-	local frame, at, pad = UIKit.LeadCard.Frame, lead.AbsolutePosition, UIKit.Images.CardLevelBadge.Pad * scale
-	local top, left = badge.AbsolutePosition.Y + pad, badge.AbsolutePosition.X + pad -- the block, inside its shadow's pad
-	local foot, right = badge.AbsolutePosition.Y + badge.AbsoluteSize.Y - pad, badge.AbsolutePosition.X + badge.AbsoluteSize.X - pad
-	local frameFoot, frameRight = at.Y + (frame[2] + frame[4]) * scale, at.X + (frame[1] + frame[3]) * scale
-	t.Check("the badge over the frame's foot, inside its width", top < frameFoot and foot > frameFoot and left >= at.X - 1 and right <= frameRight + 1,
-		string.format("%.0f to %.0f over %.0f; %.0f to %.0f, the frame to %.0f", top, foot, frameFoot, left, right, frameRight))
-	local voidkin, ink = UIKit.Systems.Voidkin, HudConfig.Card.LeadLevel
-	local body = badge:FindFirstChildOfClass("UIGradient")
-	local chevrons = lead:FindFirstChild("LevelChevrons") :: ImageLabel?
+	local top, foot = badge.AbsolutePosition.Y, badge.AbsolutePosition.Y + badge.AbsoluteSize.Y
+	local left, right = badge.AbsolutePosition.X, badge.AbsolutePosition.X + badge.AbsoluteSize.X
+	local face = portrait.AbsolutePosition.Y + portrait.AbsoluteSize.Y
+	t.Check("the badge over the portrait's foot, at its left, inside the card", top < face and foot > face and left >= lead.AbsolutePosition.X - 1
+		and left <= portrait.AbsolutePosition.X + 1,
+		string.format("%.0f to %.0f over %.0f; from %.0f, the portrait from %.0f", top, foot, face, left, portrait.AbsolutePosition.X))
+	local slate = HudConfig.Slate
+	local gold = badge:FindFirstChild("Gold") :: UIGradient?
 	local number = parts.LeadLevel :: TextLabel
-	local rim = lead:FindFirstChild("PlateRim") :: ImageLabel
-	t.Check("take A's colours: the badge the Voidkin's Block, the chevrons and number in ink, the edge lavender, the name pale",
-		body ~= nil and body.Color.Keypoints[1].Value == voidkin.Block[1] and chevrons ~= nil and chevrons.ImageColor3 == ink and number.TextColor3 == ink
-			and rim.ImageColor3 == voidkin.Colour and (parts.LeadName :: TextLabel).TextColor3 == voidkin.Pale,
-		`{if body then body.Color.Keypoints[1].Value:ToHex() else "no body"}, {number.TextColor3:ToHex()}, {rim.ImageColor3:ToHex()}`)
-	t.Check("its height never stretched: a slanted slice stretched smaller than its pixels draws upright", badge.ScaleType == Enum.ScaleType.Slice and badge.SliceCenter.Height == 0,
-		`{badge.ScaleType.Name}, its middle {badge.SliceCenter.Height} tall`)
+	t.Check("B's colours: the badge gold, the number in the accent's ink, the name white",
+		gold ~= nil and gold.Color.Keypoints[1].Value == slate.Accent[1] and number.TextColor3 == slate.AccentInk
+			and (parts.LeadName :: TextLabel).TextColor3 == slate.Ink,
+		`{if gold then gold.Color.Keypoints[1].Value:ToHex() else "no gold"}, {number.TextColor3:ToHex()}, {(parts.LeadName :: TextLabel).TextColor3:ToHex()}`)
 	local middle = number.AbsolutePosition + number.AbsoluteSize / 2
-	local eye = (parts.Spectate :: GuiObject).AbsolutePosition.Y
-	t.Check("the number on the badge, the badge above the eye", middle.X > left and middle.X < right and middle.Y > top and middle.Y < foot and foot <= eye + 1,
-		string.format("the number at %.0f, %.0f; the badge's foot %.0f, the eye %.0f", middle.X, middle.Y, foot, eye))
+	t.Check("the number on the badge", middle.X > left and middle.X < right and middle.Y > top and middle.Y < foot,
+		string.format("the number at %.0f, %.0f; the badge %.0f..%.0f, %.0f..%.0f", middle.X, middle.Y, left, right, top, foot))
+	local _ = scale
+end
+
+-- The foe card's rims (AR62, B): an elite's gold on the glass and a second outside the plate, or the coral that says
+-- theirs and no second.
+function HudCases.Rims(t: any, parts: { [string]: any }, elite: boolean)
+	local card = parts.Target :: Frame
+	local glass = card:FindFirstChild("Glass") :: Frame?
+	local rim = if glass then glass:FindFirstChild("Rim") :: UIStroke? else nil
+	local slate = HudConfig.Slate
+	local want = if elite then slate.Rim.Elite else slate.Rim.Theirs
+	t.Check(if elite then "its rim the gold" else "with the coral rim that says theirs", rim ~= nil and rim.Color == want
+		and card:GetAttribute("Side") == (if elite then "Elite" else "Theirs"), if rim then rim.Color:ToHex() else "no rim")
+	local outer = parts.TargetElite :: Frame
+	local line = outer:FindFirstChild("Line") :: UIStroke?
+	if elite then
+		t.Check("and the second rim outside the plate", outer.Visible and line ~= nil and line.Color == slate.Rim.Elite
+			and outer.AbsoluteSize.X > card.AbsoluteSize.X)
+	else
+		t.Check("and no second rim", not outer.Visible)
+	end
 end
 
 -- The top of the level badge's tint now: the level-up's pop lifts it toward white (UI.LeadCard.Glow).
 function HudCases.BadgeTop(parts: { [string]: any }): Color3
 	local badge = (parts.Lead :: Frame):FindFirstChild("LevelBadge")
-	local body = if badge then badge:FindFirstChildOfClass("UIGradient") else nil
+	local body = if badge then badge:FindFirstChild("Gold") :: UIGradient? else nil
 	return if body then body.Color.Keypoints[1].Value else Color3.new()
 end
 
@@ -148,6 +166,95 @@ function HudCases.Cases(given: Given): { any }
 				t.Check("the player list is off", Helpers.waitFor(t, 6, function(): boolean
 					return not game:GetService("StarterGui"):GetCoreGuiEnabled(Enum.CoreGuiType.PlayerList)
 				end))
+			end,
+		},
+		{
+			-- AR62's piece 1, B (research's yes to Modulo's tier 2, 2026-11-26, 23:46): a fight shows no pills, no dock and no
+			-- next step; a reward banked in one shows its own pill alone for its count-up and Config.Hud.FightHides.Hold, then
+			-- it goes again; out of the fight, all back. The lead's damage taken on its card over the bar's draining end, hits
+			-- while it shows adding up, never over the body. The hits dealt on one body stack: the latest whole, the two before
+			-- smaller and fainter, an older one gone (Rules.Hud.Stack).
+			Name = "HUD: AR62, a fight hides the pills, the dock and the step; a reward peeks its pill alone; damage taken on the lead's card; hits dealt stack",
+			Run = function(t: any)
+				local parts = HudController.Parts()
+				local credits, power = (parts.Credits :: GuiObject).Parent :: GuiObject, (parts.Electricity :: GuiObject).Parent :: GuiObject
+				local dock = parts.Dock :: GuiObject
+				t.Wait(0.3)
+				HudController.FightFor(12)
+				t.Check("in a fight, both pills and the dock step out", waitFor(t, 1, function(): boolean
+					return not credits.Visible and not power.Visible and not dock.Visible and not parts.Chip.Visible
+				end), `credits {credits.Visible}, power {power.Visible}, dock {dock.Visible}`)
+				t.Check("credits banked mid-fight", t.Server("DataCredits", 5).Ok == true)
+				t.Check("its pill peeks, alone", waitFor(t, 2, function(): boolean
+					return credits.Visible and not power.Visible
+				end), `credits {credits.Visible}, power {power.Visible}`)
+				local hides = HudConfig.FightHides
+				t.Check("and goes again after its count-up and its hold", waitFor(t, HudConfig.Motion.Count.Seconds + hides.Hold + 1, function(): boolean
+					return not credits.Visible
+				end))
+				t.Server("DataCredits", -5)
+				HudController.FightFor(0)
+				t.Check("out of the fight, the pills and the dock back", waitFor(t, 1, function(): boolean
+					return credits.Visible and power.Visible and dock.Visible
+				end), `credits {credits.Visible}, power {power.Visible}, dock {dock.Visible}`)
+				-- The damage taken, on the card.
+				t.Check("the lead's damage taken goes to its card, not over the body", Effects.Taken == HudController.LeadTaken)
+				local card = parts.Lead :: Frame
+				local taken = card:FindFirstChild("Taken") :: TextLabel?
+				if not t.Check("the card holds its taken number", taken ~= nil and card.Visible) or taken == nil then
+					return
+				end
+				HudController.HoldTaken(0.3)
+				HudController.LeadTaken(15)
+				HudController.LeadTaken(10)
+				t.Wait(0.1)
+				local slate: any = HudConfig.Slate
+				local stroke = taken:FindFirstChild("Stroke") :: UIStroke?
+				t.Equal("hits while it shows add up", taken.Text, "−25")
+				t.Check("coral in its dark stroke", taken.Visible and taken.TextColor3 == slate.Taken.Colour and stroke ~= nil and stroke.Color == slate.Taken.Stroke)
+				local bar, mark = parts.LeadHealth :: GuiObject, (parts.Lead :: Frame):FindFirstChild("ClassMark") :: GuiObject?
+				local foot = taken.AbsolutePosition.Y + taken.AbsoluteSize.Y
+				local lo, hi = card.AbsolutePosition.X, card.AbsolutePosition.X + card.AbsoluteSize.X
+				t.Check("inside the card, clear of the name's marks", taken.AbsolutePosition.X >= lo and taken.AbsolutePosition.X + taken.AbsoluteSize.X <= hi + 1
+					and mark ~= nil and taken.AbsolutePosition.X >= mark.AbsolutePosition.X + mark.AbsoluteSize.X - 1,
+					string.format("%.0f..%.0f in %.0f..%.0f", taken.AbsolutePosition.X, taken.AbsolutePosition.X + taken.AbsoluteSize.X, lo, hi))
+				t.Check("its foot on the health bar, risen no more than Rise", foot <= bar.AbsolutePosition.Y + 2 * (card.AbsoluteSize.X / card.Size.X.Offset)
+					and foot >= bar.AbsolutePosition.Y - (slate.Taken.Rise / slate.Page + 2) * (card.AbsoluteSize.X / card.Size.X.Offset),
+					string.format("its foot %.0f, the bar's top %.0f", foot, bar.AbsolutePosition.Y))
+				HudController.HoldTaken(nil)
+				t.Check("gone after its life", waitFor(t, slate.Taken.Life + 0.5, function(): boolean
+					return not taken.Visible
+				end))
+				-- The stack: four presses on one body, a twentieth apart.
+				local body = Instance.new("Model")
+				body.Name = "NL_StackTest"
+				local root = Instance.new("Part")
+				root.Name = "HumanoidRootPart"
+				root.Anchored, root.CanCollide, root.Transparency = true, false, 1
+				local camera = workspace.CurrentCamera
+				root.CFrame = camera.CFrame * CFrame.new(0, 0, -16)
+				root.Parent = body
+				body.Parent = workspace
+				local ok, problem = pcall(function()
+					for i = 1, 4 do
+						Effects.Number(root, `Stack@{i}`, 10 * i, { Style = "Dealt" }, Combat.Numbers)
+						t.Wait(0.05)
+					end
+					t.Wait(0.25)
+					local onBody: any = Effects.Counting[root] or {}
+					local newest, before, oldest, gone = onBody["Stack@4"], onBody["Stack@3"], onBody["Stack@2"], onBody["Stack@1"]
+					t.Check("the latest whole", newest ~= nil and newest.Rank == 0 and math.abs(newest.Scale.Scale - 1) < 0.02, if newest then string.format("%.2f", newest.Scale.Scale) else "none")
+					local stack = HudConfig.Numbers.Stack
+					t.Check("the one before smaller and fainter", before ~= nil and before.Rank == 1 and math.abs(before.Scale.Scale - stack.Scale[2]) < 0.02 and before.Fade >= stack.Fade[2] - 0.02,
+						if before then string.format("%.2f, faded %.2f", before.Scale.Scale, before.Fade) else "none")
+					t.Check("two before, smaller and fainter again", oldest ~= nil and oldest.Rank == 2 and oldest.Scale.Scale < (if before then before.Scale.Scale else 0) and oldest.Fade > (if before then before.Fade else 1),
+						if oldest then string.format("%.2f, faded %.2f", oldest.Scale.Scale, oldest.Fade) else "none")
+					t.Check("an older one gone", gone == nil)
+				end)
+				body:Destroy()
+				if not ok then
+					error(problem, 0)
+				end
 			end,
 		},
 		{

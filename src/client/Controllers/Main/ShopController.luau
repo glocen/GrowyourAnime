@@ -197,8 +197,10 @@ local function tick()
 	local here = minutes(left) -- whether the Shop stands in this place: the chip never points at one a trip away
 	local made, words = chip, chipWords
 	if made and words then
-		-- it waits while the return card is up, as the next step does: both stand under the pills (TR53)
+		-- it waits while the return card is up, as the next step does: both stand under the pills (TR53); and out of a
+		-- fight, with the pills (AR62's piece 1)
 		local shown = here and left <= ShopConfig.Warn and Screen.Current() ~= ShopScreen.Name and not ReturnCard.Up()
+			and not HudController.InFight()
 		made.Visible = shown
 		if shown then
 			local said = `Void Shop restock {Hud.Clock(left)}`

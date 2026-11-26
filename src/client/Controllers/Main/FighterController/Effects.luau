@@ -57,6 +57,9 @@ Effects.TimeScale = 1
 -- Studio's takes: while set, only numbers whose key starts with it are drawn, so a held frame isn't piled with the fight's
 -- (AR44's take).
 Effects.Only = nil :: string?
+-- The player's own lead's damage taken goes to its card when the HUD takes it (HudController.LeadTaken; AR62's piece 1,
+-- B), never in the crowd of hits over the body.
+Effects.Taken = nil :: ((amount: number) -> ())?
 
 local LIGHT = Color3.fromRGB(225, 225, 225) -- the stand-ins' grey
 local SPARK = Color3.fromRGB(255, 255, 255)
@@ -1856,6 +1859,10 @@ local MARK_GAP = 0.2 -- studs between the target's mark's top and the foot of a 
 type Numbers = { Rise: number, Seconds: number, Size: number, Count: number, Pop: number }
 export type NumberLook = { Style: string, Colour: Color3?, Word: string?, Rung: number? }
 type Counting = {
+	Press: string, -- its key's press, which it ranks with on the body's stack (Rules.Hud.Stack)
+	Born: number, -- os.clock() at its birth
+	Rank: number, -- presses on the body newer than its own, as last laid
+	RankAt: number, -- os.clock() its rank last moved
 	Rung: number?, -- its hit's, or nil for a word
 	YieldAt: number?, -- its age when a heavier hit sent it aside
 	Aside: Vector2, -- the way it leaves, a unit
@@ -1884,6 +1891,36 @@ local counting: { [BasePart]: { [string]: Counting } } = {}
 Effects.Counting = counting -- for the self-test
 
 local GLYPH = 0.72 -- a digit's height, of its text size: the critical's stroke is as tall
+
+-- A key's press: the key without its ":word" or ":element", so a hit's words and element's number rank with it.
+local function pressOf(key: string): string
+	for _, tail in { ":word", ":element" } do
+		if string.sub(key, -#tail) == tail then
+			return string.sub(key, 1, #key - #tail)
+		end
+	end
+	return key
+end
+
+-- A number's rank on its body's stack: how many presses on the body were born after its own (Rules.Hud.Stack). A number
+-- that gave way (Effects.Yield) has left the body's list and ranks no more.
+local function rankOf(onBody: { [string]: Counting }, c: Counting): number
+	local newer: { [string]: boolean } = {}
+	local born: { [string]: number } = {}
+	for _, other in onBody do
+		local at = born[other.Press]
+		born[other.Press] = if at then math.min(at, other.Born) else other.Born
+	end
+	local mine = born[c.Press] or c.Born
+	local count = 0
+	for press, at in born do
+		if press ~= c.Press and at > mine and not newer[press] then
+			newer[press] = true
+			count += 1
+		end
+	end
+	return count
+end
 
 -- A style's look and its size, read from Config at the number's birth, so a Tune shows on the next number.
 local function lookOf(style: string, colour: Color3?): (Digits.Look, number)
@@ -2126,6 +2163,10 @@ function Effects.Number(root: BasePart, key: string, amount: number?, look: Numb
 	scale.Parent = plate
 	local first, share = lookOf(look.Style, look.Colour)
 	local c: Counting = {
+		Press = pressOf(key),
+		Born = os.clock(),
+		Rank = 0,
+		RankAt = os.clock(),
 		Rung = if amount == nil then nil else look.Rung,
 		YieldAt = nil,
 		Aside = Vector2.zero,
@@ -2187,8 +2228,17 @@ function Effects.Number(root: BasePart, key: string, amount: number?, look: Numb
 				restyle(c, numbers)
 			end
 		end
-		scale.Scale = swellOf(c, age, numbers)
-		c.Fade = math.clamp((t - 0.6) / 0.4, 0, 1)
+		-- its place on the body's stack: the latest press's whole, the two before smaller and fainter, an older one leaving
+		local rank = rankOf(onBody, c)
+		if rank ~= c.Rank then
+			c.Rank, c.RankAt = rank, os.clock()
+		end
+		local stackScale, stackFade, leaving = Hud.Stack(c.Rank, os.clock() - c.RankAt, HudConfig.Numbers.Stack)
+		if leaving and stackFade >= 1 then
+			return false
+		end
+		scale.Scale = swellOf(c, age, numbers) * stackScale
+		c.Fade = math.max(math.clamp((t - 0.6) / 0.4, 0, 1), stackFade)
 		local yieldAt = c.YieldAt
 		if yieldAt then
 			-- Giving way to a heavier hit: out of the body's middle and up, fading, eased in; gone, it's done.

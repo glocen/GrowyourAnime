@@ -307,6 +307,10 @@ return {
 		-- Seconds, eased in, never down the body (the content check's condition 1).
 		Rung = { Grow = 0.08, Most = 1.5, Rungs = { Critical = 4 } :: { [string]: number }, Default = 2 },
 		Yield = { From = 7, Seconds = 0.1, Aside = 14 },
+		-- The hits dealt on one body as a stack (AR62's piece 1, B; Rules.Hud.Stack): the latest press's number whole, the
+		-- two before at Scale and Fade by rank, each step eased over Seconds; an older one fades out over Seconds. A
+		-- body's words and element numbers rank with their press. The builder's seed, to tune in play.
+		Stack = { Scale = { 1, 0.78, 0.62 }, Fade = { 0, 0.3, 0.55 }, Seconds = 0.12 },
 	},
 	-- The foe card's difficulty skull (AR45), by the share of the lead's health one fight with the foe takes (Rules.Hud.Cost,
 	-- read by Rules.Hud.Skull against 1): grey under Cuts[1], white up to Cuts[2], yellow under Cuts[3], red from it, where
@@ -1041,8 +1045,99 @@ return {
 		Oswald = { Family = "rbxasset://fonts/families/Oswald.json", Body = "Regular", Strong = "Medium", Number = "SemiBold", Digit = 0.5 },
 		TitilliumWeb = { Family = "rbxasset://fonts/families/TitilliumWeb.json", Body = "SemiBold", Strong = "Bold", Number = "Bold", Digit = 0.52 },
 	} :: { [string]: { Family: string, Body: string, Strong: string, Number: string, Digit: number } },
+	-- AR62's piece 1, the fight's HUD in B, Slate glass (research's pick, 2026-11-26, 23:46; Modulo's three must-fixes in,
+	-- 23:51; build/handoff/UI/hud_overhaul/piece1_fight/B_*.png, drawn by tools/ui/hud_palettes.py's "B"). Mid-value
+	-- blue-grey glass with a thin rim by side, white words in Titillium Web, one gold accent: the signature's press. Sizes
+	-- are the target's page points: Page of them to an authored point (the style frames' 1.28; UI.Kit.Slate.Pt), so its
+	-- press, 66 across, is the tap's 52. A word never draws under docs/ui.md's 14 px (UI.Kit.Text's floor): a bar grows to
+	-- hold its digits where the target's would not. Tuned live (research's ask): the plate's colours, the rim by side, the
+	-- press's place (Press.At). Every surface value is a token here, so the UI's finish (the director's bar of 2026-11-27,
+	-- 00:04: Anime Crusaders' and Sailor Piece's polish) swaps the surface without a rebuild (research, 00:04): the plate's
+	-- fill and gradient, strokes and their colours, the top highlight, the lift and the depth lip, the radii, the face, the
+	-- words' stroke and shade, the side rims. UI.Kit.Slate.Repaint lays them again a few times a second.
+	Slate = {
+		Page = 1.28,
+		-- The glass: a gradient top to foot, nearly solid (Clear: its transparency), a rounded rect with a fine pale rim and
+		-- a lit hairline inside its top; a soft lift under it. White on it measures 6.0 to 6.3 (Modulo, 23:51).
+		Plate = {
+			Top = Color3.fromHex("#52627A"),
+			Foot = Color3.fromHex("#405066"),
+			Clear = 0.04,
+			Radius = 7,
+			Rim = 1.1, -- the rim's width
+			RimClear = 0.2, -- its transparency
+			Hairline = Color3.fromHex("#FFFFFF"),
+			HairlineClear = 0.72,
+			Lift = 0.7, -- the soft shadow's transparency under a plate
+			LiftDown = 2, -- and how far down it sits
+			Lip = Color3.fromHex("#2A3442"), -- the depth lip: a solid darker edge under the glass (off in B: LipClear 1)
+			LipClear = 1,
+			LipDown = 1.5,
+		},
+		-- The words: a soft shade round a white word on the glass (its stroke, standing in for a shadow), and the dark stroke
+		-- of a number on a bar, its width a share of the number's size (15.6 to 1 on white, Modulo's must-fix).
+		Text = { Shade = 0.6, ShadeLine = 1, OnBar = 0.24 },
+		-- A bar: its light's sheen along its top, on a bar at least SheenFrom high.
+		Bar = { Radius = 4, Sheen = 0.75, SheenTall = 0.32, SheenFrom = 8 },
+		-- The rim by side, from C: azure on yours, coral on theirs; the plain pale rim on the chips.
+		-- An elite's or a keeper's card wears the gold, and a second rim outside it (Elite.Out).
+		Rim = { Yours = Color3.fromHex("#6FB2FF"), Theirs = Color3.fromHex("#FF8470"), Plain = Color3.fromHex("#E6EDF7"), Elite = Color3.fromHex("#F8C552") },
+		Elite = { Out = 2.5, Line = 1.2, Clear = 0.35 },
+		Ink = Color3.fromHex("#FFFFFF"), -- the words
+		Ink2 = Color3.fromHex("#D4DCE8"), -- a quiet mark (the class's)
+		Shade = Color3.fromHex("#1C2431"), -- a soft shade under the white words, and every number's stroke on a bar
+		Face = "rbxasset://fonts/families/TitilliumWeb.json", -- the names, the level and the numbers, Bold
+		Well = { Colour = Color3.fromHex("#1C2431"), Clear = 0.62 }, -- a bar's empty slot
+		Health = { Color3.fromHex("#FF6878"), Color3.fromHex("#E2425A") }, -- the health light, top to foot
+		Xp = Color3.fromHex("#A6E6FF"), -- the lead's experience thread
+		Accent = { Color3.fromHex("#F8C552"), Color3.fromHex("#E9A01E") }, -- the press, the level's badge, Auto when on
+		AccentInk = Color3.fromHex("#2E2104"), -- the icon and the level on the gold
+		-- The lead's card: 206 by 58, the portrait 46 square at 6 in, the name and its marks, the health bar 14 high with its
+		-- digits on it (white in the Shade's stroke, 15.6 to 1), the experience thread 3.5 under it.
+		-- Face: the square of the old card's portrait art the new one shows (its face and head, in the art's own points:
+		-- Config.UIKit's CardFace* at 2, 20 and CardHead* over it), from the hair's top to the chin.
+		Lead = {
+			Size = Vector2.new(206, 58),
+			Inset = 6,
+			Corner = 6,
+			Rim = 1.2, -- the portrait's rim, in its rarity's colour (Card.Trim)
+			Name = 13,
+			NameTop = 6, -- the name's row from the card's top
+			Marks = 6, -- the gem after the name, and the class's mark after the gem
+			Bar = 14,
+			BarTop = 25,
+			Digits = 10,
+			Thread = 3.5,
+			ThreadGap = 5,
+			Right = 8, -- the bars stop this short of the card's right
+			Face = { X = 2, Y = 8, Size = 58 },
+			Backdrop = Color3.fromHex("#E9D6C8"), -- behind the portrait's art
+		},
+		-- The foe's card: 216 by 50, its top row (the skull, "Lv N", the name, the type's gem) and its health 13 high. Poise's
+		-- bar under it waits for poise (docs/design.md, "Poise": no fighter has one yet).
+		Foe = { Size = Vector2.new(216, 50), Inset = 8, RowTop = 6, Bar = 13, BarTop = 25, Digits = 9.5, Name = 12.5, Level = 10.5, Skull = 14, Gem = 12, Gap = 8 },
+		-- The level on a gold badge at the portrait's foot.
+		Badge = { Size = Vector2.new(22, 13), Corner = 4, Text = 9.5, Line = 0.9 },
+		-- The lead's damage taken (TR69 A, kept on its card): over the bar's draining end, inside the card.
+		-- The lead's damage taken, on its card over the health bar's draining end (research's must-fix 3): "−N" in coral
+		-- in a dark stroke, its foot on the bar's top, clear of the name's marks by Gap. Hits while it shows add to it; it
+		-- swells Pop at each, rises Rise over Life and fades in its last third.
+		Taken = { Colour = Color3.fromHex("#FF7A86"), Stroke = Color3.fromHex("#2A0E14"), Line = 2.6, Size = 12, Life = 1, Rise = 6, Pop = 1.25, Gap = 4 },
+		-- The signature's press: a gold disc 66 across, its charge a ring 5 out, full and lit when ready. At: its centre from
+		-- the lead card's foot-left (the target's 47, 160 against the card's 12, 108).
+		-- Its rims: the glass's while it charges, a white one inside the gold while it's ready.
+		Press = { Size = 66, Ring = 5, Line = 2.4, RingClear = 0.78, At = Vector2.new(35, 52), Icon = 30, Rim = 1.2, GoldRimClear = 0.45 },
+		-- Auto: a slim chip right of the press, 66 by 26, its turn and word gold when on, grey off; a 66 tap area round it.
+		Auto = { Size = Vector2.new(66, 26), Gap = 16, Icon = 16, Text = 10 },
+		-- The eye (spectate): a 26 disc docked to the card's right, 7 off it, 2 under its top; a 66 tap area round it.
+		Eye = { Size = 26, Gap = 7, Down = 2, Icon = 17 },
+		Tap = 66, -- every control's tap area (never under Theme.Size.Tap)
+	},
 	-- The top right's pills (AR12, V2 Block): each wears its system's row (Config.UIKit.Systems). Widths, authored.
 	Pills = { Credits = 124, Power = 200 },
+	-- In a fight the pills, the dock and the next step's chip step out (AR62, B); a pill that gains peeks alone: shown up to
+	-- Flight seconds while its reward flies to it, then its count-up and Hold more.
+	FightHides = { Hold = 1.2, Flight = 2 },
 	Fallen = { Dim = 0.55 }, -- a fallen lead's portrait: how far it dims (never a red wash)
 	-- The cards' colours (TR3's verdict, 2026-11-13, fixes 1 to 3, with the director's notes). Health is the Ember light on
 	-- both cards, and no other bar takes red; the content check's conditions are in TR3's verdict, fix 2. The lead's

@@ -112,10 +112,13 @@ function NoticeCases.Cases(): { any }
 						string.format("its middle at %.1f px, the block's %.1f", middleAt, want))
 					local hud = HudController.Parts()
 					local card = hud.Lead
-					local corner = card.AbsolutePosition.Y + card.AbsoluteSize.Y + (HudConfig.Readout.Under + HudConfig.Readout.Size + LOOK.Below) * scale
+					-- AR62, B: under the press's ring, wherever the press stands
+					local signature = hud.Signature :: GuiObject
+					local press: any = HudConfig.Slate
+					local corner = signature.AbsolutePosition.Y + signature.AbsoluteSize.Y + ((press.Press.Ring + press.Press.Line) / press.Page + LOOK.Below) * scale
 					t.Check("at the card's left edge", math.abs(holder.AbsolutePosition.X - card.AbsolutePosition.X) < 1,
 						string.format("%.1f, the card's %.1f", holder.AbsolutePosition.X, card.AbsolutePosition.X))
-					t.Check("under the lead's corner, Below its readout's foot", math.abs(holder.AbsolutePosition.Y - corner) < 1,
+					t.Check("under the lead's corner, Below its press's ring", math.abs(holder.AbsolutePosition.Y - corner) < 1,
 						string.format("%.1f, want %.1f", holder.AbsolutePosition.Y, corner))
 					local wide = math.ceil(LOOK.Base + math.max(Text.Wide(name, name.Text), Text.Wide(line, line.Text)))
 					t.Check("as wide as its words ask, Base and the wider", math.abs(holder.AbsoluteSize.X / scale - wide) < 0.5 and LevelNotice.Wide() == wide,

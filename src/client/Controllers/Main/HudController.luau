@@ -61,6 +61,7 @@ local Text = require(UI.Kit.Text)
 local Bar = require(UI.Kit.Bar)
 local Button = require(UI.Kit.Button)
 local Skin = require(UI.Kit.Skin)
+local Slate = require(UI.Kit.Slate)
 local Readout = require(UI.Readout)
 local LeadCard = require(UI.LeadCard)
 local LevelNotice = require(UI.LevelNotice)
@@ -144,6 +145,10 @@ local healBand: Frame -- a heal of the lead's own: a band in the heal's green al
 local healGain: TextLabel -- and its "+N" after the health's digits
 local healAt = -math.huge -- the os.clock() the last one started
 local healHeld: number? = nil -- for tests: the look held this many seconds in (a still), or running
+local takenLabel: TextLabel -- the lead's damage taken, on its card (HudController.LeadTaken)
+local takenScale: UIScale
+local takenTotal, takenAt = 0, -math.huge
+local takenHeld: number? = nil -- for tests: held this many seconds in
 local glint: Frame -- experience's pop: a light over the thread's
 local lastCharge: number? = nil -- the battery at the last read, for its jump
 local baseReadAt = 0
@@ -259,12 +264,29 @@ end
 -- or nil when it came from nowhere on screen) its icons fly to the pill's, and as the first lands its number starts
 -- counting, the pill pops at Fly's rung and its "+N" rises. With nowhere to fly from, the number counts and the pill
 -- pops at once, at its own rung.
+-- In a fight the pills, the dock and the next step's chip step out (AR62's piece 1, B: research's yes, 2026-11-26): a fight
+-- is the server's Engaged and Theme.Time.Fight after it. A pill that gains in a fight peeks alone: it shows while a reward
+-- flies to it, counts up, holds Config.Hud.FightHides.Hold, and goes again.
+local fightUntil = 0
+local peeks: { [GuiObject]: number } = {}
+
+function HudController.InFight(): boolean
+	return os.clock() < fightUntil
+end
+
+-- A fight for `seconds` from now, as Engaged gives one (tests).
+function HudController.FightFor(seconds: number)
+	fightUntil = os.clock() + seconds
+end
+
 local function reward(value: TextLabel, mark: ImageLabel, from: Vector2?, image: string, old: number, new: number, format: (number) -> string, rung: number, tint: Color3, gainFormat: (number) -> string)
 	local pillFrame = value.Parent :: GuiObject
 	local won = new - old
 	Count.Run(value, old, new, format, from ~= nil)
+	peeks[pillFrame] = os.clock() + HudConfig.FightHides.Flight -- shown for the flight to land on
 	local function land(fly: boolean)
 		Count.Start(value)
+		peeks[pillFrame] = os.clock() + HudConfig.Motion.Count.Seconds + HudConfig.FightHides.Hold
 		Pop.Play(pillFrame, if fly then HudConfig.Pop.Rungs.Fly else rung)
 		Pop.Gain(pillFrame, won, tint, gainFormat)
 	end
@@ -297,28 +319,77 @@ end
 -- The spectate toggle (TR11; Config.Hud.Spectate): the eye beside the signature's readout, one family with it (AR12):
 -- its own plate, open and lit while it's on, shut and dim while off, in a whole tap target. A tap turns it on or off
 -- (SpectateController); while it can't be used it draws fainter and says why on a tap.
+-- A control's tap area in B (AR62): the target's, never under the kit's least (Theme.Size.Tap: 44 px at the floor).
+local function tapArea(): number
+	return math.max(Slate.Pt(HudConfig.Slate.Tap), Theme.Size.Tap)
+end
+
 local function eyeButton(): TextButton
-	local look = HudConfig.Spectate
+	local look = HudConfig.Slate.Eye
 	local button = Button.new({
 		Name = "Spectate",
 		Text = "",
 		Bare = true,
-		Size = UDim2.fromOffset(look.Size, look.Size),
+		Size = UDim2.fromOffset(tapArea(), tapArea()),
 		AnchorPoint = Vector2.new(0.5, 0.5),
 		Parent = Layers.Get("Hud"),
 		OnPress = function()
 			SpectateController.Set(not SpectateController.On())
 		end,
 	})
-	local skin = Skin.Of(button) -- in the face, so it squeezes with it
-	local inset = (look.Size - look.Plate) / 2
-	local off = Skin.Lay(skin, "EyeOff", { Name = "Off", X = inset, Y = inset, Z = 12 })
-	local on = Skin.Lay(skin, "EyeOn", { Name = "On", X = inset, Y = inset, Z = 12 })
+	-- In the face, so it squeezes with it (AR62, B): a small glass disc docked to the lead's card, the eye drawn on it
+	-- open while you watch your lead, shut (a lid's line) while you don't.
+	local skin = Skin.Of(button)
+	local size = Slate.Pt(look.Size)
+	local disc = Slate.Plate(skin, "Disc", Vector2.new(size, size), "Plain", size / 2)
+	disc.AnchorPoint = Vector2.new(0.5, 0.5)
+	disc.Position = UDim2.fromScale(0.5, 0.5)
+	local glyph = Slate.Pt(look.Icon)
+	local open = Instance.new("Frame")
+	open.Name = "On"
+	open.BackgroundTransparency = 1
+	open.AnchorPoint = Vector2.new(0.5, 0.5)
+	open.Position = UDim2.fromScale(0.5, 0.5)
+	open.Size = UDim2.fromOffset(glyph, glyph * 0.56)
+	open.ZIndex = 3
+	local lid = Instance.new("UICorner")
+	lid.CornerRadius = UDim.new(0.5, 0)
+	lid.Parent = open
+	local outline = Instance.new("UIStroke")
+	outline.Color = HudConfig.Slate.Ink
+	outline.Thickness = math.max(1, glyph * 0.11)
+	outline.Parent = open
+	local pupil = Instance.new("Frame")
+	pupil.Name = "Pupil"
+	pupil.BackgroundColor3 = HudConfig.Slate.Ink
+	pupil.BorderSizePixel = 0
+	pupil.AnchorPoint = Vector2.new(0.5, 0.5)
+	pupil.Position = UDim2.fromScale(0.5, 0.5)
+	pupil.Size = UDim2.fromOffset(glyph * 0.34, glyph * 0.34)
+	pupil.ZIndex = 4
+	local round = Instance.new("UICorner")
+	round.CornerRadius = UDim.new(0.5, 0)
+	round.Parent = pupil
+	pupil.Parent = open
+	open.Parent = disc
+	local shut = Instance.new("Frame")
+	shut.Name = "Off"
+	shut.BackgroundColor3 = HudConfig.Slate.Ink2
+	shut.BorderSizePixel = 0
+	shut.AnchorPoint = Vector2.new(0.5, 0.5)
+	shut.Position = UDim2.fromScale(0.5, 0.55)
+	shut.Size = UDim2.fromOffset(glyph, math.max(1.5, glyph * 0.12))
+	shut.ZIndex = 3
+	local ends = Instance.new("UICorner")
+	ends.CornerRadius = UDim.new(0.5, 0)
+	ends.Parent = shut
+	shut.Parent = disc
 	local function show()
 		local lit = SpectateController.On()
 		local whole = if button:GetAttribute("Why") ~= nil then HudConfig.Spectate.Off else 1
-		on.Visible, off.Visible = lit, not lit
-		on.ImageTransparency, off.ImageTransparency = 1 - whole, 1 - whole
+		open.Visible, shut.Visible = lit, not lit
+		outline.Transparency, pupil.BackgroundTransparency, shut.BackgroundTransparency = 1 - whole, 1 - whole, 1 - whole
+		Slate.Side(disc, if lit then "Yours" else "Plain")
 		button:SetAttribute("On", lit)
 	end
 	SpectateController.Changed:Connect(function(lit: boolean)
@@ -328,6 +399,69 @@ local function eyeButton(): TextButton
 	button:GetAttributeChangedSignal("Why"):Connect(show)
 	show()
 	return button
+end
+
+-- The signature's Auto in B (AR62): a slim glass chip, its turn and its word gold-lit while on, grey and dim while off,
+-- on a tap-high area. Its parts: the chip, the turn (a ring cut open at its top right), the word.
+local function autoChip(button: TextButton)
+	local c = HudConfig.Slate
+	local look = c.Auto
+	local w, h = Slate.Pt(look.Size.X), Slate.Pt(look.Size.Y)
+	local chip = Slate.Plate(Skin.Of(button), "Chip", Vector2.new(w, h), "Plain", h / 2)
+	chip.AnchorPoint = Vector2.new(0, 0.5)
+	chip.Position = UDim2.new(0, 0, 0.5, 0)
+	local turnSize = Slate.Pt(look.Icon)
+	local turn = Instance.new("Frame")
+	turn.Name = "Turn"
+	turn.BackgroundTransparency = 1
+	turn.AnchorPoint = Vector2.new(0.5, 0.5)
+	turn.Position = UDim2.new(0, Slate.Pt(7) + turnSize / 2, 0.5, 0)
+	turn.Size = UDim2.fromOffset(turnSize * 0.78, turnSize * 0.78)
+	turn.ZIndex = 3
+	local round = Instance.new("UICorner")
+	round.CornerRadius = UDim.new(0.5, 0)
+	round.Parent = turn
+	local line = Instance.new("UIStroke")
+	line.Name = "Line"
+	line.Thickness = math.max(1.2, turnSize * 0.13)
+	line.Parent = turn
+	local cut = Instance.new("UIGradient") -- the ring open at its top right: a turn
+	cut.Rotation = -45
+	cut.Transparency = NumberSequence.new({
+		NumberSequenceKeypoint.new(0, 0),
+		NumberSequenceKeypoint.new(0.78, 0),
+		NumberSequenceKeypoint.new(0.781, 1),
+		NumberSequenceKeypoint.new(1, 1),
+	})
+	cut.Parent = line
+	turn.Parent = chip
+	local word = Slate.Word(chip, "Word", Slate.Pt(look.Text))
+	word.Text = "AUTO"
+	word.Position = UDim2.fromOffset(Slate.Pt(27), 0)
+	word.Size = UDim2.new(1, -Slate.Pt(27), 1, 0)
+	word.ZIndex = 3
+end
+
+-- Auto's look for on or off (stepReadout, as the player's attribute changes).
+local function autoShows(button: TextButton, on: boolean)
+	local c = HudConfig.Slate
+	local chip = Skin.Of(button):FindFirstChild("Chip") :: Frame?
+	if chip == nil then
+		return
+	end
+	local turn = chip:FindFirstChild("Turn")
+	local line = if turn then turn:FindFirstChild("Line") :: UIStroke? else nil
+	local word = chip:FindFirstChild("Word") :: TextLabel?
+	if line then
+		line.Color = if on then c.Accent[1] else c.Ink2
+		line.Transparency = if on then 0 else 0.45
+	end
+	if word then
+		word.TextColor3 = if on then c.Ink else c.Ink2
+		word.TextTransparency = if on then 0 else 0.45
+	end
+	Slate.Side(chip, if on then "Elite" else "Plain") -- the gold rim while on
+	button:SetAttribute("On", on)
 end
 
 -- The quiet note under the lead's corner (docs/ui.md, rule 2; Config.Hud.Note; TR46): one line on a soft backing, in, read,
@@ -378,54 +512,52 @@ function HudController.JumpBox(): (Vector2, Vector2)
 	return Vector2.new(high.X - (side * 1.5 - 10), high.Y - (if side == 70 then side + 20 else side * 1.75)), Vector2.new(side, side)
 end
 
--- The eye's two places in the lead's corner (placeCorner): Beside the readout while it shows, Docked in the readout's own
--- place under the card while it's hidden (out of a fight), so it never floats beside an empty slot (research, 21:44,
--- from a second reader's cold read of the base). It slides between them with the readout's fade (placeEye).
-local corner: { Docked: Vector2, Beside: Vector2 }? = nil
+-- The lead's corner in B (AR62; Config.Hud.Slate, tuned live): the eye docked to the card's right, the signature's
+-- press under the card's foot-left (Press.At, or over the jump button: Readout.At), Auto beside the press, and a fallen
+-- lead's offer of the next in Auto's place (the two never show together: the press hides with a fallen lead).
+local corner: { Press: Vector2 }? = nil
 
--- The eye where the readout's fade puts it, and after it the fallen lead's offer and the signature's Auto.
 local function placeEye()
 	if corner == nil then
 		return
 	end
-	local look = HudConfig.Spectate
-	local at = corner.Docked:Lerp(corner.Beside, readout.Seen)
-	eye.Position = UDim2.fromOffset(at.X, at.Y)
-	nextButton.Position = UDim2.fromOffset(at.X + look.Size / 2 + Theme.Size.Gap, at.Y)
-	auto.Position = nextButton.Position -- never both: the readout hides with a fallen lead
+	local c = HudConfig.Slate
+	local at = corner.Press
+	local left = at.X + Slate.Pt(c.Press.Size) / 2 + Slate.Pt(c.Auto.Gap)
+	auto.Position = UDim2.fromOffset(left, at.Y)
+	nextButton.Position = auto.Position
 end
 
--- The lead's corner (AR12; Config.Hud.Readout, Config.Hud.Spectate, tuned live): the readout under the lead's card, or
--- over the jump button (Readout.At), the eye beside it (in its place while it's hidden), and after the eye a fallen
--- lead's offer of the next.
 local function placeCorner()
-	local plate, look = HudConfig.Readout, HudConfig.Spectate
+	local c, plate = HudConfig.Slate, HudConfig.Readout
 	local card = lead.Frame
 	local hud, scale = Layers.Get("Hud"), math.max(Layers.Scale(), 0.01)
-	local left = card.Position.X.Offset + plate.Right
-	local top = card.Position.Y.Offset + card.Size.Y.Offset + plate.Under
+	local x, y = card.Position.X.Offset, card.Position.Y.Offset
+	local w, h = card.Size.X.Offset, card.Size.Y.Offset
+	local size = Slate.Pt(c.Press.Size)
 	local piece = readout.Piece.Frame
-	piece.Size = UDim2.fromOffset(plate.Size, plate.Size)
+	piece.Size = UDim2.fromOffset(size, size)
+	local press = Vector2.new(x + Slate.Pt(c.Press.At.X), y + h + Slate.Pt(c.Press.At.Y))
 	if plate.At == "Jump" then
-		local at, size = HudController.JumpBox()
+		local at, box = HudController.JumpBox()
 		local origin = hud.AbsolutePosition
-		piece.Position = UDim2.fromOffset((at.X + size.X / 2 - origin.X) / scale, (at.Y - origin.Y) / scale - plate.Jump.Above - plate.Size / 2)
-	else
-		piece.Position = UDim2.fromOffset(left + plate.Size / 2, top + plate.Size / 2)
+		press = Vector2.new((at.X + box.X / 2 - origin.X) / scale, (at.Y - origin.Y) / scale - plate.Jump.Above - size / 2)
 	end
-	local docked = Vector2.new(left + plate.Size / 2, top + plate.Size / 2)
-	local beside = if plate.At == "Jump" then docked else Vector2.new(left + plate.Size + look.Right + look.Plate / 2, top + look.Lower + look.Plate / 2)
-	corner = { Docked = docked, Beside = beside }
-	eye.Size = UDim2.fromOffset(look.Size, look.Size)
-	auto.Size = UDim2.fromOffset(plate.Auto.Width, Theme.Size.Tap)
+	piece.Position = UDim2.fromOffset(press.X, press.Y)
+	corner = { Press = press }
+	local eyeSize = Slate.Pt(c.Eye.Size)
+	eye.Size = UDim2.fromOffset(tapArea(), tapArea())
+	eye.Position = UDim2.fromOffset(x + w + Slate.Pt(c.Eye.Gap) + eyeSize / 2, y + Slate.Pt(c.Eye.Down) + eyeSize / 2)
+	auto.Size = UDim2.fromOffset(math.max(Slate.Pt(c.Auto.Size.X), tapArea()), tapArea())
 	placeEye()
 	-- The level-up's notice under the corner's row, at the card's left edge (AR12, take B; TR41 (c)), stopping a gap short
 	-- of the step's chip over the dock, which shares its row on a phone.
+	local foot = press.Y + size / 2 + Slate.Pt(c.Press.Ring + c.Press.Line)
 	local chipLeft = if chip then (chip.AbsolutePosition.X - hud.AbsolutePosition.X) / scale else math.huge
-	LevelNotice.Place(card.Position.X.Offset, top + plate.Size + HudConfig.LevelNotice.Below, chipLeft - Theme.Size.Gap - card.Position.X.Offset)
+	LevelNotice.Place(x, foot + HudConfig.LevelNotice.Below, chipLeft - Theme.Size.Gap - x)
 	-- The quiet note in the same place: the two never meet, a Tower run's lead being frozen (TR46).
 	if note then
-		note.Holder.Position = UDim2.fromOffset(card.Position.X.Offset, top + plate.Size + HudConfig.LevelNotice.Below)
+		note.Holder.Position = UDim2.fromOffset(x, foot + HudConfig.LevelNotice.Below)
 	end
 end
 
@@ -454,9 +586,10 @@ local function stepReadout(model: Model?, fighting: boolean, dt: number)
 	end
 	-- Its state in its words: the kit's set light alone read the same on and off at the phone's size (TR52's capture).
 	local on = player:GetAttribute("SignatureAuto") ~= false
-	if on ~= autoOn then
+	if on ~= autoOn or auto:GetAttribute("On") == nil then
 		autoOn = on
-		Button.Set(auto, { Selected = on, Text = if on then "Auto on" else "Auto off" }) -- the kit's sentence case
+		Button.Set(auto, { Selected = on })
+		autoShows(auto, on)
 	end
 	piece.Frame:SetAttribute("Seen", readout.Seen)
 	if not can or model == nil then
@@ -946,7 +1079,7 @@ local function showChip(view: Profile.View)
 	shownStep = step
 	-- Home's panel stands where the chip does: it steps out while the panel is open (AR43, AR49), and waits while the
 	-- return card is up (TR53).
-	chip.Visible = step ~= nil and not (homePanel ~= nil and HomePanel.Shown(homePanel)) and not ReturnCard.Up()
+	chip.Visible = step ~= nil and not (homePanel ~= nil and HomePanel.Shown(homePanel)) and not ReturnCard.Up() and not HudController.InFight()
 	if step then
 		chipText.Text = step.Line
 	end
@@ -1359,19 +1492,57 @@ local function paintHeal()
 	healGain.Visible = shown and age < h.Life
 	if healGain.Visible then
 		local life = math.clamp(age / h.Life, 0, 1)
-		local digits = lead.HealthText
-		-- The digits as drawn, in the card's points (Text.Wide's stock measure ran 3 points long on the phone's face).
-		local drawn = digits.TextBounds.X * digits.Size.X.Offset / math.max(digits.AbsoluteSize.X, 1)
-		local after = digits.Position.X.Offset + drawn + h.Gap
-		healGain.Position = UDim2.fromOffset(after, digits.Position.Y.Offset - h.Rise * (1 - (1 - life) ^ 2))
-		healGain.Size = UDim2.fromOffset(Text.Wide(healGain, healGain.Text) + 2, digits.Size.Y.Offset)
+		local bar, digits = lead.Health, lead.HealthText
+		-- The digits as drawn, centred on their bar (AR62, B), in the card's points (Text.Wide's stock measure ran 3 points
+		-- long on the phone's face): the "+N" starts after their end.
+		local drawn = digits.TextBounds.X * bar.Size.X.Offset / math.max(bar.AbsoluteSize.X, 1)
+		local after = bar.Position.X.Offset + (bar.Size.X.Offset + drawn) / 2 + h.Gap
+		healGain.Position = UDim2.fromOffset(after, bar.Position.Y.Offset - h.Rise * (1 - (1 - life) ^ 2))
+		healGain.Size = UDim2.fromOffset(Text.Wide(healGain, healGain.Text) + 2, bar.Size.Y.Offset)
 		healGain.TextTransparency = math.clamp((life - 2 / 3) * 3, 0, 1)
 	end
 end
 
+-- The lead's damage taken over its health bar's draining end (AR62's piece 1, B; Config.Hud.Slate.Taken): its foot on the
+-- bar's top at the light's front, kept right of the name's marks and inside the card, rising and fading.
+local function paintTaken()
+	local k = HudConfig.Slate.Taken
+	local age = takenHeld or (os.clock() - takenAt)
+	takenLabel.Visible = lead.Frame.Visible and age < k.Life
+	if not takenLabel.Visible then
+		return
+	end
+	local bar = lead.Health
+	local share = bar:GetAttribute("Share")
+	local front = bar.Position.X.Offset + (if type(share) == "number" and share > 0 then share else 0) * bar.Size.X.Offset
+	local w = Text.Wide(takenLabel, takenLabel.Text) + 4
+	local mark = lead.Class.Parent :: GuiObject
+	local least = mark.Position.X.Offset + mark.Size.X.Offset / 2 + Slate.Pt(k.Gap) + w / 2
+	local most = lead.Frame.Size.X.Offset - Slate.Pt(HudConfig.Slate.Lead.Inset) - w / 2
+	local life = math.clamp(age / k.Life, 0, 1)
+	takenLabel.Size = UDim2.fromOffset(w, takenLabel.TextSize * 1.15)
+	takenLabel.Position = UDim2.fromOffset(math.clamp(front, math.min(least, most), most), bar.Position.Y.Offset + 1 - Slate.Pt(k.Rise) * Hud.Ease(life))
+	takenScale.Scale = 1 + (k.Pop - 1) * math.clamp(1 - age / 0.12, 0, 1)
+	Slate.Fade(takenLabel, math.clamp((life - 2 / 3) * 3, 0, 1))
+end
+
+local repaintAt = 0
 local function step(dt: number)
 	VoidkinScreen.Tick() -- its clocks, Combat Power's count, a layout tuned live
 	face()
+	if player:GetAttribute("Engaged") == true then
+		fightUntil = math.max(fightUntil, os.clock() + Theme.Time.Fight)
+	end
+	local fighting = HudController.InFight()
+	for _, pillFrame in { credits.Parent :: GuiObject, electricity.Parent :: GuiObject } do
+		pillFrame.Visible = not fighting or (peeks[pillFrame] or 0) > os.clock()
+	end
+	-- The Slate's surface tokens laid again a few times a second (AR62: a Tune, or the finish's surface, without a rebuild).
+	local clock = os.clock()
+	if clock >= repaintAt then
+		repaintAt = clock + 0.25
+		Slate.Repaint(Layers.Get("Hud"))
+	end
 	local model = myLead()
 	lead.Frame.Visible = model ~= nil and model:GetAttribute("Title") ~= nil -- a fighter's attributes come a moment after it
 	local foe: Model? = nil
@@ -1417,6 +1588,7 @@ local function step(dt: number)
 		foe = if type(id) == "string" and id ~= "" then fighterById(id) else nil
 	end
 	paintHeal()
+	paintTaken()
 	-- A keeper's own bar stands in the target card's stead (TR5, A and B); an elite's card wears its brass (AR45).
 	local boss = HudConfig.Boss
 	local variant = tostring(boss.Keeper)
@@ -1507,7 +1679,7 @@ local function step(dt: number)
 	end
 	-- A, the keeper at the foot: the dock and its chip step out for the try, since their buttons don't serve a fight.
 	local away = variant == "A" and trying
-	dockHolder.Visible = not away
+	dockHolder.Visible = not away and not HudController.InFight()
 	if away then
 		chip.Visible = false
 	end
@@ -1592,7 +1764,7 @@ function HudController.Start()
 	LevelNotice.Mount(Layers.Get("Hud"))
 	note = makeNote(Layers.Get("Hud"))
 	-- The foe's card centred, its top level with the lead's plate's (AR45: the two face each other).
-	target = TargetCard.new(Layers.Get("Hud"), UDim2.new(0.5, 0, 0, TOP + UIKit.LeadPlate.Plate[2]))
+	target = TargetCard.new(Layers.Get("Hud"), UDim2.new(0.5, 0, 0, TOP)) -- level with the lead's card (AR62, B)
 	local creditsPill = pill("Credits", 1, HudConfig.Pills.Credits, "Credits")
 	credits, coin = creditsPill.Value, creditsPill.Mark
 	local power = pill("Electricity", 2, HudConfig.Pills.Power, "Power")
@@ -1645,8 +1817,9 @@ function HudController.Start()
 	-- off, only on a tap. For this server only, on the player (FightService.SetAuto).
 	auto = Button.new({
 		Name = "SignatureAuto",
-		Text = "Auto on",
-		Size = UDim2.fromOffset(HudConfig.Readout.Auto.Width, Theme.Size.Tap),
+		Text = "",
+		Bare = true,
+		Size = UDim2.fromOffset(tapArea(), tapArea()),
 		AnchorPoint = Vector2.new(0, 0.5),
 		Parent = Layers.Get("Hud"),
 		OnPress = function()
@@ -1655,6 +1828,7 @@ function HudController.Start()
 		end,
 	})
 	auto.Visible = false
+	autoChip(auto)
 	-- Experience's pop: white over the thread's lit share, brightest at its new end (Config.Hud.Pop).
 	glint = Instance.new("Frame")
 	glint.Name = "Glint"
@@ -1687,6 +1861,12 @@ function HudController.Start()
 	healGain = Text.new({ Name = "HealGain", Size = Theme.Text.Caption, Font = Theme.Font.Strong, Colour = heal.Colour, Parent = lead.Frame })
 	healGain.ZIndex = 6
 	healGain.Visible = false
+	takenLabel = Slate.Taken(lead.Frame, "Taken")
+	takenLabel.ZIndex = 7
+	takenLabel.Visible = false
+	takenScale = Instance.new("UIScale")
+	takenScale.Parent = takenLabel
+	Effects.Taken = HudController.LeadTaken
 	-- A Regen burst on the player's own lead (TR40). Later heals of the lead's own (Lifesteal's, a healer's) come here too.
 	Net.Client.On("Hit", heldDrops) -- a pack's last fall holds its drops (TR69 A)
 	Net.Client.On("Heal", function(burst: any)
@@ -1845,6 +2025,23 @@ function HudController.LeadHealed(amount: number)
 	end
 	healGain.Text = `+{Hud.Digits(math.floor(amount + 0.5))}`
 	healAt = os.clock()
+end
+
+-- Damage the lead took, `amount` health, on its card (paintTaken): hits while one shows add to it; nothing under half a
+-- point.
+function HudController.LeadTaken(amount: number)
+	if amount < 0.5 then
+		return
+	end
+	local now = os.clock()
+	takenTotal = if now - takenAt < HudConfig.Slate.Taken.Life then takenTotal + amount else amount
+	takenAt = now
+	takenLabel.Text = `−{Hud.Digits(math.floor(takenTotal + 0.5))}`
+end
+
+-- For tests: the lead's damage taken held `age` seconds in, or running again (nil).
+function HudController.HoldTaken(age: number?)
+	takenHeld = age
 end
 
 -- For tests: the lead's heal look held `age` seconds in, for a still, or running again (nil).

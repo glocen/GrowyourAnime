@@ -1300,7 +1300,12 @@ local function onHit(hit: any)
 			Effects.Number(struck.Root, `{press}:word`, nil, { Style = "Word", Word = "Block" }, numbers)
 		end
 		if onMine then
-			Effects.Number(struck.Root, press, hit.Total, { Style = "Received", Rung = rung }, numbers)
+			local taken = Effects.Taken
+			if taken then
+				taken(hit.Total) -- on the lead's card, over its bar's draining end (AR62's piece 1)
+			else
+				Effects.Number(struck.Root, press, hit.Total, { Style = "Received", Rung = rung }, numbers)
+			end
 		else
 			local elemental = if type(hit.Elemental) == "number" then hit.Elemental else 0
 			local physical = hit.Total - elemental

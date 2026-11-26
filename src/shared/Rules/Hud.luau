@@ -483,6 +483,26 @@ function Hud.NumberScale(style: string, rung: number?, by: { Grow: number, Most:
 	return math.min(1 + by.Grow * over, by.Most)
 end
 
+-- The hits dealt on one body as a stack (AR62's piece 1, B: the latest big, the two before smaller and fading): a number
+-- `rank` presses older than the body's latest (0 for the latest) is drawn at its scale and its fade, both eased toward
+-- the rank's over `since` seconds of Config.Hud.Numbers.Stack.Seconds since it last moved down; past the stack's last
+-- rank it leaves, fading out (the third value, true). A rank never grows a number back.
+function Hud.Stack(rank: number, since: number, by: { Scale: { number }, Fade: { number }, Seconds: number }): (number, number, boolean)
+	local u = if by.Seconds > 0 then Hud.Ease(math.clamp(since / by.Seconds, 0, 1)) else 1
+	local last = #by.Scale
+	local function at(list: { number }, r: number): number
+		return list[math.clamp(r + 1, 1, last)]
+	end
+	if rank <= 0 then
+		return by.Scale[1], by.Fade[1], false
+	end
+	local gone = rank >= last
+	local scale = at(by.Scale, rank - 1) + (at(by.Scale, rank) - at(by.Scale, rank - 1)) * u
+	local fadeTo = if gone then 1 else at(by.Fade, rank)
+	local fade = at(by.Fade, rank - 1) + (fadeTo - at(by.Fade, rank - 1)) * u
+	return scale, fade, gone
+end
+
 -- A number giving way to a heavier hit, `since` seconds after it landed: its fade (0 to 1, eased in) and how far it has
 -- moved aside (0 to 1, eased out).
 function Hud.Yield(since: number, seconds: number): (number, number)

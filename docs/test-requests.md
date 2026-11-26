@@ -2622,7 +2622,7 @@ The line names the one thing nearest to done, read from the state the server alr
 | 4 | Training earns a third of what Lantern Row earns | `KillsPerHour = 450` against 136 to 204 counted on the stages (`Config/Growth.luau`) | set it from TR69 block B's timed run: a clean run's kills over its seconds |
 
 - **Waits, named so nobody forgets:** Rook's evolution ("One at launch", Voidkin, "Evolution"; no code), after the three overhauls. Auto-salvage's stones come with the Forge (`Config/Chests.luau`, 107). The three shard grades, luck and voltage are as `launch-design.md`, section 2, left them.
-- **Faber, 2026-11-27, 23:54: items 1 and 2 in.**
+- **Faber, 2026-11-26, 23:54: items 1 and 2 in.**
   - **Item 1, the swap** (`Collection.SetLead`):
     - A worker made lead swaps places: the old lead takes the bay it left, and the answer's Swapped names it.
     - A fallen lead not yet whole goes home and the bay waits empty. That's Carry's Healing, the server's fact through `LeadService.Healing`, handed to the rule as `Collection.Facts`.

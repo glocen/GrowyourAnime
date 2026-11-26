@@ -321,8 +321,11 @@ return {
 							t.Check(`{label}: its band {part} is one of its parts`, table.find(row.Part or {}, part) ~= nil)
 						end
 					elseif row.Kind == "Card" or row.Kind == "Emitter" then
-						t.Check(`{label}: {row.Image} is a kit image`, row.Image ~= nil and FxKit.Images[row.Image] ~= nil)
+						local picture = if row.Image then FxKit.Images[row.Image] or EffectsConfig.Pictures[row.Image] else nil
+						t.Check(`{label}: {row.Image} is a kit image or a picture`, picture ~= nil)
+						t.Check(`{label}: its picture uploaded once it's out of grey`, effect.Grey or (picture ~= nil and picture ~= ""))
 					end
+					t.Check(`{label}: a tell is an emitter's bursts`, row.Tell == nil or (row.Kind == "Emitter" and row.Emit ~= nil), tostring(row.Tell))
 					local lists: { { any } } = {}
 					for _, keys in row.Tracks do
 						table.insert(lists, keys)
@@ -456,7 +459,7 @@ return {
 		end,
 	},
 	{
-		Name = "Track: a burst at the Effects level keeps one particle above 0, so a one-particle hero shape never drops first",
+		Name = "Track: a burst at the Effects level keeps one particle above 0, so a one-particle hero shape never drops first, and a tell's keeps one at 0",
 		Run = function(t: any)
 			t.Equal("one at a tenth: kept", Track.Burst(1, 0.1), 1)
 			t.Equal("one at half: kept", Track.Burst(1, 0.49), 1)
@@ -466,6 +469,10 @@ return {
 			t.Equal("at 0: none", Track.Burst(1, 0), 0)
 			t.Equal("a count of 0: none", Track.Burst(0, 1), 0)
 			t.Equal("full: unchanged", Track.Burst(24, 1), 24)
+			-- A tell's row (AR52's ward): one at any level, the share above it as any burst's.
+			t.Equal("a tell at 0: one", Track.Burst(4, 0, true), 1)
+			t.Equal("a tell at a quarter: the share", Track.Burst(40, 0.25, true), 10)
+			t.Equal("a tell of 0: none", Track.Burst(0, 0, true), 0)
 		end,
 	},
 	{

@@ -90,10 +90,13 @@ end
 
 -- A burst's particle count at the player's Effects level, a share 0 to 1: the count in that share, rounded, and never
 -- below one above 0, so a one-particle hero shape (the mend's Core and Star) is never the first thing a low level loses
--- (Scintilla, AR58, 2026-11-25). At 0 nothing draws.
-function Track.Burst(count: number, share: number): number
-	if share <= 0 or count < 1 then
+-- (Scintilla, AR58, 2026-11-25). At 0 nothing draws, but a tell's row (its Tell: what a player must read, as the ward
+-- that makes blows glance; Scintilla, AR52, 2026-11-26) keeps one at any level.
+function Track.Burst(count: number, share: number, tell: boolean?): number
+	if count < 1 then
 		return 0
+	elseif share <= 0 then
+		return if tell then 1 else 0
 	end
 	return math.max(1, math.round(count * share))
 end

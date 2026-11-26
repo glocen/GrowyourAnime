@@ -53,6 +53,7 @@ export type Row = {
 	Range: number?,
 	Emitter: { [string]: any }?,
 	Emit: { { number } }?,
+	Tell: boolean?, -- its bursts keep one particle at any Effects level: a tell a player must read (Track.Burst)
 	Tracks: { [string]: { Key } },
 	Bands: { [string]: { [string]: { Key } } }?,
 	From: string?,

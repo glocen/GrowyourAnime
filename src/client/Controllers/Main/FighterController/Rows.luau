@@ -340,7 +340,7 @@ local function make(name: string, row: EffectsConfig.Row, greyed: boolean, optio
 			label.BorderSizePixel = 0
 			label.Size = UDim2.fromScale(1, 1)
 			label.ScaleType = Enum.ScaleType.Stretch
-			label.Image = FxKit.Images[row.Image :: string].Id
+			label.Image = imageId(row.Image :: string)
 			label.ImageTransparency = 1 -- shown by its image, never by Enabled (AR8 A: a picture shown is drawn a step late)
 			label.Parent = gui
 			gui.Parent = holder
@@ -349,7 +349,7 @@ local function make(name: string, row: EffectsConfig.Row, greyed: boolean, optio
 			local emitter = Instance.new("ParticleEmitter")
 			emitter.Name = "NL_RowEmitter"
 			emitter.Rate = 0
-			emitter.Texture = FxKit.Images[row.Image :: string].Id
+			emitter.Texture = imageId(row.Image :: string)
 			for property, value in row.Emitter or {} do
 				local target = emitter :: any
 				target[property] = convert(target[property], value, greyed)
@@ -750,7 +750,7 @@ function Rows.Play(name: string, anchor: CFrame, scale: number, options: Options
 					for index, emit in row.Emit or {} do
 						if not piece.Emitted[index] and t >= emit[1] then
 							piece.Emitted[index] = true
-							local count = Track.Burst(emit[2], share)
+							local count = Track.Burst(emit[2], share, row.Tell)
 							if count > 0 then
 								emitter:Emit(count)
 							end
@@ -803,9 +803,16 @@ function Rows.Warm()
 		return
 	end
 	warmed = true
+	-- The kit's images and the effects' own pictures (Config.Effects.Pictures, once uploaded): a textured Beam draws as
+	-- a solid band until its texture has loaded.
 	local ids = {}
 	for _, image in FxKit.Images do
 		table.insert(ids, image.Id)
+	end
+	for _, picture in EffectsConfig.Pictures do
+		if picture ~= "" then
+			table.insert(ids, picture)
+		end
 	end
 	task.spawn(function()
 		local missed: { string } = {}
@@ -848,7 +855,7 @@ function Rows.Warm()
 			table.insert(parts, part)
 		end
 		local emitters: { ParticleEmitter } = {}
-		for _, image in FxKit.Images do
+		for _, id in ids do
 			local part = Instance.new("Part")
 			part.Name = "NL_WarmImage"
 			part.Anchored = true
@@ -859,7 +866,7 @@ function Rows.Warm()
 			high.Position = Vector3.new(WARM_SIZE, 0, 0)
 			low.Parent, high.Parent = part, part
 			local emitter = Instance.new("ParticleEmitter")
-			emitter.Texture = image.Id
+			emitter.Texture = id
 			emitter.Rate = 0
 			emitter.Lifetime = NumberRange.new(WARM_EMIT)
 			emitter.Speed = NumberRange.new(0)
@@ -869,7 +876,7 @@ function Rows.Warm()
 			emitter.LockedToPart = true
 			emitter.Parent = low
 			local beam = Instance.new("Beam")
-			beam.Texture = image.Id
+			beam.Texture = id
 			beam.Attachment0, beam.Attachment1 = low, high
 			beam.Width0, beam.Width1 = WARM_SIZE, WARM_SIZE
 			beam.Transparency = NumberSequence.new(0.98)

@@ -17865,3 +17865,23 @@ Research, 2026-11-24, 16:53, on the director's word, "the hair still need a rewo
     2. **Each plate reads at the smallest phone and stands clear of other machines** (class: every plate; the gate "names every machine"). The Stone Condenser's plate is small and presses on the Mill's rim. A plate keeps a minimum size on the screen and never crosses another machine's outline.
     3. The Door's rim at dusk stays under the Mill's glow (the step 1 must-fix, unchanged).
 - **Faber, 2026-11-26, 15:03: step B made real.** The cut pieces and the two Transformers and FloodMasts are gone from the base (`World.Cut`; the world report wants none of a cut marker). The base's glow is turned down (`Lighting.Glow.Base`). The cases that counted the cut pieces now count only what stays. Tested: the world report is empty, and "AR50's levels" (16 of 16) and the Breaker's chambers (8 of 8) pass in Studio. Rollback: the commit before this one. Modulo's picked target A is next, then the build.
+- **Modulo's kit (step 3, 2026-11-26, 15:26; `build/handoff/Base/`, the sheet `ar65_kit/kit_beside_target_A.png`):** target A built into the kit's maps and its plan. No mesh changed: the meshes are byte-identical to the handoff's.
+  - **One accent per machine:** each machine wears its own pair of maps at 512 px, with the same cells (`Base_Mill_`, `Base_Breaker_`, `Base_Bay_`, `Base_Training_`, `Base_Condenser_`). Its frames take its accent, every light takes its accent lit, and its yellow becomes graphite. The accents are in `base_kit.WEARS`. The shared neutrals are graphite and the wall's panel a warm grey. BayHalo and CondenserJewel keep the kit's maps, for the builder's tint.
+  - **The floor (must-fix 1):** pale warm stone in slabs 8 studs by 4, each slab a step of tone, with a thin joint and a lit lip. Up close the joints read; from the gate they melt into one tone. Gone: the deck's lines, pads, frames, conduits and seams. Kept: a pale spawn ring, and the well, now graphite with the Mill's cyan rim.
+  - **The yard** (`Base_Yard_`: the wall, the gate and its fins): their lamps and gold are unlit, and the hazard print is now a plain collar. The gate's plate is the only thing that glows.
+  - **The Door (must-fix 3):** its rim glows at 0.4 (`Base_Door_`); the core keeps Faber's cap. Measured in the look at dusk, from the spawn's frame, with the rim alone: p99 luminance 0.64, max 0.70. The Mill reads 0.89, max 0.95. With the core uncapped and the Door's two lights on, the look still blooms at the Door. Those are the core and DoorInside/DoorMouth, to be read in game against the Mill.
+  - **The plan** drops what is cut for good:
+    - the pylons and spans, the floods and their lights, the transformers, and the battery's placements;
+    - level 1 goes from 62 pieces to 48, and its lights from 7 to 5;
+    - BreakerLamp is now the Breaker's violet and VoidWell the Mill's cyan.
+
+    Still in the plans and in `World.Cut`, waiting on the stages' looks: the Forge, the Lab, the level glows and rings, the bay wakes, and the Strip's far shards.
+  - **The plates (must-fix 2), Faber's `World.Plate`:**
+    - AR62's cut plate: rim #4A4F5A, panel #2C2F36 to #202227, the accent bar, and Oswald capitals in the machine's accent.
+    - The name's capitals at least 8 px tall at 852×480, the size of target A's Bay 1.
+    - Each plate over its own machine, never across another machine's outline. The Stone Condenser's goes over its far horn, clear of the Mill's rim.
+  - **Faber's install:**
+    - Upload the 14 new maps and the changed ones: the `Base_Kit_` pair, the floors, and `Base_Deck_Color`, whose id `Strip.json` also carries.
+    - Add the ids to `tools/studio/Kits/Base.json`, and copy `manifest.json` and `plan.json`.
+    - Read the graphite in game. The look's backlight renders the Breaker's front near black (#1A192A) where the target shows #434751. If the game shows it black too, `abyss` and `dark` go a step up.
+  - Made and self-reviewed; content check PASS; nothing uploaded. Research's verdict comes in game, after the install.

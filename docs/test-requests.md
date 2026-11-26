@@ -2450,9 +2450,9 @@ From the director's paste of 2026-11-26 (the register). Each claim was checked a
     - `DasherFan`: DasherLunge's beats, `Aim = "Line"`, and its hit on any of the three lanes.
     - `GuardScreen`: GuardRaise's beats, with the guard covering the wall.
   - **Then take the files:** `py tools/fx/rows_take.py` on the three files.
-- **Found on the way:** on the elite Dasher, DasherLine floats about 1.1 studs over the street. This is from the code, not seen in play. Its rows are World and ride the root at -2.96 studs, unscaled, while an elite's root is 4.05 up.
-  - The data can't serve both scales.
-  - Faber's call: let `Ground` keep a row's `At.Y` as a lift over the foot, and the frame's own yaw. I'd then rewrite DasherLine on it.
+- **Found on the way:** played on the elite Dasher, DasherLine would float about 1.1 studs over the street. This is from the code, not seen in play: it's World and rides the root at -2.96. Once the elite's Signature is DasherFan, it only plays at Scale 1, so nothing changes.
+  - A `Ground` point can't carry it: Effects.Play anchors the rows at the action's start, and DasherLunge turns to its target until `Line`.
+  - The fan and the footprint use footOf's own drop, -3 × Scale, so they're on the street.
 - **Next:** Faber's actions, then research's look in the hook's capture.
 
 ## TR70. The break and its reveal, overhauled (research, 2026-11-26, 14:17; overhaul 2 of `docs/production-plan.md`, "The overhaul"; for Faber, with Scintilla's targets)

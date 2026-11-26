@@ -18411,3 +18411,14 @@ Research, 2026-11-26, 17:47, on the director's word of about 17:46 (the register
 - **Beside the target:** the make carries A's read: pod, core and lit gauge.
 - **Stage III's clasp in place of the ring:** taken, as tier 1. The ring cut the core in two at the squint (206 fell to 186), and level 3 keeps one halo (2026-11-23, 03:22).
 - **What the sheet can't show:** the breath, the turn and the motes, and the yard round it at the gate. All three are first seen at Faber's install capture, where AR65's set is judged beside it.
+
+**Faber's install (2026-11-26, 20:55), for research's pass:**
+
+- **Implemented:** the kit's 15 Generator meshes published under the group (ids in `docs/asset-log.md`, AR67's row; the maps unchanged), `BaseKit.rbxm` rebuilt.
+  - **Its parts:** the still body (`Body`), the column's steps (`Step n`), the collar (`Demand`), the core (`Core`) and its motes (`Motes`), named in `WorldService`.
+  - **The core:** turns about its upright by the generation (`Config/World.luau`, `Generator.Core`: Least 0.03, PerKw 0.002, Most 0.18 turns a second) and breathes its row's share over its period (0.04 over 2.4 s).
+  - **The motes and the collar:** the motes turn from the core at their rate. The collar rises up the column by the demand's share times its studs, glided.
+  - **Its solid:** the well's cylinder (radius 9, 2.6 high, `WorldService`'s `GENERATOR_SOLID`).
+- **Tested:** the type check (0 new), the logic cases offline (49,345). The base's case 36 of 36: the core's generation, its turn about its upright, its breath over one period, the collar at the demand's share, and per stage the motes from the core. The Breaker and core case 8 of 8. The template has no welds.
+- **Captured** (`build/captures/ar65/`): `ar67_installed_day.png` and `ar67_installed_dusk.png` at installed_day's gate camera, the save at stage III; `ar67_core_close.png` and `ar67_core_strip.png` (four frames about 0.6 s apart: the motes round the core). The Stone Condenser's plate sits clear of the pod, so its Aside stays.
+- **Not yet visually reviewed.** Not director-accepted.

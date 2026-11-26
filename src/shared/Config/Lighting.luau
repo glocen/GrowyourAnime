@@ -144,9 +144,9 @@ return {
 	Glow = { Kit = 2.4, Houses = 1.6, Empty = 0.2, CoreBloom = 0.6, Base = 1.2, BaseFloor = 0 },
 	Houses = { HouseLow = true, HouseTall = true } :: { [string]: boolean },
 	Cores = { DoorWay = true } :: { [string]: boolean },
-	-- A plot's piece at its own share of Base, by its piece: the Festival Door's frame and rings under the Void Mill (AR65
-	-- must-fix 3, no piece outglows the Mill). Read in game at dusk, 2026-11-26, the saturated pixels' relative luminance
-	-- at p99, the Mill's cyan 0.61 to 0.67: the Door's gold 0.88 at 1 with its lights, 0.63 at 0.5 and 0.61 at 0.4 without,
+	-- A plot's piece at its own share of Base, by its piece: the Festival Door's frame and rings under the generator's
+	-- (AR65 must-fix 3, no piece outglows it). Read in game at dusk, 2026-11-26, with AR19's model, the saturated pixels'
+	-- relative luminance at p99, its cyan 0.61 to 0.67: the Door's gold 0.88 at 1 with its lights, 0.63 at 0.5 and 0.61 at 0.4 without,
 	-- 0.56 with no glow at all (its colour under the dusk light).
 	BaseShare = { Door = 0.35, DoorRing1 = 0.35, DoorRing2 = 0.35, DoorRing3 = 0.35, DoorRing4 = 0.35 } :: { [string]: number },
 	-- A piece whose glow is its own, times its phase's share and none of Clear's lift (AR17's great shard over the crossing:

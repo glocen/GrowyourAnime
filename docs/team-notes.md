@@ -8,8 +8,8 @@ Each teammate rewrites its own row: one to three lines. Open asks sit under "Wai
 - **Next:** AR67's install (Faber's day and dusk captures); the Arc panel B's build (Faber); the run card C (fixes drawn) and the top bar B (Faber); TR69 A's looks in play; AR58's final.
 - **With the director:** AR7's C4: F1, a warm lance down the pole (research's pick and lean), or O3, no ring (`build/handoff/Lamplighter/targets/C4x_F1_entrance_peak.png` beside `C4x_O3_entrance_peak.png`); AR56's sea, A, B or C, today's faces at Haze 0, one number (research's lean; `build/scratch/modulo/ar56/clouds/out/ar56_clouds_sheet.png` and `build/captures/ar56/haze_test_sheet.png`); AR61's hit star, as built or the star over a smaller mass (research's lean; `build/handoff/Hits/checkpoint/last_star_day_rungs_vs_target.png` and `last_star_street_night_rungs_vs_target.png`); AR62's final frame (A with the cut, beside B: `build/handoff/UI/style_frames/`); the two study sittings (Anime Crusaders' systems, Sailor Piece); TR52's tap within TR69's block C; the phone sitting and F7; the store's design.
 
-**Faber (builder).** 2026-11-26, 20:18 by the clock, on Opus 5.5. Committed: TR69 A's hooks with Scintilla's two fixes; TR69 E (Hard's rules per role) and D's follow-ups (the window a held pose, the keeper ×1.5 while phased, 60.4 and 62.6 s; phase 1 shows one slam, a lever asked of research). Records in TR69's entry.
-- **Next:** AR67's install (Studio: the main place, mine), then AR62 B's Arc panel, TR69 F's captures, TR71 B to D, TR59's retake.
+**Faber (builder).** 2026-11-26, 20:55 by the clock, on Opus 5.5. Committed: TR69 A's last must-fix (a critical's brush; every Shade's numbers born over where its mark would stand); AR67's generator installed (15 meshes published, the base's cases pass), its captures for research's pass in AR67's entry.
+- **Next:** AR62 B's Arc panel and Sonus's 22 cues while Scintilla holds Studio; then TR69 D's lever (First 2 s while phased), TR69 F's captures, TR71 B to D, TR59's retake.
 
 **Modulo (assets).** 2026-11-26, 20:23. Nothing running, no lock held.
 - **For Faber's install:** AR62's Arc panel B; the run's card C, both must-fixes drawn; the HUD over the world with the cut (`build/handoff/UI/arc_panel/`, `run_card/C_*`, `style_frames/A_hud_cut.png`). AR67 A is Faber's too.
@@ -21,7 +21,7 @@ Each teammate rewrites its own row: one to three lines. Open asks sit under "Wai
 **Sonus (sound).** 2026-11-26, 20:52 by the clock. **Picked, unheard**, on the director's word of 20:48 ("i wont listen js add everything", yes to the restatement): 22 sounds, one a tab, for TR42's 11, TR64's 10 and TR57's plate (TR42, "The picks, unheard"). **For Faber's install** into `Config.Cues`: `build/scratch/Sonus/picks-2026-11-26.luau`. No Studio turn held, nothing running.
 - **Next:** the director judges them in play; a miss takes the next sound on its tab.
 
-**Turns.** Studio: one at a time while memory is short. Scintilla's turn (20:26 to 20:30) handed back to Faber: the main place open in Edit, playtest stopped, nothing saved. Blender: nobody (Modulo's AR41 strips were stopped at 01:33 on 2026-11-19 by Claude Code when the PC ran low on memory; the director said wait at 01:34). Timing tests: nobody.
+**Turns.** Studio: one at a time while memory is short. Scintilla's turn from 20:56 (AR48's grey redo, TR69 A's numbers), the main place with AR67 installed; then back to Faber for TR69 D's lever. Blender: nobody (Modulo's AR41 strips were stopped at 01:33 on 2026-11-19 by Claude Code when the PC ran low on memory; the director said wait at 01:34). Timing tests: nobody.
 
 **The count.** Week of 2026-11-23: 6 pieces closed and playable: AR49, TR10, AR44's shine, TR50, AR50's and AR54's install, AR51 (each entry below has its hours). In the game and waiting: TR52 (the director's run), AR52 (research's pass), TR54 (three must-fixes).
 

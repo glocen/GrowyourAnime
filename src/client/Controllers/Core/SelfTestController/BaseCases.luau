@@ -1,7 +1,7 @@
 --!strict
 -- BaseCases (client, Studio only): the base's cases on its plot, a list of their own beside Cases, which joins it as it
 -- joins PowerCases (Cases' one table had passed what the type solver checks in one piece). AR16's base as its save has
--- it: the bays awake and asleep, the Void Mill's wheel, gauge and demand mark (AR19) and the
+-- it: the bays awake and asleep, the generator's core, motes, steps and collar (AR67) and the
 -- Training machine's crown; its machines' plates apart from the spawn; and the first session's shards opening themselves
 -- on the plot (TR24's fix 5); the Festival Door's and the gate's names (TR24's fix 10); a bay's worker at work in its ring,
 -- its halo lit in its rarity colour, and the step's chevron over the bay it names (TR24's fix 1).
@@ -203,7 +203,7 @@ function BaseCases.Cases(given: Given): { any }
 			end,
 		},
 		{
-			Name = "Base: AR16's base as its save has it: the bays it opened awake and the rest asleep, the mill's wheel, gauge and demand mark (AR19), the crown while a Voidkin trains",
+			Name = "Base: AR16's base as its save has it: the bays it opened awake and the rest asleep, the generator's core, steps and collar (AR67), the crown while a Voidkin trains",
 			Place = "Main", -- TR45: its world stands in that place only
 			Run = function(t: any)
 				local view = ProfileController.Get()
@@ -255,14 +255,14 @@ function BaseCases.Cases(given: Given): { any }
 						`pad {if pad and pad:IsA("BasePart") then pad.Transparency else "none"}, asleep {if sleeping and sleeping:IsA("BasePart") then sleeping.Transparency else "none"}`)
 				end
 				t.Equal("every bay on the plot, the two no level at launch opens among them (D5)", seen, BaseLevels.Plot())
-				-- The Void Mill (AR19), at the stage it stands at: its wheel carries the plant's generation and turns by it,
-				-- its gauge's first steps shown as the generation lights them and the rest hidden, and the demand's mark
-				-- turned about the axle to the demand's share at its stage's degrees, on one scale (Rules.Power.Gauge).
+				-- The generator (AR67), at the stage it stands at: its core carries the plant's generation, turns by it and
+				-- breathes, its column's first steps shown as the generation lights them and the rest hidden, and the
+				-- collar raised up the column by the demand's share times its studs, on one scale (Rules.Power.Gauge).
 				local plant = Markers.Find("Generator", { Plot = plot })
 				local function standing(): Instance?
 					return if plant then BaseController.StageOf(plant) else nil
 				end
-				local wheel = if standing() then (standing() :: Instance):FindFirstChild("Wheel") else nil
+				local core = if standing() then (standing() :: Instance):FindFirstChild("Core") else nil
 				local mark = if standing() then (standing() :: Instance):FindFirstChild("Demand") else nil
 				local mill = WorldConfig.Grey.Generator
 				local function gauge(): Power.GaugeRead?
@@ -277,7 +277,7 @@ function BaseCases.Cases(given: Given): { any }
 					local want = gauge()
 					local found = standing()
 					if want == nil or found == nil then
-						return "no save or no mill"
+						return "no save or no generator"
 					end
 					for step = 1, mill.Gauge.Steps do
 						local part = found:FindFirstChild(`Step {step}`)
@@ -291,14 +291,14 @@ function BaseCases.Cases(given: Given): { any }
 					end
 					return nil
 				end
-				t.Check("the mill's wheel carries the plant's generation", waitFor(t, ANSWER, function(): boolean
+				t.Check("the generator's core carries the plant's generation", waitFor(t, ANSWER, function(): boolean
 					local now = ProfileController.Get()
-					return wheel ~= nil and now ~= nil and wheel:GetAttribute("Generation") == Breaker.Rates(now :: any).Generation
-				end), tostring(wheel and wheel:GetAttribute("Generation")))
-				t.Check("its gauge's first steps shown as the generation lights them, the rest hidden", waitFor(t, ANSWER, function(): boolean
+					return core ~= nil and now ~= nil and core:GetAttribute("Generation") == Breaker.Rates(now :: any).Generation
+				end), tostring(core and core:GetAttribute("Generation")))
+				t.Check("its column's first steps shown as the generation lights them, the rest hidden", waitFor(t, ANSWER, function(): boolean
 					return stepsWrong() == nil
 				end), stepsWrong())
-				t.Check("the demand's mark at the demand's share", waitFor(t, ANSWER, function(): boolean
+				t.Check("the collar at the demand's share", waitFor(t, ANSWER, function(): boolean
 					local want = gauge()
 					local share = if mark then mark:GetAttribute("Share") else nil
 					return type(share) == "number" and want ~= nil and math.abs(share - want.Demand) < 1e-6
@@ -316,10 +316,10 @@ function BaseCases.Cases(given: Given): { any }
 						t.Wait(mill.Gauge.Glide * 2)
 					end
 					t.Check("its share held through two glides", mark:GetAttribute("Share") == share, `moved {moved} times`)
-					local angle = BaseController.TurnedOf(mark)
-					local degrees = mark:GetAttribute("Turn")
-					t.Check("the mark has its stage's degrees", type(degrees) == "number")
-					t.Near("and turned there about the axle, once glided", angle or -1, math.rad(if type(degrees) == "number" then degrees else mill.Gauge.Turn) * (if type(share) == "number" then share else 0), math.rad(1))
+					local travel = BaseController.TurnedOf(mark)
+					local studs = mark:GetAttribute("Studs")
+					t.Check("the collar has its row's studs", type(studs) == "number" and studs > 0, tostring(studs))
+					t.Near("and risen there up the column, once glided", travel or -1, (if type(studs) == "number" then studs else 0) * (if type(share) == "number" then share else 0), 0.05)
 				end
 				-- How far a turning piece turns in `seconds`, in radians, the way it turns.
 				local function turned(part: Instance?, seconds: number): number?
@@ -334,27 +334,42 @@ function BaseCases.Cases(given: Given): { any }
 					end
 					return (after - before + math.pi) % (2 * math.pi) - math.pi
 				end
-				local kw = if wheel then wheel:GetAttribute("Generation") else nil
-				if wheel and wheel:IsA("BasePart") and type(kw) == "number" then
-					local before = wheel.CFrame
-					local spun = turned(wheel, 0.5) or -1
+				local kw = if core then core:GetAttribute("Generation") else nil
+				if core and core:IsA("BasePart") and type(kw) == "number" then
+					local before = core.CFrame
+					local spun = turned(core, 0.5) or -1
 					if kw > 0 then
-						local rate = math.min(mill.Wheel.Least + kw * mill.Wheel.PerKw, mill.Wheel.Most)
-						t.Near(`it turns heavily at {string.format("%.3f", rate)} turns a second`, spun / (2 * math.pi) / 0.5, rate, rate * 0.25)
-						t.Check("about its axle, the line to the gate, so it stays in place", before.Position:FuzzyEq(wheel.CFrame.Position, 1e-3)
-							and math.abs(before.LookVector:Dot(wheel.CFrame.LookVector) - 1) < 1e-4)
+						local rate = math.min(mill.Core.Least + kw * mill.Core.PerKw, mill.Core.Most)
+						t.Near(`it turns at {string.format("%.3f", rate)} turns a second`, spun / (2 * math.pi) / 0.5, rate, rate * 0.25)
+						t.Check("about its upright, so it stays in place", before.Position:FuzzyEq(core.CFrame.Position, 1e-3)
+							and math.abs(before.UpVector:Dot(core.CFrame.UpVector) - 1) < 1e-4)
 					else
-						t.Check("at no generation, the wheel stands still", before:FuzzyEq(wheel.CFrame, 1e-4))
+						t.Check("at no generation, the core stands still", before:FuzzyEq(core.CFrame, 1e-4))
+					end
+					-- Its breath, over one period: its size swells its row's share and back.
+					local breathes, period = core:GetAttribute("Breathes"), core:GetAttribute("Period")
+					if type(breathes) == "number" and type(period) == "number" then
+						local least: number, most: number = math.huge, 0
+						local began = os.clock()
+						while os.clock() - began < period do
+							local tall: number = (core :: BasePart).Size.Y
+							least, most = math.min(least, tall), math.max(most, tall)
+							RunService.RenderStepped:Wait()
+						end
+						local swell: number = most / least - 1
+						t.Near(`it breathes {breathes} of its size and back over {period} s`, swell, breathes, breathes * 0.15)
+					else
+						t.Check("its row's breath", false, `{breathes}, {period}`)
 					end
 				end
-				-- The mill's stages (AR19): a machine's at the base's ceiling, II at base level 2 and III at 3, each laid
-				-- from the swap's table, the other two hidden and their solids open; a stage's pinions driven from its
-				-- wheel's angle, about their own axles. The level is the case's own, put back.
+				-- The generator's stages (AR67): a machine's at the base's ceiling, II at base level 2 and III at 3, each laid
+				-- from the swap's table, the other two hidden and their well open; a stage's motes turned from its core's
+				-- angle about the core's upright. The level is the case's own, put back.
 				local levelWas = (ProfileController.Get() :: any).Base.Level
 				for level = 1, BaseLevels.Top() do
 					t.Server("BaseLevel", level)
 					local want = BaseLevels.GeneratorStage(level)
-					t.Check(`base level {level}: the mill stands at stage {want}`, waitFor(t, ANSWER, function(): boolean
+					t.Check(`base level {level}: the generator stands at stage {want}`, waitFor(t, ANSWER, function(): boolean
 						return plant ~= nil and plant:GetAttribute("Stage") == want and plant:GetAttribute("Swapping") ~= true -- a rise's swap waits under its landing (AR37)
 					end), tostring(plant and plant:GetAttribute("Stage")))
 					local wrongStage: string? = nil
@@ -377,20 +392,25 @@ function BaseCases.Cases(given: Given): { any }
 					end
 					t.Check(`base level {level}: its pieces shown and solid, the others' hidden and open`, wrongStage == nil, wrongStage)
 					local shown = standing()
-					local turner = if shown then shown:FindFirstChild("Wheel") else nil
-					local pinions = 0
+					local turner = if shown then shown:FindFirstChild("Core") else nil
+					local motes = 0
 					for _, part in (if shown then shown:GetChildren() else {}) do
 						local rate = part:GetAttribute("Rate")
 						if part:IsA("BasePart") and type(rate) == "number" and rate ~= 1 and turner and turner:IsA("BasePart") then
-							pinions += 1
-							local before = part.Position
+							motes += 1
+							local function off(): Vector3
+								return part.Position - turner.Position
+							end
+							local before = off()
 							t.Wait(0.3)
 							local a, w = BaseController.TurnedOf(part), BaseController.TurnedOf(turner)
-							t.Check(`base level {level}: {part.Name} driven from its wheel at {rate}`, a ~= nil and w ~= nil and math.abs(a - w * rate) < 1e-6, `{a}, {w}`)
-							t.Check(`base level {level}: {part.Name} about its own axle`, before:FuzzyEq(part.Position, 1e-3))
+							local after = off()
+							t.Check(`base level {level}: {part.Name} turned from its core at {rate}`, a ~= nil and w ~= nil and math.abs(a - w * rate) < 1e-6, `{a}, {w}`)
+							t.Check(`base level {level}: {part.Name} about the core's upright`, math.abs(before.Y - after.Y) < 1e-3
+								and math.abs((before * Vector3.new(1, 0, 1)).Magnitude - (after * Vector3.new(1, 0, 1)).Magnitude) < 1e-3)
 						end
 					end
-					t.Equal(`base level {level}: its pinions`, pinions, want - 1)
+					t.Equal(`base level {level}: its motes`, motes, 1)
 				end
 				t.Server("BaseLevel", levelWas)
 				-- The crown: the server's word on whether a Voidkin trains, and turning only then. Then the client's turning

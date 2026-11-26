@@ -102,9 +102,9 @@ end
 -- A plot's machines as its owner's base stands (AR15; AR16), for every client, so a passer-by sees the plant work:
 -- * a chamber that breaks a shard glows full with the shard between its points, an empty one low with none ("Working");
 -- * the generator stands at its owner's stage (Rules.BaseLevels.GeneratorStage: a machine's at the base's ceiling; AR19),
---   the plant's "Stage", the other two stages hidden and their solids open; every stage's wheel turns by the plant's
---   generation ("Generation"), its gauge's steps light by it, and the demand's mark stands at the demand's share
---   ("Share"), on one scale (Rules.Power.Gauge), so a stage shown is already where the plant is;
+--   the plant's "Stage", the other two stages hidden and their solids open; every stage's core turns by the plant's
+--   generation ("Generation"), its column's steps light by it, and the collar rides at the demand's share ("Share"), on
+--   one scale (Rules.Power.Gauge), so a stage shown is already where the plant is;
 -- * each bay the base has opened stands awake and the rest asleep, where a level will wake them;
 -- * the battery's bank shows the cells its base's level holds, each lit by its share of the charge ("Lit",
 --   Rules.Breaker.Cells);
@@ -376,11 +376,11 @@ local function showPlot(number: number, data: Profile.Data?, seen: boolean?, own
 				if type(index) == "number" then
 					part.Transparency = if shown and index <= gauge.Lit then 0 else 1 -- shown or hidden, never dimmed
 				elseif part:GetAttribute("Unseen") == true then
-					part.CanCollide, part.CanQuery = shown, shown -- the mill's solids: never seen, solid while shown
+					part.CanCollide, part.CanQuery = shown, shown -- the generator's well: never seen, solid while shown
 				else
 					WorldService.Stand(part, shown)
 				end
-				if part.Name == "Wheel" then
+				if part.Name == "Core" then
 					part:SetAttribute("Generation", generation)
 				elseif part.Name == "Demand" then
 					part:SetAttribute("Share", gauge.Demand)

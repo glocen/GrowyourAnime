@@ -217,17 +217,16 @@ return {
 		CogOuter = 0.12 * 16 / 22,
 		-- The generator (TR18) at the plot's heart, where the layout says: a box Size while its kit isn't laid. Its spot
 		-- stands more than BaseController's near (13 studs) from every other: a player at one hears only that one.
-		-- The Void Mill (AR19, Stage I): its wheel turns Least turns a second and PerKw more for each kW its owner's plant
-		-- generates, at most Most, still at none; heavy, never a spin (the builder's seed, tuned by playing).
-		-- Its gauge (Rules.Power.Gauge): Steps lit steps up the rising side are the generation, and the demand's mark rides
-		-- the rail on the same scale, Turn degrees about the axle from its foot to its top (the rail's arc, Modulo's). The
-		-- scale's top is the larger of the two over Fill, never under Floor kW, so the mark and the lit steps meet when
-		-- generation meets demand and a small plant reads small (the builder's seed). The mark glides to its place over
-		-- Glide seconds.
+		-- Its model (AR67): its core turns about its upright Least turns a second and PerKw more for each kW its owner's
+		-- plant generates, at most Most, still at none (the old wheel's numbers, Modulo's contract; tuned by playing).
+		-- Its gauge (Rules.Power.Gauge): Steps lit steps up the column are the generation, and the collar rides the column
+		-- on the same scale, its row's studs from its foot to its top. The scale's top is the larger of the two over Fill,
+		-- never under Floor kW, so the collar and the lit steps meet when generation meets demand and a small plant reads
+		-- small (the builder's seed). The collar glides to its place over Glide seconds.
 		Generator = {
 			Size = Vector3.new(6, 8, 5),
-			Wheel = { Least = 0.03, PerKw = 0.002, Most = 0.18 },
-			Gauge = { Steps = 8, Floor = 60, Fill = 0.85, Turn = 117.9, Glide = 0.6 },
+			Core = { Least = 0.03, PerKw = 0.002, Most = 0.18 },
+			Gauge = { Steps = 8, Floor = 60, Fill = 0.85, Glide = 0.6 },
 		},
 	},
 	-- A bay at work (TR24's fix 1; AR16's rarity light): its worker stands in the ring, Hip studs over the bay's floor (an R6

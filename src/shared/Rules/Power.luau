@@ -230,9 +230,9 @@ end
 
 -- A split a client asked for, checked: each share a machine's, 0 or more, the whole never over 1. Returns the shares,
 -- or nil and a refusal code (Rules.Base's): "BadArgs" for the wrong shape, "Over" for a whole over 1.
--- The generator's gauge (AR19, the Void Mill): the generation and the demand as shares of one scale, 0 at the well to 1
--- at the collector's shoe, and the steps the generation lights. The scale's top is the larger of the two over
--- `gauge.Fill`, never under `gauge.Floor` kW, so the larger never quite reaches the top, the lit steps meet the mark
+-- The generator's gauge (AR67): the generation and the demand as shares of one scale, 0 at the column's foot to 1 at
+-- its top, and the steps the generation lights. The scale's top is the larger of the two over `gauge.Fill`, never
+-- under `gauge.Floor` kW, so the larger never quite reaches the top, the lit steps meet the collar
 -- when generation meets demand, and a small plant reads small. Steps light from the first: none at no generation, all
 -- at the top, the share times Steps rounded otherwise, and at least one while any power is made.
 export type Gauge = { Steps: number, Floor: number, Fill: number }

@@ -3281,6 +3281,12 @@ The rules now live in `docs/design.md`, "States in a fight", below "No lock". Fa
 - **For research:** whether the glint may share the break's frame. If not, the cheapest fix holds the glint 8 frames after a break, which cuts the tell's lead from 0.3 s to 0.17 s on that one swing.
 - **Status:** implemented, tested in play, and visually reviewed on my read. Research's look waits. Not director-accepted.
 
+**Research's look in play (Quaestor, 2026-11-26, 22:29; `break_crop2x.jpg`, `burn_player_camera.jpg`): AR48 passes, the break in the spark's place included.**
+
+- **The break and the glint may share a frame.** The glint is the next swing's tell: red and white, at the head. The break's chunks are cyan, at the waist and knees. They read as two things, and a tell is never delayed for a status's look (class: a gameplay tell keeps its lead, and a look gives way). No change.
+- **Beyond AR48, for the fight's hit work (TR66):** at the player's camera the combo's numbers pile over the body (565, 98 and 15, three times each), and the burn shows only as two flames above the head. The pile is the bigger read problem. It's a finding there, not an AR48 fix.
+- **Status:** implemented, tested in play (Faber's take case, 7 of 7), and visually reviewed, research's pass included. Not director-accepted.
+
 ## Later, by ground
 
 The rest of ground 1 (Kirra in AR10, Watt in AR11; then Sable, Marigold, Crane), then each ground's Voidkin in `docs/roster.md`'s order. **The machines** (Gantry, Bulwark, Ironhymn, Shiomaru, Aegir) share one custom rig, taller than a player, with its own clip family: the first of them is timed like AR1, because a custom rig is a different cost.
@@ -5301,6 +5307,16 @@ Research, 2026-11-24, 16:53, on the director's word, "the hair still need a rewo
   - **Status:** implemented, tested (Faber's cases), and visually reviewed, research's pass included. Not director-accepted.
 - **The Strip on AR65's atlas (research, 2026-11-26, 19:34; Faber's e7317bb0, `strip_day_east.png` and `strip_day_side.png`): it reads right, so it stays.** The paving reads as warm stone round the void's dark spires, nothing reads as a baseplate, and the base's machines' look doesn't spread onto it. Going back stays one field in `Strip.json`.
 
+
+**The base's light, Faber's pair (research, 2026-11-26, 22:16; `build/captures/lighting/`: today, A and B at the gate camera): A, the late afternoon, is picked.**
+
+- **Why A:** today's is flat, with the floor one near-white mass and the machines floating on it. A's long shadows ground every machine and give the floor values. B's floor reads cold blue-white beside the Breaker's violet.
+- **Must-fix (class: no surface in shade reads cooler than the stone's neutral; the director's "too purple, black, somber"):** A's shaded floor reads lilac-grey from ambient ABB2C2. The ambient moves toward a warm neutral until the shaded floor measures R ≥ B.
+- **The rest:**
+  - A base-only sun (a Toward key under Clear), so Lantern Row keeps its own.
+  - Density 0.1 doesn't read as mist at this camera. If the director reads mist, it goes to 0.
+  - The painted sun's mismatch goes to polish-later, unless one of the base's usual cameras faces it.
+- **Next:** Faber's gate capture after the fix, then research's verdict here.
 ## AR66. Clips follow the model (Modulo's audit and targets, research's feel line and pick, then Faber's install)
 
 The rule: `docs/design.md`, "Clips follow the model, rules follow the class" (the director, 2026-11-26, about 13:28). Each new clip keeps its action's Beats, Range and Reach (`Definitions/Actions.luau`), and a reaction keeps its set's length and Land.

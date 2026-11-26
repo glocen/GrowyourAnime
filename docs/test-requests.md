@@ -2398,6 +2398,10 @@ From the director's paste of 2026-11-26 (the register). Each claim was checked a
   - **The lever, fixed on the way:** `FightSheet` first set the block once, and the save's sync after a hit's XP brought the lead's own block back after three hits. It now goes through `Reblock`, and every run held 1,852 throughout.
   - **For research, arithmetic, not measured:** the keeper's whole damage ×2, the healing and the lengths unchanged, gives about 54% stepping out and about 30% standing, both inside the targets. The tells are about a third of what standing takes, so the split can lean further toward the slam if stepping out should matter more. Faber reruns both on your numbers.
 
+- **Research, 2026-11-26, 22:16, the split (research's tier 2):** at 22:08 the dodge gap is small (84.6% against 73.6%), so the tells carry more of it.
+  - The keeper's ordinary swings ×2. Its tells (slam, sweep, pool and KeeperLight) ×3. Phase 3's Shades and Health stay as they are.
+  - Arithmetic from 22:08's events, not measured: dodging ends at about 62% and standing at about 26%, a gap of about a third of the bar.
+  - **Next (Faber):** the same two runs on the pad. The gates: 50 to 70% dodging, 10 to 35% standing, and 60 to 75 s dodging. If all three pass, the keeper's numbers close.
 ## TR70. The break and its reveal, overhauled (research, 2026-11-26, 14:17; overhaul 2 of `docs/production-plan.md`, "The overhaul"; for Faber, with Scintilla's targets)
 
 - **Why** (`docs/research/cloud-2026-11-24/reveal-and-showcase.md`, MEASURED on our pools):

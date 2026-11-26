@@ -46,6 +46,7 @@ local Carry = require(Shared.Rules.Carry)
 local Markers = require(Shared.World.Markers)
 local Passive = require(Shared.Rules.Passive)
 local MarkRule = require(Shared.Rules.Mark)
+local Hands = require(Shared.Rules.Hands)
 local PlaceRole = require(Shared.Util.PlaceRole)
 local SupportRule = require(Shared.Rules.Support)
 local DataService = require(script.Parent.Parent.Core.DataService)
@@ -126,6 +127,7 @@ export type Fighter = {
 	Struck: { [string]: boolean }, -- the fighters (by Id) whose hit has landed on it since it last stood home: an Opener's first
 	Shield: { Share: number, Until: number }?, -- the share less damage it takes until then (Actions.Hit.Shield)
 	Guard: { Keep: number, Until: number }?, -- a Guard's raised shield (AR52; Actions.Hit.Guard; Rules.Fight.Guarded)
+	OpenUntil: number?, -- Open after a slip until then: a lead's signature on it is a Finisher (TR69 C; Rules.Hands)
 	StunLock: number, -- no stun stops it again before this (Rules.Fight.Stun)
 	-- The element states (Config.Combat.States): a burn still to pay, a chill, and when a shock and a sap end.
 	Burn: Fight.Burn?,
@@ -293,6 +295,49 @@ local function cooldownOf(f: Fighter, action: Actions.Action): number
 	return Passive.Cooldown(passiveOf(f), action.Id, action.Cooldown)
 end
 
+-- The read-out of each player's fights (TR69 C; Rules.Hands): the one going on, and the last Kept, newest last. Kept with
+-- the switch off too, so hands and Auto are read the same way.
+type Readout = { Now: Hands.Tally?, Done: { Hands.Tally } }
+local readouts: { [Player]: Readout } = {}
+
+local function readout(player: Player, at: number): Readout
+	local r: Readout = readouts[player] or ({ Now = nil, Done = {} } :: Readout)
+	readouts[player] = r
+	local current = r.Now
+	if current and Hands.Over(current, at, Combat.Hands.Linger) then
+		table.insert(r.Done, current)
+		while #r.Done > Combat.Hands.Kept do
+			table.remove(r.Done, 1)
+		end
+		r.Now = nil
+	end
+	return r
+end
+
+local function note(player: Player?, what: string, amount: number, at: number)
+	if player == nil then
+		return
+	end
+	local r = readout(player, at)
+	local current = r.Now or Hands.Tally(at)
+	r.Now = current
+	Hands.Note(current, what, amount, at)
+end
+
+-- `f`'s signature ring `share` of its cooldown fuller (Rules.Hands.Fill), never past full: a slip's, a Finisher's.
+local function refill(f: Fighter, share: number, at: number)
+	local signature = f.Signature
+	local readyAt = if signature then f.ReadyAt[signature.Id] else nil
+	if signature == nil or readyAt == nil then
+		return
+	end
+	local filled = Hands.Fill(readyAt, at, cooldownOf(f, signature), share)
+	if filled ~= readyAt then
+		f.ReadyAt[signature.Id] = filled
+		f.Model:SetAttribute("Ready", filled)
+	end
+end
+
 -- Who the client sees a fighter aimed at (an effect's line through it): the replay's held target first, then its own.
 local function showTarget(f: Fighter)
 	local shown = f.ForcedTarget or f.Target
@@ -382,6 +427,13 @@ local function start(f: Fighter, action: Actions.Action, at: number)
 	if f.Armed and f.Signature and action.Id == f.Signature.Id then
 		f.Armed = false
 		f.Model:SetAttribute("Armed", nil)
+	end
+	-- the read-out's seconds a full ring waited (TR69 C): from when it filled, or the fight's first blow if later
+	local was = f.ReadyAt[action.Id]
+	if f.Side == "Lead" and f.Owner and f.Signature and action.Id == f.Signature.Id and was and at > was then
+		local r = readout(f.Owner, at)
+		local from = if r.Now then math.max(was, r.Now.From) else at
+		note(f.Owner, "Waited", math.max(0, at - from), at)
 	end
 	local cooldown = cooldownOf(f, action)
 	if cooldown > 0 then
@@ -1087,6 +1139,11 @@ local function land(f: Fighter, action: Actions.Action, target: Fighter, beat: s
 			result.Total = result.Physical + result.Elemental
 		end
 	end
+	-- A Finisher (TR69 C; Rules.Hands): with hands on, a lead's signature landing on an Open foe, or breaking a raised
+	-- Guard open. Its own hitstop row, a longer throw, a share of its cooldown back; no damage added; the Open used up.
+	local signature = f.Signature ~= nil and action.Id == f.Signature.Id
+	local finisher = Combat.Hands.On and f.Side == "Lead" and not result.Dodged
+		and Hands.Finisher(signature, Hands.Open(target.OpenUntil, at), broke)
 	if target.Frail then
 		-- A fast floor's foe (Rules.Tower.Fast): the first hit that reaches it fells it.
 		result.Dodged = false
@@ -1108,6 +1165,13 @@ local function land(f: Fighter, action: Actions.Action, target: Fighter, beat: s
 	local left, fell = Fight.Damage(target.Health, dealt)
 	local removed = target.Health - left
 	setHealth(target, left)
+	-- the fights' read-out (TR69 C): a blow keeps it up; the health a lead lost
+	if f.Side == "Lead" then
+		note(f.Owner, "Blow", 0, at)
+	end
+	if target.Side == "Lead" then
+		note(target.Owner, "Taken", removed, at)
+	end
 	-- Lifesteal (TR49; Rules.Fight.Steal): a share of the health the hit removed, counted up to its cap a second. Through
 	-- heal, so the Tower's cap holds; no number of its own, its trickle shows on the bar.
 	if result.LifestealShare > 0 and f.Health > 0 then
@@ -1136,6 +1200,12 @@ local function land(f: Fighter, action: Actions.Action, target: Fighter, beat: s
 	end
 	-- The hold by the hit's rung, a critical's raised and a killing hit's at least its own (Rules.Fight.Hold; AR8 A)
 	local rung = Fight.Rung(hit.Rung, result.Critical, Combat.Hitstop, fell)
+	if finisher then
+		rung = math.max(rung, Combat.Hands.Finisher.Rung)
+		target.OpenUntil = nil
+		target.Model:SetAttribute("OpenUntil", nil)
+		refill(f, Combat.Hands.Finisher.Back, at)
+	end
 	local last = fell and lastOfPack(target) -- a pack's last fall holds its beat (TR69 A)
 	local hold = if result.Dodged then 0 else Fight.Hold(rung, fell, Combat.Hitstop, last)
 	if not result.Dodged then
@@ -1159,6 +1229,9 @@ local function land(f: Fighter, action: Actions.Action, target: Fighter, beat: s
 			leave(target, state, at)
 		end
 		local studs, seconds = Fight.Throw(hit.Push, fell, Combat.Push :: any)
+		if finisher then
+			studs *= Combat.Hands.Finisher.Throw
+		end
 		push(target, line, if keep < 1 and not broke then studs * keep else studs, hold, seconds)
 	end
 	Net.Server.FireAll("Hit", {
@@ -1177,6 +1250,7 @@ local function land(f: Fighter, action: Actions.Action, target: Fighter, beat: s
 		Last = if last then true else nil, -- the pack's last fall: its drops wait out the hold and leave together (TR69 A)
 		Steady = hit.Steady == true, -- the attacker doesn't hold on it, only the target
 		Guarded = if keep < 1 and not result.Dodged then (if broke then "Broke" else "Glanced") else nil, -- AR52
+		Finisher = if finisher then true else nil, -- TR69 C: its own row, by Rung; the screen's edges flash
 		Health = left,
 		MaxHealth = target.Block.Health,
 		Passive = if kindled and own then own.Id else nil, -- its cue on the attacker (FighterController/Passives)
@@ -1543,12 +1617,19 @@ local function trySkip(f: Fighter, target: Fighter, avatar: BasePart, at: number
 end
 
 -- The action a lead's choice passes over (TR52): its signature while its owner's Auto is off and no tap has armed it.
-local function held(f: Fighter): string?
+-- With hands on (TR69 C), Auto on waits Combat.Hands.Wait seconds on a full ring for a thumb, then lets it go.
+local function held(f: Fighter, at: number): string?
 	local signature = f.Signature
-	if signature == nil or f.Armed or f.Owner == nil or f.Owner:GetAttribute("SignatureAuto") ~= false then
+	if signature == nil or f.Armed or f.Owner == nil then
 		return nil
+	elseif f.Owner:GetAttribute("SignatureAuto") == false then
+		return signature.Id
 	end
-	return signature.Id
+	local readyAt = f.ReadyAt[signature.Id]
+	if Combat.Hands.On and readyAt and Hands.Waits(readyAt, at, Combat.Hands.Wait) then
+		return signature.Id
+	end
+	return nil
 end
 
 -- A lead's turn to decide.
@@ -1639,7 +1720,7 @@ local function thinkLead(f: Fighter, at: number, dt: number)
 		if trySkip(f, target, avatar, at) then
 			return
 		end
-		local action = Fight.Choose(f.Kit, f.ReadyAt, at, held(f))
+		local action = Fight.Choose(f.Kit, f.ReadyAt, at, held(f, at))
 		local range = if action then action.Range else 4
 		local gap = distance(f.Root, target.Root)
 		local slot, off = slotFor(f, target, math.max(0, range - Combat.Approach))
@@ -2316,6 +2397,7 @@ function FightService.Tap(player: Player): { Ok: boolean, Error: string?, Fired:
 	end
 	f.Armed = true
 	f.Model:SetAttribute("Armed", true)
+	note(player, "Taps", 1, at)
 	local action = f.Signature :: Actions.Action
 	local target = f.Target
 	if target and standing(target) and f.State ~= "Flinch" and f.Away == nil and f.Forced == nil
@@ -2344,6 +2426,58 @@ end
 
 function FightService.All(): { [string]: Fighter }
 	return fighters
+end
+
+-- A slip (TR69 C; Rules.Hands; SlamService): `attacker`'s marked strike missed `lead` on its Call. The attacker stands
+-- Open Combat.Hands.Open.Seconds, staggered for its kind's share of it (Combat.Stun.Share), whatever the lock, as a
+-- Guard's break is; the lead's signature ring fills Open.Fill of its cooldown, and its hold by the avatar ends, so it
+-- goes straight back in. The lead's Slipped attribute (server time) is the client's mark for its flash.
+function FightService.Open(attacker: Fighter, lead: Fighter)
+	local at = now()
+	local open = Combat.Hands.Open
+	if fighters[attacker.Id] == attacker and standing(attacker) then
+		attacker.OpenUntil = at + open.Seconds
+		attacker.Model:SetAttribute("OpenUntil", attacker.OpenUntil)
+		local stagger = open.Seconds * math.clamp(Combat.Stun.Share[attacker.Kind] or 1, 0, 1)
+		if stagger > 0 then
+			attacker.StunLock = at + stagger + Combat.Stun.Lock
+			attacker.Model:SetAttribute("StunLook", nil)
+			setState(attacker, "Stun", at + stagger)
+			endAction(attacker, at)
+			stop(attacker)
+		end
+	end
+	if fighters[lead.Id] == lead and standing(lead) then
+		refill(lead, open.Fill, at)
+		if lead.Away then
+			lead.Away = nil
+			lead.Model:SetAttribute("Away", nil)
+		end
+		lead.Model:SetAttribute("Slipped", at)
+	end
+end
+
+-- The fights' read-out (TR69 C): a count added for `player` (Rules.Hands.Note's names), and their fights read: the one
+-- going on, and the last Combat.Hands.Kept.
+function FightService.Note(player: Player, what: string, amount: number)
+	note(player, what, amount, now())
+end
+
+function FightService.Readout(player: Player): Readout
+	return readout(player, now())
+end
+
+-- Studio's tests (TR69 C): `f`'s signature ring `share` full now. Its ready time and its cooldown, or nil without one.
+function FightService.Ring(f: Fighter, share: number): (number?, number?)
+	local signature = f.Signature
+	if signature == nil then
+		return nil, nil
+	end
+	local cooldown = cooldownOf(f, signature)
+	local readyAt = now() + cooldown * (1 - math.clamp(share, 0, 1))
+	f.ReadyAt[signature.Id] = readyAt
+	f.Model:SetAttribute("Ready", readyAt)
+	return readyAt, cooldown
 end
 
 -- TR44's ways out of a mark (SlamService): `f`, a standing lead, breaks off what it was doing (its combo lost, a carry
@@ -2454,6 +2588,7 @@ function FightService.Start()
 	end)
 	Players.PlayerRemoving:Connect(function(player: Player)
 		views[player] = nil
+		readouts[player] = nil
 		local lead = leads[player]
 		if lead then
 			remove(lead)

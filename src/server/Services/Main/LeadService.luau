@@ -304,8 +304,10 @@ function LeadService.Start()
 			if lead == nil or signature == nil then
 				return { Ok = false, Error = "NoLead" }
 			end
-			lead.ReadyAt[signature.Id] = 0
-			lead.Model:SetAttribute("Ready", workspace:GetServerTimeNow())
+			-- full as of now, so Auto's wait with hands on (TR69 C) counts from here; the same as 0 for everything else
+			local at = workspace:GetServerTimeNow()
+			lead.ReadyAt[signature.Id] = at
+			lead.Model:SetAttribute("Ready", at)
 			return { Ok = true, Signature = signature.Id }
 		end)
 		-- Studio only: every Voidkin of the player but the lead fallen just now, healing at home, so none is ready to lead

@@ -151,7 +151,16 @@ return {
 			for grade in Cues.Notes do
 				t.Check(`the note's grade {grade} is a shard's`, grade == "Standard" or grade == "Enriched" or grade == "Prismatic" or grade == "Named")
 			end
-			t.Check("the strength's rungs are the hitstop's", Cues.Strength[1] == Combat.Hitstop.Rungs[1].From and Cues.Strength[2] == Combat.Hitstop.Rungs[#Combat.Hitstop.Rungs].From)
+			-- from the lightest rung to the keeper's signature; a Finisher's rung above it (TR69 C) plays full
+			local finisher = Combat.Hands.Finisher.Rung
+			local heaviest = Combat.Hitstop.Rungs[1].From
+			for _, row in Combat.Hitstop.Rungs do
+				if row.From ~= finisher then
+					heaviest = math.max(heaviest, row.From)
+				end
+			end
+			t.Check("the strength's rungs are the hitstop's", Cues.Strength[1] == Combat.Hitstop.Rungs[1].From and Cues.Strength[2] == heaviest)
+			t.Check("and a Finisher's plays full", Sound.Strength(finisher) == 1)
 		end,
 	},
 	{

@@ -250,7 +250,7 @@ function ShadeCases.Cases(given: Given): { any }
 							end))
 						elseif first then
 							t.Check("its shield's rows play from the raise (GuardShield)", waitFor(t, 0.5, function(): boolean
-								return drew(playing(guard, "GuardShield"), { "Shield" })
+								return drew(playing(guard, "GuardShield"), { "Ink", "Core" }) -- the ward's rows (Scintilla's redo)
 							end))
 							t.Check("and no grey pane beside them", SlamController.Pane(guard) == nil)
 						end

@@ -35,6 +35,8 @@ local ModeScreen = require(UI.ModeScreen)
 local Button = require(UI.Kit.Button)
 local UiLint = require(script.Parent.UiLint)
 local Actions = require(Shared.Definitions.Actions)
+local FxKit = require(Shared.Config.FxKit)
+local EffectsConfig = require(Shared.Config.Effects)
 local Main = script.Parent.Parent.Parent.Main
 local FighterController = require(Main.FighterController)
 local Effects = require(Main.FighterController.Effects)
@@ -62,6 +64,20 @@ Helpers.SQUARE = (function(): { Name: string, Stage: number, Before: string }
 	end
 	return { Name = "Elite", Stage = 0, Before = "Pack 1" }
 end)()
+
+-- The images Rows.Warm draws: the kit's (Config.FxKit) and the effects' own uploaded pictures (Config.Effects.Pictures).
+function Helpers.warmImages(): number
+	local images = 0
+	for _ in FxKit.Images do
+		images += 1
+	end
+	for _, picture in EffectsConfig.Pictures do
+		if picture ~= "" then
+			images += 1
+		end
+	end
+	return images
+end
 
 function Helpers.waitFor(t: any, seconds: number, ok: () -> boolean): boolean
 	local began = os.clock()

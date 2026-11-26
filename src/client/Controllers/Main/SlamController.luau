@@ -23,7 +23,13 @@
 --   SlamController.Line(fighter) -> (edges, fill)?  a Dasher's line's outline and fill, for tests
 --   SlamController.Pane(fighter) -> BoxHandleAdornment?   a Guard's raised pane, for tests
 --   SlamController.Struck() -> { Name, Anchor, Rows }?     the last glance or break played on a shield, for tests
+-- TR69 C, the press (Config.Combat.Hands, Off by default; Rules.Hands), in grey until Scintilla's look: on, the Recall
+-- reads "Call" and shows in every fight but the Tower's, left of Roblox's jump button; an Open foe wears a cracked ring
+-- at its feet, closing as its Open runs out and ticking each Look.Tick; the player's own lead flashes white on a slip
+-- (its Slipped attribute); and the screen's edges flash white on its Finisher (a Hit's Finisher). No words.
 --   SlamController.Recall() -> TextButton?          the Recall button while it shows, for tests
+--   SlamController.Cracks(fighter) -> { BoxHandleAdornment }?   an Open foe's cracked ring, for tests
+--   SlamController.Edge() -> Frame?                 the Finisher's flash at the screen's edges while it shows, for tests
 --   SlamController.Press() -> { [string]: any }     a Recall as a press asks it, the server's answer
 
 local ContextActionService = game:GetService("ContextActionService")
@@ -36,6 +42,7 @@ local Net = require(Shared.Net)
 local Combat = require(Shared.Config.Combat)
 local EffectsConfig = require(Shared.Config.Effects)
 local MarkRule = require(Shared.Rules.Mark)
+local Hands = require(Shared.Rules.Hands)
 local Actions = require(Shared.Definitions.Actions)
 local Effects = require(script.Parent.FighterController.Effects)
 local Rows = require(script.Parent.FighterController.Rows)
@@ -46,6 +53,7 @@ local Layers = require(UI.Layers)
 local Text = require(UI.Kit.Text)
 local Button = require(UI.Kit.Button)
 local Skin = require(UI.Kit.Skin)
+local HudController = require(script.Parent.HudController)
 
 local SlamController = {}
 
@@ -90,6 +98,11 @@ local recall: TextButton? = nil
 local recallFace: Frame? = nil
 local recallWord: TextLabel? = nil
 local bound = false
+-- TR69 C's grey stand-ins: each Open foe's cracked ring, and the Finisher's edge flash while it shows
+type Crack = { Holder: BasePart, Bits: { BoxHandleAdornment } }
+local cracks: { [Model]: Crack } = {}
+local edge: Frame? = nil
+local ownLead: Model? = nil
 
 local function now(): number
 	return workspace:GetServerTimeNow()
@@ -364,10 +377,141 @@ local function mendPop(model: Model)
 	end)
 end
 
+-- The player's own lead, kept while it stands in the fighters' folder.
+local function myLead(): Model?
+	local kept = ownLead
+	if kept and kept.Parent ~= nil then
+		return kept
+	end
+	ownLead = nil
+	local folder = fighters()
+	for _, model in (if folder then folder:GetChildren() else {}) do
+		if model:IsA("Model") and model:GetAttribute("Side") == "Lead" and model:GetAttribute("Owner") == player.UserId then
+			ownLead = model
+			return model
+		end
+	end
+	return nil
+end
+
+local function crackOff(model: Model)
+	local c = cracks[model]
+	if c then
+		cracks[model] = nil
+		c.Holder:Destroy()
+	end
+end
+
+-- An Open foe's cracked ring (TR69 C): Look.Cracks short arcs round its feet, a Gap of each left out.
+local function crackOn(model: Model)
+	local openUntil = model:GetAttribute("OpenUntil")
+	if type(openUntil) ~= "number" or now() >= openUntil then
+		crackOff(model)
+		return
+	end
+	if cracks[model] then
+		return
+	end
+	local look = Combat.Hands.Look
+	local holder = holderAt(CFrame.new(model:GetPivot().Position))
+	holder.Name = "NL_Open"
+	local bits = {}
+	for k = 1, look.Cracks do
+		local a = Instance.new("BoxHandleAdornment")
+		a.Name = `Crack{k}`
+		a.Adornee = holder
+		a.Color3 = Color3.new(1, 1, 1)
+		a.Transparency = 0.2
+		a.AlwaysOnTop = false
+		a.ZIndex = 1
+		a.Parent = holder
+		table.insert(bits, a)
+	end
+	holder.Parent = workspace
+	cracks[model] = { Holder = holder, Bits = bits }
+end
+
+-- Each frame: every cracked ring at its foe's feet, closing from Radius to Least of it as the Open runs out, brighter
+-- for a moment each Tick (the clock by eye).
+local function stepCracks(t: number)
+	local look = Combat.Hands.Look
+	for model, c in cracks do
+		local openUntil = model:GetAttribute("OpenUntil")
+		if model.Parent == nil or type(openUntil) ~= "number" or t >= openUntil or model:GetAttribute("State") == "Down" then
+			crackOff(model)
+			continue
+		end
+		local left = math.clamp((openUntil - t) / math.max(Combat.Hands.Open.Seconds, 0.01), 0, 1)
+		local radius = look.Radius * (look.Least + (1 - look.Least) * left)
+		local at = model:GetPivot().Position
+		c.Holder.CFrame = CFrame.new(at.X, groundUnder(at) + RING_UP, at.Z)
+		local arc = 2 * math.pi * radius / look.Cracks * (1 - look.Gap)
+		local into = (openUntil - t) % look.Tick
+		local lit = into > look.Tick - 0.1
+		for k, bit in c.Bits do
+			local angle = (k - 1) / look.Cracks * 2 * math.pi
+			bit.Size = Vector3.new(arc, RING_THICK, look.Width)
+			bit.CFrame = CFrame.Angles(0, -angle, 0) * CFrame.new(0, 0, -radius)
+			bit.Transparency = if lit then 0 else 0.35
+		end
+	end
+end
+
+-- The player's own lead's slip (TR69 C): a white flash on it, Look.Slip seconds.
+local function slipFlash(model: Model)
+	if model ~= myLead() then
+		return
+	end
+	local flash = Instance.new("Highlight")
+	flash.Name = "NL_Slip"
+	flash.FillColor = Color3.new(1, 1, 1)
+	flash.FillTransparency = 0.15
+	flash.OutlineTransparency = 1
+	flash.DepthMode = Enum.HighlightDepthMode.Occluded
+	flash.Adornee = model
+	flash.Parent = model
+	task.delay(Combat.Hands.Look.Slip, function()
+		flash:Destroy()
+	end)
+end
+
+-- The player's own lead's Finisher (TR69 C): the screen's edges flash white, Look.Edge seconds.
+local function edgeFlash()
+	local look = Combat.Hands.Look
+	if edge then
+		edge:Destroy()
+	end
+	local frame = Instance.new("Frame")
+	frame.Name = "FinisherEdge"
+	frame.BackgroundTransparency = 1
+	frame.Size = UDim2.fromScale(1, 1)
+	local stroke = Instance.new("UIStroke")
+	stroke.Color = Color3.new(1, 1, 1)
+	stroke.Thickness = look.EdgeWidth
+	stroke.Transparency = 0.1
+	stroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+	stroke.Parent = frame
+	frame.Parent = Layers.Get("Overlay")
+	edge = frame
+	task.delay(look.Edge, function()
+		frame:Destroy()
+		if edge == frame then
+			edge = nil
+		end
+	end)
+end
+
 local function watch(model: Instance)
 	if not model:IsA("Model") then
 		return
 	end
+	crackOn(model)
+	model:GetAttributeChangedSignal("OpenUntil"):Connect(function()
+		crackOn(model)
+	end)
+	model:GetAttributeChangedSignal("Slipped"):Connect(function()
+		slipFlash(model)
+	end)
 	if model:GetAttribute("MarkSlam") ~= nil then
 		draw(model)
 	end
@@ -393,6 +537,7 @@ local function watch(model: Instance)
 		erase(model)
 		paneOff(model)
 		veilOff(model)
+		crackOff(model)
 	end)
 end
 
@@ -431,6 +576,7 @@ local function stepMarks()
 			veilOff(model)
 		end
 	end
+	stepCracks(t)
 end
 
 -- B's Recall: what a press asks the server.
@@ -439,8 +585,20 @@ function SlamController.Press(): { [string]: any }
 	return if ok and type(answer) == "table" then answer else { Ok = false, Error = "NoAnswer" }
 end
 
+-- B's Recall in a keeper's try; with hands on (TR69 C), Call in every fight but the Tower's: the lead has a target, or a
+-- blow landed within Hands.Linger (the player's HitAt, server time).
 local function shows(): boolean
-	return MarkRule.Mode(Combat.Keeper.Out.Mode) == "B" and player:GetAttribute("Try") ~= nil
+	local hands = Combat.Hands
+	local lead = myLead()
+	local target = if lead then lead:GetAttribute("Target") else nil
+	local blow = player:GetAttribute("HitAt")
+	local fighting = (type(target) == "string" and target ~= "") or (type(blow) == "number" and now() - blow < hands.Linger)
+	return Hands.Calls(hands.On, MarkRule.Mode(Combat.Keeper.Out.Mode), player:GetAttribute("Try") ~= nil, fighting, player:GetAttribute("Tower") ~= nil)
+end
+
+-- Its word: "Call" with hands on, "Recall" as TR44 built it.
+local function callWord(): string
+	return if Combat.Hands.On then "Call" else "Recall"
 end
 
 local function makeRecall(): TextButton
@@ -475,7 +633,7 @@ local function makeRecall(): TextButton
 	stroke.Parent = face
 	face.Parent = skin
 	local word = Text.new({ Name = "Word", Size = Theme.Text.Body, Font = Theme.Font.Strong, Parent = face })
-	word.Text = "Recall"
+	word.Text = callWord()
 	word.ZIndex = 11
 	recallFace, recallWord = face, word
 	return button
@@ -506,6 +664,17 @@ local function stepRecall()
 	local button = recall
 	if button then
 		button.Visible = show
+		-- with hands on, left of Roblox's jump button, its centre on the jump's, Gap from it (combat-agency.md, Input)
+		if Combat.Hands.On then
+			local at, size = HudController.JumpBox()
+			local hud, scale = Layers.Get("Hud"), math.max(Layers.Scale(), 0.01)
+			local origin = hud.AbsolutePosition
+			button.AnchorPoint = Vector2.new(1, 0.5)
+			button.Position = UDim2.fromOffset((at.X - origin.X) / scale - Combat.Hands.Look.CallGap, (at.Y + size.Y / 2 - origin.Y) / scale)
+		else
+			button.AnchorPoint = Vector2.new(1, 1)
+			button.Position = UDim2.new(1, -RECALL_INSET.X, 1, -RECALL_INSET.Y)
+		end
 	end
 	bind(show)
 	local face, word = recallFace, recallWord
@@ -520,7 +689,7 @@ local function stepRecall()
 		face.BackgroundTransparency = 0.5
 		word.TextTransparency = 0.3
 	else
-		word.Text = "Recall"
+		word.Text = callWord()
 		face.BackgroundTransparency = Theme.Transparency.Plate
 		word.TextTransparency = 0
 	end
@@ -553,6 +722,15 @@ function SlamController.Recall(): TextButton?
 	return if recall and recall.Visible then recall else nil
 end
 
+function SlamController.Cracks(model: Model): { BoxHandleAdornment }?
+	local c = cracks[model]
+	return if c then c.Bits else nil
+end
+
+function SlamController.Edge(): Frame?
+	return edge
+end
+
 function SlamController.Start()
 	local function hook(folder: Instance)
 		for _, model in folder:GetChildren() do
@@ -577,6 +755,9 @@ function SlamController.Start()
 		end
 		if type(hit) == "table" and (hit.Guarded == "Glanced" or hit.Guarded == "Broke") then
 			shieldStruck(hit.T, hit.A, if hit.Guarded == "Glanced" then "GuardGlance" else "GuardBreak")
+		end
+		if type(hit) == "table" and hit.Finisher == true and hit.A == myLead() then
+			edgeFlash()
 		end
 	end)
 	Net.Client.On("Heal", function(heal: any)

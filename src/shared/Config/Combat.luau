@@ -155,6 +155,7 @@ return {
 			{ From = 4, Hold = 0.07, Flash = 0.08, Glow = 0.7, Tremble = 0, Trauma = 0.15 }, -- a critical
 			{ From = 7, Hold = 0.13, Flash = 0.1, Glow = 0.9, Tremble = 0.18, Trauma = 0.8 }, -- a Voidkin's signature
 			{ From = 8, Hold = 0.14, Flash = 0.1, Glow = 0.9, Tremble = 0.22, Trauma = 0.8 }, -- the keeper's signature
+			{ From = 9, Hold = 0.18, Flash = 0.1, Glow = 0.9, Tremble = 0.3, Trauma = 0.8 }, -- a Finisher (TR69 C, Hands)
 		},
 		Critical = 4,
 		Kill = 0.13,
@@ -168,6 +169,26 @@ return {
 	-- Peak emissive at once, eased back to the mask's own over Seconds, before the swing's Hit beat. Research's seeds.
 	Ring = { On = true, Radius = 2.4, Width = 0.2, Transparency = 0.25, Lift = 0.06 },
 	Glint = { On = true, Seconds = 0.3, Peak = 24 },
+	-- The press, slip then strike (TR69 C; Rules.Hands; combat-agency.md, section 4), behind its switch for the director's
+	-- pick by playing: Off is today's. On, Call (Keeper.Out.Recall's dash and cooldown) shows in every fight but the Tower's,
+	-- while the lead has a target or a blow landed within Linger seconds. A Call in a marked strike's tell that the strike
+	-- then misses is a slip: the attacker stands Open, staggered, Open.Seconds, and the lead's signature ring fills
+	-- Open.Fill of its cooldown, its hold ended. The lead's signature on an Open foe, or breaking a raised Guard, is a
+	-- Finisher: Hitstop's rung Finisher.Rung, its throw times Finisher.Throw, Finisher.Back of its cooldown back, no
+	-- damage added. Auto, on, waits Wait seconds on a full ring for a thumb. A fight's read-out closes Linger seconds after
+	-- its last blow; the server keeps the last Kept. Research's seeds (tier 2), tuned by playing.
+	Hands = {
+		On = false,
+		Open = { Seconds = 2, Fill = 0.3 },
+		Finisher = { Rung = 9, Throw = 1.5, Back = 0.3 },
+		Wait = 3,
+		Linger = 4,
+		Kept = 8,
+		-- the grey stand-ins, until Scintilla's: the Open foe's cracked ring (Cracks segments round its feet, from Radius
+		-- closing to Least of it as the Open runs out, ticking each Tick seconds), the slip's white on the lead, and the
+		-- Finisher's flash at the screen's edges; Call stands CallGap left of Roblox's jump button
+		Look = { Radius = 3, Least = 0.6, Cracks = 8, Gap = 0.35, Width = 0.25, Tick = 0.5, Slip = 0.06, Edge = 0.08, EdgeWidth = 10, CallGap = 14 },
+	},
 	-- The push: Seconds at a steady pace, on the server. Shown: each screen draws it from its own hold's end instead of
 	-- waiting for the body's replica, which comes a replication delay late (AR1, section 8); Wait is the longest it waits
 	-- for the replica to catch up, then it hands the body back over HandBack seconds.

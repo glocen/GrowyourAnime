@@ -11,6 +11,10 @@
 --   lunges counted apart, under "Lunge A" (or B, or Off). B's Recall shows only in a keeper's try, so on the Row a line
 --   under B is left by walking alone until the director's pick says otherwise.
 -- The player's attribute RecallReady (server time) says when their next Recall is ready, for the button's cooldown.
+-- * TR69 C, the press (Config.Combat.Hands, Off by default; Rules.Hands): on, the Recall is Call, in every fight but the
+--   Tower's (the lead has a target, or a blow landed within Hands.Linger), whatever the mode. A Call in a marked strike's
+--   tell that the strike then misses is a slip: FightService.Open stands the attacker Open. Each Call and each miss, on
+--   purpose or by accident, goes into the fight's read-out (FightService.Note).
 -- Studio:
 --   NL_Debug:Invoke("Slam")                 the mode, and the counts per mode
 --   NL_Debug:Invoke("Slam", nil, "A")       the switch on "Off", "A" or "B" for every side (a Tune)
@@ -18,6 +22,10 @@
 --   NL_Debug:Invoke("Slam", nil, "Now")     the player's keeper's slam ready now (a test's)
 --   NL_Debug:Invoke("Slam", nil, "Ready")   every foe on the player's lead with a signature, its signature ready now
 --                                            (AR52's cases: a Guard's raise, a Dasher's lunge)
+--   NL_Debug:Invoke("Hands")                the switch, and the player's fights' read-out (TR69 C)
+--   NL_Debug:Invoke("Hands", nil, true)     the switch on (or false: off) for every side (a Tune)
+--   NL_Debug:Invoke("Hands", nil, "Open")   every foe on the player's lead Open now, as a slip leaves it (a test's)
+--   NL_Debug:Invoke("Hands", nil, "Empty")  the lead's signature ring empty now: { Ready, Cooldown } (a test's)
 
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
@@ -28,6 +36,7 @@ local Net = require(Shared.Net)
 local Combat = require(Shared.Config.Combat)
 local Enemies = require(Shared.Definitions.Enemies)
 local MarkRule = require(Shared.Rules.Mark)
+local Hands = require(Shared.Rules.Hands)
 local Parts = require(Shared.Util.Parts)
 local Log = require(Shared.Util.Log)
 local Core = script.Parent.Parent.Core
@@ -100,7 +109,14 @@ local function unmarked(_keeper: FightService.Fighter, mark: FightService.Mark, 
 		local hit = table.find(struck, lead) ~= nil
 		local kind = if hit then nil else MarkRule.Purpose(watch.Moved, watch.Recalled, Combat.Keeper.Out.Moved)
 		MarkRule.Count(counts, watch.Key, hit, kind)
-		Log.Info("Slam", `{watch.Player.Name}'s lead, {watch.Key}: {if hit then "hit" else `missed, {kind}`}`)
+		if kind then
+			FightService.Note(watch.Player, kind, 1)
+		end
+		local slip = Combat.Hands.On and Hands.Slip(hit, watch.Recalled)
+		if slip then
+			FightService.Open(watch.Keeper, lead)
+		end
+		Log.Info("Slam", `{watch.Player.Name}'s lead, {watch.Key}: {if hit then "hit" else `missed, {kind}`}{if slip then ", a slip" else ""}`)
 	end
 end
 
@@ -126,16 +142,25 @@ local function step()
 	end
 end
 
--- B: a Recall pressed. Its answer says why not, and when the next is ready.
+-- Whether `player` is in a fight, for Call (TR69 C): their lead has a target, or a blow landed within Hands.Linger.
+local function fighting(player: Player, lead: FightService.Fighter?, at: number): boolean
+	local blow = player:GetAttribute("HitAt")
+	return (lead ~= nil and lead.Target ~= nil) or (type(blow) == "number" and at - blow < Combat.Hands.Linger)
+end
+
+-- B: a Recall pressed, or with hands on, Call (TR69 C). Its answer says why not, and when the next is ready.
 function SlamService.Recall(player: Player): { [string]: any }
 	local recall = Combat.Keeper.Out.Recall
 	local at = now()
 	local ready, from = MarkRule.Ready(recalled[player], at, recall.Cooldown)
 	local lead = FightService.LeadOf(player)
-	if mode() ~= "B" then
-		return { Ok = false, Error = "Off" }
-	elseif player:GetAttribute("Try") == nil then
-		return { Ok = false, Error = "NoFight" }
+	local hands = Combat.Hands.On
+	local tower = player:GetAttribute("Tower") ~= nil
+	if not Hands.Calls(hands, mode(), player:GetAttribute("Try") ~= nil, fighting(player, lead, at), tower) then
+		if hands then
+			return { Ok = false, Error = if tower then "Tower" else "NoFight" }
+		end
+		return { Ok = false, Error = if mode() ~= "B" then "Off" else "NoFight" }
 	elseif not ready then
 		return { Ok = false, Error = "Cooldown", Ready = from }
 	elseif lead == nil or not FightService.Standing(lead) then
@@ -146,6 +171,7 @@ function SlamService.Recall(player: Player): { [string]: any }
 	end
 	recalled[player] = at
 	player:SetAttribute("RecallReady", at + recall.Cooldown)
+	FightService.Note(player, "Calls", 1)
 	local watch = watches[lead]
 	if watch then
 		watch.Recalled = true
@@ -226,6 +252,32 @@ function SlamService.Start()
 	end)
 	if RunService:IsStudio() then
 		DebugService.Register("Slam", command)
+		DebugService.Register("Hands", function(who: any, what: any): any
+			local player = DebugService.ResolvePlayer(who)
+			if what == "Open" then
+				local lead = if player then FightService.LeadOf(player) else nil
+				local opened = {}
+				for _, f in FightService.All() do
+					if lead and f.Target == lead and FightService.Standing(f) then
+						FightService.Open(f, lead)
+						table.insert(opened, f.Id)
+					end
+				end
+				return { Ok = #opened > 0, Error = if #opened > 0 then nil else "NoFoe", Open = opened }
+			elseif what == "Empty" then
+				local lead = if player then FightService.LeadOf(player) else nil
+				local readyAt, cooldown = nil, nil
+				if lead then
+					readyAt, cooldown = FightService.Ring(lead, 0)
+				end
+				return { Ok = readyAt ~= nil, Error = if readyAt then nil else "NoLead", Ready = readyAt, Cooldown = cooldown }
+			elseif type(what) == "boolean" then
+				TuneService.Set("Combat.Hands.On", what)
+			elseif what ~= nil then
+				return { Ok = false, Error = "BadArgs" }
+			end
+			return { Ok = true, On = Combat.Hands.On, Readout = if player then FightService.Readout(player) else nil }
+		end)
 	end
 end
 

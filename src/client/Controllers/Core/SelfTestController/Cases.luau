@@ -502,10 +502,7 @@ local cases = {
 			local anchor = CFrame.lookAt(foot, foot + root.CFrame.LookVector)
 			t.Wait(2.5)
 			local over, drawn = Rows.Warmed()
-			local images = 0
-			for _ in FxKit.Images do
-				images += 1
-			end
+			local images = Helpers.warmImages()
 			t.Check("the warm pass ran and is over", over)
 			t.Check("and drew every kit image as a particle, so a picture's first burst in a session draws (AR58)", drawn == images and images > 0, `{drawn} of {images}`)
 			local player = Rows.Play("LanternExit", anchor, 1)
@@ -7819,6 +7816,17 @@ end
 -- TR52's block, the signature on a tap, given theirs. Its module cast: typed, its require alone tipped this file past what
 -- the type solver checks (32 internal errors, 2026-11-23); the module checks itself.
 for _, case in (require(script.Parent.SignatureCases) :: any).Cases({
+	LEAD_SETTLE = LEAD_SETTLE,
+	SHADE_AHEAD = SHADE_AHEAD,
+	SHADE_TOUGHER = SHADE_TOUGHER,
+	SHADE_TIMEOUT = SHADE_TIMEOUT,
+	waitFor = waitFor,
+	myLead = myLead,
+}) do
+	table.insert(cases, case)
+end
+-- TR69 C's press in a fight (the switch on for the case only), given theirs, cast as SignatureCases is.
+for _, case in (require(script.Parent.HandsCases) :: any).Cases({
 	LEAD_SETTLE = LEAD_SETTLE,
 	SHADE_AHEAD = SHADE_AHEAD,
 	SHADE_TOUGHER = SHADE_TOUGHER,

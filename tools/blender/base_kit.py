@@ -162,10 +162,13 @@ PLATE = 4.0            # a deck plate, studs
 # AR65's floor: warm stone in slabs (research's must-fix 1: stone, never a bare baseplate). A slab's two tones, its
 # joint, the lit lip on its near edges; a slab across and in, studs, each course offset by half a slab. Research's
 # verdict in game (2026-11-26, 18:12; class: every large flat surface): from the gate it read L 235 against target A's
-# 197, with no tone steps, an empty white baseplate. So every tone is two thirds of its light (in linear light: 0.67,
-# from that one measure, texture 214 to 235 on screen) and the slabs' step is twice as wide; only the joints fade with
-# distance. Before: "#DCD8CF", "#D4CFC5", "#B3ADA2", "#E9E6DF", the mottle 0.006.
-STONE = ("#BCB9B1", "#AEA9A1", "#959087", "#C3C1BB")
+# 197, with no tone steps. The first step (18:19, the map's mean 210 to 176) read 221 in game (Faber's capture, 18:41):
+# the game lifts the floor, 0.43 on screen for each step of the map. Target A's 197 in research's box is open floor at
+# 207 over a band of shadow at 188, so open floor to open floor the floor wants about 204: the slabs' tones sit at a mean
+# of 134 (both fits of the two measures put the gate at 202 to 206), cooled toward the target's grey, and their step is
+# 28, twice the last. Before: "#BCB9B1", "#AEA9A1", "#959087", "#C3C1BB"; first: "#DCD8CF", "#D4CFC5", "#B3ADA2",
+# "#E9E6DF", the mottle 0.006.
+STONE = ("#969490", "#7A7874", "#6E6C67", "#9D9C99")
 MOTTLE = 0.01
 SLAB = (8.0, 4.0)
 

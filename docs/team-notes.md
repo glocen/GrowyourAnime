@@ -11,9 +11,9 @@ Each teammate rewrites its own row: one to three lines. Open asks sit under "Wai
 **Faber (builder).** 2026-11-26, 17:45 by the clock, on Opus 5.5. Committed: AR65's install, the kit, the plates (must-fix 2, the Festival Door counted as a machine) and the Door under the Generator at dusk (must-fix 3); the Mill's plate now says GENERATOR. The record is in AR65's entry. Earlier today: TR65 to TR68, TR69 A to C built Off, TR71 A.
 - **Next:** Studio goes to Scintilla (AR52's ward retake, AR7's C4). Meanwhile, AR56's drifts staged and uploaded; then AR56's Haze test, TR66 row 13's ComboSnap, TR69 D and E, TR69 F's captures, TR71 B to D, TR59's retake.
 
-**Modulo (assets).** 2026-11-26, 19:18. Nothing running, no lock held.
-- **For research and Faber:** AR66, Kirra's own Hit A, Down A and Up A, for the verdict (the build beside A: `build/scratch/modulo/ar66/kstrips/beside_*.png`), then the install: her own rig in place of the tail layers (AR66's entry).
-- **AR64's hair** stays at "close", asked of the director. **Now:** AR66, Lyric's Hit A, Down B and Up B. Then AR67 A's build.
+**Modulo (assets).** 2026-11-26, 19:24. Nothing running, no lock held.
+- **For Faber:** AR66's six reactions, passed (Kirra's 6a9a36e9, Lyric's 525cd6b7): each her own rig, in AR66's entries.
+- **AR64's hair** stays at "close", asked of the director. **Now:** AR67 A's build, the held core in three stages.
 
 **Scintilla (effects).** 2026-11-26, 19:17. **TR69 A:** research picked R4 (the mark over the head) and G1 (the star at the eye line); building both as rows now, for Faber to hook into block A. **AR58's motes** are tested in play: drawn now, softer than the target's (for research at the final). **AR7's C4** and **AR61** wait on the director's word.
 - **Next Studio turn:** R4 and G1 in play, AR48's states in motion (the camera set on the replay pad), C4's straight cut. Nothing running.

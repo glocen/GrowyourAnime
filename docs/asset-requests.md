@@ -4149,6 +4149,23 @@ This is delivery 4, the block clip of section 5 polished, on research's open not
   - **The change, in technique:** AR52's day fix. Paint the ring's band in the target's warm hue (LightEmission 0, close to opaque) and keep the added light to the line's core alone.
   - Next take: my next Studio turn, with the clip checked first.
   - **The change, built (16:29):** RingBand is painted warm amber (#E07A16, LE 0, 0.95 seen), with RingInk (#5C3006, 0.6) a hair outside it, and RingLine's warm white as the only light. The additive band is gone and the shape is the picked one. Logic offline: 8,668 passed. The next take uses the game's own path, where the keeper's spawn plays its Challenge (`Enemies.Enter`), since my own track didn't play.
+- **C4 on Lantern Row (Scintilla, 2026-11-26, 18:04): the main read missed again at the player's camera.**
+  - **The take:** the Festival place in Play, with the keeper spawned on the street (`FightSpawn`, its Enter playing the Challenge). It was taken at the player's camera, in the street's own light, with no slow. Two stagings:
+    - 15 studs ahead of the standing avatar: the keeper stands over the camera, and its feet are behind the avatar.
+    - 24 studs ahead, the street's standing Brawlers fighting the lead beside it: `c4_street_life.png`, nine frames 1/15 s apart; `c4_street_pairs.png`, the peak beside C4's target with the squint and grey rows; both in `build/handoff/Lamplighter/checkpoint/`.
+  - **What shows:**
+    - The ring is a soft amber haze that spreads round the keeper's feet for about 0.3 s, behind the avatar's head.
+    - The dark rim and the white line don't show: at this low angle a 0.55-stud band 24 studs off is a few pixels tall.
+    - At the squint it's a faint warm smudge. In grey it's gone.
+  - **Why the target read and this doesn't:** the target was framed at the stage's camera, close behind the lead, with the ring passing under the lead and filling the frame's lower half. At the player's camera the keeper stands up the street, so the ring is a thin ellipse.
+  - **Not yet taken:** the keeper's real entrance at the ground's end. FightSpawn placed it where I chose. Where the keeper stands from the player's camera then decides most of this, as research's staging note on S5 said.
+  - **Two techniques have now missed** (the additive field, then the painted band). By the rule, the options go to the director with the images. They're research's to bring:
+    1. Keep C4, staged where its feet show. This needs Faber's staging of the keeper's entrance: its stand-off, or the camera at the entrance.
+    2. An upright read in place of a ground ring: a warm column or flare at the lantern on Stamp. It reads at a low camera, but it says less about where to stand.
+    3. Drop the ring, so the Challenge reads by the clip and the lantern's glow alone.
+
+    My lean is option 1, then one take at the real entrance before the director sees them.
+  - **Status:** implemented (dc7106c1, reviewed clean by Faber) and taken in the game at the player's camera. Visually reviewed: my read, a miss; research's verdict waits. Not director-accepted.
 
 ## AR8. The effects pass
 
@@ -16050,6 +16067,19 @@ Written by `tools/fx/shade_tells.py`, from the kit's uploaded meshes and images 
   - **Must-fix (class: every ward row in the ward's own colours):** the glance takes the ward's azure-white, as you proposed (tier 1). The cream cards are the frame's one clash.
   - **The retake for the final:** the glance fixed, in a real fight on Lantern Row's street at the player's camera, and the squint read again. If it leaves the azure mark there, the ward passes.
   - **Not a must-fix:** at the break, the Haymaker leads and the ring follows 0.17 s later, cause before effect. The order goes to TR69's hit pass (`docs/polish-later.md`).
+- **The retake, on Lantern Row (Scintilla, 2026-11-26, 18:04).** The glance's glints are in the ward's own white-azure (667294ad; GuardBreak's chips too).
+  - **The take:** the Festival place in Play, stretch 1 started from its own Fight press. A level-30 Guard was spawned on the player (`FightSpawn`, comes) into the running fight. Rook was at level 26, at the player's camera. The take was 50 s with no slow.
+  - **The sheets,** in `build/handoff/Shade/checkpoint/`:
+    - `w2_street_phone.png`: six moments at phone size, 844 wide: raise, hold, glance, the second raise, its hold after two glances, drop.
+    - `w2_street_close.png`: the same moments close.
+    - `w2_street_pairs.png` (whole frame) and `w2_street_pairs_close.png` (the guard's crop): the hold beside W2's peak, with the squint and grey rows.
+  - **My read:**
+    - The frame clicks up and holds as W2's five ribs and hoops, in azure-white lines on the street's dark stone.
+    - The glance's glints are small pale-azure streaks beside the frame. The cream cards are gone.
+    - At the squint, the Guard keeps a pale azure oval mark, as W2's does. In grey, the frame stays white lines.
+    - On the street the Guard is smaller at this camera than in W2's frame.
+  - **Not in this take:** a break. Each of the Guard's two raises ran its 2 s hold and dropped, and Rook's Haymaker landed between them. The break is unchanged since research's final read.
+  - **Status:** implemented and taken in a real fight on Lantern Row, at the player's camera; logic offline 8,668 passed. Visually reviewed: my read only, research's retake verdict waits. Not director-accepted. **For Faber's review:** done (667294ad, clean).
 
 ## AR53. Goals' look, basic at launch: the dare's line, today's three, the Mask Ledger's page (Modulo, after AR52's clips)
 

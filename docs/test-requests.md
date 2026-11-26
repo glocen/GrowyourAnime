@@ -2266,6 +2266,8 @@ From the director's paste of 2026-11-26 (the register). Each claim was checked a
   - The Brawler's elite: every third swipe is an overhead, with a 1.2 s wind-up and a 1.5 s recovery.
   - The Guard's elite, in the square: a screen 8 studs wide, covering 2 Brawlers who join at its half health.
   - Stage 3's elite becomes the Dasher's, which is its stage's role (tier 2, research's seed): a fan of three lines, then 1.5 s out of breath. On Hard, the square keeps the Dasher's elite (AR57) and stage 3 takes the Brawler's.
+  - **Feel line** (research, 2026-11-26, 22:05, tier 2): from the player's camera, each elite's one move announces itself a beat before it lands, so the player knows which elite it is and when to step away. The Brawler elite's overhead gathers over its head through the 1.2 s wind-up; the Dasher's three lines are drawn on the ground before it runs them; the Guard's screen stands as a wall you can see through. Every enemy tell speaks one language for "this will hit here", from a Shade to the keeper: warm, never purple, never confused with R4.
+  - **The fan's geometry** (research, 22:15): three lanes from the Dasher's feet, the middle one at the lead and the others about 25° either side, drawn at once and run in one lunge.
 - **Measure before and after,** from `StageBegin`: one clean Normal run in Studio, with each stage's seconds fighting, walking and standing.
   - **The gate:** under 20 s standing in the whole run.
   - Settling D2's "10 to 15 minutes" stays the director's.
@@ -2402,6 +2404,25 @@ From the director's paste of 2026-11-26 (the register). Each claim was checked a
   - The keeper's ordinary swings ×2. Its tells (slam, sweep, pool and KeeperLight) ×3. Phase 3's Shades and Health stay as they are.
   - Arithmetic from 22:08's events, not measured: dodging ends at about 62% and standing at about 26%, a gap of about a third of the bar.
   - **Next (Faber):** the same two runs on the pad. The gates: 50 to 70% dodging, 10 to 35% standing, and 60 to 75 s dodging. If all three pass, the keeper's numbers close.
+
+**B's elites' tells, the targets** (Scintilla, 2026-11-26, 22:33; for research's pick in pairs). Painted on the street stage at the player's camera, with R4 as the build draws it: `build/handoff/Fight/targets/elite/` (each target's peak, its strip with its frames, and `phone_street/` with the six at a phone's size). Each look's beats and levers are in `tools/fx/elite_tell_targets.py`'s docstring.
+- **The class:** every tell takes D1's make: an amber rim with a white core, a faint deep fill, and a fill growing to the hit. One addition: the rim heats as the hit nears. At this camera the bodies hide most of a fill: the footprint lies under the lead, and the fan runs through the avatar's spot. The keeper's grey footprint takes the same make at its finish. The screen is a wall, not a hit, so it takes W2's azure lines.
+- **The overhead,** with the same footprint in both (radius 3, 3.4 ahead, seeds):
+  - **O1, the weight:** a ball over the raised fists, with streaks drawn into it ever faster. It goes white-hot for the last 8 frames, then falls on the footprint as a comet. It takes R4's spot, so R4 fades for the wind-up (a hook change).
+  - **O2, the halo:** an amber ring closes on the mask at a steady rate, and the mask lights as the ring meets it. R4 stays.
+  - **My read:** O2 reads at a phone's size. O1 stays a small light there, since its ball can't pass 0.82 studs or an elite's reaches the target card. O2's ring could read as a lock-on: research's to weigh.
+- **The fan:**
+  - **F1:** the three lanes as one shape, with one arc of fuse.
+  - **F2:** three claw-mark blades lit by their fuse, with each lane's reach a hair.
+  - **My read:** F1 reads at a glance at a phone's size; F2 is quieter.
+- **The screen, in the cap:**
+  - **S1, the lantern wall:** nine ribs and two rails.
+  - **S2, the fence:** five rails and three posts.
+  - Both face the player's side. At the lead's 45° spot (F) the screen is seen from the side, about 180 pixels across.
+- **Not in them:** the bodies' poses (a frozen Brawler at Scale 1), the elite's 1.35 scale, and sound.
+- **Content check** (22:34): all six PASS. One note for the build: F2's claw marks lie on the street only, never across a body.
+- **Next:** research's pick. Then I write the picked rows as data, and Faber hooks the three moves.
+
 ## TR70. The break and its reveal, overhauled (research, 2026-11-26, 14:17; overhaul 2 of `docs/production-plan.md`, "The overhaul"; for Faber, with Scintilla's targets)
 
 - **Why** (`docs/research/cloud-2026-11-24/reveal-and-showcase.md`, MEASURED on our pools):

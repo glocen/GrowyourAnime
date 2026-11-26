@@ -1,0 +1,2 @@
+The peaks at a small landscape phone (667x370), left to right, 3 a row: O1_weight (street, frame 60 from the wind-up's first), O2_halo (street, frame 60 from the wind-up's first), F1_fan (street, frame 30 from Line), F2_blades (street, frame 30 from Line), S1_lantern (street, frame 20 from Raise), S2_fence (street, frame 20 from Raise).
+peaks_squint.png: the same, brought to 96 px high and back up (does the shape still read at a glance?).

@@ -1,0 +1,1 @@
+frames from Raise; a glance at 40, Drop at 120, at 60 a second: -6, -3, 0, 3, 20, 40, 42, 46, 124

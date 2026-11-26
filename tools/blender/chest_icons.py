@@ -15,6 +15,15 @@ Each chest is a different keepsake of the festival, sealed by the Void, so its s
 Worth rises in size, in height, in finish (cloth, then iron, brass and a pale steel), and in the light's lines (a thread,
 a seam, three seams, a column). No rarity's colour or frame, no padlock, no flame and no cloud: a light is a line.
 
+The three that hold one kind of thing (Definitions/Chests: ChestCase, ChestPouch, ChestCrate; Faber's ask, 2026-11-26),
+each shaped by what it holds, in the same make:
+  - the Emblem Case: a slim case lying low, brass at its corners, a seam of light under its lid, an arched brass
+    handle on top, and for its clasp a six-sided plate over the seam, the War Emblem's own badge;
+  - the Jewel Pouch: a leather pouch drawn shut at its neck, gathered in folds, a thong bound round it with two
+    beaded ends; its light a ring inside its frilled mouth, where a cut stone shows;
+  - the Forge Crate: a crate of planks with the forge's light in the gaps between them, dark posts at its corners, a
+    brace across its front, rope handles at its ends, and forge stones heaped over its rim.
+
 Built in code on gear_parts.py's shapes and rendered in Workbench, as AR6's gear is. The sheet shows each in the bag's
 plain cell (AR18's A, the edge an empty cell has; TR29, "The chest's frame") seen close, at 38 points, and alone at
 32 pixels over dark, then a row of the bag with AR6's gear among them.
@@ -46,7 +55,8 @@ TILT, SPIN = 24.0, -32.0  # the lid seen from a little above, the front and the 
 # Each chest's lacquer its own key. The Elite's and the Keeper's stand a value above the cell's dark ground, the same
 # rule as AR6's Common iron (research's verdict on the grey, fix 2); the Tower's stays dark under its pale steel.
 for key, value in (("wrap", 0.52), ("lacquer_red", 0.36), ("lacquer_black", 0.34), ("lacquer_slate", 0.22),
-                   ("cord", 0.7), ("fringe", 0.86)):
+                   ("cord", 0.7), ("fringe", 0.86), ("lacquer_umber", 0.34), ("enamel", 0.16), ("leather", 0.44),
+                   ("thong", 0.26), ("wood", 0.56), ("post", 0.32), ("rope", 0.68), ("rock", 0.42)):
     g.GREY.setdefault(key, value)
 # In colour: a key's colour, how metal it is, how rough. No finish or light takes a rarity's colour (the content check):
 # the Shade's plain hemp; the Elite's vermilion lacquer under black iron; the Keeper's black lacquer, held a value above
@@ -57,10 +67,16 @@ PAINT = dict(
     wrap=("#A08E72", 0.0, 0.85), lacquer_red=("#943525", 0.0, 0.3), lacquer_black=("#574B45", 0.0, 0.28),
     lacquer_slate=("#48464A", 0.0, 0.3), iron=("#4E525C", 0.35, 0.45), brass=("#D49A4E", 0.35, 0.32),
     steel=("#D8DFE9", 0.3, 0.42), cord=("#B8432F", 0.0, 0.8), fringe=("#E6DAC2", 0.0, 0.85),
-    stone=("#ECE6D8", 0.1, 0.15))
+    stone=("#ECE6D8", 0.1, 0.15),
+    # the three that hold one kind of thing: the Case's umber lacquer under brass, its badge's face a dark enamel, never
+    # the emblems' violet; the Pouch's saddle leather and dark thong; the Crate's pale planks, dark posts, hemp rope and
+    # warm grey stones
+    lacquer_umber=("#6E4A33", 0.0, 0.28), enamel=("#2E2622", 0.0, 0.3), leather=("#94603A", 0.0, 0.62),
+    thong=("#4B3222", 0.0, 0.7), wood=("#B48A56", 0.0, 0.75), post=("#5F4532", 0.0, 0.7), rope=("#CDB78C", 0.0, 0.85),
+    rock=("#857C73", 0.0, 0.8))
 LIT, LIGHT = "#FFF6DC", ("#FFF1D6", (4, 0.7), (10, 0.2))
 # How much of its square each fills: the worth climbs in size too, the Shade's still whole at 32 pixels.
-FILL = dict(Shade=0.68, Elite=0.78, Keeper=0.85, Tower=0.9)
+FILL = dict(Shade=0.68, Elite=0.78, Keeper=0.85, Tower=0.9, Case=0.8, Pouch=0.72, Crate=0.84)
 
 
 def rounded(name, size, key, at, r=0.06, segments=2):
@@ -216,6 +232,86 @@ def tower():
     return parts
 
 
+# --- the three that hold one kind of thing ------------------------------------------------------------------------------
+
+def case():
+    """A slim case lying low, brass at its corners, a seam of light under its lid, an arched handle, a badge clasp."""
+    w, d, h, gap, lid = 2.5, 1.5, 0.5, 0.1, 0.36
+    top = h + gap + lid
+    parts = [rounded("Body", (w, d, h), "lacquer_umber", (0, 0, h / 2), 0.06),
+             rounded("Seam", (w + 0.02, d + 0.02, gap), "lit", (0, 0, h + gap / 2), 0.02, 1),
+             rounded("Lid", (w + 0.06, d + 0.06, lid), "lacquer_umber", (0, 0, h + gap + lid / 2), 0.1)]
+    for sx in (-1, 1):
+        for sy in (-1, 1):  # a brass corner on the body and one on the lid, the seam left whole between them
+            parts.append(rounded("Corner", (0.24, 0.24, h - 0.04), "brass", (sx * (w / 2 - 0.05), sy * (d / 2 - 0.05),
+                                                                             h / 2), 0.03, 1))
+            parts.append(rounded("Corner", (0.26, 0.26, lid - 0.02), "brass", (sx * (w / 2 - 0.04), sy * (d / 2 - 0.04),
+                                                                              h + gap + lid / 2), 0.04, 1))
+        # the handle's feet on the lid
+        parts.append(rounded("Foot", (0.2, 0.26, 0.08), "brass", (sx * 0.5, 0, top + 0.03), 0.02, 1))
+    # the handle: a brass arch across the lid, to carry it by
+    parts.append(standing("Handle", 0.5, 0.065, "brass", (0, 0, top + 0.06), (1.0, 0.72, 1.0), arc=180.0))
+    # the clasp: a six-sided plate over the seam at the front, the War Emblem's own badge, a dark face in a brass rim
+    front = -d / 2 - 0.06
+    face = bl.cylinder("Face", 0.27, 0.08, 6, mat("enamel"))
+    parts.append(bl.place(face, (0, front, h + gap / 2), (90, 0, 0)))
+    rim = bl.torus("Badge", 0.29, 0.055, 6, 8, mat("brass"))
+    parts.append(bl.place(rim, (0, front - 0.03, h + gap / 2), (90, 0, 0)))
+    parts.append(p.ball("Mark", 0.08, "stone", (0, front - 0.06, h + gap / 2), squash=(1.0, 0.5, 1.0), segments=6,
+                        rings=4))
+    return parts
+
+
+def pouch():
+    """A leather pouch drawn shut, gathered at its neck, a thong with beaded ends, a ring of light in its mouth."""
+    neck = 1.22
+
+    def gathers(a, z):  # folds round it, deepening toward the neck and out into the frill
+        k = min(1.0, max(0.0, (z - 0.5) / 0.7))
+        return 1.0 + (0.025 + 0.075 * k) * math.cos(math.radians(9.0 * a))
+
+    parts = [p.lathe("Pouch", [(0.0, 0.0), (0.5, 0.02), (0.84, 0.18), (0.98, 0.46), (0.93, 0.76), (0.68, 1.02),
+                               (0.36, neck - 0.04), (0.3, neck), (0.38, neck + 0.12), (0.54, neck + 0.28),
+                               (0.6, neck + 0.36), (0.48, neck + 0.3), (0.0, neck + 0.2)], "leather", thick=0.0,
+                     wave=gathers)]
+    # the light: a ring just inside the frilled mouth, and a cut stone showing in it
+    parts.append(p.hoop("Mouth", 0.47, 0.04, "lit", neck + 0.31))
+    parts.append(p.ball("Jewel", 0.2, "stone", (0.04, 0.02, neck + 0.33), squash=(1.0, 1.0, 0.8), segments=6, rings=4))
+    # the thong bound twice round the neck, its two ends down the front, a bead on each
+    for z in (neck - 0.02, neck + 0.07):
+        parts.append(p.hoop("Thong", 0.33, 0.05, "thong", z))
+    ends = (((0.18, -0.28, neck), (0.34, -0.42, neck - 0.3), (0.38, -0.5, neck - 0.55)),
+            ((0.05, -0.31, neck), (0.1, -0.5, neck - 0.36), (0.06, -0.58, neck - 0.7)))
+    for points in ends:
+        parts.append(p.tube("End", p.curve(points, 10), 0.04, "thong"))
+        parts.append(p.ball("Bead", 0.08, "fringe", (points[-1][0], points[-1][1], points[-1][2] - 0.06)))
+    return parts
+
+
+def crate():
+    """A crate of planks, the forge's light in the gaps, dark posts, a brace, rope handles, stones over its rim."""
+    w, d, h, plank, gap = 2.4, 1.7, 1.24, 0.34, 0.09
+    parts = [rounded("Glow", (w - 0.12, d - 0.12, h - 0.06), "lit", (0, 0, h / 2), 0.02, 1)]
+    for i in range(3):  # three planks a side, the light showing in the two gaps between them
+        parts.append(rounded("Plank", (w, d, plank), "wood", (0, 0, 0.04 + i * (plank + gap) + plank / 2), 0.03, 1))
+    for sx in (-1, 1):
+        for sy in (-1, 1):
+            parts.append(rounded("Post", (0.2, 0.2, h + 0.06), "post", (sx * (w / 2 - 0.02), sy * (d / 2 - 0.02),
+                                                                          (h + 0.06) / 2), 0.03, 1))
+        # a rope handle at each end
+        parts.append(p.tube("Rope", p.curve([(sx * (w / 2 + 0.02), -0.32, 0.86), (sx * (w / 2 + 0.2), 0.0, 0.66),
+                                             (sx * (w / 2 + 0.02), 0.32, 0.86)], 12), 0.055, "rope"))
+    # one brace across the front, low left to high right, over the gaps
+    span = math.hypot(w - 0.3, h - 0.2)
+    parts.append(rounded("Brace", (span, 0.08, 0.2), "post", (0, 0, 0), 0.02, 1))
+    bl.place(parts[-1], (0, -d / 2 - 0.04, h / 2), (0, -math.degrees(math.atan2(h - 0.2, w - 0.3)), 0))
+    # the forge stones heaped over the rim, rough, the biggest at the back
+    for at, r, squash in (((0.35, 0.25, h + 0.14), 0.5, (1.1, 0.95, 0.72)), ((-0.6, 0.1, h + 0.1), 0.42, (1.15, 0.9, 0.7)),
+                          ((0.8, -0.38, h + 0.06), 0.3, (1.0, 0.9, 0.8)), ((-0.12, -0.42, h + 0.06), 0.33, (1.2, 0.9, 0.7))):
+        parts.append(p.ball("Stone", r, "rock", at, squash=squash, segments=7, rings=5))
+    return parts
+
+
 CHESTS = (
     ("Shade", "the Shade Chest", shade, "A cloth bundle tied at the top, one ear of its knot up and one fallen. Soft "
      "and small, no metal; one thread of light where the knot binds."),
@@ -225,6 +321,12 @@ CHESTS = (
      "light under each, bound with a cord in a bow and two tassels; a ring crest on its lid."),
     ("Tower", "the Tower Chest", tower, "A staved drum, banded like the Tower's platforms. From its lid rises a column "
      "of light with three rings on it, smaller as they rise: the Tower's column."),
+    ("Case", "the Emblem Case", case, "A slim case lying low, brass at its corners, a seam of light under its lid, an "
+     "arched handle; its clasp the War Emblem's six-sided badge."),
+    ("Pouch", "the Jewel Pouch", pouch, "A leather pouch drawn shut and gathered at its neck, a thong with two beaded "
+     "ends; a ring of light in its mouth, where a cut stone shows."),
+    ("Crate", "the Forge Crate", crate, "A crate of planks, the forge's light in the gaps between them, dark posts, a "
+     "brace and rope handles, forge stones heaped over its rim."),
 )
 
 
@@ -274,7 +376,8 @@ RIM = dict(Common="#8A909C", Uncommon="#7CF0A0", Rare="#6FB6FF", Epic="#D29CFF",
 # AR6's gear beside them in the bag's row, by rarity
 BESIDE = (("GearMeigetsu", "Legendary"), ("Tower", None), ("GearStormcallSceptre", "Epic"), ("Keeper", None),
           ("GearBulwarkOfEmbers", "Rare"), ("Elite", None), ("GearLanternsteelShield", "Uncommon"), ("Shade", None),
-          ("GearIronGreataxe", "Common"), ("Shade", None), ("GearRowsmithBlades", "Uncommon"), ("Elite", None))
+          ("GearIronGreataxe", "Common"), ("Case", None), ("GearRowsmithBlades", "Uncommon"), ("Pouch", None),
+          ("Crate", None))
 
 
 def cell(sh, x, y, s, picture, rarity=None):
@@ -297,10 +400,10 @@ def cell(sh, x, y, s, picture, rarity=None):
 
 def sheet(out, shots, colour=False):
     ui.K = K = 2
-    sh = ui.Sheet(1200, 560, g.GROUND)
+    sh = ui.Sheet(60 + len(CHESTS) * 292, 560, g.GROUND)
     t = sh.tile(0, 0, sh.w, sh.h)
-    t.text(20, 12, 15, "Grow your Anime: the four chests, " + ("in colour (AR21, the finish)" if colour else
-                                                               "in grey (AR21, the block)"), g.INK)
+    t.text(20, 12, 15, "Grow your Anime: the chests, " + ("in colour (AR21, the finish)" if colour else
+                                                          "in grey (AR21, the block)"), g.INK)
     t.text(20, 36, 9.5, "Each kind is a different thing, so its shape names it before a word is read; the four rise in "
            "worth by size, height, finish and the light's lines, never by a rarity's colour or frame. A light is a line.",
            g.SOFT_INK)
@@ -339,15 +442,20 @@ def sheet(out, shots, colour=False):
     rs.save(sh.px, out / name)
 
 
-IMAGES = dict(Shade="Shade Chest", Elite="Elite Chest", Keeper="Keeper's Chest", Tower="Tower Chest")
+IMAGES = dict(Shade="Shade Chest", Elite="Elite Chest", Keeper="Keeper's Chest", Tower="Tower Chest",
+              Case="Emblem Case", Pouch="Jewel Pouch", Crate="Forge Crate")
 
 
-def deliver(out, shots):
-    """The four pictures at 256 pixels, as AR6's gear, and their json: by the chest's name in Definitions/Chests.luau."""
+def deliver(out, shots, redo=False):
+    """The pictures at 256 pixels, as AR6's gear, and their json: by the chest's kind in Definitions/Chests.luau. A
+    picture already delivered (and uploaded) is kept as it is unless `redo`."""
     (out / "images").mkdir(exist_ok=True)
     for key, shot in shots.items():
-        gi.keep(rs.shrink(shot, gi.ICON / shot.shape[0]), out / "images" / f"Chest{key}.png")
-    data = dict(note="The four chests' pictures for the bag's cell and its card (AR21). A chest's cell keeps the plain "
+        path = out / "images" / f"Chest{key}.png"
+        if redo or not path.exists():
+            gi.keep(rs.shrink(shot, gi.ICON / shot.shape[0]), path)
+            print("wrote", path)
+    data = dict(note="The chests' pictures for the bag's cell and its card (AR21). A chest's cell keeps the plain "
                      "edge an empty cell has, with no rarity's bar, rim or light (TR29). Each picture is laid as a gear "
                      "picture is: its square 0.94 of the cell, centred; the object sits in it with its own margin.",
                 pixels=[gi.ICON, gi.ICON], chests={name: f"images/Chest{key}.png" for key, name in IMAGES.items()})
@@ -361,7 +469,7 @@ def main():
     shots = renders(out, colour)
     sheet(out, shots, colour)
     if colour:
-        deliver(out, shots)
+        deliver(out, shots, "redo" in sys.argv[sys.argv.index("--") + 1:])
 
 
 if __name__ == "__main__":

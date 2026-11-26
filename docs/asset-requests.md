@@ -17783,3 +17783,11 @@ Research, 2026-11-24, 16:53, on the director's word, "the hair still need a rewo
   - no two machines share an accent;
   - the gate's view shows one glow per machine, plus the Mill's.
 - **Waits:** the stages' looks (I to III) follow the picked target. Nothing else joins this piece.
+- **Research's pick on the cut pass (Quaestor, 2026-11-26, 13:16; `build/captures/ar65/compare.png` and the four frames at 568×320, each pair read in both orders):** the cut, by day and at dusk. It's clearly calmer, and the Mill now reads as the one landmark. Implemented in a playtest only; not yet built.
+  - **Make the cut real now (Faber),** with its rollback, everything hidden in the pass plus two more items. It's the picked direction, and it doesn't wait for the targets:
+    - the two Transformers, which are real grid kit like the pylons;
+    - the two FloodMasts, which stand at both edges of the Mill and break its outline (`cut_day.png`), and are real floodlights too.
+  - **LevelFin and LevelFinOuter** stay for now. They're behind this camera, so Modulo's targets judge them from the walk in.
+  - **Must-fix for the targets (the main read; class: every piece's glow against the Mill's):** at dusk the Door's gold rim is now the brightest thing in the frame and pulls the eye from the Mill. No piece outglows the Mill.
+  - **Joins Modulo's step 2:** the Mill's two lilac crystals become one glow; the bays' lilac lenses; the floor's seams; the gate's hazard stripes. Faber checks whether the dark lines across the floor toward the bays (`cut_day.png`, right of the Mill) are parts, which he hides, or the texture, which is Modulo's.
+  - **Gates:** read by eye at 568×320, not measured (Pillow isn't installed on this PC). The Mill holds the frame's centre and its strongest mass. The measured gates come at the build.

@@ -5131,6 +5131,10 @@ Research, 2026-11-24, from the cloud. Launch-design's item 7, the north star's "
   - **Must-fix (placement):** from the path, a pole stands in front of the Tower board's title. One of the two moves.
   - **Retake:** on the smallest phone, from the path's nearest point, walking the crossing.
 - **Faber, 2026-11-26, 12:50 by the clock:** the face's must-fix passes in Studio, "Boards on the Strip (TR58)" 18/0. **The pole** is the crossing's south corner post (`StripPost` at x ±40, z 20.6, 10.4 studs tall, from Modulo's Strip plan). It stands between the Strip and both boards on its side, so as a player walks the Strip it sweeps across the Lead board, then the Week's. No board shift that keeps the boards where they stand clears it. Asked of Modulo: the two south crossing posts out to |x| ≥ 70 (the boards end at 59). **Retake** at 568×320, the player 26 studs off the boards, the post as today and then at x 70 in a playtest only: `build/captures/tr58/retake_z6_post_today_small.png` and `retake_z6_post_out_small.png`. At 70 both titles and their rows read clear. The test store holds one name, so a face shows one row; the four rows are the case's made-up page. The walking frames wait for the window in front.
+- **Research's second look, 2026-11-26, 13:16** (`build/captures/tr58/retake2_*_small.png`, 568×320): both must-fixes pass, as visually reviewed by research.
+  - **The face:** from the path's nearest point, the Lead board's title and four rows read, with the viewer's row lit and its rank first.
+  - **The placement:** walking the crossing both ways, no post crosses a board.
+  - **For the row's art, not a must-fix:** the empty faces ("News: Nothing yet", "Most stars: No one yet") hold one small line on a large dark slab. The empty state gets the rows' size and the board's own art.
 
 ## TR59. The welcome week and codes (research's request, tier 2, for Faber)
 

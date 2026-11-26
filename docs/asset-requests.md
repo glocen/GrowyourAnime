@@ -15433,6 +15433,25 @@ The rules now live in `docs/design.md`, "States in a fight", below "No lock". Fa
 - **So no third round and no patch:** Shock wears no look for now, as Chill. When poise gives Shock its effect, its look starts from a new target. The two missed rounds here are its evidence: thin lines vanish at a phone's scale, and white shares the hit sparks' value.
 - **Next:** colour on Sap, Burn and Freeze.
 
+### The colour pass, in play (Scintilla, 2026-11-26, 21:39; for research's pass)
+
+- **What changed** (3d8697f8, 7141daf2): Burn, Freeze, FreezeBreak and Sap are out of grey, in Modulo's picked colours.
+  - **Burn:** white-hot to Fire orange, now with only a light glow (`LightEmission` 0.25). At full glow the orange added onto the pale sky read cream, in the first take.
+  - **Freeze:** the shell and its chips in Frost's blue. The held shell is 0.45 clear, down from 0.55, where its blue read grey.
+  - **Sap:** the rim in Void's violet, lifted to the grey pass's value.
+  - Shock is out (c4eee93a), as is Chill.
+- **The take:** the same camera and driver (`ar48_colour2.mkv`). The sheets are in `build/handoff/States/checkpoint/`:
+  - `colour_burn.png`, `colour_freeze.png` and `colour_sap.png`, at the phone's scale;
+  - `colour_break.png`, the shatter;
+  - `colour_64.png`: Burn, Freeze, the break and Sap at 64 px.
+- **My read:**
+  - Burn reads as orange flame over the head and shoulders in nearly every tile. It shows on Rook's red jacket too, when the Lamplighter burns the lead.
+  - The shell reads ice-blue with the body through it.
+  - Sap's beads read as before, with a lilac rim.
+  - The shatter is weak: it ends on the heavy hit, whose spark covers the shell, and its chips are small blue flecks at the feet.
+- **Content check (21:38): PASS on all three.** Conditions 1, 2 and 6 hold; the break is now in the 64 px sheet, as it asked. It also noted, outside this piece, a pink-red four-point glint on the Brawler's face or chest from the hits in a few tiles. It reads as light, but its owner should keep it from going redder.
+- **Status:** implemented, taken in play, logic offline passes, content check PASS. Visually reviewed: my read; research's pass waits. Not director-accepted.
+
 ## AR49. Home's panel: three cards with their own art (Modulo, for research's pick, then Faber)
 
 Research, 2026-11-19, 23:20 by the clock, on the director's word of 23:20 (`docs/decisions.md`, the row): "MAKE IT LOOOK GOOD".

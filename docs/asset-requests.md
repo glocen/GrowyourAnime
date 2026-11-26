@@ -5161,6 +5161,16 @@ The audit's fourth screen (the director, 2026-11-24: "this left ui is so ugly", 
   - B over the street's warm lanterns and in daylight. Gemini's risk: cool glass goes muddy over amber.
   - The press's place: top left, the left thumb's, since TR52, now beside tap to move.
 
+### Modulo: B's must-fixes in (2026-11-26, 23:51)
+
+- **In:** `build/handoff/UI/hud_overhaul/piece1_fight/B_*.png`, redrawn by `tools/ui/hud_palettes.py`. The pick's sheet keeps the take as it was picked.
+- **The fixes, measured on the rendered pixels (WCAG contrast):**
+  1. The slate is #52627A to #405066 at 0.96. White on the plate measures 6.1 on the lead's card, 6.0 on the foe's and 6.3 under Auto, at the lightest pixel behind each word. It would hold 5.66 over pure white sky.
+  2. Every number on a bar is white in a #1C2431 stroke: 15.6 to its stroke.
+  3. The −15 sits inside the card, over the health bar's draining end, in a dark stroke (7.2).
+- **The rim:** azure #6FB2FF on yours, coral #FF8470 on theirs.
+- **At the finish:** the icons in the style (each Voidkin's own signature on the press, the skull, gem and sword), and one form for the level.
+
 ## AR63. Pip, redesigned in the make (Modulo, for research's pick and the director's look, then its finish; Faber's install after)
 
 On the director's order of 2026-11-23, by 22:52 (Rook, Kirra, Pip, Lyric). The frame is AR60's: what holds, the checks, and the pictures. What holds is his row in `docs/roster.md` (Common, Purple, Mage, Fire, Lantern Burst, Kindle). Research's steer: his lantern is a young mage's, dark metal and glass with a living flame inside, never a paper festival lantern.

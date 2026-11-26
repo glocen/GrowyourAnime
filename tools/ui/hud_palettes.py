@@ -28,7 +28,8 @@ import style_frames as sf  # noqa: E402
 W, H = 852, 473                     # the page: 1920 x 1066 at 852 wide
 SCALE = 1920 / W
 FIGHT_SRC = sf.REPO / "build/captures/ar48_install/break_player_camera.jpg"   # the portrait: the game's own, from its card
-NUMBERS = dict(dealt="#FFF6E2", element=sf.TYPES["Red"], crit="#FFC93C", heal="#5BE37D", taken="#FF5A6A")
+NUMBERS = dict(dealt="#FFF6E2", element=sf.TYPES["Red"], crit="#FFC93C", heal="#5BE37D", taken="#FF5A6A",
+               taken_card="#FF7A86")   # on a plate, in its dark stroke: 7.2 to 1
 
 TAKES = {
     "A": dict(
@@ -49,9 +50,12 @@ TAKES = {
         display=("TitilliumWeb-Bold.ttf", "Titillium Web"), body=("BuilderSans-Bold.otf", "Builder Sans"),
         num=("TitilliumWeb-Bold.ttf", "Titillium Web"), track=1.4,
         ink="#FFFFFF", ink2="#D4DCE8", shade="#1C2431",
-        panel=dict(top="#71829C", bottom="#566780", a=0.9, stroke="#E6EDF7", stroke_a=0.6, sw=1.0, r=7,
-                   inner="#FFFFFF", inner_a=0.32, shadow=0.3),
-        foe=dict(top="#71829C", bottom="#566780", stroke="#E6EDF7"),
+        # research's pick (2026-11-26): a step darker than the first take's #71829C, so every white word on a plate
+        # reaches 5.5 to 1 over the brightest sky behind it (5.66 over white); a thin rim by side, from C
+        panel=dict(top="#52627A", bottom="#405066", a=0.96, stroke="#E6EDF7", stroke_a=0.8, sw=1.1, r=7,
+                   inner="#FFFFFF", inner_a=0.28, shadow=0.3),
+        own="#6FB2FF",
+        foe=dict(top="#52627A", bottom="#405066", stroke="#FF8470"),
         accent=("#F8C552", "#E9A01E"), accent_ink="#2E2104",
         well="#1C2431", well_a=0.38, health=("#FF6878", "#E2425A"), poise=("#F8C552", "#E9A01E"), xp="#A6E6FF",
     ),
@@ -116,6 +120,12 @@ class Page(sf.Page):
         self.add(f'<text x="{x:.1f}" y="{y:.1f}" font-family="{fam}" font-size="{size}" fill="{fill}" '
                  f'text-anchor="{anchor}"{ls}{f}{op}>{sf.esc(s)}</text>')
 
+    def on_bar(self, x, y, s, size):
+        """A number on a bar: white in a dark stroke, so it holds on the bar's lightest red (4.5 to 1 or more)."""
+        self.add(f'<text x="{x:.1f}" y="{y:.1f}" font-family="{self.T["num"][1]}" font-size="{size}" fill="#FFFFFF" '
+                 f'text-anchor="middle" stroke="#1C2431" stroke-width="{size * 0.24:.2f}" stroke-linejoin="round" '
+                 f'paint-order="stroke">{sf.esc(s)}</text>')
+
     def bar(self, x, y, w, h, share, grad, r=None, sheen=True):
         T = self.T
         r = h / 2 if r is None else r
@@ -158,7 +168,7 @@ CARD = (12, 50, 206, 58)
 def lead_card(P, health, share, taken=None):
     T = P.T
     x, y, w, h = CARD
-    P.plate(x, y, w, h)
+    P.plate(x, y, w, h, stroke=T.get("own"))
     px, py, pw = x + 6, y + 6, h - 12
     P.clip_rect("portrait", px, py, pw, pw, 6)
     P.add(f'<rect x="{px}" y="{py}" width="{pw}" height="{pw}" rx="6" fill="#E9D6C8"/>')
@@ -180,17 +190,15 @@ def lead_card(P, health, share, taken=None):
     P.glyph("sword", gx + 15, y + 8.5, 11, T["ink2"])
     hx, hy, hw, hh = nx, y + 25, x + w - nx - 8, 14
     P.bar(hx, hy, hw, hh, share, "url(#gHealth)", r=4)
-    P.word(hx + hw / 2, hy + 10.6, health, 10, role="num", fill="#FFFFFF", anchor="middle", shade=True)
+    P.on_bar(hx + hw / 2, hy + 10.6, health, 10)
     P.bar(hx, hy + hh + 5, hw, 3.5, 0.38, T["xp"], sheen=False)
     # the eye (spectate): a small disc docked to the card's edge, on a TAP-sized tap area
     ex, ey, er = x + w + 20, y + 15, 13
     P.plate(ex - er, ey - er, 2 * er, 2 * er, r=er)
-    P.glyph("eye", ex - 8.5, ey - 8.5, 17, T["ink"] if T["key"] == "A" else T["ink2"])
-    if taken:   # the lead's damage taken, at its own card: rises from the bar's end and fades
-        P.word(ex, y + h - 6, taken, 13, role="num", fill=NUMBERS["taken"], anchor="middle", shade=False)
-        P.add(f'<text x="{ex}" y="{y + h - 6}" font-family="{T["num"][1]}" font-size="13" fill="none" stroke="#3A1016" '
-              f'stroke-width="2.2" stroke-linejoin="round" text-anchor="middle" opacity="0.85">{taken}</text>')
-        P.word(ex, y + h - 6, taken, 13, role="num", fill=NUMBERS["taken"], anchor="middle", shade=False)
+    P.glyph("eye", ex - 8.5, ey - 8.5, 17, T["ink"])
+    if taken:   # the lead's damage taken: over the bar's draining end, inside the card, rising and fading; never by the eye
+        P.add(f'<text x="{x + w - 8}" y="{y + 20}" font-family="{T["num"][1]}" font-size="12" fill="{NUMBERS["taken_card"]}" '
+              f'text-anchor="end" stroke="#2A0E14" stroke-width="2.6" stroke-linejoin="round" paint-order="stroke">{taken}</text>')
 
 
 def signature(P):
@@ -237,7 +245,7 @@ def foe_card(P):
     P.glyph("gem", x + w - 20, y + 6, 12, sf.TYPES["Red"])
     hx, hw = x + 8, w - 16
     P.bar(hx, y + 25, hw, 13, 2964 / 4290, "url(#gHealth)", r=4)
-    P.word(hx + hw / 2, y + 34.8, "2,964/4,290", 9.5, role="num", fill="#FFFFFF", anchor="middle", shade=True)
+    P.on_bar(hx + hw / 2, y + 34.8, "2,964/4,290", 9.5)
     P.bar(hx, y + 42, hw, 3, 0.64, "url(#gPoise)", sheen=False)   # poise, beneath
 
 
@@ -289,7 +297,7 @@ def numbers_strip(T, key, plate):
     num(642, 90, "+120", 18, NUMBERS["heal"], edge="#0B3A1C")
     caption(642, "a heal")
     num(760, 90, "-15", 19, NUMBERS["taken"], edge="#3A1016")
-    caption(760, "taken: at the lead's card")
+    caption(760, "taken: over the lead's bar")
     return P.svg(W, sh), sh
 
 

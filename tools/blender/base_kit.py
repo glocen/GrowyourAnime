@@ -160,15 +160,14 @@ PRINTS["half"] = (8, 268, 256, 160)   # the panel's first 8 studs, for the half 
 DECK = (512, 8.0)      # the deck's own tile: pixels, and the studs it covers (four plates)
 PLATE = 4.0            # a deck plate, studs
 # AR65's floor: warm stone in slabs (research's must-fix 1: stone, never a bare baseplate). A slab's two tones, its
-# joint, the lit lip on its near edges; a slab across and in, studs, each course offset by half a slab. Research's
-# verdict in game (2026-11-26, 18:12; class: every large flat surface): from the gate it read L 235 against target A's
-# 197, with no tone steps. The first step (18:19, the map's mean 210 to 176) read 221 in game (Faber's capture, 18:41):
-# the game lifts the floor, 0.43 on screen for each step of the map. Target A's 197 in research's box is open floor at
-# 207 over a band of shadow at 188, so open floor to open floor the floor wants about 204: the slabs' tones sit at a mean
-# of 134 (both fits of the two measures put the gate at 202 to 206), cooled toward the target's grey, and their step is
-# 28, twice the last. Before: "#BCB9B1", "#AEA9A1", "#959087", "#C3C1BB"; first: "#DCD8CF", "#D4CFC5", "#B3ADA2",
-# "#E9E6DF", the mottle 0.006.
-STONE = ("#969490", "#7A7874", "#6E6C67", "#9D9C99")
+# joint, the lit lip on its near edges; a slab across and in, studs, each course offset by half a slab. Research's gate
+# (2026-11-26, 18:55): open floor from installed_day's camera, x 40 to 300 and y 360 to 420 of 852 x 480, Rec. 709 mean
+# 206 +-8, detail at least 2.0. Measured there (Faber's captures): maps at a mean of 210 read 235, at 176.5 read 219.7,
+# at 135 read 182.0 (the game's tone curve bends: flat near white, steep lower). Read between the last two, the maps sit
+# at 160, a slab's step 33. The game warms the floor (a map's R/G of 1.01 reads 1.06), so the stone is drawn near
+# neutral, R/G 0.99 and B/G 0.98, to read as target A's 1.02 and 0.95. Before: "#969490", "#7A7874", "#6E6C67",
+# "#9D9C99"; "#BCB9B1", "#AEA9A1", "#959087", "#C3C1BB"; first "#DCD8CF", "#D4CFC5", "#B3ADA2", "#E9E6DF".
+STONE = ("#AEB0AD", "#8D8F8C", "#7F807E", "#B8BAB6")
 MOTTLE = 0.01
 SLAB = (8.0, 4.0)
 

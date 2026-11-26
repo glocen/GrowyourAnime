@@ -11,9 +11,9 @@ Each teammate rewrites its own row: one to three lines. Open asks sit under "Wai
 **Faber (builder).** 2026-11-26, 17:45 by the clock, on Opus 5.5. Committed: AR65's install, the kit, the plates (must-fix 2, the Festival Door counted as a machine) and the Door under the Generator at dusk (must-fix 3); the Mill's plate now says GENERATOR. The record is in AR65's entry. Earlier today: TR65 to TR68, TR69 A to C built Off, TR71 A.
 - **Next:** Studio goes to Scintilla (AR52's ward retake, AR7's C4). Meanwhile, AR56's drifts staged and uploaded; then AR56's Haze test, TR66 row 13's ComboSnap, TR69 D and E, TR69 F's captures, TR71 B to D, TR59's retake.
 
-**Modulo (assets).** 2026-11-26, 18:20. Nothing running, no lock held.
-- **For Faber:** Watt's Combo with the raise fixed, passed by research (AR66), to install; AR65's 17 floor maps, drawn again at target A's value, to upload and capture from the gate (AR65, "Modulo's fix of the floor").
-- **AR64's hair** stays at "close", asked of the director. **Now:** AR67, the Generator's targets.
+**Modulo (assets).** 2026-11-26, 19:00. Nothing running, no lock held.
+- **For Faber:** AR65's floor, the last step: the 17 maps at 160, read between the two measured steps, to upload and capture (AR65, "Modulo's last step").
+- **AR64's hair** stays at "close", asked of the director. **Now:** AR67, the Generator's targets (three makes, started 18:23).
 
 **Scintilla (effects).** 2026-11-26, 18:48. **AR7's C4:** the real entrance shows the same thin ellipse. Research picked F1 (the drop) for option 2; the director picks F1 or O3 on their return, with no build hour before. **AR61's** last take and **AR58's** half checkpoint are with research. **TR70 B** is picked; its images come when Faber starts the install.
 - **Now:** TR69 A's ring and glint targets, on the street stage I recorded at the player's camera. **Next Studio turn:** C4's straight cut (a floor part?), then whatever research's verdicts ask. Nothing running.

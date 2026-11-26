@@ -5279,3 +5279,39 @@ Round 2:
 - **Changed from the table, with the evidence** (`Config.Audition`): ShardDrop measures to 1.0 s, as the finder counts a ring until it's 45 dB down (at 0.6, "crystal ding" and "sparkle ding" kept none); KeeperFall adds "crystal shatter", "magic shatter" and "anime shatter" (research's five kept 4); GoalDone drops "achievement" (consoles' sounds) for "goal complete", "mission complete" and "objective complete", which found little more. Its seven are its own three and four of Record's "success" finds that Record didn't keep, measured at GoalDone's length and level.
 - **Thin by the library, for the director's ear to judge:** KeeperFall's five are two glass shatters, a glass crash and two generic "boss defeated" sounds, so a "none" there means new words, not a patch. ShardDrop's are bells and dings, one note each by their titles.
 - **Where:** `ServerStorage.NL_Audition` (`Candidates`, and `Untrimmed` with every run's whole answer), unsaved: Faber's next save keeps them. **Loaded:** the panel's tabs, at the next Play. **Heard, picked:** no; the listen waits on Faber's Play the moment.
+
+## TR65. The guide's arrows, in the tutorial only (the director's word, 2026-11-26; for Faber)
+
+- **The word:** "those purple arrows are so stupid should only be there for a tutorial" (`docs/decisions.md`, 2026-11-26).
+- **What changes:** `Guide` draws its chevron and its edge arrow only until the player beats their first keeper. That's the tutorial, by research's reading, and the same line `Combat.Home.FirstFallen` uses. After it, `Guide.Point` draws nothing, whatever `Rules.Hud.NextStep` says. The HUD's next-step line stays as it is.
+- **Waits:** the Play panel's "Go to the Tower" (`Guide.Errand`) stays as it is until the director says whether a pressed errand keeps its arrow.
+- **Cases:**
+  - a profile before its first keeper's win shows the chevron on its step, as today;
+  - the same profile after the win, with shards ready, shows no chevron and no edge arrow, and its line still reads "N ready: open them at the Breaker".
+- **Check:** a capture at the smallest phone, in the yard, after the win, with shards ready: no purple mark in the world.
+
+## TR66. The Gemini blueprint's findings that hold (research, 2026-11-26, 12:30; Faber's calls)
+
+From the director's paste of 2026-11-26 (the register). Each claim was checked against the code at HEAD. Below are only those that hold, with what research asks. Each is Faber's call unless it's marked.
+
+| # | Finding | Label | Ask |
+|---|---|---|---|
+| 1 | The self-test's case modules, 27,395 lines, are required as the module loads, before its `IsStudio` gate (`SelfTestController/init.luau`, 24-40 and 359), so they load on every player's phone | VERIFIED (read) | require them inside the gate, or move them to a dev-only project |
+| 2 | A first join shows Roblox's default loading screen: `Arrival.client.luau` (14-19) removes it only after a teleport | VERIFIED (read) | our own arrival on every join, a plain fade until AR62 gives it a look |
+| 3 | The Jewels page tells players "Jewels are set here in a later update" and "a jewel of its colour" (`EquipmentScreen/Jewels.luau`, 25 and 61-72). Jewels are at launch (2026-11-17, 02:40), and players read American spelling (2026-11-17, 13:15) | VERIFIED (read) | "color" now; the page is built before any public build and never shown as a promise |
+| 4 | Poise shows on the stat sheet (`Rules/Sheet.luau`, 41), but nothing in the fight reads it (`Config/Stats.luau`, 96-98) | VERIFIED (read) | tier 2, research's call: hide the row until Stagger lands with the Lamplighter's fight (`docs/design.md`, "States in a fight") |
+| 5 | Lifesteal's `PerSecondOfMaxHealth` is read by nothing, and the fight caps by `Cap × DamagePerSecondOfMaxHealth` (`FightService`, 1101) | VERIFIED (read) | keep one number and remove the dead one |
+| 6 | The whole profile goes to the client after every change (`DataService`, 75-91) | VERIFIED (read) | measure its size and rate in a fight and in a break first, and send a patch only if it's large |
+| 7 | `DebugCommand` is created on live servers, where nothing answers it (`Net`, 22 and 161; `DebugService`, 79) | VERIFIED (read) | don't create Studio-only remotes outside Studio |
+| 8 | `build/handoff` is tracked: 2,206 files, 747 MB on disk, and the repo's packs are 837 MiB. GitHub's recommended maximum is 10 GB on disk, so there's no limit near; the cost is each pull's time as it grows | VERIFIED (sizes); SOURCED (docs.github.com, "Repository limits") | low: name what in it can be made again (previews, sheets) and stop tracking that from now on, with each maker's yes (tier 2). History is never rewritten |
+| 9 | Nothing yet tells us where new players stop | research's add, tier 2 | before the first public build, log the first session's seven beats (`docs/north-star.md`) as an AnalyticsService funnel |
+| 10 | 29 RenderStepped loops outside the tests and 27 CanvasGroups in the UI | VERIFIED (counts) | read the MicroProfiler and memory on the smallest phone before any refactor; split the big files only when a piece touches them |
+
+**Corrected, no action:**
+- Act has a rate limit (10 a second, a bucket per player: `Net`, 24 and 104-149).
+- `Home.Fallen` 90 is the time to heal, not a wait.
+- Elemental hits never crit by design (`Hit`, 133).
+- The fourth chamber, ExistNo in blocks, and migration step 14 are in Faber's eight of 2026-11-25.
+- There are 3 ProximityPrompts, not 21.
+- Sound plays in 2 of the 62 UI files.
+- MessagingService: a server sends 600 + 240 × players a minute, and a topic receives 40 + 80 × servers a minute (TR57).

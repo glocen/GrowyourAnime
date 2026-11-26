@@ -17668,3 +17668,44 @@ Research, 2026-11-24, 16:53, on the director's word, "the hair still need a rewo
 - **Sheet:** `build/handoff/Rook/hair/hair_rook_ribbons.png`.
 - **Blind read:** a fresh reader with the catalog as the bar said no on rounds 28 and 30. The gaps that remain: the crown's accent, locks that cross, and the band of light on the upper locks.
 - **Not a candidate:** nothing shown to the director, nothing uploaded.
+
+## AR65. The base, simpler: a redo (research's direction on the director's freedom; Faber's cut pass, then Modulo's targets, then the build)
+
+**Why:** the director, 2026-11-26: "the base really look like a mess it should be way more simpler, easy to the eye, to much blooms and hard to notice different machine i will give you creative freedom to cut/add major stuff" (the register). It's a redo under the 11:11 word: targets beside the old, research's pick, then the build. Research's calls below are made inside that freedom.
+- **Feel line:** from the gate on a phone, the yard reads in one look: a calm floor, the Void Mill turning as the one landmark, every machine told apart by its shape and its one colour, and nothing glowing but what calls you.
+- **What fails today** (`build/captures/ar54/`, the base as installed on 2026-11-23):
+  - Everything glows: the Mill's three neon rings, the floor's lit lines, a crystal on every top, the lit pillar, the Door's gold rim. At the kit's glow of 2.4, under dusk and night bloom, nothing leads.
+  - Every machine wears the same teal, bone and gold, and the Breaker and the bays share their bone horns.
+  - Noise behind and underfoot:
+    - pylons and cables, a real power grid, against the void-machines word (2026-11-15 and 16);
+    - the teal spikes on the skyline;
+    - hazard stripes, which belong to a building site;
+    - the floor's seams.
+- **Cut:**
+  - the pylons and cables, the skyline's spikes, and the hazard stripes;
+  - the floor's lit lines, and its seams at the camera's distance;
+  - the Mill's neon rings;
+  - every crystal but the Breaker's;
+  - the Lab's sleeping place (the Lab comes after launch).
+- **Folded:** the battery into the Mill's foot. Its charge stays on the HUD and the Power screen.
+- **Out of the yard at launch:** the Forge machine. Reinforce lives in Equipment (2026-11-17), and the Forge's own use comes after launch, when the machine comes back with it. If the director says no, it stays.
+- **Added:**
+  - each machine gets one accent colour that no other machine uses, and the rest of it takes the shared neutrals;
+  - each machine gets a silhouette that reads in greyscale;
+  - a small name plate stands over each machine, in its accent.
+  With the arrows gone after the tutorial (TR65), the shapes and the plates are how a player finds a machine.
+- **Stays:**
+  - AR54's spots and clears, and the 128-stud plot;
+  - the gate and its plate, and the showcase plinth;
+  - the bays' rarity light, the Door, and the toon outline.
+- **The light:** at most one glow per machine, with the Mill's as the only large one, and nothing on the floor glows. The world's bloom stays, since the effects need it (AR61). The base's glow comes down through its own parts and `Config.Lighting.Glow`.
+- **Order:**
+  1. **Faber, in a Studio turn, about an hour, nothing committed:** the cut pass as the first target. In a playtest, hide what's cut and turn the base's glow down. Capture from the gate at the smallest phone, by day and at dusk, beside the same frames today. Research picks whether the cuts go as listed.
+  2. **Modulo, after the hair goes to the director and AR62's frames:** two or three targets drawn on step 1's frame, showing each machine's accent and silhouette, the plates, and the floor in one calm tone. Research picks them in pairs.
+  3. **The build:** Modulo's kit, then Faber's install.
+- **Gates:**
+  - a blind reader names every machine from a still at the smallest phone;
+  - the gate's view in greyscale tells every machine apart;
+  - no two machines share an accent;
+  - the gate's view shows one glow per machine, plus the Mill's.
+- **Waits:** the stages' looks (I to III) follow the picked target. Nothing else joins this piece.

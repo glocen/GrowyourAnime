@@ -32,7 +32,10 @@ import rook_sheet as rs  # noqa: E402
 
 FPS = 60
 MODEL = Path(__file__).resolve().parents[2] / "build" / "scratch" / "modulo" / "rook" / "model"
-GAME, FRONT = (152.0, 18.0), (38.0, 8.0)  # the camera's azimuth from his front and its elevation; GAME is assumed
+# The camera's azimuth from his front (past 0, on his right) and its elevation. GAME is the player's in a fight: a lead
+# stands beyond its target turned Combat.Lead.Frame (45) toward the avatar's right, so the camera sees it 43 degrees off
+# its front, on its left, 20 up (AR1's replay; AR66). It was (152, 18), behind his right shoulder, assumed.
+GAME, FRONT = (-43.0, 20.0), (38.0, 8.0)
 SIDE, QUARTER = (90.0, 6.0), (48.0, 8.0)  # the bare sheet's two views, Pip's and Lyric's
 SINK = 0.6  # studs a leg may slide up into the hip
 STEP = 0.3  # studs a travelling foot lifts, at most

@@ -19,6 +19,7 @@ local RunService = game:GetService("RunService")
 local Shared = ReplicatedStorage.Shared
 local Net = require(Shared.Net)
 local Actions = require(Shared.Definitions.Actions)
+local Enemies = require(Shared.Definitions.Enemies)
 local Passives = require(Shared.Definitions.Passives)
 local Animations = require(Shared.Config.Animations)
 local Combat = require(Shared.Config.Combat)
@@ -33,6 +34,8 @@ local Effects = require(script.Effects)
 local Rows = require(script.Rows)
 local Sounds = require(script.Sounds)
 local Cues = require(script.Cues)
+local TargetRing = require(script.TargetRing)
+local MaskGlint = require(script.MaskGlint)
 local SoundRule = require(Shared.Rules.Sound)
 
 local player = Players.LocalPlayer
@@ -438,6 +441,14 @@ local function beginAction(view: View, action: Actions.Action, at: number)
 			t:Play(fadeIn, 1, 1)
 			t.TimePosition = view.Clock
 			view.Current = t
+		end
+	end
+	-- A Shade's ordinary swing starts with its mask's glint, the swing's read (TR69 A), unless it's joined too late to show.
+	if Combat.Glint.On and sideOf(view) == "Shade" and late < Combat.Glint.Seconds then
+		local def = view.Model:GetAttribute("Def")
+		local row = if type(def) == "string" then Enemies.ById[def] else nil
+		if row and row.Action == action.Id and row.Kind ~= "Keeper" then
+			MaskGlint.Play(view.Model)
 		end
 	end
 	-- Its effect on its beats (Action.Effect): its rows, or an older signature's function. A landed hit's spark is every action's.
@@ -1436,6 +1447,18 @@ function FighterController.Start()
 					warn(`FighterController: {view.Model.Name}'s outline: {problem}`)
 				end
 			end
+		end
+		-- The ring under the player's own lead's target (TR69 A)
+		local aimed: Model? = nil
+		for _, view in views do
+			if isMine(view) and sideOf(view) == "Lead" then
+				local target = targetOf(view)
+				aimed = if target then target.Model else nil
+			end
+		end
+		local ringOk, ringProblem = pcall(TargetRing.Step, aimed)
+		if not ringOk then
+			warn(`FighterController: the target's ring: {ringProblem}`)
 		end
 		-- The replay's freeze holds the sparks and numbers with the lead. Written only as it starts and ends, so a capture's
 		-- own 0 holds too (Effects.TimeScale's contract; a write every frame undid it after one).

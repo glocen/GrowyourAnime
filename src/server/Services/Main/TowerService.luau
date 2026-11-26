@@ -7,8 +7,8 @@
 -- transaction (Rules.Tower.Won); the next foe comes at the rise's end, while the client plays the room's beat (its
 -- steps, its number: TowerRoomController). Health carries: no heal between floors, and in a floor at most its cap
 -- (FightService's HealRoom). The lead and its Regalia stay frozen through the run (D10,
--- the player's "Tower" attribute, FightService.Frozen). The lead falling, the avatar leaving the room, a respawn, a
--- leave or a shutdown end the run at its last floor won (Rules.Tower.End): its ledger granted once, the results kept in
+-- the player's "Tower" attribute, FightService.Frozen). The lead falling, the HUD's Leave (asked first: Net
+-- "TowerLeave", TR67), a respawn, a player gone or a shutdown end the run at its last floor won (Rules.Tower.End): its ledger granted once, the results kept in
 -- the save until the client's screen has shown them (Act "TowerSeen"). A run the save still holds at a join (a crash)
 -- is ended there. At the end the avatar is set down before its gate in a fade, and the room is removed in the black.
 -- Player attributes: Tower, the floor being fought or risen to (nil out of a run); TowerFoe, its foe's name; TowerRise,
@@ -17,6 +17,10 @@
 --   TowerService.Stop(player, why)                   the run ended where it stands
 -- The results' two presses (TR46): Net "TowerRetry" sets the avatar in its gate's door, where the gate's own step
 -- begins the next run once Rest is up; Net "TowerHome" sets it down at its plot's spawn, free (HomeService.SetDown).
+-- The Play panel's "Go to the Tower" (TR65, the director: "go to the tower is simply a teleport"): Net "TowerGo" sets
+-- the avatar and its lead down before their own gate, facing it, in the Festival Door's fade (KeeperService.SetDown).
+-- A walk out of the room never ends a run unasked (TR67): the avatar is set back on its floor and the client asks
+-- whether to leave (Net "TowerEdge").
 -- The heal cap told once (TR46): the first time it binds on a run's lead, the save keeps Progress.Tower.HealTold and the
 -- client is told (Net "TowerHealCap", the share), once per account.
 
@@ -58,6 +62,8 @@ local ROOM_TAG = "GA_TowerRoom" -- a room's model, its owner's UserId in For (th
 local SLAB_TAG = "GA_TowerSlab" -- a slab whose numbers the client writes: a room's, or a gate's with its Record
 local LINGER = 0.5 -- seconds a room stands past its owner's set-down, so the black hides it going
 local RESPAWN_HOLD = 3 -- seconds a room stands past a respawn in it
+local EDGE_BACK = 3 -- studs in from the floor's edge a walk out of the room is set back to (TR67)
+local EDGE_ASK = 2 -- seconds between the questions a walk out asks
 local DAIS_TOP = (function(): number -- the gate's dais's top over its lot's ground
 	local dais = (require(ReplicatedStorage.Shared.Config.Kits.TowerRoom.Manifest) :: any).pieces.GateDais
 	return dais.centre[2] + dais.size[2] / 2
@@ -83,6 +89,7 @@ type Run = {
 local runs: { [Player]: Run } = {}
 local endedAt: { [Player]: number } = {} -- os.clock a run ended: the ring waits Config's Rest
 local stepped: { [Player]: boolean } = {} -- the avatar has been outside the gate's door since its last run
+local edgeTold: { [Player]: number } = {} -- os.clock() the client was last asked whether to leave, after a walk out
 local slots: { [number]: Model } = {} -- each room standing, by its slot
 local folder: Folder? = nil
 local seeds = Random.new()
@@ -388,8 +395,8 @@ function TowerService.Stop(player: Player, why: string)
 	end
 end
 
--- The gate and every run, each STEP: a run starts from its gate's door; a run's avatar out of its room has left; its
--- lead and its foe are kept on its floor.
+-- The gate and every run, each STEP: a run starts from its gate's door; a run's avatar out of its room is set back on
+-- its floor and asked whether to leave (TR67); its lead and its foe are kept on its floor.
 local function check()
 	local now = os.clock()
 	for _, player in Players:GetPlayers() do
@@ -421,7 +428,16 @@ local function check()
 		local radius = RoomPlan.floor.radius
 		local off = root.Position - top
 		if now > run.Grace and Tower.Left(off.X, off.Y - STAND, off.Z) then
-			TowerService.Stop(player, "Left")
+			-- Out past the steps or off the floor: back on it, a step in from its edge, facing the middle. Only the HUD's
+			-- Leave ends a run, and the walk asks it.
+			local away = flat(off)
+			local back = if away.Magnitude > 1e-3 then away.Unit * (radius - EDGE_BACK) else Vector3.zero
+			root.AssemblyLinearVelocity = Vector3.zero
+			;(player.Character :: Model):PivotTo(CFrame.lookAt(top + back + Vector3.new(0, STAND, 0), top + Vector3.new(0, STAND, 0)))
+			if now - (edgeTold[player] or -math.huge) > EDGE_ASK then
+				edgeTold[player] = now
+				Net.Server.Fire("TowerEdge", player)
+			end
 			continue
 		end
 		-- A skip back or a shove never takes a fighter off the floor: set back on it, toward the middle.
@@ -640,6 +656,32 @@ local function after(player: Player, what: string): { [string]: any }
 	return { Ok = true, Waits = if ended then math.max(0, TowerConfig.Rest - (os.clock() - ended)) else 0 }
 end
 
+-- The HUD's Leave, once its question is answered (TR67): the run ends at its last floor won, with what it won, and the
+-- avatar is set down before its gate (Stop's own way).
+function TowerService.Leave(player: Player): { [string]: any }
+	if runs[player] == nil then
+		return { Ok = false, Error = "NoRun" }
+	end
+	TowerService.Stop(player, "Leave")
+	return { Ok = true }
+end
+
+-- "Go to the Tower" (TR65): the avatar and its lead set down before the player's own gate, facing it, where a run
+-- would set them down at its end, in the fade. Refused in a run, a try or a fight, and where there's no gate (the
+-- Festival's place).
+function TowerService.Go(player: Player): { [string]: any }
+	if runs[player] then
+		return { Ok = false, Error = "InRun" }
+	elseif player:GetAttribute("Try") ~= nil or FightService.InCombat(player) then
+		return { Ok = false, Error = "InCombat" }
+	end
+	local ring = ringOf(player)
+	if ring == nil then
+		return { Ok = false, Error = "NoRing" }
+	end
+	return if KeeperService.SetDown(player, before(ring)) then { Ok = true } else { Ok = false, Error = "Nowhere" }
+end
+
 -- The heal cap bound on a fighter: if it's a run's lead and its account was never told, tell it once.
 local telling: { [Player]: boolean } = {}
 local function capped(f: FightService.Fighter)
@@ -675,6 +717,12 @@ function TowerService.Start()
 	end)
 	Net.Server.Handle("TowerHome", function(player: Player): { [string]: any }
 		return after(player, "Home")
+	end)
+	Net.Server.Handle("TowerGo", function(player: Player): { [string]: any }
+		return TowerService.Go(player)
+	end)
+	Net.Server.Handle("TowerLeave", function(player: Player): { [string]: any }
+		return TowerService.Leave(player)
 	end)
 	FightService.Fell:Connect(function(f: FightService.Fighter)
 		for player, run in runs do

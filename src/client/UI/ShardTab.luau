@@ -3,7 +3,7 @@
 -- return.json, "run"; its numbers Config.Hud.Return.Run). A tab of the run's line's own glass hangs under the line, the
 -- dare's tab's twin to its right: the shard breaking at home, its small picture and its time left. Broken, it reads
 -- "Ready" over a soft glow until the player is home, and the notice opens right from it once ("Your shard broke." /
--- "Its Voidkin waits at home."), then folds back to the tab. While the dare's tab is open the tab rides its foot. No
+-- "Its Voidkin is at your base."), then folds back to the tab. While the dare's tab is open the tab rides its foot. No
 -- shard in the Breaker, no tab. StageController draws the line and calls Show each time it or the base changes.
 --   ShardTab.Show(frame, hard, state?)   the tab on the line's frame; nil takes it away
 --   ShardTab.Notice(frame)               the notice, once, from the tab already shown

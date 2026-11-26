@@ -1,7 +1,7 @@
 --!strict
 -- CaptureCases: the capture after a reveal (TR60; UI/Reveal/Capture; docs/design.md, "Being seen", the capture). The
 -- camera tile beside a Voidkin's card takes its own press, and a take shows the frame without the HUD, then puts every
--- layer, the tile and "Tap to continue" back. Apart from Cases, which is past the type solver's size.
+-- layer, the tile and "Continue" back. Apart from Cases, which is past the type solver's size.
 
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
@@ -27,7 +27,7 @@ function CaptureCases.Cases(): { any }
 			Run = function(t: any)
 				-- TR60 (docs/design.md, "Being seen", the capture): the camera tile stands beside the card's top right while it
 				-- holds. A take (here without the share sheet) turns off every layer but the world's and the overlay's, hides the
-				-- tile and "Tap to continue" for its frame, then turns back on exactly what it turned off.
+				-- tile and "Continue" for its frame, then turns back on exactly what it turned off.
 				local c = RevealConfig.Plate.Capture
 				local rook = Voidkin.ById.rook
 				BaseController.Reveal({ Def = rook.Id, Outcome = "New", Lead = false, Credits = 0 }, { Rarity = "Epic", Name = rook.Name, Model = rook.Model })
@@ -70,7 +70,7 @@ function CaptureCases.Cases(): { any }
 				t.Check("a press at its middle lands on it", taker == tile, if taker then taker:GetFullName() else "nothing")
 				t.Wait(RevealConfig.CardHold + 0.1)
 				local skip = card:FindFirstChild("Skip")
-				t.Check(`"Tap to continue" shows before the take`, skip ~= nil and skip:IsA("GuiObject") and skip.Visible)
+				t.Check(`"Continue" shows before the take`, skip ~= nil and skip:IsA("GuiObject") and skip.Visible)
 				-- The take: which of the layers were on, then what it leaves on. A layer is a ScreenGui of ours with its own
 				-- UIScale (UI/Layers); the reveal's safe-area probe draws nothing and isn't one.
 				local on: { [ScreenGui]: boolean } = {}
@@ -97,7 +97,7 @@ function CaptureCases.Cases(): { any }
 				end
 				t.Check("in its frame, only the world's and the overlay's layers are on", #wrong == 0, table.concat(wrong, ", "))
 				t.Check("and the tile is hidden", not tile.Visible)
-				t.Check(`and "Tap to continue"`, skip ~= nil and skip:IsA("GuiObject") and not skip.Visible)
+				t.Check(`and "Continue"`, skip ~= nil and skip:IsA("GuiObject") and not skip.Visible)
 				t.Check("the take ends within its timeout", waitFor(t, c.Timeout + 0.5, function(): boolean
 					return RevealCapture.Last() ~= before
 				end))
@@ -119,7 +119,7 @@ function CaptureCases.Cases(): { any }
 				end
 				t.Check("then every layer as it was", #back == 0, table.concat(back, ", "))
 				t.Check("the tile back", tile.Visible)
-				t.Check(`"Tap to continue" back`, skip ~= nil and skip:IsA("GuiObject") and skip.Visible)
+				t.Check(`"Continue" back`, skip ~= nil and skip:IsA("GuiObject") and skip.Visible)
 				local shown = BaseController.Revealed()
 				t.Check("the card still holds", shown ~= nil and shown.Card ~= nil)
 				BaseController.Dismiss()

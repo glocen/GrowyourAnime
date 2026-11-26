@@ -8,6 +8,7 @@ local CollectionService = game:GetService("CollectionService")
 local Tags = require(script.Parent.Tags)
 local Enemies = require(script.Parent.Parent.Definitions.Enemies)
 local Grounds = require(script.Parent.Parent.Definitions.Grounds)
+local WorldConfig = require(script.Parent.Parent.Config.World)
 
 local Markers = {}
 
@@ -115,6 +116,7 @@ function Markers.Report(plots: number, owned: { [number]: boolean }?, place: str
 	for _, name in names do
 		local s = Tags[name]
 		local live = Markers.All(name)
+		local wanted = if s.Cut and WorldConfig.Cut[s.Cut] then 0 else s.Count -- none while it's cut (AR65)
 		if place and s.Place ~= place then
 			if #live > 0 then
 				problem(`{name}: {#live} in the world, wants none: it belongs in the {s.Place} place`)
@@ -184,12 +186,12 @@ function Markers.Report(plots: number, owned: { [number]: boolean }?, place: str
 					if count > 0 then
 						problem(`{name}: plot {plot} is no one's and has {count}, wants none`)
 					end
-				elseif (s.Count and count ~= s.Count) or (s.Count == nil and count == 0) then
-					problem(`{name}: plot {plot} has {count}, wants {s.Count or "one at least"}`)
+				elseif (wanted and count ~= wanted) or (wanted == nil and count == 0) then
+					problem(`{name}: plot {plot} has {count}, wants {if wanted == 0 then "none while it's cut" else wanted or "one at least"}`)
 				end
 			end
-		elseif (s.Count and #live ~= s.Count) or (s.Count == nil and #live == 0) then
-			problem(`{name}: {#live} in the world, wants {s.Count or "one at least"}`)
+		elseif (wanted and #live ~= wanted) or (wanted == nil and #live == 0) then
+			problem(`{name}: {#live} in the world, wants {if wanted == 0 then "none while it's cut" else wanted or "one at least"}`)
 		end
 	end
 	return problems

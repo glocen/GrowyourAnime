@@ -5,7 +5,8 @@
 -- and at most the cap in one; the lead, its stars and its Regalia frozen; the room's slab showing the floor and the next,
 -- its foe's steps risen at a rise and down in the fight; the lead's fall ending the run at its last floor won, the ledger
 -- granted once, the record on the gate's slab and the results, which open once and clear when closed, the avatar set down
--- before its gate and the room gone. Then the avatar leaving its room, and a crash's run ended at the next join. The
+-- before its gate and the room gone. Then a walk out of the room, set back and asked, Stay, the HUD's Leave ending the
+-- run at its last floor won (TR67), and a crash's run ended at the next join. The
 -- results' Home and Retry (TR46): Home sets the avatar down at its plot's spawn, Retry in its gate's door, where the next
 -- run begins once rested. The heal cap told once, under the lead's
 -- corner, and never again; the week's line on the results, its board a tap away and back (TR46). The case's record,
@@ -24,6 +25,7 @@ local Tower = require(Shared.Rules.Tower)
 local ProfileController = require(script.Parent.Parent.ProfileController)
 local TowerRoomController = require(script.Parent.Parent.Parent.Main.TowerRoomController)
 local HudController = require(script.Parent.Parent.Parent.Main.HudController)
+local TowerController = require(script.Parent.Parent.Parent.Main.TowerController)
 local UI = script.Parent.Parent.Parent.Parent.UI
 local Screen = require(UI.Kit.Screen)
 local Button = require(UI.Kit.Button)
@@ -367,7 +369,7 @@ function TowerCases.Cases(): { any }
 					t.Check("it shows the board on the card", board ~= nil and board.Visible and board:IsDescendantOf(parts.Body))
 					t.Check("the results step aside under it", not seen(parts.Week, parts.Body) and not seen(parts.Floor, parts.Body) and not seen(parts.Home, parts.Body))
 					local title = TowerScreen.Parts().BoardTitle :: TextLabel?
-					t.Check("titled This Week's Climb", title ~= nil and title.Text == "This Week's Climb")
+					t.Check("titled This week's climb", title ~= nil and title.Text == "This week's climb")
 					local ownRow: TextLabel? = nil
 					for name, part in TowerScreen.Parts() do
 						if name ~= "Floor" and string.sub(name, -5) == "Floor" and part:IsA("TextLabel") and part.TextColor3 == Theme.Colour.Ready then
@@ -401,17 +403,45 @@ function TowerCases.Cases(): { any }
 					t.Check("a move made while a faded one waits wins over it", type(race) == "table" and race.Ok == true and race.Off < 1, if type(race) == "table" then tostring(race.Off or race.Error) else "no answer")
 					task.wait(0.5)
 					t.Check("and don't open again", Screen.Current() ~= TowerScreen.Name)
-					-- Leaving the room (past its steps' ring) ends a run where it stands.
+					-- A walk out of the room never ends a run unasked (TR67): the avatar is set back on its floor and asked; Stay
+					-- keeps the run, and the HUD's Leave, asked and answered, ends it at its last floor won, with what it won.
 					t.Server("LeadHeal")
 					local again = t.Server("TowerStart")
 					t.Check("another run", type(again) == "table" and again.Ok == true, tostring(again and again.Error))
 					waitFor(t, TowerConfig.Rise + 2, function()
 						return state().Phase == "Fighting"
 					end)
-					t.Server("TowerOff")
-					t.Check("leaving the room ends it", waitFor(t, 3, function()
-						return me:GetAttribute("Tower") == nil and view().Progress.Tower.Run == nil and view().Progress.Tower.Results ~= nil
+					t.Server("TowerWin")
+					t.Check("a floor won before the leave", waitFor(t, TowerConfig.Rise + 4, function()
+						local held = view().Progress.Tower.Run
+						return held ~= nil and held.Floor >= 1 and state().Phase == "Fighting"
 					end))
+					t.Server("TowerOff")
+					t.Check("a walk out of the room asks whether to leave", waitFor(t, 3, function()
+						return Screen.Current() == TowerScreen.AskName
+					end), tostring(Screen.Current()))
+					local middle = state().Room
+					local avatar = me.Character and me.Character:FindFirstChild("HumanoidRootPart") :: BasePart?
+					local off = if middle and avatar then avatar.Position - middle else Vector3.new(1e4, 0, 0)
+					t.Check("and sets the avatar back in its room, the run going on", me:GetAttribute("Tower") ~= nil and view().Progress.Tower.Run ~= nil
+						and not Tower.Left(off.X, 0, off.Z), string.format("%.1f studs from its middle", (off * Vector3.new(1, 0, 1)).Magnitude))
+					local stay = TowerScreen.Parts().Stay :: TextButton?
+					t.Check("Stay keeps the run", stay ~= nil and Button.Press(stay) ~= false and waitFor(t, 2, function(): boolean
+						return Screen.Current() == nil
+					end) and me:GetAttribute("Tower") ~= nil and view().Progress.Tower.Run ~= nil)
+					local leave = TowerController.Parts().Leave :: TextButton?
+					t.Check("the HUD's Leave shows during a run", leave ~= nil and leave.Visible)
+					local held = view().Progress.Tower.Run
+					local wonBefore = if held then held.Floor else -1
+					t.Check("its press asks first", leave ~= nil and Button.Press(leave) ~= false and Screen.Current() == TowerScreen.AskName, tostring(Screen.Current()))
+					local line = TowerScreen.Parts().AskLine :: TextLabel?
+					t.Check("saying where the run ends", line ~= nil and line.Text == TowerScreen.AskLine(wonBefore), if line then line.Text else "no line")
+					local yes = TowerScreen.Parts().Leave :: TextButton?
+					t.Check("Leave ends the run at its last floor won", yes ~= nil and Button.Press(yes) ~= false and waitFor(t, 3, function(): boolean
+						local results = view().Progress.Tower.Results
+						return me:GetAttribute("Tower") == nil and view().Progress.Tower.Run == nil and results ~= nil and results.Floor == wonBefore
+					end), `{wonBefore} won before`)
+					t.Check("the HUD's Leave hides out of a run", leave == nil or not leave.Visible)
 					t.Check("its results open", waitFor(t, 3, function()
 						return Screen.Current() == TowerScreen.Name
 					end))

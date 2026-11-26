@@ -99,4 +99,17 @@ return {
 			t.Equal("the save stays saveable", #Saveable.Problems(data), 0)
 		end,
 	},
+	{
+		Name = "Progress: a keeper is beaten once any ground's keeper has a win, on either difficulty: the tutorial's end (TR65)",
+		Run = function(t: any)
+			local data = fresh()
+			t.Check("a new account: not beaten", not Progress.Beaten(data.Progress.Grounds))
+			t.Check("no grounds at all: not beaten", not Progress.Beaten(nil))
+			data.Progress.Grounds[Grounds.First] = { Opened = NOW, KeeperWins = { Normal = 0, Hard = 0 }, Back = nil }
+			t.Check("a ground opened with no win: not beaten", not Progress.Beaten(data.Progress.Grounds))
+			t.Check("a keeper's fall: beaten", Progress.KeeperWon(data, Grounds.First, NOW).Ok == true and Progress.Beaten(data.Progress.Grounds))
+			data.Progress.Grounds[Grounds.First].KeeperWins = { Normal = 0, Hard = 1 }
+			t.Check("a Hard win alone: beaten", Progress.Beaten(data.Progress.Grounds))
+		end,
+	},
 }

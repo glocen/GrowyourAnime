@@ -156,7 +156,7 @@ local function save(row: Row)
 	task.spawn(function()
 		local answer = given.Act("Settings", { Name = row.Name, Value = value })
 		if answer.Ok ~= true then
-			given.Say("Not saved: try again")
+			given.Say("Not saved. Try again.")
 			SettingsController.Keep(row.Name, SettingsController.Level(row.Name))
 		end
 	end)

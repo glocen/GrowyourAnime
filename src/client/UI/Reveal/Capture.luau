@@ -1,7 +1,7 @@
 --!strict
 -- Reveal's capture (client; TR60, docs/design.md, "Being seen", the capture). While a reveal's card holds, a camera tile
 -- stands beside its top right corner. A tap takes the frame with the reveal's card and without the HUD: every layer but
--- the world's and the overlay's is off for it, and so are the tile and "Tap to continue" (Layers.Only). Then Roblox's
+-- the world's and the overlay's is off for it, and so are the tile and "Continue" (Layers.Only). Then Roblox's
 -- share sheet opens on it, its launch data the sharer's UserId alone (Rules.Capture), which the server counts when a
 -- friend joins through it (FunnelService). A share is never rewarded. Config.Reveal.Plate.Capture's numbers; a drawn
 -- camera in the kit's neutral glass stands in for the tile's icon (Modulo's).

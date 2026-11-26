@@ -1600,7 +1600,7 @@ return function(given: Given): { any }
 					force(inventory) -- the word's plate over the chip
 				end
 				if await("Home") then
-					force(base) -- "You're home"
+					force(base) -- "Back at your base"
 				end
 				if await("Card") then
 					force(nil)
@@ -2329,7 +2329,7 @@ return function(given: Given): { any }
 			Stay = true,
 			Run = function(t: any)
 				-- AR12's plate (docs/asset-requests.md, "The reveal's card, its images"): research's pass is on the builder's
-				-- still. Each outcome's card stands, past "Tap to continue", until the driver moves ReplicatedStorage.NL_TakeStep
+				-- still. Each outcome's card stands, past "Continue", until the driver moves ReplicatedStorage.NL_TakeStep
 				-- on ("Common", "Rare", "Legendary", "End") and captures it; the Mythical copy stands first, the content
 				-- check's condition on the tinted pip at a phone's size.
 				local step = Instance.new("StringValue")

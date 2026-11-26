@@ -104,9 +104,9 @@ local player = Players.LocalPlayer
 -- What a refused change says (TR12, Rules.Carry; Rules.Base; Rules.Collection).
 local REFUSED: { [string]: string } = {
 	InCombat = "Not during a fight",
-	Healing = "Still healing at home",
-	Leading = "The lead fights: it can't be stationed",
-	Working = "Stationed: recall it first",
+	Healing = "Still healing at base",
+	Leading = "Your lead can't work a bay",
+	Working = "Working in a bay. Take it out first.",
 	NotEnough = "Not enough copies",
 	MaxStars = "All seven stars",
 	Filtered = "That name can't be used",
@@ -226,13 +226,13 @@ end
 local function role(view: Profile.View, owned: Profile.OwnedVoidkin, on: On, now: number): string
 	local whole = on.Healing()[owned.Id]
 	if whole and whole > now then
-		return `Healing at home {Hud.Clock(whole - now)}`
+		return `Healing at base {Hud.Clock(whole - now)}`
 	end
 	if player:GetAttribute("Training") == owned.Id then
 		return "Training"
 	end
 	local at = Read.Role(view, owned.Id)
-	return if at == "Lead" then "Leading" elseif at ~= "" then `Stationed in {at}` else "Resting"
+	return if at == "Lead" then "Leading" elseif at ~= "" then `Working in {at}` else "Resting"
 end
 
 local function resolved(view: Profile.View, owned: Profile.OwnedVoidkin): (Stats.Block, { Stats.Line })
@@ -884,7 +884,7 @@ local function overview(scroll: ScrollingFrame, view: Profile.View, owned: Profi
 		end
 	end
 	if owned.Nickname ~= "" then
-		line(scroll, 33, "Its own name", nil, if own then own.Name else owned.Def)
+		line(scroll, 33, "Nickname", nil, if own then own.Name else owned.Def)
 	end
 end
 
@@ -904,7 +904,7 @@ local function kitTab(scroll: ScrollingFrame, owned: Profile.OwnedVoidkin)
 	for _ in (if combo then combo.Hits else {}) do
 		hits += 1
 	end
-	line(scroll, 2, "Combo", nil, if hits > 0 then `{hits} hits in a string, again and again` else "Its moves come when it's built")
+	line(scroll, 2, "Combo", nil, if hits > 0 then `{hits}-hit combo, repeating` else "Moves coming soon")
 	local passive, how = said(row.Words.Passive)
 	local own = Passives.ById[owned.Def]
 	line(scroll, 3, `Passive · {if own then own.Name else passive}`, nil, how)
@@ -953,7 +953,7 @@ local function starsTab(scroll: ScrollingFrame, view: Profile.View, owned: Profi
 		pip.Parent = pips
 	end
 	local cost = Collection.NextStarCost(owned)
-	line(scroll, 2, `{owned.Stars} of {VoidkinConfig.MaxStars} stars`, nil, if cost then Hud.Copies(owned.Copies, cost) else `All {ALL_STARS} stars: a copy now sells for Credits`)
+	line(scroll, 2, `{owned.Stars} of {VoidkinConfig.MaxStars} stars`, nil, if cost then Hud.Copies(owned.Copies, cost) else `All {ALL_STARS} stars. Extra copies sell for Credits.`)
 	if cost then
 		local before = Stats.Power((resolved(view, owned)))
 		local next = table.clone(owned)

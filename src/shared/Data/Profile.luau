@@ -134,6 +134,7 @@ export type ReturnCard = {
 	Trained: { [string]: number },
 	Worked: { [string]: number }?, -- the workers' levels (research, 2026-11-25); nil on a card from before it
 	Shards: { string },
+	Jewels: { [string]: number }?, -- the Condenser's jewels its arrival banked, by key ("Blue:1"; TR66 #11); nil: none
 }
 
 export type GroundProgress = {

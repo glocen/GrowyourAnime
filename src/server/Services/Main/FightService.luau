@@ -203,6 +203,19 @@ local function standing(f: Fighter?): boolean
 	return f ~= nil and fighters[f.Id] == f and f.State ~= "Down" and f.State ~= "Reset" and f.State ~= "Home"
 end
 
+-- Whether `f`, falling now, leaves none of its pack standing: its fall is the pack's beat (TR69 A; Hitstop.Last).
+local function lastOfPack(f: Fighter): boolean
+	if f.Pack == nil then
+		return false
+	end
+	for _, other in fighters do
+		if other ~= f and other.Pack == f.Pack and standing(other) then
+			return false
+		end
+	end
+	return true
+end
+
 -- The element states let go (Config.Combat.States): a body down, walking home or at home is out of the fight.
 local function clearStates(f: Fighter)
 	f.Burn, f.Chill, f.ShockUntil, f.SapUntil = nil, nil, 0, 0
@@ -1123,7 +1136,8 @@ local function land(f: Fighter, action: Actions.Action, target: Fighter, beat: s
 	end
 	-- The hold by the hit's rung, a critical's raised and a killing hit's at least its own (Rules.Fight.Hold; AR8 A)
 	local rung = Fight.Rung(hit.Rung, result.Critical, Combat.Hitstop, fell)
-	local hold = if result.Dodged then 0 else Fight.Hold(rung, fell, Combat.Hitstop)
+	local last = fell and lastOfPack(target) -- a pack's last fall holds its beat (TR69 A)
+	local hold = if result.Dodged then 0 else Fight.Hold(rung, fell, Combat.Hitstop, last)
 	if not result.Dodged then
 		if not fell and target.Action == nil and target.State ~= "Stun" and (Combat.Flinch.Kinds :: any)[target.Kind] then
 			setState(target, "Flinch", at + hold + Combat.Flinch.Seconds)
@@ -1160,6 +1174,7 @@ local function land(f: Fighter, action: Actions.Action, target: Fighter, beat: s
 		Heavy = hit.Heavy,
 		Rung = rung,
 		Hold = hold,
+		Last = if last then true else nil, -- the pack's last fall: its drops wait out the hold and leave together (TR69 A)
 		Steady = hit.Steady == true, -- the attacker doesn't hold on it, only the target
 		Guarded = if keep < 1 and not result.Dodged then (if broke then "Broke" else "Glanced") else nil, -- AR52
 		Health = left,

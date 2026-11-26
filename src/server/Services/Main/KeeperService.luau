@@ -32,6 +32,7 @@ local Combat = require(Shared.Config.Combat)
 local WorldConfig = require(Shared.Config.World)
 local Markers = require(Shared.World.Markers)
 local Progress = require(Shared.Rules.Progress)
+local Grounds = require(Shared.Definitions.Grounds)
 local Drops = require(Shared.Rules.Drops)
 local Profile = require(Shared.Data.Profile)
 local Core = script.Parent.Parent.Core
@@ -494,6 +495,36 @@ function KeeperService.Start()
 					record.Back = if seconds > 0 then os.time() + seconds else nil
 				end
 				return { Ok = true, Resting = Progress.Resting(draft, ground, os.time()) }
+			end)
+		end)
+		-- Every ground's keeper wins in the save, { [ground] = { Normal, Hard } }, set first to `wins` when it's given: a
+		-- ground named there takes those wins (its record made if missing), and `false` takes a record away (a case puts
+		-- back what it found: TR65's guide case).
+		DebugService.Register("KeeperWinsSet", function(who: any, wins: any): any
+			local player = DebugService.ResolvePlayer(who)
+			if player == nil then
+				return { Ok = false, Error = "NoPlayer" }
+			elseif wins ~= nil and type(wins) ~= "table" then
+				return { Ok = false, Error = "BadArgs" }
+			end
+			return DataService.Change(player, "KeeperWinsSet", function(draft)
+				for ground, set in (wins or {}) :: { [any]: any } do
+					if Grounds.ById[ground] == nil then
+						continue
+					elseif set == false then
+						draft.Progress.Grounds[ground] = nil
+					elseif type(set) == "table" then
+						local record = draft.Progress.Grounds[ground]
+							or { Opened = os.time(), KeeperWins = { Normal = 0, Hard = 0 }, Back = nil } :: Profile.GroundProgress
+						record.KeeperWins = { Normal = tonumber(set.Normal) or 0, Hard = tonumber(set.Hard) or 0 }
+						draft.Progress.Grounds[ground] = record
+					end
+				end
+				local out = {}
+				for ground, record in draft.Progress.Grounds do
+					out[ground] = { Normal = record.KeeperWins.Normal or 0, Hard = record.KeeperWins.Hard or 0 }
+				end
+				return { Ok = true, Wins = out }
 			end)
 		end)
 		DebugService.Register("KeeperEnd", function(who: any, how: any): any

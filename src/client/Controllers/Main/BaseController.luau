@@ -89,7 +89,7 @@ local STARTER_SPIN = 0.6 -- radians a second each waiting shard turns
 local CHOOSE_HOLD = 0.4 -- seconds a starter's prompt is held: a choice for good
 local PLATE_LINE = 20 -- authored pixels a plate's line takes
 -- Each plate as wide as its longest line at the smallest scale, where text draws at 17 authored (Text.Legible):
--- "Lantern Row shard · 1 min 59 s" is 222, "Bay 2 · nobody works here" 193 (measured 2026-11-12). The battery's plate
+-- "Lantern Row shard · 1 min 59 s" is 222, "Bay 2 · nobody works here" 193 (measured 2026-11-12, before TR68 shortened it). The battery's plate
 -- says only its name: the Electricity pill carries the count (TR2, research's read of the phone take, fix 3).
 local BREAKER_WIDTH = 232
 local BAY_WIDTH = 204
@@ -113,24 +113,24 @@ local REASON: { [string]: string } = {
 	Chosen = "The first shard is already chosen",
 	NoShard = "You have none of that shard",
 	Empty = "Nothing there",
-	Leading = "The lead can't work too",
-	Working = "A worker can't lead too",
+	Leading = "Your lead can't work a bay",
+	Working = "Take it out of its bay first",
 	Named = "That shard holds one Voidkin",
 	Infused = "That shard already has its voltage",
 	Short = "Not enough charge in the battery",
-	Brief = "It would save under a minute",
+	Brief = "Saves less than a minute",
 	Closed = "The Power screen isn't open yet",
-	Over = "The shares come to more than the whole",
-	Moved = "That shard has moved on",
+	Over = "Over 100%. Lower one share.",
+	Moved = "That shard changed. Try again.",
 	BadArgs = "That can't be done",
 	Unknown = "That can't be done",
 	Stale = "Already done",
 	Cap = "That's the top level for now",
-	Ceiling = "Raise the base's level first",
+	Ceiling = "Upgrade the base first",
 	NoAnswer = "That didn't go through. Try again.",
-	Asleep = `The Stone Condenser wakes at base level {CondenserConfig.Wakes}`,
-	Busy = "A convert is already under way",
-	Stones = "Not enough stones in the bag for that convert",
+	Asleep = `The Stone Condenser turns on at base level {CondenserConfig.Wakes}`,
+	Busy = "The Condenser is busy",
+	Stones = "Not enough stones",
 	Low = `The Stone Condenser turns Mid into High from its level {CondenserConfig.Converts.Mid.FromLevel}`,
 }
 
@@ -471,14 +471,14 @@ local function bayRows(list: ScrollingFrame, view: Profile.View, now: Read.Base)
 			})
 		end
 		if current ~= "" then
-			add({ Name = "Empty", Text = "Nobody works here", Action = "Empty", OnPress = function()
+			add({ Name = "Empty", Text = "Empty", Action = "Empty", OnPress = function()
 				if act("SetWorker", { Bay = picking, Voidkin = "" }).Ok == true then
 					pickingBay = nil
 					build()
 				end
 			end })
 		end
-		add({ Name = "Back", Text = `Bay {picking}: who works?`, Colour = Theme.Colour.TextDim, Action = "Back", OnPress = function()
+		add({ Name = "Back", Text = `Bay {picking}: pick a worker`, Colour = Theme.Colour.TextDim, Action = "Back", OnPress = function()
 			pickingBay = nil
 			build()
 		end })
@@ -492,7 +492,7 @@ local function bayRows(list: ScrollingFrame, view: Profile.View, now: Read.Base)
 	end
 	table.sort(shards)
 	for _, id in shards do
-		add({ Name = id, Text = Read.ShardName(id), Detail = `{view.Bag.Shards[id]} in the bag`, Action = "Add", Disabled = if view.Progress.Starter == "" then "First, choose" else nil, OnPress = function()
+		add({ Name = id, Text = Read.ShardName(id), Detail = `{view.Bag.Shards[id]} in the bag`, Action = "Add", Disabled = if view.Progress.Starter == "" then "Pick a shard first" else nil, OnPress = function()
 			act("AddShard", { Shard = id })
 		end })
 	end
@@ -501,7 +501,7 @@ local function bayRows(list: ScrollingFrame, view: Profile.View, now: Read.Base)
 	end
 	for index, bay in view.Base.Bays do
 		local worker = if bay.Worker ~= "" then view.Voidkin[bay.Worker] else nil
-		local detail = if worker then `{Read.VoidkinName(worker)} · {Read.Kw(Power.Output(worker))}` else "Nobody works here"
+		local detail = if worker then `{Read.VoidkinName(worker)} · {Read.Kw(Power.Output(worker))}` else "Empty"
 		add({ Name = `Bay{index}`, Text = `Bay {index}`, Detail = detail, Action = "Set", OnPress = function()
 			pickingBay = index
 			build()
@@ -525,7 +525,7 @@ build = function()
 	local now = Read.Base(view, workspace:GetServerTimeNow())
 	local body = Screen.Open("Base", "Base", SCREEN)
 	breakerRows(column(body, "Breaker", if view.Progress.Starter == "" then "Choose your first shard" else "Void Breaker", true), view, now)
-	bayRows(column(body, "Bays", if pickingBay then "Who works?" else "Bag and bays", false), view, now)
+	bayRows(column(body, "Bays", if pickingBay then "Pick a worker" else "Bag and bays", false), view, now)
 end
 
 function BaseController.Open()
@@ -928,7 +928,8 @@ local function find()
 			bayMarkers[index] = marker
 		end
 	end
-	local changed = number ~= plot or stale(breaker, breakerMarker) or stale(battery, batteryMarker)
+	local changed = number ~= plot or stale(breaker, breakerMarker)
+		or (batteryMarker ~= nil and stale(battery, batteryMarker)) -- none while it's folded into the Mill (AR65)
 		or (machineMarker ~= nil and stale(machine, machineMarker))
 		or (generatorMarker ~= nil and stale(generator, generatorMarker))
 		or (condenserMarker ~= nil and stale(condenser, condenserMarker))
@@ -1161,7 +1162,7 @@ function BaseController.Refresh()
 		-- holds anything.
 		local cap = Condenser.Cap(Condenser.Level(home))
 		local tray = if held >= cap then `Tray full · {held} {CondenserConfig.Makes}` else `Tray {held} of {cap} {CondenserConfig.Makes}`
-		setLines(condenser.Plate, { "Stone Condenser", if not awake then `Wakes at base level {CondenserConfig.Wakes}`
+		setLines(condenser.Plate, { "Stone Condenser", if not awake then `Turns on at base level {CondenserConfig.Wakes}`
 			elseif mid > 0 then `{tray} · {table.concat(besides, " · ")}`
 			else tray })
 		condenser.News = awake and (held >= cap or mid > 0)
@@ -1239,7 +1240,7 @@ function BaseController.Refresh()
 		local line: string? = if bay == nil then shut(index)
 			elseif worker then `{Read.VoidkinName(worker)} · {Read.Kw(Power.Output(worker))}`
 			elseif sent then nil
-			else `Bay {index} · nobody works here`
+			else `Bay {index} · empty`
 		setLines(spot.Plate, if line then { line } else {})
 		spot.News = bay ~= nil and worker == nil and free
 		local panel = spot.Plate:FindFirstChild("Panel")

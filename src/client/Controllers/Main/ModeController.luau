@@ -3,25 +3,23 @@
 -- gamemode"; docs/research/cloud-2026-11-24/play-mode-panel.md). Play opens the Play panel (UI.ModeScreen), a card a
 -- mode as Rules.Modes says for this player's save: the Festival's press begins the run the player would go to next,
 -- through the Arc panel's own begin (StageController), and "Choose Arc" opens the Arc panel; the Tower's press closes
--- the panel and points the world's marker at the player's own ring (UI.Guide's errand), where a climb begins as it
--- always has. Pressed again while the panel or the Arc panel is open, Play closes it. The panel is built again when the save changes under it.
+-- the panel and takes the player and their lead to their own gate, facing it (TR65: a teleport, Net "TowerGo"), where a
+-- climb begins as it always has. Pressed again while the panel or the Arc panel is open, Play closes it. The panel is built again when the save changes under it.
 -- Config.Hud.Modes.On = false gives Play the Arc panel directly, as before.
 --   ModeController.Open()                  what the dock's Play does
 --   ModeController.Cards() -> { Card }?    the cards as they'd show now, for tests; nil before the save arrives
 
-local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local Shared = ReplicatedStorage.Shared
 local HudConfig = require(Shared.Config.Hud)
 local WorldConfig = require(Shared.Config.World)
-local Markers = require(Shared.World.Markers)
+local Net = require(Shared.Net)
 local Modes = require(Shared.Rules.Modes)
 local Profile = require(Shared.Data.Profile)
 local PlaceRole = require(Shared.Util.PlaceRole)
 
 local UI = script.Parent.Parent.Parent.UI
-local Guide = require(UI.Guide)
 local Screen = require(UI.Kit.Screen)
 local Toast = require(UI.Kit.Toast)
 local ModeScreen = require(UI.ModeScreen)
@@ -32,8 +30,15 @@ local StageController = require(script.Parent.StageController)
 
 local ModeController = {}
 
-local player = Players.LocalPlayer
 local LOOK = HudConfig.Modes
+
+-- Why "Go to the Tower" was refused, in plain words (TowerService.Go).
+local GO_REFUSED: { [string]: string } = {
+	NoRing = "The Tower isn't in reach here",
+	InRun = "You're in the Tower already",
+	InCombat = "Not while you're fighting",
+	Nowhere = "The Tower isn't in reach here",
+}
 
 local function cards(view: Profile.View): { Modes.Card }
 	return Modes.Cards(view, WorldConfig.Row.Ground, PlaceRole.Is("Main"))
@@ -45,14 +50,13 @@ local on: ModeScreen.On = {
 		StageController.Pick()
 	end,
 	Ring = function(): boolean
-		local plot = player:GetAttribute("Plot")
-		local ring = if type(plot) == "number" then Markers.Find("TowerRing", { Plot = plot }) else nil
-		if ring == nil then
-			Toast.Show("The Tower isn't in reach here")
+		local answer = Net.Client.Invoke("TowerGo")
+		if type(answer) ~= "table" or answer.Ok ~= true then
+			local why = if type(answer) == "table" then answer.Error else nil
+			Toast.Show(GO_REFUSED[why] or GO_REFUSED.NoRing)
 			return false
 		end
 		Screen.Close()
-		Guide.Errand({ ring }, LOOK.Errand)
 		return true
 	end,
 }

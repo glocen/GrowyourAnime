@@ -104,6 +104,71 @@ Theme.Motion = {
 	Slow = TweenInfo.new(0.35, Enum.EasingStyle.Quart, Enum.EasingDirection.Out),
 }
 
+-- The style frame (AR62; research's pick, 2026-11-26, 14:24: A, Graphite, with the shard cut): the tokens every screen's
+-- redo derives from, a screen at a time (build/handoff/UI/style_frames/A_home_cut.png and A_tokens.png, drawn by
+-- tools/ui/style_frames.py, its TAKES.A). Until a screen moves onto them it keeps Theme.Colour, and the UI lint
+-- (UiLint.Strays, TR63) names what it draws off them. Sizes are authored, at Theme.Author: the frame is drawn at 852 x
+-- 480, which the layer draws at 480 / 375 of authored, so each is the frame's over 1.28, its frame number beside it.
+local function hex(code: string): Color3
+	return Color3.fromHex(code)
+end
+Theme.Frame = {
+	-- Dark and quiet, never black: warm graphite, ivory words, one ivory press. The art is the light.
+	Neutral = {
+		Dim = hex("#17181C"), -- the dim behind a screen
+		Panel = hex("#23252B"),
+		Raised = hex("#30333B"), -- a button at rest
+		Rim = hex("#4A4F5A"),
+		Second = hex("#A9AEB8"), -- second words
+		Words = hex("#F3EEE4"), -- words, and the press
+	},
+	-- Matte graphite: a soft top-down gradient, a thin rim, a hairline of light along the top edge.
+	Panel = { Top = hex("#2C2F36"), Bottom = hex("#202227"), Hairline = Color3.new(1, 1, 1), HairlineAlpha = 0.07, Shadow = 0.45 },
+	-- The one press a screen asks for, ivory with dark ink (its words in Font.Display).
+	Press = { Top = hex("#F3EEE4"), Bottom = hex("#DCD5C6"), Ink = hex("#1B1C20") },
+	-- Hues, one job each: Alive for what's alive or for sale, only there (the director, six times: too purple).
+	Hue = { Power = hex("#FFC83D"), Alive = hex("#B784FF"), Health = hex("#E8505B") },
+	Health = { Top = hex("#F06A6E"), Bottom = hex("#C93C48") }, -- the health bar's fill
+	-- Pictures sit on their own lit grounds inside the panel, top to bottom (Modulo's must-fixes 1 and 2: Today on the
+	-- panel's graphite, Equipment on a dim bronze so the gold lives in the sword).
+	Ground = {
+		Stage = { hex("#ECE5D6"), hex("#B8B0A0") },
+		Equipment = { hex("#80684A"), hex("#38322B") },
+		Today = { hex("#30333B"), hex("#202227") },
+	},
+	DimShade = 0.55, -- how dark the world goes behind a screen, as an opacity of Neutral.Dim
+	Blur = 7, -- and how soft, in the frame's pixels
+	-- Content's own colours, as the tokens page shows them.
+	Rarity = {
+		Common = hex("#A7AEBB"),
+		Uncommon = hex("#5FD98A"),
+		Rare = hex("#58A9FF"),
+		Epic = hex("#B784FF"),
+		Legendary = hex("#FFC94A"),
+		Mythical = hex("#FF6A82"),
+	} :: { [string]: Color3 },
+	Types = {
+		Red = hex("#EA4B4F"),
+		Orange = hex("#F4902A"),
+		Blue = hex("#3F9DF2"),
+		Purple = hex("#A470F2"),
+		Green = hex("#42CC7E"),
+	} :: { [string]: Color3 },
+	-- Two faces: Oswald for names, titles and presses, in capitals; Builder Sans for numbers and the rest.
+	Font = {
+		Display = Font.new("rbxasset://fonts/families/Oswald.json", Enum.FontWeight.Bold),
+		Body = Font.new("rbxasset://fonts/families/BuilderSans.json", Enum.FontWeight.Bold),
+	},
+	Upper = true, -- the display face's words in capitals
+	Text = { Small = 14, Middle = 20, Large = 30 }, -- 18, 26, 38 in the frame
+	Radius = { Panel = 11, Card = 8, Pill = 16 }, -- 14, 10, 20 in the frame
+	Stroke = { Rim = 1.2, Hairline = 0.9 }, -- 1.5 and 1.2 in the frame
+	-- The shard cut (docs/ui.md, rule 3): a panel's, card's or clip's top-left and bottom-right corners cut on the
+	-- diagonal, Share of its radius along each side, the other two square. A piece under Least a side, or with a radius
+	-- under LeastRadius, or a pill, a bar or a small mark, keeps its round.
+	Cut = { Share = 0.9, Least = 23, LeastRadius = 5 }, -- 30 and 6 in the frame
+}
+
 -- How long things stay (docs/ui.md, rule 2: quiet until it matters).
 Theme.Time = {
 	Toast = 2.5, -- one line, then it leaves

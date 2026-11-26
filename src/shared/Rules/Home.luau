@@ -9,7 +9,7 @@
 -- the same state from the same inputs (HudController).
 --   Home.Refusal(situation, rules)   nil when a tap goes home, else "Here" | "Boss" | "Event" | "Fight" | "Cooldown"
 --   Home.Says(refusal, situation)    the refusal in plain words; nil for "Here", where a tap does nothing
---   Home.Word(refusal, situation)    the tile's word on a hover or a long press: Says, and "You're home" for "Here"
+--   Home.Word(refusal, situation)    the tile's word on a hover or a long press: Says, and "Back at your base" for "Here"
 --   Home.Broken(chargedAt, hitAt)    a hit since the charge began cancels it, and nothing is spent
 --   Home.Share(from, seconds, now)   how far a charge or a cooldown has run, 0 to 1
 
@@ -45,7 +45,7 @@ end
 
 function Home.Says(refusal: Refusal?, s: Situation): string?
 	if refusal == "Boss" then
-		return "Not in a boss's arena" -- the keeper's street, never the Arc: players read a ground as an Arc
+		return "Not during a keeper fight" -- the keeper's street, never the Arc: players read a ground as an Arc
 	elseif refusal == "Event" then
 		return "Not during an event"
 	elseif refusal == "Fight" then
@@ -60,7 +60,7 @@ end
 -- tap stays silent (research's verdict on TR20, fix 2), where Says has nothing to say.
 function Home.Word(refusal: Refusal?, s: Situation): string?
 	if refusal == "Here" then
-		return "You're home"
+		return "Back at your base"
 	end
 	return Home.Says(refusal, s)
 end

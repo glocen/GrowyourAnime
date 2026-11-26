@@ -341,7 +341,7 @@ function ReinforcePage.Build(context: Look.Context): Look.Page
 				said = { line(stones, SEAM.Soft, false) }
 			end
 		else
-			said = { line(`+{Config.Cap} is as far as it goes`, LIGHT, true), line("Every level is reached", SEAM.Soft, false) }
+			said = { line(`+{Config.Cap} is as far as it goes`, LIGHT, true), line("Max level", SEAM.Soft, false) }
 		end
 		-- A result keeps its line over the state's first until the next press (reinforce.states).
 		if result and result.Won then

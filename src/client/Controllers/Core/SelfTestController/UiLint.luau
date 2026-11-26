@@ -91,7 +91,9 @@ local function inside(piece: GuiObject, area: GuiObject): boolean
 	return low.X >= top.X - TOLERANCE and low.Y >= top.Y - TOLERANCE and high.X <= bottom.X + TOLERANCE and high.Y <= bottom.Y + TOLERANCE
 end
 
--- Whether a label actually draws: visible all the way up, in an enabled container of ours, not faded out.
+-- Whether a label actually draws: visible all the way up, in an enabled screen of ours, not faded out. A plate in the
+-- world (a SurfaceGui, a BillboardGui: the Strip's boards) is the world's, judged from the player's camera, and the
+-- engine's stack at a point on the screen never lists it.
 local function shown(object: TextLabel): boolean
 	if object.TextTransparency >= 0.95 or object.Text == "" then
 		return false
@@ -103,7 +105,7 @@ local function shown(object: TextLabel): boolean
 		end
 		node = node.Parent
 	end
-	return node ~= nil and (node :: LayerCollector).Enabled and string.sub(node.Name, 1, #OURS) == OURS
+	return node ~= nil and node:IsA("ScreenGui") and (node :: LayerCollector).Enabled and string.sub(node.Name, 1, #OURS) == OURS
 end
 
 -- The part of `label` its clipping frames let through, as (top left, bottom right) on screen, or nil when they hide all
@@ -444,6 +446,89 @@ function UiLint.Run(): Report
 		end
 	end
 	return report
+end
+
+-- The style frame's tokens (TR63, item 2, after AR62's pick; Theme.Frame): every colour in it, its strokes and its radii.
+local function tokenColours(node: any, into: { Color3 })
+	for _, value in node do
+		if typeof(value) == "Color3" then
+			table.insert(into, value)
+		elseif type(value) == "table" then
+			tokenColours(value, into)
+		end
+	end
+end
+
+local function near(a: Color3, b: Color3): boolean
+	return math.abs(a.R - b.R) <= 1.5 / 255 and math.abs(a.G - b.G) <= 1.5 / 255 and math.abs(a.B - b.B) <= 1.5 / 255
+end
+
+local function onList(value: number, list: { number }): boolean
+	for _, each in list do
+		if math.abs(value - each) <= 0.05 then
+			return true
+		end
+	end
+	return false
+end
+
+-- What the shown pieces under `root` (or every one of our screens) draw off the style frame's tokens (Theme.Frame): a
+-- fill, a text's colour, a stroke's colour or width, a corner's radius, each named once by its piece and value ("Card
+-- BackgroundColor3 #4C3E92"). A report, never a failure: the screens move onto the tokens a screen at a time (AR62,
+-- "After the pick"). Pictures (an image's tint) and gradients are art, not read. A pill (a corner of half its side or
+-- more) and a square corner are the frame's own.
+function UiLint.Strays(root: Instance?): ({ string }, number)
+	local colours: { Color3 } = {}
+	tokenColours(Theme.Frame, colours)
+	local strokes, radii = { Theme.Frame.Stroke.Rim, Theme.Frame.Stroke.Hairline }, { 0, Theme.Frame.Radius.Panel, Theme.Frame.Radius.Card, Theme.Frame.Radius.Pill }
+	local strays: { string } = {}
+	local seen: { [string]: boolean } = {}
+	local read = 0
+	local function stray(object: Instance, what: string, value: string)
+		local line = `{short(object)} {what} {value}`
+		if not seen[line] then
+			seen[line] = true
+			table.insert(strays, line)
+		end
+	end
+	local function colour(object: Instance, what: string, value: Color3)
+		read += 1
+		for _, token in colours do
+			if near(value, token) then
+				return
+			end
+		end
+		stray(object, what, `#{value:ToHex():upper()}`)
+	end
+	local where: Instance = root or Players.LocalPlayer:WaitForChild("PlayerGui")
+	for _, object in where:GetDescendants() do
+		local screen = object:FindFirstAncestorOfClass("ScreenGui")
+		if root == nil and (screen == nil or string.sub(screen.Name, 1, #OURS) ~= OURS) then
+			continue
+		end
+		if object:IsA("GuiObject") and up(object) then
+			if object.BackgroundTransparency < 0.95 then
+				colour(object, "BackgroundColor3", object.BackgroundColor3)
+			end
+			if (object:IsA("TextLabel") or object:IsA("TextButton") or object:IsA("TextBox")) and (object :: TextLabel).Text ~= "" and (object :: TextLabel).TextTransparency < 0.95 then
+				colour(object, "TextColor3", (object :: TextLabel).TextColor3)
+			end
+		elseif object:IsA("UIStroke") and object.Enabled and object.Transparency < 0.95 and object.Parent and object.Parent:IsA("GuiObject") and up(object.Parent :: GuiObject) then
+			colour(object.Parent, "UIStroke.Color", object.Color)
+			if not onList(object.Thickness, strokes) then
+				stray(object.Parent, "UIStroke.Thickness", string.format("%.2f", object.Thickness))
+			end
+		elseif object:IsA("UICorner") and object.Parent and object.Parent:IsA("GuiObject") and up(object.Parent :: GuiObject) then
+			local piece = object.Parent :: GuiObject
+			local side = math.min(piece.AbsoluteSize.X, piece.AbsoluteSize.Y)
+			local radius = object.CornerRadius.Scale * side + object.CornerRadius.Offset
+			local pill = object.CornerRadius.Scale >= 0.5 or (side > 0 and radius >= side / 2 - 0.5)
+			if not pill and (object.CornerRadius.Scale ~= 0 or not onList(object.CornerRadius.Offset, radii)) then
+				stray(piece, "UICorner", string.format("%.1f", radius))
+			end
+		end
+	end
+	return strays, read
 end
 
 -- "a; b; c +2 more", or how many labels were checked when the list is empty.

@@ -73,7 +73,7 @@ return {
 			t.Equal("the card: down as it falls", Hud.LeadStatus("Down", NOW + 1, NOW, false), "Down")
 			t.Equal("the card: healing, with its time", Hud.LeadStatus("Home", NOW + 72.2, NOW, false), "Healing 1:13")
 			t.Equal("the card: training once healed", Hud.LeadStatus("Home", NOW, NOW, true), "Training")
-			t.Equal("the card: at home when the machine has another", Hud.LeadStatus("Home", NOW - 1, NOW, false), "At home")
+			t.Equal("the card: at home when the machine has another", Hud.LeadStatus("Home", NOW - 1, NOW, false), "At base")
 			t.Equal("the card: nothing while it stands", Hud.LeadStatus("Idle", 0, NOW, false), nil)
 			t.Equal("a clock: seconds", Hud.Clock(9), "0:09")
 			t.Equal("a clock: rounded up", Hud.Clock(64.1), "1:05")

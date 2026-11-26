@@ -102,6 +102,8 @@ local function run(filter: string?): string
 	local BoardsCases = require(script.BoardsCases)
 	local WelcomeCases = require(script.WelcomeCases)
 	local SparkCases = require(script.SparkCases)
+	local HitCases = require(script.HitCases)
+	local PaceCases = require(script.PaceCases)
 	local GoalCases = require(script.GoalCases)
 	local TakeCases = require(script.TakeCases)
 	local lines: { string } = {}
@@ -260,6 +262,10 @@ local function run(filter: string?): string
 	table.move(captures, 1, #captures, #cases + 1, cases)
 	local sparks = SparkCases.Cases() -- a landed hit's star (AR61), apart for the same reason
 	table.move(sparks, 1, #sparks, #cases + 1, cases)
+	local hits = HitCases.Cases() -- the hit, TR69's block A, apart for the same reason
+	table.move(hits, 1, #hits, #cases + 1, cases)
+	local pace = PaceCases.Cases() -- the street's pace, TR69's block B: a Manual measure
+	table.move(pace, 1, #pace, #cases + 1, cases)
 	local goals = GoalCases.Cases() -- TR54's goals: the Today list, the claim, the dare line and its card, apart for the same reason
 	table.move(goals, 1, #goals, #cases + 1, cases)
 	local modes = ModeCases.Cases() -- the Play panel (the director, 2026-11-24), apart for the same reason

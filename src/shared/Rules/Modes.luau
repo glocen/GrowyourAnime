@@ -3,7 +3,7 @@
 -- gamemode"; docs/research/cloud-2026-11-24/play-mode-panel.md): which modes the dock's Play shows, a card each, and
 -- what each card's press does for this player. A mode that isn't built has no card. The Festival's card goes where the
 -- player would go next (Modes.Frontier), so a return player fights in two taps; the Arc panel stays one press further
--- for anyone who wants to choose. The Tower's card walks the player to their own ring at home, and says where it's
+-- for anyone who wants to choose. The Tower's card takes the player to their own gate at home (a teleport, TR65), and says where it's
 -- climbed from anywhere else: the run still begins by stepping in, so the server's rules are untouched.
 --   Modes.Frontier(data, ground) -> (difficulty, stretch)   where Continue takes this player
 --   Modes.Cards(data, ground, home) -> { Card }             the cards, in the panel's order
@@ -15,7 +15,7 @@ local Stages = require(Shared.Rules.Stages)
 
 local Modes = {}
 
--- What a card's main press does: begins a run (Ground, Difficulty), points the way to the player's own Tower ring, or
+-- What a card's main press does: begins a run (Ground, Difficulty), takes the player to their own Tower gate, or
 -- nothing while Off says why.
 Modes.Begin = "Begin"
 Modes.Ring = "Ring"

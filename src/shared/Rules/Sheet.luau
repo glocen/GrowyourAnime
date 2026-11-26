@@ -34,7 +34,7 @@ export type Row = { Stat: string, Name: string, Value: string, Main: boolean?, U
 export type Group = { Name: string, Rows: { Row }, Heading: string?, Caption: string? }
 
 Sheet.Headings = { Basic = "Basic Attributes", Battle = "Battle Attributes" }
-Sheet.EvenFoe = "chances against an even foe" -- the one caption, under Battle Attributes
+Sheet.EvenFoe = "against an enemy of your level" -- the one caption, under Battle Attributes
 
 -- The Battle Attributes' blocks, two a row: Offence and Defence paired, the attacker's stat on the left.
 Sheet.Groups = {

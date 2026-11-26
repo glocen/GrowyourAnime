@@ -5,9 +5,11 @@
 -- its ring to climb again once rested, and Home sets it down at its plot's spawn (TR46); elsewhere a crash's results
 -- close. Closing it, by a press or its exit, tells the server they've been seen (Act "TowerSeen"), so they open once.
 -- The week's board (TR46): a line under the rewards, "This week: #12 · floor 23" once the server answers (Net
--- "TowerBoard"); a tap on it shows the board on the card, "This Week's Climb", the top rows and the player's own, and a
+-- "TowerBoard"); a tap on it shows the board on the card, "This week's climb", the top rows and the player's own, and a
 -- tap on the board goes back. The rarity light on a rare reward, the card's art and the board's look wait for the shared finish.
 --   TowerScreen.Open(results, on)   builds it (on: Act, Retry, Home, Board)
+--   TowerScreen.Ask(won, leave)     the HUD's Leave asks first (TR67): "Leave the Tower?", Leave or Stay; `won` the
+--                                   floors the run has won, `leave` the press that ends it (true when it did)
 --   TowerScreen.Parts()             its pieces by name, for tests
 
 local Players = game:GetService("Players")
@@ -29,6 +31,7 @@ local Screen = require(UI.Kit.Screen)
 
 local TowerScreen = {}
 TowerScreen.Name = "Tower"
+TowerScreen.AskName = "TowerLeave"
 
 export type On = {
 	Act: (name: string, args: any?) -> { [string]: any },
@@ -38,6 +41,7 @@ export type On = {
 }
 
 local SIZE = Vector2.new(340, 344)
+local ASK_SIZE = Vector2.new(320, 196) -- the Leave's question: its line and two presses
 local ROW = 26
 local ROW_LEAST = 20 -- the results' rows close up to this on a short phone, a Body line still clear
 local BOARD_ROW = 19 -- a row of the board, in Caption
@@ -90,7 +94,7 @@ local function boardView(body: Frame, wide: number, tall: number, answer: { [str
 		parts[name] = label
 		return label
 	end
-	put("BoardTitle", "This Week's Climb", 0, wide, Theme.Colour.Text, Theme.Font.Strong, Enum.TextXAlignment.Center, Theme.Text.Body, ROW)
+	put("BoardTitle", "This week's climb", 0, wide, Theme.Colour.Text, Theme.Font.Strong, Enum.TextXAlignment.Center, Theme.Text.Body, ROW)
 	put("BoardBack", "Back", 0, 60, Theme.Colour.TextDim, nil, Enum.TextXAlignment.Left, Theme.Text.Caption, ROW)
 	y += ROW + 2
 	local rankWide, floorWide = 40, 70
@@ -318,6 +322,72 @@ function TowerScreen.Open(results: Profile.TowerResults, on: On)
 			task.spawn(on.Act, "TowerSeen", { Id = id })
 		end
 	end)
+end
+
+-- What the question says the run keeps: the floors it has won, in the results' own words.
+function TowerScreen.AskLine(won: number): string
+	if won < 1 then
+		return "Your run ends before its first floor is won"
+	end
+	return `Your run ends at floor {won}, and you keep what it won`
+end
+
+function TowerScreen.Ask(won: number, leave: () -> boolean)
+	table.clear(parts)
+	local body = Screen.Open(TowerScreen.AskName, "Leave the Tower?", ASK_SIZE)
+	for _, child in body:GetChildren() do
+		child:Destroy()
+	end
+	local pad = Theme.Size.Pad
+	local panel = body.Parent :: Frame
+	local wide = panel.Size.X.Offset - pad * 4
+	local room = panel.Size.Y.Offset - Screen.Head - pad
+	local words = Text.new({
+		Name = "AskLine",
+		Size = Theme.Text.Body,
+		Font = Theme.Font.Body,
+		Colour = Theme.Colour.Text,
+		Align = Enum.TextXAlignment.Center,
+		Box = UDim2.fromOffset(wide, room - Theme.Size.Tap - pad * 2),
+		Position = UDim2.fromOffset(0, pad),
+		Parent = body,
+		Wrap = true,
+	})
+	words.Text = TowerScreen.AskLine(won)
+	parts.AskLine = words
+	local gap = Theme.Size.Gap
+	local each = (wide - gap) / 2
+	local at = room - Theme.Size.Tap - pad
+	parts.Leave = Button.new({
+		Name = "Leave",
+		Text = "Leave",
+		Size = UDim2.fromOffset(each, Theme.Size.Tap),
+		Position = UDim2.fromOffset(0, at),
+		Parent = body,
+		Quiet = true,
+		OnPress = function(): boolean
+			if leave() then
+				if Screen.Current() == TowerScreen.AskName then
+					Screen.Close()
+				end
+				return true
+			end
+			return false
+		end,
+	})
+	parts.Stay = Button.new({
+		Name = "Stay",
+		Text = "Stay",
+		Size = UDim2.fromOffset(each, Theme.Size.Tap),
+		Position = UDim2.fromOffset(each + gap, at),
+		Parent = body,
+		Primary = true, -- the run goes on: the safe press is the main one
+		OnPress = function(): boolean
+			Screen.Close()
+			return true
+		end,
+	})
+	parts.Body = body
 end
 
 -- The id of the results last opened: whether those on screen are the ones the save holds.

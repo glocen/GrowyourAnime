@@ -162,6 +162,64 @@ function LintCases.Cases(): { any }
 			end
 		end,
 	},
+	{
+		-- TR63, item 2, after AR62's pick: the lint names what a piece draws off the style frame's tokens (Theme.Frame), on
+		-- a made-up screen of its own, unparented so nothing else is read: a panel and its words on the tokens, a press
+		-- with its rim and the card's corner, a pill, and one stray each of a fill, a text, a stroke's width and a corner.
+		Name = "UI: the lint names every colour, stroke and corner off the style frame's tokens (TR63, AR62)",
+		Run = function(t: any)
+			local frame = require(script.Parent.Parent.Parent.Parent.UI.Theme).Frame
+			local root = Instance.new("ScreenGui")
+			root.Name = "NL_TokenTest"
+			local function piece(name: string, parent: Instance, colour: Color3, corner: UDim?): Frame
+				local f = Instance.new("Frame")
+				f.Name = name
+				f.Size = UDim2.fromOffset(120, 60)
+				f.BackgroundColor3 = colour
+				f.Parent = parent
+				if corner then
+					local c = Instance.new("UICorner")
+					c.CornerRadius = corner
+					c.Parent = f
+				end
+				return f
+			end
+			local panel = piece("Panel", root, frame.Neutral.Panel, UDim.new(0, frame.Radius.Panel))
+			local words = Instance.new("TextLabel")
+			words.Name = "Words"
+			words.Text = "On the tokens"
+			words.BackgroundTransparency = 1
+			words.TextColor3 = frame.Neutral.Words
+			words.Parent = panel
+			local press = piece("Press", panel, frame.Press.Top, UDim.new(0, frame.Radius.Card))
+			local rim = Instance.new("UIStroke")
+			rim.Color, rim.Thickness = frame.Neutral.Rim, frame.Stroke.Rim
+			rim.Parent = press
+			piece("Pill", panel, frame.Hue.Power, UDim.new(0.5, 0))
+			piece("Violet", panel, Color3.fromHex("#4C3E92"), UDim.new(0, 6))
+			local off = Instance.new("TextLabel")
+			off.Name = "OffWords"
+			off.Text = "Off the tokens"
+			off.BackgroundTransparency = 1
+			off.TextColor3 = Color3.fromRGB(255, 0, 255)
+			off.Parent = panel
+			local thick = piece("Thick", panel, frame.Neutral.Raised)
+			local wide = Instance.new("UIStroke")
+			wide.Color, wide.Thickness = frame.Neutral.Rim, 3
+			wide.Parent = thick
+			local strays, read = UiLint.Strays(root)
+			local joined = table.concat(strays, "; ")
+			local function named(fragment: string): boolean
+				return string.find(joined, fragment, 1, true) ~= nil
+			end
+			t.Check("it reads each piece's colours", read >= 8, `{read}`)
+			t.Check("it names the stray fill and its corner", named("Violet BackgroundColor3 #4C3E92") and named("Violet UICorner 6.0"), joined)
+			t.Check("the stray words", named("OffWords TextColor3 #FF00FF"), joined)
+			t.Check("the stray stroke's width", named("Thick UIStroke.Thickness 3.00"), joined)
+			t.Check("and nothing on the tokens: the panel, its words, the press, its rim, the pill", #strays == 4, joined)
+			root:Destroy()
+		end,
+	},
 	}
 end
 

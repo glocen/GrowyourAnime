@@ -55,7 +55,8 @@ function Clips.Fades(clip: string): (number, number)
 	local role = Actions.RoleOf(clip)
 	local fades = if role then (Animations.Fades :: any)[role] else nil
 	if fades then
-		return fades.In, fades.Out
+		local snap = Animations.Snap -- the attack clips' live test (TR69 A)
+		return if snap.On and role and snap.Roles[role] then snap.In else fades.In, fades.Out
 	end
 	return 0.1, 0.1
 end

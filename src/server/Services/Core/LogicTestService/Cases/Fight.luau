@@ -870,6 +870,13 @@ return {
 			t.Equal("a killing ordinary hit holds the kill's", Fight.Hold(2, true, hitstop), hitstop.Kill)
 			t.Equal("a killing signature keeps its longer own", Fight.Hold(7, true, hitstop), math.max(signature, hitstop.Kill))
 			t.Check("the longest hold is the longest", Fight.LongestHold(hitstop) >= signature and Fight.LongestHold(hitstop) >= hitstop.Kill)
+			-- TR69 A: a pack's last fall is the pack's beat, longer than any other kill's; only a fall takes it
+			local last = hitstop.Last
+			t.Equal("a pack's last fall holds its beat (TR69 A)", Fight.Hold(2, true, hitstop, true), math.max(last, hitstop.Kill))
+			t.Check("longer than any other kill's", last > hitstop.Kill and last > signature, `{last} s`)
+			t.Equal("a last hit that doesn't fell holds its own", Fight.Hold(2, false, hitstop, true), ordinary)
+			t.Check("the longest hold takes it in", Fight.LongestHold(hitstop) >= last)
+			t.Check("a critical's camera is a small jolt beside a signature's (TR69 A)", Fight.ShakeOf(Fight.Lever(4, hitstop).Trauma) * 10 < Fight.ShakeOf(Fight.Lever(7, hitstop).Trauma))
 			-- every hit's rung is on the ladder, a signature's at 7 or more
 			for _, action in Actions.List do
 				for beat, hit in action.Hits do

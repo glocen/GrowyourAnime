@@ -145,20 +145,29 @@ return {
 	-- lead's hit (Shake). A critical is at least rung Critical, and a killing hit holds at least Kill seconds and lands at
 	-- least at rung KillRung's flash and camera, so the last blow lands before the burst (TR24's fix 11: "a Shade's death is
 	-- a small white flash"; Kill was 0.09, the old light hold). AR8 A and fix 11, the builder's starting numbers, tuned by
-	-- playing.
+	-- playing. Last: the hold of a pack's last fall, the pack's own beat, the drops it pays leaving together once it's over
+	-- (TR69 A; combat-agency.md, item 11). A critical's trauma came down from 0.35 so the signature's shake means
+	-- something again (TR69 A). Research's seeds, tuned by playing.
 	Hitstop = {
 		Rungs = {
 			{ From = 2, Hold = 0.045, Flash = 0.06, Glow = 0.55, Tremble = 0, Trauma = 0 }, -- an ordinary hit
 			{ From = 3, Hold = 0.05, Flash = 0.06, Glow = 0.6, Tremble = 0, Trauma = 0 }, -- a combo's last, the Shade's swing
-			{ From = 4, Hold = 0.07, Flash = 0.08, Glow = 0.7, Tremble = 0, Trauma = 0.35 }, -- a critical
+			{ From = 4, Hold = 0.07, Flash = 0.08, Glow = 0.7, Tremble = 0, Trauma = 0.15 }, -- a critical
 			{ From = 7, Hold = 0.13, Flash = 0.1, Glow = 0.9, Tremble = 0.18, Trauma = 0.8 }, -- a Voidkin's signature
 			{ From = 8, Hold = 0.14, Flash = 0.1, Glow = 0.9, Tremble = 0.22, Trauma = 0.8 }, -- the keeper's signature
 		},
 		Critical = 4,
 		Kill = 0.13,
 		KillRung = 4,
+		Last = 0.2,
 		Tremble = { Rate = 45 }, -- the struck body's shake: direction changes a second
 	},
+	-- The hit's read, grey blocks (TR69 A); Scintilla gives them their look later. Ring: a thin ring at the feet of the
+	-- player's own lead's target, in its type's colour (Config.Hud.Card.Types): Radius studs at the body's scale, its band
+	-- Width studs, Lift over the floor. Glint: a Shade's mask flares as its ordinary swing (its row's Action) starts, at
+	-- Peak emissive at once, eased back to the mask's own over Seconds, before the swing's Hit beat. Research's seeds.
+	Ring = { On = true, Radius = 2.4, Width = 0.2, Transparency = 0.25, Lift = 0.06 },
+	Glint = { On = true, Seconds = 0.3, Peak = 24 },
 	-- The push: Seconds at a steady pace, on the server. Shown: each screen draws it from its own hold's end instead of
 	-- waiting for the body's replica, which comes a replication delay late (AR1, section 8); Wait is the longest it waits
 	-- for the replica to catch up, then it hands the body back over HandBack seconds.

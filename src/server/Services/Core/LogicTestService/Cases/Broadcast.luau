@@ -185,8 +185,8 @@ return {
 			t.Equal("stars", said(told("Stars", "rook", "Common", 7, 1)), "Mara's Rook reached seven stars")
 			t.Equal("a first", said(told("First", "lyric", "Rare", 0, 1)), "Mara found Lyric in a shard")
 			t.Equal("a keeper", said(told("Keeper", "lanternrow", "Epic", 2, 1)), "Mara beat the Lamplighter on Hard")
-			t.Equal("the Tower's week", said(told("Board", "", "Legendary", 14, 1)), "Mara leads the Tower this week, floor 14")
-			t.Equal("this server's best", said(told("Record", "", "Rare", 12, 1)), "Mara reached floor 12, this server's best today")
+			t.Equal("the Tower's week", said(told("Board", "", "Legendary", 14, 1)), "Mara took first place in the Tower this week: floor 14")
+			t.Equal("this server's best today, in plain words (TR67)", said(told("Record", "", "Rare", 12, 1)), "Mara reached Tower floor 12")
 			local parts = Broadcast.Line(told("Item", "sword", "Legendary", 0, 1))
 			t.Check("the rarity and the item lit, the rest not", #parts == 2 and parts[2].Lit and parts[2].Text == "Legendary Sword" and not parts[1].Lit)
 			-- A nickname is never read: the line names the Voidkin's own name

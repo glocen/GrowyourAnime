@@ -12,6 +12,7 @@ local HudConfig = require(Shared.Config.Hud)
 local WorldConfig = require(Shared.Config.World)
 local Markers = require(Shared.World.Markers)
 local Modes = require(Shared.Rules.Modes)
+local Tower = require(Shared.Rules.Tower)
 local Profile = require(Shared.Data.Profile)
 local ProfileController = require(script.Parent.Parent.ProfileController)
 local HudController = require(script.Parent.Parent.Parent.Main.HudController)
@@ -121,7 +122,7 @@ function ModeCases.Cases(): { any }
 					t.Check("the Festival's press: one run, the rules' ground and difficulty", #began == 1 and began[1] == `{WorldConfig.Row.Ground} {which}`, table.concat(began, ", "))
 				end
 				Button.Press(part("TowerPress") :: TextButton)
-				t.Check("the Tower's press asks for the ring, once, and begins no run", rings == 1 and #began <= 1)
+				t.Check("the Tower's press asks to go to the Tower, once, and begins no run", rings == 1 and #began <= 1)
 				Button.Press(part("FestivalSecond") :: TextButton)
 				t.Equal("Choose Arc asks for the Arc panel, once", arcs, 1)
 				Screen.Close()
@@ -139,7 +140,7 @@ function ModeCases.Cases(): { any }
 			end,
 		},
 		{
-			Name = "Play panel: Go to the Tower closes the panel and leaves the world's marker on the player's own ring",
+			Name = "Play panel: Go to the Tower closes the panel and takes the avatar and its lead to their own gate, facing it, with no marker on it (TR65)",
 			Place = "Main", -- the Tower stands in that place only
 			Run = function(t: any)
 				if not HudConfig.Modes.On then
@@ -152,18 +153,63 @@ function ModeCases.Cases(): { any }
 					t.Check(`the Tower's card is shut here ("{cards[2].Off}"): nothing to point at`, true)
 					return
 				end
-				local plot = Players.LocalPlayer:GetAttribute("Plot")
+				local me = Players.LocalPlayer
+				local plot = me:GetAttribute("Plot")
 				local ring = if type(plot) == "number" then Markers.Find("TowerRing", { Plot = plot }) else nil
 				t.Check("the player's own ring stands", ring ~= nil)
+				if ring == nil then
+					return
+				end
+				-- From the plot's spawn, away from the gate.
+				local old = me.Character
+				t.Check("the avatar goes home first", t.Server("Respawn") == true and waitFor(t, 8, function(): boolean
+					local character = me.Character
+					local root = if character and character ~= old then character:FindFirstChild("HumanoidRootPart") else nil
+					return root ~= nil
+				end))
+				t.Wait(1)
 				ModeController.Open()
 				local press = part("TowerPress") :: TextButton?
-				t.Check("its press takes the tap and the panel closes", press ~= nil and Button.Press(press) ~= false and waitFor(t, 1, function(): boolean
+				t.Check("its press takes the tap and the panel closes", press ~= nil and Button.Press(press) ~= false and waitFor(t, 2, function(): boolean
 					return Screen.Current() == nil
 				end), tostring(Screen.Current()))
-				local read = Guide.Read()
-				t.Check("the marker is on an errand, at one target", read.Errand and read.Count == 1, `errand {read.Errand}, {read.Count} targets`)
-				Guide.Errand(nil)
-				t.Check("the errand over, the marker is the next step's again", not Guide.Read().Errand)
+				-- Set down in the fade's black, before the gate (Rules.Tower.Before), facing along the lot to it.
+				local lot = Tower.Lot(Markers.At(ring))
+				local bx, bz = Tower.Before()
+				local spot = (lot * CFrame.new(bx, 0, bz)).Position
+				local function root(): BasePart?
+					return me.Character and me.Character:FindFirstChild("HumanoidRootPart") :: BasePart?
+				end
+				local function off(): number
+					local at = root()
+					return if at then ((at.Position - spot) * Vector3.new(1, 0, 1)).Magnitude else math.huge
+				end
+				t.Check("the avatar stands before its own gate", waitFor(t, 3, function(): boolean
+					return off() < 3
+				end), string.format("%.1f studs off", off()))
+				local at = root()
+				local look = if at then at.CFrame.LookVector * Vector3.new(1, 0, 1) else Vector3.zero
+				local facing = if look.Magnitude > 1e-3 then look.Unit:Dot(lot.LookVector) else -1
+				t.Check("facing its gate", facing > 0.9, string.format("%.2f", facing))
+				-- The lead set down at its side (KeeperService.SetDown moves both).
+				local function leadOff(): number?
+					local fighters = workspace:FindFirstChild("Fighters")
+					local now = root()
+					for _, model in (if fighters then fighters:GetChildren() else {}) do
+						if model:IsA("Model") and model:GetAttribute("Side") == "Lead" and model:GetAttribute("Owner") == me.UserId then
+							return if now then ((model:GetPivot().Position - now.Position) * Vector3.new(1, 0, 1)).Magnitude else math.huge
+						end
+					end
+					return nil
+				end
+				local near = waitFor(t, 2, function(): boolean
+					local away = leadOff()
+					return away == nil or away < 12
+				end)
+				local away = leadOff()
+				t.Check("its lead came with it", near, if away then string.format("%.1f studs from the avatar", away) else "no lead out")
+				t.Check("no run begins from the set-down", me:GetAttribute("Tower") == nil)
+				t.Check("and the world's marker isn't on the gate", table.find(Guide.Read().Targets, ring) == nil)
 			end,
 		},
 	}

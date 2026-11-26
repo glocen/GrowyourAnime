@@ -391,7 +391,7 @@ local function head(body: Frame, now: Read.Base)
 			warn = rates.Demand > rates.Generation + 1e-9
 			text = if not warn then ""
 				elseif at.Data.Base.Charge > 1e-9 then "The battery covers the rest"
-				else "Demand over generation: the machines slow"
+				else "Using more power than you make. Machines slow down."
 		else
 			local slow: { string } = {}
 			for _, machine in MACHINES do
@@ -629,7 +629,7 @@ local function plate(body: Frame)
 		local kwh, capacity = at.Data.Base.Charge, at.Rates.Capacity
 		local demand = at.Rates.Demand
 		reading.Text = `{Read.Kwh(kwh)} / {Read.Number(capacity)} kWh`
-		holds.Text = if demand > 1e-9 then `holds {Read.Hours(kwh / demand)} of work` else "nothing draws now"
+		holds.Text = if demand > 1e-9 then `holds {Read.Hours(kwh / demand)} of work` else "nothing uses power now"
 		Bar.Set(charge, if capacity > 0 then math.clamp(kwh / capacity, 0, 1) else 0)
 		BatteryMark.Set(mark, kwh, capacity)
 	end)

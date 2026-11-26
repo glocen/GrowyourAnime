@@ -18,7 +18,7 @@ return {
 		Kind = { Middle = 18, Size = 14 },
 		Rarity = { Middle = 40, Size = 16, Pip = 14, PipAt = 21, From = 30, Facet = 0.55 },
 		Outcome = { Middle = 64, Size = 16, Mark = 16.25, MarkAt = 23.15, From = 33.55 },
-		-- "Tap to continue" on the outcome's line, at its right, while Room points stay between them; else under the
+		-- "Continue" on the outcome's line, at its right, while Room points stay between them; else under the
 		-- plate's foot, centred, Under below it (Modulo's fallback).
 		Tap = { Size = 14, Room = 12, Under = 4 },
 		Kept = Color3.fromHex("#D9E1F0"), -- a Voidkin kept: its mark and its words (research's call 2)

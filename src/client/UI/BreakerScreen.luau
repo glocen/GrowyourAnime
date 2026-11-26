@@ -865,20 +865,20 @@ local function strip(parent: Instance, view: Profile.View, y: number, on: On)
 		end
 	end
 	if order == 0 then
-		label(list, "Nothing", "Nothing waits. Shards drop on Lantern Row.", Theme.Text.Caption, UDim2.fromOffset(300, CHIP.Y), UDim2.new(), { Colour = ink.TextDim })
+		label(list, "Nothing", "No shards yet. Lantern Row drops them.", Theme.Text.Caption, UDim2.fromOffset(300, CHIP.Y), UDim2.new(), { Colour = ink.TextDim })
 	end
 end
 
 -- Why infusion can't go in, as the lines a player reads (BreakerScreen.Reasons, for tests). A whole shard's reason
 -- stands over the levels; a level's own beside its button, which keeps its price on it, veiled.
 local REASONS = {
-	Holds = "It holds one Voidkin: no voltage",
+	Holds = "This shard holds one Voidkin. It takes no voltage.",
 	Bag = "Put it in first, then give it voltage",
-	Ready = "Already broken: open it",
+	Ready = "Ready to open",
 	Infused = "%s: once a shard",
-	Brief = "Saves under a minute: not offered",
+	Brief = "Under a minute left. No voltage needed.",
 	Short = "Needs %s kWh",
-	Battery = "Needs a battery of %s kWh: upgrade the base", -- research's words, TR9, 2026-11-14
+	Battery = "Needs a %s kWh battery. Upgrade the base.", -- research's words, TR9, 2026-11-14
 }
 
 -- Why the chosen shard takes no voltage at all, or nil.
@@ -932,7 +932,7 @@ local function pane(parent: Instance, item: Selection?, view: Profile.View, now:
 	local pad = Theme.Size.Pad
 	local gap = Theme.Size.Gap
 	if item == nil then
-		label(frame, "Empty", "No shard yet. They drop on Lantern Row.", Theme.Text.Caption, UDim2.new(1, -pad * 2, 0, LINE * 2), UDim2.fromOffset(pad, pad), { Colour = ink.TextDim })
+		label(frame, "Empty", "No shards yet. Lantern Row drops them.", Theme.Text.Caption, UDim2.new(1, -pad * 2, 0, LINE * 2), UDim2.fromOffset(pad, pad), { Colour = ink.TextDim })
 		return
 	end
 	local it = item :: Selection

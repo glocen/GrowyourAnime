@@ -81,6 +81,7 @@ function GoalCases.Cases(): { any }
 				local was = t.Server("Goals") :: any
 				local today = was.Today
 				local heldBefore = shards(t)
+				local week = t.Server("Welcome") :: any -- the welcome week's gift lights the rim too (TR59): taken today here
 				-- today's three: one done, one counting, one claimed; yesterday's: one done, one counting an hour, one open
 				local set = {
 					{ Day = today - 1, Picks = { "Lamplighter", "BaysHour", "NewLead" }, Have = { 0, 900, 1 }, Claimed = { false, false, false } },
@@ -88,6 +89,8 @@ function GoalCases.Cases(): { any }
 				}
 				local function restore()
 					t.Server("GoalsSet", was.Days)
+					local w = week.Welcome
+					t.Server("WelcomeSet", if w then w.Taken else nil, if w then w.Last else nil, week.Shown)
 					local gained = shards(t) - heldBefore
 					if gained ~= 0 then
 						t.Server("BaseGive", SHARD, -gained)
@@ -95,11 +98,13 @@ function GoalCases.Cases(): { any }
 					local panel = HudController.Home()
 					TodayList.Hide(panel, true)
 				end
-				t.Check("the save set for the test", (t.Server("GoalsSet", set) :: any).Ok == true)
+				t.Check("the save set for the test", (t.Server("GoalsSet", set) :: any).Ok == true
+					and (t.Server("WelcomeSet", 1, week.Day, week.Shown) :: any).Ok == true)
 				local function copied(): boolean
 					local view = ProfileController.Get() :: any
 					local days = view and view.Goals and view.Goals.Days
 					return days ~= nil and #days == 2 and days[2].Picks[1] == "KeepDare" and days[1].Have[3] == 1
+						and view.Welcome ~= nil and view.Welcome.Last == week.Day
 				end
 				t.Check("its copy reached the client", waitFor(t, REPLICATE, copied))
 				local panel = HudController.Home()

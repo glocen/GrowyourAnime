@@ -44,6 +44,17 @@ function Progress.Wins(record: { KeeperWins: { [string]: number } }?, difficulty
 	return all
 end
 
+-- Whether a keeper is beaten in any ground: the end of the first session, the tutorial (TR65: the guide's arrows stop
+-- there; the same line as Carry.HomeFor's short wait, TR24's fix 5).
+function Progress.Beaten(grounds: { [string]: Profile.GroundProgress }?): boolean
+	for _, record in grounds or {} do
+		if Progress.Wins(record) > 0 then
+			return true
+		end
+	end
+	return false
+end
+
 -- The keeper of ground `id` fell to this player's lead at `now` (os.time), in a run on `difficulty` (Normal when nil or
 -- unknown): one more win there on that difficulty, the next ground opened if it wasn't, this player's keeper resting
 -- Cooldown.Wait("Keeper") from now, and its chest, the better on that difficulty's first win (Rules.Chests.KeeperChest,

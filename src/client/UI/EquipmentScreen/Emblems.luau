@@ -262,7 +262,7 @@ function EmblemsPage.Build(context: Look.Context): Look.Page
 		local above = if chosenParsed then Emblems.Above(chosenParsed.Set.Rarity) else nil
 		local cKind, cWhy = "Off", "Choose an emblem below"
 		if chosenParsed and above == nil then
-			cWhy = "Legendary is the top"
+			cWhy = "Already Legendary"
 		elseif chosenParsed and held < EmblemsConfig.Combine.Take then
 			cWhy = `Combining takes {EmblemsConfig.Combine.Take}: {held} held`
 		elseif chosenParsed then

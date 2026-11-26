@@ -380,9 +380,9 @@ function Broadcast.Line(item: News): ({ Part }, string)
 		local difficulty = Broadcast.Difficulties[item.Level] or "Normal"
 		parts = { part(`{who} beat {if foe then foe.Name else "a keeper"} on {difficulty}`) }
 	elseif kind == "Record" then
-		parts = { part(`{who} reached floor {item.Level}, this server's best today`) }
+		parts = { part(`{who} reached Tower floor {item.Level}`) } -- it shows only when it's the server's best today (TR67)
 	else
-		parts = { part(`{who} leads the Tower this week, floor {item.Level}`) }
+		parts = { part(`{who} took first place in the Tower this week: floor {item.Level}`) }
 	end
 	return parts, item.Rarity
 end

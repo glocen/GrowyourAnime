@@ -1,7 +1,7 @@
 --!strict
 -- BaseCases (client, Studio only): the base's cases on its plot, a list of their own beside Cases, which joins it as it
 -- joins PowerCases (Cases' one table had passed what the type solver checks in one piece). AR16's base as its save has
--- it: the bays awake and asleep, the battery's cells, the Void Mill's wheel, gauge and demand mark (AR19) and the
+-- it: the bays awake and asleep, the Void Mill's wheel, gauge and demand mark (AR19) and the
 -- Training machine's crown; its machines' plates apart from the spawn; and the first session's shards opening themselves
 -- on the plot (TR24's fix 5); the Festival Door's and the gate's names (TR24's fix 10); a bay's worker at work in its ring,
 -- its halo lit in its rarity colour, and the step's chevron over the bay it names (TR24's fix 1).
@@ -62,7 +62,7 @@ local World = require(UI.World)
 local Helpers = require(script.Parent.Helpers)
 
 -- The base's machine plates by name, beside "Bay1" to "Bay6" (BaseController.Parts).
-local PLATES = { Breaker = true, Battery = true, Training = true, Generator = true }
+local PLATES = { Breaker = true, Training = true, Generator = true }
 
 local BaseCases = {}
 
@@ -91,7 +91,7 @@ function BaseCases.Cases(given: Given): { any }
 	local baysBefore: { string }? = nil -- the runner's own case, below: the bays as its first half found them
 	return {
 		{
-			Name = "Base: AR65's cut pass: nothing the world cuts stands, no Lab's place, and the plot glows at the base's: its floors dark, its pieces at Base",
+			Name = "Base: AR65's cut pass: nothing the world cuts stands, no Lab's place, no battery (folded into the Mill) and no Forge, and the plot glows at the base's: its floors dark, its pieces at Base",
 			Place = "Main", -- TR45: its world stands in that place only
 			Run = function(t: any)
 				local world = workspace:FindFirstChild("World")
@@ -123,6 +123,8 @@ function BaseCases.Cases(given: Given): { any }
 					return
 				end
 				t.Check("no Lab's sleeping place", (base :: Instance):FindFirstChild("Sleeping") == nil)
+				t.Check("no battery, nor its plate: folded into the Mill", Markers.Find("Battery", { Plot = plot }) == nil and BaseController.Parts().BatteryPlate == nil)
+				t.Check("no Forge, nor its prompt", not WorldConfig.Cut.Forge or (Markers.Find("Forge", { Plot = plot }) == nil and BaseController.Parts().ForgePrompt == nil))
 				local floorLook, wallLook = nil, nil
 				for _, item in dressing:GetChildren() do
 					local piece = item:GetAttribute("Piece")
@@ -138,26 +140,25 @@ function BaseCases.Cases(given: Given): { any }
 			end,
 		},
 		{
-			Name = "Base: AR16's base as its save has it: the bays it opened awake and the rest asleep, the battery's cells by its level and lit by its charge, the mill's wheel, gauge and demand mark (AR19), the crown while a Voidkin trains",
+			Name = "Base: AR16's base as its save has it: the bays it opened awake and the rest asleep, the mill's wheel, gauge and demand mark (AR19), the crown while a Voidkin trains",
 			Place = "Main", -- TR45: its world stands in that place only
 			Run = function(t: any)
 				local view = ProfileController.Get()
 				local plot = Players.LocalPlayer:GetAttribute("Plot")
-				local function rackOf(): Instance?
-					local found = if type(plot) == "number" then Markers.Find("Battery", { Plot = plot }) else nil
-					return if found then (BaseController.StageOf(found) or found):FindFirstChild("Rack") else nil -- its stage's (TR51)
+				-- The battery is folded into the Mill (AR65): the Mill's stage says the base stands as its kit.
+				local function millOf(): Instance?
+					local found = if type(plot) == "number" then Markers.Find("Generator", { Plot = plot }) else nil
+					return if found then BaseController.StageOf(found) else nil -- its stage's (TR51)
 				end
 				-- Read at home: a case before may leave the avatar at the crossing, where the base streams out.
-				if type(plot) == "number" and rackOf() == nil then
+				if type(plot) == "number" and millOf() == nil then
 					t.Server("Respawn")
 					waitFor(t, 8, function(): boolean
-						return rackOf() ~= nil
+						return millOf() ~= nil
 					end)
 				end
-				local battery = if type(plot) == "number" then Markers.Find("Battery", { Plot = plot }) else nil
-				local rack = rackOf()
-				if view == nil or type(plot) ~= "number" or rack == nil then
-					t.Check("a plot, a save, and the base as its kit", false, if view == nil then "no save yet" elseif type(plot) ~= "number" then "no plot yet" elseif battery == nil then "no battery streamed in" else "a grey base: its battery has no rack")
+				if view == nil or type(plot) ~= "number" or millOf() == nil then
+					t.Check("a plot, a save, and the base as its kit", false, if view == nil then "no save yet" elseif type(plot) ~= "number" then "no plot yet" else "no Mill streamed in, or a grey one")
 					return
 				end
 				-- Every bay the base can open stands on the plot: the opened ones awake, solid as their piece is, the rest asleep
@@ -190,51 +191,6 @@ function BaseCases.Cases(given: Given): { any }
 						`pad {if pad and pad:IsA("BasePart") then pad.Transparency else "none"}, asleep {if sleeping and sleeping:IsA("BasePart") then sleeping.Transparency else "none"}`)
 				end
 				t.Equal("every bay on the plot, the two no level at launch opens among them (D5)", seen, BaseLevels.Plot())
-				-- The cells: as many as the level holds, each lit by its share of the charge, its glow from low to full.
-				local cells: { BasePart } = {}
-				for _, item in (battery :: Instance):GetChildren() do
-					local seat = item:GetAttribute("Cell")
-					if type(seat) == "number" and item:IsA("BasePart") then
-						cells[seat] = item
-					end
-				end
-				t.Equal("a cell on each of the bank's seats", #cells, BaseLevels.Cells(BaseLevels.Top()))
-				local empty = LightingConfig.Glow.Empty
-				local function wrong(want: { number }): string?
-					local now = ProfileController.Get()
-					local shown = BaseLevels.Cells((now :: any).Base.Level)
-					for seat, cell in cells do
-						local lit = want[seat] or 0
-						local look = cell:FindFirstChildOfClass("SurfaceAppearance")
-						local glow = LightingConfig.Glow.Base * (empty + (1 - empty) * lit) * LightingController.Look().Glow -- the phase's share (TR23), at the base's glow (AR65)
-						local got = cell:GetAttribute("Lit")
-						if (cell.Transparency == 0) ~= (seat <= shown) then
-							return `cell {seat}: {if cell.Transparency == 0 then "shown" else "hidden"} at level {(now :: any).Base.Level}`
-						elseif type(got) ~= "number" or math.abs(got - lit) > 0.05 then
-							return `cell {seat}: lit {tostring(got)}, not {lit}`
-						elseif look == nil or math.abs(look.EmissiveStrength - glow) > 0.15 then
-							return `cell {seat}: glow {if look then string.format("%.2f", look.EmissiveStrength) else "none"}, not {string.format("%.2f", glow)}`
-						end
-					end
-					return nil
-				end
-				local count = BaseLevels.Cells(view.Base.Level)
-				local capacity = Breaker.Capacity(view.Base)
-				local was = view.Base.Charge
-				local function full(share: number): { number }
-					local want = {}
-					for seat = 1, count do
-						want[seat] = math.clamp(share * count - (seat - 1), 0, 1)
-					end
-					return want
-				end
-				for _, share in { 0, 0.75, 1 } do
-					t.Server("BaseBattery", capacity * share)
-					t.Check(`at {math.floor(share * 100)}% of its {capacity} kWh, {count} cells lit one after another`, waitFor(t, ANSWER, function(): boolean
-						return wrong(full(share)) == nil
-					end), wrong(full(share)))
-				end
-				t.Server("BaseBattery", was)
 				-- The Void Mill (AR19), at the stage it stands at: its wheel carries the plant's generation and turns by it,
 				-- its gauge's first steps shown as the generation lights them and the rest hidden, and the demand's mark
 				-- turned about the axle to the demand's share at its stage's degrees, on one scale (Rules.Power.Gauge).
@@ -396,7 +352,7 @@ function BaseCases.Cases(given: Given): { any }
 			end,
 		},
 		{
-			Name = "Base: each machine at its stage (TR51; AR32 to AR35): the Breaker and a bay at their own level, the battery and the Training machine at the base's, one stage standing and the others hidden, the Breaker's lids where it hasn't a chamber yet and its lamp on its stage's crystal, the turners by their work, a rise that lands and a fall or a respawn that doesn't",
+			Name = "Base: each machine at its stage (TR51; AR32 to AR35): the Breaker and a bay at their own level, the Training machine at the base's, one stage standing and the others hidden, the Breaker's lids where it hasn't a chamber yet and its lamp on its stage's crystal, the turners by their work, a rise that lands and a fall or a respawn that doesn't",
 			Place = "Main", -- TR45: its world stands in that place only
 			Run = function(t: any)
 				local view = ProfileController.Get()
@@ -544,12 +500,11 @@ function BaseCases.Cases(given: Given): { any }
 				if asleep <= BaseLevels.Plot() then
 					stands(`bay {asleep}, asleep: no stage of it stands`, find("Bay", asleep), 1, false)
 				end
-				-- The battery and the Training machine by the base's level, as the mill (AR19).
-				local battery, trainer = find("Battery"), find("Training")
+				-- The Training machine by the base's level, as the mill (AR19). The battery is folded into the Mill (AR65).
+				local trainer = find("Training")
 				for level = 1, BaseLevels.Top() do
 					t.Server("BaseLevel", level)
 					local want = BaseLevels.GeneratorStage(level)
-					stands(`base level {level}: the battery at stage {want}`, battery, want)
 					stands(`base level {level}: the Training machine at stage {want}`, trainer, want)
 				end
 				t.Server("BaseLevel", levelWas)
@@ -652,13 +607,14 @@ function BaseCases.Cases(given: Given): { any }
 				end)
 				t.Wait(1)
 				t.Equal("a respawn: no landing", LandingController.Played() - played, 0)
-				-- A base level-up, 1 to 2: the mill, the battery and the Training machine start on one frame; the Breaker
-				-- raised just after waits the gap for its own swap (the flash guard: at most 3 flashes in any second).
-				local plant, battery, trainer = find("Generator"), find("Battery"), find("Training")
+				-- A base level-up, 1 to 2: the mill and the Training machine start on one frame (the battery is folded into the
+				-- Mill, AR65); the Breaker raised just after waits the gap for its own swap (the flash guard: at most 3 flashes
+				-- in any second).
+				local plant, trainer = find("Generator"), find("Training")
 				t.Server("MachineLevel", "Breaker", 5)
 				t.Server("BaseLevel", 1)
 				waitFor(t, ANSWER, function(): boolean
-					return settled({ breaker, plant, battery, trainer })
+					return settled({ breaker, plant, trainer })
 				end)
 				t.Wait(LandingConfig.Gap)
 				local started: { [Instance]: number } = {}
@@ -673,13 +629,13 @@ function BaseCases.Cases(given: Given): { any }
 				t.Server("BaseLevel", 2)
 				t.Server("MachineLevel", "Breaker", 6)
 				waitFor(t, ANSWER, function(): boolean
-					return started[breaker] ~= nil and settled({ breaker, plant, battery, trainer })
+					return started[breaker] ~= nil and settled({ breaker, plant, trainer })
 				end)
 				noting:Disconnect()
-				local together = plant ~= nil and battery ~= nil and trainer ~= nil and started[plant :: Instance] ~= nil
-					and started[plant :: Instance] == started[battery :: Instance] and started[plant :: Instance] == started[trainer :: Instance]
-				t.Check("the base level-up's three machines start on one frame", together,
-					`{tostring(plant and started[plant])}, {tostring(battery and started[battery])}, {tostring(trainer and started[trainer])}`)
+				local together = plant ~= nil and trainer ~= nil and started[plant :: Instance] ~= nil
+					and started[plant :: Instance] == started[trainer :: Instance]
+				t.Check("the base level-up's two machines start on one frame", together,
+					`{tostring(plant and started[plant])}, {tostring(trainer and started[trainer])}`)
 				local apart = if plant and clocks[plant] and clocks[breaker] then clocks[breaker] - clocks[plant] else nil
 				t.Check(`the Breaker's landing waits the gap, {LandingConfig.Gap} s`, apart ~= nil and apart >= LandingConfig.Gap - 1 / 30,
 					if apart then string.format("%.3f s after", apart) else "not seen")
@@ -1193,7 +1149,15 @@ function BaseCases.Cases(given: Given): { any }
 				end
 				local held, generator, frame = levels :: Instance, plant :: Instance, (base :: Model):GetPivot()
 				local rows = BasePlan.machines.baseLevels.levels
-				local pieces = #rows["2"].pieces + #rows["3"].pieces
+				-- the pieces the world lays: none of the cut's (Config.World.Cut, AR65)
+				local function kept(list: { any }): number
+					local n = 0
+					for _, row in list do
+						n += if WorldConfig.Cut[row.piece] then 0 else 1
+					end
+					return n
+				end
+				local pieces = kept(rows["2"].pieces) + kept(rows["3"].pieces)
 				-- Every piece shown as `level` has it: a level's own and every lower level's, solid only the fins.
 				local function standsAt(level: number): (boolean, string)
 					local wrong, count = {}, 0
@@ -1238,12 +1202,16 @@ function BaseCases.Cases(given: Given): { any }
 					end), said)
 				end
 				-- The rings at level 3: on the plan's axle in the plot's frame, turning in place at their rates, opposite ways.
-				for _, row in { rows["2"].pieces[4], rows["3"].pieces[4] } do
+				for _, row in ({ rows["2"].pieces[4], rows["3"].pieces[4] } :: { any }) do
 					local ring: BasePart? = nil
 					for _, part in held:GetChildren() do
 						if part:IsA("BasePart") and part:GetAttribute("Piece") == row.piece then
 							ring = part
 						end
+					end
+					if WorldConfig.Cut[row.piece :: string] then
+						t.Check(`{row.piece}: none, while it's cut`, ring == nil)
+						continue
 					end
 					if ring == nil then
 						t.Check(`{row.piece}: on the plot`, false)
@@ -1275,7 +1243,10 @@ function BaseCases.Cases(given: Given): { any }
 					end
 					local wake = bay:FindFirstChild("Wake")
 					local want = wakes[tostring(index)]
-					if want == nil then
+					if want ~= nil and WorldConfig.Cut[want] then
+						t.Check(`bay {index}: no wake, while it's cut`, wake == nil)
+						continue
+					elseif want == nil then
 						t.Check(`bay {index}: no wake`, wake == nil)
 						continue
 					end
@@ -1418,19 +1389,20 @@ function BaseCases.Cases(given: Given): { any }
 			end,
 		},
 		{
-			Name = "Base: TR37, the Forge and the Stone Condenser in their sleeping places: the Condenser sleeps on its stone below its base level and wakes at it, its comb lit by its tray, full, part-full and empty, its core turning while it works; a tap collects the tray; the convert's card beside its cradle (AR51) asleep, ready, short and running, its prompt on the cradle runs a convert; the Forge's prompt opens Reinforce, and a try strikes its ram",
+			Name = "Base: TR37, the Forge and the Stone Condenser in their sleeping places: the Condenser sleeps on its stone below its base level and wakes at it, its comb lit by its tray, full, part-full and empty, its core turning while it works; a tap collects the tray; the convert's card beside its cradle (AR51) asleep, ready, short and running, its prompt on the cradle runs a convert; no Forge while AR65 cuts it, else its prompt opens Reinforce and a try strikes its ram",
 			Place = "Main", -- TR45: its world stands in that place only
 			Run = function(t: any)
 				local view = ProfileController.Get()
 				local plot = Players.LocalPlayer:GetAttribute("Plot")
 				local condenser = if type(plot) == "number" then Markers.Find("Condenser", { Plot = plot }) else nil
 				local forge = if type(plot) == "number" then Markers.Find("Forge", { Plot = plot }) else nil
-				if view == nil or condenser == nil or forge == nil then
+				-- The Forge is out of the yard while it's cut (AR65): its prompt and ram are checked only once it's back.
+				local forgeCut = WorldConfig.Cut.Forge == true
+				if view == nil or condenser == nil or (forge == nil and not forgeCut) then
 					t.Check("a plot, its Forge, its Condenser and a save", false, `{condenser ~= nil}, {forge ~= nil}`)
 					return
 				end
 				local machine = condenser :: Instance
-				local press = forge :: Instance
 				local levelWas = view.Base.Level
 				local low, mid = CondenserConfig.Makes, CondenserConfig.Converts.Low.To
 				local function shownOf(name: string): boolean
@@ -1466,7 +1438,7 @@ function BaseCases.Cases(given: Given): { any }
 					return shownOf("Asleep") and not shownOf("Frame") and not shownOf("Core") and litCups() == 0
 				end), `stone {shownOf("Asleep")}, comb {shownOf("Frame")}, {litCups()} cups`)
 				t.Check("its plate says when it wakes", waitFor(t, ANSWER, function(): boolean
-					return plateLine() == `Wakes at base level {CondenserConfig.Wakes}`
+					return plateLine() == `Turns on at base level {CondenserConfig.Wakes}`
 				end), plateLine())
 				t.Check("nothing to collect", BaseController.Parts().CondenserPrompt == nil)
 				-- The convert's card (AR51's B): asleep, its cost line alone, 44 high, nothing to start.
@@ -1725,53 +1697,57 @@ function BaseCases.Cases(given: Given): { any }
 					end
 				end
 				-- The Forge: its prompt opens Reinforce; a try strikes its ram on every client.
-				local forgePrompt = BaseController.Parts().ForgePrompt
-				t.Check("the Forge's prompt", forgePrompt ~= nil and forgePrompt:IsA("ProximityPrompt") and (forgePrompt :: ProximityPrompt).ActionText == "Reinforce")
-				BaseController.PressForge()
-				t.Check("it opens Equipment on Reinforce", waitFor(t, ANSWER, function(): boolean
-					return Screen.Current() == EquipmentScreen.Name and EquipmentScreen.State().Page == "Reinforce"
-				end), `{tostring(Screen.Current())}, {EquipmentScreen.State().Page}`)
-				if Screen.Current() == EquipmentScreen.Name then
-					Screen.Close()
-				end
-				local ram = press:FindFirstChild("Ram") :: BasePart?
-				local item: string? = nil
-				for id, owned in (ProfileController.Get() :: any).Items do
-					if owned.Reinforce < ReinforceConfig.Cap and (item == nil or id < item) then
-						item = id
-					end
-				end
-				if ram and item then
-					local owned = (ProfileController.Get() :: any).Items[item]
-					local cost = ReinforceRules.Cost(owned, owned.Reinforce + 1)
-					local was = owned.Reinforce
-					t.Server("StonesGive", cost.Grade, cost.Stones) -- what the try spends, given first: the bag and purse end as they were
-					t.Server("DataCredits", cost.Credits)
-					local strikes = ram:GetAttribute("Strikes")
-					-- Watched from the try on, every frame, so the hitstop's few frames are never missed.
-					local lowest, moved = 0, false
-					local watching = true
-					task.spawn(function()
-						while watching do
-							local rise, striking = BaseController.StrikeOf(ram)
-							moved = moved or striking
-							lowest = math.min(lowest, rise or 0)
-							task.wait()
-						end
-					end)
-					local tried = ProfileController.Act("Reinforce", { Item = item })
-					t.Check("a Reinforce try made", tried.Ok == true, tostring(tried.Error))
-					t.Check("its ram counted one strike", waitFor(t, ANSWER, function(): boolean
-						return ram:GetAttribute("Strikes") == (if type(strikes) == "number" then strikes else 0) + 1
-					end))
-					task.wait(Forge.Length(WorldConfig.Forge) + 0.3)
-					watching = false
-					local plan = BasePlan.machines.forge.ram
-					t.Check("the ram struck the plate", moved and math.abs(lowest - (plan.contact - plan.rest)) < 0.05, `lowest {lowest}`)
-					t.Check("and settled at rest", (BaseController.StrikeOf(ram)) == 0)
-					t.Server("ReinforceSet", item, was)
+				if forgeCut then
+					t.Check("no Forge in the yard, nor its prompt: Reinforce lives in Equipment (AR65)", forge == nil and BaseController.Parts().ForgePrompt == nil)
 				else
-					t.Check("an item and the ram to strike", false, `ram {ram ~= nil}, item {tostring(item)}`)
+					local forgePrompt = BaseController.Parts().ForgePrompt
+					t.Check("the Forge's prompt", forgePrompt ~= nil and forgePrompt:IsA("ProximityPrompt") and (forgePrompt :: ProximityPrompt).ActionText == "Reinforce")
+					BaseController.PressForge()
+					t.Check("it opens Equipment on Reinforce", waitFor(t, ANSWER, function(): boolean
+						return Screen.Current() == EquipmentScreen.Name and EquipmentScreen.State().Page == "Reinforce"
+					end), `{tostring(Screen.Current())}, {EquipmentScreen.State().Page}`)
+					if Screen.Current() == EquipmentScreen.Name then
+						Screen.Close()
+					end
+					local ram = (forge :: Instance):FindFirstChild("Ram") :: BasePart?
+					local item: string? = nil
+					for id, owned in (ProfileController.Get() :: any).Items do
+						if owned.Reinforce < ReinforceConfig.Cap and (item == nil or id < item) then
+							item = id
+						end
+					end
+					if ram and item then
+						local owned = (ProfileController.Get() :: any).Items[item]
+						local cost = ReinforceRules.Cost(owned, owned.Reinforce + 1)
+						local was = owned.Reinforce
+						t.Server("StonesGive", cost.Grade, cost.Stones) -- what the try spends, given first: the bag and purse end as they were
+						t.Server("DataCredits", cost.Credits)
+						local strikes = ram:GetAttribute("Strikes")
+						-- Watched from the try on, every frame, so the hitstop's few frames are never missed.
+						local lowest, moved = 0, false
+						local watching = true
+						task.spawn(function()
+							while watching do
+								local rise, striking = BaseController.StrikeOf(ram)
+								moved = moved or striking
+								lowest = math.min(lowest, rise or 0)
+								task.wait()
+							end
+						end)
+						local tried = ProfileController.Act("Reinforce", { Item = item })
+						t.Check("a Reinforce try made", tried.Ok == true, tostring(tried.Error))
+						t.Check("its ram counted one strike", waitFor(t, ANSWER, function(): boolean
+							return ram:GetAttribute("Strikes") == (if type(strikes) == "number" then strikes else 0) + 1
+						end))
+						task.wait(Forge.Length(WorldConfig.Forge) + 0.3)
+						watching = false
+						local plan = BasePlan.machines.forge.ram
+						t.Check("the ram struck the plate", moved and math.abs(lowest - (plan.contact - plan.rest)) < 0.05, `lowest {lowest}`)
+						t.Check("and settled at rest", (BaseController.StrikeOf(ram)) == 0)
+						t.Server("ReinforceSet", item, was)
+					else
+						t.Check("an item and the ram to strike", false, `ram {ram ~= nil}, item {tostring(item)}`)
+					end
 				end
 				t.Server("BaseLevel", levelWas)
 			end,

@@ -14,6 +14,7 @@ export type Spec = {
 	Per: string?, -- "Plot": Count on each plot
 	Ground: boolean?,
 	Place: string, -- "Main" or "Festival": the other place holds none
+	Cut: string?, -- a key of Config.World.Cut: while it's cut, the world holds none (AR65)
 }
 
 local specs: { [string]: Spec } = {
@@ -24,7 +25,7 @@ local specs: { [string]: Spec } = {
 	Breaker = { Tag = "GA_Breaker", Place = "Main", Attributes = { Plot = "number" }, Count = 1, Per = "Plot", Ground = true },
 	-- A worker's bay. Bay is its number on the plot, in the order they open.
 	Bay = { Tag = "GA_Bay", Place = "Main", Attributes = { Plot = "number", Bay = "number" }, Per = "Plot", Ground = true },
-	Battery = { Tag = "GA_Battery", Place = "Main", Attributes = { Plot = "number" }, Count = 1, Per = "Plot", Ground = true },
+	Battery = { Tag = "GA_Battery", Place = "Main", Attributes = { Plot = "number" }, Count = 1, Per = "Plot", Ground = true, Cut = "BatteryRack" },
 	-- The generator (TR18): the plant's heart, with generation and demand on its face; its prompt opens the Power screen.
 	Generator = { Tag = "GA_Generator", Place = "Main", Attributes = { Plot = "number" }, Count = 1, Per = "Plot", Ground = true },
 	-- The Training machine (TR12): one Voidkin at a time trains on it, and a fallen lead comes home before it.
@@ -33,7 +34,7 @@ local specs: { [string]: Spec } = {
 	TowerRing = { Tag = "GA_TowerRing", Place = "Main", Attributes = { Plot = "number" }, Count = 1, Per = "Plot", Ground = true },
 	-- The Forge (TR37): AR28's Press in its sleeping place; its prompt opens Reinforce, and each try strikes its ram. A model
 	-- whose pivot is its home on the floor. Stands only with the base's kit.
-	Forge = { Tag = "GA_Forge", Place = "Main", Attributes = { Plot = "number" }, Count = 1, Per = "Plot", Ground = true },
+	Forge = { Tag = "GA_Forge", Place = "Main", Attributes = { Plot = "number" }, Count = 1, Per = "Plot", Ground = true, Cut = "Forge" },
 	-- The Stone Condenser (TR37): AR28's Comb over its sleeping stone, awake from its base level; its tray and the convert.
 	-- A model whose pivot is its home on the floor. Stands only with the base's kit.
 	Condenser = { Tag = "GA_Condenser", Place = "Main", Attributes = { Plot = "number" }, Count = 1, Per = "Plot", Ground = true },

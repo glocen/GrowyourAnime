@@ -70,7 +70,7 @@ local function format(line: Return.Line): (number) -> string
 		return function(n: number): string
 			return `+{Read.Kwh(n)} kWh`
 		end
-	elseif line.Kind == "Stones" then
+	elseif line.Kind == "Stones" or line.Kind == "Jewels" then
 		return function(n: number): string
 			return `+{math.floor(n + 0.5)}`
 		end
@@ -96,6 +96,8 @@ local function word(line: Return.Line, view: Profile.View): string
 		return `+{Read.Number(line.Count)} {plural(line.Count, "Credit", "Credits")}`
 	elseif line.Kind == "Stones" then
 		return `{line.Grade} {plural(line.Count, "stone", "stones")}`
+	elseif line.Kind == "Jewels" then
+		return plural(line.Count, "jewel", "jewels")
 	elseif line.Kind == "Training" or line.Kind == "Worker" then
 		local owned = if line.Id then view.Voidkin[line.Id] else nil
 		return if owned then Collection.Name(owned) else ""
@@ -123,6 +125,11 @@ local function picture(parent: GuiObject, line: Return.Line, view: Profile.View,
 		Glass.Mark(parent, "Picture", HudConfig.Power.Images.Battery, cx, cy, side, Color3.new(1, 1, 1), z)
 	elseif line.Kind == "Stones" then
 		Skin.Icon(parent, `Stone{line.Grade}`, cx, cy, side, nil, z).Name = "Picture"
+	elseif line.Kind == "Jewels" then
+		-- The first jewel's own picture, its colour and tier from its key ("Blue:1"); the empty socket's ring if it has none.
+		local colour, tier = string.match(line.Def or "", "^(%a+):(%d+)$")
+		local name = if colour and tier then `Jewel{colour}{tier}` else ""
+		Skin.Icon(parent, if UIKit.Images[name] then name else "SocketEmptyJewel", cx, cy, side, nil, z).Name = "Picture"
 	elseif line.Kind == "Shards" then
 		local def = if line.Def then Shards.ById[line.Def] else nil
 		Skin.Icon(parent, Hud.ShardPicture(if def then def.Grade else "Standard", side, math.huge), cx, cy, side, nil, z).Name = "Picture"
@@ -233,7 +240,7 @@ function ReturnCard.Show(card: Profile.ReturnCard, view: Profile.View, on: On, r
 		if name and Text.Wide(gain, show(line.Count)) + R.Gain.Gap + Text.Wide(said, name) <= wordWide then
 			said.Text = name
 		end
-		local counts = line.Kind == "Battery" or line.Kind == "Stones" or FACES[line.Kind] == true
+		local counts = line.Kind == "Battery" or line.Kind == "Stones" or line.Kind == "Jewels" or FACES[line.Kind] == true
 		if counts and not again then
 			gain.Text = show(0)
 			task.delay(R.Seconds + (index - 1) * R.After, function()

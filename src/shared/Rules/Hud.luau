@@ -293,8 +293,8 @@ function Hud.Chance(p: number): string
 end
 
 -- What the lead's card says while its lead has fallen (TR12), or nil while it stands: "Down" as it falls; at home, its
--- healing and the time left; then "Training" on the machine, or "At home" waiting. "Healing 0:24", as a refusal says it
--- (LeadReason): take F's health line holds no more at the smallest phone ("Healing at home 0:24" ran 1.2 of its box).
+-- healing and the time left; then "Training" on the machine, or "At base" waiting. "Healing 0:24", as a refusal says it
+-- (LeadReason): take F's health line holds no more at the smallest phone ("Healing at home 0:24", as it read then, ran 1.2 of its box).
 function Hud.LeadStatus(state: string, untilAt: number, now: number, training: boolean): string?
 	if state == "Down" then
 		return "Down"
@@ -303,7 +303,7 @@ function Hud.LeadStatus(state: string, untilAt: number, now: number, training: b
 	elseif untilAt > now then
 		return `Healing {Hud.Clock(untilAt - now)}`
 	end
-	return if training then "Training" else "At home"
+	return if training then "Training" else "At base"
 end
 
 -- Another Voidkin the player owns, as a fallen lead's card weighs it: its role ("Lead", "Bay 1" or "", UI.Read.Role) and,
@@ -513,7 +513,7 @@ function Hud.ShardHint(kinds: number, total: number, first: string?, home: boole
 	if not home or total <= 0 then
 		return nil
 	end
-	return if kinds == 1 and total == 1 and first then `{first}: into the Breaker` else `{total} shards: into the Breaker`
+	return if kinds == 1 and total == 1 and first then `{first} to the Breaker` else `{total} {if total == 1 then "shard" else "shards"} to the Breaker`
 end
 
 -- What the next-step line reads (TR24's fix 1): the first session's state, as HudController reads it.
@@ -556,7 +556,7 @@ function Hud.NextStep(s: StepState): Step?
 		return { Line = "Choose your first shard", Target = "Starters" }
 	end
 	if s.Ready > 0 then
-		return { Line = if s.Ready == 1 then "Ready: open it at the Breaker" else `{s.Ready} ready: open them at the Breaker`, Target = "Breaker" }
+		return { Line = if s.Ready == 1 then "Ready to open at the Breaker" else `{s.Ready} ready to open at the Breaker`, Target = "Breaker" }
 	end
 	local shards = Hud.ShardHint(s.Kinds, s.Shards, s.First, true)
 	if shards then
@@ -569,9 +569,9 @@ function Hud.NextStep(s: StepState): Step?
 		return nil
 	end
 	if s.Breaking > 0 then
-		return { Line = "Breaking: it opens at the Breaker", Target = "Breaker" }
+		return { Line = "In the Breaker", Target = "Breaker" }
 	end
-	return { Line = `Through the Door: {s.Ground}`, Target = "Door" }
+	return { Line = `Go to {s.Ground}`, Target = "Door" }
 end
 
 -- The readout's light (AR12; Config.Hud.Readout): one gradient across the well's square, `side` points each way, turned

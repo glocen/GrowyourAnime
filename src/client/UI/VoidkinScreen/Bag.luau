@@ -109,7 +109,7 @@ local function chestPicture(name: string?): string?
 end
 local NUMBER_ROW = 22 -- the card's Combat Power line
 -- The full bag's way out (the follow-up's item 6): what frees a slot, said wherever a full bag stops an open.
-local FREE_A_SLOT = "salvage an item from its card to free a slot"
+local FREE_A_SLOT = "Bag full. Salvage an item to free a slot."
 local CHEST_SAID: { [string]: string } = { NotEnough = "Not that many held", BagFull = `The bag is full: {FREE_A_SLOT}`, Unknown = "Not now" }
 local SALVAGE_SAID: { [string]: string } = {
 	NotOwned = "It isn't in the bag",
@@ -119,7 +119,7 @@ local SALVAGE_SAID: { [string]: string } = {
 local ARMED = 3 -- s the salvage's second tap is waited for
 local EQUIP_SAID: { [string]: string } = {
 	NotOwned = "It isn't in the bag",
-	WrongSlot = "It doesn't go there",
+	WrongSlot = "Wrong slot",
 	WrongClass = "Another class's weapon",
 	Unknown = "Not now",
 	InCombat = "Not during a fight",
@@ -1109,7 +1109,7 @@ function Bag.Build(context: Context): (() -> boolean)?
 			local nextOne = steps[at_ % #steps + 1]
 			local answer = context.Act("SetSalvage", { Below = nextOne })
 			if said(CHEST_SAID, "Can't set it", answer) then
-				Toast.Show(if nextOne == "" then "Salvage off: every item kept" else `{nextOne} and under turn into Credits, unless they'd raise {Sheet.Said.Power}`, Theme.Colour.Text)
+				Toast.Show(if nextOne == "" then "Auto-salvage off" else `{nextOne} and under turn into Credits, unless they'd raise {Sheet.Said.Power}`, Theme.Colour.Text)
 			end
 		end)
 	else

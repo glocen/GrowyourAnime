@@ -143,7 +143,7 @@ function ShopCases.Cases(): { any }
 				t.Check("Shards: the shard's the same at its own size", shardHero ~= nil and shardSide >= least and shardSide <= featSide, shardSide)
 				t.Check("Shards: no rarity under the shard (its odds say it)", said("Rarity", "Shards") == nil, said("Rarity", "Shards"))
 				t.Check("the screen stands on the bag's room", ShopScreen.Find("Room") ~= nil)
-				t.Check("the foot: how a stock works", said("Foot") == `A new stock every {ShopConfig.Period // 60} minutes, in every server. Your counts are your own.`, said("Foot"))
+				t.Check("the foot: how a stock works", said("Foot") == `A new stock every {ShopConfig.Period // 60} minutes, the same in every server. Each player has their own limit.`, said("Foot"))
 				local shardLine = shelf.Lines.Shard :: Shop.Line
 				local featLine = shelf.Lines.Featured :: Shop.Line
 				local shardBuy, featBuy = buyOf("Shards"), buyOf("Featured")

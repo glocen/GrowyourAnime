@@ -91,7 +91,7 @@ return {
 			t.Equal("one Main", marked, 1)
 			t.Equal("an attribute at zero shows 0", (row(groups, "Endurance") :: Sheet.Row).Value, "0")
 			t.Equal("then the Battle Attributes", groups[2].Heading, "Battle Attributes")
-			t.Equal("one caption under it", groups[2].Caption, "chances against an even foe")
+			t.Equal("one caption under it", groups[2].Caption, "against an enemy of your level")
 			t.Check("and nowhere else", groups[3].Caption == nil and groups[4].Caption == nil and groups[1].Caption == nil)
 			local names = {}
 			local count = 0

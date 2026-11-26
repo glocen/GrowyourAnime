@@ -69,7 +69,7 @@ local REFUSED: { [string]: string } = {
 	[Shop.Gone] = "A new stock just came in",
 	[Shop.Limit] = "None left for you this stock",
 	[Shop.Poor] = "Not enough Credits",
-	[Shop.BagFull] = "Your Inventory is full",
+	[Shop.BagFull] = "Bag full. Salvage an item to free a slot.",
 	[Shop.Unknown] = "That isn't on the shelf now",
 	Closed = "The Shop is closed for a moment",
 	NoAnswer = "That didn't go through. Try again.",
@@ -242,7 +242,7 @@ local function buyLine(panel: Frame, view: Profile.View, shelf: Shop.Shelf, line
 				end
 				return false
 			end
-			Toast.Show(`{named} bought: it's in your Inventory`, Theme.Colour.Text)
+			Toast.Show(`{named} bought. It's in your bag.`, Theme.Colour.Text)
 			return true
 		end,
 	})
@@ -279,7 +279,7 @@ local function featured(panel: Frame, wide: number, tall: number, view: Profile.
 			Position = UDim2.new(0.5, 0, 0.55, 0),
 			AnchorPoint = Vector2.new(0.5, 0.5),
 			Parent = panel,
-		}, "None this stock.\nWhen one is in,\nthe Shop's crown is lit.")
+		}, "None in this stock.\nThe Shop's sign lights up\nwhen one comes in.")
 		return nil
 	end
 	local tap, line_ = Theme.Size.Tap, SHOP.Row
@@ -522,7 +522,7 @@ local function build(view: Profile.View, shelf: Shop.Shelf, on: On)
 		AnchorPoint = Vector2.new(0.5, 0),
 		Parent = body,
 		Truncate = true,
-	}, `A new stock every {if minutes == math.floor(minutes) then tostring(minutes) else string.format("%.1f", minutes)} minutes, in every server. Your counts are your own.`)
+	}, `A new stock every {if minutes == math.floor(minutes) then tostring(minutes) else string.format("%.1f", minutes)} minutes, the same in every server. Each player has their own limit.`)
 	body:SetAttribute("Stock", shelf.Stock)
 	body:SetAttribute("Featured", shelf.Featured)
 end

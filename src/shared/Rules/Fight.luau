@@ -620,7 +620,7 @@ function Fight.KnockAhead(studs: number, t: number, shown: number, push: { Secon
 end
 
 export type Lever = { From: number, Hold: number, Flash: number, Glow: number, Tremble: number, Trauma: number }
-export type Hitstop = { Rungs: { Lever }, Critical: number, Kill: number, KillRung: number }
+export type Hitstop = { Rungs: { Lever }, Critical: number, Kill: number, KillRung: number, Last: number }
 
 -- A hit's rung on the importance ladder (Actions.Hit.Rung; docs/research/vfx-reference.md, rule 1): its own, 2 when it
 -- names none, and at least the critical's when it's critical.
@@ -655,15 +655,22 @@ function Fight.Lever(rung: number, hitstop: Hitstop): Lever
 	return chosen
 end
 
--- Seconds both bodies hold on a hit of `rung`: its row's, and at least the killing hit's own when it fells.
-function Fight.Hold(rung: number, killing: boolean, hitstop: Hitstop): number
+-- Seconds both bodies hold on a hit of `rung`: its row's, at least the killing hit's own when it fells, and at least Last
+-- when it fells the last of its pack standing (`last`; TR69 A: the pack's beat).
+function Fight.Hold(rung: number, killing: boolean, hitstop: Hitstop, last: boolean?): number
 	local hold = Fight.Lever(rung, hitstop).Hold
-	return if killing then math.max(hold, hitstop.Kill) else hold
+	if killing then
+		hold = math.max(hold, hitstop.Kill)
+		if last then
+			hold = math.max(hold, hitstop.Last)
+		end
+	end
+	return hold
 end
 
 -- The longest hold any hit can have: what waits on a hold (the Shade's burst on a held clip) waits this out.
 function Fight.LongestHold(hitstop: Hitstop): number
-	local most = hitstop.Kill
+	local most = math.max(hitstop.Kill, hitstop.Last)
 	for _, row in hitstop.Rungs do
 		most = math.max(most, row.Hold)
 	end

@@ -4,8 +4,6 @@
 -- open); while the target is off the frame or behind the camera, one arrow at the frame's edge points the way to it.
 -- Within Config.Hud.Guide.Near studs of the avatar both step back, and the target's own prompt speaks.
 --   Guide.Point(targets, colour?)   the targets, parts or models (nil or empty: none); the same list again changes nothing
---   Guide.Errand(targets?, seconds?) an errand the player asked for (the Play panel's "Go to the Tower"): these targets
---                                   over Point's until the avatar comes Near them, `seconds` pass, or Errand(nil)
 --   Guide.Read()                    for tests: how many targets, how many chevrons show, whether the edge's arrow shows
 --   Guide.Test(targets?)            for tests: these targets until Test(nil), whatever Point says meanwhile; then Point's
 
@@ -38,8 +36,6 @@ local hidden = true -- near the target, or none
 local rides = false -- the edge's arrow on the next step's chip, its own spot taken
 local held: { Instance }? = nil -- a test's targets, over Point's
 local wanted: { Instance } = {} -- Point's last
-local errand: { Instance }? = nil -- an errand's targets, over Point's and under a test's
-local errandUntil = 0 -- os.clock() the errand gives the marker back at
 
 -- A chevron of two bars pointing down, its point at the frame's foot.
 local function chevron(parent: GuiObject)
@@ -141,32 +137,24 @@ end
 
 function Guide.Point(list: { Instance }?, tint: Color3?)
 	wanted = list or {}
-	if held == nil and errand == nil then
+	if held == nil then
 		apply(wanted, tint)
 	end
 end
 
 function Guide.Test(list: { Instance }?)
 	held = list
-	apply(if list then list else errand or wanted)
+	apply(if list then list else wanted)
 end
 
-function Guide.Errand(list: { Instance }?, seconds: number?)
-	errand = if list and #list > 0 then list else nil
-	errandUntil = os.clock() + (seconds or 60)
-	if held == nil then
-		apply(errand or wanted)
-	end
-end
-
-function Guide.Read(): { Count: number, Shown: number, Edge: boolean, Arrow: Frame?, Rides: boolean, Errand: boolean }
+function Guide.Read(): { Count: number, Targets: { Instance }, Shown: number, Edge: boolean, Arrow: Frame?, Rides: boolean }
 	local shown = 0
 	for _, frame in chevrons do
 		if frame.Visible then
 			shown += 1
 		end
 	end
-	return { Count = #targets, Shown = shown, Edge = edge ~= nil and edge.Visible, Arrow = edge, Rides = rides, Errand = errand ~= nil }
+	return { Count = #targets, Targets = table.clone(targets), Shown = shown, Edge = edge ~= nil and edge.Visible, Arrow = edge, Rides = rides }
 end
 
 -- The edge's arrow drawn pointing down, its turn set each frame: a round dark backing rimmed in the guide's colour, and an
@@ -236,9 +224,6 @@ local function stepEdge()
 		arrow = made
 	end
 	local a = arrow :: Frame
-	if errand and os.clock() > errandUntil then -- an errand nobody walked: the marker is the next step's again
-		Guide.Errand(nil)
-	end
 	local camera = workspace.CurrentCamera
 	local at = avatarAt()
 	if #tops == 0 or camera == nil or at == nil then
@@ -258,9 +243,6 @@ local function stepEdge()
 	hidden = nearest <= CONFIG.Near
 	if hidden then
 		a.Visible = false
-		if errand and held == nil then -- arrived: the errand is done, and the next step's marker stands again
-			Guide.Errand(nil)
-		end
 		return
 	end
 	local screen = camera:WorldToViewportPoint(middle + Vector3.new(0, CONFIG.Lift, 0))

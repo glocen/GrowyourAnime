@@ -182,7 +182,7 @@ local function batteryPlate(t: any, now: Read.Base)
 		t.Check("its mark: AR12's battery, an image on the plate", false, tostring(mark))
 	end
 	local holds = said("BatteryHolds")
-	t.Check("the work it holds as its soft line", string.find(holds, "^holds .+ of work$") ~= nil or holds == "nothing draws now", holds)
+	t.Check("the work it holds as its soft line", string.find(holds, "^holds .+ of work$") ~= nil or holds == "nothing uses power now", holds)
 	local charge = part("BatteryCharge")
 	local share = if charge then charge:GetAttribute("Share") else nil
 	t.Check("its charge as a bar, lit to its share", type(share) == "number" and math.abs(share - now.Data.Base.Charge / capacity) < 0.02, `{share} against {now.Data.Base.Charge / capacity}`)

@@ -41,6 +41,7 @@ local Actions = require(Shared.Definitions.Actions)
 local HomeConfig = require(Shared.Config.Home)
 local Growth = require(Shared.Rules.Growth)
 local Hud = require(Shared.Rules.Hud)
+local Progress = require(Shared.Rules.Progress)
 local Stats = require(Shared.Rules.Stats)
 local Home = require(Shared.Rules.Home)
 local Return = require(Shared.Rules.Return)
@@ -690,7 +691,7 @@ local function stepHome()
 		mood = nil -- a charge under way is broken only by a hit (HomeService): it never dims while it runs
 	end
 	Dock.Mood(dockUi, "Base", mood)
-	Dock.Reason(dockUi, "Base", Home.Word(refusal, s)) -- a refused tile's word says why, at home "You're home" (TR20)
+	Dock.Reason(dockUi, "Base", Home.Word(refusal, s)) -- a refused tile's word says why, at the base "Back at your base" (TR20)
 	local share = if began then Home.Share(began, HomeConfig.Charge, s.Now) elseif holding then 1 else nil
 	if share and charging then
 		share = math.max(share, Home.Share(tappedAt, HomeConfig.Charge, os.clock()))
@@ -853,12 +854,7 @@ local function stepState(view: Profile.View): Hud.StepState
 		table.sort(ids)
 		idle = if ids[1] then Read.VoidkinName(view.Voidkin[ids[1]]) else nil
 	end
-	local won = false
-	for _, ground in view.Progress.Grounds do
-		for _, wins in ground.KeeperWins do
-			won = won or wins > 0
-		end
-	end
+	local won = Progress.Beaten(view.Progress.Grounds)
 	-- Out in a ground with a keeper: the keeper's name, near its gate (one ground has one yet).
 	local home = atHome()
 	local keeper: string? = nil
@@ -931,7 +927,9 @@ local function showChip(view: Profile.View)
 	if step then
 		chipText.Text = step.Line
 	end
-	Guide.Point(stepTargets(step))
+	-- The world's marker only in the tutorial, until a keeper is beaten (TR65, the director: "those purple arrows are so
+	-- stupid should only be there for a tutorial"); the line over the dock stays.
+	Guide.Point(if Progress.Beaten(view.Progress.Grounds) then nil else stepTargets(step))
 end
 
 -- A level gained, said once, in one place: the notice under the lead's corner (AR12, take B; research's ruling,
@@ -955,10 +953,23 @@ end
 
 -- What changed since the last copy, said once: a shard gained (it drops in the world and flies to the avatar, and the toast
 -- says it as it lands: TR24's fix 8), a level gained, a goal done (its sound once the fight is quiet, TR64).
-local function notice(old: Profile.View?, new: Profile.View)
-	if old == nil then
-		return
+-- os.clock() the beat of a pack's last fall near the avatar ends (Config.Combat.Hitstop.Last; Net "Hit"'s Last): the
+-- drops it paid wait it out, then leave together (TR69 A; combat-agency.md, item 11).
+local dropsWait = 0
+
+-- A pack's last fall near the avatar: its drops wait out its hold.
+local function heldDrops(hit: any)
+	local target = if type(hit) == "table" then hit.T else nil
+	local at = avatarAt()
+	if type(hit) == "table" and hit.Last == true and typeof(target) == "Instance" and target:IsA("Model") and at
+		and (target:GetPivot().Position - at).Magnitude < EffectsConfig.Drop.From then
+		dropsWait = math.max(dropsWait, os.clock() + (tonumber(hit.Hold) or 0))
 	end
+end
+
+-- What a change paid, out in the world: each shard drops from the fallen Shade and flies to the avatar, the toast saying
+-- it as it lands (TR24's fix 8), and a kill's Credits fly from where it fell (TR6); any other win pops at once.
+local function drops(old: Profile.View, new: Profile.View)
 	for shard, count in new.Bag.Shards do
 		local gained = count - (old.Bag.Shards[shard] or 0)
 		if gained > 0 then
@@ -969,15 +980,28 @@ local function notice(old: Profile.View?, new: Profile.View)
 			end, chime(if row then row.Grade else nil))
 		end
 	end
+	if new.Currency.Credits > old.Currency.Credits then
+		local fell = fallenNear()
+		reward(credits, coin, if fell then Fly.From(fell) else nil, UIKit.Systems.Credits.Icon, old.Currency.Credits, new.Currency.Credits, Read.Number, HudConfig.Pop.Rungs.Credits, UIKit.Systems.Credits.Colour, Read.Number)
+	end
+end
+
+local function notice(old: Profile.View?, new: Profile.View)
+	if old == nil then
+		return
+	end
 	if old.Goals and new.Goals and Goals.Waits(new.Goals :: any, GoalDefs.ById) > Goals.Waits(old.Goals :: any, GoalDefs.ById) then
 		Cues.Moment("GoalDone", { Hold = true })
 	end
-	local pops = HudConfig.Pop.Rungs
-	if new.Currency.Credits > old.Currency.Credits then
-		-- A kill's Credits fly from where it fell (TR6); any other win pops at once.
-		local fell = fallenNear()
-		reward(credits, coin, if fell then Fly.From(fell) else nil, UIKit.Systems.Credits.Icon, old.Currency.Credits, new.Currency.Credits, Read.Number, pops.Credits, UIKit.Systems.Credits.Colour, Read.Number)
+	-- What a pack's last fall paid waits out its beat and leaves together (TR69 A)
+	local before: Profile.View = old
+	local wait = dropsWait - os.clock()
+	if wait > 0 then
+		task.delay(wait, drops, before, new)
+	else
+		drops(before, new)
 	end
+	local pops = HudConfig.Pop.Rungs
 	local id = new.Roles.Lead
 	local was, now = old.Voidkin[id], new.Voidkin[id]
 	if was and now and (now.Level > was.Level or now.Xp > was.Xp) then
@@ -1630,6 +1654,7 @@ function HudController.Start()
 	healGain.ZIndex = 6
 	healGain.Visible = false
 	-- A Regen burst on the player's own lead (TR40). Later heals of the lead's own (Lifesteal's, a healer's) come here too.
+	Net.Client.On("Hit", heldDrops) -- a pack's last fall holds its drops (TR69 A)
 	Net.Client.On("Heal", function(burst: any)
 		if type(burst) == "table" and burst.Regen == true and type(burst.Amount) == "number" and burst.T ~= nil and burst.T == myLead() then
 			HudController.LeadHealed(burst.Amount)

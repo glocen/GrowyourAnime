@@ -206,13 +206,13 @@ end
 -- What a refusal says.
 local SAID: { [string]: string } = {
 	InCombat = "Not during a fight",
-	Capped = "It's at the most already",
+	Capped = "Already at max",
 	Poor = "Not enough Credits",
 	NoStones = "Not enough stones",
 	NoneLeft = "None of that emblem left",
 	Empty = "That socket is empty",
 	NotEnough = "Combining takes 3 of one stat and rarity",
-	Top = "Legendary is the top",
+	Top = "Already Legendary",
 }
 function Look.Refused(answer: { [string]: any }): string
 	local error = answer.Error

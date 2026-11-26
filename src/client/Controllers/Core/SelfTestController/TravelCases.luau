@@ -274,7 +274,7 @@ function TravelCases.Cases(given: { [string]: any }): { any }
 					local before = tonumber(base:GetAttribute("Shakes")) or 0
 					Button.Press(base)
 					t.Check("a tap says it's a boss's ground, and shakes", waitFor(t, REPLICATE, function(): boolean
-						return table.find(Toast.Shown(), "Not in a boss's arena") ~= nil and (tonumber(base:GetAttribute("Shakes")) or 0) > before
+						return table.find(Toast.Shown(), "Not during a keeper fight") ~= nil and (tonumber(base:GetAttribute("Shakes")) or 0) > before
 					end))
 					-- The keeper stands in its ring only once the try's fade has moved the player (the server says NoTry
 					-- before), so the loss is asked until it's taken, then the try ends after the lead's fall.

@@ -661,7 +661,7 @@ function StageScreen.Pick(ground: string, view: Profile.View, on: On)
 	local mine = power(view)
 	Glass.Label(room, "Power", if mine then `{Hud.Digits(mine)} {Sheet.Said.Power}` else "No lead", TITLE, SEAM.Text, TILE.Pad + LOOK.Foot.Power, footY - 2, 120, TITLE + 4, Enum.TextXAlignment.Left, true, 2)
 	local hardOpen = Stages.Needs(data, ground, "Hard", 1) == nil
-	parts.HardWords = Glass.Label(room, "HardWords", if hardOpen then `Hard: every foe is {StagesConfig.Offset.Hard} levels higher` else "", SMALL, SEAM.Text, W - TILE.Pad - 2 - 330, footY, 330, SMALL + 4, Enum.TextXAlignment.Right, false, 2)
+	parts.HardWords = Glass.Label(room, "HardWords", if hardOpen then `Hard: enemies are {StagesConfig.Offset.Hard} levels higher` else "", SMALL, SEAM.Text, W - TILE.Pad - 2 - 330, footY, 330, SMALL + 4, Enum.TextXAlignment.Right, false, 2)
 	-- The opening: the tile rises in, then each run's light fills to its checkpoint's ring.
 	if opening and not GuiService.ReducedMotionEnabled then
 		local at = group.Position

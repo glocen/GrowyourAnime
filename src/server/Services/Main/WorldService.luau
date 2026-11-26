@@ -774,7 +774,7 @@ local function layBack(base: Instance, number: number, at: CFrame, front: number
 	end
 	local forgeHome = placementOf("SleepingStone", 1, at)
 	local forgePlan, forgeStages = machines.forge, machines.forgeStages
-	if forgeHome and forgePlan then
+	if forgeHome and forgePlan and not WorldConfig.Cut.Forge then -- out of the yard while it's cut (AR65)
 		local forge = model(base, "Forge", homeAt(forgeHome))
 		if piece(forge, "Frame", "Forge", forgeHome, number, at, front) then
 			local ram = forgePlan.ram
@@ -1045,55 +1045,58 @@ local function plot(parent: Instance, number: number, at: CFrame, across: number
 			end
 			Markers.Stamp(bay, "Bay", { Plot = number, Bay = index })
 		end
-		-- The battery on the slant toward the back: its rack, and its bank of cells on the plan's seats, in the order they
-		-- fill (AR15, section 4). BaseService shows as many as the base's level holds and lights each by the charge.
-		local batteryAt = place(layout.stations.battery)
-		local battery = model(base, "Battery", batteryAt)
-		local batterySwap = if plan.machines then plan.machines.batteryStages else nil
-		local batteryHome = placementOf("BatteryRack", 1, at)
-		if batterySwap and batteryHome then
-			-- Its three stages (TR51; AR34, the Rising Stack), each a "Stage n" with its "Rack", shown at the base's
-			-- level. Its cells sit on the same seats at every stage that has them, so each is laid once at the root, on
-			-- the last stage's seats in the order they fill (they supersede machines.battery's), and BaseService shows
-			-- the level's.
-			local seats = {}
-			for stage = 1, 3 do
-				local rows = batterySwap.stages[tostring(stage)]
-				if rows == nil then
-					continue
+		-- None while it's cut: folded into the Mill (Config.World.Cut, AR65).
+		if not WorldConfig.Cut.BatteryRack then
+			-- The battery on the slant toward the back: its rack, and its bank of cells on the plan's seats, in the order they
+			-- fill (AR15, section 4). BaseService shows as many as the base's level holds and lights each by the charge.
+			local batteryAt = place(layout.stations.battery)
+			local battery = model(base, "Battery", batteryAt)
+			local batterySwap = if plan.machines then plan.machines.batteryStages else nil
+			local batteryHome = placementOf("BatteryRack", 1, at)
+			if batterySwap and batteryHome then
+				-- Its three stages (TR51; AR34, the Rising Stack), each a "Stage n" with its "Rack", shown at the base's
+				-- level. Its cells sit on the same seats at every stage that has them, so each is laid once at the root, on
+				-- the last stage's seats in the order they fill (they supersede machines.battery's), and BaseService shows
+				-- the level's.
+				local seats = {}
+				for stage = 1, 3 do
+					local rows = batterySwap.stages[tostring(stage)]
+					if rows == nil then
+						continue
+					end
+					local group = stageGroup(battery, stage, batteryAt)
+					group:SetAttribute("Seats", if rows.seats then #rows.seats else 0) -- the cells its rack holds
+					for _, row in rows.pieces do
+						stagePiece(group, "Rack", row.piece, batteryHome, row.at, stage, false, number, at, front)
+					end
+					seats = rows.seats or seats
 				end
-				local group = stageGroup(battery, stage, batteryAt)
-				group:SetAttribute("Seats", if rows.seats then #rows.seats else 0) -- the cells its rack holds
-				for _, row in rows.pieces do
-					stagePiece(group, "Rack", row.piece, batteryHome, row.at, stage, false, number, at, front)
+				local first = plan.machines.battery.cellsAt["1"]
+				for seat, offset in seats do
+					local cell = piece(battery, `Cell {seat}`, "BatteryCell", within(batteryHome, offset), number, at, front)
+					if cell then
+						cell:SetAttribute("Cell", seat)
+						cell:SetAttribute("Lit", 0)
+						cell:SetAttribute("Later", seat > first)
+						stand(cell, false)
+					end
 				end
-				seats = rows.seats or seats
+			elseif machine(battery, "Rack", "BatteryRack", 1, number, at, front) then
+				local bank = plan.machines.battery
+				for seat, spot in bank.seats do
+					local cell = piece(battery, `Cell {seat}`, "BatteryCell", { across = spot.across, along = spot.along, up = bank.up, turn = 0 }, number, at, front)
+					if cell then
+						cell:SetAttribute("Cell", seat)
+						cell:SetAttribute("Lit", 0)
+						cell:SetAttribute("Later", seat > bank.cellsAt["1"])
+						stand(cell, false)
+					end
+				end
+			else
+				block(battery, "Body", Vector3.new(6, 3, 4), batteryAt * CFrame.new(0, 1.5, 0), tint("battery", GREY.Battery))
 			end
-			local first = plan.machines.battery.cellsAt["1"]
-			for seat, offset in seats do
-				local cell = piece(battery, `Cell {seat}`, "BatteryCell", within(batteryHome, offset), number, at, front)
-				if cell then
-					cell:SetAttribute("Cell", seat)
-					cell:SetAttribute("Lit", 0)
-					cell:SetAttribute("Later", seat > first)
-					stand(cell, false)
-				end
-			end
-		elseif machine(battery, "Rack", "BatteryRack", 1, number, at, front) then
-			local bank = plan.machines.battery
-			for seat, spot in bank.seats do
-				local cell = piece(battery, `Cell {seat}`, "BatteryCell", { across = spot.across, along = spot.along, up = bank.up, turn = 0 }, number, at, front)
-				if cell then
-					cell:SetAttribute("Cell", seat)
-					cell:SetAttribute("Lit", 0)
-					cell:SetAttribute("Later", seat > bank.cellsAt["1"])
-					stand(cell, false)
-				end
-			end
-		else
-			block(battery, "Body", Vector3.new(6, 3, 4), batteryAt * CFrame.new(0, 1.5, 0), tint("battery", GREY.Battery))
+			Markers.Stamp(battery, "Battery", { Plot = number })
 		end
-		Markers.Stamp(battery, "Battery", { Plot = number })
 		-- The generator at the plot's heart, at the end of the way in (TR18; AR19, the Void Mill), once a stage from the
 		-- swap's table (the plan's machines.generatorStages), each stage its own model "Stage n": what stands still and
 		-- its unseen solids; its wheel, which the client turns by its owner's generation; a stage's pinions, which the
@@ -1860,7 +1863,7 @@ function WorldService.Init()
 			local standing: { [string]: number } = {}
 			for _, placement in (if basePlan.machines then basePlan.machines.placements else {}) do
 				-- The Tower's ring stands where the sleeping Tower was placed (TR29): it's checked below, not its piece.
-				if placement.piece ~= "TowerSleeping" then
+				if placement.piece ~= "TowerSleeping" and not WorldConfig.Cut[placement.piece] then
 					standing[placement.piece] = (standing[placement.piece] or 0) + 1
 				end
 			end
@@ -1869,7 +1872,9 @@ function WorldService.Init()
 			local stones = standing.SleepingStone
 			if forgePlan and stones then
 				standing.SleepingStone = stones - 1
-				standing.Forge, standing.ForgeRam, standing.ForgeGear = 1, 1, #forgePlan.gears
+				if not WorldConfig.Cut.Forge then -- its place stays empty while it's cut (AR65)
+					standing.Forge, standing.ForgeRam, standing.ForgeGear = 1, 1, #forgePlan.gears
+				end
 			end
 			-- The Lab's sleeping stone, the third, isn't laid while it's cut (Config.World.Cut, AR65).
 			if WorldConfig.Cut.Lab and standing.SleepingStone then
@@ -1945,7 +1950,11 @@ function WorldService.Init()
 				-- The Forge's ram knows its heights, and the Condenser has its comb's cups, its core and its panel (TR37).
 				local forge = (m :: Instance):FindFirstChild("Forge")
 				local ram = if forge then forge:FindFirstChild("Ram") else nil
-				if ram == nil or type(ram:GetAttribute("Rest")) ~= "number" or type(ram:GetAttribute("Contact")) ~= "number" then
+				if WorldConfig.Cut.Forge then
+					if forge then
+						table.insert(problems, `Plot {number}: the Forge laid, but it's cut (Config.World.Cut, AR65)`)
+					end
+				elseif ram == nil or type(ram:GetAttribute("Rest")) ~= "number" or type(ram:GetAttribute("Contact")) ~= "number" then
 					table.insert(problems, `Plot {number}: the Forge has no ram with its heights`)
 				end
 				local condenser = (m :: Instance):FindFirstChild("Condenser")

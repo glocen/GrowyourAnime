@@ -16,6 +16,7 @@ local Collection = require(Shared.Rules.Collection)
 local GrowthConfig = require(Shared.Config.Growth)
 local CondenserConfig = require(Shared.Config.Condenser)
 local DataConfig = require(Shared.Config.Data)
+local JewelsConfig = require(Shared.Config.Jewels)
 
 local T0 = 1_800_000_000
 local HOUR = 3600
@@ -103,6 +104,39 @@ return {
 				Return.Open(data)
 				return Return.Arrive(data) == nil
 			end)())
+			t.Equal("the save holds nothing it would lose", #Saveable.Problems(data, "profile"), 0)
+		end,
+	},
+	{
+		Name = "Return (TR66 #11): arrival banks the Condenser's jewels with its stones, the tray emptied, and the card names them after the stones; jewels alone make a card",
+		Run = function(t: any)
+			local first, second = `{JewelsConfig.Colours[1]}:1`, `{JewelsConfig.Colours[2]}:1`
+			local data = fresh(0)
+			Return.Open(data)
+			for i = 1, 2 do
+				Breaker.Advance(data, T0 + i * HOUR / 2)
+			end
+			data.Base.Condenser.Jewels = { [first] = 2, [second] = 1 }
+			local had = data.Bag.Jewels[first] or 0
+			local card = Return.Arrive(data)
+			t.Check("the jewels into the bag", (data.Bag.Jewels[first] or 0) == had + 2 and (data.Bag.Jewels[second] or 0) >= 1)
+			t.Check("the Condenser's jewels taken from its tray", data.Base.Condenser.Jewels == nil)
+			local lines = Return.Lines(card)
+			local line = find(lines, "Jewels")
+			t.Check("the card names them: their count, the first key its picture", line ~= nil and line.Count == 3 and line.Def == first,
+				if line then `{line.Count} {line.Def}` else kinds(lines))
+			local stonesAt, jewelsAt = 0, 0
+			for index, each in lines do
+				stonesAt = if each.Kind == "Stones" and stonesAt == 0 then index else stonesAt
+				jewelsAt = if each.Kind == "Jewels" then index else jewelsAt
+			end
+			t.Check("after the stones", stonesAt > 0 and jewelsAt > stonesAt, kinds(lines))
+			t.Check("the tray's press after it has nothing to take", Base.CollectTray(data, nil, T0 + HOUR).Ok == false)
+			local only = fresh(0)
+			Return.Open(only)
+			only.Base.Condenser.Jewels = { [first] = 1 }
+			local alone = Return.Arrive(only)
+			t.Equal("a jewel alone makes a card", kinds(Return.Lines(alone)), "Jewels")
 			t.Equal("the save holds nothing it would lose", #Saveable.Problems(data, "profile"), 0)
 		end,
 	},

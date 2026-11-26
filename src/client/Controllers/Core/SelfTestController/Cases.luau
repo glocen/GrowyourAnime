@@ -6448,7 +6448,7 @@ local cases = {
 		end,
 	},
 	{
-		Name = "Base: the plot's Breaker, bays and battery carry their prompt and plate; the dock opens each screen",
+		Name = "Base: the plot's Breaker, bays and Training machine carry their prompt and plate; the dock opens each screen",
 		Place = "Main", -- TR45: its world stands in that place only
 		Run = function(t: any)
 			local parts = BaseController.Parts()
@@ -6459,7 +6459,7 @@ local cases = {
 			end
 			t.Check("the Breaker has its prompt", parts.BreakerPrompt ~= nil and parts.BreakerPrompt:IsA("ProximityPrompt"))
 			t.Check("and its plate", parts.BreakerPlate ~= nil)
-			t.Check("the battery has its plate", parts.BatteryPlate ~= nil)
+			t.Check("the Training machine has its plate", parts.TrainingPlate ~= nil)
 			local index = 1
 			while parts[`Bay{index}Plate`] do
 				local open = index <= #view.Base.Bays
@@ -6523,20 +6523,22 @@ local cases = {
 	{
 		-- Research's must-fix on AR16 (2026-11-17): a world plate never stands over the player's own avatar, and one fact
 		-- shows once on the screen. From afar, a machine's news is the next step's line over the dock; its plate only lights.
-		Name = "Base: the plot's plates speak only near their machine, never over the avatar nor saying the next step's fact, and the battery's says only its name",
+		Name = "Base: the plot's plates speak only near their machine, never over the avatar nor saying the next step's fact, and the Training machine's says what it is",
 		Place = "Main", -- TR45: its world stands in that place only
 		Stay = true, -- it moves the avatar itself; the next case's reset takes it back to the pad
 		Run = function(t: any)
 			local view = ProfileController.Get()
 			local says = BaseController.Says()
-			local breaker, battery = says.Breaker, says.Battery
-			t.Check("the plot's spots are here", view ~= nil and breaker ~= nil and battery ~= nil)
-			if view == nil or breaker == nil or battery == nil then
+			-- The Training machine stands in for the battery, folded into the Mill (AR65): a machine that only says what it is.
+			local breaker, trainer = says.Breaker, says.Training
+			t.Check("the plot's spots are here", view ~= nil and breaker ~= nil and trainer ~= nil)
+			if view == nil or breaker == nil or trainer == nil then
 				return
 			end
 			local parts = BaseController.Parts()
-			local flat = battery.Ground - breaker.Ground
-			local back = Vector3.new(flat.X, 0, flat.Z).Unit -- from the Breaker toward the spawn
+			local flat = trainer.Ground - breaker.Ground
+			local back = Vector3.new(flat.X, 0, flat.Z).Unit -- from the Breaker on past the Training machine
+			local afar = breaker.Ground - back * 24 -- the Breaker's other side, toward the gate: near no machine
 			local function stand(at: Vector3, look: Vector3)
 				t.Server("TestStandAt", at + Vector3.new(0, 3, 0), look)
 				t.Wait(0.1) -- the camera's focus follows the avatar
@@ -6613,25 +6615,25 @@ local cases = {
 				return table.concat(list, ", ")
 			end
 
-			stand(battery.Ground + back * 24, breaker.Ground)
+			stand(afar, breaker.Ground)
 			t.Check("far from every machine, none is near", nearOnes() == "", nearOnes())
 			quiet("far off")
 
-			stand(battery.Ground + back * 6, battery.Ground)
-			t.Check("beside the battery, only it is near", nearOnes() == "Battery", nearOnes())
+			stand(trainer.Ground + back * 6, trainer.Ground)
+			t.Check("beside the Training machine, only it is near", nearOnes() == "Training", nearOnes())
 			t.Check("and its plate shows, unless it would stand over the avatar", waitFor(t, 1, function(): boolean
-				return plateOf("Battery").Visible or World.OnAvatar(plateOf("Battery"))
-			end), if plateOf("Battery").Visible then "shown" else "hidden over the avatar")
-			local line = plateOf("Battery"):FindFirstChild("Line1", true) :: TextLabel?
-			t.Check("saying only its name: the Electricity pill has the count", line ~= nil and line.Text == "Battery", if line then line.Text else "no line")
-			quiet("beside the battery")
-			local spawnAt = BaseController.Near + 1 -- the spawn's distance from the battery, about
-			stand(battery.Ground + back * spawnAt, battery.Ground)
-			t.Check(`stepping back to {spawnAt} studs, it holds on`, BaseController.Says().Battery.Near)
-			stand(battery.Ground + back * (BaseController.Near + BaseController.NearSlack + 3), battery.Ground)
-			t.Check("past its slack it lets go, and the plate hides", not BaseController.Says().Battery.Near and not plateOf("Battery").Visible)
-			stand(battery.Ground + back * spawnAt, battery.Ground)
-			t.Check(`coming in to {spawnAt} studs, it stays quiet: it takes hold only within {BaseController.Near}`, not BaseController.Says().Battery.Near and not plateOf("Battery").Visible)
+				return plateOf("Training").Visible or World.OnAvatar(plateOf("Training"))
+			end), if plateOf("Training").Visible then "shown" else "hidden over the avatar")
+			local line = plateOf("Training"):FindFirstChild("Line1", true) :: TextLabel?
+			t.Check("saying what it is", line ~= nil and line.Text == "Training machine", if line then line.Text else "no line")
+			quiet("beside the Training machine")
+			local spawnAt = BaseController.Near + 1 -- a stud past where it takes hold
+			stand(trainer.Ground + back * spawnAt, trainer.Ground)
+			t.Check(`stepping back to {spawnAt} studs, it holds on`, BaseController.Says().Training.Near)
+			stand(trainer.Ground + back * (BaseController.Near + BaseController.NearSlack + 3), trainer.Ground)
+			t.Check("past its slack it lets go, and the plate hides", not BaseController.Says().Training.Near and not plateOf("Training").Visible)
+			stand(trainer.Ground + back * spawnAt, trainer.Ground)
+			t.Check(`coming in to {spawnAt} studs, it stays quiet: it takes hold only within {BaseController.Near}`, not BaseController.Says().Training.Near and not plateOf("Training").Visible)
 
 			stand(breaker.Ground + back * 8, breaker.Ground)
 			t.Check("beside the Breaker, it's near", BaseController.Says().Breaker.Near)
@@ -6648,7 +6650,7 @@ local cases = {
 			end
 
 			-- From afar, news lights a plate and leaves it quiet: the next step says it.
-			stand(battery.Ground + back * 24, breaker.Ground)
+			stand(afar, breaker.Ground)
 			local shard = "named_watt"
 			local had = news().Breaker
 			t.Check("a shard goes in the bag", t.Server("BaseGive", shard, 1).Ok == true)
@@ -6696,7 +6698,9 @@ local cases = {
 					local held = (now :: any).Base.Chambers[index]
 					local working = held ~= nil and held.Work ~= nil
 					local look = if chamber then chamber:FindFirstChildOfClass("SurfaceAppearance") else nil
-					local glow = LightingConfig.Glow.Kit * (if working then 1 else LightingConfig.Glow.Empty) * LightingController.Look().Glow -- the phase's share (TR23)
+					-- a plot's own piece takes the base's glow (AR65), the phase's share (TR23)
+					local own = if chamber and chamber:GetAttribute("Plot") ~= nil then LightingConfig.Glow.Base else LightingConfig.Glow.Kit
+					local glow = own * (if working then 1 else LightingConfig.Glow.Empty) * LightingController.Look().Glow
 					if chamber == nil or chamber:GetAttribute("Working") ~= working then
 						return `chamber {index}: Working {tostring(chamber and chamber:GetAttribute("Working"))}, the save {tostring(working)}`
 					elseif shard == nil or not shard:IsA("BasePart") or shard.Transparency ~= (if working then 0 else 1) then
@@ -6935,12 +6939,12 @@ local cases = {
 		Run = function(t: any)
 			-- AR12, research's verdict on the reveal's card in Eclipse, and the plate's images: the plate under the name's
 			-- line, from its rule's left end, over the held frame left undimmed; the pip tinted its rarity's word colour; the
-			-- outcome's mark and words in one colour; "Tap to continue" once the card has stood Config.Reveal.CardHold, clear
+			-- outcome's mark and words in one colour; "Continue" once the card has stood Config.Reveal.CardHold, clear
 			-- of the outcome's words or under the plate; every label legible, whole and on screen (the UI lint).
 			local plate = RevealConfig.Plate
 			local looks = {
 				{ Def = "rook", Rarity = "Common", Outcome = "New", Lead = false, Kind = "A new Voidkin", Mark = "ShardSilver", Words = "In your collection", Colour = plate.Kept },
-				{ Def = "rook", Rarity = "Rare", Outcome = "New", Lead = true, Kind = "A new Voidkin", Mark = "ShardSilver", Words = "Your lead: it fights beside you", Colour = plate.Kept },
+				{ Def = "rook", Rarity = "Rare", Outcome = "New", Lead = true, Kind = "A new Voidkin", Mark = "ShardSilver", Words = "Your lead fights beside you", Colour = plate.Kept },
 				{ Def = "rook", Rarity = "Mythical", Outcome = "Copy", Lead = false, Kind = "A copy", Mark = "Star", Words = "One more toward its next star", Colour = plate.Star },
 				{ Def = "stellane", Rarity = "Legendary", Outcome = "Sold", Lead = false, Kind = "Already at its last star", Mark = "CoinMint", Words = "Sold for 120 Credits", Colour = UIKit.Systems.Credits.Colour },
 			}
@@ -6981,14 +6985,14 @@ local cases = {
 				t.Check(`{where}: the outcome's mark, {look.Mark}`, mark ~= nil and mark:IsA("ImageLabel") and mark.Image == UIKit.Images[look.Mark].Id)
 				t.Equal(`{where}: the outcome's words`, if outcome then outcome.Text else nil, look.Words)
 				t.Check(`{where}: in the mark's colour`, outcome ~= nil and outcome.TextColor3:ToHex() == look.Colour:ToHex())
-				t.Check(`{where}: no "Tap to continue" before the card has stood`, skip ~= nil and not skip.Visible)
+				t.Check(`{where}: no "Continue" before the card has stood`, skip ~= nil and not skip.Visible)
 				t.Wait(RevealConfig.CardHold + 0.1)
-				t.Check(`{where}: then "Tap to continue"`, skip ~= nil and skip.Visible and skip.Text == "Tap to continue")
+				t.Check(`{where}: then "Continue"`, skip ~= nil and skip.Visible and skip.Text == "Continue")
 				if skip and outcome then
 					local beside = math.abs((skip.AbsolutePosition.Y + skip.AbsoluteSize.Y / 2) - (outcome.AbsolutePosition.Y + outcome.AbsoluteSize.Y / 2)) < 1
 					local gap = skip.AbsolutePosition.X + skip.AbsoluteSize.X - skip.TextBounds.X - (outcome.AbsolutePosition.X + outcome.TextBounds.X)
 					local under = skip.AbsolutePosition.Y >= card.AbsolutePosition.Y + card.AbsoluteSize.Y - 0.5
-					t.Check(`{where}: "Tap to continue" clear of the words, or under the plate`, (beside and gap >= plate.Tap.Room * scale - 1) or under, string.format("%s, %.0f px", if beside then "beside" else "under", gap))
+					t.Check(`{where}: "Continue" clear of the words, or under the plate`, (beside and gap >= plate.Tap.Room * scale - 1) or under, string.format("%s, %.0f px", if beside then "beside" else "under", gap))
 				end
 				lintClean(t, `the plate after the reveal, {where}`)
 				BaseController.Dismiss()

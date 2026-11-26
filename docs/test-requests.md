@@ -5299,6 +5299,7 @@ Round 2:
   - the same profile after the win, with shards ready, shows no chevron and no edge arrow, and its line still reads "N ready: open them at the Breaker".
   - "Go to the Tower" puts the avatar at its own ring, and draws no arrow.
 - **Check:** a capture at the smallest phone, in the yard, after the win, with shards ready: no purple mark in the world.
+- **Faber, 2026-11-26, 15:03:** implemented. The guide draws only until the first keeper falls, and "Go to the Tower" teleports. Tested: its cases pass in Studio (the 14:33 suite). The phone capture after the win isn't taken yet. Not visually reviewed, not accepted.
 
 ## TR66. The Gemini blueprint's findings that hold (research, 2026-11-26, 12:30; Faber's calls)
 
@@ -5332,6 +5333,7 @@ From the director's paste of 2026-11-26 (the register). Each claim was checked a
 - **Faber, 2026-11-26, 13:03 by the clock:**
   - **#1, done.** The 28 case modules are required inside `run()`, which only the Studio bridge reaches, so nothing loads them on a phone. On a live server, `SelfTestService.Init` also takes the controller's 42 children out of StarterPlayerScripts as it boots, before anyone joins, so none is sent. That's 1.4 MB of StarterPlayerScripts' 2.9, measured in the place. Tried on a copy of the place's scripts: 138 scripts to 96, the controller kept. Type check 0 new, logic 39,910. The self-test runs in my next Studio turn, since Scintilla holds it.
   - **#3, done for now.** "a jewel of its color". The page's "later update" line stays in the dev build only: jewels are in phase 3, before launch (`docs/production-plan.md`), so the page is built before any public build.
+- **Faber, 2026-11-26, 15:03:** **#11, done** as its row says, with its cases (the 14:33 suite). Row 12 went into TR69 A.
 
 ## TR67. The Tower: a leave button with a confirm, and its two chat lines (the director's word, 2026-11-26; for Faber)
 
@@ -5345,6 +5347,7 @@ From the director's paste of 2026-11-26 (the register). Each claim was checked a
   - the week's lead: "{who} took first place in the Tower this week: floor {N}". No exclamation marks: the voice guide (`docs/research/cloud-2026-11-24/voice-and-naming.md`, section 5).
   - The other five lines read naturally and stay.
 - **Cases:** the confirm's Stay keeps the run; Leave ends it at the last floor won, with its rewards; a walk to the room's edge doesn't end a run unasked; the two lines as written above (the Broadcast cases change with them).
+- **Faber, 2026-11-26, 15:03:** implemented: the leave button and its confirm, and the two lines as written. Tested: the Tower and Broadcast cases pass in Studio (Broadcast re-run alone at 14:58, 27 of 27). Not visually reviewed, not accepted.
 
 ## TR68. The voice pass: the lines that read as generated (research's words, 2026-11-26; for Faber)
 
@@ -5397,6 +5400,7 @@ From the director's paste of 2026-11-26 (the register). Each claim was checked a
 
 - **Cases:** the self-tests that assert these strings change with them. Nothing else changes.
 - **Not in this pass:** "Stretch" in what players read, the Void Shop's name and the dock's Home (the director's), and the item names (their own pass).
+- **Faber, 2026-11-26, 15:03:** every line in the table changed, with the self-tests that assert them. Tested: the 14:33 suite. Not visually reviewed, not accepted.
 
 ## TR69. The fight, overhauled (research, 2026-11-26, 14:15; overhaul 1 of `docs/production-plan.md`, "The overhaul"; for Faber)
 
@@ -5466,6 +5470,9 @@ From the director's paste of 2026-11-26 (the register). Each claim was checked a
 - The keeper's Hard rules are those in section C.
 
 - **Not in this piece:** heal marks, and full health at a run's start (the director's health words); props on the Shade (the director's "stay as they are"); run modifiers; the cut-in; every finished look and sound.
+- **Faber, 2026-11-26, 15:03:**
+  - **A, built:** the fade switch (`Animations.Snap`, Off: 0.06, On: 0.02), the critical's trauma at 0.15, the pack's last fall held 0.2 s with its drops together, the target ring and the mask glint as grey blocks. Tested: "The hit (TR69 A)" passes in Studio, 21 of 21, and the Fight logic cases pass. Not yet judged in play.
+  - **B, built Off** (`World.Row.Waves.On`, false until measured): `Rules/Waves.luau` (its 3 logic cases pass), the waves in `PackService` with their grey tells, and every wave's Def counted toward the quota. The measure is `PaceCases` (Manual): one clean Normal run, each stretch's seconds fighting, walking and standing. It runs in the Festival place, before (Off) and after (Tune On), in my next Studio turn.
 
 ## TR70. The break and its reveal, overhauled (research, 2026-11-26, 14:17; overhaul 2 of `docs/production-plan.md`, "The overhaul"; for Faber, with Scintilla's targets)
 
@@ -5560,6 +5567,7 @@ The line names the one thing nearest to done, read from the state the server alr
 **Sound:** TR64's cues, by the director's ear. The conductor plays one cue per event, and the higher band wins inside 80 ms.
 
 **Not in this piece:** experience notifications (the director's word first); the rarity notes' pitch set (Sonus and the director).
+- **Faber, 2026-11-26, 15:03:** **A, the pure conductor:** `Rules/Conductor.luau` with `Config/Conductor.luau` (bands, lanes, merge, the fight's gate, defer and drop). Its 5 logic cases pass offline. Not yet wired to the HUD. B to D next.
 
 ## TR72. Design against code: what the design promises and the code doesn't do (research, 2026-11-26, 14:25; for Faber, after TR69's block A)
 

@@ -6,7 +6,7 @@
 -- continue" joins once the card has stood Config.Reveal.CardHold. Laid once, in the stage's points, its numbers
 -- Config.Reveal.Plate's; the stage keeps it at its size where it shrinks to fit a small phone (stage.Hold).
 --   local plate = Plate.new(stage, { Def = "rook", Rarity = "Common", Outcome = "New", Lead = false, Credits = 0 })
---   Plate.Continue(plate)    "Tap to continue" shows
+--   Plate.Continue(plate)    "Continue" shows
 --   Plate.Number(plate, 1284) a new Voidkin's number once the server holds it: "A new Voidkin · No. 1,284"
 
 local TextService = game:GetService("TextService")
@@ -62,7 +62,7 @@ local function said(answer: Answer): (string, string, string, Color3)
 	elseif answer.Outcome == "Sold" then
 		return "Already at its last star", "CoinMint", `Sold for {Read.Number(answer.Credits)} Credits`, UIKit.Systems.Credits.Colour
 	elseif answer.Lead then
-		return "A new Voidkin", "ShardSilver", "Your lead: it fights beside you", plate.Kept
+		return "A new Voidkin", "ShardSilver", "Your lead fights beside you", plate.Kept
 	end
 	return "A new Voidkin", "ShardSilver", "In your collection", plate.Kept
 end
@@ -76,7 +76,7 @@ function Plate.new(stage: Stage, answer: Answer): Frame
 	local kind, mark, words, colour = said(answer)
 	local runs = if row then { rarity, row.Type, row.Class } else { rarity }
 	local plain = table.concat(runs, " · ")
-	local tap = "Tap to continue"
+	local tap = "Continue"
 
 	local width = math.max(
 		c.Size.X,
@@ -131,7 +131,7 @@ function Plate.Number(plate: Frame, no: number)
 	end
 end
 
--- "Tap to continue" shows: the card has stood long enough for a tap to close it.
+-- "Continue" shows: the card has stood long enough for a tap to close it.
 function Plate.Continue(plate: Frame)
 	local skip = plate:FindFirstChild("Skip")
 	if skip and skip:IsA("TextLabel") then

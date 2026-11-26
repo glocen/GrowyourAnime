@@ -37,6 +37,9 @@ local REMOTES: { [string]: Spec } = {
 	-- The Tower's results (TowerService, TR46).
 	TowerRetry = { Kind = "Function", RatePerSecond = 2 }, -- client -> server: () -> { Ok, Error?, Waits? }: set in the ring, the run begins once rested
 	TowerHome = { Kind = "Function", RatePerSecond = 2 }, -- client -> server: () -> { Ok, Error? }: set down at the plot's spawn, free
+	TowerGo = { Kind = "Function", RatePerSecond = 2 }, -- client -> server: () -> { Ok, Error? }: set down before the player's own gate, facing it (TR65)
+	TowerLeave = { Kind = "Function", RatePerSecond = 2 }, -- client -> server: () -> { Ok, Error? }: the run ends at its last floor won, asked first (TR67)
+	TowerEdge = { Kind = "Event", RatePerSecond = 0 }, -- server -> client: () the avatar walked out of its room and was set back: ask whether to leave (TR67)
 	TowerHealCap = { Kind = "Event", RatePerSecond = 0 }, -- server -> client: (share) the heal cap bound for the first time on this account
 	TowerBoard = { Kind = "Function", RatePerSecond = 1 }, -- client -> server: () -> { Ok, Rows, Mine? }: the week's board (TowerBoardService)
 	Boards = { Kind = "Function", RatePerSecond = 1 }, -- client -> server: () -> { Ok, Boards, News }: the Strip's boards (BoardsService, TR58)

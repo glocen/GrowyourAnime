@@ -20,6 +20,8 @@ local Markers = require(Shared.World.Markers)
 local Parts = require(Shared.Util.Parts)
 local EffectsConfig = require(Shared.Config.Effects)
 local Flight = require(Shared.Rules.Flight)
+local Progress = require(Shared.Rules.Progress)
+local Grounds = require(Shared.Definitions.Grounds)
 local Effects = require(script.Parent.Parent.Parent.Main.FighterController.Effects)
 local HudController = require(script.Parent.Parent.Parent.Main.HudController)
 local BaseController = require(script.Parent.Parent.Parent.Main.BaseController)
@@ -37,6 +39,7 @@ local Toast = require(UI.Kit.Toast)
 local Layers = require(UI.Layers)
 local Theme = require(UI.Theme)
 local World = require(UI.World)
+local Guide = require(UI.Guide)
 
 local HudCases = {}
 
@@ -531,7 +534,7 @@ function HudCases.Cases(given: Given): { any }
 				Hover.Force(base, true)
 				t.Check("its word says you're home", waitFor(t, HudConfig.Motion.Hover.Word + 0.4, function(): boolean
 					return word.Visible
-				end) and word.Text == "You're home", word.Text)
+				end) and word.Text == "Back at your base", word.Text)
 				Hover.Force(base, nil)
 				Hover.Pretend(nil)
 				local still, shownBefore = shakes(), Toast.Shown()
@@ -762,7 +765,7 @@ function HudCases.Cases(given: Given): { any }
 				t.Wait(settle)
 				t.Near("off it, it eases out", Hover.Share(inventory), 0, 1e-3)
 				t.Check("back in its place, its word gone", (at(tile) - restTile).Magnitude < 0.5 and not word.Visible)
-				-- The Map tile's word is Play (TR45; a refused tile's reason is TR19's "You're home", in its own case).
+				-- The Map tile's word is Play (TR45; a refused tile's reason is TR19's "Back at your base", in its own case).
 				local map = parts.Map :: TextButton
 				local mapWord = dock:FindFirstChild("MapWord", true) :: TextLabel
 				Hover.Force(map, true)
@@ -983,14 +986,17 @@ function HudCases.Cases(given: Given): { any }
 				-- place, and the avatar steps beside the Breaker, aside from the camera's line, out of the plate's way.
 				local camera = workspace.CurrentCamera
 				local says = BaseController.Says()
-				local breakerSpot, batterySpot = says.Breaker, says.Battery
+				-- The battery it once stood by is folded into the Mill (AR65): 9 studs from the Breaker toward the Mill is
+				-- within a few studs of that old spot.
+				local plot = Players.LocalPlayer:GetAttribute("Plot")
+				local mill = if type(plot) == "number" then Markers.Find("Generator", { Plot = plot }) else nil
+				local breakerSpot = says.Breaker
 				local near = false
-				if camera and breakerSpot and batterySpot then
+				if camera and breakerSpot and mill then
 					camera.CameraType = Enum.CameraType.Scriptable
-					local flat = batterySpot.Ground - breakerSpot.Ground
-					local back = Vector3.new(flat.X, 0, flat.Z).Unit
-					local side = Vector3.new(-back.Z, 0, back.X)
-					t.Server("TestStandAt", breakerSpot.Ground + side * 9 + Vector3.new(0, 3, 0), breakerSpot.Ground)
+					local flat = Markers.At(mill).Position - breakerSpot.Ground
+					local toward = Vector3.new(flat.X, 0, flat.Z).Unit
+					t.Server("TestStandAt", breakerSpot.Ground + toward * 9 + Vector3.new(0, 3, 0), breakerSpot.Ground)
 					near = waitFor(t, 1, function(): boolean
 						return BaseController.Says().Breaker.Near
 					end)
@@ -1217,6 +1223,82 @@ function HudCases.Cases(given: Given): { any }
 				local took = if landedAt then landedAt - began else 0
 				t.Check("it lands as its flight ends", math.abs(took - Flight.Length(look)) < 0.25, `{took} s`)
 				t.Check("the shard is gone from the world", shard.Parent == nil and Effects.Drops()[shard] == nil)
+			end,
+		},
+		{
+			Name = "HUD: the world's marker only in the tutorial (TR65): before a keeper is beaten, its chevron or edge arrow on the next step; after, with shards ready, neither, and the line still says them",
+			Place = "Main", -- the plot's Breaker
+			Run = function(t: any)
+				local was = t.Server("KeeperWinsSet")
+				t.Check("the save's keeper wins read", type(was) == "table" and was.Ok == true and type(was.Wins) == "table")
+				if type(was) ~= "table" or was.Ok ~= true then
+					return
+				end
+				local none, back = {}, {}
+				for ground, wins in was.Wins do
+					none[ground] = { Normal = 0, Hard = 0 }
+					back[ground] = wins
+				end
+				if back[Grounds.First] == nil then
+					back[Grounds.First] = false -- a record only this case made goes again
+				end
+				local function beaten(): boolean
+					local view = ProfileController.Get()
+					return view ~= nil and Progress.Beaten(view.Progress.Grounds)
+				end
+				local function readyLine(): string
+					local view = ProfileController.Get()
+					local count = if view then #view.Base.Ready else 0
+					return if count == 1 then "Ready to open at the Breaker" else `{count} ready to open at the Breaker`
+				end
+				local shard = "lanternrow_standard"
+				local before = Helpers.readyCount(shard)
+				local failed: any = nil
+				local ok = xpcall(function()
+					-- A shard ready at the Breaker, and the avatar home, before it.
+					local gave = t.Server("BaseGive", shard, 1)
+					local added = type(gave) == "table" and gave.Ok == true and ProfileController.Act("AddShard", { Shard = shard }).Ok == true
+					t.Server("BaseSkip", Helpers.SKIP_ALL)
+					t.Check("a shard ready at the Breaker", added and waitFor(t, ANSWER, function(): boolean
+						return Helpers.readyCount(shard) > before
+					end))
+					local plot = Players.LocalPlayer:GetAttribute("Plot")
+					local mill = if type(plot) == "number" then Markers.Find("Generator", { Plot = plot }) else nil
+					local breaker = BaseController.Says().Breaker
+					if breaker and mill then
+						local flat = Markers.At(mill).Position - breaker.Ground
+						local toward = Vector3.new(flat.X, 0, flat.Z).Unit
+						t.Server("TestStandAt", breaker.Ground + toward * (HudConfig.Guide.Near + 8) + Vector3.new(0, 3, 0), breaker.Ground) -- past where the marker steps back
+					end
+					t.Wait(0.5)
+					-- No keeper beaten: the tutorial, so the marker stands on the Breaker.
+					t.Server("KeeperWinsSet", none)
+					local shows = waitFor(t, ANSWER, function(): boolean
+						local read = Guide.Read()
+						return not beaten() and read.Count > 0 and (read.Shown > 0 or read.Edge)
+					end)
+					local read = Guide.Read()
+					local step = HudController.Step()
+					t.Check("before a keeper is beaten, the next step's marker shows", shows and step ~= nil and step.Target == "Breaker",
+						`{read.Count} targets, {read.Shown} chevrons, edge {read.Edge}, step {if step then step.Target else "none"}`)
+					-- A keeper beaten: past the tutorial, no marker, and the line stays.
+					t.Server("KeeperWinsSet", { [Grounds.First] = { Normal = 1, Hard = 0 } })
+					local gone = waitFor(t, ANSWER, function(): boolean
+						read = Guide.Read()
+						return beaten() and read.Count == 0 and read.Shown == 0 and not read.Edge
+					end)
+					t.Check("after it, no chevron and no edge arrow", gone, `{read.Count} targets, {read.Shown} chevrons, edge {read.Edge}`)
+					local chip = HudController.Parts().ChipText :: TextLabel?
+					t.Check("and the line still says the shards ready", chip ~= nil and chip.Text == readyLine(), if chip then chip.Text else "no line")
+				end, function(problem: any): any
+					failed = problem
+					return problem
+				end)
+				t.Server("KeeperWinsSet", back)
+				Helpers.openReadyDown(t, shard, before)
+				if not ok then
+					error(failed, 0)
+				end
 			end,
 		},
 	}

@@ -16,6 +16,7 @@ local Progress = require(Shared.Rules.Progress)
 local Stats = require(Shared.Rules.Stats)
 local Goals = require(Shared.Rules.Goals)
 local Collection = require(Shared.Rules.Collection)
+local Waves = require(Shared.Rules.Waves)
 
 local Stages = {}
 
@@ -173,7 +174,7 @@ function Stages.Kill(run: Run, def: string): boolean
 		run.Last = true
 	else
 		for _, stop in row.Stops do
-			if stop.Kind == "Pack" and (stop.Def == def or (stop.With ~= nil and stop.With.Def == def) or (stop.Rear ~= nil and stop.Rear.Def == def)) then
+			if stop.Kind == "Pack" and (stop.Def == def or (stop.With ~= nil and stop.With.Def == def) or (stop.Rear ~= nil and stop.Rear.Def == def) or Waves.Defs(stop)[def]) then
 				run.Kills = math.min(row.Quota, run.Kills + 1)
 				break
 			end

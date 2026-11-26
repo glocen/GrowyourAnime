@@ -8,7 +8,7 @@
 -- Stage: the stage it belongs to (Config.Stages, TR43). Square: the elite stands in the square (one stop at most).
 -- With: a pack's others (AR52), Count of its Count Shades of that Def, spread through its ring (Rules.Fight.PackDefs).
 -- Hard: the Def that stands there on Hard in its place (AR57; Rules.Stages.DefOn).
-export type Stop = { Kind: string, Def: string, Level: number, Count: number?, Stage: number, Square: boolean?, With: { Def: string, Count: number }?, Rear: { Def: string, Count: number }?, Hard: string? }
+export type Stop = { Kind: string, Def: string, Level: number, Count: number?, Stage: number, Square: boolean?, With: { Def: string, Count: number }?, Rear: { Def: string, Count: number }?, Hard: string?, Waves: { { { [string]: any } } }? }
 
 return {
 	Walk = 16, -- studs a second the times are worked at: Roblox's default walk
@@ -19,12 +19,17 @@ return {
 	-- What the world doesn't lay of the kits' plans (AR65, the base made simpler: research's pick of the cut pass, 2026-11-26),
 	-- by a placement's or a light's name: the base's grid (its pylons, spans and transformers), its two flood masts and their
 	-- pools, the Strip's far shards on the skyline, the yard's lit floor and rings at levels 2 and 3, the bays' wakes, and
-	-- "Lab", the Lab's sleeping place. Modulo's rebuilt kit (AR65, step 3) drops them from its plans; then this empties.
+	-- "Lab", the Lab's sleeping place. Then the battery, folded into the Mill (its charge stays on the HUD and the Power
+	-- screen), and the Forge, out of the yard at launch: Reinforce lives in Equipment, and the Forge comes back with its
+	-- own use after launch, or at once if the director says it stays (take its three out of here). Modulo's rebuilt kit
+	-- (AR65, step 3) drops the rest from its plans; then this holds only what waits to come back.
 	Cut = {
 		Pylon = true, PowerSpan = true, Transformer = true, FloodMast = true, FloodLeft = true, FloodRight = true,
 		FarShardLow = true, FarShardMid = true, FarShardTall = true,
 		LevelFloor = true, LevelRays = true, LevelRing = true, LevelRingOuter = true, BayWake3 = true, BayWake4 = true,
 		Lab = true,
+		BatteryRack = true, BatteryRack2 = true, BatteryRack3 = true, BatteryCell = true,
+		Forge = true, ForgeRam = true, ForgeGear = true,
 	} :: { [string]: boolean },
 
 	-- Eight plots, two rows of four, facing each other across the Strip; one per player (Max Players 8). A plot is 200 studs
@@ -130,12 +135,26 @@ return {
 		-- the Dasher's on Hard (AR57, research's seed, tuned in play). A pack's Rear stand in a row at its back, past its ring
 		-- (Rules.Fight.PackSpots): AR58's Support behind stage 3's second pack, the builder's seed (tier 2, for research).
 		Stops = {
-			{ Kind = "Pack", Def = "brawler", Count = 4, Level = 1, Stage = 1 },
+			{ Kind = "Pack", Def = "brawler", Count = 4, Level = 1, Stage = 1, Waves = {
+				{ { Def = "brawler", Count = 3, Back = true } }, -- their backs turned
+				{ { Def = "brawler", Count = 4, From = "Sides" } }, -- two from each side
+				{ { Def = "brawler", Count = 3, Type = "Blue" } }, -- of another type
+			} },
 			{ Kind = "Elite", Def = "brawler_elite", Level = 2, Stage = 1 },
-			{ Kind = "Pack", Def = "brawler", Count = 4, Level = 3, Stage = 2, With = { Def = "guard", Count = 2 } },
+			{ Kind = "Pack", Def = "brawler", Count = 4, Level = 3, Stage = 2, With = { Def = "guard", Count = 2 }, Waves = {
+				{ { Def = "guard", Count = 1 } }, -- alone, facing the player
+				{ { Def = "guard", Count = 2, Row = "Front" }, { Def = "brawler", Count = 2, Row = "Back" } },
+				{ { Def = "guard", Count = 3, Row = "Front" }, { Def = "brawler", Count = 2, Row = "Back" } }, -- raising in turn
+			} },
 			{ Kind = "Elite", Def = "guard_elite", Level = 5, Stage = 2, Square = true, Hard = "dasher_elite" },
-			{ Kind = "Pack", Def = "brawler", Count = 3, Level = 6, Stage = 3, With = { Def = "dasher", Count = 1 } },
-			{ Kind = "Pack", Def = "brawler", Count = 3, Level = 7, Stage = 3, With = { Def = "dasher", Count = 1 }, Rear = { Def = "support", Count = 1 } },
+			{ Kind = "Pack", Def = "brawler", Count = 3, Level = 6, Stage = 3, With = { Def = "dasher", Count = 1 }, Waves = {
+				{ { Def = "dasher", Count = 1, From = "Far" } }, -- alone, far up the street
+				{ { Def = "brawler", Count = 2, Row = "Front" }, { Def = "dasher", Count = 1, Row = "Back" } },
+			} },
+			{ Kind = "Pack", Def = "brawler", Count = 3, Level = 7, Stage = 3, With = { Def = "dasher", Count = 1 }, Rear = { Def = "support", Count = 1 }, Waves = {
+				{ { Def = "dasher", Count = 2, From = "Alleys" } }, -- from the two alleys, their lines crossing
+				{ { Def = "guard", Count = 1, Row = "Front" }, { Def = "dasher", Count = 1 }, { Def = "brawler", Count = 2 }, { Def = "support", Count = 1, Rear = true } },
+			} },
 			{ Kind = "Elite", Def = "brawler_elite", Level = 8, Stage = 3 },
 			{ Kind = "Keeper", Def = "lamplighter", Level = 9, Stage = 4 },
 		} :: { Stop },
@@ -151,6 +170,13 @@ return {
 		-- Shades stands nearer another than its ring's do
 		Behind = 7,
 		Respawn = 15, -- seconds after a pack's last Shade falls until it's back (the builder's seed, 2026-11-12)
+		-- The street in waves (TR69 B, research's seeds, tuned by playing): each Pack stop's Waves, in order. The next steps
+		-- out Gap seconds after its stop's last Shade falls, its stall fronts marked in grey for the Tell before it; a list
+		-- run out starts again from its second wave while a player within Near studs of the stop still owes the stretch's
+		-- quota, and nobody near waits past the Gap. With nobody near owing, the stop rests and stands its first wave again
+		-- after Respawn, or at once, after a Tell, when someone who owes comes near. On Off, a pack stands its ring as before:
+		-- Off until the pace is measured before and after in the Festival place (PaceCases), the measure's own Tune.
+		Waves = { On = false, Gap = 2.5, Tell = 1, Near = 90, Far = 26, Side = 20 },
 		-- TR10 (the director, 2026-11-14: "mini boss/boss need a server cooldown", the keeper's "Per player"): seconds before
 		-- the elite and the keeper are back (Rules.Cooldown). The elite's is the server's, from its fall, since its fight is
 		-- shared; the keeper's is each player's own, from their win, kept with their save (a lost try may try again at

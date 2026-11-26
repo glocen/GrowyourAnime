@@ -70,8 +70,8 @@ local AHEAD = 36 -- what the base's next level opens: two lines of Caption
 -- What each machine does, one line, on its panel.
 local DOES: { [string]: string } = {
 	Breaker = "Breaks Void Shards into Voidkin.",
-	Battery = "Stores the power nothing uses.",
-	Generator = "Shows the power made against the power drawn.",
+	Battery = "Stores spare power.",
+	Generator = "Power made against power used.",
 	Training = "Trains one Voidkin. Its rate is fixed.",
 	Bay = "A Voidkin works here and makes power.",
 }
@@ -80,8 +80,8 @@ local REFUSED: { [string]: string } = {
 	Short = "Not enough Credits",
 	Stale = "Already bought",
 	Cap = "That's the top level for now",
-	Ceiling = "Raise the base's level first",
-	Asleep = "It isn't awake yet",
+	Ceiling = "Upgrade the base first",
+	Asleep = "Not open yet",
 	NoAnswer = "That didn't go through. Try again.",
 }
 
@@ -218,7 +218,7 @@ local function said(name: string, at: Read.Base): (string, string)
 		local doing = if busy > 0
 			then `{busy} of {#base.Chambers} breaking · {Read.Seconds(least)}`
 			elseif #base.Ready > 0 then `{#base.Ready} ready to open`
-			else "Idle: no shard in"
+			else "Empty"
 		return `Void Breaker · Lv {base.Machines.Breaker or 1}`, doing
 	elseif name == "Battery" then
 		return "Battery", `{Read.Kwh(base.Charge)} / {Read.Number(at.Rates.Capacity)} kWh`
@@ -226,7 +226,7 @@ local function said(name: string, at: Read.Base): (string, string)
 		return "Generator", Read.Against(at.Rates.Generation, at.Rates.Demand)
 	elseif name == "Training" then
 		local trainee = if at.Rates.Trainee then data.Voidkin[at.Rates.Trainee] else nil
-		return "Training", if trainee then `{Read.VoidkinName(trainee)} training` else "Nobody on it"
+		return "Training", if trainee then `{Read.VoidkinName(trainee)} training` else "Empty"
 	end
 	local index = tonumber(string.match(name, "^Bay(%d+)$")) or 0
 	local bay = base.Bays[index]

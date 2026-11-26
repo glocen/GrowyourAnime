@@ -3,11 +3,12 @@
 -- is away from the base, on a run in another place or offline, a record of what it does stays open on the save
 -- (Base.Away), and every advance adds to it (Rules.Breaker). Back at the base, the record closes onto the return card
 -- (Base.Card), which waits for its one press. The server credits everything as it happens or on arrival: the overflow's
--- Credits and the levels as the base advances, the Condenser's tray into the bag on arrival. The press only shows it.
+-- Credits and the levels as the base advances, the Condenser's tray, its stones and its jewels, into the bag on arrival
+-- (TR66 #11: the jewels too, and the card names them). The press only shows it.
 --   Return.Open(data)               opens the record from the base as it stands; one already open stays
---   Return.Arrive(data)             back at the base: the tray into the bag, the record closed onto the card (merged with
+--   Return.Arrive(data)             back at the base: the tray's stones and jewels into the bag, the record closed onto the card (merged with
 --                                   one not yet seen); the card, or nil when nothing changed
---   Return.Lines(card, room?)       the card's lines in AR55's order: the battery, each grade of stone, the Training
+--   Return.Lines(card, room?)       the card's lines in AR55's order: the battery, each grade of stone, the jewels, the Training
 --                                   machine, the workers who gained a level, the shards; empty for no card. `room`: the
 --                                   lines the card has room for, the workers folding sooner to fit
 --   Return.Seen(data, args, now)    the card's press: the card gone; with no card, a refusal that changes nothing
@@ -16,6 +17,7 @@ local Shared = game:GetService("ReplicatedStorage").Shared
 local Profile = require(Shared.Data.Profile)
 local BaseConfig = require(Shared.Config.Base)
 local ReinforceConfig = require(Shared.Config.Reinforce)
+local JewelsConfig = require(Shared.Config.Jewels)
 local Breaker = require(Shared.Rules.Breaker)
 local Condenser = require(Shared.Rules.Condenser)
 local Goals = require(Shared.Rules.Goals)
@@ -27,12 +29,12 @@ Return.NoCard = "NoCard"
 local EPSILON = 1e-6
 
 export type Line = {
-	Kind: string, -- "Battery" (a net gain), "Full" (it ended full and sold), "Stones", "Training", "Worker", "Workers"
-	-- (the workers past the most lines, folded) or "Shards"
-	Count: number, -- the kWh, the Credits sold, the stones, the levels or the shards
+	Kind: string, -- "Battery" (a net gain), "Full" (it ended full and sold), "Stones", "Jewels", "Training", "Worker",
+	-- "Workers" (the workers past the most lines, folded) or "Shards"
+	Count: number, -- the kWh, the Credits sold, the stones, the jewels, the levels or the shards
 	Grade: string?, -- a stone's grade
 	Id: string?, -- the Voidkin the Training machine trained most, the worker, or the first worker folded
-	Def: string?, -- the first shard that broke, for its picture
+	Def: string?, -- the first shard that broke, or the first jewel's key ("Blue:1"), for its picture
 	More: number?, -- the workers a "Workers" line folds
 	First: boolean?, -- a "Workers" line with no worker's line before it: it folds them all
 }
@@ -63,6 +65,25 @@ function Return.Lines(card: Profile.ReturnCard?, room: number?): { Line }
 		if count > 0 then
 			table.insert(lines, { Kind = "Stones", Count = count, Grade = grade })
 		end
+	end
+	-- The jewels banked, one line: their count, the first in the lists' order (Config.Jewels.Colours, then the tier) its
+	-- picture (TR66 #11).
+	local keys, jewels = {}, 0
+	for key, count in card.Jewels or {} do
+		if count > 0 then
+			table.insert(keys, key)
+			jewels += count
+		end
+	end
+	if jewels > 0 then
+		local function rank(key: string): number
+			local colour, tier = string.match(key, "^(%a+):(%d+)$")
+			return (table.find(JewelsConfig.Colours, colour or "") or #JewelsConfig.Colours + 1) * 100 + (tonumber(tier) or 0)
+		end
+		table.sort(keys, function(a: string, b: string): boolean
+			return rank(a) < rank(b)
+		end)
+		table.insert(lines, { Kind = "Jewels", Count = jewels, Def = keys[1] })
 	end
 	local most, levels = nil :: string?, 0
 	for id, gained in card.Trained do
@@ -114,6 +135,7 @@ function Return.Arrive(data: Profile.Data): Profile.ReturnCard?
 	local base = data.Base
 	local away = base.Away
 	base.Away = nil
+	local jewels: { [string]: number } = {}
 	if Condenser.Awake(base.Level) then -- TR31: credited on arrival, the press only shows it
 		local banked = 0
 		for grade, held in base.Condenser.Tray do
@@ -123,6 +145,15 @@ function Return.Arrive(data: Profile.Data): Profile.ReturnCard?
 			end
 		end
 		base.Condenser.Tray = {}
+		-- Its jewels too, as the tray's press takes them (Base.CollectTray; TR66 #11).
+		for key, held in base.Condenser.Jewels or {} do
+			if held > 0 then
+				data.Bag.Jewels[key] = (data.Bag.Jewels[key] or 0) + held
+				jewels[key] = held
+				banked += held
+			end
+		end
+		base.Condenser.Jewels = nil
 		-- The arrival is the tray's collect, so today's "Collect the Condenser's tray" counts it as the press does
 		-- (Base.CollectTray); an empty tray collects nothing, so a second arrival counts nothing.
 		if banked > 0 then
@@ -133,6 +164,13 @@ function Return.Arrive(data: Profile.Data): Profile.ReturnCard?
 		return base.Card
 	end
 	local card = base.Card or blank()
+	if next(jewels) then
+		local onCard = card.Jewels or {}
+		for key, count in jewels do
+			onCard[key] = (onCard[key] or 0) + count
+		end
+		card.Jewels = onCard
+	end
 	card.Kwh += base.Charge - away.Charge
 	card.Credits += away.Credits
 	card.Full = base.Charge >= Breaker.Capacity(base) - EPSILON and (away.Sold > 0 or card.Full)

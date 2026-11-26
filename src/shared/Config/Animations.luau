@@ -27,6 +27,9 @@ return {
 		Lunge = { In = 0.06, Out = 0.15 }, -- AR52's lunge
 		Cast = { In = 0.1, Out = 0.15 }, -- AR58's cast, the Support's (Shade_Support.clips.json)
 	},
+	-- The attack clips' snap, a live test beside today's fades (TR69 A, from TR66 row 12): On, every role here fades in
+	-- over In in place of its own (0.06 today). Off by default; NL_Debug:Invoke("Tune", "Animations.Snap.On", true).
+	Snap = { On = false, In = 0.02, Roles = { Combo = true, Swipe = true, Signature = true, Lunge = true } :: { [string]: boolean } },
 	Ids = {
 		-- published under the group, 2026-11-23 (docs/asset-log.md): AR52's two, the first clips up
 		ShadeGuard = 110693664240912,

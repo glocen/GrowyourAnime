@@ -519,9 +519,8 @@ return {
 	-- The Play panel (the director, 2026-11-24: "i asked for the play button to open a panel of gamemode"; Rules.Modes;
 	-- UI.ModeScreen), in grey until its feel line's review: a card a mode, the Festival's Wide and the Tower's Narrow, Tall
 	-- at the most, Gap apart; the cards rise in Rise points over Seconds, Stagger apart, and at once when the panel opens
-	-- again within Again seconds. On = false gives the dock's Play the Arc panel again, as before (TR50). Errand: seconds
-	-- the world's marker keeps pointing the way to the Tower's ring after "Go to the Tower".
-	Modes = { On = true, Wide = 300, Narrow = 220, Tall = 196, Gap = 10, Rise = 14, Seconds = 0.2, Stagger = 0.04, Again = 60, Errand = 60 },
+	-- again within Again seconds. On = false gives the dock's Play the Arc panel again, as before (TR50).
+	Modes = { On = true, Wide = 300, Narrow = 220, Tall = 196, Gap = 10, Rise = 14, Seconds = 0.2, Stagger = 0.04, Again = 60 },
 	Guide = { Lift = 1.5, Bob = 0.35, Rate = 0.9, Size = 36, Margin = 56, Top = 84, Bottom = 120, Near = 12, Reach = 800,
 		-- The edge's arrow (TR24's fix 2: it read as a small lilac stroke on the sky): an arrow, shaft and head, on a round
 		-- dark backing Size points across, the backing in the chevrons' ink at Backing, rimmed in the guide's colour at Rim;
@@ -1550,7 +1549,7 @@ return {
 		Top = 26,
 		Rule = { Inset = 8, Alpha = 0.78 },
 		Seat = { X = 9, Y = 2, In = 4, Of = 22 }, -- the well's images drawn at (pitch - In) / Of
-		Picture = { In = 9, Face = 8, Grow = { Battery = 1, Full = 1, Stones = 1.15, Training = 1, Worker = 1, Workers = 1, Shards = 1.2 } },
+		Picture = { In = 9, Face = 8, Grow = { Battery = 1, Full = 1, Stones = 1.15, Jewels = 1.15, Training = 1, Worker = 1, Workers = 1, Shards = 1.2 } },
 		Colours = {
 			Battery = Color3.fromHex("#FFE266"),
 			Full = Color3.fromHex("#FFE266"),
@@ -1589,7 +1588,7 @@ return {
 				Picture = { X = 51, Y = 64, Tall = 24 },
 				Rows = { { X = 62, Y = 48 }, { X = 62, Y = 66 } },
 				Held = 4, Open = 0.2, Close = 0.18,
-				Words = { "Your shard broke.", "Its Voidkin waits at home." },
+				Words = { "Your shard broke.", "Its Voidkin is at your base." },
 			},
 			Ride = 0.18, Every = 0.25,
 		},

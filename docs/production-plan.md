@@ -2,9 +2,28 @@
 
 What's next, in order. The game is in `docs/north-star.md`, its systems in `docs/design.md`. A status changes here and nowhere else.
 
-**Status, 2026-11-17, 10:09:** phase 3 is open, on the director's word (`docs/decisions.md`, 02:31: "phase 3 can start when it can dont need to wait for me"). Its first package is in the game as blocks (TR25 to TR30). Phase 2's tail runs beside it: the Door (installed at 09:01; research passed it and its sign's fix, and it closes on research's side), Sable's guard (in at 10:09: only a made Voidkin comes out of a shard; TR24, "Sable's guard"), the lead card's fixes, the Breaker's pictures, the timing cases, and AR13 for the director's ear.
+**Status, 2026-11-26, 14:11:** the overhaul, on the director's word (`docs/decisions.md`, 13:25 and 14:06: "we shouldnt rush we need to polish and make it a premium experience", "overhaul the systems that you believe geniuelly need so and rework the others to make them better"). Polish comes before new content, so no new system starts until the three overhauls below are in.
 
 **The aim:** a premium game (`docs/north-star.md`, "The bar"). One ground at the bar before six grounds in grey.
+
+## The overhaul (research's picks, 2026-11-26)
+
+**Overhauled: the design changes.** Where the old design was the director's, the new one is built beside it and the director picks. In this order:
+1. **The fight.** The vision's core and its weakest part. The player watches, 76% of what's killed before the keeper is one Shade, and no basic hit has its own read or sound.
+   - **What changes:** the hit (wind-up, a strike of 2 or 3 frames, hitstop, knockback; TR66, rows 12 and 13); the street (waves in place of the respawn quota, one move and a role for each elite, the keeper's phases, a Hard that changes behaviour; `docs/research/cloud-2026-11-24/grounds-and-encounters.md`); TR52's tap, judged in play.
+   - **Who:** research writes the feel line and the spec; Faber, Modulo and Scintilla build.
+2. **The break and its reveal.** A collection game's big moment, and today it's an overlay.
+   - **What changes:** a full-screen void moment; the Voidkin standing in 3D on a burst in its rarity's hue, with its number ("No. 1,284"); a counter strip and a sorted summary for a multi-break (`docs/research/anime-crusaders-ui.md`, "Lessons for us").
+   - **Who:** research's feel line; Scintilla's and Modulo's targets.
+3. **How the game talks.** Seven systems announce on their own, and the big moments are silent.
+   - **What changes:** one conductor for notices (one door, an order, a hold during fights and ceremonies); every ending closes with a Next line; the whole-screen return card the director asked for on 11-24 (`docs/research/cloud-2026-11-24/orchestration.md`, section 5; TR53).
+   - **Who:** Faber builds, research writes the words.
+
+**Reworked: the design stays and is made better.** The base's look (AR65); the style frame, then every screen (AR62); the Voidkin's make (AR64 on); the Tower (TR67, AR56's clouds); the words (TR68); the hit and signature sounds (TR42, by the director's ear); and electricity's worker experience, which is built but still owes its Studio check.
+
+**Kept as they are:** the currencies and the economy (the director, 11-24), the fourteen gear slots (11-25), the Tower's rules and the shard system.
+
+**Faber's order:** the director's asks and the bugs first (TR65, TR66 row 11); then AR65's cut made real; TR68; the fight's spec as it lands; then the conductor. AR7 and C4 go into the fight.
 
 ## How we run here
 

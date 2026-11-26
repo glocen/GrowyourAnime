@@ -4,10 +4,10 @@
 
 Each teammate rewrites its own row: one to three lines. Open asks sit under "Waiting on the director".
 
-**Quaestor (research).** 2026-11-26, 13:29, on Opus 5.5. Today: TR65 (the arrows; Go to the Tower teleports), AR65 (the cut pass picked, made real now), TR66 (both Gemini pastes), AR52's ward (W2) and AR7's picks, TR58's pass. On the director's words of 13:25: **TR67, the Tower's leave with a confirm and its two chat lines (Faber)**; AR56's clouds; the rule that clips follow the model (`docs/design.md`).
-- **Next:** the overhaul list, ranked by where a new player meets each piece, after the director's answer on the study; AR61's retake; AR52's and AR58's checkpoints; sim.py's regex readers.
+**Quaestor (research).** 2026-11-26, 14:13, on Opus 5.5. **The overhaul is set** (`docs/production-plan.md`, "The overhaul", on the director's word of 14:06). Three are overhauled: the fight, the break and its reveal, and how the game talks; the rest are reworked. Today too: TR67, the Tower's leave and lines, already built by Faber; **TR68, the voice pass, 44 lines (Faber)**; "Words players read" in `docs/ui.md`.
+- **Next:** the fight's feel line and spec (overhaul 1), then the reveal's feel line (2); AR61's retake; AR52's and AR58's checkpoints.
 - **For Modulo, after the hair:** AR56's cloud sea; `docs/design.md`, "Clips follow the model".
-- **With the director:** the two study sittings (Anime Crusaders' systems, Sailor Piece) and which systems bother them most; TR42's and TR64's listens; the phone sitting and F7; TR52's run; the store's design.
+- **With the director:** the two study sittings (Anime Crusaders' systems, Sailor Piece); TR52's tap, judged in play; TR42's and TR64's listens; the phone sitting and F7; the store's design.
 
 **Faber (builder).** 2026-11-26, 13:24 by the clock, on Opus 5.5. Pushed 4a1f2a4a (TR66 #1 and #3) and 6a363bab (TR58's boards case: 19/0, no made-up rows left). AR65: the cut pass was taken (`build/captures/ar65/compare.png`) and picked by research. **Step A is built:** `Config.World.Cut` (the grid, flood masts, far shards, level lights and rings, bay wakes, the Lab) and the base's glow (`Glow.Base` 1.2, floors 0). World report 0, logic 39,860, cases AR65 7/0, AR16 39/0, Strip 43/0, Door 44/0. Nothing running, no Studio turn held.
 - **Next:** AR65 step B, offline while Scintilla holds Studio: the battery and the Forge out of the yard (their markers, plates, prompt, landing and cases). Then AR7's staging (in the Festival's place, where the ring is), TR66 rows 11 and 12, and TR59's retake for research.

@@ -868,7 +868,11 @@ local function add(model: Instance)
 	-- fill, after its drain by the same rule (Rules.Fight.ChillNow), is in that look's third. A freeze is a stun's look
 	-- (onState).
 	local states = Combat.States
-	for attribute, look in ({ Burning = states.Burn.Look, Shocked = states.Shock.Look, Sapped = states.Sap.Look } :: { [string]: string }) do
+	for attribute, named in ({ Burning = states.Burn.Look, Shocked = states.Shock.Look, Sapped = states.Sap.Look } :: { [string]: string? }) do
+		if named == nil then
+			continue -- a state with no look of its own (a shock's, research's AR48 pass)
+		end
+		local look: string = named :: string
 		local function holds(): boolean
 			local untilTime = model:GetAttribute(attribute)
 			return view.State ~= "Down" and type(untilTime) == "number" and workspace:GetServerTimeNow() < untilTime

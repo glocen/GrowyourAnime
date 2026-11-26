@@ -133,7 +133,7 @@ return {
 		Burn = { Share = 0.5, Seconds = 3, Tick = 0.5, Look = "StateBurn" },
 		Chill = { Hits = 3, Delay = 1.5, Drain = 0.5, Slow = 0.3, Looks = {} :: { string } },
 		Freeze = { Seconds = 2, Look = "StateFreeze", Break = "FreezeBreak" },
-		Shock = { Seconds = 3, Look = "StateShock" },
+		Shock = { Seconds = 3, Look = nil :: string? }, -- no look until poise gives it an effect (research's AR48 pass, 21:17)
 		Sap = { Seconds = 4, Cut = 0.3, Look = "StateSap" },
 	},
 
@@ -282,6 +282,12 @@ return {
 		--     found it, its follow-through, and no stagger plays over it (research, 2026-11-26, 19:33; FightService.Window).
 		--   Health: its most health times this while phases are On, so each phase shows its idea twice (research's rule
 		--     of 19:33, seed x1.5, tuned live); Off, the 45 s fight it was solved for holds.
+		--   First: phase 1's first slam, First seconds after its Challenge ends in place of the keeper's own First, so a
+		--     phased phase 1 shows its slam twice (research's lever, 2026-11-26, 20:18). At 0 the slam opens the phase in
+		--     place of the keeper's opening swing, which held it at 2 and at 1 (research, 21:13, on the builder's trace);
+		--     Off, the keeper's First holds.
+		--   Cooldown: its slam's, in place of the action's own while its phases run, so phase 1's second slam lands before its
+		--     turn in every run (research, 21:13, on the builder's runs at First 0); Off, the action's own holds.
 		--   Mid, at From[1]: Seconds untouchable while it lights its Posts round the ring's middle, Radius out, one by one.
 		--   Pools, phase 2's: every Every seconds the posts drop pools of light Radius wide in order, Gap apart, each told
 		--     Tell before it lands (Actions' KeeperPool). The first round Start seconds into the phase.
@@ -297,6 +303,8 @@ return {
 			From = { 0.7, 0.35 },
 			Window = { Seconds = 1.5, Harder = 1.25 },
 			Health = 1.5,
+			First = 0,
+			Cooldown = 10,
 			Mid = { Seconds = 2, Posts = 6, Radius = 12 },
 			Pools = { Radius = 4, Gap = 1, Tell = 1.2, Every = 10, Start = 2 },
 			Double = { After = 0.9, Tell = 1.2, Window = 2 },

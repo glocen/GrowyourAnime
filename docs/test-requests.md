@@ -5563,6 +5563,9 @@ From the director's paste of 2026-11-26 (the register). Each claim was checked a
   - **Why:** the seed missed its own timings, since the keeper's opening swing holds the slam until about 3.3 to 5 s whatever `First` is above about 0.2. At 0, the slam is ready when the Challenge ends and takes the swing's place, so the slams land at about 3.5 and 15.5 s, the timings the seed meant.
   - **Accept:** unchanged: two slams in phase 1 in every run, the fight at 60 to 65 s.
   - **If the second still meets the turn,** the slam's cooldown while phased goes from 12 to 10, research's number, without another ask. Off, both stay as they are.
+- **Faber, 2026-11-26, 21:33: `First` 0 and the phased cooldown 10 in** (`Combat.Keeper.Phases.First` and `.Cooldown`; `FightService` takes a fighter's own `Cooldowns` by action, which the phases set and clear).
+  - **Measured** (three runs, as before): two slams in phase 1 in every run, both landing at 3.6 to 3.8 s and 14.8 to 15.1 s, before the turn at 17.6 to 20.7 s. The fights ran **64.6, 58.7 and 59.7 s**, so two runs are under 60 by 1.3 and 0.3 s. That's for research.
+  - **Tested:** "Keeper (TR69 D)" 28 of 28, with a new check: the phased slam's cooldown is `Phases.Cooldown`. "element states (AR48)" 36 of 36.
 
 ## TR70. The break and its reveal, overhauled (research, 2026-11-26, 14:17; overhaul 2 of `docs/production-plan.md`, "The overhaul"; for Faber, with Scintilla's targets)
 

@@ -150,6 +150,7 @@ export type Fighter = {
 	HarderUntil: number?,
 	Harder: number?,
 	Rates: { [string]: number }?,
+	Cooldowns: { [string]: number }?, -- an action's own cooldown (by Id) in place of its Definition's (a phased slam's)
 	Aimed: Mark?,
 	StunLock: number, -- no stun stops it again before this (Rules.Fight.Stun)
 	-- The element states (Config.Combat.States): a burn still to pay, a chill, and when a shock and a sap end.
@@ -315,7 +316,8 @@ local function against(f: Fighter, other: Fighter): boolean
 end
 
 local function cooldownOf(f: Fighter, action: Actions.Action): number
-	return Passive.Cooldown(passiveOf(f), action.Id, action.Cooldown)
+	local own = if f.Cooldowns then f.Cooldowns[action.Id] else nil
+	return Passive.Cooldown(passiveOf(f), action.Id, own or action.Cooldown)
 end
 
 -- The read-out of each player's fights (TR69 C; Rules.Hands): the one going on, and the last Kept, newest last. Kept with

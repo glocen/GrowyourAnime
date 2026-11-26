@@ -213,7 +213,10 @@ return {
 			-- third with no hit (its delay, then a share's drain), a freeze's for the whole freeze.
 			local states = Combat.States
 			worn(`the burn's look, {states.Burn.Look}`, states.Burn.Look, states.Burn.Seconds)
-			worn(`the shock's look, {states.Shock.Look}`, states.Shock.Look, states.Shock.Seconds)
+			local shock = states.Shock.Look
+			if shock then -- none until poise gives it an effect (research's AR48 pass, 2026-11-26, 21:17)
+				worn(`the shock's look, {shock}`, shock, states.Shock.Seconds)
+			end
 			worn(`the sap's look, {states.Sap.Look}`, states.Sap.Look, states.Sap.Seconds)
 			worn(`the freeze's look, {states.Freeze.Look}`, states.Freeze.Look, states.Freeze.Seconds)
 			local chill = states.Chill

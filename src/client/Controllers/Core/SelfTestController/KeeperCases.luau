@@ -123,6 +123,11 @@ function KeeperCases.Cases(): { any }
 				end)
 				t.Check("its most health Health times its own while phased", type(base) == "number" and type(tough.Most) == "number"
 					and math.abs(tough.Most / base - p.Health) < 1e-3, `{tough.Most} of {base}`)
+				-- phase 1's first slam, Phases.First past its Challenge while phased (research's lever, 2026-11-26, 20:18)
+				local challenge = Actions.ById.KeeperChallenge.Length
+				t.Check("its first slam First past its Challenge while phased, sooner than the keeper's own", type(tough.Ready) == "number"
+					and tough.Ready <= challenge + p.First + 0.05 and tough.Ready < challenge + Combat.Keeper.First - 1, tostring(tough.Ready))
+				t.Equal("its slam's cooldown while phased", tough.Cooldown, p.Cooldown)
 
 				-- Phase 1: six dark posts round it, its line at From[1].
 				local s = read()

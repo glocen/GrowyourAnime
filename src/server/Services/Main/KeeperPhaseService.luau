@@ -167,7 +167,7 @@ local function finish(f: Fighter)
 			FightService.Remove(add)
 		end
 	end
-	f.Floor, f.Rates = nil, nil
+	f.Floor, f.Rates, f.Cooldowns = nil, nil, nil
 end
 
 local function begin(f: Fighter)
@@ -193,6 +193,15 @@ local function begin(f: Fighter)
 	}
 	runs[f] = run
 	FightService.Toughen(f, run.Tough)
+	-- phase 1's first slam sooner (Phases.First, research's lever of 20:18): its signature's first readiness, set at its
+	-- spawn from the keeper's First, moved to Phases.First past its Challenge, while it's still to come
+	local first, ready = phases().First, f.ReadyAt.KeeperSignature
+	if type(first) == "number" and ready ~= nil and ready > now() then
+		f.ReadyAt.KeeperSignature = math.max(now(), ready - (Combat.Keeper.First - first))
+	end
+	-- its slam's cooldown while phased (Phases.Cooldown, research's 21:13), from its next slam on
+	local cooldown = phases().Cooldown
+	f.Cooldowns = if type(cooldown) == "number" then { KeeperSignature = cooldown } else nil
 	raisePosts(run)
 	run.Rounds = Keeper.Rounds(#run.Posts, if hard(f) then phases().Hard.Per else 1)
 	Log.Info("KeeperPhase", `{f.Id}: phase 1`)
@@ -477,6 +486,7 @@ local function command(who: any, what: any, extra: any): any
 	end
 	local run = runs[f]
 	local at = now()
+	local ready: number? = f.ReadyAt.KeeperSignature
 	local lit = 0
 	for _, post in (if run then run.Posts else {}) do
 		if post.Material == Enum.Material.Neon then
@@ -500,9 +510,11 @@ local function command(who: any, what: any, extra: any): any
 		Open = if f.OpenUntil then f.OpenUntil - at else nil,
 		Harder = if f.HarderUntil and at < f.HarderUntil then f.Harder else nil,
 		Rate = if f.Rates then f.Rates.KeeperSignature else nil,
+		Cooldown = if f.Cooldowns then f.Cooldowns.KeeperSignature else nil, -- its slam's while phased
 		Counts = if run then run.Counts else nil,
 		Pinned = if f.PinUntil then f.PinUntil - at else nil,
 		Most = f.Block.Health,
+		Ready = if ready then ready - at else nil, -- its signature's next, from now
 		Id = f.Id,
 	}
 end

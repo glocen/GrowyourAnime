@@ -27,8 +27,8 @@ local SLACK = 0.25 -- seconds a time read on this screen may sit off the server'
 local MISS = 3 -- frames a chill's look may lag its third on this screen: the look's clock and this loop's, a frame apart
 
 -- A state's look is drawn: its rows in and its switch on (Config.Effects.Lasting).
-local function shows(name: string): boolean
-	return EffectsConfig.Lasting[name] == true and (EffectsConfig.Rows :: any)[name] ~= nil
+local function shows(name: string?): boolean
+	return name ~= nil and EffectsConfig.Lasting[name] == true and (EffectsConfig.Rows :: any)[name] ~= nil
 end
 
 -- This player's lead's body, or nil.
@@ -172,7 +172,8 @@ local function turn(t: any, lead: Model, element: string, combo: Actions.Action,
 		if seen.Shocked == nil and type(shocked) == "number" then
 			seen.Shocked, seen.ShockedAt = shocked, now
 			-- the parts its arcs ride, as Rows finds them: a part or an attachment of that name
-			local rows = (EffectsConfig.Rows :: any)[Combat.States.Shock.Look] :: EffectsConfig.Rows?
+			local shockLook = Combat.States.Shock.Look
+			local rows = if shockLook then (EffectsConfig.Rows :: any)[shockLook] :: EffectsConfig.Rows? else nil
 			local missing = {}
 			for _, row in (if rows then rows.Rows else {}) :: { [string]: EffectsConfig.Row } do
 				local part = if row.Body then body:FindFirstChild(row.Body, true) else nil
@@ -273,8 +274,9 @@ function StateCases.Cases(): { any }
 					t.Check("Storm: the brawler is shocked", storm.Shocked ~= nil)
 					t.Check("for the shock's time from the hit", storm.Shocked ~= nil and math.abs((storm.Shocked :: number) - (storm.ShockedAt :: number) - states.Shock.Seconds) < SLACK,
 						if storm.Shocked then `{(storm.Shocked :: number) - (storm.ShockedAt :: number)} s` else "none")
-					if shows(states.Shock.Look) then
-						t.Check(`it wears the shock's look, {states.Shock.Look}`, storm.Looks[states.Shock.Look] == true)
+					local shockLook = states.Shock.Look
+					if shockLook and shows(shockLook) then
+						t.Check(`it wears the shock's look, {shockLook}`, storm.Looks[shockLook] == true)
 						t.Check("its body has every part the arcs ride", storm.ArcsMissing ~= nil and #(storm.ArcsMissing :: { string }) == 0,
 							if storm.ArcsMissing then table.concat(storm.ArcsMissing :: { string }, ", ") else "not read")
 					end

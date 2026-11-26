@@ -457,6 +457,7 @@ class Hair:
         self.rng = np.random.default_rng(seed)
         self.locks = 0
         self.patches = []   # whole pieces with pictures of their own (`sheet`): (the picture, its faces and their uv)
+        self.texels = []    # and each picture's texels' points and ways out, for what is baked into it later
 
     def _vert(self, at):
         return self.bm.verts.new(at)
@@ -656,6 +657,7 @@ class Hair:
         n = at(N)
         n /= np.maximum(np.linalg.norm(n, axis=2, keepdims=True), 1e-9)
         self.patches.append((np.clip(paint(u, v, at(P), n), 0, 1).astype(np.float32), faces))
+        self.texels.append((at(P), n))
         self.locks += 1
 
     def grooves(self, u, v, count, seed, start=(0.0, 0.35), end=(0.85, 1.0), dark=0.24, wide=0.006):

@@ -438,10 +438,11 @@ class Ribbons(Sheets):
                 line.append((line[-1][0] + way * step, n0 * math.cos(up) - t0 * math.sin(up)))
         return line
 
-    def ribbon(self, line, width, full=0.62, sharp=1.5, root=0.5, tall=0.16, tilt=0.0, gloss=None, k=1.0, size=(20, 56)):
+    def ribbon(self, line, width, full=0.62, sharp=1.5, root=0.5, tall=None, tilt=0.0, gloss=None, k=1.0, size=(20, 56)):
         """A ribbon along `line`: `root` of its width where it starts, its whole width from a quarter of the way to
         `full`, then drawn to a point. `tilt` degrees: turned about its own length, its first edge raised."""
         n, pts, grid = len(line), [q for q, _ in line], []
+        tall = self.fold if tall is None else tall
         for i, (q, out) in enumerate(line):
             u = i / (n - 1)
             along = (pts[min(i + 1, n - 1)] - pts[max(i - 1, 0)]).normalized()
@@ -453,7 +454,7 @@ class Ribbons(Sheets):
             v = min(u / 0.25, 1.0)
             grow = root + (1 - root) * v * v * (3 - 2 * v)
             w = width / 2 * (grow if u <= full else max(1 - ((u - full) / (1 - full)) ** sharp, 0.03))
-            high = min(tall * 2 * w, 0.03)
+            high = min(tall * 2 * w, 0.03 * max(tall / 0.16, 1.0))
             grid.append([q + side * (w * x) + out * (high * (x == -0.2)) for x in (-1.0, -0.2, 1.0)] + [q - out * 0.012])
         paint = self.painted(2 / 4, self.gloss if gloss is None else gloss)
         self.sheet(grid, lambda u, v, P, N: paint(u, v, P, N) * k, size, lambda mid, r, c: mid - (pts[r] + pts[r + 1]) / 2, closed=True)
@@ -472,6 +473,12 @@ class Ribbons(Sheets):
         ease = lambda x, lo, hi: (lambda y: y * y * (3 - 2 * y))(np.clip((x - lo) / (hi - lo), 0, 1))  # noqa: E731
         lines = [(self.rng.uniform(-0.75, 0.75), self.rng.uniform(0.03, 0.07), self.rng.uniform(0.0, 0.3)) for _ in range(3)]
         band = am.CENTRE.z + self.ring[0]
+
+        if self.flat:   # one colour across, darker toward the root: the light and the occlusion draw the rest
+            def flat(u, v, P, N):
+                c = self.dark + (self.lit - self.dark) * (0.3 + 0.7 * ease(v, 0.0, 0.7))[..., None]
+                return np.where((u <= rim)[..., None], c, self.dark * 0.8)
+            return flat
 
         def paint(u, v, P, N):
             top = u <= rim
@@ -498,14 +505,50 @@ class Ribbons(Sheets):
     tuck = 0.86         # how dark a ribbon's tucked edge falls: its crease
     one_band = False    # the ring of light across each lock's whole face, never a line down it
     spec = None         # the stage's sheen on the hair (Principled's Specular IOR Level); None leaves the stage's own
+    flat = False        # each ribbon one colour across, graded only along: no tube of light (hair-read.md, "Against Anime Vanguards")
+    ao = None           # the baked occlusion: (how far a texel looks, its darkest), or None
+    fold = 0.16         # how high a ribbon's fold stands, of its half width
+    rough = None        # the stage's roughness on the hair; None leaves the make's own (0.8)
+
+    def occlude(self):
+        """The occlusion baked into each picture: from a texel every fourth across and down, rays over its own side,
+        and the share that meet hair or the cap within reach darken it. So a ribbon darkens where it tucks under its
+        neighbour, at its root and along the cap: the depth as the catalog's, held whatever the engine's light does."""
+        from mathutils.bvhtree import BVHTree
+        reach, floor = self.ao
+        self.bm.normal_update()
+        tree = BVHTree.FromBMesh(self.bm)
+        rng = np.random.default_rng(7)
+        u1, u2 = rng.random(24), rng.random(24)
+        rays = np.stack([np.sqrt(u1) * np.cos(2 * np.pi * u2), np.sqrt(u1) * np.sin(2 * np.pi * u2), np.sqrt(1 - u1)], 1)
+        for (pic, _), (P, N) in zip(self.patches, self.texels):
+            h, w = pic.shape[:2]
+            rows, cols = np.unique(np.r_[np.arange(0, h, 4), h - 1]), np.unique(np.r_[np.arange(0, w, 4), w - 1])
+            seen = np.ones((len(rows), len(cols)))
+            for a, r in enumerate(rows):
+                for b, c in enumerate(cols):
+                    n = Vector(N[r, c])
+                    if n.length < 1e-6:
+                        continue
+                    turn = Vector((0, 0, 1)).rotation_difference(n.normalized()).to_matrix()
+                    o = Vector(P[r, c]) + n.normalized() * 0.004
+                    hits = sum(tree.ray_cast(o, turn @ Vector(d), reach)[0] is not None for d in rays)
+                    seen[a, b] = floor + (1 - floor) * (1 - hits / len(rays))
+            across = np.array([np.interp(np.arange(w), cols, row) for row in seen])
+            full = np.array([np.interp(np.arange(h), rows, col) for col in across.T]).T
+            pic *= full[..., None].astype(np.float32)
 
     def build(self, folder, name="Hair"):
+        if self.ao:
+            self.occlude()
         obj = super().build(folder, name)
         if self.spec is not None:   # the stage only: the exported pictures are untouched
             for m in obj.data.materials:
                 bsdf = m.node_tree.nodes.get("Principled BSDF")
                 if bsdf is not None:
                     bsdf.inputs["Specular IOR Level"].default_value = self.spec
+                    if self.rough is not None:
+                        bsdf.inputs["Roughness"].default_value = self.rough
         if self.round:
             me = obj.data
             own = [Vector(c.vector) for c in me.corner_normals] if hasattr(me, "corner_normals") else None
@@ -608,12 +651,16 @@ class Ribbons(Sheets):
                         off=(off[0], off[1] * r.uniform(0.85, 1.2)), n=n, tilt=tilt, k=r.uniform(0.9, 1.08))
 
 
-def rook_ribbons(accent=None, solid=False):
+def rook_ribbons(accent=None, solid=False, flat_paint=False):
     """Rook's hair: a short, tousled crop, black, as the catalog's best-loved boys' hairs are laid. The whorl sits at
     the back of the crown; from it thin ribbons sweep forward over the top to the brows and down round the sides and
     the back, each bowed, each leaving the head over its last part and hooking out. Three layers and a hem of short
     points; a few hooks stand out of the silhouette; two arcs rise out of the whorl."""
     h = Ribbons("#0B0B0D", "#020203", "#626266", seed=11)   # near-black, its light neutral grey: never grey-blue
+    if flat_paint:   # flat across each ribbon, a dark grey the light can draw planes on, the depth baked (hair-read.md, "Against Anime Vanguards")
+        # neutral: a cool one reads grey-blue on the stage (the hair's never grey-blue); the game's warm sun is Faber's check
+        h = Ribbons("#1F1F23", "#08080A", "#626266", seed=11)
+        h.flat, h.ao, h.fold = True, (0.3, 0.25), 0.3
     # lit as one mass with one band across the upper dome (the blind read of round 37: a sheen on every strand,
     # with dark creases between, reads grey and busy at size)
     h.ring, h.gloss, h.sheen, h.round, h.tuck = (0.74, 0.16), 0.2, 0.12, 0.85, 0.55
@@ -629,7 +676,7 @@ def rook_ribbons(accent=None, solid=False):
     # Calibrated, not measured in the engine: our stage's sky is one colour all round, the ground too, so its sheen
     # greys a black hair to a mean of 0.20, where Roblox's own pictures of the catalog's black hairs read 0.10 with
     # black between the locks (hair-read.md). Faber's install is the check.
-    h.spec = 0.1
+    h.spec = 0.3 if flat_paint else 0.1
     h.cap(am.hairline(front=4.94, temple=4.58, nape=4.3))
     h.under = 0.18   # dark between the clumps, so they part as the catalog's do
     h.crown(low=62.0, off=0.13)
@@ -725,6 +772,240 @@ def rook_ribbons(accent=None, solid=False):
     return h
 
 
+class Spikes(Ribbons):
+    """Hair as Anime Vanguards makes its units' (hair-read.md, "Against Anime Vanguards"): a lock is a solid spike, not
+    a ribbon. Its section is a lens, five points over its top with its ridge off the middle and two under it, smooth
+    across so the light sweeps over it, hard at its two sides so its edge is crisp. One colour, darker toward the root,
+    with the occlusion baked in: the engine's light draws the sweep. Laid by `Ribbons.lock` and `free`, as the ribbons
+    were. (A four-point diamond, flat or smooth, read as folded paper and crumpled foil: the blind reads of 2026-11-26.)"""
+
+    segs = 9                  # rings along a spike, its point included
+    rise, keel = 0.2, 0.12    # the ridge's height over the spike and the keel's depth under it, of its width
+    crown = 2.0               # the section's top: 2 a dome across the lock, 1 a ridge with a plane each side
+    lean = 0.35               # how far off the middle the ridge runs, of the half width: the broad face mostly to the light
+    root_tone = 0.5           # a spike's colour at its root, of its colour from its middle on
+    under_tone = 0.7          # its keel's colour, of its top's
+    along = True              # smooth along its length; False, every face flat
+    hard = (0, 4)             # which of its long edges stay hard: 0 and 4 its sides, 2 its ridge, 5 and 6 under
+    ao_reach, ao_floor, ao_rays = 0.35, 0.2, 32   # the baked occlusion: how far a point looks, its darkest, its rays
+
+    def ribbon(self, line, width, full=0.22, sharp=1.0, root=0.85, tall=None, tilt=0.0, gloss=None, k=1.0, size=None, segs=None):
+        segs = segs or self.segs
+        pts, outs = [q for q, _ in line], [o for _, o in line]
+        cum = [0.0]
+        for a, b in zip(pts, pts[1:]):
+            cum.append(cum[-1] + (b - a).length)
+        line = []
+        for i in range(segs):   # evenly along its length, so its planes are of one size
+            s = cum[-1] * i / (segs - 1)
+            j = int(min(max(np.searchsorted(cum, s) - 1, 0), len(pts) - 2))
+            t = (s - cum[j]) / max(cum[j + 1] - cum[j], 1e-9)
+            line.append((pts[j].lerp(pts[j + 1], t), outs[j].lerp(outs[j + 1], t)))
+        n, pts = len(line), [q for q, _ in line]
+        mid = (pts[n // 2 + 1] - pts[n // 2 - 1]).normalized()
+        o_mid = line[n // 2][1] - mid * line[n // 2][1].dot(mid)
+        flip = 1.0 if mid.cross(o_mid.normalized()).dot(KEY) >= 0 else -1.0
+        if self.rng.uniform() < 0.25:
+            flip = -flip
+        ease = lambda x: (lambda v: v * v * (3 - 2 * v))(min(max(x, 0.0), 1.0))  # noqa: E731
+        # the section, a lens: five points over its top, its ridge off the middle, two under it; across, each point's
+        # place (1 one side, -1 the other) and its column in the lock's colours (0 to 2 its top, 3 to 4 under it)
+        top_x, under_x = (1.0, 0.55, 0.0, -0.55, -1.0), (-0.5, 0.5)
+        cols = [1 - x for x in top_x] + [3 + (1 - abs(x)) for x in under_x]
+        rings, shades = [], []
+        for i, (q, out) in enumerate(line):
+            u = i / (n - 1)
+            along = (pts[min(i + 1, n - 1)] - pts[max(i - 1, 0)]).normalized()
+            out = out - along * out.dot(along)
+            out = out.normalized() if out.length > 1e-4 else along.orthogonal().normalized()
+            if tilt:
+                out = Matrix.Rotation(math.radians(tilt * (1 - 0.6 * u)), 3, along) @ out
+            side = along.cross(out).normalized()
+            v = min(u / full, 1.0)
+            w = width / 2 * (root + (1 - root) * ease(v) if u <= full else 1 - ((u - full) / (1 - full)) ** sharp)
+            c = self.lit * k * (self.root_tone + (1 - self.root_tone) * ease(u / 0.5))
+            shades.append([c, c, c, c * self.under_tone, c * self.under_tone])
+            if i == n - 1:
+                rings.append([self._vert(q)] * len(cols))
+                continue
+            ring = [q + side * (w * (x - flip * self.lean * (1 - x * x))) + out * (self.rise * 2 * w * (1 - abs(x) ** self.crown))
+                    for x in top_x]
+            ring += [q + side * (w * x) - out * (self.keel * 2 * w * (1 - x * x)) for x in under_x]
+            rings.append([self._vert(p) for p in ring])
+        strip = len(self.strips)
+        self.strips.append(np.clip(np.array(shades, np.float32), 0, 1))
+        if not hasattr(self, "spines"):
+            self.spines = []
+        self.spines.append((strip, rings))
+        m = len(cols)
+        for j, (lo, hi) in enumerate(zip(rings, rings[1:])):
+            centre = (pts[j] + pts[j + 1]) / 2
+            for a in range(m):
+                b = (a + 1) % m
+                if j < n - 2:
+                    f = self.bm.faces.new((lo[a], hi[a], hi[b], lo[b]))
+                    where = [(j, cols[a]), (j + 1, cols[a]), (j + 1, cols[b]), (j, cols[b])]
+                else:
+                    f = self.bm.faces.new((lo[a], hi[0], lo[b]))
+                    where = [(j, cols[a]), (j + 1, (cols[a] + cols[b]) / 2), (j, cols[b])]
+                f.normal_update()
+                if f.normal.dot(f.calc_center_median() - centre) < 0:   # wound outward: the game draws a face's front only
+                    f.normal_flip()
+                    where = [where[0]] + where[1:][::-1]
+                f.smooth = self.along   # smooth, so the light sweeps across the lock as one surface
+                self.charts.append((f, strip, where))
+            for a in self.hard:   # the long edges kept hard: its two sides (0 and 4) give a crisp edge
+                edge = self.bm.edges.get((lo[a], hi[a] if j < n - 2 else hi[0]))
+                if edge is not None:
+                    edge.smooth = False
+        self.locks += 1
+
+    def dome(self, low=44.0, off=(0.09, 0.02), tone=0.85, rim=0.6, segments=32):
+        """The crown as one mass, as the bar's (the blind reads of 2026-11-26: a crown of many locks meeting at the
+        whorl reads crumpled from the top and the back): a smooth dome from the top to `low` degrees down, `off[0]`
+        over the head at the top and tucking to `off[1]` at its rim, so its edge sinks under the locks that leave it.
+        One tone, `tone` of the locks' own, to `rim` of that at its edge; the locks' occlusion darkens it under them."""
+        phs = [0.5, 8.0, 16.0, 24.0, 32.0, 38.0, low]
+        grid = [[(lambda f: f[0] + f[1] * (off[0] + (off[1] - off[0]) * (ph / low) ** 2))(self.at(-180 + 360 * i / segments, ph))
+                 for i in range(segments)] for ph in phs]
+
+        def paint(u, v, P, N):
+            ease = (lambda y: y * y * (3 - 2 * y))(np.clip(v, 0, 1))
+            return np.broadcast_to(self.lit * tone, u.shape + (3,)) * (1 - (1 - rim) * ease)[..., None]
+
+        self.sheet(grid, paint, (64, 32), lambda mid, r, c: mid - am.CENTRE, closed=True)
+
+    def build(self, folder, name="Hair"):
+        self.occlude()
+        return super().build(folder, name)
+
+    def occlude(self):
+        """The occlusion baked into each spike's colours, point by point: rays from each point over its own side of
+        the hair, and the share that meet hair or the cap within `ao_reach` darken it, to `ao_floor` at the most. So a
+        spike darkens where it tucks under its neighbour, at its root and along the cap: the hair's depth in the
+        picture, as the catalog's (hair-read.md), and it holds whatever the engine's light does."""
+        from mathutils.bvhtree import BVHTree
+        self.bm.normal_update()
+        tree = BVHTree.FromBMesh(self.bm)
+        rng = np.random.default_rng(7)
+        u1, u2 = rng.random(self.ao_rays), rng.random(self.ao_rays)
+        rays = [Vector((math.sqrt(a) * math.cos(2 * math.pi * b), math.sqrt(a) * math.sin(2 * math.pi * b), math.sqrt(1 - a)))
+                for a, b in zip(u1, u2)]   # cosine-weighted, round +Z
+        seen = {}
+
+        def lit(v):
+            if v not in seen:
+                n = v.normal
+                if n.length < 1e-6:
+                    seen[v] = 1.0
+                else:
+                    turn = Vector((0, 0, 1)).rotation_difference(n).to_matrix()
+                    o = v.co + n * 0.004
+                    hits = sum(tree.ray_cast(o, turn @ d, self.ao_reach)[0] is not None for d in rays)
+                    seen[v] = self.ao_floor + (1 - self.ao_floor) * (1 - hits / len(rays))
+            return seen[v]
+
+        for strip, rings in self.spines:
+            s = self.strips[strip]
+            for i, ring in enumerate(rings):
+                left, ridge, right = lit(ring[0]), lit(ring[2]), lit(ring[4])
+                s[i, 0] *= left
+                s[i, 1] *= ridge
+                s[i, 2] *= right
+                s[i, 3] *= (left + right) / 2
+                s[i, 4] *= (lit(ring[5]) + lit(ring[6])) / 2
+
+
+def rook_spikes():
+    """Rook's cut as the bar's big-spike heads (hair-read.md, "Against Anime Vanguards"): about 21 thick wedges, each
+    a long ridge with a plane either side running its whole length, straight enough that no plane folds across it.
+    Six lie under round the sides and the back; six make the outline from a whorl near the top, kicking out over the
+    ears and down and out at the back; two short broad points lift out of the crown; three lie forward over the crown;
+    four fall from the fringe's own point to the brows, the lead to his right. Charcoal, darker at the roots and where
+    one tucks under the next, a low sheen."""
+    h = Spikes("#2A2A2B", "#0B0B0C", "#626266", seed=5)
+    h.spec, h.rough, h.root_tone, h.rise, h.keel, h.crown, h.segs = 0.2, 0.5, 0.5, 0.3, 0.16, 1.3, 6
+    h.ao_reach, h.ao_floor = 0.4, 0.15
+    h.cap(am.hairline(front=4.94, temple=4.58, nape=4.3))
+    r, W = h.rng, (180.0, 12.0)
+
+    def wedge(root, end, width, tail, flick, curl=0.0, off=(0.04, 0.1), bow=0.0, n=6, nt=3, lift=0.0, **make):
+        h.lock(root, end, width * r.uniform(0.95, 1.05), bow=bow, lift=lift, tail=tail * r.uniform(0.92, 1.08), off=off,
+               flick=flick + r.uniform(-3, 3), curl=curl, n=n, nt=nt, k=r.uniform(0.95, 1.05),
+               **{**dict(base=0.9, full=0.25, sharp=0.9), **make})
+
+    for a, ph in ((70, 90), (112, 94), (152, 98), (208, 98), (248, 94), (290, 90)):   # under, round the sides and back
+        side = 1 if a < 180 else -1
+        wedge((a - side * 4, 50), (a + side * 10, ph), 0.78, 0.16, 14, off=(0.0, 0.04))
+    for a, ph, w, t, fl in ((80, 76, 0.85, 0.36, 48), (126, 88, 0.85, 0.32, 34), (164, 96, 0.82, 0.3, 26),   # the outline
+                            (196, 96, 0.82, 0.3, 26), (234, 88, 0.85, 0.32, 34), (280, 76, 0.85, 0.36, 48)):
+        side = 1 if a < 180 else -1
+        wedge((W[0] - side * 16, W[1] + 8), (a, ph), w, t, fl, off=(0.04, 0.2), n=7)
+    for a, ph, w in ((146, 34, 0.72), (212, 30, 0.64)):   # two short broad points lift out of the crown
+        wedge((180 + (a - 180) * 0.3, 6), (a, ph), w, 0.3, 52, off=(0.2, 0.24), n=5)
+    for a, ph in ((-52, 60), (2, 50), (50, 62)):   # forward over the crown, sweeping out to the fringe's sides
+        side = 1 if a > 0 else -1 if a < 0 else 0
+        wedge((W[0] - side * 10, W[1] + 2), (a, ph), 0.9, 0.22, 14, off=(0.03, 0.26), bow=side * 0.05, n=8, lift=0.05)
+    F = (0.0, 14.0)
+    for a, ph, w in ((-46, 74, 0.6), (-16, 80, 0.78), (14, 77, 0.66), (42, 72, 0.6)):   # the fringe, the lead to his right
+        side = 1 if a > 0 else -1
+        wedge((F[0] + a * 0.3, F[1]), (a, ph), w, 0.2, 18, off=(0.12, 0.2), bow=side * 0.04, n=7, lift=0.02)
+    return h
+
+
+def rook_wedges(planes=False):
+    """Rook's cut as the bar's heads (hair-read.md, "Against Anime Vanguards"; the blind reads of 2026-11-26): 19
+    rounded wedges from a whorl at the back of the crown, swept one way, of uneven sizes, over a smooth crown mass.
+    Four small ones lie under round the back and sides, and one over each ear; over them five long leaders of uneven
+    length leave the head's outline, out over each ear and down and out at the back, the background between their
+    points; three lie forward over the crown, close to it; five fall from the fringe's own point to the brows, the
+    lead one to his right the biggest. Matte charcoal leaning cool, rounded across, no hotspot, darker at the roots,
+    under each lock and deep in the crack where one tucks under the next. (Two flat planes with a hard ridge read as
+    folded paper: the blind read of 2026-11-26, 14:08.)"""
+    h = Spikes("#29292C", "#070709", "#626266", seed=5)   # near neutral: a cool lean, never grey-blue
+    h.spec, h.rough, h.root_tone, h.rise, h.keel, h.crown, h.segs = 0.06, 0.62, 0.4, 0.3, 0.14, 1.6, 7
+    h.under_tone, h.ao_reach, h.ao_floor = 0.35, 0.45, 0.06
+    if planes:   # each lock two flat planes with a hard step at its ridge, mid dark, no sheen (the blind read of 14:07)
+        h = Spikes("#262628", "#0A0A0B", "#626266", seed=5)
+        h.spec, h.rough, h.root_tone, h.rise, h.keel, h.crown, h.segs = 0.04, 0.75, 0.6, 0.32, 0.14, 1.0, 7
+        h.hard, h.lean, h.ao_reach, h.ao_floor = (0, 2, 4), 0.15, 0.4, 0.2
+    h.cap(am.hairline(front=4.94, temple=4.58, nape=4.3))
+    h.scalp = h.lit * 0.25   # dark under the locks, so each crack reads, but not a black band at the brow
+    h.dome(low=62.0, off=(0.1, 0.03))
+    r, W = h.rng, (180.0, 26.0)
+
+    def wedge(root, end, width, tail, flick, curl=0.0, off=(0.04, 0.1), bow=0.0, n=6, nt=3, lift=0.0, **make):
+        h.lock(root, end, width * r.uniform(0.94, 1.06), bow=bow, lift=lift, tail=tail * r.uniform(0.9, 1.1), off=off,
+               flick=flick + r.uniform(-3, 3), curl=curl, n=n, nt=nt, k=r.uniform(0.94, 1.05), tilt=8.0,
+               **{**dict(base=0.9, full=0.25, sharp=r.uniform(0.75, 1.3)), **make})   # tips of uneven taper
+
+    def tier(around, count, ph_root, ph_end, width, tail, flick, off, swing=12.0, **kw):
+        for i in range(count):   # tiles laid edge over edge, every one turned the same way
+            a = around[0] + (around[1] - around[0]) * (i + 0.5 + r.uniform(-0.15, 0.15)) / count
+            back = swing if (a % 360) < 180 else -swing
+            wedge((a, ph_root + r.uniform(-3, 3)), (a + back, ph_end + r.uniform(-4, 4)), width, tail, flick, off=off,
+                  curl=(-1 if back > 0 else 1) * 6, **kw)
+
+    tier((70, 290), 4, 56, 90, 0.62, 0.14, 8, (0.02, 0.05))     # the hem: four small ones tucked between
+    for a in (74, 286):   # one down each side over the ear's top, so no gap shows the scalp from three-quarter
+        side = 1 if a < 180 else -1
+        wedge((a, 44), (a + side * 6, 90), 0.62, 0.16, 8, curl=-side * 4, off=(0.02, 0.06))
+    # the five leaders leave the outline: flaring out over each ear, down and out at the back, gaps between their points
+    for a, ph, w, t, fl in ((80, 84, 0.86, 0.52, 44), (130, 96, 0.9, 0.4, 26), (180, 106, 0.86, 0.42, 18),
+                            (230, 94, 0.9, 0.34, 26), (280, 80, 0.86, 0.38, 44)):   # uneven: his left the longest
+        side = 1 if a < 180 else -1 if a > 180 else 0
+        wedge((W[0] - side * 18 + r.uniform(-3, 3), W[1] + 8), (a, ph), w, t, fl, curl=-side * 8, off=(0.0, 0.13), n=7)
+    for a, ph, w in ((-52, 60, 0.68), (0, 54, 0.66), (52, 62, 0.68)):   # forward over the crown, close to it
+        side = 1 if a > 0 else -1 if a < 0 else 0
+        wedge((W[0] - side * 12 + r.uniform(-3, 3), W[1] + r.uniform(-2, 2)), (a, ph), w, 0.2, 14, curl=side * 8,
+              off=(0.04, 0.22), bow=side * 0.06, n=8, lift=0.05)
+    F = (0.0, 14.0)
+    for a, ph, w in ((-68, 74, 0.42), (-38, 82, 0.62), (-8, 86, 0.74), (22, 80, 0.5), (50, 74, 0.4)):
+        side = 1 if a > 0 else -1   # the fringe, to the brows, uneven, the lead to his right
+        wedge((F[0] + a * 0.3 + r.uniform(-3, 3), F[1] + r.uniform(-2, 2)), (a, ph), w, 0.18, 26 + abs(a) * 0.2, curl=side * 14,
+              off=(0.12, 0.2), bow=side * 0.04, n=7, lift=0.02)
+    return h
+
 TIE = (180, 15)
 
 
@@ -790,7 +1071,11 @@ WHO_ = {
     "rook": dict(takes={"Rook": rt.take_a, "A": with_hair(rt, rt.take_a, rook), "T": with_hair(rt, rt.take_a, rook_sheets),
                         "R": with_hair(rt, rt.take_a, rook_ribbons),
                         **{f"R{k[0].upper()}": with_hair(rt, rt.take_a, lambda k=k: rook_ribbons(k)) for k in ("split", "curl", "hooks")},
-                       "RP": with_hair(rt, rt.take_a, lambda: rook_ribbons("split", solid=True))},
+                       "RP": with_hair(rt, rt.take_a, lambda: rook_ribbons("split", solid=True)),
+                       "SK": with_hair(rt, rt.take_a, rook_spikes),
+                       "SW": with_hair(rt, rt.take_a, rook_wedges),
+                       "SP": with_hair(rt, rt.take_a, lambda: rook_wedges(planes=True)),
+                       "RF": with_hair(rt, rt.take_a, lambda: rook_ribbons("split", flat_paint=True))},
                  today="Today's Rook (AR59's pick)"),
     "kirra": dict(takes={"Kirra": kt.take_a, **{k: with_hair(kt, kt.take_a, lambda k=k: kirra(k)) for k in "ABC"}},
                   today="Today's Kirra (AR60's fix)"),

@@ -17654,6 +17654,8 @@ Every line players read, about 1,100 collected from `src/` by a read-only search
 - **Content check (13:52): PASS** on the nine. "Next try succeeds" is true only while a full heat bar makes the next try certain (`Rules/Reinforce.luau`): it changes with that rule.
 
 - **From the Gemini blueprint (research, 2026-11-26, 12:30; TR66), for the screens after the pick:** the Voidkin's line reads "Common · Red · Warrior · Fire", where two words name a color. The type shows as its gem, and the element stays a word. Each type's gem is also read by its shape, for color-blind players. The type names stay the director's (2026-11-17).
+- **The director, 2026-11-26, about 13:00:** "The whole game UI looks simply horrible, it totally fine to see an old idea and to agree it was an bad thing to use it edit/add/remove it if it better to do so". This covers the screens' redo: an old UI idea may be edited, added to or removed where that is better. Research still picks the frame.
+- **Three style frames, for research's pick** (Modulo, 2026-11-26, 14:16): A Graphite, B Pearl and C Cobalt. Each comes as Home at phone size, the HUD over the street by day, grey, a small phone, and its tokens page, in `build/handoff/UI/style_frames/`. `tools/ui/style_frames.py` draws them. Today's HUD is cloned out of the street capture. Rook wears round 43's hair; AR64's new hair goes into the picked frame. Nothing uploaded.
 
 ## AR63. Pip, redesigned in the make (Modulo, for research's pick and the director's look, then its finish; Faber's install after)
 

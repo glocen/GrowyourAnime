@@ -137,3 +137,66 @@ Rounds 42 and 43 (2026-11-26, about 13:00 to 13:07), take RP, on the director's 
 - **Still open,** from the blind read of round 42: close up, the locks are broad petals where the catalog's are many and narrow; a few strays at the back's left edge.
 
 Take T before it (`Sheets`): pleated sheets whose pleats part into points near their ends. Wide petals, nothing crossing, points that don't flick. Dropped.
+
+## Against Anime Vanguards: why ours reads bad, measured (2026-11-26, 13:10 to 14:16)
+
+The director, on round 43: "round 43 is still bad.. study how to make it good instead of iterating", then "now compare with anime vanguard or anime crusader and if u believe yours is bad compared to it keep studying and improve". No round was built for this study; four throwaway tests isolated causes (`build/scratch/modulo/hair/study/`, with `measure.py`). Pictures looked at, all internal: the catalog's eight (`catalog720/`); Anime Vanguards' units `roku`, `gaari`, `ichiga`, `jon`, `sosuke` and `savior-moonless`, heads enlarged (`study/av_heads.png`, `spikes.png`); ours, rounds 41 and 43.
+
+**The measure** (MEASURED). Each hair is scaled to one width and the inside kept. It counts the share of inside pixels on a hard tone step and on a soft slope; their ratio is the hair's crispness. At 160 px wide, AV's renders' own size:
+
+| Hair | hard step % | soft slope % | crispness | tone spread (sd) | brightest 5% |
+|---|---|---|---|---|---|
+| catalog, six black boys' hairs | 3.5 to 12.7 | 33 to 50 | 0.11 to 0.28 | 0.056 to 0.076 | 0.22 to 0.26 |
+| AV, `roku` (black) | 8.9 | 35 | 0.25 | 0.058 | 0.27 |
+| AV, `gaari`, `savior-moonless`, `ichiga` (coloured) | 18 to 30 | 30 to 49 | 0.37 to 0.83 | 0.09 to 0.20 | 0.36 to 0.75 |
+| ours, round 41 (RS) | 5.8 | 67 | 0.09 | 0.052 | 0.23 |
+| ours, round 43 (RP) | 4.6 | 47 | 0.10 | 0.048 | 0.24 |
+
+Ours is the least crisp of all: its tone runs in soft slopes where theirs sits in planes split by hard edges. That is the "pasta", the "rubbery plastic leaves" the blind reader named, and the "still bad".
+
+**What makes ours soft** (TESTED, one change at a time on round 41, measured at 480 px):
+- **The paint.** Our picture shades across each lock: a lit ridge, an eased dark edge, a ring of shine. Painted flat across and graded only along, the soft slopes fall from 36% to 10%, and the tubes go.
+- **Not the normals.** Each lock lit by its own faces instead of a ball's: no measurable change, with the paint as it is or flat (0.4% hard, 35% soft either way). On a near-black colour the light moves the tone too little to show.
+- **Flat paint alone is dull.** The spread falls to 0.024, a third of theirs, and a tone of its own on each lock doesn't lift it: the colour is too dark for the light to draw planes on.
+
+**What Anime Vanguards does** (OBSERVED, the enlarged heads):
+1. **A lock is a solid spike, not a ribbon:** a blade or a pyramid with volume, its section a triangle or a diamond, with a ridge on top.
+2. **Flat-shaded, low in polygons:** two or three faces across a spike, two to four segments along it. Each face takes the light as one plane: lit, mid, shade, split by hard edges. That is where its crispness comes from.
+3. **One colour, little paint:** the picture is near-flat. A black hair is a dark grey, so its lit planes reach about 0.27 and its shade about 0.08: the planes show.
+4. **Few and big:** about 12 great masses on `roku`, about 25 to 30 spikes on `savior-moonless` and `gaari`. Big ones make the outline, small ones fill between, every one swept the same way from the crown, and their points lift clear.
+5. **Bold outline:** the mass is a clear shape at a glance, toothed all round, falling over the brow in a few big locks.
+
+The web study (sources below) says the catalog's look is in its texture: strands painted along a strip every lock shares, occlusion multiplied in, shine marks painted per lock ([DevForum, part 2](https://devforum.roblox.com/t/how-to-make-hair-in-blender-2-8-pt-2/612848), [80.lv, hand-painted](https://80.lv/articles/studying-hand-painted-texturing-workflow-for-stylized-art), [a well-known anime game's shader, excerpt](https://bjayers.artstation.com/blog/category/5)). Roblox's own docs advise a colour map with "little to no lighting" ([SurfaceAppearance](https://create.roblox.com/docs/art/modeling/surface-appearance)). AV's units follow Roblox's way: hard-edged geometry lit by the engine.
+
+**Why 43 rounds missed:** they chased the catalog's bar, sixty to a hundred thin ribbons and a painted texture, with soft paint across each ribbon, so they read as tubes or petals. A Voidkin's bar is a unit's in Anime Vanguards (the director, 2026-11-23, 23:45). The spike rounds of 2026-11-24 and 25 were rejected as "stiff flat shards, too many, too alike, faceted": thin flat cards all of one size. AV's are solid, swept in groups, big beside small.
+
+**What sixteen blind reads found** (TESTED, 2026-11-26, 13:30 to 14:12). Each read was a new fresh reader, given one sheet with the takes beside the four black AV heads at one size. Mostly two takes differed in one thing, and the reader checked them in both orders. Sheets: `study/blind2.png` to `blind16.png`.
+- **Flat planes read as paper on ours.** These all read as "folded paper", "crumpled foil" or "faceted black paper, folded card", four times:
+  - a diamond section, flat or smooth;
+  - a ridge with two flat planes and a hard step;
+  - the same geometry beside its rounded twin (14:08).
+  - So AV's crispness doesn't come back through flat faces here. The crispness gate above is dropped, because it rewards what reads as paper.
+- **A rounded section reads as hair** in every read since: a lens, five points over the top and two under, hard only at its two sides.
+- **Tone:**
+  - Near-black with a soft sheen read as "glossy plastic shells".
+  - Charcoal, matte and rounded won (14:10).
+  - Matte charcoal on flat planes is the paper above. The fault was the planes, not the charcoal.
+  - The game's warm light browns a neutral black, so the black leans cool.
+- **Fewer, bigger, ranked:**
+  - Readers asked for it in every read. At 26 locks down to 17, the back read "one mass" (14:05).
+  - Wide alone makes a lobe ("a beret"). A big lock is long and tapered.
+- **The crown:**
+  - Many locks meeting at the whorl read "crumpled" from the top and the back. A smooth dome under the locks and fewer roots there quiet it.
+  - Thin up-locks or short tufts on the crown read as "antennae" or "horns", three times.
+- **The silhouette is the gap left:** "a rounded cap". Flaring the sides read "mushroom"; holding them close reads "cap". Status was "close" in every read, never "very close" yet.
+
+**The way, for Rook** (DESIGN, from the reads): `rook_wedges()` in `hair_ways.py`, class `Spikes`.
+- **The locks:** about 19 rounded wedges over a smooth crown dome, from a whorl at the back of the crown, swept one way.
+- **The layout:**
+  - four small hem locks;
+  - five long leaders of uneven length, leaving the outline;
+  - one lock over each ear;
+  - three lying forward over the crown, close to it;
+  - five in the fringe, the lead to his right.
+- **The colour:** cool matte charcoal, darker at the roots and under each lock, with the occlusion baked in.
+- **The gates:** the outline 1.4 to 1.8 heads wide; a fresh blind reader at "very close" or better before the director sees it.

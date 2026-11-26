@@ -5,13 +5,13 @@
 
 The looks research picked are Modulo's block-in (tools/blender/element_states_fx.py, `Cues` and `Ice`); these are the
 same timings and shapes in the game's rows, from the kit only. FighterController wears each by name while its state
-holds (StateBurn, StateChill, StateShock, StateSap; a freeze is the stun's StateFreeze) and ends it at once, so every
-row rides the body and holds to a far frame. FreezeBreak is the one free effect: the shell's shatter as the freeze ends,
-played where the body stands.
+holds (StateBurn, StateShock, StateSap; a freeze is the stun's StateFreeze; a chill wears none) and ends it at once,
+so every row rides the body and holds to a far frame. FreezeBreak is the one free effect: the shell's shatter as the
+freeze ends, played where the body stands.
 
-Feel line: a Frost lead's third hit lands, frost climbs the Shade's legs a step a hit, then a shell of ice snaps shut
-round it and bursts into chips; a Fire hit leaves embers rising off its shoulders, a Storm hit light crackling over it,
-a Void hit dark motes circling in and sinking round it. Quieter than a hit, never hiding the silhouette.
+Feel line: a Frost lead's third hit lands, a shell of ice snaps shut round the Shade and bursts into chips; a Fire hit
+leaves embers rising off its head and shoulders, a Storm hit light crawling along its arms, a Void hit dark motes drawn
+out of it. Quieter than a hit, never hiding the silhouette.
 
 Research's rule for a state (AR48's pass in motion, 2026-11-26): it sits on the body's outline, shows in the gaps between
 hits, and takes a shape no hit uses (a hit is a white star, a ring and radial sparks). Nothing at the feet: at the
@@ -21,10 +21,9 @@ Hero shapes (one each, with a direction and an acceleration):
 - Burn: a steady stream of few tapered embers, each about the size of the foe's hand, rising off the head's top and
   the shoulders' tops beside the mask, lifted and drifting outward, so they live against the sky over and beside the
   silhouette; a few larger still.
-- Chill: a crust of ice teeth along the legs' outer edges, a band a third of the fill (StateChill, StateChill2,
-  StateChill3). Research's pass of 2026-11-26 drops it (the lead hides the legs at the player's camera): Freeze carries
-  Frost alone, and these go once Combat.States.Chill names no looks.
-- Freeze: a shell snapping up out of the crust and shut in 6 frames, its edge flashing once, held clear. Stand-in: the
+- Chill: no look. Research's pass of 2026-11-26 dropped its crust on the legs (the lead hides them at the player's
+  camera): Freeze carries Frost alone, and a chill keeps its slow and its numbers.
+- Freeze: a shell snapping up from the street and shut in 6 frames, its edge flashing once, held clear. Stand-in: the
   kit's shell in its ribs (the faceted shell waits on its mesh). FreezeBreak: chips flung out and falling.
 - Shock: a jagged line of five strokes, inked dark under, down an arm's outer edge from the shoulder to the hand (the
   arms only: research's pass, 2026-11-26), lit stroke by stroke as a crawl runs down or up it, then the whole line at
@@ -54,7 +53,7 @@ FROST = ((244, 253, 255), (143, 227, 255))
 STORM = ((255, 242, 251), (255, 111, 216))
 SAP_RIM = (226, 218, 236)  # Sap's rim (its disc dark in the picture); its violet only this rim, at the colour pass
 
-START_H = 2.25  # studs: the shell's height as it starts, the crust's top at the hips
+START_H = 2.25  # studs: the shell's height as it starts, at the hips
 SHELL_W, SHELL_D, SHELL_H = 2.35, 1.3, 5.35  # the shell's half width, half depth, height
 SHUT = 6  # frames: the shell snaps shut (0.1 s)
 ROOT_HEIGHT = 3  # studs: the root over the foot, at scale 1
@@ -115,73 +114,7 @@ def burn():
     return effect("StateBurn", "Burn (Fire), worn while it holds: a steady stream of embers off the head's and shoulders' outline (AR48, Scintilla's grey, research's rule).", rows)
 
 
-# Chill and Freeze ------------------------------------------------------------------------------------------------
-def pointing(d):
-    """Tilt (degrees, as Rows applies it: CFrame.Angles(x, y, z)) laying a chip's long axis (its X) along d."""
-    n = math.sqrt(sum(c * c for c in d))
-    dx, dy, dz = (c / n for c in d)
-    c = math.asin(dy)
-    b = math.atan2(-dz, dx)
-    return v3(0, round(math.degrees(b), 1), round(math.degrees(c), 1))
-
-
-# the crust's bands: (part, outward side, low, high) in the part's studs; a leg is 1 x 2 x 1, its foot at -1
-BANDS = (  # the legs only: the torso's sides are behind the arms
-    (("Left Leg", -1, -0.6, -0.08), ("Right Leg", 1, -0.6, -0.08)),  # the shin: never the foot
-    (("Left Leg", -1, -0.08, 0.45), ("Right Leg", 1, -0.08, 0.45)),  # the knee
-    (("Left Leg", -1, 0.45, 0.98), ("Right Leg", 1, 0.45, 0.98)),  # the thigh, to the hip
-)
-TEETH = 4  # a band's teeth on each side, front and back corners in turn
-
-
-def tooth(part, side, y, front, size, born, why):
-    half_x = 0.5  # a leg is 1 wide
-    z = -0.45 if front else 0.45
-    d = (side * 0.65, 0.7, (-0.35 if front else 0.35))  # out from the corner and up
-    n = math.sqrt(sum(c * c for c in d))
-    base = 0.3 * size  # its root a little in the leg, the rest out of it
-    centre = (side * half_x + d[0] / n * base, y + d[1] / n * base, z + d[2] / n * base)
-    full = v3(size, round(size * 2.2, 3), round(size * 1.6, 3))  # a chunky tooth (the chip's 1 x 0.142 x 0.347)
-    tracks = {
-        "At": [[0, v3(*(round(c, 3) for c in centre))]],
-        "Tilt": [[0, pointing(d)]],
-        "Transparency": held(0.1),  # to the far frame: the look ends at its rows' last key, so code ends it
-        "Glow": held(1.4),
-    }
-    if born is None:
-        tracks["Scale"] = [[0, full]]
-    else:
-        tracks["Scale"] = [[0, v3(0, 0, 0)], [born, v3(0.05, 0.05, 0.05), "Back Out"], [born + 8, full]]
-    return {"Kind": "Mesh", "Body": part, "Part": ["FxChip1"], "Color": c3(FROST[0]), "Tracks": tracks, "Why": why}
-
-
-def crust(step):
-    rows = {}
-    rng = random.Random(30 + step)
-    for band in range(step):
-        new = band == step - 1
-        for part, side, low, high in BANDS[band]:
-            for k in range(TEETH):
-                y = low + (high - low) * (k + 0.5) / TEETH
-                size = round(rng.uniform(0.55, 0.75), 3)
-                born = 1 + 2 * k if new else None  # the new band's teeth snap out from the bottom up
-                name = f"B{band + 1}{'L' if side < 0 else 'R'}{k + 1}"
-                rows[name] = tooth(part, side, round(y, 3), k % 2 == 0, size, born,
-                                   "the hero: an ice tooth on the outline, out and up" if new else "the bands before, held")
-    return rows
-
-
-def chill():
-    return {
-        f"StateChill{'' if step == 1 else step}": effect(
-            f"StateChill{'' if step == 1 else step}",
-            f"Chill (Frost), its {('first', 'second', 'third')[step - 1]} third, worn while the fill is in it: the crust on the legs' outline (AR48, Scintilla's grey, research's rule).",
-            crust(step),
-        )
-        for step in (1, 2, 3)
-    }
-
-
+# Freeze -----------------------------------------------------------------------------------------------------
 def freeze():
     start_h = START_H
     shell = {  # rides the root (3 over the foot), not grounded: a grounded row's height is the foot's
@@ -192,7 +125,7 @@ def freeze():
         "Grey": "fx_ribs_Grey",
         "Color": c3(FROST[0]),
         "Tracks": {
-            # out of the crust's top and shut: its foot held on the street as it grows
+            # up from the hips and shut: its foot held on the street as it grows
             "At": [[0, v3(0, start_h / 2 - ROOT_HEIGHT, 0), "Quart Out"], [SHUT, v3(0, SHELL_H / 2 - ROOT_HEIGHT, 0)], [FAR, v3(0, SHELL_H / 2 - ROOT_HEIGHT, 0)]],
             "Scale": [[0, v3(SHELL_W * 0.85, start_h / 2, SHELL_D * 0.85), "Quart Out"], [SHUT, v3(SHELL_W, SHELL_H / 2, SHELL_D)],
                       [FAR, v3(SHELL_W, SHELL_H / 2, SHELL_D)]],
@@ -415,7 +348,7 @@ def mote_rim(out=PICTURES, side=128):
 
 
 def build():
-    looks = {"StateBurn": burn(), **chill(), "StateFreeze": freeze(), "FreezeBreak": freeze_break(), "StateShock": shock(), "StateSap": sap()}
+    looks = {"StateBurn": burn(), "StateFreeze": freeze(), "FreezeBreak": freeze_break(), "StateShock": shock(), "StateSap": sap()}
     return looks
 
 

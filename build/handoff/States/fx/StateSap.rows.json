@@ -1,134 +1,171 @@
 {
  "Schema": "rows/1",
  "Effect": "StateSap",
- "Why": "Sap (Void), worn while it holds: dark motes sinking round the body (AR48, Scintilla's grey).",
+ "Why": "Sap (Void), worn while it holds: rimmed motes drawn out of the body, outside its outline (AR48, Scintilla's grey, research's rule).",
  "Area": 1,
  "Grey": true,
  "Rows": {
-  "Motes": {
+  "MotesLeft1": {
    "Kind": "Emitter",
    "Body": "HumanoidRootPart",
-   "Image": "fx_glow",
+   "Image": "fx_mote_rim",
    "Emitter": {
     "LockedToPart": true,
-    "Lifetime": [
-     1.3,
-     2.0
-    ],
-    "EmissionDirection": "Bottom",
-    "Speed": [
-     0.5,
-     0.8
-    ],
-    "Drag": 1.2,
-    "Acceleration": {
-     "Vector3": [
-      0,
-      0,
-      0
-     ]
-    },
-    "Size": [
-     [
-      0,
-      0
-     ],
-     [
-      0.08,
-      0.28
-     ],
-     [
-      0.5,
-      0.28
-     ],
-     [
-      1,
-      0
-     ]
-    ],
-    "Transparency": [
-     [
-      0,
-      0.08
-     ],
-     [
-      1,
-      0.08
-     ]
-    ],
-    "Color": {
-     "Color3": [
-      23,
-      18,
-      31
-     ]
-    },
+    "Lifetime": [1.6, 2.2],
+    "EmissionDirection": "Left",
+    "SpreadAngle": [25, 25],
+    "Speed": [0.5, 0.8],
+    "Drag": 1.3,
+    "Acceleration": {"Vector3": [0, 0.25, 0]},
+    "Size": [[0, 0], [0.1, 0.34], [0.75, 0.34], [1, 0]],
+    "Transparency": [[0, 0], [1, 0]],
+    "Color": {"Color3": [226, 218, 236]},
     "LightEmission": 0,
     "LightInfluence": 0,
     "ZOffset": 0.2
    },
-   "Emit": [
-    [
-     0,
-     6
-    ]
-   ],
+   "Emit": [[0, 1]],
    "Tracks": {
-    "At": [
-     [
-      0,
-      {
-       "Vector3": [
-        0,
-        0.9,
-        0
-       ]
-      }
-     ],
-     [
-      3600,
-      {
-       "Vector3": [
-        0,
-        0.9,
-        0
-       ]
-      }
-     ]
-    ],
-    "Radius": [
-     [
-      0,
-      1.5
-     ],
-     [
-      3600,
-      1.5
-     ]
-    ],
-    "Rate": [
-     [
-      0,
-      12
-     ],
-     [
-      3600,
-      12
-     ]
-    ],
-    "Spin": [
-     [
-      0,
-      0,
-      "Linear"
-     ],
-     [
-      3600,
-      3780
-     ]
-    ]
+    "At": [[0, {"Vector3": [-2.25, 1.1, -0.6]}], [3600, {"Vector3": [-2.25, 1.1, -0.6]}]],
+    "Radius": [[0, 0.3], [3600, 0.3]],
+    "Rate": [[0, 2], [3600, 2]]
    },
-   "Why": "the hero: dark motes circling in round the upper body and sinking, gone above the knees"
+   "Why": "the side's next spot"
+  },
+  "MotesLeft2": {
+   "Kind": "Emitter",
+   "Body": "HumanoidRootPart",
+   "Image": "fx_mote_rim",
+   "Emitter": {
+    "LockedToPart": true,
+    "Lifetime": [1.6, 2.2],
+    "EmissionDirection": "Left",
+    "SpreadAngle": [25, 25],
+    "Speed": [0.5, 0.8],
+    "Drag": 1.3,
+    "Acceleration": {"Vector3": [0, 0.25, 0]},
+    "Size": [[0, 0], [0.1, 0.34], [0.75, 0.34], [1, 0]],
+    "Transparency": [[0, 0], [1, 0]],
+    "Color": {"Color3": [226, 218, 236]},
+    "LightEmission": 0,
+    "LightInfluence": 0,
+    "ZOffset": 0.2
+   },
+   "Emit": [[0, 1]],
+   "Tracks": {
+    "At": [[0, {"Vector3": [-2.25, 0.5, 0]}], [3600, {"Vector3": [-2.25, 0.5, 0]}]],
+    "Radius": [[0, 0.3], [3600, 0.3]],
+    "Rate": [[0, 2], [3600, 2]]
+   },
+   "Why": "the hero: dark motes with a light rim, drawn out of the body, outside its outline"
+  },
+  "MotesLeft3": {
+   "Kind": "Emitter",
+   "Body": "HumanoidRootPart",
+   "Image": "fx_mote_rim",
+   "Emitter": {
+    "LockedToPart": true,
+    "Lifetime": [1.6, 2.2],
+    "EmissionDirection": "Left",
+    "SpreadAngle": [25, 25],
+    "Speed": [0.5, 0.8],
+    "Drag": 1.3,
+    "Acceleration": {"Vector3": [0, 0.25, 0]},
+    "Size": [[0, 0], [0.1, 0.34], [0.75, 0.34], [1, 0]],
+    "Transparency": [[0, 0], [1, 0]],
+    "Color": {"Color3": [226, 218, 236]},
+    "LightEmission": 0,
+    "LightInfluence": 0,
+    "ZOffset": 0.2
+   },
+   "Emit": [[0, 1]],
+   "Tracks": {
+    "At": [[0, {"Vector3": [-2.25, 0.85, 0.6]}], [3600, {"Vector3": [-2.25, 0.85, 0.6]}]],
+    "Radius": [[0, 0.3], [3600, 0.3]],
+    "Rate": [[0, 2], [3600, 2]]
+   },
+   "Why": "the side's next spot"
+  },
+  "MotesRight1": {
+   "Kind": "Emitter",
+   "Body": "HumanoidRootPart",
+   "Image": "fx_mote_rim",
+   "Emitter": {
+    "LockedToPart": true,
+    "Lifetime": [1.6, 2.2],
+    "EmissionDirection": "Right",
+    "SpreadAngle": [25, 25],
+    "Speed": [0.5, 0.8],
+    "Drag": 1.3,
+    "Acceleration": {"Vector3": [0, 0.25, 0]},
+    "Size": [[0, 0], [0.1, 0.34], [0.75, 0.34], [1, 0]],
+    "Transparency": [[0, 0], [1, 0]],
+    "Color": {"Color3": [226, 218, 236]},
+    "LightEmission": 0,
+    "LightInfluence": 0,
+    "ZOffset": 0.2
+   },
+   "Emit": [[0, 1]],
+   "Tracks": {
+    "At": [[0, {"Vector3": [2.25, 1.1, -0.6]}], [3600, {"Vector3": [2.25, 1.1, -0.6]}]],
+    "Radius": [[0, 0.3], [3600, 0.3]],
+    "Rate": [[0, 2], [3600, 2]]
+   },
+   "Why": "the side's next spot"
+  },
+  "MotesRight2": {
+   "Kind": "Emitter",
+   "Body": "HumanoidRootPart",
+   "Image": "fx_mote_rim",
+   "Emitter": {
+    "LockedToPart": true,
+    "Lifetime": [1.6, 2.2],
+    "EmissionDirection": "Right",
+    "SpreadAngle": [25, 25],
+    "Speed": [0.5, 0.8],
+    "Drag": 1.3,
+    "Acceleration": {"Vector3": [0, 0.25, 0]},
+    "Size": [[0, 0], [0.1, 0.34], [0.75, 0.34], [1, 0]],
+    "Transparency": [[0, 0], [1, 0]],
+    "Color": {"Color3": [226, 218, 236]},
+    "LightEmission": 0,
+    "LightInfluence": 0,
+    "ZOffset": 0.2
+   },
+   "Emit": [[0, 1]],
+   "Tracks": {
+    "At": [[0, {"Vector3": [2.25, 0.5, 0]}], [3600, {"Vector3": [2.25, 0.5, 0]}]],
+    "Radius": [[0, 0.3], [3600, 0.3]],
+    "Rate": [[0, 2], [3600, 2]]
+   },
+   "Why": "the hero: dark motes with a light rim, drawn out of the body, outside its outline"
+  },
+  "MotesRight3": {
+   "Kind": "Emitter",
+   "Body": "HumanoidRootPart",
+   "Image": "fx_mote_rim",
+   "Emitter": {
+    "LockedToPart": true,
+    "Lifetime": [1.6, 2.2],
+    "EmissionDirection": "Right",
+    "SpreadAngle": [25, 25],
+    "Speed": [0.5, 0.8],
+    "Drag": 1.3,
+    "Acceleration": {"Vector3": [0, 0.25, 0]},
+    "Size": [[0, 0], [0.1, 0.34], [0.75, 0.34], [1, 0]],
+    "Transparency": [[0, 0], [1, 0]],
+    "Color": {"Color3": [226, 218, 236]},
+    "LightEmission": 0,
+    "LightInfluence": 0,
+    "ZOffset": 0.2
+   },
+   "Emit": [[0, 1]],
+   "Tracks": {
+    "At": [[0, {"Vector3": [2.25, 0.85, 0.6]}], [3600, {"Vector3": [2.25, 0.85, 0.6]}]],
+    "Radius": [[0, 0.3], [3600, 0.3]],
+    "Rate": [[0, 2], [3600, 2]]
+   },
+   "Why": "the side's next spot"
   }
  }
 }

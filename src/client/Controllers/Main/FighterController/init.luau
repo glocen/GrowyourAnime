@@ -139,6 +139,8 @@ type View = {
 	StunLook: string?, -- the stun's look and the server time it ends, kept from its start (a freeze's break)
 	StunEnds: number?,
 	Broke: Rows.Player?, -- the last freeze's break played on it, for the self-test
+	BrokeFor: number?, -- the StunEnds of the freeze whose break played (by its ending hit or its end), so it plays once
+	BrokeAt: number?, -- the server time it played
 }
 
 local views: { [Model]: View } = {}
@@ -304,6 +306,25 @@ local function shieldUp(target: View): boolean
 	return type(up) == "number" and workspace:GetServerTimeNow() < up and (EffectsConfig.Rows :: any).GuardGlance ~= nil
 end
 
+-- A freeze's ending moment on `target` (Combat.States.Freeze.Window; research's AR48 must-fix, 21:40): a hit landing in
+-- the window before its end plays the break now, once, in place of its spark; one landing just after the break played
+-- shows no spark either. True when the hit's spark gives way to the break.
+local function breaks(target: View): boolean
+	local freeze = Combat.States.Freeze
+	local now = workspace:GetServerTimeNow()
+	if target.BrokeAt and now - target.BrokeAt <= freeze.Window then
+		return true
+	end
+	local ends = target.StunEnds
+	if target.StunLook ~= freeze.Look or ends == nil or target.BrokeFor == ends or now < ends - freeze.Window then
+		return false
+	end
+	target.Broke = Effects.Once(freeze.Break, target.Model)
+	target.BrokeFor, target.BrokeAt = ends, now
+	return true
+end
+FighterController.Breaks = breaks
+
 local function show(attacker: View, target: View?, rung: number, heavy: boolean, steady: boolean, key: string, draw: ((landed: () -> ()) -> boolean)?, critical: boolean?, guarded: boolean?)
 	local actionId = if attacker.Action then attacker.Action.Id else nil -- read now: a drawn hit lands after its action may end
 	local each = if target then `{key}#{target.Id}` else key
@@ -347,7 +368,7 @@ local function show(attacker: View, target: View?, rung: number, heavy: boolean,
 			local toward = Vector3.new(from.X - at.X, 0, from.Z - at.Z)
 			local surface = if toward.Magnitude > 0.01 then at + toward.Unit * (if target.Rig == "Box" then target.Root.Size.Z / 2 else 0.6) else at
 			held.Surface, held.Blow = surface, at - from
-			if guarded or shieldUp(target) then
+			if guarded or shieldUp(target) or breaks(target) then
 				held.Surface = nil -- nor a critical's gold later (raise)
 			elseif not Effects.HitSpark(surface, at - from, rung, critical == true) or EffectsConfig.HitSparks.Old then
 				Effects.Spark(surface, from, heavy)
@@ -571,8 +592,10 @@ local function onState(view: View)
 		-- a freeze that ran its time breaks, at the foot; one ended by a fall doesn't
 		local freeze = Combat.States.Freeze
 		local ends = view.StunEnds
-		if view.StunLook == freeze.Look and state ~= "Down" and ends and workspace:GetServerTimeNow() >= ends - 0.25 then
+		if view.StunLook == freeze.Look and state ~= "Down" and ends and view.BrokeFor ~= ends
+			and workspace:GetServerTimeNow() >= ends - freeze.Window then
 			view.Broke = Effects.Once(freeze.Break, view.Model)
+			view.BrokeFor, view.BrokeAt = ends, workspace:GetServerTimeNow()
 		end
 		view.StunLook, view.StunEnds = nil, nil
 		-- the stop over: the pose let go, and the action the server ended under it ended here too

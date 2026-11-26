@@ -132,7 +132,9 @@ return {
 		Not = { Ordinary = { Sap = true }, Elite = { Sap = true } } :: { [string]: { [string]: boolean } },
 		Burn = { Share = 0.5, Seconds = 3, Tick = 0.5, Look = "StateBurn" },
 		Chill = { Hits = 3, Delay = 1.5, Drain = 0.5, Slow = 0.3, Looks = {} :: { string } },
-		Freeze = { Seconds = 2, Look = "StateFreeze", Break = "FreezeBreak" },
+		-- Window: seconds about a freeze's end in which its break is the ending moment: a hit landing there shows the break in
+		-- place of its spark (research's AR48 must-fix, 21:40: an ending moment never shares its frame with the ordinary spark)
+		Freeze = { Seconds = 2, Look = "StateFreeze", Break = "FreezeBreak", Window = 0.25 },
 		Shock = { Seconds = 3, Look = nil :: string? }, -- no look until poise gives it an effect (research's AR48 pass, 21:17)
 		Sap = { Seconds = 4, Cut = 0.3, Look = "StateSap" },
 	},

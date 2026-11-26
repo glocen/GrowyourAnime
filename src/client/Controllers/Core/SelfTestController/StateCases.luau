@@ -265,6 +265,17 @@ function StateCases.Cases(): { any }
 					end
 					if (EffectsConfig.Rows :: any)[states.Freeze.Break] ~= nil then
 						t.Check(`the freeze that ran its time breaks, {states.Freeze.Break}`, frost.Broke)
+						-- its ending hit (research's AR48 must-fix, 21:40): a hit inside the freeze's last Window plays the break,
+						-- once, in place of its spark; one mid-freeze keeps its spark, as does a body not frozen
+						local w, at = states.Freeze.Window, workspace:GetServerTimeNow()
+						local ending: any = { Model = lead, StunLook = states.Freeze.Look, StunEnds = at + w / 2 }
+						t.Check("a hit in a freeze's last window plays the break in place of its spark", FighterController.Breaks(ending)
+							and ending.Broke ~= nil and ending.BrokeFor == ending.StunEnds)
+						local first = ending.Broke
+						t.Check("a second hit just after shows no spark and no second break", FighterController.Breaks(ending) and ending.Broke == first)
+						local mid: any = { Model = lead, StunLook = states.Freeze.Look, StunEnds = at + states.Freeze.Seconds / 2 }
+						t.Check("a hit mid-freeze keeps its spark", not FighterController.Breaks(mid) and mid.Broke == nil)
+						t.Check("a hit on a body not frozen keeps its spark", not FighterController.Breaks({ Model = lead } :: any))
 					end
 				end
 

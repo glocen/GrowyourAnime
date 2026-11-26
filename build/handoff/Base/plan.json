@@ -967,7 +967,7 @@
     "along": -56.8,
     "up": 0.0,
     "turn": 0.0,
-    "standsFor": "the generator, the Void Mill: all of it that stands still"
+    "standsFor": "the Generator: all of it that stands still"
    },
    {
     "piece": "GeneratorWheel",
@@ -3084,6 +3084,6 @@
   }
  },
  "lighting": "the base stands under Lantern Row's dusk: the same sky, ambient, fog and bloom (build/handoff/LanternRow/sky/lighting.json). The conduits, the wall's line and the lamps are drawn for dusk, and under the place's daylight they don't read.",
- "lightsNote": "a PointLight over the Breaker's chambers in its violet and one low in the generator's well in the Mill's cyan, the Door's two and the showcase's, Shadows off; everything else that glows is in a glow picture",
+ "lightsNote": "a PointLight over the Breaker's chambers in its violet and one low in the Generator's well in its cyan, the Door's two and the showcase's, Shadows off; everything else that glows is in a glow picture",
  "collision": "each piece's `collision` in the manifest; the court's floor and the lines are look only"
 }

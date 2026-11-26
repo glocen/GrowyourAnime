@@ -118,7 +118,7 @@ def machines(level=1):
         made.append(("SleepingStone", x, inward, 0.0, 0.0, f"the {name.capitalize()}'s place, asleep"))
     made.append(("TowerSleeping", *TOWER_AT, 0.0, 0.0, "the Tower, asleep until phase 3"))
     mill = base.mill
-    made.append(("Generator", *GENERATOR, 0.0, 0.0, "the generator, the Void Mill: all of it that stands still"))
+    made.append(("Generator", *GENERATOR, 0.0, 0.0, "the Generator: all of it that stands still"))
     made.append(("GeneratorWheel", *GENERATOR, mill.AXLE, 0.0, "the generator's wheel, turning about the line to the gate, faster as the plant generates more"))
     for i in range(mill.STEPS):
         made.append((f"GeneratorArc{i + 1}", *GENERATOR, 0.0, 0.0, f"the gauge's step {i + 1} of {mill.STEPS}, shown while the generation lights it"))
@@ -340,8 +340,8 @@ def write_plan(out: Path):
         lighting="the base stands under Lantern Row's dusk: the same sky, ambient, fog and bloom "
                  "(build/handoff/LanternRow/sky/lighting.json). The conduits, the wall's line and the lamps are "
                  "drawn for dusk, and under the place's daylight they don't read.",
-        lightsNote="a PointLight over the Breaker's chambers in its violet and one low in the generator's well in the "
-                   "Mill's cyan, the Door's two and the showcase's, Shadows off; everything else that glows is in a glow "
+        lightsNote="a PointLight over the Breaker's chambers in its violet and one low in the Generator's well in its "
+                   "cyan, the Door's two and the showcase's, Shadows off; everything else that glows is in a glow "
                    "picture",
         collision="each piece's `collision` in the manifest; the court's floor and the lines are look only"),
         indent=1), encoding="utf-8")

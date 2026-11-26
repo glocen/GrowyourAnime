@@ -17960,3 +17960,23 @@ The rule: `docs/design.md`, "Clips follow the model, rules follow the class" (th
   3. **No part passes through the body or the street** (class: every key): the shaft through an arm, and the butt under the street, as Modulo listed. The content check comes before the build.
 - **The camera finding** goes to TR69 F, an experiment of Faber's. The clip tools' "game" view gets corrected to the player's, `play` (Modulo's).
 - **Next:** Watt's B build, then Kirra's and Lyric's targets, in Modulo's order.
+
+### Modulo's targets for Kirra's and Lyric's own Hit, Down and Up (2026-11-26, 17:30; started 17:12)
+
+- **Where:** `build/scratch/modulo/ar66/kirra/` and `build/scratch/modulo/ar66/lyric/` (gitignored). `poses_*.png` holds the keys from the player's view (`rook_clips.GAME`, corrected in 4403df2f) and from the side, with their frames. `strip_*.png` holds every third frame of a Hit and every fourth of a Down or an Up, from the player's view.
+- **Each keeps its set's length and marker:** Kirra's (R6's open set) Hit 19 frames, Down 67 with Land at 34, Up 55. Lyric's (the robe set) Hit 21, Down 67 with Land at 29, Up 59, her legs inside the jacket's tail (the widest swing is 27 of 30 degrees). A Down and its Up come as a pair: the Up starts where the Down lies.
+- **Kirra,** beside a Shade stand-in, her tail falling in the air and lying still on the settles:
+  - **Hit A, snapped back** (3 struck, 12 back on it): head and arms thrown back, the tail whipped up. **Hit B, folded** (3 folded, 12 eyes up): she folds round it, arms in.
+  - **Down A, the breakfall** (16 off her feet, 26 turning over, 34 lands, 52 lying), **Up A, the kick-up** (10 rocked back, 16 the kick, 22 on her feet).
+  - **Down B, the slide** (18 thrown, 34 lands, 42 the slide, 54 propped on her right hand, eyes up), **Up B, the spring** (12 the push, 20 legs under).
+- **Lyric,** the stand and the speakers keyed in every clip:
+  - **Hit A, rocked** (3 struck, 13 on the nod): back on her heels, hanging on to the stand as it leans in after her, the speakers knocked off their line. **Hit B, the shield** (3 shielded, 14 out again): her shoulder turned, the stand pulled in, the speakers swung in front of her.
+  - **Down A, with it** (14 and over, 29 down, 41 lying): over backwards all of a piece, the robe set's fall. She keeps hold, the stand lies along her right side with her fist on it, and the speakers drop dead on the street. **Up A, up it** (9 plants it, 20 hauls up, 32 up, 42 on the nod): she swings it upright, plants it and hauls herself up it, the other hand off the street.
+  - **Down B, let go** (6 the blow, 29 down, 41 lying): the stand stays standing where she let go of it, her hand after it, the speakers sagging beside her. **Up B, caught** (12 comes up, 24 caught, 30 on the beat): she closes on it as it tips to her and turns it once round its line on the beat, and the speakers snap home.
+- **My read:** Kirra's A pair (the breakfall and the kick-up) is the most hers, light and back up at once, and her Hit A reads best for its tail. Lyric's B pair gives the stand a life of its own and puts her rise on the beat. Her Hit A reads clearer than B, whose speakers cross her face.
+- **The build's, not the targets' (the audit):**
+  - Kirra: the legs cross 0.12 at Hit A 7; an arm into the torso up to 0.17 (Down A 1, Up A 13, Down B 38, Up B 6); a lying arm up to 0.1 under the street; Up A's head under the street at 6 to 8 before the last lift (not re-audited); a leg sinks at Up B 20.
+  - Lyric: Hit B's left arm 0.35 into the torso at 3, its speakers through her head and arm at 2 to 14; an arm under the street, 0.03 at Down A 29 and 0.15 at Down B 32; Up A's left arm 0.09 into the torso at 20; Up B's speakers 0.1 into her arms at 8 and 25.
+  - The content check comes before the build.
+- **For research, a conflict:** `docs/design.md` line 131 still says reactions are one shared set per rig, which Lyric wears too, and `lyric_clips.py`'s header says the same. The rule at line 54 overrides both.
+- **Status:** made and self-reviewed. Research's pick in pairs is next. Nothing delivered. Meanwhile: Watt's B build, with research's three must-fixes.

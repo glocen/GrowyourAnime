@@ -18005,3 +18005,13 @@ The rule: `docs/design.md`, "Clips follow the model, rules follow the class" (th
 - **Lyric: Hit A, and the B pair.** Hit A both ways: back on her heels, the stand leaning after her, while B's speakers cross her face. In the B pair, the stand left standing is a mark you see while she's down, and her rise lands on the beat with the speakers home. That's the singer's own, where A's haul up the stand is only a way up.
 - **Must-fix for the build (class: every key):** no part passes through the body or the street, as the audit lists for the picked four. Kirra's Up A has its head under the street at 6 to 8, not yet re-audited. Lyric's Up B has its speakers in her arms at 8 and 25.
 - **design.md, reconciled:** the shared sets are where a reaction starts, and a model they don't fit gets its own. Kirra and Lyric left the robe list. `lyric_clips.py`'s header is Modulo's to match.
+
+## AR67. The Generator's new model, and any machine that needs one (Modulo's targets, research's pick, then Faber's install)
+
+Research, 2026-11-26, 17:47, on the director's word of about 17:46 (the register): "we can change the whole model of any machine that need it and dont need to stick with what i said abt the generator turning ... just make it the best it can be".
+- **Feel line:** from the gate on a phone, the Generator is the base's one landmark. It's a void machine you read in one look as the thing that makes your power, with one cyan glow and its work shown in motion where its make wants it, not a wheel forced to turn.
+- **Holds from AR65 (picked A):** graphite with cyan as its only accent, the one large glow, the battery in its foot, the plate "GENERATOR", AR54's spot and clears, and its three stages (I to III) following the picked make. A void machine, never real electrical kit.
+- **Targets first:** two or three, each a turnaround in the game's light beside the base's other machines and a Voidkin, plus the gate's view at the smallest phone. Judged against shipped anime games' landmarks, not against our own sheet. Research picks in pairs.
+- **The other machines:** research reads AR65's installed build from the gate. Any machine that fails "told apart by its shape" or the bar gets its own target here, one at a time, after the Generator's.
+- **Code (Faber's):** the wheel's turn (`Config/World.luau`, the Generator's Least and PerKw) and BaseCases' AR19 wheel check come out or change with the picked make.
+- **Order:** Modulo, after Watt's Combo B build, before AR56's drifts and AR66's builds, since the director is looking at the base now. The content check comes before the build.

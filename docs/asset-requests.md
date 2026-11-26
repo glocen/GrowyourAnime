@@ -18081,6 +18081,10 @@ Research, 2026-11-24, 16:53, on the director's word, "the hair still need a rewo
   - **The step:** the first step moved the maps' mean from 210 to 176.5 and the gate from 235.4 to 220.9, so 0.43 on screen for each step of the map. Both fits of those two points (sRGB-linear and linear-light) put a map at 133 at 202 to 206 on screen. The maps now measure 135.1 (A1). The slabs' tone step is 28, twice the last, so the steps read even shrunk to an eighth. The stone is cooled toward the target's grey: the map's R−B goes from 12 to 6, since the game's light adds about 10.
   - **Made and self-reviewed; content as the row already passed, its value only.** Next: Faber's upload and the same capture.
 - **Modulo's last step, read between the two (2026-11-26, 19:00; started 18:57):** on research's third read. The maps measure 160.0 (A1), and a slab's step is 33. The colour too: the game warms the floor (the map's R/G of 1.01 read 1.06 in step 2, where the target is 1.02), so the stone is drawn near neutral (A1 158.7/160.7/157.7) to read as target A's. Made and self-reviewed; next is Faber's upload and the same capture.
+- **Research's final (Quaestor, 2026-11-26, 19:06): passes.** On d0048532's `installed_day_step3.png`. The pair beside target A is `build/scratch/quaestor/ar65/step3_vs_A.png`, in both orders.
+  - **Must-fix 1 is met:** the open floor is at 204.5 against the target's 206 (±8), and its detail is 3.7 against 2.2, so the slabs read as stone. Must-fixes 2 and 3 were met before.
+  - **What the captures can't show:** the yard round the new Generator. AR67's make is judged beside this set when it's built.
+  - **Status:** implemented, tested (Faber's cases), and visually reviewed, research's pass included. Not director-accepted.
 
 ## AR66. Clips follow the model (Modulo's audit and targets, research's feel line and pick, then Faber's install)
 
@@ -18200,3 +18204,11 @@ Research, 2026-11-26, 17:47, on the director's word of about 17:46 (the register
 - **My read:** A reads best. In grey its core is the lightest mass mid-frame, the one large glow. B shows its work best in motion, but its light is cut into strips and it's the busiest. C has the boldest silhouette, but it's the darkest mass in the frame, which is the director's "too black, somber" risk.
 - **Content check (19:03): PASS**, for the targets only. The picked make gets its own check on its files before upload, the stand-ins don't ship, and its source moves into the kit's tool.
 - **Next:** research's pick in pairs. Meanwhile, AR66's Kirra builds.
+
+**Research's pick (Quaestor, 2026-11-26, 19:06; `ar67_sheet.png` with each make's gate and grey frames, in both orders): A, the held core.**
+
+- **A over B, both orders:** at the gate, A's core is the one large glow and the lightest mass in grey, so it reads first, and it reads as the power. B's light breaks into slits between its flights, and its crown is small (cyan 1,603 px against A's 2,642).
+- **C is out:** it's the darkest mass in the frame (13,815 px under L 60), the "too black, somber" the director has named many times.
+- **Beside today's Mill:** A carries three times the cyan (2,642 against 853) and has no wheel to turn, which the director's word of about 17:46 freed.
+- **For the build, one check:** at the gate, beside the Breaker, A reads first at the squint, and in each of its three stages the core stays the lightest mass. The breath and the motes are judged in play.
+- **Next:** Modulo builds A. Then Faber's install: the wheel's turn in `Config/World.luau` and BaseCases' AR19 check.

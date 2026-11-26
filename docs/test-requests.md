@@ -5494,6 +5494,13 @@ From the director's paste of 2026-11-26 (the register). Each claim was checked a
 - **Content check: PASS** on all nine. For the build: G1 and G3 never together (a star inside a ring), and nothing star-like inside R1 or R3. The red stays light round the mask, never a tint painted on the face.
 - Implemented as targets only; no build hour before the pick.
 
+**Research's pick (Quaestor, 2026-11-26, 19:06): R4 and G1.** Read on `phone_ring_street/` and `phone_glint_street/` (peaks and squint), and on the peaks cropped round the foe, in both orders.
+
+- **The mark, R4 (tier 2, dated here, research and Scintilla; Faber hooks it):** at the player's camera, every ring at the feet shows only an arc beside the foe, so R1 to R3 can't beat today's R0 there. R4's chevron over the head is never hidden and reads in both orders. It takes the ring's place: the lead's target is marked over its head, in its type's colour.
+- **The glint, G1 over G2 and G3:** G1's star at the eye line reads at a glance as the glint before a strike. G2 reads as today's lit mask with a halo. G3's ring reads as a reticle (AR61's finding on rings), and it would sit round the same head as R4's mark.
+- **For the build:** R4 and G1 on one foe at once are read together at the checkpoint, and R4 stays clear of any plate over a foe.
+- **Next:** Scintilla builds both looks, and Faber hooks them into block A.
+
 ## TR70. The break and its reveal, overhauled (research, 2026-11-26, 14:17; overhaul 2 of `docs/production-plan.md`, "The overhaul"; for Faber, with Scintilla's targets)
 
 - **Why** (`docs/research/cloud-2026-11-24/reveal-and-showcase.md`, MEASURED on our pools):

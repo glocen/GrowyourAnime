@@ -73,6 +73,7 @@ return {
 		Name = "Exist: the words, as the Overview's header says them",
 		Run = function(t: any)
 			t.Equal("a number and its count", Exist.Words(1284, 3912), "No. 1,284 · 3,912 exist")
+			t.Equal("the only one: its verb agrees", Exist.Words(1, 1), "No. 1 · 1 exists")
 			t.Equal("before the count is read", Exist.Words(7, nil), "No. 7")
 			t.Equal("no number yet: nothing", Exist.Words(nil, 3912), "")
 			t.Equal("a count of none: the number alone", Exist.Words(3, 0), "No. 3")

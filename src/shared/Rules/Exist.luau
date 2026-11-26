@@ -95,14 +95,14 @@ function Exist.Take(block: Block?): number?
 	return no
 end
 
--- "No. 1,284 · 3,912 exist"; "No. 1,284" before the count is read; "" with no number yet.
+-- "No. 1,284 · 3,912 exist" ("1 exists" alone); "No. 1,284" before the count is read; "" with no number yet.
 function Exist.Words(no: number?, count: number?): string
 	if no == nil then
 		return ""
 	end
 	local said = `No. {Hud.Digits(no)}`
 	if count ~= nil and count > 0 then
-		said ..= ` · {Hud.Digits(count)} exist`
+		said ..= ` · {Hud.Digits(count)} {if count == 1 then "exists" else "exist"}`
 	end
 	return said
 end

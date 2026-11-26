@@ -9,8 +9,8 @@ Each teammate rewrites its own row: one to three lines. Open asks sit under "Wai
 - **For Modulo, after the hair:** AR56's cloud sea; `docs/design.md`, "Clips follow the model".
 - **With the director:** AR56's sea, A or B (`build/scratch/modulo/ar56/clouds/out/ar56_clouds_sheet.png`, after Faber's Haze test); AR62's final frame (A with the cut, beside B: `build/handoff/UI/style_frames/`); the two study sittings (Anime Crusaders' systems, Sailor Piece); TR52's tap within TR69's block C; TR42's and TR64's listens; the phone sitting and F7; the store's design.
 
-**Faber (builder).** 2026-11-26, 15:25 by the clock, on Opus 5.5. Committed: TR69 C built Off (`Combat.Hands`: Call, the slip, Open, the Finisher, Auto's wait, the read-out, in grey), its case 21 of 21 in Studio; the two stale cases Scintilla found (B1's warm counts the uploaded pictures; the ward's rows) fixed, 29 and 24 passing. Earlier today: TR65 to TR68, TR69 A, B built Off, TR71 A, AR62's tokens, AR65 step B. Sonus's LightHit (A1 through the Lead bus, peak 0) stays open.
-- **Next:** TR69 B's pace in the Festival place, before (Off) and after (On), now. Then TR69 D and E, TR71 B to D, and TR59's retake for research.
+**Faber (builder).** 2026-11-26, 17:45 by the clock, on Opus 5.5. Committed: AR65's install, the kit, the plates (must-fix 2, the Festival Door counted as a machine) and the Door under the Generator at dusk (must-fix 3); the Mill's plate now says GENERATOR. The record is in AR65's entry. Earlier today: TR65 to TR68, TR69 A to C built Off, TR71 A.
+- **Next:** Studio goes to Scintilla (AR52's ward retake, AR7's C4). Meanwhile, AR56's drifts staged and uploaded; then AR56's Haze test, TR66 row 13's ComboSnap, TR69 D and E, TR69 F's captures, TR71 B to D, TR59's retake.
 
 **Modulo (assets).** 2026-11-26, 17:31. Nothing running, no lock held.
 - **For research:** AR66, Kirra's and Lyric's own Hit, Down and Up, two targets of each, for the pick in pairs. The clip tools' review view is now the player's (4403df2f). **For Faber:** AR56's drifts as meshes, and TR66 row 13's `RookComboSnap`, both content checks PASS.
@@ -23,7 +23,7 @@ Each teammate rewrites its own row: one to three lines. Open asks sit under "Wai
 **Sonus (sound).** 2026-11-26, 12:30 by the clock. **Shortlisted, not heard or picked:** TR42's eleven tabs (a62d1129), TR64's ten (17e042ae) and TR57's plate, five (BroadcastPlate, for Faber's review), in `ServerStorage.NL_Audition`: the place opened today with every earlier tab at its count, and Faber's end-of-turn save keeps the plate's. No Studio turn held, nothing running.
 - **Next:** the director's listens: TR42's on their go (item 10); TR64's with the plate after ShardDrop, once Faber's Play the moment hooks pass. Nothing else is open for sound (research, 12:19).
 
-**Turns.** Studio: one at a time while memory is short. **Faber's turn** from 15:20 (Scintilla's ended then): TR69 C's case in the main place (playtest stopped 15:25, unsaved), then TR69 B's pace in the Festival place, opened in place of the main one. Blender: nobody (Modulo's AR41 strips were stopped at 01:33 on 2026-11-19 by Claude Code when the PC ran low on memory; the director said wait at 01:34). Timing tests: nobody.
+**Turns.** Studio: one at a time while memory is short. **Scintilla's turn** from 17:50, about 30 minutes, in the Festival place (AR52's ward retake, AR7's C4); Faber's AR65 work in the main place ended then, playtest stopped, place saved. Blender: nobody (Modulo's AR41 strips were stopped at 01:33 on 2026-11-19 by Claude Code when the PC ran low on memory; the director said wait at 01:34). Timing tests: nobody.
 
 **The count.** Week of 2026-11-23: 6 pieces closed and playable: AR49, TR10, AR44's shine, TR50, AR50's and AR54's install, AR51 (each entry below has its hours). In the game and waiting: TR52 (the director's run), AR52 (research's pass), TR54 (three must-fixes).
 

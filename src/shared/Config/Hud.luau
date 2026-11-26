@@ -441,7 +441,42 @@ return {
 	Spectate = { Size = 52, Plate = 44, Right = 10, Lower = 7, Off = 0.45, Ease = 0.3, Height = 1.5 },
 	-- Plates kept apart in a group (UI.World.Apart: the base's machine plates): Gap authored pixels between two, over and
 	-- under, as the command view's chips (Config.BaseView.Chip.Gap). The builder's seed.
-	Plates = { Gap = 6 },
+	Plates = {
+		Gap = 6,
+		-- A base machine's plate (AR65 must-fix 2: Modulo's kit on research's pick of target A, 2026-11-26; BaseController):
+		-- AR62's cut plate (Theme.Frame: the panel's graphite top to foot in Fill, its rim in Edge, a hairline of light
+		-- along its top), a tick Bar.W by Bar.H of the machine's Accent at its left and Bar.Gap before its name, in the
+		-- display face's capitals in that accent, Row authored pixels tall, Pad at each side. Near, its lines under the
+		-- name, Line each, in the body face's small size and the second words, Foot under the last; a stem Stem.W by
+		-- Stem.H from its foot down to the machine. It stands Over studs above the top of its machine's laid pieces
+		-- within Reach studs of its spot, whatever stage stands there, and draws at Ref over its distance of its size,
+		-- never under Theme.Text.Minimum for its name nor over Most, near or far: target A's Mill and Breaker stand about
+		-- 1.25 of it, its bays and Training about 0.85, from the spawn. The Stone Condenser's stands Aside studs out
+		-- from the Mill, over its far horn, and sits on that side of its point on the screen, clear of the Mill's rim.
+		-- The accents are the kit's (Modulo's base_kit.WEARS). The builder's seed, tuned by playing.
+		Machine = {
+			Fill = { Id = "rbxassetid://86497582966819", Pixels = Vector2.new(80, 80), Points = Vector2.new(20, 20), Cut = { 9, 9, 9, 9 }, Pad = 0 },
+			Edge = { Id = "rbxassetid://101281545115611", Pixels = Vector2.new(80, 80), Points = Vector2.new(20, 20), Cut = { 9, 9, 9, 9 }, Pad = 0 },
+			Accent = {
+				Mill = Color3.fromHex("#33D6E6"),
+				Breaker = Color3.fromHex("#B784FF"),
+				Bay = Color3.fromHex("#FF7A59"),
+				Training = Color3.fromHex("#5EDB72"),
+				Condenser = Color3.fromHex("#5C86FF"),
+			} :: { [string]: Color3 },
+			Row = 26,
+			Pad = 9,
+			Line = 18,
+			Foot = 5,
+			Bar = { W = 3, H = 12, Gap = 6 },
+			Stem = { W = 2, H = 9 },
+			Over = 0.8,
+			Reach = 18,
+			Ref = 75,
+			Most = 1.25,
+			Aside = 3,
+		},
+	},
 	-- The Stone Condenser's convert card (AR51's B, research's pick and pass of 2026-11-23; Modulo's condenser_card.json;
 	-- BaseController): a plate's kin on the system slab, beside the cradle, shown as the Comb's plate is. Its left edge
 	-- Place.X right of the cradle's point on the screen and its top Place.Y under it (negative: above), in points, and

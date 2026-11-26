@@ -212,7 +212,7 @@ local function glowOf(piece: string, floor: number, plotted: boolean): number
 		return if plotted then LightingConfig.Glow.BaseFloor else floor
 	end
 	if plotted then
-		return LightingConfig.Glow.Base
+		return LightingConfig.Glow.Base * (LightingConfig.BaseShare[piece] or 1)
 	end
 	return if LightingConfig.Houses[piece] then LightingConfig.Glow.Houses else LightingConfig.Glow.Kit
 end
@@ -276,14 +276,24 @@ local function dressOne(item: Instance, floor: number)
 	local numbers = if kind == "Pool" then LightingConfig.Pools elseif kind == "Lamp" then LightingConfig.Lamp else nil
 	local light = item:FindFirstChildWhichIsA("Light")
 	if numbers and light then
-		light.Brightness = numbers.Brightness * lightShare;
+		light.Brightness = numbers.Brightness * lightShare * (if kind == "Lamp" then LightingConfig.LampShare[item.Name] or 1 else 1);
 		(light :: any).Range = numbers.Range
 	end
 end
 
+-- A share list as text, for dressAll's stamp: a share tuned in play dresses again.
+local function sharesOf(list: { [string]: number }): string
+	local parts = {}
+	for name, share in list do
+		table.insert(parts, `{name}={share}`)
+	end
+	table.sort(parts)
+	return table.concat(parts, ";")
+end
+
 local function dressAll(floor: number)
 	local glow, pools, lamp, paper = LightingConfig.Glow, LightingConfig.Pools, LightingConfig.Lamp, LightingConfig.Paper
-	local now = `{glow.Kit},{glow.Houses},{glow.Base},{glow.BaseFloor},{glow.Empty},{coreMost},{pools.Brightness},{pools.Range},{lamp.Brightness},{lamp.Range},{paper.Floor},{paper.Top},{paper.Colour},{glowShare},{lightShare},{steadyShare}`
+	local now = `{glow.Kit},{glow.Houses},{glow.Base},{glow.BaseFloor},{glow.Empty},{coreMost},{pools.Brightness},{pools.Range},{lamp.Brightness},{lamp.Range},{paper.Floor},{paper.Top},{paper.Colour},{glowShare},{lightShare},{steadyShare},{sharesOf(LightingConfig.BaseShare)},{sharesOf(LightingConfig.LampShare)}`
 	if now ~= stamp then
 		stamp = now
 		for _, item in CollectionService:GetTagged(Kit.Tag) do

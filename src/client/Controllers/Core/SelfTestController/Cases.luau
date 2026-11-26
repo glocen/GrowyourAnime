@@ -6520,7 +6520,8 @@ local cases = {
 	{
 		-- Research's must-fix on AR16 (2026-11-17): a world plate never stands over the player's own avatar, and one fact
 		-- shows once on the screen. From afar, a machine's news is the next step's line over the dock; its plate only lights.
-		Name = "Base: the plot's plates speak only near their machine, never over the avatar nor saying the next step's fact, and the Training machine's says what it is",
+		-- AR65's plates (research's pick of target A, 2026-11-26): from afar each names its machine, and says no more.
+		Name = "Base: the plot's plates name their machine from afar and speak only near it, never over the avatar nor saying the next step's fact, and the Training machine's says what it is",
 		Place = "Main", -- TR45: its world stands in that place only
 		Stay = true, -- it moves the avatar itself; the next case's reset takes it back to the pad
 		Run = function(t: any)
@@ -6558,7 +6559,17 @@ local cases = {
 			end
 			local function lit(name: string): boolean
 				local panel = plateOf(name):FindFirstChild("Panel")
-				return panel ~= nil and panel:GetAttribute("Lit") == true -- its edge bold in the accent (Panel.Lit)
+				return panel ~= nil and panel:GetAttribute("Lit") == true -- its rim in its accent
+			end
+			-- Whether a plate says more than its name: a line of it shows.
+			local function speaking(name: string): boolean
+				local panel = plateOf(name):FindFirstChild("Panel")
+				for _, child in (if panel then panel:GetChildren() else {}) do
+					if child:IsA("TextLabel") and string.match(child.Name, "^Line%d+$") and child.Visible then
+						return true
+					end
+				end
+				return false
 			end
 			-- What the save says each spot has to do: a shard to put in or open, a bay a free Voidkin could take.
 			local function news(): { [string]: boolean }
@@ -6581,8 +6592,8 @@ local cases = {
 				end
 				return out
 			end
-			-- Every plate whose spot isn't near is hidden, news or not, and none that shows stands over the avatar; each spot's
-			-- news is the save's, and lights its plate.
+			-- Every plate whose spot isn't near says only its name, news or not, and none that shows stands over the avatar;
+			-- each spot's news is the save's, and lights its plate.
 			local function quiet(where: string)
 				local want = news()
 				local wrong, loud, over = {}, {}, {}
@@ -6590,7 +6601,7 @@ local cases = {
 					if spot.News ~= want[name] or lit(name) ~= want[name] then
 						table.insert(wrong, `{name} {spot.News}/{lit(name)}, the save {want[name]}`)
 					end
-					if not spot.Near and plateOf(name).Visible then
+					if not spot.Near and speaking(name) then
 						table.insert(loud, name)
 					end
 					if plateOf(name).Visible and World.OnAvatar(plateOf(name)) then
@@ -6598,7 +6609,7 @@ local cases = {
 					end
 				end
 				t.Check(`{where}: each plate's news and its light are the save's`, #wrong == 0, table.concat(wrong, "; "))
-				t.Check(`{where}: a plate not near hides, news or not`, #loud == 0, table.concat(loud, ", "))
+				t.Check(`{where}: a plate not near says only its name, news or not`, #loud == 0, table.concat(loud, ", "))
 				t.Check(`{where}: no plate stands over the avatar`, #over == 0, table.concat(over, ", "))
 			end
 			local function nearOnes(): string
@@ -6621,16 +6632,17 @@ local cases = {
 			t.Check("and its plate shows, unless it would stand over the avatar", waitFor(t, 1, function(): boolean
 				return plateOf("Training").Visible or World.OnAvatar(plateOf("Training"))
 			end), if plateOf("Training").Visible then "shown" else "hidden over the avatar")
-			local line = plateOf("Training"):FindFirstChild("Line1", true) :: TextLabel?
-			t.Check("saying what it is", line ~= nil and line.Text == "Training machine", if line then line.Text else "no line")
+			local title = plateOf("Training"):FindFirstChild("Name", true) :: TextLabel?
+			t.Check("named what it is", title ~= nil and title.Text == "TRAINING", if title then title.Text else "no name")
+			t.Check("and saying what it does", speaking("Training"))
 			quiet("beside the Training machine")
 			local spawnAt = BaseController.Near + 1 -- a stud past where it takes hold
 			stand(trainer.Ground + back * spawnAt, trainer.Ground)
 			t.Check(`stepping back to {spawnAt} studs, it holds on`, BaseController.Says().Training.Near)
 			stand(trainer.Ground + back * (BaseController.Near + BaseController.NearSlack + 3), trainer.Ground)
-			t.Check("past its slack it lets go, and the plate hides", not BaseController.Says().Training.Near and not plateOf("Training").Visible)
+			t.Check("past its slack it lets go, and the plate says only its name", not BaseController.Says().Training.Near and not speaking("Training"))
 			stand(trainer.Ground + back * spawnAt, trainer.Ground)
-			t.Check(`coming in to {spawnAt} studs, it stays quiet: it takes hold only within {BaseController.Near}`, not BaseController.Says().Training.Near and not plateOf("Training").Visible)
+			t.Check(`coming in to {spawnAt} studs, it stays quiet: it takes hold only within {BaseController.Near}`, not BaseController.Says().Training.Near and not speaking("Training"))
 
 			stand(breaker.Ground + back * 8, breaker.Ground)
 			t.Check("beside the Breaker, it's near", BaseController.Says().Breaker.Near)
@@ -6652,22 +6664,22 @@ local cases = {
 			local had = news().Breaker
 			t.Check("a shard goes in the bag", t.Server("BaseGive", shard, 1).Ok == true)
 			t.Check("far off, the Breaker's plate lights and stays quiet", waitFor(t, ANSWER, function(): boolean
-				return BaseController.Says().Breaker.News and lit("Breaker") and not plateOf("Breaker").Visible
+				return BaseController.Says().Breaker.News and lit("Breaker") and not speaking("Breaker")
 			end))
 			quiet("with a shard in the bag")
 			t.Check("the shard comes back out", t.Server("BaseGive", shard, -1).Ok == true)
 			t.Check("and the Breaker's news is the save's again", waitFor(t, ANSWER, function(): boolean
-				return BaseController.Says().Breaker.News == had and (had or not plateOf("Breaker").Visible)
+				return BaseController.Says().Breaker.News == had and not speaking("Breaker")
 			end))
 			local worker = view.Base.Bays[1] and view.Base.Bays[1].Worker or ""
 			if worker ~= "" and says.Bay1 then
 				t.Check("bay 1's worker steps out", ProfileController.Act("SetWorker", { Bay = 1, Voidkin = "" }).Ok == true)
 				t.Check("far off, bay 1 lights and stays quiet: a free Voidkin could work it", waitFor(t, ANSWER, function(): boolean
-					return BaseController.Says().Bay1.News and lit("Bay1") and not plateOf("Bay1").Visible
+					return BaseController.Says().Bay1.News and lit("Bay1") and not speaking("Bay1")
 				end))
 				t.Check("the worker goes back", ProfileController.Act("SetWorker", { Bay = 1, Voidkin = worker }).Ok == true)
 				t.Check("and bay 1 is quiet again", waitFor(t, ANSWER, function(): boolean
-					return not BaseController.Says().Bay1.News and not lit("Bay1") and not plateOf("Bay1").Visible
+					return not BaseController.Says().Bay1.News and not lit("Bay1") and not speaking("Bay1")
 				end))
 			end
 			quiet("at the end")

@@ -292,90 +292,6 @@
      "turn": 0
     },
     {
-     "piece": "Pylon",
-     "across": -59.5,
-     "along": -13,
-     "turn": 90
-    },
-    {
-     "piece": "Pylon",
-     "across": -59.5,
-     "along": -61,
-     "turn": 90
-    },
-    {
-     "piece": "PowerSpan",
-     "across": -59.5,
-     "along": -61,
-     "turn": 90
-    },
-    {
-     "piece": "Pylon",
-     "across": -59.5,
-     "along": -109,
-     "turn": 90
-    },
-    {
-     "piece": "PowerSpan",
-     "across": -59.5,
-     "along": -109,
-     "turn": 90
-    },
-    {
-     "piece": "Pylon",
-     "across": 59.5,
-     "along": -13,
-     "turn": 90
-    },
-    {
-     "piece": "Pylon",
-     "across": 59.5,
-     "along": -61,
-     "turn": 90
-    },
-    {
-     "piece": "PowerSpan",
-     "across": 59.5,
-     "along": -61,
-     "turn": 90
-    },
-    {
-     "piece": "Pylon",
-     "across": 59.5,
-     "along": -109,
-     "turn": 90
-    },
-    {
-     "piece": "PowerSpan",
-     "across": 59.5,
-     "along": -109,
-     "turn": 90
-    },
-    {
-     "piece": "FloodMast",
-     "across": -11.8,
-     "along": -40.2,
-     "turn": 0
-    },
-    {
-     "piece": "FloodMast",
-     "across": 11.8,
-     "along": -40.2,
-     "turn": 0
-    },
-    {
-     "piece": "Transformer",
-     "across": -30.0,
-     "along": -68.0,
-     "turn": 0
-    },
-    {
-     "piece": "Transformer",
-     "across": -27.1,
-     "along": -99.7,
-     "turn": 0
-    },
-    {
      "piece": "Showcase",
      "across": 14.0,
      "along": -4.9,
@@ -384,29 +300,11 @@
    ],
    "lights": [
     {
-     "name": "FloodLeft",
-     "across": -11.8,
-     "along": -37.199999999999996,
-     "up": 12.0,
-     "colour": "#EAF6FF",
-     "kind": "spot",
-     "cone": 66.0
-    },
-    {
-     "name": "FloodRight",
-     "across": 11.8,
-     "along": -37.199999999999996,
-     "up": 12.0,
-     "colour": "#EAF6FF",
-     "kind": "spot",
-     "cone": 66.0
-    },
-    {
      "name": "BreakerLamp",
      "across": 20.5,
      "along": -30.5,
      "up": 10.0,
-     "colour": "#8CF6FF",
+     "colour": "#DFC8FF",
      "kind": "point",
      "cone": null
     },
@@ -415,7 +313,7 @@
      "across": 0.0,
      "along": -56.8,
      "up": 1.6,
-     "colour": "#B98CFF",
+     "colour": "#A3EDF4",
      "kind": "point",
      "cone": null
     },
@@ -460,9 +358,9 @@
     "note": "the level's number on the gate's plate, on both faces (+Y and -Y), in Power's yellow (#FFD23E): the builder's text. The plate stands on two posts over the truss (AR54): out of the gate's view from inside, read whole from the Strip"
    },
    "budget": {
-    "pieces": 62,
-    "triangles": 14520,
-    "lights": 7,
+    "pieces": 48,
+    "triangles": 6224,
+    "lights": 5,
     "counts": {
      "Gate1": 1,
      "FloorA1": 1,
@@ -484,10 +382,6 @@
      "Wall": 26,
      "WallHalf": 2,
      "WallEnd": 2,
-     "Pylon": 6,
-     "PowerSpan": 4,
-     "FloodMast": 2,
-     "Transformer": 2,
      "Showcase": 1
     }
    }
@@ -1154,30 +1048,6 @@
     "up": 10.0,
     "turn": 0.0,
     "standsFor": "the demand's mark, turned about the axle by the demand's share"
-   },
-   {
-    "piece": "BatteryRack",
-    "across": 56.7,
-    "along": -44.9,
-    "up": 0.0,
-    "turn": 0.0,
-    "standsFor": "the battery"
-   },
-   {
-    "piece": "BatteryCell",
-    "across": 55.95,
-    "along": -45.85,
-    "up": 0.6,
-    "turn": 0.0,
-    "standsFor": "the battery's cell 1"
-   },
-   {
-    "piece": "BatteryCell",
-    "across": 57.45,
-    "along": -45.85,
-    "up": 0.6,
-    "turn": 0.0,
-    "standsFor": "the battery's cell 2"
    },
    {
     "piece": "Door",
@@ -3214,6 +3084,6 @@
   }
  },
  "lighting": "the base stands under Lantern Row's dusk: the same sky, ambient, fog and bloom (build/handoff/LanternRow/sky/lighting.json). The conduits, the wall's line and the lamps are drawn for dusk, and under the place's daylight they don't read.",
- "lightsNote": "a SpotLight straight down from each flood mast's head, a PointLight over the Breaker's chambers and one low in the generator's well, in the void's violet, Shadows off; everything else that glows is in a glow picture",
+ "lightsNote": "a PointLight over the Breaker's chambers in its violet and one low in the generator's well in the Mill's cyan, the Door's two and the showcase's, Shadows off; everything else that glows is in a glow picture",
  "collision": "each piece's `collision` in the manifest; the court's floor and the lines are look only"
 }

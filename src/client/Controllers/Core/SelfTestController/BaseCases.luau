@@ -64,6 +64,59 @@ local Helpers = require(script.Parent.Helpers)
 -- The base's machine plates by name, beside "Bay1" to "Bay6" (BaseController.Parts).
 local PLATES = { Breaker = true, Training = true, Generator = true }
 
+-- Whether a machine's plate says more than its name (AR65: each names its machine from afar): a line of it shows.
+local function speaking(frame: Instance): boolean
+	local panel = frame:FindFirstChild("Panel")
+	for _, child in (if panel then panel:GetChildren() else {}) do
+		if child:IsA("TextLabel") and string.match(child.Name, "^Line%d+$") and child.Visible then
+			return true
+		end
+	end
+	return false
+end
+
+-- Whether a screen rectangle (its corners, low and high) overlaps a convex outline (BaseController.Hull) by more than a
+-- pixel: no axis of either separates them.
+local function overlaps(low: Vector2, high: Vector2, hull: { Vector2 }): boolean
+	local corners = { low, Vector2.new(high.X, low.Y), high, Vector2.new(low.X, high.Y) }
+	local axes = { Vector2.xAxis, Vector2.yAxis }
+	for i, a in hull do
+		local edge = hull[i % #hull + 1] - a
+		if edge.Magnitude > 1e-6 then
+			table.insert(axes, Vector2.new(-edge.Y, edge.X).Unit)
+		end
+	end
+	for _, axis in axes do
+		local rLow: number, rHigh: number, hLow: number, hHigh: number = math.huge, -math.huge, math.huge, -math.huge
+		for _, c in corners do
+			rLow = math.min(rLow, axis:Dot(c))
+			rHigh = math.max(rHigh, axis:Dot(c))
+		end
+		for _, q in hull do
+			hLow = math.min(hLow, axis:Dot(q))
+			hHigh = math.max(hHigh, axis:Dot(q))
+		end
+		if rHigh <= hLow + 1 or rLow >= hHigh - 1 then
+			return false
+		end
+	end
+	return true
+end
+
+-- Each scale a GUI object draws at, multiplied up its parents (the layer's, a plate's swell).
+local function scaleOf(object: Instance): number
+	local scale = 1
+	local node: Instance? = object
+	while node do
+		local uiScale = node:FindFirstChildOfClass("UIScale")
+		if uiScale then
+			scale *= uiScale.Scale
+		end
+		node = node.Parent
+	end
+	return scale
+end
+
 local BaseCases = {}
 
 local SKIP_ALL = 3600 -- seconds of base time a case skips, past any shard's work even at the floor's speed
@@ -94,6 +147,9 @@ function BaseCases.Cases(given: Given): { any }
 			Name = "Base: AR65's cut pass: nothing the world cuts stands, no Lab's place, no battery (folded into the Mill) and no Forge, and the plot glows at the base's: its floors dark, its pieces at Base",
 			Place = "Main", -- TR45: its world stands in that place only
 			Run = function(t: any)
+				-- Read at home: a case before may leave the avatar off the plot, where its pieces stream out.
+				t.Server("Respawn")
+				t.Wait(1)
 				local world = workspace:FindFirstChild("World")
 				local standing: { string } = {}
 				for _, item in (if world then world:GetDescendants() else {}) do
@@ -125,15 +181,22 @@ function BaseCases.Cases(given: Given): { any }
 				t.Check("no Lab's sleeping place", (base :: Instance):FindFirstChild("Sleeping") == nil)
 				t.Check("no battery, nor its plate: folded into the Mill", Markers.Find("Battery", { Plot = plot }) == nil and BaseController.Parts().BatteryPlate == nil)
 				t.Check("no Forge, nor its prompt", not WorldConfig.Cut.Forge or (Markers.Find("Forge", { Plot = plot }) == nil and BaseController.Parts().ForgePrompt == nil))
+				-- Read once they stand: a case before may have laid the plot again, its dressing filling in over frames.
 				local floorLook, wallLook = nil, nil
-				for _, item in dressing:GetChildren() do
-					local piece = item:GetAttribute("Piece")
-					if type(piece) == "string" and Kit.Floors[piece] and floorLook == nil then
-						floorLook = item:FindFirstChildOfClass("SurfaceAppearance")
-					elseif piece == "Wall" and wallLook == nil then
-						wallLook = item:FindFirstChildOfClass("SurfaceAppearance")
+				waitFor(t, ANSWER, function(): boolean
+					floorLook, wallLook = nil, nil
+					local now = if lot then lot:FindFirstChild("Base") else nil
+					local laid = if now then now:FindFirstChild("Dressing") else nil
+					for _, item in (if laid then laid:GetChildren() else {}) do
+						local piece = item:GetAttribute("Piece")
+						if type(piece) == "string" and Kit.Floors[piece] and floorLook == nil then
+							floorLook = item:FindFirstChildOfClass("SurfaceAppearance")
+						elseif piece == "Wall" and wallLook == nil then
+							wallLook = item:FindFirstChildOfClass("SurfaceAppearance")
+						end
 					end
-				end
+					return floorLook ~= nil and wallLook ~= nil
+				end)
 				local share = LightingController.Look().Glow -- the phase's share (TR23)
 				t.Near("its floor at the base's floor glow", if floorLook then floorLook.EmissiveStrength else -1, LightingConfig.Glow.BaseFloor * share, 1e-3)
 				t.Near("its wall at the base's glow", if wallLook then wallLook.EmissiveStrength else -1, LightingConfig.Glow.Base * share, 1e-3)
@@ -150,8 +213,9 @@ function BaseCases.Cases(given: Given): { any }
 					local found = if type(plot) == "number" then Markers.Find("Generator", { Plot = plot }) else nil
 					return if found then BaseController.StageOf(found) else nil -- its stage's (TR51)
 				end
-				-- Read at home: a case before may leave the avatar at the crossing, where the base streams out.
-				if type(plot) == "number" and millOf() == nil then
+				-- Read at home, always: a case before may leave the avatar off the plot, where some of the base streams out
+				-- (the Mill in, the Training machine's crown out).
+				if type(plot) == "number" then
 					t.Server("Respawn")
 					waitFor(t, 8, function(): boolean
 						return millOf() ~= nil
@@ -331,8 +395,17 @@ function BaseCases.Cases(given: Given): { any }
 				t.Server("BaseLevel", levelWas)
 				-- The crown: the server's word on whether a Voidkin trains, and turning only then. Then the client's turning
 				-- alone, by its word set here, and the server's put back.
-				local trainer = Markers.Find("Training", { Plot = plot })
-				local crown = if trainer then (BaseController.StageOf(trainer) or trainer):FindFirstChild("Crown") else nil -- its stage's (TR51)
+				-- Put back, the plot lays its level again: the crown is the one standing once it has held a second, watched.
+				local crown: Instance? = nil
+				local since = os.clock()
+				waitFor(t, ANSWER + 2, function(): boolean
+					local trainer = Markers.Find("Training", { Plot = plot })
+					local now = if trainer then (BaseController.StageOf(trainer) or trainer):FindFirstChild("Crown") else nil -- its stage's (TR51)
+					if now ~= crown then
+						crown, since = now, os.clock()
+					end
+					return now ~= nil and now:IsA("BasePart") and BaseController.TurnedOf(now) ~= nil and os.clock() - since >= 1
+				end)
 				t.Check("the crown says whether a Voidkin trains, as the save has it", waitFor(t, ANSWER, function(): boolean
 					local on = Players.LocalPlayer:GetAttribute("Training")
 					return crown ~= nil and crown:GetAttribute("Training") == (type(on) == "string" and on ~= "")
@@ -659,7 +732,7 @@ function BaseCases.Cases(given: Given): { any }
 				local function shown(): { GuiObject }
 					local list: { GuiObject } = {}
 					for _, frame in layer:GetChildren() do
-						if frame:IsA("GuiObject") and frame.Visible and (PLATES[frame.Name] or string.match(frame.Name, "^Bay%d+$")) then
+						if frame:IsA("GuiObject") and frame.Visible and (PLATES[frame.Name] or string.match(frame.Name, "^Bay%d+$")) and speaking(frame) then
 							table.insert(list, frame)
 						end
 					end
@@ -680,6 +753,11 @@ function BaseCases.Cases(given: Given): { any }
 				if anchor == nil or not anchor:IsA("BasePart") or root == nil then
 					return
 				end
+				-- Something for it to say, whatever the save: one shard at work or waiting. A save with shards ready while the
+				-- next step points here leaves its plate nothing to add (one fact, said once).
+				t.Server("BaseGive", "lanternrow_standard", 1)
+				local added = t.Server("Act", "AddShard", { Shard = "lanternrow_standard" })
+				t.Check("a shard joins the Breaker, for it to say", type(added) == "table" and added.Ok == true)
 				local away = Vector3.new(root.Position.X - anchor.Position.X, 0, root.Position.Z - anchor.Position.Z)
 				local dir = if away.Magnitude > 1e-3 then away.Unit else Vector3.new(0, 0, 1)
 				local target = Vector3.new(anchor.Position.X, root.Position.Y, anchor.Position.Z)
@@ -721,6 +799,116 @@ function BaseCases.Cases(given: Given): { any }
 				t.Check("each under the top band", #over == 0, `{table.concat(over, "; ")} over {tostring(band)}`)
 				t.Server("Respawn")
 				t.Wait(1)
+			end,
+		},
+		{
+			-- AR65 must-fix 2 (Modulo's kit on research's pick of target A, 2026-11-26; Config.Hud.Plates.Machine): from the
+			-- spawn, by its own camera and by target A's (the ring behind the avatar, the Mill ahead), each machine's plate
+			-- names it in the display face's capitals in its own accent, never under the text's least size, over its own
+			-- machine and across no other's outline: the Stone Condenser's clear of the Mill's rim.
+			Name = "Base: AR65's plates, from the spawn: each names its machine in its own accent's capitals, legible, over its own machine and across no other's",
+			Place = "Main", -- TR45: its world stands in that place only
+			Run = function(t: any)
+				local m = HudConfig.Plates.Machine
+				local old = Players.LocalPlayer.Character
+				t.Check("the avatar goes home", t.Server("Respawn") == true and waitFor(t, 8, function(): boolean
+					local character = Players.LocalPlayer.Character
+					return character ~= nil and character ~= old and character:FindFirstChild("HumanoidRootPart") ~= nil
+				end))
+				t.Wait(1.5) -- the camera settles behind the avatar, and the plates find their machines
+				local camera = workspace.CurrentCamera
+				local root = (Players.LocalPlayer.Character :: Model):FindFirstChild("HumanoidRootPart") :: BasePart?
+				local mill = BaseController.Says().Generator
+				local want: { [string]: { Name: string, Accent: Color3 } } = {
+					Breaker = { Name = "VOID BREAKER", Accent = m.Accent.Breaker },
+					Generator = { Name = "GENERATOR", Accent = m.Accent.Mill },
+					Training = { Name = "TRAINING", Accent = m.Accent.Training },
+					Condenser = { Name = "STONE CONDENSER", Accent = m.Accent.Condenser },
+				}
+				local parts = BaseController.Parts()
+				for name in parts do
+					local index = string.match(name, "^Bay(%d+)Plate$")
+					if index then
+						want[`Bay{index}`] = { Name = `BAY {index}`, Accent = m.Accent.Bay }
+					end
+				end
+				local inset = GuiService:GetGuiInset()
+				local function judge(where: string)
+					local seen, wrong, small, off, across = {}, {}, {}, {}, {}
+					local rects: { [string]: { Vector2 } } = {}
+					for name, look in want do
+						local plate = parts[`{name}Plate`]
+						if plate == nil or not plate:IsA("GuiObject") or not plate.Visible then
+							continue
+						end
+						table.insert(seen, name)
+						local title = plate:FindFirstChild("Name", true)
+						if title == nil or not title:IsA("TextLabel") or title.Text ~= look.Name or title.TextColor3:ToHex() ~= look.Accent:ToHex() then
+							table.insert(wrong, `{name}: {if title and title:IsA("TextLabel") then `{title.Text} #{title.TextColor3:ToHex()}` else "no name"}`)
+							continue
+						end
+						local rendered = title.TextSize * scaleOf(title)
+						if rendered < Theme.Text.Minimum - 0.5 then
+							table.insert(small, `{name} {string.format("%.1f", rendered)} px`)
+						end
+						local p0 = plate.AbsolutePosition + inset
+						local p1 = p0 + plate.AbsoluteSize
+						rects[name] = { p0, p1 }
+						-- over its own machine: its foot at or above the machine's top on the screen, and (but the Condenser's,
+						-- which stands aside) its middle over the machine's width
+						local low, high = BaseController.Outline(name)
+						if low and high then
+							local middle = (p0.X + p1.X) / 2
+							if p1.Y > low.Y + 2 or (name ~= "Condenser" and (middle < low.X or middle > high.X)) then
+								table.insert(off, `{name}: foot {math.floor(p1.Y)}, middle {math.floor(middle)}; machine {math.floor(low.X)}..{math.floor(high.X)}, top {math.floor(low.Y)}`)
+							end
+						end
+					end
+					-- across no other machine's outline: its box's hull on the screen (a plate behind a nearer machine hides)
+					-- And the Festival Door's, which has no machine plate of its own (AR65, the dusk read: bay 6's stood on it).
+					local door = BaseController.Hull("Door")
+					for name, rect in rects do
+						for other in want do
+							if other ~= name then
+								local hull = BaseController.Hull(other)
+								if hull and #hull >= 3 and overlaps(rect[1], rect[2], hull) then
+									table.insert(across, `{name} across {other}`)
+								end
+							end
+						end
+						if door and #door >= 3 and overlaps(rect[1], rect[2], door) then
+							table.insert(across, `{name} across the Door`)
+						end
+					end
+					table.sort(seen)
+					if where == "target A's frame" then
+						t.Check(`{where}: the Generator's plate shows`, rects.Generator ~= nil, table.concat(seen, ", "))
+					elseif where == "the Door's frame" then
+						t.Check(`{where}: the Door's outline is read`, door ~= nil and #door >= 3, `{if door then #door else "no"} points`)
+					end
+					t.Check(`{where}: each names its machine in capitals, in its own accent`, #wrong == 0, table.concat(wrong, "; "))
+					t.Check(`{where}: each at least {Theme.Text.Minimum} px, however far`, #small == 0, table.concat(small, "; "))
+					t.Check(`{where}: each over its own machine`, #off == 0, table.concat(off, "; "))
+					t.Check(`{where}: none across another machine's outline`, #across == 0, table.concat(across, "; "))
+					t.Check(`{where}: the Stone Condenser's clear of the Mill's rim`, rects.Condenser == nil or table.find(across, "Condenser across Generator") == nil)
+				end
+				judge("the spawn's camera")
+				-- Target A's frame: 20 studs behind the avatar and 10 up, toward the Mill, a little down (as the target's capture)
+				t.Check("the avatar and the Mill are in", root ~= nil and mill ~= nil)
+				if root and mill then
+					local ahead = Vector3.new(mill.Ground.X - root.Position.X, 0, mill.Ground.Z - root.Position.Z).Unit
+					local foot = root.Position - Vector3.new(0, 3, 0)
+					camera.CameraType = Enum.CameraType.Scriptable
+					camera.CFrame = CFrame.lookAt(foot - ahead * 20 + Vector3.new(0, 10.3, 0), foot + ahead * 26 + Vector3.new(0, 4.3, 0))
+					t.Wait(0.6)
+					judge("target A's frame")
+					-- The dusk read's frame (2026-11-26): from the spawn's right, the Mill ahead and the Festival Door at the right,
+					-- where bay 6's plate stood on the Door's rings.
+					camera.CFrame = CFrame.lookAt(root.Position + Vector3.new(5, 8.2, 26), root.Position + Vector3.new(17, 3.2, -30))
+					t.Wait(0.6)
+					judge("the Door's frame")
+					camera.CameraType = Enum.CameraType.Custom
+				end
 			end,
 		},
 		{
@@ -946,7 +1134,6 @@ function BaseCases.Cases(given: Given): { any }
 				-- CoreBloom): the frame is a kit piece with no state, lit as the day has it (LightingController).
 				local frameLook = frame:FindFirstChildOfClass("SurfaceAppearance")
 				local most = LightingController.Look().CoreMost
-				local look = if frameLook then math.min(frameLook.EmissiveStrength, most) else -1
 				local bloom = game:GetService("Lighting"):FindFirstChildOfClass("BloomEffect")
 				local under = if bloom then bloom.Threshold * LightingConfig.Glow.CoreBloom else -1
 				t.Check("the core: its most under the bloom applied", math.abs(most - under) <= 0.011, `{most}, want {under}`)
@@ -998,13 +1185,19 @@ function BaseCases.Cases(given: Given): { any }
 				else
 					t.Check("the core: tinted white", surface.EmissiveTint == Color3.new(1, 1, 1), surface.EmissiveTint:ToHex())
 					t.Check("the core: open, as its ground is laid", core:GetAttribute("Working") == true, `{core:GetAttribute("Working")}`)
+					-- Its want read again as it's met: in a crossing of the day the frame's glow moves while the rings are read.
+					-- A plot's frame glows at its own share of the base's (Config.Lighting's BaseShare, AR65), the core at the whole.
+					local share = if frame:GetAttribute("Plot") ~= nil then LightingConfig.BaseShare[frame:GetAttribute("Piece") :: string] or 1 else 1
+					local function full(): number
+						return if frameLook then math.min(frameLook.EmissiveStrength / share, LightingController.Look().CoreMost) else -1
+					end
 					t.Check("the core: full while open", waitFor(t, 1, function(): boolean
-						return math.abs(surface.EmissiveStrength - look) < 1e-3
-					end), `{surface.EmissiveStrength}, want {look}`)
+						return math.abs(surface.EmissiveStrength - full()) < 1e-3
+					end), `{surface.EmissiveStrength}, want {full()}`)
 					core:SetAttribute("Working", false) -- the client's own word, the server's put back below
 					t.Check("the core: low while none is", waitFor(t, 1, function(): boolean
-						return math.abs(surface.EmissiveStrength - look * LightingConfig.Glow.Empty) < 1e-3
-					end), `{surface.EmissiveStrength}, want {look * LightingConfig.Glow.Empty}`)
+						return math.abs(surface.EmissiveStrength - full() * LightingConfig.Glow.Empty) < 1e-3
+					end), `{surface.EmissiveStrength}, want {full() * LightingConfig.Glow.Empty}`)
 					core:SetAttribute("Working", true)
 				end
 				-- The way: in the front ring's opening and through its depth, touching none of the stone.
@@ -1429,7 +1622,7 @@ function BaseCases.Cases(given: Given): { any }
 				local function plateLine(): string
 					local plate = BaseController.Parts().CondenserPlate
 					local panel = if plate then plate:FindFirstChild("Panel") else nil
-					local line = if panel then panel:FindFirstChild("Line2") else nil
+					local line = if panel then panel:FindFirstChild("Line1") else nil -- under its name (AR65's plate)
 					return if line and line:IsA("TextLabel") then line.Text else ""
 				end
 				-- Asleep below its level: its stone, nothing of its Comb, the plate says when it wakes, nothing to tap.

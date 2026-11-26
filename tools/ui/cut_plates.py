@@ -1,15 +1,18 @@
 """Draws the Voidkin screen's two cut plates as white-on-alpha slices for the game to tint (AR29, B; Modulo's numbers in
 docs/asset-requests.md, "B's numbers for Faber"): the chosen page's tab of glass, its top left cut 8.5 points and its
 foot left 3.4, and the bar's channel, its top left and foot right cut 6.8. The kit's own panel is cut at all four
-corners (tools/blender/ui_kit.py, `panel`), so neither shape is in it. Each plate is drawn at the kit's 4 pixels a
+corners (tools/blender/ui_kit.py, `panel`), so neither shape is in it. And the base's machine plate (AR65's must-fix 2,
+on AR62's tokens, Theme.Frame): the shard cut at its top left and foot right, Cut.Share of the card's radius (7.2), its
+rim Stroke.Rim (1.2) wide. Each plate is drawn at the kit's 4 pixels a
 point and laid as a nine-slice (UI.Kit.Skin), so its cuts and edge keep their size at any length:
   <Name>Fill  the plate, solid
-  <Name>Edge  its outline, 0.85 points inside its edge
+  <Name>Edge  its outline, its width inside its edge (0.85 points; the machine plate's 1.2)
   <Name>Glow  its glow, falling off over 5 points outside it (the tab only), Pad 5
 
 Pure Python (zlib), no other package: each pixel is the share of 4 x 4 samples inside, so the cuts are anti-aliased.
 
     py tools/ui/cut_plates.py build/scratch/faber/ar29/plates
+    py tools/ui/cut_plates.py build/upload MachinePlate      only one plate's images
 """
 
 import os
@@ -23,10 +26,11 @@ EDGE = 0.85  # the outline's width, points
 GLOW = 5.0  # the glow's reach, points
 
 # name: (width and height in points, cuts clockwise from the top left (tl, tr, br, bl), slice insets left, top,
-# right, bottom in points, whether it has a glow)
+# right, bottom in points, whether it has a glow, its outline's width in points)
 PLATES = {
-    "VoidkinTab": (16.0, (8.5, 0.0, 0.0, 3.4), (9, 9, 2, 4), True),
-    "VoidkinChannel": (16.0, (6.8, 0.0, 6.8, 0.0), (8, 8, 8, 8), False),
+    "VoidkinTab": (16.0, (8.5, 0.0, 0.0, 3.4), (9, 9, 2, 4), True, EDGE),
+    "VoidkinChannel": (16.0, (6.8, 0.0, 6.8, 0.0), (8, 8, 8, 8), False, EDGE),
+    "MachinePlate": (20.0, (7.2, 0.0, 7.2, 0.0), (9, 9, 9, 9), False, 1.2),
 }
 
 
@@ -89,11 +93,14 @@ def png(path, side, rows):
 
 def main():
     out = sys.argv[1] if len(sys.argv) > 1 else "build/scratch/faber/ar29/plates"
+    only = sys.argv[2] if len(sys.argv) > 2 else None  # one plate's name: only its images
     os.makedirs(out, exist_ok=True)
-    for name, (size, cuts, insets, glow) in PLATES.items():
+    for name, (size, cuts, insets, glow, edge) in PLATES.items():
+        if only and name != only:
+            continue
         made = {
             "Fill": (0.0, lambda d: 1.0 if d <= 0 else 0.0),
-            "Edge": (0.0, lambda d: 1.0 if -EDGE <= d <= 0 else 0.0),
+            "Edge": (0.0, lambda d, edge=edge: 1.0 if -edge <= d <= 0 else 0.0),
         }
         if glow:
             made["Glow"] = (GLOW, lambda d: 1.0 if d <= 0 else max(0.0, 1 - d / GLOW) ** 2)

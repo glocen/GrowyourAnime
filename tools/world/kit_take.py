@@ -3,17 +3,38 @@
     py tools/world/kit_take.py LanternRow
 
 Copies build/handoff/<Kit>/manifest.json and plan.json byte for byte to src/shared/Config/Kits/<Kit>/Manifest.json and
-Plan.json (Config.Kits.<Kit>), then runs the kit's logic cases with Studio closed (Cases/Kit.luau): every placement's piece
+Plan.json (Config.Kits.<Kit>), with Outlines.json beside them from the kit's meshes (`outlines`), then runs the kit's logic cases with Studio closed (Cases/Kit.luau): every placement's piece
 in the manifest, every stop on the street's marker, the lights under the ceiling. A pair that fails is taken back out,
 and what was there before put back, so the game never holds a kit its checks refuse. Never edit a taken file: change the
 kit script that wrote it, and take it again. Needs Lune and the Bash sandbox off.
 """
+import json
 import subprocess
 import sys
 from pathlib import Path
 
+import numpy as np
+
 ROOT = Path(__file__).resolve().parents[2]
 FILES = {"manifest.json": "Manifest.json", "plan.json": "Plan.json"}
+# The 26 directions of a cube's faces, edges and corners, in shares of a piece's half size: a box's outline is its corners.
+DIRECTIONS = np.array([(i, j, k) for i in (-1, 0, 1) for j in (-1, 0, 1) for k in (-1, 0, 1) if (i, j, k) != (0, 0, 0)], float)
+
+
+def outlines(meshes: Path) -> bytes:
+    """Each piece's outline from its mesh (meshes/<piece>.json, its points about its box's middle in its own frame): its
+    points furthest along each of DIRECTIONS, as shares of its half size, so a piece laid at another size scales them. On
+    the screen their hull is the piece's shape where its box would stand over its neighbours (AR65's plates, 2026-11-26):
+    {"<piece>": [x, y, z, x, y, z, ...]}."""
+    found: dict[str, list[float]] = {}
+    for path in sorted(meshes.glob("*.json")):
+        points = np.array(json.loads(path.read_text())["p"], float).reshape(-1, 3)
+        low, high = points.min(0), points.max(0)
+        half = np.where(high - low > 1e-6, (high - low) / 2, 1.0)
+        shares = (points - (low + high) / 2) / half
+        chosen = np.unique(np.round(shares[np.argmax(shares @ DIRECTIONS.T, axis=0)], 3), axis=0)
+        found[path.stem] = [float(v) for v in chosen.reshape(-1)]
+    return (json.dumps(found, separators=(",", ":")) + chr(10)).encode()
 
 
 def main() -> int:
@@ -33,6 +54,10 @@ def main() -> int:
         target = home / taken
         before[target] = target.read_bytes() if target.is_file() else None
         target.write_bytes(origin.read_bytes())
+    if (source / "meshes").is_dir():
+        target = home / "Outlines.json"
+        before[target] = target.read_bytes() if target.is_file() else None
+        target.write_bytes(outlines(source / "meshes"))
     run = subprocess.run(
         ["lune", "run", "tools/checks/logic_offline.luau", "src/server/Services/Core/LogicTestService/Cases/Kit.luau"],
         cwd=ROOT, capture_output=True, text=True,

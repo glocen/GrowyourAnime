@@ -17924,6 +17924,24 @@ Research, 2026-11-24, 16:53, on the director's word, "the hair still need a rewo
     - Add the ids to `tools/studio/Kits/Base.json`, and copy `manifest.json` and `plan.json`.
     - Read the graphite in game. The look's backlight renders the Breaker's front near black (#1A192A) where the target shows #434751. If the game shows it black too, `abyss` and `dark` go a step up.
   - Made and self-reviewed; content check PASS; nothing uploaded. Research's verdict comes in game, after the install.
+- **Faber's install (2026-11-26, 17:45):** the 46 maps uploaded under the group, all Approved; their ids in `tools/studio/Kits/Base.json` and `Strip.json`; the manifest and plan taken; the template rebuilt.
+  - **The plates (must-fix 2):**
+    - AR62's cut plate (`World.Plate`), the name's capitals at least 8 px at 852×480.
+    - Each machine's outline is its pieces' hull (`Config/Kits/Base/Outlines.json`, from the meshes). A plate across a nearer machine slides aside, its middle kept over its own, or it hides.
+    - The Festival Door counts as a machine: Bay 6's plate stood on its rings at dusk.
+    - The Condenser's plate stands over its far horn. Near, a plate speaks under the top band at its authored size.
+    - Kept apart, a plate takes the free place over its neighbour before the one under it. Pushed under, Bay 2's had stood on its own bay (`World.Settle`).
+  - **The dusk reads (OBSERVED, game captures, relative luminance of the saturated pixels at p99):**
+    - Before: the Door's gold 0.88 with its two lights and 0.71 without, the Mill's cyan 0.61 to 0.67.
+    - Must-fix 3 had missed, so the Door's frame and rings now glow at 0.35 of the base's (`Lighting.BaseShare`). Its lights are off (`LampShare`): even at 0.15 they added 0.10, clipping the rings' inner faces. Both shares tune in play.
+    - After: the Door 0.63 against the Mill's 0.65.
+    - The Breaker's front graphite reads #434246 by day and #513F7B at dusk, never near black, so `abyss` and `dark` stay.
+  - **The name:** the Mill's plate says GENERATOR (the director rejected "Void Mill"; Quaestor's name, 0e69ac4f).
+  - **Tested:**
+    - Type check 0 new; logic offline 40,169.
+    - In Studio at 60 fps: AR65 69 of 69 (the Door's frame added), the HUD's machine plates 33 of 33, AR16 42 of 42, the base view 43 of 43, AR15's Door 36 of 36 (at 37 fps).
+    - Open, not this piece's: the Items page's Case, Pouch and Crate cells have no picture (AR21 drew four), and its check now says so.
+  - Research's verdict in game is next.
 
 ## AR66. Clips follow the model (Modulo's audit and targets, research's feel line and pick, then Faber's install)
 

@@ -986,17 +986,16 @@ function HudCases.Cases(given: Given): { any }
 				-- place, and the avatar steps beside the Breaker, aside from the camera's line, out of the plate's way.
 				local camera = workspace.CurrentCamera
 				local says = BaseController.Says()
-				-- The battery it once stood by is folded into the Mill (AR65): 9 studs from the Breaker toward the Mill is
-				-- within a few studs of that old spot.
-				local plot = Players.LocalPlayer:GetAttribute("Plot")
-				local mill = if type(plot) == "number" then Markers.Find("Generator", { Plot = plot }) else nil
+				-- Near the plate's point is its lift over the prompt (AR65), lower than the machine's top, and toward the Mill
+				-- the avatar stood under the plate, which hid over it. 9 studs out, 150 degrees round from the camera's line,
+				-- it stands left of the plate once the camera turns, the prompt in reach (10; projected 2026-11-26, 60 px clear).
 				local breakerSpot = says.Breaker
 				local near = false
-				if camera and breakerSpot and mill then
+				if camera and breakerSpot then
 					camera.CameraType = Enum.CameraType.Scriptable
-					local flat = Markers.At(mill).Position - breakerSpot.Ground
-					local toward = Vector3.new(flat.X, 0, flat.Z).Unit
-					t.Server("TestStandAt", breakerSpot.Ground + toward * 9 + Vector3.new(0, 3, 0), breakerSpot.Ground)
+					local flat = camera.CFrame.Position - breakerSpot.Ground
+					local aside = CFrame.Angles(0, math.rad(-150), 0) * Vector3.new(flat.X, 0, flat.Z).Unit
+					t.Server("TestStandAt", breakerSpot.Ground + aside * 9 + Vector3.new(0, 3, 0), breakerSpot.Ground)
 					near = waitFor(t, 1, function(): boolean
 						return BaseController.Says().Breaker.Near
 					end)

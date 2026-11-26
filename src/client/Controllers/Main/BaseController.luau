@@ -31,6 +31,7 @@ local ReinforceConfig = require(Shared.Config.Reinforce)
 local Markers = require(Shared.World.Markers)
 local Kit = require(Shared.World.Kit)
 local BaseManifest: any = require(Shared.Config.Kits.Base.Manifest) -- each piece's centre, for the pieces that turn about their origin
+local BaseOutlines: { [string]: { number } } = require(Shared.Config.Kits.Base.Outlines) :: any -- each piece's shape (kit_take)
 local WorldConfig = require(Shared.Config.World)
 local HudConfig = require(Shared.Config.Hud)
 local UIKit = require(Shared.Config.UIKit)
@@ -39,6 +40,7 @@ local UI = script.Parent.Parent.Parent.UI
 local Theme = require(UI.Theme)
 local Read = require(UI.Read)
 local World = require(UI.World)
+local Layers = require(UI.Layers)
 local Panel = require(UI.Kit.Panel)
 local Text = require(UI.Kit.Text)
 local Skin = require(UI.Kit.Skin)
@@ -65,6 +67,20 @@ local TICK = 0.25 -- seconds between countdown updates
 local SELF_OPEN_EVERY = 0.5 -- seconds between looks for a shard that opens itself (TR24's fix 5)
 local SELF_OPEN_AFTER_NO = 5 -- seconds before asking again once the server said no
 local REACH = 140 -- studs from the camera a base's plates show: the plot and the Strip, never the street
+local HIDE_SLACK = 4 -- pixels a hidden plate must clear the machine in front before it shows again: no flicker
+local SLIDE_STEP = 2 -- pixels a plate across a nearer machine tries aside at a time, before it hides
+-- The cube's 26 directions (its faces, edges and corners), as kit_take's: a machine's outline is its points furthest along
+-- each, so a box's is its corners.
+local OUTLINE: { Vector3 } = {}
+for x = -1, 1 do
+	for y = -1, 1 do
+		for z = -1, 1 do
+			if x ~= 0 or y ~= 0 or z ~= 0 then
+				table.insert(OUTLINE, Vector3.new(x, y, z))
+			end
+		end
+	end
+end
 local PROMPT_REACH = 10 -- studs from a prompt's spot it can be pressed
 -- Studs, flat, from a machine's spot within which its plate speaks: the prompt's reach and a few steps. From farther, the
 -- next step over the dock carries a machine's news, with its marker on the machine, and its plate is quiet (research's
@@ -87,22 +103,13 @@ local STARTER_SCALE = 0.6
 local STARTER_GLOW = { Colour = Color3.fromHex("#C9B8FF"), Range = 7, Brightness = 1.2 }
 local STARTER_SPIN = 0.6 -- radians a second each waiting shard turns
 local CHOOSE_HOLD = 0.4 -- seconds a starter's prompt is held: a choice for good
-local PLATE_LINE = 20 -- authored pixels a plate's line takes
--- Each plate as wide as its longest line at the smallest scale, where text draws at 17 authored (Text.Legible):
--- "Lantern Row shard · 1 min 59 s" is 222, "Bay 2 · nobody works here" 193 (measured 2026-11-12, before TR68 shortened it). The battery's plate
--- says only its name: the Electricity pill carries the count (TR2, research's read of the phone take, fix 3).
-local BREAKER_WIDTH = 232
-local BAY_WIDTH = 204
-local BATTERY_WIDTH = 80
-local MACHINE_WIDTH = 204 -- "Trains while you're away", as a bay's
-local GENERATOR_UP = 9 -- studs over the generator's marker its plate and prompt stand: over its face
-local GENERATOR_WIDTH = 180 -- "Generation 30 kW", "Demand 34 kW"
+local GENERATOR_UP = 9 -- studs over the generator's marker its prompt stands: over its face
 local CONDENSER_UP = 4 -- studs over the Stone Condenser's place its prompt stands, before its comb (TR37)
-local CONDENSER_PLATE = 9 -- and its plate that much higher: over its core (9.5 up)
-local CONDENSER_WIDTH = 204 -- "Tray 12 of 12 Low · 1 Mid"
+-- Each plate stands over its machine's laid pieces (Config.Hud.Plates.Machine); until they're in, this high over its
+-- prompt: the Breaker's over the gantry's lamp, the Condenser's over its core (9.5 up), the Forge's over its head (12.5).
+local CONDENSER_PLATE = 9
 local FORGE_UP = 4 -- the Forge's prompt, before its seat (TR37)
-local FORGE_PLATE = 9.5 -- and its plate over its head (12.5 up)
-local FORGE_WIDTH = 160
+local FORGE_PLATE = 9.5
 -- Wide enough that a row's name and its second line fit beside its button at the smallest scale: 191 authored pixels,
 -- against "Intelligence · Mage · Fire" at 178, the longest line before the types took their colours' names (TR36),
 -- and "Chamber 2 · 1 min 59 s" at 164.
@@ -134,8 +141,45 @@ local REASON: { [string]: string } = {
 	Low = `The Stone Condenser turns Mid into High from its level {CondenserConfig.Converts.Mid.FromLevel}`,
 }
 
+-- A machine's plate (AR65 must-fix 2; Config.Hud.Plates.Machine): its name, its accent (a key of Machine.Accent, or none:
+-- the words' ivory), and the Piece names of the laid parts it stands over (a pattern).
+type Look = { Name: string, Accent: string?, Pieces: string }
 -- Ground: the marker's spot on the floor. Near: the avatar stands within NEAR of it. News: it's lit with something to do.
-type Spot = { Marker: Instance, Ground: Vector3, Anchor: Part, Prompt: ProximityPrompt?, Plate: Frame, Near: boolean, News: boolean }
+-- Look: its plate's. Over: where its plate stands from its anchor; Lift, until its machine's pieces are in. Lines: what
+-- it says near, under its name. Wide: its words' widest while near, held so a countdown never shakes it. Swell: its size
+-- by its distance. Points: its machine's outline in the world, its laid pieces' outlines narrowed to OUTLINE's directions.
+-- Hidden: its plate stands across a nearer machine on the screen.
+type Spot = {
+	Marker: Instance,
+	Ground: Vector3,
+	Anchor: Part,
+	Prompt: ProximityPrompt?,
+	Plate: Frame,
+	Near: boolean,
+	News: boolean,
+	Look: Look,
+	Over: Vector3,
+	Lift: number,
+	Lines: { string },
+	Wide: number,
+	Swell: UIScale,
+	Points: { Vector3 }?,
+	Hidden: boolean,
+}
+
+-- Each machine's plate by its spot's kind (AR65, Modulo's kit: one accent per machine, as base_kit.WEARS gives them).
+local LOOKS: { [string]: Look } = {
+	Breaker = { Name = "Void Breaker", Accent = "Breaker", Pieces = "^Breaker%d*$" },
+	Battery = { Name = "Battery", Pieces = "^BatteryRack%d*$" },
+	Training = { Name = "Training", Accent = "Training", Pieces = "^Training" },
+	Generator = { Name = "Generator", Accent = "Mill", Pieces = "^Generator%d*$" },
+	Bay = { Name = "Bay", Accent = "Bay", Pieces = "^Bay" },
+	Condenser = { Name = "Stone Condenser", Accent = "Condenser", Pieces = "^Condenser" },
+	Forge = { Name = "Forge", Pieces = "^Forge" },
+}
+
+-- The kit's laid pieces a plate stands over (Kit.Tag, by their Piece name), kept as they stream in.
+local laid: { [BasePart]: string } = {}
 
 local folder: Folder? = nil
 local plot: number? = nil
@@ -175,6 +219,12 @@ local reveal: Shown? = nil
 local function shut(index: number): string
 	local level = BaseLevels.OpensAt(index)
 	return if level then `Bay {index} · opens at base level {level}` else `Bay {index} · opens with more Voidkin`
+end
+
+-- The same under a shut bay's name on its plate.
+local function opens(index: number): string
+	local level = BaseLevels.OpensAt(index)
+	return if level then `Opens at base level {level}` else "Opens with more Voidkin"
 end
 
 local function act(name: string, args: any?): { [string]: any }
@@ -226,8 +276,10 @@ local function prompt(parent: Instance, name: string, object: string, actionText
 	return p
 end
 
--- Whether a spot's plate speaks now: the avatar stands near it. Its news only lights it.
+-- Whether a spot's plate speaks now: the avatar stands near it. Its news only lights it. Far, its name stands open in the
+-- sky over its machine (AR65); near, it speaks under the top band (the phone pack, 2026-11-13).
 local function speaks(spot: Spot): boolean
+	local was = spot.Near
 	local root = Parts.Root(player.Character)
 	if root == nil then
 		spot.Near = false
@@ -235,55 +287,453 @@ local function speaks(spot: Spot): boolean
 		local gap = root.Position - spot.Anchor.Position
 		spot.Near = Vector2.new(gap.X, gap.Z).Magnitude <= (if spot.Near then NEAR + NEAR_SLACK else NEAR)
 	end
+	if spot.Near ~= was then
+		World.Below(spot.Plate, not spot.Near)
+	end
 	return spot.Near
 end
 
--- A plate over `anchor`, `lift` studs higher: a panel of `lines` text lines, filled by the caller, shown while `shown()`.
-local function plate(name: string, anchor: Part, lines: number, width: number, shown: () -> boolean, lift: number?): Frame
-	local over = Vector3.new(0, lift or 0, 0)
-	local frame = World.Plate(name, Vector2.new(width, lines * PLATE_LINE + Theme.Size.Pad), function(): Vector3?
-		return if anchor.Parent and shown() and not BaseView.IsOpen() then anchor.Position + over else nil -- the command view's chips stand in
+local function accentOf(spot: Spot): Color3?
+	local key = spot.Look.Accent
+	return if key then HudConfig.Plates.Machine.Accent[key] else nil
+end
+
+-- A machine's plate over its spot (AR65 must-fix 2, Modulo's kit on research's pick of target A; Config.Hud.Plates.Machine):
+-- AR62's cut plate (Theme.Frame), a tick of the machine's accent and its name in the display face's capitals in it, from
+-- the plot's gate; its `lines` lines under the name only near (speaks); a stem down to the machine. Shown while its
+-- machine is within reach and the command view is shut (its chips stand in).
+local function plate(name: string, spot: Spot, lines: number): Frame
+	local m = HudConfig.Plates.Machine
+	local frame = World.Plate(name, Vector2.new(m.Row * 4, m.Row + m.Stem.H), function(): Vector3?
+		-- Far, over its machine's top (AR65); near, where it spoke before, its anchor's lift: up close the top stands off
+		-- the screen, and the band pushed the plate down onto the avatar's head.
+		local anchor = spot.Anchor
+		local over = if spot.Near then Vector3.new(0, spot.Lift, 0) else spot.Over
+		return if anchor.Parent and not BaseView.IsOpen() and not spot.Hidden then anchor.Position + over else nil
 	end, REACH)
-	-- Kept under the top band: a machine high on screen put its news under the lead's card (the phone pack, 2026-11-13).
-	World.Below(frame)
+	-- Its size by its distance, made before Below, which reads it (World's layout takes it into each plate's box).
+	local swell = Instance.new("UIScale")
+	swell.Parent = frame
+	spot.Swell = swell
+	-- Kept clear of the top band's pieces: a machine high on screen put its news under the lead's card (the phone pack,
+	-- 2026-11-13). Open while far (AR65): its name stands in the sky between them, over its machine, never pushed down onto
+	-- it; near, it speaks under the band (speaks).
+	World.Below(frame, true)
 	-- And never over another machine's: from the spawn, AR16's star stands bay 2 right behind the Breaker.
 	World.Apart(frame, "Base")
 	-- Nor over the player's own avatar: under the band on a phone, a plate over a machine ahead stood on its head.
 	World.Off(frame)
-	local panel = Panel.new({ Name = "Panel", Size = UDim2.fromScale(1, 1), Parent = frame })
-	panel.Visible = false -- until setLines gives it a line: at a join the save's copy comes a moment after the plot
-	Panel.Pad(panel, 4, 10) -- clear of the panel's cut corner and its lit edge at the sides (TR3's take)
-	Panel.List(panel, nil, 0)
+	local accent = accentOf(spot)
+	local words = Theme.Frame.Neutral.Words
+	local panel = Instance.new("Frame")
+	panel.Name = "Panel"
+	panel.BackgroundTransparency = 1
+	panel.Size = UDim2.new(1, 0, 0, m.Row)
+	panel.Parent = frame
+	Skin.LayOwn(panel, m.Fill :: any, "Fill", { Tint = { Theme.Frame.Panel.Top, Theme.Frame.Panel.Bottom }, Z = 1 })
+	Skin.LayOwn(panel, m.Edge :: any, "Edge", { Tint = Theme.Frame.Neutral.Rim, Z = 2 })
+	-- A hairline of light along its top, from its cut corner (the shard cut: Cut.Share of a card's radius) to its rim.
+	local cut = Theme.Frame.Radius.Card * Theme.Frame.Cut.Share
+	local rim = Theme.Frame.Stroke.Rim
+	local hairline = Instance.new("Frame")
+	hairline.Name = "Hairline"
+	hairline.BorderSizePixel = 0
+	hairline.BackgroundColor3 = Theme.Frame.Panel.Hairline
+	hairline.BackgroundTransparency = 1 - Theme.Frame.Panel.HairlineAlpha
+	hairline.Position = UDim2.fromOffset(cut + rim, rim)
+	hairline.Size = UDim2.new(1, -(cut + 2 * rim), 0, Theme.Frame.Stroke.Hairline)
+	hairline.ZIndex = 3
+	hairline.Parent = panel
+	local bar = Instance.new("Frame")
+	bar.Name = "Bar"
+	bar.BorderSizePixel = 0
+	bar.BackgroundColor3 = accent or words
+	bar.Position = UDim2.fromOffset(m.Pad, (m.Row - m.Bar.H) / 2)
+	bar.Size = UDim2.fromOffset(m.Bar.W, m.Bar.H)
+	bar.ZIndex = 3
+	bar.Parent = panel
+	local lead = m.Pad + m.Bar.W + m.Bar.Gap
+	local title = Text.new({
+		Name = "Name",
+		Size = Theme.Frame.Text.Middle,
+		Font = Theme.Frame.Font.Display,
+		Colour = accent or words,
+		Box = UDim2.new(1, -(lead + m.Pad), 0, m.Row),
+		Position = UDim2.fromOffset(lead, 0),
+		Parent = panel,
+	})
+	title.Text = if Theme.Frame.Upper then string.upper(spot.Look.Name) else spot.Look.Name
+	title.ZIndex = 3
 	for index = 1, lines do
-		local label = Text.new({ Name = `Line{index}`, Size = Theme.Text.Caption, Truncate = true, Box = UDim2.new(1, 0, 0, PLATE_LINE), Parent = panel })
-		label.LayoutOrder = index
+		local label = Text.new({
+			Name = `Line{index}`,
+			Size = Theme.Frame.Text.Small,
+			Font = Theme.Frame.Font.Body,
+			Colour = Theme.Frame.Neutral.Second,
+			Truncate = true,
+			Box = UDim2.new(1, -(lead + m.Pad), 0, m.Line),
+			Position = UDim2.fromOffset(lead, m.Row + (index - 1) * m.Line),
+			Parent = panel,
+		})
+		label.Visible = false
+		label.ZIndex = 3
 	end
+	local stem = Instance.new("Frame")
+	stem.Name = "Stem"
+	stem.BorderSizePixel = 0
+	stem.BackgroundColor3 = Theme.Frame.Neutral.Rim
+	stem.AnchorPoint = Vector2.new(0.5, 1)
+	stem.Position = UDim2.fromScale(0.5, 1)
+	stem.Size = UDim2.fromOffset(m.Stem.W, m.Stem.H)
+	stem.Parent = frame
 	return frame
 end
 
-local function setLines(frame: Frame, lines: { string })
-	local panel = frame:FindFirstChild("Panel") :: Frame?
+-- Lit with news (AR16): its rim in its accent; the panel's Lit attribute, for the cases.
+local function light(spot: Spot)
+	local panel = spot.Plate:FindFirstChild("Panel")
 	if panel == nil then
 		return
 	end
+	panel:SetAttribute("Lit", spot.News)
+	local edge = panel:FindFirstChild("Edge", true)
+	if edge and edge:IsA("ImageLabel") then
+		Skin.Tint(edge, if spot.News then accentOf(spot) or Theme.Frame.Neutral.Words else Theme.Frame.Neutral.Rim)
+	end
+end
+
+-- Its words and its size (Text.Wide): the name, and near, its lines under it, the plate held at their widest while near.
+local function fit(spot: Spot)
+	local m = HudConfig.Plates.Machine
+	local frame = spot.Plate
+	local panel = frame:FindFirstChild("Panel")
+	local title = if panel then panel:FindFirstChild("Name") else nil
+	if panel == nil or not panel:IsA("Frame") or title == nil or not title:IsA("TextLabel") then
+		return
+	end
+	local lead = m.Pad + m.Bar.W + m.Bar.Gap
+	local wide = Text.Wide(title, title.Text)
 	local shown = 0
-	for _, child in panel:GetChildren() do
-		if child:IsA("TextLabel") then
-			local index = tonumber(child.Name:match("^Line(%d+)$"))
-			child.Text = if index then lines[index] or "" else ""
-			child.Visible = child.Text ~= ""
-			shown += if child.Visible then 1 else 0
+	local index = 1
+	while true do
+		local label = panel:FindFirstChild(`Line{index}`)
+		if label == nil or not label:IsA("TextLabel") then
+			break
+		end
+		local text = spot.Lines[index] or ""
+		label.Text = text
+		label.Visible = spot.Near and text ~= ""
+		if label.Visible then
+			label.Position = UDim2.fromOffset(lead, m.Row + shown * m.Line)
+			shown += 1
+			wide = math.max(wide, Text.Wide(label, text))
+		end
+		index += 1
+	end
+	spot.Wide = if shown > 0 then math.max(spot.Wide, wide) else wide
+	local width = math.ceil(lead + spot.Wide + m.Pad)
+	local tall = m.Row + (if shown > 0 then shown * m.Line + m.Foot else 0)
+	panel.Size = UDim2.fromOffset(width, tall)
+	frame.Size = UDim2.fromOffset(width, tall + m.Stem.H)
+end
+
+-- What a spot's plate says near it, under its name.
+local function setLines(spot: Spot, lines: { string })
+	spot.Lines = lines
+	fit(spot)
+end
+
+-- A machine: the laid pieces of its kinds (`pieces`, a pattern) within Machine.Reach of its ground, whatever stage stands
+-- there.
+local function piecesNear(ground: Vector3, pieces: string): { BasePart }
+	local reach = HudConfig.Plates.Machine.Reach
+	local found = {}
+	for part, kind in laid do
+		if part.Parent == nil then
+			laid[part] = nil
+		elseif part.Transparency < 1 and string.match(kind, pieces) then
+			local gap = part.Position - ground
+			if Vector2.new(gap.X, gap.Z).Magnitude <= reach then
+				table.insert(found, part)
+			end
 		end
 	end
-	-- As tall as what it says, and gone when it says nothing.
-	frame.Size = UDim2.fromOffset(frame.Size.X.Offset, shown * PLATE_LINE + Theme.Size.Pad)
-	panel.Visible = shown > 0
+	return found
+end
+
+-- A machine's outline in the world (AR65 must-fix 2): each laid piece's (Config.Kits.Base.Outlines, its points as shares
+-- of its half size; a piece without one, its box's corners), narrowed to the points furthest along OUTLINE's directions
+-- across them all; nil while none is laid.
+local function outlineAt(ground: Vector3, pieces: string): { Vector3 }?
+	local points: { Vector3 } = {}
+	for _, part in piecesNear(ground, pieces) do
+		local cf, half = part.CFrame, part.Size / 2
+		local shares = BaseOutlines[laid[part]]
+		if shares then
+			for i = 1, #shares - 2, 3 do
+				table.insert(points, cf * (half * Vector3.new(shares[i], shares[i + 1], shares[i + 2])))
+			end
+		else
+			for _, corner in OUTLINE do
+				if math.abs(corner.X) + math.abs(corner.Y) + math.abs(corner.Z) == 3 then
+					table.insert(points, cf * (half * corner))
+				end
+			end
+		end
+	end
+	if #points == 0 then
+		return nil
+	end
+	local low, high = points[1], points[1]
+	for _, q in points do
+		low = low:Min(q)
+		high = high:Max(q)
+	end
+	local middle, half = (low + high) / 2, ((high - low) / 2):Max(Vector3.one * 1e-3)
+	local chosen: { [Vector3]: boolean } = {}
+	for _, direction in OUTLINE do
+		local best, far = points[1], -math.huge
+		for _, q in points do
+			local along = ((q - middle) / half):Dot(direction)
+			if along > far then
+				best, far = q, along
+			end
+		end
+		chosen[best] = true
+	end
+	local outline: { Vector3 } = {}
+	for q in chosen do
+		table.insert(outline, q)
+	end
+	return outline
+end
+
+-- Where a spot's plate stands (AR65 must-fix 2): Machine.Over studs above its machine's top; until its pieces are in,
+-- Lift over its anchor. Kept clear of `away`'s outline (the Stone Condenser's of the Mill's rim): Aside studs out from it,
+-- over its far horn.
+local function seat(spot: Spot, away: Spot?)
+	local m = HudConfig.Plates.Machine
+	local outline = outlineAt(spot.Ground, spot.Look.Pieces)
+	spot.Points = outline
+	local top: number? = nil
+	for _, q in outline or {} do
+		top = if top then math.max(top, q.Y) else q.Y
+	end
+	local out = Vector3.zero
+	if away then
+		local from = spot.Ground - away.Ground
+		from = Vector3.new(from.X, 0, from.Z)
+		if from.Magnitude > 1e-3 then
+			out = from.Unit * m.Aside
+		end
+	end
+	spot.Over = out + Vector3.new(0, if top then top + m.Over - spot.Anchor.Position.Y else spot.Lift, 0)
 end
 
 local function clearSpot(spot: Spot?)
 	if spot then
 		World.Remove(spot.Plate)
 		spot.Anchor:Destroy()
+	end
+end
+
+-- Every spot of the plot.
+local function allSpots(): { Spot }
+	local list: { Spot } = {}
+	for _, spot in { breaker, battery, machine, generator, condenser, forge } :: { Spot? } do
+		if spot then
+			table.insert(list, spot)
+		end
+	end
+	for _, spot in bays do
+		table.insert(list, spot)
+	end
+	return list
+end
+
+-- The Festival Door's outline: no plate of its own (its name is on its own plate), but no machine's stands across it.
+local DOOR_PIECES = "^Door"
+local doorPoints: { Vector3 }? = nil
+
+-- A machine on the screen (its outline's points, viewport pixels): their convex hull, anticlockwise on the screen, and
+-- its middle's depth; nil while a point stands behind the camera.
+local function hullAt(outline: { Vector3 }?, camera: Camera): ({ Vector2 }?, number)
+	if outline == nil or #outline < 3 then
+		return nil, 0
+	end
+	local points: { Vector2 } = {}
+	local depth = 0
+	for _, q in outline do
+		local at = camera:WorldToViewportPoint(q)
+		if at.Z <= 0 then
+			return nil, 0
+		end
+		table.insert(points, Vector2.new(at.X, at.Y))
+		depth += at.Z / #outline
+	end
+	table.sort(points, function(a: Vector2, b: Vector2): boolean
+		return a.X < b.X or (a.X == b.X and a.Y < b.Y)
+	end)
+	local function turn(o: Vector2, a: Vector2, b: Vector2): number
+		return (a.X - o.X) * (b.Y - o.Y) - (a.Y - o.Y) * (b.X - o.X)
+	end
+	local hull: { Vector2 } = {}
+	for _, pass in { 1, -1 } do
+		local start = #hull
+		local from, to = if pass == 1 then 1 else #points, if pass == 1 then #points else 1
+		for i = from, to, pass do
+			local q = points[i]
+			while #hull >= start + 2 and turn(hull[#hull - 1], hull[#hull], q) <= 0 do
+				table.remove(hull)
+			end
+			table.insert(hull, q)
+		end
+		table.remove(hull)
+	end
+	return hull, depth
+end
+
+local function hullOf(spot: Spot, camera: Camera): ({ Vector2 }?, number)
+	return hullAt(spot.Points, camera)
+end
+
+-- The Door's outline: the laid frame nearest this plot's Breaker (every plot's is tagged), its pieces around it; nil
+-- while it isn't laid.
+local function seatDoor()
+	local home = breaker or generator
+	local best: BasePart?, far = nil, math.huge
+	for part, kind in laid do
+		if kind == "Door" and part.Parent ~= nil and home then
+			local gap = (part.Position - home.Ground).Magnitude
+			if gap < far then
+				best, far = part, gap
+			end
+		end
+	end
+	doorPoints = if best then outlineAt(best.Position, DOOR_PIECES) else nil
+end
+
+-- Whether a screen rectangle (its low and high corners) overlaps a hull (hullOf's) by more than a pixel: no axis of
+-- either separates them.
+local function overlaps(low: Vector2, high: Vector2, hull: { Vector2 }): boolean
+	if #hull < 3 then
+		return false
+	end
+	local corners = { low, Vector2.new(high.X, low.Y), high, Vector2.new(low.X, high.Y) }
+	local axes = { Vector2.xAxis, Vector2.yAxis }
+	for i, a in hull do
+		local edge = hull[i % #hull + 1] - a
+		if edge.Magnitude > 1e-6 then
+			table.insert(axes, Vector2.new(-edge.Y, edge.X).Unit)
+		end
+	end
+	for _, axis in axes do
+		local rLow: number, rHigh: number, hLow: number, hHigh: number = math.huge, -math.huge, math.huge, -math.huge
+		for _, c in corners do
+			rLow = math.min(rLow, axis:Dot(c))
+			rHigh = math.max(rHigh, axis:Dot(c))
+		end
+		for _, q in hull do
+			hLow = math.min(hLow, axis:Dot(q))
+			hHigh = math.max(hHigh, axis:Dot(q))
+		end
+		if rHigh <= hLow + 1 or rLow >= hHigh - 1 then
+			return false
+		end
+	end
+	return true
+end
+
+-- Each frame: each spot's Near as the avatar walks, its plate's size by its distance (Machine.Ref over it, never under
+-- Theme.Text.Minimum for its name, never over Machine.Most; near, 1, its lines at their authored size, clear of the
+-- avatar's head), and the Stone Condenser's on the far side of its point from the Mill's on the screen, so it never
+-- crosses the Mill's rim (AR65 must-fix 2).
+local function sizePlates()
+	local camera = workspace.CurrentCamera
+	if camera == nil then
+		return
+	end
+	local m = HudConfig.Plates.Machine
+	local least = math.min(1, Theme.Text.Minimum / (Theme.Frame.Text.Middle * math.max(Layers.Scale(), 0.01)))
+	local eye = camera.CFrame.Position
+	local spots = allSpots()
+	local hulls: { [Spot]: { Hull: { Vector2 }, Depth: number } } = {}
+	for _, spot in spots do
+		speaks(spot)
+		local depth = (spot.Anchor.Position + spot.Over - eye).Magnitude
+		spot.Swell.Scale = if spot.Near then 1 else math.clamp(m.Ref / math.max(depth, 1), least, m.Most)
+		local hull, middle = hullOf(spot, camera)
+		if hull then
+			hulls[spot] = { Hull = hull, Depth = middle }
+		end
+	end
+	local door, doorDepth = hullAt(doorPoints, camera)
+	-- The Stone Condenser's plate sits on its far side of its point, clear of the Mill's rim.
+	local c, g = condenser, generator
+	local aside: Spot?, by = nil, 0
+	if c and g then
+		local here = camera:WorldToViewportPoint(c.Anchor.Position + c.Over)
+		local mill = camera:WorldToViewportPoint(g.Anchor.Position)
+		by = (if mill.X > here.X then -1 else 1) * c.Plate.Size.X.Offset * c.Swell.Scale / 2
+		aside = c
+	end
+	-- No plate stands across a nearer machine on the screen (AR65 must-fix 2): where it stands at its point, against each
+	-- nearer machine's outline. Across one, it slides aside, SLIDE_STEP pixels at a time up to half its width, its middle
+	-- kept over its own machine; with no room, it hides, and must clear by HIDE_SLACK pixels to show again.
+	local scale = Layers.Scale()
+	for _, spot in spots do
+		local at = camera:WorldToViewportPoint(spot.Anchor.Position + spot.Over)
+		local hidden, slide = false, 0
+		if at.Z > 0 and not spot.Near then
+			local size, swell = spot.Plate.Size, spot.Swell.Scale * scale
+			local wide, tall = size.X.Offset * swell, size.Y.Offset * swell
+			local left = at.X - wide / 2 + (if spot == aside then by * scale else 0)
+			local slack = if spot.Hidden then HIDE_SLACK else 0
+			-- its middle's room: over its own machine's outline, or anywhere while that isn't on the screen
+			local own = hulls[spot]
+			local from, to = -math.huge, math.huge
+			if own then
+				from, to = math.huge, -math.huge
+				for _, q in own.Hull do
+					from = math.min(from, q.X)
+					to = math.max(to, q.X)
+				end
+			end
+			local nearer: { { Vector2 } } = {}
+			for other, seen in hulls do
+				if other ~= spot and seen.Depth < at.Z then
+					table.insert(nearer, seen.Hull)
+				end
+			end
+			if door and doorDepth < at.Z then
+				table.insert(nearer, door)
+			end
+			local function clear(dx: number): boolean
+				local middle = left + dx + wide / 2
+				if dx ~= 0 and (middle < from or middle > to) then
+					return false
+				end
+				local low = Vector2.new(left + dx - slack, at.Y - tall - slack)
+				local high = Vector2.new(left + dx + wide + slack, at.Y + slack)
+				for _, hull in nearer do
+					if overlaps(low, high, hull) then
+						return false
+					end
+				end
+				return true
+			end
+			if not clear(0) then
+				hidden = true
+				for dx = SLIDE_STEP, wide / 2, SLIDE_STEP do
+					if clear(dx) or clear(-dx) then
+						slide, hidden = if clear(dx) then dx else -dx, false
+						break
+					end
+				end
+			end
+		end
+		spot.Hidden = hidden
+		World.Shift(spot.Plate, Vector2.new((if spot == aside then by else 0) + slide / math.max(scale, 0.01), 0))
 	end
 end
 
@@ -761,13 +1211,30 @@ end
 
 -- The plot -------------------------------------------------------------------------------------------------------------
 
-local function spotFor(marker: Instance, name: string, up: number, lines: number, width: number, lift: number?): Spot
+local function spotFor(marker: Instance, name: string, look: Look, up: number, lines: number, lift: number?): Spot
 	local ground = Markers.At(marker).Position
 	local anchor = anchorAt(name, ground + Vector3.new(0, up, 0))
-	local spot: Spot = { Marker = marker, Ground = ground, Anchor = anchor, Prompt = nil, Plate = nil :: any, Near = false, News = false }
-	spot.Plate = plate(name, anchor, lines, width, function(): boolean
-		return speaks(spot)
-	end, lift)
+	local spot: Spot = {
+		Marker = marker,
+		Ground = ground,
+		Anchor = anchor,
+		Prompt = nil,
+		Plate = nil :: any,
+		Near = false,
+		News = false,
+		Look = look,
+		Over = Vector3.new(0, lift or 0, 0),
+		Lift = lift or 0,
+		Lines = {},
+		Wide = 0,
+		Swell = nil :: any,
+		Points = nil,
+		Hidden = false,
+	}
+	spot.Plate = plate(name, spot, lines)
+	seat(spot)
+	light(spot)
+	fit(spot)
 	return spot
 end
 
@@ -942,32 +1409,32 @@ local function find()
 	end
 	clearAll()
 	plot = number
-	local b = spotFor(breakerMarker, "Breaker", BREAKER_UP, 4, BREAKER_WIDTH, BREAKER_PLATE)
+	local b = spotFor(breakerMarker, "Breaker", LOOKS.Breaker, BREAKER_UP, 4, BREAKER_PLATE)
 	b.Prompt = prompt(b.Anchor, "NL_Breaker", "Void Breaker", "Breaker")
 	;(b.Prompt :: ProximityPrompt).Triggered:Connect(function()
 		BaseController.PressBreaker()
 	end)
 	breaker = b
 	if batteryMarker then
-		battery = spotFor(batteryMarker, "Battery", BAY_UP, 1, BATTERY_WIDTH)
+		battery = spotFor(batteryMarker, "Battery", LOOKS.Battery, BAY_UP, 0)
 	end
 	if machineMarker then
-		machine = spotFor(machineMarker, "Training", BAY_UP, 2, MACHINE_WIDTH)
+		machine = spotFor(machineMarker, "Training", LOOKS.Training, BAY_UP, 1)
 	end
 	if generatorMarker then
-		generator = spotFor(generatorMarker, "Generator", GENERATOR_UP, 2, GENERATOR_WIDTH)
+		generator = spotFor(generatorMarker, "Generator", LOOKS.Generator, GENERATOR_UP, 2)
 	end
 	for index, marker in bayMarkers do
-		local spot = spotFor(marker, `Bay{index}`, BAY_UP, 1, BAY_WIDTH)
+		local spot = spotFor(marker, `Bay{index}`, { Name = `Bay {index}`, Accent = LOOKS.Bay.Accent, Pieces = LOOKS.Bay.Pieces }, BAY_UP, 1)
 		bays[index] = spot
 	end
 	if condenserMarker then
-		local spot = spotFor(condenserMarker, "Condenser", CONDENSER_UP, 2, CONDENSER_WIDTH, CONDENSER_PLATE)
+		local spot = spotFor(condenserMarker, "Condenser", LOOKS.Condenser, CONDENSER_UP, 1, CONDENSER_PLATE)
 		condenser = spot
 		convert = convertCard(condenserMarker, spot)
 	end
 	if forgeMarker then
-		local f = spotFor(forgeMarker, "Forge", FORGE_UP, 2, FORGE_WIDTH, FORGE_PLATE)
+		local f = spotFor(forgeMarker, "Forge", LOOKS.Forge, FORGE_UP, 1, FORGE_PLATE)
 		f.Prompt = prompt(f.Anchor, "NL_Forge", "Forge", "Reinforce")
 		;(f.Prompt :: ProximityPrompt).Triggered:Connect(function()
 			BaseController.PressForge()
@@ -1095,9 +1562,9 @@ function BaseController.Refresh()
 			table.insert(lines, `Waiting: {#now.Data.Base.Line}`)
 		end
 		if #lines == 0 and #view.Base.Ready == 0 then
-			table.insert(lines, "Void Breaker · idle")
+			table.insert(lines, "Idle")
 		end
-		setLines(breaker.Plate, lines)
+		setLines(breaker, lines)
 		-- Lit while a shard waits in the bag, until it's in (research's read of TR2's fixes, 2026-11-12), or one waits to
 		-- be opened. Seen only near: from afar the next step says it (research's must-fix on AR16, 2026-11-17).
 		local bagged = false
@@ -1105,21 +1572,18 @@ function BaseController.Refresh()
 			bagged = bagged or count > 0
 		end
 		breaker.News = bagged or #view.Base.Ready > 0
-		local panel = breaker.Plate:FindFirstChild("Panel")
-		if panel and panel:IsA("GuiObject") then
-			Panel.Lit(panel, breaker.News)
-		end
+		light(breaker)
 		if breaker.Prompt then
 			breaker.Prompt.ActionText = if #view.Base.Ready > 0 then "Open" else "Breaker"
 		end
 	end
 	if battery then
-		setLines(battery.Plate, { "Battery" })
+		setLines(battery, {})
 	end
 	if generator then
 		-- Its face: the owner's generation and demand (TR18). Its prompt only once the Power screen is open to them: until
 		-- a second machine draws, Auto runs the plant unseen.
-		setLines(generator.Plate, { `Generation {Read.Kw(now.Rates.Generation)}`, `Demand {Read.Kw(now.Rates.Demand)}` })
+		setLines(generator, { `Generation {Read.Kw(now.Rates.Generation)}`, `Demand {Read.Kw(now.Rates.Demand)}` })
 		local open = view.Base.Power.Open
 		if open and generator.Prompt == nil then
 			local p = prompt(generator.Anchor, "NL_Generator", "Generator", "Power")
@@ -1137,7 +1601,7 @@ function BaseController.Refresh()
 		-- Training machine").
 		local on = player:GetAttribute("Training")
 		local trainee = if type(on) == "string" and on ~= "" then view.Voidkin[on] else nil
-		setLines(machine.Plate, { "Training machine", if trainee then `{Read.VoidkinName(trainee)} · Lv {trainee.Level}` else "Trains while you're away" })
+		setLines(machine, { if trainee then `{Read.VoidkinName(trainee)} · Lv {trainee.Level}` else "Trains while you're away" })
 	end
 	local home = now.Data.Base
 	local awake = Condenser.Awake(home.Level)
@@ -1162,14 +1626,11 @@ function BaseController.Refresh()
 		-- holds anything.
 		local cap = Condenser.Cap(Condenser.Level(home))
 		local tray = if held >= cap then `Tray full · {held} {CondenserConfig.Makes}` else `Tray {held} of {cap} {CondenserConfig.Makes}`
-		setLines(condenser.Plate, { "Stone Condenser", if not awake then `Turns on at base level {CondenserConfig.Wakes}`
+		setLines(condenser, { if not awake then `Turns on at base level {CondenserConfig.Wakes}`
 			elseif mid > 0 then `{tray} · {table.concat(besides, " · ")}`
 			else tray })
 		condenser.News = awake and (held >= cap or mid > 0)
-		local panel = condenser.Plate:FindFirstChild("Panel")
-		if panel and panel:IsA("GuiObject") then
-			Panel.Lit(panel, condenser.News)
-		end
+		light(condenser)
 		local any = awake and held + mid > 0
 		if any and condenser.Prompt == nil then
 			local p = prompt(condenser.Anchor, "NL_Condenser", "Stone Condenser", "Collect")
@@ -1224,7 +1685,7 @@ function BaseController.Refresh()
 		convert.Switch.Enabled = awake and left == nil and runs > 1
 	end
 	if forge then
-		setLines(forge.Plate, { "Forge", "Reinforce your gear" })
+		setLines(forge, { "Reinforce your gear" })
 	end
 	-- Someone neither leading nor working, whom an empty bay could take.
 	local free = false
@@ -1237,16 +1698,13 @@ function BaseController.Refresh()
 		local worker = if bay and bay.Worker ~= "" then view.Voidkin[bay.Worker] else nil
 		-- An empty bay the next step sends a Voidkin to says nothing: the step's line says it, and the prompt is there.
 		local sent = step ~= nil and step.Target == "Bay" and step.Bay == index
-		local line: string? = if bay == nil then shut(index)
+		local line: string? = if bay == nil then opens(index)
 			elseif worker then `{Read.VoidkinName(worker)} · {Read.Kw(Power.Output(worker))}`
 			elseif sent then nil
-			else `Bay {index} · empty`
-		setLines(spot.Plate, if line then { line } else {})
+			else "Empty"
+		setLines(spot, if line then { line } else {})
 		spot.News = bay ~= nil and worker == nil and free
-		local panel = spot.Plate:FindFirstChild("Panel")
-		if panel and panel:IsA("GuiObject") then
-			Panel.Lit(panel, spot.News)
-		end
+		light(spot)
 		if bay and spot.Prompt == nil then
 			local p = prompt(spot.Anchor, "NL_Bay", `Bay {index}`, "Set worker")
 			p.Triggered:Connect(function()
@@ -1318,6 +1776,42 @@ BaseController.Near = NEAR
 BaseController.StarterShard = starterShard
 BaseController.StarterScale = STARTER_SCALE
 BaseController.NearSlack = NEAR_SLACK
+-- For tests (AR65 must-fix 2): a machine's outline on the screen, by its plate's name (Breaker, Generator, Training,
+-- Condenser, Bay1, ...): its box's convex hull, viewport pixels, as its plates hide behind it; nil while it isn't in front
+-- of the camera.
+function BaseController.Hull(name: string): { Vector2 }?
+	local spot: Spot? = if name == "Breaker" then breaker elseif name == "Battery" then battery elseif name == "Training" then machine
+		elseif name == "Generator" then generator elseif name == "Condenser" then condenser elseif name == "Forge" then forge
+		else bays[tonumber(string.match(name, "^Bay(%d+)$")) or 0]
+	local camera = workspace.CurrentCamera
+	if camera == nil then
+		return nil
+	elseif name == "Door" then
+		return (hullAt(doorPoints, camera))
+	end
+	return if spot then (hullOf(spot, camera)) else nil
+end
+
+function BaseController.Outline(name: string): (Vector2?, Vector2?)
+	local spot: Spot? = if name == "Breaker" then breaker elseif name == "Battery" then battery elseif name == "Training" then machine
+		elseif name == "Generator" then generator elseif name == "Condenser" then condenser elseif name == "Forge" then forge
+		else bays[tonumber(string.match(name, "^Bay(%d+)$")) or 0]
+	local camera = workspace.CurrentCamera
+	if spot == nil or camera == nil then
+		return nil, nil
+	end
+	local hull: { Vector2 }? = hullOf(spot, camera)
+	if hull == nil then
+		return nil, nil
+	end
+	local low: Vector2, high: Vector2 = hull[1], hull[1]
+	for _, q in hull do
+		low = low:Min(q)
+		high = high:Max(q)
+	end
+	return low, high
+end
+
 function BaseController.Says(): { [string]: { Near: boolean, News: boolean, Ground: Vector3 } }
 	local says = {}
 	local function add(name: string, spot: Spot?)
@@ -1439,6 +1933,23 @@ end
 -- A Training machine's crown, at any stage (AR35: TrainingCrown, TrainingCrown2, TrainingCrown3 turn alike).
 local function crowned(kind: any): boolean
 	return type(kind) == "string" and string.match(kind, "^TrainingCrown%d*$") ~= nil
+end
+
+-- A laid piece of a machine a plate stands over (LOOKS' patterns), or of the Festival Door, which none stands across.
+local function watchLaid(item: Instance)
+	local kind = item:GetAttribute("Piece")
+	if not item:IsA("BasePart") or type(kind) ~= "string" then
+		return
+	end
+	for _, look in LOOKS do
+		if string.match(kind, look.Pieces) then
+			laid[item] = kind
+			return
+		end
+	end
+	if string.match(kind, DOOR_PIECES) then
+		laid[item] = kind -- the Festival Door's, for no plate to stand across it (seatDoor)
+	end
 end
 
 local function watchTurning(item: Instance)
@@ -1626,10 +2137,12 @@ function BaseController.Start()
 	CollectionService:GetInstanceAddedSignal(Kit.Tag):Connect(function(item: Instance)
 		watchTurning(item)
 		watchRam(item)
+		watchLaid(item)
 	end)
 	for _, item in CollectionService:GetTagged(Kit.Tag) do
 		watchTurning(item)
 		watchRam(item)
+		watchLaid(item)
 	end
 	CollectionService:GetInstanceAddedSignal("Worker"):Connect(watchWorker)
 	for _, item in CollectionService:GetTagged("Worker") do
@@ -1685,7 +2198,13 @@ function BaseController.Start()
 		if os.clock() - last >= TICK then
 			last = os.clock()
 			BaseController.Refresh()
+			for _, spot in allSpots() do
+				seat(spot, if spot == condenser then generator else nil)
+				fit(spot)
+			end
+			seatDoor()
 		end
+		sizePlates()
 	end)
 end
 

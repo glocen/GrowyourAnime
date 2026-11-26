@@ -246,7 +246,11 @@ function BagCases.Cases(given: Given): { any }
 						local cell = cells and cells:FindFirstChild(entry.Id)
 						local ok = cell ~= nil and cell:IsA("GuiObject") and cell.LayoutOrder == index and cell:GetAttribute("Up") == entry.Up and cell:GetAttribute("Worn") == (entry.Worn or "") and cell:GetAttribute("Fits") == entry.Fits and cell:GetAttribute("Count") == entry.Count and (cell:FindFirstChild("Up") ~= nil) == entry.Up and (cell:FindFirstChild("WornMark") ~= nil) == (entry.Worn ~= nil) and cell:GetAttribute("Image") == (entry.Image or "") and (entry.Image == nil or cell:FindFirstChild("Picture", true) ~= nil)
 						right += if ok then 1 else 0
-						wrong = if ok or wrong ~= "" then wrong else entry.Id
+						if not ok and wrong == "" then
+							-- The first wrong cell, with what it says against the list.
+							local said = if cell and cell:IsA("GuiObject") then `order {cell.LayoutOrder}/{index}, up {cell:GetAttribute("Up")}/{entry.Up}, worn {cell:GetAttribute("Worn")}/{entry.Worn or ""}, fits {cell:GetAttribute("Fits")}/{entry.Fits}, count {cell:GetAttribute("Count")}/{entry.Count}, image {cell:GetAttribute("Image")}/{entry.Image or ""}, picture {cell:FindFirstChild("Picture", true) ~= nil}` else "no cell"
+							wrong = `{entry.Id} ({said})`
+						end
 					end
 					local shown = 0
 					for _, child in (if cells then cells:GetChildren() else {}) :: { Instance } do

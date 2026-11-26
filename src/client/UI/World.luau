@@ -18,7 +18,7 @@
 --   World.Foot(frame?) / World.FootTop()      the HUD's lowest piece over the dock (the next step's chip); its top in the
 --                                             viewport's pixels while it shows, else nil: the edge's arrow stays over it
 --   World.Apart(plate, group)                 kept from covering another of its group: the nearest stands at its point, and
---                                             each one above it takes the free place nearest its point, over or under
+--                                             each one above it takes the free place nearest its point over, else under
 --                                             (a base's machine plates: AR16's star lined a bay up behind the Breaker)
 --   World.Settle(rows, gap, ceiling, bottom)  that rule on rows of plates, for a view that places its own (TR21's chips)
 --   World.Clear(plate, box)                   never over the landmark it names: box() its box on the screen, viewport
@@ -56,7 +56,8 @@ local World = {}
 type Plate = { Frame: Frame, Where: () -> Vector3?, Reach: number, Shift: Vector2, Below: boolean, Open: boolean, Slide: number?, Drop: number?, Swell: UIScale?, Apart: string?, Clear: (() -> (Vector2?, Vector2?))?, Off: boolean?, Beside: { Prompt: ProximityPrompt, Gap: number, Card: Vector2? }? }
 -- A plate on the screen, authored pixels from the layer's corner: its middle, its foot, half its width, its height; and how
 -- far its point stands from the camera, if known.
-export type Row = { Frame: Frame, Middle: number, Foot: number, Half: number, Tall: number, Depth: number? }
+-- Ceiling: its own, under the one Settle is given (an open plate's: the top bar's foot, not the band's).
+export type Row = { Frame: Frame, Middle: number, Foot: number, Half: number, Tall: number, Depth: number?, Ceiling: number? }
 export type Span = { Left: number, Right: number, Edge: number } -- a piece of the band, its margin included, authored pixels
 -- A plate kept off a box on the screen (World.Clear's landmark, World.Off's avatar): where it stands, authored pixels.
 type Kept = { Box: () -> (Vector2?, Vector2?), Middle: number, Foot: number, Half: number, Tall: number }
@@ -87,6 +88,9 @@ function World.Below(frame: Frame, open: boolean?)
 	local plate = plates[frame]
 	if plate then
 		plate.Below = true
+		if plate.Open ~= (open == true) then
+			plate.Slide, plate.Drop = nil, nil -- set where it stands on its first frame in the other way, never eased from the old
+		end
 		plate.Open = open == true
 		plate.Swell = frame:FindFirstChildOfClass("UIScale") -- a number's swell grows it up from its foot
 	end
@@ -197,8 +201,9 @@ function World.OnAvatar(frame: GuiObject): boolean
 end
 
 -- No row covers another: the one lowest on the screen, the nearest, stands at its point, and each one above it takes the
--- free place nearest its point, over or under a row already placed, `gap` clear of it, its top under `ceiling` and its
--- foot over `bottom`. Side by side clears at a touch. A row with no free place on the screen stands at its point. Each
+-- free place nearest its point over a row already placed, else under one, `gap` clear of it, its top under `ceiling` (or
+-- its own) and its foot over `bottom`. Over first: a plate stands over its own machine, and pushed under its neighbour it
+-- stood on it (AR65, the Door's frame: bay 2's 42 px into its own bay, under bay 1's). Side by side clears at a touch. A row with no free place on the screen stands at its point. Each
 -- row's foot, by its frame. Feet level to the pixel go nearest first, then by name: two plates the band pushed to one
 -- line swapped places every frame (the HUD case, AR16's Breaker and bay 2).
 function World.Settle(rows: { Row }, gap: number, ceiling: number, bottom: number): { [Frame]: number }
@@ -218,8 +223,11 @@ function World.Settle(rows: { Row }, gap: number, ceiling: number, bottom: numbe
 	local placed: { { Left: number, Right: number, Top: number, Foot: number } } = {}
 	for _, row in sorted do
 		local left, right = row.Middle - row.Half, row.Middle + row.Half
+		local top = row.Ceiling or ceiling
 		local function free(foot: number): boolean
-			if foot - row.Tall < ceiling or foot > bottom then
+			-- Half a pixel's slack: a plate the band pushed down stands at `top` within a rounding, and read as over it, it
+			-- took a place beside another plate, 40 px lower (the HUD case, AR65).
+			if foot - row.Tall < top - 0.5 or foot > bottom + 0.5 then
 				return false
 			end
 			for _, other in placed do
@@ -231,13 +239,19 @@ function World.Settle(rows: { Row }, gap: number, ceiling: number, bottom: numbe
 		end
 		local best: number? = if free(row.Foot) then row.Foot else nil
 		if best == nil then
+			local over: number?, under: number? = nil, nil
 			for _, other in placed do
 				for _, foot in { other.Top - gap, other.Foot + gap + row.Tall } do
-					if free(foot) and (best == nil or math.abs(foot - row.Foot) < math.abs((best :: number) - row.Foot)) then
-						best = foot
+					if free(foot) then
+						if foot <= row.Foot then
+							over = if over == nil or foot > over then foot else over
+						else
+							under = if under == nil or foot < under then foot else under
+						end
 					end
 				end
 			end
+			best = over or under
 		end
 		local foot = best or row.Foot
 		table.insert(placed, { Left = left, Right = right, Top = foot - row.Tall, Foot = foot })
@@ -556,7 +570,8 @@ RunService:BindToRenderStep("NL_WorldPlates", Enum.RenderPriority.Camera.Value +
 		if group then
 			local swell = if plate.Swell then plate.Swell.Scale else 1
 			groups[group] = groups[group] or {}
-			table.insert(groups[group], { Frame = frame, Middle = on.X / scale + shift.X, Foot = on.Y / scale + shift.Y, Half = frame.Size.X.Offset * swell / 2, Tall = frame.Size.Y.Offset * swell, Depth = screen.Z })
+			-- An open plate may stand in the sky between the band's pieces: only the top bar's foot over it (AR65's names).
+			table.insert(groups[group], { Frame = frame, Middle = on.X / scale + shift.X, Foot = on.Y / scale + shift.Y, Half = frame.Size.X.Offset * swell / 2, Tall = frame.Size.Y.Offset * swell, Depth = screen.Z, Ceiling = if plate.Open then floor or 0 else nil })
 		end
 	end
 	-- Then each group apart, under the band and over the screen's foot: a plate only rises or drops from where it stood.

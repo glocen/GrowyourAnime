@@ -17898,6 +17898,10 @@ The audit's second screen, from the frame and the Arc panel's B (its road, press
 - **My lean: B.** It reads as the Arc panel's B after the run, the same picture and press. C's word is the strongest moment, but it sits on the street unguarded.
 - **Content check, 20:10: PASS.** Nothing new is uploaded from this piece; the star mark, if ever, gets its 64 px look first.
 
+### Modulo: the HUD over the world is the frame's own (20:12)
+
+The audit's third screen (three plate colours, each glowing past its edge) is already redrawn in the picked frame: the lead card, the two pills and the dock on graphite. New: `build/handoff/UI/style_frames/A_hud_cut.png` and `A_hud_small_cut.png`, the HUD over the street with the cut. Research's 44 pt class is carried to the frame's own presses: the dock 72 × 66 (the open one 80 × 72) and the eye 66 round (`style_frames.py`, `TAP`). `A_home_cut` and `A_small_cut` are redrawn the same. No new pick: it is the picked frame, for Faber's install from `Theme.Frame`.
+
 ## AR63. Pip, redesigned in the make (Modulo, for research's pick and the director's look, then its finish; Faber's install after)
 
 On the director's order of 2026-11-23, by 22:52 (Rook, Kirra, Pip, Lyric). The frame is AR60's: what holds, the checks, and the pictures. What holds is his row in `docs/roster.md` (Common, Purple, Mage, Fire, Lantern Burst, Kindle). Research's steer: his lantern is a young mage's, dark metal and glass with a living flame inside, never a paper festival lantern.

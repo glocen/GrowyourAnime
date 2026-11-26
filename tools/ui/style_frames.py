@@ -237,6 +237,7 @@ class Page:
 
 
 CHAMFER = os.environ.get("CHAMFER") == "1"
+TAP = 66   # a press's least height: 44 pt on the small phone (568 x 320) is 66 here (research's class, 2026-11-26)
 
 
 def shard_cut(svg):
@@ -320,8 +321,8 @@ def lead_card(P):
 
 def spectate(P):
     T = P.T
-    P.plate(14, 206, 50, 50, r=25, fill="url(#gPanel)")
-    P.glyph("eye", 26, 218, 26, T["ink2"])
+    P.plate(14, 206, TAP, TAP, r=TAP / 2, fill="url(#gPanel)")
+    P.glyph("eye", 14 + (TAP - 26) / 2, 206 + (TAP - 26) / 2, 26, T["ink2"])
 
 
 def pills(P):
@@ -341,17 +342,17 @@ def pills(P):
 
 def dock(P, active="home"):
     T = P.T
-    xs = [312, 392, 472]
+    xs = [310, 390, 470]
     for kind, x in zip(("base", "home", "map"), xs):
         on = kind == active
-        y = 396 if not on else 390
-        h = 64 if not on else 70
+        y = 460 - TAP if not on else 454 - TAP
+        h = TAP if not on else TAP + 6
         if on:   # raised and lifted, with an ivory hairline: a full ivory fill is the press's alone (research, 2026-11-26)
-            P.plate(x - 4, y, 76, h, r=T["panel"]["r"] - 2, fill=T["raised"], stroke=T["ink"], sw=1.6)
-            P.glyph(kind, x + 20, y + 19, 32, T["ink"])
+            P.plate(x - 4, y, 80, h, r=T["panel"]["r"] - 2, fill=T["raised"], stroke=T["ink"], sw=1.6)
+            P.glyph(kind, x + 20, y + (h - 32) / 2, 32, T["ink"])
         else:
-            P.plate(x, y, 68, h, r=T["panel"]["r"] - 2)
-            P.glyph(kind, x + 18, y + 16, 32, T["ink"])
+            P.plate(x, y, 72, h, r=T["panel"]["r"] - 2)
+            P.glyph(kind, x + 20, y + (h - 32) / 2, 32, T["ink"])
 
 
 # ---- Home, open ------------------------------------------------------------------------------------------------------------
@@ -542,6 +543,8 @@ def main():
         if CHAMFER:   # the shard-cut Home beside the rounded one, for research's pick in the pair (AR62's must-fix 4)
             shoot(html(frame(T, k), faces), out / f"{k}_home_cut.png", W, H)
             shoot(html(frame(T, k), faces, zoom=568 / W), out / f"{k}_small_cut.png", 568, 320, scale=1)
+            shoot(html(frame(T, k, home_open=False), faces), out / f"{k}_hud_cut.png", W, H)
+            shoot(html(frame(T, k, home_open=False), faces, zoom=568 / W), out / f"{k}_hud_small_cut.png", 568, 320, scale=1)
             continue
         shoot(html(frame(T, k), faces), out / f"{k}_home.png", W, H)
         shoot(html(frame(T, k, home_open=False), faces), out / f"{k}_hud.png", W, H)

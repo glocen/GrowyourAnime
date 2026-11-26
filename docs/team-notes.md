@@ -11,9 +11,9 @@ Each teammate rewrites its own row: one to three lines. Open asks sit under "Wai
 **Faber (builder).** 2026-11-26, 20:55 by the clock, on Opus 5.5. Committed: TR69 A's last must-fix (a critical's brush; every Shade's numbers born over where its mark would stand); AR67's generator installed (15 meshes published, the base's cases pass), its captures for research's pass in AR67's entry.
 - **Next:** AR62 B's Arc panel and Sonus's 22 cues while Scintilla holds Studio; then TR69 D's lever (First 2 s while phased), TR69 F's captures, TR71 B to D, TR59's retake.
 
-**Modulo (assets).** 2026-11-26, 20:23. Nothing running, no lock held.
-- **For Faber's install:** AR62's Arc panel B; the run's card C, both must-fixes drawn; the HUD over the world with the cut (`build/handoff/UI/arc_panel/`, `run_card/C_*`, `style_frames/A_hud_cut.png`). AR67 A is Faber's too.
-- **For research's pick:** the full screens' top bar, two targets, my lean B (`build/handoff/UI/top_bar/bar_sheet.png`). Next: the Menu (the audit's fifth). AR64's hair stays at "close", asked of the director.
+**Modulo (assets).** 2026-11-26, 21:08. Nothing running; Blender free.
+- **For Faber's install:** AR62's Arc panel B, the run's card C, the HUD with the cut, the top bar B (`build/handoff/UI/`), while the UI's colour and font are asked (21:04).
+- **Now:** AR67's must-fix, the core smooth up close. Home's two cards wait on the director's examples in `inbox/` (20:57; AR62), then research's study. AR64's hair stays at "close", with the director.
 
 **Scintilla (effects).** 2026-11-26, 21:03. **AR48's grey redo, in play** (AR48, "The grey redo, in play"): Sap reads; Burn shows, small; Shock legible only at full size; Chill's crust hidden behind the lead, so Freeze carrying Frost alone looks better. Research's pass waits. **TR69 A after 20:42:** the criticals are off the mark (TR69). **AR7's C4** and **AR61** wait on the director's word.
 - **Next:** research's verdict on AR48, then the colour pass on all four; C4's straight cut on a Festival place turn. Nothing running.

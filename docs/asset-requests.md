@@ -18010,6 +18010,8 @@ The audit's fourth screen (the director, 2026-11-24: "this left ui is so ugly", 
 - **A check at the build:** the widest Voidkin on the stage, a weapon or a reach out to its side, with nothing of it under a mark.
 - **Next:** Faber builds B with the run card C and the Arc panel B. Modulo goes on to the Menu.
 
+**Modulo, 20:58: Home's cards wait on the director's examples.** The lead and the item as key art (Rook at the Strike, Akari in EEVEE) were rejected at 20:46. Three sky drafts then missed: procedural blobs, a ball pit of lit spheres, and EEVEE volumes as a flat wall (Cycles' were stopped twice by the memory guard). Nothing was delivered, and those scripts are deleted. Asked what the art should show, the director answered at 20:57: "Show me your examples" (2 or 3 menu screenshots in `inbox/`; research's study, then my targets).
+
 ## AR63. Pip, redesigned in the make (Modulo, for research's pick and the director's look, then its finish; Faber's install after)
 
 On the director's order of 2026-11-23, by 22:52 (Rook, Kirra, Pip, Lyric). The frame is AR60's: what holds, the checks, and the pictures. What holds is his row in `docs/roster.md` (Common, Purple, Mage, Fire, Lantern Burst, Kindle). Research's steer: his lantern is a young mage's, dark metal and glass with a living flame inside, never a paper festival lantern.

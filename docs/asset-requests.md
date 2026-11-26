@@ -5171,6 +5171,34 @@ The audit's fourth screen (the director, 2026-11-24: "this left ui is so ugly", 
 - **The rim:** azure #6FB2FF on yours, coral #FF8470 on theirs.
 - **At the finish:** the icons in the style (each Voidkin's own signature on the press, the skull, gem and sword), and one form for the level.
 
+### Modulo: piece 2, the base's HUD and the return panel, two takes each in B (2026-11-27, 00:02; started after 23:51)
+
+- **Targets only,** as research said: "draw it now as targets only, in B, and build nothing until the specimen has been judged in play".
+  - Sheet: `build/handoff/UI/hud_overhaul/piece2_base/sheet.png` (today first, then the takes). Each frame sits beside it, with a `_small` twin (568 wide) and the base's `_close` views.
+  - Drawn by `tools/ui/hud_base.py` over the base at the gate, in its installed light, with today's HUD taken out.
+- **The base's HUD:**
+  - **Take 1, Tags:**
+    - Credits, with Power under it, mirroring the card. Power reads "91 kW made", with "10 kW used" under it on a meter whose track is what's made, so it can't read as an overload.
+    - The dock is three tiles in the left column (Base, Home, Play). The one you're on has a gold rim.
+    - Each machine's name sits on a small slate tag with its job's dot, on a short stem.
+  - **Take 2, Rail:**
+    - One strip: Credits, then made and used side by side, then the battery.
+    - The dock is one rail.
+    - The names are written over the world in a thin dark edge, with no plate and no stem.
+  - **Both:** the lead's card and eye as in piece 1. The dock clears the avatar's legs. The names are at 12 points, 8 px on the smallest phone.
+- **The return panel at load.** The director's words: "it should be the whole screen and appear when a player load in the game".
+  - **Take 1, Grid:** the base blurred behind a slate veil over the whole screen. "Welcome back", the gains in eight tiles, and Collect as the one press.
+  - **Take 2, Tally:** a light veil. The largest gain (+1,240 Credits) on the left over Collect, and the rest as a list, with the three stones on one row.
+  - **The words:** ReturnCard's, plus three I propose:
+    - "Welcome back";
+    - "While you were away, your base kept working.";
+    - "Battery full" said beside the Credits it became. Today the game shows "Full" big and the Credits small.
+- **The gate, measured on the rendered pixels:** every word on a plate is white.
+  - White words measure 6.1 to 7.2 on the plate bodies and 5.6 on take 1's veil.
+  - The grey second ink measured 4.4 on slate, so no word uses it now. The quieter words are smaller, in the body face.
+- **Content check:** PASS (00:02). Its one note: the default avatar's stock shirt text stays out of anything for the game page or the store.
+- **For the build, later:** Roblox's player list sits where the pills are (Gemini's note). Faber hides it, or the pills move.
+
 ## AR63. Pip, redesigned in the make (Modulo, for research's pick and the director's look, then its finish; Faber's install after)
 
 On the director's order of 2026-11-23, by 22:52 (Rook, Kirra, Pip, Lyric). The frame is AR60's: what holds, the checks, and the pictures. What holds is his row in `docs/roster.md` (Common, Purple, Mage, Fire, Lantern Burst, Kindle). Research's steer: his lantern is a young mage's, dark metal and glass with a living flame inside, never a paper festival lantern.

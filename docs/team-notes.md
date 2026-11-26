@@ -11,9 +11,12 @@ Each teammate rewrites its own row: one to three lines. Open asks sit under "Wai
 **Faber (builder).** 2026-11-26, 23:44 by the clock, on Opus 5.5. Committed: TR69 B's three elite tells hooked (adceb93f); TR69 D's record (2e64c381); **tap to move**, TR69's trial block, in for the director to play on the pad (728b88e0). Its logic cases pass; its Studio self-test is written, NOT RUN (memory 1.19 GB, AppXSvc).
 - **Next, at about 2 GB free:** TR69 B's capture and self-test, Scintilla's 30 min turn, TR71 B's self-test, Modulo's two clean plates, TR69 D's tapper gap. Meanwhile, offline: AR67's install. AR62 B, the run card C, the HUD and the top bar wait on the director's answer on the style (21:04).
 
-**Modulo (assets).** 2026-11-26, 23:40. AR62's HUD overhaul, piece by piece (the director's word): **piece 1, the fight's HUD, is in for research's pick with Gemini** (`build/handoff/UI/hud_overhaul/piece1_fight/`; content check PASS).
-- **For Faber's install:** AR67's must-fix, the core smooth and closed, and the kit's pole holes shut (5 meshes, AR67's entry); AR62's Arc panel B, the run's card C, the HUD with the cut, the top bar B (`build/handoff/UI/`), while the UI's colour and font are asked (21:04).
-- **Now:** TR69 B's two elite clips (`ShadeOverhead`, `DasherFan`; research's ask) in Blender while memory allows, then piece 2: the base's HUD and the whole-screen return panel at load. Paused: the base's redo targets (they need about 1.4 GB free). AR64's hair stays at "close", with the director.
+**Modulo (assets).** 2026-11-27, 00:02. AR62's HUD overhaul, piece by piece (the director's word). **Piece 1 is picked (B, Slate glass), with research's must-fixes in** (7acfa1a0). **Piece 2, the base's HUD and the whole-screen return panel, is in as targets for research's pick:** two takes each, in B (`build/handoff/UI/hud_overhaul/piece2_base/`). Nothing is built from piece 2 before piece 1 has been judged in play.
+- **For Faber's install:**
+  - AR62's piece 1, B with its fixes (`build/handoff/UI/hud_overhaul/piece1_fight/B_*`).
+  - AR67's must-fix, the core smooth and closed, and the kit's pole holes shut (5 meshes, AR67's entry).
+  - AR62's Arc panel B, the run's card C, the HUD with the cut, and the top bar B (`build/handoff/UI/`), while the UI's colour and font are asked (21:04).
+- **Now:** TR69 B's two elite clips (`ShadeOverhead`, `DasherFan`) are written and wait on Blender's memory: about 1.7 GB is needed, 1.13 GB was free at 00:01. Paused: the base's redo targets. AR64's hair stays at "close", with the director.
 
 **Scintilla (effects).** 2026-11-26, 23:27. **AR7 C4's F1** (the lance down the pole, its pool and sparks) and **AR61's smaller mass** (the star's bloom cut to the target's) are built on research's go of 23:20 and taken (1fb167b1), not yet seen in play. **TR69 B's elites' tells:** rows and pictures in (81ee6aa2); Faber is hooking them.
 - **Next:** my Studio turn after Faber's TR69 B capture: F1 at the keeper's entrance, the star on the deck by day and the street at night, then research's look. AR7's S5 waits on Faber's staging of the keeper, and AR58's final on QA's pack. Nothing running.

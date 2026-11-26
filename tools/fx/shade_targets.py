@@ -37,15 +37,16 @@ Three hero shapes:
   Support's veil is a whole column of it (AR58's S2): the Shades' shields one family, each in its owner's hue.
 
 The Dasher (DasherLunge: Line 0.2667 s, Lunge 1.0, Land 1.25; Config.Combat.Dasher.Line: Half 2, and the lunge's Most 12
-plus Past 2): the hit takes whoever stands within 2 studs of the line, 14 long, so the lane drawn is that 4 by 14,
-truthfully (TR44's question: can the player tell why it hit?). Feel line: a Dasher folds behind its mask's point and a lane
+plus Past 2): the hit takes whoever stands within 2 studs of the line, 14 long, so the lane drawn is that stadium, 4
+across with a round end at the feet and past the end, truthfully (TR44's question: can the player tell why it hit?; and
+Faber's review, 2026-11-26: nobody is hit off the drawn lane). Feel line: a Dasher folds behind its mask's point and a lane
 of amber light cuts open along the street to your fighter, filling toward you like a fuse; then it is down the lane in a
 streak, and the lane flashes as it lands. The levers: the cut (the lane opens from its feet to its end in 4 frames on
 Line), the fuse (a brighter fill from its feet that reaches the end on Land: the time left to move), the lunge's streak
 from Lunge, the flash on Land and the close over 6 frames. The same lane is meant for the keeper's slam footprint (TR44,
 still grey): one look for "a strike lands here". Two hero shapes:
-- D1, the lane: the lane's two edges bright, its far end pointed on past the hit's end, a faint fill, the fuse a brighter
-  fill with a bright front across it;
+- D1, the lane: the lane's rim bright, round at both ends, a faint fill, the fuse a brighter fill with a bright front
+  across it;
 - D2, the chevrons: seven chevrons the lane's width pointing down it, faint from the cut, each lit as the fuse reaches it.
 
 Frames at 60 a second, from Raise (the Guard) and from Line (the Dasher). Every strip's tiles share their stage's one frozen
@@ -402,34 +403,29 @@ def draw_line(fr: Frame, st: Stage, f, shape):
     if f < 0 or f > LAND + 8:
         return
     L, half = LINE["Length"], LINE["Half"]
-    tip = 1.2  # the point, on past the hit's end
     cut = ease_out(life(f, 0, 4))
-    reach = (L + tip) * cut
+    reach = (L + half) * cut  # the cut runs from the feet to the round end's far edge
     fuse = L * life(f, 0, LAND)  # linear: the honest timer
     landed = f >= LAND
     close = 1 - life(f, LAND, LAND + 6)
     flash = 0.7 if LAND <= f < LAND + 2 else 0.0
     feet = np.array([st.root[0], st.ground + 0.04, st.root[2]])
-    corners = [feet + st.side * sx * half * 1.2 + st.aim * va for sx in (-1, 1) for va in (-0.5, L + tip + 0.5)]
+    corners = [feet + st.side * sx * half * 1.2 + st.aim * va for sx in (-1, 1) for va in (-half - 0.5, L + half + 0.5)]
     sl = region(fr, corners)
     u, v, t, cos = on_plane(fr, sl, feet, st.side, st.aim)  # u across, v along
     ok = t > 0
     aa = np.where(ok, t, 1e3) / fr.cam.focal * 1.3
     occ = st.mask("Lead", "Shade")
     width = half * (0.25 + 0.75 * ease_out(life(f, 1, 5)))
-    inside_len = soft(v - reach, aa) * soft(-v, aa)
+    inside_len = soft(v - reach, aa)
     strength = close * (1 + flash)
+    rim = np.hypot(u, v - np.clip(v, 0, L)) - width  # the stadium: within `width` of the line from the feet to L
     if shape == "D1_lane":
-        body_w = np.where(v > L, width * np.clip((L + tip - v) / tip, 0, 1), width)  # the point
-        sd = np.maximum(np.abs(u) - body_w, -v)
-        sd = np.maximum(sd, v - reach)
-        inside = soft(sd, aa)
-        edge = band(np.abs(u) - body_w, 0.06) * 3.0 + band(np.abs(u) - body_w, 0.22) * 0.8
-        edge = edge * inside_len * soft(-(v - 0.6), 0.6)  # the edges start a little out of its feet
-        tipglow = band(v - L - tip * 0.98, 0.08) * 0
+        inside = soft(rim, aa) * inside_len
+        edge = (band(rim, 0.06) * 3.0 + band(rim, 0.22) * 0.8) * inside_len
         filled = soft(v - fuse, aa) * inside
-        front = band(v - fuse, 0.10) * 2.4 * soft(np.abs(u) - body_w, aa) * float(not landed) * float(f > 2)
-        light = inside * 0.22 + filled * 0.55 + edge + front + tipglow
+        front = band(v - fuse, 0.10) * 2.4 * soft(np.abs(u) - width, aa) * float(not landed) * float(f > 2)
+        light = inside * 0.22 + filled * 0.55 + edge + front
         laid = inside * 0.22 + filled * 0.18
     else:  # D2_chevrons
         light = np.zeros_like(u)
@@ -445,7 +441,7 @@ def draw_line(fr: Frame, st: Stage, f, shape):
             shape_in = soft(sd, aa)
             light = light + shape_in * (0.35 + 1.0 * lit) + band(d, 0.06) * (0.6 + 2.2 * lit)
             laid = laid + shape_in * (0.25 + 0.2 * lit)
-        edge_hint = band(np.abs(u) - width, 0.05) * 0.5 * soft(v - reach, aa) * soft(-v, aa)
+        edge_hint = band(rim, 0.05) * 0.5 * inside_len
         light = light + edge_hint
     light = np.where(ok, light * strength, 0)
     laid = np.where(ok, np.clip(laid, 0, 1) * close, 0)

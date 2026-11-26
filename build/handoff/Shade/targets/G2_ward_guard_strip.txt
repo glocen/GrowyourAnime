@@ -1,0 +1,2 @@
+frames from Raise, at 60 a second: -6, -3, 0, 3, 40, 42, 46
+G2_ward_guard_break.png: a heavy hit breaks it at frame 70: 70, 71, 73, 78, 86

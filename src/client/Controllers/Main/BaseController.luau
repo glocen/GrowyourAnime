@@ -24,6 +24,7 @@ local Power = require(Shared.Rules.Power)
 local Breaker = require(Shared.Rules.Breaker)
 local BaseLevels = require(Shared.Rules.BaseLevels)
 local Condenser = require(Shared.Rules.Condenser)
+local CaptureRules = require(Shared.Rules.Capture)
 local Forge = require(Shared.Rules.Forge)
 local CondenserConfig = require(Shared.Config.Condenser)
 local ReinforceConfig = require(Shared.Config.Reinforce)
@@ -46,6 +47,7 @@ local Screen = require(UI.Kit.Screen)
 local Toast = require(UI.Kit.Toast)
 local RevealStage = require(UI.Reveal)
 local RevealPlate = require(UI.Reveal.Plate)
+local RevealCapture = require(UI.Reveal.Capture)
 local BreakerScreen = require(UI.BreakerScreen)
 local PowerScreen = require(UI.PowerScreen)
 local BaseView = require(UI.BaseView)
@@ -666,6 +668,9 @@ local function card(shown: Shown, answer: { [string]: any })
 		Credits = tonumber(answer.Credits) or 0,
 	})
 	shown.Card, shown.Carded = plate, os.clock()
+	if CaptureRules.Offered("Voidkin", shown.Rarity) then
+		RevealCapture.Tile(plate) -- the capture (TR60): its tile while the card holds
+	end
 	task.delay(RevealConfig.CardHold, function()
 		if reveal == shown then
 			RevealPlate.Continue(plate)
@@ -719,7 +724,7 @@ function BaseController.Reveal(answer: { [string]: any }, show: RevealStage.Opti
 	cover.BackgroundColor3 = Theme.Colour.Backing
 	cover.BackgroundTransparency = 1
 	cover.BorderSizePixel = 0
-	cover.ZIndex = 10
+	cover.ZIndex = 1 -- under the stage, whose pieces never take a press, so the card's capture tile takes its own (TR60)
 	cover.Parent = stage.Root
 	shown = { Frame = cover :: Instance, Stage = stage, Card = nil :: Frame?, Carded = 0, Name = name, Rarity = options.Rarity, Outcome = tostring(answer.Outcome) }
 	reveal = shown

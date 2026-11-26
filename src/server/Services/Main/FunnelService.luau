@@ -9,9 +9,12 @@
 --     whose world has the gate, looked at every LOOK seconds.
 -- The step is marked on the save in its own transaction first, and logged only when that commits, so a repeat, a retried
 -- request or a rejoin never logs it again. A step carries its number and name only: no personal data.
+-- A join through a reveal's share (TR60, Rules.Capture: the launch data names the sharer) is counted as the custom
+-- event "ShareJoin", once a join, without the sharer's id, and never rewarded: Studio doesn't log it.
 --   Studio's debug bridge: "Funnel" (who) -> the player's marks and what this server has logged for them;
 --   "FunnelSet" (who, marks) -> the marks become exactly the names given and this server's log is cleared, so a test
 --   can play a step again and put the account's own marks back.
+--   "ShareJoin" (who, launchData) -> whether a join carrying that launch data counts as one through a share (TR60).
 
 local AnalyticsService = game:GetService("AnalyticsService")
 local Players = game:GetService("Players")
@@ -25,6 +28,7 @@ local Markers = require(Shared.World.Markers)
 local Profile = require(Shared.Data.Profile)
 local Combat = require(Shared.Config.Combat)
 local Funnel = require(Shared.Rules.Funnel)
+local Capture = require(Shared.Rules.Capture)
 local Core = script.Parent.Parent.Core
 local DataService = require(Core.DataService)
 local DebugService = require(Core.DebugService)
@@ -77,6 +81,35 @@ local function mark(player: Player, steps: { string })
 	end
 end
 
+-- A join through a reveal's share (TR60): counted once a join, never rewarded. Whether it counted.
+local function shareJoin(player: Player, launch: any): boolean
+	if Capture.Sharer(launch, player.UserId) == nil then
+		return false
+	end
+	if RunService:IsStudio() then
+		local list = logged[player] or {}
+		table.insert(list, "ShareJoin")
+		logged[player] = list
+	else
+		local ok, problem = pcall(function()
+			AnalyticsService:LogCustomEvent(player, "ShareJoin", 1)
+		end)
+		if not ok then
+			Log.Warn("FunnelService", "a join through a share wasn't logged:", problem)
+		end
+	end
+	return true
+end
+
+local function joined(player: Player)
+	local ok, data = pcall(function(): any
+		return player:GetJoinData()
+	end)
+	if ok and type(data) == "table" then
+		shareJoin(player, data.LaunchData)
+	end
+end
+
 -- Who stands within the Challenge's reach of the keeper's gate, in the place that has one.
 local function look()
 	local gate = Markers.Find("KeeperGate")
@@ -106,6 +139,10 @@ function FunnelService.Start()
 	Players.PlayerRemoving:Connect(function(player: Player)
 		logged[player] = nil
 	end)
+	Players.PlayerAdded:Connect(joined)
+	for _, player in Players:GetPlayers() do
+		task.spawn(joined, player)
+	end
 	task.spawn(function()
 		while true do
 			look()
@@ -126,6 +163,13 @@ function FunnelService.Start()
 				end
 			end
 			return { Ok = true, Marks = marks, Logged = table.clone(logged[player] or {}) }
+		end)
+		DebugService.Register("ShareJoin", function(who: any, launch: any): any
+			local player = DebugService.ResolvePlayer(who)
+			if player == nil then
+				return { Ok = false, Error = "BadArgs" }
+			end
+			return { Ok = true, Counted = shareJoin(player, launch), Logged = table.clone(logged[player] or {}) }
 		end)
 		DebugService.Register("FunnelSet", function(who: any, marks: any): any
 			local player = DebugService.ResolvePlayer(who)

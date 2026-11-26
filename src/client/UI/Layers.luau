@@ -11,6 +11,8 @@
 --   Layers.Band()          the band's size now, authored
 --   Layers.Changed         (scale) after a refit
 --   Layers.Force(scale?), Layers.Box(size?)   for tests: a phone's scale and its box
+--   Layers.Only({ "World", "Overlay" })   every other layer made is off, for a capture's frame: what turns them back on,
+--                                         and how many it turned off
 
 local GuiService = game:GetService("GuiService")
 local Players = game:GetService("Players")
@@ -125,6 +127,22 @@ function Layers.Box(box: Vector2?, at: Vector2?)
 	for name, root in roots do
 		size(name, root)
 	end
+end
+
+function Layers.Only(keep: { Name }): (() -> (), number)
+	local off: { ScreenGui } = {}
+	for name, root in roots do
+		local gui = root.Parent
+		if not table.find(keep, name :: Name) and gui and gui:IsA("ScreenGui") and gui.Enabled then
+			gui.Enabled = false
+			table.insert(off, gui)
+		end
+	end
+	return function()
+		for _, gui in off do
+			gui.Enabled = true
+		end
+	end, #off
 end
 
 function Layers.Get(name: Name): Frame

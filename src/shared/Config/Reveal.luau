@@ -32,6 +32,10 @@ return {
 			Legendary = Color3.fromHex("#FFD777"),
 			Mythical = Color3.fromHex("#FF8794"),
 		} :: { [string]: Color3 },
+		-- The capture's tile (TR60, UI/Reveal/Capture): beside the card's top right corner, Gap points out, in the kit's
+		-- neutral glass; a drawn camera stands in for its icon (Modulo's). Timeout: seconds the HUD stays off at most when
+		-- the frame never comes back.
+		Capture = { Size = 36, Gap = 8, Body = Vector2.new(18, 12), Lens = 7, Bump = Vector2.new(6, 3), Timeout = 3 },
 	},
 	-- Each Voidkin's Reveal clip: the marker his strike lands on, and its time in the clip. His clip is shifted so it falls
 	-- on Rook's Knock, where the ceremony's colours run (RevealArt.Figure.Knock). The self-test reads the times back from

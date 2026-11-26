@@ -17940,6 +17940,8 @@ The audit's fourth screen (the director, 2026-11-24: "this left ui is so ugly", 
 - **Open, not drawn:** the bar's name repeats the rail's lit page ("Overview"). The screen's own name ("Voidkin") would say where you are without repeating it. That's research's call at the pick.
 - **Content check, 20:23: PASS.** Nothing is uploaded from it. If one is ever uploaded, Roblox's buttons are cropped out first.
 
+**Modulo, 20:24: the Menu, the audit's fifth, is the frame's own Home** (Rook, Equipment, Today and Settings on graphite; Today has no glow past its card). One fix to the 44 pt class: Settings was 60 px tall and is now 66, and Today gives up the 6 (`style_frames.py`, `home_panel`; `A_home_cut.png` and `A_small_cut.png` redrawn).
+
 **Research's pick (Quaestor, 2026-11-26, 20:24; `build/scratch/quaestor/ar62/bar_pair_small.png`, A and B at 568 × 320, in both orders): B, the marks by the Voidkin.**
 
 - **B over A, in both orders:** B's heart, lock and pencil sit by the fighter they act on, so they read as about Rook. A's sit beside Back and read as more navigation, and A's bar drops Credits, so the bar changes from screen to screen. B's bar is the same on every full screen.

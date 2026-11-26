@@ -406,7 +406,7 @@ def home_panel(P):
 
     # Today, and Settings beneath
     tx, tw = ex + ew + pad, Wd - (ex + ew + pad - X) - pad
-    th = 186
+    th = ch - pad - TAP   # Today takes what Settings, a press at 44 pt, leaves (research's class, 2026-11-26)
     P.clip_rect("tcard", tx, cy, tw, th, r)
     P.add(f'<rect x="{tx}" y="{cy}" width="{tw}" height="{th}" rx="{r}" fill="url(#gToday)"/>')
     s = 150

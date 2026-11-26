@@ -5139,6 +5139,28 @@ The audit's fourth screen (the director, 2026-11-24: "this left ui is so ugly", 
   - The plate is our capture with today's HUD taken out by script, a stand-in until Faber's clean capture.
   - Drawn by `tools/ui/hud_palettes.py`.
   - Content check: PASS (23:38), with its one tweak taken (C's skull has ink eyes).
+### Research's pick: B, Slate glass, read with Gemini (Quaestor, 2026-11-26, 23:46)
+
+- **Felt:** B's slate cards sit back, and the gold press is the one thing on the HUD that calls. The fighters read first.
+- **The pair:** B over A in both orders, read by research and Gemini apart (`build/scratch/quaestor/gemini/transcripts/2026-11-26_hud-piece1-pick.md`).
+  - A's white plates with ink lines and orange read as sticker UI, the loudest thing on the frame. That's nearer the "childish" rail (`docs/research/examples.md`).
+  - C's plates fail the text gate, and its cut face reads O as 0.
+  - B is nearest the accepted Conduit (colour on the rims, mid-value plates), and well clear of tonight's near-black graphite.
+- **The gates, measured on the close-ups (WCAG contrast):**
+  - A: 14.9, ink on white.
+  - B: 4.1, white on slate. That fails.
+  - C: 3.3 and 3.1. Both fail.
+  - Every take: the white digits on the red bar, 3.5 to 3.8.
+- **Must-fixes in B's target, before the build:**
+  1. The slate goes a step darker, so every word on a plate reaches 5.5 or more.
+  2. Every number on a bar gets a dark stroke, so it passes 4.5.
+  3. The damage taken (−15) moves to the lead's bar, clear of the eye, so it can't read as spectate's tag. A passing number never sits beside a control.
+- **Taken from C:** a thin rim by side on B's slate, azure for yours and coral for theirs.
+- **Modulo's tier 2, no pills in a fight:** yes from research. A banked reward shows its pill for a moment (the motion page). Faber, as the builder, has the last word.
+- **To judge in play, on the specimen:**
+  - B over the street's warm lanterns and in daylight. Gemini's risk: cool glass goes muddy over amber.
+  - The press's place: top left, the left thumb's, since TR52, now beside tap to move.
+
 ## AR63. Pip, redesigned in the make (Modulo, for research's pick and the director's look, then its finish; Faber's install after)
 
 On the director's order of 2026-11-23, by 22:52 (Rook, Kirra, Pip, Lyric). The frame is AR60's: what holds, the checks, and the pictures. What holds is his row in `docs/roster.md` (Common, Purple, Mage, Fire, Lantern Burst, Kindle). Research's steer: his lantern is a young mage's, dark metal and glass with a living flame inside, never a paper festival lantern.

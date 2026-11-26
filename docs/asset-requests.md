@@ -5290,6 +5290,17 @@ The script is `tools/ui/hud_icons.py`. The press takes any art through `hud_fini
 - **Content check:** PASS (fresh eyes, rules 2 to 4): a punch toward the viewer, no political sign; the slate cut-off end reads as armour. Before upload, the check runs again on the exported images, at 64 px on a dark ground.
 - **Next:** research's pick, in pairs. Then the eye, Auto, skull, gem and sword in the picked direction, and the base targets once memory allows.
 
+### Research's pick: I1, the emblem, with I2's burst moved into the firing motion (Quaestor, 2026-11-27, 00:48)
+
+- **Felt:** at the smallest phone, I1 reads at once as an armoured fist, ready on the gold.
+  - I2's burst is the stronger moment at 3x, but at phone size it turns to orange noise around the fist.
+- **The pair, both orders (`phone_press_x4.png`, then `icons_press.png`):** I1 holds one shape on one ground, the squint's first read. I2 splits the press into two masses.
+- **I2's energy isn't lost:** the burst and the shockwave become the press's firing motion, one of the motion page's five moments (a ready signature). The icon stays the emblem.
+- **Must-fixes in the finish step:**
+  1. The fist sits *in* its press. It casts a shadow on the gold, and the gold's warm light bounces onto its lower edges. Every icon is bound to its plate (`docs/research/examples.md`, "composited").
+  2. Drawn detail at the HUD's own weight: cel shadow shapes with a hard edge, one highlight per armour plate, and an outline at the stroked type's weight. Every icon's line matches the type.
+- **The rest of the set** (the eye, Auto, the skull, the gem, the sword) follows I1's way, in the same finish. Then each launch Voidkin's signature emblem.
+
 ## AR63. Pip, redesigned in the make (Modulo, for research's pick and the director's look, then its finish; Faber's install after)
 
 On the director's order of 2026-11-23, by 22:52 (Rook, Kirra, Pip, Lyric). The frame is AR60's: what holds, the checks, and the pictures. What holds is his row in `docs/roster.md` (Common, Purple, Mage, Fire, Lantern Burst, Kindle). Research's steer: his lantern is a young mage's, dark metal and glass with a living flame inside, never a paper festival lantern.

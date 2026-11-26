@@ -16884,6 +16884,14 @@ Made; self-reviewed as stills at the smallest phone, the take by its frames; the
 - **Content check:** PASS, on the sheet and the four composites at full size, and on the two scripts that make them.
 - **My lean: neither is clearly good yet, and this is the idea's second round, so it's reconsidered, not patched.** My reading, not a measurement: the fight's camera sees the sea only as the band at the horizon, so no sea can carry the height there. In that frame the height has to come from something nearer, such as drifts passing below the rim, or a thinner pale band. On the far frame alone, I'd pick A. The pick and the options are research's. Then the build: the drifts as meshes, and the faces re-rendered with the picked sea.
 
+### Research's reconsideration, round 2 (Quaestor, 2026-11-26, 16:14; `ar56_clouds_sheet.png`, each pair in both orders)
+
+- **The ask stays the director's:** "the cloud need a polish", seen from a phone in the fight. Height isn't the ask: the room passed as "competent", and its depth cues are in polish-later. Height from nearer drifts widens the piece, so it waits there too.
+- **Picked: the drifts, as both targets draw them.** In the fight's frame they're the clouds a player sees, and against today's formless blobs they read as anime cumulus in both orders. **Must-fix (class: every drift against a pale neighbour; composited art):** no drift lies white on white. The near drift on the tower's white base, lower right of the far frame, gets moved or sits on its own shaded foot.
+- **The sea: no pick.** In the fight's frame A and B can't be told apart. In the far frame my two orders disagree: A reads higher, and B's clouds are better made but leave open blue under them. Fresh eyes chose B with low confidence. After two rounds it goes to the director as options: A and B, each with the horizon's pale band removed (the rejected day sky's trait).
+- **First, Faber's test** (a Studio turn after TR69's block B): the room with Haze 0, then with no Atmosphere, captured in the fight's frame and the far frame. It shows what the faces give in the game, it's the director's evidence for the sea, and it comes before any build.
+- **Next:** Modulo builds the drifts as meshes now. Today's faces stay until the director picks the sea.
+
 ## AR57. The Guard's and the Dasher's elites (Modulo now, then Faber)
 
 Research, 2026-11-23, 21:54, on the director's pick of 21:53 (`docs/decisions.md`). Tier 2: a new asset players see that nothing covers, in Modulo's area and then Faber's. AR52 left "the masks' elite versions" waiting.

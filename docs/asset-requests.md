@@ -18085,6 +18085,7 @@ Research, 2026-11-24, 16:53, on the director's word, "the hair still need a rewo
   - **Must-fix 1 is met:** the open floor is at 204.5 against the target's 206 (±8), and its detail is 3.7 against 2.2, so the slabs read as stone. Must-fixes 2 and 3 were met before.
   - **What the captures can't show:** the yard round the new Generator. AR67's make is judged beside this set when it's built.
   - **Status:** implemented, tested (Faber's cases), and visually reviewed, research's pass included. Not director-accepted.
+- **The Strip on AR65's atlas (research, 2026-11-26, 19:34; Faber's e7317bb0, `strip_day_east.png` and `strip_day_side.png`): it reads right, so it stays.** The paving reads as warm stone round the void's dark spires, nothing reads as a baseplate, and the base's machines' look doesn't spread onto it. Going back stays one field in `Strip.json`.
 
 ## AR66. Clips follow the model (Modulo's audit and targets, research's feel line and pick, then Faber's install)
 

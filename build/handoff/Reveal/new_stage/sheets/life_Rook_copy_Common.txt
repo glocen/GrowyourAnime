@@ -1,4 +1,4 @@
 TR70 B, a copy of a Common (Rook):
 row 1  today's stage, the full ceremony, at 0.10, 0.30, 0.55, 0.70, 1.10, 1.62 s
-row 2  C1, the Flash: a card over the world, the star bar's third pip ticking at 0.3 s, closing by itself at 1.3 s; at 0.05, 0.12, 0.25, 0.32, 0.50, 0.70, 1.30, 1.50 s
+row 2  C1, the Flash, research's pick: AR62's shard-cut panel over the world, the third pip ticking at 0.3 s, the card closing by itself at 0.8 s and gone by 0.95 s; at 0.05, 0.12, 0.25, 0.32, 0.50, 0.80, 0.88, 1.00 s
 The world is the Breaker's view at the phone's 2.16:1, its width fitted from the top.

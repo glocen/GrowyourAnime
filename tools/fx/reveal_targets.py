@@ -42,7 +42,18 @@ OUT = ROOT / "build" / "handoff" / "Reveal" / "new_stage" / "targets"
 SCALE = 2
 W, H = 844 * SCALE, 390 * SCALE
 
-HUE = {"Rare": hexc("#6FB6FF"), "Common": hexc("#AEB4C0")}  # TR70 B, the rarity's own (Config.Reveal.Plate.Words)
+HUE = {"Common": hexc("#AEB4C0"), "Uncommon": hexc("#7CF0A0"), "Rare": hexc("#6FB6FF"), "Epic": hexc("#D29CFF"),
+       "Legendary": hexc("#FFD777"), "Mythical": hexc("#FF8794")}  # the rarity's own (Config.Reveal.Plate.Words)
+# R1's loudness by rarity (research's pick, must-fix 2): spokes, their reach (a share of the frame's half-diagonal), their
+# light, and a second ring of thin spokes; the full frame is kept for the top rarities, a Rare sits mid-ladder
+LADDER = {
+    "Common": {"n": 8, "reach": 0.36, "k": 0.5, "thin": 0},
+    "Uncommon": {"n": 10, "reach": 0.48, "k": 0.62, "thin": 0},
+    "Rare": {"n": 14, "reach": 0.62, "k": 0.78, "thin": 0},
+    "Epic": {"n": 18, "reach": 0.8, "k": 0.92, "thin": 10},
+    "Legendary": {"n": 22, "reach": 1.0, "k": 1.05, "thin": 16},
+    "Mythical": {"n": 24, "reach": 1.1, "k": 1.15, "thin": 22},
+}
 GRAPHITE = hexc("#17181C")  # AR62's A: the dim behind a screen
 PANEL = hexc("#23252B")
 VOID = hexc("#3A2A6E")  # the void's own violet, only where it shows: its motes and cracks at the edges
@@ -151,6 +162,26 @@ def chest():
     return np.array([x, top + 0.32 * h], np.float32)
 
 
+def core():
+    """The burst's white core: behind the chest's middle, well under the head (research's must-fix 1)."""
+    x, top, feet, h = figure_box()
+    return np.array([x, top + 0.42 * h], np.float32)
+
+
+def keep_off(shot, rgba, land):
+    """Research's must-fix 1, with the figure about to be laid: the added light kept off the head and hair, and a dark
+    band round the figure's edge so it holds the strongest contrast over the spokes, in colour and in grey."""
+    if rgba is None:
+        return
+    a = rgba[..., 3]
+    x, top, feet, h = figure_box()
+    head = blur(a * (yy < top + 0.24 * h), 10 * SCALE)
+    shot.light *= (1 - 0.85 * np.clip(head * 3, 0, 1))[..., None]
+    shot.flush()
+    band = np.clip(blur(a, 4 * SCALE) * 2.2, 0, 1)
+    shot.lay(band, hexc("#0B0C10"), 0.6 * land)
+
+
 def void(shot, t, k, world=None):
     """The screen dropped into the void: the world dims as graphite closes in over it from the edges to the shard, the
     iris's lip and the motes the void's own violet, the only violet on the screen."""
@@ -215,13 +246,14 @@ def blade(shot, t, hue):
     shot.add(np.ones((H, W), np.float32), hue, 0.12 * k)
 
 
-def rays(shot, t, hue, n=22, reach=1.0, fan=None, turn=6.0):
-    """R1's burst: cut-crystal rays, each a lit facet and a shaded one along a bright edge, a white core behind them."""
+def rays(shot, t, hue, n=22, reach=1.0, fan=None, turn=6.0, k=1.0, thin=False, seed=3):
+    """R1's burst: cut-crystal rays, each a lit facet and a shaded one along a bright edge, a white core behind the chest
+    (never behind the head: research's must-fix 1). `k` its light (the ladder's), `thin` the second ring's needles."""
     grow = ease_out(life(t, SPLIT, SPLIT + 0.18)) * (1 + 0.06 * math.sin(min(life(t, SPLIT + 0.18, SPLIT + 0.5), 1) * math.pi))
     if grow <= 0:
         return
-    c = chest()
-    rng = np.random.default_rng(3)
+    c = core()
+    rng = np.random.default_rng(seed)
     spin = math.radians(turn) * max(t - SPLIT, 0)
     big = math.hypot(W, H) * 0.62 * reach
     for i in range(n):
@@ -230,7 +262,7 @@ def rays(shot, t, hue, n=22, reach=1.0, fan=None, turn=6.0):
         else:
             a = -math.pi / 2 + (i / (n - 1) - 0.5) * fan + rng.uniform(-0.04, 0.04) + spin * 0.3
         length = big * rng.uniform(0.55, 1.0) * grow
-        half = math.radians(rng.uniform(2.2, 4.2))
+        half = math.radians(rng.uniform(2.2, 4.2) * (0.35 if thin else 1.0))
         r0 = 0.1 * H
         tip = c + length * np.array([math.cos(a), math.sin(a)])
         root = c + r0 * np.array([math.cos(a), math.sin(a)])
@@ -241,11 +273,12 @@ def rays(shot, t, hue, n=22, reach=1.0, fan=None, turn=6.0):
         shade = polygon([root, right, tip])
         along = np.clip(np.hypot(xx - c[0], yy - c[1]) / max(length, 1), 0, 1)
         falloff = (1 - along) ** 1.3
-        shot.add(lit * falloff, hue, 1.25 * fade)
-        shot.add(shade * falloff, hue, 0.45 * fade)
-        shot.add(segment(root, tip, 1.4 * SCALE) * falloff, WHITE, 0.9 * fade)
-    shot.add(radial(c, 0.1 * H), WHITE, 2.0 * grow)
-    shot.add(radial(c, 0.24 * H, 1.6), hue, 0.55 * grow)
+        shot.add(lit * falloff, hue, 1.25 * fade * k)
+        shot.add(shade * falloff, hue, 0.45 * fade * k)
+        shot.add(segment(root, tip, 1.4 * SCALE) * falloff, WHITE, 0.9 * fade * k)
+    if not thin:
+        shot.add(radial(c, 0.075 * H), WHITE, 2.0 * grow * k)
+        shot.add(radial(c, 0.2 * H, 1.6), hue, 0.55 * grow * k)
 
 
 def rift(shot, t, hue):
@@ -330,7 +363,7 @@ def text(words, font, pt, x, y, align="left", shear=0.0):
     return cov
 
 
-def words(shot, t, hue, name, light=False):
+def words(shot, t, hue, name, light=False, rarity="Rare"):
     """The name at NAME and the plate at CARD, at today's places: the name large at the left over a bar of the hue,
     the plate under it (TR70 A's lines are Faber's; today's are drawn)."""
     shot.flush()
@@ -344,16 +377,19 @@ def words(shot, t, hue, name, light=False):
     k = ease_out(life(t, CARD - 0.14, CARD))
     if k > 0:
         cx, cy, w, h = 186 * SCALE, (250 + (1 - k) * 8) * SCALE, 300 * SCALE, 78 * SCALE
-        body = rounded(cx, cy, w, h, 10 * SCALE)
+        body = cut_panel(cx, cy, w, h, 12 * SCALE)
         shot.lay(body, PANEL, 0.94 * k)
-        shot.lay(np.clip(body - rounded(cx, cy, w - 3, h - 3, 10 * SCALE - 1.5), 0, 1), hexc("#4A4F5A"), k)
+        shot.lay(np.clip(body - cut_panel(cx, cy, w - 3, h - 3, 12 * SCALE - 1), 0, 1), hexc("#4A4F5A"), k)
         y0 = 250 + (1 - k) * 8 - 39
         shot.lay(text("A new Voidkin", BODY, 13, 50, y0 + 10), MUTED, k)
         gem = (50 * SCALE + 4 * SCALE, (y0 + 38) * SCALE)
         shot.lay(polygon([(gem[0], gem[1] - 6 * SCALE), (gem[0] + 4 * SCALE, gem[1]), (gem[0], gem[1] + 6 * SCALE),
                           (gem[0] - 4 * SCALE, gem[1])]), hue, k)
-        shot.lay(text("Rare", STRONG, 15, 62, y0 + 29), hue, k)
-        shot.lay(text("· Green · Healer", BODY, 15, 99, y0 + 29), INK, k)
+        word = text(rarity, STRONG, 15, 62, y0 + 29)
+        shot.lay(word, hue, k)
+        cols = np.nonzero(word.max(axis=0) > 0.3)[0]
+        end = cols.max() / SCALE if len(cols) else 99
+        shot.lay(text("· Green · Healer", BODY, 15, end + 5, y0 + 29), INK, k)
         shot.lay(text("In your collection", BODY, 15, 50, y0 + 51), INK, k)
 
 
@@ -377,10 +413,16 @@ def field(shot, t, hue):
 
 
 # --- the copy: Flash, a one-second tick on its star bar (TR70 A: 0.7 s, closes by itself 0.8 s after) ----------------
-COPY_LIFE = [0.05, 0.12, 0.25, 0.32, 0.5, 0.7, 1.3, 1.5]
+COPY_LIFE = [0.05, 0.12, 0.25, 0.32, 0.5, 0.8, 0.88, 1.0]
 COPY_PEAK = 0.32  # the tick
 COPY_CARD = (0.5, 0.47, 232, 196)  # its middle (shares of the screen) and its size in points: a panel, r10, AR62's material
-TICK, CLOSE = 0.3, 1.3
+TICK, CLOSE = 0.3, 0.8  # the plate closes itself after 0.8 s, gone by 0.95: done by 1.0 s from the tap (TR70's gate)
+
+
+def cut_panel(cx, cy, w, h, cut):
+    """AR62's panel: a box with the shard cut, its top-left and bottom-right corners chamfered by `cut`."""
+    x0, x1, y0, y1 = cx - w / 2, cx + w / 2, cy - h / 2, cy + h / 2
+    return polygon([(x0 + cut, y0), (x1, y0), (x1, y1 - cut), (x1 - cut, y1), (x0, y1), (x0, y0 + cut)])
 
 
 def rounded(cx, cy, w, h, r, soft=1.2):
@@ -420,9 +462,9 @@ def copy_frame(t, rook, world):
         return shot.out()
     cx, cy = COPY_CARD[0] * W, COPY_CARD[1] * H - (1 - show) * 14 * SCALE
     cw, ch = COPY_CARD[2] * SCALE * (0.9 + 0.1 * show), COPY_CARD[3] * SCALE * (0.9 + 0.1 * show)
-    body = rounded(cx, cy, cw, ch, 10 * SCALE)
+    body = cut_panel(cx, cy, cw, ch, 14 * SCALE)
     shot.lay(body, hexc("#23252B"), show)
-    shot.lay(np.clip(body - rounded(cx, cy, cw - 3, ch - 3, 10 * SCALE - 1.5), 0, 1), hexc("#4A4F5A"), show)
+    shot.lay(np.clip(body - cut_panel(cx, cy, cw - 3, ch - 3, 14 * SCALE - 1), 0, 1), hexc("#4A4F5A"), show)
     shot.lay(rounded(cx, cy - ch / 2 + 1.5, cw - 24 * SCALE, 1.2 * SCALE, 0.6 * SCALE), hexc("#F3EEE4"), 0.25 * show)
     pic = (cx - cw / 2 + 12 * SCALE, cy - ch / 2 + 12 * SCALE, cw - 24 * SCALE, ch - 76 * SCALE)
     inside = rounded(pic[0] + pic[2] / 2, pic[1] + pic[3] / 2, pic[2], pic[3], 6 * SCALE)
@@ -503,7 +545,10 @@ def frame(direction, t, rarity, figures, world=None, name="Lyric"):
     shot = Shot(GRAPHITE)
     void(shot, t, 1.0 - 0.6 * life(t, SPLIT, SPLIT + 0.3), world)
     if direction == "R1_burst":
-        rays(shot, t, hue)
+        step = LADDER[rarity]
+        if step["thin"]:
+            rays(shot, t, hue, n=step["thin"], reach=step["reach"] * 1.05, k=step["k"] * 0.8, thin=True, seed=8)
+        rays(shot, t, hue, n=step["n"], reach=step["reach"], k=step["k"])
     elif direction == "R2_rift":
         rift(shot, t, hue)
         rays(shot, t, hue, n=9, reach=0.75, fan=math.radians(150), turn=0)
@@ -514,13 +559,17 @@ def frame(direction, t, rarity, figures, world=None, name="Lyric"):
     shard(shot, t, hue)
     if t >= SPLIT + 0.04:
         land = ease_out(life(t, SPLIT + 0.04, SPLIT + 0.14))
+        if direction == "R1_burst":
+            keep_off(shot, figures(t), land)
         shot.figure(figures(t), land)
     blade(shot, t, hue)
-    words(shot, t, hue, name)
+    words(shot, t, hue, name, rarity=rarity)
     return shot.out()
 
 
 def main(argv):
+    flags = [x for x in argv if x.startswith("--")]
+    argv = [x for x in argv if not x.startswith("--")]
     folder = Path(argv[0]) if argv else FIGURES
     out = Path(argv[1]) if len(argv) > 1 else OUT
     out.mkdir(parents=True, exist_ok=True)
@@ -541,7 +590,14 @@ def main(argv):
         world[:14, :14] = world[16, 16]
     else:
         world = None
-    for direction in ("R1_burst", "R2_rift", "R3_field"):
+    # research's pick (TR70, 2026-11-26): R1 and C1; R2 and R3 stay on file (e68f68f3), drawn again with --all
+    ladder = [frame("R1_burst", PEAK, r, lyric, world)[::2, ::2] for r in LADDER]
+    strip(ladder, out / "R1_burst_ladder.png", cols=3)
+    (out / "R1_burst_ladder.txt").write_text(
+        f"R1's ladder at {PEAK:.2f} s from the tap, one frame per rarity: " + ", ".join(LADDER) + " (rows of three)" + chr(10),
+        encoding="utf-8")
+    print("R1 ladder done")
+    for direction in ("R1_burst", "R2_rift", "R3_field") if "--all" in flags else ("R1_burst",):
         write_png(frame(direction, PEAK, "Rare", lyric, world), out / f"{direction}_Lyric_peak.png")
         tiles = [frame(direction, t, "Rare", lyric, world)[::2, ::2] for t in LIFE]
         strip(tiles, out / f"{direction}_Lyric_strip.png", cols=len(LIFE))

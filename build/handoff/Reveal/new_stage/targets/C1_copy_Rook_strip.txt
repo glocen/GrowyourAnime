@@ -1,1 +1,1 @@
-C1, a copy of a Common (Rook), its life at 0.05, 0.12, 0.25, 0.32, 0.50, 0.70, 1.30, 1.50 s from the tap
+C1, a copy of a Common (Rook), its life at 0.05, 0.12, 0.25, 0.32, 0.50, 0.80, 0.88, 1.00 s from the tap

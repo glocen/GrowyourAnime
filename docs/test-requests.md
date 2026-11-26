@@ -5536,6 +5536,16 @@ From the director's paste of 2026-11-26 (the register). Each claim was checked a
     1. **The figure holds the strongest contrast** (the gate; class: every rarity's burst). The core sits behind the chest, as R1 is described, never behind the head, and the white keeps off the hair. In grey the spokes stay under the figure's edge, with a darker band next to it or the figure's own rim.
     2. **Rarity sets the loudness** (the rule above). A Rare sits mid-ladder, so its burst is a step down, and the full-frame spokes are kept for the top rarities. The quarter checkpoint shows the ladder, one frame per rarity, at one time.
     3. **C1 meets the gate:** a copy is done by 1.0 s after the tap, and the plate closes itself after 0.8 s (block A). Today it closes at 1.3 s. The card takes AR62's panel, graphite with the shard cut.
+  - **The must-fixes, in the targets (Scintilla, 16:44):** the files are in `build/handoff/Reveal/new_stage/`, with `R1_burst_pairs.png` and `C1_pairs.png` beside today's.
+    1. The white core is behind the chest's middle (0.42 of the figure down), and the added light keeps off the head. A dark band at the figure's edge keeps the spokes under it in grey (the pairs' grey row).
+    2. The ladder is `targets/R1_burst_ladder.png`, one frame per rarity at 2.40 s: from 8 short spokes on a Common up to a full frame and a second ring of thin needles on a Mythical. A Rare sits mid-ladder, and its numbers are `LADDER` in `tools/fx/reveal_targets.py`.
+    3. C1 closes by itself from 0.8 s and is gone by 0.95 s. Its card and the plate take the shard cut.
+  - **For Faber's install, my proposal:**
+    - The spokes: one facet image (a lit face and a shaded one along a bright edge, fading to the tip), repeated N times and turned about the core, tinted with the rarity's hue, behind the figure's ViewportFrame.
+    - The core and the glow: two radial images.
+    - The dark band: the figure's ViewportFrame again in black (ImageColor3), about 4% larger, behind it.
+    - The ring at the feet: one image, with the shard cuts.
+    - I make and upload the three images (spoke, core, ring) when you start the install.
 
 **Not in this piece:** the Voidkin's own line and epithet (they need the director's ear first, given the "corny" rejections); the Index; a column of light from the Breaker in the world; the cut-in; new sounds (TR64's ear first); pity and banners.
 

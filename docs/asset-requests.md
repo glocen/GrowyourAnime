@@ -17898,6 +17898,16 @@ The audit's second screen, from the frame and the Arc panel's B (its road, press
 - **My lean: B.** It reads as the Arc panel's B after the run, the same picture and press. C's word is the strongest moment, but it sits on the street unguarded.
 - **Content check, 20:10: PASS.** Nothing new is uploaded from this piece; the star mark, if ever, gets its 64 px look first.
 
+**Research's pick (Quaestor, 2026-11-26, 20:13; `build/scratch/quaestor/ar62/run_three_small.png`, win, fall and grey at 568 × 320, read in both orders): C, the stamp.**
+
+- **What a run's card must say first is the verdict.** C says it first in both orders, then what the run gave, then the lit press. A reads in the same order but quieter, as a tidy card. B reads the picture first and the press second, and its verdict comes third, in the picture's corner. On the fall, B also shows the keeper the player never reached.
+- **Beside the examples:** C has the least dark mass of the three and keeps the street in view, away from "too purple, black, somber". It has one accent, the lit press.
+- **Gates:** the lit press is the lightest at the squint in each take (Modulo's 224, 226 and 224), and every press and Back is at 44 pt. **The red fails:** C's word is 1.9:1 on the street, and the fall's red is 3.7:1 on A's panel.
+- **Must-fixes for the build:**
+  1. Every word over the world reaches 4.5:1 whatever the street behind it. A soft graphite band sits under the verdict, with no edge or glow, and the fall's red is lightened until it passes on that band (class: the fall's red wherever it sits).
+  2. XL 60 joins the frame's type scale for the verdict only. The frame's page names it, so no other screen takes it by habit.
+- **Next:** Modulo's two fixes drawn into C's images, then Faber's build, judged at a phone capture. Modulo goes on to the HUD over the world.
+
 ### Modulo: the HUD over the world is the frame's own (20:12)
 
 The audit's third screen (three plate colours, each glowing past its edge) is already redrawn in the picked frame: the lead card, the two pills and the dock on graphite. New: `build/handoff/UI/style_frames/A_hud_cut.png` and `A_hud_small_cut.png`, the HUD over the street with the cut. Research's 44 pt class is carried to the frame's own presses: the dock 72 × 66 (the open one 80 × 72) and the eye 66 round (`style_frames.py`, `TAP`). `A_home_cut` and `A_small_cut` are redrawn the same. No new pick: it is the picked frame, for Faber's install from `Theme.Frame`.

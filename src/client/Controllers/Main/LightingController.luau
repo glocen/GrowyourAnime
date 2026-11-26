@@ -205,10 +205,14 @@ local function gateZ(): number?
 	return if type(z) == "number" then z else nil
 end
 
--- A piece's glow, a light's brightness and range, from Config.
-local function glowOf(piece: string, floor: number): number
+-- A piece's glow, a light's brightness and range, from Config. A plot's own pieces (they carry their Plot) take the base's
+-- glow and its floors' (AR65).
+local function glowOf(piece: string, floor: number, plotted: boolean): number
 	if Kit.Floors[piece] then
-		return floor
+		return if plotted then LightingConfig.Glow.BaseFloor else floor
+	end
+	if plotted then
+		return LightingConfig.Glow.Base
 	end
 	return if LightingConfig.Houses[piece] then LightingConfig.Glow.Houses else LightingConfig.Glow.Kit
 end
@@ -239,14 +243,15 @@ local function dressOne(item: Instance, floor: number)
 			local empty = LightingConfig.Glow.Empty
 			local share = if working == false then empty elseif type(lit) == "number" then empty + (1 - empty) * math.clamp(lit, 0, 1) else 1
 			local steady = LightingConfig.Steady[piece]
-			local full = if steady then steady * steadyShare else glowOf(piece, floor) * glowShare
+			local plotted = item:GetAttribute("Plot") ~= nil
+			local full = if steady then steady * steadyShare else glowOf(piece, floor, plotted) * glowShare
 			local want = (if LightingConfig.Cores[piece] then math.min(full, coreMost) else full) * share
 			if look.EmissiveStrength ~= want then
 				look.EmissiveStrength = want
 			end
 		end
-		if Kit.Floors[piece] and item:IsA("BasePart") then
-			floors[item] = true
+		if Kit.Floors[piece] and item:IsA("BasePart") and item:GetAttribute("Plot") == nil then
+			floors[item] = true -- a plot's floors hold the base's, never the turn's
 		end
 		return
 	end
@@ -278,7 +283,7 @@ end
 
 local function dressAll(floor: number)
 	local glow, pools, lamp, paper = LightingConfig.Glow, LightingConfig.Pools, LightingConfig.Lamp, LightingConfig.Paper
-	local now = `{glow.Kit},{glow.Houses},{glow.Empty},{coreMost},{pools.Brightness},{pools.Range},{lamp.Brightness},{lamp.Range},{paper.Floor},{paper.Top},{paper.Colour},{glowShare},{lightShare},{steadyShare}`
+	local now = `{glow.Kit},{glow.Houses},{glow.Base},{glow.BaseFloor},{glow.Empty},{coreMost},{pools.Brightness},{pools.Range},{lamp.Brightness},{lamp.Range},{paper.Floor},{paper.Top},{paper.Colour},{glowShare},{lightShare},{steadyShare}`
 	if now ~= stamp then
 		stamp = now
 		for _, item in CollectionService:GetTagged(Kit.Tag) do

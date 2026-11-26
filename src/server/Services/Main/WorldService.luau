@@ -260,6 +260,15 @@ local function baseProblems(): { string }
 	return problems
 end
 
+-- How many of a plan's lights the world lays: all but those it cuts (Config.World.Cut, AR65).
+local function lightsLaid(lights: { Kit.Light }): number
+	local n = 0
+	for _, light in lights do
+		n += if WorldConfig.Cut[light.name] then 0 else 1
+	end
+	return n
+end
+
 -- One of a kit's static lights at `at`, Shadows off, tagged for the client's look: a SpotLight straight down is a pool.
 local function kitLight(light: Kit.Light, at: CFrame, parent: Instance): Part
 	local holder = Instance.new("Part")
@@ -384,6 +393,9 @@ local function dressStrip(parent: Instance, gateZ: number)
 	folder.Name = "Strip dressing"
 	local floorY = PAVED_TOP + DRESS_LIFT
 	for _, placement in plan.placements do
+		if WorldConfig.Cut[placement.piece] then
+			continue
+		end
 		local part = (template:FindFirstChild(placement.piece) :: BasePart):Clone()
 		part.Anchored = true
 		part.CFrame = Kit.Place(placement, manifest.pieces[placement.piece], gateZ, floorY)
@@ -393,6 +405,9 @@ local function dressStrip(parent: Instance, gateZ: number)
 		part.Parent = folder
 	end
 	for _, light in plan.lights do
+		if WorldConfig.Cut[light.name] then
+			continue
+		end
 		kitLight(light, Kit.Light(light, gateZ, floorY), folder):SetAttribute("Kit", STRIP)
 	end
 	folder.Parent = parent
@@ -472,6 +487,9 @@ local function dressPlot(m: Model, number: number, at: CFrame, front: number)
 	local folder = Instance.new("Folder")
 	folder.Name = "Dressing"
 	for _, placement in level.placements do
+		if WorldConfig.Cut[placement.piece] then
+			continue
+		end
 		local part = (template:FindFirstChild(placement.piece) :: BasePart):Clone()
 		part.Anchored = true
 		part.CFrame = at * Kit.Place(placement, manifest.pieces[placement.piece], front, DRESS_LIFT)
@@ -486,6 +504,9 @@ local function dressPlot(m: Model, number: number, at: CFrame, front: number)
 		part.Parent = folder
 	end
 	for _, light in level.lights do
+		if WorldConfig.Cut[light.name] then
+			continue
+		end
 		kitLight(light, at * Kit.Light(light, front, DRESS_LIFT), folder):SetAttribute("Plot", number)
 	end
 	local mark = level.levelMark
@@ -710,6 +731,9 @@ local function layLevels(base: Instance, number: number, at: CFrame, front: numb
 	local holder = model(base, "Levels", at)
 	for key, level in levels.levels do
 		for index, row in level.pieces do
+			if WorldConfig.Cut[row.piece] then
+				continue
+			end
 			local part = piece(holder, `{row.piece} {index}`, row.piece, { across = row.across, along = row.along, up = row.up, turn = 0 }, number, at, front)
 			if part == nil then
 				continue
@@ -808,8 +832,10 @@ local function layBack(base: Instance, number: number, at: CFrame, front: number
 			machine(base, "Condenser", "SleepingStone", 2, number, at, front) -- no kit's Comb: its stone stays
 		end
 	end
-	local sleeping = model(base, "Sleeping", at)
-	machine(sleeping, "Lab", "SleepingStone", 3, number, at, front)
+	if not WorldConfig.Cut.Lab then
+		local sleeping = model(base, "Sleeping", at)
+		machine(sleeping, "Lab", "SleepingStone", 3, number, at, front)
+	end
 end
 
 -- One plot, `at` its centre on its floor, looking out of its front onto the Strip: its lot, laid with the world, and the
@@ -1011,6 +1037,7 @@ local function plot(parent: Instance, number: number, at: CFrame, across: number
 			-- the ring), at the bay's place and turn: a later level's, hidden until BaseService wakes the bay.
 			local wakes = if plan.machines and plan.machines.baseLevels then plan.machines.baseLevels.bayWake else nil
 			local wakePiece = if wakes and asleep then wakes.pieces[tostring(index)] else nil
+			wakePiece = if wakePiece and WorldConfig.Cut[wakePiece] then nil else wakePiece
 			local wake = if wakePiece and bayHome then piece(bay, "Wake", wakePiece, bayHome, number, at, front) else nil
 			if wake then
 				wake:SetAttribute("Later", true)
@@ -1825,6 +1852,9 @@ function WorldService.Init()
 			local level = basePlan.levels[BASE_LEVEL]
 			local each: { [string]: number } = {}
 			for _, placement in level.placements do
+				if WorldConfig.Cut[placement.piece] then
+					continue
+				end
 				each[placement.piece] = (each[placement.piece] or 0) + 1
 			end
 			local standing: { [string]: number } = {}
@@ -1840,6 +1870,10 @@ function WorldService.Init()
 			if forgePlan and stones then
 				standing.SleepingStone = stones - 1
 				standing.Forge, standing.ForgeRam, standing.ForgeGear = 1, 1, #forgePlan.gears
+			end
+			-- The Lab's sleeping stone, the third, isn't laid while it's cut (Config.World.Cut, AR65).
+			if WorldConfig.Cut.Lab and standing.SleepingStone then
+				standing.SleepingStone -= 1
 			end
 			for number = 1, WorldConfig.Plots.Count do
 				local lot = plots:FindFirstChild(`Plot {number}`)
@@ -1877,8 +1911,8 @@ function WorldService.Init()
 						table.insert(problems, `Plot {number} {piece}: {count[piece] or 0} laid, level {BASE_LEVEL} has {needed}`)
 					end
 				end
-				if plotLights ~= #level.lights then
-					table.insert(problems, `Plot {number}: {plotLights} lights, level {BASE_LEVEL} has {#level.lights}`)
+				if plotLights ~= lightsLaid(level.lights) then
+					table.insert(problems, `Plot {number}: {plotLights} lights, level {BASE_LEVEL} lays {lightsLaid(level.lights)}`)
 				end
 				if level.levelMark and dressing:FindFirstChild("LevelMark") == nil then
 					table.insert(problems, `Plot {number}: no level mark`)
@@ -1893,9 +1927,15 @@ function WorldService.Init()
 				local machines: { [string]: number } = {}
 				for _, item in (m :: Instance):GetDescendants() do
 					local piece = item:GetAttribute("Piece")
+					if type(piece) == "string" and WorldConfig.Cut[piece] then
+						table.insert(problems, `Plot {number} {piece}: laid, but it's cut (Config.World.Cut, AR65)`)
+					end
 					if type(piece) == "string" and item.Parent ~= dressing and item:GetAttribute("Later") ~= true then
 						machines[piece] = (machines[piece] or 0) + 1
 					end
+				end
+				if WorldConfig.Cut.Lab and (m :: Instance):FindFirstChild("Sleeping") then
+					table.insert(problems, `Plot {number}: the Lab's sleeping place laid, but it's cut (Config.World.Cut, AR65)`)
 				end
 				for piece, needed in standing do
 					if machines[piece] ~= needed then
@@ -1964,15 +2004,23 @@ function WorldService.Init()
 			local _, stripPlan = kitFiles(STRIP)
 			local stripWant: { [string]: number } = {}
 			for _, placement in stripPlan.placements do
+				if WorldConfig.Cut[placement.piece] then
+					continue
+				end
 				stripWant[placement.piece] = (stripWant[placement.piece] or 0) + 1
+			end
+			for piece in stripGot do
+				if WorldConfig.Cut[piece] then
+					table.insert(problems, `the Strip's {piece}: laid, but it's cut (Config.World.Cut, AR65)`)
+				end
 			end
 			for piece, count in stripWant do
 				if stripGot[piece] ~= count then
 					table.insert(problems, `the Strip's {piece}: {stripGot[piece] or 0} laid, the plan has {count}`)
 				end
 			end
-			if stripLights ~= #stripPlan.lights then
-				table.insert(problems, `the Strip's lights: {stripLights}, the plan has {#stripPlan.lights}`)
+			if stripLights ~= lightsLaid(stripPlan.lights) then
+				table.insert(problems, `the Strip's lights: {stripLights}, the plan lays {lightsLaid(stripPlan.lights)}`)
 			end
 			-- The Shop's building (dressShop): the building, its crown, its five minutes and its two lights.
 			local shopWant: { [string]: number } = { VoidShop = 1, VoidShopCrown = 1, VoidShopMinute = #SHOP_MINUTES, light = 2 }

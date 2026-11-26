@@ -23,6 +23,7 @@ local Power = require(Shared.Rules.Power)
 local LightingConfig = require(Shared.Config.Lighting)
 local WorldConfig = require(Shared.Config.World)
 local Markers = require(Shared.World.Markers)
+local Kit = require(Shared.World.Kit)
 local Profile = require(Shared.Data.Profile)
 local Collection = require(Shared.Rules.Collection)
 local Stats = require(Shared.Rules.Stats)
@@ -89,6 +90,53 @@ function BaseCases.Cases(given: Given): { any }
 	local ANSWER, waitFor = given.ANSWER, given.waitFor
 	local baysBefore: { string }? = nil -- the runner's own case, below: the bays as its first half found them
 	return {
+		{
+			Name = "Base: AR65's cut pass: nothing the world cuts stands, no Lab's place, and the plot glows at the base's: its floors dark, its pieces at Base",
+			Place = "Main", -- TR45: its world stands in that place only
+			Run = function(t: any)
+				local world = workspace:FindFirstChild("World")
+				local standing: { string } = {}
+				for _, item in (if world then world:GetDescendants() else {}) do
+					local piece = item:GetAttribute("Piece")
+					if type(piece) == "string" and WorldConfig.Cut[piece] then
+						table.insert(standing, piece)
+					elseif WorldConfig.Cut[item.Name] and item:FindFirstChildWhichIsA("Light") then
+						table.insert(standing, item.Name)
+					end
+				end
+				t.Check("nothing cut stands where the client sees", world ~= nil and #standing == 0, table.concat(standing, ", "))
+				local report = t.Server("WorldReport")
+				local cutLaid: { string } = {}
+				for _, problem in (if type(report) == "table" then report else {}) do
+					if string.find(tostring(problem), "cut", 1, true) then
+						table.insert(cutLaid, tostring(problem))
+					end
+				end
+				t.Check("nor on the server: the world report names nothing cut laid", type(report) == "table" and #cutLaid == 0, table.concat(cutLaid, "; "))
+				local plot = Players.LocalPlayer:GetAttribute("Plot")
+				local plots = if world then world:FindFirstChild("Plots") else nil
+				local lot = if plots and type(plot) == "number" then plots:FindFirstChild(`Plot {plot}`) else nil
+				local base = if lot then lot:FindFirstChild("Base") else nil
+				local dressing = if base then base:FindFirstChild("Dressing") else nil
+				if dressing == nil then
+					t.Check("a plot dressed", false, "no base streamed in")
+					return
+				end
+				t.Check("no Lab's sleeping place", (base :: Instance):FindFirstChild("Sleeping") == nil)
+				local floorLook, wallLook = nil, nil
+				for _, item in dressing:GetChildren() do
+					local piece = item:GetAttribute("Piece")
+					if type(piece) == "string" and Kit.Floors[piece] and floorLook == nil then
+						floorLook = item:FindFirstChildOfClass("SurfaceAppearance")
+					elseif piece == "Wall" and wallLook == nil then
+						wallLook = item:FindFirstChildOfClass("SurfaceAppearance")
+					end
+				end
+				local share = LightingController.Look().Glow -- the phase's share (TR23)
+				t.Near("its floor at the base's floor glow", if floorLook then floorLook.EmissiveStrength else -1, LightingConfig.Glow.BaseFloor * share, 1e-3)
+				t.Near("its wall at the base's glow", if wallLook then wallLook.EmissiveStrength else -1, LightingConfig.Glow.Base * share, 1e-3)
+			end,
+		},
 		{
 			Name = "Base: AR16's base as its save has it: the bays it opened awake and the rest asleep, the battery's cells by its level and lit by its charge, the mill's wheel, gauge and demand mark (AR19), the crown while a Voidkin trains",
 			Place = "Main", -- TR45: its world stands in that place only
@@ -158,7 +206,7 @@ function BaseCases.Cases(given: Given): { any }
 					for seat, cell in cells do
 						local lit = want[seat] or 0
 						local look = cell:FindFirstChildOfClass("SurfaceAppearance")
-						local glow = LightingConfig.Glow.Kit * (empty + (1 - empty) * lit) * LightingController.Look().Glow -- the phase's share (TR23)
+						local glow = LightingConfig.Glow.Base * (empty + (1 - empty) * lit) * LightingController.Look().Glow -- the phase's share (TR23), at the base's glow (AR65)
 						local got = cell:GetAttribute("Lit")
 						if (cell.Transparency == 0) ~= (seat <= shown) then
 							return `cell {seat}: {if cell.Transparency == 0 then "shown" else "hidden"} at level {(now :: any).Base.Level}`

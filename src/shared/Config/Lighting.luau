@@ -138,7 +138,10 @@ return {
 	-- Threshold (before its state's share), so its middle stays a warm light and never burns: from the way in at phone size
 	-- (the builder's read, 2026-11-17), under the night's threshold of 1.2 its 3.6 and 1.8 clipped to white and 0.7 kept it
 	-- gold; under the day's 2.2, 1.63 and 1.32 read as light, 0.82 as a gold disc and 0.27 as a flat one.
-	Glow = { Kit = 2.4, Houses = 1.6, Empty = 0.2, CoreBloom = 0.6 },
+	-- A plot's own pieces glow at Base in place of Kit, and its floors at BaseFloor in place of the phase's Floor: the base
+	-- made simpler, nothing on its floor lit and nothing leading by glow (AR65, research's pick of the cut pass, 2026-11-26;
+	-- halved from the kit's, as the pass was taken).
+	Glow = { Kit = 2.4, Houses = 1.6, Empty = 0.2, CoreBloom = 0.6, Base = 1.2, BaseFloor = 0 },
 	Houses = { HouseLow = true, HouseTall = true } :: { [string]: boolean },
 	Cores = { DoorWay = true } :: { [string]: boolean },
 	-- A piece whose glow is its own, times its phase's share and none of Clear's lift (AR17's great shard over the crossing:

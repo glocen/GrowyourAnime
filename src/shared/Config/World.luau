@@ -16,6 +16,17 @@ return {
 	-- joining, or a reset. The builder's, 2026-11-12.
 	Arrive = 0.4,
 
+	-- What the world doesn't lay of the kits' plans (AR65, the base made simpler: research's pick of the cut pass, 2026-11-26),
+	-- by a placement's or a light's name: the base's grid (its pylons, spans and transformers), its two flood masts and their
+	-- pools, the Strip's far shards on the skyline, the yard's lit floor and rings at levels 2 and 3, the bays' wakes, and
+	-- "Lab", the Lab's sleeping place. Modulo's rebuilt kit (AR65, step 3) drops them from its plans; then this empties.
+	Cut = {
+		Pylon = true, PowerSpan = true, Transformer = true, FloodMast = true, FloodLeft = true, FloodRight = true,
+		FarShardLow = true, FarShardMid = true, FarShardTall = true,
+		LevelFloor = true, LevelRays = true, LevelRing = true, LevelRingOuter = true, BayWake3 = true, BayWake4 = true,
+		Lab = true,
+	} :: { [string]: boolean },
+
 	-- Eight plots, two rows of four, facing each other across the Strip; one per player (Max Players 8). A plot is 200 studs
 	-- square and neighbours stand 48 apart (the director, 2026-11-12: "base should be 200"; research's verdict on TR2): the
 	-- Festival Door, not the walk, takes a player to the grounds.

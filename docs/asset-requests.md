@@ -16987,6 +16987,13 @@ Made; self-reviewed as stills at the smallest phone, the take by its frames; the
 - **Content check:** PASS at about 16:35, on the atlas, its glow and the renders at full size, and on the script.
 - **Not done:** the sea's options without the pale band, after Faber's Haze test. Not director-accepted.
 
+### Research's read of the Haze test (Quaestor, 2026-11-26, 18:53; Faber's `build/captures/ar56/haze_test_sheet.png`)
+
+- **What it shows (OBSERVED):** the room's Haze 0.3 is what turns the sea flat blue. At Haze 0 the faces' own cloud heads show: a band of cloud along the rim in the fight's frame, and a cloud floor under the room in the far and high frames. No Atmosphere can't be told from Haze 0, so the change is one number (`Config.Lighting.Room`'s Haze).
+- **Beside the examples:** less mist sits on the director's side: "a bit to much atmosphere imo like that mist is a bit to much" (the Day sky, `docs/research/examples.md`).
+- **C for the director, beside A and B:** today's faces at Haze 0, in the game now, with no build. It isn't paired against A or B, since their cameras differ. **Research's lean: C,** the cloud floor B lacked, for one number. A or B is built only if the director wants the heads redrawn.
+- **So the redraw of A and B without the pale band waits** for the director's pick, and the game doesn't change before it.
+
 ## AR57. The Guard's and the Dasher's elites (Modulo now, then Faber)
 
 Research, 2026-11-23, 21:54, on the director's pick of 21:53 (`docs/decisions.md`). Tier 2: a new asset players see that nothing covers, in Modulo's area and then Faber's. AR52 left "the masks' elite versions" waiting.
@@ -17329,6 +17336,11 @@ Paint-overs on one frame of the game, in `build/handoff/Support/targets/`, each 
   - Every beat lands on its frame: the caster's ball at -14, the beam at 0, the mint star at the brawler at 3, the dome at 8, its fade by 16, gone by 58.
   - Short of the target: the star at 3 is smaller, with less white mass round it, and the motes on the brawler at 30 don't show.
   - **Status:** implemented and taken in play. Visually reviewed by me only. Research's look waits. Not director-accepted.
+- **Research's half checkpoint (Quaestor, 2026-11-26, 18:53; the same sheet, in both orders): passes.**
+  - **Felt:** the Support's ball, the beam to the Brawler, a mint star and its shell, gone by 58, each on its frame.
+  - **Gates (MEASURED: pixels 40 or more above the frame at 58, the same cells):** the mend's peak at 3 is 82% of the target's area (18,366 against 22,364), its mint 90%. At 8 the shell is 115%. The link and the caster's light, the main read, carry.
+  - **For the final, one fix, a bug rather than polish:** the motes at 30 don't draw (mint 173 px against the target's 1,788), so a layer that's built but unseen gets checked. The star's size at 3 isn't a must-fix.
+  - **Next:** the final, from QA's pack once QA joins.
 
 ## AR59. Rook, redesigned to the anime bar (Modulo, for research's pick and the director's look, then its finish; Faber's install after)
 
@@ -17738,6 +17750,16 @@ Scintilla's first piece, on the director's order of 2026-11-23 ("Shared kit firs
   - **At the player's camera at night** the spark is a few pixels across, a quick white flick that's gone in about 0.2 s. That's the real size most players see it at.
   - **Status:** implemented and taken in Studio. Visually reviewed by me only: the mass fixed, the star's shape still off. Research's verdict decides the options for the director. Not director-accepted.
 
+**Research's verdict on the last take (Quaestor, 2026-11-26, 18:53; `checkpoint/last_star_day_rungs_vs_target.png` and `last_star_street_night_rungs_vs_target.png`, in both orders):**
+
+- **Felt:** at the deck, a soft white mass and a thin hoop bloom over the fist, and no star. At the player's camera at night, rung 3 is a faint glow the size of Rook's fist, partly behind the player's own avatar, and rung 2 doesn't show.
+- **Gates (MEASURED: pixels above 245 in a box at the contact, on the 1128×642 cells):** the target's star covers 1,910 px at rung 3 and 2,580 at rung 4, as crisp arms. The build covers 7,217 and 4,730 (a glowing floor line takes part of the box), as one soft mass with no arms. At the squint the mass is the focal point, but the shape is gone.
+- **Beside the target:** both orders agree. The main read misses on shape: the feel line's "crisp star of light snaps open" reads as a glow. Rung 3's hoop is the feel line's ring ("a combo's last opens wider with a ring"), and it stays.
+- **The rule:** the bloom's technique changed twice (a card, then one particle toward the camera with its depth fixed). The mass now shows, but it swallows the star. So the options go to the director with these two sheets:
+  1. **As built:** the white mass, the hoop and rung 4's gold. The crisp star goes to polish-later. It costs nothing.
+  2. **The star over a smaller mass (research's lean):** the bloom cut to about the target's white area so the arms show over it, and the star kept at a minimum size on screen at the player's camera, since at 26 studs every hit is a flick today. Whether it reads is UNVERIFIED, so it costs one take, judged at the street camera.
+- **Until the director's word:** the build stays in the dev build, and no build hour.
+
 ## AR62. The screens' redo: their colours, their light and their art (research's audit, then Modulo's directions, then Faber, a screen at a time)
 
 **Why:** the director, 2026-11-24, 13:35, on a still of the Arc panel: "that lantern drawing is so bad and the rest is just a pain in the eye many hud design will need a big polish and change of colors"; and 13:37: "let not add those shiny bright effect that goes outside the ui buttons" (the register; `docs/ui.md`, rule 5, "Light stays in its piece"). The sixth time the colour has been called too much. It's a redo under the 11:11 word: blockouts beside the old, research's verdict in the game, the old kept.
@@ -18045,9 +18067,9 @@ Research, 2026-11-24, 16:53, on the director's word, "the hair still need a rewo
   - **AR67's read of the other machines:** from the gate and up close, the Breaker, the bays, Training, the Condenser and the Door are each told apart by shape and one colour. None needs a redo before the Generator's, and the set is judged again beside the Generator's new make.
 - **Research's second look (Quaestor, 2026-11-26, 18:41):** on `installed_day_after.png` (abf78cec). The pair is `build/scratch/quaestor/ar65/after_vs_A.png`; the floors after, before and in the target are `floor_after_before_target.png`.
   - **Must-fix 2 is met for the card.** The card is gone, and the Door's plate stands over the Door in the plates' cut, reading "LANTERN ROW". To Faber's question, yes, for every plate: a plate fades out while the frame's edge would cut its name ("LANTER"), since a cut name doesn't read. It's the same class, and it holds nothing else.
-  - **Must-fix 1, improved but missed:** the floor is at 221 in the same box, from 235, against the target's 197. The slabs' seams now show, but each slab's tone still doesn't: the detail is 2.1, against 3.4 before and the target's 4.9. From the gate it still reads as a pale baseplate, though a warmer one.
-  - **The measure,** for Modulo and Faber to read before sending: on the 852×480 capture, Rec. 709 luminance over x 40 to 300 and y 360 to 480. The mean wants about 197 (±8). The detail, that box minus its 31-pixel box blur, wants about 5.
-  - **One more round, then the rule:** fourteen points from the maps' first step suggests the game's light lifts the floor, so the next step must be larger, or made in the floor's colour. If this round misses too, the floor is reconsidered rather than patched, and its options go to the director.
+  - **Must-fix 1, improved but missed, on value only:** the open floor is at 219, from 235, against the target's open floor at 206. Corrected at 18:53 on Modulo's split and re-measured (MEASURED): the lower half of my box in the target was the plinth's soft shadow, so the detail I gave the target (4.9) was the shadow's. Open floor to open floor the detail already matches (2.0 against 2.2), so the slabs' tone isn't a miss.
+  - **The measure,** for Modulo and Faber to read before sending: on the 852×480 capture, Rec. 709 luminance over open floor only, x 40 to 300 and y 360 to 420, the same box in both frames. The mean wants 206 (±8), and the detail (that box minus its 31-pixel box blur) at least 2.0.
+  - **One more round, then the rule:** Modulo's second step aims at 204, inside the band. If it misses, the floor is reconsidered rather than patched, and its options go to the director.
 - **Modulo's second step on the floor (2026-11-26, 18:46; started 18:42):** `base_kit.py` `STONE`, the 17 floor maps (`build/handoff/Base/maps/`, the deck's included).
   - **The measure, split (MEASURED, research's box and measure):** target A's box is two things. Its upper half (y 360 to 420) is open floor at 207.0, detail 2.12. Its lower half is the soft shadow beside the showcase plinth at 188.2, detail 7.14. The installed capture's box is open floor only: 219.7, detail 2.05. Open floor to open floor, the gap is 13, and the detail already matches. My aim is 204, inside research's 197 ±8 and within 3 of the target's open floor.
   - **The step:** the first step moved the maps' mean from 210 to 176.5 and the gate from 235.4 to 220.9, so 0.43 on screen for each step of the map. Both fits of those two points (sRGB-linear and linear-light) put a map at 133 at 202 to 206 on screen. The maps now measure 135.1 (A1). The slabs' tone step is 28, twice the last, so the steps read even shrunk to an eighth. The stone is cooled toward the target's grey: the map's R−B goes from 12 to 6, since the game's light adds about 10.

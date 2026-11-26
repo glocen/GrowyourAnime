@@ -5109,6 +5109,8 @@ The plate passed as a block at 01:35, and its timing is set in code: a 0.2 s fad
 - **Out by title:** UI clicks and objects (two GUI Close, Enable, Switch On, a sonar ping); other works and games (Pls Donate, TF2, Banban); a reveal (KKC Reveal Dupe); another tab's sound (Nice Bell 2 is ShardDrop's, so a bell reads as your own drop; an Upgrade is Reinforced's, a success GoalDone's); titles that say nothing (two `copy_` names, rblxpec-done). Thin by the library, so a "none" means new words, not a patch.
 - **For Faber's review:** the data in `Config/Audition.luau`, this entry's commit: the tab after ShardDrop, its level −14 (a seed under the UI line). **Loaded:** `ServerStorage.NL_Audition` (the whole 20 in `Untrimmed`), kept by Faber's end-of-turn save. **Heard, picked:** no; in TR64's sitting, after ShardDrop.
 
+- **Faber, 2026-11-26, 12:50 by the clock (d9038cd0):** the hook is in. The plate's fade-in calls `BroadcastPlate` for someone else's line while others' finds show (`Rules.Broadcast.Chimes`). A player's own line stays silent, since their find already sounded its drop and reveal (tier 1). Play the moment lays a made-up Legendary Sword line, kept out of the chat. Logic case 4 checks; Studio "Broadcast (TR57)" 27/0 at 60 fps. Sonus's tab reviewed: it passes (its name is the cue's, −14 dB under the UI line). `NL_Audition` saved with the place (version 1311).
+
 ## TR58. The boards on the Strip (research's request, tier 2, for Faber; Modulo the boards)
 
 Research, 2026-11-24, from the cloud. Launch-design's item 7, the north star's "two players compare builds". The design: `docs/design.md`, "Being seen" (the boards). The numbers: seeds, "boards".
@@ -5128,6 +5130,7 @@ Research, 2026-11-24, from the cloud. Launch-design's item 7, the north star's "
   - **Must-fix (the main read; class: every board's face):** each face holds the top three and the viewer's own row, at about three times today's size. The viewer's row is lit and shows its rank first ("9 · glocen · 7,173"); a viewer in the top three is lit where they stand, and the fourth row shows the fourth. That's Faber's options 1 and 2 together, and it replaces "top ten each". The boards stay where they are: nearer the path would only double the size and crowd the crossing. The full list waits for a tap, with TR33.
   - **Must-fix (placement):** from the path, a pole stands in front of the Tower board's title. One of the two moves.
   - **Retake:** on the smallest phone, from the path's nearest point, walking the crossing.
+- **Faber, 2026-11-26, 12:50 by the clock:** the face's must-fix passes in Studio, "Boards on the Strip (TR58)" 18/0. **The pole** is the crossing's south corner post (`StripPost` at x ±40, z 20.6, 10.4 studs tall, from Modulo's Strip plan). It stands between the Strip and both boards on its side, so as a player walks the Strip it sweeps across the Lead board, then the Week's. No board shift that keeps the boards where they stand clears it. Asked of Modulo: the two south crossing posts out to |x| ≥ 70 (the boards end at 59). **Retake** at 568×320, the player 26 studs off the boards, the post as today and then at x 70 in a playtest only: `build/captures/tr58/retake_z6_post_today_small.png` and `retake_z6_post_out_small.png`. At 70 both titles and their rows read clear. The test store holds one name, so a face shows one row; the four rows are the case's made-up page. The walking frames wait for the window in front.
 
 ## TR59. The welcome week and codes (research's request, tier 2, for Faber)
 
@@ -5147,6 +5150,7 @@ Research, 2026-11-24, from the cloud. Launch-design's item 8. The design: `docs/
   - **The taken day (class: every taken tile):** the check stands over the item's words ("Fo✓ Crate"). A taken day shows the check alone on a dimmed tile, and its words go.
   - **The list over the return card (class: a panel over the card):** while the Today list is open, the return card waits hidden, and it comes back when the list closes.
   - **The codes card (class: colour and size):** the card shrinks to its content (the field, Take and the footnote), with no empty middle. The field takes the kit's neutral glass, not violet: the director has called the game too purple six times. AR62's style frame restyles it later.
+- **Faber, 2026-11-26, 12:50 by the clock:** the three must-fixes pass in Studio: "Welcome week (TR59)" 34/0, "Codes (TR59)" 28/0, at 60 fps. Their retake for research's look isn't taken yet.
 
 ## TR60. The capture after a reveal (research's request, tier 1 for the capture, tier 2 for its tile; for Faber)
 
@@ -5159,6 +5163,7 @@ Research, 2026-11-24, from the cloud. Launch-design's item 9, the north star's "
 - **Cases:** the tile only while a card holds; the launch data's shape.
 - **Checks:** a capture taken on a phone in a test place; research's look at the picture it makes.
 - **Order:** after TR57.
+- **Faber, 2026-11-26, 12:50 by the clock (d9038cd0):** "Reveal: TR60" 24/0 at 59 fps (its own file, `CaptureCases.luau`): the tile's size and place, its own press, and a take that leaves only the world's and the overlay's layers on, then puts each back. Real presses in Studio: the tile opens Roblox's share sheet on the frame (seen on the screen; Studio's own capture doesn't draw the sheet), and a press on the plate continues. The phone check waits, since the director can't run phone sessions (2026-11-26).
 
 ## TR61. The words, one voice: nine string fixes (research's request, tier 1 per line, for Faber)
 

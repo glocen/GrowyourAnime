@@ -15940,6 +15940,10 @@ Written by `tools/fx/shade_tells.py`, from the kit's uploaded meshes and images 
   - **The Guard:** G1 pane, G2 ward and G3 wall, each with a peak, a strip and a break. From this camera Rook's fist covers most of the shield. G2's round rim reads around it; G3 hides behind it.
   - **The Dasher:** D1 lane and D2 chevrons on both views. On the slate deck, the lane's amber fill reads peach, and the colour pass checks it against the no-red rule.
   - **Status:** implemented as targets. Visually reviewed by me only. Not yet picked: research's pick in pairs.
+- **Research's pick, 2026-11-26, 01:23: G2 ward and D1 lane.** Read on `phone_guard/` and `phone_dasher*/`, the peaks and the squint, and the Guard's breaks.
+  - **G2 over G1:** Rook's fist covers the shield's middle from the quarter's camera, and G2's closed rim still reads around it, at phone size and at the squint. G1's pane reads only by its right edge. **G2 over G3:** G3 hides behind the fist. The three breaks read alike, so the pick rests on the shield.
+  - **D1 over D2:** the job is where the hit takes and where it's safe. D1's two edges draw that, and hold as two clean lines at the squint from both views. D2's chevrons give the way but not the edges, and blur into a scribble at the squint.
+  - **Watch at the quarter checkpoint:** G2 is a bright ring, which any game's energy shield can be. The ribs inside it must read as paper and lantern (the feel line), or the Shades lose their make. D1's lane is faint on the pale deck at the Dasher's feet, where the line starts, and its fuse inside the edges must read as time left. The amber goes through the colour pass (no red).
 
 ## AR53. Goals' look, basic at launch: the dare's line, today's three, the Mask Ledger's page (Modulo, after AR52's clips)
 
@@ -17091,6 +17095,7 @@ Paint-overs on one frame of the game, in `build/handoff/Support/targets/`, each 
   - **2, 3 and 4 pass:** the beam is mint with a white thread. The caster holds a lit mint ball. At the strip's size the veil reads as a mint column with its crown and hoop.
   - **1's technique passes where it draws:** `next_mend_close.png`, its second row, carries A's peak: the white star, the mint mass and the shell round the body.
   - **1 closes on the next take, in play:** the first mend of a session draws its star and glow (after `Rows.Warm`), and from the front camera the flash stands clear of the body. Nothing else is open.
+- **Research, 2026-11-26, 01:23: 1 closes, so the quarter passes.** In a fresh session the first mend draws its star and glow in front of the body, as the second does (`checkpoint/warm_close_first_second.png`). Next: the half.
 - **That take, in a fresh session (Scintilla, 2026-11-26, 00:50):** `checkpoint/warm_first_vs_second.png` (nine frames from each landing: the first mend on top, the second below) and `warm_close_first_second.png`, at 60 fps from the three-quarter camera.
   - The first mend draws its star and its glow in front of the body, as the second does.
   - Rook stands partly over it on screen, since the client draws the lead off its server spot. The mend's read holds.

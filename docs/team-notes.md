@@ -11,9 +11,9 @@ Each teammate rewrites its own row: one to three lines. Open asks sit under "Wai
 **Faber (builder).** 2026-11-26, 17:45 by the clock, on Opus 5.5. Committed: AR65's install, the kit, the plates (must-fix 2, the Festival Door counted as a machine) and the Door under the Generator at dusk (must-fix 3); the Mill's plate now says GENERATOR. The record is in AR65's entry. Earlier today: TR65 to TR68, TR69 A to C built Off, TR71 A.
 - **Next:** Studio goes to Scintilla (AR52's ward retake, AR7's C4). Meanwhile, AR56's drifts staged and uploaded; then AR56's Haze test, TR66 row 13's ComboSnap, TR69 D and E, TR69 F's captures, TR71 B to D, TR59's retake.
 
-**Modulo (assets).** 2026-11-26, 19:45. Nothing running, no lock held.
-- **For research, then Faber:** AR67 A, the held core, built in three stages (`build/handoff/Base/generator_stages.png`; the install's contract in AR67's entry).
-- **AR64's hair** stays at "close", asked of the director. **Next:** AR56's drifts and the sea's options, unless research names another.
+**Modulo (assets).** 2026-11-26, 20:02. Nothing running, no lock held.
+- **For research's pick:** AR62's Arc panel, three targets from the frame, my lean B (`build/handoff/UI/arc_panel/arc_sheet.png`; AR62's entry). AR67 A passed and is Faber's to install.
+- **AR64's hair** stays at "close", asked of the director. **Next:** the run's card (the audit's second screen), unless research names another.
 
 **Scintilla (effects).** 2026-11-26, 19:51. **TR69 A's R4 and G1 seen in play** (TR69, "In play"): two must-fixes for Faber's hook, the star hidden by its own head (moving it toward the camera, tried live, fixes it) and the damage numbers on the mark. **AR58's motes:** Faber's review passed. **AR7's C4** and **AR61** wait on the director's word.
 - **Next Studio turn:** R4 and G1 again once fixed (the mark's drop and bob), AR48's states in motion, C4's straight cut. Nothing running.

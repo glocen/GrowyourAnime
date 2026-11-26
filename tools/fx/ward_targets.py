@@ -154,9 +154,9 @@ def rim_ribs(u, v, aa, f, drawn, rib_k):
     return edges, lights, cores
 
 
-def frame_ribs(u, v, aa, f, drawn, run_k=1.0):
+def frame_ribs(u, v, aa, f, drawn, run_k=1.0, halo=0.25):
     """W2's strokes: a lantern's frame face on, five bowed ribs top to bottom and its two hoops; `run_k` the light running
-    up the ribs (0: none, as the build's still passes draw them)."""
+    up the ribs (0: none, as the build's still passes draw them); `halo` each stroke's glow (0: the stroke alone)."""
     W, H = R * 0.92, R * 1.0 * max(drawn, 1e-3)
     edges, lights, cores = [], [], []
     vv = np.clip(v / H, -1, 1)
@@ -172,13 +172,13 @@ def frame_ribs(u, v, aa, f, drawn, run_k=1.0):
         # light running up the rib: a brighter stretch climbing it, each rib a little behind its neighbour
         phase = (f / 50 + 0.17 * i) % 1.4 - 0.2
         run = 1 + 0.9 * run_k * np.exp(-((s - phase) / 0.09) ** 2)
-        e, l, co = ink_light(d, width, aa, 1.0, core_k=1.0 if abs(c) == 1 else 0.6)
+        e, l, co = ink_light(d, width, aa, 1.0, core_k=1.0 if abs(c) == 1 else 0.6, halo=halo)
         edges.append(e), lights.append(l * run), cores.append(co * run)
     for j, h in enumerate((-0.93, 0.93)):  # the hoops: short strokes across its top and its bottom
         half = W * 0.32 * drawn
         if half > 0.05:
             d, w, _ = line_stroke(u, v, (-half, h * H), (half, h * H), STROKE * 0.9, 0.05 * math.copysign(1, h), 51 + j)
-            e, l, co = ink_light(d, w, aa, 1.0)
+            e, l, co = ink_light(d, w, aa, 1.0, halo=halo)
             edges.append(e), lights.append(l), cores.append(co)
     return edges, lights, cores
 
@@ -278,7 +278,9 @@ PIC = 512  # pixels a side: the ward is about 150 pixels tall at a phone, so a m
 EXT = 2.2  # studs from the ward's middle to the picture's edge, both ways: the frame (1.75 wide, 1.9 tall) and its glow
 BORDER = 0.15  # studs at the picture's edge over which everything fades out, so a Beam's edge never shows as a line
 PICTURES = ROOT / "build" / "handoff" / "Shade" / "fx" / "pictures"
-LIGHT_MAX = 1.25  # a stroke's body plus its glow at the most: the light picture's alpha is its share of this
+LIGHT_MAX = 1.0  # a stroke's body at the most: the light picture's alpha is its share of this
+HALO = 0.0  # the pictures' glow round each stroke: none, so the light stays on the line (research's must-fix at AR52's half
+# checkpoint, 2026-11-26: painted and added, the target's 0.25 spread a soft blue band past the ribs, "to thicc", "glass")
 
 
 def write_rgba(alpha: np.ndarray, path) -> None:
@@ -295,14 +297,15 @@ def write_rgba(alpha: np.ndarray, path) -> None:
 
 def pictures(out=PICTURES):
     """W2's frame, drawn whole (drawn 1, no running light) by frame_ribs, the target's own strokes, as three passes:
-    ink (its hair of deep azure, laid under), light (its azure body and glow, added) and core (its white core, added).
+    ink (its hair of deep azure, laid under), light (its azure body, painted and added, no glow) and core (its white
+    core, added).
     Laid out for a Beam stretched once (TextureMode Stretch, TextureLength 1) from the ward's foot (Attachment0) to its
     top (Attachment1), FaceCamera: the picture's top row lands at Attachment0 (handbook/visuals/vfx-engine-facts.md,
     "Beam"), so row 0 is the frame's foot; across, its columns, the Beam's width, EXT both ways."""
     step = 2 * EXT / PIC
     axis = -EXT + (np.arange(PIC) + 0.5) * step
     u, v = np.meshgrid(axis, axis)  # row r is v = axis[r]: row 0 the foot
-    edges, lights, cores = frame_ribs(u, v, step, 0, 1.0, run_k=0.0)
+    edges, lights, cores = frame_ribs(u, v, step, 0, 1.0, run_k=0.0, halo=HALO)
     inner = EXT - np.maximum(np.abs(u), np.abs(v))
     window = np.clip(inner / BORDER, 0, 1) ** 2
     passes = {
@@ -330,11 +333,11 @@ def run_sheet(out=PICTURES):
     u, v = np.meshgrid(axis, axis)
     inner = EXT - np.maximum(np.abs(u), np.abs(v))
     window = np.clip(inner / BORDER, 0, 1) ** 2
-    _, still, _ = frame_ribs(u, v, step, 0, 1.0, run_k=0.0)
+    _, still, _ = frame_ribs(u, v, step, 0, 1.0, run_k=0.0, halo=HALO)
     base = sum(still)
     cells = []
     for k in range(RUN_CELLS ** 2):
-        _, lights, _ = frame_ribs(u, v, step, k * RUN_CYCLE / RUN_CELLS ** 2, 1.0, run_k=1.0)
+        _, lights, _ = frame_ribs(u, v, step, k * RUN_CYCLE / RUN_CELLS ** 2, 1.0, run_k=1.0, halo=HALO)
         cells.append(np.clip(sum(lights) - base, 0, None))
     top = max(float(c.max()) for c in cells)
     rows = [np.concatenate(cells[r * RUN_CELLS:(r + 1) * RUN_CELLS], axis=1) for r in range(RUN_CELLS)]

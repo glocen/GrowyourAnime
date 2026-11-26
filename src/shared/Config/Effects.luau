@@ -433,11 +433,12 @@ local Effects = {
 		lamplighter_column_halo = "rbxassetid://71122841157536",
 		-- AR52's ward, W2's lantern frame in three passes and its running light, a Grid4x4 flipbook (tools/fx/ward_targets.py
 		-- --pictures), white, tinted only in the blues and white (the content checks of 2026-11-26): ink #163C8C laid
-		-- under, the light azure, the core white, the run azure to white.
+		-- under, the light azure, the core white, the run azure to white. The light and the run carry no glow past the
+		-- stroke (research's must-fix at the half checkpoint, 2026-11-26).
 		guard_ward_ink = "rbxassetid://136219260367274",
-		guard_ward_light = "rbxassetid://111231286821796",
+		guard_ward_light = "rbxassetid://70439356326114",
 		guard_ward_core = "rbxassetid://88139294901119",
-		guard_ward_run = "rbxassetid://89509776816386",
+		guard_ward_run = "rbxassetid://106871276509214",
 		-- AR7's C4, the keeper's challenge ring, two Grid4x4 flipbooks played once flat on the street
 		-- (tools/fx/keeper_targets.py --pictures; the content check of 2026-11-26): the field laid deep warm #7A4A12 under
 		-- and added warm over, never the deep alone or past its light, and the line added warm white.

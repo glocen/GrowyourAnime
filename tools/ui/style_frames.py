@@ -48,13 +48,16 @@ TAKES = {
     "A": dict(
         name="Graphite", line="Dark and quiet, never black: warm graphite, ivory words, one ivory press. The art is the light.",
         display=("Oswald-Bold.ttf", "Oswald"), body=("BuilderSans-Bold.otf", "Builder Sans"), upper=True, sizes=(18, 26, 38),
+        xl=60,   # a run's verdict only (the run's card, research's must-fix 2, 2026-11-26)
         ink="#F3EEE4", ink2="#A9AEB8", text_stroke=None,
         neutrals=[("#17181C", "the dim behind a screen"), ("#23252B", "panel"), ("#30333B", "raised: a button at rest"),
                   ("#4A4F5A", "rim"), ("#A9AEB8", "second words"), ("#F3EEE4", "words, the press")],
         panel=dict(top="#2C2F36", bottom="#202227", stroke="#4A4F5A", sw=1.5, r=14, inner="#FFFFFF", inner_a=0.07, shadow=0.45),
         raised="#30333B", raised_stroke="#4A4F5A",
         press=dict(fill="#F3EEE4", fill2="#DCD5C6", ink="#1B1C20", stroke=None),
-        hues=[("#FFC83D", "Power"), ("#B784FF", "alive, for sale"), ("#E8505B", "health")],
+        hues=[("#FFC83D", "Power"), ("#B784FF", "alive, for sale"), ("#E8505B", "health"),
+              ("#FF6B73", "a fall's words, lifted")],
+        fall="#FF6B73",   # words in the health hue: 4.5:1 on the panel, on raised and on the verdict's band (2026-11-26)
         credits="#F3EEE4", health=("#F06A6E", "#C93C48"), xp="#F3EEE4",
         # Today on the panel's own graphite (violet only on what's alive or for sale); Equipment on a dim brass, so its
         # gold lives in the sword and Rook stays the brightest thing (research's must-fixes 1 and 2, 2026-11-26)
@@ -469,16 +472,27 @@ def tokens_page(T, key):
         P.glyph("gem", x1 + i * 30, yc + 40, 24, c)
     # type
     x2 = 470
-    P.add(f'<text x="{x2}" y="{y0}" font-family="{T["body"][1]}" font-size="13" fill="{T["ink2"]}">TYPE: TWO FACES, THREE SIZES</text>')
-    P.text(x2, y0 + 44, f"Rook {L}", L, role="display", fill=ink)
-    P.text(x2, y0 + 80, f"Equipment {M}", M, role="display", fill=ink)
-    P.text(x2, y0 + 108, f"3,173/3,173 · 55,239 · {S}", S, fill=ink)
-    P.add(f'<text x="{x2}" y="{y0 + 130}" font-family="{T["body"][1]}" font-size="11" fill="{T["ink2"]}">'
-          f'{esc(T["display"][1])}: names, titles, presses. {esc(T["body"][1])}: numbers and the rest.</text>')
-    P.add(f'<text x="{x2}" y="{y0 + 146}" font-family="{T["body"][1]}" font-size="11" fill="{T["ink2"]}">'
-          f'Sizes at 852 x 480; authored {round(S / 1.28)}, {round(M / 1.28)}, {round(L / 1.28)} (Theme.Author, 375 high).</text>')
-    # strokes, radii, the material
-    y3 = 268
+    xl = T.get("xl")
+    P.add(f'<text x="{x2}" y="{y0}" font-family="{T["body"][1]}" font-size="13" fill="{T["ink2"]}">'
+          f'TYPE: TWO FACES, {"FOUR" if xl else "THREE"} SIZES</text>')
+    small = f'font-family="{T["body"][1]}" font-size="11" fill="{T["ink2"]}"'
+    if xl:   # the verdict's size, for a run's verdict only: the scale drawn tighter so the page keeps its height
+        P.text(x2, y0 + 60, f"Cleared {xl}", xl, role="display", fill=ink)
+        P.text(x2, y0 + 98, f"Rook {L}", L, role="display", fill=ink)
+        P.text(x2, y0 + 128, f"Equipment {M}", M, role="display", fill=ink)
+        P.text(x2, y0 + 152, f"3,173/3,173 · 55,239 · {S}", S, fill=ink)
+        P.add(f'<text x="{x2}" y="{y0 + 170}" {small}>{esc(T["display"][1])}: names, titles, presses; XL {xl}: a run\'s verdict only.</text>')
+        P.add(f'<text x="{x2}" y="{y0 + 184}" {small}>{esc(T["body"][1])}: numbers, the rest. Authored '
+              f'{", ".join(str(round(z / 1.28)) for z in (S, M, L, xl))}.</text>')
+        y3 = y0 + 204
+    else:
+        P.text(x2, y0 + 44, f"Rook {L}", L, role="display", fill=ink)
+        P.text(x2, y0 + 80, f"Equipment {M}", M, role="display", fill=ink)
+        P.text(x2, y0 + 108, f"3,173/3,173 · 55,239 · {S}", S, fill=ink)
+        P.add(f'<text x="{x2}" y="{y0 + 130}" {small}>{esc(T["display"][1])}: names, titles, presses. {esc(T["body"][1])}: numbers and the rest.</text>')
+        P.add(f'<text x="{x2}" y="{y0 + 146}" {small}>Sizes at 852 x 480; authored {round(S / 1.28)}, {round(M / 1.28)}, '
+              f'{round(L / 1.28)} (Theme.Author, 375 high).</text>')
+        y3 = 268
     P.add(f'<text x="{x2}" y="{y3}" font-family="{T["body"][1]}" font-size="13" fill="{T["ink2"]}">STROKES AND RADII</text>')
     p = T["panel"]
     radii = [(p["r"], "panel"), (max(p["r"] - 4, 6), "card"), (20, "pill")]
@@ -486,8 +500,8 @@ def tokens_page(T, key):
         P.plate(x2 + i * 118, y3 + 12, 100, 54, r=rr, shadow=False)
         P.add(f'<text x="{x2 + i * 118 + 50}" y="{y3 + 44}" font-family="{T["body"][1]}" font-size="12" fill="{T["ink"]}" text-anchor="middle">{what} r{rr}</text>')
     strokes = f"rim {p['sw']}" + (f" · words' edge {T['text_stroke'][1] / 2:.1f}" if T["text_stroke"] else "") + " · hairline 1.2"
-    P.add(f'<text x="{x2}" y="{y3 + 86}" font-family="{T["body"][1]}" font-size="12" fill="{ink}">{strokes}</text>')
-    y4 = y3 + 110
+    P.add(f'<text x="{x2}" y="{y3 + (80 if xl else 86)}" font-family="{T["body"][1]}" font-size="12" fill="{ink}">{strokes}</text>')
+    y4 = y3 + (100 if xl else 110)
     P.add(f'<text x="{x2}" y="{y4}" font-family="{T["body"][1]}" font-size="13" fill="{T["ink2"]}">ONE MATERIAL</text>')
     P.plate(x2, y4 + 10, 110, 50, r=p["r"])
     P.plate(x2 + 122, y4 + 10, 110, 50, r=p["r"] - 2, fill="url(#gPress)", stroke=p["stroke"], sw=p["sw"])

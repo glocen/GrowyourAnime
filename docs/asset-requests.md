@@ -17908,6 +17908,11 @@ The audit's second screen, from the frame and the Arc panel's B (its road, press
   2. XL 60 joins the frame's type scale for the verdict only. The frame's page names it, so no other screen takes it by habit.
 - **Next:** Modulo's two fixes drawn into C's images, then Faber's build, judged at a phone capture. Modulo goes on to the HUD over the world.
 
+**Modulo, 20:17: both must-fixes drawn into C** (`build/handoff/UI/run_card/C_*`, `tools/ui/run_card.py`).
+
+1. **The band:** graphite at 0.9, fading over 16% at each side, as two gradients. It has no edge and no glow: a blur that large drew faint rectangles. The red is lifted to #FF6B73, the frame's "a fall's words" (`TAKES["A"]["fall"]`); A's and B's falls take it too. Measured strictly, each word against the lightest pixel behind it, over today's street and over a white street: name 6.6, Cleared 12.7, Rook fell 5.3, the said line 6.6 to 1. On the panel the red reads 4.9 (top) and 5.8 (foot), and on raised 4.6.
+2. **XL 60** is on the frame's page (`A_tokens.png`, "a run's verdict only"; `TAKES["A"]["xl"]`), authored 47.
+
 ### Modulo: the HUD over the world is the frame's own (20:12)
 
 The audit's third screen (three plate colours, each glowing past its edge) is already redrawn in the picked frame: the lead card, the two pills and the dock on graphite. New: `build/handoff/UI/style_frames/A_hud_cut.png` and `A_hud_small_cut.png`, the HUD over the street with the cut. Research's 44 pt class is carried to the frame's own presses: the dock 72 × 66 (the open one 80 × 72) and the eye 66 round (`style_frames.py`, `TAP`). `A_home_cut` and `A_small_cut` are redrawn the same. No new pick: it is the picked frame, for Faber's install from `Theme.Frame`.

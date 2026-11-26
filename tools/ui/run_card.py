@@ -31,10 +31,12 @@ import style_frames as sf  # noqa: E402
 REPO, T = sf.REPO, ap.T
 W, H = sf.W, sf.H
 S, M, L = T["sizes"]
-XL = 60                                     # C's one large word (DESIGN: a fourth size, for a verdict only)
+XL = T["xl"]                                # the verdict's size, on the frame's page (research's must-fix 2)
 INK, INK2, RIM, RAISED, LOW, EMBER = ap.INK, ap.INK2, ap.RIM, ap.RAISED, ap.LOW, ap.EMBER
+BAND = 0.9                                  # the verdict band's graphite at its core
+SOFT = 0.16                                 # its fade at each side, a share of its width and of its height
 GOLD = "#FFC83D"                            # the frame's Power hue, the goals' gold (a kept dare)
-HURT = "#E8505B"                            # the frame's health hue: a fall
+HURT = T["fall"]                            # a fall's words: health lifted to 4.5:1 (research's must-fix 1, a class)
 UIH = REPO / "build/handoff/UI"
 ICONS = {"chest": UIH / "chests/images/ChestKeeper.png", "stone": UIH / "upgrades/images/StoneLow.png",
          "coin": UIH / "hud/colour/images/CoinMint.png"}
@@ -201,6 +203,17 @@ def take_b(P, st):
 
 def take_c(P, st):
     cx = W / 2
+    # the verdict's band: soft graphite under every word that stands over the world, no edge and no glow, dark enough
+    # that its words keep 4.5:1 over any street (research's must-fix 1). Two gradients, never a blur: a blur this large
+    # draws in tiles and leaves faint rectangles, an edge by another name
+    fade = lambda gid, a, b, x2, y2: (  # noqa: E731
+        f'<linearGradient id="{gid}" x1="0" y1="0" x2="{x2}" y2="{y2}">'
+        f'<stop offset="0" stop-color="{a}" stop-opacity="0"/><stop offset="{SOFT}" stop-color="{a}" stop-opacity="{b}"/>'
+        f'<stop offset="{1 - SOFT}" stop-color="{a}" stop-opacity="{b}"/><stop offset="1" stop-color="{a}" stop-opacity="0"/>'
+        '</linearGradient>')
+    P.defs.append(fade("gBand", LOW, BAND, 1, 0) + fade("gBandFall", "#FFFFFF", 1, 0, 1)
+                  + f'<mask id="mBand"><rect x="{cx - 330:.0f}" y="96" width="660" height="220" fill="url(#gBandFall)"/></mask>')
+    P.add(f'<rect x="{cx - 330:.0f}" y="96" width="660" height="220" fill="url(#gBand)" mask="url(#mBand)"/>')
     road(P, cx - 170, cx + 170, 114, st["rows"], st["kept"], size=30)
     P.text(cx, 168, "Lantern Row", M, role="display", fill=INK2, anchor="middle")
     P.text(cx, 226, st["word"], XL, role="display", fill=INK if st["won"] else HURT, anchor="middle")

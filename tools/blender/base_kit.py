@@ -159,10 +159,14 @@ PRINTS = {"panel": (8, 268, 512, 160), "hazard": (536, 268, 256, 48), "plate": (
 PRINTS["half"] = (8, 268, 256, 160)   # the panel's first 8 studs, for the half panel: the same pixels, not drawn again
 DECK = (512, 8.0)      # the deck's own tile: pixels, and the studs it covers (four plates)
 PLATE = 4.0            # a deck plate, studs
-# AR65's floor: pale warm stone in slabs (research's must-fix 1: stone, never a bare baseplate, seen close and gone by
-# the gate). A slab's two tones, its joint, the lit lip on its near edges; a slab across and in, studs, each course
-# offset by half a slab.
-STONE = ("#DCD8CF", "#D4CFC5", "#B3ADA2", "#E9E6DF")
+# AR65's floor: warm stone in slabs (research's must-fix 1: stone, never a bare baseplate). A slab's two tones, its
+# joint, the lit lip on its near edges; a slab across and in, studs, each course offset by half a slab. Research's
+# verdict in game (2026-11-26, 18:12; class: every large flat surface): from the gate it read L 235 against target A's
+# 197, with no tone steps, an empty white baseplate. So every tone is two thirds of its light (in linear light: 0.67,
+# from that one measure, texture 214 to 235 on screen) and the slabs' step is twice as wide; only the joints fade with
+# distance. Before: "#DCD8CF", "#D4CFC5", "#B3ADA2", "#E9E6DF", the mottle 0.006.
+STONE = ("#BCB9B1", "#AEA9A1", "#959087", "#C3C1BB")
+MOTTLE = 0.01
 SLAB = (8.0, 4.0)
 
 # Each machine's own colour (AR65, the feel line: "every machine told apart by its shape and its one colour"): a copy of
@@ -299,10 +303,10 @@ def atlas(swatches=None):
 
 
 def stone(x, y, px, tile=False):
-    """AR65's floor: pale warm stone in slabs, one calm tone from the gate. `x` is across from the middle line, `y` in
-    from the front edge, so a slab that crosses two floors is one slab. Each slab its own tone, a step apart; a thin
-    joint a hair darker, with a lit lip on its near edges; a faint mottle over all. Read close, the joints and the tones
-    say stone; by the gate's distance the texture's own smaller levels melt them into one tone (research's must-fix 1).
+    """AR65's floor: warm stone in slabs, at target A's value. `x` is across from the middle line, `y` in from the front
+    edge, so a slab that crosses two floors is one slab. Each slab its own tone, a step apart; a thin joint a hair
+    darker, with a lit lip on its near edges; a faint mottle over all. Read close, the joints and the tones say stone;
+    by the gate's distance the joints melt, and the slabs' tone steps still show (research's must-fix 1, in game).
     `tile`: the deck's tile, `DECK` studs square, repeating: its two courses' tones and its mottle repeat with it."""
     rng = np.random.default_rng(31)
     a, b = code(STONE[0]), code(STONE[1])
@@ -317,7 +321,7 @@ def stone(x, y, px, tile=False):
     if tile:   # whole waves across the tile
         waves[:, :2] = np.maximum(1, np.round(waves[:, :2] * DECK[1] / (2 * np.pi))) * 2 * np.pi / DECK[1]
     mottle = sum(np.sin(x * f + p) * np.sin(y * g + q) for f, g, p, q in waves)
-    page[..., :3] *= (1.0 + 0.006 * mottle)[..., None]
+    page[..., :3] *= (1.0 + MOTTLE * mottle)[..., None]
     fx, fy = xs % SLAB[0], y % SLAB[1]
     near = np.minimum(np.minimum(fx, SLAB[0] - fx), np.minimum(fy, SLAB[1] - fy))
     _mix(page, STONE[3], ((np.minimum(fx, fy) < 2.2 * px) & (near >= 1.0 * px)).astype(np.float32) * 0.5)

@@ -11,9 +11,9 @@ Each teammate rewrites its own row: one to three lines. Open asks sit under "Wai
 **Faber (builder).** 2026-11-26, 17:45 by the clock, on Opus 5.5. Committed: AR65's install, the kit, the plates (must-fix 2, the Festival Door counted as a machine) and the Door under the Generator at dusk (must-fix 3); the Mill's plate now says GENERATOR. The record is in AR65's entry. Earlier today: TR65 to TR68, TR69 A to C built Off, TR71 A.
 - **Next:** Studio goes to Scintilla (AR52's ward retake, AR7's C4). Meanwhile, AR56's drifts staged and uploaded; then AR56's Haze test, TR66 row 13's ComboSnap, TR69 D and E, TR69 F's captures, TR71 B to D, TR59's retake.
 
-**Modulo (assets).** 2026-11-26, 18:04. Nothing running, no lock held.
-- **For research:** AR66, Watt's Combo B is built, for the verdict. The sweep now rises through the gap instead of B's level sweep (AR66, "Modulo's build"). **For Faber:** `Watt_Combo.json` to install once its content check passes; AR56's drifts and TR66 row 13's `RookComboSnap` are waiting with you.
-- **AR64's hair** stays at "close", asked of the director. **Now:** AR21's three missing chest pictures (Faber's ask), then AR67, the Generator's targets.
+**Modulo (assets).** 2026-11-26, 18:20. Nothing running, no lock held.
+- **For Faber:** Watt's Combo with the raise fixed, passed by research (AR66), to install; AR65's 17 floor maps, drawn again at target A's value, to upload and capture from the gate (AR65, "Modulo's fix of the floor").
+- **AR64's hair** stays at "close", asked of the director. **Now:** AR67, the Generator's targets.
 
 **Scintilla (effects).** 2026-11-26, 18:08. **AR52's ward** passed research on the street retake (18:07); a break in a real fight goes to TR69's hit pass. **AR7's C4** missed twice: research brings its options to the director after one more take. **TR70 B** is picked (R1, C1), its must-fixes in the targets; the spoke, core and ring images come when Faber starts the install.
 - **Next Studio turn (asked of Faber):** in the Festival place, C4 at the keeper's real entrance (`KeeperTry`, the gate's own try), at the player's camera with the build unchanged. Then in the main place, AR61's bloom take and AR58's checkpoint. Nothing running meanwhile.

@@ -18085,6 +18085,12 @@ The rule: `docs/design.md`, "Clips follow the model, rules follow the class" (th
 - **Gates:** read by eye at the player's view, and not measured, because the grey Shade outshines everything in these renders. The squint and greyscale come with the in-game capture. Beside the examples: as at B's pick (17:10).
 - **Next:** Modulo's fix, then a second look at 36 to 60 only, then Faber's install.
 
+### Modulo's fix of the raise (2026-11-26, 18:18; started 18:10)
+
+- **What changed (37 to 59 only; the beats and the named keys stay where they were):** after the sweep, the fist climbs over his right shoulder while the point drops into the gap, so the shaft stands steep across the view with its butt high behind him. Then comes a short coil, the point drawn back, and the drive at 60 as before. It reads from about 42 to 59, about 16 frames, against B's 10. Beside B: `build/scratch/modulo/ar66/raise/watt_raise_B_over_fix.png`.
+- **The class, measured:** the clip's report now prints the shaft's share of its length on the player's screen at each named key (`watt_clips.py`, `on_screen`; 0 is end-on). Combo: 0 0.95, 9 0.95, 15 0.28, 18 0.32, 21 0.22, 29 0.97, 36 0.21, 54 0.79, 60 0.66, 68 0.51, 88 0.96. The guard, the thrust and the sweep's contact are as near end-on as the old raise. They read by the point's travel across the gap, which research took at the verdict. For research: do they need the same fix?
+- **Checks:** `r6parity`'s audit passes, and every line of the clip's own report is in bounds. The blade is 0.03 clear of his hair at 54. The grip's graze is 0.07 at 42, as in the Idle. The right arm is near-still for 5 frames, under the limit of 6. The content check before upload: PASS, both conditions held. In the handoff; not accepted.
+
 ## AR67. The Generator's new model, and any machine that needs one (Modulo's targets, research's pick, then Faber's install)
 
 Research, 2026-11-26, 17:47, on the director's word of about 17:46 (the register): "we can change the whole model of any machine that need it and dont need to stick with what i said abt the generator turning ... just make it the best it can be".

@@ -578,11 +578,16 @@ def combo(t):
     point_at(t, 36, "2: the sweep", (0.85, 0.85, 3.3), (-1.2, 3.25, 4.3), "out", T=(-2, 2, 4, -0.4, 0, 0.2), crouch=0.2,
              left=(-30, 0, -18))  # the left swung back, out of the gap
     t.mark(36, "Hit2")
-    point_at(t, 42, None, (1.05, 0.7, 3.7), (-1.7, 2.7, 5.2), "cubic", T=(-4, -2, 4, -0.4, 0, 0.12), crouch=0.16)
-    point_at(t, 48, None, (1.9, 0.1, 3.9), (-0.4, 2.8, 5.8), "in", T=(0, -14, 0, -0.3, 0, -0.05), crouch=0.14)
-    # raised over his right shoulder, overhand, the point down at the Shade, his weight back; then driven down and in
-    point_at(t, 54, "raised overhand", (2.25, -0.5, 5.0), (0.3, 2.3, 4.3), "in", hint=(165, 0, 25), left=(40, 0, -10),
-             T=(-8, -20, 0, 0, 0, -0.25), crouch=0.04, look=(0.0, 3.9, 3.8), feet={"Right Leg": (0.85, -0.55)})
+    # drawn back off the shoulder and raised: the fist climbs over his right shoulder while the point drops into the gap,
+    # so the shaft stands steep across the player's view, the butt high behind him, from 42 to the drive. (Held level at
+    # the Shade from his right, a spear points at this camera's lens and only its point shows: research's must-fix on
+    # the raise, 2026-11-26.) Then the point is drawn back a little more, the coil, and driven down and in.
+    point_at(t, 40, None, (1.6, 0.1, 4.55), (-0.2, 2.4, 4.2), "cubic", T=(-4, -8, 4, -0.35, 0, 0.1), crouch=0.16,
+             hint=(140, 0, 25))
+    point_at(t, 46, None, (1.85, -0.25, 5.05), (0.45, 2.1, 3.4), "in", hint=(165, 0, 25), left=(40, 0, -10),
+             T=(-6, -16, 0, -0.15, 0, -0.15), crouch=0.08, look=(0.0, 3.9, 3.6), feet={"Right Leg": (0.85, -0.55)})
+    point_at(t, 54, "raised overhand", (2.05, -0.7, 5.15), (0.9, 1.7, 3.5), "sine", hint=(170, 0, 25), left=(44, 0, -10),
+             T=(-9, -20, 0, 0, 0, -0.25), crouch=0.04, look=(0.0, 3.9, 3.8))
     t.spear(54, roll=0.0)
     point_at(t, 60, "3: the drive", (2.15, 0.5, 4.3), (0.0, 3.3, 2.95), "out", hint=(100, 0, 45), T=(17, -16, 0, 0, 0, 0.42),
              crouch=0.38, feet={"Left Leg": (-0.7, 1.0)}, look=(0.0, 3.9, 3.0))
@@ -914,8 +919,17 @@ def slung_sheet(scene, rig, out):
     print(f"wrote {out / 'slung.png'} (dusk, then a bright ground; across: {', '.join(n for n, _ in views)})")
 
 
+def on_screen(n, take) -> str:
+    """The shaft's share of its length on the player's screen at each named key: 1 lies across the view, 0 points at the
+    lens and shows only its point (research's must-fix on Watt's Combo, 2026-11-26, class: every named key)."""
+    az, el = (math.radians(a) for a in GAME)
+    lens = Vector((math.sin(az) * math.cos(el), math.sin(el), -math.cos(az) * math.cos(el)))
+    return "; ".join(f"{f} {math.sqrt(max(0.0, 1.0 - n['lines'][f][1].dot(lens) ** 2)):.2f}" for f, label in take.beats
+                     if label and f < len(n["lines"]))
+
+
 def report(name, take, n, checks, fade) -> str:
-    near = "; ".join(f"{part} {d:.2f} at {f}" for part, (d, f) in n["body"].items())
+    near ="; ".join(f"{part} {d:.2f} at {f}" for part, (d, f) in n["body"].items())
     return (f"{name}: {take.end + 1} frames, {take.end / FPS:.2f} s{' (a loop)' if take.loop else ''}\n"
             f"  the discs and the blade, nearest his head and hair (studs, past 0 is clear): {n['head'][0]:.2f} at {n['head'][1]}\n"
             f"  the same as the game fades the clip in from the walk's slung spear, or out to it: {fade[0]:.2f} ({fade[1]})\n"
@@ -931,7 +945,8 @@ def report(name, take, n, checks, fade) -> str:
             f"  the longest an arm is nearly still at 20 to 70 degrees up, of {HELD} frames: right {checks['held']['Right Arm'][0]} "
             f"(to {checks['held']['Right Arm'][1]}), left {checks['held']['Left Arm'][0]} (to {checks['held']['Left Arm'][1]})\n"
             f"  each arm at its highest: right {checks['high']['Right Arm'][0]:.0f} degrees at {checks['high']['Right Arm'][1]}, "
-            f"left {checks['high']['Left Arm'][0]:.0f} at {checks['high']['Left Arm'][1]}\n")
+            f"left {checks['high']['Left Arm'][0]:.0f} at {checks['high']['Left Arm'][1]}\n"
+            f"  the shaft's share of its length on the player's screen at each named key (0 is end-on): {on_screen(n, take)}\n")
 
 
 def main():

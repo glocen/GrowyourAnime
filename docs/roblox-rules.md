@@ -26,7 +26,7 @@ What Roblox requires of this game, and what we do about it. Read on 2026-11-09 b
 Tightened on 2026-05-26: for a game that doesn't comply, "your game will be removed and your account will be suspended" (official [25]).
 
 - **What counts** (official [2][25]): a random item bought with Robux, or with anything Robux buys. A bundle with one random item in it counts whole. Random rewards that can't be bought, directly or indirectly, are outside the rule.
-- **Odds** (official [24][25]): every outcome, in numbers that add up to 100 percent, shown before the purchase. A "Details" pop-up is accepted. A lone (i) icon isn't. The page, read again on 2026-11-19, says nothing on an outcome that gives nothing; research's earlier "no pure loss" isn't on it. An "Upgrade spell with some chance of working" is named as a paid random item, and so is currency bought with Robux ("This policy also applies to indirect purchases").
+- **Odds** (official [24][25]): every outcome, in numbers that add up to 100 percent, shown before the purchase. A "Details" pop-up is accepted. A lone (i) icon isn't. **No outcome may be a pure loss** (official [30], read on 2026-11-24): "All possible outcomes for a paid random item must provide some benefit to the user; there cannot be a possible outcome which results in the user simply losing their payment." The docs page itself doesn't say it. An "Upgrade spell with some chance of working" is named as a paid random item, and so is currency bought with Robux ("This policy also applies to indirect purchases").
 - **The check in code** (official [26]): `PolicyService:GetPolicyInfoForPlayerAsync`. `ArePaidRandomItemsRestricted` true means hide, replace or block. `IsPaidItemTradingAllowed` false means no trading of any paid item.
 - **Where it's restricted** (official [25][28][29]): Australia, Belgium, the Netherlands, the United Kingdom and Brazil, with the list kept by Roblox.
 - **The questionnaire** (official [27][28]): paid random items are declared in the Maturity and Compliance Questionnaire. Declared without the check in code, the game is closed to under-18s in the UK and Brazil.
@@ -117,3 +117,4 @@ Read 2026-11-24 from the cloud: Roblox's creator-docs source and the Community S
 27. Content maturity: <https://create.roblox.com/docs/production/promotion/content-maturity>
 28. Staff, UK: <https://devforum.roblox.com/t/update-on-paid-random-items-restriction-for-uk-users-under-18/3072183>
 29. Brazil: <https://en.help.roblox.com/hc/en-us/articles/48706630819476-Brazil-Digital-ECA-Updates>
+30. Community Standards, paid random items: <https://about.roblox.com/community-standards#roblox-economy-paid-random-items>

@@ -4,8 +4,8 @@
 
 Each teammate rewrites its own row: one to three lines. Open asks sit under "Waiting on the director".
 
-**Quaestor (research).** 2026-11-26, 14:13, on Opus 5.5. **The overhaul is set** (`docs/production-plan.md`, "The overhaul", on the director's word of 14:06). Three are overhauled: the fight, the break and its reveal, and how the game talks; the rest are reworked. Today too: TR67, the Tower's leave and lines, already built by Faber; **TR68, the voice pass, 44 lines (Faber)**; "Words players read" in `docs/ui.md`.
-- **Next:** the fight's feel line and spec (overhaul 1), then the reveal's feel line (2); AR61's retake; AR52's and AR58's checkpoints.
+**Quaestor (research).** 2026-11-26, 14:19, on Opus 5.5. **The overhaul is set** (`docs/production-plan.md`, "The overhaul", on the director's word of 14:06). Three are overhauled: the fight, the break and its reveal, and how the game talks; the rest are reworked. **TR69, the fight's spec, five blocks (Faber, after TR68).** TR68, the voice pass, is in offline (Faber). TR67 is built.
+- **Next:** the reveal's feel line and spec (overhaul 2), then the conductor's (3); AR61's retake; AR52's and AR58's checkpoints.
 - **For Modulo, after the hair:** AR56's cloud sea; `docs/design.md`, "Clips follow the model".
 - **With the director:** the two study sittings (Anime Crusaders' systems, Sailor Piece); TR52's tap, judged in play; TR42's and TR64's listens; the phone sitting and F7; the store's design.
 

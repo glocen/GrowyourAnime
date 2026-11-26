@@ -5397,3 +5397,72 @@ From the director's paste of 2026-11-26 (the register). Each claim was checked a
 
 - **Cases:** the self-tests that assert these strings change with them. Nothing else changes.
 - **Not in this pass:** "Stretch" in what players read, the Void Shop's name and the dock's Home (the director's), and the item names (their own pass).
+
+## TR69. The fight, overhauled (research, 2026-11-26, 14:15; overhaul 1 of `docs/production-plan.md`, "The overhaul"; for Faber)
+
+- **Why** (`docs/research/cloud-2026-11-24/combat-agency.md` and `grounds-and-encounters.md`, MEASURED on our seeds):
+  - the player decides nothing inside a fight;
+  - 76% of what falls before the keeper is a Brawler, the same pack respawning on a 15 s timer;
+  - a quarter to a third of stages 1 and 2 is standing still;
+  - the Lamplighter repeats one move;
+  - Hard is numbers.
+- **Feel line:** your fighter's hits snap and stop for a beat; the street sends Shades in waves that each ask one thing; when one winds up, you call your fighter clear and punish the opening with its signature.
+- **Five blocks, one at a time,** each about 90 minutes, each a playable block judged in play before the next. Every number below is a seed, exposed live (`NL_Debug` "Tune"). Each new rule gets its logic case in pure Luau.
+
+**A. The hit** (levers: hitstop, anticipation, the shake saved):
+- The attack clips' fade in at 0.02 beside today's 0.06, by a live switch. This is TR66 row 12, moved here.
+- A critical's trauma drops from 0.35 to 0.15 (`Hitstop.Rungs`, From 4). The signature keeps 0.8, so the shake means something again.
+- A pack's last fall holds 0.2 s (`Hitstop.Kill`, 0.13 today), and its drops leave together.
+- A thin ring under the lead's target, in its type's colour, as a grey block. Scintilla gives it its look later.
+- A 0.3 s glint on a Shade's mask before its ordinary swing.
+- **Waits:** sound (the rising three, the chime), and Rook's retimed strike (TR66 row 13, Modulo's after AR65's targets).
+
+**B. The street in waves** (in place of the respawn quota):
+- A pack stop holds a list of waves.
+  - The next wave steps out of the stall fronts 2.5 s after the last Shade falls, with a 1 s tell (in grey, a marker on the stall).
+  - Each stage's waves add up to its quota of 10, so the loot's fit holds.
+  - A stop whose list has run out starts again from its second wave, only while someone near still owes the quota. Nobody waits longer than the gap.
+  - Each new Shade is met alone first.
+- The lists (`Config.World.Row.Stops`):
+
+| Stage, stop | Waves |
+|---|---|
+| 1, the pack | 3 Brawlers with their backs turned · 4 Brawlers, two from each side · 3 Brawlers of another type |
+| 2, the pack | 1 Guard alone, facing the player · 2 Guards in front of 2 Brawlers · 3 Guards raising in turn, with 2 Brawlers |
+| 3, the first pack | 1 Dasher alone, far up the street · 2 Brawlers in front, 1 Dasher behind |
+| 3, the second pack | 2 Dashers from the two alleys, their lines crossing · 1 Guard in front of 1 Dasher, 2 Brawlers, the Support at the rear |
+
+- **Each elite is its stage's role plus one move of its own,** built through `/ga-action`. Block clips come from today's clips retimed.
+  - The Brawler's elite: every third swipe is an overhead, with a 1.2 s wind-up and a 1.5 s recovery.
+  - The Guard's elite, in the square: a screen 8 studs wide, covering 2 Brawlers who join at its half health.
+  - Stage 3's elite becomes the Dasher's, which is its stage's role (tier 2, research's seed): a fan of three lines, then 1.5 s out of breath. On Hard, the square keeps the Dasher's elite (AR57) and stage 3 takes the Brawler's.
+- **Measure before and after,** from `StageBegin`: one clean Normal run in Studio, with each stage's seconds fighting, walking and standing.
+  - **The gate:** under 20 s standing in the whole run.
+  - Settling D2's "10 to 15 minutes" stays the director's.
+
+**C. The press: slip, then strike** (`combat-agency.md`, section 4, with its rules and beats as written there). It's behind a switch, `Config.Combat.Hands`, Off by default.
+- **Why the switch:** manual signatures are "Out of launch" [D] and the player steers by standing, so it's built beside today's and the director picks by playing. One sitting covers it, TR52 and TR44.
+- **Call** is TR44's B, in every fight. A Call pressed inside a marked strike's tell is a slip.
+  - A slip leaves the attacker Open for 2.0 s and puts 30% in the ring.
+  - A signature that lands on an Open enemy is a Finisher: hitstop 0.18 s, trauma 0.8, and 30% of its cooldown back. It adds no damage.
+- Auto, when on, waits 3 s for a thumb, then fires. Auto never Calls.
+- **Words:** the button reads "Call". Open and the Finisher show no words: a cracked ring, then the hit.
+- **The read-out** in each fight: Calls, strikes missed on purpose and by accident, taps, the seconds a full ring waited, damage taken, clear time.
+- **The gates** are in the study's "How we'd know":
+  - one press every 4 to 10 s;
+  - misses on purpose are 70% or more of missed strikes;
+  - hands finish stage 3 with 15 to 30% more of the bar than Auto;
+  - Auto still clears Normal.
+
+**D. The Lamplighter in three phases**, in grey on `Rules.Mark`'s circles and lines (`grounds-and-encounters.md`, section C's table). It's a signature piece, so it gets the time it needs.
+- **Joining it:** AR7's staging and C4's ring.
+- The fight runs about 80 s, inside `docs/balance.md`'s band for keepers (tier 2, research's).
+- It adds moves and block clips, not a new look.
+
+**E. Hard changes behaviour:** one rule per role, as Hard rows in `Definitions/Enemies.luau`.
+- Guards raise in turn.
+- Dashers lunge twice.
+- Two marks may be in flight where Normal allows one.
+- The keeper's Hard rules are those in section C.
+
+- **Not in this piece:** heal marks, and full health at a run's start (the director's health words); props on the Shade (the director's "stay as they are"); run modifiers; the cut-in; every finished look and sound.

@@ -18204,6 +18204,10 @@ The rule: `docs/design.md`, "Clips follow the model, rules follow the class" (th
   - `Layers.kirra` and the three tail clips' ids and fades go.
   - Upload `KirraHit`, `KirraDown` and `KirraUp`.
 - **Status:** made and self-reviewed (the audit, the probe, and the build beside A). Content check before upload: PASS. No effect, the blades sheathed, the kick-up compact, the names free. Delivered to the handoff for research's verdict, then Faber's install. Not accepted.
+- **Research's verdict (Quaestor, 2026-11-26, 19:19; `beside_{Hit,Down,Up}.png`, A above the build): passes, and goes to Faber's install.**
+  - **Beside A:** every pose falls on A's frame, and the fixes don't change the read. Hit 3 is still thrown back with her face and the tail open, Down 16 is off her feet, and Up 16's kick reads in the air.
+  - **The must-fix is met:** no part goes through the body or the street (the closest is 0.04 into the torso and 0.017 under the street), and the audit passes on all eight clips. The set's lengths and its Land hold.
+  - **What the sheets can't show:** her reactions in a real fight at the player's camera, first seen at TR69 F's captures.
 
 ## AR67. The Generator's new model, and any machine that needs one (Modulo's targets, research's pick, then Faber's install)
 

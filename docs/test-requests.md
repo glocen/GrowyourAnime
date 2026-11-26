@@ -2423,6 +2423,38 @@ From the director's paste of 2026-11-26 (the register). Each claim was checked a
 - **Content check** (22:34): all six PASS. One note for the build: F2's claw marks lie on the street only, never across a body.
 - **Next:** research's pick. Then I write the picked rows as data, and Faber hooks the three moves.
 
+**B's elites' tells, the rows** (Scintilla, 2026-11-26, 22:52). Research's pick (research, 2026-11-26, about 22:55; the peaks at full size, `peaks_phone.png` and `peaks_squint.png`, read in both orders):
+> - **Overhead: O2_halo.** Why: at night on the street, O1's ball is one warm point among dozens of warm lanterns, so it loses the focal point at the squint. O1 is the better motion (a hero shape with a direction and an acceleration), but it doesn't read where it's needed. O2's ring is a shape no lantern makes, so it reads at the phone and at the squint, and R4 stays without a hook change. **Must-fix (class: a tell reads as a countdown, never as a lock-on):** the ring visibly closes, starting at 1.8× or more of its end diameter, and heats from amber to white as the strike nears. It lands with the footprint's flash. No ticks or crosshair marks.
+> - **Fan: F1_fan.** It reads at a glance, and the notches between the lanes show where the gaps are. F2's blades are quieter, and they draw claw marks.
+> - **Screen: S1_lantern.** At the phone it reads as one see-through azure wall. S2's thin rails fade at the squint. The upright ribs also belong to Lantern Row, which is where this elite lives.
+> - **What the targets can't show, first seen in Faber's hook:** the ring beside the R4 chevron in motion; the fan's far ends behind bodies; the screen at the lead's 45° spot. I judge those once in the hook's capture.
+
+- **The rows** (`tools/fx/shade_tells.py`, in `build/handoff/Shade/fx/`): each is its action's own effect, written at its elite's size, so its floor is the street. `Area` is the elite's Scale, read from `Definitions.Enemies`.
+  - **ShadeOverhead, 40 rows.**
+    - The ring is three cards riding `Mask_Brawler`, 0.95 studs before its middle. It closes at a steady rate from radius 2.4 to 1.3 at Scale 1, which is 1.85 times its end, through the 72 frames to `Strike`.
+    - It heats from amber to warm white over the last 24 frames, with a light round the mask. It flashes white on `Strike` and is gone by 5. No ticks.
+    - The footprint is D1's make on a disc of radius 3, 3.4 ahead (seeds). It's laid faint, its fill grows from the middle to `Strike` (linear), and its rim of 16 strokes heats.
+    - On `Strike`, everything goes white with the ring, needles of light leap off it, a light flashes, and it all closes over 6 frames. It's held where it was laid on the wind-up's first frame.
+  - **DasherFan, 120 rows.**
+    - DasherLine's lane three times, at 0° and ±25°. Only the three lanes' common outline is stroked (39 strokes, each with its core), so the notches show. Each lane's fill is laid, and its fuse is lit in turn to `Land`, with the rim heating.
+    - The Dasher runs the middle lane with DasherLine's streak. Each side lane is run in the same quarter second by streaks of light flown down it, and a slash bursts at each lane's end, from points laid at `Line`.
+  - **GuardScreen, 5 rows:** the ward's passes (now `ward_rows`, which GuardShield shares, its file unchanged) on the wall's pictures, 2.6 studs ahead, on `Raise` and `Drop`. Its glance and break are GuardGlance's and GuardBreak's.
+- **The pictures:** `overhead_ring_ink`, `_light` and `_core` (512 px), and `guard_screen_ink`, `_light` and `_core` (1024 px) with `guard_screen_run` (a Grid4x4 flipbook). They're drawn by the targets' own strokes (`tools/fx/elite_tell_targets.py --pictures`), and S1's wall is drawn flat, without the target's curve. Uploaded under the group at 22:51; the ids are in `docs/asset-log.md` and `Config.Effects.Pictures`.
+- **Checked:**
+  - The game's rows cases on the three files, by `rows_take`, dry run with the pictures named: the only failures are the three actions not yet in `Definitions.Actions`, and the files were taken back out. Without them, the offline suite passes (36,499).
+  - The four existing effects' files are byte for byte unchanged.
+  - The pictures' content check: all seven PASS.
+- **For Faber, the hooks:**
+  - **The three actions in `Definitions.Actions`:**
+    - `ShadeOverhead`: `Strike` at 1.2 s, length 2.7. Its hit takes the footprint's disc, as laid on its first frame.
+    - `DasherFan`: DasherLunge's beats, `Aim = "Line"`, and its hit on any of the three lanes.
+    - `GuardScreen`: GuardRaise's beats, with the guard covering the wall.
+  - **Then take the files:** `py tools/fx/rows_take.py` on the three files.
+- **Found on the way:** on the elite Dasher, DasherLine floats about 1.1 studs over the street. This is from the code, not seen in play. Its rows are World and ride the root at -2.96 studs, unscaled, while an elite's root is 4.05 up.
+  - The data can't serve both scales.
+  - Faber's call: let `Ground` keep a row's `At.Y` as a lift over the foot, and the frame's own yaw. I'd then rewrite DasherLine on it.
+- **Next:** Faber's actions, then research's look in the hook's capture.
+
 ## TR70. The break and its reveal, overhauled (research, 2026-11-26, 14:17; overhaul 2 of `docs/production-plan.md`, "The overhaul"; for Faber, with Scintilla's targets)
 
 - **Why** (`docs/research/cloud-2026-11-24/reveal-and-showcase.md`, MEASURED on our pools):

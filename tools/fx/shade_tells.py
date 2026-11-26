@@ -41,11 +41,29 @@ filling toward you like a fuse; then the Dasher is down it in a streak, and a sl
   - Slash (Land): the crescent sheet where it lands, with hot amber needles on along the run.
   World: the rows draw at the studs written, never the body's scale, since the hit's lane is 14 by 4 for an elite too.
 
+The elites' moves (TR69 B; research's picks of 2026-11-26, from the targets in build/handoff/Fight/targets/elite/,
+drawn by tools/fx/elite_tell_targets.py, which also draws their pictures with --pictures). Feel line (research, 22:05): from
+the player's camera, each elite's one move announces itself a beat before it lands, so the player knows which elite it is
+and when to step away. Each is its action's own effect, written at its elite's size (Area, the elite's Scale in
+Definitions.Enemies), so at that scale nothing is scaled, and the floor stays on the street.
+- ShadeOverhead, the Brawler elite's overhead (O2): a ring round its mask closes at a steady rate through the 1.2 s
+  wind-up, from 1.85 times its end to tight on the mask, heating from amber to white, and the footprint where the blow
+  lands lies on the street in D1's make, its fill growing to the strike, its rim heating. On Strike both flash white
+  together and the ring is gone; needles of light leap off the footprint. No ticks, no crosshair: a countdown, never a
+  lock-on (research's must-fix). The ring rides the mask; the footprint is held where it was laid on the first frame.
+- DasherFan, the Dasher elite's fan (F1): DasherLine's lane three times, the middle at its target and the others 25
+  degrees either side (research, 22:15), drawn at once, only the outline of the three together stroked, so the notches
+  between the lanes show the gaps; each lane's fuse lit in turn to Land, the rim heating. The Dasher runs the middle;
+  a streak of light runs each side lane in the same quarter second, and a slash bursts at each lane's end.
+- GuardScreen, the Guard elite's screen (S1): the ward's way, at the wall's size: a lantern wall 8 studs across, nine
+  ribs and two rails, W2's lines only, on GuardRaise's beats. Its glance and break are GuardGlance's and GuardBreak's.
+
 Frames at 60 a second from each row's beat. The colours passed their content check on 2026-11-26 (AR52): nothing red,
 the chips light, never dark or liquid, nothing left behind (AGENTS.md, rule 4).
 """
 import json
 import math
+import re
 import sys
 from pathlib import Path
 
@@ -126,6 +144,15 @@ def guard_shield():
     added. Every pass drawn WARD_LIFT toward the camera, over the Guard's raised arms (the half checkpoint). One particle
     each for the action's whole life: opened over the eight frames before Raise, its click on Raise, held, closed over
     eight frames from Drop. A break ends the action, and the ward with it: GuardBreak takes its place."""
+    rows = ward_rows("guard_ward", WARD_EXT, GUARD_AT, lift=WARD_LIFT,
+                     what="the hero: the lantern's frame, five ribs and two hoops, painted azure so it reads blue by day")
+    return effect("GuardShield", "The Guard's raised ward, GuardRaise's own effect: research's pick, W2, the lantern's "
+                  "frame (AR52).", rows, action="GuardRaise")
+
+
+def ward_rows(picture, ext, at, lift, what):
+    """W2's passes on one set of pictures (picture + _ink, _light, _run, _core), `ext` studs from their middle to their
+    edge, at `at` from the root, drawn `lift` studs toward the camera: the ward's (guard_shield) and the screen's."""
     d = RAISE_TO_DROP
     span = d + 2 * WARD_DRAW
     life = span / 60
@@ -133,8 +160,8 @@ def guard_shield():
     def q(frame):  # a frame from Raise as a share of the particle's life
         return round((frame + WARD_DRAW) / span, 4)
 
-    size = [[t, round(WARD_EXT * k, 3)] for t, k in ((0, 0.15), (q(-6), 0.62), (q(-4), 0.88), (q(-1), 1), (q(d), 1),
-                                                       (q(d + 4), 0.8), (1, 0.1))]  # Size: half the quad, the picture's EXT
+    size = [[t, round(ext * k, 3)] for t, k in ((0, 0.15), (q(-6), 0.62), (q(-4), 0.88), (q(-1), 1), (q(d), 1),
+                                                  (q(d + 4), 0.8), (1, 0.1))]  # Size: half the quad, the picture's EXT
 
     def fade(seen, click=None, start=None):  # opened, its click on Raise (if any), held at `seen`, gone
         keys = [[0, 1 if start is None else start], [q(-1), seen]]
@@ -161,33 +188,30 @@ def guard_shield():
                 "LightEmission": emission,
                 "LightInfluence": 0,
                 "Brightness": brightness,
-                "ZOffset": round(WARD_LIFT + z, 3),
+                "ZOffset": round(lift + z, 3),
                 **(more or {}),
             },
             "Emit": [[-WARD_DRAW, 1]],
             "Tell": True,  # a tell: drawn at every Effects level
-            "Tracks": {"At": [[-WARD_DRAW, v3(*GUARD_AT)]]},
+            "Tracks": {"At": [[-WARD_DRAW, v3(*at)]]},
             "Why": why,
         }
 
     rows = {
-        "Ink": flat("guard_ward_ink", AZURE_DEEP, 0, fade(INK_SEEN), 0,
+        "Ink": flat(f"{picture}_ink", AZURE_DEEP, 0, fade(INK_SEEN), 0,
                     "W2's ink: a hair of deep azure along every stroke, under the rest"),
-        "Body": flat("guard_ward_light", AZURE, 0, fade(BODY_SEEN, start=0.6), 0.02,
-                     "the hero: the lantern's frame, five ribs and two hoops, painted azure so it reads blue by day"),
-        "Flash": flat("guard_ward_light", AZURE_RIM, 1, fade(FLASH_SEEN, click=0), 0.03,
+        "Body": flat(f"{picture}_light", AZURE, 0, fade(BODY_SEEN, start=0.6), 0.02, what),
+        "Flash": flat(f"{picture}_light", AZURE_RIM, 1, fade(FLASH_SEEN, click=0), 0.03,
                       "the body's light added, white-azure: full on Raise, its click, then the strokes' glow (W2's white ribs)",
                       brightness=1.5),
-        "Run": flat("guard_ward_run", AZURE_RIM, 1, [[0, 1], [q(5), 1], [q(14), RUN_SEEN], [q(d), RUN_SEEN], [1, 1]], 0.035,
+        "Run": flat(f"{picture}_run", AZURE_RIM, 1, [[0, 1], [q(5), 1], [q(14), RUN_SEEN], [q(d), RUN_SEEN], [1, 1]], 0.035,
                     "the hold: light running up the ribs, each a little behind its neighbour (W2's run), from after the click",
                     brightness=1.5, more={"FlipbookLayout": "Grid4x4", "FlipbookMode": "Loop",
                                           "FlipbookFramerate": [RUN_RATE, RUN_RATE]}),
-        "Core": flat("guard_ward_core", (255, 255, 255), 1, fade(CORE_SEEN, click=0), 0.04,
+        "Core": flat(f"{picture}_core", (255, 255, 255), 1, fade(CORE_SEEN, click=0), 0.04,
                      "the strokes' white core where they're thickest"),
     }
-    ride(rows)
-    return effect("GuardShield", "The Guard's raised ward, GuardRaise's own effect: research's pick, W2, the lantern's "
-                  "frame (AR52).", rows, action="GuardRaise")
+    return ride(rows)
 
 
 def guard_glance():
@@ -351,8 +375,295 @@ def dasher_line():
     return effect("DasherLine", "The Dasher's line, DasherLunge's own effect: research's pick, D1 (AR52).", rows, action="DasherLunge", world=True)
 
 
+# --- the elites' moves (TR69 B) -----------------------------------------------------------------------------------------
+WHITE_HOT = (255, 246, 232)  # the strike's white, a hair warm
+OVERHEAD_WIND = 72  # frames from the overhead's first to its Strike: the 1.2 s wind-up (TR69 B)
+OVERHEAD_PRINT = {"Radius": 3.0, "Ahead": 3.4}  # the blow's disc on the street, in studs, its middle ahead of the
+# Brawler's root: seeds, and the hit takes the same disc
+MASK_FRONT = 0.95  # studs before the mask's middle at Scale 1 where the ring stands, over the face: the mask is 1.75 deep
+FAN_SPREAD = 25  # degrees between the fan's lanes (research, 22:15)
+SCREEN_AHEAD = 2.6  # studs before the Guard elite's root, past its raised arms (2.28 at its size)
+
+
+def elite_scale(kind):
+    """An elite's Scale, from its row in Definitions.Enemies, so the rows follow a retune when the script runs again."""
+    text = (ROOT / "src" / "shared" / "Definitions" / "Enemies.luau").read_text(encoding="utf-8")
+    return float(re.search(r'Id = "%s_elite"[^\n]*?Scale = ([\d.]+)' % kind, text).group(1))
+
+
+def heat(n, hot=AMBER_HOT):
+    """A rim's colour to the hit on frame n: amber, warming over the last 24 frames."""
+    return [[0, c3(AMBER), "Linear"], [n - 24, c3(AMBER), "Quad In"], [n, c3(hot)]]
+
+
+def shade_overhead():
+    from elite_tell_targets import HALO
+    k = elite_scale("brawler")
+    w = OVERHEAD_WIND
+    radius, ahead = OVERHEAD_PRINT["Radius"], OVERHEAD_PRINT["Ahead"]
+    floor = -ROOT_HEIGHT * k + 0.04
+
+    def card(r):  # the ring's card across, at the elite's size, for a radius r at Scale 1
+        return round(2 * r * k / HALO["Share"], 3)
+
+    size = [[-w, card(HALO["Start"]), "Linear"], [0, card(HALO["End"]), "Quad Out"], [5, card(HALO["End"] * 1.2)]]
+    front = -MASK_FRONT * k
+
+    def ring(name, picture, z, why, **tracks):
+        return {"Kind": "Card", "From": "Strike", "Body": "Mask_Brawler", "Image": picture, "Tracks": {
+            "At": [[-w, v3(0, 0, round(front - z, 3))]], "Size": size, **tracks}, "Why": why}
+
+    rows = {
+        "RingInk": {**ring("RingInk", "overhead_ring_ink", 0, "the ring's hair of warm ink, under it, so it holds on a "
+                            "lit stall front", Transparency=[[-w, 1, "Quad Out"], [-w + 4, 0.35, "Linear"], [0, 0.35, "Linear"], [2, 1]]),
+                    "Color": c3((42, 20, 0))},
+        "Ring": {**ring("Ring", "overhead_ring_light", 0.02, "the countdown: a ring round the mask closing at a steady "
+                        "rate, amber, heating to white as the strike nears, flashing white on it and gone",
+                        Transparency=[[-w, 1, "Quad Out"], [-w + 4, 0, "Linear"], [2, 0, "Quad In"], [5, 1]],
+                        Color=[[-w, c3(AMBER), "Linear"], [-24, c3(AMBER), "Quad In"], [-4, c3(AMBER_HOT), "Linear"], [0, c3(WHITE_HOT)]],
+                        Brightness=[[-w, 1, "Linear"], [-24, 1, "Quad In"], [0, 2.5]]),
+                 "Color": c3(AMBER)},
+        "RingCore": {**ring("RingCore", "overhead_ring_core", 0.04, "its white core, faint at first and full on the strike",
+                            Transparency=[[-w, 1, "Quad Out"], [-w + 4, 0.7, "Linear"], [-24, 0.6, "Quad In"], [0, 0],
+                                          [2, 0, "Quad In"], [5, 1]]),
+                     "Color": c3((255, 255, 255))},
+        "RingLight": {"Kind": "Light", "From": "Strike", "Body": "Mask_Brawler", "Color": c3(AMBER), "Range": round(6 * k, 2),
+                      "Tracks": {"At": [[-w, v3(0, 0, round(front - 0.4, 3))]],
+                                 "Brightness": [[-w, 0, "Linear"], [-24, 0.4, "Quad In"], [0, 3], [2, 3, "Quad In"], [8, 0]]},
+                      "Why": "light round the mask, rising to the strike: never a tint on the face"},
+    }
+    # the footprint, D1's make on a disc: laid faint, its fill growing from the middle to the strike (linear, the honest
+    # timer), its rim a ring of strokes heating to the strike; all of it white on Strike and closed over six frames
+    centre = -ahead
+    laid = {"Look": "fx_rise_Grey", "Grey": "fx_rise_Grey", "Color": c3(AMBER_DEEP)}
+    shut = [[2, 0, "Quad In"], [8, 1]]
+    rows["Field"] = {"Kind": "Mesh", "From": "Strike", "Part": ["FxShell"], **laid, "Tracks": {
+        "At": [[-w, v3(0, round(floor - 0.01, 3), centre)]],
+        "Scale": [[-w, v3(0.1, 0.02, 0.1), "Back Out"], [-w + 5, v3(radius, 0.02, radius)]],
+        "Transparency": [[-w, 0.8, "Linear"], [2, 0.8, "Quad In"], [8, 1]], "Glow": [[-w, 2.5, "Quad Out"], [-w + 5, 1.5]]},
+        "Why": "the footprint laid: a faint amber disc on the street, as wide as what the blow takes"}
+    rows["Fill"] = {"Kind": "Mesh", "From": "Strike", "Part": ["FxShell"], "Color": c3(AMBER), "Tracks": {
+        "At": [[-w, v3(0, round(floor, 3), centre)]],
+        "Scale": [[-w, v3(0.05, 0.02, 0.05), "Linear"], [0, v3(radius, 0.02, radius)]],
+        "Color": [[-w, c3(AMBER), "Linear"], [-8, c3(AMBER), "Linear"], [0, c3(WHITE_HOT)], [2, c3(WHITE_HOT), "Linear"], [8, c3(AMBER_HOT)]],
+        "Transparency": [[-w, 0.62, "Linear"], [-1, 0.5, "Linear"], [0, 0.1], *shut]},
+        "Why": "the fill, growing from the middle to the rim on the strike: the time left to move; white on the strike"}
+    count, width, core = 16, 0.16, 0.05
+    chord = 2 * radius * math.sin(math.pi / count)
+    mid = radius * math.cos(math.pi / count)
+    for i in range(count):
+        a = 2 * math.pi * (i + 0.5) / count
+        for suffix, wide, lift, colour in (("", width, 0.04, None), ("Core", core, 0.05, AMBER_CORE)):
+            rows[f"Rim{i + 1:02d}{suffix}"] = {"Kind": "Mesh", "From": "Strike", "Part": ["FxPlate"],
+                                               "Color": c3(colour or AMBER), "Tracks": {
+                "At": [[-w, v3(round(mid * math.cos(a), 4), round(floor + lift, 3), round(centre + mid * math.sin(a), 4))]],
+                "Spin": [[-w, round(-math.degrees(a), 3)]],
+                "Scale": [[-w, v3(0.02, 0.02, round(chord + width / 2, 4)), "Back Out"], [-w + 5, v3(wide, 0.02, round(chord + width / 2, 4)), "Linear"],
+                          [2, v3(wide, 0.02, round(chord + width / 2, 4)), "Quad In"], [8, v3(0.02, 0.02, round(chord + width / 2, 4))]],
+                **({"Color": [[c[0] - w, *c[1:]] for c in heat(w, WHITE_HOT)]} if not suffix else {}),
+                "Transparency": [[-w, 0, "Linear"], [2, 0.1, "Quad In"], [8, 1]]},
+                "Why": f"the footprint's rim, stroke {i + 1} of {count}: where the blow's reach ends, heating to the strike"
+                + (": its white core" if suffix else "")}
+    spray = needles(10, [30, 46], [0.14, 0.22], 70, 1.3, 0, direction="Top", colour=AMBER_HOT)
+    spray.update({"From": "Strike", "Tell": True,
+                  "Why": "needles of light leaping off the footprint on the strike: never falling, never liquid"})
+    spray["Tracks"]["At"] = [[-w, v3(0, round(floor + 0.2, 3), centre)]]  # laid with the footprint
+    rows["Spray"] = spray
+    rows["Flash"] = {"Kind": "Light", "From": "Strike", "Color": c3(AMBER_HOT), "Range": 10, "Tracks": {
+        "At": [[-w, v3(0, round(floor + 1.2, 3), centre)]],
+        "Brightness": [[-w, 0, "Linear"], [-1, 0, "Linear"], [0, 4, "Quad In"], [8, 0]]},
+        "Why": "the strike's light on the street and the bodies"}
+    for name, row in rows.items():
+        if not name.startswith("Ring"):  # the footprint stays on the stone where it was laid
+            row["Body"] = "HumanoidRootPart"
+            row["Hold"] = True
+    data = effect("ShadeOverhead", "The Brawler elite's overhead, its action's own effect: research's pick, O2, the ring "
+                  "round the mask, with the footprint in D1's make (TR69 B).", rows, action="ShadeOverhead")
+    data["Area"] = k
+    return data
+
+
+def lane_outline(spread, half, length, step=0.05):
+    """The fan's three lanes as one shape: of each lane's stadium edge (its two sides, a half circle round each end),
+    the runs outside the other two. Returns strokes: (kind, lane angle in degrees, local points) for a side, or
+    (kind, lane angle, start and end angles) for an end's arc; local is the lane's own frame, x across, z along -z."""
+    angles = (spread, 0, -spread)
+
+    def rot(x, z, deg):
+        t = math.radians(deg)
+        return x * math.cos(t) + z * math.sin(t), -x * math.sin(t) + z * math.cos(t)
+
+    def outside(x, z, skip):
+        for j, deg in enumerate(angles):
+            if j == skip:
+                continue
+            lx, lz = rot(x, z, -deg)  # into lane j's frame
+            along = min(max(-lz, 0), length)
+            if math.hypot(lx, -lz - along) < half - 1e-6:
+                return False
+        return True
+
+    strokes = []
+    for i, deg in enumerate(angles):
+        for side in (-1, 1):  # the two sides, straight
+            run = []
+            zs = [-(t * step) for t in range(int(length / step) + 1)]
+            for z in zs + [None]:
+                ok = z is not None and outside(*rot(side * half, z, deg), i)
+                if ok:
+                    run.append(z)
+                elif run:
+                    if run[0] - run[-1] > 0.3:
+                        strokes.append(("side", deg, (side * half, run[0], run[-1])))
+                    run = []
+        for end, z0, sign in (("far", -length, -1), ("near", 0, 1)):  # the ends' half circles, from the right side round
+            run = []
+            n = int(math.pi * half / step)
+            for t in range(n + 2):
+                a = math.pi * t / n if t <= n else None
+                ok = a is not None and outside(*rot(half * math.cos(a), z0 + sign * half * math.sin(a), deg), i)
+                if ok:
+                    run.append(a)
+                elif run:
+                    if run[-1] - run[0] > 0.1:
+                        strokes.append((end, deg, (run[0], run[-1])))
+                    run = []
+    return strokes
+
+
+def dasher_fan():
+    """F1: DasherLine's lane three times, only the outline of the three together stroked (lane_outline), each lane's
+    fill laid and its fuse lit in turn to Land. The middle lane is the Dasher's own run (its streak and slash, as
+    DasherLine's); the side lanes are run by a streak of light in the same quarter second, flown down each from where
+    the line was laid (an emitter turned along it, so it never depends on where the Dasher stops), and slash at their
+    ends from points laid at Line. Written at the elite's size, so its floor is the street at Area."""
+    k = elite_scale("dasher")
+    n = LINE_TO_LAND
+    lunge = round((1.0 - 0.2667) * 60)  # frames from Line to Lunge: 44
+    run = n - lunge
+    floor = -ROOT_HEIGHT * k + 0.04
+    laid = {"Look": "fx_rise_Grey", "Grey": "fx_rise_Grey", "Color": c3(AMBER_DEEP)}
+    angles = (FAN_SPREAD, 0, -FAN_SPREAD)
+
+    def rot(x, z, deg):
+        t = math.radians(deg)
+        return round(x * math.cos(t) + z * math.sin(t), 4), round(-x * math.sin(t) + z * math.cos(t), 4)
+
+    def open_close(wide, deep, long):
+        return [[0, v3(0.02, deep, long), "Back Out"], [4, v3(wide, deep, long), "Linear"], [n, v3(wide, deep, long), "Quad In"],
+                [n + 6, v3(0.02, deep, long)]]
+    rows = {"LaneNear": {"Kind": "Mesh", "From": "Line", "Part": ["FxShell"], **laid, "Tracks": {
+        "At": [[0, v3(0, round(floor - 0.01, 3), 0)]], "Scale": open_close(LINE_HALF, 0.02, LINE_HALF),
+        "Transparency": [[0, 0.86, "Linear"], [n, 0.88, "Quad In"], [n + 6, 1]], "Glow": [[0, 2.5, "Quad Out"], [4, 1.5]]},
+        "Why": "the lanes' shared round end behind the feet, laid"}}
+    steps, lit_at = 6, 0.35
+    piece = LINE_LENGTH / steps
+    for i, deg in enumerate(angles):
+        tag = ("Left", "Mid", "Right")[i]
+        x, z = rot(0, -LINE_LENGTH / 2, deg)
+        rows[f"Lane{tag}"] = {"Kind": "Mesh", "From": "Line", "Part": ["FxPlate"], **laid, "Tracks": {
+            "At": [[0, v3(x, floor, z)]], "Spin": [[0, deg]], "Scale": open_close(2 * LINE_HALF, 0.04, LINE_LENGTH),
+            "Transparency": [[0, 0.8, "Linear"], [n, 0.82, "Quad In"], [n + 6, 1]], "Glow": [[0, 2.5, "Quad Out"], [4, 1.5]]},
+            "Why": f"the {tag.lower()} lane, laid: faint, so the lanes' overlap by the feet stays near one's own"}
+        x, z = rot(0, -LINE_LENGTH, deg)
+        rows[f"Lane{tag}Far"] = {"Kind": "Mesh", "From": "Line", "Part": ["FxShell"], **laid, "Tracks": {
+            "At": [[0, v3(x, round(floor - 0.01, 3), z)]], "Scale": open_close(LINE_HALF, 0.02, LINE_HALF),
+            "Transparency": [[0, 0.84, "Linear"], [n, 0.86, "Quad In"], [n + 6, 1]], "Glow": [[0, 2.5, "Quad Out"], [4, 1.5]]},
+            "Why": f"the {tag.lower()} lane's far round end, laid"}
+        for s_ in range(1, steps + 1):
+            lit, full = round(n * (s_ - 1) / steps), round(n * s_ / steps)
+            x, z = rot(0, -(s_ - 0.5) * piece, deg)
+            rows[f"Fuse{tag}{s_}"] = {"Kind": "Mesh", "From": "Line", "Part": ["FxPlate"], "Color": c3(AMBER), "Tracks": {
+                "At": [[0, v3(x, round(floor + 0.02, 3), z)]], "Spin": [[0, deg]],
+                "Scale": open_close(LINE_HALF * 1.6, 0.02, piece),
+                "Transparency": ([[0, 1, "Linear"]] if lit > 0 else []) + [[lit, 1, "Quad Out"]]
+                + ([[full, lit_at, "Linear"]] if full < n else []) + [[n, lit_at, "Quad In"], [n + 6, 1]]},
+                "Why": f"the {tag.lower()} lane's fuse, piece {s_} of {steps}: lit in turn from the feet, whole on Land"}
+    width, core = 0.16, 0.05
+    edge = 0
+    for kind, deg, span in lane_outline(FAN_SPREAD, LINE_HALF, LINE_LENGTH):
+        if kind == "side":
+            sx, z0, z1 = span
+            pieces = [(sx, (z0 + z1) / 2, abs(z0 - z1) + width / 2, 0)]
+        else:
+            a0, a1 = span
+            parts = max(1, math.ceil((a1 - a0) / (math.pi / 6)))
+            pieces = []
+            for j in range(parts):
+                b0, b1 = a0 + (a1 - a0) * j / parts, a0 + (a1 - a0) * (j + 1) / parts
+                am, half_span = (b0 + b1) / 2, (b1 - b0) / 2
+                m = LINE_HALF * math.cos(half_span)
+                if kind == "far":
+                    pieces.append((m * math.cos(am), -LINE_LENGTH - m * math.sin(am), 2 * LINE_HALF * math.sin(half_span) + width / 2, math.degrees(am)))
+                else:
+                    pieces.append((m * math.cos(am), m * math.sin(am), 2 * LINE_HALF * math.sin(half_span) + width / 2, -math.degrees(am)))
+        for lx, lz, long, spin in pieces:
+            edge += 1
+            x, z = rot(lx, lz, deg)
+            for suffix, wide, lift, colour in (("", width, 0.04, AMBER), ("Core", core, 0.05, AMBER_CORE)):
+                rows[f"Edge{edge:02d}{suffix}"] = {"Kind": "Mesh", "From": "Line", "Part": ["FxPlate"], "Color": c3(colour), "Tracks": {
+                    "At": [[0, v3(x, round(floor + lift, 3), z)]], "Spin": [[0, round(spin + deg, 3)]],
+                    "Scale": open_close(wide, 0.02, round(long, 4)),
+                    **({"Color": heat(n)} if not suffix else {}),
+                    "Transparency": [[0, 0, "Linear"], [n, 0.1, "Quad In"], [n + 6, 1]]},
+                    "Why": "the fan's outline, the three lanes as one: where the hit's reach ends, heating to Land"
+                    + (": its white core" if suffix else "")}
+    rows["Streak"] = {
+        "Kind": "Beam", "From": "Lunge", "Body": "HumanoidRootPart", "Image": "fx_beam", "Grey": "fx_beam", "Color": c3(AMBER_HOT),
+        "Beam": {"FaceCamera": True, "LightEmission": 1, "LightInfluence": 0, "TextureMode": "Stretch", "TextureSpeed": 0, "Segments": 1},
+        "Trail": {"Back": round(0.3 * k, 3), "Beyond": 0},
+        "Tracks": {"At": [[0, v3(0, round(-0.6 * k, 3), 0)]], "Width": [[0, round(1.2 * k, 3), "Linear"], [15, round(1.2 * k, 3), "Quad In"], [24, 0]],
+                   "Lag": [[0, 6]], "Transparency": [[0, 0.1, "Quad In"], [24, 1]]},
+        "Why": "the run: a streak behind the Dasher down the middle lane"}
+    slash_at = LINE_LENGTH - LINE_HALF + 0.8  # where a run ends and its slash bursts, before the lane's far end
+    for i, deg in enumerate(angles):
+        tag = ("Left", "Mid", "Right")[i]
+        x, z = rot(0, -slash_at, deg)
+        rows[f"End{tag}"] = {"Kind": "Point", "From": "Line", "Body": "HumanoidRootPart", "Hold": True,
+                             "Tracks": {"At": [[0, v3(x, round(floor + 1.2 * k, 3), z)]], "Spin": [[0, deg]]},
+                             "Why": f"where the {tag.lower()} run ends, laid at Line"}
+        slash = at_beat(sheet_rows(f"Slash{tag}", "crescent", 0.3, [[0, 3 * k], [0.15, 4.2 * k], [1, 4.6 * k]], 0.3, 0,
+                                   f"where the {tag.lower()} run lands: the crescent sheet across it"), f"Slash{tag}", "Land")
+        for row in slash.values():
+            row["On"] = f"End{tag}"
+            row["Tracks"]["At"] = [[0, v3(0, 0, 0)]]
+        rows.update(slash)
+        if deg:
+            x, z = rot(0, 0, deg)
+            rows[f"Run{tag}Start"] = {"Kind": "Point", "From": "Line", "Body": "HumanoidRootPart", "Hold": True,
+                                      "Tracks": {"At": [[0, v3(0, round(-0.6 * k, 3), 0)]], "Spin": [[0, deg]]},
+                                      "Why": f"the {tag.lower()} lane's start, laid at Line, turned down it"}
+            flown = needles(3, [44, 48], [0.26, 0.27], 2, round(2.6 * k, 2), 0, colour=AMBER_HOT)
+            flown["Emitter"]["Drag"] = 0
+            flown.update({"From": "Lunge", "On": f"Run{tag}Start", "Tell": True,
+                          "Why": f"the {tag.lower()} lane run in the same quarter second: streaks of light flown down it"})
+            flown["Tracks"]["At"] = [[0, v3(0, 0, 0)]]
+            rows[f"Run{tag}"] = flown
+    for name, row in rows.items():
+        if row.get("On") is None and not name.startswith("End") and not name.startswith("Run") and name != "Streak":
+            row["Body"] = "HumanoidRootPart"  # the lanes stay on the stone where the line was laid
+            row["Hold"] = True
+    data = effect("DasherFan", "The Dasher elite's fan, its action's own effect: research's pick, F1, three lanes as one "
+                  "(TR69 B).", rows, action="DasherFan")
+    data["Area"] = k
+    return data
+
+
+def guard_screen():
+    """S1, the lantern wall: the ward's own passes (ward_rows) on the screen's pictures, at the wall's size."""
+    from elite_tell_targets import SCREEN_EXT, SCREEN_MID
+    k = elite_scale("guard")
+    rows = ward_rows("guard_screen", SCREEN_EXT, (0, round(-ROOT_HEIGHT * k + SCREEN_MID, 3), -SCREEN_AHEAD), lift=0.4,
+                     what="the lantern wall, nine ribs and two rails, painted azure so it reads blue by day")
+    data = effect("GuardScreen", "The Guard elite's screen, its action's own effect: research's pick, S1, the lantern "
+                  "wall (TR69 B).", rows, action="GuardScreen")
+    data["Area"] = k
+    return data
+
+
 def build():
-    return {e["Effect"]: e for e in (guard_shield(), guard_glance(), guard_break(), dasher_line())}
+    return {e["Effect"]: e for e in (guard_shield(), guard_glance(), guard_break(), dasher_line(), shade_overhead(),
+                                     dasher_fan(), guard_screen())}
 
 
 def main():

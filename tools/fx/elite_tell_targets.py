@@ -3,6 +3,10 @@ screen"). Painted over the street stage at the player's camera (the Festival pla
 on it; build/handoff/Fight/stage/stage_street.json), with today's R4 mark on the foe as the build draws it. Scintilla's.
 
     py tools/fx/elite_tell_targets.py [out_dir] [O1_weight,O2_halo,F1_...]   (default: build/handoff/Fight/targets/elite)
+    py tools/fx/elite_tell_targets.py --pictures [out_dir]   (the picks' pictures; default: build/handoff/Shade/fx/pictures)
+
+Research picked O2, F1 and S1 (2026-11-26). Their rows are written by tools/fx/shade_tells.py, and the pictures the
+game uses (O2's ring, S1's wall) are drawn here by pictures(), with the targets' own strokes.
 
 Feel line (research, 2026-11-26, 22:05, tier 2): from the player's camera, each elite's one move announces itself a beat
 before it lands, so the player knows which elite it is and when to step away. The Brawler elite's overhead gathers over
@@ -387,6 +391,54 @@ def screen_beats(f):
     return drawn, click
 
 
+def screen_strokes(su, yv, aa, f, drawn, shape, run_k=1.0, halo=0.25):
+    """The screen's strokes at (su across from its middle, yv up from the street), studs: lists of (ink, light, core)
+    per stroke, W2's ink_light. Drawn up from the street to `drawn` of its height (the rails out from its middle), the
+    light running along them at `run_k` (0: the still frame), with `halo` of glow round each (the game's pictures have
+    none, the ward's must-fix). The targets and the game's pictures (pictures()) both."""
+    W, H = SCREEN["Wide"], SCREEN["High"]
+    edges, lights, cores = [], [], []
+    base = 0.15
+    top = base + (H - base) * drawn
+    if shape == "S1_lantern":
+        for i, c in enumerate(np.linspace(-W / 2, W / 2, 9)):
+            outer = i in (0, 8)
+            sf = np.clip((yv - base) / max(top - base, 1e-3), 0, 1)
+            inside = (yv >= base) & (yv <= top)
+            bow = 0.05 * np.sin(np.pi * sf) * np.sign(c)
+            d = np.abs(su - c - bow)
+            width = (0.2 if outer else 0.13) * taper(sf) * inside
+            phase = (f / 50 + 0.17 * i) % 1.4 - 0.2
+            run = 1 + 0.9 * run_k * np.exp(-((sf - phase) / 0.09) ** 2)
+            e, l_, co = ink_light(d, width, aa, 1.0, core_k=1.0 if outer else 0.6, halo=halo)
+            edges.append(e), lights.append(l_ * run), cores.append(co * run)
+        rails = [(0.3, 0.17), (H - 0.2, 0.17)]
+        run_rails = False
+    else:
+        for i, c in enumerate((-W / 2, 0.0, W / 2)):
+            sf = np.clip((yv - base) / max(top - base, 1e-3), 0, 1)
+            inside = (yv >= base) & (yv <= top)
+            d = np.abs(su - c)
+            width = 0.2 * taper(sf) * inside
+            e, l_, co = ink_light(d, width, aa, 1.0, halo=halo)
+            edges.append(e), lights.append(l_), cores.append(co)
+        rails = [(h, 0.13) for h in np.linspace(0.5, H - 0.25, 5)]
+        run_rails = True
+    for j, (h, wd) in enumerate(rails):
+        if h > top + 0.05:
+            continue
+        half = W / 2 * drawn
+        sf = (su + half) / max(2 * half, 1e-3)
+        d = np.abs(yv - h - 0.04 * np.sin(np.pi * np.clip(sf, 0, 1)) * (1 if h > H / 2 else -1))
+        width = wd * taper(sf)
+        e, l_, co = ink_light(d, width, aa, 1.0, core_k=0.8, halo=halo)
+        if run_rails:
+            phase = (f / 60 + 0.23 * j) % 1.4 - 0.2
+            l_ = l_ * (1 + 0.9 * run_k * np.exp(-((np.clip(sf, 0, 1) - phase) / 0.08) ** 2))
+        edges.append(e), lights.append(l_), cores.append(co)
+    return edges, lights, cores
+
+
 def draw_screen(fr, st, f, shape):
     drawn, click = screen_beats(f)
     if drawn <= 0:
@@ -412,45 +464,7 @@ def draw_screen(fr, st, f, shape):
     t = np.where(in0, t0, np.where(in1, t1, 1e3))
     ok = in0 | in1
     aa = t / fr.cam.focal * 1.2
-    edges, lights, cores = [], [], []
-    base = 0.15
-    top = base + (H - base) * drawn
-    if shape == "S1_lantern":
-        for i, c in enumerate(np.linspace(-W / 2, W / 2, 9)):
-            outer = i in (0, 8)
-            sf = np.clip((yv - base) / max(top - base, 1e-3), 0, 1)
-            inside = (yv >= base) & (yv <= top)
-            bow = 0.05 * np.sin(np.pi * sf) * np.sign(c)
-            d = np.abs(su - c - bow)
-            width = (0.2 if outer else 0.13) * taper(sf) * inside
-            phase = (f / 50 + 0.17 * i) % 1.4 - 0.2
-            run = 1 + 0.9 * np.exp(-((sf - phase) / 0.09) ** 2)
-            e, l_, co = ink_light(d, width, aa, 1.0, core_k=1.0 if outer else 0.6)
-            edges.append(e), lights.append(l_ * run), cores.append(co * run)
-        rails = [(0.3, 0.17), (H - 0.2, 0.17)]
-        run_rails = False
-    else:
-        for i, c in enumerate((-W / 2, 0.0, W / 2)):
-            sf = np.clip((yv - base) / max(top - base, 1e-3), 0, 1)
-            inside = (yv >= base) & (yv <= top)
-            d = np.abs(su - c)
-            width = 0.2 * taper(sf) * inside
-            e, l_, co = ink_light(d, width, aa, 1.0)
-            edges.append(e), lights.append(l_), cores.append(co)
-        rails = [(h, 0.13) for h in np.linspace(0.5, H - 0.25, 5)]
-        run_rails = True
-    for j, (h, wd) in enumerate(rails):
-        if h > top + 0.05:
-            continue
-        half = W / 2 * drawn
-        sf = (su + half) / max(2 * half, 1e-3)
-        d = np.abs(yv - h - 0.04 * np.sin(np.pi * np.clip(sf, 0, 1)) * (1 if h > H / 2 else -1))
-        width = wd * taper(sf)
-        e, l_, co = ink_light(d, width, aa, 1.0, core_k=0.8)
-        if run_rails:
-            phase = (f / 60 + 0.23 * j) % 1.4 - 0.2
-            l_ = l_ * (1 + 0.9 * np.exp(-((np.clip(sf, 0, 1) - phase) / 0.08) ** 2))
-        edges.append(e), lights.append(l_), cores.append(co)
+    edges, lights, cores = screen_strokes(su, yv, aa, f, drawn, shape)
     edge = np.clip(sum(edges), 0, 1)
     light = sum(lights) * click
     core = sum(cores) * click
@@ -509,7 +523,68 @@ def crop(img, box):
     return img[y:y + h, x:x + w]
 
 
+# --- the game's pictures: research's picks of 2026-11-26, 22:55 (O2's ring, S1's wall) ----------------------------------
+PICTURES = ROOT / "build" / "handoff" / "Shade" / "fx" / "pictures"
+HALO = {"End": 1.3, "Start": 2.4, "Share": 0.78}
+# The ring's radius on the strike and on the wind-up's first frame, studs at Scale 1. The Brawler's mask is 2.7 wide and
+# 2.1 tall: the ring ends tight on it, round its height, and starts 1.85 times as wide (research's must-fix: 1.8 times or
+# more). Share: its radius as a share of its card's half, so the card is 2 x radius / Share across.
+HALO_STROKE = 0.12  # the ring's body at its end, studs; twice that at its start, as its card is
+HALO_PIC = 512
+SCREEN_EXT = 4.3  # studs from the screen picture's middle to its edges, both ways: the wall's 8 across and its ink
+SCREEN_MID = (0.15 + SCREEN["High"]) / 2  # the wall's middle over the street, the picture's middle
+SCREEN_PIC = 1024  # pixels a side: 119 a stud, a rib about 15
+SCREEN_RUN = 70  # frames: the light climbs the ribs once every 1.4 x 50 frames (screen_strokes)
+SCREEN_CELL = 256  # a Grid4x4 flipbook's cell, the sheet 1024 a side, Roblox's most
+
+
+def pictures(out=PICTURES):
+    """The picks' pictures, white with straight alpha, tinted in the game, row 0 at the top:
+    - overhead_ring_ink, _light, _core: O2's ring at its end size, its hair of ink, its body and its white core;
+    - guard_screen_ink, _light, _core: S1's wall drawn whole and flat (the target's curve left out: a particle is flat),
+      no running light; guard_screen_run: the light the run adds, 16 steps of one cycle, a Grid4x4 sheet, looped."""
+    from ward_targets import BORDER, LIGHT_MAX, write_rgba
+    out = Path(out)
+
+    def write(name, alpha):
+        write_rgba(alpha, out / f"{name}.png")
+        print(name, (out / f"{name}.png").resolve().relative_to(ROOT).as_posix(), f"coverage {float((alpha > 0.02).mean()):.3f}")
+
+    half = HALO["End"] / HALO["Share"]
+    step = 2 * half / HALO_PIC
+    axis = -half + (np.arange(HALO_PIC) + 0.5) * step
+    u, v = np.meshgrid(axis, -axis)
+    d = np.abs(np.hypot(u, v) - HALO["End"])
+    edge, light, core = ink_light(d, np.full_like(d, HALO_STROKE), step, 1.0, halo=0.0)
+    write("overhead_ring_ink", np.clip(edge, 0, 1))
+    write("overhead_ring_light", np.clip(light / LIGHT_MAX, 0, 1))
+    write("overhead_ring_core", np.clip(core, 0, 1))
+
+    def plane(size):
+        st_ = 2 * SCREEN_EXT / size
+        ax = -SCREEN_EXT + (np.arange(size) + 0.5) * st_
+        su, v_ = np.meshgrid(ax, -ax)
+        window = np.clip((SCREEN_EXT - np.maximum(np.abs(su), np.abs(v_))) / BORDER, 0, 1) ** 2
+        return su, v_ + SCREEN_MID, st_, window
+
+    su, yv, step, window = plane(SCREEN_PIC)
+    edges, lights, cores = screen_strokes(su, yv, step, 0, 1.0, "S1_lantern", run_k=0.0, halo=0.0)
+    write("guard_screen_ink", np.clip(sum(edges), 0, 1) * window)
+    write("guard_screen_light", np.clip(sum(lights) / LIGHT_MAX, 0, 1) * window)
+    write("guard_screen_core", np.clip(sum(cores), 0, 1) * window)
+    su, yv, step, window = plane(SCREEN_CELL)
+    still = sum(screen_strokes(su, yv, step, 0, 1.0, "S1_lantern", run_k=0.0, halo=0.0)[1])
+    cells = [np.clip(sum(screen_strokes(su, yv, step, k * SCREEN_RUN / 16, 1.0, "S1_lantern", halo=0.0)[1]) - still, 0, None)
+             for k in range(16)]
+    top = max(float(c.max()) for c in cells)
+    sheet = np.concatenate([np.concatenate(cells[r * 4:(r + 1) * 4], axis=1) for r in range(4)], axis=0)
+    write("guard_screen_run", sheet / top * np.tile(window, (4, 4)))
+
+
 def main(argv):
+    if argv[:1] == ["--pictures"]:
+        pictures(Path(argv[1]) if len(argv) > 1 else PICTURES)
+        return
     out = Path(argv[0]) if argv else OUT
     only = argv[1].split(",") if len(argv) > 1 else None
     out.mkdir(parents=True, exist_ok=True)

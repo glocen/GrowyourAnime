@@ -485,6 +485,16 @@ local Effects = {
 		-- AR48's Sap, its mote: a dark disc with a light rim, white so its Color tints the rim (tools/fx/element_states.py
 		-- --pictures; the content check of 2026-11-26).
 		fx_mote_rim = "rbxassetid://100202936055493",
+		-- TR69 B's elites' tells (tools/fx/elite_tell_targets.py --pictures; the content check of 2026-11-26), white, tinted
+		-- in their rows: the overhead's ring round the mask (ShadeOverhead), its ink #2A1400, its light amber heating to
+		-- warm white, its core white; the screen's lantern wall (GuardScreen), the ward's passes and tints.
+		overhead_ring_ink = "rbxassetid://115236393401141",
+		overhead_ring_light = "rbxassetid://76420929889928",
+		overhead_ring_core = "rbxassetid://103373742243356",
+		guard_screen_ink = "rbxassetid://109790343922810",
+		guard_screen_light = "rbxassetid://103562717473757",
+		guard_screen_core = "rbxassetid://104521595079706",
+		guard_screen_run = "rbxassetid://140644189831387",
 	} :: { [string]: string },
 
 	-- The effects as rows (the header), and those in a rows file (Config.EffectRows), merged below. Tuned live:

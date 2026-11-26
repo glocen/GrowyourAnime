@@ -15,8 +15,8 @@ Each teammate rewrites its own row: one to three lines. Open asks sit under "Wai
 - **For Faber's install:** AR67's must-fix, the core smooth and closed, and the kit's pole holes shut (5 meshes, AR67's entry); AR62's Arc panel B, the run's card C, the HUD with the cut, the top bar B (`build/handoff/UI/`), while the UI's colour and font are asked (21:04).
 - **Now:** Home's two cards wait on the director's examples in `inbox/` (20:57; AR62), then research's study. AR64's hair stays at "close", with the director. Next: research's word on what I take while these wait.
 
-**Scintilla (effects).** 2026-11-26, 22:34. **TR69 B's elites' tells:** six targets for research's pick in pairs, the overhead (O1, O2), the fan (F1, F2) and the Guard's screen (S1, S2), on the street at the player's camera, content check PASS (TR69, "B's elites' tells, the targets"). **TR70's install images** are uploaded under the group; ids in the asset log. **AR7's C4** and **AR61** wait on the director.
-- **Next:** research's pick, then the picked rows as data. AR7's S5 waits on Faber's staging of the keeper, and AR58's final on QA's pack. Nothing running.
+**Scintilla (effects).** 2026-11-26, 22:53. **TR69 B's elites' tells:** research picked O2, F1 and S1. Their rows are written (ShadeOverhead, DasherFan, GuardScreen in `build/handoff/Shade/fx/`) and their seven pictures are uploaded under the group, content check PASS. They wait on Faber's three actions, then `rows_take` (TR69, "B's elites' tells, the rows"). **AR7's C4** and **AR61** wait on the director.
+- **Next:** the elites' rows into the game once the actions are in, then research's look at the hook's capture. AR7's S5 waits on Faber's staging of the keeper, and AR58's final on QA's pack. Nothing running.
 
 **Sonus (sound).** 2026-11-26, 21:35 by the clock. **In the game, unheard:** my 22 picks (the director, 20:48: "i wont listen js add everything"), TR42's 11, TR64's 10 and TR57's plate, installed by Faber (b75b6978, Sound 119 of 119; TR42, "The picks, unheard"). No Studio turn held, nothing running.
 - **Next:** the director judges them in play; a sound they name as bad takes the next on its tab.

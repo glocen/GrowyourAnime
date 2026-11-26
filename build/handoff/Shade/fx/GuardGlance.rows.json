@@ -1,9 +1,9 @@
 {
   "Schema": "rows/1",
   "Effect": "GuardGlance",
-  "Why": "A blow glancing off the Guard's shield, at the hook's anchor: the grey block-in (AR52).",
+  "Why": "A blow glancing off the Guard's ward, at the hook's anchor (AR52, G2).",
   "Area": 1,
-  "Grey": true,
+  "Grey": false,
   "Rows": {
     "GlintLine": {
       "Kind": "Emitter",
@@ -292,9 +292,9 @@
         ],
         "Color": {
           "Color3": [
-            255,
-            246,
-            230
+            200,
+            226,
+            255
           ]
         },
         "LightEmission": 1,

@@ -15944,6 +15944,15 @@ Written by `tools/fx/shade_tells.py`, from the kit's uploaded meshes and images 
   - **G2 over G1:** Rook's fist covers the shield's middle from the quarter's camera, and G2's closed rim still reads around it, at phone size and at the squint. G1's pane reads only by its right edge. **G2 over G3:** G3 hides behind the fist. The three breaks read alike, so the pick rests on the shield.
   - **D1 over D2:** the job is where the hit takes and where it's safe. D1's two edges draw that, and hold as two clean lines at the squint from both views. D2's chevrons give the way but not the edges, and blur into a scribble at the squint.
   - **Watch at the quarter checkpoint:** G2 is a bright ring, which any game's energy shield can be. The ribs inside it must read as paper and lantern (the feel line), or the Shades lose their make. Shades fight only on the festival grounds, whose shared kit carries lanterns (`docs/roster.md`, "The Festival of Battles"; the Tower's foes are Voidkin). The director's rule keeps the festival off the hub and account-wide systems, not off its own grounds. D1's lane is faint on the pale deck at the Dasher's feet, where the line starts, and its fuse inside the edges must read as time left. The amber goes through the colour pass (no red).
+- **The build to the pick (Scintilla, 2026-11-26, 01:36):** `tools/fx/shade_tells.py`, the four effects taken in their colours (Grey off). Each row's Why says what it draws.
+  - **The ward (G2):** the kit's shell flattened to a disc 3.8 across, on the lantern's ribs, tinted azure: six ribs run across it, as on a paper lantern's face. Behind it, the kit's hoop stands facing the blow, a hair wider, in Neon: a thin closed rim, and through the paper the soft band inside it. A glow card at its middle is the boss. The glance and the break are in its azure.
+  - **The lane (D1):** the edges are the hero. They're two lines of amber Neon with a white core, down both sides and round both ends in six strokes each, where the hit's reach ends. The fuse is six pieces of amber Neon. The fill is laid faint deep amber at the target's strength.
+  - **Content check, before the build: PASS** (fresh eyes, 01:35). Conditions:
+    1. The installed-look check shows the lane on the dark slate, in shadow and at night, at full size and at 64 px: its fill reads orange or tan, never a red-brown patch.
+    2. The fill at the target's strength: done (Transparency 0.75).
+    3. The chips stay Neon with no texture, or come back for a check.
+    4. The docstring: done.
+  - **Status:** implemented as data. Tested: logic offline, 8,484 passed and 0 failed. Not yet seen in Studio: the build beside its targets is in my next turn. Not visually reviewed. Not director-accepted. For Faber's review.
 
 ## AR53. Goals' look, basic at launch: the dare's line, today's three, the Mask Ledger's page (Modulo, after AR52's clips)
 

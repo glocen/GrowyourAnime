@@ -1,49 +1,53 @@
-"""The Shades' tells (AR52, "Scintilla's looks"): the Guard's shield and the Dasher's line, written as rows files for
-tools/fx/rows_take.py, in grey. Scintilla's, the effect family's one script.
+"""The Shades' tells (AR52, "Scintilla's looks"): the Guard's ward and the Dasher's lane, written as rows files for
+tools/fx/rows_take.py. Scintilla's, the effect family's one script. Built to research's pick of 2026-11-26 (G2 ward, D1
+lane; their targets in build/handoff/Shade/targets/, drawn by tools/fx/shade_targets.py), in their colours.
 
     py tools/fx/shade_tells.py [out_dir]        (default: build/handoff/Shade/fx)
-    py tools/fx/rows_take.py build/handoff/Shade/fx/GuardGlance.rows.json build/handoff/Shade/fx/GuardBreak.rows.json
+    py tools/fx/rows_take.py build/handoff/Shade/fx/<Effect>.rows.json ...
 
-GuardShield and DasherLine are their actions' own effects, so the rows' logic case takes them only once GuardRaise and
-DasherLunge name them as their Effect (Definitions.Actions): the builder takes those two with that line, in one commit.
+GuardShield and DasherLine are their actions' own effects (Definitions.Actions' Effect on GuardRaise and DasherLunge).
 
 The Guard. Feel line: a Guard shuts its sleeves and a curved paper shield of light snaps up before it, ribbed like a
 lantern; your fighter's blows skate off it in sparks where they land, until a heavy one tears it open into paper and
 light. Research's condition (AR52, its pass in the game): it reads as raised apart from the mask, never as a bigger face,
-and a glance shows itself where the hit lands.
-- GuardShield, GuardRaise's own effect (Action.Effect), on its beats: the hero is the kit's shell flattened to a lens,
-  its near side bulging at the lead, a stud and a half before the Guard's chest, riding its root. It snaps up in the
-  eight frames before Raise (Back Out), breathes a little through the hold, and folds down and out over eight frames
-  from Drop. A ring snaps open on Raise, the click of it shutting. A break ends the action, and with it the shield at
-  once: GuardBreak takes its place.
-- GuardGlance, played by the builder's hook on each glance, anchored where the blow meets the shield, its Front the way
-  the blow travels: a glint where it lands and needles skating back off the paper toward the attacker.
-- GuardBreak, played by the hook on the break, anchored at the shield's middle the same way: a ring and a puff, and six
-  paper chips flung out and on along the blow, turning, gone by a third of a second. Paper and light only.
+and a glance shows itself where the hit lands. At the quarter: the ribs read as paper and lantern, or it's any game's ring.
+- GuardShield, GuardRaise's own effect, on its beats, riding the root: the ward (G2), a disc 3.8 across before the Guard's
+  chest, domed a little toward the blow: the kit's shell on the lantern's ribs, tinted azure (six ribs across it). Its
+  rim, the kit's hoop stood up facing the blow a hair wider than the paper, Neon: a thin closed line round the edge, and
+  through the paper the soft band inside it. A glow card at its middle, its boss. It snaps up in the eight frames before
+  Raise (Back Out), breathes through the hold, and folds down over eight frames from Drop. A ring snaps open on Raise,
+  the click of it shutting. A break ends the action, and with it the ward at once: GuardBreak takes its place.
+- GuardGlance, played by the builder's hook on each glance, anchored where the blow meets the ward, its Front the way
+  the blow travels: a glint where it lands and pale azure needles skating back off it toward the attacker.
+- GuardBreak, played by the hook on the break, anchored at the ward's middle the same way: a ring and a puff, an azure
+  light, and six chips of light flung out and on along the blow, turning, gone by a third of a second.
 
 The Dasher. Feel line: a Dasher folds behind its mask and a blade of light cuts open along the street to your fighter,
 filling toward you like a fuse; then the Dasher is down it in a streak, and a slash bursts where it lands.
 - DasherLine, DasherLunge's own effect, on its beats. Every row rides the Dasher's root and is held where it first shows
   (Hold), so the line stays on the stone, laid along the aim fixed at Line, while the Dasher runs down it.
-  - Lane (Line): the hero, the hit's own lane drawn flat on the street: every point within 2 studs (Half) of the line
-    from the Dasher's feet to 14 studs on (Most and Past), so a plate 4 across and two round ends (LaneNear, LaneFar:
-    the kit's shell flattened to a disc). Drawn as what hits, so nobody is hit off it (Faber's review, 2026-11-26). It
-    cuts open across in four frames.
-  - Fuse (Line to Land): a brighter, narrower blade inside it in six pieces, lit in turn from the Dasher's feet, the
+  - Lane (Line): the hit's own lane drawn flat on the street: every point within 2 studs (Half) of the line from the
+    Dasher's feet to 14 studs on (Most and Past), so a plate 4 across and two round ends (LaneNear, LaneFar: the kit's
+    shell flattened to a disc), laid faint deep amber. Drawn as what hits, so nobody is hit off it (Faber's review).
+  - The edges, the hero (D1): two clean lines of amber Neon with a white core, down both sides (EdgeLeft, EdgeRight) and
+    round both ends in six strokes each (CapNear1..6, CapFar1..6), where the hit's reach ends. They cut open across in
+    four frames.
+  - Fuse (Line to Land): a brighter blade inside it in six pieces of amber Neon, lit in turn from the Dasher's feet, the
     last on Land: the time left to move. Each piece is held where it was laid at Line and shown by its fade, since a
     held row's place is set once. All close over six frames after Land.
-  - Streak (Lunge to Land): a trail behind the Dasher's root as it runs.
-  - Slash (Land): the crescent sheet where it lands, with needles on along the run.
+  - Streak (Lunge to Land): a hot amber trail behind the Dasher's root as it runs.
+  - Slash (Land): the crescent sheet where it lands, with hot amber needles on along the run.
   World: the rows draw at the studs written, never the body's scale, since the hit's lane is 14 by 4 for an elite too.
 
-Frames at 60 a second from each row's beat. The block-in is Grey: every colour in its grey. The colours come after the
-blockout's verdict. Nothing red, nothing left behind (AGENTS.md, rule 4).
+Frames at 60 a second from each row's beat. The colours passed their content check on 2026-11-26 (AR52): nothing red,
+the chips light, never dark or liquid, nothing left behind (AGENTS.md, rule 4).
 """
 import json
+import math
 import sys
 from pathlib import Path
 
-from hit_sparks import LINE, WARM, c3, needles, sheet_rows, v3
+from hit_sparks import c3, needles, sheet_rows, v3
 
 ROOT = Path(__file__).resolve().parents[2]
 OUT = ROOT / "build" / "handoff" / "Shade" / "fx"
@@ -54,6 +58,18 @@ LINE_HALF = 2  # Config.Combat.Dasher.Line.Half: the hit takes a centre within 2
 LINE_TO_LAND = round((1.25 - 0.2667) * 60)  # frames from the Line beat to Land: 59
 RAISE_TO_DROP = round((2.3 - 0.3) * 60)  # frames from Raise to Drop: 120
 FLOOR = -ROOT_HEIGHT + 0.04  # a hair over the street, from the root
+
+# The picked targets' colours (AR52: G2 ward and D1 lane, research's pick of 2026-11-26; tools/fx/shade_targets.py).
+AZURE = (63, 140, 255)  # the ward's light
+AZURE_RIM = (200, 226, 255)  # its rim, Neon: a white core with the hue in it
+AZURE_BOSS = (150, 196, 255)  # the boss's glow
+AMBER = (255, 154, 31)  # the lane's light, Neon in its edges and fuse
+AMBER_CORE = (255, 232, 196)  # the edges' white core
+AMBER_DEEP = (122, 58, 0)  # laid under the light, so the lane holds on the pale deck
+AMBER_HOT = (255, 206, 140)  # the run's streak, the landing's needles
+GUARD_AT = (0, 0.7, -1.6)  # the ward's middle from the root: Config.Combat.Guard.Look's Ahead 1.6, Up 0.4, and the
+# target's 0.3 more (shade_targets.draw_guard)
+WARD = 1.9  # its radius
 
 
 def at_beat(rows, prefix, beat, frame=0):
@@ -77,7 +93,7 @@ def ride(rows, body="HumanoidRootPart", hold=False, at=None):
 
 
 def effect(name, why, rows, action=None, world=False):
-    data = {"Schema": "rows/1", "Effect": name, "Why": why, "Area": 1, "Grey": True}
+    data = {"Schema": "rows/1", "Effect": name, "Why": why, "Area": 1, "Grey": False}
     if action:
         data["Action"] = action
     if world:  # drawn in studs as written, whatever the body's scale: the hit's lane is the same for an elite
@@ -87,45 +103,76 @@ def effect(name, why, rows, action=None, world=False):
 
 
 def guard_shield():
-    front = v3(0, 0.4, -1.5)
-    full = (1.8, 2.0, 0.42)  # times the shell's unit 2: 3.6 by 4 studs, 0.84 deep
+    c = GUARD_AT
     d = RAISE_TO_DROP
+    at = [[-8, v3(*c), "Linear"], [d, v3(*c), "Quad In"], [d + 8, v3(c[0], c[1] - 1.0, c[2])]]
+    full = (WARD, WARD, 0.12)  # times the shell's unit 2: a disc 3.8 across, domed a quarter stud toward the blow
+
+    def grows(x, y, z, flat=0.03):  # snapped up in the eight frames before Raise, breathing, folded down after Drop
+        return [[-8, v3(x * 0.2, y * 0.2, flat), "Back Out"], [0, v3(x, y, z), "Sine InOut"],
+                [d // 2, v3(x * 1.02, y * 1.02, z), "Sine InOut"], [d, v3(x, y, z), "Quad In"], [d + 8, v3(x * 1.08, 0.12, flat)]]
+
     shield = {
         "Kind": "Mesh",
         "From": "Raise",
-        "Body": "HumanoidRootPart",
         "Part": ["FxShell"],
-        "Look": "fx_ribs_Warm",
+        "Look": "fx_ribs_Grey",
         "Grey": "fx_ribs_Grey",
+        "Color": c3(AZURE),
         "Tracks": {
-            "At": [[-8, front, "Linear"], [d, front, "Quad In"], [d + 8, v3(0, -1.2, -1.5)]],
-            "Scale": [
-                [-8, v3(0.4, 0.3, 0.08), "Back Out"],
-                [0, v3(*full), "Sine InOut"],
-                [d // 2, v3(full[0] * 1.03, full[1] * 1.03, full[2]), "Sine InOut"],
-                [d, v3(*full), "Quad In"],
-                [d + 8, v3(full[0] * 1.1, 0.15, 0.1)],
-            ],
-            "Transparency": [[-8, 0.8, "Quad Out"], [0, 0.25, "Sine InOut"], [d, 0.3, "Quad In"], [d + 8, 1]],
-            "Glow": [[-8, 3, "Quad Out"], [4, 1.4, "Sine InOut"], [d, 1.4]],
+            "At": at,
+            "Scale": grows(*full),
+            "Transparency": [[-8, 0.8, "Quad Out"], [0, 0.3, "Sine InOut"], [d, 0.35, "Quad In"], [d + 8, 1]],
+            "Glow": [[-8, 3, "Quad Out"], [5, 1.3, "Sine InOut"], [d, 1.3]],
         },
-        "Why": "the hero: a lens of ribbed paper before the Guard, snapped up by Raise, held, folded down at Drop",
+        "Why": "the hero: the ward, a disc of lantern paper in azure, six ribs across it, before the Guard's chest",
+    }
+    # the rim: the hoop stood up facing the blow (its band toward the Guard), a hair wider than the paper, so its ring
+    # shows round the edge as a thin closed line and through the paper as the soft band inside it
+    rim = {
+        "Kind": "Mesh",
+        "From": "Raise",
+        "Part": ["FxHoop"],
+        "Color": c3(AZURE_RIM),
+        "Tracks": {
+            "At": [[key[0], v3(key[1]["Vector3"][0], key[1]["Vector3"][1], key[1]["Vector3"][2] + 0.03)] + key[2:] for key in at],
+            "Tilt": [[-8, v3(90, 0, 0)]],
+            "Scale": [[key[0], v3(key[1]["Vector3"][0] * 1.04, 0.2, key[1]["Vector3"][1] * 1.04)] + key[2:]
+                      for key in grows(WARD, WARD, 0.12)],
+            "Transparency": [[-8, 0.6, "Quad Out"], [0, 0, "Linear"], [6, 0.1, "Sine InOut"], [d, 0.15, "Quad In"], [d + 8, 1]],
+        },
+        "Why": "the ward's rim: a closed line of light round the paper, the click of it shutting on Raise",
+    }
+    boss = {
+        "Kind": "Card",
+        "From": "Raise",
+        "Image": "fx_glow",
+        "Color": c3(AZURE_BOSS),
+        "Tracks": {
+            "At": [[key[0], v3(key[1]["Vector3"][0], key[1]["Vector3"][1], key[1]["Vector3"][2] - 0.3)] + key[2:] for key in at],
+            "Size": [[-4, 0.8, "Back Out"], [0, 3.0, "Sine InOut"], [d, 2.8, "Quad In"], [d + 8, 0]],
+            "Transparency": [[-4, 0.3, "Quad Out"], [6, 0.55, "Sine InOut"], [d, 0.55]],
+            "Brightness": [[-4, 2, "Quad Out"], [6, 1.2]],
+        },
+        "Why": "the boss: the ward lit brighter to its middle",
     }
     ring = at_beat(sheet_rows("Click", "ring", 0.3, [[0, 3], [1, 5]], 0.34, 0,
                               "the click of the shield shutting: a ring snapped open on Raise, round the shield"), "Click", "Raise")
-    ride(ring, at=front)
-    return effect("GuardShield", "The Guard's raised shield, GuardRaise's own effect: the grey block-in (AR52).",
-                  {"Shield": shield, **ring}, action="GuardRaise")
+    rows = {"Shield": shield, "Rim": rim, "Boss": boss}
+    ride(rows)
+    ride(ring, at=v3(*c))
+    return effect("GuardShield", "The Guard's raised ward, GuardRaise's own effect: research's pick, G2 (AR52).",
+                  {**rows, **ring}, action="GuardRaise")
 
 
 def guard_glance():
     rows = {
         **sheet_rows("Glint", "glint", 0.22, [[0, 1.2], [0.15, 1.8], [1, 1.6]], 0.85, 30,
                      "where the blow meets the paper: a glint, small, a glance and not a hit"),
-        "Skate": needles(5, [18, 28], [0.1, 0.18], 75, 0.7, 0, direction="Back"),
+        "Skate": needles(5, [18, 28], [0.1, 0.18], 75, 0.7, 0, direction="Back", colour=AZURE_RIM),
     }
     rows["Skate"]["Why"] = "the needles skating back off the shield toward the attacker: the blow turned aside"
-    return effect("GuardGlance", "A blow glancing off the Guard's shield, at the hook's anchor: the grey block-in (AR52).", rows)
+    return effect("GuardGlance", "A blow glancing off the Guard's ward, at the hook's anchor (AR52, G2).", rows)
 
 
 def guard_break():
@@ -137,7 +184,7 @@ def guard_break():
         "Light": {
             "Kind": "Light",
             "Range": 7,
-            "Color": c3(WARM),
+            "Color": c3(AZURE),
             "Tracks": {"At": [[0, v3(0, 0, 0.5)]], "Brightness": [[0, 2.5, "Quad Out"], [8, 0]]},
             "Why": "the break lights the Guard for a moment",
         },
@@ -152,7 +199,7 @@ def guard_break():
         rows[f"Chip{index}"] = {
             "Kind": "Mesh",
             "Part": [chip],
-            "Color": c3(LINE),
+            "Color": c3(AZURE_RIM if index % 2 else AZURE),
             "Tracks": {
                 "At": [[0, v3(x * 0.25, y * 0.25, 0), "Quad Out"], [16, v3(x, y - 0.6, -1.6 - index * 0.15)]],
                 "Scale": [[0, 0.9, "Linear"], [20, 0.5]],
@@ -160,51 +207,76 @@ def guard_break():
                 "Tilt": [[0, v3(index * 25, 0, 0), "Quad Out"], [20, v3(index * 25 + 160, 0, 90)]],
                 "Transparency": [[0, 0, "Quad In"], [12, 0.1, "Quad In"], [20, 1]],
             },
-            "Why": "a chip of the shield's paper, flung out and on along the blow, turning",
+            "Why": "a chip of the ward, light and paper, flung out and on along the blow, turning",
         }
-    return effect("GuardBreak", "The Guard's shield broken, at the hook's anchor: the grey block-in (AR52).", rows)
+    return effect("GuardBreak", "The Guard's ward broken, at the hook's anchor (AR52, G2).", rows)
 
 
 def dasher_line():
     n = LINE_TO_LAND
-    grey = {"Look": "fx_rise_Warm", "Grey": "fx_rise_Grey"}
-    open_close = lambda wide, deep, long: [  # cut open across in four frames, held, closed across over six after Land
-        [0, v3(0.02, deep, long), "Back Out"], [4, v3(wide, deep, long), "Linear"], [n, v3(wide, deep, long), "Quad In"],
-        [n + 6, v3(0.02, deep, long)]]
-    fade = [[0, 0.1, "Linear"], [n, 0.25, "Quad In"], [n + 6, 1]]
-    glow = [[0, 3, "Quad Out"], [4, 1.2, "Sine InOut"], [n, 1.6]]
+    laid = {"Look": "fx_rise_Grey", "Grey": "fx_rise_Grey", "Color": c3(AMBER_DEEP)}
+
+    def open_close(wide, deep, long):  # cut open across in four frames, held, closed across over six after Land
+        return [[0, v3(0.02, deep, long), "Back Out"], [4, v3(wide, deep, long), "Linear"], [n, v3(wide, deep, long), "Quad In"],
+                [n + 6, v3(0.02, deep, long)]]
     # the lane: what the hit takes, every point within Half of the line from the feet to Most + Past, so a stadium: a
-    # plate down the line, and a disc of the shell flattened at each end
+    # plate down the line, and a disc of the shell flattened at each end. Laid deep and faintly lit, at the target's
+    # strength (the content check of 2026-11-26: never a dark red-brown patch on the slate), so the light holds on the
+    # pale deck. The discs, laid over the plate's ends, are fainter, so the overlap stays near the plate's own.
     rows = {
-        "Lane": {"Kind": "Mesh", "From": "Line", "Part": ["FxPlate"], **grey, "Tracks": {
+        "Lane": {"Kind": "Mesh", "From": "Line", "Part": ["FxPlate"], **laid, "Tracks": {
             "At": [[0, v3(0, FLOOR, -LINE_LENGTH / 2)]], "Scale": open_close(2 * LINE_HALF, 0.04, LINE_LENGTH),
-            "Transparency": fade, "Glow": glow},
-            "Why": "the hero: a blade of light cut open along the street, as wide and as long as what the hit takes"},
+            "Transparency": [[0, 0.75, "Linear"], [n, 0.78, "Quad In"], [n + 6, 1]], "Glow": [[0, 2.5, "Quad Out"], [4, 1.5]]},
+            "Why": "the lane, laid: a faint amber stadium on the street, as wide and as long as what the hit takes"},
     }
     for key, z in (("LaneNear", 0), ("LaneFar", -LINE_LENGTH)):
-        rows[key] = {"Kind": "Mesh", "From": "Line", "Part": ["FxShell"], **grey, "Tracks": {
-            "At": [[0, v3(0, FLOOR, z)]], "Scale": open_close(LINE_HALF, 0.02, LINE_HALF), "Transparency": fade, "Glow": glow},
-            "Why": "the lane's round end: the hit reaches Half past the line's end and behind the feet"}
+        rows[key] = {"Kind": "Mesh", "From": "Line", "Part": ["FxShell"], **laid, "Tracks": {
+            "At": [[0, v3(0, FLOOR - 0.01, z)]], "Scale": open_close(LINE_HALF, 0.02, LINE_HALF),
+            "Transparency": [[0, 0.82, "Linear"], [n, 0.84, "Quad In"], [n + 6, 1]], "Glow": [[0, 2.5, "Quad Out"], [4, 1.5]]},
+            "Why": "the lane's round end, laid: the hit reaches Half past the line's end and behind the feet"}
     # the fuse: six pieces of a brighter, narrower blade inside it, from the feet to the line's end, each showing in turn
     # so the whole is lit on Land, the time left to move. Each is placed at Line, held there (Hold places a row once,
-    # when it first shows), and shown by its fade alone.
+    # when it first shows), and shown by its fade alone. Neon, so the pieces join as one even blade.
     steps = 6
     piece = LINE_LENGTH / steps
+    lit_at = 0.35  # a lit piece's transparency
     for k in range(1, steps + 1):
         lit, full = round(n * (k - 1) / steps), round(n * k / steps)
-        rows[f"Fuse{k}"] = {"Kind": "Mesh", "From": "Line", "Part": ["FxPlate"], **grey, "Tracks": {
+        rows[f"Fuse{k}"] = {"Kind": "Mesh", "From": "Line", "Part": ["FxPlate"], "Color": c3(AMBER), "Tracks": {
             "At": [[0, v3(0, FLOOR + 0.02, -(k - 0.5) * piece)]],
-            "Scale": open_close(LINE_HALF * 0.8, 0.04, piece),
-            "Transparency": ([[0, 1, "Linear"]] if lit > 0 else []) + [[lit, 1, "Quad Out"]] + ([[full, 0, "Linear"]] if full < n else []) + [[n, 0, "Quad In"], [n + 6, 1]],
-            "Glow": [[0, 2, "Linear"], [n, 4]]},
+            "Scale": open_close(LINE_HALF * 1.6, 0.02, piece),
+            "Transparency": ([[0, 1, "Linear"]] if lit > 0 else []) + [[lit, 1, "Quad Out"]] + ([[full, lit_at, "Linear"]] if full < n else [])
+            + [[n, lit_at, "Quad In"], [n + 6, 1]]},
             "Why": f"the fuse's piece {k} of {steps}: lit in turn from the feet, the whole blade lit on Land"}
+    # the edges: the hero (research's pick, D1): two clean lines of light round the stadium where the hit takes, each a
+    # Neon stroke in amber with a white core on it, straight down both sides and round both ends in six strokes each
+    width, core = 0.16, 0.05
+
+    def stroke(name, x, z, long, turn, why):
+        for suffix, wide, lift, colour in (("", width, 0.04, AMBER), ("Core", core, 0.05, AMBER_CORE)):
+            rows[f"{name}{suffix}"] = {"Kind": "Mesh", "From": "Line", "Part": ["FxPlate"], "Color": c3(colour), "Tracks": {
+                "At": [[0, v3(round(x, 4), FLOOR + lift, round(z, 4))]], "Spin": [[0, round(turn, 3)]],
+                "Scale": open_close(wide, 0.02, round(long, 4)),
+                "Transparency": [[0, 0, "Linear"], [n, 0.1, "Quad In"], [n + 6, 1]]},
+                "Why": why if not suffix else why + ": its white core"}
+    for side, x in (("Left", -LINE_HALF), ("Right", LINE_HALF)):
+        stroke(f"Edge{side}", x, -LINE_LENGTH / 2, LINE_LENGTH + width / 2, 0, f"the lane's {side.lower()} edge: where the hit's reach ends")
+    ends = 6  # strokes round each end
+    chord = 2 * LINE_HALF * math.sin(math.pi / (2 * ends))
+    mid = LINE_HALF * math.cos(math.pi / (2 * ends))
+    for k in range(ends):
+        a = math.pi * (k + 0.5) / ends  # the stroke's middle, round the end from the right side
+        stroke(f"CapFar{k + 1}", mid * math.cos(a), -LINE_LENGTH - mid * math.sin(a), chord + width / 2, math.degrees(a),
+               "the far end's edge, round: the hit reaches Half past the line's end")
+        stroke(f"CapNear{k + 1}", mid * math.cos(a), mid * math.sin(a), chord + width / 2, -math.degrees(a),
+               "the near end's edge, round, behind the feet")
     streak = {
         "Kind": "Beam",
         "From": "Lunge",
         "Body": "HumanoidRootPart",
         "Image": "fx_beam",
         "Grey": "fx_beam",
-        "Color": c3(LINE),
+        "Color": c3(AMBER_HOT),
         "Beam": {"FaceCamera": True, "LightEmission": 1, "LightInfluence": 0, "TextureMode": "Stretch", "TextureSpeed": 0, "Segments": 1},
         "Trail": {"Back": 0.3, "Beyond": 0},
         "Tracks": {
@@ -218,7 +290,7 @@ def dasher_line():
     slash = at_beat(sheet_rows("Slash", "crescent", 0.3, [[0, 3], [0.15, 4.2], [1, 4.6]], 0.3, 0,
                                "where it lands: the crescent sheet across the run"), "Slash", "Land")
     ride(slash, hold=True, at=v3(0, 0, -0.8))
-    on = needles(6, [26, 40], [0.12, 0.2], 35, 1.0, 0)
+    on = needles(6, [26, 40], [0.12, 0.2], 35, 1.0, 0, colour=AMBER_HOT)
     on["From"] = "Land"
     on["Body"] = "HumanoidRootPart"
     on["Hold"] = True
@@ -228,7 +300,7 @@ def dasher_line():
         row["Body"] = "HumanoidRootPart"
         row["Hold"] = True
     rows.update({"Streak": streak, **slash, "On": on})
-    return effect("DasherLine", "The Dasher's line, DasherLunge's own effect: the grey block-in (AR52).", rows, action="DasherLunge", world=True)
+    return effect("DasherLine", "The Dasher's line, DasherLunge's own effect: research's pick, D1 (AR52).", rows, action="DasherLunge", world=True)
 
 
 def build():

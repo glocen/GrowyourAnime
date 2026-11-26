@@ -1,20 +1,26 @@
 {
   "Schema": "rows/1",
   "Effect": "GuardShield",
-  "Why": "The Guard's raised shield, GuardRaise's own effect: the grey block-in (AR52).",
+  "Why": "The Guard's raised ward, GuardRaise's own effect: research's pick, G2 (AR52).",
   "Area": 1,
-  "Grey": true,
+  "Grey": false,
   "Action": "GuardRaise",
   "Rows": {
     "Shield": {
       "Kind": "Mesh",
       "From": "Raise",
-      "Body": "HumanoidRootPart",
       "Part": [
         "FxShell"
       ],
-      "Look": "fx_ribs_Warm",
+      "Look": "fx_ribs_Grey",
       "Grey": "fx_ribs_Grey",
+      "Color": {
+        "Color3": [
+          63,
+          140,
+          255
+        ]
+      },
       "Tracks": {
         "At": [
           [
@@ -22,8 +28,8 @@
             {
               "Vector3": [
                 0,
-                0.4,
-                -1.5
+                0.7,
+                -1.6
               ]
             },
             "Linear"
@@ -33,8 +39,8 @@
             {
               "Vector3": [
                 0,
-                0.4,
-                -1.5
+                0.7,
+                -1.6
               ]
             },
             "Quad In"
@@ -44,8 +50,8 @@
             {
               "Vector3": [
                 0,
-                -1.2,
-                -1.5
+                -0.30000000000000004,
+                -1.6
               ]
             }
           ]
@@ -55,9 +61,9 @@
             -8,
             {
               "Vector3": [
-                0.4,
-                0.3,
-                0.08
+                0.38,
+                0.38,
+                0.03
               ]
             },
             "Back Out"
@@ -66,9 +72,9 @@
             0,
             {
               "Vector3": [
-                1.8,
-                2.0,
-                0.42
+                1.9,
+                1.9,
+                0.12
               ]
             },
             "Sine InOut"
@@ -77,9 +83,9 @@
             60,
             {
               "Vector3": [
-                1.854,
-                2.06,
-                0.42
+                1.938,
+                1.938,
+                0.12
               ]
             },
             "Sine InOut"
@@ -88,9 +94,9 @@
             120,
             {
               "Vector3": [
-                1.8,
-                2.0,
-                0.42
+                1.9,
+                1.9,
+                0.12
               ]
             },
             "Quad In"
@@ -99,9 +105,9 @@
             128,
             {
               "Vector3": [
-                1.9800000000000002,
-                0.15,
-                0.1
+                2.052,
+                0.12,
+                0.03
               ]
             }
           ]
@@ -114,12 +120,12 @@
           ],
           [
             0,
-            0.25,
+            0.3,
             "Sine InOut"
           ],
           [
             120,
-            0.3,
+            0.35,
             "Quad In"
           ],
           [
@@ -134,17 +140,262 @@
             "Quad Out"
           ],
           [
-            4,
-            1.4,
+            5,
+            1.3,
             "Sine InOut"
           ],
           [
             120,
-            1.4
+            1.3
           ]
         ]
       },
-      "Why": "the hero: a lens of ribbed paper before the Guard, snapped up by Raise, held, folded down at Drop"
+      "Why": "the hero: the ward, a disc of lantern paper in azure, six ribs across it, before the Guard's chest",
+      "Body": "HumanoidRootPart"
+    },
+    "Rim": {
+      "Kind": "Mesh",
+      "From": "Raise",
+      "Part": [
+        "FxHoop"
+      ],
+      "Color": {
+        "Color3": [
+          200,
+          226,
+          255
+        ]
+      },
+      "Tracks": {
+        "At": [
+          [
+            -8,
+            {
+              "Vector3": [
+                0,
+                0.7,
+                -1.57
+              ]
+            },
+            "Linear"
+          ],
+          [
+            120,
+            {
+              "Vector3": [
+                0,
+                0.7,
+                -1.57
+              ]
+            },
+            "Quad In"
+          ],
+          [
+            128,
+            {
+              "Vector3": [
+                0,
+                -0.30000000000000004,
+                -1.57
+              ]
+            }
+          ]
+        ],
+        "Tilt": [
+          [
+            -8,
+            {
+              "Vector3": [
+                90,
+                0,
+                0
+              ]
+            }
+          ]
+        ],
+        "Scale": [
+          [
+            -8,
+            {
+              "Vector3": [
+                0.3952,
+                0.2,
+                0.3952
+              ]
+            },
+            "Back Out"
+          ],
+          [
+            0,
+            {
+              "Vector3": [
+                1.976,
+                0.2,
+                1.976
+              ]
+            },
+            "Sine InOut"
+          ],
+          [
+            60,
+            {
+              "Vector3": [
+                2.01552,
+                0.2,
+                2.01552
+              ]
+            },
+            "Sine InOut"
+          ],
+          [
+            120,
+            {
+              "Vector3": [
+                1.976,
+                0.2,
+                1.976
+              ]
+            },
+            "Quad In"
+          ],
+          [
+            128,
+            {
+              "Vector3": [
+                2.13408,
+                0.2,
+                0.1248
+              ]
+            }
+          ]
+        ],
+        "Transparency": [
+          [
+            -8,
+            0.6,
+            "Quad Out"
+          ],
+          [
+            0,
+            0,
+            "Linear"
+          ],
+          [
+            6,
+            0.1,
+            "Sine InOut"
+          ],
+          [
+            120,
+            0.15,
+            "Quad In"
+          ],
+          [
+            128,
+            1
+          ]
+        ]
+      },
+      "Why": "the ward's rim: a closed line of light round the paper, the click of it shutting on Raise",
+      "Body": "HumanoidRootPart"
+    },
+    "Boss": {
+      "Kind": "Card",
+      "From": "Raise",
+      "Image": "fx_glow",
+      "Color": {
+        "Color3": [
+          150,
+          196,
+          255
+        ]
+      },
+      "Tracks": {
+        "At": [
+          [
+            -8,
+            {
+              "Vector3": [
+                0,
+                0.7,
+                -1.9000000000000001
+              ]
+            },
+            "Linear"
+          ],
+          [
+            120,
+            {
+              "Vector3": [
+                0,
+                0.7,
+                -1.9000000000000001
+              ]
+            },
+            "Quad In"
+          ],
+          [
+            128,
+            {
+              "Vector3": [
+                0,
+                -0.30000000000000004,
+                -1.9000000000000001
+              ]
+            }
+          ]
+        ],
+        "Size": [
+          [
+            -4,
+            0.8,
+            "Back Out"
+          ],
+          [
+            0,
+            3.0,
+            "Sine InOut"
+          ],
+          [
+            120,
+            2.8,
+            "Quad In"
+          ],
+          [
+            128,
+            0
+          ]
+        ],
+        "Transparency": [
+          [
+            -4,
+            0.3,
+            "Quad Out"
+          ],
+          [
+            6,
+            0.55,
+            "Sine InOut"
+          ],
+          [
+            120,
+            0.55
+          ]
+        ],
+        "Brightness": [
+          [
+            -4,
+            2,
+            "Quad Out"
+          ],
+          [
+            6,
+            1.2
+          ]
+        ]
+      },
+      "Why": "the boss: the ward lit brighter to its middle",
+      "Body": "HumanoidRootPart"
     },
     "ClickLine": {
       "Kind": "Emitter",
@@ -198,8 +449,8 @@
             {
               "Vector3": [
                 0,
-                0.4,
-                -1.5
+                0.7,
+                -1.6
               ]
             }
           ]
@@ -286,8 +537,8 @@
             {
               "Vector3": [
                 0,
-                0.4,
-                -1.5
+                0.7,
+                -1.6
               ]
             }
           ]
@@ -350,8 +601,8 @@
             {
               "Vector3": [
                 0,
-                0.4,
-                -1.5
+                0.7,
+                -1.6
               ]
             }
           ]

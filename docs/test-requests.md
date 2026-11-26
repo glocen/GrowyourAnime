@@ -5464,7 +5464,7 @@ From the director's paste of 2026-11-26 (the register). Each claim was checked a
 
 **D. The Lamplighter in three phases**, in grey on `Rules.Mark`'s circles and lines (`grounds-and-encounters.md`, section C's table). It's a signature piece, so it gets the time it needs.
 - **Joining it:** AR7's staging and C4's ring.
-- The fight runs about 80 s, inside `docs/balance.md`'s band for keepers (tier 2, research's).
+- The fight runs about 65 s at Faber's measure, since each phase shows its idea twice (tier 2, research's; research's note of 19:33 below).
 - It adds moves and block clips, not a new look.
 
 **E. Hard changes behaviour:** one rule per role, as Hard rows in `Definitions/Enemies.luau`.
@@ -5485,6 +5485,11 @@ From the director's paste of 2026-11-26 (the register). Each claim was checked a
   - **Tested:** "Keeper (TR69 D)" passes 23 of 23 in the main place (a FightSpawn'd lamplighter the phases adopt, as the main place has no ring); its 8 logic cases pass, and LogicTests 40,268 in Studio. The Shade cases and Hands (TR69 C) pass alone, twice each; run after the other Shade cases, the Guard's stagger and the Finisher's edge flash each failed once, an order dependence for the suite.
   - **Measured:** one phased fight, a level 26 lead kept whole, no presses: **44.0 s** from spawn to fall (phase 1 13.7 s, phase 2 17.5 s, phase 3 12.7 s), against section C's 80 s and the band's 45 to 75 s. A tier 2 number for research.
   - Not yet judged in play. A note for the judging: the window's stagger cuts the slam's follow-through clip short.
+- **Research, 2026-11-26, 19:33, on Faber's two notes** (tier 2: research's number, Faber's code):
+  - **The length:** my line "about 80 s, inside the band" contradicted itself, since the band tops at 75 s. A rule replaces the number: each phase shows its idea twice, once to read and once to answer. At the measured 44 s, phase 1 sees only one slam (the first at 8 s, then every 12 s). So phase 1 runs about 21 s, and phases 2 and 3 each show two double slams and two sweeps: about 65 s from spawn to fall at the same measure (a level 26 lead kept whole, no presses), under the band's 75 s top. Presses shorten it.
+  - **The lever:** the keeper's health while phases are On (seed ×1.5, tuned live), not the windows, so a press pays the same. With phases Off, the 45 s it was solved for holds.
+  - **The window:** in D the window is the follow-through held, the lantern stuck in the street (section C), so no stagger clip plays over it. Hits land ×1.25 on the held pose.
+  - **Next:** Faber's measure at the new health, with each phase's count of its idea logged (slams, double slams, sweeps), then the judging in play.
 
 **F. The contact in view, an experiment** (research, 2026-11-26, 17:10; Modulo's finding in AR66): a lead stands beyond an ordinary Shade, turned `Combat.Lead.Frame` (45°). From the player's camera the Shade is nearer, so every melee contact lands on its far side, out of view. Elites and keepers already take `Beside` (90°).
 - **The experiment, a Studio turn after E:** one ordinary Shade fought with Rook and with Watt, at Frame 45 and with `Beside` 90 for every kind. Capture the hits at the phone's size from the player's camera, four frames each. Research picks in pairs: the contact seen, the lead's face seen, and the frame not crowded in a wave.

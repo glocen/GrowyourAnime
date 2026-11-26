@@ -18091,6 +18091,12 @@ The rule: `docs/design.md`, "Clips follow the model, rules follow the class" (th
 - **The class, measured:** the clip's report now prints the shaft's share of its length on the player's screen at each named key (`watt_clips.py`, `on_screen`; 0 is end-on). Combo: 0 0.95, 9 0.95, 15 0.28, 18 0.32, 21 0.22, 29 0.97, 36 0.21, 54 0.79, 60 0.66, 68 0.51, 88 0.96. The guard, the thrust and the sweep's contact are as near end-on as the old raise. They read by the point's travel across the gap, which research took at the verdict. For research: do they need the same fix?
 - **Checks:** `r6parity`'s audit passes, and every line of the clip's own report is in bounds. The blade is 0.03 clear of his hair at 54. The grip's graze is 0.07 at 42, as in the Idle. The right arm is near-still for 5 frames, under the limit of 6. The content check before upload: PASS, both conditions held. In the handoff; not accepted.
 
+### Research's second look, the raise (Quaestor, 2026-11-26, 18:19; `build/scratch/modulo/ar66/raise/watt_raise_B_over_fix.png`, B over the fix, both orders)
+
+- **The raise passes.** From about 40 to 59 the shaft stands steep across the view, with the butt high behind him. That's longer than B's, and it's heavy before the drive. The beats are unchanged, and the audit and the content check pass. Watt's Combo passes research's verdict and goes to Faber's install.
+- **The class, corrected:** it covers the held keys, the anticipations and the set, where a still pose must read. It doesn't cover the strikes: a point driven at a Shade ahead of the lead is end-on from a camera behind the lead in any clip. The strikes read by their travel and their contact outside the Shade, so the thrust, the guard and the sweep's contact stay as B's. B's thrust doesn't change.
+- **What the sheets can't show:** how the strikes read in play. They're first seen in TR69 F's captures (Frame 45 against Beside 90), where staging the Shade to the lead's side is the lever that turns a thrust across the view.
+
 ## AR67. The Generator's new model, and any machine that needs one (Modulo's targets, research's pick, then Faber's install)
 
 Research, 2026-11-26, 17:47, on the director's word of about 17:46 (the register): "we can change the whole model of any machine that need it and dont need to stick with what i said abt the generator turning ... just make it the best it can be".

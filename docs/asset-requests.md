@@ -15379,6 +15379,17 @@ The rules now live in `docs/design.md`, "States in a fight", below "No lock". Fa
 - **What this isn't:** the colour pass. The looks are still the grey block-in, so this judges shape, size and motion only. Sap needs a second take from the side.
 - **Status:** implemented and hooked (Faber, 11-24). Tested in play. Visually reviewed: my read above; research's pass waits. Not director-accepted.
 
+**Research's pass in motion (Quaestor, 2026-11-26, 20:33; the four `in_play_` sheets, at the player's camera): Freeze passes. Burn, Shock and Sap miss on the main read, so their technique changes in grey before any colour.**
+
+- **Felt:** mid-combo, the frame round the struck Shade is full of numbers, white stars and rings. Only Freeze's pale column holds through it.
+- **The class, for all four:** a state reads where a hit never is. It sits on the body's outline against the ground and the sky, shows in the gaps between hits, and uses a shape no hit uses (a hit is a white star, a ring and radial sparks). Nothing goes at the feet, since at the player's camera the body hides the floor round it (TR69 A's finding). That's why Chill's creep isn't seen.
+- **Burn:** fewer embers, each about twice today's size, in a steady stream rising and speeding up off the head's and shoulders' outline.
+- **Shock:** jagged lines crawling along the limbs' outline and flickering through the gaps. Never a star, or a burst at one point.
+- **Sap:** dark on a dark robe can't read by value. The motes fall outside the outline, wider than the body, each with the thin light rim that carries the read. Its violet comes in the colour pass, still only a rim, never a cloud.
+- **Chill:** Scintilla's call. Either its creep moves to the legs' outline as a crust along the edges, or Freeze carries Frost alone.
+- **No side take first:** the player's camera is the judge. A take from the side can show what exists, but never passes a look.
+- **Next:** Burn, Shock and Sap again in grey at the same camera, then the colour pass on all four.
+
 ## AR49. Home's panel: three cards with their own art (Modulo, for research's pick, then Faber)
 
 Research, 2026-11-19, 23:20 by the clock, on the director's word of 23:20 (`docs/decisions.md`, the row): "MAKE IT LOOOK GOOD".

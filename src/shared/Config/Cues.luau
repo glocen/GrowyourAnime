@@ -191,6 +191,34 @@ local Config = {
 			{ Id = 140228522212884, Seconds = 0.52665, Peak = 0.14097, From = 0.00000, To = 0.52665, In = 0, Out = 0.010, Gain = 0.648 }, -- Slash 4, Sunny_CIover
 		},
 		-- TR42's keeps: end
+		-- The picks, unheard (docs/test-requests.md, TR42, "The picks, unheard"): Sonus's one take a cue, by the
+		-- director's word (2026-11-26, 20:48: "i wont listen js add everything when i acc play the game i will says if it
+		-- good or not"), each levelled as the listening panel played it (docs/asset-log.md). Judged in play: begin
+		PickBroadcastPlate = { { Id = 9120984896, Seconds = 0.31500, Peak = 0.26044, From = 0.00000, To = 0.31500, In = 0, Out = 0.020, Gain = 0.998 } }, -- Zap High Pitch Glassy Reversed Whoosh 8 (SFX), ProSoundEffects (licensed; the tab's no. 3)
+		PickGoalDone = { { Id = 138121518391022, Seconds = 0.58500, Peak = 0.14403, From = 0.01500, To = 0.60000, In = 0, Out = 0.020, Gain = 0.670 } }, -- quest complete, NexsusM1 (community; the tab's no. 1)
+		PickGroundWire = { { Id = 9116276946, Seconds = 1.29256, Peak = 0.39000, From = 0.20744, To = 1.50000, In = 0.010, Out = 0.020, Gain = 0.108 } }, -- Lightning Flashes Quick Electrical Bursts 21 (SFX), ProSoundEffects (licensed; the tab's no. 1)
+		PickHaymaker = { { Id = 134849113162385, Seconds = 1.40500, Peak = 0.47269, From = 0.66500, To = 2.07000, In = 0, Out = 0.020, Gain = 0.115 } }, -- Power Punch, hung902 (community; the tab's no. 3)
+		PickHealerHit = { { Id = 84113820641536, Seconds = 0.60475, Peak = 0.00216, From = 0.06525, To = 0.67000, In = 0, Out = 0.020, Gain = 0.160 } }, -- sparkling_attack_hit, BrawI031 (community; the tab's no. 1)
+		PickHealerShot = { { Id = 135968996204345, Seconds = 0.70500, Peak = 0.11150, From = 0.00000, To = 0.70500, In = 0, Out = 0.020, Gain = 0.117 } }, -- FIXED sparkle magic sound, Hibuki_DSP (community; the tab's no. 3)
+		PickHeldNote = { { Id = 85343009717356, Seconds = 1.57000, Peak = 0.32419, From = 0.00000, To = 1.57000, In = 0, Out = 0.020, Gain = 0.142 } }, -- VC spin chime 4, Vanta Systems (community; the tab's no. 5)
+		PickKeeperFall = { { Id = 132535085898211, Seconds = 1.83300, Peak = 0.00594, From = 0.14200, To = 1.97500, In = 0, Out = 0.020, Gain = 0.141 } }, -- glass shattering breaking, killerguest7964 (community; the tab's no. 2)
+		PickKirraHit = { { Id = 121493335012459, Seconds = 0.52087, Peak = 0.00756, From = 0.32913, To = 0.85000, In = 0, Out = 0.020, Gain = 0.273 } }, -- Katana Slash Wind 3, GleonoffG (community; the tab's no. 2)
+		PickLanternBurst = { { Id = 9117983605, Seconds = 0.86500, Peak = 0.14822, From = 0.28500, To = 1.15000, In = 0, Out = 0.020, Gain = 0.564 } }, -- Pyro Fire Ball Burst 9 (SFX), ProSoundEffects (licensed; the tab's no. 2)
+		PickLeadDown = { { Id = 116107826564721, Seconds = 0.30616, Peak = 0.04691, From = 0.00000, To = 0.30616, In = 0, Out = 0.010, Gain = 0.114 } }, -- Failure1, schmumkin (community; the tab's no. 2)
+		PickLeadHurt = { { Id = 9113502506, Seconds = 0.38178, Peak = 0.00453, From = 0.01822, To = 0.40000, In = 0, Out = 0.020, Gain = 0.524 } }, -- Body Hits 8 (SFX), ProSoundEffects (licensed; the tab's no. 3)
+		PickLevelUp = { { Id = 139051679125038, Seconds = 0.99000, Peak = 0.10853, From = 0.01000, To = 1.00000, In = 0, Out = 0.020, Gain = 0.143 } }, -- Level-Up, NexsusM1 (community; the tab's no. 4)
+		PickMachineStage = { { Id = 133977339172345, Seconds = 1.38500, Peak = 0.07150, From = 0.00000, To = 1.38500, In = 0, Out = 0.020, Gain = 0.070 } }, -- power up 1, AwakenThePotential (community; the tab's no. 2)
+		PickMageHit = { { Id = 74527796801453, Seconds = 0.41516, Peak = 0.00619, From = 0.02978, To = 0.44494, In = 0, Out = 0.010, Gain = 0.151 } }, -- Magic Hit SFX, Remy1DB (community; the tab's no. 4)
+		PickMageShot = { { Id = 9125648149, Seconds = 0.49506, Peak = 0.15000, From = 0.09494, To = 0.59000, In = 0.010, Out = 0.020, Gain = 0.207 } }, -- Magic Zoom Up Sharp Tubular Whoosh Fast Hiss (SFX), ProSoundEffects (licensed; the tab's no. 2)
+		PickRecord = { { Id = 136993031050456, Seconds = 0.95000, Peak = 0.14375, From = 0.00000, To = 0.95000, In = 0, Out = 0.020, Gain = 0.264 } }, -- SuccessSfx, proxyprevails (community; the tab's no. 1)
+		PickReinforceFailed = { { Id = 17208353912, Seconds = 0.17000, Peak = 0.01447, From = 0.00000, To = 0.17000, In = 0, Out = 0.020, Gain = 0.170 } }, -- Roblox GUI - Negative, Roblox (licensed; the tab's no. 3)
+		PickReinforced = { { Id = 99959523787717, Seconds = 0.51500, Peak = 0.01144, From = 0.00000, To = 0.51500, In = 0, Out = 0.020, Gain = 0.048 } }, -- Upgrade Complete, EJGamerz5910 (community; the tab's no. 5)
+		PickScarfStep = { { Id = 109110048769542, Seconds = 0.48000, Peak = 0.09669, From = 0.01500, To = 0.49500, In = 0, Out = 0.020, Gain = 0.150 } }, -- zip flash quick dash sfx, Axellatic (community; the tab's no. 1)
+		PickShardDrop = { { Id = 92495718389777, Seconds = 0.38500, Peak = 0.00400, From = 0.00000, To = 0.38500, In = 0, Out = 0.020, Gain = 0.268 } }, -- Nice Bell 2, YoLiohcnj64 (community; the tab's no. 1)
+		PickWattHit = { { Id = 126976659766267, Seconds = 0.49066, Peak = 0.00791, From = 0.05434, To = 0.54500, In = 0, Out = 0.020, Gain = 0.317 } }, -- Hit - Impact - Punch - Blunt, lorenzosaudiostash (community; the tab's no. 5)
+		-- GroundWire's and MageShot's starts trimmed by the builder (2026-11-26) so their tops land before their beats at
+		-- the lowest pitch (Rules.Sound's case: Watt's Plant 0.417 s, Pip's Shot1 0.167 s), faded in over 10 ms.
+		-- The picks, unheard: end
 	} :: { [string]: { Take } },
 
 	Cues = {
@@ -369,6 +397,43 @@ do
 	cues.MachineStage = before(nil, 2)
 	cues.LeadHurt = before(nil, 2)
 	cues.BroadcastPlate = before(nil, 1) -- TR57's plate: someone else's find, on its fade-in (Rules.Broadcast.Chimes)
+end
+
+-- The picks, unheard (TR42, TR64 and TR57's plate; Takes, above): each cue plays its one pick, with its own bus, voices
+-- and reach. Its pitch stays near the 1 the panel played it at, as the keeps' do; a tonal one (Config.Audition's Tonal)
+-- plays at exactly its own, so a chime stays in tune and a shard's grade notes (Notes) stay exact. RookHit keeps the
+-- light hit's keeps.
+do
+	local picks: { [string]: { Layer } } = {
+		BroadcastPlate = { { Takes = "PickBroadcastPlate", At = 0, Lead = "Peak", Volume = 1 } },
+		GoalDone = { { Takes = "PickGoalDone", At = 0, Lead = "Peak", Volume = 1 } },
+		GroundWire = { { Takes = "PickGroundWire", At = 0, Lead = "Peak", Volume = 1 } },
+		Haymaker = { { Takes = "PickHaymaker", At = 0, Lead = "Peak", Volume = 1 } },
+		HealerHit = { { Takes = "PickHealerHit", At = 0, Volume = 1 } },
+		HealerShot = { { Takes = "PickHealerShot", At = 0, Lead = "Peak", Volume = 1 } },
+		HeldNote = { { Takes = "PickHeldNote", At = 0, Lead = "Peak", Volume = 1 } },
+		KeeperFall = { { Takes = "PickKeeperFall", At = 0, Volume = 1 } },
+		KirraHit = { { Takes = "PickKirraHit", At = 0, Volume = 1 } },
+		LanternBurst = { { Takes = "PickLanternBurst", At = 0, Lead = "Peak", Volume = 1 } },
+		LeadDown = { { Takes = "PickLeadDown", At = 0, Lead = "Peak", Volume = 1 } },
+		LeadHurt = { { Takes = "PickLeadHurt", At = 0, Volume = 1 } },
+		LevelUp = { { Takes = "PickLevelUp", At = 0, Lead = "Peak", Volume = 1 } },
+		MachineStage = { { Takes = "PickMachineStage", At = 0, Lead = "Peak", Volume = 1 } },
+		MageHit = { { Takes = "PickMageHit", At = 0, Volume = 1 } },
+		MageShot = { { Takes = "PickMageShot", At = 0, Lead = "Peak", Volume = 1 } },
+		Record = { { Takes = "PickRecord", At = 0, Lead = "Peak", Volume = 1 } },
+		ReinforceFailed = { { Takes = "PickReinforceFailed", At = 0, Lead = "Peak", Volume = 1 } },
+		Reinforced = { { Takes = "PickReinforced", At = 0, Lead = "Peak", Volume = 1 } },
+		ScarfStep = { { Takes = "PickScarfStep", At = 0, Lead = "Peak", Volume = 1 } },
+		ShardDrop = { { Takes = "PickShardDrop", At = 0, Lead = "Peak", Volume = 1 } },
+		WattHit = { { Takes = "PickWattHit", At = 0, Volume = 1 } },
+	}
+	local tonal = { HeldNote = true, HealerShot = true, HealerHit = true, LevelUp = true, ShardDrop = true, BroadcastPlate = true, GoalDone = true, Record = true, Reinforced = true }
+	for name, layers in picks do
+		local cue = Config.Cues[name]
+		cue.Layers = layers
+		cue.Pitch = if tonal[name] then { 1, 1 } else { 0.97, 1.03 }
+	end
 end
 
 -- An arrangement of a pilot: its own layers, and its pilot's bus, spreads, voices and reach.

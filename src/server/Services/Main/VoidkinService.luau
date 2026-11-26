@@ -59,7 +59,12 @@ function VoidkinService.Init()
 			if FROZEN[name] and asked ~= nil and asked == draft.Roles.Lead and FightService.Frozen(player) then
 				return { Ok = false, Error = "InCombat" }
 			end
-			return action(draft, args, workspace:GetServerTimeNow(), 0)
+			local facts: Collection.Facts = {
+				Healing = function(id: string): boolean
+					return LeadService.Healing(player, id)
+				end,
+			}
+			return action(draft, args, workspace:GetServerTimeNow(), 0, facts)
 		end, BEFORE[name])
 	end
 	-- The owner's copy carries each nickname filtered for them; one not filtered yet shows as none until it is.

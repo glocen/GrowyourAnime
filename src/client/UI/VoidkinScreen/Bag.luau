@@ -776,7 +776,7 @@ local function itemCard(context: Context, at: Layout, id: string)
 			if os.clock() - armedAt > ARMED then
 				armedAt = os.clock()
 				local at = armedAt
-				Button.Set(salvage, { Text = "Confirm", Selected = true, Note = `+{Hud.Digits(credits)} Credits` })
+				Button.Set(salvage, { Text = "Confirm", Selected = true, Note = Hud.SalvageNote(credits, if item then item.Reinforce else 0) })
 				task.delay(ARMED, function()
 					if armedAt == at and salvage.Parent then
 						armedAt = 0
@@ -791,7 +791,10 @@ local function itemCard(context: Context, at: Layout, id: string)
 				Button.Set(salvage, { Text = "Salvage", Selected = false, Note = false })
 				return false
 			end
-			Toast.Show(`Salvaged for {Hud.Digits(tonumber(answer.Credits) or credits)} Credits`, Theme.Colour.Text)
+			local back = function(list: any): number
+				return if type(list) == "table" then #list else 0
+			end
+			Toast.Show(Hud.SalvageSaid(tonumber(answer.Credits) or credits, back(answer.Emblems), back(answer.Jewels)), Theme.Colour.Text)
 			close()
 			return true
 		end,

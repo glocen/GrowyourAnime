@@ -461,10 +461,16 @@ local function actions(parent: Frame, view: Profile.View, owned: Profile.OwnedVo
 		local why = if leading then nil else Hud.LeadReason(at, on.Healing()[owned.Id], now, player:GetAttribute("InCombat") == true)
 		local blocked: string? = if type(why) == "string" then why else nil
 		local kind = if blocked then "Off" else "Lit"
-		local note = Hud.LeadNote(at)
+		-- on a worker: the lead it swaps with takes its bay unless that one's healing (Collection.SetLead; TR72, item 1)
+		local oldId = view.Roles.Lead
+		local old = if oldId ~= "" and oldId ~= owned.Id then view.Voidkin[oldId] else nil
+		local oldWhole = if old then on.Healing()[old.Id] else nil
+		local swap = if old and not (oldWhole and oldWhole > now) then old else nil
+		local note = Hud.LeadNote(at, if swap then Read.VoidkinName(swap) else nil)
 		local from = tonumber(string.match(at, "^Bay (%d+)$"))
-		-- on a worker: what its bay stops making ("Leaves Bay 2 · −18 kW")
-		local under = blocked or (if note and from then cost(note, -Power.BayKw(view :: any, from, owned :: any)) else note)
+		-- and what its bay's making changes by ("Rook takes Bay 2 · −6 kW", "Leaves Bay 2 · −18 kW")
+		local kw = if from then -Power.BayKw(view :: any, from, owned :: any) + (if swap then Power.BayKw(view :: any, from, swap :: any) else 0) else 0
+		local under = blocked or (if note and from then cost(note, kw) else note)
 		local key = `{kind}|{tostring(under)}`
 		if key ~= worn then
 			worn = key

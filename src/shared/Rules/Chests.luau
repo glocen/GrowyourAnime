@@ -587,8 +587,11 @@ end
 
 -- Salvages one owned item by the player's own hand: the item leaves the save and its Credits (Chests.Salvage) come in,
 -- in this one step, so a full bag can be emptied (the director's design review, 2026-11-18: at the cap a chest is
--- refused, and nothing a player could do removed an item). An item any preset wears is refused, never taken off for
--- them. { Ok, Item, Credits }, or a refusal that changed nothing; a repeated request finds no item and is refused.
+-- refused, and nothing a player could do removed an item). What was put in it is kept (docs/design.md, "Salvaging an
+-- item keeps what was put in it"; TR72, item 2): its emblems and jewels go to the bag first; its Reinforce level is lost,
+-- and Lost says which. An item any preset wears is refused, never taken off for them. { Ok, Item, Credits, Emblems,
+-- Jewels, Lost } (the keys put back, each once per one), or a refusal that changed nothing; a repeated request finds no
+-- item and is refused.
 function Chests.SalvageItem(data: Profile.Data, id: any): { [string]: any }
 	local item = if type(id) == "string" then data.Items[id] else nil
 	if item == nil then
@@ -598,9 +601,24 @@ function Chests.SalvageItem(data: Profile.Data, id: any): { [string]: any }
 		return { Ok = false, Error = Chests.Worn }
 	end
 	local credits = Chests.Salvage(item)
+	local emblems, jewels = {}, {}
+	for _, key in item.Sockets do
+		if key ~= "" then
+			data.Bag.Emblems[key] = (data.Bag.Emblems[key] or 0) + 1
+			table.insert(emblems, key)
+		end
+	end
+	for colour, tier in item.Jewels do
+		if type(tier) == "number" and tier > 0 then
+			local key = Jewels.Key(colour, tier)
+			data.Bag.Jewels[key] = (data.Bag.Jewels[key] or 0) + 1
+			table.insert(jewels, key)
+		end
+	end
+	table.sort(jewels)
 	data.Items[id] = nil
 	data.Currency.Credits += credits
-	return { Ok = true, Item = id, Credits = credits }
+	return { Ok = true, Item = id, Credits = credits, Emblems = emblems, Jewels = jewels, Lost = item.Reinforce }
 end
 
 return Chests

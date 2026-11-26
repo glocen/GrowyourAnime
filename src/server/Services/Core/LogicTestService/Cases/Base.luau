@@ -245,10 +245,11 @@ return {
 		end,
 	},
 	{
-		Name = "Base: Lead on a stationed Voidkin recalls it and makes it lead in one step, settled first, never stationed and leading at once",
+		Name = "Base: Lead on a stationed Voidkin makes it lead in one step, settled first, and the old lead takes its bay unless it's healing; never stationed and leading at once",
 		Run = function(t: any)
-			-- Research's ruling on the stationed page (2026-11-17, tier 2): the old lead goes home idle; a repeat of the same
-			-- request changes nothing more; the bays made what they made up to the moment it left, as a Recall would have.
+			-- Research's ruling on the stationed page (2026-11-17, tier 2), and TR72's item 1 (research, 2026-11-26, tier 2): the
+			-- old lead takes the bay, or goes home to heal and the bay waits empty; a repeat of the same request changes nothing
+			-- more; the bays made what they made up to the moment it left, as a Recall would have.
 			local function stationed(): (Profile.Data, string, string)
 				local data, rook = withRook()
 				data.Base.Charge = 0
@@ -260,8 +261,9 @@ return {
 			local data, rook, watt = stationed()
 			local answer = act(data, "SetLead", { Voidkin = watt }, T0 + 600, "lead-1")
 			t.Check("taken, saying the bay it left", answer.Ok == true and answer.Left == 2, `{answer.Ok} {answer.Left}`)
-			t.Check("Watt leads, its bay empty", data.Roles.Lead == watt and data.Base.Bays[2].Worker == "")
-			t.Equal("Rook home, idle", Profile.RoleOf(data, rook), "Resting")
+			t.Check("Watt leads, and Rook takes its bay", data.Roles.Lead == watt and data.Base.Bays[2].Worker == rook)
+			t.Equal("saying who swapped in", answer.Swapped, rook)
+			t.Equal("Rook works", Profile.RoleOf(data, rook), "Worker")
 			local function once(): boolean
 				local leading, working = 0, 0
 				for _, bay in data.Base.Bays do
@@ -272,7 +274,20 @@ return {
 			end
 			t.Check("never stationed and leading at once", once())
 			local _, changed = act(data, "SetLead", { Voidkin = watt }, T0 + 700, "lead-1")
-			t.Check("the same request again changes nothing", not changed and data.Roles.Lead == watt and data.Base.Bays[2].Worker == "" and once())
+			t.Check("the same request again changes nothing", not changed and data.Roles.Lead == watt and data.Base.Bays[2].Worker == rook and once())
+			-- Healing: the old lead fell and isn't whole, so it goes home to heal and the bay waits empty.
+			local hurt, hurtRook, hurtWatt = stationed()
+			local healed = Collection.SetLead(hurt, hurtWatt, T0 + 600, function(id: string): boolean
+				return id == hurtRook
+			end)
+			t.Check("healing: taken, nobody swapped in", healed.Ok == true and healed.Left == 2 and healed.Swapped == nil)
+			t.Check("healing: the bay waits empty, Rook home", hurt.Base.Bays[2].Worker == "" and Profile.RoleOf(hurt, hurtRook) == "Resting")
+			-- From home: no bay moves, the old lead goes home idle.
+			local idle, idleRook = withRook()
+			local pip = Collection.Uncover(idle, "watt", T0).Id
+			local fromHome = act(idle, "SetLead", { Voidkin = pip }, T0 + 10)
+			t.Check("from home: no bay left, nobody swapped", fromHome.Ok == true and fromHome.Left == nil and fromHome.Swapped == nil)
+			t.Equal("from home: the old lead rests", Profile.RoleOf(idle, idleRook), "Resting")
 			-- Settled as a Recall: the same moment, the same charge.
 			local recalled = stationed()
 			act(recalled, "SetWorker", { Bay = 2, Voidkin = "" }, T0 + 600)

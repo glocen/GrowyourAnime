@@ -24,6 +24,7 @@ local Progress = require(Shared.Rules.Progress)
 local Regalia = require(Shared.Rules.Regalia)
 local Reinforce = require(Shared.Rules.Reinforce)
 local Emblems = require(Shared.Rules.Emblems)
+local EmblemSets = require(Shared.Definitions.Emblems)
 local ReinforceConfig = require(Shared.Config.Reinforce)
 local Growth = require(Shared.Rules.Growth)
 local Collection = require(Shared.Rules.Collection)
@@ -578,9 +579,26 @@ return {
 			t.Check("gone and paid", data.Items[spare] == nil and count(data.Items) == held - 1 and data.Currency.Credits == before.Credits + worth)
 			t.Check("asked again: not owned, never paid twice", Chests.SalvageItem(data, spare).Error == Chests.NotOwned and data.Currency.Credits == before.Credits + worth)
 			t.Check("the worn ones still worn", Chests.IsWorn(data, sword) and Chests.IsWorn(data, armour))
-			-- Taken off, it can go.
+			-- Taken off, it can go, and what was put in it is kept (TR72, item 2): its emblems and jewels to the bag, its
+			-- Reinforce level lost and said.
 			Regalia.Put(data.Presets[1], "Main Hand", "Warrior", nil)
-			t.Check("taken off: salvaged", Chests.SalvageItem(data, sword).Ok == true and data.Items[sword] == nil)
+			local kept = data.Items[sword]
+			local emblem = Emblems.Key(EmblemSets.List[1].Id, "Attack")
+			local slotted = #kept.Sockets > 0
+			if slotted then
+				kept.Sockets[1] = emblem
+			end
+			kept.Jewels = { Red = 2, Blue = 1 }
+			kept.Reinforce = 7
+			local emblemsHad, redHad, blueHad = data.Bag.Emblems[emblem] or 0, data.Bag.Jewels["Red:2"] or 0, data.Bag.Jewels["Blue:1"] or 0
+			local gone = Chests.SalvageItem(data, sword)
+			t.Check("taken off: salvaged", gone.Ok == true and data.Items[sword] == nil)
+			if slotted then
+				t.Check("its emblem to the bag", (data.Bag.Emblems[emblem] or 0) == emblemsHad + 1 and #gone.Emblems == 1 and gone.Emblems[1] == emblem)
+			end
+			t.Check("its jewels to the bag", (data.Bag.Jewels["Red:2"] or 0) == redHad + 1 and (data.Bag.Jewels["Blue:1"] or 0) == blueHad + 1)
+			t.Equal("and said, each once", table.concat(gone.Jewels, ","), "Blue:1,Red:2")
+			t.Equal("its +7 lost, and said", gone.Lost, 7)
 			-- The full bag: a chest refused at the cap opens once one item is salvaged.
 			while count(data.Items) < ChestsConfig.Bag do
 				item("sword", "Common")
@@ -822,7 +840,7 @@ return {
 				end,
 			}
 			local chests0, credits0, stones0, emblems0 = sum(data.Bag.Chests), data.Currency.Credits, sum(data.Bag.Stones), sum(data.Bag.Emblems)
-			local opened, made, salvaged, creditsIn, creditsOut, stonesOut, emblemsGone = 0, 0, 0, 0, 0, 0, 0
+			local opened, made, salvaged, creditsIn, creditsOut, stonesOut = 0, 0, 0, 0, 0, 0
 			local autoSalvaged, carried = 0, 0 -- items salvaged as they came out, and emblems a Move carried over
 			local held: { string } = {}
 			local sent: { [string]: { Name: string, Args: any, U: number } } = {}
@@ -836,8 +854,8 @@ return {
 					return `Credits: {data.Currency.Credits} against {credits0 + creditsIn - creditsOut}`
 				elseif sum(data.Bag.Stones) ~= stones0 - stonesOut then
 					return `stones: {sum(data.Bag.Stones)} against {stones0 - stonesOut}`
-				elseif sum(data.Bag.Emblems) + socketed(data) ~= emblems0 - emblemsGone then
-					return `emblems: {sum(data.Bag.Emblems)} + {socketed(data)} against {emblems0 - emblemsGone}`
+				elseif sum(data.Bag.Emblems) + socketed(data) ~= emblems0 then -- a salvage puts its emblems back (TR72, item 2)
+					return `emblems: {sum(data.Bag.Emblems)} + {socketed(data)} against {emblems0}`
 				end
 				for _, preset in data.Presets do
 					for slot, id in preset.Slots do
@@ -941,7 +959,6 @@ return {
 					elseif name == "SalvageItem" then
 						salvaged += 1
 						creditsIn += answer.Credits
-						emblemsGone += socketed({ Items = { before.Items[answer.Item] } } :: any) -- an item's emblems go with it
 					elseif name == "Try" then
 						creditsOut += answer.Credits
 						stonesOut += answer.Stones

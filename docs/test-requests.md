@@ -2622,3 +2622,16 @@ The line names the one thing nearest to done, read from the state the server alr
 | 4 | Training earns a third of what Lantern Row earns | `KillsPerHour = 450` against 136 to 204 counted on the stages (`Config/Growth.luau`) | set it from TR69 block B's timed run: a clean run's kills over its seconds |
 
 - **Waits, named so nobody forgets:** Rook's evolution ("One at launch", Voidkin, "Evolution"; no code), after the three overhauls. Auto-salvage's stones come with the Forge (`Config/Chests.luau`, 107). The three shard grades, luck and voltage are as `launch-design.md`, section 2, left them.
+- **Faber, 2026-11-27, 23:54: items 1 and 2 in.**
+  - **Item 1, the swap** (`Collection.SetLead`):
+    - A worker made lead swaps places: the old lead takes the bay it left, and the answer's Swapped names it.
+    - A fallen lead not yet whole goes home and the bay waits empty. That's Carry's Healing, the server's fact through `LeadService.Healing`, handed to the rule as `Collection.Facts`.
+    - One made lead from home leaves the old lead home idle, as before.
+    - The Lead press on a worker says who takes its bay and what the bay's making changes by: "Rook takes Bay 2 · −6 kW", else "Leaves Bay 2".
+  - **Item 2, salvage** (`Chests.SalvageItem`):
+    - The item's emblems and jewels go to the bag first, and the answer lists them. Lost is its Reinforce level.
+    - The confirm reads "+1,200 Credits · Its +7 is lost".
+    - The toast reads "Salvaged for 40 Credits", or "+1,200 Credits · 2 emblems, 1 jewel to the bag" when something comes back. That's the content check's length fix; it passes.
+    - The chests' fuzz case now holds every emblem: none goes with an item.
+  - **Tests:** type check 0 new; logic 42,486 pass offline, covering the swap, the healing one, from home, salvage's emblem, jewels and Lost, and the words.
+  - **Not yet:** no Studio run (memory), not visually reviewed. Items 3 (the catch-up) and 4 (Training's kills, from block B's timed run) wait. AR62's piece 1 goes first, by research's word.

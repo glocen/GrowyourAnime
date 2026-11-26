@@ -106,16 +106,20 @@ function Collection.SpendCopies(data: Profile.Data, id: any): { [string]: any }
 	return { Ok = true, Id = owned.Id, Stars = owned.Stars, Copies = owned.Copies, Credits = credits }
 end
 
--- Makes an owned Voidkin the lead: { Ok, Id, Left }. One role at a time (docs/design.md, "Roles"): a stationed one is
--- recalled from its bay in the same step, after the bays have made what they made up to `now`, and Left is the bay it
--- left (research's ruling on the stationed page, 2026-11-17, tier 2). The old lead goes home idle. One transaction, so a
--- repeat or a cut never leaves it stationed and leading at once.
-function Collection.SetLead(data: Profile.Data, id: any, now: number?): { [string]: any }
+-- Makes an owned Voidkin the lead: { Ok, Id, Left, Swapped }. One role at a time (docs/design.md, "Roles"): a stationed
+-- one is recalled from its bay in the same step, after the bays have made what they made up to `now`, and Left is the bay
+-- it left (research's ruling on the stationed page, 2026-11-17, tier 2). A worker made lead swaps places (docs/design.md,
+-- "A worker made lead swaps places"; TR72, item 1): the old lead takes the bay it left, and Swapped is its id, unless
+-- it's healing (`healing`, the server's word: Rules.Carry's, a fallen one not yet whole), when it goes home to heal and
+-- the bay waits empty. One made lead from home leaves the old lead home idle. One transaction, so a repeat or a cut never
+-- leaves anyone stationed and leading at once.
+function Collection.SetLead(data: Profile.Data, id: any, now: number?, healing: ((id: string) -> boolean)?): { [string]: any }
 	local owned = if type(id) == "string" then data.Voidkin[id] else nil
 	if not owned then
 		return { Ok = false, Error = Collection.Unknown }
 	end
 	local left: number? = nil
+	local old = data.Roles.Lead
 	if Profile.RoleOf(data, owned.Id) == "Worker" then
 		if now == nil then
 			return { Ok = false, Error = Collection.Working } -- no clock to settle the bays by
@@ -124,12 +128,18 @@ function Collection.SetLead(data: Profile.Data, id: any, now: number?): { [strin
 		for index, bay in data.Base.Bays do
 			if bay.Worker == owned.Id then
 				bay.Worker = ""
+				bay.Banked = nil -- a worker's leftover seconds are its own (TR55)
 				left = left or index
 			end
 		end
 	end
+	local swapped: string? = nil
+	if left and old ~= "" and old ~= owned.Id and data.Voidkin[old] and not (healing and healing(old)) then
+		data.Base.Bays[left].Worker = old
+		swapped = old
+	end
 	data.Roles.Lead = owned.Id
-	return { Ok = true, Id = owned.Id, Left = left }
+	return { Ok = true, Id = owned.Id, Left = left, Swapped = swapped }
 end
 
 -- Marks an owned Voidkin a favourite, or locks it, or takes either off: { Ok, Id, Favourite, Locked }. Neither changes
@@ -255,15 +265,20 @@ local function voidkinArg(args: any): any
 	return if type(args) == "table" then args.Voidkin else nil
 end
 
+-- What the server knows that the save doesn't, handed to an action beside the client's args (VoidkinService's).
+export type Facts = {
+	Healing: ((id: string) -> boolean)?, -- a fallen Voidkin not yet whole (LeadService.Healing)
+}
+
 -- What a client may ask, by name, with the same shape as Rules.Base's actions (VoidkinService registers them).
---   SetLead { Voidkin }       the lead
+--   SetLead { Voidkin }       the lead; the old lead takes a worker's bay unless facts say it's healing
 --   SpendCopies { Voidkin }   the next star
 --   SetMark { Voidkin, Mark, On }   Mark "Favourite" or "Locked", On true or false
 --   SetNickname { Voidkin, Name }   "" takes it off; the server's filter passes it first
 --   SetShowcase { Voidkin }   the one the showcase at the gate stands (TR22); "" for the strongest
 Collection.Actions = {
-	SetLead = function(data: Profile.Data, args: any, now: number): { [string]: any }
-		return Collection.SetLead(data, voidkinArg(args), now)
+	SetLead = function(data: Profile.Data, args: any, now: number, _u: number, facts: Facts?): { [string]: any }
+		return Collection.SetLead(data, voidkinArg(args), now, if facts then facts.Healing else nil)
 	end,
 	SpendCopies = function(data: Profile.Data, args: any): { [string]: any }
 		return Collection.SpendCopies(data, voidkinArg(args))
@@ -279,6 +294,6 @@ Collection.Actions = {
 	SetShowcase = function(data: Profile.Data, args: any): { [string]: any }
 		return Collection.SetShowcase(data, voidkinArg(args))
 	end,
-} :: { [string]: (data: Profile.Data, args: any, now: number, u: number) -> { [string]: any } }
+} :: { [string]: (data: Profile.Data, args: any, now: number, u: number, facts: Facts?) -> { [string]: any } }
 
 return Collection

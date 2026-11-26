@@ -172,6 +172,12 @@ local function tick(player: Player)
 end
 
 -- Why `player` can't send out `id` as their lead now, or nil (Rules.Carry.Refusal). The one already out is no change.
+-- Whether `id` fell and isn't whole yet (Rules.Carry's Healing), outside a fight's rule: a lead swapped out of the lead
+-- by a worker goes home to heal instead of taking its bay (Collection.SetLead).
+function LeadService.Healing(player: Player, id: string): boolean
+	return Carry.Refusal(false, carriedOf(player)[id], now(), FightService.HomeOf(player)) == Carry.Healing
+end
+
 function LeadService.Refusal(player: Player, id: any): string?
 	if type(id) ~= "string" then
 		return nil -- Collection's own answer

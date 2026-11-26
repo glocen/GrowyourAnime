@@ -252,10 +252,15 @@ function Hud.WorkReason(role: string, bays: { Profile.Bay }): (string?, number?)
 	return if #bays == 0 then "No bay open yet" else "No bay free", nil
 end
 
--- The line under a pressable Lead: "Leaves Bay 2" on a stationed one (role "Bay 2"), else nil.
-function Hud.LeadNote(role: string): string?
+-- The line under a pressable Lead: on a stationed one (role "Bay 2"), who takes its bay, "Rook takes Bay 2", when the
+-- lead it swaps with (`swap`, its shown name) can work (Collection.SetLead; TR72, item 1), else "Leaves Bay 2"; nil on
+-- one at home.
+function Hud.LeadNote(role: string, swap: string?): string?
 	local bay = string.match(role, "^Bay (%d+)$")
-	return if bay then `Leaves Bay {bay}` else nil
+	if bay == nil then
+		return nil
+	end
+	return if swap and swap ~= "" then `{swap} takes Bay {bay}` else `Leaves Bay {bay}`
 end
 
 -- A kW change as the line under Lead, Station and Recall writes it (docs/ui.md, item 5, "Lead and Station say what they
@@ -265,6 +270,30 @@ function Hud.KwChange(kw: number): string
 	local shown = if size < 10 then string.format("%.1f", math.floor(size * 10 + 0.5) / 10) else Hud.Digits(size)
 	shown = string.gsub(shown, "%.0$", "")
 	return (if kw < 0 then "−" else "+") .. shown .. " kW"
+end
+
+-- Salvage's confirm (TR72, item 2; docs/design.md, "Salvaging an item keeps what was put in it"): what it gives, and the
+-- Reinforce level it loses with the number, "+1,200 Credits · Its +7 is lost".
+function Hud.SalvageNote(credits: number, reinforce: number): string
+	local gives = `+{Hud.Digits(credits)} Credits`
+	return if reinforce > 0 then `{gives} · Its +{reinforce} is lost` else gives
+end
+
+-- What a salvage said it did, in a toast's few words (docs/ui.md, "Words players read"): "Salvaged for 40 Credits", or,
+-- with what went back to the bag, the confirm's form, "+1,200 Credits · 2 emblems, 1 jewel to the bag" (the content
+-- check's fix, 2026-11-26).
+function Hud.SalvageSaid(credits: number, emblems: number, jewels: number): string
+	local back: { string } = {}
+	if emblems > 0 then
+		table.insert(back, if emblems == 1 then "1 emblem" else `{emblems} emblems`)
+	end
+	if jewels > 0 then
+		table.insert(back, if jewels == 1 then "1 jewel" else `{jewels} jewels`)
+	end
+	if #back == 0 then
+		return `Salvaged for {Hud.Digits(credits)} Credits`
+	end
+	return `+{Hud.Digits(credits)} Credits · {table.concat(back, ", ")} to the bag`
 end
 
 -- Seconds as minutes and seconds, rounded up: "1:05", "0:09".

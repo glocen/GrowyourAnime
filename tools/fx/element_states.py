@@ -1,11 +1,11 @@
-"""The element states' looks (AR48), in grey, as rows files for tools/fx/rows_take.py. Scintilla's.
+"""The element states' looks (AR48), in colour past research's grey pass, as rows files for tools/fx/rows_take.py. Scintilla's.
 
     py tools/fx/element_states.py [out_dir]        (default: build/handoff/States/fx)
     py tools/fx/element_states.py --pictures       (fx_mote_rim, Sap's mote, into build/handoff/States/pictures)
 
 The looks research picked are Modulo's block-in (tools/blender/element_states_fx.py, `Cues` and `Ice`); these are the
 same timings and shapes in the game's rows, from the kit only. FighterController wears each by name while its state
-holds (StateBurn, StateShock, StateSap; a freeze is the stun's StateFreeze; a chill wears none) and ends it at once,
+holds (StateBurn, StateSap; a freeze is the stun's StateFreeze; a chill and a shock wear none) and ends it at once,
 so every row rides the body and holds to a far frame. FreezeBreak is the one free effect: the shell's shatter as the
 freeze ends, played where the body stands.
 
@@ -25,9 +25,8 @@ Hero shapes (one each, with a direction and an acceleration):
   camera): Freeze carries Frost alone, and a chill keeps its slow and its numbers.
 - Freeze: a shell snapping up from the street and shut in 6 frames, its edge flashing once, held clear. Stand-in: the
   kit's shell in its ribs (the faceted shell waits on its mesh). FreezeBreak: chips flung out and falling.
-- Shock: a jagged line of five strokes, inked dark under, down an arm's outer edge from the shoulder to the hand (the
-  arms only: research's pass, 2026-11-26), lit stroke by stroke as a crawl runs down or up it, then the whole line at
-  once, then a gap; the two arms out of step. Never on the head, the chest or the legs.
+- Shock: no look. Research's pass of 2026-11-26, 21:17: a crawling line on the arms missed twice at a phone's scale,
+  and a shock does nothing until poise; its look starts from a new target then (git log has this file's line).
 - Sap: motes drawn out of the body, each a dark disc with a thin light rim (the rim carries the read), born just
   outside the arms' outline at the chest and drifting slowly outward and a little up, slowing, fading where they are:
   never sinking, speeding up or stretching (a dark drop running down a body reads as a drip, in a still frame too; the
@@ -46,11 +45,9 @@ from hit_sparks import c3, v3
 ROOT = Path(__file__).resolve().parents[2]
 OUT = ROOT / "build" / "handoff" / "States" / "fx"
 FAR = 3600  # frames: a look holds to here, and FighterController ends it when its state ends
-SHORT = 600  # the shock's pattern: 10 s (a shock is 3 s a hit), its look ending there and worn again by the next hit
 
 FIRE = ((255, 233, 176), (255, 138, 61))  # core, body (Config.UIKit's Fire)
 FROST = ((244, 253, 255), (143, 227, 255))
-STORM = ((255, 242, 251), (255, 111, 216))
 SAP_RIM = (211, 186, 255)  # Sap's rim, its disc dark in the picture: Void's violet (#B58CFF) lifted toward white to the
 # grey pass's value (about 200 of 255), so the rim reads on the dark robe as it did in grey; the violet only this rim
 
@@ -174,120 +171,6 @@ def freeze_break():
     return effect("FreezeBreak", "The freeze's end: the shell bursts into chips where the body stands (AR48, Scintilla's grey).", rows)
 
 
-# Shock -----------------------------------------------------------------------------------------------------------
-ARMS = (("Left Arm", -1), ("Right Arm", 1))  # the arms' outline only, upper arm to hand (research, 2026-11-26)
-STROKES = 5  # a crawl's line, shoulder to hand
-TOP, HAND = 0.95, -0.98  # studs up the arm (2 long): its line's ends
-LIT = 4  # frames a stroke is lit as the crawl passes it
-STAGGER = 2  # frames from one stroke's light to the next: the crawl's speed
-SNAP = 3  # frames the whole line is lit once after the crawl
-EDGE = 0.85  # studs out from the arm's middle: off its outer face (0.5), the line's inward jags still outside it
-JAG = (0.25, 0.38)  # studs a point stands off the edge, out then in
-WIDTH = 0.6  # fx_beam's bright middle is about half its width: it reads at the sheet's scale, a phone's
-INK = (0.95, (28, 22, 36))  # the dark line under each stroke, its width and colour: the line reads on the pale floor too
-
-
-def up_to(d):
-    """Tilt (degrees, as Rows applies it: CFrame.Angles(x, y, z)) laying a beam's up axis along d."""
-    n = math.sqrt(sum(c * c for c in d))
-    dx, dy, dz = (c / n for c in d)
-    z = math.asin(max(-1.0, min(1.0, -dx)))
-    x = math.atan2(dz, dy)
-    return v3(round(math.degrees(x), 1), 0, round(math.degrees(z), 1))
-
-
-def zig(rng, side):
-    """The points of a jagged line down an arm's outer edge, shoulder to hand: each inner point off the edge by a jag,
-    out and in by turns, leaning toward the front or the back, so it's jagged from behind and from the side."""
-    lean = rng.choice((-1, 1))
-    points = []
-    for i in range(STROKES + 1):
-        y = TOP + (HAND - TOP) * i / STROKES + (rng.uniform(-0.06, 0.06) if 0 < i < STROKES else 0)
-        jag = 0 if i in (0, STROKES) else rng.uniform(*JAG) * (1 if i % 2 else -1)
-        points.append((side * (EDGE + 0.8 * jag), y, 0.5 * jag * lean))
-    return points
-
-
-def strokes(points):
-    """Each stroke's centre, tilt and half length, point to point."""
-    out = []
-    for a, b in zip(points, points[1:]):
-        d = tuple(q - p for p, q in zip(a, b))
-        centre = tuple(round((p + q) / 2, 3) for p, q in zip(a, b))
-        out.append((v3(*centre), up_to(d), round(math.sqrt(sum(c * c for c in d)) / 2, 3)))
-    return out
-
-
-def one_a_frame(keys):
-    clean, last = [], -1
-    for key in sorted(keys, key=lambda k: k[0]):
-        if key[0] > last:
-            clean.append(key)
-            last = key[0]
-    return clean
-
-
-def crawler(side, rng):
-    """An arm's crawls: its line's strokes lit in turn, shoulder to hand or back, then the whole line at once, then a
-    gap: the tracks of its strokes."""
-    rows = [{"At": [], "Tilt": [], "Foot": [], "Top": [], "Transparency": [[0, 1]]} for _ in range(STROKES)]
-    f, down = rng.randint(2, 30), rng.random() < 0.5
-    length = (STROKES - 1) * STAGGER + LIT + 1 + SNAP
-    while f < SHORT - length - 2:
-        order = list(range(STROKES)) if down else list(range(STROKES - 1, -1, -1))
-        snap = f + (STROKES - 1) * STAGGER + LIT + 1
-        for row, (at, tilt, half) in zip(rows, strokes(zig(rng, side))):
-            for key, value in (("At", at), ("Tilt", tilt), ("Foot", -half), ("Top", half)):
-                row[key] += [[f, value], [snap + SNAP, value]]
-        for turn, s in enumerate(order):
-            b = f + turn * STAGGER
-            rows[s]["Transparency"] += [[b - 1, 1], [b, 0], [b + LIT - 1, 0.4], [b + LIT, 1]]
-        for row in rows:
-            row["Transparency"] += [[snap - 1, 1], [snap, 0], [snap + SNAP - 1, 0.2], [snap + SNAP, 1]]
-        f = snap + SNAP + 1 + rng.randint(18, 30)  # the gap
-        down = not down
-    for row in rows:
-        row["Transparency"].append([SHORT, 1])
-        for key in row:
-            row[key] = one_a_frame(row[key])
-    return rows
-
-
-def shock():
-    rng = random.Random(77)
-    rows = {}
-    for part, side in ARMS:
-        for k, tracks in enumerate(crawler(side, rng)):
-            tracks["Width"] = [[0, WIDTH]]
-            name = f"{part.replace(' ', '')}{k + 1}"
-            rows[f"{name}Ink"] = {
-                "Kind": "Beam",
-                "Body": part,
-                "Low": f"{name}.Low",
-                "High": f"{name}.High",
-                "Like": name,  # its flicker
-                "Image": "fx_beam",
-                "Grey": "fx_beam",
-                "Color": c3(INK[1]),
-                "Beam": {"FaceCamera": True, "LightEmission": 0, "LightInfluence": 0, "TextureMode": "Stretch", "TextureSpeed": 0,
-                         "Segments": 1, "ZOffset": 0},
-                "Tracks": {"Width": [[0, INK[0]]]},
-                "Why": "the dark line under the stroke, so it reads on the pale floor and sky",
-            }
-            rows[name] = {
-                "Kind": "Beam",
-                "Body": part,
-                "Image": "fx_beam",
-                "Grey": "fx_beam",
-                "Color": c3(STORM[0]),
-                "Beam": {"FaceCamera": True, "LightEmission": 1, "LightInfluence": 0, "TextureMode": "Stretch", "TextureSpeed": 0,
-                         "Segments": 1, "ZOffset": 0.1, "Brightness": 3},
-                "Tracks": tracks,
-                "Why": f"{'the hero: ' if k == 2 else ''}a stroke of a jagged line down the arm's outer edge, lit as the crawl passes, then with the whole line",
-            }
-    return effect("StateShock", "Shock (Storm), worn while it holds: jagged lines crawling along the arms' outline, flickering through the gaps (AR48, Scintilla's grey, research's rule and pass).", rows)
-
-
 # Sap -------------------------------------------------------------------------------------------------------------
 RING = 2.25  # studs out from the body's middle, each side: just past the arms' outer faces (2)
 SPOTS = ((-0.6, 1.1), (0, 0.5), (0.6, 0.85))  # each side's spots, (z, height over the root): beside the chest
@@ -352,7 +235,7 @@ def mote_rim(out=PICTURES, side=128):
 
 
 def build():
-    looks = {"StateBurn": burn(), "StateFreeze": freeze(), "FreezeBreak": freeze_break(), "StateShock": shock(), "StateSap": sap()}
+    looks = {"StateBurn": burn(), "StateFreeze": freeze(), "FreezeBreak": freeze_break(), "StateSap": sap()}
     return looks
 
 

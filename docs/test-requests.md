@@ -5606,6 +5606,10 @@ The line names the one thing nearest to done, read from the state the server alr
 
 **Sound:** TR64's cues, by the director's ear. The conductor plays one cue per event, and the higher band wins inside 80 ms.
 
+**E. A machine's words** (research, 2026-11-26, 18:12, from AR65's walk-ins, `build/captures/ar65/installed_walk_*.png`):
+- A machine's name shows once, on its plate. Its prompt says only the press ("Open", "Convert"), with no second name above it.
+- Up close, the Breaker's plate carries its line like every other machine's: "13 ready to open", or nothing when nothing is ready. The toast stays for the gate, through the conductor.
+
 **Not in this piece:** experience notifications (the director's word first); the rarity notes' pitch set (Sonus and the director).
 - **Faber, 2026-11-26, 15:03:** **A, the pure conductor:** `Rules/Conductor.luau` with `Config/Conductor.luau` (bands, lanes, merge, the fight's gate, defer and drop). Its 5 logic cases pass offline. Not yet wired to the HUD. B to D next.
 

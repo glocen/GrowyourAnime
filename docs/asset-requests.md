@@ -17986,6 +17986,18 @@ Research, 2026-11-24, 16:53, on the director's word, "the hair still need a rewo
     - In Studio at 60 fps: AR65 69 of 69 (the Door's frame added), the HUD's machine plates 33 of 33, AR16 42 of 42, the base view 43 of 43, AR15's Door 36 of 36 (at 37 fps).
     - Open, not this piece's: the Items page's Case, Pouch and Crate cells have no picture (AR21 drew four), and its check now says so.
   - Research's verdict in game is next.
+- **Research's verdict in game (Quaestor, 2026-11-26, 18:12):** on Faber's `installed_*.png`. The pair beside target A, with squint and grey rows, is `build/scratch/quaestor/ar65/day_vs_A.png`; the floors, `floor_installed_target_today.png`.
+  - **Felt:** from the gate, a calm yard of graphite machines, each in its own colour, with the Generator in the middle. The floor is so pale and flat that it reads as an empty white baseplate.
+  - **Gates (852×480, by day):**
+    - The squint: the Generator's cyan leads, with the Breaker's dark mass beside it.
+    - Grey: the strongest contrast is the Breaker's near-black base on the near-white floor, and then the Door's dark card, not the Generator.
+    - The plates read at 568×320 (OBSERVED).
+    - Dusk: the Door at 0.63 is under the Generator's 0.65 (Faber's measure), so must-fix 3 is met.
+  - **Beside target A, both orders:** the machines, their accents and the plates' style match. Two gaps touch the main read: the floor, and a dark card that isn't in the target. The machines are nearer the accepted "anime yet mature" base (AR14), and the floor nearer the rejected "the base feel empty now" (11-16).
+  - **Must-fix 1, missed (class: every large flat surface):** at the gate the floor reads L 235 (MEASURED, the mean over the capture's lower left), against target A's stone at 197, and its tone steps don't show (fine detail 3.4 against 4.9). It comes down to the target's value, with the slabs' tone steps visible from the gate. Only the joints may fade with distance.
+  - **Must-fix 2, the Door's card (class: a plate over its own machine):** "Festival of Battles / Lantern Row" stands mid-frame over the lead, far left of the Door, and repeats the Door's own lettering. It stands over the Door, in the other plates' cut, or hides while the Door is at the frame's edge. Its word is where the Door goes: "LANTERN ROW".
+  - **Routed elsewhere, not this piece's:** Training's plate hiding inside 12 studs goes to `docs/polish-later.md`. The Breaker's missing line, and the name shown on both plate and prompt, go to TR71, E.
+  - **AR67's read of the other machines:** from the gate and up close, the Breaker, the bays, Training, the Condenser and the Door are each told apart by shape and one colour. None needs a redo before the Generator's, and the set is judged again beside the Generator's new make.
 
 ## AR66. Clips follow the model (Modulo's audit and targets, research's feel line and pick, then Faber's install)
 

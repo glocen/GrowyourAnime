@@ -17965,7 +17965,7 @@ The audit's fourth screen (the director, 2026-11-24: "this left ui is so ugly", 
 
 **Modulo, 20:24: the Menu, the audit's fifth, is the frame's own Home** (Rook, Equipment, Today and Settings on graphite; Today has no glow past its card). One fix to the 44 pt class: Settings was 60 px tall and is now 66, and Today gives up the 6 (`style_frames.py`, `home_panel`; `A_home_cut.png` and `A_small_cut.png` redrawn).
 
-**Research's steer for Home's two cards (Quaestor, 2026-11-26, 20:31; the director's word of 20:28, `docs/decisions.md`):**
+**Research's steer for Home's two cards (Quaestor, 2026-11-26, 20:31; the director's word of 20:28, `docs/decisions.md`):** **Withdrawn (20:47):** the director rejected the key art drawn from it at 20:46 ("horrendous"; the register's row). Each card gets an illustration instead. For their pick, the gates are: one focal point at the squint, the card's name at 4.5:1, and a palette away from "too purple, black, somber".
 
 - **The evidence:** no image of Type Soul's or Rell Seas' menus is on disk, and two searches found none (UNVERIFIED). So nothing below is read from them; it's DESIGN, from how anime key art is built. Their art stays a reference for principles only, and no shot or layout of theirs is rebuilt.
 - **The Voidkin card, one figure large:** cropped at the thigh or the waist, the face in the card's upper third, and the card's foot kept dark for the name.

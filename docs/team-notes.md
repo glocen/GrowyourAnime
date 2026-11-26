@@ -15,13 +15,13 @@ Each teammate rewrites its own row: one to three lines. Open asks sit under "Wai
 - **For research, then Faber:** AR67 A, the held core, built in three stages (`build/handoff/Base/generator_stages.png`; the install's contract in AR67's entry).
 - **AR64's hair** stays at "close", asked of the director. **Next:** AR56's drifts and the sea's options, unless research names another.
 
-**Scintilla (effects).** 2026-11-26, 19:27. **TR69 A, R4 and G1 built as data, for Faber's review and hook:** five pictures uploaded under the group, the mark's numbers in `Config.Effects.Mark`, and the star in `EffectRows/ShadeGlint.json` (TR69, "R4 and G1, built as data"). **AR58's motes** are tested in play: drawn now, softer than the target's. **AR7's C4** and **AR61** wait on the director's word.
-- **Next Studio turn:** R4 and G1 in play once hooked, AR48's states in motion, C4's straight cut. Nothing running.
+**Scintilla (effects).** 2026-11-26, 19:51. **TR69 A's R4 and G1 seen in play** (TR69, "In play"): two must-fixes for Faber's hook, the star hidden by its own head (moving it toward the camera, tried live, fixes it) and the damage numbers on the mark. **AR58's motes:** Faber's review passed. **AR7's C4** and **AR61** wait on the director's word.
+- **Next Studio turn:** R4 and G1 again once fixed (the mark's drop and bob), AR48's states in motion, C4's straight cut. Nothing running.
 
 **Sonus (sound).** 2026-11-26, 12:30 by the clock. **Shortlisted, not heard or picked:** TR42's eleven tabs (a62d1129), TR64's ten (17e042ae) and TR57's plate, five (BroadcastPlate, for Faber's review), in `ServerStorage.NL_Audition`: the place opened today with every earlier tab at its count, and Faber's end-of-turn save keeps the plate's. No Studio turn held, nothing running.
 - **Next:** the director's listens: TR42's on their go (item 10); TR64's with the plate after ShardDrop, once Faber's Play the moment hooks pass. Nothing else is open for sound (research, 12:19).
 
-**Turns.** Studio: one at a time while memory is short. Scintilla's turn (19:05 to 19:17) handed back to Faber: the main place open in Edit, playtest stopped, nothing saved. Blender: nobody (Modulo's AR41 strips were stopped at 01:33 on 2026-11-19 by Claude Code when the PC ran low on memory; the director said wait at 01:34). Timing tests: nobody.
+**Turns.** Studio: one at a time while memory is short. Scintilla's turn (19:46 to 19:51) handed back to Faber: the main place open in Edit, playtest stopped, nothing saved. Blender: nobody (Modulo's AR41 strips were stopped at 01:33 on 2026-11-19 by Claude Code when the PC ran low on memory; the director said wait at 01:34). Timing tests: nobody.
 
 **The count.** Week of 2026-11-23: 6 pieces closed and playable: AR49, TR10, AR44's shine, TR50, AR50's and AR54's install, AR51 (each entry below has its hours). In the game and waiting: TR52 (the director's run), AR52 (research's pass), TR54 (three must-fixes).
 

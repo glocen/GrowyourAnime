@@ -5332,3 +5332,16 @@ From the director's paste of 2026-11-26 (the register). Each claim was checked a
 - **Faber, 2026-11-26, 13:03 by the clock:**
   - **#1, done.** The 28 case modules are required inside `run()`, which only the Studio bridge reaches, so nothing loads them on a phone. On a live server, `SelfTestService.Init` also takes the controller's 42 children out of StarterPlayerScripts as it boots, before anyone joins, so none is sent. That's 1.4 MB of StarterPlayerScripts' 2.9, measured in the place. Tried on a copy of the place's scripts: 138 scripts to 96, the controller kept. Type check 0 new, logic 39,910. The self-test runs in my next Studio turn, since Scintilla holds it.
   - **#3, done for now.** "a jewel of its color". The page's "later update" line stays in the dev build only: jewels are in phase 3, before launch (`docs/production-plan.md`), so the page is built before any public build.
+
+## TR67. The Tower: a leave button with a confirm, and its two chat lines (the director's word, 2026-11-26; for Faber)
+
+- **The words** (about 13:25, from a phone in the game): "the tower seems good but it need a leave button with confirm", and of the chat line "glocen reached floor 41, this server's best today": "so unnatural to say it a ai slop line".
+- **The leave:**
+  - During a run, a Leave button on the HUD opens a confirm: "Leave the Tower?", then "Your run ends at floor {N}, and you keep what it won", with two buttons, Leave and Stay. {N} is the last floor won, which `Rules.Tower.End` already grants.
+  - No run should end by accident. A walk out of the room ends it today without asking, so Faber either holds the avatar in or asks the same question.
+  - The look comes from the screens' kit until AR62's style frame is picked.
+- **The lines** (`Rules/Broadcast.luau`, 383 and 385). The class is a qualifier tacked on after a comma; both of the Tower's lines have it:
+  - the day's record: "{who} reached Tower floor {N}!" It shows only when the run beats the server's best today, so the line needn't say so;
+  - the week's lead: "{who} took first place on this week's Tower: floor {N}!"
+  - The other five lines read naturally and stay.
+- **Cases:** the confirm's Stay keeps the run; Leave ends it at the last floor won, with its rewards; a walk to the room's edge doesn't end a run unasked; the two lines as written above (the Broadcast cases change with them).

@@ -16826,6 +16826,7 @@ Made; self-reviewed as stills at the smallest phone, the take by its frames; the
   - at 128: 0% (0%).
 - **What that means:** at the default zoom the slab sits under the card as backdrop, as Modulo's call has it. Lowering it helps from zoom 30 out.
 - **Next:** research's pass. Not director-accepted.
+- **The director, 2026-11-26, about 13:25, from a phone in the game:** "the tower seems good but it need a leave button with confirm, the cloud need a polish". The cloud sea gets its finish, the room's next step after the leave button (TR67, Faber's). The cloud sea is Modulo's, after the hair, AR62 and AR65's targets. Its target is drawn beside today's clouds at the fight's frame.
 
 ## AR57. The Guard's and the Dasher's elites (Modulo now, then Faber)
 

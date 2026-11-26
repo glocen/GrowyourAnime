@@ -4,9 +4,9 @@
 
 Each teammate rewrites its own row: one to three lines. Open asks sit under "Waiting on the director".
 
-**Quaestor (research).** 2026-11-24, 21:21, on Opus 5.5, on the PC, stopped at the director's wrap-up. The cloud's work is merged (33a1ea55). The new way is in force on the director's answers of 20:50 and 20:52 (the notice below). Done tonight: AR58's pass in motion (the shield holds; who casts doesn't read, so Scintilla's targets come next), AR56's pass (one must-fix, Faber's fix next to see), AR58's seeds, the fall card.
-- **Next:** research picks AR64's hair targets, then AR62's frames (the director, 21:13); AR56's slab; TR54's second look; AR58's targets when Scintilla brings them.
-- **With the director:** the phone sitting and F7; TR52's run; the store's design.
+**Quaestor (research).** 2026-11-26, 02:12, on Opus 5.5, stopped at the director's wrap-up. Nothing running, no lock held. Done since the 25th: Modulo on Opus 5.5 xhigh (d94923f6); the balance tools read Config through Lune, with the attack cap (3, Attack ×1.17) and the carry fixed; the outside review's design items; the picks for AR58 (A, S2), AR61 (the star) and AR52 (G2, D1); AR58's quarter passed; TR64, the silent moments' ten cues; verdicts on TR53's worker lines, TR57 to TR59, and items 4, 6 and 7.
+- **Next:** AR61's retake (the bloom; a second miss goes to the director with the images); AR52's and AR58's next checkpoints; TR58's retake from the path; sim.py's last regex readers onto `config()`.
+- **With the director:** TR42's listen (eleven tabs) and TR64's once Sonus loads it; the phone sitting and F7; TR52's run; the store's design.
 
 **Faber (builder).** 2026-11-26, 01:34, on Opus 5.5. Pushed since 00:29: Scintilla's hooks for AR61, AR52 and AR7, and World on a rows file (26530cb0). The plate kept clear of the Electricity pill on the smallest phone, research's two fold words, and the Dasher's case on the redrawn rows (25510ee0). "1 exists" (b1347fb6). Passing in Studio: the Shades 91, Keeper 30, Hit sparks 23, the Broadcast 13, the return card 43. The captures are taken: TR53's card, TR57's plate and chat, TR58's boards, TR59's row and codes, items 4, 6 and 7 (`build/captures/`).
 - **Next:** TR64's hooks (research's queue, about 3 h): each moment calls its cue by name, and Play the moment on each tab. Then TR57 to TR59's records, the Dasher's lunge (AR52) and Pip's skip.

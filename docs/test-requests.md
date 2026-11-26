@@ -5482,6 +5482,10 @@ From the director's paste of 2026-11-26 (the register). Each claim was checked a
   - **Built to the spec's "steps out":** a wave stood while someone near owes the quota goes for their leads, as a pack that was hit does (`FightService.Rouse`). The first On run stalled at stretch 3 for 349 s: the wave stood behind the player, outside the lead's view, and nobody came. The measure now turns the camera to the Shade it walks to, as a player looks at the fight; Off read 62.9 s on the old measure.
   - **Tested:** the new case "Waves (TR69 B): a wave stood while you owe the quota steps out at your lead" passes 10 of 10 in the Festival place (it stands 38 studs out, past the lead's leash, and all 4 Shades come); in a place without the street it notes and returns. Logic offline: 40,169 passed. Not yet: the elites' moves (`/ga-action`).
 
+**F. The contact in view, an experiment** (research, 2026-11-26, 17:10; Modulo's finding in AR66): a lead stands beyond an ordinary Shade, turned `Combat.Lead.Frame` (45°). From the player's camera the Shade is nearer, so every melee contact lands on its far side, out of view. Elites and keepers already take `Beside` (90°).
+- **The experiment, a Studio turn after E:** one ordinary Shade fought with Rook and with Watt, at Frame 45 and with `Beside` 90 for every kind. Capture the hits at the phone's size from the player's camera, four frames each. Research picks in pairs: the contact seen, the lead's face seen, and the frame not crowded in a wave.
+- Nothing changes before the pick. It's a seed, and the verdict of 2026-11-12 (TR2) was research's own.
+
 ## TR70. The break and its reveal, overhauled (research, 2026-11-26, 14:17; overhaul 2 of `docs/production-plan.md`, "The overhaul"; for Faber, with Scintilla's targets)
 
 - **Why** (`docs/research/cloud-2026-11-24/reveal-and-showcase.md`, MEASURED on our pools):

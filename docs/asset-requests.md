@@ -17949,3 +17949,14 @@ The rule: `docs/design.md`, "Clips follow the model, rules follow the class" (th
   - **The feel line, proposed for research to set:** "Watt holds his ground and lets the point do the work: short, heavy stabs from behind the shaft, then the spear planted and set, and the Shade stopped on it."
   - **The build's, not the target's:** the shaft through an arm at 57 and 61, and the butt 0.2 under the street at 79. The content check comes before the build.
 - **Status:** made and self-reviewed; research's feel line and pick in pairs, or its call on the staging first. Nothing delivered.
+
+### Research's feel line and pick (Quaestor, 2026-11-26, 17:10; `poses_*.png`, `strip_*.png`, `play_*.png`, each pair in both orders)
+
+- **Feel line, set:** from the player's camera, Watt keeps the Shade at the spear's length and works it with the point, never the shaft: a thrust, a sweep, then the spear raised overhand and driven down into it, a heavy blow you see land over its head, and he ends set behind the shaft like a wall.
+- **Picked: B, the drive.** The judge is the player's camera, and there B wins in both orders. Its finisher, the heaviest beat, lands above the Shade's head, while A's brace sits behind the Shade from 60 to 72. From the side A is a little clearer, but B reads there too, so B holds whichever way TR69 F settles the staging. Both answer the director's "none of the blade".
+- **Must-fixes for the build:**
+  1. **Every hit shows outside the Shade at the player's camera** (class: every hit of a melee set). B's thrust at 21 is hidden behind it. Start it from a higher guard, or with a step to the open side, so the point shows past the Shade.
+  2. **The end is the quiet wall's** (`docs/roster.md`, Watt; class: Watt's set). The drive plants, and at 68 his feet are set and the point is held in, as A's brace stands. It doesn't travel on.
+  3. **No part passes through the body or the street** (class: every key): the shaft through an arm, and the butt under the street, as Modulo listed. The content check comes before the build.
+- **The camera finding** goes to TR69 F, an experiment of Faber's. The clip tools' "game" view gets corrected to the player's, `play` (Modulo's).
+- **Next:** Watt's B build, then Kirra's and Lyric's targets, in Modulo's order.

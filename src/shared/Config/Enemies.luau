@@ -16,10 +16,13 @@
 -- each stage's first play, one action at a time. Element is a string; Critical Damage a percent, never times G.
 -- The attack cap (research, 2026-11-25; docs/balance.md, "The attack cap"): with three Shades swinging at once
 -- (Config.Combat.Turns), an Ordinary Shade's Attack x1.17, 0.9 to 1.05, gives the street back its damage (37% to 44%).
+-- TR69 D (research's (a), 2026-11-26, 22:32): the keeper is tuned to the on-budget Common Warrior (docs/balance.md,
+-- "Fights against the game"). Its Attack and Elemental Attack x2, 3.15 and 1.1025 to 6.3 and 2.205; its tells x1.5 on
+-- top (Definitions.Actions). On the pad, standing ends at about 30% and a clean dodge at about 56%.
 return {
 	Ordinary = { Health = 660, Attack = 1.05, Defence = 70, Hit = 57, Dodge = 31, Critical = 47, Block = 31, ElementalAttack = 0.225, CriticalDamage = 0.5, Element = "Void" },
 	Elite = { Health = 1800, Attack = 3.4, Defence = 70, Hit = 76, Dodge = 41, Critical = 63, Block = 41, ElementalAttack = 0.85, CriticalDamage = 0.75, Element = "Void" },
-	Keeper = { Health = 6050, Attack = 3.15, Defence = 70, Hit = 76, Dodge = 41, Critical = 63, CriticalResist = 120, Block = 41, Penetration = 83, ElementalAttack = 1.1025, ElementalResist = 97, CriticalDamage = 1, Element = "Fire" },
+	Keeper = { Health = 6050, Attack = 6.3, Defence = 70, Hit = 76, Dodge = 41, Critical = 63, CriticalResist = 120, Block = 41, Penetration = 83, ElementalAttack = 2.205, ElementalResist = 97, CriticalDamage = 1, Element = "Fire" },
 	Dummy = { Health = 1e6, Attack = 0, Defence = 40 },
 	-- A difficulty's lift by Kind, times the row (Rules.Stats.Enemy). Normal has none.
 	Lift = { Hard = { Ordinary = { Health = 1.6, Attack = 1.6 }, Elite = { Health = 2.05, Attack = 1.5 }, Keeper = { Health = 1.7, Attack = 1.2 } } } :: { [string]: { [string]: { Health: number, Attack: number } } },

@@ -110,7 +110,7 @@ return {
 	{
 		Name = "Stats: Stats.Rate is the kit's one-action-at-a-time rate, Kindle's share with it",
 		Run = function(t: any)
-			for _, row in { { "rook", 1.8692 }, { "kirra", 1.9394 }, { "pip", 1.6836 }, { "watt", 1.6071 }, { "lyric", 1.5880 }, { "brawler", 2.1778 }, { "lamplighter", 2.1720 } } do
+			for _, row in { { "rook", 1.8692 }, { "kirra", 1.9394 }, { "pip", 1.6836 }, { "watt", 1.6071 }, { "lyric", 1.5880 }, { "brawler", 2.1778 }, { "lamplighter", 2.4306 } } do
 				local rate = Stats.Rate(row[1] :: string)
 				t.Check(`{row[1]}: {string.format("%.4f", rate)} a second`, near(rate, row[2] :: number, 5e-5))
 			end
@@ -163,8 +163,10 @@ return {
 			-- ttk and the share of the lead a kill costs, research's integration pass (2026-11-19), Normal, no stage factor,
 			-- on a Rook with no element, as its copy had him: the merge gives research's model exactly. Then with his Fire
 			-- (decision 6), the builder's figures through the same functions, 2026-11-19, for research to confirm or retune.
-			local model = { { "brawler", 4.51, 0.018 }, { "brawler_elite", 12.69, 0.206 }, { "lamplighter", 44.11, 0.757 } }
-			local fire = { { "brawler", 3.789, 0.0155 }, { "brawler_elite", 10.666, 0.1733 }, { "lamplighter", 39.246, 0.6732 } }
+			-- The keeper's share isn't the bare lead's to meet: it's tuned to the on-budget lead (TR69 D, research's (a),
+			-- 2026-11-26, 22:32; docs/balance.md, "Fights against the game"), and a bare lead can't beat it (the case below).
+			local model = { { "brawler", 4.51, 0.018 }, { "brawler_elite", 12.69, 0.206 }, { "lamplighter", 44.11, nil } }
+			local fire = { { "brawler", 3.789, 0.0155 }, { "brawler_elite", 10.666, 0.1733 }, { "lamplighter", 39.246, nil } }
 			for _, level in { 1, 5, 9 } do
 				for _, case in { { "no element", model, "" }, { "Fire", fire, nil } } :: { any } do
 					local rook = lead("rook", level)
@@ -176,10 +178,30 @@ return {
 						local ttk = enemy.Health / (Stats.Rate("rook") * Hit.Expected(rook, enemy))
 						local share = Stats.Rate(target[1] :: string) * Hit.Expected(enemy, rook) * ttk / rook.Health
 						t.Check(`level {level} {target[1]}, {case[1]}: {string.format("%.2f", ttk)} s`, near(ttk, target[2] :: number, 0.01))
-						t.Check(`level {level} {target[1]}, {case[1]}: {string.format("%.3f", share)} of the lead`, near(share, target[3] :: number, 0.03))
+						if target[3] ~= nil then
+							t.Check(`level {level} {target[1]}, {case[1]}: {string.format("%.3f", share)} of the lead`, near(share, target[3] :: number, 0.03))
+						end
 					end
 				end
 				t.Equal(`level {level}: Rook's own element is Fire`, lead("rook", level).Element, "Fire")
+			end
+		end,
+	},
+	{
+		-- TR69 D (research's (a), 2026-11-26, 22:32): the keeper is tuned to the on-budget Common Warrior, which ends a
+		-- standing fight near 30% (keeperHpLoss 0.7, measured on the pad), so a bare own-level one can't beat it
+		-- (docs/balance.md, "Fights against the game": "A bare Voidkin ... can't beat a keeper").
+		Name = "Fight: a bare own-level Common Warrior can't beat the keeper, with or without its element (TR69 D)",
+		Run = function(t: any)
+			for _, level in { 1, 5, 9, 20, 40 } do
+				for _, element in { "", "Fire" } do
+					local rook = lead("rook", level)
+					rook.Element = element
+					local keeper = Stats.Enemy("lamplighter", level)
+					local ttk = keeper.Health / (Stats.Rate("rook") * Hit.Expected(rook, keeper))
+					local share = Stats.Rate("lamplighter") * Hit.Expected(keeper, rook) * ttk / rook.Health
+					t.Check(`level {level}, {if element == "" then "no element" else element}: the keeper takes {string.format("%.2f", share)} of the lead`, share > 1)
+				end
 			end
 		end,
 	},
@@ -189,9 +211,10 @@ return {
 			local cuts = HudConfig.Skulls.Cuts
 			for _, level in { 5, 20, 40 } do
 				local rook = lead("rook", level)
-				for _, row in { { "brawler", 1 }, { "brawler_elite", 2 }, { "lamplighter", 3 } } do
+				for _, row in { { "brawler", 1 }, { "brawler_elite", 2 }, { "lamplighter", 4 } } do
 					local cost = Hud.Cost(rook, Stats.Enemy(row[1] :: string, level))
-					-- A bare own-level Rook: an Ordinary grey (its Regen outheals it), an Elite white, the keeper yellow.
+					-- A bare own-level Rook: an Ordinary grey (its Regen outheals it), an Elite white, the keeper red: tuned to the
+					-- on-budget lead, it beats a bare one (TR69 D). The skull reads the lead's own power (Stats.Resolve).
 					t.Equal(`level {level} {row[1]}: cost {string.format("%.3f", cost)}`, Hud.Skull(cost, 1, cuts), row[2])
 				end
 				t.Check(`level {level}: a stronger foe costs more`, Hud.Cost(rook, Stats.Enemy("brawler", level + 6)) > Hud.Cost(rook, Stats.Enemy("brawler", level)))
@@ -241,7 +264,7 @@ return {
 				t.Equal(`level {level}: but reads white, never grey`, Hud.FoeTier(rook, brawler, cuts), 2)
 				local low = Stats.Enemy("brawler", math.max(1, level - 3))
 				t.Equal(`level {level}: one three levels under reads its cost`, Hud.FoeTier(rook, low, cuts), Hud.Skull(Hud.Cost(rook, low), 1, cuts))
-				t.Equal(`level {level}: the keeper as the skull reads it`, Hud.FoeTier(rook, Stats.Enemy("lamplighter", level), cuts), 3)
+				t.Equal(`level {level}: the keeper as the skull reads it, red to a bare lead (TR69 D)`, Hud.FoeTier(rook, Stats.Enemy("lamplighter", level), cuts), 4)
 				local hard = Hud.FoeBlock("Ordinary", "brawler", level, nil, "Hard", 2, nil)
 				local server = Stats.Enemy("brawler", level, nil, "Hard", 2)
 				t.Check(`level {level}: a Hard Shade's block, the server's`, near(hard.Health, server.Health) and near(hard.Attack, server.Attack))

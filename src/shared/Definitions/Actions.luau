@@ -531,7 +531,8 @@ local rows: { Action } = {
 		Aim = "Plant",
 		Hits = {
 			-- Reach is the replay's and a fighter's with no footprint down; in the fight the footprint decides (Mark)
-			Slam = { Coefficient = ENEMY_PER_SECOND * 3, Heavy = true, Reach = 10, Push = 2.5, Rung = 8, Mark = true },
+			-- x1.5 on 3 over the keeper's Attack x2 (TR69 D, research's (a), 22:32): a tell takes x3, a swing x2
+			Slam = { Coefficient = ENEMY_PER_SECOND * 4.5, Heavy = true, Reach = 10, Push = 2.5, Rung = 8, Mark = true },
 		},
 		-- the lantern lands 6.33 studs ahead of the keeper and 1.92 to its left (AR7, section 7): from 7.5 it's down beside
 		-- your fighter, 2.25 from its middle, its drum clear of the body
@@ -575,10 +576,11 @@ local rows: { Action } = {
 		Cooldown = 0,
 		Beats = { Pool = 0.5, Sweep = 0.5, Burn = 0.5 }, -- after a heavy cue's lead (Config.Sounds), though nothing plays it on a clock
 		Hits = {
-			Pool = { Coefficient = ENEMY_PER_SECOND * 1.5, Heavy = false, Reach = 4, Push = 1.5, Rung = 4 },
-			Sweep = { Coefficient = ENEMY_PER_SECOND * 2, Heavy = true, Reach = 11, Push = 2.5, Rung = 6 },
+			-- the pool and the sweep x1.5 on 1.5 and 2, as the slam (TR69 D, 22:32); Hard's footprint halved to keep its damage
+			Pool = { Coefficient = ENEMY_PER_SECOND * 2.25, Heavy = false, Reach = 4, Push = 1.5, Rung = 4 },
+			Sweep = { Coefficient = ENEMY_PER_SECOND * 3, Heavy = true, Reach = 11, Push = 2.5, Rung = 6 },
 			-- Hard's burning footprint, a tick each Phases.Hard.Burn.Every: no push, the ladder's lightest hold (an ordinary hit)
-			Burn = { Coefficient = ENEMY_PER_SECOND * 0.5, Heavy = false, Reach = 5, Push = 0, Rung = 2 },
+			Burn = { Coefficient = ENEMY_PER_SECOND * 0.25, Heavy = false, Reach = 5, Push = 0, Rung = 2 },
 		},
 		Range = 4,
 		Heavy = true,

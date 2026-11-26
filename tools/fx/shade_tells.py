@@ -56,7 +56,9 @@ Definitions.Enemies), so at that scale nothing is scaled, and the floor stays on
   between the lanes show the gaps; each lane's fuse lit in turn to Land, the rim heating. The Dasher runs the middle;
   a streak of light runs each side lane in the same quarter second, and a slash bursts at each lane's end.
 - GuardScreen, the Guard elite's screen (S1): the ward's way, at the wall's size: a lantern wall 8 studs across, nine
-  ribs and two rails, W2's lines only, on GuardRaise's beats. Its glance and break are GuardGlance's and GuardBreak's.
+  ribs and two rails, W2's lines only, on GuardRaise's beats. Its glance is GuardGlance. Its break, GuardScreenBreak,
+  is GuardBreak's at the wall's size, anchored at the Guard's root: the tear from the wall's middle, and the whole
+  wall's frame flashed white with nine chips flung off it.
 
 Frames at 60 a second from each row's beat. The colours passed their content check on 2026-11-26 (AR52): nothing red,
 the chips light, never dark or liquid, nothing left behind (AGENTS.md, rule 4).
@@ -661,9 +663,88 @@ def guard_screen():
     return data
 
 
+def guard_screen_break():
+    """The screen broken (TR69 B), GuardBreak's way at the wall's size, all of it on the wall. The hook anchors it at the
+    Guard's root, Front the way the Guard faces (an effect played at a point rides no body), and the rows find the wall
+    from there as GuardScreen does: GuardBreak's tear, puff and light from the wall's middle, at the elite's size; the
+    whole wall's frame flashed white for two frames as it's torn (W2's break); nine chips flung off across it and on
+    along the blow (+Z, toward the Guard), turning, gone by a third of a second."""
+    from elite_tell_targets import SCREEN_EXT, SCREEN_MID
+    k = elite_scale("guard")
+    wy, wz = round(-ROOT_HEIGHT * k + SCREEN_MID, 3), -SCREEN_AHEAD  # the wall's middle from the root
+
+    def big(keys):
+        return [[t, round(s * k, 3)] for t, s in keys]
+
+    rows = {
+        **sheet_rows("Tear", "ring", 0.32, big([[0, 2.4], [1, 5]]), 0.34, 0,
+                     "the wall torn open: a ring out from its middle", colours=WARD),
+        **sheet_rows("Puff", "puff", 0.45, big([[0, 2], [1, 3.4]]), 0.45, 40,
+                     "the paper's dust where it stood, a breath after", colours=WARD),
+        "Light": {
+            "Kind": "Light",
+            "Range": round(7 * k, 2),
+            "Color": c3(AZURE),
+            "Tracks": {"At": [[0, v3(0, wy, round(wz - 0.5 * k, 3))]], "Brightness": [[0, 2.5, "Quad Out"], [8, 0]]},
+            "Why": "the break lights the Guard and the wall for a moment",
+        },
+        "Snap": {
+            "Kind": "Emitter",
+            "Image": "guard_screen_light",
+            "Emitter": {
+                "Lifetime": [2 / 60, 2 / 60],
+                "Speed": [0.01, 0.01],
+                "EmissionDirection": "Front",
+                "Orientation": "VelocityPerpendicular",
+                "LockedToPart": True,
+                "Rotation": [0, 0],
+                "RotSpeed": [0, 0],
+                "Size": [[0, SCREEN_EXT], [1, round(SCREEN_EXT * 1.06, 3)]],
+                "Transparency": [[0, 0], [1, 0.4]],
+                "Color": c3((255, 255, 255)),
+                "LightEmission": 1,
+                "LightInfluence": 0,
+                "Brightness": 3,
+                "ZOffset": 0.45,
+            },
+            "Emit": [[0, 1]],
+            "Tracks": {"At": [[0, v3(0, wy, wz)]]},
+            "Why": "W2's break on the wall: its whole frame flashes white for two frames as it's torn, then it's gone",
+        },
+    }
+    for key in ("TearLine", "TearFill", "TearDark"):
+        rows[key]["Tracks"] = {"At": [[0, v3(0, wy, wz)]]}
+    for key in ("PuffLine", "PuffFill", "PuffDark"):
+        rows[key]["Emit"] = [[2, 1]]
+        rows[key]["Tracks"] = {"At": [[2, v3(0, wy, wz)]]}
+    # nine chips of the wall, from across it (8 wide, 3.4 high about its middle), flung out and on along the blow (+Z
+    # from the wall, toward the Guard behind it), turning, gone by 20 frames
+    outs = [(-3.3, 0.9), (-2.4, -0.7), (-1.5, 1.3), (-0.6, -1.1), (0.4, 1.0), (1.3, -0.5), (2.2, 1.2), (3.1, -0.9),
+            (0.0, 0.2)]
+    for index, (x, y) in enumerate(outs, start=1):
+        rows[f"Chip{index}"] = {
+            "Kind": "Mesh",
+            "Part": [f"FxChip{(index - 1) % 3 + 1}"],
+            "Color": c3(AZURE_RIM if index % 2 else AZURE),
+            "Tracks": {
+                "At": [[0, v3(round(x * 0.7, 3), round(wy + y * 0.7, 3), wz), "Quad Out"],
+                       [16, v3(round(x * 1.15, 3), round(wy + y - 0.8, 3), round(wz + 1.0 + index * 0.1, 3))]],
+                "Scale": [[0, round(0.9 * k, 3), "Linear"], [20, round(0.5 * k, 3)]],
+                "Spin": [[0, index * 40, "Quad Out"], [20, index * 40 + (220 if index % 2 else -220)]],
+                "Tilt": [[0, v3(index * 25, 0, 0), "Quad Out"], [20, v3(index * 25 + 160, 0, 90)]],
+                "Transparency": [[0, 0, "Quad In"], [12, 0.1, "Quad In"], [20, 1]],
+            },
+            "Why": "a chip of the wall, light and paper, flung off it and on along the blow, turning",
+        }
+    data = effect("GuardScreenBreak", "The Guard elite's screen broken, on the wall, from the hook's anchor at the "
+                  "Guard's root (TR69 B; GuardBreak's way, W2's break).", rows)
+    data["Area"] = k
+    return data
+
+
 def build():
     return {e["Effect"]: e for e in (guard_shield(), guard_glance(), guard_break(), dasher_line(), shade_overhead(),
-                                     dasher_fan(), guard_screen())}
+                                     dasher_fan(), guard_screen(), guard_screen_break())}
 
 
 def main():

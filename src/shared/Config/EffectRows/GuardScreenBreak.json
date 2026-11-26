@@ -1,0 +1,1441 @@
+{
+  "Schema": "rows/1",
+  "Effect": "GuardScreenBreak",
+  "Why": "The Guard elite's screen broken, on the wall, from the hook's anchor at the Guard's root (TR69 B; GuardBreak's way, W2's break).",
+  "Area": 1.35,
+  "Grey": false,
+  "Rows": {
+    "TearLine": {
+      "Kind": "Emitter",
+      "Image": "fx_ring_line",
+      "Emitter": {
+        "Lifetime": [
+          0.32,
+          0.32
+        ],
+        "Speed": [
+          0,
+          0
+        ],
+        "Size": [
+          [
+            0,
+            3.24
+          ],
+          [
+            1,
+            6.75
+          ]
+        ],
+        "Rotation": [
+          0,
+          0
+        ],
+        "FlipbookLayout": "Grid4x4",
+        "FlipbookMode": "OneShot",
+        "LightInfluence": 0,
+        "Color": {
+          "Color3": [
+            200,
+            226,
+            255
+          ]
+        },
+        "LightEmission": 1,
+        "ZOffset": 0.55
+      },
+      "Emit": [
+        [
+          0,
+          1
+        ]
+      ],
+      "Tracks": {
+        "At": [
+          [
+            0,
+            {
+              "Vector3": [
+                0,
+                -2.175,
+                -2.6
+              ]
+            }
+          ]
+        ]
+      },
+      "Why": "the wall torn open: a ring out from its middle"
+    },
+    "TearFill": {
+      "Kind": "Emitter",
+      "Image": "fx_ring_fill",
+      "Emitter": {
+        "Lifetime": [
+          0.32,
+          0.32
+        ],
+        "Speed": [
+          0,
+          0
+        ],
+        "Size": [
+          [
+            0,
+            3.24
+          ],
+          [
+            1,
+            6.75
+          ]
+        ],
+        "Rotation": [
+          0,
+          0
+        ],
+        "FlipbookLayout": "Grid4x4",
+        "FlipbookMode": "OneShot",
+        "LightInfluence": 0,
+        "Color": [
+          [
+            0,
+            {
+              "Color3": [
+                63,
+                140,
+                255
+              ]
+            }
+          ],
+          [
+            0.34,
+            {
+              "Color3": [
+                63,
+                140,
+                255
+              ]
+            }
+          ],
+          [
+            1,
+            {
+              "Color3": [
+                22,
+                60,
+                140
+              ]
+            }
+          ]
+        ],
+        "LightEmission": 0.6,
+        "ZOffset": 0.5
+      },
+      "Emit": [
+        [
+          0,
+          1
+        ]
+      ],
+      "Tracks": {
+        "At": [
+          [
+            0,
+            {
+              "Vector3": [
+                0,
+                -2.175,
+                -2.6
+              ]
+            }
+          ]
+        ]
+      },
+      "Why": "Tear's fill pass"
+    },
+    "TearDark": {
+      "Kind": "Emitter",
+      "Image": "fx_ring_dark",
+      "Emitter": {
+        "Lifetime": [
+          0.32,
+          0.32
+        ],
+        "Speed": [
+          0,
+          0
+        ],
+        "Size": [
+          [
+            0,
+            3.24
+          ],
+          [
+            1,
+            6.75
+          ]
+        ],
+        "Rotation": [
+          0,
+          0
+        ],
+        "FlipbookLayout": "Grid4x4",
+        "FlipbookMode": "OneShot",
+        "LightInfluence": 0,
+        "Color": {
+          "Color3": [
+            22,
+            60,
+            140
+          ]
+        },
+        "LightEmission": 0,
+        "Transparency": 0.15,
+        "ZOffset": 0.45
+      },
+      "Emit": [
+        [
+          0,
+          1
+        ]
+      ],
+      "Tracks": {
+        "At": [
+          [
+            0,
+            {
+              "Vector3": [
+                0,
+                -2.175,
+                -2.6
+              ]
+            }
+          ]
+        ]
+      },
+      "Why": "Tear's dark pass"
+    },
+    "PuffLine": {
+      "Kind": "Emitter",
+      "Image": "fx_puff_line",
+      "Emitter": {
+        "Lifetime": [
+          0.45,
+          0.45
+        ],
+        "Speed": [
+          0,
+          0
+        ],
+        "Size": [
+          [
+            0,
+            2.7
+          ],
+          [
+            1,
+            4.59
+          ]
+        ],
+        "Rotation": [
+          40,
+          40
+        ],
+        "FlipbookLayout": "Grid4x4",
+        "FlipbookMode": "OneShot",
+        "LightInfluence": 0,
+        "Color": {
+          "Color3": [
+            200,
+            226,
+            255
+          ]
+        },
+        "LightEmission": 1,
+        "ZOffset": 0.55
+      },
+      "Emit": [
+        [
+          2,
+          1
+        ]
+      ],
+      "Tracks": {
+        "At": [
+          [
+            2,
+            {
+              "Vector3": [
+                0,
+                -2.175,
+                -2.6
+              ]
+            }
+          ]
+        ]
+      },
+      "Why": "the paper's dust where it stood, a breath after"
+    },
+    "PuffFill": {
+      "Kind": "Emitter",
+      "Image": "fx_puff_fill",
+      "Emitter": {
+        "Lifetime": [
+          0.45,
+          0.45
+        ],
+        "Speed": [
+          0,
+          0
+        ],
+        "Size": [
+          [
+            0,
+            2.7
+          ],
+          [
+            1,
+            4.59
+          ]
+        ],
+        "Rotation": [
+          40,
+          40
+        ],
+        "FlipbookLayout": "Grid4x4",
+        "FlipbookMode": "OneShot",
+        "LightInfluence": 0,
+        "Color": [
+          [
+            0,
+            {
+              "Color3": [
+                63,
+                140,
+                255
+              ]
+            }
+          ],
+          [
+            0.45,
+            {
+              "Color3": [
+                63,
+                140,
+                255
+              ]
+            }
+          ],
+          [
+            1,
+            {
+              "Color3": [
+                22,
+                60,
+                140
+              ]
+            }
+          ]
+        ],
+        "LightEmission": 0.6,
+        "ZOffset": 0.5
+      },
+      "Emit": [
+        [
+          2,
+          1
+        ]
+      ],
+      "Tracks": {
+        "At": [
+          [
+            2,
+            {
+              "Vector3": [
+                0,
+                -2.175,
+                -2.6
+              ]
+            }
+          ]
+        ]
+      },
+      "Why": "Puff's fill pass"
+    },
+    "PuffDark": {
+      "Kind": "Emitter",
+      "Image": "fx_puff_dark",
+      "Emitter": {
+        "Lifetime": [
+          0.45,
+          0.45
+        ],
+        "Speed": [
+          0,
+          0
+        ],
+        "Size": [
+          [
+            0,
+            2.7
+          ],
+          [
+            1,
+            4.59
+          ]
+        ],
+        "Rotation": [
+          40,
+          40
+        ],
+        "FlipbookLayout": "Grid4x4",
+        "FlipbookMode": "OneShot",
+        "LightInfluence": 0,
+        "Color": {
+          "Color3": [
+            22,
+            60,
+            140
+          ]
+        },
+        "LightEmission": 0,
+        "Transparency": 0.15,
+        "ZOffset": 0.45
+      },
+      "Emit": [
+        [
+          2,
+          1
+        ]
+      ],
+      "Tracks": {
+        "At": [
+          [
+            2,
+            {
+              "Vector3": [
+                0,
+                -2.175,
+                -2.6
+              ]
+            }
+          ]
+        ]
+      },
+      "Why": "Puff's dark pass"
+    },
+    "Light": {
+      "Kind": "Light",
+      "Range": 9.45,
+      "Color": {
+        "Color3": [
+          63,
+          140,
+          255
+        ]
+      },
+      "Tracks": {
+        "At": [
+          [
+            0,
+            {
+              "Vector3": [
+                0,
+                -2.175,
+                -3.275
+              ]
+            }
+          ]
+        ],
+        "Brightness": [
+          [
+            0,
+            2.5,
+            "Quad Out"
+          ],
+          [
+            8,
+            0
+          ]
+        ]
+      },
+      "Why": "the break lights the Guard and the wall for a moment"
+    },
+    "Snap": {
+      "Kind": "Emitter",
+      "Image": "guard_screen_light",
+      "Emitter": {
+        "Lifetime": [
+          0.03333333333333333,
+          0.03333333333333333
+        ],
+        "Speed": [
+          0.01,
+          0.01
+        ],
+        "EmissionDirection": "Front",
+        "Orientation": "VelocityPerpendicular",
+        "LockedToPart": true,
+        "Rotation": [
+          0,
+          0
+        ],
+        "RotSpeed": [
+          0,
+          0
+        ],
+        "Size": [
+          [
+            0,
+            4.3
+          ],
+          [
+            1,
+            4.558
+          ]
+        ],
+        "Transparency": [
+          [
+            0,
+            0
+          ],
+          [
+            1,
+            0.4
+          ]
+        ],
+        "Color": {
+          "Color3": [
+            255,
+            255,
+            255
+          ]
+        },
+        "LightEmission": 1,
+        "LightInfluence": 0,
+        "Brightness": 3,
+        "ZOffset": 0.45
+      },
+      "Emit": [
+        [
+          0,
+          1
+        ]
+      ],
+      "Tracks": {
+        "At": [
+          [
+            0,
+            {
+              "Vector3": [
+                0,
+                -2.175,
+                -2.6
+              ]
+            }
+          ]
+        ]
+      },
+      "Why": "W2's break on the wall: its whole frame flashes white for two frames as it's torn, then it's gone"
+    },
+    "Chip1": {
+      "Kind": "Mesh",
+      "Part": [
+        "FxChip1"
+      ],
+      "Color": {
+        "Color3": [
+          200,
+          226,
+          255
+        ]
+      },
+      "Tracks": {
+        "At": [
+          [
+            0,
+            {
+              "Vector3": [
+                -2.31,
+                -1.545,
+                -2.6
+              ]
+            },
+            "Quad Out"
+          ],
+          [
+            16,
+            {
+              "Vector3": [
+                -3.795,
+                -2.075,
+                -1.5
+              ]
+            }
+          ]
+        ],
+        "Scale": [
+          [
+            0,
+            1.215,
+            "Linear"
+          ],
+          [
+            20,
+            0.675
+          ]
+        ],
+        "Spin": [
+          [
+            0,
+            40,
+            "Quad Out"
+          ],
+          [
+            20,
+            260
+          ]
+        ],
+        "Tilt": [
+          [
+            0,
+            {
+              "Vector3": [
+                25,
+                0,
+                0
+              ]
+            },
+            "Quad Out"
+          ],
+          [
+            20,
+            {
+              "Vector3": [
+                185,
+                0,
+                90
+              ]
+            }
+          ]
+        ],
+        "Transparency": [
+          [
+            0,
+            0,
+            "Quad In"
+          ],
+          [
+            12,
+            0.1,
+            "Quad In"
+          ],
+          [
+            20,
+            1
+          ]
+        ]
+      },
+      "Why": "a chip of the wall, light and paper, flung off it and on along the blow, turning"
+    },
+    "Chip2": {
+      "Kind": "Mesh",
+      "Part": [
+        "FxChip2"
+      ],
+      "Color": {
+        "Color3": [
+          63,
+          140,
+          255
+        ]
+      },
+      "Tracks": {
+        "At": [
+          [
+            0,
+            {
+              "Vector3": [
+                -1.68,
+                -2.665,
+                -2.6
+              ]
+            },
+            "Quad Out"
+          ],
+          [
+            16,
+            {
+              "Vector3": [
+                -2.76,
+                -3.675,
+                -1.4
+              ]
+            }
+          ]
+        ],
+        "Scale": [
+          [
+            0,
+            1.215,
+            "Linear"
+          ],
+          [
+            20,
+            0.675
+          ]
+        ],
+        "Spin": [
+          [
+            0,
+            80,
+            "Quad Out"
+          ],
+          [
+            20,
+            -140
+          ]
+        ],
+        "Tilt": [
+          [
+            0,
+            {
+              "Vector3": [
+                50,
+                0,
+                0
+              ]
+            },
+            "Quad Out"
+          ],
+          [
+            20,
+            {
+              "Vector3": [
+                210,
+                0,
+                90
+              ]
+            }
+          ]
+        ],
+        "Transparency": [
+          [
+            0,
+            0,
+            "Quad In"
+          ],
+          [
+            12,
+            0.1,
+            "Quad In"
+          ],
+          [
+            20,
+            1
+          ]
+        ]
+      },
+      "Why": "a chip of the wall, light and paper, flung off it and on along the blow, turning"
+    },
+    "Chip3": {
+      "Kind": "Mesh",
+      "Part": [
+        "FxChip3"
+      ],
+      "Color": {
+        "Color3": [
+          200,
+          226,
+          255
+        ]
+      },
+      "Tracks": {
+        "At": [
+          [
+            0,
+            {
+              "Vector3": [
+                -1.05,
+                -1.265,
+                -2.6
+              ]
+            },
+            "Quad Out"
+          ],
+          [
+            16,
+            {
+              "Vector3": [
+                -1.725,
+                -1.675,
+                -1.3
+              ]
+            }
+          ]
+        ],
+        "Scale": [
+          [
+            0,
+            1.215,
+            "Linear"
+          ],
+          [
+            20,
+            0.675
+          ]
+        ],
+        "Spin": [
+          [
+            0,
+            120,
+            "Quad Out"
+          ],
+          [
+            20,
+            340
+          ]
+        ],
+        "Tilt": [
+          [
+            0,
+            {
+              "Vector3": [
+                75,
+                0,
+                0
+              ]
+            },
+            "Quad Out"
+          ],
+          [
+            20,
+            {
+              "Vector3": [
+                235,
+                0,
+                90
+              ]
+            }
+          ]
+        ],
+        "Transparency": [
+          [
+            0,
+            0,
+            "Quad In"
+          ],
+          [
+            12,
+            0.1,
+            "Quad In"
+          ],
+          [
+            20,
+            1
+          ]
+        ]
+      },
+      "Why": "a chip of the wall, light and paper, flung off it and on along the blow, turning"
+    },
+    "Chip4": {
+      "Kind": "Mesh",
+      "Part": [
+        "FxChip1"
+      ],
+      "Color": {
+        "Color3": [
+          63,
+          140,
+          255
+        ]
+      },
+      "Tracks": {
+        "At": [
+          [
+            0,
+            {
+              "Vector3": [
+                -0.42,
+                -2.945,
+                -2.6
+              ]
+            },
+            "Quad Out"
+          ],
+          [
+            16,
+            {
+              "Vector3": [
+                -0.69,
+                -4.075,
+                -1.2
+              ]
+            }
+          ]
+        ],
+        "Scale": [
+          [
+            0,
+            1.215,
+            "Linear"
+          ],
+          [
+            20,
+            0.675
+          ]
+        ],
+        "Spin": [
+          [
+            0,
+            160,
+            "Quad Out"
+          ],
+          [
+            20,
+            -60
+          ]
+        ],
+        "Tilt": [
+          [
+            0,
+            {
+              "Vector3": [
+                100,
+                0,
+                0
+              ]
+            },
+            "Quad Out"
+          ],
+          [
+            20,
+            {
+              "Vector3": [
+                260,
+                0,
+                90
+              ]
+            }
+          ]
+        ],
+        "Transparency": [
+          [
+            0,
+            0,
+            "Quad In"
+          ],
+          [
+            12,
+            0.1,
+            "Quad In"
+          ],
+          [
+            20,
+            1
+          ]
+        ]
+      },
+      "Why": "a chip of the wall, light and paper, flung off it and on along the blow, turning"
+    },
+    "Chip5": {
+      "Kind": "Mesh",
+      "Part": [
+        "FxChip2"
+      ],
+      "Color": {
+        "Color3": [
+          200,
+          226,
+          255
+        ]
+      },
+      "Tracks": {
+        "At": [
+          [
+            0,
+            {
+              "Vector3": [
+                0.28,
+                -1.475,
+                -2.6
+              ]
+            },
+            "Quad Out"
+          ],
+          [
+            16,
+            {
+              "Vector3": [
+                0.46,
+                -1.975,
+                -1.1
+              ]
+            }
+          ]
+        ],
+        "Scale": [
+          [
+            0,
+            1.215,
+            "Linear"
+          ],
+          [
+            20,
+            0.675
+          ]
+        ],
+        "Spin": [
+          [
+            0,
+            200,
+            "Quad Out"
+          ],
+          [
+            20,
+            420
+          ]
+        ],
+        "Tilt": [
+          [
+            0,
+            {
+              "Vector3": [
+                125,
+                0,
+                0
+              ]
+            },
+            "Quad Out"
+          ],
+          [
+            20,
+            {
+              "Vector3": [
+                285,
+                0,
+                90
+              ]
+            }
+          ]
+        ],
+        "Transparency": [
+          [
+            0,
+            0,
+            "Quad In"
+          ],
+          [
+            12,
+            0.1,
+            "Quad In"
+          ],
+          [
+            20,
+            1
+          ]
+        ]
+      },
+      "Why": "a chip of the wall, light and paper, flung off it and on along the blow, turning"
+    },
+    "Chip6": {
+      "Kind": "Mesh",
+      "Part": [
+        "FxChip3"
+      ],
+      "Color": {
+        "Color3": [
+          63,
+          140,
+          255
+        ]
+      },
+      "Tracks": {
+        "At": [
+          [
+            0,
+            {
+              "Vector3": [
+                0.91,
+                -2.525,
+                -2.6
+              ]
+            },
+            "Quad Out"
+          ],
+          [
+            16,
+            {
+              "Vector3": [
+                1.495,
+                -3.475,
+                -1.0
+              ]
+            }
+          ]
+        ],
+        "Scale": [
+          [
+            0,
+            1.215,
+            "Linear"
+          ],
+          [
+            20,
+            0.675
+          ]
+        ],
+        "Spin": [
+          [
+            0,
+            240,
+            "Quad Out"
+          ],
+          [
+            20,
+            20
+          ]
+        ],
+        "Tilt": [
+          [
+            0,
+            {
+              "Vector3": [
+                150,
+                0,
+                0
+              ]
+            },
+            "Quad Out"
+          ],
+          [
+            20,
+            {
+              "Vector3": [
+                310,
+                0,
+                90
+              ]
+            }
+          ]
+        ],
+        "Transparency": [
+          [
+            0,
+            0,
+            "Quad In"
+          ],
+          [
+            12,
+            0.1,
+            "Quad In"
+          ],
+          [
+            20,
+            1
+          ]
+        ]
+      },
+      "Why": "a chip of the wall, light and paper, flung off it and on along the blow, turning"
+    },
+    "Chip7": {
+      "Kind": "Mesh",
+      "Part": [
+        "FxChip1"
+      ],
+      "Color": {
+        "Color3": [
+          200,
+          226,
+          255
+        ]
+      },
+      "Tracks": {
+        "At": [
+          [
+            0,
+            {
+              "Vector3": [
+                1.54,
+                -1.335,
+                -2.6
+              ]
+            },
+            "Quad Out"
+          ],
+          [
+            16,
+            {
+              "Vector3": [
+                2.53,
+                -1.775,
+                -0.9
+              ]
+            }
+          ]
+        ],
+        "Scale": [
+          [
+            0,
+            1.215,
+            "Linear"
+          ],
+          [
+            20,
+            0.675
+          ]
+        ],
+        "Spin": [
+          [
+            0,
+            280,
+            "Quad Out"
+          ],
+          [
+            20,
+            500
+          ]
+        ],
+        "Tilt": [
+          [
+            0,
+            {
+              "Vector3": [
+                175,
+                0,
+                0
+              ]
+            },
+            "Quad Out"
+          ],
+          [
+            20,
+            {
+              "Vector3": [
+                335,
+                0,
+                90
+              ]
+            }
+          ]
+        ],
+        "Transparency": [
+          [
+            0,
+            0,
+            "Quad In"
+          ],
+          [
+            12,
+            0.1,
+            "Quad In"
+          ],
+          [
+            20,
+            1
+          ]
+        ]
+      },
+      "Why": "a chip of the wall, light and paper, flung off it and on along the blow, turning"
+    },
+    "Chip8": {
+      "Kind": "Mesh",
+      "Part": [
+        "FxChip2"
+      ],
+      "Color": {
+        "Color3": [
+          63,
+          140,
+          255
+        ]
+      },
+      "Tracks": {
+        "At": [
+          [
+            0,
+            {
+              "Vector3": [
+                2.17,
+                -2.805,
+                -2.6
+              ]
+            },
+            "Quad Out"
+          ],
+          [
+            16,
+            {
+              "Vector3": [
+                3.565,
+                -3.875,
+                -0.8
+              ]
+            }
+          ]
+        ],
+        "Scale": [
+          [
+            0,
+            1.215,
+            "Linear"
+          ],
+          [
+            20,
+            0.675
+          ]
+        ],
+        "Spin": [
+          [
+            0,
+            320,
+            "Quad Out"
+          ],
+          [
+            20,
+            100
+          ]
+        ],
+        "Tilt": [
+          [
+            0,
+            {
+              "Vector3": [
+                200,
+                0,
+                0
+              ]
+            },
+            "Quad Out"
+          ],
+          [
+            20,
+            {
+              "Vector3": [
+                360,
+                0,
+                90
+              ]
+            }
+          ]
+        ],
+        "Transparency": [
+          [
+            0,
+            0,
+            "Quad In"
+          ],
+          [
+            12,
+            0.1,
+            "Quad In"
+          ],
+          [
+            20,
+            1
+          ]
+        ]
+      },
+      "Why": "a chip of the wall, light and paper, flung off it and on along the blow, turning"
+    },
+    "Chip9": {
+      "Kind": "Mesh",
+      "Part": [
+        "FxChip3"
+      ],
+      "Color": {
+        "Color3": [
+          200,
+          226,
+          255
+        ]
+      },
+      "Tracks": {
+        "At": [
+          [
+            0,
+            {
+              "Vector3": [
+                0.0,
+                -2.035,
+                -2.6
+              ]
+            },
+            "Quad Out"
+          ],
+          [
+            16,
+            {
+              "Vector3": [
+                0.0,
+                -2.775,
+                -0.7
+              ]
+            }
+          ]
+        ],
+        "Scale": [
+          [
+            0,
+            1.215,
+            "Linear"
+          ],
+          [
+            20,
+            0.675
+          ]
+        ],
+        "Spin": [
+          [
+            0,
+            360,
+            "Quad Out"
+          ],
+          [
+            20,
+            580
+          ]
+        ],
+        "Tilt": [
+          [
+            0,
+            {
+              "Vector3": [
+                225,
+                0,
+                0
+              ]
+            },
+            "Quad Out"
+          ],
+          [
+            20,
+            {
+              "Vector3": [
+                385,
+                0,
+                90
+              ]
+            }
+          ]
+        ],
+        "Transparency": [
+          [
+            0,
+            0,
+            "Quad In"
+          ],
+          [
+            12,
+            0.1,
+            "Quad In"
+          ],
+          [
+            20,
+            1
+          ]
+        ]
+      },
+      "Why": "a chip of the wall, light and paper, flung off it and on along the blow, turning"
+    }
+  }
+}

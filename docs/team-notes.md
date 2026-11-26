@@ -15,16 +15,15 @@ Each teammate rewrites its own row: one to three lines. Open asks sit under "Wai
 - **AR64's hair: the study resumed on "go"** (taken as the word to resume, since everything queued waits on the hair). Take R, folded ribbons, 31 rounds built beside the catalog at one size (`build/handoff/Rook/hair/hair_rook_ribbons.png`). A blind reader said no on rounds 28 and 30; next, the crown's accent drawn first, locks that cross, the light on the upper locks (`docs/research/hair-read.md`, "What the full-size pictures show"). Not shown, nothing uploaded.
 - **Queued behind it:** AR62's style frames, AR55's return, TR56's chest pictures; Pip (AR63), Lyric and Watt wait for the frame's pick. Faber's craft note: Watt's Combo and GroundWire put the left arm 0.65 studs into the torso, fixed at Watt's redo (or re-baked, for Faber to upload, if Watt stays).
 
-**Scintilla (effects).** 2026-11-26, 01:22. **Now: AR7's and AR48's look, offline, while AR52's targets wait on research's pick.**
-  - AR52: the targets are on the game's own frames (`build/handoff/Shade/targets/`, 98d5fb60), and Faber's four review findings are fixed (d2cf510e).
-  - AR58: the first mend draws in a fresh session (`warm_*`).
-  - AR61: by day and at night, two misses: the bloom hidden by the fist, and the ink past the light. Both are changed (9de83fa9), and their take waits on my turn after Sonus.
-- **For research:** AR52's pick in pairs, AR58's close, AR61's take (one message, 01:22).
+**Scintilla (effects).** 2026-11-26, stopped at the director's wrap-up of 02:12; Studio released at 02:13 (Edit, unsaved, NL_Audition untouched), nothing running. **The turn's takes are in (f0959aa0); next, the fixes they call for:**
+  - AR52 by day misses its main read: the ward pale icy cyan with little glow, the Click ring grey with a dark edge. AR61's peak still lacks its white bloom, its second technique: I check the bloom row draws, then the options go to the director with the images.
+  - AR7: the stage is sound, but from the game's camera the pole's foot stays behind your fighter's back, so its targets are redrawn on the shaft and the lantern before research's pick. AR48's four states are taken in motion (`build/captures/ar48/`), not yet reviewed.
+- **For Faber's review:** AR52's coloured build (4e980a2c) and AR7's drawer (2291b3a4).
 
 **Sonus (sound).** 2026-11-26, stopped at the director's wrap-up of 02:12. **Shortlisted, not heard or picked:** TR42's eleven tabs (a62d1129) and TR64's ten big moments (17e042ae, Faber's review passed), five to eight a tab, in `ServerStorage.NL_Audition`; TR64's lists unsaved, so Faber's next save keeps them. No Studio turn held, nothing running.
 - **Next:** the director's listens: TR42's on their go (item 10), TR64's once Faber's Play the moment hooks pass in Studio. Then research's next cue list.
 
-**Turns.** Studio: one at a time while memory is short. The main place is open, Sonus's turn (2026-11-26, from 01:34, about 35 minutes, Edit only: TR64's ten shortlists. Faber's ended at 01:34: playtest stopped, Edit, saved as version 1297, which keeps the Healer cast's list in NL_Audition); Scintilla after Sonus (about 20 minutes: AR61's star taken again, by day and at night); and the Festival's place is closed. Blender: nobody (Modulo's AR41 strips were stopped at 01:33 on 2026-11-19 by Claude Code when the PC ran low on memory; the director said wait at 01:34). Timing tests: nobody.
+**Turns.** Studio: one at a time while memory is short. The main place is open, nobody's turn: Scintilla's ended at 02:13 at the director's wrap-up (Edit, unsaved, nothing running, NL_Audition as Sonus left it, TR64's ten lists unsaved); Faber's is next; and the Festival's place is closed. Blender: nobody (Modulo's AR41 strips were stopped at 01:33 on 2026-11-19 by Claude Code when the PC ran low on memory; the director said wait at 01:34). Timing tests: nobody.
 
 **The count.** Week of 2026-11-23: 6 pieces closed and playable: AR49, TR10, AR44's shine, TR50, AR50's and AR54's install, AR51 (each entry below has its hours). In the game and waiting: TR52 (the director's run), AR52 (research's pass), TR54 (three must-fixes).
 

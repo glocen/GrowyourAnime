@@ -127,6 +127,10 @@ The director, 2026-11-25, before 21:41 (bounded by the clock read then): "after 
 - **Later:** a base or idle game when the base and Power screens are redone, not before.
 - Nothing else waits on more samples.
 
+## The surface
+
+How its strokes, fills, depth, type and states reach the polish, and our adaptation for AR62's finish: `docs/research/anime-crusaders-ui-surface.md` (2026-11-27).
+
 ## Images looked at
 
 `build/reference/anime-crusaders-x/`: s001 to s004, u01 to u06 (with `u06_crop`), i02 (`hud_left`, `hud_bottom`), m02 to m08, r01 and r06, v02, v05, v10, v11, p01 to p05, g01 to g07, `vid/skill1.mkv` (`sheet1`, `hit1`, `hit2`). Not opened: the Store, Events, Areas, Quests, Battlepass, Guilds, Profile, the end-of-match screen and the upgrade's own effect. A later session starts there.

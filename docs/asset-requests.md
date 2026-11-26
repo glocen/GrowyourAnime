@@ -5187,8 +5187,9 @@ The audit's fourth screen (the director, 2026-11-24: "this left ui is so ugly", 
     - The names are written over the world in a thin dark edge, with no plate and no stem.
   - **Both:** the lead's card and eye as in piece 1. The dock clears the avatar's legs. The names are at 12 points, 8 px on the smallest phone.
 - **The return panel at load.** The director's words: "it should be the whole screen and appear when a player load in the game".
-  - **Take 1, Grid:** the base blurred behind a slate veil over the whole screen. "Welcome back", the gains in eight tiles, and Collect as the one press.
-  - **Take 2, Tally:** a light veil. The largest gain (+1,240 Credits) on the left over Collect, and the rest as a list, with the three stones on one row.
+  - **Take 1, Grid:** the base blurred behind a slate veil over the whole screen. "Welcome back", and the gains in eight tiles.
+  - **Take 2, Tally:** a light veil. The largest gain (+1,240 Credits) on the left, and the rest as a list, with the three stones on one row.
+  - **No press, in both:** "Tap anywhere to close". The director, 2026-11-27, by 00:04: "instead of collect it should maybe be click anywhere to close something like that". The word follows the device: click on a computer, tap on a phone. Open for research and Faber: today the press reads "Reveal" when shards are ready.
   - **The words:** ReturnCard's, plus three I propose:
     - "Welcome back";
     - "While you were away, your base kept working.";

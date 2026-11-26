@@ -9,7 +9,8 @@ The work is in the layout and the content, which hold through any palette:
     - the director's return panel (2026-11-26): "it should be the whole screen and appear when a player load in the game".
 The base's HUD: take 1, "Tags" (the pills stacked under each other, three dock tiles, names on short stems) and take 2,
 "Rail" (one strip of pills, the dock as one rail, the names written over the world). The return panel: take 1, "Grid"
-(a slate veil over the base, the gains in tiles) and take 2, "Tally" (a light veil, the largest gain beside a list).
+(a slate veil over the base, the gains in tiles) and take 2, "Tally" (a light veil, the largest gain beside a list); in
+both, no press: a tap anywhere closes it (the director, 2026-11-27).
 Words are the game's own (src/client/UI/ReturnCard.luau, Dock.luau), except where a take proposes its own (marked).
 Every word on a plate is white (research's gate: 5.5 to 1 or more); the quieter ones are smaller, in the body face.
 
@@ -82,6 +83,13 @@ class Page(hp.Page):
                  'stroke-linecap="round"/>')
         self.word(x + w / 2 + 1.1, y + h / 2 + 6, s, 17, role="display", caps=True, fill=T["accent_ink"], track=2.2,
                   anchor="middle", shade=False)
+
+    def hint(self, x, y, s, ink="#FFFFFF"):
+        """The panel's one way out: a quiet line, the whole screen its tap area (the director, 2026-11-27: "instead of collect
+        it should maybe be click anywhere to close"). A click on a computer, a tap on a phone: the word follows the device."""
+        self.add(f'<g transform="translate({x - 78:.1f},{y - 12.2:.1f}) scale(0.62)"><circle cx="12" cy="12" r="9" fill="none" '
+                 f'stroke="{ink}" stroke-opacity="0.5" stroke-width="2"/><circle cx="12" cy="12" r="4.2" fill="{ink}"/></g>')
+        self.word(x + 8, y, s, 13, fill=ink, anchor="middle", shade=ink == "#FFFFFF")
 
     def pair(self, x, y, n, size, s, small, anchor="start"):
         """A number and its word on one line: "91 kW made", the word smaller and quieter, never run into the number."""
@@ -229,14 +237,14 @@ def picture(P, what, x, y, size):
 
 
 def return_grid(plate):
-    """Take 1: the base behind a slate veil, the whole screen; the gains in tiles; Collect the one press."""
+    """Take 1: the base behind a slate veil, the whole screen; the gains in tiles; a tap anywhere closes it."""
     P = Page()
     P.ground(plate, blur=True)
     P.add(f'<rect x="0" y="0" width="{W}" height="{H}" fill="#3B4960" fill-opacity="0.76"/>')
-    P.word(W / 2, 70, "Welcome back", 26, role="display", caps=True, anchor="middle", track=3.2)
-    P.word(W / 2, 94, "While you were away, your base kept working.", 13, fill="#FFFFFF", anchor="middle")
+    P.word(W / 2, 84, "Welcome back", 26, role="display", caps=True, anchor="middle", track=3.2)
+    P.word(W / 2, 108, "While you were away, your base kept working.", 13, fill="#FFFFFF", anchor="middle")
     tw, th, gap = 150, 104, 12
-    x0, y0 = (W - (4 * tw + 3 * gap)) / 2, 114
+    x0, y0 = (W - (4 * tw + 3 * gap)) / 2, 130
     tiles = [("+1,240", "Credits, battery full", ("credits", None))] + GAINS   # proposed: the Credits first and big
     for i, (count, under, what) in enumerate(tiles):
         x, y = x0 + (i % 4) * (tw + gap), y0 + (i // 4) * (th + gap)
@@ -247,27 +255,29 @@ def return_grid(plate):
             picture(P, what, x + tw / 2 - 22, y + 10, 44)
         P.word(x + tw / 2, y + 76, count, 18, role="num", anchor="middle")
         P.word(x + tw / 2, y + 94, under, 12, fill="#FFFFFF", anchor="middle")
-    P.press(W / 2 - 120, 364, 240, sf.TAP, "Collect")
+    P.hint(W / 2, 410, "Tap anywhere to close")
     return P.svg(W, H)
 
 
 def return_tally(plate):
-    """Take 2: the base behind a light veil, the whole screen; the largest gain on the left, the rest as a list."""
+    """Take 2: the base behind a light veil, the whole screen; the largest gain on the left, the rest as a list; a tap anywhere
+    closes it."""
     P = Page()
     P.ground(plate, blur=True)
     P.add(f'<rect x="0" y="0" width="{W}" height="{H}" fill="#E9EEF5" fill-opacity="0.32"/>')
-    lx, ly, lw, lh = 40, 40, 300, 393
+    lx, ly, lw, lh = 40, 36, 300, 364
     P.plate(lx, ly, lw, lh, r=12)
     P.word(lx + 24, ly + 44, "Welcome back", 22, role="display", caps=True, track=2.6)
     P.word(lx + 24, ly + 66, "While you were away,", 13, fill="#FFFFFF")
     P.word(lx + 24, ly + 84, "your base kept working.", 13, fill="#FFFFFF")
     P.add(f'<path d="M{lx + 24},{ly + 104} H{lx + lw - 24}" stroke="#FFFFFF" stroke-opacity="0.22" stroke-width="1"/>')
-    P.glyph("coin", lx + 24, ly + 138, 46, CREDIT)
-    P.word(lx + 82, ly + 170, "+1,240", 34, role="num")
-    P.word(lx + 84, ly + 192, "Credits", 14)
-    P.glyph("battery", lx + 24, ly + 222, 18, POWER)
-    P.word(lx + 48, ly + 236, "Battery full: the spare became Credits.", 12, fill="#FFFFFF")   # proposed words
-    P.press(lx + 24, ly + lh - 24 - sf.TAP, lw - 48, sf.TAP, "Collect")
+    g = 44   # the gain in the middle of what's left under the rule
+    P.glyph("coin", lx + 24, ly + 138 + g, 46, CREDIT)
+    P.word(lx + 82, ly + 170 + g, "+1,240", 34, role="num")
+    P.word(lx + 84, ly + 192 + g, "Credits", 14)
+    P.glyph("battery", lx + 24, ly + 222 + g, 18, POWER)
+    P.word(lx + 48, ly + 236 + g, "Battery full: the spare became Credits.", 12, fill="#FFFFFF")   # proposed words
+    P.hint(W / 2, 445, "Tap anywhere to close", ink="#232832")
     rx, rw = 356, 456
     P.plate(rx, ly, rw, lh, r=12)
     rows = [("Stones", None, [g for g in GAINS if g[2][0] == "stone"])] + [(g[1], g, None) for g in GAINS[3:]]

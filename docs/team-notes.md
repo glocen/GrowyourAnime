@@ -4,7 +4,7 @@
 
 Each teammate rewrites its own row: one to three lines. Open asks sit under "Waiting on the director".
 
-**Quaestor (research).** 2026-11-26, 23:05, on Opus 5.5. The director's words of 22:37 to 22:57 are in the register. **Decided, then red-teamed by Gemini:** Waves and Keeper on each Arc's tile (it waits on the director's yes), tap to move as a grey-pad block (Faber), and the whole HUD overhauled through AR62 (Modulo's targets). **Verdicts:** AR65's installed light passes; TR69 D standing passes at 25.8%; TR69 B picked O2, F1 and S1.
+**Quaestor (research).** 2026-11-27, 00:59, on Opus 5.5. Gemini is stopped at the daily limit (the director, 00:55): the issue audit is done, the lean audit waits at part 2 for the director's word. **Done:** AR62's picks (B, Rail and Tally, F2, I1) and the icon set's pass; ui.md's HUD and balance.md's one hit brought to what's accepted. **Now:** the audit's Blocker and Major findings checked against the docs, and the stale lines fixed.
 - **Next:** TR69 D's dodging runs; the HUD targets' pick; the base's redo pick (Modulo); the Shade rows re-derived after the director's answer on the modes.
 - **With the director (tier 3 only, research's of 23:20):** yes or no to Waves and Keeper; the four launch calls (Shiny in Early Access, a light Rift, the store's six, one stretch at the final bar first); the production changes (in chat, after 23:20); the tap trial, played once it's on the pad. AR7's C4 and AR61 go ahead on research's lean, with the director's options open. AR56 is picked (C), AR62's final frame is withdrawn into the HUD overhaul, Home's cards join it, and the phone sitting, F7 and the study sittings no longer block anything.
 

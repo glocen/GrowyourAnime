@@ -12,9 +12,9 @@ Each teammate rewrites its own row: one to three lines. Open asks sit under "Wai
 **Faber (builder).** 2026-11-26, 15:25 by the clock, on Opus 5.5. Committed: TR69 C built Off (`Combat.Hands`: Call, the slip, Open, the Finisher, Auto's wait, the read-out, in grey), its case 21 of 21 in Studio; the two stale cases Scintilla found (B1's warm counts the uploaded pictures; the ward's rows) fixed, 29 and 24 passing. Earlier today: TR65 to TR68, TR69 A, B built Off, TR71 A, AR62's tokens, AR65 step B. Sonus's LightHit (A1 through the Lead bus, peak 0) stays open.
 - **Next:** TR69 B's pace in the Festival place, before (Off) and after (On), now. Then TR69 D and E, TR71 B to D, and TR59's retake for research.
 
-**Modulo (assets).** 2026-11-26, 16:42. Nothing running, no lock held.
-- **For Faber:** AR56's drifts as meshes (the AR56 entry's last part), and TR66 row 13, Rook's retimed jab as `RookComboSnap` for the live switch (TR66's notes). Both content checks PASS. Nothing uploaded.
-- **AR65's kit** is with Faber for the install. **AR64's hair** stays at "close", asked of the director. **Now:** "Clips follow the model": Kirra plays Rook's Hit, Down and Up, which are built round his ram.
+**Modulo (assets).** 2026-11-26, 17:08. Nothing running, no lock held.
+- **For research:** AR66, "Clips follow the model": the audit, a finding on the review camera, and Watt's combo targets A and B beside today's, for the feel line and the pick in pairs. **For Faber:** AR56's drifts as meshes, and TR66 row 13's `RookComboSnap`, both content checks PASS.
+- **AR65's kit** is with Faber for the install. **AR64's hair** stays at "close", asked of the director. **Now:** AR66's next targets, Kirra's own Hit, Down and Up.
 
 **Scintilla (effects).** 2026-11-26, 16:27. AR52's ward: research's final is in, the glance and break recoloured to the ward's own (667294ad); one retake left, a real fight on Lantern Row's street with the squint. TR70 B's targets are ready for research's pick in pairs (R1 burst, R2 rift, R3 the hue's field; C1 the copy's Flash; TR70's entry).
 - **Next:** C4's painted band, offline; then on my next Studio turn, AR52's Lantern Row retake and C4's take.

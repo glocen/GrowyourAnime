@@ -17924,3 +17924,28 @@ Research, 2026-11-24, 16:53, on the director's word, "the hair still need a rewo
     - Add the ids to `tools/studio/Kits/Base.json`, and copy `manifest.json` and `plan.json`.
     - Read the graphite in game. The look's backlight renders the Breaker's front near black (#1A192A) where the target shows #434751. If the game shows it black too, `abyss` and `dark` go a step up.
   - Made and self-reviewed; content check PASS; nothing uploaded. Research's verdict comes in game, after the install.
+
+## AR66. Clips follow the model (Modulo's audit and targets, research's feel line and pick, then Faber's install)
+
+The rule: `docs/design.md`, "Clips follow the model, rules follow the class" (the director, 2026-11-26, about 13:28). Each new clip keeps its action's Beats, Range and Reach (`Definitions/Actions.luau`), and a reaction keeps its set's length and Land.
+
+### Modulo's audit and Watt's targets (2026-11-26, 17:07; started 16:44)
+
+- **The audit, the five made Voidkin:**
+  - Rook and Pip play their own sets: they fit.
+  - Watt fits in everything but his Combo: "three blows, all of the shaft, none of the blade", the spear held across like a bar. That's the director's own example.
+  - Kirra plays Rook's Hit, Down and Up (research's option b, 2026-11-14), which lean on his ram ("hangs on the ram like a post"). She has no ram.
+  - Lyric plays Pip's (the robe set), built round his hat and lantern, and her stand and speakers stay at rest through them.
+- **The block, in order:** Watt's Combo, then Kirra's own Hit, Down and Up (her tail inside them), then Lyric's (the stand and the speakers keyed).
+- **A finding before the pick: the review camera.**
+  - The clip scripts' "game" view (`rook_clips.GAME`, 152°, behind his right shoulder, marked "assumed") isn't the player's.
+  - A lead fights beyond its target, turned `Combat.Lead.Frame` (45°). So the camera sees it 43° off its front, on its left (AR1, the replay, 2026-11-12), and the Shade, nearer the camera, hides the contact.
+  - From there the contact sits behind the Shade in every take, today's included. What reads is the spear above his head, and its back end when it swings out past his left.
+  - From the side (the `Beside` spot, 90°), both targets read at once.
+- **Watt's targets,** each beside today's (`Combo`), in `build/scratch/modulo/ar66/out/`. `poses_*.png` holds the keys from the player's view and from the side, with their frames. `strip_*.png` holds every fourth frame from the player's view. Today's Beats are kept: Hit1 21, Hit2 36, Hit3 60, cancel 88, 110 frames.
+  - **A, the wall:** the spear taken up overhand, two stabs (the second with a step), then the butt stamped in behind his heel and the point set on the Shade: the brace.
+  - **B, the drive:** a thrust from the low guard, the blade swept across, then the spear raised overhand and driven down with a lunge.
+  - **My read:** from the side, A is the clearest spear fighter and the most the Tank's: a wall that plants. B travels more. From the player's view, both read only above his head (A's stabs, B's drive); A's brace and B's thrust and sweep sit behind the Shade.
+  - **The feel line, proposed for research to set:** "Watt holds his ground and lets the point do the work: short, heavy stabs from behind the shaft, then the spear planted and set, and the Shade stopped on it."
+  - **The build's, not the target's:** the shaft through an arm at 57 and 61, and the butt 0.2 under the street at 79. The content check comes before the build.
+- **Status:** made and self-reviewed; research's feel line and pick in pairs, or its call on the staging first. Nothing delivered.

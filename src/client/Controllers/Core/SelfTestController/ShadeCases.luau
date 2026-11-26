@@ -15,6 +15,8 @@
 --   from the lead than the Brawler; with the Brawler down, it swings at the lead.
 -- The shield and the line are their actions' rows (GuardShield, DasherLine), each checked drawn; while an action's rows
 -- aren't written, or Config.Effects.Grey says, its grey stand-in is checked instead (SlamController).
+-- * TR69 E, Hard changes behaviour: two Hard Guards on the lead raise in turn, never together; a Hard Dasher lunges twice
+--   in a run; two Normal Dashers never have two marked strikes in flight on the lead at once (Config.Combat.Turns.Marks).
 -- Their rules' own cases are the logic cases' (Cases/Shades, Cases/Support).
 
 local Players = game:GetService("Players")
@@ -71,6 +73,10 @@ local WALK = 7 -- studs the avatar walks off the line
 local WATCH = 14 -- seconds an elite is watched for three swings and its own clip (its signature's cooldown is 4.8 or 6)
 local PACK = "SelfTest" -- the pack a Support case's two Shades share (FightSpawn's pack)
 local HURT = 0.6 -- the Brawler's share of its health for the Support's mend: under Combat.Support.Below
+local HARD_WATCH = 14 -- seconds Hard's Shades are watched (TR69 E): a Guard's raise is 2.7 s of a 4.8 s cooldown, a lunge 2.3
+
+type Start = { Id: string, At: number, End: number } -- server time; End math.huge while it runs
+type Watched = { Model: Model, Starts: { Start } }
 -- each elite: its def, its own clip in place of its kin's and that kin's ("" for none)
 local ELITES = {
 	{ "brawler_elite", "", "" },
@@ -659,6 +665,128 @@ function ShadeCases.Cases(given: Given): { any }
 				t.Server("FightSpawn")
 				if not ok then
 					error(err, 0)
+				end
+			end,
+		},
+		{
+			Name = "Hard (TR69 E): two Hard Guards raise in turn, never together; a Hard Dasher lunges twice in a run; two Normal Dashers never have two lines in flight at once",
+			Run = function(t: any)
+				-- `defs` stood on the lead at `difficulty`, kept whole (the lead and they), and watched HARD_WATCH seconds:
+				-- each one's actions, by id, from their start to their end in server time (the server's ActionAt, which
+				-- start and endAction both set: a raise a break ends early ends there).
+				local function watch(defs: { string }, difficulty: string?): { Watched }
+					t.Server("LeadHeal")
+					t.Server("LeadCalm")
+					t.Server("FightSpawn")
+					t.Wait(LEAD_SETTLE)
+					local lead = myLead()
+					local level = if lead then lead:GetAttribute("Level") else nil
+					local out: { Watched } = {}
+					local ids: { string } = {}
+					for index, def in defs do
+						local spawned = t.Server("FightSpawn", def, if type(level) == "number" then level else 1, SHADE_AHEAD + 3 * (index - 1), true, difficulty, nil, PACK)
+						if type(spawned) == "table" and spawned.Id then
+							table.insert(ids, spawned.Id)
+						end
+					end
+					for _, id in ids do
+						local model: Model? = nil
+						waitFor(t, REPLICATE, function(): boolean
+							model = fighterModel(id)
+							return model ~= nil
+						end)
+						if model then
+							local one: Watched = { Model = model, Starts = {} }
+							table.insert(out, one)
+						end
+					end
+					t.Check(`{#defs} {difficulty or "Normal"} {defs[1]}s stand`, #out == #defs, `{#out}`)
+					local connections = {}
+					for _, one in out do
+						local open: Start? = nil
+						table.insert(connections, one.Model:GetAttributeChangedSignal("ActionAt"):Connect(function()
+							local id, at = one.Model:GetAttribute("Action"), one.Model:GetAttribute("ActionAt")
+							if type(at) ~= "number" then
+								return
+							end
+							if open then
+								open.End = at
+								open = nil
+							end
+							if type(id) == "string" and id ~= "" then
+								local each: Start = { Id = id, At = at, End = math.huge }
+								open = each
+								table.insert(one.Starts, each)
+							end
+						end))
+					end
+					local untilAt = os.clock() + HARD_WATCH
+					while os.clock() < untilAt do
+						t.Server("FightHealth", 1)
+						for _, id in ids do
+							t.Server("FoeHealth", id, 1)
+						end
+						t.Wait(0.5)
+					end
+					for _, connection in connections do
+						connection:Disconnect()
+					end
+					t.Server("FightSpawn")
+					return out
+				end
+				local function runs(one: Watched, id: string): { Start }
+					local list = {}
+					for _, each in one.Starts do
+						if each.Id == id then
+							table.insert(list, each)
+						end
+					end
+					return list
+				end
+				-- How many of `a`'s runs share time with `b`'s, each cut to `upTo` seconds from its start when given.
+				local function together(a: { Start }, b: { Start }, upTo: number?): number
+					local count = 0
+					for _, x in a do
+						for _, y in b do
+							local xEnd = math.min(x.End, x.At + (upTo or math.huge))
+							local yEnd = math.min(y.End, y.At + (upTo or math.huge))
+							if x.At < yEnd - 0.05 and y.At < xEnd - 0.05 then
+								count += 1
+							end
+						end
+					end
+					return count
+				end
+
+				-- Two Hard Guards: their raises never overlap, and each raises.
+				local guards = watch({ "guard", "guard" }, "Hard")
+				if #guards == 2 then
+					local a, b = runs(guards[1], "GuardRaise"), runs(guards[2], "GuardRaise")
+					t.Check("each Hard Guard raises", #a >= 1 and #b >= 1, `{#a} and {#b}`)
+					t.Check("never together: one's raise starts after the other's has ended", together(a, b) == 0, `{together(a, b)} overlapping`)
+				end
+
+				-- One Hard Dasher: its lunges come in twos, the second as the first ends.
+				local lunge = Actions.ById.DasherLunge
+				local dashers = watch({ "dasher" }, "Hard")
+				if #dashers == 1 then
+					local list = runs(dashers[1], "DasherLunge")
+					local paired = false
+					for index = 2, #list do
+						if math.abs(list[index].At - list[index - 1].At - lunge.Length) < 0.25 then
+							paired = true
+						end
+					end
+					t.Check("a Hard Dasher lunges twice in a run, the second as the first ends", paired, `{#list} lunges`)
+				end
+
+				-- Two Normal Dashers: one line in flight on the lead at a time (from its start to its Land beat).
+				local land = lunge.Beats.Land
+				local normal = watch({ "dasher", "dasher" }, nil)
+				if #normal == 2 then
+					local a, b = runs(normal[1], "DasherLunge"), runs(normal[2], "DasherLunge")
+					t.Check("both Normal Dashers lunge", #a >= 1 and #b >= 1, `{#a} and {#b}`)
+					t.Check("never two lines in flight on the lead at once (Normal's one)", together(a, b, land) == 0, `{together(a, b, land)} together`)
 				end
 			end,
 		},

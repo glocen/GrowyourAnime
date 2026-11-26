@@ -129,6 +129,8 @@ type Hazard = {
 	From: number,
 	Arc: number,
 	Turn: number,
+	Back: boolean,
+	Span: number, -- from its Slam to when it goes: a sweep's turn (twice, Back), a burn's Turn, 0 for a pool
 	Down: number,
 	Slam: number,
 }
@@ -306,9 +308,11 @@ local function hazardOn(payload: any)
 		line.Parent = holder
 		rim.Parent = workspace
 		holder.Parent = workspace
+		local back = payload.Back == true
 		table.insert(hazardsDrawn, {
 			Owner = payload.A, Kind = kind, Holder = holder, Rim = rim, Line = line, Base = base, Radius = radius,
-			Length = length, From = from, Arc = arc, Turn = turn, Down = down, Slam = slam,
+			Length = length, From = from, Arc = arc, Turn = turn, Back = back, Span = if back then 2 * turn else turn,
+			Down = down, Slam = slam,
 		})
 		return
 	end
@@ -316,7 +320,8 @@ local function hazardOn(payload: any)
 	holder.Parent = workspace
 	table.insert(hazardsDrawn, {
 		Owner = payload.A, Kind = kind, Holder = holder, Ring = ring, Disc = disc, Base = at, Radius = radius,
-		Length = 0, From = 0, Arc = 0, Turn = 0, Down = down, Slam = slam,
+		Length = 0, From = 0, Arc = 0, Turn = 0, Back = false, Span = if tonumber(payload.Every) then turn or 0 else 0,
+		Down = down, Slam = slam,
 	})
 end
 
@@ -333,7 +338,7 @@ end
 local function stepHazards(t: number)
 	for index = #hazardsDrawn, 1, -1 do
 		local h = hazardsDrawn[index]
-		if h.Owner.Parent == nil or t >= h.Slam + h.Turn then
+		if h.Owner.Parent == nil or t >= h.Slam + h.Span then
 			hazardOff(index)
 			continue
 		end
@@ -347,7 +352,7 @@ local function stepHazards(t: number)
 				line.Size = Vector3.new(h.Radius * 2, RING_THICK, long)
 				line.CFrame = CFrame.new(0, 0, -long / 2)
 			else
-				local a = h.From + (Keeper.Sweep(t - h.Slam, h.Turn, h.Arc, false) or h.Arc)
+				local a = h.From + (Keeper.Sweep(t - h.Slam, h.Turn, h.Arc, h.Back) or (if h.Back then 0 else h.Arc))
 				line.Size = Vector3.new(h.Radius * 2, RING_THICK, h.Length)
 				line.CFrame = CFrame.new(0, 0, -h.Length / 2)
 				line.Transparency = 0.05

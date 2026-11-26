@@ -2,8 +2,10 @@
 -- KeeperPhaseService (server): the Lamplighter in three phases (TR69 D, a signature piece, in grey;
 -- docs/research/cloud-2026-11-24/grounds-and-encounters.md, section C; Rules.Keeper; Config.Combat.Keeper.Phases, read
 -- live, Off until it's judged in play). FightService fights a try's keeper as before; while On, this adds:
+-- * Its most health times Health as its phases begin (FightService.Toughen), so each phase shows its idea twice.
 -- * Phase 1, the lesson (over From[1] of its most health): today's fight. Each slam it lands sticks its lantern in the
---   street: Window.Seconds Open, each hit on it Window.Harder times (FightService.Window).
+--   street: Window.Seconds Open, each hit on it Window.Harder times, its pose held (FightService.Window).
+-- * Each phase's count of its idea, landed (the read-out's Counts): slams, phase 2's doubles, phase 3's sweeps.
 -- * The midpoint, at From[1]: a hit never takes it past the line (its Floor). It stands, untouchable, Mid.Seconds
 --   (FightService.Hold), while its ring's Mid.Posts posts light one by one; then phase 2.
 -- * Phase 2, the street lights (to From[2]): every Pools.Every s from Pools.Start, a round of pools, one per post in turn,
@@ -51,12 +53,15 @@ type Run = {
 	Turn: string?, -- "Mid" or "False" while a turn between phases plays
 	TurnEnds: number,
 	Posts: { BasePart },
-	Lit: number, -- posts lit so far in the midpoint's turn
+	Rounds: { { number } }, -- its posts by the step they light at (Rules.Keeper.Rounds): one at a time, Hard's Per
+	Lit: number, -- steps of Rounds lit so far in the midpoint's turn
 	Adds: { Fighter },
 	NextPools: number?,
 	Pools: { { At: number, Post: number } }, -- a round's pools still to go down
 	NextSweep: number?,
 	Seconds: { [FightService.Mark]: boolean }, -- phase 2's second slams, whose Slam opens the window
+	Counts: { { Slams: number, Doubles: number, Sweeps: number } }, -- by phase, what landed (the measure's)
+	Tough: number, -- the health factor its begin gave it (Phases.Health), taken back as it ends: Off is the 45 s fight
 }
 
 local runs: { [Fighter]: Run } = {}
@@ -69,6 +74,20 @@ end
 
 local function phases(): any
 	return Combat.Keeper.Phases
+end
+
+-- Hard's rules (TR69 E; section C), on a keeper stood on Hard.
+local function hard(f: Fighter): boolean
+	return f.Difficulty == "Hard"
+end
+
+local function lines(f: Fighter): { number }
+	return if hard(f) then phases().Hard.From else phases().From
+end
+
+-- A new tell on its difficulty: a circle's (Normal's `normal`, Hard's floor) or a line's.
+local function tell(f: Fighter, normal: number, shape: "Circle" | "Line"): number
+	return if hard(f) then phases().Hard.Tells[shape] else normal
 end
 
 -- A try's keeper (KeeperService gives it its ground; the replay's and the Tower's have none), or one a test adopted.
@@ -88,12 +107,14 @@ local function postsFolder(): Folder
 	return made
 end
 
-local function paint(run: Run, colour: Color3, count: number?)
-	for index, post in run.Posts do
-		if count == nil or index <= count then
-			post.Color = colour
-			post.Material = if colour == phases().Look.Dark then Enum.Material.SmoothPlastic else Enum.Material.Neon
-		end
+local function paintPost(post: BasePart, colour: Color3)
+	post.Color = colour
+	post.Material = if colour == phases().Look.Dark then Enum.Material.SmoothPlastic else Enum.Material.Neon
+end
+
+local function paint(run: Run, colour: Color3)
+	for _, post in run.Posts do
+		paintPost(post, colour)
 	end
 end
 
@@ -135,6 +156,9 @@ local function finish(f: Fighter)
 		return
 	end
 	runs[f] = nil
+	if run.Tough ~= 1 then
+		FightService.Toughen(f, 1 / run.Tough) -- its own health again, kept as a share (none for a fallen one)
+	end
 	for _, post in run.Posts do
 		post:Destroy()
 	end
@@ -153,15 +177,24 @@ local function begin(f: Fighter)
 		Turn = nil,
 		TurnEnds = 0,
 		Posts = {},
+		Rounds = {},
 		Lit = 0,
 		Adds = {},
 		NextPools = nil,
 		Pools = {},
 		NextSweep = nil,
 		Seconds = {},
+		Counts = {
+			{ Slams = 0, Doubles = 0, Sweeps = 0 },
+			{ Slams = 0, Doubles = 0, Sweeps = 0 },
+			{ Slams = 0, Doubles = 0, Sweeps = 0 },
+		},
+		Tough = phases().Health or 1,
 	}
 	runs[f] = run
+	FightService.Toughen(f, run.Tough)
 	raisePosts(run)
+	run.Rounds = Keeper.Rounds(#run.Posts, if hard(f) then phases().Hard.Per else 1)
 	Log.Info("KeeperPhase", `{f.Id}: phase 1`)
 end
 
@@ -194,7 +227,11 @@ local function enter(run: Run, phase: number, at: number)
 	elseif phase == 3 then
 		paint(run, p.Look.Relit)
 		local beats = Actions.ById.KeeperSignature.Beats
-		f.Rates = { KeeperSignature = Keeper.Rate(beats.Slam - beats.Plant, p.Slam.Tell) }
+		local swing = Actions.ById.KeeperSweep.Beats
+		f.Rates = {
+			KeeperSignature = Keeper.Rate(beats.Slam - beats.Plant, tell(f, p.Slam.Tell, "Circle")),
+			KeeperSweep = Keeper.Rate(swing.Sweep - swing.Wind, tell(f, p.Sweep.Tell, "Line")), -- its clip meets its tell
+		}
 		run.NextSweep = at + p.Sweep.Start
 		local home = f.Home or f.Root.CFrame
 		for index = 1, p.Adds.Count do
@@ -228,7 +265,7 @@ local function pool(run: Run, index: number, at: number)
 		Y = f.Root.Position.Y,
 		Radius = p.Pools.Radius,
 		Down = at,
-		Slam = at + p.Pools.Tell,
+		Slam = at + tell(f, p.Pools.Tell, "Circle"),
 		Target = f.Target,
 		Kind = "Pool",
 	}
@@ -250,13 +287,14 @@ local function sweep(run: Run, at: number): boolean
 		Y = pos.Y,
 		Radius = p.Sweep.Half,
 		Down = at,
-		Slam = at + p.Sweep.Tell,
+		Slam = at + tell(f, p.Sweep.Tell, "Line"),
 		Target = f.Target,
 		Length = p.Sweep.Length,
 		Kind = "Sweep",
 		From = math.atan2(look.Z, look.X) - arc / 2,
 		Arc = arc,
 		Turn = p.Sweep.Seconds,
+		Back = if hard(f) and p.Hard.Back then true else nil,
 	}
 	FightService.Hazard(f, mark, "KeeperLight", "Sweep")
 	return true
@@ -280,12 +318,15 @@ local function step()
 	end
 	for f, run in runs do
 		local most = f.Block.Health
-		if run.Turn == "Mid" then
-			local lit = math.clamp(math.floor((1 - (run.TurnEnds - at) / p.Mid.Seconds) * p.Mid.Posts) + 1, 1, #run.Posts)
-			if lit > run.Lit then
-				run.Lit = lit
-				paint(run, p.Look.Lit, lit)
+		if run.Turn == "Mid" and #run.Rounds > 0 then
+			local steps = #run.Rounds
+			local lit = math.clamp(math.floor((1 - (run.TurnEnds - at) / p.Mid.Seconds) * steps) + 1, 1, steps)
+			for step = run.Lit + 1, lit do
+				for _, index in run.Rounds[step] do
+					paintPost(run.Posts[index], p.Look.Lit)
+				end
 			end
+			run.Lit = math.max(run.Lit, lit)
 		end
 		if run.Turn then
 			if at >= run.TurnEnds then
@@ -294,7 +335,7 @@ local function step()
 			continue
 		end
 		-- The line it stands at: past it, the turn plays.
-		f.Floor = if run.Phase < 3 then Keeper.Floor(run.Phase, most, p.From) else nil
+		f.Floor = if run.Phase < 3 then Keeper.Floor(run.Phase, most, lines(f)) else nil
 		if f.Floor and f.Health <= (f.Floor :: number) + 1e-6 then
 			turn(run, at)
 			continue
@@ -302,8 +343,10 @@ local function step()
 		if run.Phase == 2 then
 			if run.NextPools and at >= run.NextPools then
 				run.NextPools = at + p.Pools.Every
-				for index = 1, #run.Posts do
-					table.insert(run.Pools, { At = at + (index - 1) * p.Pools.Gap, Post = index })
+				for step, posts in run.Rounds do
+					for _, index in posts do
+						table.insert(run.Pools, { At = at + (step - 1) * p.Pools.Gap, Post = index })
+					end
 				end
 			end
 			for index = #run.Pools, 1, -1 do
@@ -328,7 +371,7 @@ local function marked(f: Fighter, mark: FightService.Mark)
 		return
 	end
 	local p = phases()
-	local down, slam = Keeper.Second(mark.Slam, p.Double.After, p.Double.Tell)
+	local down, slam = Keeper.Second(mark.Slam, p.Double.After, tell(f, p.Double.Tell, "Circle"))
 	local owner = if mark.Target then mark.Target.Owner else nil
 	task.delay(math.max(0, down - now()), function()
 		if runs[f] ~= run or run.Turn or run.Phase ~= 2 then
@@ -363,6 +406,26 @@ local function unmarked(f: Fighter, mark: FightService.Mark, struck: { Fighter }
 		return
 	end
 	local p = phases()
+	-- Hard: each slam that lands leaves its footprint burning
+	if hard(f) and (mark.Kind == nil or run.Seconds[mark]) and mark.Length == nil then
+		local burn = p.Hard.Burn
+		local at = now()
+		local lasting: FightService.Mark = {
+			X = mark.X, Z = mark.Z, Y = mark.Y, Radius = mark.Radius, Down = at, Slam = at, Target = f.Target,
+			Kind = "Burn", Turn = burn.Seconds, Every = burn.Every,
+		}
+		task.defer(FightService.Hazard, f, lasting, "KeeperLight", "Burn")
+	end
+	local count = run.Counts[run.Phase]
+	if count and not run.Turn then
+		if run.Seconds[mark] then
+			count.Doubles += 1
+		elseif mark.Kind == "Sweep" and not mark.Back then
+			count.Sweeps += 1
+		elseif mark.Kind == nil then
+			count.Slams += 1
+		end
+	end
 	local window: number? = nil
 	if run.Seconds[mark] then
 		run.Seconds[mark] = nil
@@ -402,7 +465,7 @@ local function command(who: any, what: any, extra: any): any
 			return { Ok = false, Error = "NoKeeper" }
 		end
 		adopted[f] = true
-		return { Ok = true }
+		return { Ok = true, Most = if runs[f] then nil else f.Block.Health } -- its most before its phases toughen it
 	end
 	local player = DebugService.ResolvePlayer(who)
 	local f = if player then keeperOf(player) else nil
@@ -437,6 +500,9 @@ local function command(who: any, what: any, extra: any): any
 		Open = if f.OpenUntil then f.OpenUntil - at else nil,
 		Harder = if f.HarderUntil and at < f.HarderUntil then f.Harder else nil,
 		Rate = if f.Rates then f.Rates.KeeperSignature else nil,
+		Counts = if run then run.Counts else nil,
+		Pinned = if f.PinUntil then f.PinUntil - at else nil,
+		Most = f.Block.Health,
 		Id = f.Id,
 	}
 end

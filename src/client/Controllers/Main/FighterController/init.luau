@@ -118,6 +118,7 @@ type View = {
 	ActionRate: number, -- the server's rate for this action (FightService: a chill's slow), 1 unslowed
 	FrozenUntil: number,
 	StunHeld: number, -- the hold a stun set (os.clock()), let go when the stun ends; 0 for none
+	PinHeld: number, -- the hold a keeper's window set (TR69 D), let go when its PinUntil ends; 0 for none
 	Shown: { [string]: boolean }, -- the hits this screen has shown, by beat and press
 	Cued: { [string]: boolean }, -- the beats whose cue (Rules.Sound.Beat) this press has begun
 	Held: { [string]: Held }, -- each hit it has shown on a body, by beat, press and target: what a server's hit may raise
@@ -737,6 +738,23 @@ local function stepProp(view: View, now: number)
 	end
 end
 
+-- A keeper's window (TR69 D; research, 2026-11-26, 19:33): its pose held where the window found it, the follow-through,
+-- the lantern stuck in the street, with no stagger over it, until the server's PinUntil; its clip and its clock then go
+-- on from there. Let go early when the server ends it (a turn).
+local function onPin(view: View)
+	local untilTime = view.Model:GetAttribute("PinUntil")
+	local left = if type(untilTime) == "number" then untilTime - workspace:GetServerTimeNow() else 0
+	if left > 0 then
+		view.PinHeld = math.max(view.FrozenUntil, os.clock() + left)
+		view.FrozenUntil = view.PinHeld
+	elseif view.PinHeld > 0 then
+		if view.FrozenUntil == view.PinHeld then
+			view.FrozenUntil = os.clock()
+		end
+		view.PinHeld = 0
+	end
+end
+
 local function onAction(view: View)
 	local id = view.Model:GetAttribute("Action")
 	local at = view.Model:GetAttribute("ActionAt")
@@ -792,6 +810,7 @@ local function add(model: Instance)
 		ActionRate = 1,
 		FrozenUntil = 0,
 		StunHeld = 0,
+		PinHeld = 0,
 		Shown = {},
 		Held = {},
 		Struck = nil,
@@ -831,6 +850,9 @@ local function add(model: Instance)
 	end))
 	table.insert(view.Connections, model:GetAttributeChangedSignal("State"):Connect(function()
 		onState(view)
+	end))
+	table.insert(view.Connections, model:GetAttributeChangedSignal("PinUntil"):Connect(function()
+		onPin(view)
 	end))
 	-- A shield's look (Ground Wire's), from the server's ShieldUntil to it, or until the body falls.
 	local function shielded(): boolean

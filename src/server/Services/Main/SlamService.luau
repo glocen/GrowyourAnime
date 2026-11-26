@@ -88,6 +88,9 @@ local function marked(keeper: FightService.Fighter, mark: FightService.Mark)
 		return
 	end
 	local p = lead.Root.Position
+	if mark.Every then
+		return -- a burn lies where a slam already landed: nothing to walk out of in a tell
+	end
 	if mark.Kind and not MarkRule.Covers(mark, p.X, p.Z) then
 		return -- a hazard put down where the lead isn't asks nothing of it
 	end
@@ -147,7 +150,7 @@ local function step()
 			local l = lead.Root.Position
 			local under = mark.Kind == nil or MarkRule.Covers(mark, l.X, l.Z)
 			if under and MarkRule.Follows(moved, outside, out.Moved) then
-				watch.Broke = FightService.Away(lead, Combat.Lead.CatchUpSpeed, mark.Slam + (mark.Turn or 0))
+				watch.Broke = FightService.Away(lead, Combat.Lead.CatchUpSpeed, mark.Slam + (mark.Turn or 0) * (if mark.Back then 2 else 1))
 			end
 		end
 	end

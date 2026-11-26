@@ -1161,4 +1161,36 @@ return {
 			t.Check("the Ordinary Shade's Attack lifted x1.17 for it (0.9 to 1.05)", EnemiesConfig.Ordinary.Attack == 1.05)
 		end,
 	},
+	{
+		Name = "Hard changes behaviour (TR69 E): one marked strike in flight per lead on Normal, two on Hard; a Hard Guard raises in turn; a Hard Dasher lunges twice",
+		Run = function(t: any)
+			local marks = Combat.Turns.Marks
+			t.Check("the token's seeds: Normal 1, Hard 2", marks.Normal == 1 and marks.Hard == 2)
+			t.Check("a marked strike with none in flight goes", Fight.MayStart(true, false, 0, 0, marks.Normal, false))
+			t.Check("Normal: with one in flight it waits", not Fight.MayStart(true, false, 1, 0, marks.Normal, false))
+			t.Check("Hard: with one in flight it goes", Fight.MayStart(true, false, 1, 0, marks.Hard, false))
+			t.Check("Hard: with two it waits", not Fight.MayStart(true, false, 2, 0, marks.Hard, false))
+			t.Check("an unmarked swing never waits on marks", Fight.MayStart(false, false, 5, 0, marks.Normal, false))
+			t.Check("a Guard in turn waits while another raises", not Fight.MayStart(false, true, 0, 1, marks.Hard, true))
+			t.Check("and raises when none does", Fight.MayStart(false, true, 0, 0, marks.Hard, true))
+			t.Check("Normal's Guards raise when they're ready, together or not", Fight.MayStart(false, true, 0, 2, marks.Normal, false))
+			t.Check("one lunge, then its run is over", Fight.Again(0, nil) and not Fight.Again(1, nil))
+			t.Check("Hard's two: after the first, a second; after it, none", Fight.Again(1, 2) and not Fight.Again(2, 2))
+			-- the rows: one rule per role, on its kin and its elite, and nowhere else
+			for _, row in Enemies.List do
+				local hard = row.Hard
+				local raises = row.Signature == "GuardRaise"
+				local lunges = row.Signature == "DasherLunge"
+				t.Check(`{row.Id}: its Hard row is its role's`, (raises and hard ~= nil and hard.InTurn == true and hard.Lunges == nil)
+					or (lunges and hard ~= nil and hard.Lunges == 2 and hard.InTurn == nil)
+					or (not raises and not lunges and hard == nil))
+			end
+			local lunge = Actions.ById.DasherLunge
+			local marked = false
+			for _, hit in lunge.Hits do
+				marked = marked or hit.Mark == true
+			end
+			t.Check("the Dasher's lunge is a marked strike, so the token holds it", marked)
+		end,
+	},
 }

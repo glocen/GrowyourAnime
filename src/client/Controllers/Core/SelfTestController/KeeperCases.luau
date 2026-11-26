@@ -2,13 +2,15 @@
 -- The Lamplighter in three phases (TR69 D; KeeperPhaseService, Config.Combat.Keeper.Phases), apart: Cases is at the type
 -- checker's limit. One case stands a lamplighter on the lead by FightSpawn and lets the phases adopt it (the main place
 -- has no keeper's ring), the switch On, and walks it through its turns by its health share, on the server's own paths:
+-- * its most health Health times its own as its phases begin;
 -- * phase 1: six dark posts round it, a hit held at its line;
 -- * the midpoint: untouchable while its posts light one by one, then phase 2;
 -- * phase 2: pools go down round the ring in turn, drawn in grey; its slam brings a second After it, where the avatar
---   stood, and the window opens after the second, its hits Harder;
+--   stood, and the window opens after the second, its hits Harder, its pose held (no stagger: not stunned, its clock
+--   waiting) the window's length;
 -- * the false ending: its posts dark and it held, then relit and phase 3;
 -- * phase 3: its two adds, its slam's tell run quicker, its sweep's line turning its arc in its seconds, the window after;
--- * the switch off: its posts and its adds gone.
+-- * the switch off: its posts and its adds gone, its own most health back.
 -- The switch and the spawned foes are put back at its end.
 
 local Players = game:GetService("Players")
@@ -113,6 +115,14 @@ function KeeperCases.Cases(): { any }
 				local function read(): { [string]: any }
 					return t.Server("KeeperPhase")
 				end
+				local base = if type(adopted) == "table" then adopted.Most else nil
+				local tough = read()
+				waitFor(t, REPLICATE, function(): boolean
+					tough = read()
+					return tough.Phase ~= nil
+				end)
+				t.Check("its most health Health times its own while phased", type(base) == "number" and type(tough.Most) == "number"
+					and math.abs(tough.Most / base - p.Health) < 1e-3, `{tough.Most} of {base}`)
 
 				-- Phase 1: six dark posts round it, its line at From[1].
 				local s = read()
@@ -190,6 +200,9 @@ function KeeperCases.Cases(): { any }
 						return type(s.Open) == "number" and s.Open > 0
 					end)
 					t.Check("the window after the second, its hits Harder", type(s.Open) == "number" and s.Open > p.Double.Window - 0.8 and s.Harder == p.Window.Harder, `open {s.Open}, harder {s.Harder}`)
+					local body = keeper :: Model?
+					t.Check("its pose held the window's length, no stagger over it", type(s.Pinned) == "number" and math.abs(s.Pinned - s.Open) < 0.05
+						and body ~= nil and body:GetAttribute("State") ~= "Stun", `pinned {s.Pinned}, state {if body then body:GetAttribute("State") else nil}`)
 				end
 
 				-- The false ending: posts dark, held, then relit and phase 3.
@@ -243,6 +256,7 @@ function KeeperCases.Cases(): { any }
 				t.Wait(STEP)
 				s = read()
 				t.Check("off: its run ends, its posts gone", s.Phase == nil and s.Posts == 0, `phase {s.Phase}, {s.Posts} posts`)
+				t.Check("and its own most health again", type(base) == "number" and type(s.Most) == "number" and math.abs(s.Most - base) < 1e-3, `{s.Most} of {base}`)
 				finish()
 			end,
 		},

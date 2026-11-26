@@ -75,6 +75,8 @@ export type Mark = {
 	From: number?,
 	Arc: number?,
 	Turn: number?,
+	Back: boolean?, -- a sweep's line turns back over its Turn again (Hard)
+	Every: number?, -- a burning footprint strikes whoever stands in it each Every seconds, Turn long (Hard)
 	Up: boolean?,
 }
 -- A lead broken off for its place by its avatar (FightService.Away): at Speed, held until Until, or else Hold seconds
@@ -141,6 +143,10 @@ export type Fighter = {
 	-- Rates, an action's own rate (by Id), with a chill's; Aimed, a hazard of its own that holds its aim (the sweep's).
 	Floor: number?,
 	HeldUntil: number?,
+	-- The window's held pose (TR69 D, research's 19:33): until PinUntil it neither thinks nor steps its action, whose
+	-- clock waits and goes on after, so the follow-through holds where the window found it and plays out after.
+	PinUntil: number?,
+	Lunged: number?, -- a Hard Dasher's lunges so far in its run (TR69 E; Rules.Fight.Again)
 	HarderUntil: number?,
 	Harder: number?,
 	Rates: { [string]: number }?,
@@ -1239,7 +1245,7 @@ local function land(f: Fighter, action: Actions.Action, target: Fighter, beat: s
 	local last = fell and lastOfPack(target) -- a pack's last fall holds its beat (TR69 A)
 	local hold = if result.Dodged then 0 else Fight.Hold(rung, fell, Combat.Hitstop, last)
 	if not result.Dodged then
-		if not fell and target.Action == nil and target.State ~= "Stun" and (Combat.Flinch.Kinds :: any)[target.Kind] then
+		if not fell and target.Action == nil and target.State ~= "Stun" and not (target.PinUntil and at < target.PinUntil) and (Combat.Flinch.Kinds :: any)[target.Kind] then
 			setState(target, "Flinch", at + hold + Combat.Flinch.Seconds)
 			stop(target)
 		end
@@ -1899,6 +1905,45 @@ local function phaseOf(f: Fighter): number
 	return (sum % 97) / 97
 end
 
+-- An action's mark (TR44, AR52): whether one of its hits puts down a footprint or a line, and its beat's time.
+local function markBeat(action: Actions.Action): number?
+	for beat, hit in action.Hits do
+		if hit.Mark then
+			return action.Beats[beat]
+		end
+	end
+	return nil
+end
+
+-- Whether foe `f` may start `action` on `target` now (TR69 E; Rules.Fight.MayStart): the others' marks in flight on it
+-- (a marked action started and not yet at its mark's beat) against Config.Combat.Turns.Marks by its difficulty, and,
+-- for a Hard Guard's raise, the other Guards on it raising.
+local function mayStart(f: Fighter, target: Fighter, action: Actions.Action, at: number): boolean
+	local row = Enemies.ById[f.Def]
+	local hard = f.Difficulty == "Hard"
+	local inTurn = hard and row ~= nil and row.Hard ~= nil and row.Hard.InTurn == true
+	local marks = markBeat(action) ~= nil
+	local raises = action.Guard ~= nil
+	if not marks and not (raises and inTurn) then
+		return true
+	end
+	local inFlight, raising = 0, 0
+	for _, other in fighters do
+		local doing = other.Action
+		if other ~= f and other.Side == "Shade" and other.Kind ~= "Keeper" and other.Target == target and doing and standing(other) then
+			local beat = markBeat(doing)
+			if beat and (at - other.ActionAt) * other.ActionRate < beat then
+				inFlight += 1
+			end
+			if doing.Guard then
+				raising += 1
+			end
+		end
+	end
+	local limit = (Combat.Turns.Marks :: any)[if hard then "Hard" else "Normal"] or 1
+	return Fight.MayStart(marks, raises, inFlight, raising, limit, inTurn)
+end
+
 local function thinkShade(f: Fighter, at: number)
 	local home = f.Home
 	if f.Kit[1] == nil or home == nil then
@@ -2026,6 +2071,9 @@ local function thinkShade(f: Fighter, at: number)
 		return
 	end
 	local action = Fight.Choose(f.Kit, f.ReadyAt, at, held)
+	if action and not keeper and not mayStart(f, target, action, at) then
+		action = Fight.Choose(f.Kit, f.ReadyAt, at, action.Id) -- its turn waited for (TR69 E): its swing meanwhile
+	end
 	local range = if action then action.Range else 4
 	local gap = distance(f.Root, target.Root)
 	local slot, off = slotFor(f, target, math.max(0, range - Combat.Approach))
@@ -2035,6 +2083,28 @@ local function thinkShade(f: Fighter, at: number)
 		endAction(f, at)
 		local walk = if f.For and f.Block.Speed > 0 then f.Block.Speed elseif keeper then Combat.Keeper.WalkSpeed else Combat.Shade.WalkSpeed
 		moveTo(f, Vector3.new(slot.X, f.Root.Position.Y, slot.Z), walk)
+	end
+end
+
+-- A Hard Dasher lunges twice (TR69 E; Definitions.Enemies' Hard.Lunges, Rules.Fight.Again): a lunge that ends starts
+-- the next of its run at once, from where it left it, aimed afresh at its target, while it holds its turn and the mark
+-- token lets it; else its run is over.
+local function again(f: Fighter, action: Actions.Action, at: number)
+	local row = Enemies.ById[f.Def]
+	local lunges = if f.Difficulty == "Hard" and row and row.Hard then row.Hard.Lunges else nil
+	if lunges == nil or row == nil or row.Signature ~= action.Id then
+		f.Lunged = nil
+		return
+	end
+	local done = (f.Lunged or 0) + 1
+	local target = f.Target
+	if target and standing(target) and standing(f) and f.State == "Idle" and Fight.Again(done, lunges)
+		and (not capped(f) or hasTurn(f, target)) and mayStart(f, target, action, at) then
+		f.Lunged = done
+		face(f, target.Root.Position)
+		start(f, action, at)
+	else
+		f.Lunged = nil
 	end
 end
 
@@ -2127,7 +2197,7 @@ end
 
 -- The hazards down (TR69 D; FightService.Hazard): footprints a fighter put down outside its actions' own, each landing its
 -- action's beat on every enemy it covers on its Slam (a ring), or on each it passes over as it turns (a sweep), once.
-type Hazard = { Owner: Fighter, Mark: Mark, Action: Actions.Action, Beat: string, Struck: { Fighter }, Turned: number }
+type Hazard = { Owner: Fighter, Mark: Mark, Action: Actions.Action, Beat: string, Struck: { Fighter }, Turned: number, Pass: { Fighter }, Back: boolean }
 local hazards: { Hazard } = {}
 
 local function hazardUp(h: Hazard, struck: { Fighter }?)
@@ -2154,24 +2224,53 @@ local function stepHazards(at: number)
 		local hit = h.Action.Hits[h.Beat]
 		local centre = Vector3.new(mark.X, mark.Y, mark.Z)
 		local function strikeOn(other: Fighter)
-			table.insert(h.Struck, other)
+			if table.find(h.Struck, other) == nil then
+				table.insert(h.Struck, other)
+			end
+			table.insert(h.Pass, other)
 			local away = flat(other.Root.Position - centre)
 			land(f, h.Action, other, h.Beat, hit, at, if away.Magnitude > 0.05 then away else flat(other.Root.Position - f.Root.Position))
 		end
 		local turn = mark.Turn
 		if mark.Kind == "Sweep" and turn and mark.From and mark.Arc and mark.Length then
-			-- the line turns from From over Arc in Turn seconds: whoever it passed over since the last step is struck
-			local t = math.min(at - mark.Slam, turn)
-			local was = Keeper.Sweep(h.Turned, turn, mark.Arc, false) or 0
-			local now_ = Keeper.Sweep(t, turn, mark.Arc, false) or mark.Arc
+			-- the line turns from From over Arc in Turn seconds (and back again over as long, Back): whoever it passed over
+			-- since the last step is struck, once a way
+			local back = mark.Back == true
+			local span = if back then 2 * turn else turn
+			local t = math.min(at - mark.Slam, span)
+			if back and t > turn and not h.Back then
+				h.Back = true
+				h.Pass = {}
+			end
+			local was = Keeper.Sweep(h.Turned, turn, mark.Arc, back) or 0
+			local now_ = Keeper.Sweep(t, turn, mark.Arc, back) or (if back then 0 else mark.Arc)
+			-- a step across the far side turns out to it and back: the far side is in it
+			local hi = if h.Turned <= turn and t > turn then mark.Arc else math.max(was, now_)
+			local lo = math.min(was, now_)
 			for _, other in fighters do
 				local p = other.Root.Position
-				if against(f, other) and standing(other) and table.find(h.Struck, other) == nil
-					and MarkRule.Swept(mark.X, mark.Z, mark.From + was, mark.From + now_, mark.Length, mark.Radius, p.X, p.Z) then
+				if against(f, other) and standing(other) and table.find(h.Pass, other) == nil
+					and MarkRule.Swept(mark.X, mark.Z, mark.From + lo, mark.From + hi, mark.Length, mark.Radius, p.X, p.Z) then
 					strikeOn(other)
 				end
 			end
 			h.Turned = t
+			if t >= span then
+				table.remove(hazards, index)
+				hazardUp(h, h.Struck)
+			end
+		elseif mark.Every and turn then
+			-- a burning footprint: a tick each Every from its Slam, Turn long, on whoever stands in it then
+			local t = at - mark.Slam
+			if t >= h.Turned then
+				h.Turned += mark.Every
+				for _, other in fighters do
+					local p = other.Root.Position
+					if against(f, other) and standing(other) and MarkRule.Covers(mark, p.X, p.Z) then
+						strikeOn(other)
+					end
+				end
+			end
 			if t >= turn then
 				table.remove(hazards, index)
 				hazardUp(h, h.Struck)
@@ -2223,6 +2322,13 @@ local function step()
 		if f.State == "Flinch" and at >= f.StateUntil then
 			setState(f, "Idle")
 		end
+		if f.PinUntil then
+			if at < f.PinUntil then
+				continue -- the window's held pose (TR69 D): no beat, no step, no thought; its action's clock waits
+			end
+			f.PinUntil = nil
+			f.Model:SetAttribute("PinUntil", nil)
+		end
 		local action = f.Action
 		if action then
 			local clock = (at - f.ActionAt) * f.ActionRate
@@ -2249,6 +2355,7 @@ local function step()
 				f.Checked = clock
 				if clock >= action.Length then
 					endAction(f, at)
+					again(f, action, at)
 				end
 			end
 		end
@@ -2572,7 +2679,7 @@ function FightService.Hazard(f: Fighter, mark: Mark, action: string, beat: strin
 	if fighters[f.Id] ~= f or not standing(f) or row == nil or row.Hits[beat] == nil then
 		return false
 	end
-	local h: Hazard = { Owner = f, Mark = mark, Action = row, Beat = beat, Struck = {}, Turned = 0 }
+	local h: Hazard = { Owner = f, Mark = mark, Action = row, Beat = beat, Struck = {}, Turned = 0, Pass = {}, Back = false }
 	table.insert(hazards, h)
 	if mark.Kind == "Sweep" then
 		f.Aimed = mark
@@ -2588,6 +2695,8 @@ function FightService.Hazard(f: Fighter, mark: Mark, action: string, beat: strin
 		From = mark.From,
 		Arc = mark.Arc,
 		Turn = mark.Turn,
+		Back = mark.Back,
+		Every = mark.Every,
 	})
 	FightService.Marked:Fire(f, mark)
 	return true
@@ -2602,6 +2711,8 @@ function FightService.Hold(f: Fighter, untilAt: number, stun: number?)
 	local at = now()
 	f.HeldUntil = untilAt
 	f.Model:SetAttribute("HeldUntil", untilAt)
+	f.PinUntil = nil -- a window it was in ends with the turn
+	f.Model:SetAttribute("PinUntil", nil)
 	endAction(f, at)
 	stop(f)
 	if stun and stun > 0 then
@@ -2622,10 +2733,28 @@ function FightService.Window(f: Fighter, seconds: number, harder: number)
 	f.HarderUntil, f.Harder = at + seconds, harder
 	f.Model:SetAttribute("HarderUntil", f.HarderUntil)
 	f.StunLock = at + seconds + Combat.Stun.Lock
-	f.Model:SetAttribute("StunLook", nil)
-	setState(f, "Stun", at + seconds)
-	endAction(f, at)
+	-- its pose held where the window found it (research, 19:33): no stagger, no action ended; its clock goes on after
+	f.PinUntil = at + seconds
+	if f.Action then
+		f.ActionAt += seconds
+	end
+	f.Model:SetAttribute("PinUntil", f.PinUntil)
 	stop(f)
+end
+
+-- A keeper's health while its phases are on (TR69 D, research's 19:33): its most, and the crowd's base under it, times
+-- `factor`, what it has kept as a share. Once, as its phases begin.
+function FightService.Toughen(f: Fighter, factor: number)
+	if fighters[f.Id] ~= f or f.State == "Down" or factor <= 0 or factor == 1 then
+		return
+	end
+	local share = f.Health / math.max(1e-6, f.Block.Health)
+	f.Alone *= factor
+	local block = table.clone(f.Block)
+	block.Health *= factor
+	f.Block = block
+	f.Model:SetAttribute("MaxHealth", block.Health)
+	setHealth(f, block.Health * share)
 end
 
 -- `f` starts `action` now, facing its target, as a keeper's phase asks it (TR69 D: its sweep): false when it's down,
@@ -2633,7 +2762,8 @@ end
 function FightService.Act(f: Fighter, action: string): boolean
 	local row = Actions.ById[action]
 	local at = now()
-	if row == nil or fighters[f.Id] ~= f or not standing(f) or f.State == "Stun" or busy(f, at) or (f.HeldUntil ~= nil and at < f.HeldUntil) then
+	if row == nil or fighters[f.Id] ~= f or not standing(f) or f.State == "Stun" or busy(f, at) or (f.HeldUntil ~= nil and at < f.HeldUntil)
+		or (f.PinUntil ~= nil and at < f.PinUntil) then
 		return false
 	end
 	if f.Target then

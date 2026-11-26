@@ -28,14 +28,18 @@ export type Row = {
 	First: number?, -- seconds; nil: Config.Combat.Keeper.First (TR44: the Lamplighter's slam)
 	Idle: string?, -- its own stance's clip, over its rig's Idle (Config.Animations.Rigs; Actions.IdleOf)
 	Marker: string?, -- its picture on the down marker's tile (TR10), a Config.UIKit image; nil: the name's letter
+	-- Hard's behaviour (TR69 E: one rule per role; FightService, Rules.Fight.MayStart and Again): InTurn, a Guard raises
+	-- only while no other Guard on its lead is raising, so their shields go up in turn and never all drop at once;
+	-- Lunges, a Dasher's lunges in a run, each from where the last left it, aimed afresh.
+	Hard: { InTurn: boolean?, Lunges: number? }?,
 }
 
 local rows: { Row } = {
 	{ Id = "brawler", Name = "Brawler", Kind = "Ordinary", Action = "ShadeSwipe", Type = "Red", Rig = "Shade", Mask = "Brawler" },
 	-- AR52: the Guard raises a paper shield, the Dasher lunges down a line; between, each swings as a Brawler. Each is
 	-- ready First seconds after it's spawned; a stretch's pack stands long before its fight, so each opens with its own.
-	{ Id = "guard", Name = "Guard", Kind = "Ordinary", Action = "ShadeSwipe", Signature = "GuardRaise", First = 0, Type = "Green", Rig = "Shade", Mask = "Guard" },
-	{ Id = "dasher", Name = "Dasher", Kind = "Ordinary", Action = "ShadeSwipe", Signature = "DasherLunge", First = 1.5, Type = "Orange", Rig = "Shade", Mask = "Dasher" },
+	{ Id = "guard", Name = "Guard", Kind = "Ordinary", Action = "ShadeSwipe", Signature = "GuardRaise", First = 0, Type = "Green", Rig = "Shade", Mask = "Guard", Hard = { InTurn = true } },
+	{ Id = "dasher", Name = "Dasher", Kind = "Ordinary", Action = "ShadeSwipe", Signature = "DasherLunge", First = 1.5, Type = "Orange", Rig = "Shade", Mask = "Dasher", Hard = { Lunges = 2 } },
 	-- AR58: the Support keeps to its pack's back and lifts its sleeves, and a hurt one of its pack comes back up, or a whole
 	-- one takes a shield (SupportCast; Rules.Support). Fragile: slighter, and less health than its kin. Alone, it swings
 	-- as a Brawler. Seeds, tuned once the Guard and the Dasher are played (the director's pick, 2026-11-23).
@@ -43,8 +47,8 @@ local rows: { Row } = {
 	-- An elite wears its mask twice, the second on its Left Arm (AR2, section 5). AR57: the Guard's and the Dasher's elites
 	-- ask their kin's question at the elite's size, and play their own clips of the same beats (Config.Animations.Kinds).
 	{ Id = "brawler_elite", Name = "Brawler", Kind = "Elite", Action = "ShadeSwipe", Type = "Red", Rig = "Shade", Mask = "Brawler", Scale = 1.35, Marker = "MarkerElite" },
-	{ Id = "guard_elite", Name = "Guard", Kind = "Elite", Action = "ShadeSwipe", Signature = "GuardRaise", First = 0, Type = "Green", Rig = "Shade", Mask = "Guard", Scale = 1.35, Marker = "MarkerElite" },
-	{ Id = "dasher_elite", Name = "Dasher", Kind = "Elite", Action = "ShadeSwipe", Signature = "DasherLunge", First = 1.5, Type = "Orange", Rig = "Shade", Mask = "Dasher", Scale = 1.35, Marker = "MarkerElite" },
+	{ Id = "guard_elite", Name = "Guard", Kind = "Elite", Action = "ShadeSwipe", Signature = "GuardRaise", First = 0, Type = "Green", Rig = "Shade", Mask = "Guard", Scale = 1.35, Marker = "MarkerElite", Hard = { InTurn = true } },
+	{ Id = "dasher_elite", Name = "Dasher", Kind = "Elite", Action = "ShadeSwipe", Signature = "DasherLunge", First = 1.5, Type = "Orange", Rig = "Shade", Mask = "Dasher", Scale = 1.35, Marker = "MarkerElite", Hard = { Lunges = 2 } },
 	-- AR7: 1.5 an ordinary Shade's size, the hat's top 10.3 studs up (research's pick: taller than the elite)
 	{ Id = "lamplighter", Name = "the Lamplighter", Kind = "Keeper", Action = "KeeperSwing", Signature = "KeeperSignature", Type = "Purple", Rig = "Lamplighter", Scale = 1.5, Enter = "KeeperChallenge", Idle = "LamplighterReady", Marker = "MarkerLamplighter" },
 	-- The replay's and the self-test's target: takes every hit, never answers.

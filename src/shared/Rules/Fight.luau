@@ -45,6 +45,25 @@ function Fight.Choose(kit: { Actions.Action }, readyAt: { [string]: number }, no
 	return nil
 end
 
+-- Whether a foe may start an action now (TR69 E). A marked strike (`marks`) waits while `inFlight` of the others' are
+-- in flight on its lead and that's `limit` (Config.Combat.Turns.Marks, by difficulty); a Guard's raise (`raises`) that
+-- waits its turn (`inTurn`, Hard's) waits while `raising` others on its lead are raising.
+function Fight.MayStart(marks: boolean, raises: boolean, inFlight: number, raising: number, limit: number, inTurn: boolean): boolean
+	if marks and inFlight >= limit then
+		return false
+	end
+	if raises and inTurn and raising > 0 then
+		return false
+	end
+	return true
+end
+
+-- Whether a Dasher's lunge that ended starts another (TR69 E): `done` lunges so far in its run, of `lunges` (Hard's;
+-- nil is one).
+function Fight.Again(done: number, lunges: number?): boolean
+	return done < (lunges or 1)
+end
+
 -- A lead's signature: the first action in its kit with a cooldown (Actions.Kits puts it first), or nil.
 function Fight.Signature(kit: { Actions.Action }): Actions.Action?
 	for _, action in kit do

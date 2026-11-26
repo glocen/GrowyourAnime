@@ -573,10 +573,12 @@ local rows: { Action } = {
 		Length = 1,
 		CancelFrom = 1,
 		Cooldown = 0,
-		Beats = { Pool = 0.5, Sweep = 0.5 }, -- after a heavy cue's lead (Config.Sounds), though nothing plays it on a clock
+		Beats = { Pool = 0.5, Sweep = 0.5, Burn = 0.5 }, -- after a heavy cue's lead (Config.Sounds), though nothing plays it on a clock
 		Hits = {
 			Pool = { Coefficient = ENEMY_PER_SECOND * 1.5, Heavy = false, Reach = 4, Push = 1.5, Rung = 4 },
 			Sweep = { Coefficient = ENEMY_PER_SECOND * 2, Heavy = true, Reach = 11, Push = 2.5, Rung = 6 },
+			-- Hard's burning footprint, a tick each Phases.Hard.Burn.Every: no push, the ladder's lightest hold (an ordinary hit)
+			Burn = { Coefficient = ENEMY_PER_SECOND * 0.5, Heavy = false, Reach = 5, Push = 0, Rung = 2 },
 		},
 		Range = 4,
 		Heavy = true,

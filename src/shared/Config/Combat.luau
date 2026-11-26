@@ -95,7 +95,10 @@ return {
 	-- ring each Period seconds, at Pace of a Shade's walk (Rules.Fight.Waiting): never still. A Support never takes a
 	-- turn; elites, keepers and the Tower's foes are never capped. Tuned in play: Tune("Combat.Turns.Cap", 2), research's
 	-- other try (which would need Attack x1.50, not x1.17). Ring, Sway, Period and Pace are the builder's seeds.
-	Turns = { Cap = 3, Ring = 7, Sway = 1.5, Period = 2.4, Pace = 0.5 },
+	-- Marks (TR69 E; research's seed, grounds-and-encounters.md, "Tells and windows"): at most this many marked strikes
+	-- (a footprint or a line: an action with a Mark hit) in flight on one lead at once, from their start to their landing,
+	-- by the run's difficulty; one more waits its turn and swings meanwhile. A keeper's own are its phases' (never held).
+	Turns = { Cap = 3, Ring = 7, Sway = 1.5, Period = 2.4, Pace = 0.5, Marks = { Normal = 1, Hard = 2 } },
 
 	-- A crowd on one Shade (research's verdict on TR2, 2026-11-12): from the From-th lead that hits it, each further lead adds
 	-- Share of its health, to its most and to what it has left. A seed.
@@ -274,7 +277,10 @@ return {
 		-- waves were: NL_Debug:Invoke("Tune", "Combat.Keeper.Phases.On", true), read as a try starts.
 		--   From: the health shares where phases 2 and 3 begin. A hit stops at a line until that phase's turn has played.
 		--   Window, phase 1's: after a slam that lands, the lantern sticks in the street Seconds: the keeper stands Open
-		--     (TR69 C's state: staggered, its cracked ring) and every hit on it lands Harder times.
+		--     (TR69 C's state, its cracked ring) and every hit on it lands Harder times. Its pose is held where the window
+		--     found it, its follow-through, and no stagger plays over it (research, 2026-11-26, 19:33; FightService.Window).
+		--   Health: its most health times this while phases are On, so each phase shows its idea twice (research's rule
+		--     of 19:33, seed x1.5, tuned live); Off, the 45 s fight it was solved for holds.
 		--   Mid, at From[1]: Seconds untouchable while it lights its Posts round the ring's middle, Radius out, one by one.
 		--   Pools, phase 2's: every Every seconds the posts drop pools of light Radius wide in order, Gap apart, each told
 		--     Tell before it lands (Actions' KeeperPool). The first round Start seconds into the phase.
@@ -289,6 +295,7 @@ return {
 			On = false,
 			From = { 0.7, 0.35 },
 			Window = { Seconds = 1.5, Harder = 1.25 },
+			Health = 1.5,
 			Mid = { Seconds = 2, Posts = 6, Radius = 12 },
 			Pools = { Radius = 4, Gap = 1, Tell = 1.2, Every = 10, Start = 2 },
 			Double = { After = 0.9, Tell = 1.2, Window = 2 },
@@ -296,6 +303,10 @@ return {
 			Sweep = { Tell = 0.9, Seconds = 1.6, Arc = 120, Length = 11, Half = 1.5, Every = 9, Start = 4, Window = 2 },
 			Adds = { Def = "brawler", Count = 2, Out = 8 },
 			Slam = { Tell = 1.2 },
+			-- Hard (TR69 E; section C): its lines, its posts Per at a time (the midpoint's lights and the pools' rounds), a
+			-- slam's footprint burning Burn.Seconds (a tick each Burn.Every, KeeperLight's Burn), the sweep there and back,
+			-- and its new tells at section 2's Hard floors: a circle's (pools, the second slam, phase 3's slam) and a line's
+			Hard = { From = { 0.85, 0.35 }, Per = 2, Burn = { Seconds = 6, Every = 0.5 }, Back = true, Tells = { Circle = 0.9, Line = 0.7 } },
 			-- The posts' grey looks: dark, lit, and relit after the false ending
 			Look = { Size = Vector3.new(1, 7, 1), Dark = Color3.fromRGB(90, 92, 98), Lit = Color3.fromRGB(245, 240, 225), Relit = Color3.fromRGB(176, 132, 255) },
 		},

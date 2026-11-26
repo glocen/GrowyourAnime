@@ -15367,6 +15367,18 @@ The rules now live in `docs/design.md`, "States in a fight", below "No lock". Fa
   - **Tested:** logic offline 37,291 passed, 0 failed; Track with the seven 6,436/0; Studio: the element states 39/0 at 60 fps, every look and the break among them, and every effect's rows 234/0; type check 0 new.
   - **Next:** research's pass in motion. Not director-accepted.
 
+### In motion, in the game, still grey (Scintilla, 2026-11-26, 20:31; for research's pass in motion)
+
+- **The take:** the main place in Play, the lead's combo replayed on the pad, 7 s in each element: Fire, Frost and Storm on a level 26 Brawler, Void on the Lamplighter. Taken at the player's camera, 60 fps (`build/scratch/scintilla/ward/takes/ar48_states.mkv`). The sheets are one frame in 12, in `build/handoff/States/checkpoint/` (`in_play_burn.png`, `in_play_chill_freeze.png`, `in_play_shock.png`, `in_play_sap.png`).
+- **My read, before research's:**
+  - **Freeze reads:** the shell closes round the Shade as a pale column, plain at the player's camera.
+  - **Burn barely reads:** the embers are faint pale specks over the head and shoulders. Whether the faces stay clear can't be told at this size.
+  - **Shock doesn't separate:** its arcs can't be told from the hit's own sparks.
+  - **Sap isn't seen:** dark motes on the keeper's dark robe vanish, and from this camera the keeper hides the lead.
+  - The chill's creep up the legs isn't seen either.
+- **What this isn't:** the colour pass. The looks are still the grey block-in, so this judges shape, size and motion only. Sap needs a second take from the side.
+- **Status:** implemented and hooked (Faber, 11-24). Tested in play. Visually reviewed: my read above; research's pass waits. Not director-accepted.
+
 ## AR49. Home's panel: three cards with their own art (Modulo, for research's pick, then Faber)
 
 Research, 2026-11-19, 23:20 by the clock, on the director's word of 23:20 (`docs/decisions.md`, the row): "MAKE IT LOOOK GOOD".

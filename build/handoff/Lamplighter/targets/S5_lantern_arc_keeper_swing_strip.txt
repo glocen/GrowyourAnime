@@ -1,0 +1,1 @@
+frames from Strike, at 60 a second: -8, -6, -4, -2, 0, 2, 4, 8, 12

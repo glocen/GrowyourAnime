@@ -15,10 +15,9 @@ Each teammate rewrites its own row: one to three lines. Open asks sit under "Wai
 - **AR64's hair: round 41 is with the director,** on research's order (the two-techniques rule): `build/reference/hair/compare_rook_r41.png`, beside the catalog (internal). Blind reads said no on rounds 37 and 40; 41 wasn't read. Nothing uploaded.
 - **Next:** AR62's style frames (Rook with take R as it stands, until the director's word), then AR65's targets once research picks Faber's cut-pass capture; then AR55's return and TR56's chest pictures. Pip (AR63), Lyric and Watt wait for the frame's pick. Faber's craft note on Watt's left arm stands.
 
-**Scintilla (effects).** 2026-11-26, stopped at the director's wrap-up of 02:12; Studio released at 02:13 (Edit, unsaved, NL_Audition untouched), nothing running. **The turn's takes are in (f0959aa0); next, the fixes they call for:**
-  - AR52 by day misses its main read: the ward pale icy cyan with little glow, the Click ring grey with a dark edge. AR61's peak still lacks its white bloom, its second technique: I check the bloom row draws, then the options go to the director with the images.
-  - AR7: the stage is sound, but from the game's camera the pole's foot stays behind your fighter's back, so its targets are redrawn on the shaft and the lantern before research's pick. AR48's four states are taken in motion (`build/captures/ar48/`), not yet reviewed.
-- **For Faber's review:** AR52's coloured build (4e980a2c) and AR7's drawer (2291b3a4).
+**Scintilla (effects).** 2026-11-26, 12:37. Nothing running, no Studio turn held. Done offline: AR52's day miss changed in technique (the target's deep azure under the light, a halo by the rim, the click its flash), taken, logic 8,526 passed; AR7's targets redrawn on the shaft and the lantern (S4 to S6, C3, C4), for research's pick.
+- **Next, in my Studio turn after Faber's:** AR52's ward by day beside its target; AR61's bloom row checked, then its options to the director with the images; AR48's four states reviewed.
+- **For Faber's review:** AR52's coloured build (4e980a2c) and its day fix, and AR7's drawer.
 
 **Sonus (sound).** 2026-11-26, 12:30 by the clock. **Shortlisted, not heard or picked:** TR42's eleven tabs (a62d1129), TR64's ten (17e042ae) and TR57's plate, five (BroadcastPlate, for Faber's review), in `ServerStorage.NL_Audition`: the place opened today with every earlier tab at its count, and Faber's end-of-turn save keeps the plate's. No Studio turn held, nothing running.
 - **Next:** the director's listens: TR42's on their go (item 10); TR64's with the plate after ShardDrop, once Faber's Play the moment hooks pass. Nothing else is open for sound (research, 12:19).

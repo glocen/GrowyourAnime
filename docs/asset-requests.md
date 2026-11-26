@@ -4109,6 +4109,23 @@ This is delivery 4, the block clip of section 5 polished, on research's open not
 - **Content check, before the build: PASS.** Conditions: nothing red to maroon at the finish, the crescent's dark pass included; the dark passes play only with their bright ones; the puff never lies flat; the light's share is measured if two keepers swing at once or the swing quickens; the finished look gets its own check.
 - **Status:** implemented as data, not shown in the game; tested offline only; not visually reviewed (item 10); not director-accepted.
 
+**The targets, redrawn on the shaft and the lantern (Scintilla, 2026-11-26, 12:37).**
+- **Why:** from the game's camera the pole's foot stays behind your fighter: 11.7 studs deep at Strike, your fighter 10.7, and the stamp lands behind its legs. The first five targets, drawn at the foot, showed only the lantern.
+- **The shaft:** the stage sampled only the foot and the lantern, so `tools/fx/keeper_targets.py` solves the hook from the clip's joints, fitted to the sampled foot (0.001 studs). The lantern's path, which the fit never sees, checks it: 0.002 studs mean on the swing, 0.005 on the challenge.
+- **The targets,** in `build/handoff/Lamplighter/targets/` (peaks, strips, phone sheets):
+  - S4, the smear: the shaft swept into a sheet of light from the hold to the blow, trailing into the follow-through.
+  - S5, the lantern's arc: a comet along the lantern's swing, a flare on Strike, the shaft's glint.
+  - S6, the echoes: the lantern's afterimages.
+  - C3, the pulse: a bead up the shaft into the lantern, which bursts.
+  - C4, the wide ring: a ring on the street out to 6.5 studs.
+- **My read at phone size:**
+  - S4 reads as a sweep beside your fighter's head, S5 as a bright pop with a short comet, and S6 barely reads.
+  - C3's burst is the brightest thing on the screen, its ring lost in it. C4's ring shows only on your fighter's left.
+  - The whole swing is small on the screen: the pole turns mostly in depth, and the lantern sits beside the "Auto on" plate.
+- **Also fixed in the drawer:** your fighter was laid back from the linear picture into the sRGB render, drawn darker. The challenge's tiles showed the HUD's fading ghost; the HUD now comes from the backdrop.
+- **For the pick:** the lantern's paper is cyan by its recipe, cold at rest, so its glow reads cyan-white; the light's own hue is the kit's warm.
+- **Status:** targets, for research's pick in pairs. Nothing built. Content check: PASS.
+
 ## AR8. The effects pass
 
 For Faber and Modulo (research's request, 2026-11-13). It rests on the director's word of the same day (`docs/decisions.md`): "make it great look at some pro vfx examples and compare". It runs before phase 2 closes, and its pieces close at research's pass without the director's yes. **The measure:** `docs/research/vfx-reference.md`, its comparison table and its five rules, starting with the importance ladder.
@@ -15953,6 +15970,10 @@ Written by `tools/fx/shade_tells.py`, from the kit's uploaded meshes and images 
     3. The chips stay Neon with no texture, or come back for a check.
     4. The docstring: done.
   - **Status:** implemented as data. Tested: logic offline, 8,484 passed and 0 failed. Not yet seen in Studio: the build beside its targets is in my next turn. Not visually reviewed. Not director-accepted. For Faber's review.
+- **The day read, fixed in technique (Scintilla, 2026-11-26, 12:37).** By day the build missed its main read (f0959aa0, `build/handoff/Shade/checkpoint/build_guard_day_*.png`): the ward pale icy cyan, the Click ring grey with a dark edge. The paper carried the hue alone, lit by the sun and seen through to the pale deck.
+  - **The target's own technique now:** the hue laid deep under the light (a Neon disc in the target's #163C8C at 0.68), the paper seen through (0.65), and a halo hoop in azure beside the white rim.
+  - **The click** is the halo's flash on Raise, as the target draws it. The kit's grey ring is gone.
+  - **Status:** taken. Tested: logic offline, 8,526 passed and 0 failed. Content check: PASS. Not yet seen in Studio: the take is in my next turn. For Faber's review: `shade_tells.py` and `GuardShield.json`.
 
 ## AR53. Goals' look, basic at launch: the dare's line, today's three, the Mask Ledger's page (Modulo, after AR52's clips)
 

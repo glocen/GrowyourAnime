@@ -1,0 +1,1 @@
+frames from Stamp, at 60 a second: -16, -14, -10, -4, 0, 2, 4, 8, 12

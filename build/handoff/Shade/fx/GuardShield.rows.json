@@ -6,6 +6,135 @@
   "Grey": false,
   "Action": "GuardRaise",
   "Rows": {
+    "Deep": {
+      "Kind": "Mesh",
+      "From": "Raise",
+      "Part": [
+        "FxShell"
+      ],
+      "Color": {
+        "Color3": [
+          22,
+          60,
+          140
+        ]
+      },
+      "Tracks": {
+        "At": [
+          [
+            -8,
+            {
+              "Vector3": [
+                0,
+                0.7,
+                -1.56
+              ]
+            },
+            "Linear"
+          ],
+          [
+            120,
+            {
+              "Vector3": [
+                0,
+                0.7,
+                -1.56
+              ]
+            },
+            "Quad In"
+          ],
+          [
+            128,
+            {
+              "Vector3": [
+                0,
+                -0.30000000000000004,
+                -1.56
+              ]
+            }
+          ]
+        ],
+        "Scale": [
+          [
+            -8,
+            {
+              "Vector3": [
+                0.3724,
+                0.3724,
+                0.03
+              ]
+            },
+            "Back Out"
+          ],
+          [
+            0,
+            {
+              "Vector3": [
+                1.8619999999999999,
+                1.8619999999999999,
+                0.1
+              ]
+            },
+            "Sine InOut"
+          ],
+          [
+            60,
+            {
+              "Vector3": [
+                1.8992399999999998,
+                1.8992399999999998,
+                0.1
+              ]
+            },
+            "Sine InOut"
+          ],
+          [
+            120,
+            {
+              "Vector3": [
+                1.8619999999999999,
+                1.8619999999999999,
+                0.1
+              ]
+            },
+            "Quad In"
+          ],
+          [
+            128,
+            {
+              "Vector3": [
+                2.01096,
+                0.12,
+                0.03
+              ]
+            }
+          ]
+        ],
+        "Transparency": [
+          [
+            -8,
+            0.9,
+            "Quad Out"
+          ],
+          [
+            0,
+            0.68,
+            "Sine InOut"
+          ],
+          [
+            120,
+            0.68,
+            "Quad In"
+          ],
+          [
+            128,
+            1
+          ]
+        ]
+      },
+      "Why": "the ward's hue laid deep under its light, Neon so the sun never pales it: it holds on the pale deck",
+      "Body": "HumanoidRootPart"
+    },
     "Shield": {
       "Kind": "Mesh",
       "From": "Raise",
@@ -120,12 +249,12 @@
           ],
           [
             0,
-            0.3,
+            0.65,
             "Sine InOut"
           ],
           [
             120,
-            0.35,
+            0.65,
             "Quad In"
           ],
           [
@@ -150,7 +279,7 @@
           ]
         ]
       },
-      "Why": "the hero: the ward, a disc of lantern paper in azure, six ribs across it, before the Guard's chest",
+      "Why": "the hero: the ward, a disc of lantern paper in azure, six ribs across it, before the Guard's chest, seen through",
       "Body": "HumanoidRootPart"
     },
     "Rim": {
@@ -296,7 +425,164 @@
           ]
         ]
       },
-      "Why": "the ward's rim: a closed line of light round the paper, the click of it shutting on Raise",
+      "Why": "the ward's rim: a closed line of white light round the paper",
+      "Body": "HumanoidRootPart"
+    },
+    "Halo": {
+      "Kind": "Mesh",
+      "From": "Raise",
+      "Part": [
+        "FxHoop"
+      ],
+      "Color": {
+        "Color3": [
+          63,
+          140,
+          255
+        ]
+      },
+      "Tracks": {
+        "At": [
+          [
+            -8,
+            {
+              "Vector3": [
+                0,
+                0.7,
+                -1.55
+              ]
+            },
+            "Linear"
+          ],
+          [
+            120,
+            {
+              "Vector3": [
+                0,
+                0.7,
+                -1.55
+              ]
+            },
+            "Quad In"
+          ],
+          [
+            128,
+            {
+              "Vector3": [
+                0,
+                -0.30000000000000004,
+                -1.55
+              ]
+            }
+          ]
+        ],
+        "Tilt": [
+          [
+            -8,
+            {
+              "Vector3": [
+                90,
+                0,
+                0
+              ]
+            }
+          ]
+        ],
+        "Scale": [
+          [
+            -8,
+            {
+              "Vector3": [
+                0.41040000000000004,
+                1.0,
+                0.41040000000000004
+              ]
+            },
+            "Back Out"
+          ],
+          [
+            0,
+            {
+              "Vector3": [
+                2.17512,
+                1.0,
+                2.17512
+              ]
+            },
+            "Quad Out"
+          ],
+          [
+            5,
+            {
+              "Vector3": [
+                2.052,
+                1.0,
+                2.052
+              ]
+            },
+            "Sine InOut"
+          ],
+          [
+            60,
+            {
+              "Vector3": [
+                2.0930400000000002,
+                1.0,
+                2.0930400000000002
+              ]
+            },
+            "Sine InOut"
+          ],
+          [
+            120,
+            {
+              "Vector3": [
+                2.052,
+                1.0,
+                2.052
+              ]
+            },
+            "Quad In"
+          ],
+          [
+            128,
+            {
+              "Vector3": [
+                2.2161600000000004,
+                1.0,
+                0.1296
+              ]
+            }
+          ]
+        ],
+        "Transparency": [
+          [
+            -8,
+            0.8,
+            "Quad Out"
+          ],
+          [
+            0,
+            0,
+            "Quad Out"
+          ],
+          [
+            5,
+            0.4,
+            "Sine InOut"
+          ],
+          [
+            120,
+            0.4,
+            "Quad In"
+          ],
+          [
+            128,
+            1
+          ]
+        ]
+      },
+      "Why": "the rim's blue glow, flashed on Raise: the click of the ward shutting",
       "Body": "HumanoidRootPart"
     },
     "Boss": {
@@ -305,8 +591,8 @@
       "Image": "fx_glow",
       "Color": {
         "Color3": [
-          150,
-          196,
+          63,
+          140,
           255
         ]
       },
@@ -374,12 +660,12 @@
           ],
           [
             6,
-            0.55,
+            0.7,
             "Sine InOut"
           ],
           [
             120,
-            0.55
+            0.7
           ]
         ],
         "Brightness": [
@@ -394,222 +680,7 @@
           ]
         ]
       },
-      "Why": "the boss: the ward lit brighter to its middle",
-      "Body": "HumanoidRootPart"
-    },
-    "ClickLine": {
-      "Kind": "Emitter",
-      "Image": "fx_ring_line",
-      "Emitter": {
-        "Lifetime": [
-          0.3,
-          0.3
-        ],
-        "Speed": [
-          0,
-          0
-        ],
-        "Size": [
-          [
-            0,
-            3
-          ],
-          [
-            1,
-            5
-          ]
-        ],
-        "Rotation": [
-          0,
-          0
-        ],
-        "FlipbookLayout": "Grid4x4",
-        "FlipbookMode": "OneShot",
-        "LightInfluence": 0,
-        "Color": {
-          "Color3": [
-            255,
-            246,
-            230
-          ]
-        },
-        "LightEmission": 1,
-        "ZOffset": 0.55
-      },
-      "Emit": [
-        [
-          0,
-          1
-        ]
-      ],
-      "Tracks": {
-        "At": [
-          [
-            0,
-            {
-              "Vector3": [
-                0,
-                0.7,
-                -1.6
-              ]
-            }
-          ]
-        ]
-      },
-      "Why": "the click of the shield shutting: a ring snapped open on Raise, round the shield",
-      "From": "Raise",
-      "Body": "HumanoidRootPart"
-    },
-    "ClickFill": {
-      "Kind": "Emitter",
-      "Image": "fx_ring_fill",
-      "Emitter": {
-        "Lifetime": [
-          0.3,
-          0.3
-        ],
-        "Speed": [
-          0,
-          0
-        ],
-        "Size": [
-          [
-            0,
-            3
-          ],
-          [
-            1,
-            5
-          ]
-        ],
-        "Rotation": [
-          0,
-          0
-        ],
-        "FlipbookLayout": "Grid4x4",
-        "FlipbookMode": "OneShot",
-        "LightInfluence": 0,
-        "Color": [
-          [
-            0,
-            {
-              "Color3": [
-                233,
-                226,
-                214
-              ]
-            }
-          ],
-          [
-            0.34,
-            {
-              "Color3": [
-                233,
-                226,
-                214
-              ]
-            }
-          ],
-          [
-            1,
-            {
-              "Color3": [
-                91,
-                86,
-                112
-              ]
-            }
-          ]
-        ],
-        "LightEmission": 0.6,
-        "ZOffset": 0.5
-      },
-      "Emit": [
-        [
-          0,
-          1
-        ]
-      ],
-      "Tracks": {
-        "At": [
-          [
-            0,
-            {
-              "Vector3": [
-                0,
-                0.7,
-                -1.6
-              ]
-            }
-          ]
-        ]
-      },
-      "Why": "Click's fill pass",
-      "From": "Raise",
-      "Body": "HumanoidRootPart"
-    },
-    "ClickDark": {
-      "Kind": "Emitter",
-      "Image": "fx_ring_dark",
-      "Emitter": {
-        "Lifetime": [
-          0.3,
-          0.3
-        ],
-        "Speed": [
-          0,
-          0
-        ],
-        "Size": [
-          [
-            0,
-            3
-          ],
-          [
-            1,
-            5
-          ]
-        ],
-        "Rotation": [
-          0,
-          0
-        ],
-        "FlipbookLayout": "Grid4x4",
-        "FlipbookMode": "OneShot",
-        "LightInfluence": 0,
-        "Color": {
-          "Color3": [
-            28,
-            23,
-            38
-          ]
-        },
-        "LightEmission": 0,
-        "Transparency": 0.15,
-        "ZOffset": 0.45
-      },
-      "Emit": [
-        [
-          0,
-          1
-        ]
-      ],
-      "Tracks": {
-        "At": [
-          [
-            0,
-            {
-              "Vector3": [
-                0,
-                0.7,
-                -1.6
-              ]
-            }
-          ]
-        ]
-      },
-      "Why": "Click's dark pass",
-      "From": "Raise",
+      "Why": "the boss: the ward lit to its middle, in its hue",
       "Body": "HumanoidRootPart"
     }
   }

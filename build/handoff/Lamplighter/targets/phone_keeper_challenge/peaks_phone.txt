@@ -1,0 +1,2 @@
+The peaks at a small landscape phone (667x370), left to right, 3 a row: C3_pulse (keeper_challenge, frame 6), C4_wide_ring (keeper_challenge, frame 8).
+peaks_squint.png: the same, brought to 96 px high and back up (does the shape still read at a glance?).

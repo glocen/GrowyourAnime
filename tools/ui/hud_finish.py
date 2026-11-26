@@ -62,6 +62,7 @@ TAKES = {
 }
 
 CARD = (12, 50, 206, 58)
+ART = None          # the signature's art: None draws the flat mark; else art(P, cx, cy, inner radius, state) (hud_icons.py)
 FOE = (318, 50, 216, 50)
 SIG = (47, 160, 33)          # the signature's centre and radius: 66 across, the TAP height
 AUTO = (96, 147, 66, 26)
@@ -324,10 +325,13 @@ def signature(P, state="ready", key=False):
     if not cooling:   # the disc's lit curve, from below
         P.add(f'<path d="M{cx - r * 0.6:.1f},{cy + r * 0.58:.1f} A{r * 0.84:.1f} {r * 0.84:.1f} 0 0 0 {cx + r * 0.6:.1f},'
               f'{cy + r * 0.58:.1f}" fill="none" stroke="#FFFFFF" stroke-opacity="0.4" stroke-width="1.6" stroke-linecap="round"/>')
-    s = 38
-    P.add(f'<g opacity="{0.42 if cooling else 1}">')
-    P.icon("fist", cx - s / 2, cy - s / 2 + 1, s, ink="#22170A", o=0.9)
-    P.add("</g>")
+    if ART:
+        ART(P, cx, cy, r - 6.1, state)
+    else:
+        s = 38
+        P.add(f'<g opacity="{0.42 if cooling else 1}">')
+        P.icon("fist", cx - s / 2, cy - s / 2 + 1, s, ink="#22170A", o=0.9)
+        P.add("</g>")
     if cooling:
         P.word(cx, cy + 9, "4", 26, fill="#FFFFFF", stroke=GOLD["ink"], anchor="middle", ratio=0.2)
     if g:

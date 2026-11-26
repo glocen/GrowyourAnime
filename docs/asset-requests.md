@@ -5257,6 +5257,39 @@ The script is `tools/ui/hud_finish.py`.
 - **To Faber:** skin piece 1's block with F2's construction now. The icons go in as images, so they swap in later without a rebuild.
 - **The icons are their own piece next:** painted icons in our style, and the signature press's first, since the squint reads the press first. This follows Modulo's base targets, with targets in pairs. Today's flat marks stay in the dev build until then.
 
+### Modulo: the press's painted icon, two directions for the pick (2026-11-27, 00:47; started 00:37)
+
+On research's pick above, which puts the icons after the base targets. Those wait on memory: the guard stopped Blender at 00:36, with 0.58 GB free and Studio holding 2.2 GB. The icon needs no Blender, so it came first.
+
+Files are in `build/handoff/UI/hud_overhaul/icons/`:
+- `icons_press.png`: today's flat mark, I1 and I2, each ready, firing and cooling, on F2's press at 3x;
+- `phone_press_x4.png`: the three presses cropped from the smallest phone's frames, enlarged four times by pixel (ffmpeg; no new art);
+- each direction's frame at 1920 and on the smallest phone.
+
+The script is `tools/ui/hud_icons.py`. The press takes any art through `hud_finish.ART`.
+
+- **The subject: Rook's armoured fist toward us** (AR1's slate gauntlet as a fist, the orange band at the wrist).
+  - It is painted piece by piece: metal ramps lit from above, with the disc's gold bounced warm at the foot; hard cel shades; a heavy ink outline; thin ink and hatching in the shade; a specular on each knuckle; rivets.
+  - On firing, the knuckles' striking faces burn white-gold. Cooling drains the art to grey under its count.
+- **I1, the emblem:** the fist alone on the gold, with a light behind it.
+- **I2, the scene:** the disc filled with the Haymaker's moment: an orange burst, rushing lines, a white star behind the fist, the shockwave's two front arcs on the ground, and debris.
+- **What failed first:** the gauntlet modelled as boxes in three dimensions read as a screen or an oven, not a punch. It was dropped on its main read, and the fist's silhouette kept.
+- **Gates (by eye, on the phone crop):**
+  - Both read as a fist at the smallest phone.
+  - I1 reads first: slate on gold is the strongest contrast.
+  - I2's burst competes with the fist at that size.
+- **The director's bar,** beside our Anime Crusaders X captures (kept in my scratch only):
+  - **Nearer than the flat mark:** the heavy ink, the hard cel shades and the painted ramps are their family.
+  - **Still short:** theirs carry more drawn detail inside each form and more saturated colour, and fill more of their frame. Ours is grey steel and fills about 60% of the disc.
+  - Closing that gap is a finish step on the picked direction, not a new direction.
+- **My read:** I1, for the read at phone size. I2 is the stronger moment at 3x.
+- **For Faber, once picked:**
+  - one image per state (ready, firing, cooling), or one image with the cooling's drain as an ImageColor and transparency;
+  - the press's rings stay frames;
+  - the four other launch Voidkin's signatures follow the picked direction.
+- **Content check:** PASS (fresh eyes, rules 2 to 4): a punch toward the viewer, no political sign; the slate cut-off end reads as armour. Before upload, the check runs again on the exported images, at 64 px on a dark ground.
+- **Next:** research's pick, in pairs. Then the eye, Auto, skull, gem and sword in the picked direction, and the base targets once memory allows.
+
 ## AR63. Pip, redesigned in the make (Modulo, for research's pick and the director's look, then its finish; Faber's install after)
 
 On the director's order of 2026-11-23, by 22:52 (Rook, Kirra, Pip, Lyric). The frame is AR60's: what holds, the checks, and the pictures. What holds is his row in `docs/roster.md` (Common, Purple, Mage, Fire, Lantern Burst, Kindle). Research's steer: his lantern is a young mage's, dark metal and glass with a living flame inside, never a paper festival lantern.

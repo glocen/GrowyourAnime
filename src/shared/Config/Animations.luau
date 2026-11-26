@@ -5,7 +5,8 @@
 -- (ServerStorage.RBX_ANIMSAVES.R6.NL_<Clip>, which the server hands each client to register), and not at all live:
 -- every clip is published before a public build (handbook/art/animation.md, "Importing and publishing").
 -- Rigs: each rig's shared reactions, one clip set per rig, not per Voidkin (docs/design.md, "States in a fight"). R6
--- with open legs uses Rook's, as does TR2's stand-in; R6 in a robe uses Pip's (AR4: Pip and Lyric), named by a Voidkin row's Rig. The
+-- with open legs uses Rook's, as does TR2's stand-in; R6 in a robe uses Pip's (AR4), named by a Voidkin row's Rig; Watt,
+-- Kirra and Lyric have their own (AR11, AR66), their props and tails keyed in them. The
 -- Shade's (AR2) is every Shade's: its Down bursts on the clip's `Burst` marker. The Lamplighter's (AR7) is its own: the
 -- Shade's clips lay its pole through its coat. A fighter's own stance, over its rig's Idle, is on its row (a Voidkin's
 -- Kit, an enemy's Idle; Definitions.Actions, IdleOf).
@@ -55,9 +56,10 @@ return {
 		KirraIdle = 108318089099016,
 		KirraReveal = 111050593111477,
 		KirraScarfStep = 105107044044384,
-		KirraTailDown = 78020989083961,
-		KirraTailHit = 138756698904527,
-		KirraTailUp = 108687466607895,
+		-- 2026-11-26: AR66's, Kirra's own reactions in place of her tail's layers over Rook's
+		KirraHit = 100347512530324,
+		KirraDown = 104340648024258,
+		KirraUp = 89020276273109,
 		PipCombo = 103542498101838,
 		PipDown = 103301007001277,
 		PipHit = 73299738552534,
@@ -78,6 +80,10 @@ return {
 		LyricIdle = 136586189975169,
 		LyricReveal = 101522079487373,
 		LyricSkip = 94294294123885,
+		-- 2026-11-26: AR66's, Lyric's own reactions in place of Pip's, her stand and speakers keyed in them
+		LyricHit = 86395559014665,
+		LyricDown = 102460695668151,
+		LyricUp = 138529485516868,
 		ShadeAttack = 119217500758699,
 		ShadeAttackLeft = 132742315983424,
 		ShadeBurst = 120794324997203,
@@ -100,15 +106,17 @@ return {
 		-- Watt's own (AR11): the spear slung on his back is keyed in each (its joint on the Torso), so the shared sets would
 		-- leave it still through a fall
 		Watt = { Idle = "WattIdle", Hit = "WattHit", Down = "WattDown", Up = "WattUp" },
+		-- Kirra's and Lyric's own (AR66): her tail keyed with the body; her stand and speakers keyed in each, the stand left
+		-- standing while she lies
+		Kirra = { Idle = "KirraIdle", Hit = "KirraHit", Down = "KirraDown", Up = "KirraUp" },
+		Lyric = { Idle = "LyricIdle", Hit = "LyricHit", Down = "LyricDown", Up = "LyricUp" },
 		Shade = { Idle = "ShadeIdle", Walk = "ShadeWalk", Hit = "ShadeHit", Down = "ShadeBurst" },
 		Lamplighter = { Idle = "LamplighterIdle", Walk = "LamplighterWalk", Hit = "LamplighterHit", Down = "LamplighterDown" },
 	} :: { [string]: { [string]: string } },
 	-- A Voidkin's own layer over its rig's shared reaction, by its def and the reaction's role: it starts with the
-	-- reaction, one priority above it, and keys only what the shared set doesn't. Kirra's key her scarf alone, every body
-	-- joint at weight 0 (AR10, research's call on the reactions, option b), so the open set stays one set.
-	Layers = {
-		kirra = { Hit = "KirraTailHit", Down = "KirraTailDown", Up = "KirraTailUp" },
-	} :: { [string]: { [string]: string } },
+	-- reaction, one priority above it, and keys only what the shared set doesn't. None now: Kirra's tail layers (AR10)
+	-- went into her own set (AR66).
+	Layers = {} :: { [string]: { [string]: string } },
 	-- A clip's mirror, picked at random each time it plays, so a pack doesn't swing or reel in step (AR2).
 	Mirrors = {
 		ShadeAttack = "ShadeAttackLeft",
@@ -131,13 +139,10 @@ return {
 		LamplighterWalk = 4.94, -- at its Scale, 1.5 (Lamplighter.clips.json)
 	} :: { [string]: number },
 	Walk = { MinSpeed = 0.6, MaxRate = 3 }, -- studs a second below which it stands; the fastest it plays
-	-- A prop a Voidkin lets go of when it goes down, by its def (research's prop state for Lyric's stand, AR4, section 6):
-	-- its motor's piece leaves the hand Drop seconds into the Down clip (before its frame 12, at the blow), falls over Fall
-	-- seconds to lie flat Aside studs to the body's right and Along ahead (Lyric falls back, so hers lies by her body, clear
-	-- of her arm), and goes back to the hand over Back once Up begins.
-	Props = {
-		lyric = { Motor = "Staff", Drop = 0.1, Fall = 0.25, Aside = 2.9, Along = -1.5, Back = 0.3 },
-	} :: { [string]: { Motor: string, Drop: number, Fall: number, Aside: number, Along: number, Back: number } },
+	-- A prop a Voidkin lets go of when it goes down, by its def: its motor's piece leaves the hand Drop seconds into the
+	-- Down clip, falls over Fall seconds to lie flat Aside studs to the body's right and Along ahead, and goes back to the
+	-- hand over Back once Up begins. None now: Lyric's stand (AR4, section 6) is keyed in her own Down and Up (AR66).
+	Props = {} :: { [string]: { Motor: string, Drop: number, Fall: number, Aside: number, Along: number, Back: number } },
 	-- The game's name for each shared clip, for its fades: the rigs' reactions and the enemies' moves. A Voidkin's own
 	-- clips take theirs from their place in its kit (Definitions.Voidkin, Kit; Definitions.Actions, RoleOf).
 	Roles = {
@@ -153,9 +158,14 @@ return {
 		WattHit = "Hit",
 		WattDown = "Down",
 		WattUp = "Up",
-		KirraTailHit = "Hit", -- her layers take their reaction's fades
-		KirraTailDown = "Down",
-		KirraTailUp = "Up",
+		KirraIdle = "Idle",
+		KirraHit = "Hit",
+		KirraDown = "Down",
+		KirraUp = "Up",
+		LyricIdle = "Idle",
+		LyricHit = "Hit",
+		LyricDown = "Down",
+		LyricUp = "Up",
 		ShadeIdle = "Idle",
 		ShadeWalk = "Walk",
 		ShadeAttack = "Swipe",

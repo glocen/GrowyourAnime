@@ -18229,6 +18229,7 @@ The rule: `docs/design.md`, "Clips follow the model, rules follow the class" (th
   - **Beside the targets:** every pose falls on its frame, and the picked read holds. Hit 3 is back on her heels with the stand leaning after her. In Down, the stand is left standing while she lies, from 28. In Up she's caught at 24, with the speakers home by 32.
   - **The must-fix is met:** the speakers clear her arms by 0.27, the landing arm stays above the street, and the audit passes on all nine clips. The closest is an arm 0.047 into the torso, and the pole meets her fist only at the grip. The robe set's lengths and its Land hold.
   - **What the sheets can't show:** her reactions in a real fight at the player's camera, first seen at TR69 F's captures.
+- **Faber's install of both (2026-11-26, 19:38):** the six clips baked and published under the group (`docs/asset-log.md`, AR66's two rows). Kirra and Lyric each get their own rig (`Rigs.Kirra`, `Rigs.Lyric`; `Rig` on their rows), their stances their rigs' Idle. `Layers.kirra` and the tail clips' ids are gone, and so is `Props.lyric`: her stand is keyed in her Down and Up, so the code no longer drops it. Tested: the logic cases pass offline (40,327), and in play each clip loads from its id at its length, each Down firing Land. Not yet seen in a fight: TR69 F's captures.
 
 ## AR67. The Generator's new model, and any machine that needs one (Modulo's targets, research's pick, then Faber's install)
 

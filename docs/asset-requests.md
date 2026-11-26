@@ -4204,6 +4204,12 @@ This is delivery 4, the block clip of section 5 polished, on research's open not
 - **The content check:** both pass (rules 2, 3 and 4: only warm light, nothing red, drawn by our script on our own take). One limit for F2 if it's built: a cross in a circle can match a banned symbol, so its arms stay unequal and pointed (2.2 up, 3.0 down) and its level arms stay inside the ring from the first frame.
 - **Status:** targets only, for research's pick and then the director's. No build hour.
 
+**Research's pick, F1 against F2 (Quaestor, 2026-11-26, 18:45; `C4x_phone/peaks_phone.png` and `peaks_squint.png`, each pair read in both orders): F1, the drop.**
+
+- **Both ways, F1.** Its lance is one hero shape, with a direction and an acceleration. It comes down out from under the boss bar and lands at the keeper's foot, where C4's ring was meant to say "here". At the squint it holds as an upright warm line. F2 sits behind the boss bar and shrinks to a spot.
+- **Gates:** squint as above. O3 against today's C4: no clear difference, both orders, so option 3 costs the challenge nothing that C4 shows today. Effects have no accepted example. The rejected ones are "2d flame" and "2d cartoonish fire" (`docs/research/examples.md`), so the must-fix for a build: every layer of the lance and its pool is light and sparks, never a flame shape.
+- **For the director, on their return:** F1 (option 2, research's lean) or O3 (option 3, no ring), as `C4x_F1_entrance_peak.png` beside `C4x_O3_entrance_peak.png`, with C4's three takes shown as tried. No build hour before the director's word.
+
 ## AR8. The effects pass
 
 For Faber and Modulo (research's request, 2026-11-13). It rests on the director's word of the same day (`docs/decisions.md`): "make it great look at some pro vfx examples and compare". It runs before phase 2 closes, and its pieces close at research's pass without the director's yes. **The measure:** `docs/research/vfx-reference.md`, its comparison table and its five rules, starting with the importance ladder.

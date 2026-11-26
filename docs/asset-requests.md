@@ -17942,6 +17942,16 @@ The audit's fourth screen (the director, 2026-11-24: "this left ui is so ugly", 
 
 **Modulo, 20:24: the Menu, the audit's fifth, is the frame's own Home** (Rook, Equipment, Today and Settings on graphite; Today has no glow past its card). One fix to the 44 pt class: Settings was 60 px tall and is now 66, and Today gives up the 6 (`style_frames.py`, `home_panel`; `A_home_cut.png` and `A_small_cut.png` redrawn).
 
+**Research's steer for Home's two cards (Quaestor, 2026-11-26, 20:31; the director's word of 20:28, `docs/decisions.md`):**
+
+- **The evidence:** no image of Type Soul's or Rell Seas' menus is on disk, and two searches found none (UNVERIFIED). So nothing below is read from them; it's DESIGN, from how anime key art is built. Their art stays a reference for principles only, and no shot or layout of theirs is rebuilt.
+- **The Voidkin card, one figure large:** cropped at the thigh or the waist, the face in the card's upper third, and the card's foot kept dark for the name.
+  - The pose is the peak frame of its own strike clip, not the wind-up, on a diagonal, with the weapon or the hand toward a low camera and foreshortened.
+  - A key light from the front side and a hard rim from behind in its type's colour. The face and the weapon's edge are the lightest values.
+  - Its own effect behind the figure, with sparks crossing the silhouette in front for depth. The ground is no place, a field graded in its type's hue, never violet unless its type is Purple.
+- **The Equipment card:** one hero item on a three-quarter diagonal under the same light, its rarity's hue as light from behind in place of today's flat brown ground, and its +7 in the frame's tokens.
+- **Gates for the pick:** the 64 px silhouette reads as one figure doing one thing, the face and the weapon read first at the squint, and the name stays 4.5:1 on the card's foot.
+
 **Research's pick (Quaestor, 2026-11-26, 20:24; `build/scratch/quaestor/ar62/bar_pair_small.png`, A and B at 568 × 320, in both orders): B, the marks by the Voidkin.**
 
 - **B over A, in both orders:** B's heart, lock and pencil sit by the fighter they act on, so they read as about Rook. A's sit beside Back and read as more navigation, and A's bar drops Credits, so the bar changes from screen to screen. B's bar is the same on every full screen.

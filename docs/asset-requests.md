@@ -17715,6 +17715,13 @@ Research, 2026-11-24, 16:53, on the director's word, "the hair still need a rewo
 - **The gaps round 40's reader named that round 41 leaves open:** the outline flares like a bell where the catalog hugs the head; the edges fray into thin spikes; the crown tips are thinner than the catalog's full-width lock ends; a flat shelf at the back's upper left.
 - **The stage's sheen on the hair is calibrated, not measured:** 0.1, where the stage's own is 0.5. Our sky is one colour all round, so its sheen greys a black hair to a mean of 0.20, where the catalog's own pictures read 0.10. The exported pictures are untouched; Faber's install is the check. 5,852 triangles, thinned at the finish. Nothing uploaded.
 
+### Rounds 42 and 43, on the director's word (2026-11-26, about 13:00 to 13:07)
+
+- **The director, on round 41** (in Modulo's session): "good job with rook new model its look much better idk if u finished if u wanna work a bit go ahead it your call", then "the hair look a bit like pasta". **Covers:** round 41's look on Rook, and leave to work on the hair a little more if Modulo chooses. Not acceptance: the pasta read is open.
+- **Take RP** (`rook_ribbons(solid=True)`): one light across the mass, never a stripe down each lock; the side and back layers fewer, wider, shorter and laid close, with no thin twins and little curl; a crisp crease where a lock lies over the next; the side tips flicked out. 1.62 heads wide, 0.53 of a head over the head with the crown's tips, 4,284 triangles. Why it read as pasta: `docs/research/hair-read.md`, "Rounds 42 and 43".
+- **Blind read of round 42** (a fresh reader, RS and RP unnamed, the catalog the bar): RS reads as pasta, RP "mostly no", RP nearer the catalog. At the game's camera a phone player would take RP for a catalog hair; close up, not yet: the shading read soft and rubbery. Round 43 brought back the crisp crease and flicked the side tips out, and wasn't read.
+- **Sent to the director** at 13:07: `build/reference/hair/compare_rook_r43.png` (internal); ours alone: `build/handoff/Rook/hair/hair_rook_ribbons.png`. Rook goes into AR62's style frames with RP. Nothing uploaded.
+
 ## AR65. The base, simpler: a redo (research's direction on the director's freedom; Faber's cut pass, then Modulo's targets, then the build)
 
 **Why:** the director, 2026-11-26: "the base really look like a mess it should be way more simpler, easy to the eye, to much blooms and hard to notice different machine i will give you creative freedom to cut/add major stuff" (the register). It's a redo under the 11:11 word: targets beside the old, research's pick, then the build. Research's calls below are made inside that freedom.

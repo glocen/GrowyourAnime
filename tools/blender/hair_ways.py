@@ -476,11 +476,15 @@ class Ribbons(Sheets):
         def paint(u, v, P, N):
             top = u <= rim
             t = np.where(top, u / rim * 2 - 1, 0.0)            # across the ribbon: -1 its raised edge, 1 its tucked one
-            c = self.dark + (self.lit - self.dark) * ((0.22 + 0.78 * ease(v, 0.0, 0.7)) * (0.82 - 0.18 * t))[..., None]
+            across = 0.9 - 0.05 * t if self.one_band else 0.82 - 0.18 * t   # a lock's raised edge lit over its tucked one
+            c = self.dark + (self.lit - self.dark) * ((0.22 + 0.78 * ease(v, 0.0, 0.7)) * across)[..., None]
             for at, wide, begin in lines:
                 c = c * (1 - 0.3 * np.exp(-((t - at) / wide) ** 2) * ease(v, begin, begin + 0.15))[..., None]
             shine = np.exp(-((P[..., 2] - band) / self.ring[1]) ** 2) * gloss + 0.05
-            c = c + (self.glint - c) * (shine * np.exp(-((t + 0.3) / 0.45) ** 2))[..., None]
+            # the ring across the lock's whole face, so it crosses the mass as one band; held to a line down each lock,
+            # every lock lying in the band's height carried a stripe down its length, a noodle's (round 41: "pasta")
+            wide = 1 - 0.6 * ease(t, 0.4, 1.0) if self.one_band else np.exp(-((t + 0.3) / 0.45) ** 2)
+            c = c + (self.glint - c) * (shine * wide)[..., None]
             c = c + (self.glint - c) * (self.sheen * np.exp(-((t + 0.35) / 0.3) ** 2) * ease(v, 0.15, 0.6) * (1 - ease(v, 0.8, 1.0)))[..., None]
             c = c * (1 - self.tuck * ease(t, 0.4, 1.0))[..., None] * (1 - 0.35 * ease(-t, 0.84, 1.0))[..., None]
             return np.where(top[..., None], c, self.dark * 0.7)
@@ -492,6 +496,7 @@ class Ribbons(Sheets):
     round = 0.0         # how far a ribbon's light is the whole mass's (a ball round the head), not its own
 
     tuck = 0.86         # how dark a ribbon's tucked edge falls: its crease
+    one_band = False    # the ring of light across each lock's whole face, never a line down it
     spec = None         # the stage's sheen on the hair (Principled's Specular IOR Level); None leaves the stage's own
 
     def build(self, folder, name="Hair"):
@@ -603,7 +608,7 @@ class Ribbons(Sheets):
                         off=(off[0], off[1] * r.uniform(0.85, 1.2)), n=n, tilt=tilt, k=r.uniform(0.9, 1.08))
 
 
-def rook_ribbons(accent=None):
+def rook_ribbons(accent=None, solid=False):
     """Rook's hair: a short, tousled crop, black, as the catalog's best-loved boys' hairs are laid. The whorl sits at
     the back of the crown; from it thin ribbons sweep forward over the top to the brows and down round the sides and
     the back, each bowed, each leaving the head over its last part and hooking out. Three layers and a hem of short
@@ -612,6 +617,15 @@ def rook_ribbons(accent=None):
     # lit as one mass with one band across the upper dome (the blind read of round 37: a sheen on every strand,
     # with dark creases between, reads grey and busy at size)
     h.ring, h.gloss, h.sheen, h.round, h.tuck = (0.74, 0.16), 0.2, 0.12, 0.85, 0.55
+    # `solid` (the director, 2026-11-26, 13:0x, on round 41: "the hair look a bit like pasta"): the catalog's hairs are
+    # one dense mass with short flat locks cut into its outline; ours hung loose, long and curling, each lit as a tube.
+    # So: no light down each lock, a softer crease and a flatter fold, and the side and back layers fewer, wider,
+    # shorter, closer to the head, with no thin twins and little curl.
+    flat = dict(tall=0.07) if solid else {}
+    if solid:
+        # a crisp dark crease where a lock lies over the next, as the catalog's (the blind read of round 42: a soft
+        # crease read rubbery, plastic leaves)
+        h.sheen, h.round, h.tuck, h.one_band, h.ring = 0.0, 0.8, 0.78, True, (0.7, 0.12)
     # Calibrated, not measured in the engine: our stage's sky is one colour all round, the ground too, so its sheen
     # greys a black hair to a mean of 0.20, where Roblox's own pictures of the catalog's black hairs read 0.10 with
     # black between the locks (hair-read.md). Faber's install is the check.
@@ -650,16 +664,25 @@ def rook_ribbons(accent=None):
                    bow=sgn * r.uniform(0.05, 0.2), tail=tail * r.uniform(0.75, 1.3), off=(off[0], off[1] * r.uniform(0.85, 1.15)),
                    flick=r.uniform(*flick), curl=sgn * r.uniform(*curl), n=n, nt=nt, k=r.uniform(0.45, 0.55), **make)
 
-    # the hem: short points under everything, round the back and the sides
-    ring((70, 290), 9, 64, 86, 0.22, 0.14, (0.02, 0.03), flick=(15, 40), curl=(10, 25), nt=5, base=1.0, full=0.15, sharp=1.0)
-    # the middle layer round the sides and the back, swung back from the face
-    ring((48, 150), 7, 36, 74, 0.22, 0.2, (0.05, 0.05), turn=14, flick=(10, 30), curl=(10, 25), nt=6, base=1.0, full=0.15, sharp=1.0)
-    ring((210, 312), 7, 36, 74, 0.22, 0.2, (0.05, 0.05), turn=-14, flick=(10, 30), curl=(10, 25), nt=6, base=1.0, full=0.15, sharp=1.0)
-    ring((150, 210), 4, 36, 104, 0.22, 0.2, (0.05, 0.05), flick=(15, 35), curl=(10, 25), nt=6, base=1.0, full=0.15, sharp=1.0)
-    # the top layer from the whorl, down round the sides and the back
-    # the longest of all, so their points kick out past the shorter layers under them, never a cap over a fringe of shards
-    fan([58, 90, 122, 154], 82, 0.46, 0.3, (0.17, 0.09), split=12, bow=0.16, ess=0.03, sweep=1, flick=(25, 55), curl=(15, 35), nt=6, nape=22, base=0.95, full=0.3, sharp=1.0)
-    fan([-58, -90, -122, -154, 180], 82, 0.46, 0.3, (0.17, 0.09), split=12, bow=0.16, ess=0.03, sweep=1, flick=(25, 55), curl=(15, 35), nt=6, nape=22, base=0.95, full=0.3, sharp=1.0)
+    if solid:
+        ring((70, 290), 7, 62, 80, 0.34, 0.12, (0.02, 0.03), flick=(8, 20), curl=(4, 12), nt=4, base=1.0, full=0.15, sharp=1.0, **flat)
+        ring((48, 150), 5, 36, 70, 0.36, 0.16, (0.04, 0.04), turn=14, flick=(14, 28), curl=(4, 12), nt=5, base=1.0, full=0.15, sharp=1.0, **flat)
+        ring((210, 312), 5, 36, 70, 0.36, 0.16, (0.04, 0.04), turn=-14, flick=(14, 28), curl=(4, 12), nt=5, base=1.0, full=0.15, sharp=1.0, **flat)
+        ring((150, 210), 3, 36, 106, 0.38, 0.16, (0.04, 0.04), flick=(8, 20), curl=(4, 12), nt=5, base=1.0, full=0.15, sharp=1.0, **flat)
+        for ends in ([58, 90, 122, 154], [-58, -90, -122, -154, 180]):
+            fan(ends, 76, 0.58, 0.22, (0.12, 0.06), split=0, bow=0.14, ess=0.0, sweep=1, flick=(24, 40), curl=(0, 8), nt=5, nape=24,
+                base=0.95, full=0.3, sharp=1.0, **flat)
+    else:
+        # the hem: short points under everything, round the back and the sides
+        ring((70, 290), 9, 64, 86, 0.22, 0.14, (0.02, 0.03), flick=(15, 40), curl=(10, 25), nt=5, base=1.0, full=0.15, sharp=1.0)
+        # the middle layer round the sides and the back, swung back from the face
+        ring((48, 150), 7, 36, 74, 0.22, 0.2, (0.05, 0.05), turn=14, flick=(10, 30), curl=(10, 25), nt=6, base=1.0, full=0.15, sharp=1.0)
+        ring((210, 312), 7, 36, 74, 0.22, 0.2, (0.05, 0.05), turn=-14, flick=(10, 30), curl=(10, 25), nt=6, base=1.0, full=0.15, sharp=1.0)
+        ring((150, 210), 4, 36, 104, 0.22, 0.2, (0.05, 0.05), flick=(15, 35), curl=(10, 25), nt=6, base=1.0, full=0.15, sharp=1.0)
+        # the top layer from the whorl, down round the sides and the back
+        # the longest of all, so their points kick out past the shorter layers under them, never a cap over a fringe of shards
+        fan([58, 90, 122, 154], 82, 0.46, 0.3, (0.17, 0.09), split=12, bow=0.16, ess=0.03, sweep=1, flick=(25, 55), curl=(15, 35), nt=6, nape=22, base=0.95, full=0.3, sharp=1.0)
+        fan([-58, -90, -122, -154, 180], 82, 0.46, 0.3, (0.17, 0.09), split=12, bow=0.16, ess=0.03, sweep=1, flick=(25, 55), curl=(15, 35), nt=6, nape=22, base=0.95, full=0.3, sharp=1.0)
     # the top layer forward over the head to the brows: the fringe, broad at the root, overlapping, drawn to needles; the middle longest
     # it fans from its own point at the top of the front, so from the front its locks part outward, never run parallel
     F = (0.0, 16.0)
@@ -673,10 +696,11 @@ def rook_ribbons(accent=None):
     for k, (a, ph, w) in enumerate(((-62, 76, 0.32), (-26, 86, 0.56), (26, 82, 0.4), (58, 74, 0.32))):
         h.lock((F[0] + a * 0.25 + r.uniform(-6, 6), F[1] + r.uniform(-4, 4)), (a, ph), w, bow=(1 if k % 2 else -1) * r.uniform(0.04, 0.12),
                ess=0.03, lift=0.03, tail=0.2, off=(0.1, 0.25 + r.uniform(-0.02, 0.02)), flick=r.uniform(14, 30),
-               curl=(1 if a > 0 else -1) * r.uniform(15, 35), n=8, nt=4,
-               base=1.0, full=0.12, sharp=1.0, k=r.uniform(0.9, 1.06))
+               curl=(1 if a > 0 else -1) * (r.uniform(8, 18) if solid else r.uniform(15, 35)), n=8, nt=4,
+               base=1.0, full=0.12, sharp=1.0, k=r.uniform(0.9, 1.06), **flat)
     # over the top, the outer locks: they lie broad over the crown and sweep forward and out
-    fan([-62, -16, 30, 82], 64, 0.44, 0.22, (0.19, 0.27), split=0, bow=0.2, ess=0.04, sweep=1, flick=(6, 16), curl=(15, 35), spread=6, n=9, base=0.95, full=0.35, sharp=1.0)
+    fan([-62, -16, 30, 82], 64, 0.44, 0.22, (0.19, 0.27), split=0, bow=0.2, ess=0.04, sweep=1, flick=(6, 16), curl=(8, 18) if solid else (15, 35), spread=6, n=9,
+        base=0.95, full=0.35, sharp=1.0, **flat)
     # the crown's accent: what makes the hair known in silhouette, as the catalog's (hair-read.md): thin crescents that
     # grow out of the top and fly outward low, never upright, their faces turned half to the front so they read as
     # blades, not wires or horns. Points in studs, the face's middle at y 0, the top of the mass near z 5.5.
@@ -765,7 +789,8 @@ def tie_loop(tie):
 WHO_ = {
     "rook": dict(takes={"Rook": rt.take_a, "A": with_hair(rt, rt.take_a, rook), "T": with_hair(rt, rt.take_a, rook_sheets),
                         "R": with_hair(rt, rt.take_a, rook_ribbons),
-                        **{f"R{k[0].upper()}": with_hair(rt, rt.take_a, lambda k=k: rook_ribbons(k)) for k in ("split", "curl", "hooks")}},
+                        **{f"R{k[0].upper()}": with_hair(rt, rt.take_a, lambda k=k: rook_ribbons(k)) for k in ("split", "curl", "hooks")},
+                       "RP": with_hair(rt, rt.take_a, lambda: rook_ribbons("split", solid=True))},
                  today="Today's Rook (AR59's pick)"),
     "kirra": dict(takes={"Kirra": kt.take_a, **{k: with_hair(kt, kt.take_a, lambda k=k: kirra(k)) for k in "ABC"}},
                   today="Today's Kirra (AR60's fix)"),

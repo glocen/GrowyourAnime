@@ -93,8 +93,8 @@ def ember(at, radius, rate, size, drift, why):
             "Size": [[0, size * 0.6], [0.12, size], [0.7, size * 0.8], [1, 0]],
             "Squash": [[0, -1.0], [1, -0.4]],
             "Transparency": [[0, 0.2], [0.1, 0], [0.55, 0.05], [0.65, 0.3], [0.75, 0.1], [1, 1]],  # steady, one late flicker
-            "Color": [[0, c3(FIRE[0])], [0.3, c3(FIRE[1])], [1, c3(FIRE[1])]],
-            "LightEmission": 1,
+            "Color": [[0, c3(FIRE[0])], [0.2, c3(FIRE[1])], [1, c3(FIRE[1])]],
+            "LightEmission": 0.25,  # mostly laid over, not added: at 1 the orange added onto the pale sky read cream (21:36)
             "LightInfluence": 0,
             "ZOffset": 0.3,
         },
@@ -130,7 +130,7 @@ def freeze():
             "At": [[0, v3(0, start_h / 2 - ROOT_HEIGHT, 0), "Quart Out"], [SHUT, v3(0, SHELL_H / 2 - ROOT_HEIGHT, 0)], [FAR, v3(0, SHELL_H / 2 - ROOT_HEIGHT, 0)]],
             "Scale": [[0, v3(SHELL_W * 0.85, start_h / 2, SHELL_D * 0.85), "Quart Out"], [SHUT, v3(SHELL_W, SHELL_H / 2, SHELL_D)],
                       [FAR, v3(SHELL_W, SHELL_H / 2, SHELL_D)]],
-            "Transparency": [[0, 0.3, "Quad Out"], [SHUT + 2, 0.55], [FAR, 0.55]],  # held clear: the body shows through
+            "Transparency": [[0, 0.3, "Quad Out"], [SHUT + 2, 0.45], [FAR, 0.45]],  # held clear, the body showing through; at 0.55 its blue read grey
             "Glow": [[0, 1.5, "Linear"], [SHUT, 1.5, "Linear"], [SHUT + 1, 4, "Quad Out"], [SHUT + 3, 1.2], [FAR, 1.2]],  # its edge flashes once
         },
         "Why": "the hero: a shell of ice snapping up out of the frost and shut round the body",

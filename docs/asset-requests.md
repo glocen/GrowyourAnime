@@ -18224,6 +18224,10 @@ The rule: `docs/design.md`, "Clips follow the model, rules follow the class" (th
   - Lyric gets her own rig, in place of the robe set: `Rig = "Lyric"` in her definition, and `Rigs.Lyric = { Idle = "LyricIdle", Hit = "LyricHit", Down = "LyricDown", Up = "LyricUp" }`.
   - Upload `LyricHit`, `LyricDown` and `LyricUp`.
 - **Status:** made and self-reviewed (the audit, the probe, and the build beside the targets). Content check before upload: PASS. The reach after the stand while she lies flat isn't a held salute, and nothing else comes near the rules. Delivered to the handoff for research's verdict, then Faber's install. Not accepted.
+- **Research's verdict (Quaestor, 2026-11-26, 19:24; `lstrips/beside_{Hit,Down,Up}.png`, the target above the build): passes, and goes to Faber's install with Kirra's.**
+  - **Beside the targets:** every pose falls on its frame, and the picked read holds. Hit 3 is back on her heels with the stand leaning after her. In Down, the stand is left standing while she lies, from 28. In Up she's caught at 24, with the speakers home by 32.
+  - **The must-fix is met:** the speakers clear her arms by 0.27, the landing arm stays above the street, and the audit passes on all nine clips. The closest is an arm 0.047 into the torso, and the pole meets her fist only at the grip. The robe set's lengths and its Land hold.
+  - **What the sheets can't show:** her reactions in a real fight at the player's camera, first seen at TR69 F's captures.
 
 ## AR67. The Generator's new model, and any machine that needs one (Modulo's targets, research's pick, then Faber's install)
 

@@ -296,13 +296,18 @@ def idle(t):
     t.key(144, ease="sine", T=(5, -24, 0), crouch=0.12, RA=(14, 0, 22), LA=(60, 0, -2), TP=(0, 0, 0))
 
 
-def combo(t):
-    """A jab to find you, a hook with the ram to move you, then the ram straight down, and each one costs him more."""
+def combo(t, snap=False):
+    """A jab to find you, a hook with the ram to move you, then the ram straight down, and each one costs him more.
+
+    `snap` is TR66 row 13's experiment, the jab retimed and nothing else: the same poses and the same hit frame, a wind
+    of 9 frames (5 today), a strike of 3 (7 today) that speeds into the contact, and the hit held to 18 (15 today)
+    while the tape swings on. The hook's wind keeps its frame, so the rest of the combo is today's."""
+    wind, strike, held = (9, "snap", 18) if snap else (5, "in", 15)
     t.key(0)
-    t.key(5, ease="in", T=(4, -14, 0), LA=(50, 0, -6))
+    t.key(wind, ease=strike, T=(4, -14, 0), LA=(50, 0, -6))
     t.key(12, "1: the jab", T=(9, -22, 0, 0, 0, 0.25), LA=("reach", JAB, (80, 0, -40)), RA=(4, 0, 24), TP=(-20, 0, 0))
     t.mark(12, "Hit1")
-    t.key(15, T=(9, -22, 0, 0, 0, 0.25), TP=(14, 0, 0))
+    t.key(held, T=(9, -22, 0, 0, 0, 0.25), TP=(14, 0, 0))
     t.key(26, "wound for the hook", T=(3, -50, 0, 0, 0, -0.15), LA=(64, 0, -2), RA=(-28, 0, 34), crouch=0.22, TP=(6, 0, 0))
     t.key(40, ease="in", T=(3, -55, 0, 0, 0, -0.2), RA=(-34, 0, 36), TP=(0, 0, 0))
     t.key(45, ease="lin", T=(5, -26, 0, 0, 0, 0.02), RA=(20, 0, 70), LA=(50, 0, -10), crouch=0.21, TP=(0, 0, 10),
@@ -427,7 +432,7 @@ def work(t):
 
 
 CLIPS = {"Idle": idle, "Combo": combo, "Haymaker": haymaker, "Hit": hit, "Down": down, "Up": up, "Reveal": reveal,
-         "Work": work}
+         "Work": work, "ComboSnap": lambda t: combo(t, snap=True)}   # ComboSnap: TR66 row 13, beside Combo by a live switch
 
 
 # --- checks and outputs ---------------------------------------------------------------------------------------------

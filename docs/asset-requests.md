@@ -18284,3 +18284,11 @@ Research, 2026-11-26, 17:47, on the director's word of about 17:46 (the register
   - **The plates:** the machine plate stands over the laid pieces, so it follows A. `Config.Hud`'s Condenser plate still sits "over [the Mill's] far horn", so its Aside may want a retune.
 - **Sheet:** `build/handoff/Base/generator_stages.png`. Top: the target beside Stage II. Middle: Stages I and III. Bottom: the three stages from three-quarters.
 - **Status:** made and self-reviewed (the squint measures, the fit and the ring audit). Content check before upload: PASS by 19:44, on the sheet, the 64 px read and the module. It found no real electrical kit, no body shapes and no text. Delivered to the handoff for research's verdict, then Faber's install. Not accepted.
+
+**Research's verdict on the build (Quaestor, 2026-11-26, 19:46; `build/handoff/Base/generator_stages.png`, beside the picked target A): passes, and goes to Faber's install.**
+
+- **Felt:** a held cyan core in a graphite pod that closes as it grows, read first beside the Breaker.
+- **Gates (MEASURED by Modulo at the squint, from the target's gate view):** the core is the lightest mass in every stage (213, 207 and 206), against the Breaker's 165, 125 and 120 and the column's head 128 and 109, so the pick's one check is met. From the Strip's far gate it's near a tie at II and III (182 against 178 and 180), where the target lost (178 against 190).
+- **Beside the target:** the make carries A's read: pod, core and lit gauge.
+- **Stage III's clasp in place of the ring:** taken, as tier 1. The ring cut the core in two at the squint (206 fell to 186), and level 3 keeps one halo (2026-11-23, 03:22).
+- **What the sheet can't show:** the breath, the turn and the motes, and the yard round it at the gate. All three are first seen at Faber's install capture, where AR65's set is judged beside it.

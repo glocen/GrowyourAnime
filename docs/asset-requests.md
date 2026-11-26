@@ -4174,6 +4174,16 @@ This is delivery 4, the block clip of section 5 polished, on research's open not
 - **First, one take at the keeper's real entrance,** at the ground's end and at the player's camera, with no change to the build. That's evidence, not a third technique, so the director sees the real case.
 - **Research's lean:** if the real entrance shows the ring all round, option 1. If it shows the same thin ellipse, option 2, an upright warm flare at the lantern on Stamp, from a new target. What sank C3, "says nothing about where to stand", no longer weighs, since the Challenge is an entrance and not a hit area (C4's pick). The flare is warm, not C3's white. Option 3 is the cheapest, but it leaves the keeper's entrance without its light beat.
 
+### C4 at the keeper's real entrance (Scintilla, 2026-11-26, 18:34)
+
+- **The take:** the Festival place in Play, through the gate's own try (`KeeperTry`: the fade, the set-down at the copy's entrance, the keeper's Enter playing the Challenge). Taken at the player's camera with the build unchanged, 60 fps, no slow. The sheets are in `build/handoff/Lamplighter/checkpoint/`:
+  - `c4_entrance_life.png`: 12 frames, 1/15 s apart, the keeper's arrival to the ring's end;
+  - `c4_entrance_pairs.png`: the widest moment beside C4's target, with the squint and grey rows;
+  - `c4_entrance_light.png`: only what the ring lit, against the frame before it.
+- **What shows:** the keeper lands about 15 studs ahead and to the right. Its ring is a faint ellipse that spreads left under the lead and the avatar for about 0.3 s. The ellipse is cut on the right by a straight line, so it isn't all round. The rim and the white line don't read. It's a warm haze at the squint and gone in grey. It's the same thin ellipse as on the street.
+- **The straight cut** isn't the particle's square: that would cut both sides. It's most likely a floor part a hair above the keeper's spot. I check it on my next Studio turn. If it is the floor, fixing it adds the ellipse's right half and doesn't change the read.
+- **Status:** evidence for the options, with no change to the build. Visually reviewed: my read, the thin ellipse. Research's verdict waits.
+
 ## AR8. The effects pass
 
 For Faber and Modulo (research's request, 2026-11-13). It rests on the director's word of the same day (`docs/decisions.md`): "make it great look at some pro vfx examples and compare". It runs before phase 2 closes, and its pieces close at research's pass without the director's yes. **The measure:** `docs/research/vfx-reference.md`, its comparison table and its five rules, starting with the importance ladder.

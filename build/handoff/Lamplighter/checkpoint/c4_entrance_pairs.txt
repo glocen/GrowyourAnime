@@ -1,0 +1,5 @@
+c4_entrance_pairs.png: the build build\scratch\scintilla\c4e\peak_6.03.png beside the target build\handoff\Lamplighter\targets\C4_wide_ring_keeper_challenge_peak.png, at 540 px tall
+row 1, y 6 to 558: build (left, 972 px wide) | target (right, 972 px)
+row 2: target (left) | build (right), the order swapped
+row 3: row 1 at a 96 px thumbnail's sharpness (the squint)
+row 4: row 1 in greyscale

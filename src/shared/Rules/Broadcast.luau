@@ -17,6 +17,7 @@
 --   Broadcast.Plain(parts) / Rich(parts, hex)      the words plain, or with the lit parts in a colour
 --   Broadcast.Fresh(seen, id, now)                 true the first time an id is met (ids kept Stale seconds)
 --   Broadcast.Queue() / Hear(queue, news, now, near) / Step(queue, now, covered)   the client's plate
+--   Broadcast.Chimes(news, me, others)            whether the plate's fade-in plays its cue (TR57, "The plate's cue")
 
 local Shared = game:GetService("ReplicatedStorage").Shared
 local Config = require(Shared.Config.Broadcast)
@@ -462,6 +463,13 @@ function Broadcast.Step(queue: Queue, now: number, covered: boolean): (News?, { 
 	local held = table.remove(queue.Waiting, pick) :: Held
 	queue.Last = now
 	return held.News, stale
+end
+
+-- The plate's cue (TR57, "The plate's cue"; Config.Cues' BroadcastPlate): someone else's find, as it fades in, while the
+-- player shows others' finds (`others`). A line of the player's own (`me`) stays silent: their find already sounded, its
+-- drop and its reveal. A chat-only line never reaches the plate, so never asks.
+function Broadcast.Chimes(item: News, me: number, others: boolean): boolean
+	return others and item.User ~= me
 end
 
 return Broadcast

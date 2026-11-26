@@ -317,7 +317,7 @@ local Config = {
 	Match = { On = true, Db = {} :: { [string]: { [string]: number } } },
 	-- TR64's big moments: cues the game plays by name at their moment (Cues.Moment), never by a hit's rules, each silent
 	-- until the director's ear picks its sound. Written below with the others.
-	Moments = { "LevelUp", "ShardDrop", "KeeperFall", "LeadDown", "GoalDone", "Record", "Reinforced", "ReinforceFailed", "MachineStage", "LeadHurt" },
+	Moments = { "LevelUp", "ShardDrop", "KeeperFall", "LeadDown", "GoalDone", "Record", "Reinforced", "ReinforceFailed", "MachineStage", "LeadHurt", "BroadcastPlate" },
 	Front = 12, -- studs in front of the camera a moment's cue (and the panel's tap) plays from: inside every cue's Near, never on the listener (8.5 dB down there, AR39)
 	-- A shard's drop note by its grade, as playback speeds (TR64's note set, A C D E): G and the octave stay the reveal's,
 	-- so a drop never sounds like a Legendary. A grade not here (a starter's) plays the Standard's.
@@ -368,6 +368,7 @@ do
 	cues.ReinforceFailed = before(nil, 1)
 	cues.MachineStage = before(nil, 2)
 	cues.LeadHurt = before(nil, 2)
+	cues.BroadcastPlate = before(nil, 1) -- TR57's plate: someone else's find, on its fade-in (Rules.Broadcast.Chimes)
 end
 
 -- An arrangement of a pilot: its own layers, and its pilot's bus, spreads, voices and reach.

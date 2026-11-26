@@ -3,7 +3,8 @@
 -- server shows once in the target card's place at the top centre, in our words with the finder's display name, and
 -- stays in the chat; an open screen holds the next until it closes. The plate's gap is
 -- tuned short for the run and put back. On the smallest phone, the longest item's line keeps clear of the lead's card and
--- the pills, wrapping to two lines there.
+-- the pills, wrapping to two lines there. The plate's cue: someone else's line calls it once on its fade-in; the player's
+-- own, a chat-only line, and anyone's while others' finds are off call nothing.
 
 local Players = game:GetService("Players")
 local GuiService = game:GetService("GuiService")
@@ -12,6 +13,9 @@ local Shared = game:GetService("ReplicatedStorage").Shared
 local Config = require(Shared.Config.Broadcast)
 local HudConfig = require(Shared.Config.Hud)
 local Items = require(Shared.Definitions.Items)
+local Settings = require(Shared.Rules.Settings)
+local ProfileController = require(script.Parent.Parent.ProfileController)
+local Cues = require(script.Parent.Parent.Parent.Main.FighterController.Cues)
 local HudController = require(script.Parent.Parent.Parent.Main.HudController)
 local BroadcastController = require(script.Parent.Parent.Parent.Main.BroadcastController)
 local UI = script.Parent.Parent.Parent.Parent.UI
@@ -94,6 +98,68 @@ function BroadcastCases.Cases(): { any }
 				t.Server("Tune", "Broadcast.Plate.Gap", gap)
 				Layers.Box(nil)
 				Layers.Force(nil)
+			end,
+		},
+		{
+			Name = "Broadcast (TR57): the plate's cue, called once on someone else's line as it fades in; never on the player's own, a chat-only line, or with others' finds off",
+			Run = function(t: any)
+				Screen.Close()
+				local gap = Config.Plate.Gap
+				t.Server("Tune", "Broadcast.Plate.Gap", GAP)
+				local showing = (t.Server("Data") :: any).Settings.ShowFinds ~= false
+				local me = Players.LocalPlayer.UserId
+				local stamp = string.format("%.3f", os.clock())
+				local function line(n: number, user: number, reach: string, name: string): any
+					return { Id = `selftest-cue:{stamp}:{n}`, Kind = "Item", Reach = reach, Def = "sword", Rarity = "Legendary", Level = 0, User = user, Name = name }
+				end
+				local function clear(): boolean
+					return waitFor(t, Config.Plate.Seconds + 2, function(): boolean
+						return BroadcastController.Shown() == nil
+					end)
+				end
+				local function shows(name: string): boolean
+					return waitFor(t, GAP + 2, function(): boolean
+						local now = BroadcastController.Shown()
+						return now ~= nil and string.sub(now, 1, #name + 1) == `{name} `
+					end)
+				end
+				if not showing then
+					t.Server("Act", "Settings", { Name = "ShowFinds", Value = true })
+				end
+				t.Check("others' finds shown", waitFor(t, 2, function(): boolean
+					local view = ProfileController.Get()
+					return view ~= nil and Settings.On(view :: any, "ShowFinds")
+				end))
+				t.Check("no plate up", clear())
+				local heard = Cues.Heard("BroadcastPlate")
+				BroadcastController.Hear(line(1, 1234567890, "Server", "Mara"))
+				t.Check("someone else's line shows", shows("Mara"), tostring(BroadcastController.Shown()))
+				t.Equal("and calls the cue once, as it fades in", Cues.Heard("BroadcastPlate") - heard, 1)
+				-- While it stands: the player's own line waits, then a stranger's every-server line goes to the chat only.
+				BroadcastController.Hear(line(2, me, "Server", Players.LocalPlayer.DisplayName))
+				heard = Cues.Heard("BroadcastPlate")
+				BroadcastController.Hear(line(3, 1234567891, "All", "Ines"))
+				t.Check("a stranger's line behind a waiting one goes to the chat only", waitFor(t, 1, function(): boolean
+					return BroadcastController.Chatted() == "Ines found a Legendary Sword"
+				end), tostring((BroadcastController.Chatted())))
+				t.Equal("and calls nothing", Cues.Heard("BroadcastPlate") - heard, 0)
+				t.Check("the plate goes", clear())
+				t.Check("the player's own line shows next", shows(Players.LocalPlayer.DisplayName), tostring(BroadcastController.Shown()))
+				t.Equal("and calls nothing", Cues.Heard("BroadcastPlate") - heard, 0)
+				t.Check("it goes", clear())
+				-- Others' finds off: the server sends only the player's own, and the plate stays silent whatever it's handed.
+				t.Server("Act", "Settings", { Name = "ShowFinds", Value = false })
+				t.Check("others' finds off", waitFor(t, 2, function(): boolean
+					local view = ProfileController.Get()
+					return view ~= nil and not Settings.On(view :: any, "ShowFinds")
+				end))
+				t.Wait(GAP + 0.1)
+				BroadcastController.Hear(line(4, 1234567890, "Server", "Mara"))
+				t.Check("a line handed to the plate shows", shows("Mara"), tostring(BroadcastController.Shown()))
+				t.Equal("and calls nothing", Cues.Heard("BroadcastPlate") - heard, 0)
+				clear()
+				t.Server("Act", "Settings", { Name = "ShowFinds", Value = showing })
+				t.Server("Tune", "Broadcast.Plate.Gap", gap)
 			end,
 		},
 	}

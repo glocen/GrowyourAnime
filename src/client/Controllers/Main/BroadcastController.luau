@@ -10,6 +10,10 @@
 --   BroadcastController.Shown()     the plate's words now, plain, or nil: for tests
 --   BroadcastController.Chatted()   the last line written in the chat, plain, and its rarity's colour (hex), or nil:
 --                                   for tests
+--   BroadcastController.Hear(news)  a line as the server sends it, for tests: another player's, without one here
+-- The plate's cue (TR57, "The plate's cue"): someone else's find calls BroadcastPlate by name on the plate's fade-in
+-- (Rules.Broadcast.Chimes), silent until the director's ear picks it; the listening panel's Play the moment raises a
+-- made-up plate, kept out of the chat.
 
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
@@ -22,12 +26,15 @@ local Config = require(Shared.Config.Broadcast)
 local HudConfig = require(Shared.Config.Hud)
 local Net = require(Shared.Net)
 local Broadcast = require(Shared.Rules.Broadcast)
+local Settings = require(Shared.Rules.Settings)
 local UI = script.Parent.Parent.Parent.UI
 local Theme = require(UI.Theme)
 local Layers = require(UI.Layers)
 local Screen = require(UI.Kit.Screen)
 local HudController = require(script.Parent.HudController)
 local BaseController = require(script.Parent.BaseController)
+local ProfileController = require(script.Parent.Parent.Core.ProfileController)
+local Cues = require(script.Parent.FighterController.Cues)
 
 local BroadcastController = {}
 
@@ -118,8 +125,15 @@ local function band(): number
 	return math.max(2 * PAD + Theme.Text.Body, 2 * (half / Layers.Scale() - Theme.Size.Gap))
 end
 
--- The plate, in the target card's place, for Seconds, then gone; the line stays in the chat.
-local function lay(item: Broadcast.News)
+-- Whether the player shows others' finds: on until the save says otherwise.
+local function showsOthers(): boolean
+	local view = ProfileController.Get()
+	return view == nil or Settings.On(view :: any, "ShowFinds")
+end
+
+-- The plate, in the target card's place, for Seconds, then gone; the line stays in the chat, unless `unchatted` (the
+-- listening panel's made-up plate).
+local function lay(item: Broadcast.News, unchatted: boolean?)
 	local parts, rarity = Broadcast.Line(item)
 	local light = lightOf(rarity)
 	local plain = Broadcast.Plain(parts)
@@ -180,7 +194,12 @@ local function lay(item: Broadcast.News)
 	group.Parent = Layers.Get("Hud")
 	plate, shown = group, plain
 	TweenService:Create(group, TweenInfo.new(FADE_IN), { GroupTransparency = 0 }):Play()
-	chat(item)
+	if Broadcast.Chimes(item, player.UserId, showsOthers()) then
+		Cues.Moment("BroadcastPlate")
+	end
+	if not unchatted then
+		chat(item)
+	end
 	task.delay(Config.Plate.Seconds, function()
 		TweenService:Create(group, TweenInfo.new(FADE_OUT), { GroupTransparency = 1 }):Play()
 		task.wait(FADE_OUT)
@@ -213,8 +232,20 @@ function BroadcastController.Chatted(): (string?, string?)
 	return chatted, chattedLight
 end
 
+function BroadcastController.Hear(item: Broadcast.News)
+	hear(item)
+end
+
 function BroadcastController.Start()
 	Net.Client.On("Broadcast", hear)
+	-- Play the moment (TR64's panel): a made-up plate, someone else's Legendary find, over any plate up now.
+	Cues.Stage("BroadcastPlate", function()
+		if plate then
+			plate:Destroy()
+			plate, shown = nil, nil
+		end
+		lay({ Id = "", Kind = "Item", Reach = "Server", Def = "sword", Rarity = "Legendary", Level = 0, User = 0, Name = "glocen" }, true)
+	end)
 	local since = 0
 	RunService.Heartbeat:Connect(function(dt: number)
 		since += dt

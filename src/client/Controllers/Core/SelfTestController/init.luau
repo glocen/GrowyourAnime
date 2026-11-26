@@ -43,6 +43,7 @@ local GearCases = require(script.GearCases)
 local EquipmentCases = require(script.EquipmentCases)
 local SettingsCases = require(script.SettingsCases)
 local BroadcastCases = require(script.BroadcastCases)
+local CaptureCases = require(script.CaptureCases)
 local BoardsCases = require(script.BoardsCases)
 local WelcomeCases = require(script.WelcomeCases)
 local SparkCases = require(script.SparkCases)
@@ -253,6 +254,8 @@ local function run(filter: string?): string
 	table.move(boards, 1, #boards, #cases + 1, cases)
 	local welcome = WelcomeCases.Cases() -- the welcome week's row and the codes (TR59), apart for the same reason
 	table.move(welcome, 1, #welcome, #cases + 1, cases)
+	local captures = CaptureCases.Cases() -- the capture after a reveal (TR60), apart for the same reason
+	table.move(captures, 1, #captures, #cases + 1, cases)
 	local sparks = SparkCases.Cases() -- a landed hit's star (AR61), apart for the same reason
 	table.move(sparks, 1, #sparks, #cases + 1, cases)
 	local goals = GoalCases.Cases() -- TR54's goals: the Today list, the claim, the dare line and its card, apart for the same reason

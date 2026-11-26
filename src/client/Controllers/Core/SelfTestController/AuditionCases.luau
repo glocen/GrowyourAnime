@@ -266,7 +266,7 @@ function AuditionCases.Cases(): { any }
 				-- Play the moment: each staged moment, shown, calls its own cue (the drop on its bounce, the keeper's on its burst)
 				local player = Players.LocalPlayer
 				local plot = player:GetAttribute("Plot")
-				for _, name in { "LevelUp", "ShardDrop", "KeeperFall", "LeadDown", "GoalDone", "Record", "MachineStage", "LeadHurt" } do
+				for _, name in { "LevelUp", "ShardDrop", "KeeperFall", "LeadDown", "GoalDone", "Record", "MachineStage", "LeadHurt", "BroadcastPlate" } do
 					if name == "MachineStage" and type(plot) ~= "number" then
 						t.Check("MachineStage: a plot to show it on (none here: not checked)", false)
 						continue

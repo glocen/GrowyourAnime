@@ -239,4 +239,17 @@ return {
 			t.Check("forgotten after Stale", Broadcast.Fresh(seen, `{JOB}:9`, T0 + Config.Plate.Stale + 2) == true)
 		end,
 	},
+	{
+		Name = "Broadcast: the plate's cue sounds for someone else's find while others' finds show, never for the player's own",
+		Run = function(t: any)
+			local other = told("Item", "sword", "Legendary", 0, 10)
+			local me = 42
+			t.Check("someone else's, others shown: it sounds", Broadcast.Chimes(other, me, true))
+			t.Check("others' finds off: silent", not Broadcast.Chimes(other, me, false))
+			local mine = table.clone(other)
+			mine.User = me
+			t.Check("the player's own: silent", not Broadcast.Chimes(mine, me, true))
+			t.Check("the player's own, others off: silent", not Broadcast.Chimes(mine, me, false))
+		end,
+	},
 }

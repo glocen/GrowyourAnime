@@ -1,19 +1,14 @@
 --!strict
--- SignsController (client): the names a place says of itself, on the World layer (TR24's fix 10: "the Door shows no
--- name ... the gate at 35 studs has no name either"). The player's own Festival Door says where it leads, its name and
--- the ground it goes to under it (docs/design.md, "The Festival Door": "Festival of Battles", with the ground under it);
--- the festival gate says its ground's name to the side street. Plates as the machines' are (UI/World, UI/Kit/Panel),
--- kept under the top band, the door's apart from the base's machine plates. Their words and reach are
--- Config.World.Signs'.
--- A sign never covers the landmark it names, nor says again what the landmark's own plate says (research's must-fix on
--- AR15, 2026-11-17): it stands beside the landmark, level with its middle on the screen, hides wherever the HUD's
--- room sets it over the landmark (World.Clear), and the Door's steps away while the Door's own plate reads from the
--- camera. Under the top band a sign over the arch was pushed down onto the Door.
+-- SignsController (client): the names a place says of itself (TR24's fix 10: "the Door shows no name ... the gate at
+-- 35 studs has no name either"). The festival gate says its ground's name to the side street, on the World layer, in a
+-- plate as the machines' are (UI/World, UI/Kit/Panel), kept under the top band; its words and reach are
+-- Config.World.Signs'. Every plot's Festival Door has its name written on its own plate, on the front ring's crown
+-- (AR15, section 7); where it goes stands over it in the machines' plate (BaseController; AR65's verdict, must-fix 2).
+-- A sign never covers the landmark it names (research's must-fix on AR15, 2026-11-17): it stands beside the landmark,
+-- level with its middle on the screen, and hides wherever the HUD's room sets it over the landmark (World.Clear).
 --   SignsController.Parts()        the signs' plates, for tests
---   SignsController.Aside(door)    whether a door's sign stands aside now, its plate reading, for tests
 --   SignsController.Box(marker)    the landmark's box on the screen (viewport pixels), or nil, for tests
 
-local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local Shared = ReplicatedStorage.Shared
@@ -33,7 +28,6 @@ local FIND_EVERY = 1 -- seconds between looks for the markers: they stream in, a
 
 type Sign = { Marker: Instance, Plate: Frame }
 
-local player = Players.LocalPlayer
 local signs: { [string]: Sign } = {}
 local sides: { [string]: "Right" | "Left" } = {} -- the side each sign stands on, kept while it fits
 
@@ -96,36 +90,11 @@ local function beside(key: string, marker: Instance, size: Vector2, gap: number)
 	return ray.Origin + ray.Direction * depth
 end
 
--- Whether `door`'s own plate reads from the camera, so its sign on the screen stands aside (research's must-fix on AR15,
--- 2026-11-17: a screen sign never covers the landmark it names, nor says again what its own sign says): its name written,
--- the camera within the plate's Reads, in front of its face past Facing, and the plate on screen.
-local function plateReads(door: Instance): boolean
-	local host = door:FindFirstChild("Name")
-	local camera = workspace.CurrentCamera
-	if host == nil or not host:IsA("BasePart") or host:FindFirstChild("DoorName") == nil or camera == nil then
-		return false
-	end
-	local look = WorldConfig.Signs.Door.Plate
-	local toward = camera.CFrame.Position - host.Position
-	if toward.Magnitude > look.Reads or toward.Magnitude < 1e-3 then
-		return false
-	end
-	local face = host.CFrame:VectorToWorldSpace(Vector3.FromNormalId(Enum.NormalId.Back)) -- writeName's face
-	if toward.Unit:Dot(face) < look.Facing then
-		return false
-	end
-	local _, onScreen = camera:WorldToViewportPoint(host.Position)
-	return onScreen
-end
-
--- A plate of `lines` beside `marker`: the first line its name, Strong; the rest under it. Hidden while `aside(marker)`.
-local function make(key: string, marker: Instance, lines: { string }, look: any, group: string?, aside: ((Instance) -> boolean)?): Frame
+-- A plate of `lines` beside `marker`: the first line its name, Strong; the rest under it.
+local function make(key: string, marker: Instance, lines: { string }, look: any, group: string?): Frame
 	local line = look.Line
 	local size = Vector2.new(look.Width, #lines * line + Theme.Size.Pad)
 	local frame = World.Plate(`Sign{key}`, size, function(): Vector3?
-		if aside and aside(marker) then
-			return nil
-		end
 		return beside(key, marker, size, look.Gap)
 	end, look.Reach)
 	World.Below(frame)
@@ -158,7 +127,7 @@ local function make(key: string, marker: Instance, lines: { string }, look: any,
 	return frame
 end
 
-local function place(key: string, marker: Instance?, lines: { string }, look: any, group: string?, aside: ((Instance) -> boolean)?)
+local function place(key: string, marker: Instance?, lines: { string }, look: any, group: string?)
 	local sign = signs[key]
 	if sign and (sign.Marker ~= marker or not sign.Marker.Parent) then
 		World.Remove(sign.Plate)
@@ -166,7 +135,7 @@ local function place(key: string, marker: Instance?, lines: { string }, look: an
 		sign = nil
 	end
 	if sign == nil and marker then
-		signs[key] = { Marker = marker, Plate = make(key, marker, lines, look, group, aside) }
+		signs[key] = { Marker = marker, Plate = make(key, marker, lines, look, group) }
 	end
 end
 
@@ -206,18 +175,11 @@ local function find()
 	local config = WorldConfig.Signs
 	local row = Grounds.ById[WorldConfig.Row.Ground]
 	local ground = if row then row.Name else WorldConfig.Row.Ground
-	local plot = player:GetAttribute("Plot")
-	local door = if type(plot) == "number" then Markers.Find("FestivalDoor", { Plot = plot }) else nil
 	for _, each in Markers.All("FestivalDoor") do
 		writeName(each)
 	end
-	place("Door", door, { config.Door.Name, ground }, config.Door, "Base", plateReads)
 	-- The gate names its ground on the screen only: the kit's gate carries no words.
 	place("Gate", Markers.Find("FestivalGate"), { ground }, config.Gate, nil)
-end
-
-function SignsController.Aside(door: Instance): boolean
-	return plateReads(door)
 end
 
 function SignsController.Box(marker: Instance): (Vector2?, Vector2?)

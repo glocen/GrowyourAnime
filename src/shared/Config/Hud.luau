@@ -463,6 +463,8 @@ return {
 				Bay = Color3.fromHex("#FF7A59"),
 				Training = Color3.fromHex("#5EDB72"),
 				Condenser = Color3.fromHex("#5C86FF"),
+				-- The Festival Door's, saying where it goes (AR65's verdict, must-fix 2): its mouth's amber (base_kit, doormouth)
+				Door = Color3.fromHex("#FF9038"),
 			} :: { [string]: Color3 },
 			Row = 26,
 			Pad = 9,

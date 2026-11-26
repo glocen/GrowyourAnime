@@ -94,28 +94,19 @@ return {
 
 	-- The side street runs from the crossing between the Towers to the festival gate: a plot's depth, its path behind and
 	-- its Tower: 15.5 s at a 200-stud plot, so the Festival Door is the way in. Then Lantern Row.
-	-- The names a place says of itself (TR24's fix 10; SignsController): the player's Festival Door, its name and its
-	-- ground under it (docs/design.md, "The Festival Door"), and the festival gate, its ground's name to the side street.
-	-- Width and Line in authored pixels; Reach studs from the camera (the gate's, past the 35 studs TR24's still saw it
-	-- from). A sign never covers the landmark it names (research's must-fix on AR15, 2026-11-17): it stands beside it, Gap
-	-- authored pixels off its side, level with its middle on the screen. Over the arch, under the top band, it was pushed
-	-- down onto the Door from every distance in its reach (the builder's measure, 2026-11-17: 32 to 100% of the sign over
-	-- the Door). The builder's seeds.
-	-- The Door's name is also written on its own plate, on the front ring's crown (AR15, section 7: research's fix 3,
-	-- the name's plate belongs to the ring): Plate, in the Door's warm light, unlit by the world (LightInfluence 0),
-	-- PixelsPerStud on the plate's 5 by 1.3, Pad studs in from each edge, seen within Reach studs (the builder's seeds).
-	-- While it reads, the Door's sign steps away, so the name isn't said twice: the camera within Reads studs of the
-	-- plate, in front of its face past Facing (the cosine), the plate on screen. The game's camera rides about 12 studs
-	-- behind the avatar, so the way in at 18 studs is about 29 from the plate, where its name reads small but clear on a
-	-- phone (the builder's seeds, measured in AR15).
+	-- The names a place says of itself (TR24's fix 10; SignsController): the festival gate, its ground's name to the side
+	-- street. Width and Line in authored pixels; Reach studs from the camera (the gate's, past the 35 studs TR24's still
+	-- saw it from). A sign never covers the landmark it names (research's must-fix on AR15, 2026-11-17): it stands beside
+	-- it, Gap authored pixels off its side, level with its middle on the screen. The builder's seeds.
+	-- The player's Festival Door has its Name written on its own plate, on the front ring's crown (AR15, section 7:
+	-- research's fix 3, the name's plate belongs to the ring): Plate, in the Door's warm light, unlit by the world
+	-- (LightInfluence 0), PixelsPerStud on the plate's 5 by 1.3, Pad studs in from each edge, seen within Reach studs (the
+	-- builder's seeds). Where it goes, its ground's name, stands over it in the machines' plate (BaseController; AR65's
+	-- verdict, must-fix 2: a screen sign beside it stood over the lead and said the ring's name again).
 	Signs = {
 		Door = {
 			Name = "Festival of Battles",
-			Width = 200,
-			Line = 22,
-			Gap = 16,
-			Reach = 90,
-			Plate = { Colour = "#FFD49A", Brightness = 1.2, PixelsPerStud = 80, Pad = 0.12, Reach = 60, Reads = 36, Facing = 0.35 },
+			Plate = { Colour = "#FFD49A", Brightness = 1.2, PixelsPerStud = 80, Pad = 0.12, Reach = 60 },
 		},
 		Gate = { Width = 160, Line = 24, Gap = 16, Reach = 120 },
 	},

@@ -20,6 +20,7 @@ local RevealConfig = require(Shared.Config.Reveal)
 local RevealArt = require(Shared.Config.RevealArt)
 local Shards = require(Shared.Definitions.Shards)
 local Voidkin = require(Shared.Definitions.Voidkin)
+local Grounds = require(Shared.Definitions.Grounds)
 local Power = require(Shared.Rules.Power)
 local Breaker = require(Shared.Rules.Breaker)
 local BaseLevels = require(Shared.Rules.BaseLevels)
@@ -110,6 +111,8 @@ local CONDENSER_UP = 4 -- studs over the Stone Condenser's place its prompt stan
 local CONDENSER_PLATE = 9
 local FORGE_UP = 4 -- the Forge's prompt, before its seat (TR37)
 local FORGE_PLATE = 9.5
+local DOOR_UP = 4 -- the Festival Door's anchor, over its marker; it has no prompt of its own
+local DOOR_PLATE = 12 -- its plate over that, near, and until its pieces are in: over the rings' crown
 -- Wide enough that a row's name and its second line fit beside its button at the smallest scale: 191 authored pixels,
 -- against "Intelligence · Mage · Fire" at 178, the longest line before the types took their colours' names (TR36),
 -- and "Chamber 2 · 1 min 59 s" at 164.
@@ -189,6 +192,7 @@ local machine: Spot? = nil -- the Training machine (TR12)
 local generator: Spot? = nil -- the generator (TR18)
 local condenser: Spot? = nil -- the Stone Condenser (TR37): its plate, and its prompt while its tray holds a stone
 local forge: Spot? = nil -- the Forge (TR37): its plate and its prompt, which opens Reinforce
+local festival: Spot? = nil -- the Festival Door: its plate says where it goes (AR65's verdict, must-fix 2)
 -- The convert's card beside the Condenser's cradle (AR51's B), and its prompt on the cradle.
 type ConvertCard = {
 	Anchor: Part,
@@ -540,7 +544,7 @@ end
 -- Every spot of the plot.
 local function allSpots(): { Spot }
 	local list: { Spot } = {}
-	for _, spot in { breaker, battery, machine, generator, condenser, forge } :: { Spot? } do
+	for _, spot in { breaker, battery, machine, generator, condenser, forge, festival } :: { Spot? } do
 		if spot then
 			table.insert(list, spot)
 		end
@@ -551,7 +555,8 @@ local function allSpots(): { Spot }
 	return list
 end
 
--- The Festival Door's outline: no plate of its own (its name is on its own plate), but no machine's stands across it.
+-- The Festival Door's outline, the laid frame's nearest the Breaker: no machine's plate stands across it. Its own plate
+-- (festival) says where it goes, over it.
 local DOOR_PIECES = "^Door"
 local doorPoints: { Vector3 }? = nil
 
@@ -705,7 +710,7 @@ local function sizePlates()
 					table.insert(nearer, seen.Hull)
 				end
 			end
-			if door and doorDepth < at.Z then
+			if door and spot ~= festival and doorDepth < at.Z then
 				table.insert(nearer, door)
 			end
 			local function clear(dx: number): boolean
@@ -744,10 +749,11 @@ local function clearAll()
 	clearSpot(generator)
 	clearSpot(condenser)
 	clearSpot(forge)
+	clearSpot(festival)
 	for _, spot in bays do
 		clearSpot(spot)
 	end
-	breaker, battery, machine, generator, condenser, forge, bays = nil, nil, nil, nil, nil, nil, {}
+	breaker, battery, machine, generator, condenser, forge, festival, bays = nil, nil, nil, nil, nil, nil, nil, {}
 	if convert then
 		World.Remove(convert.Card)
 		convert.Anchor:Destroy()
@@ -1388,6 +1394,7 @@ local function find()
 	local generatorMarker = Markers.Find("Generator", { Plot = number })
 	local condenserMarker = Markers.Find("Condenser", { Plot = number })
 	local forgeMarker = Markers.Find("Forge", { Plot = number })
+	local doorMarker = Markers.Find("FestivalDoor", { Plot = number })
 	local bayMarkers: { [number]: Instance } = {}
 	for _, marker in Markers.All("Bay") do
 		local index = marker:GetAttribute("Bay")
@@ -1401,6 +1408,7 @@ local function find()
 		or (generatorMarker ~= nil and stale(generator, generatorMarker))
 		or (condenserMarker ~= nil and stale(condenser, condenserMarker))
 		or (forgeMarker ~= nil and stale(forge, forgeMarker))
+		or (doorMarker ~= nil and stale(festival, doorMarker))
 	for index, marker in bayMarkers do
 		changed = changed or stale(bays[index], marker)
 	end
@@ -1440,6 +1448,12 @@ local function find()
 			BaseController.PressForge()
 		end)
 		forge = f
+	end
+	if doorMarker then
+		-- where it goes, in the machines' plate over it (AR65's verdict, must-fix 2): its ground's name, its own amber
+		local row = Grounds.ById[WorldConfig.Row.Ground]
+		local look: Look = { Name = if row then row.Name else WorldConfig.Row.Ground, Accent = "Door", Pieces = DOOR_PIECES }
+		festival = spotFor(doorMarker, "Door", look, DOOR_UP, 0, DOOR_PLATE)
 	end
 	BaseController.Refresh()
 end
@@ -1756,6 +1770,9 @@ function BaseController.Parts(): { [string]: Instance }
 	if forge then
 		parts.ForgePlate = forge.Plate
 		parts.ForgePrompt = forge.Prompt :: any
+	end
+	if festival then
+		parts.DoorPlate = festival.Plate
 	end
 	for index, spot in bays do
 		parts[`Bay{index}Plate`] = spot.Plate

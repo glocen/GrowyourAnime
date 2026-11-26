@@ -1030,7 +1030,7 @@ function BaseCases.Cases(given: Given): { any }
 			end,
 		},
 		{
-			Name = "Base: TR24's fix 10, the Festival Door says its name with its ground under it, and the festival gate says its ground, each sign beside its landmark and never over it, the Door's away while its own plate reads",
+			Name = "Base: TR24's fix 10 and AR65's verdict (must-fix 2): the Festival Door's plate says where it goes, its ground's name, in the machines' cut over the Door and never across it; the festival gate says its ground beside it, never over it",
 			Run = function(t: any)
 				local ground = Grounds.ById[WorldConfig.Row.Ground].Name
 				local plot = Players.LocalPlayer:GetAttribute("Plot")
@@ -1040,9 +1040,12 @@ function BaseCases.Cases(given: Given): { any }
 				local festival = PlaceRole.Is("Festival")
 				t.Check("this place's landmark is in the world", if festival then gate ~= nil else door ~= nil)
 				local parts: { [string]: Frame } = {}
-				t.Check("it wears its sign", waitFor(t, 3, function(): boolean
+				local doorPlate: Frame? = nil
+				t.Check("it wears its plate", waitFor(t, 3, function(): boolean
 					parts = SignsController.Parts()
-					return if festival then parts.Gate ~= nil else parts.Door ~= nil
+					local plate = BaseController.Parts().DoorPlate
+					doorPlate = if plate and plate:IsA("Frame") then plate else nil
+					return if festival then parts.Gate ~= nil else doorPlate ~= nil
 				end))
 				local function says(frame: Frame?, index: number): string
 					local panel = frame and frame:FindFirstChild("Panel")
@@ -1051,13 +1054,16 @@ function BaseCases.Cases(given: Given): { any }
 				end
 				if festival then
 					t.Equal("the gate: its ground", says(parts.Gate, 1), ground)
-				else
-					t.Equal("the door: its name", says(parts.Door, 1), WorldConfig.Signs.Door.Name)
-					t.Equal("the door: the ground it goes to under it", says(parts.Door, 2), ground)
+				elseif doorPlate then
+					local panel = doorPlate:FindFirstChild("Panel")
+					local name = panel and panel:FindFirstChild("Name")
+					local words = if name and name:IsA("TextLabel") then name.Text else ""
+					t.Equal("the door: where it goes, its ground's name", words, if Theme.Frame.Upper then string.upper(ground) else ground)
+					t.Check("the door: not the ring's own name again", string.upper(words) ~= string.upper(WorldConfig.Signs.Door.Name), words)
+					t.Equal("the door: nothing under its name", says(doorPlate, 1), "")
 				end
-				-- Beside each landmark, never over it, and the Door's away while its own plate reads (research's must-fix on
-				-- AR15, 2026-11-17). Seen as the game's camera sees a stand: 12 studs behind the avatar and 4.7 up, looking at
-				-- its head, the avatar facing the landmark (measured in AR15). It moves on render.
+				-- Seen as the game's camera sees a stand: 12 studs behind the avatar and 4.7 up, looking at its head, the avatar
+				-- facing the landmark (measured in AR15). It moves on render.
 				local camera = workspace.CurrentCamera
 				local function look(marker: Instance, stand: Vector3)
 					local middle = if marker:IsA("Model") then marker:GetBoundingBox().Position else (marker :: BasePart).Position
@@ -1068,37 +1074,54 @@ function BaseCases.Cases(given: Given): { any }
 						RunService.RenderStepped:Wait()
 					end
 				end
+				-- A frame's box in viewport pixels.
+				local function boxOf(frame: Frame): (Vector2, Vector2)
+					local screen = frame:FindFirstAncestorOfClass("ScreenGui")
+					local inset = if screen and not screen.IgnoreGuiInset then GuiService:GetGuiInset() else Vector2.zero
+					return frame.AbsolutePosition + inset, frame.AbsolutePosition + frame.AbsoluteSize + inset
+				end
 				local function covered(frame: Frame, marker: Instance): number?
 					local low, high = SignsController.Box(marker)
 					if not frame.Visible or low == nil or high == nil then
 						return nil
 					end
-					local screen = frame:FindFirstAncestorOfClass("ScreenGui")
-					local inset = if screen and not screen.IgnoreGuiInset then GuiService:GetGuiInset() else Vector2.zero
-					local a, b = frame.AbsolutePosition + inset, frame.AbsolutePosition + frame.AbsoluteSize + inset
+					local a, b = boxOf(frame)
 					local wide = math.max(0, math.min(b.X, high.X) - math.max(a.X, low.X))
 					local tall = math.max(0, math.min(b.Y, high.Y) - math.max(a.Y, low.Y))
 					return wide * tall / (frame.AbsoluteSize.X * frame.AbsoluteSize.Y)
 				end
 				local frameOf = if door then door:FindFirstChild("Frame") else nil
-				local doorSign: Frame? = parts.Door
-				if door and frameOf and frameOf:IsA("BasePart") and doorSign then
+				if door and frameOf and frameOf:IsA("BasePart") and doorPlate then
 					local c = BaseManifest.pieces[frameOf:GetAttribute("Piece") :: string].centre
 					local origin = frameOf.CFrame * CFrame.new(-c[1], -c[2], -c[3])
-					look(door, origin * Vector3.new(0, 3.5, 18))
-					t.Check("the door: its sign away while its own plate reads, at the way in", SignsController.Aside(door) and not doorSign.Visible, `{SignsController.Aside(door)}, shown {doorSign.Visible}`)
-					local stands: { { Name: string, At: Vector3 } } = {
-						{ Name = "40 out", At = Vector3.new(0, 3.5, 40) },
-						{ Name = "18 behind", At = Vector3.new(0, 3.5, -18) },
-						{ Name = "18 aside", At = Vector3.new(18, 3.5, 4) },
+					-- Over the Door: its middle within the Door's outline across the screen, its foot at or above the outline's top.
+					local stands: { { Name: string, At: Vector3, Shown: boolean } } = {
+						{ Name = "the way in", At = Vector3.new(0, 3.5, 18), Shown = true },
+						{ Name = "40 out", At = Vector3.new(0, 3.5, 40), Shown = true },
+						{ Name = "18 aside", At = Vector3.new(18, 3.5, 4), Shown = false },
+						{ Name = "18 behind", At = Vector3.new(0, 3.5, -18), Shown = false },
 					}
 					for _, stand in stands do
 						look(door, origin * stand.At)
-						local over = covered(doorSign, door)
-						t.Check(`the door, {stand.Name}: its sign shown beside it, none of it over the door`, not SignsController.Aside(door) and over == 0, `aside {SignsController.Aside(door)}, over {over}`)
+						local hull = BaseController.Hull("Door")
+						if stand.Shown then
+							t.Check(`the door, {stand.Name}: its plate shown`, doorPlate.Visible)
+						end
+						if doorPlate.Visible and hull then
+							local left, right, top = hull[1].X, hull[1].X, hull[1].Y
+							for _, q in hull do
+								left = math.min(left, q.X)
+								right = math.max(right, q.X)
+								top = math.min(top, q.Y)
+							end
+							local a, b = boxOf(doorPlate)
+							local middle = (a.X + b.X) / 2
+							t.Check(`the door, {stand.Name}: its plate over the Door`, middle >= left and middle <= right and b.Y <= top + 2,
+								string.format("middle %.0f in %.0f..%.0f, foot %.0f against the top %.0f", middle, left, right, b.Y, top))
+						end
 					end
 				elseif not festival then
-					t.Check("the door's kit, to stand before it", false, "no Frame")
+					t.Check("the door's kit and its plate, to stand before it", false, if frameOf == nil then "no Frame" else "no plate")
 				end
 				local gateSign: Frame? = parts.Gate
 				if gate and gateSign then

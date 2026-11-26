@@ -40,6 +40,8 @@ Research (Quaestor), 2026-11-24, evening, from the cloud. This is the calibratio
 | Rejected | "those ui need a massive polished it looks childish and not good" (11-17, 13:16, L210) | the Voidkin screen's rail before AR29, **in the game** | `UI/voidkin/chrome/base_items.png` @32b5980 (Faber's phone capture, 22 minutes before the words) | medium |
 | Rejected | "i do not look like this green ui makeover i liked the old one before" (11-19, 14:56, L50) | AR40's teal on Equipment | `UI/equipment/equipment_cut.png` @8130e92 | medium |
 | Rejected | "that lantern drawing is so bad and the rest is just a pain in the eye" (11-24, 13:35, L18) | the Arc panel's Lantern Row tile, in the game | the drawing only: `UI/stages/images/StageLantern.png` @fa02fe7 | medium |
+| Rejected | "why it show the eauipped voidkin why not js a beautifull art typesoul like or rellseas like" (11-26, by 20:28, to Modulo) | AR62's Home, the Voidkin card: the lead as a plain standing shot | `UI/style_frames/A_home_cut.png` @92b323c8, the likely image (Modulo to confirm) | medium |
+| Rejected | "équipement is so ugly", then "Home's Equipment card" (11-26, by 20:28, to Modulo) | AR62's Home, the Equipment card: a gold sword with +7 on a brown ground | the same | medium |
 
 The UI pair to start from: the accepted rail (AR29, B) beside the rejected rail in the game (L210). It's the same screen, before and after the director's word.
 
